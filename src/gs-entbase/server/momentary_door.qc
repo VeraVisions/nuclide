@@ -29,14 +29,53 @@ momentary_door:NSMomentary
 {
 	void(void) momentary_door;
 
+	virtual void(string, string) SpawnKey;
 	virtual void(void) Respawn;
 	virtual void(void) SetMovementDirection;
-	virtual void(string, string) SpawnKey;
 
 	virtual void(void) MovementDone;
 	virtual void(void) MovementStateChanged;
 	virtual float(void) GetProgress;
 };
+
+void
+momentary_door::momentary_door(void)
+{
+}
+
+void
+momentary_door::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "lip":
+		m_flDistance = stof(strValue);
+		break;
+	case "speed":
+		m_flSpeed = stof(strValue);
+		break;
+	case "returnspeed":
+		m_flReturnspeed = stof(strValue);
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
+	}
+}
+
+void
+momentary_door::Respawn(void)
+{
+	RestoreAngles();
+	SetMovementDirection();
+	ClearAngles();
+
+	SetMovetype(MOVETYPE_PUSH);
+	SetSolid(SOLID_BSP);
+	SetModel(GetSpawnModel());
+	SetOrigin(GetSpawnOrigin());
+
+	m_vecPos1 = GetSpawnOrigin();
+	m_vecPos2 = (m_vecPos1 + m_vecMoveDir * (fabs(m_vecMoveDir * size) - m_flDistance));
+}
 
 float
 momentary_door::GetProgress(void)
@@ -99,43 +138,4 @@ momentary_door::SetMovementDirection(void)
 		makevectors(GetSpawnAngles());
 		m_vecMoveDir = v_forward;
 	}
-}
-
-void
-momentary_door::Respawn(void)
-{
-	RestoreAngles();
-	SetMovementDirection();
-	ClearAngles();
-
-	SetMovetype(MOVETYPE_PUSH);
-	SetSolid(SOLID_BSP);
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
-
-	m_vecPos1 = GetSpawnOrigin();
-	m_vecPos2 = (m_vecPos1 + m_vecMoveDir * (fabs(m_vecMoveDir * size) - m_flDistance));
-}
-
-void
-momentary_door::SpawnKey(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "lip":
-		m_flDistance = stof(strValue);
-		break;
-	case "speed":
-		m_flSpeed = stof(strValue);
-		break;
-	case "returnspeed":
-		m_flReturnspeed = stof(strValue);
-		break;
-	default:
-		super::SpawnKey(strKey, strValue);
-	}
-}
-
-void
-momentary_door::momentary_door(void)
-{
 }

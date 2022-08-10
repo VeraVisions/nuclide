@@ -29,7 +29,8 @@ This entity was introduced in Half-Life (1998).
 #define SF_CONVEYOR_VISUAL	1
 #define SF_CONVEYOR_NOTSOLID	2
 
-class func_conveyor:NSRenderableEntity
+class
+func_conveyor:NSRenderableEntity
 {
 	float m_flSpeed;
 	vector m_vecMoveDir;
@@ -47,11 +48,18 @@ class func_conveyor:NSRenderableEntity
 };
 
 void
+func_conveyor::func_conveyor(void)
+{
+	m_flSpeed = 0.0f;
+	m_vecMoveDir = [0.0f, 0.0f, 0.0f];
+}
+
+void
 func_conveyor::Save(float handle)
 {
+	super::Save(handle);
 	SaveFloat(handle, "m_flSpeed", m_flSpeed);
 	SaveVector(handle, "m_vecMoveDir", m_vecMoveDir);
-	super::Save(handle);
 }
 
 void
@@ -66,6 +74,40 @@ func_conveyor::Restore(string strKey, string strValue)
 		break;
 	default:
 		super::Restore(strKey, strValue);
+	}
+}
+
+void
+func_conveyor::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "speed":
+		m_flSpeed = stof(strValue);
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
+		break;
+	}
+}
+
+void
+func_conveyor::Respawn(void)
+{
+	if (!m_flSpeed)
+		m_flSpeed = 100;
+
+	RestoreAngles();
+	SetMovementDirection();
+	ClearAngles();
+	SetModel(GetSpawnModel());
+	SetMovetype(MOVETYPE_NONE);
+	SetSolid(SOLID_BSP);
+
+	Trigger(this, TRIG_ON);
+
+	if (HasSpawnFlags(SF_CONVEYOR_NOTSOLID)) {
+		SetSolid(SOLID_NOT);
+		SetSkin(0);
 	}
 }
 
@@ -113,28 +155,6 @@ func_conveyor::Trigger(entity act, int state)
 }
 
 void
-func_conveyor::Respawn(void)
-{
-	if (!m_flSpeed)
-		m_flSpeed = 100;
-
-	RestoreAngles();
-	SetMovementDirection();
-	ClearAngles();
-	SetModel(GetSpawnModel());
-	SetMovetype(MOVETYPE_NONE);
-	SetSolid(SOLID_BSP);
-
-	Trigger(this, TRIG_ON);
-
-	if (HasSpawnFlags(SF_CONVEYOR_NOTSOLID)) {
-		SetSolid(SOLID_NOT);
-		SetSkin(0);
-	}
-
-}
-
-void
 func_conveyor::Input(entity eAct, string strInput, string strData)
 {
 	switch (strInput) {
@@ -147,22 +167,4 @@ func_conveyor::Input(entity eAct, string strInput, string strData)
 	default:
 		super::Input(eAct, strInput, strData);
 	}
-}
-
-void
-func_conveyor::SpawnKey(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "speed":
-		m_flSpeed = stof(strValue);
-		break;
-	default:
-		super::SpawnKey(strKey, strValue);
-		break;
-	}
-}
-
-void
-func_conveyor::func_conveyor(void)
-{
 }

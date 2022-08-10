@@ -14,13 +14,16 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-class CGameRules
+class CGameRules:NSIO
 {
 	int m_iIntermission;
 	float m_flIntermissionTime;
 	float m_flIntermissionCycle;
 
 	void() CGameRules;
+
+	virtual void(float) Save;
+	virtual void(string,string) Restore;
 
 	virtual void(void) InitPostEnts;
 

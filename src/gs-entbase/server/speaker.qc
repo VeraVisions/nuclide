@@ -64,7 +64,8 @@ string g_speaker_hlpresets[] = {
 	"!C3A2_"
 };
 
-class speaker:NSTalkMonster
+class
+speaker:NSTalkMonster
 {
 	string m_strSentence;
 	float m_flVolume;
@@ -74,74 +75,41 @@ class speaker:NSTalkMonster
 	/* overrides */
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
+	virtual void(string, string) SpawnKey;
 	virtual void(void) Respawn;
 	virtual void(entity, int) Trigger;
-	virtual void(string, string) SpawnKey;
 
 	virtual void(void) Annouce;
 };
 
 void
+speaker::speaker(void)
+{
+	m_strSentence = __NULL__;
+	m_flVolume = 1.0f;
+}
+
+void
 speaker::Save(float handle)
 {
-	SaveString(handle, "sentence", m_strSentence);
-	SaveFloat(handle, "volume", m_flVolume);
 	super::Save(handle);
+	SaveString(handle, "m_strSentence", m_strSentence);
+	SaveFloat(handle, "m_flVolume", m_flVolume);
 }
 
 void
 speaker::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "sentence":
+	case "m_strSentence":
 		m_strSentence = ReadString(strValue);
 		break;
-	case "volume":
+	case "m_flVolume":
 		m_flVolume = ReadFloat(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
 	}
-}
-
-void
-speaker::Annouce(void)
-{
-	string seq = Sentences_GetSamples(m_strSentence);
-
-	if (seq == "") {
-		return;
-	}
-
-	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
-	WriteByte(MSG_MULTICAST, EV_SENTENCE);
-	WriteEntity(MSG_MULTICAST, this);
-	WriteString(MSG_MULTICAST, seq);
-	msg_entity = this;
-	multicast(origin, MULTICAST_PVS);
-
-	nextthink = time + random(30,60);
-}
-
-void
-speaker::Respawn(void)
-{
-	/* force this thing to be networked */
-	SetModel("models/player.mdl");
-	SetOrigin(GetSpawnOrigin());
-	SetRenderMode(RM_COLOR);
-	SetRenderAmt(0);
-
-	think = Annouce;
-
-	if (!HasSpawnFlags(SPEAKFL_SILENT))
-		nextthink = time + 10.0f;
-}
-
-void
-speaker::Trigger(entity eAct, int foo)
-{
-	nextthink = time;
 }
 
 void
@@ -167,8 +135,41 @@ speaker::SpawnKey(string strKey, string strValue)
 }
 
 void
-speaker::speaker(void)
+speaker::Respawn(void)
 {
-	m_strSentence = __NULL__;
-	m_flVolume = 1.0f;
+	/* force this thing to be networked */
+	SetModel("models/player.mdl");
+	SetOrigin(GetSpawnOrigin());
+	SetRenderMode(RM_COLOR);
+	SetRenderAmt(0);
+
+	think = Annouce;
+
+	if (!HasSpawnFlags(SPEAKFL_SILENT))
+		nextthink = time + 10.0f;
+}
+
+void
+speaker::Annouce(void)
+{
+	string seq = Sentences_GetSamples(m_strSentence);
+
+	if (seq == "") {
+		return;
+	}
+
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_SENTENCE);
+	WriteEntity(MSG_MULTICAST, this);
+	WriteString(MSG_MULTICAST, seq);
+	msg_entity = this;
+	multicast(origin, MULTICAST_PVS);
+
+	nextthink = time + random(30,60);
+}
+
+void
+speaker::Trigger(entity eAct, int foo)
+{
+	nextthink = time;
 }

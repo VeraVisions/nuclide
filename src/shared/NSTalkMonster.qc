@@ -62,93 +62,134 @@ NSTalkMonster::NSTalkMonster(void)
 void
 NSTalkMonster::Save(float handle)
 {
-	SaveString(handle, "talkAnswer", m_talkAnswer);
-	SaveString(handle, "talkAsk", m_talkAsk);
-	SaveString(handle, "talkAllyShot", m_talkAllyShot);
-	SaveString(handle, "talkGreet", m_talkGreet);
-	SaveString(handle, "talkIdle", m_talkIdle);
-	SaveString(handle, "talkPanic", m_talkPanic);
-	SaveString(handle, "talkHearing", m_talkHearing);
-	SaveString(handle, "talkSmelling", m_talkSmelling);
-	SaveString(handle, "talkStare", m_talkStare);
-	SaveString(handle, "talkSurvived", m_talkSurvived);
-	SaveString(handle, "talkWounded", m_talkWounded);
-	SaveString(handle, "talkPlayerAsk", m_talkPlayerAsk);
-	SaveString(handle, "talkPlayerGreet", m_talkPlayerGreet);
-	SaveString(handle, "talkPlayerIdle", m_talkPlayerIdle);
-	SaveString(handle, "talkPlayerWounded1", m_talkPlayerWounded1);
-	SaveString(handle, "talkPlayerWounded2", m_talkPlayerWounded2);
-	SaveString(handle, "talkPlayerWounded3", m_talkPlayerWounded3);
-	SaveString(handle, "talkUnfollow", m_talkUnfollow);
-	SaveString(handle, "talkFollow", m_talkFollow);
-	SaveString(handle, "talkStopFollow", m_talkStopFollow);
-
 	super::Save(handle);
+
+	SaveFloat(handle, "m_flPitch", m_flPitch);
+	SaveFloat(handle, "m_flNextSentence", m_flNextSentence);
+	SaveInt(handle, "m_iFlags", m_iFlags);
+	SaveEntity(handle, "m_eFollowing", m_eFollowing);
+	SaveEntity(handle, "m_eFollowingChain", m_eFollowingChain);
+	SaveVector(handle, "m_vecLastUserPos", m_vecLastUserPos);
+	SaveFloat(handle, "m_flChangePath", m_flChangePath);
+	SaveFloat(handle, "m_flTraceTime", m_flTraceTime);
+	SaveFloat(handle, "m_flFollowSpeedChanged", m_flFollowSpeedChanged);
+	SaveFloat(handle, "m_flFollowSpeed", m_flFollowSpeed);
+
+	SaveString(handle, "m_talkAnswer", m_talkAnswer);
+	SaveString(handle, "m_talkAsk", m_talkAsk);
+	SaveString(handle, "m_talkAllyShot", m_talkAllyShot);
+	SaveString(handle, "m_talkGreet", m_talkGreet);
+	SaveString(handle, "m_talkIdle", m_talkIdle);
+	SaveString(handle, "m_talkPanic", m_talkPanic);
+	SaveString(handle, "m_talkHearing", m_talkHearing);
+	SaveString(handle, "m_talkSmelling", m_talkSmelling);
+	SaveString(handle, "m_talkStare", m_talkStare);
+	SaveString(handle, "m_talkSurvived", m_talkSurvived);
+	SaveString(handle, "m_talkWounded", m_talkWounded);
+	SaveString(handle, "m_talkPlayerAsk", m_talkPlayerAsk);
+	SaveString(handle, "m_talkPlayerGreet", m_talkPlayerGreet);
+	SaveString(handle, "m_talkPlayerIdle", m_talkPlayerIdle);
+	SaveString(handle, "m_talkPlayerWounded1", m_talkPlayerWounded1);
+	SaveString(handle, "m_talkPlayerWounded2", m_talkPlayerWounded2);
+	SaveString(handle, "m_talkPlayerWounded3", m_talkPlayerWounded3);
+	SaveString(handle, "m_talkUnfollow", m_talkUnfollow);
+	SaveString(handle, "m_talkFollow", m_talkFollow);
+	SaveString(handle, "m_talkStopFollow", m_talkStopFollow);
 }
+
 void
 NSTalkMonster::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "talkAnswer":
-		m_talkAnswer = strValue;
+	case "m_flPitch":
+		m_flPitch = ReadFloat(strValue);
 		break;
-	case "talkAsk":
-		m_talkAsk = strValue;
+	case "m_flNextSentence":
+		m_flNextSentence = ReadFloat(strValue);
 		break;
-	case "talkAllyShot":
-		m_talkAllyShot = strValue;
+	case "m_iFlags":
+		m_iFlags = ReadInt(strValue);
 		break;
-	case "talkGreet":
-		m_talkGreet = strValue;
+	case "m_eFollowing":
+		m_eFollowing = ReadEntity(strValue);
 		break;
-	case "talkIdle":
-		m_talkIdle = strValue;
+	case "m_eFollowingChain":
+		m_eFollowingChain = ReadEntity(strValue);
 		break;
-	case "talkPanic":
-		m_talkPanic = strValue;
+	case "m_vecLastUserPos":
+		m_vecLastUserPos = ReadVector(strValue);
 		break;
-	case "talkHearing":
-		m_talkHearing = strValue;
+	case "m_flChangePath":
+		m_flChangePath = ReadFloat(strValue);
 		break;
-	case "talkSmelling":
-		m_talkSmelling = strValue;
+	case "m_flTraceTime":
+		m_flTraceTime = ReadFloat(strValue);
 		break;
-	case "talkStare":
-		m_talkStare = strValue;
+	case "m_flFollowSpeedChanged":
+		m_flFollowSpeedChanged = ReadFloat(strValue);
 		break;
-	case "talkSurvived":
-		m_talkSurvived = strValue;
+	case "m_flFollowSpeed":
+		m_flFollowSpeed = ReadFloat(strValue);
 		break;
-	case "talkWounded":
-		m_talkWounded = strValue;
+	case "m_talkAnswer":
+		m_talkAnswer = ReadString(strValue);
 		break;
-
-	case "talkPlayerAsk":
-		m_talkPlayerAsk = strValue;
+	case "m_talkAsk":
+		m_talkAsk = ReadString(strValue);
 		break;
-	case "talkPlayerGreet":
-		m_talkPlayerGreet = strValue;
+	case "m_talkAllyShot":
+		m_talkAllyShot = ReadString(strValue);
 		break;
-	case "talkPlayerIdle":
-		m_talkPlayerIdle = strValue;
+	case "m_talkGreet":
+		m_talkGreet = ReadString(strValue);
 		break;
-	case "talkPlayerWounded1":
-		m_talkPlayerWounded1 = strValue;
+	case "m_talkIdle":
+		m_talkIdle = ReadString(strValue);
 		break;
-	case "talkPlayerWounded2":
-		m_talkPlayerWounded2 = strValue;
+	case "m_talkPanic":
+		m_talkPanic = ReadString(strValue);
 		break;
-	case "talkPlayerWounded3":
-		m_talkPlayerWounded3 = strValue;
+	case "m_talkHearing":
+		m_talkHearing = ReadString(strValue);
 		break;
-	case "talkUnfollow":
-		m_talkUnfollow = strValue;
+	case "m_talkSmelling":
+		m_talkSmelling = ReadString(strValue);
 		break;
-	case "talkFollow":
-		m_talkFollow = strValue;
+	case "m_talkStare":
+		m_talkStare = ReadString(strValue);
 		break;
-	case "talkStopFollow":
-		m_talkStopFollow = strValue;
+	case "m_talkSurvived":
+		m_talkSurvived = ReadString(strValue);
+		break;
+	case "m_talkWounded":
+		m_talkWounded = ReadString(strValue);
+		break;
+	case "m_talkPlayerAsk":
+		m_talkPlayerAsk = ReadString(strValue);
+		break;
+	case "m_talkPlayerGreet":
+		m_talkPlayerGreet = ReadString(strValue);
+		break;
+	case "m_talkPlayerIdle":
+		m_talkPlayerIdle = ReadString(strValue);
+		break;
+	case "m_talkPlayerWounded1":
+		m_talkPlayerWounded1 = ReadString(strValue);
+		break;
+	case "m_talkPlayerWounded2":
+		m_talkPlayerWounded2 = ReadString(strValue);
+		break;
+	case "m_talkPlayerWounded3":
+		m_talkPlayerWounded3 = ReadString(strValue);
+		break;
+	case "m_talkUnfollow":
+		m_talkUnfollow = ReadString(strValue);
+		break;
+	case "m_talkFollow":
+		m_talkFollow = ReadString(strValue);
+		break;
+	case "m_talkStopFollow":
+		m_talkStopFollow = ReadString(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);

@@ -71,7 +71,8 @@ enum
 	DOORSTATE_DOWN
 };
 
-class func_door:NSRenderableEntity
+class
+func_door:NSRenderableEntity
 {
 	string targetClose;
 	vector m_vecPos1;
@@ -158,6 +159,8 @@ func_door::func_door(void)
 void
 func_door::Save(float handle)
 {
+	super::Save(handle);
+
 	SaveVector(handle, "m_vecPos1", m_vecPos1);
 	SaveVector(handle, "m_vecPos2", m_vecPos2);
 	SaveVector(handle, "m_vecDest", m_vecDest);
@@ -183,8 +186,6 @@ func_door::Save(float handle)
 	SaveString(handle, "m_strSndStop", m_strSndStop);
 	SaveString(handle, "m_strSndMove", m_strSndMove);
 	SaveString(handle, "targetClose", targetClose);
-
-	super::Save(handle);
 }
 
 void

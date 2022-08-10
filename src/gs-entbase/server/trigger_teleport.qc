@@ -32,13 +32,25 @@ enumflags
 	TRIGTELE_NOCLIENTS
 };
 
-class trigger_teleport:NSBrushTrigger
+class
+trigger_teleport:NSBrushTrigger
 {
 	void(void) trigger_teleport;
 
 	virtual void(entity) Touch;
 	virtual void(void) Respawn;
 };
+
+void
+trigger_teleport::trigger_teleport(void)
+{
+}
+
+void
+trigger_teleport::Respawn(void)
+{
+	InitBrushTrigger();
+}
 
 void
 trigger_teleport::Touch(entity eToucher)
@@ -64,17 +76,6 @@ trigger_teleport::Touch(entity eToucher)
 				eToucher.netname));
 		}
 	}
-}
-
-void
-trigger_teleport::Respawn(void)
-{
-	InitBrushTrigger();
-}
-
-void
-trigger_teleport::trigger_teleport(void)
-{
 }
 
 /*QUAKED info_teleport_destination (1 0 0) (-8 -8 -8) (8 8 8)

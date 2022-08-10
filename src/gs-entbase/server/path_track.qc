@@ -27,6 +27,7 @@ It's like a path_corner, but for tracktrains.
 This entity was introduced in Half-Life (1998).
 */
 
-class path_track:path_corner
+class
+path_track:path_corner
 {
 };

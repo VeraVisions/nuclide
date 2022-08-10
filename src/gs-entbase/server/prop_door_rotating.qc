@@ -21,7 +21,8 @@
 #define PRPDRFL_NOALERT		16384
 #define PRPDRFL_NOUSE		32768
 
-class prop_door_rotating:NSPointTrigger
+class
+prop_door_rotating:NSPointTrigger
 {
 	vector m_vecDest1;
 	vector m_vecDest2;
@@ -42,34 +43,70 @@ class prop_door_rotating:NSPointTrigger
 };
 
 void
+prop_door_rotating::prop_door_rotating(void)
+{
+	m_vecDest1 = [0.0f, 0.0f, 0.0f];
+	m_vecDest2 = [0.0f, 0.0f, 0.0f];
+	m_flDistance = 90;
+	m_flSpeed = 100;
+}
+
+void
 prop_door_rotating::Save(float handle)
 {
-	SaveVector(handle, "dest1", m_vecDest1);
-	SaveVector(handle, "dest2", m_vecDest2);
-	SaveFloat(handle, "distance", m_flDistance);
-	SaveFloat(handle, "speed", m_flSpeed);
 	super::Save(handle);
+	SaveVector(handle, "m_vecDest1", m_vecDest1);
+	SaveVector(handle, "m_vecDest2", m_vecDest2);
+	SaveFloat(handle, "m_flDistance", m_flDistance);
+	SaveFloat(handle, "m_flSpeed", m_flSpeed);
 }
 
 void
 prop_door_rotating::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "dest1":
+	case "m_vecDest1":
 		m_vecDest1 = ReadVector(strValue);
 		break;
-	case "dest2":
+	case "m_vecDest2":
 		m_vecDest2 = ReadVector(strValue);
 		break;
-	case "distance":
+	case "m_flDistance":
 		m_flDistance = ReadFloat(strValue);
 		break;
-	case "speed":
+	case "m_flSpeed":
 		m_flSpeed = ReadFloat(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
 	}
+}
+
+void
+prop_door_rotating::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "distance":
+		m_flDistance = stof(strValue);
+		break;
+	case "speed":
+		m_flSpeed = stof(strValue);
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
+	}
+}
+
+void
+prop_door_rotating::Respawn(void)
+{
+	SetModel(GetSpawnModel());
+	SetSolid(SOLID_BSP);
+	SetMovetype(MOVETYPE_PUSH);
+	SetOrigin(GetSpawnOrigin());
+	PlayerUse = Interact;
+	m_vecDest1 = GetSpawnAngles();
+	m_vecDest2 = m_vecDest1 + [0, m_flDistance, 0];
 }
 
 void
@@ -130,38 +167,4 @@ prop_door_rotating::Interact(void)
 
 	nextthink = ltime + 0.25f;
 	PlayerUse = __NULL__;
-}
-
-void
-prop_door_rotating::Respawn(void)
-{
-	SetModel(GetSpawnModel());
-	SetSolid(SOLID_BSP);
-	SetMovetype(MOVETYPE_PUSH);
-	SetOrigin(GetSpawnOrigin());
-	PlayerUse = Interact;
-	m_vecDest1 = GetSpawnAngles();
-	m_vecDest2 = m_vecDest1 + [0, m_flDistance, 0];
-}
-
-void
-prop_door_rotating::SpawnKey(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "distance":
-		m_flDistance = stof(strValue);
-		break;
-	case "speed":
-		m_flSpeed = stof(strValue);
-		break;
-	default:
-		super::SpawnKey(strKey, strValue);
-	}
-}
-
-void
-prop_door_rotating::prop_door_rotating(void)
-{
-	m_flDistance = 90;
-	m_flSpeed = 100;
 }

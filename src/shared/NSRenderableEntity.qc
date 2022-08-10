@@ -697,47 +697,31 @@ void
 NSRenderableEntity::Save(float handle)
 {
 	super::Save(handle);
-	SaveInt(handle, "body", m_iBody);
-	SaveFloat(handle, "frame", frame);
-	SaveFloat(handle, "scale", scale);
-	SaveFloat(handle, "skin", skin);
-	SaveFloat(handle, "effects", effects);
-	SaveFloat(handle, "renderamt", m_flRenderAmt);
-	SaveVector(handle, "rendercolor", m_vecRenderColor);
-	SaveFloat(handle, "rendermode", m_iRenderMode);
-	SaveFloat(handle, "renderfx", m_iRenderFX);
+	SaveInt(handle, "m_iBody", m_iBody);
+	SaveFloat(handle, "m_flRenderAmt", m_flRenderAmt);
+	SaveVector(handle, "m_vecRenderColor", m_vecRenderColor);
+	SaveFloat(handle, "m_iRenderMode", m_iRenderMode);
+	SaveFloat(handle, "m_iRenderFX", m_iRenderFX);
 }
 
 void
 NSRenderableEntity::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "body":
-		m_iBody = stoi(strValue);
+	case "m_iBody":
+		m_iBody = ReadInt(strValue);
 		break;
-	case "frame":
-		frame = stof(strValue);
+	case "m_flRenderAmt":
+		m_flRenderAmt = ReadFloat(strValue);
 		break;
-	case "scale":
-		scale = stof(strValue);
+	case "m_vecRenderColor":
+		m_vecRenderColor = ReadVector(strValue);
 		break;
-	case "skin":
-		skin = stof(strValue);
+	case "m_iRenderMode":
+		m_iRenderMode = ReadFloat(strValue);
 		break;
-	case "effects":
-		effects = stof(strValue);
-		break;
-	case "renderamt":
-		m_flRenderAmt = stof(strValue) / 255;
-		break;
-	case "rendercolor":
-		m_vecRenderColor = stov(strValue) / 255;
-		break;
-	case "rendermode":
-		m_iRenderMode = stof(strValue);
-		break;
-	case "renderfx":
-		m_iRenderFX = stof(strValue);
+	case "m_iRenderFX":
+		m_iRenderFX = ReadFloat(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);

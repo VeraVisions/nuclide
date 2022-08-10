@@ -32,7 +32,8 @@ This entity was introduced in Quake (1996).
 */
 
 
-class info_notnull:NSPointTrigger
+class
+info_notnull:NSPointTrigger
 {
 	void(void) info_notnull;
 };

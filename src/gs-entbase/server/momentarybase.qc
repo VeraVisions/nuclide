@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-typedef enum
+enum
 {
 	MOMENTARY_IDLE,
 	MOMENTARY_ROTATING,
@@ -48,6 +48,67 @@ NSMomentary:NSRenderableEntity
 	virtual float(void) GetProgress;
 };
 
+void
+NSMomentary::NSMomentary(void)
+{
+	m_eUser = __NULL__;
+	m_vecMoveDir = [0.0f, 0.0f, 0.0f];
+	m_vecPos1 = [0.0f, 0.0f, 0.0f];
+	m_vecPos2 = [0.0f, 0.0f, 0.0f];
+	m_vecDest = [0.0f, 0.0f, 0.0f];
+	m_iMoveState = 0i;
+	m_flDistance = 0.0f;
+	m_flSpeed = 0.0f;
+	m_flReturnspeed = 0.0f;
+}
+
+void
+NSMomentary::Save(float handle)
+{
+	super::Save(handle);
+	SaveEntity(handle, "m_eUser", m_eUser);
+	SaveVector(handle, "m_vecMoveDir", m_vecMoveDir);
+	SaveVector(handle, "m_vecPos1", m_vecPos1);
+	SaveVector(handle, "m_vecPos2", m_vecPos2);
+	SaveFloat(handle, "m_flDistance", m_flDistance);
+	SaveFloat(handle, "m_flSpeed", m_flSpeed);
+	SaveFloat(handle, "m_flReturnspeed", m_flReturnspeed);
+	SaveInt(handle, "m_iMoveState", m_iMoveState);
+}
+
+void
+NSMomentary::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "m_eUser":
+		m_eUser = ReadEntity(strValue);
+		break;
+	case "m_vecMoveDir":
+		m_vecMoveDir = ReadVector(strValue);
+		break;
+	case "m_vecPos1":
+		m_vecPos1 = ReadVector(strValue);
+		break;
+	case "m_vecPos2":
+		m_vecPos2 = ReadVector(strValue);
+		break;
+	case "m_flDistance":
+		m_flDistance = ReadFloat(strValue);
+		break;
+	case "m_flSpeed":
+		m_flSpeed = ReadFloat(strValue);
+		break;
+	case "m_flReturnspeed":
+		m_flReturnspeed = ReadFloat(strValue);
+		break;
+	case "m_iMoveState":
+		m_iMoveState = ReadInt(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
+
 float
 NSMomentary::GetProgress(void)
 {
@@ -68,57 +129,4 @@ NSMomentary::SetMoveState(int status)
 
 	m_iMoveState = status;
 	MovementStateChanged();
-}
-
-void
-NSMomentary::Save(float handle)
-{
-	SaveEntity(handle, "user", m_eUser);
-	SaveVector(handle, "move_dir", m_vecMoveDir);
-	SaveVector(handle, "pos1", m_vecPos1);
-	SaveVector(handle, "pos2", m_vecPos2);
-	SaveFloat(handle, "distance", m_flDistance);
-	SaveFloat(handle, "speed", m_flSpeed);
-	SaveFloat(handle, "returnspeed", m_flReturnspeed);
-	SaveInt(handle, "movestate", m_iMoveState);
-
-	super::Save(handle);
-}
-
-void
-NSMomentary::Restore(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "user":
-		m_eUser = ReadEntity(strValue);
-		break;
-	case "move_dir":
-		m_vecMoveDir = ReadVector(strValue);
-		break;
-	case "pos1":
-		m_vecPos1 = ReadVector(strValue);
-		break;
-	case "pos2":
-		m_vecPos2 = ReadVector(strValue);
-		break;
-	case "distance":
-		m_flDistance = ReadFloat(strValue);
-		break;
-	case "speed":
-		m_flSpeed = ReadFloat(strValue);
-		break;
-	case "returnspeed":
-		m_flReturnspeed = ReadFloat(strValue);
-		break;
-	case "movestate":
-		m_iMoveState = ReadInt(strValue);
-		break;
-	default:
-		super::Restore(strKey, strValue);
-	}
-}
-
-void
-NSMomentary::NSMomentary(void)
-{
 }

@@ -35,7 +35,8 @@ at lights and stuff? No...? Well... ever played Splinter Cell?... Nevermind.
 This entity was introduced in Half-Life 2 (2004).
 */
 
-class trigger_look:NSBrushTrigger
+class
+trigger_look:NSBrushTrigger
 {
 	float m_flFOV;
 	float m_flLookTime;
@@ -48,51 +49,104 @@ class trigger_look:NSBrushTrigger
 
 	void(void) trigger_look;
 
-	virtual void(void) Spawned;
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
-	virtual void(entity) Touch;
-	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
+	virtual void(void) Spawned;
+	virtual void(void) Respawn;
+	virtual void(entity) Touch;
 };
+
+void
+trigger_look::trigger_look(void)
+{
+	m_flFOV = 0.9f;
+	m_flLookTime = 0.5f;
+	m_flDelay = 0.0f;
+	m_flLooked = 0.0f;
+	m_strLookTarget = __NULL__;
+	m_strOnTrigger = __NULL__;
+}
 
 void
 trigger_look::Save(float handle)
 {
-	SaveFloat(handle, "fov", m_flFOV);
-	SaveFloat(handle, "looktime", m_flLookTime);
-	SaveFloat(handle, "delay", m_flDelay);
-	SaveFloat(handle, "looked", m_flLooked);
-	SaveString(handle, "looktarget", m_strLookTarget);
-	SaveString(handle, "OnTrigger", m_strOnTrigger);
 	super::Save(handle);
+	SaveFloat(handle, "m_flFOV", m_flFOV);
+	SaveFloat(handle, "m_flLookTime", m_flLookTime);
+	SaveFloat(handle, "m_flDelay", m_flDelay);
+	SaveFloat(handle, "m_flLooked", m_flLooked);
+	SaveString(handle, "m_strLookTarget", m_strLookTarget);
+	SaveString(handle, "m_strOnTrigger", m_strOnTrigger);
 }
 
 void
 trigger_look::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "fov":
+	case "m_flFOV":
 		m_flFOV = ReadFloat(strValue);
 		break;
-	case "looktime":
+	case "m_flLookTime":
 		m_flLookTime = ReadFloat(strValue);
 		break;
-	case "delay":
+	case "m_flDelay":
 		m_flDelay = ReadFloat(strValue);
 		break;
-	case "looked":
+	case "m_flLooked":
 		m_flLooked = ReadFloat(strValue);
 		break;
-	case "looktarget":
+	case "m_strLookTarget":
 		m_strLookTarget = ReadString(strValue);
 		break;
-	case "OnTrigger":
+	case "m_strOnTrigger":
 		m_strOnTrigger = ReadString(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
 	}
+}
+
+void
+trigger_look::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "looktarget":
+	case "target_destination":
+		m_strLookTarget = strValue;
+		break;
+	case "fov":
+	case "FieldOfView":
+		m_flFOV = stof(strValue);
+		break;
+	case "looktime":
+	case "LookTime":
+		m_flLookTime = stof(strValue);
+		break;
+	case "OnTrigger":
+		m_strOnTrigger = PrepareOutput(m_strOnTrigger, strValue);
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
+		break;
+	}
+}
+
+void
+trigger_look::Spawned(void)
+{
+	super::Spawned();
+
+	if (m_strOnTrigger)
+		m_strOnTrigger = CreateOutput(m_strOnTrigger);
+}
+
+void
+trigger_look::Respawn(void)
+{
+	/* reset */
+	InitBrushTrigger();
+	m_flLooked = 0.0f;
 }
 
 void
@@ -142,53 +196,4 @@ trigger_look::Touch(entity eToucher)
 		UseOutput(eToucher, m_strOnTrigger);
 	else
 		UseTargets(eToucher, TRIG_TOGGLE, m_flDelay);
-}
-
-void
-trigger_look::Respawn(void)
-{
-	/* reset */
-	InitBrushTrigger();
-	m_flLooked = 0.0f;
-}
-
-void
-trigger_look::SpawnKey(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "looktarget":
-	case "target_destination":
-		m_strLookTarget = strValue;
-		break;
-	case "fov":
-	case "FieldOfView":
-		m_flFOV = stof(strValue);
-		break;
-	case "looktime":
-	case "LookTime":
-		m_flLookTime = stof(strValue);
-		break;
-	case "OnTrigger":
-		m_strOnTrigger = PrepareOutput(m_strOnTrigger, strValue);
-		break;
-	default:
-		super::SpawnKey(strKey, strValue);
-		break;
-	}
-}
-
-void
-trigger_look::Spawned(void)
-{
-	super::Spawned();
-
-	if (m_strOnTrigger)
-		m_strOnTrigger = CreateOutput(m_strOnTrigger);
-}
-
-void
-trigger_look::trigger_look(void)
-{
-	m_flLookTime = 0.5f;
-	m_flFOV = 0.9f;
 }

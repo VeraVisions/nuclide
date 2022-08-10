@@ -38,55 +38,48 @@ By default it's visible and has collision.
 This entity was introduced in Half-Life 2 (2004).
 */
 
-class func_brush:NSRenderableEntity
+class
+func_brush:NSRenderableEntity
 {
 	int m_iSolidity;
 	int m_iStartOff;
 
 	void(void) func_brush;
 
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
+	virtual void(void) Respawn;
 	virtual void(entity,int) Trigger;
 	virtual void(string,string) SpawnKey;
-	virtual void(void) Respawn;
 };
 
 void
-func_brush::Trigger(entity act, int state)
+func_brush::func_brush(void)
 {
-	/* collision */
-	switch (m_iSolidity) {
-	case 1:
-		SetSolid(SOLID_NOT);
-		break;
-	case 2:
-		SetSolid(SOLID_BSP);
-		break;
-	default:
-		switch (state) {
-		case TRIG_OFF:
-			SetSolid(SOLID_NOT);
-			break;
-		case TRIG_ON:
-			SetSolid(SOLID_BSP);
-			break;
-		default:
-			SetSolid(modelindex != 0 ? SOLID_NOT : SOLID_BSP);
-		}
-	}
+	m_iSolidity = 0i;
+	m_iStartOff = 0i;
+}
 
-	/* visual */
-	switch (state) {
-	case TRIG_OFF:
-		SetModelindex(0);
+void
+func_brush::Save(float handle)
+{
+	super::Save(handle);
+	SaveInt(handle, "m_iSolidity", m_iSolidity);
+	SaveInt(handle, "m_iStartOff", m_iStartOff);
+}
+
+void
+func_brush::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "m_iSolidity":
+		m_iSolidity = ReadInt(strValue);
 		break;
-	case TRIG_ON:
-		SetModel(GetSpawnModel());
+	case "m_iStartOff":
+		m_iStartOff = ReadInt(strValue);
 		break;
 	default:
-		if (modelindex != 0)
-			SetModelindex(0);
-		else
-			SetModel(GetSpawnModel());
+		super::Restore(strKey, strValue);
 	}
 }
 
@@ -128,6 +121,41 @@ func_brush::Respawn(void)
 }
 
 void
-func_brush::func_brush(void)
+func_brush::Trigger(entity act, int state)
 {
+	/* collision */
+	switch (m_iSolidity) {
+	case 1:
+		SetSolid(SOLID_NOT);
+		break;
+	case 2:
+		SetSolid(SOLID_BSP);
+		break;
+	default:
+		switch (state) {
+		case TRIG_OFF:
+			SetSolid(SOLID_NOT);
+			break;
+		case TRIG_ON:
+			SetSolid(SOLID_BSP);
+			break;
+		default:
+			SetSolid(modelindex != 0 ? SOLID_NOT : SOLID_BSP);
+		}
+	}
+
+	/* visual */
+	switch (state) {
+	case TRIG_OFF:
+		SetModelindex(0);
+		break;
+	case TRIG_ON:
+		SetModel(GetSpawnModel());
+		break;
+	default:
+		if (modelindex != 0)
+			SetModelindex(0);
+		else
+			SetModel(GetSpawnModel());
+	}
 }

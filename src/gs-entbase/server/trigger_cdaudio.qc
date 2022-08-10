@@ -25,7 +25,8 @@ Switches the background music track when triggered.
 This entity was introduced in Half-Life (1998).
 */
 
-class trigger_cdaudio:NSBrushTrigger
+class
+trigger_cdaudio:NSBrushTrigger
 {
 	int m_iCDTrack;
 
@@ -33,29 +34,54 @@ class trigger_cdaudio:NSBrushTrigger
 
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
-	virtual void(entity, int) Trigger;
-	virtual void(void) Respawn;
-	virtual void(entity) Touch;
 	virtual void(string, string) SpawnKey;
+	virtual void(void) Respawn;
+	virtual void(entity, int) Trigger;
+	virtual void(entity) Touch;
 };
+
+void
+trigger_cdaudio::trigger_cdaudio(void)
+{
+	m_iCDTrack = 0i;
+}
 
 void
 trigger_cdaudio::Save(float handle)
 {
-	SaveInt(handle, "cdtrack", m_iCDTrack);
 	super::Save(handle);
+	SaveInt(handle, "m_iCDTrack", m_iCDTrack);
 }
 
 void
 trigger_cdaudio::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "cdtrack":
+	case "m_iCDTrack":
 		m_iCDTrack = ReadInt(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
 	}
+}
+
+void
+trigger_cdaudio::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "health":
+		m_iCDTrack = stoi(strValue);
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
+		break;
+	}
+}
+
+void
+trigger_cdaudio::Respawn(void)
+{
+	InitBrushTrigger();
 }
 
 void
@@ -81,29 +107,4 @@ void
 trigger_cdaudio::Touch(entity eToucher)
 {
 	Trigger(eToucher, TRIG_TOGGLE);
-}
-
-void
-trigger_cdaudio::Respawn(void)
-{
-	InitBrushTrigger();
-}
-
-void
-trigger_cdaudio::SpawnKey(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "health":
-		m_iCDTrack = stoi(strValue);
-		break;
-	default:
-		super::SpawnKey(strKey, strValue);
-		break;
-	}
-}
-
-void
-trigger_cdaudio::trigger_cdaudio(void)
-{
-	m_iCDTrack = 0;
 }

@@ -36,7 +36,8 @@ enumflags
 	BUTTA_TEXON
 };
 
-class button_target:NSSurfacePropEntity
+class
+button_target:NSSurfacePropEntity
 {
 	void(void) button_target;
 
@@ -44,6 +45,11 @@ class button_target:NSSurfacePropEntity
 	virtual void(entity, int) Trigger;
 	virtual void(void) Damage;
 };
+
+void
+button_target::button_target(void)
+{
+}
 
 void
 button_target::Respawn(void)
@@ -86,9 +92,4 @@ void
 button_target::Damage(void)
 {
 	Trigger(g_dmg_eAttacker, TRIG_TOGGLE); /* TODO: Set state? */
-}
-
-void
-button_target::button_target(void)
-{
 }

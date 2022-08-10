@@ -31,7 +31,8 @@ and angles towards the aim target.
 This entity was introduced in Quake (1996).
 */
 
-class info_intermission:NSPointTrigger
+class
+info_intermission:NSPointTrigger
 {
 	void(void) info_intermission;
 };

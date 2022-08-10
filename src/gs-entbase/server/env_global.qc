@@ -34,53 +34,50 @@ This entity was introduced in Half-Life (1998).
 
 #define GLOBAL_SETSPAWN 1
 
-enum
+class
+env_global:NSPointTrigger
 {
-	GLOBAL_OFF,
-	GLOBAL_ON,
-	GLOBAL_DEAD
-};
-
-class env_global:NSPointTrigger
-{
-	string m_strGlobalState;
 	int m_iTriggerMode;
 	int m_iInitialState;
 	
 	void(void) env_global;
 
 	/* overrides */
-	virtual void(void) Spawned;
 	virtual void(float) Save;
 	virtual void(string,string) Restore;
-	virtual void(entity, int) Trigger;
 	virtual void(string, string) SpawnKey;
+	virtual void(void) Spawned;
+	virtual void(entity, int) Trigger;
 	
 	virtual int(string) GlobalPresent;
-	virtual void(string, int) AddNewGlobal;
-	virtual void(string, int) SetGlobal;
+	virtual void(string, globalstate_t) AddNewGlobal;
+	virtual void(string, globalstate_t) SetGlobal;
 };
+
+void
+env_global::env_global(void)
+{
+	m_strGlobalState = __NULL__;
+	m_iTriggerMode = 0;
+	m_iInitialState = 0;
+}
 
 void
 env_global::Save(float handle)
 {
-	SaveString(handle, "globalstate", m_strGlobalState);
-	SaveInt(handle, "triggermode", m_iTriggerMode);
-	SaveInt(handle, "initialstate", m_iInitialState);
 	super::Save(handle);
+	SaveInt(handle, "m_iTriggerMode", m_iTriggerMode);
+	SaveInt(handle, "m_iInitialState", m_iInitialState);
 }
 
 void
 env_global::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "globalstate":
-		m_strGlobalState = ReadString(strValue);
-		break;
-	case "triggermode":
+	case "m_iTriggerMode":
 		m_iTriggerMode = ReadInt(strValue);
 		break;
-	case "initialstate":
+	case "m_iInitialState":
 		m_iInitialState = ReadInt(strValue);
 		break;
 	default:
@@ -89,75 +86,9 @@ env_global::Restore(string strKey, string strValue)
 }
 
 void
-env_global::Trigger(entity act, int state)
-{
-	int iOldValue = GetGlobalValue(m_strGlobalState);
-	int iNewValue = 0;
-	
-	switch(m_iTriggerMode) {
-	case 0:
-		iNewValue = GLOBAL_OFF;
-		break;
-	case 1:
-		iNewValue = GLOBAL_ON;
-		break;
-	case 2:
-		iNewValue = GLOBAL_DEAD;
-		break;
-	default:
-		if (iOldValue == GLOBAL_ON) {
-			iNewValue = GLOBAL_OFF;
-		} else if (iOldValue == GLOBAL_OFF) {
-			iNewValue = GLOBAL_ON;
-		} else {
-			iNewValue = iOldValue;
-		}
-	}
-
-	if (GlobalPresent(m_strGlobalState)) {
-		SetGlobal(m_strGlobalState, iNewValue);
-	} else {
-		AddNewGlobal(m_strGlobalState, iNewValue);
-	}
-}
-
-int
-env_global::GlobalPresent(string strName)
-{
-	for (int i = 0; i < (tokenize(cvar_string(CENVGLOBAL_CVAR))); i += 2) {
-		if (argv(i) == strName) {
-			return (1);
-		}
-	}
-	return (0);
-}
-
-void
-env_global::AddNewGlobal(string strName, int iValue)
-{
-	print("AddNewGLobal\n");
-	localcmd(sprintf("set %s \"%s %s %i\"\n", CENVGLOBAL_CVAR, cvar_string(CENVGLOBAL_CVAR), strName, iValue));
-}
-
-void
-env_global::SetGlobal(string strName, int iValue) {
-	string strNewData = "";
-	print("SetGlobal\n");
-	for (int i = 0; i < (tokenize(cvar_string(CENVGLOBAL_CVAR))); i += 2) {
-		if (argv(i) != strName) {
-			strNewData = sprintf("%s %s %s", strNewData, argv(i), argv(i+1));
-		}
-	}
-	localcmd(sprintf("set %s \"%s %s %i\"\n", CENVGLOBAL_CVAR, strNewData, strName, iValue));
-}
-
-void
 env_global::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "globalstate":
-		m_strGlobalState = strValue;
-		break;
 	case "triggermode":
 		m_iTriggerMode = stoi(strValue);
 		break;
@@ -186,6 +117,65 @@ env_global::Spawned(void)
 }
 
 void
-env_global::env_global(void)
+env_global::Trigger(entity act, int state)
 {
+	globalstate_t iOldValue = GetGlobalValue(m_strGlobalState);
+	globalstate_t newValue = 0;
+	
+	switch(m_iTriggerMode) {
+	case 0:
+		newValue = GLOBAL_OFF;
+		break;
+	case 1:
+		newValue = GLOBAL_ON;
+		break;
+	case 2:
+		newValue = GLOBAL_DEAD;
+		break;
+	default:
+		if (iOldValue == GLOBAL_ON) {
+			newValue = GLOBAL_OFF;
+		} else if (iOldValue == GLOBAL_OFF) {
+			newValue = GLOBAL_ON;
+		} else {
+			newValue = iOldValue;
+		}
+	}
+
+	if (GlobalPresent(m_strGlobalState)) {
+		SetGlobal(m_strGlobalState, newValue);
+	} else {
+		AddNewGlobal(m_strGlobalState, newValue);
+	}
+}
+
+int
+env_global::GlobalPresent(string strName)
+{
+	for (int i = 0; i < (tokenize(cvar_string(CENVGLOBAL_CVAR))); i += 2) {
+		if (argv(i) == strName) {
+			return (1);
+		}
+	}
+	return (0);
+}
+
+void
+env_global::AddNewGlobal(string strName, globalstate_t newValue)
+{
+	print("AddNewGLobal\n");
+	localcmd(sprintf("set %s \"%s %s %d\"\n", CENVGLOBAL_CVAR, cvar_string(CENVGLOBAL_CVAR), strName, newValue));
+}
+
+void
+env_global::SetGlobal(string strName, globalstate_t newValue)
+{
+	string strNewData = "";
+	print("SetGlobal\n");
+	for (int i = 0; i < (tokenize(cvar_string(CENVGLOBAL_CVAR))); i += 2) {
+		if (argv(i) != strName) {
+			strNewData = sprintf("%s %s %s", strNewData, argv(i), argv(i+1));
+		}
+	}
+	localcmd(sprintf("set %s \"%s %s %d\"\n", CENVGLOBAL_CVAR, strNewData, strName, newValue));
 }

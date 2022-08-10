@@ -27,7 +27,8 @@ to something else.
 This entity was introduced in Half-Life (1998).
 */
 
-class trigger_changetarget:NSPointTrigger
+class
+trigger_changetarget:NSPointTrigger
 {
 	string m_strNewTarget;
 
@@ -35,26 +36,44 @@ class trigger_changetarget:NSPointTrigger
 
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
-	virtual void(entity,int) Trigger;
 	virtual void(string, string) SpawnKey;
+	virtual void(entity,int) Trigger;
 };
+
+void
+trigger_changetarget::trigger_changetarget(void)
+{
+	m_strNewTarget = __NULL__;
+}
 
 void
 trigger_changetarget::Save(float handle)
 {
-	SaveString(handle, "new_target", m_strNewTarget);
 	super::Save(handle);
+	SaveString(handle, "m_strNewTarget", m_strNewTarget);
 }
 
 void
 trigger_changetarget::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "new_target":
+	case "m_strNewTarget":
 		m_strNewTarget = ReadString(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
+	}
+}
+
+void
+trigger_changetarget::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "m_iszNewTarget":
+		m_strNewTarget = strValue;
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
@@ -73,22 +92,4 @@ trigger_changetarget::Trigger(entity act, int state)
 		/* now change the target */
 		f.target = m_strNewTarget;
 	}
-}
-
-void
-trigger_changetarget::SpawnKey(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "m_iszNewTarget":
-		m_strNewTarget = strValue;
-		break;
-	default:
-		super::SpawnKey(strKey, strValue);
-	}
-}
-
-void
-trigger_changetarget::trigger_changetarget(void)
-{
-	m_strNewTarget = __NULL__;
 }

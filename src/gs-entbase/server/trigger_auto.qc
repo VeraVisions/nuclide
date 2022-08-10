@@ -33,9 +33,9 @@ When a trigger_auto is removed via TA_USEONCE it won't survive match respawns.
 This entity was introduced in Half-Life (1998).
 */
 
-class trigger_auto:NSPointTrigger
+class
+trigger_auto:NSPointTrigger
 {
-	string m_strGlobalState;
 	int m_iTriggerState;
 	float m_flDelay;
 
@@ -44,39 +44,74 @@ class trigger_auto:NSPointTrigger
 	/* overrides */
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
-	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
+	virtual void(void) Respawn;
+	virtual void(void) RestoreComplete;
 
 	virtual void(void) Processing;
 };
 
 void
+trigger_auto::trigger_auto(void)
+{
+	/* default is always toggle */
+	m_iTriggerState = TRIG_TOGGLE;
+	m_strGlobalState = __NULL__;
+	m_flDelay = 0.0f;
+}
+
+void
 trigger_auto::Save(float handle)
 {
-	SaveInt(handle, "triggerstate", m_iTriggerState);
-	SaveFloat(handle, "delay", m_flDelay);
-	SaveString(handle, "globalstate", m_strGlobalState);
 	super::Save(handle);
+	SaveInt(handle, "m_iTriggerState", m_iTriggerState);
+	SaveFloat(handle, "m_flDelay", m_flDelay);
 }
 
 void
 trigger_auto::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "triggerstate":
+	case "m_iTriggerState":
 		m_iTriggerState = ReadInt(strValue);
 		break;
-	case "delay":
+	case "m_flDelay":
 		m_flDelay = ReadFloat(strValue);
-		break;
-	case "globalstate":
-		m_strGlobalState = ReadString(strValue);
-		think = Processing;
-		nextthink = time + 0.2f;
 		break;
 	default:
 		super::Restore(strKey, strValue);
 	}
+}
+
+void
+trigger_auto::RestoreComplete(void)
+{
+	think = Processing;
+	nextthink = time + 0.2f;
+}
+
+void
+trigger_auto::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "triggerstate":
+		m_iTriggerState = stoi(strValue);
+		break;
+	case "delay":
+		m_flDelay = stof(strValue);
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
+	}
+}
+
+void
+trigger_auto::Respawn(void)
+{
+	InitPointTrigger();
+
+	think = Processing;
+	nextthink = time + 0.2f;
 }
 
 void
@@ -93,40 +128,4 @@ trigger_auto::Processing(void)
 		NSLog("^2trigger_auto::^3think^7: %s triggerer removed self",  target);
 		remove(this);
 	}
-}
-
-void
-trigger_auto::Respawn(void)
-{
-	InitPointTrigger();
-
-	think = Processing;
-	nextthink = time + 0.2f;
-}
-
-void
-trigger_auto::SpawnKey(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "globalstate":
-		m_strGlobalState = strValue;
-		break;
-	case "triggerstate":
-		m_iTriggerState = stoi(strValue);
-		break;
-	case "delay":
-		m_flDelay = stof(strValue);
-		break;
-	default:
-		super::SpawnKey(strKey, strValue);
-	}
-}
-
-void
-trigger_auto::trigger_auto(void)
-{
-	/* default is always toggle */
-	m_iTriggerState = TRIG_TOGGLE;
-	m_strGlobalState = __NULL__;
-	m_flDelay = 0.0f;
 }

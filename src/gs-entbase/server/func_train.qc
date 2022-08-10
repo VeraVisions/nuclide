@@ -54,7 +54,8 @@ enumflags
 	TRAIN_NOTSOLID
 };
 
-class func_train:NSRenderableEntity
+class
+func_train:NSRenderableEntity
 {
 	float m_flWait;
 	float m_flSpeed;
@@ -64,14 +65,13 @@ class func_train:NSRenderableEntity
 
 	void(void) func_train;
 
-	virtual void(void) Spawned;
-
 	/* overrides */
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
-	virtual void(entity, int) Trigger;
-	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
+	virtual void(void) Spawned;
+	virtual void(void) Respawn;
+	virtual void(entity, int) Trigger;
 
 	virtual void(void) SoundMove;
 	virtual void(void) SoundStop;
@@ -82,38 +82,99 @@ class func_train:NSRenderableEntity
 };
 
 void
+func_train::func_train(void)
+{
+	m_flWait = 0.0f;
+	m_flSpeed = 100.0f; /* FIXME: This is all decided by the first path_corner pretty much */
+	m_flDamage = 0.0f;
+	m_strMoveSnd = __NULL__;
+	m_strStopSnd = __NULL__;
+}
+
+void
 func_train::Save(float handle)
 {
-	SaveFloat(handle, "wait", m_flWait);
-	SaveFloat(handle, "speed", m_flSpeed);
-	SaveFloat(handle, "damage", m_flDamage);
-	SaveString(handle, "snd_move", m_strMoveSnd);
-	SaveString(handle, "snd_stop", m_strStopSnd);
 	super::Save(handle);
+	SaveFloat(handle, "m_flWait", m_flWait);
+	SaveFloat(handle, "m_flSpeed", m_flSpeed);
+	SaveFloat(handle, "m_flDamage", m_flDamage);
+	SaveString(handle, "m_strMoveSnd", m_strMoveSnd);
+	SaveString(handle, "m_strStopSnd", m_strStopSnd);
 }
 
 void
 func_train::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "wait":
+	case "m_flWait":
 		m_flWait = ReadFloat(strValue);
 		break;
-	case "speed":
+	case "m_flSpeed":
 		m_flSpeed = ReadFloat(strValue);
 		break;
-	case "damage":
+	case "m_flDamage":
 		m_flDamage = ReadFloat(strValue);
 		break;
-	case "snd_move":
+	case "m_strMoveSnd":
 		m_strMoveSnd = ReadString(strValue);
 		break;
-	case "snd_stop":
+	case "m_strStopSnd":
 		m_strStopSnd = ReadString(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
 	}
+}
+
+void
+func_train::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "dmg":
+		m_flDamage = stof(strValue);
+		break;
+	case "snd_move":
+		m_strMoveSnd = strValue;
+		break;
+	case "snd_stop":
+		m_strStopSnd = strValue;
+		break;
+	/* compatibility */
+	case "movesnd":
+		m_strMoveSnd = sprintf("func_train.move_%i", stoi(strValue) + 1i);
+		break;
+	case "stopsnd":
+		m_strStopSnd = sprintf("func_train.stop_%i", stoi(strValue) + 1i);
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
+	}
+}
+
+void
+func_train::Spawned(void)
+{
+	super::Spawned();
+
+	if (m_strMoveSnd)
+		Sound_Precache(m_strMoveSnd);
+	if (m_strStopSnd)
+		Sound_Precache(m_strStopSnd);
+}
+
+void
+func_train::Respawn(void)
+{
+	SetSolid(HasSpawnFlags(TRAIN_NOTSOLID) ? SOLID_NOT : SOLID_BSP);
+	SetMovetype(MOVETYPE_PUSH);
+	SetModel(GetSpawnModel());
+	SetOrigin(GetSpawnOrigin());
+
+	/* let's wait 1/4 a second to give the path_corner entities a chance to
+	 * spawn in case they're after us in the ent lump */
+	target = m_oldstrTarget;
+	think = AfterSpawn;
+	nextthink = ltime + 0.25f;
 }
 
 void
@@ -258,62 +319,4 @@ func_train::AfterSpawn(void)
 	if (!targetname) {
 		PathMove();
 	}
-}
-
-void
-func_train::Respawn(void)
-{
-	SetSolid(HasSpawnFlags(TRAIN_NOTSOLID) ? SOLID_NOT : SOLID_BSP);
-	SetMovetype(MOVETYPE_PUSH);
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
-
-	/* let's wait 1/4 a second to give the path_corner entities a chance to
-	 * spawn in case they're after us in the ent lump */
-	target = m_oldstrTarget;
-	think = AfterSpawn;
-	nextthink = ltime + 0.25f;
-}
-
-void
-func_train::SpawnKey(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "dmg":
-		m_flDamage = stof(strValue);
-		break;
-	case "snd_move":
-		m_strMoveSnd = strValue;
-		break;
-	case "snd_stop":
-		m_strStopSnd = strValue;
-		break;
-	/* compatibility */
-	case "movesnd":
-		m_strMoveSnd = sprintf("func_train.move_%i", stoi(strValue) + 1i);
-		break;
-	case "stopsnd":
-		m_strStopSnd = sprintf("func_train.stop_%i", stoi(strValue) + 1i);
-		break;
-	default:
-		super::SpawnKey(strKey, strValue);
-	}
-}
-
-void
-func_train::Spawned(void)
-{
-	super::Spawned();
-
-	if (m_strMoveSnd)
-		Sound_Precache(m_strMoveSnd);
-	if (m_strStopSnd)
-		Sound_Precache(m_strStopSnd);
-}
-
-void
-func_train::func_train(void)
-{
-	/* FIXME: This is all decided by the first path_corner pretty much */
-	m_flSpeed = 100;
 }

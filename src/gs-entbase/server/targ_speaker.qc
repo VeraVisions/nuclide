@@ -32,7 +32,8 @@ Quake/Quake II did not have an entity that allowed custom sound samples
 to be played.
 */
 
-class targ_speaker:NSPointTrigger
+class
+targ_speaker:NSPointTrigger
 {
 	string m_strSample;
 	float m_flVolume;
@@ -41,42 +42,39 @@ class targ_speaker:NSPointTrigger
 
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
+	virtual void(string, string) SpawnKey;
 	virtual void(void) Respawn;
 	virtual void(entity,int) Trigger;
-	virtual void(string, string) SpawnKey;
 };
+
+void
+targ_speaker::targ_speaker(void)
+{
+	m_strSample = __NULL__;
+	m_flVolume = 0.0f;
+}
 
 void
 targ_speaker::Save(float handle)
 {
-	SaveString(handle, "sample", m_strSample);
-	SaveFloat(handle, "volume", m_flVolume);
 	super::Save(handle);
+	SaveString(handle, "m_strSample", m_strSample);
+	SaveFloat(handle, "m_flVolume", m_flVolume);
 }
 
 void
 targ_speaker::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "sample":
+	case "m_strSample":
 		m_strSample = ReadString(strValue);
 		break;
-	case "volume":
+	case "m_flVolume":
 		m_flVolume = ReadFloat(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
 	}
-}
-
-void
-targ_speaker::Trigger(entity act, int state)
-{
-	if (GetMaster() == FALSE)
-		return;
-
-	sound(this, CHAN_AUTO, m_strSample, m_flVolume, ATTN_NORM);
-	
 }
 
 void
@@ -101,6 +99,11 @@ targ_speaker::Respawn(void)
 }
 
 void
-targ_speaker::targ_speaker(void)
+targ_speaker::Trigger(entity act, int state)
 {
+	if (GetMaster() == FALSE)
+		return;
+
+	sound(this, CHAN_AUTO, m_strSample, m_flVolume, ATTN_NORM);
+	
 }

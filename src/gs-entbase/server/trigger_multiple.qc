@@ -44,7 +44,8 @@ enumflags
 	TM_PUSHABLES
 };
 
-class trigger_multiple:NSBrushTrigger
+class
+trigger_multiple:NSBrushTrigger
 {
 	float m_flWait;
 
@@ -67,41 +68,86 @@ class trigger_multiple:NSBrushTrigger
 };
 
 void
-trigger_multiple::EndTouch(entity eToucher)
+trigger_multiple::trigger_multiple(void)
 {
-	if (m_strOnEndTouchAll)
-		UseOutput(eToucher, m_strOnEndTouchAll);
+	m_flWait = 0.0f;
+
+	/* Input/Output */
+	m_strOnStartTouch =
+	m_strOnEndTouchAll =
+	m_strOnTrigger =  __NULL__;
 }
 
 void
 trigger_multiple::Save(float handle)
 {
-	SaveFloat(handle, "wait", m_flWait);
-	SaveString(handle, "OnStartTouch", m_strOnStartTouch);
-	SaveString(handle, "OnEndTouchAll", m_strOnEndTouchAll);
-	SaveString(handle, "OnTrigger", m_strOnTrigger);
 	super::Save(handle);
+	SaveFloat(handle, "m_flWait", m_flWait);
+	SaveString(handle, "m_strOnStartTouch", m_strOnStartTouch);
+	SaveString(handle, "m_strOnEndTouchAll", m_strOnEndTouchAll);
+	SaveString(handle, "m_strOnTrigger", m_strOnTrigger);
 }
 
 void
 trigger_multiple::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "wait":
+	case "m_flWait":
 		m_flWait = ReadFloat(strValue);
 		break;
-	case "OnStartTouch":
+	case "m_strOnStartTouch":
 		m_strOnStartTouch = ReadString(strValue);
 		break;
-	case "OnEndTouchAll":
+	case "m_strOnEndTouchAll":
 		m_strOnEndTouchAll = ReadString(strValue);
 		break;
-	case "OnTrigger":
+	case "m_strOnTrigger":
 		m_strOnTrigger = ReadString(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
 	}
+}
+
+void
+trigger_multiple::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "wait":
+		m_flWait = stof(strValue);
+		break;
+	case "OnStartTouch":
+	case "OnStartTouchAll":
+		m_strOnStartTouch = PrepareOutput(m_strOnStartTouch, strValue);
+		break;
+	case "OnEndTouchAll":
+		m_strOnEndTouchAll = PrepareOutput(m_strOnEndTouchAll, strValue);
+		break;
+	case "OnTrigger":
+		m_strOnTrigger = PrepareOutput(m_strOnTrigger, strValue);
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
+	}
+}
+
+void
+trigger_multiple::Spawned(void)
+{
+	super::Spawned();
+
+	if (m_strOnTrigger)
+		m_strOnTrigger = CreateOutput(m_strOnTrigger);
+	if (m_strOnStartTouch)
+		m_strOnStartTouch = CreateOutput(m_strOnStartTouch);
+	if (m_strOnEndTouchAll)
+		m_strOnEndTouchAll = CreateOutput(m_strOnEndTouchAll);
+}
+
+void
+trigger_multiple::Respawn(void)
+{
+	InitBrushTrigger();
 }
 
 void
@@ -138,53 +184,8 @@ trigger_multiple::Touch(entity eToucher)
 }
 
 void
-trigger_multiple::SpawnKey(string strKey, string strValue)
+trigger_multiple::EndTouch(entity eToucher)
 {
-	switch (strKey) {
-	case "wait":
-		m_flWait = stof(strValue);
-		break;
-	case "OnStartTouch":
-	case "OnStartTouchAll":
-		m_strOnStartTouch = PrepareOutput(m_strOnStartTouch, strValue);
-		break;
-	case "OnEndTouchAll":
-		m_strOnEndTouchAll = PrepareOutput(m_strOnEndTouchAll, strValue);
-		break;
-	case "OnTrigger":
-		m_strOnTrigger = PrepareOutput(m_strOnTrigger, strValue);
-		break;
-	default:
-		super::SpawnKey(strKey, strValue);
-	}
-}
-
-void
-trigger_multiple::Respawn(void)
-{
-	InitBrushTrigger();
-}
-
-void
-trigger_multiple::Spawned(void)
-{
-	super::Spawned();
-
-	if (m_strOnTrigger)
-		m_strOnTrigger = CreateOutput(m_strOnTrigger);
-	if (m_strOnStartTouch)
-		m_strOnStartTouch = CreateOutput(m_strOnStartTouch);
 	if (m_strOnEndTouchAll)
-		m_strOnEndTouchAll = CreateOutput(m_strOnEndTouchAll);
-}
-
-void
-trigger_multiple::trigger_multiple(void)
-{
-	m_flWait = 0.0f;
-
-	/* Input/Output */
-	m_strOnStartTouch =
-	m_strOnEndTouchAll =
-	m_strOnTrigger =  __NULL__;
+		UseOutput(eToucher, m_strOnEndTouchAll);
 }

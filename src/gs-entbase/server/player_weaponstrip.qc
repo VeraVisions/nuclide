@@ -24,12 +24,18 @@ Strips the activator of all of its weapons.
 This entity was introduced in Half-Life (1998).
 */
 
-class player_weaponstrip:NSPointTrigger
+class
+player_weaponstrip:NSPointTrigger
 {
 	void(void) player_weaponstrip;
 
 	virtual void(entity, int) Trigger;
 };
+
+void
+player_weaponstrip::player_weaponstrip(void)
+{
+}
 
 void
 player_weaponstrip::Trigger(entity act, int unused)
@@ -46,9 +52,4 @@ player_weaponstrip::Trigger(entity act, int unused)
 		pl.g_items &= ~Weapon_GetBitID(i);
 		pl.activeweapon = 0;
 	}
-}
-
-void
-player_weaponstrip::player_weaponstrip(void)
-{
 }

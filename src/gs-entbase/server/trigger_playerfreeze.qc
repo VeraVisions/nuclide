@@ -30,25 +30,25 @@ and so on.
 This entity was introduced in Opposing Force (1999).
 */
 
-class trigger_playerfreeze:NSBrushTrigger
+class
+trigger_playerfreeze:NSBrushTrigger
 {
 	void(void) trigger_playerfreeze;
 
-	virtual void(void) customphysics;
-	virtual void(entity,int) Trigger;
 	virtual void(void) Respawn;
+	virtual void(entity,int) Trigger;
+	virtual void(void) customphysics;
 };
 
 void
-trigger_playerfreeze::customphysics(void)
+trigger_playerfreeze::trigger_playerfreeze(void)
 {
-	if (m_iValue == 0)
-		return;
+}
 
-	/* some games might unset this flag every single frame */
-	for (entity f = world; (f = find(f, ::classname, "player"));) {
-		f.flags |= FL_FROZEN;
-	}
+void
+trigger_playerfreeze::Respawn(void)
+{
+	m_iValue = 0;
 }
 
 void
@@ -74,12 +74,13 @@ trigger_playerfreeze::Trigger(entity act, int state)
 }
 
 void
-trigger_playerfreeze::Respawn(void)
+trigger_playerfreeze::customphysics(void)
 {
-	m_iValue = 0;
-}
+	if (m_iValue == 0)
+		return;
 
-void
-trigger_playerfreeze::trigger_playerfreeze(void)
-{
+	/* some games might unset this flag every single frame */
+	for (entity f = world; (f = find(f, ::classname, "player"));) {
+		f.flags |= FL_FROZEN;
+	}
 }

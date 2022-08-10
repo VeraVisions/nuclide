@@ -42,7 +42,8 @@ enumflags
 	EVF_ONLYUSER
 };
 
-class env_fade:NSRenderableEntity
+class
+env_fade:NSRenderableEntity
 {
 	float m_flFadeDuration;
 	float m_flFadeHold;
@@ -57,21 +58,28 @@ class env_fade:NSRenderableEntity
 };
 
 void
+env_fade::env_fade(void)
+{
+	m_flFadeDuration = 0.0f;
+	m_flFadeHold = 0.0f;
+}
+
+void
 env_fade::Save(float handle)
 {
-	SaveFloat(handle, "fade_duration", m_flFadeDuration);
-	SaveFloat(handle, "hold", m_flFadeHold);
 	super::Save(handle);
+	SaveFloat(handle, "m_flFadeDuration", m_flFadeDuration);
+	SaveFloat(handle, "m_flFadeHold", m_flFadeHold);
 }
 
 void
 env_fade::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "fade_duration":
+	case "m_flFadeDuration":
 		m_flFadeDuration = ReadFloat(strValue);
 		break;
-	case "hold":
+	case "m_flFadeHold":
 		m_flFadeHold = ReadFloat(strValue);
 		break;
 	default:
@@ -80,35 +88,13 @@ env_fade::Restore(string strKey, string strValue)
 }
 
 void
-env_fade::Trigger(entity act, int state)
-{
-	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
-	WriteByte(MSG_MULTICAST, EV_FADE);
-
-	WriteFloat(MSG_MULTICAST, m_vecRenderColor[0]);
-	WriteFloat(MSG_MULTICAST, m_vecRenderColor[1]);
-	WriteFloat(MSG_MULTICAST, m_vecRenderColor[2]);
-	WriteFloat(MSG_MULTICAST, m_flRenderAmt);
-
-	WriteFloat(MSG_MULTICAST, m_flFadeDuration);
-	WriteFloat(MSG_MULTICAST, m_flFadeHold);
-	WriteByte(MSG_MULTICAST, spawnflags);
-	msg_entity = act;
-
-	if (HasSpawnFlags(EVF_ONLYUSER))
-		multicast([0,0,0], MULTICAST_ONE_R);
-	else
-		multicast([0,0,0], MULTICAST_ALL);
-}
-
-void
 env_fade::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "duration":
+	case "m_flFadeDuration":
 		m_flFadeDuration = stof(strValue);
 		break;
-	case "holdtime":
+	case "m_flFadeHold":
 		m_flFadeHold = stof(strValue);
 		break;
 	default:
@@ -117,6 +103,22 @@ env_fade::SpawnKey(string strKey, string strValue)
 }
 
 void
-env_fade::env_fade(void)
+env_fade::Trigger(entity eAct, int iState)
 {
+	/* Half-Life ignores states entirely for env_fade's being triggered */
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_FADE);
+	WriteFloat(MSG_MULTICAST, m_vecRenderColor[0]);
+	WriteFloat(MSG_MULTICAST, m_vecRenderColor[1]);
+	WriteFloat(MSG_MULTICAST, m_vecRenderColor[2]);
+	WriteFloat(MSG_MULTICAST, m_flRenderAmt);
+	WriteFloat(MSG_MULTICAST, m_flFadeDuration);
+	WriteFloat(MSG_MULTICAST, m_flFadeHold);
+	WriteByte(MSG_MULTICAST, spawnflags);
+	msg_entity = eAct;
+
+	if (HasSpawnFlags(EVF_ONLYUSER))
+		multicast([0,0,0], MULTICAST_ONE_R);
+	else
+		multicast([0,0,0], MULTICAST_ALL);
 }

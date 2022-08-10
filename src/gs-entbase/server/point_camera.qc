@@ -40,7 +40,8 @@ PCAMFL_STARTOFF : Start with the camera turned off, outputting no signal.
 This entity was introduced in Half-Life 2 (2004).
 */
 
-class point_camera:NSPointTrigger
+class
+point_camera:NSPointTrigger
 {
 	int m_iUseSAR;
 	int m_iUseFog;
@@ -54,73 +55,58 @@ class point_camera:NSPointTrigger
 	/* overrides */
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
-	virtual void(entity,string,string) Input;
 	virtual void(string,string) SpawnKey;
 	virtual void(void) Respawn;
+	virtual void(entity,string,string) Input;
 };
+
+void
+point_camera::point_camera(void)
+{
+	m_iUseSAR = 0i;
+	m_iUseFog = 0i;
+	m_vecFogColor = [0.0f, 0.0f, 0.0f];
+	m_flFogStart = 0.0f;
+	m_flFogEnd = 0.0f;
+	m_flFOV = 90.0f;
+}
 
 void
 point_camera::Save(float handle)
 {
-	SaveInt(handle, "use_sar", m_iUseSAR);
-	SaveInt(handle, "use_fog", m_iUseFog);
-	SaveVector(handle, "fog_color", m_vecFogColor);
-	SaveFloat(handle, "fog_start", m_flFogStart);
-	SaveFloat(handle, "fog_end", m_flFogEnd);
-	SaveFloat(handle, "fov", m_flFOV);
 	super::Save(handle);
+	SaveInt(handle, "m_iUseSAR", m_iUseSAR);
+	SaveInt(handle, "m_iUseFog", m_iUseFog);
+	SaveVector(handle, "m_vecFogColor", m_vecFogColor);
+	SaveFloat(handle, "m_flFogStart", m_flFogStart);
+	SaveFloat(handle, "m_flFogEnd", m_flFogEnd);
+	SaveFloat(handle, "m_flFOV", m_flFOV);
 }
 
 void
 point_camera::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "use_sar":
+	case "m_iUseSAR":
 		m_iUseSAR = ReadInt(strValue);
 		break;
-	case "use_fog":
+	case "m_iUseFog":
 		m_iUseFog = ReadInt(strValue);
 		break;
-	case "fog_color":
+	case "m_vecFogColor":
 		m_vecFogColor = ReadVector(strValue);
 		break;
-	case "fog_start":
+	case "m_flFogStart":
 		m_flFogStart = ReadFloat(strValue);
 		break;
-	case "fog_end":
+	case "m_flFogEnd":
 		m_flFogEnd = ReadFloat(strValue);
 		break;
-	case "fov":
+	case "m_flFOV":
 		m_flFOV = ReadFloat(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
-	}
-}
-
-void
-point_camera::Input(entity eAct, string strInput, string strData)
-{
-	switch (strInput) {
-	case "ChangeFOV":
-		m_flFOV = stof(strInput);
-		break;
-	case "SetOnAndTurnOthersOff":
-		for (entity e = world; (e = find(e, ::classname, "point_camera"));) {
-			point_camera p = (point_camera)e;
-			p.m_iValue = FALSE;
-		}
-
-		m_iValue = TRUE;
-		break;
-	case "SetOn":
-		m_iValue = TRUE;
-		break;
-	case "SetOff":
-		m_iValue = FALSE;
-		break;
-	default:
-		super::Input(eAct, strInput, strData);
 	}
 }
 
@@ -163,7 +149,27 @@ point_camera::Respawn(void)
 }
 
 void
-point_camera::point_camera(void)
+point_camera::Input(entity eAct, string strInput, string strData)
 {
-	m_flFOV = 90;
+	switch (strInput) {
+	case "ChangeFOV":
+		m_flFOV = stof(strInput);
+		break;
+	case "SetOnAndTurnOthersOff":
+		for (entity e = world; (e = find(e, ::classname, "point_camera"));) {
+			point_camera p = (point_camera)e;
+			p.m_iValue = FALSE;
+		}
+
+		m_iValue = TRUE;
+		break;
+	case "SetOn":
+		m_iValue = TRUE;
+		break;
+	case "SetOff":
+		m_iValue = FALSE;
+		break;
+	default:
+		super::Input(eAct, strInput, strData);
+	}
 }

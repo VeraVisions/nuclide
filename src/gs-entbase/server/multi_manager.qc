@@ -32,7 +32,8 @@ This entity was introduced in Half-Life (1998).
 
 #define MM_MULTITHREADED 1
 
-class multi_manager_sub:NSPointTrigger
+class
+multi_manager_sub:NSPointTrigger
 {
 	entity m_eActivator;
 	int m_iValue;
@@ -46,12 +47,20 @@ class multi_manager_sub:NSPointTrigger
 };
 
 void
+multi_manager_sub::multi_manager_sub(void)
+{
+	m_eActivator = __NULL__;
+	m_iValue = 0i;
+	m_flUntilTriggered = 0.0f;
+}
+
+void
 multi_manager_sub::Save(float handle)
 {
+	super::Save(handle);
 	SaveInt(handle, "m_iValue", m_iValue);
 	SaveEntity(handle, "m_eActivator", m_eActivator);
 	SaveFloat(handle, "m_flUntilTriggered", m_flUntilTriggered);
-	super::Save(handle);
 }
 
 void
@@ -72,33 +81,38 @@ multi_manager_sub::Restore(string strKey, string strValue)
 	}
 }
 
-void
-multi_manager_sub::multi_manager_sub(void)
-{
-	m_eActivator = __NULL__;
-	m_iValue = 0;
-	m_flUntilTriggered = 0.0f;
-}
-
-class multi_manager:NSPointTrigger
+class
+multi_manager:NSPointTrigger
 {
 	multi_manager_sub m_eTriggers[16];
 	string m_strBuffer;
 	int m_iBusy;
 	int m_iValue;
 
-	virtual void(void) Spawned;
-
 	/* overrides */
-	virtual void(entity, int) Trigger;
-	virtual void(string, string) SpawnKey;
 	virtual void(float) Save;
 	virtual void(string,string) Restore;
+	virtual void(string, string) SpawnKey;
+	virtual void(void) Spawned;
+	virtual void(void) Respawn;
+	virtual void(entity, int) Trigger;
 };
+
+void
+multi_manager::multi_manager(void)
+{
+	for (int i = 0; i < 16; i++)
+		m_eTriggers[i] = __NULL__;
+
+	m_strBuffer = __NULL__;
+	m_iBusy =
+	m_iValue = 0i;
+}
 
 void
 multi_manager::Save(float handle)
 {
+	super::Save(handle);
 	SaveString(handle, "m_strBuffer", m_strBuffer);
 	SaveInt(handle, "m_iBusy", m_iBusy);
 	SaveInt(handle, "m_iValue", m_iValue);
@@ -118,13 +132,12 @@ multi_manager::Save(float handle)
 	SaveEntity(handle, "m_eTriggers_13", m_eTriggers[13]);
 	SaveEntity(handle, "m_eTriggers_14", m_eTriggers[14]);
 	SaveEntity(handle, "m_eTriggers_15", m_eTriggers[15]);
-	super::Save(handle);
 }
 
 void
 multi_manager::Restore(string strKey, string strValue)
 {
-switch (strKey) {
+	switch (strKey) {
 	case "m_strBuffer":
 		m_strBuffer = ReadString(strValue);
 		break;
@@ -184,59 +197,6 @@ switch (strKey) {
 		break;
 	default:
 		super::Restore(strKey, strValue);
-	}
-}
-
-
-void
-multi_manager::Trigger(entity act, int state)
-{
-	static void mm_enttrigger (void) {
-		multi_manager_sub wow = (multi_manager_sub)self;
-		
-		entity eFind = find(world, ::targetname, wow.target);
-
-		NSLog("^2%s::^3Trigger^7: %s (%s)", 
-			this.classname, wow.target, eFind.classname);
-
-		m_iValue = TRUE;
-		UseTargets(wow.m_eActivator, TRIG_TOGGLE, 0.0f);
-	}
-
-	if (GetMaster() == FALSE)
-		return;
-
-	m_iValue = TRUE;
-
-	/* If not multi-threaded, we have to watch out 'til all triggers are done. */
-	if (!HasSpawnFlags(MM_MULTITHREADED)) {
-		for (int i = 0; i < 16; i++) {
-			if (m_eTriggers[i].nextthink > time) {
-				return;
-			}
-		}
-	}
-
-	/* time to trigger our sub triggers */
-	for (int i = 0; i < 16; i++) {
-		if (!m_eTriggers[i].target)
-			continue;
-
-		m_eTriggers[i].think = mm_enttrigger;
-		m_eTriggers[i].m_iValue = FALSE;
-		m_eTriggers[i].nextthink = time + m_eTriggers[i].m_flUntilTriggered;
-		m_eTriggers[i].m_eActivator = act;
-	}
-}
-
-void
-multi_manager::Respawn(void)
-{
-	m_iValue = FALSE;
-
-	/* Mark them inactive */
-	for (int b = 0; b < 16; b++) {
-		m_eTriggers[b].m_iValue = FALSE;
 	}
 }
 
@@ -310,12 +270,53 @@ multi_manager::Spawned(void)
 }
 
 void
-multi_manager::multi_manager(void)
+multi_manager::Respawn(void)
 {
-	for (int i = 0; i < 16; i++)
-		m_eTriggers[i] = __NULL__;
+	m_iValue = FALSE;
 
-	m_strBuffer = __NULL__;
-	m_iBusy =
-	m_iValue = 0;
+	/* Mark them inactive */
+	for (int b = 0; b < 16; b++) {
+		m_eTriggers[b].m_iValue = FALSE;
+	}
+}
+
+void
+multi_manager::Trigger(entity act, int state)
+{
+	static void mm_enttrigger (void) {
+		multi_manager_sub wow = (multi_manager_sub)self;
+		
+		entity eFind = find(world, ::targetname, wow.target);
+
+		NSLog("^2%s::^3Trigger^7: %s (%s)", 
+			this.classname, wow.target, eFind.classname);
+
+		m_iValue = TRUE;
+		UseTargets(wow.m_eActivator, TRIG_TOGGLE, 0.0f);
+	}
+
+	if (GetMaster() == FALSE)
+		return;
+
+	m_iValue = TRUE;
+
+	/* If not multi-threaded, we have to watch out 'til all triggers are done. */
+	if (!HasSpawnFlags(MM_MULTITHREADED)) {
+		for (int i = 0; i < 16; i++) {
+			if (m_eTriggers[i].nextthink > time) {
+				return;
+			}
+		}
+	}
+
+	/* time to trigger our sub triggers */
+	for (int i = 0; i < 16; i++) {
+		if (!m_eTriggers[i].target)
+			continue;
+
+		m_eTriggers[i].think = mm_enttrigger;
+		m_eTriggers[i].m_iValue = FALSE;
+		m_eTriggers[i].nextthink = time + m_eTriggers[i].m_flUntilTriggered;
+		m_eTriggers[i].m_eActivator = act;
+	}
 }

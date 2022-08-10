@@ -33,6 +33,12 @@ info_node:NSPointTrigger
 };
 
 void
+info_node::info_node(void)
+{
+
+}
+
+void
 info_node::Respawn(void)
 {
 	SetSize([0,0,0], [0,0,0]);
@@ -44,10 +50,4 @@ info_node::Respawn(void)
 	SetOrigin(GetSpawnOrigin());
 	DropToFloor();
 	SetOrigin(GetOrigin() + [0,0,32]);
-}
-
-void
-info_node::info_node(void)
-{
-	
 }

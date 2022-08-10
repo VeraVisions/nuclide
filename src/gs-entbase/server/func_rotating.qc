@@ -63,7 +63,8 @@ enumflags
 	FR_TOGGLEDIR
 };
 
-class func_rotating:NSRenderableEntity
+class
+func_rotating:NSRenderableEntity
 {
 	vector m_vecMoveDir;
 	float m_flSpeed;
@@ -75,9 +76,9 @@ class func_rotating:NSRenderableEntity
 	/* overrides */
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
+	virtual void(string, string) SpawnKey;
 	virtual void(void) Respawn;
 	virtual void(entity, int) Trigger;
-	virtual void(string, string) SpawnKey;
 
 	virtual void(void) Rotate;
 	virtual void(entity) Blocked;
@@ -86,29 +87,38 @@ class func_rotating:NSRenderableEntity
 };
 
 void
+func_rotating::func_rotating(void)
+{
+	m_vecMoveDir = [0.0f, 0.0f, 0.0f];
+	m_flSpeed = 100;
+	m_flDamage = 0.0f;
+	m_flDir = 0.0f;
+}
+
+void
 func_rotating::Save(float handle)
 {
-	SaveVector(handle, "movedir", m_vecMoveDir);
-	SaveFloat(handle, "speed", m_flSpeed);
-	SaveFloat(handle, "damage", m_flDamage);
-	SaveFloat(handle, "dir", m_flDir);
 	super::Save(handle);
+	SaveVector(handle, "m_vecMoveDir", m_vecMoveDir);
+	SaveFloat(handle, "m_flSpeed", m_flSpeed);
+	SaveFloat(handle, "m_flDamage", m_flDamage);
+	SaveFloat(handle, "m_flDir", m_flDir);
 }
 
 void
 func_rotating::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "movedir":
+	case "m_vecMoveDir":
 		m_vecMoveDir = ReadVector(strValue);
 		break;
-	case "speed":
+	case "m_flSpeed":
 		m_flSpeed = ReadFloat(strValue);
 		break;
-	case "damage":
+	case "m_flDamage":
 		m_flDamage = ReadFloat(strValue);
 		break;
-	case "dir":
+	case "m_flDir":
 		m_flDir = ReadFloat(strValue);
 		break;
 	default:
@@ -117,9 +127,45 @@ func_rotating::Restore(string strKey, string strValue)
 }
 
 void
-func_rotating::Rotate(void)
+func_rotating::SpawnKey(string strKey, string strValue)
 {
-	nextthink = ltime + 10.0f;
+	switch (strKey) {
+	case "speed":
+		m_flSpeed = stof(strValue);
+		break;
+	case "dmg":
+		m_flDamage = stof(strValue);
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
+	}
+}
+
+void
+func_rotating::Respawn(void)
+{
+#ifdef GS_DEVELOPER
+	if (autocvar_dev_rotspeed != 0) {
+		m_flSpeed = autocvar_dev_rotspeed;
+	}
+#endif
+
+	m_flDir = 0; /* Reset */
+
+	SetModel(GetSpawnModel());
+	SetMovetype(MOVETYPE_PUSH);
+	SetSolid(HasSpawnFlags(FR_NOTSOLID) ? SOLID_NOT : SOLID_BSP);
+	SetOrigin(GetSpawnOrigin());
+
+	RestoreAngles();
+	SetMovementDirection();
+	ClearAngles();
+
+	if (HasSpawnFlags(FR_STARTON)) {
+		avelocity = m_vecMoveDir * m_flSpeed;
+		think = Rotate;
+		nextthink = ltime + 1.5f;
+	}
 }
 
 /* TODO: Handle state */
@@ -146,6 +192,12 @@ func_rotating::Trigger(entity act, int state)
 		think = Rotate;
 		nextthink = ltime + 99999.0f;
 	}
+}
+
+void
+func_rotating::Rotate(void)
+{
+	nextthink = ltime + 10.0f;
 }
 
 void
@@ -177,33 +229,6 @@ func_rotating::Touch(entity eToucher)
 }
 
 void
-func_rotating::Respawn(void)
-{
-#ifdef GS_DEVELOPER
-	if (autocvar_dev_rotspeed != 0) {
-		m_flSpeed = autocvar_dev_rotspeed;
-	}
-#endif
-
-	m_flDir = 0; /* Reset */
-
-	SetModel(GetSpawnModel());
-	SetMovetype(MOVETYPE_PUSH);
-	SetSolid(HasSpawnFlags(FR_NOTSOLID) ? SOLID_NOT : SOLID_BSP);
-	SetOrigin(GetSpawnOrigin());
-
-	RestoreAngles();
-	SetMovementDirection();
-	ClearAngles();
-
-	if (HasSpawnFlags(FR_STARTON)) {
-		avelocity = m_vecMoveDir * m_flSpeed;
-		think = Rotate;
-		nextthink = ltime + 1.5f;
-	}
-}
-
-void
 func_rotating::SetMovementDirection(void)
 {
 	if (HasSpawnFlags(FR_ZAXIS)) {
@@ -217,25 +242,4 @@ func_rotating::SetMovementDirection(void)
 	if (HasSpawnFlags(FR_REVERSE)) {
 		m_vecMoveDir *= -1;
 	}
-}
-
-void
-func_rotating::SpawnKey(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "speed":
-		m_flSpeed = stof(strValue);
-		break;
-	case "dmg":
-		m_flDamage = stof(strValue);
-		break;
-	default:
-		super::SpawnKey(strKey, strValue);
-	}
-}
-
-void
-func_rotating::func_rotating(void)
-{
-	m_flSpeed = 100;
 }

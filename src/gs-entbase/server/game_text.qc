@@ -46,7 +46,8 @@ enumflags
 	GTF_ALLPLAYERS
 };
 
-class game_text:NSPointTrigger
+class
+game_text:NSPointTrigger
 {
 	vector m_vecColor1;
 	vector m_vecColor2;
@@ -63,92 +64,77 @@ class game_text:NSPointTrigger
 
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
-	virtual void(entity, int) Trigger;
 	virtual void(string, string) SpawnKey;
+	virtual void(entity, int) Trigger;
 };
+
+void
+game_text::game_text(void)
+{
+	m_vecColor1 = [0.0f, 0.0f, 0.0f];
+	m_vecColor2 = [0.0f, 0.0f, 0.0f];
+	m_flPosX = 0.0f;
+	m_flPosY = 0.0f;
+	m_flFadeIn = 0.0f;
+	m_flFadeOut = 0.0f;
+	m_flHoldTime = 0.0f;
+	m_flFXTime = 0.0f;
+	m_iChannel = 0i;
+	m_iEffect = 0i;
+}
 
 void
 game_text::Save(float handle)
 {
-	SaveVector(handle, "color1", m_vecColor1);
-	SaveVector(handle, "color2", m_vecColor2);
-	SaveFloat(handle, "pos_x", m_flPosX);
-	SaveFloat(handle, "pos_y", m_flPosY);
-	SaveFloat(handle, "fade_in", m_flFadeIn);
-	SaveFloat(handle, "fade_out", m_flFadeOut);
-	SaveFloat(handle, "hold_time", m_flHoldTime);
-	SaveFloat(handle, "fx_time", m_flFXTime);
-	SaveInt(handle, "channel", m_iChannel);
-	SaveInt(handle, "effect", m_iEffect);
 	super::Save(handle);
+	SaveVector(handle, "m_vecColor1", m_vecColor1);
+	SaveVector(handle, "m_vecColor2", m_vecColor2);
+	SaveFloat(handle, "m_flPosX", m_flPosX);
+	SaveFloat(handle, "m_flPosY", m_flPosY);
+	SaveFloat(handle, "m_flFadeIn", m_flFadeIn);
+	SaveFloat(handle, "m_flFadeOut", m_flFadeOut);
+	SaveFloat(handle, "m_flHoldTime", m_flHoldTime);
+	SaveFloat(handle, "m_flFXTime", m_flFXTime);
+	SaveInt(handle, "m_iChannel", m_iChannel);
+	SaveInt(handle, "m_iEffect", m_iEffect);
 }
 
 void
 game_text::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "color1":
+	case "m_vecColor1":
 		m_vecColor1 = ReadVector(strValue);
 		break;
-	case "color2":
+	case "m_vecColor2":
 		m_vecColor2 = ReadVector(strValue);
 		break;
-	case "pos_x":
+	case "m_flPosX":
 		m_flPosX = ReadFloat(strValue);
 		break;
-	case "pos_y":
+	case "m_flPosY":
 		m_flPosY = ReadFloat(strValue);
 		break;
-	case "fade_in":
+	case "m_flFadeIn":
 		m_flFadeIn = ReadFloat(strValue);
 		break;
-	case "fade_out":
+	case "m_flFadeOut":
 		m_flFadeOut = ReadFloat(strValue);
 		break;
-	case "hold_time":
+	case "m_flHoldTime":
 		m_flHoldTime = ReadFloat(strValue);
 		break;
-	case "fx_time":
+	case "m_flFXTime":
 		m_flFXTime = ReadFloat(strValue);
 		break;
-	case "channel":
+	case "m_iChannel":
 		m_iChannel = ReadInt(strValue);
 		break;
-	case "effect":
+	case "m_iEffect":
 		m_iEffect = ReadInt(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
-	}
-}
-
-void
-game_text::Trigger(entity act, int state)
-{
-	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
-	WriteByte(MSG_MULTICAST, EV_TEXT);
-	WriteByte(MSG_MULTICAST, m_iChannel);
-	WriteString(MSG_MULTICAST, m_strMessage);
-	WriteFloat(MSG_MULTICAST, m_flPosX);
-	WriteFloat(MSG_MULTICAST, m_flPosY);
-	WriteByte(MSG_MULTICAST, m_iEffect);
-	WriteByte(MSG_MULTICAST, m_vecColor1[0]);
-	WriteByte(MSG_MULTICAST, m_vecColor1[1]);
-	WriteByte(MSG_MULTICAST, m_vecColor1[2]);
-	WriteByte(MSG_MULTICAST, m_vecColor2[0]);
-	WriteByte(MSG_MULTICAST, m_vecColor2[1]);
-	WriteByte(MSG_MULTICAST, m_vecColor2[2]);
-	WriteFloat(MSG_MULTICAST, m_flFadeIn);
-	WriteFloat(MSG_MULTICAST, m_flFadeOut);
-	WriteFloat(MSG_MULTICAST, m_flHoldTime);
-	WriteFloat(MSG_MULTICAST, m_flFXTime);
-
-	if (HasSpawnFlags(GTF_ALLPLAYERS)) {
-		msg_entity = this;
-		multicast(origin, MULTICAST_ALL);
-	} else {
-		msg_entity = act;
-		multicast(origin, MULTICAST_ONE_R);
 	}
 }
 
@@ -192,6 +178,31 @@ game_text::SpawnKey(string strKey, string strValue)
 }
 
 void
-game_text::game_text(void)
+game_text::Trigger(entity act, int state)
 {
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_TEXT);
+	WriteByte(MSG_MULTICAST, m_iChannel);
+	WriteString(MSG_MULTICAST, m_strMessage);
+	WriteFloat(MSG_MULTICAST, m_flPosX);
+	WriteFloat(MSG_MULTICAST, m_flPosY);
+	WriteByte(MSG_MULTICAST, m_iEffect);
+	WriteByte(MSG_MULTICAST, m_vecColor1[0]);
+	WriteByte(MSG_MULTICAST, m_vecColor1[1]);
+	WriteByte(MSG_MULTICAST, m_vecColor1[2]);
+	WriteByte(MSG_MULTICAST, m_vecColor2[0]);
+	WriteByte(MSG_MULTICAST, m_vecColor2[1]);
+	WriteByte(MSG_MULTICAST, m_vecColor2[2]);
+	WriteFloat(MSG_MULTICAST, m_flFadeIn);
+	WriteFloat(MSG_MULTICAST, m_flFadeOut);
+	WriteFloat(MSG_MULTICAST, m_flHoldTime);
+	WriteFloat(MSG_MULTICAST, m_flFXTime);
+
+	if (HasSpawnFlags(GTF_ALLPLAYERS)) {
+		msg_entity = this;
+		multicast(origin, MULTICAST_ALL);
+	} else {
+		msg_entity = act;
+		multicast(origin, MULTICAST_ONE_R);
+	}
 }

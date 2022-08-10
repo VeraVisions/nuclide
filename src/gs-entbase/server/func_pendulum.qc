@@ -49,7 +49,8 @@ enumflags
 	FUNCPEND_YAXIS
 };
 
-class func_pendulum:NSRenderableEntity
+class
+func_pendulum:NSRenderableEntity
 {
 	int m_iActive;
 	float m_flProgress;
@@ -60,36 +61,45 @@ class func_pendulum:NSRenderableEntity
 
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
-	virtual void(void) customphysics;
+	virtual void(string, string) SpawnKey;
 	virtual void(void) Respawn;
 	virtual void(entity, int) Trigger;
-	virtual void(string, string) SpawnKey;
+	virtual void(void) customphysics;
 };
+
+void
+func_pendulum::func_pendulum(void)
+{
+	m_iActive = 0i;
+	m_flProgress = 0.0f;
+	m_flDampening = 0.0f;
+	m_flDistance = 0.0f;
+}
 
 void
 func_pendulum::Save(float handle)
 {
-	SaveInt(handle, "active", m_iActive);
-	SaveFloat(handle, "progress", m_flProgress);
-	SaveFloat(handle, "dampening", m_flDampening);
-	SaveFloat(handle, "distance", m_flDistance);
 	super::Save(handle);
+	SaveInt(handle, "m_iActive", m_iActive);
+	SaveFloat(handle, "m_flProgress", m_flProgress);
+	SaveFloat(handle, "m_flDampening", m_flDampening);
+	SaveFloat(handle, "m_flDistance", m_flDistance);
 }
 
 void
 func_pendulum::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "active":
+	case "m_iActive":
 		m_iActive = ReadInt(strValue);
 		break;
-	case "progress":
+	case "m_flProgress":
 		m_flProgress = ReadFloat(strValue);
 		break;
-	case "dampening":
+	case "m_flDampening":
 		m_flDampening = ReadFloat(strValue);
 		break;
-	case "distance":
+	case "m_flDistance":
 		m_flDistance = ReadFloat(strValue);
 		break;
 	default:
@@ -98,39 +108,18 @@ func_pendulum::Restore(string strKey, string strValue)
 }
 
 void
-func_pendulum::customphysics(void)
+func_pendulum::SpawnKey(string strKey, string strValue)
 {
-	if (!m_iActive)
-		return;
-
-	m_flProgress += frametime;
-
-	if (HasSpawnFlags(FUNCPEND_XAXIS))
-		angles[2] = sin(m_flProgress);
-	else if (HasSpawnFlags(FUNCPEND_YAXIS))
-		angles[0] = sin(m_flProgress);
-	else
-		angles[1] = sin(m_flProgress);
-
-	angles *= m_flDistance;
-}
-
-void
-func_pendulum::Trigger(entity act, int state)
-{
-	switch (state) {
-	case TRIG_OFF:
-		m_iActive = 0;
+	switch (strKey) {
+	case "damp":
+		m_flDampening = stof(strValue);
 		break;
-	case TRIG_ON:
-		m_iActive = 1;
+	case "distance":
+		m_flDistance = stof(strValue);
 		break;
 	default:
-		m_iActive = 1 - m_iActive;
+		super::SpawnKey(strKey, strValue);
 	}
-
-	if (m_iActive == 0 && HasSpawnFlags(FUNCPEND_RETURNONTRIGGER))
-		angles = [0,0,0];
 }
 
 void
@@ -150,21 +139,37 @@ func_pendulum::Respawn(void)
 }
 
 void
-func_pendulum::SpawnKey(string strKey, string strValue)
+func_pendulum::Trigger(entity act, int state)
 {
-	switch (strKey) {
-	case "damp":
-		m_flDampening = stof(strValue);
+	switch (state) {
+	case TRIG_OFF:
+		m_iActive = 0;
 		break;
-	case "distance":
-		m_flDistance = stof(strValue);
+	case TRIG_ON:
+		m_iActive = 1;
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		m_iActive = 1 - m_iActive;
 	}
+
+	if (m_iActive == 0 && HasSpawnFlags(FUNCPEND_RETURNONTRIGGER))
+		angles = [0.0f, 0.0f, 0.0f];
 }
 
 void
-func_pendulum::func_pendulum(void)
+func_pendulum::customphysics(void)
 {
+	if (!m_iActive)
+		return;
+
+	m_flProgress += frametime;
+
+	if (HasSpawnFlags(FUNCPEND_XAXIS))
+		angles[2] = sin(m_flProgress);
+	else if (HasSpawnFlags(FUNCPEND_YAXIS))
+		angles[0] = sin(m_flProgress);
+	else
+		angles[1] = sin(m_flProgress);
+
+	angles *= m_flDistance;
 }

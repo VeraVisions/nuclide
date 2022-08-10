@@ -43,7 +43,8 @@ enumflags
 	GPEFL_TRIGGERONLY
 };
 
-class game_player_equip:NSPointTrigger
+class
+game_player_equip:NSPointTrigger
 {
 	string m_strBuffer;
 
@@ -58,21 +59,46 @@ class game_player_equip:NSPointTrigger
 };
 
 void
+game_player_equip::game_player_equip(void)
+{
+	m_strBuffer = __NULL__;
+}
+
+void
 game_player_equip::Save(float handle)
 {
-	SaveString(handle, "buffer", m_strBuffer);
 	super::Save(handle);
+	SaveString(handle, "m_strBuffer", m_strBuffer);
 }
 
 void
 game_player_equip::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "buffer":
+	case "m_strBuffer":
 		m_strBuffer = ReadString(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
+	}
+}
+
+void
+game_player_equip::SpawnKey(string strKey, string strValue)
+{
+	/* like multi_manager, we save non-field infos in the spawndata */
+	switch (strKey) {
+	case "{":
+	case "}":
+	case "classname":
+	case "origin":
+	case "targetname":
+	case "spawnflags":
+	case "angle":
+	case "angles":
+		break;
+	default:
+		m_strBuffer = sprintf("%s%s %s ", m_strBuffer, strKey, strValue);
 	}
 }
 
@@ -131,28 +157,4 @@ game_player_equip::Trigger(entity act, int state)
 			}
 		}
 	}
-}
-
-void
-game_player_equip::SpawnKey(string strKey, string strValue)
-{
-	/* like multi_manager, we save non-field infos in the spawndata */
-	switch (strKey) {
-	case "{":
-	case "}":
-	case "classname":
-	case "origin":
-	case "targetname":
-	case "spawnflags":
-	case "angle":
-	case "angles":
-		break;
-	default:
-		m_strBuffer = sprintf("%s%s %s ", m_strBuffer, strKey, strValue);
-	}
-}
-
-void
-game_player_equip::game_player_equip(void)
-{
 }

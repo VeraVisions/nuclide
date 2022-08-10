@@ -31,7 +31,8 @@ its targets, based on some limits given.
 It was introduced in Gunman Chronicles (2000).
 */
 
-class random_trigger:NSPointTrigger
+class
+random_trigger:NSPointTrigger
 {
 	float m_flMinTime;
 	float m_flRandMin;
@@ -42,59 +43,49 @@ class random_trigger:NSPointTrigger
 
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
-	virtual void(entity,int) Trigger;
-	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
+	virtual void(void) Respawn;
+	virtual void(entity,int) Trigger;
 };
+
+void
+random_trigger::random_trigger(void)
+{
+	m_flMinTime = 0.0f;
+	m_flRandMin = 0.0f;
+	m_flRandMax = 0.0f;
+	m_iStartState = 0i;
+}
 
 void
 random_trigger::Save(float handle)
 {
-	SaveFloat(handle, "min_time", m_flMinTime);
-	SaveFloat(handle, "rand_min", m_flRandMin);
-	SaveFloat(handle, "rand_max", m_flRandMax);
-	SaveInt(handle, "start_state", m_iStartState);
 	super::Save(handle);
+	SaveFloat(handle, "m_flMinTime", m_flMinTime);
+	SaveFloat(handle, "m_flRandMin", m_flRandMin);
+	SaveFloat(handle, "m_flRandMax", m_flRandMax);
+	SaveInt(handle, "m_iStartState", m_iStartState);
 }
 
 void
 random_trigger::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "min_time":
+	case "m_flMinTime":
 		m_flMinTime = ReadFloat(strValue);
 		break;
-	case "rand_min":
+	case "m_flRandMin":
 		m_flRandMin = ReadFloat(strValue);
 		break;
-	case "rand_max":
+	case "m_flRandMax":
 		m_flRandMax = ReadFloat(strValue);
 		break;
-	case "start_state":
+	case "m_iStartState":
 		m_iStartState = ReadInt(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
 	}
-}
-
-void
-random_trigger::Trigger(entity act, int state)
-{
-	float r;
-
-	if (GetMaster() == FALSE)
-		return;
-
-	r = time + m_flMinTime + random(m_flRandMin, m_flRandMax);
-	UseTargets(other, TRIG_TOGGLE, r);
-}
-
-void
-random_trigger::Respawn(void)
-{
-	if (m_iStartState == 1)
-		Trigger(this, TRIG_ON);
 }
 
 void
@@ -119,6 +110,20 @@ random_trigger::SpawnKey(string strKey, string strValue)
 }
 
 void
-random_trigger::random_trigger(void)
+random_trigger::Respawn(void)
 {
+	if (m_iStartState == 1)
+		Trigger(this, TRIG_ON);
+}
+
+void
+random_trigger::Trigger(entity act, int state)
+{
+	float r;
+
+	if (GetMaster() == FALSE)
+		return;
+
+	r = time + m_flMinTime + random(m_flRandMin, m_flRandMax);
+	UseTargets(other, TRIG_TOGGLE, r);
 }

@@ -24,6 +24,19 @@ the shape of a soda can.
 "killtarget" : Target to kill when triggered.
 "health" : Amount of soda-cans that can be dispensed at maximum
 "angles" : Sets the pitch, yaw and roll angles of the soda
+"skin"   : Sets the beverage type. Values from 0-6 are valid. Check notes.
+
+-------- NOTES --------
+Mainly used in vending machines. You can choose a few select types of beverage.
+
+Beverage-list:
+0 : Coca Cola
+1 : Sprite
+2 : Diet Coke
+3 : Orange
+4 : Surge
+5 : Moxie
+6 : Random (will pack one of the above, picked at the start of the map)
 
 -------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
@@ -32,76 +45,66 @@ This entity was introduced in Half-Life (1998).
 /* dependency from item_food.cpp */
 void item_sodacan(void);
 
-// TODO: Implement support for skins
-enum
+typedef enum
 {
-	SKIN_COCACOLA,
+	SKIN_COCACOLA = 0,
 	SKIN_SPRITE,
 	SKIN_DIETCOKE,
 	SKIN_ORANGE,
 	SKIN_SURGE,
 	SKIN_MOXIE,
 	SKIN_RANDOM
-};
+} sodaskin_t;
 
-class env_beverage:NSRenderableEntity
+class
+env_beverage:NSRenderableEntity
 {
 	int m_iUses;
-	int m_iReady;
-	int m_iSkin;
+	bool m_bReady;
+	sodaskin_t m_sodaSkin;
 
 	void(void) env_beverage;
 
-	virtual void(void) Spawned;
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
-	virtual void(entity, int) Trigger;
 	virtual void(string, string) SpawnKey;
+	virtual void(void) Spawned;
+	virtual void(entity, int) Trigger;
 };
+
+void
+env_beverage::env_beverage(void)
+{
+	m_iUses = 15;
+	m_bReady = false;
+	m_sodaSkin = 0;
+}
 
 void
 env_beverage::Save(float handle)
 {
-	SaveInt(handle, "uses", m_iUses);
-	SaveInt(handle, "ready", m_iReady);
-	SaveInt(handle, "skin_value", m_iSkin);
 	super::Save(handle);
+	SaveInt(handle, "m_iUses", m_iUses);
+	SaveBool(handle, "m_bReady", m_bReady);
+	SaveFloat(handle, "m_sodaSkin", m_sodaSkin);
 }
 
 void
 env_beverage::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "uses":
+	case "m_iUses":
 		m_iUses = ReadInt(strValue);
 		break;
-	case "ready":
-		m_iReady = ReadInt(strValue);
+	case "m_bReady":
+		m_bReady = ReadBool(strValue);
 		break;
-	case "skin_value":
-		m_iSkin = ReadInt(strValue);
+	case "m_sodaSkin":
+		m_sodaSkin = ReadInt(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
 	}
-}
-
-void
-env_beverage::Trigger(entity act, int unused)
-{
-	if (m_iReady == FALSE || m_iUses <= 0) {
-		return;
-	}
-
-	entity eCan = spawn();
-	setorigin(eCan, origin);
-	eCan.angles = angles;
-	eCan.owner = this;
-	eCan.think = item_sodacan;
-	eCan.nextthink = time;
-
-	m_iUses--;
-	m_iReady = FALSE;
 }
 
 void
@@ -110,6 +113,9 @@ env_beverage::SpawnKey(string strKey, string strValue)
 	switch (strKey) {
 	case "health":
 		m_iUses = stoi(strValue);
+		break;
+	case "skin":
+		m_sodaSkin = stof(strValue);
 		break;
 	default:
 		super::SpawnKey(strKey, strValue);
@@ -123,13 +129,29 @@ env_beverage::Spawned(void)
 
 	precache_model("models/can.mdl");
 	precache_sound("weapons/g_bounce3.wav");
+
+	m_bReady = true;
+
+	if (m_sodaSkin == SKIN_RANDOM) {
+		m_sodaSkin = rint(random(SKIN_COCACOLA, SKIN_MOXIE));
+	}
 }
 
 void
-env_beverage::env_beverage(void)
+env_beverage::Trigger(entity act, int unused)
 {
-	if (!m_iUses) {
-		m_iUses = 10;
+	if (m_bReady == false || m_iUses <= 0) {
+		return;
 	}
-	m_iReady = TRUE;
+
+	entity eCan = spawn();
+	setorigin(eCan, origin);
+	eCan.angles = angles;
+	eCan.owner = this;
+	eCan.think = item_sodacan;
+	eCan.nextthink = time;
+	eCan.skin = m_sodaSkin;
+
+	m_iUses--;
+	m_bReady = false;
 }

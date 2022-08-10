@@ -32,7 +32,6 @@ TO_PUSHABLES : Allow func_pushables to trigger this entity.
 This entity was introduced in Quake (1996).
 */
 
-// TODO: These are missing
 enumflags
 {
 	TO_MONSTERS,
@@ -57,56 +56,33 @@ class trigger_once:NSBrushTrigger
 };
 
 void
+trigger_once::trigger_once(void)
+{
+	m_strOnStartTouch =
+	m_strOnTrigger = __NULL__;
+}
+
+void
 trigger_once::Save(float handle)
 {
-	SaveString(handle, "OnStartTouch", m_strOnStartTouch);
-	SaveString(handle, "OnTrigger", m_strOnTrigger);
 	super::Save(handle);
+	SaveString(handle, "m_strOnStartTouch", m_strOnStartTouch);
+	SaveString(handle, "m_strOnTrigger", m_strOnTrigger);
 }
 
 void
 trigger_once::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "OnStartTouch":
+	case "m_strOnStartTouch":
 		m_strOnStartTouch = ReadString(strValue);
 		break;
-	case "OnTrigger":
+	case "m_strOnTrigger":
 		m_strOnTrigger = ReadString(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
 	}
-}
-
-void
-trigger_once::Touch(entity eToucher)
-{
-	if (GetMaster() == FALSE)
-		return;
-	if (HasSpawnFlags(TO_NOCLIENTS) && eToucher.flags & FL_CLIENT)
-		return;
-	if (!HasSpawnFlags(TO_MONSTERS) && eToucher.flags & FL_MONSTER)
-		return;
-	if (!HasSpawnFlags(TO_PUSHABLES) && eToucher.classname == "func_pushable")
-		return;
-
-	SetSolid(SOLID_NOT); /* make inactive */
-	m_iValue = 1;
-
-	if (!target) {
-		UseOutput(eToucher, m_strOnStartTouch);
-		return;
-	}
-
-	UseTargets(eToucher, TRIG_TOGGLE, m_flDelay);
-}
-
-void
-trigger_once::Respawn(void)
-{
-	InitBrushTrigger();
-	m_iValue = 0;
 }
 
 void
@@ -138,8 +114,31 @@ trigger_once::Spawned(void)
 }
 
 void
-trigger_once::trigger_once(void)
+trigger_once::Respawn(void)
 {
-	m_strOnStartTouch =
-	m_strOnTrigger = __NULL__;
+	InitBrushTrigger();
+	m_iValue = 0;
+}
+
+void
+trigger_once::Touch(entity eToucher)
+{
+	if (GetMaster() == FALSE)
+		return;
+	if (HasSpawnFlags(TO_NOCLIENTS) && eToucher.flags & FL_CLIENT)
+		return;
+	if (!HasSpawnFlags(TO_MONSTERS) && eToucher.flags & FL_MONSTER)
+		return;
+	if (!HasSpawnFlags(TO_PUSHABLES) && eToucher.classname == "func_pushable")
+		return;
+
+	SetSolid(SOLID_NOT); /* make inactive */
+	m_iValue = 1;
+
+	if (!target) {
+		UseOutput(eToucher, m_strOnStartTouch);
+		return;
+	}
+
+	UseTargets(eToucher, TRIG_TOGGLE, m_flDelay);
 }

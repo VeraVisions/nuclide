@@ -87,7 +87,8 @@ enum
     SS_TURNTOFACE /* Turn to the scripted_sequence's angle before performing the animation. */
 };
 
-class scripted_sequence:NSPointTrigger
+class
+scripted_sequence:NSPointTrigger
 {
 	int m_iEnabled;
 
@@ -117,41 +118,100 @@ class scripted_sequence:NSPointTrigger
 };
 
 void
+scripted_sequence::scripted_sequence(void)
+{
+	m_iEnabled = 0i;
+	m_strMonster = __NULL__;
+	m_strActionAnim = __NULL__;
+	m_strIdleAnim = __NULL__;
+	m_flSearchRadius = 0.0f;
+	m_iMove = 0i;
+}
+
+void
 scripted_sequence::Save(float handle)
 {
-	SaveInt(handle, "enabled", m_iEnabled);
-	SaveString(handle, "monster", m_strMonster);
-	SaveString(handle, "action_anim", m_strActionAnim);
-	SaveString(handle, "idle_anim", m_strIdleAnim);
-	SaveFloat(handle, "search_radius", m_flSearchRadius);
-	SaveInt(handle, "move", m_iMove);
 	super::Save(handle);
+	SaveInt(handle, "m_iEnabled", m_iEnabled);
+	SaveString(handle, "m_strMonster", m_strMonster);
+	SaveString(handle, "m_strActionAnim", m_strActionAnim);
+	SaveString(handle, "m_strIdleAnim", m_strIdleAnim);
+	SaveFloat(handle, "m_flSearchRadius", m_flSearchRadius);
+	SaveInt(handle, "m_iMove", m_iMove);
 }
 
 void
 scripted_sequence::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "enabled":
+	case "m_iEnabled":
 		m_iEnabled = ReadInt(strValue);
 		break;
-	case "monster":
+	case "m_strMonster":
 		m_strMonster = ReadString(strValue);
 		break;
-	case "action_anim":
+	case "m_strActionAnim":
 		m_strActionAnim = ReadString(strValue);
 		break;
-	case "idle_anim":
+	case "m_strIdleAnim":
 		m_strIdleAnim = ReadString(strValue);
 		break;
-	case "search_radius":
+	case "m_flSearchRadius":
 		m_flSearchRadius = ReadFloat(strValue);
 		break;
-	case "move":
+	case "m_iMove":
 		m_iMove = ReadInt(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
+	}
+}
+
+void
+scripted_sequence::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "m_iszEntity":
+		m_strMonster = strValue;
+		break;
+	case "m_iszPlay":
+		m_strActionAnim = strValue;
+		break;
+	case "m_iszIdle":
+		m_strIdleAnim = strValue;
+		break;
+	case "m_flRadius":
+		m_flSearchRadius = stof(strValue);
+		break;
+	case "m_flRepeat":
+		/* TODO: */
+		break;
+	case "m_fMoveTo":
+		m_iMove = stoi(strValue);
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
+	}
+}
+
+void
+scripted_sequence::Respawn(void)
+{
+	m_iEnabled = TRUE;
+	target = m_oldstrTarget;
+
+	if (m_flSearchRadius) {
+		SetSolid(SOLID_TRIGGER);
+		mins[0] = mins[1] = mins[2] = -(m_flSearchRadius/2);
+		maxs[0] = maxs[1] = maxs[2] = (m_flSearchRadius/2);
+		setsize(this, mins, maxs);
+	} else {
+		SetSolid(SOLID_NOT);
+	}
+
+	if (m_strIdleAnim) {
+		think = InitIdle;
+		nextthink = time + 0.1f;
 	}
 }
 
@@ -333,59 +393,6 @@ scripted_sequence::Touch(entity eToucher)
 		return;
 
 	RunOnEntity(eToucher);
-}
-
-void
-scripted_sequence::Respawn(void)
-{
-	m_iEnabled = TRUE;
-	target = m_oldstrTarget;
-	
-	if (m_flSearchRadius) {
-		SetSolid(SOLID_TRIGGER);
-		mins[0] = mins[1] = mins[2] = -(m_flSearchRadius/2);
-		maxs[0] = maxs[1] = maxs[2] = (m_flSearchRadius/2);
-		setsize(this, mins, maxs);
-	} else {
-		SetSolid(SOLID_NOT);
-	}
-
-	if (m_strIdleAnim) {
-		think = InitIdle;
-		nextthink = time + 0.1f;
-	}
-}
-
-void
-scripted_sequence::SpawnKey(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "m_iszEntity":
-		m_strMonster = strValue;
-		break;
-	case "m_iszPlay":
-		m_strActionAnim = strValue;
-		break;
-	case "m_iszIdle":
-		m_strIdleAnim = strValue;
-		break;
-	case "m_flRadius":
-		m_flSearchRadius = stof(strValue);
-		break;
-	case "m_flRepeat":
-		/* TODO: */
-		break;
-	case "m_fMoveTo":
-		m_iMove = stoi(strValue);
-		break;
-	default:
-		super::SpawnKey(strKey, strValue);
-	}
-}
-
-void
-scripted_sequence::scripted_sequence(void)
-{
 }
 
 CLASSEXPORT(aiscripted_sequence, scripted_sequence)

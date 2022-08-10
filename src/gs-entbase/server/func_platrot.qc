@@ -44,7 +44,8 @@ enum
 	PLATSTATE_DOWN
 };
 
-class func_platrot:NSRenderableEntity
+class
+func_platrot:NSRenderableEntity
 {
 	int m_iState;
 	float m_flSpeed;
@@ -68,42 +69,91 @@ class func_platrot:NSRenderableEntity
 };
 
 void
+func_platrot::func_platrot(void)
+{
+	m_iState = 0i;
+	m_flSpeed = 100.0f;
+	m_flHeight = 0.0f;
+	m_strNoise1 = __NULL__;
+	m_strNoise2 = __NULL__;
+	m_flRotation = 0.0f;
+}
+
+void
 func_platrot::Save(float handle)
 {
-	SaveInt(handle, "state", m_iState);
-	SaveFloat(handle, "speed", m_flSpeed);
-	SaveFloat(handle, "height", m_flHeight);
-	SaveString(handle, "noise1", m_strNoise1);
-	SaveString(handle, "noise2", m_strNoise2);
-	SaveFloat(handle, "rotation", m_flRotation);
 	super::Save(handle);
+	SaveInt(handle, "m_iState", m_iState);
+	SaveFloat(handle, "m_flSpeed", m_flSpeed);
+	SaveFloat(handle, "m_flHeight", m_flHeight);
+	SaveString(handle, "m_strNoise1", m_strNoise1);
+	SaveString(handle, "m_strNoise2", m_strNoise2);
+	SaveFloat(handle, "m_flRotation", m_flRotation);
 }
 
 void
 func_platrot::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "state":
+	case "m_iState":
 		m_iState = ReadInt(strValue);
 		break;
-	case "spped":
+	case "m_flSpeed":
 		m_flSpeed = ReadFloat(strValue);
 		break;
-	case "height":
+	case "m_flHeight":
 		m_flHeight = ReadFloat(strValue);
 		break;
-	case "noise1":
+	case "m_strNoise1":
 		m_strNoise1 = ReadString(strValue);
 		break;
-	case "noise2":
+	case "m_strNoise2":
 		m_strNoise2 = ReadString(strValue);
 		break;
-	case "rotation":
+	case "m_flRotation":
 		m_flRotation = ReadFloat(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
 	}
+}
+
+void
+func_platrot::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "height":
+		m_flHeight = stof(strValue);
+		break;
+	case "speed":
+		m_flSpeed = stof(strValue);
+		break;
+	case "noise1":
+		m_strNoise1 = strValue;
+		break;
+	case "noise2":
+		m_strNoise2 = strValue;
+		break;
+	case "rotation":
+		m_flRotation = stof(strValue);
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
+	}
+}
+
+void
+func_platrot::Respawn(void)
+{
+	SetMovetype(MOVETYPE_PUSH);
+	SetSolid(SOLID_BSP);
+	SetModel(GetSpawnModel());
+	SetOrigin(GetSpawnOrigin());
+	SetAngles(GetSpawnAngles());
+
+	m_iState = PLATSTATE_RAISED;
+	think = __NULL__;
+	nextthink = 0.0f;
 }
 
 void
@@ -193,48 +243,4 @@ func_platrot::Touch(entity eToucher)
 	}
 
 	MoveToggle();
-}
-
-void
-func_platrot::Respawn(void)
-{
-	SetMovetype(MOVETYPE_PUSH);
-	SetSolid(SOLID_BSP);
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
-	SetAngles(GetSpawnAngles());
-	
-	m_iState = PLATSTATE_RAISED;
-	think = __NULL__;
-	nextthink = 0.0f;
-}
-
-void
-func_platrot::SpawnKey(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "height":
-		m_flHeight = stof(strValue);
-		break;
-	case "speed":
-		m_flSpeed = stof(strValue);
-		break;
-	case "noise1":
-		m_strNoise1 = strValue;
-		break;
-	case "noise2":
-		m_strNoise2 = strValue;
-		break;
-	case "rotation":
-		m_flRotation = stof(strValue);
-		break;
-	default:
-		super::SpawnKey(strKey, strValue);
-	}
-}
-
-void
-func_platrot::func_platrot(void)
-{
-	m_flSpeed = 100.0f;
 }

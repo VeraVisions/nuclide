@@ -25,33 +25,60 @@ This entity does not work in multiplayer.
 This entity was introduced in Half-Life (1998).
 */
 
-class trigger_autosave:NSBrushTrigger
+class
+trigger_autosave:NSBrushTrigger
 {
 	float m_flDelay;
 
 	void(void) trigger_autosave;
 
-	virtual void(entity) Touch;
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
+	virtual void(void) Spawned;
 	virtual void(void) Respawn;
+	virtual void(entity) Touch;
 };
+
+void
+trigger_autosave::trigger_autosave(void)
+{
+	m_flDelay = 0.0f;
+}
 
 void
 trigger_autosave::Save(float handle)
 {
-	SaveFloat(handle, "delay", m_flDelay);
 	super::Save(handle);
+	SaveFloat(handle, "m_flDelay", m_flDelay);
 }
 
 void
 trigger_autosave::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "delay":
+	case "m_flDelay":
 		m_flDelay = ReadFloat(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
 	}
+}
+
+void
+trigger_autosave::Spawned(void)
+{
+	super::Spawned();
+
+	if (cvar("sv_playerslots") > 1) {
+		Destroy();
+		return;
+	}
+}
+
+void
+trigger_autosave::Respawn(void)
+{
+	InitBrushTrigger();
 }
 
 void
@@ -79,21 +106,4 @@ trigger_autosave::Touch(entity eToucher)
 	SetSolid(SOLID_NOT);
 
 	UseTargets(eToucher, TRIG_TOGGLE, m_flDelay);
-}
-
-void
-trigger_autosave::Respawn(void)
-{
-	InitBrushTrigger();
-}
-
-void
-trigger_autosave::trigger_autosave(void)
-{
-	if (cvar("sv_playerslots") > 1) {
-		remove(this);
-		return;
-	}
-
-	m_flDelay = 0.0f;
 }

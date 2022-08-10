@@ -17,13 +17,20 @@
 void
 NSVehicle::NSVehicle(void)
 {
+	m_iVehicleFlags = 0i;
+	m_iMoveButtons = 0i;
+	m_vecMoveValues = [0.0f, 0.0f, 0.0f];
 	m_eDriver = __NULL__;
+	m_eDriverLast = __NULL__;
+	m_vecPlayerPos = [0.0f, 0.0f, 0.0f];
+	m_vecExitPos = [0.0f, 0.0f, 0.0f];
 }
 
 #ifdef SERVER
 void
 NSVehicle::Save(float handle)
 {
+	super::Save(handle);
 	SaveInt(handle, "m_iVehicleFlags", m_iVehicleFlags);
 	SaveInt(handle, "m_iMoveButtons", m_iMoveButtons);
 	SaveVector(handle, "m_vecMoveValues",  m_vecMoveValues);
@@ -31,9 +38,8 @@ NSVehicle::Save(float handle)
 	SaveFloat(handle, "m_eDriverLast", num_for_edict(m_eDriverLast));
 	SaveVector(handle, "m_vecPlayerPos",  m_vecPlayerPos);
 	SaveVector(handle, "m_vecExitPos",  m_vecExitPos);
-
-	super::Save(handle);
 }
+
 void
 NSVehicle::Restore(string strKey, string strValue)
 {

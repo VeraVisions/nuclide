@@ -38,31 +38,42 @@ class trigger_gravity:NSBrushTrigger
 
 	void(void) trigger_gravity;
 
-	virtual void(void) Spawned;
-	virtual void(entity) Touch;
+#ifdef SERVER
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
+#endif
 	virtual void(string, string) SpawnKey;
+	virtual void(void) Spawned;
 	virtual void(void) Respawn;
+	virtual void(entity) Touch;
 };
 
 void
-trigger_gravity::Touch(entity eToucher)
+trigger_gravity::trigger_gravity(void)
 {
-	eToucher.gravity = m_flGravity;
+	m_flGravity = 1.0;
+}
+
+#ifdef SERVER
+void
+trigger_gravity::Save(float handle)
+{
+	super::Save(handle);
+	SaveFloat(handle, "m_flGravity", m_flGravity);
 }
 
 void
-trigger_gravity::Respawn(void)
+trigger_gravity::Restore(string strKey, string strValue)
 {
-#ifdef CLIENT
-	setmodel(this, model);
-	movetype = MOVETYPE_NONE;
-	solid = SOLID_BSPTRIGGER;
-#else
-	InitBrushTrigger();
-	SetModel(GetSpawnModel());
-	SetSolid(SOLID_BSPTRIGGER);
-#endif
+	switch (strKey) {
+	case "m_flGravity":
+		m_flGravity = ReadFloat(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
 }
+#endif
 
 void
 trigger_gravity::SpawnKey(string strField, string strKey)
@@ -87,7 +98,21 @@ trigger_gravity::Spawned(void)
 }
 
 void
-trigger_gravity::trigger_gravity(void)
+trigger_gravity::Respawn(void)
 {
-	m_flGravity = 1.0;
+#ifdef CLIENT
+	setmodel(this, model);
+	movetype = MOVETYPE_NONE;
+	solid = SOLID_BSPTRIGGER;
+#else
+	InitBrushTrigger();
+	SetModel(GetSpawnModel());
+	SetSolid(SOLID_BSPTRIGGER);
+#endif
+}
+
+void
+trigger_gravity::Touch(entity eToucher)
+{
+	eToucher.gravity = m_flGravity;
 }

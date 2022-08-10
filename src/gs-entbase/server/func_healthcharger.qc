@@ -29,7 +29,8 @@ Brush that fills up your health when used, to a maximum of 100 HP.
 This entity was introduced in Half-Life (1998).
 */
 
-class func_healthcharger:NSRenderableEntity
+class
+func_healthcharger:NSRenderableEntity
 {
 	entity m_eUser;
 	float m_flDelay;
@@ -42,9 +43,9 @@ class func_healthcharger:NSRenderableEntity
 	void(void) func_healthcharger;
 
 	/* overrides */
-	virtual void(void) Spawned;
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
+	virtual void(void) Spawned;
 	virtual void(string, string) SpawnKey;
 	virtual void(void) customphysics;
 	virtual void(void) Respawn;
@@ -54,15 +55,25 @@ class func_healthcharger:NSRenderableEntity
 };
 
 void
+func_healthcharger::func_healthcharger(void)
+{
+	m_eUser = __NULL__;
+	m_flDelay = 0.0f;
+	m_flCheck = 0.0f;
+	m_strSndFirst = "items/medshot4.wav";
+	m_strSndCharging = "items/medcharge4.wav";
+	m_strSndDone = "items/medshotno1.wav";
+}
+void
 func_healthcharger::Save(float handle)
 {
+	super::Save(handle);
 	SaveEntity(handle, "user", m_eUser);
 	SaveFloat(handle, "delay", m_flDelay);
 	SaveFloat(handle, "check", m_flCheck);
 	SaveString(handle, "snd_first", m_strSndFirst);
 	SaveString(handle, "snd_charging", m_strSndCharging);
 	SaveString(handle, "snd_done", m_strSndDone);
-	super::Save(handle);
 }
 
 void
@@ -90,6 +101,45 @@ func_healthcharger::Restore(string strKey, string strValue)
 	default:
 		super::Restore(strKey, strValue);
 	}
+}
+
+void
+func_healthcharger::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "snd_first":
+		m_strSndFirst = strValue;
+		break;
+	case "snd_charging":
+		m_strSndCharging = strValue;
+		break;
+	case "snd_done":
+		m_strSndDone = strValue;
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
+	}
+}
+
+void
+func_healthcharger::Spawned(void)
+{
+	super::Spawned();
+
+	precache_sound(m_strSndFirst);
+	precache_sound(m_strSndCharging);
+	precache_sound(m_strSndDone);
+}
+
+void
+func_healthcharger::Respawn(void)
+{
+	SetSolid(SOLID_BSP);
+	SetMovetype(MOVETYPE_PUSH);
+	SetOrigin(GetSpawnOrigin());
+	SetModel(GetSpawnModel());
+	PlayerUse = OnPlayerUse;
+	ResetHealth();
 }
 
 void
@@ -180,51 +230,4 @@ func_healthcharger::customphysics(void)
 			think();
 		}
 	}
-}
-
-void
-func_healthcharger::SpawnKey(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "snd_first":
-		m_strSndFirst = strValue;
-		break;
-	case "snd_charging":
-		m_strSndCharging = strValue;
-		break;
-	case "snd_done":
-		m_strSndDone = strValue;
-		break;
-	default:
-		super::SpawnKey(strKey, strValue);
-	}
-}
-
-void
-func_healthcharger::Respawn(void)
-{
-	SetSolid(SOLID_BSP);
-	SetMovetype(MOVETYPE_PUSH);
-	SetOrigin(GetSpawnOrigin());
-	SetModel(GetSpawnModel());
-	PlayerUse = OnPlayerUse;
-	ResetHealth();
-}
-
-void
-func_healthcharger::Spawned(void)
-{
-	super::Spawned();
-
-	precache_sound(m_strSndFirst);
-	precache_sound(m_strSndCharging);
-	precache_sound(m_strSndDone);
-}
-
-void
-func_healthcharger::func_healthcharger(void)
-{
-	m_strSndFirst = "items/medshot4.wav";
-	m_strSndCharging = "items/medcharge4.wav";
-	m_strSndDone = "items/medshotno1.wav";
 }

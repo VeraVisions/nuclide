@@ -38,7 +38,8 @@ a random interval between 10 and 15 seconds in total.
 It was introduced in Gunman Chronicles (2000).
 */
 
-class random_speaker:NSPointTrigger
+class
+random_speaker:NSPointTrigger
 {
 	string m_strSample;
 	float m_flVolume;
@@ -50,9 +51,9 @@ class random_speaker:NSPointTrigger
 	/* overrides */
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
-	virtual void(entity,int) Trigger;
-	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
+	virtual void(void) Respawn;
+	virtual void(entity,int) Trigger;
 
 	virtual void(void) PlaySample;
 	virtual void(void) Enable;
@@ -60,33 +61,90 @@ class random_speaker:NSPointTrigger
 };
 
 void
+random_speaker::random_speaker(void)
+{
+	m_strSample = __NULL__;
+	m_flVolume = 1.0f;
+	m_flMinPos = 0.0f;
+	m_flRandPercent = 0.0f;
+}
+
+void
 random_speaker::Save(float handle)
 {
-	SaveString(handle, "sample", m_strSample);
-	SaveFloat(handle, "volume", m_flVolume);
-	SaveFloat(handle, "min_pos", m_flMinPos);
-	SaveFloat(handle, "rand_percent", m_flRandPercent);
 	super::Save(handle);
+	SaveString(handle, "m_strSample", m_strSample);
+	SaveFloat(handle, "m_flVolume", m_flVolume);
+	SaveFloat(handle, "m_flMinPos", m_flMinPos);
+	SaveFloat(handle, "m_flRandPercent", m_flRandPercent);
 }
 
 void
 random_speaker::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "sample":
+	case "m_strSample":
 		m_strSample = ReadString(strValue);
 		break;
-	case "volume":
+	case "m_flVolume":
 		m_flVolume = ReadFloat(strValue);
 		break;
-	case "min_pos":
+	case "m_flMinPos":
 		m_flMinPos = ReadFloat(strValue);
 		break;
-	case "rand_percent":
+	case "m_flRandPercent":
 		m_flRandPercent = ReadFloat(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
+	}
+}
+
+void
+random_speaker::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "rsnoise":
+		m_strSample = strValue;
+		break;
+	case "volume":
+		m_flVolume = stof(strValue);
+		break;
+	case "wait":
+		m_flMinPos = stof(strValue);
+		break;
+	case "random":
+		m_flRandPercent = stof(strValue);
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
+	}
+}
+
+void
+random_speaker::Respawn(void)
+{
+	Disable();
+}
+
+void
+random_speaker::Trigger(entity act, int state)
+{
+	if (GetMaster() == FALSE)
+		return;
+
+	switch (state) {
+	case TRIG_OFF:
+		Disable();
+		break;
+	case TRIG_ON:
+		Enable();
+		break;
+	default:
+		if (m_iValue)
+			Trigger(act, TRIG_OFF);
+		else
+			Trigger(act, TRIG_ON);
 	}
 }
 
@@ -130,62 +188,4 @@ random_speaker::Disable(void)
 	m_iValue = 0;
 	think = __NULL__;
 	nextthink = 0;
-}
-
-void
-random_speaker::Trigger(entity act, int state)
-{
-	if (GetMaster() == FALSE)
-		return;
-
-	switch (state) {
-	case TRIG_OFF:
-		Disable();
-		break;
-	case TRIG_ON:
-		Enable();
-		break;
-	default:
-		if (m_iValue)
-			Trigger(act, TRIG_OFF);
-		else
-			Trigger(act, TRIG_ON);
-	}
-	
-}
-
-void
-random_speaker::Respawn(void)
-{
-	Disable();
-}
-
-void
-random_speaker::SpawnKey(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "rsnoise":
-		m_strSample = strValue;
-		break;
-	case "volume":
-		m_flVolume = stof(strValue);
-		break;
-	case "wait":
-		m_flMinPos = stof(strValue);
-		break;
-	case "random":
-		m_flRandPercent = stof(strValue);
-		break;
-	default:
-		super::SpawnKey(strKey, strValue);
-	}
-}
-
-void
-random_speaker::random_speaker(void)
-{
-	m_strSample = __NULL__;
-	m_flVolume = 1.0f;
-	m_flMinPos = 0.0f;
-	m_flRandPercent = 0.0f;
 }

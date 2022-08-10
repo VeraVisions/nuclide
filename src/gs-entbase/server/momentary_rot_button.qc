@@ -58,6 +58,7 @@ momentary_rot_button:NSMomentary
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
 	virtual void(void) OnPlayerUse;
+	virtual void(void) OnPlayerUnUse;
 	virtual void(void) Respawn;
 	virtual void(void) SetMovementDirection;
 	virtual void(string, string) SpawnKey;
@@ -68,22 +69,77 @@ momentary_rot_button:NSMomentary
 };
 
 void
+momentary_rot_button::momentary_rot_button(void)
+{
+	m_iTurnDir = 0i;
+	m_flReturnspeed = m_flSpeed = -1;
+}
+
+void
 momentary_rot_button::Save(float handle)
 {
-	SaveInt(handle, "turndir", m_iTurnDir);
 	super::Save(handle);
+	SaveInt(handle, "m_iTurnDir", m_iTurnDir);
 }
 
 void
 momentary_rot_button::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "turndir":
+	case "m_iTurnDir":
 		m_iTurnDir = ReadInt(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
 	}
+}
+
+void
+momentary_rot_button::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "distance":
+		m_flDistance = stof(strValue);
+		break;
+	case "speed":
+		m_flSpeed = stof(strValue);
+		break;
+	case "returnspeed":
+		m_flReturnspeed = stof(strValue);
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
+	}
+}
+
+void
+momentary_rot_button::Respawn(void)
+{
+	RestoreAngles();
+	SetMovementDirection();
+	ClearAngles();
+
+	if (m_flSpeed == -1)
+		m_flSpeed = 100;
+	if (m_flReturnspeed == -1)
+		m_flReturnspeed = m_flSpeed;
+
+	SetSolid(SOLID_BSP);
+	SetMovetype(MOVETYPE_PUSH);
+	SetModel(GetSpawnModel());
+	SetOrigin(GetSpawnOrigin());
+
+	/* purely visual, can't use this */
+	if (!HasSpawnFlags(MRBFL_NOTUSE)) {
+		PlayerUse = OnPlayerUse;
+		PlayerUseUnpressed = OnPlayerUnUse;
+	}
+
+	m_vecPos1 = [0,0,0];
+	m_vecPos2 = m_vecMoveDir * m_flDistance;
+
+	SetSkin(0);
+	SetMoveState(MOMENTARY_IDLE);
 }
 
 float
@@ -209,58 +265,4 @@ momentary_rot_button::SetMovementDirection(void)
 	} else {
 		m_vecMoveDir = [0,1,0];
 	}
-}
-
-void
-momentary_rot_button::Respawn(void)
-{
-	RestoreAngles();
-	SetMovementDirection();
-	ClearAngles();
-
-	if (m_flSpeed == -1)
-		m_flSpeed = 100;
-	if (m_flReturnspeed == -1)
-		m_flReturnspeed = m_flSpeed;
-
-	SetSolid(SOLID_BSP);
-	SetMovetype(MOVETYPE_PUSH);
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
-
-	/* purely visual, can't use this */
-	if (!HasSpawnFlags(MRBFL_NOTUSE)) {
-		PlayerUse = OnPlayerUse;
-		PlayerUseUnpressed = OnPlayerUnUse;
-	}
-
-	m_vecPos1 = [0,0,0];
-	m_vecPos2 = m_vecMoveDir * m_flDistance;
-
-	SetSkin(0);
-	SetMoveState(MOMENTARY_IDLE);
-}
-
-void
-momentary_rot_button::SpawnKey(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "distance":
-		m_flDistance = stof(strValue);
-		break;
-	case "speed":
-		m_flSpeed = stof(strValue);
-		break;
-	case "returnspeed":
-		m_flReturnspeed = stof(strValue);
-		break;
-	default:
-		super::SpawnKey(strKey, strValue);
-	}
-}
-
-void
-momentary_rot_button::momentary_rot_button(void)
-{
-	m_flReturnspeed = m_flSpeed = -1;
 }

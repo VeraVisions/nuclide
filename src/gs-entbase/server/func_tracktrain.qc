@@ -50,7 +50,8 @@ enumflags
 	TRAIN_NOTSOLID
 };
 
-class func_tracktrain:NSRenderableEntity
+class
+func_tracktrain:NSRenderableEntity
 {
 	float m_flWait;
 	float m_flSpeed;
@@ -63,12 +64,12 @@ class func_tracktrain:NSRenderableEntity
 
 	void(void) func_tracktrain;
 
-	virtual void(void) Spawned;
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
-	virtual void(entity, int) Trigger;
-	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
+	virtual void(void) Spawned;
+	virtual void(void) Respawn;
+	virtual void(entity, int) Trigger;
 
 	virtual void(void) SoundMove;
 	virtual void(void) SoundStop;
@@ -79,46 +80,117 @@ class func_tracktrain:NSRenderableEntity
 };
 
 void
+func_tracktrain::func_tracktrain(void)
+{
+	m_flWait = 0.0f;
+	m_flSpeed = 100; /* FIXME: This is all decided by the first path_corner pretty much */
+	m_flDamage = 0.0f;
+	m_flHeight = 0.0f;
+	m_flStartSpeed = 0.0f;
+	m_flBank = 0.0f;
+	m_strMoveSnd = __NULL__;
+	m_strStopSnd = __NULL__;
+}
+
+void
 func_tracktrain::Save(float handle)
 {
-	SaveFloat(handle, "wait", m_flWait);
-	SaveFloat(handle, "speed", m_flSpeed);
-	SaveFloat(handle, "damage", m_flDamage);
-	SaveFloat(handle, "height", m_flHeight);
-	SaveFloat(handle, "startspeed", m_flStartSpeed);
-	SaveString(handle, "snd_move", m_strMoveSnd);
-	SaveString(handle, "snd_stop", m_strStopSnd);
 	super::Save(handle);
+	SaveFloat(handle, "m_flWait", m_flWait);
+	SaveFloat(handle, "m_flSpeed", m_flSpeed);
+	SaveFloat(handle, "m_flDamage", m_flDamage);
+	SaveFloat(handle, "m_flHeight", m_flHeight);
+	SaveFloat(handle, "m_flStartSpeed", m_flStartSpeed);
+	SaveString(handle, "m_strMoveSnd", m_strMoveSnd);
+	SaveString(handle, "m_strStopSnd", m_strStopSnd);
 }
 
 void
 func_tracktrain::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "wait":
+	case "m_flWait":
 		m_flWait = ReadFloat(strValue);
 		break;
-	case "speed":
+	case "m_flSpeed":
 		m_flSpeed = ReadFloat(strValue);
 		break;
-	case "damage":
+	case "m_flDamage":
 		m_flDamage = ReadFloat(strValue);
 		break;
-	case "height":
+	case "m_flHeight":
 		m_flHeight = ReadFloat(strValue);
 		break;
-	case "startspeed":
+	case "m_flStartSpeed":
 		m_flStartSpeed = ReadFloat(strValue);
 		break;
-	case "snd_move":
+	case "m_strMoveSnd":
 		m_strMoveSnd = ReadString(strValue);
 		break;
-	case "snd_stop":
+	case "m_strStopSnd":
 		m_strStopSnd = ReadString(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
 	}
+}
+
+void
+func_tracktrain::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "startspeed":
+		m_flStartSpeed = stof(strValue);
+		break;
+	case "height":
+		m_flHeight = stof(strValue);
+		break;
+	case "dmg":
+		m_flDamage = stof(strValue);
+		break;
+	case "snd_move":
+		m_strMoveSnd = strValue;
+		break;
+	case "snd_stop":
+		m_strStopSnd = strValue;
+		break;
+	/* compatibility */
+	case "movesnd":
+		m_strMoveSnd = sprintf("func_tracktrain.move_%i", stoi(strValue) + 1i);
+		break;
+	case "stopsnd":
+		m_strStopSnd = sprintf("func_tracktrain.stop_%i", stoi(strValue) + 1i);
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
+	}
+}
+
+void
+func_tracktrain::Spawned(void)
+{
+	super::Spawned();
+
+	if (m_strMoveSnd)
+		Sound_Precache(m_strMoveSnd);
+	if (m_strStopSnd)
+		Sound_Precache(m_strStopSnd);
+}
+
+void
+func_tracktrain::Respawn(void)
+{
+	SetSolid(HasSpawnFlags(TRAIN_NOTSOLID) ? SOLID_NOT : SOLID_BSP);
+	SetMovetype(MOVETYPE_PUSH);
+	SetModel(GetSpawnModel());
+	SetOrigin(GetSpawnOrigin());
+	m_flSpeed = m_flStartSpeed;
+
+	/* let's wait 1/4 a second to give the path_corner entities a chance to
+	 * spawn in case they're after us in the ent lump */
+	target = m_oldstrTarget;
+	think = AfterSpawn;
+	nextthink = ltime + 0.25f;
 }
 
 void
@@ -299,69 +371,4 @@ func_tracktrain::AfterSpawn(void)
 	if (!targetname) {
 		PathMove();
 	}
-}
-
-void
-func_tracktrain::Respawn(void)
-{
-	SetSolid(HasSpawnFlags(TRAIN_NOTSOLID) ? SOLID_NOT : SOLID_BSP);
-	SetMovetype(MOVETYPE_PUSH);
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
-	m_flSpeed = m_flStartSpeed;
-
-	/* let's wait 1/4 a second to give the path_corner entities a chance to
-	 * spawn in case they're after us in the ent lump */
-	target = m_oldstrTarget;
-	think = AfterSpawn;
-	nextthink = ltime + 0.25f;
-}
-
-void
-func_tracktrain::SpawnKey(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "startspeed":
-		m_flStartSpeed = stof(strValue);
-		break;
-	case "height":
-		m_flHeight = stof(strValue);
-		break;
-	case "dmg":
-		m_flDamage = stof(strValue);
-		break;
-	case "snd_move":
-		m_strMoveSnd = strValue;
-		break;
-	case "snd_stop":
-		m_strStopSnd = strValue;
-		break;
-	/* compatibility */
-	case "movesnd":
-		m_strMoveSnd = sprintf("func_tracktrain.move_%i", stoi(strValue) + 1i);
-		break;
-	case "stopsnd":
-		m_strStopSnd = sprintf("func_tracktrain.stop_%i", stoi(strValue) + 1i);
-		break;
-	default:
-		super::SpawnKey(strKey, strValue);
-	}
-}
-
-void
-func_tracktrain::Spawned(void)
-{
-	super::Spawned();
-
-	if (m_strMoveSnd)
-		Sound_Precache(m_strMoveSnd);
-	if (m_strStopSnd)
-		Sound_Precache(m_strStopSnd);
-}
-
-void
-func_tracktrain::func_tracktrain(void)
-{
-	/* FIXME: This is all decided by the first path_corner pretty much */
-	m_flSpeed = 100;
 }

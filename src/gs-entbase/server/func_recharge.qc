@@ -29,7 +29,8 @@ Brush that fills up your armor when used, to a maximum of 100 points.
 This entity was introduced in Half-Life (1998).
 */
 
-class func_recharge:NSRenderableEntity
+class
+func_recharge:NSRenderableEntity
 {
 	entity m_eUser;
 	float m_flDelay;
@@ -42,54 +43,104 @@ class func_recharge:NSRenderableEntity
 	void(void) func_recharge;
 
 	/* overrides */
-	virtual void(void) Spawned;
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
 	virtual void(string, string) SpawnKey;
-	virtual void(void) customphysics;
+	virtual void(void) Spawned;
 	virtual void(void) Respawn;
+	virtual void(void) customphysics;
 
 	virtual void(void) OnPlayerUse;
 	virtual void(void) ResetHealth;
 };
 
 void
+func_recharge::func_recharge(void)
+{
+	m_strSndFirst = "items/suitchargeok1.wav";
+	m_strSndCharging = "items/suitcharge1.wav";
+	m_strSndDone = "items/suitchargeno1.wav";
+	m_eUser = __NULL__;
+	m_flDelay = 0.0f;
+	m_flCheck = 0.0f;
+}
+
+void
 func_recharge::Save(float handle)
 {
-	SaveEntity(handle, "user", m_eUser);
-	SaveFloat(handle, "delay", m_flDelay);
-	SaveFloat(handle, "check", m_flCheck);
-	SaveString(handle, "snd_first", m_strSndFirst);
-	SaveString(handle, "snd_charging", m_strSndCharging);
-	SaveString(handle, "snd_done", m_strSndDone);
 	super::Save(handle);
+	SaveEntity(handle, "m_eUser", m_eUser);
+	SaveFloat(handle, "m_flDelay", m_flDelay);
+	SaveFloat(handle, "m_flCheck", m_flCheck);
+	SaveString(handle, "m_strSndFirst", m_strSndFirst);
+	SaveString(handle, "m_strSndCharging", m_strSndCharging);
+	SaveString(handle, "m_strSndDone", m_strSndDone);
 }
 
 void
 func_recharge::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "user":
+	case "m_eUser":
 		m_eUser = ReadEntity(strValue);
 		break;
-	case "delay":
+	case "m_flDelay":
 		m_flDelay = ReadFloat(strValue);
 		break;
-	case "check":
+	case "m_flCheck":
 		m_flCheck = ReadFloat(strValue);
 		break;
-	case "snd_first":
+	case "m_strSndFirst":
 		m_strSndFirst = ReadString(strValue);
 		break;
-	case "snd_charging":
+	case "m_strSndCharging":
 		m_strSndCharging = ReadString(strValue);
 		break;
-	case "snd_done":
+	case "m_strSndDone":
 		m_strSndDone = ReadString(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
 	}
+}
+
+void
+func_recharge::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "snd_first":
+		m_strSndFirst = strValue;
+		break;
+	case "snd_charging":
+		m_strSndCharging = strValue;
+		break;
+	case "snd_done":
+		m_strSndDone = strValue;
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
+	}
+}
+
+void
+func_recharge::Spawned(void)
+{
+	super::Spawned();
+
+	precache_sound(m_strSndFirst);
+	precache_sound(m_strSndCharging);
+	precache_sound(m_strSndDone);
+}
+
+void
+func_recharge::Respawn(void)
+{
+	SetSolid(SOLID_BSP);
+	SetMovetype(MOVETYPE_PUSH);
+	SetOrigin(GetSpawnOrigin());
+	SetModel(GetSpawnModel());
+	PlayerUse = OnPlayerUse;
+	ResetHealth();
 }
 
 void
@@ -186,51 +237,4 @@ func_recharge::customphysics(void)
 			think();
 		}
 	}
-}
-
-void
-func_recharge::SpawnKey(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "snd_first":
-		m_strSndFirst = strValue;
-		break;
-	case "snd_charging":
-		m_strSndCharging = strValue;
-		break;
-	case "snd_done":
-		m_strSndDone = strValue;
-		break;
-	default:
-		super::SpawnKey(strKey, strValue);
-	}
-}
-
-void
-func_recharge::Respawn(void)
-{
-	SetSolid(SOLID_BSP);
-	SetMovetype(MOVETYPE_PUSH);
-	SetOrigin(GetSpawnOrigin());
-	SetModel(GetSpawnModel());
-	PlayerUse = OnPlayerUse;
-	ResetHealth();
-}
-
-void
-func_recharge::Spawned(void)
-{
-	super::Spawned();
-
-	precache_sound(m_strSndFirst);
-	precache_sound(m_strSndCharging);
-	precache_sound(m_strSndDone);
-}
-
-void
-func_recharge::func_recharge(void)
-{
-	m_strSndFirst = "items/suitchargeok1.wav";
-	m_strSndCharging = "items/suitcharge1.wav";
-	m_strSndDone = "items/suitchargeno1.wav";
 }

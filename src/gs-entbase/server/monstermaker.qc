@@ -45,7 +45,8 @@ enumflags
 	MMF_MONSTERCLIP
 };
 
-class monstermaker:NSPointTrigger
+class
+monstermaker:NSPointTrigger
 {
 	string m_strMonster;
 	string m_strChildName;
@@ -59,9 +60,9 @@ class monstermaker:NSPointTrigger
 	/* overrides */
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
-	virtual void(entity, int) Trigger;
-	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
+	virtual void(void) Respawn;
+	virtual void(entity, int) Trigger;
 
 	virtual void(void) Spawner;
 	virtual void(void) TurnOn;
@@ -69,42 +70,89 @@ class monstermaker:NSPointTrigger
 };
 
 void
+monstermaker::monstermaker(void)
+{
+	m_strMonster = __NULL__;
+	m_strChildName = __NULL__;
+	m_iMonsterSpawned = 0i;
+	m_iTotalMonsters = 0i;
+	m_iMaxChildren = 0i;
+	m_flDelay = 1.0f;
+}
+
+void
 monstermaker::Save(float handle)
 {
-	SaveString(handle, "monster", m_strMonster);
-	SaveString(handle, "child_name", m_strChildName);
-	SaveInt(handle, "monster_spawned", m_iMonsterSpawned);
-	SaveInt(handle, "total_monsters", m_iTotalMonsters);
-	SaveInt(handle, "max_children", m_iMaxChildren);
-	SaveFloat(handle, "delay", m_flDelay);
 	super::Save(handle);
+	SaveString(handle, "m_strMonster", m_strMonster);
+	SaveString(handle, "m_strChildName", m_strChildName);
+	SaveInt(handle, "m_iMonsterSpawned", m_iMonsterSpawned);
+	SaveInt(handle, "m_iTotalMonsters", m_iTotalMonsters);
+	SaveInt(handle, "m_iMaxChildren", m_iMaxChildren);
+	SaveFloat(handle, "m_flDelay", m_flDelay);
 }
 
 void
 monstermaker::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "enabled":
+	case "m_strMonster":
 		m_strMonster = ReadString(strValue);
 		break;
-	case "child_name":
+	case "m_strChildName":
 		m_strChildName = ReadString(strValue);
 		break;
-	case "monster_spawned":
+	case "m_iMonsterSpawned":
 		m_iMonsterSpawned = ReadInt(strValue);
 		break;
-	case "total_monsters":
+	case "m_iTotalMonsters":
 		m_iTotalMonsters = ReadInt(strValue);
 		break;
-	case "max_children":
+	case "m_iMaxChildren":
 		m_iMaxChildren = ReadInt(strValue);
 		break;
-	case "delay":
+	case "m_flDelay":
 		m_flDelay = ReadFloat(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
 	}
+}
+
+void
+monstermaker::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "monstertype":
+		m_strMonster = strValue;
+		break;
+	case "monstercount":
+		m_iTotalMonsters = stoi(strValue);
+		break;
+	case "child_alivemax":
+	case "m_imaxlivechildren":
+		m_iMaxChildren = stoi(strValue);
+		break;
+	case "child_name":
+	case "netname":
+		m_strChildName = strValue;
+		netname = __NULL__;
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
+	}
+}
+
+void
+monstermaker::Respawn(void)
+{
+	if (HasSpawnFlags(MMF_STARTON)) {
+		TurnOn();
+	} else {
+		TurnOff();
+	}
+
+	m_iMonsterSpawned = 0;
 }
 
 void
@@ -229,46 +277,4 @@ monstermaker::Trigger(entity act, int state)
 		else
 			TurnOn();
 	}
-}
-
-void
-monstermaker::Respawn(void)
-{
-	if (HasSpawnFlags(MMF_STARTON)) {
-		TurnOn();
-	} else {
-		TurnOff();
-	}
-
-	m_iMonsterSpawned = 0;
-}
-
-void
-monstermaker::SpawnKey(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "monstertype":
-		m_strMonster = strValue;
-		break;
-	case "monstercount":
-		m_iTotalMonsters = stoi(strValue);
-		break;
-	case "child_alivemax":
-	case "m_imaxlivechildren":
-		m_iMaxChildren = stoi(strValue);
-		break;
-	case "child_name":
-	case "netname":
-		m_strChildName = strValue;
-		netname = __NULL__;
-		break;
-	default:
-		super::SpawnKey(strKey, strValue);
-	}
-}
-
-void
-monstermaker::monstermaker(void)
-{
-	m_flDelay = 1.0f;
 }

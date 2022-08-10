@@ -19,13 +19,14 @@ NSTrigger::NSTrigger(void)
 {
 #ifdef SERVER
 	m_oldstrTarget = __NULL__;
-	m_strGlobalState = 0;
+	m_strGlobalState = __NULL__;
 	m_strKillTarget = __NULL__;
 	m_strMessage = __NULL__;
 	m_strMaster = __NULL__;
-	m_iUseType = 0;
-	m_iTeam = 0;
-	m_iValue = 0;
+	m_iUseType = 0i;
+	m_iTeam = 0i;
+	m_iValue = 0i;
+	m_flDelay = 0.0f;
 #endif
 }
 
@@ -92,12 +93,12 @@ NSTrigger::GetValue(void)
 	return m_iValue;
 }
 
-int
+globalstate_t
 NSTrigger::GetGlobalValue(string strName)
 {
 	for (int i = 0; i < (tokenize(cvar_string(CENVGLOBAL_CVAR))); i += 2) {
 		if (argv(i) == strName) {
-			return stoi(argv(i+1));
+			return stof(argv(i+1));
 		}
 	}
 	return (0);
@@ -137,34 +138,46 @@ NSTrigger::GetMaster(void)
 void
 NSTrigger::Save(float handle)
 {
-	SaveString(handle, "target", target);
-	SaveString(handle, "killtarget", m_strKillTarget);
-	SaveString(handle, "message", m_strMessage);
-	SaveString(handle, "master", m_strMaster);
-	SaveInt(handle, "team_no", m_iTeam);
-	SaveFloat(handle, "delay", m_flDelay);
 	super::Save(handle);
+	SaveString(handle, "m_oldstrTarget", m_oldstrTarget);
+	SaveString(handle, "m_strGlobalState", m_strGlobalState);
+	SaveString(handle, "m_strKillTarget", m_strKillTarget);
+	SaveString(handle, "m_strMessage", m_strMessage);
+	SaveString(handle, "m_strMaster", m_strMaster);
+	SaveInt(handle, "m_iUseType", m_iUseType);
+	SaveInt(handle, "m_iTeam", m_iTeam);
+	SaveInt(handle, "m_iValue", m_iValue);
+	SaveFloat(handle, "m_flDelay", m_flDelay);
 }
 void
 NSTrigger::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "target":
-		target = ReadString(strValue);
+	case "m_oldstrTarget":
+		m_oldstrTarget = ReadString(strValue);
 		break;
-	case "killtarget":
+	case "m_strGlobalState":
+		m_strGlobalState = ReadString(strValue);
+		break;
+	case "m_strKillTarget":
 		m_strKillTarget = ReadString(strValue);
 		break;
-	case "message":
+	case "m_strMessage":
 		m_strMessage = ReadString(strValue);
 		break;
-	case "master":
+	case "m_strMaster":
 		m_strMaster = ReadString(strValue);
 		break;
-	case "team_no":
+	case "m_iUseType":
+		m_iUseType = ReadInt(strValue);
+		break;
+	case "m_iTeam":
 		m_iTeam = ReadInt(strValue);
 		break;
-	case "delay":
+	case "m_iValue":
+		m_iValue = ReadInt(strValue);
+		break;
+	case "m_flDelay":
 		m_flDelay = ReadFloat(strValue);
 		break;
 	default:
@@ -189,12 +202,6 @@ void
 NSTrigger::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "target":
-		target = strValue;
-		break;
-	case "targetname":
-		targetname = strValue;
-		break;
 #ifdef SERVER
 	case "killtarget":
 		m_strKillTarget = strValue;
@@ -210,6 +217,9 @@ NSTrigger::SpawnKey(string strKey, string strValue)
 		break;
 	case "delay":
 		m_flDelay = stof(strValue);
+		break;
+	case "globalstate":
+		m_strGlobalState = strValue;
 		break;
 #endif
 	default:

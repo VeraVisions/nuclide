@@ -31,9 +31,9 @@ Requires to be positioned within an areaportal helper brush.
 This entity was introduced in Quake II (1997).
 */
 
-class func_areaportal:NSEntity
+class
+func_areaportal:NSEntity
 {
-
 	int m_iPortalState;
 	int m_iStartOpen;
 
@@ -48,6 +48,13 @@ class func_areaportal:NSEntity
 	virtual void(void) PortalOpen;
 	virtual void(void) PortalClose;
 };
+
+void
+func_areaportal::func_areaportal(void)
+{
+	m_iPortalState = 0i;
+	m_iStartOpen = 0i;
+}
 
 void
 func_areaportal::Respawn(void)
@@ -118,6 +125,7 @@ func_areaportal::PortalOpen(void)
 	setorigin(this, origin);
 	openportal(this, AREAPORTAL_OPEN);
 }
+
 void
 func_areaportal::PortalClose(void)
 {
@@ -127,9 +135,4 @@ func_areaportal::PortalClose(void)
 	m_iPortalState = 0;
 	setorigin(this, origin);
 	openportal(this, AREAPORTAL_CLOSED);
-}
-
-void
-func_areaportal::func_areaportal(void)
-{
 }

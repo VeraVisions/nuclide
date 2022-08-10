@@ -33,6 +33,12 @@ info_node_air:NSPointTrigger
 };
 
 void
+info_node_air::info_node_air(void)
+{
+
+}
+
+void
 info_node_air::Respawn(void)
 {
 	SetSize([0,0,0], [0,0,0]);
@@ -42,10 +48,4 @@ info_node_air::Respawn(void)
 	/* air nodes just stay where they are
 	   see https://twhl.info/wiki/page/Tutorial%3A_All_about_info_nodes */
 	SetOrigin(GetSpawnOrigin());
-}
-
-void
-info_node_air:: info_node_air(void)
-{
-	
 }

@@ -25,7 +25,8 @@ All entities touching this volume would carry across to the next level.
 This entity was introduced in Half-Life (1998).
 */
 
-class trigger_transition:NSBrushTrigger
+class
+trigger_transition:NSBrushTrigger
 {
 	void(void) trigger_transition;
 
@@ -33,12 +34,12 @@ class trigger_transition:NSBrushTrigger
 };
 
 void
-trigger_transition::Respawn(void)
+trigger_transition::trigger_transition(void)
 {
-	InitBrushTrigger();
 }
 
 void
-trigger_transition::trigger_transition(void)
+trigger_transition::Respawn(void)
 {
+	InitBrushTrigger();
 }

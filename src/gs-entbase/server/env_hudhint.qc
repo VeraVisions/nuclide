@@ -40,20 +40,42 @@ enumflags
 	EHH_ALLPLAYERS
 };
 
-class env_hudhint:NSPointTrigger
+class
+env_hudhint:NSPointTrigger
 {
 	string m_strMessage;
 
 	void(void) env_hudhint;
 
-	virtual void(entity, int) Trigger;
+	virtual void(float) Save;
+	virtual void(string,string) Restore;
 	virtual void(string, string) SpawnKey;
+	virtual void(entity, int) Trigger;
 };
 
 void
-env_hudhint::Trigger(entity act, int state)
+env_hudhint::env_hudhint(void)
 {
-	env_hudhint_send(act, m_strMessage, spawnflags);
+	m_strMessage = __NULL__;
+}
+
+void
+env_hudhint::Save(float handle)
+{
+	super::Save(handle);
+	SaveString(handle, "m_strMessage", m_strMessage);
+}
+
+void
+env_hudhint::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "m_strMessage":
+		m_strMessage = ReadString(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
 }
 
 void
@@ -69,8 +91,9 @@ env_hudhint::SpawnKey(string strKey, string strValue)
 }
 
 void
-env_hudhint::env_hudhint(void)
+env_hudhint::Trigger(entity act, int state)
 {
+	env_hudhint_send(act, m_strMessage, spawnflags);
 }
 
 void

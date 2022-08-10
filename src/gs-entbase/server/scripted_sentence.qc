@@ -32,7 +32,8 @@ world. It'll enable mouth flapping and all sorts of other cool effects.
 This entity was introduced in Half-Life (1998).
 */
 
-class scripted_sentence:NSPointTrigger
+class
+scripted_sentence:NSPointTrigger
 {
 	string m_strSpeaker;
 	string m_strSentence;
@@ -46,46 +47,81 @@ class scripted_sentence:NSPointTrigger
 	/* overrides */
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
-	virtual void(entity, int) Trigger;
 	virtual void(string, string) SpawnKey;
+	virtual void(entity, int) Trigger;
 };
+
+void
+scripted_sentence::scripted_sentence(void)
+{
+	m_strSpeaker = __NULL__;
+	m_strSentence = __NULL__;
+	m_flDelay = 0.0f;
+	m_flWait = 0.0f;
+	m_flPitch = 0.0f;
+	m_flDuration = 0.0f;
+}
 
 void
 scripted_sentence::Save(float handle)
 {
-	SaveString(handle, "speaker", m_strSpeaker);
-	SaveString(handle, "sentence", m_strSentence);
-	SaveFloat(handle, "delay", m_flDelay);
-	SaveFloat(handle, "wait", m_flWait);
-	SaveFloat(handle, "pitch", m_flPitch);
-	SaveFloat(handle, "duration", m_flDuration);
 	super::Save(handle);
+	SaveString(handle, "m_strSpeaker", m_strSpeaker);
+	SaveString(handle, "m_strSentence", m_strSentence);
+	SaveFloat(handle, "m_flDelay", m_flDelay);
+	SaveFloat(handle, "m_flWait", m_flWait);
+	SaveFloat(handle, "m_flPitch", m_flPitch);
+	SaveFloat(handle, "m_flDuration", m_flDuration);
 }
 
 void
 scripted_sentence::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "speaker":
+	case "m_strSpeaker":
 		m_strSpeaker = ReadString(strValue);
 		break;
-	case "sentence":
+	case "m_strSentence":
 		m_strSentence = ReadString(strValue);
 		break;
-	case "delay":
+	case "m_flDelay":
 		m_flDelay = ReadFloat(strValue);
 		break;
-	case "wait":
+	case "m_flWait":
 		m_flWait = ReadFloat(strValue);
 		break;
-	case "pitch":
+	case "m_flPitch":
 		m_flPitch = ReadFloat(strValue);
 		break;
-	case "duration":
+	case "m_flDuration":
 		m_flDuration = ReadFloat(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
+	}
+}
+
+void
+scripted_sentence::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "entity":
+		m_strSpeaker = strValue;
+		break;
+	case "sentence":
+		m_strSentence = strtoupper(strValue);
+		break;
+	case "pitch":
+		m_flPitch = stof(strValue);
+		break;
+	case "duration":
+		m_flDuration = stof(strValue);
+		break;
+	case "wait":
+		m_flWait = stof(strValue);
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
@@ -126,33 +162,4 @@ scripted_sentence::Trigger(entity act, int unused)
 	msg_entity = npc;
 	multicast(npc.origin, MULTICAST_PVS);
 	npc.m_flNextSentence = time + m_flDuration;
-}
-
-void
-scripted_sentence::SpawnKey(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "entity":
-		m_strSpeaker = strValue;
-		break;
-	case "sentence":
-		m_strSentence = strtoupper(strValue);
-		break;
-	case "pitch":
-		m_flPitch = stof(strValue);
-		break;
-	case "duration":
-		m_flDuration = stof(strValue);
-		break;
-	case "wait":
-		m_flWait = stof(strValue);
-		break;
-	default:
-		super::SpawnKey(strKey, strValue);
-	}
-}
-
-void
-scripted_sentence::scripted_sentence(void)
-{
 }

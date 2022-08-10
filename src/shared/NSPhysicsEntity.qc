@@ -33,12 +33,12 @@ NSPhysicsEntity::NSPhysicsEntity(void)
 void
 NSPhysicsEntity::Save(float handle)
 {
+	super::Save(handle);
 	SaveInt(handle, "m_iEnabled", m_iEnabled);
 	SaveInt(handle, "m_iShape", m_iShape);
 	SaveInt(handle, "m_iMaterial", m_iMaterial);
 	SaveInt(handle, "m_iFlags", m_iFlags);
 	SaveFloat(handle, "m_flInertiaScale", m_flInertiaScale);
-	super::Save(handle);
 }
 
 void

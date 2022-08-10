@@ -26,7 +26,8 @@ to gain control.
 This entity was introduced in Half-Life (1998).
 */
 
-class func_traincontrols:NSBrushTrigger
+class
+func_traincontrols:NSBrushTrigger
 {
 	void(void) func_traincontrols;
 
@@ -34,13 +35,13 @@ class func_traincontrols:NSBrushTrigger
 };
 
 void
+func_traincontrols::func_traincontrols(void)
+{
+}
+
+void
 func_traincontrols::Respawn(void)
 {
 	InitBrushTrigger();
 	ClearAngles();
-}
-
-void
-func_traincontrols::func_traincontrols(void)
-{
 }

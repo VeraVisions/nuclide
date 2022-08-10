@@ -38,12 +38,18 @@ waste disk space and memory. Use wisely.
 This entity was introduced in Half-Life 2 (2004).
 */
 
-class prop_static:NSRenderableEntity
+class
+prop_static:NSRenderableEntity
 {
 	void(void) prop_static;
 
 	virtual void(void) Respawn;
 };
+
+void
+prop_static::prop_static(void)
+{
+}
 
 void
 prop_static::Respawn(void)
@@ -54,9 +60,4 @@ prop_static::Respawn(void)
 	maxs = [0,0,0];
 	SetSize(mins, maxs);
 	SetOrigin(GetSpawnOrigin());
-}
-
-void
-prop_static::prop_static(void)
-{
 }

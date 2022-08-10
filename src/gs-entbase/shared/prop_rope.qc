@@ -32,7 +32,7 @@ ROPE_HALF : Only draw the first half of the rope, useful for vertical setups.
 This entity was introduced in The Wastes (2018).
 */
 
-typedef enumflags
+enumflags
 {
 	PROPROPE_CHANGED_MAT,
 	PROPROPE_CHANGED_SAG,

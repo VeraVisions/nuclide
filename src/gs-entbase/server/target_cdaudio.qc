@@ -31,67 +31,49 @@ act the same in practice.
 This entity was introduced in Half-Life (1998).
 */
 
-class target_cdaudio:NSPointTrigger
+class
+target_cdaudio:NSPointTrigger
 {
 	float m_flRadius;
 	int m_iCDTrack;
 
 	void(void) target_cdaudio;
 
-	virtual void(entity) Touch;
-	virtual void(void) Respawn;
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
 	virtual void(string, string) SpawnKey;
+	virtual void(void) Respawn;
+	virtual void(entity) Touch;
 };
+
+void
+target_cdaudio::target_cdaudio(void)
+{
+	m_flRadius = 0.0f;
+	m_iCDTrack = 0i;
+}
 
 void
 target_cdaudio::Save(float handle)
 {
-	SaveFloat(handle, "radius", m_flRadius);
-	SaveInt(handle, "cdtrack", m_iCDTrack);
 	super::Save(handle);
+	SaveFloat(handle, "m_flRadius", m_flRadius);
+	SaveInt(handle, "m_iCDTrack", m_iCDTrack);
 }
 
 void
 target_cdaudio::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "radius":
+	case "m_flRadius":
 		m_flRadius = ReadFloat(strValue);
 		break;
-	case "cdtrack":
+	case "m_iCDTrack":
 		m_iCDTrack = ReadInt(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
 	}
-}
-
-void
-target_cdaudio::Touch(entity eToucher)
-{
-	if (!(eToucher.flags & FL_CLIENT)) {
-		return;
-	}
-
-	NSLog("^2target_cdaudio::^3Trigger^7: CD Track %i requested", 
-		m_iCDTrack);
-
-	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
-	WriteByte(MSG_MULTICAST, EV_MUSICTRACK);
-	WriteByte(MSG_MULTICAST, m_iCDTrack);
-	msg_entity = world;
-	multicast([0,0,0], MULTICAST_ALL_R);
-	SetSolid(SOLID_NOT);
-}
-
-void
-target_cdaudio::Respawn(void)
-{
-	geomtype = GEOMTYPE_SPHERE;
-	mins = [-m_flRadius, -m_flRadius, -m_flRadius];
-	maxs = [m_flRadius, m_flRadius, m_flRadius];
-	SetSolid(SOLID_TRIGGER);
-	SetSize(mins, maxs);
 }
 
 void
@@ -110,8 +92,29 @@ target_cdaudio::SpawnKey(string strKey, string strValue)
 }
 
 void
-target_cdaudio::target_cdaudio(void)
+target_cdaudio::Respawn(void)
 {
-	m_flRadius = 0.0f;
-	m_iCDTrack = 0;
+	geomtype = GEOMTYPE_SPHERE;
+	mins = [-m_flRadius, -m_flRadius, -m_flRadius];
+	maxs = [m_flRadius, m_flRadius, m_flRadius];
+	SetSolid(SOLID_TRIGGER);
+	SetSize(mins, maxs);
+}
+
+void
+target_cdaudio::Touch(entity eToucher)
+{
+	if (!(eToucher.flags & FL_CLIENT)) {
+		return;
+	}
+
+	NSLog("^2target_cdaudio::^3Trigger^7: CD Track %i requested", 
+		m_iCDTrack);
+
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_MUSICTRACK);
+	WriteByte(MSG_MULTICAST, m_iCDTrack);
+	msg_entity = world;
+	multicast([0,0,0], MULTICAST_ALL_R);
+	SetSolid(SOLID_NOT);
 }

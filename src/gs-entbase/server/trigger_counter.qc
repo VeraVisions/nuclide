@@ -36,7 +36,8 @@ enumflags
     TRCNT_PUSHABLES
 };
 
-class trigger_counter:NSBrushTrigger
+class
+trigger_counter:NSBrushTrigger
 {
 	int m_iCounted;
 	int m_iMaxCount;
@@ -45,28 +46,35 @@ class trigger_counter:NSBrushTrigger
 
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
-	virtual void(entity) Touch;
-	virtual void(entity,int) Trigger;
-	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
+	virtual void(void) Respawn;
+	virtual void(entity,int) Trigger;
+	virtual void(entity) Touch;
 };
+
+void
+trigger_counter::trigger_counter(void)
+{
+	m_iCounted = 0;
+	m_iMaxCount = 0;
+}
 
 void
 trigger_counter::Save(float handle)
 {
-	SaveInt(handle, "counted", m_iCounted);
-	SaveInt(handle, "maxcount", m_iMaxCount);
 	super::Save(handle);
+	SaveInt(handle, "m_iCounted", m_iCounted);
+	SaveInt(handle, "m_iMaxCount", m_iMaxCount);
 }
 
 void
 trigger_counter::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "counted":
+	case "m_iCounted":
 		m_iCounted = ReadInt(strValue);
 		break;
-	case "maxcount":
+	case "m_iMaxCount":
 		m_iMaxCount = ReadInt(strValue);
 		break;
 	default:
@@ -75,9 +83,23 @@ trigger_counter::Restore(string strKey, string strValue)
 }
 
 void
-trigger_counter::Touch(entity eToucher)
+trigger_counter::SpawnKey(string strKey, string strValue)
 {
-	Trigger(eToucher, TRIG_TOGGLE);
+	switch (strKey) {
+	case "count":
+		m_iMaxCount = stoi(strValue);
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
+	}
+}
+
+void
+trigger_counter::Respawn(void)
+{
+	InitBrushTrigger();
+	m_iValue = 0;
+	m_iCounted = 0;
 }
 
 void
@@ -106,28 +128,7 @@ trigger_counter::Trigger(entity act, int state)
 }
 
 void
-trigger_counter::Respawn(void)
+trigger_counter::Touch(entity eToucher)
 {
-	InitBrushTrigger();
-	m_iValue = 0;
-	m_iCounted = 0;
-}
-
-void
-trigger_counter::SpawnKey(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "count":
-		m_iMaxCount = stoi(strValue);
-		break;
-	default:
-		super::SpawnKey(strKey, strValue);
-	}
-}
-
-void
-trigger_counter::trigger_counter(void)
-{
-	m_iCounted = 0;
-	m_iMaxCount = 0;
+	Trigger(eToucher, TRIG_TOGGLE);
 }

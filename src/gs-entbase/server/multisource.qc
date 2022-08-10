@@ -29,38 +29,40 @@ state for it to trigger its target.
 This entity was introduced in Half-Life (1998).
 */
 
-class multisource:NSPointTrigger
+class
+multisource:NSPointTrigger
 {
-	string m_strGlobalState;
-
 	void(void) multisource;
 
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
 	virtual void(void) Respawn;
 	virtual int(void) QueryTargets;
 	virtual int(void) GetValue;
 	virtual void(entity, int) Trigger;
-	virtual void(string, string) SpawnKey;
 };
 
 void
-multisource::Save(float handle)
+multisource::multisource(void)
 {
-	SaveString(handle, "globalstate", m_strGlobalState);
-	super::Save(handle);
 }
 
 void
-multisource::Restore(string strKey, string strValue)
+multisource::Respawn(void)
 {
-	switch (strKey) {
-	case "globalstate":
-		m_strGlobalState = ReadString(strValue);
-		break;
-	default:
-		super::Restore(strKey, strValue);
+	m_iValue = FALSE;
+}
+
+void
+multisource::Trigger(entity act, int unused)
+{
+	if (QueryTargets() == FALSE) {
+		NSLog("[^1MULTISOURCE^7] %s is inactive.", targetname);
+		m_iValue = FALSE;
+		return;
 	}
+
+	NSLog("[^1MULTISOURCE^7] %s is now active.", targetname);
+	m_iValue = TRUE;
+	UseTargets(act, TRIG_TOGGLE, m_flDelay);
 }
 
 int
@@ -105,42 +107,4 @@ multisource::QueryTargets(void)
 	}
 
 	return out;
-}
-
-void
-multisource::Trigger(entity act, int unused)
-{
-	if (QueryTargets() == FALSE) {
-		NSLog("[^1MULTISOURCE^7] %s is inactive.", targetname);
-		m_iValue = FALSE;
-		return;
-	}
-
-	NSLog("[^1MULTISOURCE^7] %s is now active.", targetname);
-	m_iValue = TRUE;
-	UseTargets(act, TRIG_TOGGLE, m_flDelay);
-}
-
-void
-multisource::Respawn(void)
-{
-	m_iValue = FALSE;
-}
-
-void
-multisource::SpawnKey(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "globalstate":
-		m_strGlobalState = strValue;
-		break;
-	default:
-		super::SpawnKey(strKey, strValue);
-	}
-}
-
-void
-multisource::multisource(void)
-{
-	m_strGlobalState = __NULL__;
 }

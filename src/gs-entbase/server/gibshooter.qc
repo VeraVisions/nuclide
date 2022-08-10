@@ -35,22 +35,16 @@ Shoots model bouncy entities from its location.
 This entity was introduced in Half-Life (1998).
 */
 
-class gibshooter:env_shooter
+class
+gibshooter:env_shooter
 {
 	void(void) gibshooter;
-	virtual void(void) Spawned;
 };
 
 void
-gibshooter::Spawned(void)
+gibshooter::gibshooter(void)
 {
-	super::Spawned();
-
 	m_strShootModel = "models/hgibs.mdl";
 	m_flShootSounds = 3;
 	precache_model(m_strShootModel);
-}
-
-void gibshooter::gibshooter(void)
-{
 }

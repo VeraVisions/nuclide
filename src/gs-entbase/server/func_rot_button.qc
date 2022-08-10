@@ -60,7 +60,8 @@ enum
 	ROTBTNSTATE_CLOSING
 };
 
-class func_rot_button:NSRenderableEntity
+class
+func_rot_button:NSRenderableEntity
 {
 	vector m_vecMoveAngle;
 	int m_iState;
@@ -76,8 +77,8 @@ class func_rot_button:NSRenderableEntity
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
 	virtual void(string, string) SpawnKey;
-	virtual void(entity) Touch;
 	virtual void(void) Respawn;
+	virtual void(entity) Touch;
 	virtual void(void) Death;
 
 	virtual void(void) ArrivedClosed;
@@ -89,42 +90,115 @@ class func_rot_button:NSRenderableEntity
 };
 
 void
+func_rot_button::func_rot_button(void)
+{
+	m_vecMoveAngle = [0.0f, 0.0f, 0.0f];
+	m_iState = 0i;
+	m_iHealth = 0i;
+	m_flSpeed = 0.0f;
+	m_flDistance = 0.0f;
+	m_flReturnTime = 0.0f;
+}
+
+void
 func_rot_button::Save(float handle)
 {
-	SaveVector(handle, "moveangle", m_vecMoveAngle);
-	SaveInt(handle, "state", m_iState);
-	SaveInt(handle, "health", m_iHealth);
-	SaveFloat(handle, "speed", m_flSpeed);
-	SaveFloat(handle, "distance", m_flDistance);
-	SaveFloat(handle, "returntime", m_flReturnTime);
 	super::Save(handle);
+	SaveVector(handle, "m_vecMoveAngle", m_vecMoveAngle);
+	SaveInt(handle, "m_iState", m_iState);
+	SaveInt(handle, "m_iHealth", m_iHealth);
+	SaveFloat(handle, "m_flSpeed", m_flSpeed);
+	SaveFloat(handle, "m_flDistance", m_flDistance);
+	SaveFloat(handle, "m_flReturnTime", m_flReturnTime);
 }
 
 void
 func_rot_button::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "moveangle":
+	case "m_vecMoveAngle":
 		m_vecMoveAngle = ReadVector(strValue);
 		break;
-	case "state":
+	case "m_iState":
 		m_iState = ReadInt(strValue);
 		break;
-	case "health":
+	case "m_iHealth":
 		m_iHealth = ReadInt(strValue);
 		break;
-	case "speed":
+	case "m_flSpeed":
 		m_flSpeed = ReadFloat(strValue);
 		break;
-	case "distance":
+	case "m_flDistance":
 		m_flDistance = ReadFloat(strValue);
 		break;
-	case "returntime":
+	case "m_flReturnTime":
 		m_flReturnTime = ReadFloat(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
 	}
+}
+
+void
+func_rot_button::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "distance":
+		m_flDistance = stof(strValue);
+		break;
+	case "speed":
+		m_flSpeed = stof(strValue);
+		break;
+	case "wait":
+		m_flReturnTime = stof(strValue);
+		break;
+	case "health":
+		m_iHealth = stoi(strValue);
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
+	}
+}
+
+void
+func_rot_button::Respawn(void)
+{
+	SetMovetype(MOVETYPE_PUSH);
+
+	if (HasSpawnFlags(FNCROTBUT_NONSOLID))
+		SetSolid(SOLID_NOT);
+	else
+		SetSolid(SOLID_BSP);
+
+	SetModel(GetSpawnModel());
+	SetOrigin(GetSpawnOrigin());
+	SetAngles(GetSpawnAngles());
+	PlayerUse = OnPlayerUse;
+	flags |= FL_FINDABLE_NONSOLID;
+
+	m_iState = ROTBTNSTATE_OPENED;
+	think = __NULL__;
+	nextthink = 0.0f;
+
+	if (m_iHealth > 0) {
+		takedamage = DAMAGE_YES;
+		health = m_iHealth;
+	}
+
+	vector vecMoveDir;
+	if (HasSpawnFlags(FNCROTBUT_XAXIS)) {
+		vecMoveDir = [0,0,1];
+	} else if (HasSpawnFlags(FNCROTBUT_YAXIS)) {
+		vecMoveDir = [0,1,0];
+	} else {
+		vecMoveDir = [1,0,0];
+	}
+
+	if (HasSpawnFlags(FNCROTBUT_REVERSE)) {
+		vecMoveDir *= -1;
+	}
+
+	m_vecMoveAngle = vecMoveDir * m_flDistance;
 }
 
 void
@@ -202,71 +276,4 @@ func_rot_button::Death(void)
 {
 	takedamage = DAMAGE_NO;
 	TurnToggle();
-}
-
-void
-func_rot_button::Respawn(void)
-{
-	SetMovetype(MOVETYPE_PUSH);
-
-	if (HasSpawnFlags(FNCROTBUT_NONSOLID))
-		SetSolid(SOLID_NOT);
-	else
-		SetSolid(SOLID_BSP);
-
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
-	SetAngles(GetSpawnAngles());
-	PlayerUse = OnPlayerUse;
-	flags |= FL_FINDABLE_NONSOLID;
-	
-	m_iState = ROTBTNSTATE_OPENED;
-	think = __NULL__;
-	nextthink = 0.0f;
-
-	if (m_iHealth > 0) {
-		takedamage = DAMAGE_YES;
-		health = m_iHealth;
-	}
-
-	vector vecMoveDir;
-	if (HasSpawnFlags(FNCROTBUT_XAXIS)) {
-		vecMoveDir = [0,0,1];
-	} else if (HasSpawnFlags(FNCROTBUT_YAXIS)) {
-		vecMoveDir = [0,1,0];
-	} else {
-		vecMoveDir = [1,0,0];
-	}
-
-	if (HasSpawnFlags(FNCROTBUT_REVERSE)) {
-		vecMoveDir *= -1;
-	}
-
-	m_vecMoveAngle = vecMoveDir * m_flDistance;
-}
-
-void
-func_rot_button::SpawnKey(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "distance":
-		m_flDistance = stof(strValue);
-		break;
-	case "speed":
-		m_flSpeed = stof(strValue);
-		break;
-	case "wait":
-		m_flReturnTime = stof(strValue);
-		break;
-	case "health":
-		m_iHealth = stoi(strValue);
-		break;
-	default:
-		super::SpawnKey(strKey, strValue);
-	}
-}
-
-void
-func_rot_button::func_rot_button(void)
-{
 }

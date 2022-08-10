@@ -32,7 +32,8 @@ enumflags
 	FTW_STARTHIDDEN
 };
 
-class func_wall_toggle:NSRenderableEntity
+class
+func_wall_toggle:NSRenderableEntity
 {
 	int m_oldmodelindex;
 	int m_iVisible;
@@ -47,25 +48,49 @@ class func_wall_toggle:NSRenderableEntity
 };
 
 void
+func_wall_toggle::func_wall_toggle(void)
+{
+	m_oldmodelindex = 0i;
+	m_iVisible = 0i;
+}
+
+void
 func_wall_toggle::Save(float handle)
 {
-	SaveInt(handle, "old_modelindex", m_oldmodelindex);
-	SaveInt(handle, "visible", m_iVisible);
 	super::Save(handle);
+	SaveInt(handle, "m_oldmodelindex", m_oldmodelindex);
+	SaveInt(handle, "m_iVisible", m_iVisible);
 }
 
 void
 func_wall_toggle::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "old_modelindex":
+	case "m_oldmodelindex":
 		m_oldmodelindex = ReadInt(strValue);
 		break;
-	case "visible":
+	case "m_iVisible":
 		m_iVisible = ReadInt(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
+	}
+}
+
+void
+func_wall_toggle::Respawn(void)
+{
+	SetMovetype(MOVETYPE_PUSH);
+	SetSolid(SOLID_BSP);
+	SetModel(GetSpawnModel());
+	SetOrigin(origin);
+	ClearAngles();
+
+	m_iVisible = 1;
+	m_oldmodelindex = modelindex;
+
+	if (HasSpawnFlags(FTW_STARTHIDDEN)) {
+		Trigger(this, TRIG_OFF);
 	}
 }
 
@@ -93,23 +118,6 @@ func_wall_toggle::Trigger(entity act, int state)
 }
 
 void
-func_wall_toggle::Respawn(void)
-{
-	SetMovetype(MOVETYPE_PUSH);
-	SetSolid(SOLID_BSP);
-	SetModel(GetSpawnModel());
-	SetOrigin(origin);
-	ClearAngles();
-
-	m_iVisible = 1;
-	m_oldmodelindex = modelindex;
-
-	if (HasSpawnFlags(FTW_STARTHIDDEN)) {
-		Trigger(this, TRIG_OFF);
-	}
-}
-
-void
 func_wall_toggle::Input(entity eAct, string strInput, string strData)
 {
 	switch (strInput) {
@@ -119,9 +127,4 @@ func_wall_toggle::Input(entity eAct, string strInput, string strData)
 	default:
 		super::Input(eAct, strInput, strData);
 	}
-}
-
-void
-func_wall_toggle::func_wall_toggle(void)
-{
 }

@@ -36,7 +36,8 @@ enumflags
 	GMCNTS_REMOVE,
 };
 
-class game_counter_set:NSPointTrigger
+class
+game_counter_set:NSPointTrigger
 {
 	int m_iCount;
 
@@ -50,22 +51,46 @@ class game_counter_set:NSPointTrigger
 };
 
 void
+game_counter_set::game_counter_set(void)
+{
+	m_iCount = 0;
+}
+
+void
 game_counter_set::Save(float handle)
 {
-	SaveInt(handle, "count", m_iCount);
 	super::Save(handle);
+	SaveInt(handle, "m_iCount", m_iCount);
 }
 
 void
 game_counter_set::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "count":
+	case "m_iCount":
 		m_iCount = ReadInt(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
 	}
+}
+
+void
+game_counter_set::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "frags":
+		m_iCount = stoi(strValue);
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
+	}
+}
+
+void
+game_counter_set::Respawn(void)
+{
+	InitPointTrigger();
 }
 
 void
@@ -88,28 +113,4 @@ game_counter_set::Trigger(entity act, int state)
 
 	if (HasSpawnFlags(GMCNTS_REMOVE))
 		Destroy();
-}
-
-void
-game_counter_set::Respawn(void)
-{
-	InitPointTrigger();
-}
-
-void
-game_counter_set::SpawnKey(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "frags":
-		m_iCount = stoi(strValue);
-		break;
-	default:
-		super::SpawnKey(strKey, strValue);
-	}
-}
-
-void
-game_counter_set::game_counter_set(void)
-{
-	m_iCount = 0;
 }

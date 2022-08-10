@@ -68,7 +68,8 @@ enumflags
 	FUNCVEH_RWDRIVE
 };
 
-class func_vehicle_wheel
+class
+func_vehicle_wheel:NSEntity
 {
 	void() func_vehicle_wheel;
 
@@ -78,7 +79,8 @@ class func_vehicle_wheel
 	virtual void(float) Physics;
 };
 
-class func_vehicle:NSVehicle
+class
+func_vehicle:NSVehicle
 {
 	/* map-entity fields */
 	float m_flBounceFactor;
@@ -103,12 +105,24 @@ class func_vehicle:NSVehicle
 
 	void(void) func_vehicle;
 
-	virtual void(void) customphysics;
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
+	virtual void(string, string) SpawnKey;
+	virtual void(void) Spawned;
 	virtual void(void) Respawn;
+	virtual void(void) OnRemoveEntity;
+	virtual void(void) customphysics;
 	virtual void(void) Realign;
 	virtual void(void) OnPlayerUse;
-	virtual void(string, string) SpawnKey;
 };
+
+void
+func_vehicle_wheel::func_vehicle_wheel(void)
+{
+	hitcontentsmaski = CONTENTBIT_SOLID | CONTENTBIT_BODY;
+	mins = '-8 -8 -8';
+	maxs = '8 8 8';
+}
 
 void
 func_vehicle_wheel::Bounce(vector normal)
@@ -240,7 +254,7 @@ func_vehicle_wheel::Accel(float flMoveTime, float m_flTurn)
 
 	/* air friction, doubles up for general rolling friction, ish */
 	velocity *= 1 - flMoveTime * 0.1;
-	
+
 	if (flTraction) {
 		if (eDriver) {
 			velocity -= v_forward * bound(-1, vehParent.m_eDriver.movement[0] / 400, 1) * vehParent.m_flAcceleration * flMoveTime * flTraction;
@@ -272,7 +286,7 @@ func_vehicle_wheel::Accel(float flMoveTime, float m_flTurn)
 			if (vlen(t) < 15) {
 				velocity -= t;
 			}
-			
+
 			/* don't bother with gravity if we're already on the ground and
 			   breaking. this avoids weird slides. */
 			if (!trace_fraction && trace_plane_normal * vehParent.m_vecGravityDir < -0.7f) {
@@ -300,12 +314,214 @@ func_vehicle_wheel::Physics(float turnrate)
 	Accel(frametime * 0.5f, turnrate);
 }
 
+
 void
-func_vehicle_wheel::func_vehicle_wheel(void)
+func_vehicle::func_vehicle(void)
 {
-	hitcontentsmaski = CONTENTBIT_SOLID | CONTENTBIT_BODY;
-	mins = '-8 -8 -8';
-	maxs = '8 8 8';
+	m_flBounceFactor = 1.0f;
+	m_flAcceleration = 200.0f;
+	m_flSkidSpeed = 256.0f;
+	m_flTraction = 1.0f;
+	m_flBreakFactor = 2.0f;
+	m_flSteerFactor = 1.0f;
+	m_flStraightenFactor = 1.0f;
+	m_vecGravityDir = [0,0,-1];
+	m_iVehicleFlags |= VHF_FROZEN;
+
+	m_wlFL = spawn(func_vehicle_wheel);
+	m_wlFR = spawn(func_vehicle_wheel);
+	m_wlBL = spawn(func_vehicle_wheel);
+	m_wlBR = spawn(func_vehicle_wheel);
+	m_wlFL.owner = m_wlFR.owner = m_wlBL.owner = m_wlBR.owner = this;
+}
+
+void
+func_vehicle::Save(float handle)
+{
+	super::Save(handle);
+	SaveFloat(handle, "m_flBounceFactor", m_flBounceFactor);
+	SaveFloat(handle, "m_flAcceleration", m_flAcceleration);
+	SaveFloat(handle, "m_flSkidSpeed", m_flSkidSpeed);
+	SaveFloat(handle, "m_flTraction", m_flTraction);
+	SaveFloat(handle, "m_flBreakFactor", m_flBreakFactor);
+	SaveFloat(handle, "m_flSteerFactor", m_flSteerFactor);
+	SaveFloat(handle, "m_flStraightenFactor", m_flStraightenFactor);
+	SaveVector(handle, "m_vecGravityDir", m_vecGravityDir);
+	SaveEntity(handle, "m_wlFL", m_wlFL);
+	SaveEntity(handle, "m_wlFR", m_wlFR);
+	SaveEntity(handle, "m_wlBL", m_wlBL);
+	SaveEntity(handle, "m_wlBR", m_wlBR);
+	SaveVector(handle, "m_vecControlMins", m_vecControlMins);
+	SaveVector(handle, "m_vecControlMaxs", m_vecControlMaxs);
+	SaveFloat(handle, "m_flHeight", m_flHeight);
+	SaveFloat(handle, "m_flWidth", m_flWidth);
+	SaveFloat(handle, "m_flLength", m_flLength);
+	SaveFloat(handle, "m_flTurn", m_flTurn);
+}
+
+void
+func_vehicle::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "m_flBounceFactor":
+		m_flBounceFactor = ReadFloat(strValue);
+		break;
+	case "m_flAcceleration":
+		m_flAcceleration = ReadFloat(strValue);
+		break;
+	case "m_flSkidSpeed":
+		m_flSkidSpeed = ReadFloat(strValue);
+		break;
+	case "m_flTraction":
+		m_flTraction = ReadFloat(strValue);
+		break;
+	case "m_flBreakFactor":
+		m_flBreakFactor = ReadFloat(strValue);
+		break;
+	case "m_flSteerFactor":
+		m_flSteerFactor = ReadFloat(strValue);
+		break;
+	case "m_flStraightenFactor":
+		m_flStraightenFactor = ReadFloat(strValue);
+		break;
+	case "m_vecGravityDir":
+		m_vecGravityDir = ReadVector(strValue);
+		break;
+	case "m_wlFL":
+		m_wlFL = (func_vehicle_wheel)ReadEntity(strValue);
+		break;
+	case "m_wlFR":
+		m_wlFR = (func_vehicle_wheel)ReadEntity(strValue);
+		break;
+	case "m_wlBL":
+		m_wlBL = (func_vehicle_wheel)ReadEntity(strValue);
+		break;
+	case "m_wlBR":
+		m_wlBR = (func_vehicle_wheel)ReadEntity(strValue);
+		break;
+	case "m_vecControlMins":
+		m_vecControlMins = ReadVector(strValue);
+		break;
+	case "m_vecControlMaxs":
+		m_vecControlMaxs = ReadVector(strValue);
+		break;
+	case "m_flHeight":
+		m_flHeight = ReadFloat(strValue);
+		break;
+	case "m_flWidth":
+		m_flWidth = ReadFloat(strValue);
+		break;
+	case "m_flLength":
+		m_flLength = ReadFloat(strValue);
+		break;
+	case "m_flTurn":
+		m_flTurn = ReadFloat(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
+
+void
+func_vehicle::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "acceleration":
+		// TODO
+		break;
+	case "speed":
+		m_flAcceleration = stof(strValue);
+		break;
+	case "height":
+		m_flHeight = stof(strValue);
+		break;
+	case "width":
+		m_flWidth = stof(strValue) / 2;
+		break;
+	case "length":
+		m_flLength = stof(strValue) / 2;
+		break;
+	case "bouncefactor":
+		m_flBounceFactor = stof(strValue);
+		break;
+	case "skidspeed":
+		m_flSkidSpeed = stof(strValue);
+		break;
+	case "traction":
+		m_flTraction = stof(strValue);
+		break;
+	case "breakfactor":
+		m_flBreakFactor = stof(strValue);
+		break;
+	case "steerfactor":
+		m_flSteerFactor = stof(strValue);
+		break;
+	case "straightenfactor":
+		m_flStraightenFactor = stof(strValue);
+		break;
+	case "gravitydir":
+		m_vecGravityDir = stov(strValue);
+		break;
+	case "sounds":
+		// TODO
+		break;
+	case "volume":
+		// TODO
+		break;
+	case "dmg":
+		// TODO
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
+	}
+}
+
+void
+func_vehicle::Spawned(void)
+{
+	super::Spawned();
+
+	if (m_flHeight) {
+		m_wlFL.mins[2] = m_flHeight * -1;
+		m_wlFR.mins[2] = m_flHeight * -1;
+		m_wlBL.mins[2] = m_flHeight * -1;
+		m_wlBR.mins[2] = m_flHeight * -1;
+	}
+}
+
+void
+func_vehicle::Respawn(void)
+{
+	SetMovetype(MOVETYPE_PUSH);
+	SetSolid(SOLID_BSP);
+	SetModel(GetSpawnModel());
+	SetOrigin(GetSpawnOrigin());
+	SetAngles(GetSpawnAngles());
+	think = Realign;
+	nextthink = time + 0.1f;
+
+	m_wlFL.velocity =
+	m_wlFR.velocity =
+	m_wlBL.velocity =
+	m_wlBR.velocity =
+	velocity = [0,0,0];
+	PlayerUse = OnPlayerUse;
+
+	if (m_eDriver)
+		PlayerLeave((NSClientPlayer)m_eDriver);
+}
+
+void
+func_vehicle::OnRemoveEntity(void)
+{
+	if (m_wlFL)
+		remove(m_wlFL);
+	if (m_wlFR)
+		remove(m_wlFR);
+	if (m_wlBL)
+		remove(m_wlBL);
+	if (m_wlBR)
+		remove(m_wlBR);
 }
 
 void
@@ -487,108 +703,5 @@ func_vehicle::Realign(void)
 		end_pos = first.origin;
 		end_pos[2] = GetSpawnOrigin()[2] + 64;
 		setorigin(this, end_pos);
-	}
-}
-
-void
-func_vehicle::Respawn(void)
-{
-	SetMovetype(MOVETYPE_PUSH);
-	SetSolid(SOLID_BSP);
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
-	SetAngles(GetSpawnAngles());
-	think = Realign;
-	nextthink = time + 0.1f;
-
-	m_wlFL.velocity =
-	m_wlFR.velocity =
-	m_wlBL.velocity =
-	m_wlBR.velocity =
-	velocity = [0,0,0];
-	PlayerUse = OnPlayerUse;
-
-	if (m_eDriver)
-		PlayerLeave((NSClientPlayer)m_eDriver);
-}
-
-void
-func_vehicle::SpawnKey(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "acceleration":
-		// TODO
-		break;
-	case "speed":
-		m_flAcceleration = stof(strValue);
-		break;
-	case "height":
-		m_flHeight = stof(strValue);
-		break;
-	case "width":
-		m_flWidth = stof(strValue) / 2;
-		break;
-	case "length":
-		m_flLength = stof(strValue) / 2;
-		break;
-	case "bouncefactor":
-		m_flBounceFactor = stof(strValue);
-		break;
-	case "skidspeed":
-		m_flSkidSpeed = stof(strValue);
-		break;
-	case "traction":
-		m_flTraction = stof(strValue);
-		break;
-	case "breakfactor":
-		m_flBreakFactor = stof(strValue);
-		break;
-	case "steerfactor":
-		m_flSteerFactor = stof(strValue);
-		break;
-	case "straightenfactor":
-		m_flStraightenFactor = stof(strValue);
-		break;
-	case "gravitydir":
-		m_vecGravityDir = stov(strValue);
-		break;
-	case "sounds":
-		// TODO
-		break;
-	case "volume":
-		// TODO
-		break;
-	case "dmg":
-		// TODO
-		break;
-	default:
-		super::SpawnKey(strKey, strValue);
-	}
-}
-
-void
-func_vehicle::func_vehicle(void)
-{
-	m_flBounceFactor = 1.0f;
-	m_flAcceleration = 200.0f;
-	m_flSkidSpeed = 256.0f;
-	m_flTraction = 1.0f;
-	m_flBreakFactor = 2.0f;
-	m_flSteerFactor = 1.0f;
-	m_flStraightenFactor = 1.0f;
-	m_vecGravityDir = [0,0,-1];
-	m_iVehicleFlags |= VHF_FROZEN;
-
-	m_wlFL = spawn(func_vehicle_wheel);
-	m_wlFR = spawn(func_vehicle_wheel);
-	m_wlBL = spawn(func_vehicle_wheel);
-	m_wlBR = spawn(func_vehicle_wheel);
-	m_wlFL.owner = m_wlFR.owner = m_wlBL.owner = m_wlBR.owner = this;
-
-	if (m_flHeight) {
-		m_wlFL.mins[2] = m_flHeight * -1;
-		m_wlFR.mins[2] = m_flHeight * -1;
-		m_wlBL.mins[2] = m_flHeight * -1;
-		m_wlBR.mins[2] = m_flHeight * -1;
 	}
 }

@@ -40,7 +40,8 @@ enumflags
 	GMCNT_RESET
 };
 
-class game_counter:NSPointTrigger
+class
+game_counter:NSPointTrigger
 {
 	int m_iStartCount;
 	int m_iCounted;
@@ -60,6 +61,64 @@ class game_counter:NSPointTrigger
 };
 
 void
+game_counter::game_counter(void)
+{
+	m_iStartCount = 0i;
+	m_iCounted = 0i;
+	m_iMaxCount = 0i;
+}
+
+void
+game_counter::Save(float handle)
+{
+	super::Save(handle);
+	SaveInt(handle, "m_iCounted", m_iCounted);
+	SaveInt(handle, "m_iMaxCount", m_iMaxCount);
+	SaveInt(handle, "m_iStartCount", m_iStartCount);
+}
+
+void
+game_counter::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "m_iCounted":
+		m_iCounted = ReadInt(strValue);
+		break;
+	case "m_iMaxCount":
+		m_iMaxCount = ReadInt(strValue);
+		break;
+	case "m_iStartCount":
+		m_iStartCount = ReadInt(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
+
+void
+game_counter::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "health":
+		m_iMaxCount = stoi(strValue);
+		break;
+	case "frags":
+		m_iStartCount = stoi(strValue);
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
+	}
+}
+
+void
+game_counter::Respawn(void)
+{
+	m_iValue = 0;
+	m_iCounted = m_iStartCount;
+	InitPointTrigger();
+}
+
+void
 game_counter::SetCount(int value)
 {
 	m_iCounted = value;
@@ -69,33 +128,6 @@ int
 game_counter::GetCount(void)
 {
 	return m_iCounted;
-}
-
-void
-game_counter::Save(float handle)
-{
-	SaveInt(handle, "counted", m_iCounted);
-	SaveInt(handle, "maxcount", m_iMaxCount);
-	SaveInt(handle, "startcount", m_iStartCount);
-	super::Save(handle);
-}
-
-void
-game_counter::Restore(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "counted":
-		m_iCounted = ReadInt(strValue);
-		break;
-	case "maxcount":
-		m_iMaxCount = ReadInt(strValue);
-		break;
-	case "startcount":
-		m_iStartCount = ReadInt(strValue);
-		break;
-	default:
-		super::Restore(strKey, strValue);
-	}
 }
 
 void
@@ -117,33 +149,4 @@ game_counter::Trigger(entity act, int state)
 		m_iValue = 1;
 
 	UseTargets(act, TRIG_TOGGLE, m_flDelay);
-}
-
-void
-game_counter::Respawn(void)
-{
-	m_iValue = 0;
-	m_iCounted = m_iStartCount;
-	InitPointTrigger();
-}
-
-void
-game_counter::SpawnKey(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "health":
-		m_iMaxCount = stoi(strValue);
-		break;
-	case "frags":
-		m_iStartCount = stoi(strValue);
-		break;
-	default:
-		super::SpawnKey(strKey, strValue);
-	}
-}
-
-void
-game_counter::game_counter(void)
-{
-	m_iStartCount = 0;
 }

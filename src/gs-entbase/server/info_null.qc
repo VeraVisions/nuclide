@@ -29,7 +29,8 @@ prepare to crash.
 This entity was introduced in Quake (1996).
 */
 
-class info_null:NSPointTrigger
+class
+info_null:NSPointTrigger
 {
 	void(void) info_null;
 
@@ -38,6 +39,14 @@ class info_null:NSPointTrigger
 	virtual void(void) Respawn;
 #endif
 };
+
+void
+info_null::info_null(void)
+{
+#ifndef DEBUG_INFONULL
+	remove(self);
+#endif
+}
 
 #ifdef DEBUG_INFONULL
 void
@@ -64,11 +73,3 @@ info_null::Respawn(void)
 	think = WarnDeveloper;
 }
 #endif
-
-void
-info_null::info_null(void)
-{
-#ifndef DEBUG_INFONULL
-		remove(self);
-#endif
-}

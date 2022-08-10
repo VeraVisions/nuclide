@@ -25,13 +25,28 @@ to gain control.
 This entity was introduced in Half-Life (1998).
 */
 
-class func_tankcontrols:NSBrushTrigger
+class
+func_tankcontrols:NSBrushTrigger
 {
 	void(void) func_tankcontrols;
 
 	virtual void(void) OnPlayerUse;
 	virtual void(void) Respawn;
 };
+
+void
+func_tankcontrols::func_tankcontrols(void)
+{
+}
+
+void
+func_tankcontrols::Respawn(void)
+{
+	InitBrushTrigger();
+	solid = SOLID_BBOX;
+	SetOrigin(GetSpawnOrigin());
+	PlayerUse = OnPlayerUse;
+}
 
 void
 func_tankcontrols::OnPlayerUse(void)
@@ -58,18 +73,4 @@ func_tankcontrols::OnPlayerUse(void)
 		else if (tank.m_eDriver == eActivator)
 			tank.PlayerLeave((NSClientPlayer)eActivator);
 	}
-}
-
-void
-func_tankcontrols::Respawn(void)
-{
-	InitBrushTrigger();
-	solid = SOLID_BBOX;
-	SetOrigin(GetSpawnOrigin());
-	PlayerUse = OnPlayerUse;
-}
-
-void
-func_tankcontrols::func_tankcontrols(void)
-{
 }

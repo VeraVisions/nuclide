@@ -432,6 +432,7 @@ NSClientPlayer::PredictPostFrame(void)
 void
 NSClientPlayer::Save(float handle)
 {
+	super::Save(handle);
 	SaveFloat(handle, "max_health", max_health);
 	SaveFloat(handle, "health", health);
 	SaveFloat(handle, "armor", armor);
@@ -457,7 +458,6 @@ NSClientPlayer::Save(float handle)
 	SaveInt(handle, "g_items", g_items);
 	SaveFloat(handle, "activeweapon", activeweapon);
 	SaveFloat(handle, "vehicle", num_for_edict(vehicle));
-	super::Save(handle);
 }
 
 void
@@ -792,7 +792,12 @@ NSClientPlayer::OptimiseChangedFlags(entity ePEnt, float flChanged)
 		flChanged &= ~PLAYER_PUNCHANGLE;
 		flChanged &= ~PLAYER_VIEWZOOM;
 		flChanged &= ~PLAYER_SPECTATE;
+	} else {
+		/* always keep us alive to ourselves or the person spectating */
+		/* this will make prediction smoother */
+		flChanged |= PLAYER_MODELINDEX;
 	}
+
 	return flChanged;
 }
 

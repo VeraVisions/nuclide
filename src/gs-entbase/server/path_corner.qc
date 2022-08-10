@@ -45,7 +45,8 @@ enumflags
 	PC_FIREONCE
 };
 
-class path_corner:NSPointTrigger
+class
+path_corner:NSPointTrigger
 {
 	int m_iFired;
 	float m_flSpeed;
@@ -56,68 +57,49 @@ class path_corner:NSPointTrigger
 
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
-	virtual void(entity, int) Trigger;
-	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
+	virtual void(void) Respawn;
+	virtual void(entity, int) Trigger;
 };
+
+void
+path_corner::path_corner(void)
+{
+	m_iFired = 0i;
+	m_flSpeed = 100.0f;
+	m_flYawSpeed = 0.0f;
+	m_flWait = 1.0f;
+}
 
 void
 path_corner::Save(float handle)
 {
-	SaveInt(handle, "fired", m_iFired);
-	SaveFloat(handle, "speed", m_flSpeed);
-	SaveFloat(handle, "yaw_speed", m_flYawSpeed);
-	SaveFloat(handle, "wait", m_flWait);
 	super::Save(handle);
+	SaveInt(handle, "m_iFired", m_iFired);
+	SaveFloat(handle, "m_flSpeed", m_flSpeed);
+	SaveFloat(handle, "m_flYawSpeed", m_flYawSpeed);
+	SaveFloat(handle, "m_flWait", m_flWait);
 }
 
 void
 path_corner::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "fired":
+	case "m_iFired":
 		m_iFired = ReadInt(strValue);
 		break;
-	case "speed":
+	case "m_flSpeed":
 		m_flSpeed = ReadFloat(strValue);
 		break;
-	case "yaw_speed":
+	case "m_flYawSpeed":
 		m_flYawSpeed = ReadFloat(strValue);
 		break;
-	case "wait":
+	case "m_flWait":
 		m_flWait = ReadFloat(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
 	}
-}
-
-void
-path_corner::Trigger(entity act, int state)
-{
-	entity a;
-
-	if (HasSpawnFlags(PC_FIREONCE) && m_iFired) {
-		return;
-	}
-
-	for (a = world; (a = find(a, ::targetname, m_strMessage));) {
-		NSEntity trigger = (NSEntity)a;
-		trigger.Trigger(act, state);
-		m_iFired = TRUE;
-	}
-}
-
-void
-path_corner::Respawn(void)
-{
-#ifdef DEVELOPER
-	if (autocvar_dev_cornerspeed != 0) {
-		m_flSpeed = autocvar_dev_cornerspeed;
-	}
-#endif
-
-	m_iFired = FALSE;
 }
 
 void
@@ -142,8 +124,29 @@ path_corner::SpawnKey(string strKey, string strValue)
 }
 
 void
-path_corner::path_corner(void)
+path_corner::Respawn(void)
 {
-	m_flWait = 1.0f;
-	m_flSpeed = 100.0f;
+#ifdef DEVELOPER
+	if (autocvar_dev_cornerspeed != 0) {
+		m_flSpeed = autocvar_dev_cornerspeed;
+	}
+#endif
+
+	m_iFired = FALSE;
+}
+
+void
+path_corner::Trigger(entity act, int state)
+{
+	entity a;
+
+	if (HasSpawnFlags(PC_FIREONCE) && m_iFired) {
+		return;
+	}
+
+	for (a = world; (a = find(a, ::targetname, m_strMessage));) {
+		NSEntity trigger = (NSEntity)a;
+		trigger.Trigger(act, state);
+		m_iFired = TRUE;
+	}
 }

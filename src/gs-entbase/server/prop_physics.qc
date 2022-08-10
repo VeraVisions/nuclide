@@ -27,21 +27,18 @@ This entity was introduced in Half-Life 2 (2004).
 #ifndef PHYSICS_STATIC
 #define PRPPHYS_ASLEEP 1
 
-class prop_physics:NSPhysicsEntity
+class
+prop_physics:NSPhysicsEntity
 {
 	void(void) prop_physics;
+
 	virtual void(string, string) SpawnKey;
+	virtual void(void) Respawn;
 };
 
 void
-prop_physics::Respawn(void)
+prop_physics::prop_physics(void)
 {
-	NSPhysicsEntity::Respawn();
-
-	if (HasSpawnFlags(PRPPHYS_ASLEEP))
-		PhysicsDisable();
-	else
-		PhysicsEnable();
 }
 
 void
@@ -54,25 +51,33 @@ prop_physics::SpawnKey(string strKey, string strValue)
 }
 
 void
+prop_physics::Respawn(void)
+{
+	NSPhysicsEntity::Respawn();
+
+	if (HasSpawnFlags(PRPPHYS_ASLEEP))
+		PhysicsDisable();
+	else
+		PhysicsEnable();
+}
+#else
+class
+prop_physics:NSRenderableEntity
+{
+	void(void) prop_physics;
+
+	virtual void(void) Respawn;
+};
+
+void
 prop_physics::prop_physics(void)
 {
 }
-#else
-class prop_physics:NSRenderableEntity
-{
-	void(void) prop_physics;
-	virtual void(void) Respawn;
-};
 
 void
 prop_physics::Respawn(void)
 {
 	super::Respawn();
 	SetSolid(SOLID_BBOX);
-}
-
-void
-prop_physics::prop_physics(void)
-{
 }
 #endif

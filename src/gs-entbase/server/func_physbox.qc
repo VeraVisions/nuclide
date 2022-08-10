@@ -27,11 +27,18 @@ This entity was introduced in Half-Life 2 (2004).
 #ifndef PHYSICS_STATIC
 #define FNCPHYBX_ASLEEP 4096
 
-class func_physbox:NSPhysicsEntity
+class
+func_physbox:NSPhysicsEntity
 {
 	void(void) func_physbox;
+
 	virtual void(string, string) SpawnKey;
 };
+
+void
+func_physbox::func_physbox(void)
+{
+}
 
 void
 func_physbox::Respawn(void)
@@ -52,18 +59,19 @@ func_physbox::SpawnKey(string strKey, string strValue)
 		NSPhysicsEntity::SpawnKey(strKey, strValue);
 	}
 }
+#else
+class func_physbox:NSSurfacePropEntity
+{
+	void(void) func_physbox;
+
+	virtual void(void) Respawn;
+	virtual void(void) Death;
+};
 
 void
 func_physbox::func_physbox(void)
 {
 }
-#else
-class func_physbox:NSSurfacePropEntity
-{
-	void(void) func_physbox;
-	virtual void(void) Respawn;
-	virtual void(void) Death;
-};
 
 void
 func_physbox::Death(void)
@@ -79,10 +87,4 @@ func_physbox::Respawn(void)
 	SetTakedamage(DAMAGE_YES);
 	SetSolid(SOLID_BBOX);
 }
-
-void
-func_physbox::func_physbox(void)
-{
-}
-
 #endif

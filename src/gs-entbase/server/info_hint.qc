@@ -158,8 +158,22 @@ info_hint:NSPointTrigger
 };
 
 void
+info_hint::info_hint(void)
+{
+	m_hintType = HINT_NONE;
+	m_strHintActivity = __NULL__;
+	m_flNodeFOV = 360;
+	m_bStartDisabled = false;
+	m_strHintGroup = __NULL__;
+	m_ignoreFacing = IGNORE_DEFAULT;
+	m_minState = AISTATE_IDLE;
+	m_maxState = AISTATE_COMBAT;
+};
+
+void
 info_hint::Save(float handle)
 {
+	super::Save(handle);
 	SaveFloat(handle, "m_hintType", m_hintType);
 	SaveString(handle, "m_strHintActivity", m_strHintActivity);
 	SaveFloat(handle, "m_flNodeFOV", m_flNodeFOV);
@@ -168,7 +182,6 @@ info_hint::Save(float handle)
 	SaveFloat(handle, "m_ignoreFacing", m_ignoreFacing);
 	SaveFloat(handle, "m_minState", m_minState);
 	SaveFloat(handle, "m_maxState", m_maxState);
-	super::Save(handle);
 }
 
 void
@@ -236,16 +249,3 @@ info_hint::SpawnKey(string strKey, string strValue)
 		super::SpawnKey(strKey, strValue);
 	}
 }
-
-void
-info_hint::info_hint(void)
-{
-	m_hintType = HINT_NONE;
-	m_strHintActivity = __NULL__;
-	m_flNodeFOV = 360;
-	m_bStartDisabled = false;
-	m_strHintGroup = __NULL__;
-	m_ignoreFacing = IGNORE_DEFAULT;
-	m_minState = AISTATE_IDLE;
-	m_maxState = AISTATE_COMBAT;
-};

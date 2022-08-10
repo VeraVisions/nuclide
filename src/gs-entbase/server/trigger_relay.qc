@@ -37,7 +37,8 @@ enumflags
 	TRLY_ONCE,
 };
 
-class trigger_relay:NSPointTrigger
+class
+trigger_relay:NSPointTrigger
 {
 	int m_iTriggerState;
 	int m_iEnabled;
@@ -50,43 +51,33 @@ class trigger_relay:NSPointTrigger
 };
 
 void
+trigger_relay::trigger_relay(void)
+{
+	m_iTriggerState =
+	m_iEnabled = 0;
+}
+
+void
 trigger_relay::Save(float handle)
 {
-	SaveInt(handle, "trigger_state", m_iTriggerState);
-	SaveInt(handle, "enabled", m_iEnabled);
 	super::Save(handle);
+	SaveInt(handle, "m_iTriggerState", m_iTriggerState);
+	SaveInt(handle, "m_iEnabled", m_iEnabled);
 }
 
 void
 trigger_relay::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "trigger_state":
+	case "m_iTriggerState":
 		m_iTriggerState = ReadInt(strValue);
 		break;
-	case "enabled":
+	case "m_iEnabled":
 		m_iEnabled = ReadInt(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
 	}
-}
-
-void
-trigger_relay::Trigger(entity act, int state)
-{
-	if (m_iEnabled == FALSE)
-		return;
-	if (HasSpawnFlags(TRLY_ONCE))
-		m_iEnabled = FALSE;
-
-	UseTargets(act, m_iTriggerState, m_flDelay);
-}
-
-void
-trigger_relay::Respawn(void)
-{
-	m_iEnabled = TRUE;
 }
 
 void
@@ -102,8 +93,18 @@ trigger_relay::SpawnKey(string strKey, string strValue)
 }
 
 void
-trigger_relay::trigger_relay(void)
+trigger_relay::Respawn(void)
 {
-	m_iTriggerState =
-	m_iEnabled = 0;
+	m_iEnabled = TRUE;
+}
+
+void
+trigger_relay::Trigger(entity act, int state)
+{
+	if (m_iEnabled == FALSE)
+		return;
+	if (HasSpawnFlags(TRLY_ONCE))
+		m_iEnabled = FALSE;
+
+	UseTargets(act, m_iTriggerState, m_flDelay);
 }

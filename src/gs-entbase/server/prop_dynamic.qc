@@ -30,22 +30,18 @@ This entity was introduced in Half-Life 2 (2004).
 
 #define PRPDYN_NONSOLID 256
 
-class prop_dynamic:NSSurfacePropEntity
+class
+prop_dynamic:NSSurfacePropEntity
 {
 	void(void) prop_dynamic;
 
-	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
+	virtual void(void) Respawn;
 };
 
 void
-prop_dynamic::Respawn(void)
+prop_dynamic::prop_dynamic(void)
 {
-	super::Respawn();
-	SetModel(GetSpawnModel());
-
-	if (HasSpawnFlags(PRPDYN_NONSOLID))
-		SetSolid(SOLID_NOT);
 }
 
 void
@@ -72,6 +68,11 @@ prop_dynamic::SpawnKey(string strKey, string strValue)
 }
 
 void
-prop_dynamic::prop_dynamic(void)
+prop_dynamic::Respawn(void)
 {
+	super::Respawn();
+	SetModel(GetSpawnModel());
+
+	if (HasSpawnFlags(PRPDYN_NONSOLID))
+		SetSolid(SOLID_NOT);
 }

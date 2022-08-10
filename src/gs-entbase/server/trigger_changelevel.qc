@@ -35,7 +35,8 @@ This entity was introduced in Quake (1996).
 
 vector g_landmarkpos;
 
-class info_landmark:NSPointTrigger
+class
+info_landmark:NSPointTrigger
 {
 	
 };
@@ -69,7 +70,8 @@ ChangeTarget_Activate(void)
 	foo.nextthink = time + 0.1f + cdel;
 }
 
-class trigger_changelevel:NSBrushTrigger
+class
+trigger_changelevel:NSBrushTrigger
 {
 	float m_flChangeDelay;
 	string m_strChangeTarget;
@@ -81,13 +83,13 @@ class trigger_changelevel:NSBrushTrigger
 	void(void) trigger_changelevel;
 
 	/* overrides */
-	virtual void(void) Spawned;
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
-	virtual void(entity, int) Trigger;
-	virtual void(void) Respawn;
-	virtual void(entity, string, string) Input;
 	virtual void(string, string) SpawnKey;
+	virtual void(void) Spawned;
+	virtual void(void) Respawn;
+	virtual void(entity, int) Trigger;
+	virtual void(entity, string, string) Input;
 
 	virtual void(void) Change;
 	virtual void(entity) Touch;
@@ -95,42 +97,93 @@ class trigger_changelevel:NSBrushTrigger
 };
 
 void
+trigger_changelevel::trigger_changelevel(void)
+{
+	m_flChangeDelay = 0.0f;
+	m_strChangeTarget = __NULL__;
+	m_strMap = __NULL__;
+	m_strLandmark = __NULL__;
+	m_strOnLevelChange = __NULL__;
+	m_activator = __NULL__;
+}
+
+void
 trigger_changelevel::Save(float handle)
 {
-	SaveString(handle, "changetarget", m_strChangeTarget);
-	SaveFloat(handle, "changedelay", m_flChangeDelay);
-	SaveString(handle, "map", m_strMap);
-	SaveString(handle, "landmark", m_strLandmark);
-	SaveString(handle, "OnLevelChange", m_strOnLevelChange);
-	SaveEntity(handle, "activator", m_activator);
 	super::Save(handle);
+	SaveFloat(handle, "m_flChangeDelay", m_flChangeDelay);
+	SaveString(handle, "m_strChangeTarget", m_strChangeTarget);
+	SaveString(handle, "m_strMap", m_strMap);
+	SaveString(handle, "m_strLandmark", m_strLandmark);
+	SaveString(handle, "m_strOnLevelChange", m_strOnLevelChange);
+	SaveEntity(handle, "m_activator", m_activator);
 }
 
 void
 trigger_changelevel::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "changetarget":
-		m_strChangeTarget = ReadString(strValue);
-		break;
-	case "changedelay":
+	case "m_flChangeDelay":
 		m_flChangeDelay = ReadFloat(strValue);
 		break;
-	case "map":
+	case "m_strChangeTarget":
+		m_strChangeTarget = ReadString(strValue);
+		break;
+	case "m_strMap":
 		m_strMap = ReadString(strValue);
 		break;
-	case "landmark":
+	case "m_strLandmark":
 		m_strLandmark = ReadString(strValue);
 		break;
-	case "OnLevelChange":
+	case "m_strOnLevelChange":
 		m_strOnLevelChange = ReadString(strValue);
 		break;
-	case "activator":
+	case "m_activator":
 		m_activator = ReadEntity(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
 	}
+}
+
+void
+trigger_changelevel::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "changetarget":
+		m_strChangeTarget = strValue;
+		break;
+	case "map":
+		m_strMap = strValue;
+		break;
+	case "landmark":
+		m_strLandmark = strValue;
+		break;
+	case "changedelay":
+		m_flChangeDelay = stof(strValue);
+		break;
+	case "OnLevelChange":
+	case "OnChangeLevel":
+		m_strOnLevelChange = PrepareOutput(m_strOnLevelChange, strValue);
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
+	}
+}
+
+void
+trigger_changelevel::Spawned(void)
+{
+	super::Spawned();
+
+	if (m_strOnLevelChange)
+		m_strOnLevelChange = CreateOutput(m_strOnLevelChange);
+}
+
+void
+trigger_changelevel::Respawn(void)
+{
+	InitBrushTrigger();
 }
 
 int
@@ -225,12 +278,6 @@ trigger_changelevel::Touch(entity eToucher)
 }
 
 void
-trigger_changelevel::Respawn(void)
-{
-	InitBrushTrigger();
-}
-
-void
 trigger_changelevel::Input(entity eAct, string strInput, string strData)
 {
 	switch (strInput) {
@@ -240,46 +287,6 @@ trigger_changelevel::Input(entity eAct, string strInput, string strData)
 	default:
 		super::Input(eAct, strInput, strData);
 	}
-}
-
-void
-trigger_changelevel::SpawnKey(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "changetarget":
-		m_strChangeTarget = strValue;
-		break;
-	case "map":
-		m_strMap = strValue;
-		break;
-	case "landmark":
-		m_strLandmark = strValue;
-		break;
-	case "changedelay":
-		m_flChangeDelay = stof(strValue);
-		break;
-	case "OnLevelChange":
-	case "OnChangeLevel":
-		m_strOnLevelChange = PrepareOutput(m_strOnLevelChange, strValue);
-		break;
-	default:
-		super::SpawnKey(strKey, strValue);
-	}
-}
-
-void
-trigger_changelevel::Spawned(void)
-{
-	super::Spawned();
-
-	if (m_strOnLevelChange)
-		m_strOnLevelChange = CreateOutput(m_strOnLevelChange);
-}
-
-void
-trigger_changelevel::trigger_changelevel(void)
-{
-	m_strChangeTarget = __NULL__;
 }
 
 vector

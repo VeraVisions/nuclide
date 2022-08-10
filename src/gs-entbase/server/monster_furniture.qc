@@ -38,12 +38,19 @@ enumflags
 	MF_FADECORPSE
 };
 
-class monster_furniture:NSMonster
+class
+monster_furniture:NSMonster
 {
 	void(void) monster_furniture;
 
 	virtual void(void) Respawn;
 };
+
+void
+monster_furniture::monster_furniture(void)
+{
+	spawnflags |= MSF_MULTIPLAYER;
+}
 
 void
 monster_furniture::Respawn(void)
@@ -53,12 +60,6 @@ monster_furniture::Respawn(void)
 	SetModel(GetSpawnModel());
 	SetOrigin(GetSpawnOrigin());
 	SetAngles(GetSpawnAngles());
-}
-
-void
-monster_furniture::monster_furniture(void)
-{
-	spawnflags |= MSF_MULTIPLAYER;
 }
 
 CLASSEXPORT(ts_model, monster_furniture)

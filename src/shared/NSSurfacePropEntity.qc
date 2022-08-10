@@ -478,17 +478,15 @@ NSSurfacePropEntity::Respawn(void)
 void
 NSSurfacePropEntity::Save(float handle)
 {
+	super::Save(handle);
 	SaveFloat(handle, "m_eBurner", num_for_edict(m_eBurner));
 	SaveInt(handle, "m_iBurnWeapon", m_iBurnWeapon);
 	SaveFloat(handle,"m_flBurnTime", m_flBurnTime);
 	SaveFloat(handle, "m_flBurnNext", m_flBurnNext);
 	SaveString(handle, "m_strOnBreak", m_strOnBreak);
-	SaveFloat(handle, "health", health);
 	SaveFloat(handle, "m_oldHealth", m_oldHealth);
 	SaveInt(handle, "m_iMaterial", m_iMaterial);
 	SaveInt(handle, "m_iPropData", m_iPropData);
-
-	super::Save(handle);
 }
 
 void
@@ -509,9 +507,6 @@ NSSurfacePropEntity::Restore(string strKey, string strValue)
 		break;
 	case "m_strOnBreak":
 		m_strOnBreak = ReadString(strValue);
-		break;
-	case "health":
-		health = ReadFloat(strValue);
 		break;
 	case "m_oldHealth":
 		m_oldHealth = ReadFloat(strValue);

@@ -47,68 +47,45 @@ enumflags
 	EVSPARK_STARTON
 };
 
-class env_spark:NSPointTrigger
+class
+env_spark:NSPointTrigger
 {
 	float m_flMaxDelay;
 
 	void(void) env_spark;
 
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
+	virtual void(string, string) SpawnKey;
 	virtual void(void) Spawned;
+	virtual void(void) Respawn;
+	virtual void(entity, int) Trigger;
 	virtual void(void) CreateSpark;
 	virtual void(void) TimedSpark;
-	virtual void(entity, int) Trigger;
-	virtual void(void) Respawn;
-	virtual void(string, string) SpawnKey;
 };
 
 void
-env_spark::CreateSpark(void)
+env_spark::env_spark(void)
 {
-	Sound_Play(this, CHAN_AUTO, "env_spark.sfx");
-	FX_Spark(self.origin, self.angles);
+	m_flMaxDelay = 0.0f;
 }
 
 void
-env_spark::TimedSpark(void)
+env_spark::Save(float handle)
 {
-	CreateSpark();
-	nextthink = time + (random() * m_flMaxDelay);
+	super::Save(handle);
+	SaveFloat(handle, "m_flMaxDelay", m_flMaxDelay);
 }
 
 void
-env_spark::Trigger(entity act, int state)
+env_spark::Restore(string strKey, string strValue)
 {
-	if (HasSpawnFlags(EVSPARK_TOGGLE)) {
-		switch (state) {
-		case TRIG_OFF:
-			think = __NULL__;
-			nextthink = 0;
-			break;
-		case TRIG_ON:
-			think = TimedSpark;
-			nextthink = time + (random() * m_flMaxDelay);
-			break;
-		default:
-			if (think != __NULL__) {
-				Trigger(act, TRIG_OFF);
-			} else {
-				Trigger(act, TRIG_ON);
-			}
-		}
-	} else {
-		CreateSpark();
-	}
-}
-
-void
-env_spark::Respawn(void)
-{
-	if (m_flMaxDelay <= 0) {
-		m_flMaxDelay = 1.0f;
-	}
-
-	if (HasSpawnFlags(EVSPARK_STARTON)) {
-		Trigger(this, TRIG_ON);
+	switch (strKey) {
+	case "m_flMaxDelay":
+		m_flMaxDelay = ReadFloat(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
 	}
 }
 
@@ -133,6 +110,53 @@ env_spark::Spawned(void)
 }
 
 void
-env_spark::env_spark(void)
+env_spark::Respawn(void)
 {
+	if (m_flMaxDelay <= 0) {
+		m_flMaxDelay = 1.0f;
+	}
+
+	if (HasSpawnFlags(EVSPARK_STARTON)) {
+		Trigger(this, TRIG_ON);
+	}
+}
+
+void
+env_spark::Trigger(entity act, int state)
+{
+	if (!HasSpawnFlags(EVSPARK_TOGGLE)) {
+		CreateSpark();
+		return;
+	}
+
+	switch (state) {
+	case TRIG_OFF:
+		think = __NULL__;
+		nextthink = 0;
+		break;
+	case TRIG_ON:
+		think = TimedSpark;
+		nextthink = time + (random() * m_flMaxDelay);
+		break;
+	default:
+		if (think != __NULL__) {
+			Trigger(act, TRIG_OFF);
+		} else {
+			Trigger(act, TRIG_ON);
+		}
+	}
+}
+
+void
+env_spark::CreateSpark(void)
+{
+	Sound_Play(this, CHAN_AUTO, "env_spark.sfx");
+	FX_Spark(self.origin, self.angles);
+}
+
+void
+env_spark::TimedSpark(void)
+{
+	CreateSpark();
+	nextthink = time + (random() * m_flMaxDelay);
 }

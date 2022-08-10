@@ -47,10 +47,9 @@ not get called upon map start.
 This entity was introduced in Half-Life 2 (2004).
 */
 
-class logic_auto:NSPointTrigger
+class
+logic_auto:NSPointTrigger
 {
-	string m_strGlobalState;
-
 	/* outputs */
 	string m_strOnMapSpawn;
 	string m_strOnNewGame;
@@ -66,27 +65,40 @@ class logic_auto:NSPointTrigger
 	void(void) logic_auto;
 
 	/* overrides */
-	virtual void(void) Spawned;
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
-	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
+	virtual void(void) Spawned;
+	virtual void(void) Respawn;
+	virtual void(void) RestoreComplete;
 
 	virtual void(void) Processing;
 };
 
 void
+logic_auto::logic_auto(void)
+{
+	m_iFromSaveGame = 0;
+	m_strOnMapSpawn = __NULL__;
+	m_strOnNewGame = __NULL__;
+	m_strOnLoadGame = __NULL__;
+	m_strOnMapTransition = __NULL__;
+	m_strOnBackgroundMap = __NULL__;
+	m_strOnMultiNewMap = __NULL__;
+	m_strOnMultiNewRound = __NULL__;
+}
+
+void
 logic_auto::Save(float handle)
 {
-	SaveString(handle, "globalstate", m_strGlobalState);
-	SaveString(handle, "OnMapSpawn", m_strOnMapSpawn);
-	SaveString(handle, "OnNewGame", m_strOnNewGame);
-	SaveString(handle, "OnLoadGame", m_strOnLoadGame);
-	SaveString(handle, "OnMapTransition", m_strOnMapTransition);
-	SaveString(handle, "OnBackgroundMap", m_strOnBackgroundMap);
-	SaveString(handle, "OnMultiNewMap", m_strOnMultiNewMap);
-	SaveString(handle, "OnMultiNewRound", m_strOnMultiNewRound);
 	super::Save(handle);
+	SaveString(handle, "m_strOnMapSpawn", m_strOnMapSpawn);
+	SaveString(handle, "m_strOnNewGame", m_strOnNewGame);
+	SaveString(handle, "m_strOnLoadGame", m_strOnLoadGame);
+	SaveString(handle, "m_strOnMapTransition", m_strOnMapTransition);
+	SaveString(handle, "m_strOnBackgroundMap", m_strOnBackgroundMap);
+	SaveString(handle, "m_strOnMultiNewMap", m_strOnMultiNewMap);
+	SaveString(handle, "m_strOnMultiNewRound", m_strOnMultiNewRound);
 }
 
 void
@@ -95,30 +107,25 @@ logic_auto::Restore(string strKey, string strValue)
 	m_iFromSaveGame = 1;
 
 	switch (strKey) {
-	case "globalstate":
-		m_strGlobalState = ReadString(strValue);
-		think = Processing;
-		nextthink = time + 0.2f;
-		break;
-	case "OnMapSpawn":
+	case "m_strOnMapSpawn":
 		m_strOnMapSpawn = ReadString(strValue);
 		break;
-	case "OnNewGame":
+	case "m_strOnNewGame":
 		m_strOnNewGame = ReadString(strValue);
 		break;
-	case "OnLoadGame":
+	case "m_strOnLoadGame":
 		m_strOnLoadGame = ReadString(strValue);
 		break;
-	case "OnMapTransition":
+	case "m_strOnMapTransition":
 		m_strOnMapTransition = ReadString(strValue);
 		break;
-	case "OnBackgroundMap":
+	case "m_strOnBackgroundMap":
 		m_strOnBackgroundMap = ReadString(strValue);
 		break;
-	case "OnMultiNewMap":
+	case "m_strOnMultiNewMap":
 		m_strOnMultiNewMap = ReadString(strValue);
 		break;
-	case "OnMultiNewRound":
+	case "m_strOnMultiNewRound":
 		m_strOnMultiNewRound = ReadString(strValue);
 		break;
 	default:
@@ -127,56 +134,17 @@ logic_auto::Restore(string strKey, string strValue)
 }
 
 void
-logic_auto::Processing(void)
-{
-	if (m_strGlobalState)
-		if (GetGlobalValue(m_strGlobalState) == 0)
-			return;
-
-	UseOutput(this, m_strOnMapSpawn);
-
-	if (cvar("sv_playerslots") == 1) {
-		if (m_iFromSaveGame) {
-			/* set by trigger_changelevel, however not by the changelevel cmd */
-			if (cvar("_bsp_change_auto") == 1) {
-				UseOutput(this, m_strOnMapTransition);
-				readcmd("set _bsp_change_auto \"\"\n");
-			} else
-				UseOutput(this, m_strOnLoadGame);
-		} else
-			UseOutput(this, m_strOnNewGame);
-	} else {
-		/* TODO: more reliable way of figuring out round restarts */
-		if (time > 5)
-			UseOutput(this, m_strOnMultiNewRound);
-
-		/* yes, this is also called during entity respawns :X */
-		UseOutput(this, m_strOnMultiNewMap);
-	}
-
-	if (serverkeyfloat("background") == 1)
-		UseOutput(this, m_strOnBackgroundMap);
-
-	if (HasSpawnFlags(1)) {
-		NSLog("^2logic_auto::^3think^7: %s triggerer removed self",  target);
-		remove(this);
-	}
-}
-
-void
-logic_auto::Respawn(void)
+logic_auto::RestoreComplete(void)
 {
 	think = Processing;
 	nextthink = time + 0.2f;
 }
 
+
 void
 logic_auto::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "globalstate":
-		m_strGlobalState = strValue;
-		break;
 	/* outputs */
 	case "OnMapSpawn":
 		m_strOnMapSpawn = PrepareOutput(m_strOnMapSpawn, strValue);
@@ -226,7 +194,45 @@ logic_auto::Spawned(void)
 }
 
 void
-logic_auto::logic_auto(void)
+logic_auto::Respawn(void)
 {
-	m_iFromSaveGame = 0;
+	think = Processing;
+	nextthink = time + 0.2f;
+}
+
+void
+logic_auto::Processing(void)
+{
+	if (m_strGlobalState)
+		if (GetGlobalValue(m_strGlobalState) == 0)
+			return;
+
+	UseOutput(this, m_strOnMapSpawn);
+
+	if (cvar("sv_playerslots") == 1) {
+		if (m_iFromSaveGame) {
+			/* set by trigger_changelevel, however not by the changelevel cmd */
+			if (cvar("_bsp_change_auto") == 1) {
+				UseOutput(this, m_strOnMapTransition);
+				readcmd("set _bsp_change_auto \"\"\n");
+			} else
+				UseOutput(this, m_strOnLoadGame);
+		} else
+			UseOutput(this, m_strOnNewGame);
+	} else {
+		/* TODO: more reliable way of figuring out round restarts */
+		if (time > 5)
+			UseOutput(this, m_strOnMultiNewRound);
+
+		/* yes, this is also called during entity respawns :X */
+		UseOutput(this, m_strOnMultiNewMap);
+	}
+
+	if (serverkeyfloat("background") == 1)
+		UseOutput(this, m_strOnBackgroundMap);
+
+	if (HasSpawnFlags(1)) {
+		NSLog("^2logic_auto::^3think^7: %s triggerer removed self",  target);
+		remove(this);
+	}
 }

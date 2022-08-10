@@ -66,6 +66,13 @@ NSIO::Init(void)
 	__fullspawndata = "";
 #endif
 	Spawned();
+
+#ifdef SERVER
+	/* we're loading entity data, don't call Respawn() */
+	if (g_isloading == true)
+		return;
+#endif
+	Respawn();
 }
 
 void
@@ -191,31 +198,31 @@ NSIO::Input(entity eAct, string strInput, string strData)
 void
 NSIO::SaveBool(float handle, string key, bool value)
 {
-	if (value)
+	//if (value)
 		fputs(handle, sprintf("%S \"%f\"\n", key, value));
 }
 void
 NSIO::SaveFloat(float handle, string key, float value)
 {
-	if (value)
+	//if (value)
 		fputs(handle, sprintf("%S \"%f\"\n", key, value));
 }
 void
 NSIO::SaveInt(float handle, string key, int value)
 {
-	if (value)
+	//if (value)
 		fputs(handle, sprintf("%S \"%i\"\n", key, value));
 }
 void
 NSIO::SaveString(float handle, string key, string value)
 {
-	if (value && value != "")
+	//if (value && value != "")
 		fputs(handle, sprintf("%S %S\n", key, value));
 }
 void
 NSIO::SaveVector(float handle, string key, vector value)
 {
-	if (value)
+	//if (value)
 		fputs(handle, sprintf("%S \"%v\"\n", key, value));
 }
 void
@@ -223,7 +230,7 @@ NSIO::SaveEntity(float handle, string key, entity targ)
 {
 	float value = num_for_edict(targ);
 
-	if (value)
+	//if (value)
 		fputs(handle, sprintf("%S \"%f\"\n", key, value));
 }
 
@@ -277,44 +284,345 @@ NSIO::ReadEntity(string strValue)
 void
 NSIO::Save(float handle)
 {
-	SaveFloat(handle, "nextthink", bound(0, (nextthink - time), nextthink));
+	/* all the stock Quake fields the engine is aware of */
+	SaveFloat(handle, "modelindex", modelindex);
+	SaveVector(handle, "absmin", absmin);
+	SaveVector(handle, "absmax", absmax);
+	SaveFloat(handle, "ltime", ltime);
+	SaveFloat(handle, "movetype", movetype);
+	SaveFloat(handle, "solid", solid);
+	SaveVector(handle, "origin", origin);
+	SaveVector(handle, "oldorigin", oldorigin);
+	SaveVector(handle, "velocity", velocity);
+	SaveVector(handle, "angles", angles);
+	SaveVector(handle, "avelocity", avelocity);
+	SaveVector(handle, "punchangle", punchangle);
+	//SaveString(handle, "classname", classname);
+	SaveString(handle, "model", model);
+	SaveFloat(handle, "frame", frame);
+	SaveFloat(handle, "skin", skin);
+	SaveFloat(handle, "effects", effects);
+	SaveVector(handle, "mins", mins);
+	SaveVector(handle, "maxs", maxs);
+	SaveVector(handle, "size", size);
+	SaveString(handle, "touch", getentityfieldstring(findentityfield("touch"), this));
+	SaveString(handle, "use", getentityfieldstring(findentityfield("use"), this));
 	SaveString(handle, "think", getentityfieldstring(findentityfield("think"), this));
-	SaveString(handle, "OnTrigger", m_strOnTrigger);
-	SaveString(handle, "OnUser1", m_strOnUser1);
-	SaveString(handle, "OnUser2", m_strOnUser2);
-	SaveString(handle, "OnUser3", m_strOnUser3);
-	SaveString(handle, "OnUser4", m_strOnUser4);
+	SaveString(handle, "blocked", getentityfieldstring(findentityfield("blocked"), this));
+	SaveFloat(handle, "nextthink", nextthink);
+	SaveEntity(handle, "groundentity", groundentity);
+	SaveFloat(handle, "health", health);
+	SaveFloat(handle, "frags", frags);
+	SaveFloat(handle, "weapon", weapon);
+	SaveString(handle, "weaponmodel", weaponmodel);
+	SaveFloat(handle, "weaponframe", weaponframe);
+	SaveFloat(handle, "currentammo", currentammo);
+	SaveFloat(handle, "ammo_shells", ammo_shells);
+	SaveFloat(handle, "ammo_nails", ammo_nails);
+	SaveFloat(handle, "ammo_rockets", ammo_rockets);
+	SaveFloat(handle, "ammo_cells", ammo_cells);
+	SaveFloat(handle, "items", items);
+	SaveFloat(handle, "takedamage", takedamage);
+	SaveEntity(handle, "chain", chain);
+	SaveFloat(handle, "deadflag", deadflag);
+	SaveVector(handle, "view_ofs", view_ofs);
+	SaveFloat(handle, "button0", button0);
+	SaveFloat(handle, "button1", button1);
+	SaveFloat(handle, "button2", button2);
+	SaveFloat(handle, "impulse", impulse);
+	SaveFloat(handle, "fixangle", fixangle);
+	SaveVector(handle, "v_angle", v_angle);
+	SaveFloat(handle, "idealpitch", idealpitch);
+	SaveString(handle, "netname", netname);
+	SaveEntity(handle, "enemy", enemy);
+	SaveFloat(handle, "flags", flags);
+	SaveFloat(handle, "colormap", colormap);
+	SaveFloat(handle, "team", team);
+	SaveFloat(handle, "max_health", max_health);
+	SaveFloat(handle, "teleport_time", teleport_time);
+	SaveFloat(handle, "armortype", armortype);
+	SaveFloat(handle, "armorvalue", armorvalue);
+	SaveFloat(handle, "waterlevel", waterlevel);
+	SaveFloat(handle, "watertype", watertype);
+	SaveFloat(handle, "ideal_yaw", ideal_yaw);
+	SaveFloat(handle, "yaw_speed", yaw_speed);
+	SaveEntity(handle, "aiment", aiment);
+	SaveEntity(handle, "goalentity", goalentity);
+	SaveFloat(handle, "spawnflags", spawnflags);
+	SaveString(handle, "target", target);
 	SaveString(handle, "targetname", targetname);
+	SaveFloat(handle, "dmg_take", dmg_take);
+	SaveFloat(handle, "dmg_save", dmg_save);
+	SaveEntity(handle, "dmg_inflictor", dmg_inflictor);
+	SaveEntity(handle, "owner", owner);
+	SaveVector(handle, "movedir", movedir);
+	SaveString(handle, "message", message);
+	SaveFloat(handle, "sounds", sounds);
+	SaveString(handle, "noise", noise);
+	SaveString(handle, "noise1", noise1);
+	SaveString(handle, "noise2", noise2);
+	SaveString(handle, "noise3", noise3);
+
+	SaveString(handle, "m_strOnTrigger", m_strOnTrigger);
+	SaveString(handle, "m_strOnUser1", m_strOnUser1);
+	SaveString(handle, "m_strOnUser2", m_strOnUser2);
+	SaveString(handle, "m_strOnUser3", m_strOnUser3);
+	SaveString(handle, "m_strOnUser4", m_strOnUser4);
 }
 void
 NSIO::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "targetname":
-		targetname = ReadString(strValue);
+	/* START: all the stock Quake fields the engine is aware of */
+	case "modelindex":
+		modelindex = ReadFloat(strValue);
 		break;
-	case "nextthink":
-		float nt = ReadFloat(strValue);
-
-		if (nt)
-			nextthink = time + stof(strValue);
+	case "absmin":
+		absmin = ReadVector(strValue);
+		break;
+	case "absmax":
+		absmax = ReadVector(strValue);
+		break;
+	case "ltime":
+		ltime = ReadFloat(strValue);
+		break;
+	case "movetype":
+		movetype = ReadFloat(strValue);
+		break;
+	case "solid":
+		solid = ReadFloat(strValue);
+		break;
+	case "origin":
+		origin = ReadVector(strValue);
+		setorigin(this, origin);
+		break;
+	case "oldorigin":
+		oldorigin = ReadVector(strValue);
+		break;
+	case "velocity":
+		velocity = ReadVector(strValue);
+		break;
+	case "angles":
+		angles = ReadVector(strValue);
+		break;
+	case "avelocity":
+		avelocity = ReadVector(strValue);
+		break;
+	case "punchangle":
+		punchangle = ReadVector(strValue);
+		break;
+	/*case "classname":
+		classname = ReadString(strValue);
+		break; */
+	case "model":
+		model = ReadString(strValue);
+		setmodel(this, model);
+		break;
+	case "frame":
+		frame = ReadFloat(strValue);
+		break;
+	case "skin":
+		skin = ReadFloat(strValue);
+		break;
+	case "effects":
+		effects = ReadFloat(strValue);
+		break;
+	case "mins":
+		mins = ReadVector(strValue);
+		setsize(this, mins, maxs);
+		break;
+	case "maxs":
+		maxs = ReadVector(strValue);
+		setsize(this, mins, maxs);
+		break;
+	case "size":
+		size = ReadVector(strValue);
+		break;
+	case "touch":
+		touch = externvalue(-1, strValue);
+		break;
+	case "use":
+		use = externvalue(-1, strValue);
 		break;
 	case "think":
 		think = externvalue(-1, strValue);
 		break;
-	case "OnTrigger":
+	case "blocked":
+		blocked = externvalue(-1, strValue);
+		break;
+	case "nextthink":
+		nextthink = ReadFloat(strValue);
+		break;
+	case "groundentity":
+		groundentity = ReadEntity(strValue);
+		break;
+	case "health":
+		health = ReadFloat(strValue);
+		break;
+	case "frags":
+		frags = ReadFloat(strValue);
+		break;
+	case "weapon":
+		weapon = ReadFloat(strValue);
+		break;
+	case "weaponmodel":
+		weaponmodel = ReadString(strValue);
+		break;
+	case "weaponframe":
+		weaponframe = ReadFloat(strValue);
+		break;
+	case "currentammo":
+		currentammo = ReadFloat(strValue);
+		break;
+	case "ammo_shells":
+		ammo_shells = ReadFloat(strValue);
+		break;
+	case "ammo_nails":
+		ammo_nails = ReadFloat(strValue);
+		break;
+	case "ammo_rockets":
+		ammo_rockets = ReadFloat(strValue);
+		break;
+	case "ammo_cells":
+		ammo_cells = ReadFloat(strValue);
+		break;
+	case "items":
+		items = ReadFloat(strValue);
+		break;
+	case "takedamage":
+		takedamage = ReadFloat(strValue);
+		break;
+	case "chain":
+		chain = ReadEntity(strValue);
+		break;
+	case "deadflag":
+		deadflag = ReadFloat(strValue);
+		break;
+	case "view_ofs":
+		view_ofs = ReadVector(strValue);
+		break;
+	case "button0":
+		button0 = ReadFloat(strValue);
+		break;
+	case "button1":
+		button1 = ReadFloat(strValue);
+		break;
+	case "button2":
+		button2 = ReadFloat(strValue);
+		break;
+	case "impulse":
+		impulse = ReadFloat(strValue);
+		break;
+	case "fixangle":
+		fixangle = ReadFloat(strValue);
+		break;
+	case "v_angle":
+		v_angle = ReadVector(strValue);
+		break;
+	case "idealpitch":
+		idealpitch = ReadFloat(strValue);
+		break;
+	case "netname":
+		netname = ReadString(strValue);
+		break;
+	case "enemy":
+		enemy = ReadEntity(strValue);
+		break;
+	case "flags":
+		flags = ReadFloat(strValue);
+		break;
+	case "colormap":
+		colormap = ReadFloat(strValue);
+		break;
+	case "team":
+		team = ReadFloat(strValue);
+		break;
+	case "max_health":
+		max_health = ReadFloat(strValue);
+		break;
+	case "teleport_time":
+		teleport_time = ReadFloat(strValue);
+		break;
+	case "armortype":
+		armortype = ReadFloat(strValue);
+		break;
+	case "armorvalue":
+		armorvalue = ReadFloat(strValue);
+		break;
+	case "waterlevel":
+		waterlevel = ReadFloat(strValue);
+		break;
+	case "watertype":
+		watertype = ReadFloat(strValue);
+		break;
+	case "ideal_yaw":
+		ideal_yaw = ReadFloat(strValue);
+		break;
+	case "yaw_speed":
+		yaw_speed = ReadFloat(strValue);
+		break;
+	case "aiment":
+		aiment = ReadEntity(strValue);
+		break;
+	case "goalentity":
+		goalentity = ReadEntity(strValue);
+		break;
+	case "spawnflags":
+		spawnflags = ReadFloat(strValue);
+		break;
+	case "target":
+		target = ReadString(strValue);
+		break;
+	case "targetname":
+		targetname = ReadString(strValue);
+		break;
+	case "dmg_take":
+		dmg_take = ReadFloat(strValue);
+		break;
+	case "dmg_save":
+		dmg_save = ReadFloat(strValue);
+		break;
+	case "dmg_inflictor":
+		dmg_inflictor = ReadEntity(strValue);
+		break;
+	case "owner":
+		owner = ReadEntity(strValue);
+		break;
+	case "movedir":
+		movedir = ReadVector(strValue);
+		break;
+	case "message":
+		message = ReadString(strValue);
+		break;
+	case "sounds":
+		sounds = ReadFloat(strValue);
+		break;
+	case "noise":
+		noise = ReadString(strValue);
+		break;
+	case "noise1":
+		noise1 = ReadString(strValue);
+		break;
+	case "noise2":
+		noise2 = ReadString(strValue);
+		break;
+	case "noise3":
+		noise3 = ReadString(strValue);
+		break;
+	/* END: all the stock Quake fields the engine is aware of */
+	case "m_strOnTrigger":
 		m_strOnTrigger = ReadString(strValue);
 		break;
-	case "OnUser1":
+	case "m_strOnUser1":
 		m_strOnUser1 = ReadString(strValue);
 		break;
-	case "OnUser2":
+	case "m_strOnUser2":
 		m_strOnUser2 = ReadString(strValue);
 		break;
-	case "OnUser3":
+	case "m_strOnUser3":
 		m_strOnUser3 = ReadString(strValue);
 		break;
-	case "OnUser4":
+	case "m_strOnUser4":
 		m_strOnUser4 = ReadString(strValue);
 		break;
 	}

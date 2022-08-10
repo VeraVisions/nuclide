@@ -31,7 +31,8 @@ Please look at func_breakable for more entity keys, inputs and outputs.
 This entity was introduced in Half-Life (1998).
 */
 
-class func_pushable:func_breakable
+class
+func_pushable:func_breakable
 {
 	entity m_pPuller;
 	entity m_eCollBox;
@@ -44,14 +45,22 @@ class func_pushable:func_breakable
 	virtual void(void) Respawn;
 	virtual void(entity) Touch;
 	virtual void(void) OnPlayerUse;
+	virtual void(void) OnRemoveEntity;
 };
+
+void
+func_pushable::func_pushable(void)
+{
+	m_pPuller = __NULL__;
+	m_eCollBox = __NULL__;
+}
 
 void
 func_pushable::Save(float handle)
 {
+	super::Save(handle);
 	SaveEntity(handle, "puller", m_pPuller);
 	SaveEntity(handle, "collbox", m_eCollBox);
-	super::Save(handle);
 }
 
 void
@@ -67,6 +76,32 @@ func_pushable::Restore(string strKey, string strValue)
 	default:
 		super::Restore(strKey, strValue);
 	}
+}
+
+void
+func_pushable::Respawn(void)
+{
+	super::Respawn();
+	//SetSolid(SOLID_BSP);
+	SetOrigin(GetSpawnOrigin());
+	SetMovetype(MOVETYPE_STEP);
+	PlayerUse = OnPlayerUse;
+
+	if (!m_eCollBox) {
+		m_eCollBox = spawn();
+		m_eCollBox.classname = "func_pushable_bbox";
+		m_eCollBox.solid = SOLID_BBOX;
+		m_eCollBox.owner = this;
+		setsize(m_eCollBox, -(size/2) * 0.9f, (size/2) * 0.9f);
+		setorigin(m_eCollBox, WorldSpaceCenter());
+	}
+}
+
+void
+func_pushable::OnRemoveEntity(void)
+{
+	if (m_eCollBox)
+		remove(m_eCollBox);
 }
 
 void
@@ -146,28 +181,4 @@ void
 func_pushable::OnPlayerUse(void)
 {
 	m_pPuller = eActivator;
-}
-
-void
-func_pushable::Respawn(void)
-{
-	super::Respawn();
-	//SetSolid(SOLID_BSP);
-	SetOrigin(GetSpawnOrigin());
-	SetMovetype(MOVETYPE_STEP);
-	PlayerUse = OnPlayerUse;
-
-	if (!m_eCollBox) {
-		m_eCollBox = spawn();
-		m_eCollBox.classname = "func_pushable_bbox";
-		m_eCollBox.solid = SOLID_BBOX;
-		m_eCollBox.owner = this;
-		setsize(m_eCollBox, -(size/2) * 0.9f, (size/2) * 0.9f);
-		setorigin(m_eCollBox, WorldSpaceCenter());
-	}
-}
-
-void
-func_pushable::func_pushable(void)
-{
 }

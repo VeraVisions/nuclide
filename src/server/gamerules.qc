@@ -16,6 +16,37 @@
 
 var bool autocvar_sv_friendlyFire = false;
 
+void
+CGameRules::CGameRules(void)
+{
+	forceinfokey(world, "teamplay", "0");
+	identity = 2;
+}
+
+void
+CGameRules::Save(float handle)
+{
+	SaveInt(handle, "m_iIntermission", m_iIntermission);
+	SaveFloat(handle, "m_flIntermissionTime", m_flIntermissionTime);
+	SaveFloat(handle, "m_flIntermissionCycle", m_flIntermissionCycle);
+}
+
+void
+CGameRules::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "m_iIntermission":
+		m_iIntermission = ReadInt(strValue);
+		break;
+	case "m_flIntermissionTime":
+		m_flIntermissionTime = ReadFloat(strValue);
+		break;
+	case "m_flIntermissionCycle":
+		m_flIntermissionCycle = ReadFloat(strValue);
+		break;
+	}
+}
+
 /* init */
 void
 CGameRules::InitPostEnts(void)
@@ -419,12 +450,6 @@ bool
 CGameRules::PlayerCanAttack(NSClientPlayer bp)
 {
 	return true;
-}
-
-void
-CGameRules::CGameRules(void)
-{
-	forceinfokey(world, "teamplay", "0");
 }
 
 /* our currently running mode */

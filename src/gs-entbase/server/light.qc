@@ -97,7 +97,8 @@ though.
 This entity was introduced in Nuclide (2021).
 */
 
-class light:NSPointTrigger
+class
+light:NSPointTrigger
 {
 	int m_iEnabled;
 	int m_iStartActive;
@@ -110,20 +111,31 @@ class light:NSPointTrigger
 	/* overrides */
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
+	virtual void(string, string) SpawnKey;
+	virtual void(void) Spawned;
+	virtual void(void) Respawn;
 	virtual void(void) RestoreComplete;
 	virtual void(entity, int) Trigger;
-	virtual void(void) Respawn;
-	virtual void(string, string) SpawnKey;
 };
+
+void
+light::light(void)
+{
+	m_iEnabled = 0;
+	m_iStartActive = TRUE;
+	m_strPattern = "m";
+	m_flStyle = 0;
+	m_flSwitchStyle = 0;
+}
 
 void
 light::Save(float handle)
 {
-	SaveInt(handle, "enabled", m_iEnabled);
-	SaveInt(handle, "start_active", m_iStartActive);
-	SaveFloat(handle, "style", m_flStyle);
-	SaveFloat(handle, "switch_style", m_flSwitchStyle);
-	SaveString(handle, "pattern", m_strPattern);
+	SaveInt(handle, "m_iEnabled", m_iEnabled);
+	SaveInt(handle, "m_iStartActive", m_iStartActive);
+	SaveFloat(handle, "m_flStyle", m_flStyle);
+	SaveFloat(handle, "m_flSwitchStyle", m_flSwitchStyle);
+	SaveString(handle, "m_strPattern", m_strPattern);
 	super::Save(handle);
 }
 
@@ -131,19 +143,19 @@ void
 light::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "enabled":
+	case "m_iEnabled":
 		m_iEnabled = ReadInt(strValue);
 		break;
-	case "start_active":
+	case "m_iStartActive":
 		m_iStartActive = ReadInt(strValue);
 		break;
-	case "style":
+	case "m_flStyle":
 		m_flStyle = ReadFloat(strValue);
 		break;
-	case "switch_style":
+	case "m_flSwitchStyle":
 		m_flSwitchStyle = ReadFloat(strValue);
 		break;
-	case "pattern":
+	case "m_strPattern":
 		m_strPattern = ReadString(strValue);
 		break;
 	default:
@@ -162,20 +174,43 @@ light::RestoreComplete(void)
 }
 
 void
-light::Trigger(entity act, int state)
+light::SpawnKey(string strKey, string strValue)
 {
-	switch (state) {
-	case TRIG_OFF:
-		m_iEnabled = 0;
+	switch (strKey) {
+	case "pattern":
+		m_strPattern = strValue;
 		break;
-	case TRIG_ON:
-		m_iEnabled = 1;
+	case "switch_style":
+		m_flSwitchStyle = stof(strValue);
+		break;
+	case "style":
+		m_flStyle = stof(strValue);
+		style = __NULL__;
+		break;
+	case "start_active":
+		m_iStartActive = stoi(strValue);
+		break;
+	/* level-compiler keys we don't really use right now */
+	case "_cone":
+	case "_cone2":
+	case "_sky":
+	case "pitch":
+	case "_light":
 		break;
 	default:
-		m_iEnabled = 1 - m_iEnabled;
+		super::SpawnKey(strKey, strValue);
 	}
+}
 
-	RestoreComplete();
+void
+light::Spawned(void)
+{
+	super::Spawned();
+
+	/* switch styles before 12 are builtins from Quake. */
+	if (m_flSwitchStyle > 0 && m_flSwitchStyle <= 11) {
+		m_strPattern = getlightstyle(m_flSwitchStyle);
+	}
 }
 
 void
@@ -210,47 +245,20 @@ light::Respawn(void)
 }
 
 void
-light::SpawnKey(string strKey, string strValue)
+light::Trigger(entity act, int state)
 {
-	switch (strKey) {
-	case "pattern":
-		m_strPattern = strValue;
+	switch (state) {
+	case TRIG_OFF:
+		m_iEnabled = 0;
 		break;
-	case "switch_style":
-		m_flSwitchStyle = stof(strValue);
-		break;
-	case "style":
-		m_flStyle = stof(strValue);
-		style = __NULL__;
-		break;
-	case "start_active":
-		m_iStartActive = stoi(strValue);
-		break;
-	/* level-compiler keys we don't really use right now */
-	case "_cone":
-	case "_cone2":
-	case "_sky":
-	case "pitch":
-	case "_light":
+	case TRIG_ON:
+		m_iEnabled = 1;
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		m_iEnabled = 1 - m_iEnabled;
 	}
-}
 
-void
-light::light(void)
-{
-	m_iEnabled = 0;
-	m_iStartActive = TRUE;
-	m_strPattern = "m";
-	m_flStyle = 0;
-	m_flSwitchStyle = 0;
-
-	/* switch styles before 12 are builtins from Quake. */
-	if (m_flSwitchStyle > 0 && m_flSwitchStyle <= 11) {
-		m_strPattern = getlightstyle(m_flSwitchStyle);
-	}
+	RestoreComplete();
 }
 
 CLASSEXPORT(light_spot, light)

@@ -14,6 +14,48 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+
+/*
+============
+NSEntity::NSEntity
+
+client doesn't have to do a whole lot here
+============
+*/
+void
+NSEntity::NSEntity(void)
+{
+	blocked = BlockedHandler;
+	touch = TouchHandler;
+
+#ifdef SERVER
+	identity = 1;
+#endif
+}
+
+
+void
+NSEntity::Spawned(void)
+{
+	super::Spawned();
+
+	m_oldAngle = angles;
+	m_oldOrigin = origin;
+	m_oldModel = Util_FixModel(model);
+	m_oldSolid = solid;
+
+#ifdef SERVER
+	m_oldstrTarget = target;
+
+	if (m_oldModel) {
+		precache_model(GetSpawnModel());
+	}
+
+	if (m_strOnTrigger)
+		m_strOnTrigger = CreateOutput(m_strOnTrigger);
+#endif
+}
+
 float
 NSEntity::EntIndex(void)
 {
@@ -750,78 +792,75 @@ NSEntity::Respawn(void)
 void
 NSEntity::Save(float handle)
 {
-	SaveFloat(handle, "spawnflags", spawnflags);
-	SaveVector(handle, "origin", origin);
-	SaveVector(handle, "absmin", absmin);
-	SaveVector(handle, "absmax", absmax);
-	SaveVector(handle, "mins", mins);
-	SaveVector(handle, "maxs", maxs);
-	SaveString(handle, "model", model);
-	SaveVector(handle, "angles", angles);
-	SaveFloat(handle, "solid", solid);
-	SaveFloat(handle, "movetype", movetype);
-	SaveFloat(handle, "health", health);
-	SaveString(handle, "parentname", m_parent);
+	super::Save(handle);
 	SaveFloat(handle, "pvsflags", pvsflags);
 	SaveFloat(handle, "_mapspawned", _mapspawned);
-	super::Save(handle);
+	SaveFloat(handle, "scale", scale);
+	SaveVector(handle, "m_vecMins", m_vecMins);
+	SaveVector(handle, "m_vecMaxs", m_vecMaxs);
+	SaveVector(handle, "m_oldOrigin", m_oldOrigin);
+	SaveVector(handle, "m_oldAngle", m_oldAngle);
+	SaveString(handle, "m_oldModel", m_oldModel);
+	SaveFloat(handle, "m_oldSolid", m_oldSolid);
+	SaveFloat(handle, "m_flTouchTime", m_flTouchTime);
+	SaveBool(handle, "m_beingTouched", m_beingTouched);
+	SaveEntity(handle, "m_eTouchLast", m_eTouchLast);
+	SaveString(handle, "m_parent", m_parent);
+	SaveString(handle, "m_parent_attachment", m_parent_attachment);
 }
+
 void
 NSEntity::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "spawnflags":
-		spawnflags = stof(strValue);
-		break;
-	case "origin":
-		origin = stov(strValue);
-		setorigin(this, origin);
-		break;
-	case "absmin":
-		absmin = stov(strValue);
-		break;
-	case "absmax":
-		absmax = stov(strValue);
-		break;
-	case "mins":
-		mins = stov(strValue);
-		setsize(this, mins, maxs);
-		break;
-	case "maxs":
-		maxs = stov(strValue);
-		setsize(this, mins, maxs);
-		break;
-	case "model":
-		model = strValue;
-		setmodel(this, model);
-		break;
-	case "angles":
-		angles = stov(strValue);
-		break;
-	case "solid":
-		solid = stof(strValue);
-		setorigin(this, origin);
-		break;
-	case "movetype":
-		movetype = stof(strValue);
-		break;
-	case "health":
-		health = stof(strValue);
-		break;
-	case "parentname":
-		if (strValue != "")
-			SetParent(strValue);
-		break;
 	case "pvsflags":
 		pvsflags = stof(strValue);
 		break;
 	case "_mapspawned":
 		_mapspawned = stof(strValue);
 		break;
+	case "scale":
+		scale = ReadFloat(strValue);
+		break;
+	case "m_vecMins":
+		m_vecMins = ReadVector(strValue);
+		break;
+	case "m_vecMaxs":
+		m_vecMaxs = ReadVector(strValue);
+		break;
+	case "m_oldOrigin":
+		m_oldOrigin = ReadVector(strValue);
+		break;
+	case "m_oldAngle":
+		m_oldAngle = ReadVector(strValue);
+		break;
+	case "m_oldModel":
+		m_oldModel = ReadString(strValue);
+		break;
+	case "m_oldSolid":
+		m_oldSolid = ReadFloat(strValue);
+		break;
+	case "m_flTouchTime":
+		m_flTouchTime = ReadFloat(strValue);
+		break;
+	case "m_beingTouched":
+		m_beingTouched = ReadBool(strValue);
+		break;
+	case "m_eTouchLast":
+		m_eTouchLast = ReadEntity(strValue);
+		break;
+	case "m_parent":
+		m_parent = ReadString(strValue);
+		break;
+	case "m_parent_attachment":
+		m_parent_attachment = ReadString(strValue);
+		break;
 	default:
 		super::Restore(strKey, strValue);
+		break;
 	}
 }
+
 void
 NSEntity::RestoreComplete(void)
 {
@@ -949,45 +988,4 @@ NSEntity::Destroy(void)
 		nextthink = time + 0.01;
 	else
 		nextthink = time;
-}
-
-void
-NSEntity::Spawned(void)
-{
-	super::Spawned();
-
-	m_oldAngle = angles;
-	m_oldOrigin = origin;
-	m_oldModel = Util_FixModel(model);
-	m_oldSolid = solid;
-
-#ifdef SERVER
-	m_oldstrTarget = target;
-
-	if (m_oldModel) {
-		precache_model(GetSpawnModel());
-	}
-
-	if (m_strOnTrigger)
-		m_strOnTrigger = CreateOutput(m_strOnTrigger);
-#endif
-}
-
-/*
-============
-NSEntity::NSEntity
-
-client doesn't have to do a whole lot here
-============
-*/
-void
-NSEntity::NSEntity(void)
-{
-#ifdef SERVER
-	identity = 1; /* .identity is a global ent field we abuse to let find() calls
-			reliably know that those are NSEntity class-based */
-#endif
-
-	blocked = BlockedHandler;
-	touch = TouchHandler;
 }

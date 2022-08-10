@@ -18,8 +18,8 @@ void
 NSNavAI::NSNavAI(void)
 {
 #ifdef SERVER
-	m_iNodes = 0;
-	m_iCurNode = -1;
+	m_iNodes = 0i;
+	m_iCurNode = -1i;
 	m_pRoute = __NULL__;
 	m_vecLastNode = [0,0,0];
 	m_vecTurnAngle = [0,0,0];
@@ -31,15 +31,41 @@ void
 NSNavAI::Save(float handle)
 {
 	super::Save(handle);
+	SaveInt(handle, "m_iNodes", m_iNodes);
+	SaveInt(handle, "m_iCurNode", m_iCurNode);
+	SaveVector(handle, "m_vecLastNode", m_vecLastNode);
+	SaveVector(handle, "m_vecTurnAngle", m_vecTurnAngle);
 }
 
 void
 NSNavAI::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
+	case "m_iNodes":
+		m_iNodes = ReadInt(strValue);
+		break;
+	case "m_iCurNode":
+		m_iCurNode = ReadInt(strValue);
+		break;
+	case "m_vecLastNode":
+		m_vecLastNode = ReadVector(strValue);
+		break;
+	case "m_vecTurnAngle":
+		m_vecTurnAngle = ReadVector(strValue);
+		break;
 	default:
 		super::Restore(strKey, strValue);
 	}
+}
+
+void
+NSNavAI::RestoreComplete(void)
+{
+	if (m_iNodes <= 0i)
+		return;
+
+	/* re-plot our route */
+	RouteToPosition(m_vecLastNode);
 }
 #endif
 
@@ -226,8 +252,15 @@ NSNavAI::RouteToPosition(vector destination)
 		}
 	}
 
-	if (!g_nodes_present)
+	if (!g_nodes_present) {
+		Nodes_Init();
 		return;
+	}
+
+	/* still nothing... give up */
+	if (!g_nodes_present) {
+		return;
+	}
 
 	RouteClear();
 

@@ -33,7 +33,8 @@ sequences. This is really for test-maps and showroom entities.
 This entity was introduced in Half-Life (1998).
 */
 
-class cycler:NSSurfacePropEntity
+class
+cycler:NSSurfacePropEntity
 {
 	void(void) cycler;
 
@@ -42,14 +43,8 @@ class cycler:NSSurfacePropEntity
 };
 
 void
-cycler::Pain(void)
+cycler::cycler(void)
 {
-	if (frame >= modelframecount(modelindex)) {
-		frame = 0;
-	} else {
-		frame += 1;
-	}
-	SetHealth(9999);
 }
 
 void
@@ -63,6 +58,12 @@ cycler::Respawn(void)
 }
 
 void
-cycler::cycler(void)
+cycler::Pain(void)
 {
+	if (frame >= modelframecount(modelindex)) {
+		frame = 0;
+	} else {
+		frame += 1;
+	}
+	SetHealth(9999);
 }

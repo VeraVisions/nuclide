@@ -14,19 +14,19 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-class func_lod:NSEntity
+class
+func_lod:NSEntity
 {
 	void(void) func_lod;
 
-	virtual float(entity, float) SendEntity;
-	virtual void(string, string) SpawnKey;
 	virtual void(void) Respawn;
+	virtual void(string, string) SpawnKey;
+	virtual float(entity, float) SendEntity;
 };
 
-float
-func_lod::SendEntity(entity a, float b)
+void
+func_lod::func_lod(void)
 {
-	return (0);
 }
 
 void
@@ -50,7 +50,8 @@ func_lod::Respawn(void)
 	SetOrigin(GetSpawnOrigin());
 }
 
-void
-func_lod::func_lod(void)
+float
+func_lod::SendEntity(entity a, float b)
 {
+	return (0);
 }

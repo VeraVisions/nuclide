@@ -76,12 +76,18 @@ enumflags
 	SF_NORENDERCOLOR
 };
 
-class env_render:NSRenderableEntity
+class
+env_render:NSRenderableEntity
 {
 	void(void) env_render;
 
 	virtual void(entity, int) Trigger;
 };
+
+void
+env_render::env_render(void)
+{
+}
 
 void
 env_render::Trigger(entity act, int state)
@@ -109,9 +115,4 @@ env_render::Trigger(entity act, int state)
 			trigger.SetRenderFX(m_iRenderFX);
 		}
 	}
-}
-
-void
-env_render::env_render(void)
-{
 }

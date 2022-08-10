@@ -65,7 +65,8 @@ This entity was introduced in Quake (1996).
 #define SF_HURT_FIREONPLAYER	16 // Only call UseTarget functions when it's a player
 #define SF_HURT_TOUCHPLAYER		32 // Only hurt players
 
-class trigger_hurt:NSBrushTrigger
+class
+trigger_hurt:NSBrushTrigger
 {
 	int m_iDamage;
 	int m_iDamageType;
@@ -88,45 +89,105 @@ class trigger_hurt:NSBrushTrigger
 };
 
 void
+trigger_hurt::trigger_hurt(void)
+{
+	m_iDamage = 15;
+	m_iDamageType = 0i;
+	m_flNextTrigger = 0.0f;
+	m_flNextDmg = 0.5f;
+	m_flDelay = 0.0f;
+	m_strOnHurt = __NULL__;
+	m_strOnHurtPlayer = __NULL__;
+}
+
+void
 trigger_hurt::Save(float handle)
 {
-	SaveInt(handle, "damage", m_iDamage);
-	SaveInt(handle, "damagetype", m_iDamageType);
-	SaveFloat(handle, "nexttrigger", m_flNextTrigger);
-	SaveFloat(handle, "nextdmg", m_flNextDmg);
-	SaveFloat(handle, "delay", m_flDelay);
-	SaveString(handle, "OnHurt", m_strOnHurt);
-	SaveString(handle, "OnHurtPlayer", m_strOnHurtPlayer);
 	super::Save(handle);
+	SaveInt(handle, "m_iDamage", m_iDamage);
+	SaveInt(handle, "m_iDamageType", m_iDamageType);
+	SaveFloat(handle, "m_flNextTrigger", m_flNextTrigger);
+	SaveFloat(handle, "m_flNextDmg", m_flNextDmg);
+	SaveFloat(handle, "m_flDelay", m_flDelay);
+	SaveString(handle, "m_strOnHurt", m_strOnHurt);
+	SaveString(handle, "m_strOnHurtPlayer", m_strOnHurtPlayer);
 }
 
 void
 trigger_hurt::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "damage":
+	case "m_iDamage":
 		m_iDamage = ReadInt(strValue);
 		break;
-	case "damagetype":
+	case "m_iDamageType":
 		m_iDamageType = ReadInt(strValue);
 		break;
-	case "nexttrigger":
+	case "m_flNextTrigger":
 		m_flNextTrigger = ReadFloat(strValue);
 		break;
-	case "nextdmg":
+	case "m_flNextDmg":
 		m_flNextDmg = ReadFloat(strValue);
 		break;
-	case "delay":
+	case "m_flDelay":
 		m_flDelay = ReadFloat(strValue);
 		break;
-	case "OnHurt":
+	case "m_strOnHurt":
 		m_strOnHurt = ReadString(strValue);
 		break;
-	case "OnHurtPlayer":
+	case "m_strOnHurtPlayer":
 		m_strOnHurtPlayer = ReadString(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
+	}
+}
+
+void
+trigger_hurt::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "dmg":
+		m_iDamage = stoi(strValue);
+		break;
+	case "damagetype":
+		m_iDamageType = (int)stoi(strValue);
+		break;
+	case "wait":
+		m_flNextDmg = stof(strValue);
+		break;
+	case "OnHurt":
+		m_strOnHurt = PrepareOutput(m_strOnHurt, strValue);
+		break;
+	case "OnHurtPlayer":
+		m_strOnHurtPlayer = PrepareOutput(m_strOnHurtPlayer, strValue);
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
+	}
+}
+
+void
+trigger_hurt::Spawned(void)
+{
+	super::Spawned();
+
+	if (m_strOnHurt)
+		m_strOnHurt = CreateOutput(m_strOnHurt);
+
+	if (m_strOnHurtPlayer)
+		m_strOnHurtPlayer = CreateOutput(m_strOnHurtPlayer);
+}
+
+void
+trigger_hurt::Respawn(void)
+{
+	InitBrushTrigger();
+
+	if (HasSpawnFlags(SF_HURT_OFF)) {
+		Trigger(this, TRIG_OFF);
+	} else {
+		Trigger(this, TRIG_ON);
 	}
 }
 
@@ -217,18 +278,6 @@ trigger_hurt::Touch(entity eToucher)
 }
 
 void
-trigger_hurt::Respawn(void)
-{
-	InitBrushTrigger();
-
-	if (HasSpawnFlags(SF_HURT_OFF)) {
-		Trigger(this, TRIG_OFF);
-	} else {
-		Trigger(this, TRIG_ON);
-	}
-}
-
-void
 trigger_hurt::Input(entity eAct, string strInput, string strData)
 {
 	switch (strInput) {
@@ -238,48 +287,4 @@ trigger_hurt::Input(entity eAct, string strInput, string strData)
 	default:
 		super::Input(eAct, strInput, strData);
 	}
-}
-
-void
-trigger_hurt::SpawnKey(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "dmg":
-		m_iDamage = stoi(strValue);
-		break;
-	case "damagetype":
-		m_iDamageType = (int)stoi(strValue);
-		break;
-	case "wait":
-		m_flNextDmg = stof(strValue);
-		break;
-	case "OnHurt":
-		m_strOnHurt = PrepareOutput(m_strOnHurt, strValue);
-		break;
-	case "OnHurtPlayer":
-		m_strOnHurtPlayer = PrepareOutput(m_strOnHurtPlayer, strValue);
-		break;
-	default:
-		super::SpawnKey(strKey, strValue);
-	}
-}
-
-void
-trigger_hurt::Spawned(void)
-{
-	super::Spawned();
-
-	if (m_strOnHurt)
-		m_strOnHurt = CreateOutput(m_strOnHurt);
-
-	if (m_strOnHurtPlayer)
-		m_strOnHurtPlayer = CreateOutput(m_strOnHurtPlayer);
-}
-
-void
-trigger_hurt::trigger_hurt(void)
-{
-	/* defaults */
-	m_iDamage = 15;
-	m_flNextDmg = 0.5f;
 }

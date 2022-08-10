@@ -115,30 +115,31 @@ const string funcbreakable_surftable[] = {
 "gs_material_rocks"
 };
 
-class func_breakable:NSSurfacePropEntity
+class
+func_breakable:NSSurfacePropEntity
 {
 	float m_flDelay;
 	float m_flExplodeMag;
 	float m_flExplodeRad;
 	string m_strBreakSpawn;
+	bool m_bCanTouch;
 
 	/*entity m_pressAttacker;
 	int m_pressType;
 	int m_pressDamage;*/
 
-	bool m_iCanTouch;
 
 	void(void) func_breakable;
 
 	/* overrides */
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
+	virtual void(string, string) SpawnKey;
 	virtual void(void) Spawned;
 	virtual void(void) Respawn;
 	virtual void(void) Pain;
 	virtual void(void) Death;
-	virtual void(string, string) SpawnKey;
 	virtual void(entity, int) Trigger;
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
 
 	virtual void(void) Explode;
 	virtual void(entity) Touch;
@@ -146,34 +147,134 @@ class func_breakable:NSSurfacePropEntity
 };
 
 void
+func_breakable::func_breakable(void)
+{
+	m_flDelay = 0.0f;
+	m_flExplodeMag = 0.0f;
+	m_flExplodeRad = 0.0f;
+	m_strBreakSpawn = __NULL__;
+	m_bCanTouch = false;
+}
+
+void
 func_breakable::Save(float handle)
 {
-	SaveFloat(handle, "delay", m_flDelay);
-	SaveFloat(handle, "explode_mag", m_flExplodeMag);
-	SaveFloat(handle, "explode_rad", m_flExplodeRad);
-	SaveString(handle, "breakspawn", m_strBreakSpawn);
 	super::Save(handle);
+	SaveFloat(handle, "m_flDelay", m_flDelay);
+	SaveFloat(handle, "m_flExplodeMag", m_flExplodeMag);
+	SaveFloat(handle, "m_flExplodeRad", m_flExplodeRad);
+	SaveString(handle, "m_strBreakSpawn", m_strBreakSpawn);
+	SaveBool(handle, "m_bCanTouch", m_bCanTouch);
 }
 
 void
 func_breakable::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "delay":
+	case "m_flDelay":
 		m_flDelay = ReadFloat(strValue);
 		break;
-	case "explode_mag":
+	case "m_flExplodeMag":
 		m_flExplodeMag = ReadFloat(strValue);
 		break;
-	case "explode_rad":
+	case "m_flExplodeRad":
 		m_flExplodeRad = ReadFloat(strValue);
 		break;
-	case "breakspawn":
+	case "m_strBreakSpawn":
 		m_strBreakSpawn = ReadString(strValue);
+		break;
+	case "m_bCanTouch":
+		m_bCanTouch = ReadBool(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
 	}
+}
+
+void
+func_breakable::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "material":
+		float id = stof(strValue);
+		SetSurfaceData(funcbreakable_surftable[id]);
+		SetPropData(funcbreakable_surftable[id]);
+		break;
+	case "explodemagnitude":
+		m_flExplodeMag = stof(strValue);
+		m_flExplodeRad = m_flExplodeMag * 2.5f;
+		break;
+	case "spawnobject":
+		int oid = stoi(strValue);
+
+		if (oid >= funcbreakable_objtable.length) {
+			m_strBreakSpawn = "";
+			print(sprintf("^1func_breakable^7:" \
+			      "spawnobject %i out of bounds! fix your mod!\n", oid));
+		} else {
+			m_strBreakSpawn = funcbreakable_objtable[oid];
+		}
+		break;
+	case "spawnonbreak":
+		m_strBreakSpawn = strValue;
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
+		break;
+	}
+}
+
+void
+func_breakable::Spawned(void)
+{
+	super::Spawned();
+
+	/* func_breakable defaults to glass */
+	if (classname == "func_breakable") {
+		SetPropData(funcbreakable_surftable[0]);
+		SetSurfaceData(funcbreakable_surftable[0]);
+	} else {
+		SetPropData(funcbreakable_surftable[1]);
+		SetSurfaceData(funcbreakable_surftable[1]);
+	}
+
+	/* precache impact sound */
+	Sound_Precache(GetSurfaceData(SURFDATA_SND_BULLETIMPACT));
+}
+
+void
+func_breakable::Respawn(void)
+{
+	SetMovetype(MOVETYPE_NONE);
+	SetSolid(SOLID_BSP);
+
+	SetModel(GetSpawnModel());
+	SetOrigin(GetSpawnOrigin());
+	ClearAngles();
+	think = __NULL__;
+	m_bCanTouch = true;
+
+	if (HasSpawnFlags(SF_TRIGGER)) {
+		takedamage = DAMAGE_NO;
+	} else {
+		takedamage = DAMAGE_YES;
+	}
+
+	/* initially set the health to that of the ent-data */
+	float sh = GetSpawnHealth();
+
+	if (HasPropData() == TRUE && sh == 0) {
+		/* assign propdata health */
+		health = GetPropData(PROPINFO_HEALTH);
+		m_flExplodeMag = GetPropData(PROPINFO_EXPLOSIVE_DMG);
+		m_flExplodeRad = GetPropData(PROPINFO_EXPLOSIVE_RADIUS);
+	} else {
+		health = sh;
+	}
+
+	/* unassigned health isn't valid */
+	if (!health)
+		health = 15;
 }
 
 void
@@ -263,7 +364,7 @@ func_breakable::Touch(entity eToucher)
 		Trigger(this, TRIG_TOGGLE);
 	}
 
-	if (m_iCanTouch == false)
+	if (m_bCanTouch == false)
 		return;
 
 	if (eToucher.classname == classname) {
@@ -280,7 +381,7 @@ func_breakable::Touch(entity eToucher)
 		int fDamage = (float)(vlen(eToucher.velocity) * 0.01f);
 
 		if (fDamage >= health) {
-			m_iCanTouch = false;
+			m_bCanTouch = false;
 			Damage_Apply(this, eToucher, fDamage, 0, DMG_CRUSH);
 
 			if ((GetSurfaceData(SURFDATA_MATERIAL) == GSMATERIAL_GLASS) || (GetSurfaceData(SURFDATA_MATERIAL) == GSMATERIAL_COMPUTER)) {
@@ -290,7 +391,7 @@ func_breakable::Touch(entity eToucher)
 	}
 
 	if (HasSpawnFlags(SF_PRESSURE) && (eToucher.absmin[2] >= maxs[2] - 2)) {
-		m_iCanTouch = false;
+		m_bCanTouch = false;
 		think = TriggerWrap;
 
 		if (m_flDelay == 0) {
@@ -299,95 +400,4 @@ func_breakable::Touch(entity eToucher)
 
 		nextthink = time + m_flDelay;
 	}
-}
-
-void
-func_breakable::Respawn(void)
-{
-	SetMovetype(MOVETYPE_NONE);
-	SetSolid(SOLID_BSP);
-
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
-	ClearAngles();
-	think = __NULL__;
-	m_iCanTouch = true;
-
-	if (HasSpawnFlags(SF_TRIGGER)) {
-		takedamage = DAMAGE_NO;
-	} else {
-		takedamage = DAMAGE_YES;
-	}
-
-	/* initially set the health to that of the ent-data */
-	float sh = GetSpawnHealth();
-
-	if (HasPropData() == TRUE && sh == 0) {
-		/* assign propdata health */
-		health = GetPropData(PROPINFO_HEALTH);
-		m_flExplodeMag = GetPropData(PROPINFO_EXPLOSIVE_DMG);
-		m_flExplodeRad = GetPropData(PROPINFO_EXPLOSIVE_RADIUS);
-	} else {
-		health = sh;
-	}
-
-	/* unassigned health isn't valid */
-	if (!health)
-		health = 15;
-}
-
-void
-func_breakable::SpawnKey(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "material":
-		float id = stof(strValue);
-		SetSurfaceData(funcbreakable_surftable[id]);
-		SetPropData(funcbreakable_surftable[id]);
-		break;
-	case "explodemagnitude":
-		m_flExplodeMag = stof(strValue);
-		m_flExplodeRad = m_flExplodeMag * 2.5f;
-		break;
-	case "spawnobject":
-		int oid = stoi(strValue);
-
-		if (oid >= funcbreakable_objtable.length) {
-			m_strBreakSpawn = "";
-			print(sprintf("^1func_breakable^7:" \
-			      "spawnobject %i out of bounds! fix your mod!\n", oid));
-		} else {
-			m_strBreakSpawn = funcbreakable_objtable[oid];
-		}
-		break;
-	case "spawnonbreak":
-		m_strBreakSpawn = strValue;
-		break;
-	default:
-		super::SpawnKey(strKey, strValue);
-		break;
-	}
-}
-
-void
-func_breakable::Spawned(void)
-{
-	super::Spawned();
-
-	/* func_breakable defaults to glass */
-	if (classname == "func_breakable") {
-		SetPropData(funcbreakable_surftable[0]);
-		SetSurfaceData(funcbreakable_surftable[0]);
-	} else {
-		SetPropData(funcbreakable_surftable[1]);
-		SetSurfaceData(funcbreakable_surftable[1]);
-	}
-
-	/* precache impact sound */
-	Sound_Precache(GetSurfaceData(SURFDATA_SND_BULLETIMPACT));
-}
-
-void
-func_breakable::func_breakable(void)
-{
 }

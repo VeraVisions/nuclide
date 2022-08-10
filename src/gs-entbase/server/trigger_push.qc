@@ -36,7 +36,8 @@ enumflags
 	TP_STARTOFF
 };
 
-class trigger_push:NSBrushTrigger
+class
+trigger_push:NSBrushTrigger
 {
 	vector m_vecMoveDir;
 	float m_flSpeed;
@@ -45,29 +46,36 @@ class trigger_push:NSBrushTrigger
 
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
-	virtual void(entity) Touch;
+	virtual void(string, string) SpawnKey;
 	virtual void(void) Respawn;
 	virtual void(entity, int) Trigger;
+	virtual void(entity) Touch;
 	virtual void(void) SetMovementDirection;
-	virtual void(string, string) SpawnKey;
 };
+
+void
+trigger_push::trigger_push(void)
+{
+	m_vecMoveDir = [0,0,0];
+	m_flSpeed = 100;
+}
 
 void
 trigger_push::Save(float handle)
 {
-	SaveVector(handle, "movedir", m_vecMoveDir);
-	SaveFloat(handle, "speed", m_flSpeed);
 	super::Save(handle);
+	SaveVector(handle, "m_vecMoveDir", m_vecMoveDir);
+	SaveFloat(handle, "m_flSpeed", m_flSpeed);
 }
 
 void
 trigger_push::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "movedir":
+	case "m_vecMoveDir":
 		m_vecMoveDir = ReadVector(strValue);
 		break;
-	case "speed":
+	case "m_flSpeed":
 		m_flSpeed = ReadFloat(strValue);
 		break;
 	default:
@@ -76,15 +84,28 @@ trigger_push::Restore(string strKey, string strValue)
 }
 
 void
-trigger_push::SetMovementDirection(void)
+trigger_push::SpawnKey(string strKey, string strValue)
 {
-	if (GetSpawnAngles() == [0,-1,0]) {
-		m_vecMoveDir = [0,0,1];
-	} else if (angles == [0,-2,0]) {
-		m_vecMoveDir = [0,0,-1];
-	} else {
-		makevectors(GetSpawnAngles());
-		m_vecMoveDir = v_forward;
+	switch (strKey) {
+	case "speed":
+		m_flSpeed = stof(strValue);
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
+	}
+}
+
+void
+trigger_push::Respawn(void)
+{
+	InitBrushTrigger();
+
+	RestoreAngles();
+	SetMovementDirection();
+	ClearAngles();
+
+	if (HasSpawnFlags(TP_STARTOFF)) {
+		SetSolid(SOLID_NOT);
 	}
 }
 
@@ -137,34 +158,14 @@ trigger_push::Touch(entity eToucher)
 }
 
 void
-trigger_push::Respawn(void)
+trigger_push::SetMovementDirection(void)
 {
-	InitBrushTrigger();
-
-	RestoreAngles();
-	SetMovementDirection();
-	ClearAngles();
-
-	if (HasSpawnFlags(TP_STARTOFF)) {
-		SetSolid(SOLID_NOT);
+	if (GetSpawnAngles() == [0,-1,0]) {
+		m_vecMoveDir = [0,0,1];
+	} else if (angles == [0,-2,0]) {
+		m_vecMoveDir = [0,0,-1];
+	} else {
+		makevectors(GetSpawnAngles());
+		m_vecMoveDir = v_forward;
 	}
-}
-
-void
-trigger_push::SpawnKey(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "speed":
-		m_flSpeed = stof(strValue);
-		break;
-	default:
-		super::SpawnKey(strKey, strValue);
-	}
-}
-
-void
-trigger_push::trigger_push(void)
-{
-	m_vecMoveDir = [0,0,0];
-	m_flSpeed = 100;
 }

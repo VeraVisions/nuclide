@@ -40,18 +40,81 @@ enumflags
 	EMF_ALLPLAYERS
 };
 
-class env_message:NSPointTrigger
+class
+env_message:NSPointTrigger
 {
 	string m_strSound;
 	float m_flVolume;
-	int m_iAttenuation;
+	int m_iAttenuation; /* FIXME: change this to a proper attenuation type */
 
 	void(void) env_message;
 
-	virtual void(entity, int) Play;
-	virtual void(void) Respawn;
+	virtual void(float) Save;
+	virtual void(string,string) Restore;
 	virtual void(string, string) SpawnKey;
+	virtual void(void) Respawn;
+
+	virtual void(entity, int) Play;
 };
+
+void
+env_message::env_message(void)
+{
+	m_strSound = __NULL__;
+	m_flVolume = 1.0f;
+	m_iAttenuation = 0i;
+}
+
+void
+env_message::Save(float handle)
+{
+	super::Save(handle);
+	SaveString(handle, "m_strSound", m_strSound);
+	SaveFloat(handle, "m_flVolume", m_flVolume);
+	SaveInt(handle, "m_iAttenuation", m_iAttenuation);
+}
+
+void
+env_message::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "m_strSound":
+		m_strSound = ReadString(strValue);
+		break;
+	case "m_flVolume":
+		m_flVolume = ReadFloat(strValue);
+		break;
+	case "m_iAttenuation":
+		m_iAttenuation = ReadInt(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
+
+void
+env_message::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "messagesound":
+		m_strSound = strValue;
+		break;
+	case "messagevolume":
+		m_flVolume = stof(strValue);
+		break;
+	case "messageattenuation":
+		m_iAttenuation = stoi(strValue);
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
+	}
+}
+
+void
+env_message::Respawn(void)
+{
+	Trigger = Play;
+}
 
 void
 env_message::Play(entity act, int state)
@@ -74,34 +137,6 @@ env_message::Play(entity act, int state)
 	if (HasSpawnFlags(EMF_ONCE)) {
 		Trigger = __NULL__;
 	}
-}
-
-void
-env_message::Respawn(void)
-{
-	Trigger = Play;
-}
-
-void
-env_message::SpawnKey(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "messagesound":
-		m_strSound = strValue;
-		break;
-	case "messagevolume":
-		m_flVolume = stof(strValue);
-		break;
-	case "messageattenuation":
-		m_iAttenuation = stoi(strValue);
-		break;
-	default:
-		super::SpawnKey(strKey, strValue);
-	}
-}
-
-void env_message::env_message(void)
-{
 }
 
 void

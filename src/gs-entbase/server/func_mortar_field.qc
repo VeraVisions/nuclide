@@ -42,7 +42,8 @@ sound, damage, delay and so on.
 This entity was introduced in Half-Life (1998).
 */
 
-class func_mortar_field:NSBrushTrigger
+class
+func_mortar_field:NSBrushTrigger
 {
 	int m_iType;
 	int m_iCount;
@@ -66,38 +67,79 @@ class func_mortar_field:NSBrushTrigger
 };
 
 void
+func_mortar_field::func_mortar_field(void)
+{
+	m_iType = 0i;
+	m_iCount = 0i;
+	m_flSpread = 0.0f;
+	m_strXController = __NULL__;
+	m_strYController = __NULL__;
+}
+
+void
 func_mortar_field::Save(float handle)
 {
-	SaveInt(handle, "type", m_iType);
-	SaveInt(handle, "count", m_iCount);
-	SaveFloat(handle, "spread", m_flSpread);
-	SaveString(handle, "x_controller", m_strXController);
-	SaveString(handle, "y_controller", m_strYController);
 	super::Save(handle);
+	SaveInt(handle, "m_iType", m_iType);
+	SaveInt(handle, "m_iCount", m_iCount);
+	SaveFloat(handle, "m_flSpread", m_flSpread);
+	SaveString(handle, "m_strXController", m_strXController);
+	SaveString(handle, "m_strYController", m_strYController);
 }
 
 void
 func_mortar_field::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "type":
+	case "m_iType":
 		m_iType = ReadInt(strValue);
 		break;
-	case "count":
+	case "m_iCount":
 		m_iCount = ReadInt(strValue);
 		break;
-	case "spread":
+	case "m_flSpread":
 		m_flSpread = ReadFloat(strValue);
 		break;
-	case "x_controller":
+	case "m_strXController":
 		m_strXController = ReadString(strValue);
 		break;
-	case "y_controller":
+	case "m_strYController":
 		m_strYController = ReadString(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
 	}
+}
+
+void
+func_mortar_field::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "m_iszXController":
+		m_strXController = strValue;
+		break;
+	case "m_iszYController":
+		m_strYController = strValue;
+		break;
+	case "m_fControl":
+		m_iType = stoi(strValue);
+		break;
+	case "m_flCount":
+		m_iCount = stoi(strValue);
+		break;
+	case "m_flSpread":
+		m_flSpread = stof(strValue) / 2;
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
+	}
+}
+
+void
+func_mortar_field::Respawn(void)
+{
+	InitBrushTrigger();
+	ClearAngles();
 }
 
 void
@@ -200,40 +242,4 @@ func_mortar_field::Trigger(entity act, int state)
 	default:
 		break;
 	}
-}
-
-void
-func_mortar_field::Respawn(void)
-{
-	InitBrushTrigger();
-	ClearAngles();
-}
-
-void
-func_mortar_field::SpawnKey(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "m_iszXController":
-		m_strXController = strValue;
-		break;
-	case "m_iszYController":
-		m_strYController = strValue;
-		break;
-	case "m_fControl":
-		m_iType = stoi(strValue);
-		break;
-	case "m_flCount":
-		m_iCount = stoi(strValue);
-		break;
-	case "m_flSpread":
-		m_flSpread = stof(strValue) / 2;
-		break;
-	default:
-		super::SpawnKey(strKey, strValue);
-	}
-}
-
-void
-func_mortar_field::func_mortar_field(void)
-{
 }

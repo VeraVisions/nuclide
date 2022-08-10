@@ -66,7 +66,8 @@ enumflags
 	FNCTANK_CONTROLLABLE
 };
 
-class func_tank:NSVehicle
+class
+func_tank:NSVehicle
 {
 	/* attributes */
 	float m_flYawRate; /* TODO */
@@ -101,79 +102,185 @@ class func_tank:NSVehicle
 };
 
 void
+func_tank::func_tank(void)
+{
+	m_flYawRate = 0.0f;
+	m_flYawRange = 0.0f;
+	m_flPitchRate = 0.0f;
+	m_flPitchRange = 0.0f;
+	m_vecTipPos = [0.0f, 0.0f, 0.0f];
+	m_flFireRate = 0.0f;
+	m_iDamage = 0i;
+	m_vecSpread = [0.0f, 0.0f, 0.0f];
+	m_strSpriteSmoke = __NULL__;
+	m_strSpriteFlash = __NULL__;
+	m_flSpriteScale = 0.0f;
+	m_strSndRotate = __NULL__;
+	m_flPersistance = 0.0f;
+	m_flMinRange = 0.0f;
+	m_flMaxRange = 0.0f;
+	m_flFireTime = 0.0f;
+
+	m_iVehicleFlags |= VHF_FROZEN | VHF_NOATTACK;
+}
+
+void
 func_tank::Save(float handle)
 {
-	SaveInt(handle, "damage", m_iDamage);
-	SaveFloat(handle, "yawrate", m_flYawRate);
-	SaveFloat(handle, "yawrange", m_flYawRange);
-	SaveFloat(handle, "pitchrate", m_flPitchRate);
-	SaveFloat(handle, "pitchrange", m_flPitchRange);
-	SaveFloat(handle, "firerate", m_flFireRate);
-	SaveFloat(handle, "spritescale", m_flSpriteScale);
-	SaveFloat(handle, "persistence", m_flPersistance);
-	SaveFloat(handle, "minrange", m_flMinRange);
-	SaveFloat(handle, "maxrange", m_flMaxRange);
-	SaveString(handle, "spritesmoke", m_strSpriteSmoke);
-	SaveString(handle, "spriteflash", m_strSpriteFlash);
-	SaveString(handle, "sndrotate", m_strSndRotate);
-	SaveVector(handle, "tippos", m_vecTipPos);
-	SaveVector(handle, "spread", m_vecSpread);
-
 	super::Save(handle);
+	SaveInt(handle, "m_iDamage", m_iDamage);
+	SaveFloat(handle, "m_flYawRate", m_flYawRate);
+	SaveFloat(handle, "m_flYawRange", m_flYawRange);
+	SaveFloat(handle, "m_flPitchRate", m_flPitchRate);
+	SaveFloat(handle, "m_flPitchRange", m_flPitchRange);
+	SaveFloat(handle, "m_flFireRate", m_flFireRate);
+	SaveFloat(handle, "m_flSpriteScale", m_flSpriteScale);
+	SaveFloat(handle, "m_flPersistance", m_flPersistance);
+	SaveFloat(handle, "m_flMinRange", m_flMinRange);
+	SaveFloat(handle, "m_flMaxRange", m_flMaxRange);
+	SaveString(handle, "m_strSpriteSmoke", m_strSpriteSmoke);
+	SaveString(handle, "m_strSpriteFlash", m_strSpriteFlash);
+	SaveString(handle, "m_strSndRotate", m_strSndRotate);
+	SaveVector(handle, "m_vecTipPos", m_vecTipPos);
+	SaveVector(handle, "m_vecSpread", m_vecSpread);
 }
 
 void
 func_tank::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "damage":
+	case "m_iDamage":
 		m_iDamage = ReadInt(strValue);
 		break;
-	case "yawrate":
+	case "m_flYawRate":
 		m_flYawRate = ReadFloat(strValue);
 		break;
-	case "yawrange":
+	case "m_flYawRange":
 		m_flYawRange = ReadFloat(strValue);
 		break;
-	case "pitchrate":
+	case "m_flPitchRate":
 		m_flPitchRate = ReadFloat(strValue);
 		break;
-	case "pitchrange":
+	case "m_flPitchRange":
 		m_flPitchRange = ReadFloat(strValue);
 		break;
-	case "firerate":
+	case "m_flFireRate":
 		m_flFireRate = ReadFloat(strValue);
 		break;
-	case "spritescale":
+	case "m_flSpriteScale":
 		m_flSpriteScale = ReadFloat(strValue);
 		break;
-	case "persistence":
+	case "m_flPersistance":
 		m_flPersistance = ReadFloat(strValue);
 		break;
-	case "minrange":
+	case "m_flMinRange":
 		m_flMinRange = ReadFloat(strValue);
 		break;
-	case "maxrange":
+	case "m_flMaxRange":
 		m_flMaxRange = ReadFloat(strValue);
 		break;
-	case "spritesmoke":
+	case "m_strSpriteSmoke":
 		m_strSpriteSmoke = ReadString(strValue);
 		break;
-	case "spriteflash":
+	case "m_strSpriteFlash":
 		m_strSpriteFlash = ReadString(strValue);
 		break;
-	case "sndrotate":
+	case "m_strSndRotate":
 		m_strSndRotate = ReadString(strValue);
 		break;
-	case "tippos":
+	case "m_vecTipPos":
 		m_vecTipPos = ReadVector(strValue);
 		break;
-	case "spread":
+	case "m_vecSpread":
 		m_vecSpread = ReadVector(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
 	}
+}
+
+void
+func_tank::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "yawrate":
+		m_flYawRate = stof(strValue);
+		break;
+	case "yawrange":
+		m_flYawRange = stof(strValue);
+		break;
+	case "pitchrate":
+		m_flPitchRate = stof(strValue);
+		break;
+	case "pitchrange":
+		m_flPitchRange = stof(strValue);
+		break;
+	case "barrel":
+		m_vecTipPos[0] = stof(strValue);
+		break;
+	case "barrely":
+		m_vecTipPos[1] = stof(strValue);
+		break;
+	case "barrelz":
+		m_vecTipPos[2] = stof(strValue);
+		break;
+	case "firerate":
+		m_flFireRate = 1.0f / stof(strValue);
+		break;
+	case "bullet_damage":
+		m_iDamage = stoi(strValue);
+		break;
+	case "firespread":
+		m_vecSpread = [0.25, 0.25, 0] * stof(strValue);
+		break;
+	case "persistance":
+		m_flPersistance = stof(strValue);
+		break;
+	case "minRange":
+		m_flMinRange = stof(strValue);
+		break;
+	case "maxRange":
+		m_flMaxRange = stof(strValue);
+		break;
+	case "spritesmoke":
+		m_strSpriteSmoke = strValue;
+		break;
+	case "spriteflash":
+		m_strSpriteFlash = strValue;
+		break;
+	case "spritescale":
+		m_flSpriteScale = stof(strValue);
+		break;
+	case "rotatesound":
+		m_strSndRotate = strValue;
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
+	}
+}
+
+void
+func_tank::Spawned(void)
+{
+	super::Spawned();
+
+	if (m_strSpriteFlash)
+		precache_model(m_strSpriteFlash);
+	if (m_strSpriteSmoke)
+		precache_model(m_strSpriteSmoke);
+}
+
+void
+func_tank::Respawn(void)
+{
+	SetMovetype(MOVETYPE_PUSH);
+	SetSolid(SOLID_BSP);
+	SetModel(GetSpawnModel());
+	SetOrigin(GetSpawnOrigin());
+	SetAngles(GetSpawnAngles());
+
+	if (m_eDriver)
+		PlayerLeave((NSClientPlayer)m_eDriver);
 }
 
 void
@@ -270,94 +377,4 @@ func_tank::PlayerInput(void)
 	}
 
 	input_buttons &= ~INPUT_BUTTON0;
-}
-
-void
-func_tank::Respawn(void)
-{
-	SetMovetype(MOVETYPE_PUSH);
-	SetSolid(SOLID_BSP);
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
-	SetAngles(GetSpawnAngles());
-
-	if (m_eDriver)
-		PlayerLeave((NSClientPlayer)m_eDriver);
-}
-
-void
-func_tank::SpawnKey(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "yawrate":
-		m_flYawRate = stof(strValue);
-		break;
-	case "yawrange":
-		m_flYawRange = stof(strValue);
-		break;
-	case "pitchrate":
-		m_flPitchRate = stof(strValue);
-		break;
-	case "pitchrange":
-		m_flPitchRange = stof(strValue);
-		break;
-	case "barrel":
-		m_vecTipPos[0] = stof(strValue);
-		break;
-	case "barrely":
-		m_vecTipPos[1] = stof(strValue);
-		break;
-	case "barrelz":
-		m_vecTipPos[2] = stof(strValue);
-		break;
-	case "firerate":
-		m_flFireRate = 1.0f / stof(strValue);
-		break;
-	case "bullet_damage":
-		m_iDamage = stoi(strValue);
-		break;
-	case "firespread":
-		m_vecSpread = [0.25, 0.25, 0] * stof(strValue);
-		break;
-	case "persistance":
-		m_flPersistance = stof(strValue);
-		break;
-	case "minRange":
-		m_flMinRange = stof(strValue);
-		break;
-	case "maxRange":
-		m_flMaxRange = stof(strValue);
-		break;
-	case "spritesmoke":
-		m_strSpriteSmoke = strValue;
-		break;
-	case "spriteflash":
-		m_strSpriteFlash = strValue;
-		break;
-	case "spritescale":
-		m_flSpriteScale = stof(strValue);
-		break;
-	case "rotatesound":
-		m_strSndRotate = strValue;
-		break;
-	default:
-		super::SpawnKey(strKey, strValue);
-	}
-}
-
-void
-func_tank::Spawned(void)
-{
-	super::Spawned();
-
-	if (m_strSpriteFlash)
-		precache_model(m_strSpriteFlash);
-	if (m_strSpriteSmoke)
-		precache_model(m_strSpriteSmoke);
-}
-
-void
-func_tank::func_tank(void)
-{
-	m_iVehicleFlags |= VHF_FROZEN | VHF_NOATTACK;
 }

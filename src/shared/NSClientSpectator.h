@@ -31,7 +31,7 @@ typedef enum
 	SPECMODE_OVERVIEW
 } NSClientSpectatorMode_t;
 
-typedef enumflags
+enumflags
 {
 	SPECFLAG_BUTTON_RELEASED,
 };

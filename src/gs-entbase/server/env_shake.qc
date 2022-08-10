@@ -35,7 +35,8 @@ This entity was introduced in Half-Life (1998).
 
 #define EVS_GLOBAL 1
 
-class env_shake:NSPointTrigger
+class
+env_shake:NSPointTrigger
 {
 	float m_flRadius;
 	float m_flAmplitude;
@@ -43,14 +44,51 @@ class env_shake:NSPointTrigger
 	float m_flFrequency;
 
 	void(void) env_shake;
-	virtual void(entity act, int) Trigger;
+
+	virtual void(float) Save;
+	virtual void(string,string) Restore;
 	virtual void(string, string) SpawnKey;
+	virtual void(entity act, int) Trigger;
 };
 
 void
-env_shake::Trigger(entity act, int state)
+env_shake::env_shake(void)
 {
-	Client_ShakeOnce(origin, m_flRadius, m_flDuration, m_flFrequency, m_flAmplitude);
+	m_flRadius = 0.0f;
+	m_flAmplitude = 0.0f;
+	m_flDuration = 0.0f;
+	m_flFrequency = 0.0f;
+}
+
+void
+env_shake::Save(float handle)
+{
+	super::Save(handle);
+	SaveFloat(handle, "m_flRadius", m_flRadius);
+	SaveFloat(handle, "m_flAmplitude", m_flAmplitude);
+	SaveFloat(handle, "m_flDuration", m_flDuration);
+	SaveFloat(handle, "m_flFrequency", m_flFrequency);
+}
+
+void
+env_shake::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "m_flRadius":
+		m_flRadius = ReadFloat(strValue);
+		break;
+	case "m_flAmplitude":
+		m_flAmplitude = ReadFloat(strValue);
+		break;
+	case "m_flDuration":
+		m_flDuration = ReadFloat(strValue);
+		break;
+	case "m_flFrequency":
+		m_flFrequency = ReadFloat(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
 }
 
 void
@@ -75,6 +113,7 @@ env_shake::SpawnKey(string strKey, string strValue)
 }
 
 void
-env_shake::env_shake(void)
+env_shake::Trigger(entity act, int state)
 {
+	Client_ShakeOnce(origin, m_flRadius, m_flDuration, m_flFrequency, m_flAmplitude);
 }

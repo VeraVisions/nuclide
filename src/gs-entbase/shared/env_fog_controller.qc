@@ -351,6 +351,7 @@ env_fog_controller::Respawn(void)
 void
 env_fog_controller::Save(float handle)
 {
+	super::Save(handle);
 	SaveInt(handle, "m_iSpawnEnable", m_iSpawnEnable);
 	SaveInt(handle, "m_iSpawnBlend", m_iSpawnBlend);
 	SaveFloat(handle, "m_flSpawnStart", m_flSpawnStart);
@@ -361,7 +362,6 @@ env_fog_controller::Save(float handle)
 	SaveVector(handle, "m_vecSpawnColor2", m_vecSpawnColor2);
 	SaveVector(handle, "m_vecSpawnDir", m_vecSpawnDir);
 	SaveInt(handle, "m_iUseAngles", m_iUseAngles);
-
 	SaveInt(handle, "m_iFogActive", m_iFogActive);
 	SaveInt(handle, "m_iFogBlend", m_iFogBlend);
 	SaveFloat(handle, "m_flFogStart", m_flFogStart);
@@ -371,9 +371,8 @@ env_fog_controller::Save(float handle)
 	SaveVector(handle, "m_vecFogColor", m_vecFogColor);
 	SaveVector(handle, "m_vecFogColor2", m_vecFogColor2);
 	SaveVector(handle, "m_vecFogDir", m_vecFogDir);
-
-	super::Save(handle);
 }
+
 void
 env_fog_controller::Restore(string strKey, string strValue)
 {

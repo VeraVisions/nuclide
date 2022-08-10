@@ -47,28 +47,112 @@ NSMonster::TriggerTargets(void)
 void
 NSMonster::Save(float handle)
 {
-	SaveInt(handle, "TriggerCondition", m_iTriggerCondition);
-	SaveString(handle, "TriggerTarget", m_strTriggerTarget);
-	SaveFloat(handle, "flPitch", m_flPitch);
-	SaveInt(handle, "iFlags", m_iFlags);
 	super::Save(handle);
+
+	SaveEntity(handle, "m_eEnemy", m_eEnemy);
+	SaveEntity(handle, "m_ssLast", m_ssLast);
+	SaveFloat(handle, "base_health", base_health);
+	SaveFloat(handle, "m_flAttackThink", m_flAttackThink);
+	SaveFloat(handle, "m_flBaseTime", m_flBaseTime);
+	SaveFloat(handle, "m_flPitch", m_flPitch);
+	SaveFloat(handle, "m_flSequenceEnd", m_flSequenceEnd);
+	SaveFloat(handle, "m_flSequenceSpeed", m_flSequenceSpeed);
+	SaveInt(handle, "m_iFlags", m_iFlags);
+	SaveInt(handle, "m_iSequenceFlags", m_iSequenceFlags);
+	SaveInt(handle, "m_iSequenceRemove", m_iSequenceRemove);
+	SaveInt(handle, "m_iSequenceState", m_iSequenceState);
+	SaveInt(handle, "m_iTriggerCondition", m_iTriggerCondition);
+	SaveFloat(handle, "m_iMState", m_iMState);
+	SaveFloat(handle, "m_iOldMState", m_iOldMState);
+	SaveFloat(handle, "m_iMoveState", m_iMoveState);
+	SaveString(handle, "m_strRouteEnded", m_strRouteEnded);
+	SaveString(handle, "m_strTriggerTarget", m_strTriggerTarget);
+	SaveVector(handle, "base_maxs", base_maxs);
+	SaveVector(handle, "base_mins", base_mins);
+	SaveVector(handle, "m_vecLKPos", m_vecLKPos);
+	SaveVector(handle, "m_vecSequenceAngle", m_vecSequenceAngle);
+	SaveFloat(handle, "m_flSeeTime", m_flSeeTime);
+	SaveFloat(handle, "m_flAnimTime", m_flAnimTime);
 }
 
 void
 NSMonster::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "TriggerCondition":
-		m_iTriggerCondition = stoi(strValue);
+	case "m_eEnemy":
+		m_eEnemy = ReadEntity(strValue);
 		break;
-	case "TriggerTarget":
-		m_strTriggerTarget = strValue;
+	case "m_ssLast":
+		m_ssLast = ReadEntity(strValue);
 		break;
-	case "flPitch":
-		m_flPitch = stof(strValue);
+	case "base_health":
+		base_health = ReadFloat(strValue);
 		break;
-	case "iFlags":
-		m_iFlags = stoi(strValue);
+	case "m_flAttackThink":
+		m_flAttackThink = ReadFloat(strValue);
+		break;
+	case "m_flBaseTime":
+		m_flBaseTime = ReadFloat(strValue);
+		break;
+	case "m_flPitch":
+		m_flPitch = ReadFloat(strValue);
+		break;
+	case "m_flSequenceEnd":
+		m_flSequenceEnd = ReadFloat(strValue);
+		break;
+	case "m_flSequenceSpeed":
+		m_flSequenceSpeed = ReadFloat(strValue);
+		break;
+	case "m_iFlags":
+		m_iFlags = ReadInt(strValue);
+		break;
+	case "m_iSequenceFlags":
+		m_iSequenceFlags = ReadInt(strValue);
+		break;
+	case "m_iSequenceRemove":
+		m_iSequenceRemove = ReadInt(strValue);
+		break;
+	case "m_iSequenceState":
+		m_iSequenceState = ReadInt(strValue);
+		break;
+	case "m_iTriggerCondition":
+		m_iTriggerCondition = ReadInt(strValue);
+		break;
+	case "m_iMState":
+		m_iMState = ReadFloat(strValue);
+		break;
+	case "m_iOldMState":
+		m_iOldMState = ReadFloat(strValue);
+		break;
+	case "m_iMoveState":
+		m_iMoveState = ReadFloat(strValue);
+		break;
+	case "m_strRouteEnded":
+		m_strRouteEnded = ReadString(strValue);
+		break;
+	case "m_strTriggerTarget":
+		m_strTriggerTarget = ReadString(strValue);
+		break;
+	case "base_maxs":
+		base_maxs = ReadVector(strValue);
+		break;
+	case "base_mins":
+		base_mins = ReadVector(strValue);
+		break;
+	case "m_vecLKPos":
+		m_vecLKPos = ReadVector(strValue);
+		break;
+	case "m_vecSequenceAngle":
+		m_vecSequenceAngle = ReadVector(strValue);
+		break;
+	case "m_flSeeTime":
+		m_flSeeTime = ReadFloat(strValue);
+		break;
+	case "m_flAnimTime":
+		m_flAnimTime = ReadFloat(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
 		break;
 	}
 }

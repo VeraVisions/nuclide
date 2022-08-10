@@ -53,7 +53,8 @@ enumflags
 	ENVLAZ_DECALEND
 };
 
-class env_laser:NSPointTrigger
+class
+env_laser:NSPointTrigger
 {
 	int m_iState;
 	int m_iStateOld;
@@ -64,13 +65,98 @@ class env_laser:NSPointTrigger
 
 	void(void) env_laser;
 
+	virtual void(float) Save;
+	virtual void(string,string) Restore;
+	virtual void(string, string) SpawnKey;
+	virtual void(void) Respawn;
 	virtual void(void) think;
 	virtual void(entity, int) Trigger;
-	virtual void(void) Respawn;
 	virtual void(void) EvaluateEntity;
 	virtual float(entity, float) SendEntity;
-	virtual void(string, string) SpawnKey;
 };
+
+void
+env_laser::env_laser(void)
+{
+	pvsflags = PVSF_IGNOREPVS;
+	m_iState = 0i;
+	m_iStateOld = 0i;
+	m_flDPS = 0.0f;
+	m_strLaserDest = __NULL__;
+	m_strBeamTex = __NULL__;
+	m_strEndTex = __NULL__;
+}
+
+void
+env_laser::Save(float handle)
+{
+	super::Save(handle);
+	SaveInt(handle, "m_iState", m_iState);
+	SaveInt(handle, "m_iStateOld", m_iStateOld);
+	SaveFloat(handle, "m_flDPS", m_flDPS);
+	SaveString(handle, "m_strLaserDest", m_strLaserDest);
+	SaveString(handle, "m_strBeamTex", m_strBeamTex);
+	SaveString(handle, "m_strEndTex", m_strEndTex);
+}
+
+void
+env_laser::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "m_iState":
+		m_iState = ReadInt(strValue);
+		break;
+	case "m_iStateOld":
+		m_iStateOld = ReadInt(strValue);
+		break;
+	case "m_flDPS":
+		m_flDPS = ReadFloat(strValue);
+		break;
+	case "m_strLaserDest":
+		m_strLaserDest = ReadString(strValue);
+		break;
+	case "m_strBeamTex":
+		m_strBeamTex = ReadString(strValue);
+		break;
+	case "m_strEndTex":
+		m_strEndTex = ReadString(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
+
+void
+env_laser::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "texture":
+		m_strBeamTex = strValue;
+		precache_model(m_strBeamTex);
+		break;
+	case "EndSprite":
+		m_strEndTex = strValue;
+		precache_model(m_strEndTex);
+		break;
+	case "LaserTarget":
+		m_strLaserDest = strValue;
+		break;
+	case "damage":
+		m_flDPS = stof(strValue);
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
+	}
+}
+
+void
+env_laser::Respawn(void)
+{
+	if (HasSpawnFlags(ENVLAZ_STARTON)) {
+		m_iState = 1;
+		nextthink = time + 0.1;
+	}
+}
 
 void
 env_laser::think(void)
@@ -116,15 +202,6 @@ env_laser::Trigger(entity act, int state)
 		nextthink = time;
 	} else {
 		nextthink = 0.25;
-	}
-}
-
-void
-env_laser::Respawn(void)
-{
-	if (HasSpawnFlags(ENVLAZ_STARTON)) {
-		m_iState = 1;
-		nextthink = time + 0.1;
 	}
 }
 
@@ -178,33 +255,4 @@ env_laser::EvaluateEntity(void)
 
 	SAVE_STATE(origin);
 	SAVE_STATE(angles);
-}
-
-void
-env_laser::SpawnKey(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "texture":
-		m_strBeamTex = strValue;
-		precache_model(m_strBeamTex);
-		break;
-	case "EndSprite":
-		m_strEndTex = strValue;
-		precache_model(m_strEndTex);
-		break;
-	case "LaserTarget":
-		m_strLaserDest = strValue;
-		break;
-	case "damage":
-		m_flDPS = stof(strValue);
-		break;
-	default:
-		super::SpawnKey(strKey, strValue);
-	}
-}
-
-void
-env_laser::env_laser(void)
-{
-	pvsflags = PVSF_IGNOREPVS;
 }

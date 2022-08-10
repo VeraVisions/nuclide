@@ -30,7 +30,8 @@ This entity was introduced in Half-Life (1998).
 
 #define SF_GUNTARGET_ON 1
 
-class func_guntarget:NSSurfacePropEntity
+class
+func_guntarget:NSSurfacePropEntity
 {
 	float m_flSpeed;
 	string m_strOnDeath;
@@ -39,13 +40,13 @@ class func_guntarget:NSSurfacePropEntity
 	void(void) func_guntarget;
 	
 	/* overrides */
-	virtual void(void) Spawned;
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
+	virtual void(string, string) SpawnKey;
+	virtual void(void) Spawned;
 	virtual void(void) Respawn;
 	virtual void(entity act, int) Trigger;
 	virtual void(void) Death;
-	virtual void(string, string) SpawnKey;
 	virtual void(entity, string, string) Input;
 
 	virtual void(void) NextPath;
@@ -55,12 +56,20 @@ class func_guntarget:NSSurfacePropEntity
 };
 
 void
+func_guntarget::func_guntarget(void)
+{
+	m_flSpeed = 100;
+	m_strOnDeath = __NULL__;
+	m_strOnDeathLegacy = __NULL__;
+}
+
+void
 func_guntarget::Save(float handle)
 {
+	super::Save(handle);
 	SaveFloat(handle, "m_flSpeed", m_flSpeed);
 	SaveString(handle, "m_strOnDeath", m_strOnDeath);
 	SaveString(handle, "m_strOnDeathLegacy", m_strOnDeathLegacy);
-	super::Save(handle);
 }
 
 void
@@ -78,6 +87,52 @@ func_guntarget::Restore(string strKey, string strValue)
 		break;
 	default:
 		super::Restore(strKey, strValue);
+	}
+}
+
+void
+func_guntarget::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "speed":
+		m_flSpeed = stof(strValue);
+		break;
+	case "message":
+		m_strOnDeathLegacy = strValue;
+		break;
+	case "OnDeath":
+		m_strOnDeath = PrepareOutput(m_strOnDeath, strValue);
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
+	}
+}
+
+void
+func_guntarget::Spawned(void)
+{
+	super::Spawned();
+
+	if (m_strOnDeath)
+		m_strOnDeath = CreateOutput(m_strOnDeath);
+}
+
+void
+func_guntarget::Respawn(void)
+{
+	static void ThinkWrap(void) {
+		Trigger(this, TRIG_TOGGLE);
+	}
+
+	SetSolid(SOLID_BSP);
+	SetMovetype(MOVETYPE_PUSH);
+	SetModel(GetSpawnModel());
+	SetOrigin(GetSpawnOrigin());
+	health = GetSpawnHealth();
+
+	if (HasSpawnFlags(SF_GUNTARGET_ON)) {
+		think = ThinkWrap;
+		nextthink = ltime + 0.25f;
 	}
 }
 
@@ -193,25 +248,6 @@ func_guntarget::Trigger(entity act, int state)
 }
 
 void
-func_guntarget::Respawn(void)
-{
-	static void ThinkWrap(void) {
-		Trigger(this, TRIG_TOGGLE);
-	}
-
-	SetSolid(SOLID_BSP);
-	SetMovetype(MOVETYPE_PUSH);
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
-	health = GetSpawnHealth();
-
-	if (HasSpawnFlags(SF_GUNTARGET_ON)) {
-		think = ThinkWrap;
-		nextthink = ltime + 0.25f;
-	}
-}
-
-void
 func_guntarget::Input(entity eAct, string strInput, string strData)
 {
 	switch (strInput) {
@@ -227,36 +263,4 @@ func_guntarget::Input(entity eAct, string strInput, string strData)
 	default:
 		super::Input(eAct, strInput, strData);
 	}
-}
-
-void
-func_guntarget::SpawnKey(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "speed":
-		m_flSpeed = stof(strValue);
-		break;
-	case "message":
-		m_strOnDeathLegacy = strValue;
-		break;
-	case "OnDeath":
-		m_strOnDeath = PrepareOutput(m_strOnDeath, strValue);
-		break;
-	default:
-		super::SpawnKey(strKey, strValue);
-	}
-}
-
-void
-func_guntarget::Spawned(void)
-{
-	super::Spawned();
-
-	if (m_strOnDeath)
-		m_strOnDeath = CreateOutput(m_strOnDeath);
-}
-
-void func_guntarget::func_guntarget(void)
-{
-	m_flSpeed = 100;
 }

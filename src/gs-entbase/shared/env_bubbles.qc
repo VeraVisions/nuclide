@@ -87,45 +87,49 @@ env_bubbles:NSPointTrigger
 #endif
 };
 
+void
+env_bubbles::env_bubbles(void)
+{
+}
+
 #ifdef SERVER
 void
 env_bubbles::Save(float handle)
 {
-	SaveInt(handle, "density", m_iDensity);
-	SaveFloat(handle, "frequency", m_flFrequency);
-	SaveFloat(handle, "current", m_flCurrent);
-	SaveBool(handle, "enabled", m_bEnabled);
-
-	SaveInt(handle, "spawn_density", m_iSpawnDensity);
-	SaveFloat(handle, "spawn_frequency", m_flSpawnFrequency);
-	SaveFloat(handle, "spawn_current", m_flSpawnCurrent);
-
 	super::Save(handle);
+	SaveInt(handle, "m_iDensity", m_iDensity);
+	SaveFloat(handle, "m_flFrequency", m_flFrequency);
+	SaveFloat(handle, "m_flCurrent", m_flCurrent);
+	SaveBool(handle, "m_bEnabled", m_bEnabled);
+
+	SaveInt(handle, "m_iSpawnDensity", m_iSpawnDensity);
+	SaveFloat(handle, "m_flSpawnFrequency", m_flSpawnFrequency);
+	SaveFloat(handle, "m_flSpawnCurrent", m_flSpawnCurrent);
 }
 
 void
 env_bubbles::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "density":
+	case "m_iDensity":
 		m_iDensity = ReadInt(strValue);
 		break;
-	case "frequency":
+	case "m_flFrequency":
 		m_flFrequency = ReadFloat(strValue);
 		break;
-	case "current":
+	case "m_flCurrent":
 		m_flCurrent = ReadFloat(strValue);
 		break;
-	case "enabled":
+	case "m_bEnabled":
 		m_bEnabled = ReadBool(strValue);
 		break;
-	case "spawn_density":
+	case "m_iSpawnDensity":
 		m_iSpawnDensity = ReadInt(strValue);
 		break;
-	case "spawn_frequency":
+	case "m_flSpawnFrequency":
 		m_flSpawnFrequency = ReadFloat(strValue);
 		break;
-	case "spawn_current":
+	case "m_flSpawnCurrent":
 		m_flSpawnCurrent = ReadFloat(strValue);
 		break;
 	default:
@@ -348,11 +352,6 @@ env_bubbles::Spawned(void)
 	super::Spawned();
 
 	precache_model("sprites/bubble.spr");
-}
-
-void
-env_bubbles::env_bubbles(void)
-{
 }
 
 #ifdef CLIENT

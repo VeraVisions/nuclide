@@ -36,7 +36,8 @@ which is probably overkill). No angle has to be supplied.
 This entity was introduced in Half-Life (1998).
 */
 
-class infodecal:NSPointTrigger
+class
+infodecal:NSPointTrigger
 {
 	decal m_decChild;
 	string m_strTexture;
@@ -45,27 +46,35 @@ class infodecal:NSPointTrigger
 
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
-	virtual void(entity, int) Trigger;
-	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
+	virtual void(void) Respawn;
+	virtual void(void) Spawned;
+	virtual void(entity, int) Trigger;
 };
+
+void
+infodecal::infodecal(void)
+{
+	m_decChild = __NULL__;
+	m_strTexture = __NULL__;
+}
 
 void
 infodecal::Save(float handle)
 {
-	SaveEntity(handle, "child", m_decChild);
-	SaveString(handle, "texture", m_strTexture);
 	super::Save(handle);
+	SaveEntity(handle, "m_decChild", m_decChild);
+	SaveString(handle, "m_strTexture", m_strTexture);
 }
 
 void
 infodecal::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "child":
+	case "m_decChild":
 		m_decChild = (decal)ReadEntity(strValue);
 		break;
-	case "texture":
+	case "m_strTexture":
 		m_strTexture = ReadString(strValue);
 		break;
 	default:
@@ -74,23 +83,34 @@ infodecal::Restore(string strKey, string strValue)
 }
 
 void
-infodecal::Trigger(entity act, int state)
+infodecal::SpawnKey(string strKey, string strValue)
 {
-	switch (state) {
-	case TRIG_OFF:
-		if (m_decChild) {
-			remove(m_decChild);
-			m_decChild = __NULL__;
-		}
+	switch (strKey) {
+	case "material":
+		m_strTexture = strValue;
 		break;
-	case TRIG_ON:
-		if (!m_decChild) {
-			m_decChild = spawn(decal);
-			m_decChild.Place(origin, m_strTexture);
-		}
+	case "texture":
+		m_strTexture = strtolower(strValue);
 		break;
 	default:
-		Trigger(act, (m_decChild == __NULL__) ? TRIG_ON : TRIG_OFF);
+		super::SpawnKey(strKey, strValue);
+	}
+}
+
+void
+infodecal::Spawned(void)
+{
+	float bsp_version = serverkeyfloat("*bspversion");
+
+	switch (bsp_version) {
+	case BSPVER_HL:
+	case BSPVER_RBSP:
+	case BSPVER_Q3:
+	case BSPVER_RTCW:
+		break;
+	default:
+		remove(self);
+		return;
 	}
 }
 
@@ -112,33 +132,22 @@ infodecal::Respawn(void)
 }
 
 void
-infodecal::SpawnKey(string strKey, string strValue)
+infodecal::Trigger(entity act, int state)
 {
-	switch (strKey) {
-	case "material":
-		m_strTexture = strValue;
+	switch (state) {
+	case TRIG_OFF:
+		if (m_decChild) {
+			remove(m_decChild);
+			m_decChild = __NULL__;
+		}
 		break;
-	case "texture":
-		m_strTexture = strtolower(strValue);
+	case TRIG_ON:
+		if (!m_decChild) {
+			m_decChild = spawn(decal);
+			m_decChild.Place(origin, m_strTexture);
+		}
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
-	}
-}
-
-void
-infodecal::infodecal(void)
-{
-	float bsp_version = serverkeyfloat("*bspversion");
-
-	switch (bsp_version) {
-		case BSPVER_HL:
-		case BSPVER_RBSP:
-		case BSPVER_Q3:
-		case BSPVER_RTCW:
-			break;
-		default:
-		remove(self);
-		return;
+		Trigger(act, (m_decChild == __NULL__) ? TRIG_ON : TRIG_OFF);
 	}
 }

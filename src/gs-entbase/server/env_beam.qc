@@ -24,12 +24,13 @@ This entity is incomplete. Purely stub.
 This entity was introduced in Half-Life (1998).
 */
 
-class env_beam {
+class
+env_beam
+{
 	void(void) env_beam;
 };
 
 void
 env_beam::env_beam(void)
 {
-	
 }

@@ -32,7 +32,8 @@ This is commonly used when a mission objective has failed.
 This entity was introduced in Half-Life (1998).
 */
 
-class player_loadsaved:NSRenderableEntity // for the rendercolor values
+class
+player_loadsaved:NSRenderableEntity /* for the rendercolor values */
 {
 	string m_strMessage;
 	float m_flLoadTime;
@@ -44,40 +45,70 @@ class player_loadsaved:NSRenderableEntity // for the rendercolor values
 	/* overrides */
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
-	virtual void(entity, int) Trigger;
 	virtual void(string, string) SpawnKey;
+	virtual void(entity, int) Trigger;
 
 	virtual void(void) ReloadSave;
 };
 
 void
+player_loadsaved::player_loadsaved(void)
+{
+	m_strMessage = __NULL__;
+	m_flLoadTime = 0.0f;
+	m_flFadeDuration = 0.0f;
+	m_flFadeHold = 0.0f;
+}
+
+void
 player_loadsaved::Save(float handle)
 {
-	SaveString(handle, "message", m_strMessage);
-	SaveFloat(handle, "load_time", m_flLoadTime);
-	SaveFloat(handle, "fade_duration", m_flFadeDuration);
-	SaveFloat(handle, "fade_hold", m_flFadeHold);
 	super::Save(handle);
+	SaveString(handle, "m_strMessage", m_strMessage);
+	SaveFloat(handle, "m_flLoadTime", m_flLoadTime);
+	SaveFloat(handle, "m_flFadeDuration", m_flFadeDuration);
+	SaveFloat(handle, "m_flFadeHold", m_flFadeHold);
 }
 
 void
 player_loadsaved::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "message":
+	case "m_strMessage":
 		m_strMessage = ReadString(strValue);
 		break;
-	case "load_time":
+	case "m_flLoadTime":
 		m_flLoadTime = ReadFloat(strValue);
 		break;
-	case "fade_duration":
+	case "m_flFadeDuration":
 		m_flFadeDuration = ReadFloat(strValue);
 		break;
-	case "fade_hold":
+	case "m_flFadeHold":
 		m_flFadeHold = ReadFloat(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
+	}
+}
+
+void
+player_loadsaved::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "duration":
+		m_flFadeDuration = stof(strValue);
+		break;
+	case "holdtime":
+		m_flFadeHold = stof(strValue);
+		break;
+	case "message":
+		m_strMessage = strValue;
+		break;
+	case "loadtime":
+		m_flLoadTime = stof(strValue);
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
@@ -107,30 +138,4 @@ player_loadsaved::Trigger(entity act, int unused)
 
 	think = ReloadSave;
 	nextthink = time + m_flLoadTime;
-}
-
-void
-player_loadsaved::SpawnKey(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "duration":
-		m_flFadeDuration = stof(strValue);
-		break;
-	case "holdtime":
-		m_flFadeHold = stof(strValue);
-		break;
-	case "message":
-		m_strMessage = strValue;
-		break;
-	case "loadtime":
-		m_flLoadTime = stof(strValue);
-		break;
-	default:
-		super::SpawnKey(strKey, strValue);
-	}
-}
-
-void
-player_loadsaved::player_loadsaved(void)
-{
 }

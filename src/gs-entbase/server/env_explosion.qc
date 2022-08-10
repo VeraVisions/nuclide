@@ -45,10 +45,12 @@ enumflags
 	ENVEXPLO_NOSPARKS
 };
 
-class env_explosion:NSPointTrigger
+class
+env_explosion:NSPointTrigger
 {
 	int m_iMagnitude;
 	float m_flMaxDelay;
+	bool m_bEnabled;
 
 	void(void) env_explosion;
 
@@ -57,43 +59,41 @@ class env_explosion:NSPointTrigger
 	virtual void(string,string) Restore;
 	virtual void(entity, int) Trigger;
 	virtual void(string, string) SpawnKey;
+	virtual void(void) Respawn;
 };
+
+void
+env_explosion::env_explosion(void)
+{
+	m_iMagnitude = 0;
+	m_flMaxDelay = 0.0f;
+	m_bEnabled = true;
+}
 
 void
 env_explosion::Save(float handle)
 {
-	SaveInt(handle, "magnitude", m_iMagnitude);
-	SaveFloat(handle, "max_delay", m_flMaxDelay);
 	super::Save(handle);
+	SaveInt(handle, "m_iMagnitude", m_iMagnitude);
+	SaveFloat(handle, "m_flMaxDelay", m_flMaxDelay);
+	SaveBool(handle, "m_bEnabled", m_bEnabled);
 }
 
 void
 env_explosion::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "magnitude":
+	case "m_iMagnitude":
 		m_iMagnitude = ReadInt(strValue);
 		break;
-	case "max_delay":
+	case "m_flMaxDelay":
 		m_flMaxDelay = ReadFloat(strValue);
+		break;
+	case "m_bEnabled":
+		m_bEnabled = ReadBool(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
-	}
-}
-
-void
-env_explosion::Trigger(entity act, int state)
-{
-	FX_Explosion(origin);
-
-	if (!HasSpawnFlags(ENVEXPLO_NODAMAGE)) {
-		Damage_Radius(origin, this, m_iMagnitude, m_iMagnitude * 2.5f, TRUE, 0);
-	}
-
-	// TODO: Respawn after round instead?
-	if (!HasSpawnFlags(ENVEXPLO_REPEATABLE)) {
-		remove(this);
 	}
 }
 
@@ -110,6 +110,21 @@ env_explosion::SpawnKey(string strKey, string strValue)
 }
 
 void
-env_explosion::env_explosion(void)
+env_explosion::Respawn(void)
 {
+	m_bEnabled = true;
+}
+
+void
+env_explosion::Trigger(entity act, int state)
+{
+	FX_Explosion(origin);
+
+	if (!HasSpawnFlags(ENVEXPLO_NODAMAGE)) {
+		Damage_Radius(origin, this, m_iMagnitude, m_iMagnitude * 2.5f, TRUE, 0);
+	}
+
+	if (!HasSpawnFlags(ENVEXPLO_REPEATABLE)) {
+		m_bEnabled = false;
+	}
 }

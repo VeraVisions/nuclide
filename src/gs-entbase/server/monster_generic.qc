@@ -31,24 +31,13 @@ This entity was introduced in Half-Life (1998).
 
 #define MGF_NONSOLID 4
 
-class monster_generic:NSTalkMonster
+class
+monster_generic:NSTalkMonster
 {
 	void(void) monster_generic;
 
 	virtual void(void) Respawn;
 };
-
-void
-monster_generic::Respawn(void)
-{
-	NSTalkMonster::Respawn();
-
-	if (HasSpawnFlags(MGF_NONSOLID)) {
-		takedamage = DAMAGE_NO;
-		SetSolid(SOLID_NOT);
-		iBleeds = FALSE;
-	}
-}
 
 void
 monster_generic::monster_generic(void)
@@ -64,4 +53,16 @@ monster_generic::monster_generic(void)
 	base_health = 100;
 
 	spawnflags |= MSF_MULTIPLAYER;
+}
+
+void
+monster_generic::Respawn(void)
+{
+	NSTalkMonster::Respawn();
+
+	if (HasSpawnFlags(MGF_NONSOLID)) {
+		takedamage = DAMAGE_NO;
+		SetSolid(SOLID_NOT);
+		iBleeds = FALSE;
+	}
 }

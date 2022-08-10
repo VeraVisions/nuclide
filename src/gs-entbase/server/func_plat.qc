@@ -39,7 +39,8 @@ enum
 	PLATSTATE_DOWN
 };
 
-class func_plat:NSRenderableEntity
+class
+func_plat:NSRenderableEntity
 {
 	int m_iState;
 	float m_flSpeed;
@@ -60,12 +61,20 @@ class func_plat:NSRenderableEntity
 };
 
 void
+func_plat::func_plat(void)
+{
+	m_flSpeed = 100.0f;
+	m_flHeight = 0.0f;
+	m_iState = 0i;
+}
+
+void
 func_plat::Save(float handle)
 {
+	super::Save(handle);
 	SaveInt(handle, "state", m_iState);
 	SaveFloat(handle, "speed", m_flSpeed);
 	SaveFloat(handle, "height", m_flHeight);
-	super::Save(handle);
 }
 
 void
@@ -84,6 +93,35 @@ func_plat::Restore(string strKey, string strValue)
 	default:
 		super::Restore(strKey, strValue);
 	}
+}
+
+void
+func_plat::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "height":
+		m_flHeight = stof(strValue);
+		break;
+	case "speed":
+		m_flSpeed = stof(strValue);
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
+	}
+}
+
+void
+func_plat::Respawn(void)
+{
+	SetMovetype(MOVETYPE_PUSH);
+	SetSolid(SOLID_BSP);
+	SetModel(GetSpawnModel());
+	SetOrigin(GetSpawnOrigin());
+	ClearAngles();
+
+	m_iState = PLATSTATE_RAISED;
+	think = __NULL__;
+	nextthink = 0.0f;
 }
 
 void
@@ -158,39 +196,4 @@ func_plat::Touch(entity eToucher)
 	}
 
 	MoveToggle();
-}
-
-void
-func_plat::Respawn(void)
-{
-	SetMovetype(MOVETYPE_PUSH);
-	SetSolid(SOLID_BSP);
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
-	ClearAngles();
-	
-	m_iState = PLATSTATE_RAISED;
-	think = __NULL__;
-	nextthink = 0.0f;
-}
-
-void
-func_plat::SpawnKey(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "height":
-		m_flHeight = stof(strValue);
-		break;
-	case "speed":
-		m_flSpeed = stof(strValue);
-		break;
-	default:
-		super::SpawnKey(strKey, strValue);
-	}
-}
-
-void
-func_plat::func_plat(void)
-{
-	m_flSpeed = 100.0f;
 }

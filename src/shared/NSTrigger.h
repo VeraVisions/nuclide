@@ -24,6 +24,13 @@
 
 #define CENVGLOBAL_CVAR "env_global_data"
 
+typedef enum
+{
+	GLOBAL_OFF,
+	GLOBAL_ON,
+	GLOBAL_DEAD
+} globalstate_t;
+
 class NSTrigger:NSIO
 {
 	void(void) NSTrigger;
@@ -31,7 +38,7 @@ class NSTrigger:NSIO
 #ifdef SERVER
 	string m_oldstrTarget; /* needed due to trigger_changetarget */
 
-	int m_strGlobalState;
+	string m_strGlobalState;
 	string m_strKillTarget;
 	string m_strMessage;
 	string m_strMaster;
@@ -47,7 +54,7 @@ class NSTrigger:NSIO
 	/* master feature */
 	virtual int(void) GetValue;
 	virtual int(void) GetMaster;
-	virtual int(string) GetGlobalValue;
+	virtual globalstate_t(string) GetGlobalValue;
 
 	/* overrides */
 	virtual void(float) Save;

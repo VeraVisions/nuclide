@@ -76,10 +76,7 @@ ClientConnect(void)
 
 	/* we're the only one. respawn all entities */
 	if (playercount == 1) {
-		for (entity a = world; (a = findfloat(a, ::identity, 1));) {
-			NSEntity caw = (NSEntity)a;
-			caw.Respawn();
-		}
+
 		Nodes_Init();
 	}
 }
@@ -413,12 +410,16 @@ init_respawn(void)
 	if (g_ents_initialized)
 		g_grMode.InitPostEnts();
 
+#if 0
 	for (entity a = world; (a = findfloat(a, ::identity, 1));) {
 		NSEntity ent = (NSEntity)a;
 		ent.Respawn();
 	}
 	remove(self);
+#endif
 }
+
+entity g_respawntimer;
 
 /*
 =================
@@ -493,9 +494,9 @@ initents(void)
 
 	/* TODO: Make sure every entity calls Respawn inside the constructor, then
 	 * remove this */
-	entity respawntimer = spawn();
-	respawntimer.think = init_respawn;
-	respawntimer.nextthink = time + 0.1f;
+	g_respawntimer = spawn();
+	g_respawntimer.think = init_respawn;
+	g_respawntimer.nextthink = time + 0.1f;
 
 	/* menu background lock */
 	if (cvar("sv_background") == 1) {
@@ -646,7 +647,6 @@ ConsoleCmd(string cmd)
 		makevectors(pl.v_angle);
 		if (unit.identity == 1) {
 			NSEntity ent = (NSEntity)unit;
-			ent.Respawn();
 		}
 		traceline(pl.origin, pl.origin + (v_forward * 1024), MOVE_NORMAL, pl);
 		setorigin(unit, trace_endpos);
@@ -685,17 +685,29 @@ SV_ShouldPause(float newstatus)
 	return newstatus;
 }
 
-//#define REEDICT 0
+//#define REEDICT 1
 void
 SV_PerformLoad(float fh, float entcount, float playerslots)
 {
-	entity e;
+	entity e = world;
 	entity eold;
 	string l;
-	float n;
+	float n = 0;
 	NSEntity loadent = __NULL__;
+	int num_loaded = 0i;
 
 	print("--------- Loading Existing Save ----------\n");
+	g_isloading = true;
+
+	/* mark anything else for deletion */
+	while ((e=nextent(e))) {
+		if (edict_num(1) != e) {
+			if (e.identity != 0) {
+				e.think = Util_Destroy;
+				e.nextthink = time + 0.05f;
+			}
+		}
+	}
 
 #ifdef REEDICT
 	while ((e=nextent(e))) {
@@ -715,14 +727,14 @@ SV_PerformLoad(float fh, float entcount, float playerslots)
 
 		if (argv(0) == "ENTITY") {
 			string cname;
+			cname = argv(2);
 #ifndef REEDICT
 			n = stof(argv(1));
 			e = edict_num(n);
-			print(sprintf("Creating edict num %d\n", n));
+			print(sprintf("Creating %s (edict %d)\n", cname, n));
 #else
 			entity e = spawn();
 #endif
-			cname = argv(2);
 			loadent = __NULL__;
 
 			__fullspawndata = fgets(fh);
@@ -746,6 +758,8 @@ SV_PerformLoad(float fh, float entcount, float playerslots)
 		} else if (argv(0) == "}") {
 			if (loadent) {
 				loadent.RestoreComplete();
+				num_loaded++;
+				print(sprintf("completed %s (edict %d)\n\n", loadent.classname, n));
 				loadent = __NULL__;
 			}
 		} else {
@@ -754,16 +768,21 @@ SV_PerformLoad(float fh, float entcount, float playerslots)
 
 				if (c == 2) {
 					loadent.Restore(argv(0), argv(1));
+					//print(sprintf("%s %s\n", argv(0), argv(1)));
 				}
 			}
 		}
 	}
+
+	print(sprintf("loaded %i entities\n", num_loaded));
+	g_isloading = false;
 }
 
 void
 SV_PerformSave(float fh, float entcount, float playerslots)
 {
 	float i = 0;
+	int num_saved = 0i;
 	entity e;
 
 	print("--------- Performing Save ----------\n");
@@ -786,8 +805,10 @@ SV_PerformSave(float fh, float entcount, float playerslots)
 		fputs(fh, "{\n");
 		willsave.Save(fh);
 		fputs(fh, "}\n");
+		num_saved++;
 	}
 	fclose(fh);
+	print(sprintf("saved %i entities\n", num_saved));
 }
 
 void

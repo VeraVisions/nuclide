@@ -25,7 +25,8 @@ Useful for when a singleplayer game ends, as it takes you to the main menu.
 This entity was introduced in Half-Life (1998).
 */
 
-class trigger_endsection:NSBrushTrigger
+class
+trigger_endsection:NSBrushTrigger
 {
 	void(void) trigger_endsection;
 
@@ -34,12 +35,8 @@ class trigger_endsection:NSBrushTrigger
 };
 
 void
-trigger_endsection::Trigger(entity act, int state)
+trigger_endsection::trigger_endsection(void)
 {
-	if (GetMaster() == FALSE)
-		return;
-
-	localcmd("disconnect\n");
 }
 
 void
@@ -49,6 +46,10 @@ trigger_endsection::Respawn(void)
 }
 
 void
-trigger_endsection::trigger_endsection(void)
+trigger_endsection::Trigger(entity act, int state)
 {
+	if (GetMaster() == FALSE)
+		return;
+
+	localcmd("disconnect\n");
 }

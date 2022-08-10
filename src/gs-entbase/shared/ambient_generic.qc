@@ -78,13 +78,14 @@ class ambient_generic:NSTalkMonster
 	void(void) ambient_generic;
 
 	/* overrides */
-	virtual void(void) Spawned;
 #ifdef SERVER
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
+	virtual void(string, string) SpawnKey;
+	virtual void(void) Spawned;
+	virtual void(void) Respawn;
 	virtual void(void) EvaluateEntity;
 	virtual float(entity, float) SendEntity;
-	virtual void(void) Respawn;
 	virtual void(entity, int) UseNormal;
 	virtual void(entity, int) UseLoop;
 #else
@@ -92,53 +93,68 @@ class ambient_generic:NSTalkMonster
 	virtual float(void) predraw;
 	virtual void(string) SentenceSample;
 #endif
-	virtual void(string, string) SpawnKey;
 	virtual void(void) OnRemoveEntity;
 };
 
 void
+ambient_generic::ambient_generic(void)
+{
+	m_strActivePath = __NULL__;
+	m_flVolume = 0.0f;
+	m_flRadius = 0.0f;
+	m_flPitch = 0.0f;
+	m_bLoops = false;
+	m_bToggle = false;
+	m_strSpawnPath = __NULL__;
+	m_flSpawnVolume = 0.0f;
+	m_flSpawnPitch = 0.0f;
+}
+
+void
 ambient_generic::OnRemoveEntity(void)
 {
+#ifdef SERVER
 	sound(this, CHAN_BODY, "common/null.wav", 0.1f, 0);
+#endif
 }
 
 #ifdef SERVER
 void
 ambient_generic::Save(float handle)
 {
-	SaveString(handle, "activepath", m_strActivePath);
-	SaveString(handle, "soundpath", m_strSpawnPath);
-	SaveFloat(handle, "volume", m_flVolume);
-	SaveFloat(handle, "radius", m_flRadius);
-	SaveFloat(handle, "pitch", m_flPitch);
-	SaveInt(handle, "toggleswitch", m_bToggle);
-	SaveInt(handle, "loop", m_bLoops);
 	super::Save(handle);
+	SaveString(handle, "m_strActivePath", m_strActivePath);
+	SaveString(handle, "m_strSpawnPath", m_strSpawnPath);
+	SaveFloat(handle, "m_flVolume", m_flVolume);
+	SaveFloat(handle, "m_flRadius", m_flRadius);
+	SaveFloat(handle, "m_flPitch", m_flPitch);
+	SaveInt(handle, "m_bToggle", m_bToggle);
+	SaveInt(handle, "m_bLoops", m_bLoops);
 }
 
 void
 ambient_generic::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "loop":
+	case "m_bLoops":
 		m_bLoops = ReadInt(strValue);
 		break;
-	case "toggleswitch":
+	case "m_bToggle":
 		m_bToggle = ReadInt(strValue);
 		break;
-	case "pitch":
+	case "m_flPitch":
 		m_flPitch = ReadFloat(strValue);
 		break;
-	case "radius":
+	case "m_flRadius":
 		m_flRadius = ReadFloat(strValue);
 		break;
-	case "volume":
+	case "m_flVolume":
 		m_flVolume = ReadFloat(strValue);
 		break;
-	case "soundpath":
+	case "m_strSpawnPath":
 		m_strSpawnPath = ReadString(strValue);
 		break;
-	case "activepath":
+	case "m_strActivePath":
 		m_strActivePath = ReadString(strValue);
 		break;
 	default:
@@ -147,41 +163,50 @@ ambient_generic::Restore(string strKey, string strValue)
 }
 
 void
-ambient_generic::UseNormal(entity act, int state)
+ambient_generic::SpawnKey(string strKey, string strValue)
 {
-	NSLog("Sound once: %S Volume: %f; Radius: %d; Pitch: %d", \
-		m_strActivePath, m_flVolume, m_flRadius, m_flPitch);
-
-	if (substring(m_strActivePath, 0, 1) == "!") {
-		string seq = Sentences_GetSamples(m_strActivePath);
-
-		if (seq == "")
-			return;
-
-		WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
-		WriteByte(MSG_MULTICAST, EV_SENTENCE);
-		WriteEntity(MSG_MULTICAST, this);
-		WriteString(MSG_MULTICAST, seq);
-		msg_entity = this;
-		multicast(origin, MULTICAST_PHS);
-	} else
-		sound(this, CHAN_BODY, m_strActivePath, m_flVolume, m_flRadius, m_flPitch);
+	switch (strKey) {
+	case "message":
+		m_strSpawnPath = strValue;
+		precache_sound(m_strSpawnPath);
+		message = __NULL__;
+		break;
+	case "volume":
+		m_flSpawnVolume = stof(strValue);
+		break;
+	case "pitch":
+		m_flSpawnPitch = stof(strValue);
+		break;
+	/* backwards compat */
+	case "health":
+		m_flSpawnVolume = stof(strValue) * 0.1f;
+		break;
+	/* TODO: currently unimplemented */
+	case "preset":
+	case "volstart":
+	case "fadein":
+	case "fadeout":
+	case "pitchstart":
+	case "spinup":
+	case "spindown":
+	case "lfotype":
+	case "lforate":
+	case "lfomodpitch":
+	case "lfomodvol":
+	case "cspinup":
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
+		break;
+	}
 }
 
 void
-ambient_generic::UseLoop(entity act, int state)
+ambient_generic::Spawned(void)
 {
-	if (m_bToggle == TRUE) {
-		NSLog("^2ambient_generic::^3UseLoop^7: %s stops `%s`", 
-			target, m_strActivePath);
-		m_strActivePath = "common/null.wav";
-	} else {
-		m_strActivePath = m_strSpawnPath;
-		NSLog("^2ambient_generic::^3UseLoop^7: %s plays `%s`", 
-			target, m_strActivePath);
-	}
+	super::Spawned();
 
-	m_bToggle = 1 - m_bToggle;
+	precache_sound("common/null.wav");
 }
 
 void
@@ -230,6 +255,44 @@ ambient_generic::Respawn(void)
 
 		Trigger = UseLoop;
 	}
+}
+
+void
+ambient_generic::UseNormal(entity act, int state)
+{
+	NSLog("Sound once: %S Volume: %f; Radius: %d; Pitch: %d", \
+		m_strActivePath, m_flVolume, m_flRadius, m_flPitch);
+
+	if (substring(m_strActivePath, 0, 1) == "!") {
+		string seq = Sentences_GetSamples(m_strActivePath);
+
+		if (seq == "")
+			return;
+
+		WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+		WriteByte(MSG_MULTICAST, EV_SENTENCE);
+		WriteEntity(MSG_MULTICAST, this);
+		WriteString(MSG_MULTICAST, seq);
+		msg_entity = this;
+		multicast(origin, MULTICAST_PHS);
+	} else
+		sound(this, CHAN_BODY, m_strActivePath, m_flVolume, m_flRadius, m_flPitch);
+}
+
+void
+ambient_generic::UseLoop(entity act, int state)
+{
+	if (m_bToggle == TRUE) {
+		NSLog("^2ambient_generic::^3UseLoop^7: %s stops `%s`", 
+			target, m_strActivePath);
+		m_strActivePath = "common/null.wav";
+	} else {
+		m_strActivePath = m_strSpawnPath;
+		NSLog("^2ambient_generic::^3UseLoop^7: %s plays `%s`", 
+			target, m_strActivePath);
+	}
+
+	m_bToggle = 1 - m_bToggle;
 }
 
 void
@@ -347,58 +410,6 @@ ambient_generic::predraw(void)
 	return (PREDRAW_NEXT);
 }
 #endif
-
-void
-ambient_generic::SpawnKey(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "message":
-		m_strSpawnPath = strValue;
-		precache_sound(m_strSpawnPath);
-		message = __NULL__;
-		break;
-	case "volume":
-		m_flSpawnVolume = stof(strValue);
-		break;
-	case "pitch":
-		m_flSpawnPitch = stof(strValue);
-		break;
-	/* backwards compat */
-	case "health":
-		m_flSpawnVolume = stof(strValue) * 0.1f;
-		break;
-	/* TODO: currently unimplemented */
-	case "preset":
-	case "volstart":
-	case "fadein":
-	case "fadeout":
-	case "pitchstart":
-	case "spinup":
-	case "spindown":
-	case "lfotype":
-	case "lforate":
-	case "lfomodpitch":
-	case "lfomodvol":
-	case "cspinup":
-		break;
-	default:
-		super::SpawnKey(strKey, strValue);
-		break;
-	}
-}
-
-void
-ambient_generic::Spawned(void)
-{
-	super::Spawned();
-
-	precache_sound("common/null.wav");
-}
-
-void
-ambient_generic::ambient_generic(void)
-{
-}
 
 #ifdef CLIENT
 void

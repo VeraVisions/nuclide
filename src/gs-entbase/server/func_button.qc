@@ -78,7 +78,8 @@ enum
 	FRAME_ON
 };
 
-class func_button:NSSurfacePropEntity
+class
+func_button:NSSurfacePropEntity
 {
 	int m_iState;
 	float m_flSpeed;
@@ -93,7 +94,7 @@ class func_button:NSSurfacePropEntity
 	string m_strSndPressed;
 	string m_strSndUnpressed;
 
-	bool m_iCanTouch;
+	bool m_bCanTouch;
 
 	/* input/output */
 	string m_strOnPressed;
@@ -102,6 +103,9 @@ class func_button:NSSurfacePropEntity
 	string m_strOnIn;
 	string m_strOnOut;
 
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
+	virtual void(string, string) SpawnKey;
 	virtual void(void) Spawned;
 	virtual void(void) Respawn;
 	virtual void(void) Arrived;
@@ -116,329 +120,116 @@ class func_button:NSSurfacePropEntity
 	
 	virtual void(void) SetMovementDirection;
 	virtual void(vector, void(void)) MoveToDestination;
-	virtual void(string, string) SpawnKey;
 };
+
+void
+func_button::func_button(void)
+{
+	m_iState = 0i;
+	m_flSpeed = 0.0f;
+	m_flLip = 0.0f;
+	m_flNextTrigger = 0.0f;
+	m_flWait = 4.0f;
+	m_flDelay = 0.0f;
+	m_vecPos1 = [0.0f, 0.0f, 0.0f];
+	m_vecPos2 = [0.0f, 0.0f, 0.0f];
+	m_vecDest = [0.0f, 0.0f, 0.0f];
+	m_vecMoveDir = [0.0f, 0.0f, 0.0f];
+	m_strSndPressed = __NULL__;
+	m_strSndUnpressed = __NULL__;
+	m_bCanTouch = false;
+	m_strOnPressed = __NULL__;
+	m_strOnDamaged = __NULL__;
+	m_strOnUseLocked = __NULL__;
+	m_strOnIn = __NULL__;
+	m_strOnOut = __NULL__;
+}
 
 void
 func_button::Save(float handle)
 {
-	SaveInt(handle, "state", m_iState);
-	SaveFloat(handle, "speed", m_flSpeed);
-	SaveFloat(handle, "lip", m_flLip);
-	SaveFloat(handle, "next_trigger", m_flNextTrigger);
-	SaveFloat(handle, "wait", m_flWait);
-	SaveFloat(handle, "delay", m_flDelay);
-	SaveVector(handle, "pos1", m_vecPos1);
-	SaveVector(handle, "pos2", m_vecPos2);
-	SaveVector(handle, "dest", m_vecDest);
-	SaveVector(handle, "movedir", m_vecMoveDir);
-	SaveString(handle, "snd_pressed", m_strSndPressed);
-	SaveString(handle, "snd_unpressed", m_strSndUnpressed);
-	SaveString(handle, "on_pressed", m_strOnPressed);
-	SaveString(handle, "on_damaged", m_strOnDamaged);
-	SaveString(handle, "on_uselocked", m_strOnUseLocked);
-	SaveString(handle, "on_in", m_strOnIn);
-	SaveString(handle, "on_out", m_strOnOut);
-
 	super::Save(handle);
+	SaveInt(handle, "m_iState", m_iState);
+	SaveFloat(handle, "m_flSpeed", m_flSpeed);
+	SaveFloat(handle, "m_flLip", m_flLip);
+	SaveFloat(handle, "m_flNextTrigger", m_flNextTrigger);
+	SaveFloat(handle, "m_flWait", m_flWait);
+	SaveFloat(handle, "m_flDelay", m_flDelay);
+	SaveVector(handle, "m_vecPos1", m_vecPos1);
+	SaveVector(handle, "m_vecPos2", m_vecPos2);
+	SaveVector(handle, "m_vecDest", m_vecDest);
+	SaveVector(handle, "m_vecMoveDir", m_vecMoveDir);
+	SaveString(handle, "m_strSndPressed", m_strSndPressed);
+	SaveString(handle, "m_strSndUnpressed", m_strSndUnpressed);
+	SaveString(handle, "m_strOnPressed", m_strOnPressed);
+	SaveString(handle, "m_strOnDamaged", m_strOnDamaged);
+	SaveString(handle, "m_strOnUseLocked", m_strOnUseLocked);
+	SaveString(handle, "m_strOnIn", m_strOnIn);
+	SaveString(handle, "m_strOnOut", m_strOnOut);
+	SaveBool(handle, "m_bCanTouch", m_bCanTouch);
 }
 
 void
 func_button::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "state":
+	case "m_iState":
 		m_iState = ReadInt(strValue);
 		break;
-	case "speed":
+	case "m_flSpeed":
 		m_flSpeed = ReadFloat(strValue);
 		break;
-	case "lip":
+	case "m_flLip":
 		m_flLip = ReadFloat(strValue);
 		break;
-	case "next_trigger":
+	case "m_flNextTrigger":
 		m_flNextTrigger = ReadFloat(strValue);
 		break;
-	case "wait":
+	case "m_flWait":
 		m_flWait = ReadFloat(strValue);
 		break;
-	case "delay":
+	case "m_flDelay":
 		m_flDelay = ReadFloat(strValue);
 		break;
-	case "pos1":
+	case "m_vecPos1":
 		m_vecPos1 = ReadVector(strValue);
 		break;
-	case "pos2":
+	case "m_vecPos2":
 		m_vecPos2 = ReadVector(strValue);
 		break;
-	case "dest":
+	case "m_vecDest":
 		m_vecDest = ReadVector(strValue);
 		break;
-	case "movedir":
+	case "m_vecMoveDir":
 		m_vecMoveDir = ReadVector(strValue);
 		break;
-	case "snd_pressed":
+	case "m_strSndPressed":
 		m_strSndPressed = ReadString(strValue);
 		break;
-	case "snd_unpressed":
+	case "m_strSndUnpressed":
 		m_strSndUnpressed = ReadString(strValue);
 		break;
-	case "on_pressed":
+	case "m_strOnPressed":
 		m_strOnPressed = ReadString(strValue);
 		break;
-	case "on_damaged":
+	case "m_strOnDamaged":
 		m_strOnDamaged = ReadString(strValue);
 		break;
-	case "on_uselocked":
+	case "m_strOnUseLocked":
 		m_strOnUseLocked = ReadString(strValue);
 		break;
-	case "on_in":
+	case "m_strOnIn":
 		m_strOnIn = ReadString(strValue);
 		break;
-	case "on_out":
+	case "m_strOnOut":
 		m_strOnOut = ReadString(strValue);
+		break;
+	case "m_bCanTouch":
+		m_bCanTouch = ReadBool(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
 	}
-}
-
-void
-func_button::Arrived(void)
-{
-	SetOrigin(m_vecDest);
-	velocity = [0,0,0];
-	nextthink = 0;
-	m_iCanTouch = true;
-
-	UseOutput(this, m_strOnIn);
-	m_iState = STATE_RAISED;
-
-	if (HasSpawnFlags(SF_BTT_TOGGLE)) {
-		return;
-	}
-	
-	if (m_flWait != -1) {
-		think = MoveBack;
-		nextthink = (ltime + m_flWait);
-	}
-}
-
-void
-func_button::Returned(void)
-{
-	UseOutput(this, m_strOnOut);
-	SetOrigin(m_vecDest);
-	velocity = [0,0,0];
-	nextthink = 0;
-	m_iCanTouch = true;
-
-	m_iState = STATE_LOWERED;
-	SetFrame(FRAME_OFF);
-}
-
-void
-func_button::MoveBack(void)
-{
-	m_iCanTouch = false;
-	m_iState = STATE_DOWN;
-	m_iValue = 0;
-
-	if (m_strSndUnpressed) {
-		Sound_Play(this, CHAN_VOICE, m_strSndUnpressed);
-	}
-
-	if (m_vecPos2 != m_vecPos1) {
-		MoveToDestination (m_vecPos1, Returned);
-	} else {
-		Returned();
-	}
-}
-
-void
-func_button::MoveAway(void)
-{
-	if (m_iState == STATE_UP) {
-		return;
-	}
-	m_iCanTouch = false;
-
-	if (m_iState == STATE_RAISED) {
-		nextthink = (ltime + m_flWait);
-		return;
-	}
-	
-	m_iState = STATE_UP;
-	
-	if (m_vecPos2 != m_vecPos1) {
-		MoveToDestination(m_vecPos2, Arrived);
-	} else {
-		Arrived();
-	}
-
-	m_iValue = 1;
-	SetFrame(FRAME_ON);
-}
-
-/* TODO: Handle state */
-void
-func_button::Trigger(entity act, int state)
-{
-	if (GetMaster() == FALSE)
-		return;
-
-	UseOutput(act, m_strOnUseLocked);
-
-	if (m_flNextTrigger > time) {
-		return;
-	}
-
-	m_flNextTrigger = time + m_flWait;
-	
-	if ((m_iState == STATE_UP) || (m_iState == STATE_RAISED)){
-		if (m_flWait != -1) {
-			MoveBack();
-		}
-		return;
-	}
-
-	if (m_strSndPressed)
-		Sound_Play(this, CHAN_VOICE, m_strSndPressed);
-
-	MoveAway();
-
-	UseOutput(act, m_strOnPressed);
-	UseTargets(act, TRIG_TOGGLE, m_flDelay);
-
-	if (message)
-		env_message_single(act, message);
-
-	health = GetSpawnHealth();
-}
-
-void
-func_button::DeathTrigger(void)
-{
-	Trigger(g_dmg_eAttacker, TRIG_TOGGLE);
-}
-
-void
-func_button::Touch(entity eToucher)
-{
-	if (!HasSpawnFlags(SF_BTT_TOUCH_ONLY)) {
-		return;
-	}
-
-	if (m_iCanTouch == false)
-		return;
-
-	if (eToucher.movetype == MOVETYPE_WALK) {
-		Trigger(eToucher, TRIG_TOGGLE);
-	}
-}
-
-void
-func_button::PlayerUse(void)
-{
-	if (HasSpawnFlags(SF_BTT_TOUCH_ONLY)) {
-		return;
-	}
-	Trigger(eActivator, TRIG_TOGGLE);
-}
-
-void
-func_button::Blocked(entity eBlocker)
-{
-	if (m_flWait >= 0) {
-		if (m_iState == STATE_DOWN) {
-			MoveAway();
-		} else {
-			MoveBack();
-		}
-	}
-}
-
-void
-func_button::SetMovementDirection(void)
-{
-	if (GetSpawnAngles() == [0,-1,0]) {
-		m_vecMoveDir = [0,0,1];
-	} else if (GetSpawnAngles() == [0,-2,0]) {
-		m_vecMoveDir = [0,0,-1];
-	} else {
-		makevectors(GetSpawnAngles());
-		m_vecMoveDir = v_forward;
-	}
-}
-
-void
-func_button::MoveToDestination(vector vecDest, void(void) func)
-{
-	vector vecDifference;
-	float flTravel, fTravelTime;
-
-	if (!m_flSpeed) {
-		objerror("No speed defined for moving entity! Will not divide by zero.");
-	}
-
-	m_vecDest = vecDest;
-	think = func;
-
-	if (vecDest == origin) {
-		velocity = [0,0,0];
-		nextthink = (ltime + 0.1);
-		return;
-	}
-
-	vecDifference = (vecDest - origin);
-	flTravel = vlen(vecDifference);
-	fTravelTime = (flTravel / m_flSpeed);
-
-	if (fTravelTime < 0.1) {
-		velocity = [0,0,0];
-		nextthink = ltime + 0.1;
-		return;
-	}
-
-	nextthink = (ltime + fTravelTime);
-	velocity = (vecDifference * (1 / fTravelTime));
-}
-
-void
-func_button::Respawn(void)
-{
-	RestoreAngles();
-	SetMovementDirection();
-	ClearAngles();
-
-	SetSolid(SOLID_BSP);
-	SetMovetype(MOVETYPE_PUSH);
-	SetOrigin(GetSpawnOrigin());
-	SetModel(GetSpawnModel());
-
-	velocity = [0,0,0];
-	nextthink = -1;
-	health = GetSpawnHealth();
-
-	if (health > 0) {
-		takedamage = DAMAGE_YES;
-		Death = DeathTrigger;
-	}
-
-	if (!m_flSpeed) {
-		m_flSpeed = 100;
-	}
-
-	m_vecPos1 = GetSpawnOrigin();
-
-	if (HasSpawnFlags(SF_BTT_NOMOVE)) {
-		m_vecPos2 = m_vecPos1;
-	} else {
-		m_vecPos2 = (m_vecPos1 + m_vecMoveDir * (fabs(m_vecMoveDir * size) - m_flLip));
-	}
-
-	m_iValue = 0;
-	m_iState = STATE_LOWERED;
 }
 
 void
@@ -511,7 +302,239 @@ func_button::Spawned(void)
 }
 
 void
-func_button::func_button(void)
+func_button::Respawn(void)
 {
-	m_flWait = 4.0f;
+	RestoreAngles();
+	SetMovementDirection();
+	ClearAngles();
+
+	SetSolid(SOLID_BSP);
+	SetMovetype(MOVETYPE_PUSH);
+	SetOrigin(GetSpawnOrigin());
+	SetModel(GetSpawnModel());
+
+	velocity = [0,0,0];
+	nextthink = -1;
+	health = GetSpawnHealth();
+
+	if (health > 0) {
+		takedamage = DAMAGE_YES;
+		Death = DeathTrigger;
+	}
+
+	if (!m_flSpeed) {
+		m_flSpeed = 100;
+	}
+
+	m_vecPos1 = GetSpawnOrigin();
+
+	if (HasSpawnFlags(SF_BTT_NOMOVE)) {
+		m_vecPos2 = m_vecPos1;
+	} else {
+		m_vecPos2 = (m_vecPos1 + m_vecMoveDir * (fabs(m_vecMoveDir * size) - m_flLip));
+	}
+
+	m_iValue = 0;
+	m_iState = STATE_LOWERED;
+}
+
+void
+func_button::Arrived(void)
+{
+	SetOrigin(m_vecDest);
+	velocity = [0,0,0];
+	nextthink = 0;
+	m_bCanTouch = true;
+
+	UseOutput(this, m_strOnIn);
+	m_iState = STATE_RAISED;
+
+	if (HasSpawnFlags(SF_BTT_TOGGLE)) {
+		return;
+	}
+	
+	if (m_flWait != -1) {
+		think = MoveBack;
+		nextthink = (ltime + m_flWait);
+	}
+}
+
+void
+func_button::Returned(void)
+{
+	UseOutput(this, m_strOnOut);
+	SetOrigin(m_vecDest);
+	velocity = [0,0,0];
+	nextthink = 0;
+	m_bCanTouch = true;
+
+	m_iState = STATE_LOWERED;
+	SetFrame(FRAME_OFF);
+}
+
+void
+func_button::MoveBack(void)
+{
+	m_bCanTouch = false;
+	m_iState = STATE_DOWN;
+	m_iValue = 0;
+
+	if (m_strSndUnpressed) {
+		Sound_Play(this, CHAN_VOICE, m_strSndUnpressed);
+	}
+
+	if (m_vecPos2 != m_vecPos1) {
+		MoveToDestination (m_vecPos1, Returned);
+	} else {
+		Returned();
+	}
+}
+
+void
+func_button::MoveAway(void)
+{
+	if (m_iState == STATE_UP) {
+		return;
+	}
+	m_bCanTouch = false;
+
+	if (m_iState == STATE_RAISED) {
+		nextthink = (ltime + m_flWait);
+		return;
+	}
+	
+	m_iState = STATE_UP;
+	
+	if (m_vecPos2 != m_vecPos1) {
+		MoveToDestination(m_vecPos2, Arrived);
+	} else {
+		Arrived();
+	}
+
+	m_iValue = 1;
+	SetFrame(FRAME_ON);
+}
+
+/* TODO: Handle state */
+void
+func_button::Trigger(entity act, int state)
+{
+	if (GetMaster() == FALSE)
+		return;
+
+	UseOutput(act, m_strOnUseLocked);
+
+	if (m_flNextTrigger > time) {
+		return;
+	}
+
+	m_flNextTrigger = time + m_flWait;
+	
+	if ((m_iState == STATE_UP) || (m_iState == STATE_RAISED)){
+		if (m_flWait != -1) {
+			MoveBack();
+		}
+		return;
+	}
+
+	if (m_strSndPressed)
+		Sound_Play(this, CHAN_VOICE, m_strSndPressed);
+
+	MoveAway();
+
+	UseOutput(act, m_strOnPressed);
+	UseTargets(act, TRIG_TOGGLE, m_flDelay);
+
+	if (message)
+		env_message_single(act, message);
+
+	health = GetSpawnHealth();
+}
+
+void
+func_button::DeathTrigger(void)
+{
+	Trigger(g_dmg_eAttacker, TRIG_TOGGLE);
+}
+
+void
+func_button::Touch(entity eToucher)
+{
+	if (!HasSpawnFlags(SF_BTT_TOUCH_ONLY)) {
+		return;
+	}
+
+	if (m_bCanTouch == false)
+		return;
+
+	if (eToucher.movetype == MOVETYPE_WALK) {
+		Trigger(eToucher, TRIG_TOGGLE);
+	}
+}
+
+void
+func_button::PlayerUse(void)
+{
+	if (HasSpawnFlags(SF_BTT_TOUCH_ONLY)) {
+		return;
+	}
+	Trigger(eActivator, TRIG_TOGGLE);
+}
+
+void
+func_button::Blocked(entity eBlocker)
+{
+	if (m_flWait >= 0) {
+		if (m_iState == STATE_DOWN) {
+			MoveAway();
+		} else {
+			MoveBack();
+		}
+	}
+}
+
+void
+func_button::SetMovementDirection(void)
+{
+	if (GetSpawnAngles() == [0,-1,0]) {
+		m_vecMoveDir = [0,0,1];
+	} else if (GetSpawnAngles() == [0,-2,0]) {
+		m_vecMoveDir = [0,0,-1];
+	} else {
+		makevectors(GetSpawnAngles());
+		m_vecMoveDir = v_forward;
+	}
+}
+
+void
+func_button::MoveToDestination(vector vecDest, void(void) func)
+{
+	vector vecDifference;
+	float flTravel, fTravelTime;
+
+	if (!m_flSpeed) {
+		objerror("No speed defined for moving entity! Will not divide by zero.");
+	}
+
+	m_vecDest = vecDest;
+	think = func;
+
+	if (vecDest == origin) {
+		velocity = [0,0,0];
+		nextthink = (ltime + 0.1);
+		return;
+	}
+
+	vecDifference = (vecDest - origin);
+	flTravel = vlen(vecDifference);
+	fTravelTime = (flTravel / m_flSpeed);
+
+	if (fTravelTime < 0.1) {
+		velocity = [0,0,0];
+		nextthink = ltime + 0.1;
+		return;
+	}
+
+	nextthink = (ltime + fTravelTime);
+	velocity = (vecDifference * (1 / fTravelTime));
 }

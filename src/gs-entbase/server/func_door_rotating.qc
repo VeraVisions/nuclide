@@ -67,7 +67,8 @@ enumflags
 
 #define SF_DOOR_SILENT 0x80000000i
 
-class func_door_rotating:NSRenderableEntity
+class
+func_door_rotating:NSRenderableEntity
 {
 	string targetClose;
 	string m_strSndStop;
@@ -92,6 +93,8 @@ class func_door_rotating:NSRenderableEntity
 	
 	void(void) func_door_rotating;
 
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
 	virtual void(void) Spawned;
 	virtual void(void) PortalOpen;
 	virtual void(void) PortalClose;
@@ -141,6 +144,7 @@ func_door_rotating::func_door_rotating(void)
 void
 func_door_rotating::Save(float handle)
 {
+	super::Save(handle);
 	SaveString(handle, "targetClose", targetClose);
 	SaveString(handle, "m_strSndStop", m_strSndStop);
 	SaveString(handle, "m_strSndOpen", m_strSndOpen);
@@ -160,9 +164,7 @@ func_door_rotating::Save(float handle)
 	SaveVector(handle, "m_vecPos1", m_vecPos1);
 	SaveVector(handle, "m_vecPos2", m_vecPos2);
 	SaveVector(handle, "m_vecMoveDir", m_vecMoveDir);
-	SaveBool(handle, "____", m_iCanTouch);
-
-	super::Save(handle);
+	SaveBool(handle, "m_iCanTouch", m_iCanTouch);
 }
 
 void

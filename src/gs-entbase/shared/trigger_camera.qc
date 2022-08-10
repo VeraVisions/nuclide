@@ -66,6 +66,14 @@ class trigger_camera:NSPointTrigger
 #endif
 };
 
+void
+trigger_camera::trigger_camera(void)
+{
+#ifndef CLIENT
+	m_flWait = 4.0f;
+#endif
+}
+
 #ifdef CLIENT
 void
 trigger_camera::ReceiveEntity(float flNew, float flFlags)
@@ -103,6 +111,33 @@ trigger_camera::ReceiveEntity(float flNew, float flFlags)
 	classname = "trigger_camera";
 }
 #else
+void
+trigger_camera::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "target":
+		m_strAimAt = strValue;
+		break;
+	case "moveto":
+		m_strMoveTo = strValue;
+		break;
+	case "wait":
+		m_flWait = stof(strValue);
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
+	}
+}
+
+void
+trigger_camera::Respawn(void)
+{
+	SetSolid(SOLID_NOT);
+	SetMovetype(MOVETYPE_PUSH);
+	SetModel(GetSpawnModel());
+	SetOrigin(GetSpawnOrigin());
+}
+
 float
 trigger_camera::SendEntity(entity ePEnt, float flFlags)
 {
@@ -241,39 +276,4 @@ trigger_camera::Trigger(entity act, int state)
 	GoToTarget();
 	SetSendFlags(OCAMFL_CHANGED_ORIGIN | OCAMFL_CHANGED_ANGLES | OCAMFL_CHANGED_WAIT);
 }
-
-void
-trigger_camera::Respawn(void)
-{
-	SetSolid(SOLID_NOT);
-	SetMovetype(MOVETYPE_PUSH);
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
-}
-
-void
-trigger_camera::SpawnKey(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "target":
-		m_strAimAt = strValue;
-		break;
-	case "moveto":
-		m_strMoveTo = strValue;
-		break;
-	case "wait":
-		m_flWait = stof(strValue);
-		break;
-	default:
-		super::SpawnKey(strKey, strValue);
-	}
-}
 #endif
-
-void
-trigger_camera::trigger_camera(void)
-{
-#ifndef CLIENT
-	m_flWait = 4.0f;
-#endif
-}
