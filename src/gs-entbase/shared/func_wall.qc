@@ -101,7 +101,7 @@ func_wall::Init(void)
 	SetOrigin(origin);
 	SetAngles([0,0,0]);
 	SetMovetype(MOVETYPE_NONE);
-	SetSolid(SOLID_NOT);
+	SetSolid(SOLID_BSP);
 
 	MakeStatic();
 }
