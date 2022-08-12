@@ -337,7 +337,9 @@ NSView::UpdateView(void)
 	/* move this into NSClient methods */
 	cl.PostFrame();
 
-#if 1
+	if (autocvar(r_showView, 0) == false)
+		return;
+
 	Font_DrawText(m_vecPosition + [8,8], "NSView Debug Information", FONT_CON);
 	Font_DrawText(m_vecPosition + [8,20], sprintf("Seat: %i", m_iSeat), FONT_CON);
 	Font_DrawText(m_vecPosition + [8,32], sprintf("FOV: %d", m_flFieldOfView), FONT_CON);
@@ -345,7 +347,6 @@ NSView::UpdateView(void)
 	Font_DrawText(m_vecPosition + [8,56], sprintf("Angles: %v", angles), FONT_CON);
 	Font_DrawText(m_vecPosition + [8,68], sprintf("View-Target: %d", num_for_edict(m_viewTarget)), FONT_CON);
 	Font_DrawText(m_vecPosition + [8,80], sprintf("View-Mode: %d", m_viewmode), FONT_CON);
-#endif
 }
 
 void
