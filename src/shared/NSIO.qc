@@ -67,6 +67,10 @@ NSIO::Init(void)
 #endif
 	Spawned();
 
+	/* entity may be marked as deleted */
+	if (wasfreed(this))
+		return;
+
 #ifdef SERVER
 	/* we're loading entity data, don't call Respawn() */
 	if (g_isloading == true)
