@@ -84,7 +84,7 @@ func_plat::Restore(string strKey, string strValue)
 	case "state":
 		m_iState = ReadInt(strValue);
 		break;
-	case "spped":
+	case "speed":
 		m_flSpeed = ReadFloat(strValue);
 		break;
 	case "height":
