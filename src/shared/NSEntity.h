@@ -105,7 +105,7 @@ class NSEntity:NSTrigger
 	virtual void(void) EvaluateEntity;
 	virtual float(entity, float) SendEntity;
 
-	const entity(void) GetParent;
+	nonvirtual entity(void) GetParent;
 	virtual void(string) SetParent;
 	virtual void(string) SetParentAttachment;
 	virtual void(void) ClearParent;
@@ -138,54 +138,54 @@ class NSEntity:NSTrigger
 	virtual void(float) RemoveFlags;
 
 	/* gets */
-	const vector(void) GetSpawnOrigin;
-	const vector(void) GetSpawnAngles;
-	const string(void) GetSpawnModel;
+	nonvirtual vector(void) GetSpawnOrigin;
+	nonvirtual vector(void) GetSpawnAngles;
+	nonvirtual string(void) GetSpawnModel;
 
-	const float(void) GetEffects;
-	const float(void) GetFrame;
-	const float(void) GetSkin;
-	const float(void) GetScale;
-	const entity(void) GetOwner;
-	const vector(void) GetVelocity;
-	const float(void) GetSolid;
-	const string(void) GetModel;
-	const float(void) GetModelindex;
-	const float(void) GetMovetype;
-	const float(void) GetGravity;
-	const vector(void) GetAngles;
-	const vector(void) GetAngularVelocity;
-	const vector(void) GetOrigin;
-	const vector(void) GetMins;
-	const vector(void) GetMaxs;
-	const vector(void) GetRealMins;
-	const vector(void) GetRealMaxs;
-	const vector(void) GetAbsoluteMins;
-	const vector(void) GetAbsoluteMaxs;
-	const float(void) GetFlags;
+	nonvirtual float(void) GetEffects;
+	nonvirtual float(void) GetFrame;
+	nonvirtual float(void) GetSkin;
+	nonvirtual float(void) GetScale;
+	nonvirtual entity(void) GetOwner;
+	nonvirtual vector(void) GetVelocity;
+	nonvirtual float(void) GetSolid;
+	nonvirtual string(void) GetModel;
+	nonvirtual float(void) GetModelindex;
+	nonvirtual float(void) GetMovetype;
+	nonvirtual float(void) GetGravity;
+	nonvirtual vector(void) GetAngles;
+	nonvirtual vector(void) GetAngularVelocity;
+	nonvirtual vector(void) GetOrigin;
+	nonvirtual vector(void) GetMins;
+	nonvirtual vector(void) GetMaxs;
+	nonvirtual vector(void) GetRealMins;
+	nonvirtual vector(void) GetRealMaxs;
+	nonvirtual vector(void) GetAbsoluteMins;
+	nonvirtual vector(void) GetAbsoluteMaxs;
+	nonvirtual float(void) GetFlags;
 
 	virtual void(void) Show;
 	virtual void(void) Hide;
-	const bool(void) IsHidden;
+	nonvirtual bool(void) IsHidden;
 
 	virtual void(string, string) SpawnKey;
 	virtual void(void) Destroy;
 	virtual void(void) UpdateBounds;
 
 	/* useful methods, based on GMod's API */
-	const float(void) EntIndex;
+	nonvirtual float(void) EntIndex;
 	virtual void(void) DropToFloor;
-	const vector(void) GetForward;
-	const vector(void) GetRight;
-	const vector(void) GetUp;
-	const vector(void) WorldSpaceCenter;
-	const float(void) WaterLevel;
-	const bool(entity) Visible;
-	const bool(vector) VisibleVec;
-	const bool(float) HasSpawnFlags;
-	const bool(void) IsOnGround;
-	const entity(void) GetGroundEntity;
-	const bool(void) CreatedByMap;
+	nonvirtual vector(void) GetForward;
+	nonvirtual vector(void) GetRight;
+	nonvirtual vector(void) GetUp;
+	nonvirtual vector(void) WorldSpaceCenter;
+	nonvirtual float(void) WaterLevel;
+	nonvirtual bool(entity) Visible;
+	nonvirtual bool(vector) VisibleVec;
+	nonvirtual bool(float) HasSpawnFlags;
+	nonvirtual bool(void) IsOnGround;
+	nonvirtual entity(void) GetGroundEntity;
+	nonvirtual bool(void) CreatedByMap;
 
 	virtual void(entity) Blocked;
 	virtual void(entity) StartTouch;

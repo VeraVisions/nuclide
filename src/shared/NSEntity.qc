@@ -55,7 +55,7 @@ NSEntity::Spawned(void)
 #endif
 }
 
-const float
+float
 NSEntity::EntIndex(void)
 {
 	return num_for_edict(this);
@@ -76,21 +76,21 @@ NSEntity::DropToFloor(void)
 	droptofloorwrapper(this);
 }
 
-const vector
+vector
 NSEntity::GetForward(void)
 {
 	makevectors(angles);
 	return v_forward;
 }
 
-const vector
+vector
 NSEntity::GetRight(void)
 {
 	makevectors(angles);
 	return v_right;
 }
 
-const vector
+vector
 NSEntity::GetUp(void)
 {
 	makevectors(angles);
@@ -105,7 +105,7 @@ Returns the center of an entity's bounding boxes.
 Useful on brush entities that have no real 'origin' defined.
 ============
 */
-const vector
+vector
 NSEntity::WorldSpaceCenter(void)
 {
 	return absmin + (0.5 * (absmax - absmin));
@@ -118,7 +118,7 @@ NSEntity::VisibleVec
 Returns whether or not the entity is able to see a given position
 ============
 */
-const float
+float
 NSEntity::WaterLevel(void)
 {
 	return waterlevel;
@@ -131,7 +131,7 @@ NSEntity::VisibleVec
 Returns whether or not the entity is able to see a given position
 ============
 */
-const bool
+bool
 NSEntity::VisibleVec(vector org)
 {
 	vector flDelta;
@@ -157,7 +157,7 @@ NSEntity::Visible
 Returns whether or not the entity is able to see a given entity
 ============
 */
-const bool
+bool
 NSEntity::Visible(entity ent)
 {
 	vector flDelta;
@@ -179,31 +179,31 @@ NSEntity::Visible(entity ent)
 	return (false);
 }
 
-const bool
+bool
 NSEntity::HasSpawnFlags(float sf)
 {
 	return (spawnflags & sf) ? true : false;
 }
 
-const bool
+bool
 NSEntity::IsOnGround(void)
 {
 	return (flags & FL_ONGROUND) ? true : false;
 }
 
-const bool
+bool
 NSEntity::IsSolid(void)
 {
 	return (solid != SOLID_NOT) ? true : false;
 }
 
-const entity
+entity
 NSEntity::GetGroundEntity(void)
 {
 	return groundentity;
 }
 
-const bool
+bool
 NSEntity::CreatedByMap(void)
 {
 	return _mapspawned;
@@ -451,7 +451,7 @@ NSEntity::ParentUpdate(void)
 		}
 }
 
-const entity
+entity
 NSEntity::GetParent(void)
 {
 	return find(world, ::targetname, m_parent);
@@ -677,145 +677,145 @@ NSEntity::RemoveFlags(float fl)
 	flags &= ~fl;
 }
 
-const vector
+vector
 NSEntity::GetSpawnOrigin(void)
 {
 	return m_oldOrigin;
 }
 
-const vector
+vector
 NSEntity::GetSpawnAngles(void)
 {
 	return m_oldAngle;
 }
 
-const string
+string
 NSEntity::GetSpawnModel(void)
 {
 	return m_oldModel;
 }
 
-const float
+float
 NSEntity::GetEffects(void)
 {
 	return effects;
 }
 
-const float
+float
 NSEntity::GetFrame(void)
 {
 	return frame;
 }
 
-const float
+float
 NSEntity::GetSkin(void)
 {
 	return skin;
 }
 
-const float
+float
 NSEntity::GetScale(void)
 {
 	return scale;
 }
 
-const entity
+entity
 NSEntity::GetOwner(void)
 {
 	return owner;
 }
 
-const vector
+vector
 NSEntity::GetVelocity(void)
 {
 	return velocity;
 }
 
-const float
+float
 NSEntity::GetSolid(void)
 {
 	return solid;
 }
 
-const string
+string
 NSEntity::GetModel(void)
 {
 	return model;
 }
 
-const float
+float
 NSEntity::GetModelindex(void)
 {
 	return modelindex;
 }
 
-const float
+float
 NSEntity::GetMovetype(void)
 {
 	return movetype;
 }
 
-const float
+float
 NSEntity::GetGravity(void)
 {
 	return gravity;
 }
 
-const vector
+vector
 NSEntity::GetAngles(void)
 {
 	return angles;
 }
 
-const vector
+vector
 NSEntity::GetAngularVelocity(void)
 {
 	return avelocity;
 }
 
-const vector
+vector
 NSEntity::GetOrigin(void)
 {
 	return origin;
 }
 
-const vector
+vector
 NSEntity::GetMins(void)
 {
 	return mins;
 }
 
-const vector
+vector
 NSEntity::GetMaxs(void)
 {
 	return maxs;
 }
 
-const vector
+vector
 NSEntity::GetRealMins(void)
 {
 	return m_vecMins;
 }
 
-const vector
+vector
 NSEntity::GetRealMaxs(void)
 {
 	return m_vecMaxs;
 }
 
-const vector
+vector
 NSEntity::GetAbsoluteMins(void)
 {
 	return absmin;
 }
 
-const vector
+vector
 NSEntity::GetAbsoluteMaxs(void)
 {
 	return absmax;
 }
 
-const float
+float
 NSEntity::GetFlags(void)
 {
 	return flags;
@@ -1047,7 +1047,7 @@ NSEntity::Hide(void)
 	effects |= EF_NODRAW;
 }
 
-const bool
+bool
 NSEntity::IsHidden(void)
 {
 	return (effects & EF_NODRAW) ? true : false;

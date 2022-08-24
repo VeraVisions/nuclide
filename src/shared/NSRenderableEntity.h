@@ -136,16 +136,16 @@ class NSRenderableEntity:NSEntity
 	virtual void(float) SetBoneControl4;
 	virtual void(float) SetBoneControl5;
 
-	const int(void) GetBody;
-	const float(void) GetRenderMode;
-	const float(void) GetRenderFX;
-	const float(void) GetRenderAmt;
-	const vector(void) GetRenderColor;
-	const float(void) GetBoneControl1;
-	const float(void) GetBoneControl2;
-	const float(void) GetBoneControl3;
-	const float(void) GetBoneControl4;
-	const float(void) GetBoneControl5;
+	nonvirtual int(void) GetBody;
+	nonvirtual float(void) GetRenderMode;
+	nonvirtual float(void) GetRenderFX;
+	nonvirtual float(void) GetRenderAmt;
+	nonvirtual vector(void) GetRenderColor;
+	nonvirtual float(void) GetBoneControl1;
+	nonvirtual float(void) GetBoneControl2;
+	nonvirtual float(void) GetBoneControl3;
+	nonvirtual float(void) GetBoneControl4;
+	nonvirtual float(void) GetBoneControl5;
 
 	#ifdef CLIENT
 		virtual void(void) RenderFXPass;

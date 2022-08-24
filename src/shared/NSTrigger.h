@@ -52,9 +52,9 @@ class NSTrigger:NSIO
 	virtual void(entity, int, float) UseTargets;
 
 	/* master feature */
-	virtual int(void) GetValue;
-	virtual int(void) GetMaster;
-	virtual globalstate_t(string) GetGlobalValue;
+	nonvirtual int(void) GetValue;
+	nonvirtual int(void) GetMaster;
+	nonvirtual globalstate_t(string) GetGlobalValue;
 
 	/* overrides */
 	virtual void(float) Save;

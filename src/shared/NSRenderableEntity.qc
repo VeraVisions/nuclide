@@ -600,61 +600,61 @@ NSRenderableEntity::SetBoneControl5(float val)
 	m_flBoneControl5 = val;
 }
 
-const int
+int
 NSRenderableEntity::GetBody(void)
 {
 	return m_iBody;
 }
 
-const float
+float
 NSRenderableEntity::GetRenderMode(void)
 {
 	return m_iRenderMode;
 }
 
-const float
+float
 NSRenderableEntity::GetRenderFX(void)
 {
 	return m_iRenderFX;
 }
 
-const float
+float
 NSRenderableEntity::GetRenderAmt(void)
 {
 	return m_flRenderAmt;
 }
 
-const vector
+vector
 NSRenderableEntity::GetRenderColor(void)
 {
 	return m_vecRenderColor;
 }
 
-const float
+float
 NSRenderableEntity::GetBoneControl1(void)
 {
 	return m_flBoneControl1;
 }
 
-const float
+float
 NSRenderableEntity::GetBoneControl2(void)
 {
 	return m_flBoneControl2;
 }
 
-const float
+float
 NSRenderableEntity::GetBoneControl3(void)
 {
 	return m_flBoneControl3;
 }
 
-const float
+float
 NSRenderableEntity::GetBoneControl4(void)
 {
 	return m_flBoneControl4;
 }
 
-const float
+float
 NSRenderableEntity::GetBoneControl5(void)
 {
 	return m_flBoneControl5;

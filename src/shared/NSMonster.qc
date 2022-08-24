@@ -27,7 +27,7 @@ NSMonster::NSMonster(void)
 }
 
 #ifdef SERVER
-const int
+int
 NSMonster::GetTriggerCondition(void)
 {
 	return m_iTriggerCondition;
@@ -185,7 +185,7 @@ NSMonster::AnimPlay(float seq)
 	m_flAnimTime = time + frameduration(modelindex, frame);
 }
 
-const bool
+bool
 NSMonster::InAnimation(void)
 {
 	return (m_flAnimTime > time) ? true : false;
@@ -272,7 +272,7 @@ NSMonster::AlertNearby(void)
 }
 
 /* returns TRUE if 'enemy' should be considered a valid target for killing */
-const bool
+bool
 NSMonster::IsValidEnemy(entity enemy)
 {
 	if (enemy == __NULL__)
@@ -618,7 +618,7 @@ NSMonster::AnimationUpdate(void)
 }
 
 /* for an NSMonster, health doesn't matter that much, as we could be a corpse */
-const bool
+bool
 NSMonster::IsAlive(void)
 {
 	if (GetState() == MONSTER_DEAD)
@@ -645,19 +645,19 @@ NSMonster::SetState(monsterState_t newState)
 	StateChanged(m_iOldMState, m_iMState);
 }
 
-const monsterState_t
+monsterState_t
 NSMonster::GetState(void)
 {
 	return m_iMState;
 }
 
-const int
+int
 NSMonster::GetSequenceState(void)
 {
 	return m_iSequenceState;
 }
 
-const bool
+bool
 NSMonster::InSequence(void)
 {
 	return (GetSequenceState() == SEQUENCESTATE_NONE) ? false : true;

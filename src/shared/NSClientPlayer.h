@@ -80,10 +80,10 @@ NSClientPlayer:NSClientSpectator
 	virtual void(void) Physics_InputPostMove;
 	virtual void(void) Physics_Run;
 
-	const bool(void) IsFakeSpectator;
-	const bool(void) IsRealSpectator;
-	const bool(void) IsDead;
-	const bool(void) IsPlayer;
+	virtual bool(void) IsFakeSpectator;
+	virtual bool(void) IsRealSpectator;
+	virtual bool(void) IsDead;
+	virtual bool(void) IsPlayer;
 
 #ifdef CLIENT
 	int sequence;

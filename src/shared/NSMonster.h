@@ -253,7 +253,7 @@ class NSMonster:NSNavAI
 	virtual void(string) Sound;
 	virtual void(string, string) SpawnKey;
 
-	const bool(void) IsAlive;
+	virtual bool(void) IsAlive;
 	virtual bool(int) IsFriend;
 
 	/* see/hear subsystem */
@@ -279,15 +279,15 @@ class NSMonster:NSNavAI
 	virtual float(void) MeleeMaxDistance;
 	virtual bool(void) MeleeCondition;
 
-	const bool(entity enemy) IsValidEnemy;
+	nonvirtual bool(entity enemy) IsValidEnemy;
 
 	/* sequences */
 	virtual void(void) FreeState;
 	virtual void(void) FreeStateMoved;
 	virtual void(void) RouteEnded;
 	virtual void(void) WalkRoute;
-	const int(void) GetSequenceState;
-	const bool(void) InSequence;
+	nonvirtual int(void) GetSequenceState;
+	nonvirtual bool(void) InSequence;
 
 	/* animation cycles */
 	float m_flAnimTime;
@@ -296,15 +296,15 @@ class NSMonster:NSNavAI
 	virtual int(void) AnimRun;
 	virtual void(float) AnimPlay;
 	virtual void(void) AnimationUpdate;
-	const bool(void) InAnimation;
+	nonvirtual bool(void) InAnimation;
 
 	/* states */
 	virtual void(monsterState_t, monsterState_t) StateChanged;
 	virtual void(monsterState_t) SetState;
-	const monsterState_t(void) GetState;
+	nonvirtual monsterState_t(void) GetState;
 
 	/* TriggerTarget/Condition */
-	const int(void) GetTriggerCondition;
+	nonvirtual int(void) GetTriggerCondition;
 	virtual void(void) TriggerTargets;
 
 	virtual float(entity, float) SendEntity;

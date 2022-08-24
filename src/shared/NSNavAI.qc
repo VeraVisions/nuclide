@@ -186,7 +186,7 @@ NSNavAI::CheckRoute(void)
 	}*/
 }
 
-const vector
+vector
 NSNavAI::GetRouteMovevalues(void)
 {
 	vector vecDirection;
@@ -203,7 +203,7 @@ NSNavAI::GetRouteMovevalues(void)
 	return [v_forward * vecDirection, v_right * vecDirection, v_up * vecDirection];
 }
 
-const vector
+vector
 NSNavAI::GetRouteDirection(void)
 {
 	if (!m_iNodes)

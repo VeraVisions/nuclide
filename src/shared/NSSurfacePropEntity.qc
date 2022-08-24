@@ -86,7 +86,7 @@ typedef struct
 	nettype_e type;
 } netinfo_t;
 
-const netinfo_t n_NSSurfacePropEntity[] =
+netinfo_t n_NSSurfacePropEntity[] =
 {
 	{origin[0], NSEntity::origin_net[0], SRFENT_CHANGED_ORIGIN_X, 0, NETFIELD_COORD},
 	{origin[1], NSEntity::origin_net[1], SRFENT_CHANGED_ORIGIN_Y, 0, NETFIELD_COORD},

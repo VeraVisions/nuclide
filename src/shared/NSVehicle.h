@@ -47,14 +47,14 @@ class NSVehicle:NSSurfacePropEntity
 	virtual bool(void) HideCrosshair;
 	virtual bool(void) HidePlayermodel;
 #else
-	virtual vector(void) GetExitPos;
+	nonvirtual vector(void) GetExitPos;
 	virtual void(void) EvaluateEntity;
 	virtual float(entity, float) SendEntity;
 	virtual void(float) Save;
 	virtual void(string,string) Restore;
 #endif
 
-	virtual entity(void) GetDriver;
+	nonvirtual entity(void) GetDriver;
 	virtual void(void) PlayerUpdateFlags;
 	virtual void(void) PlayerAlign;
 	virtual void(NSClientPlayer) PlayerEnter;

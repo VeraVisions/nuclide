@@ -39,8 +39,8 @@ NSNavAI:NSSurfacePropEntity
 	/* methods we'd like others to override */
 	virtual bool(void) CanCrouch;
 
-	const vector(void) GetRouteMovevalues;
-	const vector(void) GetRouteDirection;
+	nonvirtual vector(void) GetRouteMovevalues;
+	nonvirtual vector(void) GetRouteDirection;
 
 	virtual void(void) RouteEnded;
 	virtual void(void) RouteClear;
