@@ -44,6 +44,8 @@ enumflags
 */
 class NSEntity:NSTrigger
 {
+	bool m_bHidden;
+
 	void(void) NSEntity;
 
 	/* these are the real bounds, whereas .mins .maxs are affected by .scale */
@@ -100,23 +102,24 @@ class NSEntity:NSTrigger
 	PREDICTED_FLOAT_N(skin);
 	PREDICTED_FLOAT_N(effects);
 
-	virtual void(void) Show;
-	virtual void(void) Hide;
 	virtual void(void) EvaluateEntity;
 	virtual float(entity, float) SendEntity;
 
-	nonvirtual entity(void) GetParent;
-	nonvirtual void(string) SetParent;
-	nonvirtual void(string) SetParentAttachment;
-	nonvirtual void(void) ClearParent;
+	const entity(void) GetParent;
+	virtual void(string) SetParent;
+	virtual void(string) SetParentAttachment;
+	virtual void(void) ClearParent;
 	virtual void(void) ParentUpdate;
 
 	/* some ents need this */
-	nonvirtual void(void) RestoreAngles;
-	nonvirtual void(void) ClearAngles;
+	virtual void(void) RestoreAngles;
+	virtual void(void) ClearAngles;
 #endif
 
 	/* sets */
+	virtual void(float) SetEffects;
+	virtual void(float) SetFrame;
+	virtual void(float) SetSkin;
 	virtual void(float) SetScale;
 	virtual void(entity) SetOwner;
 	virtual void(vector) SetVelocity;
@@ -133,55 +136,65 @@ class NSEntity:NSTrigger
 	virtual void(vector, vector) SetSize;
 	virtual void(float) AddFlags;
 	virtual void(float) RemoveFlags;
-	/* gets */
-	nonvirtual vector(void) GetSpawnOrigin;
-	nonvirtual vector(void) GetSpawnAngles;
-	nonvirtual string(void) GetSpawnModel;
 
-	virtual float(void) GetScale;
-	virtual entity(void) GetOwner;
-	virtual vector(void) GetVelocity;
-	virtual float(void) GetSolid;
-	virtual string(void) GetModel;
-	virtual float(void) GetModelindex;
-	virtual float(void) GetMovetype;
-	virtual float(void) GetGravity;
-	virtual vector(void) GetAngles;
-	virtual vector(void) GetAngularVelocity;
-	virtual vector(void) GetOrigin;
-	virtual vector(void) GetMins;
-	virtual vector(void) GetMaxs;
-	virtual vector(void) GetRealMins;
-	virtual vector(void) GetRealMaxs;
-	virtual vector(void) GetAbsoluteMins;
-	virtual vector(void) GetAbsoluteMaxs;
-	virtual float(void) GetFlags;
+	/* gets */
+	const vector(void) GetSpawnOrigin;
+	const vector(void) GetSpawnAngles;
+	const string(void) GetSpawnModel;
+
+	const float(void) GetEffects;
+	const float(void) GetFrame;
+	const float(void) GetSkin;
+	const float(void) GetScale;
+	const entity(void) GetOwner;
+	const vector(void) GetVelocity;
+	const float(void) GetSolid;
+	const string(void) GetModel;
+	const float(void) GetModelindex;
+	const float(void) GetMovetype;
+	const float(void) GetGravity;
+	const vector(void) GetAngles;
+	const vector(void) GetAngularVelocity;
+	const vector(void) GetOrigin;
+	const vector(void) GetMins;
+	const vector(void) GetMaxs;
+	const vector(void) GetRealMins;
+	const vector(void) GetRealMaxs;
+	const vector(void) GetAbsoluteMins;
+	const vector(void) GetAbsoluteMaxs;
+	const float(void) GetFlags;
+
+	virtual void(void) Show;
+	virtual void(void) Hide;
+	const bool(void) IsHidden;
 
 	virtual void(string, string) SpawnKey;
 	virtual void(void) Destroy;
 	virtual void(void) UpdateBounds;
 
 	/* useful methods, based on GMod's API */
-	nonvirtual float(void) EntIndex;
-	nonvirtual void(void) DropToFloor;
-	nonvirtual vector(void) GetForward;
-	nonvirtual vector(void) GetRight;
-	nonvirtual vector(void) GetUp;
-	nonvirtual vector(void) WorldSpaceCenter;
-	nonvirtual float(void) WaterLevel;
-	nonvirtual bool(entity) Visible;
-	nonvirtual bool(vector) VisibleVec;
-	nonvirtual bool(float) HasSpawnFlags;
-	nonvirtual bool(void) IsOnGround;
-	nonvirtual entity(void) GetGroundEntity;
-	virtual void(entity) Blocked;
-	nonvirtual void(void) BlockedHandler;
-	nonvirtual bool(void) CreatedByMap;
+	const float(void) EntIndex;
+	virtual void(void) DropToFloor;
+	const vector(void) GetForward;
+	const vector(void) GetRight;
+	const vector(void) GetUp;
+	const vector(void) WorldSpaceCenter;
+	const float(void) WaterLevel;
+	const bool(entity) Visible;
+	const bool(vector) VisibleVec;
+	const bool(float) HasSpawnFlags;
+	const bool(void) IsOnGround;
+	const entity(void) GetGroundEntity;
+	const bool(void) CreatedByMap;
 
+	virtual void(entity) Blocked;
 	virtual void(entity) StartTouch;
 	virtual void(entity) Touch;
 	virtual void(entity) EndTouch;
-	nonvirtual void(void) TouchHandler;
+	virtual void(void) _TouchHandler;
+	virtual void(void) _BlockedHandler;
 
 	virtual void(void) OnRemoveEntity;
+
+	virtual void(void) MakeStatic;
 };

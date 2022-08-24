@@ -60,10 +60,10 @@ class NSClientSpectator:NSClient
 	virtual void(void) PostFrame;
 	virtual void(void) SpectatorTrackPlayer;
 
-	virtual bool(void) IsFakeSpectator;
-	virtual bool(void) IsRealSpectator;
-	virtual bool(void) IsDead;
-	virtual bool(void) IsPlayer;
+	const bool(void) IsFakeSpectator;
+	const bool(void) IsRealSpectator;
+	const bool(void) IsDead;
+	const bool(void) IsPlayer;
 
 #ifdef SERVER
 	virtual void(float) Save;

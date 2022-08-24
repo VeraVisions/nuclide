@@ -70,6 +70,7 @@ string __fullspawndata;
 #include "NSMaterial.h"
 #include "damage.h"
 #include "flags.h"
+#include "effects.h"
 #include "entities.h"
 #include "events.h"
 #include "flags.h"

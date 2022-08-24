@@ -14,7 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-
 /*
 ============
 NSEntity::NSEntity
@@ -25,8 +24,8 @@ client doesn't have to do a whole lot here
 void
 NSEntity::NSEntity(void)
 {
-	blocked = BlockedHandler;
-	touch = TouchHandler;
+	blocked = _BlockedHandler;
+	touch = _TouchHandler;
 
 #ifdef SERVER
 	identity = 1;
@@ -56,7 +55,7 @@ NSEntity::Spawned(void)
 #endif
 }
 
-float
+const float
 NSEntity::EntIndex(void)
 {
 	return num_for_edict(this);
@@ -77,21 +76,21 @@ NSEntity::DropToFloor(void)
 	droptofloorwrapper(this);
 }
 
-vector
+const vector
 NSEntity::GetForward(void)
 {
 	makevectors(angles);
 	return v_forward;
 }
 
-vector
+const vector
 NSEntity::GetRight(void)
 {
 	makevectors(angles);
 	return v_right;
 }
 
-vector
+const vector
 NSEntity::GetUp(void)
 {
 	makevectors(angles);
@@ -106,7 +105,7 @@ Returns the center of an entity's bounding boxes.
 Useful on brush entities that have no real 'origin' defined.
 ============
 */
-vector
+const vector
 NSEntity::WorldSpaceCenter(void)
 {
 	return absmin + (0.5 * (absmax - absmin));
@@ -119,7 +118,7 @@ NSEntity::VisibleVec
 Returns whether or not the entity is able to see a given position
 ============
 */
-float
+const float
 NSEntity::WaterLevel(void)
 {
 	return waterlevel;
@@ -132,7 +131,7 @@ NSEntity::VisibleVec
 Returns whether or not the entity is able to see a given position
 ============
 */
-bool
+const bool
 NSEntity::VisibleVec(vector org)
 {
 	vector flDelta;
@@ -145,10 +144,10 @@ NSEntity::VisibleVec(vector org)
 	if (flFoV > 0.3f) {
 		traceline(origin, org, TRUE, this);
 		if (trace_fraction == 1.0f) {
-			return (TRUE);
+			return (true);
 		}
 	}
-	return (FALSE);
+	return (false);
 }
 
 /*
@@ -158,7 +157,7 @@ NSEntity::Visible
 Returns whether or not the entity is able to see a given entity
 ============
 */
-bool
+const bool
 NSEntity::Visible(entity ent)
 {
 	vector flDelta;
@@ -180,31 +179,31 @@ NSEntity::Visible(entity ent)
 	return (false);
 }
 
-bool
+const bool
 NSEntity::HasSpawnFlags(float sf)
 {
 	return (spawnflags & sf) ? true : false;
 }
 
-bool
+const bool
 NSEntity::IsOnGround(void)
 {
 	return (flags & FL_ONGROUND) ? true : false;
 }
 
-bool
+const bool
 NSEntity::IsSolid(void)
 {
 	return (solid != SOLID_NOT) ? true : false;
 }
 
-entity
+const entity
 NSEntity::GetGroundEntity(void)
 {
 	return groundentity;
 }
 
-bool
+const bool
 NSEntity::CreatedByMap(void)
 {
 	return _mapspawned;
@@ -217,7 +216,7 @@ NSEntity::Blocked(entity eBlocker)
 }
 
 void
-NSEntity::BlockedHandler(void)
+NSEntity::_BlockedHandler(void)
 {
 	Blocked(other);
 }
@@ -241,8 +240,11 @@ NSEntity::EndTouch(entity eToucher)
 }
 
 void
-NSEntity::TouchHandler(void)
+NSEntity::_TouchHandler(void)
 {
+	if (IsHidden() == true)
+		return;
+
 #ifdef SERVER
 	if (g_grMode.IsTeamplay())
 	if (m_iTeam > 0i)
@@ -339,18 +341,6 @@ NSEntity::postdraw(void)
 
 
 #else
-void
-NSEntity::Show(void)
-{
-	alpha = 1.0f;
-}
-
-void
-NSEntity::Hide(void)
-{
-	alpha = 0.0f;
-}
-
 /* Make sure StartFrame calls this */
 float
 NSEntity::SendEntity(entity ePEnt, float flChanged)
@@ -461,7 +451,7 @@ NSEntity::ParentUpdate(void)
 		}
 }
 
-entity
+const entity
 NSEntity::GetParent(void)
 {
 	return find(world, ::targetname, m_parent);
@@ -498,6 +488,28 @@ NSEntity::ClearAngles(void)
 	angles = [0,0,0];
 }
 #endif
+
+void
+NSEntity::SetEffects(float newEffects)
+{
+	effects = newEffects;
+}
+
+void
+NSEntity::SetFrame(float newFrame)
+{
+	if (newFrame == frame)
+		return;
+
+	frame = newFrame;
+	frame1time = 0.0f;
+}
+
+void
+NSEntity::SetSkin(float newSkin)
+{
+	skin = newSkin;
+}
 
 void
 NSEntity::SetOwner(entity newOwner)
@@ -549,7 +561,11 @@ NSEntity::SetSolid(float newSolid)
 void
 NSEntity::SetScale(float newScale)
 {
+	if (newScale == scale)
+		return;
+
 	scale = newScale;
+	setsize(this, m_vecMins * scale, m_vecMaxs * scale);
 }
 
 void
@@ -661,128 +677,148 @@ NSEntity::RemoveFlags(float fl)
 	flags &= ~fl;
 }
 
-float
+const vector
+NSEntity::GetSpawnOrigin(void)
+{
+	return m_oldOrigin;
+}
+
+const vector
+NSEntity::GetSpawnAngles(void)
+{
+	return m_oldAngle;
+}
+
+const string
+NSEntity::GetSpawnModel(void)
+{
+	return m_oldModel;
+}
+
+const float
+NSEntity::GetEffects(void)
+{
+	return effects;
+}
+
+const float
+NSEntity::GetFrame(void)
+{
+	return frame;
+}
+
+const float
+NSEntity::GetSkin(void)
+{
+	return skin;
+}
+
+const float
 NSEntity::GetScale(void)
 {
 	return scale;
 }
 
-entity
+const entity
 NSEntity::GetOwner(void)
 {
 	return owner;
 }
 
-vector
+const vector
 NSEntity::GetVelocity(void)
 {
 	return velocity;
 }
 
-float
+const float
 NSEntity::GetSolid(void)
 {
 	return solid;
 }
 
-string
+const string
 NSEntity::GetModel(void)
 {
 	return model;
 }
 
-float
+const float
 NSEntity::GetModelindex(void)
 {
 	return modelindex;
 }
 
-float
+const float
 NSEntity::GetMovetype(void)
 {
 	return movetype;
 }
 
-float
+const float
 NSEntity::GetGravity(void)
 {
 	return gravity;
 }
 
-vector
+const vector
 NSEntity::GetAngles(void)
 {
 	return angles;
 }
 
-vector
+const vector
 NSEntity::GetAngularVelocity(void)
 {
 	return avelocity;
 }
 
-vector
+const vector
 NSEntity::GetOrigin(void)
 {
 	return origin;
 }
 
-vector
+const vector
 NSEntity::GetMins(void)
 {
 	return mins;
 }
 
-vector
+const vector
 NSEntity::GetMaxs(void)
 {
 	return maxs;
 }
 
-vector
+const vector
 NSEntity::GetRealMins(void)
 {
 	return m_vecMins;
 }
 
-vector
+const vector
 NSEntity::GetRealMaxs(void)
 {
 	return m_vecMaxs;
 }
 
-vector
+const vector
 NSEntity::GetAbsoluteMins(void)
 {
 	return absmin;
 }
 
-vector
+const vector
 NSEntity::GetAbsoluteMaxs(void)
 {
 	return absmax;
 }
 
-float
+const float
 NSEntity::GetFlags(void)
 {
 	return flags;
-}
-
-vector
-NSEntity::GetSpawnOrigin(void)
-{
-	return m_oldOrigin;
-}
-vector
-NSEntity::GetSpawnAngles(void)
-{
-	return m_oldAngle;
-}
-string
-NSEntity::GetSpawnModel(void)
-{
-	return m_oldModel;
 }
 
 #ifdef SERVER
@@ -997,4 +1033,28 @@ NSEntity::Destroy(void)
 		nextthink = time + 0.01;
 	else
 		nextthink = time;
+}
+
+void
+NSEntity::Show(void)
+{
+	effects &= ~EF_NODRAW;
+}
+
+void
+NSEntity::Hide(void)
+{
+	effects |= EF_NODRAW;
+}
+
+const bool
+NSEntity::IsHidden(void)
+{
+	return (effects & EF_NODRAW) ? true : false;
+}
+
+void
+NSEntity::MakeStatic(void)
+{
+	makestatic(this);
 }

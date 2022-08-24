@@ -21,13 +21,13 @@ NSClientPlayer::NSClientPlayer(void)
 	vehicle = __NULL__;
 }
 
-bool
+const bool
 NSClientPlayer::IsRealSpectator(void)
 {
 	return (false);
 }
 
-bool
+const bool
 NSClientPlayer::IsDead(void)
 {
 	if (health > 0)
@@ -36,13 +36,13 @@ NSClientPlayer::IsDead(void)
 		return (true);
 }
 
-bool
+const bool
 NSClientPlayer::IsPlayer(void)
 {
 	return (false);
 }
 
-bool
+const bool
 NSClientPlayer::IsFakeSpectator(void)
 {
 	if (GetFlags() & FL_FAKESPEC)

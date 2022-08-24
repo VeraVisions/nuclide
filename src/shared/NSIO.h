@@ -43,28 +43,28 @@ class NSIO
 	string m_strOnUser4;
 
 	/* helper functions to allocate outputs */
-	nonvirtual void(entity, string) UseOutput;
-	nonvirtual string(string, string) PrepareOutput;
-	nonvirtual string(string) CreateOutput;
+	virtual void(entity, string) UseOutput;
+	virtual string(string, string) PrepareOutput;
+	virtual string(string) CreateOutput;
 
 	virtual void(float) Save;
 	virtual void(string,string) Restore;
 
 	/* save game */
-	nonvirtual void(float, string, float) SaveFloat;
-	nonvirtual void(float, string, int) SaveInt;
-	nonvirtual void(float, string, string) SaveString;
-	nonvirtual void(float, string, vector) SaveVector;
-	nonvirtual void(float, string, bool) SaveBool;
-	nonvirtual void(float, string, entity) SaveEntity;
+	virtual void(float, string, float) SaveFloat;
+	virtual void(float, string, int) SaveInt;
+	virtual void(float, string, string) SaveString;
+	virtual void(float, string, vector) SaveVector;
+	virtual void(float, string, bool) SaveBool;
+	virtual void(float, string, entity) SaveEntity;
 
 	/* load game */
-	nonvirtual float(string) ReadFloat;
-	nonvirtual int(string) ReadInt;
-	nonvirtual string(string) ReadString;
-	nonvirtual vector(string) ReadVector;
-	nonvirtual bool(string) ReadBool;
-	nonvirtual entity(string) ReadEntity;
+	virtual float(string) ReadFloat;
+	virtual int(string) ReadInt;
+	virtual string(string) ReadString;
+	virtual vector(string) ReadVector;
+	virtual bool(string) ReadBool;
+	virtual entity(string) ReadEntity;
 
 	/* Handle incoming entities input messaging */
 	virtual void(entity, string, string) Input;

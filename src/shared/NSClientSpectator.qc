@@ -37,25 +37,25 @@ NSClientSpectator::Restore(string strKey, string strValue)
 }
 #endif
 
-bool
+const bool
 NSClientSpectator::IsRealSpectator(void)
 {
 	return (true);
 }
 
-bool
+const bool
 NSClientSpectator::IsDead(void)
 {
 	return (false);
 }
 
-bool
+const bool
 NSClientSpectator::IsPlayer(void)
 {
 	return (false);
 }
 
-bool
+const bool
 NSClientSpectator::IsFakeSpectator(void)
 {
 	return (false);

@@ -117,15 +117,6 @@ class NSRenderableEntity:NSEntity
 	/* model events */
 	float m_flBaseTime;
 
-#ifdef SERVER
-	virtual void(void) Show;
-	virtual void(void) Hide;
-#endif
-	nonvirtual void(float) SetEffects;
-	nonvirtual void(float) SetFrame;
-	nonvirtual void(float) SetSkin;
-	nonvirtual void(int) SetBody;
-	nonvirtual void(float) SetScale;
 	virtual void(void) MakeStatic;
 
 	PREDICTED_FLOAT(m_iRenderFX);
@@ -134,28 +125,30 @@ class NSRenderableEntity:NSEntity
 	PREDICTED_VECTOR(m_vecRenderColor);
 
 	/* set */
-	nonvirtual void(float) SetRenderFX;
-	nonvirtual void(float) SetRenderMode;
-	nonvirtual void(float) SetRenderAmt;
-	nonvirtual void(vector) SetRenderColor;
-	nonvirtual void(float) SetBoneControl1;
-	nonvirtual void(float) SetBoneControl2;
-	nonvirtual void(float) SetBoneControl3;
-	nonvirtual void(float) SetBoneControl4;
-	nonvirtual void(float) SetBoneControl5;
+	virtual void(int) SetBody;
+	virtual void(float) SetRenderFX;
+	virtual void(float) SetRenderMode;
+	virtual void(float) SetRenderAmt;
+	virtual void(vector) SetRenderColor;
+	virtual void(float) SetBoneControl1;
+	virtual void(float) SetBoneControl2;
+	virtual void(float) SetBoneControl3;
+	virtual void(float) SetBoneControl4;
+	virtual void(float) SetBoneControl5;
 
-	nonvirtual float(void) GetRenderMode;
-	nonvirtual float(void) GetRenderFX;
-	nonvirtual float(void) GetRenderAmt;
-	nonvirtual vector(void) GetRenderColor;
-	nonvirtual float(void) GetBoneControl1;
-	nonvirtual float(void) GetBoneControl2;
-	nonvirtual float(void) GetBoneControl3;
-	nonvirtual float(void) GetBoneControl4;
-	nonvirtual float(void) GetBoneControl5;
+	const int(void) GetBody;
+	const float(void) GetRenderMode;
+	const float(void) GetRenderFX;
+	const float(void) GetRenderAmt;
+	const vector(void) GetRenderColor;
+	const float(void) GetBoneControl1;
+	const float(void) GetBoneControl2;
+	const float(void) GetBoneControl3;
+	const float(void) GetBoneControl4;
+	const float(void) GetBoneControl5;
 
 	#ifdef CLIENT
-		nonvirtual void(void) RenderFXPass;
+		virtual void(void) RenderFXPass;
 	#else
 		/* respawn */
 		float m_oldiRenderFX;

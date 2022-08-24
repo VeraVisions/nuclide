@@ -59,25 +59,25 @@ NSClient::PostFrame(void)
 {
 }
 
-bool
+const bool
 NSClient::IsFakeSpectator(void)
 {
 	return (false);
 }
 
-bool
+const bool
 NSClient::IsRealSpectator(void)
 {
 	return (false);
 }
 
-bool
+const bool
 NSClient::IsDead(void)
 {
 	return (false);
 }
 
-bool
+const bool
 NSClient::IsPlayer(void)
 {
 	return (false);

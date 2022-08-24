@@ -493,7 +493,7 @@ only to relevant child-classes
 float
 NSRenderableEntity::predraw(void)
 {
-	if (!modelindex) {
+	if (GetModelindex() == 0 || IsHidden()) {
 		return (PREDRAW_NEXT);
 	}
 
@@ -538,59 +538,12 @@ NSRenderableEntity::Respawn(void)
 	SetRenderAmt(m_oldflRenderAmt);
 	SetRenderColor(m_oldvecRenderColor);
 }
-
-void
-NSRenderableEntity::Show(void)
-{
-	/* this needs to be more useful */
-}
-
-void
-NSRenderableEntity::Hide(void)
-{
-	SetModelindex(0);
-	SetSolid(SOLID_NOT);
-	SetMovetype(MOVETYPE_NONE);
-	takedamage = DAMAGE_NO;
-}
 #endif
-
-void
-NSRenderableEntity::SetEffects(float newEffects)
-{
-	effects = newEffects;
-}
-
-void
-NSRenderableEntity::SetFrame(float newFrame)
-{
-	if (newFrame == frame)
-		return;
-
-	frame = newFrame;
-	frame1time = 0.0f;
-}
-
-void
-NSRenderableEntity::SetSkin(float newSkin)
-{
-	skin = newSkin;
-}
 
 void
 NSRenderableEntity::SetBody(int newBody)
 {
 	m_iBody = newBody;
-}
-
-void
-NSRenderableEntity::SetScale(float newScale)
-{
-	if (newScale == scale)
-		return;
-
-	scale = newScale;
-	setsize(this, m_vecMins * scale, m_vecMaxs * scale);
 }
 
 void
@@ -647,55 +600,61 @@ NSRenderableEntity::SetBoneControl5(float val)
 	m_flBoneControl5 = val;
 }
 
-float
+const int
+NSRenderableEntity::GetBody(void)
+{
+	return m_iBody;
+}
+
+const float
 NSRenderableEntity::GetRenderMode(void)
 {
 	return m_iRenderMode;
 }
 
-float
+const float
 NSRenderableEntity::GetRenderFX(void)
 {
 	return m_iRenderFX;
 }
 
-float
+const float
 NSRenderableEntity::GetRenderAmt(void)
 {
 	return m_flRenderAmt;
 }
 
-vector
+const vector
 NSRenderableEntity::GetRenderColor(void)
 {
 	return m_vecRenderColor;
 }
 
-float
+const float
 NSRenderableEntity::GetBoneControl1(void)
 {
 	return m_flBoneControl1;
 }
 
-float
+const float
 NSRenderableEntity::GetBoneControl2(void)
 {
 	return m_flBoneControl2;
 }
 
-float
+const float
 NSRenderableEntity::GetBoneControl3(void)
 {
 	return m_flBoneControl3;
 }
 
-float
+const float
 NSRenderableEntity::GetBoneControl4(void)
 {
 	return m_flBoneControl4;
 }
 
-float
+const float
 NSRenderableEntity::GetBoneControl5(void)
 {
 	return m_flBoneControl5;
