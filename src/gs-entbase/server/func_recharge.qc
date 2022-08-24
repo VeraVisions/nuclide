@@ -151,7 +151,11 @@ func_recharge::ResetHealth(void)
 	}
 
 	SetFrame(0);
-	health = max_health = Skill_GetValue("suitcharger", 75);
+
+	if (g_grMode.IsMultiplayer() == true)
+		health = max_health = 30.0f;
+	else
+		health = max_health = Skill_GetValue("suitcharger", 75);
 }
 
 void
