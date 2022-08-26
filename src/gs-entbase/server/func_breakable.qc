@@ -251,30 +251,30 @@ func_breakable::Respawn(void)
 	SetModel(GetSpawnModel());
 	SetOrigin(GetSpawnOrigin());
 	ClearAngles();
-	think = __NULL__;
+	ReleaseThink();
 	m_bCanTouch = true;
 
 	if (HasSpawnFlags(SF_TRIGGER)) {
-		takedamage = DAMAGE_NO;
+		SetTakedamage(DAMAGE_NO);
 	} else {
-		takedamage = DAMAGE_YES;
+		SetTakedamage(DAMAGE_YES);
 	}
 
 	/* initially set the health to that of the ent-data */
-	float sh = GetSpawnHealth();
+	float spawnhealth = GetSpawnHealth();
 
-	if (HasPropData() == TRUE && sh == 0) {
+	if (HasPropData() == TRUE && spawnhealth <= 0) {
 		/* assign propdata health */
-		health = GetPropData(PROPINFO_HEALTH);
+		SetHealth(GetPropData(PROPINFO_HEALTH));
 		m_flExplodeMag = GetPropData(PROPINFO_EXPLOSIVE_DMG);
 		m_flExplodeRad = GetPropData(PROPINFO_EXPLOSIVE_RADIUS);
 	} else {
-		health = sh;
+		SetHealth(spawnhealth);
 	}
 
 	/* unassigned health isn't valid */
-	if (!health)
-		health = 15;
+	if (GetHealth() <= 0)
+		SetHealth(15);
 }
 
 void
@@ -297,6 +297,8 @@ func_breakable::Explode(void)
 	Damage_Radius(rp, this, m_flExplodeMag, m_flExplodeRad, TRUE, 0);
 	UseTargets(this, TRIG_TOGGLE, 0.0f); /* delay... ignored. */
 	Hide();
+	SetSolid(SOLID_NOT);
+	SetTakedamage(DAMAGE_NO);
 }
 
 void
@@ -340,11 +342,12 @@ func_breakable::Death(void)
 	 * The only way around this is to set a hard-coded limit of loops per
 	 * frame and that would break functionality. */
 	if (m_flExplodeMag) {
-		think = Explode;
-		nextthink = time + random(0.0,0.5);
+		ScheduleThink(Explode, random(0.0f, 0.5f));
 	} else {
 		FX_BreakModel(vlen(size) / 10, absmin, absmax, [0,0,0], GetSurfaceData(SURFDATA_MATERIAL));
 		Hide();
+		SetSolid(SOLID_NOT);
+		SetTakedamage(DAMAGE_NO);
 		UseTargets(eActivator, TRIG_TOGGLE, 0.0f);
 	}
 }
@@ -352,7 +355,7 @@ func_breakable::Death(void)
 void
 func_breakable::Trigger(entity act, int state)
 {
-	if (health > 0)
+	if (GetHealth() > 0)
 		Death();
 }
 
@@ -392,12 +395,11 @@ func_breakable::Touch(entity eToucher)
 
 	if (HasSpawnFlags(SF_PRESSURE) && (eToucher.absmin[2] >= maxs[2] - 2)) {
 		m_bCanTouch = false;
-		think = TriggerWrap;
 
-		if (m_flDelay == 0) {
+		if (m_flDelay <= 0) {
 			m_flDelay = 0.1f;
 		}
 
-		nextthink = time + m_flDelay;
+		ScheduleThink(TriggerWrap, m_flDelay);
 	}
 }

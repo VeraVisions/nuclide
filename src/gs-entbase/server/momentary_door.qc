@@ -67,6 +67,7 @@ momentary_door::Respawn(void)
 	RestoreAngles();
 	SetMovementDirection();
 	ClearAngles();
+	ClearVelocity();
 
 	SetMovetype(MOVETYPE_PUSH);
 	SetSolid(SOLID_BSP);
@@ -87,7 +88,8 @@ momentary_door::GetProgress(void)
 void
 momentary_door::MovementDone(void)
 {
-	m_vecDest = velocity = [0,0,0];
+	m_vecDest = [0,0,0];
+	ClearVelocity();
 }
 
 void
@@ -122,9 +124,8 @@ momentary_door::MovementStateChanged(void)
 		return;
 	}
 
-	think = MovementDone;
-	nextthink = (ltime + flTravelTime);
-	velocity = (vecDifference * (1.0f / flTravelTime));
+	ScheduleThink(MovementDone, flTravelTime);
+	SetVelocity(vecDifference * (1.0f / flTravelTime));
 }
 
 void

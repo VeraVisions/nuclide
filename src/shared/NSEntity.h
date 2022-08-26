@@ -136,6 +136,9 @@ class NSEntity:NSTrigger
 	virtual void(vector, vector) SetSize;
 	virtual void(float) AddFlags;
 	virtual void(float) RemoveFlags;
+	virtual void(void()) SetThink;
+	virtual void(float) SetNextThink;
+	virtual void(void(void), float) ScheduleThink;
 
 	/* gets */
 	nonvirtual vector(void) GetSpawnOrigin;
@@ -163,6 +166,10 @@ class NSEntity:NSTrigger
 	nonvirtual vector(void) GetAbsoluteMins;
 	nonvirtual vector(void) GetAbsoluteMaxs;
 	nonvirtual float(void) GetFlags;
+	nonvirtual float(void) GetNextThinkTime;
+	nonvirtual bool(void) IsThinking;
+	nonvirtual void(void) ReleaseThink;
+	nonvirtual void(void) ClearVelocity;
 
 	virtual void(void) Show;
 	virtual void(void) Hide;
@@ -186,6 +193,7 @@ class NSEntity:NSTrigger
 	nonvirtual bool(void) IsOnGround;
 	nonvirtual entity(void) GetGroundEntity;
 	nonvirtual bool(void) CreatedByMap;
+	nonvirtual bool(entity) WithinBounds;
 
 	virtual void(entity) Blocked;
 	virtual void(entity) StartTouch;

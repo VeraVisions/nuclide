@@ -677,6 +677,42 @@ NSEntity::RemoveFlags(float fl)
 	flags &= ~fl;
 }
 
+void
+NSEntity::SetThink(void(void) func)
+{
+	think = func;
+}
+
+/* FIXME: Why do we need to declare this?! */
+#ifdef CSQC
+noref .float ltime;
+#endif
+
+void
+NSEntity::SetNextThink(float fl)
+{
+	float flTime;
+
+	/* thinks work differently for pushmovables */
+	flTime = (movetype == MOVETYPE_PUSH) ? ltime : time;
+
+	/* HACK: to make sure things happen post-spawn */
+	if (flTime <= 0.0f)
+		flTime = 0.1f;
+
+	if (fl >= 0)
+		nextthink = flTime + fl;
+	else
+		NSLog("%s sets bogus nextthink value %f\n", classname, fl);
+}
+
+void
+NSEntity::ScheduleThink(void(void) func, float fl)
+{
+	SetThink(func);
+	SetNextThink(fl);
+}
+
 vector
 NSEntity::GetSpawnOrigin(void)
 {
@@ -819,6 +855,34 @@ float
 NSEntity::GetFlags(void)
 {
 	return flags;
+}
+
+float
+NSEntity::GetNextThinkTime(void)
+{
+	return nextthink;
+}
+
+bool
+NSEntity::IsThinking(void)
+{
+	if (movetype == MOVETYPE_PUSH)
+		return (nextthink > ltime) ? true : false;
+	else
+		return (nextthink > time) ? true : false;
+}
+
+void
+NSEntity::ReleaseThink(void)
+{
+	think = __NULL__;
+	nextthink = 0.0f;
+}
+
+void
+NSEntity::ClearVelocity(void)
+{
+	velocity = avelocity = [0.0f, 0.0f, 0.0f];
 }
 
 #ifdef SERVER
@@ -1057,4 +1121,17 @@ void
 NSEntity::MakeStatic(void)
 {
 	makestatic(this);
+}
+
+bool
+NSEntity::WithinBounds(entity check)
+{
+	if not (check.absmin[0] >= absmin[0] && check.absmax[0] <= absmax[0])
+		return false;
+	if not (check.absmin[1] >= absmin[1] && check.absmax[1] <= absmax[1])
+		return false;
+	if not (check.absmin[2] >= absmin[2] && check.absmax[2] <= absmax[2])
+		return false;
+
+	return true;
 }

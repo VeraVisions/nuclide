@@ -259,8 +259,8 @@ func_door_rotating::Respawn(void)
 	ClearAngles();
 
 #ifdef GS_PHYSICS
-	takedamage = DAMAGE_YES;
-	health = 100;
+	SetTakedamage(DAMAGE_YES);
+	SetHealth(100);
 	Death = func_door_rotating::Unhinge;
 #endif
 
@@ -268,9 +268,8 @@ func_door_rotating::Respawn(void)
 	SetMovetype(MOVETYPE_PUSH);
 	SetModel(GetSpawnModel());
 	SetOrigin(GetSpawnOrigin());
-	think = __NULL__;
-	nextthink = 0.0f;
-	avelocity = [0,0,0];
+	ClearVelocity();
+	ReleaseThink();
 
 	if (spawnflags & SF_ROT_USE)
 		m_iCanTouch = false;
@@ -397,8 +396,8 @@ func_door_rotating::PortalClose(void)
 void
 func_door_rotating::Unhinge(void)
 {
-	takedamage = DAMAGE_NO;
-	think = __NULL__;
+	SetTakedamage(DAMAGE_NO);
+	ReleaseThink();
 	m_iCanTouch = false;
 	SetSolid(SOLID_PHYSICS_BOX);
 	SetMovetype(MOVETYPE_PHYSICS);
@@ -411,7 +410,7 @@ func_door_rotating::Arrived(void)
 {
 	SetAngles(m_vecDest);
 	SetAngularVelocity([0,0,0]);
-	nextthink = 0.0f;
+	ReleaseThink();
 
 	m_iState = STATE_RAISED;
 
@@ -424,8 +423,7 @@ func_door_rotating::Arrived(void)
 	if ((m_flWait < 0.0f) || HasSpawnFlags(SF_ROT_TOGGLE) == true)
 		return;
 
-	think = Back;
-	nextthink = (ltime + m_flWait);
+	ScheduleThink(Back, m_flWait);
 }
 
 void
@@ -433,7 +431,7 @@ func_door_rotating::Returned(void)
 {
 	SetAngles(m_vecDest);
 	SetAngularVelocity([0,0,0]);
-	nextthink = 0.0f;
+	ReleaseThink();
 
 	if (m_strSndStop) {
 		Sound_Play(this, CHAN_VOICE, m_strSndStop);
@@ -458,7 +456,6 @@ void
 func_door_rotating::Back(void)
 {
 	if (!HasSpawnFlags(SF_DOOR_SILENT)) {
-		
 		if (m_strSndClose) {
 			Sound_Play(this, CHAN_VOICE, m_strSndClose);
 		} else {
@@ -485,11 +482,6 @@ func_door_rotating::Away(void)
 		} else {
 			sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
 		}
-	}
-  
-	if (m_iState == STATE_RAISED) {
-		nextthink = (ltime + m_flWait);
-		return;
 	}
 
 	m_iState = STATE_UP;
@@ -566,8 +558,9 @@ func_door_rotating::Touch(entity eToucher)
 		return;
 	}
 
-	if ((m_iState == STATE_UP) || (m_iState == STATE_DOWN))
+	if ((m_iState == STATE_UP) || (m_iState == STATE_DOWN)) {
 		return;
+	}
 
 	if (eToucher.movetype == MOVETYPE_WALK) {
 		Trigger(eToucher, TRIG_TOGGLE);
@@ -610,7 +603,7 @@ func_door_rotating::RotToDest(vector vDestAngle, void(void) func)
 
 	if (!m_flSpeed) {
 		NSLog("^1func_door_rotating::^3RotToDest^7: No speed defined for %s!", targetname);
-		func_door_rotating::Respawn();
+		Respawn();
 		return;
 	}
 
@@ -620,12 +613,10 @@ func_door_rotating::RotToDest(vector vDestAngle, void(void) func)
 
 	/* Avoid NAN hack */
 	if (flTravelTime <= 0.0f) {
-		func();
-		nextthink = 0.0f;
+		ScheduleThink(func, 0.0f);
 	} else {
 		avelocity = (vecAngleDifference * (1 / flTravelTime));
 		m_vecDest = vDestAngle;
-		think = func;
-		nextthink = (ltime + flTravelTime);
+		ScheduleThink(func, flTravelTime);
 	}
 }

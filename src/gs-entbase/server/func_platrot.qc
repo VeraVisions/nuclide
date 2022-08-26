@@ -152,14 +152,13 @@ func_platrot::Respawn(void)
 	SetAngles(GetSpawnAngles());
 
 	m_iState = PLATSTATE_RAISED;
-	think = __NULL__;
-	nextthink = 0.0f;
+	ReleaseThink();
 }
 
 void
 func_platrot::ArrivedUp(void)
 {
-	avelocity = velocity = [0,0,0];
+	ClearVelocity();
 	m_iState = PLATSTATE_RAISED;
 
 	sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
@@ -171,7 +170,7 @@ func_platrot::ArrivedUp(void)
 void
 func_platrot::ArrivedDown(void)
 {
-	avelocity = velocity = [0,0,0];
+	ClearVelocity();
 	m_iState = PLATSTATE_LOWERED;
 
 	sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
@@ -191,17 +190,18 @@ func_platrot::Move(vector vecDest, vector vecADest, void() vFunc)
 	vecADifference = vecADest - angles;
 	flTravel = vlen(vecDifference);
 	fTravelTime = (flTravel / m_flSpeed);
-	think = vFunc;
+	SetThink(vFunc);
 
 	if (fTravelTime < 0.1) {
-		velocity = [0,0,0];
-		nextthink = ltime + 0.1f;
+		ClearVelocity();
+		SetNextThink(0.1f);
 		return;
 	}
 
-	avelocity = (vecADifference * (1.0f / fTravelTime));
-	velocity = (vecDifference * (1.0f / fTravelTime));
-	nextthink = (ltime + fTravelTime);
+	
+	SetAngularVelocity(vecADifference * (1.0f / fTravelTime));
+	SetVelocity(vecDifference * (1.0f / fTravelTime));
+	SetNextThink(ltime + fTravelTime);
 
 	if (m_strNoise1)
 		sound(this, CHAN_VOICE, m_strNoise1, 1.0f, ATTN_NORM);

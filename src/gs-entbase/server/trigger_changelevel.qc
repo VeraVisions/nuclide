@@ -50,6 +50,8 @@ enumflags
 void
 ChangeTarget_Activate(void)
 {
+	NSTimer foo = __NULL__;
+
 	static void Finalize(void) {
 		string ctarg = cvar_string("_bsp_changetarget");
 		if (ctarg) {
@@ -64,10 +66,7 @@ ChangeTarget_Activate(void)
 		readcmd("set _bsp_changedelay \"\"\n");
 	}
 
-	entity foo = spawn();
-	float cdel = cvar("_bsp_changedelay");
-	foo.think = Finalize;
-	foo.nextthink = time + 0.1f + cdel;
+	foo.TemporaryTimer(self, Finalize, cvar("_bsp_changedelay"), false);
 }
 
 class

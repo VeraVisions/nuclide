@@ -150,7 +150,7 @@ trigger_push::Touch(entity eToucher)
 			if (eToucher.velocity[2] > 0) {
 				eToucher.flags &= ~FL_ONGROUND;
 			}
-			Hide();
+			SetSolid(SOLID_NOT);
 		} else {
 			eToucher.basevelocity += vecPush;
 		}

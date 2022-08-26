@@ -162,9 +162,8 @@ func_rotating::Respawn(void)
 	ClearAngles();
 
 	if (HasSpawnFlags(FR_STARTON)) {
-		avelocity = m_vecMoveDir * m_flSpeed;
-		think = Rotate;
-		nextthink = ltime + 1.5f;
+		SetAngularVelocity(m_vecMoveDir * m_flSpeed);
+		ScheduleThink(Rotate, 1.5f);
 	}
 }
 
@@ -173,9 +172,8 @@ void
 func_rotating::Trigger(entity act, int state)
 {
 	if (vlen(avelocity) > 0) {
-		avelocity = [0,0,0];
-		think = __NULL__;
-		nextthink = 0.0f;
+		ClearVelocity();
+		ReleaseThink();
 	} else {
 		float flSpeed;
 
@@ -185,19 +183,18 @@ func_rotating::Trigger(entity act, int state)
 			flSpeed = m_flSpeed;
 		}
 
-		avelocity = m_vecMoveDir * flSpeed;
+		SetAngularVelocity(m_vecMoveDir * flSpeed);
 		m_flDir = 1 - m_flDir;
 
-		/* HACK HACK HACK! This is terrible */
-		think = Rotate;
-		nextthink = ltime + 99999.0f;
+		/* HACK HACK HACK! This is terrible, but the only way PUSH movetypes rotate */
+		ScheduleThink(Rotate, 99999.0f);
 	}
 }
 
 void
 func_rotating::Rotate(void)
 {
-	nextthink = ltime + 10.0f;
+	SetNextThink(10.0f);
 }
 
 void
@@ -210,13 +207,8 @@ func_rotating::Blocked(entity eBlocker)
 	if (other.takedamage == DAMAGE_YES) {
 		/* this is to work around a Q1 BSP bug. don't attempt to damage our
 		 * target unless we're absolutely sure he's within the bounds of the entity */
-		if not (other.absmin[0] >= absmin[0] && other.absmax[0] <= absmax[0])
-			return;
-		if not (other.absmin[1] >= absmin[1] && other.absmax[1] <= absmax[1])
-			return;
-		if not (other.absmin[2] >= absmin[2] && other.absmax[2] <= absmax[2])
-			return;
-		Damage_Apply(other, this, m_flDamage, 0, DMG_CRUSH);
+		if (WithinBounds(other))
+			Damage_Apply(other, this, m_flDamage, 0, DMG_CRUSH);
 	}
 }
 

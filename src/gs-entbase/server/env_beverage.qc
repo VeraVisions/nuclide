@@ -144,13 +144,12 @@ env_beverage::Trigger(entity act, int unused)
 		return;
 	}
 
-	entity eCan = spawn();
-	setorigin(eCan, origin);
-	eCan.angles = angles;
-	eCan.owner = this;
-	eCan.think = item_sodacan;
-	eCan.nextthink = time;
-	eCan.skin = m_sodaSkin;
+	NSEntity eCan = spawn(NSEntity);
+	eCan.SetOrigin(GetOrigin());
+	eCan.SetAngles(GetAngles());
+	eCan.SetOwner(this);
+	eCan.ScheduleThink(item_sodacan, 0.0f);
+	eCan.SetSkin((float)m_sodaSkin);
 
 	m_iUses--;
 	m_bReady = false;

@@ -78,8 +78,7 @@ item_food::Spawned(void)
 	}
 
 	SetSize([0,0,0], [0,0,0]);
-	think = Setup;
-	nextthink = time + 1.0f;
+	ScheduleThink(Setup, 1.0f);
 }
 
 void

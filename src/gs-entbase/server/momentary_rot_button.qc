@@ -183,13 +183,12 @@ momentary_rot_button::MovementStateChanged(void)
 
 	/* Avoid NAN hack */
 	if (flTravelTime <= 0.0f) {
-		angles = m_vecDest;
+		SetAngles(m_vecDest);
 		MovementDone();
-		nextthink = 0.0f;
+		ReleaseThink();
 	} else {
-		avelocity = (vecAngleDifference * (1 / flTravelTime));
-		think = MovementDone;
-		nextthink = (ltime + flTravelTime);
+		SetAngularVelocity(vecAngleDifference * (1 / flTravelTime));
+		ScheduleThink(MovementDone, flTravelTime);
 	}
 }
 

@@ -313,9 +313,9 @@ func_button::Respawn(void)
 	SetOrigin(GetSpawnOrigin());
 	SetModel(GetSpawnModel());
 
-	velocity = [0,0,0];
-	nextthink = -1;
-	health = GetSpawnHealth();
+	ClearVelocity();
+	ReleaseThink();
+	SetHealth(GetSpawnHealth());
 
 	if (health > 0) {
 		takedamage = DAMAGE_YES;
@@ -342,20 +342,19 @@ void
 func_button::Arrived(void)
 {
 	SetOrigin(m_vecDest);
-	velocity = [0,0,0];
-	nextthink = 0;
+	ClearVelocity();
+	ReleaseThink();
 	m_bCanTouch = true;
 
 	UseOutput(this, m_strOnIn);
 	m_iState = STATE_RAISED;
 
-	if (HasSpawnFlags(SF_BTT_TOGGLE)) {
+	if (HasSpawnFlags(SF_BTT_TOGGLE) == true) {
 		return;
 	}
 	
 	if (m_flWait != -1) {
-		think = MoveBack;
-		nextthink = (ltime + m_flWait);
+		ScheduleThink(MoveBack, m_flWait);
 	}
 }
 
@@ -364,12 +363,11 @@ func_button::Returned(void)
 {
 	UseOutput(this, m_strOnOut);
 	SetOrigin(m_vecDest);
-	velocity = [0,0,0];
-	nextthink = 0;
-	m_bCanTouch = true;
-
-	m_iState = STATE_LOWERED;
+	ClearVelocity();
+	ReleaseThink();
 	SetFrame(FRAME_OFF);
+	m_bCanTouch = true;
+	m_iState = STATE_LOWERED;
 }
 
 void
@@ -396,13 +394,8 @@ func_button::MoveAway(void)
 	if (m_iState == STATE_UP) {
 		return;
 	}
-	m_bCanTouch = false;
 
-	if (m_iState == STATE_RAISED) {
-		nextthink = (ltime + m_flWait);
-		return;
-	}
-	
+	m_bCanTouch = false;
 	m_iState = STATE_UP;
 	
 	if (m_vecPos2 != m_vecPos1) {
@@ -448,7 +441,7 @@ func_button::Trigger(entity act, int state)
 	if (message)
 		env_message_single(act, message);
 
-	health = GetSpawnHealth();
+	SetHealth(GetSpawnHealth());
 }
 
 void
@@ -460,7 +453,7 @@ func_button::DeathTrigger(void)
 void
 func_button::Touch(entity eToucher)
 {
-	if (!HasSpawnFlags(SF_BTT_TOUCH_ONLY)) {
+	if (HasSpawnFlags(SF_BTT_TOUCH_ONLY) == false) {
 		return;
 	}
 
@@ -517,11 +510,10 @@ func_button::MoveToDestination(vector vecDest, void(void) func)
 	}
 
 	m_vecDest = vecDest;
-	think = func;
 
 	if (vecDest == origin) {
-		velocity = [0,0,0];
-		nextthink = (ltime + 0.1);
+		ClearVelocity();
+		ScheduleThink(func, 0.0f);
 		return;
 	}
 
@@ -530,11 +522,11 @@ func_button::MoveToDestination(vector vecDest, void(void) func)
 	fTravelTime = (flTravel / m_flSpeed);
 
 	if (fTravelTime < 0.1) {
-		velocity = [0,0,0];
-		nextthink = ltime + 0.1;
+		ClearVelocity();
+		ScheduleThink(func, 0.0f);
 		return;
 	}
 
-	nextthink = (ltime + fTravelTime);
-	velocity = (vecDifference * (1 / fTravelTime));
+	ScheduleThink(func, fTravelTime);
+	SetVelocity(vecDifference * (1 / fTravelTime));
 }

@@ -188,9 +188,8 @@ func_tracktrain::Respawn(void)
 
 	/* let's wait 1/4 a second to give the path_corner entities a chance to
 	 * spawn in case they're after us in the ent lump */
-	target = m_oldstrTarget;
-	think = AfterSpawn;
-	nextthink = ltime + 0.25f;
+	ScheduleThink(AfterSpawn, 0.25f);
+	SetTriggerTarget(m_oldstrTarget);
 }
 
 void
@@ -250,14 +249,13 @@ func_tracktrain::PathMove(void)
 
 	if (!flTravelTime) {
 		print("^1func_tracktrain::^3PathMove^7: Distance short, going next\n");
-		think = PathNext;
-		nextthink = ltime;
+		ScheduleThink(PathNext, 0.0f);
 		return;
 	}
 
 	SoundMove();
 
-	velocity = (vecVelocity * (1 / flTravelTime));
+	SetVelocity(vecVelocity * (1 / flTravelTime));
 
 	vector vecAngleDest;
 	vector vecDiff;
@@ -284,15 +282,14 @@ func_tracktrain::PathMove(void)
 	//print(sprintf("vecAngleDiff: %v\n", vecAngleDiff));
 
 	if (vecAngleDiff[1] == 0)
-		angles = vecAngleDest;
+		SetAngles(vecAngleDest);
 	else
-		avelocity = (vecAngleDiff * (1 / flTravelTime));
+		SetAngularVelocity(vecAngleDiff * (1 / flTravelTime));
 
 	if (!eNode)
-		avelocity = [0,0,0];
+		SetAngularVelocity([0,0,0]);
 
-	think = PathNext;
-	nextthink = (ltime + flTravelTime);
+	ScheduleThink(PathNext, flTravelTime);
 }
 
 void
@@ -302,7 +299,7 @@ func_tracktrain::PathDone(void)
 	eNode = (path_corner)find(world, ::targetname, target);
 
 	/* stop */
-	avelocity = [0,0,0];
+	ClearVelocity();
 
 	if (!eNode) {
 		return;
@@ -334,7 +331,7 @@ func_tracktrain::PathNext(void)
 
 	m_flWait = eNode.m_flWait;
 	target = eNode.target;
-	velocity = [0,0,0];
+	ClearVelocity();
 
 	/* warp */
 	if (eNode.HasSpawnFlags(PC_TELEPORT)) {
@@ -347,13 +344,7 @@ func_tracktrain::PathNext(void)
 		return;
 	}
 
-	/* move after delay, or instantly when none is given */
-	/*if (m_flWait > 0) {
-		think = PathMove;
-		nextthink = ltime + m_flWait;
-	} else */ {
-		PathMove();
-	}
+	PathMove();
 }
 
 /* TODO: Handle state? */

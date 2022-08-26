@@ -131,15 +131,13 @@ env_spark::Trigger(entity act, int state)
 
 	switch (state) {
 	case TRIG_OFF:
-		think = __NULL__;
-		nextthink = 0;
+		ReleaseThink();
 		break;
 	case TRIG_ON:
-		think = TimedSpark;
-		nextthink = time + (random() * m_flMaxDelay);
+		ScheduleThink(CreateSpark, (random() * m_flMaxDelay));
 		break;
 	default:
-		if (think != __NULL__) {
+		if (IsThinking() == true) {
 			Trigger(act, TRIG_OFF);
 		} else {
 			Trigger(act, TRIG_ON);
@@ -158,5 +156,5 @@ void
 env_spark::TimedSpark(void)
 {
 	CreateSpark();
-	nextthink = time + (random() * m_flMaxDelay);
+	ScheduleThink(CreateSpark, (random() * m_flMaxDelay));
 }

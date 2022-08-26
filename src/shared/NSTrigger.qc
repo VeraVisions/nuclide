@@ -87,6 +87,12 @@ NSTrigger::UseTargets(entity act, int state, float fDelay)
 	}
 }
 
+void
+NSTrigger::SetTriggerTarget(string name)
+{
+	target = name;
+}
+
 int
 NSTrigger::GetValue(void)
 {
@@ -133,6 +139,30 @@ NSTrigger::GetMaster(void)
 		classname, targetname, m_strMaster);
 	
 	return t.GetValue();
+}
+
+string
+NSTrigger::GetTriggerTarget(void)
+{
+	return target;
+}
+
+bool
+NSTrigger::HasTriggerTarget(void)
+{
+	if not (target)
+		return false;
+
+	return true;
+}
+
+bool
+NSTrigger::HasTargetname(void)
+{
+	if not (targetname)
+		return false;
+
+	return true;
 }
 
 void

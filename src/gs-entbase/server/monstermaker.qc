@@ -158,16 +158,14 @@ monstermaker::Respawn(void)
 void
 monstermaker::TurnOff(void)
 {
-	think = __NULL__;
-	nextthink = 0;
+	ReleaseThink();
 	m_iValue = 0;
 }
 
 void
 monstermaker::TurnOn(void)
 {
-	think = Spawner;
-	nextthink = time + m_flDelay;
+	ScheduleThink(Spawner, m_flDelay);
 	m_iValue = 1;
 }
 
@@ -210,14 +208,14 @@ monstermaker::Spawner(void)
 
 	/* too many alive at a time */
 	if ((m_iMaxChildren > 0 && c >= m_iMaxChildren) || (m_flDelay <= 0 && c >= 1)) {
-		nextthink = time + m_flDelay;
+		ScheduleThink(Spawner, m_flDelay);
 		return;
 	}
 
 	tracebox(origin, [-16,-16,-16], [16,16,16], origin, FALSE, this);
 
 	if (trace_startsolid == TRUE) {
-		nextthink = time + m_flDelay;
+		ScheduleThink(Spawner, m_flDelay);
 		return;
 	}
 
@@ -249,7 +247,7 @@ monstermaker::Spawner(void)
 
 	/* shut off for good when we've spawned all we ever wanted */
 	if ((m_iTotalMonsters > 0) && m_iMonsterSpawned >= m_iTotalMonsters) {
-		think = __NULL__;
+		ReleaseThink();
 		return;
 	}
 
@@ -257,7 +255,7 @@ monstermaker::Spawner(void)
 	if (HasSpawnFlags(MMF_NONTOGGLE)) {
 		TurnOff();
 	} else {
-		nextthink = time + m_flDelay;
+		ScheduleThink(Spawner, m_flDelay);
 	}
 }
 

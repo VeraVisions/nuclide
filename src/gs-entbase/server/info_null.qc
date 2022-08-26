@@ -69,7 +69,6 @@ info_null::WarnDeveloper(void)
 void
 info_null::Respawn(void)
 {
-	nextthink = time + 0.1f;
-	think = WarnDeveloper;
+	ScheduleThink(WarnDeveloper, 0.0f);
 }
 #endif

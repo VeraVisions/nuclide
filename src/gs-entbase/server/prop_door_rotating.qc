@@ -124,24 +124,25 @@ prop_door_rotating::Turn(vector vecDest, void(void) vFunc)
 	vecAngleDifference = (vecDest - angles);
 	flTravelLength = vlen(vecAngleDifference);
 	flTravelTime = (flTravelLength / m_flSpeed);
-	avelocity = (vecAngleDifference * (1 / flTravelTime));
-	think = vFunc;
-	nextthink = (ltime + flTravelTime);
+	SetAngularVelocity(vecAngleDifference * (1 / flTravelTime));
+	ScheduleThink(vFunc, flTravelTime);
 }
 
 void
 prop_door_rotating::Closed(void)
 {
-	avelocity = [0,0,0];
-	angles = m_vecDest1;
+	ClearVelocity();
+	ReleaseThink();
+	SetAngles(m_vecDest1);
 	PlayerUse = Interact;
 }
 
 void
 prop_door_rotating::Opened(void)
 {
-	avelocity = [0,0,0];
-	angles = m_vecDest2;
+	ClearVelocity();
+	ReleaseThink();
+	SetAngles(m_vecDest2);
 	PlayerUse = Interact;
 }
 
@@ -156,15 +157,14 @@ prop_door_rotating::Interact(void)
 	}
 
 	m_iValue = 1 - m_iValue;
-	frame = 1;
-	frame1time = 0.0f;
+
+	SetFrame(1);
 	SetSendFlags(BASEFL_CHANGED_FRAME);
 
 	if (m_iValue)
-		think = TurnAway;
+		ScheduleThink(TurnAway, 0.25f);
 	else
-		think = TurnBack;
+		ScheduleThink(TurnBack, 0.25f);
 
-	nextthink = ltime + 0.25f;
 	PlayerUse = __NULL__;
 }

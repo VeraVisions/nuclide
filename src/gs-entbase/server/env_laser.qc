@@ -69,7 +69,7 @@ env_laser:NSPointTrigger
 	virtual void(string,string) Restore;
 	virtual void(string, string) SpawnKey;
 	virtual void(void) Respawn;
-	virtual void(void) think;
+	virtual void(void) LaserThink;
 	virtual void(entity, int) Trigger;
 	virtual void(void) EvaluateEntity;
 	virtual float(entity, float) SendEntity;
@@ -154,26 +154,26 @@ env_laser::Respawn(void)
 {
 	if (HasSpawnFlags(ENVLAZ_STARTON)) {
 		m_iState = 1;
-		nextthink = time + 0.1;
+		ScheduleThink(LaserThink, 0.0f);
 	}
 }
 
 void
-env_laser::think(void)
+env_laser::LaserThink(void)
 {
 	entity t;
 
 	if (!m_iState) {
 		return;
 	} else {
-		nextthink = time + 0.1;
+		ScheduleThink(LaserThink, 0.1f);
 	}
 
 	t = find(world, ::targetname, m_strLaserDest);
-	angles = t.origin;
+	SetAngles(t.origin);
 
 	if (!t) {
-		print(sprintf("^1env_laser::^3think^7: %s has no valid target. Aborting\n", targetname));
+		print(sprintf("^1env_laser::^3LaserThink^7: %s has no valid target. Aborting\n", targetname));
 		return;
 	}
 
@@ -199,9 +199,9 @@ env_laser::Trigger(entity act, int state)
 	}
 
 	if (m_iState) {
-		nextthink = time;
+		ScheduleThink(LaserThink, 0.0f);
 	} else {
-		nextthink = 0.25;
+		ReleaseThink();
 	}
 }
 

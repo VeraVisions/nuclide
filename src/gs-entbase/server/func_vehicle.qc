@@ -497,14 +497,14 @@ func_vehicle::Respawn(void)
 	SetModel(GetSpawnModel());
 	SetOrigin(GetSpawnOrigin());
 	SetAngles(GetSpawnAngles());
-	think = Realign;
-	nextthink = time + 0.1f;
+	ScheduleThink(Realign, 0.0f);
 
 	m_wlFL.velocity =
 	m_wlFR.velocity =
 	m_wlBL.velocity =
-	m_wlBR.velocity =
-	velocity = [0,0,0];
+	m_wlBR.velocity = [0.0f, 0.0f, 0.0f];
+	ClearVelocity();
+
 	PlayerUse = OnPlayerUse;
 
 	if (m_eDriver)
@@ -613,7 +613,7 @@ func_vehicle::customphysics(void)
 	new_origin += m_wlBL.origin;
 	new_origin += m_wlBR.origin;
 	new_origin *= 0.25f;
-	setorigin(this, new_origin);
+	SetOrigin(new_origin);
 	PlayerAlign();
 
 	/* support for think/nextthink */

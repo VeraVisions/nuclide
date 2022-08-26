@@ -375,10 +375,8 @@ func_door::Respawn(void)
 	SetMovetype(MOVETYPE_PUSH);
 	SetModel(GetSpawnModel());
 	SetOrigin(GetSpawnOrigin());
-	flags |= FL_FINDABLE_NONSOLID;
-
-	think = __NULL__;
-	nextthink = 0.0f;
+	AddFlags(FL_FINDABLE_NONSOLID);
+	ReleaseThink();
 
 	/* FIXME: Is this correct? */
 	if (m_flWait == -1) {
@@ -472,8 +470,8 @@ void
 func_door::Arrived(void)
 {
 	SetOrigin(m_vecDest);
-	velocity = [0,0,0];
-	nextthink = 0.0f;
+	ClearVelocity();
+	ReleaseThink();
 
 	m_iState = DOORSTATE_RAISED;
 
@@ -489,16 +487,15 @@ func_door::Arrived(void)
 	if ((m_flWait < 0.0f) || HasSpawnFlags(SF_MOV_TOGGLE) == true)
 		return;
 
-	think = MoveBack;
-	nextthink = (ltime + m_flWait);
+	ScheduleThink(MoveBack, m_flWait);
 }
 
 void
 func_door::Returned(void)
 {
 	SetOrigin(m_vecDest);
-	velocity = [0,0,0];
-	nextthink = 0.0f;
+	ClearVelocity();
+	ReleaseThink();
 
 	if (targetClose)
 	for (entity f = world; (f = find(f, ::targetname, targetClose));) {
@@ -554,13 +551,6 @@ func_door::MoveAway(void)
 	if (m_strSndMove)
 		Sound_Play(this, CHAN_WEAPON, m_strSndMove);
 
-	if (!HasSpawnFlags(SF_MOV_TOGGLE)) {
-		if (m_iState == DOORSTATE_RAISED) {
-			nextthink = (ltime + m_flWait);
-			return;
-		}
-	}
-
 	m_iValue = 1;
 	m_iState = DOORSTATE_UP;
 	MoveToDestination(m_vecPos2, Arrived);
@@ -568,13 +558,13 @@ func_door::MoveAway(void)
 }
 
 void
-func_door::Trigger(entity act, int state)
+func_door::Trigger(entity act, int triggerstate)
 {
 	if (GetMaster() == 0)
 		return;
 
 	if (m_flNextTrigger > time) {
-		if (!HasSpawnFlags(SF_MOV_TOGGLE)) {
+		if (HasSpawnFlags(SF_MOV_TOGGLE) == false) {
 			return;
 		}
 	}
@@ -585,9 +575,9 @@ func_door::Trigger(entity act, int state)
 		UseTargets(act, TRIG_TOGGLE, m_flDelay);
 	}
 
-	if (state == TRIG_OFF) {
+	if (triggerstate == TRIG_OFF) {
 		MoveBack();
-	} else if (state == TRIG_ON) {
+	} else if (triggerstate == TRIG_ON) {
 		MoveAway();
 	} else {
 		if ((m_iState == DOORSTATE_UP) || (m_iState == DOORSTATE_RAISED)){
@@ -604,7 +594,7 @@ func_door::Touch(entity eToucher)
 	if (m_iCanTouch == false)
 		return;
 
-	if (HasSpawnFlags(SF_MOV_USE))
+	if (HasSpawnFlags(SF_MOV_USE) == true)
 		return;
 
 	if (m_iLocked || !GetMaster()) {
@@ -615,7 +605,7 @@ func_door::Touch(entity eToucher)
 		return;
 	}
 
-	if (HasSpawnFlags(SF_MOV_TOGGLE)) {
+	if (HasSpawnFlags(SF_MOV_TOGGLE) == true) {
 		return;
 	}
 
@@ -669,11 +659,10 @@ func_door::MoveToDestination(vector vecDest, void(void) func)
 	}
 
 	m_vecDest = vecDest;
-	think = func;
 
 	if (vecDest == origin) {
-		velocity = [0,0,0];
-		nextthink = (ltime + 0.1f);
+		ScheduleThink(func, 0.1f);
+		ClearVelocity();
 		return;
 	}
 
@@ -682,13 +671,13 @@ func_door::MoveToDestination(vector vecDest, void(void) func)
 	fTravelTime = (flTravel / m_flSpeed);
 
 	if (fTravelTime < 0.1) {
-		velocity = [0,0,0];
-		nextthink = ltime + 0.1f;
+		ScheduleThink(func, 0.1f);
+		ClearVelocity();
 		return;
 	}
 
-	nextthink = (ltime + fTravelTime);
-	velocity = (vecDifference * (1.0f / fTravelTime));
+	ScheduleThink(func, fTravelTime);
+	SetVelocity(vecDifference * (1.0f / fTravelTime));
 }
 
 void

@@ -61,11 +61,10 @@ enum
 };
 
 class
-func_rot_button:NSRenderableEntity
+func_rot_button:NSSurfacePropEntity
 {
 	vector m_vecMoveAngle;
 	int m_iState;
-	int m_iHealth;
 
 	float m_flSpeed;
 	float m_flDistance;
@@ -94,7 +93,6 @@ func_rot_button::func_rot_button(void)
 {
 	m_vecMoveAngle = [0.0f, 0.0f, 0.0f];
 	m_iState = 0i;
-	m_iHealth = 0i;
 	m_flSpeed = 0.0f;
 	m_flDistance = 0.0f;
 	m_flReturnTime = 0.0f;
@@ -106,7 +104,6 @@ func_rot_button::Save(float handle)
 	super::Save(handle);
 	SaveVector(handle, "m_vecMoveAngle", m_vecMoveAngle);
 	SaveInt(handle, "m_iState", m_iState);
-	SaveInt(handle, "m_iHealth", m_iHealth);
 	SaveFloat(handle, "m_flSpeed", m_flSpeed);
 	SaveFloat(handle, "m_flDistance", m_flDistance);
 	SaveFloat(handle, "m_flReturnTime", m_flReturnTime);
@@ -121,9 +118,6 @@ func_rot_button::Restore(string strKey, string strValue)
 		break;
 	case "m_iState":
 		m_iState = ReadInt(strValue);
-		break;
-	case "m_iHealth":
-		m_iHealth = ReadInt(strValue);
 		break;
 	case "m_flSpeed":
 		m_flSpeed = ReadFloat(strValue);
@@ -152,9 +146,6 @@ func_rot_button::SpawnKey(string strKey, string strValue)
 	case "wait":
 		m_flReturnTime = stof(strValue);
 		break;
-	case "health":
-		m_iHealth = stoi(strValue);
-		break;
 	default:
 		super::SpawnKey(strKey, strValue);
 	}
@@ -173,16 +164,15 @@ func_rot_button::Respawn(void)
 	SetModel(GetSpawnModel());
 	SetOrigin(GetSpawnOrigin());
 	SetAngles(GetSpawnAngles());
+	AddFlags(FL_FINDABLE_NONSOLID);
 	PlayerUse = OnPlayerUse;
-	flags |= FL_FINDABLE_NONSOLID;
 
 	m_iState = ROTBTNSTATE_OPENED;
-	think = __NULL__;
-	nextthink = 0.0f;
+	ReleaseThink();
 
-	if (m_iHealth > 0) {
-		takedamage = DAMAGE_YES;
-		health = m_iHealth;
+	if (GetSpawnHealth() > 0) {
+		SetTakedamage(DAMAGE_YES);
+		SetHealth(GetSpawnHealth());
 	}
 
 	vector vecMoveDir;
@@ -210,20 +200,22 @@ func_rot_button::TriggerTargets(void)
 void
 func_rot_button::ArrivedClosed(void)
 {
-	avelocity = [0,0,0];
+	ClearVelocity();
+	ReleaseThink();
+
 	m_iState = ROTBTNSTATE_CLOSED;
 	TriggerTargets();
 
 	if (m_flReturnTime > 0.0f) {
-		think = TurnToggle;
-		nextthink = ltime + m_flReturnTime;
+		ScheduleThink(TurnToggle, m_flReturnTime);
 	}
 }
 
 void
 func_rot_button::ArrivedOpened(void)
 {
-	avelocity = [0,0,0];
+	ClearVelocity();
+	ReleaseThink();
 	m_iState = ROTBTNSTATE_OPENED;
 }
 
@@ -236,10 +228,9 @@ func_rot_button::Rotate(vector vecDest, void(void) vFunc)
 	vecAngleDifference = (vecDest - angles);
 	flTravelLength = vlen(vecAngleDifference);
 	flTravelTime = (flTravelLength / m_flSpeed);
-	avelocity = (vecAngleDifference * (1 / flTravelTime));
 
-	think = vFunc;
-	nextthink = (ltime + flTravelTime);
+	SetAngularVelocity(vecAngleDifference * (1 / flTravelTime));
+	ScheduleThink(vFunc, flTravelTime);
 }
 
 void
@@ -274,6 +265,6 @@ func_rot_button::TurnToggle(void)
 void
 func_rot_button::Death(void)
 {
-	takedamage = DAMAGE_NO;
+	SetTakedamage(DAMAGE_NO);
 	TurnToggle();
 }

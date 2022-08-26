@@ -62,6 +62,7 @@ func_areaportal::Respawn(void)
 	SetModel(GetSpawnModel());
 	SetOrigin(GetSpawnOrigin());
 	Hide();
+	SetSolid(SOLID_NOT);
 
 	if (!m_iStartOpen)
 		PortalClose();

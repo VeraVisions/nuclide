@@ -169,15 +169,14 @@ trigger_multiple::Touch(entity eToucher)
 	}
 
 	/* if the target key isn't used, assume we're using the new I/O system */
-	if (!target)
+	if (HasTriggerTarget() == false)
 		UseOutput(eToucher, m_strOnStartTouch);
 	else
 		UseTargets(eToucher, TRIG_TOGGLE, m_flDelay);
 
 	/* This is effectively a trigger_once...*/
 	if (m_flWait != -1) {
-		think = Respawn;
-		nextthink = time + m_flWait;
+		ScheduleThink(Respawn, m_flWait);
 	}
 
 	SetSolid(SOLID_NOT);

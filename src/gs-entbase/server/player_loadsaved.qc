@@ -123,19 +123,16 @@ player_loadsaved::Trigger(entity act, int unused)
 {
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_FADE);
-
 	WriteFloat(MSG_MULTICAST, m_vecRenderColor[0]);
 	WriteFloat(MSG_MULTICAST, m_vecRenderColor[1]);
 	WriteFloat(MSG_MULTICAST, m_vecRenderColor[2]);
 	WriteFloat(MSG_MULTICAST, m_flRenderAmt);
-
 	WriteFloat(MSG_MULTICAST, m_flFadeDuration);
 	WriteFloat(MSG_MULTICAST, m_flFadeHold);
 	WriteByte(MSG_MULTICAST, 0);
 	msg_entity = world;
 	multicast([0,0,0], MULTICAST_ALL);
-	env_message_single(act, m_strMessage);
 
-	think = ReloadSave;
-	nextthink = time + m_flLoadTime;
+	env_message_single(act, m_strMessage);
+	ScheduleThink(ReloadSave, m_flLoadTime);
 }

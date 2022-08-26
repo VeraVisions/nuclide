@@ -210,8 +210,7 @@ scripted_sequence::Respawn(void)
 	}
 
 	if (m_strIdleAnim) {
-		think = InitIdle;
-		nextthink = time + 0.1f;
+		ScheduleThink(InitIdle, 0.0f);
 	}
 }
 
@@ -287,7 +286,7 @@ scripted_sequence::RunOnEntity(entity targ)
 	/* all the non-moving targets will do this at least */
 	if (m_strActionAnim) {
 		duration = frameduration(f.modelindex, f.m_flSequenceEnd);
-		f.nextthink = time + duration;
+		f.SetNextThink(duration);
 		NSLog(
 			"\tAnimation: %s Duration: %f seconds (modelindex %d, frame %d)",
 			m_strActionAnim,
@@ -296,7 +295,7 @@ scripted_sequence::RunOnEntity(entity targ)
 			f.m_flSequenceEnd
 		);
 	} else {
-		f.nextthink = time;
+		f.SetNextThink(0.0f);
 		NSLog(
 			"\t^1WARNING: %s skipping animation on script type %i",
 			f.targetname,
@@ -307,11 +306,11 @@ scripted_sequence::RunOnEntity(entity targ)
 	f.m_iSequenceState = SEQUENCESTATE_ENDING;
 
 	if (HasSpawnFlags(SSFL_NOSCRIPTMOVE))
-		f.think = NSMonster::FreeState;
+		f.SetThink(NSMonster::FreeState);
 	else
-		f.think = NSMonster::FreeStateMoved;
+		f.SetThink(NSMonster::FreeStateMoved);
 
-	NSLog("\tEnding: %f", f.nextthink);
+	NSLog("\tEnding: %f", f.GetNextThinkTime());
 
 	/* make sure we're forgetting about enemies and attack states in sequence */
 	f.m_eEnemy = __NULL__;

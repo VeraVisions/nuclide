@@ -136,10 +136,8 @@ logic_auto::Restore(string strKey, string strValue)
 void
 logic_auto::RestoreComplete(void)
 {
-	think = Processing;
-	nextthink = time + 0.2f;
+	ScheduleThink(Processing, 0.2f);
 }
-
 
 void
 logic_auto::SpawnKey(string strKey, string strValue)
@@ -196,8 +194,7 @@ logic_auto::Spawned(void)
 void
 logic_auto::Respawn(void)
 {
-	think = Processing;
-	nextthink = time + 0.2f;
+	ScheduleThink(Processing, 0.2f);
 }
 
 void
@@ -232,7 +229,7 @@ logic_auto::Processing(void)
 		UseOutput(this, m_strOnBackgroundMap);
 
 	if (HasSpawnFlags(1)) {
-		NSLog("^2logic_auto::^3think^7: %s triggerer removed self",  target);
+		NSLog("^2logic_auto::^3Processing ^7: %s triggerer removed self",  target);
 		remove(this);
 	}
 }

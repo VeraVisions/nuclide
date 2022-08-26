@@ -101,8 +101,6 @@ trigger_autosave::Touch(entity eToucher)
 		eToucher.netname);
 
 	localcmd("save autosave\n");
-
-	Hide();
 	SetSolid(SOLID_NOT);
 
 	UseTargets(eToucher, TRIG_TOGGLE, m_flDelay);

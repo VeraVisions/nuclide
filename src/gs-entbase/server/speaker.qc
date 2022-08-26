@@ -79,7 +79,7 @@ speaker:NSTalkMonster
 	virtual void(void) Respawn;
 	virtual void(entity, int) Trigger;
 
-	virtual void(void) Annouce;
+	virtual void(void) Announce;
 };
 
 void
@@ -143,14 +143,12 @@ speaker::Respawn(void)
 	SetRenderMode(RM_COLOR);
 	SetRenderAmt(0);
 
-	think = Annouce;
-
-	if (!HasSpawnFlags(SPEAKFL_SILENT))
-		nextthink = time + 10.0f;
+	if (HasSpawnFlags(SPEAKFL_SILENT) == false)
+		ScheduleThink(Announce, 10.0f);
 }
 
 void
-speaker::Annouce(void)
+speaker::Announce(void)
 {
 	string seq = Sentences_GetSamples(m_strSentence);
 
@@ -165,11 +163,12 @@ speaker::Annouce(void)
 	msg_entity = this;
 	multicast(origin, MULTICAST_PVS);
 
-	nextthink = time + random(30,60);
+	/* ...onto the next announcement */
+	ScheduleThink(Announce, random(30.0f, 60.0f));
 }
 
 void
 speaker::Trigger(entity eAct, int foo)
 {
-	nextthink = time;
+	ScheduleThink(Announce, 0.0f);
 }

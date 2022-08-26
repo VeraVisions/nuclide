@@ -128,11 +128,10 @@ func_guntarget::Respawn(void)
 	SetMovetype(MOVETYPE_PUSH);
 	SetModel(GetSpawnModel());
 	SetOrigin(GetSpawnOrigin());
-	health = GetSpawnHealth();
+	SetHealth(GetSpawnHealth());
 
-	if (HasSpawnFlags(SF_GUNTARGET_ON)) {
-		think = ThinkWrap;
-		nextthink = ltime + 0.25f;
+	if (HasSpawnFlags(SF_GUNTARGET_ON) == true) {
+		ScheduleThink(ThinkWrap, 0.25f);
 	}
 }
 
@@ -156,14 +155,13 @@ func_guntarget::Move(void)
 	vel_to_pos = (node.origin - vecWorldPos);
 	flTravelTime = (vlen(vel_to_pos) / m_flSpeed);
 
-	if (!flTravelTime) {
+	if (flTravelTime <= 0.0f) {
 		NextPath();
 		return;
 	}
 
-	velocity = (vel_to_pos * (1 / flTravelTime));
-	think = NextPath;
-	nextthink = (ltime + flTravelTime);
+	SetVelocity(vel_to_pos * (1 / flTravelTime));
+	ScheduleThink(NextPath, flTravelTime);
 }
 
 void
@@ -181,7 +179,7 @@ func_guntarget::NextPath(void)
 	}
 
 	target = node.target;
-	velocity = [0,0,0];
+	ClearVelocity();
 
 	if (target) {
 		Move();
@@ -211,7 +209,7 @@ func_guntarget::Death(void)
 void
 func_guntarget::Start(void)
 {
-	takedamage = DAMAGE_YES;
+	SetTakedamage(DAMAGE_YES);
 	NextPath();
 	m_iValue = 0;
 }
@@ -219,10 +217,9 @@ func_guntarget::Start(void)
 void
 func_guntarget::Stop(void)
 {
-	takedamage = DAMAGE_NO;
-	velocity = [0,0,0];
-	nextthink = 0;
-	think = __NULL__;
+	SetTakedamage(DAMAGE_NO);
+	ClearVelocity();
+	ReleaseThink();
 	m_iValue = 1;
 }
 

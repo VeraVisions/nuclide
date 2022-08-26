@@ -120,21 +120,20 @@ func_plat::Respawn(void)
 	ClearAngles();
 
 	m_iState = PLATSTATE_RAISED;
-	think = __NULL__;
-	nextthink = 0.0f;
+	ReleaseThink();
 }
 
 void
 func_plat::ArrivedUp(void)
 {
-	velocity = [0,0,0];
+	ClearVelocity();
 	m_iState = PLATSTATE_RAISED;
 }
 
 void
 func_plat::ArrivedDown(void)
 {
-	velocity = [0,0,0];
+	ClearVelocity();
 	m_iState = PLATSTATE_LOWERED;
 }
 
@@ -148,16 +147,16 @@ func_plat::Move(vector vecDest, void() vFunc)
 	vecDifference = (vecDest - origin);
 	flTravel = vlen(vecDifference);
 	fTravelTime = (flTravel / m_flSpeed);
-	think = vFunc;
+	SetThink(vFunc);
 
 	if (fTravelTime < 0.1) {
-		velocity = [0,0,0];
-		nextthink = ltime + 0.1f;
+		ClearVelocity();
+		SetNextThink(0.1f);
 		return;
 	}
 
-	velocity = (vecDifference * (1.0f / fTravelTime));
-	nextthink = (ltime + fTravelTime);
+	SetVelocity(vecDifference * (1.0f / fTravelTime));
+	SetNextThink(fTravelTime);
 }
 
 void

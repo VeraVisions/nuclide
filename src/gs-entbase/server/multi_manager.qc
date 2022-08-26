@@ -262,7 +262,7 @@ multi_manager::Spawned(void)
 		if ((!HasSpawnFlags(MM_MULTITHREADED) && targetname == argv(i)))
 			continue;
 
-		m_eTriggers[b].target = argv(i);
+		m_eTriggers[b].SetTriggerTarget(argv(i));
 		m_eTriggers[b].m_oldstrTarget = argv(i);
 		m_eTriggers[b].m_flUntilTriggered = stof(argv(i+1));
 		b++;
@@ -303,7 +303,7 @@ multi_manager::Trigger(entity act, int state)
 	/* If not multi-threaded, we have to watch out 'til all triggers are done. */
 	if (!HasSpawnFlags(MM_MULTITHREADED)) {
 		for (int i = 0; i < 16; i++) {
-			if (m_eTriggers[i].nextthink > time) {
+			if (m_eTriggers[i].IsThinking() == true) {
 				return;
 			}
 		}
@@ -311,12 +311,11 @@ multi_manager::Trigger(entity act, int state)
 
 	/* time to trigger our sub triggers */
 	for (int i = 0; i < 16; i++) {
-		if (!m_eTriggers[i].target)
+		if (m_eTriggers[i].HasTriggerTarget() == false)
 			continue;
 
-		m_eTriggers[i].think = mm_enttrigger;
+		m_eTriggers[i].ScheduleThink(mm_enttrigger, m_eTriggers[i].m_flUntilTriggered);
 		m_eTriggers[i].m_iValue = FALSE;
-		m_eTriggers[i].nextthink = time + m_eTriggers[i].m_flUntilTriggered;
 		m_eTriggers[i].m_eActivator = act;
 	}
 }

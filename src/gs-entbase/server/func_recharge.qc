@@ -201,8 +201,7 @@ func_recharge::OnPlayerUse(void)
 
 		/* Reset 30 seconds after first being used successfully */
 		//if (health == max_health) {
-			think = ResetHealth;
-			nextthink = time + 30.0f;
+			ScheduleThink(ResetHealth, 30.0f);
 		//}
 		health -= 1;
 

@@ -56,7 +56,6 @@ trigger_auto::trigger_auto(void)
 {
 	/* default is always toggle */
 	m_iTriggerState = TRIG_TOGGLE;
-	m_strGlobalState = __NULL__;
 	m_flDelay = 0.0f;
 }
 
@@ -86,8 +85,7 @@ trigger_auto::Restore(string strKey, string strValue)
 void
 trigger_auto::RestoreComplete(void)
 {
-	think = Processing;
-	nextthink = time + 0.2f;
+	ScheduleThink(Processing, 0.25f);
 }
 
 void
@@ -110,8 +108,8 @@ trigger_auto::Respawn(void)
 {
 	InitPointTrigger();
 
-	think = Processing;
-	nextthink = time + 0.2f;
+	/* deliberately add a bit more time in case we're first in the ent-lump */
+	ScheduleThink(Processing, 0.25f);
 }
 
 void
@@ -125,7 +123,7 @@ trigger_auto::Processing(void)
 	print(sprintf("%S %i %f\n", target, m_iTriggerState, m_flDelay));
 
 	if (HasSpawnFlags(1)) {
-		NSLog("^2trigger_auto::^3think^7: %s triggerer removed self",  target);
+		NSLog("^2trigger_auto::^3Processing^7: %s triggerer removed self",  target);
 		remove(this);
 	}
 }

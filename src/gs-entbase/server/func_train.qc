@@ -172,9 +172,8 @@ func_train::Respawn(void)
 
 	/* let's wait 1/4 a second to give the path_corner entities a chance to
 	 * spawn in case they're after us in the ent lump */
-	target = m_oldstrTarget;
-	think = AfterSpawn;
-	nextthink = ltime + 0.25f;
+	SetTriggerTarget(m_oldstrTarget);
+	ScheduleThink(AfterSpawn, 0.25f);
 }
 
 void
@@ -228,22 +227,20 @@ func_train::PathMove(void)
 	}
 
 	vecWorldPos = WorldSpaceCenter();
-
 	vecVelocity = (eNode.origin - vecWorldPos);
 	flTravelTime = (vlen(vecVelocity) / m_flSpeed);
 
 	if (!flTravelTime) {
 		print("^1func_train::^3PathMove^7: Distance short, going next\n");
-		think = PathNext;
-		nextthink = ltime;
+		ClearVelocity();
+		ScheduleThink(PathNext, 0.0f);
 		return;
 	}
 
 	SoundMove();
 
-	velocity = (vecVelocity * (1 / flTravelTime));
-	think = PathNext;
-	nextthink = (ltime + flTravelTime);
+	SetVelocity(vecVelocity * (1 / flTravelTime));
+	ScheduleThink(PathNext, flTravelTime);
 }
 
 void
@@ -281,8 +278,8 @@ func_train::PathNext(void)
 		m_flSpeed = eNode.m_flSpeed;
 
 	m_flWait = eNode.m_flWait;
-	target = eNode.target;
-	velocity = [0,0,0];
+	SetTriggerTarget(eNode.target);
+	ClearVelocity();
 
 	/* warp */
 	if (eNode.HasSpawnFlags(PC_TELEPORT)) {
@@ -297,8 +294,7 @@ func_train::PathNext(void)
 
 	/* move after delay, or instantly when none is given */
 	if (m_flWait > 0) {
-		think = PathMove;
-		nextthink = ltime + m_flWait;
+		ScheduleThink(PathMove, m_flWait);
 	} else {
 		PathMove();
 	}
@@ -316,7 +312,8 @@ func_train::AfterSpawn(void)
 {
 	PathNext();
 
-	if (!targetname) {
+	/* if we're unable to be triggered by anything, begin moving */
+	if (HasTargetname() == false) {
 		PathMove();
 	}
 }

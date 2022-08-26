@@ -50,11 +50,15 @@ class NSTrigger:NSIO
 	float m_flDelay;
 	virtual void(entity, int) Trigger;
 	virtual void(entity, int, float) UseTargets;
+	virtual void(string) SetTriggerTarget;
 
 	/* master feature */
 	nonvirtual int(void) GetValue;
 	nonvirtual int(void) GetMaster;
 	nonvirtual globalstate_t(string) GetGlobalValue;
+	nonvirtual string(void) GetTriggerTarget;
+	nonvirtual bool(void) HasTriggerTarget;
+	nonvirtual bool(void) HasTargetname;
 
 	/* overrides */
 	virtual void(float) Save;

@@ -178,33 +178,35 @@ env_shooter::Respawn(void)
 	}
 
 	m_iGibsLeft = m_iGibs;
-	think = __NULL__;
+	ReleaseThink();
 }
 
 void
 env_shooter::ShootGib(void)
 {
-	static void Gib_Remove(void) { remove(self); }
+	vector vecSpinVel = [0.0f, 0.0f, 0.0f];
+	vector vecThrowVel = [0.0f, 0.0f, 0.0f];
 
-	entity eGib = spawn();
-	eGib.movetype = MOVETYPE_BOUNCE;
-	setmodel(eGib, m_strShootModel);
-	setorigin(eGib, origin);
+	NSRenderableEntity eGib = spawn(NSRenderableEntity);
+	eGib.SetMovetype(MOVETYPE_BOUNCE);
+	eGib.SetModel(m_strShootModel);
+	eGib.SetOrigin(GetOrigin());
+	eGib.SetAngles(GetAngles());
 
-	makevectors(angles);
-	eGib.velocity = v_forward * m_flVelocity + [0,0,64 + (random()*64)];
-	eGib.avelocity[0] = random(-1,1) * 32;
-	eGib.avelocity[1] = random(-1,1) * 32;
-	eGib.avelocity[2] = random(-1,1) * 32;
-
-	eGib.think = Gib_Remove;
-	eGib.nextthink = time + m_flGibLife;
-	eGib.angles = angles;
+	makevectors(GetAngles());
+	vecThrowVel = v_forward * m_flVelocity;
+	vecThrowVel += [0.0f, 0.0f, 64.0f + (random() * 64.0f)];
+	vecSpinVel[0] = random(-1,1) * 32;
+	vecSpinVel[1] = random(-1,1) * 32;
+	vecSpinVel[2] = random(-1,1) * 32;
+	eGib.SetVelocity(vecThrowVel);
+	eGib.SetAngularVelocity(vecSpinVel);
+	eGib.ScheduleThink(Destroy, m_flGibLife);
 
 	m_iGibsLeft--;
 
 	if (m_iGibsLeft) {
-		nextthink = time + m_flVariance;
+		ScheduleThink(ShootGib, m_flVariance);
 	}
 }
 
@@ -213,18 +215,16 @@ env_shooter::Trigger(entity act, int state)
 {
 	switch (state) {
 	case TRIG_OFF:
-		think = __NULL__;
-		nextthink = 0.0f;
+		ReleaseThink();
 		break;
 	case TRIG_ON:
 		if (spawnflags & EVSHOOTER_REPEATABLE)
 			m_iGibsLeft = m_iGibs;
 
-		think = ShootGib;
-		nextthink = time + m_flVariance;
+		ScheduleThink(ShootGib, m_flVariance);
 		break;
 	default:
-		if (think == __NULL__)
+		if (IsThinking() == false)
 			Trigger(act, TRIG_ON);
 		else
 			Trigger(act, TRIG_OFF);

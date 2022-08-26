@@ -165,15 +165,14 @@ random_speaker::Enable(void)
 	m_iValue = 1;
 
 	/* at least wait this amount */
-	r = time + m_flMinPos;
+	r = m_flMinPos;
 
 	/* then take the specified percentage of 'wait', by random and add it */
 	r += (m_flMinPos * (m_flRandPercent / 100)) * random();
 
-	think = PlaySample;
-	nextthink = r;
+	ScheduleThink(PlaySample, r);
 
-	print("^2random_speaker::^3Disable^7: " \
+	NSLog("^2random_speaker::^3Disable^7: " \
 	       "%s playing %s in %d\n", \
 	       targetname, m_strSample, r);
 }
@@ -181,11 +180,10 @@ random_speaker::Enable(void)
 void
 random_speaker::Disable(void)
 {
-	dprint("^2random_speaker::^3Disable^7: " \
+	NSLog("^2random_speaker::^3Disable^7: " \
 	       "Disabled %s playing %s\n", \
 	       targetname, m_strSample);
 
 	m_iValue = 0;
-	think = __NULL__;
-	nextthink = 0;
+	ReleaseThink();
 }

@@ -77,6 +77,8 @@ void
 func_physbox::Death(void)
 {
 	Hide();
+	SetSolid(SOLID_NOT);
+	SetTakedamage(DAMAGE_NO);
 }
 
 void
