@@ -24,6 +24,7 @@ NSView::SetupView(void)
 	setproperty(VF_MIN, m_vecPosition);
 	setproperty(VF_SIZE, m_vecSize);
 	setproperty(VF_AFOV, m_flFieldOfView);
+	setsensitivityscaler(m_flSensitivity);
 
 	/* this will hide said entity */
 	setproperty(VF_VIEWENTITY, player_localentnum);
@@ -173,6 +174,18 @@ NSView::GetAFOV(void)
 	return m_flFieldOfView;
 }
 
+void
+NSView::SetSensitivity(float new_fov)
+{
+	m_flSensitivity = new_fov;
+}
+
+float
+NSView::GetSensitivity(void)
+{
+	return m_flSensitivity;
+}
+
 vector
 NSView::GetHUDCanvasPos(void)
 {
@@ -249,8 +262,8 @@ NSView::UpdateView(void)
 		}
 
 		StairSmooth();
-
 		SetAFOV(cvar("fov") * pl.viewzoom);
+		SetSensitivity(pl.viewzoom);
 
 		if (Client_IsDead(pl))
 			pl.UpdateDeathcam();

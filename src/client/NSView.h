@@ -40,6 +40,7 @@ NSView
 	vector m_vecSize;
 	float m_flFieldOfView;
 	viewmode_t m_viewmode;
+	float m_flSensitivity;
 
 	vector m_vecLastOrigin;
 
@@ -82,6 +83,8 @@ NSView
 	virtual void(int) SetSeatID;
 	virtual void(float) SetAFOV;
 	virtual float(void) GetAFOV;
+	virtual void(float) SetSensitivity;
+	virtual float(void) GetSensitivity;
 
 	virtual vector(void) GetHUDCanvasSize;
 	virtual vector(void) GetHUDCanvasPos;
