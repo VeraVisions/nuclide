@@ -15,6 +15,18 @@
 */
 
 void
+NSView::NSView(void)
+{
+	m_viewTarget = __NULL__;
+	m_vecPosition = [0,0];
+	m_vecSize = [0,0];
+	m_iSeat = 0;
+	m_flFieldOfView = 90.0f;
+	m_client = __NULL__;
+	m_flSensitivity = 1.0f;
+}
+
+void
 NSView::SetupView(void)
 {
 	setproperty(VF_DRAWENGINESBAR, (float)0);
@@ -360,15 +372,4 @@ NSView::UpdateView(void)
 	Font_DrawText(m_vecPosition + [8,56], sprintf("Angles: %v", angles), FONT_CON);
 	Font_DrawText(m_vecPosition + [8,68], sprintf("View-Target: %d", num_for_edict(m_viewTarget)), FONT_CON);
 	Font_DrawText(m_vecPosition + [8,80], sprintf("View-Mode: %d", m_viewmode), FONT_CON);
-}
-
-void
-NSView::NSView(void)
-{
-	m_viewTarget = __NULL__;
-	m_vecPosition = [0,0];
-	m_vecSize = [0,0];
-	m_iSeat = 0;
-	m_flFieldOfView = 90.0f;
-	m_client = __NULL__;
 }
