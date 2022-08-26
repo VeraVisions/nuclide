@@ -3,6 +3,7 @@
 NSIO.qc
 NSTrigger.qc
 NSEntity.qc
+NSTimer.qc
 NSRenderableEntity.qc
 NSSurfacePropEntity.qc
 NSPhysicsEntity.qc

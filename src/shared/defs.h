@@ -49,6 +49,7 @@ string __fullspawndata;
 #include "NSIO.h"
 #include "NSTrigger.h"
 #include "NSEntity.h"
+#include "NSTimer.h"
 #include "NSRenderableEntity.h"
 #include "NSSurfacePropEntity.h"
 #include "NSPhysicsEntity.h"
