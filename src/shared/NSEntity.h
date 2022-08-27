@@ -171,9 +171,13 @@ class NSEntity:NSTrigger
 	nonvirtual void(void) ReleaseThink;
 	nonvirtual void(void) ClearVelocity;
 
+	/* drawing related */
 	virtual void(void) Show;
 	virtual void(void) Hide;
 	nonvirtual bool(void) IsHidden;
+
+	/* this will not just hide an entity, it'll make it disappear from the game, but not deallocated it */
+	virtual void(void) Disappear;
 
 	virtual void(string, string) SpawnKey;
 	virtual void(void) Destroy;

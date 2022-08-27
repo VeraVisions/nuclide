@@ -242,9 +242,6 @@ NSEntity::EndTouch(entity eToucher)
 void
 NSEntity::_TouchHandler(void)
 {
-	if (IsHidden() == true)
-		return;
-
 #ifdef SERVER
 	if (g_grMode.IsTeamplay())
 	if (m_iTeam > 0i)
@@ -1115,6 +1112,13 @@ bool
 NSEntity::IsHidden(void)
 {
 	return (effects & EF_NODRAW) ? true : false;
+}
+
+void
+NSEntity::Disappear(void)
+{
+	modelindex = 0;
+	solid = SOLID_NOT;
 }
 
 void
