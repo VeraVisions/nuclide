@@ -100,3 +100,29 @@ NSTimer::TemporaryTimer(entity receiver, void() call, float interval, bool repea
 	ret.nextthink = time + interval;
 	return ret;
 }
+
+void
+NSTimer::RunTimer(void)
+{
+	think = NSTimer::_TimerThink;
+	nextthink = time + m_flTime;
+}
+
+NSTimer
+NSTimer::SetupTimer(entity receiver, void() call, float interval, bool repeats)
+{
+	NSTimer ret;
+
+	if (this)
+		ret = this;
+	else {
+		ret = spawn(NSTimer);
+		this = ret;
+	}
+
+	ret.m_eReceiver = receiver;
+	ret.m_flTime = interval;
+	ret.m_vFunc = call;
+	ret.m_bRepeats = repeats;
+	return ret;
+}

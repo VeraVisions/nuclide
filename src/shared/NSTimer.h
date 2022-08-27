@@ -26,6 +26,13 @@ NSTimer:NSEntity
 
 	virtual void(void) _TimerThink;
 	virtual void(void) _TempTimerThink;
+
+	/* creates and sets up a new timer, starts immediately */
 	static NSTimer(entity, void(), float, bool) ScheduleTimer;
+	/* self garbage collecting version of the above */
 	static NSTimer(entity, void(), float, bool) TemporaryTimer;
+
+	/* when you want to set up a timer ahead of time, but only run it manually */
+	virtual void(void) RunTimer;
+	static NSTimer(entity, void(), float, bool) SetupTimer;
 };
