@@ -51,7 +51,6 @@ server/func_physbox.qc
 server/func_plat.qc
 server/func_platrot.qc
 server/func_pendulum.qc
-server/func_vehicle.qc
 server/func_vehiclecontrols.qc
 server/light.qc
 server/logic_auto.qc

@@ -45,6 +45,9 @@ Entity_EntityUpdate(float type, float new)
 	case ENT_VEHICLE:
 		basevehicle_readentity(new);
 		break;
+	case ENT_VEH_BRUSH:
+		func_vehicle_readentity(new);
+		break;
 	case ENT_VEH_TANKMORTAR:
 		func_tankmortar_readentity(new);
 		break;

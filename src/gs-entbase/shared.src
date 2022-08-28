@@ -16,6 +16,7 @@ shared/func_monitor.qc
 shared/func_illusionary.qc
 shared/func_ladder.qc
 shared/func_wall.qc
+shared/func_vehicle.qc
 shared/func_tankmortar.qc
 shared/trigger_camera.qc
 shared/trigger_gravity.qc

@@ -68,15 +68,35 @@ enumflags
 	FUNCVEH_RWDRIVE
 };
 
+enumflags
+{
+	FNCVEHNET_DRIVER,
+	FNCVEHNET_MODELINDEX,
+	FNCVEHNET_ORIGIN,
+	FNCVEHNET_ANGLES,
+	FNCVEHNET_VELOCITY,
+	FNCVEHNET_TURNING,
+	FNCVEHNET_SOLIDMOVETYPE,
+	FNCVEHNET_FLAGS
+};
+
 class
-func_vehicle_wheel:NSEntity
+func_vehicle_wheel
 {
 	void() func_vehicle_wheel;
 
-	virtual void(void) Move;
+#ifdef CLIENT
+	vector origin_net;
+	vector velocity_net;
+	vector angles_net;
+	virtual void(void) PredictPreFrame;
+	virtual void(void) PredictPostFrame;
+#endif
+
+	virtual void(float) Move;
 	virtual void(vector) Bounce;
 	virtual void(float, float m_flTurn) Accel;
-	virtual void(float) Physics;
+	virtual void(float, float) Physics;
 };
 
 class
@@ -91,6 +111,9 @@ func_vehicle:NSVehicle
 	float m_flSteerFactor;
 	float m_flStraightenFactor;
 	vector m_vecGravityDir;
+	float m_flUseTime;
+	float m_flTimeLength;
+	vector m_vecSeatOffest;
 
 	func_vehicle_wheel m_wlFL;
 	func_vehicle_wheel m_wlFR;
@@ -101,28 +124,58 @@ func_vehicle:NSVehicle
 	float m_flHeight;
 	float m_flWidth;
 	float m_flLength;
-	float m_flTurn;
+
+	PREDICTED_FLOAT(m_flTurn);
 
 	void(void) func_vehicle;
+	virtual void(void) Spawned;
+	virtual void(void) Physics;
+	virtual void(void) RunVehiclePhysics;
+	virtual void(void) PlayerInput;
+	virtual void(void) OnRemoveEntity;
 
+#ifdef CLIENT
+	virtual void(void) PredictPreFrame;
+	virtual void(void) PredictPostFrame;
+	virtual void(float, float) ReceiveEntity;
+	virtual void(void) UpdateView;
+#else
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
 	virtual void(string, string) SpawnKey;
-	virtual void(void) Spawned;
 	virtual void(void) Respawn;
-	virtual void(void) OnRemoveEntity;
-	virtual void(void) customphysics;
 	virtual void(void) Realign;
 	virtual void(void) OnPlayerUse;
+	virtual void(void) EvaluateEntity;
+	virtual float(entity, float) SendEntity;
+#endif
 };
 
 void
 func_vehicle_wheel::func_vehicle_wheel(void)
 {
-	hitcontentsmaski = CONTENTBIT_SOLID | CONTENTBIT_BODY;
-	mins = '-8 -8 -8';
-	maxs = '8 8 8';
+	mins = [-8,-8,-8];
+	maxs = [8,8,8];
+	hitcontentsmaski = CONTENTBIT_BODY | CONTENTBITS_POINTSOLID | CONTENTBIT_VEHICLECLIP;
 }
+
+#ifdef CLIENT
+void
+func_vehicle_wheel::PredictPreFrame(void)
+{
+	SAVE_STATE(angles);
+	SAVE_STATE(origin);
+	SAVE_STATE(velocity);
+}
+
+void
+func_vehicle_wheel::PredictPostFrame(void)
+{
+	ROLL_BACK(angles);
+	ROLL_BACK(origin);
+	ROLL_BACK(velocity);
+}
+#endif
 
 void
 func_vehicle_wheel::Bounce(vector normal)
@@ -133,7 +186,7 @@ func_vehicle_wheel::Bounce(vector normal)
 }
 
 void
-func_vehicle_wheel::Move(void)
+func_vehicle_wheel::Move(float flTimeLength)
 {
 	vector vecDest;
 	vector vecSavedNormal;
@@ -142,7 +195,7 @@ func_vehicle_wheel::Move(void)
 	int i;
 
 	/* have a few attempts */
-	for (i = 3, flMovetime = frametime; flMovetime > 0 && i; i--) {
+	for (i = 3, flMovetime = flTimeLength; flMovetime > 0 && i; i--) {
 		vecDest = origin + (velocity * flMovetime);
 		tracebox(origin, mins, maxs, vecDest, MOVE_NOMONSTERS, this);
 
@@ -257,7 +310,7 @@ func_vehicle_wheel::Accel(float flMoveTime, float m_flTurn)
 
 	if (flTraction) {
 		if (eDriver) {
-			velocity -= v_forward * bound(-1, vehParent.m_eDriver.movement[0] / 400, 1) * vehParent.m_flAcceleration * flMoveTime * flTraction;
+			velocity -= v_forward * bound(-1, vehParent.m_vecMoveValues[0] / 400, 1) * vehParent.m_flAcceleration * flMoveTime * flTraction;
 		}
 
 		/* nuke sideways velocity. if a wheel is off the ground this probably
@@ -267,7 +320,7 @@ func_vehicle_wheel::Accel(float flMoveTime, float m_flTurn)
 		   not slowing as much as the wheel itself (zomg: race conditions!) */
 		velocity -= (velocity * v_right) * v_right * vehParent.m_flTraction * flMoveTime * flTraction;
 
-		if (!eDriver || (eDriver.button2 || eDriver.movement[2] > 0)) {
+		if (!eDriver || (vehParent.m_iMoveButtons & INPUT_BUTTON2 || vehParent.m_vecMoveValues[2] > 0)) {
 			vector t;
 
 			/* empty cars are assumed to have their brakes on.
@@ -300,7 +353,7 @@ func_vehicle_wheel::Accel(float flMoveTime, float m_flTurn)
 }
 
 void
-func_vehicle_wheel::Physics(float turnrate)
+func_vehicle_wheel::Physics(float turnrate, float flTimeLength)
 {
 	vector owner_pos;
 
@@ -309,11 +362,10 @@ func_vehicle_wheel::Physics(float turnrate)
 	tracebox(owner_pos, mins, maxs, origin, MOVE_NOMONSTERS, owner);
 	setorigin(this, trace_endpos);
 
-	Accel(frametime * 0.5f, turnrate);
-	Move();
-	Accel(frametime * 0.5f, turnrate);
+	Accel(flTimeLength / 2, turnrate);
+	Move(flTimeLength);
+	Accel(flTimeLength / 2, turnrate);
 }
-
 
 void
 func_vehicle::func_vehicle(void)
@@ -327,13 +379,67 @@ func_vehicle::func_vehicle(void)
 	m_flStraightenFactor = 1.0f;
 	m_vecGravityDir = [0,0,-1];
 	m_iVehicleFlags |= VHF_FROZEN;
+	hitcontentsmaski = CONTENTBIT_BODY | CONTENTBITS_POINTSOLID | CONTENTBIT_VEHICLECLIP;
+	m_flWidth = 40;
+	m_flLength = 85;
+	m_flHeight = 32;
 
-	m_wlFL = spawn(func_vehicle_wheel);
-	m_wlFR = spawn(func_vehicle_wheel);
-	m_wlBL = spawn(func_vehicle_wheel);
-	m_wlBR = spawn(func_vehicle_wheel);
+	if (!m_wlFL)
+		m_wlFL = spawn(func_vehicle_wheel);
+	if (!m_wlFR)
+		m_wlFR = spawn(func_vehicle_wheel);
+	if (!m_wlBL)
+		m_wlBL = spawn(func_vehicle_wheel);
+	if (!m_wlBR)
+		m_wlBR = spawn(func_vehicle_wheel);
+
 	m_wlFL.owner = m_wlFR.owner = m_wlBL.owner = m_wlBR.owner = this;
+	customphysics = Physics;
 }
+
+#ifdef CLIENT
+void
+func_vehicle::UpdateView(void)
+{
+	if (GetDriver() != __NULL__) {
+		PlayerAlign();
+	}
+}
+
+void
+func_vehicle::PredictPreFrame(void)
+{
+	SAVE_STATE(modelindex);
+	SAVE_STATE(origin);
+	SAVE_STATE(angles);
+	SAVE_STATE(velocity);
+	SAVE_STATE(m_flTurn);
+	SAVE_STATE(flags);
+	SAVE_STATE(driver_entnum);
+
+	m_wlFL.PredictPreFrame();
+	m_wlFR.PredictPreFrame();
+	m_wlBL.PredictPreFrame();
+	m_wlBR.PredictPreFrame();
+}
+
+void
+func_vehicle::PredictPostFrame(void)
+{
+	ROLL_BACK(modelindex);
+	ROLL_BACK(angles);
+	ROLL_BACK(origin);
+	ROLL_BACK(velocity);
+	ROLL_BACK(m_flTurn);
+	ROLL_BACK(flags);
+	ROLL_BACK(driver_entnum);
+
+	m_wlFL.PredictPostFrame();
+	m_wlFR.PredictPostFrame();
+	m_wlBL.PredictPostFrame();
+	m_wlBR.PredictPostFrame();
+}
+#else
 
 void
 func_vehicle::Save(float handle)
@@ -477,26 +583,13 @@ func_vehicle::SpawnKey(string strKey, string strValue)
 }
 
 void
-func_vehicle::Spawned(void)
-{
-	super::Spawned();
-
-	if (m_flHeight) {
-		m_wlFL.mins[2] = m_flHeight * -1;
-		m_wlFR.mins[2] = m_flHeight * -1;
-		m_wlBL.mins[2] = m_flHeight * -1;
-		m_wlBR.mins[2] = m_flHeight * -1;
-	}
-}
-
-void
 func_vehicle::Respawn(void)
 {
 	SetMovetype(MOVETYPE_PUSH);
 	SetSolid(SOLID_BSP);
 	SetModel(GetSpawnModel());
 	SetOrigin(GetSpawnOrigin());
-	SetAngles(GetSpawnAngles());
+	SetAngles([0,0,0]);
 	ScheduleThink(Realign, 0.0f);
 
 	m_wlFL.velocity =
@@ -512,125 +605,14 @@ func_vehicle::Respawn(void)
 }
 
 void
-func_vehicle::OnRemoveEntity(void)
-{
-	if (m_wlFL)
-		remove(m_wlFL);
-	if (m_wlFR)
-		remove(m_wlFR);
-	if (m_wlBL)
-		remove(m_wlBL);
-	if (m_wlBR)
-		remove(m_wlBR);
-}
-
-void
-func_vehicle::customphysics(void)
-{
-	/* eject the dead */
-	if (m_eDriver && m_eDriver.health <= 0) {
-		PlayerLeave((NSClientPlayer)m_eDriver);
-	}
-
-	if (m_eDriver) {
-		float y;
-
-		y = m_eDriver.movement[1];
-		y = bound(-200, y, 200) / 200;
-		y *= m_flSteerFactor;
-
-		if (y) {
-			if (y < 0 && m_flTurn < 0) {
-				m_flTurn = 0.0f;
-			} else if (y > 0 && m_flTurn > 0) {
-				m_flTurn = 0.0f;
-			} else {
-				m_flTurn = bound(-1, m_flTurn - y * frametime, 1);
-			}
-		} else {
-			/* straighten wheels forward over time */
-			if (m_flTurn < 0) {
-				m_flTurn = min(0, m_flTurn + frametime * m_flStraightenFactor);
-			} else if (m_flTurn > 0) {
-				m_flTurn = max(0, m_flTurn - frametime * m_flStraightenFactor);
-			}
-		}
-
-		PlayerUpdateFlags();
-	}
-
-	angles[0] = Math_FixDelta(angles[0]);
-	angles[1] = Math_FixDelta(angles[1]);
-	angles[2] = Math_FixDelta(angles[2]);
-	angles[0] = bound(-45, angles[0], 45);
-	angles[2] = bound(-45, angles[2], 45);
-
-	velocity[0] = bound(-1000, velocity[0], 1000);
-	velocity[1] = bound(-1000, velocity[1], 1000);
-	velocity[2] = bound(-1000, velocity[2], 1000);
-
-	makevectors(angles);
-
-	setorigin(m_wlFR, origin + v_right * m_flWidth + v_forward * m_flLength);
-	setorigin(m_wlFL, origin - v_right * m_flWidth + v_forward * m_flLength);
-	setorigin(m_wlBR, origin + v_right * m_flWidth - v_forward * m_flLength);
-	setorigin(m_wlBL, origin - v_right * m_flWidth - v_forward * m_flLength);
-
-	if (HasSpawnFlags(FUNCVEH_FWDRIVE)) {
-		m_wlFL.Physics(0);
-		m_wlFR.Physics(0);
-		m_wlBL.Physics(m_flTurn);
-		m_wlBR.Physics(m_flTurn);
-	} else if (HasSpawnFlags(FUNCVEH_RWDRIVE)) {
-		m_wlFL.Physics(-m_flTurn);
-		m_wlFR.Physics(-m_flTurn);
-		m_wlBL.Physics(0);
-		m_wlBR.Physics(0);
-	} else {
-		m_wlFL.Physics(-m_flTurn);
-		m_wlFR.Physics(-m_flTurn);
-		m_wlBL.Physics(m_flTurn);
-		m_wlBR.Physics(m_flTurn);
-	}
-
-	velocity = m_wlFL.velocity;
-	velocity += m_wlFR.velocity;
-	velocity += m_wlBL.velocity;
-	velocity += m_wlBR.velocity;
-	velocity *= 0.25f;
-
-	v_right = (m_wlFR.origin - m_wlFL.origin);
-	v_right += (m_wlBR.origin - m_wlBL.origin);
-	v_forward = (m_wlFL.origin + m_wlFR.origin);
-	v_forward -= (m_wlBL.origin + m_wlBR.origin);
-	v_up = -crossproduct(v_forward, v_right);
-	angles = vectoangles(v_forward, v_up);
-
-	/* figure out the new chassis position */
-	vector new_origin;
-	new_origin = m_wlFL.origin;
-	new_origin += m_wlFR.origin;
-	new_origin += m_wlBL.origin;
-	new_origin += m_wlBR.origin;
-	new_origin *= 0.25f;
-	SetOrigin(new_origin);
-	PlayerAlign();
-
-	/* support for think/nextthink */
-	if (think && nextthink > 0.0f) {
-		if (nextthink < time) {
-			nextthink = 0.0f;
-			think();
-		}
-	}
-}
-
-void
 func_vehicle::OnPlayerUse(void)
 {
 	vector matrix;
 	vector offs;
 	offs = eActivator.origin - origin;
+
+	if (m_flUseTime > time)
+		return;
 
 	makevectors(angles);
 	matrix[0] = dotproduct(offs, v_forward);
@@ -649,6 +631,8 @@ func_vehicle::OnPlayerUse(void)
 	} else if (!m_eDriver) {
 		PlayerEnter((NSClientPlayer)eActivator);
 	}
+
+	m_flUseTime = time + 2.0f;
 }
 
 void
@@ -698,10 +682,355 @@ func_vehicle::Realign(void)
 		vector end_pos;
 		first = (NSEntity)first;
 		second = (NSEntity)second;
+		NSLog("func_vehicle angles were: %v\n", angles);
 		angles = vectoangles(first.origin - second.origin);
+		NSLog("func_vehicle angles is now: %v\n", angles);
 
 		end_pos = first.origin;
-		end_pos[2] = GetSpawnOrigin()[2] + 64;
+		end_pos[2] = m_oldOrigin[2] + 64;
 		setorigin(this, end_pos);
+		setorigin(m_wlFR, origin + v_right * m_flWidth + v_forward * m_flLength);
+		setorigin(m_wlFL, origin - v_right * m_flWidth + v_forward * m_flLength);
+		setorigin(m_wlBR, origin + v_right * m_flWidth - v_forward * m_flLength);
+		setorigin(m_wlBL, origin - v_right * m_flWidth - v_forward * m_flLength);
 	}
 }
+#endif
+
+void
+func_vehicle::Spawned(void)
+{
+	super::Spawned();
+}
+
+void
+func_vehicle::OnRemoveEntity(void)
+{
+	if (m_wlFL)
+		remove(m_wlFL);
+	if (m_wlFR)
+		remove(m_wlFR);
+	if (m_wlBL)
+		remove(m_wlBL);
+	if (m_wlBR)
+		remove(m_wlBR);
+}
+
+void
+func_vehicle::Physics(void)
+{
+#ifdef CLIENT
+	DriverRelink();
+#endif
+
+	/* if nobody is in the car, we need to run physics here
+	 * with fake input frames */
+	if (GetDriver() == __NULL__) {
+#ifdef SERVER
+		m_flTimeLength = frametime;
+		m_vecMoveValues = [0,0,0];
+		m_iMoveButtons = 0;
+		RunVehiclePhysics();
+#else
+		setorigin(this, origin);
+#endif
+	} else {
+		//crossprint(sprintf("Driver: %s\n", GetDriver().classname));
+	}
+
+#ifdef SERVER
+	/* support for think/nextthink */
+	if (think && nextthink > 0.0f) {
+		if (nextthink < time) {
+			nextthink = 0.0f;
+			think();
+		}
+	}
+#endif
+}
+
+void
+func_vehicle::PlayerInput(void)
+{
+	m_vecMoveValues = input_movevalues;
+	m_iMoveButtons = input_buttons;
+	m_flTimeLength = input_timelength;
+
+	/* prediction frame... */
+	RunVehiclePhysics();
+
+#ifdef SERVER
+	/* allow us to exit */
+	if (m_flUseTime < time) {
+		if (input_buttons & INPUT_BUTTON5) {
+			eActivator = m_eDriver;
+			OnPlayerUse();
+			input_buttons &= ~INPUT_BUTTON5;
+		}
+	}
+#endif
+
+	//WeaponInput();
+
+	/* only allow use key */
+	input_buttons = (input_buttons & INPUT_BUTTON5);
+
+	input_movevalues = [0,0,0];
+}
+
+void
+func_vehicle::RunVehiclePhysics(void)
+{
+#ifdef SERVER
+	/* eject the dead */
+	if (m_eDriver && m_eDriver.health <= 0) {
+		PlayerLeave((NSClientPlayer)m_eDriver);
+	}
+#endif
+
+	if (m_eDriver) {
+		float y;
+
+		y = m_vecMoveValues[1];
+		y = bound(-200, y, 200) / 200;
+		y *= m_flSteerFactor;
+
+		if (y) {
+			if (y < 0 && m_flTurn < 0) {
+				m_flTurn = 0.0f;
+			} else if (y > 0 && m_flTurn > 0) {
+				m_flTurn = 0.0f;
+			} else {
+				m_flTurn = bound(-1, m_flTurn - y * m_flTimeLength, 1);
+			}
+		} else {
+			/* straighten wheels forward over time */
+			if (m_flTurn < 0) {
+				m_flTurn = min(0, m_flTurn + m_flTimeLength * m_flStraightenFactor);
+			} else if (m_flTurn > 0) {
+				m_flTurn = max(0, m_flTurn - m_flTimeLength * m_flStraightenFactor);
+			}
+		}
+
+		PlayerUpdateFlags();
+	}
+
+	angles[0] = Math_FixDelta(angles[0]);
+	angles[1] = Math_FixDelta(angles[1]);
+	angles[2] = Math_FixDelta(angles[2]);
+	angles[0] = bound (-45, angles[0], 45);
+	angles[2] = bound (-45, angles[2], 45);
+
+	velocity[0] = bound(-1000, velocity[0], 1000);
+	velocity[1] = bound(-1000, velocity[1], 1000);
+	velocity[2] = bound(-1000, velocity[2], 1000);
+
+	makevectors(angles);
+	setorigin(m_wlFR, origin + v_right * m_flWidth + v_forward * m_flLength);
+	setorigin(m_wlFL, origin - v_right * m_flWidth + v_forward * m_flLength);
+	setorigin(m_wlBR, origin + v_right * m_flWidth - v_forward * m_flLength);
+	setorigin(m_wlBL, origin - v_right * m_flWidth - v_forward * m_flLength);
+
+	m_wlFL.mins[2] = m_flHeight * -1;
+	m_wlFR.mins[2] = m_flHeight * -1;
+	m_wlBL.mins[2] = m_flHeight * -1;
+	m_wlBR.mins[2] = m_flHeight * -1;
+
+	if (HasSpawnFlags(FUNCVEH_FWDRIVE)) {
+		m_wlFL.Physics(0, m_flTimeLength);
+		m_wlFR.Physics(0, m_flTimeLength);
+		m_wlBL.Physics(m_flTurn, m_flTimeLength);
+		m_wlBR.Physics(m_flTurn, m_flTimeLength);
+	} else if (HasSpawnFlags(FUNCVEH_RWDRIVE)) {
+		m_wlFL.Physics(-m_flTurn, m_flTimeLength);
+		m_wlFR.Physics(-m_flTurn, m_flTimeLength);
+		m_wlBL.Physics(0, m_flTimeLength);
+		m_wlBR.Physics(0, m_flTimeLength);
+	} else {
+		m_wlFL.Physics(-m_flTurn, m_flTimeLength);
+		m_wlFR.Physics(-m_flTurn, m_flTimeLength);
+		m_wlBL.Physics(m_flTurn, m_flTimeLength);
+		m_wlBR.Physics(m_flTurn, m_flTimeLength);
+	}
+
+	velocity = m_wlFL.velocity;
+	velocity += m_wlFR.velocity;
+	velocity += m_wlBL.velocity;
+	velocity += m_wlBR.velocity;
+	velocity *= 0.25f;
+
+	v_right = (m_wlFR.origin - m_wlFL.origin);
+	v_right += (m_wlBR.origin - m_wlBL.origin);
+	v_forward = (m_wlFL.origin + m_wlFR.origin);
+	v_forward -= (m_wlBL.origin + m_wlBR.origin);
+	v_up = -crossproduct(v_forward, v_right);
+	angles = vectoangles(v_forward, v_up);
+
+	angles[0] = Math_FixDelta(angles[0]);
+	angles[1] = Math_FixDelta(angles[1]);
+	angles[2] = Math_FixDelta(angles[2]);
+
+	/* figure out the new chassis position */
+	vector new_origin;
+	new_origin = m_wlFL.origin;
+	new_origin += m_wlFR.origin;
+	new_origin += m_wlBL.origin;
+	new_origin += m_wlBR.origin;
+	new_origin *= 0.25f;
+	SetOrigin(new_origin);
+	PlayerAlign();
+}
+
+#ifdef CLIENT
+void
+func_vehicle::ReceiveEntity(float flChanged, float flNew)
+{
+	if (flChanged & FNCVEHNET_DRIVER) {
+		driver_entnum = readentitynum();
+		DriverRelink();
+	}
+
+	READENTITY_COORD(m_vecPlayerPos[0], FNCVEHNET_DRIVER)
+	READENTITY_COORD(m_vecPlayerPos[1], FNCVEHNET_DRIVER)
+	READENTITY_COORD(m_vecPlayerPos[2], FNCVEHNET_DRIVER)
+
+	READENTITY_SHORT(modelindex, FNCVEHNET_MODELINDEX)
+	READENTITY_FLOAT(m_vecSeatOffest[0], FNCVEHNET_MODELINDEX)
+	READENTITY_FLOAT(m_vecSeatOffest[1], FNCVEHNET_MODELINDEX)
+	READENTITY_FLOAT(m_vecSeatOffest[2], FNCVEHNET_MODELINDEX)
+
+	READENTITY_FLOAT(m_flWidth, FNCVEHNET_MODELINDEX)
+	READENTITY_FLOAT(m_flLength, FNCVEHNET_MODELINDEX)
+	READENTITY_COORD(origin[0], FNCVEHNET_ORIGIN)
+	READENTITY_COORD(origin[1], FNCVEHNET_ORIGIN)
+	READENTITY_COORD(origin[2], FNCVEHNET_ORIGIN)
+	READENTITY_ANGLE(angles[0], FNCVEHNET_ANGLES)
+	READENTITY_ANGLE(angles[1], FNCVEHNET_ANGLES)
+	READENTITY_ANGLE(angles[2], FNCVEHNET_ANGLES)
+	READENTITY_COORD(velocity[0], FNCVEHNET_VELOCITY)
+	READENTITY_COORD(velocity[1], FNCVEHNET_VELOCITY)
+	READENTITY_COORD(velocity[2], FNCVEHNET_VELOCITY)
+	READENTITY_INT(flags, FNCVEHNET_FLAGS)
+	READENTITY_BYTE(solid, FNCVEHNET_SOLIDMOVETYPE)
+	READENTITY_BYTE(movetype, FNCVEHNET_SOLIDMOVETYPE)
+	READENTITY_INT(flags, FNCVEHNET_SOLIDMOVETYPE)
+	READENTITY_COORD(mins[0], FNCVEHNET_SOLIDMOVETYPE)
+	READENTITY_COORD(mins[1], FNCVEHNET_SOLIDMOVETYPE)
+	READENTITY_COORD(mins[2], FNCVEHNET_SOLIDMOVETYPE)
+	READENTITY_COORD(maxs[0], FNCVEHNET_SOLIDMOVETYPE)
+	READENTITY_COORD(maxs[1], FNCVEHNET_SOLIDMOVETYPE)
+	READENTITY_COORD(maxs[2], FNCVEHNET_SOLIDMOVETYPE)
+
+	if (flChanged & FNCVEHNET_SOLIDMOVETYPE)
+		setsize(this, mins, maxs);
+
+	if (flChanged & FNCVEHNET_DRIVER) {
+		DriverRelink();
+	}
+
+	if (flChanged & FNCVEHNET_MODELINDEX) {
+		//setsize( this, [-50,-50,0], [50,50,64]);
+	}
+
+	if (flChanged & FNCVEHNET_ORIGIN) {
+		setorigin(this, origin);
+		makevectors(angles);
+		setorigin(m_wlFR, origin + v_right * m_flWidth + v_forward * m_flLength);
+		setorigin(m_wlFL, origin - v_right * m_flWidth + v_forward * m_flLength);
+		setorigin(m_wlBR, origin + v_right * m_flWidth - v_forward * m_flLength);
+		setorigin(m_wlBL, origin - v_right * m_flWidth - v_forward * m_flLength);
+	}
+
+	if (flNew) {
+		drawmask = MASK_ENGINE;
+		SetMovetype(MOVETYPE_NONE);
+		SetSolid(SOLID_BSP);
+
+		m_wlFL.velocity =
+		m_wlFR.velocity =
+		m_wlBL.velocity =
+		m_wlBR.velocity =
+		velocity = [0,0,0];
+		RunVehiclePhysics();
+		customphysics = Physics;
+	}
+
+	PredictPreFrame();
+}
+#else
+void
+func_vehicle::EvaluateEntity(void)
+{
+	EVALUATE_FIELD(m_eDriver, FNCVEHNET_DRIVER)
+	EVALUATE_FIELD(modelindex, FNCVEHNET_MODELINDEX)
+	EVALUATE_FIELD(origin, FNCVEHNET_ORIGIN)
+	EVALUATE_FIELD(angles, FNCVEHNET_ANGLES)
+	EVALUATE_FIELD(velocity, FNCVEHNET_VELOCITY)
+	EVALUATE_FIELD(m_flTurn, FNCVEHNET_TURNING)
+	EVALUATE_FIELD(flags, FNCVEHNET_FLAGS)
+	EVALUATE_FIELD(solid, FNCVEHNET_SOLIDMOVETYPE)
+	EVALUATE_FIELD(movetype, FNCVEHNET_SOLIDMOVETYPE)
+	EVALUATE_FIELD(mins, FNCVEHNET_SOLIDMOVETYPE)
+	EVALUATE_FIELD(maxs, FNCVEHNET_SOLIDMOVETYPE)
+}
+
+float
+func_vehicle::SendEntity(entity ePEnt, float flChanged)
+{
+	if (!modelindex)
+		return (0);
+
+	if (clienttype(ePEnt) != CLIENTTYPE_REAL)
+		return (0);
+
+	WriteByte(MSG_ENTITY, ENT_VEH_BRUSH);
+	WriteFloat(MSG_ENTITY, flChanged);
+
+	SENDENTITY_ENTITY(m_eDriver, FNCVEHNET_DRIVER)
+	SENDENTITY_COORD(m_vecPlayerPos[0], FNCVEHNET_DRIVER)
+	SENDENTITY_COORD(m_vecPlayerPos[1], FNCVEHNET_DRIVER)
+	SENDENTITY_COORD(m_vecPlayerPos[2], FNCVEHNET_DRIVER)
+	SENDENTITY_SHORT(modelindex, FNCVEHNET_MODELINDEX)
+	SENDENTITY_FLOAT(m_vecSeatOffest[0], FNCVEHNET_MODELINDEX)
+	SENDENTITY_FLOAT(m_vecSeatOffest[1], FNCVEHNET_MODELINDEX)
+	SENDENTITY_FLOAT(m_vecSeatOffest[2], FNCVEHNET_MODELINDEX)
+	SENDENTITY_FLOAT(m_flWidth, FNCVEHNET_MODELINDEX)
+	SENDENTITY_FLOAT(m_flLength, FNCVEHNET_MODELINDEX)
+	SENDENTITY_COORD(origin[0], FNCVEHNET_ORIGIN)
+	SENDENTITY_COORD(origin[1], FNCVEHNET_ORIGIN)
+	SENDENTITY_COORD(origin[2], FNCVEHNET_ORIGIN)
+	SENDENTITY_ANGLE(angles[0], FNCVEHNET_ANGLES)
+	SENDENTITY_ANGLE(angles[1], FNCVEHNET_ANGLES)
+	SENDENTITY_ANGLE(angles[2], FNCVEHNET_ANGLES)
+	SENDENTITY_COORD(velocity[0], FNCVEHNET_VELOCITY)
+	SENDENTITY_COORD(velocity[1], FNCVEHNET_VELOCITY)
+	SENDENTITY_COORD(velocity[2], FNCVEHNET_VELOCITY)
+	SENDENTITY_INT(flags, FNCVEHNET_FLAGS)
+	SENDENTITY_BYTE(solid, FNCVEHNET_SOLIDMOVETYPE)
+	SENDENTITY_BYTE(movetype, FNCVEHNET_SOLIDMOVETYPE)
+	SENDENTITY_INT(flags, FNCVEHNET_SOLIDMOVETYPE)
+	SENDENTITY_COORD(mins[0], FNCVEHNET_SOLIDMOVETYPE)
+	SENDENTITY_COORD(mins[1], FNCVEHNET_SOLIDMOVETYPE)
+	SENDENTITY_COORD(mins[2], FNCVEHNET_SOLIDMOVETYPE)
+	SENDENTITY_COORD(maxs[0], FNCVEHNET_SOLIDMOVETYPE)
+	SENDENTITY_COORD(maxs[1], FNCVEHNET_SOLIDMOVETYPE)
+	SENDENTITY_COORD(maxs[2], FNCVEHNET_SOLIDMOVETYPE)
+
+
+	return true;
+}
+#endif
+
+#ifdef CLIENT
+void
+func_vehicle_readentity(float isnew)
+{
+	func_vehicle veh = (func_vehicle)self;
+	float flags = readfloat();
+
+	if (isnew)
+		spawnfunc_func_vehicle();
+
+	veh.ReceiveEntity(flags, isnew);
+}
+#endif

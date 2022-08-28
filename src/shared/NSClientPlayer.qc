@@ -783,7 +783,7 @@ NSClientPlayer::OptimiseChangedFlags(entity ePEnt, float flChanged)
 	/* if we're a spectator of any type and spectate this player */
 	if (ePEnt != this && spectarget == false) {
 		flChanged &= ~PLAYER_ITEMS;
-		flChanged &= ~PLAYER_HEALTH;
+		//flChanged &= ~PLAYER_HEALTH;
 		flChanged &= ~PLAYER_TIMINGS;
 		flChanged &= ~PLAYER_AMMO1;
 		flChanged &= ~PLAYER_AMMO2;
