@@ -118,6 +118,9 @@ Event_Parse(float type)
         g_view.SetCameraAngle(a);
         g_view.SetClientAngle(a);
 		break;
+	case EV_CLEARDECALS:
+		CMD_Cleardecals();
+		break;
 	case EV_SHAKE:
 		if (me.classname == "spectator")
 			break;

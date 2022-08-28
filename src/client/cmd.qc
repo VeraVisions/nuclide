@@ -130,6 +130,15 @@ CMD_player_geomtest(void)
 	setcustomskin(pSeat->m_ePlayer, "", sprintf("geomset %s %s\n", argv(1), argv(2)));
 }
 
+void
+CMD_Cleardecals(void)
+{
+	for (entity e = world; (e = find(e, ::classname, "tempdecal"));) {
+		decal dcl = (decal)e;
+		dcl.m_strShader = "";
+	}
+}
+
 /*
 =================
 Cmd_Parse
@@ -144,6 +153,9 @@ int
 Cmd_Parse(string sCMD)
 {
 	switch (argv(0)) {
+	case "cleardecals":
+		CMD_Cleardecals();
+		break;
 	case "testPointLight":
 		CMD_testPointLight();
 		break;
@@ -314,6 +326,7 @@ Cmd_Init(void)
 	print("--------- Initializing Cmds ----------\n");
 
 	/* developer/debug commands */
+	registercommand("cleardecals");
 	registercommand("testLight");
 	registercommand("testPointLight");
 	registercommand("getpos");
