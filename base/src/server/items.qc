@@ -41,11 +41,10 @@ item_pickup::Touch(entity eToucher)
 #endif
 
 	if (real_owner || m_iWasDropped == 1 || cvar("sv_playerslots") == 1) {
-		remove(self);
+		Destroy();
 	} else {
-		Hide();
-		think = Respawn;
-		nextthink = time + 30.0f;
+		Disappear();
+		ScheduleThink(Respawn, 30.0f);
 	}
 }
 
@@ -75,9 +74,7 @@ item_pickup::Respawn(void)
 	}
 
 	SetSize([-16,-16,0], [16,16,16]);
-
-	think = __NULL__;
-	nextthink = -1;
+	ReleaseThink();
 
 	if (!m_iWasDropped) {
 		m_iClip = -1;

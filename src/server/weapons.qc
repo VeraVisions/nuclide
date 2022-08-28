@@ -331,7 +331,6 @@ Weapon_DropCurrentWeapon
 void
 Weapon_DropCurrentWeapon(NSClientPlayer pl)
 {
-	
 	static void DropWeapon_Enable(void)
 	{
 		self.solid = SOLID_TRIGGER;
@@ -346,17 +345,19 @@ Weapon_DropCurrentWeapon(NSClientPlayer pl)
 	item_pickup drop = spawn(item_pickup);
 	drop.m_iWasDropped = TRUE;
 	drop.m_iClip = pl.a_ammo1;
+	drop.real_owner = pl;
+	drop.owner = pl;
 	drop.SetItem(pl.activeweapon);
-	setorigin(drop, pl.origin);
-	drop.solid = SOLID_NOT;
-	drop.think = DropWeapon_Enable;
-	drop.nextthink = time + 1.5f;
-	drop.movetype = MOVETYPE_TOSS;
+	drop.SetSolid(SOLID_NOT);
+	drop.SetOrigin(pl.origin);
+	drop.ScheduleThink(DropWeapon_Enable, 1.5f);
+	drop.SetMovetype(MOVETYPE_TOSS);
 	drop.classname = "remove_me";
+	drop.SetGravity(1.0f);
 
-	makevectors(pl.v_angle);
-	drop.velocity = v_forward * 256;
-	drop.avelocity[1] = 500;
+	makevectors([-fabs(pl.v_angle[0]), pl.v_angle[1], 0]);
+	drop.SetVelocity(v_forward * 256);
+	drop.SetAngularVelocity([0.0f, 500.0f, 0.0f]);
 	Weapons_RemoveItem(pl, pl.activeweapon);
 }
 
