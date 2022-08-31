@@ -35,6 +35,19 @@ class NSTrigger:NSIO
 {
 	void(void) NSTrigger;
 
+	/* not needed to be saved right now */
+	float m_flTouchTime;
+	bool m_beingTouched;
+	entity m_eTouchLast;
+
+	/* touch/blocked */
+	virtual void(entity) Blocked;
+	virtual void(entity) StartTouch;
+	virtual void(entity) Touch;
+	virtual void(entity) EndTouch;
+	nonvirtual void(void) _TouchHandler;
+	nonvirtual void(void) _BlockedHandler;
+
 #ifdef SERVER
 	string m_oldstrTarget; /* needed due to trigger_changetarget */
 
@@ -43,7 +56,6 @@ class NSTrigger:NSIO
 	string m_strMessage;
 	string m_strMaster;
 	int m_iUseType;
-	int m_iTeam;
 	int m_iValue;
 
 	/* legacy trigger architecture */
@@ -60,10 +72,16 @@ class NSTrigger:NSIO
 	nonvirtual bool(void) HasTriggerTarget;
 	nonvirtual bool(void) HasTargetname;
 
+	/* team */
+	nonvirtual void(float) SetTeam;
+	nonvirtual float(void) GetTeam;
+
 	/* overrides */
 	virtual void(float) Save;
 	virtual void(string,string) Restore;
 	virtual void(entity, string, string) Input;
+#else
+	float team;
 #endif
 	virtual void(string, string) SpawnKey;
 };

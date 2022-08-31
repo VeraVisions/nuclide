@@ -162,12 +162,6 @@ trigger_multiple::Touch(entity eToucher)
 	if (!HasSpawnFlags(TM_PUSHABLES) && eToucher.classname == "func_pushable")
 		return;
 
-	if (g_grMode.IsTeamplay() == TRUE) {
-		if (m_iTeam > 0 && eActivator.team != m_iTeam + 1) {
-			return;
-		}
-	}
-
 	/* if the target key isn't used, assume we're using the new I/O system */
 	if (HasTriggerTarget() == false)
 		UseOutput(eToucher, m_strOnStartTouch);

@@ -17,6 +17,9 @@
 void
 NSTrigger::NSTrigger(void)
 {
+	blocked = _BlockedHandler;
+	touch = _TouchHandler;
+
 #ifdef SERVER
 	m_oldstrTarget = __NULL__;
 	m_strGlobalState = __NULL__;
@@ -24,7 +27,7 @@ NSTrigger::NSTrigger(void)
 	m_strMessage = __NULL__;
 	m_strMaster = __NULL__;
 	m_iUseType = 0i;
-	m_iTeam = 0i;
+	team = 0;
 	m_iValue = 0i;
 	m_flDelay = 0.0f;
 #endif
@@ -175,7 +178,7 @@ NSTrigger::Save(float handle)
 	SaveString(handle, "m_strMessage", m_strMessage);
 	SaveString(handle, "m_strMaster", m_strMaster);
 	SaveInt(handle, "m_iUseType", m_iUseType);
-	SaveInt(handle, "m_iTeam", m_iTeam);
+	SaveFloat(handle, "team", team);
 	SaveInt(handle, "m_iValue", m_iValue);
 	SaveFloat(handle, "m_flDelay", m_flDelay);
 }
@@ -201,8 +204,8 @@ NSTrigger::Restore(string strKey, string strValue)
 	case "m_iUseType":
 		m_iUseType = ReadInt(strValue);
 		break;
-	case "m_iTeam":
-		m_iTeam = ReadInt(strValue);
+	case "team":
+		team = ReadFloat(strValue);
 		break;
 	case "m_iValue":
 		m_iValue = ReadInt(strValue);
@@ -243,7 +246,7 @@ NSTrigger::SpawnKey(string strKey, string strValue)
 		m_strMaster = strValue;
 		break;
 	case "team_no":
-		m_iTeam = stoi(strValue);
+		team = stof(strValue);
 		break;
 	case "delay":
 		m_flDelay = stof(strValue);
@@ -256,4 +259,68 @@ NSTrigger::SpawnKey(string strKey, string strValue)
 		NSIO::SpawnKey(strKey, strValue);
 		break;
 	}
+}
+
+void
+NSTrigger::Blocked(entity eBlocker)
+{
+	/* To be handled by sub-classes */
+}
+
+void
+NSTrigger::_BlockedHandler(void)
+{
+	Blocked(other);
+}
+
+void
+NSTrigger::Touch(entity eToucher)
+{
+	/* To be handled by sub-classes */
+}
+
+void
+NSTrigger::StartTouch(entity eToucher)
+{
+	/* To be handled by sub-classes */
+}
+
+void
+NSTrigger::EndTouch(entity eToucher)
+{
+	/* To be handled by sub-classes */
+}
+
+void
+NSTrigger::_TouchHandler(void)
+{
+#ifdef SERVER
+	if (g_grMode.IsTeamplay())
+	if (team > 0i)
+	if (other.team != team) {
+		return;
+	}
+#endif
+
+	/* start touch in case we haven't */
+	if (m_beingTouched != true)
+		StartTouch(other);
+
+	Touch(other);
+
+	m_flTouchTime = GetTime();
+	m_beingTouched = true;
+	m_eTouchLast = other;
+}
+
+void
+NSTrigger::SetTeam(float new_team)
+{
+	team = new_team;
+}
+
+float
+NSTrigger::GetTeam(void)
+{
+	return (team);
 }

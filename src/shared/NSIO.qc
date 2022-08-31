@@ -678,3 +678,15 @@ NSIO::SpawnKey(string strKey, string strValue)
 		break;
 	}
 }
+
+
+/* FIXME: Why do we need to declare this?! */
+#ifdef CSQC
+noref .float ltime;
+#endif
+
+float
+NSIO::GetTime(void)
+{
+	return (movetype == MOVETYPE_PUSH) ? ltime : time;
+}

@@ -72,11 +72,6 @@ class NSEntity:NSTrigger
 	PREDICTED_VECTOR_N(velocity);
 	PREDICTED_VECTOR_N(avelocity);
 
-	/* not needed to be saved right now */
-	float m_flTouchTime;
-	bool m_beingTouched;
-	entity m_eTouchLast;
-
 	virtual void(void) Spawned;
 
 #ifdef CLIENT
@@ -203,14 +198,7 @@ class NSEntity:NSTrigger
 	nonvirtual bool(string, float, float, bool) StartSound;
 	nonvirtual bool(string, float, bool) StartSoundDef;
 	nonvirtual void(float, bool) StopSound;
-	nonvirtual float(void) GetTime;
 
-	virtual void(entity) Blocked;
-	virtual void(entity) StartTouch;
-	virtual void(entity) Touch;
-	virtual void(entity) EndTouch;
-	nonvirtual void(void) _TouchHandler;
-	nonvirtual void(void) _BlockedHandler;
 	nonvirtual void(void) HandleThink;
 
 	virtual void(void) OnRemoveEntity;

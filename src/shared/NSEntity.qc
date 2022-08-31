@@ -24,9 +24,6 @@ client doesn't have to do a whole lot here
 void
 NSEntity::NSEntity(void)
 {
-	blocked = _BlockedHandler;
-	touch = _TouchHandler;
-
 #ifdef SERVER
 	identity = 1;
 #endif
@@ -58,7 +55,7 @@ NSEntity::Spawned(void)
 float
 NSEntity::EntIndex(void)
 {
-	return num_for_edict(this);
+	return (num_for_edict(this));
 }
 
 void
@@ -80,21 +77,21 @@ vector
 NSEntity::GetForward(void)
 {
 	makevectors(angles);
-	return v_forward;
+	return (v_forward);
 }
 
 vector
 NSEntity::GetRight(void)
 {
 	makevectors(angles);
-	return v_right;
+	return (v_right);
 }
 
 vector
 NSEntity::GetUp(void)
 {
 	makevectors(angles);
-	return v_up;
+	return (v_up);
 }
 
 /*
@@ -108,7 +105,7 @@ Useful on brush entities that have no real 'origin' defined.
 vector
 NSEntity::WorldSpaceCenter(void)
 {
-	return absmin + (0.5 * (absmax - absmin));
+	return (absmin + (0.5 * (absmax - absmin)));
 }
 
 /*
@@ -121,7 +118,7 @@ Returns whether or not the entity is able to see a given position
 float
 NSEntity::WaterLevel(void)
 {
-	return waterlevel;
+	return (waterlevel);
 }
 
 /*
@@ -200,66 +197,16 @@ NSEntity::IsSolid(void)
 entity
 NSEntity::GetGroundEntity(void)
 {
-	return groundentity;
+	return (groundentity);
 }
 
 bool
 NSEntity::CreatedByMap(void)
 {
-	return _mapspawned;
+	return (_mapspawned);
 }
 
-void
-NSEntity::Blocked(entity eBlocker)
-{
-	/* To be handled by sub-classes */
-}
 
-void
-NSEntity::_BlockedHandler(void)
-{
-	Blocked(other);
-}
-
-void
-NSEntity::Touch(entity eToucher)
-{
-	/* To be handled by sub-classes */
-}
-
-void
-NSEntity::StartTouch(entity eToucher)
-{
-	/* To be handled by sub-classes */
-}
-
-void
-NSEntity::EndTouch(entity eToucher)
-{
-	/* To be handled by sub-classes */
-}
-
-void
-NSEntity::_TouchHandler(void)
-{
-#ifdef SERVER
-	if (g_grMode.IsTeamplay())
-	if (m_iTeam > 0i)
-	if (m_iTeam != other.team) {
-		return;
-	}
-#endif
-
-	/* start touch in case we haven't */
-	if (m_beingTouched != true)
-		StartTouch(other);
-
-	Touch(other);
-
-	m_flTouchTime = GetTime();
-	m_beingTouched = true;
-	m_eTouchLast = other;
-}
 
 #ifdef CLIENT
 /*
@@ -451,7 +398,7 @@ NSEntity::ParentUpdate(void)
 entity
 NSEntity::GetParent(void)
 {
-	return find(world, ::targetname, m_parent);
+	return (find(world, ::targetname, m_parent));
 }
 
 void
@@ -680,11 +627,6 @@ NSEntity::SetThink(void(void) func)
 	think = func;
 }
 
-/* FIXME: Why do we need to declare this?! */
-#ifdef CSQC
-noref .float ltime;
-#endif
-
 void
 NSEntity::SetNextThink(float fl)
 {
@@ -710,151 +652,151 @@ NSEntity::ScheduleThink(void(void) func, float fl)
 vector
 NSEntity::GetSpawnOrigin(void)
 {
-	return m_oldOrigin;
+	return (m_oldOrigin);
 }
 
 vector
 NSEntity::GetSpawnAngles(void)
 {
-	return m_oldAngle;
+	return (m_oldAngle);
 }
 
 string
 NSEntity::GetSpawnModel(void)
 {
-	return m_oldModel;
+	return (m_oldModel);
 }
 
 float
 NSEntity::GetEffects(void)
 {
-	return effects;
+	return (effects);
 }
 
 float
 NSEntity::GetFrame(void)
 {
-	return frame;
+	return (frame);
 }
 
 float
 NSEntity::GetSkin(void)
 {
-	return skin;
+	return (skin);
 }
 
 float
 NSEntity::GetScale(void)
 {
-	return scale;
+	return (scale);
 }
 
 entity
 NSEntity::GetOwner(void)
 {
-	return owner;
+	return (owner);
 }
 
 vector
 NSEntity::GetVelocity(void)
 {
-	return velocity;
+	return (velocity);
 }
 
 float
 NSEntity::GetSolid(void)
 {
-	return solid;
+	return (solid);
 }
 
 string
 NSEntity::GetModel(void)
 {
-	return model;
+	return (model);
 }
 
 float
 NSEntity::GetModelindex(void)
 {
-	return modelindex;
+	return (modelindex);
 }
 
 float
 NSEntity::GetMovetype(void)
 {
-	return movetype;
+	return (movetype);
 }
 
 float
 NSEntity::GetGravity(void)
 {
-	return gravity;
+	return (gravity);
 }
 
 vector
 NSEntity::GetAngles(void)
 {
-	return angles;
+	return (angles);
 }
 
 vector
 NSEntity::GetAngularVelocity(void)
 {
-	return avelocity;
+	return (avelocity);
 }
 
 vector
 NSEntity::GetOrigin(void)
 {
-	return origin;
+	return (origin);
 }
 
 vector
 NSEntity::GetMins(void)
 {
-	return mins;
+	return (mins);
 }
 
 vector
 NSEntity::GetMaxs(void)
 {
-	return maxs;
+	return (maxs);
 }
 
 vector
 NSEntity::GetRealMins(void)
 {
-	return m_vecMins;
+	return (m_vecMins);
 }
 
 vector
 NSEntity::GetRealMaxs(void)
 {
-	return m_vecMaxs;
+	return (m_vecMaxs);
 }
 
 vector
 NSEntity::GetAbsoluteMins(void)
 {
-	return absmin;
+	return (absmin);
 }
 
 vector
 NSEntity::GetAbsoluteMaxs(void)
 {
-	return absmax;
+	return (absmax);
 }
 
 float
 NSEntity::GetFlags(void)
 {
-	return flags;
+	return (flags);
 }
 
 float
 NSEntity::GetNextThinkTime(void)
 {
-	return nextthink;
+	return (nextthink);
 }
 
 bool
@@ -886,7 +828,7 @@ NSEntity::Respawn(void)
 	SetAngles(GetSpawnAngles());
 	SetOrigin(GetSpawnOrigin());
 	SetModel(GetSpawnModel());
-	target = m_oldstrTarget; /* FIXME: Move into NSTrigger::Respawn */
+	SetTriggerTarget(m_oldstrTarget); /* FIXME: Move into NSTrigger::Respawn */
 }
 
 void
@@ -972,8 +914,7 @@ NSEntity::Input(entity eAct, string strInput, string strData)
 {
 	switch (strInput) {
 	case "Kill":
-		think = Util_Destroy;
-		nextthink = GetTime();
+		Destroy();
 		break;
 	case "KillHierarchy":
 		/* this works because ents are basically just entnums */
@@ -1079,16 +1020,8 @@ through your own hoops. This however will be sufficient 99,99% of the time.
 void
 NSEntity::Destroy(void)
 {
-	float flTime = GetTime();
-
 	OnRemoveEntity();
-
-	think = Util_Destroy;
-
-	if (!flTime)
-		nextthink = flTime + 0.01;
-	else
-		nextthink = flTime;
+	ScheduleThink(Util_Destroy, 0.0f);
 }
 
 void
@@ -1126,29 +1059,40 @@ bool
 NSEntity::WithinBounds(entity check)
 {
 	if not (check.absmin[0] >= absmin[0] && check.absmax[0] <= absmax[0])
-		return false;
+		return (false);
 	if not (check.absmin[1] >= absmin[1] && check.absmax[1] <= absmax[1])
-		return false;
+		return (false);
 	if not (check.absmin[2] >= absmin[2] && check.absmax[2] <= absmax[2])
-		return false;
+		return (false);
 
-	return true;
+	return (true);
 }
 
 bool
 NSEntity::StartSound(string strSample, float channel, float flags, bool broadcast)
 {
 	if not (whichpack(strcat("sound/", strSample)))
-		return false;
+		return (false);
 
-	sound(this, channel, strSample, 1.0, ATTN_NORM);
-	return true;
+	if (broadcast)
+		sound(this, channel, strSample, 1.0, ATTN_NORM);
+	else {
+#ifdef SERVER
+		msg_entity = this;
+		sound(this, channel, strSample, 1.0, ATTN_NORM, 0, SOUNDFLAG_UNICAST);
+		msg_entity = __NULL__;
+#else
+		sound(this, channel, strSample, 1.0, ATTN_NORM);
+#endif
+	}
+	return (true);
 }
 
 bool
 NSEntity::StartSoundDef(string strSample, float channel, bool broadcast)
 {
 	Sound_Play(this, channel, strSample);
+	return (true);
 }
 
 void
@@ -1167,10 +1111,4 @@ NSEntity::HandleThink(void)
 			think();
 		}
 	}
-}
-
-float
-NSEntity::GetTime(void)
-{
-	return (movetype == MOVETYPE_PUSH) ? ltime : time;
 }

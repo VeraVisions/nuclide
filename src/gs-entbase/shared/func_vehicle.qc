@@ -738,15 +738,7 @@ func_vehicle::Physics(void)
 		//crossprint(sprintf("Driver: %s\n", GetDriver().classname));
 	}
 
-#ifdef SERVER
-	/* support for think/nextthink */
-	if (think && nextthink > 0.0f) {
-		if (nextthink < time) {
-			nextthink = 0.0f;
-			think();
-		}
-	}
-#endif
+	HandleThink();
 }
 
 void

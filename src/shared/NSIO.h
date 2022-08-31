@@ -34,6 +34,8 @@ class NSIO
 	/* Handle entity key/value pairs on init */
 	virtual void(string, string) SpawnKey;
 
+	nonvirtual float(void) GetTime;
+
 #ifdef SERVER
 	/* Input/Output System */
 	string m_strOnTrigger;
