@@ -406,7 +406,6 @@ NSVehicle::PlayerAlign(void)
 	vecPlayerPos = origin + v_forward * m_vecPlayerPos[0];
 	vecPlayerPos += v_right * m_vecPlayerPos[1];
 	vecPlayerPos += v_up * m_vecPlayerPos[2];
-
 	setorigin(m_eDriver, vecPlayerPos);
 }
 

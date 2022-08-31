@@ -106,39 +106,39 @@ class NSEntity:NSTrigger
 	virtual float(entity, float) SendEntity;
 
 	nonvirtual entity(void) GetParent;
-	virtual void(string) SetParent;
-	virtual void(string) SetParentAttachment;
-	virtual void(void) ClearParent;
+	nonvirtual void(string) SetParent;
+	nonvirtual void(string) SetParentAttachment;
+	nonvirtual void(void) ClearParent;
 	virtual void(void) ParentUpdate;
 
 	/* some ents need this */
-	virtual void(void) RestoreAngles;
-	virtual void(void) ClearAngles;
+	nonvirtual void(void) RestoreAngles;
+	nonvirtual void(void) ClearAngles;
 #endif
 
 	/* sets */
-	virtual void(float) SetEffects;
-	virtual void(float) SetFrame;
-	virtual void(float) SetSkin;
-	virtual void(float) SetScale;
-	virtual void(entity) SetOwner;
-	virtual void(vector) SetVelocity;
-	virtual void(void()) SetTouch;
-	virtual void(float) SetSendFlags;
-	virtual void(float) SetSolid;
-	virtual void(string) SetModel;
-	virtual void(float) SetModelindex;
-	virtual void(float) SetMovetype;
-	virtual void(float) SetGravity;
-	virtual void(vector) SetAngles;
-	virtual void(vector) SetAngularVelocity;
-	virtual void(vector) SetOrigin;
-	virtual void(vector, vector) SetSize;
-	virtual void(float) AddFlags;
-	virtual void(float) RemoveFlags;
-	virtual void(void()) SetThink;
-	virtual void(float) SetNextThink;
-	virtual void(void(void), float) ScheduleThink;
+	nonvirtual void(float) SetEffects;
+	nonvirtual void(float) SetFrame;
+	nonvirtual void(float) SetSkin;
+	nonvirtual void(float) SetScale;
+	nonvirtual void(entity) SetOwner;
+	nonvirtual void(vector) SetVelocity;
+	nonvirtual void(void()) SetTouch;
+	nonvirtual void(float) SetSendFlags;
+	nonvirtual void(float) SetSolid;
+	nonvirtual void(string) SetModel;
+	nonvirtual void(float) SetModelindex;
+	nonvirtual void(float) SetMovetype;
+	nonvirtual void(float) SetGravity;
+	nonvirtual void(vector) SetAngles;
+	nonvirtual void(vector) SetAngularVelocity;
+	nonvirtual void(vector) SetOrigin;
+	nonvirtual void(vector, vector) SetSize;
+	nonvirtual void(float) AddFlags;
+	nonvirtual void(float) RemoveFlags;
+	nonvirtual void(void()) SetThink;
+	nonvirtual void(float) SetNextThink;
+	nonvirtual void(void(void), float) ScheduleThink;
 
 	/* gets */
 	nonvirtual vector(void) GetSpawnOrigin;
@@ -172,20 +172,20 @@ class NSEntity:NSTrigger
 	nonvirtual void(void) ClearVelocity;
 
 	/* drawing related */
-	virtual void(void) Show;
-	virtual void(void) Hide;
+	nonvirtual void(void) Show;
+	nonvirtual void(void) Hide;
 	nonvirtual bool(void) IsHidden;
 
 	/* this will not just hide an entity, it'll make it disappear from the game, but not deallocated it */
-	virtual void(void) Disappear;
+	nonvirtual void(void) Disappear;
 
 	virtual void(string, string) SpawnKey;
-	virtual void(void) Destroy;
-	virtual void(void) UpdateBounds;
+	nonvirtual void(void) Destroy;
+	nonvirtual void(void) UpdateBounds;
 
-	/* useful methods, based on GMod's API */
+	/* useful methods, (some) based on GMod's API */
 	nonvirtual float(void) EntIndex;
-	virtual void(void) DropToFloor;
+	nonvirtual void(void) DropToFloor;
 	nonvirtual vector(void) GetForward;
 	nonvirtual vector(void) GetRight;
 	nonvirtual vector(void) GetUp;
@@ -199,14 +199,20 @@ class NSEntity:NSTrigger
 	nonvirtual bool(void) CreatedByMap;
 	nonvirtual bool(entity) WithinBounds;
 
+	/* useful methods, (some) based on Doom 3's API */
+	nonvirtual bool(string, float, float, bool) StartSound;
+	nonvirtual bool(string, float, bool) StartSoundDef;
+	nonvirtual void(float, bool) StopSound;
+	nonvirtual float(void) GetTime;
+
 	virtual void(entity) Blocked;
 	virtual void(entity) StartTouch;
 	virtual void(entity) Touch;
 	virtual void(entity) EndTouch;
-	virtual void(void) _TouchHandler;
-	virtual void(void) _BlockedHandler;
+	nonvirtual void(void) _TouchHandler;
+	nonvirtual void(void) _BlockedHandler;
+	nonvirtual void(void) HandleThink;
 
 	virtual void(void) OnRemoveEntity;
-
 	virtual void(void) MakeStatic;
 };

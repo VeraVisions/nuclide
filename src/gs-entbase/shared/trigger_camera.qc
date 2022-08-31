@@ -71,6 +71,9 @@ trigger_camera::trigger_camera(void)
 {
 #ifndef CLIENT
 	m_flWait = 4.0f;
+	m_strAimAt = __NULL__;
+	m_strMoveTo = __NULL__;
+	m_eLooker = __NULL__;
 #endif
 }
 
@@ -136,6 +139,7 @@ trigger_camera::Respawn(void)
 	SetMovetype(MOVETYPE_PUSH);
 	SetModel(GetSpawnModel());
 	SetOrigin(GetSpawnOrigin());
+	m_eLooker = world;
 }
 
 float
@@ -144,8 +148,9 @@ trigger_camera::SendEntity(entity ePEnt, float flFlags)
 	if (clienttype(ePEnt) != CLIENTTYPE_REAL)
 		return (0);
 
-	if (ePEnt != m_eLooker)
+	if (ePEnt != m_eLooker) {
 		return (0);
+	}
 
 	WriteByte(MSG_ENTITY, ENT_OLDCAMERA);
 	WriteFloat(MSG_ENTITY, flFlags);
@@ -206,20 +211,12 @@ trigger_camera::GoToTarget(void)
 
 	if (!flTravelTime) {
 		print("^1trigger_camera::^3GoToTarget^7: Distance short, going next\n");
-		think = NextPath;
-
-		/* because ltime may be 0 */
-		if (!ltime)
-			nextthink = ltime + 0.001f;
-		else
-			nextthink = ltime;
-
+		ScheduleThink(NextPath, 0.0f);
 		return;
 	}
 
-	velocity = (vecVelocity * (1 / flTravelTime));
-	think = NextPath;
-	nextthink = (ltime + flTravelTime);
+	SetVelocity(vecVelocity * (1 / flTravelTime));
+	ScheduleThink(NextPath, flTravelTime);
 }
 
 void
@@ -236,15 +233,13 @@ trigger_camera::NextPath(void)
 	eNode.Trigger(this, TRIG_TOGGLE);
 
 	SetOrigin(eNode.origin - (mins + maxs) * 0.5);
-
-	target = eNode.target;
-	velocity = [0,0,0];
+	SetTriggerTarget(eNode.target);
+	ClearVelocity();
 
 	/* warp next frame */
 	if (eNode.HasSpawnFlags(PC_TELEPORT)) {
 		print(sprintf("^1trigger_camera::^3NextPath^7: Node %s wants %s to teleport\n", eNode.targetname, targetname));
-		think = NextPath;
-		nextthink = ltime;
+		ScheduleThink(NextPath, 0.0f);
 		return;
 	}
 
@@ -254,8 +249,7 @@ trigger_camera::NextPath(void)
 	}
 
 	if (eNode.m_flWait > 0) {
-		think = GoToTarget;
-		nextthink = ltime + eNode.m_flWait;
+		ScheduleThink(GoToTarget, eNode.m_flWait);
 	} else {
 		GoToTarget();
 	}
@@ -266,12 +260,11 @@ void
 trigger_camera::Trigger(entity act, int state)
 {
 	m_eLooker = act;
-
+	NSLog("Triggering it on %s\n", act.netname);
 	SetOrigin(GetSpawnOrigin());
-	velocity = [0,0,0];
-	think = __NULL__;
-	nextthink = 0.0f;
-	target = m_strMoveTo;
+	ClearVelocity();
+	ReleaseThink();
+	SetTriggerTarget(m_strMoveTo);
 	NextPath();
 	GoToTarget();
 	SetSendFlags(OCAMFL_CHANGED_ORIGIN | OCAMFL_CHANGED_ANGLES | OCAMFL_CHANGED_WAIT);

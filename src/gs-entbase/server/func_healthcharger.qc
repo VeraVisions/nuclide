@@ -135,7 +135,7 @@ void
 func_healthcharger::Respawn(void)
 {
 	SetSolid(SOLID_BSP);
-	SetMovetype(MOVETYPE_PUSH);
+	SetMovetype(MOVETYPE_NONE);
 	SetOrigin(GetSpawnOrigin());
 	SetModel(GetSpawnModel());
 	PlayerUse = OnPlayerUse;
@@ -146,7 +146,7 @@ void
 func_healthcharger::ResetHealth(void)
 {
 	if (health <= 0) {
-		sound(this, CHAN_VOICE, m_strSndFirst, 1.0, ATTN_NORM);
+		StartSound(m_strSndFirst, CHAN_VOICE, 0, true);
 	}
 
 	SetFrame(0);
@@ -167,25 +167,27 @@ func_healthcharger::OnPlayerUse(void)
 		return;
 
 	/* First time */
-	if (m_eUser == world)
-		sound(this, CHAN_VOICE, m_strSndFirst, 1.0, ATTN_NORM);
+	if (m_eUser == world) {
+		StartSound(m_strSndFirst, CHAN_VOICE, 0, true);
+	}
 
-	if (m_flDelay > time)
+	if (m_flDelay > GetTime())
 		return;
 
 	if (health <= 0) {
 		eActivator.flags &= ~FL_USE_RELEASED;
-		sound(this, CHAN_VOICE, m_strSndDone, 1.0, ATTN_NORM);
+		StartSound(m_strSndDone, CHAN_VOICE, 0, true);
 		m_eUser = world;
 		return;
 	}
 
 	if (eActivator.health >= 100) {
 		eActivator.flags &= ~FL_USE_RELEASED;
-		sound(this, CHAN_VOICE, m_strSndDone, 1.0, ATTN_NORM);
+		StartSound(m_strSndDone, CHAN_VOICE, 0, true);
 	} else {
-		if (m_eUser == world)
-			sound(this, CHAN_ITEM, m_strSndCharging, 1.0, ATTN_NORM);
+		if (m_eUser == world) {
+			StartSound(m_strSndCharging, CHAN_ITEM, 0, true);
+		}
 
 		eActivator.health = bound(0, eActivator.health += 1, 100);
 
@@ -197,8 +199,8 @@ func_healthcharger::OnPlayerUse(void)
 
 		/* Disable when empty */
 		if (health <= 0) {
-			sound(this, CHAN_ITEM, "common/null.wav", 1.0, ATTN_NORM);
-			sound(this, CHAN_VOICE, m_strSndDone, 1.0, ATTN_NORM);
+			StopSound(CHAN_ITEM, true);
+			StartSound(m_strSndDone, CHAN_VOICE, 0, true);
 			SetFrame(1);
 			eActivator.flags &= ~FL_USE_RELEASED;
 			m_eUser = world;
@@ -207,26 +209,20 @@ func_healthcharger::OnPlayerUse(void)
 	}
 
 	m_eUser = eActivator;
-	m_flDelay = time + 0.1f;
-	m_flCheck = time + 0.25f;
+	m_flDelay = GetTime() + 0.1f;
+	m_flCheck = GetTime() + 0.25f;
 }
 
 void
 func_healthcharger::customphysics(void)
 {
-	if (m_flCheck > time)
+	if (m_flCheck > GetTime())
 		return;
 
 	if (m_eUser) {
-		sound(this, CHAN_ITEM, "common/null.wav", 1.0, ATTN_NORM);
+		StopSound(CHAN_ITEM, true);
 		m_eUser = world;
 	}
 
-	/* support for think/nextthink */
-	if (think && nextthink > 0.0f) {
-		if (nextthink < time) {
-			nextthink = 0.0f;
-			think();
-		}
-	}
+	HandleThink();
 }

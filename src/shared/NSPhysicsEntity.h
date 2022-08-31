@@ -81,19 +81,19 @@ class NSPhysicsEntity:NSSurfacePropEntity
 #endif
 	virtual void(string, string) SpawnKey;
 
-	virtual void(float) SetMass;
+	nonvirtual void(float) SetMass;
 	nonvirtual float(void) GetMass;
-	virtual void(float) SetFriction;
+	nonvirtual void(float) SetFriction;
 	nonvirtual float(void) GetFriction;
-	virtual void(float) SetBounceFactor;
+	nonvirtual void(float) SetBounceFactor;
 	nonvirtual float(void) GetBounceFactor;
-	virtual void(float) SetBounceStop;
+	nonvirtual void(float) SetBounceStop;
 	nonvirtual float(void) GetBounceStop;
-	virtual void(void) PhysicsEnable;
-	virtual void(void) PhysicsDisable;
-	virtual void(vector) ApplyForceCenter;
-	virtual void(vector, vector) ApplyForceOffset;
-	virtual void(vector) ApplyTorqueCenter;
+	nonvirtual void(void) PhysicsEnable;
+	nonvirtual void(void) PhysicsDisable;
+	nonvirtual void(vector) ApplyForceCenter;
+	nonvirtual void(vector, vector) ApplyForceOffset;
+	nonvirtual void(vector) ApplyTorqueCenter;
 	nonvirtual float(int, int) CalculateImpactDamage;
 };
 

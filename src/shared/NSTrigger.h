@@ -49,8 +49,8 @@ class NSTrigger:NSIO
 	/* legacy trigger architecture */
 	float m_flDelay;
 	virtual void(entity, int) Trigger;
-	virtual void(entity, int, float) UseTargets;
-	virtual void(string) SetTriggerTarget;
+	nonvirtual void(entity, int, float) UseTargets;
+	nonvirtual void(string) SetTriggerTarget;
 
 	/* master feature */
 	nonvirtual int(void) GetValue;

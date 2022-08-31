@@ -75,9 +75,9 @@ class NSSurfacePropEntity:NSRenderableEntity
 	/* I/O */
 	string m_strOnBreak;
 
-	virtual void(entity, float, int) Ignite;
-	virtual void(void) Extinguish;
-	virtual bool(void) IsOnFire;
+	nonvirtual void(entity, float, int) Ignite;
+	nonvirtual void(void) Extinguish;
+	nonvirtual bool(void) IsOnFire;
 
 	/* life, death */
 	float m_oldHealth;
@@ -86,31 +86,31 @@ class NSSurfacePropEntity:NSRenderableEntity
 	virtual bool(void) IsAlive;
 
 	/* Generic Damage */
-	virtual void(float) SetTakedamage;
-	virtual void(float) SetHealth;
-	virtual void(float) SetMaxHealth;
-	virtual float(void) GetHealth;
-	virtual float(void) GetMaxHealth;
+	nonvirtual void(float) SetTakedamage;
+	nonvirtual void(float) SetHealth;
+	nonvirtual void(float) SetMaxHealth;
+	nonvirtual float(void) GetHealth;
+	nonvirtual float(void) GetMaxHealth;
 
 	/* Surface/PropKit */
 	int m_iMaterial;
 	int m_iPropData;
-	virtual float(void) GetSpawnHealth;
-	virtual bool(void) HasPropData;
-	virtual __variant(int) GetPropData;
-	virtual bool(void) HasSurfaceData;
-	virtual __variant(int) GetSurfaceData;
+	nonvirtual float(void) GetSpawnHealth;
+	nonvirtual bool(void) HasPropData;
+	nonvirtual __variant(int) GetPropData;
+	nonvirtual bool(void) HasSurfaceData;
+	nonvirtual __variant(int) GetSurfaceData;
 
 	string m_strSurfData;
 	string m_strPropData;
-	virtual void(string) SetSurfaceData;
-	virtual void(string) SetPropData;
-	virtual void(void) SurfaceDataFinish;
-	virtual void(void) PropDataFinish;
+	nonvirtual void(string) SetSurfaceData;
+	nonvirtual void(string) SetPropData;
+	nonvirtual void(void) SurfaceDataFinish;
+	nonvirtual void(void) PropDataFinish;
 #endif
 
 	/* misc 'being' methods */
-	virtual vector(void) GetEyePos;
+	nonvirtual vector(void) GetEyePos;
 };
 
 #ifdef CLIENT

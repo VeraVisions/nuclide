@@ -256,7 +256,7 @@ NSEntity::_TouchHandler(void)
 
 	Touch(other);
 
-	m_flTouchTime = time;
+	m_flTouchTime = GetTime();
 	m_beingTouched = true;
 	m_eTouchLast = other;
 }
@@ -441,7 +441,7 @@ NSEntity::ParentUpdate(void)
 
 	/* handle end-touch */
 	if (m_beingTouched == true)
-		if (m_flTouchTime < time) {
+		if (m_flTouchTime < GetTime()) {
 				EndTouch(m_eTouchLast);
 				m_beingTouched = false;
 				m_eTouchLast = __NULL__;
@@ -688,10 +688,7 @@ noref .float ltime;
 void
 NSEntity::SetNextThink(float fl)
 {
-	float flTime;
-
-	/* thinks work differently for pushmovables */
-	flTime = (movetype == MOVETYPE_PUSH) ? ltime : time;
+	float flTime = GetTime();
 
 	/* HACK: to make sure things happen post-spawn */
 	if (flTime <= 0.0f)
@@ -863,10 +860,7 @@ NSEntity::GetNextThinkTime(void)
 bool
 NSEntity::IsThinking(void)
 {
-	if (movetype == MOVETYPE_PUSH)
-		return (nextthink > ltime) ? true : false;
-	else
-		return (nextthink > time) ? true : false;
+	return (nextthink > GetTime()) ? true : false;
 }
 
 void
@@ -979,16 +973,15 @@ NSEntity::Input(entity eAct, string strInput, string strData)
 	switch (strInput) {
 	case "Kill":
 		think = Util_Destroy;
-		nextthink = time;
+		nextthink = GetTime();
 		break;
 	case "KillHierarchy":
 		/* this works because ents are basically just entnums */
 		for (entity e = world; (e=findfloat(e, ::owner, this));) {
-			e.think = Util_Destroy;
-			e.nextthink = time;
+			NSEntity ent = (NSEntity)e;
+			ent.Destroy();
 		}
-		think = Util_Destroy;
-		nextthink = time;
+		Destroy();
 		break;
 	case "SetParent":
 		SetParent(strData);
@@ -1086,14 +1079,16 @@ through your own hoops. This however will be sufficient 99,99% of the time.
 void
 NSEntity::Destroy(void)
 {
+	float flTime = GetTime();
+
 	OnRemoveEntity();
 
 	think = Util_Destroy;
 
-	if (!time)
-		nextthink = time + 0.01;
+	if (!flTime)
+		nextthink = flTime + 0.01;
 	else
-		nextthink = time;
+		nextthink = flTime;
 }
 
 void
@@ -1138,4 +1133,44 @@ NSEntity::WithinBounds(entity check)
 		return false;
 
 	return true;
+}
+
+bool
+NSEntity::StartSound(string strSample, float channel, float flags, bool broadcast)
+{
+	if not (whichpack(strcat("sound/", strSample)))
+		return false;
+
+	sound(this, channel, strSample, 1.0, ATTN_NORM);
+	return true;
+}
+
+bool
+NSEntity::StartSoundDef(string strSample, float channel, bool broadcast)
+{
+	Sound_Play(this, channel, strSample);
+}
+
+void
+NSEntity::StopSound(float channel, bool broadcast)
+{
+	sound(this, channel, "common/null.wav", 0.1f, ATTN_NORM);
+}
+
+void
+NSEntity::HandleThink(void)
+{
+	/* support for think/nextthink */
+	if (think && nextthink > 0.0f) {
+		if (nextthink < time) {
+			nextthink = 0.0f;
+			think();
+		}
+	}
+}
+
+float
+NSEntity::GetTime(void)
+{
+	return (movetype == MOVETYPE_PUSH) ? ltime : time;
 }

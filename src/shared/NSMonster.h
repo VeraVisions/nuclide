@@ -300,7 +300,7 @@ class NSMonster:NSNavAI
 
 	/* states */
 	virtual void(monsterState_t, monsterState_t) StateChanged;
-	virtual void(monsterState_t) SetState;
+	nonvirtual void(monsterState_t) SetState;
 	nonvirtual monsterState_t(void) GetState;
 
 	/* TriggerTarget/Condition */

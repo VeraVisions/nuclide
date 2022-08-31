@@ -819,7 +819,7 @@ func_vehicle::RunVehiclePhysics(void)
 	angles[1] = Math_FixDelta(angles[1]);
 	angles[2] = Math_FixDelta(angles[2]);
 	angles[0] = bound (-45, angles[0], 45);
-	angles[2] = bound (-45, angles[2], 45);
+	angles[2] = bound (-15, angles[2], 15);
 
 	velocity[0] = bound(-1000, velocity[0], 1000);
 	velocity[1] = bound(-1000, velocity[1], 1000);

@@ -125,16 +125,16 @@ class NSRenderableEntity:NSEntity
 	PREDICTED_VECTOR(m_vecRenderColor);
 
 	/* set */
-	virtual void(int) SetBody;
-	virtual void(float) SetRenderFX;
-	virtual void(float) SetRenderMode;
-	virtual void(float) SetRenderAmt;
-	virtual void(vector) SetRenderColor;
-	virtual void(float) SetBoneControl1;
-	virtual void(float) SetBoneControl2;
-	virtual void(float) SetBoneControl3;
-	virtual void(float) SetBoneControl4;
-	virtual void(float) SetBoneControl5;
+	nonvirtual void(int) SetBody;
+	nonvirtual void(float) SetRenderFX;
+	nonvirtual void(float) SetRenderMode;
+	nonvirtual void(float) SetRenderAmt;
+	nonvirtual void(vector) SetRenderColor;
+	nonvirtual void(float) SetBoneControl1;
+	nonvirtual void(float) SetBoneControl2;
+	nonvirtual void(float) SetBoneControl3;
+	nonvirtual void(float) SetBoneControl4;
+	nonvirtual void(float) SetBoneControl5;
 
 	nonvirtual int(void) GetBody;
 	nonvirtual float(void) GetRenderMode;
@@ -148,7 +148,7 @@ class NSRenderableEntity:NSEntity
 	nonvirtual float(void) GetBoneControl5;
 
 	#ifdef CLIENT
-		virtual void(void) RenderFXPass;
+		nonvirtual void(void) RenderFXPass;
 	#else
 		/* respawn */
 		float m_oldiRenderFX;
