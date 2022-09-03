@@ -61,9 +61,9 @@ void
 cycler::Pain(void)
 {
 	if (frame >= modelframecount(modelindex)) {
-		frame = 0;
+		SetFrame(0);
 	} else {
-		frame += 1;
+		SetFrame(GetFrame() + 1);
 	}
 	SetHealth(9999);
 }

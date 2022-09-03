@@ -84,12 +84,15 @@ button_target::Trigger(entity act, int status)
 	PlayerUse = __NULL__;
 	SetTakedamage(DAMAGE_NO);
 
-	frame = 1 - frame;
+	/* toggle texture frame */
+	float new_frame = (GetFrame() >= 1) ? 0 : 1;
+	SetFrame(new_frame);
+
 	UseTargets(act, status, m_flDelay);
 }
 
 void
 button_target::Damage(void)
 {
-	Trigger(g_dmg_eAttacker, TRIG_TOGGLE); /* TODO: Set state? */
+	Trigger(g_dmg_eAttacker, TRIG_TOGGLE);
 }

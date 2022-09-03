@@ -296,8 +296,7 @@ func_breakable::Explode(void)
 	FX_Explosion(rp);
 	Damage_Radius(rp, this, m_flExplodeMag, m_flExplodeRad, TRUE, 0);
 	UseTargets(this, TRIG_TOGGLE, 0.0f); /* delay... ignored. */
-	Hide();
-	SetSolid(SOLID_NOT);
+	Disappear();
 	SetTakedamage(DAMAGE_NO);
 }
 
@@ -345,8 +344,7 @@ func_breakable::Death(void)
 		ScheduleThink(Explode, random(0.0f, 0.5f));
 	} else {
 		FX_BreakModel(vlen(size) / 10, absmin, absmax, [0,0,0], GetSurfaceData(SURFDATA_MATERIAL));
-		Hide();
-		SetSolid(SOLID_NOT);
+		Disappear();
 		SetTakedamage(DAMAGE_NO);
 		UseTargets(eActivator, TRIG_TOGGLE, 0.0f);
 	}
