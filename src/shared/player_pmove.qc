@@ -308,6 +308,7 @@ void
 NSClientPlayer::Physics_InputPreMove(void)
 {
 	NSVehicle veh = (NSVehicle)vehicle;
+	bool canmove = true;
 
 	/* when pressing the 'use' button, we also walk slower for precision */
 	if (input_buttons & INPUT_BUTTON5) {
@@ -327,7 +328,16 @@ NSClientPlayer::Physics_InputPreMove(void)
 		}
 	}
 
-	if (flags & FL_FROZEN || movetype == MOVETYPE_NONE) {
+	/* find all the valid ways to freeze a player... */
+	if (veh)
+		if (veh.PreventPlayerMovement() == true)
+			canmove = false;
+
+	if (flags & FL_FROZEN || movetype == MOVETYPE_NONE)
+		canmove = false;
+
+	/* freeze in place */
+	if (canmove == false) {
 		input_movevalues = [0,0,0];
 		input_buttons &= ~INPUT_BUTTON2;
 	}

@@ -63,6 +63,8 @@ class NSVehicle:NSSurfacePropEntity
 	virtual float(void) DriverAnimation;
 
 	virtual bool(void) CanDriverCrouch;
+	virtual bool(void) PreventPlayerMovement;
+	virtual bool(void) PreventPlayerFire;
 };
 
 enumflags

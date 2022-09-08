@@ -41,6 +41,15 @@ Game_Input(player pl)
 		return;
 	}
 
+	NSVehicle veh = (NSVehicle)pl.vehicle;
+	bool canfire = true;
+	if (veh)
+		if (veh.PreventPlayerFire() == true)
+			canfire = false;
+
+	if (canfire == false)
+		return;
+
 	if (input_buttons & INPUT_BUTTON0)
 		Weapons_Primary(pl);
 	else if (input_buttons & INPUT_BUTTON4)

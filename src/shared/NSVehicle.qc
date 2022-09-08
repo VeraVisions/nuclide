@@ -77,6 +77,18 @@ NSVehicle::CanDriverCrouch(void)
 	return (false);
 }
 
+bool
+NSVehicle::PreventPlayerMovement(void)
+{
+	return (true);
+}
+
+bool
+NSVehicle::PreventPlayerFire(void)
+{
+	return (true);
+}
+
 float
 NSVehicle::DriverAnimation(void)
 {
