@@ -425,7 +425,8 @@ NSVehicle::PlayerEnter(NSClientPlayer pl)
 	m_vecPlayerPos[1] = dotproduct(offs, v_right);
 	m_vecPlayerPos[2] = dotproduct(offs, v_up);
 	m_vecExitPos = m_vecPlayerPos;
-	pl.movetype = MOVETYPE_NOCLIP;
+	owner = pl;
+	//pl.movetype = MOVETYPE_NOCLIP;
 	m_eDriver = (entity)pl;
 	m_eDriverLast = m_eDriver;
 	pl.vehicle = this;
@@ -440,7 +441,7 @@ NSVehicle::PlayerLeave(NSClientPlayer pl)
 	if (!pl)
 		return;
 
-	pl.movetype = MOVETYPE_WALK;
+	owner = __NULL__;
 	pl.flags &= ~FL_INVEHICLE;
 
 	if (m_iVehicleFlags & VHF_FROZEN)
