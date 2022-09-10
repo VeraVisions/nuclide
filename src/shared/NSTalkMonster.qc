@@ -810,7 +810,6 @@ NSTalkMonster::predraw(void)
 
 	/* mouth flapping action */
 	bonecontrol5 = getchannellevel(this, CHAN_VOICE) * 20;
-	print(sprintf("voice: %f\n", bonecontrol5));
 
 	m_flBaseTime = frame1time;
 	ProcessWordQue();
