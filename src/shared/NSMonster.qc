@@ -743,7 +743,7 @@ NSMonster::Physics(void)
 	frame1time += frametime;
 
 	processmodelevents(modelindex, frame, m_flBaseTime,
-		frame1time, Game_ServerModelEvent);
+		frame1time, HandleAnimEvent);
 }
 
 void

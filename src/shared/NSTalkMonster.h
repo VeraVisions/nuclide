@@ -126,6 +126,9 @@ class NSTalkMonster:NSMonster
 	virtual void(void) ProcessWordQue;
 	virtual void(float,float) ReceiveEntity;
 #endif
+
+	/* model events */
+	virtual void(float, int, string) HandleAnimEvent;
 };
 
 #ifdef CLIENT

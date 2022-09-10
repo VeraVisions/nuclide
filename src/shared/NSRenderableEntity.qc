@@ -510,7 +510,7 @@ NSRenderableEntity::predraw(void)
 		frame1time += frametime;
 
 	processmodelevents(modelindex, frame, m_flBaseTime,
-		frame1time, ClientGame_ModelEvent);
+		frame1time, HandleAnimEvent);
 
 	if (alpha > 0.0) {
 		/* TODO: Move this somewhere more sane */
@@ -658,6 +658,66 @@ float
 NSRenderableEntity::GetBoneControl5(void)
 {
 	return m_flBoneControl5;
+}
+
+void
+NSRenderableEntity::HandleAnimEvent(float flTimeStamp, int iCode, string strData)
+{
+	switch(iCode) {
+#ifdef CLIENT
+	case 1004:	/* plays a sound on CHAN_BODY */
+		if (substring(strData, 0, 1) == "*")
+			sound(self, CHAN_BODY, substring(strData, 1, -1), 1.0f, ATTN_NORM);
+		else
+			sound(self, CHAN_BODY, strData, 1.0f, ATTN_NORM);
+		break;
+	case 1008:	/* plays a sound on CHAN_VOICE */
+		if (substring(strData, 0, 1) == "*")
+			sound(self, CHAN_VOICE, substring(strData, 1, -1), 1.0f, ATTN_NORM);
+		else
+			sound(self, CHAN_VOICE, strData, 1.0f, ATTN_NORM);
+		break;
+	#if 0
+	case 5004: /* view model sound? */
+		localsound(strData, CHAN_AUTO, 1.0);
+		break;
+	case 5001: /* muzzle flash on attachment 0 */
+		pSeat->m_eMuzzleflash.alpha = 1.0f;
+		pSeat->m_eMuzzleflash.scale = 0.25;
+		pSeat->m_eMuzzleflash.skin = pSeat->m_iVMBones;
+		break;
+	case 5011: /* muzzle flash on attachment 1 */
+		pSeat->m_eMuzzleflash.alpha = 1.0f;
+		pSeat->m_eMuzzleflash.scale = 0.25;
+		pSeat->m_eMuzzleflash.skin = pSeat->m_iVMBones + 1;
+		break;
+	case 5021: /* muzzle flash on attachment 2 */
+		pSeat->m_eMuzzleflash.alpha = 1.0f;
+		pSeat->m_eMuzzleflash.scale = 0.25;
+		pSeat->m_eMuzzleflash.skin = pSeat->m_iVMBones + 2;
+		break;
+	case 5031: /* muzzle flash on attachment 3 */
+		pSeat->m_eMuzzleflash.alpha = 1.0f;
+		pSeat->m_eMuzzleflash.scale = 0.25;
+		pSeat->m_eMuzzleflash.skin = pSeat->m_iVMBones + 3;
+		break;
+	#endif
+#else
+	case 1003:	/* trigger SSQC entity with specific targetname */
+		for (entity f = world; (f = find(f, ::targetname, strData));) {
+			NSEntity trigger = (NSEntity)f;
+			if (trigger.Trigger != __NULL__) {
+				trigger.Trigger(self, TRIG_TOGGLE);
+				NSLog("^2%s^7::^3ModelEvent^7: " \
+					"Calling trigger '%s'\n",
+					self.classname, strData);
+			}
+		}
+		break;
+#endif
+	default:
+		NSLog("Unknown model event: %f %i %S", flTimeStamp, iCode, strData);
+	}
 }
 
 #ifdef SERVER

@@ -147,6 +147,9 @@ class NSRenderableEntity:NSEntity
 	nonvirtual float(void) GetBoneControl4;
 	nonvirtual float(void) GetBoneControl5;
 
+	/* model events */
+	virtual void(float, int, string) HandleAnimEvent;
+
 	#ifdef CLIENT
 		nonvirtual void(void) RenderFXPass;
 	#else

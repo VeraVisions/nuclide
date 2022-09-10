@@ -58,6 +58,21 @@ NSTalkMonster::NSTalkMonster(void)
 #endif
 }
 
+void
+NSTalkMonster::HandleAnimEvent(float flTimeStamp, int iCode, string strData)
+{
+	switch(iCode) {
+#ifdef SERVER
+	case 1005:	/* plays a dialogue sentence. monsters only right now */
+		NSTalkMonster targ = (NSTalkMonster)self;
+		targ.Sentence(strData);
+		break;
+#endif
+	default:
+		super::HandleAnimEvent(flTimeStamp, iCode, strData);
+	}
+}
+
 #ifdef SERVER
 void
 NSTalkMonster::Save(float handle)
@@ -778,11 +793,25 @@ NSTalkMonster::Sentence(string msg)
 float
 NSTalkMonster::predraw(void)
 {
-	float render;
-	render = super::predraw();
+	//float render;
+	//render = super::predraw();
+
+	/* TODO: this is from NSRenderableEntity, shoul make these nonvirtual methods */
+	{
+	RenderFXPass();
+	RenderDebugSkeleton();
+
+	if (serverkeyfloat(SERVERKEY_PAUSESTATE) != 1)
+		frame1time += frametime;
+
+	processmodelevents(modelindex, frame, m_flBaseTime,
+		frame1time, HandleAnimEvent);
+	} /* TODO end */
 
 	/* mouth flapping action */
 	bonecontrol5 = getchannellevel(this, CHAN_VOICE) * 20;
+	print(sprintf("voice: %f\n", bonecontrol5));
+
 	m_flBaseTime = frame1time;
 	ProcessWordQue();
 
@@ -803,7 +832,8 @@ NSTalkMonster::predraw(void)
 		m_bWasPaused = true;
 	}
 
-	return render;
+	addentity(this);
+	return (PREDRAW_NEXT);
 }
 
 /*
