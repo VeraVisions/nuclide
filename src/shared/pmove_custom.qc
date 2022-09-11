@@ -77,6 +77,7 @@ void
 PMoveCustom_Categorize(void)
 {
 	int contents;
+	bool inladder = false;
 
 	tracebox(self.origin, self.mins, self.maxs, self.origin - [0,0,1], MOVE_NORMAL, self);
 
@@ -107,6 +108,22 @@ PMoveCustom_Categorize(void)
 	self.hitcontentsmaski = oldhitcontents;
 
 	if (trace_endcontentsi & CONTENTBIT_FTELADDER) {
+		/* place the ladder into a virtual space */
+		vector ladderpos = trace_ent.absmin + (0.5f * (trace_ent.absmax - trace_ent.absmin));
+		ladderpos[2] = self.origin[2];
+
+		/* test our view angles against them */
+		makevectors(input_angles);
+		vector vecDelta = normalize(ladderpos - self.origin);
+		float flFov = vecDelta * v_forward;
+
+		/* we're facing it... */
+		if (flFov > 0.0f) {
+			inladder = true;
+		}
+	}
+
+	if (inladder == true) {
 		self.flags |= FL_ONLADDER;
 	} else {
 		self.flags &= ~FL_ONLADDER;
