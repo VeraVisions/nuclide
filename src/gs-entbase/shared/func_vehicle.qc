@@ -805,6 +805,9 @@ func_vehicle::RunVehiclePhysics(void)
 		}
 
 		PlayerUpdateFlags();
+
+		/* we want to null our drivers' velocity because they're sticking to us */
+		m_eDriver.velocity = [0,0,0];
 	}
 
 	angles[0] = Math_FixDelta(angles[0]);
