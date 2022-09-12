@@ -82,10 +82,11 @@ void
 func_pushable::Respawn(void)
 {
 	super::Respawn();
-	//SetSolid(SOLID_BSP);
+	SetSolid(SOLID_BSP);
 	SetOrigin(GetSpawnOrigin());
 	SetMovetype(MOVETYPE_STEP);
 	PlayerUse = OnPlayerUse;
+	hitcontentsmaski = CONTENTBIT_BODY; /* don't collide with anything but players */
 
 	if (!m_eCollBox) {
 		m_eCollBox = spawn();
