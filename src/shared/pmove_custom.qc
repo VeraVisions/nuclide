@@ -107,6 +107,8 @@ PMoveCustom_Categorize(void)
 	tracebox(self.origin, self.mins, self.maxs, self.origin, MOVE_NORMAL, self);
 	self.hitcontentsmaski = oldhitcontents;
 
+	/* if set, you need to directly face the ladder or else you'll fall right off */
+#ifdef LADDERFACING
 	if (trace_endcontentsi & CONTENTBIT_FTELADDER) {
 		/* place the ladder into a virtual space */
 		vector ladderpos = trace_ent.absmin + (0.5f * (trace_ent.absmax - trace_ent.absmin));
@@ -123,7 +125,10 @@ PMoveCustom_Categorize(void)
 		}
 	}
 
-	if (inladder == true) {
+	if (inladder) {
+#else
+	if (trace_endcontentsi & CONTENTBIT_FTELADDER) {
+#endif
 		self.flags |= FL_ONLADDER;
 	} else {
 		self.flags &= ~FL_ONLADDER;
@@ -229,7 +234,9 @@ PMoveCustom_AccelLadder(float move_time, float premove, vector wish_dir, float w
 	}
 
 	if (input_buttons & INPUT_BUTTON2) {
-		makevectors([0, input_angles[1], 0]);
+		vector ladderpos = trace_ent.absmin + (0.5f * (trace_ent.absmax - trace_ent.absmin));
+		ladderpos[2] = self.origin[2];
+		makevectors(normalize(ladderpos - self.origin));
 		self.velocity = v_forward * -250;
 		self.velocity += v_up * 100;
 		self.flags &= ~FL_ONGROUND;
