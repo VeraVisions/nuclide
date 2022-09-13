@@ -82,13 +82,13 @@ PMoveCustom_Categorize(void)
 	tracebox(self.origin, self.mins, self.maxs, self.origin - [0,0,1], MOVE_NORMAL, self);
 
 	if (!trace_startsolid) {
-		if ((trace_fraction < 1) && (trace_plane_normal[2] > 0.7)) {
+		if ((trace_fraction < 1.0f) && (trace_plane_normal[2] > 0.7)) {
 			self.flags |= FL_ONGROUND;
 			self.groundentity = trace_ent;
 
-			if (self.groundentity) {
-				self.basevelocity += self.groundentity.velocity;
-			}
+			//if (self.groundentity) {
+			//	self.basevelocity += self.groundentity.velocity;
+			//}
 		} else {
 			self.flags &= ~FL_ONGROUND;
 		}
@@ -416,8 +416,10 @@ PMoveCustom_Rebound(vector normal)
 	self.velocity = self.velocity - normal * (self.velocity * normal);
 
 	if (normal[2] > 0.7) {
-		self.groundentity = trace_ent;
-		self.flags |= FL_ONGROUND;
+		if (trace_ent.solid == SOLID_BSP) {
+			self.groundentity = trace_ent;
+			self.flags |= FL_ONGROUND;
+		}
 	}
 }
 
@@ -444,6 +446,7 @@ PMoveCustom_Fix_Origin(void)
 		}
 	}
 
+#if 0
 	/* still not done */
 	for (z = 0; z < 3; z++) {
 		norg = oorg;
@@ -473,6 +476,8 @@ PMoveCustom_Fix_Origin(void)
 			return (1);
 		}
 	}
+#endif
+
 	return (0);
 }
 
@@ -484,7 +489,7 @@ PMoveCustom_Move(void)
 	vector saved_plane;
 	float stepped;
 	float move_time;
-	int i;
+	float i;
 
 	/* no friction for the deceased */
 	if (self.movetype == MOVETYPE_NOCLIP) {
@@ -492,15 +497,11 @@ PMoveCustom_Move(void)
 		return;
 	}
 
-	/* hacky attempt at base-velocity, this needs to be cleared/wiped at the end */
-	if (!(self.flags & FL_ONGROUND)) {
-		self.basevelocity[2] = 0;
-	}
-
 	/* we need to bounce off surfaces (in order to slide along them), 
 	 * so we need at 2 attempts */
 	for (i = 3, move_time = input_timelength; move_time > 0 && i; i--) {
 		dest = self.origin + (self.velocity * move_time);
+		dest += (self.basevelocity * move_time);
 
 		tracebox(self.origin, self.mins, self.maxs, dest, MOVE_NORMAL, self);
 
@@ -512,11 +513,15 @@ PMoveCustom_Move(void)
 			continue;
 		}
 
+		/* move us into place */
 		self.origin = trace_endpos;
 
-		if (trace_fraction > 1) {
+		/* no obstacles? no further tests needed */
+		if (trace_fraction >= 1.0f) {
+			setorigin(self, self.origin);
 			break;
 		}
+
 		saved_plane = trace_plane_normal;
 		move_time -= move_time * trace_fraction;
 
@@ -536,14 +541,15 @@ PMoveCustom_Move(void)
 			float roof_fraction = trace_fraction;
 			vector roof_plane_normal = trace_plane_normal;
 
-			dest = trace_endpos + (self.velocity*move_time);
+			dest = trace_endpos + (self.velocity * move_time);
+			dest += (self.basevelocity * move_time);
 			dest[2] = trace_endpos[2]; /*only horizontally*/
 
 			/* move forwards */
 			tracebox(trace_endpos, self.mins, self.maxs, dest, MOVE_NORMAL, self);
 
 			/* if we got anywhere, make this raised-step move count */
-			if (trace_fraction != 0) {
+			if (trace_fraction == 1.0f) {
 				float fwfrac = trace_fraction;
 				vector fwplane = trace_plane_normal;
 
@@ -552,7 +558,7 @@ PMoveCustom_Move(void)
 				dest[2] -= stepped + 1;
 				tracebox(trace_endpos, self.mins, self.maxs, dest, MOVE_NORMAL, self);
 
-				if (trace_fraction < 1 && trace_plane_normal[2] > 0.7f) {
+				if (trace_fraction < 1.0 && trace_plane_normal[2] > 0.7f) {
 					move_time -= move_time * fwfrac;
 					/* bounce off the ceiling */
 					if (roof_fraction < 1) {
@@ -579,9 +585,11 @@ PMoveCustom_Move(void)
 		dest = self.origin;
 		dest[2] -= serverkeyfloat("phy_stepheight");
 		tracebox(self.origin, self.mins, self.maxs, dest, MOVE_NORMAL, self);
-		if (trace_fraction >= 1) {
+
+		if (trace_fraction == 1.0) {
 			return;
 		}
+
 		/*if (trace_startsolid) {
 			if (!PMoveCustom_Fix_Origin()) {
 				return;
@@ -590,8 +598,6 @@ PMoveCustom_Move(void)
 		PMoveCustom_DoTouch(trace_ent);
 		self.groundentity = trace_ent;
 	}
-
-	tracebox(self.origin, self.mins, self.maxs, self.origin, MOVE_NORMAL, self);
 }
 
 /* this is called for when we want to run the custom QC player physics */
@@ -606,6 +612,7 @@ PMoveCustom_RunPlayerPhysics(entity target)
 
 	if (self.maxspeed <= 0)
 		self.maxspeed = 240;
+
 
 	/* call accelerate before and after the actual move, 
 	 * with half the move each time. this reduces framerate dependence. 
@@ -623,6 +630,7 @@ PMoveCustom_RunPlayerPhysics(entity target)
 
 	/* activate any SOLID_TRIGGER entities */
 	touchtriggers();
+	setorigin(self, self.origin);
 	self = oldself;
 }
 

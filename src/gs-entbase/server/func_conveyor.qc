@@ -99,9 +99,9 @@ func_conveyor::Respawn(void)
 	RestoreAngles();
 	SetMovementDirection();
 	ClearAngles();
-	SetModel(GetSpawnModel());
 	SetMovetype(MOVETYPE_NONE);
 	SetSolid(SOLID_BSP);
+	SetModel(GetSpawnModel());
 
 	Trigger(this, TRIG_ON);
 
@@ -149,9 +149,9 @@ func_conveyor::Trigger(entity act, int state)
 	}
 
 	/* changes direction */
-	glowmod[1] = 0.5f;
+	glowmod[1] = 0.5;
 	glowmod[2] = m_flSpeed / 1024;
-	SetSendFlags(RDENT_CHANGED_RENDERMODE);
+	SetSendFlags(RDENT_CHANGED_RENDERCOLOR);
 }
 
 void
