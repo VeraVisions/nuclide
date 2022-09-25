@@ -90,6 +90,7 @@ m_init(void)
 	 * for unknown reasons. It'll be fixed */
 	cvar_set("r_ignoreentpvs", "0");
 	cvar_set("_pext_infoblobs", "1");
+	cvar_set("_pext_vrinputs", "0");
 	cvar_set("_q3bsp_bihtraces", "1");
 	cvar_set("sv_gameplayfix_setmodelsize_qw", "1");
 	cvar_set("sv_gameplayfix_setmodelrealbox", "1");
