@@ -110,7 +110,7 @@ NSEntity::WorldSpaceCenter(void)
 
 /*
 ============
-NSEntity::VisibleVec
+NSEntity::WaterLevel
 
 Returns whether or not the entity is able to see a given position
 ============

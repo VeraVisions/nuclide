@@ -1,3 +1,7 @@
+// An example mapcycle! If this file is present
+// and the maps listed exist, then the multiplayer
+// mode will usually rotate between them when
+// time, fraglimit or something else was reached
 test_dlights
 test_monitor
 test_lightwarmth
