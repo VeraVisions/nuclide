@@ -81,8 +81,13 @@ else
 	cp "./platform/menu.dat" "./$BUILD_DIR/platform/menu.dat"
 	rm "./$BUILD_DIR/platform/test_maps.pk3"
 
-	# manifest
-	cp ./default.fmf ./$BUILD_DIR/default.fmf
+	# copy manifest over
+	if [ -f "./$GAME_DIR/manifest.fmf" ]; then
+		cp "./$GAME_DIR/manifest.fmf" ./$BUILD_DIR/default.fmf
+	else
+		cp ./default.fmf ./$BUILD_DIR/default.fmf
+	fi
+
 	sed -i "s|base|$GAME_DIR|g" ./$BUILD_DIR/default.fmf
 	cp ./doc/release-readme ./$BUILD_DIR/README.txt
 fi
