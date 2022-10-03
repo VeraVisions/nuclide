@@ -1,4 +1,4 @@
-# ![FTE Logo](doc/fte.svg) Nuclide - Software Development Kit 
+# ![FTE Logo](Documentation/fte.svg) Nuclide - Software Development Kit 
 
 Software Development Kit, built around idTech with focus on advanced features and
 clean-room implementations of true-and-tested game-logic frameworks.
@@ -101,7 +101,7 @@ David Walton for **FTEQW** and the **FTEQCC** compiler, which is the brain of th
 
 Timothee Besset and the **GtkRadiant** contributors, as well as the NetRadiant team for giving us a base for our editor **WorldSpawn**.
 
-![idTech Logo](doc/idtech.svg)
+![idTech Logo](Documentation/idtech.svg)
 
 ## License
 Copyright (c) 2016-2022 Vera Visions L.L.C.

@@ -1,4 +1,4 @@
-NUCLIDE PROJECT HISTORY
+# History
 
 In November 2016 eukara started work on 'OpenCS', a project which focused
 solely on creating a clean-room implementation of Counter-Strike 1.5 in QuakeC

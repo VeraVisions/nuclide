@@ -1,5 +1,4 @@
-Mod loading and setting up games
-================================
+# Mod/Game Setup
 
 For mods to show up in the "Custom Game" menu, we have to either find a manifest
 file, or a liblist.gam, or a gameinfo.txt inside the respective mod directory.
@@ -11,10 +10,12 @@ restricting that.
 
 A liblist.gam file can look something like this:
 
-game "My Cool Mod"
-version "1.0"
-startmap "e1m1"
-trainingmap "traininglevel"
+```
+  game "My Cool Mod"
+  version "1.0"
+  startmap "e1m1"
+  trainingmap "traininglevel"
+```
 
 But more definitions are available.
 Check src/menu-fn/m_customgame.qc's customgame_liblist_parse() function to stay
@@ -31,10 +32,12 @@ If you need more control, you can use manifest files. Similar to the default.fmf
 that's in the root Nuclide source tree. You can set liblist entries like this
 inside of them:
 
--set gameinfo_game "My Cool Mod"
--set gameinfo_version "1.0"
--set gameinfo_startmap "e1m1"
--set gameinfo_trainingmap "traininglevel"
+```
+  -set gameinfo_game "My Cool Mod"
+  -set gameinfo_version "1.0"
+  -set gameinfo_startmap "e1m1"
+  -set gameinfo_trainingmap "traininglevel"
+```
 
 Please name the manifest the same as the mod/game dir. For example if your game
 its directory is named "foobar" name your manifest "foobar.fmf".
