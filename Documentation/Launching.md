@@ -1,4 +1,41 @@
-# Mod/Game Setup
+# Launching
+
+## For development...
+For development, use the `nuclide` launch script inside the root directory.
+
+```
+$ ./nuclide
+```
+
+Running it on its own will mount the game dir `base/`. As that's the default defined inside the file `./default.fmf`.
+
+You can mount an additional mod over `base/` like so:
+
+```
+$ ./nuclide -game some_other_mod
+```
+
+If you wanted to mount multiple game dirs, you could in theory do it like so:
+
+```
+$ ./nuclide -game first_mod -game second_mod -game third_mod
+```
+
+And it'll load those directories in order, on top of `base/`.
+
+However, we advise you only do this for development. If you want proper multiplayer compatibility (slightly different filesystem mount setups can confuse client <> server negotation) please use the built-in **Custom game** menu to ensure maximum compatibility to other clients.
+
+## For release...
+
+You'll want to compile a custom build of the engine with your branding.
+Inside `src/engine/engine/common/` you can find a config file named `config_wastes.h`,
+which is a good example of how you can customize your engine binaries and filesystem mount-points.
+
+That way you **avoid** shipping a default.fmf file.
+
+**How to compile a custom config build**: You pass `FTE_CONFIG=wastes` to the make environment when building an engine binary - if you wanted to build with the `config_wastes.h` file. [For more information check out the building section](Building.md)
+
+## Mod/Game Setup
 
 For mods to show up in the "Custom Game" menu, we have to either find a manifest
 file, or a liblist.gam, or a gameinfo.txt inside the respective mod directory.

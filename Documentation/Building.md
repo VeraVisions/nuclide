@@ -17,6 +17,26 @@ headers for your platform.
 * libXrandr-devel
 * libSDL2-devel (only if you pass BUILD_SDL2=1 in build.cfg)
 
+### Optional: Building release binaries
+
+You'll have to manually go into `src/engine/engine` and issue:
+
+```
+$ make m-rel FTE_CONFIG=yourgameconfig
+```
+
+If you want to cross-compile to different platforms, you can pass the `FTE_TARGET` variable and select from **win32**, **win64**, **linux32**, **linux64** or **SDL2**.
+
+For example, this will build a release binary of **The Wastes** for Win32, using the configuration specified inside `src/engine/engine/common/config_wastes.h`:
+
+```
+$ make m-rel FTE_CONFIG=wastes FTE_TARGET=win32
+```
+
+The resulting binary can be found inside the `src/engine/engine/release` directory.
+
+**Note**: The **SDL2** target will require you to set the **ARCH** environment to the target of your choosing.
+
 ## Building the Level Editor {#editor}
 Handled by **build_editor.sh**.
 

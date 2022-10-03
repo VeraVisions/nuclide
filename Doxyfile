@@ -877,8 +877,8 @@ WARN_LOGFILE           =
 INPUT                  = src/ \
                          Documentation/Main.md \
                          Documentation/Building.md \
+                         Documentation/Launching.md \
                          Documentation/Filesystem.md \
-                         Documentation/Mods.md \
                          Documentation/Materials/mat_overview.md \
                          Documentation/Materials/mat_commands.md \
                          Documentation/Materials/mat_vmap.md \
