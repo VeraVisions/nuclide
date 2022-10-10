@@ -123,6 +123,7 @@ string(string modelname, int frame, float frametime) spriteframe = #0;
 
 void CSQC_UpdateSeat(void);
 
+/** Like drawstring() but aligns text to the right from the specified screen coordinates. */
 void
 drawstring_r(vector p, string t, vector s, vector c, float a, float f)
 {
@@ -143,8 +144,7 @@ void ClientGame_ModelEvent(float, int, string);
 void View_EnableViewmodel(void);
 void View_DisableViewmodel(void);
 
-/* this really should be done in-engine */
-
+/** Draws a non-filled rectangle with a specified outline. */
 void drawrect(vector pos, vector sz, float thickness, vector rgb, float al, optional float dfl)
 {
 	/* top */
@@ -157,6 +157,10 @@ void drawrect(vector pos, vector sz, float thickness, vector rgb, float al, opti
 	drawfill(pos + [sz[0] - thickness, thickness], [thickness, sz[1] - (thickness * 2)], rgb, al, dfl);
 }
 
+
+/** Like drawpic, but instead of screen coords, it will take world coords.
+Will project the 2D image relative to the active NSView that we're currently
+rendering in (g_view). So it may only be called within certain contexts. */
 void
 drawpic3d(vector worldpos, string mat, vector sz, vector rgb, float alpha)
 {
@@ -186,6 +190,7 @@ drawpic3d(vector worldpos, string mat, vector sz, vector rgb, float alpha)
 	}
 }
 
+/** Like precache_pic, but will precache sky/cube map images (_bk, _dn etc.) */
 void
 precache_cubemap(string path)
 {

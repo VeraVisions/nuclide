@@ -14,14 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*
-=================
-CSQC_UpdateSeat
-
-Updates our seat pointers, call this when you need to verify we're
+/** Updates our seat pointers. 
+Call this when you need to verify we're
 getting the current player's info and not someone elses on the same
-machine (splitscreen)
-=================
+machine (splitscreen).
 */
 void
 CSQC_UpdateSeat(void)
@@ -32,12 +28,9 @@ CSQC_UpdateSeat(void)
 	g_view = g_viewSeats[s];
 }
 
-/*
-=================
-CSQC_Init
-
-First thing inited in the progs. Before any world is initialized.
-=================
+/** Entry function that is required by the engine.
+Called once when the csprogs.dat file is loaded upon loading our client.
+Also called when map changes happen.
 */
 void
 CSQC_Init(float apilevel, string enginename, float engineversion)
@@ -90,12 +83,14 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	cvar_set("r_fullbrightSkins", "0");
 }
 
-/*
-=================
-CSQC_RendererRestarted
+/** Called by the engine whenever video resources need to be reloaded.
+This is only called when something like 'vid_reload' happens.
+We also call it once upon init. The idea is that any resources that are
+meant to be loaded into video-memory need to be precached within this
+function. This will ensure no missing resources later.
 
-Called by vid_reload callbacks
-=================
+Sub-games need to implement their own `ClientGame_RendererRestart` function
+somewhere in csprogs.dat to ensure their resources are reloaded properly.
 */
 void
 CSQC_RendererRestarted(string rstr)
@@ -142,14 +137,24 @@ CSQC_RendererRestarted(string rstr)
 	print("Graphical resources reloaded\n");
 }
 
-/* this is so that profile_csqc reports more accurate statistics as to
-   what causes computation time */
+/** Always call this instead of renderscene(); !
+We want you to avoid calling renderscene() directly because it misrepresents
+how much time is spent rendering otherwise. The profile will group engine calls
+to a single function. So call this tiny wrapper function instead so you have
+a clear overview about how much time is spent in the renderer when using `profile_csqc`
+when debugging in the game's console.
+*/
 void
 CSQC_RenderScene(void)
 {
 	renderscene();
 }
 
+/** Called on top of every 3D rendered view. This just again ensures we box
+and seperate 2D plane operations from 3D ones. This is where the HUD, Chat etc.
+will be drawn. They don't necessarily have to be 2D but this is just a clear 
+distinction from 3D world elements and overlays.
+*/
 void
 CSQC_Update2D(float w, float h, bool focus)
 {
@@ -184,12 +189,10 @@ CSQC_Update2D(float w, float h, bool focus)
 	}
 }
 
-/*
-=================
-CSQC_UpdateView
 
-Run every single frame we're connected to a session.
-=================
+/** Called every single frame by the engine's renderer to construct a frame.
+This is for all clients on display. So we handle splitscreen/multiple-views
+in here.
 */
 void
 CSQC_UpdateView(float w, float h, float focus)
@@ -302,12 +305,9 @@ CSQC_UpdateView(float w, float h, float focus)
 	pSeatLocal = __NULL__;
 }
 
-/*
-=================
-CSQC_InputEvent
-
-Updates all our input related globals for use in other functions
-=================
+/** Called every time an input event (keys pressed, mouse moved etc.) happens.
+When this returns FALSE, the engine is free to interpret the input event as it
+wishes. If it returns TRUE the engine is not set on ignoring it.
 */
 float
 CSQC_InputEvent(float fEventType, float fKey, float fCharacter, float fDeviceID)
@@ -369,12 +369,9 @@ CSQC_InputEvent(float fEventType, float fKey, float fCharacter, float fDeviceID)
 	return (vgui_pressed);
 }
 
-/*
-=================
-CSQC_Input_Frame
-
-Hijacks and controls what input globals are being sent to the server
-=================
+/** Intercepts and controls what input globals are being sent to the server.
+This is where you have the chance to suppress analog and digital movement/action values.
+Prediction will also avoid them.
 */
 void
 CSQC_Input_Frame(void)
@@ -393,12 +390,9 @@ CSQC_Input_Frame(void)
 	}
 }
 
-/*
-=================
-CSQC_Parse_Event
-
-Whenever we call a SVC_CGAMEPACKET on the SSQC, this is being run
-=================
+/** Handles every SVC_CGAMEPACKET that the engine passes onto us that the server sent.
+To maintain protocol compatibility, SVC_CGAMEPACKET is the only user controlled event.
+You cannot intercept networked events here.
 */
 void
 CSQC_Parse_Event(void)
@@ -416,14 +410,9 @@ CSQC_Parse_Event(void)
 	Event_Parse(fHeader);
 }
 
-/*
-=================
-CSQC_ConsoleCommand
-
-Commands not protected by the engine get passed here.
-If we return 0 this means the engine needs to either handle
-the command or throw a 'unrecognized command' message.
-=================
+/** Console commands not protected by the engine get handled here.
+If we return FALSE this means the engine needs to handle
+the command itself which can result in a 'unrecognized command' message in console.
 */
 float
 CSQC_ConsoleCommand(string sCMD)
@@ -443,20 +432,19 @@ CSQC_ConsoleCommand(string sCMD)
 	return Cmd_Parse(sCMD);
 }
 
-/*
-=================
-CSQC_ConsoleCommand
 
-Engine or server game will occasionally pass messages through here.
+/** Prints to console and heads up display are handled here.
+
 There are 4 different types currently:
 PRINT_LOW = low on the screen.
 PRINT_MEDIUM = medium level on the screen.
 PRINT_HIGH  = top level on the screen
 PRINT_CHAT = chat message
+
 Currently, everything but chat gets piped into a single printbuffer,
-similar to NetQuake. 
+similar to NetQuake.
+
 FIXME: We'd like to expose this further to modification.
-=================
 */
 void
 CSQC_Parse_Print(string sMessage, float fLevel)
@@ -486,15 +474,9 @@ CSQC_Parse_Print(string sMessage, float fLevel)
 	localcmd(sprintf("echo \"%s\"\n", sMessage));
 }
 
-
-/*
-=================
-CSQC_Parse_CenterPrint
-
-Catches every centerprint call and allows us to tinker with it.
+/** Catches every centerprint call and allows us to tinker with it.
 That's how we are able to add color, alpha and whatnot.
-Keep in mind that newlines need to be tokenized
-=================
+Keep in mind that newlines need to be tokenized.
 */
 float
 CSQC_Parse_CenterPrint(string sMessage)
@@ -513,15 +495,10 @@ CSQC_Parse_CenterPrint(string sMessage)
 	return (1);
 }
 
-/*
-=================
-CSQC_Ent_Update
-
-Called when an entity is being networked from the server game.
-ClientGame_EntityUpdate allows the project to do game specific
-overrides. If that returns 0 Nuclide will attempt to handle it.
-If neither handles it we'll get a protocol error.
-=================
+/** Called when an entity is being networked from the server game.
+ClientGame_EntityUpdate allows the sub-games to do game specific
+overrides. If that returns FALSE Nuclide will attempt to handle it here.
+If neither handles it we'll get a protocol error which will disconnect the client.
 */
 void
 CSQC_Ent_Update(float new)
@@ -537,12 +514,11 @@ CSQC_Ent_Update(float new)
 	Entity_EntityUpdate(t, new);
 }
 
-/*
-=================
-CSQC_WorldLoaded
+/** Called by the engine when the map has fully initialized.
 
-Whenever the world is fully initialized...
-=================
+Within this function we can make some safe assumptions about
+the world, its format and get start loading the entity lump
+ourselves if need be.
 */
 void
 CSQC_WorldLoaded(void)
@@ -583,13 +559,11 @@ CSQC_WorldLoaded(void)
 	print("Client world initialized.\n");
 }
 
-/*
-=================
-CSQC_Ent_Remove
+/** Called when a server tells us an active entity gets removed.
 
-Whenever an entity gets removed from the server and will no longer
-receive entity updates.
-=================
+In this function 'self' refers to the entity that's scheduled for removal.
+We manually call remove(); on it at the end. We get the chance to
+remove the playback of sounds, skeletal objects and so on.
 */
 void
 CSQC_Ent_Remove(void)
@@ -607,12 +581,10 @@ CSQC_Ent_Remove(void)
 	}
 }
 
-/*
-=================
-CSQC_Shutdown
+/** The last function that the engine will ever call onto this csprogs.
 
-Incase you need to free something
-=================
+You want to close file handles and possible free memory here, as
+that is the last thing that will be called.
 */
 void
 CSQC_Shutdown(void)
