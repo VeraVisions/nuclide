@@ -14,13 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*
-=================
-StartFrame
-
-Called once every single frame.
-=================
-*/
+/** Called once every single tic on the server. */
 void
 StartFrame(void)
 {
@@ -39,16 +33,11 @@ StartFrame(void)
 	Vote_Frame();
 }
 
-/*
-=================
-ClientConnect
-
-Called when the client-slot is being prepared for a player.
+/** Called when the client-slot is being prepared for a player.
 The client may not fully spawn into the world (yet), as they're still
 loading or receiving packets.
 
-The 'self' global is the connecting client in question.
-=================
+The `self` global is the connecting client in question.
 */
 void
 ClientConnect(void)
@@ -81,14 +70,9 @@ ClientConnect(void)
 	}
 }
 
-/*
-=================
-ClientDisconnect
-
-Called when a player leaves the server. At the end of the function the
-client slot referred to by the 'self' global will be cleared.
+/** Called when a player leaves the server. At the end of the function the
+client slot referred to by the `self` global will be cleared.
 This means the fields will still be accessible inside of this function.
-=================
 */
 void
 ClientDisconnect(void)
@@ -101,13 +85,8 @@ ClientDisconnect(void)
 	pl.SetModelindex(0);
 }
 
-/*
-=================
-ClientKill
-
-Called by the 'kill' command.
-The 'self' global is the client issueing the command.
-=================
+/** Called by the `kill` console command.
+The `self` global is the client issuing the command.
 */
 void
 ClientKill(void)
@@ -116,13 +95,8 @@ ClientKill(void)
 		g_grMode.PlayerKill((NSClientPlayer)self);
 }
 
-/*
-=================
-SpectatorThink
-
-Run every frame on every NSClientSpectator.
-The 'self' global refers to one of any given amount of NSClientSpectators.
-=================
+/** This is run every frame on every spectator.
+The `self` global refers to one of any given amount of spectator.
 */
 void
 SpectatorThink(void)
@@ -137,13 +111,8 @@ SpectatorThink(void)
 	}
 }
 
-/*
-=================
-SpectatorConnect
-
-Called when a NSClientSpectator joins the server.
-The 'self' global is the connecting NSClientSpectator in question.
-=================
+/** Called when a NSClientSpectator joins the server.
+The `self` global is the connecting NSClientSpectator in question.
 */
 void
 SpectatorConnect(void)
@@ -152,14 +121,9 @@ SpectatorConnect(void)
 	spawnfunc_NSClientSpectator();
 }
 
-/*
-=================
-SpectatorDisconnect
-
-Called when a NSClientSpectator leaves the server.
-The 'self' global is the leaving NSClientSpectator in question.
+/** Called when a NSClientSpectator leaves the server.
+The `self` global is the leaving NSClientSpectator in question.
 Attributes cleared when this function is done executing.
-=================
 */
 void
 SpectatorDisconnect(void)
@@ -167,16 +131,11 @@ SpectatorDisconnect(void)
 	Game_SpectatorDisconnect();
 }
 
-/*
-=================
-PutClientInServer
-
-Called when a player enters the game, having fully connected and loaded into
+/** Called when a player enters the game, having fully connected and loaded into
 the session.
-The 'self' global is the player in question.
+The `self` global is the player in question.
 The 'parmX' globals are also populated with any data carried over from
 past levels for the player in question.
-=================
 */
 void
 PutClientInServer(void)
@@ -195,14 +154,9 @@ PutClientInServer(void)
 	}
 }
 
-/*
-=================
-PlayerPreThink
-
-Run before physics have taken place.
-The 'self' global refers to a single client, as this function is called
+/** Run before game physics have taken place.
+The `self` global refers to a single client, as this function is called
 times the amount of players in a given game.
-=================
 */
 void
 PlayerPreThink(void)
@@ -227,14 +181,9 @@ PlayerPreThink(void)
 		g_grMode.PlayerPreFrame((NSClientPlayer)self);
 }
 
-/*
-=================
-PlayerPostThink
-
-Run after physics have taken place.
-The 'self' global refers to a single client, as this function is called
+/** Run after game physics have taken place.
+The `self` global refers to a single client, as this function is called
 times the amount of players in a given game.
-=================
 */
 void
 PlayerPostThink(void)
@@ -261,14 +210,9 @@ PlayerPostThink(void)
 	}
 }
 
-/*
-=================
-SetNewParms
-
-Called when we spawn in a new map (both single and multiplayer) with no level
+/** Called when we spawn in a new map (both single and multiplayer) with no level
 change ever having taken place.
-The 'self' global does not refer to anything.
-=================
+The `self` global does not refer to anything.
 */
 void
 SetNewParms(void)
@@ -279,17 +223,12 @@ SetNewParms(void)
 		g_grMode.LevelNewParms();
 }
 
-/*
-=================
-SetChangeParms
-
-Called whenever a single-player level change is about to happen, carrying
+/** Called whenever a single-player level change is about to happen, carrying
 over data from one level to the next. This is not called with the 'map' command.
 
-The 'self' global refers to a client that's partaking in the level-change.
+The `self` global refers to a client that's partaking in the level-change.
 Make sure we're saving important fields/attributes in the 'parmX' globals
 allocated for every client.
-=================
 */
 void
 SetChangeParms(void)
@@ -300,15 +239,10 @@ SetChangeParms(void)
 		g_grMode.LevelChangeParms((NSClientPlayer)self);
 }
 
-/*
-=================
-SV_RunClientCommand
+/** Run whenever an input packet by a client has been received.
 
-Run whenever an input packet by a client has been received.
-
-The 'self' global is the entity having sent the input packet,
+The `self` global is the entity having sent the input packet,
 with the input_X globals being set to the appropriate data.
-=================
 */
 void
 SV_RunClientCommand(void)
@@ -334,16 +268,11 @@ SV_RunClientCommand(void)
 	}
 }
 
-/*
-=================
-SV_ParseClientCommand
-
-Any 'cmd' from the client get sent here and handled.
+/** Any 'cmd' from the client get sent here and handled.
 Unlike ConsoleCommmand() if you want to let the server engine
 take over, you need to pass the string 'cmd' over via clientcommand().
 
 Notable examples of client cmd's involve the chat system.
-=================
 */
 void
 SV_ParseClientCommand(string cmd)
@@ -378,13 +307,9 @@ SV_ParseClientCommand(string cmd)
 	}
 }
 
-/*
-=================
-init
-
-Called when the QC module gets loaded. No entities exist yet.
-=================
-*/
+/** Called when the QC module gets loaded.
+No entities exist yet and we are unable to allocate any in here.
+So avoid calling spawn() related functions here. */
 void
 init(float prevprogs)
 {
@@ -394,13 +319,8 @@ init(float prevprogs)
 	SurfData_Init();
 }
 
-/*
-=================
-init_respawn
-
-Called inside initents() to make sure the entities have their Respawn()
+/** Called inside initents() to make sure the entities have their Respawn()
 method called at the beginning of them having spawned.
-=================
 */
 void
 init_respawn(void)
@@ -420,15 +340,11 @@ init_respawn(void)
 }
 
 entity g_respawntimer;
-
-/*
-=================
-initents
-
-???
-=================
-*/
 .string skyname;
+
+/** Called by the engine when we're ready to spawn entities.
+Before this, we are not able to spawn, touch or allocate any entity slots.
+*/
 void
 initents(void)
 {
@@ -518,19 +434,14 @@ initents(void)
 	g_ents_initialized = TRUE;
 }
 
-/*
-=================
-worldspawn
-
-The first entity spawn function. You want to make sure to put anything in here
-that'll affect subsequent initialization of map entities.
-
-Any find() or similar function will not find any entity but 'world',
-as they do not exist yet. Keep this in mind.
-=================
-*/
 var int autocvar_sv_levelexec = 1;
 
+/** The first entity spawn function. You want to make sure to put anything in here
+that'll affect subsequent initialization of map entities.
+
+Keep in mind that any find() or similar function will not find any entity but 'world',
+as they do not exist yet.
+*/
 void
 worldspawn(void)
 {
@@ -567,16 +478,14 @@ worldspawn(void)
 	}
 }
 
-/*
-=================
-ConsoleCmd
-
-Any command executed on the server (either tty, rcon or 'sv') gets
+/** Any command executed on the server (either tty, rcon or `sv`) gets
 sent here first.
 
 When returning FALSE the server will interpret the command.
-Returning TRUE will mark the command as 'resolved'.
-=================
+Returning TRUE will mark the command as 'resolved' and the engine
+will not attempt handling it.
+
+The client-side equivalent is `CSQC_ConsoleCommand` (src/client/entry.qc)
 */
 float
 ConsoleCmd(string cmd)
@@ -662,13 +571,8 @@ ConsoleCmd(string cmd)
 	return (1);
 }
 
-/*
-=================
-SV_ShouldPause
-
-Returns TRUE if the server should pause the game-logic when the 'pause' command
+/** Returns TRUE if the server can pause the server when the 'pause' command
 is being executed.
-=================
 */
 float
 SV_ShouldPause(float newstatus)
@@ -686,6 +590,12 @@ SV_ShouldPause(float newstatus)
 }
 
 //#define REEDICT 1
+
+/** Called by the engine when we're loading a savegame file.
+
+This deals with the de and re-allocation of all map entities from
+the passed file handle.
+*/
 void
 SV_PerformLoad(float fh, float entcount, float playerslots)
 {
@@ -778,6 +688,10 @@ SV_PerformLoad(float fh, float entcount, float playerslots)
 	g_isloading = false;
 }
 
+/** Called when we are saving our game. We only get passed a file handle
+to work with and dump entity data as well as some global info directly
+into it.
+*/
 void
 SV_PerformSave(float fh, float entcount, float playerslots)
 {
@@ -811,6 +725,11 @@ SV_PerformSave(float fh, float entcount, float playerslots)
 	print(sprintf("saved %i entities\n", num_saved));
 }
 
+/** Called by the engine to check with us if a spawn function exists.
+
+The `self` global refers to an already allocated entity, which we have
+to remove in case we won't initialize it.
+*/
 void
 CheckSpawn(void() spawnfunc)
 {

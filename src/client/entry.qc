@@ -413,6 +413,8 @@ CSQC_Parse_Event(void)
 /** Console commands not protected by the engine get handled here.
 If we return FALSE this means the engine needs to handle
 the command itself which can result in a 'unrecognized command' message in console.
+
+The server-side equivalent is `ConsoleCmd` (src/server/entry.qc)
 */
 float
 CSQC_ConsoleCommand(string sCMD)
