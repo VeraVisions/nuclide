@@ -24,6 +24,7 @@ enumflags
 
 class CUIButton:CUIWidget
 {
+private:
 	vector m_vecIMGSize;
 	vector m_vecColor;
 	vector m_vecIconColor;
@@ -33,22 +34,26 @@ class CUIButton:CUIWidget
 	string m_strTitleActive;
 	string m_strIcon;
 	string m_strExec;
+	virtual void m_vFunc(void) = 0;
 
-	void(void) CUIButton;
-	virtual void(void) m_vFunc = 0;
-	virtual void(void) Draw;
-	virtual vector() GetSize;
-	virtual int(void) GetSizeWidth;
-	virtual int(void) GetSizeHeight;
-	virtual void(vector) SetSize;
-	virtual void(string) SetTitle;
-	virtual void(string) SetIcon;
-	virtual void(vector) SetColor;
-	virtual void(void(void)) SetFunc;
-	virtual void(string) SetExec;
-	virtual bool(float, float, float, float) Input;
-	virtual void(void) Show;
-	virtual void(void) Hide;
+public:
+	void CUIButton(void);
+
+	virtual void Draw(void);
+	virtual vector GetSize(void);
+	virtual int GetSizeWidth(void);
+	virtual int GetSizeHeight(void);
+	virtual void SetSize(vector);
+	virtual void SetTitle(string);
+	virtual void SetIcon(string);
+	virtual void SetColor(vector);
+	virtual void SetIconColor(vector);
+	virtual void SetFunc(void(void));
+	virtual void SetExec(string);
+	virtual bool Input(float,float,float,float);
+	virtual void Show(void);
+	virtual void Hide(void);
+
 };
 
 void
@@ -100,7 +105,7 @@ CUIButton::GetSizeHeight(void)
 void
 CUIButton::SetTitle(string strName)
 {
-	vector newsize;
+	vector newsize = [0.0f, 0.0f, 0.0f];
 
 	m_strTitle = strName;
 	m_strTitleActive = sprintf("^3%s", m_strTitle);

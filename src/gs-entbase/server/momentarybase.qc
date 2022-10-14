@@ -14,16 +14,19 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-enum
+/** The state the momentary entity finds itself in. */
+typedef enum
 {
-	MOMENTARY_IDLE,
-	MOMENTARY_ROTATING,
-	MOMENTARY_RETURNING
-};
+	MOMENTARY_IDLE,		/**< It isn't doing anything. */
+	MOMENTARY_ROTATING,	/**< It's being actively turned. */
+	MOMENTARY_RETURNING	/**< It's returning to its idle position. */
+} momentary_state_t;
 
+/** This entity class represents momentary entities. */
 class
 NSMomentary:NSRenderableEntity
 {
+private:
 	entity m_eUser;
 	vector m_vecMoveDir;
 	vector m_vecPos1;
@@ -37,15 +40,19 @@ NSMomentary:NSRenderableEntity
 	float m_flSpeed;
 	float m_flReturnspeed;
 
-	void(void) NSMomentary;
+public:
+	void NSMomentary(void);
 
 	/* overrides */
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
+	virtual void Save(float);
+	virtual void Restore(string,string);
 
-	virtual void(int) SetMoveState;
-	virtual void(void) MovementStateChanged;
-	virtual float(void) GetProgress;
+	/** Sets the movement state of the momentary object. */
+	virtual void SetMoveState(int);
+	/** Called whenever the movement state changes. */
+	virtual void MovementStateChanged(void);
+	/** Returns the progress of the momentary, which is a value between 0.0 and 1.0. */
+	virtual float GetProgress(void);
 };
 
 void

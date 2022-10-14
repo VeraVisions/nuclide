@@ -29,8 +29,14 @@ enumflags
 };
 #endif
 
+/** This class represents NSMonsters that talk. They need to network extra
+information and can speak more complicated dialogue.
+
+They also can communicate with other NSTalkMonster based entities.
+*/
 class NSTalkMonster:NSMonster
 {
+private:
 #ifdef SERVER
 	/* our NPCs can have a unique pitch to their voice */
 	float m_flPitch;
@@ -79,20 +85,36 @@ class NSTalkMonster:NSMonster
 	bool m_bWasPaused;
 #endif
 
-	void(void) NSTalkMonster;
+public:
+	void NSTalkMonster(void);
+
+	/** When called, will play a [Sentence](Sentences.md) over the network. */
+	virtual void Sentence(string);
 
 #ifdef SERVER
-	virtual void(string) Speak;
-	virtual void(string) Sentence;
-	virtual void(void) WarnAllies;
-	virtual void(void) StartleAllies;
-	virtual void(void) FollowPlayer;
-	virtual void(void) FollowChain;
-	virtual void(void) RunAI;
-	virtual void(void) OnPlayerUse;
-	virtual void(void) PanicFrame;
-	virtual void(void) Hide;
-	virtual void(void) Respawn;
+	/** When called, will play a single sample (.wav/.ogg) over the network. */
+	virtual void Speak(string);
+	/** When called, will alert all allies in a nearby area. */
+	virtual void WarnAllies(void);
+	/** When called, will startle all allies in a nearby area. */
+	virtual void StartleAllies(void);
+	/** Internal use only.
+	Run every frame to run after the player we are set to follow. */
+	virtual void FollowPlayer(void);
+	/** Internal use only.
+	Run every frame to update who we're following in the chain */
+	virtual void FollowChain(void);
+	virtual void RunAI(void);
+	/** Run every frame if we're in a state of panic. */
+	virtual void PanicFrame(void);
+
+	virtual void OnPlayerUse(void);
+	virtual void Hide(void);
+	virtual void Respawn(void);
+	virtual void SpawnKey(string,string);
+	virtual float SendEntity(entity,float);
+	virtual void Save(float);
+	virtual void Restore(string,string);
 
 	/*virtual void(void) TalkAnswer;
 	virtual void(void) TalkAsk;
@@ -104,31 +126,39 @@ class NSTalkMonster:NSMonster
 	virtual void(void) TalkStare;
 	virtual void(void) TalkSurvived;
 	virtual void(void) TalkWounded;*/
-	virtual void(void) TalkPanic;
-	virtual void(void) TalkPlayerAsk; 
-	virtual void(void) TalkPlayerGreet;
-	virtual void(void) TalkPlayerIdle;
-	virtual void(void) TalkPlayerWounded1;
-	virtual void(void) TalkPlayerWounded2;
-	virtual void(void) TalkPlayerWounded3;
-	virtual void(void) TalkUnfollow;
-	virtual void(void) TalkFollow;
-	virtual void(void) TalkStopFollow;
-	virtual void(string, string) SpawnKey;
-	virtual float(entity, float) SendEntity;
-	virtual void(float) Save;
-	virtual void(string,string) Restore;
-#else
 
-	virtual float(void) predraw;
-	virtual void(string) SentenceSample;
-	virtual void(string) Sentence;
-	virtual void(void) ProcessWordQue;
-	virtual void(float,float) ReceiveEntity;
+	/** Called when they're in a state of panic. */
+	virtual void TalkPanic(void);
+	/** Called when they want to ask the player a question. */
+	virtual void TalkPlayerAsk(void);
+	/** Called when they are greeting the player. */
+	virtual void TalkPlayerGreet(void);
+	/** Called when they are chit-chatting with the player. */
+	virtual void TalkPlayerIdle(void);
+	/** Called when they tell the player that they're wounded. */
+	virtual void TalkPlayerWounded1(void);
+	/** Called when they tell the player that severely wounded. */
+	virtual void TalkPlayerWounded2(void);
+	/** Called when they tell the player that they're near death. */
+	virtual void TalkPlayerWounded3(void);
+	/** Called when they tell the player that they'll give up following. */
+	virtual void TalkUnfollow(void);
+	/** Called when they tell the player that they'll start following. */
+	virtual void TalkFollow(void);
+	/** Called when they tell the player that they'll stop following. */
+	virtual void TalkStopFollow(void);
+#else
+	virtual float predraw(void);
+	virtual void ReceiveEntity(float,float);
+
+	/** Plays a single sample from a sentence. */
+	virtual void SentenceSample(string);
+	/** Called once per frame to process the word queue */
+	virtual void ProcessWordQue(void);
 #endif
 
 	/* model events */
-	virtual void(float, int, string) HandleAnimEvent;
+	virtual void HandleAnimEvent(float,int,string);
 };
 
 #ifdef CLIENT

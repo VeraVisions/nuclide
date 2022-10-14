@@ -30,7 +30,7 @@ enumflags
 };
 
 
-enumflags
+typedef enumflags
 {
 	PHYENT_CHANGED_ORIGIN_X,
 	PHYENT_CHANGED_ORIGIN_Y,
@@ -52,49 +52,73 @@ enumflags
 	PHYENT_CHANGED_RENDERCOLOR,
 	PHYENT_CHANGED_RENDERAMT,
 	PHYENT_CHANGED_RENDERMODE,
-};
+} nsphyricsentity_changed_t;
 
+/** This entity class represents physically-simulated entities. */
 class NSPhysicsEntity:NSSurfacePropEntity
 {
+private:
 	int m_iEnabled;
 	int m_iShape;
 	int m_iMaterial;
 	int m_iFlags;
 	float m_flInertiaScale;
 
-	void(void) NSPhysicsEntity;
+	virtual void _TouchThink(void);
 
-	/* overrides */
-	virtual void(void) Respawn;
-	virtual void(void) TouchThink;
 #ifdef SERVER
 	PREDICTED_VECTOR(m_vecNetAngles);
-
-	virtual void(void) Pain;
-	virtual void(void) Death;
-	virtual void(void) EvaluateEntity;
-	virtual float(entity, float) SendEntity;
-	virtual void(float) Save;
-	virtual void(string,string) Restore;
-#else
-	virtual void(float, float) ReceiveEntity;
 #endif
-	virtual void(string, string) SpawnKey;
 
-	nonvirtual void(float) SetMass;
-	nonvirtual float(void) GetMass;
-	nonvirtual void(float) SetFriction;
-	nonvirtual float(void) GetFriction;
-	nonvirtual void(float) SetBounceFactor;
-	nonvirtual float(void) GetBounceFactor;
-	nonvirtual void(float) SetBounceStop;
-	nonvirtual float(void) GetBounceStop;
-	nonvirtual void(void) PhysicsEnable;
-	nonvirtual void(void) PhysicsDisable;
-	nonvirtual void(vector) ApplyForceCenter;
-	nonvirtual void(vector, vector) ApplyForceOffset;
-	nonvirtual void(vector) ApplyTorqueCenter;
-	nonvirtual float(int, int) CalculateImpactDamage;
+public:
+	void NSPhysicsEntity(void);
+
+	/* overrides */
+	virtual void Respawn(void);
+	virtual void SpawnKey(string,string);
+#ifdef SERVER
+	virtual void Pain(void);
+	virtual void Death(void);
+	virtual void EvaluateEntity(void);
+	virtual float SendEntity(entity,float);
+	virtual void Save(float);
+	virtual void Restore(string,string);
+#else
+	virtual void ReceiveEntity(float,float);
+#endif
+
+	/** Sets the mass of the entity in ??? */
+	nonvirtual void SetMass(float);
+	/** Returns the mass of the entity. */
+	nonvirtual float GetMass(void);
+	/** Sets the friction multiplier for this entity. Default is 1.0 */
+	nonvirtual void SetFriction(float);
+	/** Returns the friction multiplayer for this entity. */
+	nonvirtual float GetFriction(void);
+	/** Sets the bounce factor for this entity. Default is 1.0 */
+	nonvirtual void SetBounceFactor(float);
+	/** Returns the bounce factor of this entity. */
+	nonvirtual float GetBounceFactor(void);
+	/** Sets the bounce stop factor for this entity. */
+	nonvirtual void SetBounceStop(float);
+	/** Returns the bounce stop factor of this entity. */
+	nonvirtual float GetBounceStop(void);
+	/** Sets the inertia modifier for this entity. */
+	nonvirtual void SetInertia(float);
+	/** Returns the inertia modifier of this entity. */
+	nonvirtual float GetInertia(void);
+	/** Call to enable physics simulation on this entity. */
+	nonvirtual void PhysicsEnable(void);
+	/** Call to freeze physics simulation on this entity. */
+	nonvirtual void PhysicsDisable(void);
+	/** Call to apply a force (absolute velocity vector) to the center of the entity. */
+	nonvirtual void ApplyForceCenter(vector);
+	/** Call to apply force (absolute velocity vector) to a specific position on the entity. */
+	nonvirtual void ApplyForceOffset(vector,vector);
+	/** Call to apply torque (angular velocity vector) to the center of the entity. */
+	nonvirtual void ApplyTorqueCenter(vector);
+	/** Called by the physics routine to figure out the impact damage. */
+	nonvirtual float CalculateImpactDamage(int,int);
 };
 
 #ifdef CLIENT

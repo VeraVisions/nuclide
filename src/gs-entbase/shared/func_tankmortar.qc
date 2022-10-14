@@ -94,6 +94,7 @@ class func_tankmortar:NSVehicle
 	virtual void(float, float) ReceiveEntity;
 	virtual void(void) UpdateView;
 #else
+	virtual void(void) EvaluateEntity;
 	virtual float(entity, float) SendEntity;
 	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;

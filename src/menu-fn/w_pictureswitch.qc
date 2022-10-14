@@ -39,6 +39,8 @@ class CPictureSwitch:CWidget
 	virtual void(int, int) SetSize;
 	virtual void(void(void)) SetCallback;
 	virtual string() GetPic;
+	virtual void SetPicSize(int,int);
+	virtual void SetPicOffset(int,int);
 };
 
 void

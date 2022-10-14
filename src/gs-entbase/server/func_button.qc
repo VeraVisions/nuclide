@@ -103,6 +103,8 @@ func_button:NSSurfacePropEntity
 	string m_strOnIn;
 	string m_strOnOut;
 
+	void func_button(void);
+
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
 	virtual void(string, string) SpawnKey;

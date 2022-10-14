@@ -14,24 +14,36 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/* class handling the room to world translations for XR */
+/** This class represents a local client space in the world.
+
+It's used to handle room to world translation for VR, for example.
+*/
 class
 NSXRSpace
 {
+private:
 	vector m_vecForward;
 	vector m_vecRight;
 	vector m_vecUp;
 	vector m_vecOrigin;
 
-	void(void) NSXRSpace;
+public:
+	void NSXRSpace(void);
 
-	virtual void(vector) SetOrigin;
-	virtual void(vector) SetAngles;
+	/** Sets the placement of the space in the 3D world. */
+	virtual void SetOrigin(vector);
+	/** Sets the direction offset of the space in the 3D world. */
+	virtual void SetAngles(vector);
 
-	virtual vector(void) GetForward;
-	virtual vector(void) GetRight;
-	virtual vector(void) GetUp;
+	/** Get the forward facing direction in a normalized vector. */
+	virtual vector GetForward(void);
+	/** Get the right facing direction in a normalized vector. */
+	virtual vector GetRight(void);
+	/** Get the up facing direction in a normalized vector. */
+	virtual vector GetUp(void);
 
-	virtual vector(vector) RoomToWorldOrigin;
-	virtual vector(vector) RoomToWorldAngles;
+	/** Takes a room-space position and translates it into world position. */
+	virtual vector RoomToWorldOrigin(vector);
+	/** Takes a room-space angle and translates it into world angles. */
+	virtual vector RoomToWorldAngles(vector);
 };

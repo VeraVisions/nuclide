@@ -14,57 +14,60 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/** This entity class represents vehicles that are predicted across the network. */
 class NSVehicle:NSSurfacePropEntity
 {
+private:
 	int m_iVehicleFlags;
 	int m_iMoveButtons;
 	vector m_vecMoveValues;
-
 	entity m_eDriver;
 	entity m_eDriver_net;
-
 	entity m_eDriverLast;
-
-	void(void) NSVehicle;
-
 	vector m_vecPlayerPos;
-
-	vector angles_net;
-	vector origin_net;
-	vector velocity_net;
 	vector m_vecExitPos;
+
+	/* FIXME: Aren't those already defined in parent classes? */
+	PREDICTED_VECTOR_N(angles);
+	PREDICTED_VECTOR_N(origin);
+	PREDICTED_VECTOR_N(velocity);
 
 #ifdef CLIENT
 	PREDICTED_FLOAT(driver_entnum);
-
-	virtual void(void) DriverRelink;
-	virtual bool(void) IsLocalDriver;
-	virtual void(void) PredictPreFrame;
-	virtual void(void) PredictPostFrame;
-	virtual void(float, float) ReceiveEntity;
-	virtual void(void) UpdateView;
-	virtual bool(void) HideViewWeapon;
-	virtual bool(void) HideCrosshair;
-	virtual bool(void) HidePlayermodel;
-#else
-	nonvirtual vector(void) GetExitPos;
-	virtual void(void) EvaluateEntity;
-	virtual float(entity, float) SendEntity;
-	virtual void(float) Save;
-	virtual void(string,string) Restore;
 #endif
 
-	nonvirtual entity(void) GetDriver;
-	virtual void(void) PlayerUpdateFlags;
-	virtual void(void) PlayerAlign;
-	virtual void(NSClientPlayer) PlayerEnter;
-	virtual void(NSClientPlayer) PlayerLeave;
-	virtual void() PlayerInput;
-	virtual float(void) DriverAnimation;
+public:
+	void NSVehicle(void);
 
-	virtual bool(void) CanDriverCrouch;
-	virtual bool(void) PreventPlayerMovement;
-	virtual bool(void) PreventPlayerFire;
+#ifdef CLIENT
+	virtual void DriverRelink(void);
+	virtual bool IsLocalDriver(void);
+	virtual void PredictPreFrame(void);
+	virtual void PredictPostFrame(void);
+	virtual void ReceiveEntity(float,float);
+	virtual void UpdateView(void);
+	virtual bool HideViewWeapon(void);
+	virtual bool HideCrosshair(void);
+	virtual bool HidePlayermodel(void);
+#else
+	nonvirtual vector GetExitPos(void);
+	virtual void EvaluateEntity(void);
+	virtual float SendEntity(entity,float);
+	virtual void Save(float);
+	virtual void Restore(string,string);
+#endif
+
+	nonvirtual entity GetDriver(void);
+	virtual void PlayerUpdateFlags(void);
+	virtual void PlayerAlign(void);
+	virtual void PlayerEnter(NSClientPlayer);
+	virtual void PlayerLeave(NSClientPlayer);
+	virtual void PlayerInput(void);
+	virtual float DriverAnimation(void);
+	
+	virtual bool CanDriverCrouch(void);
+	virtual bool PreventPlayerMovement(void);
+	virtual bool PreventPlayerFire(void);
 };
 
 enumflags

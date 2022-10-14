@@ -610,6 +610,19 @@ NSEntity::SetModelindex(float newModelIndex)
 }
 
 void
+NSEntity::AddEffects(float fl)
+{
+	effects |= fl;
+}
+
+void
+NSEntity::RemoveEffects(float fl)
+{
+	effects &= ~fl;
+}
+
+
+void
 NSEntity::AddFlags(float fl)
 {
 	flags |= fl;

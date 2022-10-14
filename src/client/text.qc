@@ -30,7 +30,7 @@ GameText_CharCount(float fadein, float timer, string msg)
 void
 GameText_DrawString(vector pos, string msg, vector col, float alpha)
 {
-	vector rpos;
+	vector rpos = [0.0f, 0.0f, 0.0f];
 	int c = tokenizebyseparator(msg, "\n");
 
 	for (int i = 0; i < c; i++) {
@@ -62,7 +62,7 @@ void
 GameText_DrawMessage(int i, float timer, int highlight)
 {
 	float a = 0.0f;
-	vector rpos;
+	vector rpos = [0.0f, 0.0f, 0.0f];
 	float mtime;
 	float btime;
 	string finalstr;

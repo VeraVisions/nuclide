@@ -31,22 +31,19 @@ typedef enum
 	GLOBAL_DEAD
 } globalstate_t;
 
+/** NSTrigger handles all the non-input as well as Legacy (Quake, GoldSource) style
+trigger behaviour. It also deals with masters, touches, blocking and so on.
+*/
 class NSTrigger:NSIO
 {
-	void(void) NSTrigger;
-
+private:
 	/* not needed to be saved right now */
 	float m_flTouchTime;
 	bool m_beingTouched;
 	entity m_eTouchLast;
 
-	/* touch/blocked */
-	virtual void(entity) Blocked;
-	virtual void(entity) StartTouch;
-	virtual void(entity) Touch;
-	virtual void(entity) EndTouch;
-	nonvirtual void(void) _TouchHandler;
-	nonvirtual void(void) _BlockedHandler;
+	nonvirtual void _TouchHandler(void);
+	nonvirtual void _BlockedHandler(void);
 
 #ifdef SERVER
 	string m_oldstrTarget; /* needed due to trigger_changetarget */
@@ -60,30 +57,68 @@ class NSTrigger:NSIO
 
 	/* legacy trigger architecture */
 	float m_flDelay;
-	virtual void(entity, int) Trigger;
-	nonvirtual void(entity, int, float) UseTargets;
-	nonvirtual void(string) SetTriggerTarget;
-
-	/* master feature */
-	nonvirtual int(void) GetValue;
-	nonvirtual int(void) GetMaster;
-	nonvirtual globalstate_t(string) GetGlobalValue;
-	nonvirtual string(void) GetTriggerTarget;
-	nonvirtual bool(void) HasTriggerTarget;
-	nonvirtual bool(void) HasTargetname;
-
-	/* team */
-	nonvirtual void(float) SetTeam;
-	nonvirtual float(void) GetTeam;
-
-	/* overrides */
-	virtual void(float) Save;
-	virtual void(string,string) Restore;
-	virtual void(entity, string, string) Input;
 #else
 	float team;
 #endif
-	virtual void(string, string) SpawnKey;
+
+public:
+	void NSTrigger(void);
+
+	/* touch/blocked */
+	/** Called whenever out movement is being blocked by an entity.
+		This is currently only relevant on entities that are of `MOVETYPE_PUSH`. */
+	virtual void Blocked(entity);
+	/** Called when we started touching another entity. */
+	virtual void StartTouch(entity);
+
+	/** Called whenever we're touching another entity. */
+	virtual void Touch(entity);
+
+	/** Called when we stopped touching the last touched entity. */
+	virtual void EndTouch(entity);
+
+#ifdef SERVER
+	/** Called whenever we're legacy triggered by another object or function. */
+	virtual void Trigger(entity,int);
+
+	/** When called will trigger its legacy targets with a given delay. */
+	nonvirtual void UseTargets(entity,int, float);
+
+	/** Sets the legacy target for this entity. */
+	nonvirtual void SetTriggerTarget(string);
+
+	/* master feature */
+	/** Returns what we will pass onto other's `::GetMaster()` calls if we're their master. */
+	nonvirtual int GetValue(void);
+
+	/** Returns whether our master allows us to be triggered. */
+	nonvirtual int GetMaster(void);
+
+	/** Returns the value of a given env_global property */
+	nonvirtual globalstate_t GetGlobalValue(string);
+
+	/** Returns the name of the entity group it can trigger (legacy style). */
+	nonvirtual string GetTriggerTarget(void);
+
+	/** Returns TRUE if the entity has a legacy trigger target. */
+	nonvirtual bool HasTriggerTarget(void);
+
+	/** Returns TRUE if the entity has a name that can be used for messaging. */
+	nonvirtual bool HasTargetname(void);
+
+	/** Assigns the entity to a given team value. */
+	nonvirtual void SetTeam(float);
+
+	/** Retrives the team value of a given entity. */
+	nonvirtual float GetTeam(void);
+
+	/* overrides */
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void Input(entity,string,string);
+
+#endif
+	virtual void SpawnKey(string,string);
 };
 
 enum

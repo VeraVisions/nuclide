@@ -16,20 +16,26 @@
 
 class CFrame:CWidget
 {
+private:
 	int m_background;
 	int m_bsize[2];
 	int m_size[2];
-	virtual void(void) Draw;
-	virtual void(float, float, float, float) Input;
 
-	virtual void(int, int) SetSize;
-	virtual void(int) SetBorder;
+public:
+	void CFrame(void);
+
+	virtual void Draw(void);
+	virtual void Input(float,float,float,float);
+	virtual void SetSize(int,int);
+	virtual void SetBorder(int);
 };
 
 void
 CFrame::CFrame(void)
 {
+	m_background = 0;
 	m_bsize[0] = m_bsize[1] = 3;
+	m_size[0] = m_size[1] = 0;
 }
 
 void

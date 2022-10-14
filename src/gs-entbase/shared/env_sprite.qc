@@ -78,11 +78,12 @@ class env_sprite:NSRenderableEntity
 	virtual void(bool) SetFramerate;
 
 #ifdef SERVER
-	virtual void(void) Spawned;
-	virtual void(entity, int) Trigger;
-	virtual void(void) EvaluateEntity;
-	virtual float(entity, float) SendEntity;
-	virtual void(string, string) SpawnKey;
+	virtual void Spawned(void);
+	virtual void Trigger(entity,int);
+	virtual void EvaluateEntity(void);
+	virtual float SendEntity(entity,float);
+	virtual void SpawnKey(string,string);
+	virtual void NetworkOnce(void);
 #else
 	virtual float(void) predraw;
 	virtual void(void) think;

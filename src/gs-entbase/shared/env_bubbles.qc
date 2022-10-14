@@ -68,22 +68,23 @@ env_bubbles:NSPointTrigger
 	float m_flSpawnFrequency;
 	float m_flSpawnCurrent;
 
-	void(void) env_bubbles;
+	void env_bubbles(void);
 
 	/* overrides */
-	virtual void(string, string) SpawnKey;
-	virtual void(void) Respawn;
+	virtual void SpawnKey(string,string);
+	virtual void Respawn(void);
+	virtual void Spawned(void);
 
 #ifdef SERVER
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(void) EvaluateEntity;
-	virtual float(entity, float) SendEntity;
-	virtual void(entity, int) Trigger;
-	virtual void(entity, string, string) Input;
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void EvaluateEntity(void);
+	virtual float SendEntity(entity,float);
+	virtual void Trigger(entity,int);
+	virtual void Input(entity,string,string);
 #else
-	virtual void(void) EmitBubbles;
-	virtual void(float, float) ReceiveEntity;
+	virtual void EmitBubbles(void);
+	virtual void ReceiveEntity(float,float);
 #endif
 };
 

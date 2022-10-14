@@ -102,25 +102,25 @@ func_door:NSRenderableEntity
 
 	void(void) func_door;
 
-	virtual void(void) Spawned;
+	virtual void Spawned(void);
 
-	virtual void(void) PortalOpen;
-	virtual void(void) PortalClose;
-	virtual void(void) SetMovementDirection;
-	virtual void(vector, void(void) func) MoveToDestination;
-	virtual void(void) MoveAway;
-	virtual void(void) MoveBack;
-	virtual void(void) Arrived;
-	virtual void(void) Returned;
-	virtual void(void) Respawn;
-	virtual void(entity, int) Trigger;
-	virtual void(entity) Blocked;
-	virtual void(entity) Touch;
-	virtual void(void) PlayerUse;
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(string, string) SpawnKey;
-	virtual void(entity, string, string) Input;
+	virtual void PortalOpen(void);
+	virtual void PortalClose(void);
+	virtual void SetMovementDirection(void);
+	virtual void MoveToDestination(vector, void(void) func);
+	virtual void MoveAway(void);
+	virtual void MoveBack(void);
+	virtual void Arrived(void);
+	virtual void Returned(void);
+	virtual void Respawn(void);
+	virtual void Trigger(entity, int);
+	virtual void Blocked(entity);
+	virtual void Touch(entity);
+	virtual void PlayerUse(void);
+	virtual void Save(float);
+	virtual void Restore(string, string);
+	virtual void SpawnKey(string, string);
+	virtual void Input(entity, string, string);
 };
 
 void

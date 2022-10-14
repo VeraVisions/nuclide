@@ -229,6 +229,18 @@ NSTrigger::Input(entity eAct, string strInput, string strData)
 		super:: Input(eAct, strInput, strData);
 	}
 }
+
+void
+NSTrigger::SetTeam(float new_team)
+{
+	team = new_team;
+}
+
+float
+NSTrigger::GetTeam(void)
+{
+	return (team);
+}
 #endif
 
 void
@@ -311,16 +323,4 @@ NSTrigger::_TouchHandler(void)
 	m_flTouchTime = GetTime();
 	m_beingTouched = true;
 	m_eTouchLast = other;
-}
-
-void
-NSTrigger::SetTeam(float new_team)
-{
-	team = new_team;
-}
-
-float
-NSTrigger::GetTeam(void)
-{
-	return (team);
 }

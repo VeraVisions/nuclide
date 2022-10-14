@@ -42,8 +42,8 @@ multi_manager_sub:NSPointTrigger
 	void(void) multi_manager_sub;
 
 	/* overrides */
-	virtual void(float) Save;
-	virtual void(string,string) Restore;
+	virtual void Save(float);
+	virtual void Restore(string,string);
 };
 
 void
@@ -84,18 +84,22 @@ multi_manager_sub::Restore(string strKey, string strValue)
 class
 multi_manager:NSPointTrigger
 {
+private:
 	multi_manager_sub m_eTriggers[16];
 	string m_strBuffer;
 	int m_iBusy;
 	int m_iValue;
 
+public:
+	void multi_manager(void);
+
 	/* overrides */
-	virtual void(float) Save;
-	virtual void(string,string) Restore;
-	virtual void(string, string) SpawnKey;
-	virtual void(void) Spawned;
-	virtual void(void) Respawn;
-	virtual void(entity, int) Trigger;
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void SpawnKey(string,string);
+	virtual void Spawned(void);
+	virtual void Respawn(void);
+	virtual void Trigger(entity,int);
 };
 
 void

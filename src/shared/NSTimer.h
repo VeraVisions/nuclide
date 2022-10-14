@@ -14,25 +14,32 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/** This class provides a way to trigger a function in the future.
+It has the ability to clean itself up afterwards, too. */
 class
 NSTimer:NSEntity
 {
+private:
 	entity m_eReceiver;
 	virtual void(void) m_vFunc = 0;
 	float m_flTime;
 	bool m_bRepeats;
-	
-	void(void) NSTimer;
 
-	virtual void(void) _TimerThink;
-	virtual void(void) _TempTimerThink;
+	virtual void _TimerThink(void);
+	virtual void _TempTimerThink(void);
 
-	/* creates and sets up a new timer, starts immediately */
-	static NSTimer(entity, void(), float, bool) ScheduleTimer;
-	/* self garbage collecting version of the above */
-	static NSTimer(entity, void(), float, bool) TemporaryTimer;
+public:
+	void NSTimer(void);
 
-	/* when you want to set up a timer ahead of time, but only run it manually */
-	virtual void(void) RunTimer;
-	static NSTimer(entity, void(), float, bool) SetupTimer;
+	/** When called, creates and sets up a new timer, starts immediately. */
+	static NSTimer ScheduleTimer(entity, void(), float, bool);
+
+	/** When called, creates a self garbage collecting version of a timer. */
+	static NSTimer TemporaryTimer(entity, void(), float, bool);
+
+	/** Runs the timer that's set up. */
+	virtual void RunTimer(void);
+
+	/** When called, sets up a timer that has to be run manually later. */
+	static NSTimer SetupTimer(entity, void(), float, bool);
 };

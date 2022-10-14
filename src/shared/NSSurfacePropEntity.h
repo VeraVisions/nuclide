@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-enumflags
+typedef enumflags
 {
 	SRFENT_CHANGED_ORIGIN_X,
 	SRFENT_CHANGED_ORIGIN_Y,
@@ -37,34 +37,15 @@ enumflags
 	SRFENT_CHANGED_RENDERAMT,
 	SRFENT_CHANGED_RENDERMODE,
 	SRFENT_CHANGED_CONTROLLER
-};
+} nssurfacepropentity_changed_t;
 
+/** This entity represents an NSRenderableEntity with interactive surface properties.
+It can take damage and can handle variously different types of impact. */
 class NSSurfacePropEntity:NSRenderableEntity
 {
+private:
 	float m_flBurnNext;
 
-	void(void) NSSurfacePropEntity;
-
-	virtual void(void) Spawned;
-
-	/* overrides */
-	virtual void(string) SetModel;
-#ifdef SERVER
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(void) Respawn;
-	virtual void(entity, string, string) Input;
-	virtual void(string, string) SpawnKey;
-	virtual void(void) ParentUpdate;
-	virtual void(void) EvaluateEntity;
-	virtual float(entity, float) SendEntity;
-#else
-	virtual float(void) predraw;
-	virtual void(void) RenderFire;
-	virtual void(float,float) ReceiveEntity;
-#endif
-
-	/* new */
 #ifdef SERVER
 	/* fire/burning */
 	entity m_eBurner;
@@ -75,44 +56,92 @@ class NSSurfacePropEntity:NSRenderableEntity
 	/* I/O */
 	string m_strOnBreak;
 
-	nonvirtual void(entity, float, int) Ignite;
-	nonvirtual void(void) Extinguish;
-	nonvirtual bool(void) IsOnFire;
-
 	/* life, death */
 	float m_oldHealth;
-	virtual void(void) Pain;
-	virtual void(void) Death;
-	virtual bool(void) IsAlive;
-
-	/* Generic Damage */
-	nonvirtual void(float) SetTakedamage;
-	nonvirtual void(float) SetHealth;
-	nonvirtual void(float) SetMaxHealth;
-	nonvirtual float(void) GetHealth;
-	nonvirtual float(void) GetMaxHealth;
 
 	/* Surface/PropKit */
 	int m_iMaterial;
-	int m_iPropData;
-	nonvirtual float(void) GetSpawnHealth;
-	nonvirtual bool(void) HasPropData;
-	nonvirtual __variant(int) GetPropData;
-	nonvirtual bool(void) HasSurfaceData;
-	nonvirtual __variant(int) GetSurfaceData;
-
 	string m_strSurfData;
+	int m_iPropData;
 	string m_strPropData;
-	nonvirtual void(string) SetSurfaceData;
-	nonvirtual void(string) SetPropData;
-	nonvirtual void(void) SurfaceDataFinish;
-	nonvirtual void(void) PropDataFinish;
+
+	nonvirtual void _SurfaceDataFinish(void);
+	nonvirtual void _PropDataFinish(void);
+#endif
+
+public:
+	void NSSurfacePropEntity(void);
+
+	/* overrides */
+	virtual void Spawned(void);
+	virtual void SetModel(string);
+
+#ifdef SERVER
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void Respawn(void);
+	virtual void Input(entity,string,string);
+	virtual void SpawnKey(string,string);
+	virtual void ParentUpdate(void);
+	virtual void EvaluateEntity(void);
+	virtual float SendEntity(entity,float);
+#else
+	virtual float predraw(void);
+	virtual void ReceiveEntity(float,float);
+#endif
+
+	/* new */
+#ifdef SERVER
+	/** Sets the entity on fire. */
+	nonvirtual void Ignite(entity, float, int);
+	/** If the entity is on fire, it'll have it extinguished */
+	nonvirtual void Extinguish(void);
+	/** Returns whether or not this entity is on fire. */
+	nonvirtual bool IsOnFire(void);
+	/** Called whenever the entity receives damage. */
+	virtual void Pain(void);
+	/** Called when the health is equal or below 0 */
+	virtual void Death(void);
+	/** Returns whether or not the entity is alive. */
+	virtual bool IsAlive(void);
+
+	/* Generic Damage */
+	/** Sets whether the entity can take damage */
+	nonvirtual void SetTakedamage(float);
+	/** Sets the current health of the entity. */
+	nonvirtual void SetHealth(float);
+	/** Sets the maximum amount of health the entity can have */
+	nonvirtual void SetMaxHealth(float);
+	/** Returns the current health of the entity. */
+	nonvirtual float GetHealth(void);
+	/** Returns the maximum health the entity can have. */
+	nonvirtual float GetMaxHealth(void);
+
+	/** Returns the health the entity spawned with at map load */
+	nonvirtual float GetSpawnHealth(void);
+	/** Returns if the entity has prop data information set. */ 
+	nonvirtual bool HasPropData(void) ;
+	/** Returns a variable type of information about the entity's prop data */
+	nonvirtual __variant GetPropData(int);
+	/** Returns if the entity has surface data information set. */ 
+	nonvirtual bool HasSurfaceData(void);
+	/** Returns a variable type of information about the entity's surface data */
+	nonvirtual __variant GetSurfaceData(int);
+	/** Assigns the surface data of a given description onto this entity. */
+	nonvirtual void SetSurfaceData(string);
+	/** Assigns the prop data of a given description onto this entity. */
+	nonvirtual void SetPropData(string);
+#else
+	/** Called every frame to render a fire effect, but will only do so if the entity is burning. */
+	virtual void RenderFire(void);
 #endif
 
 	/* misc 'being' methods */
-	nonvirtual vector(void) GetEyePos;
+	/** Returns the absolute world position of where the eyes are located. */
+	nonvirtual vector GetEyePos(void);
 };
 
 #ifdef CLIENT
 void NSSurfacePropEntity_ReadEntity(bool);
 #endif
+

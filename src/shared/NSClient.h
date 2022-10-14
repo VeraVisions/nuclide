@@ -14,10 +14,15 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/* both NSClientPlayer and base_NSClientSpectator are based off this class */
+/** This entity class is the lowest client/player class.
+
+It is mostly concerned with the features shared between players
+and spectating clients alike.
+*/
 class
 NSClient:NSNavAI
 {
+private:
 	vector origin_net;
 	vector velocity_net;
 
@@ -26,38 +31,36 @@ NSClient:NSNavAI
 	NSXRInput m_xrInputLeft;
 	NSXRInput m_xrInputRight;
 
-	void(void) NSClient;
+public:
+	void NSClient(void);
 
 	/* final input handling of the client */
-	virtual void(void) ClientInput;
-
-	virtual void(void) PreFrame;
-	virtual void(void) PostFrame;
-
-	virtual bool(void) IsFakeSpectator;
-	virtual bool(void) IsRealSpectator;
-	virtual bool(void) IsDead;
-	virtual bool(void) IsPlayer;
-
-	virtual void(void) OnRemoveEntity;
+	virtual void ClientInput(void);
+	virtual void PreFrame(void);
+	virtual void PostFrame(void);
+	virtual bool IsFakeSpectator(void);
+	virtual bool IsRealSpectator(void);
+	virtual bool IsDead(void);
+	virtual bool IsPlayer(void);
+	virtual void OnRemoveEntity(void);
 
 #ifdef CLIENT
-	/* gives the chance to override input variables before networking */
-	virtual void(void) ClientInputFrame;
+	/** Called to give a chance to override input variables before networking */
+	virtual void ClientInputFrame(void);
 
-	/* our camera when we're alive */
-	virtual void(void) UpdateAliveCam;
+	/** Called every single client frame when this client is alive */
+	virtual void UpdateAliveCam(void);
 
-	/* our camera when we're dead */
-	virtual void(void) UpdateDeathcam;
+	/** Called every single client frame when this client is dead */
+	virtual void UpdateDeathcam(void);
 
-	/* our camera when we're in an intermission */
-	virtual void(void) UpdateIntermissionCam;
+	/** Called every single client frame during intermission */
+	virtual void UpdateIntermissionCam(void);
 
 	/* run every frame before renderscene() */
-	virtual float(void) predraw;
+	virtual float predraw(void);
 #else
-	virtual void(float) Save;
-	virtual void(string,string) Restore;
+	virtual void Save(float);
+	virtual void Restore(string,string);
 #endif
 };

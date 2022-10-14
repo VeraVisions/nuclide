@@ -14,12 +14,14 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/* NSNavAI is a moving/pathfinding object. It knows how to deal
-   with waypoint based nodes. 
+/** This entity class represents a moving/pathfinding object.
+It knows how to deal with waypoint based nodes and possibly other
+types of pathfinding in the future.
 */
 class
 NSNavAI:NSSurfacePropEntity
 {
+private:
 #ifdef SERVER
 	/* pathfinding */
 	int m_iNodes;
@@ -29,22 +31,29 @@ NSNavAI:NSSurfacePropEntity
 	vector m_vecTurnAngle;
 #endif
 
-	void(void) NSNavAI;
+public:
+	void NSNavAI(void);
 
 #ifdef SERVER
-	virtual void(float) Save;
-	virtual void(string,string) Restore;
-	virtual void(void) RestoreComplete;
+	/* overrides */
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void RestoreComplete(void);
 
 	/* methods we'd like others to override */
-	virtual bool(void) CanCrouch;
-
-	nonvirtual vector(void) GetRouteMovevalues;
-	nonvirtual vector(void) GetRouteDirection;
-
-	virtual void(void) RouteEnded;
-	virtual void(void) RouteClear;
-	virtual void(void) CheckRoute;
-	virtual void(vector) RouteToPosition;
+	/** Returns if this class is capable of crouching. */
+	virtual bool CanCrouch(void);
+	/** Returns the current movement values in a single vector (x = fwd, y = rt, y = up) */
+	nonvirtual vector GetRouteMovevalues(void);
+	/** Returns the current movement direction. */
+	nonvirtual vector GetRouteDirection(void);
+	/** Called when the object is done moving to its destination. */
+	virtual void RouteEnded(void);
+	/** When called, will wipe any memory of an ongoing route. */
+	virtual void RouteClear(void);
+	/** Internal use only. Called every frame to see our route progression. */
+	virtual void CheckRoute(void);
+	/** When called, will plot a route to a given world coordinate and start moving. */
+	virtual void RouteToPosition(vector);
 #endif
 };

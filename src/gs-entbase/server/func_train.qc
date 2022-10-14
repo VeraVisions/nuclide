@@ -78,6 +78,7 @@ func_train:NSRenderableEntity
 	virtual void(void) AfterSpawn;
 	virtual void(void) PathNext;
 	virtual void(void) PathMove;
+	virtual void(void) PathDone;
 	virtual void(entity) Blocked;
 };
 

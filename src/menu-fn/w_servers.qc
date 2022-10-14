@@ -18,24 +18,27 @@
 
 class CServerList:CWidget
 {
+private:
 	int m_size[2];
 	string m_entries[SL_MAX_ENTRIES];
 	int m_count;
 	int m_scroll;
 	int m_selected;
-	virtual void(int) m_execute = 0;
+	virtual void m_execute(int) = 0;
 
-	void(void) CServerList;
-	virtual void(void) Draw;
-	virtual void(float, float, float, float) Input;
+public:
+	void CServerList(void);
 
-	virtual void(string) AddEntry;
-	virtual void(void) Clear;
-	virtual void(int, int) SetSize;
-	virtual void(void(int)) SetChanged;
-	virtual void(int) SetSelected;
-	virtual string(void) GetSelectedItem;
-	virtual int(void) GetSelected;
+	virtual void Draw(void);
+	virtual void Input(float,float,float,float);
+	virtual void AddEntry(string);
+	virtual void Clear(void);
+	virtual void SetSize(int,int);
+	virtual void SetChanged(void(int));
+	virtual void SetSelected(int);
+	virtual string GetSelectedItem(void);
+	virtual int GetSelected(void);
+	virtual void SetScroll(int);
 };
 
 void

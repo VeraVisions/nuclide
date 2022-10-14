@@ -14,7 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-enumflags
+/**
+Bitfield enumeration for NSMonster its SendFlags field.
+
+These give hint as to which internal fields get networked to the client.
+*/
+typedef enumflags
 {
 	MONFL_CHANGED_ORIGIN_X,
 	MONFL_CHANGED_ORIGIN_Y,
@@ -36,8 +41,12 @@ enumflags
 	MONFL_CHANGED_RENDERCOLOR,
 	MONFL_CHANGED_RENDERAMT,
 	MONFL_CHANGED_RENDERMODE,
-};
+} nsmonster_changed_t;
 
+/** List of supported ACT types.
+These originate from GoldSrc and framegroups within models can be tagged
+with them. This way the game-logic doesn't need to know the exact framegroup
+but can instead pick a random ACT and we'll pick the right framegroup for you. */
 typedef enum {
 	ACT_RESET = 0,
 	ACT_IDLE = 1i,
@@ -118,7 +127,7 @@ typedef enum {
 	ACT_FLINCH_RIGHTLEG,
 } monster_activity_t;
 
-/* monster flags, these are defined by the level designers */
+/** Monster flags, these are defined by the level designers. */
 typedef enumflags
 {
 	MSF_WAITTILLSEEN,
@@ -136,7 +145,7 @@ typedef enumflags
 	MSF_HORDE
 } monsterFlag_t;
 
-/* movement states */
+/** Behaviour states. */
 typedef enum
 {
 	MONSTER_IDLE,
@@ -148,7 +157,7 @@ typedef enum
 	MONSTER_GIBBED
 } monsterState_t;
 
-/* scripted sequence states */
+/** Scripted sequence states. */
 typedef enum
 {
 	SEQUENCESTATE_NONE,
@@ -157,7 +166,7 @@ typedef enum
 	SEQUENCESTATE_ENDING
 } sequenceState_t;
 
-/* alliance state */
+/** Alliance states. */
 typedef enum
 {
 	MAL_FRIEND, /* friendly towards the player */
@@ -166,6 +175,7 @@ typedef enum
 	MAL_ROGUE   /* no allies, not even amongst themselves */
 } allianceState_t;
 
+/** Movement states */
 typedef enum
 {
 	MOVESTATE_IDLE,
@@ -173,32 +183,47 @@ typedef enum
 	MOVESTATE_RUN
 } movementState_t;
 
-/* These numerations involve the m_iTriggerCondition attribute.
- * Basically these conditions are being checked and triggered depending on what
- * it's set to. If any of those checks are successful, we trigger our target
- * under the m_strTriggerTarget attribute. */
+/** These numerations involve the m_iTriggerCondition attribute.
+Basically these conditions are being checked and triggered depending on what
+it's set to. If any of those checks are successful, we trigger our target
+under the m_strTriggerTarget attribute. */
 typedef enum
 {
-	MTRIG_NONE,					/* nothing */
-	MTRIG_SEEPLAYER_ANGRY,		/* we see an enemy player, that we want to harm */
-	MTRIG_PAIN,					/* taken damage */ 
-	MTRIG_HALFHEALTH,			/* lost half of our base_health */
-	MTRIG_DEATH,				/* we have died. */
-	MTRIG_SQUADMEMBERDEAD,		/* a squad member died */
-	MTRIG_SQUADLEADERDEAD,		/* the squad leader died */
-	MTRIG_HEARNOISE,			/* we hear some noise around the world. */
-	MTRIG_HEARENEMYPLAYER,		/* we hear a player we are enemies with */
-	MTRIG_HEARWEAPONS,			/* we hear weapons being fired */
-	MTRIG_SEEPLAYER,			/* we see a player, don't have to be angry at him. */
-	MTRIG_SEEPLAYER_RELAXED,	/* we see a player and we're currently attacking anything */
+	MTRIG_NONE,					/**< nothing */
+	MTRIG_SEEPLAYER_ANGRY,		/**< we see an enemy player, that we want to harm */
+	MTRIG_PAIN,					/**< taken damage */ 
+	MTRIG_HALFHEALTH,			/**< lost half of our base_health */
+	MTRIG_DEATH,				/**< we have died. */
+	MTRIG_SQUADMEMBERDEAD,		/**< a squad member died */
+	MTRIG_SQUADLEADERDEAD,		/**< the squad leader died */
+	MTRIG_HEARNOISE,			/**< we hear some noise around the world. */
+	MTRIG_HEARENEMYPLAYER,		/**< we hear a player we are enemies with */
+	MTRIG_HEARWEAPONS,			/**< we hear weapons being fired */
+	MTRIG_SEEPLAYER,			/**< we see a player, don't have to be angry at him. */
+	MTRIG_SEEPLAYER_RELAXED,	/**< we see a player and we're currently attacking anything */
 } triggerCondition_t;
 
 /* FIXME: I'd like to move this into NSMonster, but our current IsFriend()
  * check is currently only checking on a .takedamage basis. */
 .int m_iAlliance;
 
+/** This entity class represents non-player characters. 
+They have the ability to move around (or stand still) but are all
+capable of fighting if prompted to.
+
+There are a few methods that you need to reimplement in order for them
+to do some basic combat:
+
+	virtual void(void) AttackDraw;
+	virtual void(void) AttackHolster;
+	virtual int(void) AttackMelee;
+	virtual int(void) AttackRanged;
+
+Check their individual descriptions as to how you're supposed to approach them.
+*/
 class NSMonster:NSNavAI
 {
+private:
 #ifdef SERVER
 	entity m_ssLast;
 	vector oldnet_velocity;
@@ -231,87 +256,130 @@ class NSMonster:NSNavAI
 	monsterState_t m_iOldMState;
 	vector m_vecLKPos; /* last-known pos */
 
+	/* see/hear subsystem */
+	float m_flSeeTime;
+	/* animation cycles */
+	float m_flAnimTime;
 #endif
 
-	void(void) NSMonster;
+public:
+	void NSMonster(void);
 
 #ifdef SERVER	
 	/* overrides */
-	virtual void(float) Save;
-	virtual void(string,string) Restore;
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void EvaluateEntity(void);
+	virtual float SendEntity(entity,float);
+	virtual void Touch(entity);
+	virtual void Hide(void);
+	virtual void Respawn(void);
+	virtual void Pain(void);
+	virtual void Death(void);
+	virtual void Physics(void);
+	virtual void Gib(void);
+	virtual void Sound(string);
+	virtual void SpawnKey(string,string);
 
-	virtual void(entity) Touch;
-	virtual void(void) Hide;
-	virtual void(void) Respawn;
-	virtual void(void) Pain;
-	virtual void(void) Death;
-	virtual void(void) Physics;
-	virtual void(void) RunAI;
-	virtual void(void) IdleNoise;
-	virtual void(void) FallNoise;
-	virtual void(void) Gib;
-	virtual void(string) Sound;
-	virtual void(string, string) SpawnKey;
+	/** Internal use only.
+	Run every frame to go through the main AI loop. */
+	virtual void RunAI(void);
+	/** Overridable: Called after a while when they've got nothing to do. */
+	virtual void IdleNoise(void);
+	/** Overridable: Called when they start falling. */
+	virtual void FallNoise(void);
 
-	virtual bool(void) IsAlive;
-	virtual bool(int) IsFriend;
+	/** Returns if they're considered alive. */
+	virtual bool IsAlive(void);
+	/** Returns whether they are allied with the type in question */
+	virtual bool IsFriend(int);
 
 	/* see/hear subsystem */
-	float m_flSeeTime;
-	virtual void(void) SeeThink;
-	virtual float(void) SeeFOV;
+	/** Internal use only. Called every frame to simulate vision. */
+	virtual void SeeThink(void);
+	/** Overridable: Returns the field of view in degrees. */
+	virtual float SeeFOV(void);
 
-	/* reactions */
-	virtual void(void) AlertNearby;
+	/** FIXME: Same as WarnAllies/StartleAllies? WTF? */
+	virtual void AlertNearby(void);
 
 	/* movement */
-	virtual float(void) GetWalkSpeed;
-	virtual float(void) GetChaseSpeed;
-	virtual float(void) GetRunSpeed;
+	/** Overridable: Returns the walking speed in Quake units per second. */
+	virtual float GetWalkSpeed(void);
+	/** Overridable: Returns the chase speed in Quake units per second. */
+	virtual float GetChaseSpeed(void);
+	/** Overridable: Returns the running speed in Quake units per second. */
+	virtual float GetRunSpeed(void);
 
 	/* attack system */
-	virtual void(void) AttackDraw;
-	virtual void(void) AttackHolster;
-	virtual void(void) AttackThink;
-	virtual int(void) AttackMelee;
-	virtual int(void) AttackRanged;
+	/** Overridable: Called when they're drawing a weapon. */
+	virtual void AttackDraw(void);
+	/** Overridable: Called when they're holstering a weapon. */
+	virtual void AttackHolster(void);
+	/** Overridable: Called when aiming their weapon. */
+	virtual void AttackThink(void);
+	/** Overridable: Called when attempting to melee attack. Return 0 if impossible. */
+	virtual int AttackMelee(void);
+	/** Overridable: Called when attempting to attack from a distance. Return 0 if impossible. */
+	virtual int AttackRanged(void);
 
-	virtual float(void) MeleeMaxDistance;
-	virtual bool(void) MeleeCondition;
+	/** Overridable: Returns the distance in qu of what'll be a successfull melee attack. */
+	virtual float MeleeMaxDistance(void);
 
-	nonvirtual bool(entity enemy) IsValidEnemy;
+	/** Returns whether or not we should attempt a melee attack.
+		FIXME: Should pass a parameter for the enemy in question instead! */
+	virtual bool MeleeCondition(void);
+
+	/** Returns TRUE if 'enemy' should be considered a valid target for killing */
+	nonvirtual bool IsValidEnemy(entity);
 
 	/* sequences */
-	virtual void(void) FreeState;
-	virtual void(void) FreeStateMoved;
-	virtual void(void) RouteEnded;
-	virtual void(void) WalkRoute;
-	nonvirtual int(void) GetSequenceState;
-	nonvirtual bool(void) InSequence;
+	/** Internal use only. Called when a sequence is done. */
+	virtual void FreeState(void);
+	/** Internal use only. Called when a sequence is done. */
+	virtual void FreeStateMoved(void);
+	/** Internal use only. Called when a movement route is done. */
+	virtual void RouteEnded(void);
+	/** Internal use only. Called every frame to progress through a route. */
+	virtual void WalkRoute(void);
+	
+	/** Returns the type of sequence they're currently in. */
+	nonvirtual int GetSequenceState(void);
+	/** Returns if they're currently in a scripted sequence. */
+	nonvirtual bool InSequence(void);
 
 	/* animation cycles */
-	float m_flAnimTime;
-	virtual int(void) AnimIdle;
-	virtual int(void) AnimWalk;
-	virtual int(void) AnimRun;
-	virtual void(float) AnimPlay;
-	virtual void(void) AnimationUpdate;
-	nonvirtual bool(void) InAnimation;
+	/** Overridable: Called when we need to play a fresh idle framegroup. */
+	virtual int AnimIdle(void);
+	/** Overridable: Called when we need to play a fresh walking framegroup. */
+	virtual int AnimWalk(void);
+	/** Overridable: Called when we need to play a fresh running framegroup. */
+	virtual int AnimRun(void);
+	/** Call to play a single animation onto it, which cannot be interrupted by movement. */
+	virtual void AnimPlay(float);
+	/** Internal use only. Run every frame to update animation parameters. */
+	virtual void AnimationUpdate(void);
+	/** Returns if we're currently in a forced animation sequence. */
+	nonvirtual bool InAnimation(void);
 
 	/* states */
-	virtual void(monsterState_t, monsterState_t) StateChanged;
-	nonvirtual void(monsterState_t) SetState;
-	nonvirtual monsterState_t(void) GetState;
+	/** Called whenever the state of this NSMonster changes. */
+	virtual void StateChanged(monsterState_t,monsterState_t);
+	/** Sets the current state of this NSMonster. */
+	nonvirtual void SetState(monsterState_t);
+	/** Returns the current state of this NSMonster. */
+	nonvirtual monsterState_t GetState(void);
 
 	/* TriggerTarget/Condition */
-	nonvirtual int(void) GetTriggerCondition;
-	virtual void(void) TriggerTargets;
+	/** Returns the condition under which they'll trigger their targets. */
+	nonvirtual int GetTriggerCondition(void);
+	/** Call to trigger their targets manually. */
+	virtual void TriggerTargets(void);
 
-	virtual float(entity, float) SendEntity;
 #else
-	virtual void(void) customphysics;
-	virtual float(void) predraw;
-	virtual void(float,float) ReceiveEntity;
+	virtual void customphysics(void);
+	virtual float predraw(void);
+	virtual void ReceiveEntity(float,float);
 #endif
 };
 

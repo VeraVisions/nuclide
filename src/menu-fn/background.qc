@@ -48,7 +48,8 @@ void
 Background_Steam(void)
 {
 	for (int i = 0; i < g_back800.length; i++) {
-		vector pos, size;
+		vector pos = [0.0f, 0.0f, 0.0f];
+		vector size = [0.0f, 0.0f, 0.0f];
 		
 		/* scale down 800x600 to 640x480 */
 		size = g_back800[i].vecSize * 0.8f;

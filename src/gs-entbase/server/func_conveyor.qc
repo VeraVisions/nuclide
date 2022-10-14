@@ -130,7 +130,10 @@ func_conveyor::Touch(entity eToucher)
 	if (HasSpawnFlags(SF_CONVEYOR_VISUAL))
 		return;
 
-	eToucher.basevelocity = m_vecMoveDir * (m_flSpeed * -0.2);
+	eToucher.basevelocity = m_vecMoveDir * (m_flSpeed);
+	
+	print("touchy\n");
+	print(sprintf("want basevel: %v\n", eToucher.basevelocity));
 }
 
 void 

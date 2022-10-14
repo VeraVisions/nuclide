@@ -88,8 +88,10 @@ CSEv_Spraylogo(void)
 #endif
 
 #ifdef CLIENT
+/** This entity class represents a NSClientPlayer their spraylogo. */
 class NSSpraylogo:NSEntity
 {
+private:
 	vector m_vecColor;
 	vector m_vecPosition;
 	vector m_vecAngles;
@@ -99,9 +101,11 @@ class NSSpraylogo:NSEntity
 	bool m_bInitialized;
 	bool m_bMonochrome;
 
-	void(void) NSSpraylogo;
-	virtual float(void) predraw;
-	virtual void(void) RendererRestarted;
+public:
+	void NSSpraylogo(void);
+
+	virtual float predraw(void);
+	virtual void RendererRestarted(void);
 };
 
 

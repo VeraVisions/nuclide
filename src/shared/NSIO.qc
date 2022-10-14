@@ -116,9 +116,6 @@ NSIO::UseOutput(entity act, string outname)
 	}
 }
 
-/* input is a 5 parameter, commar separated string, output is the targetname
-   of a minion entity that'll handle the triggering (and counting down of uses)
-   as defined in the Source Input/Output specs */
 string
 NSIO::CreateOutput(string outmsg)
 {
@@ -633,15 +630,6 @@ NSIO::Restore(string strKey, string strValue)
 }
 #endif
 
-/*
-============
-NSIO::SpawnKey
-
-note that the engine still likes to try and map key/value
-pairs on its own, but we can at least undo some of that in
-here if needed
-============
-*/
 void
 NSIO::SpawnKey(string strKey, string strValue)
 {

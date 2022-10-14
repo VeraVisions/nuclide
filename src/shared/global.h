@@ -31,3 +31,6 @@ enumflags
        SEARCH_MULTISEARCH,
        SEARCH_NAMESORT
 };
+
+
+const vector g_vec_null = [0.0f, 0.0f, 0.0f];

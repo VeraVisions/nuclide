@@ -40,14 +40,19 @@ enumflags
 class
 trigger_relay:NSPointTrigger
 {
+private:
 	int m_iTriggerState;
 	int m_iEnabled;
 
-	void(void) trigger_relay;
+public:
+	void trigger_relay(void);
 
-	virtual void(entity, int) Trigger;
-	virtual void(void) Respawn;
-	virtual void(string, string) SpawnKey;
+	virtual void Trigger(entity,int);
+	virtual void Respawn(void);
+	virtual void SpawnKey(string,string);
+
+	virtual void Save(float);
+	virtual void Restore(string,string);
 };
 
 void

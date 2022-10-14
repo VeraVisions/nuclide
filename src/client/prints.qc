@@ -38,7 +38,7 @@ Print_Draw(void)
 void
 Print_DrawCenterprint(void)
 {
-	vector vecPos;
+	vector vecPos = [0.0f, 0.0f, 0.0f];
 
 	if (pSeat->m_flCenterprintAlpha <= 0) {
 		return;

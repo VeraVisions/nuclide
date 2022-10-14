@@ -273,24 +273,24 @@ NSMonster::AlertNearby(void)
 
 /* returns TRUE if 'enemy' should be considered a valid target for killing */
 bool
-NSMonster::IsValidEnemy(entity enemy)
+NSMonster::IsValidEnemy(entity enny)
 {
-	if (enemy == __NULL__)
+	if (enny == __NULL__)
 		return FALSE;
-	/* dead enemy should not be considered valid */
-	if (enemy.solid == SOLID_CORPSE || enemy.health <= 0)
+	/* dead enny should not be considered valid */
+	if ((enny.solid == SOLID_CORPSE) || (enny.health <= 0))
 		return FALSE;
 	/* such monster should ignore players */
-	if ((enemy.flags & FL_CLIENT) && HasSpawnFlags(MSF_IGNOREPLAYER))
+	if ((enny.flags & FL_CLIENT) && HasSpawnFlags(MSF_IGNOREPLAYER))
 		return FALSE;
-	/* monsters ignore enemy who uses notarget cheat, useful for development */
-	if (enemy.flags & FL_NOTARGET)
+	/* monsters ignore enny who uses notarget cheat, useful for development */
+	if (enny.flags & FL_NOTARGET)
 		return FALSE;
 	/* if they're our friend... ignore */
-	if (IsFriend(enemy.m_iAlliance))
+	if (IsFriend(enny.m_iAlliance))
 		return FALSE;
 	/* prevent from shooting non-sentient stuff */
-	if (!(enemy.flags & (FL_MONSTER | FL_CLIENT)))
+	if (!(enny.flags & (FL_MONSTER | FL_CLIENT)))
 		return FALSE;
 
 	return TRUE;

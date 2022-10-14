@@ -22,17 +22,22 @@
    is done in the NSView.
 */
 
+/** The view mode type of an NSView. */
 typedef enum
 {
-	VIEWMODE_NORMAL,		/* just a regular camera with no special logic */
-	VIEWMODE_FPS,			/* uses view target position + view offset */
-	VIEWMODE_THIRDPERSON,	/* third person view, fixed */
-	VIEWMODE_SPECTATING		/* spectating, mixed viewmodes inside */
+	VIEWMODE_NORMAL,		/**< just a regular camera with no special logic */
+	VIEWMODE_FPS,			/**< uses view target position + view offset */
+	VIEWMODE_THIRDPERSON,	/**< third person view, fixed */
+	VIEWMODE_SPECTATING		/**< spectating, mixed viewmodes inside */
 } viewmode_t;
 
+/** This class represents 3D views, used for rendering the game.
+It can also be used to render picture-in-picture views on top
+of other views. */
 class
 NSView
 {
+private:
 	int m_iSeat;
 
 	/* the dimensions of our view */
@@ -52,48 +57,50 @@ NSView
 	vector m_vecClientAngle;
 	bool m_bSetClientAngle;
 
-	void(void) NSView;
+public:
+	void NSView(void);
 
-	/* the only method we we want to call setproperty() */
-	virtual void(void) SetupView;
-	/* only does one thing: renderscene() */
-	virtual void(void) RenderView;
-
-	/* when called, will modify 'origin' to vertically smoothed when on ground */
-	virtual void(void) StairSmooth;
-
-	/* applies an punch to our camera angle, temporarily */
-	virtual void(vector) AddPunchAngle;
-
-	/* called every CSQC_UpdateView for each player */
-	virtual void(void) UpdateView;
+	/** the only method we we want to call setproperty() */
+	virtual void SetupView(void);
+	/** only does one thing: renderscene() */
+	virtual void RenderView(void);
+	
+	/** when called, will modify 'origin' to vertically smoothed when on ground */
+	virtual void StairSmooth(void);
+	
+	/** applies an punch to our camera angle, temporarily */
+	virtual void AddPunchAngle(vector);
+	
+	/** called every CSQC_UpdateView for each player */
+	virtual void UpdateView(void);
 
 	/* set/get */
-	virtual void(viewmode_t) SetViewMode;
-	virtual viewmode_t(void) GetViewMode;
+	virtual void SetViewMode(viewmode_t);
+	virtual viewmode_t GetViewMode(void);
+	
+	virtual void SetViewPosition(vector);
+	virtual void SetViewSize(vector);
+	virtual void SetViewTarget(NSEntity);
+	virtual void SetClientOwner(NSClient);
+	
+	virtual void SetCameraOrigin(vector);
+	virtual void SetCameraAngle(vector);
+	virtual void SetClientAngle(vector);
+	virtual void SetSeatID(int);
+	virtual void SetAFOV(float);
+	virtual float GetAFOV(void);
+	virtual void SetSensitivity(float);
+	virtual float GetSensitivity(void);
+	
+	virtual vector GetHUDCanvasSize(void);
+	virtual vector GetHUDCanvasPos(void);
+	
+	virtual float GetViewWidth(void);
+	virtual float GetViewHeight(void);
+	
+	virtual vector GetCameraOrigin(void);
+	virtual vector GetCameraAngle(void);
 
-	virtual void(vector) SetViewPosition;
-	virtual void(vector) SetViewSize;
-	virtual void(NSEntity) SetViewTarget;
-	virtual void(NSClient) SetClientOwner;
-
-	virtual void(vector) SetCameraOrigin;
-	virtual void(vector) SetCameraAngle;
-	virtual void(vector) SetClientAngle;
-	virtual void(int) SetSeatID;
-	virtual void(float) SetAFOV;
-	virtual float(void) GetAFOV;
-	virtual void(float) SetSensitivity;
-	virtual float(void) GetSensitivity;
-
-	virtual vector(void) GetHUDCanvasSize;
-	virtual vector(void) GetHUDCanvasPos;
-
-	virtual float(void) GetViewWidth;
-	virtual float(void) GetViewHeight;
-
-	virtual vector(void) GetCameraOrigin;
-	virtual vector(void) GetCameraAngle;
 };
 
 /* one NSView for each seat */

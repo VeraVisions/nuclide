@@ -14,62 +14,112 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/* NSIO class is responsible for handling entity spawns, respawns,
-   save/load as well as key/value pair loading, as well as inputs/outputs
-   which is our basic entity model.
+/** This class is responsible for handling core entity functionality.
 
-   This is a very low-level class. You're never meant to use this.
-   Use NSEntity as a basis for your classes.
+It handles entity spawns, respawns,
+save/load as well as key/value pair loading, as well as inputs/outputs
+which is our basic entity model.
+
+This is a very low-level class. You're never meant to use this.
+Use NSEntity as a basis for your classes.
 */
 class NSIO
 {
-	void(void) NSIO;
 
-	virtual void(void) Init;
-	virtual void(void) Spawned;
+private:
+	void NSIO(void);
 
-	/* whenever gamerules want entities to respawn */
-	virtual void(void) Respawn;
-
-	/* Handle entity key/value pairs on init */
-	virtual void(string, string) SpawnKey;
-
-	nonvirtual float(void) GetTime;
+	virtual void Init(void);
 
 #ifdef SERVER
-	/* Input/Output System */
 	string m_strOnTrigger;
 	string m_strOnUser1;
 	string m_strOnUser2;
 	string m_strOnUser3;
 	string m_strOnUser4;
+#endif
 
+public:
+	/** Called when the entity is fulled initialized.
+		Any spawn key/value info pairs have already been
+		dealt with. So now we can make full decisions on the entity.
+		Always make sure to call `super::Spawned();` inside your method when overriding. */
+	virtual void Spawned(void);
+
+	/** Server: Called when the entity first spawns or when game-logic requests the entity to
+		return to its original spawn state. */
+	virtual void Respawn(void);
+
+	/** This method handles entity key/value pairs on map load.
+		You can easily convert the `strValue` parameter using the ReadFloat etc. methods
+		that are part of NSIO. */
+	virtual void SpawnKey(string,string);
+
+	/** Get the level time the entity finds itself in.
+		Always use this instead of the `time` global. The `time` global may not
+		be valid on every type of entity. Specifically, MOVETYPE_PUSH entities only
+		update upon movement (so that any think timers the entity may have are not triggered
+		when it is at rest. */
+	nonvirtual float GetTime(void);
+
+#ifdef SERVER
 	/* helper functions to allocate outputs */
-	nonvirtual void(entity, string) UseOutput;
-	nonvirtual string(string, string) PrepareOutput;
-	nonvirtual string(string) CreateOutput;
+	/** Triggers an output field that has been created beforehand */
+	nonvirtual void UseOutput(entity,string);
+	/** Prepares an output field.
+	Commonly used within ::SpawnKey() to prepare output fields.
+	For example: m_someOutput = PrepareOutput(m_someOutput, strValue);`
+	This will ensure that when an entity wants to trigger multiple outputs
+	that those can be called with a single `UseOutput` call. */
+	nonvirtual string PrepareOutput(string,string);
 
-	virtual void(float) Save;
-	virtual void(string,string) Restore;
+	/** Called at the end of setting up an entity's output field. 
+	The input is a 5 parameter, commar separated string.
+	The return value is the targetname of a minion object that'll handle 
+	the triggering (and counting down of uses) as defined in the Source Engine's
+	Input/Output specification. */
+	nonvirtual string CreateOutput(string);
 
-	/* save game */
-	nonvirtual void(float, string, float) SaveFloat;
-	nonvirtual void(float, string, int) SaveInt;
-	nonvirtual void(float, string, string) SaveString;
-	nonvirtual void(float, string, vector) SaveVector;
-	nonvirtual void(float, string, bool) SaveBool;
-	nonvirtual void(float, string, entity) SaveEntity;
+	/** Handles saving a copy of this entity to a given filehandle.
+		Within you want to use the ::SaveFloat() etc. methods to write
+		the internal member attributes to the specified file handle. */
+	virtual void Save(float);
 
-	/* load game */
-	nonvirtual float(string) ReadFloat;
-	nonvirtual int(string) ReadInt;
-	nonvirtual string(string) ReadString;
-	nonvirtual vector(string) ReadVector;
-	nonvirtual bool(string) ReadBool;
-	nonvirtual entity(string) ReadEntity;
+	/** Similar to `::SpawnKey` but for save-game fields.
+		Whatever you write into file handles within your `::Save()` method
+		needs to be read back in here. */
+	virtual void Restore(string,string);
 
-	/* Handle incoming entities input messaging */
-	virtual void(entity, string, string) Input;
+	/* save game related methods */
+	/** Saves a floating point key/value pair to a filehandle. */
+	nonvirtual void SaveFloat(float,string,float);
+	/** Saves a integer key/value pair to a filehandle. */
+	nonvirtual void SaveInt(float,string,int);
+	/** Saves a string key/value pair to a filehandle. */
+	nonvirtual void SaveString(float,string,string);
+	/** Saves a vector key/value pair to a filehandle. */
+	nonvirtual void SaveVector(float,string,vector);
+	/** Saves a boolean key/value pair to a filehandle. */
+	nonvirtual void SaveBool(float,string,bool);
+	/** Saves an entity id key/value pair to a filehandle. */
+	nonvirtual void SaveEntity(float,string,entity);
+
+	/* load game/spawn helper functions */
+	/** reads a floating point value from a string */
+	nonvirtual float ReadFloat(string);
+	/** reads an integer value from a string */
+	nonvirtual int ReadInt(string);
+	/** reads a string value from a string (with error checking) */
+	nonvirtual string ReadString(string);
+	/** reads a vector from a string */
+	nonvirtual vector ReadVector(string);
+	/** reads a boolean value from a string */
+	nonvirtual bool ReadBool(string);
+	/** read an entity id, converted to entity, from a string */
+	nonvirtual entity ReadEntity(string);
+
+	/** Called when we are being prompted by another object/function with an input message. */
+	virtual void Input(entity,string,string);
 #endif
 };
 

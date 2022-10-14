@@ -14,6 +14,11 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/** This entity class represents every player client.
+
+When clients connect via the connect command, they will findthemselves
+of type NSClientPlayer.
+*/
 class
 NSClientPlayer:NSClientSpectator
 {

@@ -173,7 +173,7 @@ NSClientPlayer::UpdateAliveCam(void)
 			makevectors(view_angles);
 			vector vStart = [pSeat->m_vecPredictedOrigin[0], pSeat->m_vecPredictedOrigin[1], pSeat->m_vecPredictedOrigin[2] + 16] + (v_right * 4);
 			vector vEnd = vStart + (v_forward * -48) + [0,0,16] + (v_right * 4);
-			traceline(vStart, vEnd, FALSE, self);
+			traceline(vStart, vEnd, FALSE, this);
 			g_view.SetCameraOrigin(trace_endpos + (v_forward * 5));
 		}
 	}

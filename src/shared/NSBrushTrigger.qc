@@ -19,7 +19,6 @@ NSBrushTrigger::NSBrushTrigger(void)
 {
 }
 
-#ifdef SERVER
 void
 NSBrushTrigger::InitBrushTrigger(void)
 {
@@ -27,4 +26,3 @@ NSBrushTrigger::InitBrushTrigger(void)
 	SetMovetype(MOVETYPE_NONE);
 	SetSolid(SOLID_BSPTRIGGER);
 }
-#endif

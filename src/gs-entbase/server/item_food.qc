@@ -33,10 +33,11 @@ item_food:NSEntity
 
 	void(void) item_food;
 
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(void) Setup;
-	virtual void(entity) Touch;
+	virtual void Spawned(void);
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void Setup(void);
+	virtual void Touch(entity);
 };
 
 void

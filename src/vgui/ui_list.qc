@@ -40,6 +40,10 @@ class CUIList:CUIWidget
 	
 	virtual void(int) SetItemCount;
 	virtual int(void) GetItemCount;
+
+
+	virtual int(void) GetOffset;
+	virtual vector(void) GetSize;
 	
 	virtual void(void(void)) CallOnScroll;
 	

@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-enumflags
+typedef enumflags
 {
 	RDENT_CHANGED_ORIGIN_X,
 	RDENT_CHANGED_ORIGIN_Y,
@@ -37,9 +37,9 @@ enumflags
 	RDENT_CHANGED_RENDERAMT,
 	RDENT_CHANGED_RENDERMODE,
 	RDENT_CHANGED_CONTROLLER
-};
+} nsrenderableentity_changed_t;
 
-enum
+typedef enum
 { 
 	RM_NORMAL = 0,
 	RM_COLOR = 1,
@@ -52,9 +52,9 @@ enum
 	RM_WORLDGLOW = 9, /* Source 2004 */
 	RM_DONTRENDER = 10, /* Source 2004 */
 	RM_TRIGGER
-};
+} rendermode_t;
 
-enum
+typedef enum
 {
 	RFX_NORMAL = 0,
 	RFX_SLOWPULSE = 1,
@@ -76,7 +76,7 @@ enum
 	RFX_GLOWSHELL = 19,
 	RFX_GLOWSHELL2 = 20,
 	RFX_Q2PULSE = 21
-};
+} renderfx_t;
 
 #ifdef CLIENT
 var int autocvar_cl_showtriggers = FALSE;
@@ -84,26 +84,14 @@ var int autocvar_rm_unlit_additive = TRUE;
 var int autocvar_rm_unlit_texture = TRUE;
 #endif
 
-/* anything with a physical appearance that's networked */
+/** This entity represents any NSEntity with advanced rendering properties.
+This includes GoldSource and Source Engine style rendering effects.
+
+This is the bare minimum for most characters as it allows for body
+and bone control settings. */
 class NSRenderableEntity:NSEntity
 {
-	void(void) NSRenderableEntity;
-
-	/* overrides */
-	virtual void(string, string) SpawnKey;
-#ifdef SERVER
-	virtual void(entity, string, string) Input;
-	virtual void(void) Respawn;
-	virtual void(float) Save;
-	virtual void(string,string) Restore;
-	virtual void(void) EvaluateEntity;
-	virtual float(entity, float) SendEntity;
-#else
-	virtual void(void) RenderDebugSkeleton;
-	virtual void(float,float) ReceiveEntity;
-	virtual float(void) predraw;
-#endif
-
+private:
 	/* new */
 	PREDICTED_FLOAT(m_flBoneControl1);
 	PREDICTED_FLOAT(m_flBoneControl2);
@@ -114,50 +102,92 @@ class NSRenderableEntity:NSEntity
 	PREDICTED_FLOAT_N(colormap);
 	PREDICTED_VECTOR_N(glowmod);
 
-	/* model events */
-	float m_flBaseTime;
-
-	virtual void(void) MakeStatic;
-
 	PREDICTED_FLOAT(m_iRenderFX);
 	PREDICTED_FLOAT(m_iRenderMode);
 	PREDICTED_FLOAT(m_flRenderAmt);
 	PREDICTED_VECTOR(m_vecRenderColor);
 
-	/* set */
-	nonvirtual void(int) SetBody;
-	nonvirtual void(float) SetRenderFX;
-	nonvirtual void(float) SetRenderMode;
-	nonvirtual void(float) SetRenderAmt;
-	nonvirtual void(vector) SetRenderColor;
-	nonvirtual void(float) SetBoneControl1;
-	nonvirtual void(float) SetBoneControl2;
-	nonvirtual void(float) SetBoneControl3;
-	nonvirtual void(float) SetBoneControl4;
-	nonvirtual void(float) SetBoneControl5;
+	/* model events */
+	float m_flBaseTime;
 
-	nonvirtual int(void) GetBody;
-	nonvirtual float(void) GetRenderMode;
-	nonvirtual float(void) GetRenderFX;
-	nonvirtual float(void) GetRenderAmt;
-	nonvirtual vector(void) GetRenderColor;
-	nonvirtual float(void) GetBoneControl1;
-	nonvirtual float(void) GetBoneControl2;
-	nonvirtual float(void) GetBoneControl3;
-	nonvirtual float(void) GetBoneControl4;
-	nonvirtual float(void) GetBoneControl5;
+#ifdef SERVER
+	/* respawn */
+	float m_oldiRenderFX;
+	float m_oldiRenderMode;
+	float m_oldflRenderAmt;
+	vector m_oldvecRenderColor;
+#endif
+
+
+public:
+	void NSRenderableEntity(void);
+
+	/* overrides */
+	virtual void SpawnKey(string,string);
+#ifdef SERVER
+	virtual void Input(entity,string,string);
+	virtual void Respawn(void);
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void EvaluateEntity(void);
+	virtual float SendEntity(entity,float);
+#else
+	virtual void RenderDebugSkeleton(void);
+	virtual void ReceiveEntity(float,float);
+	virtual float predraw(void);
+#endif
+
+	virtual void MakeStatic(void);
+
+	/* set */
+	/** Sets the bodygroup of the entity. */
+	nonvirtual void SetBody(int);
+	/** Sets the render FX type of the entity. Check renderfx_t for details. */
+	nonvirtual void SetRenderFX(float);
+	/** Sets the render mode type of the entity. Check rendermode_t for details. */
+	nonvirtual void SetRenderMode(float);
+	/** Sets the render amount of the entity. This depdends on the context. */
+	nonvirtual void SetRenderAmt(float);
+	/** Sets the render color of the entity. */
+	nonvirtual void SetRenderColor(vector);
+	/** Sets the value of the bone controller #1. */
+	nonvirtual void SetBoneControl1(float);
+	/** Sets the value of the bone controller #2. */
+	nonvirtual void SetBoneControl2(float);
+	/** Sets the value of the bone controller #3. */
+	nonvirtual void SetBoneControl3(float);
+	/** Sets the value of the bone controller #4. */
+	nonvirtual void SetBoneControl4(float);
+	/** Sets the value of the bone controller #5. */
+	nonvirtual void SetBoneControl5(float);
+	/** Returns the bodygroup of the entity. */
+	nonvirtual int GetBody(void);
+	/** Returns the render mode of the entity. */
+	nonvirtual float GetRenderMode(void);
+	/** Returns the render FX of the entity. */
+	nonvirtual float GetRenderFX(void);
+	/** Returns the render amount of the entity. */
+	nonvirtual float GetRenderAmt(void);
+	/** Returns the render color of the entity. */
+	nonvirtual vector GetRenderColor(void);
+	/** Returns the value of the entity's bone controller #1. */
+	nonvirtual float GetBoneControl1(void);
+	/** Returns the value of the entity's bone controller #2. */
+	nonvirtual float GetBoneControl2(void);
+	/** Returns the value of the entity's bone controller #3. */
+	nonvirtual float GetBoneControl3(void);
+	/** Returns the value of the entity's bone controller #4. */
+	nonvirtual float GetBoneControl4(void);
+	/** Returns the value of the entity's bone controller #5. */
+	nonvirtual float GetBoneControl5(void);
 
 	/* model events */
-	virtual void(float, int, string) HandleAnimEvent;
+	/** Callback for any model event that gets triggered while playing a framegroup. */
+	virtual void HandleAnimEvent(float, int,string);
 
 	#ifdef CLIENT
-		nonvirtual void(void) RenderFXPass;
-	#else
-		/* respawn */
-		float m_oldiRenderFX;
-		float m_oldiRenderMode;
-		float m_oldflRenderAmt;
-		vector m_oldvecRenderColor;
+	/** Called by predraw(); and will set the appropriate rendering specific fields. */
+	nonvirtual void RenderFXPass(void);
 	#endif
 };
 

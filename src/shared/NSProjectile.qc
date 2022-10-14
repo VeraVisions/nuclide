@@ -52,7 +52,7 @@ NSProjectile::SetModel(string mdl)
 }
 
 void
-NSProjectile::AnimateThink(void)
+NSProjectile::_AnimateThink(void)
 {
 	frame++;
 
@@ -69,6 +69,6 @@ NSProjectile::Animate(int startframe, int endframe, float framerate)
 	m_iProjectileAnimStart = endframe;
 	m_flProjectileFramerate = framerate;
 	frame = startframe;
-	think = AnimateThink;
+	think = _AnimateThink;
 	nextthink = time + m_flProjectileFramerate;
 }

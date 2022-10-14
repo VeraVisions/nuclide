@@ -46,8 +46,8 @@ NSSurfacePropEntity::Spawned(void)
 
 #ifdef SERVER
 	/* tokenization complete, now we can load propdata */
-	SurfaceDataFinish();
-	PropDataFinish();
+	_SurfaceDataFinish();
+	_PropDataFinish();
 
 	/* Input/Output system */
 	if (m_strOnBreak)
@@ -629,7 +629,7 @@ NSSurfacePropEntity::SetPropData(string type)
 	m_strPropData = type;
 }
 void
-NSSurfacePropEntity::SurfaceDataFinish(void)
+NSSurfacePropEntity::_SurfaceDataFinish(void)
 {
 	SurfData_SetStage(m_strSurfData);
 
@@ -639,7 +639,7 @@ NSSurfacePropEntity::SurfaceDataFinish(void)
 		m_iMaterial = -1;
 }
 void
-NSSurfacePropEntity::PropDataFinish(void)
+NSSurfacePropEntity::_PropDataFinish(void)
 {
 	PropData_SetStage(m_strPropData);
 

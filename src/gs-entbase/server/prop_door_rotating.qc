@@ -29,17 +29,18 @@ prop_door_rotating:NSPointTrigger
 	float m_flDistance;
 	float m_flSpeed;
 
-	void(void) prop_door_rotating;
+	void prop_door_rotating(void);
 
 	/* overrides */
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(void) Respawn;
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void Respawn(void);
+	virtual void SpawnKey(string,string);
 
-	virtual void(void) Interact;
-	virtual void(vector, void(void)) Turn;
-	virtual void(void) Opened;
-	virtual void(void) Closed;
+	virtual void Interact(void);
+	virtual void Turn(vector,void(void));
+	virtual void Opened(void);
+	virtual void Closed(void);
 };
 
 void

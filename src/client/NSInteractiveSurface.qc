@@ -34,9 +34,14 @@ This entity was introduced in Nuclide (2022).
 */
 
 #ifdef CLIENT
+/** This entity class represents fully interactive surfaces.
+
+Place one around a map and you can render any UI class of your choosing.
+*/
 class
 NSInteractiveSurface:NSEntity
 {
+private:
 	CUIWidget m_UIChain;
 	string m_strSurfaceMat;
 	bool m_bInFocus;
@@ -44,25 +49,26 @@ NSInteractiveSurface:NSEntity
 	vector m_vecCursorPos;
 	bool m_bCached;
 	float m_flScale;
-
 	string m_strUIClass;
 	vector m_vecUIRes;
 	vector m_vecWorldSize;
 	float m_flUseDistance;
 
-	void(void) NSInteractiveSurface;
+public:
+	void NSInteractiveSurface(void);
 
-	virtual float(void) predraw;
-	virtual void(void) postdraw;
+	virtual float predraw(void);
+	virtual void postdraw(void);
+	
+	virtual bool Input(float,float,float,float);
+	virtual void Spawned(void);
+	virtual void SpawnKey(string,string);
+	virtual void RenderScene(void);
+	
+	virtual bool FocusCheck(vector,vector);
+	
+	virtual void RendererRestarted(void);
 
-	virtual bool(float,float,float,float) Input;
-	virtual void(void) Spawned;
-	virtual void(string, string) SpawnKey;
-	virtual void(void) RenderScene;
-
-	virtual bool(vector, vector) FocusCheck;
-
-	virtual void(void) RendererRestarted;
 };
 
 bool

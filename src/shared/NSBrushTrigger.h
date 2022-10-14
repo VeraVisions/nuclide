@@ -14,11 +14,17 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/** This entity class represents brush volume based triggers.
+
+It's primary function is to consistently set up triggers.
+In your sub-class you'll probably want to call `InitBrushTrigger()`
+inside its `::Respawn()` reimplementation.
+*/
 class NSBrushTrigger:NSEntity
 {
-	void(void) NSBrushTrigger;
+public:
+	void NSBrushTrigger(void);
 
-#ifdef SERVER
-	virtual void(void) InitBrushTrigger;
-#endif
+	/** Sets up a brush trigger volume based on the brush information. */
+	virtual void InitBrushTrigger(void);
 };

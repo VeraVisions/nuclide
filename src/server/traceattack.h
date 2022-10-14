@@ -20,10 +20,11 @@ void TraceAttack_FireBullets(int iShots, vector vecPos, int iDamage, vector vecS
 void TraceAttack_SetPenetrationPower(int power);
 #endif
 
-
+/** This class handles traceline/hitscan attacks. */
 class
 NSTraceAttack
 {
+private:
 	/* multi-part damage */
 	entity m_eMultiTarget;
 	int m_iMultiValue;
@@ -44,24 +45,39 @@ NSTraceAttack
 	int m_iTotalPenetrations;
 #endif
 
-	void(void) NSTraceAttack;
+	virtual void _ApplyDamage(void);
+	virtual void _FireSingle(vector,vector,float,float);
 
-	virtual void(void) _ApplyDamage;
-	virtual void(vector, vector, float, float) _FireSingle;
-	virtual void(void) Fire;
+public:
+	void NSTraceAttack(void);
 
-	virtual void(int) SetShots;
-	virtual void(vector) SetOrigin;
-	virtual void(int) SetDamage;
-	virtual void(vector) SetSpread;
-	virtual void(int) SetWeapon;
-	virtual void(float) SetRange;
-	virtual void(entity) SetOwner;
+	/** Call once your parameters are set up to cast the trace/hitscan */
+	virtual void Fire(void);
 
-#ifdef BULLETPENETRATION
-	virtual void(float) SetPenetrationMaxThickness;
-	virtual void(int) SetPenetrationPower;
-#endif
+	/** Sets the number of traces performed. Default is 1. */
+	virtual void SetShots(int);
+	/** Sets the position of where we're firing from. */
+	virtual void SetOrigin(vector);
+	/** Sets the amount of damage a single trace will do. */
+	virtual void SetDamage(int);
+	/** Sets the spread, which increases with distance. */
+	virtual void SetSpread(vector);
+	/** Sets the weapon associated with the trace. */
+	virtual void SetWeapon(int);
+	/** Sets the maximum range the trace will cast, before it is discarded. */
+	virtual void SetRange(float);
+	/** Sets the owner responsible for the trace. */
+	virtual void SetOwner(entity);
+	
+	#ifdef BULLETPENETRATION
+	/** Sets the maximum thickness that the trace is not allowed to penetrate.
+	Your project needs to have the `BULLETPENETRATION` flag enabled. */
+	virtual void SetPenetrationMaxThickness(float);
+	/** Sets the power level of the traceline when penetrating surfaces.
+	Your project needs to have the `BULLETPENETRATION` flag enabled. */
+	virtual void SetPenetrationPower(int);
+	#endif
+
 };
 
 NSTraceAttack g_traceAttack;

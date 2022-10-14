@@ -39,6 +39,8 @@ class CUpdateList:CWidget
 	virtual void(void(void)) SetDClicked;
 	virtual void(int) SetSelected;
 	virtual int(void) GetSelected;
+	virtual void SetScroll(int);
+	virtual void SetMax(int);
 };
 
 void

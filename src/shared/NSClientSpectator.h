@@ -36,8 +36,19 @@ enumflags
 	SPECFLAG_BUTTON_RELEASED,
 };
 
+/** This entity class represents every spectator client.
+
+These types of clients are not meant to interfere with the gameplay,
+they are merely observers.
+
+NSClientPlayer is a sub-class which has the ability to interact with games.
+
+When clients connect via the `spectate` command, they will findthemselves
+of type NSClientSpectator.
+*/
 class NSClientSpectator:NSClient
 {
+private:
 	PREDICTED_FLOAT(spec_ent);
 	PREDICTED_FLOAT(spec_flags);
 	NSClientSpectatorMode_t spec_mode; NSClientSpectatorMode_t spec_mode_net;
@@ -46,36 +57,37 @@ class NSClientSpectator:NSClient
 
 	int sequence;
 
-	void(void) NSClientSpectator;
+public:
+	void NSClientSpectator(void);
 
-	virtual void(void) ClientInput;
-
-	virtual void(void) InputNext;
-	virtual void(void) InputPrevious;
-	virtual void(void) InputMode;
-
-	virtual void(void) WarpToTarget;
-
-	virtual void(void) PreFrame;
-	virtual void(void) PostFrame;
-	virtual void(void) SpectatorTrackPlayer;
-
-	virtual bool(void) IsFakeSpectator;
-	virtual bool(void) IsRealSpectator;
-	virtual bool(void) IsDead;
-	virtual bool(void) IsPlayer;
-
-#ifdef SERVER
-	virtual void(float) Save;
-	virtual void(string,string) Restore;
-	virtual void(void) EvaluateEntity;
-	virtual float(entity, float) SendEntity;
-	virtual void(void) RunClientCommand;
-#else
-	virtual void(void) ClientInputFrame;
-	virtual void(float,float) ReceiveEntity;
-	virtual float(void) predraw;
-#endif
+	virtual void ClientInput(void);
+	
+	virtual void InputNext(void);
+	virtual void InputPrevious(void);
+	virtual void InputMode(void);
+	
+	virtual void WarpToTarget(void);
+	
+	virtual void PreFrame(void);
+	virtual void PostFrame(void);
+	virtual void SpectatorTrackPlayer(void);
+	
+	virtual bool IsFakeSpectator(void);
+	virtual bool IsRealSpectator(void);
+	virtual bool IsDead(void);
+	virtual bool IsPlayer(void);
+	
+	#ifdef SERVER
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void EvaluateEntity(void);
+	virtual float SendEntity(entity,float);
+	virtual void RunClientCommand(void);
+	#else
+	virtual void ClientInputFrame(void);
+	virtual void ReceiveEntity(float,float);
+	virtual float predraw(void);
+	#endif
 };
 
 #ifdef CLIENT

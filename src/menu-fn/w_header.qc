@@ -47,6 +47,7 @@ string g_header_text[] = {
 
 class CHeader:CWidget
 {
+private:
 	int m_header;
 	float m_lerp;
 	int m_start_x;
@@ -59,13 +60,34 @@ class CHeader:CWidget
 	int m_end_h;
 	int m_visible;
 
-	virtual void(void) m_execute = 0;
+	virtual void m_execute(void) = 0;
 
-	virtual void(void) Draw;
-	virtual void(int, int, int, int) SetStartEndPos;
-	virtual void(int, int, int, int) SetStartEndSize;
-	virtual void(int) SetHeader;
+public:
+	void CHeader(void);
+
+	virtual void Draw(void);
+	virtual void SetStartEndPos(int,int,int,int);
+	virtual void SetStartEndSize(int,int,int,int);
+	virtual void SetHeader(int);
+
+	virtual void SetExecute(void(void) vFunc);
 };
+
+void
+CHeader::CHeader(void)
+{
+	m_header = 0;
+	m_lerp = 0.0f;
+	m_start_x = 0;
+	m_start_y = 0;
+	m_end_x = 0;
+	m_end_y = 0;
+	m_start_w = 0;
+	m_start_h = 0;
+	m_end_w = 0;
+	m_end_h = 0;
+	m_visible = 0;
+}
 
 void
 CHeader::Draw(void)

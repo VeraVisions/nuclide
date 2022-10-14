@@ -14,59 +14,93 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-class CGameRules:NSIO
+/** This class represents active gamerules. */
+class NSGameRules:NSIO
 {
+private:
 	int m_iIntermission;
 	float m_flIntermissionTime;
 	float m_flIntermissionCycle;
 
-	void() CGameRules;
+public:
+	void NSGameRules(void);
 
-	virtual void(float) Save;
-	virtual void(string,string) Restore;
+	/* overrides */
+	virtual void Save(float);
+	virtual void Restore(string,string);
 
-	virtual void(void) InitPostEnts;
-
+	/** Overridable: Called when all map entities have initialized. */
+	virtual void InitPostEnts(void);
+	
 	/* logic */
-	virtual void(void) FrameStart;
-	virtual bool(NSClientPlayer,string) ConsoleCommand;
-
+	/** Overridable: Called every server frame. */
+	virtual void FrameStart(void);
+	/** Overridable: Called when a client issues a server command. */
+	virtual bool ConsoleCommand(NSClientPlayer,string);
+	
 	/* client */
-	virtual void(NSClientPlayer) PlayerConnect;
-	virtual void(NSClientPlayer) PlayerDisconnect;
-	virtual void(NSClientPlayer) PlayerKill;
-	virtual void(NSClientPlayer) PlayerSpawn;
-	virtual void(NSClientPlayer) PlayerPreFrame;
-	virtual void(NSClientPlayer) PlayerPostFrame;
-	virtual void(NSClientPlayer) PlayerDeath;
-	virtual void(NSClientPlayer) PlayerPain;
-	virtual bool(NSClientPlayer) PlayerCanAttack;
-
+	/** Overridable: Called when a NSClientPlayer joins the server. */
+	virtual void PlayerConnect(NSClientPlayer);
+	/** Overridable: Called when a NSClientPlayer leaves the server. */
+	virtual void PlayerDisconnect(NSClientPlayer);
+	/** Overridable: Called when a NSClientPlayer issues the `kill` console command. */
+	virtual void PlayerKill(NSClientPlayer);
+	/** Overridable: Called when a NSClientPlayer spawns, called sometime after joining. */
+	virtual void PlayerSpawn(NSClientPlayer);
+	/** Overridable: Called before running physics on the NSClientPlayer in question. */
+	virtual void PlayerPreFrame(NSClientPlayer);
+	/** Overridable: Called after running physics on the NSClientPlayer in question. */
+	virtual void PlayerPostFrame(NSClientPlayer);
+	/** Overridable: Called when a NSClientPlayer dies in the game. */
+	virtual void PlayerDeath(NSClientPlayer);
+	/** Overridable: Called when a NSClientPlayer feels pain. */
+	virtual void PlayerPain(NSClientPlayer);
+	/** Overridable: Called to check if a NSClientPlayer can attack. */
+	virtual bool PlayerCanAttack(NSClientPlayer);
+	
 	/* level transitions */
-	virtual void(void) LevelNewParms;
-	virtual void(NSClientPlayer) LevelChangeParms;
-
+	/** Overridable: Called to set up new level parms for any NSClientPlayer. */
+	virtual void LevelNewParms(void);
+	/** Overridable: Called to store parms for a specific NSClientPlayer. */
+	virtual void LevelChangeParms(NSClientPlayer);
+	
 	/* Entities/Item manipulation */
-	virtual int(int) MaxItemPerSlot;
-	virtual bool(void) MonstersSpawn;
-	virtual void(entity,entity,float,int,damageType_t) DamageApply;
-	virtual bool(entity, vector) DamageCheckTrace;
-	virtual void(vector,entity,float,float,int,int) DamageRadius;
-
+	/** Overridable: Returns how many items players can carry in a given slot. */
+	virtual int MaxItemPerSlot(int);
+	/** Overridable: Returns if NSMonster or NSTalkMonster entities can spawn. */
+	virtual bool MonstersSpawn(void);
+	/** Overridable: shim to handle application of direct damage. */
+	virtual void DamageApply(entity,entity,float,int,damageType_t);
+	/** Checks if an entity can be attacked from a given position. */
+	virtual bool DamageCheckTrace(entity,vector);
+	/** Overridable: shim to handle application of indirect radius damage. */
+	virtual void DamageRadius(vector,entity,float,float,int,int);
+	
 	/* end of a game */
-	virtual void(void) IntermissionStart;
-	virtual void(void) IntermissionCycle;
-	virtual void(void) IntermissionEnd;
-	virtual bool(void) InIntermission;
+	/** Called when intermission starts. */
+	virtual void IntermissionStart(void);
+	/** Called when intermission calls a new map. */
+	virtual void IntermissionCycle(void);
+	/** Called when intermission ents. */
+	virtual void IntermissionEnd(void);
+	/** Returns if the gamerules find themselves in an intermission. */
+	virtual bool InIntermission(void);
 
-	virtual bool(void) IsTeamplay;
-	virtual bool(void) IsMultiplayer;
-
+	/** Returns if this gamerule considers itself teamplay oriented. */
+	virtual bool IsTeamplay(void);
+	/** Returns if the gamerule is a multiplayer game. */
+	virtual bool IsMultiplayer(void);
+	
 	/* spectator */
-	/*virtual void(NSClientPlayer) SpectatorConnect;
-	virtual void(NSClientPlayer) SpectatorDisconnect;
-	virtual void(NSClientPlayer) SpectatorThink;*/
+	/*
+	virtual void SpectatorConnect(NSClientPlayer);
+	virtual void SpectatorDisconnect(NSClientPlayer);
+	virtual void SpectatorThink(NSClientPlayer);
+	*/
+
 };
 
 /* our currently running mode */
-CGameRules g_grMode;
+NSGameRules g_grMode;
+
+#define CGameRules NSGamerules

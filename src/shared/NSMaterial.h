@@ -14,21 +14,30 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/** Parent-class of all materials, used for footsteps, impacts and more. */
 class
 NSMaterial
 {
+private:
 	bool m_bPenetrable;
 	bool m_bFootsteps;
 	float m_flFriction;
 	string m_strStepSound;
 
-	void(void) NSMaterial;
+public:
+	void NSMaterial(void);
 
-	virtual float(void) GetFriction;
-	virtual bool(void) Footsteps;
-	virtual bool(void) Penetrable;
-	virtual void(NSClient) FootstepSound;
-	virtual void(vector, vector) Impact;
+	/** Returns the friction multiplier of this surface. */
+	virtual float GetFriction(void);
+	/** Returns whether the material creates footstep sounds. */
+	virtual bool Footsteps(void);
+	/** Returns whether or not the material is penetrable. */
+	virtual bool Penetrable(void);
+	/** Called whenever a client makes a stepping sound. */
+	virtual void FootstepSound(NSClient);
+	/** Called whenever a bullet impact happens onto this material. */
+	virtual void Impact(vector,vector);
+
 };
 
 hashtable g_hashMaterials;

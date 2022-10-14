@@ -558,7 +558,7 @@ NSPhysicsEntity::ApplyTorqueCenter(vector vecTorque)
 }
 
 void
-NSPhysicsEntity::TouchThink(void)
+NSPhysicsEntity::_TouchThink(void)
 {
 	if (!m_iEnabled) {
 		return;
@@ -695,7 +695,7 @@ NSPhysicsEntity::Respawn(void)
 		dimension_hit = 1;
 	}
 
-	think = TouchThink;
+	think = _TouchThink;
 	nextthink = time + 0.1f;
 
 	effects &= ~EF_NOSHADOW;

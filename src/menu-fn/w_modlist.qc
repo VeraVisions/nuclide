@@ -40,6 +40,8 @@ class CModList:CWidget
 	//virtual void(void(int)) SetChanged;
 	virtual void(int) SetSelected;
 	virtual int(void) GetSelected;
+	virtual void SetScroll(int);
+	virtual void SetChanged(void(void));
 };
 
 void

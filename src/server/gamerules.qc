@@ -17,14 +17,14 @@
 var bool autocvar_sv_friendlyFire = false;
 
 void
-CGameRules::CGameRules(void)
+NSGameRules::NSGameRules(void)
 {
 	forceinfokey(world, "teamplay", "0");
 	identity = 2;
 }
 
 void
-CGameRules::Save(float handle)
+NSGameRules::Save(float handle)
 {
 	SaveInt(handle, "m_iIntermission", m_iIntermission);
 	SaveFloat(handle, "m_flIntermissionTime", m_flIntermissionTime);
@@ -32,7 +32,7 @@ CGameRules::Save(float handle)
 }
 
 void
-CGameRules::Restore(string strKey, string strValue)
+NSGameRules::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "m_iIntermission":
@@ -49,32 +49,32 @@ CGameRules::Restore(string strKey, string strValue)
 
 /* init */
 void
-CGameRules::InitPostEnts(void)
+NSGameRules::InitPostEnts(void)
 {
 	//print("Init!\n");
 }
 
 /* logic */
 void
-CGameRules::FrameStart(void)
+NSGameRules::FrameStart(void)
 {
 	//print("StartFrame!\n");
 }
 bool
-CGameRules::ConsoleCommand(NSClientPlayer pl, string cmd)
+NSGameRules::ConsoleCommand(NSClientPlayer pl, string cmd)
 {
 	return (false);
 }
 
 /* client */
 void
-CGameRules::PlayerConnect(NSClientPlayer pl)
+NSGameRules::PlayerConnect(NSClientPlayer pl)
 {
 	if (Plugin_PlayerConnect(pl) == FALSE)
 		bprint(PRINT_HIGH, sprintf("%s connected\n", pl.netname));
 }
 void
-CGameRules::PlayerDisconnect(NSClientPlayer pl)
+NSGameRules::PlayerDisconnect(NSClientPlayer pl)
 {
 	bprint(PRINT_HIGH, sprintf("%s disconnected\n", pl.netname));
 
@@ -87,75 +87,75 @@ CGameRules::PlayerDisconnect(NSClientPlayer pl)
 }
 
 void
-CGameRules::PlayerKill(NSClientPlayer pl)
+NSGameRules::PlayerKill(NSClientPlayer pl)
 {
 	Damage_Apply(pl, pl, pl.health, 0, DMG_SKIP_ARMOR);
 }
 void
-CGameRules::PlayerDeath(NSClientPlayer pl)
+NSGameRules::PlayerDeath(NSClientPlayer pl)
 {
 	//print("PlayerDeath!\n");
 	pl.Death();
 }
 void
-CGameRules::PlayerPain(NSClientPlayer pl)
+NSGameRules::PlayerPain(NSClientPlayer pl)
 {
 	//print("ClientKill!\n");
 	pl.Pain();
 }
 void
-CGameRules::PlayerSpawn(NSClientPlayer pl)
+NSGameRules::PlayerSpawn(NSClientPlayer pl)
 {
 	//print("PutClientInServer!\n");
 }
 void
-CGameRules::PlayerPreFrame(NSClientPlayer pl)
+NSGameRules::PlayerPreFrame(NSClientPlayer pl)
 {
 	//print("PlayerPreThink!\n");
 }
 void
-CGameRules::PlayerPostFrame(NSClientPlayer pl)
+NSGameRules::PlayerPostFrame(NSClientPlayer pl)
 {
 	//print("PlayerPostThink!\n");
 }
 
 /* level transitions */
 void
-CGameRules::LevelNewParms(void)
+NSGameRules::LevelNewParms(void)
 {
 	//print("LevelNewParms!\n");
 }
 void
-CGameRules::LevelChangeParms(NSClientPlayer pl)
+NSGameRules::LevelChangeParms(NSClientPlayer pl)
 {
 	//print("LevelChangeParms!\n");
 }
 
 /* spectator */
 /*void
-CGameRules::SpectatorConnect(player pl)
+NSGameRules::SpectatorConnect(player pl)
 {
 	//print("SpectatorConnect!\n");
 }
 void
-CGameRules::SpectatorDisconnect(player pl)
+NSGameRules::SpectatorDisconnect(player pl)
 {
 	//print("SpectatorDisconnect!\n");
 }
 void
-CGameRules::SpectatorThink(player pl)
+NSGameRules::SpectatorThink(player pl)
 {
 	//print("SpectatorThink!\n");
 }*/
 
 int
-CGameRules::MaxItemPerSlot(int slot)
+NSGameRules::MaxItemPerSlot(int slot)
 {
 	return (-1);
 }
 
 void
-CGameRules::IntermissionStart(void)
+NSGameRules::IntermissionStart(void)
 {
 	if (m_iIntermission)
 		return;
@@ -170,7 +170,7 @@ CGameRules::IntermissionStart(void)
 }
 
 void
-CGameRules::IntermissionCycle(void)
+NSGameRules::IntermissionCycle(void)
 {
 	static NSEntity cam;
 	NSEntity targ;
@@ -221,31 +221,31 @@ CGameRules::IntermissionCycle(void)
 }
 
 bool
-CGameRules::InIntermission(void)
+NSGameRules::InIntermission(void)
 {
 	return (m_iIntermission) ? true : false;
 }
 
 bool
-CGameRules::MonstersSpawn(void)
+NSGameRules::MonstersSpawn(void)
 {
 	return (true);
 }
 
 /* init */
 bool
-CGameRules::IsTeamplay(void)
+NSGameRules::IsTeamplay(void)
 {
 	return (false);
 }
 bool
-CGameRules::IsMultiplayer(void)
+NSGameRules::IsMultiplayer(void)
 {
 	return (false);
 }
 
 void
-CGameRules::DamageApply(entity t, entity c, float dmg, int w, damageType_t type)
+NSGameRules::DamageApply(entity t, entity c, float dmg, int w, damageType_t type)
 {
 	/* Damage */
 	NSSurfacePropEntity eTarget = (NSSurfacePropEntity)t;
@@ -360,7 +360,7 @@ CGameRules::DamageApply(entity t, entity c, float dmg, int w, damageType_t type)
 
 /* checks if we can hit an entity at 5 of the same spots */
 bool
-CGameRules::DamageCheckTrace(entity t, vector vecHitPos)
+NSGameRules::DamageCheckTrace(entity t, vector vecHitPos)
 {
 	/* We're lazy. Who cares */
 	if (t.solid == SOLID_BSP)
@@ -390,7 +390,7 @@ CGameRules::DamageCheckTrace(entity t, vector vecHitPos)
 }
 
 void
-CGameRules::DamageRadius(vector org, entity attacker, float dmg, float r, int check, int w)
+NSGameRules::DamageRadius(vector org, entity attacker, float dmg, float r, int check, int w)
 {
 	float new_dmg;
 	float dist;
@@ -429,7 +429,7 @@ CGameRules::DamageRadius(vector org, entity attacker, float dmg, float r, int ch
 }
 
 void
-CGameRules::IntermissionEnd(void)
+NSGameRules::IntermissionEnd(void)
 {
 	if (!m_iIntermission)
 		return;
@@ -447,10 +447,7 @@ CGameRules::IntermissionEnd(void)
 }
 
 bool
-CGameRules::PlayerCanAttack(NSClientPlayer bp)
+NSGameRules::PlayerCanAttack(NSClientPlayer bp)
 {
 	return true;
 }
-
-/* our currently running mode */
-CGameRules g_grMode;

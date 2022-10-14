@@ -44,7 +44,7 @@ Chat_Draw(void)
 	/* the voting stuff resides here too, for now */
 	if (serverkey("vote_cmd")) {
 		string tempstr;
-		vector temppos;
+		vector temppos = [0.0f, 0.0f, 0.0f];
 		tempstr = sprintf("^3Vote: %s", serverkey("vote_cmd"));
 		temppos[0] = (g_hudres[0]/2) - (stringwidth(tempstr, TRUE, [12,12]) / 2);
 		temppos[1] = 96;

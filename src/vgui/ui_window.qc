@@ -40,6 +40,9 @@ class CUIWindow:CUIWidget
 	virtual void(void) m_vMoveCB = 0;
 
 	void(void) CUIWindow;
+
+	virtual void(vector) SetPos;
+	virtual vector(void) GetPos;
 	
 	virtual void(string) SetTitle;
 	virtual string() GetTitle;
@@ -62,6 +65,7 @@ class CUIWindow:CUIWidget
 
 	virtual bool(void) Visible;
 	virtual void(void) Draw;
+	virtual void(void) Show;
 	virtual void(void) Hide;
 	virtual bool(float, float, float, float) Input;
 };
