@@ -15,7 +15,7 @@
  */
 
 #include "NSOutput.h"
-#include "gamerules.h"
+#include "NSGameRules.h"
 #include "sentences.h"
 #include "skill.h"
 #include "logging.h"
@@ -23,7 +23,7 @@
 #include "spawn.h"
 #include "weapons.h"
 #include "plugins.h"
-#include "traceattack.h"
+#include "NSTraceAttack.h"
 #include "footsteps.h"
 
 #include "route.h"

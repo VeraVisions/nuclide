@@ -5,7 +5,6 @@
 #includelist
 shared/ambient_generic.qc
 shared/decals.qc
-shared/spraylogo.qc
 shared/func_friction.qc
 shared/env_sprite.qc
 shared/env_bubbles.qc

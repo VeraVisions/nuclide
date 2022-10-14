@@ -14,123 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-#ifdef SERVER
-void
-Spray_RemoveAll(entity entOwner)
-{
-	for (entity eFind = world;(eFind = find(eFind, classname, "Spray"));) {
-		if (eFind.owner == entOwner) {
-			remove(eFind);
-		}
-	}
-}
-
-float
-Spray_SendEntity(entity ePEnt, float fChanged)
-{
-	if (clienttype(ePEnt) != CLIENTTYPE_REAL)
-		return (0);
-
-	WriteByte(MSG_ENTITY, ENT_SPRAY);
-	WriteCoord(MSG_ENTITY, self.origin[0]);
-	WriteCoord(MSG_ENTITY, self.origin[1]);
-	WriteCoord(MSG_ENTITY, self.origin[2]);
-	WriteCoord(MSG_ENTITY, self.angles[0]);
-	WriteCoord(MSG_ENTITY, self.angles[1]);
-	WriteCoord(MSG_ENTITY, self.angles[2]);
-	WriteEntity(MSG_ENTITY, self.owner);
-	return (1);
-}
-
-void
-CSEv_Spraylogo(void)
-{
-	entity spray;
-	vector src;
-	vector co;
-
-	src = self.origin + self.view_ofs;
-
-	makevectors(self.v_angle);
-	traceline(src, src + v_forward * 128, FALSE, self);
-
-	if (trace_fraction >= 1.0f) {
-		return;
-	}
-
-	/* we only allow one active spray */
-	Spray_RemoveAll(self);
-
-	/* spawn the new one */
-	spray = spawn(); 
-	spray.classname = "Spray";
-	spray.owner = self;
-	spray.solid = SOLID_NOT;
-	setorigin(spray, trace_endpos);
-
-	/* calculate the rotation by taking our current view and mapping it
-	 * against the surface we're looking at */
-	makevectors([self.v_angle[0] * -1, self.v_angle[1], self.v_angle[2]]);
-	co = v_forward -(v_forward * trace_plane_normal) * trace_plane_normal;
-
-	/* quick fix */
-	if (trace_plane_normal[2] == 0) {
-		co = '0 0 1';
-	}
-
-	/* apply the angles and apply networking */
-	spray.angles = vectoangles(co, trace_plane_normal);
-	spray.SendEntity = Spray_SendEntity;
-	spray.SendFlags = 1;
-
-	Sound_Play(self, CHAN_VOICE, "player.spraylogo");
-}
-#endif
-
 #ifdef CLIENT
-/** This entity class represents a NSClientPlayer their spraylogo. */
-class NSSpraylogo:NSEntity
-{
-private:
-	vector m_vecColor;
-	vector m_vecPosition;
-	vector m_vecAngles;
-	int m_iOwnerID;
-	string m_strName;
-	string m_m_strPath;
-	bool m_bInitialized;
-	bool m_bMonochrome;
-
-public:
-	void NSSpraylogo(void);
-
-	virtual float predraw(void);
-	virtual void RendererRestarted(void);
-};
-
-
-const string g_spray_mat_1 = \
-	"{\n" \
-		"cull disable\n" \
-		"polygonOffset\n" \
-		"{\n" \
-			"map $rt:%s\n" \
-			"blendfunc GL_SRC_COLOR GL_ONE_MINUS_SRC_COLOR\n" \
-			"rgbGen vertex\n" \
-		"}\n" \
-	"}";
-
-const string g_spray_mat_0 = \
-	"{\n" \
-		"cull disable\n" \
-		"polygonOffset\n" \
-		"{\n" \
-			"map $rt:%s\n" \
-			"blendfunc blend\n" \
-			"rgbGen vertex\n" \
-		"}\n" \
-	"}";
-
 void
 NSSpraylogo::RendererRestarted(void)
 {
@@ -214,5 +98,78 @@ Spray_Parse(void)
 	spSelf.m_strName = sprintf("spray_%i_%d", spSelf.m_iOwnerID, spSelf.m_bMonochrome);
 	spSelf.m_m_strPath = sprintf("simg_%i_%d", spSelf.m_iOwnerID, spSelf.m_bMonochrome);
 	spSelf.m_vecColor = stov(getplayerkeyvalue(spSelf.m_iOwnerID, "spraycolor"));
+}
+
+#else
+
+void
+Spray_RemoveAll(entity entOwner)
+{
+	for (entity eFind = world;(eFind = find(eFind, classname, "Spray"));) {
+		if (eFind.owner == entOwner) {
+			remove(eFind);
+		}
+	}
+}
+
+float
+Spray_SendEntity(entity ePEnt, float fChanged)
+{
+	if (clienttype(ePEnt) != CLIENTTYPE_REAL)
+		return (0);
+
+	WriteByte(MSG_ENTITY, ENT_SPRAY);
+	WriteCoord(MSG_ENTITY, self.origin[0]);
+	WriteCoord(MSG_ENTITY, self.origin[1]);
+	WriteCoord(MSG_ENTITY, self.origin[2]);
+	WriteCoord(MSG_ENTITY, self.angles[0]);
+	WriteCoord(MSG_ENTITY, self.angles[1]);
+	WriteCoord(MSG_ENTITY, self.angles[2]);
+	WriteEntity(MSG_ENTITY, self.owner);
+	return (1);
+}
+
+void
+CSEv_Spraylogo(void)
+{
+	entity spray;
+	vector src;
+	vector co;
+
+	src = self.origin + self.view_ofs;
+
+	makevectors(self.v_angle);
+	traceline(src, src + v_forward * 128, FALSE, self);
+
+	if (trace_fraction >= 1.0f) {
+		return;
+	}
+
+	/* we only allow one active spray */
+	Spray_RemoveAll(self);
+
+	/* spawn the new one */
+	spray = spawn(); 
+	spray.classname = "Spray";
+	spray.owner = self;
+	spray.solid = SOLID_NOT;
+	setorigin(spray, trace_endpos);
+
+	/* calculate the rotation by taking our current view and mapping it
+	 * against the surface we're looking at */
+	makevectors([self.v_angle[0] * -1, self.v_angle[1], self.v_angle[2]]);
+	co = v_forward -(v_forward * trace_plane_normal) * trace_plane_normal;
+
+	/* quick fix */
+	if (trace_plane_normal[2] == 0) {
+		co = '0 0 1';
+	}
+
+	/* apply the angles and apply networking */
+	spray.angles = vectoangles(co, trace_plane_normal);
+	spray.SendEntity = Spray_SendEntity;
+	spray.SendFlags = 1;
+
+	Sound_Play(self, CHAN_VOICE, "player.spraylogo");
 }
 #endif

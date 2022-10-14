@@ -103,4 +103,4 @@ public:
 /* our currently running mode */
 NSGameRules g_grMode;
 
-#define CGameRules NSGamerules
+#define CGameRules NSGameRules

@@ -6,10 +6,10 @@ nodes.qc
 skill.qc
 sentences.qc
 spawn.qc
-gamerules.qc
+NSGameRules.qc
 client.qc
 server.qc
-traceattack.qc
+NSTraceAttack.qc
 footsteps.qc
 vote.qc
 weapons.qc

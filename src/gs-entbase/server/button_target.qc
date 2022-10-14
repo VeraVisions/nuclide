@@ -30,15 +30,17 @@ BUTTA_TEXON : Texture choices will be inverted in case multiple frames exist.
 This entity was introduced in Quake (1996).
 */
 
-enumflags
+/** Spawnflags that button_target supports. */
+typedef enumflags
 {
-	BUTTA_USE,
-	BUTTA_TEXON
-};
+	BUTTA_USE,	/**< Button has to be used by a player to trigger, instead of being shot. */
+	BUTTA_TEXON	/**< Button texture starts in the **ON** state. */
+} sf_button_target_t;
 
 class
 button_target:NSSurfacePropEntity
 {
+public:
 	void(void) button_target;
 
 	virtual void(void) Respawn;

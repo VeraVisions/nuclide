@@ -27,6 +27,7 @@ player_pmove.qc
 propdata.qc
 surfaceproperties.qc
 NSMaterial.qc
+NSSpraylogo.qc
 util.qc
 weapons.qc
 
