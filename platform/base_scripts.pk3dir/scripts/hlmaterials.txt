@@ -1,0 +1,18 @@
+// define which material classes (right) are used for
+// which material ids (letters on the left side)
+B,BloodyFlesh
+C,Concrete
+D,Dirt
+F,Flesh
+G,Grate
+H,Alien
+K,Snow
+M,Metal
+N,Sand
+O,Foliage
+P,Computer
+S,Slosh
+T,Tile
+V,Vent
+W,Wood
+Y,Glass

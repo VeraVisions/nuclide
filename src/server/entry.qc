@@ -352,14 +352,7 @@ initents(void)
 
 	/* sound shader init */
 	Sound_Init();
-
-	/* only bother doing so on Half-Life BSP */
-	if (serverkeyfloat("*bspversion") == BSPVER_HL) {
-		HLMaterials_Init();
-	} else {
-		Materials_Init();
-	}
-
+	Materials_Init();
 	PMove_Init();
 
 	/* TODO: turn these effects into sound shaders */

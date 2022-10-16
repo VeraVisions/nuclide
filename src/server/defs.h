@@ -131,7 +131,6 @@ entity eActivator;
 int trace_surfaceflagsi;
 string startspot;
 string __fullspawndata;
-hashtable hashMaterials;
 
 /* damage related tempglobals, like trace_* */
 entity g_dmg_eAttacker;

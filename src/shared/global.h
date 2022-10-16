@@ -14,6 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+#ifdef DOXYGEN
+#define enumflags enum
+#endif
+
 void
 _NSLog(string msg)
 {
@@ -31,6 +35,5 @@ enumflags
        SEARCH_MULTISEARCH,
        SEARCH_NAMESORT
 };
-
 
 const vector g_vec_null = [0.0f, 0.0f, 0.0f];

@@ -19,10 +19,14 @@ class
 NSMaterial
 {
 private:
+	string m_strMaterialName;
+	
 	bool m_bPenetrable;
 	bool m_bFootsteps;
 	float m_flFriction;
 	string m_strStepSound;
+
+	nonvirtual void _PrecacheAndExit(string);
 
 public:
 	void NSMaterial(void);
@@ -38,9 +42,31 @@ public:
 	/** Called whenever a bullet impact happens onto this material. */
 	virtual void Impact(vector,vector);
 
+	/** Called upon init for each registered game material. */
+	virtual void Precache(void);
+
 };
 
 hashtable g_hashMaterials;
+hashtable hashMaterials;
 
 void Materials_Init(void);
 NSMaterial Material_FromTexture(string);
+
+/* legacy material compatibility */
+
+/** hlmaterial to classname mapper table */
+typedef struct
+{
+	string id;
+	string matclass;
+} hlmaterials_lut;
+
+hlmaterials_lut *g_hlmlut;
+var int g_hlmlut_count;
+var int g_hlmaterial_entries;
+
+var bool g_materialsAreLegacy;
+
+/* FIXME: world.... sigh, we should box this into a worldspawn class */
+.string materials_file;

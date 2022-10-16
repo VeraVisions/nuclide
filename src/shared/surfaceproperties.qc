@@ -15,8 +15,6 @@
 */
 
 #ifdef SERVER
-float HLMaterials_Fetch(string);
-
 /* takes a material id (e.g. 'W' for wood) and returns an breakmodel id */
 static materialType_t
 SurfData_IDtoMaterial(float mat)
@@ -464,7 +462,7 @@ void
 SurfData_Impact(entity e, int fl, vector org, vector ang)
 {
 	static void SurfData_Impact_SurfaceParm(entity e, int fl, vector org, vector ang) {
-#ifndef NEW_MATERIALS
+#ifdef OLD_MATERIALS
 		switch (serverkeyfloat("*bspversion")) {
 		case BSPVER_HL:
 			float surf;
