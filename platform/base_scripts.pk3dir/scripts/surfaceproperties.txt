@@ -8,6 +8,7 @@ default
 
 gs_material_glass
 {
+	gamematerial Y
 	fx_bulletimpact "fx_impact.glass"
 	bulletimpact "sfx_impact.glass"
 	stepleft "step_glass.left"
@@ -16,6 +17,7 @@ gs_material_glass
 
 gs_material_wood
 {
+	gamematerial W
 	fx_bulletimpact "fx_impact.wood"
 	bulletimpact "sfx_impact.wood"
 	stepleft "step_wood.left"
@@ -24,6 +26,7 @@ gs_material_wood
 
 gs_material_metal
 {
+	gamematerial M
 	fx_bulletimpact "fx_impact.metal"
 	bulletimpact "sfx_impact.metal"
 	stepleft "step_metal.left"
@@ -32,6 +35,7 @@ gs_material_metal
 
 gs_material_flesh
 {
+	gamematerial F
 	fx_bulletimpact "fx_impact.flesh"
 	bulletimpact "sfx_impact.flesh"
 	stepleft "step_flesh.left"
@@ -48,6 +52,7 @@ gs_material_cinderblock
 
 gs_material_tile
 {
+	gamematerial T
 	fx_bulletimpact "fx_impact.tile"
 	bulletimpact "sfx_impact.tile"
 	stepleft "step_tile.left"
@@ -56,6 +61,7 @@ gs_material_tile
 
 gs_material_computer
 {
+	gamematerial P
 	fx_bulletimpact "fx_impact.computer"
 	bulletimpact "sfx_impact.computer"
 	stepleft "step_computer.left"
@@ -80,6 +86,7 @@ gs_material_rock
 
 gs_material_flesh
 {
+	gamematerial F
 	fx_bulletimpact "fx_impact.flesh"
 	bulletimpact "sfx_impact.flesh"
 	stepleft "step_flesh.left"
@@ -88,6 +95,7 @@ gs_material_flesh
 
 gs_material_concrete
 {
+	gamematerial C
 	fx_bulletimpact "fx_impact.concrete"
 	bulletimpact "sfx_impact.concrete"
 	stepleft "step_concrete.left"
@@ -96,6 +104,7 @@ gs_material_concrete
 
 gs_material_dirt
 {
+	gamematerial D
 	fx_bulletimpact "fx_impact.dirt"
 	bulletimpact "sfx_impact.dirt"
 	stepleft "step_dirt.left"
@@ -104,6 +113,7 @@ gs_material_dirt
 
 gs_material_grate
 {
+	gamematerial G
 	fx_bulletimpact "fx_impact.grate"
 	bulletimpact "sfx_impact.grate"
 	stepleft "step_grate.left"
@@ -112,6 +122,7 @@ gs_material_grate
 
 gs_material_alien
 {
+	gamematerial H
 	fx_bulletimpact "fx_impact.alien"
 	bulletimpact "sfx_impact.alien"
 	stepleft "step_alien.left"
@@ -120,6 +131,7 @@ gs_material_alien
 
 gs_material_snow
 {
+	gamematerial K
 	fx_bulletimpact "fx_impact.snow"
 	bulletimpact "sfx_impact.snow"
 	stepleft "step_snow.left"
@@ -128,6 +140,7 @@ gs_material_snow
 
 gs_material_sand
 {
+	gamematerial N
 	fx_bulletimpact "fx_impact.sand"
 	bulletimpact "sfx_impact.sand"
 	stepleft "step_sand.left"
@@ -136,6 +149,7 @@ gs_material_sand
 
 gs_material_foliage
 {
+	gamematerial O
 	fx_bulletimpact "fx_impact.foliage"
 	bulletimpact "sfx_impact.foliage"
 	stepleft "step_slosh.left"
@@ -144,6 +158,7 @@ gs_material_foliage
 
 gs_material_slosh
 {
+	gamematerial S
 	fx_bulletimpact "fx_impact.slosh"
 	bulletimpact "sfx_impact.slosh"
 	stepleft "step_slosh.left"
@@ -152,6 +167,7 @@ gs_material_slosh
 
 gs_material_vent
 {
+	gamematerial V
 	fx_bulletimpact "fx_impact.snow"
 	bulletimpact "sfx_impact.snow"
 	stepleft "step_vent.left"

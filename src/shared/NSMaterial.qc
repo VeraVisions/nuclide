@@ -77,6 +77,10 @@ Materials_LoadFromMat(string filename)
 	}
 }
 
+/** FIXME: all this should be done exclusively in surfaceproperties.qc, however that
+is currently server-side only. Make it shared and then we can get rid of this
+whole file! */
+
 /** loads a temporary mapper so we can map letters to class names. */
 static void
 Materials_Mapper_Init(void)
@@ -84,15 +88,18 @@ Materials_Mapper_Init(void)
 	string sTemp;
 	int c = 0;
 	filestream fileLUT;
+	string spname;
+	bool inbrace = false;
 
-	fileLUT = fopen("scripts/hlmaterials.txt", FILE_READ);
+	fileLUT = fopen("scripts/surfaceproperties.txt", FILE_READ);
 	g_hlmlut_count = 0;
 
 	/* count valid entries. */
 	if (fileLUT >= 0) {
 		while ((sTemp = fgets(fileLUT))) {
-			if (tokenizebyseparator(sTemp, ",") == 2) {
-				g_hlmlut_count++;
+			if (tokenize_console(sTemp) == 2) {
+				if (argv(0) == "gamematerial")
+					g_hlmlut_count++;
 			}
 		}
 	}
@@ -105,11 +112,20 @@ Materials_Mapper_Init(void)
 	if (fileLUT >= 0) {
 		while ((sTemp = fgets(fileLUT))) {
 			/* tokenize and just parse this stuff in */
-			if (tokenizebyseparator(sTemp, ",") == 2) {
-				g_hlmlut[c].id = argv(0);
-				g_hlmlut[c].matclass = argv(1);
-				c++;
+			if (tokenize_console(sTemp) == 2) {
+				if (argv(0) == "gamematerial") {
+					g_hlmlut[c].id = argv(1);
+					g_hlmlut[c].matclass = spname;
+					c++;
+				}
 			}
+			
+			if (argv(0) == "{")
+				inbrace = true;
+			else if (argv(0) == "}")
+				inbrace = false;
+			else if (inbrace == false)
+				spname = argv(0);
 		}
 	}
 }
