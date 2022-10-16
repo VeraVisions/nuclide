@@ -315,6 +315,8 @@ init(float prevprogs)
 {
 	print("--------- Initializing Server-Module ----------\n");
 	Plugin_Init();
+
+	Sound_Init();
 	PropData_Init();
 	SurfData_Init();
 }
@@ -351,7 +353,6 @@ initents(void)
 	print("--------- Initializing Server Entities ----------\n");
 
 	/* sound shader init */
-	Sound_Init();
 	Materials_Init();
 	PMove_Init();
 

@@ -886,6 +886,8 @@ INPUT                  = src/ \
                          Documentation/Materials/commands/ \
                          Documentation/Materials/MatShaders.md \
                          Documentation/Materials/MatGoldSrc.md \
+                         Documentation/Surf_data.md \
+                         Documentation/Prop_data.md \
                          Documentation/Sound/ \
                          Documentation/Models/ \
                          Documentation/History.md \

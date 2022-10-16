@@ -84,6 +84,8 @@ typedef struct
 	string m_sndStrain;
 	string m_sndRoll;
 	string m_sndBreak;
+
+	string m_fxBulletImpact;
 } surfaceData_t;
 
 /* entity will have to have a .surfdata field pointing to an id */
@@ -113,7 +115,7 @@ typedef enum
 	SURFDATA_SND_STRAIN,
 	SURFDATA_SND_ROLL,
 	SURFDATA_SND_BREAK,
-	SURFDATA_FX_IMPACT,
+	SURFDATA_FX_BULLETIMPACT,
 } surfinfo_t;
 
 /* initialized SurfaceKit */
@@ -124,6 +126,8 @@ void SurfData_SetStage(string type);
 
 /* Finishes initialization, returns valid SurfaceKit id */
 int SurfData_Finish(void);
+
+int SurfData_TexToSurfData(string tex_name);
 
 /* Call an impact effect against an entity surface */
 void SurfData_Impact(entity e, int fl, vector org, vector ang);

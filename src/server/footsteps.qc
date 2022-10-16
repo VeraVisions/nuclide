@@ -24,44 +24,6 @@ Just precaching sound shaders for all the types of material oriented footsteps.
 void
 Footsteps_Init(void)
 {
-	Sound_Precache("step_default.left");
-	Sound_Precache("step_default.right");
-	Sound_Precache("step_alien.left");
-	Sound_Precache("step_alien.right");
-	Sound_Precache("step_computer.left");
-	Sound_Precache("step_computer.right");
-	Sound_Precache("step_concrete.left");
-	Sound_Precache("step_concrete.right");
-	Sound_Precache("step_dirt.left");
-	Sound_Precache("step_dirt.right");
-	Sound_Precache("step_flesh.left");
-	Sound_Precache("step_flesh.right");
-	Sound_Precache("step_foliage.left");
-	Sound_Precache("step_foliage.right");
-	Sound_Precache("step_glass.left");
-	Sound_Precache("step_glass.right");
-	Sound_Precache("step_grate.left");
-	Sound_Precache("step_grate.right");
-	Sound_Precache("step_metal.left");
-	Sound_Precache("step_metal.right");
-	Sound_Precache("step_sand.left");
-	Sound_Precache("step_sand.right");
-	Sound_Precache("step_slosh.left");
-	Sound_Precache("step_slosh.right");
-	Sound_Precache("step_snow.left");
-	Sound_Precache("step_snow.right");
-	Sound_Precache("step_tile.left");
-	Sound_Precache("step_tile.right");
-	Sound_Precache("step_vent.left");
-	Sound_Precache("step_vent.right");
-	Sound_Precache("step_wood.left");
-	Sound_Precache("step_wood.right");
-	Sound_Precache("step_ladder.left");
-	Sound_Precache("step_ladder.right");
-	Sound_Precache("step_wade.left");
-	Sound_Precache("step_wade.right");
-	Sound_Precache("step_swim.left");
-	Sound_Precache("step_swim.right");
 }
 
 /*
@@ -77,179 +39,33 @@ Footsteps_HLBSP(NSClientPlayer target)
 {
 	string mat_name = "";
 	string tex_name = "";
+	string sound = "";
 
 	//tracebox(target.origin, PHY_HULL_MIN, PHY_HULL_MAX, target.origin + [0,0,-48], MOVE_NORMAL, target);
 	traceline(target.origin + target.view_ofs, target.origin + [0,0,-48], FALSE, target);
 	tex_name = getsurfacetexture(trace_ent, getsurfacenearpoint(trace_ent, trace_endpos));
 
-	if (target.flags & FL_ONGROUND) {
-		tex_name = Materials_FixName(tex_name);
-
-		switch((float)hash_get(hashMaterials, tex_name)) {
-		case MATID_ALIEN:
-			mat_name = "step_alien";
-			break;
-		case MATID_BLOODYFLESH:
-			mat_name = "step_flesh";
-			break;
-		case MATID_COMPUTER:
-			mat_name = "step_computer";
-			break;
-		case MATID_CONCRETE:
-			mat_name = "step_concrete";
-			break;
-		case MATID_DIRT:
-			mat_name = "step_dirt";
-			break;
-		case MATID_FLESH:
-			mat_name = "step_flesh";
-			break;
-		case MATID_FOLIAGE:
-			mat_name = "step_foliage";
-			break;
-		case MATID_GLASS:
-			mat_name = "step_glass";
-			break;
-		case MATID_GRATE:
-			mat_name = "step_grate";
-			break;
-		case MATID_METAL:
-			mat_name = "step_metal";
-			break;
-		case MATID_SLOSH:
-			mat_name = "step_slosh";
-			break;
-		case MATID_SNOW:
-			mat_name = "step_snow";
-			break;
-		case MATID_TILE:
-			mat_name = "step_tile";
-			break;
-		case MATID_VENT:
-			mat_name = "step_vent";
-			break;
-		case MATID_WOOD:
-			mat_name = "step_wood";
-			break;
-		default:
-			mat_name = "step_default";
-			break;
-		}
+	if (!(target.flags & FL_ONGROUND)) {
+		return;
 	} else if (target.flags & FL_ONLADDER) {
 		mat_name = "step_ladder";
+		
+		if (target.step)
+			Sound_Play(target, CHAN_BODY, sprintf("%s.left", mat_name));
+		else
+			Sound_Play(target, CHAN_BODY, sprintf("%s.right", mat_name));
+
+		return;
 	}
 
 	if (target.step) {
-		Sound_Play(target, CHAN_BODY, sprintf("%s.left", mat_name));
+		Sound_Play(target, CHAN_BODY, 
+			SurfData_GetInfo(SurfData_TexToSurfData(tex_name), SURFDATA_SND_STEPLEFT));
 	} else {
-		Sound_Play(target, CHAN_BODY, sprintf("%s.right", mat_name));
-	}
-}
-
-/*
-=================
-Footsteps_VVBSP
-
-Modern BSP format which uses surfaceflags to specify materials on surfaces.
-=================
-*/
-void
-Footsteps_VVBSP(NSClientPlayer target)
-{
-	string mat_name = "";
-
-	/* WIP */
-	if (target.flags & FL_ONGROUND) {
-		target.hitcontentsmaski = CONTENTBITS_POINTSOLID;
-		tracebox(target.origin, target.mins, target.maxs, (target.origin + [0,0,-16]), MOVE_NORMAL, target);
-		target.hitcontentsmaski = 0;
-		trace_surfaceflagsi &= ~SURF_MASK;
-
-		switch (trace_surfaceflagsi) {
-		case SURF_ALIEN:
-			mat_name = "step_alien";
-			break;
-		case SURF_BLOODYFLESH:
-			mat_name = "step_flesh";
-			break;
-		case SURF_FOLIAGE:
-			mat_name = "step_foliage";
-			break;
-		case SURF_COMPUTER:
-			mat_name = "step_computer";
-			break;
-		case SURF_DIRT:
-			mat_name = "step_dirt";
-			break;
-		case SURF_VENT:
-			mat_name = "step_vent";
-			break;
-		case SURF_GRATE:
-			mat_name = "step_grate";
-			break;
-		case SURF_METAL:
-			mat_name = "step_metal";
-			break;
-		case SURF_GLASS:
-			mat_name = "step_glass";
-			break;
-		case SURF_SAND:
-			mat_name = "step_sand";
-			break;
-		case SURF_SLOSH:
-			mat_name = "step_slosh";
-			break;
-		case SURF_SNOW:
-			mat_name = "step_snow";
-			break;
-		case SURF_TILE:
-			mat_name = "step_tile";
-			break;
-		case SURF_WOOD:
-			mat_name = "step_wood";
-			break;
-		case SURF_CONCRETE:
-			mat_name = "step_concrete";
-			break;
-		default:
-			mat_name = "step_default";
-		}
-	} else if (target.flags & FL_ONLADDER) {
-		mat_name = "step_ladder";
+		Sound_Play(target, CHAN_BODY,
+			SurfData_GetInfo(SurfData_TexToSurfData(tex_name), SURFDATA_SND_STEPRIGHT));
 	}
 
-	if (target.step) {
-		Sound_Play(target, CHAN_BODY, sprintf("%s.left", mat_name));
-	} else {
-		Sound_Play(target, CHAN_BODY, sprintf("%s.right", mat_name));
-	}
-}
-
-/*
-=================
-Footsteps_Default
-
-Default for any map format which we don't support or don't know how to support
-materials for.
-=================
-*/
-void
-Footsteps_Default(NSClientPlayer target)
-{
-	string mat_name = "";
-
-	/* WIP */
-	if (target.flags & FL_ONGROUND) {
-		mat_name = "step_default";
-	} else if (target.flags & FL_ONLADDER) {
-		mat_name = "step_ladder";
-	}
-
-	if (target.step) {
-		Sound_Play(target, CHAN_BODY, sprintf("%s.left", mat_name));
-	} else {
-		Sound_Play(target, CHAN_BODY, sprintf("%s.right", mat_name));
-	}
 }
 
 /*
@@ -275,54 +91,42 @@ Footsteps_Update(void)
 	pl = (NSClientPlayer)self;
 
 	if (pl.movetype == MOVETYPE_WALK) {
-		if ((pl.velocity[0] == 0 && pl.velocity[1] == 0) || pl.step_time > time) {
+		if ((pl.velocity[0] == 0 && pl.velocity[1] == 0) || pl.step_time > time)
 			return;
-		}
 
 		if (pl.waterlevel == 1) {
-			if (pl.step) {
+			if (pl.step)
 				Sound_Play(pl, CHAN_BODY, "step_slosh.left");
-			} else {
+			else
 				Sound_Play(pl, CHAN_BODY, "step_slosh.right");
-			}
+
 			pl.step_time = time + 0.35f;
 		} else if (pl.waterlevel == 2) {
-			if (pl.step) {
+			if (pl.step)
 				Sound_Play(pl, CHAN_BODY, "step_wade.left");
-			} else {
+			else
 				Sound_Play(pl, CHAN_BODY, "step_wade.right");
-			}
+		
 			pl.step_time = time + 1.0f;
 		}  else if (pl.waterlevel == 3) {
-			if (pl.step) {
+			if (pl.step)
 				Sound_Play(pl, CHAN_BODY, "step_swim.left");
-			} else {
+			else
 				Sound_Play(pl, CHAN_BODY, "step_swim.right");
-			}
+
 			pl.step_time = time + 2.0f;
 		} else {
 			/* make it so we step once we land */
 			if (!(pl.flags & FL_ONGROUND) && !(pl.flags & FL_ONLADDER)) {
 				pl.step_time = 0.0f;
 				return;
+			}
 		}
 
 		/* the footsteps call might overwrite this later */
 		pl.step_time = time + 0.35;
 
-		switch (serverkeyfloat("*bspversion")) {
-		case BSPVER_HL:
-			Footsteps_HLBSP(pl);
-			break;
-		case BSPVER_Q3: /* Q3 */
-		case BSPVER_RTCW: /* RtCW */
-		case BSPVER_RBSP: /* RFVBSP */
-			Footsteps_VVBSP(pl);
-			break;
-		default:
-			Footsteps_Default(pl);
-		}
-		}
+		Footsteps_HLBSP(pl);
 
 		/* switch between feet */
 		pl.step = 1 - pl.step;

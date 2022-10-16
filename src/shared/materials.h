@@ -52,56 +52,6 @@ typedef enum
 } materialType_t;
 
 
-/* HLBSP materials.txt character id's */
-//#define MATID_UNUSED1			'A'
-#define MATID_BLOODYFLESH		'B'
-#define MATID_CONCRETE			'C'
-#define MATID_DIRT			'D'
-//#define MATID_UNUSED2			'E'
-#define MATID_FLESH			'F'
-#define MATID_GRATE			'G'
-#define MATID_ALIEN			'H'
-//#define MATID_UNUSED3			'I'
-//#define MATID_GRASS			'J'
-//#define MATID_PLASTIC			'L'
-#define MATID_METAL			'M'
-#define MATID_FOLIAGE			'O'
-#define MATID_COMPUTER			'P'
-//#define MATID_ASPHALT			'Q'
-//#define MATID_BRICK			'R'
-#define MATID_SLOSH			'S'
-#define MATID_TILE			'T'
-#define MATID_CARDBOARD			'U'
-#define MATID_VENT			'V'
-#define MATID_WOOD			'W'
-//#define MATID_UNUSED4			'X'
-#define MATID_GLASS			'Y'
-//#define MATID_UNUSED5			'Z'
-
-/* CS defines snow as 'N' on GoldSrc, whereas in Source it's reserved for sand */
-#ifdef CSTRIKE
-#define MATID_SNOW			'N'
-#define MATID_SAND			'K'
-#else
-#define MATID_SNOW			'K'
-#define MATID_SAND			'N'
-#endif
-
-/* modern additions, not implemented yet */
-#define MATID_CLAY			1
-#define MATID_PLASTER			2
-#define MATID_ROCK			3
-#define MATID_RUBBER			4
-#define MATID_SHEETROCK			5
-#define MATID_CLOTH			6
-#define MATID_CARPET			7
-#define MATID_PAPER			8
-#define MATID_UPHOLSTERY		9
-#define MATID_PUDDLE			10
-#define MATID_MUD			11
-#define MATID_SANDBARREL		12
-
-
 /* q3 bsp base flags */
 #define SURF_NODAMAGE		0x1i		// never give falling damage
 #define SURF_SLICK		0x2i		// effects game physics
@@ -134,7 +84,7 @@ typedef enum
 #define SURF_RESERVED6		0x04000000i
 #define SURF_PENETRATE		0x08000000i
 
-/* material surfaceflags (need to be masked) */
+/* old TW material surfaceflags (need to be masked) */
 #define SURF_MASK		0x0FFFFFFFi
 #define SURF_ALIEN		0x10000000i
 #define SURF_BLOODYFLESH	0x20000000i

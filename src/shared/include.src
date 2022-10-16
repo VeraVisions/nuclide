@@ -32,5 +32,4 @@ util.qc
 weapons.qc
 
 ../xr/include.src
-../materials/include.src
 #endlist

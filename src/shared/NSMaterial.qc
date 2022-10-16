@@ -14,83 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-void
-NSMaterial::NSMaterial(void)
-{
-	m_bPenetrable = false;
-	m_bFootsteps = false;
-	m_flFriction = 1.0f;
-	m_strStepSound = "step.default";
-}
-
-void
-NSMaterial::_PrecacheAndExit(string cname)
-{
-	/* make it searchable */
-	classname = "NSMaterial";
-	m_strMaterialName = cname;
-
-	Precache();
-}
-
-
-float
-NSMaterial::GetFriction(void)
-{
-	return (m_flFriction);
-}
-
-bool
-NSMaterial::Footsteps(void)
-{
-	return (m_bFootsteps);
-}
-
-bool
-NSMaterial::Penetrable(void)
-{
-	return (m_bPenetrable);
-}
-
-void
-NSMaterial::Precache(void)
-{
-	/* foobar */
-}
-
-void
-NSMaterial::FootstepSound(NSClient client)
-{
-	/* foobar */
-}
-
-void
-NSMaterial::Impact(vector vecOrigin, vector vecAngle)
-{
-	print(sprintf("Called impact on material %S at %v, %v\n", m_strMaterialName, vecOrigin, vecAngle));
-}
-
-/** Takes a material classname and precaches it. */
-static void
-Materials_PrecacheClass(string cname)
-{
-	string func = strcat("spawnfunc_", cname);
-
-	/* does the material class exist? */
-	if (isfunction(func)) {
-		entity oldself = self;
-		void(void) vFunc;
-		vFunc = externvalue(-2, func);
-		NSMaterial new_mat = spawn(NSMaterial);
-		self = new_mat;
-		vFunc();
-		new_mat._PrecacheAndExit(cname);
-		self = oldself;
-		print(sprintf("material class %s cached successfully.\n", cname));
-	} else {
-		print(sprintf("material class %s failed to load.\n", cname));
-	}
-}
 
 /* general purpose functions to interact with the material system */
 static void
@@ -144,7 +67,6 @@ Materials_LoadFromMat(string filename)
 
 				if (command == "material") {
 					hash_add(g_hashMaterials, materialname, parameters, EV_STRING);
-					Materials_PrecacheClass(parameters);
 					print(sprintf("added Material %S type %S\n", materialname, parameters));
 					break;
 				}
@@ -186,7 +108,6 @@ Materials_Mapper_Init(void)
 			if (tokenizebyseparator(sTemp, ",") == 2) {
 				g_hlmlut[c].id = argv(0);
 				g_hlmlut[c].matclass = argv(1);
-				Materials_PrecacheClass(argv(1));
 				c++;
 			}
 		}
@@ -296,37 +217,4 @@ Materials_Init(void)
 			Materials_LoadFromMat(search_getfilename(searchy, i));
 		}
 	}
-}
-
-/** Returns an NSMaterial for a given material. */
-NSMaterial
-Material_FromTexture(string tex_name)
-{
-	NSMaterial ret = __NULL__;
-	string mat = "";
-
-	/* older map formats need their names 'fixed' */
-	if (g_materialsAreLegacy == true) {
-		tex_name = Materials_FixName(tex_name);
-	}
-
-	mat = (string)hash_get(g_hashMaterials, tex_name);
-
-	if not (mat)
-		return __NULL__;
-
-	/** look for all existing materials */
-	if (mat != "")
-	for (entity f = world; (f = find(f, ::classname, "NSMaterial"));) {
-		ret = (NSMaterial)f;
-
-		/* we found it */
-		if (ret.m_strMaterialName == mat)
-			return ret;
-	}
-
-	/* just return a dummy NSMaterial... */
-	ret = spawn(NSMaterial);
-	ret._PrecacheAndExit(mat);
-	return ret;
 }
