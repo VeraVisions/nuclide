@@ -880,12 +880,12 @@ INPUT                  = src/ \
                          Documentation/Launching.md \
                          Documentation/Filesystem.md \
                          Documentation/Classes.md \
-                         Documentation/Materials/mat_overview.md \
-                         Documentation/Materials/mat_commands.md \
-                         Documentation/Materials/mat_vmap.md \
+                         Documentation/Materials/MatOverview.md \
+                         Documentation/Materials/MatCommands.md \
+                         Documentation/Materials/MatVMap.md \
                          Documentation/Materials/commands/ \
-                         Documentation/Materials/mat_shaders.md \
-                         Documentation/Materials/mat_legacy.md \
+                         Documentation/Materials/MatShaders.md \
+                         Documentation/Materials/MatGoldSrc.md \
                          Documentation/Sound/ \
                          Documentation/Models/ \
                          Documentation/History.md \
