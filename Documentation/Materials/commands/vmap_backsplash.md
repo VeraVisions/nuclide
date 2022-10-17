@@ -1,10 +1,10 @@
 # Materials: VMap Commands {#mat_vmap}
 ## vmap_backsplash
-### Syntax {#syntax}
+### Syntax
 
 **vmap_backsplash <percent> <distance>**
 
-### Overview {#overview}
+### Overview
 
 Controls the percentage of [surface
 light](vmap_surfaceLight) backsplash (how

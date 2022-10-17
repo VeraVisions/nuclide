@@ -1,10 +1,10 @@
 # Materials: VMap Commands {#mat_vmap}
 ## vmap_invert
-### Syntax {#syntax}
+### Syntax
 
 **vmap_invert**
 
-### Overview {#overview}
+### Overview
 
 Inverts a surface normal. Works on brush faces, models and patches. Used
 in celshading to achieve the inverted backfacing hull.

@@ -1,10 +1,10 @@
 # Materials: VMap Commands {#mat_vmap}
 ## vmap_remapmaterial
-### Syntax {#syntax}
+### Syntax
 
 **vmap_remapMaterial <material>**
 
-### Overview {#overview}
+### Overview
 
 Allows the material to later become known as the specified material.
 

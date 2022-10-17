@@ -1,10 +1,10 @@
 # Materials: Commands {#mat_commands}
 ## depthwrite
-### Syntax {#syntax}
+### Syntax
 
 **depthWrite**
 
-### Overview {#overview}
+### Overview
 
 By default, writes to the depth buffer when
 [depthFunc](depthFunc) passes will happen

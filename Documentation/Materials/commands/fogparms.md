@@ -1,10 +1,10 @@
 # Materials: Commands {#mat_commands}
 ## fogparms
-### Syntax {#syntax}
+### Syntax
 
 **fogParms <red value> <green value> <blue value> <distance to opaque>**
 
-### Overview {#overview}
+### Overview
 
 **Note**: you must also specify "surfaceparm fog" to cause
 [vmap](vmap) to identify the surfaces inside the volume.

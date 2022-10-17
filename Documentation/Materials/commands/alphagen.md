@@ -1,10 +1,10 @@
 # Materials: Commands {#mat_commands}
 ## alphagen
-### Syntax {#syntax}
+### Syntax
 
 **alphaGen <func>**
 
-### Overview {#overview}
+### Overview
 
 The alpha channel can be specified like the [rgb
 channels](rgbGen). If not specified, it

@@ -1,11 +1,11 @@
 # Materials: Commands {#mat_commands}
 ## fte_clutter
-### Syntax {#syntax}
+### Syntax
 
 **fte_clutter <model> <spacing> <scale min> <scale max> <z offset>
 <angle min> <angle max>**
 
-### Overview {#overview}
+### Overview
 
 Similar to [vmap_surfaceModel (Material
 Command)](vmap_surfaceModel), however

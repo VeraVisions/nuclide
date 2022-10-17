@@ -1,6 +1,6 @@
 # Materials: Commands {#mat_commands}
 ## surfaceparm
-### Overview {#overview}
+### Overview
 
 The surfaceparm keyword is not only read by the VMAP compiler, but also
 by the renderer. A few keywords will only apply to any one of them.

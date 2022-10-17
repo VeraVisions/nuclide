@@ -1,10 +1,10 @@
 # Materials: Commands {#mat_commands}
 ## reflectmask
-### Syntax {#syntax}
+### Syntax
 
 **reflectmask <texturepath/texturename>**
 
-### Overview {#overview}
+### Overview
 
 Defines a texture that specifies which parts of a material will reveal a
 reflective material, such as a

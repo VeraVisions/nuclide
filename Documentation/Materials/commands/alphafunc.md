@@ -1,10 +1,10 @@
 # Materials: Commands {#mat_commands}
 ## alphafunc
-### Syntax {#syntax}
+### Syntax
 
 **alphaFunc <func>**
 
-### Overview {#overview}
+### Overview
 
 Determines the alpha test function used when rendering this surface.
 

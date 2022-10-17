@@ -1,10 +1,10 @@
 # Materials: VMap Commands {#mat_vmap}
 ## vmap_nodirty
-### Syntax {#syntax}
+### Syntax
 
 **vmap_nodirty**
 
-### Overview {#overview}
+### Overview
 
 This surface is not affected by dirt-mapping. The compiler baked variant
 of ambient occlusion.

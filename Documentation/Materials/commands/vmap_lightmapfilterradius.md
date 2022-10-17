@@ -1,11 +1,11 @@
 # Materials: VMap Commands {#mat_vmap}
 ## vmap_lightmapfilterradius
-### Syntax {#syntax}
+### Syntax
 
 **vmap_lightmapFilterRadius <lightmap filter radius>
 <light filter radius>**
 
-### Overview {#overview}
+### Overview
 
 This is usually used on [light emitting
 materials](vmap_surfaceLight) to

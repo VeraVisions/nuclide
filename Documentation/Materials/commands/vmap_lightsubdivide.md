@@ -1,10 +1,10 @@
 # Materials: VMap Commands {#mat_vmap}
 ## vmap_lightsubdivide
-### Syntax {#syntax}
+### Syntax
 
 **q3map_lightSubdivide <units>**
 
-### Overview {#overview}
+### Overview
 
 Used on surface lights (see [vmap_surfaceLight (Material
 Command)](vmap_surfaceLight)). Controls

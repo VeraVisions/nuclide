@@ -1,10 +1,10 @@
 # Materials: Commands {#mat_commands}
 ## tcmod
-### Syntax {#syntax}
+### Syntax
 
 **tcMod <func> &lt;…&gt;**
 
-### Overview {#overview}
+### Overview
 
 Specifies how texture coordinates are modified after they are generated.
 

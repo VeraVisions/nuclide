@@ -1,10 +1,10 @@
 # Materials: VMap Commands {#mat_vmap}
 ## vmap_lightimage
-### Syntax {#syntax}
+### Syntax
 
 **vmap_lightImage <texturepath>**
 
-### Overview {#overview}
+### Overview
 
 By default, surface lights use the average color of the source image to
 generate the color of the light. vmap_lightImage specifies an alternate

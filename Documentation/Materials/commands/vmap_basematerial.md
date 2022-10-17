@@ -1,10 +1,10 @@
 # Materials: VMap Commands {#mat_vmap}
 ## vmap_basematerial
-### Syntax {#syntax}
+### Syntax
 
 **vmap_baseMaterial <material>**
 
-### Overview {#overview}
+### Overview
 
 Copies the vmap_/surfaceparm commands from the specified material into
 this one.

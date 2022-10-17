@@ -1,10 +1,10 @@
 # Materials: Commands {#mat_commands}
 ## deformvertexes
-### Syntax {#syntax}
+### Syntax
 
 **deformVertexes <func>**
 
-### Overview {#overview}
+### Overview
 
 This command performs a general deformation on the surface's vertexes,
 changing the actual shape of the surface before drawing the shader

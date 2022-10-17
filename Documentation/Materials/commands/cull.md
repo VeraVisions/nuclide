@@ -1,10 +1,10 @@
 # Materials: Commands {#mat_commands}
 ## cull
-### Syntax {#syntax}
+### Syntax
 
 **cull <side>**
 
-### Overview {#overview}
+### Overview
 
 Every surface of a polygon has two sides, a front and a back. Typically,
 we only see the front or "out" side. For example, a solid block you only

@@ -1,12 +1,12 @@
 # Materials: Commands {#mat_commands}
 ## rgbgen
-### Syntax {#syntax}
+### Syntax
 
 **rgbGen <func>**
 
 **rgbGen wave <func> <base> <amp><phase> <freq>**
 
-### Overview {#overview}
+### Overview
 
 Defines what vertex colors are set to for any given surface.
 

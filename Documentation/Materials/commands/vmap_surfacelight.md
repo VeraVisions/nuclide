@@ -1,10 +1,10 @@
 # Materials: VMap Commands {#mat_vmap}
 ## vmap_surfacelight
-### Syntax {#syntax}
+### Syntax
 
 **vmap_surfacelight <intensity>**
 
-### Overview {#overview}
+### Overview
 
 The texture gives off light equal to the value set for it. The relative
 surface area of the texture in the world affects the actual amount of

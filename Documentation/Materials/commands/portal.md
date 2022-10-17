@@ -1,10 +1,10 @@
 # Materials: Commands {#mat_commands}
 ## portal
-### Syntax {#syntax}
+### Syntax
 
 **portal**
 
-### Overview {#overview}
+### Overview
 
 Specifies that this texture is the surface for a portal or mirror. In
 the game map, a portal entity must be placed directly in front of the

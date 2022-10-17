@@ -1,10 +1,10 @@
 # Materials: VMap Commands {#mat_vmap}
 ## vmap_backmaterial
-### Syntax {#syntax}
+### Syntax
 
 **vmap_backMaterial <material>**
 
-### Overview {#overview}
+### Overview
 
 This allows a brush surface to use a different material when you are
 inside it looking out.

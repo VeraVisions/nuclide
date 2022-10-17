@@ -1,10 +1,10 @@
 # Materials: VMap Commands {#mat_vmap}
 ## vmap_lightmapsampleoffset
-### Syntax {#syntax}
+### Syntax
 
 **vmap_lightmapSampleOffset <float>**
 
-### Overview {#overview}
+### Overview
 
 Takes a single parameter, defaulting to 1.0, which specifies how many
 units off a surface should the compiler sample lighting from. Use larger

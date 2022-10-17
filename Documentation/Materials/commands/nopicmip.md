@@ -1,10 +1,10 @@
 # Materials: Commands {#mat_commands}
 ## nopicmip
-### Syntax {#syntax}
+### Syntax
 
 **noPicMip**
 
-### Overview {#overview}
+### Overview
 
 This causes the texture to ignore user-set values for the gl_picmip cvar
 command. The image will always be high resolution. Example: Used to keep

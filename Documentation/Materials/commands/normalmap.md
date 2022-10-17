@@ -1,10 +1,10 @@
 # Materials: Commands {#mat_commands}
 ## normalmap
-### Syntax {#syntax}
+### Syntax
 
 **normalmap <texturepath/texturename>**
 
-### Overview {#overview}
+### Overview
 
 Specifies the default texture to use for any normalmap operations. This
 depends heavily on which [GLSL program](Shaders) is used

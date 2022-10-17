@@ -1,10 +1,10 @@
 # Materials: Commands {#mat_commands}
 ## fullbrightmap
-### Syntax {#syntax}
+### Syntax
 
 **fullbrightmap <texturepath/texturename>**
 
-### Overview {#overview}
+### Overview
 
 The texture is essentially a fullbright overlay on top of the
 diffuse/albedomap.

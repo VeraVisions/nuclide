@@ -1,10 +1,10 @@
 # Materials: Commands {#mat_commands}
 ## nomipmaps
-### Syntax {#syntax}
+### Syntax
 
 **noMipmaps**
 
-### Overview {#overview}
+### Overview
 
 This implies [noPicMip](noPicMip), but
 also prevents the generation of any lower resolution mipmaps for use by

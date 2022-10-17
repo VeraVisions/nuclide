@@ -2,18 +2,18 @@
 ## blendfunc
 ![OpenGL blending cheat-sheet](gl_blendmodes.jpg "from zanir.wz.cz/?p=60")
 
-### Syntax {#syntax}
+### Syntax
 
 **blendFunc <simplefunc>**
 
 **blendFunc <srcBlend> <destBlend>**
 
-### Overview {#overview}
+### Overview
 
 Blend functions are the keyword commands that tell the renderer how
 graphic layers are to be mixed together.
 
-### Usage {#usage}
+### Usage
 
 #### Simplified blend functions {#simplified_blend_functions}
 

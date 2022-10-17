@@ -1,10 +1,10 @@
 # Materials: Commands {#mat_commands}
 ## specularmap
-### Syntax {#syntax}
+### Syntax
 
 **specularmap <texturepath/texturename>**
 
-### Overview {#overview}
+### Overview
 
 Can set the specularity of the surface in relation to dlights.
 Specularity is the intensity of the light reflecting off the surface. In

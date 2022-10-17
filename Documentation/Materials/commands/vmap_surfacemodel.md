@@ -1,11 +1,11 @@
 # Materials: VMap Commands {#mat_vmap}
 ## vmap_surfacemodel
-### Syntax {#syntax}
+### Syntax
 
 **vmap_surfaceModel <modelpath> <density> <odds> <minscale> <maxscale>
 <minangle> <maxangle> <oriented>**
 
-### Overview {#overview}
+### Overview
 
 A surface with vmap_surfaceModel in its shader will randomly place a
 specified model across it's face. This is designed to place grass or

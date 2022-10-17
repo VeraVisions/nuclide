@@ -1,10 +1,10 @@
 # Materials: Commands {#mat_commands}
 ## reflectcube
-### Syntax {#syntax}
+### Syntax
 
 **reflectcube <texturepath/cubemapname>**
 
-### Overview {#overview}
+### Overview
 
 Specifies which cubemap to use on this material. By default, the engine
 will pass the nearest in-world cubemap instead.

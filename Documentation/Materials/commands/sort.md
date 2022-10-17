@@ -1,10 +1,10 @@
 # Materials: Commands {#mat_commands}
 ## sort
-### Syntax {#syntax}
+### Syntax
 
 **sort <value>**
 
-### Overview {#overview}
+### Overview
 
 Use this keyword to fine-tune the depth sorting of materials as they are
 compared against other materials in the game world. The basic concept is

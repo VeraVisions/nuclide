@@ -1,10 +1,10 @@
 # Materials: Compiler Commands {#mat_vmap}
 ## vmap_tesssize
-### Syntax {#syntax}
+### Syntax
 
 **vmap_tessSize <amount>**
 
-### Overview {#overview}
+### Overview
 
 Formely known as just **tessSize**.
 
