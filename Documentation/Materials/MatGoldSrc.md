@@ -1,20 +1,22 @@
 # "Materials" in GoldSrc
+
 In the GoldSrc games "Material" definitions handle what footsteps and what impact sounds are played against each texture in the game-world.
 
 ![Generic bullet impact effect in Half-Life](hl_impact.jpg)
 
 So when you walk on dirt, you can hear the difference; or when you shoot wood with a gun it will sound like wood.
 
-*Note:* While Nuclide supports this for legacy BSP files, please define the surface properties inside your [material](Documentation/Materials/MatOverview.md) using the **surfaceprop** command.
+**Note:** While Nuclide supports this for legacy BSP files, please define the surface properties inside your [material](Documentation/Materials/MatOverview.md) using the **surfaceprop** command.
 
 ## Details
-Usually, a game in the GoldSrc engine would provide a `sound/materials.txt` file, where each line defines the properties for a single (or a series of) textures.
+
+Usually, a game in the GoldSrc engine would provide a `sound/materials.txt` file, where each line defines the properties for a single (or a series of) textures by starting with a material id character, followed by whitespace, followed by a name matching pattern.
 
 For example:
 
 `C CONCRETEWALL`
 
-Will make any surface the type **concrete** that starts with the name `CONCRETEWALL`. In vanilla Half-Life, the second argument (name) can only be 12 characters long.
+Will give any surface the id **C** if it starts with the name `CONCRETEWALL`.
 
 It will also only compare the length of characters of the name above. So for example if you were to define:
 
@@ -22,30 +24,33 @@ It will also only compare the length of characters of the name above. So for exa
 
 Then `CONCRETEWALL` would still be marked as concrete, and any other texture that starts with `CONC[...]`.
 
-When you then walk around your level, the footstep will be aware of you being on a texture marked with the **concrete** attribute and play a different step sound. In theory.
+**Note:** In vanilla Half-Life, the second argument (name) can only be 12 characters long.
 
-There's many other types available in games such as Half-Life, a few of them conflict two so porting levels can sometimes be a bit more work than it first appears to be at first glance.
+When you then walk around your level, the footstep will then be aware of you being on a texture marked with the **C** attribute and play a different step sound. Games are free to define what those material id characters mean - so different games/mods may interpret it differently.
+
+Porting levels can sometimes be a bit more work than it first appears to be at first glance as a result!
 
 ## Later Enhancements
 
 ### Community additions
 
-In stock GoldSrc games, the **materials.txt** can be overwritten by a modification, and users could customize the file on the client-side only for themselves. This means there was no map specific materials, and mods could not inherit Half-Life's materials, so mods would always have to manage a nearly duplicate file if they desired custom texture sounds.
+In stock GoldSrc games, the `sound/materials.txt` can be overwritten by a modification but it couldn't be dynamically extended in any way.
+This means there was no possibility of map specific materials, and mods could not inherit Half-Life's materials, so mods would always have to manage a nearly duplicate file if they desired custom material definitions.
 
-A few mods tried to remedy this problem, the following below is methods
+A few mods tried to remedy this problem, the following below are methods
 documented so far:
 
-maps/MAPNAME.mat
+file named maps/MAPNAME.mat
 : Introduced in The Wastes (2003)
 
-maps/MAPNAME_materials.txt
+file named maps/MAPNAME_materials.txt
 : Convention by Andrew Lucas, creator of Trinity SDK, modeled after MAPNAME_details.txt
 
 worldspawn entity key named 'materials_file' with the value `PATH_TO/FILE.txt`
 : Introduced in Sven Co-op 5.0
 
 **All these methods are supported by Nuclide**, as one goal is to implement
-conventions by not only Valve but the community as well.
+conventions by not only Valve but the community as well!
 
 ### Nuclide additions
 
@@ -55,16 +60,15 @@ their own *inheritable* materials file:
 `sounds/materials_UNIQUENAME.txt`
 
 The idea here is that any mod or even map pack can include ONLY the textures
-used, and no longer will anyone have to manage a near-clone of materials.txt
+used, and no longer will anyone have to manage a near-clone of `sound/materials.txt`.
 
 For repackaging or modding purposes, if you desire to give your map custom
 material property definitions, we recommend **The Wastes** its method for individual maps,
-while the Nuclide method should be used for Mods or Map Packs. We find these to be
-the most clean and efficient way!
+while the Nuclide method should be used for **mods** or **map packs**.
 
-**NOTE**: We recommend only using materials text files for GoldSrc related modding
+**Note:** We recommend only using material text files for GoldSrc related modding
 purposes. It is inefficient for modern projects as there are much better
-standards already supported in Nuclide. You'll save a bit of memory that way too.
+standards already supported in Nuclide.
 
 # Material List
 
@@ -97,8 +101,6 @@ which Material ID character maps to which [surfaceproperty](Documentation/Surf_d
 This way you can add new materials to existing legacy maps without writing a line of code.
 
 Listed below are definitions for various games and mods. Only the changes and additions are listed since the rest are identical.
-
-The "*" indicates these definitions are not implemented in Nuclide
 
 ## GoldSrc Games/Mods
 
@@ -231,7 +233,7 @@ In Nuclide,
 |-------------------|---------------------|
 | 11                | Steam Pipe          |
 
-Alien Swarm: Reactive Drop uses the same definitions.
+**Alien Swarm: Reactive Drop uses the same definitions.**
 
 ### Counter-Strike: Global Offensive
 
