@@ -54,7 +54,3 @@ Depending on the gamemode set by you in the server's Game_InitRules function, it
 ### Inventory
 This needs to be completed.
 - NSWeapon (incomplete)
-
-### World Materials
-This needs to be completed.
-- NSMaterial (incomplete)

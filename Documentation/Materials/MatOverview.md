@@ -6,23 +6,36 @@
 
 In the idTech series of engines, **id Tech 3/Quake III Arena** was the first to introduce such a system, wrongly referred to back then as **shaders**. This was before vertex and fragment shaders were commonplace in the video-game asset pipeline.
 
+![from pulsing tubes to various animated materials in Quake III Arena](q3a_material.jpg)
+
 They effectively merged the Quake texture-prefix hacks and Quake II .wal surface flags into one plain text format.
 
 Starting with **id Tech 4/Doom III** in 2004, the name of **shader** was changed to **material** to avoid confusion with proper GPU oriented vertex and fragment shaders.
 
-FTE has since coupled the old 'shader' syntax with proper GPU shaders using the [program](MatCommands.md) material command.
+**FTEQW** has since coupled the old 'shader' syntax with proper GPU shaders using the [program](Documentation/Materials/commands/program.md) material command.
 
 ## What is a Material?
-Materials are short text scripts that define the properties of a surface as it appears and functions in a game world (or compatible editing tool). By convention, the documents that contain these scripts usually has the same name as the texture set which contains the textures being modified (e.g; base, hell, castle, etc,). Several specific materials have also been created to handle special cases, like liquids, sky and special effects. 
+
+Materials are short text scripts that define the properties of a surface as it both appears and functions in the game world.
+
+If you want your sky texture to be replaced with a **skybox**, you will have to write a material definition for that.
+
+If you want to have a surface that looks and acts like water, then you have to write a material for that too. Unlike earlier **id Tech** games no assumption over a surface should be made based on texture names alone.
+
+### When using older BSP formats...
+
+Then you can still use modern materials! While the engine may load a texture from a **.bsp** or **.wad** file directly, it will still (albeit internally) create a material for it.
+
+When ingame, look at your surface you want to replace with the console variable **r_showshaders** set to **1* - and you will see the path and the contents of the material you're looking at. You can use that information to override rendering for practically any surface, even when using old fileformats.
 
 ## Usage
 
-When the engine looks for a texture, it will look for a material file in the file-tree first, then attempt to 'make one up' if only an image file is present. A rendereable surface will **always** have a material. The question is whether you provide it, or if the engine has to automatically generate one internally.
+When the engine looks for a texture, it will look for a material file in the file-tree first, then it will attempt to 'make one up' if only an image file is present. A rendereable surface will **always** have a material. The question is whether you provide it, or if the engine has to automatically generate one internally.
 
 The file extension for materials in Nuclide is .mat. There are two ways of defining materials:
 
-* A large .shader script file containing multiple materials inside the **./scripts/** folder (not recommended)
-* One small .mat file with the same path as the texture. E.g: **models/weapons/handcannon/w_handcannon/w_handcannon.mat** handles **models/weapons/handcannon/w_handcannon/w_handcannon.tga** 
+- A large .shader script file containing multiple materials inside the **./scripts/** folder (not recommended)
+- One small .mat file with the same path as the texture. E.g: **models/weapons/handcannon/w_handcannon/w_handcannon.mat** handles **models/weapons/handcannon/w_handcannon/w_handcannon.tga** 
 
 A material file consists of a series of surface attributes (global scope) and rendering instructions formatted within braces ("{" and "}"). Below you can see a simple example of syntax and format for a single process, including the VMAP keywords or 'Surface Parameters', which follow the first bracket and a single bracketed 'stage':
 
@@ -53,12 +66,14 @@ We then follow into the territory of defining specific rendering instructions wi
 [You can read more about those commands in detail right here.](MatCommands.md)
 
 ## Engine generated materials
+
 If no material definition for a surface is present, the engine will create an internal one.
 It's generally a primitive material using the internal **defaultwall** shader if it's a world texture, the **defaultskin** texture if it's a model, or a **default2d** if it's a HUD element.
 
-## Legacy materials
+## Q3A style materials, without GLSL
 
 You can support old-style Q3A materials alongside modern shader oriented ones.
+
 ```
     {
         if $programs
@@ -73,8 +88,6 @@ You can support old-style Q3A materials alongside modern shader oriented ones.
         endif
     }
 ```
-Here everything inside the **if $programs** block will only ever load if it's capable of handling the GLSL.
-So if you have a card only performing well under the GL 1.X pipeline, the **else** path will take priority.
-This means less graphical fidelity, but generally better performance on those old chipsets.
 
-All of Quake III's shading language is supported in the else block.
+Here everything inside the **if $programs** block will only ever load if it's capable of handling the GLSL.
+So if the player has a card that does not support programmable shaders, the **else** path will take over.
