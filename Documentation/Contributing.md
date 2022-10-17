@@ -8,13 +8,13 @@ There's just 2 very short requirements.
 The code must be yours.
 
 It's simple:
-* Do not take code that is by anyone else that is not you.
+- Do not take code that is by anyone else that is not you.
 
 
 ## Rule #2
 No submission or decompilation of third-party code. This is important if you want to recreate behaviour from another game.
 
-* We do not decompile - we reverse-engineer by trial and error.
+- We do not decompile - we reverse-engineer by trial and error.
 
 This is generally referred to as 'clean-room engineering'.
 Most of the behaviour is rather predictable, other is not.

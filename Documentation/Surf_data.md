@@ -1,7 +1,7 @@
 # Surface Properties
 
-**Surfaces** are being abstracted into one API with the help of **Surf
-Data** helper functions and large parts of NSSurfacePropEntity.
+**Surfaces** are being abstracted into one API with the help of **SurfData**
+helper functions and large parts of NSSurfacePropEntity.
 
 # Preface {#preface}
 

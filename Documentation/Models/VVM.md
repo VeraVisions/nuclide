@@ -75,5 +75,4 @@ models/weapons/v_winchester.vvm*
 
 ## External links {#external_links}
 
-[<https://github.com/VeraVisions/vvmtool> vvmtool on
-GitHub](https://github.com/VeraVisions/vvmtool)
+[vvmtool on GitHub](https://github.com/VeraVisions/vvmtool)

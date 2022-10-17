@@ -23,7 +23,7 @@ $ ./nuclide -game first_mod -game second_mod -game third_mod
 
 And it'll load those directories in order, on top of `base/`.
 
-However, we advise you only do this for development. If you want proper multiplayer compatibility (slightly different filesystem mount setups can confuse client <> server negotation) please use the built-in **Custom game** menu to ensure maximum compatibility to other clients.
+However, we advise you only do this for development. If you want proper multiplayer compatibility (slightly different filesystem mount setups can confuse client-server negotation) please use the built-in **Custom game** menu to ensure maximum compatibility to other clients.
 
 ## For release...
 

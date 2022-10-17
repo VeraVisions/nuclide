@@ -32,6 +32,7 @@ internal, modeling program specific exporter for VVM.
 
 Here's an EXCERPT of a control file from **The Wastes*:
 
+```
     output tommygun.vvm
     materialprefix models/weapons/tommygun/
 
@@ -75,7 +76,7 @@ Here's an EXCERPT of a control file from **The Wastes*:
     event 0 1005 "33 1"
         scene seq/shoot.smd fps 30.0
         scene seq/shoot_last.smd fps 30.0
-    ...
+```
 
 That's a really complicated control file, but it highlights a few
 things:
@@ -92,10 +93,12 @@ things:
 
 However, a model control file doesn't need to be this complicated:
 
+```
         output terminal01.vvm
         materialprefix models/props/computers/
         rotate 0 -90 0
         scene ref/terminal01.smd
+```
 
 This is `models/props/computers/terminal01.qc` from The Wastes.
 
