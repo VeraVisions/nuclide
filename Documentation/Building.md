@@ -6,19 +6,6 @@ The **build_engine.sh** will do that for you. It will still ask you to have at l
 a certain amount of dependencies installed (such as the **GCC**, **GNU make** and the **X11/SDL**
 headers for your platform.
 
-### Dependencies
-
-- subversion
-- gmake
-- gcc
-- mesa-libGL-devel
-- libgnutls-devel
-- libopenal-devel
-- libX11-devel
-- libXcursor-devel
-- libXrandr-devel
-- libSDL2-devel (only if you pass BUILD_SDL2=1 in build.cfg)
-
 ### Optional: Building release binaries
 
 You'll have to manually go into `src/engine/engine` and issue:
@@ -43,22 +30,15 @@ The resulting binary can be found inside the `src/engine/engine/release` directo
 
 Handled by **build_editor.sh**.
 
-### Dependencies
-
-- gcc-c++
-- gtk2-devel
-- gtkglext-devel
-- libxml2-devel
-- libjpeg8-devel
-- minizip-devel
-
 ## Building Game-Logic {#game}
 
 You can build the game source tree with **build_game.sh**. 
 
 The script also takes a parameter. If you specify:
 
-`./build_game.sh valve`
+```
+./build_game.sh valve
+```
 
 then it will only build the game-logic for the `valve` directory.
 
@@ -83,3 +63,101 @@ The game-logic is written in QuakeC, it is thus platform and architecture indepe
 
 You do not need to rebuild the logic for each and every platform.
 The results will be identical.
+
+## Dependencies
+
+### Debian / Raspbian
+
+#### FTE
+
+```
+apt-get install subversion libgl-dev gnutls-dev
+```
+
+#### SDL2
+
+```
+apt-get install libsdl2-dev
+```
+
+#### GLX / X11 (part of libsdl2-dev)
+
+```
+apt-get install libx11-dev libxcursor-dev libxrender-dev
+```
+
+#### ODE Plugin
+
+```
+apt-get install autoconf automake libtool
+```
+
+#### FFMPEG Plugin
+
+```
+apt-get install libavformat-dev libswscale-dev
+```
+
+### OpenBSD
+
+#### Nuclide
+
+```
+pkg_add git
+```
+
+#### FTE
+
+```
+pkg_add subversion
+```
+
+#### SDL2
+
+```
+pkg_add sdl2
+```
+
+#### FFMPEG Plugin
+
+```
+pkg_add ffmpeg
+```
+
+### OpenSUSE
+
+#### Nuclide
+
+```
+zypper in git 
+```
+
+#### FTE
+
+```
+zypper in subversion make gcc gcc-c++ mesa-libGL-devel libgnutls-devel
+```
+
+#### SDL2
+
+```
+zypper in libSDL2-devel
+```
+
+#### GLX / X11
+
+```
+zypper in libX11-devel libXcursor-devel libXrandr-devel
+```
+
+#### FFMPEG Plugin
+
+```
+zypper in ffmpeg-4-libavformat-devel ffmpeg-4-libswscale-devel
+```
+
+#### Worldspawn
+
+```
+zypper in cmake gtkglext-devel libxml2-devel libjpeg8-devel minizip-devel
+```
