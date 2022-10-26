@@ -65,7 +65,7 @@ Materials_LoadFromMat(string filename)
 				command = strtolower(argv(0));
 				parameters = argv(1);
 
-				if (command == "material") {
+				if (command == "surfaceprop") {
 					hash_add(g_hashMaterials, materialname, parameters, EV_STRING);
 					print(sprintf("added Material %S type %S\n", materialname, parameters));
 					break;

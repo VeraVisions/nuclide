@@ -28,6 +28,7 @@
 	Available keys are:
 	"base"			<string>	what type to inherit
 	"gamematerial"		<char>		material character, e.g. W for wood
+									which are looked up in scripts/decals.txt at a later time.
 	"climbable"		<bool>		???
 	"thickness"		<float>		non-solid, air (?) thickness
 	"density"		<int>		material density in kg / m^3
@@ -59,7 +60,6 @@
 	"impactHardThreshold"	<float>
 	"audioHardMinVelocity"	<float>
 */
-#ifdef SERVER
 
 typedef struct
 {
@@ -86,6 +86,8 @@ typedef struct
 	string m_sndBreak;
 
 	string m_fxBulletImpact;
+	float m_fxBulletImpactID;
+	string _name;
 } surfaceData_t;
 
 /* entity will have to have a .surfdata field pointing to an id */
@@ -116,6 +118,7 @@ typedef enum
 	SURFDATA_SND_ROLL,
 	SURFDATA_SND_BREAK,
 	SURFDATA_FX_BULLETIMPACT,
+	SURFDATA_FX_BULLETIMPACTID
 } surfinfo_t;
 
 /* initialized SurfaceKit */
@@ -134,4 +137,7 @@ void SurfData_Impact(entity e, int fl, vector org, vector ang);
 
 /* Get information from a Surface */
 __variant SurfData_GetInfo(int, int);
+
+#ifdef CLIENT
+void SurfData_Impact_Parse(void);
 #endif

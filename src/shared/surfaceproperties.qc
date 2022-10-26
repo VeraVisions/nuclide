@@ -14,104 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-#ifdef SERVER
-/* takes a material id (e.g. 'W' for wood) and returns an breakmodel id */
-static materialType_t
-SurfData_IDtoMaterial(float mat)
-{
-#if 0
-	switch (mat) {
-	case MATID_GLASS:
-		return GSMATERIAL_GLASS;
-		break;
-	case MATID_WOOD:
-		return GSMATERIAL_WOOD;
-		break;
-	case MATID_METAL:
-		return GSMATERIAL_METAL;
-		break;
-	case MATID_FLESH:
-		return GSMATERIAL_FLESH;
-		break;
-	case MATID_CONCRETE:
-		return GSMATERIAL_CINDER;
-		break;
-	case MATID_TILE:
-		return GSMATERIAL_TILE;
-		break;
-	case MATID_COMPUTER:
-		return GSMATERIAL_COMPUTER;
-		break;
-	case MATID_ROCK:
-		return GSMATERIAL_ROCK;
-		break;
-	default:
-		return GSMATERIAL_NONE;
-	}
-#endif
-}
-
-/* takes a material id (e.g. 'W' for wood) and returns an impact */
-static impactType_t
-SurfData_IDtoImpact(float mat)
-{
-#if 0
-	switch (mat) {
-	case MATID_GLASS:
-		return IMPACT_GLASS;
-		break;
-	case MATID_WOOD:
-		return IMPACT_WOOD;
-		break;
-	case MATID_GRATE:
-		return IMPACT_GRATE;
-		break;
-	case MATID_METAL:
-		return IMPACT_METAL;
-		break;
-	case MATID_VENT:
-		return IMPACT_VENT;
-		break;
-	case MATID_BLOODYFLESH:
-	case MATID_FLESH:
-		return IMPACT_FLESH;
-		break;
-	case MATID_CONCRETE:
-		return IMPACT_CONCRETE;
-		break;
-	case MATID_TILE:
-		return IMPACT_TILE;
-		break;
-	case MATID_COMPUTER:
-		return IMPACT_COMPUTER;
-		break;
-	case MATID_GLASS:
-		return IMPACT_GLASS;
-		break;
-	case MATID_DIRT:
-		return IMPACT_DIRT;
-		break;
-	case MATID_FOLIAGE:
-		return IMPACT_FOLIAGE;
-		break;
-	case MATID_SAND:
-		return IMPACT_SAND;
-		break;
-	case MATID_SNOW:
-		return IMPACT_SNOW;
-		break;
-	case MATID_SLOSH:
-		return IMPACT_SLOSH;
-		break;
-	case MATID_ALIEN:
-		return IMPACT_ALIEN;
-		break;
-	default:
-		return IMPACT_DEFAULT;
-	}
-#endif
-}
-
 /* takes a surfaceflag material bit and returns an impact */
 static impactType_t
 SurfData_SurfaceFlagtoImpact(int fl)
@@ -220,6 +122,9 @@ SurfData_ParseField(int i, int a)
 		break;
 	case "fx_bulletimpact":
 		g_surfdata[i].m_fxBulletImpact = argv(1);
+#ifdef CLIENT
+		g_surfdata[i].m_fxBulletImpactID = particleeffectnum(g_surfdata[i].m_fxBulletImpact);
+#endif
 		break;
 	}
 }
@@ -254,6 +159,7 @@ SurfData_Parse(string line)
 			SurfData_ParseField(i, c);
 		} else if (braced == 0) {
 			t_name = strtolower(line);
+			g_surfdata[i]._name = t_name;
 			hash_add(g_hashsurfdata, t_name, (int)i);
 		}
 	}
@@ -330,6 +236,19 @@ SurfData_TexToSurfData(string tex_name)
 	return SurfData_Load(mat);
 }
 
+string
+SurfData_DataForMatID(float matid)
+{
+	int id = -1;
+	for (int i = 0; i < g_surfdata_count; i++) {
+		if (matid == g_surfdata[i].m_flMaterial) {
+			return g_surfdata[i]._name;
+		}
+	}
+
+	return 0;
+}
+
 /* Public API functions */
 __variant
 SurfData_GetInfo(int i, int type)
@@ -340,7 +259,7 @@ SurfData_GetInfo(int i, int type)
 	switch (type)
 	{
 	case SURFDATA_MATERIAL:
-		return (__variant)SurfData_IDtoMaterial(g_surfdata[i].m_flMaterial);
+		return __NULL__;
 	case SURFDATA_THICKNESS:
 		return (__variant)g_surfdata[i].m_flThickness;
 	case SURFDATA_DENSITY:
@@ -379,6 +298,8 @@ SurfData_GetInfo(int i, int type)
 		return (__variant)g_surfdata[i].m_sndBreak;
 	case SURFDATA_FX_BULLETIMPACT:
 		return (__variant)g_surfdata[i].m_fxBulletImpact;
+	case SURFDATA_FX_BULLETIMPACTID:
+		return (__variant)g_surfdata[i].m_fxBulletImpactID;
 	default:
 		return __NULL__;
 	}
@@ -488,9 +409,54 @@ SurfData_Finish(void)
 	}
 }
 
+
+void
+SurfData_Impact_Net(entity e, vector org)
+{
+#ifdef CLIENT
+	string tex_name = getsurfacetexture(world, getsurfacenearpoint(world, org));
+
+	string impactsfx = SurfData_GetInfo(SurfData_TexToSurfData(tex_name), SURFDATA_SND_BULLETIMPACT);
+
+	string impactfx = SurfData_GetInfo(SurfData_TexToSurfData(tex_name), SURFDATA_FX_BULLETIMPACT);
+	float impactid = SurfData_GetInfo(SurfData_TexToSurfData(tex_name), SURFDATA_FX_BULLETIMPACTID);
+
+	NSLog("ent: %s texture: %s", e.classname, tex_name);
+	NSLog("playing impact sfx %S at %v", impactsfx, org);
+	NSLog("emitting impact fx %S at %v", impactfx, org);
+
+	Sound_PlayAt(org, impactsfx);
+	pointparticles( impactid, org, [0,0,0], 1 );
+#else
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_SURFIMPACT);
+	WriteCoord(MSG_MULTICAST, org[0]);
+	WriteCoord(MSG_MULTICAST, org[1]);
+	WriteCoord(MSG_MULTICAST, org[2]);
+	WriteEntity(MSG_MULTICAST, e);
+	multicast(org, MULTICAST_PVS);
+#endif
+}
+
+#ifdef CLIENT
+void
+SurfData_Impact_Parse(void)
+{
+	entity surfnum = __NULL__;
+	vector impactorg = [0.0f, 0.0f, 0.0f];
+
+	impactorg[0] = readcoord();
+	impactorg[1] = readcoord();
+	impactorg[2] = readcoord();
+	surfnum = findfloat(world, ::entnum, readentitynum()-1);
+	SurfData_Impact_Net(surfnum, impactorg);
+}
+#endif
+
 void
 SurfData_Impact(entity e, int fl, vector org, vector ang)
 {
+#ifdef SERVER
 	static void SurfData_Impact_SurfaceParm(entity e, int fl, vector org, vector ang) {
 	/* provided for backwards compatibility with the old surfaceflag based materials */
 	#ifdef OLD_MATERIALS
@@ -505,18 +471,7 @@ SurfData_Impact(entity e, int fl, vector org, vector ang)
 			FX_Impact(IMPACT_DEFAULT, org, ang);
 		}
 	#else
-		float surf = getsurfacenearpoint(e, org);
-		string tex_name = getsurfacetexture(e, surf);
-
-		string impactsfx = SurfData_GetInfo(SurfData_TexToSurfData(tex_name), SURFDATA_SND_BULLETIMPACT);
-
-		string impactfx = SurfData_GetInfo(SurfData_TexToSurfData(tex_name), SURFDATA_FX_BULLETIMPACT);
-
-		NSLog("playing impact sfx %S at %v", impactsfx, org);
-		NSLog("playing impact fx %S at %v", impactfx, org);
-
-		Sound_PlayAt(org, impactsfx);
-
+		SurfData_Impact_Net(e, org);
 	#endif
 	}
 
@@ -531,5 +486,5 @@ SurfData_Impact(entity e, int fl, vector org, vector ang)
 		else
 			SurfData_Impact_SurfaceParm(e, fl, org, ang);
 	}
-}
 #endif
+}

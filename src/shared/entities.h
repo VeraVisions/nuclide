@@ -55,7 +55,9 @@ Returns the closest point entity of a given classname.
 world means it failed. most likely.
 =================
 */
-entity Entity_FindClosest(entity target, string cname) {
+entity
+Entity_FindClosest(entity target, string cname)
+{
 	entity best = world;
 	float bestdist;
 	float dist;
@@ -74,6 +76,7 @@ entity Entity_FindClosest(entity target, string cname) {
 	return best;
 }
 
+
 /*
 =================
 Entity_SelectRandom
@@ -83,13 +86,14 @@ Check for world at all times. If world is returned then the given classname
 will most likely never return anything valid.
 =================
 */
-entity Entity_SelectRandom(string cname) 
+entity
+Entity_SelectRandom(string cname)
 {
 	entity spot = world;
 	float max = 0;
 
 	/* count our max count */
-	for (entity e = world;(e = find(e, ::classname, cname));) {
+	for (entity e = world; (e = find(e,::classname, cname));) {
 		max++;
 	}
 

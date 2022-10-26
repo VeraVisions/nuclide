@@ -122,28 +122,30 @@ bot::WeaponAttack(void)
 }
 
 var float g_botalert_timer;
+
 void
 BotLib_Alert(vector pos, float radius, float t)
 {
 	CGameRules rules = g_grMode;
 
-	/* sometimes many alert-sounds happen at once... we don't really want that */
+	/* sometimes many alert-sounds happen at once... we don't really want
+	 * that */
 	if (g_botalert_timer > time)
 		return;
 
-	for (entity w = world; (w = find(w, ::targetname, "_nuclide_bot_"));) {
+	for (entity w = world; (w = find(w,::targetname, "_nuclide_bot_"));) {
 		/* out of radius */
 		if (vlen(pos - w.origin) > radius)
 			continue;
 
-		bot f = (bot)w;
+		bot f = (bot) w;
 
 		/* they already got a target of some kind */
 		if (f.m_eTarget)
 			continue;
 
-		/* if they're our friend... ignore*/
-		if (rules.IsTeamplay()) 
+		/* if they're our friend... ignore */
+		if (rules.IsTeamplay())
 			if (w.team == t)
 				continue;
 
