@@ -12,6 +12,7 @@ is a manifest file the engine reads. It is updated occasionally.
 
 It defines which directories to mount in the virtual filesystem of the engine
 and has a document entirely dedicated to itself. For that please read:
+
 ```
 	src/engine/specs/fte_manifests.txt
 ```
@@ -19,6 +20,7 @@ and has a document entirely dedicated to itself. For that please read:
 ## Loading Games
 
 On its own, Nuclide launches the game directory `base/`, unless you tell it otherwise:
+
 ```
 ./nuclide -game mygame
 ```
@@ -64,6 +66,7 @@ It's advised that you do not pack **csprogs.dat** and **progs.dat** into a prote
 
 
 ## Nuclide specific formats
+
 Nuclide contains many custom definition files that are not engine specific.
 `.efx`, `.font`, `.sndshd` and `.way` to name a few.
 The game-logic mostly handles them and can thus be, in theory, extended by you.

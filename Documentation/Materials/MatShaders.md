@@ -1,12 +1,14 @@
 # Materials: Shaders
+
 Shaders are referring to GPU-oriented pieces of a program, performing shading and rendering related functions instead of letting the engine handle it. 
 
-In **FTEQW** you can specify a custom GLSL or HLSL shader using the [program](MatCommands.md) command inside a [Material](MatOverview.md).
+In **FTEQW** you can specify a custom GLSL or HLSL shader using the [program](Documentation/Materials/commands/program.md) command inside a [Material](Documentation/Materials/MatOverview.md).
 
 ## Example Shader
+
 This is a primitive shader file. It includes the vertex and fragment program.
 
-It will respond to the [diffusemap](MatCommands.md) only, which is loaded
+It will respond to the [diffusemap](Documentation/Materials/commands/diffusemap.md) only, which is loaded
 into the **d_f** variable. It can be modified from that point onwards.
 The commented out line will turn all of the output red.
 
@@ -46,7 +48,8 @@ void main ()
 ```
 
 ## Dissecting GLSL shaders
-When we pass `program <shadername>` in our [Material](MatOverview.md), the engine will load `glsl/<shadername>.glsl` to handle the material for us.
+
+When we pass `program <shadername>` in our Material, the engine will load `glsl/<shadername>.glsl` to handle the material for us.
 
 The shader in question needs to define a `main` function for both a vertex and a fragment shader. That's what the **ifdef**s are for in the above example.
 

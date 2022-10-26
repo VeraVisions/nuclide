@@ -3,11 +3,12 @@
 If you require assistance that involves the internals of Nuclide itself (as in, you have already gotten it running) and need someone to talk to about it - there's a few places where we all gather and talk about this project as well as sub-projects and related projects.
 
 ## Matrix
+
 This is the default for us. [You can find a dedicated **Space** right here.](https://matrix.to/#/#nuclide:matrix.org)
 
 ## Internet Relay Chat
-This is our fallback. It is also bridged with the general room on Matrix.
 
+This is our fallback. It is also bridged with the general room on Matrix.
 You can connect to irc.libera.chat and join #nuclide.
 
 ## Commercial Support

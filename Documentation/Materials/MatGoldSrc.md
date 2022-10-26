@@ -225,8 +225,6 @@ The **Material ID** is used via the `gamematerial` command inside **scripts/surf
 
 Be aware that a Source engine game may actually have more surface materials than this, these are *solely the IDs associated with impact effects*.
 
-In Nuclide, 
-
 ### Alien Swarm
 
 | Material ID       | Material Name       |

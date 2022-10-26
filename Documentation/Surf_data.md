@@ -45,11 +45,9 @@ the object and the friction it deals with.
 So in Nuclide, there's a few options too as to how you're able to define
 what property anything is made of.
 
--   For the level geometry, a `surfaceparm` is used to
+-   For the level geometry, a surfaceprop is used to
     define what material properties to use. There are a lot of basic materials
     to choose from there.
--   For models, the `surfaceParm` command inside the .QC can be used to
-    define a surfaceparm.
 -   Entities can **specify** which entry from
     `scripts/surfaceproperties.txt` get's used. This is required for
     NSPhysicsEntity derived classes.
@@ -57,8 +55,8 @@ what property anything is made of.
     field to be the name of an entity listed inside the
     `surfaceproperties.txt` file.
 -   ...of course, the old way is supported as long as you're using a
-    legacy format that does not support **surfaceParms**. They'll get
-    mapped to a pair of pre-defined entries, which mods can override.
+    legacy format that does not support **surfaceprop**. They'll get
+    mapped to the IDs specified in the surfaceproperties.txt file.
 
 And instead of defining a single character defining the audio visual
 appearance, you can now tweak every aspect of it. See **Scripting**
@@ -93,6 +91,7 @@ Available keys are:
 
         "stepleft"      <string>    footstep left
         "stepright"     <string>    footstep right
+        "fx_bulletimpact"      <string>    particle effect to cast on impact
         "bulletimpact"      <string>    soundDef to play on impact
         "scraperough"       <string>    soundDef to play on rough scraping
         "scrapesmooth"      <string>    soundDef to play on smooth scraping

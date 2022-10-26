@@ -23,30 +23,32 @@ and it contains structures for types and a separate section titled
 
 An example propdata.txt looks like this:
 
-` "PropData.txt"`
-` {`
-` `
-`   "sometype"`
-`   {`
-`     // .. key/field attributes`
-`     // e.g.`
-`     "health" "10"`
-`     "breakable_model" "somematerial"`
-`   }`
-` `
-`   "BreakableModels"`
-`   {`
-`     // completely unrelated to types defined in propdata.txt`
-`     // but somehow still part of it?`
-` `
-`     "somematerial"`
-`     {`
-`       // model path / fadeout time pair`
-`       // e.g.`
-`       "foo.vvm" "2.5"`
-`     }`
-`   }`
-` }`
+```
+ "PropData.txt"
+ {
+ 
+   "sometype"
+   {
+     // .. key/field attributes
+     // e.g.
+     "health" "10"
+     "breakable_model" "somematerial"
+   }
+ 
+   "BreakableModels"
+   {
+     // completely unrelated to types defined in propdata.txt
+     // but somehow still part of it?
+ 
+     "somematerial"
+     {
+       // model path / fadeout time pair
+       // e.g.
+       "foo.vvm" "2.5"
+     }
+   }
+ }
+```
 
 The idea is that props specify the type of prop they are ("sometype")
 and it defines a set of sensible defaults.
@@ -70,11 +72,13 @@ text definition alongside as mentioned above.
 An example for the example specification listed above would be a
 propdata key/value pair as part of the entity definition:
 
-` {`
-`   "classname" "func_wall"`
-`   "model"     "*42"`
-`   "propdata"  "sometype"`
-` }`
+```
+ {
+   "classname" "func_wall"
+   "model"     "*42"
+   "propdata"  "sometype"
+ }
+```
 
 ### Model propdata definition {#model_propdata_definition}
 
@@ -82,15 +86,17 @@ If you had a model, e.g. located at `models/foobar.vvm` then if you were
 to place a file named `models/foobar.vvm.propdata` alongside it with the
 following contents:
 
-` PropData.txt`
-` {`
-`   prop_data`
-`   {`
-`     "health" "30"`
-`     "breakable_model" "somematerial"`
-`     "breakable_count" "10"`
-`   }`
-` }`
+```
+ PropData.txt
+ {
+   prop_data
+   {
+     "health" "30"
+     "breakable_model" "somematerial"
+     "breakable_count" "10"
+   }
+ }
+```
 
 This registers an internal propdata definition with the name
 **models/foobar.vvm.propdata** that would correspond to the above
