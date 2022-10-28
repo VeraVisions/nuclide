@@ -87,7 +87,6 @@ typedef struct
 
 	string m_fxBulletImpact;
 	float m_fxBulletImpactID;
-	string _name;
 } surfaceData_t;
 
 /* entity will have to have a .surfdata field pointing to an id */

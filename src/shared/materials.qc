@@ -169,7 +169,7 @@ Materials_LoadFromLegacyText(string filename)
 				mat_type = Materials_Mapper_Lookup(strtoupper(argv(0)));
 				tex_name = Materials_FixName(strtolower(argv(1)));
 				hash_add(g_hashMaterials, tex_name, mat_type, EV_STRING);
-				print(sprintf("hlmaterial: %S %S\n", tex_name, mat_type));
+				///print(sprintf("hlmaterial: %S %S\n", tex_name, mat_type));
 				g_hlmaterial_entries++;
 			}
 		}

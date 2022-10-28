@@ -53,7 +53,9 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	/* Sound shaders */
 	Sound_Init();
 	SurfData_Init();
-	PropData_Init();
+	PropData_Init();	
+	DecalGroups_Init();
+
 	precache_sound("common/wpn_hudon.wav");
 	precache_sound("common/wpn_hudoff.wav");
 	precache_sound("common/wpn_moveselect.wav");

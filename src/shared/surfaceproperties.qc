@@ -121,6 +121,7 @@ SurfData_ParseField(int i, int a)
 		g_surfdata[i].m_sndBreak = argv(1);
 		break;
 	case "fx_bulletimpact":
+	case "part_bulletimpact":
 		g_surfdata[i].m_fxBulletImpact = argv(1);
 #ifdef CLIENT
 		g_surfdata[i].m_fxBulletImpactID = particleeffectnum(g_surfdata[i].m_fxBulletImpact);
@@ -159,7 +160,6 @@ SurfData_Parse(string line)
 			SurfData_ParseField(i, c);
 		} else if (braced == 0) {
 			t_name = strtolower(line);
-			g_surfdata[i]._name = t_name;
 			hash_add(g_hashsurfdata, t_name, (int)i);
 		}
 	}
@@ -208,7 +208,7 @@ SurfData_CountLine(string line)
 		break;
 	default:
 		/* new definition starts */
-		if (braced == 0) {
+		if (c == 1 && braced == 0) {
 			t_name = strtolower(line);
 
 			if (t_name)
@@ -234,19 +234,6 @@ SurfData_TexToSurfData(string tex_name)
 
 	/* we got the surfdata string, return that */
 	return SurfData_Load(mat);
-}
-
-string
-SurfData_DataForMatID(float matid)
-{
-	int id = -1;
-	for (int i = 0; i < g_surfdata_count; i++) {
-		if (matid == g_surfdata[i].m_flMaterial) {
-			return g_surfdata[i]._name;
-		}
-	}
-
-	return 0;
 }
 
 /* Public API functions */

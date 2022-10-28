@@ -121,6 +121,9 @@ Event_Parse(float type)
 	case EV_SURFIMPACT:
 		SurfData_Impact_Parse();
 		break;
+	case EV_DECALGROUP:
+		DecalGroups_Receive();
+		break;
 	case EV_CLEARDECALS:
 		CMD_Cleardecals();
 		break;

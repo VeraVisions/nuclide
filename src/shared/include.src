@@ -26,7 +26,8 @@ NSClientPlayer.qc
 player_pmove.qc
 propdata.qc
 surfaceproperties.qc
-NSMaterial.qc
+decalgroups.qc
+materials.qc
 NSSpraylogo.qc
 util.qc
 weapons.qc

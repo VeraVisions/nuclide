@@ -319,6 +319,7 @@ init(float prevprogs)
 	Sound_Init();
 	PropData_Init();
 	SurfData_Init();
+	DecalGroups_Init();
 }
 
 /** Called inside initents() to make sure the entities have their Respawn()

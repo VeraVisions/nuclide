@@ -14,6 +14,29 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+hashtable g_hashMaterials;
+hashtable hashMaterials;
+
+void Materials_Init(void);
+
+/* legacy material compatibility */
+
+/** hlmaterial to classname mapper table */
+typedef struct
+{
+	string id;
+	string matclass;
+} hlmaterials_lut;
+
+hlmaterials_lut *g_hlmlut;
+var int g_hlmlut_count;
+var int g_hlmaterial_entries;
+
+var bool g_materialsAreLegacy;
+
+/* FIXME: world.... sigh, we should box this into a worldspawn class */
+.string materials_file;
+
 // Impact types
 typedef enum
 {
@@ -189,4 +212,4 @@ Materials_FixName(string old_name)
 	NSLog("%s > %s", old_name, tex_name);
 
 	return tex_name;
-}
+}

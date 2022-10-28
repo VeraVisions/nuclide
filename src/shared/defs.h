@@ -69,7 +69,7 @@ string __fullspawndata;
 
 #include "NSVehicle.h"
 
-#include "NSMaterial.h"
+#include "materials.h"
 #include "damage.h"
 #include "flags.h"
 #include "effects.h"
@@ -77,13 +77,13 @@ string __fullspawndata;
 #include "events.h"
 #include "flags.h"
 #include "hitmesh.h"
-#include "materials.h"
 #include "math.h"
 #include "pmove.h"
 #include "memory.h"
 #include "platform.h"
 #include "propdata.h"
 #include "surfaceproperties.h"
+#include "decalgroups.h"
 #include "colors.h"
 #include "weapons.h"
 
