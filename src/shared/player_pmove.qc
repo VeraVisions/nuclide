@@ -385,6 +385,9 @@ NSClientPlayer::Physics_Run(void)
 	/* give us a chance to manipulate input_ globals before running physics */
 	Physics_InputPreMove();
 
+	/* handle footsteps */
+	Footsteps_Update();
+
 	/* handle drowning and other environmental factors */
 	Physics_WaterMove();
 

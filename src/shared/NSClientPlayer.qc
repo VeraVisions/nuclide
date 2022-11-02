@@ -1024,3 +1024,88 @@ NSClientPlayer::InputUse_Up(void)
 	}
 }
 #endif
+
+void
+NSClientPlayer::Footsteps_Update(void)
+{
+#ifdef SERVER
+	string mat_name = "";
+	string tex_name = "";
+	string sound = "";
+
+	/* mp_footsteps is only available in MP matches */
+	if (Util_IsSingleplayer() == false)
+		if (autocvar(mp_footsteps, 1) == 0)
+			return;
+
+	if (movetype != MOVETYPE_WALK)
+		return;
+
+	if ((velocity[0] == 0 && velocity[1] == 0) || step_time > time)
+		return;
+
+	if (waterlevel == 1) {
+		if (step)
+			StartSoundDef("step_slosh.left", CHAN_BODY, true);
+		else
+			StartSoundDef("step_slosh.right", CHAN_BODY, true);
+
+		step_time = time + 0.35f;
+	} else if (waterlevel == 2) {
+		if (step)
+			StartSoundDef("step_wade.left", CHAN_BODY, true);
+		else
+			StartSoundDef("step_wade.right", CHAN_BODY, true);
+		
+		step_time = time + 1.0f;
+	}  else if (waterlevel == 3) {
+		if (step)
+			StartSoundDef("step_swim.left", CHAN_BODY, true);
+		else
+			StartSoundDef("step_swim.right", CHAN_BODY, true);
+
+		step_time = time + 2.0f;
+	} else {
+		/* make it so we step once we land */
+		if (!(flags & FL_ONGROUND) && !(flags & FL_ONLADDER)) {
+			step_time = 0.0f;
+			return;
+		}
+	}
+
+	/* the footsteps call might overwrite this later */
+	step_time = time + 0.35;
+
+	//tracebox(origin, PHY_HULL_MIN, PHY_HULL_MAX, origin + [0,0,-48], MOVE_NORMAL, target);
+	traceline(origin + view_ofs, origin + [0,0,-48], FALSE, this);
+	tex_name = getsurfacetexture(trace_ent, getsurfacenearpoint(trace_ent, trace_endpos));
+
+	if (!(flags & FL_ONGROUND)) {
+		return;
+	} else if (flags & FL_ONLADDER) {
+		if (step)
+			StartSoundDef("step_ladder.left", CHAN_BODY, true);
+		else
+			StartSoundDef("step_ladder.right", CHAN_BODY, true);
+
+		/* switch between feet */
+		step = 1 - step;
+		return;
+	}
+
+	if (step) {
+		StartSoundDef(
+			SurfData_GetInfo(SurfData_TexToSurfData(tex_name), SURFDATA_SND_STEPLEFT),
+			CHAN_BODY,
+			true);
+	} else {
+		StartSoundDef(
+			SurfData_GetInfo(SurfData_TexToSurfData(tex_name), SURFDATA_SND_STEPRIGHT),
+			CHAN_BODY,
+			true);
+	}
+
+	/* switch between feet */
+	step = 1 - step;
+#endif
+}

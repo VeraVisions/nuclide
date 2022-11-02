@@ -94,7 +94,6 @@ var bool autocvar_mp_flashlight = true;
 void FX_Impact(impactType_t, vector, vector);
 void FX_Explosion(vector);
 void FX_GibHuman(vector vecOrigin, vector vecDir, float flForce);
-void Footsteps_Update(void);
 
 void TraceAttack_FireBullets(int, vector, int, vector, int);
 #ifdef BULLETPENETRATION

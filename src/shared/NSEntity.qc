@@ -1104,6 +1104,7 @@ NSEntity::StartSound(string strSample, float channel, float flags, bool broadcas
 bool
 NSEntity::StartSoundDef(string strSample, float channel, bool broadcast)
 {
+	NSLog("StartSoundDef: %s %d %d", strSample, channel, broadcast);
 	Sound_Play(this, channel, strSample);
 	return (true);
 }

@@ -143,6 +143,8 @@ NSClientPlayer:NSClientSpectator
 	virtual void(void) InputUse_Down;
 	virtual void(void) InputUse_Up;
 #endif
+
+	virtual void Footsteps_Update(void);
 };
 
 /* all potential SendFlags bits we can possibly send */

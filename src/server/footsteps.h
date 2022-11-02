@@ -15,4 +15,3 @@
  */
 
 void Footsteps_Init(void);
-void Footsteps_Update(void);
