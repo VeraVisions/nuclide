@@ -269,12 +269,12 @@ NSClientPlayer::Physics_WaterMove(void)
 	}
 
 #ifdef SERVER
-	if (WaterLevel() == CONTENT_LAVA) {
+	if (watertype == CONTENT_LAVA) {
 		if (m_flPainTime < time) {
 			Damage_Apply(this, world, 10 * WaterLevel(), 0, DMG_BURN);
 			m_flPainTime = time + 0.2;
 		}
-	} else if (WaterLevel() == CONTENT_SLIME) {
+	} else if (watertype == CONTENT_SLIME) {
 		if (m_flPainTime < time) {
 			Damage_Apply(this, world, 4 * WaterLevel(), 0, DMG_ACID);
 			m_flPainTime = time + 1;

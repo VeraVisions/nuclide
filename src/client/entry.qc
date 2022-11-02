@@ -575,11 +575,16 @@ CSQC_Ent_Remove(void)
 {
 	if (self.isCSQC) {
 		NSEntity me = (NSEntity)self;
+
+		/* we don't want to call Destroy, as that's delayed by a frame...
+		   so we need to call this ourselves */
 		me.OnRemoveEntity();
 
+		/* frees one slot the engine won't free for us */
 		if (me.skeletonindex)
 			skel_delete(me.skeletonindex);
 
+		/* we're done, remove it once and for all */
 		remove(self);
 	} else {
 		remove(self);
