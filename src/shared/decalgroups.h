@@ -29,6 +29,7 @@
 /* public API */
 void DecalGroups_Init(void);
 void DecalGroups_Place(string group, vector org);
+int DecalGroups_NumForName(string group);
 
 #ifdef CLIENT
 void DecalGroups_Receive(void);

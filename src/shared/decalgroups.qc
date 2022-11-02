@@ -159,11 +159,17 @@ DecalGroups_PlaceGroupID(int index, vector org)
 }
 #endif
 
+int
+DecalGroups_NumForName(string group)
+{
+	return (int)hash_get(g_hashdecalgroup, group, -1);
+}
+
 void
 DecalGroups_Place(string group, vector org)
 {
 	int index;
-	index = (int)hash_get(g_hashdecalgroup, group, -1);
+	index = (int)hash_get(g_hashdecalgroup, strtolower(group), -1);
 
 #ifdef SERVER
 	/* on the server we only need to tell the clients in the PVS

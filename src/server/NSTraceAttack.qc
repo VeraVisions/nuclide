@@ -122,6 +122,8 @@ NSTraceAttack::_FireSingle(vector vecPos, vector vecAngles, float flDamage, floa
 
 	/* impact per bullet */
 	if (trace_ent.iBleeds == 0) {
+		if (m_strDecalGroup)
+			DecalGroups_Place(m_strDecalGroup, trace_endpos);
 		SurfData_Impact(trace_ent, trace_surfaceflagsi, trace_endpos, trace_plane_normal);
 	}
 
@@ -250,6 +252,12 @@ NSTraceAttack::SetOwner(entity eOwner)
 	m_eOwner = eOwner;
 }
 
+void
+NSTraceAttack::SetDecalGroup(string strGroupName)
+{
+	//int m_iDecalGroup = DecalGroups_NumForName(strGroupName);
+	m_strDecalGroup = strGroupName;
+}
 
 #ifdef BULLETPENETRATION
 void
@@ -271,6 +279,8 @@ NSTraceAttack::NSTraceAttack(void)
 	m_iMultiValue = 0;
 	m_iMultiBody = 0;
 	m_flRange = 8196;
+	//m_iDecalGroup = -1;
+	m_strDecalGroup = __NULL__;
 
 #ifdef BULLETPENETRATION
 	m_flMaxThickness = 5.0f;
@@ -293,6 +303,23 @@ TraceAttack_FireBullets(int iShots, vector vecPos, int iDamage, vector vecSpread
 	g_traceAttack.SetSpread(vecSpread);
 	g_traceAttack.SetWeapon(iWeapon);
 	g_traceAttack.SetOwner(self);
+	g_traceAttack.Fire();
+}
+
+void
+TraceAttack_FireBulletsWithDecal(int iShots, vector vecPos, int iDamage, vector vecSpread, int iWeapon, string strDecalGroup)
+{
+	if (!g_traceAttack) {
+		g_traceAttack = spawn(NSTraceAttack);
+	}
+
+	g_traceAttack.SetShots(iShots);
+	g_traceAttack.SetOrigin(vecPos);
+	g_traceAttack.SetDamage(iDamage);
+	g_traceAttack.SetSpread(vecSpread);
+	g_traceAttack.SetWeapon(iWeapon);
+	g_traceAttack.SetOwner(self);
+	g_traceAttack.SetDecalGroup(strDecalGroup);
 	g_traceAttack.Fire();
 }
 

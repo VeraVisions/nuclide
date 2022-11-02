@@ -90,6 +90,9 @@ NSClientPlayer:NSClientSpectator
 	virtual bool(void) IsDead;
 	virtual bool(void) IsPlayer;
 
+	/** Empty & shared between Client and Server. This is run on every player, every frame, to update their animation cycle. */
+	virtual void UpdatePlayerAnimation(void);
+
 #ifdef CLIENT
 	int sequence;
 
@@ -106,6 +109,15 @@ NSClientPlayer:NSClientSpectator
 	virtual void(void) PredictPostFrame;
 	virtual void(void) ClientInputFrame;
 	virtual void(void) UpdateAliveCam;
+
+	virtual float predraw(void);
+	virtual void postdraw(void);
+
+	/** Empty. Updates the bone controller responsible for mouth movement. */
+	virtual void UpdatePlayerJaw(float);
+
+	/** Empty. This is run on every player, every frame to update attachments. */
+	virtual void UpdatePlayerAttachments(bool);
 #else
 	int voted;
 	int step;

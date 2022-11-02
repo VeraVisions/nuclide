@@ -33,3 +33,6 @@ float Client_IsPlayer(NSClient cl);
 float Client_InIntermission(void);
 
 string Util_GetKeyString(string);
+
+
+bool Client_InVehicle(void);

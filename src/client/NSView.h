@@ -57,6 +57,8 @@ private:
 	vector m_vecClientAngle;
 	bool m_bSetClientAngle;
 
+	bool m_bDrawLocalPlayer;
+
 public:
 	void NSView(void);
 
@@ -82,6 +84,8 @@ public:
 	virtual void SetViewSize(vector);
 	virtual void SetViewTarget(NSEntity);
 	virtual void SetClientOwner(NSClient);
+
+	virtual void SetDrawLocalPlayer(bool);
 	
 	virtual void SetCameraOrigin(vector);
 	virtual void SetCameraAngle(vector);

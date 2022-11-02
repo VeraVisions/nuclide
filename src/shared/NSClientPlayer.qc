@@ -138,7 +138,118 @@ NSClientPlayer::ClientInput(void)
 	Game_Input((player)this);
 }
 
+/* this is where it gets mod specific really fast,
+   as some models may not even support skeletal animation */
+void
+NSClientPlayer::UpdatePlayerAnimation(void)
+{
+
+}
+
 #ifdef CLIENT
+void
+NSClientPlayer::UpdatePlayerJaw(float voip_volume)
+{
+}
+
+void
+NSClientPlayer::UpdatePlayerAttachments(bool visible)
+{
+
+}
+
+float
+NSClientPlayer::predraw(void)
+{
+	bool localplayer = false;
+
+	NSClient cl = (NSClient)pSeat->m_ePlayer;
+
+	/* figure out if this is the local player. it's either us or us spectating */
+	if (Client_IsSpectator(cl)) {
+		NSClientSpectator spec = (NSClientSpectator)pSeat->m_ePlayer;
+		if (entnum == spec.spec_ent && spec.spec_mode == SPECMODE_FIRSTPERSON) {
+			localplayer = true;
+		}
+	} else {
+		if (entnum == player_localentnum) {
+			localplayer = true;
+		}
+	}
+
+	/* make sure we're enabling shadow rendering on us! */
+	effects &= ~EF_NOSHADOW;
+
+	/* always advance the player animation in some way */
+	UpdatePlayerAnimation();
+
+	/* mouth flapping */
+	UpdatePlayerJaw(getplayerkeyfloat(this.entnum - 1, "voiploudness"));
+
+	/* apply any necessary filters from NSRenderableEntity */
+	RenderFXPass();
+
+	/* apply any fire effects, if we're burning (we're of type NSSurfacePropEntity that can burn) */
+	RenderFire();
+
+	/* if we're inside of a vehicle, it may want to hide or show us regardless */
+	if (localplayer && flags & FL_INVEHICLE) {
+		NSVehicle veh = (NSVehicle)vehicle;
+
+		if (veh)
+			localplayer = veh.HidePlayermodel();
+	}
+
+	/* if we're forcing third-person.. or this is not us - render this player */
+	if (autocvar_cl_thirdperson == TRUE || !localplayer) {
+		/* mark as not-mirror-only */
+		renderflags &= ~RF_EXTERNALMODEL;
+
+		/* same for our attachment */
+		if (p_model)
+			p_model.renderflags &= ~RF_EXTERNALMODEL;
+
+		/* let mods override attachments and whatnot */
+		UpdatePlayerAttachments(true);
+
+		/* draw a 3D voice blob over its head */
+		Voice_Draw3D(this);
+
+		/* force drawing us if it's our local player and we're meant to show */
+		if (entnum == player_localentnum)
+			g_view.SetDrawLocalPlayer(true);
+
+		/* sucks we can't draw a shadow on this thing, maybe in the future when FTEQW allows it */
+		if (p_model)
+			addentity(p_model);
+	} else { /* we're doing first person stuff */
+		/* flags that the model appear in mirrors only */
+		renderflags |= RF_EXTERNALMODEL;
+
+		/* ditto */
+		if (p_model)
+			p_model.renderflags |= RF_EXTERNALMODEL;
+
+		/* give mods a chance to de-render attachments */
+		UpdatePlayerAttachments(false);
+
+		/* this is here just to make sure our view hides us if it's the local player */
+		if (entnum == player_localentnum)
+			g_view.SetDrawLocalPlayer(false);
+	}
+
+	/* this needs to be called absolutely last */
+	/* we're calling this so that the shadow can still be drawn */
+	addentity(this);
+
+	return (PREDRAW_NEXT);
+}
+
+void
+NSClientPlayer::postdraw(void)
+{
+}
+
 void
 NSClientPlayer::VehicleRelink(void)
 {

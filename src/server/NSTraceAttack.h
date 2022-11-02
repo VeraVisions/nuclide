@@ -16,6 +16,8 @@
 
 void TraceAttack_FireBullets(int iShots, vector vecPos, int iDamage, vector vecSpread, int iWeapon);
 
+void TraceAttack_FireBulletsWithDecal(int iShots, vector vecPos, int iDamage, vector vecSpread, int iWeapon, string strDecalGroup);
+
 #ifdef BULLETPENETRATION
 void TraceAttack_SetPenetrationPower(int power);
 #endif
@@ -37,6 +39,8 @@ private:
 	entity m_eOwner;
 	float m_flRange;
 	vector m_vecOrigin;
+	//int m_iDecalGroup;
+	string m_strDecalGroup;
 
 	/* bullet penetration */
 #ifdef BULLETPENETRATION
@@ -68,6 +72,9 @@ public:
 	virtual void SetRange(float);
 	/** Sets the owner responsible for the trace. */
 	virtual void SetOwner(entity);
+
+	/** Sets the decal group used by the trace attack */
+	virtual void SetDecalGroup(string);
 	
 	#ifdef BULLETPENETRATION
 	/** Sets the maximum thickness that the trace is not allowed to penetrate.

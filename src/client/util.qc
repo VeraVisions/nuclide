@@ -47,6 +47,13 @@ Client_IsPlayer(NSClient cl)
 	return cl.IsPlayer();
 }
 
+bool
+Client_InVehicle(void)
+{
+	player pl = (player)pSeat->m_ePlayer;
+	return (pl.vehicle != world) ? true : false;
+}
+
 /*
 =================
 Util_GetKeyString

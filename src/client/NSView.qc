@@ -38,8 +38,11 @@ NSView::SetupView(void)
 	setproperty(VF_AFOV, m_flFieldOfView);
 	setsensitivityscaler(m_flSensitivity);
 
-	/* this will hide said entity */
-	setproperty(VF_VIEWENTITY, player_localentnum);
+	/* if yes, draw everything. */
+	if (m_bDrawLocalPlayer)
+		setproperty(VF_VIEWENTITY, 0);
+	else
+		setproperty(VF_VIEWENTITY, player_localentnum);
 
 	/* handle camera override */
 	if (pSeat->m_flCameraTime > time || pSeat->m_flCameraTime == -1) {
@@ -67,6 +70,12 @@ void
 NSView::RenderView(void)
 {
 	renderscene();
+}
+
+void
+NSView::SetDrawLocalPlayer(bool choice)
+{
+	m_bDrawLocalPlayer = choice;
 }
 
 void
