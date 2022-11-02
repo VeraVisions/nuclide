@@ -419,6 +419,9 @@ NSVehicle::PlayerAlign(void)
 	vecPlayerPos += v_right * m_vecPlayerPos[1];
 	vecPlayerPos += v_up * m_vecPlayerPos[2];
 	setorigin(m_eDriver, vecPlayerPos);
+
+	/* remove any player velocity to prevent fall damage or other unnicecities */
+	m_eDriver.velocity = [0,0,0];
 }
 
 void
