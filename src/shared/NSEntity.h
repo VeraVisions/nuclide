@@ -100,6 +100,15 @@ public:
 	/* overrides */
 	virtual void SpawnKey(string,string);
 	virtual void Spawned(void);
+
+	/** Handles what happens before the entity gets removed from the client game. */
+	virtual void OnRemoveEntity(void);
+
+	/** Tells the engine to make the entity static, effectively making it inaccessible.
+		It will be removed from the game-logic but remain visible and it will retain its
+		collision and maintain the appearance it had before getting removed. */
+	virtual void MakeStatic(void);
+
 #ifdef SERVER
 	virtual void Respawn(void);
 	virtual void Input(entity,string,string);
@@ -334,12 +343,4 @@ public:
 		of any entity class that you want to support think functions in.
 		This saves you the effort of writing your own routines and methods. */
 	nonvirtual void HandleThink(void);
-
-	/** Handles what happens before the entity gets removed from the client game. */
-	virtual void OnRemoveEntity(void);
-
-	/** Tells the engine to make the entity static, effectively making it inaccessible.
-		It will be removed from the game-logic but remain visible and it will retain its
-		collision and maintain the appearance it had before getting removed. */
-	virtual void MakeStatic(void);
 };

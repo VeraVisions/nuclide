@@ -28,7 +28,7 @@ Materials_LoadFromText(string filename)
 	fileMaterial = fopen(filename, FILE_READ);
 
 	if (fileMaterial >= 0) {
-		print(strcat("parsing material assignments from ", filename,"\n"));
+		//print(strcat("parsing material assignments from ", filename,"\n"));
 
 		while ((sTemp = fgets(fileMaterial))) {
 			/* tokenize and just parse this stuff in */
@@ -67,7 +67,7 @@ Materials_LoadFromMat(string filename)
 
 				if (command == "surfaceprop") {
 					hash_add(g_hashMaterials, materialname, parameters, EV_STRING);
-					print(sprintf("added Material %S type %S\n", materialname, parameters));
+					//print(sprintf("added Material %S type %S\n", materialname, parameters));
 					break;
 				}
 			}
@@ -162,7 +162,7 @@ Materials_LoadFromLegacyText(string filename)
 
 	fileMaterial = fopen(filename, FILE_READ);
 	if (fileMaterial >= 0) {
-		print(strcat("parsing material definitions from ", filename,"\n"));
+		//print(strcat("parsing material definitions from ", filename,"\n"));
 		while ((sTemp = fgets(fileMaterial))) {
 			/* tokenize and just parse this stuff in */
 			if (tokenize_console(sTemp) == 2) {

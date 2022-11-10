@@ -899,7 +899,7 @@ NSClientPlayer::OptimiseChangedFlags(entity ePEnt, float flChanged)
 		flChanged &= ~PLAYER_AMMO1;
 		flChanged &= ~PLAYER_AMMO2;
 		flChanged &= ~PLAYER_AMMO3;
-		flChanged &= ~PLAYER_FLAGS;
+		//flChanged &= ~PLAYER_FLAGS;
 		flChanged &= ~PLAYER_PUNCHANGLE;
 		flChanged &= ~PLAYER_VIEWZOOM;
 		flChanged &= ~PLAYER_SPECTATE;
@@ -1067,7 +1067,7 @@ NSClientPlayer::Footsteps_Update(void)
 		step_time = time + 2.0f;
 	} else {
 		/* make it so we step once we land */
-		if (!(flags & FL_ONGROUND) && !(flags & FL_ONLADDER)) {
+		if (!(GetFlags() & FL_ONGROUND) && !(GetFlags() & FL_ONLADDER)) {
 			step_time = 0.0f;
 			return;
 		}
@@ -1080,9 +1080,9 @@ NSClientPlayer::Footsteps_Update(void)
 	traceline(origin + view_ofs, origin + [0,0,-48], FALSE, this);
 	tex_name = getsurfacetexture(trace_ent, getsurfacenearpoint(trace_ent, trace_endpos));
 
-	if (!(flags & FL_ONGROUND)) {
+	if (!(GetFlags() & FL_ONGROUND) && (!GetFlags() & FL_ONLADDER)) {
 		return;
-	} else if (flags & FL_ONLADDER) {
+	} else if (GetFlags() & FL_ONLADDER) {
 		if (step)
 			StartSoundDef("step_ladder.left", CHAN_BODY, true);
 		else
