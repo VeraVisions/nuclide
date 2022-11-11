@@ -141,7 +141,7 @@ NSClientPlayer::ClientInput(void)
 /* this is where it gets mod specific really fast,
    as some models may not even support skeletal animation */
 void
-NSClientPlayer::UpdatePlayerAnimation(void)
+NSClientPlayer::UpdatePlayerAnimation(float timelength)
 {
 
 }
@@ -180,8 +180,10 @@ NSClientPlayer::predraw(void)
 	/* make sure we're enabling shadow rendering on us! */
 	effects &= ~EF_NOSHADOW;
 
-	/* always advance the player animation in some way */
-	UpdatePlayerAnimation();
+	/* if this player is not the local player, then physics aren't being run on them
+      so we need to advance their animation manually */
+	if (entnum != player_localentnum)
+		UpdatePlayerAnimation(clframetime);
 
 	/* mouth flapping */
 	UpdatePlayerJaw(getplayerkeyfloat(this.entnum - 1, "voiploudness"));

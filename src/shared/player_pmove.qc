@@ -363,8 +363,7 @@ NSClientPlayer::Physics_InputPostMove(void)
 	punchangle[2] *= punch;
 
 	/* player animation code */
-	Animation_TimerUpdate((player)this, input_timelength);
-	Animation_PlayerUpdate((player)this);
+	UpdatePlayerAnimation(input_timelength);
 
 	RemoveFlags(FL_FROZEN);
 	ClientInput();

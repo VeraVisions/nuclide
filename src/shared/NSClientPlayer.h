@@ -91,7 +91,7 @@ NSClientPlayer:NSClientSpectator
 	virtual bool(void) IsPlayer;
 
 	/** Empty & shared between Client and Server. This is run on every player, every frame, to update their animation cycle. */
-	virtual void UpdatePlayerAnimation(void);
+	virtual void UpdatePlayerAnimation(float);
 
 #ifdef CLIENT
 	int sequence;
