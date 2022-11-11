@@ -292,7 +292,9 @@ void
 func_breakable::Explode(void)
 {
 	vector rp = WorldSpaceCenter();
-	FX_BreakModel(vlen(size) / 10, absmin, absmax, [0,0,0], GetSurfaceData(SURFDATA_MATERIAL));
+	vector vecDir = vectoangles(rp - g_dmg_vecLocation);
+
+	BreakModel_Spawn(absmin, absmax, [0,0,0], m_flExplodeMag, vlen(size) / 10, GetPropData(PROPINFO_BREAKMODEL));
 	FX_Explosion(rp);
 	Damage_Radius(rp, this, m_flExplodeMag, m_flExplodeRad, TRUE, 0);
 	UseTargets(this, TRIG_TOGGLE, 0.0f); /* delay... ignored. */
@@ -343,7 +345,8 @@ func_breakable::Death(void)
 	if (m_flExplodeMag) {
 		ScheduleThink(Explode, random(0.0f, 0.5f));
 	} else {
-		FX_BreakModel(vlen(size) / 10, absmin, absmax, [0,0,0], GetSurfaceData(SURFDATA_MATERIAL));
+		vector vecDir = vectoangles(WorldSpaceCenter() - g_dmg_vecLocation);
+		BreakModel_Spawn(absmin, absmax, vecDir, g_dmg_iDamage * 2.5, vlen(size) / 10, GetPropData(PROPINFO_BREAKMODEL));
 		Disappear();
 		SetTakedamage(DAMAGE_NO);
 		UseTargets(eActivator, TRIG_TOGGLE, 0.0f);
