@@ -1079,7 +1079,7 @@ NSClientPlayer::Footsteps_Update(void)
 	step_time = time + 0.35;
 
 	//tracebox(origin, PHY_HULL_MIN, PHY_HULL_MAX, origin + [0,0,-48], MOVE_NORMAL, target);
-	traceline(origin + view_ofs, origin + [0,0,-48], FALSE, this);
+	traceline(origin + view_ofs, origin + [0,0,-48], MOVE_NORMAL, this);
 	tex_name = getsurfacetexture(trace_ent, getsurfacenearpoint(trace_ent, trace_endpos));
 
 	if (!(GetFlags() & FL_ONGROUND) && (!GetFlags() & FL_ONLADDER)) {

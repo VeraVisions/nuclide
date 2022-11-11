@@ -21,11 +21,13 @@ NSTraceAttack::_ApplyDamage(void)
 	if (m_eMultiTarget == __NULL__)
 		return;
 
-	if (trace_ent.iBleeds == 1) {
+	/* the location _could_ be more accurate... */
+	if (m_eMultiTarget.iBleeds == 1) {
 		FX_Blood(trace_endpos, [0.5,0,0]);
 	}
 
 	trace_surface_id = m_iMultiBody;
+	g_dmg_vecLocation = trace_endpos;
 	Damage_Apply(m_eMultiTarget, m_eOwner, m_iMultiValue, m_iWeapon, DMG_BULLET);
 	m_eMultiTarget = __NULL__;
 	m_iMultiValue = 0;

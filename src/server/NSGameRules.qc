@@ -417,6 +417,7 @@ NSGameRules::DamageRadius(vector org, entity attacker, float dmg, float r, int c
 		new_dmg = rint(dmg * diff);
 
 		if (diff > 0) {
+			g_dmg_vecLocation = org;
 			DamageApply(e, attacker, new_dmg, w, DMG_EXPLODE);
 
 			/* approximate, feel free to tweak */

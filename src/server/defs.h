@@ -139,6 +139,7 @@ int g_dmg_iRealDamage;
 bodyType_t g_dmg_iHitBody;
 int g_dmg_iFlags;
 int g_dmg_iWeapon;
+vector g_dmg_vecLocation;
 
 var bool g_ents_initialized = FALSE;
 
