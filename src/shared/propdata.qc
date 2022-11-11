@@ -470,7 +470,7 @@ BreakModel_Spawn(vector smins, vector smaxs, vector dir, float speed, int count,
 	index = (int)hash_get(g_hashbreakmodel, type, -1);
 
 	if (index < 0) {
-		crossprint(sprintf("^1 BreakModel_Spawn: type %s is not defined\n", type));
+		crossprint(sprintf("^1BreakModel_Spawn: type %s is not defined\n", type));
 		return;
 	}
 
@@ -481,8 +481,10 @@ BreakModel_Spawn(vector smins, vector smaxs, vector dir, float speed, int count,
 		vector endpos;
 		string mname;
 		float fadetime;
-		entity gib;
+		NSRenderableEntity gib;
 		int r;
+		int p;
+		int bodygroup = 0;
 
 		/* pick a model between 0 and num) */
 		r = floor(random(0, modelcount));
@@ -490,81 +492,37 @@ BreakModel_Spawn(vector smins, vector smaxs, vector dir, float speed, int count,
 		/* two entries, always have to skip by 2 */
 		mname = argv((r * 2));
 		fadetime = stof(argv((r * 2) + 1));
+		p = tokenizebyseparator(mname, "#");
+
+		/* special char # detected to designate model submodel count */
+		if (p == 2) {
+			mname = argv(0);
+			bodygroup = (int)floor(random(0, stof(argv(1)) + 1));
+		}
 
 		endpos[0] = smins[0] + ( random() * ( smaxs[0] - smins[0] ) );
 		endpos[1] = smins[1] + ( random() * ( smaxs[1] - smins[1] ) );
 		endpos[2] = smins[2] + ( random() * ( smaxs[2] - smins[2] ) );
 
-		gib = spawn();
-		setmodel(gib, mname);
-		setsize(gib, [0,0,0], [0,0,0]);
-		setorigin(gib, endpos);
+		gib = spawn(NSRenderableEntity);
+		gib.SetModel(mname);
+		gib.SetBody(bodygroup);
+		gib.SetSize([0,0,0], [0,0,0]);
+		gib.SetOrigin(endpos);
 		makevectors(dir);
 		gib.velocity = (v_forward * speed) * 0.75;
 		gib.velocity[0] += (random() - 0.5) * (speed * 0.25);
 		gib.velocity[1] += (random() - 0.5) * (speed * 0.25);
 		gib.velocity[2] += (random() - 0.5) * (speed * 0.25);
-		gib.avelocity = vectoangles(gib.velocity);
-		gib.movetype = MOVETYPE_BOUNCE;
-		gib.think = Util_Destroy;
-		gib.nextthink = time + fadetime;
+		gib.SetAngularVelocity(vectoangles(gib.velocity));
+		gib.SetMovetype(MOVETYPE_BOUNCE);
+		gib.ScheduleThink(Util_Destroy, fadetime);
 
 		#ifdef CLIENT
 			gib.drawmask = MASK_ENGINE;
 		#endif
+
+		/* re-calculate the tokenization */
+		x = tokenize(g_breakmodel[index].data);
 	}
 }
-
-void
-BreakModel_SpawnUnit(vector smins, vector smaxs, vector dir, float speed, string type)
-{
-	int index;
-	index = (int)hash_get(g_hashbreakmodel, type, -1);
-
-	if (index < 0) {
-		crossprint(sprintf("^1 BreakModel_Spawn: type %s is not defined\n", type));
-		return;
-	}
-
-	float x = tokenize(g_breakmodel[index].data);
-	int modelcount = x / 2;
-
-	for (int i = 0; i < modelcount; i++) {
-		vector endpos;
-		string mname;
-		float fadetime;
-		entity gib;
-		int r;
-
-		/* pick a model between 0 and num) */
-		r = i;
-
-		/* two entries, always have to skip by 2 */
-		mname = argv((r * 2));
-		fadetime = stof(argv((r * 2) + 1));
-
-		endpos[0] = smins[0] + ( random() * ( smaxs[0] - smins[0] ) );
-		endpos[1] = smins[1] + ( random() * ( smaxs[1] - smins[1] ) );
-		endpos[2] = smins[2] + ( random() * ( smaxs[2] - smins[2] ) );
-
-		gib = spawn();
-		setmodel(gib, mname);
-		setsize(gib, [0,0,0], [0,0,0]);
-		setorigin(gib, endpos);
-		makevectors(dir);
-		gib.velocity = (v_forward * speed) * 0.75;
-		gib.velocity[0] += (random() - 0.5) * (speed * 0.25);
-		gib.velocity[1] += (random() - 0.5) * (speed * 0.25);
-		gib.velocity[2] += (random() - 0.5) * (speed * 0.25);
-		gib.avelocity = vectoangles(gib.velocity);
-		gib.movetype = MOVETYPE_BOUNCE;
-		gib.think = Util_Destroy;
-		gib.nextthink = time + fadetime;
-
-		#ifdef CLIENT
-			gib.drawmask = MASK_ENGINE;
-		#endif
-	}
-}
-
-
