@@ -132,8 +132,6 @@ BreakModel_ParseField(int i, int a)
 		string mdl, fadetime;
 		mdl = argv(0);
 		fadetime = argv(1);
-		precache_model(mdl);
-		print(sprintf("caching breakmodel %s %s\n", mdl, fadetime));
 		g_breakmodel[i].data = sprintf("%s%S %S\n", g_breakmodel[i].data, mdl, fadetime);
 	}
 };
@@ -435,6 +433,30 @@ PropData_Init(void)
 		PropData_ParseLine(line);
 	}
 	fclose(fh);
+
+	/* now let's precache all of our breakmodel units.
+	   first we gotta interate through each cached breakmodel line */
+	for (int i = 0; i < g_breakmodel_count; i++) {
+		float x = tokenize(g_breakmodel[i].data);
+		int r = (int)(x/2);
+
+		/* now we're getting the individual 2-part segments (model, fadetime) */
+		for (int b = 0; b < r; b++) {
+			string mname = argv(b*2);
+			int p = tokenizebyseparator(mname, "#"); /* special submodel character */
+
+			/* either precache the first part, or whole part */
+			if (p == 2) {
+				mname = argv(0);
+			}
+
+			precache_model(mname);
+			NSLog("precaching break model: %S", mname);
+
+			/* gotta tokenize our inputs again */
+			x = tokenize(g_breakmodel[i].data);
+		}
+	}
 
 	print("PropData initialized.\n");
 }
