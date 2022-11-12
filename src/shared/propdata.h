@@ -43,7 +43,7 @@
 				"foo.vvm" "2.5"
 
 				// but I also added
-				"foo.mdl#9" "5.0"
+				"foo.mdl#submodels=9" "5.0"
 				// where the # symbol notes that >9< submodels of the first
 				// submodel group will be chosen at random to represent 1 unit
 				// of the breakmodel collective

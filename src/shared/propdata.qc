@@ -443,10 +443,10 @@ PropData_Init(void)
 		/* now we're getting the individual 2-part segments (model, fadetime) */
 		for (int b = 0; b < r; b++) {
 			string mname = argv(b*2);
-			int p = tokenizebyseparator(mname, "#"); /* special submodel character */
+			int p = tokenizebyseparator(mname, "#"); /* special attribute character */
 
 			/* either precache the first part, or whole part */
-			if (p == 2) {
+			if (p > 1) {
 				mname = argv(0);
 			}
 
@@ -502,24 +502,64 @@ BreakModel_Spawn(vector smins, vector smaxs, vector dir, float speed, int count,
 	for (int i = 0; i < count; i++) {
 		vector endpos;
 		string mname;
+		string fullline;
 		float fadetime;
 		NSRenderableEntity gib;
 		int r;
 		int p;
 		int bodygroup = 0;
+		vector rendercolor = [1,1,1];
+		float renderamt = 1.0f;
+		float rendermode = RM_NORMAL;
+		float renderfx = RFX_NORMAL;
 
 		/* pick a model between 0 and num) */
 		r = floor(random(0, modelcount));
 
 		/* two entries, always have to skip by 2 */
-		mname = argv((r * 2));
+		fullline = mname = argv((r * 2));
 		fadetime = stof(argv((r * 2) + 1));
 		p = tokenizebyseparator(mname, "#");
 
 		/* special char # detected to designate model submodel count */
-		if (p == 2) {
+		if (p > 1) {
 			mname = argv(0);
-			bodygroup = (int)floor(random(0, stof(argv(1)) + 1));
+
+			/* iterate over all the segments */
+			for (int g = 1; g < p; g++) {
+				string segment = argv(g);
+				int m = tokenizebyseparator(segment, "=");
+
+				/* check if there's an assignment */
+				if (m == 2) {
+					string key = argv(0);
+					string value = argv(1);
+
+					switch (key) {
+					case "submodels":
+						bodygroup = (int)floor(random(0, stof(value)));
+						break;
+					case "rendercolor":
+						rendercolor = stov(value);
+						break;
+					case "renderamt":
+						renderamt = stof(value);
+						break;
+					case "rendermode":
+						rendermode = stof(value);
+						break;
+					case "renderfx":
+						renderfx = stof(value);
+						break;
+					default:
+						print(sprintf("^1BreakModel_Spawn: Unrecognized model attribute %S with value %S\n",
+							key, value));
+					}
+				}
+
+				/* start the line anew */
+				p = tokenizebyseparator(fullline, "#");
+			}
 		}
 
 		endpos[0] = smins[0] + ( random() * ( smaxs[0] - smins[0] ) );
@@ -529,6 +569,10 @@ BreakModel_Spawn(vector smins, vector smaxs, vector dir, float speed, int count,
 		gib = spawn(NSRenderableEntity);
 		gib.SetModel(mname);
 		gib.SetBody(bodygroup);
+		gib.SetRenderColor(rendercolor);
+		gib.SetRenderAmt(renderamt);
+		gib.SetRenderMode(rendermode);
+		gib.SetRenderFX(renderfx);
 		gib.SetSize([0,0,0], [0,0,0]);
 		gib.SetOrigin(endpos);
 		makevectors(dir);
