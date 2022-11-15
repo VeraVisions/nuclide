@@ -548,6 +548,10 @@ void
 NSRenderableEntity::SetBody(int newBody)
 {
 	m_iBody = newBody;
+
+#ifdef CLIENT
+	setcustomskin(this, "", sprintf("geomset 0 %i\ngeomset 1 %i\n", m_iBody, m_iBody));
+#endif
 }
 
 void

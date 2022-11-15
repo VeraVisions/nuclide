@@ -135,6 +135,9 @@ Event_Parse(float type)
 		pSeat->m_flShakeFreq = readfloat();
 		pSeat->m_flShakeTime = pSeat->m_flShakeDuration;
 		break;
+	case EV_BREAKMODEL:
+		BreakModel_Receive();
+		break;
 	default:
 		error("event not recognized. abort immediately.\n");
 	}

@@ -485,17 +485,10 @@ PropData_Finish(void)
 }
 
 /* BreakModel related helper API */
+#ifdef CLIENT
 void
-BreakModel_Spawn(vector smins, vector smaxs, vector dir, float speed, int count, string type)
+BreakModel_SpawnID(vector smins, vector smaxs, vector dir, float speed, int count, int index)
 {
-	int index;
-	index = (int)hash_get(g_hashbreakmodel, type, -1);
-
-	if (index < 0) {
-		crossprint(sprintf("^1BreakModel_Spawn: type %s is not defined\n", type));
-		return;
-	}
-
 	float x = tokenize(g_breakmodel[index].data);
 	int modelcount = x / 2;
 
@@ -592,3 +585,58 @@ BreakModel_Spawn(vector smins, vector smaxs, vector dir, float speed, int count,
 		x = tokenize(g_breakmodel[index].data);
 	}
 }
+
+void
+BreakModel_Receive(void)
+{
+	vector smins, smaxs, dir;
+	float speed;
+	int count;
+	int index;
+
+	index = readbyte();
+	smins[0] = readcoord();
+	smins[1] = readcoord();
+	smins[2] = readcoord();
+
+	smaxs[0] = readcoord();
+	smaxs[1] = readcoord();
+	smaxs[2] = readcoord();
+
+	dir[0] = readcoord();
+	dir[1] = readcoord();
+	dir[2] = readcoord();
+
+	speed = readfloat();
+	count = readbyte();
+
+	BreakModel_SpawnID(smins, smaxs, dir, speed, count, index);
+}
+
+#else
+void
+BreakModel_Spawn(vector smins, vector smaxs, vector dir, float speed, int count, string type)
+{
+	int index;
+	index = (int)hash_get(g_hashbreakmodel, type, -1);
+
+	if (index == -1)
+		return;
+
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_BREAKMODEL);
+	WriteByte(MSG_MULTICAST, index);
+	WriteCoord(MSG_MULTICAST, smins[0]);
+	WriteCoord(MSG_MULTICAST, smins[1]);
+	WriteCoord(MSG_MULTICAST, smins[2]);
+	WriteCoord(MSG_MULTICAST, smaxs[0]);
+	WriteCoord(MSG_MULTICAST, smaxs[1]);
+	WriteCoord(MSG_MULTICAST, smaxs[2]);
+	WriteCoord(MSG_MULTICAST, dir[0]);
+	WriteCoord(MSG_MULTICAST, dir[1]);
+	WriteCoord(MSG_MULTICAST, dir[2]);
+	WriteFloat(MSG_MULTICAST, speed);
+	WriteByte(MSG_MULTICAST, count);
+	multicast((smins - smaxs), MULTICAST_PVS);
+}
+#endif

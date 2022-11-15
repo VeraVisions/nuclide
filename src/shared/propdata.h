@@ -128,7 +128,13 @@ breakmodel_t *g_breakmodel;
 int g_breakmodel_count;
 var hashtable g_hashbreakmodel;
 
+
+#ifdef CLIENT
+void BreakModel_SpawnID(vector smins, vector smaxs, vector dir, float speed, int count, int index);
+void BreakModel_Receive(void);
+#else
 void BreakModel_Spawn(vector pos, vector dir, vector spread, float speed, int count, string type);
+#endif
 
 /* necessary API functions */
 //void BreakModel_Init(void);
