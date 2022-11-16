@@ -139,6 +139,10 @@ public:
 
 	virtual void MakeStatic(void);
 
+	/* model events */
+	/** Callback for any model event that gets triggered while playing a framegroup. */
+	virtual void HandleAnimEvent(float, int,string);
+
 	/* set */
 	/** Sets the bodygroup of the entity. */
 	nonvirtual void SetBody(int);
@@ -180,10 +184,6 @@ public:
 	nonvirtual float GetBoneControl4(void);
 	/** Returns the value of the entity's bone controller #5. */
 	nonvirtual float GetBoneControl5(void);
-
-	/* model events */
-	/** Callback for any model event that gets triggered while playing a framegroup. */
-	virtual void HandleAnimEvent(float, int,string);
 
 	#ifdef CLIENT
 	/** Called by predraw(); and will set the appropriate rendering specific fields. */

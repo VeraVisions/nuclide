@@ -41,8 +41,7 @@ public:
 	virtual string GetObituaryMessage(void);
 	/** Returns the weapon type. Check weapontype_t for details. */
 	virtual int GetType(void);
-	/** Returns the owner/wielder of the weapon. */
-	virtual entity GetOwner(void);
+
 	/** Returns primary attack clip */
 	virtual int GetClip1(void);
 	/** Returns secondary attack clip */

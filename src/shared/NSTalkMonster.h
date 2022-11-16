@@ -109,7 +109,7 @@ public:
 	virtual void PanicFrame(void);
 
 	virtual void OnPlayerUse(void);
-	virtual void Hide(void);
+	//virtual void Hide(void);
 	virtual void Respawn(void);
 	virtual void SpawnKey(string,string);
 	virtual float SendEntity(entity,float);

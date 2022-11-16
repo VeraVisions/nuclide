@@ -117,12 +117,6 @@ NSWeapon::GetType(void)
 	return 0;
 }
 
-entity
-NSWeapon::GetOwner(void)
-{
-	return m_owner;
-}
-
 int
 NSWeapon::GetClip1(void)
 {

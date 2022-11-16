@@ -644,12 +644,14 @@ NSTalkMonster::SpawnKey(string strKey, string strValue)
 	}
 }
 
+#if 0
 void
 NSTalkMonster::Hide(void)
 {
 	m_eFollowing = world;
 	NSMonster::Hide();
 }
+#endif
 
 float
 NSTalkMonster::SendEntity(entity ePEnt, float flChanged)

@@ -77,7 +77,15 @@ public:
 	/** Called when we stopped touching the last touched entity. */
 	virtual void EndTouch(entity);
 
+	/* override */
+	virtual void SpawnKey(string,string);
+
 #ifdef SERVER
+	/* overrides */
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void Input(entity,string,string);
+
 	/** Called whenever we're legacy triggered by another object or function. */
 	virtual void Trigger(entity,int);
 
@@ -89,7 +97,8 @@ public:
 
 	/* master feature */
 	/** Returns what we will pass onto other's `::GetMaster()` calls if we're their master. */
-	nonvirtual int GetValue(void);
+	/* multisource overrides this, so keep virtual */
+	virtual int GetValue(void);
 
 	/** Returns whether our master allows us to be triggered. */
 	nonvirtual int GetMaster(void);
@@ -112,13 +121,7 @@ public:
 	/** Retrives the team value of a given entity. */
 	nonvirtual float GetTeam(void);
 
-	/* overrides */
-	virtual void Save(float);
-	virtual void Restore(string,string);
-	virtual void Input(entity,string,string);
-
 #endif
-	virtual void SpawnKey(string,string);
 };
 
 enum

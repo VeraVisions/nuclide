@@ -55,14 +55,21 @@ public:
 		that are part of NSIO. */
 	virtual void SpawnKey(string,string);
 
-	/** Get the level time the entity finds itself in.
-		Always use this instead of the `time` global. The `time` global may not
-		be valid on every type of entity. Specifically, MOVETYPE_PUSH entities only
-		update upon movement (so that any think timers the entity may have are not triggered
-		when it is at rest. */
-	nonvirtual float GetTime(void);
-
 #ifdef SERVER
+
+	/** Handles saving a copy of this entity to a given filehandle.
+		Within you want to use the ::SaveFloat() etc. methods to write
+		the internal member attributes to the specified file handle. */
+	virtual void Save(float);
+
+	/** Similar to `::SpawnKey` but for save-game fields.
+		Whatever you write into file handles within your `::Save()` method
+		needs to be read back in here. */
+	virtual void Restore(string,string);
+
+	/** Called when we are being prompted by another object/function with an input message. */
+	virtual void Input(entity,string,string);
+
 	/* helper functions to allocate outputs */
 	/** Triggers an output field that has been created beforehand */
 	nonvirtual void UseOutput(entity,string);
@@ -79,16 +86,6 @@ public:
 	the triggering (and counting down of uses) as defined in the Source Engine's
 	Input/Output specification. */
 	nonvirtual string CreateOutput(string);
-
-	/** Handles saving a copy of this entity to a given filehandle.
-		Within you want to use the ::SaveFloat() etc. methods to write
-		the internal member attributes to the specified file handle. */
-	virtual void Save(float);
-
-	/** Similar to `::SpawnKey` but for save-game fields.
-		Whatever you write into file handles within your `::Save()` method
-		needs to be read back in here. */
-	virtual void Restore(string,string);
 
 	/* save game related methods */
 	/** Saves a floating point key/value pair to a filehandle. */
@@ -117,10 +114,14 @@ public:
 	nonvirtual bool ReadBool(string);
 	/** read an entity id, converted to entity, from a string */
 	nonvirtual entity ReadEntity(string);
-
-	/** Called when we are being prompted by another object/function with an input message. */
-	virtual void Input(entity,string,string);
 #endif
+
+	/** Get the level time the entity finds itself in.
+		Always use this instead of the `time` global. The `time` global may not
+		be valid on every type of entity. Specifically, MOVETYPE_PUSH entities only
+		update upon movement (so that any think timers the entity may have are not triggered
+		when it is at rest. */
+	nonvirtual float GetTime(void);
 };
 
 .bool _mapspawned;

@@ -48,6 +48,7 @@ enumflags
 class prop_vehicle_driveable_wheel
 {
 	void() prop_vehicle_driveable_wheel;
+
 	float m_flSuspension;
 	float m_flSuspensionForce;
 
@@ -122,6 +123,50 @@ class prop_vehicle_driveable:NSVehicle
 	virtual float(entity, float) SendEntity;
 #endif
 };
+
+void
+prop_vehicle_driveable::prop_vehicle_driveable(void)
+{
+	m_eDriver = __NULL__;
+	m_flBounceFactor = 1.25f;
+	m_flAcceleration = 600.0f;
+	m_flSkidSpeed = 256.0f;
+	m_flTraction = 5.0f;
+	m_flBreakFactor = 2.0f;
+	m_flSteerFactor = 1.0f;
+	m_flStraightenFactor = 1.0f;
+	m_vecGravityDir = [0,0,-1];
+	m_iVehicleFlags |= VHF_FROZEN;
+	hitcontentsmaski = CONTENTBIT_BODY | CONTENTBITS_POINTSOLID | CONTENTBIT_VEHICLECLIP;
+
+	if (!m_eCollBox1)
+		m_eCollBox1 = spawn(NSEntity);
+	if (!m_eCollBox2)
+		m_eCollBox2 = spawn(NSEntity);
+
+	{
+		m_eCollBox1.SetSize([-32,-32,0], [32,32,32]);
+		m_eCollBox2.SetSize([-32,-32,0], [32,32,32]);
+	}
+
+	m_eCollBox1.hitcontentsmaski = hitcontentsmaski;	
+	m_eCollBox2.hitcontentsmaski = hitcontentsmaski;	
+
+	if (!m_wlFL)
+		m_wlFL = spawn(prop_vehicle_driveable_wheel);
+	if (!m_wlFR)
+		m_wlFR = spawn(prop_vehicle_driveable_wheel);
+	if (!m_wlBL)
+		m_wlBL = spawn(prop_vehicle_driveable_wheel);
+	if (!m_wlBR)
+		m_wlBR = spawn(prop_vehicle_driveable_wheel);
+
+	m_eCollBox1.owner = m_eCollBox2.owner = \
+		m_wlFL.owner = m_wlFR.owner = \
+		m_wlBL.owner = m_wlBR.owner = this;
+
+	customphysics = Physics;
+}
 
 #ifdef CLIENT
 bool
@@ -851,50 +896,6 @@ prop_vehicle_driveable::Spawned(void)
 #ifdef SERVER
 	Sound_Precache("prop_vehicle_driveable.bounce");
 #endif
-}
-
-void
-prop_vehicle_driveable::prop_vehicle_driveable(void)
-{
-	m_eDriver = __NULL__;
-	m_flBounceFactor = 1.25f;
-	m_flAcceleration = 600.0f;
-	m_flSkidSpeed = 256.0f;
-	m_flTraction = 5.0f;
-	m_flBreakFactor = 2.0f;
-	m_flSteerFactor = 1.0f;
-	m_flStraightenFactor = 1.0f;
-	m_vecGravityDir = [0,0,-1];
-	m_iVehicleFlags |= VHF_FROZEN;
-	hitcontentsmaski = CONTENTBIT_BODY | CONTENTBITS_POINTSOLID | CONTENTBIT_VEHICLECLIP;
-
-	if (!m_eCollBox1)
-		m_eCollBox1 = spawn(NSEntity);
-	if (!m_eCollBox2)
-		m_eCollBox2 = spawn(NSEntity);
-
-	{
-		m_eCollBox1.SetSize([-32,-32,0], [32,32,32]);
-		m_eCollBox2.SetSize([-32,-32,0], [32,32,32]);
-	}
-
-	m_eCollBox1.hitcontentsmaski = hitcontentsmaski;	
-	m_eCollBox2.hitcontentsmaski = hitcontentsmaski;	
-
-	if (!m_wlFL)
-		m_wlFL = spawn(prop_vehicle_driveable_wheel);
-	if (!m_wlFR)
-		m_wlFR = spawn(prop_vehicle_driveable_wheel);
-	if (!m_wlBL)
-		m_wlBL = spawn(prop_vehicle_driveable_wheel);
-	if (!m_wlBR)
-		m_wlBR = spawn(prop_vehicle_driveable_wheel);
-
-	m_eCollBox1.owner = m_eCollBox2.owner = \
-		m_wlFL.owner = m_wlFR.owner = \
-		m_wlBL.owner = m_wlBR.owner = this;
-
-	customphysics = Physics;
 }
 
 #ifdef CLIENT

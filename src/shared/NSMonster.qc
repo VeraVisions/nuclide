@@ -815,6 +815,7 @@ NSMonster::Death(void)
 		TriggerTargets();
 }
 
+#if 0
 void
 NSMonster::Hide(void)
 {
@@ -823,6 +824,7 @@ NSMonster::Hide(void)
 	SetMovetype(MOVETYPE_NONE);
 	customphysics = __NULL__;
 }
+#endif
 
 void
 NSMonster::Respawn(void)

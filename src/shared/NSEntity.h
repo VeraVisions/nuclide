@@ -115,6 +115,9 @@ public:
 	virtual void Save(float);
 	virtual void Restore(string,string);
 
+	/** Called when we need to re-align the entity to our parent entity. */
+	virtual void ParentUpdate(void);
+
 	/** Called when the entity has been successfully restored from a savegame file. */
 	virtual void RestoreComplete(void);
 
@@ -135,9 +138,6 @@ public:
 
 	/** Call this on an entity to remove the connection to its parent. */
 	nonvirtual void ClearParent(void);
-
-	/** Called when we need to re-align the entity to our parent entity. */
-	virtual void ParentUpdate(void);
 
 	/** Restore the entity's angles to the value they spawned with. */
 	nonvirtual void RestoreAngles(void);
@@ -172,7 +172,7 @@ public:
 	/** Sets the collision type of the entity. Check the solid_t enum for available types. */
 	nonvirtual void SetSolid(float);
 	/** Sets the 3D model representation of the entity from a file path and name. */
-	nonvirtual void SetModel(string);
+	virtual void SetModel(string);
 	/** Sets the 3D model representation of the entity from an already precached resource id. */
 	nonvirtual void SetModelindex(float);
 	/** Sets the movement type of the entity. Check the movetype_t enum for available types. */
