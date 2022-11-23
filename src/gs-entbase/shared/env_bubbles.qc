@@ -58,10 +58,10 @@ enumflags
 class
 env_bubbles:NSPointTrigger
 {
-	PREDICTED_INT(m_iDensity);
-	PREDICTED_FLOAT(m_flFrequency);
-	PREDICTED_FLOAT(m_flCurrent);
-	PREDICTED_BOOL(m_bEnabled);
+	PREDICTED_INT(m_iDensity)
+	PREDICTED_FLOAT(m_flFrequency)
+	PREDICTED_FLOAT(m_flCurrent)
+	PREDICTED_BOOL(m_bEnabled)
 
 	/* spawn values */
 	int m_iSpawnDensity;

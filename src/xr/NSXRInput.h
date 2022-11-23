@@ -47,46 +47,55 @@ these inputs as well.
 Each input has the ability to have a NSWeapon reference tied to it.
 That way you can dual (or even triple) wield them.
 */
-class
-NSXRInput
-{
-private:
+class NSXRInput {
+  public:
+	void NSXRInput( void );
+
+	/** Sets the NSXRInput type. */
+	virtual void SetType( xrinput_t );
+
+	/** Sets which NSXRSpace this input belongs to. */
+	virtual void SetParentSpace( NSXRSpace );
+
+	/** Returns the world space position of this NSXRInput. */
+	virtual vector GetOrigin( void );
+
+	/** Returns the direction this NSXRInput is facing. */
+	virtual vector GetAngles( void );
+
+	/** Returns the current velocity of this NSXRInput. */
+	virtual vector GetVelocity( void );
+
+	/** Returns the rotational movement of this NSXRInput. */
+	virtual vector GetAngularVelocity( void );
+
+	/** Returns the status of the NSXRInput. */
+	virtual unsigned int GetStatus( void );
+
+	/** Returns the weapon this NSXRInput is wielding. */
+	virtual unsigned int GetWeapon( void );
+
+	/** Returns the type of NSXRInput, check xrinput_t for details. */
+	virtual xrinput_t GetType( void );
+
+	/** Returns if this NSXRInput is available/active. */
+	virtual bool IsAvailable( void );
+
+	/** Run every single input event. */
+	virtual void InputFrame( void );
+
+	/** Debug function that can be called every single frame. */
+	virtual void PrintInfo( void );
+
+  private:
 	/** Reference to the space we belong to */
 	NSXRSpace m_xrSpace;
 	vector m_vecOrigin;
 	vector m_vecAngles;
-	vector m_vecVelocity;                                                                                     
+	vector m_vecVelocity;
 	vector m_vecAVelocity;
 	unsigned int m_iStatus;
 	unsigned int m_iWeapon;
 
 	xrinput_t m_inputType;
-
-public:
-	void NSXRInput(void);
-
-	/** Sets the NSXRInput type. */
-	virtual void SetType(xrinput_t);
-	/** Sets which NSXRSpace this input belongs to. */
-	virtual void SetParentSpace(NSXRSpace);
-	/** Returns the world space position of this NSXRInput. */
-	virtual vector GetOrigin(void);
-	/** Returns the direction this NSXRInput is facing. */
-	virtual vector GetAngles(void);
-	/** Returns the current velocity of this NSXRInput. */
-	virtual vector GetVelocity(void);
-	/** Returns the rotational movement of this NSXRInput. */
-	virtual vector GetAngularVelocity(void);
-	/** Returns the status of the NSXRInput. */
-	virtual unsigned int GetStatus(void);
-	/** Returns the weapon this NSXRInput is wielding. */
-	virtual unsigned int GetWeapon(void);
-	/** Returns the type of NSXRInput, check xrinput_t for details. */
-	virtual xrinput_t GetType(void);
-	/** Returns if this NSXRInput is available/active. */
-	virtual bool IsAvailable(void);
-	/** Run every single input event. */
-	virtual void InputFrame(void);
-	/** Debug function that can be called every single frame. */
-	virtual void PrintInfo(void);
 };

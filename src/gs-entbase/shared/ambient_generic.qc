@@ -63,11 +63,11 @@ enumflags
 class ambient_generic:NSTalkMonster
 {
 	/* networked attributes */
-	PREDICTED_STRING(m_strActivePath);
-	PREDICTED_FLOAT(m_flVolume);
-	PREDICTED_FLOAT(m_flRadius);
-	PREDICTED_FLOAT(m_flPitch);
-	PREDICTED_BOOL(m_bLoops);
+	PREDICTED_STRING(m_strActivePath)
+	PREDICTED_FLOAT(m_flVolume)
+	PREDICTED_FLOAT(m_flRadius)
+	PREDICTED_FLOAT(m_flPitch)
+	PREDICTED_BOOL(m_bLoops)
 	bool m_bToggle;
 
 	/* spawn values */

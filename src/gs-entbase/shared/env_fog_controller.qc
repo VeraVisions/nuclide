@@ -67,15 +67,15 @@ class
 env_fog_controller:NSPointTrigger
 {
 	/* networked attributes */
-	PREDICTED_INT(m_iFogActive);
-	PREDICTED_INT(m_iFogBlend);
-	PREDICTED_FLOAT(m_flFogStart);
-	PREDICTED_FLOAT(m_flFogEnd);
-	PREDICTED_FLOAT(m_flFogMaxDensity);
-	PREDICTED_FLOAT(m_flFogFarZ);
-	PREDICTED_VECTOR(m_vecFogColor);
-	PREDICTED_VECTOR(m_vecFogColor2);
-	PREDICTED_VECTOR(m_vecFogDir);
+	PREDICTED_INT(m_iFogActive)
+	PREDICTED_INT(m_iFogBlend)
+	PREDICTED_FLOAT(m_flFogStart)
+	PREDICTED_FLOAT(m_flFogEnd)
+	PREDICTED_FLOAT(m_flFogMaxDensity)
+	PREDICTED_FLOAT(m_flFogFarZ)
+	PREDICTED_VECTOR(m_vecFogColor)
+	PREDICTED_VECTOR(m_vecFogColor2)
+	PREDICTED_VECTOR(m_vecFogDir)
 
 	void(void) env_fog_controller;
 

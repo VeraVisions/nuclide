@@ -342,6 +342,17 @@ NSGameRules::DamageApply(entity t, entity c, float dmg, int w, damageType_t type
 		multicast([0,0,0], MULTICAST_ONE_R);
 	}
 
+	/* only hit notify on clients */
+	if ((g_dmg_eTarget.flags & FL_CLIENT) || (g_dmg_eTarget.flags & FL_MONSTER)) {
+		/* server-side hitnotify */
+		if ((g_dmg_eAttacker.flags & FL_CLIENT) && (g_dmg_eTarget != g_dmg_eAttacker)) {
+			WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+			WriteByte(MSG_MULTICAST, EV_HITNOTIFY);
+			msg_entity = c;
+			multicast([0,0,0], MULTICAST_ONE);
+		}
+	}
+
 	/* they died */
 	if (eTarget.GetHealth() <= 0) {
 		if (eTarget.flags & FL_CLIENT) {

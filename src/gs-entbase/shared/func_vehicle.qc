@@ -125,7 +125,7 @@ func_vehicle:NSVehicle
 	float m_flWidth;
 	float m_flLength;
 
-	PREDICTED_FLOAT(m_flTurn);
+	PREDICTED_FLOAT(m_flTurn)
 
 	void(void) func_vehicle;
 	virtual void(void) Spawned;

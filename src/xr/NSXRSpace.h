@@ -18,32 +18,34 @@
 
 It's used to handle room to world translation for VR, for example.
 */
-class
-NSXRSpace
-{
+class NSXRSpace {
+public:
+	void NSXRSpace( void );
+
+	/** Sets the placement of the space in the 3D world. */
+	virtual void SetOrigin( vector );
+
+	/** Sets the direction offset of the space in the 3D world. */
+	virtual void SetAngles( vector );
+
+	/** Get the forward facing direction in a normalized vector. */
+	virtual vector GetForward( void );
+
+	/** Get the right facing direction in a normalized vector. */
+	virtual vector GetRight( void );
+
+	/** Get the up facing direction in a normalized vector. */
+	virtual vector GetUp( void );
+
+	/** Takes a room-space position and translates it into world position. */
+	virtual vector RoomToWorldOrigin( vector );
+
+	/** Takes a room-space angle and translates it into world angles. */
+	virtual vector RoomToWorldAngles( vector );
+
 private:
 	vector m_vecForward;
 	vector m_vecRight;
 	vector m_vecUp;
 	vector m_vecOrigin;
-
-public:
-	void NSXRSpace(void);
-
-	/** Sets the placement of the space in the 3D world. */
-	virtual void SetOrigin(vector);
-	/** Sets the direction offset of the space in the 3D world. */
-	virtual void SetAngles(vector);
-
-	/** Get the forward facing direction in a normalized vector. */
-	virtual vector GetForward(void);
-	/** Get the right facing direction in a normalized vector. */
-	virtual vector GetRight(void);
-	/** Get the up facing direction in a normalized vector. */
-	virtual vector GetUp(void);
-
-	/** Takes a room-space position and translates it into world position. */
-	virtual vector RoomToWorldOrigin(vector);
-	/** Takes a room-space angle and translates it into world angles. */
-	virtual vector RoomToWorldAngles(vector);
 };

@@ -14,6 +14,19 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+void
+NSXRInput::NSXRInput(void)
+{
+	m_xrSpace = __NULL__;
+	m_vecOrigin = [0.0f, 0.0f, 0.0f];
+	m_vecAngles = [0.0f, 0.0f, 0.0f];
+	m_vecVelocity = [0.0f, 0.0f, 0.0f];
+	m_vecAVelocity = [0.0f, 0.0f, 0.0f];
+	m_iStatus = 0i;
+	m_iWeapon = 0i;
+	m_inputType = XR_INPUT_UNKNOWN;
+}
+
 vector
 NSXRInput::GetOrigin(void)
 {
@@ -157,9 +170,4 @@ NSXRInput::PrintInfo(void)
 	}
 
 	crossprint(sprintf("%s o: %v a: %v v:%v va:%v s:%i w:%i\n", deviceType, GetOrigin(), GetAngles(), GetVelocity(), GetAngularVelocity(), GetStatus(), GetWeapon()));
-}
-
-void
-NSXRInput::NSXRInput(void)
-{
 }

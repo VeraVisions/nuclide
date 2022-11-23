@@ -92,7 +92,7 @@ class prop_vehicle_driveable:NSVehicle
 	prop_vehicle_driveable_wheel m_wlBR;
 	vector m_vecControlMins;
 	vector m_vecControlMaxs;
-	PREDICTED_FLOAT(m_flTurn);
+	PREDICTED_FLOAT(m_flTurn)
 
 	float m_flBRWheelAxel;
 	float m_flBLWheelAxel;

@@ -93,19 +93,19 @@ class NSRenderableEntity:NSEntity
 {
 private:
 	/* new */
-	PREDICTED_FLOAT(m_flBoneControl1);
-	PREDICTED_FLOAT(m_flBoneControl2);
-	PREDICTED_FLOAT(m_flBoneControl3);
-	PREDICTED_FLOAT(m_flBoneControl4);
-	PREDICTED_FLOAT(m_flBoneControl5);
-	PREDICTED_INT(m_iBody);
-	PREDICTED_FLOAT_N(colormap);
-	PREDICTED_VECTOR_N(glowmod);
+	PREDICTED_FLOAT(m_flBoneControl1)
+	PREDICTED_FLOAT(m_flBoneControl2)
+	PREDICTED_FLOAT(m_flBoneControl3)
+	PREDICTED_FLOAT(m_flBoneControl4)
+	PREDICTED_FLOAT(m_flBoneControl5)
+	PREDICTED_INT(m_iBody)
+	PREDICTED_FLOAT_N(colormap)
+	PREDICTED_VECTOR_N(glowmod)
 
-	PREDICTED_FLOAT(m_iRenderFX);
-	PREDICTED_FLOAT(m_iRenderMode);
-	PREDICTED_FLOAT(m_flRenderAmt);
-	PREDICTED_VECTOR(m_vecRenderColor);
+	PREDICTED_FLOAT(m_iRenderFX)
+	PREDICTED_FLOAT(m_iRenderMode)
+	PREDICTED_FLOAT(m_flRenderAmt)
+	PREDICTED_VECTOR(m_vecRenderColor)
 
 	/* model events */
 	float m_flBaseTime;

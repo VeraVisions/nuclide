@@ -54,10 +54,10 @@ var int autocvar_rope_maxsegments = -1;
 class prop_rope:NSEntity
 {
 	string m_strShader;
-	PREDICTED_FLOAT(m_flSag);
-	PREDICTED_FLOAT(m_flSwingFactor);
-	PREDICTED_INT(m_iSegments);
-	PREDICTED_VECTOR(m_vecTarget);
+	PREDICTED_FLOAT(m_flSag)
+	PREDICTED_FLOAT(m_flSwingFactor)
+	PREDICTED_INT(m_iSegments)
+	PREDICTED_VECTOR(m_vecTarget)
 
 	void(void) prop_rope;
 

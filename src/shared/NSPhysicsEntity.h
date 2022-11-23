@@ -67,7 +67,7 @@ private:
 	virtual void _TouchThink(void);
 
 #ifdef SERVER
-	PREDICTED_VECTOR(m_vecNetAngles);
+	PREDICTED_VECTOR(m_vecNetAngles)
 #endif
 
 public:

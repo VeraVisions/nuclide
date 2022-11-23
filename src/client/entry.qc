@@ -578,7 +578,8 @@ CSQC_Ent_Remove(void)
 
 		/* we don't want to call Destroy, as that's delayed by a frame...
 		   so we need to call this ourselves */
-		me.OnRemoveEntity();
+		if (me.OnRemoveEntity)
+			me.OnRemoveEntity();
 
 		/* frees one slot the engine won't free for us */
 		if (me.skeletonindex)

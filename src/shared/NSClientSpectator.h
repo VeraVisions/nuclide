@@ -49,8 +49,8 @@ of type NSClientSpectator.
 class NSClientSpectator:NSClient
 {
 private:
-	PREDICTED_FLOAT(spec_ent);
-	PREDICTED_FLOAT(spec_flags);
+	PREDICTED_FLOAT(spec_ent)
+	PREDICTED_FLOAT(spec_flags)
 	NSClientSpectatorMode_t spec_mode; NSClientSpectatorMode_t spec_mode_net;
 
 	vector spec_org;

@@ -23,32 +23,32 @@ class
 NSClientPlayer:NSClientSpectator
 {
 #ifdef SERVER
-	PREDICTED_INT_N(weaponframe);
+	PREDICTED_INT_N(weaponframe)
 #else
-	PREDICTED_INT(weaponframe);
-	PREDICTED_FLOAT(vehicle_entnum);
+	PREDICTED_INT(weaponframe)
+	PREDICTED_FLOAT(vehicle_entnum)
 #endif
-	PREDICTED_FLOAT(health);
-	PREDICTED_FLOAT(armor);
+	PREDICTED_FLOAT(health)
+	PREDICTED_FLOAT(armor)
 
-	PREDICTED_FLOAT_N(colormap);
-	PREDICTED_FLOAT_N(gflags);
-	PREDICTED_FLOAT(viewzoom);
-	PREDICTED_VECTOR_N(view_ofs);
-	PREDICTED_VECTOR(v_angle);
-	PREDICTED_FLOAT_N(pmove_flags);
+	PREDICTED_FLOAT_N(colormap)
+	PREDICTED_FLOAT_N(gflags)
+	PREDICTED_FLOAT(viewzoom)
+	PREDICTED_VECTOR_N(view_ofs)
+	PREDICTED_VECTOR(v_angle)
+	PREDICTED_FLOAT_N(pmove_flags)
 
-	PREDICTED_FLOAT(w_attack_next);
-	PREDICTED_FLOAT(w_idle_next);
-	PREDICTED_FLOAT(teleport_time);
-	PREDICTED_FLOAT(weapontime);
-	PREDICTED_VECTOR(punchangle);
+	PREDICTED_FLOAT(w_attack_next)
+	PREDICTED_FLOAT(w_idle_next)
+	PREDICTED_FLOAT(teleport_time)
+	PREDICTED_FLOAT(weapontime)
+	PREDICTED_VECTOR(punchangle)
 
 	/* We can't use the default .items field, because FTE will assume
 	 * effects of some bits. Such as invisibility, quad, etc. 
 	 * also, modders probably want 32 bits for items. */
-	PREDICTED_INT(g_items);
-	PREDICTED_FLOAT(activeweapon);
+	PREDICTED_INT(g_items)
+	PREDICTED_FLOAT(activeweapon)
 
 #ifdef NEW_INVENTORY
 	NSWeapon m_weapons[MAX_WEAPONS];
@@ -56,7 +56,7 @@ NSClientPlayer:NSClientSpectator
 #endif
 
 	/* vehicle info */
-	PREDICTED_ENT(vehicle);
+	PREDICTED_ENT(vehicle)
 
 	/* these are NOT networked */
 	int a_ammo1;

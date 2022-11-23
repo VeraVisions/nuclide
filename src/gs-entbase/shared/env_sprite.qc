@@ -65,8 +65,8 @@ class env_sprite:NSRenderableEntity
 	int m_iToggled;
 	float m_flEffects;
 
-	PREDICTED_STRING(m_strMaterial);
-	PREDICTED_FLOAT(m_flFramerate);
+	PREDICTED_STRING(m_strMaterial)
+	PREDICTED_FLOAT(m_flFramerate)
 
 #ifdef CLIENT
 	int m_iMaxFrame;

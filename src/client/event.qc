@@ -31,6 +31,8 @@ Event_Parse(float type)
 		iDmgFlags = readint();
 		CSQC_Parse_Damage_New(vecDmgPos, iDmgTake, iDmgFlags);
 		break;
+	case EV_HITNOTIFY:
+		break;
 	case EV_INTERMISSION:
 		int cam;
 		vector pos, ang;

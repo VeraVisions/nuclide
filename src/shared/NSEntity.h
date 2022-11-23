@@ -60,25 +60,25 @@ private:
 	string m_oldModel; /**< contains the model that the entity spawned with */
 	float m_oldSolid; /**< contains the collision type the entity spawned with */
 
-	PREDICTED_VECTOR_N(origin);
-	PREDICTED_VECTOR_N(angles);
-	PREDICTED_FLOAT_N(modelindex);
-	PREDICTED_VECTOR_N(size);
-	PREDICTED_VECTOR_N(mins);
-	PREDICTED_VECTOR_N(maxs);
-	PREDICTED_FLOAT_N(solid);
-	PREDICTED_FLOAT_N(movetype);
-	PREDICTED_FLOAT_N(scale);
-	PREDICTED_FLOAT_N(flags);
-	PREDICTED_VECTOR_N(velocity);
-	PREDICTED_VECTOR_N(avelocity);
+	PREDICTED_VECTOR_N(origin)
+	PREDICTED_VECTOR_N(angles)
+	PREDICTED_FLOAT_N(modelindex)
+	PREDICTED_VECTOR_N(size)
+	PREDICTED_VECTOR_N(mins)
+	PREDICTED_VECTOR_N(maxs)
+	PREDICTED_FLOAT_N(solid)
+	PREDICTED_FLOAT_N(movetype)
+	PREDICTED_FLOAT_N(scale)
+	PREDICTED_FLOAT_N(flags)
+	PREDICTED_VECTOR_N(velocity)
+	PREDICTED_VECTOR_N(avelocity)
 
 #ifdef SERVER
 	string m_parent;
 	string m_parent_attachment;
-	PREDICTED_FLOAT_N(frame);
-	PREDICTED_FLOAT_N(skin);
-	PREDICTED_FLOAT_N(effects);
+	PREDICTED_FLOAT_N(frame)
+	PREDICTED_FLOAT_N(skin)
+	PREDICTED_FLOAT_N(effects)
 #endif
 
 public:

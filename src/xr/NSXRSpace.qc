@@ -14,6 +14,15 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+void
+NSXRSpace::NSXRSpace(void)
+{
+	m_vecForward =
+	m_vecRight =
+	m_vecUp =
+	m_vecOrigin = [0.0f, 0.0f, 0.0f];
+}
+
 vector
 NSXRSpace::GetForward(void)
 {
@@ -64,9 +73,4 @@ NSXRSpace::SetAngles(vector vecAngles)
 	m_vecForward = v_forward;
 	m_vecRight = v_right;
 	m_vecUp = v_up;
-}
-
-void
-NSXRSpace::NSXRSpace(void)
-{
 }
