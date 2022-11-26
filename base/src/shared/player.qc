@@ -29,12 +29,9 @@ enumflags
 
 class player:NSClientPlayer
 {
-	PREDICTED_INT(mode_tempstate);
+	PREDICTED_INT(mode_tempstate)
 
 #ifdef CLIENT
-	virtual void(void) draw;
-	virtual float() predraw;
-	virtual void(void) postdraw;
 	virtual void(float,float) ReceiveEntity;
 	virtual void(void) PredictPreFrame;
 	virtual void(void) PredictPostFrame;

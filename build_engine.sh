@@ -1,15 +1,17 @@
 #!/bin/sh
 . ./build.cfg
 
-if ! [ -x "$(command -v svn)" ]
+if ! [ -x "$(command -v git)" ]
 then
-	printf "'svn' is not installed.\n"
+	printf "'git' is not installed.\n"
 	exit
 fi
 
 set -e
 
 FTE_MAKEFILE=./src/engine/engine/Makefile
+FTE_SVNDIR=./src/engine/.svn
+
 COMPILE_SYS=$(uname)
 COMPILE_OS=$(uname -o)
 
@@ -103,6 +105,13 @@ fi
 
 mkdir -p ./bin
 
+# SVN is no more
+if [ -d "$FTE_SVNDIR" ]
+then
+	printf "Detected Subversion repo... Please remove ./src/engine before proceeding."
+	exit
+fi
+
 if [ -f "$FTE_MAKEFILE" ]
 then
 	if [ "$BUILD_UPDATE" -eq 1 ]
@@ -110,11 +119,13 @@ then
 		printf "Engine is present, updating...\n"
 		cd ./src/engine/
 
-		if [ "$BUILD_ENGINEREVISION" -eq 0 ]
+		if [ -z "$(git status --untracked-files=no --porcelain)" ]
 		then
-			svn up
-		else
-			svn -r $BUILD_ENGINEREVISION up
+			# TODO: let devs decide to fetch changes instead first
+			git pull --rebase
+		else 
+			# Uncommitted changes
+			printf "You have uncommitted changes. Will not pull --rebase.\n"
 		fi
 
 		cd ./engine
@@ -124,13 +135,7 @@ then
 else
 	printf "Engine is NOT present, cloning...\n"
 	cd ./src/
-
-	if [ "$BUILD_ENGINEREVISION" -eq 0 ]
-	then
-		svn checkout https://svn.code.sf.net/p/fteqw/code/trunk engine
-	else
-		svn -r $BUILD_ENGINEREVISION checkout https://svn.code.sf.net/p/fteqw/code/trunk engine
-	fi
+	git clone "https://github.com/VeraVisions/fteqw" engine
 	cd ./engine/engine
 fi
 
