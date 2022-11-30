@@ -149,27 +149,27 @@ NSVehicle::UpdateView(void)
 void
 NSVehicle::PredictPreFrame(void)
 {
-	SAVE_STATE(angles);
-	SAVE_STATE(origin);
-	SAVE_STATE(velocity);
-	SAVE_STATE(size);
-	SAVE_STATE(modelindex);
-	SAVE_STATE(solid);
-	SAVE_STATE(movetype);
-	SAVE_STATE(m_eDriver);
+	SAVE_STATE(angles)
+	SAVE_STATE(origin)
+	SAVE_STATE(velocity)
+	SAVE_STATE(size)
+	SAVE_STATE(modelindex)
+	SAVE_STATE(solid)
+	SAVE_STATE(movetype)
+	SAVE_STATE(m_eDriver)
 }
 
 void
 NSVehicle::PredictPostFrame(void)
 {
-	ROLL_BACK(angles);
-	ROLL_BACK(origin);
-	ROLL_BACK(velocity);
-	ROLL_BACK(size);
-	ROLL_BACK(modelindex);
-	ROLL_BACK(solid);
-	ROLL_BACK(movetype);
-	ROLL_BACK(m_eDriver);
+	ROLL_BACK(angles)
+	ROLL_BACK(origin)
+	ROLL_BACK(velocity)
+	ROLL_BACK(size)
+	ROLL_BACK(modelindex)
+	ROLL_BACK(solid)
+	ROLL_BACK(movetype)
+	ROLL_BACK(m_eDriver)
 }
 
 void
@@ -326,14 +326,14 @@ NSVehicle::EvaluateEntity(void)
 	if (ATTR_CHANGED(m_eDriver))
 		SetSendFlags(VEHFL_CHANGED_DRIVER);
 
-	SAVE_STATE(origin);
-	SAVE_STATE(angles);
-	SAVE_STATE(velocity);
-	SAVE_STATE(modelindex);
-	SAVE_STATE(solid);
-	SAVE_STATE(movetype);
-	SAVE_STATE(size);
-	SAVE_STATE(m_eDriver);
+	SAVE_STATE(origin)
+	SAVE_STATE(angles)
+	SAVE_STATE(velocity)
+	SAVE_STATE(modelindex)
+	SAVE_STATE(solid)
+	SAVE_STATE(movetype)
+	SAVE_STATE(size)
+	SAVE_STATE(m_eDriver)
 }
 
 float

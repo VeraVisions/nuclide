@@ -111,17 +111,17 @@ func_tankmortar::UpdateView(void)
 void
 func_tankmortar::PredictPreFrame(void)
 {
-	SAVE_STATE(angles);
-	SAVE_STATE(origin);
-	SAVE_STATE(velocity);
+	SAVE_STATE(angles)
+	SAVE_STATE(origin)
+	SAVE_STATE(velocity)
 }
 
 void
 func_tankmortar::PredictPostFrame(void)
 {
-	ROLL_BACK(angles);
-	ROLL_BACK(origin);
-	ROLL_BACK(velocity);
+	ROLL_BACK(angles)
+	ROLL_BACK(origin)
+	ROLL_BACK(velocity)
 }
 
 void
@@ -193,9 +193,9 @@ func_tankmortar::EvaluateEntity(void)
 		SetSendFlags(VEHFL_CHANGED_VELOCITY);
 	}
 
-	SAVE_STATE(origin);
-	SAVE_STATE(angles);
-	SAVE_STATE(velocity);
+	SAVE_STATE(origin)
+	SAVE_STATE(angles)
+	SAVE_STATE(velocity)
 }
 
 float

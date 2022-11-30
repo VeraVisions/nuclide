@@ -363,11 +363,11 @@ NSClientSpectator::PreFrame(void)
 {
 #ifdef CLIENT
 	/* base player attributes/fields we're going to roll back */
-	SAVE_STATE(origin);
-	SAVE_STATE(velocity);
-	SAVE_STATE(spec_ent);
-	SAVE_STATE(spec_mode);
-	SAVE_STATE(spec_flags);
+	SAVE_STATE(origin)
+	SAVE_STATE(velocity)
+	SAVE_STATE(spec_ent)
+	SAVE_STATE(spec_mode)
+	SAVE_STATE(spec_flags)
 
 	/* run physics code for all the input frames which we've not heard back
 	 * from yet. This continues on in Player_ReceiveEntity! */
@@ -449,11 +449,11 @@ NSClientSpectator::EvaluateEntity(void)
 	if (spec_flags != spec_flags_net)
 		SetSendFlags(SPECFL_FLAGS);
 
-	SAVE_STATE(origin);
-	SAVE_STATE(velocity);
-	SAVE_STATE(spec_ent);
-	SAVE_STATE(spec_mode);
-	SAVE_STATE(spec_flags);
+	SAVE_STATE(origin)
+	SAVE_STATE(velocity)
+	SAVE_STATE(spec_ent)
+	SAVE_STATE(spec_mode)
+	SAVE_STATE(spec_flags)
 }
 #endif
 
@@ -461,11 +461,11 @@ void
 NSClientSpectator::PostFrame(void)
 {
 #ifdef CLIENT
-	ROLL_BACK(origin);
-	ROLL_BACK(velocity);
-	ROLL_BACK(spec_ent);
-	ROLL_BACK(spec_mode);
-	ROLL_BACK(spec_flags);
+	ROLL_BACK(origin)
+	ROLL_BACK(velocity)
+	ROLL_BACK(spec_ent)
+	ROLL_BACK(spec_mode)
+	ROLL_BACK(spec_flags)
 #endif
 }
 

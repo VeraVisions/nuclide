@@ -467,35 +467,35 @@ at the top of player::PredictPreFrame
 void
 NSClientPlayer::PredictPreFrame(void)
 {
-	SAVE_STATE(modelindex);
-	SAVE_STATE(origin);
-	SAVE_STATE(v_angle);
-	SAVE_STATE(angles);
-	SAVE_STATE(colormap);
-	SAVE_STATE(velocity);
-	SAVE_STATE(flags);
-	SAVE_STATE(gflags);
-	SAVE_STATE(pmove_flags);
-	SAVE_STATE(activeweapon);
-	SAVE_STATE(weaponframe);
-	SAVE_STATE(g_items);
-	SAVE_STATE(health);
-	SAVE_STATE(armor);
-	SAVE_STATE(mins);
-	SAVE_STATE(maxs);
-	SAVE_STATE(view_ofs);
-	SAVE_STATE(movetype);
-	SAVE_STATE(solid);
-	SAVE_STATE(punchangle);
-	SAVE_STATE(viewzoom);
-	SAVE_STATE(teleport_time);
-	SAVE_STATE(weapontime);
-	SAVE_STATE(w_attack_next);
-	SAVE_STATE(w_idle_next);
-	SAVE_STATE(vehicle_entnum);
-	SAVE_STATE(spec_ent);
-	SAVE_STATE(spec_mode);
-	SAVE_STATE(spec_flags);
+	SAVE_STATE(modelindex)
+	SAVE_STATE(origin)
+	SAVE_STATE(v_angle)
+	SAVE_STATE(angles)
+	SAVE_STATE(colormap)
+	SAVE_STATE(velocity)
+	SAVE_STATE(flags)
+	SAVE_STATE(gflags)
+	SAVE_STATE(pmove_flags)
+	SAVE_STATE(activeweapon)
+	SAVE_STATE(weaponframe)
+	SAVE_STATE(g_items)
+	SAVE_STATE(health)
+	SAVE_STATE(armor)
+	SAVE_STATE(mins)
+	SAVE_STATE(maxs)
+	SAVE_STATE(view_ofs)
+	SAVE_STATE(movetype)
+	SAVE_STATE(solid)
+	SAVE_STATE(punchangle)
+	SAVE_STATE(viewzoom)
+	SAVE_STATE(teleport_time)
+	SAVE_STATE(weapontime)
+	SAVE_STATE(w_attack_next)
+	SAVE_STATE(w_idle_next)
+	SAVE_STATE(vehicle_entnum)
+	SAVE_STATE(spec_ent)
+	SAVE_STATE(spec_mode)
+	SAVE_STATE(spec_flags)
 }
 
 /*
@@ -511,35 +511,35 @@ at the top of player::PredictPostFrame
 void
 NSClientPlayer::PredictPostFrame(void)
 {
-	ROLL_BACK(modelindex);
-	ROLL_BACK(origin);
-	ROLL_BACK(v_angle);
-	ROLL_BACK(angles);
-	ROLL_BACK(colormap);
-	ROLL_BACK(velocity);
-	ROLL_BACK(flags);
-	ROLL_BACK(gflags);
-	ROLL_BACK(pmove_flags);
-	ROLL_BACK(activeweapon);
-	ROLL_BACK(weaponframe);
-	ROLL_BACK(g_items);
-	ROLL_BACK(health);
-	ROLL_BACK(armor);
-	ROLL_BACK(mins);
-	ROLL_BACK(maxs);
-	ROLL_BACK(view_ofs);
-	ROLL_BACK(movetype);
-	ROLL_BACK(solid);
-	ROLL_BACK(punchangle);
-	ROLL_BACK(viewzoom);
-	ROLL_BACK(teleport_time);
-	ROLL_BACK(weapontime);
-	ROLL_BACK(w_attack_next);
-	ROLL_BACK(w_idle_next);
-	ROLL_BACK(vehicle_entnum);
-	ROLL_BACK(spec_ent);
-	ROLL_BACK(spec_mode);
-	ROLL_BACK(spec_flags);
+	ROLL_BACK(modelindex)
+	ROLL_BACK(origin)
+	ROLL_BACK(v_angle)
+	ROLL_BACK(angles)
+	ROLL_BACK(colormap)
+	ROLL_BACK(velocity)
+	ROLL_BACK(flags)
+	ROLL_BACK(gflags)
+	ROLL_BACK(pmove_flags)
+	ROLL_BACK(activeweapon)
+	ROLL_BACK(weaponframe)
+	ROLL_BACK(g_items)
+	ROLL_BACK(health)
+	ROLL_BACK(armor)
+	ROLL_BACK(mins)
+	ROLL_BACK(maxs)
+	ROLL_BACK(view_ofs)
+	ROLL_BACK(movetype)
+	ROLL_BACK(solid)
+	ROLL_BACK(punchangle)
+	ROLL_BACK(viewzoom)
+	ROLL_BACK(teleport_time)
+	ROLL_BACK(weapontime)
+	ROLL_BACK(w_attack_next)
+	ROLL_BACK(w_idle_next)
+	ROLL_BACK(vehicle_entnum)
+	ROLL_BACK(spec_ent)
+	ROLL_BACK(spec_mode)
+	ROLL_BACK(spec_flags)
 }
 #else
 void

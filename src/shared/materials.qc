@@ -88,7 +88,7 @@ Materials_Mapper_Init(void)
 	string sTemp;
 	int c = 0;
 	filestream fileLUT;
-	string spname;
+	string spname = "";
 	bool inbrace = false;
 
 	fileLUT = fopen("scripts/surfaceproperties.txt", FILE_READ);

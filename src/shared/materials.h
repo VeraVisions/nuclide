@@ -15,7 +15,6 @@
 */
 
 hashtable g_hashMaterials;
-hashtable hashMaterials;
 
 void Materials_Init(void);
 

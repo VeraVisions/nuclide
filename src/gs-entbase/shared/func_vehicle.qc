@@ -163,17 +163,17 @@ func_vehicle_wheel::func_vehicle_wheel(void)
 void
 func_vehicle_wheel::PredictPreFrame(void)
 {
-	SAVE_STATE(angles);
-	SAVE_STATE(origin);
-	SAVE_STATE(velocity);
+	SAVE_STATE(angles)
+	SAVE_STATE(origin)
+	SAVE_STATE(velocity)
 }
 
 void
 func_vehicle_wheel::PredictPostFrame(void)
 {
-	ROLL_BACK(angles);
-	ROLL_BACK(origin);
-	ROLL_BACK(velocity);
+	ROLL_BACK(angles)
+	ROLL_BACK(origin)
+	ROLL_BACK(velocity)
 }
 #endif
 
@@ -409,13 +409,13 @@ func_vehicle::UpdateView(void)
 void
 func_vehicle::PredictPreFrame(void)
 {
-	SAVE_STATE(modelindex);
-	SAVE_STATE(origin);
-	SAVE_STATE(angles);
-	SAVE_STATE(velocity);
-	SAVE_STATE(m_flTurn);
-	SAVE_STATE(flags);
-	SAVE_STATE(driver_entnum);
+	SAVE_STATE(modelindex)
+	SAVE_STATE(origin)
+	SAVE_STATE(angles)
+	SAVE_STATE(velocity)
+	SAVE_STATE(m_flTurn)
+	SAVE_STATE(flags)
+	SAVE_STATE(driver_entnum)
 
 	m_wlFL.PredictPreFrame();
 	m_wlFR.PredictPreFrame();
@@ -426,13 +426,13 @@ func_vehicle::PredictPreFrame(void)
 void
 func_vehicle::PredictPostFrame(void)
 {
-	ROLL_BACK(modelindex);
-	ROLL_BACK(angles);
-	ROLL_BACK(origin);
-	ROLL_BACK(velocity);
-	ROLL_BACK(m_flTurn);
-	ROLL_BACK(flags);
-	ROLL_BACK(driver_entnum);
+	ROLL_BACK(modelindex)
+	ROLL_BACK(angles)
+	ROLL_BACK(origin)
+	ROLL_BACK(velocity)
+	ROLL_BACK(m_flTurn)
+	ROLL_BACK(flags)
+	ROLL_BACK(driver_entnum)
 
 	m_wlFL.PredictPostFrame();
 	m_wlFR.PredictPostFrame();

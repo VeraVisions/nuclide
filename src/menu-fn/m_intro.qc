@@ -23,7 +23,7 @@ enum
 };
 
 #define INTRO_TIME 8
-float g_intro_progress;
+var float g_intro_progress = 0.0f;
 int g_intro_stage;
 
 void
@@ -37,6 +37,7 @@ void
 m_intro_draw(void)
 {
 	float alpha;
+
 	if (clientstate() == 2) {
 		g_intro_progress = INTRO_TIME;
 		g_intro_stage = INTRO_DONE;

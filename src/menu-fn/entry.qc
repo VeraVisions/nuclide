@@ -15,6 +15,7 @@
 */
 
 var bool g_initialized = false;
+var bool g_input_received = false;
 
 #define FN_UPDATE_PKGLIST "http://www.frag-net.com/dl/%s_packages"
 
@@ -203,6 +204,11 @@ void
 m_draw(vector screensize)
 {
 	static float oldtime;
+
+	if (!g_input_received) {
+		return;
+	}
+
 	frametime = time - oldtime;
 
 	/* don't attempt to draw unless we're done loading everything */
@@ -316,6 +322,8 @@ m_drawloading(vector screensize, float opaque)
 float
 Menu_InputEvent(float evtype, float scanx, float chary, float devid)
 {
+	g_input_received = true;
+
 	switch (evtype) {
 	case IE_KEYDOWN:
 		if (chary == K_ESCAPE) {

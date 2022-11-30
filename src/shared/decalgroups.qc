@@ -145,7 +145,6 @@ void
 DecalGroups_PlaceGroupID(int index, vector org)
 {
 	/* on the client we only need to go ahead and place the final decal */
-	string material;
 	int r;
 
 	/* get all materials of the group */
