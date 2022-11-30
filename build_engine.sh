@@ -108,7 +108,7 @@ mkdir -p ./bin
 # SVN is no more
 if [ -d "$FTE_SVNDIR" ]
 then
-	printf "Detected Subversion repo... Please remove ./src/engine before proceeding."
+	printf "Detected Subversion repo... Please remove ./src/engine before proceeding.\n"
 	exit
 fi
 
