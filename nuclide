@@ -2,13 +2,18 @@
 set -e
 SRCPATH="$( cd "$( dirname $(readlink -nf $0) )" && pwd )"
 
+if [ -d "$HOME/Library/Games" ]
+then
+	ADDITIONAL_ARGS="-usehome -homedir ${HOME}/Library/Games/Nuclide"
+fi
+
 cd "$SRCPATH/bin"
 
 if [ -f "$SRCPATH/bin/fteqw" ]; then
 	if [ -z "$NUCLIDE_GDB" ]; then
-		./fteqw -basedir ../ $*
+		./fteqw ${ADDITIONAL_ARGS} -basedir ../ $*
 	else
-		gdb --args ./fteqw -basedir ../ $*
+		gdb --args ./fteqw ${ADDITIONAL_ARGS} -basedir ../ $*
 	fi
 else
 	printf "Engine is not present, please run build_engine.sh\n"
