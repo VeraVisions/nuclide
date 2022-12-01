@@ -134,31 +134,8 @@ Master_ResortCache(void)
 void
 Master_GetInternetList(void)
 {
-	string url = sprintf("%s:%d",MASTER_DNS,MASTER_PORT);
-	localcmd("net_master1 \"localhost\"\n");
-	localcmd("net_master2 \"\"\n");
-	localcmd("net_master3 \"\"\n");
-	localcmd("net_master4 \"\"\n");
-	localcmd("net_master5 \"\"\n");
-	localcmd("net_master6 \"\"\n");
-	localcmd("net_master7 \"\"\n");
-	localcmd("net_master8 \"\"\n");
-	cvar_set("net_masterextra1", url);
-	localcmd("net_masterextra2 \"\"\n");
-	localcmd("net_masterextra3 \"\"\n");
-	localcmd("net_masterextra4 \"\"\n");
-	localcmd("net_masterextra5 \"\"\n");
-	localcmd("net_masterextra6 \"\"\n");
-	localcmd("net_masterextra7 \"\"\n");
-	localcmd("net_masterextra8 \"\"\n");
-
-	Master_UpdateCache();
-}
-
-void
-Master_GetLANList(void)
-{
-	localcmd("net_master1 \"localhost\"\n");
+	/*string url = sprintf("%s:%d",MASTER_DNS,MASTER_PORT);
+	cvar_set("net_master1", url);
 	localcmd("net_master2 \"\"\n");
 	localcmd("net_master3 \"\"\n");
 	localcmd("net_master4 \"\"\n");
@@ -173,7 +150,30 @@ Master_GetLANList(void)
 	localcmd("net_masterextra5 \"\"\n");
 	localcmd("net_masterextra6 \"\"\n");
 	localcmd("net_masterextra7 \"\"\n");
-	localcmd("net_masterextra8 \"\"\n");
+	localcmd("net_masterextra8 \"\"\n");*/
+
+	Master_UpdateCache();
+}
+
+void
+Master_GetLANList(void)
+{
+	/*localcmd("net_master1 \"255.255.255.255:27500\"\n");
+	localcmd("net_master2 \"\"\n");
+	localcmd("net_master3 \"\"\n");
+	localcmd("net_master4 \"\"\n");
+	localcmd("net_master5 \"\"\n");
+	localcmd("net_master6 \"\"\n");
+	localcmd("net_master7 \"\"\n");
+	localcmd("net_master8 \"\"\n");
+	localcmd("net_masterextra1 \"\"\n");
+	localcmd("net_masterextra2 \"\"\n");
+	localcmd("net_masterextra3 \"\"\n");
+	localcmd("net_masterextra4 \"\"\n");
+	localcmd("net_masterextra5 \"\"\n");
+	localcmd("net_masterextra6 \"\"\n");
+	localcmd("net_masterextra7 \"\"\n");
+	localcmd("net_masterextra8 \"\"\n");*/
 
 	Master_UpdateCache();
 }

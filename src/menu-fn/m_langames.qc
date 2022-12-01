@@ -134,6 +134,7 @@ void
 lan_btnrefresh(void)
 {
 	g_lanrefresh = TRUE;
+	Master_GetLANList();
 }
 
 void
