@@ -139,6 +139,67 @@ CMD_Cleardecals(void)
 	}
 }
 
+/* Wishlist: list size and potential vmem usage */
+void
+CMD_ListModels(void)
+{
+	string tmp;
+	int i = 0i;
+	int actual_count = 0i;
+
+	for (int i = -4096; i < 4096; i++) {
+		tmp = modelnameforindex(i);
+
+		if (strlen(tmp) > 1) {
+			print(sprintf("%i %s\n", i, tmp));
+			actual_count++;
+		}
+	}
+	print(sprintf("\t%i total models loaded\n", actual_count));
+}
+
+/* Wishlist: list size and samplerate/bitdepth */
+void
+CMD_ListSounds(void)
+{
+	string tmp;
+	int i = 0i;
+	int actual_count = 0i;
+	float length;
+	float total_length = 0.0f;
+
+	for (int i = 0; i < 4096; i++) {
+		tmp = soundnameforindex(i);
+		length = soundlength(tmp);
+
+		if (strlen(tmp) > 1) {
+			print(sprintf("%i %s (%f seconds)\n", i, tmp, length));
+			actual_count++;
+			total_length += length;
+		}
+	}
+	print(sprintf("\t%i total samples loaded\n", actual_count));
+	print(sprintf("\t%f seconds worth of samples\n", total_length));
+}
+
+void
+CMD_ListParticles(void)
+{
+	string tmp;
+	int i = 0i;
+	int actual_count = 0i;
+
+	for (int i = -4096; i < 4096; i++) {
+		tmp = particleeffectquery(i, 0);
+
+		if (strlen(tmp) > 1) {
+			print(sprintf("%i %s\n", i, tmp));
+			actual_count++;
+		}
+	}
+	print(sprintf("\t%i total particles loaded\n", actual_count));
+}
+
 /*
 =================
 Cmd_Parse
@@ -153,6 +214,15 @@ int
 Cmd_Parse(string sCMD)
 {
 	switch (argv(0)) {
+	case "listModels":
+		CMD_ListModels();
+		break;
+	case "listSounds":
+		CMD_ListSounds();
+		break;
+	case "listParticles":
+		CMD_ListParticles();
+		break;
 	case "cleardecals":
 		CMD_Cleardecals();
 		break;
@@ -326,6 +396,10 @@ Cmd_Init(void)
 	print("--------- Initializing Cmds ----------\n");
 
 	/* developer/debug commands */
+	registercommand("listModels");
+	registercommand("listSounds");
+	registercommand("listParticles");
+
 	registercommand("cleardecals");
 	registercommand("testLight");
 	registercommand("testPointLight");
