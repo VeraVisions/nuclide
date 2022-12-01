@@ -177,6 +177,10 @@ NSClientPlayer::predraw(void)
 		}
 	}
 
+	if (!p_model) {
+		p_model = spawn(NSRenderableEntity);
+	}
+
 	/* make sure we're enabling shadow rendering on us! */
 	effects &= ~EF_NOSHADOW;
 

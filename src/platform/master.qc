@@ -43,6 +43,28 @@ Master_GetTotalServers(void)
 }
 
 int
+Master_GetLANServers(void)
+{
+	int count = 0;
+	int tcount = 0;
+
+	count = gethostcachevalue(SLIST_HOSTCACHEVIEWCOUNT);
+
+	for (int i = 0; i < count; i++) {
+		string address;
+		address = gethostcachestring(srv_fldAdress, i);
+
+		/* skip LAN */
+		if (!address || !Server_IsLan(address)) {
+			continue;
+		}
+		tcount++;
+	}
+
+	return tcount;
+}
+
+int
 Master_GetInternetServers(void)
 {
 	int count = 0;
@@ -112,7 +134,7 @@ Master_ResortCache(void)
 void
 Master_GetInternetList(void)
 {
-	/*string url = sprintf("%s:%d",MASTER_DNS,MASTER_PORT);
+	string url = sprintf("%s:%d",MASTER_DNS,MASTER_PORT);
 	localcmd("net_master1 \"localhost\"\n");
 	localcmd("net_master2 \"\"\n");
 	localcmd("net_master3 \"\"\n");
@@ -128,7 +150,7 @@ Master_GetInternetList(void)
 	localcmd("net_masterextra5 \"\"\n");
 	localcmd("net_masterextra6 \"\"\n");
 	localcmd("net_masterextra7 \"\"\n");
-	localcmd("net_masterextra8 \"\"\n");*/
+	localcmd("net_masterextra8 \"\"\n");
 
 	Master_UpdateCache();
 }
@@ -136,7 +158,7 @@ Master_GetInternetList(void)
 void
 Master_GetLANList(void)
 {
-	/*localcmd("net_master1 \"localhost\"\n");
+	localcmd("net_master1 \"localhost\"\n");
 	localcmd("net_master2 \"\"\n");
 	localcmd("net_master3 \"\"\n");
 	localcmd("net_master4 \"\"\n");
@@ -151,7 +173,7 @@ Master_GetLANList(void)
 	localcmd("net_masterextra5 \"\"\n");
 	localcmd("net_masterextra6 \"\"\n");
 	localcmd("net_masterextra7 \"\"\n");
-	localcmd("net_masterextra8 \"\"\n");*/
+	localcmd("net_masterextra8 \"\"\n");
 
 	Master_UpdateCache();
 }

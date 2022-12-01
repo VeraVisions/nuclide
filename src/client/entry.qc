@@ -573,8 +573,9 @@ remove the playback of sounds, skeletal objects and so on.
 void
 CSQC_Ent_Remove(void)
 {
-	if (self.isCSQC) {
+	if (self.identity) {
 		NSEntity me = (NSEntity)self;
+		me.removed = 1; /* mark this as cleanly removed */
 
 		/* we don't want to call Destroy, as that's delayed by a frame...
 		   so we need to call this ourselves */

@@ -34,6 +34,8 @@ int Master_GetTotalServers(void);
 /* returns the amount of internet games */
 int Master_GetInternetServers(void);
 
+int Master_GetLANServers(void);
+
 /* get completely new list of servers, hard-reset the cache */
 void Master_UpdateCache(void);
 

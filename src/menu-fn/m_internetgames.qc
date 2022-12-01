@@ -97,12 +97,11 @@ inet_refreshframe(void)
 	int count = 0;
 	int added = 0;
 
-	Master_RefreshCache();
-
 	/* only rebuild every half a frame */
 	if (refreshtime > time)
 		return;
 
+	Master_RefreshCache();
 	count = gethostcachevalue(SLIST_HOSTCACHEVIEWCOUNT);
 	refreshtime = time + 0.5f;
 

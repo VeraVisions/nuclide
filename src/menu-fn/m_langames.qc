@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+var int g_lanrefresh = FALSE;
+
 CWidget fn_lan;
 CMainButton lan_btnJoin;
 CMainButton lan_btnCreate;
@@ -29,6 +31,59 @@ CListBox lan_lbServers_Game;
 CListBox lan_lbServers_Players;
 CListBox lan_lbServers_Addresses;
 CScrollbar lan_sbServers;
+CDialog lan_dgRefresh;
+CMainButton lan_btnRefDone;
+
+void
+lan_refreshframe(void)
+{
+	static float refreshtime;
+	int count = 0;
+	int added = 0;
+
+	/* only rebuild every half a frame */
+	if (refreshtime > time)
+		return;
+
+	refreshtime = time + 0.5f;
+
+	Master_RefreshCache();
+	count = gethostcachevalue(SLIST_HOSTCACHEVIEWCOUNT);
+	lan_lbServers_Name.Clear();
+	lan_lbServers_Ping.Clear();
+	lan_lbServers_Map.Clear();
+	lan_lbServers_Game.Clear();
+	lan_lbServers_Players.Clear();
+	lan_lbServers_Addresses.Clear();
+
+	for (int i = 0; i < count; i++) {
+		string address;
+		string players;
+		string ping;
+
+		address = gethostcachestring(srv_fldAdress, i);
+		if (!address || !Server_IsLan(address)) {
+			continue;
+		}
+
+		players = sprintf("%d/%d",
+						stof(gethostcachestring(srv_fldPlayers, i)),
+						stof(gethostcachestring(srv_fldMaxplayers, i))
+					);
+		ping = sprintf("%d", stof(gethostcachestring(srv_fldPing, i)));
+		lan_lbServers_Name.AddEntry(gethostcachestring(srv_fldName, i));
+		lan_lbServers_Ping.AddEntry(ping);
+		lan_lbServers_Map.AddEntry(gethostcachestring(srv_fldMap, i));
+		lan_lbServers_Game.AddEntry(gethostcachestring(srv_fldGame, i));
+		lan_lbServers_Players.AddEntry(players);
+		lan_lbServers_Addresses.AddEntry(address);
+		print(sprintf("Adding %s to the LAN server list\n", address));
+		added++;
+	}
+
+	print(sprintf("Added %i LAN servers (of %i).\n", added, count));
+	lan_sbServers.SetMax(added);
+}
 
 /* Button Callbacks */
 void
@@ -78,44 +133,13 @@ lan_btndone_start(void)
 void
 lan_btnrefresh(void)
 {
-	int count = 0;
-	int added = 0;
+	g_lanrefresh = TRUE;
+}
 
-	Master_RefreshCache();
-	count = gethostcachevalue(SLIST_HOSTCACHEVIEWCOUNT);
-	lan_lbServers_Name.Clear();
-	lan_lbServers_Ping.Clear();
-	lan_lbServers_Map.Clear();
-	lan_lbServers_Game.Clear();
-	lan_lbServers_Players.Clear();
-	lan_lbServers_Addresses.Clear();
-
-	for (int i = 0; i < count; i++) {
-		string address;
-		string players;
-		string ping;
-
-		address = gethostcachestring(srv_fldAdress, i);
-		if (!address || !Server_IsLan(address)) {
-			continue;
-		}
-
-		players = sprintf("%d/%d",
-						stof(gethostcachestring(srv_fldPlayers, i)),
-						stof(gethostcachestring(srv_fldMaxplayers, i))
-					);
-		ping = sprintf("%d", stof(gethostcachestring(srv_fldPing, i)));
-		lan_lbServers_Name.AddEntry(gethostcachestring(srv_fldName, i));
-		lan_lbServers_Ping.AddEntry(ping);
-		lan_lbServers_Map.AddEntry(gethostcachestring(srv_fldMap, i));
-		lan_lbServers_Game.AddEntry(gethostcachestring(srv_fldGame, i));
-		lan_lbServers_Players.AddEntry(players);
-		lan_lbServers_Addresses.AddEntry(address);
-		print(sprintf("Adding %s to the LAN server list\n", address));
-		added++;
-	}
-	print(sprintf("Added %i LAN servers.\n", added));
-	lan_sbServers.SetMax(added);
+void
+lan_refreshfinish(void)
+{
+	g_lanrefresh = FALSE;
 }
 
 void
@@ -218,6 +242,14 @@ menu_langames_init(void)
 	lan_sbServers.SetCallback(lan_lb_changed);
 	//xlan_sbServers.SetMax(g_resolutions.length);
 	Widget_Add(fn_lan, lan_sbServers);
+
+	lan_dgRefresh = spawn(CDialog);
+	lan_btnRefDone = spawn(CMainButton);
+	lan_btnRefDone.SetImage(BTN_DONE);
+	lan_btnRefDone.SetPos(233,291);
+	lan_btnRefDone.SetLength(68);
+	lan_btnRefDone.SetExecute(lan_refreshfinish);
+	Widget_Add(lan_dgRefresh, lan_btnRefDone);
 }
 
 void
@@ -238,10 +270,26 @@ menu_langames_draw(void)
 					1.0f, 0, font_arial);
 	WLabel_Static(572, 128, m_reslbl[IDS_SERVER_PLAYERS], 10, 10, [1,1,1],
 					1.0f, 0, font_arial);
+
+	if (!g_lanrefresh)
+		return;
+
+	lan_refreshframe();
+	lan_dgRefresh.Draw();
+	Widget_Draw(lan_dgRefresh);
+	WField_Static(162, 180, "Refreshing LAN server list...", 320, 260,
+					col_prompt_text, 1.0f, 2, font_label_p);
+	WField_Static(162, 220, sprintf("Listing %i applicable servers\n",
+					Master_GetLANServers()), 320, 260,
+					col_prompt_title, 1.0f, 2, font_label_p);
 }
 
 void
 menu_langames_input(float evtype, float scanx, float chary, float devid)
 {
-	Widget_Input(fn_lan, evtype, scanx, chary, devid);
+	if (!g_lanrefresh) {
+		Widget_Input(fn_lan, evtype, scanx, chary, devid);
+	} else {
+		Widget_Input(lan_dgRefresh, evtype, scanx, chary, devid);
+	}
 }

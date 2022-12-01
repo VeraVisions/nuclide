@@ -224,6 +224,28 @@ memalloc(int size)
 	return prior(size);
 }
 
+.float identity;
+.float removed;
+__wrap void
+remove(entity target)
+{
+	/* it's an NSEntity sub-class */
+	if (target.identity) {
+		NSEntity ent = (NSEntity)target;
+
+		/* if we're calling remove() on it and not .Destroy()... it's being uncleanly removed! */
+		if (ent.removed == 0) {
+			ent.OnRemoveEntity();
+			breakpoint();
+			print(sprintf("^1WARNING: Entity %d of class %s uncleanly removed!\n", num_for_edict(ent), ent.classname));
+			ent.removed = 1;
+		}
+	}
+
+	target.removed = 0;
+	prior(target);
+}
+
 void
 setorigin_safe(entity target, vector testorg)
 {

@@ -22,9 +22,7 @@ client doesn't have to do a whole lot here
 ============
 */
 void NSEntity::NSEntity( void ) {
-#ifdef SERVER
 	identity = 1;
-#endif
 }
 
 
@@ -856,6 +854,7 @@ through your own hoops. This however will be sufficient 99,99% of the time.
 ============
 */
 void NSEntity::Destroy( void ) {
+	removed = 1; /* mark this as cleanly removed */
 	OnRemoveEntity();
 	ScheduleThink( Util_Destroy, 0.0f );
 }
