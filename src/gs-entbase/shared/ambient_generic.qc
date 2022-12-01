@@ -113,9 +113,7 @@ ambient_generic::ambient_generic(void)
 void
 ambient_generic::OnRemoveEntity(void)
 {
-#ifdef SERVER
 	sound(this, CHAN_BODY, "common/null.wav", 0.1f, 0);
-#endif
 }
 
 #ifdef SERVER

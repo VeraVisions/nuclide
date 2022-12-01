@@ -856,7 +856,7 @@ through your own hoops. This however will be sufficient 99,99% of the time.
 void NSEntity::Destroy( void ) {
 	removed = 1; /* mark this as cleanly removed */
 	OnRemoveEntity();
-	ScheduleThink( Util_Destroy, 0.0f );
+	ScheduleThink(Util_Destroy, 0.0f );
 }
 
 void NSEntity::Show( void ) {

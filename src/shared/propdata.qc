@@ -575,7 +575,7 @@ BreakModel_SpawnID(vector smins, vector smaxs, vector dir, float speed, int coun
 		gib.velocity[2] += (random() - 0.5) * (speed * 0.25);
 		gib.SetAngularVelocity(vectoangles(gib.velocity));
 		gib.SetMovetype(MOVETYPE_BOUNCE);
-		gib.ScheduleThink(Util_Destroy, fadetime);
+		gib.ScheduleThink(NSEntity::Destroy, fadetime);
 
 		#ifdef CLIENT
 			gib.drawmask = MASK_ENGINE;

@@ -268,8 +268,7 @@ env_bubbles::EmitBubbles(void)
 
 		/* destroy the bubble once it exits out the water */
 		timer = (size[2] / eBubble.velocity[2]);
-		eBubble.think = Util_Destroy;
-		eBubble.nextthink = time + timer;
+		eBubble.ScheduleThink(Destroy, timer);
 	}
 
 	nextthink = time + m_flFrequency;
