@@ -109,7 +109,7 @@ infodecal::Spawned(void)
 	case BSPVER_RTCW:
 		break;
 	default:
-		remove(self);
+		Destroy();
 		return;
 	}
 }
@@ -123,7 +123,7 @@ infodecal::Respawn(void)
 		/* spawn automatically, remove self */
 		Trigger(this, TRIG_ON);
 #else
-		remove(this);
+		Destroy();
 #endif
 	} else {
 		Trigger(this, TRIG_OFF);

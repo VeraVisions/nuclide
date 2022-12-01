@@ -100,7 +100,7 @@ trigger_cdaudio::Trigger(entity act, int unused)
 	msg_entity = world;
 	multicast([0,0,0], MULTICAST_ALL_R);
 
-	remove(this);
+	Destroy();
 }
 
 void

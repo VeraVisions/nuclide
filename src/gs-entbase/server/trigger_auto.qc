@@ -124,6 +124,6 @@ trigger_auto::Processing(void)
 
 	if (HasSpawnFlags(1)) {
 		NSLog("^2trigger_auto::^3Processing^7: %s triggerer removed self",  target);
-		remove(this);
+		Destroy();
 	}
 }

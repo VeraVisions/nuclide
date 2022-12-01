@@ -31,7 +31,7 @@ infodecal::predraw(void)
 	if (!m_decChild) {
 		m_decChild = spawn(decal);
 		m_decChild.Place(origin, m_strTexture);
-		remove(this);
+		Destroy();
 	}
 	return (PREDRAW_NEXT);
 }
@@ -56,7 +56,7 @@ void
 infodecal::infodecal(void)
 {
 	if (targetname) {
-		remove(this);
+		Destroy();
 		return;
 	}
 }

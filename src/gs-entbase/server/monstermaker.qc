@@ -241,7 +241,7 @@ monstermaker::Spawner(void)
 		}
 	} else {
 		NSLog("^1monstermaker::^3Trigger^7: cannot call spawnfunction for %s", m_strMonster);
-		remove(this);
+		Destroy();
 		return;
 	}
 
