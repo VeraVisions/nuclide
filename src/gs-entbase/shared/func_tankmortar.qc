@@ -79,26 +79,28 @@ class func_tankmortar:NSVehicle
 	float m_flMaxRange; /* TODO */
 	float m_flYawRange; /* TODO */
 	float m_flPitchRange; /* TODO */
-
 	float m_flFireTime;
-	void(void) func_tankmortar;
 
-	virtual void(void) Spawned;
-	virtual void(void) PlayerInput;
-	virtual void(vector) SpriteSmoke;
-	virtual void(vector) SpriteFlash;
-
+public:
+	void func_tankmortar(void);
+	
+	virtual void Spawned(void);
+	virtual void PlayerInput(void);
+	virtual void SpriteSmoke(vector);
+	virtual void SpriteFlash(vector);
+	
 #ifdef CLIENT
-	virtual void(void) PredictPreFrame;
-	virtual void(void) PredictPostFrame;
-	virtual void(float, float) ReceiveEntity;
-	virtual void(void) UpdateView;
+	virtual void PredictPreFrame(void);
+	virtual void PredictPostFrame(void);
+	virtual void ReceiveEntity(float,float);
+	virtual void UpdateView(void);
 #else
-	virtual void(void) EvaluateEntity;
-	virtual float(entity, float) SendEntity;
-	virtual void(void) Respawn;
-	virtual void(string, string) SpawnKey;
+	virtual void EvaluateEntity(void);
+	virtual float SendEntity(entity,float);
+	virtual void Respawn(void);
+	virtual void SpawnKey(string,string);
 #endif
+
 };
 
 

@@ -29,9 +29,11 @@ This entity was introduced in Half-Life (1998).
 class
 func_traincontrols:NSBrushTrigger
 {
-	void(void) func_traincontrols;
+public:
+	void func_traincontrols(void);
+	
+	virtual void Respawn(void);
 
-	virtual void(void) Respawn;
 };
 
 void

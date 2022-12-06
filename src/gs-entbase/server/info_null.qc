@@ -32,12 +32,14 @@ This entity was introduced in Quake (1996).
 class
 info_null:NSPointTrigger
 {
-	void(void) info_null;
-
+public:
+	void info_null(void);
+	
 #ifdef DEBUG_INFONULL
-	virtual void(void) WarnDeveloper;
-	virtual void(void) Respawn;
+	virtual void WarnDeveloper(void);
+	virtual void Respawn(void);
 #endif
+
 };
 
 void

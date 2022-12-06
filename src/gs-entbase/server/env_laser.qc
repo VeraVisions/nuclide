@@ -63,16 +63,18 @@ env_laser:NSPointTrigger
 	string m_strBeamTex;
 	string m_strEndTex;
 
-	void(void) env_laser;
+public:
+	void env_laser(void);
+	
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void SpawnKey(string,string);
+	virtual void Respawn(void);
+	virtual void LaserThink(void);
+	virtual void Trigger(entity,int);
+	virtual void EvaluateEntity(void);
+	virtual float SendEntity(entity,float);
 
-	virtual void(float) Save;
-	virtual void(string,string) Restore;
-	virtual void(string, string) SpawnKey;
-	virtual void(void) Respawn;
-	virtual void(void) LaserThink;
-	virtual void(entity, int) Trigger;
-	virtual void(void) EvaluateEntity;
-	virtual float(entity, float) SendEntity;
 };
 
 void

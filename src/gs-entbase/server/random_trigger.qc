@@ -39,13 +39,15 @@ random_trigger:NSPointTrigger
 	float m_flRandMax;
 	int m_iStartState;
 
-	void(void) random_trigger;
+public:
+	void random_trigger(void);
+	
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void SpawnKey(string,string);
+	virtual void Respawn(void);
+	virtual void Trigger(entity,int);
 
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(string, string) SpawnKey;
-	virtual void(void) Respawn;
-	virtual void(entity,int) Trigger;
 };
 
 void

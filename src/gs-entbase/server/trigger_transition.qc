@@ -28,9 +28,9 @@ This entity was introduced in Half-Life (1998).
 class
 trigger_transition:NSBrushTrigger
 {
-	void(void) trigger_transition;
-
-	virtual void(void) Respawn;
+	void trigger_transition(void);
+	
+	virtual void Respawn(void);
 };
 
 void

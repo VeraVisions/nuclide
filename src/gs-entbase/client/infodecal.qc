@@ -17,12 +17,14 @@
 class
 infodecal:NSEntity
 {
+public:
+	void infodecal(void);
+	virtual void SpawnKey(string, string);
+	virtual float predraw(void);
+
+private:
 	decal m_decChild;
 	string m_strTexture;
-
-	void(void) infodecal;
-	virtual void(string, string) SpawnKey;
-	virtual float(void) predraw;
 };
 
 float

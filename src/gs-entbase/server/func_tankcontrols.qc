@@ -28,10 +28,12 @@ This entity was introduced in Half-Life (1998).
 class
 func_tankcontrols:NSBrushTrigger
 {
-	void(void) func_tankcontrols;
+public:
+	void func_tankcontrols(void);
+	
+	virtual void OnPlayerUse(void);
+	virtual void Respawn(void);
 
-	virtual void(void) OnPlayerUse;
-	virtual void(void) Respawn;
 };
 
 void

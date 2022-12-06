@@ -52,16 +52,18 @@ env_spark:NSPointTrigger
 {
 	float m_flMaxDelay;
 
-	void(void) env_spark;
+public:
+	void env_spark(void);
+	
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void SpawnKey(string,string);
+	virtual void Spawned(void);
+	virtual void Respawn(void);
+	virtual void Trigger(entity,int);
+	virtual void CreateSpark(void);
+	virtual void TimedSpark(void);
 
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(string, string) SpawnKey;
-	virtual void(void) Spawned;
-	virtual void(void) Respawn;
-	virtual void(entity, int) Trigger;
-	virtual void(void) CreateSpark;
-	virtual void(void) TimedSpark;
 };
 
 void

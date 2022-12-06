@@ -83,20 +83,24 @@ enumflags
 class
 func_vehicle_wheel
 {
-	void() func_vehicle_wheel;
-
+private:
 #ifdef CLIENT
 	vector origin_net;
 	vector velocity_net;
 	vector angles_net;
-	virtual void(void) PredictPreFrame;
-	virtual void(void) PredictPostFrame;
 #endif
 
-	virtual void(float) Move;
-	virtual void(vector) Bounce;
-	virtual void(float, float m_flTurn) Accel;
-	virtual void(float, float) Physics;
+public:
+	void func_vehicle_wheel(void);
+
+#ifdef CLIENT
+	virtual void PredictPreFrame(void);
+	virtual void PredictPostFrame(void);
+#endif
+	virtual void Move(float);
+	virtual void Bounce(vector);
+	virtual void Accel(float,float);
+	virtual void Physics(float,float);
 };
 
 class

@@ -62,22 +62,24 @@ func_tracktrain:NSRenderableEntity
 	string m_strMoveSnd;
 	string m_strStopSnd;
 
-	void(void) func_tracktrain;
+public:
+	void func_tracktrain(void);
 
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(string, string) SpawnKey;
-	virtual void(void) Spawned;
-	virtual void(void) Respawn;
-	virtual void(entity, int) Trigger;
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void SpawnKey(string,string);
+	virtual void Spawned(void);
+	virtual void Respawn(void);
+	virtual void Trigger(entity,int);
 
-	virtual void(void) SoundMove;
-	virtual void(void) SoundStop;
-	virtual void(void) AfterSpawn;
-	virtual void(void) PathNext;
-	virtual void(void) PathMove;
-	virtual void(void) PathDone;
-	virtual void(entity) Blocked;
+	virtual void SoundMove(void);
+	virtual void SoundStop(void);
+	virtual void AfterSpawn(void);
+	virtual void PathNext(void);
+	virtual void PathMove(void);
+	virtual void PathDone(void);
+	virtual void Blocked(entity);
+
 };
 
 void

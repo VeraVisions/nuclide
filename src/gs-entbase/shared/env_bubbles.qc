@@ -68,6 +68,7 @@ env_bubbles:NSPointTrigger
 	float m_flSpawnFrequency;
 	float m_flSpawnCurrent;
 
+public:
 	void env_bubbles(void);
 
 	/* overrides */

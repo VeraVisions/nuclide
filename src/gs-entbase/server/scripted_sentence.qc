@@ -42,13 +42,15 @@ scripted_sentence:NSPointTrigger
 	float m_flPitch;
 	float m_flDuration;
 
-	void(void) scripted_sentence;
-
+public:
+	void scripted_sentence(void);
+	
 	/* overrides */
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(string, string) SpawnKey;
-	virtual void(entity, int) Trigger;
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void SpawnKey(string,string);
+	virtual void Trigger(entity,int);
+
 };
 
 void

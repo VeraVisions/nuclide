@@ -22,6 +22,73 @@ of type NSClientPlayer.
 class
 NSClientPlayer:NSClientSpectator
 {
+public:
+	void NSClientPlayer(void);
+	
+	virtual void ClientInput(void);
+	virtual void PreFrame(void);
+	virtual void PostFrame(void);
+	
+	virtual void Physics_Fall(float);
+	virtual void Physics_Crouch(void);
+	virtual void Physics_Jump(void);
+	virtual void Physics_CheckJump(float);
+	virtual void Physics_SetViewParms(void);
+	virtual void Physics_WaterJump(void);
+	virtual void Physics_WaterMove(void);
+	virtual float Physics_MaxSpeed(void);
+	virtual void Physics_InputPreMove(void);
+	virtual void Physics_InputPostMove(void);
+	virtual void Physics_Run(void);
+	
+	virtual bool IsFakeSpectator(void);
+	virtual bool IsRealSpectator(void);
+	virtual bool IsDead(void);
+	virtual bool IsPlayer(void);
+	
+	/** Empty & shared between Client and Server. This is run on every player, every frame, to update their animation cycle. */
+	virtual void UpdatePlayerAnimation(float);
+	
+
+#ifdef CLIENT
+	virtual void VehicleRelink(void);
+	virtual void OnRemoveEntity(void);
+	virtual void ReceiveEntity(float,float);
+	virtual void PredictPreFrame(void);
+	virtual void PredictPostFrame(void);
+	virtual void ClientInputFrame(void);
+	virtual void UpdateAliveCam(void);
+
+	virtual float predraw(void);
+	virtual void postdraw(void);
+
+	/** Empty. Updates the bone controller responsible for mouth movement. */
+	virtual void UpdatePlayerJaw(float);
+
+	/** Empty. This is run on every player, every frame to update attachments. */
+	virtual void UpdatePlayerAttachments(bool);
+
+#else
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void Respawn(void);
+	virtual void EvaluateEntity(void);
+	virtual float SendEntity(entity,float);
+	virtual float OptimiseChangedFlags(entity,float);
+	
+	virtual void Death(void);
+	virtual void MakePlayer(void);
+	virtual void MakeTempSpectator(void);
+	
+	virtual void InputUse_Down(void);
+	virtual void InputUse_Up(void);
+
+#endif
+
+	virtual void Footsteps_Update(void);
+
+private:
+
 #ifdef SERVER
 	PREDICTED_INT_N(weaponframe)
 #else
@@ -66,33 +133,6 @@ NSClientPlayer:NSClientSpectator
 	/* any mods that use hooks */
 	entity hook;
 
-	void(void) NSClientPlayer;
-
-	virtual void(void) ClientInput;
-
-	virtual void(void) PreFrame;
-	virtual void(void) PostFrame;
-
-	virtual void(float) Physics_Fall;
-	virtual void(void) Physics_Crouch;
-	virtual void(void) Physics_Jump;
-	virtual void(float) Physics_CheckJump;
-	virtual void(void) Physics_SetViewParms;
-	virtual void(void) Physics_WaterJump;
-	virtual void(void) Physics_WaterMove;
-	virtual float(void) Physics_MaxSpeed;
-	virtual void(void) Physics_InputPreMove;
-	virtual void(void) Physics_InputPostMove;
-	virtual void(void) Physics_Run;
-
-	virtual bool(void) IsFakeSpectator;
-	virtual bool(void) IsRealSpectator;
-	virtual bool(void) IsDead;
-	virtual bool(void) IsPlayer;
-
-	/** Empty & shared between Client and Server. This is run on every player, every frame, to update their animation cycle. */
-	virtual void UpdatePlayerAnimation(float);
-
 #ifdef CLIENT
 	int sequence;
 
@@ -101,23 +141,6 @@ NSClientPlayer:NSClientSpectator
 	int p_hand_bone;
 	int p_model_bone;
 	float lastweapon;
-
-	virtual void(void) VehicleRelink;
-	virtual void(void) OnRemoveEntity;
-	virtual void(float, float) ReceiveEntity;
-	virtual void(void) PredictPreFrame;
-	virtual void(void) PredictPostFrame;
-	virtual void(void) ClientInputFrame;
-	virtual void(void) UpdateAliveCam;
-
-	virtual float predraw(void);
-	virtual void postdraw(void);
-
-	/** Empty. Updates the bone controller responsible for mouth movement. */
-	virtual void UpdatePlayerJaw(float);
-
-	/** Empty. This is run on every player, every frame to update attachments. */
-	virtual void UpdatePlayerAttachments(bool);
 #else
 	int voted;
 	int step;
@@ -128,23 +151,7 @@ NSClientPlayer:NSClientSpectator
 	float m_flPainTime;
 
 	entity last_used;
-
-	virtual void(float) Save;
-	virtual void(string,string) Restore;
-	virtual void(void) Respawn;
-	virtual void(void) EvaluateEntity;
-	virtual float(entity, float) SendEntity;
-	virtual float(entity, float) OptimiseChangedFlags;
-
-	virtual void(void) Death;
-	virtual void(void) MakePlayer;
-	virtual void(void) MakeTempSpectator;
-
-	virtual void(void) InputUse_Down;
-	virtual void(void) InputUse_Up;
 #endif
-
-	virtual void Footsteps_Update(void);
 };
 
 /* all potential SendFlags bits we can possibly send */

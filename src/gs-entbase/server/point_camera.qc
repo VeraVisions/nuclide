@@ -50,14 +50,15 @@ point_camera:NSPointTrigger
 	float m_flFogEnd;
 	float m_flFOV;
 
-	void(void) point_camera;
-
+public:
+	void point_camera(void);
+	
 	/* overrides */
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(string,string) SpawnKey;
-	virtual void(void) Respawn;
-	virtual void(entity,string,string) Input;
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void SpawnKey(string,string);
+	virtual void Respawn(void);
+	virtual void Input(entity,string,string);
 };
 
 void

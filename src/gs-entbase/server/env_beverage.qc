@@ -63,13 +63,15 @@ env_beverage:NSRenderableEntity
 	bool m_bReady;
 	sodaskin_t m_sodaSkin;
 
-	void(void) env_beverage;
+public:
+	void env_beverage(void);
+	
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void SpawnKey(string,string);
+	virtual void Spawned(void);
+	virtual void Trigger(entity,int);
 
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(string, string) SpawnKey;
-	virtual void(void) Spawned;
-	virtual void(entity, int) Trigger;
 };
 
 void

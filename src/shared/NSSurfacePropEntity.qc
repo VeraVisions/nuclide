@@ -142,9 +142,6 @@ NSSurfacePropEntity::SendEntity(entity ePEnt, float fChanged)
 
 	WriteByte(MSG_ENTITY, ENT_SURFPROP);
 
-	/* don't network triggers unless provoked */
-	/*if (cvar("developer") == 0 && m_iRenderMode == RM_TRIGGER)
-		return (0);*/
 #if 0
 	if (fChanged == 0xFFFFFF) {
 		for (int i = 0; i < n_NSSurfacePropEntity.length; i++) {

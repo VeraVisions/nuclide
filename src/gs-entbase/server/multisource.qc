@@ -32,12 +32,14 @@ This entity was introduced in Half-Life (1998).
 class
 multisource:NSPointTrigger
 {
-	void(void) multisource;
+public:
+	void multisource(void);
+	
+	virtual void Respawn(void);
+	virtual int QueryTargets(void);
+	virtual int GetValue(void);
+	virtual void Trigger(entity,int);
 
-	virtual void(void) Respawn;
-	virtual int(void) QueryTargets;
-	virtual int(void) GetValue;
-	virtual void(entity, int) Trigger;
 };
 
 void

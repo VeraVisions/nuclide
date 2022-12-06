@@ -40,18 +40,20 @@ env_global:NSPointTrigger
 	int m_iTriggerMode;
 	int m_iInitialState;
 	
-	void(void) env_global;
-
-	/* overrides */
-	virtual void(float) Save;
-	virtual void(string,string) Restore;
-	virtual void(string, string) SpawnKey;
-	virtual void(void) Spawned;
-	virtual void(entity, int) Trigger;
+public:
+	void env_global(void);
 	
-	virtual int(string) GlobalPresent;
-	virtual void(string, globalstate_t) AddNewGlobal;
-	virtual void(string, globalstate_t) SetGlobal;
+	/* overrides */
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void SpawnKey(string,string);
+	virtual void Spawned(void);
+	virtual void Trigger(entity,int);
+	
+	virtual int GlobalPresent(string);
+	virtual void AddNewGlobal(string,globalstate_t);
+	virtual void SetGlobal(string,globalstate_t);
+
 };
 
 void

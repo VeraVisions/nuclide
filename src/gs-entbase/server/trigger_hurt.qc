@@ -68,6 +68,19 @@ This entity was introduced in Quake (1996).
 class
 trigger_hurt:NSBrushTrigger
 {
+public:
+	void trigger_hurt(void);
+	
+	virtual void Spawned(void);
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void Trigger(entity,int);
+	virtual void Touch(entity);
+	virtual void Respawn(void);
+	virtual void SpawnKey(string,string);
+	virtual void Input(entity,string,string);
+
+private:
 	int m_iDamage;
 	int m_iDamageType;
 	float m_flNextTrigger;
@@ -75,17 +88,6 @@ trigger_hurt:NSBrushTrigger
 	float m_flDelay;
 	string m_strOnHurt;
 	string m_strOnHurtPlayer;
-
-	void(void) trigger_hurt;
-
-	virtual void(void) Spawned;
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(entity, int) Trigger;
-	virtual void(entity) Touch;
-	virtual void(void) Respawn;
-	virtual void(string, string) SpawnKey;
-	virtual void(entity, string, string) Input;
 };
 
 void

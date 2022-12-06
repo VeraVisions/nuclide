@@ -30,14 +30,15 @@ This entity was introduced in Quake (1996).
 class
 func_wall:NSRenderableEntity
 {
-	void(void) func_wall;
+public:
+	void func_wall(void);
 
 #ifdef SERVER
-	virtual void(void) Respawn;
-	virtual float(entity, float) SendEntity;
-	virtual void(entity, int) Trigger;
+	virtual void Respawn(void);
+	virtual float SendEntity(entity,float);
+	virtual void Trigger(entity,int);
 #else
-	virtual void(void) Init;
+	virtual void Init(void);
 #endif
 };
 

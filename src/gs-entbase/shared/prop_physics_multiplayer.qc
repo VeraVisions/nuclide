@@ -40,15 +40,16 @@ class prop_physics_multiplayer:NSPhysicsEntity
 {
 	int m_iPhysicsMode;
 
-	void(void) prop_physics_multiplayer;
+public:
+	void prop_physics_multiplayer(void);
 
 #ifdef CLIENT
-	virtual void(void) Init;
+	virtual void Init(void);
 #endif
-	virtual void(void) Respawn;
-	virtual void(string, string) SpawnKey;
-	virtual void(entity) Touch;
-	virtual void(void) TouchThink;
+	virtual void Respawn(void);
+	virtual void SpawnKey(string,string);
+	virtual void Touch(entity);
+	virtual void TouchThink(void);
 };
 
 void

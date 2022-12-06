@@ -36,10 +36,12 @@ void CMap_Shoot(void);
 class
 env_cubemap:NSEntity
 {
-	int m_iSize;
+public:
+	void env_cubemap(void);
+	virtual void SpawnKey(string,string);
 
-	void(void) env_cubemap;
-	virtual void(string, string) SpawnKey;
+private:
+	int m_iSize;
 };
 
 void

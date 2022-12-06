@@ -70,16 +70,18 @@ speaker:NSTalkMonster
 	string m_strSentence;
 	float m_flVolume;
 
-	void(void) speaker;
-
+public:
+	void speaker(void);
+	
 	/* overrides */
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(string, string) SpawnKey;
-	virtual void(void) Respawn;
-	virtual void(entity, int) Trigger;
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void SpawnKey(string,string);
+	virtual void Respawn(void);
+	virtual void Trigger(entity,int);
+	
+	virtual void Announce(void);
 
-	virtual void(void) Announce;
 };
 
 void

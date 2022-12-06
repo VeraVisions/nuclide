@@ -48,14 +48,16 @@ game_player_equip:NSPointTrigger
 {
 	string m_strBuffer;
 
-	void(void) game_player_equip;
+public:
+	void game_player_equip(void);
+	
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void Trigger(entity,int);
+	virtual void SpawnKey(string,string);
+	
+	virtual void SpawnUnit(string,vector);
 
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(entity, int) Trigger;
-	virtual void(string, string) SpawnKey;
-
-	virtual void(string, vector) SpawnUnit;
 };
 
 void

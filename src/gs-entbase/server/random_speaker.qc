@@ -46,18 +46,20 @@ random_speaker:NSPointTrigger
 	float m_flMinPos;
 	float m_flRandPercent;
 
-	void(void) random_speaker;
-
+public:
+	void random_speaker(void);
+	
 	/* overrides */
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(string, string) SpawnKey;
-	virtual void(void) Respawn;
-	virtual void(entity,int) Trigger;
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void SpawnKey(string,string);
+	virtual void Respawn(void);
+	virtual void Trigger(entity,int);
+	
+	virtual void PlaySample(void);
+	virtual void Enable(void);
+	virtual void Disable(void);
 
-	virtual void(void) PlaySample;
-	virtual void(void) Enable;
-	virtual void(void) Disable;
 };
 
 void

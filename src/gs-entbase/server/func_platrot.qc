@@ -54,18 +54,20 @@ func_platrot:NSRenderableEntity
 	string m_strNoise2;
 	float m_flRotation;
 
-	void(void) func_platrot;
+public:
+	void func_platrot(void);
+	
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void Trigger(entity,int);
+	virtual void Respawn(void);
+	virtual void Touch(entity);
+	virtual void SpawnKey(string,string);
 
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(entity, int) Trigger;
-	virtual void(void) ArrivedUp;
-	virtual void(void) ArrivedDown;
-	virtual void(vector, vector, void(void)) Move;
-	virtual void(void) MoveToggle;
-	virtual void(void) Respawn;
-	virtual void(entity) Touch;
-	virtual void(string, string) SpawnKey;
+	virtual void Move(vector, vector, void(void));
+	virtual void ArrivedUp(void);
+	virtual void ArrivedDown(void);
+	virtual void MoveToggle(void);
 };
 
 void

@@ -52,20 +52,22 @@ momentary_rot_button:NSMomentary
 {
 	int m_iTurnDir;
 
-	void(void) momentary_rot_button;
-
+public:
+	void momentary_rot_button(void);
+	
 	/* overrides */
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(void) OnPlayerUse;
-	virtual void(void) OnPlayerUnUse;
-	virtual void(void) Respawn;
-	virtual void(void) SetMovementDirection;
-	virtual void(string, string) SpawnKey;
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void OnPlayerUse(void);
+	virtual void OnPlayerUnUse(void);
+	virtual void Respawn(void);
+	virtual void SetMovementDirection(void);
+	virtual void SpawnKey(string,string);
+	
+	virtual void MovementDone(void);
+	virtual void MovementStateChanged(void);
+	virtual float GetProgress(void);
 
-	virtual void(void) MovementDone;
-	virtual void(void) MovementStateChanged;
-	virtual float(void) GetProgress;
 };
 
 void

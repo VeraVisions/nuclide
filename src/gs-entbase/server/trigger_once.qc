@@ -41,18 +41,20 @@ enumflags
 
 class trigger_once:NSBrushTrigger
 {
+public:
+	void trigger_once(void);
+	
+	virtual void Spawned(void);
+	
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void Touch(entity);
+	virtual void Respawn(void);
+	virtual void SpawnKey(string,string);
+
+private:
 	string m_strOnStartTouch;
 	string m_strOnTrigger;
-
-	void(void) trigger_once;
-
-	virtual void(void) Spawned;
-
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(entity) Touch;
-	virtual void(void) Respawn;
-	virtual void(string, string) SpawnKey;
 };
 
 void

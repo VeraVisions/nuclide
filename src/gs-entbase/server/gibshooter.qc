@@ -38,7 +38,8 @@ This entity was introduced in Half-Life (1998).
 class
 gibshooter:env_shooter
 {
-	void(void) gibshooter;
+public:
+	void gibshooter(void);
 };
 
 void

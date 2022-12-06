@@ -62,17 +62,19 @@ logic_auto:NSPointTrigger
 	/* temporary */
 	int m_iFromSaveGame;
 
-	void(void) logic_auto;
-
+public:
+	void logic_auto(void);
+	
 	/* overrides */
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(string, string) SpawnKey;
-	virtual void(void) Spawned;
-	virtual void(void) Respawn;
-	virtual void(void) RestoreComplete;
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void SpawnKey(string,string);
+	virtual void Spawned(void);
+	virtual void Respawn(void);
+	virtual void RestoreComplete(void);
+	
+	virtual void Processing(void);
 
-	virtual void(void) Processing;
 };
 
 void

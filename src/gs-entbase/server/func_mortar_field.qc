@@ -51,19 +51,20 @@ func_mortar_field:NSBrushTrigger
 	string m_strXController;
 	string m_strYController;
 
-	void(void) func_mortar_field;
-
+public:
+	void func_mortar_field(void);
+	
 	/* overrides */
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(entity,int) Trigger;
-	virtual void(void) Respawn;
-	virtual void(string, string) SpawnKey;
-
-	virtual void(vector) Fire;
-	virtual void(void) FireRandom;
-	virtual void(entity) FireTarget;
-	virtual void(void) FireControlled;
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void Trigger(entity,int);
+	virtual void Respawn(void);
+	virtual void SpawnKey(string,string);
+	
+	virtual void Fire(vector);
+	virtual void FireRandom(void);
+	virtual void FireTarget(entity);
+	virtual void FireControlled(void);
 };
 
 void

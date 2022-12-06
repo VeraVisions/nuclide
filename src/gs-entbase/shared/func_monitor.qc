@@ -74,6 +74,9 @@ enumflags
 
 class func_monitor:NSRenderableEntity
 {
+#ifdef CLIENT
+	int m_iValue;
+#endif
 	/* these mirror the fields of a point_camera */
 	vector m_vecCamOrigin;
 	vector m_vecCamAngles;
@@ -85,19 +88,19 @@ class func_monitor:NSRenderableEntity
 	float m_flFogStart;
 	float m_flFogEnd;
 
-	void(void) func_monitor;
+public:
+	void func_monitor(void);
 
 #ifdef CLIENT
-	int m_iValue;
+	virtual void ReceiveEntity(float,float);
 
-	virtual void(float,float) ReceiveEntity;
 #else
-	virtual void(void) Respawn;
-	virtual void(void) EvaluateEntity;
-	virtual float(entity, float) SendEntity;
-	virtual void(string, string) SpawnKey;
-	virtual void(entity, int) Trigger;
-	virtual void(entity, string, string) Input;
+	virtual void Respawn(void);
+	virtual void EvaluateEntity(void);
+	virtual float SendEntity(entity,float);
+	virtual void SpawnKey(string,string);
+	virtual void Trigger(entity,int);
+	virtual void Input(entity, string, string);
 #endif
 };
 

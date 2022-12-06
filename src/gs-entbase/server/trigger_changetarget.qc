@@ -32,12 +32,14 @@ trigger_changetarget:NSPointTrigger
 {
 	string m_strNewTarget;
 
-	void(void) trigger_changetarget;
+public:
+	void trigger_changetarget(void);
+	
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void SpawnKey(string,string);
+	virtual void Trigger(entity,int);
 
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(string, string) SpawnKey;
-	virtual void(entity,int) Trigger;
 };
 
 void

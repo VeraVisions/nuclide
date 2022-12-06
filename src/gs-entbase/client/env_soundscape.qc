@@ -31,15 +31,17 @@ int g_scapes;
 
 class env_soundscape:NSEntity
 {
+public:
+	void env_soundscape(void);
+	
+	virtual void Respawn(void);
+	virtual void SpawnKey(string,string);
+
+private:
 	int m_iID;
 	int m_iShader;
 	int m_iRadius;
 	float m_flVolume;
-
-	void(void) env_soundscape;
-
-	virtual void(void) Respawn;
-	virtual void(string, string) SpawnKey;
 };
 
 env_soundscape g_entSoundScape;

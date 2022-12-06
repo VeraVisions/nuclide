@@ -79,20 +79,21 @@ trigger_changelevel:NSBrushTrigger
 	string m_strOnLevelChange;
 	entity m_activator;
 
-	void(void) trigger_changelevel;
+public:
+	void trigger_changelevel(void);
 
 	/* overrides */
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(string, string) SpawnKey;
-	virtual void(void) Spawned;
-	virtual void(void) Respawn;
-	virtual void(entity, int) Trigger;
-	virtual void(entity, string, string) Input;
-
-	virtual void(void) Change;
-	virtual void(entity) Touch;
-	virtual int(entity, entity) IsInside;
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void SpawnKey(string,string);
+	virtual void Spawned(void);
+	virtual void Respawn(void);
+	virtual void Trigger(entity,int);
+	virtual void Input(entity,string,string);
+	
+	virtual void Change(void);
+	virtual void Touch(entity);
+	virtual int IsInside(entity,entity);
 };
 
 void

@@ -52,14 +52,16 @@ env_explosion:NSPointTrigger
 	float m_flMaxDelay;
 	bool m_bEnabled;
 
-	void(void) env_explosion;
-
+public:
+	void env_explosion(void);
+	
 	/* overrides */
-	virtual void(float) Save;
-	virtual void(string,string) Restore;
-	virtual void(entity, int) Trigger;
-	virtual void(string, string) SpawnKey;
-	virtual void(void) Respawn;
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void Trigger(entity,int);
+	virtual void SpawnKey(string,string);
+	virtual void Respawn(void);
+
 };
 
 void

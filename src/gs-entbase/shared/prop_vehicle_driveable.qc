@@ -47,29 +47,34 @@ enumflags
 
 class prop_vehicle_driveable_wheel
 {
-	void() prop_vehicle_driveable_wheel;
-
+private:
 	float m_flSuspension;
 	float m_flSuspensionForce;
 
 #ifdef CLIENT
-
 	vector origin_net;
 	vector velocity_net;
 	vector angles_net;
-	virtual void(void) PredictPreFrame;
-	virtual void(void) PredictPostFrame;
 #endif
 
-	virtual void(float) UpdateSuspension;
-	virtual void(float) Move;
-	virtual void(vector) Bounce;
-	virtual void(float, float m_flTurn) Accel;
-	virtual void(float, float) Physics;
+public:
+	void prop_vehicle_driveable_wheel(void);
+
+#ifdef CLIENT
+	virtual void PredictPreFrame(void);
+	virtual void PredictPostFrame(void);
+#endif
+
+	virtual void UpdateSuspension(float);
+	virtual void Move(float);
+	virtual void Bounce(vector);
+	virtual void Accel(float,float);
+	virtual void Physics(float,float);
 };
 
 class prop_vehicle_driveable:NSVehicle
 {
+private:
 	/* map-entity fields */
 	float m_flBounceFactor;
 	float m_flAcceleration;
@@ -101,26 +106,27 @@ class prop_vehicle_driveable:NSVehicle
 
 	float m_flUseTime;
 
-	void(void) prop_vehicle_driveable;
+public:
+	void prop_vehicle_driveable(void);
 
-	virtual void(void) Spawned;
-	virtual void(void) Physics;
-	virtual void(void) RunVehiclePhysics;
-	virtual void(void) WeaponInput;
-	virtual void(void) PlayerInput;
-	virtual void(void) OnRemoveEntity;
+	virtual void Spawned(void);
+	virtual void Physics(void);
+	virtual void RunVehiclePhysics(void);
+	virtual void WeaponInput(void);
+	virtual void PlayerInput(void);
+	virtual void OnRemoveEntity(void);
 
 #ifdef CLIENT
-	virtual bool(void) HideViewWeapon;
-	virtual void(void) PredictPreFrame;
-	virtual void(void) PredictPostFrame;
-	virtual void(float, float) ReceiveEntity;
-	virtual void(void) UpdateView;
+	virtual bool HideViewWeapon(void);
+	virtual void PredictPreFrame(void);
+	virtual void PredictPostFrame(void);
+	virtual void ReceiveEntity(float,float);
+	virtual void UpdateView(void);
 #else
-	virtual void(void) Respawn;
-	virtual void(void) OnPlayerUse;
-	virtual void(void) EvaluateEntity;
-	virtual float(entity, float) SendEntity;
+	virtual void Respawn(void);
+	virtual void OnPlayerUse(void);
+	virtual void EvaluateEntity(void);
+	virtual float SendEntity(entity,float);
 #endif
 };
 

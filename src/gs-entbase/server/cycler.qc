@@ -36,10 +36,12 @@ This entity was introduced in Half-Life (1998).
 class
 cycler:NSSurfacePropEntity
 {
-	void(void) cycler;
+public:
+	void cycler(void);
+	
+	virtual void Respawn(void);
+	virtual void Pain(void);
 
-	virtual void(void) Respawn;
-	virtual void(void) Pain;
 };
 
 void

@@ -30,14 +30,15 @@ This entity was introduced in Quake (1996).
 class
 func_illusionary:NSRenderableEntity
 {
-	void(void) func_illusionary;
+public:
+	void func_illusionary(void);
 
 #ifdef SERVER
-	virtual void(void) Respawn;
-	virtual float(entity, float) SendEntity;
-	virtual void(entity, int) Trigger;
+	virtual void Respawn(void);
+	virtual float SendEntity(entity,float);
+	virtual void Trigger(entity,int);
 #else
-	virtual void(void) Init;
+	virtual void Init(void);
 #endif
 };
 
@@ -48,7 +49,7 @@ func_illusionary:NSRenderableEntity
 float
 func_illusionary::SendEntity(entity pvsent, float fl)
 {
-	if ((GetRenderMode() != RM_NORMAL) || (targetname))
+	if ((GetRenderMode() != RM_NORMAL) || HasTargetname())
 		return super::SendEntity(pvsent, fl);
 	else
 		return (0);
@@ -84,7 +85,7 @@ func_illusionary::Respawn(void)
 	ClearAngles();
 
 	// TODO: Add support for (skin) -1 = Empty, -7 = Volumetric light
-	if (skin < 0) {
+	if (GetSkin() < 0) {
 		SetSkin(0);
 	}
 }
@@ -109,7 +110,7 @@ func_illusionary::Init(void)
 	SetSolid(SOLID_NOT);
 
 	if (skin == -1 && m_iRenderMode == RM_TEXTURE)
-		SetRenderMode(RM_TRIGGER);
+		Hide();
 
 	MakeStatic();
 }

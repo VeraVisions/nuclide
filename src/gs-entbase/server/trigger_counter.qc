@@ -42,14 +42,16 @@ trigger_counter:NSBrushTrigger
 	int m_iCounted;
 	int m_iMaxCount;
 
-	void(void) trigger_counter;
+public:
+	void trigger_counter(void);
+	
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void SpawnKey(string,string);
+	virtual void Respawn(void);
+	virtual void Trigger(entity,int);
+	virtual void Touch(entity);
 
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(string, string) SpawnKey;
-	virtual void(void) Respawn;
-	virtual void(entity,int) Trigger;
-	virtual void(entity) Touch;
 };
 
 void

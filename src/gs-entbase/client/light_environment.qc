@@ -51,10 +51,12 @@ This entity was introduced in Half-Life (1998).
 
 class light_environment:NSEntity
 {
-	void(void) light_environment;
+public:
+	void light_environment(void);
+	
+	virtual void Respawn(void);
+	virtual void SpawnKey(string,string);
 
-	virtual void(void) Respawn;
-	virtual void(string, string) SpawnKey;
 };
 
 void

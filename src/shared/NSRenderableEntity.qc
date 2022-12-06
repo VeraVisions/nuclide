@@ -332,15 +332,6 @@ NSRenderableEntity::RenderFXPass(void)
 		drawflags = 7;
 		abslight = 128;
 		break;
-	case RM_TRIGGER:
-		if (autocvar_cl_showtriggers) {
-			effects = EF_FULLBRIGHT;
-			alpha = 0.75f;
-			colormod = [1,0,0];
-		} else {
-			alpha = 0.0f;
-		}
-		break;
 	case RM_DONTRENDER:
 		/* prevent addentity() from being called */
 		alpha = 0.0f;

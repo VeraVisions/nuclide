@@ -71,19 +71,21 @@ func_rotating:NSRenderableEntity
 	float m_flDamage;
 	float m_flDir;
 
-	void(void) func_rotating;
-
+public:
+	void func_rotating(void);
+	
 	/* overrides */
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(string, string) SpawnKey;
-	virtual void(void) Respawn;
-	virtual void(entity, int) Trigger;
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void SpawnKey(string,string);
+	virtual void Respawn(void);
+	virtual void Trigger(entity,int);
+	
+	virtual void Rotate(void);
+	virtual void Blocked(entity);
+	virtual void Touch(entity);
+	virtual void SetMovementDirection(void);
 
-	virtual void(void) Rotate;
-	virtual void(entity) Blocked;
-	virtual void(entity) Touch;
-	virtual void(void) SetMovementDirection;
 };
 
 void

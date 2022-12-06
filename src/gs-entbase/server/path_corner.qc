@@ -53,13 +53,15 @@ path_corner:NSPointTrigger
 	float m_flYawSpeed;
 	float m_flWait;
 
-	void(void) path_corner;
+public:
+	void path_corner(void);
+	
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void SpawnKey(string,string);
+	virtual void Respawn(void);
+	virtual void Trigger(entity,int);
 
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(string, string) SpawnKey;
-	virtual void(void) Respawn;
-	virtual void(entity, int) Trigger;
 };
 
 void

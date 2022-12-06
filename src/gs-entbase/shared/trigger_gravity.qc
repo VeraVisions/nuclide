@@ -36,16 +36,17 @@ class trigger_gravity:NSBrushTrigger
 {
 	float m_flGravity;
 
-	void(void) trigger_gravity;
-
+public:
+	void trigger_gravity(void);
+	
 #ifdef SERVER
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
+	virtual void Save(float);
+	virtual void Restore(string,string);
 #endif
-	virtual void(string, string) SpawnKey;
-	virtual void(void) Spawned;
-	virtual void(void) Respawn;
-	virtual void(entity) Touch;
+	virtual void SpawnKey(string,string);
+	virtual void Spawned(void);
+	virtual void Respawn(void);
+	virtual void Touch(entity);
 };
 
 void

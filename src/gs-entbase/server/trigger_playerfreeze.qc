@@ -33,11 +33,12 @@ This entity was introduced in Opposing Force (1999).
 class
 trigger_playerfreeze:NSBrushTrigger
 {
-	void(void) trigger_playerfreeze;
-
-	virtual void(void) Respawn;
-	virtual void(entity,int) Trigger;
-	virtual void(void) customphysics;
+public:
+	void trigger_playerfreeze(void);
+	
+	virtual void Respawn(void);
+	virtual void Trigger(entity,int);
+	virtual void customphysics(void);
 };
 
 void

@@ -88,17 +88,19 @@ func_tank:NSVehicle
 
 	float m_flFireTime;
 
-	void(void) func_tank;
+public:
+	void func_tank(void);
+	
+	virtual void Spawned(void);
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void customphysics(void);
+	virtual void PlayerInput(void);
+	virtual void Respawn(void);
+	virtual void SpriteSmoke(vector);
+	virtual void SpriteFlash(vector);
+	virtual void SpawnKey(string,string);
 
-	virtual void(void) Spawned;
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(void) customphysics;
-	virtual void(void) PlayerInput;
-	virtual void(void) Respawn;
-	virtual void(vector) SpriteSmoke;
-	virtual void(vector) SpriteFlash;
-	virtual void(string, string) SpawnKey;
 };
 
 void

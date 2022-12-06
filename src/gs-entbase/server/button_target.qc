@@ -41,11 +41,12 @@ class
 button_target:NSSurfacePropEntity
 {
 public:
-	void(void) button_target;
+	void button_target(void);
+	
+	virtual void Respawn(void);
+	virtual void Trigger(entity,int);
+	virtual void Damage(void);
 
-	virtual void(void) Respawn;
-	virtual void(entity, int) Trigger;
-	virtual void(void) Damage;
 };
 
 void

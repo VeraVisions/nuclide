@@ -41,9 +41,11 @@ enumflags
 class
 monster_furniture:NSMonster
 {
-	void(void) monster_furniture;
+public:
+	void monster_furniture(void);
+	
+	virtual void Respawn(void);
 
-	virtual void(void) Respawn;
 };
 
 void

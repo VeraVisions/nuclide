@@ -51,7 +51,6 @@ typedef enum
 	RM_ADDFRAC = 7, /* Source 2004 */
 	RM_WORLDGLOW = 9, /* Source 2004 */
 	RM_DONTRENDER = 10, /* Source 2004 */
-	RM_TRIGGER
 } rendermode_t;
 
 typedef enum
@@ -79,7 +78,6 @@ typedef enum
 } renderfx_t;
 
 #ifdef CLIENT
-var int autocvar_cl_showtriggers = FALSE;
 var int autocvar_rm_unlit_additive = TRUE;
 var int autocvar_rm_unlit_texture = TRUE;
 #endif
@@ -141,7 +139,7 @@ public:
 
 	/* model events */
 	/** Callback for any model event that gets triggered while playing a framegroup. */
-	virtual void HandleAnimEvent(float, int,string);
+	virtual void HandleAnimEvent(float,int,string);
 
 	/* set */
 	/** Sets the bodygroup of the entity. */

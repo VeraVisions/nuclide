@@ -47,14 +47,16 @@ env_message:NSPointTrigger
 	float m_flVolume;
 	int m_iAttenuation; /* FIXME: change this to a proper attenuation type */
 
-	void(void) env_message;
+public:
+	void env_message(void);
+	
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void SpawnKey(string,string);
+	virtual void Respawn(void);
+	
+	virtual void Play(entity,int);
 
-	virtual void(float) Save;
-	virtual void(string,string) Restore;
-	virtual void(string, string) SpawnKey;
-	virtual void(void) Respawn;
-
-	virtual void(entity, int) Play;
 };
 
 void

@@ -38,6 +38,17 @@ This entity was introduced in Half-Life 2 (2004).
 class
 trigger_look:NSBrushTrigger
 {
+public:
+	void trigger_look(void);
+	
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void SpawnKey(string,string);
+	virtual void Spawned(void);
+	virtual void Respawn(void);
+	virtual void Touch(entity);
+
+private:
 	float m_flFOV;
 	float m_flLookTime;
 	float m_flDelay;
@@ -46,15 +57,6 @@ trigger_look:NSBrushTrigger
 
 	/* Input/Output */
 	string m_strOnTrigger;
-
-	void(void) trigger_look;
-
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(string, string) SpawnKey;
-	virtual void(void) Spawned;
-	virtual void(void) Respawn;
-	virtual void(entity) Touch;
 };
 
 void

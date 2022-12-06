@@ -27,14 +27,16 @@ enumflags
 
 class env_laser
 {
+public:
+	void env_laser(void);
+	
+	virtual void ReceiveEntity(float,float);
+	virtual float predraw(void);
+
+private:
 	int m_iState;
 	string m_strBeamTex;
 	string m_strEndTex;
-
-	void(void) env_laser;
-
-	virtual void(float,float) ReceiveEntity;
-	virtual float(void) predraw;
 };
 
 float env_laser::predraw(void)

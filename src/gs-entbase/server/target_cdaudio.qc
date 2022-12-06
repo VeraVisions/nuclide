@@ -37,13 +37,15 @@ target_cdaudio:NSPointTrigger
 	float m_flRadius;
 	int m_iCDTrack;
 
-	void(void) target_cdaudio;
+public:
+	void target_cdaudio(void);
+	
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void SpawnKey(string,string);
+	virtual void Respawn(void);
+	virtual void Touch(entity);
 
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(string, string) SpawnKey;
-	virtual void(void) Respawn;
-	virtual void(entity) Touch;
 };
 
 void

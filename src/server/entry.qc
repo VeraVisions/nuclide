@@ -380,8 +380,6 @@ initents(void)
 	precache_sound("debris/concrete2.wav");
 	precache_sound("debris/concrete3.wav");
 
-	Footsteps_Init();
-
 	precache_sound("player/pl_fallpain3.wav");
 	precache_sound("items/9mmclip1.wav");
 	precache_sound("items/gunpickup2.wav");

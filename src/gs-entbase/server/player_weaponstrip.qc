@@ -27,9 +27,10 @@ This entity was introduced in Half-Life (1998).
 class
 player_weaponstrip:NSPointTrigger
 {
-	void(void) player_weaponstrip;
-
-	virtual void(entity, int) Trigger;
+public:
+	void player_weaponstrip(void);
+	
+	virtual void Trigger(entity,int);
 };
 
 void

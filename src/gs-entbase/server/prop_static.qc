@@ -41,9 +41,11 @@ This entity was introduced in Half-Life 2 (2004).
 class
 prop_static:NSRenderableEntity
 {
-	void(void) prop_static;
+public:
+	void prop_static(void);
+	
+	virtual void Respawn(void);
 
-	virtual void(void) Respawn;
 };
 
 void

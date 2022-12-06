@@ -35,16 +35,18 @@ func_conveyor:NSRenderableEntity
 	float m_flSpeed;
 	vector m_vecMoveDir;
 
+public:
 	void(void) func_conveyor;
 
-	virtual void(float) Save;
-	virtual void(string,string) Restore;
-	virtual void(void) Respawn;
-	virtual void(entity, int) Trigger;
-	virtual void(entity) Touch;
-	virtual void(void) SetMovementDirection;
-	virtual void(entity, string, string) Input;
-	virtual void(string, string) SpawnKey;
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void Respawn(void);
+	virtual void Trigger(entity,int);
+	virtual void Touch(entity);
+	virtual void SetMovementDirection(void);
+	virtual void Input(entity, string, string);
+	virtual void SpawnKey(string,string);
+
 };
 
 void

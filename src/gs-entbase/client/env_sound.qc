@@ -66,13 +66,15 @@ string g_hlefx[] = {
 
 class env_sound:NSEntity
 {
+public:
+	void env_sound(void);
+	
+	virtual void Respawn(void);
+	virtual void SpawnKey(string,string);
+
+private:
 	int m_iRoomType;
 	int m_iRadius;
-
-	void(void) env_sound;
-
-	virtual void(void) Respawn;
-	virtual void(string, string) SpawnKey;
 };
 
 void

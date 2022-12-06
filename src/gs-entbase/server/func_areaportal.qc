@@ -37,16 +37,18 @@ func_areaportal:NSEntity
 	int m_iPortalState;
 	int m_iStartOpen;
 
-	void(void) func_areaportal;
-
+public:
+	void func_areaportal(void);
+	
 	/* overrides */
-	virtual void(void) Respawn;
-	virtual void(string, string) SpawnKey;
-	virtual void(entity, int) Trigger;
-	virtual void(entity, string, string) Input;
+	virtual void Respawn(void);
+	virtual void SpawnKey(string,string);
+	virtual void Trigger(entity,int);
+	virtual void Input(entity,string,string);
+	
+	virtual void PortalOpen(void);
+	virtual void PortalClose(void);
 
-	virtual void(void) PortalOpen;
-	virtual void(void) PortalClose;
 };
 
 void

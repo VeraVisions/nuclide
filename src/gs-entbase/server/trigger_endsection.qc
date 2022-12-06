@@ -28,10 +28,12 @@ This entity was introduced in Half-Life (1998).
 class
 trigger_endsection:NSBrushTrigger
 {
-	void(void) trigger_endsection;
+public:
+	void trigger_endsection(void);
+	
+	virtual void Trigger(entity,int);
+	virtual void Respawn(void);
 
-	virtual void(entity,int) Trigger;
-	virtual void(void) Respawn;
 };
 
 void

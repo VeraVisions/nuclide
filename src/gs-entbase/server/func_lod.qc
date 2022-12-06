@@ -17,11 +17,13 @@
 class
 func_lod:NSEntity
 {
-	void(void) func_lod;
+public:
+	void func_lod(void);
+	
+	virtual void Respawn(void);
+	virtual void SpawnKey(string,string);
+	virtual float SendEntity(entity,float);
 
-	virtual void(void) Respawn;
-	virtual void(string, string) SpawnKey;
-	virtual float(entity, float) SendEntity;
 };
 
 void

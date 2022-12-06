@@ -43,7 +43,6 @@ Supported Render-Mode ("rendermode") values:
 4 : Solid; Make transparent by respecting transparent pixels (GoldSrc)
 5 : Additive; Blend the object additively against the world.
 6 : Fullbright; Render the object without lighting.
-7 : Trigger; Will only show when the console variable cl_showtriggers is set to 1.
 
 Supported Render-FX ("renderfx") values:
 0 : Normal
@@ -79,9 +78,11 @@ enumflags
 class
 env_render:NSRenderableEntity
 {
-	void(void) env_render;
+public:
+	void env_render(void);
+	
+	virtual void Trigger(entity,int);
 
-	virtual void(entity, int) Trigger;
 };
 
 void

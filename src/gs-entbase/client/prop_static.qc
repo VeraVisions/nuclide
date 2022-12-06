@@ -17,13 +17,15 @@
 class
 prop_static:NSEntity
 {
+public:
+	void prop_static(void);
+	
+	virtual void SpawnKey(string,string);
+	virtual void Respawn(void);
+	virtual void Spawned(void);
+
+private:
 	int m_iBody;
-
-	void(void) prop_static;
-
-	virtual void(string, string) SpawnKey;
-	virtual void(void) Respawn;
-	virtual void(void) Spawned;
 };
 
 void

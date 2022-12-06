@@ -91,28 +91,29 @@ func_door_rotating:NSRenderableEntity
 	vector m_vecMoveDir;
 	bool m_iCanTouch;
 	
-	void(void) func_door_rotating;
-
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(void) Spawned;
-	virtual void(void) PortalOpen;
-	virtual void(void) PortalClose;
-	virtual void(void) Respawn;
-	virtual void(void) Arrived;
-	virtual void(void) Returned;
-	virtual void(void) Back;
-	virtual void(void) Away;
-	virtual void(entity, int) Trigger;
-	virtual void(void) Use;
-	virtual void(entity) Touch;
-	virtual void(entity) Blocked;
-	virtual void(void) SetMovementDirection;
-	virtual void(vector angle, void(void) func) RotToDest;
-	virtual void(string, string) SpawnKey;
+public:
+	void func_door_rotating(void);
+	
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void Spawned(void);
+	virtual void PortalOpen(void);
+	virtual void PortalClose(void);
+	virtual void Respawn(void);
+	virtual void Arrived(void);
+	virtual void Returned(void);
+	virtual void Back(void);
+	virtual void Away(void);
+	virtual void Trigger(entity,int);
+	virtual void Use(void);
+	virtual void Touch(entity);
+	virtual void Blocked(entity);
+	virtual void SetMovementDirection(void);
+	virtual void SpawnKey(string,string);
+	virtual void RotToDest(vector angle, void(void) func);
 
 #ifdef GS_PHYSICS
-	virtual void(void) Unhinge;
+	virtual void Unhinge(void);
 #endif
 };
 

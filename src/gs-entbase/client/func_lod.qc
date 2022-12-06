@@ -33,13 +33,15 @@ var int autocvar_dev_loddistance = 0;
 
 class func_lod:NSRenderableEntity
 {
+public:
+	void func_lod(void);
+	
+	virtual void Spawned(void);
+	virtual float predraw(void);
+	virtual void SpawnKey(string,string);
+
+private:
 	int m_iDisappearDist;
-
-	void(void) func_lod;
-
-	virtual void(void) Spawned;
-	virtual float() predraw;
-	virtual void(string,string) SpawnKey;
 };
 
 float

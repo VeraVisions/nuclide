@@ -30,14 +30,16 @@ trigger_cdaudio:NSBrushTrigger
 {
 	int m_iCDTrack;
 
-	void(void) trigger_cdaudio;
+public:
+	void trigger_cdaudio(void);
+	
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void SpawnKey(string,string);
+	virtual void Respawn(void);
+	virtual void Trigger(entity,int);
+	virtual void Touch(entity);
 
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(string, string) SpawnKey;
-	virtual void(void) Respawn;
-	virtual void(entity, int) Trigger;
-	virtual void(entity) Touch;
 };
 
 void

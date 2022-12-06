@@ -43,12 +43,14 @@ env_shake:NSPointTrigger
 	float m_flDuration;
 	float m_flFrequency;
 
-	void(void) env_shake;
+public:
+	void env_shake(void);
+	
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void SpawnKey(string,string);
+	virtual void Trigger(entity,int);
 
-	virtual void(float) Save;
-	virtual void(string,string) Restore;
-	virtual void(string, string) SpawnKey;
-	virtual void(entity act, int) Trigger;
 };
 
 void

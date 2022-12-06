@@ -40,18 +40,20 @@ func_healthcharger:NSRenderableEntity
 	string m_strSndCharging;
 	string m_strSndDone;
 
-	void(void) func_healthcharger;
-
+public:
+	void func_healthcharger(void);
+	
 	/* overrides */
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(void) Spawned;
-	virtual void(string, string) SpawnKey;
-	virtual void(void) customphysics;
-	virtual void(void) Respawn;
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void Spawned(void);
+	virtual void SpawnKey(string,string);
+	virtual void customphysics(void);
+	virtual void Respawn(void);
+	
+	virtual void OnPlayerUse(void);
+	virtual void ResetHealth(void);
 
-	virtual void(void) OnPlayerUse;
-	virtual void(void) ResetHealth;
 };
 
 void

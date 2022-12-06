@@ -34,9 +34,11 @@ This entity was introduced in Half-Life (1998).
 class
 monster_generic:NSTalkMonster
 {
-	void(void) monster_generic;
+public:
+	void monster_generic(void);
+	
+	virtual void Respawn(void);
 
-	virtual void(void) Respawn;
 };
 
 void

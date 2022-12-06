@@ -33,10 +33,11 @@ This entity was introduced in Half-Life 2 (2004).
 class
 prop_dynamic:NSSurfacePropEntity
 {
-	void(void) prop_dynamic;
-
-	virtual void(string, string) SpawnKey;
-	virtual void(void) Respawn;
+public:
+	void prop_dynamic(void);
+	
+	virtual void SpawnKey(string,string);
+	virtual void Respawn(void);
 };
 
 void

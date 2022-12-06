@@ -39,18 +39,20 @@ enumflags
 class
 trigger_push:NSBrushTrigger
 {
+public:
+	void trigger_push(void);
+	
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void SpawnKey(string,string);
+	virtual void Respawn(void);
+	virtual void Trigger(entity,int);
+	virtual void Touch(entity);
+	virtual void SetMovementDirection(void);
+
+private:
 	vector m_vecMoveDir;
 	float m_flSpeed;
-
-	void(void) trigger_push;
-
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(string, string) SpawnKey;
-	virtual void(void) Respawn;
-	virtual void(entity, int) Trigger;
-	virtual void(entity) Touch;
-	virtual void(void) SetMovementDirection;
 };
 
 void

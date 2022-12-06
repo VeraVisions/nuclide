@@ -29,6 +29,7 @@ prop_door_rotating:NSPointTrigger
 	float m_flDistance;
 	float m_flSpeed;
 
+public:
 	void prop_door_rotating(void);
 
 	/* overrides */

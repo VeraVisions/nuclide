@@ -36,9 +36,10 @@ var int g_skyscale;
 class
 sky_camera:NSEntity
 {
-	void(void) sky_camera;
+public:
+	void sky_camera(void);
 
-	virtual void(string, string) SpawnKey;
+	virtual void SpawnKey(string, string);
 };
 
 void

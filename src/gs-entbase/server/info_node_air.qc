@@ -27,9 +27,11 @@ This entity was introduced in Half-Life (1998).
 class
 info_node_air:NSPointTrigger
 {
-	void(void) info_node_air;
+public:
+	void info_node_air(void);
+	
+	virtual void Respawn(void);
 
-	virtual void(void) Respawn;
 };
 
 void

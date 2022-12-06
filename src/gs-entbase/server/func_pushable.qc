@@ -37,15 +37,17 @@ func_pushable:func_breakable
 	entity m_pPuller;
 	entity m_eCollBox;
 
-	void(void) func_pushable;
+public:
+	void func_pushable(void);
+	
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void customphysics(void);
+	virtual void Respawn(void);
+	virtual void Touch(entity);
+	virtual void OnPlayerUse(void);
+	virtual void OnRemoveEntity(void);
 
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(void) customphysics;
-	virtual void(void) Respawn;
-	virtual void(entity) Touch;
-	virtual void(void) OnPlayerUse;
-	virtual void(void) OnRemoveEntity;
 };
 
 void

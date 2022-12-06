@@ -4,7 +4,7 @@
 
 ## History
 
-In the idTech series of engines, **id Tech 3/Quake III Arena** was the first to introduce such a system, wrongly referred to back then as **shaders**. This was before vertex and fragment shaders were commonplace in the video-game asset pipeline.
+In the id Tech series of engines, **id Tech 3/Quake III Arena** was the first to introduce such a system, wrongly referred to back then as **shaders**. This was before vertex and fragment shaders were commonplace in the video-game asset pipeline.
 
 ![from pulsing tubes to various animated materials in Quake III Arena](q3a_material.jpg)
 

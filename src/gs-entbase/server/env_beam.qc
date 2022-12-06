@@ -27,7 +27,8 @@ This entity was introduced in Half-Life (1998).
 class
 env_beam
 {
-	void(void) env_beam;
+public:
+	void env_beam(void);
 };
 
 void

@@ -31,6 +31,14 @@ This entity was introduced in The Wastes (2018).
 
 class env_particle:NSEntity
 {
+public:
+	void env_particle(void);
+	
+	virtual void Respawn(void);
+	virtual void customphysics(void);
+	virtual void SpawnKey(string,string);
+
+private:
 	entity m_eTarget;
 	float m_flNextTime;
 	float m_flPartID;
@@ -38,12 +46,6 @@ class env_particle:NSEntity
 	float m_flWait;
 	int m_iCount;
 	string m_strTarget;
-
-	void(void) env_particle;
-
-	virtual void(void) Respawn;
-	virtual void(void) customphysics;
-	virtual void(string, string) SpawnKey;
 };
 
 void env_particle::customphysics(void)

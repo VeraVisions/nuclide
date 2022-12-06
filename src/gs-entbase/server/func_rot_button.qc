@@ -70,22 +70,24 @@ func_rot_button:NSSurfacePropEntity
 	float m_flDistance;
 	float m_flReturnTime;
 
-	void(void) func_rot_button;
-
+public:
+	void func_rot_button(void);
+	
 	/* overrides */
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(string, string) SpawnKey;
-	virtual void(void) Respawn;
-	virtual void(entity) Touch;
-	virtual void(void) Death;
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void SpawnKey(string,string);
+	virtual void Respawn(void);
+	virtual void Touch(entity);
+	virtual void Death(void);
+	
+	virtual void ArrivedClosed(void);
+	virtual void ArrivedOpened(void);
+	virtual void TriggerTargets(void);
+	virtual void Rotate(vector, void());
+	virtual void TurnToggle(void);
+	virtual void OnPlayerUse(void);
 
-	virtual void(void) ArrivedClosed;
-	virtual void(void) ArrivedOpened;
-	virtual void(void) TriggerTargets;
-	virtual void(vector, void()) Rotate;
-	virtual void(void) TurnToggle;
-	virtual void(void) OnPlayerUse;
 };
 
 void

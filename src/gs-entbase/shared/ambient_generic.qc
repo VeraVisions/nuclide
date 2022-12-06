@@ -75,25 +75,28 @@ class ambient_generic:NSTalkMonster
 	float m_flSpawnVolume;
 	float m_flSpawnPitch;
 
-	void(void) ambient_generic;
+public:
+	void ambient_generic(void);
 
 	/* overrides */
 #ifdef SERVER
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(string, string) SpawnKey;
-	virtual void(void) Spawned;
-	virtual void(void) Respawn;
-	virtual void(void) EvaluateEntity;
-	virtual float(entity, float) SendEntity;
-	virtual void(entity, int) UseNormal;
-	virtual void(entity, int) UseLoop;
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void SpawnKey(string,string);
+	virtual void Spawned(void);
+	virtual void Respawn(void);
+	virtual void EvaluateEntity(void);
+	virtual float SendEntity(entity,float);
+	virtual void UseNormal(entity,int);
+	virtual void UseLoop(entity,int);
+
 #else
-	virtual void(float, float) ReceiveEntity;
-	virtual float(void) predraw;
-	virtual void(string) SentenceSample;
+	virtual void ReceiveEntity(float,float);
+	virtual float predraw(void);
+	virtual void SentenceSample(string);
+
 #endif
-	virtual void(void) OnRemoveEntity;
+	virtual void OnRemoveEntity(void);
 };
 
 void

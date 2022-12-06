@@ -103,18 +103,20 @@ scripted_sequence:NSPointTrigger
 	/* How we move to perform m_iActionAnim */
 	int m_iMove;
 
-	void(void) scripted_sequence;
-
-	/* overrides */
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(entity, int) Trigger;
-	virtual void(void) Respawn;
-	virtual void(string, string) SpawnKey;
+public:
+	void scripted_sequence(void);
 	
-	virtual void(entity) RunOnEntity;
-	virtual void(void) InitIdle;
-	virtual void(entity) Touch;
+	/* overrides */
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void Trigger(entity,int);
+	virtual void Respawn(void);
+	virtual void SpawnKey(string,string);
+	
+	virtual void RunOnEntity(entity);
+	virtual void InitIdle(void);
+	virtual void Touch(entity);
+
 };
 
 void

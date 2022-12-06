@@ -27,9 +27,11 @@ This entity was introduced in Half-Life (1998).
 class
 info_node:NSPointTrigger
 {
-	void(void) info_node;
+public:
+	void info_node(void);
+	
+	virtual void Respawn(void);
 
-	virtual void(void) Respawn;
 };
 
 void

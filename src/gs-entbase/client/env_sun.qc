@@ -46,17 +46,19 @@ Util_IsSky(vector pos)
 
 class env_sun:NSEntity
 {
+public:
+	void env_sun(void);
+	
+	virtual void Spawned(void);
+	virtual void postdraw(void);
+	virtual float predraw(void);
+	virtual void SpawnKey(string,string);
+	virtual void RendererRestarted(void);
+
+private:
 	vector m_vecLensPos;
 	float m_flLensAlpha;
 	int m_iUseAngles;
-
-	void(void) env_sun;
-
-	virtual void(void) Spawned;
-	virtual void(void) postdraw;
-	virtual float(void) predraw;
-	virtual void(string, string) SpawnKey;
-	virtual void(void) RendererRestarted;
 };
 
 void

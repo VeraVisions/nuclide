@@ -34,7 +34,8 @@ This entity was introduced in Quake (1996).
 class
 info_intermission:NSPointTrigger
 {
-	void(void) info_intermission;
+public:
+	void info_intermission(void);
 };
 
 void

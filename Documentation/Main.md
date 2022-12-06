@@ -14,7 +14,7 @@ as to have a stable base with a decent API for making games.
 - Client-side predicted movement and inputs for things like weapons-systems
 - Lots of well documented objects to use in level formats supported by FTEQW
 - Reference implementations for a lot of features exlusive to FTEQW compared
-  to other idTech engines
+  to other id Tech engines
 - Designed to be familar to developers who're used to GoldSrc and Source engine
   projects
 

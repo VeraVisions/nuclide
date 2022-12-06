@@ -47,17 +47,19 @@ game_counter:NSPointTrigger
 	int m_iCounted;
 	int m_iMaxCount;
 
-	void(void) game_counter;
-
+public:
+	void game_counter(void);
+	
 	/* overrides */
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(entity,int) Trigger;
-	virtual void(void) Respawn;
-	virtual void(string, string) SpawnKey;
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void Trigger(entity,int);
+	virtual void Respawn(void);
+	virtual void SpawnKey(string,string);
+	
+	virtual int GetCount(void);
+	virtual void SetCount(int);
 
-	virtual int(void) GetCount;
-	virtual void(int) SetCount;
 };
 
 void

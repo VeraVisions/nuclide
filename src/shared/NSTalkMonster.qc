@@ -664,10 +664,6 @@ NSTalkMonster::SendEntity(entity ePEnt, float flChanged)
 
 	WriteByte(MSG_ENTITY, ENT_TALKMONSTER);
 
-	/* don't network triggers unless provoked */
-	/*if (cvar("developer") == 0 && m_iRenderMode == RM_TRIGGER)
-		return (0);*/
-
 	/* broadcast how much data is expected to be read */
 	WriteFloat(MSG_ENTITY, flChanged);
 

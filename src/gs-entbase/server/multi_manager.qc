@@ -39,11 +39,13 @@ multi_manager_sub:NSPointTrigger
 	int m_iValue;
 	float m_flUntilTriggered;
 
-	void(void) multi_manager_sub;
+public:
+	void multi_manager_sub(void);
 
 	/* overrides */
 	virtual void Save(float);
 	virtual void Restore(string,string);
+
 };
 
 void

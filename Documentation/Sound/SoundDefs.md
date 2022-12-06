@@ -1,9 +1,9 @@
 # Sound: soundDef
-Nuclide mimics the sound defintion spec from **idTech 4** somewhat, albeit
+Nuclide mimics the sound defintion spec from **id Tech 4** somewhat, albeit
 with some changes/enhancements. We call them **soundDefs**.
 
 **The elevator pitch**: To allow for more control over the sounds than what was previously
-allowed in idTech engines we also allow designers to drop sounds into
+allowed in id Tech engines we also allow designers to drop sounds into
 the game without having to set some common parameters every time.
 
 Instead of directly calling which .wav or .ogg file to play, we tell it
@@ -79,7 +79,7 @@ This one has multiple sound files specified, which means that **Nuclide** will r
 
 ## Power to the developer {#power_to_the_developer}
 
-Unlike the implementation in **idTech 4**, all of the sound defs handling
+Unlike the implementation in **id Tech 4**, all of the sound defs handling
 is done in the game-logic and is therefore exposed to all developers.
 Some mods may want to hook AI callbacks into the system, or create
 visual effects when commands are called by a sound def. The

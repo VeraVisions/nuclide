@@ -51,18 +51,19 @@ class trigger_camera:NSPointTrigger
 	entity m_eLooker;
 #endif
 
-	void(void) trigger_camera;
+public:
+	void trigger_camera(void);
 
 #ifdef CLIENT
-	virtual void(float,float) ReceiveEntity;
+	virtual void ReceiveEntity(float,float);
 #else
-	virtual void(void) NextPath;
-	virtual void(void) GoToTarget;
-	virtual void(entity, int) Trigger;
-	virtual void(void) Respawn;
-	virtual void(string, string) SpawnKey;
-	virtual float(entity, float) SendEntity;
-	virtual void(void) EvaluateEntity;
+	virtual void NextPath(void);
+	virtual void GoToTarget(void);
+	virtual void Trigger(entity,int);
+	virtual void Respawn(void);
+	virtual void SpawnKey(string,string);
+	virtual float SendEntity(entity,float);
+	virtual void EvaluateEntity(void);
 #endif
 };
 

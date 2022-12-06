@@ -24,7 +24,6 @@
 #include "weapons.h"
 #include "plugins.h"
 #include "NSTraceAttack.h"
-#include "footsteps.h"
 
 #include "route.h"
 #include "way.h"

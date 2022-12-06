@@ -47,24 +47,24 @@ enumflags
 class
 trigger_multiple:NSBrushTrigger
 {
+public:
+	void trigger_multiple(void);
+	
+	virtual void Spawned(void);
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void Touch(entity);
+	virtual void Respawn(void);
+	virtual void SpawnKey(string,string);
+	virtual void EndTouch(entity);
+
+private:
 	float m_flWait;
 
 	/* Input/Output */
 	string m_strOnStartTouch;
 	string m_strOnEndTouchAll;
 	string m_strOnTrigger;
-
-	void(void) trigger_multiple;
-
-	virtual void(void) Spawned;
-
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(entity) Touch;
-	virtual void(void) Respawn;
-	virtual void(string, string) SpawnKey;
-
-	virtual void(entity) EndTouch;
 };
 
 void

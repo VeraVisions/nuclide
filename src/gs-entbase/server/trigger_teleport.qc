@@ -35,10 +35,11 @@ enumflags
 class
 trigger_teleport:NSBrushTrigger
 {
-	void(void) trigger_teleport;
-
-	virtual void(entity) Touch;
-	virtual void(void) Respawn;
+public:
+	void trigger_teleport(void);
+	
+	virtual void Touch(entity);
+	virtual void Respawn(void);
 };
 
 void

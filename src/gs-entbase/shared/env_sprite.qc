@@ -61,6 +61,7 @@ enumflags
 
 class env_sprite:NSRenderableEntity
 {
+private:
 	bool m_iIsShader;
 	int m_iToggled;
 	float m_flEffects;
@@ -73,7 +74,8 @@ class env_sprite:NSRenderableEntity
 	bool m_bLoops;
 #endif
 
-	void(void) env_sprite;
+public:
+	void env_sprite(void);
 
 	virtual void(bool) SetFramerate;
 
@@ -85,11 +87,12 @@ class env_sprite:NSRenderableEntity
 	virtual void SpawnKey(string,string);
 	virtual void NetworkOnce(void);
 #else
-	virtual float(void) predraw;
-	virtual void(void) think;
-	virtual void(float, float) ReceiveEntity;
-	virtual void(int) SetMaxFrame;
-	virtual void(bool) SetLoopFlag;
+	virtual float predraw(void);
+	virtual void think(void);
+	virtual void ReceiveEntity(float,float);
+	virtual void SetMaxFrame(int);
+	virtual void SetLoopFlag(bool);
+
 #endif
 };
 

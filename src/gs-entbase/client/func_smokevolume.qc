@@ -30,6 +30,14 @@ This entity was introduced in Half-Life 2 (2004).
 
 class func_smokevolume:NSEntity
 {
+public:
+	void func_smokevolume(void);
+
+	virtual void Spawned(void);
+	virtual float predraw(void);
+	virtual void SpawnKey(string, string);
+
+private:
 	int m_iCount;
 	int m_iPart;
 	float m_flNexTime;
@@ -43,16 +51,17 @@ class func_smokevolume:NSEntity
 	float m_flLifetimeMax;
 	string m_strMaterial;
 	float m_flMaxDrawDistance;
-
-	void(void) func_smokevolume;
-	virtual void(void) Spawned;
-	virtual float() predraw;
-	virtual void(string, string) SpawnKey;
 };
 
 #if 1
 class func_smokevolume_cloud
 {
+public:
+	void func_smokevolume_cloud(void);
+	
+	virtual float predraw(void);
+
+private:
 	vector cloudsize;
 	float lifetime;
 
@@ -61,10 +70,6 @@ class func_smokevolume_cloud
 	vector m_vecColor;
 	float m_flLifeTime;
 	string m_strMaterial;
-
-	void(void) func_smokevolume_cloud;
-
-	virtual float(void) predraw;
 };
 
 float

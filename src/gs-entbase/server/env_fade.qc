@@ -48,13 +48,14 @@ env_fade:NSRenderableEntity
 	float m_flFadeDuration;
 	float m_flFadeHold;
 
-	void(void) env_fade;
-
+public:
+	void env_fade(void);
+	
 	/* overrides */
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(entity, int) Trigger;
-	virtual void(string, string) SpawnKey;
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void Trigger(entity,int);
+	virtual void SpawnKey(string,string);
 };
 
 void

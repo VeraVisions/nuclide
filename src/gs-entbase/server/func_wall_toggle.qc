@@ -38,13 +38,15 @@ func_wall_toggle:NSRenderableEntity
 	int m_oldmodelindex;
 	int m_iVisible;
 
-	void(void) func_wall_toggle;
+public:
+	void func_wall_toggle(void);
+	
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void Respawn(void);
+	virtual void Trigger(entity,int);
+	virtual void Input(entity,string,string);
 
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(void) Respawn;
-	virtual void(entity, int) Trigger;
-	virtual void(entity, string, string) Input;
 };
 
 void

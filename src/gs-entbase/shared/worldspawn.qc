@@ -53,10 +53,12 @@ var int g_iHDREnabled = 0;
 
 class worldspawn:NSEntity
 {
-	void(void) worldspawn;
+public:
+	void worldspawn(void);
+	
+	virtual void SpawnKey(string,string);
+	virtual void Spawned(void);
 
-	virtual void(string, string) SpawnKey;
-	virtual void(void) Spawned;
 };
 
 void

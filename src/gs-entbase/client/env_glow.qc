@@ -33,6 +33,17 @@ var int autocvar_r_skipLensFlares = 0;
 
 class env_glow:NSEntity /* change to renderablentity? */
 {
+public:
+	void env_glow(void);
+	
+	virtual void Spawned(void);
+	virtual void Respawn(void);
+	virtual float predraw(void);
+	virtual void postdraw(void);
+	virtual void SpawnKey(string,string);
+	virtual void RendererRestarted(void);
+
+private:
 	vector m_vecColor;
 	float m_flAlpha;
 	float m_flMaxAlpha;
@@ -42,15 +53,6 @@ class env_glow:NSEntity /* change to renderablentity? */
 
 	vector m_vecRotate;
 	vector m_vecOrientation;
-
-	void(void) env_glow;
-
-	virtual void(void) Spawned;
-	virtual void(void) Respawn;
-	virtual float(void) predraw;
-	virtual void(void) postdraw;
-	virtual void(string, string) SpawnKey;
-	virtual void(void) RendererRestarted;
 };
 
 void env_sun_lensflare(vector, float, vector);

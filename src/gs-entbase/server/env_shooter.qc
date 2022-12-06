@@ -51,15 +51,17 @@ env_shooter:NSPointTrigger
 	float m_flShootSounds;
 	float m_flScale;
 	float m_flSkin;
-	
-	void(void) env_shooter;
 
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(string, string) SpawnKey;
-	virtual void(void) Respawn;
-	virtual void(void) ShootGib;
-	virtual void(entity, int) Trigger;
+public:
+	void env_shooter(void);
+
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void SpawnKey(string,string);
+	virtual void Respawn(void);
+	virtual void ShootGib(void);
+	virtual void Trigger(entity,int);
+
 };
 
 void

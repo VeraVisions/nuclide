@@ -37,22 +37,25 @@ func_guntarget:NSSurfacePropEntity
 	string m_strOnDeath;
 	string m_strOnDeathLegacy;
 
-	void(void) func_guntarget;
+public:
+	void func_guntarget(void);
 	
 	/* overrides */
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(string, string) SpawnKey;
-	virtual void(void) Spawned;
-	virtual void(void) Respawn;
-	virtual void(entity act, int) Trigger;
-	virtual void(void) Death;
-	virtual void(entity, string, string) Input;
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void SpawnKey(string,string);
+	virtual void Spawned(void);
+	virtual void Respawn(void);
+	virtual void Trigger(entity,int);
+	virtual void Death(void);
+	
+	virtual void NextPath(void);
+	virtual void Move(void);
+	virtual void Start(void);
+	virtual void Stop(void);
 
-	virtual void(void) NextPath;
-	virtual void(void) Move;
-	virtual void(void) Start;
-	virtual void(void) Stop;
+	virtual void Input(entity, string, string);
+
 };
 
 void

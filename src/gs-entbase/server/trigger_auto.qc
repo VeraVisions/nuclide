@@ -39,16 +39,18 @@ trigger_auto:NSPointTrigger
 	int m_iTriggerState;
 	float m_flDelay;
 
-	void(void) trigger_auto;
-
+public:
+	void trigger_auto(void);
+	
 	/* overrides */
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(string, string) SpawnKey;
-	virtual void(void) Respawn;
-	virtual void(void) RestoreComplete;
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void SpawnKey(string,string);
+	virtual void Respawn(void);
+	virtual void RestoreComplete(void);
+	
+	virtual void Processing(void);
 
-	virtual void(void) Processing;
 };
 
 void

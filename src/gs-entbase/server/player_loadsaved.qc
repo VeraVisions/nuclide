@@ -40,15 +40,17 @@ player_loadsaved:NSRenderableEntity /* for the rendercolor values */
 	float m_flFadeDuration;
 	float m_flFadeHold;
 
-	void(void) player_loadsaved;
-
+public:
+	void player_loadsaved(void);
+	
 	/* overrides */
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(string, string) SpawnKey;
-	virtual void(entity, int) Trigger;
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void SpawnKey(string,string);
+	virtual void Trigger(entity,int);
+	
+	virtual void ReloadSave(void);
 
-	virtual void(void) ReloadSave;
 };
 
 void

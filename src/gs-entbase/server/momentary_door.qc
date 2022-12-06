@@ -27,15 +27,16 @@ This entity was introduced in Half-Life (1998).
 class
 momentary_door:NSMomentary
 {
-	void(void) momentary_door;
-
-	virtual void(string, string) SpawnKey;
-	virtual void(void) Respawn;
-	virtual void(void) SetMovementDirection;
-
-	virtual void(void) MovementDone;
-	virtual void(void) MovementStateChanged;
-	virtual float(void) GetProgress;
+public:
+	void momentary_door(void);
+	
+	virtual void SpawnKey(string,string);
+	virtual void Respawn(void);
+	virtual void SetMovementDirection(void);
+	
+	virtual void MovementDone(void);
+	virtual void MovementStateChanged(void);
+	virtual float GetProgress(void);
 };
 
 void

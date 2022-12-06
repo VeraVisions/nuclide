@@ -8,9 +8,7 @@ sentences.qc
 spawn.qc
 NSGameRules.qc
 client.qc
-server.qc
 NSTraceAttack.qc
-footsteps.qc
 vote.qc
 weapons.qc
 modelevent.qc

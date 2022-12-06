@@ -63,6 +63,7 @@ enumflags
 
 class env_projectedtexture:NSPointTrigger
 {
+private:
 	vector m_vecLight;
 	float m_flIntensity;
 	float m_flInnerCone;
@@ -76,18 +77,19 @@ class env_projectedtexture:NSPointTrigger
 	float m_flFOV;
 	int m_iState;
 
-	void(void) env_projectedtexture;
+public:
+	void env_projectedtexture(void);
 
 #ifdef CLIENT
-	virtual void(float,float) ReceiveEntity;
-	virtual float(void) predraw;
+	virtual void ReceiveEntity(float,float);
+	virtual float predraw(void);
 #else
-	virtual void(entity, int) Trigger;
-	virtual void(void) Respawn;
-	virtual float(entity, float) SendEntity;
-	virtual void(string, string) SpawnKey;
-	virtual void(entity, string, string) Input;
-	virtual void(void) EvaluateEntity;
+	virtual void Trigger(entity,int);
+	virtual void Respawn(void);
+	virtual float SendEntity(entity,float);
+	virtual void SpawnKey(string,string);
+	virtual void EvaluateEntity(void);
+	virtual void Input(entity, string, string);
 #endif
 };
 

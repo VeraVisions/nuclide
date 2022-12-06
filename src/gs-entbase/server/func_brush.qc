@@ -44,13 +44,15 @@ func_brush:NSRenderableEntity
 	int m_iSolidity;
 	int m_iStartOff;
 
-	void(void) func_brush;
+public:
+	void func_brush(void);
+	
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void Respawn(void);
+	virtual void Trigger(entity,int);
+	virtual void SpawnKey(string,string);
 
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(void) Respawn;
-	virtual void(entity,int) Trigger;
-	virtual void(string,string) SpawnKey;
 };
 
 void

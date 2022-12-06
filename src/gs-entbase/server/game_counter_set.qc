@@ -41,13 +41,15 @@ game_counter_set:NSPointTrigger
 {
 	int m_iCount;
 
-	void(void) game_counter_set;
+public:
+	void game_counter_set(void);
+	
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void Trigger(entity,int);
+	virtual void Respawn(void);
+	virtual void SpawnKey(string,string);
 
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(entity,int) Trigger;
-	virtual void(void) Respawn;
-	virtual void(string, string) SpawnKey;
 };
 
 void

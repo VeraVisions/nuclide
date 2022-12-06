@@ -26,15 +26,17 @@ This entity was introduced in Half-Life 2 (2004).
 
 class func_dustmotes:NSEntity
 {
+public:
+	void func_dustmotes(void);
+	
+	virtual void Spawned(void);
+	virtual float predraw(void);
+	virtual void SpawnKey(string,string);
+
+private:
 	int m_iCount;
 	int m_iPart;
 	float m_flNexTime;
-
-	void(void) func_dustmotes;
-
-	virtual void(void) Spawned;
-	virtual float() predraw;
-	virtual void(string, string) SpawnKey;
 };
 
 float

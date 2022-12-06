@@ -45,12 +45,14 @@ env_hudhint:NSPointTrigger
 {
 	string m_strMessage;
 
-	void(void) env_hudhint;
+public:
+	void env_hudhint(void);
+	
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void SpawnKey(string,string);
+	virtual void Trigger(entity,int);
 
-	virtual void(float) Save;
-	virtual void(string,string) Restore;
-	virtual void(string, string) SpawnKey;
-	virtual void(entity, int) Trigger;
 };
 
 void

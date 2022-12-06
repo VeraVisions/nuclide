@@ -100,6 +100,7 @@ func_door:NSRenderableEntity
 	string m_strSndMove;
 	string m_strSndStop;
 
+public:
 	void(void) func_door;
 
 	virtual void Spawned(void);

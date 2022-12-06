@@ -29,6 +29,13 @@ This entity was introduced in Half-Life 2 (2004).
 
 class func_dustcloud:NSEntity
 {
+public:
+	void func_dustcloud(void);
+	virtual void Spawned(void);
+	virtual float predraw(void);
+	virtual void SpawnKey(string,string);
+
+private:
 	int m_iCount;
 	int m_iPart;
 	float m_flNexTime;
@@ -39,16 +46,17 @@ class func_dustcloud:NSEntity
 	vector m_vecColor;
 	float m_flLifetimeMin;
 	float m_flLifetimeMax;
-
-	void(void) func_dustcloud;
-	virtual void(void) Spawned;
-	virtual float() predraw;
-	virtual void(string, string) SpawnKey;
 };
 
 #if 1
 class func_dustcloud_cloud
 {
+public:
+	void func_dustcloud_cloud(void);
+	
+	virtual float predraw(void);
+
+private:
 	vector cloudsize;
 	float lifetime;
 
@@ -56,10 +64,6 @@ class func_dustcloud_cloud
 	float m_flMaxAlpha;
 	vector m_vecColor;
 	float m_flLifeTime;
-
-	void(void) func_dustcloud_cloud;
-
-	virtual float(void) predraw;
 };
 
 float

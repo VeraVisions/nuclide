@@ -149,12 +149,14 @@ info_hint:NSPointTrigger
 	aistate_t m_minState;
 	aistate_t m_maxState;
 
-	void(void) info_hint;
-
+public:
+	void info_hint(void);
+	
 	/* overrides */
-	virtual void(float) Save;
-	virtual void(string,string) Restore;
-	virtual void(string, string) SpawnKey;
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void SpawnKey(string,string);
+
 };
 
 void

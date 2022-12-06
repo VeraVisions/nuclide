@@ -30,10 +30,11 @@ This entity was introduced in Half-Life 2 (2004).
 class
 prop_physics:NSPhysicsEntity
 {
-	void(void) prop_physics;
-
-	virtual void(string, string) SpawnKey;
-	virtual void(void) Respawn;
+public:
+	void prop_physics(void);
+	
+	virtual void SpawnKey(string,string);
+	virtual void Respawn(void);
 };
 
 void

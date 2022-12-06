@@ -16,7 +16,8 @@
 
 class info_notnull:NSEntity
 {
-	void(void) info_notnull;
+public:
+	void info_notnull(void);
 };
 
 void

@@ -30,13 +30,14 @@ trigger_autosave:NSBrushTrigger
 {
 	float m_flDelay;
 
-	void(void) trigger_autosave;
-
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(void) Spawned;
-	virtual void(void) Respawn;
-	virtual void(entity) Touch;
+public:
+	void trigger_autosave(void);
+	
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void Spawned(void);
+	virtual void Respawn(void);
+	virtual void Touch(entity);
 };
 
 void

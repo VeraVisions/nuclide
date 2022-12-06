@@ -30,10 +30,12 @@ This entity was introduced in Half-Life 2 (2004).
 class
 func_physbox:NSPhysicsEntity
 {
+public:
 	void func_physbox(void);
 
 	virtual void Respawn(void);
 	virtual void SpawnKey(string, string);
+
 };
 
 void

@@ -66,29 +66,11 @@ enumflags
 class
 env_fog_controller:NSPointTrigger
 {
-	/* networked attributes */
-	PREDICTED_INT(m_iFogActive)
-	PREDICTED_INT(m_iFogBlend)
-	PREDICTED_FLOAT(m_flFogStart)
-	PREDICTED_FLOAT(m_flFogEnd)
-	PREDICTED_FLOAT(m_flFogMaxDensity)
-	PREDICTED_FLOAT(m_flFogFarZ)
-	PREDICTED_VECTOR(m_vecFogColor)
-	PREDICTED_VECTOR(m_vecFogColor2)
-	PREDICTED_VECTOR(m_vecFogDir)
-
-	void(void) env_fog_controller;
-
+private:
 #ifdef CLIENT
 	/* temporary attributes */
 	float m_flNextDraw;
 	float m_flLastDelta;
-
-	virtual float(void) StartToBias;
-	virtual float(void) FogRender;
-	virtual void(void) FogUpdate;
-	virtual void(void) RendererRestarted;
-	virtual void(float,float) ReceiveEntity;
 #else
 	/* main spawn attributes */
 	int m_iSpawnEnable;
@@ -101,15 +83,38 @@ env_fog_controller:NSPointTrigger
 	vector m_vecSpawnColor2;
 	vector m_vecSpawnDir;
 	int m_iUseAngles;
+#endif
 
-	virtual float(entity, float) SendEntity;
-	virtual void(void) EvaluateEntity;
-	virtual void(entity, int) Trigger;
-	virtual void(void) Respawn;
-	virtual void(float) Save;
-	virtual void(string,string) Restore;
-	virtual void(entity, string, string) Input;
-	virtual void(string, string) SpawnKey;
+	/* networked attributes */
+	PREDICTED_INT(m_iFogActive)
+	PREDICTED_INT(m_iFogBlend)
+	PREDICTED_FLOAT(m_flFogStart)
+	PREDICTED_FLOAT(m_flFogEnd)
+	PREDICTED_FLOAT(m_flFogMaxDensity)
+	PREDICTED_FLOAT(m_flFogFarZ)
+	PREDICTED_VECTOR(m_vecFogColor)
+	PREDICTED_VECTOR(m_vecFogColor2)
+	PREDICTED_VECTOR(m_vecFogDir)
+
+public:
+	void env_fog_controller(void);
+
+#ifdef CLIENT
+	virtual float StartToBias(void);
+	virtual float FogRender(void);
+	virtual void FogUpdate(void);
+	virtual void RendererRestarted(void);
+	virtual void ReceiveEntity(float,float);
+
+#else
+	virtual float SendEntity(entity,float);
+	virtual void EvaluateEntity(void);
+	virtual void Trigger(entity,int);
+	virtual void Respawn(void);
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void SpawnKey(string,string);
+	virtual void Input(entity, string, string);
 #endif
 };
 

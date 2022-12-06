@@ -47,25 +47,28 @@ enumflags
 
 class info_particle_system:NSPointTrigger
 {
+private:
+#ifdef CLIENT
+	int m_iValue;
+	int m_iEffectID;
+#endif
 	string m_strEffectName;
 	float m_flInterval;
 	int m_iSpawnCount;
 
-	void(void) info_particle_system;
+public:
+	void info_particle_system(void);
 
 #ifdef CLIENT
-	int m_iValue;
-	int m_iEffectID;
-
-	virtual void(void) Emit;
-	virtual void(float,float) ReceiveEntity;
+	virtual void Emit(void);
+	virtual void ReceiveEntity(float,float);
 #else
-	virtual void(void) Respawn;
-	virtual void(void) EvaluateEntity;
-	virtual float(entity, float) SendEntity;
-	virtual void(string, string) SpawnKey;
-	virtual void(entity, int) Trigger;
-	virtual void(entity, string, string) Input;
+	virtual void Respawn(void);
+	virtual void EvaluateEntity(void);
+	virtual float SendEntity(entity,float);
+	virtual void SpawnKey(string,string);
+	virtual void Trigger(entity,int);
+	virtual void Input(entity, string, string);
 #endif
 };
 

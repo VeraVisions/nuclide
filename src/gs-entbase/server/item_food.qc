@@ -31,7 +31,7 @@ item_food:NSEntity
 {
 	int m_iIsCan;
 
-	void(void) item_food;
+	void item_food(void);
 
 	virtual void Spawned(void);
 	virtual void Save(float);

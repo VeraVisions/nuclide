@@ -15,7 +15,7 @@ Any .vvm consists of multiple input files. These can come in the
 following formats:
 
 -   SMD (GoldSrc & Source)
--   MD5MESH and MD5ANIM (idTech 4)
+-   MD5MESH and MD5ANIM (id Tech 4)
 -   FBX
 -   IQE
 -   OBJ (no animations)

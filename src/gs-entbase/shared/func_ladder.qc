@@ -27,13 +27,15 @@ This entity was introduced in Half-Life (1998).
 class
 func_ladder:NSRenderableEntity
 {
-	void(void) func_ladder;
+public:
+	void func_ladder(void);
 
-	virtual void(void) Respawn;
+	virtual void Respawn(void);
 
 #ifdef SERVER
-	virtual void(entity, int) Trigger;
+	virtual void Trigger(entity, int);
 #endif
+
 };
 
 #ifdef SERVER
@@ -63,7 +65,7 @@ func_ladder::Respawn(void)
 	SetModel(GetSpawnModel());
 	SetOrigin(GetSpawnOrigin());
 	SetFrame(0);
-	SetRenderMode(RM_TRIGGER);
+	Hide();
 }
 
 void

@@ -53,6 +53,7 @@ public:
 	virtual void MovementStateChanged(void);
 	/** Returns the progress of the momentary, which is a value between 0.0 and 1.0. */
 	virtual float GetProgress(void);
+
 };
 
 void

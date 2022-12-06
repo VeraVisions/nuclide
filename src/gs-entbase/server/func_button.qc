@@ -103,25 +103,25 @@ func_button:NSSurfacePropEntity
 	string m_strOnIn;
 	string m_strOnOut;
 
+public:
 	void func_button(void);
-
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(string, string) SpawnKey;
-	virtual void(void) Spawned;
-	virtual void(void) Respawn;
-	virtual void(void) Arrived;
-	virtual void(void) Returned;
-	virtual void(void) MoveBack;
-	virtual void(void) MoveAway;
-	virtual void(entity) Touch;
-	virtual void(entity) Blocked;
-	virtual void(entity, int) Trigger;
-	virtual void(void) DeathTrigger;
-	virtual void(void) PlayerUse;
 	
-	virtual void(void) SetMovementDirection;
-	virtual void(vector, void(void)) MoveToDestination;
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void SpawnKey(string,string);
+	virtual void Spawned(void);
+	virtual void Respawn(void);
+	virtual void Arrived(void);
+	virtual void Returned(void);
+	virtual void MoveBack(void);
+	virtual void MoveAway(void);
+	virtual void Touch(entity);
+	virtual void Blocked(entity);
+	virtual void Trigger(entity,int);
+	virtual void DeathTrigger(void);
+	virtual void PlayerUse(void);
+	virtual void SetMovementDirection(void);
+	virtual void MoveToDestination(vector, void(void));
 };
 
 void

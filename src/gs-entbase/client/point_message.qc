@@ -31,12 +31,13 @@ This entity was introduced in Half-Life 2 (2004).
 
 class point_message:NSEntity
 {
+public:
+	void point_message(void);
+	virtual void SpawnKey(string, string);
+
+private:
 	float m_flRadius;
 	string m_strMessage;
-
-	void(void) point_message;
-
-	virtual void(string, string) SpawnKey;
 };
 
 void

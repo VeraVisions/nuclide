@@ -10,8 +10,9 @@ ent_for_mod()
 	ENT_OUTFILE="./$1/entities.def"
 	echo '' > "$ENT_OUTFILE"
 
+	echo "Scanning for definitions inside the game directory."
 	find ./$1/src/ -type f \( -iname \*.qc \) | while read EDEF_N; do
-		echo "Scanning for definitions inside $EDEF_N"
+		echo "... $EDEF_N"
 		sed -n '/\/*QUAKED/,/*\//p' $EDEF_N >> "$ENT_OUTFILE"
 	done;
 
@@ -22,8 +23,9 @@ ent_for_mod()
 BASE_ENT="./platform/entities.def"
 echo '' > "$BASE_ENT"
 
+echo "Scanning for definitions inside the general entity codebase."
 find ./src/gs-entbase/ -type f \( -iname \*.qc \) | while read EDEF_N; do
-	echo "Scanning for definitions inside $EDEF_N"
+	echo "... $EDEF_N"
 	sed -n '/\/*QUAKED/,/*\//p' $EDEF_N >> "$BASE_ENT"
 done;
 

@@ -83,22 +83,22 @@ class light_dynamic:NSPointTrigger
 	int m_iStartActive;
 	float m_light; /* our light handle */
 
-	void(void) light_dynamic;
-	virtual void(string, string) SpawnKey;
+public:
+	void light_dynamic(void);
+	virtual void SpawnKey(string,string);
 
 #ifdef CLIENT
-	virtual void(void) OnRemoveEntity;
-	virtual void(float,float) ReceiveEntity;
-	virtual float(void) predraw;
-	virtual void(void) RendererRestarted;
-	virtual void(float) LightChanged;
+	virtual void OnRemoveEntity(void);
+	virtual void ReceiveEntity(float,float);
+	virtual float predraw(void);
+	virtual void RendererRestarted(void);
+	virtual void LightChanged(float);
 #else
-
-	virtual void(entity, int) Trigger;
-	virtual void(void) Respawn;
-	virtual float(entity, float) SendEntity;
-	virtual void(entity, string, string) Input;
-	virtual void(void) EvaluateEntity;
+	virtual void Trigger(entity,int);
+	virtual void Respawn(void);
+	virtual float SendEntity(entity,float);
+	virtual void EvaluateEntity(void);
+	virtual void Input(entity, string, string);
 #endif
 };
 

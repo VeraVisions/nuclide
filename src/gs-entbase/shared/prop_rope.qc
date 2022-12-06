@@ -59,17 +59,18 @@ class prop_rope:NSEntity
 	PREDICTED_INT(m_iSegments)
 	PREDICTED_VECTOR(m_vecTarget)
 
-	void(void) prop_rope;
+public:
+	void prop_rope(void);
 
 #ifdef CLIENT
-	virtual float() predraw;
-	virtual void(float,float) ReceiveEntity;
-	virtual void(vector, vector, vector) DrawSegment;
+	virtual float predraw(void);
+	virtual void ReceiveEntity(float,float);
+	virtual void DrawSegment(vector, vector, vector);
 #else
-	virtual void(void) Respawn;
-	virtual void(void) EvaluateEntity;
-	virtual float(entity, float) SendEntity;
-	virtual void(string, string) SpawnKey;
+	virtual void Respawn(void);
+	virtual void EvaluateEntity(void);
+	virtual float SendEntity(entity,float);
+	virtual void SpawnKey(string,string);
 #endif
 };
 

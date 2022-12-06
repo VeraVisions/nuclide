@@ -60,12 +60,14 @@ game_text:NSPointTrigger
 	int m_iChannel;
 	int m_iEffect;
 
-	void(void) game_text;
+public:
+	void game_text(void);
+	
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void SpawnKey(string,string);
+	virtual void Trigger(entity,int);
 
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(string, string) SpawnKey;
-	virtual void(entity, int) Trigger;
 };
 
 void
