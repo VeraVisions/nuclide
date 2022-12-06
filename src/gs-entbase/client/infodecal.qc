@@ -59,4 +59,6 @@ infodecal::infodecal(void)
 		Destroy();
 		return;
 	}
+
+	drawmask = MASK_ENGINE;
 }
