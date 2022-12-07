@@ -32,7 +32,7 @@ This works only with the OpenAL sound backend.
 This entity was introduced in Half-Life (1998).
 */
 
-string g_hlefx[] = {
+static string g_hlefx[] = {
 	"default",
 	"gs_generic",
 	"gs_metal_s",

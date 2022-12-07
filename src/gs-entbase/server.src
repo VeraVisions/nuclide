@@ -13,7 +13,6 @@ server/info_hint.qc
 server/button_target.qc
 server/cycler.qc
 server/cycler_sprite.qc
-server/env_beam.qc
 server/env_fade.qc
 server/env_hudhint.qc
 server/env_spark.qc
