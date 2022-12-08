@@ -919,6 +919,18 @@ void NSEntity::StopSound( float channel, bool broadcast ) {
 	sound( this, channel, "common/null.wav", 0.1f, ATTN_NORM );
 }
 
+vector NSEntity::NearestWallPointForRadius(float radius)
+{
+	vector vecRadius = [radius, radius, radius];
+	tracebox(origin, -vecRadius, vecRadius, origin, MOVE_EVERYTHING, this);
+
+	if (trace_fraction <= 1.0) {
+		return trace_endpos;
+	} else {
+		return origin;
+	}
+}
+
 void NSEntity::HandleThink( void ) {
 	/* support for think/nextthink */
 	if ( think && nextthink > 0.0f ) {

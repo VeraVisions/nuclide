@@ -339,6 +339,8 @@ public:
 	/** Stops a sound sample or soundDef that is playing on the given channel. */
 	nonvirtual void StopSound(float,bool);
 
+	nonvirtual vector NearestWallPointForRadius(float);
+
 	/** For physics functions only. Call this inside your customphysics function
 		of any entity class that you want to support think functions in.
 		This saves you the effort of writing your own routines and methods. */

@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/* TODO: needs to be made consistent across all entities. */
 void
 Entity_EntityUpdate(float type, float new)
 {
@@ -30,6 +31,9 @@ Entity_EntityUpdate(float type, float new)
 		break;
 	case ENT_SURFPROP:
 		NSSurfacePropEntity_ReadEntity(new);
+		break;
+	case ENT_BEAM:
+		env_beam_ReadEntity(new);
 		break;
 	case ENT_PHYSICS:
 		NSPhysicsEntity_ReadEntity(new);
