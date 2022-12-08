@@ -35,6 +35,9 @@ Entity_EntityUpdate(float type, float new)
 	case ENT_BEAM:
 		env_beam_ReadEntity(new);
 		break;
+	case ENT_LASER:
+		env_laser_ReadEntity(new);
+		break;
 	case ENT_PHYSICS:
 		NSPhysicsEntity_ReadEntity(new);
 		break;
@@ -117,13 +120,6 @@ Entity_EntityUpdate(float type, float new)
 		break;
 	case ENT_FOGCONTROLLER:
 		env_fog_controller_readentity(new);
-		break;
-	case ENT_ENVLASER:
-		env_laser l = (env_laser)self;
-		if (new) {
-			spawnfunc_env_laser();
-		}
-		l.ReceiveEntity(new, readfloat());
 		break;
 	case ENT_PARTSYSTEM:
 		info_particle_system ips = (info_particle_system)self;

@@ -82,7 +82,6 @@ server/trigger_relay.qc
 server/env_shooter.qc
 server/gibshooter.qc
 server/env_beverage.qc
-server/env_laser.qc
 server/item_food.qc
 server/speaker.qc
 server/multi_manager.qc

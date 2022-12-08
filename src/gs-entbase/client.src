@@ -11,7 +11,6 @@ client/env_sun.qc
 client/env_sound.qc
 client/env_soundscape.qc
 client/env_particle.qc
-client/env_laser.qc
 client/func_lod.qc
 client/func_dustmotes.qc
 client/func_dustcloud.qc

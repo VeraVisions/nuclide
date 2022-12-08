@@ -15,7 +15,7 @@
 */
 
 /*QUAKED env_beam (1 0 0) (-8 -8 -8) (8 8 8) BEAM_STARTON BEAM_TOGGLE BEAM_RANDOMSTRIKE BEAM_RING BEAM_STARTSPARKS BEAM_ENDSPARKS BEAM_DECAL BEAM_SHADESTART BEAM_SHADEEND
-This entity is incomplete. Purely stub.
+Controllable beam effect, akin to lightning. Also known as env_lightning.
 
 -------- KEYS --------
 "targetname" : Name
@@ -26,17 +26,20 @@ This entity is incomplete. Purely stub.
 "life"           : Lifetime of the beam in seconds.
 "StrikeTime"     : Time in seconds before the beam reactivates.
 "damage"         : Damage per second that's dealt when touching the inner beam.
+"texture"        : Path to the sprite to use in place of a texture.
+"BoltWidth"      : Thickness multiplier. 0-255 range.
+"NoiseAmplitude" : Amplitude multiplier. 0-255 range.
 
 -------- SPAWNFLAGS --------
 BEAM_STARTON : Activate the beam at map start.
 BEAM_TOGGLE : Beam can now be toggled off, else StrikeTime + life keys take over.
 BEAM_RANDOMSTRIKE : Use variations in StrikeTime + life keys when set.
-BEAM_RING : TODO: Instead of a beam, two points will connect into a ring.
+BEAM_RING : Instead of a beam, two points will connect into a ring.
 BEAM_STARTSPARKS : TODO: Start of the beam will spark when set.
 BEAM_ENDSPARKS :  TODO: End of the beam will spark when set.
 BEAM_DECAL : TODO: Presumably leaves decals when sparks hit a surface.
-BEAM_SHADESTART : TODO: Beam will fade towards the start point when set.
-BEAM_SHADEEND : TODO: Beam will fade towards the end point when set.
+BEAM_SHADESTART : Beam will fade towards the start point when set.
+BEAM_SHADEEND : Beam will fade towards the end point when set.
 
 -------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
@@ -44,14 +47,18 @@ This entity was introduced in Half-Life (1998).
 
 enumflags
 {
-	BEAM_CHANGED_ORIGIN,
+	BEAM_CHANGED_SPRITE,
 	BEAM_CHANGED_STARTPOS_X,
 	BEAM_CHANGED_STARTPOS_Y,
 	BEAM_CHANGED_STARTPOS_Z,
 	BEAM_CHANGED_ENDPOS_X,
 	BEAM_CHANGED_ENDPOS_Y,
 	BEAM_CHANGED_ENDPOS_Z,
-	BEAM_CHANGED_ACTIVE
+	BEAM_CHANGED_ACTIVE,
+	BEAM_CHANGED_FLAGS,
+	BEAM_CHANGED_COLOR,
+	BEAM_CHANGED_WIDTH,
+	BEAM_CHANGED_AMPLITUDE
 };
 
 enumflags
@@ -68,7 +75,7 @@ enumflags
 };
 
 class
-env_beam:NSEntity
+env_beam:NSRenderableEntity
 {
 public:
 	void env_beam(void);
@@ -92,6 +99,13 @@ private:
 	PREDICTED_VECTOR(m_vecStartPos)
 	PREDICTED_VECTOR(m_vecEndPos)
 	PREDICTED_INT(m_iActive)
+	PREDICTED_INT(m_iBeamFlags)
+	PREDICTED_FLOAT(m_flBeamWidth)
+	PREDICTED_FLOAT(m_flAmplitude)
+
+	/* visual fluff */
+	string m_strTexture;
+	PREDICTED_INT(m_iSpriteID)
 
 #ifdef SERVER
 	string m_strStartEnt;
@@ -113,6 +127,10 @@ env_beam::env_beam(void)
 	m_flLifeTime = 0.0f;
 	m_flStrikeTime = 0.0f;
 	m_iDamage = 0i;
+	m_iBeamFlags = 0i;
+
+	m_strTexture = __NULL__;
+	m_flBeamWidth = 0.0f;
 #endif
 }
 
@@ -124,8 +142,14 @@ env_beam::Respawn(void)
 	SetOrigin(GetSpawnOrigin());
 	m_iValue = 0;
 
+	/* force us to precache the sprite model... and get a modelindex back */
+	m_iSpriteID = getmodelindex(m_strTexture, false);
+
 	if (HasSpawnFlags(BEAM_STARTON))
 		Trigger(this, TRIG_ON);
+
+	/* keep it simple */
+	m_iBeamFlags = spawnflags | BEAM_SHADEEND;
 }
 
 void
@@ -149,6 +173,18 @@ env_beam::SpawnKey(string strKey, string strValue)
 		break;
 	case "damage":
 		m_iDamage = ReadInt(strValue);
+		break;
+	case "texture":
+		m_strTexture = ReadString(strValue);
+		break;
+	case "BoltWidth":
+		m_flBeamWidth = ReadFloat(strValue);
+		break;
+	case "NoiseAmplitude":
+		m_flAmplitude = ReadFloat(strValue);
+		break;
+	case "rendercolor":
+		m_vecRenderColor = ReadVector(strValue);
 		break;
 	default:
 		super::SpawnKey(strValue, strKey);
@@ -185,15 +221,12 @@ env_beam::LaunchBeam(void)
 	if (HasSpawnFlags(BEAM_TOGGLE))
 		return;
 
-	/* if we have a specific life time set */
-	if (m_flLifeTime)
-		lifetime = m_flLifeTime;
-	else if (m_flStrikeTime) /* else, we'll just have to take the strike time */
-		lifetime = m_flStrikeTime;
-
 	/* if lifetime is less or equal to 0, it's an infinite beam */
-	if (lifetime <= 0.0f)
+	if (m_flLifeTime <= 0.0f)
 		return;
+
+	/* if we have a specific life time set */
+	lifetime = m_flLifeTime;
 
 	if (HasSpawnFlags(BEAM_RANDOMSTRIKE))
 		lifetime *= random();
@@ -209,14 +242,6 @@ env_beam::EndBeam(void)
 
 	m_iActive = 0i; /* beam is now active */
 	striketime = m_flStrikeTime;
-
-	/* if the strike time is less or equal to 0, don't replay it */
-	if (striketime <= 0.0f)
-		return;
-
-	/* odd behaviour: don't re-strike if we have no life-time set? */
-	if (m_flLifeTime <= 0.0f)
-		return;
 
 	if (HasSpawnFlags(BEAM_RANDOMSTRIKE))
 		striketime *= random();
@@ -236,7 +261,7 @@ void
 env_beam::Trigger(entity act, int state)
 {
 	/* if toggle isn't enabled, it can only ever get activated */
-	if (HasSpawnFlags(BEAM_TOGGLE) == false) {
+	if (m_flLifeTime > 0 && HasSpawnFlags(BEAM_TOGGLE) == false) {
 		m_iValue = 1;
 	} else {
 		switch (state) {
@@ -294,15 +319,20 @@ env_beam::EvaluateEntity(void)
 		}
 	}
 
+	EVALUATE_FIELD(m_iSpriteID, BEAM_CHANGED_SPRITE)
 	EVALUATE_VECTOR(m_vecStartPos, 0, BEAM_CHANGED_STARTPOS_X)
 	EVALUATE_VECTOR(m_vecStartPos, 1, BEAM_CHANGED_STARTPOS_Y)
 	EVALUATE_VECTOR(m_vecStartPos, 2, BEAM_CHANGED_STARTPOS_Z)
-
 	EVALUATE_VECTOR(m_vecEndPos, 0, BEAM_CHANGED_ENDPOS_X)
 	EVALUATE_VECTOR(m_vecEndPos, 1, BEAM_CHANGED_ENDPOS_Y)
 	EVALUATE_VECTOR(m_vecEndPos, 2, BEAM_CHANGED_ENDPOS_Z)
-
 	EVALUATE_FIELD(m_iActive, BEAM_CHANGED_ACTIVE)
+	EVALUATE_FIELD(m_iBeamFlags, BEAM_CHANGED_FLAGS)
+	EVALUATE_VECTOR(m_vecRenderColor, 0, BEAM_CHANGED_COLOR)
+	EVALUATE_VECTOR(m_vecRenderColor, 1, BEAM_CHANGED_COLOR)
+	EVALUATE_VECTOR(m_vecRenderColor, 2, BEAM_CHANGED_COLOR)
+	EVALUATE_FIELD(m_flBeamWidth, BEAM_CHANGED_WIDTH)
+	EVALUATE_FIELD(m_flAmplitude, BEAM_CHANGED_AMPLITUDE)
 }
 
 float
@@ -311,6 +341,7 @@ env_beam::SendEntity(entity ePEnt, float flChanged)
 	WriteByte(MSG_ENTITY, ENT_BEAM);
 	WriteFloat(MSG_ENTITY, flChanged);
 
+	SENDENTITY_INT(m_iSpriteID, BEAM_CHANGED_SPRITE)
 	SENDENTITY_COORD(m_vecStartPos[0], BEAM_CHANGED_STARTPOS_X)
 	SENDENTITY_COORD(m_vecStartPos[1], BEAM_CHANGED_STARTPOS_Y)
 	SENDENTITY_COORD(m_vecStartPos[2], BEAM_CHANGED_STARTPOS_Z)
@@ -318,6 +349,12 @@ env_beam::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_COORD(m_vecEndPos[1], BEAM_CHANGED_ENDPOS_Y)
 	SENDENTITY_COORD(m_vecEndPos[2], BEAM_CHANGED_ENDPOS_Z)
 	SENDENTITY_BYTE(m_iActive, BEAM_CHANGED_ACTIVE)
+	SENDENTITY_BYTE(m_iBeamFlags, BEAM_CHANGED_FLAGS)
+	SENDENTITY_BYTE(m_vecRenderColor[0], BEAM_CHANGED_COLOR)
+	SENDENTITY_BYTE(m_vecRenderColor[1], BEAM_CHANGED_COLOR)
+	SENDENTITY_BYTE(m_vecRenderColor[2], BEAM_CHANGED_COLOR)
+	SENDENTITY_BYTE(m_flBeamWidth, BEAM_CHANGED_WIDTH)
+	SENDENTITY_BYTE(m_flAmplitude, BEAM_CHANGED_AMPLITUDE)
 
 	//print(sprintf("S (%x): %v %v %i\n", flChanged, m_vecStartPos, m_vecEndPos, m_iActive));
 
@@ -327,6 +364,7 @@ env_beam::SendEntity(entity ePEnt, float flChanged)
 void
 env_beam::ReceiveEntity(float flNew, float flChanged)
 {
+	READENTITY_INT(m_iSpriteID, BEAM_CHANGED_SPRITE)
 	READENTITY_COORD(m_vecStartPos[0], BEAM_CHANGED_STARTPOS_X)
 	READENTITY_COORD(m_vecStartPos[1], BEAM_CHANGED_STARTPOS_Y)
 	READENTITY_COORD(m_vecStartPos[2], BEAM_CHANGED_STARTPOS_Z)
@@ -334,13 +372,57 @@ env_beam::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_COORD(m_vecEndPos[1], BEAM_CHANGED_ENDPOS_Y)
 	READENTITY_COORD(m_vecEndPos[2], BEAM_CHANGED_ENDPOS_Z)
 	READENTITY_BYTE(m_iActive, BEAM_CHANGED_ACTIVE)
+	READENTITY_BYTE(m_iBeamFlags, BEAM_CHANGED_FLAGS)
+	READENTITY_BYTE(m_vecRenderColor[0], BEAM_CHANGED_COLOR)
+	READENTITY_BYTE(m_vecRenderColor[1], BEAM_CHANGED_COLOR)
+	READENTITY_BYTE(m_vecRenderColor[2], BEAM_CHANGED_COLOR)
+	READENTITY_BYTE(m_flBeamWidth, BEAM_CHANGED_WIDTH)
+	READENTITY_BYTE(m_flAmplitude, BEAM_CHANGED_AMPLITUDE)
 
 	//print(sprintf("R (%x): %v %v %i\n", flChanged, m_vecStartPos, m_vecEndPos, m_iActive));
 
 	drawmask = MASK_ENGINE;
 	setsize(this, [0,0,0], [0,0,0]);
 	setorigin(this, m_vecStartPos);
+
+	/* the sprite has changed, we need to query a new texture */
+	if (flChanged & BEAM_CHANGED_SPRITE) {
+		m_strTexture = spriteframe(modelnameforindex(m_iSpriteID), 0, 0.0f);
+	}
 }
+
+#define BEAM_COUNT 16
+float
+pseudorand(float input)
+{
+	float seed = (float)input % 5.0f;
+	seed += (float)input % 8.0f;
+	seed += (float)input % 4.0f;
+	seed += (float)input % 13.0f;
+	seed += (float)input % 70.0f;
+
+	/* like the engine its random(), never return 0, never return 1 */
+	return bound(0.01, (seed) / 100.0f, 0.99f);
+}
+
+static float env_beam_jitlut[BEAM_COUNT] = {
+	0.000000,
+	0.195090,
+	0.382683,
+	0.555570,
+	0.707106,
+	0.831469,
+	0.923879,
+	0.980785,
+	1.000000,
+	0.980786,
+	0.923880,
+	0.831471,
+	0.707108,
+	0.555572,
+	0.382685,
+	0.000000,
+};
 
 float
 env_beam::predraw(void)
@@ -349,11 +431,77 @@ env_beam::predraw(void)
 	if (!m_iActive)
 		return;
 
+	if (autocvar(r_skipBeams, 0))
+		return;
+
 	/* primitive representation */
+#if 0
 	R_BeginPolygon("", 0, 0);
 		R_PolygonVertex(m_vecStartPos, [0,1], [0,1,0], 1.0f);
 		R_PolygonVertex(m_vecEndPos, [1,1], [0,1,0], 1.0f);
 	R_EndPolygon();
+#endif
+
+	if (m_strTexture) {
+		float last_progression = 0.0f;
+		makevectors(g_view.GetCameraAngle());
+		setproperty(VF_ORIGIN, pSeat->m_vecPredictedOrigin);
+		R_BeginPolygon(m_strTexture, DRAWFLAG_ADDITIVE, 0);
+
+		for (float i = 0; i < BEAM_COUNT; i++) {
+			float progression = (i / (BEAM_COUNT-1));
+			vector point;
+			vector jitter;
+			float strength;
+			float a = 1.0f;
+
+			/* our steps from a - b */
+			if (m_iBeamFlags & BEAM_RING) {
+				vector center = m_vecStartPos - (m_vecStartPos - m_vecEndPos) * 0.5f;
+				float length = vlen(m_vecStartPos - m_vecEndPos) * 0.5;
+
+				float theta = 2.0f * M_PI * (i / (BEAM_COUNT-1));
+				vector p = [sin(theta), cos(theta)] * length;
+
+				point = center + p;
+			} else {
+				point[0] = Math_Lerp(m_vecStartPos[0], m_vecEndPos[0], progression);
+				point[1] = Math_Lerp(m_vecStartPos[1], m_vecEndPos[1], progression);
+				point[2] = Math_Lerp(m_vecStartPos[2], m_vecEndPos[2], progression);
+			}
+
+			/* get the direction the beam is 'looking' */
+			makevectors(vectoangles(m_vecEndPos - m_vecStartPos));
+
+			/* nudge it a lil bit up/down left/right from its trajectory */
+			/* these are all randomly chosen constants */
+			jitter = v_right * (pseudorand((4 * time) + i + entnum) - 0.5);
+			jitter += v_up * (pseudorand((4 * time) + i + 64.12 + entnum) - 0.5);
+			jitter += v_right * (pseudorand(100 + (8 * time) + i + entnum) - 0.5);
+			jitter += v_up * (pseudorand(100 + (8 * time) + i + 25.4 + entnum) - 0.5);
+			jitter *= m_flAmplitude;
+
+			/* start/end points get less jittery the closer we get*/
+			jitter *= env_beam_jitlut[i];
+
+			/* apply jitter */
+			point += jitter;
+
+			/* fading flag stuff */
+			if ((i == 0 && m_iBeamFlags & BEAM_SHADESTART) || 
+				(i == BEAM_COUNT && m_iBeamFlags & BEAM_SHADEEND))
+				a = 0.0f;
+
+			R_PolygonVertex(point, [1, 0], m_vecRenderColor / 255, a);
+
+			if (autocvar(cl_showoff, 0))
+				dynamiclight_add(point, 150, m_vecRenderColor/255);
+
+			last_progression = progression;
+		}
+
+		R_EndPolygonRibbon(m_flBeamWidth/8, [-1,0]);
+	}
 
 	return (PREDRAW_NEXT);
 }
