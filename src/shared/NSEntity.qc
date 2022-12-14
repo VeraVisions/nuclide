@@ -14,17 +14,17 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*
-============
-NSEntity::NSEntity
+static void droptofloorwrapper( entity foo ) {
+	entity old_self = self;
 
-client doesn't have to do a whole lot here
-============
-*/
+	self = foo;
+	droptofloor();
+	self = old_self;
+}
+
 void NSEntity::NSEntity( void ) {
 	identity = 1;
 }
-
 
 void NSEntity::Spawned( void ) {
 	super::Spawned();
@@ -51,14 +51,6 @@ float NSEntity::EntIndex( void ) {
 	return ( num_for_edict( this ) );
 }
 
-void droptofloorwrapper( entity foo ) {
-	entity old_self = self;
-
-	self = foo;
-	droptofloor();
-	self = old_self;
-}
-
 void NSEntity::DropToFloor( void ) {
 	droptofloorwrapper( this );
 }
@@ -78,36 +70,14 @@ vector NSEntity::GetUp( void ) {
 	return ( v_up );
 }
 
-/*
-============
-NSEntity::WorldSpaceCenter
-
-Returns the center of an entity's bounding boxes.
-Useful on brush entities that have no real 'origin' defined.
-============
-*/
 vector NSEntity::WorldSpaceCenter( void ) {
 	return ( absmin + ( 0.5 * ( absmax - absmin ) ) );
 }
 
-/*
-============
-NSEntity::WaterLevel
-
-Returns whether or not the entity is able to see a given position
-============
-*/
 float NSEntity::WaterLevel( void ) {
 	return ( waterlevel );
 }
 
-/*
-============
-NSEntity::VisibleVec
-
-Returns whether or not the entity is able to see a given position
-============
-*/
 bool NSEntity::VisibleVec( vector org ) {
 	vector flDelta;
 	float flFoV;
@@ -125,13 +95,6 @@ bool NSEntity::VisibleVec( vector org ) {
 	return ( false );
 }
 
-/*
-============
-NSEntity::Visible
-
-Returns whether or not the entity is able to see a given entity
-============
-*/
 bool NSEntity::Visible( entity ent ) {
 	vector flDelta;
 	float flFoV;
@@ -175,23 +138,10 @@ bool NSEntity::CreatedByMap( void ) {
 
 
 #ifdef CLIENT
-/*
-============
-NSEntity::RendererRestarted
-
-make sure any child-classes precache their assets in here
-for vid_reload calls or other sudden deaths (driver restarts)
-============
-*/
 void NSEntity::RendererRestarted( void ) {
 
 }
 
-/*
-============
-NSEntity::ReceiveEntity
-============
-*/
 void NSEntity::ReceiveEntity( float flNew, float flChanged ) {
 	READENTITY_COORD( origin[0], BASEFL_CHANGED_ORIGIN_X )
 		READENTITY_COORD( origin[1], BASEFL_CHANGED_ORIGIN_Y )
@@ -234,11 +184,6 @@ void NSEntity::ReceiveEntity( float flNew, float flChanged ) {
 	setorigin( this, origin );
 }
 
-/*
-============
-NSEntity::postdraw
-============
-*/
 void NSEntity::postdraw( void ) {
 }
 
@@ -785,15 +730,6 @@ void NSEntity::Input( entity eAct, string strInput, string strData ) {
 }
 #endif
 
-/*
-============
-NSEntity::SpawnKey
-
-note that the engine still likes to try and map key/value
-pairs on its own, but we can at least undo some of that in
-here if needed
-============
-*/
 void NSEntity::SpawnKey( string strKey, string strValue ) {
 	/* we do re-read a lot of the builtin fields in case we want to set
 	   defaults. just in case anybody is wondering. */
@@ -833,26 +769,9 @@ void NSEntity::SpawnKey( string strKey, string strValue ) {
 	}
 }
 
-
-/*
-============
-OnRemoveEntity
-
-Empty method, meant for sub-classes to clean up their contents
-============
-*/
 void NSEntity::OnRemoveEntity( void ) {
 }
 
-/*
-============
-NSEntity::Destroy
-
-Call if the entity is to be removed the next possible frame.
-If you want an entity to be purged immediately, you'll have to jump
-through your own hoops. This however will be sufficient 99,99% of the time.
-============
-*/
 void NSEntity::Destroy( void ) {
 	removed = 1; /* mark this as cleanly removed */
 	OnRemoveEntity();
@@ -940,3 +859,19 @@ void NSEntity::HandleThink( void ) {
 		}
 	}
 }
+
+#ifdef CLIENT
+void
+NSEntity_ReadEntity(bool new)
+{
+	float fl;
+
+	NSEntity read = (NSEntity)self;
+	if (new) {
+		spawnfunc_NSEntity();
+	}
+
+	fl = readfloat();
+	read.ReceiveEntity(new, fl);
+}
+#endif

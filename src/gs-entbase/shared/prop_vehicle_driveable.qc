@@ -30,22 +30,6 @@ enumflags
 	VEHFL_FLAGS
 };
 
-/*!QUAKED prop_vehicle_driveable (0 0 1) (-50 -50 0) (50 50 70)
-# OVERVIEW
-Point entity defining a 4-wheel vehicle that you can drive.
-
-# KEYS
-- "targetname" : Name
-
-# SPAWNFLAGS
-None currently.
-
-# NOTES
-None currently.
-
-# TRIVIA
-This entity was introduced in Half-Life 2 (2004).
-*/
 class prop_vehicle_driveable_wheel
 {
 private:
@@ -73,6 +57,22 @@ public:
 	virtual void Physics(float,float);
 };
 
+/*!QUAKED prop_vehicle_driveable (0 0 1) (-50 -50 0) (50 50 70)
+# OVERVIEW
+Point entity defining a 4-wheel vehicle that you can drive.
+
+# KEYS
+- "targetname" : Name
+
+# SPAWNFLAGS
+None currently.
+
+# NOTES
+None currently.
+
+# TRIVIA
+This entity was introduced in Half-Life 2 (2004).
+*/
 class prop_vehicle_driveable:NSVehicle
 {
 private:

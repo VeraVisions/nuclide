@@ -25,15 +25,16 @@ This is a food item that will give the user 1 health when touched.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+It's also known as item_sodacan.
 */
 class
-item_food:NSEntity
+item_food:NSRenderableEntity
 {
 	int m_iIsCan;
 
 	void item_food(void);
 
-	virtual void Spawned(void);
+	virtual void Respawn(void);
 	virtual void Save(float);
 	virtual void Restore(string,string);
 	virtual void Setup(void);
@@ -67,16 +68,14 @@ item_food::Restore(string strKey, string strValue)
 }
 
 void
-item_food::Spawned(void)
+item_food::Respawn(void)
 {
-	super::Spawned();
-
 	SetSolid(SOLID_NOT);
 	SetMovetype(MOVETYPE_TOSS);
 
-	if (m_iIsCan) {
+	//if (m_iIsCan) {
 		SetModel("models/can.mdl");
-	}
+	//}
 
 	SetSize([0,0,0], [0,0,0]);
 	ScheduleThink(Setup, 1.0f);
@@ -88,9 +87,9 @@ item_food::Setup(void)
 	SetSolid(SOLID_TRIGGER);
 	SetSize([-16,-16,-16], [16,16,16]);
 
-	if (m_iIsCan) {
+	//if (m_iIsCan) {
 		sound(this, CHAN_ITEM, "weapons/g_bounce3.wav", 1.0f, ATTN_NORM);
-	}
+	//}
 }
 
 void

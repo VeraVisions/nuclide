@@ -62,19 +62,6 @@ This entity was introduced in Half-Life (1998).
 */
 class ambient_generic:NSTalkMonster
 {
-	/* networked attributes */
-	PREDICTED_STRING(m_strActivePath)
-	PREDICTED_FLOAT(m_flVolume)
-	PREDICTED_FLOAT(m_flRadius)
-	PREDICTED_FLOAT(m_flPitch)
-	PREDICTED_BOOL(m_bLoops)
-	bool m_bToggle;
-
-	/* spawn values */
-	string m_strSpawnPath;
-	float m_flSpawnVolume;
-	float m_flSpawnPitch;
-
 public:
 	void ambient_generic(void);
 
@@ -89,14 +76,26 @@ public:
 	virtual float SendEntity(entity,float);
 	virtual void UseNormal(entity,int);
 	virtual void UseLoop(entity,int);
-
 #else
 	virtual void ReceiveEntity(float,float);
 	virtual float predraw(void);
 	virtual void SentenceSample(string);
-
 #endif
 	virtual void OnRemoveEntity(void);
+
+private:
+	/* networked attributes */
+	PREDICTED_STRING(m_strActivePath)
+	PREDICTED_FLOAT(m_flVolume)
+	PREDICTED_FLOAT(m_flRadius)
+	PREDICTED_FLOAT(m_flPitch)
+	PREDICTED_BOOL(m_bLoops)
+	bool m_bToggle;
+
+	/* spawn values */
+	string m_strSpawnPath;
+	float m_flSpawnVolume;
+	float m_flSpawnPitch;
 };
 
 void
@@ -382,7 +381,8 @@ ambient_generic::ReceiveEntity(float isnew, float flChanged)
 void
 ambient_generic::SentenceSample(string sample)
 {
-	/* honestly, the 0.25 for the radius is probably inaccurate (winged it), ATTN_NORM is too short though */
+	/* honestly, the 0.25 for the radius is probably inaccurate (winged it), 
+	   ATTN_NORM is too short though */
 	sound(this, CHAN_VOICE, sample, 1.0, m_flRadius, 100, SOUNDFLAG_FOLLOW);
 }
 

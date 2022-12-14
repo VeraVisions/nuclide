@@ -74,6 +74,30 @@ This entity was introduced in Quake (1996).
 class
 func_door:NSRenderableEntity
 {
+public:
+	void func_door(void);
+
+	virtual void Spawned(void);
+
+	virtual void PortalOpen(void);
+	virtual void PortalClose(void);
+	virtual void SetMovementDirection(void);
+	virtual void MoveToDestination(vector, void(void) func);
+	virtual void MoveAway(void);
+	virtual void MoveBack(void);
+	virtual void Arrived(void);
+	virtual void Returned(void);
+	virtual void Respawn(void);
+	virtual void Trigger(entity, int);
+	virtual void Blocked(entity);
+	virtual void Touch(entity);
+	virtual void PlayerUse(void);
+	virtual void Save(float);
+	virtual void Restore(string, string);
+	virtual void SpawnKey(string, string);
+	virtual void Input(entity, string, string);
+
+private:
 	string targetClose;
 	vector m_vecPos1;
 	vector m_vecPos2;
@@ -99,29 +123,6 @@ func_door:NSRenderableEntity
 	string m_strSndClose;
 	string m_strSndMove;
 	string m_strSndStop;
-
-public:
-	void(void) func_door;
-
-	virtual void Spawned(void);
-
-	virtual void PortalOpen(void);
-	virtual void PortalClose(void);
-	virtual void SetMovementDirection(void);
-	virtual void MoveToDestination(vector, void(void) func);
-	virtual void MoveAway(void);
-	virtual void MoveBack(void);
-	virtual void Arrived(void);
-	virtual void Returned(void);
-	virtual void Respawn(void);
-	virtual void Trigger(entity, int);
-	virtual void Blocked(entity);
-	virtual void Touch(entity);
-	virtual void PlayerUse(void);
-	virtual void Save(float);
-	virtual void Restore(string, string);
-	virtual void SpawnKey(string, string);
-	virtual void Input(entity, string, string);
 };
 
 void

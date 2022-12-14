@@ -20,11 +20,7 @@ Entity_EntityUpdate(float type, float new)
 {
 	switch (type) {
 	case ENT_ENTITY:
-		NSEntity me = (NSEntity)self;
-		if (new) {
-			spawnfunc_NSEntity();
-		}
-		me.ReceiveEntity(new, readfloat());
+		NSEntity_ReadEntity(new);
 		break;
 	case ENT_ENTITYRENDERABLE:
 		NSRenderableEntity_ReadEntity(new);

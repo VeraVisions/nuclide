@@ -339,6 +339,8 @@ public:
 	/** Stops a sound sample or soundDef that is playing on the given channel. */
 	nonvirtual void StopSound(float,bool);
 
+	/** Returns the nearest point on a wall of this entity within a specified radius. 
+		If there is nothing nearby, it'll return the position of the entity. */
 	nonvirtual vector NearestWallPointForRadius(float);
 
 	/** For physics functions only. Call this inside your customphysics function
@@ -346,3 +348,7 @@ public:
 		This saves you the effort of writing your own routines and methods. */
 	nonvirtual void HandleThink(void);
 };
+
+#ifdef CLIENT
+void NSEntity_ReadEntity(float);
+#endif

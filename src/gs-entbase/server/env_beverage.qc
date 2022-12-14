@@ -30,7 +30,7 @@ typedef enum
 
 /*!QUAKED env_beverage (1 0 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
-Upon triggered, the entity will spawn item_food in its place in
+Upon being triggered, the entity will spawn item_food in its place in
 the shape of a soda can.
 
 # KEYS
@@ -59,10 +59,6 @@ This entity was introduced in Half-Life (1998).
 class
 env_beverage:NSRenderableEntity
 {
-	int m_iUses;
-	bool m_bReady;
-	sodaskin_t m_sodaSkin;
-
 public:
 	void env_beverage(void);
 	
@@ -72,6 +68,10 @@ public:
 	virtual void Spawned(void);
 	virtual void Trigger(entity,int);
 
+private:
+	int m_iUses;
+	bool m_bReady;
+	sodaskin_t m_sodaSkin;
 };
 
 void
@@ -147,6 +147,7 @@ env_beverage::Trigger(entity act, int unused)
 	}
 
 	NSEntity eCan = spawn(NSEntity);
+	eCan.Respawn();
 	eCan.SetOrigin(GetOrigin());
 	eCan.SetAngles(GetAngles());
 	eCan.SetOwner(this);
