@@ -14,25 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED env_hudhint (0 0 0) (-8 -8 -8) (8 8 8) EHH_ALLPLAYERS
-Will display a hint message to the client who activates it.
-
--------- KEYS --------
-"targetname" : Name
-"target" : Target when triggered.
-"killtarget" : Target to kill when triggered.
-"rendercolor" : RGB8 Color of the fade effect.
-"renderamt" : A8 alpha value we'll hit at max.
-"duration" : Duration of the effect in seconds.
-"holdtime" : How long we'll hold on the max color/alpha.
-
--------- SPAWNFLAGS --------
-EHH_ALLPLAYERS : Send the hint notifcation to all connected clients.
-
--------- TRIVIA --------
-This entity was introduced in Half-Life 2 (2004).
-*/
-
 void env_hudhint_send(entity eActivator, string strMessage, int iFlags);
 
 enumflags
@@ -40,6 +21,25 @@ enumflags
 	EHH_ALLPLAYERS
 };
 
+/*!QUAKED env_hudhint (0 0 0) (-8 -8 -8) (8 8 8) EHH_ALLPLAYERS
+# OVERVIEW
+Will display a hint message to the client who activates it.
+
+# KEYS
+- "targetname" : Name
+- "target" : Target when triggered.
+- "killtarget" : Target to kill when triggered.
+- "rendercolor" : RGB8 Color of the fade effect.
+- "renderamt" : A8 alpha value we'll hit at max.
+- "duration" : Duration of the effect in seconds.
+- "holdtime" : How long we'll hold on the max color/alpha.
+
+# SPAWNFLAGS
+- EHH_ALLPLAYERS (1) : Send the hint notifcation to all connected clients.
+
+# TRIVIA
+This entity was introduced in Half-Life 2 (2004).
+*/
 class
 env_hudhint:NSPointTrigger
 {

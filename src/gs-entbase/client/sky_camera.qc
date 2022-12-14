@@ -14,25 +14,25 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED sky_camera (1 0.3 1) (-8 -8 -8) (8 8 8)
-Defines the position of a skyroom camera.
-
--------- KEYS --------
-"scale" : Scale modifier. Default is "16".
-
--------- NOTES --------
-You want to put this into a dedicated room that contains a 3D skybox.
-The scale modifier is more like a divider. You want to keep these
-divisable by 2 to avoid any precision funkyness.
-
--------- TRIVIA --------
-This entity was introduced in Half-Life 2 (2004).
-*/
-
 var int autocvar_dev_skyscale = 0;
 var vector g_skypos;
 var int g_skyscale;
 
+/*!QUAKED sky_camera (1 0.3 1) (-8 -8 -8) (8 8 8)
+# OVERVIEW
+Defines the position of a skyroom camera.
+
+# KEYS
+- "scale" : Scale modifier. Default is "16".
+
+# NOTES
+You want to put this into a dedicated room that contains a 3D skybox.
+The scale modifier is more like a divider. You want to keep these
+divisable by 2 to avoid any precision funkyness.
+
+# TRIVIA
+This entity was introduced in Half-Life 2 (2004).
+*/
 class
 sky_camera:NSEntity
 {

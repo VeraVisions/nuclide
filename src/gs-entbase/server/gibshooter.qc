@@ -14,27 +14,30 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED gibshooter (1 0 0) (-8 -8 -8) (8 8 8) GIBS_REPEATABLE
+/*!QUAKED gibshooter (1 0 0) (-8 -8 -8) (8 8 8) GIBS_REPEATABLE
+# OVERVIEW
 Shoots model bouncy entities from its location.
 
--------- KEYS --------
-"targetname" : Name
-"target" : Target when triggered.
-"killtarget" : Target to kill when triggered.
-"angles" : Sets the pitch, yaw and roll direction of the shooter.
-"shootmodel" : Model file to shoot.
-"shootsounds" : PCM sample to play whenever a piece shoots out.
-"m_iGibs" : Amount of models shot in total.
-"m_flDelay" : Delay before being able to be fired again.
-"m_flVelocity" : Speed of the models in units per second.
-"m_flVariance" : Delay between shots.
-"m_flGibLife" : Life of the individual model piece.
-"scale" : Scale modifier of the model pieces.
+# KEYS
+- "targetname" : Name
+- "target" : Target when triggered.
+- "killtarget" : Target to kill when triggered.
+- "angles" : Sets the pitch, yaw and roll direction of the shooter.
+- "shootmodel" : Model file to shoot.
+- "shootsounds" : PCM sample to play whenever a piece shoots out.
+- "m_iGibs" : Amount of models shot in total.
+- "m_flDelay" : Delay before being able to be fired again.
+- "m_flVelocity" : Speed of the models in units per second.
+- "m_flVariance" : Delay between shots.
+- "m_flGibLife" : Life of the individual model piece.
+- "scale" : Scale modifier of the model pieces.
 
--------- TRIVIA --------
+# SPAWNFLAGS
+- GIBS_REPEATABLE (1) : Can be triggered repeatedly.
+
+# TRIVIA
 This entity was introduced in Half-Life (1998).
 */
-
 class
 gibshooter:env_shooter
 {

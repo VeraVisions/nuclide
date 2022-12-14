@@ -14,23 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED func_platrot (0 .5 .8) ?
-A vertically moving platform that rotates.
-
--------- KEYS --------
-"targetname"     : Name
-"noise1"         : Sound when moving
-"noise2"         : Sound when stopped
-"speed"          : Speed of rotation in u/s
-"height"         : Vertical travel distance
-"rotation"       : Rotation amount, in degrees
-
--------- NOTES --------
-
--------- HISTORY --------
-This entity was introduced in Half-Life (1998).
-*/
-
 enumflags
 {
 	FNCPLAT_TRIGGER,
@@ -44,6 +27,25 @@ enum
 	PLATSTATE_DOWN
 };
 
+
+/*!QUAKED func_platrot (0 .5 .8) ?
+# OVERVIEW
+A vertically moving platform that rotates.
+
+# KEYS
+- "targetname"     : Name
+- "noise1"         : Sound when moving
+- "noise2"         : Sound when stopped
+- "speed"          : Speed of rotation in u/s
+- "height"         : Vertical travel distance
+- "rotation"       : Rotation amount, in degrees
+
+# NOTES
+Spins.
+
+-------- HISTORY --------
+This entity was introduced in Half-Life (1998).
+*/
 class
 func_platrot:NSRenderableEntity
 {

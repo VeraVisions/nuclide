@@ -14,25 +14,30 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED func_vehiclecontrols (0 .5 .8) ?
+/*!QUAKED func_vehiclecontrols (0 .5 .8) ?
+# OVERVIEW
 Brush that marks the usable region of a func_vehicle, in order
 to gain control.
 
--------- KEYS --------
-"targetname" : Name
-"target" : Name of the func_vehicle to control
+# KEYS
+- "targetname" : Name
+- "target" : Name of the func_vehicle to control
 
--------- NOTES --------
+# NOTES
 It's the same as func_tracktraincontrols, except that it's for
 func_vehicle instead of func_tracktrain.
 
--------- TRIVIA --------
+# TRIVIA
 This entity was introduced in Counter-Strike (2000).
 */
+class
+func_vehiclecontrols:func_traincontrols
+{
+	void func_vehiclecontrols(void);
+};
 
 void
-func_vehiclecontrols(void)
+func_vehiclecontrols::func_vehiclecontrols(void)
 {
-	spawnfunc_func_traincontrols();
-	self.classname = "func_vehiclecontrols";
+
 }

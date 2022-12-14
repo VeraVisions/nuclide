@@ -14,24 +14,24 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED trigger_teleport (0 .5 .8) ?
-Teleportation volume. Teleports anything it touches to the position of
-any entity set as the "target". Works best with info_teleport_destination.
-
--------- KEYS --------
-"targetname" : Name
-"target" : Which target to teleport to.
-
--------- TRIVIA --------
-This entity was introduced in Quake (1996).
-*/
-
 enumflags
 {
 	TRIGTELE_MONSTERS,
 	TRIGTELE_NOCLIENTS
 };
 
+/*!QUAKED trigger_teleport (0 .5 .8) ?
+# OVERVIEW
+Teleportation volume. Teleports anything it touches to the position of
+any entity set as the "target". Works best with info_teleport_destination.
+
+# KEYS
+- "targetname" : Name
+- "target" : Which target to teleport to.
+
+# TRIVIA
+This entity was introduced in Quake (1996).
+*/
 class
 trigger_teleport:NSBrushTrigger
 {
@@ -79,7 +79,7 @@ trigger_teleport::Touch(entity eToucher)
 	}
 }
 
-/*QUAKED info_teleport_destination (1 0 0) (-8 -8 -8) (8 8 8)
+/*!QUAKED info_teleport_destination (1 0 0) (-8 -8 -8) (8 8 8)
 "targetname"    Name
 
 Entity designed to designate a destination for a trigger_teleport.

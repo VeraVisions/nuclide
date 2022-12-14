@@ -14,22 +14,26 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED prop_dynamic (0 0.2 1) (-8 -8 -8) (8 8 8) x x x x x x x x PRPDYN_NONSOLID
-Client-side decorative model entity.
-
--------- KEYS --------
-"model" : Model file that will be displayed by the entity.
-"modelscale" : Scale modifier of the model. Default is "1".
-"angles" : Sets the pitch, yaw and roll angles of the model.
-"_cs" : Toggles if the prop casts a shadow or not.
-"solid" : Specifies which collision model to use (0: Nonsolid; 2: BBox; 6: Per-poly)
-
--------- TRIVIA --------
-This entity was introduced in Half-Life 2 (2004).
-*/
-
 #define PRPDYN_NONSOLID 256
 
+/*!QUAKED prop_dynamic (0 0.2 1) (-8 -8 -8) (8 8 8) x x x x x x x x PRPDYN_NONSOLID
+# OVERVIEW
+Client-side decorative model entity.
+
+# KEYS
+- "model" : Model file that will be displayed by the entity.
+- "modelscale" : Scale modifier of the model. Default is "1".
+- "angles" : Sets the pitch, yaw and roll angles of the model.
+- "_cs" : Toggles if the prop casts a shadow or not.
+- "solid" : Specifies which collision model to use (0: Nonsolid; 2: BBox; 6: Per-poly)
+
+# SPAWNFLAGS
+- PRPDYN_NONSOLID (256) : Prop is non-solid.
+
+# TRIVIA
+This entity was introduced in Half-Life 2 (2004).
+There are two ways of making a prop_dynamic non-solid.
+*/
 class
 prop_dynamic:NSSurfacePropEntity
 {

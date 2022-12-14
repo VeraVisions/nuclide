@@ -14,36 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED speaker (1 0 0) (-8 -8 -8) (8 8 8)
-Creates a public announcement system that randomly plays announcements from
-the sentences.txt file.
-
--------- KEYS --------
-"targetname" : Name
-"preset" : Preset sentence group.
-"message" : Sentence group name (used when preset is 0)
-"health" : Message volume (value from 0-10)
-
--------- NOTES --------
-Valid values for 'preset":
-    0 = Use Sentence group name
-    1 = C1A0_
-    2 = C1A1_
-    3 = C1A2_
-    4 = C1A3_
-    5 = C1A4_
-    6 = C2A1_
-    7 = C2A2_
-    8 = C2A3_
-    9 = C2A4_
-    10 = C2A5_
-    11 = C3A1_
-    12 = C3A2_
-
--------- TRIVIA --------
-This entity was introduced in Half-Life (1998).
-*/
-
 enumflags
 {
 	SPEAKFL_SILENT
@@ -64,6 +34,36 @@ string g_speaker_hlpresets[] = {
 	"!C3A2_"
 };
 
+/*!QUAKED speaker (1 0 0) (-8 -8 -8) (8 8 8)
+# OVERVIEW
+Creates a public announcement system that randomly plays announcements from
+the sentences.txt file.
+
+# KEYS
+- "targetname" : Name
+- "preset" : Preset sentence group.
+- "message" : Sentence group name (used when preset is 0)
+- "health" : Message volume (value from 0-10)
+
+# NOTES
+Valid values for 'preset":
+    - 0 = Use Sentence group name
+    - 1 = C1A0_
+    - 2 = C1A1_
+    - 3 = C1A2_
+    - 4 = C1A3_
+    - 5 = C1A4_
+    - 6 = C2A1_
+    - 7 = C2A2_
+    - 8 = C2A3_
+    - 9 = C2A4_
+    - 10 = C2A5_
+    - 11 = C3A1_
+    - 12 = C3A2_
+
+# TRIVIA
+This entity was introduced in Half-Life (1998).
+*/
 class
 speaker:NSTalkMonster
 {

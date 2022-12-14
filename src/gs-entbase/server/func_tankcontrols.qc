@@ -14,17 +14,17 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED func_tankcontrols (0 .5 .8) ?
+/*!QUAKED func_tankcontrols (0 .5 .8) ?
+# OVERVIEW
 Brush that marks the usable region of a func_tankmortar, in order
 to gain control.
 
--------- KEYS --------
-"targetname" : Name
+# KEYS
+- "targetname" : Name
 
--------- TRIVIA --------
+# TRIVIA
 This entity was introduced in Half-Life (1998).
 */
-
 class
 func_tankcontrols:NSBrushTrigger
 {

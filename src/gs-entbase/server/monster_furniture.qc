@@ -14,18 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED monster_furniture (1 0 0) (-8 -8 -8) (8 8 8)
-Decorative, does nothing yet.
-
--------- KEYS --------
-"targetname" : Name
-"angles" : Sets the pitch, yaw and roll angles of the model.
-"model" : Model file that will be displayed by the entity.
-
--------- TRIVIA --------
-This entity was introduced in Half-Life (1998).
-*/
-
 enumflags
 {
 	MF_WAITTILSEEN,
@@ -38,6 +26,18 @@ enumflags
 	MF_FADECORPSE
 };
 
+/*!QUAKED monster_furniture (1 0 0) (-8 -8 -8) (8 8 8)
+# OVERVIEW
+Decorative, does nothing yet.
+
+# KEYS
+- "targetname" : Name
+- "angles" : Sets the pitch, yaw and roll angles of the model.
+- "model" : Model file that will be displayed by the entity.
+
+# TRIVIA
+This entity was introduced in Half-Life (1998).
+*/
 class
 monster_furniture:NSMonster
 {

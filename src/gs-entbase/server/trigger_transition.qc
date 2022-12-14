@@ -14,17 +14,17 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED trigger_transition (0 .5 .8) ?
+/*!QUAKED trigger_transition (0 .5 .8) ?
+# OVERVIEW
 Currently unused. This is meant for defining level transition regions.
 All entities touching this volume would carry across to the next level.
 
--------- KEYS --------
-"targetname" : Name
+# KEYS
+- "targetname" : Name
 
--------- TRIVIA --------
+# TRIVIA
 This entity was introduced in Half-Life (1998).
 */
-
 class
 trigger_transition:NSBrushTrigger
 {

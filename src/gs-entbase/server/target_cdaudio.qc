@@ -14,23 +14,23 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED target_cdaudio (1 0 0) (-8 -8 -8) (8 8 8)
+/*!QUAKED target_cdaudio (1 0 0) (-8 -8 -8) (8 8 8)
+# OVERVIEW
 A radius based trigger_cdaudio.
 Disables itself upon activation.
 
--------- KEYS --------
-"targetname" : Name
-"health" : Music track to play (1-30). -1 to stop.
-"radius" : Radius in which the entity will be triggered in.
+# KEYS
+- "targetname" : Name
+- "health" : Music track to play (1-30). -1 to stop.
+- "radius" : Radius in which the entity will be triggered in.
 
--------- NOTES --------
+# NOTES
 I honestly don't know what the point is, as trigger_cdaudio should
 act the same in practice.
 
--------- TRIVIA --------
+# TRIVIA
 This entity was introduced in Half-Life (1998).
 */
-
 class
 target_cdaudio:NSPointTrigger
 {

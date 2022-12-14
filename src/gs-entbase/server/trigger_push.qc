@@ -14,28 +14,28 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED trigger_push (0 .5 .8) ? TP_ONCE TP_STARTOFF
-Pushes anything in its volume into a direction of your choosing.
-
--------- KEYS --------
-"targetname" : Name
-"speed" : The speed (units per second) it'll apply to touchers.
-"angles" : Sets the direction of the push.
-
--------- SPAWNFLAGS --------
-TP_ONCE : Only emit a single push once before disabling itself.
-TP_STARTOFF : Needs to be triggered first in order to function.
-
--------- TRIVIA --------
-This entity was introduced in Quake (1996).
-*/
-
 enumflags
 {
 	TP_ONCE,
 	TP_STARTOFF
 };
 
+/*!QUAKED trigger_push (0 .5 .8) ? TP_ONCE TP_STARTOFF
+# OVERVIEW
+Pushes anything in its volume into a direction of your choosing.
+
+# KEYS
+- "targetname" : Name
+- "speed" : The speed (units per second) it'll apply to touchers.
+- "angles" : Sets the direction of the push.
+
+# SPAWNFLAGS
+- TP_ONCE (1) : Only emit a single push once before disabling itself.
+- TP_STARTOFF (2) : Needs to be triggered first in order to function.
+
+# TRIVIA
+This entity was introduced in Quake (1996).
+*/
 class
 trigger_push:NSBrushTrigger
 {

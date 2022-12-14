@@ -14,32 +14,32 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED game_counter (0 .5 .8) (-8 -8 -8) (8 8 8) GMCNT_REMOVE GMCNT_RESET
-This entity counts the number of times it has been triggered and activates its
-target when it reaches a specified number.
-
--------- KEYS --------
-"targetname" : Name
-"target" : Target when triggered.
-"master" : Master entity (optional)
-"killtarget" : Target to kill when triggered.
-"health" : Number of times the entity has to be triggered.
-"frags" : Starting value of this game_counter.
-
--------- SPAWNFLAGS --------
-GMCNT_REMOVE : Remove permanently once it fired its target.
-GMCNT_RESET : Reset internal counter to starting value once it fired its target.
-
--------- TRIVIA --------
-This entity was introduced in Half-Life (1998).
-*/
-
 enumflags
 {
 	GMCNT_REMOVE,
 	GMCNT_RESET
 };
 
+/*!QUAKED game_counter (0 .5 .8) (-8 -8 -8) (8 8 8) GMCNT_REMOVE GMCNT_RESET
+# OVERVIEW
+This entity counts the number of times it has been triggered and activates its
+target when it reaches a specified number.
+
+# KEYS
+- "targetname" : Name
+- "target" : Target when triggered.
+- "master" : Master entity (optional)
+- "killtarget" : Target to kill when triggered.
+- "health" : Number of times the entity has to be triggered.
+- "frags" : Starting value of this game_counter.
+
+# SPAWNFLAGS
+- GMCNT_REMOVE (1) : Remove permanently once it fired its target.
+- GMCNT_RESET (2) : Reset internal counter to starting value once it fired its target.
+
+# TRIVIA
+This entity was introduced in Half-Life (1998).
+*/
 class
 game_counter:NSPointTrigger
 {

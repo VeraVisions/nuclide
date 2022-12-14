@@ -14,27 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED env_fade (0 0 0) (-8 -8 -8) (8 8 8) EVF_FADEDROM EVF_MODULATE EVF_ONLYUSER
-Overlay that blinds/obscures players vision when triggered.
-
--------- KEYS --------
-"targetname" : Name
-"target" : Target when triggered.
-"killtarget" : Target to kill when triggered.
-"rendercolor" : RGB8 Color of the fade effect.
-"renderamt" : A8 alpha value we'll hit at max.
-"duration" : Duration of the effect in seconds.
-"holdtime" : How long we'll hold on the max color/alpha.
-
--------- SPAWNFLAGS --------
-EVF_FADEDROM : Inverts the fading animation.
-EVF_MODULATE : Modulate tints the image after "rendercolor" instead of obscuring it.
-EVF_ONLYUSER : Don't blind everyone, just the activator.
-
--------- TRIVIA --------
-This entity was introduced in Half-Life (1998).
-*/
-
 enumflags
 {
 	EVF_FADEDROM,
@@ -42,6 +21,27 @@ enumflags
 	EVF_ONLYUSER
 };
 
+/*!QUAKED env_fade (0 0 0) (-8 -8 -8) (8 8 8) EVF_FADEDROM EVF_MODULATE EVF_ONLYUSER
+# OVERVIEW
+Overlay that blinds/obscures players vision when triggered.
+
+# KEYS
+- "targetname" : Name
+- "target" : Target when triggered.
+- "killtarget" : Target to kill when triggered.
+- "rendercolor" : RGB8 Color of the fade effect.
+- "renderamt" : A8 alpha value we'll hit at max.
+- "duration" : Duration of the effect in seconds.
+- "holdtime" : How long we'll hold on the max color/alpha.
+
+# SPAWNFLAGS
+- EVF_FADEDROM (1) : Inverts the fading animation.
+- EVF_MODULATE (2) : Modulate tints the image after "rendercolor" instead of obscuring it.
+- EVF_ONLYUSER (4) : Don't blind everyone, just the activator.
+
+# TRIVIA
+This entity was introduced in Half-Life (1998).
+*/
 class
 env_fade:NSRenderableEntity
 {

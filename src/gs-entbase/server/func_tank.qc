@@ -14,47 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED func_tank (0 .5 .8) ? FNCTANK_ACTIVE x x x FNCTANK_DIRECTONLY FNCTANK_CONTROLLABLE
-A mountable tank gun turret type entity. A player (or NPC) can interact with
-it and shoot it. It's in the same family as the func_tankmortar entity, the
-difference being that this shoots bullets and not mortar blasts.
-
--------- KEYS --------
-"targetname" : Name
-"yawrate" : The speed of the left/right movement of the gun.
-"yawrange" : Range of left/right movement in degrees.
-"pitchrate" : The speed of the up/down movement of the gun.
-"pitchrange" : Range of up/down movement in degrees.
-"barrel" : Distance from origin to barrel tip in units.
-"barrely" : Horizontal distance origin to the center of the barrel tip.
-"barrelz" : Vertical distance origin to the center of the barrel tip.
-"firerate" : Number of bullets fired per second.
-"bullet_damage" : Damage each fired bullet does.
-"firespread" : Accuracy of the gun. 0 is best, 4 is worst.
-"persistance" : Time in seconds for how long an NPC might continue shooting.
-"minRange" : Minimum range the target can be at for an NPC to fire.
-"maxRange" : Maximum range the target can be at for an NPC to fire.
-"spritesmoke" : Sprite to spawn for 'smoke' when the entity is fired.
-"spriteflash" : Sprite to spawn for a 'muzzleflash' when the entity is fired.
-"spritescale" : Scale multiplier for both smoke and flash sprites.
-"rotatesound" : Sound file to play in a loop while barrel is rotating.
-
--------- SPAWNFLAGS --------
-FNCTANK_ACTIVE : Unimplemented.
-FNCTANK_DIRECTONLY : Unimplemented.
-FNCTANK_CONTROLLABLE : Unimplemented.
-
--------- NOTES --------
-I don't like the sprite stuff tacked on at all because of the extra networking
-involved and because it's so awfully GoldSrc specific.
-Eventually I need to design a more generic routine that allows people to just
-refer to materials with the appropriate blend-modes instead of hardcoding that
-some random sprites needs to be treated additive.
-
--------- TRIVIA --------
-This entity was introduced in Half-Life (1998).
-*/
-
 /* TODO: Implement these */
 enumflags
 {
@@ -66,6 +25,47 @@ enumflags
 	FNCTANK_CONTROLLABLE
 };
 
+/*!QUAKED func_tank (0 .5 .8) ? FNCTANK_ACTIVE x x x FNCTANK_DIRECTONLY FNCTANK_CONTROLLABLE
+# OVERVIEW
+A mountable tank gun turret type entity. A player (or NPC) can interact with
+it and shoot it. It's in the same family as the func_tankmortar entity, the
+difference being that this shoots bullets and not mortar blasts.
+
+# KEYS
+- "targetname" : Name
+- "yawrate" : The speed of the left/right movement of the gun.
+- "yawrange" : Range of left/right movement in degrees.
+- "pitchrate" : The speed of the up/down movement of the gun.
+- "pitchrange" : Range of up/down movement in degrees.
+- "barrel" : Distance from origin to barrel tip in units.
+- "barrely" : Horizontal distance origin to the center of the barrel tip.
+- "barrelz" : Vertical distance origin to the center of the barrel tip.
+- "firerate" : Number of bullets fired per second.
+- "bullet_damage" : Damage each fired bullet does.
+- "firespread" : Accuracy of the gun. 0 is best, 4 is worst.
+- "persistance" : Time in seconds for how long an NPC might continue shooting.
+- "minRange" : Minimum range the target can be at for an NPC to fire.
+- "maxRange" : Maximum range the target can be at for an NPC to fire.
+- "spritesmoke" : Sprite to spawn for 'smoke' when the entity is fired.
+- "spriteflash" : Sprite to spawn for a 'muzzleflash' when the entity is fired.
+- "spritescale" : Scale multiplier for both smoke and flash sprites.
+- "rotatesound" : Sound file to play in a loop while barrel is rotating.
+
+# SPAWNFLAGS
+- FNCTANK_ACTIVE (1) : TODO: Start active?
+- FNCTANK_DIRECTONLY (16) : TODO: ?
+- FNCTANK_CONTROLLABLE (32) : TODO: Can be interacted with similar to a tankmortar?
+
+# NOTES
+I don't like the sprite stuff tacked on at all because of the extra networking
+involved and because it's so awfully GoldSrc specific.
+Eventually I need to design a more generic routine that allows people to just
+refer to materials with the appropriate blend-modes instead of hardcoding that
+some random sprites needs to be treated additive.
+
+# TRIVIA
+This entity was introduced in Half-Life (1998).
+*/
 class
 func_tank:NSVehicle
 {

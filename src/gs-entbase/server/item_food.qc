@@ -14,18 +14,18 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED item_food (1 0 0) (-8 -8 -8) (8 8 8)
+/*!QUAKED item_food (1 0 0) (-8 -8 -8) (8 8 8)
+# OVERVIEW
 This is a food item that will give the user 1 health when touched.
 
--------- KEYS --------
-"targetname" : Name
-"angles" : Sets the pitch, yaw and roll angles of the model.
-"model" : Model file that will be displayed by the entity.
+# KEYS
+- "targetname" : Name
+- "angles" : Sets the pitch, yaw and roll angles of the model.
+- "model" : Model file that will be displayed by the entity.
 
--------- TRIVIA --------
+# TRIVIA
 This entity was introduced in Half-Life (1998).
 */
-
 class
 item_food:NSEntity
 {

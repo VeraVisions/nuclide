@@ -14,22 +14,23 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
  
-/*QUAKED light_environment (1 0 0) (-8 -8 -8) (8 8 8) ?
+/*!QUAKED light_environment (1 0 0) (-8 -8 -8) (8 8 8) ?
+# OVERVIEW
 Defines the overall ambient skylight in the map.
 
--------- KEYS --------
-"color" : Normalized RGB color value. Default is [1,1,1]
-"color255" : RGB255 color value. e.g. '255 255 255' for white
-"ambientcolor" : Shadow color. Normalized RGB color value. Default is [1,1,1]
-"ambientcolor255" : Shadow color. RGB255 color value. e.g. '255 255 255' for white
-"intensity" : Overall intensity of the sky light. '300' is probably okay for a day level.
-"sunangle" : The yaw position of the sun, basically the horizontal direction.
-"pitch" : The vertical position of the sun. '-90' means straight down, '-45' is diagonal etc.
-"samples" : The amount of passes onto the lightmap, this is required for spread.
-"sunspreadangle" : The offset of each sample pass in degrees, basically horizontal jitter.
-"filterradius" : Blur amount for each pass. This will make cloud scenes work well.
+# KEYS
+- "color" : Normalized RGB color value. Default is [1,1,1]
+- "color255" : RGB255 color value. e.g. '255 255 255' for white
+- "ambientcolor" : Shadow color. Normalized RGB color value. Default is [1,1,1]
+- "ambientcolor255" : Shadow color. RGB255 color value. e.g. '255 255 255' for white
+- "intensity" : Overall intensity of the sky light. '300' is probably okay for a day level.
+- "sunangle" : The yaw position of the sun, basically the horizontal direction.
+- "pitch" : The vertical position of the sun. '-90' means straight down, '-45' is diagonal etc.
+- "samples" : The amount of passes onto the lightmap, this is required for spread.
+- "sunspreadangle" : The offset of each sample pass in degrees, basically horizontal jitter.
+- "filterradius" : Blur amount for each pass. This will make cloud scenes work well.
 
--------- NOTES --------
+# NOTES
 Only one is effective per map.
 Sun light generally is white, unless the atmosphere/horizon is coloring it.
 The ambientcolor should generally be set to that of the skybox for the most
@@ -45,7 +46,7 @@ For cloudly/overcast skies, I'd recommend setting the 'pitch' to '-45', then
 of at least '1'. This will ensure that the sunlight will be cast diagonally
 from 4 positions across the entire horizon - thus eliminating any harsh shadows.
 
--------- TRIVIA --------
+# TRIVIA
 This entity was introduced in Half-Life (1998).
 */
 

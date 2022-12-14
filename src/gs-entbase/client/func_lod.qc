@@ -14,23 +14,23 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED func_lod (0 .5 .8) ?
-Level of Detail brush entity, disappears at a set distance.
-Useful for when VIS is impossible or not enough.
-
--------- KEYS --------
-"targetname" : Name
-"DisappearDist" : Distance in units for of when the func_lod will pop out of view.
-"Solid" : Defines solidity. Is "0" when solid, "1" when not-solid.
-
--------- TRIVIA --------
-This entity was introduced in Half-Life 2 (2004).
-*/
-
 #ifdef DEVELOPER
 var int autocvar_dev_loddistance = 0;
 #endif
 
+/*!QUAKED func_lod (0 .5 .8) ?
+# OVERVIEW
+Level of Detail brush entity, disappears at a set distance.
+Useful for when VIS is impossible or not enough.
+
+# KEYS
+- "targetname" : Name
+- "DisappearDist" : Distance in units for of when the func_lod will pop out of view.
+- "Solid" : Defines solidity. Is "0" when solid, "1" when not-solid.
+
+# TRIVIA
+This entity was introduced in Half-Life 2 (2004).
+*/
 class func_lod:NSRenderableEntity
 {
 public:

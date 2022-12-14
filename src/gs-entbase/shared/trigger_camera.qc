@@ -14,26 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED trigger_camera (1 0 0) (-8 -8 -8) (8 8 8)
-Forces a camera change when triggered.
-
--------- KEYS --------
-"targetname" : Name
-"target" : Camera aims at this target.
-"moveto" : First path_corner entity, if present.
-"wait" : The total time the camera effect is active.
-
--------- NOTES --------
-The client who triggers it will get its camera perspective changed to this
-trigger_camera. It is capable of following a track in case "moveto" is set.
-The movement finishes independently of the "wait" key.
-In case you are follow a path, the triggers of the respective path_corners will
-be respected.
-
--------- TRIVIA --------
-This entity was introduced in Half-Life (1998).
-*/
-
 enumflags
 {
 	OCAMFL_CHANGED_ORIGIN,
@@ -41,6 +21,26 @@ enumflags
 	OCAMFL_CHANGED_WAIT
 };
 
+/*!QUAKED trigger_camera (1 0 0) (-8 -8 -8) (8 8 8)
+# OVERVIEW
+Forces a camera change when triggered.
+
+# KEYS
+- "targetname" : Name
+- "target" : Camera aims at this target.
+- "moveto" : First path_corner entity, if present.
+- "wait" : The total time the camera effect is active.
+
+# NOTES
+The client who triggers it will get its camera perspective changed to this
+trigger_camera. It is capable of following a track in case "moveto" is set.
+The movement finishes independently of the "wait" key.
+In case you are follow a path, the triggers of the respective path_corners will
+be respected.
+
+# TRIVIA
+This entity was introduced in Half-Life (1998).
+*/
 class trigger_camera:NSPointTrigger
 {
 #ifdef CLIENT

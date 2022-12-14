@@ -14,24 +14,24 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED func_wall_toggle (0 .5 .8) ? FTW_STARTHIDDEN
-Brush that can be hidden and reappear when triggered.
-
--------- KEYS --------
-"targetname" : Name
-
--------- SPAWNFLAGS --------
-FTW_STARTHIDDEN : Start invisible upon spawning.
-
--------- TRIVIA --------
-This entity was introduced in Half-Life (1998).
-*/
-
 enumflags
 {
 	FTW_STARTHIDDEN
 };
 
+/*!QUAKED func_wall_toggle (0 .5 .8) ? FTW_STARTHIDDEN
+# OVERVIEW
+Brush that can be hidden and reappear when triggered.
+
+# KEYS
+- "targetname" : Name
+
+# SPAWNFLAGS
+- FTW_STARTHIDDEN (1) : Start invisible upon spawning.
+
+# TRIVIA
+This entity was introduced in Half-Life (1998).
+*/
 class
 func_wall_toggle:NSRenderableEntity
 {

@@ -14,19 +14,20 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED random_speaker (1 0 0) (-8 -8 -8) (8 8 8)
+/*!QUAKED random_speaker (1 0 0) (-8 -8 -8) (8 8 8)
+# OVERVIEW
 This entity plays a .wav file at random intervals.
 
--------- KEYS --------
-"targetname" : Name
-"target" : Target when triggered
-"killtarget" : Target to kill when triggered
-"rsnoise" : Path to the sound file.
-"volume" : Volume to play the sound as (normalized, 0.0 - 1.0).
-"wait" : Minimum time for sound repetition in %.
-"random" : Random % of this added to wait.
+# KEYS
+- "targetname" : Name
+- "target" : Target when triggered
+- "killtarget" : Target to kill when triggered
+- "rsnoise" : Path to the sound file.
+- "volume" : Volume to play the sound as (normalized, 0.0 - 1.0).
+- "wait" : Minimum time for sound repetition in %.
+- "random" : Random % of this added to wait.
 
--------- NOTES --------
+# NOTES
 To explain the math behind it:
 The 'wait' key specifies the minimum time it waits to play itself again,
 however we always add a bit of a random interval on top.
@@ -34,10 +35,9 @@ The random interval is a set percentage of the specified 'wait' time.
 For example, if 'wait' is 10 and 'random' is 50, then it'll always be
 a random interval between 10 and 15 seconds in total.
 
--------- TRIVIA --------
+# TRIVIA
 It was introduced in Gunman Chronicles (2000).
 */
-
 class
 random_speaker:NSPointTrigger
 {

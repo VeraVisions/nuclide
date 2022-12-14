@@ -14,32 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED env_sprite (1 0 0) (-8 -8 -8) (8 8 8) ENVS_STARTON ENVS_PLAYONCE
-A sprite entity manager with fancy overrides.
-
--------- KEYS --------
-"targetname" : Name
-"target" : Target when triggered.
-"killtarget" : Target to kill when triggered.
-"angles" : Sets the pitch, yaw and roll angles of the sprite.
-"model" : Path to the sprite in question.
-"rendercolor" : Color modifier of the sprite.
-"renderamt" : Alpha modifier of the sprite.
-"rendermode" : Render mode of the sprite.
-"framerate" : Rate between frames in seconds.
-"scale" : Scale modifier of the sprite.
-
--------- SPAWNFLAGS --------
-ENVS_STARTON : Start visible.
-ENVS_PLAYONCE : Play once from start to finish, then make invisible.
-
--------- NOTES --------
-Only used with an external sprite format, like SPR, SPRHL and SPR32.
-
--------- TRIVIA --------
-This entity was introduced in Half-Life (1998).
-*/
-
 enumflags
 {
 	SPRITE_CHANGED_ORIGIN,
@@ -59,6 +33,32 @@ enumflags
 	ENVS_PLAYONCE
 };
 
+/*!QUAKED env_sprite (1 0 0) (-8 -8 -8) (8 8 8) ENVS_STARTON ENVS_PLAYONCE
+# OVERVIEW
+A sprite entity manager with fancy overrides.
+
+# KEYS
+- "targetname" : Name
+- "target" : Target when triggered.
+- "killtarget" : Target to kill when triggered.
+- "angles" : Sets the pitch, yaw and roll angles of the sprite.
+- "model" : Path to the sprite in question.
+- "rendercolor" : Color modifier of the sprite.
+- "renderamt" : Alpha modifier of the sprite.
+- "rendermode" : Render mode of the sprite.
+- "framerate" : Rate between frames in seconds.
+- "scale" : Scale modifier of the sprite.
+
+# SPAWNFLAGS
+- ENVS_STARTON (1) : Start visible.
+- ENVS_PLAYONCE (2) : Play once from start to finish, then make invisible.
+
+# NOTES
+Only used with an external sprite format, like SPR, SPRHL and SPR32.
+
+# TRIVIA
+This entity was introduced in Half-Life (1998).
+*/
 class env_sprite:NSRenderableEntity
 {
 private:

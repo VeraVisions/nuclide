@@ -14,16 +14,16 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED info_node_air (0 0 0) (-8 -8 -8) (8 8 8)
+/*!QUAKED info_node_air (0 0 0) (-8 -8 -8) (8 8 8)
+# OVERVIEW
 It's a node, helping monsters navigate in the air as well as underwater.
 
--------- KEYS --------
-"targetname" : Name
+# KEYS
+- "targetname" : Name
 
--------- TRIVIA --------
+# TRIVIA
 This entity was introduced in Half-Life (1998).
 */
-
 class
 info_node_air:NSPointTrigger
 {

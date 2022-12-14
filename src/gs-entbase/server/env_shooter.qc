@@ -14,29 +14,29 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED env_shooter (1 0 0) (-8 -8 -8) (8 8 8) EVSHOOTER_REPEATABLE
-Shoots model entities from its location.
-
--------- KEYS --------
-"targetname" : Name
-"target" : Target when triggered.
-"killtarget" : Target to kill when triggered.
-"angles" : Sets the pitch, yaw and roll direction of the shooter.
-"shootmodel" : Model file to shoot.
-"shootsounds" : PCM sample to play whenever a piece shoots out.
-"m_iGibs" : Amount of models shot in total.
-"m_flDelay" : Delay before being able to be fired again.
-"m_flVelocity" : Speed of the models in units per second.
-"m_flVariance" : Delay between shots.
-"m_flGibLife" : Life of the individual model piece.
-"scale" : Scale modifier of the model pieces.
-
--------- TRIVIA --------
-This entity was introduced in Half-Life (1998).
-*/
-
 #define EVSHOOTER_REPEATABLE 1
 
+/*!QUAKED env_shooter (1 0 0) (-8 -8 -8) (8 8 8) EVSHOOTER_REPEATABLE
+# OVERVIEW
+Shoots model entities from its location.
+
+# KEYS
+- "targetname" : Name
+- "target" : Target when triggered.
+- "killtarget" : Target to kill when triggered.
+- "angles" : Sets the pitch, yaw and roll direction of the shooter.
+- "shootmodel" : Model file to shoot.
+- "shootsounds" : PCM sample to play whenever a piece shoots out.
+- "m_iGibs" : Amount of models shot in total.
+- "m_flDelay" : Delay before being able to be fired again.
+- "m_flVelocity" : Speed of the models in units per second.
+- "m_flVariance" : Delay between shots.
+- "m_flGibLife" : Life of the individual model piece.
+- "scale" : Scale modifier of the model pieces.
+
+# TRIVIA
+This entity was introduced in Half-Life (1998).
+*/
 class
 env_shooter:NSPointTrigger
 {

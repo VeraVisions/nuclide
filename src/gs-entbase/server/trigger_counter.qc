@@ -14,21 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED trigger_counter (0 .5 .8) ? TRCNT_SILENT TRCNT_NOCLIENTS TRCNT_PUSHABLES
-This entity counts the number of times it has been triggered and activates its
-target when it reaches a specified number.
-
--------- KEYS --------
-"targetname" : Name
-"target" : Target when triggered.
-"killtarget" : Target to kill when triggered.
-"count" : Number of times the entity has to be triggered.
-"delay" : Delay in seconds until target is triggered.
-
--------- TRIVIA --------
-This entity was introduced in Quake (1996).
-*/
-
 enumflags
 {
     TRCNT_SILENT,
@@ -36,6 +21,21 @@ enumflags
     TRCNT_PUSHABLES
 };
 
+/*!QUAKED trigger_counter (0 .5 .8) ? TRCNT_SILENT TRCNT_NOCLIENTS TRCNT_PUSHABLES
+# OVERVIEW
+This entity counts the number of times it has been triggered and activates its
+target when it reaches a specified number.
+
+# KEYS
+- "targetname" : Name
+- "target" : Target when triggered.
+- "killtarget" : Target to kill when triggered.
+- "count" : Number of times the entity has to be triggered.
+- "delay" : Delay in seconds until target is triggered.
+
+# TRIVIA
+This entity was introduced in Quake (1996).
+*/
 class
 trigger_counter:NSBrushTrigger
 {

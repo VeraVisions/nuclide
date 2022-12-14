@@ -14,27 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED env_explosion (1 0 0) (-8 -8 -8) (8 8 8) ENVEXPLO_NODAMAGE ENVEXPLO_REPEATABLE ENVEXPLO_NOBALL ENVEXPLO_NOSMOKE ENVEXPLO_NODECAL ENVEXPLO_NOSPARKS
-When triggered, creates an explosion at its location.
-
--------- KEYS --------
-"targetname" : Name
-"target" : Target when triggered.
-"killtarget" : Target to kill when triggered.
-"iMagnitude" : Magnitude of the explosion.
-
--------- SPAWNFLAGS --------
-ENVEXPLO_NODAMAGE : Make this explosion purely decorative, without radius damage.
-ENVEXPLO_REPEATABLE : Makes this explosion triggerable more than once.
-ENVEXPLO_NOBALL : Spawn no fireball.
-ENVEXPLO_NOSMOKE : Spawn no smoke.
-ENVEXPLO_NODECAL : Leave no decal upon explosion.
-ENVEXPLO_NOSPARKS : Don't spawn any sparks upon exploding.
-
--------- TRIVIA --------
-This entity was introduced in Half-Life (1998).
-*/
-
 enumflags
 {
 	ENVEXPLO_NODAMAGE,
@@ -45,6 +24,27 @@ enumflags
 	ENVEXPLO_NOSPARKS
 };
 
+/*!QUAKED env_explosion (1 0 0) (-8 -8 -8) (8 8 8) ENVEXPLO_NODAMAGE ENVEXPLO_REPEATABLE ENVEXPLO_NOBALL ENVEXPLO_NOSMOKE ENVEXPLO_NODECAL ENVEXPLO_NOSPARKS
+# OVERVIEW
+When triggered, creates an explosion at its location.
+
+# KEYS
+- "targetname" : Name
+- "target" : Target when triggered.
+- "killtarget" : Target to kill when triggered.
+- "iMagnitude" : Magnitude of the explosion.
+
+# SPAWNFLAGS
+- ENVEXPLO_NODAMAGE (1) : Make this explosion purely decorative, without radius damage.
+- ENVEXPLO_REPEATABLE (2) : Makes this explosion triggerable more than once.
+- ENVEXPLO_NOBALL (4) : Spawn no fireball.
+- ENVEXPLO_NOSMOKE (8) : Spawn no smoke.
+- ENVEXPLO_NODECAL (16) : Leave no decal upon explosion.
+- ENVEXPLO_NOSPARKS (32) : Don't spawn any sparks upon exploding.
+
+# TRIVIA
+This entity was introduced in Half-Life (1998).
+*/
 class
 env_explosion:NSPointTrigger
 {

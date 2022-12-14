@@ -14,24 +14,24 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED player_loadsaved (1 0 0) (-8 -8 -8) (8 8 8)
+/*!QUAKED player_loadsaved (1 0 0) (-8 -8 -8) (8 8 8)
+# OVERVIEW
 This trigger reloads the last autosaved game with a custom message.
 This is commonly used when a mission objective has failed.
 
--------- KEYS --------
-"targetname" : Name
-"message" : Message to display
-"messagetime" : Message lifetime (not implemented)
-"loadtime" : Time until we load the last autosave
-"duration" : Fade effect total duration
-"holdtime" : Fade effect hold time
-"rendercolor" : Fade effect color vector (RGB255)
-"renderamt" : Fade effect alpha value
+# KEYS
+- "targetname" : Name
+- "message" : Message to display
+- "messagetime" : Message lifetime (not implemented)
+- "loadtime" : Time until we load the last autosave
+- "duration" : Fade effect total duration
+- "holdtime" : Fade effect hold time
+- "rendercolor" : Fade effect color vector (RGB255)
+- "renderamt" : Fade effect alpha value
 
--------- TRIVIA --------
+# TRIVIA
 This entity was introduced in Half-Life (1998).
 */
-
 class
 player_loadsaved:NSRenderableEntity /* for the rendercolor values */
 {

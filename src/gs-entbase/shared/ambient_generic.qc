@@ -14,32 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED ambient_generic (1 1 1) (-8 -8 -8) (8 8 8) AS_ARADIUS AS_SRADIUS AS_MRADIUS AS_LRADIUS AS_SILENT AS_NOTTOGGLED
-Plays a sound sample of whatever format the engine is configured to support.
-
--------- KEYS --------
-"targetname" : Name
-"target" : Target when triggered.
-"killtarget" : Target to kill when triggered.
-"message" : Sound file to play, or sentences.txt entry if prefixed with a '!'
-"volume" : Playback volume from 0.0 to 1.0
-"pitch" : Playback pitch from 0.0 to 2.0
-
--------- SPAWNFLAGS --------
-AS_ARADIUS : Plays the sound everywhere. Heard by everyone.
-AS_SRADIUS : Small playback radius.
-AS_MRADIUS : Medium playback radius.
-AS_LRADIUS : Large playback radius.
-AS_SILENT : Start silent, trigger to make it play!
-AS_NOTTOGGLED : Don't toggle playback. When triggered, only play the sample once.
-
--------- NOTES --------
-If you want it to loop, you have to give the file itself a loop flag.
-
--------- TRIVIA --------
-This entity was introduced in Half-Life (1998).
-*/
-
 enumflags
 {
 	AS_ARADIUS,
@@ -60,6 +34,32 @@ enumflags
 	AMBIENT_ENABLED
 };
 
+/*!QUAKED ambient_generic (1 1 1) (-8 -8 -8) (8 8 8) AS_ARADIUS AS_SRADIUS AS_MRADIUS AS_LRADIUS AS_SILENT AS_NOTTOGGLED
+# OVERVIEW
+Plays a sound sample of whatever format the engine is configured to support.
+
+# KEYS
+- "targetname" : Name
+- "target" : Target when triggered.
+- "killtarget" : Target to kill when triggered.
+- "message" : Sound file to play, or sentences.txt entry if prefixed with a '!'
+- "volume" : Playback volume from 0.0 to 1.0
+- "pitch" : Playback pitch from 0.0 to 2.0
+
+# SPAWNFLAGS
+- AS_ARADIUS (1) : Plays the sound everywhere. Heard by everyone.
+- AS_SRADIUS (2) : Small playback radius.
+- AS_MRADIUS (4) : Medium playback radius.
+- AS_LRADIUS (8) : Large playback radius.
+- AS_SILENT (16) : Start silent, trigger to make it play!
+- AS_NOTTOGGLED (32) : Don't toggle playback. When triggered, only play the sample once.
+
+# NOTES
+If you want it to loop, you have to give the file itself a loop flag.
+
+# TRIVIA
+This entity was introduced in Half-Life (1998).
+*/
 class ambient_generic:NSTalkMonster
 {
 	/* networked attributes */

@@ -14,24 +14,25 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED targ_speaker (1 0 0) (-8 -8 -8) (8 8 8)
+/*!QUAKED targ_speaker (1 0 0) (-8 -8 -8) (8 8 8)
+# OVERVIEW
 This entity plays a sample upon triggering at a specified volume.
 
--------- KEYS --------
-"targetname" : Name
-"target" : Target when triggered
-"killtarget" : Target to kill when triggered
-"tsnoise" : Path to the sound file
-"volume" : Volume to play the sound as (normalized, 0.0 - 1.0)
+# KEYS
+- "targetname" : Name
+- "target" : Target when triggered
+- "killtarget" : Target to kill when triggered
+- "tsnoise" : Path to the sound file
+- "volume" : Volume to play the sound as (normalized, 0.0 - 1.0)
 
--------- TRIVIA --------
+# TRIVIA
 It was introduced in Gunman Chronicles (2000).
+
 It's not any more useful than an ambient_generic.
 I suspect it's a carry-over from when Gunman was a Quake II mod, as
 Quake/Quake II did not have an entity that allowed custom sound samples
 to be played.
 */
-
 class
 targ_speaker:NSPointTrigger
 {

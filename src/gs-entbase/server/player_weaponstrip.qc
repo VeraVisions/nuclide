@@ -14,16 +14,16 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED player_weaponstrip (1 0 0) (-8 -8 -8) (8 8 8)
+/*!QUAKED player_weaponstrip (1 0 0) (-8 -8 -8) (8 8 8)
+# OVERVIEW
 Strips the activator of all of its weapons.
 
--------- KEYS --------
-"targetname" : Name
+# KEYS
+- "targetname" : Name
 
--------- TRIVIA --------
+# TRIVIA
 This entity was introduced in Half-Life (1998).
 */
-
 class
 player_weaponstrip:NSPointTrigger
 {

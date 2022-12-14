@@ -14,32 +14,32 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED env_message (1 0 0) (-8 -8 -8) (8 8 8) EMF_ONCE EMF_ALLPLAYERS
-Displays a basic message or titles.txt entry.
-
--------- KEYS --------
-"targetname" : Name
-"target" : Target when triggered.
-"killtarget" : Target to kill when triggered.
-"message" : Message to send to players
-"messagesound" : PCM sample to play when triggered. Leave empty if desired.
-"messagevolume" : PCM sample volume. Only relevant when "messagesound" is set.
-"messageattenuation" : PCM sample attenuation. Ditto.
-
--------- SPAWNFLAGS --------
-EMF_ONCE : Removes itself after being triggered once.
-EMF_ALLPLAYERS : Send the message to all clients instead of only the activator.
-
--------- TRIVIA --------
-This entity was introduced in Half-Life (1998).
-*/
-
 enumflags
 {
 	EMF_ONCE,
 	EMF_ALLPLAYERS
 };
 
+/*!QUAKED env_message (1 0 0) (-8 -8 -8) (8 8 8) EMF_ONCE EMF_ALLPLAYERS
+# OVERVIEW
+Displays a basic message or titles.txt entry.
+
+# KEYS
+- "targetname" : Name
+- "target" : Target when triggered.
+- "killtarget" : Target to kill when triggered.
+- "message" : Message to send to players
+- "messagesound" : PCM sample to play when triggered. Leave empty if desired.
+- "messagevolume" : PCM sample volume. Only relevant when "messagesound" is set.
+- "messageattenuation" : PCM sample attenuation. Ditto.
+
+# SPAWNFLAGS
+- EMF_ONCE (1) : Removes itself after being triggered once.
+- EMF_ALLPLAYERS (2) : Send the message to all clients instead of only the activator.
+
+# TRIVIA
+This entity was introduced in Half-Life (1998).
+*/
 class
 env_message:NSPointTrigger
 {

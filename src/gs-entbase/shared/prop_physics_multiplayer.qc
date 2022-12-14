@@ -14,28 +14,28 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED prop_physics_multiplayer (0 0 0.8) (-16 -16 -16) (16 16 16) PRPPHYS_ASLEEP
+#ifndef PHYSICS_STATIC
+#define PRPPHYS_ASLEEP 1
+
+/*!QUAKED prop_physics_multiplayer (0 0 0.8) (-16 -16 -16) (16 16 16) PRPPHYS_ASLEEP
+# OVERVIEW
 Physics prop that is optimised for netplay.
 It either pushes the player away, or gets pushed away by the player.
 The simulation can take place on either client or server.
 
--------- KEYS --------
-"targetname" : Name
-"physicsmode" : Which type of push/simulation model to use. See notes.
+# KEYS
+- "targetname" : Name
+- "physicsmode" : Which type of push/simulation model to use. See notes.
 
--------- NOTES --------
+# NOTES
 'physicsmode' can be one of three things:
-    1 - push player away
-    2 - get pushed (server-side)
-    3 - get pushed (client-side)
+    1. push player away
+    2. get pushed (server-side)
+    3. get pushed (client-side)
 
--------- TRIVIA --------
+# TRIVIA
 This entity was introduced in Half-Life 2 (2004).
 */
-
-#ifndef PHYSICS_STATIC
-#define PRPPHYS_ASLEEP 1
-
 class prop_physics_multiplayer:NSPhysicsEntity
 {
 	int m_iPhysicsMode;

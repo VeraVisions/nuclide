@@ -14,19 +14,19 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED func_illusionary (0 .5 .8) ?
+/*!QUAKED func_illusionary (0 .5 .8) ?
+# OVERVIEW
 Brush that lets light to pass through it and is non-solid.
 
--------- KEYS --------
-"targetname" : Name
+# KEYS
+- "targetname" : Name
 
--------- NOTES --------
+# NOTES
 On idTech 2 BSPs, it will change texture variants when triggered.
 
--------- TRIVIA --------
+# TRIVIA
 This entity was introduced in Quake (1996).
 */
-
 class
 func_illusionary:NSRenderableEntity
 {

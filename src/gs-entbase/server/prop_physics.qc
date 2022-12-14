@@ -14,19 +14,22 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED prop_physics (0 0 0.8) (-16 -16 -16) (16 16 16) PRPPHYS_ASLEEP
-Physics model
-
--------- KEYS --------
-"targetname" : Name
-
--------- TRIVIA --------
-This entity was introduced in Half-Life 2 (2004).
-*/
-
 #ifndef PHYSICS_STATIC
 #define PRPPHYS_ASLEEP 1
 
+/*!QUAKED prop_physics (0 0 0.8) (-16 -16 -16) (16 16 16) PRPPHYS_ASLEEP
+# OVERVIEW
+Physics model
+
+# KEYS
+- "targetname" : Name
+
+# SPAWNFLAGS
+- PRPPHYS_ASLEEP (1) : Prop starts without physics and stays until it is impacted.
+
+# TRIVIA
+This entity was introduced in Half-Life 2 (2004).
+*/
 class
 prop_physics:NSPhysicsEntity
 {

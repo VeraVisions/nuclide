@@ -17,21 +17,6 @@
 /* this is causing crashes on OpenAL 1.19.1 when enabled */
 //#define DSP_LERP
 
-/*QUAKED env_sound (0 1 0.5) (-8 -8 -8) (8 8 8)
-Client-side environmental reverb modifier.
-
--------- KEYS --------
-"radius" : Radius in units.
-"efx_file" : Name of the OpenAL EFX definiton to use.
-"roomtype" : Legacy enumeration for GoldSrc support. Please don't use this.
-
--------- NOTES --------
-This works only with the OpenAL sound backend.
-
--------- TRIVIA --------
-This entity was introduced in Half-Life (1998).
-*/
-
 static string g_hlefx[] = {
 	"default",
 	"gs_generic",
@@ -64,6 +49,21 @@ static string g_hlefx[] = {
 	"gs_weirdo3"
 };
 
+/*!QUAKED env_sound (0 1 0.5) (-8 -8 -8) (8 8 8)
+# OVERVIEW
+Client-side environmental reverb modifier.
+
+# KEYS
+- "radius" : Radius in units.
+- "efx_file" : Name of the OpenAL EFX definiton to use.
+- "roomtype" : Legacy enumeration for GoldSrc support. Please don't use this.
+
+# NOTES
+This works only with the OpenAL sound backend.
+
+# TRIVIA
+This entity was introduced in Half-Life (1998).
+*/
 class env_sound:NSEntity
 {
 public:

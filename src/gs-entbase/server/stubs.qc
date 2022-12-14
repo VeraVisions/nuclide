@@ -14,13 +14,14 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED info_player_start (1 1 1) (-16 -16 -36) (16 16 36)
+/*!QUAKED info_player_start (1 1 1) (-16 -16 -36) (16 16 36)
+# OVERVIEW
 Player spawn position for single-player games.
 
--------- KEYS --------
-"targetname" : Name
+# KEYS
+- "targetname" : Name
 
--------- NOTES --------
+# NOTES
 This entity is also used in Counter-Strike (2000) and its beta versions to mark
 spawn-positions for the Counter-Terrorist team.
 
@@ -30,17 +31,18 @@ or multiplayer coop (if info_player_coop spawn points don't exist).
 Mods may choose to have additional fields that are not documented here as part
 of the entity, keep that in mind.
 
--------- TRIVIA --------
+# TRIVIA
 This entity was introduced in Quake (1996).
 */
 
-/*QUAKED info_player_deathmatch (1 1 1) (-16 -16 -36) (16 16 36)
+/*!QUAKED info_player_deathmatch (1 1 1) (-16 -16 -36) (16 16 36)
+# OVERVIEW
 Player spawn position for deathmatch games.
 
--------- KEYS --------
-"targetname" : Name
+# KEYS
+- "targetname" : Name
 
--------- NOTES --------
+# NOTES
 This entity is also used in Counter-Strike (2000) and its beta versions to mark
 spawn-positions for the Terrorist team.
 
@@ -51,17 +53,18 @@ based modes.
 Mods may choose to have additional fields that are not documented here as part
 of the entity, keep that in mind.
 
--------- TRIVIA --------
+# TRIVIA
 This entity was introduced in Quake (1996).
 */
 
-/*QUAKED info_player_coop (1 1 1) (-16 -16 -36) (16 16 36)
+/*!QUAKED info_player_coop (1 1 1) (-16 -16 -36) (16 16 36)
+# OVERVIEW
 Player spawn position for cooperative games.
 
--------- KEYS --------
-"targetname" : Name
+# KEYS
+- "targetname" : Name
 
--------- NOTES --------
+# NOTES
 In order for a player to spawn here, the game needs to take place on a map
 for singleplayer with cooperative multiplayer enabled.
 If this entity isn't present on such a mode, info_player_start will be the
@@ -70,7 +73,7 @@ fallback spawn-point.
 Mods may choose to have additional fields that are not documented here as part
 of the entity, keep that in mind.
 
--------- TRIVIA --------
+# TRIVIA
 This entity was introduced in Quake (1996).
 */
 

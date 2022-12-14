@@ -14,27 +14,27 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED env_shake (1 0.5 0) (-8 -8 -8) (8 8 8) EVS_GLOBAL
-Causes an earthquake/shaking effect when triggered.
-
--------- KEYS --------
-"targetname" : Name
-"target" : Target when triggered.
-"killtarget" : Target to kill when triggered.
-"radius" : Radius of the quake/shake effect.
-"amplitude" : Amplitude of the effect.
-"duration" : Duration of the effect in seconds.
-"frequency" : The frequency of the shake.
-
--------- SPAWNFLAGS --------
-EVS_GLOBAL : Affect all clients, ignoring "radius" entirely.
-
--------- TRIVIA --------
-This entity was introduced in Half-Life (1998).
-*/
-
 #define EVS_GLOBAL 1
 
+/*!QUAKED env_shake (1 0.5 0) (-8 -8 -8) (8 8 8) EVS_GLOBAL
+# OVERVIEW
+Causes an earthquake/shaking effect when triggered.
+
+# KEYS
+- "targetname" : Name
+- "target" : Target when triggered.
+- "killtarget" : Target to kill when triggered.
+- "radius" : Radius of the quake/shake effect.
+- "amplitude" : Amplitude of the effect.
+- "duration" : Duration of the effect in seconds.
+- "frequency" : The frequency of the shake.
+
+# SPAWNFLAGS
+- EVS_GLOBAL : Affect all clients, ignoring "radius" entirely.
+
+# TRIVIA
+This entity was introduced in Half-Life (1998).
+*/
 class
 env_shake:NSPointTrigger
 {

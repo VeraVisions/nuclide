@@ -14,21 +14,25 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED func_conveyor (0 .5 .8) ?
--------- KEYS --------
-"targetname" : Name
-"target" : Target when triggered.
-"killtarget" : Target to kill when triggered.
-
-STUB!
-
--------- TRIVIA --------
-This entity was introduced in Half-Life (1998).
-*/
-
 #define SF_CONVEYOR_VISUAL	1
 #define SF_CONVEYOR_NOTSOLID	2
 
+/*!QUAKED func_conveyor (0 .5 .8) ? SF_CONVEYOR_VISUAL SF_CONVEYOR_NOTSOLID
+# OVERVIEW
+A conveyor belt entity. Texture will move along in the direction and speed of the conveyor.
+
+# KEYS
+- "targetname" : Name
+- "target" : Target when triggered.
+- "killtarget" : Target to kill when triggered.
+
+# SPAWNFLAGS
+- SF_CONVEYOR_VISUAL (1) : This conveyor does not affect entities physically.
+- SF_CONVEYOR_NOTSOLID (2) : This conveyor is non-solid.
+
+# TRIVIA
+This entity was introduced in Half-Life (1998).
+*/
 class
 func_conveyor:NSRenderableEntity
 {

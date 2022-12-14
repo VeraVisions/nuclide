@@ -14,25 +14,25 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED cycler (1 0 0) (-8 -8 -8) (8 8 8)
+/*!QUAKED cycler (1 0 0) (-8 -8 -8) (8 8 8)
+# OVERVIEW
 Animation cycler entity. For development purposes mainly.
 
--------- KEYS --------
-"targetname" : Name
-"target" : Target when triggered.
-"killtarget" : Target to kill when triggered.
-"angles" : Sets the pitch, yaw and roll angles of the model.
-"sequence" : Sets the animation the model should start in. 
-"model" : Model file that will be displayed by the entity.
+# KEYS
+- "targetname" : Name
+- "target" : Target when triggered.
+- "killtarget" : Target to kill when triggered.
+- "angles" : Sets the pitch, yaw and roll angles of the model.
+- "sequence" : Sets the animation the model should start in. 
+- "model" : Model file that will be displayed by the entity.
 
--------- NOTES --------
+# NOTES
 Upon damage, the cycler will switch between all available animation
 sequences. This is really for test-maps and showroom entities.
 
--------- TRIVIA --------
+# TRIVIA
 This entity was introduced in Half-Life (1998).
 */
-
 class
 cycler:NSSurfacePropEntity
 {

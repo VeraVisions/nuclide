@@ -14,37 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED env_beam (1 0 0) (-8 -8 -8) (8 8 8) BEAM_STARTON BEAM_TOGGLE BEAM_RANDOMSTRIKE BEAM_RING BEAM_STARTSPARKS BEAM_ENDSPARKS BEAM_DECAL BEAM_SHADESTART BEAM_SHADEEND
-Controllable beam effect, akin to lightning. Also known as env_lightning.
-
--------- KEYS --------
-"targetname" : Name
-"LightningStart" : Targetname of the entity that acts as starting point for the beam.
-"LightningEnd"   : Targetname of the entity that acts as an ending point for the beam.
-"Radius"         : If either start/end point is undefined, it'll pick the nearest surface
-                   in this specified radius as start/end points.
-"life"           : Lifetime of the beam in seconds.
-"StrikeTime"     : Time in seconds before the beam reactivates.
-"damage"         : Damage per second that's dealt when touching the inner beam.
-"texture"        : Path to the sprite to use in place of a texture.
-"BoltWidth"      : Thickness multiplier. 0-255 range.
-"NoiseAmplitude" : Amplitude multiplier. 0-255 range.
-
--------- SPAWNFLAGS --------
-BEAM_STARTON : Activate the beam at map start.
-BEAM_TOGGLE : Beam can now be toggled off, else StrikeTime + life keys take over.
-BEAM_RANDOMSTRIKE : Use variations in StrikeTime + life keys when set.
-BEAM_RING : Instead of a beam, two points will connect into a ring.
-BEAM_STARTSPARKS : TODO: Start of the beam will spark when set.
-BEAM_ENDSPARKS :  TODO: End of the beam will spark when set.
-BEAM_DECAL : TODO: Presumably leaves decals when sparks hit a surface.
-BEAM_SHADESTART : Beam will fade towards the start point when set.
-BEAM_SHADEEND : Beam will fade towards the end point when set.
-
--------- TRIVIA --------
-This entity was introduced in Half-Life (1998).
-*/
-
 enumflags
 {
 	BEAM_CHANGED_SPRITE,
@@ -74,6 +43,37 @@ enumflags
 	BEAM_SHADEEND
 };
 
+/*!QUAKED env_beam (1 0 0) (-8 -8 -8) (8 8 8) BEAM_STARTON BEAM_TOGGLE BEAM_RANDOMSTRIKE BEAM_RING BEAM_STARTSPARKS BEAM_ENDSPARKS BEAM_DECAL BEAM_SHADESTART BEAM_SHADEEND
+# OVERVIEW
+Controllable beam effect, akin to lightning. Also known as env_lightning.
+
+# KEYS
+- "targetname" : Name
+- "LightningStart" : Targetname of the entity that acts as starting point for the beam.
+- "LightningEnd"   : Targetname of the entity that acts as an ending point for the beam.
+- "Radius"         : If either start/end point is undefined, it'll pick the nearest surface
+                     in this specified radius as start/end points.
+- "life"           : Lifetime of the beam in seconds.
+- "StrikeTime"     : Time in seconds before the beam reactivates.
+- "damage"         : Damage per second that's dealt when touching the inner beam.
+- "texture"        : Path to the sprite to use in place of a texture.
+- "BoltWidth"      : Thickness multiplier. 0-255 range.
+- "NoiseAmplitude" : Amplitude multiplier. 0-255 range.
+
+# SPAWNFLAGS
+- BEAM_STARTON (1) : Activate the beam at map start.
+- BEAM_TOGGLE (2) : Beam can now be toggled off, else StrikeTime + life keys take over.
+- BEAM_RANDOMSTRIKE (4) : Use variations in StrikeTime + life keys when set.
+- BEAM_RING (8) : Instead of a beam, two points will connect into a ring.
+- BEAM_STARTSPARKS (16) : TODO: Start of the beam will spark when set.
+- BEAM_ENDSPARKS (32) :  TODO: End of the beam will spark when set.
+- BEAM_DECAL (64) : TODO: Presumably leaves decals when sparks hit a surface.
+- BEAM_SHADESTART (128) : Beam will fade towards the start point when set.
+- BEAM_SHADEEND (256) : Beam will fade towards the end point when set.
+
+# TRIVIA
+This entity was introduced in Half-Life (1998).
+*/
 class
 env_beam:NSRenderableEntity
 {

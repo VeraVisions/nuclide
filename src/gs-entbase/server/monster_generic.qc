@@ -14,18 +14,19 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED monster_generic (1 0 0) (-8 -8 -8) (8 8 8) x x MGF_NONSOLID
+/*!QUAKED monster_generic (1 0 0) (-8 -8 -8) (8 8 8) x x MGF_NONSOLID
+# OVERVIEW
 Decorative, does nothing yet.
 
--------- KEYS --------
-"targetname" : Name
-"angles" : Sets the pitch, yaw and roll angles of the model.
-"model" : Model file that will be displayed by the entity.
+# KEYS
+- "targetname" : Name
+- "angles" : Sets the pitch, yaw and roll angles of the model.
+- "model" : Model file that will be displayed by the entity.
 
--------- SPAWNFLAGS --------
-MGF_NONSOLID : Don't test collision against this entity.
+# SPAWNFLAGS
+- MGF_NONSOLID (4) : Don't test collision against this entity.
 
--------- TRIVIA --------
+# TRIVIA
 This entity was introduced in Half-Life (1998).
 */
 

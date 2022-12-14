@@ -14,16 +14,16 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED func_dustmotes (0 .5 .8) ?
+/*!QUAKED func_dustmotes (0 .5 .8) ?
+# OVERVIEW
 Dustmote emitting brush volume.
 
--------- KEYS --------
-"count" :  Number of dustmote particles that will float around on average.
+# KEYS
+- "count" :  Number of dustmote particles that will float around on average.
 
--------- TRIVIA --------
+# TRIVIA
 This entity was introduced in Half-Life 2 (2004).
 */
-
 class func_dustmotes:NSEntity
 {
 public:

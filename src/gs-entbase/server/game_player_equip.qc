@@ -14,14 +14,23 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED game_player_equip (1 0 0) (-8 -8 -8) (8 8 8) GPEFL_TRIGGERONLY
+enumflags
+{
+	GPEFL_TRIGGERONLY
+};
+
+/*!QUAKED game_player_equip (1 0 0) (-8 -8 -8) (8 8 8) GPEFL_TRIGGERONLY
+# OVERVIEW
 Entity that emits items when triggered, or upon player spawn (MP-only).
 
--------- KEYS --------
-"targetname" : Name
-"master" : Team Master
+# KEYS
+- "targetname" : Name
+- "master" : Team Master
 
--------- NOTES --------
+# SPAWNFLAGS
+ - GPEFL_TRIGGERONLY (1) : See notes.
+
+# NOTES
 When the flag GPEFL_TRIGGERONLY is set, the entity has to be triggered
 in order to 'give' the activator the item. Otherwise it'll automatically
 'give' every client its noted items upon spawning.
@@ -34,15 +43,9 @@ expected behaviour. Some modifications might depend on that...
 
 I still need to implement the Team Master functionality.
 
--------- TRIVIA --------
+# TRIVIA
 This entity was introduced in Half-Life (1998).
 */
-
-enumflags
-{
-	GPEFL_TRIGGERONLY
-};
-
 class
 game_player_equip:NSPointTrigger
 {

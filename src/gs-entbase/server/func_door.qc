@@ -14,43 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED func_door (0 .5 .8) ? SF_MOV_OPEN x SF_MOV_UNLINK SF_MOV_PASSABLE x SF_MOV_TOGGLE x x SF_MOV_USE
-This sliding door entity has the ability to slide forth and back on any
-axis. It is often used for primitive elevators as well.
-
--------- KEYS --------
-"targetname" : Name
-"target" : Target when triggered.
-"killtarget" : Target to kill when triggered.
-"speed" : Movement speed in game-units per second.
-"lip" : Sets how many units are still visible after a door moved.
-"delay" : Time until triggering target.
-"wait" : When to move back.
-"netname" : Target to trigger when door returns to its initial position.
-"dmg" : Damage to inflict upon anything blocking the way.
-"snd_open" : Sound shader to play for when the door opens.
-"snd_close" : Sound shader to play for when the door closes.
-"snd_stop" : Sound shader to play for when the door stops moving.
-"movesnd" : Legacy integer value pointing to a predefined move sound.
-"stopsnd" : Legacy integer value pointing to a predefined stop sound.
-"forceclosed": Will make sure the door will not bounce back when something is blocking it
-
--------- SPAWNFLAGS --------
-SF_MOV_OPEN : Swaps the positions between raised and lowered state.
-SF_MOV_UNLINK : Currently unimplemented.
-SF_MOV_PASSABLE : Don't test against any collision with this door.
-SF_MOV_TOGGLE : Door cannot be opened by physical means, only by a trigger.
-SF_MOV_USE : Players can press the "use" button/key to activate this door.
-
--------- NOTES --------
-The keys "movesnd" and "stopsnd" are obsolete. Their values point towards
-the samples doors/doormoveX.wav and doors/doorstopX.wav respectively, where
-X is the integer value set in "movesnd" and "stopsnd".
-
--------- TRIVIA --------
-This entity was introduced in Quake (1996).
-*/
-
 enumflags {
 	SF_MOV_OPEN,
 	SF_MOV_RESERVED1,
@@ -71,6 +34,43 @@ enum
 	DOORSTATE_DOWN
 };
 
+/*!QUAKED func_door (0 .5 .8) ? SF_MOV_OPEN x SF_MOV_UNLINK SF_MOV_PASSABLE x SF_MOV_TOGGLE x x SF_MOV_USE
+# OVERVIEW
+This sliding door entity has the ability to slide forth and back on any
+axis. It is often used for primitive elevators as well.
+
+# KEYS
+- "targetname" : Name
+- "target" : Target when triggered.
+- "killtarget" : Target to kill when triggered.
+- "speed" : Movement speed in game-units per second.
+- "lip" : Sets how many units are still visible after a door moved.
+- "delay" : Time until triggering target.
+- "wait" : When to move back.
+- "netname" : Target to trigger when door returns to its initial position.
+- "dmg" : Damage to inflict upon anything blocking the way.
+- "snd_open" : Sound shader to play for when the door opens.
+- "snd_close" : Sound shader to play for when the door closes.
+- "snd_stop" : Sound shader to play for when the door stops moving.
+- "movesnd" : Legacy integer value pointing to a predefined move sound.
+- "stopsnd" : Legacy integer value pointing to a predefined stop sound.
+- "forceclosed": Will make sure the door will not bounce back when something is blocking it
+
+# SPAWNFLAGS
+- SF_MOV_OPEN : Swaps the positions between raised and lowered state.
+- SF_MOV_UNLINK : Currently unimplemented.
+- SF_MOV_PASSABLE : Don't test against any collision with this door.
+- SF_MOV_TOGGLE : Door cannot be opened by physical means, only by a trigger.
+- SF_MOV_USE : Players can press the "use" button/key to activate this door.
+
+# NOTES
+The keys "movesnd" and "stopsnd" are obsolete. Their values point towards
+the samples doors/doormoveX.wav and doors/doorstopX.wav respectively, where
+X is the integer value set in "movesnd" and "stopsnd".
+
+# TRIVIA
+This entity was introduced in Quake (1996).
+*/
 class
 func_door:NSRenderableEntity
 {

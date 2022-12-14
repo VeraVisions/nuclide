@@ -14,48 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED scripted_sequence (1 0 0) (-8 -8 -8) (8 8 8) x x SSFL_REPEATABLE SSFL_LEAVECORPSE x SSFL_NOINTERRUPT SSFL_OVERRIDEAI SSFL_NOSCRIPTMOVE
-Allow an actor to be selected and given an action to perform.
-This is done in the form of playing an animation.
-
--------- KEYS --------
-"targetname" : Name
-"target" : Target when triggered.
-"killtarget" : Target to kill when triggered.
-"m_iszEntity" : Entity targetname OR classname description to target
-"m_iszPlay" : After the monster has moved to the action point, play this animation
-"m_iszIdle" : Animation to play until the scripted_sequence is triggered
-"m_flRadius" : Search radius for m_targetMonster if a classname is specified
-"m_flRepeat" : Loop? Unused.
-"m_fMoveTo" : How we move to perform m_iActionAnim
-
--------- SPAWNFLAGS --------
-SSFL_REPEATABLE : Can trigger the sequence more than once.
-SSFL_LEAVECORPSE : When the actor is done, they'll be frozen.
-SSFL_NOINTERRUPT : Don't allow any interruption of the actor when in-sequence.
-SSFL_OVERRIDEAI : Don't allow the actor to call think/sound functions while playing.
-
--------- NOTES --------
-f_fMoveTo values:
-    0 = Don't move or turn
-    1 = Walk to the scripted_sequence
-    2 = Run to the scripted_sequence
-    3 = Unused/Not defined. Do not use this.
-    4 = Warp to the location of the scripted_sequence and perform the animation.
-    5 = Turn to the scripted_sequence's angle before performing the animation.
-
--------- TRIVIA --------
-This entity was introduced in Half-Life (1998).
-*/
-
 float(float modidx, string framename) frameforname = #276;
 float(float modidx, float framenum) frameduration = #277;
-/*
- * Scripted Sequences
- * ==================
- * Allow a monster to be selected and given an action to perform.
- * This is done in the form of an animation.
- */
  
  /* If enabled, the sequence can be triggered more than once. 
   * Otherwise the entity will be removed once the sequence is complete. */
@@ -87,6 +47,40 @@ enum
     SS_TURNTOFACE /* Turn to the scripted_sequence's angle before performing the animation. */
 };
 
+/*!QUAKED scripted_sequence (1 0 0) (-8 -8 -8) (8 8 8) x x SSFL_REPEATABLE SSFL_LEAVECORPSE x SSFL_NOINTERRUPT SSFL_OVERRIDEAI SSFL_NOSCRIPTMOVE
+# OVERVIEW
+Allow an actor to be selected and given an action to perform.
+This is done in the form of playing an animation.
+
+# KEYS
+- "targetname" : Name
+- "target" : Target when triggered.
+- "killtarget" : Target to kill when triggered.
+- "m_iszEntity" : Entity targetname OR classname description to target
+- "m_iszPlay" : After the monster has moved to the action point, play this animation
+- "m_iszIdle" : Animation to play until the scripted_sequence is triggered
+- "m_flRadius" : Search radius for m_targetMonster if a classname is specified
+- "m_flRepeat" : Loop? Unused.
+- "m_fMoveTo" : How we move to perform m_iActionAnim
+
+# SPAWNFLAGS
+- SSFL_REPEATABLE (4) : Can trigger the sequence more than once.
+- SSFL_LEAVECORPSE (8) : When the actor is done, they'll be frozen.
+- SSFL_NOINTERRUPT (32) : Don't allow any interruption of the actor when in-sequence.
+- SSFL_OVERRIDEAI (64) : Don't allow the actor to call think/sound functions while playing.
+
+# NOTES
+f_fMoveTo values:
+    - 0 = Don't move or turn
+    - 1 = Walk to the scripted_sequence
+    - 2 = Run to the scripted_sequence
+    - 3 = Unused/Not defined. Do not use this.
+    - 4 = Warp to the location of the scripted_sequence and perform the animation.
+    - 5 = Turn to the scripted_sequence's angle before performing the animation.
+
+# TRIVIA
+This entity was introduced in Half-Life (1998).
+*/
 class
 scripted_sequence:NSPointTrigger
 {

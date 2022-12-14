@@ -14,23 +14,28 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED func_pushable (0 .5 .8) ? SF_TRIGGER SF_TOUCH SF_PRESSURE
+/*!QUAKED func_pushable (0 .5 .8) ? SF_TRIGGER SF_TOUCH SF_PRESSURE
+# OVERVIEW
 This is essentially the same entity as a func_breakable, but
 a player can push and pull it around the level.
 
--------- KEYS --------
-"targetname" : Name
-"target" : Target when triggered.
-"killtarget" : Target to kill when triggered.
+# KEYS
+- "targetname" : Name
+- "target" : Target when triggered.
+- "killtarget" : Target to kill when triggered.
 
--------- NOTES --------
+# SPAWNFLAGS
+- SF_TRIGGER (1) : Break only when triggered.
+- SF_TOUCH (2) : Touch can break.
+- SF_PRESSURE (4) : Standing on top can break.
+
+# NOTES
 It uses stepping player physics to move around.
 Please look at func_breakable for more entity keys, inputs and outputs.
 
--------- TRIVIA --------
+# TRIVIA
 This entity was introduced in Half-Life (1998).
 */
-
 class
 func_pushable:func_breakable
 {

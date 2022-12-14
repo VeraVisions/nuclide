@@ -14,23 +14,23 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED func_areaportal (0 .5 .8) ?
+/*!QUAKED func_areaportal (0 .5 .8) ?
+# OVERVIEW
 Manages a space between two areas.
 Requires to be positioned within an areaportal helper brush.
 
--------- KEYS --------
-"targetname" : Name
-"StartOpen"  : Sets the initial state. If 1 the portal will start open.
+# KEYS
+- "targetname" : Name
+- "StartOpen"  : Sets the initial state. If 1 the portal will start open.
 
--------- INPUTS --------
-"Open" : Open the areaportal.
-"Close" : Close the areaportal.
-"Toggle" : Toggle the areaportal.
+# INPUTS
+- "Open" : Open the areaportal.
+- "Close" : Close the areaportal.
+- "Toggle" : Toggle the areaportal.
 
--------- TRIVIA --------
+# TRIVIA
 This entity was introduced in Quake II (1997).
 */
-
 class
 func_areaportal:NSEntity
 {

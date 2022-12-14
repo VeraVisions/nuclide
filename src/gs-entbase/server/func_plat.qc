@@ -14,18 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED func_plat (0 .5 .8) ? FNCPLAT_TRIGGER
-It's a simple elevator. It goes down... and back up.
-
--------- KEYS --------
-"targetname" : Name
-"speed" : Speed of the lift in units per second
-"height" : Number of units the lift is supposed to move down
-
--------- TRIVIA --------
-This entity was introduced in Quake (1996).
-*/
-
 enumflags
 {
 	FNCPLAT_TRIGGER,
@@ -39,6 +27,25 @@ enum
 	PLATSTATE_DOWN
 };
 
+/*!QUAKED func_plat (0 .5 .8) ? FNCPLAT_TRIGGER
+# OVERVIEW
+It's a simple elevator. It goes down... and back up.
+
+# KEYS
+- "targetname" : Name
+- "speed" : Speed of the lift in units per second
+- "height" : Number of units the lift is supposed to move down
+
+# SPAWNFLAGS
+- FNCPLAT_TRIGGER (1) : Has to be triggered to move.
+
+# NOTES
+By default, touching the platform near its end/start point results in the platform
+to be called up/down.
+
+# TRIVIA
+This entity was introduced in Quake (1996).
+*/
 class
 func_plat:NSRenderableEntity
 {

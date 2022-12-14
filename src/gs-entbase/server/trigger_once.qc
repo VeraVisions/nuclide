@@ -14,24 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED trigger_once (0 .5 .8) ? TO_MONSTERS TO_NOCLIENTS TO_PUSHABLES
-A trigger volume which works only once.
-
--------- KEYS --------
-"targetname" : Name
-"target" : Target when triggered.
-"killtarget" : Target to kill when triggered.
-"delay" : Delay until target is triggered.
-
--------- SPAWNFLAGS --------
-TO_MONSTERS : Allow NPCs to activate this entity.
-TO_NOCLIENTS : Don't allow players to activate this entity.
-TO_PUSHABLES : Allow func_pushables to trigger this entity.
-
--------- TRIVIA --------
-This entity was introduced in Quake (1996).
-*/
-
 enumflags
 {
 	TO_MONSTERS,
@@ -39,6 +21,24 @@ enumflags
 	TO_PUSHABLES
 };
 
+/*!QUAKED trigger_once (0 .5 .8) ? TO_MONSTERS TO_NOCLIENTS TO_PUSHABLES
+# OVERVIEW
+A trigger volume which works only once.
+
+# KEYS
+- "targetname" : Name
+- "target" : Target when triggered.
+- "killtarget" : Target to kill when triggered.
+- "delay" : Delay until target is triggered.
+
+# SPAWNFLAGS
+- TO_MONSTERS (1) : Allow NPCs to activate this entity.
+- TO_NOCLIENTS (2) : Don't allow players to activate this entity.
+- TO_PUSHABLES (4) : Allow func_pushables to trigger this entity.
+
+# TRIVIA
+This entity was introduced in Quake (1996).
+*/
 class trigger_once:NSBrushTrigger
 {
 public:

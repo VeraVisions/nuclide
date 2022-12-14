@@ -14,22 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED button_target (0 .5 .8) ? BUTTA_USE BUTTA_TEXON
-Non-moving button that can either be used by hand, or shot.
-
--------- KEYS --------
-"targetname" : Name
-"target" : Target when triggered.
-"delay" : Time until target is triggered.
-
--------- SPAWNFLAGS --------
-BUTTA_USE : Button becomes 'use' only, clients have to interact with it manually instead of shooting it.
-BUTTA_TEXON : Texture choices will be inverted in case multiple frames exist.
-
--------- TRIVIA --------
-This entity was introduced in Quake (1996).
-*/
-
 /** Spawnflags that button_target supports. */
 typedef enumflags
 {
@@ -37,6 +21,22 @@ typedef enumflags
 	BUTTA_TEXON	/**< Button texture starts in the **ON** state. */
 } sf_button_target_t;
 
+/*!QUAKED button_target (0 .5 .8) ? BUTTA_USE BUTTA_TEXON
+# OVERVIEW
+Non-moving button that can either be used by hand, or shot.
+
+# KEYS
+- "targetname" : Name
+- "target" : Target when triggered.
+- "delay" : Time in seconds until target is triggered.
+
+# SPAWNFLAGS
+- BUTTA_USE (1) : Button becomes 'use' only, clients have to interact with it manually instead of shooting it.
+- BUTTA_TEXON (2) : Texture choices will be inverted in case multiple frames exist.
+
+# TRIVIA
+This entity was introduced in Quake (1996).
+*/
 class
 button_target:NSSurfacePropEntity
 {
@@ -46,7 +46,6 @@ public:
 	virtual void Respawn(void);
 	virtual void Trigger(entity,int);
 	virtual void Damage(void);
-
 };
 
 void

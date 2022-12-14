@@ -14,21 +14,21 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED info_null (1 0 0) (-8 -8 -8) (8 8 8)
+/*!QUAKED info_null (1 0 0) (-8 -8 -8) (8 8 8)
+# OVERVIEW
 Helper entity for the map creation process only.
 It is supposed to be removed after compilation of a .bsp file.
 
--------- KEYS --------
-"targetname" : Name
+# KEYS
+- "targetname" : Name
 
--------- NOTES --------
+# NOTES
 If you're pointing any active game-logic entities to this entity,
 prepare to crash.
 
--------- TRIVIA --------
+# TRIVIA
 This entity was introduced in Quake (1996).
 */
-
 class
 info_null:NSPointTrigger
 {

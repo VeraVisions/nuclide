@@ -14,20 +14,20 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED func_smokevolume (0 .5 .8) ? FULLBRIGHT
+/*!QUAKED func_smokevolume (0 .5 .8) ? FULLBRIGHT
+# OVERVIEW
 Smoke cloud emitting brush volume.
 
--------- KEYS --------
-"ParticleDrawWidth" : Size of the particles in Quake units.
-"SizeMax" : Maximum size of each cloud. In Quake units.
-"Color1" : Primary color
-"Color2" : Secondary color
-"MaxDrawDistance" : Maximum draw distance. Set to 0 if infinite.
+# KEYS
+- "ParticleDrawWidth" : Size of the particles in Quake units.
+- "SizeMax" : Maximum size of each cloud. In Quake units.
+- "Color1" : Primary color
+- "Color2" : Secondary color
+- "MaxDrawDistance" : Maximum draw distance. Set to 0 if infinite.
 
--------- TRIVIA --------
+# TRIVIA
 This entity was introduced in Half-Life 2 (2004).
 */
-
 class func_smokevolume:NSEntity
 {
 public:

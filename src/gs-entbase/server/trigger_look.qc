@@ -14,7 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED trigger_look (0 .5 .8) ?
+/*!QUAKED trigger_look (0 .5 .8) ?
+# OVERVIEW
 Triggers itself when a player is inside its volume and is looking at a
 specific entity within a specified field-of-view cone.
 It then disables itself.
@@ -22,19 +23,18 @@ It then disables itself.
 It's like the beginning in Halo - you know, where you have to look up/down
 at lights and stuff? No...? Well... ever played Splinter Cell?... Nevermind.
 
--------- KEYS --------
-"targetname" : Name
-"target" : Target when triggered.
-"delay" : Delay until target is triggered.
-"killtarget" : Target to kill when triggered.
-"looktarget" : Name of the entity to be looked at. Doesn't have to be solid.
-"looktime" : How long the player must look at the 'looktarget', in seconds.
-"fov" : Area of the view-cone check, 1.0 is straight ahead, 0.0 is in the realm of 90 degrees. Default is 0.9.
+# KEYS
+- "targetname" : Name
+- "target" : Target when triggered.
+- "delay" : Delay until target is triggered.
+- "killtarget" : Target to kill when triggered.
+- "looktarget" : Name of the entity to be looked at. Doesn't have to be solid.
+- "looktime" : How long the player must look at the 'looktarget', in seconds.
+- "fov" : Area of the view-cone check, 1.0 is straight ahead, 0.0 is in the realm of 90 degrees. Default is 0.9.
 
--------- TRIVIA --------
+# TRIVIA
 This entity was introduced in Half-Life 2 (2004).
 */
-
 class
 trigger_look:NSBrushTrigger
 {

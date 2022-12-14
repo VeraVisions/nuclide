@@ -14,25 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED info_particle_system (1 0 0) (-8 -8 -8) (8 8 8) PSFL_STARTACTIVE
-An entity that's spawns particles from the engine's particle system.
-
--------- KEYS --------
-"targetname" : Name
-"effect_name" : Name of the particle effect to spawn
-"start_active" : Whether or not the entity needs to be triggered first
-"interval" : Override for spawn intervals.
-"spawncount" : Override for the amount of particles that will be emitted
-
--------- INPUTS --------
-"Start" : Starts the emitter.
-"Stop" : Stops the emitter.
-"Toggle" : Toggles the emitter from an on/off state.
-
--------- TRIVIA --------
-This entity was introduced in The Orange Box (2007).
-*/
-
 #define PSFL_STARTACTIVE 1
 
 enumflags
@@ -45,6 +26,25 @@ enumflags
 	PARTSYSFL_CHANGED_COUNT
 };
 
+/*!QUAKED info_particle_system (1 0 0) (-8 -8 -8) (8 8 8) PSFL_STARTACTIVE
+# OVERVIEW
+An entity that's spawns particles from the engine's particle system.
+
+# KEYS
+- "targetname" : Name
+- "effect_name" : Name of the particle effect to spawn
+- "start_active" : Whether or not the entity needs to be triggered first
+- "interval" : Override for spawn intervals.
+- "spawncount" : Override for the amount of particles that will be emitted
+
+# INPUTS
+- "Start" : Starts the emitter.
+- "Stop" : Stops the emitter.
+- "Toggle" : Toggles the emitter from an on/off state.
+
+# TRIVIA
+This entity was introduced in The Orange Box (2007).
+*/
 class info_particle_system:NSPointTrigger
 {
 private:

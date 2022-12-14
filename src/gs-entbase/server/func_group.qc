@@ -14,15 +14,16 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED func_group (0 .5 .8) ?
+/*!QUAKED func_group (0 .5 .8) ?
+# OVERVIEW
 A "fake" entity for level editors, used to group together patches and
 brushes for easy moving. All geometry in the group will become
 worldspawn upon compile.
 
--------- KEYS --------
+# KEYS
 "_rs" : Specifies if the geometry will recieve shadows (RAD lighting).
 "_cs" : Specifies if the geometry will cast shadows (RAD lighting).
 
--------- TRIVIA --------
+# TRIVIA
 This entity was introduced in Quake III Arena (1999).
 */

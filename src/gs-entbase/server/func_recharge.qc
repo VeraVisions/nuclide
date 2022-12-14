@@ -14,21 +14,21 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED func_recharge (0 .5 .8) ?
+/*!QUAKED func_recharge (0 .5 .8) ?
+# OVERVIEW
 Brush that fills up your armor when used, to a maximum of 100 points.
 
--------- KEYS --------
-"targetname" : Name
-"target" : Target when triggered.
-"killtarget" : Target to kill when triggered.
-"snd_first" : Sound to play when first used.
-"snd_charging" : Sound to play when first charging.
-"snd_done" : Sound to play when first finished charging.
+# KEYS
+- "targetname" : Name
+- "target" : Target when triggered.
+- "killtarget" : Target to kill when triggered.
+- "snd_first" : Sound to play when first used.
+- "snd_charging" : Sound to play when first charging.
+- "snd_done" : Sound to play when first finished charging.
 
--------- TRIVIA --------
+# TRIVIA
 This entity was introduced in Half-Life (1998).
 */
-
 class
 func_recharge:NSRenderableEntity
 {

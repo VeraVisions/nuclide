@@ -14,16 +14,16 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED func_ladder (0 .5 .8) ?
+/*!QUAKED func_ladder (0 .5 .8) ?
+# OVERVIEW
 Ladder volume. Climb up ladders with this one simple brush.
 
--------- KEYS --------
-"targetname" : Name
+# KEYS
+- "targetname" : Name
 
--------- TRIVIA --------
+# TRIVIA
 This entity was introduced in Half-Life (1998).
 */
-
 class
 func_ladder:NSRenderableEntity
 {

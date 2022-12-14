@@ -14,22 +14,22 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED func_friction (0 .5 .8) ?
+/*!QUAKED func_friction (0 .5 .8) ?
+# OVERVIEW
 Volume that permanently adds a modifier that affects an entities' friction.
 Higher value = less friction.
 
--------- KEYS --------
-"targetname" : Name
-"modifier" : Friction modifier.
+# KEYS
+- "targetname" : Name
+- "modifier" : Friction modifier.
 
--------- NOTES --------
+# NOTES
 Similar to trigger_gravity in that you want to make sure the friction is reset
 around the primary volume in case that's the effect that you desire.
 
--------- TRIVIA --------
+# TRIVIA
 This entity was introduced in Half-Life (1998).
 */
-
 class func_friction:NSEntity
 {
 private:

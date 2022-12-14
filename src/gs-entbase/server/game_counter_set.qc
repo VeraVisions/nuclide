@@ -14,23 +14,23 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED game_counter_set (0 .5 .8) (-8 -8 -8) (8 8 8) GMCNTS_REMOVE
+/*!QUAKED game_counter_set (0 .5 .8) (-8 -8 -8) (8 8 8) GMCNTS_REMOVE
+# OVERVIEW
 When triggered, it'll change the internal counter of its target (a game_counter)
 to the specified value within.
 
--------- KEYS --------
-"targetname" : Name
-"target" : Target when triggered.
-"master" : Master entity (optional)
-"frags" : New value of the target game_counter.
+# KEYS
+- "targetname" : Name
+- "target" : Target when triggered.
+- "master" : Master entity (optional)
+- "frags" : New value of the target game_counter.
 
--------- SPAWNFLAGS --------
-GMCNT_REMOVE : Remove permanently once it fired its target.
+# SPAWNFLAGS
+- GMCNT_REMOVE (1) : Remove permanently once it fired its target.
 
--------- TRIVIA --------
+# TRIVIA
 This entity was introduced in Half-Life (1998).
 */
-
 enumflags
 {
 	GMCNTS_REMOVE,

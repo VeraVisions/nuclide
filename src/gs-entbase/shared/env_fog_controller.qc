@@ -14,42 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED env_fog_controller (1 0 0) (-8 -8 -8) (8 8 8) EVFOGCTL_MASTER
-Textured light projected. This is the type of lighting that's used for
-flashlights, lamp spotlights and so on.
-
--------- KEYS --------
-"targetname" : Name
-"target" : Name of an entity in the map that light will point at.
-"fogenable" : Will make the fog start active if not 0.
-"fogstart" : Distance from the camera of where the fog starts.
-"fogend" : Distance from the camera of where the fog ends.
-"fogmaxdensity" : Maximum fog density. Value between 0.00 and 1.00.
-"farz" : Clip anything after the specified distance.
-"fogcolor" : Primary color of the fog in RGB255. E.g. '255 0 0' for red.
-"fogcolor2" : Secondary color of the fog in RGB255. Only used when 'fogblend' is 1.
-"fogblend" : Whether or not to blend between fogcolor and fogcolor2.
-"fogdir" : The fog directon for the secondary color. Only used when 'fogblend' is 1.
-"use_angles" : If we should use the 'angles' key instead of 'fogdir'. Only used when 'fogblend' is 1.
-
--------- INPUTS --------
-"TurnOff" : Turns the entity off.
-"TurnOn" : Turns the entity on.
-"Toggle" : Toggles the entity to an on/off state.
-"SetStartDist" : Sets fogstart.
-"SetEndDist" : Sets fogend.
-"SetColor" : Sets fogcolor.
-"SetColorSecondary" : Sets fogcolor2.
-"SetFarZ" : Sets farz.
-
--------- SPAWNFLAGS --------
-EVFOGCTL_MASTER : If specified, this one will always take priority over
-                  any other active fog controllers... currently unused.
-
--------- TRIVIA --------
-This entity was introduced in Half-Life 2 (2004).
-*/
-
 enumflags
 {
 	ENVFOG_CHANGED_ACTIVE,
@@ -63,6 +27,42 @@ enumflags
 	ENVFOG_CHANGED_DIR
 };
 
+/*!QUAKED env_fog_controller (1 0 0) (-8 -8 -8) (8 8 8) EVFOGCTL_MASTER
+# OVERVIEW
+Textured light projected. This is the type of lighting that's used for
+flashlights, lamp spotlights and so on.
+
+# KEYS
+- "targetname" : Name
+- "target" : Name of an entity in the map that light will point at.
+- "fogenable" : Will make the fog start active if not 0.
+- "fogstart" : Distance from the camera of where the fog starts.
+- "fogend" : Distance from the camera of where the fog ends.
+- "fogmaxdensity" : Maximum fog density. Value between 0.00 and 1.00.
+- "farz" : Clip anything after the specified distance.
+- "fogcolor" : Primary color of the fog in RGB255. E.g. '255 0 0' for red.
+- "fogcolor2" : Secondary color of the fog in RGB255. Only used when 'fogblend' is 1.
+- "fogblend" : Whether or not to blend between fogcolor and fogcolor2.
+- "fogdir" : The fog directon for the secondary color. Only used when 'fogblend' is 1.
+- "use_angles" : If we should use the 'angles' key instead of 'fogdir'. Only used when 'fogblend' is 1.
+
+# INPUTS
+- "TurnOff" : Turns the entity off.
+- "TurnOn" : Turns the entity on.
+- "Toggle" : Toggles the entity to an on/off state.
+- "SetStartDist" : Sets fogstart.
+- "SetEndDist" : Sets fogend.
+- "SetColor" : Sets fogcolor.
+- "SetColorSecondary" : Sets fogcolor2.
+- "SetFarZ" : Sets farz.
+
+# SPAWNFLAGS
+- EVFOGCTL_MASTER (1) : If specified, this one will always take priority over
+                        any other active fog controllers... currently unused.
+
+# TRIVIA
+This entity was introduced in Half-Life 2 (2004).
+*/
 class
 env_fog_controller:NSPointTrigger
 {

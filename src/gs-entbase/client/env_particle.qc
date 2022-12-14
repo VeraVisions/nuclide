@@ -14,21 +14,21 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED env_particle (1 0 0) (-8 -8 -8) (8 8 8)
+/*!QUAKED env_particle (1 0 0) (-8 -8 -8) (8 8 8)
+# OVERVIEW
 Client-side particle effect. Active at runtime, fully client-side.
 Cannot be triggered. Repeats automatically.
 
--------- KEYS --------
-"message" : Particle material to use.
-"wait" : Delay between emits.
-"target" : Name of target, like an info_notnull (client-side)
-"velocity" : Speed in units.
-"count" : Number of particles to emit.
+# KEYS
+- "message" : Particle material to use.
+- "wait" : Delay between emits.
+- "target" : Name of target, like an info_notnull (client-side)
+- "velocity" : Speed in units.
+- "count" : Number of particles to emit.
 
--------- TRIVIA --------
+# TRIVIA
 This entity was introduced in The Wastes (2018).
 */
-
 class env_particle:NSEntity
 {
 public:

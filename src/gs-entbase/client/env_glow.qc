@@ -14,24 +14,27 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED env_glow (0 0.5 1) (-8 -8 -8) (8 8 8) EVGLOW_ORIENT
-Client-side glare/glow orb effect like the flares in 1997's Unreal.
-
--------- KEYS --------
-"shader" : Material to use for the glare/glow effect.
-"model" : Sprite model to use for the glare/glow (idTech 2 BSPs only)
-"scale" : Scale multiplier.
-"rendercolor" : Material color override in RGB8.
-"renderamt" : Material alpha override in A8.
-
--------- TRIVIA --------
-This entity was introduced in Half-Life (1998).
-*/
-
 var int autocvar_r_skipGlows = 0;
 var int autocvar_r_skipLensFlares = 0;
 
-class env_glow:NSEntity /* change to renderablentity? */
+/*!QUAKED env_glow (0 0.5 1) (-8 -8 -8) (8 8 8) EVGLOW_ORIENT
+# OVERVIEW
+Client-side glare/glow orb effect like the flares in 1997's Unreal.
+
+# KEYS
+- "shader" : Material to use for the glare/glow effect.
+- "model" : Sprite model to use for the glare/glow (idTech 2 BSPs only)
+- "scale" : Scale multiplier.
+- "rendercolor" : Material color override in RGB8.
+- "renderamt" : Material alpha override in A8.
+
+# SPAWNFLAGS
+- EVGLOW_ORIENT (1) : TODO: Glow is an oriented sprite when set.
+
+# TRIVIA
+This entity was introduced in Half-Life (1998).
+*/
+class env_glow:NSEntity /* TODO: change to renderablentity? */
 {
 public:
 	void env_glow(void);

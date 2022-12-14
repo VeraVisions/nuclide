@@ -14,36 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED func_rotating (0 .5 .8) ? FR_STARTON FR_REVERSE FR_ZAXIS FR_XAXIS FR_ACCDCC FR_FANPAIN FR_NOTSOLID FR_SMALLRADIUS FR_MRADIUS FR_LRADIUS FR_TOGGLEDIR
-Rotating brush object. Useful for fans, etc.
-
--------- KEYS --------
-"targetname" : Name
-"target" : Target when triggered.
-"killtarget" : Target to kill when triggered.
-"speed" : Speed in units per second.
-"dmg" : Damage applied to entity blocking its rotational path.
-
--------- SPAWNFLAGS --------
-FR_STARTON : Start on.
-FR_REVERSE : Spin in reverse.
-FR_ZAXIS : Spin on the Z-axis.
-FR_XAXIS : Spin on the X-axis.
-FR_ACCDCC : Enable acceleration and de-acceleration.
-FR_FANPAIN : Will damage entities that collide when turned on.
-FR_NOTSOLID : Don't do collision testing against this entity.
-FR_SMALLRADIUS : Fan sound will have a small playback radius.
-FR_MRADIUS : Fan sound will have a medium playback radius.
-FR_LRADIUS : Fan sound will have a large playback radius.
-FR_TOGGLEDIR : Reverses direction when triggered.
-
--------- NOTES --------
-Please include an origin brush so that a pivot point will be defined.
-
--------- TRIVIA --------
-This entity was introduced in Half-Life (1998).
-*/
-
 #ifdef GS_DEVELOPER
 var int autocvar_dev_rotspeed = 0;
 #endif
@@ -63,6 +33,36 @@ enumflags
 	FR_TOGGLEDIR
 };
 
+/*!QUAKED func_rotating (0 .5 .8) ? FR_STARTON FR_REVERSE FR_ZAXIS FR_XAXIS FR_ACCDCC FR_FANPAIN FR_NOTSOLID FR_SMALLRADIUS FR_MRADIUS FR_LRADIUS FR_TOGGLEDIR
+# OVERVIEW
+Rotating brush object. Useful for fans, etc.
+
+# KEYS
+- "targetname" : Name
+- "target" : Target when triggered.
+- "killtarget" : Target to kill when triggered.
+- "speed" : Speed in units per second.
+- "dmg" : Damage applied to entity blocking its rotational path.
+
+# SPAWNFLAGS
+- FR_STARTON (1) : Start on.
+- FR_REVERSE (2) : Spin in reverse.
+- FR_ZAXIS (4) : Spin on the Z-axis.
+- FR_XAXIS (8) : Spin on the X-axis.
+- FR_ACCDCC (16) : Enable acceleration and de-acceleration.
+- FR_FANPAIN (32) : Will damage entities that collide when turned on.
+- FR_NOTSOLID (64) : Don't do collision testing against this entity.
+- FR_SMALLRADIUS (128) : Fan sound will have a small playback radius.
+- FR_MRADIUS (256) : Fan sound will have a medium playback radius.
+- FR_LRADIUS (512) : Fan sound will have a large playback radius.
+- FR_TOGGLEDIR (1024) : Reverses direction when triggered.
+
+# NOTES
+Please include an origin brush so that a pivot point will be defined.
+
+# TRIVIA
+This entity was introduced in Half-Life (1998).
+*/
 class
 func_rotating:NSRenderableEntity
 {

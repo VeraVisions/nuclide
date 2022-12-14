@@ -14,19 +14,19 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED func_physbox (0 .5 .8) ? x x x x x x x x x x x x FNCPHYBX_ASLEEP
-Physics brush.
-
--------- KEYS --------
-"targetname" : Name
-
--------- TRIVIA --------
-This entity was introduced in Half-Life 2 (2004).
-*/
-
 #ifndef PHYSICS_STATIC
 #define FNCPHYBX_ASLEEP 4096
 
+/*!QUAKED func_physbox (0 .5 .8) ? x x x x x x x x x x x x FNCPHYBX_ASLEEP
+# OVERVIEW
+Physics brush.
+
+# KEYS
+- "targetname" : Name
+
+# TRIVIA
+This entity was introduced in Half-Life 2 (2004).
+*/
 class
 func_physbox:NSPhysicsEntity
 {

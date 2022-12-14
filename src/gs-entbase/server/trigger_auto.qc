@@ -14,22 +14,23 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED trigger_auto (1 0 0) (-8 -8 -8) (8 8 8) TA_USEONCE
+/*!QUAKED trigger_auto (1 0 0) (-8 -8 -8) (8 8 8) TA_USEONCE
+# OVERVIEW
 Will automatically trigger its target when the level has spawned.
 
--------- KEYS --------
-"targetname" : Name
-"target" : Target when triggered.
-"killtarget" : Target to kill when triggered.
-"delay" : Time in seconds until it triggers its target.
+# KEYS
+- "targetname" : Name
+- "target" : Target when triggered.
+- "killtarget" : Target to kill when triggered.
+- "delay" : Time in seconds until it triggers its target.
 
--------- SPAWNFLAGS --------
-TA_USEONCE : Remove itself from the level permanently when activated.
+# SPAWNFLAGS
+- TA_USEONCE (1) : Remove itself from the level permanently when activated.
 
--------- NOTES --------
+# NOTES
 When a trigger_auto is removed via TA_USEONCE it won't survive match respawns.
 
--------- TRIVIA --------
+# TRIVIA
 This entity was introduced in Half-Life (1998).
 */
 

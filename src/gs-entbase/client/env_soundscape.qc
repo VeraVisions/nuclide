@@ -14,21 +14,21 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED env_soundscape (0 1 0.3) (-8 -8 -8) (8 8 8)
-Client-side environmental soundscape modifier.
-
--------- KEYS --------
-"radius" : Radius in units.
-"shader" : Sound shader to play.
-
--------- TRIVIA --------
-This entity was introduced in Half-Life 2 (2004).
-*/
-
 var int autocvar_dsp_soundscapes = TRUE;
 
 int g_scapes;
 
+/*!QUAKED env_soundscape (0 1 0.3) (-8 -8 -8) (8 8 8)
+# OVERVIEW
+Client-side environmental soundscape modifier.
+
+# KEYS
+- "radius" : Radius in units.
+- "shader" : Sound shader to play.
+
+# TRIVIA
+This entity was introduced in Half-Life 2 (2004).
+*/
 class env_soundscape:NSEntity
 {
 public:

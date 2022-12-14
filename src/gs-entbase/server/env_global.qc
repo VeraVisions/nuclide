@@ -14,26 +14,26 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED env_global (1 0 0) (-8 -8 -8) (8 8 8) GLOBAL_SETSPAWN
-Persistent storage for variables that carry over level changes.
-
--------- KEYS --------
-"targetname" : Name
-"target" : Target when triggered.
-"killtarget" : Target to kill when triggered.
-"globalstate" : The variable name in which we hold information in.
-"initialstate" : Initial mode: 0 = off, 1 = on, 2 = dead
-"triggermode" : Mode when triggered: 0 = off, 1 = on, 2 = dead
-
--------- SPAWNFLAGS --------
-GLOBAL_SETSPAWN : Without this set, it'll only modify existing variables.
-
--------- TRIVIA --------
-This entity was introduced in Half-Life (1998).
-*/
-
 #define GLOBAL_SETSPAWN 1
 
+/*!QUAKED env_global (1 0 0) (-8 -8 -8) (8 8 8) GLOBAL_SETSPAWN
+# OVERVIEW
+Persistent storage for variables that carry over level changes.
+
+# KEYS
+- "targetname" : Name
+- "target" : Target when triggered.
+- "killtarget" : Target to kill when triggered.
+- "globalstate" : The variable name in which we hold information in.
+- "initialstate" : Initial mode: 0 = off, 1 = on, 2 = dead
+- "triggermode" : Mode when triggered: 0 = off, 1 = on, 2 = dead
+
+# SPAWNFLAGS
+- GLOBAL_SETSPAWN (1) : Without this set, it'll only modify existing variables.
+
+# TRIVIA
+This entity was introduced in Half-Life (1998).
+*/
 class
 env_global:NSPointTrigger
 {

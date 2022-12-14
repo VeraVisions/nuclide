@@ -14,20 +14,21 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED func_mortar_field (0 .5 .8) ?
+/*!QUAKED func_mortar_field (0 .5 .8) ?
+# OVERVIEW
 This brush volume acts as mortar drop area.
 When triggered, it'll drop mortar shells straight to the ground (with a bit
 of spread if specified).
 
--------- KEYS --------
-"targetname" : Name
-"m_flSpread" : Maximum spread in game-units
-"m_flCount" : Number of bombs dropped per strike
-"m_flControl" : Targeting type. 0 = random, 1 = activator, 2 = controlled
-"m_iszXController" : Name of the momentary_rot_button providing X-offset
-"m_iszYController" : Name of the momentary_rot_button providing Y-offset
+# KEYS
+- "targetname" : Name
+- "m_flSpread" : Maximum spread in game-units
+- "m_flCount" : Number of bombs dropped per strike
+- "m_flControl" : Targeting type. 0 = random, 1 = activator, 2 = controlled
+- "m_iszXController" : Name of the momentary_rot_button providing X-offset
+- "m_iszYController" : Name of the momentary_rot_button providing Y-offset
 
--------- NOTES --------
+# NOTES
 It can be set to three different targeting modes, 0 will pick any
 random point in the volume as a drop position. 1 will target the person or
 entity activating it and 2 is a more complex mode which requires two
@@ -38,10 +39,9 @@ between mortar shell drops) that I haven't implemented yet.
 I'll turn those into map attribute keys so people can finally control
 sound, damage, delay and so on.
 
--------- TRIVIA --------
+# TRIVIA
 This entity was introduced in Half-Life (1998).
 */
-
 class
 func_mortar_field:NSBrushTrigger
 {

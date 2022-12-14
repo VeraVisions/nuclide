@@ -14,24 +14,24 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED multi_manager (1 0 0) (-8 -8 -8) (8 8 8) MM_MULTITHREADED
+#define MM_MULTITHREADED 1
+
+/*!QUAKED multi_manager (1 0 0) (-8 -8 -8) (8 8 8) MM_MULTITHREADED
+# OVERVIEW
 Triggers a maximum of 16 user defined entities with additonal timers.
 Add a target's name as an entity key, with the value set to the time in seconds
 that'll pass before the entity will be triggered.
 
--------- KEYS --------
-"targetname" : Name
+# KEYS
+- "targetname" : Name
 
--------- SPAWNFLAGS --------
-MM_MULTITHREADED : Allow the multi_manager to be triggered again before it has
+# SPAWNFLAGS
+- MM_MULTITHREADED (1) : Allow the multi_manager to be triggered again before it has
 finished triggering it's previous list of entities.
 
--------- TRIVIA --------
+# TRIVIA
 This entity was introduced in Half-Life (1998).
 */
-
-#define MM_MULTITHREADED 1
-
 class
 multi_manager_sub:NSPointTrigger
 {

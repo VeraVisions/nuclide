@@ -14,34 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED env_beverage (1 0 0) (-8 -8 -8) (8 8 8)
-Upon triggered, the entity will spawn item_food in its place in
-the shape of a soda can.
-
--------- KEYS --------
-"targetname" : Name
-"target" : Target when triggered.
-"killtarget" : Target to kill when triggered.
-"health" : Amount of soda-cans that can be dispensed at maximum
-"angles" : Sets the pitch, yaw and roll angles of the soda
-"skin"   : Sets the beverage type. Values from 0-6 are valid. Check notes.
-
--------- NOTES --------
-Mainly used in vending machines. You can choose a few select types of beverage.
-
-Beverage-list:
-0 : Coca Cola
-1 : Sprite
-2 : Diet Coke
-3 : Orange
-4 : Surge
-5 : Moxie
-6 : Random (will pack one of the above, picked at the start of the map)
-
--------- TRIVIA --------
-This entity was introduced in Half-Life (1998).
-*/
-
 /* dependency from item_food.cpp */
 void item_sodacan(void);
 
@@ -56,6 +28,34 @@ typedef enum
 	SKIN_RANDOM
 } sodaskin_t;
 
+/*!QUAKED env_beverage (1 0 0) (-8 -8 -8) (8 8 8)
+# OVERVIEW
+Upon triggered, the entity will spawn item_food in its place in
+the shape of a soda can.
+
+# KEYS
+- "targetname" : Name
+- "target" : Target when triggered.
+- "killtarget" : Target to kill when triggered.
+- "health" : Amount of soda-cans that can be dispensed at maximum
+- "angles" : Sets the pitch, yaw and roll angles of the soda
+- "skin"   : Sets the beverage type. Values from 0-6 are valid. Check notes.
+
+# NOTES
+Mainly used in vending machines. You can choose a few select types of beverage.
+
+Beverage-list:
+	- 0 : Coca Cola
+	- 1 : Sprite
+	- 2 : Diet Coke
+	- 3 : Orange
+	- 4 : Surge
+	- 5 : Moxie
+	- 6 : Random (will pack one of the above, picked at the start of the map)
+
+# TRIVIA
+This entity was introduced in Half-Life (1998).
+*/
 class
 env_beverage:NSRenderableEntity
 {

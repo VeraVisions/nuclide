@@ -13,7 +13,9 @@ ent_for_mod()
 	echo "Scanning for definitions inside the game directory."
 	find ./$1/src/ -type f \( -iname \*.qc \) | while read EDEF_N; do
 		echo "... $EDEF_N"
-		sed -n '/\/*QUAKED/,/*\//p' $EDEF_N >> "$ENT_OUTFILE"
+		sed -n '/\/*!QUAKED/,/*\//p' $EDEF_N >> "$ENT_OUTFILE"
+		# fix doxygen markup
+		sed -i 's/*!QUAKED/*QUAKED/g' "$ENT_OUTFILE"
 	done;
 
 	cat ./platform/entities.def >> $ENT_OUTFILE
@@ -26,7 +28,9 @@ echo '' > "$BASE_ENT"
 echo "Scanning for definitions inside the general entity codebase."
 find ./src/gs-entbase/ -type f \( -iname \*.qc \) | while read EDEF_N; do
 	echo "... $EDEF_N"
-	sed -n '/\/*QUAKED/,/*\//p' $EDEF_N >> "$BASE_ENT"
+	sed -n '/\/*!QUAKED/,/*\//p' $EDEF_N >> "$BASE_ENT"
+	# fix doxygen markup
+	sed -i 's/*!QUAKED/*QUAKED/g' "$BASE_ENT"
 done;
 
 # each game gets its own ents + general purpose ents appended at the end

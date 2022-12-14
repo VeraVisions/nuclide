@@ -14,24 +14,23 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED info_notnull (1 0 0) (-8 -8 -8) (8 8 8)
+/*!QUAKED info_notnull (1 0 0) (-8 -8 -8) (8 8 8)
+# OVERVIEW
 Helper entity for the game-logic its vast array of entities.
 It is most commonly used to aim active in-game entities towards a specific
 location.
 
--------- KEYS --------
-"targetname" : Name
+# KEYS
+- "targetname" : Name
 
--------- NOTES --------
+# NOTES
 For tasks such as aiming static/lightmapped light sources during the compiling
 process, please use info_null instead as it'll get removed after it has served
 its purpose.
 
--------- TRIVIA --------
+# TRIVIA
 This entity was introduced in Quake (1996).
 */
-
-
 class
 info_notnull:NSPointTrigger
 {

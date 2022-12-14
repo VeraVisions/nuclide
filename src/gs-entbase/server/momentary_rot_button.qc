@@ -14,27 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED momentary_rot_button (0 .5 .8) ? MRBFL_DOORHACK MRBFL_NOTUSE x x MRBFL_AUTORETURN x MRBFL_XAXIS MRBFL_YAXIS
-Dyanmic button/wheel/lever that moves back into its original position when not
-in use. It affects momentary_door.
-
--------- KEYS --------
-"targetname" : Name
-"distance" : Maximum distance it'll turn until it stops.
-"speed" : Speed at which it rotates/turns.
-"returnspeed" : Speed at which it returns to its original position.
-
--------- SPAWNFLAGS --------
-MRBFL_DOORHACK : This entity will move along with another momentary_rot_button of the same name.
-MRBFL_NOTUSE : Don't allow interaction via "use" key/button.
-MRBFL_AUTORETURN : Rotate back to its original state when not being used.
-MRBFL_XAXIS : Rotate along the X-axis.
-MRBFL_YAXIS : Rotate along the Y-axis.
-
--------- TRIVIA --------
-This entity was introduced in Half-Life (1998).
-*/
-
 enumflags
 {
 	MRBFL_DOORHACK,
@@ -47,6 +26,27 @@ enumflags
 	MRBFL_YAXIS
 };
 
+/*!QUAKED momentary_rot_button (0 .5 .8) ? MRBFL_DOORHACK MRBFL_NOTUSE x x MRBFL_AUTORETURN x MRBFL_XAXIS MRBFL_YAXIS
+# OVERVIEW
+Dyanmic button/wheel/lever that moves back into its original position when not
+in use. It affects momentary_door.
+
+# KEYS
+- "targetname" : Name
+- "distance" : Maximum distance it'll turn until it stops.
+- "speed" : Speed at which it rotates/turns.
+- "returnspeed" : Speed at which it returns to its original position.
+
+# SPAWNFLAGS
+- MRBFL_DOORHACK (1) : This entity will move along with another momentary_rot_button of the same name.
+- MRBFL_NOTUSE (2) : Don't allow interaction via "use" key/button.
+- MRBFL_AUTORETURN (16) : Rotate back to its original state when not being used.
+- MRBFL_XAXIS (64) : Rotate along the X-axis.
+- MRBFL_YAXIS (128) : Rotate along the Y-axis.
+
+# TRIVIA
+This entity was introduced in Half-Life (1998).
+*/
 class
 momentary_rot_button:NSMomentary
 {

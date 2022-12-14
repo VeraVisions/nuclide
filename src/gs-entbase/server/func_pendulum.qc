@@ -14,29 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED func_pendulum (0 .5 .8) ? FUNCPEND_STARTON x x FUNCPEND_NONSOLID FUNCPEND_RETURNONTRIGGER x FUNCPEND_XAXIS FUNCPEND_YAXIS
-A brush that swings along a pivot point like a pendulum.
-
--------- KEYS --------
-"targetname" : Name
-"damp" : Dampening factor.
-"distance" : Swinging distance in euler-angles.
-"speed" : Speed at which it swings in units-per-second.
-
--------- SPAWNFLAGS --------
-FUNCPEND_STARTON : Start swinging immediately.
-FUNCPEND_NONSOLID : Don't do collision testing against this entity.
-FUNCPEND_RETURNONTRIGGER : Once it gets triggered it'll return to its starting position.
-FUNCPEND_XAXIS : Swing on the X-axis.
-FUNCPEND_YAXIS : Swing on the Y-axis.
-
--------- NOTES --------
-Please include an origin brush so that a pivot point will be defined.
-
--------- TRIVIA --------
-This entity was introduced in Half-Life (1998).
-*/
-
 enumflags
 {
 	FUNCPEND_STARTON,
@@ -49,6 +26,29 @@ enumflags
 	FUNCPEND_YAXIS
 };
 
+/*!QUAKED func_pendulum (0 .5 .8) ? FUNCPEND_STARTON x x FUNCPEND_NONSOLID FUNCPEND_RETURNONTRIGGER x FUNCPEND_XAXIS FUNCPEND_YAXIS
+# OVERVIEW
+A brush that swings along a pivot point like a pendulum.
+
+# KEYS
+- "targetname" : Name
+- "damp" : Dampening factor.
+- "distance" : Swinging distance in euler-angles.
+- "speed" : Speed at which it swings in units-per-second.
+
+# SPAWNFLAGS
+- FUNCPEND_STARTON (1) : Start swinging immediately.
+- FUNCPEND_NONSOLID (8) : Don't do collision testing against this entity.
+- FUNCPEND_RETURNONTRIGGER (16) : Once it gets triggered it'll return to its starting position.
+- FUNCPEND_XAXIS (64) : Swing on the X-axis.
+- FUNCPEND_YAXIS (128) : Swing on the Y-axis.
+
+# NOTES
+Please include an origin brush so that a pivot point will be defined.
+
+# TRIVIA
+This entity was introduced in Half-Life (1998).
+*/
 class
 func_pendulum:NSRenderableEntity
 {

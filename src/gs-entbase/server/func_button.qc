@@ -14,43 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED func_button (0 .5 .8) ? SF_BTT_NOMOVE x x x x SF_BTT_TOGGLE SF_BTT_SPARKS x SF_BTT_TOUCH_ONLY
-A brush entity which can be used either by touching, interaction (via a games'
-use-key/button or other targetting methods.
-It will then travel, similar to a door to a specified direction.
-Once it's fully pushed in, it'll trigger its targets, then return back to its
-original position.
-
--------- KEYS --------
-"targetname" :  Name
-"target" : Target when triggered.
-"killtarget" : Target to kill when triggered.
-"speed" : Movement speed of the door in game-units per second.
-"lip" : How many units remain visible when fully pushed in.
-"snd_pressed" : The sound shader name to play when pressed down.
-"snd_unpressed" : The sound shader name to play when the button becomes raised.
-"wait" : Time to wait in seconds before the button becomes raised.
-"delay" : Delay until the Target gets triggered.
-"sounds" : Obsolete legacy key for HL/Q1 style buttons to decide which sounds to play.
-"health" : Amount of damage this button takes before it triggers. Will reset.
-
--------- OUTPUTS --------
-"OnDamaged" : Fired when the button is damaged.
-"OnPressed" : Fired when the button is pressed.
-"OnUseLocked" : Fired when the button is used while locked.
-"OnIn" : Fired when the button reaches the in/pressed position.
-"OnOut" : Fired when the button reaches the out/released position.
-
--------- SPAWNFLAGS --------
-SF_BTT_NOMOVE : Don't move when it's activated.
-SF_BTT_TOGGLE : Don't move back to the raised state automatically.
-SF_BTT_SPARKS : Spawn decorative sparks when used.
-SF_BTT_TOUCH_ONLY : Disable 'use' key/button. Only collision will activate it.
-
--------- TRIVIA --------
-This entity was introduced in Quake (1996).
-*/
-
 enumflags
 {
 	SF_BTT_NOMOVE,
@@ -78,6 +41,43 @@ enum
 	FRAME_ON
 };
 
+/*!QUAKED func_button (0 .5 .8) ? SF_BTT_NOMOVE x x x x SF_BTT_TOGGLE SF_BTT_SPARKS x SF_BTT_TOUCH_ONLY
+# OVERVIEW
+A brush entity which can be used either by touching, interaction (via a games'
+use-key/button or other targetting methods.
+It will then travel, similar to a door to a specified direction.
+Once it's fully pushed in, it'll trigger its targets, then return back to its
+original position.
+
+# KEYS
+- "targetname" :  Name
+- "target" : Target when triggered.
+- "killtarget" : Target to kill when triggered.
+- "speed" : Movement speed of the door in game-units per second.
+- "lip" : How many units remain visible when fully pushed in.
+- "snd_pressed" : The sound shader name to play when pressed down.
+- "snd_unpressed" : The sound shader name to play when the button becomes raised.
+- "wait" : Time to wait in seconds before the button becomes raised.
+- "delay" : Delay until the Target gets triggered.
+- "sounds" : Obsolete legacy key for HL/Q1 style buttons to decide which sounds to play.
+- "health" : Amount of damage this button takes before it triggers. Will reset.
+
+-------- OUTPUTS --------
+- "OnDamaged" : Fired when the button is damaged.
+- "OnPressed" : Fired when the button is pressed.
+- "OnUseLocked" : Fired when the button is used while locked.
+- "OnIn" : Fired when the button reaches the in/pressed position.
+- "OnOut" : Fired when the button reaches the out/released position.
+
+# SPAWNFLAGS
+- SF_BTT_NOMOVE (1) : Don't move when it's activated.
+- SF_BTT_TOGGLE (32) : Don't move back to the raised state automatically.
+- SF_BTT_SPARKS (64) : Spawn decorative sparks when used.
+- SF_BTT_TOUCH_ONLY (256) : Disable 'use' key/button. Only collision will activate it.
+
+# TRIVIA
+This entity was introduced in Quake (1996).
+*/
 class
 func_button:NSSurfacePropEntity
 {

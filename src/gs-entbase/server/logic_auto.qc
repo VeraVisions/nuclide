@@ -14,28 +14,29 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED logic_auto (1 0 0) (-8 -8 -8) (8 8 8) TA_USEONCE
+/*!QUAKED logic_auto (1 0 0) (-8 -8 -8) (8 8 8) TA_USEONCE
+# OVERVIEW
 Will automatically trigger its outputs when the level has spawned.
 This is Source's variant of trigger_auto. If you want to talk to old-styled
 targets instead, use that instead.
 
--------- KEYS --------
-"targetname" : Name
-"globalstate" : The env_global state to read before firing.
+# KEYS
+- "targetname" : Name
+- "globalstate" : The env_global state to read before firing.
 
--------- INPUTS --------
-"OnMapSpawn" : Triggered when the map is loaded for any reason.
-"OnNewGame" : Triggered only when a new game starts on this level.
-"OnLoadGame : Triggered when the map is loaded via save game.
-"OnMapTransition" : Triggered when we load this map via level transition.
-"OnBackgroundMap" : Triggered if this map is used as a menu background.
-"OnMultiNewMap" : Same as 'OnMapSpawn' but only valid in multiplayer.
-"OnMultiNewRound" : Triggered only during round restarts in multiplayer.
+# INPUTS
+- "OnMapSpawn" : Triggered when the map is loaded for any reason.
+- "OnNewGame" : Triggered only when a new game starts on this level.
+- "OnLoadGame : Triggered when the map is loaded via save game.
+- "OnMapTransition" : Triggered when we load this map via level transition.
+- "OnBackgroundMap" : Triggered if this map is used as a menu background.
+- "OnMultiNewMap" : Same as 'OnMapSpawn' but only valid in multiplayer.
+- "OnMultiNewRound" : Triggered only during round restarts in multiplayer.
 
--------- SPAWNFLAGS --------
-TA_USEONCE : Remove itself from the level permanently when activated.
+# SPAWNFLAGS
+- TA_USEONCE (1) : Remove itself from the level permanently when activated.
 
--------- NOTES --------
+# NOTES
 When a logic_auto is removed via TA_USEONCE it won't survive match respawns.
 
 Source Engine behaviour (do not fix):
@@ -43,7 +44,7 @@ The output 'OnMultiNewMap' is also triggered during round restarts.
 This would make 'OnMultiNewRound' redundant, however 'OnMultiNewRound' does
 not get called upon map start.
 
--------- TRIVIA --------
+# TRIVIA
 This entity was introduced in Half-Life 2 (2004).
 */
 

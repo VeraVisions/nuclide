@@ -14,16 +14,16 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED info_node (0 0 0) (-8 -8 -8) (8 8 8)
+/*!QUAKED info_node (0 0 0) (-8 -8 -8) (8 8 8)
+# OVERVIEW
 It's a node, helping monsters navigate on the ground.
 
--------- KEYS --------
-"targetname" : Name
+# KEYS
+- "targetname" : Name
 
--------- TRIVIA --------
+# TRIVIA
 This entity was introduced in Half-Life (1998).
 */
-
 class
 info_node:NSPointTrigger
 {

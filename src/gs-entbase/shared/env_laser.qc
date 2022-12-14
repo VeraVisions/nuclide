@@ -14,27 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED env_laser (1 0 0) (-8 -8 -8) (8 8 8) LASER_STARTON x x x LASER_STARTSPARKS LASER_ENDSPARKS LASER_DECAL
-Controllable laser effect. More or less a stripped-down version of env_beam.
-
--------- KEYS --------
-"targetname"     : Name
-"LaserTarget"    : Targetname of the entity that acts as end point for the laser.
-"damage"         : Damage per second that's dealt when touching the inner laser.
-"texture"        : Path to the sprite to use in place of a texture.
-"BoltWidth"      : Thickness multiplier. 0-255 range.
-"NoiseAmplitude" : Amplitude multiplier. 0-255 range.
-
--------- SPAWNFLAGS --------
-LASER_STARTON : Activate the laser at map start.
-LASER_STARTSPARKS :Start of the laser will spark when set.
-LASER_ENDSPARKS : End of the laser will spark when set.
-LASER_DECAL : TODO: Presumably leaves decals when sparks hit a surface.
-
--------- TRIVIA --------
-This entity was introduced in Half-Life (1998).
-*/
-
 enumflags
 {
 	LASER_CHANGED_SPRITE,
@@ -62,6 +41,27 @@ enumflags
 	LASER_DECAL
 };
 
+/*!QUAKED env_laser (1 0 0) (-8 -8 -8) (8 8 8) LASER_STARTON x x x LASER_STARTSPARKS LASER_ENDSPARKS LASER_DECAL
+# OVERVIEW
+Controllable laser effect. More or less a stripped-down version of env_beam.
+
+# KEYS
+- "targetname"     : Name
+- "LaserTarget"    : Targetname of the entity that acts as end point for the laser.
+- "damage"         : Damage per second that's dealt when touching the inner laser.
+- "texture"        : Path to the sprite to use in place of a texture.
+- "BoltWidth"      : Thickness multiplier. 0-255 range.
+- "NoiseAmplitude" : Amplitude multiplier. 0-255 range.
+
+# SPAWNFLAGS
+- LASER_STARTON (1) : Activate the laser at map start.
+- LASER_STARTSPARKS (16) :Start of the laser will spark when set.
+- LASER_ENDSPARKS (32) : End of the laser will spark when set.
+- LASER_DECAL (64) : TODO: Presumably leaves decals when sparks hit a surface.
+
+# TRIVIA
+This entity was introduced in Half-Life (1998).
+*/
 class
 env_laser:NSRenderableEntity
 {

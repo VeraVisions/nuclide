@@ -14,35 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED env_bubbles (1 0 0) ? BUBFL_STARTOFF
-Brush volume that emits rising bubbles.
-
--------- KEYS --------
-"targetname" : Name
-"density"    : Bubble count when it's emitting
-"frequency"  : Emitting frequency in seconds
-"angles"     : Direction of water current
-"current"    : Speed of the water current
-
--------- SPAWNFLAGS --------
-BUBFL_STARTOFF : Start disabled.
-
--------- INPUTS --------
-"Activate"     : Turns the entity on
-"Deactive"     : Turns the entity off
-"Toggle"       : Toggles the entity to an on/off state
-"SetDensity"   : Sets the bubble count when it's emitting
-"SetFrequency" : Sets the emitting frequency in seconds
-"SetCurrent"   : Sets the speed of the water current
-
--------- NOTES --------
-The bubbles emit will pick a random place in the volume (although always at the bottom)
-and rise up in varying speeds. This means you can only place vertical bubble emitters.
-
--------- TRIVIA --------
-This entity was introduced in Half-Life (1998).
-*/
-
 enumflags
 {
 	BUBBLES_ORIGIN,
@@ -55,6 +26,35 @@ enumflags
 
 #define BUBFL_STARTOFF 1
 
+/*!QUAKED env_bubbles (1 0 0) ? BUBFL_STARTOFF
+# OVERVIEW
+Brush volume that emits rising bubbles.
+
+# KEYS
+- "targetname" : Name
+- "density"    : Bubble count when it's emitting
+- "frequency"  : Emitting frequency in seconds
+- "angles"     : Direction of water current
+- "current"    : Speed of the water current
+
+# SPAWNFLAGS
+- BUBFL_STARTOFF (1) : Start disabled.
+
+# INPUTS
+- "Activate"     : Turns the entity on
+- "Deactive"     : Turns the entity off
+- "Toggle"       : Toggles the entity to an on/off state
+- "SetDensity"   : Sets the bubble count when it's emitting
+- "SetFrequency" : Sets the emitting frequency in seconds
+- "SetCurrent"   : Sets the speed of the water current
+
+# NOTES
+The bubbles emit will pick a random place in the volume (although always at the bottom)
+and rise up in varying speeds. This means you can only place vertical bubble emitters.
+
+# TRIVIA
+This entity was introduced in Half-Life (1998).
+*/
 class
 env_bubbles:NSPointTrigger
 {

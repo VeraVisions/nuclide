@@ -14,19 +14,20 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED func_brush (0 .5 .8) ?
+/*!QUAKED func_brush (0 .5 .8) ?
+# OVERVIEW
 Combination of func_illusionary, func_wall, func_wall_toggle.
 When triggered, it'll become invisible and lose its collision.
 
--------- KEYS --------
-"targetname" : Name
-"Solidity" : Mode for choosing solidity. 0 : Toggle, 1 : Never, 2 : Always.
-"StartDisabled" : Will make it spawn invisible.
-"solidbsp" : Type of collision model to choose. 0 : Per-Poly, 1 : BSP file.
-"excludednpc" : Name of the NPC classname that will not collide with this entity
-"invert_exclusion" : Set to 1 if you want the 'excludednpc' key to act inverted
+# KEYS
+- "targetname" : Name
+- "Solidity" : Mode for choosing solidity. 0 : Toggle, 1 : Never, 2 : Always.
+- "StartDisabled" : Will make it spawn invisible.
+- "solidbsp" : Type of collision model to choose. 0 : Per-Poly, 1 : BSP file.
+- "excludednpc" : Name of the NPC classname that will not collide with this entity
+- "invert_exclusion" : Set to 1 if you want the 'excludednpc' key to act inverted
 
--------- NOTES --------
+# NOTES
 The main thing func_brush is concerned with is appearance.
 When you trigger it on/off, it'll be made visible/invisible.
 Collision however depends on the setting of the "Solidity" key.
@@ -34,10 +35,9 @@ If "Solidity" is toggle, the collision will ne enabled/disabled depending
 on whether or not the entity is visible/invisible.
 By default it's visible and has collision.
 
--------- HISTORY --------
+# TRIVIA
 This entity was introduced in Half-Life 2 (2004).
 */
-
 class
 func_brush:NSRenderableEntity
 {

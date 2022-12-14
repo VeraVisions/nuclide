@@ -14,23 +14,24 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED path_corner (1 0 0) (-8 -8 -8) (8 8 8) PC_WAIT PC_TELEPORT PC_FIREONCE
+/*!QUAKED path_corner (1 0 0) (-8 -8 -8) (8 8 8) PC_WAIT PC_TELEPORT PC_FIREONCE
+# OVERVIEW
 Node entities used for func_trains and func_guntargets.
 
--------- KEYS --------
-"targetname" : Name
-"target" : Next node.
-"message" : Target to trigger when a train passes this node.
-"speed" : New speed for passing train.
-"yaw_speed" : New yaw rotation for passing train. Currently unused.
-"wait" : Waiting time until we go to the next node.
+# KEYS
+- "targetname" : Name
+- "target" : Next node.
+- "message" : Target to trigger when a train passes this node.
+- "speed" : New speed for passing train.
+- "yaw_speed" : New yaw rotation for passing train. Currently unused.
+- "wait" : Waiting time until we go to the next node.
 
--------- SPAWNFLAGS --------
-PC_WAIT : Train will stop moving once passed. Needs retrigger to progress.
-PC_TELEPORT : Train passing will immediately teleport to "target".
-PC_FIREONCE : Only fire its target (message) once.
+# SPAWNFLAGS
+- PC_WAIT (1) : Train will stop moving once passed. Needs retrigger to progress.
+- PC_TELEPORT (2) : Train passing will immediately teleport to "target".
+- PC_FIREONCE (4) : Only fire its target (message) once.
 
--------- TRIVIA --------
+# TRIVIA
 This entity was introduced in Quake (1996).
 */
 

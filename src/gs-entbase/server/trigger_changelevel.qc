@@ -14,22 +14,23 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED trigger_changelevel (0 .5 .8) ? LC_NOINTERMISSION LC_USEONLY
+/*!QUAKED trigger_changelevel (0 .5 .8) ? LC_NOINTERMISSION LC_USEONLY
+# OVERVIEW
 When a Landmark is specified, you will have to position two info_landmark
 entities across your two levels with the same name. They'll mark a translation
 point for the coordinates in your levels.
 
--------- KEYS --------
-"targetname" : Name
-"map" : Next .bsp file name to transition to.
-"landmark" : Landmark name to target.
-"changedelay" : Time in seconds until the transition happens.
+# KEYS
+- "targetname" : Name
+- "map" : Next .bsp file name to transition to.
+- "landmark" : Landmark name to target.
+- "changedelay" : Time in seconds until the transition happens.
 
--------- SPAWNFLAGS --------
-LC_NOINTERMISSION : Don't show intermission cam (unimplemented).
-LC_USEONLY : Can't activate through touching, only via triggers.
+# SPAWNFLAGS
+- LC_NOINTERMISSION (1) : Don't show intermission cam (unimplemented).
+- LC_USEONLY (2) : Can't activate through touching, only via triggers.
 
--------- TRIVIA --------
+# TRIVIA
 This entity was introduced in Quake (1996).
 */
 

@@ -16,18 +16,6 @@
  
 int trace_surfaceflagsi;
 
-/*QUAKED env_sun (1 0 0) (-8 -8 -8) (8 8 8)
-"targetname" : Name
-"pitch" : Sun glow pitch.
-"angle" : Sun glow angle.
-"use_angles" : Use the 'angles' yaw value instead of the one from 'angle'.
-
-STUB!
-
--------- TRIVIA --------
-This entity was introduced in Half-Life 2 (2004).
-*/
-
 #define FLARE_SIZE [128,128]
 
 int
@@ -44,6 +32,19 @@ Util_IsSky(vector pos)
 	return (0);
 }
 
+/*!QUAKED env_sun (1 0 0) (-8 -8 -8) (8 8 8)
+# OVERVIEW
+Visual representation of where the sun is positioned in the sky.
+
+# KEYS
+- "targetname" : Name
+- "pitch" : Sun glow pitch.
+- "angle" : Sun glow angle.
+- "use_angles" : Use the 'angles' yaw value instead of the one from 'angle'.
+
+# TRIVIA
+This entity was introduced in Half-Life 2 (2004).
+*/
 class env_sun:NSEntity
 {
 public:

@@ -14,23 +14,23 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED info_intermission (1 0 0) (-8 -8 -8) (8 8 8)
+/*!QUAKED info_intermission (1 0 0) (-8 -8 -8) (8 8 8)
+# OVERVIEW
 An entity that's used to create an 'Intermission' camera.
 
--------- KEYS --------
-"targetname" : Name
+# KEYS
+- "targetname" : Name
 
--------- NOTES --------
+# NOTES
 Some mods use this while displaying the final scores, once a timelimit
 is hit etc.
 
 When Intermission is active, the players camera will be teleported here
 and angles towards the aim target.
 
--------- TRIVIA --------
+# TRIVIA
 This entity was introduced in Quake (1996).
 */
-
 class
 info_intermission:NSPointTrigger
 {

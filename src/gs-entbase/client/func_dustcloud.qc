@@ -14,19 +14,19 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED func_dustcloud (0 .5 .8) ?
+/*!QUAKED func_dustcloud (0 .5 .8) ?
+# OVERVIEW
 Dust cloud emitting brush volume.
 
--------- KEYS --------
-"count" :  Number of cloud particles that will float around on average.
-"Alpha" :  Transparency of the clouds. Value from 0 to 255.
-"SizeMin" : Minimum size of each cloud. In Quake units.
-"SizeMax" : Maximum size of each cloud. In Quake units.
+# KEYS
+- "count" :  Number of cloud particles that will float around on average.
+- "Alpha" :  Transparency of the clouds. Value from 0 to 255.
+- "SizeMin" : Minimum size of each cloud. In Quake units.
+- "SizeMax" : Maximum size of each cloud. In Quake units.
 
--------- TRIVIA --------
+# TRIVIA
 This entity was introduced in Half-Life 2 (2004).
 */
-
 class func_dustcloud:NSEntity
 {
 public:

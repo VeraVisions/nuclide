@@ -14,13 +14,14 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED momentary_door (0 .5 .8) ?
+/*!QUAKED momentary_door (0 .5 .8) ?
+# OVERVIEW
 Dynamic door that will move back down if it's not being used.
 
--------- KEYS --------
-"targetname" : Name
+# KEYS
+- "targetname" : Name
 
--------- TRIVIA --------
+# TRIVIA
 This entity was introduced in Half-Life (1998).
 */
 

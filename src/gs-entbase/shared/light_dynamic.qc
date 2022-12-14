@@ -14,44 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED light_dynamic (1 0 0) (-8 -8 -8) (8 8 8)
-Dynamic light entity. Can be parented to things, it even has some inputs that
-may be interesting.
-
--------- KEYS --------
-"targetname" : Name
-"target" : Name of an entity in the map that light will point at.
-"_light" : Color of the spotlight in RGB255 format.
-"brightness" : Intensity of the spotlight.
-"_inner_cone" : Angles of the inner spotlight beam. 0 = omnidirectional.
-"_cone" : Angles of the outer spotlight beam. 0 = omnidirectional.
-"distance" : Distance that light is allowed to cast, in inches.
-"spotlight_radius" : Radius of the resulting spotlight that's cast at a wall.
-"style" : Select one of the hard-coded lightstyles.
-"start_active" : Override for if the entity should start on or off.
-"pattern" : Override the lightstyle pattern with a string.
-
--------- INPUTS --------
-"TurnOn" : Turns the light on.
-"TurnOff" : Turns the light off.
-"Toggle" : Toggles the light from an on/off state.
-"Color" : Sets the light color in RGB255 format.
-"brightness" : Sets the light brightness.
-"distance" : Sets the distance of which the light will travel/radius.
-"_inner_cone" : Sets the length of the inner light cone.
-"_cone" : Sets the length of the light cone.
-"spotlight_radius" : Sets the radius of the projected spotlight.
-"style" : Sets the light appearance in integer form.
-"SetPattern" : Sets the light pattern in string form! a = dark, z = bright
-
--------- NOTES --------
-The 'start_active' is a Nuclide specific one. There is no way in Source engine
-games to tell the entity to start inactive as far as I can tell.
-
--------- TRIVIA --------
-This entity was introduced in Half-Life 2 (2004).
-*/
-
 var int autocvar_r_showDlights = 0;
 
 enumflags
@@ -69,6 +31,44 @@ enumflags
 	DLIGHTFL_CHANGED_PATTERN
 };
 
+/*!QUAKED light_dynamic (1 0 0) (-8 -8 -8) (8 8 8)
+# OVERVIEW
+Dynamic light entity. Can be parented to things, it even has some inputs that
+may be interesting.
+
+# KEYS
+- "targetname" : Name
+- "target" : Name of an entity in the map that light will point at.
+- "_light" : Color of the spotlight in RGB255 format.
+- "brightness" : Intensity of the spotlight.
+- "_inner_cone" : Angles of the inner spotlight beam. 0 = omnidirectional.
+- "_cone" : Angles of the outer spotlight beam. 0 = omnidirectional.
+- "distance" : Distance that light is allowed to cast, in inches.
+- "spotlight_radius" : Radius of the resulting spotlight that's cast at a wall.
+- "style" : Select one of the hard-coded lightstyles.
+- "start_active" : Override for if the entity should start on or off.
+- "pattern" : Override the lightstyle pattern with a string.
+
+# INPUTS
+- "TurnOn" : Turns the light on.
+- "TurnOff" : Turns the light off.
+- "Toggle" : Toggles the light from an on/off state.
+- "Color" : Sets the light color in RGB255 format.
+- "brightness" : Sets the light brightness.
+- "distance" : Sets the distance of which the light will travel/radius.
+- "_inner_cone" : Sets the length of the inner light cone.
+- "_cone" : Sets the length of the light cone.
+- "spotlight_radius" : Sets the radius of the projected spotlight.
+- "style" : Sets the light appearance in integer form.
+- "SetPattern" : Sets the light pattern in string form! a = dark, z = bright
+
+# NOTES
+The 'start_active' is a Nuclide specific one. There is no way in Source engine
+games to tell the entity to start inactive as far as I can tell.
+
+# TRIVIA
+This entity was introduced in Half-Life 2 (2004).
+*/
 class light_dynamic:NSPointTrigger
 {
 	vector m_vecLight;

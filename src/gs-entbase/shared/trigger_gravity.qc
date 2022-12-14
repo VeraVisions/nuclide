@@ -14,24 +14,24 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED trigger_gravity (0 .5 .8) ?
+/*!QUAKED trigger_gravity (0 .5 .8) ?
+# OVERVIEW
 Volume that will, when an entity enters it, permanently alters how it
 experiences gravity.
 
--------- KEYS --------
+# KEYS
 "targetname" : Name
 "gravity" : Gravity multiplier.
 
--------- NOTES --------
+# NOTES
 Entities leaving the volume will NOT lose the gravity modifier.
 If you don't desire this behaviour, then make sure a trigger_gravity with a
 modifier value of "1.0" surrounds the aforementioned volume so it can reset itself.
 Other than that gravity will naturally reset when the entity respawns.
 
--------- TRIVIA --------
+# TRIVIA
 This entity was introduced in Quake II (1997).
 */
-
 class trigger_gravity:NSBrushTrigger
 {
 	float m_flGravity;

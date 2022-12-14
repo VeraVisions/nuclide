@@ -14,24 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED prop_rope (1 1 0.5) (-8 -8 -8) (8 8 8) ROPE_VERTICAL
-Client-side decorative rope entity. 
-Connect the entity to a named info_notnull and watch it swing around.
-
--------- KEYS --------
-"sag" : Multiplier on how much sagginess will be applied to the rope.
-"segments" : Number of total segments. Default is "16".
-"material" : The texture to use on the rope.
-"swingfactor" : Multiplier on how much the rope swings about.
-"target" : The info_notnull to connect the rope to.
-
--------- SPAWNFLAGS --------
-ROPE_HALF : Only draw the first half of the rope, useful for vertical setups.
-
--------- TRIVIA --------
-This entity was introduced in The Wastes (2018).
-*/
-
 enumflags
 {
 	PROPROPE_CHANGED_MAT,
@@ -51,6 +33,24 @@ var float autocvar_rope_swing = 2.0;
 var bool autocvar_rope_fast = TRUE;
 var int autocvar_rope_maxsegments = -1;
 
+/*!QUAKED prop_rope (1 1 0.5) (-8 -8 -8) (8 8 8) ROPE_VERTICAL
+# OVERVIEW
+Client-side decorative rope entity. 
+Connect the entity to a named info_notnull and watch it swing around.
+
+# KEYS
+- "sag" : Multiplier on how much sagginess will be applied to the rope.
+- "segments" : Number of total segments. Default is "16".
+- "material" : The texture to use on the rope.
+- "swingfactor" : Multiplier on how much the rope swings about.
+- "target" : The info_notnull to connect the rope to.
+
+# SPAWNFLAGS
+- ROPE_VERTICAL (1) : Only draw the first half of the rope, useful for vertical setups.
+
+# TRIVIA
+This entity was introduced in The Wastes (2018).
+*/
 class prop_rope:NSEntity
 {
 	string m_strShader;

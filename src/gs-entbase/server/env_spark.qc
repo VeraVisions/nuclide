@@ -14,28 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED env_spark (1 0 0) (-8 -8 -8) (8 8 8) x x x x x EVSPARK_TOGGLE EVSPARK_STARTON
-Creates a series (or just one) spark effect with sound when triggered.
-
--------- KEYS --------
-"targetname" : Name
-"target" : Target when triggered.
-"killtarget" : Target to kill when triggered.
-"angles" : Sets the pitch, yaw and roll angles of the spark.
-"MaxDelay" : Delay between sparks when start-on (or toggle) is set
-
--------- SPAWNFLAGS --------
-EVSPARK_TOGGLE : When triggered, it'll spark continously with "MaxDelay" dictating the interval.
-EVSPARK_STARTON : Start sparking upon spawning, at least waiting til "MaxDelay" seconds has passed.
-
--------- NOTES --------
-The spawnflags EVSPARK_TOGGLE and EVSPARK_STARTON are often used together.
-Without them set, it'll of course only spark once whenever it's triggered.
-
--------- TRIVIA --------
-This entity was introduced in Half-Life (1998).
-*/
-
 enumflags
 {
 	EVSPARK_UNUSED1,
@@ -47,6 +25,28 @@ enumflags
 	EVSPARK_STARTON
 };
 
+/*!QUAKED env_spark (1 0 0) (-8 -8 -8) (8 8 8) x x x x x EVSPARK_TOGGLE EVSPARK_STARTON
+# OVERVIEW
+Creates a series (or just one) spark effect with sound when triggered.
+
+# KEYS
+- "targetname" : Name
+- "target" : Target when triggered.
+- "killtarget" : Target to kill when triggered.
+- "angles" : Sets the pitch, yaw and roll angles of the spark.
+- "MaxDelay" : Delay between sparks when start-on (or toggle) is set
+
+# SPAWNFLAGS
+- EVSPARK_TOGGLE (32) : When triggered, it'll spark continously with "MaxDelay" dictating the interval.
+- EVSPARK_STARTON (64) : Start sparking upon spawning, at least waiting til "MaxDelay" seconds has passed.
+
+# NOTES
+The spawnflags EVSPARK_TOGGLE and EVSPARK_STARTON are often used together.
+Without them set, it'll of course only spark once whenever it's triggered.
+
+# TRIVIA
+This entity was introduced in Half-Life (1998).
+*/
 class
 env_spark:NSPointTrigger
 {

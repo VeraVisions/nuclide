@@ -14,29 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED trigger_multiple (0 .5 .8) ? TM_MONSTERS TM_NOCLIENTS TM_PUSHABLES
-A trigger volume which works more than once. 
-
--------- KEYS --------
-"targetname" : Name
-"target" : Target when triggered.
-"killtarget" : Target to kill when triggered.
-"delay" : Delay until target is triggered.
-"wait" : Time until this entity can trigger again
-
--------- OUTPUTS ---------
-"OnStartTouch": Triggered when something starts touching this volume
-"OnEndTouchAll": Triggered when nothing touched the entity no more
-
--------- SPAWNFLAGS --------
-TM_MONSTERS : Allow NPCs to activate this entity.
-TM_NOCLIENTS : Don't allow players to activate this entity.
-TM_PUSHABLES : Allow func_pushables to trigger this entity.
-
--------- TRIVIA --------
-This entity was introduced in Quake (1996).
-*/
-
 enumflags
 {
 	TM_MONSTERS,
@@ -44,6 +21,29 @@ enumflags
 	TM_PUSHABLES
 };
 
+/*!QUAKED trigger_multiple (0 .5 .8) ? TM_MONSTERS TM_NOCLIENTS TM_PUSHABLES
+# OVERVIEW
+A trigger volume which works more than once. 
+
+# KEYS
+- "targetname" : Name
+- "target" : Target when triggered.
+- "killtarget" : Target to kill when triggered.
+- "delay" : Delay until target is triggered.
+- "wait" : Time until this entity can trigger again
+
+# OUTPUTS
+- "OnStartTouch": Triggered when something starts touching this volume
+- "OnEndTouchAll": Triggered when nothing touched the entity no more
+
+# SPAWNFLAGS
+- TM_MONSTERS (1) : Allow NPCs to activate this entity.
+- TM_NOCLIENTS (2) : Don't allow players to activate this entity.
+- TM_PUSHABLES (4) : Allow func_pushables to trigger this entity.
+
+# TRIVIA
+This entity was introduced in Quake (1996).
+*/
 class
 trigger_multiple:NSBrushTrigger
 {

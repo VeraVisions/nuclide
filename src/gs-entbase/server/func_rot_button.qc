@@ -14,31 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED func_rot_button (0 .5 .8) ? FNCROTBUT_NONSOLID FNCROTBUT_REVERSE x x x FNCROTBUT_TOGGLE FNCROTBUT_XAXIS FNCROTBUT_YAXIS FNCROTBUT_TOUCHABLE
-A button that rotates along a pivot point. Used for valves, spigots and alike.
-
--------- KEYS --------
-"targetname" : Name
-"target" : Name of the entity to trigger when opened
-"speed" : How fast the button rotates when activated.
-"health" : If non-zero, the button must be damaged to turn.
-"wait" : Time to wait before button resets itself. -1 makes it stay set.
-"distance" : Distance in degrees the button will rotate.
-
--------- SPAWNFLAGS --------
-FNCROTBUT_NONSOLID : Don't do collision testing against this entity.
-FNCROTBUT_REVERSE : Rotate the counter-clockwise.
-FNCROTBUT_TOGGLE : Can only be activated via trigger, not player interaction.
-FNCROTBUT_XAXIS : Rotate along the X-axis.
-FNCROTBUT_YAXIS : Rotate along the Y-axis.
-
--------- NOTES --------
-Please include an origin brush so that a pivot point will be defined.
-
--------- TRIVIA --------
-This entity was introduced in Half-Life (1998).
-*/
-
 enumflags
 {
 	FNCROTBUT_NONSOLID,
@@ -60,6 +35,31 @@ enum
 	ROTBTNSTATE_CLOSING
 };
 
+/*!QUAKED func_rot_button (0 .5 .8) ? FNCROTBUT_NONSOLID FNCROTBUT_REVERSE x x x FNCROTBUT_TOGGLE FNCROTBUT_XAXIS FNCROTBUT_YAXIS FNCROTBUT_TOUCHABLE
+# OVERVIEW
+A button that rotates along a pivot point. Used for valves, spigots and alike.
+
+# KEYS
+- "targetname" : Name
+- "target" : Name of the entity to trigger when opened
+- "speed" : How fast the button rotates when activated.
+- "health" : If non-zero, the button must be damaged to turn.
+- "wait" : Time to wait before button resets itself. -1 makes it stay set.
+- "distance" : Distance in degrees the button will rotate.
+
+# SPAWNFLAGS
+- FNCROTBUT_NONSOLID (1) : Don't do collision testing against this entity.
+- FNCROTBUT_REVERSE (2) : Rotate the counter-clockwise.
+- FNCROTBUT_TOGGLE (32) : Can only be activated via trigger, not player interaction.
+- FNCROTBUT_XAXIS (64) : Rotate along the X-axis.
+- FNCROTBUT_YAXIS (128) : Rotate along the Y-axis.
+
+# NOTES
+Please include an origin brush so that a pivot point will be defined.
+
+# TRIVIA
+This entity was introduced in Half-Life (1998).
+*/
 class
 func_rot_button:NSSurfacePropEntity
 {

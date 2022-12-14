@@ -14,30 +14,30 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED prop_static (0 0.2 1) (-8 -8 -8) (8 8 8) SF_BASIC_COL
+/*!QUAKED prop_static (0 0.2 1) (-8 -8 -8) (8 8 8) SF_BASIC_COL
+# OVERVIEW
 Decorative model entity that gets baked into the level file.
 
--------- KEYS --------
-"model" : Model file that will be displayed by the entity.
-"modelscale" : Scale modifier of the model. Default is "1".
-"modelscale_vec" : Scale modifier, but in vector format
-"angles" : Sets the pitch, yaw and roll angles of the model.
-"_cs" : Toggles if the prop casts a shadow or not.
-"_ls" : Lightmap scale multiplier for the resulting surfaces.
-"_sn" : Shading angle related to lightmap phong shading.
-"_remap" : Force the model surfaces to use a specified material.
+# KEYS
+- "model" : Model file that will be displayed by the entity.
+- "modelscale" : Scale modifier of the model. Default is "1".
+- "modelscale_vec" : Scale modifier, but in vector format
+- "angles" : Sets the pitch, yaw and roll angles of the model.
+- "_cs" : Toggles if the prop casts a shadow or not.
+- "_ls" : Lightmap scale multiplier for the resulting surfaces.
+- "_sn" : Shading angle related to lightmap phong shading.
+- "_remap" : Force the model surfaces to use a specified material.
 
--------- NOTES --------
+# NOTES
 After compilation, the source model is no longer required and the
 resulting entity is removed. This ensures that models are rendered in the
 same batch as the world. This makes sense for one giant unique model in
 the map, but for multiple repetitive uses of the same model you'll actually
 waste disk space and memory. Use wisely.
 
--------- TRIVIA --------
+# TRIVIA
 This entity was introduced in Half-Life 2 (2004).
 */
-
 class
 prop_static:NSRenderableEntity
 {

@@ -14,38 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED env_projectedtexture (1 0 0) (-8 -8 -8) (8 8 8) PRTEXSF_STARTON
-Textured light projected. This is the type of lighting that's used for
-flashlights, lamp spotlights and so on.
-
--------- KEYS --------
-"targetname" : Name
-"target" : Name of an entity in the map that light will point at.
-"lightcolor" : Color of the projected texture light + intensity (unused?)
-"style" : Light appearance style of the projected texture.
-"texturename" : Name of the texture to be cast as a light.
-"farz" : Distance to which this projected light will be cast.
-"nearz" : Clipping distance for near objects that won't get lit.
-"pattern" : Sets a custom pattern. The "style" key overrides this.
-
--------- INPUTS --------
-"TurnOff" : Turns the entity off.
-"TurnOn" : Turns the entity on.
-"Toggle" : Toggles the entity to an on/off state.
-"SpotlightTexture" : Sets the projected texture to a specified path.
-"LightColor" : Sets the color of the light in RGB255 form.
-"SetLightStyle" : Sets the light appearance integer.
-"SetNearZ" : Sets clipping distance for near objects that won't get lit.
-"SetFarZ" : Sets distance to which this projected light will be cast.
-"SetPattern" : Sets the style pattern of the light to a custom one.
-
--------- SPAWNFLAGS --------
-PRTEXSF_STARTON : Start enabled.
-
--------- TRIVIA --------
-This entity was introduced in Half-Life 2: Episode One (2006).
-*/
-
 enumflags
 {
 	PRTEXFL_CHANGED_ORIGIN,
@@ -61,6 +29,38 @@ enumflags
 	PRTEXFL_CHANGED_PATTERN
 };
 
+/*!QUAKED env_projectedtexture (1 0 0) (-8 -8 -8) (8 8 8) PRTEXSF_STARTON
+# OVERVIEW
+Textured light projected. This is the type of lighting that's used for
+flashlights, lamp spotlights and so on.
+
+# KEYS
+- "targetname" : Name
+- "target" : Name of an entity in the map that light will point at.
+- "lightcolor" : Color of the projected texture light + intensity (unused?)
+- "style" : Light appearance style of the projected texture.
+- "texturename" : Name of the texture to be cast as a light.
+- "farz" : Distance to which this projected light will be cast.
+- "nearz" : Clipping distance for near objects that won't get lit.
+- "pattern" : Sets a custom pattern. The "style" key overrides this.
+
+# INPUTS
+- "TurnOff" : Turns the entity off.
+- "TurnOn" : Turns the entity on.
+- "Toggle" : Toggles the entity to an on/off state.
+- "SpotlightTexture" : Sets the projected texture to a specified path.
+- "LightColor" : Sets the color of the light in RGB255 form.
+- "SetLightStyle" : Sets the light appearance integer.
+- "SetNearZ" : Sets clipping distance for near objects that won't get lit.
+- "SetFarZ" : Sets distance to which this projected light will be cast.
+- "SetPattern" : Sets the style pattern of the light to a custom one.
+
+# SPAWNFLAGS
+- PRTEXSF_STARTON (1) : Start enabled.
+
+# TRIVIA
+This entity was introduced in Half-Life 2: Episode One (2006).
+*/
 class env_projectedtexture:NSPointTrigger
 {
 private:

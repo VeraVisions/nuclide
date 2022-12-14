@@ -14,22 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED func_monitor (0 .5 .8) ?
-A monitor that renders the view of a linked point_camera entity.
-
--------- KEYS --------
-"targetname" : Name
-"target" : Camera it's linked to.
-
--------- INPUTS --------
-"Enable" : Turns the monitor on
-"Disable" : Turns the monitor on.
-"Toggle" : Toggles the state of the monitor between on and off.
-
--------- TRIVIA --------
-This entity was introduced in Half-Life 2 (2004).
-*/
-
 #ifdef CLIENT
 int g_iRenderTargetActive;
 float g_flRenderTargetFOV;
@@ -72,6 +56,22 @@ enumflags
 	MONITORFL_CHANGED_STATUS
 };
 
+/*!QUAKED func_monitor (0 .5 .8) ?
+# OVERVIEW
+A monitor that renders the view of a linked point_camera entity.
+
+# KEYS
+- "targetname" : Name
+- "target" : Camera it's linked to.
+
+# INPUTS
+- "Enable" : Turns the monitor on
+- "Disable" : Turns the monitor on.
+- "Toggle" : Toggles the state of the monitor between on and off.
+
+# TRIVIA
+This entity was introduced in Half-Life 2 (2004).
+*/
 class func_monitor:NSRenderableEntity
 {
 #ifdef CLIENT

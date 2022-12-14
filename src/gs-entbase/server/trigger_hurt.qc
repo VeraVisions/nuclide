@@ -14,27 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED trigger_hurt (0 .5 .8) ? SF_HURT_ONCE SF_HURT_OFF x SF_HURT_NOPLAYERS SF_HURT_FIREONPLAYER SF_HURT_TOUCHPLAYER
-Trigger volume that damages everything it touches.
-
--------- KEYS --------
-"targetname" : Name
-"target" : Target when triggered.
-"delay" : Delay until target is triggered.
-"killtarget" : Target to kill when triggered.
-"dmg" : Damage inflicted.
-
--------- SPAWNFLAGS --------
-SF_HURT_ONCE : Stop once it's been triggered the first time.
-SF_HURT_OFF : Needs to be triggered in order to work again.
-SF_HURT_NOPLAYERS : Will only hurt NPCs.
-SF_HURT_TOUCHPLAYER : Will only hurt players.
-SF_HURT_FIREONPLAYER : Only trigger a target if a player activates it.
-
--------- TRIVIA --------
-This entity was introduced in Quake (1996).
-*/
-
 .float hurt_next;
 
 #define HURTTYPE_GENERIC	0
@@ -65,6 +44,27 @@ This entity was introduced in Quake (1996).
 #define SF_HURT_FIREONPLAYER	16 // Only call UseTarget functions when it's a player
 #define SF_HURT_TOUCHPLAYER		32 // Only hurt players
 
+/*!QUAKED trigger_hurt (0 .5 .8) ? SF_HURT_ONCE SF_HURT_OFF x SF_HURT_NOPLAYERS SF_HURT_FIREONPLAYER SF_HURT_TOUCHPLAYER
+# OVERVIEW
+Trigger volume that damages everything it touches.
+
+# KEYS
+- "targetname" : Name
+- "target" : Target when triggered.
+- "delay" : Delay until target is triggered.
+- "killtarget" : Target to kill when triggered.
+- "dmg" : Damage inflicted.
+
+# SPAWNFLAGS
+- SF_HURT_ONCE (1) : Stop once it's been triggered the first time.
+- SF_HURT_OFF (2) : Needs to be triggered in order to work again.
+- SF_HURT_NOPLAYERS (8) : Will only hurt NPCs.
+- SF_HURT_TOUCHPLAYER (16) : Will only hurt players.
+- SF_HURT_FIREONPLAYER (32) : Only trigger a target if a player activates it.
+
+# TRIVIA
+This entity was introduced in Quake (1996).
+*/
 class
 trigger_hurt:NSBrushTrigger
 {

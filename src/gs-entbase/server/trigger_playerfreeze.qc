@@ -14,22 +14,22 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED trigger_playerfreeze (1 0 0) (-8 -8 -8) (8 8 8)
+/*!QUAKED trigger_playerfreeze (1 0 0) (-8 -8 -8) (8 8 8)
+# OVERVIEW
 Trigger that freezes all clients, until it is triggered again.
 Freezing a player means they're unable to move, they can still look around.
 
--------- KEYS --------
-"targetname" : Name
-"killtarget" : Target to kill when triggered.
+# KEYS
+- "targetname" : Name
+- "killtarget" : Target to kill when triggered.
 
--------- NOTES --------
+# NOTES
 Ideas: Add ability to supress looking around, firing weapons, using items
 and so on.
 
--------- TRIVIA --------
+# TRIVIA
 This entity was introduced in Opposing Force (1999).
 */
-
 class
 trigger_playerfreeze:NSBrushTrigger
 {

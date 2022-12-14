@@ -14,43 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED func_breakable (0 .5 .8) ? SF_TRIGGER SF_TOUCH SF_PRESSURE
-Brush volume that can break into lots of little pieces.
-
--------- KEYS --------
-"targetname" : Name
-"target" : Target when triggered.
-"killtarget" : Target to kill when triggered.
-"health" : Health of the entity.
-"material" : Material it's made of (See material-list below).
-"delay" : Delay in seconds of when it breaks under pressure.
-"explodemagnitude" : Strength of the explosion.
-
--------- SPAWNFLAGS --------
-SF_TRIGGER : Breakable is invincible and has to be triggered in order to break.
-SF_TOUCH : Break when an entity collides into it at high speed (damage is speed in units * 0.01).
-SF_PRESSURE : Initiate break once someone is standing on top of it.
-
--------- NOTES --------
-The strength of the explosion decides the radius (magnitude * 2.5) and the
-maximum damage the explosion will do in the center. It has a linear fall-off.
-
-Material-list:
-0 : Glass
-1 : Wood
-2 : Metal
-3 : Flesh
-4 : Cinder
-5 : Tile
-6 ; Computer
-7 : Glass (Unbreakable)
-8 : Rock
-9 : None
-
--------- TRIVIA --------
-This entity was introduced in Half-Life (1998).
-*/
-
 enumflags
 {
 	SF_TRIGGER,
@@ -115,6 +78,43 @@ const string funcbreakable_surftable[] = {
 "gs_material_rocks"
 };
 
+/*!QUAKED func_breakable (0 .5 .8) ? SF_TRIGGER SF_TOUCH SF_PRESSURE
+# OVERVIEW
+Brush volume that can break into lots of little pieces.
+
+# KEYS
+- "targetname" : Name
+- "target" : Target when triggered.
+- "killtarget" : Target to kill when triggered.
+- "health" : Health of the entity.
+- "material" : Material it's made of (See material-list below).
+- "delay" : Delay in seconds of when it breaks under pressure.
+- "explodemagnitude" : Strength of the explosion.
+
+# SPAWNFLAGS
+- SF_TRIGGER (1) : Breakable is invincible and has to be triggered in order to break.
+- SF_TOUCH (2) : Break when an entity collides into it at high speed (damage is speed in units * 0.01).
+- SF_PRESSURE (4) : Initiate break once someone is standing on top of it.
+
+# NOTES
+The strength of the explosion decides the radius (magnitude * 2.5) and the
+maximum damage the explosion will do in the center. It has a linear fall-off.
+
+Material-list:
+	- 0 : Glass
+	- 1 : Wood
+	- 2 : Metal
+	- 3 : Flesh
+	- 4 : Cinder
+	- 5 : Tile
+	- 6 ; Computer
+	- 7 : Glass (Unbreakable)
+	- 8 : Rock
+	- 9 : None
+
+# TRIVIA
+This entity was introduced in Half-Life (1998).
+*/
 class
 func_breakable:NSSurfacePropEntity
 {

@@ -14,21 +14,21 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED point_message (0.2 1 0.2) (-8 -8 -8) (8 8 8)
+/*!QUAKED point_message (0.2 1 0.2) (-8 -8 -8) (8 8 8)
+# OVERVIEW
 Client-side overlay/message that is projected in relation to its position
 in 3D space.
 
--------- KEYS --------
-"message" : The message to display.
-"radius" : The radius in which it will appear.
+# KEYS
+- "message" : The message to display.
+- "radius" : The radius in which it will appear.
 
--------- NOTES --------
+# NOTES
 Used for zoo and test maps in which less interactive overlays are desired.
 
--------- TRIVIA --------
+# TRIVIA
 This entity was introduced in Half-Life 2 (2004).
 */
-
 class point_message:NSEntity
 {
 public:
