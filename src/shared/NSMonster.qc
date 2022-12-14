@@ -200,9 +200,10 @@ NSMonster::Sound(string msg)
 void
 NSMonster::Gib(void)
 {
+	SetState(MONSTER_DEAD);
 	SetTakedamage(DAMAGE_NO);
 	FX_GibHuman(origin, vectoangles(origin - g_dmg_eAttacker.origin), g_dmg_iDamage * 2.0f);
-	Hide();
+	Disappear();
 }
 
 void
