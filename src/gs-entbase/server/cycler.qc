@@ -41,7 +41,6 @@ public:
 	
 	virtual void Respawn(void);
 	virtual void Pain(void);
-
 };
 
 void

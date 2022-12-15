@@ -84,7 +84,7 @@ public:
 	virtual void ReceiveEntity(float,float);
 	virtual float predraw(void);
 #else
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 	virtual void Respawn(void);
 	virtual float SendEntity(entity,float);
 	virtual void SpawnKey(string,string);
@@ -166,12 +166,12 @@ env_projectedtexture::EvaluateEntity(void)
 
 		SetSendFlags(PRTEXFL_CHANGED_ANGLES);
 	}
-	SAVE_STATE(origin);
-	SAVE_STATE(angles);
+	SAVE_STATE(origin)
+	SAVE_STATE(angles)
 }
 
 void
-env_projectedtexture::Trigger(entity act, int state)
+env_projectedtexture::Trigger(entity act, triggermode_t state)
 {
 	switch (state) {
 	case TRIG_OFF:

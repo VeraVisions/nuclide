@@ -66,7 +66,7 @@ public:
 	virtual void Restore(string,string);
 	virtual void SpawnKey(string,string);
 	virtual void Spawned(void);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 
 private:
 	int m_iUses;
@@ -140,7 +140,7 @@ env_beverage::Spawned(void)
 }
 
 void
-env_beverage::Trigger(entity act, int unused)
+env_beverage::Trigger(entity act, triggermode_t unused)
 {
 	if (m_bReady == false || m_iUses <= 0) {
 		return;

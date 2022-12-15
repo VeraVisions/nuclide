@@ -46,7 +46,7 @@ public:
 	virtual void SpawnKey(string,string);
 	virtual void Spawned(void);
 	virtual void Respawn(void);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 	virtual void Death(void);
 	
 	virtual void NextPath(void);
@@ -227,7 +227,7 @@ func_guntarget::Stop(void)
 }
 
 void
-func_guntarget::Trigger(entity act, int state)
+func_guntarget::Trigger(entity act, triggermode_t state)
 {
 	switch (state) {
 	case TRIG_OFF:

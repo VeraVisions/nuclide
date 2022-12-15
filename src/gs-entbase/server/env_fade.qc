@@ -54,7 +54,7 @@ public:
 	/* overrides */
 	virtual void Save(float);
 	virtual void Restore(string,string);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 	virtual void SpawnKey(string,string);
 };
 
@@ -104,7 +104,7 @@ env_fade::SpawnKey(string strKey, string strValue)
 }
 
 void
-env_fade::Trigger(entity eAct, int iState)
+env_fade::Trigger(entity eAct, triggermode_t iState)
 {
 	/* Half-Life ignores states entirely for env_fade's being triggered */
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);

@@ -57,7 +57,7 @@ public:
 	/* overrides */
 	virtual void Save(float);
 	virtual void Restore(string,string);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 	virtual void Respawn(void);
 	virtual void SpawnKey(string,string);
 	
@@ -228,7 +228,7 @@ func_mortar_field::FireControlled(void)
 }
 
 void
-func_mortar_field::Trigger(entity act, int state)
+func_mortar_field::Trigger(entity act, triggermode_t state)
 {
 	switch (m_iType) {
 	case 0:

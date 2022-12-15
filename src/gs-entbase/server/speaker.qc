@@ -78,7 +78,7 @@ public:
 	virtual void Restore(string,string);
 	virtual void SpawnKey(string,string);
 	virtual void Respawn(void);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 	
 	virtual void Announce(void);
 
@@ -170,7 +170,7 @@ speaker::Announce(void)
 }
 
 void
-speaker::Trigger(entity eAct, int foo)
+speaker::Trigger(entity eAct, triggermode_t foo)
 {
 	ScheduleThink(Announce, 0.0f);
 }

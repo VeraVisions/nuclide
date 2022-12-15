@@ -21,8 +21,10 @@ precision, and that can disturb other operations.
 Texture coordinates are modified in the order in which **tcMods** are
 specified. In otherwords, if you see:
 
-` tcMod scale 0.5 0.5`
-` tcMod scroll 1 1`
+```
+ tcMod scale 0.5 0.5
+ tcMod scroll 1 1
+```
 
 Then the texture coordinates will be **scaled then**scrolled'''.
 

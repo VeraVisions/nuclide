@@ -46,7 +46,7 @@ public:
 	virtual void Restore(string,string);
 	virtual void SpawnKey(string,string);
 	virtual void Respawn(void);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 
 };
 
@@ -119,7 +119,7 @@ random_trigger::Respawn(void)
 }
 
 void
-random_trigger::Trigger(entity act, int state)
+random_trigger::Trigger(entity act, triggermode_t state)
 {
 	float r;
 

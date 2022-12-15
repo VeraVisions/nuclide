@@ -259,6 +259,8 @@ public:
 	nonvirtual vector GetAbsoluteMaxs(void);
 	/** Returns a flag bitfield that the entity associates with. */
 	nonvirtual float GetFlags(void);
+	/** Returns true if the entity has the specified flags. */
+	nonvirtual float HasFlags(float);
 	/** Returns an absolute value of when the entity will be think again.
 		Any result should be tested against `::GetTime()`. */
 	nonvirtual float GetNextThinkTime(void);

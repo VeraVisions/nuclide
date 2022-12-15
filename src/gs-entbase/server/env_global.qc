@@ -48,7 +48,7 @@ public:
 	virtual void Restore(string,string);
 	virtual void SpawnKey(string,string);
 	virtual void Spawned(void);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 	
 	virtual int GlobalPresent(string);
 	virtual void AddNewGlobal(string,globalstate_t);
@@ -119,7 +119,7 @@ env_global::Spawned(void)
 }
 
 void
-env_global::Trigger(entity act, int state)
+env_global::Trigger(entity act, triggermode_t state)
 {
 	globalstate_t iOldValue = GetGlobalValue(m_strGlobalState);
 	globalstate_t newValue = 0;

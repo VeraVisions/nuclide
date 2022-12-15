@@ -72,7 +72,7 @@ public:
 	virtual void SpawnKey(string,string);
 	virtual void Spawned(void);
 	virtual void Respawn(void);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 	
 	virtual void SoundMove(void);
 	virtual void SoundStop(void);
@@ -304,7 +304,7 @@ func_train::PathNext(void)
 
 /* TODO: Handle state? */
 void
-func_train::Trigger(entity act, int state)
+func_train::Trigger(entity act, triggermode_t state)
 {
 	PathMove();
 }

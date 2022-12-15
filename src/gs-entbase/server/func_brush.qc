@@ -50,7 +50,7 @@ public:
 	virtual void Save(float);
 	virtual void Restore(string,string);
 	virtual void Respawn(void);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 	virtual void SpawnKey(string,string);
 
 };
@@ -123,7 +123,7 @@ func_brush::Respawn(void)
 }
 
 void
-func_brush::Trigger(entity act, int state)
+func_brush::Trigger(entity act, triggermode_t state)
 {
 	/* collision */
 	switch (m_iSolidity) {

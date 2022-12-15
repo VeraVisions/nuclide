@@ -19,6 +19,16 @@ NSBrushTrigger::NSBrushTrigger(void)
 {
 }
 
+int
+NSBrushTrigger::GetValue(void)
+{
+	if (GetSolid() == SOLID_NOT) {
+		return (1);
+	}
+
+	return (0);
+}
+
 void
 NSBrushTrigger::InitBrushTrigger(void)
 {

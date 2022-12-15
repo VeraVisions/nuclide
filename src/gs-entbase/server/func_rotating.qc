@@ -79,7 +79,7 @@ public:
 	virtual void Restore(string,string);
 	virtual void SpawnKey(string,string);
 	virtual void Respawn(void);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 	
 	virtual void Rotate(void);
 	virtual void Blocked(entity);
@@ -171,7 +171,7 @@ func_rotating::Respawn(void)
 
 /* TODO: Handle state */
 void
-func_rotating::Trigger(entity act, int state)
+func_rotating::Trigger(entity act, triggermode_t state)
 {
 	if (vlen(avelocity) > 0) {
 		ClearVelocity();

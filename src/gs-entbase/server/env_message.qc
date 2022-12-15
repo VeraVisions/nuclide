@@ -55,7 +55,7 @@ public:
 	virtual void SpawnKey(string,string);
 	virtual void Respawn(void);
 	
-	virtual void Play(entity,int);
+	virtual void Play(entity, triggermode_t);
 
 };
 
@@ -119,7 +119,7 @@ env_message::Respawn(void)
 }
 
 void
-env_message::Play(entity act, int state)
+env_message::Play(entity act, triggermode_t state)
 {
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_MESSAGE);

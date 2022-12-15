@@ -38,7 +38,7 @@ public:
 	virtual void Save(float);
 	virtual void Restore(string,string);
 	virtual void SpawnKey(string,string);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 
 };
 
@@ -80,7 +80,7 @@ trigger_changetarget::SpawnKey(string strKey, string strValue)
 }
 
 void
-trigger_changetarget::Trigger(entity act, int state)
+trigger_changetarget::Trigger(entity act, triggermode_t state)
 {
 	NSEntity f;
 

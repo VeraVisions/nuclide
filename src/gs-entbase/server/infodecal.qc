@@ -50,7 +50,7 @@ public:
 	virtual void SpawnKey(string,string);
 	virtual void Respawn(void);
 	virtual void Spawned(void);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 
 };
 
@@ -134,7 +134,7 @@ infodecal::Respawn(void)
 }
 
 void
-infodecal::Trigger(entity act, int state)
+infodecal::Trigger(entity act, triggermode_t state)
 {
 	switch (state) {
 	case TRIG_OFF:

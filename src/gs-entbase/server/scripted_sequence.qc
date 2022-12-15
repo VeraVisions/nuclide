@@ -103,7 +103,7 @@ public:
 	/* overrides */
 	virtual void Save(float);
 	virtual void Restore(string,string);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 	virtual void Respawn(void);
 	virtual void SpawnKey(string,string);
 	
@@ -315,7 +315,7 @@ scripted_sequence::RunOnEntity(entity targ)
 }
 
 void
-scripted_sequence::Trigger(entity act, int unused)
+scripted_sequence::Trigger(entity act, triggermode_t unused)
 {
 	NSMonster f;
 

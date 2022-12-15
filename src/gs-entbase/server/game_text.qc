@@ -66,7 +66,7 @@ public:
 	virtual void Save(float);
 	virtual void Restore(string,string);
 	virtual void SpawnKey(string,string);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 
 };
 
@@ -180,7 +180,7 @@ game_text::SpawnKey(string strKey, string strValue)
 }
 
 void
-game_text::Trigger(entity act, int state)
+game_text::Trigger(entity act, triggermode_t state)
 {
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_TEXT);

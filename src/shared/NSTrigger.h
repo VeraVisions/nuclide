@@ -31,36 +31,25 @@ typedef enum
 	GLOBAL_DEAD
 } globalstate_t;
 
+typedef enum
+{ 
+	USE_TOGGLE,
+	USE_CONTINOUS
+} usetype_t;
+
+typedef enum
+{
+	TRIG_OFF,
+	TRIG_ON,
+	TRIG_TOGGLE
+} triggermode_t;
+
+
 /** NSTrigger handles all the non-input as well as Legacy (Quake, GoldSource) style
 trigger behaviour. It also deals with masters, touches, blocking and so on.
 */
 class NSTrigger:NSIO
 {
-private:
-	/* not needed to be saved right now */
-	float m_flTouchTime;
-	bool m_beingTouched;
-	entity m_eTouchLast;
-
-	nonvirtual void _TouchHandler(void);
-	nonvirtual void _BlockedHandler(void);
-
-#ifdef SERVER
-	string m_oldstrTarget; /* needed due to trigger_changetarget */
-
-	string m_strGlobalState;
-	string m_strKillTarget;
-	string m_strMessage;
-	string m_strMaster;
-	int m_iUseType;
-	int m_iValue;
-
-	/* legacy trigger architecture */
-	float m_flDelay;
-#else
-	float team;
-#endif
-
 public:
 	void NSTrigger(void);
 
@@ -87,18 +76,18 @@ public:
 	virtual void Input(entity,string,string);
 
 	/** Called whenever we're legacy triggered by another object or function. */
-	virtual void Trigger(entity,int);
-
-	/** When called will trigger its legacy targets with a given delay. */
-	nonvirtual void UseTargets(entity,int, float);
-
-	/** Sets the legacy target for this entity. */
-	nonvirtual void SetTriggerTarget(string);
+	virtual void Trigger(entity, triggermode_t);
 
 	/* master feature */
 	/** Returns what we will pass onto other's `::GetMaster()` calls if we're their master. */
 	/* multisource overrides this, so keep virtual */
 	virtual int GetValue(void);
+
+	/** When called will trigger its legacy targets with a given delay. */
+	nonvirtual void UseTargets(entity,int,float);
+
+	/** Sets the legacy target for this entity. */
+	nonvirtual void SetTriggerTarget(string);
 
 	/** Returns whether our master allows us to be triggered. */
 	nonvirtual int GetMaster(void);
@@ -120,19 +109,30 @@ public:
 
 	/** Retrives the team value of a given entity. */
 	nonvirtual float GetTeam(void);
-
 #endif
-};
 
-enum
-{ 
-	USE_TOGGLE,
-	USE_CONTINOUS
-};
+private:
+	/* not needed to be saved right now */
+	float m_flTouchTime;
+	bool m_beingTouched;
+	entity m_eTouchLast;
 
-enum
-{
-	TRIG_OFF,
-	TRIG_ON,
-	TRIG_TOGGLE
+	nonvirtual void _TouchHandler(void);
+	nonvirtual void _BlockedHandler(void);
+
+#ifdef SERVER
+	string m_oldstrTarget; /* needed due to trigger_changetarget */
+
+	string m_strGlobalState;
+	string m_strKillTarget;
+	string m_strMessage;
+	string m_strMaster;
+	int m_iUseType;
+	int m_iValue;
+
+	/* legacy trigger architecture */
+	float m_flDelay;
+#else
+	float team;
+#endif
 };

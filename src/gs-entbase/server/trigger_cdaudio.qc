@@ -38,7 +38,7 @@ public:
 	virtual void Restore(string,string);
 	virtual void SpawnKey(string,string);
 	virtual void Respawn(void);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 	virtual void Touch(entity);
 
 };
@@ -88,7 +88,7 @@ trigger_cdaudio::Respawn(void)
 }
 
 void
-trigger_cdaudio::Trigger(entity act, int unused)
+trigger_cdaudio::Trigger(entity act, triggermode_t unused)
 {
 	if (!(act.flags & FL_CLIENT)) {
 		return;

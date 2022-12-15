@@ -89,7 +89,7 @@ public:
 	virtual void SpawnKey(string,string);
 	virtual void Spawned(void);
 	virtual void Respawn(void);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 	virtual void Input(entity,string,string);
 	
 	virtual void Change(void);
@@ -249,7 +249,7 @@ trigger_changelevel::Change(void)
 }
 
 void
-trigger_changelevel::Trigger(entity act, int unused)
+trigger_changelevel::Trigger(entity act, triggermode_t unused)
 {
 	if (GetMaster() == FALSE)
 		return;

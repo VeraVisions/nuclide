@@ -104,7 +104,7 @@ public:
 	virtual void Returned(void);
 	virtual void Back(void);
 	virtual void Away(void);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 	virtual void Use(void);
 	virtual void Touch(entity);
 	virtual void Blocked(entity);
@@ -506,7 +506,7 @@ func_door_rotating::Away(void)
 }
 
 void
-func_door_rotating::Trigger(entity act, int state)
+func_door_rotating::Trigger(entity act, triggermode_t state)
 {
 	if (GetMaster() == FALSE) {
 		return;

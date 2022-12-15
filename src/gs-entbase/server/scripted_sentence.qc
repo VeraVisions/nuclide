@@ -49,7 +49,7 @@ public:
 	virtual void Save(float);
 	virtual void Restore(string,string);
 	virtual void SpawnKey(string,string);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 
 };
 
@@ -128,7 +128,7 @@ scripted_sentence::SpawnKey(string strKey, string strValue)
 }
 
 void
-scripted_sentence::Trigger(entity act, int unused)
+scripted_sentence::Trigger(entity act, triggermode_t unused)
 {
 	entity spe;
 	spe = find(world, ::targetname, m_strSpeaker);

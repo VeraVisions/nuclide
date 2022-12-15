@@ -109,7 +109,7 @@ public:
 #else
 	virtual float SendEntity(entity,float);
 	virtual void EvaluateEntity(void);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 	virtual void Respawn(void);
 	virtual void Save(float);
 	virtual void Restore(string,string);
@@ -303,19 +303,19 @@ env_fog_controller::EvaluateEntity(void)
 	if (ATTR_CHANGED(m_vecFogDir))
 		SetSendFlags(ENVFOG_CHANGED_DIR);
 
-	SAVE_STATE(m_iFogActive);
-	SAVE_STATE(m_iFogBlend);
-	SAVE_STATE(m_flFogStart);
-	SAVE_STATE(m_flFogEnd);
-	SAVE_STATE(m_flFogMaxDensity);
-	SAVE_STATE(m_flFogFarZ);
-	SAVE_STATE(m_vecFogColor);
-	SAVE_STATE(m_vecFogColor2);
-	SAVE_STATE(m_vecFogDir);
+	SAVE_STATE(m_iFogActive)
+	SAVE_STATE(m_iFogBlend)
+	SAVE_STATE(m_flFogStart)
+	SAVE_STATE(m_flFogEnd)
+	SAVE_STATE(m_flFogMaxDensity)
+	SAVE_STATE(m_flFogFarZ)
+	SAVE_STATE(m_vecFogColor)
+	SAVE_STATE(m_vecFogColor2)
+	SAVE_STATE(m_vecFogDir)
 }
 
 void
-env_fog_controller::Trigger(entity eAct, int iState)
+env_fog_controller::Trigger(entity eAct, triggermode_t iState)
 {
 	switch (iState) {
 	case TRIG_OFF:

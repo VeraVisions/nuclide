@@ -99,7 +99,7 @@ public:
 	virtual void EvaluateEntity(void);
 	virtual float SendEntity(entity,float);
 	virtual void SpawnKey(string,string);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 	virtual void Input(entity, string, string);
 #endif
 };
@@ -225,7 +225,7 @@ func_monitor::EvaluateEntity(void)
 	if (ATTR_CHANGED(origin)) {
 		SetSendFlags(MONITORFL_CHANGED_BASE);
 	}
-	SAVE_STATE(origin);
+	SAVE_STATE(origin)
 
 	/* this monitor is disabled */
 	if (!m_iValue)
@@ -276,7 +276,7 @@ func_monitor::EvaluateEntity(void)
 }
 
 void
-func_monitor::Trigger(entity act, int state)
+func_monitor::Trigger(entity act, triggermode_t state)
 {
 	switch (state) {
 	case TRIG_OFF:

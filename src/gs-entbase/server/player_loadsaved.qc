@@ -47,7 +47,7 @@ public:
 	virtual void Save(float);
 	virtual void Restore(string,string);
 	virtual void SpawnKey(string,string);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 	
 	virtual void ReloadSave(void);
 
@@ -121,7 +121,7 @@ player_loadsaved::ReloadSave(void)
 }
 
 void
-player_loadsaved::Trigger(entity act, int unused)
+player_loadsaved::Trigger(entity act, triggermode_t unused)
 {
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_FADE);

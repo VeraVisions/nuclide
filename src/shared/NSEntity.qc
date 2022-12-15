@@ -595,6 +595,13 @@ float NSEntity::GetFlags( void ) {
 	return ( flags );
 }
 
+bool NSEntity::HasFlags(float bits) {
+	if ( flags & bits )
+		return (true);
+
+	return (false);
+}
+
 float NSEntity::GetNextThinkTime( void ) {
 	return ( nextthink );
 }

@@ -58,7 +58,7 @@ public:
 	/* overrides */
 	virtual void Save(float);
 	virtual void Restore(string,string);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 	virtual void SpawnKey(string,string);
 	virtual void Respawn(void);
 
@@ -118,7 +118,7 @@ env_explosion::Respawn(void)
 }
 
 void
-env_explosion::Trigger(entity act, int state)
+env_explosion::Trigger(entity act, triggermode_t state)
 {
 	FX_Explosion(origin);
 

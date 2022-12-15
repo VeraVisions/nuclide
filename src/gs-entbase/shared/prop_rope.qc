@@ -232,12 +232,12 @@ prop_rope::EvaluateEntity(void)
 		SetSendFlags(PROPROPE_CHANGED_FLAGS);
 	}
 
-	SAVE_STATE(m_flSag);
-	SAVE_STATE(m_flSwingFactor);
-	SAVE_STATE(m_iSegments);
-	SAVE_STATE(origin);
-	SAVE_STATE(m_vecTarget);
-	SAVE_STATE(flags);
+	SAVE_STATE(m_flSag)
+	SAVE_STATE(m_flSwingFactor)
+	SAVE_STATE(m_iSegments)
+	SAVE_STATE(origin)
+	SAVE_STATE(m_vecTarget)
+	SAVE_STATE(flags)
 }
 
 float

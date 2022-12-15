@@ -139,7 +139,7 @@ public:
 	virtual void Respawn(void);
 	virtual void Pain(void);
 	virtual void Death(void);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 	
 	virtual void Explode(void);
 	virtual void Touch(entity);
@@ -355,7 +355,7 @@ func_breakable::Death(void)
 }
 
 void
-func_breakable::Trigger(entity act, int state)
+func_breakable::Trigger(entity act, triggermode_t state)
 {
 	if (GetHealth() > 0)
 		Death();

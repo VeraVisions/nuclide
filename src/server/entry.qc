@@ -152,6 +152,8 @@ PutClientInServer(void)
 		if (t.Trigger)
 			t.Trigger(self, TRIG_TOGGLE);
 	}
+
+	trigger_auto_trigger();
 }
 
 /** Run before game physics have taken place.

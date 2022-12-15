@@ -46,7 +46,7 @@ public:
 	virtual void Restore(string,string);
 	virtual void SpawnKey(string,string);
 	virtual void Respawn(void);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 
 };
 
@@ -102,7 +102,7 @@ targ_speaker::Respawn(void)
 }
 
 void
-targ_speaker::Trigger(entity act, int state)
+targ_speaker::Trigger(entity act, triggermode_t state)
 {
 	if (GetMaster() == FALSE)
 		return;

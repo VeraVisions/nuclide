@@ -56,7 +56,7 @@ public:
 	
 	virtual void Save(float);
 	virtual void Restore(string,string);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 	virtual void SpawnKey(string,string);
 	
 	virtual void SpawnUnit(string,vector);
@@ -136,7 +136,7 @@ game_player_equip::SpawnUnit(string cname, vector org)
 }
 
 void
-game_player_equip::Trigger(entity act, int state)
+game_player_equip::Trigger(entity act, triggermode_t state)
 {
 	int total, i, count, x;
 	string cname;

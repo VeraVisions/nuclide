@@ -84,7 +84,7 @@ public:
 	virtual void Spawned(void);
 	virtual void Respawn(void);
 	virtual void RestoreComplete(void);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 
 };
 
@@ -215,7 +215,7 @@ light::Respawn(void)
 }
 
 void
-light::Trigger(entity act, int state)
+light::Trigger(entity act, triggermode_t state)
 {
 	switch (state) {
 	case TRIG_OFF:

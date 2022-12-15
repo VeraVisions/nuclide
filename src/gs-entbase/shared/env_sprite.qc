@@ -81,7 +81,7 @@ public:
 
 #ifdef SERVER
 	virtual void Spawned(void);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 	virtual void EvaluateEntity(void);
 	virtual float SendEntity(entity,float);
 	virtual void SpawnKey(string,string);
@@ -125,15 +125,15 @@ env_sprite::EvaluateEntity(void)
 		SetSendFlags(SPRITE_CHANGED_MATERIAL);
 	}
 
-	SAVE_STATE(origin);
-	SAVE_STATE(modelindex);
-	SAVE_STATE(m_flFramerate);
-	SAVE_STATE(scale);
-	SAVE_STATE(m_iRenderMode);
-	SAVE_STATE(m_iRenderFX);
-	SAVE_STATE(m_vecRenderColor);
-	SAVE_STATE(m_flRenderAmt);
-	SAVE_STATE(m_strMaterial);
+	SAVE_STATE(origin)
+	SAVE_STATE(modelindex)
+	SAVE_STATE(m_flFramerate)
+	SAVE_STATE(scale)
+	SAVE_STATE(m_iRenderMode)
+	SAVE_STATE(m_iRenderFX)
+	SAVE_STATE(m_vecRenderColor)
+	SAVE_STATE(m_flRenderAmt)
+	SAVE_STATE(m_strMaterial)
 }
 
 float
@@ -213,7 +213,7 @@ env_sprite::NetworkOnce(void)
 
 /* TODO: Implement state */
 void
-env_sprite::Trigger(entity act, int state)
+env_sprite::Trigger(entity act, triggermode_t state)
 {
 	if (HasSpawnFlags(ENVS_PLAYONCE)) {
 		NetworkOnce();

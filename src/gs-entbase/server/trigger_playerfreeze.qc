@@ -37,7 +37,7 @@ public:
 	void trigger_playerfreeze(void);
 	
 	virtual void Respawn(void);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 	virtual void customphysics(void);
 };
 
@@ -53,7 +53,7 @@ trigger_playerfreeze::Respawn(void)
 }
 
 void
-trigger_playerfreeze::Trigger(entity act, int state)
+trigger_playerfreeze::Trigger(entity act, triggermode_t state)
 {
 	if (GetMaster() == FALSE)
 		return;

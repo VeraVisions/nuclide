@@ -44,7 +44,7 @@ public:
 	void button_target(void);
 	
 	virtual void Respawn(void);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity,triggermode_t);
 	virtual void Damage(void);
 };
 
@@ -80,7 +80,7 @@ button_target::Respawn(void)
 }
 
 void
-button_target::Trigger(entity act, int status)
+button_target::Trigger(entity act, triggermode_t status)
 {
 	/* make unusable */
 	PlayerUse = __NULL__;

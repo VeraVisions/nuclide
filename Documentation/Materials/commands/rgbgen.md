@@ -22,8 +22,9 @@ entity, oneMinusEntity, fromVertex, and lightingDiffuse.
 
 Follow this up with a vector of the color that you'd like the vertex
 colors to be set as. An example for green would be:
-
-` rgbGen const 0.0 1.0 0.0`
+```
+  rgbGen const 0.0 1.0 0.0
+```
 
 #### identityLighting {#identitylighting}
 

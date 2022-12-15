@@ -51,7 +51,7 @@ public:
 	virtual void Save(float);
 	virtual void Restore(string,string);
 	virtual void SpawnKey(string,string);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 
 };
 
@@ -93,7 +93,7 @@ env_hudhint::SpawnKey(string strKey, string strValue)
 }
 
 void
-env_hudhint::Trigger(entity act, int state)
+env_hudhint::Trigger(entity act, triggermode_t state)
 {
 	env_hudhint_send(act, m_strMessage, spawnflags);
 }

@@ -67,7 +67,7 @@ public:
 	virtual void EvaluateEntity(void);
 	virtual float SendEntity(entity,float);
 	virtual void SpawnKey(string,string);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 	virtual void Input(entity, string, string);
 #endif
 };
@@ -172,12 +172,12 @@ info_particle_system::EvaluateEntity(void)
 		SetSendFlags(PARTSYSFL_CHANGED_ANGLES);
 	}
 
-	SAVE_STATE(origin);
-	SAVE_STATE(angles);
+	SAVE_STATE(origin)
+	SAVE_STATE(angles)
 }
 
 void
-info_particle_system::Trigger(entity act, int state)
+info_particle_system::Trigger(entity act, triggermode_t state)
 {
 	switch (state) {
 	case TRIG_OFF:

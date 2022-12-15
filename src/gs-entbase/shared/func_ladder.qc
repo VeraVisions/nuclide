@@ -33,14 +33,14 @@ public:
 	virtual void Respawn(void);
 
 #ifdef SERVER
-	virtual void Trigger(entity, int);
+	virtual void Trigger(entity, triggermode_t);
 #endif
 
 };
 
 #ifdef SERVER
 void
-func_ladder::Trigger(entity act, int state)
+func_ladder::Trigger(entity act, triggermode_t state)
 {
 	switch (state) {
 	case TRIG_OFF:

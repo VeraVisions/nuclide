@@ -74,7 +74,7 @@ public:
 	virtual void Spawned(void);
 	virtual void Save(float);
 	virtual void Restore(string,string);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 	virtual void Touch(entity);
 	virtual void Respawn(void);
 	virtual void SpawnKey(string,string);
@@ -194,7 +194,7 @@ trigger_hurt::Respawn(void)
 }
 
 void
-trigger_hurt::Trigger(entity act, int state)
+trigger_hurt::Trigger(entity act, triggermode_t state)
 {
 	switch (state) {
 	case TRIG_OFF:

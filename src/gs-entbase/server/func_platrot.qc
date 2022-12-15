@@ -61,7 +61,7 @@ public:
 	
 	virtual void Save(float);
 	virtual void Restore(string,string);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 	virtual void Respawn(void);
 	virtual void Touch(entity);
 	virtual void SpawnKey(string,string);
@@ -222,7 +222,7 @@ func_platrot::MoveToggle(void)
 }
 
 void
-func_platrot::Trigger(entity act, int state)
+func_platrot::Trigger(entity act, triggermode_t state)
 {
 	if (HasSpawnFlags(FNCPLAT_TRIGGER))
 		return;

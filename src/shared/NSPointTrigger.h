@@ -26,5 +26,5 @@ public:
 	void NSPointTrigger(void);
 
 	/** Sets up a point entity trigger with no size. */
-	virtual void InitPointTrigger(void);
+	nonvirtual void InitPointTrigger(void);
 };

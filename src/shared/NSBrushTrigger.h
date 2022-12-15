@@ -25,6 +25,9 @@ class NSBrushTrigger:NSEntity
 public:
 	void NSBrushTrigger(void);
 
+	/* overrides */
+	virtual int GetValue(void);
+
 	/** Sets up a brush trigger volume based on the brush information. */
-	virtual void InitBrushTrigger(void);
+	nonvirtual void InitBrushTrigger(void);
 };

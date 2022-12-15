@@ -60,7 +60,7 @@ public:
 	virtual void SpawnKey(string,string);
 	virtual void Respawn(void);
 	virtual void ShootGib(void);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 
 };
 
@@ -213,7 +213,7 @@ env_shooter::ShootGib(void)
 }
 
 void
-env_shooter::Trigger(entity act, int state)
+env_shooter::Trigger(entity act, triggermode_t state)
 {
 	switch (state) {
 	case TRIG_OFF:

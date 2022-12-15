@@ -88,7 +88,7 @@ public:
 	virtual void Arrived(void);
 	virtual void Returned(void);
 	virtual void Respawn(void);
-	virtual void Trigger(entity, int);
+	virtual void Trigger(entity, triggermode_t);
 	virtual void Blocked(entity);
 	virtual void Touch(entity);
 	virtual void PlayerUse(void);
@@ -560,7 +560,7 @@ func_door::MoveAway(void)
 }
 
 void
-func_door::Trigger(entity act, int triggerstate)
+func_door::Trigger(entity act, triggermode_t triggerstate)
 {
 	if (GetMaster() == 0)
 		return;

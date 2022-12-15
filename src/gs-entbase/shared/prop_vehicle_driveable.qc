@@ -838,13 +838,13 @@ prop_vehicle_driveable::EvaluateEntity(void)
 	if (ATTR_CHANGED(flags))
 		SetSendFlags(VEHFL_FLAGS);
 
-	SAVE_STATE(origin);
-	SAVE_STATE(angles);
+	SAVE_STATE(origin)
+	SAVE_STATE(angles)
 	SAVE_STATE(modelindex);
-	SAVE_STATE(velocity);
-	SAVE_STATE(m_flTurn);
-	SAVE_STATE(m_eDriver);
-	SAVE_STATE(flags);
+	SAVE_STATE(velocity)
+	SAVE_STATE(m_flTurn)
+	SAVE_STATE(m_eDriver)
+	SAVE_STATE(flags)
 }
 
 float

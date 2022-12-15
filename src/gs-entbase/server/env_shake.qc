@@ -49,7 +49,7 @@ public:
 	virtual void Save(float);
 	virtual void Restore(string,string);
 	virtual void SpawnKey(string,string);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 
 };
 
@@ -115,7 +115,7 @@ env_shake::SpawnKey(string strKey, string strValue)
 }
 
 void
-env_shake::Trigger(entity act, int state)
+env_shake::Trigger(entity act, triggermode_t state)
 {
 	Client_ShakeOnce(origin, m_flRadius, m_flDuration, m_flFrequency, m_flAmplitude);
 }

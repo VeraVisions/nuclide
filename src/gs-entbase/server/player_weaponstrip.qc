@@ -30,7 +30,7 @@ player_weaponstrip:NSPointTrigger
 public:
 	void player_weaponstrip(void);
 	
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 };
 
 void
@@ -39,7 +39,7 @@ player_weaponstrip::player_weaponstrip(void)
 }
 
 void
-player_weaponstrip::Trigger(entity act, int unused)
+player_weaponstrip::Trigger(entity act, triggermode_t unused)
 {
 	NSClientPlayer pl;
 

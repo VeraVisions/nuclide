@@ -37,7 +37,7 @@ This entity was introduced in Half-Life (1998).
 class
 trigger_auto:NSPointTrigger
 {
-	int m_iTriggerState;
+	triggermode_t m_iTriggerState;
 	float m_flDelay;
 
 public:
@@ -66,7 +66,7 @@ void
 trigger_auto::Save(float handle)
 {
 	super::Save(handle);
-	SaveInt(handle, "m_iTriggerState", m_iTriggerState);
+	SaveFloat(handle, "m_iTriggerState", m_iTriggerState);
 	SaveFloat(handle, "m_flDelay", m_flDelay);
 }
 
@@ -75,7 +75,7 @@ trigger_auto::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "m_iTriggerState":
-		m_iTriggerState = ReadInt(strValue);
+		m_iTriggerState = ReadFloat(strValue);
 		break;
 	case "m_flDelay":
 		m_flDelay = ReadFloat(strValue);
@@ -88,7 +88,7 @@ trigger_auto::Restore(string strKey, string strValue)
 void
 trigger_auto::RestoreComplete(void)
 {
-	ScheduleThink(Processing, 0.25f);
+	//ScheduleThink(Processing, 0.0f);
 }
 
 void
@@ -96,7 +96,7 @@ trigger_auto::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "triggerstate":
-		m_iTriggerState = stoi(strValue);
+		m_iTriggerState = stof(strValue);
 		break;
 	case "delay":
 		m_flDelay = stof(strValue);
@@ -111,22 +111,42 @@ trigger_auto::Respawn(void)
 {
 	InitPointTrigger();
 
-	/* deliberately add a bit more time in case we're first in the ent-lump */
-	ScheduleThink(Processing, 0.25f);
+	/* deliberately add a bit more time in case we're first in the ent-lump
+		also we'll only do this in multiplayer games. SP games will call
+	    trigger_auto_trigger() for when one player has fully joined */
+	if (cvar("sv_playerslots") > 1)
+		ScheduleThink(Processing, 0.25f);
 }
 
 void
 trigger_auto::Processing(void)
 {
-	if (m_strGlobalState)
+	if (m_strGlobalState) {
 		if (GetGlobalValue(m_strGlobalState) == 0)
 			return;
+	}
 
 	UseTargets(this, m_iTriggerState, m_flDelay);
-	print(sprintf("%S %i %f\n", target, m_iTriggerState, m_flDelay));
+	print(sprintf("%S %d %f %f\n", target, m_iTriggerState, m_flDelay, time));
 
 	if (HasSpawnFlags(1)) {
 		NSLog("^2trigger_auto::^3Processing^7: %s triggerer removed self",  target);
 		Destroy();
 	}
+}
+
+void
+trigger_auto_trigger(void)
+{
+	static bool called = false;
+	trigger_auto loop;
+
+	/* don't do it more than once */
+	if (called)
+		return;
+
+	for (loop = __NULL__; (loop = (trigger_auto)find(loop, ::classname, "trigger_auto"));) {
+		loop.Processing();
+	}
+	called = true;
 }

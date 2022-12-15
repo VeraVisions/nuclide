@@ -45,7 +45,7 @@ public:
 	virtual void Save(float);
 	virtual void Restore(string,string);
 	virtual void Respawn(void);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 	virtual void Touch(entity);
 	virtual void SetMovementDirection(void);
 	virtual void Input(entity, string, string);
@@ -143,7 +143,7 @@ func_conveyor::Touch(entity eToucher)
 }
 
 void 
-func_conveyor::Trigger(entity act, int state)
+func_conveyor::Trigger(entity act, triggermode_t state)
 {
 	switch (state) {
 	case TRIG_ON:

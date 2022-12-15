@@ -36,7 +36,7 @@ public:
 #ifdef SERVER
 	virtual void Respawn(void);
 	virtual float SendEntity(entity,float);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 #else
 	virtual void Init(void);
 #endif
@@ -57,7 +57,7 @@ func_wall::SendEntity(entity pvsent, float fl)
 }
 
 void
-func_wall::Trigger(entity act, int state)
+func_wall::Trigger(entity act, triggermode_t state)
 {
 	switch (state) {
 	case TRIG_OFF:

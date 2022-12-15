@@ -81,7 +81,7 @@ env_render:NSRenderableEntity
 public:
 	void env_render(void);
 	
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 
 };
 
@@ -91,7 +91,7 @@ env_render::env_render(void)
 }
 
 void
-env_render::Trigger(entity act, int state)
+env_render::Trigger(entity act, triggermode_t state)
 {
 	for (entity e = world;
 		(e = find(e, ::targetname, target));) {

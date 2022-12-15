@@ -73,7 +73,7 @@ public:
 	virtual void SpawnKey(string,string);
 	virtual void EvaluateEntity(void);
 	virtual float SendEntity(entity,float);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 	nonvirtual void CastLaser(void);
 #else
 	virtual float predraw(void);
@@ -176,7 +176,7 @@ env_laser::CastLaser(void)
 }
 
 void
-env_laser::Trigger(entity act, int state)
+env_laser::Trigger(entity act, triggermode_t state)
 {
 	switch (state) {
 	case TRIG_OFF:
@@ -317,10 +317,10 @@ env_laser::predraw(void)
 {
 	/* only draw when active. */
 	if (!m_iActive)
-		return;
+		return (PREDRAW_NEXT);
 
 	if (autocvar(r_skipBeams, 0))
-		return;
+		return (PREDRAW_NEXT);
 
 	/* primitive representation */
 #if 0
@@ -340,7 +340,6 @@ env_laser::predraw(void)
 			float progression = (i / (LASER_COUNT-1));
 			vector point;
 			vector jitter;
-			float strength;
 			float a = 1.0f;
 
 			/* our steps from a - b */

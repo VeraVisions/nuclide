@@ -43,7 +43,7 @@ public:
 	/* overrides */
 	virtual void Respawn(void);
 	virtual void SpawnKey(string,string);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 	virtual void Input(entity,string,string);
 	
 	virtual void PortalOpen(void);
@@ -86,7 +86,7 @@ func_areaportal::SpawnKey(string strKey, string strValue)
 }
 
 void
-func_areaportal::Trigger(entity act, int state)
+func_areaportal::Trigger(entity act, triggermode_t state)
 {
 	if (state == TRIG_OFF) {
 		PortalClose();

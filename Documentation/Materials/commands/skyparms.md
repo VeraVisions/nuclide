@@ -31,22 +31,23 @@ clouds. This has not be tested in a long time, so it probably doesn't
 actually work. Set to "-" to ignore.
 
 ### Example Sky Material {#example_sky_material}
-
-`   // Vera Visions Material`
-`   {`
-`       qer_editorImage textures/skies/dune.tga`
-`       skyParms textures/skies/dune/bg 256 -`
-`       noPicMip`
-`       noMipmaps`
-`       `
-`       surfaceParm sky`
-`       surfaceParm noimpact`
-`       surfaceParm nolightmap`
-`       surfaceParm nodlight`
-`       {`
-`           program skybox`
-`           map $cube:textures/skies/dune/bg`
-`           map textures/skies/clouds/dunecloud.tga`
-`           map textures/skies/clouds/dunecloud_layer.tga`
-`       }`
-`   }`
+```
+   // Vera Visions Material
+   {
+       qer_editorImage textures/skies/dune.tga
+       skyParms textures/skies/dune/bg 256 -
+       noPicMip
+       noMipmaps
+       
+       surfaceParm sky
+       surfaceParm noimpact
+       surfaceParm nolightmap
+       surfaceParm nodlight
+       {
+           program skybox
+           map $cube:textures/skies/dune/bg
+           map textures/skies/clouds/dunecloud.tga
+           map textures/skies/clouds/dunecloud_layer.tga
+       }
+   }
+```

@@ -44,7 +44,7 @@ public:
 	virtual void Save(float);
 	virtual void Restore(string,string);
 	virtual void Respawn(void);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 	virtual void Input(entity,string,string);
 
 };
@@ -97,7 +97,7 @@ func_wall_toggle::Respawn(void)
 }
 
 void
-func_wall_toggle::Trigger(entity act, int state)
+func_wall_toggle::Trigger(entity act, triggermode_t state)
 {
 	switch (state) {
 	case TRIG_OFF:

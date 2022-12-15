@@ -43,9 +43,9 @@ class trigger_once:NSBrushTrigger
 {
 public:
 	void trigger_once(void);
-	
+
+	/* overrides */
 	virtual void Spawned(void);
-	
 	virtual void Save(float);
 	virtual void Restore(string,string);
 	virtual void Touch(entity);
@@ -62,6 +62,25 @@ trigger_once::trigger_once(void)
 {
 	m_strOnStartTouch =
 	m_strOnTrigger = __NULL__;
+}
+
+void
+trigger_once::Spawned(void)
+{
+	super::Spawned();
+
+	if (m_strOnTrigger)
+		m_strOnTrigger = CreateOutput(m_strOnTrigger);
+
+	if (m_strOnStartTouch)
+		m_strOnStartTouch = CreateOutput(m_strOnStartTouch);
+}
+
+void
+trigger_once::Respawn(void)
+{
+	InitBrushTrigger();
+	m_iValue = 0;
 }
 
 void
@@ -102,26 +121,6 @@ trigger_once::SpawnKey(string strKey, string strValue)
 		break;
 	}
 }
-
-void
-trigger_once::Spawned(void)
-{
-	super::Spawned();
-
-	if (m_strOnTrigger)
-		m_strOnTrigger = CreateOutput(m_strOnTrigger);
-
-	if (m_strOnStartTouch)
-		m_strOnStartTouch = CreateOutput(m_strOnStartTouch);
-}
-
-void
-trigger_once::Respawn(void)
-{
-	InitBrushTrigger();
-	m_iValue = 0;
-}
-
 void
 trigger_once::Touch(entity eToucher)
 {

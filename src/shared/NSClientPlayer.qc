@@ -45,7 +45,7 @@ NSClientPlayer::IsPlayer(void)
 bool
 NSClientPlayer::IsFakeSpectator(void)
 {
-	if (GetFlags() & FL_FAKESPEC)
+	if (HasFlags(FL_FAKESPEC))
 		return (true);
 
 	return (false);
@@ -199,7 +199,7 @@ NSClientPlayer::predraw(void)
 	RenderFire();
 
 	/* if we're inside of a vehicle, it may want to hide or show us regardless */
-	if (localplayer && flags & FL_INVEHICLE) {
+	if (localplayer && HasFlags(FL_INVEHICLE)) {
 		NSVehicle veh = (NSVehicle)vehicle;
 
 		if (veh)
@@ -1004,7 +1004,7 @@ NSClientPlayer::InputUse_Down(void)
 		last_used = eRad;
 
 		/* Some entities want to support Use spamming */
-		if (!(flags & FL_USE_RELEASED)) {
+		if (HasFlags(FL_USE_RELEASED) == false) {
 			sound(this, CHAN_ITEM, "common/wpn_select.wav", 0.25, ATTN_IDLE);
 		}
 	} else {
@@ -1023,7 +1023,7 @@ Called when we let go of the +use button
 void
 NSClientPlayer::InputUse_Up(void)
 {
-	if (!(flags & FL_USE_RELEASED)) {
+	if (HasFlags(FL_USE_RELEASED) == false) {
 		_NSClientPlayer_unuseworkaround(last_used);
 		last_used = world;
 		flags |= FL_USE_RELEASED;
@@ -1073,7 +1073,7 @@ NSClientPlayer::Footsteps_Update(void)
 		step_time = time + 2.0f;
 	} else {
 		/* make it so we step once we land */
-		if (!(GetFlags() & FL_ONGROUND) && !(GetFlags() & FL_ONLADDER)) {
+		if (HasFlags(FL_ONGROUND | FL_ONLADDER) == false) {
 			step_time = 0.0f;
 			return;
 		}
@@ -1086,9 +1086,10 @@ NSClientPlayer::Footsteps_Update(void)
 	traceline(origin + view_ofs, origin + [0,0,-48], MOVE_NORMAL, this);
 	tex_name = getsurfacetexture(trace_ent, getsurfacenearpoint(trace_ent, trace_endpos));
 
-	if (!(GetFlags() & FL_ONGROUND) && (!GetFlags() & FL_ONLADDER)) {
+	/* don't step in air */
+	if (HasFlags(FL_ONGROUND | FL_ONLADDER) == false) {
 		return;
-	} else if (GetFlags() & FL_ONLADDER) {
+	} else if (HasFlags(FL_ONLADDER) && HasFlags(FL_ONGROUND) == false) { /* play ladder sounds */
 		if (step)
 			StartSoundDef("step_ladder.left", CHAN_BODY, true);
 		else
@@ -1096,6 +1097,8 @@ NSClientPlayer::Footsteps_Update(void)
 
 		/* switch between feet */
 		step = 1 - step;
+		return;
+	} else if (HasFlags(FL_ONLADDER) && HasFlags(FL_ONGROUND)) { /* at a ladder, but not moving */
 		return;
 	}
 

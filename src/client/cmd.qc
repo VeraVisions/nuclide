@@ -147,7 +147,7 @@ CMD_ListModels(void)
 	int i = 0i;
 	int actual_count = 0i;
 
-	for (int i = -4096; i < 4096; i++) {
+	for (i = -4096; i < 4096; i++) {
 		tmp = modelnameforindex(i);
 
 		if (strlen(tmp) > 1) {
@@ -168,7 +168,7 @@ CMD_ListSounds(void)
 	float length;
 	float total_length = 0.0f;
 
-	for (int i = 0; i < 4096; i++) {
+	for (i = 0; i < 4096; i++) {
 		tmp = soundnameforindex(i);
 		length = soundlength(tmp);
 
@@ -189,7 +189,7 @@ CMD_ListParticles(void)
 	int i = 0i;
 	int actual_count = 0i;
 
-	for (int i = -4096; i < 4096; i++) {
+	for (i = -4096; i < 4096; i++) {
 		tmp = particleeffectquery(i, 0);
 
 		if (strlen(tmp) > 1) {

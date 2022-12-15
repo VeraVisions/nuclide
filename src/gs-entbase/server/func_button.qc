@@ -117,7 +117,7 @@ public:
 	virtual void MoveAway(void);
 	virtual void Touch(entity);
 	virtual void Blocked(entity);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 	virtual void DeathTrigger(void);
 	virtual void PlayerUse(void);
 	virtual void SetMovementDirection(void);
@@ -412,7 +412,7 @@ func_button::MoveAway(void)
 
 /* TODO: Handle state */
 void
-func_button::Trigger(entity act, int state)
+func_button::Trigger(entity act, triggermode_t state)
 {
 	if (GetMaster() == FALSE)
 		return;

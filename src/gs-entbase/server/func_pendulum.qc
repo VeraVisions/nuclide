@@ -64,7 +64,7 @@ public:
 	virtual void Restore(string,string);
 	virtual void SpawnKey(string,string);
 	virtual void Respawn(void);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 	virtual void customphysics(void);
 
 };
@@ -141,7 +141,7 @@ func_pendulum::Respawn(void)
 }
 
 void
-func_pendulum::Trigger(entity act, int state)
+func_pendulum::Trigger(entity act, triggermode_t state)
 {
 	switch (state) {
 	case TRIG_OFF:

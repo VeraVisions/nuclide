@@ -61,7 +61,7 @@ public:
 	virtual void Restore(string,string);
 	virtual void SpawnKey(string,string);
 	virtual void Respawn(void);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 
 };
 
@@ -139,7 +139,7 @@ path_corner::Respawn(void)
 }
 
 void
-path_corner::Trigger(entity act, int state)
+path_corner::Trigger(entity act, triggermode_t state)
 {
 	entity a;
 

@@ -146,18 +146,18 @@ NSPhysicsEntity::EvaluateEntity(void)
 		SetSendFlags(PHYENT_CHANGED_VELOCITY);
 	}
 
-	SAVE_STATE(origin);
-	SAVE_STATE(angles);
-	SAVE_STATE(modelindex);
-	SAVE_STATE(solid);
-	SAVE_STATE(movetype);
-	SAVE_STATE(size);
-	SAVE_STATE(frame);
-	SAVE_STATE(skin);
-	SAVE_STATE(effects);
-	SAVE_STATE(m_iBody);
-	SAVE_STATE(scale);
-	SAVE_STATE(velocity);
+	SAVE_STATE(origin)
+	SAVE_STATE(angles)
+	SAVE_STATE(modelindex)
+	SAVE_STATE(solid)
+	SAVE_STATE(movetype)
+	SAVE_STATE(size)
+	SAVE_STATE(frame)
+	SAVE_STATE(skin)
+	SAVE_STATE(effects)
+	SAVE_STATE(m_iBody)
+	SAVE_STATE(scale)
+	SAVE_STATE(velocity)
 
 	if (ATTR_CHANGED(m_iRenderMode)) {
 		SetSendFlags(PHYENT_CHANGED_RENDERMODE);

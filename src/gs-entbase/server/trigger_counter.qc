@@ -49,7 +49,7 @@ public:
 	virtual void Restore(string,string);
 	virtual void SpawnKey(string,string);
 	virtual void Respawn(void);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 	virtual void Touch(entity);
 
 };
@@ -105,7 +105,7 @@ trigger_counter::Respawn(void)
 }
 
 void
-trigger_counter::Trigger(entity act, int state)
+trigger_counter::Trigger(entity act, triggermode_t state)
 {
 	if (act.classname == "func_pushable" && !HasSpawnFlags(TRCNT_PUSHABLES))
 		return;

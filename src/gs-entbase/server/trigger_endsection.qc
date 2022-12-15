@@ -31,7 +31,7 @@ trigger_endsection:NSBrushTrigger
 public:
 	void trigger_endsection(void);
 	
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 	virtual void Respawn(void);
 
 };
@@ -48,7 +48,7 @@ trigger_endsection::Respawn(void)
 }
 
 void
-trigger_endsection::Trigger(entity act, int state)
+trigger_endsection::Trigger(entity act, triggermode_t state)
 {
 	if (GetMaster() == FALSE)
 		return;

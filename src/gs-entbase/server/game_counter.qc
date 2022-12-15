@@ -53,7 +53,7 @@ public:
 	/* overrides */
 	virtual void Save(float);
 	virtual void Restore(string,string);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 	virtual void Respawn(void);
 	virtual void SpawnKey(string,string);
 	
@@ -133,7 +133,7 @@ game_counter::GetCount(void)
 }
 
 void
-game_counter::Trigger(entity act, int state)
+game_counter::Trigger(entity act, triggermode_t state)
 {
 	if (GetMaster() == FALSE)
 		return;

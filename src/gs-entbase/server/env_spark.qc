@@ -60,7 +60,7 @@ public:
 	virtual void SpawnKey(string,string);
 	virtual void Spawned(void);
 	virtual void Respawn(void);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 	virtual void CreateSpark(void);
 	virtual void TimedSpark(void);
 
@@ -124,7 +124,7 @@ env_spark::Respawn(void)
 }
 
 void
-env_spark::Trigger(entity act, int state)
+env_spark::Trigger(entity act, triggermode_t state)
 {
 	if (!HasSpawnFlags(EVSPARK_TOGGLE)) {
 		CreateSpark();

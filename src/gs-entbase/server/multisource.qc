@@ -38,7 +38,7 @@ public:
 	virtual void Respawn(void);
 	virtual int QueryTargets(void);
 	virtual int GetValue(void);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 
 };
 
@@ -54,7 +54,7 @@ multisource::Respawn(void)
 }
 
 void
-multisource::Trigger(entity act, int unused)
+multisource::Trigger(entity act, triggermode_t unused)
 {
 	if (QueryTargets() == FALSE) {
 		NSLog("[^1MULTISOURCE^7] %s is inactive.", targetname);

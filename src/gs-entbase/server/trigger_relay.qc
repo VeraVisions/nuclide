@@ -41,13 +41,13 @@ class
 trigger_relay:NSPointTrigger
 {
 private:
-	int m_iTriggerState;
+	triggermode_t m_iTriggerState;
 	int m_iEnabled;
 
 public:
 	void trigger_relay(void);
 
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity,triggermode_t);
 	virtual void Respawn(void);
 	virtual void SpawnKey(string,string);
 
@@ -58,7 +58,7 @@ public:
 void
 trigger_relay::trigger_relay(void)
 {
-	m_iTriggerState =
+	m_iTriggerState = 0;
 	m_iEnabled = 0;
 }
 
@@ -66,7 +66,7 @@ void
 trigger_relay::Save(float handle)
 {
 	super::Save(handle);
-	SaveInt(handle, "m_iTriggerState", m_iTriggerState);
+	SaveFloat(handle, "m_iTriggerState", m_iTriggerState);
 	SaveInt(handle, "m_iEnabled", m_iEnabled);
 }
 
@@ -75,7 +75,7 @@ trigger_relay::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "m_iTriggerState":
-		m_iTriggerState = ReadInt(strValue);
+		m_iTriggerState = ReadFloat(strValue);
 		break;
 	case "m_iEnabled":
 		m_iEnabled = ReadInt(strValue);
@@ -101,15 +101,22 @@ void
 trigger_relay::Respawn(void)
 {
 	m_iEnabled = TRUE;
+	m_iValue = FALSE;
 }
 
 void
-trigger_relay::Trigger(entity act, int state)
+trigger_relay::Trigger(entity act, triggermode_t state)
 {
-	if (m_iEnabled == FALSE)
+	if (m_iEnabled == FALSE) {
+		NSLog("trigger_relay (%s) has already been triggered", targetname);
 		return;
-	if (HasSpawnFlags(TRLY_ONCE))
-		m_iEnabled = FALSE;
+	}
 
+	if (HasSpawnFlags(TRLY_ONCE)) {
+		m_iEnabled = FALSE;
+	}
+
+	m_iValue = TRUE;
+	NSLog("trigger_relay (%s) will trigger %s with state %d", targetname, target, m_iTriggerState);
 	UseTargets(act, m_iTriggerState, m_flDelay);
 }

@@ -46,7 +46,7 @@ public:
 	virtual void Restore(string,string);
 	virtual void SpawnKey(string,string);
 	virtual void Respawn(void);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity,triggermode_t);
 	virtual void Touch(entity);
 	virtual void SetMovementDirection(void);
 
@@ -112,7 +112,7 @@ trigger_push::Respawn(void)
 }
 
 void
-trigger_push::Trigger(entity act, int state)
+trigger_push::Trigger(entity act, triggermode_t state)
 {
 	switch (state) {
 	case TRIG_OFF:

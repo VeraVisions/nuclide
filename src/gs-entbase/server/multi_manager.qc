@@ -101,7 +101,7 @@ public:
 	virtual void SpawnKey(string,string);
 	virtual void Spawned(void);
 	virtual void Respawn(void);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 };
 
 void
@@ -287,7 +287,7 @@ multi_manager::Respawn(void)
 }
 
 void
-multi_manager::Trigger(entity act, int state)
+multi_manager::Trigger(entity act, triggermode_t state)
 {
 	static void mm_enttrigger (void) {
 		multi_manager_sub wow = (multi_manager_sub)self;

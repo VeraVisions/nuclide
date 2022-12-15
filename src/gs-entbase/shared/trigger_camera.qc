@@ -59,7 +59,7 @@ public:
 #else
 	virtual void NextPath(void);
 	virtual void GoToTarget(void);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 	virtual void Respawn(void);
 	virtual void SpawnKey(string,string);
 	virtual float SendEntity(entity,float);
@@ -190,8 +190,8 @@ trigger_camera::EvaluateEntity(void)
 		SetSendFlags(OCAMFL_CHANGED_ANGLES);
 	}
 
-	SAVE_STATE(origin);
-	SAVE_STATE(angles);
+	SAVE_STATE(origin)
+	SAVE_STATE(angles)
 }
 
 void
@@ -258,7 +258,7 @@ trigger_camera::NextPath(void)
 
 /* TODO: Handle state? */
 void
-trigger_camera::Trigger(entity act, int state)
+trigger_camera::Trigger(entity act, triggermode_t state)
 {
 	m_eLooker = act;
 	NSLog("Triggering it on %s\n", act.netname);

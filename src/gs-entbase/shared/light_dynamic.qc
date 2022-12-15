@@ -94,7 +94,7 @@ public:
 	virtual void RendererRestarted(void);
 	virtual void LightChanged(float);
 #else
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 	virtual void Respawn(void);
 	virtual float SendEntity(entity,float);
 	virtual void EvaluateEntity(void);
@@ -236,12 +236,12 @@ light_dynamic::EvaluateEntity(void)
 		SetSendFlags(DLIGHTFL_CHANGED_ANGLES);
 	}
 
-	SAVE_STATE(origin);
-	SAVE_STATE(angles);
+	SAVE_STATE(origin)
+	SAVE_STATE(angles)
 }
 
 void
-light_dynamic::Trigger(entity act, int state)
+light_dynamic::Trigger(entity act, triggermode_t state)
 {
 	switch (state) {
 	case TRIG_OFF:

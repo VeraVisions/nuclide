@@ -36,7 +36,7 @@ NSTrigger::NSTrigger(void)
 #ifdef SERVER
 /* legacy trigger architecture */
 void
-NSTrigger::Trigger(entity act, int state)
+NSTrigger::Trigger(entity act, triggermode_t state)
 {
 	NSLog("^2%s::^3Input^7: Triggerd by %s with no consequence", 
 		classname, act.classname);

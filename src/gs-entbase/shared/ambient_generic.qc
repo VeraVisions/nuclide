@@ -74,8 +74,8 @@ public:
 	virtual void Respawn(void);
 	virtual void EvaluateEntity(void);
 	virtual float SendEntity(entity,float);
-	virtual void UseNormal(entity,int);
-	virtual void UseLoop(entity,int);
+	virtual void UseNormal(entity,triggermode_t);
+	virtual void UseLoop(entity, triggermode_t);
 #else
 	virtual void ReceiveEntity(float,float);
 	virtual float predraw(void);
@@ -258,7 +258,7 @@ ambient_generic::Respawn(void)
 }
 
 void
-ambient_generic::UseNormal(entity act, int state)
+ambient_generic::UseNormal(entity act, triggermode_t state)
 {
 	NSLog("Sound once: %S Volume: %f; Radius: %d; Pitch: %d", \
 		m_strActivePath, m_flVolume, m_flRadius, m_flPitch);
@@ -280,7 +280,7 @@ ambient_generic::UseNormal(entity act, int state)
 }
 
 void
-ambient_generic::UseLoop(entity act, int state)
+ambient_generic::UseLoop(entity act, triggermode_t state)
 {
 	if (m_bToggle == TRUE) {
 		NSLog("^2ambient_generic::^3UseLoop^7: %s stops `%s`", 
@@ -311,12 +311,12 @@ ambient_generic::EvaluateEntity(void)
 	if (ATTR_CHANGED(m_bLoops))
 		SetSendFlags(AMBIENT_ENABLED);
 
-	SAVE_STATE(origin);
-	SAVE_STATE(m_strActivePath);
-	SAVE_STATE(m_flVolume);
-	SAVE_STATE(m_flRadius);
-	SAVE_STATE(m_flPitch);
-	SAVE_STATE(m_bLoops);
+	SAVE_STATE(origin)
+	SAVE_STATE(m_strActivePath)
+	SAVE_STATE(m_flVolume)
+	SAVE_STATE(m_flRadius)
+	SAVE_STATE(m_flPitch)
+	SAVE_STATE(m_bLoops)
 }
 
 float

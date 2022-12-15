@@ -85,7 +85,7 @@ public:
 	virtual void SpawnKey(string,string);
 	virtual void EvaluateEntity(void);
 	virtual float SendEntity(entity,float);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 	nonvirtual void CastLaser(void);
 	nonvirtual void LaunchBeam(void);
 	nonvirtual void EndBeam(void);
@@ -258,7 +258,7 @@ env_beam::StopBeam(void)
 }
 
 void
-env_beam::Trigger(entity act, int state)
+env_beam::Trigger(entity act, triggermode_t state)
 {
 	/* if toggle isn't enabled, it can only ever get activated */
 	if (m_flLifeTime > 0 && HasSpawnFlags(BEAM_TOGGLE) == false) {
@@ -429,10 +429,10 @@ env_beam::predraw(void)
 {
 	/* only draw when active. */
 	if (!m_iActive)
-		return;
+		return (PREDRAW_NEXT);
 
 	if (autocvar(r_skipBeams, 0))
-		return;
+		return (PREDRAW_NEXT);
 
 	/* primitive representation */
 #if 0
@@ -452,7 +452,6 @@ env_beam::predraw(void)
 			float progression = (i / (BEAM_COUNT-1));
 			vector point;
 			vector jitter;
-			float strength;
 			float a = 1.0f;
 
 			/* our steps from a - b */

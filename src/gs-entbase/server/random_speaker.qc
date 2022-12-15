@@ -54,7 +54,7 @@ public:
 	virtual void Restore(string,string);
 	virtual void SpawnKey(string,string);
 	virtual void Respawn(void);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 	
 	virtual void PlaySample(void);
 	virtual void Enable(void);
@@ -130,7 +130,7 @@ random_speaker::Respawn(void)
 }
 
 void
-random_speaker::Trigger(entity act, int state)
+random_speaker::Trigger(entity act, triggermode_t state)
 {
 	if (GetMaster() == FALSE)
 		return;

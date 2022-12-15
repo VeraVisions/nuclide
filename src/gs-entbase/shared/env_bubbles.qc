@@ -81,7 +81,7 @@ public:
 	virtual void Restore(string,string);
 	virtual void EvaluateEntity(void);
 	virtual float SendEntity(entity,float);
-	virtual void Trigger(entity,int);
+	virtual void Trigger(entity, triggermode_t);
 	virtual void Input(entity,string,string);
 #else
 	virtual void EmitBubbles(void);
@@ -167,7 +167,7 @@ env_bubbles::Input(entity eAct, string strKey, string strData)
 }
 
 void
-env_bubbles::Trigger(entity eAct, int iState)
+env_bubbles::Trigger(entity eAct, triggermode_t iState)
 {
 	switch (iState) {
 	case TRIG_OFF:
@@ -196,12 +196,12 @@ env_bubbles::EvaluateEntity(void)
 	if (ATTR_CHANGED(m_bEnabled))
 		SetSendFlags(BUBBLES_ENABLED);
 
-	SAVE_STATE(origin);
-	SAVE_STATE(angles);
-	SAVE_STATE(m_iDensity);
-	SAVE_STATE(m_flFrequency);
-	SAVE_STATE(m_flCurrent);
-	SAVE_STATE(m_bEnabled);
+	SAVE_STATE(origin)
+	SAVE_STATE(angles)
+	SAVE_STATE(m_iDensity)
+	SAVE_STATE(m_flFrequency)
+	SAVE_STATE(m_flCurrent)
+	SAVE_STATE(m_bEnabled)
 }
 float
 env_bubbles::SendEntity(entity ePVSent, float flChanged)
