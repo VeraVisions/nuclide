@@ -39,12 +39,14 @@ const string mat_fade_modulate =
 		"}\n" \
 	"}\n";
 
+/* needs to be called on every vid_reload */
 void
-Fade_Init(void)
+Fade_Reload(void)
 {
 	shaderforname("fade_modulate", mat_fade_modulate);
 }
 
+/* run every frame to update the actively running fade effects */
 void
 Fade_Update (int x, int y, int w, int h)
 {
@@ -85,6 +87,8 @@ Fade_Update (int x, int y, int w, int h)
 	pSeat->m_flFadeTime += clframetime;
 }
 
+/* called by a worldspawn key,
+   will cause the game to fade-in over the course of 4 seconds */
 void
 Fade_StartDark(void)
 {

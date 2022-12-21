@@ -63,7 +63,7 @@ DetailTex_Parse(string maptex, string detailtex, float xscale, float yscale)
 }
 
 void
-DetailTex_Init(void)
+DetailTex_Reload(void)
 {
 	filestream fh;
 	string line;

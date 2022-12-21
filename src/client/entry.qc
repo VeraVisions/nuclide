@@ -114,7 +114,7 @@ CSQC_RendererRestarted(string rstr)
 	precache_pic("gfx/vgui/icntlk_pl");
 
 	/* View */
-	Chat_Init();
+	Chat_Reload();
 
 #ifndef NEW_INVENTORY
 	Weapons_Init();
@@ -126,11 +126,11 @@ CSQC_RendererRestarted(string rstr)
 	HUD_Init();
 
 	/* GS-Entbase */
-	Fade_Init();
+	Fade_Reload();
 	Decal_Reload();
 	Sky_Update(TRUE);
 	Entities_RendererRestarted();
-	DetailTex_Init();
+	DetailTex_Reload();
 
 	//g_shellchrome = spriteframe("sprites/shellchrome.spr", 0, 0.0f);
 	g_shellchromeshader = shaderforname("shellchrome", sprintf("{\ndeformVertexes bulge 1.25 1.25 0\n{\nmap %s\ntcMod scroll -0.1 0.1\ntcGen environment\nrgbGen entity\n}\n}", "textures/sfx/reflection.tga"));

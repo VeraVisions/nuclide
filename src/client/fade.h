@@ -14,7 +14,11 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-void Fade_Init(void);
-void Fade_Update (int x, int y, int w, int h);
+/** Called upon every vid_reload to cache the material definitions required for fade effects. */
+void Fade_Reload(void);
+/** Called every frame to update the actively running fade effects. */
+void Fade_Update(int x, int y, int w, int h);
+/** Called by the worldspawn key "startdark" to gradually fade in the game view upon map start. */
 void Fade_StartDark(void);
+/** Called whenever the client receives a EV_FADE from the server. */
 void Fade_Parse(void);

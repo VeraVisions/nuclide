@@ -27,7 +27,7 @@ font_s g_fntChat;
 string g_chatbuffer_final;
 
 void
-Chat_Init(void)
+Chat_Reload(void)
 {
 	Font_Load("fonts/chat.font", g_fntChat);
 }

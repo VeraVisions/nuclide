@@ -26,6 +26,7 @@ Propagate our pmove state to whatever the current frame before its stomped on
 void
 Predict_EntityUpdate(player pl, float new)
 {
+	/* people expect a static camera when paused */
 	if (Util_IsPaused())
 		return;
 
@@ -33,10 +34,10 @@ Predict_EntityUpdate(player pl, float new)
 	if (new || self.classname != "player") {
 		spawnfunc_player();
 		pl.classname = "player";
-		
+
+		/* is this **us** ? */
 		if (pl.entnum == player_localentnum) {
-			//pl.solid = SOLID_SLIDEBOX;
-			//pl.movetype = MOVETYPE_NONE;
+			/* this will prevent the client-game from running its own physics between updates */
 			pl.customphysics = Empty;
 		} else {
 			/* other players will act like missiles for interpolation purposes */
@@ -62,5 +63,4 @@ Predict_EntityUpdate(player pl, float new)
 			pl.Physics_Run();
 		}
 	}
-	
 }

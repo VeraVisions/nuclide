@@ -15,46 +15,132 @@
 */
 
 void
-Event_Parse(float type)
+EV_Damage(void)
+{
+	vector vecDmgPos;
+	int iDmgTake;
+	int iDmgFlags;
+	vecDmgPos[0] = readcoord();
+	vecDmgPos[1] = readcoord();
+	vecDmgPos[2] = readcoord();
+	iDmgTake = readint();
+	iDmgFlags = readint();
+	CSQC_Parse_Damage_New(vecDmgPos, iDmgTake, iDmgFlags);
+}
+
+void
+EV_Intermission(void)
+{
+	int cam;
+	vector pos, ang;
+
+	cam = (int)readbyte();
+
+	if (cam) {
+		ang[0] = readfloat();
+		ang[1] = readfloat();
+		ang[2] = readfloat();
+
+		pos[0] = readcoord();
+		pos[1] = readcoord();
+		pos[2] = readcoord();
+	} else {
+		pos = getproperty(VF_ORIGIN);
+		ang = getproperty(VF_ANGLES);
+	}
+
+	pSeat->m_vecCameraOrigin = pos;
+	pSeat->m_vecCameraAngle = ang;
+	g_iIntermission = TRUE;
+}
+
+void
+EV_Speak(void)
+{
+	string msg;
+	float pit;
+	entity t = findfloat(world, entnum, readentitynum());
+	msg = readstring();
+	pit = readfloat();
+	sound(t, CHAN_VOICE, msg, 1.0, ATTN_NORM, pit);
+}
+
+void
+EV_HUDHint(void)
+{
+	string hint;
+	hint = readstring();
+	/* TODO: Handle the event properly */
+	Chat_Parse(sprintf("Hint: %s", hint));
+}
+
+void
+EV_CameraTrigger(void)
+{
+	vector cam_newpos;
+
+	cam_newpos[0] = readcoord();
+	cam_newpos[1] = readcoord();
+	cam_newpos[2] = readcoord();
+
+	pSeat->m_vecCameraAngle[0] = readcoord();
+	pSeat->m_vecCameraAngle[1] = readcoord();
+	pSeat->m_vecCameraAngle[2] = readcoord();
+
+	pSeat->m_flCameraTime = time + readfloat();
+
+	/* if the same camera as last-time (hack) is still active,
+	   then make sure it becomes inactive... */
+	if (pSeat->m_vecCameraOrigin == cam_newpos) {
+		pSeat->m_flCameraTime = 0.0f;
+	} else {
+		pSeat->m_vecCameraOrigin = cam_newpos;
+	}
+}
+
+void
+EV_Angle(void)
+{
+	vector a;
+	a[0] = readfloat();
+	a[1] = readfloat();
+	a[2] = readfloat();
+	g_view.SetCameraAngle(a);
+	g_view.SetClientAngle(a);
+}
+
+void
+EV_Shake(void)
 {
 	entity me = pSeat->m_ePlayer;
+	float duration;
+	float amplitude;
+	float frequency;
 
+	duration = readfloat();
+	amplitude = readfloat();
+	frequency = readfloat();
+
+	if (me.classname == "spectator")
+			return;
+
+	pSeat->m_flShakeDuration = duration;
+	pSeat->m_flShakeAmp = amplitude;
+	pSeat->m_flShakeFreq = frequency;
+	pSeat->m_flShakeTime = pSeat->m_flShakeDuration;
+}
+
+void
+Event_Parse(float type)
+{
 	switch (type) {
 	case EV_DAMAGE:
-		vector vecDmgPos;
-		int iDmgTake;
-		int iDmgFlags;
-		vecDmgPos[0] = readcoord();
-		vecDmgPos[1] = readcoord();
-		vecDmgPos[2] = readcoord();
-		iDmgTake = readint();
-		iDmgFlags = readint();
-		CSQC_Parse_Damage_New(vecDmgPos, iDmgTake, iDmgFlags);
+		EV_Damage();
 		break;
 	case EV_HITNOTIFY:
 		break;
 	case EV_INTERMISSION:
-		int cam;
-		vector pos, ang;
-
-		cam = (int)readbyte();
-
-		if (cam) {
-			ang[0] = readfloat();
-			ang[1] = readfloat();
-			ang[2] = readfloat();
-
-			pos[0] = readcoord();
-			pos[1] = readcoord();
-			pos[2] = readcoord();
-		} else {
-			pos = getproperty(VF_ORIGIN);
-			ang = getproperty(VF_ANGLES);
-		}
-
-		pSeat->m_vecCameraOrigin = pos;
-		pSeat->m_vecCameraAngle = ang;
-		g_iIntermission = TRUE;
+		EV_Intermission();
 		break;
 	case EV_MUSICTRACK:
 		Music_ParseTrack();
@@ -63,21 +149,13 @@ Event_Parse(float type)
 		Music_ParseLoop();
 		break;
 	case EV_SPEAK:
-		string msg;
-		float pit;
-		entity t = findfloat(world, entnum, readentitynum());
-		msg = readstring();
-		pit = readfloat();
-		sound(t, CHAN_VOICE, msg, 1.0, ATTN_NORM, pit);
+		EV_Speak();
 		break;
 	case EV_SENTENCE:
 		NSTalkMonster_ParseSentence();
 		break;
 	case EV_HUDHINT:
-		string hint;
-		hint = readstring();
-		/* TODO: Handle the event properly */
-		Chat_Parse(sprintf("Hint: %s", hint));
+		EV_HUDHint();
 		break;
 	case EV_FADE:
 		Fade_Parse();
@@ -92,33 +170,10 @@ Event_Parse(float type)
 		GameMessage_Parse();
 		break;
 	case EV_CAMERATRIGGER:
-		vector cam_newpos;
-
-		cam_newpos[0] = readcoord();
-		cam_newpos[1] = readcoord();
-		cam_newpos[2] = readcoord();
-
-		pSeat->m_vecCameraAngle[0] = readcoord();
-		pSeat->m_vecCameraAngle[1] = readcoord();
-		pSeat->m_vecCameraAngle[2] = readcoord();
-
-		pSeat->m_flCameraTime = time + readfloat();
-
-		/* if the same camera as last-time (hack) is still active,
-		   then make sure it becomes inactive... */
-		if (pSeat->m_vecCameraOrigin == cam_newpos) {
-			pSeat->m_flCameraTime = 0.0f;
-		} else {
-			pSeat->m_vecCameraOrigin = cam_newpos;
-		}
+		EV_CameraTrigger();
 		break;
 	case EV_ANGLE:
-		vector a;
-		a[0] = readfloat();
-		a[1] = readfloat();
-		a[2] = readfloat();
-        g_view.SetCameraAngle(a);
-        g_view.SetClientAngle(a);
+		EV_Angle();
 		break;
 	case EV_SURFIMPACT:
 		SurfData_Impact_Parse();
@@ -130,12 +185,7 @@ Event_Parse(float type)
 		CMD_Cleardecals();
 		break;
 	case EV_SHAKE:
-		if (me.classname == "spectator")
-			break;
-		pSeat->m_flShakeDuration = readfloat();
-		pSeat->m_flShakeAmp = readfloat();
-		pSeat->m_flShakeFreq = readfloat();
-		pSeat->m_flShakeTime = pSeat->m_flShakeDuration;
+		EV_Shake();
 		break;
 	case EV_BREAKMODEL:
 		BreakModel_Receive();
