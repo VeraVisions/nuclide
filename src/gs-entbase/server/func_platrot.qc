@@ -43,7 +43,7 @@ A vertically moving platform that rotates.
 # NOTES
 Spins.
 
--------- HISTORY --------
+# TRIVIA
 This entity was introduced in Half-Life (1998).
 */
 class

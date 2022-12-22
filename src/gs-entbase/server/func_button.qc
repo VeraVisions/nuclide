@@ -62,7 +62,7 @@ original position.
 - "sounds" : Obsolete legacy key for HL/Q1 style buttons to decide which sounds to play.
 - "health" : Amount of damage this button takes before it triggers. Will reset.
 
--------- OUTPUTS --------
+# OUTPUTS
 - "OnDamaged" : Fired when the button is damaged.
 - "OnPressed" : Fired when the button is pressed.
 - "OnUseLocked" : Fired when the button is used while locked.

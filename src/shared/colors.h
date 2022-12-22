@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/** Takes a normalized color vector and returns the hexadecimal equivalent
+    for "funstrings". E.g. '1.0 0.0 0.0' becomes "^xF00". */
 string
 Colors_RGB8_to_HEX(vector color)
 {
@@ -50,6 +52,8 @@ Colors_RGB8_to_HEX(vector color)
 	return out;
 }
 
+/* Takes a 0-255 based color vector and returns the hexadecimal equivalent
+    for "funstrings". E.g. '255 0 0' becomes "^xF00". */
 string
 Colors_RGB255_to_HEX(vector color)
 {

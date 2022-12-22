@@ -45,14 +45,14 @@ public:
 	
 	/* overrides */
 	virtual void Save(float);
-	virtual void Restore(string,string);
-	virtual void SpawnKey(string,string);
+	virtual void Restore(string, string);
+	virtual void SpawnKey(string, string);
 	virtual void Spawned(void);
 	virtual void Trigger(entity, triggermode_t);
 	
 	virtual int GlobalPresent(string);
-	virtual void AddNewGlobal(string,globalstate_t);
-	virtual void SetGlobal(string,globalstate_t);
+	virtual void AddNewGlobal(string, globalstate_t);
+	virtual void SetGlobal(string, globalstate_t);
 
 };
 

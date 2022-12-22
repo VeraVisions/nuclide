@@ -24,23 +24,25 @@
 
 #define CENVGLOBAL_CVAR "env_global_data"
 
+/** States for env_global data. */
 typedef enum
 {
+	/** env_global data in question is set to 'off'. */
 	GLOBAL_OFF,
+	/** env_global data in question is set to 'on'. */
 	GLOBAL_ON,
+	/** env_global data in question is dead. */
 	GLOBAL_DEAD
 } globalstate_t;
 
-typedef enum
-{ 
-	USE_TOGGLE,
-	USE_CONTINOUS
-} usetype_t;
-
+/** The type of trigger activation. Used by trigger_auto and trigger_relay to specifically trigger states. TRIG_TOGGLE is the safe option, as it'll cause something to happen either way. The way an entity responds to the described state is up to how it is programmed. Many entities do not react to a change in state at all. */
 typedef enum
 {
+	/** Trigger the target 'off', for doors that may tell them to close. */
 	TRIG_OFF,
+	/** Trigger the target 'on', for doors that may tell them to open. */
 	TRIG_ON,
+	/** Trigger the target the opposite to whatever they're currently in. */
 	TRIG_TOGGLE
 } triggermode_t;
 
@@ -66,7 +68,7 @@ public:
 	/** Called when we stopped touching the last touched entity. */
 	virtual void EndTouch(entity);
 
-	/* override */
+	/* overrides */
 	virtual void SpawnKey(string,string);
 
 #ifdef SERVER

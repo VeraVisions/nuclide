@@ -307,6 +307,8 @@ func_tracktrain::PathDone(void)
 		return;
 	}
 
+	NSLog("func_tracktrain (%s): Touched base with path_corner %S", targetname, target);
+
 	/* fire the path_corners' target */
 	if (eNode.m_strMessage) {
 		eNode.Trigger(this, TRIG_TOGGLE);

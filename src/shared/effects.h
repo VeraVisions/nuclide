@@ -23,19 +23,19 @@
 #define EF_ADDITIVE			(1<<5) /**< Render the entity additively. Also known as EF_FLAG2 in QW */
 #define EF_BLUE				(1<<6)	/**< Cast a blue dynamic light. */
 #define EF_RED				(1<<7)	/**< Cast a red dynamic light. */
-#define EF_UNUSED1			(1<<8)
+#define EF_UNUSED1			(1<<8)  /**< Unused. */
 #define EF_FULLBRIGHT		(1<<9)	/**< Render entity without lighting. */
-#define EF_UNUSED2			(1<<10)
-#define EF_UNUSED3			(1<<11)
+#define EF_UNUSED2			(1<<10)  /**< Unused. */
+#define EF_UNUSED3			(1<<11)  /**< Unused. */
 #define EF_NOSHADOW			(1<<12) /**< Entity won't cast a shadow. */
 #define EF_NODEPTHTEST		(1<<13)	/**< Entity renders through walls. */
-#define EF_UNUSED4			(1<<14)
-#define EF_UNUSED5			(1<<15)
-#define EF_UNUSED6			(1<<16)
-#define EF_UNUSED7			(1<<17)
+#define EF_UNUSED4			(1<<14)  /**< Unused. */
+#define EF_UNUSED5			(1<<15)  /**< Unused. */
+#define EF_UNUSED6			(1<<16)  /**< Unused. */
+#define EF_UNUSED7			(1<<17)  /**< Unused. */
 #define EF_GREEN			(1<<18)	/**< Cast a green dynamic light. */
-#define EF_UNUSED8			(1<<19)
-#define EF_UNUSED9			(1<<20)
-#define EF_UNUSED10			(1<<21)
-#define EF_UNUSED11			(1<<22)
-#define EF_UNUSED12			(1<<23)
+#define EF_UNUSED8			(1<<19)  /**< Unused. */
+#define EF_UNUSED9			(1<<20)  /**< Unused. */
+#define EF_UNUSED10			(1<<21)  /**< Unused. */
+#define EF_UNUSED11			(1<<22)  /**< Unused. */
+#define EF_UNUSED12			(1<<23)  /**< Unused. */

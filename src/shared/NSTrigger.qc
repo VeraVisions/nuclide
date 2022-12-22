@@ -38,7 +38,7 @@ NSTrigger::NSTrigger(void)
 void
 NSTrigger::Trigger(entity act, triggermode_t state)
 {
-	NSLog("^2%s::^3Input^7: Triggerd by %s with no consequence", 
+	NSLog("^2%s::^3Trigger^7: Triggered by %s with no consequence", 
 		classname, act.classname);
 }
 
@@ -130,16 +130,16 @@ NSTrigger::GetMaster(void)
 	/* we couldn't find it, so let's not even bother going further */
 	if (!t) {
 		NSLog("^2%s::^3GetMaster^7: Invalid master (%s), return success", 
-		classname, m_strMaster);
+			classname, m_strMaster);
 		return (1);
 	}
 
 	if (t.GetValue() == 1)
 		NSLog("^2%s::^3GetMaster^7: %s learns %s ^2POSITIVE", 
-		classname, targetname, m_strMaster);
+			classname, targetname, m_strMaster);
 	else
 		NSLog("^2%s::^3GetMaster^7: %s learns %s ^1NEGATIVE", 
-		classname, targetname, m_strMaster);
+			classname, targetname, m_strMaster);
 	
 	return t.GetValue();
 }

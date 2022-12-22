@@ -14,50 +14,44 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/* entity update identifiers */
-enum
+/** Entity update identifiers */
+typedef enum
 {
-	ENT_NONE,
-	ENT_ENTITY,
-	ENT_ENTITYRENDERABLE,
-	ENT_SURFPROP,
-	ENT_BEAM,
-	ENT_PHYSICS,
-	ENT_MONSTER,
-	ENT_TALKMONSTER,
-	ENT_PLAYER,
-	ENT_SPECTATOR,
-	ENT_AMBIENTSOUND,
-	ENT_DLIGHT,
-	ENT_PROJECTEDTEXTURE,
-	ENT_FOGCONTROLLER,
-	ENT_LASER,
-	ENT_PARTSYSTEM,
-	ENT_SPRITE,
-	ENT_SPRAY,
-	ENT_DECAL,
-	ENT_OLDCAMERA,
-	ENT_MONITOR,
-	ENT_VEHICLE,
-	ENT_VEH_BRUSH,
-	ENT_VEH_TANKMORTAR,
-	ENT_VEH_4WHEEL,
-	ENT_PROPROPE,
-	ENT_BUBBLES,
-	ENT_SEPARATOR,
-};
+	ENT_NONE = 0,	/**< invalid, but reserved. */
+	ENT_ENTITY,	/**< of type NSEntity */
+	ENT_ENTITYRENDERABLE, /**< of type NSRenderableEntity */
+	ENT_SURFPROP, /**< of type NSSurfacePropEntity */
+	ENT_PHYSICS,	/**< of type NSPhysicsEntity */
+	ENT_MONSTER,	/**< of type NSMonster */
+	ENT_TALKMONSTER,	/**< of type NSTalkMonster */
+	ENT_PLAYER,	/**< of type NSClientPlayer */
+	ENT_SPECTATOR,	/**< of type NSClientSpectator */
+	ENT_AMBIENTSOUND,	/**< of type ambient_generic */
+	ENT_BEAM,	/**< of type env_beam */
+	ENT_DLIGHT,	/**< of type light_dynamic */
+	ENT_PROJECTEDTEXTURE, /**< of type env_projectedtexture */
+	ENT_FOGCONTROLLER, /**< of type env_fog_controller */
+	ENT_LASER,	/**< of type env_laser */
+	ENT_PARTSYSTEM,	/**< of type info_particle_system */
+	ENT_SPRITE,	/**< of type env_sprite */
+	ENT_SPRAY,	/**< of type spray */
+	ENT_DECAL,	/**< of type infodecal */
+	ENT_OLDCAMERA,	/**< of type trigger_camera */
+	ENT_MONITOR,	/**< of type func_monitor */
+	ENT_VEHICLE,	/**< Reserved. */
+	ENT_VEH_BRUSH,	/**< of type func_vehicle */
+	ENT_VEH_TANKMORTAR,	/**< of type func_tankmortar */
+	ENT_VEH_4WHEEL,	/**< of type prop_vehicle_driveable */
+	ENT_PROPROPE,	/**< of type prop_rope */
+	ENT_BUBBLES,	/**< of type env_bubbles */
+	ENT_SEPARATOR,	/**< This is a separator. This separator is used by you to add game-specific networked entities. When declaring your own entity-update types, you want the first value to equal ENT_SEPARATOR at all times to ensure you'll not be overriding existing slots. */
+} entupdate_t;
 
 
-/*
-=================
-Entity_FindClosest
-
-Returns the closest point entity of a given classname.
-world means it failed. most likely.
-=================
-*/
+/** Returns the closest point entity of a given classname.
+Returns 'world' or '__NULL__' if it fails to find anything. */
 entity
-Entity_FindClosest(entity target, string cname)
+Entity_FindClosest(entity startTarget, string className)
 {
 	entity best = world;
 	float bestdist;
@@ -65,8 +59,8 @@ Entity_FindClosest(entity target, string cname)
 
 	bestdist = 9999999;
 
-	for (entity e = world; (e = find(e, classname, cname));) {
-		dist = vlen(target.origin - e.origin);
+	for (entity e = world; (e = find(e, classname, className));) {
+		dist = vlen(startTarget.origin - e.origin);
 
 		if (dist < bestdist) {
 			bestdist = dist;
@@ -78,40 +72,33 @@ Entity_FindClosest(entity target, string cname)
 }
 
 
-/*
-=================
-Entity_SelectRandom
-
-Returns a random entity of a given classname.
-Check for world at all times. If world is returned then the given classname
-will most likely never return anything valid.
-=================
-*/
+/** Returns a random entity of a given classname.
+If world or '__NULL__' is returned, then the given classname is not present in the map. */
 entity
-Entity_SelectRandom(string cname)
+Entity_SelectRandom(string className)
 {
 	entity spot = world;
-	float max = 0;
+	int max = 0i;
 
-	/* count our max count */
-	for (entity e = world; (e = find(e,::classname, cname));) {
+	/* count the total number of entities of the desired class */
+	for (entity e = world; (e = find(e, ::classname, className));) {
 		max++;
 	}
 
-	/* immediately exit out */
-	if (max == 0) {
-		print(sprintf("^1Error: %s is not present on this map.\n", cname));
+	/* immediately exit out if we've got none */
+	if (max < 1i) {
+		print(sprintf("^1Error: %s is not present on this map.\n", className));
 		return __NULL__;
 	}
 
 	/* select a random point */
 	for (int i = random(1, max); i > 0; i--) {
-		spot = find(spot, classname, cname);
+		spot = find(spot, ::classname, className);
 	}
 
 	/* we might end up not finding anything, wrap around? */
 	if (spot == __NULL__) {
-		spot = find(spot, classname, cname);
+		spot = find(spot, ::classname, className);
 	}
 
 	/* we should have returned something valid now */

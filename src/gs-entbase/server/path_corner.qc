@@ -144,6 +144,7 @@ path_corner::Trigger(entity act, triggermode_t state)
 	entity a;
 
 	if (HasSpawnFlags(PC_FIREONCE) && m_iFired) {
+		NSLog("path_corner (%s) can only fire its targets once", targetname);
 		return;
 	}
 
@@ -151,5 +152,6 @@ path_corner::Trigger(entity act, triggermode_t state)
 		NSEntity trigger = (NSEntity)a;
 		trigger.Trigger(act, state);
 		m_iFired = TRUE;
+		NSLog("path_corner (%s) fired its %S targets", targetname, m_strMessage);
 	}
 }
