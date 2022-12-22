@@ -17,16 +17,11 @@
 void
 bot::ChatSay(string msg)
 {
-	SV_SendChat(this, msg, world, 0);
+	g_grMode.ChatMessageAll(this, msg);
 }
 
 void
 bot::ChatSayTeam(string msg)
 {
-	entity a;
-	for (a = world; (a = find(a, ::classname, "player"));) { 
-		if (a.team == this.team) {
-			SV_SendChat(self, msg, a, 1);
-		}
-	}
+	g_grMode.ChatMessageTeam(this, msg);
 }

@@ -280,15 +280,28 @@ void
 SV_ParseClientCommand(string cmd)
 {
 	string newcmd = Plugin_ParseClientCommand(cmd);
+	int argc;
 
-	if (newcmd == __NULL__)
-		Game_ParseClientCommand(cmd);
-	else 
-		Game_ParseClientCommand(newcmd);
+	/* give the game-mode a chance to override us */
+	if (g_ents_initialized)
+		if (g_grMode.ClientCommand((NSClient)self, cmd) == true)
+			return;
 
-	tokenize(cmd);
+	argc = tokenize(cmd);
 
 	switch (argv(0)) {
+	case "say":
+		if (argc == 2)
+			g_grMode.ChatMessageAll(self, argv(1));
+		else
+			g_grMode.ChatMessageAll(self, substring(cmd, 5, -2));
+		break;
+	case "say_team":
+		if (argc == 2)
+			g_grMode.ChatMessageTeam(self, argv(1));
+		else
+			g_grMode.ChatMessageTeam(self, substring(cmd, 10, -2));
+		break;
 	case "spectate":
 		if (self.classname != "player")
 			break;

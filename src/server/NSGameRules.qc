@@ -65,6 +65,11 @@ NSGameRules::ConsoleCommand(NSClientPlayer pl, string cmd)
 {
 	return (false);
 }
+bool
+NSGameRules::ClientCommand(NSClient pl, string cmd)
+{
+	return (false);
+}
 
 /* client */
 void
@@ -462,4 +467,45 @@ bool
 NSGameRules::PlayerCanAttack(NSClientPlayer bp)
 {
 	return true;
+}
+
+void
+NSGameRules::ChatMessageAll(NSClient cl, string strMessage)
+{
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_CHAT);
+	WriteByte(MSG_MULTICAST, num_for_edict(cl) - 1);
+	WriteByte(MSG_MULTICAST, cl.team); 
+	WriteString(MSG_MULTICAST, strMessage);
+	multicast([0,0,0], MULTICAST_ALL_R);
+
+	localcmd(sprintf("echo [ALL] %s: %s\n", cl.netname, strMessage));
+}
+
+void
+NSGameRules::ChatMessageTeam(NSClient cl, string strMessage)
+{
+	/* their finger probably slipped */
+	if (IsTeamplay() == false) {
+		ChatMessageAll(cl, strMessage);
+		return;
+	}
+
+	/* single handedly pick out team members */
+	for (entity a = world; (a = find(a, ::classname, "player"));) {
+		/* not one of us! */
+		if (a.team != cl.team)
+			continue;
+
+		WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+		WriteByte(MSG_MULTICAST, EV_CHAT_TEAM);
+		WriteByte(MSG_MULTICAST, num_for_edict(cl) - 1); 
+		WriteByte(MSG_MULTICAST, cl.team); 
+		WriteString(MSG_MULTICAST, strMessage);
+
+		msg_entity = a;
+		multicast([0,0,0], MULTICAST_ONE_R);
+	}
+
+	localcmd(sprintf("echo [TEAM] %s: %s\n", cl.netname, strMessage));
 }

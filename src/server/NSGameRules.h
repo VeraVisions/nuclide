@@ -35,8 +35,10 @@ public:
 	/* logic */
 	/** Overridable: Called every server frame. */
 	virtual void FrameStart(void);
-	/** Overridable: Called when a client issues a server command. */
+	/** Overridable: Called when a client issues a console command. */
 	virtual bool ConsoleCommand(NSClientPlayer,string);
+	/** Overridable: Called when a client issues a client command. */
+	virtual bool ClientCommand(NSClient,string);
 	
 	/* client */
 	/** Overridable: Called when a NSClientPlayer joins the server. */
@@ -90,6 +92,15 @@ public:
 	virtual bool IsTeamplay(void);
 	/** Returns if the gamerule is a multiplayer game. */
 	virtual bool IsMultiplayer(void);
+
+	/* chat related methods */
+	/** Called by Nuclide when the server has received a chat message
+		that is to be distributed amongst all clients, regardless of team. */
+	virtual void ChatMessageAll(NSClient, string);
+
+	/** Called by Nuclide when the server has received a chat message
+		that is to be distributed amongst all clients of the same team. */
+	virtual void ChatMessageTeam(NSClient, string);
 	
 	/* spectator */
 	/*

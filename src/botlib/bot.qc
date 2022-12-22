@@ -14,8 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-void SV_SendChat(entity sender, string msg, entity eEnt, float fType);
-
 botstate_t
 bot::GetState(void)
 {
