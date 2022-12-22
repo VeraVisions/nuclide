@@ -297,7 +297,7 @@ multi_manager::Trigger(entity act, triggermode_t state)
 		NSLog("^2%s::^3Trigger^7: %s (%s)", 
 			this.classname, wow.target, eFind.classname);
 
-		m_iValue = TRUE;
+		wow.m_iValue = TRUE;
 		UseTargets(wow.m_eActivator, TRIG_TOGGLE, 0.0f);
 	}
 
@@ -320,8 +320,8 @@ multi_manager::Trigger(entity act, triggermode_t state)
 		if (m_eTriggers[i].HasTriggerTarget() == false)
 			continue;
 
-		m_eTriggers[i].ScheduleThink(mm_enttrigger, m_eTriggers[i].m_flUntilTriggered);
 		m_eTriggers[i].m_iValue = FALSE;
 		m_eTriggers[i].m_eActivator = act;
+		m_eTriggers[i].ScheduleThink(mm_enttrigger, m_eTriggers[i].m_flUntilTriggered);
 	}
 }
