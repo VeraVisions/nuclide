@@ -22,43 +22,11 @@ Game_RunClientCommand(void)
 	pl.Physics_Run();
 }
 
-/* custom chat packet */
-void
-SV_SendChat(entity sender, string msg, entity eEnt, float fType)
-{
-	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
-	WriteByte(MSG_MULTICAST, fType == 0 ? EV_CHAT:EV_CHAT_TEAM);
-	WriteByte(MSG_MULTICAST, num_for_edict(sender) - 1); 
-	WriteByte(MSG_MULTICAST, sender.team); 
-	WriteString(MSG_MULTICAST, msg);
-	if (eEnt) {
-		msg_entity = eEnt;
-		multicast([0,0,0], MULTICAST_ONE);
-	} else {
-		multicast([0,0,0], MULTICAST_ALL);
-	}
-
-	localcmd(sprintf("echo [SERVER] %s: %s\n", sender.netname, msg));
-}
-
 /* client cmd overrides happen here */
 void
 Game_ParseClientCommand(string cmd)
 {
 	tokenize(cmd);
-
-	if (argv(0) == "say") {
-		SV_SendChat(self, argv(1), world, 0);
-		return;
-	} else if (argv(0) == "say_team") {
-		entity a;
-		for (a = world; (a = find(a, ::classname, "player"));) { 
-			if (a.team == self.team) {
-				SV_SendChat(self, argv(1), a, 1);
-			}
-		}
-		return;
-	}
 
 	clientcommand(self, cmd);
 }

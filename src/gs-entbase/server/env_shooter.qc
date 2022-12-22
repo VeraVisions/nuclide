@@ -38,7 +38,7 @@ Shoots model entities from its location.
 This entity was introduced in Half-Life (1998).
 */
 class
-env_shooter:NSPointTrigger
+env_shooter:NSRenderableEntity
 {
 	int m_iGibs;
 	int m_iGibsLeft;
@@ -55,6 +55,7 @@ env_shooter:NSPointTrigger
 public:
 	void env_shooter(void);
 
+	virtual void Spawned(void);
 	virtual void Save(float);
 	virtual void Restore(string,string);
 	virtual void SpawnKey(string,string);
@@ -77,6 +78,38 @@ env_shooter::env_shooter(void)
 	m_flShootSounds = 0;
 	m_flScale = 1.0;
 	m_flSkin = 0;
+}
+
+void
+env_shooter::Spawned(void)
+{
+	super::Spawned();
+
+	if (m_strShootModel)
+		precache_model(m_strShootModel);
+
+	/* There isn't a much more portable to do this, maybe this can be abstracted
+		through separate soundDef entries but I don't know if that'll be less annoying. */
+	switch (m_flShootSounds) {
+	case 0:	/* glass */
+		Sound_Precache("func_breakable.impact_glass");
+		break;
+	case 1:	/* wood */
+		Sound_Precache("func_breakable.impact_wood");
+		break;
+	case 2:	/* metal */
+		Sound_Precache("func_breakable.impact_metal");
+		break;
+	case 3: /* flesh */
+		Sound_Precache("func_breakable.impact_flesh");
+		break;
+	case 4:	/* concrete */
+		Sound_Precache("func_breakable.impact_concrete");
+		break;
+	case -1: /* none */
+	default:
+		break;
+	}
 }
 
 void
@@ -138,6 +171,9 @@ void
 env_shooter::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
+	case "angle":
+		angles = [stof(strValue) * 90, 0, 0];
+		break;
 	case "m_iGibs":
 		m_iGibs = stoi(strValue);
 		break;
@@ -155,7 +191,6 @@ env_shooter::SpawnKey(string strKey, string strValue)
 		break;
 	case "shootmodel":
 		m_strShootModel = strValue;
-		precache_model(m_strShootModel);
 		break;
 	case "shootsounds":
 		m_flShootSounds = stof(strValue);
@@ -194,10 +229,39 @@ env_shooter::ShootGib(void)
 	eGib.SetModel(m_strShootModel);
 	eGib.SetOrigin(GetOrigin());
 	eGib.SetAngles(GetAngles());
+	eGib.SetRenderColor(m_vecRenderColor);
+	eGib.SetRenderMode(m_iRenderMode);
+	eGib.SetRenderFX(m_iRenderFX);
+	eGib.SetRenderAmt(m_flRenderAmt);
+	eGib.SetScale(m_flScale);
+
+	switch (m_flShootSounds) {
+	case 0:	/* glass */
+		StartSoundDef("func_breakable.impact_glass", CHAN_VOICE, false);
+		break;
+	case 1:	/* wood */
+		StartSoundDef("func_breakable.impact_wood", CHAN_VOICE, false);
+		break;
+	case 2:	/* metal */
+		StartSoundDef("func_breakable.impact_metal", CHAN_VOICE, false);
+		break;
+	case 3: /* flesh */
+		StartSoundDef("func_breakable.impact_flesh", CHAN_VOICE, false);
+		break;
+	case 4:	/* concrete */
+		StartSoundDef("func_breakable.impact_concrete", CHAN_VOICE, false);
+		break;
+	case -1: /* none */
+	default:
+		break;
+	}
+
+	if (m_flGibLife <= 0)
+		m_flGibLife = 1.0f;
 
 	makevectors(GetAngles());
 	vecThrowVel = v_forward * m_flVelocity;
-	vecThrowVel += [0.0f, 0.0f, 64.0f + (random() * 64.0f)];
+	vecThrowVel += [0.0f, 0.0f, 32.0f + (random() * 32.0f)];
 	vecSpinVel[0] = random(-1,1) * 32;
 	vecSpinVel[1] = random(-1,1) * 32;
 	vecSpinVel[2] = random(-1,1) * 32;
