@@ -40,18 +40,6 @@ This entity was introduced in Half-Life (1998).
 class
 env_shooter:NSRenderableEntity
 {
-	int m_iGibs;
-	int m_iGibsLeft;
-
-	float m_flDelay;
-	float m_flVelocity;
-	float m_flVariance;
-	float m_flGibLife;
-	string m_strShootModel;
-	float m_flShootSounds;
-	float m_flScale;
-	float m_flSkin;
-
 public:
 	void env_shooter(void);
 
@@ -63,6 +51,18 @@ public:
 	virtual void ShootGib(void);
 	virtual void Trigger(entity, triggermode_t);
 
+private:
+	int m_iGibs;
+	int m_iGibsLeft;
+
+	float m_flDelay;
+	float m_flVelocity;
+	float m_flVariance;
+	float m_flGibLife;
+	string m_strShootModel;
+	float m_flShootSounds;
+	float m_flScale;
+	float m_flSkin;
 };
 
 void
@@ -234,6 +234,7 @@ env_shooter::ShootGib(void)
 	eGib.SetRenderFX(m_iRenderFX);
 	eGib.SetRenderAmt(m_flRenderAmt);
 	eGib.SetScale(m_flScale);
+	eGib.SetSkin(m_flSkin);
 
 	switch (m_flShootSounds) {
 	case 0:	/* glass */
