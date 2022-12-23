@@ -266,7 +266,14 @@ SV_RunClientCommand(void)
 #endif
 
 	if (!Plugin_RunClientCommand()) {
-		Game_RunClientCommand();
+		/* TODO */
+	}
+
+	/* the last thing that happens, so that the game can intercept
+	   input globals beforehand */
+	if (self.classname == "player") {
+		player pl = (player)self;
+		pl.Physics_Run();
 	}
 }
 
@@ -318,6 +325,15 @@ SV_ParseClientCommand(string cmd)
 		if (cvar("sv_cheats") == 1) {
 			setorigin(self, stov(argv(1)));
 		}
+		break;
+	case "timeleft":
+		string msg;
+		string timestring;
+		float timeleft;
+		timeleft = cvar("timelimit") - (time / 60);
+		timestring = Util_TimeToString(timeleft);
+		msg = sprintf("we have %s minutes remaining", timestring);
+		bprint(PRINT_CHAT, msg);
 		break;
 	default:
 		clientcommand(self, cmd);
