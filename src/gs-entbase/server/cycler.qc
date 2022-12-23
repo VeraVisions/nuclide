@@ -56,6 +56,7 @@ cycler::Respawn(void)
 	SetSolid(SOLID_BBOX);
 	SetTakedamage(DAMAGE_YES);
 	SetHealth(9999);
+	SetSize(VEC_HULL_MIN, VEC_HULL_MAX);
 }
 
 void
