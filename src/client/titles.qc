@@ -53,7 +53,7 @@ Titles_ParseFunString(string temp)
 	temp = strreplace("\\w", "^7", temp);
 	temp = strreplace("\\d", "^8", temp);
 	temp = strreplace("\\R", " ", temp);
-	temp = strreplace("/n", "\n", temp);
+	temp = strreplace("\\n", "\n", temp);
 	return temp;
 }
 
