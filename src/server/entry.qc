@@ -458,6 +458,9 @@ initents(void)
 	ChangeTarget_Activate();
 
 	g_ents_initialized = TRUE;
+
+	/* engine hacks for dedicated servers */
+	cvar_set("s_nominaldistance", "1000");
 }
 
 var int autocvar_sv_levelexec = 1;
