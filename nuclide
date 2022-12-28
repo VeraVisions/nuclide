@@ -9,9 +9,21 @@ fi
 
 cd "$SRCPATH/bin"
 
+if [ -f ../$1/manifest.fmf ]
+then
+	MANIFEST="-manifest ../$1/manifest.fmf"
+	SVGAMEDIR=$(cat ../$1/manifest.fmf  | grep BASEGAME | awk 'BEGIN { ORS="," } { print $2 } END { print "" }')
+	SVGAMEDIR=${SVGAMEDIR%,,}
+	ARGUMENTS="$2 +sv_gamedir \"${SVGAMEDIR}\""
+	echo "Arguments: $ARGUMENTS"
+else
+	ARGUMENTS="$*"
+fi
+
+
 if [ -f "$SRCPATH/bin/fteqw" ]; then
 	if [ -z "$NUCLIDE_GDB" ]; then
-		./fteqw ${ADDITIONAL_ARGS} -basedir ../ $*
+		./fteqw ${ADDITIONAL_ARGS} -basedir ../ ${MANIFEST} ${ARGUMENTS} 
 	else
 		gdb --args ./fteqw ${ADDITIONAL_ARGS} -basedir ../ $*
 	fi

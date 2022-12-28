@@ -8,9 +8,9 @@ For development, use the `nuclide` launch script inside the root directory.
 $ ./nuclide
 ```
 
-Running it on its own will mount the game dir `base/`. As that's the default defined inside the file `./default.fmf`.
+Running it on its own will mount only the directory `platform/`. As that's the default defined inside the file `./default.fmf`.
 
-You can mount an additional mod over `base/` like so:
+You can mount an additional mod over it like so:
 
 ```
 $ ./nuclide -game some_other_mod
@@ -22,9 +22,27 @@ If you wanted to mount multiple game dirs, you could in theory do it like so:
 $ ./nuclide -game first_mod -game second_mod -game third_mod
 ```
 
-And it'll load those directories in order, on top of `base/`.
+And it'll load those directories in order.
+
+However, if you'd like to be very specific in how a game is run/branded/launched
+you should really use **FTE Manifest** files.
+
+Simply plop one into your game directory with the name `manifest.fmf`, then launch
+nuclide like so:
+
+```
+$ ./nuclide first_mod
+```
+
+and it will load `first_mod/manifest.fmf`. You can supply arguments to it by putting them into the second parameter with quotes like so:
+
+```
+$ ./nuclide first_mod "-window +set sv_cheats 1"
+```
 
 However, we advise you only do this for development. If you want proper multiplayer compatibility (slightly different filesystem mount setups can confuse client-server negotation) please use the built-in **Custom game** menu to ensure maximum compatibility to other clients.
+
+If you are running a dedicated server and have issues with multiple game directories, check the value of the cvar `sv_gamedir` on the server. It is meant to be a semicolon separated list of game directories, if multiple ones are supposed to be mounted.
 
 ## For release...
 

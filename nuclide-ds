@@ -1,22 +1,32 @@
-#!/bin/sh
+#!/bin/bash
 set -e
-SCRPATH="$( cd "$( dirname $(readlink -nf $0) )" && pwd )"
+SRCPATH="$( cd "$( dirname $(readlink -nf $0) )" && pwd )"
 
-# We want to keep our library separate
 if [ -d "$HOME/Library/Games" ]
 then
 	ADDITIONAL_ARGS="-usehome -homedir ${HOME}/Library/Games/Nuclide"
 fi
 
-
 cd "$SRCPATH/bin"
 
-if [ -f "$SRCPATH/bin/fteqw-sv" ]; then
+if [ -f ../$1/manifest.fmf ]
+then
+	MANIFEST="-manifest ../$1/manifest.fmf"
+	SVGAMEDIR=$(cat ../$1/manifest.fmf  | grep BASEGAME | awk 'BEGIN { ORS="," } { print $2 } END { print "" }')
+	SVGAMEDIR=${SVGAMEDIR%,,}
+	ARGUMENTS="$2 +sv_gamedir \"${SVGAMEDIR}\""
+	echo "Arguments: $ARGUMENTS"
+else
+	ARGUMENTS="$*"
+fi
+
+
+if [ -f "$SRCPATH/bin/fteqw" ]; then
 	if [ -z "$NUCLIDE_GDB" ]; then
-		./fteqw-sv ${ADDITIONAL_ARGS} -basedir ../ $*
+		./fteqw-sv ${ADDITIONAL_ARGS} -basedir ../ ${MANIFEST} ${ARGUMENTS} 
 	else
-		gdb --args ./fteqw ${ADDITIONAL_ARGS} -basedir ../ $*
+		gdb --args ./fteqw-sv ${ADDITIONAL_ARGS} -basedir ../ $*
 	fi
 else
 	printf "Engine is not present, please run build_engine.sh\n"
-f
+fi
