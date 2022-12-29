@@ -62,7 +62,7 @@ NSClientSpectator::IsFakeSpectator(void)
 }
 
 void
-NSClientSpectator::ClientInput(void)
+NSClientSpectator::ProcessInput(void)
 {
 	if (input_buttons & INPUT_BUTTON0) {
 		InputNext();
@@ -126,10 +126,12 @@ NSClientSpectator::SendEntity(entity ePVSent, float flChangedFlags)
 }
 
 void
-NSClientSpectator::RunClientCommand(void)
+NSClientSpectator::ServerInputFrame(void)
 {
 	runstandardplayerphysics(this);
-	ClientInput();
+
+	/* since we are not using Physics_Run(), we have to call this manually */
+	ProcessInput();
 }
 
 #else
@@ -168,7 +170,7 @@ NSClientSpectator::ReceiveEntity(float new, float fl)
 				}
 				input_sequence = i;
 				runstandardplayerphysics(this);
-				ClientInput();
+				ProcessInput();
 			}
 
 			/* any differences in things that are read below are now
@@ -391,7 +393,7 @@ NSClientSpectator::PreFrame(void)
 
 		/* run our custom physics */
 		runstandardplayerphysics(this);
-		ClientInput();
+		ProcessInput();
 	}
 #endif
 

@@ -389,6 +389,7 @@ CSQC_Input_Frame(void)
 
 	if (me.classname == "player" || me.classname == "spectator") {
 		NSClient pl = (NSClient)me;
+		pl.SharedInputFrame();
 		pl.ClientInputFrame();
 	}
 }

@@ -22,6 +22,56 @@ and spectating clients alike.
 class
 NSClient:NSNavAI
 {
+public:
+	void NSClient(void);
+
+	/** Called to deal with the final input handling of the client. */
+	virtual void ProcessInput(void);
+	/** Run once, every frame, before physics are run on the player. */
+	virtual void PreFrame(void);
+	/** Run once, every frame, after physics are run on the player. */
+	virtual void PostFrame(void);
+	/** Returns if we're a 'fake' spectator. This is a regular player acting as a spectator. */
+	virtual bool IsFakeSpectator(void);
+	/** Returns if we're a 'real' spectator. That is a client that can only spectate. */
+	virtual bool IsRealSpectator(void);
+	/** Returns if we're considered 'dead'. NSClient, NSClientSpectator will always return false. */
+	virtual bool IsDead(void);
+	/** Returns if we're a player. That is a type of client that is built on top of NSClientPlayer. */
+	virtual bool IsPlayer(void);
+	/** Like ClientInputFrame and ServerInputFrame. However it's run on both. */
+	virtual void SharedInputFrame(void);
+
+	/* overrides */
+	virtual void OnRemoveEntity(void);
+
+#ifdef CLIENT
+	/** Client: Called on the client to give a chance to override input variables before networking */
+	virtual void ClientInputFrame(void);
+
+	/** Client: Called every single client frame when this client is alive */
+	virtual void UpdateAliveCam(void);
+
+	/** Client: Called every single client frame when this client is dead */
+	virtual void UpdateDeathcam(void);
+
+	/** Client: Called every single client frame during intermission */
+	virtual void UpdateIntermissionCam(void);
+
+	/* overrides */
+	virtual float predraw(void);
+#endif
+
+#ifdef SERVER
+	/** Server: Like ClientInputFrame, but run on the server.
+	It's the first method to be called after receiving the input variables from the client.*/
+	virtual void ServerInputFrame(void);
+
+	/* overrides */
+	virtual void Save(float);
+	virtual void Restore(string,string);
+#endif
+
 private:
 	vector origin_net;
 	vector velocity_net;
@@ -30,37 +80,4 @@ private:
 	NSXRInput m_xrInputHead;
 	NSXRInput m_xrInputLeft;
 	NSXRInput m_xrInputRight;
-
-public:
-	void NSClient(void);
-
-	/* final input handling of the client */
-	virtual void ClientInput(void);
-	virtual void PreFrame(void);
-	virtual void PostFrame(void);
-	virtual bool IsFakeSpectator(void);
-	virtual bool IsRealSpectator(void);
-	virtual bool IsDead(void);
-	virtual bool IsPlayer(void);
-	virtual void OnRemoveEntity(void);
-
-#ifdef CLIENT
-	/** Called to give a chance to override input variables before networking */
-	virtual void ClientInputFrame(void);
-
-	/** Called every single client frame when this client is alive */
-	virtual void UpdateAliveCam(void);
-
-	/** Called every single client frame when this client is dead */
-	virtual void UpdateDeathcam(void);
-
-	/** Called every single client frame during intermission */
-	virtual void UpdateIntermissionCam(void);
-
-	/* run every frame before renderscene() */
-	virtual float predraw(void);
-#else
-	virtual void Save(float);
-	virtual void Restore(string,string);
-#endif
 };

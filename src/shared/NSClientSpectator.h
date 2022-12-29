@@ -60,34 +60,42 @@ private:
 public:
 	void NSClientSpectator(void);
 
-	virtual void ClientInput(void);
-	
-	virtual void InputNext(void);
-	virtual void InputPrevious(void);
-	virtual void InputMode(void);
-	
-	virtual void WarpToTarget(void);
-	
+	/* overrides */
+	virtual void ProcessInput(void);
 	virtual void PreFrame(void);
 	virtual void PostFrame(void);
-	virtual void SpectatorTrackPlayer(void);
-	
 	virtual bool IsFakeSpectator(void);
 	virtual bool IsRealSpectator(void);
 	virtual bool IsDead(void);
 	virtual bool IsPlayer(void);
+
+	/** Call to spectate the next spectating target. */
+	virtual void InputNext(void);
+	/** Call to spectate the previous player target. */
+	virtual void InputPrevious(void);
+	/** Call to change the spectating mode. */
+	virtual void InputMode(void);
+
+	/** Re-teleport to the target we're spectating. 
+	Called once by InputNext/Previous. */
+	virtual void WarpToTarget(void);
+
+	/** Called every frame to track with our target player. */
+	virtual void SpectatorTrackPlayer(void);
+
+#ifdef CLIENT
+	virtual void ClientInputFrame(void);
+	virtual void ReceiveEntity(float,float);
+	virtual float predraw(void);
+#endif
 	
-	#ifdef SERVER
+#ifdef SERVER
 	virtual void Save(float);
 	virtual void Restore(string,string);
 	virtual void EvaluateEntity(void);
 	virtual float SendEntity(entity,float);
-	virtual void RunClientCommand(void);
-	#else
-	virtual void ClientInputFrame(void);
-	virtual void ReceiveEntity(float,float);
-	virtual float predraw(void);
-	#endif
+	virtual void ServerInputFrame(void);
+#endif
 };
 
 #ifdef CLIENT

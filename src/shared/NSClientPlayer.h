@@ -25,7 +25,7 @@ NSClientPlayer:NSClientSpectator
 public:
 	void NSClientPlayer(void);
 	
-	virtual void ClientInput(void);
+	virtual void ProcessInput(void);
 	virtual void PreFrame(void);
 	virtual void PostFrame(void);
 	
@@ -59,28 +59,38 @@ public:
 	virtual void ClientInputFrame(void);
 	virtual void UpdateAliveCam(void);
 
-	virtual float predraw(void);
-	virtual void postdraw(void);
-
 	/** Empty. Updates the bone controller responsible for mouth movement. */
 	virtual void UpdatePlayerJaw(float);
 
 	/** Empty. This is run on every player, every frame to update attachments. */
 	virtual void UpdatePlayerAttachments(bool);
 
-#else
+	virtual float predraw(void);
+	virtual void postdraw(void);
+
+#endif
+
+#ifdef SERVER
+	/* overrides */
 	virtual void Save(float);
 	virtual void Restore(string,string);
 	virtual void Respawn(void);
 	virtual void EvaluateEntity(void);
 	virtual float SendEntity(entity,float);
-	virtual float OptimiseChangedFlags(entity,float);
-	
 	virtual void Death(void);
+	virtual void ServerInputFrame(void);
+
+	/** Helper function that will optimise the changed-flags of your player entity. */
+	virtual float OptimiseChangedFlags(entity,float);
+
+	/** When called, will turn the client into a proper player. */
 	virtual void MakePlayer(void);
+	/** When called, will turn the client into a spectator. */
 	virtual void MakeTempSpectator(void);
-	
+
+	/** Called when we press the button bound to +use. */
 	virtual void InputUse_Down(void);
+	/** Called when we let go of the button bound to +use. */
 	virtual void InputUse_Up(void);
 
 #endif
@@ -89,12 +99,15 @@ public:
 
 private:
 
-#ifdef SERVER
-	PREDICTED_INT_N(weaponframe)
-#else
+#ifdef CLIENT
 	PREDICTED_INT(weaponframe)
 	PREDICTED_FLOAT(vehicle_entnum)
 #endif
+
+#ifdef SERVER
+	PREDICTED_INT_N(weaponframe)
+#endif
+
 	PREDICTED_FLOAT(health)
 	PREDICTED_FLOAT(armor)
 
@@ -141,7 +154,9 @@ private:
 	int p_hand_bone;
 	int p_model_bone;
 	float lastweapon;
-#else
+#endif
+
+#ifdef SERVER
 	int voted;
 	int step;
 	float step_time;

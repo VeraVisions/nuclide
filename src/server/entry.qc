@@ -44,8 +44,10 @@ ClientConnect(void)
 {
 	int playercount = 0;
 
+	/* don't carry over team settings from a previous session */
 	forceinfokey(self, "*team", "0");
 
+	/* bot needs special init */
 #ifdef BOT_INCLUDED
 	if (clienttype(self) == CLIENTTYPE_BOT) {
 		spawnfunc_bot();
@@ -63,9 +65,8 @@ ClientConnect(void)
 	for (entity a = world; (a = find(a, ::classname, "player"));)
 		playercount++;
 
-	/* we're the only one. respawn all entities */
+	/* Force node init */
 	if (playercount == 1) {
-
 		Nodes_Init();
 	}
 }
@@ -101,8 +102,6 @@ The `self` global refers to one of any given amount of spectator.
 void
 SpectatorThink(void)
 {
-	Game_SpectatorThink();
-
 	if (self.classname == "spectator") {
 		NSClientSpectator spec = (NSClientSpectator)self;
 		spec.PreFrame();
@@ -117,7 +116,6 @@ The `self` global is the connecting NSClientSpectator in question.
 void
 SpectatorConnect(void)
 {
-	Game_SpectatorConnect();
 	spawnfunc_NSClientSpectator();
 }
 
@@ -128,7 +126,6 @@ Attributes cleared when this function is done executing.
 void
 SpectatorDisconnect(void)
 {
-	Game_SpectatorDisconnect();
 }
 
 /** Called when a player enters the game, having fully connected and loaded into
@@ -153,6 +150,7 @@ PutClientInServer(void)
 			t.Trigger(self, TRIG_TOGGLE);
 	}
 
+	/* the game and its triggers start when the player is ready to see it */
 	trigger_auto_trigger();
 }
 
@@ -249,10 +247,9 @@ with the input_X globals being set to the appropriate data.
 void
 SV_RunClientCommand(void)
 {
-	if (self.classname == "spectator") {
-		NSClientSpectator spec = (NSClientSpectator)self;
-		spec.RunClientCommand();
-	}
+	NSClient cl = (NSClient)self;
+	cl.SharedInputFrame();
+	cl.ServerInputFrame();
 
 	if (self.classname != "player") {
 		return;

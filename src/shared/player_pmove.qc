@@ -366,7 +366,7 @@ NSClientPlayer::Physics_InputPostMove(void)
 	UpdatePlayerAnimation(input_timelength);
 
 	RemoveFlags(FL_FROZEN);
-	ClientInput();
+	ProcessInput();
 }
 
 /* the main physics routine, the head */

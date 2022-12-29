@@ -111,9 +111,8 @@ NSClientPlayer::PostFrame(void)
 #endif
 }
 
-
 void
-NSClientPlayer::ClientInput(void)
+NSClientPlayer::ProcessInput(void)
 {	
 	if (Util_IsPaused())
 		return;
@@ -121,7 +120,7 @@ NSClientPlayer::ClientInput(void)
 	XR_InputFrame(this);
 
 	if (!Client_InIntermission() && IsFakeSpectator()) {
-		NSClientSpectator::ClientInput();
+		NSClientSpectator::ProcessInput();
 		SpectatorTrackPlayer();
 		return;
 	}
@@ -546,6 +545,12 @@ NSClientPlayer::PredictPostFrame(void)
 	ROLL_BACK(spec_flags)
 }
 #else
+void
+NSClientPlayer::ServerInputFrame(void)
+{
+
+}
+
 void
 NSClientPlayer::Save(float handle)
 {

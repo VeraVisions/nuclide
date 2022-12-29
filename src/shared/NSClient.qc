@@ -36,7 +36,18 @@ NSClient::Restore(string strKey, string strValue)
 		super::Restore(strKey, strValue);
 	}
 }
+
+void
+NSClient::ServerInputFrame(void)
+{
+}
 #endif
+
+void
+NSClient::SharedInputFrame(void)
+{
+
+}
 
 void
 NSClient::OnRemoveEntity(void)
@@ -45,7 +56,7 @@ NSClient::OnRemoveEntity(void)
 }
 
 void
-NSClient::ClientInput(void)
+NSClient::ProcessInput(void)
 {
 }
 
