@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-void
+static void
 CMD_testPointLight(void)
 {
 	makevectors(getproperty(VF_ANGLES));
@@ -22,7 +22,7 @@ CMD_testPointLight(void)
 	dynamiclight_spawnstatic(trace_endpos + (v_forward * -16), 1024, [1,1,1]);
 }
 
-void
+static void
 CMD_dev_modeltest(void)
 {
 	entity mt = spawn();
@@ -34,7 +34,7 @@ CMD_dev_modeltest(void)
 	mt.angles[0] = mt.angles[2] = 0;
 }
 
-void
+static void
 CMD_dev_explode(void)
 {
 	makevectors(getproperty(VF_ANGLES));
@@ -42,7 +42,7 @@ CMD_dev_explode(void)
 	FX_Explosion(trace_endpos);
 }
 
-void
+static void
 CMD_dev_sunpos(void)
 {
 	vector sunpos, sunang;
@@ -63,7 +63,7 @@ CMD_dev_sunpos(void)
 	print(sprintf("light_environment: sunangle: %d; pitch: %d\n", leang[1], leang[0]));
 }
 
-void
+static void
 CMD_dev_measure(void)
 {
 	static vector measurepos;
@@ -76,7 +76,7 @@ CMD_dev_measure(void)
 	}
 }
 
-void
+static void
 CMD_vote(void)
 {
 	if (argv(1) == "yes") {
@@ -86,45 +86,45 @@ CMD_vote(void)
 	}
 }
 
-void
+static void
 CMD_getpos(void)
 {
 	print(sprintf("setpos %v;setang -%v\n", getproperty(VF_ORIGIN), getproperty(VF_ANGLES)));
 }
 
-void
+static void
 CMD_setpos(void)
 {
 	localcmd(sprintf("cmd setpos \"%s\"\n", argv(1)));
 }
 
-void
+static void
 CMD_setang(void)
 {
     g_view.SetCameraAngle(stov(argv(1)));
     g_view.SetClientAngle(stov(argv(1)));
 }
 
-void
+static void
 CMD_titles_test(void)
 {
 	GameMessage_Setup(argv(1), 0);
 }
 
-void
+static void
 CMD_way_menu(void)
 {
 	Way_Autoload();
 	Textmenu_Call("WAY_MENU");
 }
 
-void
+static void
 CMD_view_geomtest(void)
 {
 	Weapons_SetGeomset(sprintf("geomset %s %s\n", argv(1), argv(2)));
 }
 
-void
+static void
 CMD_player_geomtest(void)
 {
 	setcustomskin(pSeat->m_ePlayer, "", sprintf("geomset %s %s\n", argv(1), argv(2)));
@@ -140,7 +140,7 @@ CMD_Cleardecals(void)
 }
 
 /* Wishlist: list size and potential vmem usage */
-void
+static void
 CMD_ListModels(void)
 {
 	string tmp;
@@ -159,7 +159,7 @@ CMD_ListModels(void)
 }
 
 /* Wishlist: list size and samplerate/bitdepth */
-void
+static void
 CMD_ListSounds(void)
 {
 	string tmp;
@@ -182,7 +182,7 @@ CMD_ListSounds(void)
 	print(sprintf("\t%f seconds worth of samples\n", total_length));
 }
 
-void
+static void
 CMD_ListParticles(void)
 {
 	string tmp;
@@ -210,7 +210,7 @@ Returns 0 if the command isn't handled and the engine is expected
 to handle it from there.
 =================
 */
-int
+bool
 Cmd_Parse(string sCMD)
 {
 	switch (argv(0)) {
@@ -378,9 +378,9 @@ Cmd_Parse(string sCMD)
 		pSeat->m_iInputReload = FALSE;
 		break;
 	default:
-		return (0);
+		return (false);
 	}
-	return (1);
+	return (true);
 }
 
 /*

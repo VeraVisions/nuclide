@@ -13,6 +13,15 @@
  * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
- 
+
+/** Registers console commands that are provided by Nuclide. */
 void Cmd_Init(void);
-int Cmd_Parse(string);
+
+/** @brief Interprets a console command that is not defined within the gamesources.
+
+Called from CSQC_ConsoleCommand to handle any builtin commands from the Nuclide SDK,
+unless a game decided to implement its own interpretation of the commands.
+
+@param strCommand the command (with parameters) in question 
+@return true if the command was successfully handled, false if not. */
+bool Cmd_Parse(string strCommand);

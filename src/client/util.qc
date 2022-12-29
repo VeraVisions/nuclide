@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-float
+bool
 Client_IsSpectator(NSClient cl)
 {
 	if (cl.IsRealSpectator() || cl.IsFakeSpectator())
@@ -23,25 +23,25 @@ Client_IsSpectator(NSClient cl)
 	return false;
 }
 
-float
+bool
 Client_IsRealSpectator(NSClient cl)
 {
 	return cl.IsRealSpectator();
 }
 
-float
+bool
 Client_IsFakeSpectator(NSClient cl)
 {
 	return cl.IsFakeSpectator();
 }
 
-float
+bool
 Client_IsDead(NSClient cl)
 {
 	return cl.IsDead();
 }
 
-float
+bool
 Client_IsPlayer(NSClient cl)
 {
 	return cl.IsPlayer();

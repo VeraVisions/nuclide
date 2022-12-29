@@ -22,6 +22,7 @@
 #include "cmd.h"
 #include "util.h"
 #include "NSView.h"
+#include "crosshair.h"
 
 #define READENTITY_BYTE(field, changedflag) {\
 	if (flChanged & changedflag)\

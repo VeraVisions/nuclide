@@ -152,7 +152,7 @@ Font_DrawRText_RGBA(vector vecOrigin, string strText, vector rgb, float a, font_
 }
 
 void
-Font_DrawField(vector vecOrigin, vector vecSize, string strText, font_s fnt, int iAlignFlags)
+Font_DrawField(vector vecOrigin, vector vecSize, string strText, font_s fnt, alignflags_t iAlignFlags)
 {
 	drawfont = (float)fnt.iID;
 	drawfontscale[0] = (float)fnt.iScaleX / 8;
@@ -186,11 +186,11 @@ Font_GetHeight(font_s fnt)
 }
 
 float
-Font_StringWidth(string strText, float flColors, font_s fnt)
+Font_StringWidth(string strText, bool hasColor, font_s fnt)
 {
 	float w;
 	drawfont = (float)fnt.iID;
-	w = stringwidth(strText, flColors, [fnt.iScaleX, fnt.iScaleY]);
+	w = stringwidth(strText, (float)hasColor, [fnt.iScaleX, fnt.iScaleY]);
 	drawfont = 0;
 	drawfontscale = [1,1,0];
 	return w;

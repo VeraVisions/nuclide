@@ -26,5 +26,6 @@ shake.qc
 cmd.qc
 event.qc
 entry.qc
+crosshair.qc
 util.qc
 #endlist

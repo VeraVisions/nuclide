@@ -15,7 +15,7 @@
 */
 
 /* for effect 2 */
-int
+static int
 GameText_CharCount(float fadein, float timer, string msg)
 {
 	float len = (timer / fadein);
@@ -27,7 +27,7 @@ GameText_CharCount(float fadein, float timer, string msg)
 }
 
 /* the engine its drawstring doesn't like newlines that much */
-void
+static void
 GameText_DrawString(vector pos, string msg, vector col, float alpha)
 {
 	vector rpos = [0.0f, 0.0f, 0.0f];
@@ -58,7 +58,7 @@ GameText_DrawString(vector pos, string msg, vector col, float alpha)
 	}
 }
 
-void
+static void
 GameText_DrawMessage(int i, float timer, int highlight)
 {
 	float a = 0.0f;
