@@ -830,7 +830,12 @@ games_init(void)
 	games[id].hlversion = "1000";
 	games[id].svonly = 0;
 	games[id].installed = 1;
-	games[id].chatroom = gamedirname;
+	games[id].chatroom = cvar_string("gameinfo_chatroom");
+
+	if not (games[id].chatroom) {
+		games[id].chatroom = gamedirname;
+	}
+
 	games[id].readme = "readme.txt";
 	games[id].pkgid = -1;
 	games[id].steambg = 0;
