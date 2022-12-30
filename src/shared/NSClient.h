@@ -67,6 +67,11 @@ public:
 	It's the first method to be called after receiving the input variables from the client.*/
 	virtual void ServerInputFrame(void);
 
+	/** Set the value of an InfoKey. */
+	nonvirtual void SetInfoKey(string, string);
+	/** Get the string value of an InfoKey. */
+	nonvirtual string GetInfoKey(string);
+
 	/* overrides */
 	virtual void Save(float);
 	virtual void Restore(string,string);

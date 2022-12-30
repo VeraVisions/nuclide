@@ -41,6 +41,19 @@ void
 NSClient::ServerInputFrame(void)
 {
 }
+
+void
+NSClient::SetInfoKey(string strKey, string strValue)
+{
+	forceinfokey(this, strKey, strValue);
+}
+
+string
+NSClient::GetInfoKey(string strKey)
+{
+	return infokey(this, strKey);
+}
+
 #endif
 
 void
