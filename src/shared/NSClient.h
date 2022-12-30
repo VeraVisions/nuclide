@@ -39,14 +39,14 @@ public:
 	virtual bool IsDead(void);
 	/** Returns if we're a player. That is a type of client that is built on top of NSClientPlayer. */
 	virtual bool IsPlayer(void);
-	/** Like ClientInputFrame and ServerInputFrame. However it's run on both. */
+	/** Like ClientInputFrame and ServerInputFrame, but run on both client and server at the same time. It is run before ClientInputFrame and ServerInputFrame. */
 	virtual void SharedInputFrame(void);
 
 	/* overrides */
 	virtual void OnRemoveEntity(void);
 
 #ifdef CLIENT
-	/** Client: Called on the client to give a chance to override input variables before networking */
+	/** Client: Called on the client to give a chance to override input_* variables before networking them takes place. */
 	virtual void ClientInputFrame(void);
 
 	/** Client: Called every single client frame when this client is alive */
@@ -63,8 +63,7 @@ public:
 #endif
 
 #ifdef SERVER
-	/** Server: Like ClientInputFrame, but run on the server.
-	It's the first method to be called after receiving the input variables from the client.*/
+	/** Server: This is where the input* variables arrive after sending them out from the client (see ClientInputFrame).*/
 	virtual void ServerInputFrame(void);
 
 	/** Set the value of an InfoKey. */

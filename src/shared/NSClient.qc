@@ -17,6 +17,7 @@
 void
 NSClient::NSClient(void)
 {
+	customphysics = Empty; /* we don't want any engine physics to run on clients, ever. */
 	flags |= FL_CLIENT;
 	XR_Init(this);
 }

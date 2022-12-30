@@ -234,6 +234,12 @@ void
 NSTrigger::SetTeam(float new_team)
 {
 	team = new_team;
+
+	/* update the InfoKey too if it's a client entity */
+	if (flags & FL_CLIENT) {
+		NSClient client = (NSClient)this;
+		client.SetInfoKey("*team", sprintf("%d", new_team));
+	}
 }
 
 float
