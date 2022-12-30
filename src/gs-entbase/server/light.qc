@@ -138,7 +138,7 @@ light::RestoreComplete(void)
 {
 	if (m_iEnabled == 0) {
 		lightstyle(m_flStyle, "a");
-	} else {
+	} else if (m_flStyle > 12) {
 		lightstyle(m_flStyle, m_strPattern);
 	}
 }

@@ -83,7 +83,7 @@ ClientDisconnect(void)
 
 	/* this will hide/remove the player from other clients */
 	player pl = (player)self;
-	pl.SetModelindex(0);
+	pl.Disappear();
 }
 
 /** Called by the `kill` console command.
@@ -484,6 +484,8 @@ worldspawn(void)
 	lightstyle(9, "aaaaaaaazzzzzzzz");
 	lightstyle(10, "mmamammmmammamamaaamammma");
 	lightstyle(11, "abcdefghijklmnopqrrqponmlkjihgfedcba");
+	lightstyle(12, "mmnnmmnnnmmnn");
+	lightstyle(63, "a");
 	Skill_Init();
 
 	precache_model("models/error.vvm");
