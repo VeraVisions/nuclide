@@ -83,7 +83,8 @@ public:
 	virtual float SendEntity(entity,float);
 	virtual void Save(float);
 	virtual void Restore(string,string);
-#else
+#endif
+#ifdef CLIENT
 	virtual void ReceiveEntity(float,float);
 #endif
 

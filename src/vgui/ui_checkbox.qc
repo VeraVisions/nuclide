@@ -22,23 +22,25 @@ enumflags
 	CHECKBOX_CHECKED
 };
 
-class CUICheckbox:CUIWidget
+class VGUICheckbox:VGUIWidget
 {
+public:
+	void VGUICheckbox(void);
+	
+	nonvirtual void SetTitle(string);
+	nonvirtual int GetValue(void);
+	nonvirtual void SetValue(int);
+
+	virtual void Draw(void);
+	virtual bool Input(float, float, float, float);
+
+private:
 	vector m_vecColor;
 	float m_flAlpha;
-	vector m_vecSize;
 	string m_strTitle;
-	
-	void(void) CUICheckbox;
-	virtual void(void) Draw;
-	virtual void(vector) SetSize;
-	virtual void(string) SetTitle;
-	virtual int(void) GetValue;
-	virtual void(int) SetValue;
-	virtual bool(float, float, float, float) Input;
 };
 
-void CUICheckbox::CUICheckbox(void)
+void VGUICheckbox::VGUICheckbox(void)
 {
 	m_vecColor = UI_MAINCOLOR;
 	m_flAlpha = 1.0f;
@@ -46,15 +48,11 @@ void CUICheckbox::CUICheckbox(void)
 	m_iFlags = CHECKBOX_VISIBLE;
 }
 
-void CUICheckbox::SetSize (vector vecSize)
-{
-	m_vecSize = vecSize;
-}
-void CUICheckbox::SetTitle (string strName)
+void VGUICheckbox::SetTitle (string strName)
 {
 	m_strTitle = strName;
 }
-int CUICheckbox::GetValue(void)
+int VGUICheckbox::GetValue(void)
 {
 	if (m_iFlags & CHECKBOX_CHECKED) {
 		return (1);
@@ -62,7 +60,7 @@ int CUICheckbox::GetValue(void)
 		return (0);
 	}
 }
-void CUICheckbox::SetValue (int iValue)
+void VGUICheckbox::SetValue (int iValue)
 {
 	if (iValue == TRUE) {
 		m_iFlags |= CHECKBOX_CHECKED;
@@ -71,7 +69,7 @@ void CUICheckbox::SetValue (int iValue)
 	}
 }
 
-void CUICheckbox::Draw(void)
+void VGUICheckbox::Draw(void)
 {
 #ifndef CLASSIC_VGUI
 	drawfill(m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, m_vecColor, m_flAlpha);
@@ -107,7 +105,7 @@ void CUICheckbox::Draw(void)
 	}
 }
 
-bool CUICheckbox::Input (float flEVType, float flKey, float flChar, float flDevID)
+bool VGUICheckbox::Input (float flEVType, float flKey, float flChar, float flDevID)
 {
 	bool ret = false;
 

@@ -49,7 +49,9 @@ public:
 	virtual bool HideViewWeapon(void);
 	virtual bool HideCrosshair(void);
 	virtual bool HidePlayermodel(void);
-#else
+#endif
+
+#ifdef SERVER
 	nonvirtual vector GetExitPos(void);
 	virtual void EvaluateEntity(void);
 	virtual float SendEntity(entity,float);

@@ -27,7 +27,7 @@ Achievement_Clear(string strName)
 }
 
 /* returns whether or not an achievement has been achieved */
-int
+bool
 Achievement_Get(string strName)
 {
 	return 0;

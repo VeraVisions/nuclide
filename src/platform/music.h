@@ -14,13 +14,24 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! @file music.h
+    @brief Music handler.
+
+    This is the internal music handler.
+    Games primarily will use in-game entities such as trigger_cdaudio
+    and target_cdaudio to play/change music tracks.
+
+    This is the code that handles how music track id's are translated
+    into different path/naming conventions and file formats.
+*/
+
 /* we're forced to support a few different paths */
-enum
+typedef enum
 {
-	MUSIC_AUTO,
-	MUSIC_FLAC, /* requires fteplug_ffmpeg */
-	MUSIC_STEAMHL
-};
+	MUSIC_AUTO, /**< Auto selection (default). */
+	MUSIC_FLAC, /**< Free-Lossless-Audio-Codec requires fteplug_ffmpeg. */
+	MUSIC_STEAMHL /**< MP3 tracks in the naming conventions of Steam Half-Life (2003) */
+} musicstyle_t;
 
 string g_steamhltracks[27] = {
 	"media/Half-Life01.mp3",
@@ -52,15 +63,27 @@ string g_steamhltracks[27] = {
 	"media/Suspense07.mp3"
 };
 
-var int autocvar_cl_musicstyle = MUSIC_AUTO;
+var musicstyle_t autocvar_cl_musicstyle = MUSIC_AUTO;
 
-/* some installs may have the music in media/, others may be in music/ */
+/** Get the path to a single music track.
+Some installs may have the music in media/, others may be in music/.
+
+@param id The music track in question.
+@return Path to the music track. */
 string Music_GetPath(int id);
 
-/* EV_MUSICTRACK */
+/** This function is called by EV_MUSICTRACK events.
+Will play a single music track once.
+
+@param parm The music track in question. Mostly a track number. */
 void Music_ParseTrack(string parm);
 
-/* EV_MUSICLOOP */
+/** This function is called by EV_MUSICLOOP events.
+Will play a music track that loops.
+
+@param parm The music track in question. Mostly a track number. */
 void Music_ParseLoop(string parm);
 
+/** Called once when the menu is initialized.
+Will start playing whatever track is defined in the manifest or liblist file. */
 void Music_MenuStart(void);

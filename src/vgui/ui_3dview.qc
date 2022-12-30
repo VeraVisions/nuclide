@@ -26,30 +26,38 @@ enumflags
 	VIEW_VISIBLE
 };
 
-class CUI3DView:CUIWidget
+class VGUI3DView:VGUIWidget
 {
-	vector m_vecSize;
+public:
+	void VGUI3DView(void);
+
+	/** Return the 3D-space position our camera within the 3D view is located at. */
+	nonvirtual vector Get3DPos(void);
+	/** Return the angle that the camera within the 3D view is aiming at. */
+	nonvirtual vector Get3DAngles(void);
+	/** Sets the position of the camera within the 3D-space. */
+	nonvirtual void Set3DPos(vector);
+	/** Sets the angle of the camera within the 3D-space. */
+	nonvirtual void Set3DAngles(vector);
+	/** Sets the function to call in order to draw the scene. */
+	nonvirtual void SetDrawFunc(void(void));
+	/** Sets the function to call for when input events happen within the 3D view. */
+	nonvirtual void SetInputFunc(float(float, float, float, float));
+
+	/* overrides */
+	virtual void Draw(void);
+	virtual bool Input(float, float, float, float);
+
+private:
 	vector m_vec3DPos;
 	vector m_vec3DAngles;
 	float m_flFOV;
-
-	void(void) CUI3DView;
 	virtual void(void) m_vDrawFunc = 0;
 	virtual float(float, float, float, float) m_vInputFunc = 0;
-	virtual void(void) Draw;
-	virtual vector() GetSize;
-	virtual vector() Get3DPos;
-	virtual vector() Get3DAngles;
-	virtual void(vector) SetSize;
-	virtual void(vector) Set3DPos;
-	virtual void(vector) Set3DAngles;
-	virtual void(void(void)) SetDrawFunc;
-	virtual void(float(float, float, float, float)) SetInputFunc;
-	virtual bool(float, float, float, float) Input;
 };
 
 void
-CUI3DView::CUI3DView(void)
+VGUI3DView::VGUI3DView(void)
 {
 	m_flFOV = 90;
 	m_vecSize = [64,64];
@@ -58,55 +66,43 @@ CUI3DView::CUI3DView(void)
 }
 
 void
-CUI3DView::SetSize(vector vecSize)
-{
-	m_vecSize = vecSize;
-}
-
-vector
-CUI3DView::GetSize(void)
-{
-	return m_vecSize;
-}
-
-void
-CUI3DView::Set3DAngles(vector vecAngles)
+VGUI3DView::Set3DAngles(vector vecAngles)
 {
 	m_vec3DAngles = vecAngles;
 }
 
 vector
-CUI3DView::Get3DAngles(void)
+VGUI3DView::Get3DAngles(void)
 {
 	return m_vec3DAngles;
 }
 
 void
-CUI3DView::Set3DPos(vector vecPos)
+VGUI3DView::Set3DPos(vector vecPos)
 {
 	m_vec3DPos = vecPos;
 }
 
 vector
-CUI3DView::Get3DPos(void)
+VGUI3DView::Get3DPos(void)
 {
 	return m_vec3DPos;
 }
 
 void
-CUI3DView::SetDrawFunc(void(void) vFunc)
+VGUI3DView::SetDrawFunc(void(void) vFunc)
 {
 	m_vDrawFunc = vFunc;
 }
 
 void
-CUI3DView::SetInputFunc(float(float, float, float, float) vFunc)
+VGUI3DView::SetInputFunc(float(float, float, float, float) vFunc)
 {
 	m_vInputFunc = vFunc;
 }
 
 void
-CUI3DView::Draw(void)
+VGUI3DView::Draw(void)
 {
 	if (!m_vDrawFunc) {
 		return;
@@ -122,7 +118,7 @@ CUI3DView::Draw(void)
 }
 
 bool
-CUI3DView::Input(float flEVType, float flKey, float flChar, float flDevID)
+VGUI3DView::Input(float flEVType, float flKey, float flChar, float flDevID)
 {
 	if (!m_vInputFunc) {
 		return false;

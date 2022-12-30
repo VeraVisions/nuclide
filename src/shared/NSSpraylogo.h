@@ -60,8 +60,9 @@ const string g_spray_mat_0 = \
 		"}\n" \
 	"}";
 
-#else
+#endif
 
+#ifdef SERVER
 void Spray_RemoveAll(entity entOwner);
 float Spray_SendEntity(entity ePEnt, float fChanged);
 void CSEv_Spraylogo(void);

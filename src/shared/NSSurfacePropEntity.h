@@ -85,7 +85,9 @@ public:
 	virtual void ParentUpdate(void);
 	virtual void EvaluateEntity(void);
 	virtual float SendEntity(entity,float);
-#else
+#endif
+
+#ifdef CLIENT
 	virtual float predraw(void);
 	virtual void ReceiveEntity(float,float);
 #endif
@@ -131,7 +133,9 @@ public:
 	nonvirtual void SetSurfaceData(string);
 	/** Assigns the prop data of a given description onto this entity. */
 	nonvirtual void SetPropData(string);
-#else
+#endif
+
+#ifdef CLIENT
 	/** Called every frame to render a fire effect, but will only do so if the entity is burning. */
 	virtual void RenderFire(void);
 #endif

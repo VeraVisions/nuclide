@@ -22,23 +22,28 @@ enumflags
 	TEXTBOX_FOCUS
 };
 
-class CUITextBox:CUIWidget
+class VGUITextBox:VGUIWidget
 {
+public:
+	void VGUITextBox(void);
+
+	/** Set the starting text of the textbox. */
+	nonvirtual void SetText(string);
+	/** Get the text inside the textbox. */
+	nonvirtual string GetText(void);
+
+	/* overrides */
+	virtual void Draw(void);
+	virtual bool Input(float, float, float, float);
+
+private:
 	vector m_vecColor;
 	float m_flAlpha;
-	vector m_vecSize;
 	string m_strText;
 	float m_flTime;
-	
-	void(void) CUITextBox;
-	virtual void(void) Draw;
-	virtual void(vector) SetSize;
-	virtual void(string) SetText;
-	virtual string() GetText;
-	virtual bool(float, float, float, float) Input;
 };
 
-void CUITextBox::CUITextBox(void)
+void VGUITextBox::VGUITextBox(void)
 {
 	m_vecColor = UI_MAINCOLOR;
 	m_flAlpha = 1.0f;
@@ -46,20 +51,16 @@ void CUITextBox::CUITextBox(void)
 	m_iFlags = BUTTON_VISIBLE;
 }
 
-void CUITextBox::SetSize (vector vecSize)
-{
-	m_vecSize = vecSize;
-}
-void CUITextBox::SetText (string strName)
+void VGUITextBox::SetText (string strName)
 {
 	m_strText = strName;
 }
-string CUITextBox::GetText(void)
+string VGUITextBox::GetText(void)
 {
 	return m_strText;
 }
 
-void CUITextBox::Draw(void)
+void VGUITextBox::Draw(void)
 {
 
 #ifdef CLASSIC_VGUI
@@ -97,7 +98,7 @@ void CUITextBox::Draw(void)
 	}
 }
 
-bool CUITextBox::Input (float flEVType, float flKey, float flChar, float flDevID)
+bool VGUITextBox::Input (float flEVType, float flKey, float flChar, float flDevID)
 {
 	bool ret = false;
 

@@ -14,55 +14,48 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-class CUITabView:CUIWidget
+class VGUITabView:VGUIWidget
 {
-	vector m_vecSize;
+public:
+	void VGUITabView(void);
+
+	/** Sets the title of the tab view. */
+	nonvirtual void SetTitle(string);
+
+	/* overrides */
+	virtual void PositionChanged(vector, vector);
+	virtual void SizeChanged(vector, vector);
+	virtual void Draw(void);
+	virtual bool Input(float, float, float, float);
+
+private:
 	vector m_vecOutlineSize;
 	vector m_vecOutlinePos;
 	string m_strTitle;
-	
-	void(void) CUITabView;
-	virtual void(void) Draw;
-	virtual void(vector) SetPos;
-	virtual vector() GetPos;
-	virtual void(vector) SetSize;
-	virtual vector() GetSize;
-	virtual void(string) SetTitle;
-	virtual bool(float, float, float, float) Input;
 };
 
-void CUITabView::CUITabView(void)
+void VGUITabView::VGUITabView(void)
 {
 	m_vecSize = [96,16];
 	m_iFlags = BUTTON_VISIBLE;
 }
 
-void CUITabView::SetPos (vector vecSize)
+void VGUITabView:: PositionChanged (vector vecOld, vector vecNew)
 {
-	m_vecOrigin = vecSize;
-	m_vecOutlinePos = m_vecOrigin + [0, 20];
-}
-vector CUITabView::GetPos(void)
-{
-	return m_vecOrigin;
+	m_vecOutlinePos = vecNew + [0, 20];
 }
 
-void CUITabView::SetSize (vector vecSize)
+void VGUITabView::SizeChanged (vector vecOld, vector vecNew)
 {
-	m_vecSize = vecSize;
-	m_vecOutlineSize = m_vecSize - [0, 20];
-}
-vector CUITabView::GetSize(void)
-{
-	return m_vecSize;
+	m_vecOutlineSize = vecNew - [0, 20];
 }
 
-void CUITabView::SetTitle (string strName)
+void VGUITabView::SetTitle (string strName)
 {
 	m_strTitle = strName;
 	SetSize([stringwidth(m_strTitle, TRUE, [g_fntDefault.iScaleX, g_fntDefault.iScaleY]), 16]);
 }
-void CUITabView::Draw(void)
+void VGUITabView::Draw(void)
 {
 	
 	//drawfill(m_parent.m_vecOrigin + m_vecOutlinePos, [m_vecOutlineSize[0], 1], [1,1,1], 0.5f);
@@ -73,7 +66,7 @@ void CUITabView::Draw(void)
 	//Font_DrawText(m_parent.m_vecOrigin + m_vecOrigin + [8, 8], m_strTitle, g_fntDefault);
 }
 
-bool CUITabView::Input (float flEVType, float flKey, float flChar, float flDevID)
+bool VGUITabView::Input (float flEVType, float flKey, float flChar, float flDevID)
 {
 	return false;
 }

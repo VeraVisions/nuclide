@@ -22,25 +22,28 @@ enumflags
 	RADIO_ACTIVE
 };
 
-class CUIRadio:CUIWidget
+class VGUIRadio:VGUIWidget
 {
+public:
+	void VGUIRadio(void);
+
+	nonvirtual void SetTitle(string);
+	nonvirtual int GetValue(void);
+	nonvirtual void SetValue(int);
+	nonvirtual void SetFunc(void(void));
+
+	virtual void Draw(void);
+	virtual bool(float, float, float, float) Input;
+
+private:
 	vector m_vecColor;
 	float m_flAlpha;
 	vector m_vecSize;
 	string m_strTitle;
 	virtual void(void) m_vFunc = 0;
-	
-	void(void) CUIRadio;
-	virtual void(void) Draw;
-	virtual void(vector) SetSize;
-	virtual void(string) SetTitle;
-	virtual int(void) GetValue;
-	virtual void(int) SetValue;
-	virtual void(void(void)) SetFunc;
-	virtual bool(float, float, float, float) Input;
 };
 
-void CUIRadio::CUIRadio(void)
+void VGUIRadio::VGUIRadio(void)
 {
 	m_vecColor = UI_MAINCOLOR;
 	m_flAlpha = 1.0f;
@@ -48,15 +51,12 @@ void CUIRadio::CUIRadio(void)
 	m_iFlags = RADIO_VISIBLE;
 }
 
-void CUIRadio::SetSize (vector vecSize)
-{
-	m_vecSize = vecSize;
-}
-void CUIRadio::SetTitle (string strName)
+
+void VGUIRadio::SetTitle (string strName)
 {
 	m_strTitle = strName;
 }
-int CUIRadio::GetValue(void)
+int VGUIRadio::GetValue(void)
 {
 	if (m_iFlags & RADIO_ACTIVE) {
 		return (1);
@@ -64,7 +64,7 @@ int CUIRadio::GetValue(void)
 		return (0);
 	}
 }
-void CUIRadio::SetValue (int iValue)
+void VGUIRadio::SetValue (int iValue)
 {
 	if (iValue == TRUE) {
 		m_iFlags |= RADIO_ACTIVE;
@@ -72,12 +72,12 @@ void CUIRadio::SetValue (int iValue)
 		m_iFlags -= (m_iFlags & RADIO_ACTIVE);
 	}
 }
-void CUIRadio::SetFunc (void(void) vFunc)
+void VGUIRadio::SetFunc (void(void) vFunc)
 {
 	m_vFunc = vFunc;
 }
 
-void CUIRadio::Draw(void)
+void VGUIRadio::Draw(void)
 {
 #ifndef CLASSIC_VGUI
 	drawfill(m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, m_vecColor, m_flAlpha);
@@ -112,7 +112,7 @@ void CUIRadio::Draw(void)
 	}
 }
 
-bool CUIRadio::Input (float flEVType, float flKey, float flChar, float flDevID)
+bool VGUIRadio::Input (float flEVType, float flKey, float flChar, float flDevID)
 {
 	bool ret = false;
 

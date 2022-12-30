@@ -22,42 +22,42 @@ enumflags
 	BUTTON_LASTACTIVE
 };
 
-class CUIButton:CUIWidget
+class VGUIButton:VGUIWidget
 {
+public:
+	void VGUIButton(void);
+
+	/** Sets the title of the button. */
+	nonvirtual void SetTitle(string);
+	/** Sets the icon of the button. */
+	nonvirtual void SetIcon(string);
+	/** Sets the color of the button text. */
+	nonvirtual void SetColor(vector);
+	/** Sets the color of the icon on the button. */
+	nonvirtual void SetIconColor(vector);
+	/** Sets the function to call when the button is pressed. */
+	nonvirtual void SetFunc(void(void));
+	/** Sets the command to execute when the button is pressed. */
+	nonvirtual void SetExec(string);
+
+	/* overrides */
+	virtual void Draw(void);
+	virtual bool Input(float,float,float,float);
+
 private:
 	vector m_vecIMGSize;
 	vector m_vecColor;
 	vector m_vecIconColor;
 	float m_flAlpha;
-	vector m_vecSize;
 	string m_strTitle;
 	string m_strTitleActive;
 	string m_strIcon;
 	string m_strExec;
 	virtual void m_vFunc(void) = 0;
-
-public:
-	void CUIButton(void);
-
-	virtual void Draw(void);
-	virtual vector GetSize(void);
-	virtual int GetSizeWidth(void);
-	virtual int GetSizeHeight(void);
-	virtual void SetSize(vector);
-	virtual void SetTitle(string);
-	virtual void SetIcon(string);
-	virtual void SetColor(vector);
-	virtual void SetIconColor(vector);
-	virtual void SetFunc(void(void));
-	virtual void SetExec(string);
-	virtual bool Input(float,float,float,float);
-	virtual void Show(void);
-	virtual void Hide(void);
-
 };
 
 void
-CUIButton::CUIButton(void)
+VGUIButton::VGUIButton(void)
 {
 	m_vecColor = UI_MAINCOLOR;
 	m_flAlpha = 1.0f;
@@ -67,43 +67,25 @@ CUIButton::CUIButton(void)
 }
 
 void
-CUIButton::SetColor(vector vecColor)
+VGUIButton::SetColor(vector vecColor)
 {
 	m_vecColor = vecColor;
 }
 
 void
-CUIButton::SetIconColor(vector vecColor)
+VGUIButton::SetIconColor(vector vecColor)
 {
 	m_vecIconColor = vecColor;
 };
 
 void
-CUIButton::SetSize(vector vecSize)
+VGUIButton::SetSize(vector vecSize)
 {
 	m_vecSize = vecSize;
 }
 
-vector
-CUIButton::GetSize(void)
-{
-	return m_vecSize;
-}
-
-int
-CUIButton::GetSizeWidth(void)
-{
-	return m_vecSize[0];
-}
-
-int
-CUIButton::GetSizeHeight(void)
-{
-	return m_vecSize[1];
-}
-
 void
-CUIButton::SetTitle(string strName)
+VGUIButton::SetTitle(string strName)
 {
 	vector newsize = [0.0f, 0.0f, 0.0f];
 
@@ -116,7 +98,7 @@ CUIButton::SetTitle(string strName)
 	SetSize(newsize);
 }
 void
-CUIButton::SetIcon(string strName)
+VGUIButton::SetIcon(string strName)
 {
 	m_strIcon = strName;
 	m_vecIMGSize = drawgetimagesize(strName);
@@ -126,31 +108,20 @@ CUIButton::SetIcon(string strName)
 	}
 }
 void
-CUIButton::SetFunc(void(void) vFunc)
+VGUIButton::SetFunc(void(void) vFunc)
 {
 	m_vFunc = vFunc;
 }
 void
-CUIButton::SetExec(string exe)
+VGUIButton::SetExec(string exe)
 {
 	m_strExec = exe;
 }
 
 void
-CUIButton::Show(void)
+VGUIButton::Draw(void)
 {
-	m_iFlags |= BUTTON_VISIBLE;
-}
-void
-CUIButton::Hide(void)
-{
-	m_iFlags -= (m_iFlags & BUTTON_VISIBLE);
-}
-
-void
-CUIButton::Draw(void)
-{
-	if (!(m_iFlags & BUTTON_VISIBLE))
+	if (!Visible())
 		return;
 
 #ifndef CLASSIC_VGUI
@@ -193,11 +164,11 @@ CUIButton::Draw(void)
 }
 
 bool
-CUIButton::Input(float flEVType, float flKey, float flChar, float flDevID)
+VGUIButton::Input(float flEVType, float flKey, float flChar, float flDevID)
 {
 	bool ret = false;
 
-	if (!(m_iFlags & BUTTON_VISIBLE))
+	if (!Visible())
 		return false;
 
 	if (flEVType == IE_KEYDOWN) {

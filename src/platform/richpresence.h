@@ -14,8 +14,40 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! @file richpresence.h
+    @brief Rich Presence handler.
+
+    This is the internal rich presence handler.
+    Rich presence is when the platform outside of the game communicates
+    to other users what game it is we are playing and how to connect to it.
+
+    An example would be a friends-list where you see that a player
+    is in game "Example Game" playing a multiplayer game on "Example map".
+
+    In addition it will expose a way for the game to supply a connect
+    command to the command-line, so that those players can join via the
+    platform interface.
+
+    The console command `richpresence_dump` will output the current set
+    of key/value pairs that will be shared with the platform.
+*/
+
+/** Sets a rich-presence key to the desired value.
+You keys currently available are: "status", "connect"
+
+Setting the "status" key is meant to be visible to other
+players on the platform/network you're playing on.
+This may show up to other people on your friends-list, or some equivalent.
+
+Meanwhile the "connect" key should have the address of
+a game servers others players can reach you under. */
 void RichPresence_Set(string strKey, string strValue);
-void RichPresence_DumpInfo(void);
+
+/** Clears the current rich-presence status. */
 void RichPresence_Clear(void);
 
+/** Returns if we've got an active rich-presence status. */
 bool RichPresence_WasSet(void);
+
+/** Debug function that prints the currently active rich-presence keys to console. */
+void RichPresence_DumpInfo(void);

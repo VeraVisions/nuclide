@@ -21,20 +21,24 @@ enumflags
 	SLIDER_DOWN,
 };
 
-class CUISlider:CUIWidget
+class VGUISlider:VGUIWidget
 {
+public:
+	void VGUISlider(void);
+
+	nonvirtual void SetTitle(string);
+
+	/* overrides */
+	virtual void Draw(void);
+	virtual bool Input(float, float, float, float);
+
+private:
 	float m_flAlpha;
 	vector m_vecSize;
 	vector m_vecColor;
-
-	void(void) CUISlider;
-	virtual void(void) Draw;
-	virtual bool(float, float, float, float) Input;
-	virtual void(vector) SetSize;
-	virtual void(string) SetTitle;
 };
 
-void CUISlider::CUISlider(void)
+void VGUISlider::VGUISlider(void)
 {
 	m_vecColor = [76,88,68] / 255;
 	m_flAlpha = 1.0f;
@@ -42,7 +46,7 @@ void CUISlider::CUISlider(void)
 	m_iFlags = BUTTON_VISIBLE;
 }
 
-void CUISlider::Draw(void)
+void VGUISlider::Draw(void)
 {
 	drawfill(m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, m_vecColor, m_flAlpha);
 	
@@ -66,16 +70,12 @@ void CUISlider::Draw(void)
 	}
 }
 
-bool CUISlider::Input (float flEVType, float flKey, float flChar, float flDevID)
+bool VGUISlider::Input (float flEVType, float flKey, float flChar, float flDevID)
 {
 	return false;
 }
 
-void CUISlider::SetSize (vector vecSize)
-{
-	m_vecSize = vecSize;
-}
-void CUISlider::SetTitle (string strName)
+void VGUISlider::SetTitle (string strName)
 {
 	m_strTitle = strName;
 }

@@ -14,78 +14,77 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-class CUIListBox:CUIWidget
+class VGUIListBox:VGUIWidget
 {
+public:
+	void VGUIListBox(void);
+
+	nonvirtual void SetOffset(int);
+	nonvirtual void AddItem(string);
+	nonvirtual void SetItemCount(int);
+	nonvirtual string GetItem(int);
+	nonvirtual int GetSelected(void);
+
+	virtual void Draw(void);
+	virtual bool Input(float, float, float, float);
+
+private:
 	vector m_vecSize;
 	string m_strTitle;
 	string *m_strItems;
 	int m_iItemCount;
 	int m_iSelected;
 	int m_iDrawOffset;
-	
-	void(void) CUIListBox;
-	virtual void(vector) SetSize;
-	virtual void(int) SetOffset;
-	virtual void(string) AddItem;
-	virtual void(int) SetItemCount;
-	virtual string(int) GetItem;
-	virtual int(void) GetSelected;
-	virtual void(void) Draw;
-	virtual bool(float, float, float, float) Input;
 };
 
-void CUIListBox::CUIListBox(void)
+void VGUIListBox::VGUIListBox(void)
 {
 	m_vecSize = [96,16];
 	m_iFlags = 1;
 	m_iSelected = -1;
 }
 
-void CUIListBox::SetSize (vector vecSize)
-{
-	m_vecSize = vecSize;
-}
-void CUIListBox::SetItemCount (int iCount)
+void VGUIListBox::SetItemCount (int iCount)
 {
 	if (!m_iItemCount) {
-		NSLog("CUIListBox: Initialized with a maximum of %i entries", iCount);
+		NSLog("VGUIListBox: Initialized with a maximum of %i entries", iCount);
 		m_iItemCount = iCount;
 		m_strItems = memalloc(iCount * sizeof(string));
 	}
 }
-void CUIListBox::SetOffset (int iOffset)
+void VGUIListBox::SetOffset (int iOffset)
 {
 	int iMaxDisplay = bound(0, m_iItemCount, floor(m_vecSize[1] / 20));
 	m_iDrawOffset = bound(0, iOffset, m_iItemCount - iMaxDisplay);
 }
 
-string CUIListBox::GetItem (int iIndex)
+string VGUIListBox::GetItem (int iIndex)
 {
 	return m_strItems[iIndex];
 }
 
-int CUIListBox::GetSelected(void)
+int VGUIListBox::GetSelected(void)
 {
 	return m_iSelected;
 }
 
-void CUIListBox::AddItem (string strItem)
+void VGUIListBox::AddItem (string strItem)
 {
 	if (!m_iItemCount) {
-		dprint("CUIListBox: Can't add item to empty list!\n");
+		dprint("VGUIListBox: Can't add item to empty list!\n");
 		return;
 	}
 	
 	for (int i = 0; i < m_iItemCount; i++) {
 		if (!m_strItems[i]) {
 			m_strItems[i] = strItem;
-			dprint("CUIListBox: Item added\n");
+			dprint("VGUIListBox: Item added\n");
 			break;
 		}
 	}
 }
 
-void CUIListBox::Draw(void)
+void VGUIListBox::Draw(void)
 {
 	int iMaxDisplay;
 	if (!m_iItemCount) {
@@ -115,7 +114,7 @@ void CUIListBox::Draw(void)
 	}
 }
 
-bool CUIListBox::Input (float flEVType, float flKey, float flChar, float flDevID)
+bool VGUIListBox::Input (float flEVType, float flKey, float flChar, float flDevID)
 {
 	bool ret = false;
 	int iMaxDisplay;

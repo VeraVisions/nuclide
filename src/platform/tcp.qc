@@ -109,8 +109,11 @@ TCP_Frame(tcpinfo_t *in)
 	memfree((__variant *)out);
 }
 
-int
+tcpstate_t
 TCP_GetState(tcpinfo_t *in)
 {
+	if (!in)
+		return STATE_DISCONNECTED;
+
 	return in.m_iState;
 }

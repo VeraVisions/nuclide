@@ -129,7 +129,9 @@ public:
 	virtual void Restore(string,string);
 	virtual void EvaluateEntity(void);
 	virtual float SendEntity(entity,float);
-#else
+#endif
+
+#ifdef CLIENT
 	virtual void RenderDebugSkeleton(void);
 	virtual void ReceiveEntity(float,float);
 	virtual float predraw(void);

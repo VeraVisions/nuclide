@@ -25,25 +25,30 @@ enumflags
 	MBUTTON_SHOWMP
 };
 
-class CUIMenuButton:CUIWidget
+class
+VGUIMenuButton:VGUIWidget
 {
+public:
+	void VGUIMenuButton(void);
+
+	nonvirtual void SetTitle(string);
+	nonvirtual void SetIcon(string);
+	nonvirtual void SetFunc(void(void));
+
+	virtual void Draw(void);
+	virtual bool Input(float, float, float, float);
+
+private:
 	vector m_vecColor;
 	float m_flAlpha;
-	vector m_vecSize;
 	string m_strTitle;
 	string m_strIcon;
-	
-	void(void) CUIMenuButton;
+
 	virtual void(void) m_vFunc = 0;
-	virtual void(void) Draw;
-	virtual void(vector) SetSize;
-	virtual void(string) SetTitle;
-	virtual void(string) SetIcon;
-	virtual void(void(void)) SetFunc;
-	virtual bool(float, float, float, float) Input;
 };
 
-void CUIMenuButton::CUIMenuButton(void)
+void
+VGUIMenuButton::VGUIMenuButton(void)
 {
 	m_vecColor = UI_MAINCOLOR;
 	m_flAlpha = 1.0f;
@@ -51,7 +56,8 @@ void CUIMenuButton::CUIMenuButton(void)
 	m_iFlags = MBUTTON_VISIBLE | MBUTTON_SHOWOFFLINE | MBUTTON_SHOWSP | MBUTTON_SHOWMP;
 }
 
-void CUIMenuButton::Draw(void)
+void
+VGUIMenuButton::Draw(void)
 {
 	// If we're not ingame
 	if (clientstate() == 2 && !g_background) {
@@ -101,7 +107,8 @@ void CUIMenuButton::Draw(void)
 	}
 }
 
-bool CUIMenuButton::Input (float flEVType, float flKey, float flChar, float flDevID)
+bool
+VGUIMenuButton::Input (float flEVType, float flKey, float flChar, float flDevID)
 {
 	bool ret = false;
 
@@ -137,19 +144,20 @@ bool CUIMenuButton::Input (float flEVType, float flKey, float flChar, float flDe
 	return (ret);
 }
 
-void CUIMenuButton::SetSize (vector vecSize)
-{
-	m_vecSize = vecSize;
-}
-void CUIMenuButton::SetTitle (string strName)
+void
+VGUIMenuButton::SetTitle (string strName)
 {
 	m_strTitle = strName;
 }
-void CUIMenuButton::SetIcon (string strName)
+
+void
+VGUIMenuButton::SetIcon (string strName)
 {
 	m_strIcon = strName;
 }
-void CUIMenuButton::SetFunc (void(void) vFunc)
+
+void
+VGUIMenuButton::SetFunc (void(void) vFunc)
 {
 	m_vFunc = vFunc;
 }

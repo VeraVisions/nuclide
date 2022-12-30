@@ -14,6 +14,23 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/* compatibility wrappers */
+#define CUI3DView VGUI3DView
+#define CUIButton VGUIButton
+#define CUICheckbox VGUICheckbox
+#define CUILabel	VGUILabel
+#define CUIList VGUIList
+#define CUIListBox VGUIListBox
+#define CUIMenuButton VGUIMenuButton
+#define CUIPic VGUIPic
+#define CUIRadio VGUIRadio
+#define CUIScrollbar VGUIScrollbar
+#define CUISlider VGUISlider
+#define CUITabView VGUITabView
+#define CUITextBox VGUITextBox
+#define CUIWidget VGUIWidget
+#define CUIWindow VGUIWindow
+
 font_s g_fntDefault;
 var int g_vguiWidgetCount;
 
@@ -29,12 +46,14 @@ var int g_vguiWidgetCount;
 	var float UI_MAINALPHA;
 #endif
 
+/** Return whether a VGUI panel is active on the 2D overlay level. */
 int
 VGUI_Active(void)
 {
 	return (g_vguiWidgetCount > 0) ? TRUE : FALSE;
 }
 
+/** Returns whether our mouse cursor is in a specific region of the screen. */
 int
 Util_MouseAbove(vector vecMousePos, vector vecPos, vector vecSize)
 {
@@ -46,75 +65,229 @@ Util_MouseAbove(vector vecMousePos, vector vecPos, vector vecSize)
 	return (0);
 }
 
-class CUIWidget
+/** @brief The base VGUI widget class.
+
+Every VGUI widget is based off of this. */
+class VGUIWidget
 {
+public:
+	void VGUIWidget(void);
+
+	/** Adds a widget into this one. */
+	nonvirtual void Add(VGUIWidget);
+	/** Add a flag to the widget. */
+	nonvirtual void FlagAdd(int);
+	/** Remove a flag from the widget. */
+	nonvirtual void FlagRemove(int);
+	/** Set the position within its context. */
+	nonvirtual void SetPos(vector);
+	/** Return the position of the widget within its context. */
+	nonvirtual vector GetPos(void);
+	/** Returns the X coordinate of the widget position within its context. */
+	nonvirtual int GetPosWidth(void);
+	/** Returns the Y coordinate of the widget position within its context. */
+	nonvirtual int GetPosHeight(void);
+
+	/** Set the size of the widget to a new one. */
+	nonvirtual void SetSize(vector);
+	/** Returns the size of the widget, in pixels. */
+	nonvirtual vector GetSize(void);
+
+	/** Returns the width of the widget, in pixels. */
+	nonvirtual int GetSizeWidth(void);
+	/** Returns the height of the widget, in pixels. */
+	nonvirtual int GetSizeHeight(void);
+
+	/** Sets the minimum size of the widget. */
+	nonvirtual void SetMinSize(vector);
+	/** Returns the minimum size of the widget. */
+	nonvirtual vector GetMinSize(void);
+
+	/** Sets the maximum size of the widget. */
+	nonvirtual void SetMaxSize(vector);
+	/** Returns the maximum size of the widget. */
+	nonvirtual vector GetMaxSize(void);
+
+	/** Returns true/false depending on if the widget is visible. */
+	nonvirtual bool Visible(void);
+	/** Show the widget. */
+	nonvirtual void Show(void);
+	/** Hide the widget. */
+	nonvirtual void Hide(void);
+
+	/** Called when the position of the widget was changed in any capacity. */
+	virtual void PositionChanged(vector, vector);
+	/** Called when the size of the widget has changed in any capacity. */
+	virtual void SizeChanged(vector, vector);
+
+	/** Called in order to draw the widget. */
+	virtual void Draw(void);
+	/** Called whenever the physical properties of the display change. */
+	virtual void Reposition(void);
+	/** Called whenever an input event gets directed to the widget. */
+	virtual bool Input(float, float, float, float);
+	/** Called when the widget has fully initialized.
+       When you override this, you may call `super::Spawned();` to ensure
+       the parent classes get to finish initializing also. */
+	virtual void Spawned(void);
+
+private:
 	vector m_vecOrigin;
-	CUIWidget m_next;
-	CUIWidget m_parent;
+	vector m_vecSize;
+	vector m_vecMinSize;
+	vector m_vecMaxSize;
+	VGUIWidget m_next;
+	VGUIWidget m_parent;
 	int m_iFlags;
-
-	void(void) CUIWidget;
-
-	virtual void(CUIWidget) Add;
-	virtual void(int) FlagAdd;
-	virtual void(int) FlagRemove;
-	virtual void(vector) SetPos;
-	virtual vector() GetPos;
-	virtual int(void) GetPosWidth;
-	virtual int(void) GetPosHeight;
-	virtual void(void) Draw;
-	virtual void(void) Reposition;
-	virtual bool(float, float, float, float) Input;
-	virtual void(void) Spawned;
+	bool m_bVisible;
 };
 
 void
-CUIWidget::SetPos(vector vecPos)
+VGUIWidget::VGUIWidget(void)
 {
-	m_vecOrigin = vecPos;
+	m_vecOrigin = [0.0f, 0.0f];
+	m_vecSize = [0.0f, 0.0f];
+	m_vecMinSize = [0.0f, 0.0f];
+	m_vecMaxSize = [9999.0f, 9999.0f];
+	m_next = __NULL__;
+	m_parent = __NULL__;
+	m_iFlags = 0i;
+	m_bVisible = true;
+
+	Spawned();
+}
+
+bool
+VGUIWidget::Visible(void)
+{
+	return m_bVisible;
+}
+
+void
+VGUIWidget::Hide(void)
+{
+	m_bVisible = false;
+}
+
+void
+VGUIWidget::Show(void)
+{
+	m_bVisible = true;
+}
+
+void
+VGUIWidget::PositionChanged(vector vecOld, vector vecNew)
+{
+
+}
+
+void
+VGUIWidget::SizeChanged(vector vecOld, vector vecNew)
+{
+
+}
+
+void
+VGUIWidget::SetPos(vector vecNewPos)
+{
+	m_vecOrigin[0] = bound(0, vecNewPos[0], video_res[0] - 32);
+	m_vecOrigin[1] = bound(0, vecNewPos[1], video_res[1] - 32);
 }
 
 vector
-CUIWidget::GetPos(void)
+VGUIWidget::GetPos(void)
 {
 	return m_vecOrigin;
 }
 
 int
-CUIWidget::GetPosWidth(void)
+VGUIWidget::GetPosWidth(void)
 {
 	return m_vecOrigin[0];
 }
 
 int
-CUIWidget::GetPosHeight(void)
+VGUIWidget::GetPosHeight(void)
 {
 	return m_vecOrigin[1];
 }
 
 void
-CUIWidget::FlagAdd(int iFlag)
+VGUIWidget::SetSize(vector vecNewSize)
+{
+	vector vecOld = m_vecSize;
+	m_vecSize = vecNewSize;
+	m_vecSize[0] = bound(m_vecMinSize[0], vecNewSize[0], m_vecMaxSize[0]);
+	m_vecSize[1] = bound(m_vecMinSize[1], vecNewSize[1], m_vecMaxSize[1]);
+
+	SizeChanged(vecOld, m_vecSize);
+}
+
+vector
+VGUIWidget::GetSize(void)
+{
+	return m_vecSize;
+}
+
+int
+VGUIWidget::GetSizeWidth(void)
+{
+	return m_vecSize[0];
+}
+
+int
+VGUIWidget::GetSizeHeight(void)
+{
+	return m_vecSize[1];
+}
+
+void
+VGUIWidget::SetMinSize (vector vecNewSize)
+{
+	m_vecMinSize = vecNewSize;
+}
+
+vector
+VGUIWidget::GetMinSize(void)
+{
+	return m_vecMinSize;
+}
+
+void
+VGUIWidget::SetMaxSize (vector vecNewSize)
+{
+	m_vecMaxSize = vecNewSize;
+}
+
+vector
+VGUIWidget::GetMaxSize(void)
+{
+	return m_vecMaxSize;
+}
+
+void
+VGUIWidget::FlagAdd(int iFlag)
 {
 	m_iFlags |= iFlag;
 }
 
 void
-CUIWidget::FlagRemove(int iFlag)
+VGUIWidget::FlagRemove(int iFlag)
 {
 	m_iFlags -= (m_iFlags & iFlag);
 }
 
 void
-CUIWidget::Reposition(void)
+VGUIWidget::Reposition(void)
 {
 
 }
 
 void
-CUIWidget::Add(CUIWidget wNew)
+VGUIWidget::Add(VGUIWidget wNew)
 {
-	CUIWidget wNext = this;
-	CUIWidget wParent;
+	VGUIWidget wNext = this;
+	VGUIWidget wParent;
 	do {
 		wParent = wNext;
 		wNext = wNext.m_next;
@@ -124,9 +297,9 @@ CUIWidget::Add(CUIWidget wNew)
 }
 
 void
-CUIWidget::Draw(void)
+VGUIWidget::Draw(void)
 {
-	CUIWidget wNext = this;
+	VGUIWidget wNext = this;
 	g_vguiWidgetCount = 0;
 	do {
 		wNext = wNext.m_next;
@@ -139,13 +312,13 @@ CUIWidget::Draw(void)
 
 typedef struct
 {
-	CUIWidget member;
+	VGUIWidget member;
 } vgui_input_scene_t;
 
 bool
-CUIWidget::Input(float flEVType, float flKey, float flChar, float flDevID)
+VGUIWidget::Input(float flEVType, float flKey, float flChar, float flDevID)
 {
-	CUIWidget wNext = this;
+	VGUIWidget wNext = this;
 
 	/* this is garbage, but it'll work */
 	int c = 0;
@@ -181,14 +354,8 @@ CUIWidget::Input(float flEVType, float flKey, float flChar, float flDevID)
 }
 
 void
-CUIWidget::Spawned(void)
+VGUIWidget::Spawned(void)
 {
-}
-
-void
-CUIWidget::CUIWidget(void)
-{
-	Spawned();
 }
 
 void
@@ -233,7 +400,7 @@ UISystem_Init(void)
 }
 
 #ifdef CLIENT
-CUIWidget
+VGUIWidget
 UIClass_Spawn(string cname)
 {
 	string func = strcat("spawnfunc_", cname);
@@ -242,7 +409,7 @@ UIClass_Spawn(string cname)
 		entity oldself = self;
 		void(void) vFunc;
 		vFunc = externvalue(-2, func);
-		CUIWidget new_uiclass = spawn(CUIWidget);
+		VGUIWidget new_uiclass = spawn(VGUIWidget);
 		self = new_uiclass;
 		vFunc();
 		self = oldself;

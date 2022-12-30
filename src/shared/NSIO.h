@@ -56,7 +56,6 @@ public:
 	virtual void SpawnKey(string,string);
 
 #ifdef SERVER
-
 	/** Handles saving a copy of this entity to a given filehandle.
 		Within you want to use the ::SaveFloat() etc. methods to write
 		the internal member attributes to the specified file handle. */

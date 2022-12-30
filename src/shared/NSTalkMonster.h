@@ -75,7 +75,9 @@ private:
 	string m_talkUnfollow; /* when the player asks us to stop following */
 	string m_talkFollow; /* whenever player asks the NPC to follow */
 	string m_talkStopFollow; /* we have to stop following */
-#else
+#endif
+
+#ifdef CLIENT
 	/* sentence system */
 	float m_flSentenceTime;
 	sound_t *m_pSentenceQue;
@@ -147,7 +149,9 @@ public:
 	virtual void TalkFollow(void);
 	/** Called when they tell the player that they'll stop following. */
 	virtual void TalkStopFollow(void);
-#else
+#endif
+
+#ifdef CLIENT
 	virtual float predraw(void);
 	virtual void ReceiveEntity(float,float);
 

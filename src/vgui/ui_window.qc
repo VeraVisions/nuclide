@@ -22,58 +22,49 @@ enumflags
 	WINDOW_CANRESIZE
 };
 
-class CUIWindow:CUIWidget
+/** Top-most window class in VGUILib */
+class VGUIWindow:VGUIWidget
 {
-	vector m_vecOrigin;
+public:
+	void VGUIWindow(void);
+
+	/** Set the title of the window widget. */
+	nonvirtual void SetTitle(string);
+	/** Returns the title of the window widget. */
+	nonvirtual string GetTitle(void);
+
+	/** Sets the icon of the window widget. */
+	nonvirtual void SetIcon(string);
+	/** Returns the icon of the window widget. */
+	nonvirtual string GetIcon(void);
+
+	/** Called when the window is was resized by the user. */
+	nonvirtual void CallOnResize(void(void) vFunc);
+	/** Called when the window has been repositioned by the user. */
+	nonvirtual void CallOnMove(void(void) vFunc);
+
+	/* overrides */
+	virtual void Draw(void);
+	virtual void SizeChanged(vector, vector);
+	virtual bool Input(float, float, float, float);
+
+private:
 	vector m_vecColor;
 	float m_flAlpha;
-	vector m_vecSize;
-	vector m_vecMinSize;
-	vector m_vecMaxSize;
 	vector m_vecDragOffset;
 	string m_strTitle;
 	string m_strIcon;
 
-	CUIButton m_btnClose;
+	VGUIButton m_btnClose;
 	
 	virtual void(void) m_vResizeCB = 0;
 	virtual void(void) m_vMoveCB = 0;
-
-	void(void) CUIWindow;
-
-	virtual void(vector) SetPos;
-	virtual vector(void) GetPos;
-	
-	virtual void(string) SetTitle;
-	virtual string() GetTitle;
-	
-	virtual void(string) SetIcon;
-	virtual string() GetIcon;
-	
-	virtual void(vector) SetSize;
-	virtual vector() GetSize;
-	
-	virtual void(vector) SetMinSize;
-	virtual vector() GetMinSize;
-	
-	virtual void(vector) SetMaxSize;
-	virtual vector() GetMaxSize;
-	
-	
-	virtual void(void(void) vFunc) CallOnResize;
-	virtual void(void(void) vFunc) CallOnMove;
-
-	virtual bool(void) Visible;
-	virtual void(void) Draw;
-	virtual void(void) Show;
-	virtual void(void) Hide;
-	virtual bool(float, float, float, float) Input;
 };
 
-void CUIWindow::CUIWindow(void)
+void VGUIWindow::VGUIWindow(void)
 {
 	static void WindowButtonClose(void) {
-		m_parent.m_iFlags -= (m_parent.m_iFlags & WINDOW_VISIBLE);
+		m_parent.Hide();
 	}
 	m_vecColor = UI_MAINCOLOR;
 	m_flAlpha = 1.0f;
@@ -83,7 +74,7 @@ void CUIWindow::CUIWindow(void)
 
 	m_strTitle = "Window";
 
-	m_btnClose = spawn(CUIButton);
+	m_btnClose = spawn(VGUIButton);
 	m_btnClose.SetTitle(__NULL__);
 	m_btnClose.SetIcon("textures/ui/steam/icon_close");
 
@@ -99,88 +90,41 @@ void CUIWindow::CUIWindow(void)
 	SetSize([320,240]);
 }
 
-bool
-CUIWindow::Visible(void)
-{
-	return (m_iFlags & WINDOW_VISIBLE) ? true : false;
-}
-
-void CUIWindow::SetTitle (string strName)
+void VGUIWindow::SetTitle (string strName)
 {
 	m_strTitle = strName;
 }
-string CUIWindow::GetTitle(void)
+string VGUIWindow::GetTitle(void)
 {
 	return m_strTitle;
 }
 
-void CUIWindow::SetIcon (string strName)
+void VGUIWindow::SetIcon (string strName)
 {
 	m_strIcon = strName;
 }
-string CUIWindow::GetIcon(void)
+string VGUIWindow::GetIcon(void)
 {
 	return m_strIcon;
 }
 
-void CUIWindow::SetSize (vector vecNewSize)
+void VGUIWindow:: SizeChanged (vector vecOld, vector vecNew)
 {
-	m_vecSize[0] = bound(m_vecMinSize[0], vecNewSize[0], m_vecMaxSize[0]);
-	m_vecSize[1] = bound(m_vecMinSize[1], vecNewSize[1], m_vecMaxSize[1]);
-	m_btnClose.SetPos([m_vecSize[0] - 24, 4]);
-}
-vector CUIWindow::GetSize(void)
-{
-	return m_vecSize;
+	m_btnClose.SetPos([vecNew[0] - 24, 4]);
 }
 
-void CUIWindow::SetMinSize (vector vecNewSize)
-{
-	m_vecMinSize = vecNewSize;
-}
-vector CUIWindow::GetMinSize(void)
-{
-	return m_vecMinSize;
-}
-
-void CUIWindow::SetMaxSize (vector vecNewSize)
-{
-	m_vecMaxSize = vecNewSize;
-}
-vector CUIWindow::GetMaxSize(void)
-{
-	return m_vecMaxSize;
-}
-
-void CUIWindow::SetPos (vector vecNewPos)
-{
-	m_vecOrigin[0] = bound(0, vecNewPos[0], video_res[0] - 32);
-	m_vecOrigin[1] = bound(0, vecNewPos[1], video_res[1] - 32);
-}
-vector CUIWindow::GetPos(void)
-{
-	return m_vecOrigin;
-}
-
-void CUIWindow::CallOnMove (void(void) vFunc)
+void VGUIWindow::CallOnMove (void(void) vFunc)
 {
 	m_vMoveCB = vFunc;
 }
-void CUIWindow::CallOnResize (void(void) vFunc)
+void VGUIWindow::CallOnResize (void(void) vFunc)
 {
 	m_vResizeCB = vFunc;
 }
 
-void CUIWindow::Hide(void)
-{
-	m_iFlags -= (m_iFlags & WINDOW_VISIBLE);
-}
-void CUIWindow::Show(void)
-{
-	m_iFlags |= WINDOW_VISIBLE;
-}
 
-void CUIWindow::Draw(void)
+
+void VGUIWindow::Draw(void)
 {
 #ifdef CLASSIC_VGUI
 	drawfill(m_vecOrigin, m_vecSize, [0,0,0], 0.5);
@@ -223,7 +167,7 @@ void CUIWindow::Draw(void)
 #endif
 }
 
-bool CUIWindow::Input (float flEVType, float flKey, float flChar, float flDevID)
+bool VGUIWindow::Input (float flEVType, float flKey, float flChar, float flDevID)
 {
 	bool ret = false;
 

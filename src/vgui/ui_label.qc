@@ -14,29 +14,29 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-class CUILabel:CUIWidget
+class VGUILabel:VGUIWidget
 {
-	vector m_vecSize;
+public:
+	void VGUILabel(void);
+
+	nonvirtual void SetTitle(string);
+
+	virtual void Draw(void);
+	virtual bool Input(float, float, float, float);
+
+private:
 	string m_strTitle;
-	
-	void(void) CUILabel;
-	virtual void(void) Draw;
-	virtual void(vector) SetSize;
-	virtual void(string) SetTitle;
-	virtual bool(float, float, float, float) Input;
 };
 
-void CUILabel::CUILabel(void)
+void
+VGUILabel::VGUILabel(void)
 {
 	m_vecSize = [96,16];
 	m_iFlags = BUTTON_VISIBLE;
 }
 
-void CUILabel::SetSize (vector vecSize)
-{
-	m_vecSize = vecSize;
-}
-void CUILabel::SetTitle (string strName)
+void
+VGUILabel::SetTitle (string strName)
 {
 #ifndef CLASSIC_VGUI
 	m_strTitle = strName;
@@ -49,14 +49,17 @@ void CUILabel::SetTitle (string strName)
 	 * in engines' textfield thing in combo with ttf. */
 	SetSize([2 + stringwidth(m_strTitle, TRUE, [g_fntDefault.iScaleX, g_fntDefault.iScaleY]), 16]);
 }
-void CUILabel::Draw(void)
+
+void
+VGUILabel::Draw(void)
 {
 	if (m_strTitle) {
 		Font_DrawField(m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, m_strTitle, g_fntDefault, 0);
 	}
 }
 
-bool CUILabel::Input (float flEVType, float flKey, float flChar, float flDevID)
+bool
+VGUILabel::Input (float flEVType, float flKey, float flChar, float flDevID)
 {
 	return false;
 }

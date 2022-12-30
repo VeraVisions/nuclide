@@ -134,7 +134,9 @@ private:
 
 	/* legacy trigger architecture */
 	float m_flDelay;
-#else
+#endif
+
+#ifdef CLIENT
 	float team;
 #endif
 };

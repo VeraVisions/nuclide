@@ -311,6 +311,7 @@ NSClientPlayer::ClientInputFrame(void)
 	if (Util_IsPaused())
 		return;
 
+	/* fake spectators want the same input as real ones. */
 	if (IsFakeSpectator()) {
 		NSClientSpectator::ClientInputFrame();
 		return;
@@ -372,7 +373,7 @@ NSClientPlayer::ClientInputFrame(void)
 		}
 	}
 
-	/* compat*/
+	/* compat */
 	if (input_impulse == 201) {
 		sendevent("Spraylogo", "");
 	}

@@ -19,55 +19,51 @@ enumflags
 	IMAGE_VISIBLE
 };
 
-class CUIPic:CUIWidget
+class
+VGUIPic:VGUIWidget
 {
-	vector m_vecSize;
+public:
+	void VGUIPic(void);
+	
+	nonvirtual void SetImage(string);
+	nonvirtual string GetImage(void);
+	
+	virtual void Draw(void);
+	virtual bool Input(float, float, float, float);
+
+private:
 	string m_strImage;
-	
-	void(void) CUIPic;
-	
-	virtual void(vector) SetSize;
-	virtual vector() GetSize;
-	
-	virtual void(string) SetImage;
-	virtual string() GetImage;
-	
-	virtual void(void) Draw;
-	virtual bool(float, float, float, float) Input;
 };
 
-void CUIPic::CUIPic(void)
+void
+VGUIPic::VGUIPic(void)
 {
 	m_vecSize = [16,16];
 	m_iFlags = IMAGE_VISIBLE;
 }
 
-void CUIPic::Draw(void)
+void
+VGUIPic::Draw(void)
 {
 	if (m_strImage) {
 		drawpic(m_parent.m_vecOrigin + m_vecOrigin, m_strImage, m_vecSize, [1,1,1], 1.0f, 0);
 	}
 }
 
-bool CUIPic::Input (float flEVType, float flKey, float flChar, float flDevID)
+bool
+VGUIPic::Input (float flEVType, float flKey, float flChar, float flDevID)
 {
 	return false;
 }
 
-void CUIPic::SetSize (vector vecSize)
-{
-	m_vecSize = vecSize;
-}
-vector CUIPic::GetSize(void)
-{
-	return m_vecSize;
-}
-
-void CUIPic::SetImage (string strName)
+void
+VGUIPic::SetImage (string strName)
 {
 	m_strImage = strName;
 }
-string CUIPic::GetImage(void)
+
+string
+VGUIPic::GetImage(void)
 {
 	return m_strImage;
 }

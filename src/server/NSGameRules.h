@@ -14,6 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*! @file NSGameRules.h
+    @brief Gamerule top level class.
+
+    There's a lot of methods you're allowed to override.
+*/
+
 /** This class represents active gamerules. */
 class NSGameRules:NSIO
 {

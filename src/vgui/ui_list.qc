@@ -14,51 +14,48 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-class CUIList:CUIWidget
+class VGUIList:VGUIWidget
 {
-	vector m_vecSize;
+public:
+	void VGUIList(void);
+
+	nonvirtual void SetOffset(int,int);
+
+	nonvirtual void SetSelected(int);
+	nonvirtual int GetSelected(void);
+
+	nonvirtual int GetMaxVisibleItems(void);
+
+	nonvirtual void AddItem(string);
+	nonvirtual string GetItem(int);
+
+	nonvirtual void SetItemCount(int);
+	nonvirtual int GetItemCount(void);
+
+	nonvirtual int GetOffset(void);
+
+	nonvirtual void CallOnScroll(void(void));
+
+	virtual void Draw(void);
+	virtual bool Input(float, float, float, float);
+
+private:
 	string m_strTitle;
 	string *m_strItems;
 	int m_iItemCount;
 	int m_iSelected;
 	int m_iDrawOffset;
-	
-	void(void) CUIList;
-	
 	virtual void(void) m_vScrollCB = 0;
-	
-	virtual void(vector) SetSize;
-	virtual void(int, int) SetOffset;
-	
-	virtual void(int) SetSelected;
-	virtual int(void) GetSelected;
-	
-	virtual int(void) GetMaxVisibleItems;
-	
-	virtual void(string) AddItem;
-	virtual string(int) GetItem;
-	
-	virtual void(int) SetItemCount;
-	virtual int(void) GetItemCount;
-
-
-	virtual int(void) GetOffset;
-	virtual vector(void) GetSize;
-	
-	virtual void(void(void)) CallOnScroll;
-	
-	virtual void(void) Draw;
-	virtual bool(float, float, float, float) Input;
 };
 
-void CUIList::CUIList(void)
+void VGUIList::VGUIList(void)
 {
 	m_vecSize = [96,16];
 	m_iFlags = 1;
 	m_iSelected = -1;
 }
 
-void CUIList::Draw(void)
+void VGUIList::Draw(void)
 {
 	int iMaxDisplay;
 	if (!m_iItemCount) {
@@ -100,7 +97,7 @@ void CUIList::Draw(void)
 	drawresetcliparea();
 }
 
-bool CUIList::Input (float flEVType, float flKey, float flChar, float flDevID)
+bool VGUIList::Input (float flEVType, float flKey, float flChar, float flDevID)
 {
 	bool ret = false;
 	int iMaxDisplay;
@@ -128,22 +125,13 @@ bool CUIList::Input (float flEVType, float flKey, float flChar, float flDevID)
 	return (ret);
 }
 
-void CUIList::SetSize (vector vecSize)
-{
-	m_vecSize = vecSize;
-}
-vector CUIList::GetSize(void)
-{
-	return m_vecSize;
-}
-
-int CUIList::GetMaxVisibleItems(void)
+int VGUIList::GetMaxVisibleItems(void)
 {
 	int iMaxDisplay = bound(0, m_iItemCount, floor(m_vecSize[1] / 20));
 	return m_iItemCount - iMaxDisplay;
 }
 
-void CUIList::SetOffset (int iOffset, int iCallBack)
+void VGUIList::SetOffset (int iOffset, int iCallBack)
 {
 	int iMaxDisplay = bound(0, m_iItemCount, floor(m_vecSize[1] / 20));
 	m_iDrawOffset = bound(0, iOffset, m_iItemCount - iMaxDisplay);
@@ -152,59 +140,59 @@ void CUIList::SetOffset (int iOffset, int iCallBack)
 		m_vScrollCB();
 	}
 }
-int CUIList::GetOffset(void)
+int VGUIList::GetOffset(void)
 {
 	return m_iDrawOffset;
 }
 
-void CUIList::SetItemCount (int iCount)
+void VGUIList::SetItemCount (int iCount)
 {
 	if (!m_iItemCount) {
-		NSLog("CUIList: Initialized with a maximum of %i entries", iCount);
+		NSLog("VGUIList: Initialized with a maximum of %i entries", iCount);
 		m_iItemCount = iCount;
 		m_strItems = memalloc(iCount * sizeof(string));
 	}
 }
-int CUIList::GetItemCount(void)
+int VGUIList::GetItemCount(void)
 {
 	return m_iItemCount;
 }
 
-string CUIList::GetItem (int iIndex)
+string VGUIList::GetItem (int iIndex)
 {
 	if (m_iSelected < 0 || m_iItemCount <= 0) {
-		dprint("CUIList: GetItem on empty/unselected list!\n");
+		dprint("VGUIList: GetItem on empty/unselected list!\n");
 		return "ERROR";
 	}
 	return m_strItems[iIndex];
 }
 
-void CUIList::SetSelected (int iVal)
+void VGUIList::SetSelected (int iVal)
 {
 	m_iSelected = iVal;
 }
-int CUIList::GetSelected(void)
+int VGUIList::GetSelected(void)
 {
 	return m_iSelected;
 }
 
-void CUIList::AddItem (string strItem)
+void VGUIList::AddItem (string strItem)
 {
 	if (!m_iItemCount) {
-		dprint("CUIList: Can't add item to empty list!\n");
+		dprint("VGUIList: Can't add item to empty list!\n");
 		return;
 	}
 	
 	for (int i = 0; i < m_iItemCount; i++) {
 		if (!m_strItems[i]) {
 			m_strItems[i] = strItem;
-			dprint("CUIList: Item added\n");
+			dprint("VGUIList: Item added\n");
 			break;
 		}
 	}
 }
 
-void CUIList::CallOnScroll (void(void) vFunc)
+void VGUIList::CallOnScroll (void(void) vFunc)
 {
 	m_vScrollCB = vFunc;
 }

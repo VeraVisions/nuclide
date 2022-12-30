@@ -22,8 +22,29 @@ enumflags
 	SCROLLBAR_SLIDER_DOWN
 };
 
-class CUIScrollbar:CUIWidget
+/** This is a scollbar widget. It needs rework. */
+class VGUIScrollbar:VGUIWidget
 {
+public:
+	void VGUIScrollbar(void);
+
+	/** Sets the ??? */
+	nonvirtual void SetLength(int);
+	nonvirtual int GetLength(void);
+	nonvirtual void SetMin(float);
+	nonvirtual float GetMin(void);
+	nonvirtual void SetMax(float);
+	nonvirtual float GetMax(void);
+	nonvirtual void SetStep(float);
+	nonvirtual float GetStep(void);
+	nonvirtual void SetValue(float,int);
+	nonvirtual float GetValue(void);
+	nonvirtual void CallOnChange(void(void));
+
+	virtual void Draw(void);
+	virtual bool Input(float, float, float, float);
+
+private:
 	vector m_vecColor;
 	float m_flAlpha;
 	
@@ -33,35 +54,18 @@ class CUIScrollbar:CUIWidget
 	float m_flMax;
 	float m_flStep;
 	float m_flValue;
-	
-	void(void) CUIScrollbar;
+
 	virtual void(void) m_vChangedCB = 0;
-	
-	virtual void(int) SetLength;
-	virtual int(void) GetLength;
-	virtual void(float) SetMin;
-	virtual float() GetMin;
-	virtual void(float) SetMax;
-	virtual float() GetMax;
-	virtual void(float) SetStep;
-	virtual float() GetStep;
-	virtual void(float, int) SetValue;
-	virtual float() GetValue;
-	
-	virtual void(void(void)) CallOnChange;
-	
-	virtual bool(float, float, float, float) Input;
-	virtual void(void) Draw;
 };
 
-void CUIScrollbar::CUIScrollbar(void)
+void VGUIScrollbar::VGUIScrollbar(void)
 {
 	m_vecColor = UI_MAINCOLOR;
 	m_flAlpha = 1.0f;
 	m_iFlags = SCROLLBAR_VISIBLE;
 }
 
-void CUIScrollbar::Draw(void)
+void VGUIScrollbar::Draw(void)
 {
 	vector vecSize = [20, m_iLength];
 
@@ -168,7 +172,7 @@ void CUIScrollbar::Draw(void)
 #endif
 }
 
-bool CUIScrollbar::Input (float flEVType, float flKey, float flChar, float flDevID)
+bool VGUIScrollbar::Input (float flEVType, float flKey, float flChar, float flDevID)
 {
 	bool ret = false;
 	vector vecUpPos = m_parent.m_vecOrigin + m_vecOrigin;
@@ -202,43 +206,43 @@ bool CUIScrollbar::Input (float flEVType, float flKey, float flChar, float flDev
 	return (ret);
 }
 
-void CUIScrollbar::SetLength (int iLength)
+void VGUIScrollbar::SetLength (int iLength)
 {
 	m_iLength = iLength;
 }
-int CUIScrollbar::GetLength(void)
+int VGUIScrollbar::GetLength(void)
 {
 	return m_iLength;
 }
 
-void CUIScrollbar::SetMin (float flVal)
+void VGUIScrollbar::SetMin (float flVal)
 {
 	m_flMin = flVal;
 }
-float CUIScrollbar::GetMin(void)
+float VGUIScrollbar::GetMin(void)
 {
 	return m_flMin;
 }
 
-void CUIScrollbar::SetMax (float flVal)
+void VGUIScrollbar::SetMax (float flVal)
 {
 	m_flMax = flVal;
 }
-float CUIScrollbar::GetMax(void)
+float VGUIScrollbar::GetMax(void)
 {
 	return m_flMax;
 }
 
-void CUIScrollbar::SetStep (float flVal)
+void VGUIScrollbar::SetStep (float flVal)
 {
 	m_flStep = flVal;
 }
-float CUIScrollbar::GetStep(void)
+float VGUIScrollbar::GetStep(void)
 {
 	return m_flStep;
 }
 
-void CUIScrollbar::SetValue (float flVal, int iCallBack)
+void VGUIScrollbar::SetValue (float flVal, int iCallBack)
 {
 	m_flValue = bound(m_flMin, flVal, m_flMax);
 	
@@ -246,12 +250,12 @@ void CUIScrollbar::SetValue (float flVal, int iCallBack)
 		m_vChangedCB();
 	}
 }
-float CUIScrollbar::GetValue(void)
+float VGUIScrollbar::GetValue(void)
 {
 	return m_flValue;
 }
 
-void CUIScrollbar::CallOnChange (void(void) vFunc)
+void VGUIScrollbar::CallOnChange (void(void) vFunc)
 {
 	m_vChangedCB = vFunc;
 }

@@ -375,8 +375,9 @@ public:
 	nonvirtual int GetTriggerCondition(void);
 	/** Call to trigger their targets manually. */
 	virtual void TriggerTargets(void);
+#endif
 
-#else
+#ifdef CLIENT
 	virtual void customphysics(void);
 	virtual float predraw(void);
 	virtual void ReceiveEntity(float,float);
@@ -387,7 +388,9 @@ public:
 string Sentences_GetSamples(string);
 string Sentences_ProcessSample(string);
 void NSMonster_ReadEntity(bool);
-#else
+#endif
+
+#ifdef SERVER
 void NSMonster_AlertEnemyAlliance(vector pos, float radius, int alliance);
 entity NSMonster_FindClosestPlayer(entity);
 #endif
