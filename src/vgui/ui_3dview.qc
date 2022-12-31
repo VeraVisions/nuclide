@@ -21,11 +21,6 @@ noref .vector maxs;
 noref .string model;
 noref .float frame, frame2, lerpfrac, renderflags, frame1time;
 
-enumflags
-{
-	VIEW_VISIBLE
-};
-
 class VGUI3DView:VGUIWidget
 {
 public:
@@ -47,6 +42,7 @@ public:
 	/* overrides */
 	virtual void Draw(void);
 	virtual bool Input(float, float, float, float);
+	virtual void Spawned(void);
 
 private:
 	vector m_vec3DPos;
@@ -60,9 +56,13 @@ void
 VGUI3DView::VGUI3DView(void)
 {
 	m_flFOV = 90;
-	m_vecSize = [64,64];
 	m_vec3DPos = m_vec3DAngles = [0,0,0];
-	m_iFlags = VIEW_VISIBLE;
+}
+
+void
+VGUI3DView::Spawned(void)
+{
+	SetSize([64,64]);
 }
 
 void

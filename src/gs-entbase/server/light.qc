@@ -136,9 +136,13 @@ light::Restore(string strKey, string strValue)
 void
 light::RestoreComplete(void)
 {
+	/* not switchable */
+	if (m_flStyle < 12)
+		return;
+
 	if (m_iEnabled == 0) {
 		lightstyle(m_flStyle, "a");
-	} else if (m_flStyle > 12) {
+	} else {
 		lightstyle(m_flStyle, m_strPattern);
 	}
 }

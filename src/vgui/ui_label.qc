@@ -23,6 +23,7 @@ public:
 
 	virtual void Draw(void);
 	virtual bool Input(float, float, float, float);
+	virtual void Spawned(void);
 
 private:
 	string m_strTitle;
@@ -31,8 +32,13 @@ private:
 void
 VGUILabel::VGUILabel(void)
 {
-	m_vecSize = [96,16];
-	m_iFlags = BUTTON_VISIBLE;
+	m_strTitle = __NULL__;
+}
+
+void
+VGUILabel::Spawned(void)
+{
+	SetSize([96,16]);
 }
 
 void

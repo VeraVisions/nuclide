@@ -16,7 +16,6 @@
 
 enumflags
 {
-	TEXTBOX_VISIBLE,
 	TEXTBOX_HOVER,
 	TEXTBOX_DOWN,
 	TEXTBOX_FOCUS
@@ -35,6 +34,7 @@ public:
 	/* overrides */
 	virtual void Draw(void);
 	virtual bool Input(float, float, float, float);
+	virtual void Spawned(void);
 
 private:
 	vector m_vecColor;
@@ -47,8 +47,11 @@ void VGUITextBox::VGUITextBox(void)
 {
 	m_vecColor = UI_MAINCOLOR;
 	m_flAlpha = 1.0f;
-	m_vecSize = [96,24];
-	m_iFlags = BUTTON_VISIBLE;
+}
+
+void VGUITextBox:: Spawned(void)
+{
+	SetSize([96,24]);
 }
 
 void VGUITextBox::SetText (string strName)

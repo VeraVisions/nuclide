@@ -37,6 +37,7 @@ public:
 
 	virtual void Draw(void);
 	virtual bool Input(float, float, float, float);
+	virtual void Spawned(void);
 
 private:
 	vector m_vecColor;
@@ -52,8 +53,13 @@ VGUIMenuButton::VGUIMenuButton(void)
 {
 	m_vecColor = UI_MAINCOLOR;
 	m_flAlpha = 1.0f;
-	m_vecSize = [96,24];
-	m_iFlags = MBUTTON_VISIBLE | MBUTTON_SHOWOFFLINE | MBUTTON_SHOWSP | MBUTTON_SHOWMP;
+}
+
+void
+VGUIMenuButton::Spawned(void)
+{
+	SetSize([96,24]);
+	FlagAdd(MBUTTON_VISIBLE | MBUTTON_SHOWOFFLINE | MBUTTON_SHOWSP | MBUTTON_SHOWMP);
 }
 
 void

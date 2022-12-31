@@ -190,8 +190,8 @@ VGUIWidget::SizeChanged(vector vecOld, vector vecNew)
 void
 VGUIWidget::SetPos(vector vecNewPos)
 {
-	m_vecOrigin[0] = bound(0, vecNewPos[0], video_res[0] - 32);
-	m_vecOrigin[1] = bound(0, vecNewPos[1], video_res[1] - 32);
+	m_vecOrigin[0] = bound(0, vecNewPos[0], 9999.0);
+	m_vecOrigin[1] = bound(0, vecNewPos[1], 9999.0);
 }
 
 vector
@@ -296,6 +296,7 @@ VGUIWidget::Add(VGUIWidget wNew)
 	wNew.m_parent = this;
 }
 
+.string classname;
 void
 VGUIWidget::Draw(void)
 {
@@ -303,7 +304,7 @@ VGUIWidget::Draw(void)
 	g_vguiWidgetCount = 0;
 	do {
 		wNext = wNext.m_next;
-		if (wNext && wNext.m_iFlags & 1 && wNext.m_parent.m_iFlags & 1) {
+		if (wNext && wNext.Visible() && wNext.m_parent.Visible()) {
 			g_vguiWidgetCount++;
 			wNext.Draw();
 		}
@@ -342,7 +343,7 @@ VGUIWidget::Input(float flEVType, float flKey, float flChar, float flDevID)
 	for (int x = c-1; x >= 0; x--) {
 		wNext = tree[x].member;
 
-		if (wNext && wNext.m_iFlags & 1 && wNext.m_parent.m_iFlags & 1)
+		if (wNext && wNext.Visible() && wNext.m_parent.Visible())
 			if (wNext.Input(flEVType, flKey, flChar, flDevID) == true) {
 				memfree(tree);
 				return (true);

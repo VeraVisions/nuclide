@@ -119,9 +119,9 @@ void UI_ModelViewer_Show ( void )
 		}
 	
 		if ( chkBackground.GetValue() == TRUE ) {
-			picBackground.FlagAdd( IMAGE_VISIBLE );
+			picBackground.Show();
 		} else {
-			picBackground.FlagRemove( IMAGE_VISIBLE );
+			picBackground.Hide();
 		}
 	}
 	static float UI_ModelViewer_Input ( float flEVType, float flKey, float flChar, float flDevID ) {
@@ -205,26 +205,26 @@ void UI_ModelViewer_Show ( void )
 		btnSeqNext.SetPos( btnTabRenderer.GetPos() + [ 64, 50 ] );
 	}
 	static void UI_ModelViewer_HideAll( void ) {
-		chkBackground.FlagRemove( 1 );
-		chkGround.FlagRemove( 1 );
-		chkMirror.FlagRemove( 1 );
-		lblSeqFrame.FlagRemove( 1 );
-		btnSeqPrev.FlagRemove( 1 );
-		btnSeqNext.FlagRemove( 1 );
-		btnFirstperson.FlagRemove( 1 );
+		chkBackground.Hide();
+		chkGround.Hide();
+		chkMirror.Hide();
+		lblSeqFrame.Hide();
+		btnSeqPrev.Hide();
+		btnSeqNext.Hide();
+		btnFirstperson.Hide();
 	}
 	static void UI_ModelViewer_ShowRenderer( void ) {
 		UI_ModelViewer_HideAll();
-		chkBackground.FlagAdd( 1 );
-		chkGround.FlagAdd( 1 );
-		chkMirror.FlagAdd( 1 );
-		btnFirstperson.FlagAdd( 1 );
+		chkBackground.Show();
+		chkGround.Show();
+		chkMirror.Show();
+		btnFirstperson.Show();
 	}
 	static void UI_ModelViewer_ShowSequence( void ) {
 		UI_ModelViewer_HideAll();
-		lblSeqFrame.FlagAdd( 1 );
-		btnSeqPrev.FlagAdd( 1 );
-		btnSeqNext.FlagAdd( 1 );
+		lblSeqFrame.Show();
+		btnSeqPrev.Show();
+		btnSeqNext.Show();
 	}
 	static void UI_ModelViewer_ShowBody( void ) {
 		UI_ModelViewer_HideAll();

@@ -16,7 +16,6 @@
 
 enumflags
 {
-	RADIO_VISIBLE,
 	RADIO_HOVER,
 	RADIO_DOWN,
 	RADIO_ACTIVE
@@ -34,6 +33,7 @@ public:
 
 	virtual void Draw(void);
 	virtual bool(float, float, float, float) Input;
+	virtual void Spawned(void);
 
 private:
 	vector m_vecColor;
@@ -47,8 +47,12 @@ void VGUIRadio::VGUIRadio(void)
 {
 	m_vecColor = UI_MAINCOLOR;
 	m_flAlpha = 1.0f;
-	m_vecSize = [96,24];
-	m_iFlags = RADIO_VISIBLE;
+}
+
+void
+VGUIRadio::Spawned(void)
+{
+	SetSize([96,24]);
 }
 
 

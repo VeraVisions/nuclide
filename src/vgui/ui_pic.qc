@@ -30,6 +30,7 @@ public:
 	
 	virtual void Draw(void);
 	virtual bool Input(float, float, float, float);
+	virtual void Spawned(void);
 
 private:
 	string m_strImage;
@@ -38,8 +39,13 @@ private:
 void
 VGUIPic::VGUIPic(void)
 {
-	m_vecSize = [16,16];
-	m_iFlags = IMAGE_VISIBLE;
+	m_strImage = __NULL__;
+}
+
+void
+VGUIPic::Spawned(void)
+{
+	SetSize([16,16]);
 }
 
 void

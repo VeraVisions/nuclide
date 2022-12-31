@@ -16,7 +16,6 @@
 
 enumflags
 {
-	CHECKBOX_VISIBLE,
 	CHECKBOX_HOVER,
 	CHECKBOX_DOWN,
 	CHECKBOX_CHECKED
@@ -33,6 +32,7 @@ public:
 
 	virtual void Draw(void);
 	virtual bool Input(float, float, float, float);
+	virtual void Spawned(void);
 
 private:
 	vector m_vecColor;
@@ -44,8 +44,12 @@ void VGUICheckbox::VGUICheckbox(void)
 {
 	m_vecColor = UI_MAINCOLOR;
 	m_flAlpha = 1.0f;
-	m_vecSize = [96,18];
-	m_iFlags = CHECKBOX_VISIBLE;
+}
+
+void
+VGUICheckbox::Spawned(void)
+{
+	SetSize([96,18]);
 }
 
 void VGUICheckbox::SetTitle (string strName)

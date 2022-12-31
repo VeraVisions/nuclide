@@ -16,7 +16,6 @@
 
 enumflags
 {
-	SLIDER_VISIBLE,
 	SLIDER_HOVER,
 	SLIDER_DOWN,
 };
@@ -31,6 +30,7 @@ public:
 	/* overrides */
 	virtual void Draw(void);
 	virtual bool Input(float, float, float, float);
+	virtual void Spawned(void);
 
 private:
 	float m_flAlpha;
@@ -42,8 +42,12 @@ void VGUISlider::VGUISlider(void)
 {
 	m_vecColor = [76,88,68] / 255;
 	m_flAlpha = 1.0f;
-	m_vecSize = [96,24];
-	m_iFlags = BUTTON_VISIBLE;
+}
+
+void
+VGUISlider::Spawned(void)
+{
+	SetSize([96,24]);
 }
 
 void VGUISlider::Draw(void)

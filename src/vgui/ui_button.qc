@@ -16,7 +16,6 @@
 
 enumflags
 {
-	BUTTON_VISIBLE,
 	BUTTON_HOVER,
 	BUTTON_DOWN,
 	BUTTON_LASTACTIVE
@@ -61,9 +60,13 @@ VGUIButton::VGUIButton(void)
 {
 	m_vecColor = UI_MAINCOLOR;
 	m_flAlpha = 1.0f;
-	m_vecSize = [96,24];
 	m_vecIconColor = [1,1,1];
-	m_iFlags = BUTTON_VISIBLE;
+}
+
+void
+VGUIButton::Spawned(void)
+{
+	SetSize([96,24]);
 }
 
 void
@@ -121,9 +124,6 @@ VGUIButton::SetExec(string exe)
 void
 VGUIButton::Draw(void)
 {
-	if (!Visible())
-		return;
-
 #ifndef CLASSIC_VGUI
 	drawfill(m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, m_vecColor, m_flAlpha);
 
@@ -167,9 +167,6 @@ bool
 VGUIButton::Input(float flEVType, float flKey, float flChar, float flDevID)
 {
 	bool ret = false;
-
-	if (!Visible())
-		return false;
 
 	if (flEVType == IE_KEYDOWN) {
 		if (flKey == K_MOUSE1) {

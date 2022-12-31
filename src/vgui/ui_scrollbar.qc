@@ -16,7 +16,6 @@
 
 enumflags
 {
-	SCROLLBAR_VISIBLE,
 	SCROLLBAR_UP_DOWN,
 	SCROLLBAR_DN_DOWN,
 	SCROLLBAR_SLIDER_DOWN
@@ -62,7 +61,6 @@ void VGUIScrollbar::VGUIScrollbar(void)
 {
 	m_vecColor = UI_MAINCOLOR;
 	m_flAlpha = 1.0f;
-	m_iFlags = SCROLLBAR_VISIBLE;
 }
 
 void VGUIScrollbar::Draw(void)

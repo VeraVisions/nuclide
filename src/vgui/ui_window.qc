@@ -16,7 +16,6 @@
 
 enumflags
 {
-	WINDOW_VISIBLE,
 	WINDOW_DRAGGING,
 	WINDOW_RESIZING,
 	WINDOW_CANRESIZE
@@ -47,6 +46,7 @@ public:
 	virtual void Draw(void);
 	virtual void SizeChanged(vector, vector);
 	virtual bool Input(float, float, float, float);
+	virtual void Spawned(void);
 
 private:
 	vector m_vecColor;
@@ -61,16 +61,22 @@ private:
 	virtual void(void) m_vMoveCB = 0;
 };
 
-void VGUIWindow::VGUIWindow(void)
+void
+VGUIWindow::VGUIWindow(void)
+{
+	m_vecColor = UI_MAINCOLOR;
+	m_flAlpha = 1.0f;
+}
+
+void
+VGUIWindow::Spawned(void)
 {
 	static void WindowButtonClose(void) {
 		m_parent.Hide();
 	}
-	m_vecColor = UI_MAINCOLOR;
-	m_flAlpha = 1.0f;
 
-	m_vecMinSize = [64,64];
-	m_vecMaxSize = [640,480]; // TODO: Make this the screen res
+	SetMinSize([64,64]);
+	SetMaxSize([640,480]); // TODO: Make this the screen res
 
 	m_strTitle = "Window";
 
@@ -87,6 +93,7 @@ void VGUIWindow::VGUIWindow(void)
 	m_btnClose.SetFunc(WindowButtonClose);
 	m_btnClose.SetSize([20,20]);
 	Add(m_btnClose);
+
 	SetSize([320,240]);
 }
 

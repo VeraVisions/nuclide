@@ -303,7 +303,5 @@ TestUI::Spawned(void)
 void
 TestUI::TestUI(void)
 {
-	m_vecSize = [512,512];
-	m_iFlags |= WINDOW_VISIBLE;
 }
 #endif

@@ -27,6 +27,7 @@ public:
 
 	virtual void Draw(void);
 	virtual bool Input(float, float, float, float);
+	virtual void Spawned(void);
 
 private:
 	vector m_vecSize;
@@ -39,9 +40,12 @@ private:
 
 void VGUIListBox::VGUIListBox(void)
 {
-	m_vecSize = [96,16];
-	m_iFlags = 1;
 	m_iSelected = -1;
+}
+
+void VGUIListBox::Spawned(void)
+{
+	SetSize([96,16]);
 }
 
 void VGUIListBox::SetItemCount (int iCount)

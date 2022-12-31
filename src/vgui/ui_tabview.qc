@@ -27,6 +27,7 @@ public:
 	virtual void SizeChanged(vector, vector);
 	virtual void Draw(void);
 	virtual bool Input(float, float, float, float);
+	virtual void Spawned(void);
 
 private:
 	vector m_vecOutlineSize;
@@ -36,8 +37,13 @@ private:
 
 void VGUITabView::VGUITabView(void)
 {
-	m_vecSize = [96,16];
-	m_iFlags = BUTTON_VISIBLE;
+	m_vecOutlinePos = m_vecOutlineSize = g_vec_null;
+	m_strTitle = __NULL__;
+}
+
+void VGUITabView::Spawned(void)
+{
+	SetSize([96,16]);
 }
 
 void VGUITabView:: PositionChanged (vector vecOld, vector vecNew)
