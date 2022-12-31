@@ -169,6 +169,9 @@ Weapons_Draw(player pl)
 {
 	int i = pl.activeweapon;
 
+	/* In case the previous weapon hid the model */
+	Weapons_EnableModel();
+
 	pl.w_attack_next = 0.5f;
 	pl.w_idle_next = 2.5f;
 	pl.viewzoom = 1.0f;
