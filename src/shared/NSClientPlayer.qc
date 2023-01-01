@@ -219,6 +219,7 @@ NSClientPlayer::predraw(void)
 
 		/* draw a 3D voice blob over its head */
 		Voice_Draw3D(this);
+		Weapons_PreDraw(this, true);
 
 		/* force drawing us if it's our local player and we're meant to show */
 		if (entnum == player_localentnum)
@@ -237,6 +238,7 @@ NSClientPlayer::predraw(void)
 
 		/* give mods a chance to de-render attachments */
 		UpdatePlayerAttachments(false);
+		Weapons_PreDraw(this, false);
 
 		/* this is here just to make sure our view hides us if it's the local player */
 		if (entnum == player_localentnum)
