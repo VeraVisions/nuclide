@@ -276,20 +276,22 @@ NSView::UpdateView(void)
 	/* after predraws we can act upon their new positions */
 	switch (GetViewMode()) {
 	case VIEWMODE_FPS:
-		cl.UpdateAliveCam();
-
 		if (Client_InIntermission()) {
 			cl.UpdateIntermissionCam();
+		} else {
+			if (Client_IsDead(pl)) {
+				SetAFOV(cvar("fov"));
+				SetSensitivity(1.0f);
+				pl.UpdateDeathcam();
+			} else {
+				print("alive\n");
+				SetAFOV(cvar("fov") * pl.viewzoom);
+				SetSensitivity(pl.viewzoom);
+				cl.UpdateAliveCam();
+				StairSmooth();
+				View_DrawViewModel();
+			}
 		}
-
-		StairSmooth();
-		SetAFOV(cvar("fov") * pl.viewzoom);
-		SetSensitivity(pl.viewzoom);
-
-		if (Client_IsDead(pl))
-			pl.UpdateDeathcam();
-		else
-			View_DrawViewModel();
 		break;
 	case VIEWMODE_THIRDPERSON:
 		break;

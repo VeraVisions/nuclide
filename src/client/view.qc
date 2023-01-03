@@ -245,13 +245,6 @@ View_DrawViewModel(void)
 		Viewmodel_CalcBob();
 		Viewmodel_ApplyBob(m_eViewModel);
 		Viewmodel_ApplyBob(m_eViewModelL);
-
-		/* view roll */
-		if (pl.movetype == MOVETYPE_WALK) {
-			Camera_StrafeRoll(view_angles);
-			Camera_RunBob(view_angles);
-			setproperty(VF_ANGLES, view_angles + pl.punchangle);
-		}
 	} else {
 		m_eViewModelL.origin = pl.m_xrInputLeft.GetOrigin();
 		m_eViewModel.origin = pl.m_xrInputRight.GetOrigin();

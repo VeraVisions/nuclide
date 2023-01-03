@@ -45,6 +45,7 @@ public:
 	virtual bool IsRealSpectator(void);
 	virtual bool IsDead(void);
 	virtual bool IsPlayer(void);
+	virtual void SharedInputFrame(void);
 	
 	/** Empty & shared between Client and Server. This is run on every player, every frame, to update their animation cycle. */
 	virtual void UpdatePlayerAnimation(float);

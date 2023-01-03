@@ -20,7 +20,8 @@ typedef enumflags
 	SPECFL_VELOCITY,
 	SPECFL_TARGET,
 	SPECFL_MODE,
-	SPECFL_FLAGS
+	SPECFL_FLAGS,
+	SPECFL_TYPE,
 } NSClientSpectatorFlags_t;
 
 typedef enum
@@ -68,6 +69,7 @@ public:
 	virtual bool IsRealSpectator(void);
 	virtual bool IsDead(void);
 	virtual bool IsPlayer(void);
+	virtual void SharedInputFrame(void);
 
 	/** Call to spectate the next spectating target. */
 	virtual void InputNext(void);

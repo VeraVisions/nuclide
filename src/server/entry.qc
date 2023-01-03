@@ -248,30 +248,13 @@ void
 SV_RunClientCommand(void)
 {
 	NSClient cl = (NSClient)self;
-	cl.SharedInputFrame();
-	cl.ServerInputFrame();
-
-	if (self.classname != "player") {
-		return;
-	}
-
-#ifdef BOT_INCLUDED
-	/* wait a few seconds, as we may not have been spawned yet */
-	if (clienttype(self) == CLIENTTYPE_BOT) {
-		((bot)self).RunAI();
-	}
-#endif
 
 	if (!Plugin_RunClientCommand()) {
 		/* TODO */
 	}
 
-	/* the last thing that happens, so that the game can intercept
-	   input globals beforehand */
-	if (self.classname == "player") {
-		player pl = (player)self;
-		pl.Physics_Run();
-	}
+	cl.SharedInputFrame();
+	cl.ServerInputFrame();
 }
 
 /** Any 'cmd' from the client get sent here and handled.

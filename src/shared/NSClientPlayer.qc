@@ -21,6 +21,17 @@ NSClientPlayer::NSClientPlayer(void)
 	vehicle = __NULL__;
 }
 
+
+void
+NSClientPlayer::SharedInputFrame(void)
+{
+	/* if spectator, we want to make sure we call this */
+	if (!Client_InIntermission() && IsFakeSpectator()) {
+		NSClientSpectator::SharedInputFrame();
+		return;
+	}
+}
+
 bool
 NSClientPlayer::IsRealSpectator(void)
 {
@@ -39,7 +50,7 @@ NSClientPlayer::IsDead(void)
 bool
 NSClientPlayer::IsPlayer(void)
 {
-	return (false);
+	return (true);
 }
 
 bool
@@ -279,6 +290,8 @@ void
 NSClientPlayer::UpdateAliveCam(void)
 {
 	g_view.SetCameraOrigin(GetEyePos());
+	Camera_RunBob(view_angles);
+	Camera_StrafeRoll(view_angles);
 	g_view.SetCameraAngle(view_angles);
 
 	if (vehicle) {
@@ -551,7 +564,14 @@ NSClientPlayer::PredictPostFrame(void)
 void
 NSClientPlayer::ServerInputFrame(void)
 {
+#ifdef BOT_INCLUDED
+	/* wait a few seconds, as we may not have been spawned yet */
+	if (clienttype(this) == CLIENTTYPE_BOT) {
+		((bot)this).RunAI();
+	}
+#endif
 
+	Physics_Run();
 }
 
 void

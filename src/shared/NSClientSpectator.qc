@@ -64,6 +64,7 @@ NSClientSpectator::IsFakeSpectator(void)
 void
 NSClientSpectator::ProcessInput(void)
 {
+#ifdef SERVER
 	if (input_buttons & INPUT_BUTTON0) {
 		InputNext();
 	} else if (input_buttons & INPUT_BUTTON3) {
@@ -73,9 +74,7 @@ NSClientSpectator::ProcessInput(void)
 	} else {
 		spec_flags &= ~SPECFLAG_BUTTON_RELEASED;
 	}
-
-	input_buttons = 0;
-	//crossprint(sprintf("%d %d %d\n", spec_ent, spec_mode, spec_flags));
+#endif
 }
 
 void
@@ -86,9 +85,23 @@ NSClientSpectator::WarpToTarget(void)
 	setorigin(this, b.origin);
 }
 
+void
+NSClientSpectator::SharedInputFrame(void)
+{
+	SetSize(g_vec_null, g_vec_null);
+
+	if (spec_mode == SPECMODE_FREE) {
+		SetSolid(SOLID_NOT);
+		SetMovetype(MOVETYPE_NOCLIP);
+	} else {
+		SetSolid(SOLID_NOT);
+		SetMovetype(MOVETYPE_NONE);
+	}
+}
+
 #ifdef SERVER
 float
-NSClientSpectator::SendEntity(entity ePVSent, float flChangedFlags)
+NSClientSpectator::SendEntity(entity ePVSent, float flChanged)
 {
 	if (this != ePVSent) {
 		return (0);
@@ -99,28 +112,21 @@ NSClientSpectator::SendEntity(entity ePVSent, float flChangedFlags)
 	}
 
 	WriteByte(MSG_ENTITY, ENT_SPECTATOR);
-	WriteFloat(MSG_ENTITY, flChangedFlags);
+	WriteFloat(MSG_ENTITY, flChanged);
 
-	if (flChangedFlags & SPECFL_ORIGIN) {
-		WriteCoord(MSG_ENTITY, origin[0]);
-		WriteCoord(MSG_ENTITY, origin[1]);
-		WriteCoord(MSG_ENTITY, origin[2]);
-	}
+	SENDENTITY_COORD(origin[0], SPECFL_ORIGIN)
+	SENDENTITY_COORD(origin[1], SPECFL_ORIGIN)
+	SENDENTITY_COORD(origin[2], SPECFL_ORIGIN)
 
-	if (flChangedFlags & SPECFL_VELOCITY) {
-		WriteFloat(MSG_ENTITY, velocity[0]);
-		WriteFloat(MSG_ENTITY, velocity[1]);
-		WriteFloat(MSG_ENTITY, velocity[2]);
-	}
+	SENDENTITY_FLOAT(velocity[0], SPECFL_VELOCITY)
+	SENDENTITY_FLOAT(velocity[1], SPECFL_VELOCITY)
+	SENDENTITY_FLOAT(velocity[2], SPECFL_VELOCITY)
 
-	if (flChangedFlags & SPECFL_TARGET)
-		WriteByte(MSG_ENTITY, spec_ent);
-
-	if (flChangedFlags & SPECFL_MODE)
-		WriteByte(MSG_ENTITY, spec_mode);
-
-	if (flChangedFlags & SPECFL_FLAGS)
-		WriteByte(MSG_ENTITY, spec_flags);
+	SENDENTITY_BYTE(spec_ent, SPECFL_TARGET)
+	SENDENTITY_BYTE(spec_mode, SPECFL_MODE)
+	SENDENTITY_BYTE(spec_flags, SPECFL_FLAGS)
+	SENDENTITY_BYTE(movetype, SPECFL_TYPE)
+	SENDENTITY_BYTE(solid, SPECFL_TYPE)
 
 	return (1);
 }
@@ -128,7 +134,11 @@ NSClientSpectator::SendEntity(entity ePVSent, float flChangedFlags)
 void
 NSClientSpectator::ServerInputFrame(void)
 {
-	runstandardplayerphysics(this);
+	if (spec_mode == SPECMODE_FREE) {
+		runstandardplayerphysics(this);
+	} else {
+		WarpToTarget();
+	}
 
 	/* since we are not using Physics_Run(), we have to call this manually */
 	ProcessInput();
@@ -151,8 +161,9 @@ NSClientSpectator::ClientInputFrame(void)
 }
 
 void
-NSClientSpectator::ReceiveEntity(float new, float fl)
+NSClientSpectator::ReceiveEntity(float new, float flChanged)
 {
+	if (spec_mode == SPECMODE_FREE)
 	if (new == FALSE) {
 		/* Go through all the physics code between the last received frame
 		 * and the newest frame and keep the changes this time around instead
@@ -181,27 +192,21 @@ NSClientSpectator::ReceiveEntity(float new, float fl)
 	/* seed for our prediction table */
 	sequence = servercommandframe;
 
-	if (fl & SPECFL_ORIGIN) {
-		origin[0] = readcoord();
-		origin[1] = readcoord();
-		origin[2] = readcoord();
-	}
+	READENTITY_COORD(origin[0], SPECFL_ORIGIN)
+	READENTITY_COORD(origin[1], SPECFL_ORIGIN)
+	READENTITY_COORD(origin[2], SPECFL_ORIGIN)
 
-	if (fl & SPECFL_VELOCITY) {
-		velocity[0] = readfloat();
-		velocity[1] = readfloat();
-		velocity[2] = readfloat();
-	}
+	READENTITY_FLOAT(velocity[0], SPECFL_VELOCITY)
+	READENTITY_FLOAT(velocity[1], SPECFL_VELOCITY)
+	READENTITY_FLOAT(velocity[2], SPECFL_VELOCITY)
 
-	if (fl & SPECFL_TARGET)
-		spec_ent = readbyte();
-
-	if (fl & SPECFL_MODE)
-		spec_mode = readbyte();
-
-	if (fl & SPECFL_FLAGS)
-		spec_flags = readbyte();
+	READENTITY_BYTE(spec_ent, SPECFL_TARGET)
+	READENTITY_BYTE(spec_mode, SPECFL_MODE)
+	READENTITY_BYTE(spec_flags, SPECFL_FLAGS)
+	READENTITY_BYTE(movetype, SPECFL_TYPE)
+	READENTITY_BYTE(solid, SPECFL_TYPE)
 };
+
 float
 NSClientSpectator::predraw(void)
 {
@@ -215,6 +220,8 @@ NSClientSpectator::InputNext(void)
 {
 	if (spec_flags & SPECFLAG_BUTTON_RELEASED)
 		return;
+
+	spec_flags |= SPECFLAG_BUTTON_RELEASED;
 
 #if 0
 	float max_edict;
@@ -264,7 +271,7 @@ NSClientSpectator::InputNext(void)
 
 	spec_ent = best;
 #endif
-	spec_flags |= SPECFLAG_BUTTON_RELEASED;
+
 	WarpToTarget();
 
 	if (spec_mode == SPECMODE_FREE)
@@ -276,6 +283,9 @@ NSClientSpectator::InputPrevious(void)
 {
 	if (spec_flags & SPECFLAG_BUTTON_RELEASED)
 		return;
+
+	spec_flags |= SPECFLAG_BUTTON_RELEASED;
+
 #if 0
 	float max_edict;
 
@@ -327,7 +337,6 @@ NSClientSpectator::InputPrevious(void)
 	spec_ent = best;
 #endif
 
-	spec_flags |= SPECFLAG_BUTTON_RELEASED;
 
 	WarpToTarget();
 
@@ -340,6 +349,8 @@ NSClientSpectator::InputMode(void)
 {
 	if (spec_flags & SPECFLAG_BUTTON_RELEASED)
 		return;
+
+	spec_flags |= SPECFLAG_BUTTON_RELEASED;
 
 	NSClient f;
 #ifdef CLIENT
@@ -356,8 +367,6 @@ NSClientSpectator::InputMode(void)
 		if (spec_mode > SPECMODE_FIRSTPERSON)
 			spec_mode = SPECMODE_FREE;
 	}
-
-	spec_flags |= SPECFLAG_BUTTON_RELEASED;
 }
 
 void
@@ -436,26 +445,13 @@ NSClientSpectator::EvaluateEntity(void)
 {
 	/* check for which values have changed in this frame
 	   and announce to network said changes */
-	if (origin != origin_net)
-		SetSendFlags(SPECFL_ORIGIN);
-
-	if (velocity != velocity_net)
-		SetSendFlags(SPECFL_VELOCITY);
-
-	if (spec_ent != spec_ent_net)
-		SetSendFlags(SPECFL_TARGET);
-
-	if (spec_mode != spec_mode_net)
-		SetSendFlags(SPECFL_MODE);
-
-	if (spec_flags != spec_flags_net)
-		SetSendFlags(SPECFL_FLAGS);
-
-	SAVE_STATE(origin)
-	SAVE_STATE(velocity)
-	SAVE_STATE(spec_ent)
-	SAVE_STATE(spec_mode)
-	SAVE_STATE(spec_flags)
+	EVALUATE_FIELD(origin, SPECFL_ORIGIN)
+	EVALUATE_FIELD(velocity, SPECFL_VELOCITY)
+	EVALUATE_FIELD(spec_ent, SPECFL_TARGET)
+	EVALUATE_FIELD(spec_mode, SPECFL_MODE)
+	EVALUATE_FIELD(spec_flags, SPECFL_FLAGS)
+	EVALUATE_FIELD(movetype, SPECFL_TYPE)
+	EVALUATE_FIELD(solid, SPECFL_TYPE)
 }
 #endif
 
