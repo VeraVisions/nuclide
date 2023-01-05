@@ -284,7 +284,6 @@ NSView::UpdateView(void)
 				SetSensitivity(1.0f);
 				pl.UpdateDeathcam();
 			} else {
-				print("alive\n");
 				SetAFOV(cvar("fov") * pl.viewzoom);
 				SetSensitivity(pl.viewzoom);
 				cl.UpdateAliveCam();
