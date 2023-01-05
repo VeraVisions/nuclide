@@ -196,8 +196,22 @@ NSClientPlayer::predraw(void)
 
 	/* if this player is not the local player, then physics aren't being run on them
       so we need to advance their animation manually */
-	if (entnum != player_localentnum)
-		UpdatePlayerAnimation(clframetime);
+	if (entnum != player_localentnum) {
+		if (autocvar(cg_extrapolateClients, 1)) {
+			makevectors(v_angle);
+			input_movevalues[0] = dotproduct(velocity, v_forward);
+			input_movevalues[1] = dotproduct(velocity, v_right);
+			input_movevalues[2] = dotproduct(velocity, v_up);
+			input_buttons = (flags & FL_JUMPRELEASED) ? 0 : INPUT_BUTTON2;
+			input_angles = v_angle;
+			input_impulse = 0;
+			input_timelength = clframetime;
+			Physics_Run();
+		} else {
+			/* advance animation, usually done in physics */
+			UpdatePlayerAnimation(clframetime);
+		}
+	}
 
 	/* mouth flapping */
 	UpdatePlayerJaw(getplayerkeyfloat(this.entnum - 1, "voiploudness"));
