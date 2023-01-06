@@ -36,6 +36,7 @@ public:
 	
 	virtual void Respawn(void);
 	virtual void SpawnKey(string,string);
+	virtual bool CanSpawn(bool);
 
 private:
 	int m_iID;
@@ -47,6 +48,12 @@ private:
 env_soundscape g_entSoundScape;
 env_soundscape g_entOldScape;
 env_soundscape g_ambientsound;
+
+bool
+env_soundscape::CanSpawn(bool clientSide)
+{
+	return true;
+}
 
 void
 env_soundscape::SpawnKey(string strField, string strKey)

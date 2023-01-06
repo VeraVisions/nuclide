@@ -66,6 +66,9 @@ public:
 		needs to be read back in here. */
 	virtual void Restore(string,string);
 
+	/** Called when the entity has been successfully restored from a savegame file. */
+	virtual void RestoreComplete(void);
+
 	/** Called when we are being prompted by another object/function with an input message. */
 	virtual void Input(entity,string,string);
 

@@ -34,6 +34,7 @@ class point_message:NSEntity
 public:
 	void point_message(void);
 	virtual void SpawnKey(string, string);
+	virtual bool CanSpawn(bool);
 
 private:
 	float m_flRadius;
@@ -65,6 +66,12 @@ point_message::point_message(void)
 	m_flRadius = 512;
 	m_strMessage = "No message";
 	isCSQC = true;
+}
+
+bool
+point_message::CanSpawn(bool clientSide)
+{
+	return true;
 }
 
 int

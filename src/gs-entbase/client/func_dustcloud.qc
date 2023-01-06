@@ -34,6 +34,7 @@ public:
 	virtual void Spawned(void);
 	virtual float predraw(void);
 	virtual void SpawnKey(string,string);
+	virtual bool CanSpawn(bool);
 
 private:
 	int m_iCount;
@@ -65,6 +66,12 @@ private:
 	vector m_vecColor;
 	float m_flLifeTime;
 };
+
+bool
+func_dustcloud::CanSpawn(bool clientSide)
+{
+	return true;
+}
 
 float
 func_dustcloud_cloud::predraw(void)

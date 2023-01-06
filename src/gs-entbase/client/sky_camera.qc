@@ -40,6 +40,7 @@ public:
 	void sky_camera(void);
 
 	virtual void SpawnKey(string, string);
+	virtual bool CanSpawn(bool);
 };
 
 void
@@ -57,6 +58,12 @@ sky_camera::SpawnKey(string strField, string strKey)
 	default:
 		super::SpawnKey(strField, strKey);
 	}
+}
+
+bool
+sky_camera::CanSpawn(bool clientSide)
+{
+	return true;
 }
 
 void

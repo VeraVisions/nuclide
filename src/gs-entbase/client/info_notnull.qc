@@ -18,7 +18,15 @@ class info_notnull:NSEntity
 {
 public:
 	void info_notnull(void);
+	virtual bool CanSpawn(bool);
 };
+
+
+bool
+info_notnull::CanSpawn(bool clientSide)
+{
+	return true;
+}
 
 void
 info_notnull::info_notnull(void)

@@ -55,6 +55,7 @@ public:
 	virtual float predraw(void);
 	virtual void SpawnKey(string,string);
 	virtual void RendererRestarted(void);
+	virtual bool CanSpawn(bool);
 
 private:
 	vector m_vecLensPos;
@@ -69,6 +70,12 @@ env_sun::RendererRestarted(void)
 	precache_pic("textures/sfx/flare2");
 	precache_pic("textures/sfx/flare3");
 	precache_pic("textures/sfx/flare4");
+}
+
+bool
+env_sun::CanSpawn(bool clientSide)
+{
+	return true;
 }
 
 float

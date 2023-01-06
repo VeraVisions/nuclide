@@ -110,6 +110,10 @@ public:
 		collision and maintain the appearance it had before getting removed. */
 	virtual void MakeStatic(void);
 
+	/** Returns if this entity can spawned from the map file.
+	@param clientSide If it's being spawned on the client-side. */
+	virtual bool CanSpawn(bool clientSide);
+
 #ifdef SERVER
 	virtual void Respawn(void);
 	virtual void Input(entity,string,string);
@@ -118,9 +122,6 @@ public:
 
 	/** Called when we need to re-align the entity to our parent entity. */
 	virtual void ParentUpdate(void);
-
-	/** Called when the entity has been successfully restored from a savegame file. */
-	virtual void RestoreComplete(void);
 
 	/** Run each tic after physics are run to determine if we need to send updates over the network. */
 	virtual void EvaluateEntity(void);

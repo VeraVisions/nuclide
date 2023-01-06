@@ -57,6 +57,7 @@ public:
 	
 	virtual void Respawn(void);
 	virtual void SpawnKey(string,string);
+	virtual bool CanSpawn(bool);
 
 };
 
@@ -81,6 +82,12 @@ light_environment::SpawnKey(string strField, string strKey)
 	default:
 		super::SpawnKey(strField, strKey);
 	}
+}
+
+bool
+light_environment::CanSpawn(bool clientSide)
+{
+	return true;
 }
 
 void

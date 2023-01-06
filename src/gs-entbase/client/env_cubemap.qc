@@ -39,6 +39,7 @@ env_cubemap:NSEntity
 public:
 	void env_cubemap(void);
 	virtual void SpawnKey(string,string);
+	virtual bool CanSpawn(bool);
 
 private:
 	int m_iSize;
@@ -65,6 +66,12 @@ env_cubemap::SpawnKey(string strField, string strKey)
 	default:
 		super::SpawnKey(strField, strKey);
 	}
+}
+
+bool
+env_cubemap::CanSpawn(bool clientSide)
+{
+	return true;
 }
 
 void

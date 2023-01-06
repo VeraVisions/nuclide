@@ -45,6 +45,7 @@ public:
 	virtual void postdraw(void);
 	virtual void SpawnKey(string,string);
 	virtual void RendererRestarted(void);
+	virtual bool CanSpawn(bool);
 
 private:
 	vector m_vecColor;
@@ -57,6 +58,12 @@ private:
 	vector m_vecRotate;
 	vector m_vecOrientation;
 };
+
+bool
+env_glow::CanSpawn(bool clientSide)
+{
+	return true;
+}
 
 void env_sun_lensflare(vector, float, vector);
 void

@@ -71,11 +71,18 @@ public:
 	
 	virtual void Respawn(void);
 	virtual void SpawnKey(string,string);
+	virtual bool CanSpawn(bool);
 
 private:
 	int m_iRoomType;
 	int m_iRadius;
 };
+
+bool
+env_sound::CanSpawn(bool clientSide)
+{
+	return true;
+}
 
 void
 env_sound::SpawnKey(string strField, string strKey)

@@ -139,7 +139,7 @@ NSRenderableEntity::SendEntity(entity ePEnt, float flChanged)
 		/* no rendermode means no extra fields */
 		if (m_iRenderMode == RM_NORMAL) {
 			flChanged &= ~RDENT_CHANGED_RENDERMODE;
-			flChanged &= ~RDENT_CHANGED_RENDERCOLOR;
+			//flChanged &= ~RDENT_CHANGED_RENDERCOLOR; /* glowmod needs this */
 			flChanged &= ~RDENT_CHANGED_RENDERAMT;
 		}
 

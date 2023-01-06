@@ -36,6 +36,7 @@ public:
 	virtual void Spawned(void);
 	virtual float predraw(void);
 	virtual void SpawnKey(string, string);
+	virtual bool CanSpawn(bool);
 
 private:
 	int m_iCount;
@@ -175,6 +176,12 @@ func_smokevolume::Spawned(void)
 		m_iCount = (int)(vlen(size) / 100);
 	/*m_strParticle = strcat("dustcloud_", ftos(entnum));
 	localcmd(sprintf(g_dustcloud_cfg, m_strParticle));*/
+}
+
+bool
+func_smokevolume::CanSpawn(bool clientSide)
+{
+	return true;
 }
 
 void

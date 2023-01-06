@@ -751,4 +751,12 @@ CheckSpawn(void() spawnfunc)
 		print(sprintf("^1Cannot find entity class ^7%s\n", self.classname));
 		remove(self);
 	}
+
+	/* check if this entity was meant to spawn on the client-side only */
+	if (self.identity) {
+		NSEntity ent = (NSEntity)self;
+
+		if (ent.CanSpawn(false) == false)
+			ent.Destroy();
+	}
 }

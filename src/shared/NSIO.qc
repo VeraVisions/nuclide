@@ -628,6 +628,11 @@ NSIO::Restore(string strKey, string strValue)
 		break;
 	}
 }
+
+void
+NSIO::RestoreComplete( void ) {
+	/* this is where we can handle anything post-loading */
+}
 #endif
 
 void

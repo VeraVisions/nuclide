@@ -23,6 +23,7 @@ public:
 	virtual void SpawnKey(string,string);
 	virtual void Respawn(void);
 	virtual void Spawned(void);
+	virtual bool CanSpawn(bool);
 
 private:
 	int m_iBody;
@@ -64,6 +65,12 @@ prop_static::Spawned(void)
 	applycustomskin(this, skindata);
 	setorigin(this, origin);
 	setsize(this, mins * scale, maxs * scale);
+}
+
+bool
+prop_static::CanSpawn(bool clientSide)
+{
+	return true;
 }
 
 void

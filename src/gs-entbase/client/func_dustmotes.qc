@@ -32,12 +32,19 @@ public:
 	virtual void Spawned(void);
 	virtual float predraw(void);
 	virtual void SpawnKey(string,string);
+	virtual bool CanSpawn(bool);
 
 private:
 	int m_iCount;
 	int m_iPart;
 	float m_flNexTime;
 };
+
+bool
+func_dustmotes::CanSpawn(bool clientSide)
+{
+	return true;
+}
 
 float
 func_dustmotes::predraw(void)

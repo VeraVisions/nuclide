@@ -165,6 +165,11 @@ Entities_ParseLump(void)
 			if (eEnt && eEnt.isCSQC == false) {
 				remove(eEnt);
 			}
+
+			if (eEnt.identity)
+			if (eEnt.CanSpawn(true) == false)
+				eEnt.Destroy();
+
 			return (1);
 		}
 

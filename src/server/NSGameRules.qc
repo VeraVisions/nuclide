@@ -47,6 +47,13 @@ NSGameRules::Restore(string strKey, string strValue)
 	}
 }
 
+void
+NSGameRules::RestoreComplete(void)
+{
+	/* mark this as our active game-rule upon restore. */
+	g_grMode = this;
+}
+
 /* init */
 void
 NSGameRules::InitPostEnts(void)

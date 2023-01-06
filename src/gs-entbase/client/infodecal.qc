@@ -21,6 +21,7 @@ public:
 	void infodecal(void);
 	virtual void SpawnKey(string, string);
 	virtual float predraw(void);
+	virtual bool CanSpawn(bool);
 
 private:
 	decal m_decChild;
@@ -36,6 +37,12 @@ infodecal::predraw(void)
 		Destroy();
 	}
 	return (PREDRAW_NEXT);
+}
+
+bool
+infodecal::CanSpawn(bool clientSide)
+{
+	return true;
 }
 
 void

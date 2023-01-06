@@ -39,10 +39,17 @@ public:
 	virtual void Spawned(void);
 	virtual float predraw(void);
 	virtual void SpawnKey(string,string);
+	virtual bool CanSpawn(bool);
 
 private:
 	int m_iDisappearDist;
 };
+
+bool
+func_lod::CanSpawn(bool clientSide)
+{
+	return true;
+}
 
 float
 func_lod::predraw(void)

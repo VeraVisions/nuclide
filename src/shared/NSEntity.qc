@@ -717,10 +717,6 @@ void NSEntity::Restore( string strKey, string strValue ) {
 	}
 }
 
-void NSEntity::RestoreComplete( void ) {
-	/* this is where we can handle anything post-loading */
-}
-
 void NSEntity::Input( entity eAct, string strInput, string strData ) {
 	switch ( strInput ) {
 	case "Kill":
@@ -823,6 +819,16 @@ void NSEntity::Disappear( void ) {
 
 void NSEntity::MakeStatic( void ) {
 	makestatic( this );
+}
+
+bool
+NSEntity::CanSpawn(bool clientSide)
+{
+	/* in most cases, we don't need these to spawn on the client-side */
+	if (clientSide)
+		return false;
+	else
+		return true;
 }
 
 bool NSEntity::WithinBounds( entity check ) {

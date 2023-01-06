@@ -34,6 +34,7 @@ public:
 	/* overrides */
 	virtual void Save(float);
 	virtual void Restore(string,string);
+	virtual void RestoreComplete(void);
 
 	/** Overridable: Called when all map entities have initialized. */
 	virtual void InitPostEnts(void);

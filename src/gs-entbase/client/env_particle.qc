@@ -37,6 +37,7 @@ public:
 	virtual void Respawn(void);
 	virtual void customphysics(void);
 	virtual void SpawnKey(string,string);
+	virtual bool CanSpawn(bool);
 
 private:
 	entity m_eTarget;
@@ -47,6 +48,12 @@ private:
 	int m_iCount;
 	string m_strTarget;
 };
+
+bool
+env_particle::CanSpawn(bool clientSide)
+{
+	return true;
+}
 
 void env_particle::customphysics(void)
 {
