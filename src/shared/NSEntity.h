@@ -59,6 +59,7 @@ private:
 	vector m_oldAngle; /**< contains the angle that the entity spawned in */
 	string m_oldModel; /**< contains the model that the entity spawned with */
 	float m_oldSolid; /**< contains the collision type the entity spawned with */
+	bool m_bIsBrush;
 
 	PREDICTED_VECTOR_N(origin)
 	PREDICTED_VECTOR_N(angles)

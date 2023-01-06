@@ -446,6 +446,7 @@ void NSEntity::SetOrigin( vector newOrigin ) {
 }
 
 void NSEntity::SetModel( string newModel ) {
+	m_bIsBrush = substring(newModel, 0, 1) == "*" ? true : false;
 	model = newModel;
 	setmodel( this, newModel );
 
@@ -458,6 +459,7 @@ void NSEntity::SetModelindex( float newModelIndex ) {
 
 	modelindex = newModelIndex;
 	SetSize( mins, maxs );
+
 }
 
 void NSEntity::AddEffects( float fl ) {
