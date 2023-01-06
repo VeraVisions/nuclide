@@ -14,7 +14,7 @@ then
 	MANIFEST="-manifest ../$1/manifest.fmf"
 	SVGAMEDIR=$(cat ../$1/manifest.fmf  | grep BASEGAME | awk 'BEGIN { ORS="," } { print $2 } END { print "" }')
 	SVGAMEDIR=${SVGAMEDIR%,,}
-	ARGUMENTS="$2 +sv_gamedir \"${SVGAMEDIR}\""
+	ARGUMENTS="$2 +sv_gamedir \"${SVGAMEDIR}\" +set fs_game $1"
 	echo "Arguments: $ARGUMENTS"
 else
 	ARGUMENTS="$*"
