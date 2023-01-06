@@ -210,20 +210,20 @@ NSView::GetSensitivity(void)
 vector
 NSView::GetHUDCanvasPos(void)
 {
-	if (autocvar_cl_hudaspect <= 0) {
+	if (autocvar_cg_hudAspect <= 0) {
 		return m_vecPosition;
 	} else {
-		return [m_vecPosition[0] + ((m_vecSize[0] / 2) - ((m_vecSize[1] * autocvar_cl_hudaspect) / 2)), m_vecPosition[1]];
+		return [m_vecPosition[0] + ((m_vecSize[0] / 2) - ((m_vecSize[1] * autocvar_cg_hudAspect) / 2)), m_vecPosition[1]];
 	}
 }
 
 vector
 NSView::GetHUDCanvasSize(void)
 {
-	if (autocvar_cl_hudaspect <= 0) {
+	if (autocvar_cg_hudAspect <= 0) {
 		return m_vecSize;
 	} else {
-		return [m_vecSize[1] * autocvar_cl_hudaspect, m_vecSize[1]];
+		return [m_vecSize[1] * autocvar_cg_hudAspect, m_vecSize[1]];
 	}
 }
 

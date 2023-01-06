@@ -202,7 +202,8 @@ NSClientPlayer::predraw(void)
 			input_movevalues[0] = dotproduct(velocity, v_forward);
 			input_movevalues[1] = dotproduct(velocity, v_right);
 			input_movevalues[2] = dotproduct(velocity, v_up);
-			input_buttons = (flags & FL_JUMPRELEASED) ? 0 : INPUT_BUTTON2;
+			input_buttons = (flags & FL_JUMPRELEASED) ? 0 : INPUT_BUTTON2; /* this may not help that much... */
+			input_buttons |= (flags & FL_CROUCHING) ? INPUT_BUTTON8 : 0;
 			input_angles = v_angle;
 			input_impulse = 0;
 			input_timelength = clframetime;
@@ -231,7 +232,7 @@ NSClientPlayer::predraw(void)
 	}
 
 	/* if we're forcing third-person.. or this is not us - render this player */
-	if (autocvar_cl_thirdperson == TRUE || !localplayer) {
+	if (autocvar_pm_thirdPerson == TRUE || !localplayer) {
 		/* mark as not-mirror-only */
 		renderflags &= ~RF_EXTERNALMODEL;
 
@@ -295,7 +296,7 @@ void
 NSClientPlayer::OnRemoveEntity(void)
 {
 	if (p_model)
-		remove(p_model);
+		p_model.Destroy();
 
 	super::OnRemoveEntity();
 }
@@ -314,7 +315,7 @@ NSClientPlayer::UpdateAliveCam(void)
 		if (veh.UpdateView)
 			veh.UpdateView();
 	} else if (health) {
-		if (autocvar_cl_thirdperson == TRUE) {
+		if (autocvar_pm_thirdPerson == TRUE) {
 			makevectors(view_angles);
 			vector vStart = [pSeat->m_vecPredictedOrigin[0], pSeat->m_vecPredictedOrigin[1], pSeat->m_vecPredictedOrigin[2] + 16] + (v_right * 4);
 			vector vEnd = vStart + (v_forward * -48) + [0,0,16] + (v_right * 4);

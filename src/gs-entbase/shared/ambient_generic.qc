@@ -110,6 +110,7 @@ ambient_generic::ambient_generic(void)
 	m_strSpawnPath = __NULL__;
 	m_flSpawnVolume = 0.0f;
 	m_flSpawnPitch = 0.0f;
+	spawnflags |= MSF_MULTIPLAYER;
 }
 
 void
@@ -335,7 +336,7 @@ ambient_generic::SendEntity(entity ePEnt, float flChanged)
 	}
 	
 	if (flChanged & AMBIENT_PATH)
-		WriteString(MSG_ENTITY, m_strActivePath);
+		WriteFloat(MSG_ENTITY, getsoundindex(m_strActivePath, true));
 	if (flChanged & AMBIENT_VOLUME)
 		WriteFloat(MSG_ENTITY, m_flVolume);
 	if (flChanged & AMBIENT_RADIUS)
@@ -361,7 +362,7 @@ ambient_generic::ReceiveEntity(float isnew, float flChanged)
 	}
 	
 	if (flChanged & AMBIENT_PATH)
-		m_strActivePath = readstring();
+		m_strActivePath = soundnameforindex(readfloat());
 	if (flChanged & AMBIENT_VOLUME)
 		m_flVolume = readfloat();
 	if (flChanged & AMBIENT_RADIUS)

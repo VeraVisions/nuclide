@@ -287,13 +287,13 @@ Cmd_Parse(string sCMD)
 		pSeat->m_iInputUse = FALSE;
 		break;
 	case "+duck":
-		if (autocvar_cl_crouch_toggle == true)
+		if (autocvar_pm_crouchToggle == true)
 			pSeat->m_iInputDuck = 1 - pSeat->m_iInputDuck;
 		else
 			pSeat->m_iInputDuck = TRUE;
 		break;
 	case "-duck":
-		if (autocvar_cl_crouch_toggle == false)
+		if (autocvar_pm_crouchToggle == false)
 			pSeat->m_iInputDuck = FALSE;
 		break;
 	case "invnext":

@@ -201,6 +201,23 @@ float NSEntity::SendEntity( entity ePEnt, float flChanged ) {
 		return ( 0 );
 
 	WriteByte( MSG_ENTITY, ENT_ENTITY );
+
+	/* optimisation */
+	{
+		/* we'll never network these if we aren't moving. */
+		if (movetype == MOVETYPE_NONE) {
+			flChanged &= ~BASEFL_CHANGED_VELOCITY_X;
+			flChanged &= ~BASEFL_CHANGED_VELOCITY_Y;
+			flChanged &= ~BASEFL_CHANGED_VELOCITY_Z;
+			flChanged &= ~BASEFL_CHANGED_ANGULARVELOCITY;
+		}
+
+		if (m_bIsBrush == true) {
+			flChanged &= ~BASEFL_CHANGED_FLAGS;
+			flChanged &= ~BASEFL_CHANGED_SCALE;
+		}
+	}
+
 	/* broadcast how much data is expected to be read */
 	WriteFloat( MSG_ENTITY, flChanged );
 

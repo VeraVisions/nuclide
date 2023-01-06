@@ -47,6 +47,11 @@ Weapons_Reload(NSClientPlayer pl)
 }
 
 void
+Weapons_PreDraw(NSClientPlayer pl, bool thirdperson)
+{
+}
+
+void
 Weapons_SetGeomset(string foo)
 {
 

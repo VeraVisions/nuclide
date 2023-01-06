@@ -14,8 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-var bool autocvar_v_modellag = 0;
-var bool autocvar_v_muzzledlight = 1;
+var bool autocvar_cg_viewmodelLag = 0;
+var bool autocvar_cg_muzzleDLight = 1;
 
 void
 View_Init(void)
@@ -99,13 +99,13 @@ View_CalcViewport(int s, float fWinWidth, float fWinHeight)
 	}
 
 	/* generate usable hud variables */
-	if (autocvar_cl_hudaspect <= 0) {
+	if (autocvar_cg_hudAspect <= 0) {
 		g_hudmins = video_mins;
 		g_hudres = video_res;
 	} else {
 		g_hudmins = video_mins;
-		g_hudmins[0] += (video_res[0] / 2) - ((video_res[1] * autocvar_cl_hudaspect) / 2);
-		g_hudres[0] = video_res[1] * autocvar_cl_hudaspect;
+		g_hudmins[0] += (video_res[0] / 2) - ((video_res[1] * autocvar_cg_hudAspect) / 2);
+		g_hudres[0] = video_res[1] * autocvar_cg_hudAspect;
 		g_hudres[1] = video_res[1];
 	}
 #else
@@ -185,7 +185,7 @@ View_DrawViewModel(void)
 			return;
 	}
 
-	if (cvar("r_drawviewmodel") == 0 || autocvar_cl_thirdperson == TRUE) {
+	if (cvar("r_drawviewmodel") == 0 || autocvar_pm_thirdPerson == TRUE) {
 		return;
 	}
 
@@ -203,7 +203,7 @@ View_DrawViewModel(void)
 
 	makevectors(view_angles);
 
-	if (autocvar_v_modellag == 0)
+	if (autocvar_cg_viewmodelLag == 0)
 		m_eViewModel.angles = view_angles;
 	else {
 		float limit;
@@ -212,7 +212,7 @@ View_DrawViewModel(void)
 		pSeat->m_vecLag = v_forward;
 		makevectors(view_angles);
 
-		if (autocvar_v_modellag == 2) {
+		if (autocvar_cg_viewmodelLag == 2) {
 			float pitchfix = fabs(view_angles[0] / 180);
 			limit = dotproduct(pSeat->m_vecLag, v_forward) * (1.0 - pitchfix);
 			speed = (1.0 - limit) * clframetime;
@@ -233,7 +233,7 @@ View_DrawViewModel(void)
 	m_eViewModelL.colormap = m_eViewModel.colormap = pSeat->m_ePlayer.colormap;
 
 	/* now apply the scale hack */
-	m_eViewModelL.scale = m_eViewModel.scale = autocvar_r_viewmodelscale;
+	m_eViewModelL.scale = m_eViewModel.scale = autocvar_cg_viewmodelScale;
 
 	if (Client_IsSpectator(cl) || XR_Available(pl) == false) {
 		m_eViewModelL.origin = g_view.GetCameraOrigin();
@@ -255,7 +255,7 @@ View_DrawViewModel(void)
 	/* this is currently broken */
 #if 0
 	// Left-handed weapons
-	if (autocvar_v_lefthanded) {
+	if (autocvar_cg_viewmodelFlip) {
 		v_right *= -1;
 		m_eViewModel.renderflags |= RF_USEAXIS;
 		//m_eViewModel.forceshader = SHADER_CULLED;
@@ -275,7 +275,7 @@ View_DrawViewModel(void)
 			m_eMuzzleflash.angles = m_eViewModel.angles;
 			m_eMuzzleflash.angles[2] += (random() * 10) - 5;
 
-			if (autocvar_v_muzzledlight == true)
+			if (autocvar_cg_muzzleDLight == true)
 				dynamiclight_add(pSeat->m_vecPredictedOrigin + (v_forward * 32), 400, [1,0.45,0]);
 
 			setorigin(m_eMuzzleflash, m_eMuzzleflash.origin);
@@ -287,7 +287,7 @@ View_DrawViewModel(void)
 			m_eMuzzleflashL.angles = m_eViewModelL.angles;
 			m_eMuzzleflashL.angles[2] += (random() * 10) - 5;
 
-			if (autocvar_v_muzzledlight == true)
+			if (autocvar_cg_muzzleDLight == true)
 				dynamiclight_add(pSeat->m_vecPredictedOrigin + (v_forward * 32), 400, [1,0.45,0]);
 
 			setorigin(m_eMuzzleflashL, m_eMuzzleflashL.origin);

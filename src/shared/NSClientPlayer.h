@@ -151,7 +151,7 @@ private:
 	int sequence;
 
 	/* external weapon model */
-	entity p_model;
+	NSRenderableEntity p_model;
 	int p_hand_bone;
 	int p_model_bone;
 	float lastweapon;

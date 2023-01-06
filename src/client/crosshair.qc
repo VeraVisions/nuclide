@@ -49,7 +49,7 @@ Cross_DrawSubRGBA(string strMat, vector vecSize, vector vecSrcPos, vector vecSrc
 {
 	static vector cross_pos;
 
-	if (cvar("cl_thirdperson") < 1) {
+	if (cvar("pm_thirdPerson") < 1) {
 		cross_pos = g_hudmins + (g_hudres / 2) + [-(vecSize[0]/2),-(vecSize[1]/2)];
 		cross_pos[0] = rint(cross_pos[0]);
 		cross_pos[1] = rint(cross_pos[1]);

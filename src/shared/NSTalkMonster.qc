@@ -19,9 +19,9 @@ NSTalkMonster::NSTalkMonster(void)
 {
 #ifdef SERVER
 	m_eFollowing = world;
-	float m_flPitch = 1.0f;
-	float m_flNextSentence = 0.0f;
-	int m_iFlags = 0i;
+	m_flPitch = 1.0f;
+	m_flNextSentence = 0.0f;
+	m_iFlags = 0i;
 	m_eFollowingChain = __NULL__;
 	m_vecLastUserPos = [0,0,0];
 	m_flChangePath = 0.0f;

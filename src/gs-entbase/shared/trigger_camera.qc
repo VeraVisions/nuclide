@@ -18,7 +18,8 @@ enumflags
 {
 	OCAMFL_CHANGED_ORIGIN,
 	OCAMFL_CHANGED_ANGLES,
-	OCAMFL_CHANGED_WAIT
+	OCAMFL_CHANGED_WAIT,
+	OCAMFL_CHANGED_VIEWER
 };
 
 /*!QUAKED trigger_camera (1 0 0) (-8 -8 -8) (8 8 8)
@@ -43,12 +44,14 @@ This entity was introduced in Half-Life (1998).
 */
 class trigger_camera:NSPointTrigger
 {
+	entity m_eLooker;
 #ifdef CLIENT
 #else
 	float m_flWait;
 	string m_strAimAt;
 	string m_strMoveTo;
-	entity m_eLooker;
+	entity m_eLooker_net;
+	float m_flSpeed;
 #endif
 
 public:
@@ -82,6 +85,10 @@ trigger_camera::trigger_camera(void)
 void
 trigger_camera::ReceiveEntity(float flNew, float flFlags)
 {
+	float flWait;
+
+	print(sprintf("camera update %d %d %x\n", entnum, flNew, flFlags));
+
 	if (flFlags & OCAMFL_CHANGED_ORIGIN) {
 		origin[0] = readcoord();
 		origin[1] = readcoord();
@@ -95,14 +102,25 @@ trigger_camera::ReceiveEntity(float flNew, float flFlags)
 		angles[2] = readfloat();
 	}
 
+	if (flFlags & OCAMFL_CHANGED_VIEWER) {
+		m_eLooker = findfloat(world, ::entnum, readentitynum());
+	}
+
+	if (flFlags & OCAMFL_CHANGED_WAIT) {
+		flWait = readfloat();
+	}
+
 	int s = (float)getproperty(VF_ACTIVESEAT);
 	pSeat = &g_seats[s];
+
+	/* not us */
+	if (m_eLooker != pSeat->m_ePlayer)
+		return;
+
 	pSeat->m_vecCameraOrigin = origin;
 	pSeat->m_vecCameraAngle = angles;
 
 	if (flFlags & OCAMFL_CHANGED_WAIT) {
-		float flWait = readfloat();
-
 		if (flWait == -1)
 			pSeat->m_flCameraTime = -1;
 		else
@@ -136,23 +154,18 @@ trigger_camera::SpawnKey(string strKey, string strValue)
 void
 trigger_camera::Respawn(void)
 {
+	SetSize([0,0,0], [0,0,0]);
 	SetSolid(SOLID_NOT);
 	SetMovetype(MOVETYPE_PUSH);
 	SetModel(GetSpawnModel());
 	SetOrigin(GetSpawnOrigin());
 	m_eLooker = world;
+	pvsflags = PVSF_IGNOREPVS;
 }
 
 float
 trigger_camera::SendEntity(entity ePEnt, float flFlags)
 {
-	if (clienttype(ePEnt) != CLIENTTYPE_REAL)
-		return (0);
-
-	if (ePEnt != m_eLooker) {
-		return (0);
-	}
-
 	WriteByte(MSG_ENTITY, ENT_OLDCAMERA);
 	WriteFloat(MSG_ENTITY, flFlags);
 
@@ -166,6 +179,10 @@ trigger_camera::SendEntity(entity ePEnt, float flFlags)
 		WriteFloat(MSG_ENTITY, angles[0]);
 		WriteFloat(MSG_ENTITY, angles[1]);
 		WriteFloat(MSG_ENTITY, angles[2]);
+	}
+
+	if (flFlags & OCAMFL_CHANGED_VIEWER) {
+		WriteEntity(MSG_ENTITY, m_eLooker);
 	}
 
 	if (flFlags & OCAMFL_CHANGED_WAIT) {
@@ -189,9 +206,13 @@ trigger_camera::EvaluateEntity(void)
 	if (ATTR_CHANGED(angles)) {
 		SetSendFlags(OCAMFL_CHANGED_ANGLES);
 	}
+	if (ATTR_CHANGED(m_eLooker)) {
+		SetSendFlags(OCAMFL_CHANGED_VIEWER);
+	}
 
 	SAVE_STATE(origin)
 	SAVE_STATE(angles)
+	SAVE_STATE(m_eLooker)
 }
 
 void
@@ -210,9 +231,11 @@ trigger_camera::GoToTarget(void)
 	vecVelocity = (eNode.origin - origin);
 	flTravelTime = (vlen(vecVelocity) / eNode.m_flSpeed);
 
+	NSLog("trigger_camera (%s): Moving to path_corner %S within %f secs", targetname, target, flTravelTime);
+
 	if (!flTravelTime) {
 		print("^1trigger_camera::^3GoToTarget^7: Distance short, going next\n");
-		ScheduleThink(NextPath, 0.0f);
+		NextPath();
 		return;
 	}
 
@@ -229,6 +252,8 @@ trigger_camera::NextPath(void)
 	if (!eNode) {
 		return;
 	}
+
+	NSLog("trigger_camera (%s): Touched base with path_corner %S", targetname, target);
 
 	/* fire the path_corners' target */
 	eNode.Trigger(this, TRIG_TOGGLE);
@@ -260,6 +285,21 @@ trigger_camera::NextPath(void)
 void
 trigger_camera::Trigger(entity act, triggermode_t state)
 {
+	/* HACK: if we don't have a valid activator... pick the first player we can find */
+	if (!(act.flags & FL_CLIENT)) {
+		act = find(world, ::classname, "player");
+	}
+
+	print(sprintf("trigger_camera for %S is now %S\n", act.netname, targetname));
+
+	/* kill the other cams the player may be attached to */
+	for (trigger_camera cam = world; (cam = (trigger_camera)find(cam, ::classname, "trigger_camera"));) {
+		if (cam.m_eLooker == act) {
+			cam.m_eLooker = __NULL__;
+			cam.SetSendFlags(-1);
+		}
+	}
+
 	m_eLooker = act;
 	NSLog("Triggering it on %s\n", act.netname);
 	SetOrigin(GetSpawnOrigin());
@@ -268,6 +308,6 @@ trigger_camera::Trigger(entity act, triggermode_t state)
 	SetTriggerTarget(m_strMoveTo);
 	NextPath();
 	GoToTarget();
-	SetSendFlags(OCAMFL_CHANGED_ORIGIN | OCAMFL_CHANGED_ANGLES | OCAMFL_CHANGED_WAIT);
+	SetSendFlags(-1);
 }
 #endif

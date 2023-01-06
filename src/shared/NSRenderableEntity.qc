@@ -128,6 +128,29 @@ NSRenderableEntity::SendEntity(entity ePEnt, float flChanged)
 
 	WriteByte(MSG_ENTITY, ENT_ENTITYRENDERABLE);
 
+	/* optimisation */
+	{
+		/* we'll never network these if we aren't moving. */
+		if (movetype == MOVETYPE_NONE) {
+			flChanged &= ~RDENT_CHANGED_VELOCITY;
+			flChanged &= ~RDENT_CHANGED_ANGULARVELOCITY;
+		}
+
+		/* no rendermode means no extra fields */
+		if (m_iRenderMode == RM_NORMAL) {
+			flChanged &= ~RDENT_CHANGED_RENDERMODE;
+			flChanged &= ~RDENT_CHANGED_RENDERCOLOR;
+			flChanged &= ~RDENT_CHANGED_RENDERAMT;
+		}
+
+		if (m_bIsBrush == true) {
+			flChanged &= ~RDENT_CHANGED_FLAGS;
+			flChanged &= ~RDENT_CHANGED_BODY;
+			flChanged &= ~RDENT_CHANGED_SCALE;
+			flChanged &= ~RDENT_CHANGED_CONTROLLER;
+		}
+	}
+
 	/* broadcast how much data is expected to be read */
 	WriteFloat(MSG_ENTITY, flChanged);
 

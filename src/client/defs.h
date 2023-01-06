@@ -92,20 +92,18 @@ var float g_shellchromeshader;
 var float g_shellchromeshader_cull;
 
 /* clientside cvars */
-var float autocvar_zoom_sensitivity = 1.0f;
-var int autocvar_cl_smoothstairs = TRUE;
-var int autocvar_cl_thirdperson = FALSE;
-var int autocvar_v_lefthanded = FALSE;
-var string autocvar_cl_logofile = "lambda";
-var vector autocvar_cl_logocolor = [255,0,0];
+var float autocvar_in_zoomSensitivity = 1.0f;
+var int autocvar_pm_stairSmoothing = TRUE;
+var int autocvar_pm_thirdPerson = FALSE;
+var int autocvar_cg_viewmodelFlip = FALSE;
 var vector autocvar_con_color = [255,150,0];
 var vector autocvar_vgui_color = [255,170,0];
-var vector autocvar_v_gunofs = [0,0,0];
-var int autocvar_r_viewmodelpass = 0;
-var float autocvar_r_viewmodelfov = 90.0f;
-var float autocvar_r_viewmodelscale = 1.0f;
-var float autocvar_cl_hudaspect = 0.0f;
-var bool autocvar_cl_crouch_toggle = false;
+var vector autocvar_cg_viewmodelOffset = [0,0,0];
+var int autocvar_cg_viewmodelPass = 0;
+var float autocvar_cg_viewmodelFov = 90.0f;
+var float autocvar_cg_viewmodelScale = 1.0f;
+var float autocvar_cg_hudAspect = 0.0f;
+var bool autocvar_pm_crouchToggle = false;
 
 /* particle descriptors */
 var float PART_DUSTMOTE;
