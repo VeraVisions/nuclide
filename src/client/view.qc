@@ -276,7 +276,7 @@ View_DrawViewModel(void)
 			m_eMuzzleflash.angles[2] += (random() * 10) - 5;
 
 			if (autocvar_cg_muzzleDLight == true)
-				dynamiclight_add(pSeat->m_vecPredictedOrigin + (v_forward * 32), 400, [1,0.45,0]);
+				dynamiclight_add(pSeat->m_vecPredictedOrigin + (v_forward * 32), 256, [1,0.45,0]);
 
 			setorigin(m_eMuzzleflash, m_eMuzzleflash.origin);
 			addentity(m_eMuzzleflash);
@@ -288,7 +288,7 @@ View_DrawViewModel(void)
 			m_eMuzzleflashL.angles[2] += (random() * 10) - 5;
 
 			if (autocvar_cg_muzzleDLight == true)
-				dynamiclight_add(pSeat->m_vecPredictedOrigin + (v_forward * 32), 400, [1,0.45,0]);
+				dynamiclight_add(pSeat->m_vecPredictedOrigin + (v_forward * 32), 256, [1,0.45,0]);
 
 			setorigin(m_eMuzzleflashL, m_eMuzzleflashL.origin);
 			addentity(m_eMuzzleflashL);

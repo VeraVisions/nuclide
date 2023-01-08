@@ -1,4 +1,6 @@
+#ifndef MAX_WEAPONS
 #define MAX_WEAPONS 32
+#endif
 
 /** This class represents inventory items and weapons that you can directly interact with.
 
@@ -90,8 +92,17 @@ public:
 	virtual void Reload(void);
 	/** Called whenever the no weapon command is called by a client. */
 	virtual void Release(void);
+
+#ifdef CLIENT
 	/** Called before 3D world rendering is performed. */
 	virtual void ClientPredraw(void);
 	/** Called after 3D world rendering is performed. */
 	virtual void ClientPostdraw(void);
+
+	virtual void ReceiveEntity(float, float);
+#endif
+
+#ifdef SERVER
+	virtual float SendEntity(entity, float);
+#endif
 };

@@ -15,6 +15,7 @@ void Weapons_Release(NSClientPlayer);
 void Weapons_Primary(NSClientPlayer);
 void Weapons_Secondary(NSClientPlayer);
 void Weapons_Reload(NSClientPlayer);
+void Weapons_PreDraw(NSClientPlayer, bool);
 void Weapons_Init(void);
 string Weapons_GetWorldmodel(int);
 weapontype_t Weapons_GetType(NSClientPlayer, int);

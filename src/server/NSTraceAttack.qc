@@ -345,3 +345,27 @@ TraceAttack_SetPenetrationPower(int power)
 	g_traceAttack.SetPenetrationMaxThickness((8 * power) * g_traceAttack.m_flRangeModifier);
 }
 #endif
+
+/* generic function that applies damage, pain and suffering */
+void
+Damage_Apply(entity t, entity c, float dmg, int w, damageType_t type)
+{
+	CGameRules rules = (CGameRules)g_grMode;
+	rules.DamageApply(t, c, dmg, w, type);
+}
+
+/* physical check of whether or not we can trace important parts of an ent */
+float
+Damage_CheckTrace(entity t, vector vecHitPos)
+{
+	CGameRules rules = (CGameRules)g_grMode;
+	return rules.DamageCheckTrace(t, vecHitPos);
+}
+
+/* even more pain and suffering, mostly used for explosives */
+void
+Damage_Radius(vector org, entity attacker, float dmg, float r, int check, int w)
+{
+	CGameRules rules = (CGameRules)g_grMode;
+	rules.DamageRadius(org, attacker, dmg, r, check, w);
+}

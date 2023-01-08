@@ -65,6 +65,8 @@ private:
 	int m_iPropData;
 	string m_strPropData;
 
+	float m_flDeathTime;
+
 	nonvirtual void _SurfaceDataFinish(void);
 	nonvirtual void _PropDataFinish(void);
 #endif
@@ -133,6 +135,8 @@ public:
 	nonvirtual void SetSurfaceData(string);
 	/** Assigns the prop data of a given description onto this entity. */
 	nonvirtual void SetPropData(string);
+	/** Returns how many seconds have passed since we died. Will return -1 if not applicable. */
+	nonvirtual float TimeSinceDeath(void);
 #endif
 
 #ifdef CLIENT

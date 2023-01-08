@@ -24,49 +24,70 @@
 #include "NSView.h"
 #include "crosshair.h"
 
+#define PRINTFLAG(x) if (cvar("net_showUpdates")) \
+	print(sprintf("%f %s read update %s\n", time, classname, #x));
+
 #define READENTITY_BYTE(field, changedflag) {\
-	if (flChanged & changedflag)\
+	if (flChanged & changedflag) {\
 		field = readbyte();\
+		PRINTFLAG(changedflag); \
+	}\
 }
 
 #define READENTITY_SHORT(field, changedflag) {\
-	if (flChanged & changedflag)\
+	if (flChanged & changedflag) {\
 		field = readshort();\
+		PRINTFLAG(changedflag); \
+	}\
 }
 
 #define READENTITY_FLOAT(field, changedflag) {\
-	if (flChanged & changedflag)\
+	if (flChanged & changedflag) {\
 		field = readfloat();\
+		PRINTFLAG(changedflag); \
+	}\
 }
 
 #define READENTITY_INT(field, changedflag) {\
-	if (flChanged & changedflag)\
+	if (flChanged & changedflag) {\
 		field = readint();\
+		PRINTFLAG(changedflag); \
+	}\
 }
 
 #define READENTITY_STRING(field, changedflag) {\
-	if (flChanged & changedflag)\
+	if (flChanged & changedflag) {\
 		field = readstring();\
+		PRINTFLAG(changedflag); \
+	}\
 }
 
 #define READENTITY_COORD(field, changedflag) {\
-	if (flChanged & changedflag)\
+	if (flChanged & changedflag) {\
 		field = readcoord();\
+		PRINTFLAG(changedflag); \
+	}\
 }
 
 #define READENTITY_ANGLE(field, changedflag) {\
-	if (flChanged & changedflag)\
+	if (flChanged & changedflag) {\
 		field = readshort() / (32767 / 360);\
+		PRINTFLAG(changedflag); \
+	}\
 }
 
 #define READENTITY_ENTITY(field, changedflag) {\
-	if (flChanged & changedflag)\
+	if (flChanged & changedflag) {\
 		field = findfloat(world, ::entnum, readentitynum());\
+		PRINTFLAG(changedflag); \
+	}\
 }
 
 #define READENTITY_ENTNUM(field, changedflag) {\
-	if (flChanged & changedflag)\
+	if (flChanged & changedflag) {\
 		field = readentitynum();\
+		PRINTFLAG(changedflag); \
+	}\
 }
 
 /* undocumented printcall types */

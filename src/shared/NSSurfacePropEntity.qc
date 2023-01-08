@@ -582,6 +582,8 @@ NSSurfacePropEntity::Pain(void)
 void
 NSSurfacePropEntity::Death(void)
 {
+	m_flDeathTime = time;
+
 	print(sprintf("%S", m_strOnBreak));
 	print("\n");
 
@@ -645,7 +647,19 @@ NSSurfacePropEntity::_PropDataFinish(void)
 	else
 		m_iPropData = -1;
 }
-#else
+
+float
+NSSurfacePropEntity::TimeSinceDeath(void)
+{
+	if (IsAlive())
+		return -1;
+
+	return time - m_flDeathTime;
+}
+
+#endif
+
+#ifdef CLIENT
 void
 NSSurfacePropEntity::RenderFire(void)
 {

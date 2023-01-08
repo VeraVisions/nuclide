@@ -35,16 +35,16 @@ PMoveCustom_UpdateVar(string info, string cv)
 void
 PMoveCustom_StartFrame(void)
 {
-	PMoveCustom_UpdateVar("phy_stepheight", "sv_stepheight");
-	PMoveCustom_UpdateVar("phy_airstepheight", "sv_airstepheight");
-	PMoveCustom_UpdateVar("phy_friction", "sv_friction");
-	PMoveCustom_UpdateVar("phy_edgefriction", "sv_edgefriction");
-	PMoveCustom_UpdateVar("phy_stopspeed", "sv_stopspeed");
-	PMoveCustom_UpdateVar("phy_gravity", "sv_gravity");
-	PMoveCustom_UpdateVar("phy_airaccelerate", "sv_airaccelerate");
-	PMoveCustom_UpdateVar("phy_wateraccelerate", "sv_wateraccelerate");
-	PMoveCustom_UpdateVar("phy_accelerate", "sv_accelerate");
-	PMoveCustom_UpdateVar("phy_maxspeed", "sv_maxspeed");
+	PMoveCustom_UpdateVar("phy_stepheight", "pm_stepsize");
+	PMoveCustom_UpdateVar("phy_airstepheight", "pm_airstepsize");
+	PMoveCustom_UpdateVar("phy_friction", "pm_friction");
+	PMoveCustom_UpdateVar("phy_edgefriction", "pm_edgefriction");
+	PMoveCustom_UpdateVar("phy_stopspeed", "pm_stopspeed");
+	PMoveCustom_UpdateVar("phy_gravity", "g_gravity");
+	PMoveCustom_UpdateVar("phy_airaccelerate", "pm_airaccelerate");
+	PMoveCustom_UpdateVar("phy_wateraccelerate", "pm_wateraccelerate");
+	PMoveCustom_UpdateVar("phy_accelerate", "pm_accelerate");
+	PMoveCustom_UpdateVar("phy_maxspeed", "pm_maxspeed");
 }
 #endif
 

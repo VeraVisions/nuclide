@@ -775,6 +775,7 @@ NSClientPlayer::Death(void)
 	forceinfokey(this, "*deaths", ftos(deaths));
 	forceinfokey(this, "*dead", "1");
 	forceinfokey(this, "*spectator", "0");
+	m_flDeathTime = time;
 }
 
 /*

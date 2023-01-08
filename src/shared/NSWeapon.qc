@@ -40,6 +40,7 @@ NSWeapon::Release(void)
 {
 }
 
+#ifdef CLIENT
 void
 NSWeapon::ClientPredraw(void)
 {
@@ -49,6 +50,29 @@ void
 NSWeapon::ClientPostdraw(void)
 {
 }
+
+void
+NSWeapon::ReceiveEntity(float new, float flChanged)
+{
+
+}
+#endif
+
+#ifdef SERVER
+float
+NSWeapon::SendEntity(entity ePEnt, float flChanged)
+{
+	/* if we have a model, assume we're a pickup */
+	if (modelindex) {
+		return super::SendEntity(ePEnt, flChanged);
+	}
+
+	/* don't network to anyone but the owner */
+	if (ePEnt != owner) {
+		return (false);
+	}
+}
+#endif
 
 /* get */
 string

@@ -114,31 +114,31 @@
 #endif
 
 /* if they're undefined by a config, they'll be set by the game/mod default */
-var float autocvar_sv_stepheight = PMOVE_STEPHEIGHT;
-var float autocvar_sv_airstepheight = PMOVE_AIRSTEPHEIGHT;
-var float autocvar_sv_friction = PMOVE_FRICTION;
-var float autocvar_sv_edgefriction = PMOVE_EDGEFRICTION;
-var float autocvar_sv_stopspeed = PMOVE_STOPSPEED;
-var float autocvar_sv_gravity = PMOVE_GRAVITY;
-var float autocvar_sv_airaccelerate = PMOVE_AIRACCELERATE;
-var float autocvar_sv_wateraccelerate = PMOVE_WATERACCELERATE;
-var float autocvar_sv_accelerate = PMOVE_ACCELERATE;
-var float autocvar_sv_maxspeed = PMOVE_MAXSPEED;
+var float autocvar_pm_stepsize = PMOVE_STEPHEIGHT;
+var float autocvar_pm_airstepsize = PMOVE_AIRSTEPHEIGHT;
+var float autocvar_pm_friction = PMOVE_FRICTION;
+var float autocvar_pm_edgefriction = PMOVE_EDGEFRICTION;
+var float autocvar_pm_stopspeed = PMOVE_STOPSPEED;
+var float autocvar_pm_airaccelerate = PMOVE_AIRACCELERATE;
+var float autocvar_pm_wateraccelerate = PMOVE_WATERACCELERATE;
+var float autocvar_pm_accelerate = PMOVE_ACCELERATE;
+var float autocvar_pm_maxspeed = PMOVE_MAXSPEED;
+var float autocvar_g_gravity = PMOVE_GRAVITY;
 
 void
 PMove_Init(void)
 {
 	#ifdef SERVER
-	cvar_set("sv_stepheight", ftos(PMOVE_STEPHEIGHT));
-	cvar_set("sv_airstepheight", ftos(PMOVE_AIRSTEPHEIGHT));
-	cvar_set("sv_friction", ftos(PMOVE_FRICTION));
-	cvar_set("sv_edgefriction", ftos(PMOVE_EDGEFRICTION));
-	cvar_set("sv_stopspeed", ftos(PMOVE_STOPSPEED));
-	cvar_set("sv_gravity", ftos(PMOVE_GRAVITY));
-	cvar_set("sv_airaccelerate", ftos(PMOVE_AIRACCELERATE));
-	cvar_set("sv_wateraccelerate", ftos(PMOVE_WATERACCELERATE));
-	cvar_set("sv_accelerate", ftos(PMOVE_ACCELERATE));
-	cvar_set("sv_maxspeed", ftos(PMOVE_MAXSPEED));
+	cvar_set("pm_stepsize", ftos(PMOVE_STEPHEIGHT));
+	cvar_set("pm_airstepsize", ftos(PMOVE_AIRSTEPHEIGHT));
+	cvar_set("pm_friction", ftos(PMOVE_FRICTION));
+	cvar_set("pm_edgefriction", ftos(PMOVE_EDGEFRICTION));
+	cvar_set("pm_stopspeed", ftos(PMOVE_STOPSPEED));
+	cvar_set("pm_airaccelerate", ftos(PMOVE_AIRACCELERATE));
+	cvar_set("pm_wateraccelerate", ftos(PMOVE_WATERACCELERATE));
+	cvar_set("pm_accelerate", ftos(PMOVE_ACCELERATE));
+	cvar_set("pm_maxspeed", ftos(PMOVE_MAXSPEED));
+	cvar_set("g_gravity", ftos(PMOVE_GRAVITY)); /* global */
 	#endif
 
 	#ifdef CUSTOMPLAYERPHYSICS
