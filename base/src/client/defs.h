@@ -19,17 +19,5 @@ vector g_hudres;
 
 struct
 {
-	/* hud.c */
-	int m_iHealthOld;
-	float m_flHealthAlpha;
-	int m_iArmorOld;
-	float m_flArmorAlpha;
-	int m_iAmmo1Old;
-	float m_flAmmo1Alpha;
-	int m_iAmmo2Old;
-	float m_flAmmo2Alpha;
-	int m_iAmmo3Old;
-	float m_flAmmo3Alpha;
-	int m_iPickupWeapon;
-	float m_flPickupAlpha;
+	float temp;
 } g_seatslocal[4], *pSeatLocal;

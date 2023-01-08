@@ -30,9 +30,6 @@ Game_Input(player pl)
 	else
 		pl.InputUse_Up();
 
-	if (pl.impulse == 100)
-		Flashlight_Toggle();
-
 	pl.impulse = 0;
 #endif
 

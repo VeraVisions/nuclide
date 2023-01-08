@@ -13,27 +13,3 @@
  * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
-
-/* generic function that applies damage, pain and suffering */
-void
-Damage_Apply(entity t, entity c, float dmg, int w, damageType_t type)
-{
-	CGameRules rules = (CGameRules)g_grMode;
-	rules.DamageApply(t, c, dmg, w, type);
-}
-
-/* physical check of whether or not we can trace important parts of an ent */
-float
-Damage_CheckTrace(entity t, vector vecHitPos)
-{
-	CGameRules rules = (CGameRules)g_grMode;
-	return rules.DamageCheckTrace(t, vecHitPos);
-}
-
-/* even more pain and suffering, mostly used for explosives */
-void
-Damage_Radius(vector org, entity attacker, float dmg, float r, int check, int w)
-{
-	CGameRules rules = (CGameRules)g_grMode;
-	rules.DamageRadius(org, attacker, dmg, r, check, w);
-}

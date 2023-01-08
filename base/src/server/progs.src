@@ -23,18 +23,10 @@ defs.h
 ../../../src/botlib/include.src
 
 /* mod specific functions */
-player.qc
-spectator.qc
 gamerules.qc
 gamerules_singleplayer.qc
 gamerules_multiplayer.qc
-client.qc
-server.qc
-damage.qc
-items.qc
-flashlight.qc
 modelevent.qc
-spawn.qc
 
 /* global server/shared code */
 ../../../src/server/include.src

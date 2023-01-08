@@ -15,6 +15,3 @@
 */
 
 #include "gamerules.h"
-#include "items.h"
-#include "flashlight.h"
-#include "player.h"

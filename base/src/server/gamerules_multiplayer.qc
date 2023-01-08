@@ -53,7 +53,6 @@ MultiplayerRules::PlayerDeath(NSClientPlayer pl)
 	pl.SetSolid(SOLID_NOT);
 	pl.SetModelindex(0);
 	pl.takedamage = DAMAGE_NO;
-	pl.gflags &= ~GF_FLASHLIGHT;
 	pl.armor = pl.activeweapon = pl.g_items = 0;
 
 	pl.think = PutClientInServer;
@@ -112,4 +111,10 @@ MultiplayerRules::ConsoleCommand(NSClientPlayer pp, string cmd)
 	}
 
 	return (1);
+}
+
+void
+Game_InitRules(void)
+{
+	g_grMode = spawn(MultiplayerRules);
 }

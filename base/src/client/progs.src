@@ -26,17 +26,16 @@ defs.h
 ../shared/include.src
 ../../../base/src/client/draw.qc
 init.qc
-player.qc
 entities.qc
+camera.qc
 cmds.qc
 game_event.qc
-camera.qc
+modelevent.qc
 viewmodel.qc
 view.qc
 hud.qc
 hud_weaponselect.qc
 scoreboard.qc
-modelevent.qc
 
 /* global client/shared code */
 ../../../src/client/include.src

@@ -84,7 +84,7 @@ Viewmodel_CalcBob(void)
 	pViewBob->m_flBob2 = bound(-7, flBob, 4);
 
 	/* make sure it's adjusted for scale */
-	pViewBob->m_flBob *= autocvar_r_cg_viewmodelScale;
+	pViewBob->m_flBob *= autocvar_cg_viewmodelScale;
 }
 
 void

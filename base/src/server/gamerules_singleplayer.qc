@@ -20,7 +20,6 @@ SingleplayerRules::PlayerDeath(NSClientPlayer pl)
 	pl.movetype = MOVETYPE_NONE;
 	pl.solid = SOLID_NOT;
 	pl.takedamage = DAMAGE_NO;
-	pl.gflags &= ~GF_FLASHLIGHT;
 	pl.armor = pl.activeweapon = pl.g_items = pl.weapon = 0;
 	pl.health = 0;
 

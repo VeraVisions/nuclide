@@ -49,13 +49,13 @@ FX_Corpse_Spawn(player pl, float anim)
 {
 	NSRenderableEntity body_next = (NSRenderableEntity)FX_Corpse_Next();
 	setorigin(body_next, pl.origin + [0,0,32]);
+	body_next.SetMovetype(MOVETYPE_TOSS);
+	body_next.SetSolid(SOLID_CORPSE);
 	setmodel(body_next, pl.model);
 	setsize(body_next, VEC_HULL_MIN, VEC_HULL_MAX);
-	body_next.SetMovetype(MOVETYPE_TOSS);
-	body_next.SetSolid(SOLID_TRIGGER);
 	body_next.SetModelindex(pl.modelindex);
 	body_next.SetAngles(pl.angles);
-	body_next.velocity = (pl.velocity);
+	body_next.velocity = (pl.velocity) + [0,0,120];
 	body_next.colormap = pl.colormap;
 	body_next.SetFrame(anim);
 	return (entity)body_next;
