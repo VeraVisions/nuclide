@@ -1,6 +1,5 @@
  #includelist
 player.qc
-input.qc
 fx_explosion.qc
 fx_spark.qc
 fx_blood.qc

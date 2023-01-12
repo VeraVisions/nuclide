@@ -144,8 +144,54 @@ NSClientPlayer::ProcessInput(void)
 			veh.PlayerInput();
 	}
 
-	/* weapon/item logic of what the player controls */
-	Game_Input((player)this);
+#ifdef SERVER
+	CGameRules rules = (CGameRules)g_grMode;
+
+	if (rules.m_iIntermission) {
+		rules.IntermissionEnd();
+		return;
+	} else if (IsAlive() == false) {
+		if (input_buttons & INPUT_BUTTON0)
+			rules.PlayerRequestRespawn(this);
+	}
+
+	/* handle use button presses */
+	if (input_buttons & INPUT_BUTTON5)
+		InputUse_Down(); 
+	else
+		InputUse_Up();
+
+	/* handle impulse commands */
+	rules.ImpulseCommand(this, impulse);
+	impulse = 0;
+#endif
+
+	NSVehicle veh = (NSVehicle)vehicle;
+	bool canfire = true;
+
+	/* can't fire in some vehicles */
+	if (veh)
+		if (veh.PreventPlayerFire() == true)
+			canfire = false;
+
+	/* can't fire when dead, sorry. */
+	if (health <= 0)
+		canfire = false;
+	
+	if (canfire == false) {
+		Weapons_Release(this);
+		return;
+	}
+
+	/* weapon system */
+	if (input_buttons & INPUT_BUTTON0)
+		Weapons_Primary(this);
+	else if (input_buttons & INPUT_BUTTON4)
+		Weapons_Reload(this);
+	else if (input_buttons & INPUT_BUTTON3)
+		Weapons_Secondary(this);
+	else
+		Weapons_Release(this);
 }
 
 /* this is where it gets mod specific really fast,
