@@ -46,6 +46,8 @@ public:
 	virtual bool ConsoleCommand(NSClientPlayer,string);
 	/** Overridable: Called when a client issues a client command. */
 	virtual bool ClientCommand(NSClient,string);
+	/** Overridable: Called when a client issues an impulse command. */
+	virtual bool ImpulseCommand(NSClient, float);
 	
 	/* client */
 	/** Overridable: Called when a NSClientPlayer joins the server. */
@@ -66,6 +68,12 @@ public:
 	virtual void PlayerPain(NSClientPlayer);
 	/** Overridable: Called to check if a NSClientPlayer can attack. */
 	virtual bool PlayerCanAttack(NSClientPlayer);
+
+	/** Overridable: called when a NSClientPlayer requests a respawn.
+	In a multiplayer game, it'll put you back into the game as a player.
+	In a singleplayer game, it might load the most recent save.
+	@return True/false depending on the respawn succeeded. */
+	virtual bool PlayerRequestRespawn(NSClientPlayer);
 	
 	/* level transitions */
 	/** Overridable: Called to set up new level parms for any NSClientPlayer. */

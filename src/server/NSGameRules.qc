@@ -77,6 +77,11 @@ NSGameRules::ClientCommand(NSClient pl, string cmd)
 {
 	return (false);
 }
+bool
+NSGameRules::ImpulseCommand(NSClient pl, float num)
+{
+	return (false);
+}
 
 /* client */
 void
@@ -474,6 +479,12 @@ bool
 NSGameRules::PlayerCanAttack(NSClientPlayer bp)
 {
 	return true;
+}
+
+bool
+NSGameRules::PlayerRequestRespawn(NSClientPlayer bp)
+{
+	return false;
 }
 
 void
