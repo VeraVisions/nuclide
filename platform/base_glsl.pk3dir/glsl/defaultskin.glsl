@@ -64,6 +64,24 @@ varying vec3 light;
 	}
 #endif
 
+	vec3 VectorIRotate( vec3 inPos, mat3x4 xform )
+	{
+		vec3 outPos;
+		outPos.x = inPos.x*xform[0][0] + inPos.y*xform[1][0] + inPos.z*xform[2][0];
+		outPos.y = inPos.x*xform[0][1] + inPos.y*xform[1][1] + inPos.z*xform[2][1];
+		outPos.z = inPos.x*xform[0][2] + inPos.y*xform[1][2] + inPos.z*xform[2][2];
+		return outPos;
+	}
+
+	vec3 VectorTransform( vec3 inPos, mat3x4 xform )
+	{
+		vec3 outPos;
+		outPos.x = dot( inPos, xform[0].xyz ) + xform[0][3];
+		outPos.y = dot( inPos, xform[1].xyz ) + xform[1][3];
+		outPos.z = dot( inPos, xform[2].xyz ) + xform[2][3];
+		return outPos;
+	}
+
 	void main ()
 	{
 		vec3 n, s, t, w;
@@ -93,6 +111,8 @@ varying vec3 light;
 		}
 
 #ifdef CHROME
+#ifdef SKELETAL
+	#if 0
 		vec3 rorg = rlv(vec3(0,0,0), w, e_light_dir);
 		vec3 viewc = normalize(rorg - w);
 		float d = dot(n, viewc);
@@ -102,6 +122,33 @@ varying vec3 light;
 		reflected.z = n.z * 2.0 * d - viewc.z;
 		tex_c.x = 0.5 + reflected.y * 0.5;
 		tex_c.y = 0.5 - reflected.z * 0.5;
+	#else
+		/* code contributed by Slartibarty */
+		vec3 tmp = normalize(e_eyepos);
+
+		int boneid = int(v_bone.r);
+		tmp.x += m_bones_mat3x4[boneid][0][3];
+		tmp.y += m_bones_mat3x4[boneid][1][3];
+		tmp.z += m_bones_mat3x4[boneid][2][3];
+
+		tmp = normalize( tmp );
+		vec3 chromeUp = normalize( cross( tmp, vec3( m_modelview[0][0], m_modelview[1][0], m_modelview[2][0] ) ) );
+		vec3 chromeRight = normalize( cross( chromeUp, tmp ) );
+
+		chromeUp = VectorIRotate( chromeUp, m_bones_mat3x4[boneid] );
+		chromeRight = VectorIRotate( chromeRight, m_bones_mat3x4[boneid] );
+
+		float na;
+
+		// calc s coord
+		na = dot( v_normal, chromeRight );
+		tex_c.x = ( na + 1.0 ) * 0.5;
+
+		// calc t coord
+		na = dot( v_normal, chromeUp );
+		tex_c.y = ( na + 1.0 ) * 0.5;
+	#endif
+#endif
 #endif
 	
 #ifdef REFLECTCUBE
