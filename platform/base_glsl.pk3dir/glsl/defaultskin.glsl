@@ -111,8 +111,7 @@ varying vec3 light;
 		}
 
 #ifdef CHROME
-#ifdef SKELETAL
-	#if 0
+	#ifndef SKELETAL
 		vec3 rorg = rlv(vec3(0,0,0), w, e_light_dir);
 		vec3 viewc = normalize(rorg - w);
 		float d = dot(n, viewc);
@@ -124,7 +123,7 @@ varying vec3 light;
 		tex_c.y = 0.5 - reflected.z * 0.5;
 	#else
 		/* code contributed by Slartibarty */
-		vec3 tmp = normalize(e_eyepos);
+		vec3 tmp = e_eyepos * -1.0f;
 
 		int boneid = int(v_bone.r);
 		tmp.x += m_bones_mat3x4[boneid][0][3];
@@ -148,7 +147,6 @@ varying vec3 light;
 		na = dot( v_normal, chromeUp );
 		tex_c.y = ( na + 1.0 ) * 0.5;
 	#endif
-#endif
 #endif
 	
 #ifdef REFLECTCUBE
