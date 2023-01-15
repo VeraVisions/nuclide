@@ -71,7 +71,7 @@ The results will be identical.
 #### FTE
 
 ```
-apt-get install subversion libgl-dev gnutls-dev
+apt-get install libgl-dev gnutls-dev
 ```
 
 #### SDL2
@@ -86,13 +86,13 @@ apt-get install libsdl2-dev
 apt-get install libx11-dev libxcursor-dev libxrender-dev
 ```
 
-#### ODE Plugin
+#### Plugin: ODE
 
 ```
 apt-get install autoconf automake libtool
 ```
 
-#### FFMPEG Plugin
+#### Plugin: FFMPEG
 
 ```
 apt-get install libavformat-dev libswscale-dev
@@ -100,16 +100,10 @@ apt-get install libavformat-dev libswscale-dev
 
 ### OpenBSD
 
-#### Nuclide
-
-```
-pkg_add git
-```
-
 #### FTE
 
 ```
-pkg_add subversion
+pkg_add git
 ```
 
 #### SDL2
@@ -118,10 +112,53 @@ pkg_add subversion
 pkg_add sdl2
 ```
 
-#### FFMPEG Plugin
+#### Plugin: FFMPEG
 
 ```
 pkg_add ffmpeg
+```
+
+### Arch Linux
+
+#### FTE
+
+```
+pacman -S make gcc Xorg git
+```
+
+#### Plugin: ODE
+
+```
+pacman -S zip automake autoconf
+```
+
+#### Plugin: FFMPEG
+
+```
+pacman -S ffmpeg4.4
+```
+
+*Note:* You will have to manually build this plugin due to FFMPEG breaking ABI between releases and Arch's rolling release nature. 
+
+1) Edit build.cfg and change `FFMPEG=YES` to `NO`
+2) Browse to src/engine/engine
+3) Run this command: 
+
+`make plugins-rel NATIVE_PLUGINS="ffmpeg" AV_BASE=/usr/include/ffmpeg4.4/ AV_LDFLAGS="-l:libavcodec.so.58 -l:libavformat.so.58 -l:libavutil.so.56 -l:libswscale.so.5"`
+
+4) Copy over `fteplug_ffmpeg.so` to the `bin` folder where nuclide and the build scripts are.
+
+
+#### SDL2
+
+```
+pacman -S sdl2
+```
+
+#### WorldSpawn
+
+```
+pacman -S pkgconf gtk2 gtkglext
 ```
 
 ### OpenSUSE
@@ -135,7 +172,7 @@ zypper in git
 #### FTE
 
 ```
-zypper in subversion make gcc gcc-c++ mesa-libGL-devel libgnutls-devel
+zypper in make gcc gcc-c++ mesa-libGL-devel libgnutls-devel
 ```
 
 #### SDL2
@@ -150,7 +187,7 @@ zypper in libSDL2-devel
 zypper in libX11-devel libXcursor-devel libXrandr-devel
 ```
 
-#### FFMPEG Plugin
+#### Plugin: FFMPEG
 
 ```
 zypper in ffmpeg-4-libavformat-devel ffmpeg-4-libswscale-devel
