@@ -25,7 +25,8 @@ private:
 	float m_flProjectileFramerate;
 	virtual void m_pImpact(entity, entity) = 0;
 
-	virtual void _AnimateThink(void);
+	nonvirtual void _AnimateThink(void);
+	nonvirtual void _AnimateThinkDead(void);
 
 public:
 	void NSProjectile(void);
@@ -39,4 +40,6 @@ public:
 	virtual void ProjectileTouch(void);
 	/** When called, will animated between two frame positions at a specified framerate. */
 	virtual void Animate(int, int, float);
+	virtual void AnimateOnce(int, int, float);
+	virtual void Spawned(void);
 };

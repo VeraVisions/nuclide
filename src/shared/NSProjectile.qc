@@ -20,9 +20,13 @@ NSProjectile::NSProjectile(void)
 	m_iProjectileAnimEnd = 0i;
 	m_iProjectileAnimStart = 0i;
 	m_flProjectileFramerate = 0.1f; /* default to 10 hz */
-	touch = ProjectileTouch;
+}
 
-	SetMovetype(MOVETYPE_FLY);
+void
+NSProjectile::Spawned(void)
+{
+	touch = ProjectileTouch;
+	SetMovetype(MOVETYPE_FLYMISSILE);
 	SetRenderColor([1,1,1]);
 	SetRenderAmt(1.0);
 	SetSolid(SOLID_BBOX);
@@ -54,21 +58,47 @@ NSProjectile::SetModel(string mdl)
 void
 NSProjectile::_AnimateThink(void)
 {
-	frame++;
+	SetFrame(frame + 1);
 
 	if (frame > (float)m_iProjectileAnimEnd)
-		frame = (float)m_iProjectileAnimStart;
+		SetFrame(m_iProjectileAnimStart);
 
+	think = _AnimateThink;
+	nextthink = time + m_flProjectileFramerate;
+}
+
+void
+NSProjectile::_AnimateThinkDead(void)
+{
+	SetFrame(frame + 1);
+
+	if (frame > (float)m_iProjectileAnimEnd) {
+		Destroy();
+		return;
+	}
+
+	think = _AnimateThinkDead;
 	nextthink = time + m_flProjectileFramerate;
 }
 
 void
 NSProjectile::Animate(int startframe, int endframe, float framerate)
 {
-	m_iProjectileAnimEnd = startframe;
-	m_iProjectileAnimStart = endframe;
+	m_iProjectileAnimStart = startframe;
+	m_iProjectileAnimEnd = endframe;
 	m_flProjectileFramerate = framerate;
 	frame = startframe;
 	think = _AnimateThink;
+	nextthink = time + m_flProjectileFramerate;
+}
+
+void
+NSProjectile::AnimateOnce(int startframe, int endframe, float framerate)
+{
+	m_iProjectileAnimStart = startframe;
+	m_iProjectileAnimEnd = endframe;
+	m_flProjectileFramerate = framerate;
+	frame = startframe;
+	think = _AnimateThinkDead;
 	nextthink = time + m_flProjectileFramerate;
 }
