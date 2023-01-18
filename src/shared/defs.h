@@ -325,3 +325,10 @@ Util_IsSingleplayer(void)
 	/* else we're multiplayer */
 	return false;
 }
+
+float
+crandom(void)
+{
+	return ((random() - 0.5f) * 2.0f);
+}
+
