@@ -31,15 +31,14 @@ private:
 public:
 	void NSProjectile(void);
 
-	/* overrides */
-	virtual void SetModel(string); /* FIXME: Is this meant to be overridable? */
-
 	/** Sets the function that'll be called upon impact of the projectile onto a surface. */
-	virtual void SetImpact(void(entity, entity));
+	nonvirtual void SetImpact(void(entity, entity));
+	/** When called, will animated between two frame positions at a specified framerate on loop. */
+	nonvirtual void Animate(int, int, float);
+	/** When called, will animated between two frame positions at a specified framerate and remove itself when it has finished playing the sequence. */
+	nonvirtual void AnimateOnce(int, int, float);
+
 	/** Called upon the projectile touching another object. */
-	virtual void ProjectileTouch(void);
-	/** When called, will animated between two frame positions at a specified framerate. */
-	virtual void Animate(int, int, float);
-	virtual void AnimateOnce(int, int, float);
+	virtual void Touch(entity);
 	virtual void Spawned(void);
 };

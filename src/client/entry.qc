@@ -165,6 +165,7 @@ CSQC_Update2D(float w, float h, bool focus)
 	self = cl;
 
 	if (Util_GetMaxPlayers() > 1 && !VGUI_Active() && (Client_InIntermission() || (!cl.IsFakeSpectator() && cl.IsDead()))) {
+		HUD_Draw();
 		Scores_Draw();
 		Chat_Draw();
 		Print_Draw();

@@ -25,19 +25,22 @@ NSProjectile::NSProjectile(void)
 void
 NSProjectile::Spawned(void)
 {
-	touch = ProjectileTouch;
+	super::Spawned();
+
 	SetMovetype(MOVETYPE_FLYMISSILE);
 	SetRenderColor([1,1,1]);
 	SetRenderAmt(1.0);
 	SetSolid(SOLID_BBOX);
-	hitcontentsmaski |= CONTENTBIT_PROJECTILE;
+	SetRenderAmt(1.0f);
+	SetRenderColor([1.0,1.0,1.0]);
+	SetSize([0,0,0], [0,0,0]);
 }
 
 void
-NSProjectile::ProjectileTouch(void)
+NSProjectile::Touch(entity eToucher)
 {
 	if (m_pImpact)
-		m_pImpact(other, this);
+		m_pImpact(eToucher, this);
 
 	Destroy();
 }
@@ -46,13 +49,7 @@ void
 NSProjectile::SetImpact(void(entity a,entity b) func)
 {
 	m_pImpact = func;
-}
-
-void
-NSProjectile::SetModel(string mdl)
-{
-	super::SetModel(mdl);
-	SetSize([0,0,0], [0,0,0]);
+	Spawned();
 }
 
 void

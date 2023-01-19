@@ -48,22 +48,22 @@ Event_ProcessModel(float flTimeStamp, int iCode, string strData)
 		break;
 	case 5001: /* muzzle flash on attachment 0 */
 		pSeat->m_eMuzzleflash.alpha = 1.0f;
-		pSeat->m_eMuzzleflash.scale = 0.25;
+		pSeat->m_eMuzzleflash.scale = 0.5;
 		pSeat->m_eMuzzleflash.skin = pSeat->m_iVMBones;
 		break;
 	case 5011: /* muzzle flash on attachment 1 */
 		pSeat->m_eMuzzleflash.alpha = 1.0f;
-		pSeat->m_eMuzzleflash.scale = 0.25;
+		pSeat->m_eMuzzleflash.scale = 0.5;
 		pSeat->m_eMuzzleflash.skin = pSeat->m_iVMBones + 1;
 		break;
 	case 5021: /* muzzle flash on attachment 2 */
 		pSeat->m_eMuzzleflash.alpha = 1.0f;
-		pSeat->m_eMuzzleflash.scale = 0.25;
+		pSeat->m_eMuzzleflash.scale = 0.5;
 		pSeat->m_eMuzzleflash.skin = pSeat->m_iVMBones + 2;
 		break;
 	case 5031: /* muzzle flash on attachment 3 */
 		pSeat->m_eMuzzleflash.alpha = 1.0f;
-		pSeat->m_eMuzzleflash.scale = 0.25;
+		pSeat->m_eMuzzleflash.scale = 0.5;
 		pSeat->m_eMuzzleflash.skin = pSeat->m_iVMBones + 3;
 		break;
 	default:

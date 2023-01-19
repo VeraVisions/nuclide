@@ -126,6 +126,7 @@ NSTraceAttack::_FireSingle(vector vecPos, vector vecAngles, float flDamage, floa
 	if (trace_ent.iBleeds == 0) {
 		if (m_strDecalGroup)
 			DecalGroups_Place(m_strDecalGroup, trace_endpos + (v_forward * -2));
+
 		SurfData_Impact(trace_ent, trace_surfaceflagsi, trace_endpos, trace_plane_normal);
 	}
 

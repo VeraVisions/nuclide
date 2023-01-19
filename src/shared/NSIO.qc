@@ -50,6 +50,7 @@ NSIO::Respawn(void)
 void
 NSIO::Init(void)
 {
+	if (__fullspawndata) {
 	/* annoylingly our starting offsets differ */
 #ifdef CLIENT
 	for (int i = 0; i < (tokenize(__fullspawndata) - 1); i += 2)
@@ -58,13 +59,13 @@ NSIO::Init(void)
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2)
 		SpawnKey(argv(i), argv(i+1));
 #endif
+	}
 
-#ifdef SERVER
 	/* some entity might involuntarily call SpawnInit as part of being
 	   a member of NSIO. So we need to make sure that it doesn't
 	   inherit stuff from the last previously loaded entity */
 	__fullspawndata = "";
-#endif
+
 	Spawned();
 
 	/* entity may be marked as deleted */
@@ -76,6 +77,7 @@ NSIO::Init(void)
 	if (g_isloading == true)
 		return;
 #endif
+
 	Respawn();
 }
 

@@ -401,7 +401,7 @@ void
 SurfData_Impact_Net(entity e, vector org)
 {
 #ifdef CLIENT
-	string tex_name = getsurfacetexture(world, getsurfacenearpoint(world, org));
+	string tex_name = getsurfacetexture(e, getsurfacenearpoint(e, org));
 
 	string impactsfx = SurfData_GetInfo(SurfData_TexToSurfData(tex_name), SURFDATA_SND_BULLETIMPACT);
 
