@@ -892,6 +892,13 @@ void NSEntity::HandleThink( void ) {
 	}
 }
 
+bool NSEntity::IsFacing(entity target)
+{
+	vector vecDiff = normalize(target.origin - origin);
+	makevectors(angles);
+	return ((vecDiff * v_forward) > 0 ) ? true : false;
+}
+
 #ifdef CLIENT
 void
 NSEntity_ReadEntity(bool new)

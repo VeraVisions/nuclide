@@ -351,6 +351,9 @@ public:
 		of any entity class that you want to support think functions in.
 		This saves you the effort of writing your own routines and methods. */
 	nonvirtual void HandleThink(void);
+
+	/** Returns either true or false depending on if this entity is facing the entity in question. */
+	nonvirtual bool IsFacing(entity);
 };
 
 #ifdef CLIENT
