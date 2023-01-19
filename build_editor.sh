@@ -110,7 +110,7 @@ then
 else
 	printf "WorldSpawn is NOT present, cloning...\n"
 	cd ./src/
-	git clone https://git.code.sf.net/p/worldspawn/code worldspawn
+	git clone "https://vcs.vera-visions.com/tech/worldspawn" worldspawn
 	cd ./worldspawn
 fi
 

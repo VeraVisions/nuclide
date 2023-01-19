@@ -135,7 +135,7 @@ then
 else
 	printf "Engine is NOT present, cloning...\n"
 	cd ./src/
-	git clone "https://github.com/VeraVisions/fteqw" engine
+	git clone "https://vcs.vera-visions.com/tech/engine" engine
 	cd ./engine/engine
 fi
 

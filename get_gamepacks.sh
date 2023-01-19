@@ -19,12 +19,12 @@ grab_mod()
 	cd "$SCRPATH"
 }
 
-grab_mod gearbox https://www.github.com/eukara/freegearbox
-grab_mod rewolf https://www.github.com/eukara/freegunman
-grab_mod poke646 https://www.github.com/eukara/freepoke646
-grab_mod tfc https://www.github.com/eukara/freetfc
-grab_mod scihunt https://www.github.com/eukara/freesci
-grab_mod hunger https://www.github.com/eukara/freehunger
-grab_mod valve https://www.github.com/eukara/freehl
-grab_mod cstrike https://www.github.com/eukara/freecs
-grab_mod ts https://www.github.com/Frag-Net/FreeTS
+grab_mod gearbox https://vcs.vera-visions.com/nuclide-ports/gearbox
+grab_mod rewolf https://vcs.vera-visions.com/nuclide-ports/rewolf
+grab_mod poke646 https://vcs.vera-visions.com/nuclide-ports/poke646
+grab_mod tfc https://vcs.vera-visions.com/nuclide-ports/tfc
+grab_mod scihunt https://vcs.vera-visions.com/nuclide-ports/scihunt
+grab_mod hunger https://vcs.vera-visions.com/nuclide-ports/hunger
+grab_mod valve https://vcs.vera-visions.com/nuclide-ports/valve
+grab_mod cstrike https://vcs.vera-visions.com/nuclide-ports/cstrike
+grab_mod ts https://vcs.vera-visions.com/nuclide-ports/ts
