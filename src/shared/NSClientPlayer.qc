@@ -184,12 +184,12 @@ NSClientPlayer::ProcessInput(void)
 	}
 
 	/* weapon system */
-	if (input_buttons & INPUT_BUTTON0)
+	if (input_buttons & INPUT_BUTTON3)
+		Weapons_Secondary(this);
+	else if (input_buttons & INPUT_BUTTON0)
 		Weapons_Primary(this);
 	else if (input_buttons & INPUT_BUTTON4)
 		Weapons_Reload(this);
-	else if (input_buttons & INPUT_BUTTON3)
-		Weapons_Secondary(this);
 	else
 		Weapons_Release(this);
 }
