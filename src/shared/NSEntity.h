@@ -51,6 +51,7 @@ what you are doing. Otherwise, you will deal with loss of savegames and much mor
 class NSEntity:NSTrigger
 {
 private:
+	float m_flSpawnTime;
 	bool m_bHidden; /**< decides whether the entity is visible or not, without affecting collision */
 	vector m_vecMins; /**< REAL min bounding box value, without .scale affecting it */
 	vector m_vecMaxs; /**< REAL max bounding box value, without .scale affecting it */
@@ -354,6 +355,12 @@ public:
 
 	/** Returns either true or false depending on if this entity is facing the entity in question. */
 	nonvirtual bool IsFacing(entity);
+
+	/** Returns the time that's passed since the entity has been spawned. */
+	nonvirtual float GetSpawnAge(void);
+
+	/** Returns the absolute timestamp of when the entity had been spawned. */
+	nonvirtual float GetSpawnTime(void);
 };
 
 #ifdef CLIENT

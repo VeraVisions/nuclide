@@ -24,6 +24,7 @@ static void droptofloorwrapper( entity foo ) {
 
 void NSEntity::NSEntity( void ) {
 	identity = 1;
+	m_flSpawnTime = time;
 }
 
 void NSEntity::Spawned( void ) {
@@ -897,6 +898,18 @@ bool NSEntity::IsFacing(entity target)
 	vector vecDiff = normalize(target.origin - origin);
 	makevectors(angles);
 	return ((vecDiff * v_forward) > 0 ) ? true : false;
+}
+
+float
+NSEntity::GetSpawnAge(void)
+{
+	return time - m_flSpawnTime;
+}
+
+float
+NSEntity::GetSpawnTime(void)
+{
+	return m_flSpawnTime;
 }
 
 #ifdef CLIENT
