@@ -67,6 +67,7 @@ GameText_DrawMessage(int i, float timer, int highlight)
 	float btime;
 	string finalstr;
 
+	/* typing effect */
 	if (g_textchannels[i].m_iEffect == 2) {
 		/* scan out */
 		finalstr = substring(g_textchannels[i].m_strMessage, 0,
@@ -116,10 +117,28 @@ GameText_DrawMessage(int i, float timer, int highlight)
 void
 GameText_Draw(void)
 {
+	vector debugPos = [16,16];
+	
+	if (cvar("r_showTexts") > 0)
+		Font_DrawText(debugPos, "Text Debug Information", FONT_CON);
+
+	debugPos[1] += 20;
+
 	for (int i = 0i; i < 6; i++) {
-		GameText_DrawMessage(i, g_textchannels[i].m_flTime - g_textchannels[i].m_flFXTime, 0);
-		GameText_DrawMessage(i, g_textchannels[i].m_flTime, 1);
+		/* we'll draw the highlight separately */
+		GameText_DrawMessage(i, g_textchannels[i].m_flTime - g_textchannels[i].m_flFXTime, 0); /* first pass */
+
+		/* effect 0 has no highlight */
+		if (g_textchannels[i].m_iEffect != 0)
+			GameText_DrawMessage(i, g_textchannels[i].m_flTime, 1); /* second pass */
+
 		g_textchannels[i].m_flTime += clframetime;
+
+		if (cvar("r_showTexts") <= 0)
+			continue;
+		
+		Font_DrawText(debugPos, sprintf("Chan %i: E %i T: %f/%f", i, g_textchannels[i].m_iEffect, g_textchannels[i].m_flTime, g_textchannels[i].m_flHoldTime), FONT_CON);
+		debugPos[1] += 20;
 	}
 }
 
