@@ -126,3 +126,19 @@ NSTimer::SetupTimer(entity receiver, void() call, float interval, bool repeats)
 	ret.m_bRepeats = repeats;
 	return ret;
 }
+
+void
+NSTimer::OnRemoveEntity(void)
+{
+	nextthink = 0.0f;
+	think = __NULL__;
+}
+
+void
+NSTimer::StopTimer(void)
+{
+	if (this) {
+		nextthink = 0.0f;
+		think = __NULL__;
+	}
+}

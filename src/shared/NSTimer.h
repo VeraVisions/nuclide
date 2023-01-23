@@ -42,4 +42,9 @@ public:
 
 	/** When called, sets up a timer that has to be run manually later. */
 	static NSTimer SetupTimer(entity, void(), float, bool);
+
+	/** Invalidates the timer when called. */
+	nonvirtual void StopTimer(void);
+
+	virtual void OnRemoveEntity(void);
 };
