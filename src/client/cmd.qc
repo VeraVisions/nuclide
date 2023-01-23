@@ -200,6 +200,25 @@ CMD_ListParticles(void)
 	print(sprintf("\t%i total particles loaded\n", actual_count));
 }
 
+static void
+CMD_ListTitles(void)
+{
+	string tmp;
+	int i = 0i;
+
+	for (i = 0; i < g_titles_count; i++) {
+		print(sprintf("%s, (x: %d, y: %d)\n", 
+			g_titles[i].m_strName, g_titles[i].m_flPosX, g_titles[i].m_flPosY));
+		print(sprintf("\teffect: %i, fade-in: %f, fade-out: %f\n", 
+			g_titles[i].m_iEffect, g_titles[i].m_flFadeIn, g_titles[i].m_flFadeOut));
+		print(sprintf("\thold-time: %f, fx-time: %f\n", 
+			g_titles[i].m_flHoldTime, g_titles[i].m_flFXTime));
+		print(sprintf("\tcolor 1: %v, color 2: %v\n", 
+			g_titles[i].m_vecColor1, g_titles[i].m_vecColor2));
+	}
+	print(sprintf("\t%i total titles loaded\n", g_titles_count));
+}
+
 /*
 =================
 Cmd_Parse
@@ -214,6 +233,9 @@ bool
 Cmd_Parse(string sCMD)
 {
 	switch (argv(0)) {
+	case "listTitles":
+		CMD_ListTitles();
+		break;
 	case "listModels":
 		CMD_ListModels();
 		break;
@@ -399,6 +421,7 @@ Cmd_Init(void)
 	registercommand("listModels");
 	registercommand("listSounds");
 	registercommand("listParticles");
+	registercommand("listTitles");
 
 	registercommand("cleardecals");
 	registercommand("testLight");
