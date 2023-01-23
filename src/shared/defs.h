@@ -106,14 +106,14 @@ const vector VEC_CHULL_MIN = [-16,-16,-18];
 const vector VEC_CHULL_MAX = [16,16,18];
 
 // Actually used by input_button etc.
-#define INPUT_BUTTON0 0x00000001
-#define INPUT_BUTTON2 0x00000002
-#define INPUT_BUTTON3 0x00000004
-#define INPUT_BUTTON4 0x00000008
-#define INPUT_BUTTON5 0x00000010
-#define INPUT_BUTTON6 0x00000020
-#define INPUT_BUTTON7 0x00000040
-#define INPUT_BUTTON8 0x00000080
+#define INPUT_BUTTON0 0x00000001	/* attack 1*/
+#define INPUT_BUTTON2 0x00000002	/* jumping */
+#define INPUT_BUTTON3 0x00000004	/* attack 2 */
+#define INPUT_BUTTON4 0x00000008	/* reload */
+#define INPUT_BUTTON5 0x00000010	/* use button */
+#define INPUT_BUTTON6 0x00000020	/* reserved */
+#define INPUT_BUTTON7 0x00000040	/* reserved */
+#define INPUT_BUTTON8 0x00000080	/* crouching */
 
 /* sendflags */
 #define UPDATE_ALL				16777215

@@ -286,6 +286,8 @@ struct
 	int m_iInputReload;
 	int m_iInputUse;
 	int m_iInputDuck;
+	int m_iInputExtra1;
+	int m_iInputExtra2;
 	float m_flInputBlockTime;
 	
 	/* fading */

@@ -420,6 +420,14 @@ NSClientPlayer::ClientInputFrame(void)
 		input_buttons |= INPUT_BUTTON8;
 	}
 
+	if (pSeat->m_iInputExtra1 == TRUE) {
+		input_buttons |= INPUT_BUTTON6;
+	}
+
+	if (pSeat->m_iInputExtra2 == TRUE) {
+		input_buttons |= INPUT_BUTTON7;
+	}
+
 	/* The HUD needs more time */
 	if (pSeat->m_iHUDWeaponSelected) {
 		if ((input_buttons & INPUT_BUTTON0))
