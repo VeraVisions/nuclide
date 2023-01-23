@@ -249,6 +249,9 @@ SV_RunClientCommand(void)
 {
 	NSClient cl = (NSClient)self;
 
+	if (self.classname != "player" && self.classname != "spectator")
+		return;
+
 	if (!Plugin_RunClientCommand()) {
 		/* TODO */
 	}
