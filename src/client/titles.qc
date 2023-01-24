@@ -54,6 +54,7 @@ Titles_ParseFunString(string temp)
 	temp = strreplace("\\d", "^8", temp);
 	temp = strreplace("\\R", " ", temp);
 	temp = strreplace("\\n", "\n", temp);
+	temp = strreplace("\\N", "\n", temp);
 	return temp;
 }
 
@@ -100,13 +101,13 @@ Titles_Init(void)
 	/* fill in some sane defaults */
 	t_position[0] = 0;
 	t_position[1] = -1;
-	t_effect = 1;
+	t_effect = 0;
 	t_color = [1,1,1];
 	t_color2 = [1,1,1];
 	t_fxtime = 0.5f;
 	t_holdtime = 2.5f;
-	t_fadein = 1.0f;
-	t_fadeout = 1.0f;
+	t_fadein = 0.5f;
+	t_fadeout = 0.5f;
 	g_titles_count = 0;
 
 	/* first pass, count entries */
