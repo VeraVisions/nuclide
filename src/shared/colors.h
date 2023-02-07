@@ -19,37 +19,7 @@
 string
 Colors_RGB8_to_HEX(vector color)
 {
-	string out = "^x";
-
-	for (int i = 0; i < 3; i++) {
-		string a = "";
-		float b = rint(color[i] * 15);
-
-		switch (b) {
-		case 10:
-			a = "A";
-			break;
-		case 11:
-			a = "B";
-			break;
-		case 12:
-			a = "C";
-			break;
-		case 13:
-			a = "D";
-			break;
-		case 14:
-			a = "E";
-			break;
-		case 15:
-			a = "F";
-			break;
-		default:
-			a = ftos(b);
-		}
-		out = sprintf("%s%s", out, a);
-	}
-	return out;
+	return sprintf("^x%x%x%x", color[0] * 15, color[1] * 15, color[2] * 15);
 }
 
 /** Takes a 0-255 based color vector and returns the hexadecimal equivalent

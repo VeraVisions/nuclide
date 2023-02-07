@@ -7,4 +7,5 @@ fx_breakmodel.qc
 fx_corpse.qc
 fx_gibhuman.qc
 fx_impact.qc
+TestWeapon.qc
 #endlist

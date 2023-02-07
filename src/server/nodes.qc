@@ -146,35 +146,38 @@ Node_AutoLink(node_t *new)
 	}
 }
 
+static void
+Nodes_InsertNodeForClassname(string classn)
+{
+	for (entity a = world; (a = find(a, ::classname, classn));) {
+		int iID = g_iNodes++;
+		g_pNodes = (node_t *)memrealloc(g_pNodes, sizeof(node_t), iID, g_iNodes);
+		node_t *n = g_pNodes + iID;
+		n->origin = a.origin;
+		n->nb = __NULL__;
+		n->nb_count = 0;
+		n->radius = 32;
+		Node_AutoLink(n);
+	}
+}
+
 void
 Nodes_BuildFromEnts(void)
 {
 	print("rebuilding node tree...");
 
 	/* run through the ents and rebuild the tree */
-	for (entity a = world; (a = find(a, ::classname, "info_node"));) {
-		int iID = g_iNodes++;
-		g_pNodes = (node_t *)memrealloc(g_pNodes, sizeof(node_t), iID, g_iNodes);
-		node_t *n = g_pNodes + iID;
-		n->origin = a.origin;
-		n->nb = __NULL__;
-		n->nb_count = 0;
-		n->radius = 32;
-		Node_AutoLink(n);
-	}
+	Nodes_InsertNodeForClassname("info_node");
 
 #if 0
-	for (entity a = world; (a = find(a, ::classname, "scripted_sequence"));) {
-		int iID = g_iNodes++;
-		g_pNodes = (node_t *)memrealloc(g_pNodes, sizeof(node_t), iID, g_iNodes);
-		node_t *n = g_pNodes + iID;
-		n->origin = a.origin;
-		n->nb = __NULL__;
-		n->nb_count = 0;
-		n->radius = 32;
-		Node_AutoLink(n);
-	}
+	Nodes_InsertNodeForClassname("scripted_sequence");
 #endif
+
+	/* last resort */
+	if (g_iNodes == 0)
+		Nodes_InsertNodeForClassname("info_player_start");
+	if (g_iNodes == 0)
+		Nodes_InsertNodeForClassname("info_player_deathmatch");
 
 	print(sprintf("%i possible nodes found in %s\n", g_iNodes, mapname));
 

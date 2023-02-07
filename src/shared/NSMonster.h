@@ -288,6 +288,8 @@ public:
 	virtual void IdleNoise(void);
 	/** Overridable: Called when they start falling. */
 	virtual void FallNoise(void);
+	/** Overridable: Called when this monster gets 'alerted' to something new. */
+	virtual void AlertNoise(void);
 
 	/** Returns if they're considered alive. */
 	virtual bool IsAlive(void);

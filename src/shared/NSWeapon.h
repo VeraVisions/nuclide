@@ -4,6 +4,14 @@
 
 /** This class represents inventory items and weapons that you can directly interact with.
 
+	Trouble that's standing in the way of this taking off:
+
+	Level changes currently only support client entities from setting up 
+	changelevel parameters. There is parm_string that we *could* use to
+	store weapon entity information in, but this will grow massively.
+
+	For the time being, we need to use the legacy system if we want to support
+	singleplayer.
 */
 class
 NSWeapon:NSRenderableEntity
@@ -104,5 +112,8 @@ public:
 
 #ifdef SERVER
 	virtual float SendEntity(entity, float);
+
+	virtual void Touch(entity);
+	virtual void Respawn(void);
 #endif
 };

@@ -174,10 +174,12 @@ NSTraceAttack::Fire(void)
 	m_iMultiValue = 0;
 
 	while (m_iShots > 0) {
-		if (m_eOwner.flags & FL_CLIENT)
+		if (m_eOwner.flags & FL_CLIENT) {
 			vecDir = aim(m_eOwner, 100000);
-		else
-			vecDir = m_eOwner.v_angle;
+		} else {
+			makevectors(m_eOwner.v_angle);
+			vecDir = v_forward;
+		}
 
 #ifndef BULLETPATTERNS
 		vecDir += random(-1,1) * m_vecSpread[0] * v_right;

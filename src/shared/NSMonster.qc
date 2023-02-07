@@ -216,6 +216,11 @@ NSMonster::IdleNoise(void)
 {
 }
 
+void
+NSMonster::AlertNoise(void)
+{
+}
+
 bool
 NSMonster::IsFriend(int al)
 {
@@ -300,15 +305,21 @@ NSMonster::IsValidEnemy(entity enny)
 void
 NSMonster::SeeThink(void)
 {
+	if (m_flAttackThink < time)
 	if (m_eEnemy) {
 		/* check if we should invalidate current enemy */
 		if (IsValidEnemy(m_eEnemy))
 			return;
 
 		/* enemy is not valid anymore, reset it, clear route and search for new enemy */
+		RouteClear();
+
+		makevectors(angles);
+		RouteToPosition(m_eEnemy.origin + (v_forward * -64));
+		m_flSequenceSpeed = GetWalkSpeed();
+
 		SetState(MONSTER_ALERT);
 		m_eEnemy = __NULL__;
-		RouteClear();
 		m_flSeeTime = 0;
 	}
 
@@ -332,7 +343,7 @@ NSMonster::SeeThink(void)
 			continue;
 
 		/* first, is the potential enemy in our field of view? */
-		makevectors(v_angle);
+		makevectors(angles);
 		vector v = normalize(w.origin - origin);
 		float flDot = v * v_forward;
 
@@ -370,6 +381,33 @@ float
 NSMonster::GetRunSpeed(void)
 {
 	return 140;
+}
+
+void
+NSMonster::_LerpTurnToEnemy(float flSpeed)
+{
+	if (GetState() != MONSTER_AIMING)
+		return;
+
+	if (!m_eEnemy)
+		return;
+
+	vector vecWishAngle = vectoangles(m_eEnemy.origin - origin);
+	vector vecFinalAngle;
+	float flLerp = frametime * flSpeed;
+
+	if (flLerp > 1.0)
+		flLerp = 0.95;
+
+	makevectors(vecWishAngle);
+	vecFinalAngle = v_forward;
+	makevectors( v_angle );
+	vecFinalAngle[0] = Math_Lerp( v_forward[0], vecFinalAngle[0], flLerp );
+	vecFinalAngle[1] = Math_Lerp( v_forward[1], vecFinalAngle[1], flLerp );
+	vecFinalAngle[2] = Math_Lerp( v_forward[2], vecFinalAngle[2], flLerp );
+	vecWishAngle = vectoangles( vecFinalAngle );
+	v_angle[1] = Math_FixDelta(vecWishAngle[1]);
+	angles[1] = input_angles[1] = v_angle[1];
 }
 
 void
@@ -412,6 +450,9 @@ NSMonster::AttackThink(void)
 
 	if (GetState() == MONSTER_AIMING) {
 		int m;
+
+		_LerpTurnToEnemy(1000);
+
 		if (MeleeCondition() == TRUE)
 			m = AttackMelee();
 		else {
@@ -419,8 +460,7 @@ NSMonster::AttackThink(void)
 
 			/* if we don't have the desired attack mode, walk */
 			if (m == FALSE)
-				SetState(MONSTER_CHASING);	
-
+				SetState(MONSTER_CHASING);
 		}
 	}
 }
@@ -571,6 +611,9 @@ NSMonster::AnimationUpdate(void)
 	if (GetState() == MONSTER_DEAD)
 		return;
 
+	if (GetState() == MONSTER_AIMING)
+		return;
+
 	float spvel = vlen(velocity);
 	float midspeed = GetWalkSpeed() + ((GetRunSpeed() -  GetWalkSpeed()) * 0.5f);
 
@@ -700,6 +743,7 @@ NSMonster::Physics(void)
 				RunAI();
 			}
 
+			_LerpTurnToEnemy(30);
 			AnimationUpdate();
 		}
 
@@ -1051,6 +1095,9 @@ NSMonster_ReadEntity(bool new)
 }
 #else
 
+
+var int autocvar_ai_alertdebug = 0;
+
 var float g_monsteralert_timer;
 void
 NSMonster_AlertEnemyAlliance(vector pos, float radius, int alliance)
@@ -1059,33 +1106,53 @@ NSMonster_AlertEnemyAlliance(vector pos, float radius, int alliance)
 	if (g_monsteralert_timer > time)
 		return;
 
+	if (autocvar_ai_alertdebug)
+		print(sprintf("AI alert from %v with radius %f and alliance %i\n", pos, radius, alliance));
+
 	for (entity w = world; (w = findfloat(w, ::takedamage, DAMAGE_YES));) {
 		/* out of radius */
-		if (vlen(pos - w.origin) > radius)
+		if (vlen(pos - w.origin) > radius) {
 			continue;
+		}
 
 		/* only target monsters */
-		if (!(w.flags & FL_MONSTER))
+		if (!(w.flags & FL_MONSTER)) {
+			if (autocvar_ai_alertdebug)
+				print(sprintf("\t%S is not a monster\n", w.classname));
 			continue;
+		}
 
 		NSMonster f = (NSMonster)w;
 
 		/* they already got a target of some kind */
-		if (f.m_eEnemy)
+		if (f.m_eEnemy) {
+			if (autocvar_ai_alertdebug)
+				print(sprintf("\t%S already has a target\n", w.classname));
 			continue;
+		}
 
 		/* if they're our friend... ignore*/
-		if (f.IsFriend(alliance))
+		if (f.IsFriend(alliance)) {
+			if (autocvar_ai_alertdebug)
+				print(sprintf("\t%S is friend of alliance %i\n", w.classname, alliance));
 			continue;
+		}
 
 		/* if the monster is dead... ignore */
-		if (f.health <= 0)
+		if (f.health <= 0) {
+			if (autocvar_ai_alertdebug)
+				print(sprintf("\t%S is dead, cannot be alerted\n", w.classname));
 			continue;
+		}
+
+		if (autocvar_ai_alertdebug)
+				print(sprintf("\twe're alerting %S to go to %v\n", w.classname, pos));
 
 		/* we've heard a noise. investigate the location */
 		f.RouteClear();
 		f.RouteToPosition(pos);
-		f.m_flSequenceSpeed = 140;
+		f.m_flSequenceSpeed = f.GetWalkSpeed();
+		f.AlertNoise();
 	}
 
 	g_monsteralert_timer = time + 0.5f;

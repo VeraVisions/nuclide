@@ -25,6 +25,7 @@ typedef enum
 	ENT_MONSTER,	/**< of type NSMonster */
 	ENT_TALKMONSTER,	/**< of type NSTalkMonster */
 	ENT_PLAYER,	/**< of type NSClientPlayer */
+	ENT_WEAPON, /**< of type NSWeapon */
 	ENT_SPECTATOR,	/**< of type NSClientSpectator */
 	ENT_AMBIENTSOUND,	/**< of type ambient_generic */
 	ENT_BEAM,	/**< of type env_beam */

@@ -68,8 +68,15 @@ public:
 	virtual bool FocusCheck(vector,vector);
 	
 	virtual void RendererRestarted(void);
+	virtual bool CanSpawn(bool);
 
 };
+
+bool
+NSInteractiveSurface::CanSpawn(bool clientSide)
+{
+	return true;
+}
 
 bool
 NSInteractiveSurface::FocusCheck(vector vecViewPos, vector vecViewAng)

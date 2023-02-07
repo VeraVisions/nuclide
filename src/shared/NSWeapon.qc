@@ -71,6 +71,36 @@ NSWeapon::SendEntity(entity ePEnt, float flChanged)
 	if (ePEnt != owner) {
 		return (false);
 	}
+
+#if 0
+	WriteByte(MSG_ENTITY, ENT_WEAPON);
+	WriteFloat(MSG_ENTITY, flChanged);
+	WriteInt(MSG_ENTITY, m_iSlot);
+	WriteInt(MSG_ENTITY, m_iSlotPos);
+	WriteByte(MSG_ENTITY, m_bAllowDropping);
+	WriteInt(MSG_ENTITY, m_iWeight);
+	WriteInt(MSG_ENTITY, m_iClip1);
+	WriteInt(MSG_ENTITY, m_iClip2);
+	WriteFloat(MSG_ENTITY, m_flPrimaryNext);
+	WriteFloat(MSG_ENTITY, m_flSecondaryNext);
+	WriteFloat(MSG_ENTITY, m_flLastFired);
+#endif
+}
+
+void
+NSWeapon::Touch(entity eToucher)
+{
+	Hide();
+	SetSolid(SOLID_NOT);
+}
+
+void
+NSWeapon::Respawn(void)
+{
+	/* the weapons gets placed in-world */
+	SetModel(GetWorldModel());
+	SetSolid(SOLID_TRIGGER);
+	SetOrigin(GetSpawnOrigin());
 }
 #endif
 

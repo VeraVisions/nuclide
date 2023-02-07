@@ -309,6 +309,11 @@ NSTalkMonster::TalkPlayerIdle(void)
 		return;
 
 	for (entity p = world; (p = find(p, ::classname, "player"));) {
+
+		if (!IsFriend(p.m_iAlliance)) {
+			continue;
+		}
+
 		/* Find players in a specific radius */
 		if (vlen(p.origin - origin) < PLAYER_DETECT_RADIUS) {
 			/* If we can't physically see him, don't do anything */
