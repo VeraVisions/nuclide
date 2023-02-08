@@ -919,6 +919,7 @@ menu_customgame_init(void)
 	customgame_sbMods.SetCallback(customgame_sbmods_changed);
 	customgame_sbMods.SetMax(gameinfo_count);
 	Widget_Add(fn_customgame, customgame_sbMods);
+	g_iModInstallCache = -1;
 #endif
 }
 
@@ -971,7 +972,7 @@ menu_customgame_draw(void)
 
 
 #if 1
-	if (g_iModInstallCache >= 0) {
+	if (g_iModInstallCache >= 0i) {
 		customgame_installframe();
 	}
 #endif
