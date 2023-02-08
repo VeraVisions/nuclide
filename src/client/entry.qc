@@ -270,13 +270,13 @@ CSQC_UpdateView(float w, float h, float focus)
 			pSeatLocal = &g_seatslocal[s];
 			g_view = g_viewSeats[s];
 
-            setproperty(VF_ACTIVESEAT, (float)s);
 			pSeat->m_ePlayer = findfloat(world, ::entnum, player_localentnum);
 
             if (pSeat->m_ePlayer == world)
                 continue;
 
 			cl = (NSClient)pSeat->m_ePlayer;
+			setproperty(VF_ACTIVESEAT, (float)s);
 
 			/* set up our single/split viewport */
 			View_CalcViewport(s, w, h);

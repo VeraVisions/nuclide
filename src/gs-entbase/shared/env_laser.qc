@@ -315,6 +315,14 @@ static float env_laser_jitlut[LASER_COUNT] = {
 float
 env_laser::predraw(void)
 {
+	vector vecPlayer;
+	NSClientPlayer pl;
+
+	int s = (float)getproperty(VF_ACTIVESEAT);
+	pSeat = &g_seats[s];
+	pl = (NSClientPlayer)pSeat->m_ePlayer;
+	vecPlayer = pl.GetEyePos();
+
 	/* only draw when active. */
 	if (!m_iActive)
 		return (PREDRAW_NEXT);
@@ -333,7 +341,7 @@ env_laser::predraw(void)
 	if (m_strTexture) {
 		float last_progression = 0.0f;
 		makevectors(g_view.GetCameraAngle());
-		setproperty(VF_ORIGIN, pSeat->m_vecPredictedOrigin);
+		setproperty(VF_ORIGIN, vecPlayer);
 		R_BeginPolygon(m_strTexture, DRAWFLAG_ADDITIVE, 0);
 
 		for (float i = 0; i < LASER_COUNT; i++) {

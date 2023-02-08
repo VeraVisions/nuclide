@@ -105,10 +105,12 @@ prop_rope::predraw(void)
 	vector pos2;
 	float segments;
 	vector vecPlayer;
+	NSClientPlayer pl;
 
 	int s = (float)getproperty(VF_ACTIVESEAT);
 	pSeat = &g_seats[s];
-	vecPlayer = pSeat->m_vecPredictedOrigin;
+	pl = (NSClientPlayer)pSeat->m_ePlayer;
+	vecPlayer = pl.GetEyePos();
 
 	/* draw the start/end without segments */
 	if (autocvar_rope_debug == TRUE) {
