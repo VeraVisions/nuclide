@@ -793,6 +793,7 @@ NSClientPlayer::MakeTempSpectator(void)
 	activeweapon = 0;
 	effects = 0;
 	alpha = 0.0f;
+	scale = 1.0f;
 	forceinfokey(this, "*spectator", "0"); /* not a real spectator */
 	forceinfokey(this, "*dead", "0");
 }
@@ -860,6 +861,7 @@ NSClientPlayer::MakePlayer(void)
 	SendFlags = UPDATE_ALL;
 	customphysics = Empty;
 	iBleeds = TRUE;
+	scale = 1.0f;
 	SetSize(VEC_HULL_MIN, VEC_HULL_MAX);
 	forceinfokey(this, "*spectator", "0");
 	forceinfokey(this, "*deaths", ftos(deaths));
