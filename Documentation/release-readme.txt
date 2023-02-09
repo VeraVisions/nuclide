@@ -19,7 +19,7 @@ Make sure you're running the latest version of FTEQW.
 If your entire engine/binary crashes to desktop or whatever, it's an FTE bug.
 Contact #fte at irc.quakenet.org
 
-If you crash to console, contact #freecs at irc.libera.chat
+If you crash to console, contact #nuclide at irc.libera.chat
 
 Notes
 =======================================

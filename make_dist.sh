@@ -48,6 +48,11 @@ find ./$GAME_DIR -name *.pk3dir | xargs -I @ sh -c 'echo `basename "@"`' | while
 	mv "./$GAME_DIR/$PK3DIR/$PK3NAME.pk3" "./$BUILD_DIR/$GAME_DIR/$PK3NAME.pk3"
 done;
 
+# copy plain text files included within the game-dir
+find ./$GAME_DIR -name '*.txt' | xargs -I @ sh -c 'echo `basename "@"`' | while read TEXTNAME; do
+	cp "./$GAME_DIR/$TEXTNAME" "./$BUILD_DIR/$GAME_DIR/$TEXTNAME"
+done;
+
 # copy over the shell scripts inside the game-dir
 find ./$GAME_DIR -name 'install_*.sh' | xargs -I @ sh -c 'echo `basename "@"`' | while read SCRIPTNAME; do
 	cp "./$GAME_DIR/$SCRIPTNAME" "./$BUILD_DIR/$GAME_DIR/$SCRIPTNAME"
@@ -89,7 +94,7 @@ else
 	fi
 
 	sed -i "s|base|$GAME_DIR|g" ./$BUILD_DIR/default.fmf
-	cp ./doc/release-readme ./$BUILD_DIR/README.txt
+	cp ./Documentation/release-readme.txt ./$BUILD_DIR/README.txt
 fi
 
 tree ./$BUILD_DIR
