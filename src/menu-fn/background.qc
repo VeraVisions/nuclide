@@ -15,10 +15,24 @@
 */
 
 void
+drawpic_flip(vector pos, string mat, vector size, vector color, float alpha)
+{
+	drawsubpic(pos, size, mat, [1,0], [-1,1], color, alpha, 0);
+}
+
+void
 Background_WON(void)
 {
 	drawpic([g_menuofs[0],g_menuofs[1]], g_bmp[SPLASH],
 		[640,480], [1,1,1], 1.0f);
+
+	/* just some silly widescreen extension hack that could apply to some games */
+#if 0
+	drawpic_flip([g_menuofs[0] - 640,g_menuofs[1]], g_bmp[SPLASH],
+		[640,480], [1,1,1], 1.0f);
+	drawpic_flip([g_menuofs[0] + 640,g_menuofs[1]], g_bmp[SPLASH],
+		[640,480], [1,1,1], 1.0f);
+#endif
 }
 
 typedef struct

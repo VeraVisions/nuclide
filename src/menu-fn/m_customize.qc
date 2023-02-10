@@ -21,10 +21,17 @@ CTextBox cz_tbNetname;
 CPictureSwitch cz_psSpray;
 CSlider cz_sldTopcolor;
 CSlider cz_sldBottomcolor;
+CCheckBox cz_cxHQModels;
+CCheckBox cz_cxEnableVoice;
+CCheckBox cz_cxEnableMic;
+CSlider cz_sldTransmitVol;
+CSlider cz_sldReceiveVol;
 
 #ifdef MODEL_PREVIEW
 CUI3DView cz_3dModel;
 var int g_iModel;
+entity g_ePreviewModel;
+static int g_iPreviewmodelSubUpdate;
 #else
 CPictureSwitch cz_psModel;
 #endif
@@ -131,6 +138,60 @@ cz_sldBottomcolorChanged(float val)
 }
 
 void
+cz_sldTransmitVolChanged(float val)
+{
+	localcmd(sprintf("seta cl_voip_capturingvol %f\n", val));
+}
+
+void
+cz_sldReceiveVolChanged(float val)
+{
+	localcmd(sprintf("seta cl_voip_play %f\n", val));
+
+	/* this is not a FTE cvar... */
+	localcmd(sprintf("seta _ugly_cl_voip_volume %f\n", val));
+}
+
+void
+cz_cxHQModelsChanged(float val)
+{
+	localcmd(sprintf("seta cl_himodels %f\n", val));
+
+	if (val)
+			setcustomskin(g_ePreviewModel, "", "geomset 0 2\n");
+		else
+			setcustomskin(g_ePreviewModel, "", "geomset 0 1\n");
+}
+void
+cz_cxEnableVoiceChanged(float val)
+{
+	if (val) {
+		/* restore the original volume if present */
+		if (cvar("_ugly_cl_voip_volume"))
+			localcmd(sprintf("seta cl_voip_play %f\n", cvar("_ugly_cl_voip_volume")));
+		else
+			localcmd("seta cl_voip_play 1\n"); /* else assume full volume */
+	} else {
+		/* save the old value, whatever that may have been */
+		localcmd(sprintf("seta _ugly_cl_voip_volume %f\n", cvar("cl_voip_play")));
+		localcmd("seta cl_voip_play 0\n");
+	}
+}
+void
+cz_cxEnableMicChanged(float val)
+{
+	/* engine won't allow us to use localcmd() for this because
+	   it falsely believes the menu is the server...
+	   but guess what, cvar_set won't work either. so if your console
+	   complains about this, this either has not yet been fixed or you are
+	   using a really old engine. sorry for this inconvenience. */
+	if (val)
+		localcmd("seta cl_voip_send 1\n");
+	else
+		localcmd("seta cl_voip_send 4\n"); /* hack: disables to anything other than rtp */
+}
+
+void
 menu_customize_init(void)
 {
 	int sid = 0;
@@ -200,6 +261,43 @@ menu_customize_init(void)
 	cz_tbNetname.SetText(cvar_string("name"));
 	Widget_Add(fn_customize, cz_tbNetname);
 
+	cz_cxHQModels = spawn(CCheckBox);
+	cz_cxHQModels.SetPos(52,223);
+	cz_cxHQModels.SetValue(cvar("cl_himodels"));
+	cz_cxHQModels.SetCallback(cz_cxHQModelsChanged);
+	Widget_Add(fn_customize, cz_cxHQModels);
+
+	cz_cxEnableVoice = spawn(CCheckBox);
+	cz_cxEnableVoice.SetPos(52,351);
+	cz_cxEnableVoice.SetValue(cvar("cl_voip_play"));
+	if (cvar("cl_voip_play") > 0)
+		cz_cxEnableVoice.SetValue(1);
+	else
+		cz_cxEnableVoice.SetValue(0);
+	cz_cxEnableVoice.SetCallback(cz_cxEnableVoiceChanged);
+	Widget_Add(fn_customize, cz_cxEnableVoice);
+
+	cz_cxEnableMic = spawn(CCheckBox);
+	cz_cxEnableMic.SetPos(52,391);
+	cz_cxEnableMic.SetCallback(cz_cxEnableMicChanged);
+	if (cvar("cl_voip_send") == 4)
+		cz_cxEnableMic.SetValue(0);
+	else
+		cz_cxEnableMic.SetValue(1);
+	Widget_Add(fn_customize, cz_cxEnableMic);
+
+	cz_sldTransmitVol = spawn(CSlider);
+	cz_sldTransmitVol.SetPos(213,377);
+	cz_sldTransmitVol.SetValue(cvar("cl_voip_capturingvol"));
+	cz_sldTransmitVol.SetCallback(cz_sldTransmitVolChanged);
+	Widget_Add(fn_customize, cz_sldTransmitVol);
+		
+	cz_sldReceiveVol = spawn(CSlider);
+	cz_sldReceiveVol.SetPos(213,428);
+	cz_sldReceiveVol.SetValue(cvar("cl_voip_play"));
+	cz_sldReceiveVol.SetCallback(cz_sldReceiveVolChanged);
+	Widget_Add(fn_customize, cz_sldReceiveVol);
+
 	if (games[gameinfo_current].nosprays == 0) {
 		cz_psSpray = spawn(CPictureSwitch);
 		cz_psSpray.SetPos(212,226);
@@ -215,24 +313,32 @@ menu_customize_init(void)
 
 	if (games[gameinfo_current].nomodels == 0) {
 #ifdef MODEL_PREVIEW
-		static entity eModel;
 		static vector vecDistance = [ 45, 0, 0 ];
 		static void ModelPreview_SetModel( string strModel ) {
-			setmodel( eModel, strModel );
+			setmodel( g_ePreviewModel, strModel );
 			AngleVectors( cz_3dModel.Get3DAngles() );
 			cz_3dModel.Set3DPos( v_forward * -vecDistance[0] + v_right * vecDistance[1] + v_up * vecDistance[2] );
+
+			/* TODO: ideally we'd like to update the submodel here according to
+			   the cl_himodels cvar, but FTE doesn't like us doing that
+			   apparently as skinobjects are not available directly upon
+			   init. eventually I'll have to stage a sub-model update for
+			   later. or maybe the engine should just get its stuff sorted.
+			   for the time being, enjoy this message that I can point
+			   to for when someone inexplicably points out the bug. */
+				g_iPreviewmodelSubUpdate = 0;
 		}
 		static void ModelPreview_Draw ( void ) {
 			static int initialized = FALSE;
 			if ( !initialized ) {
 				initialized = TRUE;
-				eModel = spawn();
-				eModel.angles[1] -= 180;
+				g_ePreviewModel = spawn();
+				g_ePreviewModel.angles[1] -= 180;
 				ModelPreview_SetModel(sprintf("models/player/%s/%s.mdl", cvar_string("_cl_playermodel"), cvar_string("_cl_playermodel")));
 			}
-			addentity( eModel );
-			eModel.frame1time += frametime;
-			eModel.colormod = [cz_sldTopcolor.m_value, cz_sldBottomcolor.m_value, 2.0];
+			addentity( g_ePreviewModel );
+			g_ePreviewModel.frame1time += frametime;
+			g_ePreviewModel.colormod = [cz_sldTopcolor.m_value, cz_sldBottomcolor.m_value, 2.0];
 		}
 		static void ModelPreview_Input ( float type, float x, float y, float flDevID ) {
 			if (type == IE_KEYUP && x == K_MOUSE1 && Util_CheckMouse(414, 340, 64, 24) == TRUE) {
@@ -334,13 +440,43 @@ menu_customize_init(void)
 	}
 }
 
+
+/*
+	cz_sldTransmitVol.SetPos(213,377);
+	cz_sldTransmitVol.SetValue(cvar("cl_voip_capturingvol"));
+	cz_sldTransmitVol.SetCallback(cz_sldTransmitVolChanged);
+	Widget_Add(fn_customize, cz_sldTransmitVol);
+		
+	cz_sldReceiveVol = spawn(CSlider);
+	cz_sldReceiveVol.SetPos(213,428);
+*/
+
 void
 menu_customize_draw(void)
 {
 	Widget_Draw(fn_customize);
 	Header_Draw(HEAD_CUSTOMIZE);
 	WLabel_Static(212, 140, m_reslbl[IDS_PLAYERINFO_NAME], 14, 14, [1,1,1],
-					1.0f, 0, font_arial);
+					1.0f, 0, font_label);
+
+	WField_Static(52 + 26, 225, "High quality models", 115, 64, [0.75, 0.75, 0.75],
+					1.0f, 3, font_label_b);
+	WField_Static(52 + 26, 353, "Enable voice in this mod.", 115, 64, [0.75, 0.75, 0.75],
+					1.0f, 3, font_label_b);
+	WField_Static(52 + 26, 393, "Use microphone for voice input.", 115, 64, [0.75, 0.75, 0.75],
+					1.0f, 3, font_label_b);
+
+	WLabel_Static(410, 140, "", HELPTXT_SIZE, HELPTXT_SIZE, [1,1,1],
+						1.0f, 0, font_label);
+
+	if (cvar("cl_voip_codec") == 2)
+	WField_Static(52, 393+40, "* Uses Opus sound codec. Copyright © 2012-2023 by Xiph.Org Foundation.", 128, 64, [0.75, 0.75, 0.75],
+					1.0f, 3, font_label);
+
+	WLabel_Static(213, 377 - 16, "Voice Transmit Volume *", 14, 14, [1,1,1],
+						1.0f, 0, font_label);
+	WLabel_Static(213, 428 - 16, "Voice Receive Volume *", 14, 14, [1,1,1],
+						1.0f, 0, font_label);
 
 	if (games[gameinfo_current].nomodels == 0) {
 		WLabel_Static(410, 140, sprintf(m_reslbl[IDS_MODEL_NAME], cvar_string("_cl_playermodel")), 14, 14, [1,1,1],
@@ -359,6 +495,13 @@ menu_customize_draw(void)
 		drawfill([g_menuofs[0] + 510,g_menuofs[1] + 346], [64,12], g_vecBottomcolor, 0.75f);
 #endif
 	}
+
+#ifdef MODEL_PREVIEW
+	if (g_iPreviewmodelSubUpdate == 0) {
+		cz_cxHQModelsChanged(cvar("cl_himodels"));
+		g_iPreviewmodelSubUpdate = 1;
+	}
+#endif
 
 	if (games[gameinfo_current].nosprays == 0)
 	WLabel_Static(212, 203, m_reslbl[IDS_PROFILE_LOGO], 14, 14, [1,1,1],
