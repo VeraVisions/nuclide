@@ -53,6 +53,13 @@ Cross_DrawSubRGBA(string strMat, vector vecSize, vector vecSrcPos, vector vecSrc
 		cross_pos = g_hudmins + (g_hudres / 2) + [-(vecSize[0]/2),-(vecSize[1]/2)];
 		cross_pos[0] = rint(cross_pos[0]);
 		cross_pos[1] = rint(cross_pos[1]);
+
+		/* terrible hack to deal with engine's bad autoscale positioning */
+		if (cvar("vid_conautoscale") > 1) {
+			cross_pos[0] -= 0.25f;
+			cross_pos[1] -= 0.25f;
+		}
+		
 		drawsubpic(cross_pos, vecSize, strMat, vecSrcPos, vecSrcSize, vecColor, flAlpha, DRAWFLAG_NORMAL);
 	} else {
 		vector vecSrc;
