@@ -166,6 +166,9 @@ m_init(void)
 		localcmd(strcat("map_background ", mapname, "\n"));
 	}
 
+	/* prepare spray logo keys */
+	spray_setinfokeys();
+
 	g_initialized = true;
 }
 

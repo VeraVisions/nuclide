@@ -85,17 +85,29 @@ cz_cbModelChanged(void)
 }
 
 void
+spray_setinfokeys(void)
+{
+	string strSpray = cvar_string("_cl_playerspray");
+	string strExt = substring(strSpray, strlen(strSpray) - 3, 3);
+	int iType = 0i;
+
+	/* bmp are always monochrome */
+	if (strExt == "bmp")
+		iType = 1i;
+	else
+		iType = 0i;
+
+	localcmd(sprintf("setinfoblob spray %s\n", strSpray));
+	localcmd(sprintf("setinfo spraycolor \"%v\"\n", [1,1,1]));
+	localcmd(sprintf("setinfo spraytype %i\n", iType));
+}
+
+void
 cz_cbSprayChanged(void)
 {
 	string mdl = cz_psSpray.GetPic();
 	localcmd(sprintf("seta _cl_playerspray %s\n", mdl));
-	localcmd(sprintf("setinfoblob spray %s\n", mdl));
-
-	/* bmp are always monochrome */
-	if (substring(mdl, strlen(mdl) - 3, 3) == "bmp")
-		localcmd("setinfo spraytype 1\n");
-	else
-		localcmd("setinfo spraytype 0\n");
+	spray_setinfokeys();
 }
 
 void
