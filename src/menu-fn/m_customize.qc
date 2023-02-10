@@ -341,7 +341,7 @@ menu_customize_init(void)
 			g_ePreviewModel.colormod = [cz_sldTopcolor.m_value, cz_sldBottomcolor.m_value, 2.0];
 		}
 		static void ModelPreview_Input ( float type, float x, float y, float flDevID ) {
-			if (type == IE_KEYUP && x == K_MOUSE1 && Util_CheckMouse(414, 340, 64, 24) == TRUE) {
+			if (type == IE_KEYUP && x == K_MOUSE1 && Util_CheckMouse(414, 360, 64, 24) == TRUE) {
 				g_iModel--;
 				if (g_iModel < 0)
 					g_iModel = g_modelcount - 1;
@@ -349,7 +349,7 @@ menu_customize_init(void)
 				cz_cbModelChanged();
 				ModelPreview_SetModel(sprintf("%s.mdl", g_models[g_iModel]));
 			}
-			if (type == IE_KEYUP && x == K_MOUSE1 && Util_CheckMouse(510, 340, 64, 24) == TRUE) {
+			if (type == IE_KEYUP && x == K_MOUSE1 && Util_CheckMouse(510, 360, 64, 24) == TRUE) {
 				g_iModel++;
 				if (g_iModel >= g_modelcount)
 					g_iModel = 0;
@@ -406,8 +406,8 @@ menu_customize_init(void)
 		}
 
 		cz_3dModel = spawn(CUI3DView);
-		cz_3dModel.SetPos(410,160);
-		cz_3dModel.SetSize([170,221]);
+		cz_3dModel.SetPos(413,163);
+		cz_3dModel.SetSize([164,190]);
 		cz_3dModel.SetDrawFunc(ModelPreview_Draw);
 		cz_3dModel.SetInputFunc(ModelPreview_Input);
 		Widget_Add(fn_customize, cz_3dModel);
@@ -424,13 +424,15 @@ menu_customize_init(void)
 #endif
 
 		cz_sldTopcolor = spawn(CSlider);
-		cz_sldTopcolor.SetPos(420,400);
+		cz_sldTopcolor.SetPos(410,410);
+		cz_sldTopcolor.SetLength(170);
 		cz_sldTopcolor.SetValue(cvar("_cl_topcolor"));
 		cz_sldTopcolor.SetCallback(cz_sldTopcolorChanged);
 		Widget_Add(fn_customize, cz_sldTopcolor);
 		
 		cz_sldBottomcolor = spawn(CSlider);
-		cz_sldBottomcolor.SetPos(420,420);
+		cz_sldBottomcolor.SetPos(410,430);
+		cz_sldBottomcolor.SetLength(170);
 		cz_sldBottomcolor.SetValue(cvar("_cl_bottomcolor"));
 		cz_sldBottomcolor.SetCallback(cz_sldBottomcolorChanged);
 		Widget_Add(fn_customize, cz_sldBottomcolor);
@@ -451,9 +453,15 @@ menu_customize_init(void)
 	cz_sldReceiveVol.SetPos(213,428);
 */
 
+#define TEXTBTN_COLOR [1.0, 0.74, 0.22]
+#define FRAME_COLOR [0.224, 0.224, 0.224]
 void
 menu_customize_draw(void)
 {
+
+	drawfill([g_menuofs[0] + 410,g_menuofs[1] + 160], [170, 221], FRAME_COLOR, 1.0f);
+	drawfill([g_menuofs[0] + 413,g_menuofs[1] + 163], [164,190], [0,0,0], 1.0f);
+
 	Widget_Draw(fn_customize);
 	Header_Draw(HEAD_CUSTOMIZE);
 	WLabel_Static(212, 140, m_reslbl[IDS_PLAYERINFO_NAME], 14, 14, [1,1,1],
@@ -478,17 +486,21 @@ menu_customize_draw(void)
 	WLabel_Static(213, 428 - 16, "Voice Receive Volume *", 14, 14, [1,1,1],
 						1.0f, 0, font_label);
 
+
+	WLabel_Static(410, 390, "Colors", 14, 14, [1,1,1],
+						1.0f, 0, font_label);
+
 	if (games[gameinfo_current].nomodels == 0) {
 		WLabel_Static(410, 140, sprintf(m_reslbl[IDS_MODEL_NAME], cvar_string("_cl_playermodel")), 14, 14, [1,1,1],
 						1.0f, 0, font_arial);
 #ifdef MODEL_PREVIEW
-		drawfill([g_menuofs[0] + 414,g_menuofs[1] + 370], [64,12], g_vecTopcolor, 0.75f);
-		drawfill([g_menuofs[0] + 510,g_menuofs[1] + 370], [64,12], g_vecBottomcolor, 0.75f);
+		//drawfill([g_menuofs[0] + 414,g_menuofs[1] + 166], [64,12], g_vecTopcolor, 0.75f);
+		//drawfill([g_menuofs[0] + 510,g_menuofs[1] + 166], [64,12], g_vecBottomcolor, 0.75f);
 
 		/* fake buttons */
-		WLabel_Static(414, 340, "Previous", 14, 14, [1,1,1],
+		WLabel_Static(414, 360, m_reslbl[IDS_PREVIOUS], 14, 14, col_prompt_text,
 							1.0f, 0, font_arial);
-		WLabel_StaticR(575, 340, "Next", 14, 14, [1,1,1],
+		WLabel_StaticR(575, 360, m_reslbl[IDS_NEXT], 14, 14, col_prompt_text,
 							1.0f, 0, font_arial);
 #else
 		drawfill([g_menuofs[0] + 414,g_menuofs[1] + 346], [64,12], g_vecTopcolor, 0.75f);

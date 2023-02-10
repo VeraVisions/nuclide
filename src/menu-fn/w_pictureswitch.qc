@@ -59,11 +59,11 @@ CPictureSwitch::Draw(void)
 	drawpic([m_picofs[0]+g_menuofs[0]+m_x+3,m_picofs[1]+g_menuofs[1]+m_y+3], m_pics[m_value],
 			[m_picsize[0],m_picsize[1]], [1,1,1], 1.0f);
 
-	WLabel_Static(m_x+3, m_y+m_size[1]-16, m_reslbl[IDS_PREVIOUS], 12, 12, [1,1,1],
+	WLabel_Static(m_x+3, m_y+m_size[1]-16, m_reslbl[IDS_PREVIOUS], 12, 12, col_prompt_text,
 					1.0f, 0, font_arial);
 	WLabel_StaticR(m_x+m_size[0]-4,
 					m_y+m_size[1]-16, m_reslbl[IDS_NEXT], 12, 12,
-					[1,1,1],1.0f, 0, font_arial);
+					col_prompt_text,1.0f, 0, font_arial);
 }
 
 void

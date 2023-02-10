@@ -21,14 +21,16 @@ class CSlider:CWidget
 	int m_hover;
 	int m_hold;
 	float m_value;
-	virtual void(float) m_changed = 0;
+	virtual void m_changed(float) = 0;
 
-	void(void) CSlider;
-	virtual void(void) Draw;
-	virtual void(float, float, float, float) Input;
+	void CSlider(void);
+	virtual void Draw(void);
+	virtual void Input(float, float, float, float);
 	
-	virtual void(float) SetValue;
-	virtual void(void(float)) SetCallback;
+	virtual void SetValue(float);
+	virtual void SetLength(float);
+	virtual void SetCallback(void(float));
+
 };
 
 void
@@ -85,6 +87,13 @@ CSlider::Input(float type, float x, float y, float devid)
 			}
 		}
 	}
+}
+
+void
+CSlider::SetLength(float val)
+{
+	m_length = val;
+	m_tlength = m_length - 27;
 }
 
 void
