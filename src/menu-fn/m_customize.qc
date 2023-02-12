@@ -156,11 +156,12 @@ void
 cz_cxHQModelsChanged(float val)
 {
 	localcmd(sprintf("seta cl_himodels %f\n", val));
-
+#ifdef MODEL_PREVIEW
 	if (val)
 			setcustomskin(g_ePreviewModel, "", "geomset 0 2\n");
 		else
 			setcustomskin(g_ePreviewModel, "", "geomset 0 1\n");
+#endif
 }
 void
 cz_cxEnableVoiceChanged(float val)
