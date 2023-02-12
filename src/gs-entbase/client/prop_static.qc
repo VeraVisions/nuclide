@@ -33,6 +33,10 @@ void
 prop_static::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
+	case "frame":
+	case "sequence":
+		frame = stof(strValue);
+		break;
 	case "modelscale":
 		scale = stof(strValue);
 		break;

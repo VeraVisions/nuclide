@@ -53,6 +53,10 @@ void
 prop_dynamic::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
+	case "frame":
+	case "sequence":
+		frame = stof(strValue);
+		break;
 	case "solid":
 		float s = stof(strValue);
 
