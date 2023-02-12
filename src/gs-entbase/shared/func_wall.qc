@@ -27,6 +27,7 @@ On idTech 2 BSPs, it will change texture variants when triggered.
 # TRIVIA
 This entity was introduced in Quake (1996).
 */
+
 class
 func_wall:NSRenderableEntity
 {
@@ -39,6 +40,7 @@ public:
 	virtual void Trigger(entity, triggermode_t);
 #else
 	virtual void Init(void);
+	virtual bool CanSpawn(bool);
 #endif
 };
 
@@ -86,6 +88,13 @@ func_wall::Respawn(void)
 	ClearAngles();
 }
 #else
+
+bool
+func_wall::CanSpawn(bool clientSide)
+{
+	return true;
+}
+
 void
 func_wall::Init(void)
 {

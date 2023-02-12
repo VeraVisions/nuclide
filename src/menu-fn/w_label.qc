@@ -23,8 +23,10 @@ class CLabel:CWidget
 	float m_alpha;
 	int m_font;
 
-	void(void) CLabel;
-	virtual void(void) Draw;
+	void CLabel(void);
+	virtual void Draw(void);
+	virtual void SetText(string, font_s);
+	virtual void SetTextHeight(int);
 };
 
 void
@@ -37,10 +39,24 @@ CLabel::CLabel(void)
 }
 
 void
+CLabel::SetText(string txt, font_s font)
+{
+	m_label = txt;
+	m_font = Font_GetID(font);
+	m_sx = m_sy = Font_GetHeight(font);
+}
+
+void
+CLabel::SetTextHeight(int val)
+{
+	m_sx = m_sy = val;
+}
+
+void
 CLabel::Draw(void)
 {
 	drawfont = m_font;
-	drawstring([m_x,m_y], m_label, [m_sx,m_sy], m_color, m_alpha, 0);
+	drawstring([g_menuofs[0] + m_x, g_menuofs[1] + m_y], m_label, [m_sx,m_sy], m_color, m_alpha, 0);
 }
 
 /* Sometimes all you need is a static label */

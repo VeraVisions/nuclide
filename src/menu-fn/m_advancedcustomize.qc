@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2023 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -63,6 +63,8 @@ menu_advancedcustomize_init(void)
 	ac_btnCancel.SetExecute(ac_btncancel_start);
 	ac_btnCancel.SetPos(50,172);
 	Widget_Add(fn_advcustomize, ac_btnCancel);
+
+	Layout_FromFile("user.scr", fn_advcustomize);
 }
 
 void

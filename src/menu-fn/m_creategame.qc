@@ -66,6 +66,21 @@ create_btnok_start(void)
 }
 
 void
+create_btnadvanced_start(void)
+{
+	static void create_btnadvanced_end(void) {
+		g_menupage = PAGE_ADVANCEDMPOPTIONS;
+	}
+	localsound("../media/launch_upmenu1.wav");
+	header.SetStartEndPos(50,172,45,45);
+	header.SetStartEndSize(156,26,460,80);
+	header.m_lerp = 0.0f;
+	header.m_visible = TRUE;
+	header.SetHeader(HEAD_ADVANCED);
+	header.SetExecute(create_btnadvanced_end);
+}
+
+void
 create_btncancel_start(void)
 {
 	static void create_btncancel_end(void) {
@@ -95,7 +110,7 @@ menu_creategame_init(void)
 	fn_create = spawn(CWidget);
 	create_btnAdv = spawn(CMainButton);
 	create_btnAdv.SetImage(BTN_ADVOPTIONS);
-	//create_btnAdv.SetExecute(btn_console);
+	create_btnAdv.SetExecute(create_btnadvanced_start);
 	create_btnAdv.SetPos(50,140);
 	Widget_Add(fn_create, create_btnAdv);
 

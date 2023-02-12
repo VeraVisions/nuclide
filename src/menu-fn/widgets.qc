@@ -20,6 +20,7 @@ class CWidget
 	int m_y;
 	CWidget m_next;
 	CWidget m_parent;
+	int m_onpage;
 
 	void(void) CWidget;
 	virtual void(void) Draw;
@@ -33,6 +34,7 @@ CWidget::CWidget(void)
 {
 	m_x = g_menuofs[0];
 	m_y = g_menuofs[1];
+	m_onpage = 0;
 }
 
 void

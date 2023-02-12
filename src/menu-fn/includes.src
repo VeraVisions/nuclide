@@ -33,6 +33,11 @@ w_scrollbar.qc
 w_updatelist.qc
 w_combobox.qc
 
+w_cvartextbox.qc
+w_cvarcheckbox.qc
+
+layout_script.qc
+
 m_addserver.qc
 m_advancedcontrols.qc
 m_advancedcustomize.qc
