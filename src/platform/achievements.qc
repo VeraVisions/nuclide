@@ -57,4 +57,5 @@ Achievement_IndicateProgress(string strName, int iCurrent, int iMax)
 bool
 Achievement_RequestStats(achievement_t *ptr, int count)
 {
+	return false;
 }

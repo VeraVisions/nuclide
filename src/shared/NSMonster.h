@@ -260,6 +260,8 @@ private:
 	float m_flSeeTime;
 	/* animation cycles */
 	float m_flAnimTime;
+
+	nonvirtual void _LerpTurnToEnemy(float);
 #endif
 
 public:

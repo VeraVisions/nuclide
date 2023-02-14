@@ -42,6 +42,7 @@ public:
 	/* overrides */
 	virtual void Draw(void);
 	virtual bool Input(float,float,float,float);
+	virtual void Spawned(void);
 
 private:
 	vector m_vecIMGSize;
@@ -80,12 +81,6 @@ VGUIButton::SetIconColor(vector vecColor)
 {
 	m_vecIconColor = vecColor;
 };
-
-void
-VGUIButton::SetSize(vector vecSize)
-{
-	m_vecSize = vecSize;
-}
 
 void
 VGUIButton::SetTitle(string strName)

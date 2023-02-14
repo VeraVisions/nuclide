@@ -282,15 +282,15 @@ SV_ParseClientCommand(string cmd)
 	switch (argv(0)) {
 	case "say":
 		if (argc == 2)
-			g_grMode.ChatMessageAll(self, argv(1));
+			g_grMode.ChatMessageAll((NSClient)self, argv(1));
 		else
-			g_grMode.ChatMessageAll(self, substring(cmd, 5, -2));
+			g_grMode.ChatMessageAll((NSClient)self, substring(cmd, 5, -2));
 		break;
 	case "say_team":
 		if (argc == 2)
-			g_grMode.ChatMessageTeam(self, argv(1));
+			g_grMode.ChatMessageTeam((NSClient)self, argv(1));
 		else
-			g_grMode.ChatMessageTeam(self, substring(cmd, 10, -2));
+			g_grMode.ChatMessageTeam((NSClient)self, substring(cmd, 10, -2));
 		break;
 	case "spectate":
 		if (self.classname != "player")

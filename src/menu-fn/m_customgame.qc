@@ -324,6 +324,34 @@ games_find_in_gamedir(string filename, string gamedirname)
 
 			sh = search_begin(filename, SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, strcat(gamedirname, "/", full));
 			fh = search_fopen(sh, 0);
+			print(sprintf("looking for %s in %s\n", filename, strcat(gamedirname, "/", full)));
+
+			/* we found one */
+			if (fh >= 0) {
+				search_end(sh);
+				break;
+			}
+			search_end(sh);
+		}
+		search_end(psh);
+	}
+
+	/* we do not. let's search for pk3's to sift through */
+	if (fh < 0) {
+		/* let's search for every pk3 in the gamedir and search for a liblist, one at a time. */
+		psh = search_begin("dlcache/*.pk3.*", SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, gamedirname);
+
+		/* loop through each pk3 in reverse (newest to old) */
+		for (int i = search_getsize(psh); i >= 0; i--) {
+			string full = search_getfilename(psh, i);
+			print(sprintf("%s\n", full));
+
+			if (!full)
+				continue;
+
+			sh = search_begin(filename, SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, strcat(gamedirname, "/", full));
+			fh = search_fopen(sh, 0);
+			print(sprintf("looking for %s in %s\n", filename, strcat(gamedirname, "/", full)));
 
 			/* we found one */
 			if (fh >= 0) {
@@ -522,12 +550,12 @@ customgame_btnactivate_start(void)
 	else if (games[nextgame].info_type == GAMEINFO_LIBLIST) {
 		/* some games/mods inherit other directories */
 		if (games[nextgame].fallback_dir) {
-			localcmd(sprintf("gamedir \"logos;platform;%s;%s;%s\"\n", games[nextgame].base_dir, games[nextgame].fallback_dir, games[nextgame].gamedir));
+			localcmd(sprintf("gamedir \"platform;%s;%s;%s\"\n", games[nextgame].base_dir, games[nextgame].fallback_dir, games[nextgame].gamedir));
 		} else {
-			localcmd(sprintf("gamedir \"logos;platform;%s;%s\"\n", games[nextgame].base_dir, games[nextgame].gamedir));
+			localcmd(sprintf("gamedir \"platform;%s;%s\"\n", games[nextgame].base_dir, games[nextgame].gamedir));
 		}
 	} else
-		localcmd(sprintf("gamedir \"logos;platform;%s;%s\"\n", games[nextgame].base_dir, games[nextgame].gamedir));
+		localcmd(sprintf("gamedir \"platform;%s;%s\"\n", games[nextgame].base_dir, games[nextgame].gamedir));
 #endif
 
 	localcmd("stopmusic\nsnd_restart\nwait\nvid_reload\n");
@@ -535,8 +563,6 @@ customgame_btnactivate_start(void)
 	localcmd("menu_customgame\n");
 	localcmd("menu_musicstart\n");
 }
-
-
 
 #if 1
 void
@@ -561,9 +587,8 @@ void
 customgame_installend(void)
 {
 	int gid = g_iModInstallCache;
-	print("install-end!\n");
-
-	localcmd(sprintf("fs_changegame %s http://www.frag-net.com/mods/%s.fmf\n", g_strModInstallCache, g_strModInstallCache));
+	print(sprintf("Installation ended for %S!\n", g_strModInstallCache));
+	localcmd(sprintf("game %s\n", g_strModInstallCache));
 	game_writeinstallcache(-1, g_strModInstallCache);
 }
 
@@ -711,7 +736,7 @@ games_setdefaultpkgs(int id)
 }
 
 void
-games_init_2(void)
+games_init_mods(void)
 {
 	int id;
 	int foundself = 0;
@@ -719,19 +744,10 @@ games_init_2(void)
 	gameinfo_count = 0;
 
 	for (id = 0; (gamedirname = getgamedirinfo(id, 0)); id++) {
-		/* in case FTE does not report the current game we're playing, sigh */
-		if (gamedirname == cvar_string("game"))
-			foundself = 1;
-
 		gameinfo_count++;
 	}
 
-	/* append current game to the very end */
-	if (!foundself) {
-		//games_set(gameinfo_count);
-		gameinfo_count++;
-	}
-
+	/* re-allocate the game list */
 	memfree(games);
 	games = memalloc(sizeof(gameinfo_t) * gameinfo_count);
 
@@ -742,12 +758,6 @@ games_init_2(void)
 	/* now loop through all the mods we found and load in the metadata */
 	for (id = 0; id < gameinfo_count; id++) {
 		gamedirname = getgamedirinfo(id, 0);
-
-		/* handle the case if we didn't get reported our own game */
-		if (!foundself)
-		if (id == (gameinfo_count-1)) {
-			gamedirname = cvar_string("game");
-		}
 
 		/* Fill in the defaults */
 		games[id].game = gamedirname;
@@ -809,8 +819,10 @@ games_init(void)
 {
 	int id = 0;
 	string gamedirname = cvar_string("game");
-	gameinfo_count++;
+
+	gameinfo_count = 1; /* we start at 1 game, ours */
 	games = memalloc(sizeof(gameinfo_t) * gameinfo_count);
+
 	/* Fill in the defaults */
 	games[id].game = gamedirname;
 	games[id].gamedir = gamedirname;
@@ -840,9 +852,12 @@ games_init(void)
 	games[id].pkgid = -1;
 	games[id].steambg = 0;
 	gameinfo_current = 0;
+
+	/* only run this when not in web-client mode */
+#ifndef WEBMENU
+	/* set the default packages for a given game */
 	games_setdefaultpkgs(id);
 
-#ifndef WEBMENU
 	if (games_check_manifest(id, gamedirname) == 1) {
 		NSLog("[MENU] Found manifest for %s", gamedirname);
 		games[id].info_type = GAMEINFO_MANIFEST;
@@ -857,6 +872,8 @@ games_init(void)
 		games[id].info_type = GAMEINFO_NONE;
 	}
 #endif
+
+	/* set the current game to be us */
 	games_set(id);
 }
 
@@ -938,8 +955,10 @@ menu_customgame_draw(void)
 		customgame_dlgWait.Draw();
 		WField_Static(162, 180, "Indexing all local games, please wait...", 320, 260,
 						col_prompt_text, 1.0f, 2, font_label_p);
+
+		/* once we started rendering the message, start parsing mods */
 		if (g_customgame_initialized == 1)
-			games_init_2();
+			games_init_mods();
 
 		g_customgame_initialized++;
 		return;
@@ -964,6 +983,7 @@ menu_customgame_draw(void)
 	WLabel_Static(571, 143, m_reslbl[IDS_MODLIST_PLAYERS], 11, 11, [1,1,1],
 					1.0f, 0, font_arial);
 
+	/* draw a frame for when we're refreshing the mod list */
 	if (g_iModServerLoading) {
 		customgame_dlgWait.Draw();
 		WField_Static(162, 180, m_reslbl[IDS_MODREQ_TITLE], 320, 260,
@@ -971,13 +991,14 @@ menu_customgame_draw(void)
 	}
 
 
+	/* draw a frame with progress during package install */
 #if 1
 	if (g_iModInstallCache >= 0i) {
 		customgame_installframe();
 	}
 #endif
 
-	customgame_sbMods.SetMax(gameinfo_count-1); /* don't show our current game */
+	customgame_sbMods.SetMax(gameinfo_count-1);
 #endif
 }
 

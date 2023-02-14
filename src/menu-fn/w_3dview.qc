@@ -14,10 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-noref .vector colormod;
-noref .vector angles;
 noref .float colormap;
 noref .float frame, frame2, lerpfrac, renderflags, frame1time;
+noref .vector angles;
+noref .vector colormod;
 
 enumflags
 {

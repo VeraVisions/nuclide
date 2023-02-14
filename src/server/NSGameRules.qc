@@ -340,8 +340,8 @@ NSGameRules::DamageApply(entity t, entity c, float dmg, int w, damageType_t type
 	g_dmg_iFlags = type;
 	g_dmg_iWeapon = w;
 
-	NSLog("Damage: %s damages %s with %i damage", c.classname, t.classname, dmg);
-	NSLog("\tHit-body: %i", g_dmg_iHitBody);
+	NSLog("Damage: %s damages %s with %d damage", c.classname, t.classname, dmg);
+	NSLog("\tHit-body: %d", g_dmg_iHitBody);
 	NSLog("\tFlags: %i", g_dmg_iFlags);
 	NSLog("\tWeapon: %i", g_dmg_iWeapon);
 

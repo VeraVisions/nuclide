@@ -85,7 +85,7 @@ trigger_camera::trigger_camera(void)
 void
 trigger_camera::ReceiveEntity(float flNew, float flFlags)
 {
-	float flWait;
+	float flWait = 0.0f;
 
 	print(sprintf("camera update %d %d %x\n", entnum, flNew, flFlags));
 
@@ -293,7 +293,7 @@ trigger_camera::Trigger(entity act, triggermode_t state)
 	print(sprintf("trigger_camera for %S is now %S\n", act.netname, targetname));
 
 	/* kill the other cams the player may be attached to */
-	for (trigger_camera cam = world; (cam = (trigger_camera)find(cam, ::classname, "trigger_camera"));) {
+	for (trigger_camera cam = __NULL__; (cam = (trigger_camera)find(cam, ::classname, "trigger_camera"));) {
 		if (cam.m_eLooker == act) {
 			cam.m_eLooker = __NULL__;
 			cam.SetSendFlags(-1);

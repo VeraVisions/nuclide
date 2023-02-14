@@ -85,6 +85,8 @@ NSWeapon::SendEntity(entity ePEnt, float flChanged)
 	WriteFloat(MSG_ENTITY, m_flSecondaryNext);
 	WriteFloat(MSG_ENTITY, m_flLastFired);
 #endif
+
+	return (true);
 }
 
 void

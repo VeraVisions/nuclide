@@ -124,7 +124,9 @@ NSClientPlayer::PostFrame(void)
 
 void
 NSClientPlayer::ProcessInput(void)
-{	
+{
+	NSVehicle veh = (NSVehicle)vehicle;
+
 	if (Util_IsPaused())
 		return;
 
@@ -138,8 +140,6 @@ NSClientPlayer::ProcessInput(void)
 
 	/* allow vehicles to prevent weapon logic from happening */
 	if (vehicle && !Client_InIntermission()) {
-		NSVehicle veh = (NSVehicle)vehicle;
-
 		if (veh.PlayerInput)
 			veh.PlayerInput();
 	}
@@ -166,7 +166,6 @@ NSClientPlayer::ProcessInput(void)
 	impulse = 0;
 #endif
 
-	NSVehicle veh = (NSVehicle)vehicle;
 	bool canfire = true;
 
 	/* can't fire in some vehicles */
@@ -179,19 +178,19 @@ NSClientPlayer::ProcessInput(void)
 		canfire = false;
 	
 	if (canfire == false) {
-		Weapons_Release(this);
+		Weapons_Release((player)this);
 		return;
 	}
 
 	/* weapon system */
 	if (input_buttons & INPUT_BUTTON3)
-		Weapons_Secondary(this);
+		Weapons_Secondary((player)this);
 	else if (input_buttons & INPUT_BUTTON0)
-		Weapons_Primary(this);
+		Weapons_Primary((player)this);
 	else if (input_buttons & INPUT_BUTTON4)
-		Weapons_Reload(this);
+		Weapons_Reload((player)this);
 	else
-		Weapons_Release(this);
+		Weapons_Release((player)this);
 }
 
 /* this is where it gets mod specific really fast,
@@ -291,7 +290,7 @@ NSClientPlayer::predraw(void)
 
 		/* draw a 3D voice blob over its head */
 		Voice_Draw3D(this);
-		Weapons_PreDraw(this, true);
+		Weapons_PreDraw((player)this, true);
 
 		/* force drawing us if it's our local player and we're meant to show */
 		if (entnum == player_localentnum)
@@ -310,7 +309,7 @@ NSClientPlayer::predraw(void)
 
 		/* give mods a chance to de-render attachments */
 		UpdatePlayerAttachments(false);
-		Weapons_PreDraw(this, false);
+		Weapons_PreDraw((player)this, false);
 
 		/* this is here just to make sure our view hides us if it's the local player */
 		if (entnum == player_localentnum)

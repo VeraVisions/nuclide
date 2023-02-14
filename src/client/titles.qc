@@ -38,6 +38,21 @@ typedef struct titles_s
 titles_t *g_titles;
 int g_titles_count;
 
+titles_t g_title_null =
+{
+	.m_strName = "",
+	.m_strMessage = "",
+	.m_flPosX = 0.0f,
+	.m_flPosY = -1.0f,
+	.m_iEffect = 0,
+	.m_vecColor1 = [1,1,1],
+	.m_vecColor2 = [1,1,1],
+	.m_flFadeIn = 0.5f,
+	.m_flFadeOut = 0.5f,
+	.m_flHoldTime = 0.0f,
+	.m_flFXTime = 2.5f
+};
+
 string
 Titles_ParseFunString(string temp)
 {

@@ -64,7 +64,7 @@ Cross_DrawSubRGBA(string strMat, vector vecSize, vector vecSrcPos, vector vecSrc
 	} else {
 		vector vecSrc;
 		vector vecDst;
-		player pl = pSeat->m_ePlayer;
+		player pl = (player)pSeat->m_ePlayer;
 
 		vecSrc = pSeat->m_vecPredictedOrigin + pSeat->m_ePlayer.view_ofs;
 		makevectors(view_angles);

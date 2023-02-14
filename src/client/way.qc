@@ -19,7 +19,7 @@ Way_Init(void)
 {
 	/* main waypoint menu */
 	{
-		titles_t way_menu;
+		titles_t way_menu = g_title_null;
 		way_menu.m_strName = "WAY_MENU";
 		way_menu.m_strMessage = "1.\tAdd...\n" \
 								"2.\tLink/Unlink...\n" \
@@ -36,7 +36,7 @@ Way_Init(void)
 	}
 	/* add waypoint menu */
 	{
-		titles_t way_file;
+		titles_t way_file = g_title_null;
 		way_file.m_strName = "WAY_FILE";
 		way_file.m_strMessage = "1.\tSave current file (data/mapname.way)\n" \
 								"\n" \
@@ -53,7 +53,7 @@ Way_Init(void)
 	}
 	/* add waypoint menu */
 	{
-		titles_t way_add;
+		titles_t way_add = g_title_null;
 		way_add.m_strName = "WAY_ADD";
 		way_add.m_strMessage = "1.\tAdd ^1Single^7 Waypoint\n" \
 								"2.\tAdd ^1Chain^7 Waypoint^7 (last-to-new)\n" \
@@ -71,7 +71,7 @@ Way_Init(void)
 	}
 	/* add waypoint menu */
 	{
-		titles_t way_link;
+		titles_t way_link = g_title_null;
 		way_link.m_strName = "WAY_LINK";
 		way_link.m_strMessage = "1.\tLink 1-way (2 steps)\n" \
 								"2.\tLink 2-way (2 steps)\n" \
@@ -88,7 +88,7 @@ Way_Init(void)
 	}
 	/* add waypoint menu */
 	{
-		titles_t way_remove;
+		titles_t way_remove = g_title_null;
 		way_remove.m_strName = "WAY_REMOVE";
 		way_remove.m_strMessage = "\n" \
 								"\n" \
@@ -105,7 +105,7 @@ Way_Init(void)
 	}
 	/* add waypoint menu */
 	{
-		titles_t way_flags;
+		titles_t way_flags = g_title_null;
 		way_flags.m_strName = "WAY_FLAGS";
 		way_flags.m_strMessage = "1.\tFlag ^3JUMP^7 (2 steps)\n" \
 								"2.\tFlag ^2CROUCH^7 (2 steps)\n" \
@@ -122,7 +122,7 @@ Way_Init(void)
 	}
 	/* add waypoint menu */
 	{
-		titles_t way_radius;
+		titles_t way_radius = g_title_null;
 		way_radius.m_strName = "WAY_RADIUS";
 		way_radius.m_strMessage = "1.\tSet closest way-radius (0)\n" \
 								"2.\tSet closest way-radius (8)\n" \
@@ -139,7 +139,7 @@ Way_Init(void)
 	}
 	/* add waypoint menu */
 	{
-		titles_t way_text;
+		titles_t way_text = g_title_null;
 		way_text.m_strName = "WAY_AUTOLINK";
 		way_text.m_strMessage = "1.\tDefault radius (256)\n" \
 								"2.\t32 radius\n" \
@@ -156,7 +156,7 @@ Way_Init(void)
 	}
 	/* add waypoint menu */
 	{
-		titles_t way_move;
+		titles_t way_move = g_title_null;
 		way_move.m_strName = "WAY_MOVE";
 		way_move.m_strMessage = "1.\tMove nearest +1 X-axis\n" \
 								"2.\tMove nearest -1 X-axis\n" \

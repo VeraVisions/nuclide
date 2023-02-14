@@ -85,9 +85,10 @@ Font_Load(string strFile, font_s &fntNew)
 
 	print(sprintf("loaded font definition for %s\n", strFile));
 
-	if (strRenderSize != "")
+	if (strRenderSize != "") {
+		print(sprintf("rendersize: %S\n", strRenderSize));
 		fntNew.iID = (int)loadfont("", strFontPath, strRenderSize, -1, 0, 0);
-	else
+	} else
 		fntNew.iID = (int)loadfont("", strFontPath, ftos((float)fntNew.iScaleY), -1, 0, 0);
 }
 

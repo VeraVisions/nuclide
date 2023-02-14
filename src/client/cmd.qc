@@ -203,7 +203,6 @@ CMD_ListParticles(void)
 static void
 CMD_ListTitles(void)
 {
-	string tmp;
 	int i = 0i;
 
 	for (i = 0; i < g_titles_count; i++) {

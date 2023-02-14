@@ -61,6 +61,8 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	precache_sound("common/wpn_moveselect.wav");
 	precache_sound("common/wpn_select.wav");
 
+	precache_sound("common/null.wav");
+
 	/* VGUI */
 	VGUI_Init();
 
