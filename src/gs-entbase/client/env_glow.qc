@@ -59,6 +59,7 @@ private:
 	vector m_vecOrientation;
 
 	nonvirtual bool IsVisible(vector);
+	nonvirtual void RenderGlow(vector, vector);
 };
 
 bool
@@ -93,7 +94,7 @@ env_glow::IsVisible(vector vecPlayer)
 bool
 env_glow::CanSpawn(bool clientSide)
 {
-	return false;
+	return true;
 }
 
 void env_sun_lensflare(vector, float, vector);
@@ -167,7 +168,7 @@ env_glow::predraw(void)
 	float flDist = vlen(vecPlayer - origin);
 
 	if (IsVisible(vecPlayer) == false)
-		return;
+		return (PREDRAW_NEXT);
 
 	/* Scale the glow somewhat with the players distance */
 	fsize = m_vecSize * m_flScale;
