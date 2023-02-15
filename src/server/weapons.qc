@@ -123,7 +123,8 @@ returns TRUE if weapon pickup gets removed from this world
 int
 Weapons_AddItem(NSClientPlayer pl, int w, int startammo)
 {
-	int value;
+	int value = false;
+	bool over_limit = false;
 
 	/* let's check if we've got a limit */
 	int maxit;
@@ -138,7 +139,8 @@ Weapons_AddItem(NSClientPlayer pl, int w, int startammo)
 
 				/* we're over the slot limit. */
 				if (c >= maxit) {
-					return (0);
+					over_limit = true;
+					break;
 				}
 			}
 		}
@@ -149,7 +151,7 @@ Weapons_AddItem(NSClientPlayer pl, int w, int startammo)
 		if (pl.g_items & g_weapons[w].id) {
 			/* already present, skip */
 			value = FALSE;
-		} else {
+		} else if (over_limit == false) {
 			/* new to our arsenal */
 			pl.g_items |= g_weapons[w].id;
 			value = TRUE;
@@ -171,7 +173,7 @@ Weapons_AddItem(NSClientPlayer pl, int w, int startammo)
 			/* FALSE means maxammo is hit */
 			if (!value)
 				return value;
-		} else {
+		} else if (over_limit == false) {
 			/* new to our arsenal */
 			if (g_weapons[w].pickup((player)pl, TRUE, startammo) == TRUE) {
 				pl.g_items |= g_weapons[w].id;
@@ -188,6 +190,8 @@ Weapons_AddItem(NSClientPlayer pl, int w, int startammo)
 				/* cannot pickup this weapon (weapon says no) */
 				return FALSE;
 			}
+		} else {
+			return FALSE;
 		}
 	}
 
@@ -199,7 +203,8 @@ Weapons_AddItem(NSClientPlayer pl, int w, int startammo)
 int
 Weapons_AddItemSilent(NSClientPlayer pl, int w, int startammo)
 {
-	int value;
+	int value = false;
+	bool over_limit = false;
 
 	/* let's check if we've got a limit */
 	int maxit;
@@ -214,7 +219,8 @@ Weapons_AddItemSilent(NSClientPlayer pl, int w, int startammo)
 
 				/* we're over the slot limit. */
 				if (c >= maxit) {
-					return (0);
+					over_limit = true;
+					break;
 				}
 			}
 		}
@@ -225,7 +231,7 @@ Weapons_AddItemSilent(NSClientPlayer pl, int w, int startammo)
 		if (pl.g_items & g_weapons[w].id) {
 			/* already present, skip */
 			value = FALSE;
-		} else {
+		} else if (over_limit == false) {
 			/* new to our arsenal */
 			pl.g_items |= g_weapons[w].id;
 			value = TRUE;
@@ -245,7 +251,7 @@ Weapons_AddItemSilent(NSClientPlayer pl, int w, int startammo)
 			/* FALSE means maxammo is hit */
 			if (!value)
 				return value;
-		} else {
+		} else if (over_limit == false) {
 			/* new to our arsenal */
 			if (g_weapons[w].pickup((player)pl, TRUE, startammo) == TRUE) {
 				pl.g_items |= g_weapons[w].id;
@@ -260,6 +266,8 @@ Weapons_AddItemSilent(NSClientPlayer pl, int w, int startammo)
 				/* cannot pickup this weapon (weapon says no) */
 				return FALSE;
 			}
+		} else {
+			return false;
 		}
 	}
 
