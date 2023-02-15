@@ -176,8 +176,8 @@ env_sun_lensflare(vector m_vecLensPos, float m_flLensAlpha, vector vecColor)
 {
 	vector lens_pos = project(m_vecLensPos);
 	vector lens_1 = lens_pos - (FLARE_SIZE / 2);
-	vector player_pos = getproperty(VF_ORIGIN);
-	vector player_angle = getproperty(VF_CL_VIEWANGLES);
+	vector player_pos = g_view.GetCameraOrigin();;
+	vector player_angle = g_view.GetCameraAngle();;
 
 	m_flLensAlpha *= 0.5f;
 

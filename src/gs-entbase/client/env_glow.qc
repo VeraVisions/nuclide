@@ -38,7 +38,7 @@ class env_glow:NSEntity /* TODO: change to renderablentity? */
 {
 public:
 	void env_glow(void);
-	
+
 	virtual void Spawned(void);
 	virtual void Respawn(void);
 	virtual float predraw(void);
@@ -57,12 +57,43 @@ private:
 
 	vector m_vecRotate;
 	vector m_vecOrientation;
+
+	nonvirtual bool IsVisible(vector);
 };
+
+bool
+env_glow::IsVisible(vector vecPlayer)
+{
+	entity oother = other;
+
+	if (autocvar_r_skipGlows)
+		return (false);
+
+	if (checkpvs(vecPlayer, this) == FALSE)
+		return (false);
+
+	other = world;
+	traceline(this.origin, vecPlayer, MOVE_OTHERONLY, this);
+	other = oother;
+
+	/* If we can't trace against the player, or are two close, fade out */
+	if (trace_fraction < 1.0f || vlen(origin - vecPlayer) < 128)
+		m_flAlpha = m_flAlpha - frametime;
+	else
+		m_flAlpha = m_flAlpha + frametime;
+
+	m_flAlpha = bound(0.0f, m_flAlpha, 1.0f);
+
+	if (m_flAlpha <= 0.0f)
+		return (false);
+
+	return (true);
+}
 
 bool
 env_glow::CanSpawn(bool clientSide)
 {
-	return true;
+	return false;
 }
 
 void env_sun_lensflare(vector, float, vector);
@@ -92,61 +123,9 @@ env_glow::RendererRestarted(void)
 	}
 }
 
-float
-env_glow::predraw(void)
+void
+env_glow::RenderGlow(vector forg, vector fsize)
 {
-	vector forg;
-	vector fsize;
-	vector vecPlayer;
-
-	if (autocvar_r_skipGlows)
-		return PREDRAW_NEXT;
-
-	int s = (float)getproperty(VF_ACTIVESEAT);
-	pSeat = &g_seats[s];
-	vecPlayer = pSeat->m_vecPredictedOrigin;
-
-	if (checkpvs(vecPlayer, this) == FALSE)
-		return (PREDRAW_NEXT);
-
-	other = world;
-	traceline(this.origin, vecPlayer, MOVE_OTHERONLY, this);
-
-	/* If we can't trace against the player, or are two close, fade out */
-	if (trace_fraction < 1.0f || vlen(origin - vecPlayer) < 128)
-		m_flAlpha -= clframetime;
-	else
-		m_flAlpha += clframetime;
-
-	m_flAlpha = bound(0.0f, m_flAlpha, 1.0f);
-
-	if (m_flAlpha <= 0.0f)
-		return (PREDRAW_NEXT);
-
-	/* Scale the glow somewhat with the players distance */
-	fsize = m_vecSize * m_flScale;
-	fsize *= bound(1, vlen(vecPlayer - origin) / 256, 4);
-
-	makevectors(view_angles);
-
-	/* Nudge this slightly towards the camera */
-	makevectors(vectoangles(origin - vecPlayer));
-	forg = origin + (v_forward * -16);
-
-	if (HasSpawnFlags(1)) {
-		vector above;
-		makevectors(m_vecOrientation);
-		above = origin + (v_forward * 16);
-
-		/* we're aiming right down */
-		if (above[2] > origin[2])
-			makevectors(m_vecOrientation+[0, m_vecRotate[2],0]);
-		else
-			makevectors(m_vecOrientation+[0,0, m_vecRotate[2]]);
-	} else {
-		makevectors(view_angles+[0, m_vecRotate[1], m_vecRotate[2]]);
-	}
-
 #ifndef FTE_QUADFIX
 	R_BeginPolygon(m_strSprite, 1, 0);
 	R_PolygonVertex(forg + v_right * fsize[0] - v_up * fsize[1],
@@ -176,6 +155,43 @@ env_glow::predraw(void)
 		[1,0], m_vecColor * m_flMaxAlpha, m_flAlpha);
 	R_EndPolygon();
 #endif
+}
+
+float
+env_glow::predraw(void)
+{
+	vector forg;
+	vector fsize;
+	vector vecPlayer = g_view.GetCameraOrigin();
+	vector vecAngle = g_view.GetCameraAngle();
+	float flDist = vlen(vecPlayer - origin);
+
+	if (IsVisible(vecPlayer) == false)
+		return;
+
+	/* Scale the glow somewhat with the players distance */
+	fsize = m_vecSize * m_flScale;
+	fsize *= bound(1, flDist / 256, 4);
+
+	/* Nudge this slightly towards the camera */
+	makevectors(vectoangles(origin - vecPlayer));
+	forg = origin + (v_forward * -16);
+
+	if (HasSpawnFlags(1)) {
+		vector above;
+		makevectors(m_vecOrientation);
+		above = origin + (v_forward * 16);
+
+		/* we're aiming right down */
+		if (above[2] > origin[2])
+			makevectors(m_vecOrientation+[0, m_vecRotate[2],0]);
+		else
+			makevectors(m_vecOrientation+[0,0, m_vecRotate[2]]);
+	} else {
+		makevectors(vecAngle +[0, m_vecRotate[1], m_vecRotate[2]]);
+	}
+
+	RenderGlow(forg, fsize);
 
 	return (PREDRAW_NEXT);
 }
