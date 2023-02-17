@@ -196,12 +196,17 @@ menu_creategame_init(void)
 	g_mapcount = search_getsize(mapsearch);
 	for (i = 0; i < g_mapcount; i++) {
 		string tmp, dir;
+		string gdir = games[gameinfo_current].gamedir;
 		int list = TRUE;
 		tmp = substring(search_getfilename(mapsearch, i), 5, -1);
 
+		/* work around FTEQW's path choice */
+		if (gdir == "ftehl")
+			gdir = "valve";
+
 		/* only look for maps in the current gamedir, requires SEARCH_FULLPACKAGE */
-		dir = substring(search_getpackagename(mapsearch, i), 0, strlen(games[gameinfo_current].gamedir));
-		if (dir != games[gameinfo_current].gamedir) {
+		dir = substring(search_getpackagename(mapsearch, i), 0, strlen(gdir));
+		if (dir != gdir) {
 			continue;
 		}
 
