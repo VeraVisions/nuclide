@@ -199,6 +199,8 @@ Resource_Available(resource_t res)
 		return false;
 	else if (res == RESOURCE_AVAILABLE)
 		return true;
+
+	return RESOURCE_UNCHECKED;
 }
 
 void m_hide(void);
