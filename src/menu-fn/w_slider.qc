@@ -22,6 +22,7 @@ class CSlider:CWidget
 	int m_hold;
 	float m_value;
 	virtual void m_changed(float) = 0;
+	resource_t m_resSlider;
 
 	void CSlider(void);
 	virtual void Draw(void);
@@ -40,6 +41,7 @@ CSlider::CSlider(void)
 	 * (border, etc. ignored) */
 	m_length = 156;
 	m_tlength = m_length - 27;
+	m_resSlider = Resource_Check(strcat(g_bmp[SLIDER], ".bmp"));
 }
 
 void
@@ -47,10 +49,13 @@ CSlider::Draw(void)
 {
 	drawfill([g_menuofs[0]+m_x,g_menuofs[1]+m_y], [m_length,8], [0.25,0.25,0.25], 1.0f);
 	drawfill([g_menuofs[0]+m_x+3,g_menuofs[1]+m_y+3], [m_length-6,2], [0,0,0], 1.0f);
-	
-	
+
+	if (Resource_Available(m_resSlider))
 	drawpic([g_menuofs[0]+m_x+(m_value * m_tlength)+3,g_menuofs[1]+m_y], g_bmp[SLIDER],
 			[21,8], [1,1,1], 1.0f);
+	else {
+		drawfill([g_menuofs[0]+m_x+(m_value * m_tlength)+3,g_menuofs[1]+m_y], [21,8], [1,1,1], 0.75f);
+	}
 }
 
 void

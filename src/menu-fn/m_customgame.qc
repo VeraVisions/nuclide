@@ -324,7 +324,7 @@ games_find_in_gamedir(string filename, string gamedirname)
 
 			sh = search_begin(filename, SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, strcat(gamedirname, "/", full));
 			fh = search_fopen(sh, 0);
-			print(sprintf("looking for %s in %s\n", filename, strcat(gamedirname, "/", full)));
+			//print(sprintf("looking for %s in %s\n", filename, strcat(gamedirname, "/", full)));
 
 			/* we found one */
 			if (fh >= 0) {
@@ -344,14 +344,14 @@ games_find_in_gamedir(string filename, string gamedirname)
 		/* loop through each pk3 in reverse (newest to old) */
 		for (int i = search_getsize(psh); i >= 0; i--) {
 			string full = search_getfilename(psh, i);
-			print(sprintf("%s\n", full));
+			//print(sprintf("%s\n", full));
 
 			if (!full)
 				continue;
 
 			sh = search_begin(filename, SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, strcat(gamedirname, "/", full));
 			fh = search_fopen(sh, 0);
-			print(sprintf("looking for %s in %s\n", filename, strcat(gamedirname, "/", full)));
+			//print(sprintf("looking for %s in %s\n", filename, strcat(gamedirname, "/", full)));
 
 			/* we found one */
 			if (fh >= 0) {
@@ -730,8 +730,8 @@ void
 games_setdefaultpkgs(int id)
 {
 	if (games[id].gamedir == "valve") {
-		games[id].pkgname = "valve_dayone;valve_uplink;valve_realmedia;valve_opfordemo;valve_hlds;valve_patch1110;addon_furtherdata;addon_holidaymodels";
-		games[id].pkgfile = "maps/crossfire.bsp";
+		games[id].pkgname = "valve_patch;addon_furtherdata;addon_holidaymodels";
+		games[id].pkgfile = "maps/crossfire.bsp"; /* only found in patches */
 	}
 }
 

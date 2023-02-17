@@ -107,7 +107,7 @@ ctrl_btndefaults(void)
 		}
 		fclose(fs_def);
 	} else {
-		error("Cannot parse gfx/shell/kb_def.lst!");
+		warning("Cannot parse gfx/shell/kb_def.lst!");
 	}
 }
 
@@ -258,7 +258,7 @@ menu_controls_init(void)
 		}
 		fclose(fs_actlst);
 	} else {
-		error("Cannot parse gfx/shell/kb_act.lst!");
+		warning("Cannot parse gfx/shell/kb_act.lst!");
 	}
 
 	menu_controls_update();

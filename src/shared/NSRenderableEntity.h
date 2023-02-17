@@ -108,6 +108,10 @@ private:
 	/* model events */
 	float m_flBaseTime;
 
+#ifdef CLIENT
+	nonvirtual void _UpdateGeomset();
+#endif
+
 #ifdef SERVER
 	/* respawn */
 	float m_oldiRenderFX;
@@ -135,6 +139,7 @@ public:
 	virtual void RenderDebugSkeleton(void);
 	virtual void ReceiveEntity(float,float);
 	virtual float predraw(void);
+	virtual void RendererRestarted();
 #endif
 
 	virtual void MakeStatic(void);

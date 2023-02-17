@@ -27,6 +27,8 @@ class CScrollbar:CWidget
 	int m_totalentries;
 	int m_itemheight;
 	virtual void(int) m_changed = 0;
+	resource_t m_resUp;
+	resource_t m_resDown;
 	
 	int m_up_hover;
 	int m_up_hold;
@@ -42,6 +44,9 @@ class CScrollbar:CWidget
 	virtual void(int) SetHeight;
 	virtual void(int) SetItemheight;
 	virtual void(void(int)) SetCallback;
+
+	nonvirtual void DrawArrowUp(vector);
+	nonvirtual void DrawArrowDown(vector);
 };
 
 void
@@ -51,6 +56,54 @@ CScrollbar::CScrollbar(void)
 	 * (border, etc. ignored) */
 	SetItemheight(15);
 	SetHeight(128);
+	m_resUp = Resource_Check(strcat(g_bmp[UPARROWD], ".bmp"));
+	m_resDown = Resource_Check(strcat(g_bmp[DNARROWD], ".bmp"));
+}
+
+void
+CScrollbar::DrawArrowUp(vector vecPos)
+{
+	if (Resource_Available(m_resUp)) {
+		if (m_up_hold) {
+			drawpic(vecPos, g_bmp[UPARROWP], [16,16], [1,1,1], 1.0f, 0);
+		} else if (m_up_hover) {
+			drawpic(vecPos, g_bmp[UPARROWF], [16,16], [1,1,1], 1.0f, 0);
+		} else {
+			drawpic(vecPos, g_bmp[UPARROWD], [16,16], [1,1,1], 1.0f, 0);
+		}
+	} else {
+		drawfill(vecPos, [16,16], [0.25,0.25,0.25], 1.0f);
+		drawfill(vecPos + [3,3], [10,10], [0,0,0], 1.0f);
+
+		if (m_up_hold) {
+			drawfill(vecPos, [16,16], [1,1,1], 1.0f);
+		} else if (m_up_hover) {
+			drawfill(vecPos, [16,16], [1,1,1], 0.75f);
+		}
+	}
+}
+
+void
+CScrollbar::DrawArrowDown(vector vecPos)
+{
+	if (Resource_Available(m_resDown)) {
+		if (m_dn_hold) {
+			drawpic(vecPos, g_bmp[DNARROWP], [16,16], [1,1,1], 1.0f, 0);
+		} else if (m_dn_hover) {
+			drawpic(vecPos, g_bmp[DNARROWF], [16,16], [1,1,1], 1.0f, 0);
+		} else {
+			drawpic(vecPos, g_bmp[DNARROWD], [16,16], [1,1,1], 1.0f, 0);
+		}
+	} else {
+		drawfill(vecPos, [16,16], [0.25,0.25,0.25], 1.0f);
+		drawfill(vecPos + [3,3], [10,10], [0,0,0], 1.0f);
+
+		if (m_dn_hold) {
+			drawfill(vecPos, [16,16], [1,1,1], 1.0f);
+		} else if (m_dn_hover) {
+			drawfill(vecPos, [16,16], [1,1,1], 0.75f);
+		}
+	}
 }
 
 void
@@ -59,27 +112,8 @@ CScrollbar::Draw(void)
 	int barheight = 0;
 	float barstep = 0;
 
-	if (m_up_hold) {
-		drawpic([g_menuofs[0]+m_x,g_menuofs[1]+m_y], g_bmp[UPARROWP],
-				[16,16], [1,1,1], 1.0f, 0);
-	} else if (m_up_hover) {
-		drawpic([g_menuofs[0]+m_x,g_menuofs[1]+m_y], g_bmp[UPARROWF],
-				[16,16], [1,1,1], 1.0f, 0);
-	} else {
-		drawpic([g_menuofs[0]+m_x,g_menuofs[1]+m_y], g_bmp[UPARROWD],
-				[16,16], [1,1,1], 1.0f, 0);
-	}
-
-	if (m_dn_hold) {
-		drawpic([g_menuofs[0]+m_x,g_menuofs[1]+m_y+m_theight + 16], g_bmp[DNARROWP],
-				[16,16], [1,1,1], 1.0f, 0);
-	} else if (m_dn_hover) {
-		drawpic([g_menuofs[0]+m_x,g_menuofs[1]+m_y+m_theight + 16], g_bmp[DNARROWF],
-				[16,16], [1,1,1], 1.0f, 0);
-	} else {
-		drawpic([g_menuofs[0]+m_x,g_menuofs[1]+m_y+m_theight + 16], g_bmp[DNARROWD],
-				[16,16], [1,1,1], 1.0f, 0);
-	}
+	DrawArrowUp([g_menuofs[0]+m_x,g_menuofs[1]+m_y]);
+	DrawArrowDown([g_menuofs[0]+m_x,g_menuofs[1]+m_y+m_theight + 16]);
 
 	barheight = (float)(m_minus) / (float)(m_totalentries) * m_theight;
 

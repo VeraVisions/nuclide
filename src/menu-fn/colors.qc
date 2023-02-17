@@ -62,7 +62,7 @@ Colors_Init(void)
 	}
 
 	if (fs_colors < 0) {
-		print("^1WARNING: ^7Could NOT load gfx/shell/colors.lst");
+		warning("Cannot parse gfx/shell/colors.lst!");
 		return;
 	}
 

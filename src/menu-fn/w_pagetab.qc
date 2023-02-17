@@ -7,12 +7,17 @@ class CPageTab:CWidget
 
 	int m_lbtnstate;
 	int m_rbtnstate;
+	resource_t m_resLeft;
+	resource_t m_resRight;
 
 	void CPageTab(void);
 	virtual void Draw(void);
 	virtual void Input(float, float, float, float);
 
 	virtual void AddWidget(CWidget);
+
+	nonvirtual void DrawArrowLeft(vector);
+	nonvirtual void DrawArrowRight(vector);
 };
 
 void
@@ -20,29 +25,62 @@ CPageTab::CPageTab(void)
 {
 	m_page = 1;
 	m_maxpage = 1;
+	m_resLeft = Resource_Check(strcat(g_bmp[LARROWDEFAULT], ".bmp"));
+	m_resRight = Resource_Check(strcat(g_bmp[RARROWDEFAULT], ".bmp"));
+}
+
+void
+CPageTab::DrawArrowLeft(vector vecPos)
+{
+	if (Resource_Available(m_resLeft)) {
+		if (m_lbtnstate & 2) {
+			drawpic(vecPos, g_bmp[LARROWPRESSED], [16,16], [1,1,1], 1.0f, 0);
+		} else if (m_lbtnstate & 1) {
+			drawpic(vecPos, g_bmp[LARROWFLYOVER], [16,16], [1,1,1], 1.0f, 0);
+		} else {
+			drawpic(vecPos, g_bmp[LARROWDEFAULT], [16,16], [1,1,1], 1.0f, 0);
+		}
+	} else {
+		drawfill(vecPos, [16,16], [0.25,0.25,0.25], 1.0f);
+		drawfill(vecPos + [3,3], [10,10], [0,0,0], 1.0f);
+
+		if (m_lbtnstate & 2) {
+			drawfill(vecPos, [16,16], [1,1,1], 1.0f);
+		} else if (m_lbtnstate & 1) {
+			drawfill(vecPos, [16,16], [1,1,1], 0.75f);
+		}
+	}
+}
+
+void
+CPageTab::DrawArrowRight(vector vecPos)
+{
+	if (Resource_Available(m_resRight)) {
+		if (m_rbtnstate & 2) {
+			drawpic(vecPos, g_bmp[RARROWPRESSED], [16,16], [1,1,1], 1.0f, 0);
+		} else if (m_rbtnstate & 1) {
+			drawpic(vecPos, g_bmp[RARROWFLYOVER], [16,16], [1,1,1], 1.0f, 0);
+		} else {
+			drawpic(vecPos, g_bmp[RARROWDEFAULT], [16,16], [1,1,1], 1.0f, 0);
+		}
+	} else {
+		drawfill(vecPos, [16,16], [0.25,0.25,0.25], 1.0f);
+		drawfill(vecPos + [3,3], [10,10], [0,0,0], 1.0f);
+
+		if (m_rbtnstate & 2) {
+			drawfill(vecPos, [16,16], [1,1,1], 1.0f);
+		} else if (m_rbtnstate & 1) {
+			drawfill(vecPos, [16,16], [1,1,1], 0.75f);
+		}
+	}
 }
 
 .string classname;
 void
 CPageTab::Draw(void)
 {
-	string lbtn = g_bmp[LARROWDEFAULT];
-	string rbtn = g_bmp[RARROWDEFAULT];
-
-	if (m_lbtnstate & 2)
-		lbtn = g_bmp[LARROWPRESSED];
-	else if (m_lbtnstate & 1)
-		lbtn = g_bmp[LARROWFLYOVER];
-
-	if (m_rbtnstate & 2)
-		rbtn = g_bmp[RARROWPRESSED];
-	else if (m_rbtnstate & 1)
-		rbtn = g_bmp[RARROWFLYOVER];
-
-	drawpic([g_menuofs[0]+440,g_menuofs[1]+108], lbtn,
-				[16,16], [1,1,1], 1.0f, 0);
-	drawpic([g_menuofs[0]+573,g_menuofs[1]+108], rbtn,
-				[16,16], [1,1,1], 1.0f, 0);
+	DrawArrowLeft([g_menuofs[0]+440,g_menuofs[1]+108]);
+	DrawArrowRight([g_menuofs[0]+573,g_menuofs[1]+108]);
 
 	WLabel_Static(460, 111, sprintf("Page %i of %i", m_page, m_maxpage), 14, 14, [1,1,1],
 				1.0, 0, font_label);

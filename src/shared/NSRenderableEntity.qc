@@ -37,6 +37,18 @@ NSRenderableEntity::NSRenderableEntity(void)
 #endif
 }
 
+
+#ifdef CLIENT
+void NSRenderableEntity::RendererRestarted( void ) {
+	_UpdateGeomset();
+}
+
+void NSRenderableEntity::_UpdateGeomset(void)
+{
+	setcustomskin(this, "", sprintf("geomset 0 %i\ngeomset 1 %i\n", m_iBody, m_iBody));
+}
+#endif
+
 /*
 ============
 NSRenderableEntity::MakeStatic
@@ -564,7 +576,7 @@ NSRenderableEntity::SetBody(int newBody)
 	m_iBody = newBody;
 
 #ifdef CLIENT
-	setcustomskin(this, "", sprintf("geomset 0 %i\ngeomset 1 %i\n", m_iBody, m_iBody));
+	_UpdateGeomset();
 #endif
 }
 

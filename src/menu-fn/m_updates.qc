@@ -116,10 +116,14 @@ up_lbupdates_changed(void)
 
 	pkgid = up_lbUpdates.GetSelected();
 
-	if (!pkgid)
+	if (pkgid == -1)
 		return;
 
 	newpic = sprintf(FN_UPDATE_IMGURL, updates[pkgid].name);
+
+	if not (newpic)
+		return;
+
 	g_updates_previewpic = newpic;
 	precache_pic(g_updates_previewpic);
 }

@@ -87,7 +87,7 @@ Layout_FromFile_Create(CPageTab target, string cvar, string descr, string type, 
 		//new = spawn(CTextBox);
 		//break;
 	default:
-		print(sprintf("Unknown layout element type %S\n", type));
+		warning(sprintf("Unknown widget type %S for cvar %S, ignoring", type, cvar));
 	}
 
 	if (!new)
@@ -197,7 +197,7 @@ Layout_FromFile(string filename, CWidget target)
 
 	fh = fopen(filename, FILE_READ);
 	if (fh < 0) {
-		error(sprintf("Cannot read layout file %S\n", filename));
+		warning(sprintf("Cannot read layout file %S", filename));
 		return;
 	}
 
