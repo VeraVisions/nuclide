@@ -196,5 +196,59 @@ zypper in ffmpeg-4-libavformat-devel ffmpeg-4-libswscale-devel
 #### Worldspawn
 
 ```
-zypper in cmake gtkglext-devel libxml2-devel libjpeg8-devel minizip-devel
+zypper in make gtkglext-devel libxml2-devel libjpeg8-devel minizip-devel
+```
+
+### Fedora
+
+#### FTE
+
+```
+dnf install make gcc gcc-c++ mesa-libGL-devel gnutls-devel
+```
+
+#### SDL2
+
+```
+dnf install SDL2-devel
+```
+
+#### GLX / X11 (part of libsdl2-dev)
+
+```
+dnf install libX11-devel libXcursor-devel libXrender-devel
+```
+
+#### Plugin: ODE
+
+```
+dnf install autoconf automake libtool
+```
+
+#### Plugin: FFMPEG
+
+*Note:* You will have to manually build this plugin due to FFMPEG breaking ABI between releases as well as install a custom repository since Fedora ships only latest versions of FFMPEG. 
+
+First, you will need to install the RPM Fusion if you don't have it. We recommend reading their official guide: https://rpmfusion.org/Configuration
+
+Then, you can install the required version of FFMPEG:
+
+```
+dnf install compat-ffmpeg4-devel
+```
+
+Now to build:
+
+1) Edit build.cfg and change `FFMPEG=YES` to `NO`
+2) Browse to src/engine/engine
+3) Run this command: 
+
+`make plugins-rel NATIVE_PLUGINS="ffmpeg" AV_BASE=/usr/include/compat-ffmpeg4 AV_LDFLAGS="-l:libavcodec.so.58 -l:libavformat.so.58 -l:libavutil.so.56 -l:libswscale.so.5"`
+
+4) Copy over `fteplug_ffmpeg.so` to the `bin` folder where nuclide and the build scripts are.
+
+#### Worldspawn
+
+```
+dnf install make pkgconf gtkglext-devel libxml2-devel libjpeg-turbo-devel minizip-devel
 ```

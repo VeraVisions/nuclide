@@ -1,7 +1,7 @@
 Nuclide
 Beta Version
 Readme File
-14/07/2022
+23/02/2023
  
 *****************************************************************
 About This Document: 
@@ -47,15 +47,19 @@ You can also join Nuclide's Matrix space here: https://matrix.to/#/#nuclide:matr
  
 V. CONTRIBUTORS
  
+dqus - Misc code fixes and help
 cyber-bridge - Misc weapon and item fixes
-Matthew Nguyen - Early Readme formatting
 BartoCH - Some shell script corrections, misc stuff
+dhalucario - Fedora build help
+Matthew Nguyen - Early Readme formatting
+Cloudwalk - Suggestions, Feedback, and fellow Quaker (as in the game)
  
 VI. SPECIAL THANKS
  
 Spike
 Xylemon
 theuaredead
+preston22
 twhl.info
 Little Caesars
 all the other UNIX hackers that dl my wares
