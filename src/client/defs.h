@@ -96,6 +96,8 @@
 #define PRINT_HIGH		2
 #define PRINT_CHAT		3
 
+var bool g_dlight_cached = false;
+
 const float MASK_GLOWS = 16;
 var bool g_focus;
 bool Util_IsFocused(void);

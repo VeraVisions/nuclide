@@ -291,6 +291,11 @@ CSQC_UpdateView(float w, float h, float focus)
 			else
 				g_view.SetViewMode(VIEWMODE_FPS);
 
+			if (g_dlight_cached == false) {
+				g_dlight_cached = true;
+				dynamiclight_add(g_view.GetCameraOrigin(), 16, [0.1,0.1,0.1]);
+			}
+
 			g_view.UpdateView();
 
 			/* 2D calls happen here, after rendering is done */
