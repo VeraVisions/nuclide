@@ -45,71 +45,71 @@ public:
 	void NSView(void);
 
 	/** the only method we we want to call setproperty() */
-	virtual void SetupView(void);
+	nonvirtual void SetupView(void);
 	/** only does one thing: renderscene() */
-	virtual void RenderView(void);
+	nonvirtual void RenderView(void);
 	
 	/** when called, will modify 'origin' to vertically smoothed when on ground */
-	virtual void StairSmooth(void);
+	nonvirtual void StairSmooth(void);
 	
 	/** applies an punch to our camera angle, temporarily */
-	virtual void AddPunchAngle(vector);
+	nonvirtual void AddPunchAngle(vector);
 	
 	/** called every CSQC_UpdateView for each player */
-	virtual void UpdateView(void);
+	nonvirtual void UpdateView(void);
 
 	/* set/get */
 	/** Sets the viewmode_t of the NSView. */
-	virtual void SetViewMode(viewmode_t);
+	nonvirtual void SetViewMode(viewmode_t);
 	/** Gets the viewmode_t of the NSView. */
-	virtual viewmode_t GetViewMode(void);
+	nonvirtual viewmode_t GetViewMode(void);
 
 	/** Sets the position of the NSView on the screen. */
-	virtual void SetViewPosition(vector);
+	nonvirtual void SetViewPosition(vector);
 	/** Sets the canvas of the NSView. */
-	virtual void SetViewSize(vector);
+	nonvirtual void SetViewSize(vector);
 	/** Sets the view target of the NSView. We'll be seeing the world through their eyes. */
-	virtual void SetViewTarget(NSEntity);
+	nonvirtual void SetViewTarget(NSEntity);
 	/** Sets the client owner of the NSView.
        For example, when you're spectating somebody, 
        our View Target will be the person we're spectating; 
        whereas the owner is the client doing the spectating. */
-	virtual void SetClientOwner(NSClient);
+	nonvirtual void SetClientOwner(NSClient);
 
 	/** Call with the argument `true` and you will draw the body of the view target. */
-	virtual void SetDrawLocalPlayer(bool);
+	nonvirtual void SetDrawLocalPlayer(bool);
 
 	/** Sets the 3D position of the NSView. */
-	virtual void SetCameraOrigin(vector);
+	nonvirtual void SetCameraOrigin(vector);
 	/** Sets the 3D direction of the NSView. */
-	virtual void SetCameraAngle(vector);
+	nonvirtual void SetCameraAngle(vector);
 	/** Sets the client-angle of the NSView. */
-	virtual void SetClientAngle(vector);
+	nonvirtual void SetClientAngle(vector);
 	/** Sets the seat id of the NSView */
-	virtual void SetSeatID(int);
+	nonvirtual void SetSeatID(int);
 	/** Sets the absolute field of view of the NSView. */
-	virtual void SetAFOV(float);
+	nonvirtual void SetAFOV(float);
 	/** Returns the absolute field of view of the NSView. */
-	virtual float GetAFOV(void);
+	nonvirtual float GetAFOV(void);
 	/** Sets the sensitivity multiplier of the NSView. */
-	virtual void SetSensitivity(float);
+	nonvirtual void SetSensitivity(float);
 	/** Returns the sensitivity of the NSView. */
-	virtual float GetSensitivity(void);
+	nonvirtual float GetSensitivity(void);
 
 	/** Returns the canvas size of the heads up display. */
-	virtual vector GetHUDCanvasSize(void);
+	nonvirtual vector GetHUDCanvasSize(void);
 	/** Returns the canvas size of a heads-up-display. */
-	virtual vector GetHUDCanvasPos(void);
+	nonvirtual vector GetHUDCanvasPos(void);
 
 	/** Get the absolute width of the view, in pixels. */
-	virtual float GetViewWidth(void);
+	nonvirtual float GetViewWidth(void);
 	/** Get the absolute height of the view, in pixels. */
-	virtual float GetViewHeight(void);
+	nonvirtual float GetViewHeight(void);
 
 	/** Returns the 3D world coordinate of the NSView. */
-	virtual vector GetCameraOrigin(void);
+	nonvirtual vector GetCameraOrigin(void);
 	/** Returns the 3D direction of the NSView. */
-	virtual vector GetCameraAngle(void);
+	nonvirtual vector GetCameraAngle(void);
 
 private:
 	int m_iSeat;

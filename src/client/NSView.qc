@@ -91,7 +91,7 @@ NSView::StairSmooth(void)
 
 		/* Have we gone up since last frame? */
 		if ((m_viewTarget.flags & FL_ONGROUND) && (endpos[2] - m_vecLastOrigin[2] > 0)) {
-			endpos[2] = m_vecLastOrigin[2] += (clframetime * 150);
+			endpos[2] = m_vecLastOrigin[2] += (frametime * 150);
 
 			if (endpos[2] > origin[2]) {
 				endpos[2] = origin[2];
