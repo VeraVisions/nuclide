@@ -15,3 +15,13 @@
 */
 
 #include "gamerules.h"
+
+// stubs for spawning
+void info_player_deathmatch(void)
+{
+
+}
+
+void info_player_start(void)
+{
+}

@@ -15,6 +15,12 @@
 */
 
 void
+GameRules::GameRules(void)
+{
+
+}
+
+void
 GameRules::LevelDecodeParms(NSClientPlayer pp)
 {
 	player pl = (player)pp;

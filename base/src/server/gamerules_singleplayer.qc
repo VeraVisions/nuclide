@@ -15,6 +15,12 @@
 */
 
 void
+SingleplayerRules::SingleplayerRules(void)
+{
+
+}
+
+void
 SingleplayerRules::PlayerDeath(NSClientPlayer pl)
 {
 	pl.movetype = MOVETYPE_NONE;

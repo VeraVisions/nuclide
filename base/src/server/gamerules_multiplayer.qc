@@ -15,6 +15,12 @@
 */
 
 void
+MultiplayerRules::MultiplayerRules(void)
+{
+
+}
+
+void
 MultiplayerRules::FrameStart(void)
 {
 	if (cvar("mp_timelimit"))
@@ -117,4 +123,10 @@ void
 Game_InitRules(void)
 {
 	g_grMode = spawn(MultiplayerRules);
+
+	if (cvar("sv_playerslots") == 1 || cvar("coop") == 1) {
+		g_grMode = spawn(SingleplayerRules);
+	} else {
+		g_grMode = spawn(MultiplayerRules);
+	}
 }

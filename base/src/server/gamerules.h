@@ -16,6 +16,8 @@
 
 class GameRules:CGameRules
 {
+	void GameRules(void);
+
 	virtual void(NSClientPlayer) PlayerConnect;
 	virtual void(NSClientPlayer) PlayerDisconnect;
 	virtual void(NSClientPlayer) PlayerKill;
@@ -28,6 +30,8 @@ class GameRules:CGameRules
 
 class SingleplayerRules:GameRules
 {
+	void SingleplayerRules(void);
+
 	/* client */
 	virtual void(NSClientPlayer) PlayerSpawn;
 	virtual void(NSClientPlayer) PlayerDeath;
@@ -35,9 +39,11 @@ class SingleplayerRules:GameRules
 
 class MultiplayerRules:GameRules
 {
+
 	int m_iIntermission;
 	int m_iIntermissionTime;
 
+	void MultiplayerRules(void);
 	virtual void(void) FrameStart;
 
 	/* client */
