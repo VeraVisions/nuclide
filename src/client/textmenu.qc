@@ -64,7 +64,7 @@ Textmenu_Draw(void)
 		g_textchannels[5].m_vecColor1 = [1,1,1];
 		g_textchannels[5].m_vecColor2 = [0,0,0];
 		g_textchannels[5].m_iEffect = 0;
-		g_textmenucheck = cltime + 0.5;
+		g_textmenucheck = cltime + 0.25;
 	}
 }
 
