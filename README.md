@@ -5,7 +5,7 @@ clean-room implementations of true-and-tested game-logic frameworks.
 It's been used to ship a commercial product. So it's proven to some extent.
 
 All of this is written in QuakeC, but there's also some GLSL and shell scripts
-in here. If you and our team is unfamilar with any of these, you may want something else.
+in here. If you and your team are unfamilar with any of these, you may want something else.
 
 ## Documentation
 
@@ -26,7 +26,7 @@ Timothee Besset and the **GtkRadiant** contributors, as well as the NetRadiant t
 ![idTech Logo](Documentation/idtech.svg)
 
 ## License
-Copyright (c) 2016-2022 Vera Visions L.L.C.
+Copyright (c) 2016-2023 Vera Visions L.L.C.
 
 Permission to use, copy, modify, and distribute this software for any
 purpose with or without fee is hereby granted, provided that the above
