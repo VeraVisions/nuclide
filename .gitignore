@@ -39,6 +39,10 @@ qkey
 installed.lst
 *.kdev4
 hl2/*
+bshift/*
+baseq2/*
+gangstawars/*
+nightfire/*
 *.ico
 src/engine/
 bin/

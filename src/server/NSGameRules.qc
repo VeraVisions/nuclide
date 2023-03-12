@@ -101,6 +101,7 @@ NSGameRules::PlayerDisconnect(NSClientPlayer pl)
 	pl.SetModelindex(0);
 	pl.SetHealth(0);
 	pl.SetTakedamage(DAMAGE_NO);
+	pl.SetTeam(0);
 }
 
 void

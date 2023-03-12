@@ -32,7 +32,6 @@ CMainButton customgame_btnDone;
 int g_iModInstallCache;
 string g_strModInstallCache;
 
-#if 1
 /* get installing id */
 void
 game_getinstallcache(void)
@@ -71,7 +70,6 @@ game_writeinstallcache(int id, string gamedir)
 		fclose(fs_cache);
 	}
 }
-#endif
 
 int
 game_getpackageid(string pkgname)
@@ -542,21 +540,17 @@ customgame_btnactivate_start(void)
 
 	games_set(nextgame);
 
-#if 0
-	localcmd(sprintf("gamedir %s %s.fmf\nfs_changegame %s -\n", games[nextgame].gamedir, games[nextgame].gamedir, games[nextgame].gamedir));
-#else
 	if (games[nextgame].info_type == GAMEINFO_MANIFEST)
 		localcmd(sprintf("gamedir %s %s.fmf\nfs_changegame %s -\n", games[nextgame].gamedir, games[nextgame].gamedir, games[nextgame].gamedir));
 	else if (games[nextgame].info_type == GAMEINFO_LIBLIST) {
 		/* some games/mods inherit other directories */
 		if (games[nextgame].fallback_dir) {
-			localcmd(sprintf("gamedir \"platform;%s;%s;%s\"\n", games[nextgame].base_dir, games[nextgame].fallback_dir, games[nextgame].gamedir));
+			localcmd(sprintf("gamedir \"%s;%s;%s\"\n", games[nextgame].base_dir, games[nextgame].fallback_dir, games[nextgame].gamedir));
 		} else {
-			localcmd(sprintf("gamedir \"platform;%s;%s\"\n", games[nextgame].base_dir, games[nextgame].gamedir));
+			localcmd(sprintf("gamedir \"%s;%s\"\n", games[nextgame].base_dir, games[nextgame].gamedir));
 		}
 	} else
-		localcmd(sprintf("gamedir \"platform;%s;%s\"\n", games[nextgame].base_dir, games[nextgame].gamedir));
-#endif
+		localcmd(sprintf("gamedir \"%s;%s\"\n", games[nextgame].base_dir, games[nextgame].gamedir));
 
 	localcmd("stopmusic\nsnd_restart\nwait\nvid_reload\n");
 	localcmd("menu_restart\n");
@@ -564,7 +558,6 @@ customgame_btnactivate_start(void)
 	localcmd("menu_musicstart\n");
 }
 
-#if 1
 void
 customgame_installstart(int gameid)
 {
@@ -589,6 +582,11 @@ customgame_installend(void)
 	int gid = g_iModInstallCache;
 	print(sprintf("Installation ended for %S!\n", g_strModInstallCache));
 	localcmd(sprintf("game %s\n", g_strModInstallCache));
+
+	localcmd("stopmusic\nsnd_restart\nwait\nvid_reload\n");
+	localcmd("menu_restart\n");
+	localcmd("menu_customgame\n");
+	localcmd("menu_musicstart\n");
 	game_writeinstallcache(-1, g_strModInstallCache);
 }
 
@@ -652,13 +650,11 @@ customgame_installframe(void)
 
 	customgame_installend();
 }
-#endif
 
 /* download the .fmf and switch games immediately */
 void
 customgame_btninstall_start(void)
 {
-#if 1
 	int id = customgame_lbMods.GetSelected();
 	string st;
 
@@ -674,10 +670,6 @@ customgame_btninstall_start(void)
 
 	game_writeinstallcache(id, games[id].gamedir);
 	customgame_installend();
-#else
-	int nextgame = customgame_lbMods.GetSelected();
-	localcmd(sprintf("fs_changegame %s http://www.frag-net.com/mods/%s.fmf\n", games[nextgame].gamedir, games[nextgame].gamedir));
-#endif
 }
 
 void 
@@ -992,11 +984,9 @@ menu_customgame_draw(void)
 
 
 	/* draw a frame with progress during package install */
-#if 1
 	if (g_iModInstallCache >= 0i) {
 		customgame_installframe();
 	}
-#endif
 
 	customgame_sbMods.SetMax(gameinfo_count-1);
 #endif

@@ -72,43 +72,27 @@ View_AddEvent(void(void) pCallback, float flTime)
 }
 
 void
+View_ClearEvents(void)
+{
+	pSeat->m_pEventCall = __NULL__;
+	pSeat->m_flEventTime = 0;
+	pSeat->m_flEventFrame = 0;
+	pSeat->m_flEventMdl = 0;
+	pSeat->m_iEventWeapon = 0;
+
+	pSeat->m_eViewModelL.frame1time = 0.0f;
+	pSeat->m_eViewModel.frame1time = 0.0f;
+	pSeat->m_eMuzzleflash.modelindex =
+	pSeat->m_eMuzzleflashL.modelindex =
+	pSeat->m_eMuzzleflash.alpha =
+	pSeat->m_eMuzzleflashL.alpha =
+	pSeat->m_eMuzzleflash.frame1time =
+	pSeat->m_eMuzzleflashL.frame1time = 0;
+}
+
+void
 View_CalcViewport(int s, float fWinWidth, float fWinHeight)
 {
-#if 0
-	//FIXME: this is awkward. renderscene internally rounds to pixels.
-	//on the other hand, drawpic uses linear filtering and multisample and stuff.
-	//this means that there can be a pixel or so difference between scene and 2d.
-	//as a general rule, you won't notice unless there's some big drawfills.
-	switch (numclientseats) {
-	case 3:
-		if (!s) {
-	case 2:
-		video_res = [fWinWidth, fWinHeight * 0.5];
-		video_mins = [0, (s & 1) * video_res[1]];
-		break;
-		}
-		s++;
-	case 4:
-		video_res = [fWinWidth, fWinHeight] * 0.5;
-		video_mins = [(s&1) * video_res[0], (s / 2i) * video_res[1]];
-		break;
-	default:
-		video_res = [fWinWidth, fWinHeight];
-		video_mins = [0, 0];
-		break;
-	}
-
-	/* generate usable hud variables */
-	if (autocvar_cg_hudAspect <= 0) {
-		g_hudmins = video_mins;
-		g_hudres = video_res;
-	} else {
-		g_hudmins = video_mins;
-		g_hudmins[0] += (video_res[0] / 2) - ((video_res[1] * autocvar_cg_hudAspect) / 2);
-		g_hudres[0] = video_res[1] * autocvar_cg_hudAspect;
-		g_hudres[1] = video_res[1];
-	}
-#else
 	switch (numclientseats) {
 	case 3:
 		if (!s) {
@@ -124,7 +108,7 @@ View_CalcViewport(int s, float fWinWidth, float fWinHeight)
 		break;
 	default:
 		g_viewSeats[s].SetViewSize([fWinWidth, fWinHeight]);
-		g_viewSeats[s].SetViewPosition([0, 0]);
+		//g_viewSeats[s].SetViewPosition([0, 0]);
 		break;
 	}
 
@@ -132,7 +116,6 @@ View_CalcViewport(int s, float fWinWidth, float fWinHeight)
 	video_mins = g_viewSeats[s].m_vecPosition;
 	g_hudmins = g_viewSeats[s].GetHUDCanvasPos();
 	g_hudres = g_viewSeats[s].GetHUDCanvasSize();
-#endif
 }
 
 void

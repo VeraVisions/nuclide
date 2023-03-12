@@ -1,4 +1,4 @@
 color "255 255 255"
 alpha 255
 size 12
-path gfx/shell/cabin.ttf
+path fonts/ibm/IBMPlexSansCondensed-Medium.otf
