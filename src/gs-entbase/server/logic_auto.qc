@@ -25,12 +25,12 @@ targets instead, use that instead.
 - "globalstate" : The env_global state to read before firing.
 
 # INPUTS
-- "OnMapSpawn" : Triggered when the map is loaded for any reason.
-- "OnNewGame" : Triggered only when a new game starts on this level.
-- "OnLoadGame : Triggered when the map is loaded via save game.
-- "OnMapTransition" : Triggered when we load this map via level transition.
-- "OnBackgroundMap" : Triggered if this map is used as a menu background.
-- "OnMultiNewMap" : Same as 'OnMapSpawn' but only valid in multiplayer.
+- "OnMapSpawn" : Triggered when the map is loaded for any reason.  
+- "OnNewGame" : Triggered only when a new game starts on this level.  
+- "OnLoadGame" : Triggered when the map is loaded via save game.  
+- "OnMapTransition" : Triggered when we load this map via level transition.  
+- "OnBackgroundMap" : Triggered if this map is used as a menu background.  
+- "OnMultiNewMap" : Same as 'OnMapSpawn' but only valid in multiplayer.  
 - "OnMultiNewRound" : Triggered only during round restarts in multiplayer.
 
 # SPAWNFLAGS
