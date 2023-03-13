@@ -6,6 +6,7 @@ NSEntity.qc
 NSTimer.qc
 NSRenderableEntity.qc
 NSSurfacePropEntity.qc
+NSMoverEntity.qc
 NSPhysicsEntity.qc
 NSBrushTrigger.qc
 NSPointTrigger.qc

@@ -83,9 +83,6 @@
 		WriteEntity(MSG_ENTITY, field);\
 }
 
-#define AREAPORTAL_CLOSED 0
-#define AREAPORTAL_OPEN 1
-
 var bool g_isloading = false;
 
 var bool autocvar_mp_flashlight = true;

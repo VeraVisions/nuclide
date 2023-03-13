@@ -52,6 +52,7 @@ string __fullspawndata;
 #include "NSTimer.h"
 #include "NSRenderableEntity.h"
 #include "NSSurfacePropEntity.h"
+#include "NSMoverEntity.h"
 #include "NSPhysicsEntity.h"
 #include "NSBrushTrigger.h"
 #include "NSPointTrigger.h"

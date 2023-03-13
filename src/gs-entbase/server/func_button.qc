@@ -29,14 +29,6 @@ enumflags
 
 enum
 {
-	STATE_RAISED,
-	STATE_LOWERED,
-	STATE_UP,
-	STATE_DOWN
-};
-
-enum
-{
 	FRAME_OFF,
 	FRAME_ON
 };
@@ -79,18 +71,14 @@ original position.
 This entity was introduced in Quake (1996).
 */
 class
-func_button:NSSurfacePropEntity
+func_button:NSMoverEntity
 {
-	int m_iState;
+	moverState_t m_moverState;
 	float m_flSpeed;
 	float m_flLip;
 	float m_flNextTrigger;
 	float m_flWait;
 	float m_flDelay;
-	vector m_vecPos1;
-	vector m_vecPos2;
-	vector m_vecDest;
-	vector m_vecMoveDir;
 	string m_strSndPressed;
 	string m_strSndUnpressed;
 
@@ -111,32 +99,24 @@ public:
 	virtual void SpawnKey(string,string);
 	virtual void Spawned(void);
 	virtual void Respawn(void);
-	virtual void Arrived(void);
-	virtual void Returned(void);
-	virtual void MoveBack(void);
-	virtual void MoveAway(void);
 	virtual void Touch(entity);
 	virtual void Blocked(entity);
 	virtual void Trigger(entity, triggermode_t);
 	virtual void DeathTrigger(void);
 	virtual void PlayerUse(void);
-	virtual void SetMovementDirection(void);
-	virtual void MoveToDestination(vector, void(void));
+
+	virtual void MoverStartsMoving(void);
+	virtual void MoverFinishesMoving(void);
 };
 
 void
 func_button::func_button(void)
 {
-	m_iState = 0i;
 	m_flSpeed = 0.0f;
 	m_flLip = 0.0f;
 	m_flNextTrigger = 0.0f;
 	m_flWait = 4.0f;
 	m_flDelay = 0.0f;
-	m_vecPos1 = [0.0f, 0.0f, 0.0f];
-	m_vecPos2 = [0.0f, 0.0f, 0.0f];
-	m_vecDest = [0.0f, 0.0f, 0.0f];
-	m_vecMoveDir = [0.0f, 0.0f, 0.0f];
 	m_strSndPressed = __NULL__;
 	m_strSndUnpressed = __NULL__;
 	m_bCanTouch = false;
@@ -151,16 +131,11 @@ void
 func_button::Save(float handle)
 {
 	super::Save(handle);
-	SaveInt(handle, "m_iState", m_iState);
 	SaveFloat(handle, "m_flSpeed", m_flSpeed);
 	SaveFloat(handle, "m_flLip", m_flLip);
 	SaveFloat(handle, "m_flNextTrigger", m_flNextTrigger);
 	SaveFloat(handle, "m_flWait", m_flWait);
 	SaveFloat(handle, "m_flDelay", m_flDelay);
-	SaveVector(handle, "m_vecPos1", m_vecPos1);
-	SaveVector(handle, "m_vecPos2", m_vecPos2);
-	SaveVector(handle, "m_vecDest", m_vecDest);
-	SaveVector(handle, "m_vecMoveDir", m_vecMoveDir);
 	SaveString(handle, "m_strSndPressed", m_strSndPressed);
 	SaveString(handle, "m_strSndUnpressed", m_strSndUnpressed);
 	SaveString(handle, "m_strOnPressed", m_strOnPressed);
@@ -175,9 +150,6 @@ void
 func_button::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "m_iState":
-		m_iState = ReadInt(strValue);
-		break;
 	case "m_flSpeed":
 		m_flSpeed = ReadFloat(strValue);
 		break;
@@ -192,18 +164,6 @@ func_button::Restore(string strKey, string strValue)
 		break;
 	case "m_flDelay":
 		m_flDelay = ReadFloat(strValue);
-		break;
-	case "m_vecPos1":
-		m_vecPos1 = ReadVector(strValue);
-		break;
-	case "m_vecPos2":
-		m_vecPos2 = ReadVector(strValue);
-		break;
-	case "m_vecDest":
-		m_vecDest = ReadVector(strValue);
-		break;
-	case "m_vecMoveDir":
-		m_vecMoveDir = ReadVector(strValue);
 		break;
 	case "m_strSndPressed":
 		m_strSndPressed = ReadString(strValue);
@@ -306,10 +266,6 @@ func_button::Spawned(void)
 void
 func_button::Respawn(void)
 {
-	RestoreAngles();
-	SetMovementDirection();
-	ClearAngles();
-
 	SetSolid(SOLID_BSP);
 	SetMovetype(MOVETYPE_PUSH);
 	SetOrigin(GetSpawnOrigin());
@@ -318,6 +274,11 @@ func_button::Respawn(void)
 	ClearVelocity();
 	ReleaseThink();
 	SetHealth(GetSpawnHealth());
+
+	RestoreAngles();
+	SetPosition1(GetSpawnOrigin());
+	SetPosition2(GetDirectionalPosition(GetSpawnAngles(), m_flLip));
+	ClearAngles();
 
 	if (health > 0) {
 		takedamage = DAMAGE_YES;
@@ -328,86 +289,47 @@ func_button::Respawn(void)
 		m_flSpeed = 100;
 	}
 
-	m_vecPos1 = GetSpawnOrigin();
-
 	if (HasSpawnFlags(SF_BTT_NOMOVE)) {
-		m_vecPos2 = m_vecPos1;
-	} else {
-		m_vecPos2 = (m_vecPos1 + m_vecMoveDir * (fabs(m_vecMoveDir * size) - m_flLip));
+		SetPosition2(GetPosition1());
 	}
 
 	m_iValue = 0;
-	m_iState = STATE_LOWERED;
 }
 
 void
-func_button::Arrived(void)
+func_button::MoverFinishesMoving(void)
 {
-	SetOrigin(m_vecDest);
-	ClearVelocity();
-	ReleaseThink();
-	m_bCanTouch = true;
-
-	UseOutput(this, m_strOnIn);
-	m_iState = STATE_RAISED;
-
-	if (HasSpawnFlags(SF_BTT_TOGGLE) == true) {
-		return;
+	static void MoveBack(void) {
+		MoveToPosition(GetPosition1(), m_flSpeed);
 	}
-	
-	if (m_flWait != -1) {
+
+	if (GetMoverState() == MOVER_POS1) {
+		UseOutput(this, m_strOnOut);
+		SetFrame(FRAME_OFF);
+	} else if (GetMoverState() == MOVER_POS2) {
+		UseOutput(this, m_strOnIn);
 		ScheduleThink(MoveBack, m_flWait);
 	}
-}
 
-void
-func_button::Returned(void)
-{
-	UseOutput(this, m_strOnOut);
-	SetOrigin(m_vecDest);
-	ClearVelocity();
-	ReleaseThink();
-	SetFrame(FRAME_OFF);
 	m_bCanTouch = true;
-	m_iState = STATE_LOWERED;
 }
 
-void
-func_button::MoveBack(void)
-{
-	m_bCanTouch = false;
-	m_iState = STATE_DOWN;
-	m_iValue = 0;
-
-	if (m_strSndUnpressed) {
-		Sound_Play(this, CHAN_VOICE, m_strSndUnpressed);
-	}
-
-	if (m_vecPos2 != m_vecPos1) {
-		MoveToDestination (m_vecPos1, Returned);
-	} else {
-		Returned();
-	}
-}
 
 void
-func_button::MoveAway(void)
+func_button::MoverStartsMoving(void)
 {
-	if (m_iState == STATE_UP) {
-		return;
-	}
-
 	m_bCanTouch = false;
-	m_iState = STATE_UP;
-	
-	if (m_vecPos2 != m_vecPos1) {
-		MoveToDestination(m_vecPos2, Arrived);
-	} else {
-		Arrived();
-	}
 
-	m_iValue = 1;
-	SetFrame(FRAME_ON);
+	if (GetMoverState() == MOVER_1TO2) {
+		m_iValue = 1;
+		SetFrame(FRAME_ON);
+	} else if (GetMoverState() == MOVER_2TO1) {
+		m_iValue = 0;
+
+		if (m_strSndUnpressed) {
+			Sound_Play(this, CHAN_VOICE, m_strSndUnpressed);
+		}
+	}
 }
 
 /* TODO: Handle state */
@@ -425,9 +347,9 @@ func_button::Trigger(entity act, triggermode_t state)
 
 	m_flNextTrigger = time + m_flWait;
 	
-	if ((m_iState == STATE_UP) || (m_iState == STATE_RAISED)){
+	if ((m_moverState == MOVER_1TO2) || (m_moverState == MOVER_POS2)){
 		if (m_flWait != -1) {
-			MoveBack();
+			MoveToPosition(GetPosition1(), m_flSpeed);
 		}
 		return;
 	}
@@ -435,8 +357,7 @@ func_button::Trigger(entity act, triggermode_t state)
 	if (m_strSndPressed)
 		Sound_Play(this, CHAN_VOICE, m_strSndPressed);
 
-	MoveAway();
-
+	MoveToPosition(GetPosition2(), m_flSpeed);
 	UseOutput(act, m_strOnPressed);
 	UseTargets(act, TRIG_TOGGLE, m_flDelay);
 
@@ -480,55 +401,6 @@ void
 func_button::Blocked(entity eBlocker)
 {
 	if (m_flWait >= 0) {
-		if (m_iState == STATE_DOWN) {
-			MoveAway();
-		} else {
-			MoveBack();
-		}
+		MoveToReverse(m_flSpeed);
 	}
-}
-
-void
-func_button::SetMovementDirection(void)
-{
-	if (GetSpawnAngles() == [0,-1,0]) {
-		m_vecMoveDir = [0,0,1];
-	} else if (GetSpawnAngles() == [0,-2,0]) {
-		m_vecMoveDir = [0,0,-1];
-	} else {
-		makevectors(GetSpawnAngles());
-		m_vecMoveDir = v_forward;
-	}
-}
-
-void
-func_button::MoveToDestination(vector vecDest, void(void) func)
-{
-	vector vecDifference;
-	float flTravel, fTravelTime;
-
-	if (!m_flSpeed) {
-		objerror("No speed defined for moving entity! Will not divide by zero.");
-	}
-
-	m_vecDest = vecDest;
-
-	if (vecDest == origin) {
-		ClearVelocity();
-		ScheduleThink(func, 0.0f);
-		return;
-	}
-
-	vecDifference = (vecDest - origin);
-	flTravel = vlen(vecDifference);
-	fTravelTime = (flTravel / m_flSpeed);
-
-	if (fTravelTime < 0.1) {
-		ClearVelocity();
-		ScheduleThink(func, 0.0f);
-		return;
-	}
-
-	ScheduleThink(func, fTravelTime);
-	SetVelocity(vecDifference * (1 / fTravelTime));
 }

@@ -68,8 +68,30 @@ Please include an origin brush so that a pivot point will be defined.
 This entity was introduced in Quake II (1997).
 */
 class
-func_door_rotating:NSRenderableEntity
+func_door_rotating:NSMoverEntity
 {
+public:
+	void func_door_rotating(void);
+
+	/* overrides */
+	virtual void Spawned(void);
+	virtual void SpawnKey(string,string);
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void Use(void);
+	virtual void Touch(entity);
+	virtual void Blocked(entity);
+	virtual void Respawn(void);
+	virtual void MoverStartsMoving(void);
+	virtual void MoverFinishesMoving(void);
+
+	virtual void Trigger(entity, triggermode_t);
+
+#ifdef GS_PHYSICS
+	nonvirtual void Unhinge(void);
+#endif
+
+private:
 	string targetClose;
 	string m_strSndStop;
 	string m_strSndOpen;
@@ -78,43 +100,13 @@ func_door_rotating:NSRenderableEntity
 	float m_flSoundWait;
 	float m_flDistance;
 	float m_flSpeed;
-	float m_iState;
 	float m_flNextAction;
 	float m_flWait;
 	float m_flDelay;
-	int m_iPortalState;
 	int m_iDamage;
 	int m_iLocked;
-	vector m_vecDest;
-	vector m_vecPos1;
-	vector m_vecPos2;
-	vector m_vecMoveDir;
-	bool m_iCanTouch;
-	
-public:
-	void func_door_rotating(void);
-	
-	virtual void Save(float);
-	virtual void Restore(string,string);
-	virtual void Spawned(void);
-	virtual void PortalOpen(void);
-	virtual void PortalClose(void);
-	virtual void Respawn(void);
-	virtual void Arrived(void);
-	virtual void Returned(void);
-	virtual void Back(void);
-	virtual void Away(void);
-	virtual void Trigger(entity, triggermode_t);
-	virtual void Use(void);
-	virtual void Touch(entity);
-	virtual void Blocked(entity);
-	virtual void SetMovementDirection(void);
-	virtual void SpawnKey(string,string);
-	virtual void RotToDest(vector angle, void(void) func);
-
-#ifdef GS_PHYSICS
-	virtual void Unhinge(void);
-#endif
+	bool m_bCanTouch;
+	vector m_vecTurnDir;
 };
 
 void
@@ -130,16 +122,11 @@ func_door_rotating::func_door_rotating(void)
 	m_iLocked = 0i;
 	m_flDistance = 90.0f;
 	m_flSpeed = 100.0f;
-	m_iState = 0i;
 	m_flNextAction = 0.0f;
 	m_flWait = 0.0f;
 	m_flDelay = 4.0f;
-	m_vecDest = [0.0f, 0.0f, 0.0f];
-	m_vecPos1 = [0.0f, 0.0f, 0.0f];
-	m_vecPos2 = [0,0,0];
-	m_vecMoveDir = [0.0f, 0.0f, 0.0f];
-	m_iPortalState = 0i;
-	m_iCanTouch = false;
+	m_bCanTouch = false;
+	m_vecTurnDir = g_vec_null;
 }
 
 void
@@ -154,18 +141,13 @@ func_door_rotating::Save(float handle)
 	SaveFloat(handle, "m_flSoundWait", m_flSoundWait);
 	SaveFloat(handle, "m_flDistance", m_flDistance);
 	SaveFloat(handle, "m_flSpeed", m_flSpeed);
-	SaveFloat(handle, "m_iState", m_iState);
 	SaveFloat(handle, "m_flNextAction", m_flNextAction);
 	SaveFloat(handle, "m_flWait", m_flWait);
 	SaveFloat(handle, "m_flDelay", m_flDelay);
-	SaveInt(handle, "m_iPortalState", m_iPortalState);
 	SaveInt(handle, "m_iDamage", m_iDamage);
 	SaveInt(handle, "m_iLocked", m_iLocked);
-	SaveVector(handle, "m_vecDest", m_vecDest);
-	SaveVector(handle, "m_vecPos1", m_vecPos1);
-	SaveVector(handle, "m_vecPos2", m_vecPos2);
-	SaveVector(handle, "m_vecMoveDir", m_vecMoveDir);
-	SaveBool(handle, "m_iCanTouch", m_iCanTouch);
+	SaveBool(handle, "m_bCanTouch", m_bCanTouch);
+	SaveVector(handle, "m_vecTurnDir", m_vecTurnDir);
 }
 
 void
@@ -196,9 +178,6 @@ func_door_rotating::Restore(string strKey, string strValue)
 	case "m_flSpeed":
 		m_flSpeed = ReadFloat(strValue);
 		break;
-	case "m_iState":
-		m_iState = ReadInt(strValue);
-		break;
 	case "m_flNextAction":
 		m_flNextAction = ReadFloat(strValue);
 		break;
@@ -208,29 +187,17 @@ func_door_rotating::Restore(string strKey, string strValue)
 	case "m_flDelay":
 		m_flDelay = ReadFloat(strValue);
 		break;
-	case "m_iPortalState":
-		m_iPortalState = ReadInt(strValue);
-		break;
 	case "m_iDamage":
 		m_iDamage = ReadInt(strValue);
 		break;
 	case "m_iLocked":
 		m_iLocked = ReadInt(strValue);
 		break;
-	case "m_vecDest":
-		m_vecDest = ReadVector(strValue);
+	case "m_bCanTouch":
+		m_bCanTouch = ReadInt(strValue);
 		break;
-	case "m_vecPos1":
-		m_vecPos1 = ReadVector(strValue);
-		break;
-	case "m_vecPos2":
-		m_vecPos2 = ReadVector(strValue);
-		break;
-	case "m_vecMoveDir":
-		m_vecMoveDir = ReadVector(strValue);
-		break;
-	case "m_iCanTouch":
-		m_iCanTouch = ReadInt(strValue);
+	case "m_vecTurnDir":
+		m_vecTurnDir = ReadVector(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
@@ -255,10 +222,6 @@ func_door_rotating::Spawned(void)
 void
 func_door_rotating::Respawn(void)
 {
-	RestoreAngles();
-	SetMovementDirection();
-	ClearAngles();
-
 #ifdef GS_PHYSICS
 	SetTakedamage(DAMAGE_YES);
 	SetHealth(100);
@@ -272,14 +235,24 @@ func_door_rotating::Respawn(void)
 	ClearVelocity();
 	ReleaseThink();
 
-	if (spawnflags & SF_ROT_USE)
-		m_iCanTouch = false;
-	else
-		m_iCanTouch = true;
+	if (HasSpawnFlags(SF_ROT_ZAXIS)) {
+		m_vecTurnDir = [0,0,1];
+	} else if (HasSpawnFlags(SF_ROT_XAXIS)) {
+		m_vecTurnDir = [1,0,0];
+	} else {
+		m_vecTurnDir = [0,1,0];
+	}
+
+	if (spawnflags & SF_ROT_USE) {
+		m_bCanTouch = false;
+	} else {
+		m_bCanTouch = true;
+	}
 
 	/* this is a terrible hack */
-	if (m_flWait == 0)
+	if (m_flWait == 0) {
 		m_flWait = 0.01f;
+	}
 
 	if (HasSpawnFlags(SF_ROT_USE)) {
 		PlayerUse = Use;
@@ -287,25 +260,21 @@ func_door_rotating::Respawn(void)
 		PlayerUse = __NULL__;
 	}
 
-	m_vecPos1 = GetSpawnAngles();
+	SetPosition1(GetSpawnAngles());
 
+	RestoreAngles();
 	if (HasSpawnFlags(SF_ROT_BACKWARDS)) {
-		m_vecPos2 = GetSpawnAngles() + m_vecMoveDir * -m_flDistance;
+		SetPosition2(GetDirectionalRotation(m_vecTurnDir, -m_flDistance));
 	} else {
-		m_vecPos2 = GetSpawnAngles() + m_vecMoveDir * m_flDistance;
+		SetPosition2(GetDirectionalRotation(m_vecTurnDir, m_flDistance));
 	}
+	ClearAngles();
 
 	if (HasSpawnFlags(SF_ROT_OPEN)) {
-		vector vTemp = m_vecPos2;
-		m_vecPos2 = m_vecPos1;
-		m_vecPos1 = vTemp;
-		m_vecMoveDir = m_vecMoveDir * -1;
-		PortalOpen();
-	} else {
-		PortalClose();
+		vector vTemp = GetPosition2();
+		SetPosition2(GetPosition1());
+		SetPosition1(vTemp);
 	}
-
-	m_iState = STATE_LOWERED;
 
 	if (HasSpawnFlags(SF_ROT_PASSABLE)) {
 		SetSolid(SOLID_NOT);
@@ -315,7 +284,7 @@ func_door_rotating::Respawn(void)
 		m_iLocked = TRUE;
 	}
 
-	SetAngles(m_vecPos1);
+	SetAngles(GetPosition1());
 }
 
 void
@@ -326,9 +295,6 @@ func_door_rotating::SpawnKey(string strKey, string strValue)
 	case "speed":
 		m_flSpeed = stof(strValue);
 		break;
-	/*case "lip":
-		m_flDistance = stof(strValue);
-		break;*/
 	case "snd_open":
 		m_strSndOpen = strValue;
 		break;
@@ -344,11 +310,11 @@ func_door_rotating::SpawnKey(string strKey, string strValue)
 		break;
 	/* GoldSrc compat */
 	case "movesnd":
-		x = stoi(strValue);
+		x = stoi(strValue); /* sanitize */
 		m_strSndOpen = m_strSndClose = sprintf("func_door_rotating.move_%i", x);
 		break;
 	case "stopsnd":
-		x = stoi(strValue);
+		x = stoi(strValue); /* sanitize */
 		m_strSndStop = sprintf("func_door_rotating.stop_%i", x);
 		break;
 	case "distance":
@@ -364,33 +330,12 @@ func_door_rotating::SpawnKey(string strKey, string strValue)
 		targetClose = strValue;
 		break;
 	case "locked_sound":
-		x = stoi(strValue);
+		x = stoi(strValue);  /* sanitize */
 		m_strLockedSfx = sprintf("func_button.hlsfx_%i", x+1i);
 		break;
 	default:
 		super::SpawnKey(strKey, strValue);
 	}
-}
-
-void
-func_door_rotating::PortalOpen(void)
-{
-	if (m_iPortalState == 1)
-		return;
-
-	m_iPortalState = 1;
-	setorigin(this, origin);
-	openportal(this, AREAPORTAL_OPEN);
-}
-void
-func_door_rotating::PortalClose(void)
-{
-	if (m_iPortalState == 0)
-		return;
-
-	m_iPortalState = 0;
-	setorigin(this, origin);
-	openportal(this, AREAPORTAL_CLOSED);
 }
 
 #ifdef GS_PHYSICS
@@ -399,7 +344,7 @@ func_door_rotating::Unhinge(void)
 {
 	SetTakedamage(DAMAGE_NO);
 	ReleaseThink();
-	m_iCanTouch = false;
+	m_bCanTouch = false;
 	SetSolid(SOLID_PHYSICS_BOX);
 	SetMovetype(MOVETYPE_PHYSICS);
 	physics_enable(this, TRUE);
@@ -407,102 +352,60 @@ func_door_rotating::Unhinge(void)
 #endif
 
 void
-func_door_rotating::Arrived(void)
+func_door_rotating::MoverFinishesMoving(void)
 {
-	SetAngles(m_vecDest);
-	SetAngularVelocity([0,0,0]);
-	ReleaseThink();
-
-	m_iState = STATE_RAISED;
-
-	if (m_strSndStop) {
-		Sound_Play(this, CHAN_VOICE, m_strSndStop);
-	} else {
-		sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
+	static void RotateBack(void) {
+		RotateToPosition(GetPosition1(), m_flSpeed);
 	}
 
-	if ((m_flWait < 0.0f) || HasSpawnFlags(SF_ROT_TOGGLE) == true)
-		return;
-
-	ScheduleThink(Back, m_flWait);
-}
-
-void
-func_door_rotating::Returned(void)
-{
-	SetAngles(m_vecDest);
-	SetAngularVelocity([0,0,0]);
-	ReleaseThink();
-
-	if (m_strSndStop) {
-		Sound_Play(this, CHAN_VOICE, m_strSndStop);
-	} else {
-		sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
-	}
-
-	if (targetClose)
-	for (entity f = world; (f = find(f, ::targetname, targetClose));) {
-		NSEntity trigger = (NSEntity)f;
-		if (trigger.Trigger != __NULL__) {
-			trigger.Trigger(this, TRIG_TOGGLE);
-		}
-	}
-    
-	m_iState = STATE_LOWERED;
-
-	PortalClose();
-}
-
-void
-func_door_rotating::Back(void)
-{
-	if (!HasSpawnFlags(SF_DOOR_SILENT)) {
-		if (m_strSndClose) {
-			Sound_Play(this, CHAN_VOICE, m_strSndClose);
+	if (GetMoverState() == MOVER_POS1) {
+		if (m_strSndStop) {
+			Sound_Play(this, CHAN_VOICE, m_strSndStop);
 		} else {
 			sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
 		}
-	}
 
-	m_iState = STATE_DOWN;
-	RotToDest(m_vecPos1, Returned);
-}
-
-void
-func_door_rotating::Away(void)
-{
-	float fDirection = 1.0;
-
-	if (m_iState == STATE_UP) {
-		return;
-	}
-
-	if (!HasSpawnFlags(SF_DOOR_SILENT)) {
-		if (m_strSndOpen) {
-			Sound_Play(this, CHAN_VOICE, m_strSndOpen);
+		if (targetClose)
+		for (entity f = world; (f = find(f, ::targetname, targetClose));) {
+			NSEntity trigger = (NSEntity)f;
+			if (trigger.Trigger != __NULL__) {
+				trigger.Trigger(this, TRIG_TOGGLE);
+			}
+		}
+	} else if (GetMoverState() == MOVER_POS2) {
+		if (m_strSndStop) {
+			Sound_Play(this, CHAN_VOICE, m_strSndStop);
 		} else {
 			sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
 		}
+
+		if ((m_flWait < 0.0f) || HasSpawnFlags(SF_ROT_TOGGLE) == true)
+			return;
+
+		ScheduleThink(RotateBack, m_flWait);
 	}
+}
 
-	m_iState = STATE_UP;
-
-	if (!HasSpawnFlags(SF_ROT_ONEWAY)) {
-		/* One way doors only work on the Y axis */
-		if (!HasSpawnFlags(SF_ROT_ZAXIS) || HasSpawnFlags(SF_ROT_XAXIS)) {
-			/* get the door facing dir */
-			vector door_dir = vectoangles(WorldSpaceCenter() - origin);
-			makevectors(door_dir);
-			float flDir = dotproduct(origin - eActivator.origin, v_right);
-
-			if (flDir > 0) {
-				fDirection = -1.0f;
+void
+func_door_rotating::MoverStartsMoving(void)
+{
+	if (GetMoverState() == MOVER_2TO1) {
+		if (!HasSpawnFlags(SF_DOOR_SILENT)) {
+			if (m_strSndClose) {
+				Sound_Play(this, CHAN_VOICE, m_strSndClose);
+			} else {
+				sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
+			}
+		}
+	} else if (GetMoverState() == MOVER_1TO2) {
+		if (!HasSpawnFlags(SF_DOOR_SILENT)) {
+			if (m_strSndOpen) {
+				Sound_Play(this, CHAN_VOICE, m_strSndOpen);
+			} else {
+				sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
 			}
 		}
 	}
-
-	RotToDest(m_vecPos2 * fDirection, Arrived);
-	PortalOpen();
 }
 
 void
@@ -511,24 +414,38 @@ func_door_rotating::Trigger(entity act, triggermode_t state)
 	if (GetMaster() == FALSE) {
 		return;
 	}
-	if (m_flNextAction > time) {
-		return;
-	}
 
-	m_flNextAction = time + m_flWait;
 	eActivator = act;
 
+	/* this door can swing both ways */
+	if (!HasSpawnFlags(SF_ROT_ONEWAY)) {
+		/* One way doors only work on the Y axis */
+		if (!HasSpawnFlags(SF_ROT_ZAXIS) || HasSpawnFlags(SF_ROT_XAXIS)) {
+			float flDirection = 1.0;
+			/* get the door facing dir */
+			vector door_dir = vectoangles(WorldSpaceCenter() - origin);
+			makevectors(door_dir);
+			float flDir = dotproduct(origin - act.origin, v_right);
+
+			if (flDir > 0) {
+				flDirection = -1.0f;
+			}
+
+			SetPosition2(GetDirectionalRotation(m_vecTurnDir, m_flDistance * flDirection));
+		}
+	}
+
 	if (state == TRIG_TOGGLE) {
-		if ((m_iState == STATE_UP) || (m_iState == STATE_RAISED)) {
-			Back();
+		if ((GetMoverState() == MOVER_1TO2) || (GetMoverState() == MOVER_POS2)) {
+			RotateToPosition(GetPosition1(), m_flSpeed);
 			return;
 		} else {
-			Away();
+			RotateToPosition(GetPosition2(), m_flSpeed);
 		}
 	} else if (state == TRIG_OFF) {
-		Back();
+		RotateToPosition(GetPosition1(), m_flSpeed);
 	} else if (state == TRIG_ON) {
-		Away();
+		RotateToPosition(GetPosition2(), m_flSpeed);
 	}
 
 	UseTargets(act, TRIG_TOGGLE, m_flDelay);
@@ -544,8 +461,9 @@ func_door_rotating::Use(void)
 void
 func_door_rotating::Touch(entity eToucher)
 {
-	if (m_iCanTouch == false)
+	if (m_bCanTouch == false) {
 		return;
+	}
 
 	if (m_iLocked || !GetMaster()) {
 		if (m_flSoundWait < time)
@@ -559,7 +477,7 @@ func_door_rotating::Touch(entity eToucher)
 		return;
 	}
 
-	if ((m_iState == STATE_UP) || (m_iState == STATE_DOWN)) {
+	if ((GetMoverState() == MOVER_1TO2) || (GetMoverState() == MOVER_2TO1)) {
 		return;
 	}
 
@@ -576,48 +494,6 @@ func_door_rotating::Blocked(entity eBlocker)
 	}
 
 	if (m_flWait >= 0) {
-		if (m_iState == STATE_DOWN) {
-			Away();
-		} else {
-			Back();
-		}
-	}
-}
-
-void
-func_door_rotating::SetMovementDirection(void)
-{
-	if (HasSpawnFlags(SF_ROT_ZAXIS)) {
-		m_vecMoveDir = [0,0,1];
-	} else if (HasSpawnFlags(SF_ROT_XAXIS)) {
-		m_vecMoveDir = [1,0,0];
-	} else {
-		m_vecMoveDir = [0,1,0];
-	}
-}
-
-void
-func_door_rotating::RotToDest(vector vDestAngle, void(void) func)
-{
-	vector vecAngleDifference;
-	float flTravelLength, flTravelTime;
-
-	if (!m_flSpeed) {
-		NSLog("^1func_door_rotating::^3RotToDest^7: No speed defined for %s!", targetname);
-		Respawn();
-		return;
-	}
-
-	vecAngleDifference = (vDestAngle - angles);
-	flTravelLength = vlen(vecAngleDifference);
-	flTravelTime = (flTravelLength / m_flSpeed);
-
-	/* Avoid NAN hack */
-	if (flTravelTime <= 0.0f) {
-		ScheduleThink(func, 0.0f);
-	} else {
-		avelocity = (vecAngleDifference * (1 / flTravelTime));
-		m_vecDest = vDestAngle;
-		ScheduleThink(func, flTravelTime);
+		RotateToReverse(m_flSpeed);
 	}
 }

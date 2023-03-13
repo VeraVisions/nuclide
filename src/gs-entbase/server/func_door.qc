@@ -26,14 +26,6 @@ enumflags {
 	SF_MOV_USE
 };
 
-enum
-{
-	DOORSTATE_RAISED,
-	DOORSTATE_LOWERED,
-	DOORSTATE_UP,
-	DOORSTATE_DOWN
-};
-
 /*!QUAKED func_door (0 .5 .8) ? SF_MOV_OPEN x SF_MOV_UNLINK SF_MOV_PASSABLE x SF_MOV_TOGGLE x x SF_MOV_USE
 # OVERVIEW
 This sliding door entity has the ability to slide forth and back on any
@@ -72,21 +64,13 @@ X is the integer value set in "movesnd" and "stopsnd".
 This entity was introduced in Quake (1996).
 */
 class
-func_door:NSRenderableEntity
+func_door:NSMoverEntity
 {
 public:
 	void func_door(void);
 
 	virtual void Spawned(void);
 
-	virtual void PortalOpen(void);
-	virtual void PortalClose(void);
-	virtual void SetMovementDirection(void);
-	virtual void MoveToDestination(vector, void(void) func);
-	virtual void MoveAway(void);
-	virtual void MoveBack(void);
-	virtual void Arrived(void);
-	virtual void Returned(void);
 	virtual void Respawn(void);
 	virtual void Trigger(entity, triggermode_t);
 	virtual void Blocked(entity);
@@ -97,21 +81,18 @@ public:
 	virtual void SpawnKey(string, string);
 	virtual void Input(entity, string, string);
 
+	virtual void MoverStartsMoving(void);
+	virtual void MoverFinishesMoving(void);
+
 private:
 	string targetClose;
-	vector m_vecPos1;
-	vector m_vecPos2;
-	vector m_vecDest;
-	vector m_vecMoveDir;
 	float m_flSpeed;
-	float m_flLip;
-	float m_iState;
 	float m_flNextTrigger;
 	float m_flWait;
 	float m_flDelay;
+	float m_flLip;
 	int m_iDamage;
 	int m_iLocked;
-	int m_iPortalState;
 	int m_iForceClosed;
 	bool m_iCanTouch;
 
@@ -128,21 +109,13 @@ private:
 void
 func_door::func_door(void)
 {
-	m_vecPos1 =
-	m_vecPos2 =
-	m_vecDest =
-	m_vecMoveDir = [0,0,0];
-
-	m_flSpeed =
 	m_flLip =
-	m_iState =
 	m_flNextTrigger =
 	m_flWait =
 	m_flDelay = 0.0f;
 
 	m_iDamage =
 	m_iLocked =
-	m_iPortalState =
 	m_iForceClosed = 0;
 
 	m_iCanTouch = false;
@@ -163,14 +136,7 @@ func_door::Save(float handle)
 {
 	super::Save(handle);
 
-	SaveVector(handle, "m_vecPos1", m_vecPos1);
-	SaveVector(handle, "m_vecPos2", m_vecPos2);
-	SaveVector(handle, "m_vecDest", m_vecDest);
-	SaveVector(handle, "m_vecMoveDir", m_vecMoveDir);
-
-	SaveFloat(handle, "m_flSpeed", m_flSpeed);
 	SaveFloat(handle, "m_flLip", m_flLip);
-	SaveFloat(handle, "m_iState", m_iState);
 	SaveFloat(handle, "m_flNextTrigger", m_flNextTrigger);
 	SaveFloat(handle, "m_flWait", m_flWait);
 	SaveFloat(handle, "m_flDelay", m_flDelay);
@@ -178,7 +144,6 @@ func_door::Save(float handle)
 
 	SaveInt(handle, "m_iDamage", m_iDamage);
 	SaveInt(handle, "m_iLocked", m_iLocked);
-	SaveInt(handle, "m_iPortalState", m_iPortalState);
 	SaveInt(handle, "m_iForceClosed", m_iForceClosed);
 
 	SaveString(handle, "m_strLockedSfx", m_strLockedSfx);
@@ -194,27 +159,8 @@ void
 func_door::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "m_vecPos1":
-		m_vecPos1 = ReadVector(strValue);
-		break;
-	case "m_vecPos2":
-		m_vecPos2 = ReadVector(strValue);
-		break;
-	case "m_vecDest":
-		m_vecDest = ReadVector(strValue);
-		break;
-	case "m_vecMoveDir":
-		m_vecMoveDir = ReadVector(strValue);
-		break;
-
-	case "m_flSpeed":
-		m_flSpeed = ReadFloat(strValue);
-		break;
 	case "m_flLip":
 		m_flLip = ReadFloat(strValue);
-		break;
-	case "m_iState":
-		m_iState = ReadFloat(strValue);
 		break;
 	case "m_flNextTrigger":
 		m_flNextTrigger = ReadFloat(strValue);
@@ -234,9 +180,6 @@ func_door::Restore(string strKey, string strValue)
 		break;
 	case "m_iLocked":
 		m_iLocked = ReadInt(strValue);
-		break;
-	case "m_iPortalState":
-		m_iPortalState = ReadInt(strValue);
 		break;
 	case "m_iForceClosed":
 		m_iForceClosed = ReadInt(strValue);
@@ -355,19 +298,9 @@ func_door::Spawned(void)
 void
 func_door::Respawn(void)
 {
-	/* reset */
-	m_vecPos1 = [0,0,0];
-	m_vecPos2 = [0,0,0];
-	m_vecDest = [0,0,0];
-	m_vecMoveDir = [0,0,0];
-
 	/* this is a terrible hack */
 	if (m_flWait == 0)
 		m_flWait = 0.01f;
-
-	RestoreAngles();
-	SetMovementDirection();
-	ClearAngles();
 
 	if (HasSpawnFlags(SF_MOV_PASSABLE))
 		SetSolid(SOLID_NOT);
@@ -379,6 +312,11 @@ func_door::Respawn(void)
 	SetOrigin(GetSpawnOrigin());
 	AddFlags(FL_FINDABLE_NONSOLID);
 	ReleaseThink();
+
+	RestoreAngles();
+	SetPosition1(GetSpawnOrigin());
+	SetPosition2(GetDirectionalPosition(GetSpawnAngles(), m_flLip));
+	ClearAngles();
 
 	/* FIXME: Is this correct? */
 	if (m_flWait == -1) {
@@ -394,9 +332,6 @@ func_door::Respawn(void)
 	}
 
 	m_iValue = 0;
-	m_iState = DOORSTATE_LOWERED;
-	m_vecPos1 = GetSpawnOrigin();
-	m_vecPos2 = (m_vecPos1 + m_vecMoveDir * (fabs(m_vecMoveDir * size) - m_flLip));
 
 	if (spawnflags & SF_MOV_USE)
 		m_iCanTouch = false;
@@ -405,12 +340,13 @@ func_door::Respawn(void)
 
 	if (HasSpawnFlags(SF_MOV_OPEN)) {
 		SetOrigin(m_vecPos2);
-		m_vecPos2 = m_vecPos1;
-		m_vecPos1 = origin;
+		SetPosition2(GetPosition1());
+		SetPosition1(GetOrigin());
+
 		m_iValue = 1;
-		PortalOpen();
+		_PortalOpen();
 	} else {
-		PortalClose();
+		_PortalClose();
 	}
 
 	if (targetname) {
@@ -437,28 +373,6 @@ func_door::Input(entity eAct, string strInput, string strData)
 }
 
 void
-func_door::PortalOpen(void)
-{
-	if (m_iPortalState == 1)
-		return;
-
-	m_iPortalState = 1;
-	setorigin(this, origin);
-	openportal(this, AREAPORTAL_OPEN);
-}
-
-void
-func_door::PortalClose(void)
-{
-	if (m_iPortalState == 0)
-		return;
-
-	m_iPortalState = 0;
-	setorigin(this, origin);
-	openportal(this, AREAPORTAL_CLOSED);
-}
-
-void
 func_door::PlayerUse(void)
 {
 	if (!HasSpawnFlags(SF_MOV_USE))
@@ -469,94 +383,75 @@ func_door::PlayerUse(void)
 }
 
 void
-func_door::Arrived(void)
+func_door::MoverFinishesMoving(void)
 {
-	SetOrigin(m_vecDest);
-	ClearVelocity();
-	ReleaseThink();
-
-	m_iState = DOORSTATE_RAISED;
-
-	if (m_strSndStop) {
-		Sound_Play(this, CHAN_VOICE, m_strSndStop);
-	} else {
-		sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
+	static void MoveBack(void) {
+		MoveToPosition(GetPosition1(), m_flSpeed);
 	}
 
-	if (m_strSndMove)
-		sound(this, CHAN_WEAPON, "common/null.wav", 1.0f, ATTN_NORM);
-
-	if ((m_flWait < 0.0f) || HasSpawnFlags(SF_MOV_TOGGLE) == true)
-		return;
-
-	ScheduleThink(MoveBack, m_flWait);
-}
-
-void
-func_door::Returned(void)
-{
-	SetOrigin(m_vecDest);
-	ClearVelocity();
-	ReleaseThink();
-
-	if (targetClose)
-	for (entity f = world; (f = find(f, ::targetname, targetClose));) {
-		NSEntity trigger = (NSEntity)f;
-		if (trigger.Trigger != __NULL__) {
-			trigger.Trigger(this, TRIG_TOGGLE);
+	/* we arrived at our starting position within the map */
+	if (GetMoverState() == MOVER_POS1) {
+		if (targetClose)
+		for (entity f = world; (f = find(f, ::targetname, targetClose));) {
+			NSEntity trigger = (NSEntity)f;
+			if (trigger.Trigger != __NULL__) {
+				trigger.Trigger(this, TRIG_TOGGLE);
+			}
 		}
+
+		if (m_strSndStop) {
+			Sound_Play(this, CHAN_VOICE, m_strSndStop);
+		} else {
+			sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
+		}
+
+		if (m_strSndMove)
+			sound(this, CHAN_WEAPON, "common/null.wav", 1.0f, ATTN_NORM);
+
+	} else if (GetMoverState() == MOVER_POS2) {
+		if (m_strSndStop) {
+			Sound_Play(this, CHAN_VOICE, m_strSndStop);
+		} else {
+			sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
+		}
+
+		if (m_strSndMove)
+			sound(this, CHAN_WEAPON, "common/null.wav", 1.0f, ATTN_NORM);
+
+		if ((m_flWait < 0.0f) || HasSpawnFlags(SF_MOV_TOGGLE) == true)
+			return;
+
+		ScheduleThink(MoveBack, m_flWait);
 	}
-
-	if (m_strSndStop) {
-		Sound_Play(this, CHAN_VOICE, m_strSndStop);
-	} else {
-		sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
-	}
-
-	if (m_strSndMove)
-		sound(this, CHAN_WEAPON, "common/null.wav", 1.0f, ATTN_NORM);
-
-	m_iState = DOORSTATE_LOWERED;
-	PortalClose();
 }
 
 void
-func_door::MoveBack(void)
+func_door::MoverStartsMoving(void)
 {
-	if (m_strSndClose) {
-		Sound_Play(this, CHAN_VOICE, m_strSndClose);
-	} else {
-		sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
+	if (GetMoverState() == MOVER_1TO2) {
+		if (m_strSndOpen) {
+			Sound_Play(this, CHAN_VOICE, m_strSndOpen);
+		} else {
+			sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
+		}
+
+		if (m_strSndMove)
+			Sound_Play(this, CHAN_WEAPON, m_strSndMove);
+
+		m_iValue = 1;
+	} else if (GetMoverState() == MOVER_2TO1) {
+
+		if (m_strSndClose) {
+			Sound_Play(this, CHAN_VOICE, m_strSndClose);
+		} else {
+			sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
+		}
+
+		if (m_strSndMove)
+			Sound_Play(this, CHAN_WEAPON, m_strSndMove);
+
+		m_iValue = 0;
 	}
-
-	if (m_strSndMove)
-		Sound_Play(this, CHAN_WEAPON, m_strSndMove);
-
-	m_iValue = 0;
-	m_iState = DOORSTATE_DOWN;
-	MoveToDestination(m_vecPos1, Returned);
-}
-
-void
-func_door::MoveAway(void)
-{
-	if (m_iState == DOORSTATE_UP) {
-		return;
-	}
-
-	if (m_strSndOpen) {
-		Sound_Play(this, CHAN_VOICE, m_strSndOpen);
-	} else {
-		sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
-	}
-
-	if (m_strSndMove)
-		Sound_Play(this, CHAN_WEAPON, m_strSndMove);
-
-	m_iValue = 1;
-	m_iState = DOORSTATE_UP;
-	MoveToDestination(m_vecPos2, Arrived);
-	PortalOpen();
 }
 
 void
@@ -573,20 +468,16 @@ func_door::Trigger(entity act, triggermode_t triggerstate)
 	m_flNextTrigger = time + m_flWait;
 
 	/* only trigger stuff once we are done moving */
-	if ((m_iState == DOORSTATE_RAISED) || (m_iState == DOORSTATE_LOWERED)) {
+	if ((GetMoverState() == MOVER_POS1) || (GetMoverState() == MOVER_POS2)) {
 		UseTargets(act, TRIG_TOGGLE, m_flDelay);
 	}
 
 	if (triggerstate == TRIG_OFF) {
-		MoveBack();
+		MoveToPosition(GetPosition1(), m_flSpeed);
 	} else if (triggerstate == TRIG_ON) {
-		MoveAway();
+		MoveToPosition(GetPosition2(), m_flSpeed);
 	} else {
-		if ((m_iState == DOORSTATE_UP) || (m_iState == DOORSTATE_RAISED)){
-			MoveBack();
-		} else {
-			MoveAway();
-		}
+		MoveToReverse(m_flSpeed);
 	}
 }
 
@@ -627,59 +518,8 @@ func_door::Blocked(entity eBlocker)
 
 	if (!m_iForceClosed)
 	if (m_flWait >= 0) {
-		if (m_iState == DOORSTATE_DOWN) {
-			MoveAway();
-		} else {
-			MoveBack();
-		}
+		MoveToReverse(m_flSpeed);
 	}
-}
-
-void
-func_door::SetMovementDirection(void)
-{
-	if (GetSpawnAngles() == [0,-1,0]) {
-		m_vecMoveDir = [0,0,1];
-	} else if (GetSpawnAngles() == [0,-2,0]) {
-		m_vecMoveDir = [0,0,-1];
-	} else {
-		makevectors(GetSpawnAngles());
-		m_vecMoveDir = v_forward;
-	}
-}
-
-void
-func_door::MoveToDestination(vector vecDest, void(void) func)
-{
-	vector vecDifference;
-	float flTravel;
-	float fTravelTime;
-
-	if (!m_flSpeed) {
-		objerror("func_door: No speed defined!");
-		return;
-	}
-
-	m_vecDest = vecDest;
-
-	if (vecDest == origin) {
-		ScheduleThink(func, 0.1f);
-		ClearVelocity();
-		return;
-	}
-
-	vecDifference = (vecDest - origin);
-	flTravel = vlen(vecDifference);
-	fTravelTime = (flTravel / m_flSpeed);
-
-	if (fTravelTime < 0.1) {
-		ScheduleThink(func, 0.1f);
-		ClearVelocity();
-		return;
-	}
-
-	ScheduleThink(func, fTravelTime);
-	SetVelocity(vecDifference * (1.0f / fTravelTime));
 }
 
 void
