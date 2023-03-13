@@ -502,16 +502,16 @@ void NSEntity::SetThink( void ( void ) func ) {
 }
 
 void NSEntity::SetNextThink( float fl ) {
-	float flTime = GetTime();
+	float flTime = GetTime() + fl;
 
 	/* HACK: to make sure things happen post-spawn */
-	if ( flTime <= 0.0f )
+	if ( flTime == 0.0f )
 		flTime = 0.1f;
 
-	if ( fl >= 0 )
-		nextthink = flTime + fl;
+	if ( flTime >= 0 )
+		nextthink = flTime;
 	else
-		NSLog( "%s sets bogus nextthink value %f\n", classname, fl );
+		NSLog( "%s sets bogus nextthink value %f\n", classname, flTime );
 }
 
 void NSEntity::ScheduleThink( void ( void ) func, float fl ) {
