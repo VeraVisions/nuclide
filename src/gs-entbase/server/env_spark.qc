@@ -25,7 +25,7 @@ enumflags
 	EVSPARK_STARTON
 };
 
-/*!QUAKED env_spark (1 0 0) (-8 -8 -8) (8 8 8) x x x x x EVSPARK_TOGGLE EVSPARK_STARTON
+/*!QUAKED env_spark (1 .5 0) (-8 -8 -8) (8 8 8) x x x x x EVSPARK_TOGGLE EVSPARK_STARTON
 # OVERVIEW
 Creates a series (or just one) spark effect with sound when triggered.
 

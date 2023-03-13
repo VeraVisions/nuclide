@@ -31,7 +31,7 @@ A conveyor belt entity. Texture will move along in the direction and speed of th
 - SF_CONVEYOR_NOTSOLID (2) : This conveyor is non-solid.
 
 # TRIVIA
-This entity was introduced in Half-Life (1998).
+This entity was introduced in Quake II (1997).
 */
 class
 func_conveyor:NSRenderableEntity

@@ -22,7 +22,7 @@ float g_dCubeSize;
 void CMap_Check(void);
 void CMap_Shoot(void);
 
-/*!QUAKED env_cubemap (0 0 1) (-8 -8 -8) (8 8 8)
+/*!QUAKED env_cubemap (1 .5 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Specifies a location for which a cubemap will be generated when the 
 buildcubemaps console command is executed.

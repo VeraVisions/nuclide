@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*!QUAKED trigger_playerfreeze (1 0 0) (-8 -8 -8) (8 8 8)
+/*!QUAKED trigger_playerfreeze (.5 .5 .5) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Trigger that freezes all clients, until it is triggered again.
 Freezing a player means they're unable to move, they can still look around.

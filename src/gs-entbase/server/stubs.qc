@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*!QUAKED info_player_start (1 1 1) (-16 -16 -36) (16 16 36)
+/*!QUAKED info_player_start (1 0 0) (-16 -16 -36) (16 16 36)
 # OVERVIEW
 Player spawn position for single-player games.
 
@@ -35,7 +35,7 @@ of the entity, keep that in mind.
 This entity was introduced in Quake (1996).
 */
 
-/*!QUAKED info_player_deathmatch (1 1 1) (-16 -16 -36) (16 16 36)
+/*!QUAKED info_player_deathmatch (1 0 1) (-16 -16 -36) (16 16 36)
 # OVERVIEW
 Player spawn position for deathmatch games.
 
@@ -57,7 +57,7 @@ of the entity, keep that in mind.
 This entity was introduced in Quake (1996).
 */
 
-/*!QUAKED info_player_coop (1 1 1) (-16 -16 -36) (16 16 36)
+/*!QUAKED info_player_coop (1 0 1) (-16 -16 -36) (16 16 36)
 # OVERVIEW
 Player spawn position for cooperative games.
 

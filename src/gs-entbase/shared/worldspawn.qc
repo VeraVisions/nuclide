@@ -28,13 +28,13 @@ var int g_iHDREnabled = 0;
 Only used for the world.
 
 # KEYS
-- "message" : Full name of the map.
+- "message" : Full title of the map. (e.g. "Barbie's Domain")
 - "author" : Author of the map.
-- "chaptertitle" : Titles entry to display when entering the level.
-- "sounds" : CD track to play.
+- "chaptertitle" : Titles.txt entry to display when entering the level.
+- "sounds" : CD track to play. Numerical value. Most likely starts at '2'.
 - "_fog" : Fog in the playable area. Format: (density red green blue alpha depthbias)
 - "_skyroomfog" : Fog in the skybox area. Format: (density red green blue alpha depthbias)
-- "skyname" : Which skybox to use. (e.g. textures/skies/sundown)
+- "skyname" : Which skybox to use. (e.g. "textures/skies/sundown")
 - "ambientsound" : Sound shader to play in the background (looping) for when other env_soundscape entities are NOT active.
 - "startdark" : Starts the level with a fade in similar to using an env_fade, which lasts for nine seconds.
 - "hdr_iris_minvalue" : Minimum HDR brightness adjustment. Default is "0.0".
@@ -58,13 +58,19 @@ public:
 	
 	virtual void SpawnKey(string,string);
 	virtual void Spawned(void);
-
 };
+
+void
+worldspawn::worldspawn(void)
+{
+}
 
 void
 worldspawn::Spawned(void)
 {
 	g_vecSunDir = [90,0];
+
+	super::Spawned();
 
 	if (g_iHDREnabled)
 		cvar_set("r_hdr_irisadaptation", "1");
@@ -124,10 +130,5 @@ worldspawn::SpawnKey(string strField, string strKey)
 	default:
 		break;
 	}
-}
-
-void
-worldspawn::worldspawn(void)
-{
 }
 #endif

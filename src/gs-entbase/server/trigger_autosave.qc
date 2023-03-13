@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*!QUAKED trigger_autosave (0 .5 .8) ?
+/*!QUAKED trigger_autosave (.5 .5 .5) ?
 # OVERVIEW
 Volume that'll save the current game when a client enters its bounds.
 This entity does not work in multiplayer.

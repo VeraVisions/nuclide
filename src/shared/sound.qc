@@ -14,10 +14,11 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-void(vector origin, string sample, float volume, float attenuation, float pitch) pointsound_proper = #483;
+static void pointsound_proper(vector origin, string sample, float volume, float attenuation, float pitch) = #483;
 
 #ifndef SOUNDSHADER_DYNAMIC
 	#ifndef SOUNDSHADER_MAX
+		/** The max amount of soundDef entries. Can override this in your progs.src. */
 		#define SOUNDSHADER_MAX 512
 	#endif
 #endif
@@ -65,7 +66,7 @@ Sound_Init(void)
 	print("SoundDef initialized.\n");
 }
 
-void
+static void
 Sound_ParseField(int i, int a)
 {
 	switch (argv(0)) {
@@ -197,7 +198,7 @@ Sound_GetAttenuation(int i)
 		return cvar("s_nominaldistance") / g_sounds[i].dist_max;
 }
 
-int
+static int
 Sound_Parse(int i, string line, string shader)
 {
 	int c;
@@ -332,7 +333,7 @@ Sound_Precache(string shader)
 	return -1;
 }
 
-void
+static void
 Sound_Distance(entity target, string shader)
 {
 	int r;
@@ -395,7 +396,7 @@ Sound_Distance(entity target, string shader)
 	);
 }
 
-void
+static void
 Sound_DistancePos(vector pos, string shader)
 {
 	int r;

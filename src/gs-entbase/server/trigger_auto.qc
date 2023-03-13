@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*!QUAKED trigger_auto (1 0 0) (-8 -8 -8) (8 8 8) TA_USEONCE
+/*!QUAKED trigger_auto (.5 .5 .5) (-8 -8 -8) (8 8 8) TA_USEONCE
 # OVERVIEW
 Will automatically trigger its target when the level has spawned.
 

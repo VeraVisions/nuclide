@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*!QUAKED prop_static (0 0.2 1) (-8 -8 -8) (8 8 8) SF_BASIC_COL
+/*!QUAKED prop_static (1 0 0) (-8 -8 -8) (8 8 8) SF_BASIC_COL
 # OVERVIEW
 Decorative model entity that gets baked into the level file.
 

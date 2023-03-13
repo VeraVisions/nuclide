@@ -18,7 +18,7 @@ var int autocvar_dsp_soundscapes = TRUE;
 
 int g_scapes;
 
-/*!QUAKED env_soundscape (0 1 0.3) (-8 -8 -8) (8 8 8)
+/*!QUAKED env_soundscape (1 .5 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Client-side environmental soundscape modifier.
 

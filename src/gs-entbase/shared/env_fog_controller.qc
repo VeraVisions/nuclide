@@ -27,7 +27,7 @@ enumflags
 	ENVFOG_CHANGED_DIR
 };
 
-/*!QUAKED env_fog_controller (1 0 0) (-8 -8 -8) (8 8 8) EVFOGCTL_MASTER
+/*!QUAKED env_fog_controller (1 .5 0) (-8 -8 -8) (8 8 8) EVFOGCTL_MASTER
 # OVERVIEW
 Textured light projected. This is the type of lighting that's used for
 flashlights, lamp spotlights and so on.

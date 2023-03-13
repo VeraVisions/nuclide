@@ -17,7 +17,7 @@
 var int autocvar_r_skipGlows = 0;
 var int autocvar_r_skipLensFlares = 0;
 
-/*!QUAKED env_glow (0 0.5 1) (-8 -8 -8) (8 8 8) EVGLOW_ORIENT
+/*!QUAKED env_glow (1 .5 0) (-8 -8 -8) (8 8 8) EVGLOW_ORIENT
 # OVERVIEW
 Client-side glare/glow orb effect like the flares in 1997's Unreal.
 

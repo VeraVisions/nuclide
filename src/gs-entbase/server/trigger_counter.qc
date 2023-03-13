@@ -21,7 +21,7 @@ enumflags
     TRCNT_PUSHABLES
 };
 
-/*!QUAKED trigger_counter (0 .5 .8) ? TRCNT_SILENT TRCNT_NOCLIENTS TRCNT_PUSHABLES
+/*!QUAKED trigger_counter (.5 .5 .5) ? TRCNT_SILENT TRCNT_NOCLIENTS TRCNT_PUSHABLES
 # OVERVIEW
 This entity counts the number of times it has been triggered and activates its
 target when it reaches a specified number.

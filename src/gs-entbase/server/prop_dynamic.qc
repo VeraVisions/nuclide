@@ -16,7 +16,7 @@
 
 #define PRPDYN_NONSOLID 256
 
-/*!QUAKED prop_dynamic (0 0.2 1) (-8 -8 -8) (8 8 8) x x x x x x x x PRPDYN_NONSOLID
+/*!QUAKED prop_dynamic (1 0 0) (-8 -8 -8) (8 8 8) x x x x x x x x PRPDYN_NONSOLID
 # OVERVIEW
 Client-side decorative model entity.
 

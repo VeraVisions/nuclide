@@ -61,7 +61,7 @@ Rotating brush object. Useful for fans, etc.
 Please include an origin brush so that a pivot point will be defined.
 
 # TRIVIA
-This entity was introduced in Half-Life (1998).
+This entity was introduced in Quake II (1997).
 */
 class
 func_rotating:NSRenderableEntity

@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*!QUAKED trigger_look (0 .5 .8) ?
+/*!QUAKED trigger_look (.5 .5 .5) ?
 # OVERVIEW
 Triggers itself when a player is inside its volume and is looking at a
 specific entity within a specified field-of-view cone.

@@ -21,7 +21,7 @@ enumflags
 	EHH_ALLPLAYERS
 };
 
-/*!QUAKED env_hudhint (0 0 0) (-8 -8 -8) (8 8 8) EHH_ALLPLAYERS
+/*!QUAKED env_hudhint (1 .5 0) (-8 -8 -8) (8 8 8) EHH_ALLPLAYERS
 # OVERVIEW
 Will display a hint message to the client who activates it.
 

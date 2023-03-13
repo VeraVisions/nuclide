@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*!QUAKED trigger_gravity (0 .5 .8) ?
+/*!QUAKED trigger_gravity (.5 .5 .5) ?
 # OVERVIEW
 Volume that will, when an entity enters it, permanently alters how it
 experiences gravity.

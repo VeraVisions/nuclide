@@ -14,40 +14,56 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! @file sound.h
+    @brief SoundDef system functions.
+
+    Anything concerned with soundDef scripting happens here.
+    They're the primary system with which you should be messing
+    with the sound system. It allows modders to override/expand
+    on the audio experience without having to edit the source code.
+
+    Read [Sound: soundDef](Documentation/Sound/SoundDefs.md) for more information.
+*/
+
 .float maxspeed;
 .float flags;
+
+/** Global hash table for name > soundDef id lookup. */
 var hashtable g_hashsounds;
 
+/** Enumeration of valid sound flags. */
 typedef enumflags
 {
-	SNDFL_LOOPING,	/* forceloop */
-	SNDFL_NODUPS,	/* don't random the samples */
-	SNDFL_GLOBAL,	/* no attenuation */
-	SNDFL_NOREVERB,	/* skip reverb */
-	SNDFL_OMNI,	/* volume on all channels is equal */
-	SNDFL_PRIVATE,	/* only play on target */
-	SNDFL_STEP,	/* volume is calculated from entity speed */
-	SNDFL_FOLLOW,
-	SNDFL_ALERTS	/* this sounds alerts AI, takes distance into account */
+	SNDFL_LOOPING,	/**< forceloop */
+	SNDFL_NODUPS,	/**< don't random the samples */
+	SNDFL_GLOBAL,	/**< no attenuation */
+	SNDFL_NOREVERB,	/**< skip reverb */
+	SNDFL_OMNI,		/**< volume on all channels is equal */
+	SNDFL_PRIVATE,	/**< only play on target */
+	SNDFL_STEP,		/**< volume is calculated from entity speed */
+	SNDFL_FOLLOW,	/**< sample follows entity as it plays */
+	SNDFL_ALERTS	/**< this sounds alerts AI, takes distance into account */
 } soundFlag_t;
 
+/** A soundDef aka 'sound shader' type. */
 typedef struct
 {
-	float dist_min;
-	float dist_max;
-	float offset;
-	float pitch_min;
-	float pitch_max;
-	float shakes;
-	float volume;
-	soundFlag_t flags;
-	int playc;
-	int sample_count;
-	string samples;
-	string name;
-	string distshader;
+	float dist_min; /**< Minimum playback distance. Default is 0. */
+	float dist_max; /**< Maximum playback distance. */
+	float offset;	/**< Sound sample offset. Will start playback this many seconds in. */
+	float pitch_min; /**< Minimum sound pitch. */
+	float pitch_max; /**< Maximum sound pitch. */
+	float shakes; /**< Earthquake/Shake amplifier. Default is 0. */
+	float volume; /**< Desired playback volume. */
+	soundFlag_t flags; /**< Sound flags that are applied to this soundDef. */
+	int playc; /**< Number of plays. */
+	int sample_count; /**< Total amount of samples within this soundDef. */
+	string samples; /**< Separated list of samples. */
+	string name; /**< Name of the soundDef. */
+	string distshader; /**< soundDef to play where this soundDef is not audible. */
 } snd_t;
 
+/** A sound sample of a sentences.txt word sequence. */
 typedef struct
 {
 	string m_strSnd;
@@ -55,20 +71,28 @@ typedef struct
 	float m_flPitch;
 } sound_t;
 
+/** Pointer to the global soundDef table. */
 snd_t *g_sounds;
+/** Total amount of registered soundDef entries. */
 int g_sounds_count; 
 
+/** Called by the client inside CSQC_Init(), and on the server inside init(). */
 void Sound_Init(void);
+/** Called by CSQC_Shutdown() and in theory, somewhere on the server. */
 void Sound_Shutdown(void);
-void Sound_ParseField(int i, int a);
-int Sound_Parse(int i, string line, string shader);
-int Sound_Precache(string shader);
-void Sound_Play(entity target, int chan, string shader);
-void Sound_PlayAt(vector pos, string shader);
+/** Force the precache of a soundDef file. */
+int Sound_Precache(string sndDef);
+/** Play a soundDef on a given target entity. */
+void Sound_Play(entity targetEntity, int sndChannel, string sndDef);
+/** Play a soundDef a a given location. */
+void Sound_PlayAt(vector worldPos, string sndDef);
 
 #ifdef CLIENT
+/** Client-side only: Play a sound locally, outside the game world. */
 void Sound_PlayLocal(string shader);
-void Sound_Update(entity target, int channel, int sample, float volume);
+/** Client-side only: Update the sound parameters on a given entity. */
+void Sound_Update(entity targetEntity, int sndChannel, int sndSample, float desiredVolume);
 #else
-void Sound_Speak(entity target, string shader);
+/** Server-side only: Play a sentences.txt entry on a given entity. */
+void Sound_Speak(entity targetEntity, string sentencesEntry);
 #endif

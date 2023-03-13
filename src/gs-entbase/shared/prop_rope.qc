@@ -33,7 +33,7 @@ var float autocvar_rope_swing = 2.0;
 var bool autocvar_rope_fast = TRUE;
 var int autocvar_rope_maxsegments = -1;
 
-/*!QUAKED prop_rope (1 1 0.5) (-8 -8 -8) (8 8 8) ROPE_VERTICAL
+/*!QUAKED prop_rope (1 0 0) (-8 -8 -8) (8 8 8) ROPE_VERTICAL
 # OVERVIEW
 Client-side decorative rope entity. 
 Connect the entity to a named info_notnull and watch it swing around.

@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*!QUAKED light (1 0 0) (-8 -8 -8) (8 8 8) LFL_LINEAR x LFL_DARK LFL_NOGRID x x
+/*!QUAKED light (0 1 0) (-8 -8 -8) (8 8 8) LFL_LINEAR x LFL_DARK LFL_NOGRID x x
 # OVERVIEW
 Infinitely small point of light illuminating the scene.
 
@@ -238,7 +238,7 @@ light::Trigger(entity act, triggermode_t state)
 CLASSEXPORT(light_spot, light)
 CLASSEXPORT(light_environment, light)
 
-/*!QUAKED light_surface (1 0 0) (-8 -8 -8) (8 8 8)
+/*!QUAKED light_surface (0 1 0) (-8 -8 -8) (8 8 8)
 Material property modifier related to lighting.
 
 # KEYS

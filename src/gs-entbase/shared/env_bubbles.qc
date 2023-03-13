@@ -26,7 +26,7 @@ enumflags
 
 #define BUBFL_STARTOFF 1
 
-/*!QUAKED env_bubbles (1 0 0) ? BUBFL_STARTOFF
+/*!QUAKED env_bubbles (1 .5 0) ? BUBFL_STARTOFF
 # OVERVIEW
 Brush volume that emits rising bubbles.
 

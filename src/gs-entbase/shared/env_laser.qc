@@ -41,7 +41,7 @@ enumflags
 	LASER_DECAL
 };
 
-/*!QUAKED env_laser (1 0 0) (-8 -8 -8) (8 8 8) LASER_STARTON x x x LASER_STARTSPARKS LASER_ENDSPARKS LASER_DECAL
+/*!QUAKED env_laser (1 .5 0) (-8 -8 -8) (8 8 8) LASER_STARTON x x x LASER_STARTSPARKS LASER_ENDSPARKS LASER_DECAL
 # OVERVIEW
 Controllable laser effect. More or less a stripped-down version of env_beam.
 

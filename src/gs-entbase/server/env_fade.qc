@@ -21,7 +21,7 @@ enumflags
 	EVF_ONLYUSER
 };
 
-/*!QUAKED env_fade (0 0 0) (-8 -8 -8) (8 8 8) EVF_FADEDROM EVF_MODULATE EVF_ONLYUSER
+/*!QUAKED env_fade (1 .5 0) (-8 -8 -8) (8 8 8) EVF_FADEDROM EVF_MODULATE EVF_ONLYUSER
 # OVERVIEW
 Overlay that blinds/obscures players vision when triggered.
 

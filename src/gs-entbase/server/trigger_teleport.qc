@@ -20,7 +20,7 @@ enumflags
 	TRIGTELE_NOCLIENTS
 };
 
-/*!QUAKED trigger_teleport (0 .5 .8) ?
+/*!QUAKED trigger_teleport (.5 .5 .5) ?
 # OVERVIEW
 Teleportation volume. Teleports anything it touches to the position of
 any entity set as the "target". Works best with info_teleport_destination.

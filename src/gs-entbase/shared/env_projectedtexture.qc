@@ -29,7 +29,7 @@ enumflags
 	PRTEXFL_CHANGED_PATTERN
 };
 
-/*!QUAKED env_projectedtexture (1 0 0) (-8 -8 -8) (8 8 8) PRTEXSF_STARTON
+/*!QUAKED env_projectedtexture (1 .5 0) (-8 -8 -8) (8 8 8) PRTEXSF_STARTON
 # OVERVIEW
 Textured light projected. This is the type of lighting that's used for
 flashlights, lamp spotlights and so on.

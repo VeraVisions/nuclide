@@ -33,7 +33,7 @@ enumflags
 	ENVS_PLAYONCE
 };
 
-/*!QUAKED env_sprite (1 0 0) (-8 -8 -8) (8 8 8) ENVS_STARTON ENVS_PLAYONCE
+/*!QUAKED env_sprite (1 .5 0) (-8 -8 -8) (8 8 8) ENVS_STARTON ENVS_PLAYONCE
 # OVERVIEW
 A sprite entity manager with fancy overrides.
 

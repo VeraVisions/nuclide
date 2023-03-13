@@ -49,7 +49,7 @@ static string g_hlefx[] = {
 	"gs_weirdo3"
 };
 
-/*!QUAKED env_sound (0 1 0.5) (-8 -8 -8) (8 8 8)
+/*!QUAKED env_sound (1 .5 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Client-side environmental reverb modifier.
 

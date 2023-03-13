@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*!QUAKED trigger_changetarget (1 0 0) (-8 -8 -8) (8 8 8)
+/*!QUAKED trigger_changetarget (.5 .5 .5) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 When triggered, trigger_changetarget changes the 'target' value of any entity
 to something else.

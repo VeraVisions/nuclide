@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
  
-/*!QUAKED light_environment (1 0 0) (-8 -8 -8) (8 8 8) ?
+/*!QUAKED light_environment (0 1 0) (-8 -8 -8) (8 8 8) ?
 # OVERVIEW
 Defines the overall ambient skylight in the map.
 

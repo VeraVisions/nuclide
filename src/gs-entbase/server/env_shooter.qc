@@ -16,7 +16,7 @@
 
 #define EVSHOOTER_REPEATABLE 1
 
-/*!QUAKED env_shooter (1 0 0) (-8 -8 -8) (8 8 8) EVSHOOTER_REPEATABLE
+/*!QUAKED env_shooter (1 .5 0) (-8 -8 -8) (8 8 8) EVSHOOTER_REPEATABLE
 # OVERVIEW
 Shoots model entities from its location.
 

@@ -20,7 +20,7 @@ enumflags
 	TP_STARTOFF
 };
 
-/*!QUAKED trigger_push (0 .5 .8) ? TP_ONCE TP_STARTOFF
+/*!QUAKED trigger_push (.5 .5 .5) ? TP_ONCE TP_STARTOFF
 # OVERVIEW
 Pushes anything in its volume into a direction of your choosing.
 

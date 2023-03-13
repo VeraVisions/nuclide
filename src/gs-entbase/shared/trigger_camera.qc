@@ -22,7 +22,7 @@ enumflags
 	OCAMFL_CHANGED_VIEWER
 };
 
-/*!QUAKED trigger_camera (1 0 0) (-8 -8 -8) (8 8 8)
+/*!QUAKED trigger_camera (.5 .5 .5) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Forces a camera change when triggered.
 

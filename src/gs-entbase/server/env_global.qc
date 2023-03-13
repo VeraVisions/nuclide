@@ -16,7 +16,7 @@
 
 #define GLOBAL_SETSPAWN 1
 
-/*!QUAKED env_global (1 0 0) (-8 -8 -8) (8 8 8) GLOBAL_SETSPAWN
+/*!QUAKED env_global (1 .5 0) (-8 -8 -8) (8 8 8) GLOBAL_SETSPAWN
 # OVERVIEW
 Persistent storage for variables that carry over level changes.
 

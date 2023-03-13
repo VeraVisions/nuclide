@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*!QUAKED path_track (1 0 0) (-8 -8 -8) (8 8 8)
+/*!QUAKED path_track (.5 .3 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Node entities used for func_tracktrains.
 It's like a path_corner, but for tracktrains.

@@ -19,7 +19,7 @@ enumflags
 	TRLY_ONCE,
 };
 
-/*!QUAKED trigger_relay (0 .5 .8) ? TRLY_ONCE
+/*!QUAKED trigger_relay (.5 .5 .5) ? TRLY_ONCE
 # OVERVIEW
 This is an inbetween trigger that forces a desired output state
 instead of toggling e.g. a door open.

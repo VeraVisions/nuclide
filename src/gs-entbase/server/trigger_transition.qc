@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*!QUAKED trigger_transition (0 .5 .8) ?
+/*!QUAKED trigger_transition (.5 .5 .5) ?
 # OVERVIEW
 Currently unused. This is meant for defining level transition regions.
 All entities touching this volume would carry across to the next level.

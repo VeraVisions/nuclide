@@ -17,7 +17,7 @@
 #ifndef PHYSICS_STATIC
 #define PRPPHYS_ASLEEP 1
 
-/*!QUAKED prop_physics (0 0 0.8) (-16 -16 -16) (16 16 16) PRPPHYS_ASLEEP
+/*!QUAKED prop_physics (1 0 0) (-16 -16 -16) (16 16 16) PRPPHYS_ASLEEP
 # OVERVIEW
 Physics model
 

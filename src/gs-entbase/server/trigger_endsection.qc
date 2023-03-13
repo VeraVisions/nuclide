@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*!QUAKED trigger_endsection (0 .5 .8) ?
+/*!QUAKED trigger_endsection (.5 .5 .5) ?
 # OVERVIEW
 This trigger shuts down the server.
 Useful for when a singleplayer game ends, as it takes you to the main menu.

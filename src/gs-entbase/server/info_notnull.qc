@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*!QUAKED info_notnull (1 0 0) (-8 -8 -8) (8 8 8)
+/*!QUAKED info_notnull (0 0.5 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Helper entity for the game-logic its vast array of entities.
 It is most commonly used to aim active in-game entities towards a specific

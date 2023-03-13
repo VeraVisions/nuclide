@@ -35,7 +35,7 @@ Non-moving button that can either be used by hand, or shot.
 - BUTTA_TEXON (2) : Texture choices will be inverted in case multiple frames exist.
 
 # TRIVIA
-This entity was introduced in Quake (1996).
+This entity was introduced in Half-Life (1998).
 */
 class
 button_target:NSSurfacePropEntity

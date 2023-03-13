@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*!QUAKED trigger_cdaudio (0 .5 .8) ?
+/*!QUAKED trigger_cdaudio (.5 .5 .5) ?
 # OVERVIEW
 Switches the background music track when triggered.
 

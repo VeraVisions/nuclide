@@ -32,7 +32,7 @@ Util_IsSky(vector pos)
 	return (0);
 }
 
-/*!QUAKED env_sun (1 0 0) (-8 -8 -8) (8 8 8)
+/*!QUAKED env_sun (1 .5 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Visual representation of where the sun is positioned in the sky.
 

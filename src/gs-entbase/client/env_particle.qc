@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*!QUAKED env_particle (1 0 0) (-8 -8 -8) (8 8 8)
+/*!QUAKED env_particle (1 .5 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Client-side particle effect. Active at runtime, fully client-side.
 Cannot be triggered. Repeats automatically.

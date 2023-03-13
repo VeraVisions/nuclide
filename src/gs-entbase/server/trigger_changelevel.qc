@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*!QUAKED trigger_changelevel (0 .5 .8) ? LC_NOINTERMISSION LC_USEONLY
+/*!QUAKED trigger_changelevel (.5 .5 .5) ? LC_NOINTERMISSION LC_USEONLY
 # OVERVIEW
 When a Landmark is specified, you will have to position two info_landmark
 entities across your two levels with the same name. They'll mark a translation

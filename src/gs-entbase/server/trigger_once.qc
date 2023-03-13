@@ -21,7 +21,7 @@ enumflags
 	TO_PUSHABLES
 };
 
-/*!QUAKED trigger_once (0 .5 .8) ? TO_MONSTERS TO_NOCLIENTS TO_PUSHABLES
+/*!QUAKED trigger_once (.5 .5 .5) ? TO_MONSTERS TO_NOCLIENTS TO_PUSHABLES
 # OVERVIEW
 A trigger volume which works only once.
 

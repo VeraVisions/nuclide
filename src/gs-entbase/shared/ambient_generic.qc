@@ -34,7 +34,7 @@ enumflags
 	AMBIENT_ENABLED
 };
 
-/*!QUAKED ambient_generic (1 1 1) (-8 -8 -8) (8 8 8) AS_ARADIUS AS_SRADIUS AS_MRADIUS AS_LRADIUS AS_SILENT AS_NOTTOGGLED
+/*!QUAKED ambient_generic (0.3 0.1 0.6) (-8 -8 -8) (8 8 8) AS_ARADIUS AS_SRADIUS AS_MRADIUS AS_LRADIUS AS_SILENT AS_NOTTOGGLED
 # OVERVIEW
 Plays a sound sample of whatever format the engine is configured to support.
 

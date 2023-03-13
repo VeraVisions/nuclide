@@ -16,7 +16,7 @@
 
 #define EVS_GLOBAL 1
 
-/*!QUAKED env_shake (1 0.5 0) (-8 -8 -8) (8 8 8) EVS_GLOBAL
+/*!QUAKED env_shake (1 .5 0) (-8 -8 -8) (8 8 8) EVS_GLOBAL
 # OVERVIEW
 Causes an earthquake/shaking effect when triggered.
 

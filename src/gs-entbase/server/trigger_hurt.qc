@@ -44,7 +44,7 @@
 #define SF_HURT_FIREONPLAYER	16 // Only call UseTarget functions when it's a player
 #define SF_HURT_TOUCHPLAYER		32 // Only hurt players
 
-/*!QUAKED trigger_hurt (0 .5 .8) ? SF_HURT_ONCE SF_HURT_OFF x SF_HURT_NOPLAYERS SF_HURT_FIREONPLAYER SF_HURT_TOUCHPLAYER
+/*!QUAKED trigger_hurt (.5 .5 .5) ? SF_HURT_ONCE SF_HURT_OFF x SF_HURT_NOPLAYERS SF_HURT_FIREONPLAYER SF_HURT_TOUCHPLAYER
 # OVERVIEW
 Trigger volume that damages everything it touches.
 

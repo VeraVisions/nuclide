@@ -28,7 +28,7 @@ typedef enum
 	SKIN_RANDOM
 } sodaskin_t;
 
-/*!QUAKED env_beverage (1 0 0) (-8 -8 -8) (8 8 8)
+/*!QUAKED env_beverage (1 .5 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Upon being triggered, the entity will spawn item_food in its place in
 the shape of a soda can.

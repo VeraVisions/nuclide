@@ -31,7 +31,7 @@ enumflags
 	DLIGHTFL_CHANGED_PATTERN
 };
 
-/*!QUAKED light_dynamic (1 0 0) (-8 -8 -8) (8 8 8)
+/*!QUAKED light_dynamic (0 1 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Dynamic light entity. Can be parented to things, it even has some inputs that
 may be interesting.

@@ -20,7 +20,7 @@ enumflags
 	EMF_ALLPLAYERS
 };
 
-/*!QUAKED env_message (1 0 0) (-8 -8 -8) (8 8 8) EMF_ONCE EMF_ALLPLAYERS
+/*!QUAKED env_message (1 .5 0) (-8 -8 -8) (8 8 8) EMF_ONCE EMF_ALLPLAYERS
 # OVERVIEW
 Displays a basic message or titles.txt entry.
 

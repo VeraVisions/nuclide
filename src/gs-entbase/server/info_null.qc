@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*!QUAKED info_null (1 0 0) (-8 -8 -8) (8 8 8)
+/*!QUAKED info_null (0 0.5 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Helper entity for the map creation process only.
 It is supposed to be removed after compilation of a .bsp file.
