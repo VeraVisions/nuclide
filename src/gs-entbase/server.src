@@ -60,6 +60,7 @@ server/player_loadsaved.qc
 server/prop_dynamic.qc
 server/prop_physics.qc
 server/point_camera.qc
+server/point_trigger.qc
 server/targ_speaker.qc
 server/target_cdaudio.qc
 server/env_global.qc
