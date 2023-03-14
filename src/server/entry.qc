@@ -396,6 +396,10 @@ initents(void)
 	precache_sound("debris/concrete2.wav");
 	precache_sound("debris/concrete3.wav");
 
+	/** compat... */
+	precache_sound("misc/null.wav");
+	precache_sound("common/null.wav");
+
 	precache_sound("player/pl_fallpain3.wav");
 	precache_sound("items/9mmclip1.wav");
 	precache_sound("items/gunpickup2.wav");
@@ -403,7 +407,6 @@ initents(void)
 	precache_sound("common/wpn_denyselect.wav");
 	precache_sound("player/sprayer.wav");
 	precache_sound("items/flashlight1.wav");
-	precache_sound("common/null.wav");
 
 	Sound_Precache("player.gasplight");
 	Sound_Precache("player.gaspheavy");

@@ -177,7 +177,7 @@ void
 func_plat::MoverFinishesMoving(void)
 {
 	static void MoveDown(void) {
-		MoveToPosition(GetPosition2(), m_flSpeed);
+		MoveToPosition(GetMoverPosition2(), m_flSpeed);
 	}
 
 	/* cancel out any moving sfx */
@@ -206,8 +206,8 @@ func_plat::Respawn(void)
 		m_flHeight = size[2] + 8;
 	}
 
-	SetPosition1(GetOrigin());
-	SetPosition2(GetOrigin() - [0, 0, m_flHeight]);
+	SetMoverPosition1(GetOrigin());
+	SetMoverPosition2(GetOrigin() - [0, 0, m_flHeight]);
 
 	ClearAngles();
 	ReleaseThink();
@@ -220,7 +220,7 @@ func_plat::Respawn(void)
 		m_handler.SetTargetPlatform(this);
 	}
 
-	SetOrigin(GetPosition2());
+	SetOrigin(GetMoverPosition2());
 	SetMoverState(MOVER_POS2);
 }
 
@@ -229,10 +229,10 @@ func_plat::Trigger(entity act, triggermode_t state)
 {
 	switch (state) {
 	case TRIG_OFF:
-		MoveToPosition(GetPosition1(), m_flSpeed);
+		MoveToPosition(GetMoverPosition1(), m_flSpeed);
 		break;
 	case TRIG_ON:
-		MoveToPosition(GetPosition2(), m_flSpeed);
+		MoveToPosition(GetMoverPosition2(), m_flSpeed);
 		break;
 	default:
 		MoveToReverse(m_flSpeed);
@@ -274,8 +274,8 @@ func_plat_helper::SetTargetPlatform(entity targ)
 
 	m_eTargetPlat = targ;
 
-	vecPos1 = targetPlat.GetPosition1();
-	vecPos2 = targetPlat.GetPosition2();
+	vecPos1 = targetPlat.GetMoverPosition1();
+	vecPos2 = targetPlat.GetMoverPosition2();
 	vecMins = targetPlat.GetMins() + [25, 25, 0];
 	vecMaxs = targetPlat.GetMaxs() - [25, 25, -8];
 	vecMins[2] = vecMaxs[2] - (vecPos1[2] - vecPos2[2] + 8);
@@ -301,7 +301,7 @@ func_plat_helper::Touch(entity eToucher)
 		return;
 
 	if (targetPlat.GetMoverState() == MOVER_POS2)
-		targetPlat.MoveToPosition(targetPlat.GetPosition1(), targetPlat.m_flSpeed);
+		targetPlat.MoveToPosition(targetPlat.GetMoverPosition1(), targetPlat.m_flSpeed);
 	else
 		targetPlat.SetNextThink(1.0);
 }

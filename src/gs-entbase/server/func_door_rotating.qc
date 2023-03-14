@@ -260,20 +260,20 @@ func_door_rotating::Respawn(void)
 		PlayerUse = __NULL__;
 	}
 
-	SetPosition1(GetSpawnAngles());
+	SetMoverRotation1(GetSpawnAngles());
 
 	RestoreAngles();
 	if (HasSpawnFlags(SF_ROT_BACKWARDS)) {
-		SetPosition2(GetDirectionalRotation(m_vecTurnDir, -m_flDistance));
+		SetMoverRotation2(GetDirectionalRotation(m_vecTurnDir, -m_flDistance));
 	} else {
-		SetPosition2(GetDirectionalRotation(m_vecTurnDir, m_flDistance));
+		SetMoverRotation2(GetDirectionalRotation(m_vecTurnDir, m_flDistance));
 	}
 	ClearAngles();
 
 	if (HasSpawnFlags(SF_ROT_OPEN)) {
-		vector vTemp = GetPosition2();
-		SetPosition2(GetPosition1());
-		SetPosition1(vTemp);
+		vector vTemp = GetMoverRotation2();
+		SetMoverRotation2(GetMoverRotation1());
+		SetMoverRotation1(vTemp);
 	}
 
 	if (HasSpawnFlags(SF_ROT_PASSABLE)) {
@@ -284,7 +284,7 @@ func_door_rotating::Respawn(void)
 		m_iLocked = TRUE;
 	}
 
-	SetAngles(GetPosition1());
+	SetAngles(GetMoverRotation1());
 }
 
 void
@@ -355,14 +355,14 @@ void
 func_door_rotating::MoverFinishesMoving(void)
 {
 	static void RotateBack(void) {
-		RotateToPosition(GetPosition1(), m_flSpeed);
+		RotateToPosition(GetMoverRotation1(), m_flSpeed);
 	}
 
 	if (GetMoverState() == MOVER_POS1) {
 		if (m_strSndStop) {
-			Sound_Play(this, CHAN_VOICE, m_strSndStop);
+			StartSoundDef(m_strSndStop, CHAN_VOICE, true);
 		} else {
-			sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
+			StartSound("common/null.wav", CHAN_VOICE, 0, true);
 		}
 
 		if (targetClose)
@@ -374,9 +374,9 @@ func_door_rotating::MoverFinishesMoving(void)
 		}
 	} else if (GetMoverState() == MOVER_POS2) {
 		if (m_strSndStop) {
-			Sound_Play(this, CHAN_VOICE, m_strSndStop);
+			StartSoundDef(m_strSndStop, CHAN_VOICE, true);
 		} else {
-			sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
+			StartSound("common/null.wav", CHAN_VOICE, 0, true);
 		}
 
 		if ((m_flWait < 0.0f) || HasSpawnFlags(SF_ROT_TOGGLE) == true)
@@ -392,17 +392,17 @@ func_door_rotating::MoverStartsMoving(void)
 	if (GetMoverState() == MOVER_2TO1) {
 		if (!HasSpawnFlags(SF_DOOR_SILENT)) {
 			if (m_strSndClose) {
-				Sound_Play(this, CHAN_VOICE, m_strSndClose);
+				StartSoundDef(m_strSndClose, CHAN_VOICE, true);
 			} else {
-				sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
+				StartSound("common/null.wav", CHAN_VOICE, 0, true);
 			}
 		}
 	} else if (GetMoverState() == MOVER_1TO2) {
 		if (!HasSpawnFlags(SF_DOOR_SILENT)) {
 			if (m_strSndOpen) {
-				Sound_Play(this, CHAN_VOICE, m_strSndOpen);
+				StartSoundDef(m_strSndOpen, CHAN_VOICE, true);
 			} else {
-				sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
+				StartSound("common/null.wav", CHAN_VOICE, 0, true);
 			}
 		}
 	}
@@ -431,21 +431,21 @@ func_door_rotating::Trigger(entity act, triggermode_t state)
 				flDirection = -1.0f;
 			}
 
-			SetPosition2(GetDirectionalRotation(m_vecTurnDir, m_flDistance * flDirection));
+			SetMoverRotation2(GetDirectionalRotation(m_vecTurnDir, m_flDistance * flDirection));
 		}
 	}
 
 	if (state == TRIG_TOGGLE) {
 		if ((GetMoverState() == MOVER_1TO2) || (GetMoverState() == MOVER_POS2)) {
-			RotateToPosition(GetPosition1(), m_flSpeed);
+			RotateToPosition(GetMoverRotation1(), m_flSpeed);
 			return;
 		} else {
-			RotateToPosition(GetPosition2(), m_flSpeed);
+			RotateToPosition(GetMoverRotation2(), m_flSpeed);
 		}
 	} else if (state == TRIG_OFF) {
-		RotateToPosition(GetPosition1(), m_flSpeed);
+		RotateToPosition(GetMoverRotation1(), m_flSpeed);
 	} else if (state == TRIG_ON) {
-		RotateToPosition(GetPosition2(), m_flSpeed);
+		RotateToPosition(GetMoverRotation2(), m_flSpeed);
 	}
 
 	UseTargets(act, TRIG_TOGGLE, m_flDelay);

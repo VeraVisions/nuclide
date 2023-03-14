@@ -26,8 +26,8 @@ typedef enum
 /** The movement type of the NSMoverEntity. */
 typedef enum
 {
-	MOVERTYPE_TRANSFORM, /**< Moves in a linear fashion. */
-	MOVERTYPE_ROTATE, /**< Rotates in a linear fashion. */
+	MOVERTYPE_LINEAR, /**< Moves in a linear fashion. */
+	MOVERTYPE_ACCELERATED, /**< Moved in an accelerated fashion. */
 } moverType_t;
 
 
@@ -61,19 +61,31 @@ public:
 	nonvirtual moverType_t GetMoverType(void);
 
 	/** Sets the initial starting position. */
-	nonvirtual void SetPosition1(vector);
+	nonvirtual void SetMoverPosition1(vector);
 	/** Returns the starting position. */
-	nonvirtual vector GetPosition1(void);
+	nonvirtual vector GetMoverPosition1(void);
 
 	/** Sets the final destination. */
-	nonvirtual void SetPosition2(vector);
+	nonvirtual void SetMoverPosition2(vector);
 	/** Returns the final destination. */
-	nonvirtual vector GetPosition2(void);
+	nonvirtual vector GetMoverPosition2(void);
+
+	/** Sets the initial starting angle. */
+	nonvirtual void SetMoverRotation1(vector);
+	/** Returns the starting angle. */
+	nonvirtual vector GetMoverRotation1(void);
+
+	/** Sets the final destination angle. */
+	nonvirtual void SetMoverRotation2(vector);
+	/** Returns the final destination angle. */
+	nonvirtual vector GetMoverRotation2(void);
 
 	/** Moves this entity to the specified position. */
 	nonvirtual void MoveToPosition(vector, float);
 	/** Rotates this entity to the desired angle. */
 	nonvirtual void RotateToPosition(vector, float);
+	/** Moves and rotates this entity to a desired location. */
+	nonvirtual void MoveAndRotateToPosition(vector, vector, float);
 
 	/** Moves to the reverse state. If a mover is at pos1, it'll go to pos2, etc. */
 	nonvirtual void MoveToReverse(float);
@@ -96,15 +108,15 @@ public:
 private:
 	vector m_vecPos1;
 	vector m_vecPos2;
+	vector m_vecPos3;
+	vector m_vecPos4;
 	moverState_t m_moverState;
 	moverType_t m_moverType;
 	int m_iPortalState;
 
 	nonvirtual void _PortalOpen(void);
 	nonvirtual void _PortalClose(void);
-	nonvirtual void _ArrivedAtPosition1(void);
-	nonvirtual void _ArrivedAtPosition2(void);
-	nonvirtual void _RotatedToPosition1(void);
-	nonvirtual void _RotatedToPosition2(void);
+	nonvirtual void _ArrivedAtRotPosition1(void);
+	nonvirtual void _ArrivedAtRotPosition2(void);
 	nonvirtual void _BeginMoving(void);
 };

@@ -127,7 +127,7 @@ trigger_auto::Processing(void)
 	}
 
 	UseTargets(this, m_iTriggerState, m_flDelay);
-	print(sprintf("%S %d %f %f\n", target, m_iTriggerState, m_flDelay, time));
+	//print(sprintf("%S %d %f %f\n", target, m_iTriggerState, m_flDelay, time));
 
 	if (HasSpawnFlags(1)) {
 		NSLog("^2trigger_auto::^3Processing^7: %s triggerer removed self",  target);

@@ -3,8 +3,10 @@ NSMoverEntity::NSMoverEntity(void)
 {
 	m_vecPos1 = g_vec_null;
 	m_vecPos2 = g_vec_null;
+	m_vecPos3 = g_vec_null;
+	m_vecPos4 = g_vec_null;
 	m_moverState = MOVER_POS1;
-	m_moverType = MOVERTYPE_TRANSFORM;
+	m_moverType = MOVERTYPE_LINEAR;
 	m_iPortalState = 0i;
 }
 
@@ -16,6 +18,8 @@ NSMoverEntity::Save(float handle)
 
 	SaveVector(handle, "m_vecPos1", m_vecPos1);
 	SaveVector(handle, "m_vecPos2", m_vecPos2);
+	SaveVector(handle, "m_vecPos3", m_vecPos3);
+	SaveVector(handle, "m_vecPos4", m_vecPos4);
 	SaveFloat(handle, "m_moverState", m_moverState);
 	SaveFloat(handle, "m_moverType", m_moverType);
 	SaveInt(handle, "m_iPortalState", m_iPortalState);
@@ -30,6 +34,12 @@ NSMoverEntity::Restore(string strKey, string strValue)
 		break;
 	case "m_vecPos2":
 		m_vecPos2 = ReadVector(strValue);
+		break;
+	case "m_vecPos3":
+		m_vecPos3 = ReadVector(strValue);
+		break;
+	case "m_vecPos4":
+		m_vecPos4 = ReadVector(strValue);
 		break;
 	case "m_moverState":
 		m_moverState = ReadFloat(strValue);
@@ -100,55 +110,88 @@ NSMoverEntity::GetMoverType(void)
 }
 
 void
-NSMoverEntity::SetPosition1(vector val)
+NSMoverEntity::SetMoverPosition1(vector val)
 {
 	m_vecPos1 = val;
 }
 
 vector
-NSMoverEntity::GetPosition1(void)
+NSMoverEntity::GetMoverPosition1(void)
 {
 	return m_vecPos1;
 }
 
 void
-NSMoverEntity::SetPosition2(vector val)
+NSMoverEntity::SetMoverPosition2(vector val)
 {
 	m_vecPos2 = val;
 }
 
 vector
-NSMoverEntity::GetPosition2(void)
+NSMoverEntity::GetMoverPosition2(void)
 {
 	return m_vecPos2;
 }
 
 void
+NSMoverEntity::SetMoverRotation1(vector val)
+{
+	m_vecPos3 = val;
+}
+
+vector
+NSMoverEntity::GetMoverRotation1(void)
+{
+	return m_vecPos3;
+}
+
+void
+NSMoverEntity::SetMoverRotation2(vector val)
+{
+	m_vecPos4 = val;
+}
+
+vector
+NSMoverEntity::GetMoverRotation2(void)
+{
+	return m_vecPos4;
+}
+
+void
 NSMoverEntity::MoveToPosition(vector vecDest, float flSpeed)
 {
+	MoveAndRotateToPosition(vecDest, GetAngles(), flSpeed);
+}
+
+void
+NSMoverEntity::MoveAndRotateToPosition(vector vecDest, vector vecAngle, float flSpeed)
+{
 	vector vecDifference;
+	vector vecAngleDifference;
 	float flTravel;
 	float fTravelTime;
 
 	/* selects which end method to trigger based on state. */
-	static void MoveToPosition_Done(float travelTime) {
+	static void MoveToRotPosition_Done(float travelTime) {
 		if (m_moverState == MOVER_1TO2) {
-			ScheduleThink(_ArrivedAtPosition2, travelTime);
+			ScheduleThink(_ArrivedAtRotPosition2, travelTime);
 		} else if (m_moverState == MOVER_2TO1) {
-			ScheduleThink(_ArrivedAtPosition1, travelTime);
+			ScheduleThink(_ArrivedAtRotPosition1, travelTime);
 		}
 		MoverStartsMoving();
 		_PortalOpen();
 	}
 
 	/* selects which end positition to set based on state */
-	static void MoveToPosition_SetDest(vector vecDest) {
+	static void MoveToRotPosition_SetDest(vector vecDest, vector vecAngle) {
 		if (m_moverState == MOVER_POS2) {
 			m_vecPos1 = vecDest;
+			m_vecPos3 = vecAngle;
 			m_moverState = MOVER_2TO1;
 		} else {
 			m_moverState = MOVER_1TO2;
 			m_vecPos2 = vecDest;
+			m_vecPos4 = vecAngle;
 		}
 	}
 
@@ -159,92 +202,60 @@ NSMoverEntity::MoveToPosition(vector vecDest, float flSpeed)
 	}
 
 	/* set the appropriate attribute */
-	MoveToPosition_SetDest(vecDest);
-
-	/* if we're already there, don't bother and trigger it right now. */
-	if (vecDest == GetOrigin()) {
-		MoveToPosition_Done(0.0f);
-		ClearVelocity();
-		return;
-	}
+	MoveToRotPosition_SetDest(vecDest, vecAngle);
 
 	/* calculate travel distance and time */
 	vecDifference = (vecDest - GetOrigin());
+	vecAngleDifference = (vecAngle - GetAngles());
 	flTravel = vlen(vecDifference);
 	fTravelTime = (flTravel / flSpeed);
 
+	/* if we won't move far enough, we may rotate? */
+	if (!flTravel) {
+		flTravel = vlen(vecAngleDifference);
+		fTravelTime = (flTravel / flSpeed);
+	}
+
+	/* if we're already there, don't bother and trigger it right now. */
+	if (fTravelTime <= 0.0) {
+
+		if (m_moverState == MOVER_1TO2) {
+			_ArrivedAtRotPosition2();
+		} else if (m_moverState == MOVER_2TO1) {
+			_ArrivedAtRotPosition1();
+		}
+		return;
+	}
+
 	/* schedule the movement and proceed to trigger the end after a certain time */
-	MoveToPosition_Done(fTravelTime);
+	MoveToRotPosition_Done(fTravelTime);
 	SetVelocity(vecDifference * (1.0f / fTravelTime));
+	SetAngularVelocity((vecAngleDifference * (1.0 / fTravelTime)));
 }
 
 void
 NSMoverEntity::MoveToReverse(float flSpeed)
 {
 	if ((GetMoverState() == MOVER_POS2) || (GetMoverState() == MOVER_1TO2)){
-		MoveToPosition(GetPosition1(), flSpeed);
+		MoveToPosition(GetMoverPosition1(), flSpeed);
 	} else {
-		MoveToPosition(GetPosition2(), flSpeed);
+		MoveToPosition(GetMoverPosition2(), flSpeed);
 	}
 }
 
 void
-NSMoverEntity::RotateToPosition(vector vDestAngle, float flSpeed)
+NSMoverEntity::RotateToPosition(vector vecAngle, float flSpeed)
 {
-	vector vecAngleDifference;
-	float flTravelLength, flTravelTime;
-
-	static void RotateToPosition_Done(float travelTime) {
-		if (m_moverState == MOVER_1TO2) {
-			ScheduleThink(_RotatedToPosition2, travelTime);
-		} else if (m_moverState == MOVER_2TO1) {
-			ScheduleThink(_RotatedToPosition1, travelTime);
-		}
-		MoverStartsMoving();
-		_PortalOpen();
-	}
-
-	static void RotateToPosition_SetDest(vector vecDest) {
-		if (m_moverState == MOVER_POS2) {
-			m_vecPos1 = vecDest;
-			m_moverState = MOVER_2TO1;
-		} else {
-			m_moverState = MOVER_1TO2;
-			m_vecPos2 = vecDest;
-		}
-	}
-
-	if (!flSpeed) {
-		NSLog("NSMoverEntity::RotateToPosition: No speed defined!");
-		Respawn();
-		return;
-	}
-
-	RotateToPosition_SetDest(vDestAngle);
-	vecAngleDifference = (vDestAngle - angles);
-	flTravelLength = vlen(vecAngleDifference);
-	flTravelTime = (flTravelLength / flSpeed);
-
-	/* Avoid NAN hack */
-	if (flTravelTime <= 0.0f) {
-		if (m_moverState == MOVER_1TO2) {
-			_RotatedToPosition2();
-		} else if (m_moverState == MOVER_2TO1) {
-			_RotatedToPosition1();
-		}
-	} else {
-		SetAngularVelocity((vecAngleDifference * (1 / flTravelTime)));
-		RotateToPosition_Done(flTravelTime);
-	}
+	MoveAndRotateToPosition(GetOrigin(), vecAngle, flSpeed);
 }
 
 void
 NSMoverEntity::RotateToReverse(float flSpeed)
 {
 	if ((GetMoverState() == MOVER_POS2) || (GetMoverState() == MOVER_1TO2)){
-		RotateToPosition(GetPosition1(), flSpeed);
+		RotateToPosition(GetMoverRotation1(), flSpeed);
 	} else {
-		RotateToPosition(GetPosition2(), flSpeed);
+		RotateToPosition(GetMoverRotation2(), flSpeed);
 	}
 }
 
@@ -283,10 +294,12 @@ NSMoverEntity::_PortalClose(void)
 	openportal(this, AREAPORTAL_CLOSED);
 }
 
+
 void
-NSMoverEntity::_ArrivedAtPosition1(void)
+NSMoverEntity::_ArrivedAtRotPosition1(void)
 {
 	SetOrigin(m_vecPos1);
+	SetAngles(m_vecPos3);
 	ClearVelocity();
 	ReleaseThink();
 	m_moverState = MOVER_POS1;
@@ -295,30 +308,10 @@ NSMoverEntity::_ArrivedAtPosition1(void)
 }
 
 void
-NSMoverEntity::_ArrivedAtPosition2(void)
+NSMoverEntity::_ArrivedAtRotPosition2(void)
 {
 	SetOrigin(m_vecPos2);
-	ClearVelocity();
-	ReleaseThink();
-	m_moverState = MOVER_POS2;
-	MoverFinishesMoving();
-}
-
-void
-NSMoverEntity::_RotatedToPosition1(void)
-{
-	SetAngles(m_vecPos1);
-	ClearVelocity();
-	ReleaseThink();
-	m_moverState = MOVER_POS1;
-	_PortalClose();
-	MoverFinishesMoving();
-}
-
-void
-NSMoverEntity::_RotatedToPosition2(void)
-{
-	SetAngles(m_vecPos2);
+	SetAngles(m_vecPos4);
 	ClearVelocity();
 	ReleaseThink();
 	m_moverState = MOVER_POS2;

@@ -314,8 +314,8 @@ func_door::Respawn(void)
 	ReleaseThink();
 
 	RestoreAngles();
-	SetPosition1(GetSpawnOrigin());
-	SetPosition2(GetDirectionalPosition(GetSpawnAngles(), m_flLip));
+	SetMoverPosition1(GetSpawnOrigin());
+	SetMoverPosition2(GetDirectionalPosition(GetSpawnAngles(), m_flLip));
 	ClearAngles();
 
 	/* FIXME: Is this correct? */
@@ -340,8 +340,8 @@ func_door::Respawn(void)
 
 	if (HasSpawnFlags(SF_MOV_OPEN)) {
 		SetOrigin(m_vecPos2);
-		SetPosition2(GetPosition1());
-		SetPosition1(GetOrigin());
+		SetMoverPosition2(GetMoverPosition1());
+		SetMoverPosition1(GetOrigin());
 
 		m_iValue = 1;
 		_PortalOpen();
@@ -386,7 +386,7 @@ void
 func_door::MoverFinishesMoving(void)
 {
 	static void MoveBack(void) {
-		MoveToPosition(GetPosition1(), m_flSpeed);
+		MoveToPosition(GetMoverPosition1(), m_flSpeed);
 	}
 
 	/* we arrived at our starting position within the map */
@@ -400,23 +400,23 @@ func_door::MoverFinishesMoving(void)
 		}
 
 		if (m_strSndStop) {
-			Sound_Play(this, CHAN_VOICE, m_strSndStop);
+			StartSoundDef(m_strSndStop, CHAN_VOICE, true);
 		} else {
-			sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
+			StartSound("common/null.wav", CHAN_VOICE, 0, true);
 		}
 
 		if (m_strSndMove)
-			sound(this, CHAN_WEAPON, "common/null.wav", 1.0f, ATTN_NORM);
+			StartSound("common/null.wav", CHAN_WEAPON, 0, true);
 
 	} else if (GetMoverState() == MOVER_POS2) {
 		if (m_strSndStop) {
-			Sound_Play(this, CHAN_VOICE, m_strSndStop);
+			StartSoundDef(m_strSndStop, CHAN_VOICE, true);
 		} else {
-			sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
+			StartSound("common/null.wav", CHAN_VOICE, 0, true);
 		}
 
 		if (m_strSndMove)
-			sound(this, CHAN_WEAPON, "common/null.wav", 1.0f, ATTN_NORM);
+			StartSound("common/null.wav", CHAN_WEAPON, 0, true);
 
 		if ((m_flWait < 0.0f) || HasSpawnFlags(SF_MOV_TOGGLE) == true)
 			return;
@@ -430,25 +430,25 @@ func_door::MoverStartsMoving(void)
 {
 	if (GetMoverState() == MOVER_1TO2) {
 		if (m_strSndOpen) {
-			Sound_Play(this, CHAN_VOICE, m_strSndOpen);
+			StartSoundDef(m_strSndOpen, CHAN_VOICE, true);
 		} else {
-			sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
+			StartSound("common/null.wav", CHAN_VOICE, 0, true);
 		}
 
 		if (m_strSndMove)
-			Sound_Play(this, CHAN_WEAPON, m_strSndMove);
+			StartSoundDef(m_strSndMove, CHAN_WEAPON, true);
 
 		m_iValue = 1;
 	} else if (GetMoverState() == MOVER_2TO1) {
 
 		if (m_strSndClose) {
-			Sound_Play(this, CHAN_VOICE, m_strSndClose);
+			StartSoundDef(m_strSndClose, CHAN_VOICE, true);
 		} else {
-			sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
+			StartSound("common/null.wav", CHAN_VOICE, 0, true);
 		}
 
 		if (m_strSndMove)
-			Sound_Play(this, CHAN_WEAPON, m_strSndMove);
+			StartSoundDef(m_strSndMove, CHAN_WEAPON, true);
 
 		m_iValue = 0;
 	}
@@ -473,9 +473,9 @@ func_door::Trigger(entity act, triggermode_t triggerstate)
 	}
 
 	if (triggerstate == TRIG_OFF) {
-		MoveToPosition(GetPosition1(), m_flSpeed);
+		MoveToPosition(GetMoverPosition1(), m_flSpeed);
 	} else if (triggerstate == TRIG_ON) {
-		MoveToPosition(GetPosition2(), m_flSpeed);
+		MoveToPosition(GetMoverPosition2(), m_flSpeed);
 	} else {
 		MoveToReverse(m_flSpeed);
 	}

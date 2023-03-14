@@ -276,8 +276,8 @@ func_button::Respawn(void)
 	SetHealth(GetSpawnHealth());
 
 	RestoreAngles();
-	SetPosition1(GetSpawnOrigin());
-	SetPosition2(GetDirectionalPosition(GetSpawnAngles(), m_flLip));
+	SetMoverPosition1(GetSpawnOrigin());
+	SetMoverPosition2(GetDirectionalPosition(GetSpawnAngles(), m_flLip));
 	ClearAngles();
 
 	if (health > 0) {
@@ -290,7 +290,7 @@ func_button::Respawn(void)
 	}
 
 	if (HasSpawnFlags(SF_BTT_NOMOVE)) {
-		SetPosition2(GetPosition1());
+		SetMoverPosition2(GetMoverPosition1());
 	}
 
 	m_iValue = 0;
@@ -300,7 +300,7 @@ void
 func_button::MoverFinishesMoving(void)
 {
 	static void MoveBack(void) {
-		MoveToPosition(GetPosition1(), m_flSpeed);
+		MoveToPosition(GetMoverPosition1(), m_flSpeed);
 	}
 
 	if (GetMoverState() == MOVER_POS1) {
@@ -349,7 +349,7 @@ func_button::Trigger(entity act, triggermode_t state)
 	
 	if ((m_moverState == MOVER_1TO2) || (m_moverState == MOVER_POS2)){
 		if (m_flWait != -1) {
-			MoveToPosition(GetPosition1(), m_flSpeed);
+			MoveToPosition(GetMoverPosition1(), m_flSpeed);
 		}
 		return;
 	}
@@ -357,7 +357,7 @@ func_button::Trigger(entity act, triggermode_t state)
 	if (m_strSndPressed)
 		Sound_Play(this, CHAN_VOICE, m_strSndPressed);
 
-	MoveToPosition(GetPosition2(), m_flSpeed);
+	MoveToPosition(GetMoverPosition2(), m_flSpeed);
 	UseOutput(act, m_strOnPressed);
 	UseTargets(act, TRIG_TOGGLE, m_flDelay);
 
