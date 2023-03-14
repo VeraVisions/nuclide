@@ -19,12 +19,19 @@ enumflags
 	FNCPLAT_TRIGGER,
 };
 
-enum
+class
+func_plat_helper:NSEntity
 {
-	PLATSTATE_RAISED,
-	PLATSTATE_LOWERED,
-	PLATSTATE_UP,
-	PLATSTATE_DOWN
+public:
+	void func_plat_helper(void);
+
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void Touch(entity);
+	nonvirtual void SetTargetPlatform(entity);
+
+private:
+	entity m_eTargetPlat;
 };
 
 /*!QUAKED func_plat (0 .5 .8) ? FNCPLAT_TRIGGER
@@ -47,12 +54,8 @@ to be called up/down.
 This entity was introduced in Quake (1996).
 */
 class
-func_plat:NSRenderableEntity
+func_plat:NSMoverEntity
 {
-	int m_iState;
-	float m_flSpeed;
-	float m_flHeight;
-
 public:
 	void func_plat(void);
 	
@@ -60,13 +63,19 @@ public:
 	virtual void Restore(string,string);
 	virtual void Trigger(entity, triggermode_t);
 	virtual void Respawn(void);
-	virtual void Touch(entity);
 	virtual void SpawnKey(string,string);
+	virtual void Spawned(void);
 
-	virtual void ArrivedUp(void);
-	virtual void ArrivedDown(void);
-	virtual void MoveToggle(void);
-	virtual void Move(vector, void(void));
+	virtual void MoverStartsMoving(void);
+	virtual void MoverFinishesMoving(void);
+
+private:
+	float m_flSpeed;
+	float m_flHeight;
+	string m_strSndMove;
+	string m_strSndStop;
+
+	func_plat_helper m_handler;
 };
 
 void
@@ -74,30 +83,51 @@ func_plat::func_plat(void)
 {
 	m_flSpeed = 100.0f;
 	m_flHeight = 0.0f;
-	m_iState = 0i;
+	m_handler = __NULL__;
+	m_strSndMove =
+	m_strSndStop = __NULL__;
+}
+
+void
+func_plat::Spawned(void)
+{
+	super::Spawned();
+
+	if (m_strSndStop)
+		Sound_Precache(m_strSndStop);
+	if (m_strSndMove)
+		Sound_Precache(m_strSndMove);
 }
 
 void
 func_plat::Save(float handle)
 {
 	super::Save(handle);
-	SaveInt(handle, "state", m_iState);
-	SaveFloat(handle, "speed", m_flSpeed);
-	SaveFloat(handle, "height", m_flHeight);
+	SaveFloat(handle, "m_flSpeed", m_flSpeed);
+	SaveFloat(handle, "m_flHeight", m_flHeight);
+	SaveString(handle, "m_strSndMove", m_strSndMove);
+	SaveString(handle, "m_strSndStop", m_strSndStop);
+	SaveEntity(handle, "m_handler", m_handler);
 }
 
 void
 func_plat::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "state":
-		m_iState = ReadInt(strValue);
-		break;
-	case "speed":
+	case "m_flSpeed":
 		m_flSpeed = ReadFloat(strValue);
 		break;
-	case "height":
+	case "m_flHeight":
 		m_flHeight = ReadFloat(strValue);
+		break;
+	case "m_strSndMove":
+		m_strSndMove = ReadString(strValue);
+		break;
+	case "m_strSndStop":
+		m_strSndStop = ReadString(strValue);
+		break;
+	case "m_handler":
+		m_handler = ReadEntity(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
@@ -107,6 +137,8 @@ func_plat::Restore(string strKey, string strValue)
 void
 func_plat::SpawnKey(string strKey, string strValue)
 {
+	int x = 0i;
+
 	switch (strKey) {
 	case "height":
 		m_flHeight = stof(strValue);
@@ -114,8 +146,51 @@ func_plat::SpawnKey(string strKey, string strValue)
 	case "speed":
 		m_flSpeed = stof(strValue);
 		break;
+	/* GoldSrc compat */
+	case "movesnd":
+		x = stoi(strValue);
+		m_strSndMove = sprintf("func_plat.move_%i", x);
+		break;
+	case "stopsnd":
+		x = stoi(strValue);
+		m_strSndStop = sprintf("func_plat.stop_%i", x);
+		break;
 	default:
 		super::SpawnKey(strKey, strValue);
+	}
+}
+
+void
+func_plat::MoverStartsMoving(void)
+{
+	if (GetMoverState() == MOVER_1TO2) {
+		m_iValue = 1;
+	} else if (GetMoverState() == MOVER_2TO1) {
+		m_iValue = 0;
+	}
+
+	if (m_strSndMove)
+		StartSoundDef(m_strSndMove, CHAN_VOICE, true);
+}
+
+void
+func_plat::MoverFinishesMoving(void)
+{
+	static void MoveDown(void) {
+		MoveToPosition(GetPosition2(), m_flSpeed);
+	}
+
+	/* cancel out any moving sfx */
+	if (m_strSndMove) {
+		StartSound("common/null.wav", CHAN_VOICE, 0, true);
+	}
+
+	if (m_strSndStop) {
+		StartSoundDef(m_strSndStop, CHAN_VOICE, true);
+	}
+
+	if (GetMoverState() == MOVER_POS1) {
+		ScheduleThink(MoveDown, 3.0);
 	}
 }
 
@@ -126,82 +201,107 @@ func_plat::Respawn(void)
 	SetSolid(SOLID_BSP);
 	SetModel(GetSpawnModel());
 	SetOrigin(GetSpawnOrigin());
+
+	if (!m_flHeight) {
+		m_flHeight = size[2] + 8;
+	}
+
+	SetPosition1(GetOrigin());
+	SetPosition2(GetOrigin() - [0, 0, m_flHeight]);
+
 	ClearAngles();
-
-	m_iState = PLATSTATE_RAISED;
 	ReleaseThink();
-}
 
-void
-func_plat::ArrivedUp(void)
-{
-	ClearVelocity();
-	m_iState = PLATSTATE_RAISED;
-}
+	/* only spawn the helper if it's not set to be triggered */
+	if (!HasSpawnFlags(FNCPLAT_TRIGGER)) {
+		if (!m_handler)
+			m_handler = spawn(func_plat_helper);
 
-void
-func_plat::ArrivedDown(void)
-{
-	ClearVelocity();
-	m_iState = PLATSTATE_LOWERED;
-}
-
-void
-func_plat::Move(vector vecDest, void() vFunc)
-{
-	vector vecDifference;
-	float flTravel, fTravelTime;
-
-	m_iState = PLATSTATE_DOWN;
-	vecDifference = (vecDest - origin);
-	flTravel = vlen(vecDifference);
-	fTravelTime = (flTravel / m_flSpeed);
-	SetThink(vFunc);
-
-	if (fTravelTime < 0.1) {
-		ClearVelocity();
-		SetNextThink(0.1f);
-		return;
+		m_handler.SetTargetPlatform(this);
 	}
 
-	SetVelocity(vecDifference * (1.0f / fTravelTime));
-	SetNextThink(fTravelTime);
-}
-
-void
-func_plat::MoveToggle(void)
-{
-	if (m_iState == PLATSTATE_RAISED) {
-		Move(GetSpawnOrigin() - [0,0,m_flHeight], ArrivedDown);
-	} else if (m_iState == PLATSTATE_LOWERED) {
-		Move(GetSpawnOrigin(), ArrivedUp);
-	}
+	SetOrigin(GetPosition2());
+	SetMoverState(MOVER_POS2);
 }
 
 void
 func_plat::Trigger(entity act, triggermode_t state)
 {
-	if (HasSpawnFlags(FNCPLAT_TRIGGER))
-		return;
-	
 	switch (state) {
 	case TRIG_OFF:
-		Move(GetSpawnOrigin() - [0,0,m_flHeight], ArrivedDown);
+		MoveToPosition(GetPosition1(), m_flSpeed);
 		break;
 	case TRIG_ON:
-		Move(GetSpawnOrigin(), ArrivedUp);
+		MoveToPosition(GetPosition2(), m_flSpeed);
 		break;
 	default:
-		MoveToggle();
+		MoveToReverse(m_flSpeed);
 	}
 }
 
 void
-func_plat::Touch(entity eToucher)
+func_plat_helper::func_plat_helper(void)
 {
+	m_eTargetPlat = __NULL__;
+}
+
+void
+func_plat_helper::Save(float handle)
+{
+
+	super::Save(handle);
+	SaveEntity(handle, "m_eTargetPlat", m_eTargetPlat);
+}
+
+void
+func_plat_helper::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "m_eTargetPlat":
+		m_eTargetPlat = ReadEntity(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
+
+void
+func_plat_helper::SetTargetPlatform(entity targ)
+{
+	func_plat targetPlat = (func_plat)targ;
+	vector vecMins, vecMaxs;
+	vector vecPos1, vecPos2;
+
+	m_eTargetPlat = targ;
+
+	vecPos1 = targetPlat.GetPosition1();
+	vecPos2 = targetPlat.GetPosition2();
+	vecMins = targetPlat.GetMins() + [25, 25, 0];
+	vecMaxs = targetPlat.GetMaxs() - [25, 25, -8];
+	vecMins[2] = vecMaxs[2] - (vecPos1[2] - vecPos2[2] + 8);
+
+	SetSolid(SOLID_TRIGGER);
+	SetMovetype(MOVETYPE_NONE);
+	SetOrigin(targetPlat.origin);
+	SetSize(vecMins, vecMaxs);
+}
+
+void
+func_plat_helper::Touch(entity eToucher)
+{
+	func_plat targetPlat;
+
 	if (eToucher.movetype != MOVETYPE_WALK) {
 		return;
 	}
 
-	MoveToggle();
+	targetPlat = (func_plat)m_eTargetPlat;
+
+	if (targetPlat.IsMoving())
+		return;
+
+	if (targetPlat.GetMoverState() == MOVER_POS2)
+		targetPlat.MoveToPosition(targetPlat.GetPosition1(), targetPlat.m_flSpeed);
+	else
+		targetPlat.SetNextThink(1.0);
 }
