@@ -275,7 +275,7 @@ m_draw(vector screensize)
 	if (clientstate() == 2) {
 		/* ...unless we're in background map mode. */
 		if (!g_background)
-			drawfill([0,0], screensize, [0,0,0], 0.75f);
+			drawpic([0,0], "menutint", screensize, [1,1,1], 1.0f);
 	} else {
 		/* clear screen */
 		drawfill([0,0], screensize, [0,0,0], 1.0f);
