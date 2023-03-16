@@ -102,7 +102,7 @@ CMap_Shoot(void)
 		g_view.SetCameraAngle([0,0,0]);
 
 		strReflectcube = sprintf(
-					"env/%s_%d_%d_%d",
+					"env/%s_%d_%d_%d.ktx",
 					mapname,
 					g_vecCubePos[0],
 					g_vecCubePos[1],
