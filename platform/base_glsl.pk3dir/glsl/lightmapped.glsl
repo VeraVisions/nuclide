@@ -186,6 +186,7 @@ varying vec3 norm;
 
 		// the lighting stage for the world
 		#if defined(BUMP)
+			float refl = texture2D(s_normalmap, tex_c).a;
 
 			// whether to respect our bump, or to act flat
 			#if r_skipNormal == 0
@@ -200,7 +201,6 @@ varying vec3 norm;
 			#if r_skipEnvmap == 0
 				vec3 cube_c;
 				vec3 env_f;
-				float refl = texture2D(s_normalmap, tex_c).a;
 				cube_c = reflect(normalize(-eyevector), vec3(0.0, 0.0, 1.0));
 				cube_c = cube_c.x * invsurface[0] + 
 						 cube_c.y * invsurface[1] + 
@@ -208,6 +208,8 @@ varying vec3 norm;
 				cube_c = (m_model * vec4(cube_c.xyz, 0.0)).xyz;
 				env_f = textureCube(s_reflectcube, cube_c).rgb * (e_lmscale.rgb * 0.25);
 				diffuse_f.rgb = mix(env_f, diffuse_f.rgb, refl);
+			#else
+				diffuse_f.rgb = mix(vec3(0.0, 0.0, 0.0), diffuse_f.rgb, refl);
 			#endif
 		#else
 			diffuse_f.rgb *= lightmap_fragment();
