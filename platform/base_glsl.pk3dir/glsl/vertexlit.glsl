@@ -113,9 +113,9 @@ varying mat3 invsurface;
 		#endif
 
 		/* directional light */
-		light = (e_light_mul * lambert(norm, e_light_dir)) * 2.0;
+		light += (e_light_mul * lambert(norm, e_light_dir)) * 2.0;
 		light += (e_light_ambient * lambert(norm, reflect(norm, e_light_dir))) * 0.5;
-		light *= 2.0;
+		light += (e_light_mul * dot(normal_f, e_light_dir));
 
 	#ifdef FAKESHADOWS
 		diff_f.rgb *= ShadowmapFilter(s_shadowmap, vtexprojcoord);

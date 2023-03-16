@@ -205,6 +205,7 @@ CSQC_UpdateView(float w, float h, float focus)
 {
 	NSClient cl = __NULL__;
 	int s;
+	vector vecViewAngles = view_angles;
 
 	g_focus = (bool)focus;
 
@@ -260,7 +261,8 @@ CSQC_UpdateView(float w, float h, float focus)
 		setproperty(VF_MIN, [0,0]);
 		setproperty(VF_VIEWENTITY, player_localentnum);
 		setproperty(VF_ORIGIN, g_vecCubePos);
-		setproperty(VF_ANGLES, [0,0,0]);
+		setproperty(VF_ANGLES, vecViewAngles);
+		setproperty(VF_CL_VIEWANGLES, vecViewAngles);
 		setproperty(VF_SIZE_X, g_dCubeSize);
 		setproperty(VF_SIZE_Y, g_dCubeSize);
 		setproperty(VF_AFOV, 90.0f);
