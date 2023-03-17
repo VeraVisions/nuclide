@@ -82,6 +82,8 @@ worldspawn::Spawned(void)
 	cvar_set("r_hdr_irisadaptation_multiplier", ftos(g_flHDRIrisMultiplier));
 	cvar_set("r_hdr_irisadaptation_fade_up", ftos(g_flHDRIrisFadeUp));
 	cvar_set("r_hdr_irisadaptation_fade_down", ftos(g_flHDRIrisFadeDown));
+
+	Destroy();
 }
 
 void

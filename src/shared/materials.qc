@@ -67,7 +67,7 @@ Materials_LoadFromMat(string filename)
 
 				if (command == "surfaceprop") {
 					hash_add(g_hashMaterials, materialname, parameters, EV_STRING);
-					//print(sprintf("added Material %S type %S\n", materialname, parameters));
+					print(sprintf("added Material %S type %S\n", materialname, parameters));
 					break;
 				}
 			}
@@ -232,5 +232,15 @@ Materials_Init(void)
 		for (int i = 0; i < search_getsize(searchy); i++) {
 			Materials_LoadFromMat(search_getfilename(searchy, i));
 		}
+		search_end(searchy);
+
+		/* don't judge me for this abhorrent path, father */
+		searchhandle mdlsearch = search_begin("models/*/*/*/*.mat:models/*/*/*.mat:models/*/*.mat:models/*.mat", SEARCH_MULTISEARCH | SEARCH_NAMESORT, TRUE);
+		for (int i = 0; i < search_getsize(mdlsearch); i++) {
+			string mdlmat = search_getfilename(mdlsearch, i);
+			printf("model: %S\n", mdlmat);
+			Materials_LoadFromMat(mdlmat);
+		}
+		search_end(mdlsearch);
 	}
 }

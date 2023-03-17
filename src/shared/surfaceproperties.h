@@ -139,4 +139,5 @@ __variant SurfData_GetInfo(int, int);
 
 #ifdef CLIENT
 void SurfData_Impact_Parse(void);
+void SurfData_ImpactID_Parse(void);
 #endif

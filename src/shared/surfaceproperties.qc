@@ -14,46 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/* takes a surfaceflag material bit and returns an impact */
-static impactType_t
-SurfData_SurfaceFlagtoImpact(int fl)
-{
-	switch (fl) {
-	case SURF_ALIEN:
-		return IMPACT_ALIEN;
-	case SURF_COMPUTER:
-		return IMPACT_COMPUTER;
-	case SURF_CONCRETE:
-		return IMPACT_CONCRETE;
-	case SURF_DIRT:
-		return IMPACT_DIRT;
-	case SURF_BLOODYFLESH:
-		return IMPACT_FLESH;
-	case SURF_FOLIAGE:
-		return IMPACT_FOLIAGE;
-	case SURF_GLASS:
-		return IMPACT_GLASS;
-	case SURF_GRATE:
-		return IMPACT_GRATE;
-	case SURF_METAL:
-		return IMPACT_METAL;
-	case SURF_SAND:
-		return IMPACT_SAND;
-	case SURF_SLOSH:
-		return IMPACT_SLOSH;
-	case SURF_SNOW:
-		return IMPACT_SNOW;
-	case SURF_TILE:
-		return IMPACT_TILE;
-	case SURF_VENT:
-		return IMPACT_VENT;
-	case SURF_WOOD:
-		return IMPACT_WOOD;
-	default:
-		return IMPACT_DEFAULT;
-	}
-}
-
 static void
 SurfData_ParseField(int i, int a)
 {
@@ -397,24 +357,10 @@ SurfData_Finish(void)
 }
 
 
+#ifdef SERVER
 void
 SurfData_Impact_Net(entity e, vector org)
 {
-#ifdef CLIENT
-	string tex_name = getsurfacetexture(e, getsurfacenearpoint(e, org));
-
-	string impactsfx = SurfData_GetInfo(SurfData_TexToSurfData(tex_name), SURFDATA_SND_BULLETIMPACT);
-
-	string impactfx = SurfData_GetInfo(SurfData_TexToSurfData(tex_name), SURFDATA_FX_BULLETIMPACT);
-	float impactid = SurfData_GetInfo(SurfData_TexToSurfData(tex_name), SURFDATA_FX_BULLETIMPACTID);
-
-	NSLog("ent: %s texture: %s", e.classname, tex_name);
-	NSLog("playing impact sfx %S at %v", impactsfx, org);
-	NSLog("emitting impact fx %S at %v", impactfx, org);
-
-	Sound_PlayAt(org, impactsfx);
-	pointparticles( impactid, org, [0,0,0], 1 );
-#else
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_SURFIMPACT);
 	WriteCoord(MSG_MULTICAST, org[0]);
@@ -422,10 +368,26 @@ SurfData_Impact_Net(entity e, vector org)
 	WriteCoord(MSG_MULTICAST, org[2]);
 	WriteEntity(MSG_MULTICAST, e);
 	multicast(org, MULTICAST_PVS);
-#endif
 }
 
+void
+SurfData_ImpactID_Net(int id, vector org, vector ang)
+{
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_SURFIMPACTID);
+	WriteCoord(MSG_MULTICAST, org[0]);
+	WriteCoord(MSG_MULTICAST, org[1]);
+	WriteCoord(MSG_MULTICAST, org[2]);
+	WriteCoord(MSG_MULTICAST, ang[0]);
+	WriteCoord(MSG_MULTICAST, ang[1]);
+	WriteCoord(MSG_MULTICAST, ang[2]);
+	WriteInt(MSG_MULTICAST, id);
+	multicast(org, MULTICAST_PVS);
+}
+#endif
+
 #ifdef CLIENT
+/** Called by EV_SURFIMPACT */
 void
 SurfData_Impact_Parse(void)
 {
@@ -436,7 +398,44 @@ SurfData_Impact_Parse(void)
 	impactorg[1] = readcoord();
 	impactorg[2] = readcoord();
 	surfnum = findfloat(world, ::entnum, readentitynum()-1);
-	SurfData_Impact_Net(surfnum, impactorg);
+
+	string tex_name = getsurfacetexture(surfnum, getsurfacenearpoint(surfnum, impactorg));
+
+	string impactsfx = SurfData_GetInfo(SurfData_TexToSurfData(tex_name), SURFDATA_SND_BULLETIMPACT);
+
+	string impactfx = SurfData_GetInfo(SurfData_TexToSurfData(tex_name), SURFDATA_FX_BULLETIMPACT);
+	float impactid = SurfData_GetInfo(SurfData_TexToSurfData(tex_name), SURFDATA_FX_BULLETIMPACTID);
+
+	NSLog("SurfData_Impact_Parse:");
+	NSLog("\tent: %S texture: %S", surfnum.classname, tex_name);
+	NSLog("\tplaying impact sfx %S at %v", impactsfx, impactorg);
+	NSLog("\temitting impact fx %S at %v", impactfx, impactorg);
+
+	Sound_PlayAt(impactorg, impactsfx);
+	pointparticles( impactid, impactorg, [0,0,0], 1 );
+}
+
+/** Called by EV_SURFIMPACTID */
+void
+SurfData_ImpactID_Parse(void)
+{
+	int matid = __NULL__;
+	vector impactorg = g_vec_null;
+	vector impactang = g_vec_null;
+
+	impactorg[0] = readcoord();
+	impactorg[1] = readcoord();
+	impactorg[2] = readcoord();
+
+	impactang[0] = readcoord();
+	impactang[1] = readcoord();
+	impactang[2] = readcoord();
+	matid = readint();
+
+	string impactsfx = SurfData_GetInfo(matid, SURFDATA_SND_BULLETIMPACT);
+	float impactid = SurfData_GetInfo(matid, SURFDATA_FX_BULLETIMPACTID);
+	Sound_PlayAt(impactorg, impactsfx);
+	pointparticles( impactid, impactorg, normalize(impactang), 1 );
 }
 #endif
 
@@ -445,26 +444,18 @@ SurfData_Impact(entity e, int fl, vector org, vector ang)
 {
 #ifdef SERVER
 	static void SurfData_Impact_SurfaceParm(entity e, int fl, vector org, vector ang) {
-	/* provided for backwards compatibility with the old surfaceflag based materials */
-	#ifdef OLD_MATERIALS
-		switch (serverkeyfloat("*bspversion")) {
-		case BSPVER_Q3: /* Q3 */
-		case BSPVER_RTCW: /* RtCW */
-		case BSPVER_RBSP: /* RFVBSP */
-			fl &= ~SURF_MASK;
-			FX_Impact(SurfData_SurfaceFlagtoImpact(fl), org, ang);
-		break;
-		default:
-			FX_Impact(IMPACT_DEFAULT, org, ang);
-		}
-	#else
 		SurfData_Impact_Net(e, org);
-	#endif
 	}
 
 	/* the static world */
 	if (e == world || e.takedamage == DAMAGE_NO) {
-		SurfData_Impact_SurfaceParm(e, fl, org, ang);
+		if (trace_surfacename != "") {
+			string n = strcat(dirname(e.model), "/", trace_surfacename);
+			int texdata = SurfData_TexToSurfData(n);
+			NSLog("SurfData_Impact: %S %i\n", n, texdata);
+			SurfData_ImpactID_Net(texdata, org, ang);
+		} else
+			SurfData_Impact_SurfaceParm(e, fl, org, ang);
 	} else { /* anything with takedamage = DAMAGE_YES is a NSurfacePropEntity. */
 		NSSurfacePropEntity foo = (NSSurfacePropEntity)e;
 

@@ -333,3 +333,22 @@ crandom(void)
 	return ((random() - 0.5f) * 2.0f);
 }
 
+string
+dirname(string input)
+{
+	if (!input) {
+		return "";
+	}
+
+	int c = tokenizebyseparator(input, "/", "\\ ", "!");
+	string newpath = "";
+
+	for (int i = 0; i < (c-1); i++) {
+		newpath = sprintf("%s/%s", newpath, argv(i));
+	}
+
+	/* Kill the first / */
+	newpath = substring(newpath, 1, strlen(newpath)-1);
+
+	return newpath;
+}
