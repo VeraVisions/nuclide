@@ -43,7 +43,6 @@ server/func_tank.qc
 server/func_tankcontrols.qc
 server/func_pushable.qc
 server/func_wall_toggle.qc
-server/func_conveyor.qc
 server/func_rotating.qc
 server/func_rot_button.qc
 server/func_physbox.qc
@@ -75,7 +74,6 @@ server/trigger_changetarget.qc
 server/trigger_look.qc
 server/trigger_once.qc
 server/trigger_multiple.qc
-server/trigger_push.qc
 server/trigger_teleport.qc
 server/trigger_transition.qc
 server/trigger_playerfreeze.qc

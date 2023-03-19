@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+static int g_mat_total;
 
 /* general purpose functions to interact with the material system */
 static void
@@ -67,7 +68,8 @@ Materials_LoadFromMat(string filename)
 
 				if (command == "surfaceprop") {
 					hash_add(g_hashMaterials, materialname, parameters, EV_STRING);
-					print(sprintf("added Material %S type %S\n", materialname, parameters));
+					g_mat_total++;
+					//print(sprintf("added Material %S type %S\n", materialname, parameters));
 					break;
 				}
 			}
@@ -171,6 +173,7 @@ Materials_LoadFromLegacyText(string filename)
 				hash_add(g_hashMaterials, tex_name, mat_type, EV_STRING);
 				///print(sprintf("hlmaterial: %S %S\n", tex_name, mat_type));
 				g_hlmaterial_entries++;
+				g_mat_total++;
 			}
 		}
 		fclose(fileMaterial);
@@ -183,6 +186,9 @@ Materials_LoadFromLegacyText(string filename)
 void
 Materials_Init(void)
 {
+	print("--------- Initializing Material Data ----------\n");
+	g_mat_total = 0i;
+
 	g_hashMaterials = __NULL__;
 	g_hashMaterials = hash_createtab(2, EV_STRING | HASH_REPLACE);
 
@@ -238,9 +244,11 @@ Materials_Init(void)
 		searchhandle mdlsearch = search_begin("models/*/*/*/*.mat:models/*/*/*.mat:models/*/*.mat:models/*.mat", SEARCH_MULTISEARCH | SEARCH_NAMESORT, TRUE);
 		for (int i = 0; i < search_getsize(mdlsearch); i++) {
 			string mdlmat = search_getfilename(mdlsearch, i);
-			printf("model: %S\n", mdlmat);
+			//printf("model: %S\n", mdlmat);
 			Materials_LoadFromMat(mdlmat);
 		}
 		search_end(mdlsearch);
 	}
+
+	print(sprintf("material data initialized with %i entries.\n", g_mat_total));
 }

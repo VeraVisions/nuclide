@@ -269,6 +269,8 @@ SurfData_Init(void)
 	string line;
 	int index;
 
+	print("--------- Initializing Surface Data ----------\n");
+
 	/* remove old data */
 	SurfData_Shutdown();
 
@@ -331,6 +333,8 @@ SurfData_Init(void)
 		Sound_Precache(g_surfdata[i].m_sndStepRight);
 		Sound_Precache(g_surfdata[i].m_sndBulletImpact);
 	}
+
+	print(sprintf("surface data initialized with %i entries.\n", g_surfdata_count));
 }
 
 static string g_curSurfData;

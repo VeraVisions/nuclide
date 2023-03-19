@@ -36,6 +36,8 @@ void
 CSQC_Init(float apilevel, string enginename, float engineversion)
 {
 	print("--------- Initializing Client Game ----------\n");
+	print("Built: " __DATE__ " " __TIME__"\n");
+	print("QCC: " __QCCVER__ "\n");
 
 	for (int i = 0; i < 4; i++) {
 		g_viewSeats[i] = spawn(NSView);

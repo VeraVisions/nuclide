@@ -19,23 +19,6 @@ var bool g_input_received = false;
 
 #define FN_UPDATE_PKGLIST "http://www.frag-net.com/dl/%s_packages"
 
-const string LICENSE_TEXT = "\
-==============================================================================\
-Copyright (c) 2016-2022 Marco Cawthorne <marco@vera-visions.com>\
-\
-Permission to use, copy, modify, and distribute this software for any\
-purpose with or without fee is hereby granted, provided that the above\
-copyright notice and this permission notice appear in all copies.\
-\
-THE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES\
-WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF\
-MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR\
-ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES\
-WHATSOEVER RESULTING FROM LOSS OF MIND, USE, DATA OR PROFITS, WHETHER\
-IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING\
-OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.\
-==============================================================================";
-
 /* r_autoscale forces vid_conautoscale to be one of 4 integer values.
  * this is due to vid_conautoscale 0 scaling with in floating point... which
  * in turns results in skipped rows/columns and shimmering. */
@@ -86,6 +69,10 @@ m_init(void)
 {
 	vector g_btnsize;
 
+	print("--------- Initializing Menu ----------\n");
+	print("Built: " __DATE__ " " __TIME__"\n");
+	print("QCC: " __QCCVER__ "\n");
+
 	/* things that should really be default. platform_default.cfg is supposed to set
 	 * them the first time - however FTE doesn't do that when switching manifests
 	 * for unknown reasons. It'll be fixed */
@@ -107,9 +94,6 @@ m_init(void)
 	cvar_set("cfg_save_auto", "1");
 	cvar_set("r_imageextensions", "tga bmp pcx png jpg");
 	cvar_set("cl_cursor_scale", "1");
-
-	print(LICENSE_TEXT);
-	print("\n\n");
 
 	registercommand("menu_updates");
 	registercommand("menu_customgame");

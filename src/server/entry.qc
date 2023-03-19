@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+static int g_ent_spawned;
+
 /** Called once every single tic on the server. */
 void
 StartFrame(void)
@@ -329,7 +331,10 @@ So avoid calling spawn() related functions here. */
 void
 init(float prevprogs)
 {
-	print("--------- Initializing Server-Module ----------\n");
+	print("--------- Initializing Server Game ----------\n");
+	print("Built: " __DATE__ " " __TIME__"\n");
+	print("QCC: " __QCCVER__ "\n");
+
 	Plugin_Init();
 
 	Sound_Init();
@@ -344,18 +349,18 @@ method called at the beginning of them having spawned.
 void
 init_respawn(void)
 {
-	print("--------- Respawning Server Entities ----------\n");
+	int endspawn = 0;
 
 	if (g_ents_initialized)
 		g_grMode.InitPostEnts();
 
-#if 0
-	for (entity a = world; (a = findfloat(a, ::identity, 1));) {
-		NSEntity ent = (NSEntity)a;
-		ent.Respawn();
+	/* of all the map entities that we wanted to spawn, how many are left? */
+	for (entity a = world; (a = findfloat(a, ::_mapspawned, true));) {
+		endspawn++;
 	}
+
+	print(sprintf("...%i entities spawned (%i inhibited)\n", g_ent_spawned, g_ent_spawned - endspawn));
 	remove(self);
-#endif
 }
 
 entity g_respawntimer;
@@ -367,8 +372,6 @@ Before this, we are not able to spawn, touch or allocate any entity slots.
 void
 initents(void)
 {
-	print("--------- Initializing Server Entities ----------\n");
-
 	/* sound shader init */
 	Materials_Init();
 	PMove_Init();
@@ -460,7 +463,10 @@ as they do not exist yet.
 void
 worldspawn(void)
 {
-	print("--------- Initializing World ----------\n");
+	print("--------- Map Initialization ---------\n");
+	print(sprintf("Map: %s\n", mapname));
+	print("----------- Game Map Init ------------\n");
+
 	lightstyle(0, "m");
 	lightstyle(1, "mmnmmommommnonmmonqnmmo");
 	lightstyle(2, "abcdefghijklmnopqrstuvwxyzyxwvutsrqponmlkjihgfedcba");
@@ -493,6 +499,8 @@ worldspawn(void)
 		}
 		forceinfokey(world, "skyname", self.skyname);
 	}
+
+	print("Spawning entities\n");
 }
 
 /** Any command executed on the server (either tty, rcon or `sv`) gets
@@ -753,6 +761,7 @@ CheckSpawn(void() spawnfunc)
 	if (spawnfunc) {
 		spawnfunc();
 		self._mapspawned = true;
+		g_ent_spawned++;
 	} else {
 		print(sprintf("^1Cannot find entity class ^7%s\n", self.classname));
 		remove(self);
@@ -762,7 +771,9 @@ CheckSpawn(void() spawnfunc)
 	if (self.identity) {
 		NSEntity ent = (NSEntity)self;
 
-		if (ent.CanSpawn(false) == false)
+		if (ent.CanSpawn(false) == false) {
 			ent.Destroy();
+			g_ent_spawned--;
+		}
 	}
 }

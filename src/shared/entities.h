@@ -45,6 +45,8 @@ typedef enum
 	ENT_VEH_4WHEEL,	/**< of type prop_vehicle_driveable */
 	ENT_PROPROPE,	/**< of type prop_rope */
 	ENT_BUBBLES,	/**< of type env_bubbles */
+	ENT_CONVEYOR,
+	ENT_PUSH,
 	ENT_SEPARATOR,	/**< This is a separator. This separator is used by you to add game-specific networked entities. When declaring your own entity-update types, you want the first value to equal ENT_SEPARATOR at all times to ensure you'll not be overriding existing slots. */
 } entupdate_t;
 

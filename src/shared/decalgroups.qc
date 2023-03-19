@@ -8,9 +8,9 @@ typedef struct
 } decalGroup_t;
 
 decalGroup_t *g_decalgroup;
-int g_decalgroup_count;
 #endif
 
+static int g_decalgroup_count;
 var hashtable g_hashdecalgroup;
 
 #ifdef CLIENT
@@ -87,6 +87,7 @@ DecalGroups_Parse(string line)
 		} else if (braced == 0) {
 			t_name = strtolower(line);
 			hash_add(g_hashdecalgroup, t_name, (int)i);
+			g_decalgroup_count++;
 		}
 	}
 }
@@ -96,6 +97,8 @@ DecalGroups_Init(void)
 {
 	filestream fh;
 	string line;
+
+	print("--------- Initializing Decal Groups ----------\n");
 
 	/* create the hash-table if it doesn't exist */
 	if (!g_hashdecalgroup) {
@@ -124,6 +127,7 @@ DecalGroups_Init(void)
 	}
 #endif
 
+	g_decalgroup_count = 0;
 	fseek(fh, 0);
 
 	while ((line = fgets(fh))) {
@@ -133,11 +137,15 @@ DecalGroups_Init(void)
 
 	fclose(fh);
 
+#if 0
 #ifdef CLIENT
 	for (int i = 0; i < g_decalgroup_count; i++) {
 		print(sprintf("%i (members: %i) %s\n", i, g_decalgroup[i].members, g_decalgroup[i].materials));
 	}
 #endif
+#endif
+
+	print(sprintf("decal groups initialized with %i entries.\n", g_decalgroup_count));
 }
 
 #ifdef CLIENT

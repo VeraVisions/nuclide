@@ -294,7 +294,7 @@ void UI_ModelViewer_Show ( void )
 		btnSeqPrev.SetTitle( "<<" );
 		btnSeqPrev.SetFunc( UI_ModelViewer_SetFrameM );
 		
-		searchhandle shModels = search_begin( "models/*.mdl:models/*.vvm", SEARCH_NAMESORT | SEARCH_MULTISEARCH, TRUE );
+		searchhandle shModels = search_begin( "models/*.mdl:models/*.vvm:models/*/*.mdl:models/*/*.vvm:models/*/*/*.mdl:models/*/*/*.vvm:models/*/*/*/*.mdl:models/*/*/*/*.vvm", SEARCH_NAMESORT | SEARCH_MULTISEARCH, TRUE );
 		lstModels = spawn( CUIList );
 		lstModels.SetItemCount( search_getsize( shModels ) );
 		lstModels.CallOnScroll( ModelViewer_ScrollUpdate );

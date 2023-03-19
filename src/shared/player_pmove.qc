@@ -374,6 +374,8 @@ void
 NSClientPlayer::Physics_Run(void)
 {
 	float flFallVel = (flags & FL_ONGROUND) ? 0 : -velocity[2];
+	float flBaseVel =  basevelocity[2];
+	bool onGround = (flags & FL_ONGROUND) ? true : false;
 
 	saved_input_movevalues = input_movevalues;
 	saved_input_buttons = input_buttons;
@@ -413,12 +415,11 @@ NSClientPlayer::Physics_Run(void)
 
 	Physics_CheckJump(FALSE);
 
-	if (waterlevel != 0) {
-		flFallVel = 0;
-	}
-
-	if ((flags & FL_ONGROUND) && movetype == MOVETYPE_WALK) {
-		Physics_Fall(flFallVel);
+	if (onGround == false && (flags & FL_ONGROUND)) {
+		if (waterlevel != 0) {
+			flFallVel = 0;
+		}
+		Physics_Fall(flFallVel - flBaseVel);
 	}
 
 	input_movevalues = saved_input_movevalues;

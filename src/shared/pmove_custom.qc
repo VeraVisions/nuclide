@@ -493,7 +493,7 @@ PMoveCustom_Move(void)
 
 	/* no friction for the deceased */
 	if (self.movetype == MOVETYPE_NOCLIP) {
-		self.origin = self.origin + self.velocity * input_timelength;
+		self.origin += self.velocity * input_timelength;
 		return;
 	}
 
@@ -502,6 +502,7 @@ PMoveCustom_Move(void)
 	for (i = 3, move_time = input_timelength; move_time > 0 && i; i--) {
 		dest = self.origin + (self.velocity * move_time);
 		dest += (self.basevelocity * move_time);
+		//print(sprintf("basevel: %v\n", self.basevelocity));
 
 		tracebox(self.origin, self.mins, self.maxs, dest, MOVE_NORMAL, self);
 
@@ -545,6 +546,9 @@ PMoveCustom_Move(void)
 			dest += (self.basevelocity * move_time);
 			dest[2] = trace_endpos[2]; /*only horizontally*/
 
+			/* clear base-velocity */
+			self.basevelocity = [0,0,0];
+
 			/* move forwards */
 			tracebox(trace_endpos, self.mins, self.maxs, dest, MOVE_NORMAL, self);
 
@@ -577,7 +581,7 @@ PMoveCustom_Move(void)
 
 		/* stepping failed, just bounce off */
 		PMoveCustom_Rebound(saved_plane);
-		PMoveCustom_DoTouch(trace_ent);
+		PMoveCustom_DoTouch(trace_ent);	/* this is where basevelocity might get set */
 	}
 
 	/* touch whatever is below */
@@ -613,7 +617,6 @@ PMoveCustom_RunPlayerPhysics(entity target)
 	if (self.maxspeed <= 0)
 		self.maxspeed = 240;
 
-
 	/* call accelerate before and after the actual move, 
 	 * with half the move each time. this reduces framerate dependence. 
 	 * and makes controlling jumps slightly easier */
@@ -624,9 +627,6 @@ PMoveCustom_RunPlayerPhysics(entity target)
 	/* NOTE: should clip to network precision here if lower than a float */
 	self.angles = input_angles;
 	self.angles[0] *= -0.333;
-
-	/* clear base-velocity and ground-entity */
-	self.basevelocity = [0,0,0];
 
 	/* activate any SOLID_TRIGGER entities */
 	touchtriggers();

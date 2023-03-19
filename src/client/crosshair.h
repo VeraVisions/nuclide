@@ -25,50 +25,50 @@
 
 /** Draws a crosshair on the screen with the desired material and size.
 
-@param strMat is the material to use.
-@param vecSize is the size in pixels it is meant to take up on screen. */
-void Cross_Draw(string strMat, vector vecSize);
+@param materialPath is the material to use.
+@param sizeXY is the size in pixels it is meant to take up on screen. */
+void Cross_Draw(string materialPath, vector sizeXY);
 
 /** Draw a given crosshair on the screen, with variable color.
 
-@param strMat is the material to use.
-@param vecSize is the size in pixels it is meant to take up on screen.
-@param vecColor is the normalized color values to tint the surface with.*/
-void Cross_DrawRGB(string strMat, vector vecSize, vector vecColor);
+@param materialPath is the material to use.
+@param sizeXY is the size in pixels it is meant to take up on screen.
+@param colorRGB is the normalized color values to tint the surface with.*/
+void Cross_DrawRGB(string materialPath, vector sizeXY, vector colorRGB);
 
 /** Draw a given crosshair on the screen, with variable color and alpha.
 
-@param strMat is the material to use.
-@param vecSize is the size in pixels it is meant to take up on screen.
-@param vecColor is the normalized color values to tint the surface with.
-@param flAlpha is the alpha values to use on the whole surface.*/
-void Cross_DrawRGBA(string strMat, vector vecSize, vector vecColor, float flAlpha);
+@param materialPath is the material to use.
+@param sizeXY is the size in pixels it is meant to take up on screen.
+@param colorRGB is the normalized color values to tint the surface with.
+@param alphaValue is the alpha values to use on the whole surface.*/
+void Cross_DrawRGBA(string materialPath, vector sizeXY, vector colorRGB, float alphaValue);
 
 
 /** Draw a given crosshair on the screen, of only a section from a material.
 
-@param strMat is the material to use.
-@param vecSize is the size in pixels it is meant to take up on screen.
-@param vecSrcPos is a normalized starting position within the material from which we should start drawing from.
-@param vecSrcSize is the normalized size within the material from which we should draw from.*/
-void Cross_DrawSub(string strMat, vector vecSize, vector vecSrcPos, vector vecSrcSize);
+@param materialPath is the material to use.
+@param sizeXY is the size in pixels it is meant to take up on screen.
+@param sourcePosXY is a normalized starting position within the material from which we should start drawing from.
+@param sourceSizeXY is the normalized size within the material from which we should draw from.*/
+void Cross_DrawSub(string materialPath, vector sizeXY, vector sourcePosXY, vector sourceSizeXY);
 
 
 /** Draw a given crosshair on the screen, of only a section from a material, with variable color.
 
-@param strMat is the material to use.
-@param vecSize is the size in pixels it is meant to take up on screen.
-@param vecSrcPos is a normalized starting position within the material from which we should start drawing from.
-@param vecSrcSize is the normalized size within the material from which we should draw from.
-@param vecColor is the normalized color values to tint the surface with.*/
-void Cross_DrawSubRGB(string strMat, vector vecSize, vector vecSrcPos, vector vecSrcSize, vector vecColor);
+@param materialPath is the material to use.
+@param sizeXY is the size in pixels it is meant to take up on screen.
+@param sourcePosXY is a normalized starting position within the material from which we should start drawing from.
+@param sourceSizeXY is the normalized size within the material from which we should draw from.
+@param colorRGB is the normalized color values to tint the surface with.*/
+void Cross_DrawSubRGB(string materialPath, vector sizeXY, vector sourcePosXY, vector sourceSizeXY, vector colorRGB);
 
 /** Draw a given crosshair on the screen, of only a section from a material, with variable color/alpha.
 
-@param strMat is the material to use.
-@param vecSize is the size in pixels it is meant to take up on screen.
-@param vecSrcPos is a normalized starting position within the material from which we should start drawing from.
-@param vecSrcSize is the normalized size within the material from which we should draw from.
-@param vecColor is the normalized color values to tint the surface with.
-@param flAlpha is the alpha values to use on the whole surface.*/
-void Cross_DrawSubRGBA(string strMat, vector vecSize, vector vecSrcPos, vector vecSrcSize, vector vecColor, float flAlpha);
+@param materialPath is the material to use.
+@param sizeXY is the size in pixels it is meant to take up on screen.
+@param sourcePosXY is a normalized starting position within the material from which we should start drawing from.
+@param sourceSizeXY is the normalized size within the material from which we should draw from.
+@param colorRGB is the normalized color values to tint the surface with.
+@param alphaValue is the alpha values to use on the whole surface.*/
+void Cross_DrawSubRGBA(string materialPath, vector sizeXY, vector sourcePosXY, vector sourceSizeXY, vector colorRGB, float alphaValue);

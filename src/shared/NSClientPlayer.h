@@ -116,6 +116,7 @@ private:
 	PREDICTED_FLOAT_N(gflags)
 	PREDICTED_FLOAT(viewzoom)
 	PREDICTED_VECTOR_N(view_ofs)
+	PREDICTED_VECTOR_N(basevelocity)
 	PREDICTED_VECTOR(v_angle)
 	PREDICTED_FLOAT_N(pmove_flags)
 
