@@ -24,6 +24,7 @@ HUD_Init(void)
 void
 HUD_Draw(void)
 {
+	Textmenu_Draw();
 }
 
 /* specatator main entry */
