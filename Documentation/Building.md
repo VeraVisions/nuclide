@@ -1,5 +1,13 @@
 # Building
 
+## Preface
+
+If you don't plan on modifying the engine, then you probably shouldn't! You can grab binaries from [FTEQW](https://www.fteqw.org) and move them into the Nuclide directory under `./bin`. 
+
+If you're on Microsoft Windows, you will most likely not be running the `nuclide` launch script anyway, so feel free to move the `fteqw.exe` into the root of the Nuclide directory, and run that as-is instead. 
+
+It will mount the game directories specified in the `default.fmf` file, which you can tweak as needed. [For more information, read the relevant documentation regarding launching Nuclide](Documentation/Launching.md)
+
 ## Building the Engine {#engine}
 
 The **build_engine.sh** will do that for you. It will still ask you to have at least

@@ -220,9 +220,13 @@ NSMoverEntity::MoveAndRotateToPosition(vector vecDest, vector vecAngle, float fl
 	if (fTravelTime <= 0.0) {
 
 		if (m_moverState == MOVER_1TO2) {
+			MoverStartsMoving();
 			_ArrivedAtRotPosition2();
+			MoverFinishesMoving();
 		} else if (m_moverState == MOVER_2TO1) {
+			MoverStartsMoving();
 			_ArrivedAtRotPosition1();
+			MoverFinishesMoving();
 		}
 		return;
 	}
