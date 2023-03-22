@@ -133,6 +133,9 @@ Entity_EntityUpdate(float type, float new)
 	case ENT_CONVEYOR:
 		func_conveyor_ReadEntity(new);
 		break;
+	case ENT_WAYPOINT:
+		info_waypoint_ReadEntity(new);
+		break;
 	case ENT_PUSH:
 		trigger_push_ReadEntity(new);
 		break;
