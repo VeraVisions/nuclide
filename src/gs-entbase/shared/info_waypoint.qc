@@ -162,6 +162,7 @@ info_waypoint::EvaluateEntity(void)
 	EVALUATE_FIELD(m_strIcon, INFWAY_CHANGED_IMAGE)
 	EVALUATE_FIELD(m_strText, INFWAY_CHANGED_TEXT)
 	EVALUATE_FIELD(m_bEnabled, INFWAY_CHANGED_STATE)
+	pvsflags = PVSF_IGNOREPVS;
 }
 
 float
