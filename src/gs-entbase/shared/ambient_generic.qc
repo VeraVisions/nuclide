@@ -43,8 +43,8 @@ Plays a sound sample of whatever format the engine is configured to support.
 - "target" : Target when triggered.
 - "killtarget" : Target to kill when triggered.
 - "message" : Sound file to play, or sentences.txt entry if prefixed with a '!'
-- "volume" : Playback volume from 0.0 to 1.0
-- "pitch" : Playback pitch from 0.0 to 2.0
+- "volume" : Playback volume from 0.0 to 1.0 (default)
+- "pitch" : Playback pitch, default is 100.
 
 # SPAWNFLAGS
 - AS_ARADIUS (1) : Plays the sound everywhere. Heard by everyone.
@@ -76,6 +76,7 @@ public:
 	virtual float SendEntity(entity,float);
 	virtual void UseNormal(entity,triggermode_t);
 	virtual void UseLoop(entity, triggermode_t);
+	virtual void Input(entity, string, string);
 #else
 	virtual void ReceiveEntity(float,float);
 	virtual float predraw(void);
@@ -178,7 +179,7 @@ ambient_generic::SpawnKey(string strKey, string strValue)
 	case "pitch":
 		m_flSpawnPitch = stof(strValue);
 		break;
-	/* backwards compat */
+	/* backwards compat with GoldSrc/Source */
 	case "health":
 		m_flSpawnVolume = stof(strValue) * 0.1f;
 		break;
@@ -281,7 +282,7 @@ ambient_generic::UseNormal(entity act, triggermode_t state)
 void
 ambient_generic::UseLoop(entity act, triggermode_t state)
 {
-	if (m_bToggle == TRUE) {
+	if (m_bToggle == true) {
 		NSLog("^2ambient_generic::^3UseLoop^7: %s stops `%s`", 
 			target, m_strActivePath);
 		m_strActivePath = "common/null.wav";
@@ -291,31 +292,47 @@ ambient_generic::UseLoop(entity act, triggermode_t state)
 			target, m_strActivePath);
 	}
 
-	m_bToggle = 1 - m_bToggle;
+	m_bToggle = !m_bToggle;
+}
+
+void
+ambient_generic::Input(entity eAct, string strKey, string strValue)
+{
+	switch (strKey) {
+	case "Pitch":
+		m_flPitch = stof(strValue);
+		break;
+	case "PlaySound":
+		m_bToggle = false;
+		Trigger(eAct, TRIG_TOGGLE);
+		break;
+	case "StopSound":
+		m_bToggle = true;
+		Trigger(eAct, TRIG_TOGGLE);
+		break;
+	case "ToggleSound":
+		m_bToggle = !m_bToggle;
+		Trigger(eAct, TRIG_TOGGLE);
+		break;
+	case "Volume":
+		m_flVolume = stof(strValue) / 10;
+		break;
+	default:
+		super::Input(eAct, strKey, strValue);
+	}
 }
 
 void
 ambient_generic::EvaluateEntity(void)
 {
-	if (ATTR_CHANGED(origin))
-		SetSendFlags(AMBIENT_ORIGIN);
-	if (ATTR_CHANGED(m_strActivePath))
-		SetSendFlags(AMBIENT_PATH);
-	if (ATTR_CHANGED(m_flVolume))
-		SetSendFlags(AMBIENT_VOLUME);
-	if (ATTR_CHANGED(m_flRadius))
-		SetSendFlags(AMBIENT_RADIUS);
-	if (ATTR_CHANGED(m_flPitch))
-		SetSendFlags(AMBIENT_PITCH);
-	if (ATTR_CHANGED(m_bLoops))
-		SetSendFlags(AMBIENT_ENABLED);
-
-	SAVE_STATE(origin)
-	SAVE_STATE(m_strActivePath)
-	SAVE_STATE(m_flVolume)
-	SAVE_STATE(m_flRadius)
-	SAVE_STATE(m_flPitch)
-	SAVE_STATE(m_bLoops)
+	EVALUATE_VECTOR(origin, 0, AMBIENT_ORIGIN)
+	EVALUATE_VECTOR(origin, 1, AMBIENT_ORIGIN)
+	EVALUATE_VECTOR(origin, 2, AMBIENT_ORIGIN)
+	EVALUATE_FIELD(m_strActivePath, AMBIENT_PATH)
+	EVALUATE_FIELD(m_flVolume, AMBIENT_VOLUME)
+	EVALUATE_FIELD(m_flRadius, AMBIENT_RADIUS)
+	EVALUATE_FIELD(m_flPitch, AMBIENT_PITCH)
+	EVALUATE_FIELD(m_bLoops, AMBIENT_ENABLED)
 }
 
 float
