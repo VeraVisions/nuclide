@@ -49,10 +49,10 @@ public:
 	virtual void Trigger(entity, triggermode_t);
 	virtual void Death(void);
 	
-	virtual void NextPath(void);
-	virtual void Move(void);
-	virtual void Start(void);
-	virtual void Stop(void);
+	nonvirtual void NextPath(void);
+	nonvirtual void Move(void);
+	nonvirtual void Start(void);
+	nonvirtual void Stop(void);
 
 	virtual void Input(entity, string, string);
 

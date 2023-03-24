@@ -37,7 +37,7 @@ item_food:NSRenderableEntity
 	virtual void Respawn(void);
 	virtual void Save(float);
 	virtual void Restore(string,string);
-	virtual void Setup(void);
+	nonvirtual void Setup(void);
 	virtual void Touch(entity);
 };
 

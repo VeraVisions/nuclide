@@ -38,10 +38,10 @@ public:
 	virtual void Respawn(void);
 	virtual void SpawnKey(string,string);
 
-	virtual void Interact(void);
-	virtual void Turn(vector,void(void));
-	virtual void Opened(void);
-	virtual void Closed(void);
+	nonvirtual void Interact(void);
+	nonvirtual void Turn(vector,void(void));
+	nonvirtual void Opened(void);
+	nonvirtual void Closed(void);
 };
 
 void

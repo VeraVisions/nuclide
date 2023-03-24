@@ -52,7 +52,7 @@ public:
 	virtual void Respawn(void);
 	
 	virtual void OnPlayerUse(void);
-	virtual void ResetHealth(void);
+	nonvirtual void ResetHealth(void);
 
 };
 

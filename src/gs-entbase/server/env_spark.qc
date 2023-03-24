@@ -61,8 +61,8 @@ public:
 	virtual void Spawned(void);
 	virtual void Respawn(void);
 	virtual void Trigger(entity, triggermode_t);
-	virtual void CreateSpark(void);
-	virtual void TimedSpark(void);
+	nonvirtual void CreateSpark(void);
+	nonvirtual void TimedSpark(void);
 
 };
 

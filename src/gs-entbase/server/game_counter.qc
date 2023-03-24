@@ -57,8 +57,8 @@ public:
 	virtual void Respawn(void);
 	virtual void SpawnKey(string,string);
 	
-	virtual int GetCount(void);
-	virtual void SetCount(int);
+	nonvirtual int GetCount(void);
+	nonvirtual void SetCount(int);
 
 };
 

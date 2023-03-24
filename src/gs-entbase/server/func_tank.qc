@@ -97,9 +97,9 @@ public:
 	virtual void customphysics(void);
 	virtual void PlayerInput(void);
 	virtual void Respawn(void);
-	virtual void SpriteSmoke(vector);
-	virtual void SpriteFlash(vector);
 	virtual void SpawnKey(string,string);
+	nonvirtual void SpriteSmoke(vector);
+	nonvirtual void SpriteFlash(vector);
 
 };
 

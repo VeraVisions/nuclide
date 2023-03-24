@@ -51,7 +51,7 @@ func_recharge:NSRenderableEntity
 	virtual void customphysics(void);
 	
 	virtual void OnPlayerUse(void);
-	virtual void ResetHealth(void);
+	nonvirtual void ResetHealth(void);
 
 };
 

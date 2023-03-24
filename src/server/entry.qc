@@ -418,7 +418,9 @@ initents(void)
 	Sound_Precache("damage_bullet.hit");
 	Sound_Precache("player.spraylogo");
 
-	Game_InitRules();
+	if (!g_grMode)
+		Game_InitRules();
+
 	Game_Worldspawn();
 	Decals_Init();
 	Sentences_Init();
@@ -634,6 +636,7 @@ SV_PerformLoad(float fh, float entcount, float playerslots)
 	print("--------- Loading Existing Save ----------\n");
 	g_isloading = true;
 
+#if 0
 	/* mark anything else for deletion */
 	while ((e=nextent(e))) {
 		if (edict_num(1) != e) {
@@ -643,6 +646,7 @@ SV_PerformLoad(float fh, float entcount, float playerslots)
 			}
 		}
 	}
+#endif
 
 #ifdef REEDICT
 	while ((e=nextent(e))) {

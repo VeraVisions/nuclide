@@ -36,7 +36,7 @@ public:
 	void info_null(void);
 	
 #ifdef DEBUG_INFONULL
-	virtual void WarnDeveloper(void);
+	nonvirtual void WarnDeveloper(void);
 	virtual void Respawn(void);
 #endif
 

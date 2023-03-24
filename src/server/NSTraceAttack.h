@@ -24,7 +24,7 @@ void TraceAttack_SetPenetrationPower(int power);
 
 /** This class handles traceline/hitscan attacks. */
 class
-NSTraceAttack
+NSTraceAttack:NSIO
 {
 private:
 	/* multi-part damage */
@@ -54,6 +54,11 @@ private:
 
 public:
 	void NSTraceAttack(void);
+
+	/* overrides */
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void RestoreComplete(void);
 
 	/** Call once your parameters are set up to cast the trace/hitscan */
 	virtual void Fire(void);

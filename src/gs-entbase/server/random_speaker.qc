@@ -56,9 +56,9 @@ public:
 	virtual void Respawn(void);
 	virtual void Trigger(entity, triggermode_t);
 	
-	virtual void PlaySample(void);
-	virtual void Enable(void);
-	virtual void Disable(void);
+	nonvirtual void PlaySample(void);
+	nonvirtual void Enable(void);
+	nonvirtual void Disable(void);
 
 };
 

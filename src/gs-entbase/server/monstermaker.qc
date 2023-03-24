@@ -66,9 +66,9 @@ public:
 	virtual void Respawn(void);
 	virtual void Trigger(entity, triggermode_t);
 	
-	virtual void Spawner(void);
-	virtual void TurnOn(void);
-	virtual void TurnOff(void);
+	nonvirtual void Spawner(void);
+	nonvirtual void TurnOn(void);
+	nonvirtual void TurnOff(void);
 
 };
 

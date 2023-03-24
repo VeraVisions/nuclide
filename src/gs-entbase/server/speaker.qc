@@ -80,7 +80,7 @@ public:
 	virtual void Respawn(void);
 	virtual void Trigger(entity, triggermode_t);
 	
-	virtual void Announce(void);
+	nonvirtual void Announce(void);
 
 };
 

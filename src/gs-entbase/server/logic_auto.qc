@@ -74,7 +74,7 @@ public:
 	virtual void Respawn(void);
 	virtual void RestoreComplete(void);
 	
-	virtual void Processing(void);
+	nonvirtual void Processing(void);
 
 };
 

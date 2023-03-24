@@ -106,10 +106,10 @@ public:
 	virtual void Trigger(entity, triggermode_t);
 	virtual void Respawn(void);
 	virtual void SpawnKey(string,string);
-	
-	virtual void RunOnEntity(entity);
-	virtual void InitIdle(void);
 	virtual void Touch(entity);
+	
+	nonvirtual void RunOnEntity(entity);
+	nonvirtual void InitIdle(void);
 
 };
 

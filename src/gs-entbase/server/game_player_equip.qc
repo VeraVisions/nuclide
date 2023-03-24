@@ -59,7 +59,7 @@ public:
 	virtual void Trigger(entity, triggermode_t);
 	virtual void SpawnKey(string,string);
 	
-	virtual void SpawnUnit(string,vector);
+	nonvirtual void SpawnUnit(string,vector);
 
 };
 

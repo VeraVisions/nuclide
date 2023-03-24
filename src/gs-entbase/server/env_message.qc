@@ -55,7 +55,7 @@ public:
 	virtual void SpawnKey(string,string);
 	virtual void Respawn(void);
 	
-	virtual void Play(entity, triggermode_t);
+	nonvirtual void Play(entity, triggermode_t);
 
 };
 

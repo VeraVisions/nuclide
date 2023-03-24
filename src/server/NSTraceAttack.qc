@@ -15,6 +15,107 @@
 */
 
 void
+NSTraceAttack::NSTraceAttack(void)
+{
+	m_eMultiTarget = __NULL__;
+	m_iMultiValue = 0;
+	m_iMultiBody = 0;
+	m_flRange = 8196;
+	//m_iDecalGroup = -1;
+	m_strDecalGroup = __NULL__;
+
+#ifdef BULLETPENETRATION
+	m_flMaxThickness = 5.0f;
+	m_flRangeModifier = 1.0f;
+	m_iTotalPenetrations = 0;
+#endif
+
+	identity = 1;
+};
+
+void
+NSTraceAttack::Save(float handle)
+{
+	SaveEntity(handle, "m_eMultiTarget", m_eMultiTarget);
+	SaveInt(handle, "m_iMultiValue", m_iMultiValue);
+	SaveInt(handle, "m_iMultiBody", m_iMultiBody);
+	SaveInt(handle, "m_iShots", m_iShots);
+	SaveFloat(handle, "m_flDamage", m_flDamage);
+	SaveVector(handle, "m_vecSpread", m_vecSpread);
+	SaveInt(handle, "m_iWeapon", m_iWeapon);
+	SaveEntity(handle, "m_eOwner", m_eOwner);
+	SaveFloat(handle, "m_flRange", m_flRange);
+	SaveVector(handle, "m_vecOrigin", m_vecOrigin);
+	SaveString(handle, "m_strDecalGroup", m_strDecalGroup);
+
+#ifdef BULLETPENETRATION
+	SaveFloat(handle, "m_flMaxThickness", m_flMaxThickness);
+	SaveFloat(handle, "m_flRangeModifier", m_flRangeModifier);
+	SaveInt(handle, "m_iTotalPenetrations", m_iTotalPenetrations);
+#endif
+}
+
+void
+NSTraceAttack::RestoreComplete(void)
+{
+	g_traceAttack = this;
+}
+
+void
+NSTraceAttack::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "m_eMultiTarget":
+		m_eMultiTarget = ReadEntity(strValue);
+		break;
+	case "m_iMultiValue":
+		m_iMultiValue = ReadInt(strValue);
+		break;
+	case "m_iMultiBody":
+		m_iMultiBody = ReadInt(strValue);
+		break;
+
+	case "m_iShots":
+		m_iShots = ReadInt(strValue);
+		break;
+	case "m_flDamage":
+		m_flDamage = ReadFloat(strValue);
+		break;
+	case "m_vecSpread":
+		m_vecSpread = ReadVector(strValue);
+		break;
+	case "m_iWeapon":
+		m_iWeapon = ReadInt(strValue);
+		break;
+	case "m_eOwner":
+		m_eOwner = ReadEntity(strValue);
+		break;
+	case "m_flRange":
+		m_flRange = ReadFloat(strValue);
+		break;
+	case "m_vecOrigin":
+		m_vecOrigin = ReadVector(strValue);
+		break;
+	case "m_strDecalGroup":
+		m_strDecalGroup = ReadString(strValue);
+		break;
+
+	/* bullet penetration */
+#ifdef BULLETPENETRATION
+	case "m_flMaxThickness":
+		m_flMaxThickness = ReadFloat(strValue);
+		break;
+	case "m_flRangeModifier":
+		m_flRangeModifier = ReadFloat(strValue);
+		break;
+	case "m_iTotalPenetrations":
+		m_iTotalPenetrations = ReadInt(strValue);
+		break;
+#endif
+	}
+}
+
+void
 NSTraceAttack::_ApplyDamage(void)
 {
 	/* may not be defined yet */
@@ -276,23 +377,6 @@ NSTraceAttack::SetPenetrationPower(int iPower)
 	m_iTotalPenetrations = iPower;
 }
 #endif
-
-void
-NSTraceAttack::NSTraceAttack(void)
-{
-	m_eMultiTarget = __NULL__;
-	m_iMultiValue = 0;
-	m_iMultiBody = 0;
-	m_flRange = 8196;
-	//m_iDecalGroup = -1;
-	m_strDecalGroup = __NULL__;
-
-#ifdef BULLETPENETRATION
-	m_flMaxThickness = 5.0f;
-	m_flRangeModifier = 1.0f;
-	m_iTotalPenetrations = 0;
-#endif
-};
 
 /* fire a given amount of shots */
 void

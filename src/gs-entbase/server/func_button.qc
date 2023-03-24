@@ -102,7 +102,7 @@ public:
 	virtual void Touch(entity);
 	virtual void Blocked(entity);
 	virtual void Trigger(entity, triggermode_t);
-	virtual void DeathTrigger(void);
+	nonvirtual void DeathTrigger(void);
 	virtual void PlayerUse(void);
 
 	virtual void MoverStartsMoving(void);

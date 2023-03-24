@@ -48,8 +48,8 @@ public:
 	virtual void Restore(string,string);
 	virtual void SpawnKey(string,string);
 	virtual void Respawn(void);
-	virtual void ShootGib(void);
 	virtual void Trigger(entity, triggermode_t);
+	nonvirtual void ShootGib(void);
 
 private:
 	int m_iGibs;

@@ -80,13 +80,13 @@ public:
 	virtual void Respawn(void);
 	virtual void Touch(entity);
 	virtual void Death(void);
-	
-	virtual void ArrivedClosed(void);
-	virtual void ArrivedOpened(void);
-	virtual void TriggerTargets(void);
-	virtual void Rotate(vector, void());
-	virtual void TurnToggle(void);
 	virtual void OnPlayerUse(void);
+	
+	nonvirtual void ArrivedClosed(void);
+	nonvirtual void ArrivedOpened(void);
+	nonvirtual void TriggerTargets(void);
+	nonvirtual void Rotate(vector, void());
+	nonvirtual void TurnToggle(void);
 
 };
 

@@ -61,10 +61,10 @@ public:
 	virtual void Respawn(void);
 	virtual void SpawnKey(string,string);
 	
-	virtual void Fire(vector);
-	virtual void FireRandom(void);
-	virtual void FireTarget(entity);
-	virtual void FireControlled(void);
+	nonvirtual void Fire(vector);
+	nonvirtual void FireRandom(void);
+	nonvirtual void FireTarget(entity);
+	nonvirtual void FireControlled(void);
 };
 
 void

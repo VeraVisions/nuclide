@@ -74,12 +74,12 @@ public:
 	virtual void Respawn(void);
 	virtual void Trigger(entity, triggermode_t);
 	
-	virtual void SoundMove(void);
-	virtual void SoundStop(void);
-	virtual void AfterSpawn(void);
-	virtual void PathNext(void);
-	virtual void PathMove(void);
-	virtual void PathDone(void);
+	nonvirtual void SoundMove(void);
+	nonvirtual void SoundStop(void);
+	nonvirtual void AfterSpawn(void);
+	nonvirtual void PathNext(void);
+	nonvirtual void PathMove(void);
+	nonvirtual void PathDone(void);
 	virtual void Blocked(entity);
 };
 

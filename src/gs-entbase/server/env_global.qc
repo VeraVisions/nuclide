@@ -50,9 +50,9 @@ public:
 	virtual void Spawned(void);
 	virtual void Trigger(entity, triggermode_t);
 	
-	virtual int GlobalPresent(string);
-	virtual void AddNewGlobal(string, globalstate_t);
-	virtual void SetGlobal(string, globalstate_t);
+	nonvirtual int GlobalPresent(string);
+	nonvirtual void AddNewGlobal(string, globalstate_t);
+	nonvirtual void SetGlobal(string, globalstate_t);
 
 };
 

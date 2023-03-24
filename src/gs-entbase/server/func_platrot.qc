@@ -66,10 +66,10 @@ public:
 	virtual void Touch(entity);
 	virtual void SpawnKey(string,string);
 
-	virtual void Move(vector, vector, void(void));
-	virtual void ArrivedUp(void);
-	virtual void ArrivedDown(void);
-	virtual void MoveToggle(void);
+	nonvirtual void Move(vector, vector, void(void));
+	nonvirtual void ArrivedUp(void);
+	nonvirtual void ArrivedDown(void);
+	nonvirtual void MoveToggle(void);
 };
 
 void

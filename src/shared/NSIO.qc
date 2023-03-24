@@ -366,6 +366,30 @@ NSIO::Save(float handle)
 	SaveString(handle, "noise2", noise2);
 	SaveString(handle, "noise3", noise3);
 
+	/* FTEQW relevant fields */
+	SaveFloat(handle, "dimension_solid", dimension_solid);
+	SaveFloat(handle, "dimension_hit", dimension_hit);
+	SaveFloat(handle, "frame1time", frame1time);
+	SaveFloat(handle, "basebone", basebone);
+	SaveFloat(handle, "baseframe", baseframe);
+	SaveFloat(handle, "drawflags", drawflags);
+	SaveString(handle, "customphysics", getentityfieldstring(findentityfield("customphysics"), this));
+	SaveFloat(handle, "dimension_see", dimension_see);
+	SaveFloat(handle, "dimension_seen", dimension_seen);
+	SaveFloat(handle, "dimension_seen", dimension_seen);
+	SaveString(handle, "SendEntity", getentityfieldstring(findentityfield("SendEntity"), this));
+	SaveFloat(handle, "Version", Version);
+	SaveFloat(handle, "viewzoom", viewzoom);
+	SaveFloat(handle, "uniquespawnid", uniquespawnid);
+
+	/* Nuclide global fields */
+	SaveFloat(handle, "jumptime", jumptime);
+	SaveFloat(handle, "identity", identity);
+	SaveFloat(handle, "iBleeds", iBleeds);
+	SaveFloat(handle, "subblend2frac", subblend2frac);
+	SaveFloat(handle, "subblendfrac", subblendfrac);
+	SaveFloat(handle, "baseframe1time", baseframe1time);
+
 	SaveString(handle, "m_strOnTrigger", m_strOnTrigger);
 	SaveString(handle, "m_strOnUser1", m_strOnUser1);
 	SaveString(handle, "m_strOnUser2", m_strOnUser2);
@@ -612,6 +636,71 @@ NSIO::Restore(string strKey, string strValue)
 	case "noise3":
 		noise3 = ReadString(strValue);
 		break;
+
+	/* FTEQW relevant fields */
+	case "dimension_solid":
+		dimension_solid = ReadFloat(strValue);
+		break;
+	case "dimension_hit":
+		dimension_hit = ReadFloat(strValue);
+		break;
+	case "frame1time":
+		frame1time = ReadFloat(strValue);
+		break;
+	case "basebone":
+		basebone = ReadFloat(strValue);
+		break;
+	case "baseframe":
+		baseframe = ReadFloat(strValue);
+		break;
+	case "drawflags":
+		drawflags = ReadFloat(strValue);
+		break;
+	case "customphysics":
+		customphysics = externvalue(-1, strValue);
+		break;
+	case "dimension_see":
+		dimension_see = ReadFloat(strValue);
+		break;
+	case "dimension_seen":
+		dimension_seen = ReadFloat(strValue);
+		break;
+	case "dimension_seen":
+		dimension_seen = ReadFloat(strValue);
+		break;
+	case "SendEntity":
+		SendEntity = externvalue(-1, strValue);
+		break;
+	case "Version":
+		Version = ReadFloat(strValue);
+		break;
+	case "viewzoom":
+		viewzoom = ReadFloat(strValue);
+		break;
+	case "uniquespawnid":
+		uniquespawnid = ReadFloat(strValue);
+		break;
+
+	/* Nuclide global fields */
+	case "jumptime":
+		jumptime = ReadFloat(strValue);
+		break;
+	case "identity":
+		identity = ReadFloat(strValue);
+		break;
+	case "iBleeds":
+		iBleeds = ReadFloat(strValue);
+		break;
+	case "subblend2frac":
+		subblend2frac = ReadFloat(strValue);
+		break;
+	case "subblendfrac":
+		subblendfrac = ReadFloat(strValue);
+		break;
+	case "baseframe1time":
+		baseframe1time = ReadFloat(strValue);
+		break;
+
 	/* END: all the stock Quake fields the engine is aware of */
 	case "m_strOnTrigger":
 		m_strOnTrigger = ReadString(strValue);

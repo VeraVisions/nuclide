@@ -49,7 +49,7 @@ public:
 	virtual void SpawnKey(string,string);
 	virtual void Trigger(entity, triggermode_t);
 	
-	virtual void ReloadSave(void);
+	nonvirtual void ReloadSave(void);
 
 };
 
