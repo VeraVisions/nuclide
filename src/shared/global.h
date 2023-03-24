@@ -15,6 +15,7 @@
 */
 
 #ifdef DOXYGEN
+/** Doxygen doesn't know what enumflags (aka bitfields) are, used as e.g. */
 #define enumflags enum
 #endif
 
@@ -24,16 +25,39 @@ _NSLog(string msg)
 	if (cvar("g_developer") == 1)
 		print(sprintf("%f %s\n", time, msg));
 }
+
+void
+_NSAssert(bool condition, string function, string descr)
+{
+	if (!condition) {
+		print(strcat("^1Assertion failed in ", function, ", reason: ", descr, "\n"));
+#ifndef MENU
+		breakpoint();
+#endif
+	}
+}
+
+/** Logs an error type message, with timestamp.
+	 The console variable `g_developer` has to be `1` for them to be visible.
+
+@param description(...) contains a formatted string containing a description. */
 #define NSLog(...) _NSLog(sprintf(__VA_ARGS__))
 
-enumflags
+/** Generates an assertion, if a given condition is false.
+
+@param condition is the expression to be evaluated.
+@param description(...) contains a formatted string containing an error description. */
+
+#define NSAssert(condition, ...) _NSAssert(condition, __FUNC__, sprintf(__VA_ARGS__))
+
+typedef enumflags
 {
-       SEARCH_INSENSITIVE,
-       SEARCH_FULLPACKAGE,
-       SEARCH_ALLOWDUPES,
-       SEARCH_FORCESEARCH,
-       SEARCH_MULTISEARCH,
-       SEARCH_NAMESORT
-};
+       SEARCH_INSENSITIVE,	/**< Attempt to do a case-insensitive search (slower) */
+       SEARCH_FULLPACKAGE,	/**< Package names include the game directory as a prefix */
+       SEARCH_ALLOWDUPES,	/**< Do not attempt to remove duplicate results (so you can search through multiple archives) */
+       SEARCH_FORCESEARCH,	/**< Search a given game directory even if it's not mounted */
+       SEARCH_MULTISEARCH,	/**< When set, separating search queries with `:` will allow for multiple queries in one string */
+       SEARCH_NAMESORT		/**< Sort the results alphabetically (slower) */
+} searchFlags_t;
 
 const vector g_vec_null = [0.0f, 0.0f, 0.0f];
