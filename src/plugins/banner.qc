@@ -24,7 +24,7 @@ BannerPlug_Broadcast(string bmsg)
 {
 
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
-	WriteByte(MSG_MULTICAST, EV_TEXT);
+	WriteByte(MSG_MULTICAST, EV_TEXT_STRING);
 	WriteByte(MSG_MULTICAST, 1);
 	WriteString(MSG_MULTICAST, bmsg);
 	WriteFloat(MSG_MULTICAST, -1);

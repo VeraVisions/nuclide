@@ -16,7 +16,6 @@
 
 #include "NSOutput.h"
 #include "NSGameRules.h"
-#include "sentences.h"
 #include "skill.h"
 #include "logging.h"
 #include "nodes.h"

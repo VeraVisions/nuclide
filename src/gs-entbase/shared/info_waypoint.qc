@@ -229,7 +229,7 @@ info_waypoint::postdraw(void)
 	if (drawicon_visible(origin) != 0) {
 		float textLength = Font_StringWidth(m_strText, true, FONT_CON);
 		vector vecProj = project(origin) - [32, 32];
-		vector projectedPos = project(origin) - (textLength/2) + [0, 114];
+		vector projectedPos = project(origin) + [-(textLength/2), 48];
 		float a = (visible == 2) ? 0.25 : 1.0f;
 		float dist = vlen(origin - g_view.GetCameraOrigin()) / WAYPOINT_METER;
 		string distText = sprintf("Distance: %d m", dist);

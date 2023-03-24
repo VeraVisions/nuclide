@@ -14,49 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/* voice sentence samples for AI and other triggers that are supposed to talk.
- * the formatting is messy as hell and I feel dirty for even bothering with all
- * this to begin with.
- * 
- * the server will send a short string identifer over and we'll look it up.
- * what's annoying is that some NPCs got their own pitch overrides so I guess
- * we'll just default to those whenever there's no custom value set.
- */
-
-/* sentences are the voice-acting backbone of the sound system.
- * http://articles.thewavelength.net/230/
- * has pretty good documentation of how the format is meant to work */
-
-/* Sentences Documentation
-
-	Each line is a new sentence group.
-    [GROUPNAME] [...PARAMETERS] [...SAMPLES]
-
-    If a sample is not in a sub-directory, it'll be assumed to be part
-    of the 'vox' sub-directory, or the last valid path of a previous sample.
-    For example
-        attention male/hello how are you
-    becomes
-        vox/attention.wav male/hello.wav male/how.wav male/are.wav male/you.wav
-
-	When parameters are surrounded by spaces, this means they apply
-    to all current samples. They can be overwritten later down the parsing.
-    When a parameter is attached to a sample, e.g.
-        attention(p120)
-    Then this parameter only applies to said keyword.
-    Whereas...
-        (p120) attention everyone alive
-    Will apply the pitch effect to all three succeeding samples.
-
-	Parameters:
-    (pXX) = Pitch. Valid values are from 50 to 150.
-    (vXX) = Volume. Valid values are from 0 to 100.
-    (sXX) = Start point in %. E.g. 10 skips the first 10% of the sample.
-    (eXX) = End point in %. E.g. 75 ends playback 75% into the sample.
-    (tXX) = Time shift/compression in %. 100 is unaltered speed,
-            wheras 50 plays the sample back in half the time.
-*/
-
+#ifdef CLIENT
 /* enable this if you want to use memalloc */
 #define DYNAMIC_SENTENCES
 
@@ -106,6 +64,11 @@ Sentences_Init(void)
 		return;
 	}
 
+	/* create the hash-table if it doesn't exist */
+	if (!g_hashsentences) {
+		g_hashsentences = hash_createtab(2, HASH_ADD);
+	}
+
 	while ((temp = fgets(fs_sentences))) {
 		/* tons of comments/garbage in those files,
 		 * so tokenize appropriately */
@@ -140,6 +103,7 @@ Sentences_Init(void)
 			/* first entry is the id, prefix with ! as well */
 			if (i==0) {
 				g_sentences[x].m_strID = strtoupper(strcat("!", argv(0)));
+				hash_add(g_hashsentences, g_sentences[x].m_strID, x);
 			} else {
 				if (i == 1) {
 					g_sentences[x].m_strSamples = sprintf("%s", argv(i));
@@ -182,11 +146,144 @@ string
 Sentences_GetSamples(string msg)
 {
 	Sentences_ResetSample();
+	int i = (int)hash_get(g_hashsentences, msg, -1i);
 
-	for (int i = 0; i < g_sentences_count; i++) {
-		if (g_sentences[i].m_strID == msg) {
-			return g_sentences[i].m_strSamples;
+	if (i != -1i)
+		return g_sentences[i].m_strSamples;
+	else {
+		print(sprintf("^1ERROR: Cannot find sentence %S\n", msg));
+		return "";
+	}
+}
+
+string
+Sentences_GetString(int id)
+{
+	return g_sentences[id].m_strID;
+}
+#endif
+
+#ifdef SERVER
+void
+Sentences_Init(void)
+{
+	filestream fs_sentences;
+	string temp;
+	int c;
+
+	print("--------- Initializing SentencesDef (SERVER) ----------\n");
+
+	if (g_sentences_count > 0) {
+		g_sentences_count = 0;
+#ifndef DYNAMIC_SENTENCES
+		if (g_sentences) {
+			memfree(g_sentences);
+		}
+#endif
+	}
+
+	fs_sentences = fopen("sound/sentences.txt", FILE_READ);
+
+	if (fs_sentences < 0) {
+		print("^1could not load sound/sentences.txt\n");
+		return;
+	}
+
+	/* create the hash-table if it doesn't exist */
+	if (!g_hashsentences) {
+		g_hashsentences = hash_createtab(2, HASH_ADD);
+	}
+
+	while ((temp = fgets(fs_sentences))) {
+		/* tons of comments/garbage in those files,
+		 * so tokenize appropriately */
+		c = tokenize_console(temp);
+
+		/* not enough for an entry. */
+		if (c < 2) {
+			continue;
+		}
+
+		/* starts of at 0, for every line increases */
+		int x = g_sentences_count;
+
+		/* allocate memory and increase count */
+#ifdef DYNAMIC_SENTENCES
+		g_sentences_count++;
+		g_sentences = (string *)memrealloc(g_sentences,
+				sizeof(string),
+				x,
+				g_sentences_count);
+#else
+		if (g_sentences_count + 1 >= SENTENCES_LIMIT) {
+			print("^1reached limit of max sentences!\n");
+			return;
+		}
+
+		g_sentences_count++;
+#endif
+
+		g_sentences[x] = strtoupper(strcat("!", argv(0)));
+		hash_add(g_hashsentences, g_sentences[x], x);
+	}
+
+	fclose(fs_sentences);
+	print(sprintf("SentencesDef initialized with %i entries.\n", g_sentences_count));
+}
+
+string
+Sentences_GetSamples(string word)
+{
+	int len;
+	int gc = 0;
+	int r, x;
+
+	/* you never know what NPCs might do */
+	if (word == "") {
+		return ("");
+	}
+
+	/* check if the word is present at all */
+	x = (int)hash_get(g_hashsentences, word, -1i);
+	if (x != -1i) {
+		return g_sentences[x];
+	}
+
+	/* it may be a random group of words. */
+	/* start at [WORD]0 */
+	r = (int)hash_get(g_hashsentences, strcat(word, "0"), 0i);
+
+	len = strlen(word);
+	for (int i = r; i < g_sentences_count; i++) {
+		string sub = substring(g_sentences[i], 0, len);
+		if (sub == word) {
+			gc++;
 		}
 	}
+
+	/* if we've got one, choose a random sample of them */
+	if (gc) {
+		r = floor(random(0, gc));
+		NSLog("^3Sentences_GetSamples^7: Choosing %s%i", word, r);
+		return sprintf("%s%i", word, r);
+	}
+
+	/* we've somehow messed up catastrophically */
+	print(sprintf("^1ERROR: Invalid sentence keyword %s\n", word));
 	return ("");
 }
+
+int
+Sentences_GetID(string sentence)
+{
+	int i = (int)hash_get(g_hashsentences, sentence, -1i);
+
+	if (i != -1i) {
+		print(sprintf("^2SUCCESS: Found sentence %S\n", sentence));
+		return i;
+	} else {
+		print(sprintf("^1ERROR: Cannot find sentence %S\n", sentence));
+		return 0;
+	}
+}
+#endif

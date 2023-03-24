@@ -183,7 +183,7 @@ void
 game_text::Trigger(entity act, triggermode_t state)
 {
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
-	WriteByte(MSG_MULTICAST, EV_TEXT);
+	WriteByte(MSG_MULTICAST, EV_TEXT_STRING);
 	WriteByte(MSG_MULTICAST, m_iChannel);
 	WriteString(MSG_MULTICAST, m_strMessage);
 	WriteFloat(MSG_MULTICAST, m_flPosX);

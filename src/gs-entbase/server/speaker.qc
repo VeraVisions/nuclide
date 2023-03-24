@@ -161,7 +161,7 @@ speaker::Announce(void)
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_SENTENCE);
 	WriteEntity(MSG_MULTICAST, this);
-	WriteString(MSG_MULTICAST, seq);
+	WriteInt(MSG_MULTICAST, Sentences_GetID(seq));
 	msg_entity = this;
 	multicast(origin, MULTICAST_PVS);
 

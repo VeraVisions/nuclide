@@ -164,7 +164,10 @@ Event_Parse(float type)
 		EnvSprite_ParseEvent();
 		break;
 	case EV_TEXT:
-		GameText_Parse();
+		GameText_ParseString();
+		break;
+	case EV_TEXT_STRING:
+		GameText_ParseString();
 		break;
 	case EV_MESSAGE:
 		GameMessage_Parse();

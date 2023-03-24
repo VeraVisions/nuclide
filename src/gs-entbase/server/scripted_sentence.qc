@@ -160,7 +160,7 @@ scripted_sentence::Trigger(entity act, triggermode_t unused)
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_SENTENCE);
 	WriteEntity(MSG_MULTICAST, npc);
-	WriteString(MSG_MULTICAST, m_strSentence);
+	WriteInt(MSG_MULTICAST, Sentences_GetID(m_strSentence));
 	msg_entity = npc;
 	multicast(npc.origin, MULTICAST_PVS);
 	npc.m_flNextSentence = time + m_flDuration;

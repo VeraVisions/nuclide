@@ -29,6 +29,7 @@ propdata.qc
 surfaceproperties.qc
 decalgroups.qc
 materials.qc
+sentences.qc
 NSSpraylogo.qc
 util.qc
 weapons.qc

@@ -143,6 +143,33 @@ GameText_Draw(void)
 }
 
 void
+GameText_ParseString(void)
+{
+	int chan = readbyte();
+
+	/* last channel is reserved for text menus */
+	if (!(chan >= 0 && chan <= 4)) {
+		return;
+	}
+
+	g_textchannels[chan].m_strMessage = Titles_ParseFunString(readstring());
+	g_textchannels[chan].m_flPosX = readfloat();
+	g_textchannels[chan].m_flPosY = readfloat();
+	g_textchannels[chan].m_iEffect = readbyte();
+	g_textchannels[chan].m_vecColor1[0] = readbyte() / 255;
+	g_textchannels[chan].m_vecColor1[1] = readbyte() / 255;
+	g_textchannels[chan].m_vecColor1[2] = readbyte() / 255;
+	g_textchannels[chan].m_vecColor2[0] = readbyte() / 255;
+	g_textchannels[chan].m_vecColor2[1] = readbyte() / 255;
+	g_textchannels[chan].m_vecColor2[2] = readbyte() / 255;
+	g_textchannels[chan].m_flFadeIn = readfloat();
+	g_textchannels[chan].m_flFadeOut = readfloat();
+	g_textchannels[chan].m_flHoldTime = readfloat();
+	g_textchannels[chan].m_flFXTime = readfloat();
+	g_textchannels[chan].m_flTime = 0.0f;
+}
+
+void
 GameText_Parse(void)
 {
 	int chan = readbyte();

@@ -127,7 +127,7 @@ func_plat::Restore(string strKey, string strValue)
 		m_strSndStop = ReadString(strValue);
 		break;
 	case "m_handler":
-		m_handler = ReadEntity(strValue);
+		m_handler = (func_plat_helper)ReadEntity(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
