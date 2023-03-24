@@ -305,7 +305,7 @@ games_find_in_gamedir(string filename, string gamedirname)
 	filestream fh;
 
 	/* first let's see if we've got a liblist.gam just floating inside the gamedir */
-	gsh = search_begin(filename, SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, gamedirname);
+	gsh = search_begin(filename, SB_FULLPACKAGEPATH | SB_FORCESEARCH | SEARCH_ALLOWDUPES, FALSE, gamedirname);
 	fh = search_fopen(gsh, 0);
 
 	/* we do not. let's search for pk3's to sift through */
@@ -337,7 +337,7 @@ games_find_in_gamedir(string filename, string gamedirname)
 	/* we do not. let's search for pk3's to sift through */
 	if (fh < 0) {
 		/* let's search for every pk3 in the gamedir and search for a liblist, one at a time. */
-		psh = search_begin("dlcache/*.pk3.*", SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, gamedirname);
+		psh = search_begin("dlcache/*.pk3.*", SB_FULLPACKAGEPATH | SB_FORCESEARCH | SEARCH_ALLOWDUPES, FALSE, gamedirname);
 
 		/* loop through each pk3 in reverse (newest to old) */
 		for (int i = search_getsize(psh); i >= 0; i--) {
@@ -347,7 +347,7 @@ games_find_in_gamedir(string filename, string gamedirname)
 			if (!full)
 				continue;
 
-			sh = search_begin(filename, SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, strcat(gamedirname, "/", full));
+			sh = search_begin(filename, SB_FULLPACKAGEPATH | SB_FORCESEARCH | SEARCH_ALLOWDUPES, FALSE, strcat(gamedirname, "/", full));
 			fh = search_fopen(sh, 0);
 			//print(sprintf("looking for %s in %s\n", filename, strcat(gamedirname, "/", full)));
 
@@ -364,7 +364,7 @@ games_find_in_gamedir(string filename, string gamedirname)
 	/* still nothing. let's search for pk4's to sift through */
 	if (fh < 0) {
 		/* let's search for every pk4 in the gamedir and search for a liblist, one at a time. */
-		psh = search_begin("*.pk4", SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, gamedirname);
+		psh = search_begin("*.pk4", SB_FULLPACKAGEPATH | SB_FORCESEARCH | SEARCH_ALLOWDUPES, FALSE, gamedirname);
 
 		/* loop through each pk4 in reverse (newest to old) */
 		for (int i = search_getsize(psh); i >= 0; i--) {
@@ -373,7 +373,7 @@ games_find_in_gamedir(string filename, string gamedirname)
 			if (!full)
 				continue;
 
-			sh = search_begin(filename, SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, strcat(gamedirname, "/", full));
+			sh = search_begin(filename, SB_FULLPACKAGEPATH | SB_FORCESEARCH | SEARCH_ALLOWDUPES, FALSE, strcat(gamedirname, "/", full));
 			fh = search_fopen(sh, 0);
 
 			/* we found one */
