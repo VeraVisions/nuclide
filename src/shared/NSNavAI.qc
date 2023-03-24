@@ -124,14 +124,14 @@ NSNavAI::CheckRoute(void)
 	}
 
 	/* check if we can reach the node after the current one */
-	if (m_iCurNode > 0) {
+	if (m_iCurNode > 0 && m_iNodes > 3) { /* HACK: only bother when we have more than 3 nodes in the path... this works around an issue in c1a0d I'm unsure about */
 		int iNextNode = (m_iCurNode - 1);
 		vector vecNextNode = m_pRoute[iNextNode].dest;
 
 		tracebox(origin, mins, maxs, vecNextNode, MOVE_NORMAL, this);
 
 		/* it's accessible */
-		if (trace_fraction == 1.0f) {
+		if (!trace_startsolid && trace_fraction == 1.0f) {
 			evenpos = vecNextNode;
 			m_iCurNode = iNextNode;
 			NSLog("^2%s::^3CheckRoute^7: skipping to next node %i at '%v'", \
