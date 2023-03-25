@@ -76,6 +76,7 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	Decals_Init();
 	Way_Init();
 	Materials_Init();
+	MOTD_Init();
 
 	/* let the menu know we're a multi or a singleplayer game */
 	if (serverkeyfloat("sv_playerslots") == 1)

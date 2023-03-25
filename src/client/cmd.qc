@@ -374,6 +374,9 @@ Cmd_Parse(string sCMD)
 	case "player_geomtest":
 		CMD_player_geomtest();
 		break;
+	case "motd":
+		print(MOTD_GetTextBody());
+		break;
 
 	/* XR binds, engine binds them currently */
 	case "+attack_left":
@@ -454,6 +457,9 @@ Cmd_Init(void)
 	/* voting */
 	registercommand("vote");
 	registercommand("callvote");
+
+	/* motd */
+	registercommand("motd");
 
 	/* hud weapon selection system */
 	registercommand("slot1");

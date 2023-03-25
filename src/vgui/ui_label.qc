@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/** A VGUI label/text field. */
 class VGUILabel:VGUIWidget
 {
 public:
@@ -24,15 +25,19 @@ public:
 	virtual void Draw(void);
 	virtual bool Input(float, float, float, float);
 	virtual void Spawned(void);
+	virtual void SetTextSize(int);
 
 private:
 	string m_strTitle;
+	int m_labelFlags;
+	int m_textSize;
 };
 
 void
 VGUILabel::VGUILabel(void)
 {
 	m_strTitle = __NULL__;
+	m_labelFlags = AF_TOP | AF_LEFT;
 }
 
 void
@@ -57,10 +62,28 @@ VGUILabel::SetTitle (string strName)
 }
 
 void
+VGUILabel::SetTextSize(int val)
+{
+	m_textSize = val;
+}
+
+void
 VGUILabel::Draw(void)
 {
 	if (m_strTitle) {
-		Font_DrawField(m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, m_strTitle, g_fntDefault, 0);
+		vector pos;
+		vector size;
+
+		pos = m_parent.m_vecOrigin + m_vecOrigin;
+		size = m_vecSize;
+		drawsetcliparea(pos[0], pos[1], size[0], size[1]);
+
+		if (!m_textSize)
+			Font_DrawField(pos, size, m_strTitle, g_fntDefault, m_labelFlags);
+		else
+			Font_DrawFieldAtHeight(pos, size, m_textSize, m_strTitle, g_fntDefault, m_labelFlags);
+
+		drawresetcliparea();
 	}
 }
 

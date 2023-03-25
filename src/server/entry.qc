@@ -374,6 +374,7 @@ initents(void)
 {
 	/* sound shader init */
 	Materials_Init();
+	MOTD_Init();
 	PMove_Init();
 
 	/* TODO: turn these effects into sound shaders */

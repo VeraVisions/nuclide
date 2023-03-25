@@ -104,6 +104,16 @@ void Font_DrawRText_RGBA(vector vecOrigin, string strText, vector col, float a, 
 @param iAlignFlags sets how the text may be aligned. */
 void Font_DrawField(vector vecOrigin, vector vecSize, string strText, font_s fnt, alignflags_t iAlignFlags);
 
+/** Draws a textfield with line wrapping at a custom text height.
+
+@param vecOrigin is the absolute starting position.
+@param vecSize is the total area in pixels that the field takes up on the screen.
+@param iTextHeight is the desired text height in pixels.
+@param strText is the text to be drawn onto the screen.
+@param fnt is the font to be used for rendering the text.
+@param iAlignFlags sets how the text may be aligned. */
+void Font_DrawFieldAtHeight(vector vecOrigin, vector vecSize, int iTextHeight, string strText, font_s fnt, alignflags_t iAlignFlags);
+
 /** Converts a normalized RGB color vector to a hex color string.
 
 @param vecColor is the normalized input color. E.g. [1.0f, 0.0f, 0.0f]

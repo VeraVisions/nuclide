@@ -89,6 +89,7 @@ VGUIButton::SetTitle(string strName)
 
 	m_strTitle = strName;
 	m_strTitleActive = sprintf("^3%s", m_strTitle);
+	m_strTitle = sprintf("%s%s", Font_RGBtoHex(UI_MAINCOLOR), strName);
 	drawfont = g_fntDefault.iID;
 
 	newsize[0] = stringwidth(m_strTitle, TRUE, [g_fntDefault.iScaleX, g_fntDefault.iScaleY]) + 16;

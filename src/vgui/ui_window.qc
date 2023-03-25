@@ -18,8 +18,17 @@ enumflags
 {
 	WINDOW_DRAGGING,
 	WINDOW_RESIZING,
-	WINDOW_CANRESIZE
 };
+
+typedef enumflags
+{
+	VGUIWindowBorderless,
+	VGUIWindowTitled,
+	VGUIWindowClosable,
+	VGUIWindowMiniaturizable,
+	VGUIWindowResizeable,
+	VGUIWindowMovable,
+} vguiWindowStyle_t;
 
 /** Top-most window class in VGUILib */
 class VGUIWindow:VGUIWidget
@@ -42,6 +51,9 @@ public:
 	/** Called when the window has been repositioned by the user. */
 	nonvirtual void CallOnMove(void(void) vFunc);
 
+	/** Sets the style mask of the specified window. */
+	nonvirtual void SetStyleMask(vguiWindowStyle_t);
+
 	/* overrides */
 	virtual void Draw(void);
 	virtual void SizeChanged(vector, vector);
@@ -54,6 +66,7 @@ private:
 	vector m_vecDragOffset;
 	string m_strTitle;
 	string m_strIcon;
+	vguiWindowStyle_t m_styleMask;
 
 	VGUIButton m_btnClose;
 	
@@ -66,6 +79,21 @@ VGUIWindow::VGUIWindow(void)
 {
 	m_vecColor = UI_MAINCOLOR;
 	m_flAlpha = 1.0f;
+	m_styleMask = VGUIWindowMovable |
+		VGUIWindowTitled |
+		VGUIWindowClosable |
+		VGUIWindowMiniaturizable |
+		VGUIWindowResizeable;
+}
+
+void
+VGUIWindow::SetStyleMask(vguiWindowStyle_t val)
+{
+	if (!(val & VGUIWindowClosable)) {
+		m_btnClose.Hide();
+	}
+
+	m_styleMask = val;
 }
 
 void
@@ -140,7 +168,7 @@ void VGUIWindow::Draw(void)
 	drawfill(m_vecOrigin + [0, 1], [1, m_vecSize[1] - 2], m_vecColor, 1.0f);
 	drawfill(m_vecOrigin + [m_vecSize[0] - 1, 1], [1, m_vecSize[1] - 2], m_vecColor, 1.0f);
 
-	if (m_iFlags & WINDOW_CANRESIZE) {
+	if (m_styleMask & VGUIWindowResizeable) {
 		drawpic(m_vecOrigin + m_vecSize - [16,16], "textures/ui/steam/icon_resizer", [16,16], m_vecColor, 1.0f, 0);
 	}
 #else
@@ -150,11 +178,12 @@ void VGUIWindow::Draw(void)
 	drawfill(m_vecOrigin + [0, 1], [1, m_vecSize[1] - 2], [1,1,1], 0.5f);
 	drawfill(m_vecOrigin + [m_vecSize[0] - 1, 1], [1, m_vecSize[1] - 2], [0,0,0], 0.5f);
 
-	if (m_iFlags & WINDOW_CANRESIZE) {
+	if (m_styleMask & VGUIWindowResizeable) {
 		drawpic(m_vecOrigin + m_vecSize - [16,16], "textures/ui/steam/icon_resizer", [16,16], m_vecColor, 1.0f, 0);
 	}
 #endif
 
+	if (m_styleMask & VGUIWindowTitled)
 	if (m_strTitle) {
 		if (m_strIcon) {
 			Font_DrawText(m_vecOrigin + [26, 8], m_strTitle, g_fntDefault);
@@ -163,7 +192,7 @@ void VGUIWindow::Draw(void)
 			Font_DrawText(m_vecOrigin + [8, 8], m_strTitle, g_fntDefault);
 		}
 	}
-	
+
 #ifdef UI_DEVELOPER
 	if (m_iFlags & WINDOW_DRAGGING) {
 		Font_DrawText([8, video_res[1] - 18], sprintf("Window Position: %d, %d\n", m_vecOrigin[0], m_vecOrigin[1]), g_fntDefault);
@@ -180,9 +209,9 @@ bool VGUIWindow::Input (float flEVType, float flKey, float flChar, float flDevID
 
 	if (flEVType == IE_KEYDOWN) {
 		if (flKey == K_MOUSE1) {
-			if (m_iFlags & WINDOW_CANRESIZE && Util_MouseAbove(g_vecMousePos, m_vecOrigin + (m_vecSize - [16,16]), [16,16])) {
+			if (m_styleMask & VGUIWindowResizeable && Util_MouseAbove(g_vecMousePos, m_vecOrigin + (m_vecSize - [16,16]), [16,16])) {
 				m_iFlags |= WINDOW_RESIZING;
-			} else if (Util_MouseAbove(g_vecMousePos, m_vecOrigin, [m_vecSize[0] - 32, 16])) {
+			} else if (m_styleMask & VGUIWindowMovable && Util_MouseAbove(g_vecMousePos, m_vecOrigin, [m_vecSize[0] - 32, 16])) {
 				m_iFlags |= WINDOW_DRAGGING;
 				m_vecDragOffset = m_vecOrigin - g_vecMousePos;
 			}

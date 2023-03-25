@@ -162,6 +162,17 @@ Font_DrawField(vector vecOrigin, vector vecSize, string strText, font_s fnt, ali
 	drawfontscale = [1,1,0];
 }
 
+void
+Font_DrawFieldAtHeight(vector vecOrigin, vector vecSize, int iTextHeight, string strText, font_s fnt, alignflags_t iAlignFlags)
+{
+	drawfont = (float)fnt.iID;
+	drawfontscale[0] = (float)iTextHeight / 8;
+	drawfontscale[1] = (float)iTextHeight / 8;
+	drawtextfield(vecOrigin, vecSize, (float)iAlignFlags, strText);
+	drawfont = 0;
+	drawfontscale = [1,1,0];
+}
+
 string
 Font_RGBtoHex(vector vecColor)
 {

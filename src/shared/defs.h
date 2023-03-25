@@ -89,6 +89,7 @@ string __fullspawndata;
 #include "decalgroups.h"
 #include "colors.h"
 #include "weapons.h"
+#include "motd.h"
 
 #define BSPVER_PREREL 	28
 #define BSPVER_Q1		29

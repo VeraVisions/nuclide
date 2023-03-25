@@ -33,6 +33,7 @@ sentences.qc
 NSSpraylogo.qc
 util.qc
 weapons.qc
+motd.qc
 
 ../xr/include.src
 #endlist
