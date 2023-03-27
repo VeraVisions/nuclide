@@ -247,7 +247,7 @@ void UI_ModelViewer_Show ( void )
 		winViewer.SetSize( [ 550, 390 ] );
 		winViewer.SetMinSize( [ 430, 256 ] );
 		winViewer.SetMaxSize( [ 9999, 9999 ] );
-		winViewer.FlagAdd( WINDOW_CANRESIZE );
+		winViewer.SetStyleMask( VGUIWindowStyleDefault );
 		winViewer.SetPos( [ 172, 64 ] );
 		winViewer.SetIcon( "textures/ui/icons/hdd" );
 		winViewer.CallOnResize( UI_ModelViewer_Resize );

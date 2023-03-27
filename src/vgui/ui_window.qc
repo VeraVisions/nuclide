@@ -30,6 +30,12 @@ typedef enumflags
 	VGUIWindowMovable,
 } vguiWindowStyle_t;
 
+#define VGUIWindowStyleDefault VGUIWindowMovable | \
+		VGUIWindowTitled | \
+		VGUIWindowClosable | \
+		VGUIWindowMiniaturizable | \
+		VGUIWindowResizeable
+
 /** Top-most window class in VGUILib */
 class VGUIWindow:VGUIWidget
 {
@@ -79,11 +85,7 @@ VGUIWindow::VGUIWindow(void)
 {
 	m_vecColor = UI_MAINCOLOR;
 	m_flAlpha = 1.0f;
-	m_styleMask = VGUIWindowMovable |
-		VGUIWindowTitled |
-		VGUIWindowClosable |
-		VGUIWindowMiniaturizable |
-		VGUIWindowResizeable;
+	m_styleMask = VGUIWindowStyleDefault;
 }
 
 void
