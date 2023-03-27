@@ -33,8 +33,7 @@ typedef enumflags
 #define VGUIWindowStyleDefault VGUIWindowMovable | \
 		VGUIWindowTitled | \
 		VGUIWindowClosable | \
-		VGUIWindowMiniaturizable | \
-		VGUIWindowResizeable
+		VGUIWindowMiniaturizable
 
 /** Top-most window class in VGUILib */
 class VGUIWindow:VGUIWidget
