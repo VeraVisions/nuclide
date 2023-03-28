@@ -38,6 +38,15 @@ typedef struct
 /** Global pool of text channels. */
 gametext_t g_textchannels[6];
 
+#define TEXTQUEUE_MAX 6
+
+/** this is reserved for channel 0 */
+gametext_t g_textqueue[TEXTQUEUE_MAX];
+
+
+int g_textqueue_next;
+int g_textqueue_count;
+
 /** Used by Nuclide to draw all active text channels to the screen. */
 void GameText_Draw(void);
 
