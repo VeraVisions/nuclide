@@ -21,6 +21,8 @@ enumflags
 	RADIO_ACTIVE
 };
 
+.void(void) tmpVGUIRadio1;
+
 class VGUIRadio:VGUIWidget
 {
 public:
@@ -40,7 +42,6 @@ private:
 	float m_flAlpha;
 	vector m_vecSize;
 	string m_strTitle;
-	virtual void(void) m_vFunc = 0;
 };
 
 void VGUIRadio::VGUIRadio(void)
@@ -78,7 +79,7 @@ void VGUIRadio::SetValue (int iValue)
 }
 void VGUIRadio::SetFunc (void(void) vFunc)
 {
-	m_vFunc = vFunc;
+	tmpVGUIRadio1 = vFunc;
 }
 
 void VGUIRadio::Draw(void)
@@ -130,8 +131,8 @@ bool VGUIRadio::Input (float flEVType, float flKey, float flChar, float flDevID)
 	} else if (flEVType == IE_KEYUP) {
 		if (flKey == K_MOUSE1) {
 			if (m_iFlags & RADIO_DOWN && Util_MouseAbove(g_vecMousePos, m_parent.m_vecOrigin + m_vecOrigin, m_vecSize)) {
-				if (m_vFunc) {
-					m_vFunc();
+				if (tmpVGUIRadio1) {
+					tmpVGUIRadio1();
 				}
 				SetValue(TRUE);
 				ret = true;

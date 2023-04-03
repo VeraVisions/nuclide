@@ -355,3 +355,22 @@ dirname(string input)
 
 	return newpath;
 }
+
+string
+textfile_to_string(string filename)
+{
+	string fileContents = __NULL__;
+
+	filestream fileHandle = fopen(filename, FILE_READ);
+	string temp;
+
+	if (fileHandle != -1) {
+		while ((temp = fgets(fileHandle))) {
+			fileContents = strcat(fileContents, temp, "\n");
+		}
+	} else {
+		fileContents = __NULL__;
+	}
+
+	return fileContents;
+}

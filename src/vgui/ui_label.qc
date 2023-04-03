@@ -43,7 +43,7 @@ VGUILabel::VGUILabel(void)
 void
 VGUILabel::Spawned(void)
 {
-	SetSize([96,16]);
+	SetSize([0,0]);
 }
 
 void
@@ -56,9 +56,11 @@ VGUILabel::SetTitle (string strName)
 #endif
 	drawfont = g_fntDefault.iID;
 
+	if (GetSize() == [0,0]) {
 	/* hack, add 2 just to make sure it doesn't immediately wrap. bug
 	 * in engines' textfield thing in combo with ttf. */
 	SetSize([2 + stringwidth(m_strTitle, TRUE, [g_fntDefault.iScaleX, g_fntDefault.iScaleY]), 16]);
+	}
 }
 
 void

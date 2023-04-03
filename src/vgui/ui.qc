@@ -36,7 +36,7 @@ var int g_vguiWidgetCount;
 
 #ifdef CLASSIC_VGUI
 	#ifndef UI_MAINCOLOR
-		#define UI_MAINCOLOR [255,200,0] / 255
+		#define UI_MAINCOLOR [255,170,0] / 255
 	#endif
 	#ifndef UI_MAINALPHA
 		#define UI_MAINALPHA 255
@@ -79,6 +79,9 @@ public:
 	nonvirtual void FlagAdd(int);
 	/** Remove a flag from the widget. */
 	nonvirtual void FlagRemove(int);
+	/** Check if the VGUIWidget has a flag attached. */
+	nonvirtual bool HasFlag(int);
+
 	/** Set the position within its context. */
 	nonvirtual void SetPos(vector);
 	/** Return the position of the widget within its context. */
@@ -275,6 +278,12 @@ void
 VGUIWidget::FlagRemove(int iFlag)
 {
 	m_iFlags -= (m_iFlags & iFlag);
+}
+
+bool
+VGUIWidget::HasFlag(int flag)
+{
+	return (m_iFlags & flag) ? true : false;
 }
 
 void

@@ -28,12 +28,17 @@ typedef enumflags
 	VGUIWindowMiniaturizable,
 	VGUIWindowResizeable,
 	VGUIWindowMovable,
+	VGUIWindowFullscreen
 } vguiWindowStyle_t;
 
 #define VGUIWindowStyleDefault VGUIWindowMovable | \
 		VGUIWindowTitled | \
 		VGUIWindowClosable | \
 		VGUIWindowMiniaturizable
+
+/* TODO: MOVE THESE INTO VGUIWindow! COMPILER NEEDS TO BE FIXED FIRST HOWEVER. */
+.void(void) tmpVGUIWindow1;
+.void(void) tmpVGUIWindow2;
 
 /** Top-most window class in VGUILib */
 class VGUIWindow:VGUIWidget
@@ -51,13 +56,20 @@ public:
 	/** Returns the icon of the window widget. */
 	nonvirtual string GetIcon(void);
 
+	/** Sets the style mask of the specified window. */
+	nonvirtual void SetStyleMask(vguiWindowStyle_t);
+
 	/** Called when the window is was resized by the user. */
 	nonvirtual void CallOnResize(void(void) vFunc);
 	/** Called when the window has been repositioned by the user. */
 	nonvirtual void CallOnMove(void(void) vFunc);
 
-	/** Sets the style mask of the specified window. */
-	nonvirtual void SetStyleMask(vguiWindowStyle_t);
+	/** Called when the VGUIWindow got moved successfully. */
+	virtual void WindowDidMove(vector, vector);
+	/** Called when the VGUIWindow got resized successfully. */
+	virtual void WindowDidResize(vector, vector);
+	/** Called when the VGUIWindow was successfully closed. */
+	virtual void WindowDidClose(void);
 
 	/* overrides */
 	virtual void Draw(void);
@@ -74,9 +86,6 @@ private:
 	vguiWindowStyle_t m_styleMask;
 
 	VGUIButton m_btnClose;
-	
-	virtual void(void) m_vResizeCB = 0;
-	virtual void(void) m_vMoveCB = 0;
 };
 
 void
@@ -98,10 +107,28 @@ VGUIWindow::SetStyleMask(vguiWindowStyle_t val)
 }
 
 void
+VGUIWindow::CallOnResize(void(void) func)
+{
+	//#warning "SetFunc in VGUIButton is DEPRECATED. Compiler IS generating JUNK in the old way. Please override VGUIButton and define a OnMouseDown/Up method instead"
+	//m_vFunc = vFunc;
+	tmpVGUIWindow1 = func;
+}
+
+void
+VGUIWindow::CallOnMove(void(void) func)
+{
+	//#warning "SetFunc in VGUIButton is DEPRECATED. Compiler IS generating JUNK in the old way. Please override VGUIButton and define a OnMouseDown/Up method instead"
+	//m_vFunc = vFunc;
+	tmpVGUIWindow2 = func;
+}
+
+
+void
 VGUIWindow::Spawned(void)
 {
-	static void WindowButtonClose(void) {
-		m_parent.Hide();
+	static void VGUIWindowButtonClose(void) {
+		VGUIButton winSelf = (VGUIButton)self;
+		winSelf.m_parent.Hide();
 	}
 
 	SetMinSize([64,64]);
@@ -119,7 +146,7 @@ VGUIWindow::Spawned(void)
 	m_btnClose.SetIconColor([1,1,1]);
 #endif
 	m_btnClose.SetColor(m_vecColor);
-	m_btnClose.SetFunc(WindowButtonClose);
+	m_btnClose.SetFunc(VGUIWindowButtonClose);
 	m_btnClose.SetSize([20,20]);
 	Add(m_btnClose);
 
@@ -144,40 +171,59 @@ string VGUIWindow::GetIcon(void)
 	return m_strIcon;
 }
 
-void VGUIWindow:: SizeChanged (vector vecOld, vector vecNew)
+void VGUIWindow::SizeChanged (vector vecOld, vector vecNew)
 {
 	m_btnClose.SetPos([vecNew[0] - 24, 4]);
 }
 
-void VGUIWindow::CallOnMove (void(void) vFunc)
+void
+VGUIWindow::WindowDidMove(vector oldPosition, vector newPosition)
 {
-	m_vMoveCB = vFunc;
-}
-void VGUIWindow::CallOnResize (void(void) vFunc)
-{
-	m_vResizeCB = vFunc;
+
 }
 
+void
+VGUIWindow::WindowDidResize(vector oldSize, vector newSize)
+{
 
+}
+
+void
+VGUIWindow::WindowDidClose(void)
+{
+
+}
 
 void VGUIWindow::Draw(void)
 {
 #ifdef CLASSIC_VGUI
-	drawfill(m_vecOrigin, m_vecSize, [0,0,0], 0.5);
+	if (m_styleMask & VGUIWindowFullscreen)
+		drawfill([0,0], video_res, [0,0,0], 0.5);
+	else
+		drawfill(m_vecOrigin, m_vecSize, [0,0,0], 0.5);
+
+	if (!(m_styleMask & VGUIWindowBorderless)) {
 	drawfill(m_vecOrigin, [m_vecSize[0], 1], m_vecColor, 1.0f);
 	drawfill(m_vecOrigin + [0, m_vecSize[1] - 1], [m_vecSize[0], 1], m_vecColor, 1.0f);
 	drawfill(m_vecOrigin + [0, 1], [1, m_vecSize[1] - 2], m_vecColor, 1.0f);
 	drawfill(m_vecOrigin + [m_vecSize[0] - 1, 1], [1, m_vecSize[1] - 2], m_vecColor, 1.0f);
+	}
 
 	if (m_styleMask & VGUIWindowResizeable) {
 		drawpic(m_vecOrigin + m_vecSize - [16,16], "textures/ui/steam/icon_resizer", [16,16], m_vecColor, 1.0f, 0);
 	}
 #else
-	drawfill(m_vecOrigin, m_vecSize, m_vecColor, m_flAlpha);
+	if (m_styleMask & VGUIWindowFullscreen)
+		drawfill([0,0], video_res, m_vecColor, m_flAlpha);
+	else
+		drawfill(m_vecOrigin, m_vecSize, m_vecColor, m_flAlpha);
+
+	if (!(m_styleMask & VGUIWindowBorderless)) {
 	drawfill(m_vecOrigin, [m_vecSize[0], 1], [1,1,1], 0.5f);
 	drawfill(m_vecOrigin + [0, m_vecSize[1] - 1], [m_vecSize[0], 1], [0,0,0], 0.5f);
 	drawfill(m_vecOrigin + [0, 1], [1, m_vecSize[1] - 2], [1,1,1], 0.5f);
 	drawfill(m_vecOrigin + [m_vecSize[0] - 1, 1], [1, m_vecSize[1] - 2], [0,0,0], 0.5f);
+	}
 
 	if (m_styleMask & VGUIWindowResizeable) {
 		drawpic(m_vecOrigin + m_vecSize - [16,16], "textures/ui/steam/icon_resizer", [16,16], m_vecColor, 1.0f, 0);
@@ -226,22 +272,24 @@ bool VGUIWindow::Input (float flEVType, float flKey, float flChar, float flDevID
 
 	if (m_iFlags & WINDOW_RESIZING) {
 		if (flEVType == IE_MOUSEABS) {
-			vector vNewScale = [flKey, flChar] - m_vecOrigin - m_vecSize;
-			SetSize(GetSize() + vNewScale);
-			
-			if (m_vResizeCB) {
-				m_vResizeCB();
-			}
+			vector oldSize = m_vecSize;
+			vector newSize = GetSize() + ([flKey, flChar] - m_vecOrigin - m_vecSize);
+			SetSize(newSize);
+			WindowDidResize(oldSize, newSize);
+
+			if (tmpVGUIWindow1)
+				tmpVGUIWindow1();
 		}
 		ret = true;
 	} else if (m_iFlags & WINDOW_DRAGGING) {
 		if (flEVType == IE_MOUSEABS) {
-			vector vNewPos = [flKey, flChar] - m_vecOrigin;
-			SetPos(GetPos() + vNewPos + m_vecDragOffset);
-			
-			if (m_vMoveCB) {
-				m_vMoveCB();
-			}
+			vector oldPos = m_vecOrigin;
+			vector newPos = GetPos() + ([flKey, flChar] - m_vecOrigin) + m_vecDragOffset;
+			SetPos(newPos);
+			WindowDidMove(oldPos, newPos);
+
+			if (tmpVGUIWindow2)
+				tmpVGUIWindow2();
 		}
 		ret = true;
 	}

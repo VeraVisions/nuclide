@@ -25,6 +25,8 @@ enumflags
 	MBUTTON_SHOWMP
 };
 
+.void(void) tmpVGUIMenuButton1;
+
 class
 VGUIMenuButton:VGUIWidget
 {
@@ -44,8 +46,6 @@ private:
 	float m_flAlpha;
 	string m_strTitle;
 	string m_strIcon;
-
-	virtual void(void) m_vFunc = 0;
 };
 
 void
@@ -139,8 +139,8 @@ VGUIMenuButton::Input (float flEVType, float flKey, float flChar, float flDevID)
 	} else if (flEVType == IE_KEYUP) {
 		if (flKey == K_MOUSE1) {
 			if (m_iFlags & MBUTTON_DOWN && Util_MouseAbove(g_vecMousePos, m_parent.m_vecOrigin + m_vecOrigin, m_vecSize)) {
-				if (m_vFunc) {
-					m_vFunc();
+				if (tmpVGUIMenuButton1) {
+					tmpVGUIMenuButton1();
 				}
 				ret = true;
 			}
@@ -165,6 +165,6 @@ VGUIMenuButton::SetIcon (string strName)
 void
 VGUIMenuButton::SetFunc (void(void) vFunc)
 {
-	m_vFunc = vFunc;
+	tmpVGUIMenuButton1 = vFunc;
 }
 #endif

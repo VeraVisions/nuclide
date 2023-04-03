@@ -21,7 +21,10 @@ enumflags
 	BUTTON_LASTACTIVE
 };
 
-class VGUIButton:VGUIWidget
+/* TODO: MOVE THESE INTO VGUIButton! COMPILER NEEDS TO BE FIXED FIRST HOWEVER. */
+.void(void) tmpVGUIButton1;
+
+class VGUIButton:VGUIControl
 {
 public:
 	void VGUIButton(void);
@@ -34,8 +37,13 @@ public:
 	nonvirtual void SetColor(vector);
 	/** Sets the color of the icon on the button. */
 	nonvirtual void SetIconColor(vector);
+
+	/** Gets the title of the button. */
+	nonvirtual string GetTitle(void);
+
 	/** Sets the function to call when the button is pressed. */
 	nonvirtual void SetFunc(void(void));
+
 	/** Sets the command to execute when the button is pressed. */
 	nonvirtual void SetExec(string);
 
@@ -43,7 +51,6 @@ public:
 	virtual void Draw(void);
 	virtual bool Input(float,float,float,float);
 	virtual void Spawned(void);
-
 private:
 	vector m_vecIMGSize;
 	vector m_vecColor;
@@ -53,7 +60,6 @@ private:
 	string m_strTitleActive;
 	string m_strIcon;
 	string m_strExec;
-	virtual void m_vFunc(void) = 0;
 };
 
 void
@@ -89,13 +95,20 @@ VGUIButton::SetTitle(string strName)
 
 	m_strTitle = strName;
 	m_strTitleActive = sprintf("^3%s", m_strTitle);
-	m_strTitle = sprintf("%s%s", Font_RGBtoHex(UI_MAINCOLOR), strName);
+	//m_strTitle = sprintf("%s%s", Font_RGBtoHex(UI_MAINCOLOR), strName);
 	drawfont = g_fntDefault.iID;
 
 	newsize[0] = stringwidth(m_strTitle, TRUE, [g_fntDefault.iScaleX, g_fntDefault.iScaleY]) + 16;
 	newsize[1] = 24;
 	SetSize(newsize);
 }
+
+string
+VGUIButton::GetTitle(void)
+{
+	return m_strTitle;
+}
+
 void
 VGUIButton::SetIcon(string strName)
 {
@@ -107,15 +120,18 @@ VGUIButton::SetIcon(string strName)
 	}
 }
 void
-VGUIButton::SetFunc(void(void) vFunc)
+VGUIButton::SetFunc(void(void) func)
 {
-	m_vFunc = vFunc;
+	//#warning "SetFunc in VGUIButton is DEPRECATED. Compiler IS generating JUNK in the old way. Please override VGUIButton and define a OnMouseDown/Up method instead"
+	//m_vFunc = vFunc;
+	tmpVGUIButton1 = func;
 }
 void
 VGUIButton::SetExec(string exe)
 {
 	m_strExec = exe;
 }
+
 
 void
 VGUIButton::Draw(void)
@@ -134,6 +150,21 @@ VGUIButton::Draw(void)
 		drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, 1], [1, m_vecSize[1] - 2], [1,1,1], 0.5f);
 		drawfill(m_parent.m_vecOrigin + m_vecOrigin + [m_vecSize[0] - 1, 1], [1, m_vecSize[1] - 2], [0,0,0], 0.5f);
 	}
+
+	if (m_strTitle) {
+		if (m_iFlags & BUTTON_HOVER) {
+			Font_DrawText(m_parent.m_vecOrigin + m_vecOrigin + [8, 8], m_strTitle, g_fntDefault);
+		} else {
+			Font_DrawText(m_parent.m_vecOrigin + m_vecOrigin + [8, 8], m_strTitle, g_fntDefault);
+		}
+	}
+	if (m_strIcon) {
+		if (m_iFlags & BUTTON_DOWN)
+			drawpic(m_parent.m_vecOrigin + m_vecOrigin + [2,2], m_strIcon, m_vecIMGSize, m_vecIconColor * 0.25, 1.0f, 0);
+		else
+			drawpic(m_parent.m_vecOrigin + m_vecOrigin + [2,2], m_strIcon, m_vecIMGSize, m_vecIconColor, 1.0f, 0);
+	}
+
 #else
 	if (m_iFlags & BUTTON_DOWN) {
 		drawfill(m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, m_vecColor, 0.25f);
@@ -142,7 +173,7 @@ VGUIButton::Draw(void)
 	drawfill(m_parent.m_vecOrigin + m_vecOrigin, [m_vecSize[0], 1], m_vecColor, 1.0f);
 	drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, 1], [1, m_vecSize[1] - 2], m_vecColor, 1.0f);
 	drawfill(m_parent.m_vecOrigin + m_vecOrigin + [m_vecSize[0] - 1, 1], [1, m_vecSize[1] - 2], m_vecColor, 1.0f);
-#endif
+
 
 	if (m_strTitle) {
 		if (m_iFlags & BUTTON_LASTACTIVE) {
@@ -157,6 +188,7 @@ VGUIButton::Draw(void)
 		else
 			drawpic(m_parent.m_vecOrigin + m_vecOrigin + [2,2], m_strIcon, m_vecIMGSize, m_vecIconColor, 1.0f, 0);
 	}
+#endif
 }
 
 bool
@@ -164,10 +196,29 @@ VGUIButton::Input(float flEVType, float flKey, float flChar, float flDevID)
 {
 	bool ret = false;
 
+	bool mouseHover = false;
+
+	if (Util_MouseAbove(g_vecMousePos, m_parent.m_vecOrigin + m_vecOrigin, m_vecSize)) {
+		mouseHover = true;
+	}
+
+	if (mouseHover == true && HasFlag(BUTTON_HOVER) == false) {
+		FlagAdd(BUTTON_HOVER);
+		OnMouseEntered();
+	} else if (HasFlag(BUTTON_HOVER)) {
+		FlagRemove(BUTTON_HOVER);
+		OnMouseExited();
+	}
+
 	if (flEVType == IE_KEYDOWN) {
 		if (flKey == K_MOUSE1) {
 			FlagRemove(BUTTON_LASTACTIVE);
-			if (Util_MouseAbove(g_vecMousePos, m_parent.m_vecOrigin + m_vecOrigin, m_vecSize)) {
+			if (mouseHover) {
+				if (tmpVGUIButton1)
+					tmpVGUIButton1();
+
+				OnMouseDown();
+
 				FlagAdd(BUTTON_DOWN);
 				FlagAdd(BUTTON_LASTACTIVE);
 				ret = true;
@@ -175,9 +226,9 @@ VGUIButton::Input(float flEVType, float flKey, float flChar, float flDevID)
 		}
 	} else if (flEVType == IE_KEYUP) {
 		if (flKey == K_MOUSE1) {
-			if (m_iFlags & BUTTON_DOWN && Util_MouseAbove(g_vecMousePos, m_parent.m_vecOrigin + m_vecOrigin, m_vecSize)) {
-				if (m_vFunc)
-					m_vFunc();
+			if (m_iFlags & BUTTON_DOWN && mouseHover) {
+				OnMouseUp();
+
 				if (m_strExec)
 					localcmd(sprintf("%s\n", m_strExec));
 

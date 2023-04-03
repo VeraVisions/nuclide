@@ -21,6 +21,9 @@ noref .vector maxs;
 noref .string model;
 noref .float frame, frame2, lerpfrac, renderflags, frame1time;
 
+.void(void) tmpVGUI3DView1;
+.float(float,float,float,float) tmpVGUI3DView2;
+
 class VGUI3DView:VGUIWidget
 {
 public:
@@ -48,8 +51,6 @@ private:
 	vector m_vec3DPos;
 	vector m_vec3DAngles;
 	float m_flFOV;
-	virtual void(void) m_vDrawFunc = 0;
-	virtual float(float, float, float, float) m_vInputFunc = 0;
 };
 
 void
@@ -92,19 +93,19 @@ VGUI3DView::Get3DPos(void)
 void
 VGUI3DView::SetDrawFunc(void(void) vFunc)
 {
-	m_vDrawFunc = vFunc;
+	tmpVGUI3DView1 = vFunc;
 }
 
 void
 VGUI3DView::SetInputFunc(float(float, float, float, float) vFunc)
 {
-	m_vInputFunc = vFunc;
+	tmpVGUI3DView2 = vFunc;
 }
 
 void
 VGUI3DView::Draw(void)
 {
-	if (!m_vDrawFunc) {
+	if (!tmpVGUI3DView1) {
 		return;
 	}
 
@@ -113,16 +114,16 @@ VGUI3DView::Draw(void)
 	setproperty(VF_AFOV, 90);
 	setproperty(VF_ORIGIN, m_vec3DPos);
 	setproperty(VF_ANGLES, m_vec3DAngles);
-	m_vDrawFunc();
+	tmpVGUI3DView1();
 	renderscene();
 }
 
 bool
 VGUI3DView::Input(float flEVType, float flKey, float flChar, float flDevID)
 {
-	if (!m_vInputFunc) {
+	if (!tmpVGUI3DView2) {
 		return false;
 	}
 
-	return m_vInputFunc(flEVType, flKey, flChar, flDevID);
+	return tmpVGUI3DView2(flEVType, flKey, flChar, flDevID);
 }

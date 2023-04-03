@@ -1,10 +1,12 @@
 #includelist
 ../vgui/ui.qc
+../vgui/ui_control.qc
 ../vgui/ui_button.qc
 ../vgui/ui_menubutton.qc
 ../vgui/ui_radio.qc
 ../vgui/ui_checkbox.qc
 ../vgui/ui_window.qc
+../vgui/ui_frame.qc
 ../vgui/ui_label.qc
 ../vgui/ui_pic.qc
 ../vgui/ui_3dview.qc

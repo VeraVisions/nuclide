@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+.void(void) tmpVGUIList1;
+
 class VGUIList:VGUIWidget
 {
 public:
@@ -46,7 +48,6 @@ private:
 	int m_iItemCount;
 	int m_iSelected;
 	int m_iDrawOffset;
-	virtual void(void) m_vScrollCB = 0;
 };
 
 void VGUIList::VGUIList(void)
@@ -140,8 +141,8 @@ void VGUIList::SetOffset (int iOffset, int iCallBack)
 	int iMaxDisplay = bound(0, m_iItemCount, floor(m_vecSize[1] / 20));
 	m_iDrawOffset = bound(0, iOffset, m_iItemCount - iMaxDisplay);
 	
-	if (m_vScrollCB && iCallBack) {
-		m_vScrollCB();
+	if (tmpVGUIList1 && iCallBack) {
+		tmpVGUIList1();
 	}
 }
 int VGUIList::GetOffset(void)
@@ -198,5 +199,5 @@ void VGUIList::AddItem (string strItem)
 
 void VGUIList::CallOnScroll (void(void) vFunc)
 {
-	m_vScrollCB = vFunc;
+	tmpVGUIList1 = vFunc;
 }

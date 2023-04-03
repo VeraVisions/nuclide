@@ -45,7 +45,7 @@ VGUIPic::VGUIPic(void)
 void
 VGUIPic::Spawned(void)
 {
-	SetSize([16,16]);
+	SetSize([16,16, 0]);
 }
 
 void
@@ -66,6 +66,7 @@ void
 VGUIPic::SetImage (string strName)
 {
 	m_strImage = strName;
+	SetSize(drawgetimagesize(m_strImage));
 }
 
 string

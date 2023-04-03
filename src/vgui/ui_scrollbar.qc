@@ -21,6 +21,8 @@ enumflags
 	SCROLLBAR_SLIDER_DOWN
 };
 
+.void(void) tmpVGUIScrollbar1;
+
 /** This is a scollbar widget. It needs rework. */
 class VGUIScrollbar:VGUIWidget
 {
@@ -53,8 +55,6 @@ private:
 	float m_flMax;
 	float m_flStep;
 	float m_flValue;
-
-	virtual void(void) m_vChangedCB = 0;
 };
 
 void VGUIScrollbar::VGUIScrollbar(void)
@@ -244,8 +244,8 @@ void VGUIScrollbar::SetValue (float flVal, int iCallBack)
 {
 	m_flValue = bound(m_flMin, flVal, m_flMax);
 	
-	if (m_vChangedCB && iCallBack) {
-		m_vChangedCB();
+	if (tmpVGUIScrollbar1 && iCallBack) {
+		tmpVGUIScrollbar1();
 	}
 }
 float VGUIScrollbar::GetValue(void)
@@ -255,5 +255,5 @@ float VGUIScrollbar::GetValue(void)
 
 void VGUIScrollbar::CallOnChange (void(void) vFunc)
 {
-	m_vChangedCB = vFunc;
+	tmpVGUIScrollbar1 = vFunc;
 }
