@@ -38,6 +38,11 @@ public:
 	/** Sets the color of the icon on the button. */
 	nonvirtual void SetIconColor(vector);
 
+	/** Sets the key to be pressed to order to simulate a click event. */
+	nonvirtual void SetKeyEquivalent(string);
+	/** Returns the key to be pressed in order to simulate a click event. */
+	nonvirtual string GetKeyEquivalent(void);
+
 	/** Gets the title of the button. */
 	nonvirtual string GetTitle(void);
 
@@ -60,6 +65,7 @@ private:
 	string m_strTitleActive;
 	string m_strIcon;
 	string m_strExec;
+	int m_keyEquivalent;
 };
 
 void
@@ -68,6 +74,7 @@ VGUIButton::VGUIButton(void)
 	m_vecColor = UI_MAINCOLOR;
 	m_flAlpha = 1.0f;
 	m_vecIconColor = [1,1,1];
+	m_keyEquivalent = -1;
 }
 
 void
@@ -132,6 +139,18 @@ VGUIButton::SetExec(string exe)
 	m_strExec = exe;
 }
 
+void
+VGUIButton::SetKeyEquivalent(string keyValue)
+{
+	m_keyEquivalent = stringtokeynum(keyValue);
+}
+
+string
+VGUIButton::GetKeyEquivalent(void)
+{
+	return keynumtostring(m_keyEquivalent);
+}
+
 
 void
 VGUIButton::Draw(void)
@@ -151,13 +170,25 @@ VGUIButton::Draw(void)
 		drawfill(m_parent.m_vecOrigin + m_vecOrigin + [m_vecSize[0] - 1, 1], [1, m_vecSize[1] - 2], [0,0,0], 0.5f);
 	}
 
+	float textPadding = 8;
+
+	if (m_keyEquivalent >= 0) {
+		float length;
+		string keyText = GetKeyEquivalent();
+
+		length = Font_StringWidth(keyText, FALSE, g_fntDefault);
+		textPadding += length + 8;
+		Font_DrawText(m_parent.m_vecOrigin + m_vecOrigin + [8, 8], keyText, g_fntDefault);
+	}
+
 	if (m_strTitle) {
 		if (m_iFlags & BUTTON_HOVER) {
-			Font_DrawText(m_parent.m_vecOrigin + m_vecOrigin + [8, 8], m_strTitle, g_fntDefault);
+			Font_DrawText(m_parent.m_vecOrigin + m_vecOrigin + [textPadding, 8], m_strTitle, g_fntDefault);
 		} else {
-			Font_DrawText(m_parent.m_vecOrigin + m_vecOrigin + [8, 8], m_strTitle, g_fntDefault);
+			Font_DrawText(m_parent.m_vecOrigin + m_vecOrigin + [textPadding, 8], m_strTitle, g_fntDefault);
 		}
 	}
+
 	if (m_strIcon) {
 		if (m_iFlags & BUTTON_DOWN)
 			drawpic(m_parent.m_vecOrigin + m_vecOrigin + [2,2], m_strIcon, m_vecIMGSize, m_vecIconColor * 0.25, 1.0f, 0);
@@ -175,11 +206,22 @@ VGUIButton::Draw(void)
 	drawfill(m_parent.m_vecOrigin + m_vecOrigin + [m_vecSize[0] - 1, 1], [1, m_vecSize[1] - 2], m_vecColor, 1.0f);
 
 
+	float textPadding = 8;
+
+	if (m_keyEquivalent >= 0) {
+		float length;
+		string keyText = GetKeyEquivalent();
+
+		length = Font_StringWidth(keyText, FALSE, g_fntDefault);
+		textPadding += length + 8;
+		Font_DrawText(m_parent.m_vecOrigin + m_vecOrigin + [8, 8], keyText, g_fntDefault);
+	}
+
 	if (m_strTitle) {
 		if (m_iFlags & BUTTON_LASTACTIVE) {
-			Font_DrawText(m_parent.m_vecOrigin + m_vecOrigin + [8, 8], m_strTitleActive, g_fntDefault);
+			Font_DrawText(m_parent.m_vecOrigin + m_vecOrigin + [textPadding, 8], m_strTitleActive, g_fntDefault);
 		} else {
-			Font_DrawText(m_parent.m_vecOrigin + m_vecOrigin + [8, 8], m_strTitle, g_fntDefault);
+			Font_DrawText(m_parent.m_vecOrigin + m_vecOrigin + [textPadding, 8], m_strTitle, g_fntDefault);
 		}
 	}
 	if (m_strIcon) {
@@ -225,6 +267,14 @@ VGUIButton::Input(float flEVType, float flKey, float flChar, float flDevID)
 			}
 		}
 	} else if (flEVType == IE_KEYUP) {
+		/* simulate click */
+		if (m_keyEquivalent >= 0)
+		if (flKey == m_keyEquivalent) {
+			m_iFlags |= BUTTON_DOWN;
+			mouseHover = true;
+			flKey = K_MOUSE1;
+		}
+
 		if (flKey == K_MOUSE1) {
 			if (m_iFlags & BUTTON_DOWN && mouseHover) {
 				OnMouseUp();
