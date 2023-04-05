@@ -66,64 +66,49 @@ void VGUIScrollbar::VGUIScrollbar(void)
 void VGUIScrollbar::Draw(void)
 {
 	vector vecSize = [20, m_iLength];
+	vector vecUpPos = m_parent.m_vecOrigin + m_vecOrigin;
+	vector vecDownPos = m_parent.m_vecOrigin + m_vecOrigin + [0, m_iLength - 20];
+	vector vecSliderPos = m_parent.m_vecOrigin + m_vecOrigin + [0, 20];
 
 #ifndef CLASSIC_VGUI
-	drawfill(m_parent.m_vecOrigin + m_vecOrigin, vecSize, m_vecColor, m_flAlpha);
+	VGUITheme theme = GetTheme();
+	
+	vecSliderPos[1] += (m_iLength - 60) * (m_flValue / m_flMax);
 
 	if (m_iFlags & BUTTON_DOWN) {
-		drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, vecSize[1] - 1], [vecSize[0], 1], [1,1,1], 0.5f);
-		drawfill(m_parent.m_vecOrigin + m_vecOrigin, [vecSize[0], 1], [0,0,0], 0.5f);
-		drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, 1], [1, vecSize[1] - 2], [0,0,0], 0.5f);
-		drawfill(m_parent.m_vecOrigin + m_vecOrigin + [vecSize[0] - 1, 1], [1, vecSize[1] - 2], [1,1,1], 0.5f);
+		theme.DrawScrollbar(m_parent.m_vecOrigin + m_vecOrigin, vecSize, VGUI_STATE_ACTIVE);
 	} else {
-		drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, vecSize[1] - 1], [vecSize[0], 1], [0,0,0], 0.5f);
-		drawfill(m_parent.m_vecOrigin + m_vecOrigin, [vecSize[0], 1], [1,1,1], 0.5f);
-		drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, 1], [1, vecSize[1] - 2], [1,1,1], 0.5f);
-		drawfill(m_parent.m_vecOrigin + m_vecOrigin + [vecSize[0] - 1, 1], [1, vecSize[1] - 2], [0,0,0], 0.5f);
+		theme.DrawScrollbar(m_parent.m_vecOrigin + m_vecOrigin, vecSize, VGUI_STATE_NORMAL);
 	}
+
+	// Slider Button
+	if (m_iFlags & SCROLLBAR_SLIDER_DOWN) {
+		theme.DrawScroller(vecSliderPos, [20,20], VGUI_STATE_ACTIVE);
+	} else {
+		theme.DrawScroller(vecSliderPos, [20,20], VGUI_STATE_NORMAL);
+	}
+
+	// Button UP
+	if (m_iFlags & SCROLLBAR_UP_DOWN) {
+		theme.DrawButton(vecUpPos, [20,20], VGUI_STATE_ACTIVE);
+	} else {
+		theme.DrawButton(vecUpPos, [20,20], VGUI_STATE_NORMAL);
+	}
+	drawpic(vecUpPos + [2,2], "textures/ui/steam/icon_up", [16,16], [1,1,1], 1.0f, 0);
+
+	if (m_iFlags & SCROLLBAR_DN_DOWN) {
+		theme.DrawButton(vecDownPos, [20,20], VGUI_STATE_ACTIVE);
+	} else {
+		theme.DrawButton(vecDownPos, [20,20], VGUI_STATE_NORMAL);
+	}
+	drawpic(vecDownPos + [2,2], "textures/ui/steam/icon_down", [16,16], [1,1,1], 1.0f, 0);
+
 #else
 	drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, vecSize[1] - 1], [vecSize[0], 1], m_vecColor, 1.0f);
 	drawfill(m_parent.m_vecOrigin + m_vecOrigin, [vecSize[0], 1], m_vecColor, 1.0f);
 	drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, 1], [1, vecSize[1] - 2], m_vecColor, 1.0f);
 	drawfill(m_parent.m_vecOrigin + m_vecOrigin + [vecSize[0] - 1, 1], [1, vecSize[1] - 2], m_vecColor, 1.0f);
-#endif
 
-	vector vecUpPos = m_parent.m_vecOrigin + m_vecOrigin;
-	vector vecDownPos = m_parent.m_vecOrigin + m_vecOrigin + [0, m_iLength - 20];
-	vector vecSliderPos = m_parent.m_vecOrigin + m_vecOrigin + [0, 20];
-	
-	vecSliderPos[1] += (m_iLength - 60) * (m_flValue / m_flMax);
-	
-	// Slider Button
-	drawfill(vecSliderPos, [20,20], m_vecColor, m_flAlpha);
-	if (m_iFlags & SCROLLBAR_SLIDER_DOWN) {
-		drawfill(vecSliderPos, [20, 1], [0,0,0], 0.5f);
-		drawfill(vecSliderPos + [0, 19], [20, 1], [1,1,1], 0.5f);
-		drawfill(vecSliderPos + [0, 1], [1, 18], [0,0,0], 0.5f);
-		drawfill(vecSliderPos + [19, 1], [1, 18], [1,1,1], 0.5f);
-	} else {
-		drawfill(vecSliderPos, [20, 1], [1,1,1], 0.5f);
-		drawfill(vecSliderPos + [0, 19], [20, 1], [0,0,0], 0.5f);
-		drawfill(vecSliderPos + [0, 1], [1, 18], [1,1,1], 0.5f);
-		drawfill(vecSliderPos + [19, 1], [1, 18], [0,0,0], 0.5f);
-	}
-
-	// Button UP
-#ifndef CLASSIC_VGUI
-	drawfill(vecUpPos, [20,20], m_vecColor, m_flAlpha);
-	if (m_iFlags & SCROLLBAR_UP_DOWN) {
-		drawfill(vecUpPos, [20, 1], [0,0,0], 0.5f);
-		drawfill(vecUpPos + [0, 19], [20, 1], [1,1,1], 0.5f);
-		drawfill(vecUpPos + [0, 1], [1, 18], [0,0,0], 0.5f);
-		drawfill(vecUpPos + [19, 1], [1, 18], [1,1,1], 0.5f);
-	} else {
-		drawfill(vecUpPos, [20, 1], [1,1,1], 0.5f);
-		drawfill(vecUpPos + [0, 19], [20, 1], [0,0,0], 0.5f);
-		drawfill(vecUpPos + [0, 1], [1, 18], [1,1,1], 0.5f);
-		drawfill(vecUpPos + [19, 1], [1, 18], [0,0,0], 0.5f);
-	}
-	drawpic(vecUpPos + [2,2], "textures/ui/steam/icon_up", [16,16], [1,1,1], 1.0f, 0);
-#else
 	if (m_iFlags & SCROLLBAR_UP_DOWN) {
 		drawfill(vecUpPos, [20,20], m_vecColor, 0.25f);
 		drawfill(vecUpPos, [20, 1], m_vecColor, 1.0f);
@@ -137,23 +122,8 @@ void VGUIScrollbar::Draw(void)
 		drawfill(vecUpPos + [19, 1], [1, 18], m_vecColor, 1.0f);
 	}
 	drawpic(vecUpPos + [2,2], "textures/ui/steam/icon_up", [16,16], m_vecColor, 1.0f, 0);
-#endif
+
 	// Button DOWN
-#ifndef CLASSIC_VGUI
-	drawfill(vecDownPos, [20,20], m_vecColor, m_flAlpha);
-	if (m_iFlags & SCROLLBAR_DN_DOWN) {
-		drawfill(vecDownPos, [20, 1], [0,0,0], 0.5f);
-		drawfill(vecDownPos + [0, 19], [20, 1], [1,1,1], 0.5f);
-		drawfill(vecDownPos + [0, 1], [1, 18], [0,0,0], 0.5f);
-		drawfill(vecDownPos + [19, 1], [1, 18], [1,1,1], 0.5f);
-	} else {
-		drawfill(vecDownPos, [20, 1], [1,1,1], 0.5f);
-		drawfill(vecDownPos+ [0, 19], [20, 1], [0,0,0], 0.5f);
-		drawfill(vecDownPos + [0, 1], [1, 18], [1,1,1], 0.5f);
-		drawfill(vecDownPos + [19, 1], [1, 18], [0,0,0], 0.5f);
-	}
-	drawpic(vecDownPos + [2,2], "textures/ui/steam/icon_down", [16,16], [1,1,1], 1.0f, 0);
-#else
 	if (m_iFlags & SCROLLBAR_DN_DOWN) {
 		drawfill(vecDownPos, [20,20], m_vecColor, 0.25f);
 		drawfill(vecDownPos, [20, 1], m_vecColor, 1.0f);

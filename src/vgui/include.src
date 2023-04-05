@@ -1,4 +1,6 @@
 #includelist
+../vgui/ui_color.qc
+../vgui/ui_theme.qc
 ../vgui/ui.qc
 ../vgui/ui_control.qc
 ../vgui/ui_button.qc

@@ -34,18 +34,6 @@
 font_s g_fntDefault;
 var int g_vguiWidgetCount;
 
-#ifdef CLASSIC_VGUI
-	#ifndef UI_MAINCOLOR
-		#define UI_MAINCOLOR [255,170,0] / 255
-	#endif
-	#ifndef UI_MAINALPHA
-		#define UI_MAINALPHA 255
-	#endif
-#else
-	var vector UI_MAINCOLOR;
-	var float UI_MAINALPHA;
-#endif
-
 /** Return whether a VGUI panel is active on the 2D overlay level. */
 int
 VGUI_Active(void)
@@ -118,6 +106,11 @@ public:
 	/** Hide the widget. */
 	nonvirtual void Hide(void);
 
+	/** Sets the VGUITheme to use on this widget (and any children it may have) */
+	nonvirtual void SetTheme(VGUITheme);
+	/** Returns the VGUI that will be used on this widget. */
+	nonvirtual VGUITheme GetTheme(void);
+
 	/** Called when the position of the widget was changed in any capacity. */
 	virtual void PositionChanged(vector, vector);
 	/** Called when the size of the widget has changed in any capacity. */
@@ -143,6 +136,7 @@ private:
 	VGUIWidget m_parent;
 	int m_iFlags;
 	bool m_bVisible;
+	VGUITheme m_theme;
 };
 
 void
@@ -158,6 +152,26 @@ VGUIWidget::VGUIWidget(void)
 	m_bVisible = true;
 
 	Spawned();
+}
+
+void
+VGUIWidget::SetTheme(VGUITheme theme)
+{
+	m_theme = theme;
+}
+
+VGUITheme
+VGUIWidget::GetTheme(void)
+{
+	/* if no theme set, but we have a parent... inherit the parents' theme recursively */
+	if (!m_theme && m_parent)
+		return m_parent.GetTheme();
+
+	/* we have nothing, use the default one. */
+	if (!m_theme)
+		m_theme = spawn(VGUITheme);
+
+	return m_theme;
 }
 
 bool

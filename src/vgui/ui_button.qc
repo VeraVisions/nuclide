@@ -156,18 +156,12 @@ void
 VGUIButton::Draw(void)
 {
 #ifndef CLASSIC_VGUI
-	drawfill(m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, m_vecColor, m_flAlpha);
+	VGUITheme theme = GetTheme();
 
 	if (m_iFlags & BUTTON_DOWN) {
-		drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, m_vecSize[1] - 1], [m_vecSize[0], 1], [1,1,1], 0.5f);
-		drawfill(m_parent.m_vecOrigin + m_vecOrigin, [m_vecSize[0], 1], [0,0,0], 0.5f);
-		drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, 1], [1, m_vecSize[1] - 2], [0,0,0], 0.5f);
-		drawfill(m_parent.m_vecOrigin + m_vecOrigin + [m_vecSize[0] - 1, 1], [1, m_vecSize[1] - 2], [1,1,1], 0.5f);
+		theme.DrawButton(m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, VGUI_STATE_ACTIVE);
 	} else {
-		drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, m_vecSize[1] - 1], [m_vecSize[0], 1], [0,0,0], 0.5f);
-		drawfill(m_parent.m_vecOrigin + m_vecOrigin, [m_vecSize[0], 1], [1,1,1], 0.5f);
-		drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, 1], [1, m_vecSize[1] - 2], [1,1,1], 0.5f);
-		drawfill(m_parent.m_vecOrigin + m_vecOrigin + [m_vecSize[0] - 1, 1], [1, m_vecSize[1] - 2], [0,0,0], 0.5f);
+		theme.DrawButton(m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, VGUI_STATE_NORMAL);
 	}
 
 	float textPadding = 8;
@@ -178,14 +172,14 @@ VGUIButton::Draw(void)
 
 		length = Font_StringWidth(keyText, FALSE, g_fntDefault);
 		textPadding += length + 8;
-		Font_DrawText(m_parent.m_vecOrigin + m_vecOrigin + [8, 8], keyText, g_fntDefault);
+		theme.DrawText(m_parent.m_vecOrigin + m_vecOrigin + [8, 8], keyText, m_vecSize, g_fntDefault);
 	}
 
 	if (m_strTitle) {
 		if (m_iFlags & BUTTON_HOVER) {
-			Font_DrawText(m_parent.m_vecOrigin + m_vecOrigin + [textPadding, 8], m_strTitle, g_fntDefault);
+			theme.DrawText(m_parent.m_vecOrigin + m_vecOrigin + [textPadding, 8], m_strTitle, m_vecSize, g_fntDefault);
 		} else {
-			Font_DrawText(m_parent.m_vecOrigin + m_vecOrigin + [textPadding, 8], m_strTitle, g_fntDefault);
+			theme.DrawText(m_parent.m_vecOrigin + m_vecOrigin + [textPadding, 8], m_strTitle, m_vecSize, g_fntDefault);
 		}
 	}
 
@@ -256,9 +250,6 @@ VGUIButton::Input(float flEVType, float flKey, float flChar, float flDevID)
 		if (flKey == K_MOUSE1) {
 			FlagRemove(BUTTON_LASTACTIVE);
 			if (mouseHover) {
-				if (tmpVGUIButton1)
-					tmpVGUIButton1();
-
 				OnMouseDown();
 
 				FlagAdd(BUTTON_DOWN);
@@ -278,6 +269,9 @@ VGUIButton::Input(float flEVType, float flKey, float flChar, float flDevID)
 		if (flKey == K_MOUSE1) {
 			if (m_iFlags & BUTTON_DOWN && mouseHover) {
 				OnMouseUp();
+
+				if (tmpVGUIButton1)
+					tmpVGUIButton1();
 
 				if (m_strExec)
 					localcmd(sprintf("%s\n", m_strExec));

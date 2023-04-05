@@ -212,23 +212,6 @@ void VGUIWindow::Draw(void)
 	if (m_styleMask & VGUIWindowResizeable) {
 		drawpic(m_vecOrigin + m_vecSize - [16,16], "textures/ui/steam/icon_resizer", [16,16], m_vecColor, 1.0f, 0);
 	}
-#else
-	if (m_styleMask & VGUIWindowFullscreen)
-		drawfill([0,0], video_res, m_vecColor, m_flAlpha);
-	else
-		drawfill(m_vecOrigin, m_vecSize, m_vecColor, m_flAlpha);
-
-	if (!(m_styleMask & VGUIWindowBorderless)) {
-	drawfill(m_vecOrigin, [m_vecSize[0], 1], [1,1,1], 0.5f);
-	drawfill(m_vecOrigin + [0, m_vecSize[1] - 1], [m_vecSize[0], 1], [0,0,0], 0.5f);
-	drawfill(m_vecOrigin + [0, 1], [1, m_vecSize[1] - 2], [1,1,1], 0.5f);
-	drawfill(m_vecOrigin + [m_vecSize[0] - 1, 1], [1, m_vecSize[1] - 2], [0,0,0], 0.5f);
-	}
-
-	if (m_styleMask & VGUIWindowResizeable) {
-		drawpic(m_vecOrigin + m_vecSize - [16,16], "textures/ui/steam/icon_resizer", [16,16], m_vecColor, 1.0f, 0);
-	}
-#endif
 
 	if (m_styleMask & VGUIWindowTitled)
 	if (m_strTitle) {
@@ -239,6 +222,30 @@ void VGUIWindow::Draw(void)
 			Font_DrawText(m_vecOrigin + [8, 8], m_strTitle, g_fntDefault);
 		}
 	}
+#else
+	VGUITheme theme = GetTheme();
+
+	if (m_styleMask & VGUIWindowFullscreen)
+		theme.DrawWindowBackground([0, 0], video_res, VGUI_STATE_ACTIVE);
+	else if  (!(m_styleMask & VGUIWindowBorderless))
+		theme.DrawWindow(m_vecOrigin, m_vecSize, VGUI_STATE_ACTIVE);
+	else
+		theme.DrawWindowBackground(m_vecOrigin, m_vecSize, VGUI_STATE_ACTIVE);
+
+	if (m_styleMask & VGUIWindowResizeable) {
+		drawpic(m_vecOrigin + m_vecSize - [16,16], "textures/ui/steam/icon_resizer", [16,16], m_vecColor, 1.0f, 0);
+	}
+
+	if (m_styleMask & VGUIWindowTitled)
+	if (m_strTitle) {
+		if (m_strIcon) {
+			theme.DrawText(m_vecOrigin + [26, 8], m_strTitle, m_vecSize, g_fntDefault);
+			drawpic(m_vecOrigin + [4, 4], m_strIcon, [16,16], [1,1,1], 1.0f, 0);
+		} else {
+			theme.DrawText(m_vecOrigin + [8, 8], m_strTitle, m_vecSize, g_fntDefault);
+		}
+	}
+#endif
 
 #ifdef UI_DEVELOPER
 	if (m_iFlags & WINDOW_DRAGGING) {

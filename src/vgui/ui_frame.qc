@@ -14,28 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-enumflags
-{
-	WINDOW_DRAGGING,
-	WINDOW_RESIZING,
-};
-
-typedef enumflags
-{
-	VGUIFrameBorderless,
-	VGUIFrameTitled,
-	VGUIFrameClosable,
-	VGUIFrameMiniaturizable,
-	VGUIFrameResizeable,
-	VGUIFrameMovable,
-} VGUIFrameStyle_t;
-
-#define VGUIFrameStyleDefault VGUIFrameMovable | \
-		VGUIFrameTitled | \
-		VGUIFrameClosable | \
-		VGUIFrameMiniaturizable
-
-/** Top-most window class in VGUILib */
 class VGUIFrame:VGUIWidget
 {
 public:

@@ -85,18 +85,21 @@ void VGUIRadio::SetFunc (void(void) vFunc)
 void VGUIRadio::Draw(void)
 {
 #ifndef CLASSIC_VGUI
-	drawfill(m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, m_vecColor, m_flAlpha);
+	VGUITheme theme = GetTheme();
+
+	theme.DrawControlBackground(m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, VGUI_STATE_ACTIVE);
 	
 	if (m_iFlags & RADIO_DOWN) {
-		drawfill(m_parent.m_vecOrigin + m_vecOrigin, [m_vecSize[0], 1], [0,0,0], 0.5f);
-		drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, m_vecSize[1] - 1], [m_vecSize[0], 1], [1,1,1], 0.5f);
-		drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, 1], [1, m_vecSize[1] - 2], [0,0,0], 0.5f);
-		drawfill(m_parent.m_vecOrigin + m_vecOrigin + [m_vecSize[0] - 1, 1], [1, m_vecSize[1] - 2], [1,1,1], 0.5f);
+		theme.DrawBorder(m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, VGUI_BORDER_INSET, __NULL__);
 	}
 	if (m_iFlags & RADIO_ACTIVE) {
 		drawpic(m_parent.m_vecOrigin + m_vecOrigin, "textures/ui/steam/icon_radiosel", [16,16], [1,1,1], 1.0f, 0);
 	} else {
 		drawpic(m_parent.m_vecOrigin + m_vecOrigin, "textures/ui/steam/icon_radiounsel", [16,16], [1,1,1], 1.0f, 0);
+	}
+
+	if (m_strTitle) {
+		theme.DrawText(m_parent.m_vecOrigin + m_vecOrigin + [24, 3], m_strTitle, m_vecSize, g_fntDefault);
 	}
 #else
 	if (m_iFlags & RADIO_DOWN) {
@@ -110,11 +113,11 @@ void VGUIRadio::Draw(void)
 	} else {
 		drawpic(m_parent.m_vecOrigin + m_vecOrigin, "textures/ui/steam/icon_radiounsel", [16,16], m_vecColor, 1.0f, 0);
 	}
-#endif
 
 	if (m_strTitle) {
 		Font_DrawText(m_parent.m_vecOrigin + m_vecOrigin + [24, 3], m_strTitle, g_fntDefault);
 	}
+#endif
 }
 
 bool VGUIRadio::Input (float flEVType, float flKey, float flChar, float flDevID)
