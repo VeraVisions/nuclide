@@ -603,6 +603,7 @@ PMoveCustom_Move(void)
 		self.groundentity = trace_ent;
 	}
 }
+#endif
 
 /* this is called for when we want to run the custom QC player physics */
 void
@@ -617,19 +618,26 @@ PMoveCustom_RunPlayerPhysics(entity target)
 	if (self.maxspeed <= 0)
 		self.maxspeed = 240;
 
+#ifdef CUSTOMPLAYERPHYSICS
 	/* call accelerate before and after the actual move, 
 	 * with half the move each time. this reduces framerate dependence. 
 	 * and makes controlling jumps slightly easier */
 	PMoveCustom_Acceleration(input_timelength / 2, TRUE);
 	PMoveCustom_Move();
 	PMoveCustom_Acceleration(input_timelength / 2, FALSE);
+#else
+	runstandardplayerphysics(target);
+#endif
 
 	/* NOTE: should clip to network precision here if lower than a float */
 	self.angles = input_angles;
 	self.angles[0] *= -0.333;
 
+#ifdef CUSTOMPLAYERPHYSICS
 	/* activate any SOLID_TRIGGER entities */
 	touchtriggers();
+#endif
+
 	setorigin(self, self.origin);
 	self = oldself;
 }
@@ -674,4 +682,3 @@ PMoveCustom_RunCrouchPhysics(entity target)
 	}
 	PMoveCustom_RunPlayerPhysics(target);
 }
-#endif 
