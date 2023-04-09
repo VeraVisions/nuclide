@@ -45,18 +45,18 @@ public:
 	void NSView(void);
 
 	/** the only method we we want to call setproperty() */
-	nonvirtual void SetupView(void);
+	virtual void SetupView(void);
 	/** only does one thing: renderscene() */
-	nonvirtual void RenderView(void);
+	virtual void RenderView(void);
 	
 	/** when called, will modify 'origin' to vertically smoothed when on ground */
-	nonvirtual void StairSmooth(void);
+	virtual void StairSmooth(void);
+	
+	/** called every CSQC_UpdateView for each player */
+	virtual void UpdateView(void);
 	
 	/** applies an punch to our camera angle, temporarily */
 	nonvirtual void AddPunchAngle(vector);
-	
-	/** called every CSQC_UpdateView for each player */
-	nonvirtual void UpdateView(void);
 
 	/* set/get */
 	/** Sets the viewmode_t of the NSView. */
