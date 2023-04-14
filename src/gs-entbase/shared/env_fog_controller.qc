@@ -16,21 +16,20 @@
 
 enumflags
 {
-	ENVFOG_CHANGED_ACTIVE,
-	ENVFOG_CHANGED_BLEND,
-	ENVFOG_CHANGED_START,
-	ENVFOG_CHANGED_END,
-	ENVFOG_CHANGED_MAXDENSITY,
-	ENVFOG_CHANGED_FARZ,
-	ENVFOG_CHANGED_COLOR,
-	ENVFOG_CHANGED_COLOR2,
-	ENVFOG_CHANGED_DIR
+	ENVFOGCTRL_CHANGED_ACTIVE,
+	ENVFOGCTRL_CHANGED_BLEND,
+	ENVFOGCTRL_CHANGED_START,
+	ENVFOGCTRL_CHANGED_END,
+	ENVFOGCTRL_CHANGED_MAXDENSITY,
+	ENVFOGCTRL_CHANGED_FARZ,
+	ENVFOGCTRL_CHANGED_COLOR,
+	ENVFOGCTRL_CHANGED_COLOR2,
+	ENVFOGCTRL_CHANGED_DIR
 };
 
 /*!QUAKED env_fog_controller (1 .5 0) (-8 -8 -8) (8 8 8) EVFOGCTL_MASTER
 # OVERVIEW
-Textured light projected. This is the type of lighting that's used for
-flashlights, lamp spotlights and so on.
+Controls fog that affects the entire map.
 
 # KEYS
 - "targetname" : Name
@@ -105,8 +104,9 @@ public:
 	virtual void FogUpdate(void);
 	virtual void RendererRestarted(void);
 	virtual void ReceiveEntity(float,float);
+#endif
 
-#else
+#ifdef SERVER
 	virtual float SendEntity(entity,float);
 	virtual void EvaluateEntity(void);
 	virtual void Trigger(entity, triggermode_t);
@@ -206,29 +206,29 @@ env_fog_controller::RendererRestarted(void)
 void
 env_fog_controller::ReceiveEntity(float flSendFlags, float flNew)
 {
-	if (flSendFlags & ENVFOG_CHANGED_ACTIVE)
+	if (flSendFlags & ENVFOGCTRL_CHANGED_ACTIVE)
 		m_iFogActive = readbyte();
-	if (flSendFlags & ENVFOG_CHANGED_BLEND)
+	if (flSendFlags & ENVFOGCTRL_CHANGED_BLEND)
 		m_iFogBlend = readbyte();
-	if (flSendFlags & ENVFOG_CHANGED_START)
+	if (flSendFlags & ENVFOGCTRL_CHANGED_START)
 		m_flFogStart = readfloat();
-	if (flSendFlags & ENVFOG_CHANGED_END)
+	if (flSendFlags & ENVFOGCTRL_CHANGED_END)
 		m_flFogEnd = readfloat();
-	if (flSendFlags & ENVFOG_CHANGED_MAXDENSITY)
+	if (flSendFlags & ENVFOGCTRL_CHANGED_MAXDENSITY)
 		m_flFogMaxDensity = readfloat();
-	if (flSendFlags & ENVFOG_CHANGED_FARZ)
+	if (flSendFlags & ENVFOGCTRL_CHANGED_FARZ)
 		m_flFogFarZ = readfloat();
-	if (flSendFlags & ENVFOG_CHANGED_COLOR) {
+	if (flSendFlags & ENVFOGCTRL_CHANGED_COLOR) {
 		m_vecFogColor[0] = readfloat();
 		m_vecFogColor[1] = readfloat();
 		m_vecFogColor[2] = readfloat();
 	}
-	if (flSendFlags & ENVFOG_CHANGED_COLOR2) {
+	if (flSendFlags & ENVFOGCTRL_CHANGED_COLOR2) {
 		m_vecFogColor2[0] = readfloat();
 		m_vecFogColor2[1] = readfloat();
 		m_vecFogColor2[2] = readfloat();
 	}
-	if (flSendFlags & ENVFOG_CHANGED_DIR) {
+	if (flSendFlags & ENVFOGCTRL_CHANGED_DIR) {
 		m_vecFogDir[0] = readfloat();
 		m_vecFogDir[1] = readfloat();
 		m_vecFogDir[2] = readfloat();
@@ -250,29 +250,29 @@ env_fog_controller::SendEntity(entity ePVEnt, float flSendFlags)
 	WriteByte(MSG_ENTITY, ENT_FOGCONTROLLER);
 	WriteFloat(MSG_ENTITY, flSendFlags);
 
-	if (flSendFlags & ENVFOG_CHANGED_ACTIVE)
+	if (flSendFlags & ENVFOGCTRL_CHANGED_ACTIVE)
 		WriteByte(MSG_ENTITY, m_iFogActive);
-	if (flSendFlags & ENVFOG_CHANGED_BLEND)
+	if (flSendFlags & ENVFOGCTRL_CHANGED_BLEND)
 		WriteByte(MSG_ENTITY, m_iFogBlend);
-	if (flSendFlags & ENVFOG_CHANGED_START)
+	if (flSendFlags & ENVFOGCTRL_CHANGED_START)
 		WriteFloat(MSG_ENTITY, m_flFogStart);
-	if (flSendFlags & ENVFOG_CHANGED_END)
+	if (flSendFlags & ENVFOGCTRL_CHANGED_END)
 		WriteFloat(MSG_ENTITY, m_flFogEnd);
-	if (flSendFlags & ENVFOG_CHANGED_MAXDENSITY)
+	if (flSendFlags & ENVFOGCTRL_CHANGED_MAXDENSITY)
 		WriteFloat(MSG_ENTITY, m_flFogMaxDensity);
-	if (flSendFlags & ENVFOG_CHANGED_FARZ)
+	if (flSendFlags & ENVFOGCTRL_CHANGED_FARZ)
 		WriteFloat(MSG_ENTITY, m_flFogFarZ);
-	if (flSendFlags & ENVFOG_CHANGED_COLOR) {
+	if (flSendFlags & ENVFOGCTRL_CHANGED_COLOR) {
 		WriteFloat(MSG_ENTITY, m_vecFogColor[0]);
 		WriteFloat(MSG_ENTITY, m_vecFogColor[1]);
 		WriteFloat(MSG_ENTITY, m_vecFogColor[2]);
 	}
-	if (flSendFlags & ENVFOG_CHANGED_COLOR2) {
+	if (flSendFlags & ENVFOGCTRL_CHANGED_COLOR2) {
 		WriteFloat(MSG_ENTITY, m_vecFogColor2[0]);
 		WriteFloat(MSG_ENTITY, m_vecFogColor2[1]);
 		WriteFloat(MSG_ENTITY, m_vecFogColor2[2]);
 	}
-	if (flSendFlags & ENVFOG_CHANGED_DIR) {
+	if (flSendFlags & ENVFOGCTRL_CHANGED_DIR) {
 		WriteFloat(MSG_ENTITY, m_vecFogDir[0]);
 		WriteFloat(MSG_ENTITY, m_vecFogDir[1]);
 		WriteFloat(MSG_ENTITY, m_vecFogDir[2]);
@@ -285,23 +285,23 @@ void
 env_fog_controller::EvaluateEntity(void)
 {
 	if (ATTR_CHANGED(m_iFogActive))
-		SetSendFlags(ENVFOG_CHANGED_ACTIVE);
+		SetSendFlags(ENVFOGCTRL_CHANGED_ACTIVE);
 	if (ATTR_CHANGED(m_iFogBlend))
-		SetSendFlags(ENVFOG_CHANGED_BLEND);
+		SetSendFlags(ENVFOGCTRL_CHANGED_BLEND);
 	if (ATTR_CHANGED(m_flFogStart))
-		SetSendFlags(ENVFOG_CHANGED_START);
+		SetSendFlags(ENVFOGCTRL_CHANGED_START);
 	if (ATTR_CHANGED(m_flFogEnd))
-		SetSendFlags(ENVFOG_CHANGED_END);
+		SetSendFlags(ENVFOGCTRL_CHANGED_END);
 	if (ATTR_CHANGED(m_flFogMaxDensity))
-		SetSendFlags(ENVFOG_CHANGED_MAXDENSITY);
+		SetSendFlags(ENVFOGCTRL_CHANGED_MAXDENSITY);
 	if (ATTR_CHANGED(m_flFogFarZ))
-		SetSendFlags(ENVFOG_CHANGED_FARZ);
+		SetSendFlags(ENVFOGCTRL_CHANGED_FARZ);
 	if (ATTR_CHANGED(m_vecFogColor))
-		SetSendFlags(ENVFOG_CHANGED_COLOR);
+		SetSendFlags(ENVFOGCTRL_CHANGED_COLOR);
 	if (ATTR_CHANGED(m_vecFogColor2))
-		SetSendFlags(ENVFOG_CHANGED_COLOR2);
+		SetSendFlags(ENVFOGCTRL_CHANGED_COLOR2);
 	if (ATTR_CHANGED(m_vecFogDir))
-		SetSendFlags(ENVFOG_CHANGED_DIR);
+		SetSendFlags(ENVFOGCTRL_CHANGED_DIR);
 
 	SAVE_STATE(m_iFogActive)
 	SAVE_STATE(m_iFogBlend)

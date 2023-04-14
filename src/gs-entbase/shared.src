@@ -11,6 +11,7 @@ shared/env_sprite.qc
 shared/env_bubbles.qc
 shared/env_laser.qc
 shared/env_projectedtexture.qc
+shared/env_fog.qc
 shared/env_fog_controller.qc
 shared/light_dynamic.qc
 shared/func_monitor.qc
