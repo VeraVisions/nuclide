@@ -33,6 +33,8 @@
 #define ATTR_CHANGED(x) (x ##_net != x)
 #define VEC_CHANGED(x,y) (x ##_net[y] != x[y])
 
+noref const float   SVC_TEMPENTITY          = 23;
+
 #ifdef CLIENT
 string __fullspawndata;
 #endif

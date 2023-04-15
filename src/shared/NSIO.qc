@@ -320,10 +320,6 @@ NSIO::Save(float handle)
 	SaveString(handle, "weaponmodel", weaponmodel);
 	SaveFloat(handle, "weaponframe", weaponframe);
 	SaveFloat(handle, "currentammo", currentammo);
-	SaveFloat(handle, "ammo_shells", ammo_shells);
-	SaveFloat(handle, "ammo_nails", ammo_nails);
-	SaveFloat(handle, "ammo_rockets", ammo_rockets);
-	SaveFloat(handle, "ammo_cells", ammo_cells);
 	SaveFloat(handle, "items", items);
 	SaveFloat(handle, "takedamage", takedamage);
 	SaveEntity(handle, "chain", chain);
@@ -493,18 +489,6 @@ NSIO::Restore(string strKey, string strValue)
 		break;
 	case "currentammo":
 		currentammo = ReadFloat(strValue);
-		break;
-	case "ammo_shells":
-		ammo_shells = ReadFloat(strValue);
-		break;
-	case "ammo_nails":
-		ammo_nails = ReadFloat(strValue);
-		break;
-	case "ammo_rockets":
-		ammo_rockets = ReadFloat(strValue);
-		break;
-	case "ammo_cells":
-		ammo_cells = ReadFloat(strValue);
 		break;
 	case "items":
 		items = ReadFloat(strValue);

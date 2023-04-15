@@ -96,6 +96,7 @@ private:
 	PREDICTED_FLOAT(m_flBoneControl3)
 	PREDICTED_FLOAT(m_flBoneControl4)
 	PREDICTED_FLOAT(m_flBoneControl5)
+	PREDICTED_FLOAT_N(modelflags)
 	PREDICTED_INT(m_iBody)
 	PREDICTED_FLOAT_N(colormap)
 	PREDICTED_VECTOR_N(glowmod)
