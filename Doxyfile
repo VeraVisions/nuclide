@@ -879,6 +879,7 @@ INPUT                  = src/ \
                          Documentation/Building.md \
                          Documentation/Launching.md \
                          Documentation/Filesystem.md \
+                         Documentation/Networking.md \
                          Documentation/Classes.md \
                          Documentation/Materials/MatOverview.md \
                          Documentation/Materials/MatCommands.md \
