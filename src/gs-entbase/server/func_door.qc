@@ -104,6 +104,8 @@ private:
 	string m_strSndClose;
 	string m_strSndMove;
 	string m_strSndStop;
+
+	int m_waterType;
 };
 
 void
@@ -217,6 +219,9 @@ func_door::SpawnKey(string strKey, string strValue)
 	int x;
 
 	switch (strKey) {
+	case "skin":
+		m_waterType = stoi(strValue);
+		break;
 	case "speed":
 		m_flSpeed = stof(strValue);
 		break;
@@ -530,7 +535,15 @@ func_water(void)
 	door = (func_door)self;
 	door.classname = "func_water";
 	door.SetSolid(SOLID_BSP);
-	door.SetSkin(CONTENT_WATER);
+
+	if (door.m_waterType == -4) {
+		door.SetSkin(CONTENT_SLIME);
+	} else if (door.m_waterType == -5) {
+		door.SetSkin(CONTENT_LAVA);
+	} else {
+		door.SetSkin(CONTENT_WATER);
+	}
+
 	door.effects |= EF_FULLBRIGHT;
 	setorigin(door, door.origin); // relink. have to do this.
 }
