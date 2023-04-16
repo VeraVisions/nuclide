@@ -451,7 +451,7 @@ NSRenderableEntity::RenderFXPass(void)
 		fatness = 0;
 		colormod = m_vecRenderColor;
 		forceshader = g_shellchromeshader_cull;
-		alpha = 1.0;
+		alpha = m_flRenderAmt;
 		/* copy entity into rendering queue */
 		addentity(this);
 		/* reset */
@@ -467,7 +467,7 @@ NSRenderableEntity::RenderFXPass(void)
 		fatness = 0;
 		colormod = m_vecRenderColor;
 		forceshader = g_shellchromeshader;
-		alpha = 1.0;
+		alpha = m_flRenderAmt;
 		/* copy entity into rendering queue */
 		addentity(this);
 		/* reset */
