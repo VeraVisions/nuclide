@@ -180,6 +180,11 @@ View_DrawViewModel(void)
 	m_eViewModel.SetRenderColor(pl.GetRenderColor());
 	m_eViewModel.SetRenderAmt(pl.GetRenderAmt());
 
+	m_eViewModelL.SetRenderMode(pl.GetRenderMode());
+	m_eViewModelL.SetRenderFX(pl.GetRenderFX());
+	m_eViewModelL.SetRenderColor(pl.GetRenderColor());
+	m_eViewModelL.SetRenderAmt(pl.GetRenderAmt());
+
 	View_UpdateWeapon(pl, m_eViewModel, m_eMuzzleflash);
 	float fBaseTime2 = m_eViewModel.frame1time;
 	float fBaseTime = m_eViewModel.frame1time;
@@ -288,6 +293,9 @@ View_DrawViewModel(void)
 		setorigin(m_eViewModelL, m_eViewModel.origin);
 		m_eViewModel.RenderFXPass();
 		m_eViewModelL.RenderFXPass();
+
+		m_eViewModelL.renderflags = RF_DEPTHHACK | RF_FIRSTPERSON;
+		m_eViewModel.renderflags = RF_DEPTHHACK | RF_FIRSTPERSON;
 
 		if (m_eViewModel.GetRenderMode() != RM_DONTRENDER)
 			addentity(m_eViewModel);
