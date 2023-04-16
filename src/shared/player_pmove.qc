@@ -243,21 +243,15 @@ NSClientPlayer::Physics_WaterMove(void)
 
 #ifdef SERVER
 	if (WaterLevel() > 0) {
-		print(sprintf("level: %d type: %d\n", waterlevel, watertype));
-
 	if (watertype == CONTENT_LAVA) {
-		print("in lava\n");
 		if (m_flPainTime < time) {
 			Damage_Apply(this, world, 10 * WaterLevel(), 0, DMG_BURN);
 			m_flPainTime = time + 0.2;
-			print("lava damage\n");
 		}
 	} else if (watertype == CONTENT_SLIME) {
-		print("in slime\n");
 		if (m_flPainTime < time) {
 			Damage_Apply(this, world, 4 * WaterLevel(), 0, DMG_ACID);
 			m_flPainTime = time + 1;
-			print("slime damage\n");
 		}
 	}
 	}
