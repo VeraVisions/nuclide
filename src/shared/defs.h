@@ -102,7 +102,7 @@ string __fullspawndata;
 #define BSPVER_RTCW		47
 #define BSPVER_RBSP 	1
 
-#define CLASSEXPORT(classname,classa) void classname(void) { spawnfunc_##classa(); }
+#define CLASSEXPORT(a,b) void a(void) { if (!isfunction(#b)) { self.classname = strcat("spawnfunc_", #b); } else { self.classname = #b; } callfunction(self.classname); }
 
 #define printf(x, ...) print(sprintf(x, ...))
 

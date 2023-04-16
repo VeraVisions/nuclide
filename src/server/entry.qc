@@ -418,6 +418,10 @@ initents(void)
 	Sound_Precache("player.waterexit");
 	Sound_Precache("damage_bullet.hit");
 	Sound_Precache("player.spraylogo");
+	Sound_Precache("step_wade.left");
+	Sound_Precache("step_wade.right");
+	Sound_Precache("step_ladder.left");
+	Sound_Precache("step_ladder.right");
 
 	if (!g_grMode)
 		Game_InitRules();
