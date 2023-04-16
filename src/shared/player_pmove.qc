@@ -241,6 +241,28 @@ NSClientPlayer::Physics_WaterMove(void)
 		return;
 	}
 
+#ifdef SERVER
+	if (WaterLevel() > 0) {
+		print(sprintf("level: %d type: %d\n", waterlevel, watertype));
+
+	if (watertype == CONTENT_LAVA) {
+		print("in lava\n");
+		if (m_flPainTime < time) {
+			Damage_Apply(this, world, 10 * WaterLevel(), 0, DMG_BURN);
+			m_flPainTime = time + 0.2;
+			print("lava damage\n");
+		}
+	} else if (watertype == CONTENT_SLIME) {
+		print("in slime\n");
+		if (m_flPainTime < time) {
+			Damage_Apply(this, world, 4 * WaterLevel(), 0, DMG_ACID);
+			m_flPainTime = time + 1;
+			print("slime damage\n");
+		}
+	}
+	}
+#endif
+
 	/* we've just exited water */
 	if (WaterLevel() != 3) {
 		if (m_flUnderwaterTime < time) {
@@ -258,6 +280,8 @@ NSClientPlayer::Physics_WaterMove(void)
 	}
 #endif
 
+
+
 	if (!WaterLevel()){
 		if (GetFlags() & FL_INWATER) {
 #ifdef SERVER
@@ -267,20 +291,6 @@ NSClientPlayer::Physics_WaterMove(void)
 		}
 		return;
 	}
-
-#ifdef SERVER
-	if (watertype == CONTENT_LAVA) {
-		if (m_flPainTime < time) {
-			Damage_Apply(this, world, 10 * WaterLevel(), 0, DMG_BURN);
-			m_flPainTime = time + 0.2;
-		}
-	} else if (watertype == CONTENT_SLIME) {
-		if (m_flPainTime < time) {
-			Damage_Apply(this, world, 4 * WaterLevel(), 0, DMG_ACID);
-			m_flPainTime = time + 1;
-		}
-	}
-#endif
 
 	if (!(GetFlags() & FL_INWATER)) {
 #ifdef SERVER

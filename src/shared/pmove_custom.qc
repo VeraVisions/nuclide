@@ -56,7 +56,7 @@ PMoveCustom_Contents(vector org)
 {
 	int oldhitcontents = self.hitcontentsmaski;
 	self.hitcontentsmaski = -1;
-	traceline(org, org, TRUE, self);
+	traceline(org, org, MOVE_EVERYTHING, self);
 	self.hitcontentsmaski = oldhitcontents;
 	return trace_endcontentsi;
 }
@@ -78,6 +78,7 @@ PMoveCustom_Categorize(void)
 {
 	int contents;
 	bool inladder = false;
+	vector testPos;
 
 	tracebox(self.origin, self.mins, self.maxs, self.origin - [0,0,1], MOVE_NORMAL, self);
 
@@ -134,7 +135,8 @@ PMoveCustom_Categorize(void)
 		self.flags &= ~FL_ONLADDER;
 	}
 
-	contents = PMoveCustom_Contents(self.origin + self.mins + [0,0,1]);
+	testPos = self.origin + [0, 0, self.mins[2] + 4];
+	contents = PMoveCustom_Contents(testPos);
 
 	if (contents & CONTENTBIT_WATER) {
 		contents = CONTENT_WATER;
@@ -142,11 +144,14 @@ PMoveCustom_Categorize(void)
 		contents = CONTENT_SLIME;
 	} else if (contents & CONTENTBIT_LAVA) {
 		contents = CONTENT_LAVA;
+	} else {
+		contents = CONTENT_EMPTY;
 	}
 
 	/* how far underwater are we? */
 	if (contents < CONTENT_SOLID && !(self.flags & FL_ONLADDER)) {
 		self.watertype = contents;
+
 		if (PMoveCustom_Contents(self.origin + (self.mins + self.maxs) * 0.5) 
 			& CONTENTBITS_FLUID)
 		{

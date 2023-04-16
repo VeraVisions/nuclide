@@ -1167,6 +1167,7 @@ NSClientPlayer::Footsteps_Update(void)
 			StartSoundDef("step_slosh.right", CHAN_BODY, true);
 
 		step_time = time + 0.35f;
+		return;
 	} else if (waterlevel == 2) {
 		if (step)
 			StartSoundDef("step_wade.left", CHAN_BODY, true);
@@ -1174,6 +1175,7 @@ NSClientPlayer::Footsteps_Update(void)
 			StartSoundDef("step_wade.right", CHAN_BODY, true);
 		
 		step_time = time + 1.0f;
+		return;
 	}  else if (waterlevel == 3) {
 		if (step)
 			StartSoundDef("step_swim.left", CHAN_BODY, true);
@@ -1181,6 +1183,7 @@ NSClientPlayer::Footsteps_Update(void)
 			StartSoundDef("step_swim.right", CHAN_BODY, true);
 
 		step_time = time + 2.0f;
+		return;
 	} else {
 		/* make it so we step once we land */
 		if (HasFlags(FL_ONGROUND | FL_ONLADDER) == false) {
