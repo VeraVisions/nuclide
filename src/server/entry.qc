@@ -422,6 +422,8 @@ initents(void)
 	Sound_Precache("step_wade.right");
 	Sound_Precache("step_ladder.left");
 	Sound_Precache("step_ladder.right");
+	Sound_Precache("step_swim.left");
+	Sound_Precache("step_swim.right");
 
 	if (!g_grMode)
 		Game_InitRules();
