@@ -26,3 +26,13 @@ void Weapons_UpdateAmmo(NSClientPlayer, int, int, int);
 void Weapons_SetGeomset(string);
 #endif
 #endif
+
+
+#ifdef CLIENT
+
+void
+Weapons_SwitchBest(NSClientPlayer pl, optional float skip)
+{
+
+}
+#endif
