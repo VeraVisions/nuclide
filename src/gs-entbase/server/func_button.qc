@@ -303,6 +303,12 @@ func_button::MoverFinishesMoving(void)
 		MoveToPosition(GetMoverPosition1(), m_flSpeed);
 	}
 
+	/* let's reset our button's health and mark it as shootable */
+	SetHealth(GetSpawnHealth());
+
+	if (GetHealth() > 0)
+		SetTakedamage(DAMAGE_YES);
+
 	if (GetMoverState() == MOVER_POS1) {
 		UseOutput(this, m_strOnOut);
 		SetFrame(FRAME_OFF);
@@ -370,6 +376,7 @@ func_button::Trigger(entity act, triggermode_t state)
 void
 func_button::DeathTrigger(void)
 {
+	SetTakedamage(DAMAGE_NO);
 	Trigger(g_dmg_eAttacker, TRIG_TOGGLE);
 }
 
