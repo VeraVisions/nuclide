@@ -119,7 +119,7 @@ func_button::func_button(void)
 	m_flDelay = 0.0f;
 	m_strSndPressed = __NULL__;
 	m_strSndUnpressed = __NULL__;
-	m_bCanTouch = false;
+	m_bCanTouch = true;
 	m_strOnPressed = __NULL__;
 	m_strOnDamaged = __NULL__;
 	m_strOnUseLocked = __NULL__;
