@@ -170,7 +170,6 @@ ambient_generic::SpawnKey(string strKey, string strValue)
 	switch (strKey) {
 	case "message":
 		m_strSpawnPath = strValue;
-		precache_sound(m_strSpawnPath);
 		message = __NULL__;
 		break;
 	case "volume":
@@ -207,6 +206,7 @@ void
 ambient_generic::Spawned(void)
 {
 	super::Spawned();
+	precache_sound(m_strSpawnPath);
 }
 
 void
