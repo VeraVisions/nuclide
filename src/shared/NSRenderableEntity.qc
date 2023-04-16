@@ -371,8 +371,6 @@ NSRenderableEntity::RenderFXPass(void)
 		abslight = 128;
 		break;
 	case RM_DONTRENDER:
-		/* prevent addentity() from being called */
-		alpha = 0.0f;
 		break;
 	}
 
@@ -555,7 +553,7 @@ NSRenderableEntity::predraw(void)
 			float dim = ((sin(time * autocvar(rfx_q2pulse_speed, 4)) + (M_PI/2)) * autocvar(rfx_q2pulse_intensity, 1.0));
 			dim += 1.0f;
 			addentity_lighting(this, [0,0,0], [dim, dim, dim], [0,0,0], 0, 0);
-		} else {
+		} else if (m_iRenderMode != RM_DONTRENDER) {
 			addentity(this);
 		}
 	}

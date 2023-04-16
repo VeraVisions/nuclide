@@ -297,8 +297,10 @@ NSClientPlayer::predraw(void)
 			g_view.SetDrawLocalPlayer(true);
 
 		/* sucks we can't draw a shadow on this thing, maybe in the future when FTEQW allows it */
-		if (p_model)
-			addentity(p_model);
+		if (p_model) {
+			if (p_model.GetRenderMode() != RM_DONTRENDER)
+				addentity(p_model);
+		}
 	} else { /* we're doing first person stuff */
 		/* flags that the model appear in mirrors only */
 		renderflags |= RF_EXTERNALMODEL;
@@ -318,7 +320,8 @@ NSClientPlayer::predraw(void)
 
 	/* this needs to be called absolutely last */
 	/* we're calling this so that the shadow can still be drawn */
-	addentity(this);
+	if (GetRenderMode() != RM_DONTRENDER)
+		addentity(this);
 
 	return (PREDRAW_NEXT);
 }

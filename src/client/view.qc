@@ -24,11 +24,13 @@ View_Init(void)
 		pSeat = &g_seats[s];
 		if(!pSeat->m_eViewModel) {
 			/* right side */
-			pSeat->m_eViewModel = spawn();
+			pSeat->m_eViewModel = spawn(NSRenderableEntity);
 			pSeat->m_eViewModel.classname = "vm";
 			pSeat->m_eViewModel.renderflags = RF_DEPTHHACK | RF_FIRSTPERSON;
 			pSeat->m_eViewModel.effects |= EF_NOSHADOW;
 			pSeat->m_eViewModel.alpha = 1.0f;
+			pSeat->m_eViewModel.drawmask = 0;
+
 			setsize(pSeat->m_eViewModel, [0,0,0], [0,0,0]);
 
 			pSeat->m_eMuzzleflash = spawn();
@@ -38,11 +40,12 @@ View_Init(void)
 			setsize(pSeat->m_eMuzzleflash, [0,0,0], [0,0,0]);
 
 			/* left side */
-			pSeat->m_eViewModelL = spawn();
+			pSeat->m_eViewModelL = spawn(NSRenderableEntity);
 			pSeat->m_eViewModelL.classname = "vm";
 			pSeat->m_eViewModelL.renderflags = RF_DEPTHHACK | RF_FIRSTPERSON;
 			pSeat->m_eViewModelL.effects |= EF_NOSHADOW;
 			pSeat->m_eViewModelL.alpha = 1.0f;
+			pSeat->m_eViewModelL.drawmask = 0;
 			setsize(pSeat->m_eViewModelL, [0,0,0], [0,0,0]);
 
 			pSeat->m_eMuzzleflashL = spawn();
@@ -135,9 +138,9 @@ muzzleflash, dynamic lights and so on appear
 void
 View_DrawViewModel(void)
 {
-	entity m_eViewModel = pSeat->m_eViewModel;
+	NSRenderableEntity m_eViewModel = pSeat->m_eViewModel;
 	entity m_eMuzzleflash = pSeat->m_eMuzzleflash;
-	entity m_eViewModelL = pSeat->m_eViewModelL;
+	NSRenderableEntity m_eViewModelL = pSeat->m_eViewModelL;
 	entity m_eMuzzleflashL = pSeat->m_eMuzzleflashL;
 
 	player pl = __NULL__;
@@ -171,6 +174,11 @@ View_DrawViewModel(void)
 	if (cvar("r_drawviewmodel") == 0 || autocvar_pm_thirdPerson == TRUE) {
 		return;
 	}
+
+	m_eViewModel.SetRenderMode(pl.GetRenderMode());
+	m_eViewModel.SetRenderFX(pl.GetRenderFX());
+	m_eViewModel.SetRenderColor(pl.GetRenderColor());
+	m_eViewModel.SetRenderAmt(pl.GetRenderAmt());
 
 	View_UpdateWeapon(pl, m_eViewModel, m_eMuzzleflash);
 	float fBaseTime2 = m_eViewModel.frame1time;
@@ -278,8 +286,13 @@ View_DrawViewModel(void)
 		}
 		setorigin(m_eViewModel, m_eViewModel.origin);
 		setorigin(m_eViewModelL, m_eViewModel.origin);
-		addentity(m_eViewModel);
-		addentity(m_eViewModelL);
+		m_eViewModel.RenderFXPass();
+		m_eViewModelL.RenderFXPass();
+
+		if (m_eViewModel.GetRenderMode() != RM_DONTRENDER)
+			addentity(m_eViewModel);
+		if (m_eViewModelL.GetRenderMode() != RM_DONTRENDER)
+			addentity(m_eViewModelL);
 	}
 }
 
