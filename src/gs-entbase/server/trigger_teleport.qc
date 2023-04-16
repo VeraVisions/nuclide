@@ -69,7 +69,7 @@ trigger_teleport::Touch(entity eToucher)
 
 		if (eTarget) {
 			vector endpos = eTarget.origin + [0,0,16];
-			setorigin(eToucher, endpos);
+			setorigin_safe(eToucher, endpos);
 			NSLog("^2trigger_teleport::^3Touch^7: Teleported '%s' to `%v`", 
 				eToucher.netname, endpos);
 		} else {
