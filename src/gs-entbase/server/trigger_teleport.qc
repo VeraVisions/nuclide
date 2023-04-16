@@ -69,7 +69,15 @@ trigger_teleport::Touch(entity eToucher)
 
 		if (eTarget) {
 			vector endpos = eTarget.origin + [0,0,16];
+			float flSpeed = vlen(eToucher.velocity);
+			makevectors(eToucher.angles);
+			eToucher.velocity = (v_forward * flSpeed);
+			eToucher.angles = eTarget.angles;
 			setorigin_safe(eToucher, endpos);
+
+			if (eToucher.flags & FL_CLIENT)
+				Client_FixAngle(eToucher, eToucher.angles);
+
 			NSLog("^2trigger_teleport::^3Touch^7: Teleported '%s' to `%v`", 
 				eToucher.netname, endpos);
 		} else {
