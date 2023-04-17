@@ -85,7 +85,9 @@ Weapons_UpdateAmmo(NSClientPlayer pl, int a1, int a2, int a3)
 
 void Weapons_PickupNotify(NSClientPlayer pl, int w) {}
 void Weapons_RefreshAmmo(NSClientPlayer pl) {}
+#ifdef SERVER
 void Weapons_SwitchBest(NSClientPlayer pl, optional float skip) {}
+#endif
 int Weapons_AddItem(NSClientPlayer pl, int w, int startammo) {}
 void Weapons_RemoveItem(NSClientPlayer pl, int w) {}
 void Weapons_InitItem(int w) {}
