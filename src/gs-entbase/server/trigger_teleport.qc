@@ -39,12 +39,30 @@ public:
 	void trigger_teleport(void);
 	
 	virtual void Touch(entity);
+
+	virtual void Spawned(void);
 	virtual void Respawn(void);
+
+private:
+	string m_sndTeleported;
 };
 
 void
 trigger_teleport::trigger_teleport(void)
 {
+	m_sndTeleported = __NULL__;
+}
+
+void
+trigger_teleport::Spawned(void)
+{
+	super::Spawned();
+
+	/* if we're in Deathmatch Classic, force this soundDef */
+	if (cvar_string("fs_game") == "dmc") {
+		m_sndTeleported = "dmc_teleporter.teleported";
+	}
+	Sound_Precache(m_sndTeleported);
 }
 
 void
@@ -77,6 +95,10 @@ trigger_teleport::Touch(entity eToucher)
 
 			if (eToucher.flags & FL_CLIENT)
 				Client_FixAngle(eToucher, eToucher.angles);
+
+			if (m_sndTeleported) {
+				Sound_Play(eToucher, CHAN_VOICE, m_sndTeleported);
+			}
 
 			NSLog("^2trigger_teleport::^3Touch^7: Teleported '%s' to `%v`", 
 				eToucher.netname, endpos);
