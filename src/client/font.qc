@@ -95,7 +95,9 @@ Font_Load(string strFile, font_s &fntNew)
 		string r = ftos(fntNew.vecColor[0]);
 		string g = ftos(fntNew.vecColor[0]);
 		string b = ftos(fntNew.vecColor[0]);
-		cvar_set("gl_font", strcat(strFontPath, "?col=", r, ",", g, ",", b));
+		string size = ftos((float)fntNew.iScaleY);
+		cvar_set("con_textfont", strcat(strFontPath, "?col=", r, ",", g, ",", b));
+		cvar_set("con_textsize", strcat("-", size));
 	}
 }
 
