@@ -798,6 +798,7 @@ void NSEntity::OnRemoveEntity( void ) {
 void NSEntity::Destroy( void ) {
 	removed = 1; /* mark this as cleanly removed */
 	OnRemoveEntity();
+	customphysics = __NULL__;
 	ScheduleThink(Util_Destroy, 0.0f );
 }
 
@@ -910,6 +911,22 @@ float
 NSEntity::GetSpawnTime(void)
 {
 	return m_flSpawnTime;
+}
+
+void
+NSEntity::Transport(vector new_pos, vector new_ang)
+{
+	float flSpeed = vlen(this.GetVelocity());
+	makevectors(new_ang);
+	SetVelocity(v_forward * flSpeed);
+
+	SetOrigin(new_pos);
+	SetAngles(new_ang);
+
+#ifdef SERVER
+	if (flags & FL_CLIENT)
+		Client_FixAngle(this, new_ang);
+#endif
 }
 
 #ifdef CLIENT

@@ -361,6 +361,8 @@ public:
 
 	/** Returns the absolute timestamp of when the entity had been spawned. */
 	nonvirtual float GetSpawnTime(void);
+	/** Move the entity to a new position, with updated angles. */
+	nonvirtual void Transport(vector, vector);
 };
 
 #ifdef CLIENT
