@@ -89,6 +89,14 @@ Font_Load(string strFile, font_s &fntNew)
 		fntNew.iID = (int)loadfont("", strFontPath, strRenderSize, -1, 0, 0);
 	} else
 		fntNew.iID = (int)loadfont("", strFontPath, ftos((float)fntNew.iScaleY), -1, 0, 0);
+
+	/* this is the console font, so make sure we use it */
+	if (strFile == "fonts/fontcon.font") {
+		string r = ftos(fntNew.vecColor[0]);
+		string g = ftos(fntNew.vecColor[0]);
+		string b = ftos(fntNew.vecColor[0]);
+		cvar_set("gl_font", strcat(strFontPath, "?col=", r, ",", g, ",", b));
+	}
 }
 
 void
