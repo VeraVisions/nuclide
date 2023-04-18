@@ -82,6 +82,25 @@ Titles_Shutdown(void)
 	g_titles_count = 0;
 }
 
+string
+Titles_GetTextBody(string shortName)
+{
+	int foundID = -1i;
+	string compare = strtoupper(shortName);
+
+	for (int i = 0; i < g_titles_count; i++) {
+		if (g_titles[i].m_strName == compare) {
+			foundID = i;
+			break;
+		}
+	}
+
+	if (foundID >= 0)
+		return g_titles[foundID].m_strMessage;
+
+	return compare;
+}
+
 void
 Titles_Init(void)
 {
