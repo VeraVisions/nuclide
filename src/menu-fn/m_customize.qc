@@ -460,10 +460,6 @@ void
 menu_customize_draw(void)
 {
 
-	drawfill([g_menuofs[0] + 410,g_menuofs[1] + 160], [170, 221], FRAME_COLOR, 1.0f);
-	drawfill([g_menuofs[0] + 413,g_menuofs[1] + 163], [164,190], [0,0,0], 1.0f);
-
-	Widget_Draw(fn_customize);
 	Header_Draw(HEAD_CUSTOMIZE);
 	WLabel_Static(212, 140, m_reslbl[IDS_PLAYERINFO_NAME], 14, 14, [1,1,1],
 					1.0f, 0, font_label);
@@ -488,10 +484,12 @@ menu_customize_draw(void)
 						1.0f, 0, font_label);
 
 
-	WLabel_Static(410, 390, "Colors", 14, 14, [1,1,1],
-						1.0f, 0, font_label);
 
 	if (games[gameinfo_current].nomodels == 0) {
+		drawfill([g_menuofs[0] + 410,g_menuofs[1] + 160], [170, 221], FRAME_COLOR, 1.0f);
+		drawfill([g_menuofs[0] + 413,g_menuofs[1] + 163], [164,190], [0,0,0], 1.0f);
+		WLabel_Static(410, 390, "Colors", 14, 14, [1,1,1],
+						1.0f, 0, font_label);
 		WLabel_Static(410, 140, sprintf(m_reslbl[IDS_MODEL_NAME], cvar_string("_cl_playermodel")), 14, 14, [1,1,1],
 						1.0f, 0, font_arial);
 #ifdef MODEL_PREVIEW
@@ -508,6 +506,8 @@ menu_customize_draw(void)
 		drawfill([g_menuofs[0] + 510,g_menuofs[1] + 346], [64,12], g_vecBottomcolor, 0.75f);
 #endif
 	}
+
+	Widget_Draw(fn_customize);
 
 #ifdef MODEL_PREVIEW
 	if (g_iPreviewmodelSubUpdate == 0) {
