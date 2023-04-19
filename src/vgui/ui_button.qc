@@ -193,7 +193,7 @@ VGUIButton::Draw(void)
 	}
 
 #else
-	if (m_iFlags & BUTTON_DOWN) {
+	if (m_iFlags & BUTTON_HOVER) {
 		drawfill(m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, m_vecColor, 0.25f);
 	}
 	drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, m_vecSize[1] - 1], [m_vecSize[0], 1], m_vecColor, 1.0f);
@@ -250,7 +250,7 @@ VGUIButton::Input(float flEVType, float flKey, float flChar, float flDevID)
 	if (mouseHover == true && HasFlag(BUTTON_HOVER) == false) {
 		FlagAdd(BUTTON_HOVER);
 		OnMouseEntered();
-	} else if (HasFlag(BUTTON_HOVER)) {
+	} else if (HasFlag(BUTTON_HOVER) && mouseHover == false) {
 		FlagRemove(BUTTON_HOVER);
 		OnMouseExited();
 	}
