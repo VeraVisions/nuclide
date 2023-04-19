@@ -197,6 +197,6 @@ Event_Parse(float type)
 		BreakModel_Receive();
 		break;
 	default:
-		error("event not recognized. abort immediately.\n");
+		error(sprintf("event id %d not recognized. abort immediately.\n", type));
 	}
 }
