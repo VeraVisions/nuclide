@@ -105,9 +105,11 @@ VGUIButton::SetTitle(string strName)
 	//m_strTitle = sprintf("%s%s", Font_RGBtoHex(UI_MAINCOLOR), strName);
 	drawfont = g_fntDefault.iID;
 
-	newsize[0] = stringwidth(m_strTitle, TRUE, [g_fntDefault.iScaleX, g_fntDefault.iScaleY]) + 16;
-	newsize[1] = 24;
-	SetSize(newsize);
+	if (GetSize() == [0,0]) {
+		newsize[0] = stringwidth(m_strTitle, TRUE, [g_fntDefault.iScaleX, g_fntDefault.iScaleY]) + 16;
+		newsize[1] = 24;
+		SetSize(newsize);
+	}
 }
 
 string
@@ -202,6 +204,11 @@ VGUIButton::Draw(void)
 
 	float textPadding = 8;
 
+	{
+		vector pos = m_parent.m_vecOrigin + m_vecOrigin;
+		drawsetcliparea(pos[0], pos[1], m_vecSize[0], m_vecSize[1]);
+	}
+
 	if (m_keyEquivalent >= 0) {
 		float length;
 		string keyText = GetKeyEquivalent();
@@ -224,6 +231,8 @@ VGUIButton::Draw(void)
 		else
 			drawpic(m_parent.m_vecOrigin + m_vecOrigin + [2,2], m_strIcon, m_vecIMGSize, m_vecIconColor, 1.0f, 0);
 	}
+
+	drawresetcliparea();
 #endif
 }
 
