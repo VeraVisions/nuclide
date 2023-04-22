@@ -296,8 +296,8 @@ public:
 	/* useful methods, (some) based on GMod's API */
 	/** Returns the unique entity id of the entity. */
 	nonvirtual float EntIndex(void);
-	/** When called, will drop the entity down onto the surface it's hovering over. */
-	nonvirtual void DropToFloor(void);
+	/** When called, will drop the entity down onto the surface it's hovering over. Will return `false` if the entity fell through the floor, or something else that's undesirable. */
+	nonvirtual bool DropToFloor(void);
 	/** Returns a normalized forward vector of the entity to more easily test which way it's facing. */
 	nonvirtual vector GetForward(void);
 	/** Returns a normalized right vector of the entity to more easily test what's right next to it. */

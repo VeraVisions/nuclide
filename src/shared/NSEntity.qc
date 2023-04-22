@@ -14,12 +14,13 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-static void droptofloorwrapper( entity foo ) {
+static bool droptofloorwrapper( entity foo ) {
+	bool result;
 	entity old_self = self;
-
 	self = foo;
-	droptofloor();
+	result = droptofloor();
 	self = old_self;
+	return result;
 }
 
 void NSEntity::NSEntity( void ) {
@@ -52,8 +53,8 @@ float NSEntity::EntIndex( void ) {
 	return ( num_for_edict( this ) );
 }
 
-void NSEntity::DropToFloor( void ) {
-	droptofloorwrapper( this );
+bool NSEntity::DropToFloor( void ) {
+	return droptofloorwrapper( this );
 }
 
 vector NSEntity::GetForward( void ) {
