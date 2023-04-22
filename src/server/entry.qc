@@ -491,6 +491,7 @@ worldspawn(void)
 	lightstyle(12, "mmnnmmnnnmmnn");
 	lightstyle(63, "a");
 	Skill_Init();
+	MapTweaks_Init();
 
 	precache_model("models/error.vvm");
 
@@ -769,6 +770,9 @@ to remove in case we won't initialize it.
 void
 CheckSpawn(void() spawnfunc)
 {
+	if (MapTweak_EntitySpawn(self))
+		return;
+
 	if (spawnfunc) {
 		spawnfunc();
 		self._mapspawned = true;

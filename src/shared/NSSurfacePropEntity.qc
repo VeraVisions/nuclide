@@ -402,6 +402,17 @@ NSSurfacePropEntity::GetSpawnHealth(void)
 	return m_oldHealth;
 }
 
+void
+NSSurfacePropEntity::SetArmor(float new_armor)
+{
+	armor = new_armor;
+}
+float
+NSSurfacePropEntity::GetArmor(void)
+{
+	return armor;
+}
+
 bool
 NSSurfacePropEntity::HasPropData(void)
 {

@@ -12,5 +12,6 @@ vote.qc
 weapons.qc
 modelevent.qc
 mapcycle.qc
+maptweaks.qc
 entry.qc
 #endlist

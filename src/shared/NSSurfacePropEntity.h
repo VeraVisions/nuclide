@@ -46,6 +46,8 @@ class NSSurfacePropEntity:NSRenderableEntity
 private:
 	float m_flBurnNext;
 
+	PREDICTED_FLOAT(armor)
+
 #ifdef SERVER
 	/* fire/burning */
 	entity m_eBurner;
@@ -125,6 +127,11 @@ public:
 	nonvirtual float GetHealth(void);
 	/** Returns the maximum health the entity can have. */
 	nonvirtual float GetMaxHealth(void);
+
+	/** Sets the current armor of the entity. */
+	nonvirtual void SetArmor(float);
+	/** Returns the current armor of the entity. */
+	nonvirtual float GetArmor(void);
 
 	/** Returns the health the entity spawned with at map load */
 	nonvirtual float GetSpawnHealth(void);

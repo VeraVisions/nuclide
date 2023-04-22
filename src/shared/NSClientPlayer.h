@@ -110,7 +110,6 @@ private:
 #endif
 
 	PREDICTED_FLOAT(health)
-	PREDICTED_FLOAT(armor)
 
 	PREDICTED_FLOAT_N(colormap)
 	PREDICTED_FLOAT_N(gflags)
