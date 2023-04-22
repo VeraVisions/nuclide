@@ -832,7 +832,7 @@ NSClientPlayer::Death(void)
 	SetVelocity([0,0,0]);
 	SetGravity(1.0f);
 	customphysics = Empty;
-	iBleeds = FALSE;
+	SetCanBleed(false);
 	setsize(this, [0,0,0], [0,0,0]);
 	forceinfokey(this, "*deaths", ftos(deaths));
 	forceinfokey(this, "*dead", "1");
@@ -867,7 +867,7 @@ NSClientPlayer::MakePlayer(void)
 	SetGravity(1.0f);
 	SendFlags = UPDATE_ALL;
 	customphysics = Empty;
-	iBleeds = TRUE;
+	SetCanBleed(true);
 	scale = 1.0f;
 	SetSize(VEC_HULL_MIN, VEC_HULL_MAX);
 	forceinfokey(this, "*spectator", "0");

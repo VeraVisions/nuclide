@@ -66,7 +66,7 @@ NSTraceAttack::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "m_eMultiTarget":
-		m_eMultiTarget = ReadEntity(strValue);
+		m_eMultiTarget = (NSSurfacePropEntity)ReadEntity(strValue);
 		break;
 	case "m_iMultiValue":
 		m_iMultiValue = ReadInt(strValue);
@@ -123,7 +123,7 @@ NSTraceAttack::_ApplyDamage(void)
 		return;
 
 	/* the location _could_ be more accurate... */
-	if (m_eMultiTarget.iBleeds == 1) {
+	if (m_eMultiTarget.CanBleed() == true) {
 		FX_Blood(trace_endpos, [0.5,0,0]);
 	}
 
@@ -235,7 +235,7 @@ NSTraceAttack::_FireSingle(vector vecPos, vector vecAngles, float flDamage, floa
 	if (trace_ent.takedamage == DAMAGE_YES) {
 		if (trace_ent != m_eMultiTarget) {
 			_ApplyDamage();
-			m_eMultiTarget = trace_ent;
+			m_eMultiTarget = (NSSurfacePropEntity)trace_ent;
 			m_iMultiValue = flDamage;
 		} else {
 			m_iMultiValue += flDamage;

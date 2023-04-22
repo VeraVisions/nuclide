@@ -28,7 +28,7 @@ NSTraceAttack:NSIO
 {
 private:
 	/* multi-part damage */
-	entity m_eMultiTarget;
+	NSSurfacePropEntity m_eMultiTarget;
 	int m_iMultiValue;
 	int m_iMultiBody;
 

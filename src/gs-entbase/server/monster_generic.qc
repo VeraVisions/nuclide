@@ -66,6 +66,6 @@ monster_generic::Respawn(void)
 	if (HasSpawnFlags(MGF_NONSOLID)) {
 		takedamage = DAMAGE_NO;
 		SetSolid(SOLID_NOT);
-		iBleeds = FALSE;
+		SetCanBleed(false);
 	}
 }

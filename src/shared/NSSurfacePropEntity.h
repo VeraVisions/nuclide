@@ -109,6 +109,11 @@ public:
 	/** Returns whether or not the entity is alive. */
 	virtual bool IsAlive(void);
 
+	/** Sets whether the entity can bleed. */
+	nonvirtual void SetCanBleed(bool);
+	/** Returns whether the entity can bleed. */
+	nonvirtual bool CanBleed(void);
+
 	/* Generic Damage */
 	/** Sets whether the entity can take damage */
 	nonvirtual void SetTakedamage(float);

@@ -64,6 +64,18 @@ NSSurfacePropEntity::IsAlive(void)
 	return (health > 0) ? true : false;
 }
 
+void
+NSSurfacePropEntity::SetCanBleed(bool bleedValue)
+{
+	iBleeds = bleedValue;
+}
+
+bool
+NSSurfacePropEntity::CanBleed(void)
+{
+	return iBleeds;
+}
+
 #if 0
 typedef enum
 {

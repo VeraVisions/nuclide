@@ -886,7 +886,7 @@ NSMonster::Respawn(void)
 	SetHealth(base_health);
 	m_eEnemy = __NULL__;
 	m_iFlags = 0x0;
-	iBleeds = TRUE;
+	SetCanBleed(true);
 	customphysics = Physics;
 
 	SetAngles(v_angle);

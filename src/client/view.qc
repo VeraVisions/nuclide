@@ -138,9 +138,9 @@ muzzleflash, dynamic lights and so on appear
 void
 View_DrawViewModel(void)
 {
-	NSRenderableEntity m_eViewModel = pSeat->m_eViewModel;
+	NSRenderableEntity m_eViewModel = (NSRenderableEntity)pSeat->m_eViewModel;
 	entity m_eMuzzleflash = pSeat->m_eMuzzleflash;
-	NSRenderableEntity m_eViewModelL = pSeat->m_eViewModelL;
+	NSRenderableEntity m_eViewModelL = (NSRenderableEntity)pSeat->m_eViewModelL;
 	entity m_eMuzzleflashL = pSeat->m_eMuzzleflashL;
 
 	player pl = __NULL__;

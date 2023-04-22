@@ -14,6 +14,17 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+string
+Event_DataToMuzzleflash(string dataString)
+{
+	float id = stof(substring(dataString, 0, 1)) - 1;
+
+	if (id)
+		return strcat("sprites/muzzleflash", ftos(id), ".spr");
+	else
+		return "sprites/muzzleflash.spr";	
+}
+
 /*
 ====================
 Event_ProcessModel
@@ -48,23 +59,27 @@ Event_ProcessModel(float flTimeStamp, int iCode, string strData)
 		break;
 	case 5001: /* muzzle flash on attachment 0 */
 		pSeat->m_eMuzzleflash.alpha = 1.0f;
-		pSeat->m_eMuzzleflash.scale = 0.5;
+		pSeat->m_eMuzzleflash.scale = 0.35;
 		pSeat->m_eMuzzleflash.skin = pSeat->m_iVMBones;
+		setmodel(pSeat->m_eMuzzleflash, Event_DataToMuzzleflash(strData));
 		break;
 	case 5011: /* muzzle flash on attachment 1 */
 		pSeat->m_eMuzzleflash.alpha = 1.0f;
-		pSeat->m_eMuzzleflash.scale = 0.5;
+		pSeat->m_eMuzzleflash.scale = 0.35;
 		pSeat->m_eMuzzleflash.skin = pSeat->m_iVMBones + 1;
+		setmodel(pSeat->m_eMuzzleflash, Event_DataToMuzzleflash(strData));
 		break;
 	case 5021: /* muzzle flash on attachment 2 */
 		pSeat->m_eMuzzleflash.alpha = 1.0f;
-		pSeat->m_eMuzzleflash.scale = 0.5;
+		pSeat->m_eMuzzleflash.scale = 0.35;
 		pSeat->m_eMuzzleflash.skin = pSeat->m_iVMBones + 2;
+		setmodel(pSeat->m_eMuzzleflash, Event_DataToMuzzleflash(strData));
 		break;
 	case 5031: /* muzzle flash on attachment 3 */
 		pSeat->m_eMuzzleflash.alpha = 1.0f;
-		pSeat->m_eMuzzleflash.scale = 0.5;
+		pSeat->m_eMuzzleflash.scale = 0.35;
 		pSeat->m_eMuzzleflash.skin = pSeat->m_iVMBones + 3;
+		setmodel(pSeat->m_eMuzzleflash, Event_DataToMuzzleflash(strData));
 		break;
 	default:
 		print(sprintf("Unknown model event: %f %i %S\n", flTimeStamp, iCode, strData));
