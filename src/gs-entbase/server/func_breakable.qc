@@ -155,6 +155,13 @@ func_breakable::func_breakable(void)
 	m_flExplodeRad = 0.0f;
 	m_strBreakSpawn = __NULL__;
 	m_bCanTouch = false;
+
+	/* func_breakable defaults to glass */
+	if (classname == "func_breakable") {
+		material = 0;
+	} else {
+		material = 1;
+	}
 }
 
 void
@@ -197,9 +204,7 @@ func_breakable::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "material":
-		float id = stof(strValue);
-		SetSurfaceData(funcbreakable_surftable[id]);
-		SetPropData(funcbreakable_surftable[id]);
+		material = stof(strValue);
 		break;
 	case "explodemagnitude":
 		m_flExplodeMag = stof(strValue);
@@ -228,19 +233,11 @@ func_breakable::SpawnKey(string strKey, string strValue)
 void
 func_breakable::Spawned(void)
 {
+	/* needs to be called before super function */
+	SetSurfaceData(funcbreakable_surftable[material]);
+	SetPropData(funcbreakable_surftable[material]);
+
 	super::Spawned();
-
-	/* func_breakable defaults to glass */
-	if (classname == "func_breakable") {
-		SetPropData(funcbreakable_surftable[0]);
-		SetSurfaceData(funcbreakable_surftable[0]);
-	} else {
-		SetPropData(funcbreakable_surftable[1]);
-		SetSurfaceData(funcbreakable_surftable[1]);
-	}
-
-	/* precache impact sound */
-	Sound_Precache(GetSurfaceData(SURFDATA_SND_BULLETIMPACT));
 }
 
 void
@@ -264,7 +261,7 @@ func_breakable::Respawn(void)
 	/* initially set the health to that of the ent-data */
 	float spawnhealth = GetSpawnHealth();
 
-	if (HasPropData() == TRUE && spawnhealth <= 0) {
+	if (HasPropData() == true && spawnhealth <= 0) {
 		/* assign propdata health */
 		SetHealth(GetPropData(PROPINFO_HEALTH));
 		m_flExplodeMag = GetPropData(PROPINFO_EXPLOSIVE_DMG);
@@ -355,6 +352,7 @@ func_breakable::Death(void)
 		vector vecDir = vectoangles(WorldSpaceCenter() - g_dmg_vecLocation);
 		string sndBreak = GetSurfaceData(SURFDATA_SND_BREAK);
 		string breakModel = GetPropData(PROPINFO_BREAKMODEL);
+
 		BreakModel_Spawn(absmin, absmax, vecDir, g_dmg_iDamage * 2.5, vlen(size) / 10, breakModel);
 		Disappear();
 		SetTakedamage(DAMAGE_NO);

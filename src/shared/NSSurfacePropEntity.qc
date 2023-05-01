@@ -28,8 +28,8 @@ NSSurfacePropEntity::NSSurfacePropEntity(void)
 	m_flBurnTime = 0.0f;
 	m_flBurnDmgTime = 0.0f;
 	m_oldHealth = 0;
-	string m_strSurfData = __NULL__;
-	string m_strPropData = __NULL__;
+	m_strSurfData = __NULL__;
+	m_strPropData = __NULL__;
 #endif
 }
 
