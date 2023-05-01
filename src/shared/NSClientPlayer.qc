@@ -50,6 +50,9 @@ NSClientPlayer::IsDead(void)
 bool
 NSClientPlayer::IsPlayer(void)
 {
+	if (HasFlags(FL_FAKESPEC))
+		return (false);
+
 	return (true);
 }
 

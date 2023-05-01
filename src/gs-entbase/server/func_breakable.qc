@@ -281,11 +281,16 @@ func_breakable::Respawn(void)
 void
 func_breakable::Pain(void)
 {
+	string painSound;
+
 	if (HasSpawnFlags(SF_TRIGGER)) {
 		return;
 	}
 
-	Sound_Play(this, CHAN_VOICE, GetSurfaceData(SURFDATA_SND_BULLETIMPACT));
+	painSound = GetSurfaceData(SURFDATA_SND_BULLETIMPACT);
+
+	if (painSound)
+		StartSoundDef(painSound, CHAN_VOICE, true);
 }
 
 
@@ -294,13 +299,14 @@ func_breakable::Explode(void)
 {
 	vector rp = WorldSpaceCenter();
 	vector vecDir = vectoangles(rp - g_dmg_vecLocation);
+	string breakModel = GetPropData(PROPINFO_BREAKMODEL);
 
-	BreakModel_Spawn(absmin, absmax, [0,0,0], m_flExplodeMag, vlen(size) / 10, GetPropData(PROPINFO_BREAKMODEL));
+	BreakModel_Spawn(absmin, absmax, [0,0,0], m_flExplodeMag, vlen(size) / 10, breakModel);
 	FX_Explosion(rp);
 	Damage_Radius(rp, this, m_flExplodeMag, m_flExplodeRad, TRUE, 0);
 	UseTargets(this, TRIG_TOGGLE, 0.0f); /* delay... ignored. */
-	Disappear();
 	SetTakedamage(DAMAGE_NO);
+	Disappear();
 }
 
 void
@@ -347,10 +353,15 @@ func_breakable::Death(void)
 		ScheduleThink(Explode, random(0.0f, 0.5f));
 	} else {
 		vector vecDir = vectoangles(WorldSpaceCenter() - g_dmg_vecLocation);
-		BreakModel_Spawn(absmin, absmax, vecDir, g_dmg_iDamage * 2.5, vlen(size) / 10, GetPropData(PROPINFO_BREAKMODEL));
+		string sndBreak = GetSurfaceData(SURFDATA_SND_BREAK);
+		string breakModel = GetPropData(PROPINFO_BREAKMODEL);
+		BreakModel_Spawn(absmin, absmax, vecDir, g_dmg_iDamage * 2.5, vlen(size) / 10, breakModel);
 		Disappear();
 		SetTakedamage(DAMAGE_NO);
 		UseTargets(eActivator, TRIG_TOGGLE, 0.0f);
+
+		if (sndBreak)
+			StartSoundDef(sndBreak, CHAN_BODY, true);
 	}
 }
 

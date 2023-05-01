@@ -74,11 +74,11 @@ SurfData_ParseField(int i, int a)
 		g_surfdata[i].m_sndStrain = argv(1);
 		break;
 	case "break":
-		g_surfdata[i].m_sndRoll = argv(1);
+		g_surfdata[i].m_sndBreak = argv(1);
 		break;
 	case "roll":
 	case "rolling":
-		g_surfdata[i].m_sndBreak = argv(1);
+		g_surfdata[i].m_sndRoll = argv(1);
 		break;
 	case "fx_bulletimpact":
 	case "part_bulletimpact":
@@ -332,6 +332,7 @@ SurfData_Init(void)
 		Sound_Precache(g_surfdata[i].m_sndStepLeft);
 		Sound_Precache(g_surfdata[i].m_sndStepRight);
 		Sound_Precache(g_surfdata[i].m_sndBulletImpact);
+		Sound_Precache(g_surfdata[i].m_sndBreak);
 	}
 
 	print(sprintf("surface data initialized with %i entries.\n", g_surfdata_count));
