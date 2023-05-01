@@ -459,6 +459,9 @@ initents(void)
 
 	/* engine hacks for dedicated servers */
 	cvar_set("s_nominaldistance", "1000");
+
+	/* other engine hacks */
+	cvar_set("sv_nqplayerphysics", "0");
 }
 
 var int autocvar_sv_levelexec = 1;
