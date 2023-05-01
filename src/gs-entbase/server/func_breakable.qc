@@ -353,13 +353,19 @@ func_breakable::Death(void)
 		string sndBreak = GetSurfaceData(SURFDATA_SND_BREAK);
 		string breakModel = GetPropData(PROPINFO_BREAKMODEL);
 
-		BreakModel_Spawn(absmin, absmax, vecDir, g_dmg_iDamage * 2.5, vlen(size) / 10, breakModel);
+		if (breakModel != "")
+			BreakModel_Spawn(absmin, absmax, vecDir, g_dmg_iDamage * 2.5, vlen(size) / 10, breakModel);
+		else
+			NSLog("func_breakable (%s) does not have a propdata break model", funcbreakable_surftable[material]);
+
+		if (sndBreak != "")
+			StartSoundDef(sndBreak, CHAN_BODY, true);
+		else
+			NSLog("func_breakable (%s) does not have a surfaceproperty for break", funcbreakable_surftable[material]);
+
 		Disappear();
 		SetTakedamage(DAMAGE_NO);
 		UseTargets(eActivator, TRIG_TOGGLE, 0.0f);
-
-		if (sndBreak)
-			StartSoundDef(sndBreak, CHAN_BODY, true);
 	}
 }
 
