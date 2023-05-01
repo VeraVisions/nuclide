@@ -167,6 +167,9 @@ MapTweak_FinishSpawn(entity targetEntity, string newClassname)
 	entity oldSelf = self;
 	self = targetEntity;
 
+	if (EntityDef_SpawnClassname(newClassname))
+		return;
+
 	if (!isfunction(newClassname)) {
 		self.classname = strcat("spawnfunc_", newClassname);
 	} else {
