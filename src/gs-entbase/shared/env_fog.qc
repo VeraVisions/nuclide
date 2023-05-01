@@ -75,7 +75,7 @@ env_fog::env_fog(void)
 	m_flStartDist = 0;
 	m_flEndDist = 512;
 	m_flDensity = 1.0f;
-	m_vecColor = [1, 1, 1];
+	m_vecColor = [255, 255, 255];
 	m_bEnabled = true;
 }
 
