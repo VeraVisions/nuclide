@@ -475,9 +475,9 @@ as they do not exist yet.
 void
 worldspawn(void)
 {
-	print("--------- Map Initialization ---------\n");
-	print(sprintf("Map: %s\n", mapname));
-	print("----------- Game Map Init ------------\n");
+	print("--------- Map Initialization ---------\n");
+	print(sprintf("Map: %s\n", mapname));
+	print("----------- Game Map Init ------------\n");
 
 	lightstyle(0, "m");
 	lightstyle(1, "mmnmmommommnonmmonqnmmo");
