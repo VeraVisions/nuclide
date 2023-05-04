@@ -279,14 +279,18 @@ NSClientPlayer::predraw(void)
 			localplayer = veh.HidePlayermodel();
 	}
 
+	p_model.SetRenderMode(GetRenderMode());
+	p_model.SetRenderColor(GetRenderColor());
+	p_model.SetRenderFX(GetRenderFX());
+	p_model.SetRenderAmt(GetRenderAmt());
+
 	/* if we're forcing third-person.. or this is not us - render this player */
 	if (autocvar_pm_thirdPerson == TRUE || !localplayer) {
 		/* mark as not-mirror-only */
 		renderflags &= ~RF_EXTERNALMODEL;
 
 		/* same for our attachment */
-		if (p_model)
-			p_model.renderflags &= ~RF_EXTERNALMODEL;
+		p_model.renderflags &= ~RF_EXTERNALMODEL;
 
 		/* let mods override attachments and whatnot */
 		UpdatePlayerAttachments(true);
@@ -309,8 +313,7 @@ NSClientPlayer::predraw(void)
 		renderflags |= RF_EXTERNALMODEL;
 
 		/* ditto */
-		if (p_model)
-			p_model.renderflags |= RF_EXTERNALMODEL;
+		p_model.renderflags |= RF_EXTERNALMODEL;
 
 		/* give mods a chance to de-render attachments */
 		UpdatePlayerAttachments(false);
