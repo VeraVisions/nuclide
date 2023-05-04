@@ -179,26 +179,38 @@ EntityDef_PrepareEntity(entity target, int id)
 	int spawnWords = 0i;
 	NSEntity targetEnt = (NSEntity)target;
 	entity oldSelf = self;
+	bool isEntDefBased = false;
 
-	/* first we spawn it as the base spawnclass */
-	if (!isfunction(g_entDefTable[id].spawnClass)) {
-		spawnClass = strcat("spawnfunc_", g_entDefTable[id].spawnClass);
-	} else {
-		spawnClass = g_entDefTable[id].spawnClass;
+	/* check if the spawnclass is an entityDef */
+	for (int i = 0i; i < g_entDefCount; i++) {
+		if (g_entDefTable[id].spawnClass == g_entDefTable[i].entClass) {
+			EntityDef_PrepareEntity(self, i);
+			isEntDefBased = true;
+			break;
+		}
 	}
 
-	/* init */
-	self = target;
-	callfunction(spawnClass);
-	self = oldSelf;
+	if (isEntDefBased == false) {
+		/* first we spawn it as the base spawnclass */
+		if (!isfunction(g_entDefTable[id].spawnClass)) {
+			spawnClass = strcat("spawnfunc_", g_entDefTable[id].spawnClass);
+		} else {
+			spawnClass = g_entDefTable[id].spawnClass;
+		}
 
-	/* first load all keys we inherit from the 'inherited' class */
-	for (int x = 0; x < g_entDefCount; x++) {
-		/* found the thing we're supposed to inherit */
-		if (g_entDefTable[x].entClass == g_entDefTable[id].inheritKeys) {
-			spawnWords = tokenize_console(g_entDefTable[x].spawnData);
-			for (int i = 0; i < spawnWords; i+= 2) {
-				targetEnt.SpawnKey(argv(i), argv(i+1));
+		/* init */
+		self = target;
+		callfunction(spawnClass);
+		self = oldSelf;
+
+		/* first load all keys we inherit from the 'inherited' class */
+		for (int x = 0; x < g_entDefCount; x++) {
+			/* found the thing we're supposed to inherit */
+			if (g_entDefTable[x].entClass == g_entDefTable[id].inheritKeys) {
+				spawnWords = tokenize_console(g_entDefTable[x].spawnData);
+				for (int i = 0; i < spawnWords; i+= 2) {
+					targetEnt.SpawnKey(argv(i), argv(i+1));
+				}
 			}
 		}
 	}
