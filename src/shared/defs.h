@@ -64,6 +64,7 @@ string __fullspawndata;
 #include "NSMonster.h"
 #include "NSTalkMonster.h"
 #include "NSProjectile.h"
+#include "NSItem.h"
 #include "NSSpraylogo.h"
 
 #include "../xr/defs.h"

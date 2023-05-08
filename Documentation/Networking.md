@@ -73,9 +73,9 @@ We'd like to streamline a lot of this further, so this may be subject to change.
 
 ## Event updates
 
-This is pretty simple. The server will use the FTE QuakeWorld supported `SVC_CGAMEPACKET` packet type to network events.
+The server will use the FTE QuakeWorld supported `SVC_CGAMEPACKET` packet type to network events.
 
-An example of such an event is as follows, it can be called at any time:
+An example of such an event is as follows, it can be called at any time, anywhere on the server:
 
 ```
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
@@ -91,14 +91,6 @@ From there you can use the builtins `readbyte()`, `readshort()` etc. which are a
 ## Client to Server communication
 
 There's a few different means of networking things to the server as a client.
-
-### infokeys
-
-Clients can set their own custom infokey data at any time, using the `setinfo` console command. For example: `setinfo foo bar` will set the infokey `foo` to the value of `bar`. The server can then read any given infokey on a given client like so: `string value = infokey(someplayer, "foo");`
-
-The server can also assign its own infokeys to a player. These can be overriden by the client at any given time as well, **unless the server prefixes them** with an asterisk. Here is an example: `forceinfokey(somePlayer, "*team", "1");`
-
-infokeys are visible to all other clients. So be careful about the type of data you store in them. Storing passwords or other sensitive information is not recommended.
 
 ### sendevent
 
@@ -216,4 +208,82 @@ Whenever the client issues a `cmd` based command, say: `cmd say foobar` in conso
 
 ## ServerInfo
 
-To be written.
+ServerInfo keys can be set by server admins, or the game-logic. Those keys are networked to clients inside the game, as well as outside of the game. They can be queried through tools like `qstat` or `GameSpy`.
+
+### Setting ServerInfo
+
+#### Console (admins/debugging)
+
+When in the console, you can set the key `foo` to the value `bar` like this:
+
+```
+serverinfo foo bar
+```
+
+#### Server-side code
+
+The same thing can be done in the **SSQC** side with this line of code:
+
+```
+forceinfokey(world, "foo", "bar");
+```
+
+### Retrieving ServerInfo
+
+#### Console (Debugging)
+
+At any time, the server and clients can enter `serverinfo` by itself into the console, and it will print out all known ServerInfo keys.
+
+Some of the keys are set by the engine, noteworthy ones include `*bspversion` and `mapname`. I encourage you try it and see if there's any keys that seem interesting to you and to make note of them.
+
+#### Client/server-side code
+
+We have two builtins to query ServerInfo keys from the client-side. `serverkey` and `serverkeyfloat`. Their usage goes like this:
+
+```
+string maybeBar = serverkey("foo");
+float someNum = serverkeyfloat("maxclients");
+```
+
+## UserInfo
+
+UserInfo keys are means of allowing clients (and the server, more on that later) to communicate bits of information about themselves to the server and all other clients.  Much like **ServerInfo**. Those are networked regardless of whether another client is in the same **PVS**.
+
+### Setting UserInfo
+
+#### Console (clients)
+
+Clients can set their own custom infokey data at any time, using the `setinfo` console command. For example: `setinfo foo bar` will set the infokey `foo` to the value of `bar`.
+
+#### Server-side code
+
+The server can also assign its own infokeys to a player. These can be overriden by the client at any given time - **unless the server prefixes them** with an asterisk. Here is an example: `forceinfokey(somePlayer, "*team", "1");`
+
+Client infokeys are visible to all other clients. That's how most of the scoreboard is filled in with information. So be careful about the type of data you store in them. Storing passwords or other sensitive information is not recommended.
+
+### Retrieving UserInfo
+
+#### Client-side code
+
+On the client-side, if you wanted to query your own players' specific infokey value, you can query it like this: 
+
+```
+float myTeam = getplayerkeyfloat(player_localnum, "*team");
+```
+
+And if you want to query a specific player entity, this is perfectly valid:
+
+```
+string theirName = getplayerkey(playerEnty.entnum-1, "name");
+```
+
+As to why we have to subtract 1 from an entity its entnum for this, is because the clients in the infokey table start at **0**, and player entities on the server start at **1**; *0 being reserved for `world`*.
+
+#### Server-side code
+
+The server can then read any given infokey on a given client like so:
+
+```
+string value = infokey(someplayer, "foo");
+float otherValue = infokeyf(someplayer, "somenumber");
+```

@@ -16,6 +16,7 @@ NSNavAI.qc
 NSMonster.qc
 NSTalkMonster.qc
 NSProjectile.qc
+NSItem.qc
 
 NSClient.qc
 NSClientSpectator.qc
