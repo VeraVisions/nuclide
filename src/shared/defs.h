@@ -377,3 +377,46 @@ textfile_to_string(string filename)
 
 	return fileContents;
 }
+
+/* moved from src/botlib/route.qc */
+/* Get's a velocity vector with which we can successfully jump from one place to another */
+vector
+Route_GetJumpVelocity(vector vecFrom, vector vecTo, float flGravMod)
+{
+#if 1
+	float flHeight, flGravity, flTime, flDistance, flDir;
+	vector vecJump = [0,0,0];
+
+	if (flGravMod <= 0.0)
+		flGravMod = 1.0f;
+
+	flGravity = serverkeyfloat("phy_gravity") * flGravMod;
+	flHeight = vecTo[2] - vecFrom[2];
+
+	/* this may not be a much verticality to this jump, use distance instead */
+	if (flHeight <= 0) {
+		flHeight = vlen(vecTo - vecFrom);
+		flTime = flHeight / flGravity;
+	} else {
+		flTime = sqrt(flHeight / (flGravity * 0.5f));
+		if (flTime <= 0) {
+			return [0,0,0];
+		}
+	}
+
+	vecJump = vecTo - vecFrom;
+	vecJump[2] = 0;
+	flDistance = vlen(normalize(vecJump));
+
+	flDir = flDistance / flTime;
+	vecJump *= flDir;
+	vecJump[2] = flTime * flGravity;
+#else
+	vector vecJump = [0,0,0];
+	float flDist = vlen(vecTo - vecFrom);
+	makevectors(vectoangles(vecTo - vecFrom));
+	vecJump = v_forward * flDist;
+	vecJump[2] = 280;
+#endif
+	return vecJump;
+}

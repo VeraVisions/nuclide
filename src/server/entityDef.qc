@@ -172,7 +172,7 @@ EntityDef_Init(void)
 #endif
 }
 
-static void
+static NSEntity
 EntityDef_PrepareEntity(entity target, int id)
 {
 	string spawnClass;
@@ -235,17 +235,17 @@ EntityDef_PrepareEntity(entity target, int id)
 	/* now we rename the classname for better visibility */
 	self.classname = g_entDefTable[id].entClass;
 	__fullspawndata = "";
+	return targetEnt;
 }
 
-bool
+NSEntity
 EntityDef_SpawnClassname(string className)
 {
 	for (int i = 0i; i < g_entDefCount; i++) {
 		if (className == g_entDefTable[i].entClass) {
-			EntityDef_PrepareEntity(self, i);
-			return true;
+			return EntityDef_PrepareEntity(self, i);
 		}
 	}
 
-	return false;
+	return __NULL__;
 }

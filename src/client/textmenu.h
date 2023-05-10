@@ -23,3 +23,4 @@ int Textmenu_IsActive(void);
 void Textmenu_Hide(void);
 void Textmenu_Input(int);
 void Textmenu_Draw(void);
+string Titles_GetTextBody(string);
