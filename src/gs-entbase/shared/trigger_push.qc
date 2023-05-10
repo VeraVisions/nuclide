@@ -85,6 +85,7 @@ public:
 private:
 	PREDICTED_FLOAT(m_flSpeed)
 	PREDICTED_VECTOR(m_vecMoveDir)
+	PREDICTED_BOOL(m_bHasTarget)
 };
 
 void
@@ -92,6 +93,7 @@ trigger_push::trigger_push(void)
 {
 	m_vecMoveDir = [0,0,0];
 	m_flSpeed = 100;
+	m_bHasTarget = false;
 }
 
 #ifdef SERVER
@@ -101,6 +103,7 @@ trigger_push::Save(float handle)
 	super::Save(handle);
 	SaveVector(handle, "m_vecMoveDir", m_vecMoveDir);
 	SaveFloat(handle, "m_flSpeed", m_flSpeed);
+	SaveBool(handle, "m_bHasTarget", m_bHasTarget);
 }
 
 void
@@ -112,6 +115,9 @@ trigger_push::Restore(string strKey, string strValue)
 		break;
 	case "m_flSpeed":
 		m_flSpeed = ReadFloat(strValue);
+		break;
+	case "m_bHasTarget":
+		m_bHasTarget = ReadFloat(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
@@ -133,6 +139,18 @@ trigger_push::SpawnKey(string strKey, string strValue)
 void
 trigger_push::Respawn(void)
 {
+	static void JumpDestCheck(void) {
+		/* this ent has a destination target */
+		m_bHasTarget = false;
+		if (target) {
+			entity targetPos = find(world, ::targetname, target);
+
+			if (targetPos) {
+				m_bHasTarget = true;
+				m_vecMoveDir = targetPos.origin;
+			}
+		}
+	}
 	InitBrushTrigger();
 
 	RestoreAngles();
@@ -142,6 +160,9 @@ trigger_push::Respawn(void)
 	if (HasSpawnFlags(TP_STARTOFF)) {
 		SetSolid(SOLID_NOT);
 	}
+
+	if (target)
+		ScheduleThink(JumpDestCheck, 0.5f);
 }
 
 void
@@ -201,6 +222,7 @@ trigger_push::EvaluateEntity(void)
 	EVALUATE_VECTOR(m_vecMoveDir, 0, PUSH_CHANGED_MOVEDIR)
 	EVALUATE_VECTOR(m_vecMoveDir, 1, PUSH_CHANGED_MOVEDIR)
 	EVALUATE_VECTOR(m_vecMoveDir, 2, PUSH_CHANGED_MOVEDIR)
+	EVALUATE_FIELD(m_bHasTarget, PUSH_CHANGED_MOVEDIR)
 }
 
 float
@@ -252,6 +274,7 @@ trigger_push::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_FLOAT(m_vecMoveDir[0], PUSH_CHANGED_MOVEDIR)
 	SENDENTITY_FLOAT(m_vecMoveDir[1], PUSH_CHANGED_MOVEDIR)
 	SENDENTITY_FLOAT(m_vecMoveDir[2], PUSH_CHANGED_MOVEDIR)
+	SENDENTITY_BYTE(m_bHasTarget, PUSH_CHANGED_MOVEDIR)
 
 	return true;
 }
@@ -287,6 +310,7 @@ trigger_push::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_FLOAT(m_vecMoveDir[0], PUSH_CHANGED_MOVEDIR)
 	READENTITY_FLOAT(m_vecMoveDir[1], PUSH_CHANGED_MOVEDIR)
 	READENTITY_FLOAT(m_vecMoveDir[2], PUSH_CHANGED_MOVEDIR)
+	READENTITY_BYTE(m_bHasTarget, PUSH_CHANGED_MOVEDIR)
 
 	if (flChanged & PUSH_CHANGED_SIZE)
 		setsize(this, mins, maxs);
@@ -321,6 +345,12 @@ trigger_push::Touch(entity eToucher)
 	case MOVETYPE_PUSH:
 	case MOVETYPE_NOCLIP:
 	case MOVETYPE_FOLLOW:
+		return;
+	}
+
+	if (m_bHasTarget) {
+		if (eToucher.flags & FL_ONGROUND)
+		eToucher.velocity = Route_GetJumpVelocity(WorldSpaceCenter(), m_vecMoveDir, 1.0);
 		return;
 	}
 
