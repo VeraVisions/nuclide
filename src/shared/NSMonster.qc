@@ -344,13 +344,13 @@ NSMonster::SeeThink(void)
 
 		/* first, is the potential enemy in our field of view? */
 		makevectors(angles);
-		vector v = normalize(w.origin - origin);
+		vector v = normalize(w.origin - GetEyePos());
 		float flDot = v * v_forward;
 
 		if (flDot < SeeFOV()/180)
 			continue;
 
-		traceline(origin, w.origin, MOVE_EVERYTHING, this);
+		traceline(GetEyePos(), w.origin, MOVE_EVERYTHING, this);
 
 		/* we have line of sight with the player */
 		if (trace_fraction == 1.0f || trace_ent == w) {
@@ -926,6 +926,7 @@ NSMonster::EvaluateEntity(void)
 	EVALUATE_VECTOR(angles, 1, MONFL_CHANGED_ANGLES_Y)
 	EVALUATE_VECTOR(angles, 2, MONFL_CHANGED_ANGLES_Z)
 	EVALUATE_FIELD(modelindex, MONFL_CHANGED_MODELINDEX)
+	EVALUATE_VECTOR(view_ofs, 2, MONFL_CHANGED_MODELINDEX)
 	EVALUATE_FIELD(solid, MONFL_CHANGED_SOLID)
 	EVALUATE_FIELD(movetype, MONFL_CHANGED_FLAGS)
 	EVALUATE_FIELD(flags, MONFL_CHANGED_FLAGS)
@@ -973,6 +974,7 @@ NSMonster::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_ANGLE(angles[1], MONFL_CHANGED_ANGLES_Y)
 	SENDENTITY_ANGLE(angles[2], MONFL_CHANGED_ANGLES_Z)
 	SENDENTITY_SHORT(modelindex, MONFL_CHANGED_MODELINDEX)
+	SENDENTITY_BYTE(view_ofs[2], MONFL_CHANGED_MODELINDEX)
 	SENDENTITY_BYTE(solid, MONFL_CHANGED_SOLID)
 	SENDENTITY_BYTE(movetype, MONFL_CHANGED_FLAGS)
 	SENDENTITY_INT(flags, MONFL_CHANGED_FLAGS)
@@ -1027,6 +1029,8 @@ NSMonster::predraw(void)
 		frame2time = frame1time;
 	}
 
+	_RenderDebugViewCone();
+
 	return render;
 }
 
@@ -1045,6 +1049,7 @@ NSMonster::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_ANGLE(angles[1], MONFL_CHANGED_ANGLES_Y)
 	READENTITY_ANGLE(angles[2], MONFL_CHANGED_ANGLES_Z)
 	READENTITY_SHORT(modelindex, MONFL_CHANGED_MODELINDEX)
+	READENTITY_BYTE(view_ofs[2], MONFL_CHANGED_MODELINDEX)
 	READENTITY_BYTE(solid, MONFL_CHANGED_SOLID)
 	READENTITY_BYTE(movetype, MONFL_CHANGED_FLAGS)
 	READENTITY_INT(flags, MONFL_CHANGED_FLAGS)
@@ -1080,6 +1085,37 @@ NSMonster::ReceiveEntity(float flNew, float flChanged)
 		setcustomskin(this, "", sprintf("geomset 0 %i\ngeomset 1 %i\n", m_iBody, m_iBody));
 
 	setorigin(this, origin);
+}
+
+void
+NSMonster::_RenderDebugViewCone(void)
+{
+	vector v;
+	float flDot;
+	vector testOrg;
+
+	if (autocvar(r_showViewCone, 0) == 0)
+		return;
+	
+	makevectors(angles);
+	testOrg = pSeat->m_ePlayer.origin;
+	v = normalize(testOrg - GetEyePos());
+	flDot = v * v_forward;
+
+	/* not inside our FoV at all */
+	if (flDot < 90.0f/180) {
+		drawcone(GetEyePos(), angles, 16, 60, 90, [0.25,0,0], 0.25f);
+		return;
+	}
+
+	traceline(GetEyePos(), testOrg, MOVE_EVERYTHING, this);
+
+	/* we have line of sight with the client */
+	if (trace_fraction == 1.0f || trace_ent == pSeat->m_ePlayer) {
+		drawcone(GetEyePos(), angles, 16, 60, 90, [1,0,0], 0.75f);
+	} else { /* in FoV, no line of sight */
+		drawcone(GetEyePos(), angles, 16, 60, 90, [1,1,1], 0.25f);
+	}
 }
 #endif
 

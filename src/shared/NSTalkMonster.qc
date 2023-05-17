@@ -826,6 +826,8 @@ NSTalkMonster::predraw(void)
 	}
 
 	addentity(this);
+	_RenderDebugViewCone();
+
 	return (PREDRAW_NEXT);
 }
 

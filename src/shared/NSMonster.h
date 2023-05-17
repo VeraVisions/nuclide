@@ -261,6 +261,8 @@ private:
 	/* animation cycles */
 	float m_flAnimTime;
 
+	PREDICTED_VECTOR_N(view_ofs)
+
 	nonvirtual void _LerpTurnToEnemy(float);
 #endif
 
@@ -382,6 +384,9 @@ public:
 #endif
 
 #ifdef CLIENT
+	nonvirtual void _RenderDebugViewCone();
+
+	/** overrides */
 	virtual void customphysics(void);
 	virtual float predraw(void);
 	virtual void ReceiveEntity(float,float);

@@ -159,6 +159,8 @@ public:
 	/* misc 'being' methods */
 	/** Returns the absolute world position of where the eyes are located. */
 	nonvirtual vector GetEyePos(void);
+	/** Sets the relative position of the eyes */
+	nonvirtual void SetEyePos(vector);
 };
 
 #ifdef CLIENT

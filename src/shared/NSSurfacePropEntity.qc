@@ -40,6 +40,12 @@ NSSurfacePropEntity::GetEyePos(void)
 }
 
 void
+NSSurfacePropEntity::SetEyePos(vector value)
+{
+	view_ofs = value;
+}
+
+void
 NSSurfacePropEntity::Spawned(void)
 {
 	super::Spawned();
