@@ -1,6 +1,31 @@
 #!/bin/sh
 . ./build.cfg
 
+safe_copy()
+{
+	if [ -f "$1" ]
+	then
+		cp -v "$1" "$2"
+	fi
+}
+
+radiant_build()
+{
+	# copy files over to RADIANT
+	if [ ! -z "$RADIANT_PATH" ]
+	then
+		if [ -d "$RADIANT_PATH/gamepacks/games" ];
+		then
+			./make_mapdef.sh "$1"
+			mkdir -p "$RADIANT_PATH/gamepacks/$1.game/$1/"
+			safe_copy "./$1/radiant.game" "$RADIANT_PATH/gamepacks/games/$1.game"
+			safe_copy "./$1/entities.def" "$RADIANT_PATH/gamepacks/$1.game/$1/entities.def"
+			safe_copy "./$1/radiant.xml" "$RADIANT_PATH/gamepacks/$1.game/default_build_menu.xml"
+			exit
+		fi
+	fi
+}
+
 if [ "$SKIP_UPDATE" = "1" ]; then
 	BUILD_UPDATE=0
 fi
@@ -34,7 +59,7 @@ if [ -x "$(command -v fteqcc)" ]; then
 
 		make
 		cd "$SCRPATH"
-		./make_mapdef.sh "$1"
+		radiant_build "$1"
 		exit 0
 	fi
 
@@ -70,9 +95,7 @@ if [ -x "$(command -v fteqcc)" ]; then
 		cd ..
 		export GAMEDIR=$(basename $PWD)
 		cd $OLDDIR
-		if [ -f "$SCRPATH"/bin/worldspawn ]; then
-			./make_mapdef.sh $GAMEDIR
-		fi
+		radiant_build "$GAMEDIR"
 	done;
 else
 	printf "FTEQCC compiler is not present, please run build_engine.sh\n"
