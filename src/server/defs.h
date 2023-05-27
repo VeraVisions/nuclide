@@ -148,3 +148,6 @@ void main(void)
 #define SAVE_VECTOR(x,y,z) fputs(x, sprintf("%S \"%v\" ", y, z))
 #define SAVE_STRING(x,y,z) fputs(x, sprintf("%S \"%s\" ", y, z))
 #define SAVE_HEX(x,y,z) fputs(x, sprintf("%S \"%x\" ", y, z))
+
+NSEntity EntityDef_SpawnClassname(string className);
+NSEntity EntityDef_CreateClassname(string className);

@@ -23,6 +23,9 @@ NSNavAI::NSNavAI(void)
 	m_pRoute = __NULL__;
 	m_vecLastNode = [0,0,0];
 	m_vecTurnAngle = [0,0,0];
+
+	for (int i = 0; i < MAX_AMMO_TYPES; i++)
+		m_iAmmoTypes[i] = 0;
 #endif
 }
 

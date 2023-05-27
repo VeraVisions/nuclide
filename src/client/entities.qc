@@ -48,6 +48,9 @@ Entity_EntityUpdate(float type, float new)
 	case ENT_VEHICLE:
 		basevehicle_readentity(new);
 		break;
+	case ENT_PORTAL:
+		NSPortal_ReadEntity(new);
+		break;
 	case ENT_VEH_BRUSH:
 		func_vehicle_readentity(new);
 		break;
@@ -141,6 +144,9 @@ Entity_EntityUpdate(float type, float new)
 		break;
 	case ENT_PUSH:
 		trigger_push_ReadEntity(new);
+		break;
+	case ENT_ENTITYPROJECTILE:
+		NSProjectile_ReadEntity(new);
 		break;
 	default:
 			//error(sprintf("Unknown entity type update received. (%d)\n", t));

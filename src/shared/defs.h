@@ -66,6 +66,7 @@ string __fullspawndata;
 #include "NSProjectile.h"
 #include "NSItem.h"
 #include "NSSpraylogo.h"
+#include "NSPortal.h"
 
 #include "../xr/defs.h"
 #include "NSClient.h"

@@ -103,7 +103,7 @@ EntityDef_ReadFile(string filePath)
 				/* we've reached the end of a definition */
 				if (braceDepth == 0) {
 					/* we have something somewhat valid I guess */
-					if (currentDef.entClass != "" && currentDef.spawnClass != "") {
+					if (currentDef.entClass != "" /*&& currentDef.spawnClass != ""*/) {
 						g_entDefTable[g_entDefCount].entClass = currentDef.entClass;
 						g_entDefTable[g_entDefCount].spawnClass = currentDef.spawnClass;
 						g_entDefTable[g_entDefCount].spawnData = currentDef.spawnData;
@@ -184,7 +184,7 @@ EntityDef_PrepareEntity(entity target, int id)
 	/* check if the spawnclass is an entityDef */
 	for (int i = 0i; i < g_entDefCount; i++) {
 		if (g_entDefTable[id].spawnClass == g_entDefTable[i].entClass) {
-			EntityDef_PrepareEntity(self, i);
+			EntityDef_PrepareEntity(target, i);
 			isEntDefBased = true;
 			break;
 		}
@@ -233,7 +233,7 @@ EntityDef_PrepareEntity(entity target, int id)
 	targetEnt.Respawn();
 
 	/* now we rename the classname for better visibility */
-	self.classname = g_entDefTable[id].entClass;
+	targetEnt.classname = g_entDefTable[id].entClass;
 	__fullspawndata = "";
 	return targetEnt;
 }
@@ -248,4 +248,56 @@ EntityDef_SpawnClassname(string className)
 	}
 
 	return __NULL__;
+}
+
+NSEntity
+EntityDef_CreateClassname(string className)
+{
+	entity oldSelf = self;
+	NSEntity new = spawn(NSEntity);
+	self = new;
+	EntityDef_SpawnClassname(className);
+	self = oldSelf;
+	return new;
+}
+
+string
+EntityDef_GetKeyValue(string className, string keyName)
+{
+	float spawnWords = 0;
+	string inheritKeys = __NULL__;
+
+	/* loop through all defs */
+	for (int i = 0i; i < g_entDefCount; i++) {
+		/* found the right def */
+		//print(sprintf("%S %S\n", className, g_entDefTable[i].entClass));
+		if (className == g_entDefTable[i].entClass) {
+			inheritKeys = g_entDefTable[i].inheritKeys;
+			spawnWords = tokenize_console(g_entDefTable[i].spawnData);
+
+			/* iterate over our own spawnkeys first */
+			for (int c = 0i; c < spawnWords; c+= 2i) {
+				if (argv(c) == keyName) {
+					return argv(c+1);
+				}
+			}
+
+			/* not found, look into the inherit keyword's spawndata */
+			if (inheritKeys == __NULL__)
+				return "";
+
+			for (int b = 0i; b < g_entDefCount; i++) {
+				if (inheritKeys == g_entDefTable[b].entClass) {
+					spawnWords = tokenize_console(g_entDefTable[b].spawnData);
+					for (int c = 0i; c < spawnWords; c+= 2i) {
+						if (argv(c) == keyName) {
+							return argv(c+1);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return "";
 }

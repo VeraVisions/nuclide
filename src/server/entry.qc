@@ -775,9 +775,9 @@ to remove in case we won't initialize it.
 void
 CheckSpawn(void() spawnfunc)
 {
-	if (EntityDef_SpawnClassname(self.classname))
-		return;
 	if (MapTweak_EntitySpawn(self))
+		return;
+	if (EntityDef_SpawnClassname(self.classname))
 		return;
 
 	if (spawnfunc) {

@@ -17,7 +17,7 @@
 #ifdef SERVER
 void NSItem::NSItem(void)
 {
-	m_iClip = 0i;
+	m_iClip = -1;
 	m_iWasDropped = 0i;
 	m_iInvItem = 0i;
 	m_sndAcquire = __NULL__;
@@ -122,10 +122,35 @@ void NSItem::SetItem(int i)
 	SetSize([-16,-16,0], [16,16,16]);
 }
 
+int
+NSItem::GetItem(void)
+{
+	return m_iInvItem;
+}
+
 void NSItem::SetFloating(int i)
 {
 	m_bFloating = i ? true : false;
 }
+
+bool
+NSItem::GetFloating(void)
+{
+	return m_bFloating;
+}
+
+void
+NSItem::SetSpinning(bool value)
+{
+	m_bSpins = value;
+}
+
+bool
+NSItem::GetSpinning(void)
+{
+	return m_bSpins;
+}
+
 
 void
 NSItem::PickupRespawn(void)

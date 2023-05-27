@@ -47,3 +47,14 @@ Skill_GetValue(string variable, float defaultvalue)
 	float val = fabs(cvar(sprintf("sk_%s%d", variable, skill)));
 	return (val == 0) ? defaultvalue : val;
 }
+
+/* input string is potentially a skill variable */
+float
+Skill_GetDefValue(string variable)
+{
+	if (substring(variable, 0, 6) == "skill:") {
+		return Skill_GetValue(substring(variable, 6, -1), 0);
+	}
+
+	return stof(variable);
+}

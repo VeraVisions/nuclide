@@ -14,6 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+#ifndef MAX_AMMO_TYPES
+#define MAX_AMMO_TYPES 16
+#endif
+
 /** This entity class represents a moving/pathfinding object.
 It knows how to deal with waypoint based nodes and possibly other
 types of pathfinding in the future.
@@ -29,6 +33,9 @@ private:
 	nodeslist_t *m_pRoute;
 	vector m_vecLastNode;
 	vector m_vecTurnAngle;
+
+	/* These are defined in side defs\*.def, ammo_types and ammo_names */
+	int m_iAmmoTypes[MAX_AMMO_TYPES];
 #endif
 
 public:

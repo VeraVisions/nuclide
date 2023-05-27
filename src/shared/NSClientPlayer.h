@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+noref .vector v_angle;
+
 /** This entity class represents every player client.
 
 When clients connect via the connect command, they will findthemselves
@@ -116,7 +118,7 @@ private:
 	PREDICTED_FLOAT(viewzoom)
 	PREDICTED_VECTOR_N(view_ofs)
 	PREDICTED_VECTOR_N(basevelocity)
-	PREDICTED_VECTOR(v_angle)
+	PREDICTED_VECTOR_N(v_angle)
 	PREDICTED_FLOAT_N(pmove_flags)
 
 	PREDICTED_FLOAT(w_attack_next)

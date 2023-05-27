@@ -581,6 +581,11 @@ PMoveCustom_Move(void)
 					self.origin = trace_endpos;
 					continue;
 				}
+			} else {
+				if (trace_ent.solid == SOLID_PORTAL) {
+					NSPortal portalEntry = (NSPortal)trace_ent;
+					portalEntry.TransportEntity((NSEntity)self);
+				}
 			}
 		}
 
@@ -596,6 +601,10 @@ PMoveCustom_Move(void)
 		tracebox(self.origin, self.mins, self.maxs, dest, MOVE_NORMAL, self);
 
 		if (trace_fraction == 1.0) {
+			return;
+		} else if (trace_ent.solid == SOLID_PORTAL) {
+			NSPortal portalEntry = (NSPortal)trace_ent;
+			portalEntry.TransportEntity((NSEntity)self);
 			return;
 		}
 

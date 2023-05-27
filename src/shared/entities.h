@@ -20,6 +20,7 @@ typedef enum
 	ENT_NONE = 0,	/**< invalid, but reserved. */
 	ENT_ENTITY,	/**< of type NSEntity */
 	ENT_ENTITYRENDERABLE, /**< of type NSRenderableEntity */
+	ENT_ENTITYPROJECTILE, /**< of type NSProjectile */
 	ENT_SURFPROP, /**< of type NSSurfacePropEntity */
 	ENT_PHYSICS,	/**< of type NSPhysicsEntity */
 	ENT_MONSTER,	/**< of type NSMonster */
@@ -27,6 +28,7 @@ typedef enum
 	ENT_PLAYER,	/**< of type NSClientPlayer */
 	ENT_WEAPON, /**< of type NSWeapon */
 	ENT_SPECTATOR,	/**< of type NSClientSpectator */
+	ENT_PORTAL,		/**< of type NSPortal */
 	ENT_AMBIENTSOUND,	/**< of type ambient_generic */
 	ENT_BEAM,	/**< of type env_beam */
 	ENT_DLIGHT,	/**< of type light_dynamic */

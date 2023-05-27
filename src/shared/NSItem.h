@@ -27,9 +27,14 @@ public:
 	virtual void Respawn(void);
 	virtual void SpawnKey(string, string);
 
-	virtual void SetItem(int i);
-	virtual void SetFloating(int);
-	virtual void PickupRespawn(void);
+	nonvirtual void SetItem(int i);
+	nonvirtual int GetItem(void);
+	nonvirtual void SetFloating(int);
+	nonvirtual bool GetFloating(void);
+	nonvirtual void SetSpinning(bool);
+	nonvirtual bool GetSpinning(void);
+
+	nonvirtual void PickupRespawn(void);
 
 private:
 	int m_iClip;
