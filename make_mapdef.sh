@@ -61,6 +61,13 @@ do
 		KEY_MAXS=$(cat "/tmp/def_maxs")
 		KEY_USAGE=$(cat "/tmp/def_usage")
 		KEY_MODEL=$(cat "/tmp/def_model")
+		printf -- "" > "/tmp/def_name"
+		printf -- "" > "/tmp/def_color"
+		printf -- "" > "/tmp/def_mins"
+		printf -- "" > "/tmp/def_mins"
+		printf -- "" > "/tmp/def_maxs"
+		printf -- "" > "/tmp/def_usage"
+		printf -- "" > "/tmp/def_model"
 
 		if [ -z "$KEY_NAME" ]
 		then
