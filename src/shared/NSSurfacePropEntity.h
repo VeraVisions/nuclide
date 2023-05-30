@@ -14,6 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+#ifdef CLIENT
+noref .float health;
+#endif
+
 typedef enumflags
 {
 	SRFENT_CHANGED_ORIGIN_X,
@@ -47,6 +51,7 @@ private:
 	float m_flBurnNext;
 
 	PREDICTED_FLOAT(armor)
+	PREDICTED_FLOAT_N(health)
 
 #ifdef SERVER
 	/* fire/burning */

@@ -107,7 +107,7 @@ NSNavAI::CheckRoute(void)
 	flDist = floor(vlen(evenpos - origin));
 
 	if (flDist < 8) {
-		NSLog("^2%s::^3CheckRoute^7: " \
+		NSNavAI_Log("^2%s::^3CheckRoute^7: " \
 			"%s reached node", classname, targetname);
 		m_iCurNode--;
 		velocity = [0,0,0]; /* clamp friction */
@@ -119,7 +119,7 @@ NSNavAI::CheckRoute(void)
 
 			/* can we walk directly to our target destination? */
 			if (trace_fraction == 1.0) {
-				NSLog("^2%s::^3CheckRoute^7: Walking directly to last node at '%v'", \
+				NSNavAI_Log("^2%s::^3CheckRoute^7: Walking directly to last node at '%v'", \
 					classname, m_vecLastNode);
 				m_iCurNode = -1;
 			}
@@ -137,7 +137,7 @@ NSNavAI::CheckRoute(void)
 		if (!trace_startsolid && trace_fraction == 1.0f) {
 			evenpos = vecNextNode;
 			m_iCurNode = iNextNode;
-			NSLog("^2%s::^3CheckRoute^7: skipping to next node %i at '%v'", \
+			NSNavAI_Log("^2%s::^3CheckRoute^7: skipping to next node %i at '%v'", \
 				classname, iNextNode, vecNextNode);
 		}
 	}
@@ -146,7 +146,7 @@ NSNavAI::CheckRoute(void)
 	if (m_iCurNode < -1) {
 		RouteClear();
 		RouteEnded();
-		NSLog("^2%s::^3CheckRoute^7: %s reached end", classname, targetname);
+		NSNavAI_Log("^2%s::^3CheckRoute^7: %s reached end", classname, targetname);
 	}
 
 	/* crouch attempt */
@@ -234,11 +234,11 @@ NSNavAI::RouteToPosition(vector destination)
 
 		/* can we walk directly to our target destination? */
 		if (trace_fraction == 1.0) {
-			NSLog("^2%s::^3RouteToPosition^7: " \
+			NSNavAI_Log("^2%s::^3RouteToPosition^7: " \
 				"Walking directly to last node", classname);
 			p.m_iCurNode = -1;
 		} else {
-			NSLog("^2%s::^3RouteToPosition^7: " \
+			NSNavAI_Log("^2%s::^3RouteToPosition^7: " \
 				"Path obstructed, calculating route", classname);
 
 			/* run through all nodes, mark the closest direct path possible */

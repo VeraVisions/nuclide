@@ -14,6 +14,15 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+var bool autocvar_ai_debugLogic = false;
+void
+_NSMonster_Log(string msg)
+{
+	if (autocvar_ai_debugLogic == true)
+		print(sprintf("%f %s\n", time, msg));
+}
+#define NSMonster_Log(...) _NSMonster_Log(sprintf(__VA_ARGS__))
+
 /**
 Bitfield enumeration for NSMonster its SendFlags field.
 
@@ -32,7 +41,7 @@ typedef enumflags
 	MONFL_CHANGED_FLAGS,
 	MONFL_CHANGED_SOLID,
 	MONFL_CHANGED_FRAME,
-	MONFL_CHANGED_SKIN,
+	MONFL_CHANGED_SKINHEALTH,
 	MONFL_CHANGED_MOVETYPE,
 	MONFL_CHANGED_EFFECTS,
 	MONFL_CHANGED_BODY,
@@ -260,6 +269,9 @@ private:
 	float m_flSeeTime;
 	/* animation cycles */
 	float m_flAnimTime;
+
+	/* timer for keeping track of the target */
+	float m_flTrackingTime;
 
 	PREDICTED_VECTOR_N(view_ofs)
 

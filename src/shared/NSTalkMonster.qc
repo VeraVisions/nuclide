@@ -680,7 +680,8 @@ NSTalkMonster::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_COORD(maxs[1], MONFL_CHANGED_SIZE)
 	SENDENTITY_COORD(maxs[2], MONFL_CHANGED_SIZE)
 	SENDENTITY_BYTE(frame, MONFL_CHANGED_FRAME)
-	SENDENTITY_FLOAT(skin, MONFL_CHANGED_SKIN)
+	SENDENTITY_FLOAT(skin, MONFL_CHANGED_SKINHEALTH)
+	SENDENTITY_FLOAT(health, MONFL_CHANGED_SKINHEALTH)
 	SENDENTITY_FLOAT(effects, MONFL_CHANGED_EFFECTS)
 	SENDENTITY_BYTE(m_iBody, MONFL_CHANGED_BODY)
 	SENDENTITY_FLOAT(scale, MONFL_CHANGED_SCALE)
@@ -732,7 +733,7 @@ NSTalkMonster::ProcessWordQue(void)
 
 	SentenceSample(m_pSentenceQue[m_iSentencePos].m_strSnd);
 
-	NSLog("^2NSEntity::^3ProcessWordQue^7: Speaking %s", m_pSentenceQue[m_iSentencePos].m_strSnd);
+	NSMonster_Log("^2NSEntity::^3ProcessWordQue^7: Speaking %s", m_pSentenceQue[m_iSentencePos].m_strSnd);
 	m_iSentencePos++;
 
 	if (m_iSentencePos == m_iSentenceCount) {
@@ -856,7 +857,8 @@ NSTalkMonster::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_COORD(maxs[1], MONFL_CHANGED_SIZE)
 	READENTITY_COORD(maxs[2], MONFL_CHANGED_SIZE)
 	READENTITY_BYTE(frame, MONFL_CHANGED_FRAME)
-	READENTITY_FLOAT(skin, MONFL_CHANGED_SKIN)
+	READENTITY_FLOAT(skin, MONFL_CHANGED_SKINHEALTH)
+	READENTITY_FLOAT(health, MONFL_CHANGED_SKINHEALTH)
 	READENTITY_FLOAT(effects, MONFL_CHANGED_EFFECTS)
 	READENTITY_BYTE(m_iBody, MONFL_CHANGED_BODY)
 	READENTITY_FLOAT(scale, MONFL_CHANGED_SCALE)
@@ -899,14 +901,14 @@ NSTalkMonster_ParseSentence(void)
 
 	if (ent) {
 		if (ent.classname != "NSTalkMonster" && ent.classname != "ambient_generic")
-		NSLog("^3 NSTalkMonster_ParseSentence ^7: Entity %d not a NSTalkMonster!", e);
+		NSMonster_Log("^3 NSTalkMonster_ParseSentence ^7: Entity %d not a NSTalkMonster!", e);
 		else {
 			targ = (NSTalkMonster)ent;
 			targ.Sentence(sentence);
-			NSLog("^3 NSTalkMonster_ParseSentence ^7: Entity %d saying %s", e, sentence);
+			NSMonster_Log("^3 NSTalkMonster_ParseSentence ^7: Entity %d saying %s", e, sentence);
 		}
 	} else {
-		NSLog("^3 NSTalkMonster_ParseSentence ^7: Entity %d not in PVS", e);
+		NSMonster_Log("^3 NSTalkMonster_ParseSentence ^7: Entity %d not in PVS", e);
 	}
 }
 #endif

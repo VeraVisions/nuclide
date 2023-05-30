@@ -14,6 +14,15 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+var bool autocvar_ai_debugNav = false;
+void
+_NSNavAI_Log(string msg)
+{
+	if (autocvar_ai_debugNav == true)
+		print(sprintf("%f %s\n", time, msg));
+}
+#define NSNavAI_Log(...) _NSNavAI_Log(sprintf(__VA_ARGS__))
+
 #ifndef MAX_AMMO_TYPES
 #define MAX_AMMO_TYPES 16
 #endif
