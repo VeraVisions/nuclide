@@ -321,6 +321,8 @@ public:
 	nonvirtual bool Visible(entity);
 	/** Returns if the entity is visible from a given position and a field of view of 90 degrees. */
 	nonvirtual bool VisibleVec(vector);
+	/** Returns a normalized value of how far away the target is from the entity's view direction. 1 means dead-center. 0 means it's behind.*/
+	nonvirtual bool DistanceFromYaw(entity);
 	/** Returns if the entity has any spawnflags set. */
 	nonvirtual bool HasSpawnFlags(float);
 	/** Returns if the entity is aligned to the ground. */
