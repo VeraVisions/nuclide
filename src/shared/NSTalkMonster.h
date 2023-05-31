@@ -36,57 +36,6 @@ They also can communicate with other NSTalkMonster based entities.
 */
 class NSTalkMonster:NSMonster
 {
-private:
-#ifdef SERVER
-	/* our NPCs can have a unique pitch to their voice */
-	float m_flPitch;
-	float m_flNextSentence;
-	int m_iFlags;
-
-	entity m_eFollowing;
-	entity m_eFollowingChain;
-	vector m_vecLastUserPos;
-	float m_flChangePath;
-	float m_flTraceTime;
-	float m_flFollowSpeedChanged;
-	float m_flFollowSpeed;
-	
-
-	/* sentences identifiers */
-	string m_talkAnswer; /* random answer to whenever a question is asked */
-	string m_talkAsk; /* asks a random generic question */
-	string m_talkAllyShot; /* asks to not shoot an ally further */
-	string m_talkGreet; /* greet other NPCs */
-	string m_talkIdle; /* idle chatter */
-	string m_talkPanic; /* panic screams */
-	string m_talkHearing; /* what did we just hear? */
-	string m_talkSmelling; /* is something smelling bad? */
-	string m_talkStare; /* when NPC is being stared at */
-	string m_talkSurvived; /* we're near death */
-	string m_talkWounded; /* we've sustained light wounds */
-
-	/* things that NPCs will only say to the player */
-	string m_talkPlayerAsk; /* ask player some question */
-	string m_talkPlayerGreet; /* say hello to the player */
-	string m_talkPlayerIdle; /* idle chatter with the player */
-	string m_talkPlayerWounded1; /* slightly wounded player comment */
-	string m_talkPlayerWounded2; /* a bit worse */
-	string m_talkPlayerWounded3; /* yup, got thus far */
-	string m_talkUnfollow; /* when the player asks us to stop following */
-	string m_talkFollow; /* whenever player asks the NPC to follow */
-	string m_talkStopFollow; /* we have to stop following */
-#endif
-
-#ifdef CLIENT
-	/* sentence system */
-	float m_flSentenceTime;
-	sound_t *m_pSentenceQue;
-	int m_iSentenceCount;
-	int m_iSentencePos;
-	float m_sndVoiceOffs;
-	bool m_bWasPaused;
-#endif
-
 public:
 	void NSTalkMonster(void);
 
@@ -163,6 +112,60 @@ public:
 
 	/* model events */
 	virtual void HandleAnimEvent(float,int,string);
+
+private:
+#ifdef SERVER
+	/* our NPCs can have a unique pitch to their voice */
+	float m_flPitch;
+	float m_flNextSentence;
+	int m_iFlags;
+
+	entity m_eFollowing;
+	entity m_eFollowingChain;
+	vector m_vecLastUserPos;
+	float m_flChangePath;
+	float m_flTraceTime;
+	float m_flFollowSpeedChanged;
+	float m_flFollowSpeed;
+	
+
+	/* sentences identifiers */
+	string m_talkAnswer; /* random answer to whenever a question is asked */
+	string m_talkAsk; /* asks a random generic question */
+	string m_talkAllyShot; /* asks to not shoot an ally further */
+	string m_talkGreet; /* greet other NPCs */
+	string m_talkIdle; /* idle chatter */
+	string m_talkPanic; /* panic screams */
+	string m_talkHearing; /* what did we just hear? */
+	string m_talkSmelling; /* is something smelling bad? */
+	string m_talkStare; /* when NPC is being stared at */
+	string m_talkSurvived; /* we're near death */
+	string m_talkWounded; /* we've sustained light wounds */
+	string m_talkAlert; /* we've been alerted to a threat */
+
+	/* things that NPCs will only say to the player */
+	string m_talkPlayerAsk; /* ask player some question */
+	string m_talkPlayerGreet; /* say hello to the player */
+	string m_talkPlayerIdle; /* idle chatter with the player */
+	string m_talkPlayerWounded1; /* slightly wounded player comment */
+	string m_talkPlayerWounded2; /* a bit worse */
+	string m_talkPlayerWounded3; /* yup, got thus far */
+	string m_talkUnfollow; /* when the player asks us to stop following */
+	string m_talkFollow; /* whenever player asks the NPC to follow */
+	string m_talkStopFollow; /* we have to stop following */
+
+	virtual void _Alerted(void);
+#endif
+
+#ifdef CLIENT
+	/* sentence system */
+	float m_flSentenceTime;
+	sound_t *m_pSentenceQue;
+	int m_iSentenceCount;
+	int m_iSentencePos;
+	float m_sndVoiceOffs;
+	bool m_bWasPaused;
+#endif
 };
 
 #ifdef CLIENT

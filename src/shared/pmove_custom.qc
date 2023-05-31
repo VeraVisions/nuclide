@@ -256,12 +256,6 @@ PMoveCustom_AccelFriction(float move_time, float premove, vector wish_dir, float
 	float flFriction;
 	vector vecTemp;
 
-	/* friction does not apply to monsters right now */
-	if (self.flags & FL_MONSTER) {
-		self.velocity = wish_dir * wish_speed;
-		return;
-	}
-
 	flApplyFriction = serverkeyfloat("phy_friction");
 
 	/* per frame basis friction modifier */
@@ -412,6 +406,11 @@ PMoveCustom_DoTouch(entity tother)
 		self.touch();
 	}
 	self = oself;
+
+	if (self.touch) {
+		other = tother;
+		self.touch();
+	}
 }
 
 /* bounce us back off a place normal */

@@ -311,6 +311,14 @@ public:
 	virtual bool IsAlive(void);
 	/** Returns whether they are allied with the type in question */
 	virtual bool IsFriend(int);
+	/** Overridable: Called once, when the monster has died. */
+	virtual void HasBeenKilled(void);
+	/** Overridable: Called every time the monster is hurt, while still alive. */
+	virtual void HasBeenHit(void);
+	/* Overridable: Called when the monster was gibbed. */
+	virtual void HasBeenGibbed(void);
+	/* Overridable: Called when the monster has been alerted to threat. */
+	virtual void HasBeenAlerted(void);
 
 	/* see/hear subsystem */
 	/** Internal use only. Called every frame to simulate vision. */
@@ -396,12 +404,21 @@ public:
 #endif
 
 #ifdef CLIENT
-	nonvirtual void _RenderDebugViewCone();
 
 	/** overrides */
 	virtual void customphysics(void);
 	virtual float predraw(void);
 	virtual void ReceiveEntity(float,float);
+#endif
+
+private:
+
+#ifdef CLIENT
+	nonvirtual void _RenderDebugViewCone();
+#endif
+
+#ifdef SERVER
+	virtual void _Alerted(void);
 #endif
 };
 

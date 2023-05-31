@@ -28,9 +28,9 @@ NSMonster::NSMonster(void)
 	oldnet_velocity = g_vec_null;
 	m_flPitch = 1.0f;
 	m_iFlags = 0i;
-	base_mins = g_vec_null;
-	base_maxs = g_vec_null;
-	base_health = 100;
+	//base_mins = g_vec_null;
+	//base_maxs = g_vec_null;
+	//base_health = 100;
 	m_strRouteEnded = __NULL__;
 	m_iSequenceRemove = 0i;
 	m_iSequenceState = 0i;
@@ -227,9 +227,10 @@ NSMonster::Sound(string msg)
 void
 NSMonster::Gib(void)
 {
+	vector vecDir = vectoangles(GetOrigin() - g_dmg_vecLocation);
 	SetState(MONSTER_DEAD);
 	SetTakedamage(DAMAGE_NO);
-	FX_GibHuman(origin, vectoangles(origin - g_dmg_eAttacker.origin), g_dmg_iDamage * 2.0f);
+	FX_GibHuman(origin, vecDir, g_dmg_iDamage * 2.5f);
 	Disappear();
 }
 
@@ -301,6 +302,7 @@ NSMonster::AlertNearby(void)
 			continue;
 
 		f.m_eEnemy = m_eEnemy;
+		f._Alerted();
 	}
 }
 
@@ -409,6 +411,7 @@ NSMonster::SeeThink(void)
 			if (m_eEnemy != w) {
 				m_eEnemy = w;
 				m_flTrackingTime = time;
+				_Alerted();
 				AlertNearby();
 			}
 			return;
@@ -765,6 +768,7 @@ NSMonster::InSequence(void)
 void
 NSMonster::RunAI(void)
 {
+	IdleNoise();
 	SeeThink();
 	AttackThink();
 }
@@ -859,6 +863,12 @@ NSMonster::Touch(entity eToucher)
 }
 
 void
+NSMonster::HasBeenHit(void)
+{
+	/* to be filled in by the sub-class */
+}
+
+void
 NSMonster::Pain(void)
 {
 	/* dead things tell nuthin */
@@ -885,6 +895,31 @@ NSMonster::Pain(void)
 
 	/* alert all nearby friendlies */
 	AlertNearby();
+	HasBeenHit();
+}
+
+void
+NSMonster::HasBeenKilled(void)
+{
+	/* to be filled in by the sub-class */
+}
+
+void
+NSMonster::HasBeenGibbed(void)
+{
+	/* to be filled in by the sub-class */
+}
+
+void
+NSMonster::HasBeenAlerted(void)
+{
+	/* to be filled in by the sub-class */
+}
+
+void
+NSMonster::_Alerted(void)
+{
+	HasBeenAlerted();
 }
 
 void
@@ -892,6 +927,7 @@ NSMonster::Death(void)
 {
 	/* we were already dead before, so gib */
 	if (GetState() == MONSTER_DEAD) {
+		HasBeenGibbed();
 		Gib();
 		return;
 	}
@@ -900,11 +936,13 @@ NSMonster::Death(void)
 
 	/* if we make more than 50 damage, gib immediately */
 	if (GetHealth() < -50) {
+		HasBeenGibbed();
 		Gib();
 		return;
 	}
 
 	/* make sure we're not causing any more obituaries */
+	HasBeenKilled();
 	RemoveFlags(FL_MONSTER);
 
 	/* set the monster up for getting gibbed */

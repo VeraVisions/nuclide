@@ -23,7 +23,7 @@ NSTalkMonster::NSTalkMonster(void)
 	m_flNextSentence = 0.0f;
 	m_iFlags = 0i;
 	m_eFollowingChain = __NULL__;
-	m_vecLastUserPos = [0,0,0];
+	m_vecLastUserPos = g_vec_null;
 	m_flChangePath = 0.0f;
 	m_flTraceTime = 0.0f;
 	m_flFollowSpeedChanged = 0.0f;
@@ -39,6 +39,7 @@ NSTalkMonster::NSTalkMonster(void)
 	m_talkStare = __NULL__;
 	m_talkSurvived = __NULL__;
 	m_talkWounded = __NULL__;
+	m_talkAlert = __NULL__;
 	m_talkPlayerAsk = __NULL__;
 	m_talkPlayerGreet = __NULL__;
 	m_talkPlayerIdle = __NULL__;
@@ -75,6 +76,15 @@ NSTalkMonster::HandleAnimEvent(float flTimeStamp, int iCode, string strData)
 
 #ifdef SERVER
 void
+NSTalkMonster::_Alerted(void)
+{
+	super::_Alerted();
+
+	if (m_talkAlert)
+		Sentence(m_talkAlert);
+}
+
+void
 NSTalkMonster::Save(float handle)
 {
 	super::Save(handle);
@@ -101,6 +111,7 @@ NSTalkMonster::Save(float handle)
 	SaveString(handle, "m_talkStare", m_talkStare);
 	SaveString(handle, "m_talkSurvived", m_talkSurvived);
 	SaveString(handle, "m_talkWounded", m_talkWounded);
+	SaveString(handle, "m_talkAlert", m_talkAlert);
 	SaveString(handle, "m_talkPlayerAsk", m_talkPlayerAsk);
 	SaveString(handle, "m_talkPlayerGreet", m_talkPlayerGreet);
 	SaveString(handle, "m_talkPlayerIdle", m_talkPlayerIdle);
@@ -178,6 +189,9 @@ NSTalkMonster::Restore(string strKey, string strValue)
 		break;
 	case "m_talkWounded":
 		m_talkWounded = ReadString(strValue);
+		break;
+	case "m_talkAlert":
+		m_talkAlert = ReadString(strValue);
 		break;
 	case "m_talkPlayerAsk":
 		m_talkPlayerAsk = ReadString(strValue);
