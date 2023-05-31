@@ -431,15 +431,23 @@ NSMonster::GetChaseSpeed(void)
 	return 240;
 }
 
-
 float
 NSMonster::GetRunSpeed(void)
 {
 	return 140;
 }
 
+float
+NSMonster::GetYawSpeed(void)
+{
+	if (GetState() == MONSTER_AIMING)
+		return 128;
+
+	return 90;
+}
+
 void
-NSMonster::_LerpTurnToEnemy(float flSpeed)
+NSMonster::_LerpTurnToEnemy(void)
 {
 	/* only continue if we're in one of the three states. */
 	if (GetState() != MONSTER_AIMING)
@@ -450,22 +458,27 @@ NSMonster::_LerpTurnToEnemy(float flSpeed)
 	if (!m_eEnemy)
 		return;
 
+	float turnSpeed = GetYawSpeed();
 	vector vecWishAngle = vectoangles(m_eEnemy.origin - origin);
-	vector vecFinalAngle;
-	float flLerp = frametime * flSpeed;
+	float yawDiff = anglesub(vecWishAngle[1], v_angle[1]);
 
-	if (flLerp > 1.0)
-		flLerp = 0.95;
+	/* min/max out the diff */
+	if (yawDiff > 0) {
+		v_angle[1] += turnSpeed * frametime;
 
-	makevectors(vecWishAngle);
-	vecFinalAngle = v_forward;
-	makevectors( v_angle );
-	vecFinalAngle[0] = Math_Lerp( v_forward[0], vecFinalAngle[0], flLerp );
-	vecFinalAngle[1] = Math_Lerp( v_forward[1], vecFinalAngle[1], flLerp );
-	vecFinalAngle[2] = Math_Lerp( v_forward[2], vecFinalAngle[2], flLerp );
-	vecWishAngle = vectoangles( vecFinalAngle );
-	v_angle[1] = Math_FixDelta(vecWishAngle[1]);
-	angles[1] = input_angles[1] = v_angle[1];
+		if (v_angle[1] > vecWishAngle[1])
+			v_angle[1] = vecWishAngle[1];
+	} else if (yawDiff < 0) {
+		v_angle[1] -= turnSpeed * frametime;
+
+		if (v_angle[1] < vecWishAngle[1])
+			v_angle[1] = vecWishAngle[1];
+	}
+
+	/* fix angles */
+	makevectors(v_angle);
+	vecWishAngle = vectoangles( v_forward );
+	angles[1] = input_angles[1] = v_angle[1] = vecWishAngle[1];
 }
 
 void
@@ -509,7 +522,7 @@ NSMonster::AttackThink(void)
 	if (GetState() == MONSTER_AIMING) {
 		int m;
 
-		_LerpTurnToEnemy(30);
+		_LerpTurnToEnemy();
 
 		if (MeleeCondition() == TRUE)
 			m = AttackMelee();
@@ -644,19 +657,27 @@ NSMonster::WalkRoute(void)
 
 	/* yaw interpolation */
 	{
-	vector new_ang;
-	vector old_ang;
-	vector tmp;
-	makevectors(input_angles);
-	new_ang = v_forward;
-	makevectors(angles);
-	old_ang = v_forward;
+		float turnSpeed = GetYawSpeed();
+		vector vecWishAngle = input_angles;
+		float yawDiff = anglesub(vecWishAngle[1], v_angle[1]);
 
-	tmp[0] = Math_Lerp(old_ang[0], new_ang[0], frametime * 5);
-	tmp[1] = Math_Lerp(old_ang[1], new_ang[1], frametime * 5);
-	tmp[2] = Math_Lerp(old_ang[2], new_ang[2], frametime * 5);
-	input_angles = vectoangles(tmp);
-	input_angles[0] = input_angles[2] = 0;
+		/* min/max out the diff */
+		if (yawDiff > 0) {
+			v_angle[1] += turnSpeed * frametime;
+
+			if (v_angle[1] > vecWishAngle[1])
+				v_angle[1] = vecWishAngle[1];
+		} else if (yawDiff < 0) {
+			v_angle[1] -= turnSpeed * frametime;
+
+			if (v_angle[1] < vecWishAngle[1])
+				v_angle[1] = vecWishAngle[1];
+		}
+
+		/* fix angles */
+		makevectors(v_angle);
+		vecWishAngle = vectoangles( v_forward );
+		angles[1] = input_angles[1] = v_angle[1] = vecWishAngle[1];
 	}
 }
 
@@ -802,7 +823,7 @@ NSMonster::Physics(void)
 				RunAI();
 			}
 
-			_LerpTurnToEnemy(30);
+			_LerpTurnToEnemy();
 			AnimationUpdate();
 		}
 

@@ -275,7 +275,7 @@ private:
 
 	PREDICTED_VECTOR_N(view_ofs)
 
-	nonvirtual void _LerpTurnToEnemy(float);
+	nonvirtual void _LerpTurnToEnemy(void);
 #endif
 
 public:
@@ -336,6 +336,8 @@ public:
 	virtual float GetChaseSpeed(void);
 	/** Overridable: Returns the running speed in Quake units per second. */
 	virtual float GetRunSpeed(void);
+	/** Overridable: Returns the turning speed in euler-angle units per second. */
+	virtual float GetYawSpeed(void);
 
 	/* attack system */
 	/** Overridable: Called when they're drawing a weapon. */
