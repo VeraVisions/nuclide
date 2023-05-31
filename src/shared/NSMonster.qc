@@ -187,19 +187,19 @@ NSMonster::Restore(string strKey, string strValue)
 int
 NSMonster::AnimIdle(void)
 {
-	return -1;
+	return frameforaction(modelindex, ACT_IDLE);
 }
 
 int
 NSMonster::AnimWalk(void)
 {
-	return -1;
+	return frameforaction(modelindex, ACT_WALK);
 }
 
 int
 NSMonster::AnimRun(void)
 {
-	return -1;
+	return frameforaction(modelindex, ACT_RUN);
 }
 
 void
@@ -419,22 +419,27 @@ NSMonster::SeeThink(void)
 	}
 }
 
+var float autocvar_ai_stepSize = 128;
+
 float
 NSMonster::GetWalkSpeed(void)
 {
-	return 64;
+	float speed = autocvar_ai_stepsize / frameduration(modelindex, AnimWalk());
+	return speed;
 }
 
 float
 NSMonster::GetChaseSpeed(void)
 {
-	return 240;
+	float speed = autocvar_ai_stepsize / frameduration(modelindex, AnimRun());
+	return speed;
 }
 
 float
 NSMonster::GetRunSpeed(void)
 {
-	return 140;
+	float speed = autocvar_ai_stepsize / frameduration(modelindex, AnimRun());
+	return speed;
 }
 
 float
