@@ -232,52 +232,6 @@ Check their individual descriptions as to how you're supposed to approach them.
 */
 class NSMonster:NSNavAI
 {
-private:
-#ifdef SERVER
-	entity m_ssLast;
-	vector oldnet_velocity;
-	float m_flPitch;
-	int m_iFlags;
-	vector base_mins;
-	vector base_maxs;
-	float base_health;
-
-	/* sequences */
-	string m_strRouteEnded;
-	int m_iSequenceRemove;
-	int m_iSequenceState;
-	float m_flSequenceEnd;
-	float m_flSequenceSpeed;
-	vector m_vecSequenceAngle;
-	int m_iSequenceFlags;
-	movementState_t m_iMoveState;
-
-	int m_iTriggerCondition;
-	string m_strTriggerTarget;
-
-	/* model events */
-	float m_flBaseTime;
-
-	/* attack/alliance system */
-	entity m_eEnemy;
-	float m_flAttackThink;
-	monsterState_t m_iMState;
-	monsterState_t m_iOldMState;
-	vector m_vecLKPos; /* last-known pos */
-
-	/* see/hear subsystem */
-	float m_flSeeTime;
-	/* animation cycles */
-	float m_flAnimTime;
-
-	/* timer for keeping track of the target */
-	float m_flTrackingTime;
-
-	PREDICTED_VECTOR_N(view_ofs)
-
-	nonvirtual void _LerpTurnToEnemy(void);
-#endif
-
 public:
 	void NSMonster(void);
 
@@ -420,6 +374,48 @@ private:
 #endif
 
 #ifdef SERVER
+	entity m_ssLast;
+	vector oldnet_velocity;
+	float m_flPitch;
+	int m_iFlags;
+	vector base_mins;
+	vector base_maxs;
+	float base_health;
+
+	/* sequences */
+	string m_strRouteEnded;
+	int m_iSequenceRemove;
+	int m_iSequenceState;
+	float m_flSequenceEnd;
+	float m_flSequenceSpeed;
+	vector m_vecSequenceAngle;
+	int m_iSequenceFlags;
+	movementState_t m_iMoveState;
+
+	int m_iTriggerCondition;
+	string m_strTriggerTarget;
+
+	/* model events */
+	float m_flBaseTime;
+
+	/* attack/alliance system */
+	entity m_eEnemy;
+	float m_flAttackThink;
+	monsterState_t m_iMState;
+	monsterState_t m_iOldMState;
+	vector m_vecLKPos; /* last-known pos */
+
+	/* see/hear subsystem */
+	float m_flSeeTime;
+	/* animation cycles */
+	float m_flAnimTime;
+
+	/* timer for keeping track of the target */
+	float m_flTrackingTime;
+
+	PREDICTED_VECTOR_N(view_ofs)
+
+	nonvirtual void _LerpTurnToEnemy(void);
 	virtual void _Alerted(void);
 #endif
 };

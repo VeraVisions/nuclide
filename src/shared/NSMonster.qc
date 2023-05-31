@@ -424,21 +424,21 @@ var float autocvar_ai_stepSize = 128;
 float
 NSMonster::GetWalkSpeed(void)
 {
-	float speed = autocvar_ai_stepsize / frameduration(modelindex, AnimWalk());
+	float speed = autocvar_ai_stepSize / frameduration(modelindex, AnimWalk());
 	return speed;
 }
 
 float
 NSMonster::GetChaseSpeed(void)
 {
-	float speed = autocvar_ai_stepsize / frameduration(modelindex, AnimRun());
+	float speed = autocvar_ai_stepSize / frameduration(modelindex, AnimRun());
 	return speed;
 }
 
 float
 NSMonster::GetRunSpeed(void)
 {
-	float speed = autocvar_ai_stepsize / frameduration(modelindex, AnimRun());
+	float speed = autocvar_ai_stepSize / frameduration(modelindex, AnimRun());
 	return speed;
 }
 
