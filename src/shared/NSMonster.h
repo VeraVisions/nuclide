@@ -415,6 +415,9 @@ private:
 
 	PREDICTED_VECTOR_N(view_ofs)
 
+	/* caching variables, don't save these */
+	float m_actIdle;
+
 	nonvirtual void _LerpTurnToEnemy(void);
 	virtual void _Alerted(void);
 #endif

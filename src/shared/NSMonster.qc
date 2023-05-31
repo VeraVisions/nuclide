@@ -50,6 +50,7 @@ NSMonster::NSMonster(void)
 	m_flSeeTime = 0.0f;
 	m_flAnimTime = 0.0f;
 	m_flTrackingTime = 0.0f;
+	m_actIdle = -1;
 #endif
 }
 
@@ -702,7 +703,10 @@ NSMonster::AnimationUpdate(void)
 	float midspeed = GetWalkSpeed() + ((GetRunSpeed() -  GetWalkSpeed()) * 0.5f);
 
 	if (spvel < 5) {
-		fr = AnimIdle();
+		if (m_actIdle == -1)
+			m_actIdle = AnimIdle();
+
+		fr = m_actIdle;
 
 		if (m_iMoveState != MOVESTATE_IDLE)
 			m_flAnimTime = 0.0f;
