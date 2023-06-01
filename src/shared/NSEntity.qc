@@ -99,7 +99,7 @@ bool NSEntity::VisibleVec( vector org ) {
 
 bool NSEntity::Visible( entity ent ) {
 	/* is it in our field of view? */
-	if ( DistanceFromYaw(ent) > 0.3f ) {
+	if ( DistanceFromYaw(ent.origin) > 0.3f ) {
 		traceline( origin, ent.origin, MOVE_NORMAL, this );
 		if ( trace_fraction == 1.0f || trace_ent == ent ) {
 			print( sprintf( "%s can see %s\n", classname, ent.classname ) );
@@ -110,12 +110,12 @@ bool NSEntity::Visible( entity ent ) {
 	return ( false );
 }
 
-bool NSEntity::DistanceFromYaw( entity ent ) {
+bool NSEntity::DistanceFromYaw( vector targetPos ) {
 	vector flDelta;
 	float flFoV;
 
 	makevectors( angles );
-	flDelta = normalize( ent.origin - origin );
+	flDelta = normalize( targetPos - origin );
 	return flDelta * v_forward;
 }
 

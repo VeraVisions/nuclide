@@ -200,7 +200,20 @@ NSMonster::AnimWalk(void)
 int
 NSMonster::AnimRun(void)
 {
-	return frameforaction(modelindex, ACT_RUN);
+	float runAnim = frameforaction(modelindex, ACT_RUN);
+	return (runAnim == -1) ? AnimWalk() : runAnim;
+}
+
+int
+NSMonster::AnimTurnLeft(void)
+{
+	return frameforaction(modelindex, ACT_TURN_LEFT);
+}
+
+int
+NSMonster::AnimTurnRight(void)
+{
+	return frameforaction(modelindex, ACT_TURN_RIGHT);
 }
 
 void
@@ -453,20 +466,27 @@ NSMonster::GetYawSpeed(void)
 }
 
 void
-NSMonster::_LerpTurnToEnemy(void)
+NSMonster::_LerpTurnToYaw(vector turnYaw)
 {
-	/* only continue if we're in one of the three states. */
-	if (GetState() != MONSTER_AIMING)
-		if (GetState() != MONSTER_CHASING)
-			if (GetState() != MONSTER_FOLLOWING)
-				return;
-
-	if (!m_eEnemy)
-		return;
-
 	float turnSpeed = GetYawSpeed();
-	vector vecWishAngle = vectoangles(m_eEnemy.origin - origin);
-	float yawDiff = anglesub(vecWishAngle[1], v_angle[1]);
+	vector vecWishAngle = turnYaw;
+	float yawDiff = anglesub(turnYaw[1], v_angle[1]);
+
+	if (fabs(yawDiff) > 90) {
+		velocity = g_vec_null;
+		input_movevalues = g_vec_null;
+
+		if (m_bTurning == false)
+		if (yawDiff < 0) {
+			SetFrame(AnimTurnRight());
+		} else {
+			SetFrame(AnimTurnLeft());
+		}
+
+		m_bTurning = true;
+	} else {
+		m_bTurning = false;
+	}
 
 	/* min/max out the diff */
 	if (yawDiff > 0) {
@@ -485,6 +505,29 @@ NSMonster::_LerpTurnToEnemy(void)
 	makevectors(v_angle);
 	vecWishAngle = vectoangles( v_forward );
 	angles[1] = input_angles[1] = v_angle[1] = vecWishAngle[1];
+}
+
+void
+NSMonster::_LerpTurnToPos(vector turnPos)
+{
+	vector vecWishAngle = vectoangles(turnPos - origin);
+	_LerpTurnToYaw(vecWishAngle);
+}
+
+
+void
+NSMonster::_LerpTurnToEnemy(void)
+{
+	/* only continue if we're in one of the three states. */
+	if (GetState() != MONSTER_AIMING)
+		if (GetState() != MONSTER_CHASING)
+			if (GetState() != MONSTER_FOLLOWING)
+				return;
+
+	if (!m_eEnemy)
+		return;
+
+	_LerpTurnToPos(m_eEnemy.origin);
 }
 
 void
@@ -645,6 +688,8 @@ NSMonster::RouteEnded(void)
 void
 NSMonster::WalkRoute(void)
 {
+	vector wishAngles;
+
 	/* we're busy shooting at something, don't walk */
 	if (GetState() == MONSTER_AIMING && m_eEnemy) {
 		input_angles = vectoangles(m_eEnemy.origin - origin);
@@ -662,29 +707,7 @@ NSMonster::WalkRoute(void)
 		return;
 
 	/* yaw interpolation */
-	{
-		float turnSpeed = GetYawSpeed();
-		vector vecWishAngle = input_angles;
-		float yawDiff = anglesub(vecWishAngle[1], v_angle[1]);
-
-		/* min/max out the diff */
-		if (yawDiff > 0) {
-			v_angle[1] += turnSpeed * frametime;
-
-			if (v_angle[1] > vecWishAngle[1])
-				v_angle[1] = vecWishAngle[1];
-		} else if (yawDiff < 0) {
-			v_angle[1] -= turnSpeed * frametime;
-
-			if (v_angle[1] < vecWishAngle[1])
-				v_angle[1] = vecWishAngle[1];
-		}
-
-		/* fix angles */
-		makevectors(v_angle);
-		vecWishAngle = vectoangles( v_forward );
-		angles[1] = input_angles[1] = v_angle[1] = vecWishAngle[1];
-	}
+	_LerpTurnToYaw(input_angles);
 }
 
 void
@@ -697,6 +720,9 @@ NSMonster::AnimationUpdate(void)
 		return;
 
 	if (GetState() == MONSTER_AIMING)
+		return;
+
+	if (m_bTurning)
 		return;
 
 	float spvel = vlen(velocity);
@@ -813,6 +839,7 @@ NSMonster::Physics(void)
 	input_buttons = 0;
 	input_timelength = frametime;
 	input_angles = angles;
+	m_bTurning = false;
 
 	/* when stuck in a sequence, forget enemies, combat stance */
 	if (GetSequenceState() != SEQUENCESTATE_NONE) {

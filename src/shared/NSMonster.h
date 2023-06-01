@@ -337,6 +337,10 @@ public:
 	virtual int AnimWalk(void);
 	/** Overridable: Called when we need to play a fresh running framegroup. */
 	virtual int AnimRun(void);
+	/** Overridable: Called when we need to play a left turning animation. */
+	virtual int AnimTurnLeft(void);
+	/** Overridable: Called when we need to play a right turning animation. */
+	virtual int AnimTurnRight(void);
 	/** Call to play a single animation onto it, which cannot be interrupted by movement. */
 	virtual void AnimPlay(float);
 	/** Internal use only. Run every frame to update animation parameters. */
@@ -417,8 +421,10 @@ private:
 
 	/* caching variables, don't save these */
 	float m_actIdle;
+	bool m_bTurning;
 
 	nonvirtual void _LerpTurnToEnemy(void);
+	nonvirtual void _LerpTurnToYaw(vector);
 	virtual void _Alerted(void);
 #endif
 };
