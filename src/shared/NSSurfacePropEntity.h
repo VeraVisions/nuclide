@@ -47,37 +47,6 @@ typedef enumflags
 It can take damage and can handle variously different types of impact. */
 class NSSurfacePropEntity:NSRenderableEntity
 {
-private:
-	float m_flBurnNext;
-
-	PREDICTED_FLOAT(armor)
-	PREDICTED_FLOAT_N(health)
-
-#ifdef SERVER
-	/* fire/burning */
-	entity m_eBurner;
-	int m_iBurnWeapon;
-	float m_flBurnTime;
-	float m_flBurnDmgTime; /* for whenever they touch a hot flame */
-
-	/* I/O */
-	string m_strOnBreak;
-
-	/* life, death */
-	float m_oldHealth;
-
-	/* Surface/PropKit */
-	int m_iMaterial;
-	string m_strSurfData;
-	int m_iPropData;
-	string m_strPropData;
-
-	float m_flDeathTime;
-
-	nonvirtual void _SurfaceDataFinish(void);
-	nonvirtual void _PropDataFinish(void);
-#endif
-
 public:
 	void NSSurfacePropEntity(void);
 
@@ -154,6 +123,11 @@ public:
 	nonvirtual void SetPropData(string);
 	/** Returns how many seconds have passed since we died. Will return -1 if not applicable. */
 	nonvirtual float TimeSinceDeath(void);
+
+	/** Sets the colour of the blood of this entity. */
+	nonvirtual void SetBloodColor(vector);
+	/** Returns the blood color of this entity. */
+	nonvirtual vector GetBloodColor(void);
 #endif
 
 #ifdef CLIENT
@@ -164,8 +138,41 @@ public:
 	/* misc 'being' methods */
 	/** Returns the absolute world position of where the eyes are located. */
 	nonvirtual vector GetEyePos(void);
-	/** Sets the relative position of the eyes */
+	/** Sets the relative position of the eyes. */
 	nonvirtual void SetEyePos(vector);
+
+private:
+	float m_flBurnNext;
+
+	PREDICTED_FLOAT(armor)
+	PREDICTED_FLOAT_N(health)
+
+#ifdef SERVER
+	/* fire/burning */
+	entity m_eBurner;
+	int m_iBurnWeapon;
+	float m_flBurnTime;
+	float m_flBurnDmgTime; /* for whenever they touch a hot flame */
+
+	/* I/O */
+	string m_strOnBreak;
+
+	/* life, death */
+	float m_oldHealth;
+	vector m_vecBloodColor;
+
+	/* Surface/PropKit */
+	int m_iMaterial;
+	string m_strSurfData;
+	int m_iPropData;
+	string m_strPropData;
+
+	float m_flDeathTime;
+
+	nonvirtual void _SurfaceDataFinish(void);
+	nonvirtual void _PropDataFinish(void);
+#endif
+
 };
 
 #ifdef CLIENT

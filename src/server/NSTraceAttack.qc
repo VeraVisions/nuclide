@@ -124,7 +124,7 @@ NSTraceAttack::_ApplyDamage(void)
 
 	/* the location _could_ be more accurate... */
 	if (m_eMultiTarget.CanBleed() == true) {
-		FX_Blood(trace_endpos, [0.5,0,0]);
+		FX_Blood(trace_endpos, m_eMultiTarget.GetBloodColor());
 	}
 
 	trace_surface_id = m_iMultiBody;

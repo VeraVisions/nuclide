@@ -30,6 +30,7 @@ NSSurfacePropEntity::NSSurfacePropEntity(void)
 	m_oldHealth = 0;
 	m_strSurfData = __NULL__;
 	m_strPropData = __NULL__;
+	m_vecBloodColor = [0.5, 0, 0];
 #endif
 }
 
@@ -63,6 +64,17 @@ NSSurfacePropEntity::Spawned(void)
 
 /* networking */
 #ifdef SERVER
+void
+NSSurfacePropEntity::SetBloodColor(vector newColor)
+{
+	m_vecBloodColor = newColor;
+}
+
+vector
+NSSurfacePropEntity::GetBloodColor(void)
+{
+	return m_vecBloodColor;
+}
 
 bool
 NSSurfacePropEntity::IsAlive(void)
