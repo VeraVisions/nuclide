@@ -14,15 +14,19 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-#include "gamerules.h"
-#include "items.h"
-
-// stubs for spawning
-void info_player_deathmatch(void)
+/* PICKUP ITEMS */
+class item_pickup:NSRenderableEntity
 {
+	int m_bFloating;
+	int m_iClip;
+	int m_iWasDropped;
+	int id;
+	void item_pickup(void);
 
-}
-
-void info_player_start(void)
-{
-}
+	virtual void Spawned(void);
+	virtual void Touch(entity);
+	virtual void SetItem(int i);
+	virtual void Respawn(void);
+	virtual void SetFloating(int);
+	virtual void PickupRespawn(void);
+};

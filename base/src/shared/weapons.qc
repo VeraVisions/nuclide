@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2023 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,15 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-#include "gamerules.h"
-#include "items.h"
-
-// stubs for spawning
-void info_player_deathmatch(void)
-{
-
-}
-
-void info_player_start(void)
-{
-}
+weapon_t w_null = {};
+weapon_t g_weapons[] = {
+	w_null
+};

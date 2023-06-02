@@ -1,5 +1,8 @@
  #includelist
 player.qc
+weapon_common.h
+weapons.h
+flags.h
 fx_explosion.qc
 fx_spark.qc
 fx_blood.qc
@@ -8,4 +11,6 @@ fx_corpse.qc
 fx_gibhuman.qc
 fx_impact.qc
 TestWeapon.qc
+weapons.qc
+weapon_common.qc
 #endlist
