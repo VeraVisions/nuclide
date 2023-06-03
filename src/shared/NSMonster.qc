@@ -188,32 +188,33 @@ NSMonster::Restore(string strKey, string strValue)
 int
 NSMonster::AnimIdle(void)
 {
-	return frameforaction(modelindex, ACT_IDLE);
+	return FramegroupForAct(ACT_IDLE);
 }
 
 int
 NSMonster::AnimWalk(void)
 {
-	return frameforaction(modelindex, ACT_WALK);
+	return FramegroupForAct(ACT_WALK);
 }
 
 int
 NSMonster::AnimRun(void)
 {
-	float runAnim = frameforaction(modelindex, ACT_RUN);
+	float runAnim = FramegroupForAct(ACT_RUN);
 	return (runAnim == -1) ? AnimWalk() : runAnim;
 }
 
-int
-NSMonster::AnimTurnLeft(void)
+float
+NSMonster::FramegroupForAct(float actName)
 {
-	return frameforaction(modelindex, ACT_TURN_LEFT);
+	float frameGroup = frameforaction(modelindex, actName);
+	return frameGroup;
 }
 
-int
-NSMonster::AnimTurnRight(void)
+void
+NSMonster::ActPlay(float actName)
 {
-	return frameforaction(modelindex, ACT_TURN_RIGHT);
+	AnimPlay(FramegroupForAct(actName));
 }
 
 void
@@ -438,21 +439,21 @@ var float autocvar_ai_stepSize = 128;
 float
 NSMonster::GetWalkSpeed(void)
 {
-	float speed = autocvar_ai_stepSize / frameduration(modelindex, AnimWalk());
+	float speed = autocvar_ai_stepSize / frameduration(modelindex, FramegroupForAct(ACT_WALK));
 	return speed;
 }
 
 float
 NSMonster::GetChaseSpeed(void)
 {
-	float speed = autocvar_ai_stepSize / frameduration(modelindex, AnimRun());
+	float speed = autocvar_ai_stepSize / frameduration(modelindex, FramegroupForAct(ACT_RUN));
 	return speed;
 }
 
 float
 NSMonster::GetRunSpeed(void)
 {
-	float speed = autocvar_ai_stepSize / frameduration(modelindex, AnimRun());
+	float speed = autocvar_ai_stepSize / frameduration(modelindex, FramegroupForAct(ACT_RUN));
 	return speed;
 }
 
@@ -478,9 +479,9 @@ NSMonster::_LerpTurnToYaw(vector turnYaw)
 
 		if (m_bTurning == false)
 		if (yawDiff < 0) {
-			SetFrame(AnimTurnRight());
+			SetFrame(FramegroupForAct(ACT_TURN_RIGHT));
 		} else {
-			SetFrame(AnimTurnLeft());
+			SetFrame(FramegroupForAct(ACT_TURN_LEFT));
 		}
 
 		m_bTurning = true;
@@ -518,14 +519,14 @@ NSMonster::_LerpTurnToPos(vector turnPos)
 void
 NSMonster::_LerpTurnToEnemy(void)
 {
+	if (!m_eEnemy)
+		return;
+
 	/* only continue if we're in one of the three states. */
 	if (GetState() != MONSTER_AIMING)
 		if (GetState() != MONSTER_CHASING)
 			if (GetState() != MONSTER_FOLLOWING)
 				return;
-
-	if (!m_eEnemy)
-		return;
 
 	_LerpTurnToPos(m_eEnemy.origin);
 }
@@ -688,8 +689,6 @@ NSMonster::RouteEnded(void)
 void
 NSMonster::WalkRoute(void)
 {
-	vector wishAngles;
-
 	/* we're busy shooting at something, don't walk */
 	if (GetState() == MONSTER_AIMING && m_eEnemy) {
 		input_angles = vectoangles(m_eEnemy.origin - origin);

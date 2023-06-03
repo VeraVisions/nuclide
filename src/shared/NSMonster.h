@@ -331,16 +331,16 @@ public:
 	nonvirtual bool InSequence(void);
 
 	/* animation cycles */
-	/** Overridable: Called when we need to play a fresh idle framegroup. */
+	/** DEPRECATED, Overridable: Called when we need to play a fresh idle framegroup. */
 	virtual int AnimIdle(void);
-	/** Overridable: Called when we need to play a fresh walking framegroup. */
+	/** DEPRECATED, Overridable: Called when we need to play a fresh walking framegroup. */
 	virtual int AnimWalk(void);
-	/** Overridable: Called when we need to play a fresh running framegroup. */
+	/** DEPRECATED, Overridable: Called when we need to play a fresh running framegroup. */
 	virtual int AnimRun(void);
-	/** Overridable: Called when we need to play a left turning animation. */
-	virtual int AnimTurnLeft(void);
-	/** Overridable: Called when we need to play a right turning animation. */
-	virtual int AnimTurnRight(void);
+	/** Overridable: Returns which framegroup to play for a given ACT. */
+	virtual float FramegroupForAct(float);
+	/** Call to play an ACT on the given NSMonster. */
+	nonvirtual void ActPlay(float);
 	/** Call to play a single animation onto it, which cannot be interrupted by movement. */
 	virtual void AnimPlay(float);
 	/** Internal use only. Run every frame to update animation parameters. */
@@ -424,6 +424,7 @@ private:
 	bool m_bTurning;
 
 	nonvirtual void _LerpTurnToEnemy(void);
+	nonvirtual void _LerpTurnToPos(vector);
 	nonvirtual void _LerpTurnToYaw(vector);
 	virtual void _Alerted(void);
 #endif
