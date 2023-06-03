@@ -10,10 +10,10 @@ NSMoverEntity.qc
 NSPhysicsEntity.qc
 NSBrushTrigger.qc
 NSPointTrigger.qc
-NSWeapon.qc
 NSVehicle.qc
 NSNavAI.qc
 NSMonster.qc
+NSSquadMonster.qc
 NSTalkMonster.qc
 NSProjectile.qc
 NSItem.qc

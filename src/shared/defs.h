@@ -62,6 +62,7 @@ string __fullspawndata;
 #include "NSPointTrigger.h"
 #include "NSNavAI.h"
 #include "NSMonster.h"
+#include "NSSquadMonster.h"
 #include "NSTalkMonster.h"
 #include "NSProjectile.h"
 #include "NSItem.h"
@@ -71,7 +72,6 @@ string __fullspawndata;
 #include "../xr/defs.h"
 #include "NSClient.h"
 #include "NSClientSpectator.h"
-#include "NSWeapon.h"
 #include "NSClientPlayer.h"
 
 #include "NSVehicle.h"

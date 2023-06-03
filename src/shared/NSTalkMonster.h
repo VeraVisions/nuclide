@@ -34,7 +34,7 @@ information and can speak more complicated dialogue.
 
 They also can communicate with other NSTalkMonster based entities.
 */
-class NSTalkMonster:NSMonster
+class NSTalkMonster:NSSquadMonster
 {
 public:
 	void NSTalkMonster(void);

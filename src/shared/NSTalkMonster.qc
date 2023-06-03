@@ -490,9 +490,10 @@ NSTalkMonster::FollowPlayer(void)
 {
 	float flPlayerDist;
 	input_angles = vectoangles(m_eFollowingChain.origin - origin);
-	input_angles[0] = 0;
-	input_angles[1] = Math_FixDelta(input_angles[1]);
-	input_angles[2] = 0;
+			input_angles[0] = 0;
+			input_angles[1] = Math_FixDelta(input_angles[1]);
+			input_angles[2] = 0;
+	_LerpTurnToYaw(input_angles[1]);
 
 	/* for best results, we want to ignore the Z plane
 	   this avoids the problem of a follower spinning 
@@ -521,7 +522,8 @@ NSTalkMonster::FollowPlayer(void)
 			}
 		}
 
-		input_movevalues[0] = m_flFollowSpeed;
+		if (DistanceFromYaw(vecParent) > 0.9f)
+			input_movevalues[0] = m_flFollowSpeed;
 
 		other = world;
 		traceline(origin, m_eFollowingChain.origin, MOVE_OTHERONLY, this);
@@ -532,6 +534,7 @@ NSTalkMonster::FollowPlayer(void)
 			input_angles[0] = 0;
 			input_angles[1] = Math_FixDelta(input_angles[1]);
 			input_angles[2] = 0;
+			_LerpTurnToYaw(input_angles[1]);
 		} else {
 			m_vecLastUserPos = m_eFollowingChain.origin;
 		}
@@ -617,7 +620,7 @@ NSTalkMonster::RunAI(void)
 void
 NSTalkMonster::Respawn(void)
 {
-	NSMonster::Respawn();
+	super::Respawn();
 	m_eFollowing = world;
 	m_eFollowingChain = world;
 }
@@ -658,7 +661,7 @@ NSTalkMonster::SpawnKey(string strKey, string strValue)
 		m_talkFollow = strcat("!", strValue);
 		break;
 	default:
-		NSMonster::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 		break;
 	}
 }
