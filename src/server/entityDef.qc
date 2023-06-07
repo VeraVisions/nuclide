@@ -181,6 +181,10 @@ EntityDef_PrepareEntity(entity target, int id)
 	entity oldSelf = self;
 	bool isEntDefBased = false;
 
+	if (!targetEnt) {
+		targetEnt = spawn(NSEntity);
+	}
+
 	/* check if the spawnclass is an entityDef */
 	for (int i = 0i; i < g_entDefCount; i++) {
 		if (g_entDefTable[id].spawnClass == g_entDefTable[i].entClass) {
