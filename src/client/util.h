@@ -39,3 +39,7 @@ string Util_GetKeyString(string strBind);
 
 /** Returns if the currently active client-seat is in a vehicle. */
 bool Client_InVehicle(void);
+
+string Util_GetTime(void);
+float Util_GetTimeLeft(void);
+string Util_GetAddress(void);
