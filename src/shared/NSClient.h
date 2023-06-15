@@ -84,4 +84,8 @@ private:
 	NSXRInput m_xrInputHead;
 	NSXRInput m_xrInputLeft;
 	NSXRInput m_xrInputRight;
+
+#ifdef SERVER
+	float score;
+#endif
 };

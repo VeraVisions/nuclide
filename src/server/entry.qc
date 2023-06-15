@@ -209,6 +209,7 @@ PlayerPostThink(void)
 		player pl = (player)self;
 		g_grMode.PlayerPostFrame((NSClientPlayer)self);
 		pl.EvaluateEntity();
+		forceinfokey(pl, "*score", ftos(pl.score));
 	}
 }
 
