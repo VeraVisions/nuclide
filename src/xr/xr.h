@@ -25,3 +25,4 @@ void XR_UpdateView(entity);
 
 var float autocvar_xr_roomscale = 1.0f;
 var float autocvar_xr_viewheight = -48.0f;
+var bool autocvar_xr_debug_fakeinputs = false;

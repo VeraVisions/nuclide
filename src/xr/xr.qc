@@ -95,7 +95,7 @@ XR_InputFrame(entity ePlayer)
 	if (!pl.m_xrSpace)
 		return;
 
-	if (autocvar(debug_fakevr, 0)) {
+	if (autocvar_xr_debug_fakeinputs) {
 		input_head_status = (XR_STATUS_ORG | XR_STATUS_ANG);
 		input_left_status = (XR_STATUS_ORG | XR_STATUS_ANG);
 		input_right_status = (XR_STATUS_ORG | XR_STATUS_ANG);
