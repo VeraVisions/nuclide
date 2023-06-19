@@ -42,6 +42,33 @@
 		"movetype"
 		"0"
 	}
+
+	as you can see, key/value pairs can also split across multiple lines,
+	although that is discouraged.
+
+	we also have things exclusive to our entityDef format:
+
+	entityDef foobar {
+		[...]
+
+		when "body" equals 1 {
+			"skin" "4"
+		}
+	}
+
+	will allow developers to configure other fields when certain
+   conditions are met.
+
+	this is also expanded to include model event callbacks to the tried
+	and true I/O system:
+
+	entityDef foobar {
+		[...]
+
+		events {
+			1004 "SpawnDef" "foobar_projectile"
+		}
+	}
 */
 
 /* games can feel free to set this to whatever you need. */
@@ -66,8 +93,10 @@ typedef struct
 	string spawnData;
 	string inheritKeys;
 
-	string tweakDefs;
+	string tweakDefs; /* when (field) equals/greater-than/less-than/is-not (value) */
 	string tweakKeys;
+
+	string eventList; /* model events */
 } entityDef_t;
 
 entityDef_t g_entDefTable[ENTITYDEF_MAX];
@@ -83,6 +112,7 @@ EntityDef_ReadFile(string filePath)
 	entityDef_t currentDef;
 	int braceDepth = 0i;
 	string lastWord = __NULL__;
+	bool inEvent = false;
 
 	currentDef.entClass = "";
 	currentDef.spawnClass = "";
@@ -90,6 +120,7 @@ EntityDef_ReadFile(string filePath)
 	currentDef.inheritKeys = "";
 	currentDef.tweakDefs = "";
 	currentDef.tweakKeys = "";
+	currentDef.eventList = "";
 
 	/* bounds check */
 	if (g_entDefCount >= ENTITYDEF_MAX) {
@@ -127,6 +158,7 @@ EntityDef_ReadFile(string filePath)
 						g_entDefTable[g_entDefCount].inheritKeys = currentDef.inheritKeys;
 						g_entDefTable[g_entDefCount].tweakDefs = currentDef.tweakDefs;
 						g_entDefTable[g_entDefCount].tweakKeys = currentDef.tweakKeys;
+						g_entDefTable[g_entDefCount].eventList = currentDef.eventList;
 
 						/* increment the def count */
 						if (g_entDefCount < ENTITYDEF_MAX)
@@ -138,13 +170,16 @@ EntityDef_ReadFile(string filePath)
 					currentDef.inheritKeys = "";
 					currentDef.tweakDefs = "";
 					currentDef.tweakKeys = "";
+					currentDef.eventList = "";
 				}
 
 				/* we came out of a tweak */
 				if (braceDepth == 1) {
-					if (currentDef.tweakDefs != "") {
+					if (inEvent == false && currentDef.tweakKeys != "") {
 						currentDef.tweakKeys = strcat(currentDef.tweakKeys, ";"); /* mark the end of a key chain */
+						//currentDef.tweakKeys = "";
 					}
+					inEvent = false;
 				}
 				break;
 			default:
@@ -180,40 +215,19 @@ EntityDef_ReadFile(string filePath)
 							break;
 						
 						}
+						inEvent = false;
 						i+=3;
+					} else if (substring(word, 0, 6) == "events") {
+						inEvent = true;
 					} else { /* rest gets dumped into spawndata */
 						currentDef.spawnData = strcat(currentDef.spawnData, "\"", word, "\"", " ");
 					}
 				} else if (braceDepth == 2) {
-					/* spawnclass is reserved and the next keyword specs it */
-					if (word == "spawnclass") {
-						currentDef.spawnClass = argv(i+1);
-						i++;
-					} else if (word == "inherit") {
-						currentDef.inheritKeys = argv(i+1);
-						i++;
-					} else if (substring(word, 0, 7) == "editor_") {
-						/* do nothing */
-						i++;
-					} else if (substring(word, 0, 4) == "when") {
-						switch (argv(i+2)) {
-						case "equals":
-							currentDef.tweakDefs = strcat(currentDef.tweakDefs, argv(i+1), " 0 ", argv(i+3), ";");
-							break;	
-						case "less-than":
-							currentDef.tweakDefs = strcat(currentDef.tweakDefs, argv(i+1), " 1 ", argv(i+3), ";");
-							break;	
-						case "greater-than":
-							currentDef.tweakDefs = strcat(currentDef.tweakDefs, argv(i+1), " 2 ", argv(i+3), ";");
-							break;	
-						case "is-not":
-							currentDef.tweakDefs = strcat(currentDef.tweakDefs, argv(i+1), " 3 ", argv(i+3), ";");
-							break;
-						
-						}
-						i+=3;
-					} else { /* rest gets dumped into spawndata */
+					/* it's a 'when' tweak */
+					if (inEvent == false) {
 						currentDef.tweakKeys = strcat(currentDef.tweakKeys, "\"", word, "\"", " ");
+					} else { /* it's a model event callback */
+						currentDef.eventList = strcat(currentDef.eventList, "\"", word, "\"", " ");
 					}
 				}
 			}
@@ -250,7 +264,7 @@ EntityDef_Init(void)
 		}
 	}
 
-#if 0
+#if 1
 	for (int i = 0i; i < g_entDefCount; i++) {
 		int numKeys = tokenize_console(g_entDefTable[i].spawnData);
 		print(sprintf("edef %i: %S\n", i, g_entDefTable[i].entClass));
@@ -258,6 +272,7 @@ EntityDef_Init(void)
 		print(sprintf("\tinheritKeys: %S\n", g_entDefTable[i].inheritKeys));
 		print(sprintf("\ttweakDefs %S\n", g_entDefTable[i].tweakDefs));
 		print(sprintf("\ttweakKeys %S\n", g_entDefTable[i].tweakKeys));
+		print(sprintf("\teventList %S\n", g_entDefTable[i].eventList));
 		print("\tspawnData:\n");
 		
 		for (int c = 0; c < numKeys; c+=2) {
@@ -417,6 +432,7 @@ EntityDef_PrepareEntity(entity target, int id)
 		spawnWords = tokenizebyseparator(g_entDefTable[id].tweakDefs, ";");
 	}
 
+	targetEnt.m_strModelEventCB = g_entDefTable[id].eventList; /* pass over the event listing */
 	targetEnt.Spawned();
 	targetEnt.Respawn();
 

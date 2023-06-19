@@ -755,7 +755,29 @@ NSRenderableEntity::HandleAnimEvent(float flTimeStamp, int iCode, string strData
 		break;
 #endif
 	default:
+#ifdef SERVER
+		int eDefEvents = tokenize(m_strModelEventCB);
+		//print(sprintf("%i\n", eDefEvents));
+
+		for (int i = 0; i < eDefEvents; i+=3) {
+			int testCode = stoi(argv(i+0));
+			string testInput = argv(i+1);
+			string testData = argv(i+2);
+			//print(sprintf("%i %s %s\n", testCode, testInput, testData));
+
+			/* this is kind of messy in that we can only pass one parm over another */
+			if (iCode == testCode) {
+				if (testData != "")
+					Input(this, testInput, testData);
+				else
+					Input(this, testInput, strData); /* no parms passed. */
+
+				tokenize(m_strModelEventCB); /* ensure argv() is 'rewound'... */
+			}
+		}
+#else
 		NSLog("Unknown model event: %f %i %S", flTimeStamp, iCode, strData);
+#endif
 	}
 }
 

@@ -37,6 +37,9 @@ private:
 	string m_strOnUser2;
 	string m_strOnUser3;
 	string m_strOnUser4;
+
+	/* entityDef powered modelevent callbacks */
+	string m_strModelEventCB;
 #endif
 
 public:

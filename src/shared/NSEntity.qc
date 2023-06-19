@@ -110,15 +110,12 @@ bool NSEntity::Visible( entity ent ) {
 	return ( false );
 }
 
-bool NSEntity::DistanceFromYaw( vector targetPos ) {
-	vector flDelta;
-	float flFoV;
-
+float NSEntity::DistanceFromYaw( vector targetPos ) {
+	vector vecDelta;
 	makevectors( angles );
-	flDelta = normalize( targetPos - origin );
-	return flDelta * v_forward;
+	vecDelta = normalize( targetPos - origin );
+	return vecDelta * v_forward;
 }
-
 
 bool NSEntity::HasSpawnFlags( float sf ) {
 	return ( spawnflags & sf ) ? true : false;
