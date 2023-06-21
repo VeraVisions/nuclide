@@ -358,6 +358,9 @@ public:
 	/** Returns either true or false depending on if this entity is facing the entity in question. */
 	nonvirtual bool IsFacing(entity);
 
+	/** Returns either true or false depending on if this entity is facing a position in question. */
+	nonvirtual bool IsFacingPosition(vector);
+
 	/** Returns the time that's passed since the entity has been spawned. */
 	nonvirtual float GetSpawnAge(void);
 

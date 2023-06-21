@@ -20,6 +20,7 @@ NSSquadMonster::NSSquadMonster(void)
 #ifdef SERVER
 	m_inSquad = false;
 	m_eSquadLeader = __NULL__;
+	m_bStartAsLeader = false;
 
 	for (int i = 0; i < NSSQUADMONSTER_MAXMEMBERS; i++) {
 		m_eSquadMembers[i] = __NULL__;
@@ -28,6 +29,39 @@ NSSquadMonster::NSSquadMonster(void)
 }
 
 #ifdef SERVER
+void
+NSSquadMonster::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "squad_leader":
+		m_bStartAsLeader = ReadBool(strValue);
+		break;
+	case "squad_leader_body":
+		m_iSquadLeaderBody = ReadInt(strValue);
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
+	}
+}
+
+void
+NSSquadMonster::Spawned(void)
+{
+	static void AttachToNearBySquad(void) {
+		FindSquadNearMe(1024);
+	}
+
+	super::Spawned();
+
+	/* unless specified manually, make up who becomes squad member */
+	if (m_bStartAsLeader) {
+		m_eSquadLeader = this;
+		m_inSquad = true;
+	} else {
+		ScheduleThink(AttachToNearBySquad, 0.5f);
+	}
+}
+
 void
 NSSquadMonster::HasBecomeSquadLeader(void)
 {
@@ -97,6 +131,7 @@ NSSquadMonster::AddToSquad(NSSquadMonster addMember)
 		startMember = this;
 		m_inSquad = true;
 		print(sprintf("%s (%d) became squad leader\n", classname, num_for_edict(this)));
+		SetBody(GetBody() | m_iSquadLeaderBody);
 		HasBecomeSquadLeader();
 	}
 

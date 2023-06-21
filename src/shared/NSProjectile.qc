@@ -504,3 +504,32 @@ NSProjectile_ReadEntity(bool new)
 	rend.ReceiveEntity(new, fl);
 }
 #endif
+
+#ifdef SERVER
+void
+NSProjectile_SpawnDef(string entityDef, NSEntity theOwner)
+{
+	entity oldself = self;
+	NSProjectile rocket = spawn(NSProjectile);
+	rocket.owner = theOwner;
+	self = rocket;
+	EntityDef_SpawnClassname(entityDef);
+	self = oldself;
+	rocket.Launch(theOwner.GetOrigin() + theOwner.view_ofs, theOwner.GetAngles(), 0.0f, 0.0f, 0.0f);
+}
+void
+NSProjectile_SpawnDefAttachment(string entityDef, NSEntity theOwner, int attachmentID)
+{
+	entity oldself = self;
+	float skeletonIndex = skel_create(theOwner.modelindex);
+	vector attachmentPos =  gettaginfo(theOwner, skel_get_numbones(skeletonIndex) + attachmentID);
+	skel_delete(skeletonIndex);
+
+	NSProjectile rocket = spawn(NSProjectile);
+	rocket.owner = theOwner;
+	self = rocket;
+	EntityDef_SpawnClassname(entityDef);
+	self = oldself;
+	rocket.Launch(attachmentPos, theOwner.GetAngles(), 0.0f, 0.0f, 0.0f);
+}
+#endif

@@ -50,6 +50,7 @@ typedef enumflags
 	MONFL_CHANGED_RENDERCOLOR,
 	MONFL_CHANGED_RENDERAMT,
 	MONFL_CHANGED_RENDERMODE,
+	MONFL_CHANGED_HEADYAW
 } nsmonster_changed_t;
 
 /** List of supported ACT types.
@@ -373,11 +374,19 @@ public:
 
 private:
 
+	vector v_angle_net;
+
 #ifdef CLIENT
 	nonvirtual void _RenderDebugViewCone();
 #endif
 
+	PREDICTED_FLOAT(m_flHeadYaw)
+	PREDICTED_FLOAT_N(frame1time)
+	PREDICTED_FLOAT_N(subblendfrac)
+	PREDICTED_FLOAT_N(bonecontrol1)
+
 #ifdef SERVER
+	entity m_eLookAt;
 	entity m_ssLast;
 	vector oldnet_velocity;
 	float m_flPitch;
@@ -422,6 +431,70 @@ private:
 	/* caching variables, don't save these */
 	float m_actIdle;
 	bool m_bTurning;
+	float m_flIdleNext;
+	float _m_flMeleeAttempts;
+	float _m_flMeleeDelay;
+	float _m_flBurstCount;
+	bool _m_bShouldThrow;
+
+	/* save these please */
+	float _m_flReloadTracker;
+	bool m_bWeaponDrawn;
+
+	/* entityDef related */
+	float m_flEyeHeight;
+	string m_sndSight;
+	string m_sndIdle;
+	float m_flIdleMin;
+	float m_flIdleMax;
+	string m_sndFootstep;
+	string m_sndChatter;
+	string m_sndChatterCombat;
+	string m_sndPain;
+
+	string m_sndMeleeAttack;
+	string m_sndMeleeAttackHit;
+	string m_sndMeleeAttackMiss;
+
+	string m_sndDeath;
+	string m_sndThud;
+
+
+	/* attack definitions, if defined will fire projectiles */
+	string m_defSpecial1;
+	float m_flSpecial1Range;
+	string m_defSpecial2;
+	float m_flSpecial2Range;
+	string m_defRanged1;
+	float m_flRanged1Range;
+	string m_defRanged2;
+	float m_flRanged2Range;
+
+	/* ranged1 only */
+	int m_iNumProjectiles;
+	float m_flProjectileDelay;
+	float m_flProjectileSpread;
+
+	/* general */
+	float m_flAttackCone;
+	float m_flAttackAccuracy;
+
+	/* melee attack */
+	string m_defMelee;
+	float m_flMeleeRange;
+
+	string m_sndRangedAttack;
+	float m_flReloadCount;
+	float m_flReloadDelay;
+	string m_sndReload;
+
+	string m_sndRangedAttack2;
+
+	bool m_bWeaponStartsDrawn;
+	float m_flBodyOnDraw;
+
+	float m_flWalkSpeed;
+	float m_flRunSpeed;
 
 	nonvirtual void _LerpTurnToEnemy(void);
 	nonvirtual void _LerpTurnToPos(vector);

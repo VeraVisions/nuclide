@@ -83,7 +83,8 @@ enum
 	EDEFTWEAK_EQ = 0,
 	EDEFTWEAK_LT,
 	EDEFTWEAK_GT,
-	EDEFTWEAK_NOT
+	EDEFTWEAK_NOT,
+	EDEFTWEAK_CONTAINS
 };
 
 typedef struct
@@ -203,15 +204,18 @@ EntityDef_ReadFile(string filePath)
 						switch (argv(i+2)) {
 						case "equals":
 							currentDef.tweakDefs = strcat(currentDef.tweakDefs, argv(i+1), " 0 ", argv(i+3), ";");
-							break;	
+							break;
 						case "less-than":
 							currentDef.tweakDefs = strcat(currentDef.tweakDefs, argv(i+1), " 1 ", argv(i+3), ";");
-							break;	
+							break;
 						case "greater-than":
 							currentDef.tweakDefs = strcat(currentDef.tweakDefs, argv(i+1), " 2 ", argv(i+3), ";");
-							break;	
+							break;
 						case "is-not":
 							currentDef.tweakDefs = strcat(currentDef.tweakDefs, argv(i+1), " 3 ", argv(i+3), ";");
+							break;
+						case "contains":
+							currentDef.tweakDefs = strcat(currentDef.tweakDefs, argv(i+1), " 4 ", argv(i+3), ";");
 							break;
 						
 						}
@@ -264,7 +268,7 @@ EntityDef_Init(void)
 		}
 	}
 
-#if 1
+#if 0
 	for (int i = 0i; i < g_entDefCount; i++) {
 		int numKeys = tokenize_console(g_entDefTable[i].spawnData);
 		print(sprintf("edef %i: %S\n", i, g_entDefTable[i].entClass));
@@ -322,6 +326,12 @@ EntityDef_CheckCondition(int id, string keyWord, float tweakCondition, string ke
 			break;
 		case EDEFTWEAK_NOT:
 			if (key == keyWord && value != keyValue)
+				return true;
+		case EDEFTWEAK_CONTAINS:
+			tmp1 = stof(keyValue);
+			tmp2 = stof(value);
+
+			if (key == keyWord && tmp2 & tmp1)
 				return true;
 			break;
 		}
@@ -454,6 +464,19 @@ EntityDef_Precaches(int index)
 		if (substring(strKey, 0, 4) == "snd_") {
 			Sound_Precache(strValue);
 			spawnWords = tokenize_console(g_entDefTable[index].spawnData);
+		}
+	}
+
+	/* handle soundDef events */
+	spawnWords = tokenize(g_entDefTable[index].eventList);
+	for (int i = 0; i < spawnWords; i+=3) {
+		int testCode = stoi(argv(i+0));
+		string testInput = argv(i+1);
+		string testData = argv(i+2);
+		
+		if (testInput == "StartSoundDef") {
+			Sound_Precache(testData);
+			tokenize(g_entDefTable[index].eventList);
 		}
 	}
 }

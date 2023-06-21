@@ -98,6 +98,8 @@ public:
 	virtual void TalkFollow(void);
 	/** Called when they tell the player that they'll stop following. */
 	virtual void TalkStopFollow(void);
+	/** Called when they tell the player they won't follow you. */
+	virtual void TalkDenyFollow(void);
 #endif
 
 #ifdef CLIENT
@@ -127,7 +129,7 @@ private:
 	float m_flTraceTime;
 	float m_flFollowSpeedChanged;
 	float m_flFollowSpeed;
-	
+	bool m_bFollowOnUse;
 
 	/* sentences identifiers */
 	string m_talkAnswer; /* random answer to whenever a question is asked */
@@ -153,6 +155,7 @@ private:
 	string m_talkUnfollow; /* when the player asks us to stop following */
 	string m_talkFollow; /* whenever player asks the NPC to follow */
 	string m_talkStopFollow; /* we have to stop following */
+	string m_talkDenyFollow; /* deny the follow request. */
 
 	virtual void _Alerted(void);
 #endif

@@ -49,6 +49,8 @@ NSTalkMonster::NSTalkMonster(void)
 	m_talkUnfollow = __NULL__;
 	m_talkFollow = __NULL__;
 	m_talkStopFollow = __NULL__;
+	m_talkDenyFollow = __NULL__;
+	m_bFollowOnUse = false;
 #else
 	m_flSentenceTime = 0.0f;
 	m_pSentenceQue = __NULL__;
@@ -300,13 +302,13 @@ NSTalkMonster::TalkPlayerGreet(void)
 		/* Find players in a specific radius */
 		if (vlen(p.origin - origin) < PLAYER_DETECT_RADIUS) {
 			/* If we can't physically see him, don't do anything */
-			traceline(origin, p.origin, FALSE, this);
-			if (trace_ent != p) {
+			if (VisibleVec(p.origin + p.view_ofs) == false)
 				continue;
-			}
+
 			Sentence(m_talkPlayerGreet);
 			m_flNextSentence = time + 10.0;
 			m_iFlags |= MONSTER_METPLAYER;
+			m_eLookAt = p;
 			break;
 		}
 	}
@@ -486,6 +488,17 @@ NSTalkMonster::TalkStopFollow(void)
 }
 
 void
+NSTalkMonster::TalkDenyFollow(void)
+{
+	if (m_iSequenceState != SEQUENCESTATE_NONE)
+		return;
+
+	Sentence(m_talkDenyFollow);
+	m_flNextSentence = time + 10.0;
+}
+
+
+void
 NSTalkMonster::FollowPlayer(void)
 {
 	float flPlayerDist;
@@ -506,7 +519,7 @@ NSTalkMonster::FollowPlayer(void)
 	/* Give up after 1024 units */
 	if (flPlayerDist > 1024) {
 		m_eFollowing = world;
-	} else if (flPlayerDist > 64) {
+	} else if (flPlayerDist > 128) {
 		/* we only allow speed changes every second, avoid jitter */
 		if (m_flFollowSpeedChanged < time) {
 			float flNextSpeed = GetChaseSpeed();
@@ -605,6 +618,7 @@ NSTalkMonster::RunAI(void)
 	FollowChain();
 
 	if (m_eFollowing != world) {
+		m_eLookAt = m_eFollowing;
 		FollowPlayer();
 	} else if (m_iFlags & MONSTER_FEAR) {
 		PanicFrame();
@@ -623,6 +637,11 @@ NSTalkMonster::Respawn(void)
 	super::Respawn();
 	m_eFollowing = world;
 	m_eFollowingChain = world;
+	PlayerUse = OnPlayerUse;
+
+	if (m_bFollowOnUse) {
+		m_iFlags |= MONSTER_CANFOLLOW;
+	}
 }
 
 void
@@ -632,8 +651,10 @@ NSTalkMonster::OnPlayerUse(void)
 		return;
 
 	/* can't press use any non-allies */
-	if (!(m_iFlags & MONSTER_CANFOLLOW))
+	if (!(m_iFlags & MONSTER_CANFOLLOW)) {
+		TalkDenyFollow();
 		return;
+	}
 
 	if ((m_eFollowing == world)) {
 		if (!(m_iFlags & MONSTER_USED)) {
@@ -659,6 +680,77 @@ NSTalkMonster::SpawnKey(string strKey, string strValue)
 		break;
 	case "UseSentence":
 		m_talkFollow = strcat("!", strValue);
+		break;
+
+	/* entityDef */
+	case "talk_answer":
+		m_talkAnswer = ReadString(strValue);
+		break;
+	case "talk_ask":
+		m_talkAsk = ReadString(strValue);
+		break;
+	case "talk_ally_shot":
+		m_talkAllyShot = ReadString(strValue);
+		break;
+	case "talk_greet":
+		m_talkGreet = ReadString(strValue);
+		break;
+	case "talk_idle":
+		m_talkIdle = ReadString(strValue);
+		break;
+	case "talk_panic":
+		m_talkPanic = ReadString(strValue);
+		break;
+	case "talk_hearing":
+		m_talkHearing = ReadString(strValue);
+		break;
+	case "talk_smelling":
+		m_talkSmelling = ReadString(strValue);
+		break;
+	case "talk_stare":
+		m_talkStare = ReadString(strValue);
+		break;
+	case "talk_survived":
+		m_talkSurvived = ReadString(strValue);
+		break;
+	case "talk_wounded":
+		m_talkWounded = ReadString(strValue);
+		break;
+	case "talk_alert":
+		m_talkAlert = ReadString(strValue);
+		break;
+	case "talk_player_ask":
+		m_talkPlayerAsk = ReadString(strValue);
+		break;
+	case "talk_player_greet":
+		m_talkPlayerGreet = ReadString(strValue);
+		break;
+	case "talk_player_idle":
+		m_talkPlayerIdle = ReadString(strValue);
+		break;
+	case "talk_player_wounded1":
+		m_talkPlayerWounded1 = ReadString(strValue);
+		break;
+	case "talk_player_wounded2":
+		m_talkPlayerWounded2 = ReadString(strValue);
+		break;
+	case "talk_player_wounded3":
+		m_talkPlayerWounded3 = ReadString(strValue);
+		break;
+	case "talk_unfollow":
+		m_talkUnfollow = ReadString(strValue);
+		break;
+	case "talk_follow":
+		m_talkFollow = ReadString(strValue);
+		break;
+	case "talk_stop_follow":
+		m_talkStopFollow = ReadString(strValue);
+		break;
+	case "talk_deny_follow":
+		m_talkDenyFollow = ReadString(strValue);
+		break;
+	case "follow_on_use":
+		m_bFollowOnUse = ReadBool(strValue);
 		break;
 	default:
 		super::SpawnKey(strKey, strValue);
@@ -686,6 +778,7 @@ NSTalkMonster::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_ANGLE(angles[0], MONFL_CHANGED_ANGLES_X)
 	SENDENTITY_ANGLE(angles[1], MONFL_CHANGED_ANGLES_Y)
 	SENDENTITY_ANGLE(angles[2], MONFL_CHANGED_ANGLES_Z)
+	SENDENTITY_FLOAT(v_angle[0], MONFL_CHANGED_ANGLES_X)
 	SENDENTITY_SHORT(modelindex, MONFL_CHANGED_MODELINDEX)
 	SENDENTITY_BYTE(view_ofs[2], MONFL_CHANGED_MODELINDEX)
 	SENDENTITY_BYTE(solid, MONFL_CHANGED_SOLID)
@@ -712,6 +805,7 @@ NSTalkMonster::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_ANGLE(m_vecRenderColor[1], MONFL_CHANGED_RENDERCOLOR)
 	SENDENTITY_ANGLE(m_vecRenderColor[2], MONFL_CHANGED_RENDERCOLOR)
 	SENDENTITY_ANGLE(m_flRenderAmt, MONFL_CHANGED_RENDERAMT)
+	SENDENTITY_FLOAT(m_flHeadYaw, MONFL_CHANGED_HEADYAW)
 
 	return (1);
 }
@@ -844,6 +938,23 @@ NSTalkMonster::predraw(void)
 		m_bWasPaused = true;
 	}
 
+	bonecontrol2 = autocvar(bonecontrol2, 0);
+	bonecontrol3 = autocvar(bonecontrol3, 0);
+	bonecontrol4 = autocvar(bonecontrol4, 0);
+
+	/* this will make the actor 'aim" at the target */
+	{
+		makevectors(v_angle);
+		vector tmp = vectoangles(v_forward);
+		subblendfrac = tmp[0] / 90;
+		bonecontrol1 = m_flHeadYaw;	/* head turning */
+	}
+
+	//print(sprintf("yaw: %f %f\n", subblendfrac, v_angle[0]));
+	subblend2frac = autocvar(subblend2frac, 0);
+	basesubblendfrac = autocvar(basesubblendfrac, 0);
+	basesubblend2frac = autocvar(basesubblend2frac, 0);
+
 	addentity(this);
 	_RenderDebugViewCone();
 
@@ -864,6 +975,7 @@ NSTalkMonster::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_ANGLE(angles[0], MONFL_CHANGED_ANGLES_X)
 	READENTITY_ANGLE(angles[1], MONFL_CHANGED_ANGLES_Y)
 	READENTITY_ANGLE(angles[2], MONFL_CHANGED_ANGLES_Z)
+	READENTITY_FLOAT(v_angle[0], MONFL_CHANGED_ANGLES_X)
 	READENTITY_SHORT(modelindex, MONFL_CHANGED_MODELINDEX)
 	READENTITY_BYTE(view_ofs[2], MONFL_CHANGED_MODELINDEX)
 	READENTITY_BYTE(solid, MONFL_CHANGED_SOLID)
@@ -890,6 +1002,7 @@ NSTalkMonster::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_ANGLE(m_vecRenderColor[1], MONFL_CHANGED_RENDERCOLOR)
 	READENTITY_ANGLE(m_vecRenderColor[2], MONFL_CHANGED_RENDERCOLOR)
 	READENTITY_ANGLE(m_flRenderAmt, MONFL_CHANGED_RENDERAMT)
+	READENTITY_FLOAT(m_flHeadYaw, MONFL_CHANGED_HEADYAW)
 
 	if (scale == 0.0)
 		scale = 1.0f;
@@ -899,7 +1012,7 @@ NSTalkMonster::ReceiveEntity(float flNew, float flChanged)
 	if (flChanged & MONFL_CHANGED_SIZE)
 		setsize(this, mins * scale, maxs * scale);
 	if (flChanged & MONFL_CHANGED_BODY)
-		setcustomskin(this, "", sprintf("geomset 0 %i\ngeomset 1 %i\n", m_iBody, m_iBody));
+		_UpdateGeomset();
 
 	setorigin(this, origin);
 }

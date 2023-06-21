@@ -748,6 +748,19 @@ void NSEntity::Input( entity eAct, string strInput, string strData ) {
 		if ( PlayerUse )
 			PlayerUse();
 		break;
+	case "SpawnDef":
+		break;
+	case "SpawnProjectileDef":
+		if (EntityDef_HasSpawnClass(strData)) {
+			NSProjectile_SpawnDefAttachment(strData, this, 0);
+		} else {
+			float rangedDmg = Skill_GetDefValue(EntityDef_GetKeyValue(strData, "damage"));
+			TraceAttack_FireBullets(1, origin + view_ofs, rangedDmg, [0.01,0.01], 0);
+		}
+		break;
+	case "StartSoundDef":
+		StartSoundDef(strData, CHAN_VOICE, true);
+		break;
 	default:
 		NSTrigger::Input( eAct, strInput, strData );
 	}
@@ -898,6 +911,13 @@ void NSEntity::HandleThink( void ) {
 bool NSEntity::IsFacing(entity target)
 {
 	vector vecDiff = normalize(target.origin - origin);
+	makevectors(angles);
+	return ((vecDiff * v_forward) > 0 ) ? true : false;
+}
+
+bool NSEntity::IsFacingPosition(vector targetPos)
+{
+	vector vecDiff = normalize(targetPos - origin);
 	makevectors(angles);
 	return ((vecDiff * v_forward) > 0 ) ? true : false;
 }

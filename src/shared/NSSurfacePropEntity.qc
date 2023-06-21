@@ -602,6 +602,10 @@ NSSurfacePropEntity::SpawnKey(string strKey, string strValue)
 	case "materialdata":
 		SetSurfaceData(strValue);
 		break;
+	/* entityDef */
+	case "blood_color":
+		m_vecBloodColor = ReadVector(strValue);
+		break;
 	/* Input/Output system */
 #ifdef SERVER
 	case "OnBreak":

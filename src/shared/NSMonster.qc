@@ -6,13 +6,16 @@
  * copyright notice and this permission notice appear in all copies.
  *
  * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
- * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
  * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
  * WHATSOEVER RESULTING FROM LOSS OF MIND, USE, DATA OR PROFITS, WHETHER
  * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
+
+var float autocvar_ai_walkSpeed = 64;
+var float autocvar_ai_runSpeed = 364;
 
 void
 NSMonster::NSMonster(void)
@@ -51,6 +54,44 @@ NSMonster::NSMonster(void)
 	m_flAnimTime = 0.0f;
 	m_flTrackingTime = 0.0f;
 	m_actIdle = -1;
+	m_flIdleNext = 0.0f;
+	m_flEyeHeight = 64.0f;
+
+	m_sndSight = __NULL__;
+	m_sndIdle = __NULL__;
+	m_flIdleMin = 5.0f;
+	m_flIdleMax = 10.0f;
+	m_sndFootstep = __NULL__;
+	m_sndChatter = __NULL__;
+	m_sndChatterCombat = __NULL__;
+	m_sndPain = __NULL__;
+	m_sndMeleeAttack = __NULL__;
+	m_sndMeleeAttackHit = __NULL__;
+	m_sndMeleeAttackMiss = __NULL__;
+	m_sndDeath = __NULL__;
+	m_sndThud = __NULL__;
+	m_defMelee = __NULL__;
+	m_defSpecial1 = __NULL__;
+	m_iNumProjectiles = 1i;
+	m_flProjectileDelay = 0.0f;
+	m_flProjectileSpread = 0.0f;
+	m_flAttackCone = 0.0f;
+	m_flAttackAccuracy = 1.0f;
+	m_flMeleeRange = -1;
+
+	m_defRanged1 = __NULL__;
+	m_defRanged2 = __NULL__;
+
+	/* invalidate all ranges. */
+	m_flRanged1Range =
+	m_flRanged2Range =
+	m_flSpecial1Range =
+	m_flSpecial2Range = -1.0f;
+
+	m_bWeaponStartsDrawn = true;
+
+	m_flWalkSpeed = autocvar_ai_walkSpeed;
+	m_flRunSpeed = autocvar_ai_runSpeed;
 #endif
 }
 
@@ -245,7 +286,9 @@ NSMonster::Gib(void)
 	vector vecDir = vectoangles(GetOrigin() - g_dmg_vecLocation);
 	SetState(MONSTER_DEAD);
 	SetTakedamage(DAMAGE_NO);
-	FX_GibHuman(origin, vecDir, g_dmg_iDamage * 2.5f);
+
+	string breakModel = GetPropData(PROPINFO_BREAKMODEL);
+	BreakModel_Spawn(absmin, absmax, vecDir, g_dmg_iDamage * 2.5f, vlen(size) / 10, breakModel);
 	Disappear();
 }
 
@@ -257,11 +300,17 @@ NSMonster::FallNoise(void)
 void
 NSMonster::IdleNoise(void)
 {
+	if (m_flIdleNext > time)
+		return;
+
+	StartSoundDef(m_sndIdle, CHAN_VOICE, true);
+	m_flIdleNext = time + random(m_flIdleMin, m_flIdleMax);
 }
 
 void
 NSMonster::AlertNoise(void)
 {
+	StartSoundDef(m_sndSight, CHAN_VOICE, true);
 }
 
 bool
@@ -279,7 +328,7 @@ NSMonster::IsFriend(int al)
 float
 NSMonster::MeleeMaxDistance(void)
 {
-	return 96;
+	return m_flMeleeRange;
 }
 
 /* Whether or not we should attempt a melee attack */
@@ -302,6 +351,9 @@ NSMonster::AlertNearby(void)
 		return;
 
 	for (entity w = world; (w = findfloat(w, ::takedamage, DAMAGE_YES));) {
+		if (w.classname != classname)
+			continue;
+
 		if (!IsFriend(w.m_iAlliance))
 			continue;
 
@@ -362,6 +414,22 @@ NSMonster_TraceAgainsTarget(NSMonster monster, NSEntity target)
 void
 NSMonster::SeeThink(void)
 {
+	if (m_eLookAt) {
+		vector vecDelta;
+		makevectors( angles );
+		vecDelta = normalize( (m_eLookAt.origin + m_eLookAt.view_ofs) - GetEyePos() );
+		m_flHeadYaw = (vecDelta * v_right) * -60;
+		//print(sprintf("head yaw: %f %v\n", m_flHeadYaw, vecDelta));
+
+		/* this will make the actor 'aim" at the target */
+		{
+			makevectors(v_angle);
+			vector tmp = vectoangles(v_forward);
+			subblendfrac = tmp[0] / 90;
+			bonecontrol1 = m_flHeadYaw;	/* head turning */
+		}	
+	}
+
 	if (m_flAttackThink < time)
 	if (m_eEnemy) {
 		/* check if we should invalidate current enemy */
@@ -371,6 +439,7 @@ NSMonster::SeeThink(void)
 				return;
 
 			m_flSeeTime = time + 0.25f;
+			m_eLookAt = m_eEnemy;
 
 			/* see if we can trace our target, if yes, update our timestamp */
 			if (NSMonster_TraceAgainsTarget(this, (NSEntity) m_eEnemy) == true) {
@@ -391,6 +460,7 @@ NSMonster::SeeThink(void)
 
 		SetState(MONSTER_ALERT);
 		m_eEnemy = __NULL__;
+		m_eLookAt = __NULL__;
 		m_flSeeTime = 0;
 	}
 
@@ -434,27 +504,22 @@ NSMonster::SeeThink(void)
 	}
 }
 
-var float autocvar_ai_stepSize = 128;
-
 float
 NSMonster::GetWalkSpeed(void)
 {
-	float speed = autocvar_ai_stepSize / frameduration(modelindex, FramegroupForAct(ACT_WALK));
-	return speed;
+	return m_flWalkSpeed;
 }
 
 float
 NSMonster::GetChaseSpeed(void)
 {
-	float speed = autocvar_ai_stepSize / frameduration(modelindex, FramegroupForAct(ACT_RUN));
-	return speed;
+	return m_flRunSpeed;
 }
 
 float
 NSMonster::GetRunSpeed(void)
 {
-	float speed = autocvar_ai_stepSize / frameduration(modelindex, FramegroupForAct(ACT_RUN));
-	return speed;
+	return m_flRunSpeed;
 }
 
 float
@@ -519,6 +584,9 @@ NSMonster::_LerpTurnToPos(vector turnPos)
 void
 NSMonster::_LerpTurnToEnemy(void)
 {
+	vector enemyEyePos;
+	vector dirAim;
+
 	if (!m_eEnemy)
 		return;
 
@@ -529,6 +597,11 @@ NSMonster::_LerpTurnToEnemy(void)
 				return;
 
 	_LerpTurnToPos(m_eEnemy.origin);
+
+	enemyEyePos = (m_eEnemy.origin + m_eEnemy.view_ofs);
+
+	dirAim = vectoangles(enemyEyePos - GetEyePos());
+	v_angle[0] = dirAim[0];
 }
 
 void
@@ -545,7 +618,7 @@ NSMonster::AttackThink(void)
 
 	/* do we have a clear shot? */
 	other = world;
-	traceline(origin, m_eEnemy.origin, MOVE_OTHERONLY, this);
+	traceline(GetEyePos(), m_eEnemy.origin, MOVE_OTHERONLY, this);
 
 	/* something is blocking us */
 	if (trace_fraction < 1.0f) {
@@ -589,13 +662,165 @@ NSMonster::AttackThink(void)
 int
 NSMonster::AttackMelee(void)
 {
-	m_flAttackThink = time + 0.5f;
-	return (0);
+	float actMelee1 = FramegroupForAct(ACT_MELEE_ATTACK1);
+	float actMelee2 = FramegroupForAct(ACT_MELEE_ATTACK2);
+
+	if (!m_defMelee)
+		return (0);
+
+	_m_flMeleeDelay = Skill_GetDefValue(EntityDef_GetKeyValue(m_defMelee, "delay"));
+	_m_flMeleeAttempts = Skill_GetDefValue(EntityDef_GetKeyValue(m_defMelee, "attempts"));
+
+	//print(sprintf("Melee attack %S with delay %f and %d attempts\n", m_defMelee, _m_flMeleeDelay, _m_flMeleeAttempts));
+
+	static void
+	AttackMelee_AttackFlail(void)
+	{
+		float meleeDmg = Skill_GetDefValue(EntityDef_GetKeyValue(m_defMelee, "damage"));
+		float meleeWait = Skill_GetDefValue(EntityDef_GetKeyValue(m_defMelee, "wait"));
+		traceline(origin, m_eEnemy.origin, FALSE, this);
+	
+		if (trace_fraction >= 1.0 || trace_ent.takedamage != DAMAGE_YES) {
+			StartSoundDef(m_sndMeleeAttackMiss, CHAN_WEAPON, true);
+			return;
+		}
+
+		Damage_Apply(trace_ent, this, meleeDmg, 0, 0);
+		StartSoundDef(m_sndMeleeAttackHit, CHAN_WEAPON, true);
+
+		_m_flMeleeAttempts--;
+
+		if (_m_flMeleeAttempts > 0)
+			ScheduleThink(AttackMelee_AttackFlail, _m_flMeleeDelay + meleeWait);
+	}
+
+	if (random() < 0.5 || actMelee2 == -1)
+		AnimPlay(actMelee1);
+	else
+		AnimPlay(actMelee2);
+
+	m_flAttackThink = m_flAnimTime;
+	StartSoundDef(m_sndMeleeAttack, CHAN_WEAPON, true);
+
+	/* functional */
+	ScheduleThink(AttackMelee_AttackFlail, _m_flMeleeDelay);
+	return (1);
 }
 
 int
 NSMonster::AttackRanged(void)
 {
+	static void AttackRanged_Throw(void)
+	{
+		for (int i = 0; i < m_iNumProjectiles; i++)
+			NSProjectile_SpawnDef(m_defSpecial1, this);
+	}
+	static void AttackRanged_RangedSpecial(void)
+	{
+		NSProjectile_SpawnDef(m_defRanged2, this);
+	}
+
+	float distToEnemy = vlen(m_eEnemy.origin - GetOrigin());
+
+	bool inSpecial1Range = (distToEnemy < m_flSpecial1Range && m_flSpecial1Range != -1.0) ? true : false;
+	bool inSpecial2Range = (distToEnemy < m_flSpecial2Range && m_flSpecial2Range != -1.0) ? true : false;
+	bool inRanged1Range = (distToEnemy < m_flRanged1Range && m_flRanged1Range != -1.0) ? true : false;
+	bool inRanged2Range = (distToEnemy < m_flRanged2Range && m_flRanged2Range != -1.0) ? true : false;
+	bool throwAnyway = false;
+
+	traceline(GetEyePos(), m_eEnemy.origin, MOVE_NORMAL, this);
+
+	if (_m_bShouldThrow == false && inSpecial1Range && m_flReloadCount)
+		if (_m_flReloadTracker > m_flReloadCount) {
+			throwAnyway = true;
+			_m_bShouldThrow = true;
+		}
+
+	/* special always first if possible */
+	if (throwAnyway == false && inRanged1Range && trace_ent == m_eEnemy) {
+		float rangedDmg = Skill_GetDefValue(EntityDef_GetKeyValue(m_defRanged1, "damage"));
+		float rangedDly = Skill_GetDefValue(EntityDef_GetKeyValue(m_defRanged1, "delay"));
+		float rangedMin = Skill_GetDefValue(EntityDef_GetKeyValue(m_defRanged1, "delay_min"));
+		float rangedMax = Skill_GetDefValue(EntityDef_GetKeyValue(m_defRanged1, "delay_max"));
+		float burstCount = Skill_GetDefValue(EntityDef_GetKeyValue(m_defRanged1, "burst"));
+		float burstDelay = Skill_GetDefValue(EntityDef_GetKeyValue(m_defRanged1, "burst_delay"));
+		float actRanged = FramegroupForAct(ACT_RANGE_ATTACK1);
+		float burstTime = 0.0f;
+
+		if (rangedDly <= 0.0) {
+			rangedDly = random(rangedMin, rangedMax);
+		}
+
+		/* can't shoot anything ranged anymore, need to reload. */
+		if (m_flReloadCount)
+		if (_m_flReloadTracker > m_flReloadCount) {
+			float actReload = FramegroupForAct(ACT_RELOAD);
+			_m_flReloadTracker = 0;
+			AnimPlay(actReload);
+			StartSoundDef(m_sndReload, CHAN_WEAPON, true);
+			_m_bShouldThrow = false;
+
+			if (m_flReloadDelay)
+				m_flAttackThink = time + m_flReloadDelay;
+			else
+				m_flAttackThink = time + frameduration(modelindex, actReload);
+
+			return 1;
+		}
+
+		AnimPlay(actRanged);
+
+		/* if we have no spawnclass, it must be a hitscan weapon */
+		if (EntityDef_HasSpawnClass(m_defRanged1)) {
+			NSProjectile_SpawnDef(m_defRanged1, this);
+		} else {
+			TraceAttack_FireBullets(1, GetEyePos(), rangedDmg, [0.01,0.01] * m_flAttackAccuracy, 0);
+		}
+
+		StartSoundDef(m_sndRangedAttack, CHAN_WEAPON, true);
+		_m_flBurstCount++;
+		_m_flReloadTracker++;
+
+		if (burstCount)
+		if (_m_flBurstCount >= burstCount) {
+			_m_flBurstCount = 0;
+			burstTime = burstDelay;
+		}
+
+		if (rangedDly)
+			m_flAttackThink = time + rangedDly + burstTime;
+		else
+			m_flAttackThink = time + frameduration(modelindex, actRanged) + burstTime;
+
+		return 1;
+	} else if (throwAnyway == false && inRanged2Range && trace_ent == m_eEnemy) {
+		float actRangedSpecial = FramegroupForAct(ACT_RANGE_ATTACK2);
+		AnimPlay(actRangedSpecial);
+		ScheduleThink(AttackRanged_RangedSpecial, 0.0f);
+		m_flAttackThink = time + frameduration(modelindex, actRangedSpecial);
+		return 1;
+	} else if (inSpecial1Range) {
+		AnimPlay(FramegroupForAct(ACT_SPECIAL_ATTACK1));
+		ScheduleThink(AttackRanged_Throw, m_flProjectileDelay);
+
+		if (_m_bShouldThrow)
+			m_flAttackThink = time + 1.0f;
+		else
+			m_flAttackThink = time + 2.5f;
+
+		return 1;
+	} else if (inSpecial2Range) {
+		AnimPlay(FramegroupForAct(ACT_SPECIAL_ATTACK2));
+		ScheduleThink(AttackRanged_Throw, m_flProjectileDelay);
+
+		if (_m_bShouldThrow)
+			m_flAttackThink = time + 1.0f;
+		else
+			m_flAttackThink = time + 2.5f;
+
+		return 1;
+	}
+
 	m_flAttackThink = time + 0.5f;
 	return (0);
 }
@@ -603,15 +828,20 @@ NSMonster::AttackRanged(void)
 void
 NSMonster::AttackDraw(void)
 {
-	NSMonster_Log("^1%s::AttackDraw: Not defined!", classname);
-	m_flAttackThink = time + 0.5f;
+	float actDraw = FramegroupForAct(ACT_ARM);
+	AnimPlay(actDraw);
+	m_flAttackThink = time + frameduration(modelindex, actDraw);
+
+	if (m_flBodyOnDraw)
+		SetBody(m_flBodyOnDraw);
 }
 
 void
 NSMonster::AttackHolster(void)
 {
-	NSMonster_Log("^1%s::AttackHolster: Not defined!", classname);
-	m_flAttackThink = time + 0.5f;
+	float actHolster = FramegroupForAct(ACT_DISARM);
+	AnimPlay(actHolster);
+	m_flAttackThink = time + frameduration(modelindex, actHolster);
 }
 
 void
@@ -787,8 +1017,27 @@ NSMonster::IsAlive(void)
 void
 NSMonster::StateChanged(monsterState_t oldState, monsterState_t newState)
 {
-	NSMonster_Log("^2%s::^3StateChanged^7: state changed from %d to %d", \
-		classname, oldState, newState);
+	switch (newState) {
+	case MONSTER_AIMING:
+		/* we're coming from an alerted/raised state to pointing a gun. */
+		if (oldState == MONSTER_ALERT) {
+			/* only draw if it wasn't already drawn */
+			if (m_bWeaponDrawn == false) {
+				AttackDraw();
+				m_bWeaponDrawn = true;
+			}
+		}
+		break;
+	case MONSTER_ALERT:
+		if (oldState == MONSTER_AIMING) {
+			/* only holster if it wasn't in the initial state either */
+			if (m_bWeaponStartsDrawn == false) {
+				AttackHolster();
+				m_bWeaponDrawn = false;
+			}
+		}
+		break;
+	}
 }
 
 void
@@ -899,8 +1148,7 @@ NSMonster::Physics(void)
 		}
 	}
 
-	m_flBaseTime = frame1time;
-	frame1time += frametime;
+	//print(sprintf("%f was %f\n", frame1time, m_flBaseTime));
 
 	processmodelevents(modelindex, frame, m_flBaseTime,
 		frame1time, HandleAnimEvent);
@@ -912,6 +1160,7 @@ NSMonster::Touch(entity eToucher)
 	if (movetype != MOVETYPE_WALK)
 		return;
 
+	if (autocvar(pm_pushMonsters, 0))
 	if (eToucher.movetype == MOVETYPE_WALK) {
 		if (eToucher.absmin[2] < origin[2])
 			velocity = normalize(eToucher.origin - origin) * -128;
@@ -927,6 +1176,11 @@ NSMonster::HasBeenHit(void)
 void
 NSMonster::Pain(void)
 {
+	float actSmallFlinch = FramegroupForAct(ACT_SMALL_FLINCH);
+	float actBigFlinch = FramegroupForAct(ACT_BIG_FLINCH);
+	float actTwitch = FramegroupForAct(ACT_TWITCH);
+	float actPain = -1;
+
 	/* dead things tell nuthin */
 	if (IsAlive() == false)
 		return;
@@ -951,6 +1205,42 @@ NSMonster::Pain(void)
 
 	/* alert all nearby friendlies */
 	AlertNearby();
+
+	switch (g_dmg_iHitBody) {
+	case BODY_HEAD:
+		actPain = FramegroupForAct(ACT_FLINCH_HEAD);
+		break;
+	case BODY_CHEST:
+		actPain = FramegroupForAct(ACT_FLINCH_CHEST);
+		break;
+	case BODY_STOMACH:
+		actPain = FramegroupForAct(ACT_FLINCH_STOMACH);
+		break;
+	case BODY_ARMLEFT:
+		actPain = FramegroupForAct(ACT_FLINCH_LEFTARM);
+		break;
+	case BODY_ARMRIGHT:
+		actPain = FramegroupForAct(ACT_FLINCH_RIGHTARM);
+		break;
+	case BODY_LEGLEFT:
+		actPain = FramegroupForAct(ACT_FLINCH_LEFTLEG);
+		break;
+	case BODY_LEGRIGHT:
+		actPain = FramegroupForAct(ACT_FLINCH_RIGHTLEG);
+		break;
+	}
+
+	/* fallback in case we do not have specialized flinches */
+	if (actPain == -1) {
+		/* for big damage pain anim, we need to take at least 1/3rd of health */
+		if (actBigFlinch >= 0 && g_dmg_iDamage > (base_health / 3))
+			actPain = actBigFlinch;
+		else if (actSmallFlinch >= 0)
+			actPain = actSmallFlinch;
+	}
+
+	AnimPlay(actPain);
+	StartSoundDef(m_sndPain, CHAN_VOICE, true);
 	HasBeenHit();
 }
 
@@ -981,6 +1271,19 @@ NSMonster::_Alerted(void)
 void
 NSMonster::Death(void)
 {
+	static void Death_Thud(void)
+	{
+		StartSoundDef(m_sndThud, CHAN_BODY, true);
+	}
+
+	float actViolent = FramegroupForAct(ACT_DIEVIOLENT);
+	float actForward = FramegroupForAct(ACT_DIEFORWARD);
+	float actBackward = FramegroupForAct(ACT_DIEBACKWARD);
+	float actSimple = FramegroupForAct(ACT_DIESIMPLE);
+	float actBackshot = FramegroupForAct(ACT_DIE_BACKSHOT);
+
+	float actDeath = -1;
+
 	/* we were already dead before, so gib */
 	if (GetState() == MONSTER_DEAD) {
 		HasBeenGibbed();
@@ -997,8 +1300,37 @@ NSMonster::Death(void)
 		return;
 	}
 
-	/* make sure we're not causing any more obituaries */
+	switch (g_dmg_iHitBody) {
+	case BODY_HEAD:
+		actDeath = FramegroupForAct(ACT_DIE_HEADSHOT);
+		break;
+	case BODY_CHEST:
+		actDeath = FramegroupForAct(ACT_DIE_CHESTSHOT);
+		break;
+	case BODY_STOMACH:
+		actDeath = FramegroupForAct(ACT_DIE_GUTSHOT);
+		break;
+	}
+
+	if (actDeath == -1) {
+		if (actViolent >= 0 && GetHealth() < -15) /* lots of damage */
+			AnimPlay(actViolent);
+		else if (actBackshot >= 0 && IsFacingPosition(g_dmg_vecLocation) == false)
+			AnimPlay(actBackshot);
+		else if (actForward >= 0 && IsFacingPosition(g_dmg_vecLocation) == false)
+			AnimPlay(actForward);
+		else if (actBackward >= 0 && IsFacingPosition(g_dmg_vecLocation) == true)
+			AnimPlay(actBackward);
+		else
+			AnimPlay(actSimple);
+	} else {
+		AnimPlay(actDeath);
+	}
+
+	StartSoundDef(m_sndDeath, CHAN_VOICE, true);
 	HasBeenKilled();
+
+	/* make sure we're not causing any more obituaries */
 	RemoveFlags(FL_MONSTER);
 
 	/* set the monster up for getting gibbed */
@@ -1010,6 +1342,9 @@ NSMonster::Death(void)
 	/* monsters trigger their targets when dead */
 	if (GetTriggerCondition() == MTRIG_DEATH)
 		TriggerTargets();
+
+	/* play thud sound */
+	ScheduleThink(Death_Thud, frameduration(modelindex, frame) * 0.5f);
 }
 
 #if 0
@@ -1047,8 +1382,15 @@ NSMonster::Respawn(void)
 	SetModel(GetSpawnModel());
 	SetSize(base_mins, base_maxs);
 	SetOrigin(GetSpawnOrigin());
+	SetEyePos([0, 0, m_flEyeHeight]);
 
 	DropToFloor();
+
+	if (m_bWeaponStartsDrawn) {
+		m_bWeaponDrawn = true;
+	} else {
+		m_bWeaponDrawn = false;
+	}
 }
 
 void
@@ -1057,10 +1399,148 @@ NSMonster::SpawnKey(string strKey, string strValue)
 	switch (strKey) {
 	/* The legacy GoldSrc trigger condition system */
 	case "TriggerCondition":
-		m_iTriggerCondition = stoi(strValue);
+		m_iTriggerCondition = ReadInt(strValue);
 		break;
 	case "TriggerTarget":
-		m_strTriggerTarget = strValue;
+		m_strTriggerTarget = ReadString(strValue);
+		break;
+	/* entityDef related */
+	case "netname":	/* used for obituries and debug info */
+		netname = ReadString(strValue);
+		break;
+	case "eye_height":
+		m_flEyeHeight = ReadFloat(strValue);
+		break;
+	case "snd_sight":
+		m_sndSight = ReadString(strValue);
+		break;
+	case "snd_idle":
+		m_sndIdle = ReadString(strValue);
+		break;
+	case "idle_min": /* used for idle sound timer */
+		m_flIdleMin = ReadFloat(strValue);
+		break;
+	case "idle_max": /* ditto */
+		m_flIdleMax = ReadFloat(strValue);
+		break;
+	case "snd_footstep":
+		m_sndFootstep = ReadString(strValue);
+		break;
+	case "snd_chatter":
+		m_sndChatter = ReadString(strValue);
+		break;
+	case "snd_chatter_combat":
+		m_sndChatterCombat = ReadString(strValue);
+		break;
+	case "snd_pain":
+		m_sndPain = ReadString(strValue);
+		break;
+	case "snd_death":
+		m_sndDeath = ReadString(strValue);
+		break;
+	case "snd_thud":
+		m_sndThud = ReadString(strValue);
+		break;
+	case "def_melee":	/* melee attack information */
+	case "def_attack_melee":
+		m_defMelee = ReadString(strValue);
+		break;
+	case "attack_melee_range":
+	case "melee_range":  /* Doom 3 compat */
+		m_flMeleeRange = ReadFloat(strValue);
+		break;
+	case "snd_melee_attack":
+		m_sndMeleeAttack = ReadString(strValue);
+		break;
+	case "snd_melee_attack_hit":
+		m_sndMeleeAttackHit = ReadString(strValue);
+		break;
+	case "snd_melee_attack_miss":
+		m_sndMeleeAttackMiss = ReadString(strValue);
+		break;
+	case "def_attack_ranged": /* primary ranged attack */
+	case "def_attack_ranged_1":
+		m_defRanged1 = ReadString(strValue);
+		break;
+	case "attack_ranged1_range":
+	case "attack_ranged_range":
+	case "ranged_range":
+		m_flRanged1Range = ReadFloat(strValue);
+		break;
+	case "def_attack_ranged_2": /* special ranged attack */
+		m_defRanged2 = ReadString(strValue);
+		break;
+	case "attack_ranged2_range":
+	case "ranged2_range":
+		m_flRanged2Range = ReadFloat(strValue);
+		break;
+	case "snd_ranged_attack":
+		m_sndRangedAttack = ReadString(strValue);
+		break;
+	case "reload_count": /* how many ranged attacks until reload */
+		m_flReloadCount = ReadFloat(strValue);
+		break;
+	case "reload_delay": /* time between reloads */
+		m_flReloadDelay = ReadFloat(strValue);
+		break;
+	case "snd_reload":
+		m_sndReload = ReadString(strValue);
+		break;
+	case "def_attack_special":
+	case "def_attack_special_1":
+		m_defSpecial1 = ReadString(strValue);
+		break;
+	case "attack_special1_range":
+	case "attack_special_range":
+	case "special1_range":
+		m_flSpecial1Range = ReadFloat(strValue);
+		break;
+	case "def_attack_special_2": /* projectile */
+		m_defSpecial2 = ReadString(strValue);
+		break;
+	case "attack_special2_range":
+	case "special2_range":
+		m_flSpecial2Range = ReadFloat(strValue);
+		break;
+	case "num_projectiles":
+		m_iNumProjectiles = ReadInt(strValue);
+		break;
+	case "projectile_spread":
+		m_flProjectileSpread = ReadFloat(strValue);
+		break;
+	case "projectile_delay":
+		m_flProjectileDelay = ReadFloat(strValue);
+		break;
+	case "attack_cone":
+		m_flAttackCone = ReadFloat(strValue);
+		break;
+	case "attack_accuracy": /* affects ranged accuracy */
+		m_flAttackAccuracy = ReadFloat(strValue);
+		break;
+	case "weapon_drawn":
+		m_bWeaponStartsDrawn = ReadBool(strValue);
+		break;
+	case "body_on_draw":
+		m_flBodyOnDraw = ReadFloat(strValue);
+		break;
+	case "speed_walk":
+		m_flWalkSpeed = ReadFloat(strValue);
+		break;
+	case "speed_run":
+		m_flRunSpeed = ReadFloat(strValue);
+		break;
+	/* compat */
+	case "maxs":
+		base_maxs = ReadVector(strValue);
+		break;
+	case "mins":
+		base_mins = ReadVector(strValue);
+		break;
+	case "team":
+		m_iAlliance = ReadInt(strValue);
+		break;
+	case "health":
+		base_health = Skill_GetDefValue(strValue);
 		break;
 	default:
 		NSSurfacePropEntity::SpawnKey(strKey, strValue);
@@ -1077,6 +1557,7 @@ NSMonster::EvaluateEntity(void)
 	EVALUATE_VECTOR(angles, 0, MONFL_CHANGED_ANGLES_X)
 	EVALUATE_VECTOR(angles, 1, MONFL_CHANGED_ANGLES_Y)
 	EVALUATE_VECTOR(angles, 2, MONFL_CHANGED_ANGLES_Z)
+	EVALUATE_VECTOR(v_angle, 0, MONFL_CHANGED_ANGLES_X)
 	EVALUATE_FIELD(modelindex, MONFL_CHANGED_MODELINDEX)
 	EVALUATE_VECTOR(view_ofs, 2, MONFL_CHANGED_MODELINDEX)
 	EVALUATE_FIELD(solid, MONFL_CHANGED_SOLID)
@@ -1103,6 +1584,9 @@ NSMonster::EvaluateEntity(void)
 	EVALUATE_VECTOR(m_vecRenderColor, 1, MONFL_CHANGED_RENDERCOLOR)
 	EVALUATE_VECTOR(m_vecRenderColor, 2, MONFL_CHANGED_RENDERCOLOR)
 	EVALUATE_FIELD(m_flRenderAmt, MONFL_CHANGED_RENDERAMT)
+	EVALUATE_FIELD(bonecontrol1, MONFL_CHANGED_HEADYAW)
+	EVALUATE_FIELD(subblendfrac, MONFL_CHANGED_HEADYAW)
+	EVALUATE_FIELD(frame1time, MONFL_CHANGED_HEADYAW)
 }
 
 /* Make sure StartFrame calls this */
@@ -1126,6 +1610,7 @@ NSMonster::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_ANGLE(angles[0], MONFL_CHANGED_ANGLES_X)
 	SENDENTITY_ANGLE(angles[1], MONFL_CHANGED_ANGLES_Y)
 	SENDENTITY_ANGLE(angles[2], MONFL_CHANGED_ANGLES_Z)
+	SENDENTITY_ANGLE(v_angle[0], MONFL_CHANGED_ANGLES_X)
 	SENDENTITY_SHORT(modelindex, MONFL_CHANGED_MODELINDEX)
 	SENDENTITY_BYTE(view_ofs[2], MONFL_CHANGED_MODELINDEX)
 	SENDENTITY_BYTE(solid, MONFL_CHANGED_SOLID)
@@ -1152,6 +1637,9 @@ NSMonster::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_ANGLE(m_vecRenderColor[1], MONFL_CHANGED_RENDERCOLOR)
 	SENDENTITY_ANGLE(m_vecRenderColor[2], MONFL_CHANGED_RENDERCOLOR)
 	SENDENTITY_ANGLE(m_flRenderAmt, MONFL_CHANGED_RENDERAMT)
+	SENDENTITY_FLOAT(bonecontrol1, MONFL_CHANGED_HEADYAW)
+	SENDENTITY_FLOAT(subblendfrac, MONFL_CHANGED_HEADYAW)
+	SENDENTITY_FLOAT(frame1time, MONFL_CHANGED_HEADYAW)
 
 	return (1);
 }
@@ -1202,6 +1690,7 @@ NSMonster::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_ANGLE(angles[0], MONFL_CHANGED_ANGLES_X)
 	READENTITY_ANGLE(angles[1], MONFL_CHANGED_ANGLES_Y)
 	READENTITY_ANGLE(angles[2], MONFL_CHANGED_ANGLES_Z)
+	READENTITY_ANGLE(v_angle[0], MONFL_CHANGED_ANGLES_X)
 	READENTITY_SHORT(modelindex, MONFL_CHANGED_MODELINDEX)
 	READENTITY_BYTE(view_ofs[2], MONFL_CHANGED_MODELINDEX)
 	READENTITY_BYTE(solid, MONFL_CHANGED_SOLID)
@@ -1228,16 +1717,17 @@ NSMonster::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_ANGLE(m_vecRenderColor[1], MONFL_CHANGED_RENDERCOLOR)
 	READENTITY_ANGLE(m_vecRenderColor[2], MONFL_CHANGED_RENDERCOLOR)
 	READENTITY_ANGLE(m_flRenderAmt, MONFL_CHANGED_RENDERAMT)
+	READENTITY_FLOAT(bonecontrol1, MONFL_CHANGED_HEADYAW)
+	READENTITY_FLOAT(subblendfrac, MONFL_CHANGED_HEADYAW)
+	READENTITY_FLOAT(frame1time, MONFL_CHANGED_HEADYAW)
 
 	if (scale == 0.0)
 		scale = 1.0f;
 
-	if (flChanged & MONFL_CHANGED_FRAME)
-		frame1time = 0.0f;
 	if (flChanged & MONFL_CHANGED_SIZE)
 		setsize(this, mins * scale, maxs * scale);
 	if (flChanged & MONFL_CHANGED_BODY)
-		setcustomskin(this, "", sprintf("geomset 0 %i\ngeomset 1 %i\n", m_iBody, m_iBody));
+		_UpdateGeomset();
 
 	setorigin(this, origin);
 }
