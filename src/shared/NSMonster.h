@@ -491,7 +491,7 @@ private:
 	string m_sndRangedAttack2;
 
 	bool m_bWeaponStartsDrawn;
-	float m_flBodyOnDraw;
+	string m_strBodyOnDraw;
 
 	float m_flWalkSpeed;
 	float m_flRunSpeed;

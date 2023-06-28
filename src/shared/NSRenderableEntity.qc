@@ -587,8 +587,6 @@ NSRenderableEntity::SetBody(int newBody)
 {
 	m_iBody = newBody;
 
-	breakpoint();
-
 #ifdef CLIENT
 	_UpdateGeomset();
 #endif
@@ -600,7 +598,6 @@ NSRenderableEntity::SetBodyInGroup(int groupID, int bodyValue)
 	/* pack our half bytes */
 	m_iBody |= (bodyValue << (4 * groupID));
 	//print(sprintf("NEW BODY: %i %i %i\n", m_iBody, groupID, bodyValue));
-	breakpoint();
 }
 
 void

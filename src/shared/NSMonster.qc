@@ -832,8 +832,15 @@ NSMonster::AttackDraw(void)
 	AnimPlay(actDraw);
 	m_flAttackThink = time + frameduration(modelindex, actDraw);
 
-	if (m_flBodyOnDraw)
-		SetBody(m_flBodyOnDraw);
+	if (m_strBodyOnDraw) {
+		int t = tokenizebyseparator(m_strBodyOnDraw, ":");
+
+		if (t == 1) {
+			SetBodyInGroup(0, stoi(argv(0)));
+		} else if (t == 2) {
+			SetBodyInGroup(stoi(argv(0)), stoi(argv(1)));
+		}
+	}
 }
 
 void
@@ -1521,7 +1528,7 @@ NSMonster::SpawnKey(string strKey, string strValue)
 		m_bWeaponStartsDrawn = ReadBool(strValue);
 		break;
 	case "body_on_draw":
-		m_flBodyOnDraw = ReadFloat(strValue);
+		m_strBodyOnDraw = ReadString(strValue);
 		break;
 	case "speed_walk":
 		m_flWalkSpeed = ReadFloat(strValue);
