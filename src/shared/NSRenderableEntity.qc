@@ -45,13 +45,16 @@ void NSRenderableEntity::RendererRestarted( void ) {
 
 void NSRenderableEntity::_UpdateGeomset(void)
 {
+	/* unpack our half bytes */
 	int firstBody = (m_iBody & 0x0F);
 	int secondBody = ((m_iBody >> 4) & 0x0F);
+	int thirdBody = ((m_iBody >> 8) & 0x0F);
+	int fourthBody = ((m_iBody >> 12) & 0x0F);
 
-	//print(sprintf("%i body 1: %i body 2: %i\n", m_iBody , firstBody, secondBody));
+	//print(sprintf("%i body 0: %i body 1: %i body 2: %i body 3: %i\n", m_iBody , firstBody, secondBody, thirdBody, fourthBody));
 
 	setcustomskin(this, "",
-		sprintf("geomset 0 %i\ngeomset 1 %i\ngeomset 2 %i\n", secondBody, firstBody, secondBody)
+		sprintf("geomset 0 %i\ngeomset 1 %i\ngeomset 2 %i\ngeomset 3 %i\n", firstBody, secondBody, thirdBody, fourthBody)
 	);
 }
 #endif
@@ -196,7 +199,7 @@ NSRenderableEntity::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_FLOAT(frame1time, RDENT_CHANGED_FRAME)
 	SENDENTITY_FLOAT(skin, RDENT_CHANGED_SKIN)
 	SENDENTITY_FLOAT(effects, RDENT_CHANGED_EFFECTS)
-	SENDENTITY_BYTE(m_iBody, RDENT_CHANGED_BODY)
+	SENDENTITY_SHORT(m_iBody, RDENT_CHANGED_BODY)
 	SENDENTITY_FLOAT(scale, RDENT_CHANGED_SCALE)
 	SENDENTITY_COORD(velocity[0], RDENT_CHANGED_VELOCITY)
 	SENDENTITY_COORD(velocity[1], RDENT_CHANGED_VELOCITY)
@@ -253,7 +256,7 @@ NSRenderableEntity::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_FLOAT(frame1time, RDENT_CHANGED_FRAME)
 	READENTITY_FLOAT(skin, RDENT_CHANGED_SKIN)
 	READENTITY_FLOAT(effects, RDENT_CHANGED_EFFECTS)
-	READENTITY_BYTE(m_iBody, RDENT_CHANGED_BODY)
+	READENTITY_SHORT(m_iBody, RDENT_CHANGED_BODY)
 	READENTITY_FLOAT(scale, RDENT_CHANGED_SCALE)
 	READENTITY_COORD(velocity[0], RDENT_CHANGED_VELOCITY)
 	READENTITY_COORD(velocity[1], RDENT_CHANGED_VELOCITY)
@@ -584,9 +587,20 @@ NSRenderableEntity::SetBody(int newBody)
 {
 	m_iBody = newBody;
 
+	breakpoint();
+
 #ifdef CLIENT
 	_UpdateGeomset();
 #endif
+}
+
+void
+NSRenderableEntity::SetBodyInGroup(int groupID, int bodyValue)
+{
+	/* pack our half bytes */
+	m_iBody |= (bodyValue << (4 * groupID));
+	//print(sprintf("NEW BODY: %i %i %i\n", m_iBody, groupID, bodyValue));
+	breakpoint();
 }
 
 void
@@ -645,6 +659,12 @@ NSRenderableEntity::SetBoneControl5(float val)
 
 int
 NSRenderableEntity::GetBody(void)
+{
+	return m_iBody;
+}
+
+int
+NSRenderableEntity::GetBodyInGroup(int bodyGroup)
 {
 	return m_iBody;
 }
@@ -851,6 +871,18 @@ NSRenderableEntity::SpawnKey(string strKey, string strValue)
 	switch (strKey) {
 	case "body":
 		m_iBody = stoi(strValue);
+		break;
+	case "body0":
+		SetBodyInGroup(0, stoi(strValue));
+		break;
+	case "body1":
+		SetBodyInGroup(1, stoi(strValue));
+		break;
+	case "body2":
+		SetBodyInGroup(2, stoi(strValue));
+		break;
+	case "body3":
+		SetBodyInGroup(3, stoi(strValue));
 		break;
 	case "modelscale":
 	case "scale":

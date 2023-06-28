@@ -152,6 +152,8 @@ public:
 	/* set */
 	/** Sets the bodygroup of the entity. */
 	nonvirtual void SetBody(int);
+	/** Sets the body inside of a specific group. */
+	nonvirtual void SetBodyInGroup(int, int);
 	/** Sets the render FX type of the entity. Check renderfx_t for details. */
 	nonvirtual void SetRenderFX(float);
 	/** Sets the render mode type of the entity. Check rendermode_t for details. */
@@ -172,6 +174,8 @@ public:
 	nonvirtual void SetBoneControl5(float);
 	/** Returns the bodygroup of the entity. */
 	nonvirtual int GetBody(void);
+	/** Returns the body within a given group. */
+	nonvirtual int GetBodyInGroup(int);
 	/** Returns the render mode of the entity. */
 	nonvirtual float GetRenderMode(void);
 	/** Returns the render FX of the entity. */

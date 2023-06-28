@@ -25,6 +25,8 @@ NSSquadMonster::NSSquadMonster(void)
 	for (int i = 0; i < NSSQUADMONSTER_MAXMEMBERS; i++) {
 		m_eSquadMembers[i] = __NULL__;
 	}
+
+	m_strSquadLeaderBody = 0;
 #endif
 }
 
@@ -37,7 +39,7 @@ NSSquadMonster::SpawnKey(string strKey, string strValue)
 		m_bStartAsLeader = ReadBool(strValue);
 		break;
 	case "squad_leader_body":
-		m_iSquadLeaderBody = ReadInt(strValue);
+		m_strSquadLeaderBody = ReadString(strValue);
 		break;
 	default:
 		super::SpawnKey(strKey, strValue);
@@ -131,7 +133,19 @@ NSSquadMonster::AddToSquad(NSSquadMonster addMember)
 		startMember = this;
 		m_inSquad = true;
 		print(sprintf("%s (%d) became squad leader\n", classname, num_for_edict(this)));
-		SetBody(GetBody() | m_iSquadLeaderBody);
+		//SetBody(GetBody() | m_iSquadLeaderBody);
+
+		/* apply the squad leader body */
+		{
+			int t = tokenizebyseparator(m_strSquadLeaderBody, ":");
+
+			if (t == 1) {
+				SetBodyInGroup(0, stoi(argv(0)));
+			} else if (t == 2) {
+				SetBodyInGroup(stoi(argv(0)), stoi(argv(1)));
+			}
+		}
+
 		HasBecomeSquadLeader();
 	}
 

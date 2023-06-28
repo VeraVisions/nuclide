@@ -55,7 +55,7 @@ public:
 
 #ifdef SERVER
 private:
-	int m_iSquadLeaderBody;
+	string m_strSquadLeaderBody;
 	bool m_bStartAsLeader;
 	bool m_inSquad;
 	NSSquadMonster m_eSquadLeader;
