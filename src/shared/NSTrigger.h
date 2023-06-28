@@ -132,6 +132,8 @@ private:
 	int m_iUseType;
 	int m_iValue;
 
+	float team_no;
+
 	/* legacy trigger architecture */
 	float m_flDelay;
 #endif

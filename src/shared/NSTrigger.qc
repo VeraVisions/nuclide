@@ -264,7 +264,7 @@ NSTrigger::SpawnKey(string strKey, string strValue)
 		m_strMaster = strValue;
 		break;
 	case "team_no":
-		team = stof(strValue);
+		team_no = stof(strValue);
 		break;
 	case "delay":
 		m_flDelay = stof(strValue);
@@ -314,8 +314,8 @@ NSTrigger::_TouchHandler(void)
 {
 #ifdef SERVER
 	if (g_grMode.IsTeamplay())
-	if (team > 0i)
-	if (other.team != team) {
+	if (team_no > 0i)
+	if (other.team != team_no) {
 		return;
 	}
 #endif
