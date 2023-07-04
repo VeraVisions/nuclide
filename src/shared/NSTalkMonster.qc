@@ -506,7 +506,7 @@ NSTalkMonster::FollowPlayer(void)
 			input_angles[0] = 0;
 			input_angles[1] = Math_FixDelta(input_angles[1]);
 			input_angles[2] = 0;
-	_LerpTurnToYaw(input_angles[1]);
+	_LerpTurnToYaw(input_angles);
 
 	/* for best results, we want to ignore the Z plane
 	   this avoids the problem of a follower spinning 
@@ -547,7 +547,7 @@ NSTalkMonster::FollowPlayer(void)
 			input_angles[0] = 0;
 			input_angles[1] = Math_FixDelta(input_angles[1]);
 			input_angles[2] = 0;
-			_LerpTurnToYaw(input_angles[1]);
+			_LerpTurnToYaw(input_angles);
 		} else {
 			m_vecLastUserPos = m_eFollowingChain.origin;
 		}

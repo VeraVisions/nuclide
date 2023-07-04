@@ -254,6 +254,30 @@ remove(entity target)
 	prior(target);
 }
 
+__wrap void
+traceline(vector v1, vector v2, float flags, entity ent)
+{
+#ifdef SERVER
+	if (autocvar(com_showTracers, 0) == 1) {
+		WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+		WriteByte(MSG_MULTICAST, EV_TRACEDEBUG);
+		WriteCoord(MSG_MULTICAST, v1[0]);
+		WriteCoord(MSG_MULTICAST, v1[1]);
+		WriteCoord(MSG_MULTICAST, v1[2]);
+		WriteCoord(MSG_MULTICAST, v2[0]);
+		WriteCoord(MSG_MULTICAST, v2[1]);
+		WriteCoord(MSG_MULTICAST, v2[2]);
+		msg_entity = world;
+		multicast(v1, MULTICAST_PVS_R);
+	}
+#endif
+
+#ifdef CLIENT
+	// TODO
+#endif
+	prior(v1, v2, flags, ent);
+}
+
 void
 setorigin_safe(entity target, vector testorg)
 {

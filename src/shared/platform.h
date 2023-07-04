@@ -72,3 +72,40 @@ Platform_GetPlatform(void)
 
 	return g_platform;
 }
+
+bool
+Platform_FileInGamedir(string fileName, string gameDir)
+{
+	searchhandle fileSearch;
+	int fileCount = 0i;
+
+	fileSearch = search_begin(fileName, SEARCH_FULLPACKAGE, TRUE);
+	fileCount = search_getsize(fileSearch);
+
+	print(sprintf("looking for %S in %S\n", fileName, gameDir));
+
+	/* doesn't exist */
+	if (fileCount <= 0)
+		return false;
+
+	for (int i = 0; i < fileCount; i++) {
+		string fileDir;
+		string fullPath = search_getpackagename(fileSearch, i);
+		fileDir = substring(fullPath, 0, strlen(gameDir)); /* only need to check same-ness */
+
+		if (fileDir == gameDir) {
+			print("found it\n");
+			return true;
+		}
+	}
+
+	/* file exists but is in a different gamedir */
+	return false;
+}
+
+bool
+Platform_FileInCurrentGamedir(string fileName)
+{
+	string gameDir = cvar_string("game");
+	return Platform_FileInGamedir(fileName, gameDir);
+}

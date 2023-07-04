@@ -131,6 +131,40 @@ EV_Shake(void)
 }
 
 void
+EV_TraceDebug(void)
+{
+	static void EV_TraceDebug_Draw(void) {
+		R_BeginPolygon("", 0, 0);
+		R_PolygonVertex(self.origin, [0,1], [0,1,0], 1.0f);
+		R_PolygonVertex(self.angles, [1,1], [1,0,0], 1.0f);
+		R_EndPolygon();
+	}
+	static void EV_TraceDebug_Destroy(void) {
+		remove(self);
+	}
+
+	vector startOrg, endOrg;
+	entity traceRep;
+
+	startOrg[0] = readcoord();
+	startOrg[1] = readcoord();
+	startOrg[2] = readcoord();
+
+	endOrg[0] = readcoord();
+	endOrg[1] = readcoord();
+	endOrg[2] = readcoord();
+
+	traceRep = spawn();
+	traceRep.predraw = EV_TraceDebug_Draw;
+	traceRep.drawmask = MASK_ENGINE;
+	traceRep.think = EV_TraceDebug_Destroy;
+	traceRep.nextthink = time + 4.0f;
+
+	traceRep.origin = startOrg;
+	traceRep.angles = endOrg;
+}
+
+void
 Event_Parse(float type)
 {
 	switch (type) {
@@ -195,6 +229,9 @@ Event_Parse(float type)
 		break;
 	case EV_BREAKMODEL:
 		BreakModel_Receive();
+		break;
+	case EV_TRACEDEBUG:
+		EV_TraceDebug();
 		break;
 	default:
 		error(sprintf("event id %d not recognized. abort immediately.\n", type));

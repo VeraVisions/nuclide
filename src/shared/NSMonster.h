@@ -513,3 +513,17 @@ void NSMonster_ReadEntity(bool);
 void NSMonster_AlertEnemyAlliance(vector pos, float radius, int alliance);
 entity NSMonster_FindClosestPlayer(entity);
 #endif
+
+.float baseframe2;
+.float baseframe1time;
+.float baseframe2time;
+.float baselerpfrac;
+.float bonecontrol1;
+.float bonecontrol2;
+.float bonecontrol3;
+.float bonecontrol4;
+.float bonecontrol5;
+.float subblendfrac;
+.float subblend2frac;
+.float basesubblendfrac;
+.float basesubblend2frac;
