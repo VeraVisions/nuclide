@@ -692,12 +692,17 @@ SV_PerformLoad(float fh, float entcount, float playerslots)
 
 			__fullspawndata = fgets(fh);
 
-			/* call the constructor if one is present, init the default fields */
-			if (isfunction(strcat("spawnfunc_", cname))) {
-				e.classname = cname;
+			eold = self;
+			self = e;
 
-				eold = self;
-				self = e;
+			/* check for entityDef first */
+			if (EntityDef_SpawnClassname(cname)) {
+				e.classname = cname;
+				loadent = (NSEntity)e;
+				self = eold;
+			} else if (isfunction(strcat("spawnfunc_", cname))) {
+				/* call the constructor if one is present, init the default fields */
+				e.classname = cname;
 				callfunction(strcat("spawnfunc_", cname));
 				e.classname = cname;
 				loadent = (NSEntity)e;
@@ -705,6 +710,7 @@ SV_PerformLoad(float fh, float entcount, float playerslots)
 			} else {
 				print(sprintf("Could not spawn %s\n", cname));
 				remove(e);
+				self = eold;
 				continue;
 			}
 		} else if (argv(0) == "{") {
