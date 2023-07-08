@@ -963,6 +963,10 @@ NSRenderableEntity::SpawnKey(string strKey, string strValue)
 	case "scale":
 		scale = stof(strValue);
 		break;
+	case "modelstretch":
+	case "axialscale":
+		m_vecAxialScale = stov(strValue);
+		break;
 	case "skin":
 		skin = stof(strValue);
 		break;
