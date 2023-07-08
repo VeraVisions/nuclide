@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+.void(void) _m_NSTimerFunc;
+
 /** This class provides a way to trigger a function in the future.
 It has the ability to clean itself up afterwards, too. */
 class
@@ -21,7 +23,6 @@ NSTimer:NSEntity
 {
 private:
 	entity m_eReceiver;
-	virtual void(void) m_vFunc = 0;
 	float m_flTime;
 	bool m_bRepeats;
 
@@ -47,4 +48,9 @@ public:
 	nonvirtual void StopTimer(void);
 
 	virtual void OnRemoveEntity(void);
+
+#ifdef SERVER
+	virtual void Save(float);
+	virtual void Restore(string, string);
+#endif
 };

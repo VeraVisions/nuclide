@@ -384,6 +384,7 @@ NSIO::Save(float handle)
 	SaveString(handle, "m_strOnUser2", m_strOnUser2);
 	SaveString(handle, "m_strOnUser3", m_strOnUser3);
 	SaveString(handle, "m_strOnUser4", m_strOnUser4);
+	SaveString(handle, "m_strModelEventCB", m_strModelEventCB);
 }
 void
 NSIO::Restore(string strKey, string strValue)
@@ -672,6 +673,9 @@ NSIO::Restore(string strKey, string strValue)
 		break;
 	case "m_strOnUser4":
 		m_strOnUser4 = ReadString(strValue);
+		break;
+	case "m_strModelEventCB":
+		m_strModelEventCB = ReadString(strValue);
 		break;
 	}
 }

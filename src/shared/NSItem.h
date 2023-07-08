@@ -26,6 +26,8 @@ public:
 	virtual void Touch(entity);
 	virtual void Respawn(void);
 	virtual void SpawnKey(string, string);
+	virtual void Save(float);
+	virtual void Restore(string,string);
 
 	nonvirtual void SetItem(int i);
 	nonvirtual int GetItem(void);

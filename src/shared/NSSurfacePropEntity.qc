@@ -526,20 +526,34 @@ void
 NSSurfacePropEntity::Save(float handle)
 {
 	super::Save(handle);
+	SaveFloat(handle, "m_flBurnNext", m_flBurnNext);
+	SaveFloat(handle, "armor", armor);
+	SaveFloat(handle, "health", health);
 	SaveFloat(handle, "m_eBurner", num_for_edict(m_eBurner));
 	SaveInt(handle, "m_iBurnWeapon", m_iBurnWeapon);
 	SaveFloat(handle,"m_flBurnTime", m_flBurnTime);
-	SaveFloat(handle, "m_flBurnNext", m_flBurnNext);
+	SaveFloat(handle, "m_flBurnDmgTime", m_flBurnDmgTime);
 	SaveString(handle, "m_strOnBreak", m_strOnBreak);
 	SaveFloat(handle, "m_oldHealth", m_oldHealth);
+	SaveVector(handle, "m_vecBloodColor", m_vecBloodColor);
 	SaveInt(handle, "m_iMaterial", m_iMaterial);
 	SaveInt(handle, "m_iPropData", m_iPropData);
+	SaveFloat(handle, "m_flDeathTime", m_flDeathTime);
 }
 
 void
 NSSurfacePropEntity::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
+	case "m_flBurnNext":
+		m_flBurnNext = ReadFloat(strValue);
+		break;
+	case "armor":
+		armor = ReadFloat(strValue);
+		break;
+	case "health":
+		health = ReadFloat(strValue);
+		break;
 	case "m_eBurner":
 		m_eBurner = edict_num(ReadFloat(strValue));
 		break;
@@ -549,8 +563,8 @@ NSSurfacePropEntity::Restore(string strKey, string strValue)
 	case "m_flBurnTime":
 		m_flBurnTime = ReadFloat(strValue);
 		break;
-	case "m_flBurnNext":
-		m_flBurnNext = ReadFloat(strValue);
+	case "m_flBurnDmgTime":
+		m_flBurnDmgTime = ReadFloat(strValue);
 		break;
 	case "m_strOnBreak":
 		m_strOnBreak = ReadString(strValue);
@@ -558,11 +572,17 @@ NSSurfacePropEntity::Restore(string strKey, string strValue)
 	case "m_oldHealth":
 		m_oldHealth = ReadFloat(strValue);
 		break;
+	case "m_vecBloodColor":
+		m_vecBloodColor = ReadVector(strValue);
+		break;
 	case "m_iMaterial":
 		m_iMaterial = ReadInt(strValue);
 		break;
 	case "m_iPropData":
 		m_iPropData = ReadInt(strValue);
+		break;
+	case "m_flDeathTime":
+		m_flDeathTime = ReadFloat(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);

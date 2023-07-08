@@ -122,6 +122,8 @@ public:
 	virtual void SpawnKey(string, string);
 	virtual void EvaluateEntity(void);
 	virtual float SendEntity(entity, float);
+	virtual void Save(float);
+	virtual void Restore(string, string);
 
 	nonvirtual void _FuseEnded(void);
 	nonvirtual void _Explode(void);

@@ -847,19 +847,53 @@ void
 NSRenderableEntity::Save(float handle)
 {
 	super::Save(handle);
+	SaveFloat(handle, "m_flBoneControl1", m_flBoneControl1);
+	SaveFloat(handle, "m_flBoneControl2", m_flBoneControl2);
+	SaveFloat(handle, "m_flBoneControl3", m_flBoneControl3);
+	SaveFloat(handle, "m_flBoneControl4", m_flBoneControl4);
+	SaveFloat(handle, "m_flBoneControl5", m_flBoneControl5);
+	SaveFloat(handle, "modelflags", modelflags);
 	SaveInt(handle, "m_iBody", m_iBody);
+	SaveFloat(handle, "colormap", colormap);
+	SaveVector(handle, "glowmod", glowmod);
 	SaveFloat(handle, "m_flRenderAmt", m_flRenderAmt);
 	SaveVector(handle, "m_vecRenderColor", m_vecRenderColor);
 	SaveFloat(handle, "m_iRenderMode", m_iRenderMode);
 	SaveFloat(handle, "m_iRenderFX", m_iRenderFX);
+	SaveVector(handle, "m_vecAxialScale", m_vecAxialScale);
+	SaveFloat(handle, "m_flBaseTime", m_flBaseTime);
 }
 
 void
 NSRenderableEntity::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
+	case "m_flBoneControl1":
+		m_flBoneControl1 = ReadFloat(strValue);
+		break;
+	case "m_flBoneControl2":
+		m_flBoneControl2 = ReadFloat(strValue);
+		break;
+	case "m_flBoneControl3":
+		m_flBoneControl3 = ReadFloat(strValue);
+		break;
+	case "m_flBoneControl4":
+		m_flBoneControl4 = ReadFloat(strValue);
+		break;
+	case "m_flBoneControl5":
+		m_flBoneControl5 = ReadFloat(strValue);
+		break;
+	case "modelflags":
+		modelflags = ReadFloat(strValue);
+		break;
 	case "m_iBody":
 		m_iBody = ReadInt(strValue);
+		break;
+	case "colormap":
+		colormap = ReadFloat(strValue);
+		break;
+	case "glowmod":
+		glowmod = ReadVector(strValue);
 		break;
 	case "m_flRenderAmt":
 		m_flRenderAmt = ReadFloat(strValue);
@@ -872,6 +906,12 @@ NSRenderableEntity::Restore(string strKey, string strValue)
 		break;
 	case "m_iRenderFX":
 		m_iRenderFX = ReadFloat(strValue);
+		break;
+	case "m_vecAxialScale":
+		m_vecAxialScale = ReadVector(strValue);
+		break;
+	case "m_flBaseTime":
+		m_flBaseTime = ReadFloat(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);

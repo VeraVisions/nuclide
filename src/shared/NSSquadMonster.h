@@ -27,6 +27,8 @@ public:
 	/* overrides */
 	virtual void Spawned(void);
 	virtual void SpawnKey(string, string);
+	virtual void Save(float);
+	virtual void Restore(string, string);
 
 	/** Overridable: Called when this NPC became squad leader. */
 	virtual void HasBecomeSquadLeader(void);

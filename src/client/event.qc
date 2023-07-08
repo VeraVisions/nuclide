@@ -133,11 +133,12 @@ EV_Shake(void)
 void
 EV_TraceDebug(void)
 {
-	static void EV_TraceDebug_Draw(void) {
+	static float EV_TraceDebug_Draw(void) {
 		R_BeginPolygon("", 0, 0);
 		R_PolygonVertex(self.origin, [0,1], [0,1,0], 1.0f);
 		R_PolygonVertex(self.angles, [1,1], [1,0,0], 1.0f);
 		R_EndPolygon();
+		return PREDRAW_NEXT;
 	}
 	static void EV_TraceDebug_Destroy(void) {
 		remove(self);

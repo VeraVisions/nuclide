@@ -56,6 +56,54 @@ NSPortal::NSPortal(void)
 
 #ifdef SERVER
 void
+NSPortal::Save(float handle)
+{
+	super::Save(handle);
+	SaveEntity(handle, "m_ePortalTarget", m_ePortalTarget);
+	SaveVector(handle, "m_vecTargetPos", m_vecTargetPos);
+	SaveVector(handle, "m_vecTargetAngle", m_vecTargetAngle);
+	SaveVector(handle, "m_vecPortalPos", m_vecPortalPos);
+	SaveVector(handle, "m_vecPortalN", m_vecPortalN);
+	SaveVector(handle, "m_vecPortalS", m_vecPortalS);
+	SaveVector(handle, "m_vecPortalT", m_vecPortalT);
+	SaveInt(handle, "m_iPortalValue", m_iPortalValue);
+}
+
+void
+NSPortal::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "m_ePortalTarget":
+		m_ePortalTarget = (NSPortal)ReadEntity(strValue);
+		break;
+	case "m_vecTargetPos":
+		m_vecTargetPos = ReadVector(strValue);
+		break;
+	case "m_vecTargetAngle":
+		m_vecTargetAngle = ReadVector(strValue);
+		break;
+	case "m_vecPortalPos":
+		m_vecPortalPos = ReadVector(strValue);
+		break;
+	case "m_vecPortalN":
+		m_vecPortalN = ReadVector(strValue);
+		break;
+	case "m_vecPortalS":
+		m_vecPortalS = ReadVector(strValue);
+		break;
+	case "m_vecPortalT":
+		m_vecPortalT = ReadVector(strValue);
+		break;
+	case "m_iPortalValue":
+		m_iPortalValue = ReadInt(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+		break;
+	}
+}
+
+void
 NSPortal::PortalAutoLink(void)
 {
 	/* this just links against the youngest portal of the same ID at this time */
@@ -360,8 +408,8 @@ void
 NSPortal::ReceiveEntity(float flNew, float flChanged)
 {
 	if (m_ePortalTarget) {
-		m_ePortalTarget.m_ePortalTarget = world;
-		m_ePortalTarget = world;
+		m_ePortalTarget.m_ePortalTarget = __NULL__;
+		m_ePortalTarget = __NULL__;
 	}
 
 	READENTITY_COORD(origin[0], PORTALFL_CHANGED_ORIGIN_X)
@@ -370,7 +418,7 @@ NSPortal::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_FLOAT(angles[0], PORTALFL_CHANGED_ANGLES_X)
 	READENTITY_FLOAT(angles[1], PORTALFL_CHANGED_ANGLES_Y)
 	READENTITY_FLOAT(angles[2], PORTALFL_CHANGED_ANGLES_Z)
-	READENTITY_ENTITY(m_ePortalTarget, PORTALFL_CHANGED_TARG_ENTITY)
+	READENTITY_PORTAL(m_ePortalTarget, PORTALFL_CHANGED_TARG_ENTITY)
 
 		READENTITY_COORD(m_vecTargetPos[0], PORTALFL_CHANGED_TARG_ORIGIN_X)
 		READENTITY_COORD(m_vecTargetPos[1], PORTALFL_CHANGED_TARG_ORIGIN_Y)
@@ -381,7 +429,7 @@ NSPortal::ReceiveEntity(float flNew, float flChanged)
 
 	if (m_ePortalTarget) {
 		if (m_ePortalTarget.m_ePortalTarget)
-			m_ePortalTarget.m_ePortalTarget.m_ePortalTarget = world;
+			m_ePortalTarget.m_ePortalTarget.m_ePortalTarget = __NULL__;
 
 		m_ePortalTarget. m_ePortalTarget = this;
 	} else {

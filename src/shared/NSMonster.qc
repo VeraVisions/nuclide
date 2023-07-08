@@ -118,65 +118,126 @@ NSMonster::Save(float handle)
 {
 	super::Save(handle);
 
-	SaveEntity(handle, "m_eEnemy", m_eEnemy);
+	SaveFloat(handle, "m_flHeadYaw", m_flHeadYaw);
+	SaveFloat(handle, "frame1time", frame1time);
+	SaveFloat(handle, "subblendfrac", subblendfrac);
+	SaveFloat(handle, "bonecontrol1", bonecontrol1);
+	SaveEntity(handle, "m_eLookAt", m_eLookAt);
 	SaveEntity(handle, "m_ssLast", m_ssLast);
-	SaveFloat(handle, "base_health", base_health);
-	SaveFloat(handle, "m_flAttackThink", m_flAttackThink);
-	SaveFloat(handle, "m_flBaseTime", m_flBaseTime);
 	SaveFloat(handle, "m_flPitch", m_flPitch);
-	SaveFloat(handle, "m_flSequenceEnd", m_flSequenceEnd);
-	SaveFloat(handle, "m_flSequenceSpeed", m_flSequenceSpeed);
 	SaveInt(handle, "m_iFlags", m_iFlags);
-	SaveInt(handle, "m_iSequenceFlags", m_iSequenceFlags);
+	SaveVector(handle, "base_mins", base_mins);
+	SaveVector(handle, "base_maxs", base_maxs);
+	SaveFloat(handle, "base_health", base_health);
+	SaveString(handle, "m_strRouteEnded", m_strRouteEnded);
 	SaveInt(handle, "m_iSequenceRemove", m_iSequenceRemove);
 	SaveInt(handle, "m_iSequenceState", m_iSequenceState);
+	SaveFloat(handle, "m_flSequenceEnd", m_flSequenceEnd);
+	SaveFloat(handle, "m_flSequenceSpeed", m_flSequenceSpeed);
+	SaveVector(handle, "m_vecSequenceAngle", m_vecSequenceAngle);
+	SaveInt(handle, "m_iSequenceFlags", m_iSequenceFlags);
+	SaveFloat(handle, "m_iMoveState", m_iMoveState);
 	SaveInt(handle, "m_iTriggerCondition", m_iTriggerCondition);
+	SaveString(handle, "m_strTriggerTarget", m_strTriggerTarget);
+	SaveFloat(handle, "m_flBaseTime", m_flBaseTime);
+	SaveEntity(handle, "m_eEnemy", m_eEnemy);
+	SaveFloat(handle, "m_flAttackThink", m_flAttackThink);
 	SaveFloat(handle, "m_iMState", m_iMState);
 	SaveFloat(handle, "m_iOldMState", m_iOldMState);
-	SaveFloat(handle, "m_iMoveState", m_iMoveState);
-	SaveString(handle, "m_strRouteEnded", m_strRouteEnded);
-	SaveString(handle, "m_strTriggerTarget", m_strTriggerTarget);
-	SaveVector(handle, "base_maxs", base_maxs);
-	SaveVector(handle, "base_mins", base_mins);
 	SaveVector(handle, "m_vecLKPos", m_vecLKPos);
-	SaveVector(handle, "m_vecSequenceAngle", m_vecSequenceAngle);
 	SaveFloat(handle, "m_flSeeTime", m_flSeeTime);
 	SaveFloat(handle, "m_flAnimTime", m_flAnimTime);
+	SaveFloat(handle, "m_flTrackingTime", m_flTrackingTime);
+	SaveVector(handle, "view_ofs", view_ofs);
+	SaveFloat(handle, "m_actIdle", m_actIdle);
+	SaveBool(handle, "m_bTurning", m_bTurning);
+	SaveFloat(handle, "m_flIdleNext", m_flIdleNext);
+	SaveFloat(handle, "_m_flMeleeAttempts", _m_flMeleeAttempts);
+	SaveFloat(handle, "_m_flMeleeDelay", _m_flMeleeDelay);
+	SaveFloat(handle, "_m_flBurstCount", _m_flBurstCount);
+	SaveBool(handle, "_m_bShouldThrow", _m_bShouldThrow);
+	SaveFloat(handle, "_m_flReloadTracker", _m_flReloadTracker);
+	SaveBool(handle, "m_bWeaponDrawn", m_bWeaponDrawn);
+	SaveFloat(handle, "m_flEyeHeight", m_flEyeHeight);
+	SaveString(handle, "m_sndSight", m_sndSight);
+	SaveString(handle, "m_sndIdle", m_sndIdle);
+	SaveFloat(handle, "m_flIdleMin", m_flIdleMin);
+	SaveFloat(handle, "m_flIdleMax", m_flIdleMax);
+	SaveString(handle, "m_sndFootstep", m_sndFootstep);
+	SaveString(handle, "m_sndChatter", m_sndChatter);
+	SaveString(handle, "m_sndChatterCombat", m_sndChatterCombat);
+	SaveString(handle, "m_sndPain", m_sndPain);
+	SaveString(handle, "m_sndMeleeAttack", m_sndMeleeAttack);
+	SaveString(handle, "m_sndMeleeAttackHit", m_sndMeleeAttackHit);
+	SaveString(handle, "m_sndMeleeAttackMiss", m_sndMeleeAttackMiss);
+	SaveString(handle, "m_sndDeath", m_sndDeath);
+	SaveString(handle, "m_sndThud", m_sndThud);
+	SaveString(handle, "m_defSpecial1", m_defSpecial1);
+	SaveFloat(handle, "m_flSpecial1Range", m_flSpecial1Range);
+	SaveString(handle, "m_defSpecial2", m_defSpecial2);
+	SaveFloat(handle, "m_flSpecial2Range", m_flSpecial2Range);
+	SaveString(handle, "m_defRanged1", m_defRanged1);
+	SaveFloat(handle, "m_flRanged1Range", m_flRanged1Range);
+	SaveString(handle, "m_defRanged2", m_defRanged2);
+	SaveFloat(handle, "m_flRanged2Range", m_flRanged2Range);
+	SaveInt(handle, "m_iNumProjectiles", m_iNumProjectiles);
+	SaveFloat(handle, "m_flProjectileDelay", m_flProjectileDelay);
+	SaveFloat(handle, "m_flProjectileSpread", m_flProjectileSpread);
+	SaveFloat(handle, "m_flAttackCone", m_flAttackCone);
+	SaveFloat(handle, "m_flAttackAccuracy", m_flAttackAccuracy);
+	SaveString(handle, "m_defMelee", m_defMelee);
+	SaveFloat(handle, "m_flMeleeRange", m_flMeleeRange);
+	SaveString(handle, "m_sndRangedAttack", m_sndRangedAttack);
+	SaveFloat(handle, "m_flReloadCount", m_flReloadCount);
+	SaveFloat(handle, "m_flReloadDelay", m_flReloadDelay);
+	SaveString(handle, "m_sndReload", m_sndReload);
+	SaveString(handle, "m_sndRangedAttack2", m_sndRangedAttack2);
+	SaveBool(handle, "m_bWeaponStartsDrawn", m_bWeaponStartsDrawn);
+	SaveString(handle, "m_strBodyOnDraw", m_strBodyOnDraw);
+	SaveFloat(handle, "m_flWalkSpeed", m_flWalkSpeed);
+	SaveFloat(handle, "m_flRunSpeed", m_flRunSpeed);
 }
 
 void
 NSMonster::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "m_eEnemy":
-		m_eEnemy = ReadEntity(strValue);
+
+	case "m_flHeadYaw":
+		m_flHeadYaw = ReadFloat(strValue);
+		break;
+	case "frame1time":
+		frame1time = ReadFloat(strValue);
+		break;
+	case "subblendfrac":
+		subblendfrac = ReadFloat(strValue);
+		break;
+	case "bonecontrol1":
+		bonecontrol1 = ReadFloat(strValue);
+		break;
+	case "m_eLookAt":
+		m_eLookAt = ReadEntity(strValue);
 		break;
 	case "m_ssLast":
 		m_ssLast = ReadEntity(strValue);
 		break;
-	case "base_health":
-		base_health = ReadFloat(strValue);
-		break;
-	case "m_flAttackThink":
-		m_flAttackThink = ReadFloat(strValue);
-		break;
-	case "m_flBaseTime":
-		m_flBaseTime = ReadFloat(strValue);
-		break;
 	case "m_flPitch":
 		m_flPitch = ReadFloat(strValue);
-		break;
-	case "m_flSequenceEnd":
-		m_flSequenceEnd = ReadFloat(strValue);
-		break;
-	case "m_flSequenceSpeed":
-		m_flSequenceSpeed = ReadFloat(strValue);
 		break;
 	case "m_iFlags":
 		m_iFlags = ReadInt(strValue);
 		break;
-	case "m_iSequenceFlags":
-		m_iSequenceFlags = ReadInt(strValue);
+	case "base_mins":
+		base_mins = ReadVector(strValue);
+		break;
+	case "base_maxs":
+		base_maxs = ReadVector(strValue);
+		break;
+	case "base_health":
+		base_health = ReadFloat(strValue);
+		break;
+	case "m_strRouteEnded":
+		m_strRouteEnded = ReadString(strValue);
 		break;
 	case "m_iSequenceRemove":
 		m_iSequenceRemove = ReadInt(strValue);
@@ -184,8 +245,35 @@ NSMonster::Restore(string strKey, string strValue)
 	case "m_iSequenceState":
 		m_iSequenceState = ReadInt(strValue);
 		break;
+	case "m_flSequenceEnd":
+		m_flSequenceEnd = ReadFloat(strValue);
+		break;
+	case "m_flSequenceSpeed":
+		m_flSequenceSpeed = ReadFloat(strValue);
+		break;
+	case "m_vecSequenceAngle":
+		m_vecSequenceAngle = ReadVector(strValue);
+		break;
+	case "m_iSequenceFlags":
+		m_iSequenceFlags = ReadInt(strValue);
+		break;
+	case "m_iMoveState":
+		m_iMoveState = ReadFloat(strValue);
+		break;
 	case "m_iTriggerCondition":
 		m_iTriggerCondition = ReadInt(strValue);
+		break;
+	case "m_strTriggerTarget":
+		m_strTriggerTarget = ReadString(strValue);
+		break;
+	case "m_flBaseTime":
+		m_flBaseTime = ReadFloat(strValue);
+		break;
+	case "m_eEnemy":
+		m_eEnemy = ReadEntity(strValue);
+		break;
+	case "m_flAttackThink":
+		m_flAttackThink = ReadFloat(strValue);
 		break;
 	case "m_iMState":
 		m_iMState = ReadFloat(strValue);
@@ -193,32 +281,161 @@ NSMonster::Restore(string strKey, string strValue)
 	case "m_iOldMState":
 		m_iOldMState = ReadFloat(strValue);
 		break;
-	case "m_iMoveState":
-		m_iMoveState = ReadFloat(strValue);
-		break;
-	case "m_strRouteEnded":
-		m_strRouteEnded = ReadString(strValue);
-		break;
-	case "m_strTriggerTarget":
-		m_strTriggerTarget = ReadString(strValue);
-		break;
-	case "base_maxs":
-		base_maxs = ReadVector(strValue);
-		break;
-	case "base_mins":
-		base_mins = ReadVector(strValue);
-		break;
 	case "m_vecLKPos":
 		m_vecLKPos = ReadVector(strValue);
-		break;
-	case "m_vecSequenceAngle":
-		m_vecSequenceAngle = ReadVector(strValue);
 		break;
 	case "m_flSeeTime":
 		m_flSeeTime = ReadFloat(strValue);
 		break;
 	case "m_flAnimTime":
 		m_flAnimTime = ReadFloat(strValue);
+		break;
+	case "m_flTrackingTime":
+		m_flTrackingTime = ReadFloat(strValue);
+		break;
+	case "view_ofs":
+		view_ofs = ReadVector(strValue);
+		break;
+	case "m_actIdle":
+		m_actIdle = ReadFloat(strValue);
+		break;
+	case "m_bTurning":
+		m_bTurning = ReadBool(strValue);
+		break;
+	case "m_flIdleNext":
+		m_flIdleNext = ReadFloat(strValue);
+		break;
+	case "_m_flMeleeAttempts":
+		_m_flMeleeAttempts = ReadFloat(strValue);
+		break;
+	case "_m_flMeleeDelay":
+		_m_flMeleeDelay = ReadFloat(strValue);
+		break;
+	case "_m_flBurstCount":
+		_m_flBurstCount = ReadFloat(strValue);
+		break;
+	case "_m_bShouldThrow":
+		_m_bShouldThrow = ReadBool(strValue);
+		break;
+	case "_m_flReloadTracker":
+		_m_flReloadTracker = ReadFloat(strValue);
+		break;
+	case "m_bWeaponDrawn":
+		m_bWeaponDrawn = ReadBool(strValue);
+		break;
+	case "m_flEyeHeight":
+		m_flEyeHeight = ReadFloat(strValue);
+		break;
+	case "m_sndSight":
+		m_sndSight = ReadString(strValue);
+		break;
+	case "m_sndIdle":
+		m_sndIdle = ReadString(strValue);
+		break;
+	case "m_flIdleMin":
+		m_flIdleMin = ReadFloat(strValue);
+		break;
+	case "m_flIdleMax":
+		m_flIdleMax = ReadFloat(strValue);
+		break;
+	case "m_sndFootstep":
+		m_sndFootstep = ReadString(strValue);
+		break;
+	case "m_sndChatter":
+		m_sndChatter = ReadString(strValue);
+		break;
+	case "m_sndChatterCombat":
+		m_sndChatterCombat = ReadString(strValue);
+		break;
+	case "m_sndPain":
+		m_sndPain = ReadString(strValue);
+		break;
+	case "m_sndMeleeAttack":
+		m_sndMeleeAttack = ReadString(strValue);
+		break;
+	case "m_sndMeleeAttackHit":
+		m_sndMeleeAttackHit = ReadString(strValue);
+		break;
+	case "m_sndMeleeAttackMiss":
+		m_sndMeleeAttackMiss = ReadString(strValue);
+		break;
+	case "m_sndDeath":
+		m_sndDeath = ReadString(strValue);
+		break;
+	case "m_sndThud":
+		m_sndThud = ReadString(strValue);
+		break;
+	case "m_defSpecial1":
+		m_defSpecial1 = ReadString(strValue);
+		break;
+	case "m_flSpecial1Range":
+		m_flSpecial1Range = ReadFloat(strValue);
+		break;
+	case "m_defSpecial2":
+		m_defSpecial2 = ReadString(strValue);
+		break;
+	case "m_flSpecial2Range":
+		m_flSpecial2Range = ReadFloat(strValue);
+		break;
+	case "m_defRanged1":
+		m_defRanged1 = ReadString(strValue);
+		break;
+	case "m_flRanged1Range":
+		m_flRanged1Range = ReadFloat(strValue);
+		break;
+	case "m_defRanged2":
+		m_defRanged2 = ReadString(strValue);
+		break;
+	case "m_flRanged2Range":
+		m_flRanged2Range = ReadFloat(strValue);
+		break;
+	case "m_iNumProjectiles":
+		m_iNumProjectiles = ReadInt(strValue);
+		break;
+	case "m_flProjectileDelay":
+		m_flProjectileDelay = ReadFloat(strValue);
+		break;
+	case "m_flProjectileSpread":
+		m_flProjectileSpread = ReadFloat(strValue);
+		break;
+	case "m_flAttackCone":
+		m_flAttackCone = ReadFloat(strValue);
+		break;
+	case "m_flAttackAccuracy":
+		m_flAttackAccuracy = ReadFloat(strValue);
+		break;
+	case "m_defMelee":
+		m_defMelee = ReadString(strValue);
+		break;
+	case "m_flMeleeRange":
+		m_flMeleeRange = ReadFloat(strValue);
+		break;
+	case "m_sndRangedAttack":
+		m_sndRangedAttack = ReadString(strValue);
+		break;
+	case "m_flReloadCount":
+		m_flReloadCount = ReadFloat(strValue);
+		break;
+	case "m_flReloadDelay":
+		m_flReloadDelay = ReadFloat(strValue);
+		break;
+	case "m_sndReload":
+		m_sndReload = ReadString(strValue);
+		break;
+	case "m_sndRangedAttack2":
+		m_sndRangedAttack2 = ReadString(strValue);
+		break;
+	case "m_bWeaponStartsDrawn":
+		m_bWeaponStartsDrawn = ReadBool(strValue);
+		break;
+	case "m_strBodyOnDraw":
+		m_strBodyOnDraw = ReadString(strValue);
+		break;
+	case "m_flWalkSpeed":
+		m_flWalkSpeed = ReadFloat(strValue);
+		break;
+	case "m_flRunSpeed":
+		m_flRunSpeed = ReadFloat(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);

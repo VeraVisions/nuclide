@@ -101,6 +101,7 @@ NSTalkMonster::Save(float handle)
 	SaveFloat(handle, "m_flTraceTime", m_flTraceTime);
 	SaveFloat(handle, "m_flFollowSpeedChanged", m_flFollowSpeedChanged);
 	SaveFloat(handle, "m_flFollowSpeed", m_flFollowSpeed);
+	SaveBool(handle, "m_bFollowOnUse", m_bFollowOnUse);
 
 	SaveString(handle, "m_talkAnswer", m_talkAnswer);
 	SaveString(handle, "m_talkAsk", m_talkAsk);
@@ -123,6 +124,7 @@ NSTalkMonster::Save(float handle)
 	SaveString(handle, "m_talkUnfollow", m_talkUnfollow);
 	SaveString(handle, "m_talkFollow", m_talkFollow);
 	SaveString(handle, "m_talkStopFollow", m_talkStopFollow);
+	SaveString(handle, "m_talkDenyFollow", m_talkDenyFollow);
 }
 
 void
@@ -158,6 +160,9 @@ NSTalkMonster::Restore(string strKey, string strValue)
 		break;
 	case "m_flFollowSpeed":
 		m_flFollowSpeed = ReadFloat(strValue);
+		break;
+	case "m_bFollowOnUse":
+		m_bFollowOnUse = ReadBool(strValue);
 		break;
 	case "m_talkAnswer":
 		m_talkAnswer = ReadString(strValue);
@@ -221,6 +226,9 @@ NSTalkMonster::Restore(string strKey, string strValue)
 		break;
 	case "m_talkStopFollow":
 		m_talkStopFollow = ReadString(strValue);
+		break;
+	case "m_talkDenyFollow":
+		m_talkDenyFollow = ReadString(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);

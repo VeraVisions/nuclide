@@ -47,6 +47,59 @@ NSSquadMonster::SpawnKey(string strKey, string strValue)
 }
 
 void
+NSSquadMonster::Save(float handle)
+{
+	super::Save(handle);
+
+	SaveString(handle, "m_strSquadLeaderBody", m_strSquadLeaderBody);
+	SaveBool(handle, "m_bStartAsLeader", m_bStartAsLeader);
+	SaveBool(handle, "m_inSquad", m_inSquad);
+	SaveEntity(handle, "m_eSquadLeader", m_eSquadLeader);
+	SaveEntity(handle, "m_eSquadMembers0", m_eSquadMembers[0]);
+	SaveEntity(handle, "m_eSquadMembers1", m_eSquadMembers[1]);
+	SaveEntity(handle, "m_eSquadMembers2", m_eSquadMembers[2]);
+	SaveEntity(handle, "m_eSquadMembers3", m_eSquadMembers[3]);
+	SaveEntity(handle, "m_eSquadMembers4", m_eSquadMembers[4]);
+}
+
+void
+NSSquadMonster::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "m_strSquadLeaderBody":
+		m_strSquadLeaderBody = ReadString(strValue);
+		break;
+	case "m_bStartAsLeader":
+		m_bStartAsLeader = ReadBool(strValue);
+		break;
+	case "m_inSquad":
+		m_inSquad = ReadBool(strValue);
+		break;
+	case "m_eSquadLeader":
+		m_eSquadLeader = (NSSquadMonster)ReadEntity(strValue);
+		break;
+	case "m_eSquadMembers0":
+		m_eSquadMembers[0] = (NSSquadMonster)ReadEntity(strValue);
+		break;
+	case "m_eSquadMembers1":
+		m_eSquadMembers[1] = (NSSquadMonster)ReadEntity(strValue);
+		break;
+	case "m_eSquadMembers2":
+		m_eSquadMembers[2] = (NSSquadMonster)ReadEntity(strValue);
+		break;
+	case "m_eSquadMembers3":
+		m_eSquadMembers[3] = (NSSquadMonster)ReadEntity(strValue);
+		break;
+	case "m_eSquadMembers4":
+		m_eSquadMembers[4] = (NSSquadMonster)ReadEntity(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+		break;
+	}
+}
+
+void
 NSSquadMonster::Spawned(void)
 {
 	static void AttachToNearBySquad(void) {

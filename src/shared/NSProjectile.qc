@@ -201,6 +201,179 @@ NSProjectile::SpawnKey(string strKey, string strValue)
 }
 
 void
+NSProjectile::Save(float handle)
+{
+	super::Save(handle);
+
+	SaveInt(handle, "m_iProjectileAnimEnd", m_iProjectileAnimEnd);
+	SaveInt(handle, "m_iProjectileAnimStart", m_iProjectileAnimStart);
+	SaveFloat(handle, "m_flProjectileFramerate", m_flProjectileFramerate);
+	SaveFloat(handle, "m_flDmgMultiplier", m_flDmgMultiplier);
+	SaveString(handle, "m_defDamage", m_defDamage);
+	SaveString(handle, "m_defSplashDamage", m_defSplashDamage);
+	SaveVector(handle, "m_vecLaunchVelocity", m_vecLaunchVelocity);
+	SaveFloat(handle, "m_flThrust", m_flThrust);
+	SaveFloat(handle, "m_flThrustStart", m_flThrustStart);
+	SaveFloat(handle, "m_flThrustEnd", m_flThrustEnd);
+	SaveFloat(handle, "m_flFrictionLinear", m_flFrictionLinear);
+	SaveFloat(handle, "m_flBounce", m_flBounce);
+	SaveFloat(handle, "m_flMass", m_flMass);
+	SaveFloat(handle, "m_flGravity", m_flGravity);
+	SaveFloat(handle, "m_flFuse", m_flFuse);
+	SaveBool(handle, "m_bDetonateOnFuse", m_bDetonateOnFuse);
+	SaveBool(handle, "m_bDetonateOnDeath", m_bDetonateOnDeath);
+	SaveBool(handle, "m_bDetonateOnWorld", m_bDetonateOnWorld);
+	SaveBool(handle, "m_bDetonateOnActor", m_bDetonateOnActor);
+	SaveBool(handle, "m_bImpactEffect", m_bImpactEffect);
+	SaveBool(handle, "m_bImpactGib", m_bImpactGib);
+	SaveString(handle, "m_matDetonate", m_matDetonate);
+	SaveFloat(handle, "m_flDecalSize", m_flDecalSize);
+	SaveString(handle, "m_partSmokeFly", m_partSmokeFly);
+	SaveString(handle, "m_partModelDetonate", m_partModelDetonate);
+	SaveString(handle, "m_partSmokeDetonate", m_partSmokeDetonate);
+	SaveString(handle, "m_partSmokeBounce", m_partSmokeBounce); 
+	SaveString(handle, "m_partSmokeFuse", m_partSmokeFuse);
+	SaveInt(handle, "m_iDebrisCount", m_iDebrisCount);
+	SaveVector(handle, "m_vecLightColor", m_vecLightColor);
+	SaveFloat(handle, "m_flLightRadius", m_flLightRadius);
+	SaveFloat(handle, "m_flLightOffset", m_flLightOffset);
+	SaveVector(handle, "m_vecExplodeLightColor", m_vecExplodeLightColor);
+	SaveFloat(handle, "m_fExplodelLightRadius", m_fExplodelLightRadius);
+	SaveFloat(handle, "m_fExplodelLightFadetime", m_fExplodelLightFadetime);
+	SaveString(handle, "m_sndFly", m_sndFly);
+	SaveString(handle, "m_sndExplode", m_sndExplode);
+	SaveString(handle, "m_sndBounce", m_sndBounce);
+	SaveBool(handle, "m_bIsBullet", m_bIsBullet);
+}
+
+void
+NSProjectile::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "m_iProjectileAnimEnd":
+		m_iProjectileAnimEnd = ReadInt(strValue);
+		break;
+	case "m_iProjectileAnimStart":
+		m_iProjectileAnimStart = ReadInt(strValue);
+		break;
+	case "m_flProjectileFramerate":
+		m_flProjectileFramerate = ReadFloat(strValue);
+		break;
+	case "m_flDmgMultiplier":
+		m_flDmgMultiplier = ReadFloat(strValue);
+		break;
+	case "m_defDamage":
+		m_defDamage = ReadString(strValue);
+		break;
+	case "m_defSplashDamage":
+		m_defSplashDamage = ReadString(strValue);
+		break;
+	case "m_vecLaunchVelocity":
+		m_vecLaunchVelocity = ReadVector(strValue);
+		break;
+	case "m_flThrust":
+		m_flThrust = ReadFloat(strValue);
+		break;
+	case "m_flThrustStart":
+		m_flThrustStart = ReadFloat(strValue);
+		break;
+	case "m_flThrustEnd":
+		m_flThrustEnd = ReadFloat(strValue);
+		break;
+	case "m_flFrictionLinear":
+		m_flFrictionLinear = ReadFloat(strValue);
+		break;
+	case "m_flBounce":
+		m_flBounce = ReadFloat(strValue);
+		break;
+	case "m_flMass":
+		m_flMass = ReadFloat(strValue);
+		break;
+	case "m_flGravity":
+		m_flGravity = ReadFloat(strValue);
+		break;
+	case "m_flFuse":
+		m_flFuse = ReadFloat(strValue);
+		break;
+	case "m_bDetonateOnFuse":
+		m_bDetonateOnFuse = ReadBool(strValue);
+		break;
+	case "m_bDetonateOnDeath":
+		m_bDetonateOnDeath = ReadBool(strValue);
+		break;
+	case "m_bDetonateOnWorld":
+		m_bDetonateOnWorld = ReadBool(strValue);
+		break;
+	case "m_bDetonateOnActor":
+		m_bDetonateOnActor = ReadBool(strValue);
+		break;
+	case "m_bImpactEffect":
+		m_bImpactEffect = ReadBool(strValue);
+		break;
+	case "m_bImpactGib":
+		m_bImpactGib = ReadBool(strValue);
+		break;
+	case "m_matDetonate":
+		m_matDetonate = ReadString(strValue);
+		break;
+	case "m_flDecalSize":
+		m_flDecalSize = ReadFloat(strValue);
+		break;
+	case "m_partSmokeFly":
+		m_partSmokeFly = ReadString(strValue);
+		break;
+	case "m_partModelDetonate":
+		m_partModelDetonate = ReadString(strValue);
+		break;
+	case "m_partSmokeDetonate":
+		m_partSmokeDetonate = ReadString(strValue);
+		break;
+	case "m_partSmokeBounce":
+		m_partSmokeBounce = ReadString(strValue);
+		break; 
+	case "m_partSmokeFuse":
+		m_partSmokeFuse = ReadString(strValue);
+		break;
+	case "m_iDebrisCount":
+		m_iDebrisCount = ReadInt(strValue);
+		break;
+	case "m_vecLightColor":
+		m_vecLightColor = ReadVector(strValue);
+		break;
+	case "m_flLightRadius":
+		m_flLightRadius = ReadFloat(strValue);
+		break;
+	case "m_flLightOffset":
+		m_flLightOffset = ReadFloat(strValue);
+		break;
+	case "m_vecExplodeLightColor":
+		m_vecExplodeLightColor = ReadVector(strValue);
+		break;
+	case "m_fExplodelLightRadius":
+		m_fExplodelLightRadius = ReadFloat(strValue);
+		break;
+	case "m_fExplodelLightFadetime":
+		m_fExplodelLightFadetime = ReadFloat(strValue);
+		break;
+	case "m_sndFly":
+		m_sndFly = ReadString(strValue);
+		break;
+	case "m_sndExplode":
+		m_sndExplode = ReadString(strValue);
+		break;
+	case "m_sndBounce":
+		m_sndBounce = ReadString(strValue);
+		break;
+	case "m_bIsBullet":
+		m_bIsBullet = ReadBool(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+		break;
+	}
+}
+
+void
 NSProjectile::Spawned(void)
 {
 	super::Spawned();

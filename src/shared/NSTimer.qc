@@ -18,7 +18,7 @@ void
 NSTimer::NSTimer(void)
 {
 	m_eReceiver = __NULL__;
-	m_vFunc = __NULL__;
+	_m_NSTimerFunc = __NULL__;
 	m_flTime = 0.0f;
 	m_bRepeats = false;
 }
@@ -36,7 +36,7 @@ _NSTimerWrapper(entity receiver, void() func)
 void
 NSTimer::_TimerThink(void)
 {
-	_NSTimerWrapper(m_eReceiver, m_vFunc);
+	_NSTimerWrapper(m_eReceiver, _m_NSTimerFunc);
 
 	if (m_bRepeats == true)
 		nextthink = time + m_flTime;
@@ -45,7 +45,7 @@ NSTimer::_TimerThink(void)
 void
 NSTimer::_TempTimerThink(void)
 {
-	_NSTimerWrapper(m_eReceiver, m_vFunc);
+	_NSTimerWrapper(m_eReceiver, _m_NSTimerFunc);
 
 	if (m_bRepeats == true)
 		nextthink = time + m_flTime;
@@ -69,7 +69,7 @@ NSTimer::ScheduleTimer(entity receiver, void() call, float interval, bool repeat
 
 	ret.m_eReceiver = receiver;
 	ret.m_flTime = interval;
-	ret.m_vFunc = call;
+	ret._m_NSTimerFunc = call;
 	ret.m_bRepeats = repeats;
 
 	/* time to start running */
@@ -92,7 +92,7 @@ NSTimer::TemporaryTimer(entity receiver, void() call, float interval, bool repea
 
 	ret.m_eReceiver = receiver;
 	ret.m_flTime = interval;
-	ret.m_vFunc = call;
+	ret._m_NSTimerFunc = call;
 	ret.m_bRepeats = repeats;
 
 	/* time to start running */
@@ -122,7 +122,7 @@ NSTimer::SetupTimer(entity receiver, void() call, float interval, bool repeats)
 
 	ret.m_eReceiver = receiver;
 	ret.m_flTime = interval;
-	ret.m_vFunc = call;
+	ret._m_NSTimerFunc = call;
 	ret.m_bRepeats = repeats;
 	return ret;
 }
@@ -142,3 +142,37 @@ NSTimer::StopTimer(void)
 		think = __NULL__;
 	}
 }
+
+#ifdef SERVER
+void
+NSTimer::Save(float handle)
+{
+	super::Save(handle);
+	SaveEntity(handle, "m_eReceiver", m_eReceiver);
+	SaveString(handle, "_m_NSTimerFunc", getentityfieldstring(findentityfield("_m_NSTimerFunc"), this));
+	SaveFloat(handle, "m_flTime", m_flTime);
+	SaveBool(handle, "m_bRepeats", m_bRepeats);
+}
+
+void
+NSTimer::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "m_eReceiver":
+		m_eReceiver = ReadEntity(strValue);
+		break;
+	case "_m_NSTimerFunc":
+		_m_NSTimerFunc = externvalue(-1, strValue);
+		break;
+	case "m_flTime":
+		m_flTime = ReadFloat(strValue);
+		break;
+	case "m_bRepeats":
+		m_bRepeats = ReadBool(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+		break;
+	}
+}
+#endif

@@ -459,7 +459,6 @@ private:
 	string m_sndDeath;
 	string m_sndThud;
 
-
 	/* attack definitions, if defined will fire projectiles */
 	string m_defSpecial1;
 	float m_flSpecial1Range;

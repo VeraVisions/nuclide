@@ -15,7 +15,8 @@
 */
 
 #ifdef SERVER
-void NSItem::NSItem(void)
+void
+NSItem::NSItem(void)
 {
 	m_iClip = -1;
 	m_iWasDropped = 0i;
@@ -23,6 +24,7 @@ void NSItem::NSItem(void)
 	m_sndAcquire = __NULL__;
 	m_sndRespawn = __NULL__;
 	m_bFloating = false;
+	m_bSpins = false;
 }
 
 void
@@ -34,7 +36,8 @@ NSItem::Spawned(void)
 	Sound_Precache(m_sndRespawn);
 }
 
-void NSItem::Respawn(void)
+void
+NSItem::Respawn(void)
 {
 	SetSolid(SOLID_TRIGGER);
 	SetOrigin(GetSpawnOrigin());
@@ -90,7 +93,52 @@ NSItem::SpawnKey(string strKey, string strValue)
 	}
 }
 
-void NSItem::Touch(entity eToucher)
+void
+NSItem::Save(float handle)
+{
+	super::Save(handle);
+	SaveInt(handle, "m_iClip", m_iClip);
+	SaveInt(handle, "m_iWasDropped", m_iWasDropped);
+	SaveInt(handle, "m_iInvItem", m_iInvItem);
+	SaveString(handle, "m_sndAcquire", m_sndAcquire);
+	SaveString(handle, "m_sndRespawn", m_sndRespawn);
+	SaveBool(handle, "m_bFloating", m_bFloating);
+	SaveBool(handle, "m_bSpins", m_bSpins);
+}
+
+void
+NSItem::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "m_iClip":
+		m_iClip = ReadInt(strValue);
+		break;
+	case "m_iWasDropped":
+		m_iWasDropped = ReadInt(strValue);
+		break;
+	case "m_iInvItem":
+		m_iInvItem = ReadInt(strValue);
+		break;
+	case "m_sndAcquire":
+		m_sndAcquire = ReadString(strValue);
+		break;
+	case "m_sndRespawn":
+		m_sndRespawn = ReadString(strValue);
+		break;
+	case "m_bFloating":
+		m_bFloating = ReadBool(strValue);
+		break;
+	case "m_bSpins":
+		m_bSpins = ReadBool(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+		break;
+	}
+}
+
+void
+NSItem::Touch(entity eToucher)
 {
 	if (eToucher.classname != "player") {
 		return;
@@ -114,7 +162,8 @@ void NSItem::Touch(entity eToucher)
 	}
 }
 
-void NSItem::SetItem(int i)
+void
+NSItem::SetItem(int i)
 {
 	m_iInvItem = i;
 	m_oldModel = Weapons_GetWorldmodel(m_iInvItem);

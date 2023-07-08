@@ -44,6 +44,9 @@ NSPortal:NSEntity
 	virtual vector camera_transform(vector, vector);
 
 #ifdef SERVER
+	virtual void Save(float);
+	virtual void Restore(string,string);
+
 	virtual void EvaluateEntity(void);
 	virtual float SendEntity(entity, float);
 
@@ -88,6 +91,13 @@ private:
 
 #ifdef CLIENT
 void NSPortal_ReadEntity(bool);
+
+#define READENTITY_PORTAL(field, changedflag) {\
+	if (flChanged & changedflag) {\
+		field = (NSPortal)findfloat(world, ::entnum, readentitynum());\
+		PRINTFLAG(changedflag); \
+	}\
+}
 #endif
 
 #define SOLID_PORTAL 21

@@ -27,12 +27,32 @@ void
 NSClient::Save(float handle)
 {
 	super::Save(handle);
+	/*SaveEntity(handle, "m_xrSpace", m_xrSpace);
+	SaveEntity(handle, "m_xrInputHead", m_xrInputHead);
+	SaveEntity(handle, "m_xrInputLeft", m_xrInputLeft);
+	SaveEntity(handle, "m_xrInputRight", m_xrInputRight);*/
+	SaveFloat(handle, "score", score);
 }
 
 void
 NSClient::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
+	/*case "m_xrSpace":
+		m_xrSpace = (NSXRSpace)ReadEntity(strValue);
+		break;
+	case "m_xrInputHead":
+		m_xrInputHead = (NSXRInput)ReadEntity(strValue);
+		break;
+	case "m_xrInputLeft":
+		m_xrInputLeft = (NSXRInput)ReadEntity(strValue);
+		break;
+	case "m_xrInputRight":
+		m_xrInputRight = (NSXRInput)ReadEntity(strValue);
+		break;*/
+	case "score":
+		score = ReadFloat(strValue);
+		break;
 	default:
 		super::Restore(strKey, strValue);
 	}
