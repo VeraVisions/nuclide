@@ -105,6 +105,7 @@ private:
 	PREDICTED_FLOAT(m_iRenderMode)
 	PREDICTED_FLOAT(m_flRenderAmt)
 	PREDICTED_VECTOR(m_vecRenderColor)
+	PREDICTED_VECTOR(m_vecAxialScale)
 
 	/* model events */
 	float m_flBaseTime;
@@ -172,6 +173,9 @@ public:
 	nonvirtual void SetBoneControl4(float);
 	/** Sets the value of the bone controller #5. */
 	nonvirtual void SetBoneControl5(float);
+	/** Sets the axial, anisotropic scale of an entity, affecting the individual axis (forward, right, up). */
+	nonvirtual void SetAxialScale(vector);
+
 	/** Returns the bodygroup of the entity. */
 	nonvirtual int GetBody(void);
 	/** Returns the body within a given group. */
@@ -194,10 +198,13 @@ public:
 	nonvirtual float GetBoneControl4(void);
 	/** Returns the value of the entity's bone controller #5. */
 	nonvirtual float GetBoneControl5(void);
+	/** Returns the axial/anisotropic scale of the entity, same as input format (forward, right, up) */
+	nonvirtual vector GetAxialScale(void);
 
 	#ifdef CLIENT
 	/** Called by predraw(); and will set the appropriate rendering specific fields. */
 	nonvirtual void RenderFXPass(void);
+	nonvirtual void RenderAxialScale(void);
 	#endif
 };
 

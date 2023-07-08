@@ -29,6 +29,7 @@ NSRenderableEntity::NSRenderableEntity(void)
 	m_flBoneControl4 = 0.5f;
 	m_flBoneControl5 = 0.5f;
 	m_iBody = 0i;
+	m_vecAxialScale = [1,1,1];
 
 	effects |= EF_NOSHADOW;
 
@@ -117,6 +118,9 @@ NSRenderableEntity::EvaluateEntity(void)
 	EVALUATE_FIELD(effects, RDENT_CHANGED_EFFECTS)
 	EVALUATE_FIELD(m_iBody, RDENT_CHANGED_BODY)
 	EVALUATE_FIELD(scale, RDENT_CHANGED_SCALE)
+	EVALUATE_VECTOR(m_vecAxialScale, 0, RDENT_CHANGED_SCALE)
+	EVALUATE_VECTOR(m_vecAxialScale, 1, RDENT_CHANGED_SCALE)
+	EVALUATE_VECTOR(m_vecAxialScale, 2, RDENT_CHANGED_SCALE)
 	EVALUATE_VECTOR(velocity, 0, RDENT_CHANGED_VELOCITY)
 	EVALUATE_VECTOR(velocity, 1, RDENT_CHANGED_VELOCITY)
 	EVALUATE_VECTOR(velocity, 2, RDENT_CHANGED_VELOCITY)
@@ -201,6 +205,9 @@ NSRenderableEntity::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_FLOAT(effects, RDENT_CHANGED_EFFECTS)
 	SENDENTITY_SHORT(m_iBody, RDENT_CHANGED_BODY)
 	SENDENTITY_FLOAT(scale, RDENT_CHANGED_SCALE)
+	SENDENTITY_FLOAT(m_vecAxialScale[0], RDENT_CHANGED_SCALE)
+	SENDENTITY_FLOAT(m_vecAxialScale[1], RDENT_CHANGED_SCALE)
+	SENDENTITY_FLOAT(m_vecAxialScale[2], RDENT_CHANGED_SCALE)
 	SENDENTITY_COORD(velocity[0], RDENT_CHANGED_VELOCITY)
 	SENDENTITY_COORD(velocity[1], RDENT_CHANGED_VELOCITY)
 	SENDENTITY_COORD(velocity[2], RDENT_CHANGED_VELOCITY)
@@ -258,6 +265,9 @@ NSRenderableEntity::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_FLOAT(effects, RDENT_CHANGED_EFFECTS)
 	READENTITY_SHORT(m_iBody, RDENT_CHANGED_BODY)
 	READENTITY_FLOAT(scale, RDENT_CHANGED_SCALE)
+	READENTITY_FLOAT(m_vecAxialScale[0], RDENT_CHANGED_SCALE)
+	READENTITY_FLOAT(m_vecAxialScale[1], RDENT_CHANGED_SCALE)
+	READENTITY_FLOAT(m_vecAxialScale[2], RDENT_CHANGED_SCALE)
 	READENTITY_COORD(velocity[0], RDENT_CHANGED_VELOCITY)
 	READENTITY_COORD(velocity[1], RDENT_CHANGED_VELOCITY)
 	READENTITY_COORD(velocity[2], RDENT_CHANGED_VELOCITY)
@@ -522,6 +532,19 @@ NSRenderableEntity::RenderDebugSkeleton(void)
 	}
 }
 
+void
+NSRenderableEntity::RenderAxialScale(void)
+{
+	/* only bother if we're non-standard */
+	if (m_vecAxialScale != [1,1,1]) {
+		makevectors(angles);
+		v_forward *= m_vecAxialScale[0];
+		v_right *= m_vecAxialScale[1];
+		v_up *= m_vecAxialScale[2];
+		renderflags |= RF_USEAXIS;
+	}
+}
+
 /*
 ============
 NSRenderableEntity::predraw
@@ -531,6 +554,7 @@ entities, so TODO: make things like anims, sentences apply
 only to relevant child-classes
 ============
 */
+var vector autocvar_testscale = [1,1,1];
 float
 NSRenderableEntity::predraw(void)
 {
@@ -553,6 +577,8 @@ NSRenderableEntity::predraw(void)
 
 	processmodelevents(modelindex, frame, m_flBaseTime,
 		frame1time, HandleAnimEvent);
+
+	RenderAxialScale();
 
 	if (alpha > 0.0) {
 		/* TODO: Move this somewhere more sane */
@@ -654,6 +680,12 @@ NSRenderableEntity::SetBoneControl5(float val)
 	m_flBoneControl5 = val;
 }
 
+void
+NSRenderableEntity::SetAxialScale(vector scaleVec)
+{
+	m_vecAxialScale = scaleVec;
+}
+
 int
 NSRenderableEntity::GetBody(void)
 {
@@ -718,6 +750,12 @@ float
 NSRenderableEntity::GetBoneControl5(void)
 {
 	return m_flBoneControl5;
+}
+
+vector
+NSRenderableEntity::GetAxialScale(void)
+{
+	return m_vecAxialScale;
 }
 
 void
