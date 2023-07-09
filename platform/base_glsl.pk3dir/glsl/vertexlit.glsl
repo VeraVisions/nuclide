@@ -90,13 +90,11 @@ varying mat3 invsurface;
 
 	void main (void)
 	{
-		vec4 diff_f;
-		vec3 light;
+		vec4 diff_f = vec4(1.0, 1.0, 1.0, 1.0);
+		vec3 light = vec3(0.0, 0.0, 0.0);
 
 		#if r_skipDiffuse == 0
 			diff_f = texture2D(s_diffuse, tex_c);
-		#else
-			diff_f = vec4(1.0, 1.0, 1.0, 1.0);
 		#endif
 
 		// bump goes here
