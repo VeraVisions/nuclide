@@ -73,6 +73,7 @@ prop_dynamic::SpawnKey(string strKey, string strValue)
 		break;
 	default:
 		super::SpawnKey(strKey, strValue);
+		break;
 	}
 }
 
