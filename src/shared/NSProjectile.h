@@ -80,7 +80,8 @@ private:
 	string m_partSmokeDetonate;
 	string m_partSmokeBounce; 
 	string m_partSmokeFuse;
-	int m_iDebrisCount; /* TODO */
+	string m_defProjectileDebris;
+	int m_iDebrisCount;
 	vector m_vecLightColor; /* TODO */
 	float m_flLightRadius; /* TODO */
 	float m_flLightOffset; /* TODO */
@@ -90,9 +91,15 @@ private:
 	string m_sndFly;
 	string m_sndExplode;
 	string m_sndBounce;
+	vector m_vecSpawnMins;
+	vector m_vecSpawnMaxs;
 
 	/* ETQW-additions */
 	bool m_bIsBullet;
+
+	/* Nuclide additions */
+	bool m_bStickToWorld;
+	bool m_bStickToActor;
 
 	nonvirtual void _AnimateThink(void);
 	nonvirtual void _AnimateThinkDead(void);
@@ -141,6 +148,7 @@ void NSProjectile_ReadEntity(bool);
 #endif
 
 #ifdef SERVER
-void NSProjectile_SpawnDef(string entityDef, NSEntity theOwner)
-void NSProjectile_SpawnDefAttachment(string entityDef, NSEntity theOwner, int attachmentID)
+void NSProjectile_SpawnDef(string entityDef, NSEntity theOwner);
+void NSProjectile_SpawnDefAtPosition(string entityDef, NSEntity theOwner, vector vecOrigin, vector vecAngles);
+void NSProjectile_SpawnDefAttachment(string entityDef, NSEntity theOwner, int attachmentID);
 #endif

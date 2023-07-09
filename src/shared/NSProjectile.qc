@@ -57,9 +57,15 @@ NSProjectile::NSProjectile(void)
 	m_sndFly = __NULL__;
 	m_sndExplode = __NULL__;
 	m_sndBounce = __NULL__;
+	m_vecSpawnMins = g_vec_null;
+	m_vecSpawnMaxs = g_vec_null;
 
 	/* ETQW-additions */
 	m_bIsBullet = false;
+
+	/* Nuclide additions */
+	m_bStickToWorld = false;
+	m_bStickToActor = false;
 #endif
 }
 
@@ -156,6 +162,9 @@ NSProjectile::SpawnKey(string strKey, string strValue)
 	case "debris_count":
 		m_iDebrisCount = ReadInt(strValue);
 		break;
+	case "projectile_debris":
+		m_defProjectileDebris = ReadString(strValue);
+		break;
 	/*case "def_debris":
 		break;
 	case "def_shrapnel":
@@ -195,8 +204,22 @@ NSProjectile::SpawnKey(string strKey, string strValue)
 	case "is_bullet":
 		m_bIsBullet = ReadBool(strValue);
 		break;
+	/* Nuclide additions */
+	case "stick_to_world":
+		m_bStickToWorld = ReadBool(strValue);
+		break;
+	case "stick_to_actor":
+		m_bStickToActor = ReadBool(strValue);
+		break;
+	case "mins":
+		m_vecSpawnMins = ReadVector(strValue);
+		break;
+	case "maxs":
+		m_vecSpawnMaxs = ReadVector(strValue);
+		break;
 	default:
 		super::SpawnKey(strKey, strValue);
+		break;
 	}
 }
 
@@ -233,6 +256,7 @@ NSProjectile::Save(float handle)
 	SaveString(handle, "m_partSmokeDetonate", m_partSmokeDetonate);
 	SaveString(handle, "m_partSmokeBounce", m_partSmokeBounce); 
 	SaveString(handle, "m_partSmokeFuse", m_partSmokeFuse);
+	SaveString(handle, "m_defProjectileDebris", m_defProjectileDebris);
 	SaveInt(handle, "m_iDebrisCount", m_iDebrisCount);
 	SaveVector(handle, "m_vecLightColor", m_vecLightColor);
 	SaveFloat(handle, "m_flLightRadius", m_flLightRadius);
@@ -244,6 +268,10 @@ NSProjectile::Save(float handle)
 	SaveString(handle, "m_sndExplode", m_sndExplode);
 	SaveString(handle, "m_sndBounce", m_sndBounce);
 	SaveBool(handle, "m_bIsBullet", m_bIsBullet);
+	SaveBool(handle, "m_bStickToWorld", m_bStickToWorld);
+	SaveBool(handle, "m_bStickToActor", m_bStickToActor);
+	SaveVector(handle, "m_vecSpawnMins", m_vecSpawnMins);
+	SaveVector(handle, "m_vecSpawnMaxs", m_vecSpawnMaxs);
 }
 
 void
@@ -334,6 +362,9 @@ NSProjectile::Restore(string strKey, string strValue)
 	case "m_partSmokeFuse":
 		m_partSmokeFuse = ReadString(strValue);
 		break;
+	case "m_defProjectileDebris":
+		m_defProjectileDebris = ReadString(strValue);
+		break;
 	case "m_iDebrisCount":
 		m_iDebrisCount = ReadInt(strValue);
 		break;
@@ -367,6 +398,18 @@ NSProjectile::Restore(string strKey, string strValue)
 	case "m_bIsBullet":
 		m_bIsBullet = ReadBool(strValue);
 		break;
+	case "m_bStickToWorld":
+		m_bStickToWorld = ReadBool(strValue);
+		break;
+	case "m_bStickToActor":
+		m_bStickToActor = ReadBool(strValue);
+		break;
+	case "m_vecSpawnMins":
+		m_vecSpawnMins = ReadVector(strValue);
+		break;
+	case "m_vecSpawnMaxs":
+		m_vecSpawnMaxs = ReadVector(strValue);
+		break;
 	default:
 		super::Restore(strKey, strValue);
 		break;
@@ -379,12 +422,8 @@ NSProjectile::Spawned(void)
 	super::Spawned();
 
 	SetMovetype(MOVETYPE_FLYMISSILE);
-	SetRenderColor([1,1,1]);
-	SetRenderAmt(1.0);
 	SetSolid(SOLID_BBOX);
-	SetRenderAmt(1.0f);
-	SetRenderColor([1.0,1.0,1.0]);
-	SetSize([0,0,0], [0,0,0]);
+	SetSize(m_vecSpawnMins, m_vecSpawnMaxs);
 }
 
 void
@@ -414,6 +453,12 @@ NSProjectile::Touch(entity eToucher)
 			_Explode();
 			return;
 		}
+	}
+
+	if (m_bStickToWorld && eToucher == world) {
+		SetMovetype(MOVETYPE_NONE);
+	} else if (m_bStickToActor && eToucher.takedamage != DAMAGE_NO) {
+		SetMovetype(MOVETYPE_NONE);
 	}
 
 	if (m_partSmokeBounce)
@@ -529,6 +574,17 @@ NSProjectile::_Explode(void)
 		Damage_Radius(origin, owner, flDamage, flRadius, TRUE, WEAPON_NONE);
 	}
 
+	/* another def that'll be spawned when this one detonates */
+	if (m_defProjectileDebris) {
+		vector debrisAngle = GetAngles();
+		float movementAmount = 360.0f / (float)m_iDebrisCount;
+
+		for (int i = 0; i < m_iDebrisCount; i++) {
+			NSProjectile_SpawnDefAtPosition(m_defProjectileDebris, owner, explodePos, debrisAngle);
+			debrisAngle[1] += movementAmount;
+		}
+	}
+
 	StartSoundDef(m_sndExplode, CHAN_VOICE, true);
 	Destroy();
 }
@@ -552,6 +608,7 @@ NSProjectile::Launch(vector startPos, vector launchDir, float fuseOffset, float 
 	SetOrigin(startPos);
 	SetAngles(launchDir);
 	SetModel(m_oldModel);
+	SetSize(m_vecSpawnMins, m_vecSpawnMaxs);
 
 	if (dmgMultiplier <= 0.0)
 		dmgMultiplier = 1.0f;
@@ -577,6 +634,7 @@ NSProjectile::Launch(vector startPos, vector launchDir, float fuseOffset, float 
 	SetAngularVelocity(avelocity);
 	SetHealth(health);
 	SetSolid(SOLID_BBOX);
+	//SetRenderMode(RM_ADDITIVE);
 
 	if (m_flBounce > 0) {
 		SetMovetype(MOVETYPE_BOUNCE);
@@ -600,7 +658,7 @@ NSProjectile::Launch(vector startPos, vector launchDir, float fuseOffset, float 
 
 	StartSoundDef(m_sndFly, CHAN_BODY, true);
 	SendFlags = (-1);
-	SendEntity = 0; /* HACK: remove this once Spike fixes CSQC-set traileffectnum etc. */
+	//SendEntity = 0; /* HACK: remove this once Spike fixes CSQC-set traileffectnum etc. */
 }
 
 void
@@ -614,6 +672,12 @@ NSProjectile::EvaluateEntity(void)
 	EVALUATE_VECTOR(angles, 2, PROJ_CHANGED_ANGLES_Z)
 	EVALUATE_FIELD(modelindex, PROJ_CHANGED_MODELINDEX)
 	EVALUATE_FIELD(traileffectnum, PROJ_CHANGED_MODELINDEX)
+	EVALUATE_FIELD(m_iRenderMode, PROJ_CHANGED_RENDERMODE)
+	EVALUATE_FIELD(m_iRenderFX, PROJ_CHANGED_RENDERMODE)
+	EVALUATE_VECTOR(m_vecRenderColor, 0, PROJ_CHANGED_RENDERCOLOR)
+	EVALUATE_VECTOR(m_vecRenderColor, 1, PROJ_CHANGED_RENDERCOLOR)
+	EVALUATE_VECTOR(m_vecRenderColor, 2, PROJ_CHANGED_RENDERCOLOR)
+	EVALUATE_FIELD(m_flRenderAmt, PROJ_CHANGED_RENDERAMT)
 }
 
 /* Make sure StartFrame calls this */
@@ -639,6 +703,12 @@ NSProjectile::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_ANGLE(angles[2], PROJ_CHANGED_ANGLES_Z)
 	SENDENTITY_SHORT(modelindex, PROJ_CHANGED_MODELINDEX)
 	SENDENTITY_FLOAT(traileffectnum, PROJ_CHANGED_MODELINDEX)
+	SENDENTITY_BYTE(m_iRenderMode, PROJ_CHANGED_RENDERMODE)
+	SENDENTITY_BYTE(m_iRenderFX, PROJ_CHANGED_RENDERMODE)
+	SENDENTITY_ANGLE(m_vecRenderColor[0], PROJ_CHANGED_RENDERCOLOR)
+	SENDENTITY_ANGLE(m_vecRenderColor[1], PROJ_CHANGED_RENDERCOLOR)
+	SENDENTITY_ANGLE(m_vecRenderColor[2], PROJ_CHANGED_RENDERCOLOR)
+	SENDENTITY_ANGLE(m_flRenderAmt, PROJ_CHANGED_RENDERAMT)
 
 	return (1);
 }
@@ -657,8 +727,16 @@ NSProjectile::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_ANGLE(angles[2], PROJ_CHANGED_ANGLES_Z)
 	READENTITY_SHORT(modelindex, PROJ_CHANGED_MODELINDEX)
 	READENTITY_FLOAT(traileffectnum, PROJ_CHANGED_MODELINDEX)
+	READENTITY_BYTE(m_iRenderMode, PROJ_CHANGED_RENDERMODE)
+	READENTITY_BYTE(m_iRenderFX, PROJ_CHANGED_RENDERMODE)
+	READENTITY_ANGLE(m_vecRenderColor[0], PROJ_CHANGED_RENDERCOLOR)
+	READENTITY_ANGLE(m_vecRenderColor[1], PROJ_CHANGED_RENDERCOLOR)
+	READENTITY_ANGLE(m_vecRenderColor[2], PROJ_CHANGED_RENDERCOLOR)
+	READENTITY_ANGLE(m_flRenderAmt, PROJ_CHANGED_RENDERAMT)
 	setmodelindex(this, modelindex);
 	setorigin(this, origin);
+
+	traileffectnum = -fabs(traileffectnum);
 }
 #endif
 
@@ -689,6 +767,17 @@ NSProjectile_SpawnDef(string entityDef, NSEntity theOwner)
 	EntityDef_SpawnClassname(entityDef);
 	self = oldself;
 	rocket.Launch(theOwner.GetOrigin() + theOwner.view_ofs, theOwner.GetAngles(), 0.0f, 0.0f, 0.0f);
+}
+void
+NSProjectile_SpawnDefAtPosition(string entityDef, NSEntity theOwner, vector vecOrigin, vector vecAngles)
+{
+	entity oldself = self;
+	NSProjectile rocket = spawn(NSProjectile);
+	rocket.owner = theOwner;
+	self = rocket;
+	EntityDef_SpawnClassname(entityDef);
+	self = oldself;
+	rocket.Launch(vecOrigin, vecAngles, 0.0f, 0.0f, 0.0f);
 }
 void
 NSProjectile_SpawnDefAttachment(string entityDef, NSEntity theOwner, int attachmentID)
