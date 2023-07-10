@@ -554,7 +554,7 @@ entities, so TODO: make things like anims, sentences apply
 only to relevant child-classes
 ============
 */
-var vector autocvar_testscale = [1,1,1];
+.vector last_pos;
 float
 NSRenderableEntity::predraw(void)
 {
@@ -590,6 +590,11 @@ NSRenderableEntity::predraw(void)
 			addentity(this);
 		}
 	}
+
+	if (traileffectnum) {
+		trailparticles(traileffectnum, this, oldorigin, origin);
+	}
+	oldorigin = origin;
 
 	return (PREDRAW_NEXT);
 }

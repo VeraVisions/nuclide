@@ -735,8 +735,6 @@ NSProjectile::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_ANGLE(m_flRenderAmt, PROJ_CHANGED_RENDERAMT)
 	setmodelindex(this, modelindex);
 	setorigin(this, origin);
-
-	traileffectnum = -fabs(traileffectnum);
 }
 #endif
 
