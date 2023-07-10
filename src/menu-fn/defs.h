@@ -15,7 +15,6 @@
 */
 
 #include "../client/font.h"
-#include "../shared/global.h"
 
 var int autocvar_menu_intro = TRUE;
 var int autocvar__menu_singleplayer;
