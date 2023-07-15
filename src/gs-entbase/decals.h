@@ -90,3 +90,7 @@ decal_pickwall(entity dself, vector vpos)
 
 decal Decals_Next(vector pos);
 void Decals_Place(vector pos, string dname);
+
+#ifdef CLIENT
+string Decal_Precache(string decalTex);
+#endif

@@ -99,6 +99,7 @@ var bool g_net_debug = false;
 #define PRINT_CHAT		3
 
 var bool g_dlight_cached = false;
+var bool g_client_world_loaded = false;
 
 const float MASK_GLOWS = 16;
 var bool g_focus;

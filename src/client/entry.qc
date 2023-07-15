@@ -575,6 +575,11 @@ CSQC_WorldLoaded(void)
 		ent.Respawn();
 	}
 
+	g_client_world_loaded = true;
+
+	/* wad files will most likely have loaded now */
+	DecalGroups_Precache();
+
 	print("Client world initialized.\n");
 }
 

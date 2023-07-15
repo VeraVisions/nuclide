@@ -150,6 +150,21 @@ DecalGroups_Init(void)
 
 #ifdef CLIENT
 void
+DecalGroups_Precache(void)
+{
+	if (g_client_world_loaded == false)
+		return;
+
+	for (int i = 0; i < g_decalgroup_count; i++) {
+		int c = tokenizebyseparator(g_decalgroup[i].materials, ";");
+
+		for (int x = 0; x < c; x++) {
+			Decal_Precache(argv(x));
+		}
+	}
+}
+
+void
 DecalGroups_PlaceGroupID(int index, vector org)
 {
 	/* on the client we only need to go ahead and place the final decal */

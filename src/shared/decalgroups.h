@@ -32,5 +32,6 @@ void DecalGroups_Place(string group, vector org);
 int DecalGroups_NumForName(string group);
 
 #ifdef CLIENT
+void DecalGroups_Precache(void);
 void DecalGroups_Receive(void);
 #endif

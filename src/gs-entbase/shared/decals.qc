@@ -144,9 +144,7 @@ decal::BuildShader(void)
 	if (!m_strTexture || !m_strTexture)
 		return;
 
-	m_strShader = sprintf("decal_%s", m_strTexture);
-	shader_buff = sprintf(g_decal_shader, m_strTexture);
-	shaderforname(m_strShader, shader_buff);
+	m_strShader = Decal_Precache(m_strTexture);
 }
 #endif
 
@@ -276,6 +274,16 @@ void Decals_Place(vector pos, string dname)
 }
 
 #ifdef CLIENT
+string
+Decal_Precache(string decalTex)
+{
+	string shaderName = sprintf("decal_%s", decalTex);
+	string shaderBuff = sprintf(g_decal_shader, decalTex);
+	precache_pic(decalTex); /* precache */
+	shaderforname(shaderName, shaderBuff);
+	return shaderName;
+}
+
 void
 Decal_Reload(void)
 {
