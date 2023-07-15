@@ -241,35 +241,35 @@ bool
 NSIO::ReadBool(string strValue)
 {
 	if (strValue && strValue != "")
-		return stof(strValue);
+		return stof(Constants_LookUp(strValue, strValue));
 	return __NULL__;
 }
 float
 NSIO::ReadFloat(string strValue)
 {
 	if (strValue && strValue != "")
-		return stof(strValue);
+		return stof(Constants_LookUp(strValue, strValue));
 	return __NULL__;
 }
 int
 NSIO::ReadInt(string strValue)
 {
 	if (strValue && strValue != "")
-		return stoi(strValue);
+		return stoi(Constants_LookUp(strValue, strValue));
 	return __NULL__;
 }
 string
 NSIO::ReadString(string strValue)
 {
 	if (strValue && strValue != "")
-		return strValue;
+		return Constants_LookUp(strValue, strValue);
 	return __NULL__;
 }
 vector
 NSIO::ReadVector(string strValue)
 {
 	if (strValue && strValue != "")
-		return stov(strValue);
+		return stov(Constants_LookUp(strValue, strValue));
 	return __NULL__;
 }
 entity

@@ -338,6 +338,7 @@ init(float prevprogs)
 
 	Plugin_Init();
 
+	Constants_Init();
 	Sound_Init();
 	PropData_Init();
 	SurfData_Init();

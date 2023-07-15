@@ -40,6 +40,7 @@ string __fullspawndata;
 #endif
 
 #include "global.h"
+#include "cloader.h"
 #include "sound.h"
 
 #ifdef CLIENT

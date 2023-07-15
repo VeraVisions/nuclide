@@ -23,6 +23,7 @@ NSClient.qc
 NSClientSpectator.qc
 pmove.qc
 pmove_custom.qc
+cloader.qc
 sound.qc
 math.qc
 NSClientPlayer.qc

@@ -52,7 +52,7 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 
 	Cmd_Init();
 
-	/* Sound shaders */
+	Constants_Init();
 	Sound_Init();
 	SurfData_Init();
 	PropData_Init();	

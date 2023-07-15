@@ -888,6 +888,7 @@ INPUT                  = src/ \
                          Documentation/Materials/MatShaders.md \
                          Documentation/Materials/MatGoldSrc.md \
                          Documentation/Shaders/ \
+                         Documentation/Constants.md \
                          Documentation/EntityDef.md \
                          Documentation/Surf_data.md \
                          Documentation/Prop_data.md \
