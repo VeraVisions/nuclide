@@ -545,6 +545,30 @@ NSRenderableEntity::RenderAxialScale(void)
 	}
 }
 
+void
+NSRenderableEntity::RenderGLQuakeShadow(void)
+{
+	vector oldOrigin = origin;
+
+	if (autocvar(r_drawGLQuakeShadow, 0) == 0)
+		return;
+
+	if (effects & EF_NOSHADOW)
+		return;
+
+	if (m_bIsBrush == true)
+		return;
+
+	traceline(origin + [0, 0, 1], origin + [0, 0, -1024], MOVE_NORMAL, this);
+	origin = trace_endpos + [0,0,1];
+	makevectors(angles);
+	v_up *= 0.01;
+	renderflags = RF_USEAXIS;
+	alpha = 0.5f;
+	addentity_lighting(this, [0,0,0], [0, 0, 0], [0,0,0], 0, 0);
+	origin = oldOrigin;
+}
+
 /*
 ============
 NSRenderableEntity::predraw
@@ -595,6 +619,8 @@ NSRenderableEntity::predraw(void)
 		trailparticles(traileffectnum, this, oldorigin, origin);
 	}
 	oldorigin = origin;
+
+	RenderGLQuakeShadow();
 
 	return (PREDRAW_NEXT);
 }

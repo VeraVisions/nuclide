@@ -972,6 +972,7 @@ NSTalkMonster::predraw(void)
 
 	addentity(this);
 	_RenderDebugViewCone();
+	RenderGLQuakeShadow();
 
 	return (PREDRAW_NEXT);
 }
