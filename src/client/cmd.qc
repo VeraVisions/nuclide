@@ -218,6 +218,24 @@ CMD_ListTitles(void)
 	print(sprintf("\t%i total titles loaded\n", g_titles_count));
 }
 
+static void
+CMD_ListModelFramegroups(void)
+{
+	string modelName = argv(1);
+	float modelIndex = getmodelindex(modelName);
+	string firstGroup
+	string temp;
+
+	print(sprintf("// model: %S\n", modelName));
+
+	print("typedef enum {\n");
+	for (int i = 0; i < modelframecount(modelIndex); i++) {
+		temp = frametoname(modelIndex, i);
+		print(sprintf("\t%s = %i,\n", strtoupper(temp), i));
+	}
+	print("} framegroups_e;\n");
+}
+
 /*
 =================
 Cmd_Parse
@@ -232,6 +250,9 @@ bool
 Cmd_Parse(string sCMD)
 {
 	switch (argv(0)) {
+	case "listFramegroups":
+		CMD_ListModelFramegroups();
+		break;
 	case "listTitles":
 		CMD_ListTitles();
 		break;
@@ -420,6 +441,7 @@ Cmd_Init(void)
 	print("--------- Initializing Cmds ----------\n");
 
 	/* developer/debug commands */
+	registercommand("listFramegroups");
 	registercommand("listModels");
 	registercommand("listSounds");
 	registercommand("listParticles");
