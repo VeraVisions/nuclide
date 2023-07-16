@@ -355,7 +355,6 @@ void NSEntity::SetFrame( float newFrame ) {
 	{
 		int eDefEvents = tokenize(m_strModelEventCB);
 		string ourName = frametoname(modelindex, frame);
-		print(sprintf("New frame! %S\n", ourName));
 
 		for (int i = 0; i < eDefEvents; i+=3) {
 			string testName = argv(i+0);
