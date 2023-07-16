@@ -348,6 +348,31 @@ void NSEntity::SetFrame( float newFrame ) {
 
 	frame = newFrame;
 	frame1time = 0.0f;
+
+
+#ifdef SERVER
+	/* check if an event callback exists */
+	{
+		int eDefEvents = tokenize(m_strModelEventCB);
+		string ourName = frametoname(modelindex, frame);
+		print(sprintf("New frame! %S\n", ourName));
+
+		for (int i = 0; i < eDefEvents; i+=3) {
+			string testName = argv(i+0);
+			string testInput = argv(i+1);
+			string testData = argv(i+2);
+
+			if (ourName == testName) {
+				if (testData != "")
+					Input(this, testInput, testData);
+				else
+					Input(this, testInput, ""); /* no parms passed. */
+
+				tokenize(m_strModelEventCB); /* ensure argv() is 'rewound'... */
+			}
+		}
+	}
+#endif
 }
 
 void NSEntity::SetSkin( float newSkin ) {
@@ -760,6 +785,13 @@ void NSEntity::Input( entity eAct, string strInput, string strData ) {
 		break;
 	case "StartSoundDef":
 		StartSoundDef(strData, CHAN_VOICE, true);
+		break;
+	case "AddVelocity":
+		vector velAdd = stov(strData);
+		makevectors(angles);
+		velocity += v_forward * velAdd[0];
+		velocity += v_right * velAdd[1];
+		velocity += v_up * velAdd[2];
 		break;
 	default:
 		NSTrigger::Input( eAct, strInput, strData );
