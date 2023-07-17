@@ -134,6 +134,7 @@ void BreakModel_SpawnID(vector smins, vector smaxs, vector dir, float speed, int
 void BreakModel_Receive(void);
 #else
 void BreakModel_Spawn(vector pos, vector dir, vector spread, float speed, int count, string type);
+void BreakModel_Entity(NSSurfacePropEntity target, vector dir, float speed);
 #endif
 
 /* necessary API functions */

@@ -639,4 +639,32 @@ BreakModel_Spawn(vector smins, vector smaxs, vector dir, float speed, int count,
 	WriteByte(MSG_MULTICAST, count);
 	multicast((smins - smaxs), MULTICAST_PVS);
 }
+
+void
+BreakModel_Entity(NSSurfacePropEntity target, vector dir, float speed)
+{
+	string type = Prop_GetInfo(target.m_iPropData, PROPINFO_BREAKMODEL);
+	int count = Prop_GetInfo(target.m_iPropData, PROPINFO_BREAKCOUNT);
+	int index = (int)hash_get(g_hashbreakmodel, type, -1);
+	vector pos = target.GetOrigin();
+
+	if not (index)
+		return;
+
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_BREAKMODEL);
+	WriteByte(MSG_MULTICAST, index);
+	WriteCoord(MSG_MULTICAST, pos[0] + target.mins[0]);
+	WriteCoord(MSG_MULTICAST, pos[1] + target.mins[1]);
+	WriteCoord(MSG_MULTICAST, pos[2] + target.mins[2]);
+	WriteCoord(MSG_MULTICAST, pos[0] + target.maxs[0]);
+	WriteCoord(MSG_MULTICAST, pos[1] + target.maxs[1]);
+	WriteCoord(MSG_MULTICAST, pos[2] + target.maxs[2]);
+	WriteCoord(MSG_MULTICAST, dir[0]);
+	WriteCoord(MSG_MULTICAST, dir[1]);
+	WriteCoord(MSG_MULTICAST, dir[2]);
+	WriteFloat(MSG_MULTICAST, speed);
+	WriteByte(MSG_MULTICAST, count);
+	multicast(pos, MULTICAST_PVS);
+}
 #endif

@@ -625,11 +625,11 @@ NSSurfacePropEntity::SpawnKey(string strKey, string strValue)
 		m_oldHealth = health;
 		break;
 	case "propdata":
-		SetPropData(strValue);
+		m_strPropData = ReadString(strValue);
 		break;
 	case "surfdata":
 	case "materialdata":
-		SetSurfaceData(strValue);
+		m_strSurfData = ReadString(strValue);
 		break;
 	/* entityDef */
 	case "blood_color":
@@ -695,12 +695,15 @@ void
 NSSurfacePropEntity::SetSurfaceData(string type)
 {
 	m_strSurfData = type;
+	_SurfaceDataFinish();
 }
 void
 NSSurfacePropEntity::SetPropData(string type)
 {
 	m_strPropData = type;
+	_PropDataFinish();
 }
+
 void
 NSSurfacePropEntity::_SurfaceDataFinish(void)
 {
