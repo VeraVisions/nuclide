@@ -580,7 +580,7 @@ NSProjectile::_Explode(void)
 		float movementAmount = 360.0f / (float)m_iDebrisCount;
 
 		for (int i = 0; i < m_iDebrisCount; i++) {
-			NSProjectile_SpawnDefAtPosition(m_defProjectileDebris, owner, explodePos, debrisAngle);
+			NSProjectile_SpawnDefAtPosition(m_defProjectileDebris, (NSEntity)owner, explodePos, debrisAngle);
 			debrisAngle[1] += movementAmount;
 		}
 	}

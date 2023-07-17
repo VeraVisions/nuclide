@@ -205,6 +205,7 @@ public:
 	/** Called by predraw(); and will set the appropriate rendering specific fields. */
 	nonvirtual void RenderFXPass(void);
 	nonvirtual void RenderAxialScale(void);
+	nonvirtual void RenderGLQuakeShadow(void);
 	#endif
 };
 

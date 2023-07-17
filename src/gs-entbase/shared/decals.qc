@@ -138,8 +138,6 @@ decal::predraw(void)
 void
 decal::BuildShader(void)
 {
-	string shader_buff;
-
 	/* skip empty decals */
 	if (!m_strTexture || !m_strTexture)
 		return;

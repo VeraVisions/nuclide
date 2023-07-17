@@ -223,8 +223,7 @@ CMD_ListModelFramegroups(void)
 {
 	string modelName = argv(1);
 	float modelIndex = getmodelindex(modelName);
-	string firstGroup
-	string temp;
+	string temp = "";
 
 	print(sprintf("// model: %S\n", modelName));
 
