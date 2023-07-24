@@ -86,8 +86,6 @@ var bool g_isloading = false;
 
 var bool autocvar_mp_flashlight = true;
 
-void FX_Impact(impactType_t, vector, vector);
-void FX_Explosion(vector);
 
 void TraceAttack_FireBullets(int, vector, int, vector, int);
 #ifdef BULLETPENETRATION

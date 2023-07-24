@@ -396,13 +396,11 @@ NSClientPlayer::Physics_Run(void)
 	/* handle drowning and other environmental factors */
 	Physics_WaterMove();
 
-	/* grappling hook stuff */
-#if 0
-	if (pl.hook.skin == 1) {
-		pl.velocity = (pl.hook.origin - pl.origin);
-		pl.velocity = (pl.velocity * (1 / (vlen(pl.velocity) / 750)));
+	/* grappling hook stuff, TODO: variable speeds */
+	if (grapvelocity != g_vec_null) {
+		velocity = (grapvelocity - origin);
+		velocity = (velocity * (1 / (vlen(velocity) / 750)));
 	}
-#endif
 
 	Physics_SetViewParms();
 

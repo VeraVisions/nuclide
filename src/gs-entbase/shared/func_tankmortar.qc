@@ -352,7 +352,7 @@ func_tankmortar::PlayerInput(void)
 		Damage_Radius(trace_endpos, m_eDriver, dmg, dmg * 2.5f, TRUE, 0);
 
 		/* fx */
-		FX_Explosion(trace_endpos);
+		pointparticles(particleeffectnum("fx_explosion.main"), trace_endpos, [0,0,0], 1);
 		SpriteSmoke(spos);
 		SpriteFlash(spos);
 

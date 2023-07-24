@@ -463,8 +463,12 @@ EntityDef_Precaches(int index)
 
 		if (substring(strKey, 0, 4) == "snd_") {
 			Sound_Precache(strValue);
-			spawnWords = tokenize_console(g_entDefTable[index].spawnData);
+		} else if (substring(strKey, 0, 6) == "smoke_") {
+			particleeffectnum(strValue);
+		} else if (strKey == "model_detonate") {
+			particleeffectnum(strValue);
 		}
+		spawnWords = tokenize_console(g_entDefTable[index].spawnData);
 	}
 
 	/* handle soundDef events */

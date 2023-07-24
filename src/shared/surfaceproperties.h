@@ -132,7 +132,7 @@ int SurfData_Finish(void);
 int SurfData_TexToSurfData(string tex_name);
 
 /* Call an impact effect against an entity surface */
-void SurfData_Impact(entity e, int fl, vector org, vector ang);
+void SurfData_Impact(entity e, vector org, vector ang);
 
 /* Get information from a Surface */
 __variant SurfData_GetInfo(int, int);
@@ -141,3 +141,7 @@ __variant SurfData_GetInfo(int, int);
 void SurfData_Impact_Parse(void);
 void SurfData_ImpactID_Parse(void);
 #endif
+
+void SurfData_ImpactOfType(int materialID, vector worldPosition, vector impactNormal);
+
+void SurfData_ImpactOfNamedType(string materialName, vector worldPosition, vector impactNormal);

@@ -151,7 +151,7 @@ void
 env_spark::CreateSpark(void)
 {
 	Sound_Play(this, CHAN_AUTO, "env_spark.sfx");
-	FX_Spark(self.origin, self.angles);
+	pointparticles(particleeffectnum("platform.spark"), origin, angles, 1);
 }
 
 void

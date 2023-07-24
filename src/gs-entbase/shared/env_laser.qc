@@ -291,8 +291,6 @@ env_laser::ReceiveEntity(float flNew, float flChanged)
 
 #define LASER_COUNT 16
 
-void FX_Spark(vector pos, vector ang);
-
 static float env_laser_jitlut[LASER_COUNT] = {
 	0.000000,
 	0.195090,
@@ -389,14 +387,14 @@ env_laser::predraw(void)
 	if (m_iBeamFlags & (LASER_STARTSPARKS)) {
 		vector dir = vectoangles(origin - m_vecEndPos);
 		makevectors(dir);
-		FX_Spark(origin, -v_forward);
+		pointparticles(particleeffectnum("platform.spark"), origin, -v_forward, 1);
 	}
 
 	if (m_iBeamFlags & (LASER_ENDSPARKS)) {
 		vector dir2 = vectoangles(m_vecEndPos - origin);
 
 		makevectors(dir2);
-		FX_Spark(m_vecEndPos, -v_forward);
+		pointparticles(particleeffectnum("platform.spark"), m_vecEndPos, -v_forward, 1);
 	}
 
 	m_flSparkTime = time + 0.25f;

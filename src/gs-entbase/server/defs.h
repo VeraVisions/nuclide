@@ -14,5 +14,3 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-void FX_Spark(vector, vector);
-void FX_BreakModel(int, vector, vector, vector, float);

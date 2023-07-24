@@ -299,7 +299,7 @@ func_breakable::Explode(void)
 	string breakModel = GetPropData(PROPINFO_BREAKMODEL);
 
 	BreakModel_Spawn(absmin, absmax, [0,0,0], m_flExplodeMag, vlen(size) / 10, breakModel);
-	FX_Explosion(rp);
+	pointparticles(particleeffectnum("fx_explosion.main"), rp, [0,0,0], 1);
 	Damage_Radius(rp, this, m_flExplodeMag, m_flExplodeRad, TRUE, 0);
 	UseTargets(this, TRIG_TOGGLE, 0.0f); /* delay... ignored. */
 	SetTakedamage(DAMAGE_NO);

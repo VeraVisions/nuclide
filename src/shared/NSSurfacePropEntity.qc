@@ -686,7 +686,7 @@ NSSurfacePropEntity::Death(void)
 		if (!flExplodeRad)
 			flExplodeRad = flExplodeMag * 2.5f;
 
-		FX_Explosion(origin);
+		pointparticles(particleeffectnum("fx_explosion.main"), origin, angles, 1);
 		Damage_Radius(origin, this, flExplodeMag, flExplodeRad, TRUE, 0);
 	}
 }

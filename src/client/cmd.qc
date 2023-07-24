@@ -39,7 +39,7 @@ CMD_dev_explode(void)
 {
 	makevectors(getproperty(VF_ANGLES));
 	traceline(getproperty(VF_ORIGIN), getproperty(VF_ORIGIN) + v_forward * 4096, FALSE, pSeat->m_ePlayer);
-	FX_Explosion(trace_endpos);
+//	FX_Explosion(trace_endpos);
 }
 
 static void
@@ -121,6 +121,7 @@ CMD_way_menu(void)
 static void
 CMD_view_geomtest(void)
 {
+	print(sprintf("geomset %s %s\n", argv(1), argv(2)));
 	Weapons_SetGeomset(sprintf("geomset %s %s\n", argv(1), argv(2)));
 }
 

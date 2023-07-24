@@ -170,13 +170,13 @@ NSTraceAttack::_FireSingle(vector vecPos, vector vecAngles, float flDamage, floa
 
 	/* water impact */
 	if (trace_endcontentsi & CONTENTBIT_WATER) {
-		FX_Impact(IMPACT_SLOSH, trace_endpos, trace_plane_normal);
+		SurfData_ImpactOfNamedType("water", trace_endpos, trace_plane_normal);
 		_FireSingle(trace_endpos + (v_forward * 2), vecAngles, flDamage / 2, flRange);
 	} else if (trace_endcontentsi & CONTENTBIT_SLIME) {
-		FX_Impact(IMPACT_SLOSH, trace_endpos, trace_plane_normal);
+		SurfData_ImpactOfNamedType("slime", trace_endpos, trace_plane_normal);
 		_FireSingle(trace_endpos + (v_forward * 2), vecAngles, flDamage / 2, flRange);
 	} else if (trace_endcontentsi & CONTENTBIT_LAVA) {
-		FX_Impact(IMPACT_SLOSH, trace_endpos, trace_plane_normal);
+		SurfData_ImpactOfNamedType("lama", trace_endpos, trace_plane_normal);
 		_FireSingle(trace_endpos + (v_forward * 2), vecAngles, flDamage / 2, flRange);
 	}
 
@@ -228,7 +228,7 @@ NSTraceAttack::_FireSingle(vector vecPos, vector vecAngles, float flDamage, floa
 		if (m_strDecalGroup)
 			DecalGroups_Place(m_strDecalGroup, trace_endpos + (v_forward * -2));
 
-		SurfData_Impact(trace_ent, trace_surfaceflagsi, trace_endpos, trace_plane_normal);
+		SurfData_Impact(trace_ent, trace_endpos, trace_plane_normal);
 	}
 
 	/* combine them into one single Damage_Apply call later */

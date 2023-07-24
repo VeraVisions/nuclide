@@ -445,10 +445,10 @@ SurfData_ImpactID_Parse(void)
 #endif
 
 void
-SurfData_Impact(entity e, int fl, vector org, vector ang)
+SurfData_Impact(entity e, vector org, vector ang)
 {
 #ifdef SERVER
-	static void SurfData_Impact_SurfaceParm(entity e, int fl, vector org, vector ang) {
+	static void SurfData_Impact_SurfaceParm(entity e, vector org, vector ang) {
 		SurfData_Impact_Net(e, org);
 	}
 
@@ -460,14 +460,30 @@ SurfData_Impact(entity e, int fl, vector org, vector ang)
 			NSLog("SurfData_Impact: %S %i\n", n, texdata);
 			SurfData_ImpactID_Net(texdata, org, ang);
 		} else
-			SurfData_Impact_SurfaceParm(e, fl, org, ang);
+			SurfData_Impact_SurfaceParm(e, org, ang);
 	} else { /* anything with takedamage = DAMAGE_YES is a NSurfacePropEntity. */
 		NSSurfacePropEntity foo = (NSSurfacePropEntity)e;
 
 		if (foo.HasSurfaceData() && foo.GetSurfaceData(SURFDATA_MATERIAL) != -1)
-			FX_Impact(foo.GetSurfaceData(SURFDATA_FX_BULLETIMPACT), org, ang);
+			SurfData_ImpactOfType(foo.GetSurfaceData(SURFDATA_MATERIAL), org, ang);
 		else
-			SurfData_Impact_SurfaceParm(e, fl, org, ang);
+			SurfData_Impact_SurfaceParm(e, org, ang);
 	}
 #endif
+}
+
+void
+SurfData_ImpactOfType(int materialID, vector worldPosition, vector impactNormal)
+{
+#ifdef SERVER
+	SurfData_ImpactID_Net(materialID, worldPosition, impactNormal);
+#endif
+	/* TODO: client side only version */
+}
+
+void
+SurfData_ImpactOfNamedType(string materialName, vector worldPosition, vector impactNormal)
+{
+	int index = (int)hash_get(g_hashsurfdata, materialName, -1);
+	SurfData_ImpactOfType(index, worldPosition, impactNormal);
 }

@@ -156,7 +156,7 @@ func_mortar_field::Fire(vector vecOrg)
 
 	float dmg = 200.0f;
 	Damage_Radius(trace_endpos, this, dmg, dmg * 2.5f, TRUE, 0);
-	FX_Explosion(trace_endpos);
+	pointparticles(particleeffectnum("fx_explosion.main"), trace_endpos, [0,0,0], 1);
 }
 
 void

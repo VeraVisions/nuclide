@@ -146,8 +146,7 @@ private:
 	int a_ammo2;
 	int a_ammo3;
 
-	/* any mods that use hooks */
-	entity hook;
+	PREDICTED_VECTOR(grapvelocity)
 
 #ifdef CLIENT
 	int sequence;

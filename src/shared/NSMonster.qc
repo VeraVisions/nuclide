@@ -1629,7 +1629,7 @@ NSMonster::SpawnKey(string strKey, string strValue)
 		m_strTriggerTarget = ReadString(strValue);
 		break;
 	/* entityDef related */
-	case "netname":	/* used for obituries and debug info */
+	case "netname":	/* used for obituaries and debug info */
 		netname = ReadString(strValue);
 		break;
 	case "eye_height":

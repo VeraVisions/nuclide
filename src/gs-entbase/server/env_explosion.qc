@@ -120,7 +120,7 @@ env_explosion::Respawn(void)
 void
 env_explosion::Trigger(entity act, triggermode_t state)
 {
-	FX_Explosion(origin);
+	pointparticles(particleeffectnum("fx_explosion.main"), origin, [0,0,0], 1);
 
 	if (!HasSpawnFlags(ENVEXPLO_NODAMAGE)) {
 		Damage_Radius(origin, this, m_iMagnitude, m_iMagnitude * 2.5f, TRUE, 0);
