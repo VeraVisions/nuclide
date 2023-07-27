@@ -154,7 +154,7 @@ void NSProjectile_ReadEntity(bool);
 #endif
 
 #ifdef SERVER
-void NSProjectile_SpawnDef(string entityDef, NSEntity theOwner);
-void NSProjectile_SpawnDefAtPosition(string entityDef, NSEntity theOwner, vector vecOrigin, vector vecAngles);
-void NSProjectile_SpawnDefAttachment(string entityDef, NSEntity theOwner, int attachmentID);
+NSProjectile NSProjectile_SpawnDef(string entityDef, NSEntity theOwner);
+NSProjectile NSProjectile_SpawnDefAtPosition(string entityDef, NSEntity theOwner, vector vecOrigin, vector vecAngles);
+NSProjectile NSProjectile_SpawnDefAttachment(string entityDef, NSEntity theOwner, int attachmentID);
 #endif

@@ -813,18 +813,28 @@ NSProjectile_ReadEntity(bool new)
 #endif
 
 #ifdef SERVER
-void
+NSProjectile
 NSProjectile_SpawnDef(string entityDef, NSEntity theOwner)
 {
 	entity oldself = self;
+	vector launchAngle;
+
 	NSProjectile rocket = spawn(NSProjectile);
 	rocket.owner = theOwner;
 	self = rocket;
 	EntityDef_SpawnClassname(entityDef);
 	self = oldself;
-	rocket.Launch(theOwner.GetOrigin() + theOwner.view_ofs, theOwner.GetAngles(), 0.0f, 0.0f, 0.0f);
+
+	if (theOwner.flags & FL_CLIENT)
+		launchAngle = theOwner.v_angle;
+	else
+		launchAngle = theOwner.GetAngles();
+
+	rocket.Launch(theOwner.GetOrigin() + theOwner.view_ofs, launchAngle, 0.0f, 0.0f, 0.0f);
+	return rocket;
 }
-void
+
+NSProjectile
 NSProjectile_SpawnDefAtPosition(string entityDef, NSEntity theOwner, vector vecOrigin, vector vecAngles)
 {
 	entity oldself = self;
@@ -834,8 +844,10 @@ NSProjectile_SpawnDefAtPosition(string entityDef, NSEntity theOwner, vector vecO
 	EntityDef_SpawnClassname(entityDef);
 	self = oldself;
 	rocket.Launch(vecOrigin, vecAngles, 0.0f, 0.0f, 0.0f);
+	return rocket;
 }
-void
+
+NSProjectile
 NSProjectile_SpawnDefAttachment(string entityDef, NSEntity theOwner, int attachmentID)
 {
 	entity oldself = self;
@@ -849,5 +861,6 @@ NSProjectile_SpawnDefAttachment(string entityDef, NSEntity theOwner, int attachm
 	EntityDef_SpawnClassname(entityDef);
 	self = oldself;
 	rocket.Launch(attachmentPos, theOwner.GetAngles(), 0.0f, 0.0f, 0.0f);
+	return rocket;
 }
 #endif
