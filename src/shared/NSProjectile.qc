@@ -59,6 +59,7 @@ NSProjectile::NSProjectile(void)
 	m_sndBounce = __NULL__;
 	m_vecSpawnMins = g_vec_null;
 	m_vecSpawnMaxs = g_vec_null;
+	m_flSpawnFrame = 0;
 
 	/* ETQW-additions */
 	m_bIsBullet = false;
@@ -66,6 +67,8 @@ NSProjectile::NSProjectile(void)
 	/* Nuclide additions */
 	m_bStickToWorld = false;
 	m_bStickToActor = false;
+	m_bThrustHoming = false;
+	m_bInheritVelocity = false;
 #endif
 }
 
@@ -220,6 +223,12 @@ NSProjectile::SpawnKey(string strKey, string strValue)
 	case "thrust_homing":
 		m_bThrustHoming = ReadBool(strValue);
 		break;
+	case "frame":
+		m_flSpawnFrame = ReadFloat(strValue);
+		break;
+	case "inherit_velocity":
+		m_bInheritVelocity = ReadBool(strValue);
+		break;
 	default:
 		super::SpawnKey(strKey, strValue);
 		break;
@@ -277,6 +286,8 @@ NSProjectile::Save(float handle)
 	SaveVector(handle, "m_vecSpawnMaxs", m_vecSpawnMaxs);
 	SaveBool(handle, "m_bThrustHoming", m_bThrustHoming);
 	SaveEntity(handle, "m_thrustHandler", m_thrustHandler);
+	SaveFloat(handle, "m_flSpawnFrame", m_flSpawnFrame);
+	SaveBool(handle, "m_bInheritVelocity", m_bInheritVelocity);
 }
 
 void
@@ -420,6 +431,12 @@ NSProjectile::Restore(string strKey, string strValue)
 		break;
 	case "m_thrustHandler":
 		m_thrustHandler = (NSTimer)ReadEntity(strValue);
+		break;
+	case "m_flSpawnFrame":
+		m_flSpawnFrame = ReadFloat(strValue);
+		break;
+	case "m_bInheritVelocity":
+		m_bInheritVelocity = ReadBool(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
@@ -678,6 +695,9 @@ NSProjectile::Launch(vector startPos, vector launchDir, float fuseOffset, float 
 	moveVel += (m_vecLaunchVelocity[1] * powerMultiplier) * v_right;
 	moveVel += (m_vecLaunchVelocity[2] * powerMultiplier) * v_up;
 
+	if (m_bInheritVelocity == true)
+		moveVel += owner.velocity;
+
 	/* fire slower underwater */
 	if (pointcontents(startPos) == CONTENT_WATER) {
 		SetVelocity(moveVel / 10);
@@ -714,6 +734,7 @@ NSProjectile::Launch(vector startPos, vector launchDir, float fuseOffset, float 
 		m_thrustHandler = NSTimer::TemporaryTimer(this, _ThrustThink, 0.0, true);
 	}
 
+	SetFrame(m_flSpawnFrame);
 	StartSoundDef(m_sndFly, CHAN_BODY, true);
 	SendFlags = (-1);
 	//SendEntity = 0; /* HACK: remove this once Spike fixes CSQC-set traileffectnum etc. */
@@ -729,6 +750,7 @@ NSProjectile::EvaluateEntity(void)
 	EVALUATE_VECTOR(angles, 1, PROJ_CHANGED_ANGLES_Y)
 	EVALUATE_VECTOR(angles, 2, PROJ_CHANGED_ANGLES_Z)
 	EVALUATE_FIELD(modelindex, PROJ_CHANGED_MODELINDEX)
+	EVALUATE_FIELD(frame, PROJ_CHANGED_MODELINDEX)
 	EVALUATE_FIELD(traileffectnum, PROJ_CHANGED_MODELINDEX)
 	EVALUATE_FIELD(m_iRenderMode, PROJ_CHANGED_RENDERMODE)
 	EVALUATE_FIELD(m_iRenderFX, PROJ_CHANGED_RENDERMODE)
@@ -760,6 +782,7 @@ NSProjectile::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_ANGLE(angles[1], PROJ_CHANGED_ANGLES_Y)
 	SENDENTITY_ANGLE(angles[2], PROJ_CHANGED_ANGLES_Z)
 	SENDENTITY_SHORT(modelindex, PROJ_CHANGED_MODELINDEX)
+	SENDENTITY_BYTE(frame, PROJ_CHANGED_MODELINDEX)
 	SENDENTITY_FLOAT(traileffectnum, PROJ_CHANGED_MODELINDEX)
 	SENDENTITY_BYTE(m_iRenderMode, PROJ_CHANGED_RENDERMODE)
 	SENDENTITY_BYTE(m_iRenderFX, PROJ_CHANGED_RENDERMODE)
@@ -784,6 +807,7 @@ NSProjectile::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_ANGLE(angles[1], PROJ_CHANGED_ANGLES_Y)
 	READENTITY_ANGLE(angles[2], PROJ_CHANGED_ANGLES_Z)
 	READENTITY_SHORT(modelindex, PROJ_CHANGED_MODELINDEX)
+	READENTITY_BYTE(frame, PROJ_CHANGED_MODELINDEX)
 	READENTITY_FLOAT(traileffectnum, PROJ_CHANGED_MODELINDEX)
 	READENTITY_BYTE(m_iRenderMode, PROJ_CHANGED_RENDERMODE)
 	READENTITY_BYTE(m_iRenderFX, PROJ_CHANGED_RENDERMODE)
