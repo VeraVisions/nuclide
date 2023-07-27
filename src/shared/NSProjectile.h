@@ -100,9 +100,15 @@ private:
 	/* Nuclide additions */
 	bool m_bStickToWorld;
 	bool m_bStickToActor;
+	bool m_bThrustHoming;
+
+	NSTimer m_thrustHandler;
 
 	nonvirtual void _AnimateThink(void);
+	nonvirtual void _ThrustThink(void);
 	nonvirtual void _AnimateThinkDead(void);
+
+	virtual void OnRemoveEntity(void);
 #endif
 
 public:

@@ -36,6 +36,11 @@ _NSTimerWrapper(entity receiver, void() func)
 void
 NSTimer::_TimerThink(void)
 {
+	if (!m_eReceiver) {
+		Destroy();
+		return;
+	}
+
 	_NSTimerWrapper(m_eReceiver, _m_NSTimerFunc);
 
 	if (m_bRepeats == true)

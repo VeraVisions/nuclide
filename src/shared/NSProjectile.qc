@@ -217,6 +217,9 @@ NSProjectile::SpawnKey(string strKey, string strValue)
 	case "maxs":
 		m_vecSpawnMaxs = ReadVector(strValue);
 		break;
+	case "thrust_homing":
+		m_bThrustHoming = ReadBool(strValue);
+		break;
 	default:
 		super::SpawnKey(strKey, strValue);
 		break;
@@ -272,6 +275,8 @@ NSProjectile::Save(float handle)
 	SaveBool(handle, "m_bStickToActor", m_bStickToActor);
 	SaveVector(handle, "m_vecSpawnMins", m_vecSpawnMins);
 	SaveVector(handle, "m_vecSpawnMaxs", m_vecSpawnMaxs);
+	SaveBool(handle, "m_bThrustHoming", m_bThrustHoming);
+	SaveEntity(handle, "m_thrustHandler", m_thrustHandler);
 }
 
 void
@@ -409,6 +414,12 @@ NSProjectile::Restore(string strKey, string strValue)
 		break;
 	case "m_vecSpawnMaxs":
 		m_vecSpawnMaxs = ReadVector(strValue);
+		break;
+	case "m_bThrustHoming":
+		m_bThrustHoming = ReadBool(strValue);
+		break;
+	case "m_thrustHandler":
+		m_thrustHandler = (NSTimer)ReadEntity(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
@@ -596,6 +607,49 @@ NSProjectile::_LaunchHitscan(vector startPos, vector launchDir, float dmgMultipl
 }
 
 void
+NSProjectile::_ThrustThink(void)
+{
+	vector currentVelocity;
+	float currentSpeed;
+	float newSpeed;
+	vector newVelocity;
+
+	currentVelocity = GetVelocity();
+	currentSpeed = vlen(currentVelocity);
+	newSpeed = (currentSpeed + (m_flThrust * frametime));
+
+	/* homing mode */
+	if (m_bThrustHoming) {
+		NSSurfacePropEntity projectileOwner = (NSSurfacePropEntity)GetOwner();
+		vector ownerPos = projectileOwner.GetEyePos();
+		makevectors(projectileOwner.v_angle);
+		traceline(ownerPos, ownerPos + v_forward * 8096, FALSE, projectileOwner);
+		SetAngles(vectoangles(trace_endpos - GetOrigin()));
+	}
+
+	makevectors(GetAngles());
+	newVelocity = v_forward * (newSpeed);
+
+	/* prevent thrusting early */
+	if ((m_flThrustStart > 0) && GetSpawnAge() < m_flThrustStart) { 
+		return;
+	}
+
+	/* stop thrusting when we reach the end time */
+	if ((m_flThrustEnd > 0) && (GetSpawnAge() > m_flThrustEnd)) {
+		m_thrustHandler.Destroy(); /* invalidate */
+		return;
+	}
+
+	SetVelocity(newVelocity);
+}
+
+void
+NSProjectile::OnRemoveEntity(void)
+{
+}
+
+void
 NSProjectile::Launch(vector startPos, vector launchDir, float fuseOffset, float powerMultiplier, float dmgMultiplier)
 {
 	vector moveVel = g_vec_null;
@@ -654,6 +708,10 @@ NSProjectile::Launch(vector startPos, vector launchDir, float fuseOffset, float 
 
 	if (m_flFuse > 0) {
 		ScheduleThink(_FuseEnded, m_flFuse + fuseOffset);
+	}
+
+	if (m_flThrust != 0) {
+		m_thrustHandler = NSTimer::TemporaryTimer(this, _ThrustThink, 0.0, true);
 	}
 
 	StartSoundDef(m_sndFly, CHAN_BODY, true);
