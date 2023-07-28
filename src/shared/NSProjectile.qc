@@ -60,6 +60,7 @@ NSProjectile::NSProjectile(void)
 	m_vecSpawnMins = g_vec_null;
 	m_vecSpawnMaxs = g_vec_null;
 	m_flSpawnFrame = 0;
+	m_vecSpawnOrigin = g_vec_null;
 
 	/* ETQW-additions */
 	m_bIsBullet = false;
@@ -228,6 +229,9 @@ NSProjectile::SpawnKey(string strKey, string strValue)
 		break;
 	case "inherit_velocity":
 		m_bInheritVelocity = ReadBool(strValue);
+		break;
+	case "offset":
+		m_vecSpawnOrigin = ReadVector(strValue);
 		break;
 	default:
 		super::SpawnKey(strKey, strValue);
@@ -588,7 +592,7 @@ NSProjectile::_Explode(void)
 	vector explodePos = origin - (v_forward * 32);
 
 	if (m_partModelDetonate)
-		pointparticles(particleeffectnum(m_partModelDetonate), explodePos, velocity, 1);
+		pointparticles(particleeffectnum(m_partModelDetonate), explodePos, trace_plane_normal, 1);
 
 	//print(sprintf("%S\n", m_defSplashDamage));
 	if (m_defSplashDamage) {
@@ -676,7 +680,6 @@ NSProjectile::Launch(vector startPos, vector launchDir, float fuseOffset, float 
 		return;
 	}
 
-	SetOrigin(startPos);
 	SetAngles(launchDir);
 	SetModel(m_oldModel);
 	SetSize(m_vecSpawnMins, m_vecSpawnMaxs);
@@ -694,6 +697,11 @@ NSProjectile::Launch(vector startPos, vector launchDir, float fuseOffset, float 
 	moveVel = (m_vecLaunchVelocity[0] * powerMultiplier) * v_forward;
 	moveVel += (m_vecLaunchVelocity[1] * powerMultiplier) * v_right;
 	moveVel += (m_vecLaunchVelocity[2] * powerMultiplier) * v_up;
+
+	startPos += v_forward * m_vecSpawnOrigin[0];
+	startPos += v_right * m_vecSpawnOrigin[1];
+	startPos += v_up * m_vecSpawnOrigin[2];
+	SetOrigin(startPos);
 
 	if (m_bInheritVelocity == true)
 		moveVel += owner.velocity;
@@ -735,6 +743,7 @@ NSProjectile::Launch(vector startPos, vector launchDir, float fuseOffset, float 
 	}
 
 	SetFrame(m_flSpawnFrame);
+	SetGravity(m_flGravity);
 	StartSoundDef(m_sndFly, CHAN_BODY, true);
 	SendFlags = (-1);
 	//SendEntity = 0; /* HACK: remove this once Spike fixes CSQC-set traileffectnum etc. */

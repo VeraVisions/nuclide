@@ -94,7 +94,7 @@ private:
 	vector m_vecSpawnMins;
 	vector m_vecSpawnMaxs;
 	float m_flSpawnFrame;
-	bool m_bInheritVelocity;
+	vector m_vecSpawnOrigin;
 
 	/* ETQW-additions */
 	bool m_bIsBullet;
@@ -103,6 +103,7 @@ private:
 	bool m_bStickToWorld;
 	bool m_bStickToActor;
 	bool m_bThrustHoming;
+	bool m_bInheritVelocity;
 
 	NSTimer m_thrustHandler;
 
