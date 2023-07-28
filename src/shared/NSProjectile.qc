@@ -449,6 +449,12 @@ NSProjectile::Restore(string strKey, string strValue)
 }
 
 void
+NSProjectile::Trigger(entity theActivator, triggermode_t theMode)
+{
+	_Explode();
+}
+
+void
 NSProjectile::Spawned(void)
 {
 	super::Spawned();

@@ -141,6 +141,8 @@ public:
 	virtual void Save(float);
 	virtual void Restore(string, string);
 
+	virtual void Trigger(entity, triggermode_t);
+
 	nonvirtual void _FuseEnded(void);
 	nonvirtual void _Explode(void);
 
