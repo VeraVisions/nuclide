@@ -616,7 +616,8 @@ NSRenderableEntity::predraw(void)
 	}
 
 	if (traileffectnum) {
-		trailparticles(traileffectnum, this, oldorigin, origin);
+		if (oldorigin != g_vec_null)
+			trailparticles(traileffectnum, this, oldorigin, origin);
 	}
 	oldorigin = origin;
 
