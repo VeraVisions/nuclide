@@ -955,14 +955,6 @@ NSTalkMonster::predraw(void)
 	bonecontrol3 = autocvar(bonecontrol3, 0);
 	bonecontrol4 = autocvar(bonecontrol4, 0);
 
-	/* this will make the actor 'aim" at the target */
-	{
-		makevectors(v_angle);
-		vector tmp = vectoangles(v_forward);
-		subblendfrac = tmp[0] / 90;
-		bonecontrol1 = m_flHeadYaw;	/* head turning */
-	}
-
 	//print(sprintf("yaw: %f %f\n", subblendfrac, v_angle[0]));
 	subblend2frac = autocvar(subblend2frac, 0);
 	basesubblendfrac = autocvar(basesubblendfrac, 0);
