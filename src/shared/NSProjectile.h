@@ -59,9 +59,9 @@ private:
 	string m_defDamage;
 	string m_defSplashDamage;
 	vector m_vecLaunchVelocity;
-	float m_flThrust; /* TODO */
-	float m_flThrustStart;  /* TODO */
-	float m_flThrustEnd; /* TODO */
+	float m_flThrust;
+	float m_flThrustStart;
+	float m_flThrustEnd;
 	float m_flFrictionLinear; /* TODO */
 	float m_flBounce;
 	float m_flMass; /* TODO */
@@ -73,8 +73,8 @@ private:
 	bool m_bDetonateOnActor;
 	bool m_bImpactEffect; /* TODO */
 	bool m_bImpactGib; /* TODO */
-	string m_matDetonate; /* TODO */
-	float m_flDecalSize; /* TODO */
+	string m_matDetonate;
+	float m_flDecalSize;
 	string m_partSmokeFly;
 	string m_partModelDetonate;
 	string m_partSmokeDetonate;

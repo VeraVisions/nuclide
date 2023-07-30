@@ -142,6 +142,7 @@ NSProjectile::SpawnKey(string strKey, string strValue)
 	case "impact_gib": /* gibs */
 		m_bImpactGib = ReadBool(strValue);
 		break;
+	case "decal_detonate":
 	case "mtr_detonate":
 		m_matDetonate = ReadString(strValue);
 		break;
@@ -596,6 +597,10 @@ NSProjectile::_Explode(void)
 {
 	makevectors(vectoangles(velocity));
 	vector explodePos = origin - (v_forward * 32);
+
+	if (m_matDetonate) {
+		DecalGroups_Place(m_matDetonate, origin);
+	}
 
 	if (m_partModelDetonate)
 		pointparticles(particleeffectnum(m_partModelDetonate), explodePos, trace_plane_normal, 1);
