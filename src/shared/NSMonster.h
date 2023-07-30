@@ -381,7 +381,6 @@ private:
 #endif
 
 	PREDICTED_FLOAT(m_flHeadYaw)
-	PREDICTED_FLOAT_N(frame1time)
 	PREDICTED_FLOAT_N(subblendfrac)
 	PREDICTED_FLOAT_N(bonecontrol1)
 

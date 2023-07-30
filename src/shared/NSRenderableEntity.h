@@ -100,6 +100,7 @@ private:
 	PREDICTED_INT(m_iBody)
 	PREDICTED_FLOAT_N(colormap)
 	PREDICTED_VECTOR_N(glowmod)
+	PREDICTED_FLOAT_N(frame1time)
 
 	PREDICTED_FLOAT(m_iRenderFX)
 	PREDICTED_FLOAT(m_iRenderMode)
