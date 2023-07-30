@@ -92,6 +92,8 @@ NSMonster::NSMonster(void)
 
 	m_flWalkSpeed = autocvar_ai_walkSpeed;
 	m_flRunSpeed = autocvar_ai_runSpeed;
+	m_flLeapDamage = 0;
+	m_bLeapAttacked = false;
 #endif
 }
 
@@ -196,6 +198,8 @@ NSMonster::Save(float handle)
 	SaveString(handle, "m_strBodyOnDraw", m_strBodyOnDraw);
 	SaveFloat(handle, "m_flWalkSpeed", m_flWalkSpeed);
 	SaveFloat(handle, "m_flRunSpeed", m_flRunSpeed);
+	SaveFloat(handle, "m_flLeapDamage", m_flLeapDamage);
+	SaveBool(handle, "m_bLeapAttacked", m_bLeapAttacked);
 }
 
 void
@@ -436,6 +440,12 @@ NSMonster::Restore(string strKey, string strValue)
 		break;
 	case "m_flRunSpeed":
 		m_flRunSpeed = ReadFloat(strValue);
+		break;
+	case "m_flLeapDamage":
+		m_flLeapDamage = ReadFloat(strValue);
+		break;
+	case "m_bLeapAttacked":
+		m_bLeapAttacked = ReadBool(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
@@ -1313,6 +1323,11 @@ NSMonster::Physics(void)
 	input_angles = angles;
 	m_bTurning = false;
 
+	/* unset the leap attack */
+	if (m_bLeapAttacked == true && HasFlags(FL_ONGROUND) == true) {
+		m_bLeapAttacked = false;
+	}
+
 	/* when stuck in a sequence, forget enemies, combat stance */
 	if (GetSequenceState() != SEQUENCESTATE_NONE) {
 		m_eEnemy = __NULL__;
@@ -1381,6 +1396,15 @@ NSMonster::Physics(void)
 void
 NSMonster::Touch(entity eToucher)
 {
+	/* leap test, are we no longer on the ground? */
+	if (m_flLeapDamage && m_bLeapAttacked == false)
+	if (HasFlags(FL_ONGROUND) == false) {
+		if (eToucher.takedamage == DAMAGE_YES) {
+			Damage_Apply(eToucher, this, m_flLeapDamage, WEAPON_NONE, DMG_BLUNT);
+			m_bLeapAttacked = true;
+		}
+	}
+
 	if (movetype != MOVETYPE_WALK)
 		return;
 
@@ -1765,6 +1789,9 @@ NSMonster::SpawnKey(string strKey, string strValue)
 		break;
 	case "health":
 		base_health = Skill_GetDefValue(strValue);
+		break;
+	case "leap_damage":
+		m_flLeapDamage = Skill_GetDefValue(strValue);
 		break;
 	default:
 		NSSurfacePropEntity::SpawnKey(strKey, strValue);

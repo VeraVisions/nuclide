@@ -494,6 +494,9 @@ private:
 	float m_flWalkSpeed;
 	float m_flRunSpeed;
 
+	float m_flLeapDamage;
+	bool m_bLeapAttacked;
+
 	nonvirtual void _LerpTurnToEnemy(void);
 	nonvirtual void _LerpTurnToPos(vector);
 	nonvirtual void _LerpTurnToYaw(vector);
