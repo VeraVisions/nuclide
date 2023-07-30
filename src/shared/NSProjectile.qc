@@ -741,7 +741,7 @@ NSProjectile::Launch(vector startPos, vector launchDir, float fuseOffset, float 
 	}
 
 	if (m_flFuse > 0) {
-		ScheduleThink(_FuseEnded, m_flFuse + fuseOffset);
+		ScheduleThink(_FuseEnded, m_flFuse - fuseOffset);
 	}
 
 	if (m_flThrust != 0) {
@@ -847,6 +847,7 @@ NSProjectile_ReadEntity(bool new)
 	}
 
 	fl = readfloat();
+
 	rend.ReceiveEntity(new, fl);
 }
 #endif
