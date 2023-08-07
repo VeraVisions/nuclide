@@ -61,6 +61,7 @@ typedef struct
 	string samples; /**< Separated list of samples. */
 	string name; /**< Name of the soundDef. */
 	string distshader; /**< soundDef to play where this soundDef is not audible. */
+	float pointparticle;
 } snd_t;
 
 /** A sound sample of a sentences.txt word sequence. */

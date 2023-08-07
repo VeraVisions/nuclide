@@ -172,6 +172,9 @@ Sound_ParseField(int i, int a)
 	case "distshader":
 		g_sounds[i].distshader = argv(1);
 		break;
+	case "pointparticle":
+		g_sounds[i].pointparticle = particleeffectnum(argv(1));
+		break;
 	case "alerts":
 		dprint("\tSound set to alert enemy AI\n");
 		g_sounds[i].flags |= SNDFL_ALERTS;
@@ -548,6 +551,14 @@ Sound_Play(entity target, int chan, string shader)
 			pSeat->m_flShakeTime = pSeat->m_flShakeDuration;
 		}
 	}
+#endif
+
+#ifdef CLIENT
+	if (g_sounds[sample].pointparticle)
+		pointparticles(g_sounds[sample].pointparticle, target.origin, [0,0,0], 1);
+#else
+	if (g_sounds[sample].pointparticle)
+		print(sprintf("SoundDef %S is attempting to spawn a particle on the server side.\n", shader));
 #endif
 
 	sound(
