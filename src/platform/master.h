@@ -33,6 +33,12 @@ float srv_fldPlayers;
 float srv_fldMaxplayers;
 float srv_fldMap;
 float srv_fldGame;
+float srv_fldServerInfo;
+float srv_fldPlayer0;
+
+/* We cache these, because the engine may purge our cache anyway */
+int g_masterInternetServers;
+int g_masterLANServers;
 
 /** Returns IP of master server. */
 string Master_Resolve(void);

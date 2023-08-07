@@ -45,45 +45,39 @@ Master_GetTotalServers(void)
 int
 Master_GetLANServers(void)
 {
-	int count = 0;
-	int tcount = 0;
-
-	count = gethostcachevalue(SLIST_HOSTCACHEVIEWCOUNT);
-
-	for (int i = 0; i < count; i++) {
-		string address;
-		address = gethostcachestring(srv_fldAdress, i);
-
-		/* skip LAN */
-		if (!address || !Server_IsLan(address)) {
-			continue;
-		}
-		tcount++;
-	}
-
-	return tcount;
+	return g_masterLANServers;
 }
 
 int
 Master_GetInternetServers(void)
 {
-	int count = 0;
-	int tcount = 0;
+	return g_masterInternetServers;
+}
 
-	count = gethostcachevalue(SLIST_HOSTCACHEVIEWCOUNT);
+void
+Master_RecountServers(void)
+{
+	int count = 0i;
+	g_masterInternetServers = 0i;
+	g_masterInternetServers = 0i;
+
+	count = (int)gethostcachevalue(SLIST_HOSTCACHEVIEWCOUNT);
 
 	for (int i = 0; i < count; i++) {
 		string address;
 		address = gethostcachestring(srv_fldAdress, i);
 
-		/* skip LAN */
-		if (!address || Server_IsLan(address)) {
+		/* skip empty entries */
+		if not (address)
 			continue;
-		}
-		tcount++;
-	}
 
-	return tcount;
+		/* skip LAN */
+		if (Server_IsLan(address)) {
+			g_masterLANServers++;
+		} else {
+			g_masterInternetServers++;
+		}
+	}
 }
 
 void
@@ -95,7 +89,8 @@ Master_RefreshCache(void)
 	sethostcachesort(gethostcacheindexforkey("ping"), FALSE);
 	refreshhostcache(FALSE);
 	resorthostcache();
-	int a = gethostcachevalue(SLIST_HOSTCACHETOTALCOUNT);
+	Master_RecountServers();
+	int a = Master_GetLANServers() + Master_GetInternetServers();
 	
 	if (a) {
 		NSLog("Master reports a total of %i servers.", a);
@@ -111,7 +106,8 @@ Master_UpdateCache(void)
 	sethostcachesort(gethostcacheindexforkey("ping"), FALSE);
 	refreshhostcache(TRUE);
 	resorthostcache();
-	int a = gethostcachevalue(SLIST_HOSTCACHETOTALCOUNT);
+	Master_RecountServers();
+	int a = Master_GetLANServers() + Master_GetInternetServers();
 	
 	if (a) {
 		NSLog("Master reports a total of %i servers.", a);
@@ -129,6 +125,8 @@ Master_ResortCache(void)
 	srv_fldMaxplayers = gethostcacheindexforkey("maxplayers");
 	srv_fldMap = gethostcacheindexforkey("map");
 	srv_fldGame = gethostcacheindexforkey("game");
+	srv_fldServerInfo = gethostcacheindexforkey("serverinfo");
+	srv_fldPlayer0 = gethostcacheindexforkey("player");
 }
 
 void
