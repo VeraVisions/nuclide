@@ -168,6 +168,10 @@ private:
 	float m_flPainTime;
 
 	entity last_used;
+
+	float pb_angle_delta;
+	float pb_player_delta;
+	vector pb_last_angles;
 #endif
 };
 

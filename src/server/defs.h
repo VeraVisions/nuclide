@@ -26,6 +26,7 @@
 
 #include "route.h"
 #include "way.h"
+#include "lament.h"
 
 /* helper macros */
 #define EVALUATE_FIELD(fieldname, changedflag) {\

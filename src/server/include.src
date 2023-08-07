@@ -9,6 +9,7 @@ NSGameRules.qc
 client.qc
 NSTraceAttack.qc
 vote.qc
+lament.qc
 weapons.qc
 modelevent.qc
 mapcycle.qc

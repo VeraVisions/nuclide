@@ -255,6 +255,8 @@ SV_RunClientCommand(void)
 	if (self.classname != "player" && self.classname != "spectator")
 		return;
 
+	CheatersLament((NSClientPlayer)cl, input_angles, input_buttons, input_timelength);
+
 	if (!Plugin_RunClientCommand()) {
 		/* TODO */
 	}
