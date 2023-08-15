@@ -14,27 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-#define FN_UPDATE_IMGURL "http://www.frag-net.com/dl/img/%s.jpg"
 
 #ifndef WEBMENU
-enum
-{
-	GPMI_NAME,		// name of the package, for use with the pkg command.
-	GPMI_CATEGORY,		// category text
-	GPMI_TITLE,		// name of the package, for showing the user.
-	GPMI_VERSION,		// version info (may have multiple with the same name but different versions)
-	GPMI_DESCRIPTION,	// some blurb
-	GPMI_LICENSE,		// what license its distributed under
-	GPMI_AUTHOR,		// name of the person(s) who created it
-	GPMI_WEBSITE,		// where to contribute/find out more info/etc
-	GPMI_INSTALLED,		// current state
-	GPMI_ACTION,		// desired state
-	GPMI_AVAILABLE,		// whether it may be downloaded or not.
-	GPMI_FILESIZE,		// size to download.
-};
-
-string(int, int) getpackagemanagerinfo = #0;
-
 var int g_updates_initialized = FALSE;
 var int autocvar_menu_updating = FALSE;
 
@@ -63,49 +44,25 @@ up_btndone_start(void)
 void
 up_btninstall_start(void)
 {
-	int pkgid;
-
-	pkgid = up_lbUpdates.GetSelected();
-	localcmd(sprintf("pkg add %s\n", updates[pkgid].name));
-	updates[pkgid].installed = "pending";
-	print(sprintf("Marking package %s for install.\n", updates[pkgid].title));
+	Updates_Remove(up_lbUpdates.GetSelected());
 }
 
 void
 up_btnremove_start(void)
 {
-	int pkgid;
-
-	pkgid = up_lbUpdates.GetSelected();
-	localcmd(sprintf("pkg rem %s\n", updates[pkgid].name));
-	updates[pkgid].installed = "rem";
-	print(sprintf("Marking package %s for 'removal'.\n", updates[pkgid].title));
+	Updates_Install(up_lbUpdates.GetSelected());
 }
 
 void
 up_toggleinstall(void)
 {
-	int pkgid;
-	pkgid = up_lbUpdates.GetSelected();
-
-	switch (updates[pkgid].installed) {
-	case "":
-	case "rem":
-		localcmd(sprintf("pkg add %s\n", updates[pkgid].name));
-		updates[pkgid].installed = "pending";
-		break;
-	default:
-		localcmd(sprintf("pkg rem %s\n", updates[pkgid].name));
-		updates[pkgid].installed = "rem";
-	}
+	Updates_Toggle(up_lbUpdates.GetSelected());
 }
 
 void
 up_btnapply_start(void)
 {
-	cvar_set("menu_updating", "1");
-	localcmd("pkg apply\n");
-	print("Applying package changes.\n");
+	Updates_ApplyPendingChanges();
 }
 
 void
@@ -134,94 +91,14 @@ up_sbupdates_changed(int val)
 	up_lbUpdates.SetScroll(val);
 }
 
-
 void
 menu_updates_refresh(void)
 {
-	int c;
-	update_count = 0;
+	Updates_Refresh();
+	int updateCount = Updates_GetPackageCount();
 
-	if (updates) {
-		memfree(updates);
-	}
-
-#if 0
-	for (int i = 0; (getpackagemanagerinfo(i, GPMI_NAME)); i++) {
-		string cat = getpackagemanagerinfo(i, GPMI_CATEGORY);
-		if (cat == "Plugins/") {
-			continue;
-		}
-		if (cat == "Mod/") {
-			continue;
-		}
-		update_count++;
-	}
-#else
-	/* look for the valid packages in the gameinfo pkgname */
-	int pkgcount = tokenize(games[gameinfo_current].pkgname);
-	for (int i = 0i; i < pkgcount; i++) {
-		int id = game_getpackageid(argv(i));
-		if (id == -1)
-			continue;
-
-		update_count++;
-	}
-#endif
-
-	c = 0;
-	updates = memalloc(sizeof(update_t) * update_count);
-
-#if 0
-	for (int i = 0; (getpackagemanagerinfo(i, GPMI_NAME)); i++) {
-		string cat = getpackagemanagerinfo(i, GPMI_CATEGORY);
-		if (cat == "Plugins/") {
-			continue;
-		}
-		if (cat == "Mod/") {
-			continue;
-		}
-
-		updates[c].name = getpackagemanagerinfo(i, GPMI_NAME);
-		updates[c].category = getpackagemanagerinfo(i, GPMI_CATEGORY);
-		updates[c].title = getpackagemanagerinfo(i, GPMI_TITLE);
-		updates[c].version = getpackagemanagerinfo(i, GPMI_VERSION);
-		updates[c].description = getpackagemanagerinfo(i, GPMI_DESCRIPTION);
-		updates[c].license = getpackagemanagerinfo(i, GPMI_LICENSE);
-		updates[c].author = getpackagemanagerinfo(i, GPMI_AUTHOR);
-		updates[c].website = getpackagemanagerinfo(i, GPMI_WEBSITE);
-		updates[c].installed = getpackagemanagerinfo(i, GPMI_INSTALLED);
-		updates[c].size = (int)stof(getpackagemanagerinfo(i, GPMI_FILESIZE));
-		updates[c].uid = i;
-		precache_pic(sprintf(FN_UPDATE_IMGURL, updates[c].name));
-
-		c++;
-	}
-#else
-	for (int i = 0i; i < pkgcount; i++) {
-		int id = game_getpackageid(argv(i));
-
-		if (id == -1)
-			continue;
-
-		updates[c].name = getpackagemanagerinfo(id, GPMI_NAME);
-		updates[c].category = getpackagemanagerinfo(id, GPMI_CATEGORY);
-		updates[c].title = getpackagemanagerinfo(id, GPMI_TITLE);
-		updates[c].version = getpackagemanagerinfo(id, GPMI_VERSION);
-		updates[c].description = getpackagemanagerinfo(id, GPMI_DESCRIPTION);
-		updates[c].license = getpackagemanagerinfo(id, GPMI_LICENSE);
-		updates[c].author = getpackagemanagerinfo(id, GPMI_AUTHOR);
-		updates[c].website = getpackagemanagerinfo(id, GPMI_WEBSITE);
-		updates[c].installed = getpackagemanagerinfo(id, GPMI_INSTALLED);
-		updates[c].size = (int)stof(getpackagemanagerinfo(id, GPMI_FILESIZE));
-		updates[c].uid = id;
-		precache_pic(sprintf(FN_UPDATE_IMGURL, updates[c].name));
-
-		c++;
-	}
-#endif
-
-	up_sbUpdates.SetMax(update_count);
-	up_lbUpdates.SetMax(update_count);
+	up_sbUpdates.SetMax(updateCount);
+	up_lbUpdates.SetMax(updateCount);
 	up_lbUpdates.SetSelected(0);
 }
 #endif
@@ -281,6 +158,8 @@ menu_updates_init(void)
 	up_frPreview.SetPos(350,160);
 	up_frPreview.SetSize(256+6,128+6);
 	Widget_Add(fn_updates, up_frPreview);
+
+	Updates_Refresh();
 #endif
 }
 
@@ -312,8 +191,8 @@ menu_updates_draw(void)
 		}
 
 		/* query until 1 package is ready */
-		for (int i = 0; (getpackagemanagerinfo(i, GPMI_NAME)); i++) {
-			string installed = getpackagemanagerinfo(i, GPMI_INSTALLED);
+		for (int i = 0; (Updates_GetInfo(i, GPMI_NAME)); i++) {
+			string installed = Updates_GetInfo(i, GPMI_INSTALLED);
 			/* increment to keep track */
 			if (installed == "enabled")
 				old_enabled++;

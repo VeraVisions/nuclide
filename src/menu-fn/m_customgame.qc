@@ -721,10 +721,12 @@ customgame_lbmods_changed(void)
 void
 games_setdefaultpkgs(int id)
 {
+#if 0
 	if (games[id].gamedir == "valve") {
 		games[id].pkgname = "valve_patch;addon_furtherdata;addon_holidaymodels";
 		games[id].pkgfile = "maps/crossfire.bsp"; /* only found in patches */
 	}
+#endif
 }
 
 void

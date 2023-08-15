@@ -50,7 +50,7 @@ Colors_Init(void)
 	col_refresh_text	= [255,255,255] / 255;
 	col_refresh_bg		= [56,56,56] / 255;
 
-	col_button_bg		= [1,1,1];
+	col_button_bg		= [247,181,57] / 255;
 	col_button_select	= [1,0,0];
 	col_button_click	= [1,1,0];
 	col_button_disabled	= [0.25, 0.25, 0.25];

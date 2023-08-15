@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+#include "util.h"
 #include "achievements.h"
 #include "master.h"
 #include "modserver.h"
@@ -21,4 +22,4 @@
 #include "richpresence.h"
 #include "servers.h"
 #include "tcp.h"
-#include "util.h"
+#include "updates.h"

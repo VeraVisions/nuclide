@@ -7,4 +7,5 @@ richpresence.qc
 servers.qc
 tcp.qc
 util.qc
+updates.qc
 #endlist 

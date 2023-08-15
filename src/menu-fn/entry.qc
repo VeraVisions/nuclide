@@ -63,6 +63,22 @@ Menu_GammaHack(void)
 	}
 }
 
+bool
+Menu_HasStartupVideos(void)
+{
+	if (Platform_FileInCurrentGamedir("media/valve.avi"))
+		return true;
+
+	return false;
+}
+
+void
+Menu_PlayStartupVideos(void)
+{
+	print("playing startup videos\n");
+	//localcmd("playvideo av:media/sierra.avi av:media/valve.avi\n");
+}
+
 /* called upon menu init/restart */
 void
 m_init(void)
@@ -121,6 +137,7 @@ m_init(void)
 
 	Colors_Init();
 	Strings_Init();
+	Updates_Init();
 
 	if (games[gameinfo_current].gamedir != "valve" || games[gameinfo_current].steambg == 1) {
 		m_intro_skip();
@@ -152,6 +169,9 @@ m_init(void)
 
 	/* prepare spray logo keys */
 	spray_setinfokeys();
+
+	if (Menu_HasStartupVideos() == true)
+		Menu_PlayStartupVideos();
 
 	g_initialized = true;
 }
