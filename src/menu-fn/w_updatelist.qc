@@ -76,7 +76,7 @@ CUpdateList::Draw(void)
 		}
 
 		int uid = updates[i].uid;
-		string status = getpackagemanagerinfo(uid, GPMI_INSTALLED);
+		string status = Updates_GetInfo(uid, GPMI_INSTALLED);
 
 		switch (status) {
 		case "":

@@ -14,6 +14,34 @@ Updates_GetPackageCount(void)
 	return g_platform_update_count;
 }
 
+/** Checks a given package name and sees if it's in the list of recommended packages. */
+bool
+Updates_IsRecommended(string packageName)
+{
+	string newName = "";
+	int countPkg = 0i;
+
+	/* cancel out early if need be */
+	if not (games[gameinfo_current].pkgname)
+		return true;
+
+	/* get rid of the version string FTEQW appends */
+	tokenizebyseparator(packageName, "=");
+	newName = argv(0);
+
+	/* iterate over the recommended packages */
+	countPkg = (int)tokenizebyseparator(games[gameinfo_current].pkgname, ";");
+
+	for (int i = 0i; i < countPkg; i++) {
+		/* there's a match */
+		if (newName == argv(i))
+			return true;
+	}
+
+	/* if nothing is found at all. */
+	return false;
+}
+
 /** called whenever we need to re-initialize the updates struct */
 void
 Updates_Refresh(void)
@@ -33,14 +61,12 @@ Updates_Refresh(void)
 
 	updates = memalloc(sizeof(update_t) * g_platform_update_count);
 
-	/* limit it to packages that the game wants */
-	tokenizebyseparator(games[gameinfo_current].pkgname, ";");
-
 	/* fill in all the package values */
 	for (int i = 0i; i < g_platform_update_count; i++) {
-		int id = game_getpackageid(argv(i));
+		int id = i;
 
-		if (id == -1)
+		/* skip not recommended packages */
+		if (Updates_IsRecommended(Updates_GetInfo(id, GPMI_NAME)) == false)
 			continue;
 
 		updates[c].name = Updates_GetInfo(id, GPMI_NAME);
@@ -53,9 +79,8 @@ Updates_Refresh(void)
 		updates[c].website = Updates_GetInfo(id, GPMI_WEBSITE);
 		updates[c].installed = Updates_GetInfo(id, GPMI_INSTALLED);
 		updates[c].size = (int)stof(Updates_GetInfo(id, GPMI_FILESIZE));
-		updates[c].uid = id;
+		updates[c].uid = i;
 		precache_pic(sprintf(FN_UPDATE_IMGURL, updates[c].name));
-
 		c++;
 	}
 
