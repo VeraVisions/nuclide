@@ -132,7 +132,7 @@ m_init(void)
 	g_btnsize = drawgetimagesize(g_bmp[BTNS_MAIN]);
 	g_btnofs = 26 / g_btnsize[1];
 
-	games_init();
+	GameLibrary_Init();
 	main_init();
 
 	Colors_Init();

@@ -92,14 +92,22 @@ Updates_Refresh(void)
 int
 Updates_IDForName(string packageName)
 {
-	string tempString = "";
+	string f;
 
-	for (int i = 0i; (tempString = getpackagemanagerinfo(i, GPMI_NAME)); i++) {
-		if (tempString == packageName)
+	for (int i = 0; (getpackagemanagerinfo(i, GPMI_NAME)); i++) {
+		string name;
+		name = getpackagemanagerinfo(i, GPMI_NAME);
+
+		/* Spike started randomly putting version numbers into package names */
+		f = sprintf("%s=%s", packageName, getpackagemanagerinfo(i, GPMI_VERSION));
+
+		if (name == f) {
 			return i;
+		}
 	}
 
-	return -1i;
+	/* no package id whatsoever */
+	return (-1i);
 }
 
 /** Returns the package name for a given ID. Returns __NULL__ when not available. */

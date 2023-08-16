@@ -161,7 +161,7 @@ ModServer_ParseItem(string data)
 			break;
 		case "gameinfo_pkgname":
 			games[id].pkgname = argv(i+1);
-			games[id].pkgid = game_getpackageid(games[id].pkgname);
+			games[id].pkgid = Updates_IDForName(games[id].pkgname);
 			break;
 		default:
 			break;

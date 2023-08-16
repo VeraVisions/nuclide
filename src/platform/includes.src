@@ -8,4 +8,5 @@ servers.qc
 tcp.qc
 util.qc
 updates.qc
+gamelibrary.qc
 #endlist 

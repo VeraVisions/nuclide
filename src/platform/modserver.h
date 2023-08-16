@@ -29,8 +29,6 @@
 var int g_iModServerLoading;
 var int g_iModServerReqCount;
 
-int game_getpackageid(string pkgname);
-
 /** Call this to initiate a lengthy process of updating the list of mods
 we can install in the custom game menu. */
 void ModServer_Refresh(void);
