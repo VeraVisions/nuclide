@@ -71,7 +71,7 @@ menu_viewreadme_init(void)
 
 	filestream rdme;
 	string lstline;
-	rdme = fopen(games[gameinfo_current].readme, FILE_READ);
+	rdme = fopen(GameLibrary_GetInfo(GAMEINFO_READMEFILE), FILE_READ);
 	if (rdme >= 0) {
 		while((lstline = fgets(rdme))) {
 			vr_lbReadme.AddWrapped(lstline);

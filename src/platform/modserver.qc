@@ -51,7 +51,7 @@ ModServer_ParseList(string data)
 
 		for (int x = 0; x < gameinfo_count; x++) {
 			/* skip mods we already have. */
-			if (gamedir == games[x].gamedir) {
+			if (gamedir == GameLibrary_GetGameInfo(x, GAMEINFO_GAMEDIR)) {
 				skip = 1;
 				break;
 			}
@@ -104,7 +104,7 @@ ModServer_ParseItem(string data)
 	games[id].startmap = "c0a0";
 	games[id].trainingmap = "t0a0";
 	games[id].cldll = 1;
-	games[id].hlversion = "1110";
+	games[id].minversion = "1110";
 	games[id].svonly = 0;
 	games[id].installed = 0;
 	games[id].pkgid = -1;
@@ -141,8 +141,8 @@ ModServer_ParseItem(string data)
 		case "gameinfo_type":
 			games[id].type = argv(i+1);
 			break;
-		case "gameinfo_hlversion":
-			games[id].hlversion = argv(i+1);
+		case "gameinfo_minversion":
+			games[id].minversion = argv(i+1);
 			break;
 		case "gameinfo_nomodels":
 			games[id].nomodels = stof(argv(i+1));
@@ -202,7 +202,7 @@ ModServer_URI_Callback(float id, float code, string data, int resourcebytes)
 		ModServer_ParseItem(data);
 		break;
 	case MODSERVER_REQ_PKGNAMES:
-		games[gameinfo_current].pkgname = data;
+		games[GameLibrary_GetCurrentGame()].pkgname = data;
 		g_pkgname_updating = 0;
 		break;
 	default:

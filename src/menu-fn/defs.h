@@ -18,6 +18,7 @@
 
 var int autocvar_menu_intro = TRUE;
 var int autocvar__menu_singleplayer;
+var bool autocvar_menu_steambg = false;
 
 #define KEY_UNKNOWN		-1
 #define KEY_GAME		0
@@ -58,50 +59,6 @@ typedef struct
 	void(void) m_draw;
 	void(float evtype, float scanx, float chary, float devid) m_input;
 } menupage_t;
-
-typedef enum
-{
-	GAMEINFO_NONE,
-	GAMEINFO_MANIFEST,
-	GAMEINFO_GITXT,
-	GAMEINFO_LIBLIST
-} gi_type;
-
-typedef struct
-{
-	string game;
-	string gamedir;
-	string base_dir;
-	string url_info;
-	string url_dl;
-	string version;
-	string readme;
-	int size;
-	int svonly;
-	int cldll;
-	string type;
-	string hlversion;
-	string pkgname;
-	string pkgfile;
-	int pkgid;
-	int nomodels;
-	int nosprays;
-	int installed;
-	string mpentity;
-	string gamedll;
-	string startmap;
-	string trainingmap;
-	string fallback_dir;
-	string chatroom;
-	string menumap;
-	string introvideo;
-	int steambg;
-	gi_type info_type;
-} gameinfo_t;
-
-var int gameinfo_current = -1;
-int gameinfo_count;
-gameinfo_t *games;
 
 int g_menupage;
 

@@ -78,7 +78,7 @@ btn_training(void)
 {
 	localcmd("stopmusic\n");
 	localcmd("maxplayers 1\n");
-	localcmd(games[gameinfo_current].trainingmap);
+	localcmd(GameLibrary_GetInfo(GAMEINFO_TRAININGMAP));
 
 	/* TODO: Some mods may choose to put movies in this... */
 	RichPresence_Clear();
@@ -195,7 +195,7 @@ menu_main_init(void)
 	main_btnNewGame.SetImage(BTN_NEWGAME);
 	main_btnNewGame.SetPos(70,208);
 	/* new game not available in multiplayer_only */
-	if (games[gameinfo_current].type != "Multiplayer")
+	if (GameLibrary_GetInfo(GAMEINFO_TYPE) != "Multiplayer")
 		main_btnNewGame.SetExecute(btn_newgame_start);
 	Widget_Add(fn_main, main_btnNewGame);
 
@@ -204,7 +204,7 @@ menu_main_init(void)
 	main_btnTraining.SetImage(BTN_TRAINING);
 	main_btnTraining.SetPos(70,236);
 	/* some mods actively try to hide the option */
-	if (games[gameinfo_current].trainingmap != "")
+	if (GameLibrary_GetInfo(GAMEINFO_TRAININGMAP) != "")
 		main_btnTraining.SetExecute(btn_training);
 	Widget_Add(fn_main, main_btnTraining);
 
@@ -220,7 +220,7 @@ menu_main_init(void)
 	main_btnLoadGame.SetImage(BTN_LOADGAME);
 	main_btnLoadGame.SetPos(70,292);
 	/* disable in multiplayer_only */
-	if (games[gameinfo_current].type != "Multiplayer")
+	if (GameLibrary_GetInfo(GAMEINFO_TYPE) != "Multiplayer")
 		main_btnLoadGame.SetExecute(btn_loadgame_start);
 	Widget_Add(fn_main, main_btnLoadGame);
 
@@ -229,7 +229,7 @@ menu_main_init(void)
 	main_btnMultiplayer.SetImage(BTN_MULTIPLAYER);
 	main_btnMultiplayer.SetPos(70,320);
 	/* disable when it's singleplayer_only */
-	if (games[gameinfo_current].type != "Singleplayer")
+	if (GameLibrary_GetInfo(GAMEINFO_TYPE) != "Singleplayer")
 		main_btnMultiplayer.SetExecute(btn_multiplayer_start);
 	Widget_Add(fn_main, main_btnMultiplayer);
 
@@ -296,14 +296,14 @@ menu_main_init(void)
 	main_btn2NewGame.SetImage(BTN_NEWGAME);
 	main_btn2NewGame.SetPos(70,236);
 	/* disable in multiplayer_only */
-	if (games[gameinfo_current].type != "Multiplayer")
+	if (GameLibrary_GetInfo(GAMEINFO_TYPE) != "Multiplayer")
 		main_btn2NewGame.SetExecute(btn_newgame_start);
 	Widget_Add(fn_main2, main_btn2NewGame);
 
 	/* Training */
 	main_btn2Training = spawn(CMainButton);
 	main_btn2Training.SetImage(BTN_TRAINING);
-	if (games[gameinfo_current].trainingmap)
+	if (GameLibrary_GetInfo(GAMEINFO_TRAININGMAP) != "")
 		main_btn2Training.SetExecute(btn_training);
 	main_btn2Training.SetPos(70,264);
 	Widget_Add(fn_main2, main_btn2Training);
@@ -320,7 +320,7 @@ menu_main_init(void)
 	main_btn2LoadGame.SetImage(BTN_SAVELOAD);
 	main_btn2LoadGame.SetPos(70,320);
 	/* disable in multiplayer_only */
-	if (games[gameinfo_current].type != "Multiplayer")
+	if (GameLibrary_GetInfo(GAMEINFO_TYPE) != "Multiplayer")
 		main_btn2LoadGame.SetExecute(btn_loadgame_start);
 	Widget_Add(fn_main2, main_btn2LoadGame);
 
@@ -328,7 +328,7 @@ menu_main_init(void)
 	main_btn2Multiplayer = spawn(CMainButton);
 	main_btn2Multiplayer.SetImage(BTN_MULTIPLAYER);
 	main_btn2Multiplayer.SetPos(70,348);
-	if (games[gameinfo_current].type != "Singleplayer")
+	if (GameLibrary_GetInfo(GAMEINFO_TYPE) != "Singleplayer")
 		main_btn2Multiplayer.SetExecute(btn_multiplayer_start);
 	Widget_Add(fn_main2, main_btn2Multiplayer);
 
@@ -379,7 +379,7 @@ menu_main_draw(void)
 	} else {
 #ifndef WEBMENU
 		/* Don't even attempt to display the logo.avi otherwise */
-		if (games[gameinfo_current].steambg == 0 && checkcommand("ffmpeg_videobitrate")) {
+		if (autocvar_menu_steambg == false && checkcommand("ffmpeg_videobitrate")) {
 			drawpic([g_menuofs[0],g_menuofs[1] + 70], g_bmp[LOGO_AVI],
 					g_logosize, [1,1,1], 1.0f);
 			g_logosize = gecko_get_texture_extent(g_bmp[LOGO_AVI]);

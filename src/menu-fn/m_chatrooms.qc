@@ -339,7 +339,7 @@ cr_makeconnection(void)
 	string channel;
 	i = TCP_Connect(&tcp_irc, "tcp://irc.frag-net.com:6667");
 
-	channel = games[gameinfo_current].chatroom;
+	channel = GameLibrary_GetInfo(GAMEINFO_CHATROOM);
 
 	/* we're already setting a default channel, but a mod might set it
 	   set it to something empty to mess with us */

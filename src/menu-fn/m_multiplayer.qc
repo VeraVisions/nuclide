@@ -172,6 +172,12 @@ mp_btndisconnect(void)
 }
 
 void
+mp_btnquickstart(void)
+{
+	
+}
+
+void
 menu_multiplayer_init(void)
 {
 	fn_multiplayer = spawn(CWidget);
@@ -181,7 +187,7 @@ menu_multiplayer_init(void)
 	/* unconnected menu */
 	mp_btnQuickstart = spawn(CMainButton);
 	mp_btnQuickstart.SetImage(BTN_QUICKSTART);
-	//mp_btnQuickstart.SetExecute(btn_console);
+	mp_btnQuickstart.SetExecute(mp_btnquickstart);
 	mp_btnQuickstart.SetPos(50,140);
 	Widget_Add(fn_multiplayer, mp_btnQuickstart);
 	

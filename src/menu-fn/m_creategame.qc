@@ -196,7 +196,7 @@ menu_creategame_init(void)
 	g_mapcount = search_getsize(mapsearch);
 	for (i = 0; i < g_mapcount; i++) {
 		string tmp, dir;
-		string gdir = games[gameinfo_current].gamedir;
+		string gdir = GameLibrary_GetInfo(GAMEINFO_GAMEDIR);
 		int list = TRUE;
 		tmp = substring(search_getfilename(mapsearch, i), 5, -1);
 

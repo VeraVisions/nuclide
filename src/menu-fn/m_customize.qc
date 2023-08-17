@@ -224,8 +224,6 @@ menu_customize_init(void)
 			}
 		}
 		search_end(searchy);
-	} else {
-		games[gameinfo_current].nosprays = 1;
 	}
 
 	/* scan and cache the models */
@@ -240,8 +238,6 @@ menu_customize_init(void)
 			precache_pic(g_models[i]);
 		}
 		search_end(searchy);
-	} else {
-		games[gameinfo_current].nomodels = 1;
 	}
 	
 	fn_customize = spawn(CWidget);
@@ -299,7 +295,7 @@ menu_customize_init(void)
 	cz_sldReceiveVol.SetCallback(cz_sldReceiveVolChanged);
 	Widget_Add(fn_customize, cz_sldReceiveVol);
 
-	if (games[gameinfo_current].nosprays == 0) {
+	if (GameLibrary_GetInfo(GAMEINFO_NOSPRAYS) == false) {
 		cz_psSpray = spawn(CPictureSwitch);
 		cz_psSpray.SetPos(212,226);
 		cz_psSpray.SetSize(99,124);
@@ -312,7 +308,7 @@ menu_customize_init(void)
 		Widget_Add(fn_customize, cz_psSpray);
 	}
 
-	if (games[gameinfo_current].nomodels == 0) {
+	if (GameLibrary_GetInfo(GAMEINFO_NOPLAYERMODELS) == false) {
 #ifdef MODEL_PREVIEW
 		static vector vecDistance = [ 45, 0, 0 ];
 		static void ModelPreview_SetModel( string strModel ) {
@@ -485,7 +481,7 @@ menu_customize_draw(void)
 
 
 
-	if (games[gameinfo_current].nomodels == 0) {
+	if (GameLibrary_GetInfo(GAMEINFO_NOPLAYERMODELS) == false) {
 		drawfill([g_menuofs[0] + 410,g_menuofs[1] + 160], [170, 221], FRAME_COLOR, 1.0f);
 		drawfill([g_menuofs[0] + 413,g_menuofs[1] + 163], [164,190], [0,0,0], 1.0f);
 		WLabel_Static(410, 390, "Colors", 14, 14, [1,1,1],
@@ -516,7 +512,7 @@ menu_customize_draw(void)
 	}
 #endif
 
-	if (games[gameinfo_current].nosprays == 0)
+	if (GameLibrary_GetInfo(GAMEINFO_NOSPRAYS) == false)
 	WLabel_Static(212, 203, m_reslbl[IDS_PROFILE_LOGO], 14, 14, [1,1,1],
 					1.0f, 0, font_arial);
 

@@ -84,6 +84,7 @@ void
 m_init(void)
 {
 	vector g_btnsize;
+	string menuMap;
 
 	print("--------- Initializing Menu ----------\n");
 	print("Built: " __DATE__ " " __TIME__"\n");
@@ -139,32 +140,25 @@ m_init(void)
 	Strings_Init();
 	Updates_Init();
 
-	if (games[gameinfo_current].gamedir != "valve" || games[gameinfo_current].steambg == 1) {
+	if (GameLibrary_GetInfo(GAMEINFO_GAMEDIR) != "valve") {
 		m_intro_skip();
 		Music_MenuStart();
-	}
-
-	if (games[gameinfo_current].pkgfile != "")
-	if not (whichpack(games[gameinfo_current].pkgfile) || autocvar_menu_updating) {
-		/* reload in case of video restarts? */
-		shaderforname("logo_avi", "{\n{\nvideomap av:media/logo.avi\n}\n}");
-		g_menupage = PAGE_UPDATES;
 	}
 
 	Menu_AutoScale();
 	Menu_GammaHack();
 
 	if (g_intro_stage == 0) {
-		string videofile = games[gameinfo_current].introvideo;
+		string videofile = GameLibrary_GetInfo(GAMEINFO_INTROVIDEO);
 		
 		if (videofile) {
 			localcmd(strcat("playvideo ", videofile, "\n"));
 		}
 	}
 
-	if (games[gameinfo_current].menumap != "") {
-		string mapname = games[gameinfo_current].menumap;
-		localcmd(strcat("map_background ", mapname, "\n"));
+	menuMap = GameLibrary_GetInfo(GAMEINFO_MENUMAP);
+	if (menuMap != "") {
+		localcmd(strcat("map_background ", menuMap, "\n"));
 	}
 
 	/* prepare spray logo keys */
@@ -285,7 +279,7 @@ m_draw(vector screensize)
 		drawfill([0,0], screensize, [0,0,0], 1.0f);
 
 		/* draw either WON or Steam background */
-		if (games[gameinfo_current].steambg == 0)
+		if (autocvar_menu_steambg == false)
 				Background_WON();
 		else
 				Background_Steam();

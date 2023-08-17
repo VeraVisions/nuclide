@@ -176,10 +176,11 @@ menu_updates_draw(void)
 
 	if (!g_updates_initialized) {
 		int pkg_ready = 0;
+		string packages = GameLibrary_GetInfo(GAMEINFO_PACKAGELIST);
 
 		/* we have no hard-coded list of supported packages, so query frag-net.com */
-		if (!games[gameinfo_current].pkgname && !g_pkgname_updating) {
-			string gamedir = games[gameinfo_current].gamedir;
+		if (!packages && !g_pkgname_updating) {
+			string gamedir = GameLibrary_GetInfo(GAMEINFO_GAMEDIR);
 			print(sprintf("Querying package names for %s\n", gamedir));
 			uri_get(sprintf("http://www.frag-net.com/dl/packages_%s", uri_escape(gamedir)), MODSERVER_REQ_PKGNAMES);
 			g_pkgname_updating = 1;

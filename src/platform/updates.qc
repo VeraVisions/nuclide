@@ -20,9 +20,10 @@ Updates_IsRecommended(string packageName)
 {
 	string newName = "";
 	int countPkg = 0i;
+	string packageList = GameLibrary_GetInfo(GAMEINFO_PACKAGELIST);
 
 	/* cancel out early if need be */
-	if not (games[gameinfo_current].pkgname)
+	if not (packageList)
 		return true;
 
 	/* get rid of the version string FTEQW appends */
@@ -30,7 +31,7 @@ Updates_IsRecommended(string packageName)
 	newName = argv(0);
 
 	/* iterate over the recommended packages */
-	countPkg = (int)tokenizebyseparator(games[gameinfo_current].pkgname, ";");
+	countPkg = (int)tokenizebyseparator(packageList, ";");
 
 	for (int i = 0i; i < countPkg; i++) {
 		/* there's a match */

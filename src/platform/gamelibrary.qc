@@ -17,6 +17,8 @@
 int g_iModInstallCache;
 string g_strModInstallCache;
 
+var int gameinfo_current = -1;
+
 /* local game/mod info parsing */
 static void
 GameLibrary_Set(int id)
@@ -162,8 +164,8 @@ GameLibrary_LibListParse(int id, string strKey, string strValue)
 		}
 		break;
 	case "minversion":
-	case "hlversion":
-		games[id].hlversion = strValue;
+	case "minversion":
+		games[id].minversion = strValue;
 		break;
 	case "nomodels":
 		games[id].nomodels = (int)stof(strValue);
@@ -202,9 +204,6 @@ GameLibrary_LibListParse(int id, string strKey, string strValue)
 		break;
 	case "introvideo":
 		games[id].introvideo = strValue;
-		break;
-	case "steambg":
-		games[id].steambg = (int)stof(strValue);
 		break;
 	case "base_dir":
 		games[id].base_dir = strValue;
@@ -377,13 +376,12 @@ GameLibrary_SetDefaults(int id, string gamedirname)
 	games[id].startmap = "map c0a0\n";
 	games[id].trainingmap = "map t0a0\n";
 	games[id].cldll = 1;
-	games[id].hlversion = "1000";
+	games[id].minversion = "1000";
 	games[id].svonly = 0;
 	games[id].installed = 1;
 	games[id].chatroom = gamedirname;
 	games[id].readme = "readme.txt";
 	games[id].pkgid = -1;
-	games[id].steambg = 0;
 
 #if 0
 	if (games[id].gamedir == "valve") {
@@ -623,4 +621,89 @@ GameLibrary_Deactivate(void)
 	localcmd("menu_restart\n");
 	localcmd("menu_customgame\n");
 	localcmd("menu_musicstart\n");
+}
+
+/** Return the ID for the currently activate game. */
+int
+GameLibrary_GetCurrentGame(void)
+{
+	return gameinfo_current;
+}
+
+__variant
+GameLibrary_GetInfo(gameInfo_t infoType)
+{
+	return GameLibrary_GetGameInfo(gameinfo_current, infoType);
+}
+
+/** Retrieves info for a given game. */
+__variant
+GameLibrary_GetGameInfo(int gameID, gameInfo_t infoType)
+{
+	switch (infoType) {
+	case GAMEINFO_TITLE:
+		return (string)games[gameID].game;
+		break;
+	case GAMEINFO_GAMEDIR:
+		return (string)games[gameID].gamedir;
+		break;
+	case GAMEINFO_FALLBACKDIR:
+		return (string)games[gameID].fallback_dir;
+		break;
+	case GAMEINFO_BASEDIR:
+		return (string)games[gameID].base_dir;
+		break;
+	case GAMEINFO_WEBSITE:
+		return (string)games[gameID].url_info;
+		break;
+	case GAMEINFO_VERSION:
+		return (string)games[gameID].version;
+		break;
+	case GAMEINFO_SIZE:
+		return (int)games[gameID].size;
+		break;
+	case GAMEINFO_TYPE:
+		return (string)games[gameID].type;
+		break;
+	case GAMEINFO_NOPLAYERMODELS:
+		return games[gameID].nomodels == 1 ? true : false;
+		break;
+	case GAMEINFO_NOSPRAYS:
+		return games[gameID].nosprays == 1 ? true : false;
+		break;
+	case GAMEINFO_STARTMAP:
+		return (string)games[gameID].startmap;
+		break;
+	case GAMEINFO_TRAININGMAP:
+		return (string)games[gameID].trainingmap;
+		break;
+	case GAMEINFO_MINVERSION:
+		return (string)games[gameID].minversion;
+		break;
+	case GAMEINFO_CHATROOM:
+		return (string)games[gameID].chatroom;
+		break;
+	case GAMEINFO_READMEFILE:
+		return (string)games[gameID].readme;
+		break;
+	case GAMEINFO_INTROVIDEO:
+		return (string)games[gameID].introvideo;
+		break;
+	case GAMEINFO_MENUMAP:
+		return (string)games[gameID].menumap;
+		break;
+	case GAMEINFO_AUTHOR:
+		return (string)"Unknown";
+		break;
+	case GAMEINFO_AUTHORSITE:
+		return (string)"Unknown";
+		break;
+	case GAMEINFO_PACKAGELIST:
+		return (string)games[gameID].pkgname;
+		break;
+	case GAMEINFO_INSTALLED:
+		return games[gameID].installed == 1 ? true : false;
+	default:
+		return __NULL__;
+	}
 }

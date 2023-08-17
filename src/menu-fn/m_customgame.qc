@@ -86,9 +86,9 @@ customgame_sbmods_changed(int val)
 void
 customgame_lbmods_changed(void)
 {
-	int gid = customgame_lbMods.GetSelected();
+	int gameID = customgame_lbMods.GetSelected();
 
-	if (games[gid].installed == TRUE) {
+	if (GameLibrary_GetGameInfo(gameID, GAMEINFO_INSTALLED) == true) {
 		customgame_btnActivate.SetExecute(customgame_btnactivate_start);
 		customgame_btnInstall.SetExecute(__NULL__);
 	} else {
