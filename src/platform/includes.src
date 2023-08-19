@@ -9,4 +9,5 @@ tcp.qc
 util.qc
 updates.qc
 gamelibrary.qc
+maplibrary.qc
 #endlist 

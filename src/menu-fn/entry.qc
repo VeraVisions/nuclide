@@ -134,6 +134,7 @@ m_init(void)
 	g_btnofs = 26 / g_btnsize[1];
 
 	GameLibrary_Init();
+	MapLibrary_Init();
 	main_init();
 
 	Colors_Init();

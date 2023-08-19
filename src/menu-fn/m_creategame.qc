@@ -30,11 +30,6 @@ CFrame create_frMaps;
 CListBox create_lbMaps;
 CScrollbar create_sbMaps;
 
-int g_mapcount;
-
-int map_blacklist_count;
-string *map_blacklist;
-
 void
 create_btnok_start(void)
 {
@@ -104,8 +99,7 @@ create_sbmaps_changed(int val)
 void
 menu_creategame_init(void)
 {
-	int i = 0;
-	int realcount = 0;
+	int mapCount = 0i;
 
 	fn_create = spawn(CWidget);
 	create_btnAdv = spawn(CMainButton);
@@ -165,72 +159,15 @@ menu_creategame_init(void)
 	create_sbMaps.SetCallback(create_sbmaps_changed);
 	Widget_Add(fn_createshared, create_sbMaps);
 
-	/* map blacklist code */
-	filestream fs_blacklist;
-	fs_blacklist = fopen("scripts/map_blacklist", FILE_READ);
+	/* fill in our list box */
+	mapCount = MapLibrary_GetMapCount();
 
-	if (fs_blacklist < 0) {
-		print("^1WARNING: ^7Could NOT load scripts/map_blacklist\n");
+	for (int i = 0i; i < mapCount; i++) {
+		string mapName = MapLibrary_GetInfo(i, MAPINFO_NAME);
+		create_lbMaps.AddEntry(mapName);
 	}
 
-	if (fs_blacklist >= 0) {
-		string temp;
-
-		while ((temp = fgets(fs_blacklist))) {
-			map_blacklist_count++;
-		}
-
-		map_blacklist = memalloc(sizeof(string) * map_blacklist_count);
-		fseek(fs_blacklist, 0);
-
-		i = 0;
-		while ((temp = fgets(fs_blacklist))) {
-			map_blacklist[i] = temp;
-			i++;
-		}
-
-		fclose(fs_blacklist);
-	}
-
-	searchhandle mapsearch = search_begin("maps/*.bsp", SEARCH_NAMESORT | SEARCH_FULLPACKAGE, TRUE);
-	g_mapcount = search_getsize(mapsearch);
-	for (i = 0; i < g_mapcount; i++) {
-		string tmp, dir;
-		string gdir = GameLibrary_GetInfo(GAMEINFO_GAMEDIR);
-		int list = TRUE;
-		tmp = substring(search_getfilename(mapsearch, i), 5, -1);
-
-		/* work around FTEQW's path choice */
-		if (gdir == "ftehl")
-			gdir = "valve";
-
-		/* only look for maps in the current gamedir, requires SEARCH_FULLPACKAGE */
-		dir = substring(search_getpackagename(mapsearch, i), 0, strlen(gdir));
-		if (dir != gdir) {
-			continue;
-		}
-
-		/* ignore test_ prefix maps */
-		if (substring(tmp, 0, 5) == "test_") {
-			continue;
-		}
-
-		/* see if any of our blacklisted names match */
-		for (int b = 0; b < map_blacklist_count; b++) {
-			if (tmp == map_blacklist[b]) {
-				list = FALSE;
-				break;
-			}
-		}
-
-		if (list == TRUE) {
-			create_lbMaps.AddEntry(tmp);
-			realcount++;
-		}
-	}
-
-	create_sbMaps.SetMax(realcount);
-	search_end(mapsearch);
+	create_sbMaps.SetMax(mapCount);
 }
 
 void

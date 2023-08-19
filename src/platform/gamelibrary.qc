@@ -561,6 +561,8 @@ GameLibrary_InitCustom(void)
 		crash();
 		return;
 	}
+
+	print(sprintf("GameLibrary initialized (%i entries).\n", gameinfo_count));
 }
 #endif
 
