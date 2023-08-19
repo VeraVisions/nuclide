@@ -15,6 +15,28 @@
 */
 
 #ifndef WEBMENU
+/* the same as GameLibrary_IDForPackageName */
+static int
+ModServer_IDForPackageName(string packageName)
+{
+	string f;
+
+	for (int i = 0; (getpackagemanagerinfo(i, GPMI_NAME)); i++) {
+		string name;
+		name = getpackagemanagerinfo(i, GPMI_NAME);
+
+		/* Spike started randomly putting version numbers into package names */
+		f = sprintf("%s=%s", packageName, getpackagemanagerinfo(i, GPMI_VERSION));
+
+		if (name == f) {
+			return i;
+		}
+	}
+
+	/* no package id whatsoever */
+	return (-1i);
+}
+
 void*
 memrealloc(__variant *oldptr, int elementsize, int old_num, int new_num)
 {
@@ -161,13 +183,15 @@ ModServer_ParseItem(string data)
 			break;
 		case "gameinfo_pkgname":
 			games[id].pkgname = argv(i+1);
-			games[id].pkgid = Updates_IDForName(games[id].pkgname);
+			games[id].pkgid = ModServer_IDForPackageName(games[id].pkgname);
 			break;
 		default:
 			break;
 		}
 	}
 }
+
+void Updater_URI_Callback(float id, float code, string data, int resourcebytes);
 
 /* Called as an eventual result of the uri_get builtin. */
 void
@@ -202,8 +226,7 @@ ModServer_URI_Callback(float id, float code, string data, int resourcebytes)
 		ModServer_ParseItem(data);
 		break;
 	case MODSERVER_REQ_PKGNAMES:
-		games[GameLibrary_GetCurrentGame()].pkgname = data;
-		g_pkgname_updating = 0;
+		Updater_URI_Callback(id, code, data, resourcebytes);
 		break;
 	default:
 		print(sprintf("^1ModServer_URI_Callback^7: Unknown request id %d with code %d\n", id, code));

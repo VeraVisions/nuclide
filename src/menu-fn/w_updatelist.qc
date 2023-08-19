@@ -66,6 +66,9 @@ CUpdateList::Draw(void)
 
 	for (int i = m_scroll; i < (visible + m_scroll); i++) {
 		vector colo;
+		string updateTitle = Updates_GetInfo(i, UPDATE_TITLE);
+		updateState_t updateState = Updates_GetInfo(i, UPDATE_STATE);
+		updateAction_t updateAction = Updates_GetInfo(i, UPDATE_ACTION);
 
 		if (m_selected == i) {
 			colo = ML_COL_2;
@@ -75,60 +78,55 @@ CUpdateList::Draw(void)
 			colo = ML_COL_1;
 		}
 
-		int uid = updates[i].uid;
-		string status = Updates_GetInfo(uid, GPMI_INSTALLED);
 
-		switch (status) {
-		case "":
-			if (updates[i].installed == "") {
-				colo = [1,0,0];
-			} else if (updates[i].installed == "pending") {
-				colo = [0,1,0];
-			} else if (updates[i].installed == "enabled") {
-				colo = colo;
-			}
+		switch (updateState) {
+		case UPDATESTATE_ENABLED:
+			colo = ML_COL_1;
 			break;
-		case "pending":
-			colo[0] *= 0.5;
-			colo[1] *= 0.5;
-			colo[2] *= 0.5;
+		case UPDATESTATE_CORRUPT:
+			colo = [1, 0, 0];	/* red */
 			break;
-		case "enabled":
-			colo = colo;
-			break;
-		case "present":
-			colo[0] *= 0.5;
-			colo[1] *= 0.5;
-			colo[2] *= 0.5;
-			break;
-		case "corrupt":
-			colo = [1,0,0] * sin(time);
-			break;
-		default:
-			float p = stof(status) / 100;
+		case UPDATESTATE_PENDING:
+			float p = Updates_GetInfo(i, UPDATE_DLPERCENTAGE) / 100;
 			colo = [0,1,0] * p;
 			drawfill([g_menuofs[0] + m_x, g_menuofs[1] + pos], [m_size[0] * p, 18], 
 				colo, 0.5f);
 
 			colo = [0.25,0.25,0.25] + ([0.75,0.75,0.75] * p);
 			break;
+		case UPDATESTATE_DISABLED:
+		case UPDATESTATE_NONE:
+			colo = [0.5, 0.5, 0.5]; /* grey */
+		default:
+			break;
 		}
 
-		/* TODO: make this integrate with the above better */
-		if (updates[i].installed == "rem") {
-			if ((time*2) & 1)
-				colo = [1,0,0];
-			else
-				colo = [0,0,0];
-		} else if (updates[i].installed == "in") {
-			if ((time*2) & 1)
+		if ((time*2) & 1) {
+			switch (updateAction) {
+			case UPDATEACTION_INSTALL:	/* blinking orange */
 				colo = [1,1,0];
-			else
-				colo = [0,0,0];
+				break;
+			case UPDATEACTION_REINSTALL:
+				colo = [0,1,0];
+				break;
+			case UPDATEACTION_UNINSTALL:	/* blinking red */
+				colo = [1,0,0];
+				break;
+			case UPDATEACTION_AUTOINSTALL:	/* blinking orange/grey */
+				colo = [0.5,0.5,0];
+				break;
+			case UPDATEACTION_DISABLE:		/* blinking grey/color */
+				colo = [0.5,0.5,0.5];
+				break;
+			case UPDATEACTION_RETAIN:
+			case UPDATEACTION_NONE:
+			default:
+				break;
+			}
 		}
 
 		/* Game */
-		WLabel_Static(m_x + 3, pos + 3, updates[i].title, 11, 11, colo,
+		WLabel_Static(m_x + 3, pos + 3, updateTitle, 11, 11, colo,
 					1.0f, 0, font_arial);
 
 		pos += 18;

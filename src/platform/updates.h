@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2023 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,54 +14,75 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-string(float id, float b) getgamedirinfo = #0;
-string(int packageidx, int desiredfield) getpackagemanagerinfo = #0;
-
+/** Different types you can pass to `Updates_GetInfo(...)` to learn details about a given Update entry. */
 typedef enum
 {
-	GPMI_NAME,			/**< name of the package, for use with the pkg command. */
-	GPMI_CATEGORY,		/**< category text */
-	GPMI_TITLE,			/**< name of the package, for showing the user. */
-	GPMI_VERSION,		/**< version info (may have multiple with the same name but different versions) */
-	GPMI_DESCRIPTION,	/**< some blurb */
-	GPMI_LICENSE,		/**< what license its distributed under */
-	GPMI_AUTHOR,		/**< name of the person(s) who created it */
-	GPMI_WEBSITE,		/**< where to contribute/find out more info/etc */
-	GPMI_INSTALLED,		/**< current state */
-	GPMI_ACTION,		/**< desired state */
-	GPMI_AVAILABLE,		/**< whether it may be downloaded or not. */
-	GPMI_FILESIZE,		/**< size to download. */
+	UPDATE_NAME,			/**< (string) name of the package, for use with the pkg command. */
+	UPDATE_CATEGORY,		/**< (string) category text */
+	UPDATE_TITLE,			/**< (string) name of the package, for showing the user. */
+	UPDATE_VERSION,			/**< (string) version info (may have multiple with the same name but different versions) */
+	UPDATE_DESCRIPTION,		/**< (string) some blurb */
+	UPDATE_LICENSE,			/**< (string) what license its distributed under */
+	UPDATE_AUTHOR,			/**< (string) name of the person(s) who created it */
+	UPDATE_WEBSITE,			/**< (string) where to contribute/find out more info/etc */
+	UPDATE_STATE,			/**< (updateState_t) The current state of the update. */
+	UPDATE_ACTION,			/**< (updateAction_t) Pending action of the update. */
+	UPDATE_FILESIZE,		/**< (int) size to download in bytes. */
+	UPDATE_PREVIEWIMAGE,	/**< (string) Path to a preview image in 4:3 aspect ratio. */
+	UPDATE_STATUSSTRING,	/**< (string) Localizable string that gives you the update status. */
+	UPDATE_DLPERCENTAGE,	/**< (float) Download progress in percent (0-100). */
 } updateType_t;
 
-typedef struct
+/** Return values from passing UPDATE_STATE to Updates_GetInfo() */
+typedef enum
 {
-	string name;
-	string category;
-	string title;
-	string version;
-	string description;
-	string license;
-	string author;
-	string website;
-	string installed;
-	int size;
-	int uid;
-} update_t;
+	UPDATESTATE_NONE,		/**< Update is not installed, or unavailable. */
+	UPDATESTATE_DISABLED,	/**< Update is installed, but disabled. */
+	UPDATESTATE_ENABLED,	/**< Update is installed and enabled. */
+	UPDATESTATE_CORRUPT,	/**< Update on disk is corrupted. */
+	UPDATESTATE_PENDING		/**< Update is pending a change. Usually when we're downloading it. */
+} updateState_t;
 
-int g_platform_update_count;
-update_t *updates;
+/** Return values from passing UPDATE_ACTION to Updates_GetInfo() */
+typedef enum
+{
+	UPDATEACTION_NONE,			/**< Update is not marked for any change. */
+	UPDATEACTION_INSTALL,		/**< Update marked for installation. */
+	UPDATEACTION_REINSTALL,		/**< Update marked as needing re-installation. */
+	UPDATEACTION_UNINSTALL,		/**< Update marked for removal. */
+	UPDATEACTION_AUTOINSTALL,	/**< Update marked as needing to be installed, due to a dependency. */
+	UPDATEACTION_DISABLE,		/**< Update has been marked for disabling. */
+	UPDATEACTION_RETAIN			/**< Update has been marked as being retained. */
+} updateAction_t;
 
-#define FN_UPDATE_IMGURL "http://www.frag-net.com/dl/img/%s.jpg"
+/** These are the possible return values from Updates_GetUpdaterStatus().
+That way you can put up a loading screen for when the updater is still initiliazing, 
+or be notified of when an updater is not available at all. */
+typedef enum
+{
+	UPDATER_NONE,			/**< Nuclide's updater has not been initialized. You need to call Update_Init(). */
+	UPDATER_UNAVAILABLE,	/**< Nuclide's updater is unavailable. This may be due to the update server being offline. */
+	UPDATER_PENDING,		/**< Nuclide's updater is pending. May change to UNAVAILABLE or INITIALIZED. */
+	UPDATER_INITIALIZED		/**< Nuclide's updater is initialized and may have entries. Use Updates_GetUpdateCount() to query how many. */
+} updaterStatus_t;
 
+/** Call this in order to contact the update server and fill the list of updates. */
 void Updates_Init(void);
-void Updates_Refresh(void);
+/** Retrieve the status of the updater. See updaterStatus_t for valid return values. */
+updaterStatus_t Updates_GetUpdaterStatus(void);
+/** Returns the total amount of updates available for the currently running game. */
 int Updates_GetPackageCount(void);
-int Updates_IDForName(string);
-string Updates_NameForID(int);
-string Updates_GetInfo(int, updateType_t);
+/** Query a package (by ID) for its various info fields. See updateType_t for available fields. */
+__variant Updates_GetInfo(int, updateType_t);
+/** Returns if our current game has updates available for any installed packages. */
 bool Updates_Available(void);
-
+/** Toggle the installation/disabling of an update. May return true/false if it succeeded in marking the package. */
 bool Updates_Toggle(int);
+/** Mark an update as pending installion. May return true/false if it succeeded in marking the package. */
 bool Updates_Install(int);
+/** Mark an update as pending deletion. May return true/false if it succeeded in marking the package. */
 bool Updates_Remove(int);
+/** Mark an update as pending uninstallation. May return true/false if it succeeded in marking the package. */
+bool Updates_Destroy(int);
+/** Apply all pending changes to packages. May return true/false if it succeeded in doing so. */
 bool Updates_ApplyPendingChanges(void);

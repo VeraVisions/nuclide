@@ -138,7 +138,6 @@ m_init(void)
 
 	Colors_Init();
 	Strings_Init();
-	Updates_Init();
 
 	if (GameLibrary_GetInfo(GAMEINFO_GAMEDIR) != "valve") {
 		m_intro_skip();

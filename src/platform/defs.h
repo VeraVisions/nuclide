@@ -24,3 +24,20 @@
 #include "tcp.h"
 #include "updates.h"
 #include "gamelibrary.h"
+
+/** Definitions for FTE's internal package manager. We don't want you to talk to this one directly within Nuclide. */
+typedef enum
+{
+	GPMI_NAME,			/**< name of the package, for use with the pkg command. */
+	GPMI_CATEGORY,		/**< category text */
+	GPMI_TITLE,			/**< name of the package, for showing the user. */
+	GPMI_VERSION,		/**< version info (may have multiple with the same name but different versions) */
+	GPMI_DESCRIPTION,	/**< some blurb */
+	GPMI_LICENSE,		/**< what license its distributed under */
+	GPMI_AUTHOR,		/**< name of the person(s) who created it */
+	GPMI_WEBSITE,		/**< where to contribute/find out more info/etc */
+	GPMI_INSTALLED,		/**< current state */
+	GPMI_ACTION,		/**< desired state */
+	GPMI_AVAILABLE,		/**< whether it may be downloaded or not. */
+	GPMI_FILESIZE,		/**< size to download. */
+} packageType_t;

@@ -14,6 +14,29 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/* The GameLibrary concerns itself with everything around what a game is,
+how to install, activate and deactivate them. Mods are included in this,
+so I'll proceed calling them 'games' or 'custom games'.
+
+A game can be installed through two primary means:
+
+- Manual install, like from a .zip or some installer or archive
+- Engine package manager install, through our own user interface
+
+And between these, they can come with different metadata/manifests.
+
+It assumed that every game has either a FTE Manifest description,
+a gameinfo.txt (Source Engine format) or liblist.gam (GoldSrc format)
+that describes various aspects of the game. Like which version it is, what
+map will be loaded when you press 'New Game' and so on.
+
+If that info is not available, some placeholder data will be used instead.
+However, games installed via the package manager will at least for the
+custom game menus not use the on-disk manifest file, but information
+provided by the package manager. Once you switch into said game everything
+within will be pulled from a file on disk, such as a liblist.gam or gameinfo.txt.
+*/
+
 int g_iModInstallCache;
 string g_strModInstallCache;
 
@@ -26,6 +49,27 @@ GameLibrary_Set(int id)
 	gameinfo_current = id;
 	setwindowcaption(games[id].game);
 	cvar_set("com_fullgamename", games[id].game);
+}
+
+static int
+GameLibrary_IDForPackageName(string packageName)
+{
+	string f;
+
+	for (int i = 0; (getpackagemanagerinfo(i, GPMI_NAME)); i++) {
+		string name;
+		name = getpackagemanagerinfo(i, GPMI_NAME);
+
+		/* Spike started randomly putting version numbers into package names */
+		f = sprintf("%s=%s", packageName, getpackagemanagerinfo(i, GPMI_VERSION));
+
+		if (name == f) {
+			return i;
+		}
+	}
+
+	/* no package id whatsoever */
+	return (-1i);
 }
 
 /** Looks for a single file inside a gamedir, including its pk3s and returns a valid filehandle if it is found. */
@@ -188,7 +232,7 @@ GameLibrary_LibListParse(int id, string strKey, string strValue)
 	/* newly added with Nuclide */
 	case "pkgname":
 		games[id].pkgname = strValue;
-		games[id].pkgid = Updates_IDForName(games[id].pkgname);
+		games[id].pkgid = GameLibrary_IDForPackageName(games[id].pkgname);
 		break;
 	case "pkgfile":
 		games[id].pkgfile = strValue;
@@ -391,21 +435,61 @@ GameLibrary_SetDefaults(int id, string gamedirname)
 #endif
 }
 
+/** Checks if a given game directory was installed manually. */
+static bool
+GameLibrary_CheckLocalPresence(string gameDir)
+{
+	string testPkgDir = __NULL__;
+	bool returnSuccess = true;
+
+	for (int x = 0i; (testPkgDir = getgamedirinfo(x, 0)); x++) {
+		if (gameDir == testPkgDir) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
 void
 GameLibrary_InitCustom(void)
 {
 	int id;
 	int foundself = 0;
-	string gamedirname;
+	string gamedirname = __NULL__;
 	gameinfo_count = 0;
+	int packageinfo_count = 0i;
+	int c = 0i;
 
+	/* first count let's all manually installed mods */
 	for (id = 0; (gamedirname = getgamedirinfo(id, 0)); id++) {
 		gameinfo_count++;
 	}
 
+	/* count the package installed mods after */
+	for (int i = 0; (getpackagemanagerinfo(i, GPMI_NAME)); i++) {
+		string packageName = getpackagemanagerinfo(i, GPMI_NAME);
+		string installStatus = getpackagemanagerinfo(i, GPMI_INSTALLED);
+		string prefix = substring(packageName, 0, 3);
+
+		/* only care about installed mods (custom games) */
+		if (prefix == "cg_" && installStatus == "enabled") {
+			string gameDir = substring(packageName, 3, -1);
+			tokenizebyseparator(gameDir, "=");
+			gameDir = argv(0);
+
+			/* check if this mod was installed manually already */
+			if (GameLibrary_CheckLocalPresence(gameDir) == true) {
+				continue;
+			}
+
+			packageinfo_count++;
+		}
+	}
+
 	/* re-allocate the game list */
 	memfree(games);
-	games = memalloc(sizeof(gameinfo_t) * gameinfo_count);
+	games = memalloc(sizeof(gameinfo_t) * (gameinfo_count + packageinfo_count));
 
 	/* The things we do for frequent flyer mileage. */
 	if (!games)
@@ -429,7 +513,47 @@ GameLibrary_InitCustom(void)
 			NSLog("[MENU] Found nothing for %s", gamedirname);
 			games[id].info_type = GAMEINFO_NONE;
 		}
+		c = id + 1;
 	}
+
+	/* iterate through all packages again */
+	for (int i = 0i; (getpackagemanagerinfo(i, GPMI_NAME)); i++) {
+		string packageName = getpackagemanagerinfo(i, GPMI_NAME);
+		string installStatus = getpackagemanagerinfo(i, GPMI_INSTALLED);
+		string prefix = substring(packageName, 0, 3);
+
+		/* same check as above in the counter */
+		if (prefix == "cg_" && installStatus == "enabled") {
+			string gameDir = substring(packageName, 3, -1);
+			tokenizebyseparator(gameDir, "=");
+			gameDir = argv(0);
+
+			if (GameLibrary_CheckLocalPresence(gameDir) == true) {
+				continue;
+			}
+
+			string titleString = getpackagemanagerinfo(i, GPMI_TITLE);
+			string versionString = getpackagemanagerinfo(i, GPMI_VERSION);
+			string authorString = getpackagemanagerinfo(i, GPMI_AUTHOR);
+			string sizeString = getpackagemanagerinfo(i, GPMI_FILESIZE);
+			string websiteString = getpackagemanagerinfo(i, GPMI_WEBSITE);
+
+			//print(sprintf("Adding packaged game %S\n", gameDir));
+			GameLibrary_SetDefaults(c, gameDir);
+
+			games[c].game = substring(titleString, 5, -1); /* strip 'Mod: '*/
+			games[c].url_info = websiteString;
+			games[c].version = versionString;
+			games[c].size = (int)stof(sizeString);
+			games[c].type = "Both";
+			games[c].info_type = GAMEINFO_PACKAGE;
+			games[c].pkgname = strcat("cg_", gameDir, ";game_", gameDir, ";");
+			c++;
+		}
+	}
+
+	/* now we can pretend that these weren't their own thing */
+	gameinfo_count += packageinfo_count;
 
 	/* we may have some mods, but we're not running any of them. Fatal */
 	if (gameinfo_current == -1) {
@@ -458,7 +582,6 @@ GameLibrary_Init(void)
 
 	/* only run this when not in web-client mode */
 #ifndef WEBMENU
-
 	if (GameLibrary_CheckManifest(id, gamedirname) == 1) {
 		NSLog("[MENU] Found manifest for %s", gamedirname);
 		games[id].info_type = GAMEINFO_MANIFEST;
@@ -521,8 +644,8 @@ GameLibrary_InstallProgress(void)
 		int pkgid;
 
 		/* package query */
-		pkgid = Updates_IDForName(argv(i));
-		st = Updates_GetInfo(pkgid, GPMI_INSTALLED);
+		pkgid = GameLibrary_IDForPackageName(argv(i));
+		st = getpackagemanagerinfo(pkgid, GPMI_INSTALLED);
 
 		/* filter out statuses so we can calculate percentage */
 		switch (st) {
@@ -555,10 +678,11 @@ static void
 GameLibrary_InstallStart(int gameid)
 {
 	int count;
+
 	count = tokenize(games[gameid].pkgname);
 
 	for (int i = 0; i < count; i++) {
-		int pkgid = Updates_IDForName(argv(i));
+		int pkgid = GameLibrary_IDForPackageName(argv(i));
 		localcmd(sprintf("pkg add %s\n", argv(i)));
 		print(sprintf("Marking package %s for install.\n",
 		      argv(i)));
@@ -575,7 +699,12 @@ GameLibrary_Install(int gameID)
 {
 	string st;
 
-	st = Updates_GetInfo(games[gameID].pkgid, GPMI_INSTALLED);
+	if (gameID >= gameinfo_count || gameID < 0i) {
+		print(sprintf("GameLibrary_Install: Invalid game id %i!\n", gameID));
+		return;
+	}
+
+	st = getpackagemanagerinfo(games[gameID].pkgid, GPMI_INSTALLED);
 
 	print(st);
 	print("\n");
@@ -593,6 +722,11 @@ GameLibrary_Install(int gameID)
 void
 GameLibrary_Activate(int gameID)
 {
+	if (gameID >= gameinfo_count || gameID < 0i) {
+		print(sprintf("GameLibrary_Activate: Invalid game id %i!\n", gameID));
+		return;
+	}
+
 	GameLibrary_Set(gameID);
 
 	if (games[gameID].info_type == GAMEINFO_MANIFEST)
@@ -636,10 +770,14 @@ GameLibrary_GetInfo(gameInfo_t infoType)
 	return GameLibrary_GetGameInfo(gameinfo_current, infoType);
 }
 
-/** Retrieves info for a given game. */
 __variant
 GameLibrary_GetGameInfo(int gameID, gameInfo_t infoType)
 {
+	if (gameID >= gameinfo_count || gameID < 0i) {
+		print(sprintf("GameLibrary_GetGameInfo: Invalid game id %i!\n", gameID));
+		return __NULL__;
+	}
+
 	switch (infoType) {
 	case GAMEINFO_TITLE:
 		return (string)games[gameID].game;

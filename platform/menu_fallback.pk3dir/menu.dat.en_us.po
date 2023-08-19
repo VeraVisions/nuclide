@@ -958,7 +958,7 @@ msgid "IDS_CONFIGURE_GOREHELP"
 msgstr  "Disable visuals inappropriate for younger players and multiplayer."
 
 msgid "IDS_CONFIGURE_AUTOPATCHHELP"
-msgstr  "Download the latest version of %s."
+msgstr  "Download updates for %s."
 
 msgid "IDS_CHAT_NOSERVERS"
 msgstr  "Could not locate any Frag-Net servers."
@@ -1652,3 +1652,33 @@ msgstr  "Do you want to uncompress the files for game '%s'?"
 
 msgid "IDS_FAVSVRS_CORRUPT"
 msgstr  "The server data file favsvrs.dat appears to be corrupt.\n\nYou can request a new list of servers by pressing the Update button.\n\nDo you want to remove the corrupt file (you will have to re-enter your 'favorites' if you remove the file)?"
+
+msgid "UPDATE_DISABLED"
+msgstr "Disabled"
+
+msgid "UPDATE_ENABLED"
+msgstr "Enabled"
+
+msgid "UPDATE_CORRUPT"
+msgstr "Corrupt"
+
+msgid "UPDATE_NOTINSTALLED"
+msgstr "Not installed"
+
+msgid "UPDATE_PENDING_INSTALL"
+msgstr "Install (pending)"
+
+msgid "UPDATE_PENDING_REINSTALL"
+msgstr "Reinstall (pending)"
+
+msgid "UPDATE_PENDING_UNINSTALL"
+msgstr "Uninstall (pending)"
+
+msgid "UPDATE_PENDING_AUTOINSTALL"
+msgstr "Auto-install (pending)"
+
+msgid "UPDATE_PENDING_DISABLE"
+msgstr "Disable (pending)"
+
+msgid "UPDATE_PENDING_RETAIN"
+msgstr "Retain (pending)"

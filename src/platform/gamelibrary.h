@@ -61,6 +61,7 @@ float GameLibrary_InstallProgress(void);
 int GameLibrary_GetCurrentGame(void);
 /** Retrieves fields for a given game. See gameInfo_t for a list of fields you can query. */
 __variant GameLibrary_GetGameInfo(int, gameInfo_t);
+/** Retrieves fields for the currently running game. See gameInfo_t for a list of fields you can query. */
 __variant GameLibrary_GetInfo(gameInfo_t);
 
 typedef enum
@@ -68,7 +69,8 @@ typedef enum
 	GAMEINFO_NONE,		/**< No gameinfo available. This is probably the engine making assumptions. */
 	GAMEINFO_MANIFEST,	/**< Game info was read from a manifest within the path. */
 	GAMEINFO_GITXT,		/**< Game info stems from a Source Engine style gameinfo.txt file. */
-	GAMEINFO_LIBLIST	/**< Game info stems from a GoldSrc style liblist.gam file. */
+	GAMEINFO_LIBLIST,	/**< Game info stems from a GoldSrc style liblist.gam file. */
+	GAMEINFO_PACKAGE,
 } gi_type;
 
 typedef struct

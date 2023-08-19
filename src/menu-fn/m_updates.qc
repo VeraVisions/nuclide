@@ -38,19 +38,19 @@ up_btndone_start(void)
 	cvar_set("menu_updating", "0");
 	localsound("../media/launch_dnmenu1.wav");
 	g_menupage = PAGE_CONFIGURATION;
-	localcmd("seta menu_installedpackages 1;cfg_save\n");
+	localcmd("pkg revert;seta menu_installedpackages 1;cfg_save\n");
 }
 
 void
 up_btninstall_start(void)
 {
-	Updates_Remove(up_lbUpdates.GetSelected());
+	Updates_Install(up_lbUpdates.GetSelected());
 }
 
 void
 up_btnremove_start(void)
 {
-	Updates_Install(up_lbUpdates.GetSelected());
+	Updates_Destroy(up_lbUpdates.GetSelected());
 }
 
 void
@@ -76,7 +76,7 @@ up_lbupdates_changed(void)
 	if (pkgid == -1)
 		return;
 
-	newpic = sprintf(FN_UPDATE_IMGURL, updates[pkgid].name);
+	newpic = Updates_GetInfo(pkgid, UPDATE_PREVIEWIMAGE);
 
 	if not (newpic)
 		return;
@@ -94,7 +94,6 @@ up_sbupdates_changed(int val)
 void
 menu_updates_refresh(void)
 {
-	Updates_Refresh();
 	int updateCount = Updates_GetPackageCount();
 
 	up_sbUpdates.SetMax(updateCount);
@@ -119,19 +118,19 @@ menu_updates_init(void)
 	up_btnApply = spawn(CMainButton);
 	up_btnApply.SetImage(BTN_UPDATE);
 	up_btnApply.SetExecute(up_btnapply_start);
-	up_btnApply.SetPos(350+96,420+30);
+	up_btnApply.SetPos(50 + 160,420+13);
 	Widget_Add(fn_updates, up_btnApply);
 
 	up_btnInstall = spawn(CMainButton);
 	up_btnInstall.SetImage(BTN_INSTALL);
 	up_btnInstall.SetExecute(up_btninstall_start);
-	up_btnInstall.SetPos(350,420);
+	up_btnInstall.SetPos(380,400);
 	Widget_Add(fn_updates, up_btnInstall);
 
 	up_btnDelete = spawn(CMainButton);
 	up_btnDelete.SetImage(BTN_DELETE);
 	up_btnDelete.SetExecute(up_btnremove_start);
-	up_btnDelete.SetPos(350+200,420);
+	up_btnDelete.SetPos(380,400+30);
 	Widget_Add(fn_updates, up_btnDelete);
 
 	up_frUpdates = spawn(CFrame);
@@ -158,58 +157,42 @@ menu_updates_init(void)
 	up_frPreview.SetPos(350,160);
 	up_frPreview.SetSize(256+6,128+6);
 	Widget_Add(fn_updates, up_frPreview);
-
-	Updates_Refresh();
 #endif
 }
 
 
-/* Drawing */
-int g_pkgname_updating;
 void
 menu_updates_draw(void)
 {
 #ifndef WEBMENU
-	static int old_enabled;
-
 	float fl = 0;
 
-	if (!g_updates_initialized) {
-		int pkg_ready = 0;
-		string packages = GameLibrary_GetInfo(GAMEINFO_PACKAGELIST);
-
-		/* we have no hard-coded list of supported packages, so query frag-net.com */
-		if (!packages && !g_pkgname_updating) {
-			string gamedir = GameLibrary_GetInfo(GAMEINFO_GAMEDIR);
-			print(sprintf("Querying package names for %s\n", gamedir));
-			uri_get(sprintf("http://www.frag-net.com/dl/packages_%s", uri_escape(gamedir)), MODSERVER_REQ_PKGNAMES);
-			g_pkgname_updating = 1;
-		}
-
-		/* don't query packages YET until we get a response */
-		if (g_pkgname_updating == 1) {
-			return;
-		}
-
-		/* query until 1 package is ready */
-		for (int i = 0; (Updates_GetInfo(i, GPMI_NAME)); i++) {
-			string installed = Updates_GetInfo(i, GPMI_INSTALLED);
-			/* increment to keep track */
-			if (installed == "enabled")
-				old_enabled++;
-
-			pkg_ready = 1;
-		}
-
-		if (pkg_ready == 1) {
-			menu_updates_refresh();
-			g_updates_initialized = TRUE;
-		}
+	/* first draw run */
+	if (g_updates_initialized == 0) {
+		Updates_Init();
+		g_updates_initialized = 2;
 		return;
 	}
 
-	Widget_Draw(fn_updates);
+	updaterStatus_t status = Updates_GetUpdaterStatus();
+
 	Header_Draw(HEAD_CONFIG);
+
+	/* we're still initializing... */
+	if (g_updates_initialized == 2) {
+		if (status == UPDATER_PENDING) {
+			customgame_dlgWait.Draw();
+			WField_Static(162, 180, "Contacting update server...", 320, 260,
+						col_prompt_text, 1.0f, 2, font_label_p);
+			return;
+		} else if (status == UPDATER_INITIALIZED) {
+			menu_updates_refresh();
+			g_updates_initialized = 1;
+		}
+	}
+
+	Widget_Draw(fn_updates);
+	drawpic([g_menuofs[0]+550,g_menuofs[1]+10], g_bmp[FN_LOGO],[80,80], [1,1,1], 1.0f, 0);
 
 	WLabel_Static(50, 143, "Data files:", 11, 11, [1,1,1],
 					1.0f, 0, font_arial);
@@ -231,36 +214,21 @@ menu_updates_draw(void)
 					1.0f, 0, font_arial);
 
 	int i = up_lbUpdates.GetSelected();
-	i = updates[i].uid;
+
 	fl = 310;
-	WLabel_Static(420,fl, getpackagemanagerinfo(i, GPMI_AUTHOR), 11, 11, [1,1,1],
+	WLabel_Static(420,fl, Updates_GetInfo(i, UPDATE_AUTHOR), 11, 11, [1,1,1],
 					1.0f, 0, font_arial); fl += 18;
-	WLabel_Static(420,fl, getpackagemanagerinfo(i, GPMI_INSTALLED), 11, 11, [1,1,1],
+	WLabel_Static(420,fl, Updates_GetInfo(i, UPDATE_STATUSSTRING), 11, 11, [1,1,1],
 					1.0f, 0, font_arial); fl += 18;
-	WLabel_Static(420,fl, getpackagemanagerinfo(i, GPMI_LICENSE), 11, 11, [1,1,1],
+	WLabel_Static(420,fl, Updates_GetInfo(i, UPDATE_LICENSE), 11, 11, [1,1,1],
 					1.0f, 0, font_arial); fl += 18;
-	WLabel_Static(420,fl, getpackagemanagerinfo(i, GPMI_WEBSITE), 11, 11, [1,1,1],
+	WLabel_Static(420,fl, Updates_GetInfo(i, UPDATE_WEBSITE), 11, 11, [1,1,1],
 					1.0f, 0, font_arial); fl += 18;
-	WLabel_Static(420,fl, getpackagemanagerinfo(i, GPMI_VERSION), 11, 11, [1,1,1],
+	WLabel_Static(420,fl, Updates_GetInfo(i, UPDATE_VERSION), 11, 11, [1,1,1],
 					1.0f, 0, font_arial);
 
 	WLabel_Static(350, 143, "Preview:", 11, 11, [1,1,1],
 					1.0f, 0, font_arial);
-
-	/* check if we've got any more packages than upon init */
-	int new_packages = 0;
-	for (int b = 0; (getpackagemanagerinfo(b, GPMI_NAME)); b++) {
-		string installed = getpackagemanagerinfo(b, GPMI_INSTALLED);
-
-		/* increment to keep track */
-		if (installed == "enabled")
-			new_packages++;
-	}
-
-	if (old_enabled != new_packages) {
-		old_enabled = new_packages;
-		localcmd("menu_restart\nmenu_updates\n");
-	}
 
 	if (g_updates_previewpic)
 	drawpic([g_menuofs[0]+350+3,g_menuofs[1]+160+3], g_updates_previewpic, [256,128], [1,1,1], 1.0f);

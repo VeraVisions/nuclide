@@ -1,13 +1,72 @@
-/** needs to be called upon menu-init, and call Updates_Refresh() if auto-updates
-   are enabled. if a chooser does not want updates, then we won't. */
+/*
+ * Copyright (c) 2016-2023 Vera Visions LLC.
+ *
+ * Permission to use, copy, modify, and distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF MIND, USE, DATA OR PROFITS, WHETHER
+ * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
+ * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+*/
+
+typedef struct
+{
+	string name;
+	string category;
+	string title;
+	string version;
+	string description;
+	string license;
+	string author;
+	string website;
+	string installed;
+	updateState_t state;
+	updateAction_t pending_action;
+	int size;
+	int uid;
+	string preview_image;
+	float dlpercentage;
+} update_t;
+
+string(float id, float b) getgamedirinfo = #0;
+string(int packageidx, int desiredfield) getpackagemanagerinfo = #0;
+
+#define FN_UPDATE_IMGURL "http://www.frag-net.com/dl/img/%s.jpg"
+int g_platform_update_count;
+update_t *updates;
+
+var updaterStatus_t updater_package_status = UPDATER_NONE;
+
 void
 Updates_Init(void)
 {
-	/*localcmd("pkg addsource https://www.frag-net.com/pkgs/list\n");*/
-	print("Update system initialized.\n");
+	string packages;
+
+	/* first, see if our game info sets any packages. */
+	packages = GameLibrary_GetInfo(GAMEINFO_PACKAGELIST);
+
+	/* we have no hard-coded list of supported packages, so query frag-net.com */
+	if (!packages) {
+		string gamedir = cvar_string("fs_game");
+		print(sprintf("Querying package names for %s\n", gamedir));
+		uri_get(sprintf("http://www.frag-net.com/dl/packages_%s", uri_escape(gamedir)), MODSERVER_REQ_PKGNAMES);
+		updater_package_status = UPDATER_PENDING;
+	} else {
+		updater_package_status = UPDATER_INITIALIZED;
+	}
 }
 
-/** will return a cached value */
+updaterStatus_t
+Updates_GetUpdaterStatus(void)
+{
+	return updater_package_status;
+}
+
 int
 Updates_GetPackageCount(void)
 {
@@ -43,8 +102,68 @@ Updates_IsRecommended(string packageName)
 	return false;
 }
 
-/** called whenever we need to re-initialize the updates struct */
-void
+static void
+Updates_RefreshStateValues(int packageID)
+{
+	int pkgUID = updates[packageID].uid;
+	string installedState = getpackagemanagerinfo(pkgUID, GPMI_INSTALLED);
+	string actionState = getpackagemanagerinfo(pkgUID, GPMI_ACTION);
+
+	switch (actionState) {
+	case "user":
+		updates[packageID].pending_action = UPDATEACTION_INSTALL;
+		break;
+	case "reinstall":
+		updates[packageID].pending_action = UPDATEACTION_REINSTALL;
+		break;
+	case "purge":
+		updates[packageID].pending_action = UPDATEACTION_UNINSTALL;
+		break;
+	case "auto":
+		updates[packageID].pending_action = UPDATEACTION_AUTOINSTALL;
+		break;
+	case "disable":
+		updates[packageID].pending_action = UPDATEACTION_DISABLE;
+		break;
+	case "retain":
+		/*updates[packageID].pending_action = UPDATEACTION_RETAIN;
+		break;*/
+	default:
+		updates[packageID].pending_action = UPDATEACTION_NONE;
+	}
+
+	switch (installedState) {
+	case "present":
+		updates[packageID].state = UPDATESTATE_DISABLED;
+		break;
+	case "enabled":
+		updates[packageID].state = UPDATESTATE_ENABLED;
+		break;
+	case "corrupt":
+		updates[packageID].state = UPDATESTATE_CORRUPT;
+		break;
+	case "pending":
+		updates[packageID].state = UPDATESTATE_PENDING;
+		break;
+	default:
+		updates[packageID].state = UPDATESTATE_NONE;
+	}
+
+	updates[packageID].dlpercentage = stof(installedState);
+
+	/* HACK: the engine doesn't seem to set pending while installing, so let us do the job then */
+	if (updates[packageID].dlpercentage > 0)
+		updates[packageID].state = UPDATESTATE_PENDING;
+
+	/* HACK: enabled AND pending installation? smells like an engine bug! */
+	if (updates[packageID].state == UPDATESTATE_ENABLED) {
+		if (updates[packageID].pending_action == UPDATEACTION_INSTALL) {
+			updates[packageID].pending_action = UPDATEACTION_NONE;
+		}
+	}
+}
+
+static void
 Updates_Refresh(void)
 {
 	int c = 0i;
@@ -56,7 +175,7 @@ Updates_Refresh(void)
 	}
 
 	/* count all updates that we've got in our package sources */
-	for (int i = 0i; (Updates_GetInfo(i, GPMI_NAME)); i++) {
+	for (int i = 0i; (getpackagemanagerinfo(i, GPMI_NAME)); i++) {
 		g_platform_update_count++;
 	}
 
@@ -67,21 +186,23 @@ Updates_Refresh(void)
 		int id = i;
 
 		/* skip not recommended packages */
-		if (Updates_IsRecommended(Updates_GetInfo(id, GPMI_NAME)) == false)
+		if (Updates_IsRecommended(getpackagemanagerinfo(id, GPMI_NAME)) == false)
 			continue;
 
-		updates[c].name = Updates_GetInfo(id, GPMI_NAME);
-		updates[c].category = Updates_GetInfo(id, GPMI_CATEGORY);
-		updates[c].title = Updates_GetInfo(id, GPMI_TITLE);
-		updates[c].version = Updates_GetInfo(id, GPMI_VERSION);
-		updates[c].description = Updates_GetInfo(id, GPMI_DESCRIPTION);
-		updates[c].license = Updates_GetInfo(id, GPMI_LICENSE);
-		updates[c].author = Updates_GetInfo(id, GPMI_AUTHOR);
-		updates[c].website = Updates_GetInfo(id, GPMI_WEBSITE);
-		updates[c].installed = Updates_GetInfo(id, GPMI_INSTALLED);
-		updates[c].size = (int)stof(Updates_GetInfo(id, GPMI_FILESIZE));
+		updates[c].name = getpackagemanagerinfo(id, GPMI_NAME);
+		updates[c].category = getpackagemanagerinfo(id, GPMI_CATEGORY);
+		updates[c].title = getpackagemanagerinfo(id, GPMI_TITLE);
+		updates[c].version = getpackagemanagerinfo(id, GPMI_VERSION);
+		updates[c].description = getpackagemanagerinfo(id, GPMI_DESCRIPTION);
+		updates[c].license = getpackagemanagerinfo(id, GPMI_LICENSE);
+		updates[c].author = getpackagemanagerinfo(id, GPMI_AUTHOR);
+		updates[c].website = getpackagemanagerinfo(id, GPMI_WEBSITE);
+
+		updates[c].size = (int)stof(getpackagemanagerinfo(id, GPMI_FILESIZE));
 		updates[c].uid = i;
-		precache_pic(sprintf(FN_UPDATE_IMGURL, updates[c].name));
+		updates[c].preview_image = sprintf(FN_UPDATE_IMGURL, updates[c].name);
+		Updates_RefreshStateValues(c);
+
 		c++;
 	}
 
@@ -89,94 +210,177 @@ Updates_Refresh(void)
 	g_platform_update_count = c;
 }
 
-/** Returns the package ID for a given name. Will return -1 when not available. */
-int
-Updates_IDForName(string packageName)
-{
-	string f;
-
-	for (int i = 0; (getpackagemanagerinfo(i, GPMI_NAME)); i++) {
-		string name;
-		name = getpackagemanagerinfo(i, GPMI_NAME);
-
-		/* Spike started randomly putting version numbers into package names */
-		f = sprintf("%s=%s", packageName, getpackagemanagerinfo(i, GPMI_VERSION));
-
-		if (name == f) {
-			return i;
-		}
-	}
-
-	/* no package id whatsoever */
-	return (-1i);
-}
-
-/** Returns the package name for a given ID. Returns __NULL__ when not available. */
-string
-Updates_NameForID(int packageID)
-{
-	string packageName = getpackagemanagerinfo(packageID, GPMI_NAME);
-
-	if not (packageName)
-		return __NULL__;
-
-	return packageName;
-}
-
-/** Query a package (by ID) for its various info fields. See updateType_t for available fields. */
-string
+__variant
 Updates_GetInfo(int packageID, updateType_t fieldType)
 {
-	return getpackagemanagerinfo(packageID, (int)fieldType);
+	if (packageID >= g_platform_update_count || packageID < 0i) {
+		print(sprintf("Updates_GetInfo: Invalid package id %i!\n", packageID));
+		return __NULL__;
+	}
+
+	Updates_RefreshStateValues(packageID);
+
+	switch (fieldType) {
+	case UPDATE_NAME:
+		return (string)updates[packageID].name;
+		break;
+	case UPDATE_CATEGORY:
+		return (string)updates[packageID].category;
+		break;
+	case UPDATE_TITLE:
+		return (string)updates[packageID].title;
+		break;
+	case UPDATE_VERSION:
+		return (string)updates[packageID].version;
+		break;
+	case UPDATE_DESCRIPTION:
+		return (string)updates[packageID].description;
+		break;
+	case UPDATE_LICENSE:
+		return (string)updates[packageID].license;
+		break;
+	case UPDATE_AUTHOR:
+		return (string)updates[packageID].author;
+		break;
+	case UPDATE_WEBSITE:
+		return (string)updates[packageID].website;
+		break;
+	case UPDATE_STATE:
+		return (updateState_t)updates[packageID].state;
+		break;
+	case UPDATE_ACTION:
+		return (updateAction_t)updates[packageID].pending_action;
+		break;
+	case UPDATE_FILESIZE:
+		return (int)updates[packageID].size;
+		break;
+	case UPDATE_PREVIEWIMAGE:
+		return (string)updates[packageID].preview_image;
+		break;
+	case UPDATE_STATUSSTRING:
+		/* if we have a action, focus on that */
+		switch (updates[packageID].pending_action) {
+			case UPDATEACTION_INSTALL:
+				if (updates[packageID].dlpercentage > 0.0) {
+					return sprintf("%d %%", updates[packageID].dlpercentage);
+				} else {
+					return _("UPDATE_PENDING_INSTALL");
+				}
+				break;
+			case UPDATEACTION_REINSTALL:
+				return _("UPDATE_PENDING_REINSTALL");
+				break;
+			case UPDATEACTION_UNINSTALL:
+				return _("UPDATE_PENDING_UNINSTALL");
+				break;
+			case UPDATEACTION_AUTOINSTALL:
+				return _("UPDATE_PENDING_AUTOINSTALL");
+				break;
+			case UPDATEACTION_DISABLE:
+				return _("UPDATE_PENDING_DISABLE");
+				break;
+			case UPDATEACTION_RETAIN:
+				return _("UPDATE_PENDING_RETAIN");
+				break;
+			default:
+				switch (updates[packageID].state) {
+				case UPDATESTATE_DISABLED:
+					return _("UPDATE_DISABLED");
+					break;
+				case UPDATESTATE_ENABLED:
+					return _("UPDATE_ENABLED");
+					break;
+				case UPDATESTATE_CORRUPT:
+					return _("UPDATE_CORRUPT");
+					break;
+				default:
+					return _("UPDATE_NOTINSTALLED");
+				}
+			}
+			break;
+		break;
+	case UPDATE_DLPERCENTAGE:
+		return updates[packageID].dlpercentage;
+		break;
+	default:
+		return __NULL__;
+	}
 }
 
-/** Returns if our current game has updates available for any installed packages. */
 bool
 Updates_Available(void)
 {
 	return true;
 }
 
-/** Toggle the installation of a package. Will return true if it was done. */
 bool
 Updates_Toggle(int packageID)
 {
-	switch (updates[packageID].installed) {
-	case "":
-	case "rem":
+	if (packageID >= g_platform_update_count || packageID < 0i) {
+		print(sprintf("Updates_Toggle: Invalid package id %i!\n", packageID));
+		return false;
+	}
+
+	switch (updates[packageID].pending_action) {
+	case UPDATEACTION_INSTALL:
+	case UPDATEACTION_REINSTALL:
+		localcmd(sprintf("pkg rem %s\n", updates[packageID].name));
+		break;
+	case UPDATEACTION_UNINSTALL:
+	case UPDATEACTION_DISABLE:
 		localcmd(sprintf("pkg add %s\n", updates[packageID].name));
-		updates[packageID].installed = "pending";
 		break;
 	default:
-		localcmd(sprintf("pkg rem %s\n", updates[packageID].name));
-		updates[packageID].installed = "rem";
+		if (updates[packageID].state == UPDATESTATE_ENABLED) {
+			localcmd(sprintf("pkg rem %s\n", updates[packageID].name));
+		} else {
+			localcmd(sprintf("pkg add %s\n", updates[packageID].name));
+		}
+		break;
 	}
 
 	return true;
 }
 
-/** Mark a package as pending installion. May return true/false if it succeeded in marking the package. */
 bool
 Updates_Install(int packageID)
 {
+	if (packageID >= g_platform_update_count || packageID < 0i) {
+		print(sprintf("Updates_Install: Invalid package id %i!\n", packageID));
+		return false;
+	}
+
 	localcmd(sprintf("pkg add %s\n", updates[packageID].name));
-	updates[packageID].installed = "pending";
 	print(sprintf("Marking package %s for install.\n", updates[packageID].title));
 	return true;
 }
 
-/** Mark a package as pending deletion. May return true/false if it succeeded in marking the package. */
 bool
 Updates_Remove(int packageID)
 {
+	if (packageID >= g_platform_update_count || packageID < 0i) {
+		print(sprintf("Updates_Remove: Invalid package id %i!\n", packageID));
+		return false;
+	}
 
 	localcmd(sprintf("pkg rem %s\n", updates[packageID].name));
-	updates[packageID].installed = "rem";
 	print(sprintf("Marking package %s for 'removal'.\n", updates[packageID].title));
 	return true;
 }
 
-/** Apply all pending changes to packages. May return true/false if it succeeded in doing so. */
+bool
+Updates_Destroy(int packageID)
+{
+	if (packageID >= g_platform_update_count || packageID < 0i) {
+		print(sprintf("Updates_Destroy: Invalid package id %i!\n", packageID));
+		return false;
+	}
+
+	localcmd(sprintf("pkg del %s\n", updates[packageID].name));
+	print(sprintf("Marking package %s for 'deletion'.\n", updates[packageID].title));
+	return true;
+}
+
 bool
 Updates_ApplyPendingChanges(void)
 {
@@ -184,4 +388,20 @@ Updates_ApplyPendingChanges(void)
 	localcmd("pkg apply\n");
 	print("Applying package changes.\n");
 	return true;
+}
+
+void
+Updater_URI_Callback(float id, float code, string data, int resourcebytes)
+{
+	if (code == 404) {
+		string gameDir = cvar_string("fs_game");
+		games[GameLibrary_GetCurrentGame()].pkgname = strcat("cg_", gameDir, ";game_", gameDir, ";");
+
+	} else {
+		print(sprintf("URI: %d %d %S %i\n", id, code, data, resourcebytes));
+		games[GameLibrary_GetCurrentGame()].pkgname = data;
+	}
+
+	updater_package_status = UPDATER_INITIALIZED;
+	Updates_Refresh();
 }
