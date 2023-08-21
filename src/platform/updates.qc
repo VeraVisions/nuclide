@@ -259,6 +259,8 @@ Updates_GetInfo(int packageID, updateType_t fieldType)
 		/* if we have a action, focus on that */
 		switch (updates[packageID].pending_action) {
 			case UPDATEACTION_INSTALL:
+				Updates_RefreshStateValues(packageID);
+
 				if (updates[packageID].dlpercentage > 0.0) {
 					return sprintf("%d %%", updates[packageID].dlpercentage);
 				} else {
@@ -266,18 +268,23 @@ Updates_GetInfo(int packageID, updateType_t fieldType)
 				}
 				break;
 			case UPDATEACTION_REINSTALL:
+				Updates_RefreshStateValues(packageID);
 				return _("UPDATE_PENDING_REINSTALL");
 				break;
 			case UPDATEACTION_UNINSTALL:
+				Updates_RefreshStateValues(packageID);
 				return _("UPDATE_PENDING_UNINSTALL");
 				break;
 			case UPDATEACTION_AUTOINSTALL:
+				Updates_RefreshStateValues(packageID);
 				return _("UPDATE_PENDING_AUTOINSTALL");
 				break;
 			case UPDATEACTION_DISABLE:
+				Updates_RefreshStateValues(packageID);
 				return _("UPDATE_PENDING_DISABLE");
 				break;
 			case UPDATEACTION_RETAIN:
+				Updates_RefreshStateValues(packageID);
 				return _("UPDATE_PENDING_RETAIN");
 				break;
 			default:
