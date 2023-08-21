@@ -4,11 +4,11 @@
 material. It also accepts arguments that will recompile a shader with
 certain permutations. This is kinda ugly,
 
-Starting in [The Wastes](The_Wastes) 1.2, there are the
+Starting in **The Wastes 1.2**, there are the
 following shader programs available to you:
 
--   program [unlit](unlit_(Shader))
--   program [lightmapped](lightmapped_(Shader))
--   program [vertexlit](vertexlit_(Shader))
--   program [water](water_(Shader))
--   program [refract](refract_(Shader))
+-   program [unlit](unlit.md)
+-   program [lightmapped](lightmapped.md)
+-   program [vertexlit](vertexlit.md)
+-   program [water](water.md)
+-   program [refract](refract.md)

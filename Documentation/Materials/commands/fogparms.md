@@ -7,15 +7,15 @@
 ### Overview
 
 **Note**: you must also specify "surfaceparm fog" to cause
-[vmap](vmap) to identify the surfaces inside the volume.
+[vmap](vmap.md) to identify the surfaces inside the volume.
 Fogparms only describes how to render the fog on the surfaces.
 
-**<red value> <green value> <blue value>** These are normalized values.
+**red value, green value, blue value**: These are normalized values.
 To obtain the values that define fog color divide the desired color's
 Red, Green and Blue values by 255 to obtain three normalized numbers
 within the 0.0 to 1.0 range.
 
-**<distance toopaque>** This is the distance, in game units, until the
+**distance to opaque**: This is the distance, in game units, until the
 fog becomes totally opaque, as measured from the point of view of the
 observer. By making the height of the fog brush shorter than the
 distance to opaque, the apparent density of the fog can be reduced

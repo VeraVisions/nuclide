@@ -8,9 +8,9 @@ by the renderer. A few keywords will only apply to any one of them.
 All surfaceparm keywords are preceded by the word surfaceparm as
 follows:
 
-:
-
-    :   surfaceparm **fog**
+```
+    surfaceparm **fog**
+```
 
 ### Behaviour Keywords {#behaviour_keywords}
 

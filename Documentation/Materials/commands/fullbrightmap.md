@@ -9,17 +9,17 @@
 The texture is essentially a fullbright overlay on top of the
 diffuse/albedomap.
 
-Not all [Shaders](Shaders) support them. In some, like the
-[unlit](unlit_(Shader)) shader, the
-[diffusemap](diffusemap) is always
+Not all [Shaders](Shaders.md) support them. In some, like the
+[unlit](unlit.md) shader, the
+[diffusemap](diffusemap.md) is always
 fullbright.
 
 ### See also {#see_also}
 
--   [diffusemap](diffusemap)
--   [normalmap](normalmap)
--   [specularmap](specularmap)
--   [uppermap](uppermap)
--   [lowermap](lowermap)
--   [reflectmask](reflectmask)
--   [reflectcube](reflectcube)
+-   [diffusemap](diffusemap.md)
+-   [normalmap](normalmap.md)
+-   [specularmap](specularmap.md)
+-   [uppermap](uppermap.md)
+-   [lowermap](lowermap.md)
+-   [reflectmask](reflectmask.md)
+-   [reflectcube](reflectcube.md)

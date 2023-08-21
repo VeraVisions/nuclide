@@ -2,7 +2,7 @@
 ## tcmod
 ### Syntax
 
-**tcMod <func> &lt;…&gt;**
+**tcMod <func> [...]**
 
 ### Overview
 
@@ -26,7 +26,7 @@ specified. In otherwords, if you see:
  tcMod scroll 1 1
 ```
 
-Then the texture coordinates will be **scaled then**scrolled'''.
+Then the texture coordinates will be **scaled** then **scrolled**.
 
 ### Functions {#functions}
 
@@ -81,20 +81,20 @@ Stretches the texture coordinates with the given function. Stretching is
 defined as stretching the texture coordinate away from the center of the
 polygon and then compressing it towards the center of the polygon.
 
-**<base>**: A base value of one is the original dimension of the texture
+**base**: A base value of one is the original dimension of the texture
 when it reaches the stretch stage. Inserting other '''values positive or
 negative in this variable will produce unknown effects.
 
-**<amplitude>**: This is the measurement of distance the texture will
+**amplitude**: This is the measurement of distance the texture will
 stretch from the base size. It is measured, like scroll, in textures. A
 value of 1 here will double the size of the texture at its peak.
 
-**<phase>**: See the explanation for phase under the deform vertexes
+**phase**: See the explanation for phase under the deform vertexes
 keyword.
 
-**<frequency>**: this is wave peaks per second.
+**frequency**: this is wave peaks per second.
 
-**<func>**:
+**func**:
 
 -   **Sin**: the texture expands smoothly to its peak dimension and then
     shrinks smoothly to its valley dimension in a flowing manner.
@@ -122,13 +122,13 @@ forth churning and swirling effect on the texture.
 
 The parameters for this are defined as follows:
 
--   **<base>**: Currently undefined.
--   **<amplitude>**: This is essentially the intensity of the
+-   **base**: Currently undefined.
+-   **amplitude**: This is essentially the intensity of the
     disturbance or twisting and squiggling of the texture.
--   **<phase>**: See the explanation for phase under the
+-   **phase**: See the explanation for phase under the
     [deformvertexes](DeformVertexes)
     keyword.
--   **<freq>**: Frequency. This value is expressed as repetitions or
+-   **freq**: Frequency. This value is expressed as repetitions or
     cycles of the wave per second. A value of one would cycle once per
     second. A value of 10 would cycle 10 times per second. A value of
     0.1 would cycle once every 10 seconds.

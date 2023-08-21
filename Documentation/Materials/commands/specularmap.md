@@ -13,10 +13,10 @@ texture it for other purposes, too.
 
 ### See also {#see_also}
 
--   [diffusemap](diffusemap)
--   [normalmap](normalmap)
--   [fullbrightmap](fullbrightmap)
--   [uppermap](uppermap)
--   [lowermap](lowermap)
--   [reflectmask](reflectmask)
--   [reflectcube](reflectcube)
+-   [diffusemap](diffusemap.md)
+-   [normalmap](normalmap.md)
+-   [fullbrightmap](fullbrightmap.md)
+-   [uppermap](uppermap.md)
+-   [lowermap](lowermap.md)
+-   [reflectmask](reflectmask.md)
+-   [reflectcube](reflectcube.md)

@@ -11,10 +11,10 @@ will pass the nearest in-world cubemap instead.
 
 ### See also {#see_also}
 
--   [diffusemap](diffusemap)
--   [normalmap](normalmap)
--   [specularmap](specularmap)
--   [fullbrightmap](fullbrightmap)
--   [uppermap](uppermap)
--   [lowermap](lowermap)
--   [reflectmask](reflectmask)
+-   [diffusemap](diffusemap.md)
+-   [normalmap](normalmap.md)
+-   [specularmap](specularmap.md)
+-   [fullbrightmap](fullbrightmap.md)
+-   [uppermap](uppermap.md)
+-   [lowermap](lowermap.md)
+-   [reflectmask](reflectmask.md)

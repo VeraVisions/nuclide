@@ -18,10 +18,10 @@ Check out our [Normal mapping guide](Normal_mapping_guide).
 
 ### See also {#see_also}
 
--   [diffusemap](diffusemap)
--   [specularmap](specularmap)
--   [fullbrightmap](fullbrightmap)
--   [uppermap](uppermap)
--   [lowermap](lowermap)
--   [reflectmask](reflectmask)
--   [reflectcube](reflectcube)
+-   [diffusemap](diffusemap.md)
+-   [specularmap](specularmap.md)
+-   [fullbrightmap](fullbrightmap.md)
+-   [uppermap](uppermap.md)
+-   [lowermap](lowermap.md)
+-   [reflectmask](reflectmask.md)
+-   [reflectcube](reflectcube.md)

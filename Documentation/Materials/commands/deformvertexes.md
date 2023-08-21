@@ -23,10 +23,10 @@ It accepts the standard **wave** functions of the type: **sin**,
 **triangle**, **square**, **sawtooth** or **inversesawtooth**.
 
 The "div" parameter is used to control the wave "spread" - a value equal
-to the [tessSize](vmap_tessSize) of the
+to the [tessSize](vmap_tesssize.md) of the
 surface is a good default value.
 
-#### normal <siv> <func> <base> &lt;amplitude ~0.1-~0.5&gt; &lt;frequency ~1.0-~4.0&gt; {#normal_amplitude_0.1_0.5_frequency_1.0_4.0}
+#### normal <siv> <func> <base> <amplitude> <frequency> {#normal_amplitude}
 
 This deformation affects the normals of a vertex without actually moving
 it, which will effect later material options like lighting and
@@ -43,14 +43,14 @@ rain, flags.
 This forces a bulge to move along the given s and t directions. Designed
 for use on curved pipes.
 
-#### move<x> <y> <z> <func> <base> <amplitude> <phase> <freq> {#move}
+#### move <x> <y> <z> <func> <base> <amplitude> <phase> <freq> {#move}
 
 This keyword is used to make a brush, curve patch or model appear to
-move together as a unit. The **<x>** **<y>** and **<z>** values are the
+move together as a unit. The **x** **y** and **z** values are the
 distance and direction in game units the object appears to move relative
 to it's point of origin in the map.
 
-The **<func> <base> <amplitude> <phase>** and **<freq>** values are the
+The **func base amplitude phase** and **freq** values are the
 same as found in other wave form manipulations.
 
 The product of the function modifies the values x, y, and z.Therefore,
@@ -101,9 +101,9 @@ smaller wave forms occurring in a given area. Larger values create a
 lesser density of waves, or otherwise put, the appearance of larger
 waves. To look correct this value should closely correspond to the value
 (in pixels) set for
-[tessSize](vmap_tessSize) of the texture.
+[tessSize](vmap_tesssize.md) of the texture.
 A value of 100.0 is a good default value (which means your
-[tessSize](vmap_tessSize) should be close
+[tessSize](vmap_tesssize.md) should be close
 to that for things tolook "wavelike").
 
 #### <func> {#section_1}
