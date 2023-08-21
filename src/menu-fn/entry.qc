@@ -117,6 +117,7 @@ m_init(void)
 	registercommand("map_background");
 	registercommand("menu_musicstart");
 	registercommand("richpresence_dump");
+	registercommand("platformRefreshUpdates");
 
 	Font_Load("fonts/fontcon.font", font_console);
 	Font_Load("fonts/menu_label.font", font_label);
@@ -407,6 +408,9 @@ m_consolecommand(string cmd)
 	case "map_background":
 		localcmd(sprintf("maxplayers 2\nset coop 1\nset sv_background 1\nmap %s\n",
 			argv(1)));
+		break;
+	case "platformRefreshUpdates":
+		Updates_RefreshState();
 		break;
 	default:
 		return (0);

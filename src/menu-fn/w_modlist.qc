@@ -66,7 +66,7 @@ CModList::Draw(void)
 			 [0,0,0], 1.0f);
 
 	visible = floor(m_size[1] / 29);
-	visible = bound(0, visible, gameinfo_count - 1);
+	visible = bound(0, visible, GameLibrary_GetGameCount() - 1);
 	pos = m_y;
 
 	for (int i = m_scroll; i <= (visible + m_scroll); i++) {
@@ -145,7 +145,7 @@ CModList::Input(float type, float x, float y, float devid)
 	int pos[2];
 
 	visible = floor(m_size[1] / 29);
-	visible = bound(0, visible, gameinfo_count - 1);
+	visible = bound(0, visible, GameLibrary_GetGameCount() - 1);
 
 	pos[0] = m_x;
 	pos[1] = m_y;

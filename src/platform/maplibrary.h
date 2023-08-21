@@ -14,6 +14,21 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! @file maplibrary.h
+    @brief Map library parsing and querying of metadata.
+
+Menus need to be aware of what levels aka maps are available for modes like
+multiplayer. The MapLibrary is by configured to only parse levels from the
+current game directory (much like GoldSrc) and optionally can blacklist
+maps based on a variety of criteria which may be configurable at some point
+in time.
+
+The menu needs to call MapLibrary_Init() at least once, after which you can
+query the total amount of maps that are available via MapLibrary_GetMapCount().
+
+You can then iterate over the individual entries with MapLibrary_GetInfo().
+*/
+
 typedef enum
 {
 	MAPINFO_NAME,		/**< (string) Name of the map. E.g. e1m1 */

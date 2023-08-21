@@ -14,29 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/* The GameLibrary concerns itself with everything around what a game is,
-how to install, activate and deactivate them. Mods are included in this,
-so I'll proceed calling them 'games' or 'custom games'.
-
-A game can be installed through two primary means:
-
-- Manual install, like from a .zip or some installer or archive
-- Engine package manager install, through our own user interface
-
-And between these, they can come with different metadata/manifests.
-
-It assumed that every game has either a FTE Manifest description,
-a gameinfo.txt (Source Engine format) or liblist.gam (GoldSrc format)
-that describes various aspects of the game. Like which version it is, what
-map will be loaded when you press 'New Game' and so on.
-
-If that info is not available, some placeholder data will be used instead.
-However, games installed via the package manager will at least for the
-custom game menus not use the on-disk manifest file, but information
-provided by the package manager. Once you switch into said game everything
-within will be pulled from a file on disk, such as a liblist.gam or gameinfo.txt.
-*/
-
 int g_iModInstallCache;
 string g_strModInstallCache;
 
@@ -764,6 +741,12 @@ int
 GameLibrary_GetCurrentGame(void)
 {
 	return gameinfo_current;
+}
+
+int
+GameLibrary_GetGameCount(void)
+{
+	return gameinfo_count;
 }
 
 __variant

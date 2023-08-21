@@ -218,8 +218,6 @@ Updates_GetInfo(int packageID, updateType_t fieldType)
 		return __NULL__;
 	}
 
-	Updates_RefreshStateValues(packageID);
-
 	switch (fieldType) {
 	case UPDATE_NAME:
 		return (string)updates[packageID].name;
@@ -338,6 +336,7 @@ Updates_Toggle(int packageID)
 		}
 		break;
 	}
+	localcmd(sprintf("platformRefreshUpdates %i\n", packageID));
 
 	return true;
 }
@@ -351,6 +350,7 @@ Updates_Install(int packageID)
 	}
 
 	localcmd(sprintf("pkg add %s\n", updates[packageID].name));
+	localcmd(sprintf("platformRefreshUpdates %i\n", packageID));
 	print(sprintf("Marking package %s for install.\n", updates[packageID].title));
 	return true;
 }
@@ -364,6 +364,7 @@ Updates_Remove(int packageID)
 	}
 
 	localcmd(sprintf("pkg rem %s\n", updates[packageID].name));
+	localcmd(sprintf("platformRefreshUpdates %i\n", packageID));
 	print(sprintf("Marking package %s for 'removal'.\n", updates[packageID].title));
 	return true;
 }
@@ -377,6 +378,7 @@ Updates_Destroy(int packageID)
 	}
 
 	localcmd(sprintf("pkg del %s\n", updates[packageID].name));
+	localcmd(sprintf("platformRefreshUpdates %i\n", packageID));
 	print(sprintf("Marking package %s for 'deletion'.\n", updates[packageID].title));
 	return true;
 }
@@ -390,15 +392,37 @@ Updates_ApplyPendingChanges(void)
 	return true;
 }
 
+/* I hate having to put this in, but because we can only interact with the
+engine its own package manager via console commands (they are delayed as
+as result) we cannot query the result of our `pkg` commands right after
+calling them via localcmd(). Therefore menus need to implement the console
+command `platformRefreshUpdates` which calls this very function below.
+All in the hopes of improving performance just a tiny bit. */
+void
+Updates_RefreshState(void)
+{
+	/* at least try to be a bit clever about it. */
+	if (argv(0) == "platformRefreshUpdates") {
+		Updates_RefreshStateValues((int)stof(argv(1)));
+		return;
+	}
+
+	/* just force refresh them all otherwise. */
+	for (int i = 0i; i < g_platform_update_count; i++) {
+		Updates_RefreshStateValues(i);
+	}
+}
+
 void
 Updater_URI_Callback(float id, float code, string data, int resourcebytes)
 {
+	/* game does not have a recommended package listing remotely? make something up. */
 	if (code == 404) {
 		string gameDir = cvar_string("fs_game");
 		games[GameLibrary_GetCurrentGame()].pkgname = strcat("cg_", gameDir, ";game_", gameDir, ";");
 
 	} else {
-		print(sprintf("URI: %d %d %S %i\n", id, code, data, resourcebytes));
+		//print(sprintf("URI: %d %d %S %i\n", id, code, data, resourcebytes));
 		games[GameLibrary_GetCurrentGame()].pkgname = data;
 	}
 

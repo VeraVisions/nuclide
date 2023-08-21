@@ -14,6 +14,40 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! @file gamelibrary.h
+    @brief Game library parsing and querying of metadata.
+
+The GameLibrary concerns itself with everything around what a game is,
+how to install, activate and deactivate it. Mods are included in this,
+so we'll proceed calling them 'games' or 'custom games'.
+
+A game can be installed through two primary means:
+
+- Manual install, like from a .zip or some installer or archive
+- Engine package manager install, through our own user interface
+
+And between these, they can come with different metadata/manifests.
+
+It assumed that every game has either a FTE Manifest description,
+a gameinfo.txt (Source Engine format) or liblist.gam (GoldSrc format)
+that describes various aspects of the game. Like which version it is, what
+map will be loaded when you press 'New Game' and so on.
+
+If that info is not available, some placeholder data will be used instead.
+However, games installed via the package manager will at least for the
+custom game menus not use the on-disk manifest file, but information
+provided by the package manager. Once you switch into said game everything
+within will be pulled from a file on disk, such as a liblist.gam or gameinfo.txt.
+
+The menu needs to call GameLibrary_Init() once for parsing the currently running
+game its own metadata. If you want to index custom games, aka mods, you need
+to do so with GameLibrary_InitCustom() afterwards.
+
+Because indexing mods can take a very long time depending on the amount
+that is stored on disk, you may want to call GameLibrary_InitCustom() at
+a later time.
+*/
+
 typedef enum
 {
 	GAMEINFO_TITLE,			/**< (string) The title of the game. E.g. "Action Game" */
@@ -56,8 +90,9 @@ void GameLibrary_Deactivate(void);
 bool GameLibrary_IsInstalling(void);
 /** Returns a 0-100% value of game install progress, tracking across multiple packages. */
 float GameLibrary_InstallProgress(void);
-
-/** Return the ID for the currently activate game. */
+/** Returns the total amount of games currently available. */
+int GameLibrary_GetGameCount(void);
+/** Return the ID for the currently active game. */
 int GameLibrary_GetCurrentGame(void);
 /** Retrieves fields for a given game. See gameInfo_t for a list of fields you can query. */
 __variant GameLibrary_GetGameInfo(int, gameInfo_t);
@@ -73,6 +108,7 @@ typedef enum
 	GAMEINFO_PACKAGE,
 } gi_type;
 
+#ifndef DOXYGEN
 typedef struct
 {
 	string game;
@@ -106,3 +142,4 @@ typedef struct
 
 int gameinfo_count;
 gameinfo_t *games;
+#endif

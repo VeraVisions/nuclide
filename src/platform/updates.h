@@ -14,6 +14,22 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! @file updates.h
+    @brief Game and content update handler functions.
+
+The updater is an abstraction of the engine its own package manager.
+Not all packages the engine offers are related to the game you're currently
+running. Therefore we offer our own API within Nuclide to deal with game updates.
+
+You want to call Updates_Init() once, after which Updates_GetUpdaterStatus() should be queried to determine when the Updater is ready. That is not necessary, but it might be helpful to throw up a loading screen while that is returning UPDATER_PENDING.
+
+Once Updates_GetUpdaterStatus() reports UPDATER_INITIALIZED, you can expect the loading to be fully done.
+
+The function Updates_GetPackageCount() will report the total amount of update packages available for the game. These are not 'new' updates, they contain every package associated with the game that can and should be installed and kept updated.
+
+Use Updates_GetInfo() to retrieve metadata about individual packages.
+*/
+
 /** Different types you can pass to `Updates_GetInfo(...)` to learn details about a given Update entry. */
 typedef enum
 {
@@ -86,3 +102,5 @@ bool Updates_Remove(int);
 bool Updates_Destroy(int);
 /** Apply all pending changes to packages. May return true/false if it succeeded in doing so. */
 bool Updates_ApplyPendingChanges(void);
+/** Called by the console command `platformRefreshUpdates`, which your menu needs to implement. Otherwise you will not see pending changes reflected in your menu interface. */
+void Updates_RefreshState(void);
