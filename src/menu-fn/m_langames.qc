@@ -116,6 +116,21 @@ lan_btncreate_start(void)
 }
 
 void
+lan_btnview_start(void)
+{
+	static void lan_btnview_end(void) {
+		g_menupage = PAGE_VIEWGAMEINFO;
+	}
+	localsound("../media/launch_upmenu1.wav");
+	header.SetStartEndPos(30,172,45,45);
+	header.SetStartEndSize(156,26,460,80);
+	header.m_lerp = 0.0f;
+	header.m_visible = TRUE;
+	header.SetHeader(HEAD_MULTI);
+	header.SetExecute(lan_btnview_end);
+}
+
+void
 lan_btndone_start(void)
 {
 	static void lan_btndone_end(void) {
@@ -184,7 +199,7 @@ menu_langames_init(void)
 
 	lan_btnViewGame = spawn(CMainButton);
 	lan_btnViewGame.SetImage(BTN_GAMEINFO);
-	//lan_btnViewGame.SetExecute(btn_console);
+	lan_btnViewGame.SetExecute(lan_btnview_start);
 	lan_btnViewGame.SetPos(30,204);
 	Widget_Add(fn_lan, lan_btnViewGame);
 

@@ -736,7 +736,6 @@ GameLibrary_Deactivate(void)
 	localcmd("menu_musicstart\n");
 }
 
-/** Return the ID for the currently activate game. */
 int
 GameLibrary_GetCurrentGame(void)
 {

@@ -102,5 +102,3 @@ bool Updates_Remove(int);
 bool Updates_Destroy(int);
 /** Apply all pending changes to packages. May return true/false if it succeeded in doing so. */
 bool Updates_ApplyPendingChanges(void);
-/** Called by the console command `platformRefreshUpdates`, which your menu needs to implement. Otherwise you will not see pending changes reflected in your menu interface. */
-void Updates_RefreshState(void);

@@ -34,6 +34,7 @@ CListBox inet_lbServers_Map;
 CListBox inet_lbServers_Game;
 CListBox inet_lbServers_Players;
 CListBox inet_lbServers_Addresses;
+CListBox inet_lbServers_CacheIndex;
 CScrollbar inet_sbServers;
 
 CDialog inet_dgRefresh;
@@ -69,6 +70,25 @@ inet_btncreate_start(void)
 	header.SetExecute(inet_btncreate_end);
 }
 
+void menu_viewgameinfo_setserver(float serverNum);
+void
+inet_btnview_start(void)
+{
+	static void lan_btnview_end(void) {
+		g_menupage = PAGE_VIEWGAMEINFO;
+	}
+	localsound("../media/launch_upmenu1.wav");
+	header.SetStartEndPos(30,172,45,45);
+	header.SetStartEndSize(156,26,460,80);
+	header.m_lerp = 0.0f;
+	header.m_visible = TRUE;
+	header.SetHeader(HEAD_MULTI);
+	header.SetExecute(lan_btnview_end);
+
+	float cacheIndex = stof(inet_lbServers_CacheIndex.GetSelectedItem());
+	menu_viewgameinfo_setserver(cacheIndex);
+}
+
 void
 inet_btndone_start(void)
 {
@@ -102,7 +122,7 @@ inet_refreshframe(void)
 		return;
 
 	Master_RefreshCache();
-	count = gethostcachevalue(SLIST_HOSTCACHEVIEWCOUNT);
+	count = Master_GetInternetServers();
 	refreshtime = time + 0.5f;
 
 	inet_lbServers_Name.Clear();
@@ -111,6 +131,7 @@ inet_refreshframe(void)
 	inet_lbServers_Game.Clear();
 	inet_lbServers_Players.Clear();
 	inet_lbServers_Addresses.Clear();
+	inet_lbServers_CacheIndex.Clear();
 
 	for (int i = 0; i < count; i++) {
 		string address;
@@ -135,6 +156,7 @@ inet_refreshframe(void)
 		inet_lbServers_Game.AddEntry(gethostcachestring(srv_fldGame, i));
 		inet_lbServers_Players.AddEntry(players);
 		inet_lbServers_Addresses.AddEntry(address);
+		inet_lbServers_CacheIndex.AddEntry(sprintf("%i", i));
 		NSLog("Adding %s to the Internet server list", address);
 		added++;
 	}
@@ -157,6 +179,7 @@ inet_lb_clicked(int val)
 	inet_lbServers_Game.SetSelected(val, FALSE);
 	inet_lbServers_Players.SetSelected(val, FALSE);
 	inet_lbServers_Addresses.SetSelected(val, FALSE);
+	inet_lbServers_CacheIndex.SetSelected(val, FALSE);
 }
 
 void
@@ -188,7 +211,7 @@ menu_internetgames_init(void)
 
 	inet_btnViewGame = spawn(CMainButton);
 	inet_btnViewGame.SetImage(BTN_GAMEINFO);
-	//inet_btnViewGame.SetExecute(btn_console);
+	inet_btnViewGame.SetExecute(inet_btnview_start);
 	inet_btnViewGame.SetPos(30,204);
 	Widget_Add(fn_inet, inet_btnViewGame);
 
@@ -258,6 +281,7 @@ menu_internetgames_init(void)
 	Widget_Add(fn_inet, inet_lbServers_Players);
 
 	inet_lbServers_Addresses = spawn(CListBox);
+	inet_lbServers_CacheIndex = spawn(CListBox);
 
 	inet_sbServers = spawn(CScrollbar);
 	inet_sbServers.SetPos(614,141);

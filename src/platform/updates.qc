@@ -218,6 +218,8 @@ Updates_GetInfo(int packageID, updateType_t fieldType)
 		return __NULL__;
 	}
 
+	Updates_RefreshStateValues(packageID);
+
 	switch (fieldType) {
 	case UPDATE_NAME:
 		return (string)updates[packageID].name;
@@ -259,8 +261,6 @@ Updates_GetInfo(int packageID, updateType_t fieldType)
 		/* if we have a action, focus on that */
 		switch (updates[packageID].pending_action) {
 			case UPDATEACTION_INSTALL:
-				Updates_RefreshStateValues(packageID);
-
 				if (updates[packageID].dlpercentage > 0.0) {
 					return sprintf("%d %%", updates[packageID].dlpercentage);
 				} else {
@@ -268,23 +268,18 @@ Updates_GetInfo(int packageID, updateType_t fieldType)
 				}
 				break;
 			case UPDATEACTION_REINSTALL:
-				Updates_RefreshStateValues(packageID);
 				return _("UPDATE_PENDING_REINSTALL");
 				break;
 			case UPDATEACTION_UNINSTALL:
-				Updates_RefreshStateValues(packageID);
 				return _("UPDATE_PENDING_UNINSTALL");
 				break;
 			case UPDATEACTION_AUTOINSTALL:
-				Updates_RefreshStateValues(packageID);
 				return _("UPDATE_PENDING_AUTOINSTALL");
 				break;
 			case UPDATEACTION_DISABLE:
-				Updates_RefreshStateValues(packageID);
 				return _("UPDATE_PENDING_DISABLE");
 				break;
 			case UPDATEACTION_RETAIN:
-				Updates_RefreshStateValues(packageID);
 				return _("UPDATE_PENDING_RETAIN");
 				break;
 			default:
@@ -397,27 +392,6 @@ Updates_ApplyPendingChanges(void)
 	localcmd("pkg apply\n");
 	print("Applying package changes.\n");
 	return true;
-}
-
-/* I hate having to put this in, but because we can only interact with the
-engine its own package manager via console commands (they are delayed as
-as result) we cannot query the result of our `pkg` commands right after
-calling them via localcmd(). Therefore menus need to implement the console
-command `platformRefreshUpdates` which calls this very function below.
-All in the hopes of improving performance just a tiny bit. */
-void
-Updates_RefreshState(void)
-{
-	/* at least try to be a bit clever about it. */
-	if (argv(0) == "platformRefreshUpdates") {
-		Updates_RefreshStateValues((int)stof(argv(1)));
-		return;
-	}
-
-	/* just force refresh them all otherwise. */
-	for (int i = 0i; i < g_platform_update_count; i++) {
-		Updates_RefreshStateValues(i);
-	}
 }
 
 void

@@ -71,7 +71,7 @@ ModServer_ParseList(string data)
 		int skip = 0;
 		string gamedir = argv(i);
 
-		for (int x = 0; x < gameinfo_count; x++) {
+		for (int x = 0; x < GameLibrary_GetGameCount(); x++) {
 			/* skip mods we already have. */
 			if (gamedir == GameLibrary_GetGameInfo(x, GAMEINFO_GAMEDIR)) {
 				skip = 1;
