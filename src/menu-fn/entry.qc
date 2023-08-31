@@ -83,7 +83,6 @@ Menu_PlayStartupVideos(void)
 void
 m_init(void)
 {
-	vector g_btnsize;
 	string menuMap;
 
 	print("--------- Initializing Menu ----------\n");
@@ -126,12 +125,8 @@ m_init(void)
 
 	localcmd("plug_load ffmpeg\n");
 
-	for (int i = 0; i < g_bmp.length; i++) {
-		precache_pic(g_bmp[i]);
-	}
-
-	g_btnsize = drawgetimagesize(g_bmp[BTNS_MAIN]);
-	g_btnofs = 26 / g_btnsize[1];
+	/* don't precache btns_main.bmp directly any more. */
+	CMainButton_InitSheets();
 
 	GameLibrary_Init();
 	MapLibrary_Init();
@@ -174,6 +169,7 @@ m_init(void)
 void
 Menu_RendererRestarted(string rendererdesc)
 {
+	CMainButton_InitSheets();
 	Menu_AutoScale();
 	Menu_GammaHack();
 }

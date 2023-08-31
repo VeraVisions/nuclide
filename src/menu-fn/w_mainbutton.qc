@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+int g_mainbutton_imgcount;
+
 enum
 {
 	BTN_NEWGAME,
@@ -88,7 +90,10 @@ enum
 	BTN_SPECTATEGAMES
 };
 
-string g_mainbtn_text[] = {
+#define MAIN_BUTTONS 71
+string g_mainbtn_sheets[MAIN_BUTTONS];
+
+string g_mainbtn_text[MAIN_BUTTONS] = {
 	"NEW GAME",
 	"RESUME GAME",
 	"TRAINING",
@@ -187,38 +192,36 @@ CMainButton::CMainButton(void)
 	m_length = 156;
 }
 
-static int g_btns_present;
+#define BUTTON_OFFSET (1.0f / 3.0f)
 
 void
 CMainButton::Draw(void)
 {
-	if (!g_btns_present) {
-		if (whichpack(strcat(g_bmp[0],".bmp"))) {
-			g_btns_present = 1;
-		} else {
-			g_btns_present = 2;
-		}
+	bool btnPresent = false;
+
+	/* we may not have a button image */
+	if (m_bitmap < g_mainbutton_imgcount) {
+		btnPresent = true;
 	}
 
 	/* if we have btns_main */
-	if (g_btns_present == 1) {
+	if (btnPresent == true) {
 		if (!m_execute) {
-			drawsubpic([g_menuofs[0]+m_x,g_menuofs[1]+m_y], [156,26], g_bmp[0], 
-					[0,(m_bitmap * 3) * g_btnofs], [1,g_btnofs], [1,1,1], 0.75f, 1);
+			drawsubpic([g_menuofs[0]+m_x,g_menuofs[1]+m_y], [156,26], g_mainbtn_sheets[m_bitmap], 
+					[0,0], [1, BUTTON_OFFSET], [1,1,1] * 0.75f, 1.0f, 0);
 					return;
 		}
 		if (m_click) {
-			drawsubpic([g_menuofs[0]+m_x,g_menuofs[1]+m_y], [156,26], g_bmp[0],
-					[0,((m_bitmap * 3)+2) * g_btnofs], [1,g_btnofs],
-					[1,1,1], 1.0f, 1);
+			drawsubpic([g_menuofs[0]+m_x,g_menuofs[1]+m_y], [156,26], g_mainbtn_sheets[m_bitmap],
+					[0,0 + (2/3)], [1, BUTTON_OFFSET], [1,1,1], 1.0f, 0);
 			return;
 		}
-		drawsubpic([g_menuofs[0]+m_x,g_menuofs[1]+m_y], [156,26], g_bmp[0], 
-					[0,(m_bitmap * 3) * g_btnofs], [1,g_btnofs], [1,1,1], 1.0f, 1);
+
+		drawsubpic([g_menuofs[0]+m_x,g_menuofs[1]+m_y], [156,26], g_mainbtn_sheets[m_bitmap], 
+					[0,0], [1, BUTTON_OFFSET], [1,1,1], 1.0f, 0);
 					
-		drawsubpic([g_menuofs[0]+m_x,g_menuofs[1]+m_y], [156,26], g_bmp[0],
-					[0,((m_bitmap * 3)+1) * g_btnofs], [1,g_btnofs],
-					[1,1,1], 1 - m_alpha, 1);
+		drawsubpic([g_menuofs[0]+m_x,g_menuofs[1]+m_y], [156,26], g_mainbtn_sheets[m_bitmap],
+					[0,0 + BUTTON_OFFSET], [1, BUTTON_OFFSET], [1,1,1] * (1 - m_alpha), 1.0f, 0);
 	} else {
 		drawfont = Font_GetID(font_label_p);
 		if (!m_execute) {
@@ -278,4 +281,55 @@ void
 CMainButton::SetExecute(void(void) vFunc)
 {
 	m_execute = vFunc;
+}
+
+/** Old GPUs are limited in their texture size, so split 'em up! */
+#define MAINBUTTON_WIDTH 156i
+#define MAINBUTTON_HEIGHT 78i
+#define MAINBUTTON_PIXELS (MAINBUTTON_WIDTH * MAINBUTTON_HEIGHT)
+void
+CMainButton_InitSheets( void )
+{
+	int *img;
+	int width, height;
+	int format;
+
+	img = r_readimage("gfx/shell/btns_main.bmp", width, height, format);
+
+	if (img == __NULL__) {
+		return;
+	}
+
+	/* only load in as meny segments as the menu bitmap provides,
+	   which will also deal as a cut-off point and provide fallback
+	   text for versions of the game data that does not have all
+	   the images required */
+	g_mainbutton_imgcount = (height / MAINBUTTON_HEIGHT);
+
+	for (int i = 0i; i < g_mainbutton_imgcount; i++ ) {
+		string sheetName = sprintf("btns_main_%i", i);
+		string materialPath = sprintf("gfx/shell/btns_main_%i", i);
+		int *imgBuffer;
+		int bufferOffset = (MAINBUTTON_WIDTH * MAINBUTTON_HEIGHT) * i; /* advance the img buffer */
+
+		imgBuffer = memalloc(sizeof(int) * MAINBUTTON_PIXELS);
+
+		for (int x = 0i; x < MAINBUTTON_PIXELS; x++) {
+			imgBuffer[x] = img[x + bufferOffset];
+		}
+
+		/* upload the image, then generate a material pointing to it for us to display later. */
+		r_uploadimage(sheetName, MAINBUTTON_WIDTH, MAINBUTTON_HEIGHT, (void *)imgBuffer);
+		shaderforname(materialPath, sprintf("{\n{\n\tclampmap %s\n\trgbGen vertex\n\tblendFunc add\n}\n}", sheetName));
+
+		/* lut */
+		g_mainbtn_sheets[i] = materialPath;
+
+		memfree(imgBuffer);
+	}
+	memfree(img);
+
+	for (int i = 1; i < g_bmp.length; i++) {
+		precache_pic(g_bmp[i]);
+	}
 }

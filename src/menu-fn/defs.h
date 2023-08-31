@@ -37,7 +37,6 @@ int g_mousepos[2];
 vector g_logosize;
 int g_lastmousepos[2];
 int g_active;
-float g_btnofs;
 float frametime;
 var int g_background = FALSE;
 var int g_gamestate;
