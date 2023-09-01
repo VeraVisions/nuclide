@@ -25,6 +25,7 @@
 #include "updates.h"
 #include "gamelibrary.h"
 #include "maplibrary.h"
+#include "error.h"
 
 /** Definitions for FTE's internal package manager. We don't want you to talk to this one directly within Nuclide. */
 typedef enum

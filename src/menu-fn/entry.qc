@@ -79,10 +79,19 @@ Menu_PlayStartupVideos(void)
 	//localcmd("playvideo av:media/sierra.avi av:media/valve.avi\n");
 }
 
+
+CDialog main_dgDisconnect;
+CMainButton main_btnRefOK;
+var bool serverDisconnect = false;
+
 /* called upon menu init/restart */
 void
 m_init(void)
 {
+	void m_init_okdisconnect(void) {
+		serverDisconnect = false;
+	}
+
 	string menuMap;
 
 	print("--------- Initializing Menu ----------\n");
@@ -161,6 +170,15 @@ m_init(void)
 
 	if (Menu_HasStartupVideos() == true)
 		Menu_PlayStartupVideos();
+
+	/* init the disconnect dialog */
+	main_dgDisconnect = spawn(CDialog);
+	main_btnRefOK = spawn(CMainButton);
+	main_btnRefOK.SetImage(BTN_OK);
+	main_btnRefOK.SetPos(233,291);
+	main_btnRefOK.SetLength(68);
+	main_btnRefOK.SetExecute(m_init_okdisconnect);
+	Widget_Add(main_dgDisconnect, main_btnRefOK);
 
 	g_initialized = true;
 }
@@ -295,6 +313,21 @@ m_draw(vector screensize)
 	/* draw the actual widgets */
 	main_draw();
 
+	/* did the server disconnect us?...*/
+	if (Error_ServerDisconnected() == true) {
+		serverDisconnect = true;
+	}
+
+	/* if that happened, throw up a panel with an OK button. */
+	if (serverDisconnect == true) {
+		main_dgDisconnect.Draw();
+		Widget_Draw(main_dgDisconnect);
+		WField_Static(162, 180, "Disconnected", 320, 260,
+						col_prompt_text, 1.0f, 2, font_label_p);
+		WField_Static(162, 220, Error_GetDisconnectReason(), 320, 260,
+					col_prompt_title, 1.0f, 2, font_label_p);
+	}
+
 	oldtime = time;
 }
 
@@ -330,7 +363,11 @@ Menu_InputEvent(float evtype, float scanx, float chary, float devid)
 		break;
 	}
 
-	main_input(evtype, scanx, chary, devid);
+	if (serverDisconnect)
+		Widget_Input(main_dgDisconnect, evtype, scanx, chary, devid);
+	else
+		main_input(evtype, scanx, chary, devid);
+
 	return (1);
 }
 
