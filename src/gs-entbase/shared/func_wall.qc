@@ -124,3 +124,6 @@ func_wall::func_wall(void)
 	isCSQC = true;
 #endif
 }
+
+/* temporary */
+CLASSEXPORT(func_reflective_glass, func_wall)
