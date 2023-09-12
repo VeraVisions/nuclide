@@ -67,6 +67,7 @@ public:
 	virtual void Restore(string,string);
 	virtual void SpawnKey(string,string);
 	virtual void Trigger(entity, triggermode_t);
+	virtual void Input(entity, string, string);
 
 };
 
@@ -206,5 +207,17 @@ game_text::Trigger(entity act, triggermode_t state)
 	} else {
 		msg_entity = act;
 		multicast(origin, MULTICAST_ONE_R);
+	}
+}
+
+void
+game_text::Input(entity eAct, string strInput, string strData)
+{
+	switch (strInput) {
+	case "Display":
+		Trigger(eAct, TRIG_ON);
+		break;
+	default:
+		Input(eAct, strInput, strData);
 	}
 }

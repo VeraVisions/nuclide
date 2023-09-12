@@ -33,6 +33,7 @@ typedef enum
 	ENT_BEAM,	/**< of type env_beam */
 	ENT_DLIGHT,	/**< of type light_dynamic */
 	ENT_PROJECTEDTEXTURE, /**< of type env_projectedtexture */
+	ENT_SPOTLIGHT, /**< of type point_spotlight */
 	ENT_FOG,			/*<< of type env_fog */
 	ENT_FOGCONTROLLER, /**< of type env_fog_controller */
 	ENT_LASER,	/**< of type env_laser */

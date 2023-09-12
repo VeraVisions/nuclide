@@ -183,25 +183,16 @@ env_bubbles::Trigger(entity eAct, triggermode_t iState)
 void
 env_bubbles::EvaluateEntity(void)
 {
-	if (ATTR_CHANGED(origin))
-		SetSendFlags(BUBBLES_ORIGIN);
-	if (ATTR_CHANGED(angles))
-		SetSendFlags(BUBBLES_ANGLES);
-	if (ATTR_CHANGED(m_iDensity))
-		SetSendFlags(BUBBLES_DENSITY);
-	if (ATTR_CHANGED(m_flFrequency))
-		SetSendFlags(BUBBLES_FREQUENCY);
-	if (ATTR_CHANGED(m_flCurrent))
-		SetSendFlags(BUBBLES_CURRENT);
-	if (ATTR_CHANGED(m_bEnabled))
-		SetSendFlags(BUBBLES_ENABLED);
-
-	SAVE_STATE(origin)
-	SAVE_STATE(angles)
-	SAVE_STATE(m_iDensity)
-	SAVE_STATE(m_flFrequency)
-	SAVE_STATE(m_flCurrent)
-	SAVE_STATE(m_bEnabled)
+	EVALUATE_VECTOR(origin, 0, BUBBLES_ORIGIN)
+	EVALUATE_VECTOR(origin, 1, BUBBLES_ORIGIN)
+	EVALUATE_VECTOR(origin, 2, BUBBLES_ORIGIN)
+	EVALUATE_VECTOR(angles, 0, BUBBLES_ANGLES)
+	EVALUATE_VECTOR(angles, 1, BUBBLES_ANGLES)
+	EVALUATE_VECTOR(angles, 2, BUBBLES_ANGLES)
+	EVALUATE_FIELD(m_iDensity, BUBBLES_DENSITY)
+	EVALUATE_FIELD(m_flFrequency, BUBBLES_FREQUENCY)
+	EVALUATE_FIELD(m_flCurrent, BUBBLES_CURRENT)
+	EVALUATE_FIELD(m_bEnabled, BUBBLES_ENABLED)
 }
 float
 env_bubbles::SendEntity(entity ePVSent, float flChanged)

@@ -381,40 +381,9 @@ initents(void)
 	MOTD_Init();
 	PMove_Init();
 
-	/* TODO: turn these effects into sound shaders */
-	precache_sound("weapons/explode3.wav");
-	precache_sound("weapons/explode4.wav");
-	precache_sound("weapons/explode5.wav");
-	precache_sound("debris/glass1.wav");
-	precache_sound("debris/glass2.wav");
-	precache_sound("debris/glass3.wav");
-	precache_sound("debris/wood1.wav");
-	precache_sound("debris/wood2.wav");
-	precache_sound("debris/wood3.wav");
-	precache_sound("debris/metal1.wav");
-	precache_sound("debris/metal2.wav");
-	precache_sound("debris/metal3.wav");
-	precache_sound("debris/flesh1.wav");
-	precache_sound("debris/flesh2.wav");
-	precache_sound("debris/flesh3.wav");
-	precache_sound("debris/flesh5.wav");
-	precache_sound("debris/flesh6.wav");
-	precache_sound("debris/flesh7.wav");
-	precache_sound("debris/concrete1.wav");
-	precache_sound("debris/concrete2.wav");
-	precache_sound("debris/concrete3.wav");
-
 	/** compat... */
 	precache_sound("misc/null.wav");
 	precache_sound("common/null.wav");
-
-	precache_sound("player/pl_fallpain3.wav");
-	precache_sound("items/9mmclip1.wav");
-	precache_sound("items/gunpickup2.wav");
-	precache_sound("common/wpn_select.wav");
-	precache_sound("common/wpn_denyselect.wav");
-	precache_sound("player/sprayer.wav");
-	precache_sound("items/flashlight1.wav");
 
 	Sound_Precache("player.gasplight");
 	Sound_Precache("player.gaspheavy");

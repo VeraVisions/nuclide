@@ -151,6 +151,7 @@ env_projectedtexture::ReceiveEntity(float flNew, float flFlags)
 		m_strPattern = readstring();
 
 	classname = "env_projectedtexture";
+	drawmask = MASK_ENGINE;
 }
 #else
 void

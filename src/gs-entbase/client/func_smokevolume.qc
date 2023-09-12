@@ -171,6 +171,7 @@ func_smokevolume::Spawned(void)
 	setmodel(this, model);
 	setorigin(this, origin);
 	movetype = MOVETYPE_NONE;
+	drawmask = MASK_ENGINE;
 
 	if (m_iCount == -1)
 		m_iCount = (int)(vlen(size) / 100);

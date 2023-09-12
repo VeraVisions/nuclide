@@ -26,6 +26,7 @@ shared/info_particle_system.qc
 shared/info_waypoint.qc
 shared/prop_physics_multiplayer.qc
 shared/prop_vehicle_driveable.qc
+shared/point_spotlight.qc
 shared/trigger_push.qc
 shared/func_conveyor.qc
 shared/prop_rope.qc

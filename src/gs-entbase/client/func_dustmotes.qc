@@ -85,6 +85,7 @@ func_dustmotes::Spawned(void)
 	setorigin(this, origin);
 	movetype = MOVETYPE_NONE;
 	m_iCount = vlen(size) / 10;
+	drawmask = MASK_ENGINE;
 }
 
 void

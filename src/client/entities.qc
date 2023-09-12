@@ -117,6 +117,9 @@ Entity_EntityUpdate(float type, float new)
 		}
 		ept.ReceiveEntity(new, readfloat());
 		break;
+	case ENT_SPOTLIGHT:
+		point_spotlight_ReadEntity(new);
+		break;
 	case ENT_FOG:
 		env_fog_readentity(new);
 		break;
