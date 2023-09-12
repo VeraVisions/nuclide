@@ -74,19 +74,17 @@ This entity was introduced in Half-Life 2 (2004).
 */
 class func_monitor:NSRenderableEntity
 {
-#ifdef CLIENT
-	int m_iValue;
-#endif
 	/* these mirror the fields of a point_camera */
-	vector m_vecCamOrigin;
-	vector m_vecCamAngles;
+	PREDICTED_VECTOR(m_vecCamOrigin)
+	PREDICTED_VECTOR(m_vecCamAngles)
+	PREDICTED_FLOAT(m_flFOV)
+	PREDICTED_INT(m_iUseSAR)
+	PREDICTED_VECTOR(m_vecFogColor)
+	PREDICTED_FLOAT(m_flFogStart)
+	PREDICTED_FLOAT(m_flFogEnd)
+	PREDICTED_BOOL(m_bState)
 	int m_iCamValue;
-	float m_flFOV;
-	int m_iUseSAR;
 	int m_iUseFog;
-	vector m_vecFogColor;
-	float m_flFogStart;
-	float m_flFogEnd;
 
 public:
 	void func_monitor(void);
@@ -106,47 +104,26 @@ public:
 
 #ifdef CLIENT
 void
-func_monitor::ReceiveEntity(float flNew, float flFlags)
+func_monitor::ReceiveEntity(float flNew, float flChanged)
 {
-	if (flFlags & MONITORFL_CHANGED_ORIGIN) {
-		modelindex = readfloat();
-		origin[0] = readcoord();
-		origin[1] = readcoord();
-		origin[2] = readcoord();
-	}
-
-	if (flFlags & MONITORFL_CHANGED_ORIGIN) {
-		m_vecCamOrigin[0] = readcoord();
-		m_vecCamOrigin[1] = readcoord();
-		m_vecCamOrigin[2] = readcoord();
-	}
-
-	if (flFlags & MONITORFL_CHANGED_ANGLES) {
-		m_vecCamAngles[0] = readfloat();
-		m_vecCamAngles[1] = readfloat();
-		m_vecCamAngles[2] = readfloat();
-	}
-
-	if (flFlags & MONITORFL_CHANGED_FOV)
-		m_flFOV = readbyte();
-
-	if (flFlags & MONITORFL_CHANGED_ASPECT)
-		m_iUseSAR = readbyte();
-
-	if (flFlags & MONITORFL_CHANGED_FOGCOLOR) {
-		m_vecFogColor[0] = readbyte();
-		m_vecFogColor[1] = readbyte();
-		m_vecFogColor[2] = readbyte();
-	}
-
-	if (flFlags & MONITORFL_CHANGED_FOGSTART)
-		m_flFogStart = readshort();
-
-	if (flFlags & MONITORFL_CHANGED_FOGEND)
-		m_flFogEnd = readshort();
-
-	if (flFlags & MONITORFL_CHANGED_STATUS)
-		m_iValue = readbyte();
+	READENTITY_FLOAT(modelindex, MONITORFL_CHANGED_BASE)
+	READENTITY_COORD(origin[0], MONITORFL_CHANGED_BASE)
+	READENTITY_COORD(origin[1], MONITORFL_CHANGED_BASE)
+	READENTITY_COORD(origin[2], MONITORFL_CHANGED_BASE)
+	READENTITY_COORD(m_vecCamOrigin[0], MONITORFL_CHANGED_ORIGIN)
+	READENTITY_COORD(m_vecCamOrigin[1], MONITORFL_CHANGED_ORIGIN)
+	READENTITY_COORD(m_vecCamOrigin[2], MONITORFL_CHANGED_ORIGIN)
+	READENTITY_ANGLE(m_vecCamAngles[0], MONITORFL_CHANGED_ANGLES)
+	READENTITY_ANGLE(m_vecCamAngles[1], MONITORFL_CHANGED_ANGLES)
+	READENTITY_ANGLE(m_vecCamAngles[2], MONITORFL_CHANGED_ANGLES)
+	READENTITY_BYTE(m_flFOV, MONITORFL_CHANGED_FOV)
+	READENTITY_BYTE(m_iUseSAR, MONITORFL_CHANGED_ASPECT)
+	READENTITY_BYTE(m_vecFogColor[0], MONITORFL_CHANGED_FOGCOLOR)
+	READENTITY_BYTE(m_vecFogColor[1], MONITORFL_CHANGED_FOGCOLOR)
+	READENTITY_BYTE(m_vecFogColor[2], MONITORFL_CHANGED_FOGCOLOR)
+	READENTITY_SHORT(m_flFogStart, MONITORFL_CHANGED_FOGSTART)
+	READENTITY_SHORT(m_flFogEnd, MONITORFL_CHANGED_FOGEND)
+	READENTITY_BYTE(m_bState, MONITORFL_CHANGED_STATUS)
 
 	classname = "func_monitor";
 
@@ -155,9 +132,9 @@ func_monitor::ReceiveEntity(float flNew, float flFlags)
 	setorigin(this, origin);
 	setsize(this, mins, maxs);
 
-	g_iRenderTargetActive = m_iValue;
+	g_iRenderTargetActive = m_bState;
 
-	if (!m_iValue) {
+	if (!m_bState) {
 		return;
 	}
 
@@ -168,53 +145,32 @@ func_monitor::ReceiveEntity(float flNew, float flFlags)
 }
 #else
 float
-func_monitor::SendEntity(entity ePEnt, float flFlags)
+func_monitor::SendEntity(entity ePEnt, float flChanged)
 {
 	if (clienttype(ePEnt) != CLIENTTYPE_REAL)
 		return (0);
 
 	WriteByte(MSG_ENTITY, ENT_MONITOR);
-	WriteFloat(MSG_ENTITY, flFlags);
+	WriteFloat(MSG_ENTITY, flChanged);
 
-	if (flFlags & MONITORFL_CHANGED_BASE) {
-		WriteFloat(MSG_ENTITY, modelindex);
-		WriteCoord(MSG_ENTITY, origin[0]);
-		WriteCoord(MSG_ENTITY, origin[0]);
-		WriteCoord(MSG_ENTITY, origin[0]);
-	}
-
-	if (flFlags & MONITORFL_CHANGED_ORIGIN) {
-		WriteCoord(MSG_ENTITY, m_vecCamOrigin[0]);
-		WriteCoord(MSG_ENTITY, m_vecCamOrigin[1]);
-		WriteCoord(MSG_ENTITY, m_vecCamOrigin[2]);
-	}
-
-	if (flFlags & MONITORFL_CHANGED_ANGLES) {
-		WriteFloat(MSG_ENTITY, m_vecCamAngles[0]);
-		WriteFloat(MSG_ENTITY, m_vecCamAngles[1]);
-		WriteFloat(MSG_ENTITY, m_vecCamAngles[2]);
-	}
-
-	if (flFlags & MONITORFL_CHANGED_FOV)
-		WriteByte(MSG_ENTITY, m_flFOV);
-
-	if (flFlags & MONITORFL_CHANGED_ASPECT)
-		WriteByte(MSG_ENTITY, m_iUseSAR);
-
-	if (flFlags & MONITORFL_CHANGED_FOGCOLOR) {
-		WriteByte(MSG_ENTITY, m_vecFogColor[0]);
-		WriteByte(MSG_ENTITY, m_vecFogColor[1]);
-		WriteByte(MSG_ENTITY, m_vecFogColor[2]);
-	}
-
-	if (flFlags & MONITORFL_CHANGED_FOGSTART)
-		WriteShort(MSG_ENTITY, m_flFogStart);
-
-	if (flFlags & MONITORFL_CHANGED_FOGEND)
-		WriteShort(MSG_ENTITY, m_flFogEnd);
-
-	if (flFlags & MONITORFL_CHANGED_STATUS)
-		WriteByte(MSG_ENTITY, m_iValue);
+	SENDENTITY_FLOAT(modelindex, MONITORFL_CHANGED_BASE)
+	SENDENTITY_COORD(origin[0], MONITORFL_CHANGED_BASE)
+	SENDENTITY_COORD(origin[1], MONITORFL_CHANGED_BASE)
+	SENDENTITY_COORD(origin[2], MONITORFL_CHANGED_BASE)
+	SENDENTITY_COORD(m_vecCamOrigin[0], MONITORFL_CHANGED_ORIGIN)
+	SENDENTITY_COORD(m_vecCamOrigin[1], MONITORFL_CHANGED_ORIGIN)
+	SENDENTITY_COORD(m_vecCamOrigin[2], MONITORFL_CHANGED_ORIGIN)
+	SENDENTITY_ANGLE(m_vecCamAngles[0], MONITORFL_CHANGED_ANGLES)
+	SENDENTITY_ANGLE(m_vecCamAngles[1], MONITORFL_CHANGED_ANGLES)
+	SENDENTITY_ANGLE(m_vecCamAngles[2], MONITORFL_CHANGED_ANGLES)
+	SENDENTITY_BYTE(m_flFOV, MONITORFL_CHANGED_FOV)
+	SENDENTITY_BYTE(m_iUseSAR, MONITORFL_CHANGED_ASPECT)
+	SENDENTITY_BYTE(m_vecFogColor[0], MONITORFL_CHANGED_FOGCOLOR)
+	SENDENTITY_BYTE(m_vecFogColor[1], MONITORFL_CHANGED_FOGCOLOR)
+	SENDENTITY_BYTE(m_vecFogColor[2], MONITORFL_CHANGED_FOGCOLOR)
+	SENDENTITY_SHORT(m_flFogStart, MONITORFL_CHANGED_FOGSTART)
+	SENDENTITY_SHORT(m_flFogEnd, MONITORFL_CHANGED_FOGEND)
+	SENDENTITY_BYTE(m_bState, MONITORFL_CHANGED_STATUS)
 
 	return (1);
 }
@@ -228,7 +184,7 @@ func_monitor::EvaluateEntity(void)
 	SAVE_STATE(origin)
 
 	/* this monitor is disabled */
-	if (!m_iValue)
+	if (!m_bState)
 		return;
 
 	point_camera viewer;
@@ -237,42 +193,36 @@ func_monitor::EvaluateEntity(void)
 	if (!viewer)
 		return;
 
+	m_vecCamOrigin = viewer.origin;
+	m_vecCamAngles = viewer.angles;
+	m_flFOV = viewer.m_flFOV;
+	m_iUseSAR = viewer.m_iUseSAR;
+	m_vecFogColor = viewer.m_vecFogColor;
+	m_flFogStart = viewer.m_flFogStart;
+	m_bState = viewer.m_iValue ? true : false;
+
 	/* camera is disabled */
 	if (!viewer.m_iValue)
 		return;
 
-	if (m_vecCamOrigin != viewer.origin) {
-		m_vecCamOrigin = viewer.origin;
-		SetSendFlags(MONITORFL_CHANGED_ORIGIN);
-	}
-	if (m_vecCamAngles != viewer.angles) {
-		m_vecCamAngles = viewer.angles;
-		SetSendFlags(MONITORFL_CHANGED_ANGLES);
-	}
-	if (m_flFOV != viewer.m_flFOV) {
-		m_flFOV = viewer.m_flFOV;
-		SetSendFlags(MONITORFL_CHANGED_FOV);
-	}
-	if (m_iUseSAR != viewer.m_iUseSAR) {
-		m_iUseSAR = viewer.m_iUseSAR;
-		SetSendFlags(MONITORFL_CHANGED_ASPECT);
-	}
-	if (m_vecFogColor != viewer.m_vecFogColor) {
-		m_vecFogColor = viewer.m_vecFogColor;
-		SetSendFlags(MONITORFL_CHANGED_FOGCOLOR);
-	}
-	if (m_flFogStart != viewer.m_flFogStart) {
-		m_flFogStart = viewer.m_flFogStart;
-		SetSendFlags(MONITORFL_CHANGED_FOGSTART);
-	}
-	if (m_flFogEnd != viewer.m_flFogEnd) {
-		m_flFogEnd = viewer.m_flFogEnd;
-		SetSendFlags(MONITORFL_CHANGED_FOGEND);
-	}
-	if (m_flFogEnd != viewer.m_flFogEnd) {
-		m_flFogEnd = viewer.m_flFogEnd;
-		SetSendFlags(MONITORFL_CHANGED_STATUS);
-	}
+	EVALUATE_FIELD(modelindex, MONITORFL_CHANGED_BASE)
+	EVALUATE_VECTOR(origin, 0, MONITORFL_CHANGED_BASE)
+	EVALUATE_VECTOR(origin, 1, MONITORFL_CHANGED_BASE)
+	EVALUATE_VECTOR(origin, 2, MONITORFL_CHANGED_BASE)
+	EVALUATE_VECTOR(m_vecCamOrigin, 0, MONITORFL_CHANGED_ORIGIN)
+	EVALUATE_VECTOR(m_vecCamOrigin, 1, MONITORFL_CHANGED_ORIGIN)
+	EVALUATE_VECTOR(m_vecCamOrigin, 2, MONITORFL_CHANGED_ORIGIN)
+	EVALUATE_VECTOR(m_vecCamAngles, 0, MONITORFL_CHANGED_ANGLES)
+	EVALUATE_VECTOR(m_vecCamAngles, 1, MONITORFL_CHANGED_ANGLES)
+	EVALUATE_VECTOR(m_vecCamAngles, 2, MONITORFL_CHANGED_ANGLES)
+	EVALUATE_FIELD(m_flFOV, MONITORFL_CHANGED_FOV)
+	EVALUATE_FIELD(m_iUseSAR, MONITORFL_CHANGED_ASPECT)
+	EVALUATE_VECTOR(m_vecFogColor, 0, MONITORFL_CHANGED_FOGCOLOR)
+	EVALUATE_VECTOR(m_vecFogColor, 1, MONITORFL_CHANGED_FOGCOLOR)
+	EVALUATE_VECTOR(m_vecFogColor, 2, MONITORFL_CHANGED_FOGCOLOR)
+	EVALUATE_FIELD(m_flFogStart, MONITORFL_CHANGED_FOGSTART)
+	EVALUATE_FIELD(m_flFogEnd, MONITORFL_CHANGED_FOGEND)
+	EVALUATE_FIELD(m_bState, MONITORFL_CHANGED_STATUS)
 }
 
 void
@@ -280,13 +230,13 @@ func_monitor::Trigger(entity act, triggermode_t state)
 {
 	switch (state) {
 	case TRIG_OFF:
-		m_iValue = 0;
+		m_bState = 0;
 		break;
 	case TRIG_ON:
-		m_iValue = 1;
+		m_bState = 1;
 		break;
 	default:
-		m_iValue = 1 - m_iValue;
+		m_bState = 1 - m_bState;
 	}
 
 	SetSendFlags(MONITORFL_CHANGED_STATUS);
@@ -327,7 +277,7 @@ func_monitor::Respawn(void)
 	SetOrigin(GetSpawnOrigin());
 	SetAngles(GetSpawnAngles());
 	SetModel(GetSpawnModel());
-	m_iValue = TRUE;
+	m_bState = true;
 }
 #endif
 
