@@ -16,12 +16,27 @@
 
 var string g_strSkyName;
 
+bool
+Sky_SourceBSPCheck(string sky)
+{
+	if not (whichpack(strcat("materials/skybox/", sky, "bk.vmt")))
+		return false;
+
+	return true;
+}
+
 void
 Sky_Update(int force)
 {
 	if (g_strSkyName != serverkey("skyname") || force == TRUE) {
 		g_strSkyName = serverkey("skyname");
-		localcmd(sprintf("sky \"%s\"\n", g_strSkyName));
+
+		/* is it a Source Engine material? */
+		if (Sky_SourceBSPCheck(g_strSkyName))
+			localcmd(sprintf("sky \"materials/skybox/%s\"\n", g_strSkyName));
+		else
+			localcmd(sprintf("sky \"%s\"\n", g_strSkyName));
+
 		print(sprintf("sky update applying %s.\n", g_strSkyName));
 	}
 }

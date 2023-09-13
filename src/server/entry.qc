@@ -485,8 +485,8 @@ worldspawn(void)
 		if (!self.skyname) {
 			self.skyname = "desert";
 		}
-		forceinfokey(world, "skyname", self.skyname);
 	}
+	forceinfokey(world, "skyname", self.skyname);
 
 	print("Spawning entities\n");
 }
