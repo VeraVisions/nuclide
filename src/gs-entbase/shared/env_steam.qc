@@ -346,7 +346,7 @@ env_steam::Trigger(entity act, triggermode_t state)
 		m_bState = true;
 		break;
 	default:
-		m_bState == true ? false : true;
+		m_bState = (m_bState == true) ? false : true;
 	}
 }
 
