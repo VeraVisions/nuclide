@@ -49,11 +49,7 @@ func_dustmotes::CanSpawn(bool clientSide)
 float
 func_dustmotes::predraw(void)
 {
-	vector vecPlayer;
-
-	int s = (float)getproperty(VF_ACTIVESEAT);
-	pSeat = &g_seats[s];
-	vecPlayer = pSeat->m_vecPredictedOrigin;
+	vector vecPlayer = g_view.GetCameraOrigin();
 
 	if (checkpvs(vecPlayer, this) == FALSE)
 		return (PREDRAW_NEXT);

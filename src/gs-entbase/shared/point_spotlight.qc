@@ -59,6 +59,7 @@ public:
 	void point_spotlight(void);
 
 #ifdef CLIENT
+	vector m_vecBeamEnd;
 	float m_flBeamTrace;
 	float m_flBeamHalfwidth;
 
@@ -81,6 +82,9 @@ point_spotlight::UpdateBeamLength(void)
 {
 	traceline(origin, origin - [0, 0, m_flBeamLength], MOVE_NORMAL, this);
 	m_flBeamTrace = m_flBeamLength * trace_fraction;
+
+	makevectors(angles);
+	m_vecBeamEnd = origin + v_forward * m_flBeamTrace;
 }
 
 float
@@ -103,15 +107,18 @@ point_spotlight::predraw(void)
 			coneAlpha = 0.0f;
 
 		if (coneAlpha > 0.0) {
+			vector flareOrg = origin;
 			makevectors(vectoangles(origin - vecPlayer));
+			flareOrg += v_forward * - 32.0f;
+
 			R_BeginPolygon("textures/sfx/spot_flare");
-			R_PolygonVertex(origin + v_right * m_flBeamHalfwidth - v_up * m_flBeamHalfwidth,
+			R_PolygonVertex(flareOrg + v_right * m_flBeamHalfwidth - v_up * m_flBeamHalfwidth,
 				[1,1], m_vecColor * coneAlpha, 1.0f);
-			R_PolygonVertex(origin - v_right * m_flBeamHalfwidth - v_up * m_flBeamHalfwidth,
+			R_PolygonVertex(flareOrg - v_right * m_flBeamHalfwidth - v_up * m_flBeamHalfwidth,
 				[0,1], m_vecColor * coneAlpha, 1.0f);
-			R_PolygonVertex(origin - v_right * m_flBeamHalfwidth + v_up * m_flBeamHalfwidth,
+			R_PolygonVertex(flareOrg - v_right * m_flBeamHalfwidth + v_up * m_flBeamHalfwidth,
 				[0,0], m_vecColor * coneAlpha, 1.0f);
-			R_PolygonVertex(origin + v_right * m_flBeamHalfwidth + v_up * m_flBeamHalfwidth,
+			R_PolygonVertex(flareOrg + v_right * m_flBeamHalfwidth + v_up * m_flBeamHalfwidth,
 				[1,0], m_vecColor * coneAlpha, 1.0f);
 			R_EndPolygon();
 		}
@@ -125,18 +132,34 @@ point_spotlight::predraw(void)
 
 		/* beam */
 		if (coneAlpha > 0.0) {
-			vecPlayer[2] = origin[2];
+
+#if 0
+			//vecPlayer[2] = origin[2];
 			makevectors(vectoangles(origin - vecPlayer));
 			R_BeginPolygon("textures/sfx/spot_cone");
-			R_PolygonVertex(origin + (v_right * m_flBeamHalfwidth) - (v_up * m_flBeamTrace),
+			R_PolygonVertex(m_vecBeamEnd + (v_right * m_flBeamHalfwidth),
 				[1,1], m_vecColor * coneAlpha, 1.0f);
-			R_PolygonVertex(origin - (v_right * m_flBeamHalfwidth) - (v_up * m_flBeamTrace),
+			R_PolygonVertex(m_vecBeamEnd - (v_right * m_flBeamHalfwidth),
 				[0,1], m_vecColor * coneAlpha, 1.0f);
 			R_PolygonVertex(origin - (v_right * m_flBeamHalfwidth),
 				[0,0], m_vecColor * coneAlpha, 1.0f);
 			R_PolygonVertex(origin + (v_right * m_flBeamHalfwidth),
 				[1,0], m_vecColor * coneAlpha, 1.0f);
 			R_EndPolygon();
+#else
+			makevectors(getproperty(VF_CL_VIEWANGLES));
+			setproperty(VF_ORIGIN, vecPlayer);
+			R_BeginPolygon("textures/sfx/spot_cone");
+			R_PolygonVertex(origin, [1,0], m_vecColor * coneAlpha, 1.0f);
+			R_PolygonVertex(m_vecBeamEnd, [1,1], m_vecColor * coneAlpha, 1.0f);
+			R_EndPolygonRibbon(m_flBeamWidth, [-1,0]);
+
+			/* debug */
+			/*R_BeginPolygon("", 0, 0);
+			R_PolygonVertex(origin, [0,1], [0,1,0], 1.0f);
+			R_PolygonVertex(m_vecBeamEnd, [1,1], [0,1,0], 1.0f);
+			R_EndPolygon();*/
+#endif
 		}
 	}
 

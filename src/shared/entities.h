@@ -35,6 +35,7 @@ typedef enum
 	ENT_PROJECTEDTEXTURE, /**< of type env_projectedtexture */
 	ENT_SPOTLIGHT, /**< of type point_spotlight */
 	ENT_FOG,			/*<< of type env_fog */
+	ENT_STEAM,
 	ENT_FOGCONTROLLER, /**< of type env_fog_controller */
 	ENT_LASER,	/**< of type env_laser */
 	ENT_PARTSYSTEM,	/**< of type info_particle_system */

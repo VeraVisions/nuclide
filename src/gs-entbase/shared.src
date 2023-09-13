@@ -13,6 +13,8 @@ shared/env_laser.qc
 shared/env_projectedtexture.qc
 shared/env_fog.qc
 shared/env_fog_controller.qc
+//shared/env_fire.qc
+shared/env_steam.qc
 shared/light_dynamic.qc
 shared/func_monitor.qc
 shared/func_illusionary.qc

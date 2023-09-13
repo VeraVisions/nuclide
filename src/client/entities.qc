@@ -123,6 +123,9 @@ Entity_EntityUpdate(float type, float new)
 	case ENT_FOG:
 		env_fog_readentity(new);
 		break;
+	case ENT_STEAM:
+		env_steam_ReadEntity(new);
+		break;
 	case ENT_FOGCONTROLLER:
 		env_fog_controller_readentity(new);
 		break;

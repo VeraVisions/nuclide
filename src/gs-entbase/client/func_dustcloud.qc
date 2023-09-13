@@ -116,11 +116,7 @@ func_dustcloud_cloud::func_dustcloud_cloud(void)
 float
 func_dustcloud::predraw(void)
 {
-	vector vecPlayer;
-
-	int s = (float)getproperty(VF_ACTIVESEAT);
-	pSeat = &g_seats[s];
-	vecPlayer = pSeat->m_vecPredictedOrigin;
+	vector vecPlayer = g_view.GetCameraOrigin();
 
 	if (checkpvs(vecPlayer, this) == FALSE)
 		return (PREDRAW_NEXT);
