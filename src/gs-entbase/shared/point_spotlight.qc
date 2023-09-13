@@ -66,6 +66,8 @@ public:
 	virtual void ReceiveEntity(float,float);
 	virtual float predraw(void);
 	nonvirtual void UpdateBeamLength(void);
+	nonvirtual float BeamViewDelta(vector);
+	nonvirtual float FlareViewDelta(float, vector);
 #else
 	virtual void Trigger(entity, triggermode_t);
 	virtual void Respawn(void);
@@ -88,6 +90,39 @@ point_spotlight::UpdateBeamLength(void)
 }
 
 float
+point_spotlight::BeamViewDelta(vector cameraAngle)
+{
+	vector v;
+	float upDelta;
+	float forwardDelta;
+
+	/* depending on whether we're looking 'up' at the spotlight,
+	   we'll adjust the delta to reflect that */
+	v = normalize(origin - m_vecBeamEnd);
+
+	makevectors(cameraAngle);
+	upDelta = (v * v_up);
+	forwardDelta = (v * v_forward);
+
+	//NSLog("forwardDelta: %f\n", forwardDelta);
+	//NSLog("upDelta: %f (%f)\n", upDelta, 1.0 - upDelta);
+
+	if (forwardDelta < 0.0)
+		return upDelta * (1.0 - forwardDelta);
+
+	if (upDelta >= 0.0)
+		return upDelta;
+	else
+		return 0.0f;
+}
+
+float
+point_spotlight::FlareViewDelta(float beamDelta, vector cameraAngle)
+{
+	return 1.0 - beamDelta;
+}
+
+float
 point_spotlight::predraw(void)
 {
 	if (!m_iState) {
@@ -98,40 +133,13 @@ point_spotlight::predraw(void)
 	{
 		vector vecPlayer = g_view.GetCameraOrigin();
 		vector vecAngle = g_view.GetCameraAngle();
-		float coneAlpha = 1.0f;
+		float coneAlpha = BeamViewDelta(vecAngle);
 
-		/* corona */
-		if (vecAngle[0] < 0)
-			coneAlpha = bound(0.0, fabs(vecAngle[0]) / 60.0f, 1.0);
-		else
-			coneAlpha = 0.0f;
-
-		if (coneAlpha > 0.0) {
-			vector flareOrg = origin;
-			makevectors(vectoangles(origin - vecPlayer));
-			flareOrg += v_forward * - 32.0f;
-
-			R_BeginPolygon("textures/sfx/spot_flare");
-			R_PolygonVertex(flareOrg + v_right * m_flBeamHalfwidth - v_up * m_flBeamHalfwidth,
-				[1,1], m_vecColor * coneAlpha, 1.0f);
-			R_PolygonVertex(flareOrg - v_right * m_flBeamHalfwidth - v_up * m_flBeamHalfwidth,
-				[0,1], m_vecColor * coneAlpha, 1.0f);
-			R_PolygonVertex(flareOrg - v_right * m_flBeamHalfwidth + v_up * m_flBeamHalfwidth,
-				[0,0], m_vecColor * coneAlpha, 1.0f);
-			R_PolygonVertex(flareOrg + v_right * m_flBeamHalfwidth + v_up * m_flBeamHalfwidth,
-				[1,0], m_vecColor * coneAlpha, 1.0f);
-			R_EndPolygon();
-		}
-
-		if (vecAngle[0] < 0)
-			coneAlpha = bound(0.0, fabs(vecAngle[0]) / 45.0f, 1.0);
-		else
-			coneAlpha = 0.0f;
-
-		coneAlpha = (1.0 - coneAlpha) * 0.5f;
+		//NSLog("coneAlpha: %f\n", coneAlpha);
 
 		/* beam */
 		if (coneAlpha > 0.0) {
+			vector finalColor = (m_vecColor * (coneAlpha * 0.5f));
 
 #if 0
 			//vecPlayer[2] = origin[2];
@@ -147,11 +155,11 @@ point_spotlight::predraw(void)
 				[1,0], m_vecColor * coneAlpha, 1.0f);
 			R_EndPolygon();
 #else
-			makevectors(getproperty(VF_CL_VIEWANGLES));
+			makevectors(vecAngle);
 			setproperty(VF_ORIGIN, vecPlayer);
 			R_BeginPolygon("textures/sfx/spot_cone");
-			R_PolygonVertex(origin, [1,0], m_vecColor * coneAlpha, 1.0f);
-			R_PolygonVertex(m_vecBeamEnd, [1,1], m_vecColor * coneAlpha, 1.0f);
+			R_PolygonVertex(origin, [1,0], finalColor, 1.0f);
+			R_PolygonVertex(m_vecBeamEnd, [1,1], finalColor, 1.0f);
 			R_EndPolygonRibbon(m_flBeamWidth, [-1,0]);
 
 			/* debug */
@@ -160,6 +168,25 @@ point_spotlight::predraw(void)
 			R_PolygonVertex(m_vecBeamEnd, [1,1], [0,1,0], 1.0f);
 			R_EndPolygon();*/
 #endif
+		}
+
+		coneAlpha = FlareViewDelta(coneAlpha, vecAngle);
+
+		if (coneAlpha > 0.0) {
+			vector flareOrg = origin;
+			makevectors(vectoangles(origin - vecPlayer));
+			flareOrg += v_forward * - 16.0f;
+
+			R_BeginPolygon("textures/sfx/spot_flare");
+			R_PolygonVertex(flareOrg + v_right * m_flBeamHalfwidth - v_up * m_flBeamHalfwidth,
+				[1,1], m_vecColor * coneAlpha, 1.0f);
+			R_PolygonVertex(flareOrg - v_right * m_flBeamHalfwidth - v_up * m_flBeamHalfwidth,
+				[0,1], m_vecColor * coneAlpha, 1.0f);
+			R_PolygonVertex(flareOrg - v_right * m_flBeamHalfwidth + v_up * m_flBeamHalfwidth,
+				[0,0], m_vecColor * coneAlpha, 1.0f);
+			R_PolygonVertex(flareOrg + v_right * m_flBeamHalfwidth + v_up * m_flBeamHalfwidth,
+				[1,0], m_vecColor * coneAlpha, 1.0f);
+			R_EndPolygon();
 		}
 	}
 
