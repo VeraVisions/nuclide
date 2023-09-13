@@ -92,6 +92,13 @@ var bool g_net_debug = false;
 	}\
 }
 
+#define READENTITY_COLOR(field, changedflag) {\
+	if (flChanged & changedflag) {\
+		field = readbyte() / 255;\
+		PRINTFLAG(changedflag); \
+	}\
+}
+
 /* undocumented printcall types */
 #define PRINT_LOW		0
 #define PRINT_MEDIUM	1

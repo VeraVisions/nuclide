@@ -50,7 +50,7 @@ This entity was introduced in Half-Life 2 (2004).
 class point_spotlight:NSPointTrigger
 {
 private:
-	PREDICTED_VECTOR(m_vecRenderColor)
+	PREDICTED_VECTOR(m_vecColor)
 	PREDICTED_FLOAT(m_flBeamLength)
 	PREDICTED_FLOAT(m_flBeamWidth)
 	PREDICTED_INT(m_iState)
@@ -59,8 +59,12 @@ public:
 	void point_spotlight(void);
 
 #ifdef CLIENT
+	float m_flBeamTrace;
+	float m_flBeamHalfwidth;
+
 	virtual void ReceiveEntity(float,float);
 	virtual float predraw(void);
+	nonvirtual void UpdateBeamLength(void);
 #else
 	virtual void Trigger(entity, triggermode_t);
 	virtual void Respawn(void);
@@ -72,6 +76,13 @@ public:
 };
 
 #ifdef CLIENT
+void
+point_spotlight::UpdateBeamLength(void)
+{
+	traceline(origin, origin - [0, 0, m_flBeamLength], MOVE_NORMAL, this);
+	m_flBeamTrace = m_flBeamLength * trace_fraction;
+}
+
 float
 point_spotlight::predraw(void)
 {
@@ -84,9 +95,6 @@ point_spotlight::predraw(void)
 		vector vecPlayer = g_view.GetCameraOrigin();
 		vector vecAngle = g_view.GetCameraAngle();
 		float coneAlpha = 1.0f;
-		float beamWidth = m_flBeamWidth / 2;
-		vector beamColor = m_vecRenderColor / 255;
-		float beamDist = 0.0f;
 
 		/* corona */
 		if (vecAngle[0] < 0)
@@ -97,14 +105,14 @@ point_spotlight::predraw(void)
 		if (coneAlpha > 0.0) {
 			makevectors(vectoangles(origin - vecPlayer));
 			R_BeginPolygon("textures/sfx/spot_flare");
-			R_PolygonVertex(origin + v_right * beamWidth - v_up * beamWidth,
-				[1,1], beamColor * coneAlpha, 1.0f);
-			R_PolygonVertex(origin - v_right * beamWidth - v_up * beamWidth,
-				[0,1], beamColor * coneAlpha, 1.0f);
-			R_PolygonVertex(origin - v_right * beamWidth + v_up * beamWidth,
-				[0,0], beamColor * coneAlpha, 1.0f);
-			R_PolygonVertex(origin + v_right * beamWidth + v_up * beamWidth,
-				[1,0], beamColor * coneAlpha, 1.0f);
+			R_PolygonVertex(origin + v_right * m_flBeamHalfwidth - v_up * m_flBeamHalfwidth,
+				[1,1], m_vecColor * coneAlpha, 1.0f);
+			R_PolygonVertex(origin - v_right * m_flBeamHalfwidth - v_up * m_flBeamHalfwidth,
+				[0,1], m_vecColor * coneAlpha, 1.0f);
+			R_PolygonVertex(origin - v_right * m_flBeamHalfwidth + v_up * m_flBeamHalfwidth,
+				[0,0], m_vecColor * coneAlpha, 1.0f);
+			R_PolygonVertex(origin + v_right * m_flBeamHalfwidth + v_up * m_flBeamHalfwidth,
+				[1,0], m_vecColor * coneAlpha, 1.0f);
 			R_EndPolygon();
 		}
 
@@ -119,21 +127,15 @@ point_spotlight::predraw(void)
 		if (coneAlpha > 0.0) {
 			vecPlayer[2] = origin[2];
 			makevectors(vectoangles(origin - vecPlayer));
-
-			/* figure out the end pos */
-			other = world;
-			traceline(origin, origin - [0, 0, m_flBeamLength], MOVE_OTHERONLY, this);
-			beamDist = fabs(trace_plane_dist);
-
 			R_BeginPolygon("textures/sfx/spot_cone");
-			R_PolygonVertex(origin + (v_right * beamWidth) - (v_up * beamDist),
-				[1,1], beamColor, coneAlpha);
-			R_PolygonVertex(origin - (v_right * beamWidth) - (v_up * beamDist),
-				[0,1], beamColor, coneAlpha);
-			R_PolygonVertex(origin - (v_right * beamWidth),
-				[0,0], beamColor, coneAlpha);
-			R_PolygonVertex(origin + (v_right * beamWidth),
-				[1,0], beamColor, coneAlpha);
+			R_PolygonVertex(origin + (v_right * m_flBeamHalfwidth) - (v_up * m_flBeamTrace),
+				[1,1], m_vecColor * coneAlpha, 1.0f);
+			R_PolygonVertex(origin - (v_right * m_flBeamHalfwidth) - (v_up * m_flBeamTrace),
+				[0,1], m_vecColor * coneAlpha, 1.0f);
+			R_PolygonVertex(origin - (v_right * m_flBeamHalfwidth),
+				[0,0], m_vecColor * coneAlpha, 1.0f);
+			R_PolygonVertex(origin + (v_right * m_flBeamHalfwidth),
+				[1,0], m_vecColor * coneAlpha, 1.0f);
 			R_EndPolygon();
 		}
 	}
@@ -143,12 +145,9 @@ point_spotlight::predraw(void)
 		return (PREDRAW_NEXT);
 
 	makevectors(angles);
-	/* TODO: We need to handle the second cone light */
-	float p = dynamiclight_add(origin, m_flBeamLength, m_vecRenderColor / 255, 0, "textures/flashlight");
+	float p = dynamiclight_add(origin, m_flBeamLength, m_vecColor / 255, 0, "textures/flashlight");
 	dynamiclight_set(p, LFIELD_ANGLES, angles);
 	dynamiclight_set(p, LFIELD_FLAGS, LFLAG_NORMALMODE | LFLAG_REALTIMEMODE | LFLAG_SHADOWMAP);
-	//dynamiclight_set(p, LFIELD_NEARCLIP, 0);
-	//dynamiclight_set(p, LFIELD_STYLESTRING, m_strPattern);
 
 	return (PREDRAW_NEXT);
 }
@@ -162,12 +161,21 @@ point_spotlight::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_ANGLE(angles[0], PNTSPTLGHT_CHANGED_ANGLES)
 	READENTITY_ANGLE(angles[1], PNTSPTLGHT_CHANGED_ANGLES)
 	READENTITY_ANGLE(angles[2], PNTSPTLGHT_CHANGED_ANGLES)
-	READENTITY_BYTE(m_vecRenderColor[0], PNTSPTLGHT_CHANGED_COLOR)
-	READENTITY_BYTE(m_vecRenderColor[1], PNTSPTLGHT_CHANGED_COLOR)
-	READENTITY_BYTE(m_vecRenderColor[2], PNTSPTLGHT_CHANGED_COLOR)
+	READENTITY_COLOR(m_vecColor[0], PNTSPTLGHT_CHANGED_COLOR)
+	READENTITY_COLOR(m_vecColor[1], PNTSPTLGHT_CHANGED_COLOR)
+	READENTITY_COLOR(m_vecColor[2], PNTSPTLGHT_CHANGED_COLOR)
 	READENTITY_FLOAT(m_flBeamLength, PNTSPTLGHT_CHANGED_LENGTH)
 	READENTITY_FLOAT(m_flBeamWidth, PNTSPTLGHT_CHANGED_WIDTH)
 	READENTITY_BYTE(m_iState, PNTSPTLGHT_CHANGED_STATE)
+
+	if ((flChanged & PNTSPTLGHT_CHANGED_ORIGIN) || 
+		(flChanged & PNTSPTLGHT_CHANGED_ANGLES) || 
+		(flChanged & PNTSPTLGHT_CHANGED_LENGTH))
+		UpdateBeamLength();
+
+	if (flChanged & PNTSPTLGHT_CHANGED_WIDTH) {
+		m_flBeamHalfwidth = m_flBeamWidth / 2;
+	}
 
 	setorigin(this, origin);
 	classname = "point_spotlight";
@@ -183,6 +191,9 @@ point_spotlight::EvaluateEntity(void)
 	EVALUATE_VECTOR(angles, 0, PNTSPTLGHT_CHANGED_ANGLES)
 	EVALUATE_VECTOR(angles, 1, PNTSPTLGHT_CHANGED_ANGLES)
 	EVALUATE_VECTOR(angles, 2, PNTSPTLGHT_CHANGED_ANGLES)
+	EVALUATE_VECTOR(m_vecColor, 0, PNTSPTLGHT_CHANGED_COLOR)
+	EVALUATE_VECTOR(m_vecColor, 1, PNTSPTLGHT_CHANGED_COLOR)
+	EVALUATE_VECTOR(m_vecColor, 2, PNTSPTLGHT_CHANGED_COLOR)
 	EVALUATE_FIELD(m_flBeamLength, PNTSPTLGHT_CHANGED_LENGTH)
 	EVALUATE_FIELD(m_flBeamWidth, PNTSPTLGHT_CHANGED_WIDTH)
 	EVALUATE_FIELD(m_iState, PNTSPTLGHT_CHANGED_STATE)
@@ -223,9 +234,9 @@ point_spotlight::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_ANGLE(angles[0], PNTSPTLGHT_CHANGED_ANGLES)
 	SENDENTITY_ANGLE(angles[1], PNTSPTLGHT_CHANGED_ANGLES)
 	SENDENTITY_ANGLE(angles[2], PNTSPTLGHT_CHANGED_ANGLES)
-	SENDENTITY_BYTE(m_vecRenderColor[0], PNTSPTLGHT_CHANGED_COLOR)
-	SENDENTITY_BYTE(m_vecRenderColor[1], PNTSPTLGHT_CHANGED_COLOR)
-	SENDENTITY_BYTE(m_vecRenderColor[2], PNTSPTLGHT_CHANGED_COLOR)
+	SENDENTITY_COLOR(m_vecColor[0], PNTSPTLGHT_CHANGED_COLOR)
+	SENDENTITY_COLOR(m_vecColor[1], PNTSPTLGHT_CHANGED_COLOR)
+	SENDENTITY_COLOR(m_vecColor[2], PNTSPTLGHT_CHANGED_COLOR)
 	SENDENTITY_FLOAT(m_flBeamLength, PNTSPTLGHT_CHANGED_LENGTH)
 	SENDENTITY_FLOAT(m_flBeamWidth, PNTSPTLGHT_CHANGED_WIDTH)
 	SENDENTITY_BYTE(m_iState, PNTSPTLGHT_CHANGED_STATE)
@@ -256,7 +267,7 @@ point_spotlight::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "rendercolor":
-		m_vecRenderColor = stov(strValue);
+		m_vecColor = stov(strValue) / 255;
 		break;
 	case "spotlightlength":
 		m_flBeamLength = stof(strValue);
@@ -290,7 +301,7 @@ point_spotlight::point_spotlight(void)
 #ifndef CLIENT
 	m_flBeamLength = 500.0f;
 	m_flBeamWidth = 50.0f;
-	m_vecRenderColor = [255,255,255];
+	m_vecColor = [1.0,1.0,1.0];
 #endif
 }
 

@@ -83,6 +83,11 @@
 		WriteEntity(MSG_ENTITY, field);\
 }
 
+#define SENDENTITY_COLOR(field, changedflag) {\
+	if (flChanged & changedflag)\
+		WriteByte(MSG_ENTITY, field * 255.0);\
+}
+
 var bool g_isloading = false;
 
 var bool autocvar_mp_flashlight = true;

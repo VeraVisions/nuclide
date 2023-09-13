@@ -8,9 +8,8 @@
 
 	{
 		clampmap "textures/sfx/cone.tga"
+		blendFunc add
 		rgbGen vertex
-		alphaGen vertex
-		blendFunc blend
 	}
 }
 
