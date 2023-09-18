@@ -29,10 +29,46 @@ enumflags
 };
 #endif
 
-/** This class represents NSMonsters that talk. They need to network extra
+/*! \brief This class represents NSMonsters that talk. */
+/*!QUAKED NSTalkMonster (0 0.8 0.8) (-16 -16 0) (16 16 72) WAITTILLSEEN GAG MONSTERCLIP x PRISONER x IGNOREPLAYER WAITFORSCRIPT PREDISASTER FADECORPSE MULTIPLAYER FALLING HORDE
+# OVERVIEW
+This class represents NSMonsters that talk. They need to network extra
 information and can speak more complicated dialogue.
 
 They also can communicate with other NSTalkMonster based entities.
+
+# KEYS
+- "targetname" : Name
+- "netname" :	Name used for obituaries and debug info.
+- "maxs" : Bounding box mins.
+- "mins" : Bounding box maxs.
+
+## KEYS - SENTENCES
+- "talk_answer" : SentenceDef to play when they're providing a generic answer to a question.
+- "talk_ask" : SentenceDef to play when they're asking a question.
+- "talk_ally_shot" : SentenceDef to play when they're commenting on an ally being shot.
+- "talk_greet" : SentenceDef to play when greeting an ally.
+- "talk_idle" : SentenceDef to play when idling about.
+- "talk_panic" : SentenceDef to play when the state from being calm changes to being fearful.
+- "talk_hearing" : SentenceDef to play when commenting on a suspicious noise.
+- "talk_smelling" : SentenceDef to play when commenting on a suspicious smell.
+- "talk_stare" : SentenceDef to play when commenting on the player staring at them.
+- "talk_survived" : SentenceDef to play when they've survived an attack.
+- "talk_wounded" : SentenceDef to play when they've been severely wounded.
+- "talk_alert" : SentenceDef to play when they've become alerted.
+- "talk_player_ask" : SentenceDef to play when they want to ask the player a question.
+- "talk_player_greet" : SentenceDef to play when they want to greet the player.
+- "talk_player_idle" : SentenceDef to play when they hang around the player.
+- "talk_player_wounded1" :
+- "talk_player_wounded2" :
+- "talk_player_wounded3" :
+- "talk_unfollow" : SentenceDef to play for when they're choosing to unfollow someone.
+- "talk_follow" : SentenceDef to play for when they're choosing follow someone.
+- "talk_stop_follow" : SentenceDef to play for when they're being asked to unfollow someone.
+- "talk_deny_follow" : SentenceDef to play for when they're denying the follow request.
+- "follow_on_use" : Can be either 0 or 1, will decide if they can follow someone.
+
+For more keys, see NSMonster.
 */
 class NSTalkMonster:NSSquadMonster
 {
