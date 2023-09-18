@@ -1664,6 +1664,16 @@ NSMonster::Respawn(void)
 	} else {
 		m_bWeaponDrawn = false;
 	}
+
+	/* start dead (corpse) */
+	if (_m_bStartDead) {
+		RemoveFlags(FL_MONSTER);
+		SetMovetype(MOVETYPE_NONE);
+		SetSolid(SOLID_CORPSE);
+		SetHealth(base_health);
+		SetState(MONSTER_DEAD);
+		SetFrame(_m_flFrame);
+	}
 }
 
 void
@@ -1817,6 +1827,13 @@ NSMonster::SpawnKey(string strKey, string strValue)
 		break;
 	case "leap_damage":
 		m_flLeapDamage = Skill_GetDefValue(strValue);
+		break;
+	/* simple tweaks */
+	case "dead":
+		_m_bStartDead = ReadBool(strValue);
+		break;
+	case "frame":
+		_m_flFrame = ReadFloat(strValue);
 		break;
 	default:
 		NSSurfacePropEntity::SpawnKey(strKey, strValue);

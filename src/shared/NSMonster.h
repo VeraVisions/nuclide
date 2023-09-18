@@ -236,6 +236,7 @@ capable of fighting if prompted to.
 
 ## KEYS - BEHAVIOUR
 - "health" : Starting health.
+- "dead" : Whether to start the monster in a dead state (0 or 1).
 - "team" : Alliance. See allianceState_t for which numerical values to pick.
 - "speed_walk" : Walk speed in units per second.
 - "speed_run" : Run speed in units per second.
@@ -499,6 +500,8 @@ private:
 	float _m_flMeleeDelay;
 	float _m_flBurstCount;
 	bool _m_bShouldThrow;
+	bool _m_bStartDead;
+	float _m_flFrame;
 
 	/* save these please */
 	float _m_flReloadTracker;
