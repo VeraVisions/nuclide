@@ -179,10 +179,10 @@ typedef enum
 /** Alliance states. */
 typedef enum
 {
-	MAL_FRIEND, /* friendly towards the player */
-	MAL_ENEMY,  /* unfriendly towards the player */
-	MAL_ALIEN,  /* unfriendly towards anyone but themselves */
-	MAL_ROGUE   /* no allies, not even amongst themselves */
+	MAL_FRIEND, /**< 1, friendly towards the player */
+	MAL_ENEMY,  /**< 2, unfriendly towards the player */
+	MAL_ALIEN,  /**< 3, unfriendly towards anyone but themselves */
+	MAL_ROGUE   /**< 4, no allies, not even amongst themselves */
 } allianceState_t;
 
 /** Movement states */
@@ -199,37 +199,100 @@ it's set to. If any of those checks are successful, we trigger our target
 under the m_strTriggerTarget attribute. */
 typedef enum
 {
-	MTRIG_NONE,					/**< nothing */
-	MTRIG_SEEPLAYER_ANGRY,		/**< we see an enemy player, that we want to harm */
-	MTRIG_PAIN,					/**< taken damage */ 
-	MTRIG_HALFHEALTH,			/**< lost half of our base_health */
-	MTRIG_DEATH,				/**< we have died. */
-	MTRIG_SQUADMEMBERDEAD,		/**< a squad member died */
-	MTRIG_SQUADLEADERDEAD,		/**< the squad leader died */
-	MTRIG_HEARNOISE,			/**< we hear some noise around the world. */
-	MTRIG_HEARENEMYPLAYER,		/**< we hear a player we are enemies with */
-	MTRIG_HEARWEAPONS,			/**< we hear weapons being fired */
-	MTRIG_SEEPLAYER,			/**< we see a player, don't have to be angry at him. */
-	MTRIG_SEEPLAYER_RELAXED,	/**< we see a player and we're currently attacking anything */
+	MTRIG_NONE,					/**< 1, nothing */
+	MTRIG_SEEPLAYER_ANGRY,		/**< 2, we see an enemy player, that we want to harm */
+	MTRIG_PAIN,					/**< 3, taken damage */ 
+	MTRIG_HALFHEALTH,			/**< 4, lost half of our base_health */
+	MTRIG_DEATH,				/**< 5, we have died. */
+	MTRIG_SQUADMEMBERDEAD,		/**< 6, a squad member died */
+	MTRIG_SQUADLEADERDEAD,		/**< 7, the squad leader died */
+	MTRIG_HEARNOISE,			/**< 8, we hear some noise around the world. */
+	MTRIG_HEARENEMYPLAYER,		/**< 9, we hear a player we are enemies with */
+	MTRIG_HEARWEAPONS,			/**< 10, we hear weapons being fired */
+	MTRIG_SEEPLAYER,			/**< 11, we see a player, don't have to be angry at him. */
+	MTRIG_SEEPLAYER_RELAXED,	/**< 12, we see a player and we're currently attacking anything */
 } triggerCondition_t;
 
 /* FIXME: I'd like to move this into NSMonster, but our current IsFriend()
  * check is currently only checking on a .takedamage basis. */
 .int m_iAlliance;
 
-/** This entity class represents non-player characters. 
+/*! \brief This entity class represents non-player characters. */
+/*!QUAKED NSMonster (0 0.8 0.8) (-16 -16 0) (16 16 72) WAITTILLSEEN GAG MONSTERCLIP x PRISONER x IGNOREPLAYER WAITFORSCRIPT PREDISASTER FADECORPSE MULTIPLAYER FALLING HORDE
+# OVERVIEW
+This entity class represents non-player characters. 
 They have the ability to move around (or stand still) but are all
 capable of fighting if prompted to.
 
-There are a few methods that you need to reimplement in order for them
-to do some basic combat:
+# KEYS
+- "targetname" : Name
+- "netname" :	Name used for obituaries and debug info.
+- "maxs" : Bounding box mins.
+- "mins" : Bounding box maxs.
 
-	virtual void(void) AttackDraw;
-	virtual void(void) AttackHolster;
-	virtual int(void) AttackMelee;
-	virtual int(void) AttackRanged;
+## KEYS - TRIGGERS
+- "TriggerCondition" : See triggerCondition_t for which numerical values to pick.
+- "TriggerTarget" : Will trigger this entity when TriggerCondition (triggerCondition_t) is met.
 
-Check their individual descriptions as to how you're supposed to approach them.
+## KEYS - BEHAVIOUR
+- "health" : Starting health.
+- "team" : Alliance. See allianceState_t for which numerical values to pick.
+- "speed_walk" : Walk speed in units per second.
+- "speed_run" : Run speed in units per second.
+- "eye_height" : Height in units at which to place the eyes from the origin. Use the cvar r_showViewCone to debug it.
+- "snd_sight" : SoundDef to play upon 'alert'.
+- "snd_idle" : SoundDef to play when the monster is idle.
+- "idle_min" : Min idle delay in seconds.
+- "idle_max" : Max idle delay in seconds.
+- "snd_footstep" : Which soundDef to play when a footstep should occur.
+- "snd_chatter" : An idle type soundDef to play.
+- "snd_chatter_combat" : An idle type soundDef, only during combat.
+- "snd_pain" : SoundDef to play when in pain.
+- "snd_death" : SoundDef to play when death settles in.
+- "snd_thud" : SoundDef to play when the monster falls to the ground.
+
+## KEYS - ATTACK (MELEE)
+- "def_attack_melee" : Which entityDef to look into for a melee attack. [CONTINUED] 
+- "attack_melee_range" : Range under which melee attacks occur.
+- "snd_melee_attack" : SoundDef to play when melee attacking.
+- "snd_melee_attack_hit" : SoundDef to play when a successful melee attack occurs.
+- "snd_melee_attack_miss" : SoundDef to play when a melee attack misses.
+
+## KEYS - ATTACK (RANGED)
+- "def_attack_ranged_1" : EntityDef that contains primary ranged attack info.
+- "attack_ranged1_range" : Range for the primary ranged attack.
+- "def_attack_ranged_2" :  EntityDef that contains secondary ranged attack info.
+- "attack_ranged2_range" : Range for the secondary ranged attack.
+- "snd_ranged_attack" : SoundDef to play upon ranged attack.
+- "reload_count" : how many ranged attacks until reload. Only affects primary ranged attacks.
+- "reload_delay" : Time between reloads in seconds. Requires `reload_count` to be set > 0.
+- "snd_reload" : SoundDef to play when reloading.
+- "attack_cone" : Cone in which to attack.
+- "attack_accuracy" : Accuracy (or rather, lack of) multiplier.
+
+## KEYS - ATTACK (SPECIAL)
+- "def_attack_special_1" : EntityDef that contains primary special attack info. Intended for projectiles.
+- "attack_special1_range" : Range for the primary special attack.
+- "num_projectiles" : The number of primary special projectiles to shoot.
+- "projectile_spread" : Spread of the projectiles. 0 is none. 1 is the max.
+- "projectile_delay" : Delay in seconds until a special attack projectile is thrown.
+
+- "weapon_drawn" : Whether or not the weapon is drawn by default. Either 0 or 1.
+- "body_on_draw" : Which bodygroup to switch to when the monster has drawn its weapon.
+- "leap_damage" : Amount of damage appled when the enemy leaps towards you and hits.
+
+# SPAWNFLAGS
+- WAITTILLSEEN (1) - Play scripted sequence only once the monster gets seen by a player.
+- GAG (2) - Won't speak.
+- MONSTERCLIP (4) - Interacts with monsterclips?
+- PRISONER (16) - Never used.
+- IGNOREPLAYER (64) - Ignores the player. Like 'notarget'.
+- WAITFORSCRIPT (128) - Does nothing, until a scripted sequence runs on the monster. Then becomes alive.
+- PREDISASTER (256) - Special flag used in Half-Life.
+- FADECORPSE (512) - Corpse will disappear on its own.
+- MULTIPLAYER (1024) - Available in multiplayer.
+- FALLING (2048) - Will not drop to the floor upon level spawn - but fall when in-game.
+- HORDE (4096) - Never used.
 */
 class NSMonster:NSNavAI
 {
@@ -348,6 +411,7 @@ public:
 	virtual void AnimationUpdate(void);
 	/** Returns if we're currently in a forced animation sequence. */
 	nonvirtual bool InAnimation(void);
+	nonvirtual void AnimReset(void);
 
 	/* states */
 	/** Called whenever the state of this NSMonster changes. */

@@ -492,7 +492,13 @@ NSMonster::AnimPlay(float seq)
 	SetSendFlags(MONFL_CHANGED_FRAME);
 
 	SetFrame(seq);
-	m_flAnimTime = time + frameduration(modelindex, frame);
+	m_flAnimTime = time + frameduration(modelindex, seq);
+}
+
+void
+NSMonster::AnimReset(void)
+{
+	frame1time = 0.0f;
 }
 
 bool
@@ -921,6 +927,8 @@ NSMonster::AttackMelee(void)
 			ScheduleThink(AttackMelee_AttackFlail, _m_flMeleeDelay + meleeWait);
 	}
 
+	AnimReset();
+
 	if (random() < 0.5 || actMelee2 == -1)
 		AnimPlay(actMelee1);
 	else
@@ -944,6 +952,7 @@ NSMonster::AttackRanged(void)
 	}
 	static void AttackRanged_RangedSpecial(void)
 	{
+		NSMonster_Log("AttackRanged_RangedSpecial: %S", m_defRanged2);
 		NSProjectile_SpawnDef(m_defRanged2, this);
 	}
 
@@ -961,6 +970,7 @@ NSMonster::AttackRanged(void)
 		if (_m_flReloadTracker > m_flReloadCount) {
 			throwAnyway = true;
 			_m_bShouldThrow = true;
+			NSMonster_Log("throwAnyway: true!");
 		}
 
 	/* special always first if possible */
@@ -987,21 +997,29 @@ NSMonster::AttackRanged(void)
 			StartSoundDef(m_sndReload, CHAN_WEAPON, true);
 			_m_bShouldThrow = false;
 
-			if (m_flReloadDelay)
+			if (m_flReloadDelay) {
 				m_flAttackThink = time + m_flReloadDelay;
-			else
-				m_flAttackThink = time + frameduration(modelindex, actReload);
+				NSMonster_Log("Reloading, delay %f seconds", m_flReloadDelay);
+			} else {
+				float actDuration = frameduration(modelindex, actReload);
+				m_flAttackThink = time + actDuration;
+				NSMonster_Log("Reloading, act delays it by %f seconds", actDuration);
+			}
 
 			return 1;
 		}
 
+		AnimReset();
 		AnimPlay(actRanged);
 
 		/* if we have no spawnclass, it must be a hitscan weapon */
+		if (m_defRanged1)
 		if (EntityDef_HasSpawnClass(m_defRanged1)) {
 			NSProjectile_SpawnDef(m_defRanged1, this);
+			NSMonster_Log("Firing ranged def %S", m_defRanged1);
 		} else {
 			TraceAttack_FireBullets(1, GetEyePos(), rangedDmg, [0.01,0.01] * m_flAttackAccuracy, 0);
+			NSMonster_Log("Firing traceline def with %d", rangedDmg);
 		}
 
 		StartSoundDef(m_sndRangedAttack, CHAN_WEAPON, true);
@@ -1014,19 +1032,25 @@ NSMonster::AttackRanged(void)
 			burstTime = burstDelay;
 		}
 
-		if (rangedDly)
+		if (rangedDly) {
 			m_flAttackThink = time + rangedDly + burstTime;
-		else
-			m_flAttackThink = time + frameduration(modelindex, actRanged) + burstTime;
+			NSMonster_Log("Primary ranged attack, delay %f seconds (burst %d)", rangedDly, burstTime);
+		} else {
+			float actAttackTime = frameduration(modelindex, actRanged);
+			m_flAttackThink = time + actAttackTime + burstTime;
+			NSMonster_Log("Primary ranged attack, act delays it by %f seconds (burst %f)", actAttackTime, burstTime);
+		}
 
 		return 1;
 	} else if (throwAnyway == false && inRanged2Range && trace_ent == m_eEnemy) {
 		float actRangedSpecial = FramegroupForAct(ACT_RANGE_ATTACK2);
+		AnimReset();
 		AnimPlay(actRangedSpecial);
 		ScheduleThink(AttackRanged_RangedSpecial, 0.0f);
 		m_flAttackThink = time + frameduration(modelindex, actRangedSpecial);
 		return 1;
 	} else if (inSpecial1Range) {
+		AnimReset();
 		AnimPlay(FramegroupForAct(ACT_SPECIAL_ATTACK1));
 		ScheduleThink(AttackRanged_Throw, m_flProjectileDelay);
 
@@ -1037,6 +1061,7 @@ NSMonster::AttackRanged(void)
 
 		return 1;
 	} else if (inSpecial2Range) {
+		AnimReset();
 		AnimPlay(FramegroupForAct(ACT_SPECIAL_ATTACK2));
 		ScheduleThink(AttackRanged_Throw, m_flProjectileDelay);
 
