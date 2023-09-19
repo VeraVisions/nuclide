@@ -268,6 +268,7 @@ capable of fighting if prompted to.
 - "reload_count" : how many ranged attacks until reload. Only affects primary ranged attacks.
 - "reload_delay" : Time between reloads in seconds. Requires `reload_count` to be set > 0.
 - "snd_reload" : SoundDef to play when reloading.
+- "reserve_ammo" : The amount of reserve ammo. -1 is infinite (default)
 - "attack_cone" : Cone in which to attack.
 - "attack_accuracy" : Accuracy (or rather, lack of) multiplier.
 
@@ -552,6 +553,7 @@ private:
 	float m_flReloadCount;
 	float m_flReloadDelay;
 	string m_sndReload;
+	float m_flReserveAmmo;
 
 	string m_sndRangedAttack2;
 

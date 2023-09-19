@@ -88,6 +88,8 @@ NSMonster::NSMonster(void)
 	m_flSpecial1Range =
 	m_flSpecial2Range = -1.0f;
 
+	m_flReserveAmmo = -1; /* unlimited */
+
 	m_bWeaponStartsDrawn = true;
 
 	m_flWalkSpeed = autocvar_ai_walkSpeed;
@@ -193,6 +195,7 @@ NSMonster::Save(float handle)
 	SaveFloat(handle, "m_flReloadCount", m_flReloadCount);
 	SaveFloat(handle, "m_flReloadDelay", m_flReloadDelay);
 	SaveString(handle, "m_sndReload", m_sndReload);
+	SaveFloat(handle, "m_flReserveAmmo", m_flReserveAmmo);
 	SaveString(handle, "m_sndRangedAttack2", m_sndRangedAttack2);
 	SaveBool(handle, "m_bWeaponStartsDrawn", m_bWeaponStartsDrawn);
 	SaveString(handle, "m_strBodyOnDraw", m_strBodyOnDraw);
@@ -425,6 +428,9 @@ NSMonster::Restore(string strKey, string strValue)
 		break;
 	case "m_sndReload":
 		m_sndReload = ReadString(strValue);
+		break;
+	case "m_flReserveAmmo":
+		m_flReserveAmmo = ReadFloat(strValue);
 		break;
 	case "m_sndRangedAttack2":
 		m_sndRangedAttack2 = ReadString(strValue);
@@ -991,8 +997,29 @@ NSMonster::AttackRanged(void)
 		/* can't shoot anything ranged anymore, need to reload. */
 		if (m_flReloadCount)
 		if (_m_flReloadTracker > m_flReloadCount) {
+			float startAmmo = 0;
 			float actReload = FramegroupForAct(ACT_RELOAD);
-			_m_flReloadTracker = 0;
+
+			/* out of ammo, cannot reload */
+			if (m_flReserveAmmo == 0) {
+				//NSMonster_Log("Out of ammo!");
+				return 0;
+			}
+
+			/* do we not have unlimited ammo? */
+			if (m_flReserveAmmo != -1) {
+				m_flReserveAmmo -= m_flReloadCount;
+				NSMonster_Log("Reserve ammo: %d", m_flReserveAmmo);
+
+				/* oh no, we're below 0 in terms of ammo. */
+				if (m_flReserveAmmo < 0) {
+					startAmmo = -m_flReserveAmmo;
+					m_flReserveAmmo = 0; /* we're fully emptied now */
+				}
+			}
+
+			NSMonster_Log("Starting at %d bullets", startAmmo);
+			_m_flReloadTracker = startAmmo;
 			AnimPlay(actReload);
 			StartSoundDef(m_sndReload, CHAN_WEAPON, true);
 			_m_bShouldThrow = false;
@@ -1768,6 +1795,9 @@ NSMonster::SpawnKey(string strKey, string strValue)
 		break;
 	case "snd_reload":
 		m_sndReload = ReadString(strValue);
+		break;
+	case "reserve_ammo":
+		m_flReserveAmmo = ReadFloat(strValue);
 		break;
 	case "def_attack_special":
 	case "def_attack_special_1":
