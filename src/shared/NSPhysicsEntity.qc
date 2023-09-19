@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+//#define ODE_MODE 1
+
 void
 NSPhysicsEntity::NSPhysicsEntity(void)
 {
@@ -25,8 +27,13 @@ NSPhysicsEntity::NSPhysicsEntity(void)
 	m_iMaterial = 0i;
 	m_iFlags = 0i;
 
+#ifdef ODE_MODE
 	cvar_set("physics_ode_iterationsperframe", "1");
 	cvar_set("physics_ode_movelimit", "0.1");
+#else
+	cvar_set("physics_bullet_maxiterationsperframe", "10");
+	cvar_set("physics_bullet_framerate", "60");
+#endif
 }
 
 #ifdef SERVER
@@ -66,8 +73,6 @@ NSPhysicsEntity::Restore(string strKey, string strValue)
 }
 #endif
 
-#define ODE_MODE 1
-
 #ifdef CLIENT
 bool physics_supported(void)
 {
@@ -88,94 +93,57 @@ bool physics_supported(void)
 void
 NSPhysicsEntity::EvaluateEntity(void)
 {
-#if 0
-	origin[0] = rint(origin[0]);
-	origin[1] = rint(origin[1]);
-	origin[2] = rint(origin[2]);
-	angles[0] = rint(angles[0]);
-	angles[1] = rint(angles[1]);
-	angles[2] = rint(angles[2]);
-#endif
-
-	if (origin_x != origin_net_x) {
-		SetSendFlags(PHYENT_CHANGED_ORIGIN_X);
-	}
-	if (origin_y != origin_net_y) {
-		SetSendFlags(PHYENT_CHANGED_ORIGIN_Y);
-	}
-	if (origin_z != origin_net_z) {
-		SetSendFlags(PHYENT_CHANGED_ORIGIN_Z);
-	}
-	if (angles_x != angles_net_x) {
-		SetSendFlags(PHYENT_CHANGED_ANGLES_X);
-	}
-	if (angles_y != angles_net_y) {
-		SetSendFlags(PHYENT_CHANGED_ANGLES_Y);
-	}
-	if (angles_z != angles_net_z) {
-		SetSendFlags(PHYENT_CHANGED_ANGLES_Z);
-	}
-	if (ATTR_CHANGED(modelindex)) {
-		SetSendFlags(PHYENT_CHANGED_MODELINDEX);
-	}
-	if (ATTR_CHANGED(solid)) {
-		SetSendFlags(PHYENT_CHANGED_SOLID);
-	}
-	if (ATTR_CHANGED(movetype)) {
-		SetSendFlags(PHYENT_CHANGED_MOVETYPE);
-	}
-	if (ATTR_CHANGED(size)) {
-		SetSendFlags(PHYENT_CHANGED_SIZE);
-	}
-	if (ATTR_CHANGED(frame)) {
-		SetSendFlags(PHYENT_CHANGED_FRAME);
-	}
-	if (ATTR_CHANGED(skin)) {
-		SetSendFlags(PHYENT_CHANGED_SKIN);
-	}
-	if (ATTR_CHANGED(effects)) {
-		SetSendFlags(PHYENT_CHANGED_EFFECTS);
-	}
-	if (ATTR_CHANGED(m_iBody)) {
-		SetSendFlags(PHYENT_CHANGED_BODY);
-	}
-	if (ATTR_CHANGED(scale)) {
-		SetSendFlags(PHYENT_CHANGED_SCALE);
-	}
-	if (ATTR_CHANGED(velocity)) {
-		SetSendFlags(PHYENT_CHANGED_VELOCITY);
-	}
-
-	SAVE_STATE(origin)
-	SAVE_STATE(angles)
-	SAVE_STATE(modelindex)
-	SAVE_STATE(solid)
-	SAVE_STATE(movetype)
-	SAVE_STATE(size)
-	SAVE_STATE(frame)
-	SAVE_STATE(skin)
-	SAVE_STATE(effects)
-	SAVE_STATE(m_iBody)
-	SAVE_STATE(scale)
-	SAVE_STATE(velocity)
-
-	if (ATTR_CHANGED(m_iRenderMode)) {
-		SetSendFlags(PHYENT_CHANGED_RENDERMODE);
-	}
-	if (ATTR_CHANGED(m_iRenderFX)) {
-		SetSendFlags(PHYENT_CHANGED_RENDERMODE);
-	}
-
-	if (ATTR_CHANGED(m_vecRenderColor)) {
-		SetSendFlags(PHYENT_CHANGED_RENDERCOLOR);
-	}
-	if (ATTR_CHANGED(m_flRenderAmt)) {
-		SetSendFlags(PHYENT_CHANGED_RENDERAMT);
-	}
+	EVALUATE_VECTOR(origin, 0, RDENT_CHANGED_ORIGIN_X)
+	EVALUATE_VECTOR(origin, 1, RDENT_CHANGED_ORIGIN_Y)
+	EVALUATE_VECTOR(origin, 2, RDENT_CHANGED_ORIGIN_Z)
+	EVALUATE_VECTOR(angles, 0, RDENT_CHANGED_ANGLES_X)
+	EVALUATE_VECTOR(angles, 1, RDENT_CHANGED_ANGLES_Y)
+	EVALUATE_VECTOR(angles, 2, RDENT_CHANGED_ANGLES_Z)
+	EVALUATE_FIELD(modelindex, RDENT_CHANGED_MODELINDEX)
+	EVALUATE_FIELD(colormap, RDENT_CHANGED_MODELINDEX)
+	EVALUATE_FIELD(solid, RDENT_CHANGED_SOLIDMOVETYPE)
+	EVALUATE_FIELD(movetype, RDENT_CHANGED_SOLIDMOVETYPE)
+	EVALUATE_FIELD(flags, RDENT_CHANGED_FLAGS)
+	EVALUATE_FIELD(modelflags, RDENT_CHANGED_FLAGS)
+	EVALUATE_VECTOR(mins, 0, RDENT_CHANGED_SIZE)
+	EVALUATE_VECTOR(mins, 1, RDENT_CHANGED_SIZE)
+	EVALUATE_VECTOR(mins, 2, RDENT_CHANGED_SIZE)
+	EVALUATE_VECTOR(maxs, 0, RDENT_CHANGED_SIZE)
+	EVALUATE_VECTOR(maxs, 1, RDENT_CHANGED_SIZE)
+	EVALUATE_VECTOR(maxs, 2, RDENT_CHANGED_SIZE)
+	EVALUATE_FIELD(frame, RDENT_CHANGED_FRAME)
+	EVALUATE_FIELD(frame1time, RDENT_CHANGED_FRAME)
+	EVALUATE_FIELD(skin, RDENT_CHANGED_SKIN)
+	EVALUATE_FIELD(effects, RDENT_CHANGED_EFFECTS)
+	EVALUATE_FIELD(m_iBody, RDENT_CHANGED_BODY)
+	EVALUATE_FIELD(scale, RDENT_CHANGED_SCALE)
+	EVALUATE_VECTOR(m_vecAxialScale, 0, RDENT_CHANGED_SCALE)
+	EVALUATE_VECTOR(m_vecAxialScale, 1, RDENT_CHANGED_SCALE)
+	EVALUATE_VECTOR(m_vecAxialScale, 2, RDENT_CHANGED_SCALE)
+	EVALUATE_VECTOR(velocity, 0, RDENT_CHANGED_VELOCITY)
+	EVALUATE_VECTOR(velocity, 1, RDENT_CHANGED_VELOCITY)
+	EVALUATE_VECTOR(velocity, 2, RDENT_CHANGED_VELOCITY)
+	EVALUATE_VECTOR(avelocity, 0, RDENT_CHANGED_ANGULARVELOCITY)
+	EVALUATE_VECTOR(avelocity, 1, RDENT_CHANGED_ANGULARVELOCITY)
+	EVALUATE_VECTOR(avelocity, 2, RDENT_CHANGED_ANGULARVELOCITY)
+	EVALUATE_FIELD(m_iRenderMode, RDENT_CHANGED_RENDERMODE)
+	EVALUATE_FIELD(m_iRenderFX, RDENT_CHANGED_RENDERMODE)
+	EVALUATE_VECTOR(m_vecRenderColor, 0, RDENT_CHANGED_RENDERCOLOR)
+	EVALUATE_VECTOR(m_vecRenderColor, 1, RDENT_CHANGED_RENDERCOLOR)
+	EVALUATE_VECTOR(m_vecRenderColor, 2, RDENT_CHANGED_RENDERCOLOR)
+	EVALUATE_VECTOR(glowmod, 0, RDENT_CHANGED_RENDERCOLOR)
+	EVALUATE_VECTOR(glowmod, 1, RDENT_CHANGED_RENDERCOLOR)
+	EVALUATE_VECTOR(glowmod, 2, RDENT_CHANGED_RENDERCOLOR)
+	EVALUATE_FIELD(m_flRenderAmt, RDENT_CHANGED_RENDERAMT)
+	EVALUATE_FIELD(m_flBoneControl1, RDENT_CHANGED_CONTROLLER)
+	EVALUATE_FIELD(m_flBoneControl2, RDENT_CHANGED_CONTROLLER)
+	EVALUATE_FIELD(m_flBoneControl3, RDENT_CHANGED_CONTROLLER)
+	EVALUATE_FIELD(m_flBoneControl4, RDENT_CHANGED_CONTROLLER)
+	EVALUATE_FIELD(m_flBoneControl5, RDENT_CHANGED_CONTROLLER)
 }
 
 float
-NSPhysicsEntity::SendEntity(entity ePEnt, float fChanged)
+NSPhysicsEntity::SendEntity(entity ePEnt, float flChanged)
 {
 	if (!modelindex)
 		return (0);
@@ -185,123 +153,80 @@ NSPhysicsEntity::SendEntity(entity ePEnt, float fChanged)
 
 	WriteByte(MSG_ENTITY, ENT_PHYSICS);
 
-	/* newly popped into the PVS, sadly this is the only hacky way to check
-	 * for this right now. convince the engine maintainer to make this more sensible */
-	if (fChanged == 0xFFFFFF) {
-		/* check for defaults. if these are predictable fields, don't even bother
-		 * networking them! you're just wasting bandwidth. */
-		if (frame == 0)
-			fChanged &= ~PHYENT_CHANGED_FRAME;
-		if (skin == 0)
-			fChanged &= ~PHYENT_CHANGED_SKIN;
-		if (effects == 0)
-			fChanged &= ~PHYENT_CHANGED_EFFECTS;
-		if (m_iBody == 0)
-			fChanged &= ~PHYENT_CHANGED_BODY;
-		if (scale == 0.0 || scale == 1.0)
-			fChanged &= ~PHYENT_CHANGED_SCALE;
-		if (origin[0] == 0)
-			fChanged &= ~PHYENT_CHANGED_ORIGIN_X;
-		if (origin[1] == 0)
-			fChanged &= ~PHYENT_CHANGED_ORIGIN_Y;
-		if (origin[2] == 0)
-			fChanged &= ~PHYENT_CHANGED_ORIGIN_Z;
-		if (angles[0] == 0)
-			fChanged &= ~PHYENT_CHANGED_ANGLES_X;
-		if (angles[1] == 0)
-			fChanged &= ~PHYENT_CHANGED_ANGLES_Y;
-		if (angles[2] == 0)
-			fChanged &= ~PHYENT_CHANGED_ANGLES_Z;
-		if (velocity == [0,0,0])
-			fChanged &= ~PHYENT_CHANGED_VELOCITY;
-		if (mins == [0,0,0] && maxs == [0,0,0])
-			fChanged &= ~PHYENT_CHANGED_SIZE;
-		if (solid == SOLID_NOT)
-			fChanged &= ~PHYENT_CHANGED_SOLID;
-		if (movetype == MOVETYPE_NONE)
-			fChanged &= ~PHYENT_CHANGED_MOVETYPE;
-		if (m_iRenderMode == RM_NORMAL)
-			fChanged &= ~PHYENT_CHANGED_RENDERMODE;
+	/* optimisation */
+	{
+		/* we'll never network these if we aren't moving. */
+		if (movetype == MOVETYPE_NONE) {
+			flChanged &= ~RDENT_CHANGED_VELOCITY;
+			flChanged &= ~RDENT_CHANGED_ANGULARVELOCITY;
+		}
+
+		/* no rendermode means no extra fields */
+		if (m_iRenderMode == RM_NORMAL && m_iRenderFX == RFX_NORMAL) {
+			flChanged &= ~RDENT_CHANGED_RENDERMODE;
+			//flChanged &= ~RDENT_CHANGED_RENDERCOLOR; /* glowmod needs this */
+			flChanged &= ~RDENT_CHANGED_RENDERAMT;
+		}
+
+		if (m_bIsBrush == true) {
+			flChanged &= ~RDENT_CHANGED_FLAGS;
+			flChanged &= ~RDENT_CHANGED_BODY;
+			flChanged &= ~RDENT_CHANGED_SCALE;
+			flChanged &= ~RDENT_CHANGED_CONTROLLER;
+		}
 	}
 
 	/* broadcast how much data is expected to be read */
-	WriteFloat(MSG_ENTITY, fChanged);
+	WriteFloat(MSG_ENTITY, flChanged);
 
-	/* really trying to get our moneys worth with 23 bits of mantissa */
-	if (fChanged & PHYENT_CHANGED_ORIGIN_X) {
-		WriteCoord(MSG_ENTITY, origin[0]);
-	}
-	if (fChanged & PHYENT_CHANGED_ORIGIN_Y) {
-		WriteCoord(MSG_ENTITY, origin[1]);
-	}
-	if (fChanged & PHYENT_CHANGED_ORIGIN_Z) {
-		WriteCoord(MSG_ENTITY, origin[2]);
-	}
-
-	if (fChanged & PHYENT_CHANGED_ANGLES_X) {
-		WriteShort(MSG_ENTITY, angles[0] * 32767 / 360);
-	}
-	if (fChanged & PHYENT_CHANGED_ANGLES_Y) {
-		WriteShort(MSG_ENTITY, angles[1] * 32767 / 360);
-	}
-	if (fChanged & PHYENT_CHANGED_ANGLES_Z) {
-		WriteShort(MSG_ENTITY, angles[2] * 32767 / 360);
-	}
-	if (fChanged & PHYENT_CHANGED_MODELINDEX) {
-		WriteShort(MSG_ENTITY, modelindex);
-	}
-	if (fChanged & PHYENT_CHANGED_SOLID) {
-		WriteByte(MSG_ENTITY, solid);
-	}
-	if (fChanged & PHYENT_CHANGED_MOVETYPE) {
-		WriteByte(MSG_ENTITY, movetype);
-	}
-	if (fChanged & PHYENT_CHANGED_SIZE) {
-		WriteCoord(MSG_ENTITY, mins[0]);
-		WriteCoord(MSG_ENTITY, mins[1]);
-		WriteCoord(MSG_ENTITY, mins[2]);
-		WriteCoord(MSG_ENTITY, maxs[0]);
-		WriteCoord(MSG_ENTITY, maxs[1]);
-		WriteCoord(MSG_ENTITY, maxs[2]);
-	}
-	if (fChanged & PHYENT_CHANGED_FRAME) {
-		WriteByte(MSG_ENTITY, frame);
-		WriteByte(MSG_ENTITY, frame1time);
-	}
-	if (fChanged & PHYENT_CHANGED_SKIN) {
-		WriteByte(MSG_ENTITY, skin + 128);
-	}
-	if (fChanged & PHYENT_CHANGED_EFFECTS) {
-		WriteFloat(MSG_ENTITY, effects);
-	}
-	if (fChanged & PHYENT_CHANGED_BODY) {
-		WriteByte(MSG_ENTITY, m_iBody);
-	}
-	if (fChanged & PHYENT_CHANGED_SCALE) {
-		WriteFloat(MSG_ENTITY, scale);
-	}
-	if (fChanged & PHYENT_CHANGED_VELOCITY) {
-		WriteFloat(MSG_ENTITY, velocity[0]);
-		WriteFloat(MSG_ENTITY, velocity[1]);
-		WriteFloat(MSG_ENTITY, velocity[2]);
-	}
-
-	if (fChanged & PHYENT_CHANGED_RENDERMODE) {
-		WriteByte(MSG_ENTITY, m_iRenderMode);
-		WriteByte(MSG_ENTITY, m_iRenderFX);
-	}
-
-	if (fChanged & PHYENT_CHANGED_RENDERCOLOR) {
-		WriteFloat(MSG_ENTITY, m_vecRenderColor[0]);
-		WriteFloat(MSG_ENTITY, m_vecRenderColor[1]);
-		WriteFloat(MSG_ENTITY, m_vecRenderColor[2]);
-		WriteFloat(MSG_ENTITY, glowmod[0]);
-		WriteFloat(MSG_ENTITY, glowmod[1]);
-		WriteFloat(MSG_ENTITY, glowmod[2]);
-	}
-	if (fChanged & PHYENT_CHANGED_RENDERAMT) {
-		WriteFloat(MSG_ENTITY, m_flRenderAmt);
-	}
+	SENDENTITY_COORD(origin[0], RDENT_CHANGED_ORIGIN_X)
+	SENDENTITY_COORD(origin[1], RDENT_CHANGED_ORIGIN_Y)
+	SENDENTITY_COORD(origin[2], RDENT_CHANGED_ORIGIN_Z)
+	SENDENTITY_ANGLE(angles[0], RDENT_CHANGED_ANGLES_X)
+	SENDENTITY_ANGLE(angles[1], RDENT_CHANGED_ANGLES_Y)
+	SENDENTITY_ANGLE(angles[2], RDENT_CHANGED_ANGLES_Z)
+	SENDENTITY_SHORT(modelindex, RDENT_CHANGED_MODELINDEX)
+	SENDENTITY_BYTE(colormap, RDENT_CHANGED_MODELINDEX)
+	SENDENTITY_BYTE(solid, RDENT_CHANGED_SOLIDMOVETYPE)
+	SENDENTITY_BYTE(movetype, RDENT_CHANGED_SOLIDMOVETYPE)
+	SENDENTITY_INT(flags, RDENT_CHANGED_FLAGS)
+	SENDENTITY_INT(modelflags, RDENT_CHANGED_FLAGS)
+	SENDENTITY_COORD(mins[0], RDENT_CHANGED_SIZE)
+	SENDENTITY_COORD(mins[1], RDENT_CHANGED_SIZE)
+	SENDENTITY_COORD(mins[2], RDENT_CHANGED_SIZE)
+	SENDENTITY_COORD(maxs[0], RDENT_CHANGED_SIZE)
+	SENDENTITY_COORD(maxs[1], RDENT_CHANGED_SIZE)
+	SENDENTITY_COORD(maxs[2], RDENT_CHANGED_SIZE)
+	SENDENTITY_BYTE(frame, RDENT_CHANGED_FRAME)
+	SENDENTITY_FLOAT(frame1time, RDENT_CHANGED_FRAME)
+	SENDENTITY_FLOAT(skin, RDENT_CHANGED_SKIN)
+	SENDENTITY_FLOAT(effects, RDENT_CHANGED_EFFECTS)
+	SENDENTITY_SHORT(m_iBody, RDENT_CHANGED_BODY)
+	SENDENTITY_FLOAT(scale, RDENT_CHANGED_SCALE)
+	SENDENTITY_FLOAT(m_vecAxialScale[0], RDENT_CHANGED_SCALE)
+	SENDENTITY_FLOAT(m_vecAxialScale[1], RDENT_CHANGED_SCALE)
+	SENDENTITY_FLOAT(m_vecAxialScale[2], RDENT_CHANGED_SCALE)
+	SENDENTITY_COORD(velocity[0], RDENT_CHANGED_VELOCITY)
+	SENDENTITY_COORD(velocity[1], RDENT_CHANGED_VELOCITY)
+	SENDENTITY_COORD(velocity[2], RDENT_CHANGED_VELOCITY)
+	SENDENTITY_COORD(avelocity[0], RDENT_CHANGED_ANGULARVELOCITY)
+	SENDENTITY_COORD(avelocity[1], RDENT_CHANGED_ANGULARVELOCITY)
+	SENDENTITY_COORD(avelocity[2], RDENT_CHANGED_ANGULARVELOCITY)
+	SENDENTITY_BYTE(m_iRenderMode, RDENT_CHANGED_RENDERMODE)
+	SENDENTITY_BYTE(m_iRenderFX, RDENT_CHANGED_RENDERMODE)
+	SENDENTITY_ANGLE(m_vecRenderColor[0], RDENT_CHANGED_RENDERCOLOR)
+	SENDENTITY_ANGLE(m_vecRenderColor[1], RDENT_CHANGED_RENDERCOLOR)
+	SENDENTITY_ANGLE(m_vecRenderColor[2], RDENT_CHANGED_RENDERCOLOR)
+	/* these need more precision for shader hacks... */
+	SENDENTITY_FLOAT(glowmod[0], RDENT_CHANGED_RENDERCOLOR)
+	SENDENTITY_FLOAT(glowmod[1], RDENT_CHANGED_RENDERCOLOR)
+	SENDENTITY_FLOAT(glowmod[2], RDENT_CHANGED_RENDERCOLOR)
+	SENDENTITY_ANGLE(m_flRenderAmt, RDENT_CHANGED_RENDERAMT)
+	SENDENTITY_ANGLE(m_flBoneControl1, RDENT_CHANGED_CONTROLLER)
+	SENDENTITY_ANGLE(m_flBoneControl2, RDENT_CHANGED_CONTROLLER)
+	SENDENTITY_ANGLE(m_flBoneControl3, RDENT_CHANGED_CONTROLLER)
+	SENDENTITY_ANGLE(m_flBoneControl4, RDENT_CHANGED_CONTROLLER)
+	SENDENTITY_ANGLE(m_flBoneControl5, RDENT_CHANGED_CONTROLLER)
 
 	return (1);
 }
@@ -315,98 +240,65 @@ NSPhysicsEntity::ReceiveEntity
 void
 NSPhysicsEntity::ReceiveEntity(float flNew, float flChanged)
 {
-	if (flChanged & PHYENT_CHANGED_ORIGIN_X) {
-		origin[0] = readcoord();
-	}
-	if (flChanged & PHYENT_CHANGED_ORIGIN_Y) {
-		origin[1] = readcoord();
-	}
-	if (flChanged & PHYENT_CHANGED_ORIGIN_Z) {
-		origin[2] = readcoord();
-	}
-	if (flChanged & PHYENT_CHANGED_ANGLES_X) {
-		angles[0] = readshort() / (32767 / 360);
-	}
-	if (flChanged & PHYENT_CHANGED_ANGLES_Y) {
-		angles[1] = readshort() / (32767 / 360);
-	}
-	if (flChanged & PHYENT_CHANGED_ANGLES_Z) {
-		angles[2] = readshort() / (32767 / 360);
-	}
-	if (flChanged & PHYENT_CHANGED_MODELINDEX) {
-		setmodelindex(this, readshort());
-	}
-	if (flChanged & PHYENT_CHANGED_SOLID) {
-		solid = readbyte();
-	}
-	if (flChanged & PHYENT_CHANGED_MOVETYPE) {
-		movetype = readbyte();
-
-		if (movetype == MOVETYPE_PHYSICS) {
-			movetype = MOVETYPE_NONE;
-		}
-	}
-	if (flChanged & PHYENT_CHANGED_SIZE) {
-		mins[0] = readcoord();
-		mins[1] = readcoord();
-		mins[2] = readcoord();
-		maxs[0] = readcoord();
-		maxs[1] = readcoord();
-		maxs[2] = readcoord();
-	}
-	if (flChanged & PHYENT_CHANGED_FRAME) {
-		frame = readbyte();
-		frame1time =
-		frame2time = readbyte();
-	}
-	if (flChanged & PHYENT_CHANGED_SKIN) {
-		skin = readbyte() - 128;
-	}
-	if (flChanged & PHYENT_CHANGED_EFFECTS) {
-		effects = readfloat();
-	}
-	if (flChanged & PHYENT_CHANGED_BODY) {
-		m_iBody = readbyte();
-		setcustomskin(this, "", sprintf("geomset 0 %i\ngeomset 1 %i\n", m_iBody, m_iBody));
-	}
-	if (flChanged & PHYENT_CHANGED_SCALE) {
-		scale = readfloat();
-	}
-	if (flChanged & PHYENT_CHANGED_VELOCITY) {
-		velocity[0] = readfloat();
-		velocity[1] = readfloat();
-		velocity[2] = readfloat();
-	}
-
-	if (flChanged & PHYENT_CHANGED_RENDERMODE) {
-		m_iRenderMode = readbyte();
-		m_iRenderFX = readbyte();
-	}
-	if (flChanged & PHYENT_CHANGED_RENDERCOLOR) {
-		m_vecRenderColor[0] = readfloat();
-		m_vecRenderColor[1] = readfloat();
-		m_vecRenderColor[2] = readfloat();
-		glowmod[0] = readfloat();
-		glowmod[1] = readfloat();
-		glowmod[2] = readfloat();
-	}
-	if (flChanged & PHYENT_CHANGED_RENDERAMT) {
-		m_flRenderAmt = readfloat();
-	}
-
-	if (modelindex) {
-		drawmask = MASK_ENGINE;
-	} else {
-		drawmask = 0;
-	}
+	READENTITY_COORD(origin[0], RDENT_CHANGED_ORIGIN_X)
+	READENTITY_COORD(origin[1], RDENT_CHANGED_ORIGIN_Y)
+	READENTITY_COORD(origin[2], RDENT_CHANGED_ORIGIN_Z)
+	READENTITY_ANGLE(angles[0], RDENT_CHANGED_ANGLES_X)
+	READENTITY_ANGLE(angles[1], RDENT_CHANGED_ANGLES_Y)
+	READENTITY_ANGLE(angles[2], RDENT_CHANGED_ANGLES_Z)
+	READENTITY_SHORT(modelindex, RDENT_CHANGED_MODELINDEX)
+	READENTITY_BYTE(colormap, RDENT_CHANGED_MODELINDEX)
+	READENTITY_BYTE(solid, RDENT_CHANGED_SOLIDMOVETYPE)
+	READENTITY_BYTE(movetype, RDENT_CHANGED_SOLIDMOVETYPE)
+	READENTITY_INT(flags, RDENT_CHANGED_FLAGS)
+	READENTITY_INT(modelflags, RDENT_CHANGED_FLAGS)
+	READENTITY_COORD(mins[0], RDENT_CHANGED_SIZE)
+	READENTITY_COORD(mins[1], RDENT_CHANGED_SIZE)
+	READENTITY_COORD(mins[2], RDENT_CHANGED_SIZE)
+	READENTITY_COORD(maxs[0], RDENT_CHANGED_SIZE)
+	READENTITY_COORD(maxs[1], RDENT_CHANGED_SIZE)
+	READENTITY_COORD(maxs[2], RDENT_CHANGED_SIZE)
+	READENTITY_BYTE(frame, RDENT_CHANGED_FRAME)
+	READENTITY_FLOAT(frame1time, RDENT_CHANGED_FRAME)
+	READENTITY_FLOAT(skin, RDENT_CHANGED_SKIN)
+	READENTITY_FLOAT(effects, RDENT_CHANGED_EFFECTS)
+	READENTITY_SHORT(m_iBody, RDENT_CHANGED_BODY)
+	READENTITY_FLOAT(scale, RDENT_CHANGED_SCALE)
+	READENTITY_FLOAT(m_vecAxialScale[0], RDENT_CHANGED_SCALE)
+	READENTITY_FLOAT(m_vecAxialScale[1], RDENT_CHANGED_SCALE)
+	READENTITY_FLOAT(m_vecAxialScale[2], RDENT_CHANGED_SCALE)
+	READENTITY_COORD(velocity[0], RDENT_CHANGED_VELOCITY)
+	READENTITY_COORD(velocity[1], RDENT_CHANGED_VELOCITY)
+	READENTITY_COORD(velocity[2], RDENT_CHANGED_VELOCITY)
+	READENTITY_COORD(avelocity[0], RDENT_CHANGED_ANGULARVELOCITY)
+	READENTITY_COORD(avelocity[1], RDENT_CHANGED_ANGULARVELOCITY)
+	READENTITY_COORD(avelocity[2], RDENT_CHANGED_ANGULARVELOCITY)
+	READENTITY_BYTE(m_iRenderMode, RDENT_CHANGED_RENDERMODE)
+	READENTITY_BYTE(m_iRenderFX, RDENT_CHANGED_RENDERMODE)
+	READENTITY_ANGLE(m_vecRenderColor[0], RDENT_CHANGED_RENDERCOLOR)
+	READENTITY_ANGLE(m_vecRenderColor[1], RDENT_CHANGED_RENDERCOLOR)
+	READENTITY_ANGLE(m_vecRenderColor[2], RDENT_CHANGED_RENDERCOLOR)
+	/* these need more precision for shader hacks... */
+	READENTITY_FLOAT(glowmod[0], RDENT_CHANGED_RENDERCOLOR)
+	READENTITY_FLOAT(glowmod[1], RDENT_CHANGED_RENDERCOLOR)
+	READENTITY_FLOAT(glowmod[2], RDENT_CHANGED_RENDERCOLOR)
+	READENTITY_ANGLE(m_flRenderAmt, RDENT_CHANGED_RENDERAMT)
+	READENTITY_ANGLE(m_flBoneControl1, RDENT_CHANGED_CONTROLLER)
+	READENTITY_ANGLE(m_flBoneControl2, RDENT_CHANGED_CONTROLLER)
+	READENTITY_ANGLE(m_flBoneControl3, RDENT_CHANGED_CONTROLLER)
+	READENTITY_ANGLE(m_flBoneControl4, RDENT_CHANGED_CONTROLLER)
+	READENTITY_ANGLE(m_flBoneControl5, RDENT_CHANGED_CONTROLLER)
 
 	if (scale == 0.0)
 		scale = 1.0f;
 
-	if (flChanged & PHYENT_CHANGED_SIZE)
+	if (flChanged & RDENT_CHANGED_SIZE)
 		setsize(this, mins * scale, maxs * scale);
+	if (flChanged & RDENT_CHANGED_BODY)
+		_UpdateGeomset();
 
 	setorigin(this, origin);
+	movetype = MOVETYPE_NONE;
 }
 #endif
 
@@ -669,7 +561,6 @@ NSPhysicsEntity::Respawn(void)
 	SetMovetype(MOVETYPE_PHYSICS);
 	SetSolid(SOLID_PHYSICS_BOX + m_iShape);
 	SetModel(GetSpawnModel());
-	geomtype = GEOMTYPE_TRIMESH;
 
 #ifdef SERVER
 	SetTakedamage(DAMAGE_YES);
@@ -685,6 +576,7 @@ NSPhysicsEntity::Respawn(void)
 	SetMass(1.0f);
 	SetFriction(1.0f);
 	SetBounceFactor(0.1f);
+	geomtype = GEOMTYPE_TRIMESH;
 #endif
 
 	SetOrigin(GetSpawnOrigin());
