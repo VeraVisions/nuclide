@@ -34,39 +34,80 @@ This entity was introduced in Quake II (1997).
 class
 func_areaportal:NSEntity
 {
-	int m_iPortalState;
-	int m_iStartOpen;
+	bool m_bPortalState;
+	bool m_bStartOpen;
+	int m_iPortalNumber; /* Source Engine only */
+	bool m_bSourcePortal;
 
 public:
 	void func_areaportal(void);
 	
 	/* overrides */
-	virtual void Respawn(void);
+	virtual void Spawned(void);
 	virtual void SpawnKey(string,string);
 	virtual void Trigger(entity, triggermode_t);
 	virtual void Input(entity,string,string);
+	virtual void Save(float);
+	virtual void Restore(string, string);
 	
-	virtual void PortalOpen(void);
-	virtual void PortalClose(void);
-
+	nonvirtual void PortalOpen(void);
+	nonvirtual void PortalClose(void);
 };
 
 void
 func_areaportal::func_areaportal(void)
 {
-	m_iPortalState = 0i;
-	m_iStartOpen = 0i;
+	m_bPortalState = true;
+	m_bStartOpen = false;
+	m_iPortalNumber = 0i;
+	m_bSourcePortal = false;
 }
 
 void
-func_areaportal::Respawn(void)
+func_areaportal::Save(float handle)
 {
+	super::Save(handle);
+	SaveBool(handle, "m_bPortalState", m_bPortalState);
+	SaveBool(handle, "m_bStartOpen", m_bStartOpen);
+	SaveInt(handle, "m_iPortalNumber", m_iPortalNumber);
+	SaveBool(handle, "m_bSourcePortal", m_bSourcePortal);
+}
+
+void
+func_areaportal::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "m_bPortalState":
+		m_bPortalState = ReadBool(strValue);
+		break;
+	case "m_bStartOpen":
+		m_bStartOpen = ReadBool(strValue);
+		break;
+	case "m_iPortalNumber":
+		m_iPortalNumber = ReadInt(strValue);
+		break;
+	case "m_bSourcePortal":
+		m_bSourcePortal = ReadBool(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
+
+void
+func_areaportal::Spawned(void)
+{
+	super::Spawned();
+
 	SetModel(GetSpawnModel());
 	SetOrigin(GetSpawnOrigin());
 	Hide();
 	SetSolid(SOLID_NOT);
 
-	if (!m_iStartOpen)
+	if (m_bSourcePortal)
+		style = (float)m_iPortalNumber;
+
+	if (m_bStartOpen == false)
 		PortalClose();
 	else
 		PortalOpen();
@@ -75,11 +116,13 @@ func_areaportal::Respawn(void)
 void
 func_areaportal::SpawnKey(string strKey, string strValue)
 {
-
 	switch (strKey) {
 	case "StartOpen":
-		m_iStartOpen = stoi(strValue);
+		m_bStartOpen = ReadBool(strValue);
 		break;
+	case "portalnumber":
+		m_iPortalNumber = ReadInt(strValue);
+		m_bSourcePortal = true;
 	default:
 		super::SpawnKey(strKey, strValue);
 	}
@@ -93,7 +136,7 @@ func_areaportal::Trigger(entity act, triggermode_t state)
 	} else if (state == TRIG_ON) {
 		PortalOpen();
 	} else {
-		if (m_iPortalState == 1)
+		if (m_bPortalState == true)
 			PortalClose();
 		else
 			PortalOpen();
@@ -104,9 +147,11 @@ void
 func_areaportal::Input(entity eAct, string strInput, string strData)
 {
 	switch (strInput) {
+	case "TurnOn":
 	case "Open":
 		Trigger(eAct, TRIG_ON);
 		break;
+	case "TurnOff":
 	case "Close":
 		Trigger(eAct, TRIG_OFF);
 		break;
@@ -121,10 +166,7 @@ func_areaportal::Input(entity eAct, string strInput, string strData)
 void
 func_areaportal::PortalOpen(void)
 {
-	if (m_iPortalState == 1)
-		return;
-
-	m_iPortalState = 1;
+	m_bPortalState = true;
 	setorigin(this, origin);
 	openportal(this, AREAPORTAL_OPEN);
 }
@@ -132,10 +174,7 @@ func_areaportal::PortalOpen(void)
 void
 func_areaportal::PortalClose(void)
 {
-	if (m_iPortalState == 0)
-		return;
-
-	m_iPortalState = 0;
+	m_bPortalState = false;
 	setorigin(this, origin);
 	openportal(this, AREAPORTAL_CLOSED);
 }
