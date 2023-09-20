@@ -6,7 +6,6 @@
 decals.h
 client/defs.h
 client/env_cubemap.qc
-client/env_glow.qc
 client/env_sun.qc
 client/env_sound.qc
 client/env_soundscape.qc

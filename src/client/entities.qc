@@ -20,45 +20,45 @@ Entity_EntityUpdate(float type, float new)
 {
 	switch (type) {
 	case ENT_ENTITY:
-		NSEntity_ReadEntity(new);
+		NSENTITY_READENTITY(NSEntity, new)
 		break;
 	case ENT_ENTITYRENDERABLE:
-		NSRenderableEntity_ReadEntity(new);
+		NSENTITY_READENTITY(NSRenderableEntity, new)
 		break;
 	case ENT_SURFPROP:
-		NSSurfacePropEntity_ReadEntity(new);
+		NSENTITY_READENTITY(NSSurfacePropEntity, new)
 		break;
 	case ENT_BEAM:
-		env_beam_ReadEntity(new);
+		NSENTITY_READENTITY(env_beam, new)
 		break;
 	case ENT_LASER:
-		env_laser_ReadEntity(new);
+		NSENTITY_READENTITY(env_laser, new)
 		break;
 	case ENT_PHYSICS:
-		NSPhysicsEntity_ReadEntity(new);
+		NSENTITY_READENTITY(NSPhysicsEntity, new)
 		break;
 	case ENT_MONSTER:
-		NSMonster_ReadEntity(new);
+		NSENTITY_READENTITY(NSMonster, new)
 		self.customphysics = Empty;
 		break;
 	case ENT_TALKMONSTER:
-		NSTalkMonster_ReadEntity(new);
+		NSENTITY_READENTITY(NSTalkMonster, new)
 		self.customphysics = Empty;
 		break;
 	case ENT_VEHICLE:
-		basevehicle_readentity(new);
+		NSENTITY_READENTITY(NSVehicle, new)
 		break;
 	case ENT_PORTAL:
-		NSPortal_ReadEntity(new);
+		NSENTITY_READENTITY(NSPortal, new)
 		break;
 	case ENT_VEH_BRUSH:
-		func_vehicle_readentity(new);
+		NSENTITY_READENTITY(func_vehicle, new)
 		break;
 	case ENT_VEH_TANKMORTAR:
-		func_tankmortar_readentity(new);
+		NSENTITY_READENTITY(func_tankmortar, new)
 		break;
 	case ENT_VEH_4WHEEL:
-		prop_vehicle_driveable_readentity(new);
+		NSENTITY_READENTITY(prop_vehicle_driveable, new)
 		break;
 	case ENT_PLAYER:
 		player pl = (player)self;
@@ -78,11 +78,10 @@ Entity_EntityUpdate(float type, float new)
 		Spectator_ReadEntity(new);
 		break;
 	case ENT_SPRITE:
-		env_sprite spr = (env_sprite)self;
-		if (new) {
-			spawnfunc_env_sprite();
-		}
-		spr.ReceiveEntity(new, readfloat());
+		NSENTITY_READENTITY(env_sprite, new)
+		break;
+	case ENT_GLOW:
+		NSENTITY_READENTITY(env_glow, new)
 		break;
 	case ENT_SPRAY:
 		Spray_Parse();
@@ -91,68 +90,52 @@ Entity_EntityUpdate(float type, float new)
 		Decal_Parse();
 		break;
 	case ENT_AMBIENTSOUND:
-		ambient_generic_ReadEntity(new);
+		NSENTITY_READENTITY(ambient_generic, new)
 		break;
 	case ENT_OLDCAMERA:
-		trigger_camera tc = (trigger_camera)self;
-		if (new) {
-			spawnfunc_trigger_camera();
-		}
-		tc.ReceiveEntity(new, readfloat());
+		NSENTITY_READENTITY(trigger_camera, new)
 		break;
 	case ENT_MONITOR:
-		func_monitor fc = (func_monitor)self;
-		if (new) {
-			spawnfunc_func_monitor();
-		}
-		fc.ReceiveEntity(new, readfloat());
+		NSENTITY_READENTITY(func_monitor, new)
 		break;
 	case ENT_DLIGHT:
-		light_dynamic_ReadEntity(new);
+		NSENTITY_READENTITY(light_dynamic, new)
 		break;
 	case ENT_PROJECTEDTEXTURE:
-		env_projectedtexture ept = (env_projectedtexture)self;
-		if (new) {
-			spawnfunc_env_projectedtexture();
-		}
-		ept.ReceiveEntity(new, readfloat());
+		NSENTITY_READENTITY(env_projectedtexture, new)
 		break;
 	case ENT_SPOTLIGHT:
-		point_spotlight_ReadEntity(new);
+		NSENTITY_READENTITY(point_spotlight, new)
 		break;
 	case ENT_FOG:
-		env_fog_readentity(new);
+		NSENTITY_READENTITY(env_fog, new)
 		break;
 	case ENT_STEAM:
-		env_steam_ReadEntity(new);
+		NSENTITY_READENTITY(env_steam, new)
 		break;
 	case ENT_FOGCONTROLLER:
-		env_fog_controller_readentity(new);
+		NSENTITY_READENTITY(env_fog_controller, new)
 		break;
 	case ENT_PARTSYSTEM:
-		info_particle_system ips = (info_particle_system)self;
-		if (new) {
-			spawnfunc_info_particle_system();
-		}
-		ips.ReceiveEntity(new, readfloat());
+		NSENTITY_READENTITY(info_particle_system, new)
 		break;
 	case ENT_PROPROPE:
-		prop_rope_readentity(new);
+		NSENTITY_READENTITY(prop_rope, new)
 		break;
 	case ENT_BUBBLES:
-		env_bubbles_ReadEntity(new);
+		NSENTITY_READENTITY(env_bubbles, new)
 		break;
 	case ENT_CONVEYOR:
-		func_conveyor_ReadEntity(new);
+		NSENTITY_READENTITY(func_conveyor, new)
 		break;
 	case ENT_WAYPOINT:
-		info_waypoint_ReadEntity(new);
+		NSENTITY_READENTITY(info_waypoint, new)
 		break;
 	case ENT_PUSH:
-		trigger_push_ReadEntity(new);
+		NSENTITY_READENTITY(trigger_push, new)
 		break;
 	case ENT_ENTITYPROJECTILE:
-		NSProjectile_ReadEntity(new);
+		NSENTITY_READENTITY(NSProjectile, new)
 		break;
 	default:
 			//error(sprintf("Unknown entity type update received. (%d)\n", t));

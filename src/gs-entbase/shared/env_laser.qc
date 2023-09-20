@@ -402,17 +402,3 @@ env_laser::predraw(void)
 	return (PREDRAW_NEXT);
 }
 #endif
-
-#ifdef CLIENT
-void
-env_laser_ReadEntity(float isnew)
-{
-	env_laser laser = (env_laser)self;
-	float changedflags = readfloat();
-
-	if (isnew)
-		spawnfunc_env_laser();
-
-	laser.ReceiveEntity(isnew, changedflags);
-}
-#endif

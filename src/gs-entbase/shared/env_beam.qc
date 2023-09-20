@@ -513,17 +513,3 @@ env_beam::predraw(void)
 	return (PREDRAW_NEXT);
 }
 #endif
-
-#ifdef CLIENT
-void
-env_beam_ReadEntity(float isnew)
-{
-	env_beam beam = (env_beam)self;
-	float changedflags = readfloat();
-
-	if (isnew)
-		spawnfunc_env_beam();
-
-	beam.ReceiveEntity(isnew, changedflags);
-}
-#endif

@@ -482,17 +482,3 @@ env_steam::predraw(void)
 	return (PREDRAW_NEXT);
 }
 #endif
-
-#ifdef CLIENT
-void
-env_steam_ReadEntity(float isnew)
-{
-	env_steam laser = (env_steam)self;
-	float changedflags = readfloat();
-
-	if (isnew)
-		spawnfunc_env_steam();
-
-	laser.ReceiveEntity(isnew, changedflags);
-}
-#endif

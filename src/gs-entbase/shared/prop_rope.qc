@@ -308,18 +308,3 @@ prop_rope::prop_rope(void)
 	drawmask = MASK_ENGINE;
 #endif
 }
-
-
-#ifdef CLIENT
-void
-prop_rope_readentity(float isnew)
-{
-	prop_rope rope = (prop_rope)self;
-	float flags = readfloat();
-
-	if (isnew)
-		spawnfunc_prop_rope();
-
-	rope.ReceiveEntity(flags, isnew);
-}
-#endif

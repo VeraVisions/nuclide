@@ -50,8 +50,9 @@ NSTrigger::UseTargets(entity act, int state, float fDelay)
 		remove(self);
 	}
 
-	if (!target || target == "")
-		return;
+	if not (m_strKillTarget)
+		if not (target)
+			return;
 
 	if (fDelay > 0.0f) {
 		NSLog("^2%s::^3UseTargets^7: Triggering `%s`", 
@@ -82,9 +83,11 @@ NSTrigger::UseTargets(entity act, int state, float fDelay)
 		}
 
 		if (m_strKillTarget && m_strKillTarget != "") {
-			entity eKill = find(world, ::targetname, m_strKillTarget);
+			NSEntity eKill = (NSEntity)find(world, ::targetname, m_strKillTarget);
+			NSLog("^2%s::^3UseTargets^7: Killing `%s`", 
+				classname, m_strKillTarget);
 			if (eKill) {
-				remove(eKill);
+				eKill.Destroy();
 			}
 		}
 	}

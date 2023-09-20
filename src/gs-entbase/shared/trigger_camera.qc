@@ -87,8 +87,6 @@ trigger_camera::ReceiveEntity(float flNew, float flFlags)
 {
 	float flWait = 0.0f;
 
-	print(sprintf("camera update %d %d %x\n", entnum, flNew, flFlags));
-
 	if (flFlags & OCAMFL_CHANGED_ORIGIN) {
 		origin[0] = readcoord();
 		origin[1] = readcoord();
@@ -234,7 +232,7 @@ trigger_camera::GoToTarget(void)
 	NSLog("trigger_camera (%s): Moving to path_corner %S within %f secs", targetname, target, flTravelTime);
 
 	if (!flTravelTime) {
-		print("^1trigger_camera::^3GoToTarget^7: Distance short, going next\n");
+		NSEntWarning("distance too short, going to next");
 		NextPath();
 		return;
 	}
@@ -264,7 +262,7 @@ trigger_camera::NextPath(void)
 
 	/* warp next frame */
 	if (eNode.HasSpawnFlags(PC_TELEPORT)) {
-		print(sprintf("^1trigger_camera::^3NextPath^7: Node %s wants %s to teleport\n", eNode.targetname, targetname));
+		NSLog("^1trigger_camera::^3NextPath^7: Node %s wants %s to teleport\n", eNode.targetname, targetname);
 		ScheduleThink(NextPath, 0.0f);
 		return;
 	}
@@ -290,7 +288,7 @@ trigger_camera::Trigger(entity act, triggermode_t state)
 		act = find(world, ::classname, "player");
 	}
 
-	print(sprintf("trigger_camera for %S is now %S\n", act.netname, targetname));
+	NSLog("trigger_camera for %S is now %S\n", act.netname, targetname);
 
 	/* kill the other cams the player may be attached to */
 	for (trigger_camera cam = __NULL__; (cam = (trigger_camera)find(cam, ::classname, "trigger_camera"));) {

@@ -10,6 +10,7 @@ shared/env_beam.qc
 shared/env_sprite.qc
 shared/env_bubbles.qc
 shared/env_laser.qc
+shared/env_glow.qc
 shared/env_projectedtexture.qc
 shared/env_fog.qc
 shared/env_fog_controller.qc

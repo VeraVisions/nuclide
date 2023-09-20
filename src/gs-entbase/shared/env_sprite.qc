@@ -66,8 +66,8 @@ private:
 	int m_iToggled;
 	float m_flEffects;
 
-	PREDICTED_STRING(m_strMaterial)
-	PREDICTED_FLOAT(m_flFramerate)
+	NETWORKED_STRING(m_strMaterial)
+	NETWORKED_FLOAT(m_flFramerate)
 
 #ifdef CLIENT
 	int m_iMaxFrame;
@@ -96,48 +96,36 @@ public:
 #endif
 };
 
+void
+env_sprite::env_sprite(void)
+{
+	NETWORKED_DEFAULT(m_strMaterial, __NULL__)
+	NETWORKED_DEFAULT(m_flFramerate, 10.0f)
+	NETWORKED_DEFAULT(scale, 1.0f)
+	m_iIsShader = false;
+}
+
 #ifdef SERVER
 void
 env_sprite::EvaluateEntity(void)
 {
-	if (ATTR_CHANGED(origin)) {
-		SetSendFlags(SPRITE_CHANGED_ORIGIN);
-	}
-	if (ATTR_CHANGED(modelindex)) {
-		SetSendFlags(SPRITE_CHANGED_MODELINDEX);
-	}
-	if (ATTR_CHANGED(m_flFramerate)) {
-		SetSendFlags(SPRITE_CHANGED_FRAMERATE);
-	}
-	if (ATTR_CHANGED(scale)) {
-		SetSendFlags(SPRITE_CHANGED_SCALE);
-	}
-	if (ATTR_CHANGED(m_iRenderMode)) {
-		SetSendFlags(SPRITE_CHANGED_RENDERMODE);
-	}
-	if (ATTR_CHANGED(m_vecRenderColor)) {
-		SetSendFlags(SPRITE_CHANGED_RENDERCOLOR);
-	}
-	if (ATTR_CHANGED(m_flRenderAmt)) {
-		SetSendFlags(SPRITE_CHANGED_RENDERAMT);
-	}
-	if (ATTR_CHANGED(m_strMaterial)) {
-		SetSendFlags(SPRITE_CHANGED_MATERIAL);
-	}
-
-	SAVE_STATE(origin)
-	SAVE_STATE(modelindex)
-	SAVE_STATE(m_flFramerate)
-	SAVE_STATE(scale)
-	SAVE_STATE(m_iRenderMode)
-	SAVE_STATE(m_iRenderFX)
-	SAVE_STATE(m_vecRenderColor)
-	SAVE_STATE(m_flRenderAmt)
-	SAVE_STATE(m_strMaterial)
+	EVALUATE_VECTOR(origin, 0, SPRITE_CHANGED_ORIGIN)
+	EVALUATE_VECTOR(origin, 1, SPRITE_CHANGED_ORIGIN)
+	EVALUATE_VECTOR(origin, 2, SPRITE_CHANGED_ORIGIN)
+	EVALUATE_FIELD(modelindex, SPRITE_CHANGED_MODELINDEX)
+	EVALUATE_FIELD(m_flFramerate, SPRITE_CHANGED_FRAMERATE)
+	EVALUATE_FIELD(scale, SPRITE_CHANGED_SCALE)
+	EVALUATE_FIELD(m_iRenderMode, SPRITE_CHANGED_RENDERMODE)
+	EVALUATE_FIELD(m_iRenderFX, SPRITE_CHANGED_RENDERFX)
+	EVALUATE_VECTOR(m_vecRenderColor, 0, SPRITE_CHANGED_RENDERCOLOR)
+	EVALUATE_VECTOR(m_vecRenderColor, 1, SPRITE_CHANGED_RENDERCOLOR)
+	EVALUATE_VECTOR(m_vecRenderColor, 2, SPRITE_CHANGED_RENDERCOLOR)
+	EVALUATE_FIELD(m_flRenderAmt, SPRITE_CHANGED_RENDERAMT)
+	EVALUATE_FIELD(m_strMaterial, SPRITE_CHANGED_MATERIAL)
 }
 
 float
-env_sprite::SendEntity(entity ePEnt, float flFlags)
+env_sprite::SendEntity(entity ePEnt, float flChanged)
 {
 	if (clienttype(ePEnt) != CLIENTTYPE_REAL)
 		return (0);
@@ -149,41 +137,26 @@ env_sprite::SendEntity(entity ePEnt, float flFlags)
 	if (m_iToggled == FALSE)
 		return (0);
 
+	/* strings are expensive. */
+	if (!m_strMaterial)
+		flChanged &= ~SPRITE_CHANGED_MATERIAL;
+
 	WriteByte(MSG_ENTITY, ENT_SPRITE);
-	WriteFloat(MSG_ENTITY, flFlags);
+	WriteFloat(MSG_ENTITY, flChanged);
 
-	if (flFlags & SPRITE_CHANGED_ORIGIN) {
-		WriteCoord(MSG_ENTITY, origin[0]);
-		WriteCoord(MSG_ENTITY, origin[1]);
-		WriteCoord(MSG_ENTITY, origin[2]);
-	}
-
-	if (flFlags & SPRITE_CHANGED_MODELINDEX) {
-		WriteFloat(MSG_ENTITY, modelindex);
-	}
-	if (flFlags & SPRITE_CHANGED_FRAMERATE) {
-		WriteFloat(MSG_ENTITY, m_flFramerate);
-	}
-	if (flFlags & SPRITE_CHANGED_SCALE) {
-		WriteFloat(MSG_ENTITY, scale);
-	}
-	if (flFlags & SPRITE_CHANGED_RENDERMODE) {
-		WriteByte(MSG_ENTITY, m_iRenderMode);
-	}
-	if (flFlags & SPRITE_CHANGED_RENDERFX) {
-		WriteByte(MSG_ENTITY, m_iRenderFX);
-	}
-	if (flFlags & SPRITE_CHANGED_RENDERCOLOR) {
-		WriteFloat(MSG_ENTITY, m_vecRenderColor[0]);
-		WriteFloat(MSG_ENTITY, m_vecRenderColor[1]);
-		WriteFloat(MSG_ENTITY, m_vecRenderColor[2]);
-	}
-	if (flFlags & SPRITE_CHANGED_RENDERAMT) {
-		WriteFloat(MSG_ENTITY, m_flRenderAmt);
-	}
-	if (flFlags & SPRITE_CHANGED_MATERIAL) {
-		WriteString(MSG_ENTITY, m_strMaterial);
-	}
+	SENDENTITY_COORD(origin[0], SPRITE_CHANGED_ORIGIN)
+	SENDENTITY_COORD(origin[1], SPRITE_CHANGED_ORIGIN)
+	SENDENTITY_COORD(origin[2], SPRITE_CHANGED_ORIGIN)
+	SENDENTITY_FLOAT(modelindex, SPRITE_CHANGED_MODELINDEX)
+	SENDENTITY_FLOAT(m_flFramerate, SPRITE_CHANGED_FRAMERATE)
+	SENDENTITY_FLOAT(scale, SPRITE_CHANGED_SCALE)
+	SENDENTITY_BYTE(m_iRenderMode, SPRITE_CHANGED_RENDERMODE)
+	SENDENTITY_BYTE(m_iRenderFX, SPRITE_CHANGED_RENDERFX)
+	SENDENTITY_COLOR(m_vecRenderColor[0], SPRITE_CHANGED_RENDERCOLOR)
+	SENDENTITY_COLOR(m_vecRenderColor[1], SPRITE_CHANGED_RENDERCOLOR)
+	SENDENTITY_COLOR(m_vecRenderColor[2], SPRITE_CHANGED_RENDERCOLOR)
+	SENDENTITY_COLOR(m_flRenderAmt, SPRITE_CHANGED_RENDERAMT)
+	SENDENTITY_STRING(m_strMaterial, SPRITE_CHANGED_MATERIAL)
 
 	return (1);
 }
@@ -305,39 +278,21 @@ env_sprite::think(void)
 }
 
 void
-env_sprite::ReceiveEntity(float flNew, float flFlags)
+env_sprite::ReceiveEntity(float flNew, float flChanged)
 {
-	if (flFlags & SPRITE_CHANGED_ORIGIN) {
-		origin[0] = readcoord();
-		origin[1] = readcoord();
-		origin[2] = readcoord();
-	}
-	if (flFlags & SPRITE_CHANGED_MODELINDEX) {
-		modelindex = readfloat();
-	}
-	if (flFlags & SPRITE_CHANGED_FRAMERATE) {
-		m_flFramerate = readfloat();
-	}
-	if (flFlags & SPRITE_CHANGED_SCALE) {
-		scale = readfloat();
-	}
-	if (flFlags & SPRITE_CHANGED_RENDERMODE) {
-		m_iRenderMode = readbyte();
-	}
-	if (flFlags & SPRITE_CHANGED_RENDERFX) {
-		m_iRenderFX = readbyte();
-	}
-	if (flFlags & SPRITE_CHANGED_RENDERCOLOR) {
-		m_vecRenderColor[0] = readfloat();
-		m_vecRenderColor[1] = readfloat();
-		m_vecRenderColor[2] = readfloat();
-	}
-	if (flFlags & SPRITE_CHANGED_RENDERAMT) {
-		m_flRenderAmt = readfloat();
-	}
-	if (flFlags & SPRITE_CHANGED_MATERIAL) {
-		m_strMaterial = readstring();
-	}
+	READENTITY_COORD(origin[0], SPRITE_CHANGED_ORIGIN)
+	READENTITY_COORD(origin[1], SPRITE_CHANGED_ORIGIN)
+	READENTITY_COORD(origin[2], SPRITE_CHANGED_ORIGIN)
+	READENTITY_FLOAT(modelindex, SPRITE_CHANGED_MODELINDEX)
+	READENTITY_FLOAT(m_flFramerate, SPRITE_CHANGED_FRAMERATE)
+	READENTITY_FLOAT(scale, SPRITE_CHANGED_SCALE)
+	READENTITY_BYTE(m_iRenderMode, SPRITE_CHANGED_RENDERMODE)
+	READENTITY_BYTE(m_iRenderFX, SPRITE_CHANGED_RENDERFX)
+	READENTITY_COLOR(m_vecRenderColor[0], SPRITE_CHANGED_RENDERCOLOR)
+	READENTITY_COLOR(m_vecRenderColor[1], SPRITE_CHANGED_RENDERCOLOR)
+	READENTITY_COLOR(m_vecRenderColor[2], SPRITE_CHANGED_RENDERCOLOR)
+	READENTITY_COLOR(m_flRenderAmt, SPRITE_CHANGED_RENDERAMT)
+	READENTITY_STRING(m_strMaterial, SPRITE_CHANGED_MATERIAL)
 
 	drawmask = MASK_ENGINE;
 	nextthink = time + (1 / m_flFramerate);
@@ -364,15 +319,6 @@ void
 env_sprite::SetFramerate(bool flag)
 {
 
-}
-
-void
-env_sprite::env_sprite(void)
-{
-	m_iIsShader = false;
-	m_flFramerate = 10;
-	m_strMaterial = __NULL__;
-	scale = 1.0f;
 }
 
 #ifdef CLIENT

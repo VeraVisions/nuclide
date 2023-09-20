@@ -576,7 +576,6 @@ private:
 #ifdef CLIENT
 string Sentences_GetSamples(string);
 string Sentences_ProcessSample(string);
-void NSMonster_ReadEntity(bool);
 #endif
 
 #ifdef SERVER

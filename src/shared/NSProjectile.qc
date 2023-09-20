@@ -840,23 +840,6 @@ NSProjectile::ReceiveEntity(float flNew, float flChanged)
 }
 #endif
 
-#ifdef CLIENT
-void
-NSProjectile_ReadEntity(bool new)
-{
-	float fl;
-
-	NSProjectile rend = (NSProjectile)self;
-	if (new) {
-		spawnfunc_NSProjectile();
-	}
-
-	fl = readfloat();
-
-	rend.ReceiveEntity(new, fl);
-}
-#endif
-
 #ifdef SERVER
 NSProjectile
 NSProjectile_SpawnDef(string entityDef, NSEntity theOwner)

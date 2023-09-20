@@ -1018,18 +1018,4 @@ func_vehicle::SendEntity(entity ePEnt, float flChanged)
 
 	return true;
 }
-#endif
-
-#ifdef CLIENT
-void
-func_vehicle_readentity(float isnew)
-{
-	func_vehicle veh = (func_vehicle)self;
-	float flags = readfloat();
-
-	if (isnew)
-		spawnfunc_func_vehicle();
-
-	veh.ReceiveEntity(flags, isnew);
-}
 #endif

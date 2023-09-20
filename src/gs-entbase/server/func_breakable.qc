@@ -215,8 +215,7 @@ func_breakable::SpawnKey(string strKey, string strValue)
 
 		if (oid >= funcbreakable_objtable.length) {
 			m_strBreakSpawn = "";
-			print(sprintf("^1func_breakable^7:" \
-			      "spawnobject %i out of bounds! fix your mod!\n", oid));
+			NSEntWarning("spawnobject %i out of bounds", oid);
 		} else {
 			m_strBreakSpawn = funcbreakable_objtable[oid];
 		}

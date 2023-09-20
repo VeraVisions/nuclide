@@ -153,11 +153,6 @@ public:
 #endif
 };
 
-
-#ifdef CLIENT
-void NSProjectile_ReadEntity(bool);
-#endif
-
 #ifdef SERVER
 NSProjectile NSProjectile_SpawnDef(string entityDef, NSEntity theOwner);
 NSProjectile NSProjectile_SpawnDefAtPosition(string entityDef, NSEntity theOwner, vector vecOrigin, vector vecAngles);

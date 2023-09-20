@@ -136,7 +136,7 @@ trigger_once::Touch(entity eToucher)
 	SetSolid(SOLID_NOT); /* make inactive */
 	m_iValue = 1;
 
-	if (!target) {
+	if (!target && !m_strKillTarget) {
 		UseOutput(eToucher, m_strOnStartTouch);
 		return;
 	}

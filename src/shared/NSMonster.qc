@@ -2099,19 +2099,7 @@ NSMonster::_RenderDebugViewCone(void)
 }
 #endif
 
-#ifdef CLIENT
-void
-NSMonster_ReadEntity(bool new)
-{
-	NSMonster me = (NSMonster)self;
-	if (new) {
-		spawnfunc_NSMonster();
-	}
-	me.ReceiveEntity(new, readfloat());
-}
-#else
-
-
+#ifdef SERVER
 var int autocvar_ai_alertdebug = 0;
 
 var float g_monsteralert_timer;

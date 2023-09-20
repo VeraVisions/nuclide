@@ -446,15 +446,3 @@ NSPortal::ReceiveEntity(float flNew, float flChanged)
 	predraw = 0;
 }
 #endif
-
-#ifdef CLIENT
-void
-NSPortal_ReadEntity(bool new)
-{
-	NSPortal me = (NSPortal)self;
-	if (new) {
-		spawnfunc_NSPortal();
-	}
-	me.ReceiveEntity(new, readfloat());
-}
-#endif

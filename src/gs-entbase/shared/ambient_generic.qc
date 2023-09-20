@@ -427,15 +427,3 @@ ambient_generic::predraw(void)
 	return (PREDRAW_NEXT);
 }
 #endif
-
-#ifdef CLIENT
-void
-ambient_generic_ReadEntity(float new)
-{
-	ambient_generic me = (ambient_generic)self;
-	if (new) {
-		spawnfunc_ambient_generic();
-	}
-	me.ReceiveEntity(new, readfloat());
-}
-#endif

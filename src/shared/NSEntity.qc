@@ -908,7 +908,7 @@ bool NSEntity::StartSound( string strSample, float channel, float flags, bool br
 }
 
 bool NSEntity::StartSoundDef( string strSample, float channel, bool broadcast ) {
-	NSLog( "StartSoundDef: %s %d %d", strSample, channel, broadcast );
+	NSLog( "^2%s::^3StartSoundDef^7: %s (chan: %d bcast: %d)", classname, strSample, channel, broadcast );
 	Sound_Play( this, channel, strSample );
 	return ( true );
 }
@@ -980,19 +980,3 @@ NSEntity::Transport(vector new_pos, vector new_ang)
 		Client_FixAngle(this, new_ang);
 #endif
 }
-
-#ifdef CLIENT
-void
-NSEntity_ReadEntity(bool new)
-{
-	float fl;
-
-	NSEntity read = (NSEntity)self;
-	if (new) {
-		spawnfunc_NSEntity();
-	}
-
-	fl = readfloat();
-	read.ReceiveEntity(new, fl);
-}
-#endif

@@ -15,6 +15,18 @@
 */
 
 /* networking helpers */
+#define NETWORKED_INT(x) int x; int x ##_net;
+#define NETWORKED_FLOAT(x) float x; float x ##_net;
+#define NETWORKED_VECTOR(x) vector x; vector x ##_net;
+#define NETWORKED_ENT(x) entity x; entity x ##_net;
+#define NETWORKED_STRING(x) string x; string x ##_net;
+#define NETWORKED_BOOL(x) bool x; bool x ##_net;
+
+#define NETWORKED_INT_N(x) int x ##_net;
+#define NETWORKED_FLOAT_N(x) float x ##_net;
+#define NETWORKED_VECTOR_N(x) vector x ##_net;
+#define NETWORKED_STRING_N(x) string x ##_net;
+
 #define PREDICTED_INT(x) int x; int x ##_net;
 #define PREDICTED_FLOAT(x) float x; float x ##_net;
 #define PREDICTED_VECTOR(x) vector x; vector x ##_net;
@@ -26,6 +38,22 @@
 #define PREDICTED_FLOAT_N(x) float x ##_net;
 #define PREDICTED_VECTOR_N(x) vector x ##_net;
 #define PREDICTED_STRING_N(x) string x ##_net;
+
+#ifdef CLIENT
+#define NSENTITY_READENTITY(x, y) \
+	{ \
+		local x x ##_e = ( x )self;\
+		if (y == true) { \
+			self.classname = strcat("spawnfunc_", #x); \
+			callfunction(self.classname); \
+		} \
+		x ##_e.ReceiveEntity( y, readfloat() );\
+	}
+#else
+
+#endif
+
+#define NETWORKED_DEFAULT(x, y) x ##_net = x = y;
 
 #define ROLL_BACK(x) x = x ##_net;
 #define SAVE_STATE(x) x ##_net = x;
@@ -175,6 +203,10 @@ crossprint(string m)
 __wrap string
 precache_model(string m)
 {
+	if not (m) {
+		breakpoint();
+	}
+
 #ifdef CLIENT
 	NSLog("^3Client precaching model ^7%s", m);
 #else

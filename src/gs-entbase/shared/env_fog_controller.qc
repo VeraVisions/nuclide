@@ -168,13 +168,13 @@ env_fog_controller::FogRender(void)
 	m_flNextDraw = cltime + 1.0f;
 
 	/* apply the fog. wish there was a builtin for this instead... */
-	localcmd(sprintf("fog %f %f %f %f %f %f\n", \
-		StartToBias(),
+	localcmd(sprintf("set r_fog_linear 1; fog %f %f %f %f %f %f\n", \
+		m_flFogEnd,
 		Math_Lerp(m_vecFogColor[0], m_vecFogColor2[0], delta),
 		Math_Lerp(m_vecFogColor[1], m_vecFogColor2[1], delta),
 		Math_Lerp(m_vecFogColor[2], m_vecFogColor2[2], delta),
 		m_flFogMaxDensity,
-		0.0f));
+		m_flFogStart));
 
 	//print(sprintf("%f (%v, %v)\n", delta, p1, p2));
 
@@ -187,13 +187,13 @@ env_fog_controller::FogUpdate(void)
 	if (!m_iFogActive)
 		return;
 
-	localcmd(sprintf("fog %f %f %f %f %f %f\n", \
-		StartToBias(),
+	localcmd(sprintf("set r_fog_linear 1; fog %f %f %f %f %f %f\n", \
+		m_flFogEnd,
 		m_vecFogColor[0],
 		m_vecFogColor[1],
 		m_vecFogColor[2],
 		m_flFogMaxDensity,
-		0.0f));
+		m_flFogStart));
 }
 
 void
@@ -529,18 +529,3 @@ env_fog_controller::env_fog_controller(void)
 	m_flSpawnMaxDensity = 1.0f;
 #endif
 }
-
-
-#ifdef CLIENT
-void
-env_fog_controller_readentity(float isnew)
-{
-	env_fog_controller fog = (env_fog_controller)self;
-	float flags = readfloat();
-
-	if (isnew)
-		spawnfunc_env_fog_controller();
-
-	fog.ReceiveEntity(flags, isnew);
-}
-#endif

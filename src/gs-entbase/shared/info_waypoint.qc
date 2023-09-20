@@ -245,18 +245,4 @@ info_waypoint::postdraw(void)
 		Font_DrawText_RGBA(projectedPos, m_strText, [1,1,1], a, FONT_CON);
 	}
 }
-
-void
-info_waypoint_ReadEntity(bool new)
-{
-	float fl;
-
-	info_waypoint rend = (info_waypoint)self;
-	if (new) {
-		spawnfunc_info_waypoint();
-	}
-
-	fl = readfloat();
-	rend.ReceiveEntity(new, fl);
-}
 #endif

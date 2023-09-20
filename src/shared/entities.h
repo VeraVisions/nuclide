@@ -40,6 +40,7 @@ typedef enum
 	ENT_LASER,	/**< of type env_laser */
 	ENT_PARTSYSTEM,	/**< of type info_particle_system */
 	ENT_SPRITE,	/**< of type env_sprite */
+	ENT_GLOW, /**< of type env_glow */
 	ENT_SPRAY,	/**< of type spray */
 	ENT_DECAL,	/**< of type infodecal */
 	ENT_OLDCAMERA,	/**< of type trigger_camera */

@@ -37,6 +37,12 @@ _NSAssert(bool condition, string function, string descr)
 	}
 }
 
+void
+_NSEntWarning(string className, vector classOrg, string warnMessage)
+{
+	print(sprintf("^1Class %s at %v: %s\n", className, classOrg, warnMessage));
+}
+
 /** Logs an error type message, with timestamp.
 	 The console variable `g_developer` has to be `1` for them to be visible.
 
@@ -49,6 +55,9 @@ _NSAssert(bool condition, string function, string descr)
 @param description(...) contains a formatted string containing an error description. */
 
 #define NSAssert(condition, ...) _NSAssert(condition, __FUNC__, sprintf(__VA_ARGS__))
+
+
+#define NSEntWarning(...) _NSEntWarning(classname, origin, sprintf(__VA_ARGS__))
 
 typedef enumflags
 {

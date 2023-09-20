@@ -148,7 +148,7 @@ func_guntarget::Move(void)
 	node = (path_corner)find(world, ::targetname, target);
 
 	if (!node) {
-		NSLog("^1func_guntarget::^3Move^7: Path node for %s not found!", targetname);
+		NSEntWarning("node %s for %s not found!", target, targetname);
 		return;
 	}
 

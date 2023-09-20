@@ -209,7 +209,3 @@ public:
 	nonvirtual void RenderGLQuakeShadow(void);
 	#endif
 };
-
-#ifdef CLIENT
-void NSRenderableEntity_ReadEntity(bool)
-#endif

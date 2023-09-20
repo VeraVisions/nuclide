@@ -634,19 +634,3 @@ NSPhysicsEntity::SpawnKey(string strKey, string strValue)
 		break;
 	}
 }
-
-#ifdef CLIENT
-void
-NSPhysicsEntity_ReadEntity(bool new)
-{
-	float fl;
-	NSPhysicsEntity rend = (NSPhysicsEntity)self;
-	if (new) {
-		spawnfunc_NSPhysicsEntity();
-	}
-	fl = readfloat();
-	rend.ReceiveEntity(new, fl);
-
-	//print(sprintf("physics ent update: %d %x %d %v\n", self.entnum, fl, self.origin, vlen(self.velocity)));
-}
-#endif

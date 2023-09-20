@@ -77,6 +77,13 @@ float
 func_smokevolume_cloud::predraw(void)
 {
 	float alpha;
+	vector vecPlayer = g_view.GetCameraOrigin();
+		return PREDRAW_NEXT;
+	
+	if (checkpvs(vecPlayer, this) == FALSE) {
+		return PREDRAW_NEXT;
+	}
+
 	makevectors(view_angles);
 
 	if (lifetime < (m_flLifeTime / 2)) {
@@ -89,6 +96,9 @@ func_smokevolume_cloud::predraw(void)
 
 	if (!(spawnflags & 1)) {
 		m_vecColor *= (getlight(origin) / 255);
+		m_vecColor[0] = bound(0.0, m_vecColor[0], 1.0);
+		m_vecColor[1] = bound(0.0, m_vecColor[1], 1.0);
+		m_vecColor[2] = bound(0.0, m_vecColor[2], 1.0);
 	}
 
 	R_BeginPolygon(m_strMaterial, 0, 0);
@@ -121,12 +131,14 @@ float
 func_smokevolume::predraw(void)
 {
 	vector vecPlayer = g_view.GetCameraOrigin();
+	float playerDist = vlen(vecPlayer - origin);
+	float fracDist = 1.0 - bound(0.0, playerDist / 512, 1.0);
 
 	if (checkpvs(vecPlayer, this) == FALSE)
 		return (PREDRAW_NEXT);
 
 	if (m_flMaxDrawDistance > 0.0)
-		if (vlen(vecPlayer - origin) > m_flMaxDrawDistance)
+		if (playerDist > m_flMaxDrawDistance)
 			return (PREDRAW_NEXT);
 
 	if (m_flNexTime > cltime)
@@ -144,7 +156,7 @@ func_smokevolume::predraw(void)
 		cloud.m_vecColor[0] = Math_Lerp(m_vecColor1[0], m_vecColor2[0], r);
 		cloud.m_vecColor[1] = Math_Lerp(m_vecColor1[1], m_vecColor2[1], r);
 		cloud.m_vecColor[2] = Math_Lerp(m_vecColor1[2], m_vecColor2[2], r);
-		cloud.m_flMaxAlpha = m_flAlpha;
+		cloud.m_flMaxAlpha = m_flAlpha * fracDist;
 		cloud.cloudsize[0] = random(m_flSizeMin, m_flSizeMax);
 		cloud.cloudsize[1] = random(m_flSizeMin, m_flSizeMax);
 		cloud.m_flLifeTime = random(m_flLifetimeMin, m_flLifetimeMax);

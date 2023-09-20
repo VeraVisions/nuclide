@@ -364,20 +364,6 @@ func_conveyor::ReceiveEntity(float flNew, float flChanged)
 
 	setorigin(this, origin);
 }
-
-void
-func_conveyor_ReadEntity(bool new)
-{
-	float fl;
-
-	func_conveyor rend = (func_conveyor)self;
-	if (new) {
-		spawnfunc_func_conveyor();
-	}
-
-	fl = readfloat();
-	rend.ReceiveEntity(new, fl);
-}
 #endif
 
 void

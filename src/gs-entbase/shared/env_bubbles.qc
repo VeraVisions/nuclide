@@ -345,15 +345,3 @@ env_bubbles::Spawned(void)
 
 	precache_model("sprites/bubble.spr");
 }
-
-#ifdef CLIENT
-void
-env_bubbles_ReadEntity(float new)
-{
-	env_bubbles me = (env_bubbles)self;
-	if (new) {
-		spawnfunc_env_bubbles();
-	}
-	me.ReceiveEntity(new, readfloat());
-}
-#endif

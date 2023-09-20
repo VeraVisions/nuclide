@@ -369,7 +369,3 @@ public:
 	/** Move the entity to a new position, with updated angles. */
 	nonvirtual void Transport(vector, vector);
 };
-
-#ifdef CLIENT
-void NSEntity_ReadEntity(float);
-#endif

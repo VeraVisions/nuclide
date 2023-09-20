@@ -417,18 +417,3 @@ light_dynamic::light_dynamic(void)
 
 /* compatibility for q3map users, stay safe out there */
 class dynamic_light:light_dynamic { };
-
-#ifdef CLIENT
-void
-light_dynamic_ReadEntity(float new)
-{
-	light_dynamic dl = (light_dynamic)self;
-
-	if (new) {
-		spawnfunc_light_dynamic();
-	}
-
-	dl.ReceiveEntity(new, readfloat());
-	dl.drawmask = MASK_GLOWS;
-}
-#endif

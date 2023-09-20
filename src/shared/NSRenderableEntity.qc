@@ -217,9 +217,9 @@ NSRenderableEntity::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_COORD(avelocity[2], RDENT_CHANGED_ANGULARVELOCITY)
 	SENDENTITY_BYTE(m_iRenderMode, RDENT_CHANGED_RENDERMODE)
 	SENDENTITY_BYTE(m_iRenderFX, RDENT_CHANGED_RENDERMODE)
-	SENDENTITY_ANGLE(m_vecRenderColor[0], RDENT_CHANGED_RENDERCOLOR)
-	SENDENTITY_ANGLE(m_vecRenderColor[1], RDENT_CHANGED_RENDERCOLOR)
-	SENDENTITY_ANGLE(m_vecRenderColor[2], RDENT_CHANGED_RENDERCOLOR)
+	SENDENTITY_COLOR(m_vecRenderColor[0], RDENT_CHANGED_RENDERCOLOR)
+	SENDENTITY_COLOR(m_vecRenderColor[1], RDENT_CHANGED_RENDERCOLOR)
+	SENDENTITY_COLOR(m_vecRenderColor[2], RDENT_CHANGED_RENDERCOLOR)
 	/* these need more precision for shader hacks... */
 	SENDENTITY_FLOAT(glowmod[0], RDENT_CHANGED_RENDERCOLOR)
 	SENDENTITY_FLOAT(glowmod[1], RDENT_CHANGED_RENDERCOLOR)
@@ -277,9 +277,9 @@ NSRenderableEntity::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_COORD(avelocity[2], RDENT_CHANGED_ANGULARVELOCITY)
 	READENTITY_BYTE(m_iRenderMode, RDENT_CHANGED_RENDERMODE)
 	READENTITY_BYTE(m_iRenderFX, RDENT_CHANGED_RENDERMODE)
-	READENTITY_ANGLE(m_vecRenderColor[0], RDENT_CHANGED_RENDERCOLOR)
-	READENTITY_ANGLE(m_vecRenderColor[1], RDENT_CHANGED_RENDERCOLOR)
-	READENTITY_ANGLE(m_vecRenderColor[2], RDENT_CHANGED_RENDERCOLOR)
+	READENTITY_COLOR(m_vecRenderColor[0], RDENT_CHANGED_RENDERCOLOR)
+	READENTITY_COLOR(m_vecRenderColor[1], RDENT_CHANGED_RENDERCOLOR)
+	READENTITY_COLOR(m_vecRenderColor[2], RDENT_CHANGED_RENDERCOLOR)
 	/* these need more precision for shader hacks... */
 	READENTITY_FLOAT(glowmod[0], RDENT_CHANGED_RENDERCOLOR)
 	READENTITY_FLOAT(glowmod[1], RDENT_CHANGED_RENDERCOLOR)
@@ -638,6 +638,12 @@ NSRenderableEntity::Respawn(void)
 	SetRenderMode(m_oldiRenderMode);
 	SetRenderAmt(m_oldflRenderAmt);
 	SetRenderColor(m_oldvecRenderColor);
+
+	if (GetRenderColor() == g_vec_null)
+		SetRenderColor([1.0, 1.0, 1.0]);
+
+	if (GetRenderMode() == RM_NORMAL)
+		SetRenderAmt(1.0);
 }
 #endif
 
@@ -1043,19 +1049,3 @@ NSRenderableEntity::SpawnKey(string strKey, string strValue)
 		break;
 	}
 }
-
-#ifdef CLIENT
-void
-NSRenderableEntity_ReadEntity(bool new)
-{
-	float fl;
-
-	NSRenderableEntity rend = (NSRenderableEntity)self;
-	if (new) {
-		spawnfunc_NSRenderableEntity();
-	}
-
-	fl = readfloat();
-	rend.ReceiveEntity(new, fl);
-}
-#endif

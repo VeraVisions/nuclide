@@ -216,17 +216,3 @@ env_fog::Trigger(entity act, triggermode_t state)
 	}
 }
 #endif
-
-#ifdef CLIENT
-void
-env_fog_readentity(float isnew)
-{
-	env_fog fog = (env_fog)self;
-	float flags = readfloat();
-
-	if (isnew)
-		spawnfunc_env_fog();
-
-	fog.ReceiveEntity(isnew, flags);
-}
-#endif

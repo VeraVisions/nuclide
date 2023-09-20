@@ -354,15 +354,3 @@ point_spotlight::point_spotlight(void)
 	m_vecColor = [1.0,1.0,1.0];
 #endif
 }
-
-#ifdef CLIENT
-void
-point_spotlight_ReadEntity(float isNew)
-{
-	point_spotlight ept = (point_spotlight)self;
-	if (isNew) {
-		spawnfunc_point_spotlight();
-	}
-	ept.ReceiveEntity(isNew, readfloat());
-}
-#endif

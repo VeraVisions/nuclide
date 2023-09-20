@@ -90,8 +90,6 @@ private:
 };
 
 #ifdef CLIENT
-void NSPortal_ReadEntity(bool);
-
 #define READENTITY_PORTAL(field, changedflag) {\
 	if (flChanged & changedflag) {\
 		field = (NSPortal)findfloat(world, ::entnum, readentitynum());\

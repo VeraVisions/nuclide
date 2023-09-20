@@ -459,17 +459,3 @@ func_tankmortar::func_tankmortar(void)
 	m_iVehicleFlags |= VHF_FROZEN | VHF_NOATTACK;
 
 }
-
-#ifdef CLIENT
-void
-func_tankmortar_readentity(float isnew)
-{
-	func_tankmortar veh = (func_tankmortar)self;
-	float flags = readfloat();
-
-	if (isnew)
-		spawnfunc_func_tankmortar();
-
-	veh.ReceiveEntity(flags, isnew);
-}
-#endif

@@ -903,18 +903,4 @@ prop_vehicle_driveable::Spawned(void)
 #ifdef SERVER
 	Sound_Precache("prop_vehicle_driveable.bounce");
 #endif
-}
-
-#ifdef CLIENT
-void
-prop_vehicle_driveable_readentity(float isnew)
-{
-	prop_vehicle_driveable veh = (prop_vehicle_driveable)self;
-	float flags = readfloat();
-
-	if (isnew)
-		spawnfunc_prop_vehicle_driveable();
-
-	veh.ReceiveEntity(flags, isnew);
-}
-#endif
+}

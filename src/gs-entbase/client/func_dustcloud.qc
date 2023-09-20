@@ -77,6 +77,12 @@ float
 func_dustcloud_cloud::predraw(void)
 {
 	float alpha;
+	vector vecPlayer = g_view.GetCameraOrigin();
+	
+	if (checkpvs(vecPlayer, this) == FALSE) {
+		return;
+	}
+
 	makevectors(view_angles);
 
 	if (lifetime < (m_flLifeTime / 2)) {

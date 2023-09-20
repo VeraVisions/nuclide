@@ -121,7 +121,3 @@ public:
 	/** Called by the physics routine to figure out the impact damage. */
 	nonvirtual float CalculateImpactDamage(int,int);
 };
-
-#ifdef CLIENT
-void NSPhysicsEntity_ReadEntity(bool);
-#endif
