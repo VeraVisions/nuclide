@@ -43,14 +43,38 @@ do
 		printf -- "$VAL" > "/tmp/def_maxs"
 	fi
 
+	if [ "$KEY" == "mins" ]
+	then
+		if [ -z $(cat "/tmp/def_mins") ]
+		then
+			printf -- "$VAL" > "/tmp/def_mins"
+		fi
+	fi
+
+	if [ "$KEY" == "maxs" ]
+	then
+		if [ -z $(cat "/tmp/def_maxs") ]
+		then
+			printf -- "$VAL" > "/tmp/def_maxs"
+		fi
+	fi
+
 	if [ "$KEY" == "editor_usage" ]
 	then
 		printf -- "$VAL" > "/tmp/def_usage"
 	fi
 
-	if [ "$KEY" == "model" ]
+	if [ "$KEY" == "editor_model" ]
 	then
 		printf -- "$VAL" > "/tmp/def_model"
+	fi
+
+	if [ "$KEY" == "model" ]
+	then
+		if [ -z $(cat "/tmp/def_model") ]
+		then
+			printf -- "$VAL" > "/tmp/def_model"
+		fi
 	fi
 
 	if [ "$SEG1" == "}" ]
