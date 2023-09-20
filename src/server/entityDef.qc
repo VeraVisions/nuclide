@@ -73,7 +73,7 @@
 
 /* games can feel free to set this to whatever you need. */
 #ifndef ENTITYDEF_MAX
-#define ENTITYDEF_MAX 128
+#define ENTITYDEF_MAX 256
 #endif
 
 var string g_lastSpawnData;
