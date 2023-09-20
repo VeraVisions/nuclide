@@ -18,6 +18,7 @@ NSTalkMonster.qc
 NSProjectile.qc
 NSItem.qc
 NSPortal.qc
+NSDebris.qc
 
 NSClient.qc
 NSClientSpectator.qc

@@ -31,15 +31,16 @@ DecalGroups_CountLine(string line)
 		break;
 	case "}":
 		braced--;
+
+		if (t_name)
+				g_decalgroup_count++;
+
 		t_name = "";
 		break;
 	default:
 		/* new definition starts */
 		if (c == 1 && braced == 0) {
 			t_name = strtolower(line);
-
-			if (t_name)
-				g_decalgroup_count++;
 		}
 	}
 	return;
@@ -64,8 +65,11 @@ DecalGroups_Parse(string line)
 		break;
 	case "}":
 		/* increase counter when done */
-		if (t_name)
+		if (t_name) {
+			hash_add(g_hashdecalgroup, t_name, (int)i);
+			g_decalgroup_count++;
 			i++;
+		}
 
 		braced--;
 		t_name = "";
@@ -86,8 +90,6 @@ DecalGroups_Parse(string line)
 #endif
 		} else if (braced == 0) {
 			t_name = strtolower(line);
-			hash_add(g_hashdecalgroup, t_name, (int)i);
-			g_decalgroup_count++;
 		}
 	}
 }
@@ -161,6 +163,7 @@ DecalGroups_Precache(void)
 		for (int x = 0; x < c; x++) {
 			Decal_Precache(argv(x));
 		}
+		
 	}
 }
 

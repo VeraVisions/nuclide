@@ -97,6 +97,7 @@ string __fullspawndata;
 #include "NSItem.h"
 #include "NSSpraylogo.h"
 #include "NSPortal.h"
+#include "NSDebris.h"
 
 #include "../xr/defs.h"
 #include "NSClient.h"

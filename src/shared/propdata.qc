@@ -497,7 +497,7 @@ BreakModel_SpawnID(vector smins, vector smaxs, vector dir, float speed, int coun
 		string mname;
 		string fullline;
 		float fadetime;
-		NSRenderableEntity gib;
+		NSDebris gib;
 		int r;
 		int p;
 		int bodygroup = 0;
@@ -505,6 +505,7 @@ BreakModel_SpawnID(vector smins, vector smaxs, vector dir, float speed, int coun
 		float renderamt = 1.0f;
 		float rendermode = RM_NORMAL;
 		float renderfx = RFX_NORMAL;
+		string impactDecal = __NULL__;
 
 		/* pick a model between 0 and num) */
 		r = floor(random(0, modelcount));
@@ -544,6 +545,9 @@ BreakModel_SpawnID(vector smins, vector smaxs, vector dir, float speed, int coun
 					case "renderfx":
 						renderfx = stof(value);
 						break;
+					case "impactdecal":
+						impactDecal = value;
+						break;
 					default:
 						print(sprintf("^1BreakModel_Spawn: Unrecognized model attribute %S with value %S\n",
 							key, value));
@@ -559,7 +563,7 @@ BreakModel_SpawnID(vector smins, vector smaxs, vector dir, float speed, int coun
 		endpos[1] = smins[1] + ( random() * ( smaxs[1] - smins[1] ) );
 		endpos[2] = smins[2] + ( random() * ( smaxs[2] - smins[2] ) );
 
-		gib = spawn(NSRenderableEntity);
+		gib = spawn(NSDebris);
 		gib.SetModel(mname);
 		gib.SetBody(bodygroup);
 		gib.SetRenderColor(rendercolor);
@@ -575,7 +579,9 @@ BreakModel_SpawnID(vector smins, vector smaxs, vector dir, float speed, int coun
 		gib.velocity[2] += (random() - 0.5) * (speed * 0.25);
 		gib.SetAngularVelocity(vectoangles(gib.velocity));
 		gib.SetMovetype(MOVETYPE_BOUNCE);
+		gib.SetSolid(SOLID_BBOX);
 		gib.ScheduleThink(NSEntity::Destroy, fadetime);
+		gib.SetImpactDecal(impactDecal);
 
 		#ifdef CLIENT
 			gib.drawmask = MASK_ENGINE;
