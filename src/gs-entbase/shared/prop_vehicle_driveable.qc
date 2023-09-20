@@ -738,7 +738,7 @@ prop_vehicle_driveable::Respawn(void)
 
 #ifdef CLIENT
 void
-prop_vehicle_driveable::ReceiveEntity(float flSendFlags, float flNew)
+prop_vehicle_driveable::ReceiveEntity(float flNew, float flSendFlags)
 {
 	if (flSendFlags & VEHFL_DRIVER) {
 		driver_entnum = readentitynum();

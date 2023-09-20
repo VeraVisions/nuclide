@@ -882,7 +882,7 @@ func_vehicle::RunVehiclePhysics(void)
 
 #ifdef CLIENT
 void
-func_vehicle::ReceiveEntity(float flChanged, float flNew)
+func_vehicle::ReceiveEntity(float flNew, float flChanged)
 {
 	if (flChanged & FNCVEHNET_DRIVER) {
 		driver_entnum = readentitynum();

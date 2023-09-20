@@ -204,7 +204,7 @@ env_fog_controller::RendererRestarted(void)
 }
 
 void
-env_fog_controller::ReceiveEntity(float flSendFlags, float flNew)
+env_fog_controller::ReceiveEntity(float flNew, float flSendFlags)
 {
 	if (flSendFlags & ENVFOGCTRL_CHANGED_ACTIVE)
 		m_iFogActive = readbyte();

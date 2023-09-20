@@ -89,7 +89,3 @@ enumflags
 	VHF_FROZEN,
 	VHF_NOATTACK
 };
-
-#ifdef CLIENT
-void basevehicle_readentity(float isnew);
-#endif

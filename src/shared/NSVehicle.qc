@@ -173,7 +173,7 @@ NSVehicle::PredictPostFrame(void)
 }
 
 void
-NSVehicle::ReceiveEntity(float fChanged, float new)
+NSVehicle::ReceiveEntity(float new, float fChanged)
 {
 	if (fChanged & VEHFL_CHANGED_ORIGIN) {
 		origin[0] = readcoord();
@@ -470,17 +470,3 @@ NSVehicle::PlayerLeave(NSClientPlayer pl)
 
 	SetSendFlags(VEHFL_CHANGED_DRIVER);
 }
-
-#ifdef CLIENT
-void
-basevehicle_readentity(float isnew)
-{
-	NSVehicle veh = (NSVehicle)self;
-	float flags = readfloat();
-
-	if (isnew)
-		spawnfunc_NSVehicle();
-
-	veh.ReceiveEntity(flags, isnew);
-}
-#endif

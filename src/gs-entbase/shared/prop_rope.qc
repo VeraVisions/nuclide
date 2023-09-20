@@ -167,7 +167,7 @@ prop_rope::predraw(void)
 }
 
 void
-prop_rope::ReceiveEntity(float flSendFlags, float new)
+prop_rope::ReceiveEntity(float new, float flSendFlags)
 {
 	if (flSendFlags & PROPROPE_CHANGED_MAT)
 		m_strShader = readstring();

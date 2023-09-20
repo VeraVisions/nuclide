@@ -127,7 +127,7 @@ func_tankmortar::PredictPostFrame(void)
 }
 
 void
-func_tankmortar::ReceiveEntity(float fChanged, float new)
+func_tankmortar::ReceiveEntity(float new, float fChanged)
 {
 	if (fChanged & VEHFL_CHANGED_ORIGIN) {
 		origin[0] = readcoord();
