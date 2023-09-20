@@ -626,6 +626,119 @@ NSRenderableEntity::predraw(void)
 
 	return (PREDRAW_NEXT);
 }
+
+void
+NSRenderableEntity::postdraw(void)
+{
+	if not (autocvar(r_showRenderInfo, 0))
+		return;
+
+	if not (PointMessage_Visible(origin, g_view.GetCameraOrigin(), g_view.GetCameraAngle()))
+		return;
+
+	string renderMode;
+	string renderFX;
+
+	switch (GetRenderMode()) {
+	case RM_NORMAL:
+		renderMode = "RM_NORMAL";
+		break;
+	case RM_COLOR:
+		renderMode = "RM_COLOR";
+		break;
+	case RM_TEXTURE:
+		renderMode = "RM_TEXTURE";
+		break;
+	case RM_GLOW:
+		renderMode = "RM_GLOW";
+		break;
+	case RM_SOLID:
+		renderMode = "RM_SOLID";
+		break;
+	case RM_ADDITIVE:
+		renderMode = "RM_ADDITIVE";
+		break;
+	case RM_FULLBRIGHT:
+		renderMode = "RM_FULLBRIGHT";
+		break;
+	case RM_ADDFRAC:
+		renderMode = "RM_ADDFRAC";
+		break;
+	case RM_WORLDGLOW:
+		renderMode = "RM_WORLDGLOW";
+		break;
+	case RM_DONTRENDER:
+		renderMode = "RM_DONTRENDER";
+		break;
+	}
+
+	switch (GetRenderFX()) {
+	case RFX_NORMAL:
+		renderFX = "RFX_NORMAL";
+		break;
+	case RFX_SLOWPULSE:
+		renderFX = "RFX_SLOWPULSE";
+		break;
+	case RFX_FASTPULSE:
+		renderFX = "RFX_FASTPULSE";
+		break;
+	case RFX_SLOWWIDEPULSE:
+		renderFX = "RFX_SLOWWIDEPULSE";
+		break;
+	case RFX_FASTWIDEPULSE:
+		renderFX = "RFX_FASTWIDEPULSE";
+		break;
+	case RFX_SLOWFADEAWAY:
+		renderFX = "RFX_SLOWFADEAWAY";
+		break;
+	case RFX_FASTFADEAWAY:
+		renderFX = "RFX_FASTFADEAWAY";
+		break;
+	case RFX_SLOWBECOMESOLID:
+		renderFX = "RFX_SLOWBECOMESOLID";
+		break;
+	case RFX_FASTBECOMESOLID:
+		renderFX = "RFX_FASTBECOMESOLID";
+		break;
+	case RFX_SLOWSTROBE:
+		renderFX = "RFX_SLOWSTROBE";
+		break;
+	case RFX_FASTSTROBE:
+		renderFX = "RFX_FASTSTROBE";
+		break;
+	case RFX_FASTERSTROBE:
+		renderFX = "RFX_FASTERSTROBE";
+		break;
+	case RFX_SLOWFLICKER:
+		renderFX = "RFX_SLOWFLICKER";
+		break;
+	case RFX_FASTFLICKER:
+		renderFX = "RFX_FASTFLICKER";
+		break;
+	case RFX_CONSTANTGLOW:
+		renderFX = "RFX_CONSTANTGLOW";
+		break;
+	case RFX_DISTORT:
+		renderFX = "RFX_DISTORT";
+		break;
+	case RFX_HOLOGRAM:
+		renderFX = "RFX_HOLOGRAM";
+		break;
+	case RFX_GLOWSHELL:
+		renderFX = "RFX_GLOWSHELL";
+		break;
+	case RFX_GLOWSHELL2:
+		renderFX = "RFX_GLOWSHELL2";
+		break;
+	case RFX_Q2PULSE:
+		renderFX = "RFX_Q2PULSE";
+		break;
+	}
+	string renderString = sprintf("RC: %v\nRA: %f\nRM: %s\nRFX: %s",
+		m_vecRenderColor, m_flRenderAmt, renderMode, renderFX);
+
+	PointMessage_StringAtPos(WorldSpaceCenter(), renderString);
+}
 #endif
 
 #ifdef SERVER
@@ -634,16 +747,10 @@ NSRenderableEntity::Respawn(void)
 {
 	super::Respawn();
 
-	SetRenderFX(m_oldiRenderFX);
-	SetRenderMode(m_oldiRenderMode);
-	SetRenderAmt(m_oldflRenderAmt);
-	SetRenderColor(m_oldvecRenderColor);
-
-	if (GetRenderColor() == g_vec_null)
-		SetRenderColor([1.0, 1.0, 1.0]);
-
-	if (GetRenderMode() == RM_NORMAL)
-		SetRenderAmt(1.0);
+	SetRenderFX(GetSpawnRenderFX());
+	SetRenderMode(GetSpawnRenderMode());
+	SetRenderAmt(GetSpawnRenderAmt());
+	SetRenderColor(GetSpawnRenderColor());
 }
 #endif
 
@@ -686,6 +793,10 @@ NSRenderableEntity::SetRenderAmt(float newAmt)
 void
 NSRenderableEntity::SetRenderColor(vector newColor)
 {
+	/* rendercolor can NEVER be pitch black. */
+	if (newColor == g_vec_null)
+		m_vecRenderColor = [1.0, 1.0, 1.0];
+
 	m_vecRenderColor = newColor;
 }
 
@@ -737,6 +848,32 @@ NSRenderableEntity::GetBodyInGroup(int bodyGroup)
 	return m_iBody;
 }
 
+#ifdef SERVER
+vector
+NSRenderableEntity::GetSpawnRenderColor(void)
+{
+	return m_oldvecRenderColor;
+}
+
+float
+NSRenderableEntity::GetSpawnRenderAmt(void)
+{
+	return m_oldflRenderAmt;
+}
+
+int
+NSRenderableEntity::GetSpawnRenderMode(void)
+{
+	return m_oldiRenderMode;
+}
+
+int
+NSRenderableEntity::GetSpawnRenderFX(void)
+{
+	return m_oldiRenderFX;
+}
+#endif
+
 float
 NSRenderableEntity::GetRenderMode(void)
 {
@@ -752,12 +889,22 @@ NSRenderableEntity::GetRenderFX(void)
 float
 NSRenderableEntity::GetRenderAmt(void)
 {
+	if (m_iRenderMode == RM_NORMAL)
+		return 1.0f;
+	else if (m_iRenderMode == RM_GLOW && m_flRenderAmt == 0.0)
+		return 1.0f;
+
 	return m_flRenderAmt;
 }
 
 vector
 NSRenderableEntity::GetRenderColor(void)
 {
+	if (m_iRenderMode == RM_NORMAL)
+		return [1.0, 1.0, 1.0];
+	else if (m_iRenderMode == RM_GLOW)
+		return [1.0, 1.0, 1.0];
+
 	return m_vecRenderColor;
 }
 

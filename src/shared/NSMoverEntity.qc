@@ -213,7 +213,7 @@ NSMoverEntity::MoveAndRotateToPosition(vector vecDest, vector vecAngle, float fl
 
 	/* abort if no speed is defined whatsoever */
 	if (!flSpeed) {
-		objerror("NSMoverEntity::MoveToPosition: No speed defined!");
+		NSEntWarning("NSMoverEntity::MoveToPosition: No speed defined!");
 		return;
 	}
 

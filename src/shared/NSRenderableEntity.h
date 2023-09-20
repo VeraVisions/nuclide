@@ -142,6 +142,7 @@ public:
 	virtual void RenderDebugSkeleton(void);
 	virtual void ReceiveEntity(float,float);
 	virtual float predraw(void);
+	virtual void postdraw(void);
 	virtual void RendererRestarted();
 #endif
 
@@ -176,6 +177,13 @@ public:
 	nonvirtual void SetBoneControl5(float);
 	/** Sets the axial, anisotropic scale of an entity, affecting the individual axis (forward, right, up). */
 	nonvirtual void SetAxialScale(vector);
+
+#ifdef SERVER
+	nonvirtual vector GetSpawnRenderColor(void);
+	nonvirtual float GetSpawnRenderAmt(void);
+	nonvirtual int GetSpawnRenderFX(void);
+	nonvirtual int GetSpawnRenderMode(void);
+#endif
 
 	/** Returns the bodygroup of the entity. */
 	nonvirtual int GetBody(void);

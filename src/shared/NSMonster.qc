@@ -1962,10 +1962,10 @@ NSMonster::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_COORD(velocity[2], MONFL_CHANGED_VELOCITY)
 	SENDENTITY_BYTE(m_iRenderMode, MONFL_CHANGED_RENDERMODE)
 	SENDENTITY_BYTE(m_iRenderFX, MONFL_CHANGED_RENDERMODE)
-	SENDENTITY_ANGLE(m_vecRenderColor[0], MONFL_CHANGED_RENDERCOLOR)
-	SENDENTITY_ANGLE(m_vecRenderColor[1], MONFL_CHANGED_RENDERCOLOR)
-	SENDENTITY_ANGLE(m_vecRenderColor[2], MONFL_CHANGED_RENDERCOLOR)
-	SENDENTITY_ANGLE(m_flRenderAmt, MONFL_CHANGED_RENDERAMT)
+	SENDENTITY_COLOR(m_vecRenderColor[0], MONFL_CHANGED_RENDERCOLOR)
+	SENDENTITY_COLOR(m_vecRenderColor[1], MONFL_CHANGED_RENDERCOLOR)
+	SENDENTITY_COLOR(m_vecRenderColor[2], MONFL_CHANGED_RENDERCOLOR)
+	SENDENTITY_COLOR(m_flRenderAmt, MONFL_CHANGED_RENDERAMT)
 	SENDENTITY_FLOAT(bonecontrol1, MONFL_CHANGED_HEADYAW)
 	SENDENTITY_FLOAT(subblendfrac, MONFL_CHANGED_HEADYAW)
 	SENDENTITY_FLOAT(frame1time, MONFL_CHANGED_HEADYAW)
@@ -2045,10 +2045,10 @@ NSMonster::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_COORD(velocity[2], MONFL_CHANGED_VELOCITY)
 	READENTITY_BYTE(m_iRenderMode, MONFL_CHANGED_RENDERMODE)
 	READENTITY_BYTE(m_iRenderFX, MONFL_CHANGED_RENDERMODE)
-	READENTITY_ANGLE(m_vecRenderColor[0], MONFL_CHANGED_RENDERCOLOR)
-	READENTITY_ANGLE(m_vecRenderColor[1], MONFL_CHANGED_RENDERCOLOR)
-	READENTITY_ANGLE(m_vecRenderColor[2], MONFL_CHANGED_RENDERCOLOR)
-	READENTITY_ANGLE(m_flRenderAmt, MONFL_CHANGED_RENDERAMT)
+	READENTITY_COLOR(m_vecRenderColor[0], MONFL_CHANGED_RENDERCOLOR)
+	READENTITY_COLOR(m_vecRenderColor[1], MONFL_CHANGED_RENDERCOLOR)
+	READENTITY_COLOR(m_vecRenderColor[2], MONFL_CHANGED_RENDERCOLOR)
+	READENTITY_COLOR(m_flRenderAmt, MONFL_CHANGED_RENDERAMT)
 	READENTITY_FLOAT(bonecontrol1, MONFL_CHANGED_HEADYAW)
 	READENTITY_FLOAT(subblendfrac, MONFL_CHANGED_HEADYAW)
 	READENTITY_FLOAT(frame1time, MONFL_CHANGED_HEADYAW)
@@ -2111,7 +2111,7 @@ NSMonster_AlertEnemyAlliance(vector pos, float radius, int alliance)
 		return;
 
 	if (autocvar_ai_alertdebug)
-		print(sprintf("AI alert from %v with radius %f and alliance %i\n", pos, radius, alliance));
+		NSMonster_Log("AI alert from %v with radius %f and alliance %i\n", pos, radius, alliance);
 
 	for (entity w = world; (w = findfloat(w, ::takedamage, DAMAGE_YES));) {
 		/* out of radius */
@@ -2122,7 +2122,7 @@ NSMonster_AlertEnemyAlliance(vector pos, float radius, int alliance)
 		/* only target monsters */
 		if (!(w.flags & FL_MONSTER)) {
 			if (autocvar_ai_alertdebug)
-				print(sprintf("\t%S is not a monster\n", w.classname));
+				NSMonster_Log("\t%S is not a monster\n", w.classname);
 			continue;
 		}
 
@@ -2131,26 +2131,26 @@ NSMonster_AlertEnemyAlliance(vector pos, float radius, int alliance)
 		/* they already got a target of some kind */
 		if (f.m_eEnemy) {
 			if (autocvar_ai_alertdebug)
-				print(sprintf("\t%S already has a target\n", w.classname));
+				NSMonster_Log("\t%S already has a target\n", w.classname);
 			continue;
 		}
 
 		/* if they're our friend... ignore*/
 		if (f.IsFriend(alliance)) {
 			if (autocvar_ai_alertdebug)
-				print(sprintf("\t%S is friend of alliance %i\n", w.classname, alliance));
+				NSMonster_Log("\t%S is friend of alliance %i\n", w.classname, alliance);
 			continue;
 		}
 
 		/* if the monster is dead... ignore */
 		if (f.health <= 0) {
 			if (autocvar_ai_alertdebug)
-				print(sprintf("\t%S is dead, cannot be alerted\n", w.classname));
+				NSMonster_Log("\t%S is dead, cannot be alerted\n", w.classname);
 			continue;
 		}
 
 		if (autocvar_ai_alertdebug)
-				print(sprintf("\twe're alerting %S to go to %v\n", w.classname, pos));
+				NSMonster_Log("\twe're alerting %S to go to %v\n", w.classname, pos);
 
 		/* we've heard a noise. investigate the location */
 		f.RouteClear();

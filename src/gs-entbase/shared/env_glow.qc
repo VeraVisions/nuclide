@@ -102,11 +102,11 @@ env_glow::Respawn(void)
 	SetOrigin(GetSpawnOrigin());
 	AddEffects(EF_NOSHADOW);
 
-	if (GetRenderColor() == g_vec_null)
-		SetRenderColor([1.0, 1.0, 1.0]);
+	SetRenderFX(GetSpawnRenderFX());
+	SetRenderMode(GetSpawnRenderMode());
+	SetRenderAmt(GetSpawnRenderAmt());
+	SetRenderColor(GetSpawnRenderColor());
 
-	if (GetRenderMode() == RM_NORMAL)
-		SetRenderAmt(1.0);
 /*
 	if (HasSpawnFlags(1)) {
 		hitcontentsmaski = CONTENTBIT_SOLID;
@@ -216,33 +216,36 @@ env_glow::RendererRestarted(void)
 void
 env_glow::RenderGlow(vector forg, vector fsize)
 {
+	float alphaTint = GetRenderAmt();
+	vector renderColor = m_vecRenderColor;
+
 #ifndef FTE_QUADFIX
 	R_BeginPolygon(m_strMaterial, 1, 0);
 	R_PolygonVertex(forg + v_right * fsize[0] - v_up * fsize[1],
-		[1,1], m_vecRenderColor * m_flRenderAmt, m_flMaxAlpha);
+		[1,1], renderColor * alphaTint, m_flMaxAlpha);
 	R_PolygonVertex(forg - v_right * fsize[0] - v_up * fsize[1],
-		[0,1], m_vecRenderColor * m_flRenderAmt, m_flMaxAlpha);
+		[0,1], renderColor * alphaTint, m_flMaxAlpha);
 	R_PolygonVertex(forg - v_right * fsize[0] + v_up * fsize[1],
-		[0,0], m_vecRenderColor * m_flRenderAmt, m_flMaxAlpha);
+		[0,0], renderColor * alphaTint, m_flMaxAlpha);
 	R_PolygonVertex(forg + v_right * fsize[0] + v_up * fsize[1],
-		[1,0], m_vecRenderColor * m_flRenderAmt, m_flMaxAlpha);
+		[1,0], renderColor * alphaTint, m_flMaxAlpha);
 	R_EndPolygon();
 #else
 	R_BeginPolygon(m_strMaterial, 1, 0);
 	R_PolygonVertex(forg + v_right * fsize[0] - v_up * fsize[1],
-		[1,1], m_vecRenderColor * m_flRenderAmt, m_flMaxAlpha);
+		[1,1], renderColor * alphaTint, m_flMaxAlpha);
 	R_PolygonVertex(forg - v_right * fsize[0] - v_up * fsize[1],
-		[0,1], m_vecRenderColor * m_flRenderAmt, m_flMaxAlpha);
+		[0,1], renderColor * alphaTint, m_flMaxAlpha);
 	R_PolygonVertex(forg - v_right * fsize[0] + v_up * fsize[1],
-		[0,0], m_vecRenderColor * m_flRenderAmt, m_flMaxAlpha);
+		[0,0], renderColor * alphaTint, m_flMaxAlpha);
 	R_EndPolygon();
 	R_BeginPolygon(m_strMaterial, 1, 0);
 	R_PolygonVertex(forg - v_right * fsize[0] - v_up * fsize[1],
-		[0,1], m_vecRenderColor * m_flRenderAmt, m_flMaxAlpha);
+		[0,1], renderColor * alphaTint, m_flMaxAlpha);
 	R_PolygonVertex(forg - v_right * fsize[0] + v_up * fsize[1],
-		[0,0], m_vecRenderColor * m_flRenderAmt, m_flMaxAlpha);
+		[0,0], renderColor * alphaTint, m_flMaxAlpha);
 	R_PolygonVertex(forg + v_right * fsize[0] + v_up * fsize[1],
-		[1,0], m_vecRenderColor * m_flRenderAmt, m_flMaxAlpha);
+		[1,0], renderColor * alphaTint, m_flMaxAlpha);
 	R_EndPolygon();
 #endif
 }
@@ -250,33 +253,36 @@ env_glow::RenderGlow(vector forg, vector fsize)
 void
 env_glow::RenderNormal(vector forg, vector fsize)
 {
+	float alphaTint = GetRenderAmt();
+	vector renderColor = GetRenderColor();
+
 #ifndef FTE_QUADFIX
 	R_BeginPolygon(m_strMaterial, 0, 0);
 	R_PolygonVertex(forg + v_right * fsize[0] - v_up * fsize[1],
-		[1,1], m_vecRenderColor, m_flRenderAmt);
+		[1,1], renderColor, alphaTint);
 	R_PolygonVertex(forg - v_right * fsize[0] - v_up * fsize[1],
-		[0,1], m_vecRenderColor, m_flRenderAmt);
+		[0,1], renderColor, alphaTint);
 	R_PolygonVertex(forg - v_right * fsize[0] + v_up * fsize[1],
-		[0,0], m_vecRenderColor, m_flRenderAmt);
+		[0,0], renderColor, alphaTint);
 	R_PolygonVertex(forg + v_right * fsize[0] + v_up * fsize[1],
-		[1,0], m_vecRenderColor, m_flRenderAmt);
+		[1,0], renderColor, alphaTint);
 	R_EndPolygon();
 #else
 	R_BeginPolygon(m_strMaterial, 0, 0);
 	R_PolygonVertex(forg + v_right * fsize[0] - v_up * fsize[1],
-		[1,1], m_vecRenderColor, m_flRenderAmt);
+		[1,1], renderColor, alphaTint);
 	R_PolygonVertex(forg - v_right * fsize[0] - v_up * fsize[1],
-		[0,1], m_vecRenderColor, m_flRenderAmt);
+		[0,1], renderColor, alphaTint);
 	R_PolygonVertex(forg - v_right * fsize[0] + v_up * fsize[1],
-		[0,0], m_vecRenderColor, m_flRenderAmt);
+		[0,0], renderColor, alphaTint);
 	R_EndPolygon();
 	R_BeginPolygon(m_strMaterial, 0, 0);
 	R_PolygonVertex(forg - v_right * fsize[0] - v_up * fsize[1],
-		[0,1], m_vecRenderColor, m_flRenderAmt);
+		[0,1], renderColor, alphaTint);
 	R_PolygonVertex(forg - v_right * fsize[0] + v_up * fsize[1],
-		[0,0], m_vecRenderColor, m_flRenderAmt);
+		[0,0], renderColor, alphaTint);
 	R_PolygonVertex(forg + v_right * fsize[0] + v_up * fsize[1],
-		[1,0], m_vecRenderColor, m_flRenderAmt);
+		[1,0], renderColor, alphaTint);
 	R_EndPolygon();
 #endif
 }
@@ -289,6 +295,9 @@ env_glow::predraw(void)
 	vector vecPlayer = g_view.GetCameraOrigin();
 	vector vecAngle = g_view.GetCameraAngle();
 	float flDist = vlen(vecPlayer - origin);
+
+	if (GetRenderMode() == RM_GLOW)
+		scale = 1.0f;
 
 	if (GetRenderMode() == RM_GLOW) {
 		if (IsVisible(vecPlayer) == false)

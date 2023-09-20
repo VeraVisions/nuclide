@@ -150,6 +150,7 @@ env_beam::Respawn(void)
 
 	/* keep it simple */
 	m_iBeamFlags = spawnflags | BEAM_SHADEEND;
+	pvsflags = PVSF_IGNOREPVS;
 }
 
 void
@@ -428,12 +429,7 @@ float
 env_beam::predraw(void)
 {
 	vector vecPlayer;
-	NSClientPlayer pl;
-
-	int s = (float)getproperty(VF_ACTIVESEAT);
-	pSeat = &g_seats[s];
-	pl = (NSClientPlayer)pSeat->m_ePlayer;
-	vecPlayer = pl.GetEyePos();
+	vecPlayer = g_view.GetCameraOrigin();
 
 	/* only draw when active. */
 	if (!m_iActive)

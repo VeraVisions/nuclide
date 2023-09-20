@@ -185,7 +185,7 @@ NSSquadMonster::AddToSquad(NSSquadMonster addMember)
 		m_eSquadLeader = this;
 		startMember = this;
 		m_inSquad = true;
-		print(sprintf("%s (%d) became squad leader\n", classname, num_for_edict(this)));
+		NSMonster_Log("%s (%d) became squad leader\n", classname, num_for_edict(this));
 		//SetBody(GetBody() | m_iSquadLeaderBody);
 
 		/* apply the squad leader body */
@@ -211,7 +211,7 @@ NSSquadMonster::AddToSquad(NSSquadMonster addMember)
 			addMember.m_eSquadLeader = startMember;
 			addMember.m_inSquad = true;
 			addMember.HasJoinedSquad();
-			print(sprintf("%s (%d) added to squad, member %i\n", classname, num_for_edict(this), i));
+			NSMonster_Log("%s (%d) added to squad, member %i\n", classname, num_for_edict(this), i);
 			return;
 		}
 	}

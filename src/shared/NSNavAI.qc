@@ -282,6 +282,6 @@ NSNavAI::RouteClear(void)
 	m_iCurNode = BOTROUTE_END;
 	m_iNodes = 0;
 	memfree(m_pRoute);
-	print(sprintf("%s cleared his route.\n", netname));
+	NSNavAI_Log("Actor %S (%s) cleared their route.", netname, classname);
 }
 #endif

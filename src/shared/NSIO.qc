@@ -125,8 +125,9 @@ NSIO::CreateOutput(string outmsg)
 	string outname = "";
 	float c;
 
-	if not (outmsg)
+	if not (outmsg) {
 		error("Cannot assign EMPTY contents to CreateOutput!");
+	}
 
 	outname = sprintf("output_%i", outcount);
 	outcount++;
@@ -190,11 +191,11 @@ NSIO::Input(entity eAct, string strInput, string strData)
 		break;
 	default:
 		if (strData != "")
-		print(sprintf("^2%s::^3Input^7: Receives input %s from %s with data %s\n", 
-			this.classname, strInput, eAct.classname, strData));
+		NSLog("^2%s::^3Input^7: Receives input %s from %s with data %s\n", 
+			this.classname, strInput, eAct.classname, strData);
 		else
-		print(sprintf("^2%s::^3Input^7: Receives input %s from %s\n", 
-			this.classname, strInput, eAct.classname));
+		NSLog("^2%s::^3Input^7: Receives input %s from %s\n", 
+			this.classname, strInput, eAct.classname);
 	}
 }
 
