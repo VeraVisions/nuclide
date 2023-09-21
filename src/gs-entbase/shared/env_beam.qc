@@ -93,6 +93,7 @@ public:
 #else
 	virtual float predraw(void);
 	virtual void ReceiveEntity(float,float);
+	virtual void RendererRestarted(void);
 #endif
 
 private:
@@ -384,12 +385,18 @@ env_beam::ReceiveEntity(float flNew, float flChanged)
 
 	drawmask = MASK_ENGINE;
 	setsize(this, [0,0,0], [0,0,0]);
-	setorigin(this, m_vecStartPos);
+	origin = m_vecStartPos;
 
 	/* the sprite has changed, we need to query a new texture */
 	if (flChanged & BEAM_CHANGED_SPRITE) {
-		m_strTexture = spriteframe(modelnameforindex(m_iSpriteID), 0, 0.0f);
+		RendererRestarted();
 	}
+}
+
+void
+env_beam::RendererRestarted(void)
+{
+	m_strTexture = spriteframe(modelnameforindex(m_iSpriteID), 0, 0.0f);
 }
 
 #define BEAM_COUNT 16

@@ -78,6 +78,7 @@ public:
 #else
 	virtual float predraw(void);
 	virtual void ReceiveEntity(float,float);
+	virtual void RendererRestarted(void);
 #endif
 
 private:
@@ -285,8 +286,14 @@ env_laser::ReceiveEntity(float flNew, float flChanged)
 
 	/* the sprite has changed, we need to query a new texture */
 	if (flChanged & LASER_CHANGED_SPRITE) {
-		m_strTexture = spriteframe(modelnameforindex(m_iSpriteID), 0, 0.0f);
+		RendererRestarted();
 	}
+}
+
+void
+env_laser::RendererRestarted(void)
+{
+	m_strTexture = spriteframe(modelnameforindex(m_iSpriteID), 0, 0.0f);
 }
 
 #define LASER_COUNT 16

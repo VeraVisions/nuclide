@@ -296,6 +296,7 @@ env_glow::predraw(void)
 	vector vecAngle = g_view.GetCameraAngle();
 	float flDist = vlen(vecPlayer - origin);
 
+	/* HACK: GoldSrc does this */
 	if (GetRenderMode() == RM_GLOW)
 		scale = 1.0f;
 
