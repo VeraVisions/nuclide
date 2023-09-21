@@ -273,7 +273,7 @@ scripted_sequence::RunOnEntity(entity targ)
 		NSLog("\tType: SS_RUN (%i)", m_iMove);
 		return;
 	} else if (m_iMove == SS_INSTANTANEOUS) {
-		setorigin(f, this.origin);
+		f.SetOrigin(GetOrigin());
 		f.DropToFloor();
 		NSLog("\tType: SS_INSTANTANEOUS (%i)", m_iMove);
 	} else if (m_iMove == SS_TURNTOFACE) {

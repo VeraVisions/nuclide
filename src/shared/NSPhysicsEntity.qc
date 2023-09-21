@@ -297,7 +297,6 @@ NSPhysicsEntity::ReceiveEntity(float flNew, float flChanged)
 	if (flChanged & RDENT_CHANGED_BODY)
 		_UpdateGeomset();
 
-	setorigin(this, origin);
 	movetype = MOVETYPE_NONE;
 }
 #endif

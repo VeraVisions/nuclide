@@ -836,7 +836,6 @@ NSProjectile::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_COLOR(m_vecRenderColor[2], PROJ_CHANGED_RENDERCOLOR)
 	READENTITY_COLOR(m_flRenderAmt, PROJ_CHANGED_RENDERAMT)
 	setmodelindex(this, modelindex);
-	setorigin(this, origin);
 }
 #endif
 

@@ -643,6 +643,7 @@ void
 NSTalkMonster::Respawn(void)
 {
 	super::Respawn();
+
 	m_eFollowing = world;
 	m_eFollowingChain = world;
 	PlayerUse = OnPlayerUse;
@@ -1026,8 +1027,6 @@ NSTalkMonster::ReceiveEntity(float flNew, float flChanged)
 		setsize(this, mins * scale, maxs * scale);
 	if (flChanged & MONFL_CHANGED_BODY)
 		_UpdateGeomset();
-
-	setorigin(this, origin);
 }
 
 void

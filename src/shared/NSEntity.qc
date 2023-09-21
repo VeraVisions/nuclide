@@ -182,8 +182,6 @@ void NSEntity::ReceiveEntity( float flNew, float flChanged ) {
 
 	if ( flChanged & BASEFL_CHANGED_SIZE )
 		setsize( this, mins, maxs );
-
-	setorigin( this, origin );
 }
 
 void NSEntity::postdraw( void ) {

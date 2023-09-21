@@ -298,8 +298,6 @@ NSRenderableEntity::ReceiveEntity(float flNew, float flChanged)
 		setsize(this, mins * scale, maxs * scale);
 	if (flChanged & RDENT_CHANGED_BODY)
 		_UpdateGeomset();
-
-	setorigin(this, origin);
 }
 
 /*

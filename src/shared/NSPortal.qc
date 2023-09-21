@@ -440,7 +440,7 @@ NSPortal::ReceiveEntity(float flNew, float flChanged)
 		m_vecTargetS = v_right;
 		m_vecTargetT = v_up;
 	}
-	setorigin(this, origin);
+
 	_PortalUpdated();
 	drawmask = MASK_ENGINE;
 	predraw = 0;

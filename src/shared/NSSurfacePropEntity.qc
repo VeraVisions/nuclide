@@ -384,8 +384,6 @@ NSSurfacePropEntity::ReceiveEntity(float flNew, float flChanged)
 		setsize(this, mins * scale, maxs * scale);
 	if (flChanged & SRFENT_CHANGED_BODY)
 		setcustomskin(this, "", sprintf("geomset 0 %i\ngeomset 1 %i\n", m_iBody, m_iBody));
-
-	setorigin(this, origin);
 }
 #endif
 

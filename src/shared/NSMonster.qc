@@ -1188,7 +1188,6 @@ NSMonster::FreeStateDead(void)
 	DropToFloor();
 
 	RemoveFlags(FL_MONSTER);
-	SetMovetype(MOVETYPE_NONE);
 	SetSolid(SOLID_CORPSE);
 	SetState(MONSTER_DEAD);
 	FreeState();
@@ -1678,6 +1677,14 @@ NSMonster::Hide(void)
 void
 NSMonster::Respawn(void)
 {
+	/* we need to delay the DropToFloor() by at least a frame.
+	   otherwise they may just fall through an entity (func_wall, func_train etc.)
+	   that came after this entity in the lump. */
+	static void AdjustSpawnPos(void) {
+		SetOrigin(GetSpawnOrigin());
+		DropToFloor();
+	}
+
 	v_angle = GetSpawnAngles();
 	v_angle[0] = Math_FixDelta(v_angle[0]);
 	v_angle[1] = Math_FixDelta(v_angle[1]);
@@ -1698,11 +1705,9 @@ NSMonster::Respawn(void)
 	SetMovetype(MOVETYPE_WALK);
 	SetModel(GetSpawnModel());
 	SetSize(base_mins, base_maxs);
-	//SetOrigin();
-	setorigin_safe(this, GetSpawnOrigin());
 	SetEyePos([0, 0, m_flEyeHeight]);
+	ScheduleThink(AdjustSpawnPos, 0.0f);
 
-	DropToFloor();
 
 	if (m_bWeaponStartsDrawn) {
 		m_bWeaponDrawn = true;
