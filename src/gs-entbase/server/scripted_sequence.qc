@@ -274,6 +274,7 @@ scripted_sequence::RunOnEntity(entity targ)
 		return;
 	} else if (m_iMove == SS_INSTANTANEOUS) {
 		setorigin(f, this.origin);
+		f.DropToFloor();
 		NSLog("\tType: SS_INSTANTANEOUS (%i)", m_iMove);
 	} else if (m_iMove == SS_TURNTOFACE) {
 		NSLog("\tType: SS_TURNTOFACE (%i)", m_iMove);
@@ -366,8 +367,11 @@ scripted_sequence::InitIdle(void)
 			return;
 		}
 	}
-	
-	setorigin(f, origin);
+
+	/* FIXME: does this filter apply to other types as well? */
+	if (m_iMove != SS_NO)
+		setorigin(f, origin);
+
 	f.m_flSequenceEnd = frameforname(f.modelindex, m_strIdleAnim);
 	f.m_iSequenceState = SEQUENCESTATE_ENDING;
 	f.m_vecSequenceAngle = angles;
