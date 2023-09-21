@@ -368,4 +368,7 @@ public:
 	nonvirtual float GetSpawnTime(void);
 	/** Move the entity to a new position, with updated angles. */
 	nonvirtual void Transport(vector, vector);
+
+	/** Relink the entity against the world. Updates PVS info etc. */
+	nonvirtual void Relink(void);
 };

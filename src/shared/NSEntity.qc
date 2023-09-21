@@ -980,3 +980,9 @@ NSEntity::Transport(vector new_pos, vector new_ang)
 		Client_FixAngle(this, new_ang);
 #endif
 }
+
+void
+NSEntity::Relink(void)
+{
+	setorigin(this, origin);
+}

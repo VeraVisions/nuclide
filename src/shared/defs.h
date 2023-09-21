@@ -48,6 +48,7 @@
 			callfunction(self.classname); \
 		} \
 		x ##_e.ReceiveEntity( y, readfloat() );\
+		x ##_e.Relink();\
 	}
 #else
 
