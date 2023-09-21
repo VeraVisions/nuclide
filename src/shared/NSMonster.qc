@@ -1178,6 +1178,23 @@ NSMonster::FreeStateMoved(void)
 }
 
 void
+NSMonster::FreeStateDead(void)
+{
+	vector new_origin;
+
+	new_origin = gettaginfo(this, 1);
+	NSMonster_Log("^2%s::^3FreeStateMoved^7: moved to %v", classname, new_origin);
+	SetOrigin(new_origin);
+	DropToFloor();
+
+	RemoveFlags(FL_MONSTER);
+	SetMovetype(MOVETYPE_NONE);
+	SetSolid(SOLID_CORPSE);
+	SetState(MONSTER_DEAD);
+	FreeState();
+}
+
+void
 NSMonster::RouteEnded(void)
 {
 	super::RouteEnded();
@@ -1681,7 +1698,8 @@ NSMonster::Respawn(void)
 	SetMovetype(MOVETYPE_WALK);
 	SetModel(GetSpawnModel());
 	SetSize(base_mins, base_maxs);
-	SetOrigin(GetSpawnOrigin());
+	//SetOrigin();
+	setorigin_safe(this, GetSpawnOrigin());
 	SetEyePos([0, 0, m_flEyeHeight]);
 
 	DropToFloor();
@@ -2060,8 +2078,6 @@ NSMonster::ReceiveEntity(float flNew, float flChanged)
 		setsize(this, mins * scale, maxs * scale);
 	if (flChanged & MONFL_CHANGED_BODY)
 		_UpdateGeomset();
-
-	setorigin(this, origin);
 }
 
 void

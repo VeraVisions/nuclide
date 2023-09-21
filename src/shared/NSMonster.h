@@ -386,6 +386,8 @@ public:
 	virtual void FreeState(void);
 	/** Internal use only. Called when a sequence is done. */
 	virtual void FreeStateMoved(void);
+	/** Internal use only. Called when a sequence is done and we leave a corpse. */
+	virtual void FreeStateDead(void);
 	/** Internal use only. Called when a movement route is done. */
 	virtual void RouteEnded(void);
 	/** Internal use only. Called every frame to progress through a route. */

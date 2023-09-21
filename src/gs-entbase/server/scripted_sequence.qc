@@ -302,7 +302,9 @@ scripted_sequence::RunOnEntity(entity targ)
 
 	f.m_iSequenceState = SEQUENCESTATE_ENDING;
 
-	if (HasSpawnFlags(SSFL_NOSCRIPTMOVE))
+	if (HasSpawnFlags(SSFL_LEAVECORPSE))
+		f.SetThink(NSMonster::FreeStateDead);
+	else if (HasSpawnFlags(SSFL_NOSCRIPTMOVE))
 		f.SetThink(NSMonster::FreeState);
 	else
 		f.SetThink(NSMonster::FreeStateMoved);
@@ -312,7 +314,6 @@ scripted_sequence::RunOnEntity(entity targ)
 	/* make sure we're forgetting about enemies and attack states in sequence */
 	f.m_eEnemy = __NULL__;
 	f.m_iMState = MONSTER_IDLE;
-	
 }
 
 void
