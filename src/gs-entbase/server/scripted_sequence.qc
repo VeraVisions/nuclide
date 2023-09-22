@@ -369,12 +369,11 @@ scripted_sequence::InitIdle(void)
 		}
 	}
 
-	/* The entity may be configured to reposition itself on ::Respawn...*/
-	f.ReleaseThink();
-
 	/* FIXME: does this filter apply to other types as well? */
 	if (m_iMove != SS_NO) {
 		NSLog("^2scripted_sequence::^3InitIdle^7: Moving %S to %v", m_strMonster, GetOrigin());
+		/* The entity may be configured to reposition itself on ::Respawn...*/
+		f.ReleaseThink();
 		setorigin(f, GetOrigin());
 	}
 
