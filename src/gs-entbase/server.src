@@ -54,6 +54,7 @@ server/light.qc
 server/logic_auto.qc
 server/stubs.qc
 server/infodecal.qc
+server/item_generic.qc
 server/player_weaponstrip.qc
 server/player_loadsaved.qc
 server/prop_dynamic.qc
