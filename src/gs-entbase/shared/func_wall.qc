@@ -28,34 +28,21 @@ On idTech 2 BSPs, it will change texture variants when triggered.
 This entity was introduced in Quake (1996).
 */
 
+#ifdef SERVER
 class
 func_wall:NSRenderableEntity
 {
 public:
 	void func_wall(void);
 
-#ifdef SERVER
 	virtual void Respawn(void);
-	virtual float SendEntity(entity,float);
 	virtual void Trigger(entity, triggermode_t);
-#else
-	virtual void Init(void);
-	virtual bool CanSpawn(bool);
-#endif
 };
 
-#ifdef SERVER
-/* we're overriding SendEntity so that we don't network func_walls
- * without a targetname. They'll never experience gameplay changes
- * and therefore can be handled fully client-side */
-float
-func_wall::SendEntity(entity pvsent, float fl)
+void
+func_wall::func_wall(void)
 {
-	/* if we have a target name, act norm */
-	if ((GetRenderMode() != RM_NORMAL) || (targetname))
-		return super::SendEntity(pvsent, fl);
-	else
-		return (0);
+
 }
 
 void
@@ -87,43 +74,7 @@ func_wall::Respawn(void)
 	SetFrame(0);
 	ClearAngles();
 }
-#else
-
-bool
-func_wall::CanSpawn(bool clientSide)
-{
-	return true;
-}
-
-void
-func_wall::Init(void)
-{
-	super::Init();
-
-	/* this entity is being controlled by the server, remove it */
-	if ((GetRenderMode() != RM_NORMAL) && (targetname)) {
-		Destroy();
-		return;
-	}
-
-	precache_model(model);
-	SetModel(model);
-	SetOrigin(origin);
-	SetAngles([0,0,0]);
-	SetMovetype(MOVETYPE_NONE);
-	SetSolid(SOLID_BSP);
-
-	MakeStatic();
-}
 #endif
-
-void
-func_wall::func_wall(void)
-{
-#ifdef CLIENT
-	isCSQC = true;
-#endif
-}
 
 /* temporary */
 CLASSEXPORT(func_reflective_glass, func_wall)

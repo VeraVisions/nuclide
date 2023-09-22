@@ -27,32 +27,20 @@ On idTech 2 BSPs, it will change texture variants when triggered.
 # TRIVIA
 This entity was introduced in Quake (1996).
 */
+#ifdef SERVER
 class
 func_illusionary:NSRenderableEntity
 {
 public:
 	void func_illusionary(void);
 
-#ifdef SERVER
 	virtual void Respawn(void);
-	virtual float SendEntity(entity,float);
 	virtual void Trigger(entity, triggermode_t);
-#else
-	virtual void Init(void);
-#endif
 };
 
-#ifdef SERVER
-/* we're overriding SendEntity so that we don't network func_illusionarys
- * without a targetname. They'll never experience gameplay changes
- * and therefore can be handled fully client-side */
-float
-func_illusionary::SendEntity(entity pvsent, float fl)
+void
+func_illusionary::func_illusionary(void)
 {
-	if ((GetRenderMode() != RM_NORMAL) || HasTargetname())
-		return super::SendEntity(pvsent, fl);
-	else
-		return (0);
 }
 
 void
@@ -89,37 +77,4 @@ func_illusionary::Respawn(void)
 		SetSkin(0);
 	}
 }
-#else
-
-void
-func_illusionary::Init(void)
-{
-	super::Init();
-
-	/* this entity is being controlled by the server, remove it */
-	if ((GetRenderMode() != RM_NORMAL) || (targetname)) {
-		Destroy();
-		return;
-	}
-
-	precache_model(model);
-	SetModel(model);
-	SetOrigin(origin);
-	SetAngles([0,0,0]);
-	SetMovetype(MOVETYPE_NONE);
-	SetSolid(SOLID_NOT);
-
-	if (skin == -1 && m_iRenderMode == RM_TEXTURE)
-		Hide();
-
-	MakeStatic();
-}
 #endif
-
-void
-func_illusionary::func_illusionary(void)
-{
-#ifdef CLIENT
-	isCSQC = true;
-#endif
-}
