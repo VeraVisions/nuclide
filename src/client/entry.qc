@@ -84,6 +84,8 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	else
 		cvar_set("_menu_singleplayer", "0");
 
+	WorldSpawn_Init();
+
 	/* end msg */
 	print("Client game initialized.\n");
 

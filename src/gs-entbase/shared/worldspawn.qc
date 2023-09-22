@@ -14,14 +14,11 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-#ifdef CLIENT
-/* High Dynamic Range - Iris Adaption */
-var float g_flHDRIrisMinValue = 1.0;
-var float g_flHDRIrisMaxValue = 2.0;
-var float g_flHDRIrisMultiplier = 1.0;
-var float g_flHDRIrisFadeUp = 0.1;
-var float g_flHDRIrisFadeDown = 0.5;
-var int g_iHDREnabled = 0;
+#ifdef SERVER
+void EntityDef_Init(void);
+void MapTweaks_Init(void);
+var int autocvar_sv_levelexec = 1;
+#endif
 
 /*!QUAKED worldspawn (0 0 0) ?
 # OVERVIEW
@@ -51,86 +48,209 @@ It's also not affected by "killtarget".
 # TRIVIA
 This entity was introduced in Quake (1996).
 */
+
+#ifdef SERVER
 class worldspawn:NSEntity
 {
 public:
 	void worldspawn(void);
-	
-	virtual void SpawnKey(string,string);
+
 	virtual void Spawned(void);
+	virtual void SpawnKey(string, string);
+
+private:
+	string m_strSkyName;
+	bool m_bStartDark;
+	string m_strChapterTitle;
+	string m_strAmbientSound;
+	string m_strBGMTrack;
+
+	float m_flHDRIrisMinValue;
+	float m_flHDRIrisMaxValue;
+	float m_flHDRIrisMultiplier;
+	float m_flHDRIrisFadeUp;
+	float m_flHDRIrisFadeDown;
+	bool m_bHDREnabled;
 };
+
 
 void
 worldspawn::worldspawn(void)
 {
+	/* defaults */
+	m_flHDRIrisMinValue = 1.0;
+	m_flHDRIrisMaxValue = 2.0;
+	m_flHDRIrisMultiplier = 1.0;
+	m_flHDRIrisFadeUp = 0.1;
+	m_flHDRIrisFadeDown = 0.5;
+	m_bHDREnabled = false;
+
+	if (serverkeyfloat("*bspversion") == BSPVER_HL) {
+		m_strSkyName = "desert";
+	} else {
+		m_strSkyName = "";
+	}
+
+	m_bStartDark = false;
+	m_strChapterTitle = "";
+	m_strAmbientSound = "";
+	m_strBGMTrack = "";
+
+	print("--------- Map Initialization ---------\n");
+	print(sprintf("Map: %s\n", mapname));
+	print("----------- Game Map Init ------------\n");
+
+	lightstyle(0, "m");
+	lightstyle(1, "mmnmmommommnonmmonqnmmo");
+	lightstyle(2, "abcdefghijklmnopqrstuvwxyzyxwvutsrqponmlkjihgfedcba");
+	lightstyle(3, "mmmmmaaaaammmmmaaaaaabcdefgabcdefg");
+	lightstyle(4, "mamamamamama");
+	lightstyle(5, "jklmnopqrstuvwxyzyxwvutsrqponmlkj");
+	lightstyle(6, "nmonqnmomnmomomno");
+	lightstyle(7, "mmmaaaabcdefgmmmmaaaammmaamm");
+	lightstyle(8, "mmmaaammmaaammmabcdefaaaammmmabcdefmmmaaaa");
+	lightstyle(9, "aaaaaaaazzzzzzzz");
+	lightstyle(10, "mmamammmmammamamaaamammma");
+	lightstyle(11, "abcdefghijklmnopqrrqponmlkjihgfedcba");
+	lightstyle(12, "mmnnmmnnnmmnn");
+	lightstyle(63, "a");
+
+	Skill_Init();
+	EntityDef_Init();
+	MapTweaks_Init();
+
+	precache_model("models/error.vvm");
+
+	if (autocvar_sv_levelexec)
+		readcmd(sprintf("exec maps/%s.cfg\n", mapname));
+
+	print("Spawning entities\n");
 }
 
 void
 worldspawn::Spawned(void)
 {
-	g_vecSunDir = [90,0];
-
 	super::Spawned();
+	touch = __NULL__;
+	blocked = __NULL__;
 
-	if (g_iHDREnabled)
-		cvar_set("r_hdr_irisadaptation", "1");
-	else
-		cvar_set("r_hdr_irisadaptation", "0");
+	forceinfokey(world, "skyname", m_strSkyName);
+	forceinfokey(world, "startdark", ftos(m_bStartDark));
+	forceinfokey(world, "chaptertitle", m_strChapterTitle);
+	forceinfokey(world, "ambientsound", m_strAmbientSound);
+	forceinfokey(world, "bgm", m_strBGMTrack);
 
-	cvar_set("r_hdr_irisadaptation_minvalue", ftos(g_flHDRIrisMinValue));
-	cvar_set("r_hdr_irisadaptation_maxvalue", ftos(g_flHDRIrisMaxValue));
-	cvar_set("r_hdr_irisadaptation_multiplier", ftos(g_flHDRIrisMultiplier));
-	cvar_set("r_hdr_irisadaptation_fade_up", ftos(g_flHDRIrisFadeUp));
-	cvar_set("r_hdr_irisadaptation_fade_down", ftos(g_flHDRIrisFadeDown));
+	if (m_bHDREnabled) {
+		forceinfokey(world, "hdr_iris_minvalue", ftos(m_flHDRIrisMinValue));
+		forceinfokey(world, "hdr_iris_maxvalue", ftos(m_flHDRIrisMaxValue));
+		forceinfokey(world, "hdr_iris_multiplier", ftos(m_flHDRIrisMultiplier));
+		forceinfokey(world, "hdr_iris_fade_up", ftos(m_flHDRIrisFadeUp));
+		forceinfokey(world, "hdr_iris_fade_down", ftos(m_flHDRIrisFadeDown));
+	} else {
+		forceinfokey(world, "hdr_iris_minvalue", "");
+		forceinfokey(world, "hdr_iris_maxvalue", "");
+		forceinfokey(world, "hdr_iris_multiplier", "");
+		forceinfokey(world, "hdr_iris_fade_up", "");
+		forceinfokey(world, "hdr_iris_fade_down", "");
+	}
 
-	Destroy();
+	forceinfokey(world, "hdr", ftos(m_bHDREnabled));
 }
 
 void
-worldspawn::SpawnKey(string strField, string strKey)
+worldspawn::SpawnKey(string strKey, string strValue)
 {
-	switch (strField) {
+	switch (strKey) {
+	case "skyname":
+		m_strSkyName = ReadString(strValue);
+		break;
 	case "startdark":
-		if (stof(strKey) == 1)
-			Fade_StartDark();
+		m_bStartDark = ReadBool(strValue);
 		break;
 	case "chaptertitle":
-		GameMessage_Setup(strKey, 0);
+		m_strChapterTitle = ReadString(strValue);
 		break;
 	case "ambientsound":
-		if (g_ambientsound) {
-			break;
-		}
-		g_ambientsound = spawn(env_soundscape);
-		g_ambientsound.m_iShader = Sound_Precache(strKey);
+		m_strAmbientSound = ReadString(strValue);
 		break;
-#ifdef HHDEATH
+	/* Household Death */
 	case "_bgm":
-		localcmd(sprintf("music sound/bgm/%s.mp3\n", strKey));
+		m_strBGMTrack = ReadString(strValue);
 		break;
-#endif
 	case "hdr_iris_minvalue":
-		g_flHDRIrisMinValue = stof(strKey);
-		g_iHDREnabled = 1;
+		m_flHDRIrisMinValue = ReadFloat(strValue);
+		m_bHDREnabled = true;
 		break;
 	case "hdr_iris_maxvalue":
-		g_flHDRIrisMaxValue = stof(strKey);
-		g_iHDREnabled = 1;
+		m_flHDRIrisMaxValue = ReadFloat(strValue);
+		m_bHDREnabled = true;
 		break;
 	case "hdr_iris_multiplier":
-		g_flHDRIrisMultiplier = stof(strKey);
-		g_iHDREnabled = 1;
+		m_flHDRIrisMultiplier = ReadFloat(strValue);
+		m_bHDREnabled = true;
 		break;
 	case "hdr_iris_fade_up":
-		g_flHDRIrisFadeUp = stof(strKey);
-		g_iHDREnabled = 1;
+		m_flHDRIrisFadeUp = ReadFloat(strValue);
+		m_bHDREnabled = true;
 		break;
 	case "hdr_iris_fade_down":
-		g_flHDRIrisFadeDown = stof(strKey);
-		g_iHDREnabled = 1;
+		m_flHDRIrisFadeDown = ReadFloat(strValue);
+		m_bHDREnabled = true;
 		break;
 	default:
+		super::SpawnKey(strKey, strValue);
 		break;
+	}
+}
+#endif
+
+#ifdef CLIENT
+/* There are a few reasons to avoid worldspawn networking itself in the form
+of an entity. First of all, entity '0' cannot do that anyway - second we should
+learn about the various world properties because we spawn into the game and
+start networking various entity states. That way we can prepare to load music
+tracks, adjust the client-side rendering (startdark comes to mind) accordingly. */
+void
+WorldSpawn_Init(void)
+{
+	string skyName = serverkey("skyname");
+	bool startDark = serverkeyfloat("startdark");
+	string chapterTitle = serverkey("chaptertitle");
+	string ambientSound = serverkey("ambientsound");
+	string bgmTrack = serverkey("bgm");
+	float hdrMin = serverkeyfloat("hdr_iris_minvalue");
+	float hdrMax = serverkeyfloat("hdr_iris_maxvalue");
+	float hdrMultiplier = serverkeyfloat("hdr_iris_multiplier");
+	float hdrFadeUp = serverkeyfloat("hdr_iris_fade_up");
+	float hdrFadeDown = serverkeyfloat("hdr_iris_fade_down");
+	bool hdrEnabled = serverkeyfloat("hdr");
+
+	if (startDark == true)
+		Fade_StartDark();
+
+	if (chapterTitle) {
+		GameMessage_Setup(chapterTitle, 0);
+	}
+
+	cvar_set("r_hdr_irisadaptation_minvalue", ftos(hdrMin));
+	cvar_set("r_hdr_irisadaptation_maxvalue", ftos(hdrMax));
+	cvar_set("r_hdr_irisadaptation_multiplier", ftos(hdrMultiplier));
+	cvar_set("r_hdr_irisadaptation_fade_up", ftos(hdrFadeUp));
+	cvar_set("r_hdr_irisadaptation_fade_down", ftos(hdrFadeDown));
+
+	if (hdrEnabled == true) {
+		cvar_set("r_hdr_irisadaptation", "1");
+	} else {
+		cvar_set("r_hdr_irisadaptation", "0");
+	}
+
+	if (!g_ambientsound) {
+		g_ambientsound = spawn(env_soundscape);
+		g_ambientsound.m_iShader = Sound_Precache(ambientSound);
+	}
+
+	if (bgmTrack) {
+		localcmd(sprintf("music sound/bgm/%s.mp3\n", bgmTrack));
 	}
 }
 #endif

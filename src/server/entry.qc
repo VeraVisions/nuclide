@@ -368,7 +368,6 @@ init_respawn(void)
 }
 
 entity g_respawntimer;
-.string skyname;
 
 /** Called by the engine when we're ready to spawn entities.
 Before this, we are not able to spawn, touch or allocate any entity slots.
@@ -435,60 +434,6 @@ initents(void)
 
 	/* other engine hacks */
 	cvar_set("sv_nqplayerphysics", "0");
-}
-
-var int autocvar_sv_levelexec = 1;
-
-/** The first entity spawn function. You want to make sure to put anything in here
-that'll affect subsequent initialization of map entities.
-
-Keep in mind that any find() or similar function will not find any entity but 'world',
-as they do not exist yet.
-*/
-void
-worldspawn(void)
-{
-	print("--------- Map Initialization ---------\n");
-	print(sprintf("Map: %s\n", mapname));
-	print("----------- Game Map Init ------------\n");
-
-	lightstyle(0, "m");
-	lightstyle(1, "mmnmmommommnonmmonqnmmo");
-	lightstyle(2, "abcdefghijklmnopqrstuvwxyzyxwvutsrqponmlkjihgfedcba");
-	lightstyle(3, "mmmmmaaaaammmmmaaaaaabcdefgabcdefg");
-	lightstyle(4, "mamamamamama");
-	lightstyle(5, "jklmnopqrstuvwxyzyxwvutsrqponmlkj");
-	lightstyle(6, "nmonqnmomnmomomno");
-	lightstyle(7, "mmmaaaabcdefgmmmmaaaammmaamm");
-	lightstyle(8, "mmmaaammmaaammmabcdefaaaammmmabcdefmmmaaaa");
-	lightstyle(9, "aaaaaaaazzzzzzzz");
-	lightstyle(10, "mmamammmmammamamaaamammma");
-	lightstyle(11, "abcdefghijklmnopqrrqponmlkjihgfedcba");
-	lightstyle(12, "mmnnmmnnnmmnn");
-	lightstyle(63, "a");
-	Skill_Init();
-
-	EntityDef_Init();
-	MapTweaks_Init();
-
-	precache_model("models/error.vvm");
-
-	if (autocvar_sv_levelexec)
-		readcmd(sprintf("exec maps/%s.cfg\n", mapname));
-
-	/* we need to flush this, so that any leftover serverinfo
-	 * in the server-config gets overwritten */
-	forceinfokey(world, "skyname", "");
-
-	/* Set the default sky */
-	if (serverkeyfloat("*bspversion") == BSPVER_HL) {
-		if (!self.skyname) {
-			self.skyname = "desert";
-		}
-	}
-	forceinfokey(world, "skyname", self.skyname);
-
-	print("Spawning entities\n");
 }
 
 /** Any command executed on the server (either tty, rcon or `sv`) gets
