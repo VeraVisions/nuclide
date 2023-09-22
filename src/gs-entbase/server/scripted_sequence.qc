@@ -257,18 +257,18 @@ scripted_sequence::RunOnEntity(entity targ)
 	f.m_iSequenceState = SEQUENCESTATE_ACTIVE;
 
 	/* seems to be active at all times? contrary to SS_TURNTOFACE existing? */
-	f.m_vecSequenceAngle = angles;
+	f.m_vecSequenceAngle = GetAngles();
 	f.m_iSequenceFlags = spawnflags;
 
 	if (m_iMove == SS_NO) {
 		NSLog("\tType: SS_NO (%i)", m_iMove);
 	} else if (m_iMove == SS_WALK) {
-		f.RouteToPosition(origin);
+		f.RouteToPosition(GetOrigin());
 		f.m_flSequenceSpeed = f.GetWalkSpeed();
 		NSLog("\tType: SS_WALK (%i)", m_iMove);
 		return;
 	} else if (m_iMove == SS_RUN) {
-		f.RouteToPosition(origin);
+		f.RouteToPosition(GetOrigin());
 		f.m_flSequenceSpeed = f.GetRunSpeed();
 		NSLog("\tType: SS_RUN (%i)", m_iMove);
 		return;
@@ -348,7 +348,7 @@ scripted_sequence::InitIdle(void)
 {
 	NSMonster f;
 
-	NSLog("^2scripted_sequence::^3InitIdle^7: with spawnflags %d", spawnflags);
+	NSLog("^2scripted_sequence::^3InitIdle^7: with spawnflags %d on %S", spawnflags, m_strMonster);
 	f = (NSMonster)find(world, ::targetname, m_strMonster);
 
 	/* target doesn't exist/hasn't spawned */
@@ -369,13 +369,18 @@ scripted_sequence::InitIdle(void)
 		}
 	}
 
-	/* FIXME: does this filter apply to other types as well? */
-	if (m_iMove != SS_NO)
-		setorigin(f, origin);
+	/* The entity may be configured to reposition itself on ::Respawn...*/
+	f.ReleaseThink();
 
-	f.m_flSequenceEnd = frameforname(f.modelindex, m_strIdleAnim);
+	/* FIXME: does this filter apply to other types as well? */
+	if (m_iMove != SS_NO) {
+		NSLog("^2scripted_sequence::^3InitIdle^7: Moving %S to %v", m_strMonster, GetOrigin());
+		setorigin(f, GetOrigin());
+	}
+
+	f.m_flSequenceEnd = frameforname(f.GetModelindex(), m_strIdleAnim);
 	f.m_iSequenceState = SEQUENCESTATE_ENDING;
-	f.m_vecSequenceAngle = angles;
+	f.m_vecSequenceAngle = GetAngles();
 }
 
 void
