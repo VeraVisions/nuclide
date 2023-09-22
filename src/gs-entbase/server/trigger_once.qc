@@ -144,6 +144,6 @@ trigger_once::Touch(entity eToucher)
 		return;
 	}
 
-	print(sprintf("%s is triggering %s in trigger_once\n", eToucher.classname, target));
+	NSLog("^2trigger_once::^3Touch^7: %S is triggering %S", eToucher.classname, target);
 	UseTargets(eToucher, TRIG_TOGGLE, m_flDelay);
 }

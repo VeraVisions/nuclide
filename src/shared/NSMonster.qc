@@ -1683,6 +1683,7 @@ NSMonster::Respawn(void)
 	static void AdjustSpawnPos(void) {
 		SetOrigin(GetSpawnOrigin());
 		DropToFloor();
+		setorigin_safe(this, origin);
 	}
 
 	v_angle = GetSpawnAngles();
