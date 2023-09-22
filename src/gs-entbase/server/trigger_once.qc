@@ -124,13 +124,16 @@ trigger_once::SpawnKey(string strKey, string strValue)
 void
 trigger_once::Touch(entity eToucher)
 {
+	bool isPushable = (substring(eToucher.classname, 0, 5) == "func_") ? true : false;
+
 	if (GetMaster() == FALSE)
 		return;
+
 	if (HasSpawnFlags(TO_NOCLIENTS) && eToucher.flags & FL_CLIENT)
 		return;
 	if (!HasSpawnFlags(TO_MONSTERS) && eToucher.flags & FL_MONSTER)
 		return;
-	if (!HasSpawnFlags(TO_PUSHABLES) && eToucher.classname == "func_pushable")
+	if (!HasSpawnFlags(TO_PUSHABLES) && isPushable == true)
 		return;
 
 	SetSolid(SOLID_NOT); /* make inactive */
@@ -141,5 +144,6 @@ trigger_once::Touch(entity eToucher)
 		return;
 	}
 
+	print(sprintf("%s is triggering %s in trigger_once\n", eToucher.classname, target));
 	UseTargets(eToucher, TRIG_TOGGLE, m_flDelay);
 }
