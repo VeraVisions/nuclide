@@ -1709,6 +1709,11 @@ NSMonster::Respawn(void)
 	SetEyePos([0, 0, m_flEyeHeight]);
 	ScheduleThink(AdjustSpawnPos, 0.0f);
 
+	if (HasSpawnFlags(MSF_MONSTERCLIP)) {
+		hitcontentsmaski = CONTENTBITS_BOXSOLID | CONTENTBIT_MONSTERCLIP;
+	} else {
+		hitcontentsmaski = CONTENTBITS_BOXSOLID;
+	}
 
 	if (m_bWeaponStartsDrawn) {
 		m_bWeaponDrawn = true;

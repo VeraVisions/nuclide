@@ -50,6 +50,7 @@ server/func_plat.qc
 server/func_platrot.qc
 server/func_pendulum.qc
 server/func_vehiclecontrols.qc
+server/func_monsterclip.qc
 server/light.qc
 server/logic_auto.qc
 server/stubs.qc
