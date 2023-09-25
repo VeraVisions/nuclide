@@ -491,6 +491,17 @@ ConsoleCmd(string cmd)
 				t.Trigger(self, TRIG_TOGGLE);
 		}
 		break;
+	case "input":
+		float entNum = stof(argv(1));
+		string inputName = argv(2);
+		string inputData = argv(3);
+		NSEntity inputTarget = (NSEntity)edict_num(entNum);
+
+		if (inputTarget) {
+			inputTarget.Input(self, inputName, inputData);
+			print(sprintf("Sending input to %d, %S: %S\n", entNum, inputName, inputData));
+		}
+		break;
 	case "goto_ent":
 		static entity finder;
 		finder = find(finder, ::classname, argv(1));
