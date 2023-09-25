@@ -44,6 +44,8 @@ Sound_Shutdown(void)
 	g_hashsounds = 0;
 }
 
+void SoundSource_Init(void);
+
 void
 Sound_Init(void)
 {
@@ -61,18 +63,23 @@ Sound_Init(void)
 	print(sprintf("allocated %d bytes for soundDef\n", sizeof(snd_t) * SOUNDSHADER_MAX));
 #endif
 
+	/* Source Engine conventions */
+	SoundSource_Init();
+
 	precache_sound("misc/missing.wav");
 
 	print("SoundDef initialized.\n");
 }
 
 static void
-Sound_ParseField(int i, int a)
+Sound_ParseField(int i, int a, string keyName, string setValue)
 {
-	switch (argv(0)) {
+	bool precacheSound = true;
+
+	switch (keyName) {
 	case "attenuation":
 		if (a == 2) {
-			switch(argv(1)) {
+			switch(setValue) {
 			case "idle":
 				g_sounds[i].dist_max = 1000 / ATTN_IDLE;
 				break;
@@ -89,53 +96,82 @@ Sound_ParseField(int i, int a)
 			}
 		}
 		break;
+	case "soundlevel":
+		if (a == 2) {
+			switch(setValue) {
+			case "ATTN_IDLE":
+				g_sounds[i].dist_max = 1000 / ATTN_IDLE;
+				break;
+			case "ATTN_RICOCHET":
+			case "ATTN_STATIC":
+				g_sounds[i].dist_max = 1000 / ATTN_STATIC;
+				break;
+			case "ATTN_NONE":
+				g_sounds[i].dist_max = 0;
+				break;
+			case "ATTN_GUNFIRE":
+			case "ATTN_NORM":
+				g_sounds[i].dist_max = 1000 / ATTN_NORM;
+			default:
+				break;
+			}
+		}
+		break;
 	case "dist_min":
 		if (a == 2) {
 			dprint("\tMin distance set\n");
-			g_sounds[i].dist_min = stof(argv(1));
+			g_sounds[i].dist_min = stof(setValue);
 		}
 		break;
 	case "dist_max":
 		if (a == 2) {
 			dprint("\tMax distance set\n");
-			g_sounds[i].dist_max = stof(argv(1));
+			g_sounds[i].dist_max = stof(setValue);
 		}
 		break;
 	case "volume":
 		if (a == 2) {
 			dprint("\tVolume set\n");
-			g_sounds[i].volume = stof(argv(1));
+			g_sounds[i].volume = stof(setValue);
 		}
 		break;
 	case "shakes":
 		if (a == 2) {
 			dprint("\tShake set\n");
-			g_sounds[i].shakes = stof(argv(1));
+			g_sounds[i].shakes = stof(setValue);
 		}
 		break;
 	case "pitch":
 		if (a == 2) {
 			dprint("\tPitch set\n");
-			g_sounds[i].pitch_min = fabs(stof(argv(1))) * 100;
-			g_sounds[i].pitch_max = g_sounds[i].pitch_min;
+
+			int comma = tokenizebyseparator(setValue, ",");
+
+			if (comma == 2) {
+				g_sounds[i].pitch_min = stof(argv(0));
+				g_sounds[i].pitch_max = stof(argv(1));
+			} else {
+				g_sounds[i].pitch_min = fabs(stof(setValue)) * 100;
+				g_sounds[i].pitch_max = g_sounds[i].pitch_min;
+			}
 		}
 		break;
 	case "pitch_min":
 		if (a == 2) {
 			dprint("\tMinimum pitch set\n");
-			g_sounds[i].pitch_min = fabs(stof(argv(1))) * 100;
+			g_sounds[i].pitch_min = fabs(stof(setValue)) * 100;
 		}
 		break;
 	case "pitch_max":
 		if (a == 2) {
 			dprint("\tMaximum pitch set\n");
-			g_sounds[i].pitch_max = fabs(stof(argv(1))) * 100;
+			g_sounds[i].pitch_max = fabs(stof(setValue)) * 100;
 		}
 		break;
 	case "offset":
 		if (a == 2) {
 			dprint("\tOffset set\n");
-			g_sounds[i].offset = stof(argv(1));
+			g_sounds[i].offset = stof(setValue);
 		}
 		break;
 	case "looping":
@@ -170,22 +206,37 @@ Sound_ParseField(int i, int a)
 		g_sounds[i].flags |= SNDFL_STEP;
 		break;
 	case "distshader":
-		g_sounds[i].distshader = argv(1);
+		g_sounds[i].distshader = setValue;
 		break;
 	case "pointparticle":
-		g_sounds[i].pointparticle = particleeffectnum(argv(1));
+		g_sounds[i].pointparticle = particleeffectnum(setValue);
 		break;
 	case "alerts":
 		dprint("\tSound set to alert enemy AI\n");
 		g_sounds[i].flags |= SNDFL_ALERTS;
 		break;
+	case "wave":
+		string randomPrefix = substring(setValue, 0, 1);
+ 
+		/* why? what is any of this about? */
+		if (randomPrefix == "^" || randomPrefix == ")" || randomPrefix == "*") {
+			setValue = substring(setValue, 1, -1);
+		}
+
+		/* hack to deal with all the stuff we don't yet support */
+		//if not (whichpack(strcat("sound/", setValue)))
+			precacheSound = false;
+
 	case "sample":
 		if (a == 2) {
 			dprint("\tAdded sample ");
-			dprint(argv(1));
+			dprint(setValue);
 			dprint("\n");
-			precache_sound(argv(1));
-			g_sounds[i].samples = sprintf("%s%s\n", g_sounds[i].samples, argv(1));
+
+			if (precacheSound)
+				precache_sound(setValue);
+
+			g_sounds[i].samples = sprintf("%s%s\n", g_sounds[i].samples, setValue);
 			g_sounds[i].sample_count++;
 		}
 		break;
@@ -232,7 +283,7 @@ Sound_Parse(int i, string line, string shader)
 		break;
 	default:
 		if (braced == TRUE) {
-			Sound_ParseField(i, c);
+			Sound_ParseField(i, c, argv(0), argv(1));
 		} else {
 			/* name/identifer of our message */
 			t_name = strtolower(line);
@@ -250,6 +301,84 @@ Sound_Parse(int i, string line, string shader)
 		}
 	}
 	return (0);
+}
+
+bool
+Sound_PrecacheFile(string fileName)
+{
+	filestream scriptFile;
+	string lineStream;
+	int braceDepth;
+	string sndDefName = "";
+	int startIndex = g_sounds_count;
+
+	if (g_sounds_count >= SOUNDSHADER_MAX)
+		return;
+
+	scriptFile = fopen(fileName, FILE_READ);
+
+	if (scriptFile < 0) {
+		return false;
+	}
+
+	/* create the hash-table if it doesn't exist */
+	if (!g_hashsounds) {
+		g_hashsounds = hash_createtab(2, HASH_ADD);
+	}
+
+	print(sprintf("Precaching SOURCE ENGINE file %S\n", fileName));
+
+	while ((lineStream = fgets(scriptFile))) {
+		/* when we found it, quit */
+		int lineSegments = tokenize_console(lineStream);
+
+		/* word for word */
+		for (int i = 0i; i < lineSegments; i++) {
+			string word = argv(i);
+
+			switch (word) {
+			case "{":
+				if (braceDepth == 0) {
+					g_sounds[startIndex].volume = 1.0f;
+					g_sounds[startIndex].dist_max = 1000;
+					g_sounds[startIndex].pitch_min = g_sounds[startIndex].pitch_max = 100;
+					g_sounds[startIndex].offset = 0;
+				}
+				braceDepth++;
+				break;
+			case "}":
+				braceDepth--;
+
+				/* sound definition done */
+				if (braceDepth == 0) {
+					//if (substring(sndDefName, 0, 11) == "Weapon_SMG1")
+					//	error("");
+
+					hash_add(g_hashsounds, sndDefName, startIndex);
+				//	print(sprintf("sfx add %i %S\n", startIndex, sndDefName));
+					sndDefName = "";
+					startIndex++;
+					g_sounds_count++;
+
+					if (g_sounds_count >= SOUNDSHADER_MAX)
+						return;
+				}
+				break;
+			default:
+				if (braceDepth == 0) {
+					sndDefName = word;
+				} else {
+					//print(sprintf("field %S %S\n", argv(i), argv(i+1)));
+					Sound_ParseField(startIndex, 2, argv(i), argv(i+1));
+					i++;
+				}
+				break;
+			}
+		}
+
+	}
+
+	return true;
 }
 
 int
@@ -773,3 +902,36 @@ Sound_Speak(entity target, string shader)
 	multicast(target.origin, MULTICAST_PVS);
 }
 #endif
+
+/* utterly basic (and probably wrong...) support for Source Engine sound definitions */
+void
+SoundSource_Init(void)
+{
+	const string manifestStart = "scripts/game_sounds_manifest.txt";
+	filestream manifestFile;
+	string lineStream;
+
+	manifestFile = fopen(manifestStart, FILE_READ);
+
+	/* file doesn't exist. that's okay. */
+	if (manifestFile < 0) {
+		error(sprintf("loading %S failed.\n", manifestStart));
+		return;
+	}
+
+	while ((lineStream = fgets(manifestFile))) {
+		/* when we found it, quit */
+		int c = tokenize(lineStream);
+		string key = argv(0);
+		string value = argv(1);
+
+		if (c == 2) {
+			if (key == "precache_file") {
+#if 1
+				Sound_PrecacheFile(value);
+#endif
+			}
+		}
+	}
+	fclose(manifestFile);
+}
