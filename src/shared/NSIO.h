@@ -92,6 +92,10 @@ public:
 	Input/Output specification. */
 	nonvirtual string CreateOutput(string);
 
+	/** Returns whether the Output is ready, or has done firing - not currently scheduled to fire, etc.
+	Input is the identifier of an output. */
+	nonvirtual bool CheckOutput(string);
+
 	/* save game related methods */
 	/** Saves a floating point key/value pair to a filehandle. */
 	nonvirtual void SaveFloat(float,string,float);

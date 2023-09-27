@@ -164,6 +164,19 @@ NSIO::CreateOutput(string outmsg)
 	return outname;
 }
 
+bool
+NSIO::CheckOutput(string strOut)
+{
+	for (entity f = world; (f = find(f, ::targetname, strOut));) {
+		NSOutput op = (NSOutput)f;
+
+		if (op.nextthink != 0.0f)
+			return false;
+	}
+
+	return true;
+}
+
 string
 NSIO::PrepareOutput(string strOut, string strValue)
 {

@@ -29,6 +29,8 @@ NSOutput::TriggerOutput(void)
 	/* we're not -1 (infinite) and we've still got one use to deduct */
 	if (m_iCount > 0)
 		m_iCount--;
+
+	nextthink = 0.0f;
 }
 
 void
