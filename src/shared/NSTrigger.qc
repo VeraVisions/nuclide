@@ -34,10 +34,48 @@ NSTrigger::NSTrigger(void)
 }
 
 #ifdef SERVER
+
+bool
+NSTrigger::CanBeTriggeredBy(entity testEnt)
+{
+	/* easy way out */
+	if (spawnflags & TOUCHFILTER_EVERYTHING)
+		return true;
+
+	/* filters */
+	if (!(spawnflags & TOUCHFILTER_CLIENTS) && (testEnt.flags & FL_CLIENT))
+		return false;
+	if (!(spawnflags & TOUCHFILTER_NPCS) && (testEnt.flags & FL_MONSTER))
+		return false;
+	if (!(spawnflags & TOUCHFILTER_PUSHABLE) && (testEnt.classname == "func_pushable"))
+		return false;
+	if (!(spawnflags & TOUCHFILTER_PHYSICS) && (testEnt.isPhysics == true))
+		return false;
+	if (!(spawnflags & TOUCHFILTER_FRIENDLIES) && (testEnt.flags & FL_MONSTER) && (testEnt.m_iAlliance == 0))
+		return false;
+	if (!(spawnflags & TOUCHFILTER_CLIENTSINVEHICLES) && (testEnt.flags & FL_CLIENT) && (testEnt.flags & FL_INVEHICLE))
+		return false;
+
+/*
+
+	if (!spawnflags & TOUCHFILTER_CLIENTSNOTINVEHICLES) {
+		return false;
+	if (!spawnflags &TRIGTELE_DEBRIS) && )
+		return false;
+	if (!spawnflags &TRIGTELE_NPCSINVEHICLES) && )
+		return false;
+	if (!spawnflags &TRIGTELE_NOBOTS) && )
+		return false;
+*/
+
+	return true;
+}
+
 /* legacy trigger architecture */
 void
 NSTrigger::Trigger(entity act, triggermode_t state)
 {
+	breakpoint();
 	NSLog("^2%s::^3Trigger^7: Triggered by %s with no consequence", 
 		classname, act.classname);
 }
@@ -49,6 +87,9 @@ NSTrigger::UseTargets(entity act, int state, float fDelay)
 		NSTrigger::UseTargets(self.owner, self.health, 0.0f);
 		remove(self);
 	}
+
+	if not (target)
+		return;
 
 	if not (m_strKillTarget)
 		if not (target)
@@ -157,6 +198,8 @@ bool
 NSTrigger::HasTriggerTarget(void)
 {
 	if not (target)
+		return false;
+	if (target == "")
 		return false;
 
 	return true;
@@ -322,6 +365,7 @@ NSTrigger::_TouchHandler(void)
 		return;
 	}
 #endif
+
 
 	/* start touch in case we haven't */
 	if (m_beingTouched != true)

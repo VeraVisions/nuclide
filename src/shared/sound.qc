@@ -308,12 +308,12 @@ Sound_PrecacheFile(string fileName)
 {
 	filestream scriptFile;
 	string lineStream;
-	int braceDepth;
+	int braceDepth = 0i;
 	string sndDefName = "";
 	int startIndex = g_sounds_count;
 
 	if (g_sounds_count >= SOUNDSHADER_MAX)
-		return;
+		return false;
 
 	scriptFile = fopen(fileName, FILE_READ);
 
@@ -361,7 +361,7 @@ Sound_PrecacheFile(string fileName)
 					g_sounds_count++;
 
 					if (g_sounds_count >= SOUNDSHADER_MAX)
-						return;
+						return false;
 				}
 				break;
 			default:
@@ -795,6 +795,7 @@ Sound_GetID(string defName)
 {
 	if (defName == "")
 		return -1;
+
 	return (int)hash_get(g_hashsounds, defName, -1);
 }
 
@@ -923,7 +924,7 @@ SoundSource_Init(void)
 
 	/* file doesn't exist. that's okay. */
 	if (manifestFile < 0) {
-		error(sprintf("loading %S failed.\n", manifestStart));
+		//error(sprintf("loading %S failed.\n", manifestStart));
 		return;
 	}
 

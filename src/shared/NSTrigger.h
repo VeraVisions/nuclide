@@ -46,6 +46,21 @@ typedef enum
 	TRIG_TOGGLE
 } triggermode_t;
 
+enumflags
+{
+	TOUCHFILTER_CLIENTS,
+	TOUCHFILTER_NPCS,
+	TOUCHFILTER_PUSHABLE,
+	TOUCHFILTER_PHYSICS,
+	TOUCHFILTER_FRIENDLIES,
+	TOUCHFILTER_CLIENTSINVEHICLES,
+	TOUCHFILTER_EVERYTHING,
+	TOUCHFILTER_CLIENTSNOTINVEHICLES,
+	TOUCHFILTER_DEBRIS,
+	TOUCHFILTER_NPCSINVEHICLES,
+	TOUCHFILTER_NOBOTS
+};
+
 
 /** NSTrigger handles all the non-input as well as Legacy (Quake, GoldSource) style
 trigger behaviour. It also deals with masters, touches, blocking and so on.
@@ -76,6 +91,9 @@ public:
 	virtual void Save(float);
 	virtual void Restore(string,string);
 	virtual void Input(entity,string,string);
+
+	/* Called to check if the target entity can touch trigger itself. */
+	virtual bool CanBeTriggeredBy(entity);
 
 	/** Called whenever we're legacy triggered by another object or function. */
 	virtual void Trigger(entity, triggermode_t);
