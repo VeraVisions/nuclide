@@ -19,6 +19,41 @@ enumflags
 	LOGICTIMER_OSCILLATOR
 };
 
+/*!QUAKED logic_timer (1 0 0) (-8 -8 -8) (8 8 8) OSCILLATOR
+# OVERVIEW
+Will trigger its outputs at fixed/random intervals, much like the entity random_trigger.
+
+# KEYS
+- "targetname" : Name
+- "UseRandomTime" : Boolean value that determines whether it's random, or fixed.
+- "LowerRandomBound" : The lower limit of a random trigger timer.
+- "UpperRandomBound" : The upper limit of a random trigger timer.
+- "RefireTime" : Fixed time in seconds. Only when UseRandomTime is set to 0.
+- "StartDisabled" : Boolean value that determines whether we should not start triggering at level start.
+
+# INPUTS
+- "Enable" - Enable the timer logic.
+- "Disable" - Disable the timer logic.
+- "Toggle" - Toggle between Enable/Disable.
+- "ResetTimer" - Resets the timer, and starts it.
+- "FireTimer" - Forcefully triggers the OnTimer outputs.
+- "RefireTime" - Sets a new firing time from the data field.
+- "LowerRandomBound" - Sets the lower limit of a random trigger timer from the data field.
+- "UpperRandomBound" - Sets the upper limit of a random trigger timer from the data field.
+- "AddToTimer" - Adds the number of seconds from the data field to the current timer.
+- "SubtractFromTimer" - Removes the number of seconds from the data field to the current timer.
+
+# OUTPUTS
+- "OnTimer" : Triggered when the map is loaded for any reason.  
+- "OnTimerHigh" : Triggered only when a new game starts on this level.  
+- "OnTimerLow" : Triggered when the map is loaded via save game.  
+
+# SPAWNFLAGS
+- OSCILLATOR (1) : Instead of triggering the OnTimer output, will flip-flip between OnTimerHigh and OnTimerLow.
+
+# TRIVIA
+This entity was introduced in Half-Life 2 (2004).
+*/
 class
 logic_timer:NSPointTrigger
 {

@@ -20,6 +20,36 @@ enumflags
 	LOGICRELAY_FAST
 };
 
+/*!QUAKED logic_relay (1 0 0) (-8 -8 -8) (8 8 8) ONCE FAST
+# OVERVIEW
+Triggers outputs within an I/O system chain, which can be enabled/disabled at will.
+
+# KEYS
+- "targetname" : Name
+- "StartDisabled" : Whether the entity starts disabled.
+
+# INPUTS
+- "Enable" : Enable the logic_relay. Allowing it to be triggered.
+- "Disable" : Disable the logic_relay. Prevent it from being triggered.
+- "Trigger" : Trigger the logic_relay. Will fire the OnTrigger output.
+- "Toggle" : Toggle between Enabled/Disabled.
+- "CancelPending" : Not yet implemented. Will cancel any outputs currently scheduled to trigger.
+- "EnableRefire" : Not yet implemented. Will be called on itself automatically after all outputs finish their job.
+
+# OUTPUTS
+- "OnSpawn" : Triggered when the map is loaded for any reason.  
+- "OnTrigger" : Triggered only when a new game starts on this level.  
+
+# SPAWNFLAGS
+- ONCE (1) : Remove itself from the level permanently when activated.
+- FAST (2) : Allow retriggering even when not all outputs are done firing.
+
+# NOTES
+When a logic_relay is removed via spawnflag ONCE it won't survive match respawns.
+
+# TRIVIA
+This entity was introduced in Half-Life 2 (2004).
+*/
 class
 logic_relay:NSPointTrigger
 {
@@ -47,7 +77,7 @@ void
 logic_relay::Respawn(void)
 {
 	InitPointTrigger();
-	m_bEnabled = m_bStartDisabled;
+	m_bEnabled = (m_bStartDisabled) ? false : true;
 }
 
 void

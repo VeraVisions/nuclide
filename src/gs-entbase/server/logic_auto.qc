@@ -14,7 +14,9 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*!QUAKED logic_auto (1 0 0) (-8 -8 -8) (8 8 8) TA_USEONCE
+#define LOGICAUTO_USEONCE 1
+
+/*!QUAKED logic_auto (1 0 0) (-8 -8 -8) (8 8 8) USE_ONCE
 # OVERVIEW
 Will automatically trigger its outputs when the level has spawned.
 This is Source's variant of trigger_auto. If you want to talk to old-styled
@@ -24,7 +26,7 @@ targets instead, use that instead.
 - "targetname" : Name
 - "globalstate" : The env_global state to read before firing.
 
-# INPUTS
+# OUTPUTS
 - "OnMapSpawn" : Triggered when the map is loaded for any reason.  
 - "OnNewGame" : Triggered only when a new game starts on this level.  
 - "OnLoadGame" : Triggered when the map is loaded via save game.  
@@ -34,7 +36,7 @@ targets instead, use that instead.
 - "OnMultiNewRound" : Triggered only during round restarts in multiplayer.
 
 # SPAWNFLAGS
-- TA_USEONCE (1) : Remove itself from the level permanently when activated.
+- USE_ONCE (1) : Remove itself from the level permanently when activated.
 
 # NOTES
 When a logic_auto is removed via TA_USEONCE it won't survive match respawns.
@@ -47,7 +49,6 @@ not get called upon map start.
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
 */
-
 class
 logic_auto:NSPointTrigger
 {
@@ -197,6 +198,8 @@ logic_auto::Spawned(void)
 void
 logic_auto::Respawn(void)
 {
+	
+	m_iFromSaveGame = 1;
 	ScheduleThink(Processing, 0.2f);
 }
 
@@ -231,7 +234,7 @@ logic_auto::Processing(void)
 	if (serverkeyfloat("background") == 1)
 		UseOutput(this, m_strOnBackgroundMap);
 
-	if (HasSpawnFlags(1)) {
+	if (HasSpawnFlags(LOGICAUTO_USEONCE)) {
 		NSLog("^2logic_auto::^3Processing ^7: %s triggerer removed self",  target);
 		Destroy();
 	}
