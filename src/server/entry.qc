@@ -516,16 +516,22 @@ ConsoleCmd(string cmd)
 		}
 		break;
 	case "spawn":
-		entity unit = spawn();
-		unit.classname =  strcat("spawnfunc_", argv(1));
-		self = unit;
+		entity eDef = spawn();
+		eDef.classname =  strcat("spawnfunc_", argv(1));
+		self = eDef;
 		callfunction(self.classname);
 		self = pl;
 
 		makevectors(pl.v_angle);
-		if (unit.identity == 1) {
-			NSEntity ent = (NSEntity)unit;
+		if (eDef.identity == 1) {
+			NSEntity ent = (NSEntity)eDef;
 		}
+		traceline(pl.origin, pl.origin + (v_forward * 1024), MOVE_NORMAL, pl);
+		setorigin(eDef, trace_endpos);
+		break;
+	case "spawndef":
+		NSEntity unit = EntityDef_CreateClassname(argv(1));
+		makevectors(pl.v_angle);
 		traceline(pl.origin, pl.origin + (v_forward * 1024), MOVE_NORMAL, pl);
 		setorigin(unit, trace_endpos);
 		break;
