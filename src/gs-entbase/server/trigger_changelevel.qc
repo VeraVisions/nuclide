@@ -51,21 +51,31 @@ enumflags
 void
 ChangeTarget_Activate(void)
 {
+	string ctarg = cvar_string("_bsp_changetarget");
 	NSTimer foo = __NULL__;
 
 	static void Finalize(void) {
 		string ctarg = cvar_string("_bsp_changetarget");
-		if (ctarg) {
-			for (entity a = world; (a = find(a, ::targetname, ctarg));) {
-				NSEntity t = (NSEntity)a;
 
-				if (t.Trigger)
-					t.Trigger(self, TRIG_TOGGLE);
-			}
+		if not (ctarg)
+			return;
+
+		if (ctarg == "")
+			return;
+
+		for (entity a = world; (a = find(a, ::targetname, ctarg));) {
+			NSEntity t = (NSEntity)a;
+
+			if (t.Trigger)
+				t.Trigger(self, TRIG_TOGGLE);
 		}
+
 		readcmd("set _bsp_changetarget \"\"\n");
 		readcmd("set _bsp_changedelay \"\"\n");
 	}
+
+	if not (ctarg)
+		return;
 
 	foo.TemporaryTimer(self, Finalize, cvar("_bsp_changedelay"), false);
 }
