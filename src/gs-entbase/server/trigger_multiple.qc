@@ -56,10 +56,14 @@ public:
 	virtual void Touch(entity);
 	virtual void Respawn(void);
 	virtual void SpawnKey(string,string);
+	virtual void Input(entity,string,string);
 	virtual void EndTouch(entity);
 
 private:
 	float m_flWait;
+	bool m_bStartDisabled;
+	bool m_bIsModern;
+	bool m_bEnabled;
 
 	/* Input/Output */
 	string m_strOnStartTouch;
@@ -76,6 +80,8 @@ trigger_multiple::trigger_multiple(void)
 	m_strOnStartTouch =
 	m_strOnEndTouchAll =
 	m_strOnTrigger =  __NULL__;
+	m_bIsModern = false;
+	m_bEnabled = true;
 }
 
 void
@@ -116,6 +122,10 @@ trigger_multiple::SpawnKey(string strKey, string strValue)
 	case "wait":
 		m_flWait = stof(strValue);
 		break;
+	case "StartDisabled":
+		m_bStartDisabled = ReadBool(strValue);
+		m_bIsModern = true;
+		break;
 	case "OnStartTouch":
 	case "OnStartTouchAll":
 		m_strOnStartTouch = PrepareOutput(m_strOnStartTouch, strValue);
@@ -148,6 +158,35 @@ void
 trigger_multiple::Respawn(void)
 {
 	InitBrushTrigger();
+	m_bEnabled = (m_bStartDisabled) ? false : true;
+}
+
+void
+trigger_multiple::Input(entity entityActivator, string inputName, string dataField)
+{
+	switch (inputName) {
+	case "Enable":
+		m_bEnabled = true;
+		break;
+	case "Disable":
+		m_bEnabled = false;
+		break;
+	case "Toggle":
+		m_bEnabled = (m_bEnabled) ? false : true;
+		break;
+	case "TouchTest":
+		Touch(entityActivator);
+		break;
+	case "StartTouch":
+		StartTouch(entityActivator);
+		break;
+	case "EndTouch":
+		EndTouch(entityActivator);
+		break;
+	default:
+		super::Input(entityActivator, inputName, dataField);
+		break;
+	}
 }
 
 void
@@ -155,12 +194,21 @@ trigger_multiple::Touch(entity eToucher)
 {
 	if (GetMaster() == FALSE)
 		return;
-	if (HasSpawnFlags(TM_NOCLIENTS) && eToucher.flags & FL_CLIENT)
+
+	if (m_bEnabled == false)
 		return;
-	if (!HasSpawnFlags(TM_MONSTERS) && eToucher.flags & FL_MONSTER)
+
+	/* legacy entity check */
+	if (m_bIsModern == false) {
+		if (HasSpawnFlags(TM_NOCLIENTS) && eToucher.flags & FL_CLIENT)
+			return;
+		if (!HasSpawnFlags(TM_MONSTERS) && eToucher.flags & FL_MONSTER)
+			return;
+		if (!HasSpawnFlags(TM_PUSHABLES) && eToucher.classname == "func_pushable")
+			return;
+	} else if (CanBeTriggeredBy(eToucher) == false) {
 		return;
-	if (!HasSpawnFlags(TM_PUSHABLES) && eToucher.classname == "func_pushable")
-		return;
+	}
 
 	/* if the target key isn't used, assume we're using the new I/O system */
 	if (HasTriggerTarget() == false)

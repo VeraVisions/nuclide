@@ -48,10 +48,14 @@ public:
 	virtual void Respawn(void);
 	virtual void SpawnKey(string, string);
 
+	nonvirtual bool CanPass(NSEntity);
+
 private:
+	bool m_bEnabled;
 	string m_sndTeleport;
 	string m_sndTeleportEnter;
 	string m_sndTeleportExit;
+	bool m_bIsModern;
 };
 
 void
@@ -60,6 +64,8 @@ trigger_teleport::trigger_teleport(void)
 	m_sndTeleport = __NULL__;
 	m_sndTeleportEnter = __NULL__;
 	m_sndTeleportExit = __NULL__;
+	m_bEnabled = true;
+	m_bIsModern = false;
 }
 
 void
@@ -75,9 +81,31 @@ trigger_teleport::SpawnKey(string strKey, string strValue)
 	case "snd_teleport_exit":
 		m_sndTeleportExit = strValue;
 		break;
+	case "StartDisabled":
+		m_bEnabled = ReadBool(strValue);
+		m_bIsModern = true;
+		break;
 	default:
 		super::SpawnKey(strKey, strValue);
 	}
+}
+
+
+bool
+trigger_teleport::CanPass(NSEntity target)
+{
+	/* legacy entity check */
+	if (m_bIsModern == false) {
+		if (HasSpawnFlags(TRIGTELE_NOCLIENTS) && target.flags & FL_CLIENT)
+			return false;
+		if (!HasSpawnFlags(TRIGTELE_MONSTERS) && target.flags & FL_MONSTER)
+			return false;
+	} else {
+		if (CanBeTriggeredBy(target) == false)
+			return false;
+	}
+
+	return true;
 }
 
 void
@@ -106,9 +134,9 @@ trigger_teleport::Touch(entity eToucher)
 {
 	if (GetMaster() == FALSE)
 		return;
-	if (HasSpawnFlags(TRIGTELE_NOCLIENTS) && eToucher.flags & FL_CLIENT)
+	if (m_bEnabled == false)
 		return;
-	if (!HasSpawnFlags(TRIGTELE_MONSTERS) && eToucher.flags & FL_MONSTER)
+	if (CanPass((NSEntity)eToucher) == false)
 		return;
 
 	if (eToucher.movetype != MOVETYPE_NONE) {

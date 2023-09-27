@@ -52,9 +52,14 @@ public:
 	virtual void Respawn(void);
 	virtual void SpawnKey(string,string);
 
+	virtual void Input(entity, string, string);
+
 private:
+	bool m_bStartDisabled;
+	bool m_bEnabled;
 	string m_strOnStartTouch;
 	string m_strOnTrigger;
+	bool m_bIsModern;
 };
 
 void
@@ -62,6 +67,9 @@ trigger_once::trigger_once(void)
 {
 	m_strOnStartTouch =
 	m_strOnTrigger = __NULL__;
+	m_bIsModern = false;
+	m_bStartDisabled = false;
+	m_bEnabled = true;
 }
 
 void
@@ -71,7 +79,6 @@ trigger_once::Spawned(void)
 
 	if (m_strOnTrigger)
 		m_strOnTrigger = CreateOutput(m_strOnTrigger);
-
 	if (m_strOnStartTouch)
 		m_strOnStartTouch = CreateOutput(m_strOnStartTouch);
 }
@@ -81,6 +88,7 @@ trigger_once::Respawn(void)
 {
 	InitBrushTrigger();
 	m_iValue = 0;
+	m_bEnabled = (m_bStartDisabled) ? false : true;
 }
 
 void
@@ -110,6 +118,10 @@ void
 trigger_once::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
+	case "StartDisabled":
+		m_bStartDisabled = ReadBool(strValue);
+		m_bIsModern = true;
+		break;
 	case "OnStartTouch":
 		m_strOnStartTouch = PrepareOutput(m_strOnStartTouch, strValue);
 		break;
@@ -121,6 +133,29 @@ trigger_once::SpawnKey(string strKey, string strValue)
 		break;
 	}
 }
+
+void
+trigger_once::Input(entity entityActivator, string inputName, string dataField)
+{
+	switch (inputName) {
+	case "Enable":
+		m_bEnabled = true;
+		break;
+	case "Disable":
+		m_bEnabled = false;
+		break;
+	case "Toggle":
+		m_bEnabled = (m_bEnabled) ? false : true;
+		break;
+	case "StartTouch":
+		StartTouch(entityActivator);
+		break;
+	default:
+		super::Input(entityActivator, inputName, dataField);
+		break;
+	}
+}
+
 void
 trigger_once::Touch(entity eToucher)
 {
@@ -129,17 +164,26 @@ trigger_once::Touch(entity eToucher)
 	if (GetMaster() == FALSE)
 		return;
 
-	if (HasSpawnFlags(TO_NOCLIENTS) && eToucher.flags & FL_CLIENT)
+	if (m_bEnabled == false)
 		return;
-	if (!HasSpawnFlags(TO_MONSTERS) && eToucher.flags & FL_MONSTER)
+
+	/* legacy entity check */
+	if (m_bIsModern == false) {
+		if (HasSpawnFlags(TO_NOCLIENTS) && eToucher.flags & FL_CLIENT)
+			return;
+		if (!HasSpawnFlags(TO_MONSTERS) && eToucher.flags & FL_MONSTER)
+			return;
+		if (!HasSpawnFlags(TO_PUSHABLES) && isPushable == true)
+			return;
+	} else if (CanBeTriggeredBy(eToucher) == false) {
 		return;
-	if (!HasSpawnFlags(TO_PUSHABLES) && isPushable == true)
-		return;
+	}
 
 	SetSolid(SOLID_NOT); /* make inactive */
 	m_iValue = 1;
 
 	if (!target && !m_strKillTarget) {
+		NSLog("^2trigger_once::^3Touch^7: %S is triggering OnStartTouch", eToucher.classname);
 		UseOutput(eToucher, m_strOnStartTouch);
 		return;
 	}
