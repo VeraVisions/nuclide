@@ -53,6 +53,8 @@ server/func_vehiclecontrols.qc
 server/func_monsterclip.qc
 server/light.qc
 server/logic_auto.qc
+server/logic_relay.qc
+server/logic_timer.qc
 server/stubs.qc
 server/infodecal.qc
 server/item_generic.qc
