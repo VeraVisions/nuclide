@@ -31,7 +31,8 @@ enumflags
 	AMBIENT_RADIUS,
 	AMBIENT_PITCH,
 	AMBIENT_ORIGIN,
-	AMBIENT_ENABLED
+	AMBIENT_ENABLED,
+	AMBIENT_MODERN
 };
 
 /*!QUAKED ambient_generic (0.3 0.1 0.6) (-8 -8 -8) (8 8 8) AS_ARADIUS AS_SRADIUS AS_MRADIUS AS_LRADIUS AS_SILENT AS_NOTTOGGLED
@@ -92,6 +93,7 @@ private:
 	PREDICTED_FLOAT(m_flPitch)
 	PREDICTED_BOOL(m_bLoops)
 	bool m_bToggle;
+	bool m_bIsModern;
 
 	/* spawn values */
 	string m_strSpawnPath;
@@ -108,6 +110,7 @@ ambient_generic::ambient_generic(void)
 	m_flPitch = 0.0f;
 	m_bLoops = false;
 	m_bToggle = false;
+	m_bIsModern = false;
 	m_strSpawnPath = __NULL__;
 	m_flSpawnVolume = 0.0f;
 	m_flSpawnPitch = 0.0f;
@@ -132,6 +135,7 @@ ambient_generic::Save(float handle)
 	SaveFloat(handle, "m_flPitch", m_flPitch);
 	SaveInt(handle, "m_bToggle", m_bToggle);
 	SaveInt(handle, "m_bLoops", m_bLoops);
+	SaveBool(handle, "m_bIsModern", m_bIsModern);
 }
 
 void
@@ -158,6 +162,9 @@ ambient_generic::Restore(string strKey, string strValue)
 		break;
 	case "m_strActivePath":
 		m_strActivePath = ReadString(strValue);
+		break;
+	case "m_bIsModern":
+		m_bIsModern = ReadBool(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
@@ -195,7 +202,9 @@ ambient_generic::SpawnKey(string strKey, string strValue)
 	case "lfomodpitch":
 	case "lfomodvol":
 	case "cspinup":
-		break;
+		break;	
+	case "radius":
+		m_bIsModern = true;
 	default:
 		super::SpawnKey(strKey, strValue);
 		break;
@@ -275,8 +284,13 @@ ambient_generic::UseNormal(entity act, triggermode_t state)
 		WriteInt(MSG_MULTICAST, Sentences_GetID(m_strActivePath));
 		msg_entity = this;
 		multicast(origin, MULTICAST_PHS);
-	} else
-		sound(this, CHAN_BODY, m_strActivePath, m_flVolume, m_flRadius, m_flPitch);
+	} else {
+		if not (whichpack(strcat("sound/", m_strActivePath))) {
+			Sound_Play(this, CHAN_BODY, m_strActivePath);
+		} else {
+			sound(this, CHAN_BODY, m_strActivePath, m_flVolume, m_flRadius, m_flPitch);
+		}
+	}
 }
 
 void
@@ -342,6 +356,11 @@ ambient_generic::SendEntity(entity ePEnt, float flChanged)
 		return (0);
 
 	WriteByte(MSG_ENTITY, ENT_AMBIENTSOUND);
+
+	if (m_bIsModern) {
+		flChanged |= AMBIENT_MODERN;
+	}
+
 	WriteFloat(MSG_ENTITY, flChanged);
 
 	if (flChanged & AMBIENT_ORIGIN) {
@@ -350,8 +369,13 @@ ambient_generic::SendEntity(entity ePEnt, float flChanged)
 		WriteCoord(MSG_ENTITY, origin[2]);
 	}
 	
-	if (flChanged & AMBIENT_PATH)
-		WriteFloat(MSG_ENTITY, getsoundindex(m_strActivePath, true));
+	if (flChanged & AMBIENT_PATH) {
+		if (flChanged & AMBIENT_MODERN) {
+			WriteString(MSG_ENTITY, m_strActivePath);
+		} else {
+			WriteFloat(MSG_ENTITY, getsoundindex(m_strActivePath, true));
+		}
+	}
 	if (flChanged & AMBIENT_VOLUME)
 		WriteFloat(MSG_ENTITY, m_flVolume);
 	if (flChanged & AMBIENT_RADIUS)
@@ -376,8 +400,14 @@ ambient_generic::ReceiveEntity(float isnew, float flChanged)
 		drawmask = MASK_ENGINE;
 	}
 	
-	if (flChanged & AMBIENT_PATH)
-		m_strActivePath = soundnameforindex(readfloat());
+	if (flChanged & AMBIENT_PATH) {
+		if (flChanged & AMBIENT_MODERN) {
+			m_strActivePath = readstring();
+		} else {
+			m_strActivePath = soundnameforindex(readfloat());
+		}
+	}
+
 	if (flChanged & AMBIENT_VOLUME)
 		m_flVolume = readfloat();
 	if (flChanged & AMBIENT_RADIUS)
@@ -390,8 +420,14 @@ ambient_generic::ReceiveEntity(float isnew, float flChanged)
 	NSLog("Sound received: %S Volume: %f; Radius: %d; Pitch: %d", m_strActivePath, m_flVolume, m_flRadius, m_flPitch);
 
 
-	if (m_bLoops == true)
-		soundupdate(this, CHAN_BODY, m_strActivePath, m_flVolume, m_flRadius, m_flPitch, 0, 0);
+	if (m_bLoops == true) {
+		if (flChanged & AMBIENT_MODERN) {
+			Sound_Update(this, CHAN_BODY, Sound_GetID(m_strActivePath), m_flVolume);
+		} else {
+			soundupdate(this, CHAN_BODY, 
+				m_strActivePath, m_flVolume, m_flRadius, m_flPitch, 0, 0);
+		}
+	}
 }
 
 void
