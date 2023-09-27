@@ -92,10 +92,10 @@ void
 env_fade::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "m_flFadeDuration":
+	case "duration":
 		m_flFadeDuration = stof(strValue);
 		break;
-	case "m_flFadeHold":
+	case "holdtime":
 		m_flFadeHold = stof(strValue);
 		break;
 	default:

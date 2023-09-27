@@ -392,7 +392,6 @@ func_tracktrain::PathNext(void)
 void
 func_tracktrain::Trigger(entity act, triggermode_t state)
 {
-	breakpoint();
 	PathMove();
 }
 
