@@ -61,6 +61,7 @@ public:
 private:
 	string m_strSkyName;
 	bool m_bStartDark;
+	bool m_bGameTitle;
 	string m_strChapterTitle;
 	string m_strAmbientSound;
 	string m_strBGMTrack;
@@ -139,6 +140,7 @@ worldspawn::Spawned(void)
 	forceinfokey(world, "chaptertitle", m_strChapterTitle);
 	forceinfokey(world, "ambientsound", m_strAmbientSound);
 	forceinfokey(world, "bgm", m_strBGMTrack);
+	forceinfokey(world, "gametitle", ftos(m_bGameTitle));
 
 	if (m_bHDREnabled) {
 		forceinfokey(world, "hdr_iris_minvalue", ftos(m_flHDRIrisMinValue));
@@ -172,6 +174,9 @@ worldspawn::SpawnKey(string strKey, string strValue)
 		break;
 	case "ambientsound":
 		m_strAmbientSound = ReadString(strValue);
+		break;
+	case "gametitle":
+		m_bGameTitle = ReadBool(strValue);
 		break;
 	/* Household Death */
 	case "_bgm":
@@ -225,8 +230,9 @@ WorldSpawn_Init(void)
 	float hdrFadeDown = serverkeyfloat("hdr_iris_fade_down");
 	bool hdrEnabled = serverkeyfloat("hdr");
 
-	if (startDark == true)
+	if (startDark == true) {
 		Fade_StartDark();
+	}
 
 	if (chapterTitle) {
 		GameMessage_Setup(chapterTitle, 0);
