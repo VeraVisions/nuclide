@@ -101,7 +101,10 @@ NSIO::Spawned(void)
 void
 NSIO::UseOutput(entity act, string outname)
 {
-	if (!outname)
+	if (!outname || outname == "")
+		return;
+
+	if (!act)
 		return;
 
 	for (entity f = world; (f = find(f, ::targetname, outname));) {
@@ -112,9 +115,7 @@ NSIO::UseOutput(entity act, string outname)
 			return;
 		}
 
-		op.m_eActivator = act;
-		op.think = NSOutput::TriggerOutput;
-		op.nextthink = time + op.m_flDelay;
+		op.ScheduleOutput(act);
 	}
 }
 

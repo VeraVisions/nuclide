@@ -32,6 +32,14 @@ NSOutput::TriggerOutput(void)
 }
 
 void
+NSOutput::ScheduleOutput(entity activatorEnt)
+{
+	m_eActivator = activatorEnt;
+	think = TriggerOutput;
+	nextthink = time + m_flDelay;
+}
+
+void
 NSOutput::Init(void)
 {
 	/* Init of NSIO will tokenize __fullspawndata which
@@ -44,6 +52,8 @@ NSOutput::Respawn(void)
 {
 	/* gotta reset our counter */
 	m_iCount = m_iOldCount;
+	nextthink = 0.0f;
+	think = __NULL__;
 }
 
 void

@@ -36,6 +36,8 @@ public:
 	/** Call to trigger the NSOutput's target. */
 	virtual void TriggerOutput(void);
 
+	virtual void ScheduleOutput(entity);
+
 	/** Internal use only. */
 	virtual void Init(void);
 	/** Internal use only. */
