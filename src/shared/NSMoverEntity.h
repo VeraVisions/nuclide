@@ -103,6 +103,7 @@ public:
 #ifdef SERVER
 	virtual void Save(float);
 	virtual void Restore(string, string);
+	virtual void SpawnKey(string, string);
 #endif
 
 private:
@@ -113,6 +114,8 @@ private:
 	moverState_t m_moverState;
 	moverType_t m_moverType;
 	int m_iPortalState;
+	vector m_vecMoveDir; /* movedir override from Source */
+	bool m_bUseMoveDir;
 
 	nonvirtual void _PortalOpen(void);
 	nonvirtual void _PortalClose(void);

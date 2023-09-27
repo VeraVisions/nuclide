@@ -24,9 +24,23 @@ NSMoverEntity::NSMoverEntity(void)
 	m_moverState = MOVER_POS1;
 	m_moverType = MOVERTYPE_LINEAR;
 	m_iPortalState = 0i;
+	m_bUseMoveDir = false;
 }
 
 #ifdef SERVER
+void
+NSMoverEntity::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "movedir":
+		m_vecMoveDir = ReadVector(strValue);
+		m_bUseMoveDir = true;
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
+
 void
 NSMoverEntity::Save(float handle)
 {
@@ -39,6 +53,8 @@ NSMoverEntity::Save(float handle)
 	SaveFloat(handle, "m_moverState", m_moverState);
 	SaveFloat(handle, "m_moverType", m_moverType);
 	SaveInt(handle, "m_iPortalState", m_iPortalState);
+	SaveVector(handle, "m_vecMoveDir", m_vecMoveDir);
+	SaveBool(handle, "m_bUseMoveDir", m_bUseMoveDir);
 }
 
 void
@@ -66,6 +82,12 @@ NSMoverEntity::Restore(string strKey, string strValue)
 	case "m_iPortalState":
 		m_iPortalState = ReadInt(strValue);
 		break;
+	case "m_vecMoveDir":
+		m_vecMoveDir = ReadVector(strValue);
+		break;
+	case "m_bUseMoveDir":
+		m_bUseMoveDir = ReadBool(strValue);
+		break;
 	default:
 		super::Restore(strKey, strValue);
 	}
@@ -78,15 +100,20 @@ NSMoverEntity::GetDirectionalPosition(vector vecAngle, float flLip)
 	vector vecMoveDir = g_vec_null;
 	vector vecPos = g_vec_null;
 
-	/* editor angle */
-	if (vecAngle == [0,-1,0]) {
-		vecMoveDir = [0,0,1];
-	} else if (vecAngle == [0,-2,0]) {
-		vecMoveDir = [0,0,-1];
-	} else {
-		/* manually specified angle */
-		makevectors(vecAngle);
+	if (m_bUseMoveDir == true) {
+		makevectors(m_vecMoveDir);
 		vecMoveDir = v_forward;
+	} else {
+		/* editor angle */
+		if (vecAngle == [0,-1,0]) {
+			vecMoveDir = [0,0,1];
+		} else if (vecAngle == [0,-2,0]) {
+			vecMoveDir = [0,0,-1];
+		} else {
+			/* manually specified angle */
+			makevectors(vecAngle);
+			vecMoveDir = v_forward;
+		}
 	}
 
 	vecPos = (GetOrigin() + vecMoveDir * (fabs(vecMoveDir * size) - flLip));
