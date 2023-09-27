@@ -1025,8 +1025,11 @@ NSTalkMonster::ReceiveEntity(float flNew, float flChanged)
 		frame1time = 0.0f;
 	if (flChanged & MONFL_CHANGED_SIZE)
 		setsize(this, mins * scale, maxs * scale);
+
 	if (flChanged & MONFL_CHANGED_BODY)
 		_UpdateGeomset();
+	if (flChanged & MONFL_CHANGED_MODELINDEX)
+		_UpdateBoneCount();
 }
 
 void

@@ -2087,8 +2087,11 @@ NSMonster::ReceiveEntity(float flNew, float flChanged)
 
 	if (flChanged & MONFL_CHANGED_SIZE)
 		setsize(this, mins * scale, maxs * scale);
+
 	if (flChanged & MONFL_CHANGED_BODY)
 		_UpdateGeomset();
+	if (flChanged & MONFL_CHANGED_MODELINDEX)
+		_UpdateBoneCount();
 }
 
 void
