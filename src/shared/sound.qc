@@ -790,6 +790,14 @@ Sound_PlayLocal(string shader)
 	localsound(argv(r));
 }
 
+int
+Sound_GetID(string defName)
+{
+	if (defName == "")
+		return -1;
+	return (int)hash_get(g_hashsounds, defName, -1);
+}
+
 void
 Sound_Update(entity target, int channel, int sample, float volume)
 {

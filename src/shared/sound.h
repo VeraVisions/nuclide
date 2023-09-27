@@ -93,6 +93,8 @@ void Sound_PlayAt(vector worldPos, string sndDef);
 void Sound_PlayLocal(string shader);
 /** Client-side only: Update the sound parameters on a given entity. */
 void Sound_Update(entity targetEntity, int sndChannel, int sndSample, float desiredVolume);
+
+int Sound_GetID(string sndDef);
 #else
 /** Server-side only: Play a sentences.txt entry on a given entity. */
 void Sound_Speak(entity targetEntity, string sentencesEntry);
