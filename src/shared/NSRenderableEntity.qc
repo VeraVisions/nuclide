@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+
+
 void
 NSRenderableEntity::NSRenderableEntity(void)
 {
@@ -57,6 +59,15 @@ void NSRenderableEntity::_UpdateGeomset(void)
 	setcustomskin(this, "",
 		sprintf("geomset 0 %i\ngeomset 1 %i\ngeomset 2 %i\ngeomset 3 %i\n", firstBody, secondBody, thirdBody, fourthBody)
 	);
+}
+
+void
+NSRenderableEntity::_UpdateBoneCount(void)
+{
+	skeletonindex = skel_create(modelindex);
+	m_iNumBones = skel_get_numbones(skeletonindex) + 1;
+	//print(sprintf("UPDATED GEOMSET FOR MODELINDEX %d, %d BONES\n", modelindex, m_iNumBones));
+	skel_delete(skeletonindex);
 }
 #endif
 
@@ -298,6 +309,8 @@ NSRenderableEntity::ReceiveEntity(float flNew, float flChanged)
 		setsize(this, mins * scale, maxs * scale);
 	if (flChanged & RDENT_CHANGED_BODY)
 		_UpdateGeomset();
+	if (flChanged & RDENT_CHANGED_MODELINDEX)
+		_UpdateBoneCount();
 }
 
 /*
@@ -767,6 +780,7 @@ NSRenderableEntity::SetBodyInGroup(int groupID, int bodyValue)
 {
 	/* pack our half bytes */
 	m_iBody |= (bodyValue << (4 * groupID));
+	m_iBody_net = 0;
 	//print(sprintf("NEW BODY: %i %i %i\n", m_iBody, groupID, bodyValue));
 }
 
@@ -946,44 +960,38 @@ void
 NSRenderableEntity::HandleAnimEvent(float flTimeStamp, int iCode, string strData)
 {
 	switch(iCode) {
-#ifdef CLIENT
 	case 1004:	/* plays a sound on CHAN_BODY */
+#ifdef CLIENT
 		if (substring(strData, 0, 1) == "*")
 			sound(self, CHAN_BODY, substring(strData, 1, -1), 1.0f, ATTN_NORM);
 		else
 			sound(self, CHAN_BODY, strData, 1.0f, ATTN_NORM);
+#endif
 		break;
 	case 1008:	/* plays a sound on CHAN_VOICE */
+#ifdef CLIENT
 		if (substring(strData, 0, 1) == "*")
 			sound(self, CHAN_VOICE, substring(strData, 1, -1), 1.0f, ATTN_NORM);
 		else
 			sound(self, CHAN_VOICE, strData, 1.0f, ATTN_NORM);
+#endif
 		break;
-	#if 0
+#ifdef CLIENT
 	case 5004: /* view model sound? */
-		localsound(strData, CHAN_AUTO, 1.0);
+		sound(this, CHAN_AUTO, strData, 1.0, ATTN_NORM);
 		break;
 	case 5001: /* muzzle flash on attachment 0 */
-		pSeat->m_eMuzzleflash.alpha = 1.0f;
-		pSeat->m_eMuzzleflash.scale = 0.25;
-		pSeat->m_eMuzzleflash.skin = pSeat->m_iVMBones;
+		vector muzzleOrg = gettaginfo(this, m_iNumBones);
 		break;
 	case 5011: /* muzzle flash on attachment 1 */
-		pSeat->m_eMuzzleflash.alpha = 1.0f;
-		pSeat->m_eMuzzleflash.scale = 0.25;
-		pSeat->m_eMuzzleflash.skin = pSeat->m_iVMBones + 1;
+		vector muzzleOrg = gettaginfo(this, m_iNumBones + 1);
 		break;
 	case 5021: /* muzzle flash on attachment 2 */
-		pSeat->m_eMuzzleflash.alpha = 1.0f;
-		pSeat->m_eMuzzleflash.scale = 0.25;
-		pSeat->m_eMuzzleflash.skin = pSeat->m_iVMBones + 2;
+		vector muzzleOrg = gettaginfo(this, m_iNumBones + 2);
 		break;
 	case 5031: /* muzzle flash on attachment 3 */
-		pSeat->m_eMuzzleflash.alpha = 1.0f;
-		pSeat->m_eMuzzleflash.scale = 0.25;
-		pSeat->m_eMuzzleflash.skin = pSeat->m_iVMBones + 3;
+		vector muzzleOrg = gettaginfo(this, m_iNumBones + 3);
 		break;
-	#endif
 #else
 	case 1003:	/* trigger SSQC entity with specific targetname */
 		for (entity f = world; (f = find(f, ::targetname, strData));) {
@@ -1016,12 +1024,14 @@ NSRenderableEntity::HandleAnimEvent(float flTimeStamp, int iCode, string strData
 					Input(this, testInput, strData); /* no parms passed. */
 
 				tokenize(m_strModelEventCB); /* ensure argv() is 'rewound'... */
+				return;
 			}
 		}
 		
 		//print(sprintf("Received: %f %i %S\n", flTimeStamp, iCode, strData));
+		NSLog("SSQC model event: %f %i %S", flTimeStamp, iCode, strData);
 #else
-		NSLog("Unknown model event: %f %i %S", flTimeStamp, iCode, strData);
+		NSLog("CSQC model event: %f %i %S", flTimeStamp, iCode, strData);
 #endif
 	}
 }
@@ -1117,6 +1127,21 @@ NSRenderableEntity::Input(entity eAct, string strInput, string strData)
 		break;
 	case "EnableShadow":
 		effects &= ~EF_NOSHADOW;
+		break;
+	case "SetAnimation":
+		float animFrame = frameforname(modelindex, strcat("@", strData));
+		SetFrame(animFrame);
+		print(sprintf("SetAnimation: %S (%d) on %S\n",strData, animFrame, model));
+		break;
+	case "SetBodyInGroup":
+		int argC = tokenize(strData);
+
+		if (argC == 2) {
+			int bodyGroup = stoi(argv(0));
+			int bodyModel = stoi(argv(1));
+			SetBodyInGroup(bodyGroup, bodyModel);
+			//print(sprintf("SetBodyInGroup %i to %i\n", bodyGroup, bodyModel));
+		}
 		break;
 	default:
 		super::Input(eAct, strInput, strData);

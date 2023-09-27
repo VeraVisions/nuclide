@@ -112,7 +112,9 @@ private:
 	float m_flBaseTime;
 
 #ifdef CLIENT
+	float m_iNumBones;
 	nonvirtual void _UpdateGeomset();
+	nonvirtual void _UpdateBoneCount();
 #endif
 
 #ifdef SERVER
