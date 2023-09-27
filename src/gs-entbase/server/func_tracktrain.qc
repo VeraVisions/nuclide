@@ -16,13 +16,24 @@
 
 enumflags
 {
-	TRAIN_WAIT,
-	TRAIN_NOPITCH,
-	TRAIN_UNUSED2,
-	TRAIN_NOTSOLID
+	OLDTRAIN_WAIT,
+	OLDTRAIN_NOPITCH,
+	OLDTRAIN_UNUSED2,
+	OLDTRAIN_NOTSOLID
 };
 
-/*!QUAKED func_tracktrain (0 .5 .8) ? TRAIN_WAIT TRAIN_NOPITCH x TRAIN_NOTSOLID
+enumflags
+{
+	TRAIN_NOPITCH,
+	TRAIN_NOUSER,
+	TRAIN_NONSOLID,
+	TRAIN_FIXED,
+	TRAIN_RIDEABLE,
+	TRAIN_SOUNDPITCH,
+	TRAIN_NOBLOCK
+};
+
+/*!QUAKED func_tracktrain (0 .5 .8) ? OLDTRAIN_WAIT OLDTRAIN_NOPITCH x OLDTRAIN_NOTSOLID
 # OVERVIEW
 An interactive train that moves along a path akin to func_train.
 
@@ -35,9 +46,9 @@ An interactive train that moves along a path akin to func_train.
 - "snd_stop" : Path to sound sample which plays when it stops moving.
 
 # SPAWNFLAGS
-- TRAIN_WAIT (1) : Stop at each path_corner until we're triggered again.
-- TRAIN_NOPITCH (2) : Train does not pivot up/down at all.
-- TRAIN_NOTSOLID (8) : Don't do collision testing against this entity.
+- OLDTRAIN_WAIT (1) : Stop at each path_corner until we're triggered again.
+- OLDTRAIN_NOPITCH (2) : Train does not pivot up/down at all.
+- OLDTRAIN_NOTSOLID (8) : Don't do collision testing against this entity.
 
 # NOTES
 Upon level entry, the func_tracktrain will spawn right where its first path_corner
@@ -52,15 +63,6 @@ This entity was introduced in Half-Life (1998).
 class
 func_tracktrain:NSRenderableEntity
 {
-	float m_flWait;
-	float m_flSpeed;
-	float m_flDamage;
-	float m_flHeight;
-	float m_flStartSpeed;
-	float m_flBank;
-	string m_strMoveSnd;
-	string m_strStopSnd;
-
 public:
 	void func_tracktrain(void);
 
@@ -79,6 +81,17 @@ public:
 	nonvirtual void PathDone(void);
 	virtual void Blocked(entity);
 
+private:
+
+	float m_flWait;
+	float m_flSpeed;
+	float m_flDamage;
+	float m_flHeight;
+	float m_flStartSpeed;
+	float m_flBank;
+	string m_strMoveSnd;
+	string m_strStopSnd;
+	bool m_bIsModern;
 };
 
 void
@@ -92,6 +105,7 @@ func_tracktrain::func_tracktrain(void)
 	m_flBank = 0.0f;
 	m_strMoveSnd = __NULL__;
 	m_strStopSnd = __NULL__;
+	m_bIsModern = false;
 }
 
 void
@@ -163,6 +177,9 @@ func_tracktrain::SpawnKey(string strKey, string strValue)
 	case "stopsnd":
 		m_strStopSnd = sprintf("func_tracktrain.stop_%i", stoi(strValue) + 1i);
 		break;
+	/* TODO: */
+	case "velocitytype":
+		m_bIsModern = true;
 	default:
 		super::SpawnKey(strKey, strValue);
 	}
@@ -182,7 +199,13 @@ func_tracktrain::Spawned(void)
 void
 func_tracktrain::Respawn(void)
 {
-	SetSolid(HasSpawnFlags(TRAIN_NOTSOLID) ? SOLID_NOT : SOLID_BSP);
+	/* legacy compat */
+	if (m_bIsModern == false) {
+		SetSolid(HasSpawnFlags(OLDTRAIN_NOTSOLID) ? SOLID_NOT : SOLID_BSP);
+	} else {
+		SetSolid(HasSpawnFlags(TRAIN_NONSOLID) ? SOLID_NOT : SOLID_BSP);
+	}
+
 	SetMovetype(MOVETYPE_PUSH);
 	SetModel(GetSpawnModel());
 	SetOrigin(GetSpawnOrigin());
@@ -267,14 +290,21 @@ func_tracktrain::PathMove(void)
 
 	/* the direction we're aiming for */
 	vecAngleDest = vectoangles(vecDiff);
-
 	vecAngleDest[1] += 180.0f; /* this is an evil hack */
 
-	/* we only care about YAW */
-	if (HasSpawnFlags(TRAIN_NOPITCH))
-		vecAngleDest[0] = 0;
-	else
-		vecAngleDest[0] = -Math_FixDelta(vecAngleDest[0]);
+	if (m_bIsModern == false) {
+		/* we only care about YAW */
+		if (HasSpawnFlags(OLDTRAIN_NOPITCH))
+			vecAngleDest[0] = 0;
+		else
+			vecAngleDest[0] = -Math_FixDelta(vecAngleDest[0]);
+	} else {
+		if (HasSpawnFlags(TRAIN_NOPITCH))
+			vecAngleDest[0] = 0;
+		else
+			vecAngleDest[0] = -Math_FixDelta(vecAngleDest[0]);
+	}
+
 	vecAngleDest[1] = Math_FixDelta(vecAngleDest[1]);
 	vecAngleDest[2] = 0;
 
@@ -320,11 +350,18 @@ void
 func_tracktrain::PathNext(void)
 {
 	path_corner eNode;
+
+	if (HasTriggerTarget() == false)
+		return;
+
 	eNode = (path_corner)find(world, ::targetname, target);
 
 	if (!eNode) {
 		return;
 	}
+
+	
+	NSLog("^1func_tracktrain::^3PathNext^7: Going to target %S (%s)", target, eNode.classname);
 
 	SetOrigin((eNode.origin) + [0,0,m_flHeight]);
 	PathDone();
@@ -355,14 +392,50 @@ func_tracktrain::PathNext(void)
 void
 func_tracktrain::Trigger(entity act, triggermode_t state)
 {
+	breakpoint();
 	PathMove();
 }
 
 void
 func_tracktrain::AfterSpawn(void)
 {
-	PathNext();
+	path_corner eNode;
 
+	if (HasTriggerTarget() == false)
+		return;
+
+	eNode = (path_corner)find(world, ::targetname, target);
+
+	if (!eNode) {
+		return;
+	}
+
+	
+	NSLog("^1func_tracktrain::^3AfterSpawn^7: Start at target %S (%s)", target, eNode.classname);
+
+	SetOrigin((eNode.origin) + [0,0,m_flHeight]);
+	PathDone();
+
+	/* if speed is 0, retain current speed */
+	if (eNode.m_flSpeed > 0)
+		m_flSpeed = eNode.m_flSpeed;
+
+	m_flWait = eNode.m_flWait;
+	target = eNode.target;
+	ClearVelocity();
+
+	/* warp */
+	if (eNode.HasSpawnFlags(PC_TELEPORT)) {
+		SetOrigin((eNode.origin) + [0,0,m_flHeight]);
+	}
+
+	/* stop until triggered again */
+	if (eNode.HasSpawnFlags(PC_WAIT)) {
+		SoundStop();
+		return;
+	}
+
+	/* auto start */
 	if (!targetname) {
 		PathMove();
 	}
