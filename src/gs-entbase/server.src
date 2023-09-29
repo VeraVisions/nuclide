@@ -55,6 +55,7 @@ server/light.qc
 server/logic_auto.qc
 server/logic_relay.qc
 server/logic_timer.qc
+server/logic_case.qc
 server/stubs.qc
 server/infodecal.qc
 server/item_generic.qc
@@ -73,6 +74,7 @@ server/trigger_autosave.qc
 server/trigger_cdaudio.qc
 server/trigger_counter.qc
 server/trigger_hurt.qc
+server/trigger_transition.qc
 server/trigger_changelevel.qc
 server/trigger_endsection.qc
 server/trigger_changetarget.qc
@@ -80,7 +82,6 @@ server/trigger_look.qc
 server/trigger_once.qc
 server/trigger_multiple.qc
 server/trigger_teleport.qc
-server/trigger_transition.qc
 server/trigger_playerfreeze.qc
 server/trigger_relay.qc
 server/env_shooter.qc

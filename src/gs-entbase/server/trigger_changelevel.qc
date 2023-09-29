@@ -96,6 +96,7 @@ public:
 	/* overrides */
 	virtual void Save(float);
 	virtual void Restore(string,string);
+	virtual void RestoreComplete(void);
 	virtual void SpawnKey(string,string);
 	virtual void Spawned(void);
 	virtual void Respawn(void);
@@ -155,6 +156,13 @@ trigger_changelevel::Restore(string strKey, string strValue)
 	default:
 		super::Restore(strKey, strValue);
 	}
+}
+
+void
+trigger_changelevel::RestoreComplete(void)
+{
+	super::RestoreComplete();
+	SetSolid(SOLID_TRIGGER);
 }
 
 void
@@ -250,8 +258,17 @@ trigger_changelevel::Change(void)
 		info_landmark lm = (info_landmark)e;
 		/* found it */
 		if (lm.targetname == m_strLandmark) {
+			trigger_transition t;
 			NSLog("^2trigger_changelevel::^3Change^7: Found landmark for %s", m_strLandmark);
 			g_landmarkpos = m_activator.origin - lm.origin;
+
+			/* time to transition */
+			t = (trigger_transition)find(world, ::targetname, m_strLandmark);
+
+			if (t) {
+				t.SaveTransition();
+			}
+
 			changelevel(m_strMap, m_strLandmark);
 			break;
 		}
@@ -317,4 +334,10 @@ Landmark_GetSpot(void)
 	entity ips = find(world, ::classname, "info_player_start");
 	print(sprintf("^1ERROR^7: Landmark_GetSpot: Cannot find startspot '%s'!\n",startspot));
 	return ips.origin;
+}
+
+vector
+Landmark_GetPosition(void)
+{
+	return g_landmarkpos;
 }

@@ -142,6 +142,11 @@ PutClientInServer(void)
 	if (g_ents_initialized)
 		g_grMode.PlayerSpawn((NSClientPlayer)self);
 
+	/* handle transitions */
+	if (whichpack("data/trans.dat")) {
+		trigger_transition::LoadTransition();
+	}
+
 	Plugin_PlayerEntered((NSClientPlayer)self);
 
 	/* activate all game_playerspawn entities */
@@ -364,6 +369,7 @@ init_respawn(void)
 	}
 
 	print(sprintf("...%i entities spawned (%i inhibited)\n", g_ent_spawned, g_ent_spawned - endspawn));
+
 	remove(self);
 }
 
