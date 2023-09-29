@@ -14,11 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-//#define ODE_MODE 1
+#define ODE_MODE 1
 
 void
 NSPhysicsEntity::NSPhysicsEntity(void)
 {
+	isPhysics = true;
 	mass = 1.0f;
 	m_flInertiaScale = 1.0f;
 
@@ -412,8 +413,11 @@ NSPhysicsEntity::ApplyForceCenter(vector vecForce)
 {
 	if (physics_supported() == TRUE) {
 		physics_addforce(this, vecForce, [0,0,0]);
+#ifdef ODE_MODE
+		//velocity += vecForce;
+#endif
 	} else {
-		velocity = vecForce;
+		velocity += vecForce;
 	}
 
 	/* make sure touch think is called */
@@ -425,8 +429,11 @@ NSPhysicsEntity::ApplyForceOffset(vector vecForce, vector vecOffset)
 {
 	if (physics_supported() == TRUE) {
 		physics_addforce(this, vecForce, vecOffset);
+#ifdef ODE_MODE
+		//velocity += vecForce;
+#endif
 	} else {
-		velocity = vecForce;
+		velocity += vecForce;
 	}
 
 	/* make sure touch think is called */

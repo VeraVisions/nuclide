@@ -121,3 +121,5 @@ public:
 	/** Called by the physics routine to figure out the impact damage. */
 	nonvirtual float CalculateImpactDamage(int,int);
 };
+
+noref .bool isPhysics;
