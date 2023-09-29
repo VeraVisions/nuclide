@@ -403,8 +403,10 @@ initents(void)
 	Sound_Precache("step_swim.left");
 	Sound_Precache("step_swim.right");
 
-	if (!g_grMode)
+	if (!g_grMode) {
 		Game_InitRules();
+		forceinfokey(world, "mode", g_grMode.Title());
+	}
 
 	Game_Worldspawn();
 	Decals_Init();

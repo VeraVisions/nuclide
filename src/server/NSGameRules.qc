@@ -533,3 +533,9 @@ NSGameRules::ChatMessageTeam(NSClient cl, string strMessage)
 
 	localcmd(sprintf("echo [TEAM] %s: %s\n", cl.netname, strMessage));
 }
+
+string
+NSGameRules::Title(void)
+{
+	return "Default";
+}

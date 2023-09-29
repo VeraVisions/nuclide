@@ -116,6 +116,9 @@ public:
 	/** Called by Nuclide when the server has received a chat message
 		that is to be distributed amongst all clients of the same team. */
 	virtual void ChatMessageTeam(NSClient, string);
+
+	/** Returns the title of the gamemode running. */
+	virtual string Title(void);
 	
 	/* spectator */
 	/*
