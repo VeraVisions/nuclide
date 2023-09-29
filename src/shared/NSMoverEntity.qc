@@ -37,7 +37,7 @@ NSMoverEntity::SpawnKey(string strKey, string strValue)
 		m_bUseMoveDir = true;
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
