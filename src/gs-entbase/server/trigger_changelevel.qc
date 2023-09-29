@@ -70,8 +70,8 @@ ChangeTarget_Activate(void)
 				t.Trigger(self, TRIG_TOGGLE);
 		}
 
-		readcmd("set _bsp_changetarget \"\"\n");
-		readcmd("set _bsp_changedelay \"\"\n");
+		cvar_set("_bsp_changetarget", "");
+		cvar_set("_bsp_changedelay", "");
 	}
 
 	if not (ctarg)
@@ -222,7 +222,7 @@ void
 trigger_changelevel::Change(void)
 {
 	/* needed for logic_auto */
-	readcmd("set _bsp_change_auto \"1\"\n");
+	cvar_set("_bsp_change_auto", "1");
 
 	/* standard level change */
 	if (!m_strLandmark) {
@@ -287,8 +287,8 @@ trigger_changelevel::Trigger(entity act, triggermode_t unused)
 	/* eActivator == player who triggered the damn thing */
 	m_activator = act;
 
-	readcmd(sprintf("set _bsp_changetarget %S\n", m_strChangeTarget));
-	readcmd(sprintf("set _bsp_changedelay %f\n", m_flChangeDelay));
+	cvar_set("_bsp_changetarget", m_strChangeTarget);
+	cvar_set("_bsp_changedelay", ftos(m_flChangeDelay));
 
 	Change();
 }

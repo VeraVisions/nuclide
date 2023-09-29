@@ -75,7 +75,6 @@ NSTrigger::CanBeTriggeredBy(entity testEnt)
 void
 NSTrigger::Trigger(entity act, triggermode_t state)
 {
-	breakpoint();
 	NSLog("^2%s::^3Trigger^7: Triggered by %s with no consequence", 
 		classname, act.classname);
 }

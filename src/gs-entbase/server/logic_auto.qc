@@ -217,7 +217,7 @@ logic_auto::Processing(void)
 			/* set by trigger_changelevel, however not by the changelevel cmd */
 			if (cvar("_bsp_change_auto") == 1) {
 				UseOutput(this, m_strOnMapTransition);
-				readcmd("set _bsp_change_auto \"\"\n");
+				cvar_set("_bsp_change_auto", "");
 			} else
 				UseOutput(this, m_strOnLoadGame);
 		} else
