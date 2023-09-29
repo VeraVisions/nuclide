@@ -143,6 +143,7 @@ private:
 #ifdef SERVER
 	string m_oldstrTarget; /* needed due to trigger_changetarget */
 
+	string m_strGlobalName;
 	string m_strGlobalState;
 	string m_strKillTarget;
 	string m_strMessage;

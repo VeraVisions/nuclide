@@ -227,6 +227,7 @@ NSTrigger::Save(float handle)
 	SaveFloat(handle, "team", team);
 	SaveInt(handle, "m_iValue", m_iValue);
 	SaveFloat(handle, "m_flDelay", m_flDelay);
+	SaveString(handle, "m_strGlobalName", m_strGlobalName);
 }
 void
 NSTrigger::Restore(string strKey, string strValue)
@@ -258,6 +259,9 @@ NSTrigger::Restore(string strKey, string strValue)
 		break;
 	case "m_flDelay":
 		m_flDelay = ReadFloat(strValue);
+		break;
+	case "m_strGlobalName":
+		m_strGlobalName = ReadString(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
@@ -318,9 +322,12 @@ NSTrigger::SpawnKey(string strKey, string strValue)
 	case "globalstate":
 		m_strGlobalState = strValue;
 		break;
+	case "globalname":
+		m_strGlobalName = strValue;
+		break;
 #endif
 	default:
-		NSIO::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 		break;
 	}
 }

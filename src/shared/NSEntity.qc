@@ -830,7 +830,7 @@ void NSEntity::SpawnKey( string strKey, string strValue ) {
 		break;
 #endif
 	default:
-		NSTrigger::SpawnKey( strKey, strValue );
+		super::SpawnKey( strKey, strValue );
 		break;
 	}
 }
