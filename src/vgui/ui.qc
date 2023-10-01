@@ -53,6 +53,7 @@ Util_MouseAbove(vector vecMousePos, vector vecPos, vector vecSize)
 	return (0);
 }
 
+.bool isVGUI;
 /** @brief The base VGUI widget class.
 
 Every VGUI widget is based off of this. */
@@ -62,7 +63,7 @@ public:
 	void VGUIWidget(void);
 
 	/** Adds a widget into this one. */
-	nonvirtual void Add(VGUIWidget);
+	virtual void Add(VGUIWidget);
 	/** Add a flag to the widget. */
 	nonvirtual void FlagAdd(int);
 	/** Remove a flag from the widget. */
@@ -116,6 +117,9 @@ public:
 	/** Called when the size of the widget has changed in any capacity. */
 	virtual void SizeChanged(vector, vector);
 
+	virtual void NowVisible(void);
+	virtual void NowHidden(void);
+
 	/** Called in order to draw the widget. */
 	virtual void Draw(void);
 	/** Called whenever the physical properties of the display change. */
@@ -134,6 +138,7 @@ private:
 	vector m_vecMaxSize;
 	VGUIWidget m_next;
 	VGUIWidget m_parent;
+	VGUIWidget m_children;
 	int m_iFlags;
 	bool m_bVisible;
 	VGUITheme m_theme;
@@ -150,6 +155,7 @@ VGUIWidget::VGUIWidget(void)
 	m_parent = __NULL__;
 	m_iFlags = 0i;
 	m_bVisible = true;
+	isVGUI = true;
 
 	Spawned();
 }
@@ -184,12 +190,26 @@ void
 VGUIWidget::Hide(void)
 {
 	m_bVisible = false;
+	NowHidden();
 }
+
+void
+VGUIWidget::NowHidden(void)
+{
+}
+
+
+void
+VGUIWidget::NowVisible(void)
+{
+}
+
 
 void
 VGUIWidget::Show(void)
 {
 	m_bVisible = true;
+	NowVisible();
 }
 
 void
@@ -343,38 +363,51 @@ bool
 VGUIWidget::Input(float flEVType, float flKey, float flChar, float flDevID)
 {
 	VGUIWidget wNext = this;
+	VGUIWidget wLast = __NULL__;
+	VGUIWidget wLastBefore = __NULL__;
 
-	/* this is garbage, but it'll work */
-	int c = 0;
+	/* figure out the last window in the chain... */
 	do {
+		wLastBefore = wNext;
 		wNext = wNext.m_next;
-		c++;
+
+		if (wNext) {
+			wLast = wNext;
+		}
 	} while (wNext);
 
-	/* we got the count of valid items */
-	vgui_input_scene_t *tree = memalloc(sizeof(vgui_input_scene_t) * c);
+	//print(sprintf("Last widget: %S\n", wLast.classname)); 
 
-	int i = 0;
-	wNext = this;
-	do {
-		wNext = wNext.m_next;
-		tree[i].member = wNext;
-		i++;
-	} while (wNext);
+	/* we've found a window, let's test inputs backwards. */
+	while (wLast.classname) {
+		bool test = false;
 
-	/* traverse the list in reverse */
-	for (int x = c-1; x >= 0; x--) {
-		wNext = tree[x].member;
+		if (wLast.Visible())
+			test = wLast.Input(flEVType, flKey, flChar, flDevID);
 
-		if (wNext && wNext.Visible() && wNext.m_parent.Visible())
-			if (wNext.Input(flEVType, flKey, flChar, flDevID) == true) {
-				memfree(tree);
-				return (true);
+		//print(sprintf("Testing input for... widget: %S %d\n", wLast.classname, test));
+
+		/* input successful */
+		if (test == true) {
+			return true;
+		}
+
+		/* select the former input */
+		for (VGUIWidget a = this; a != __NULL__; a = a.m_next) {
+			/* we've reached the end, take one from before */
+			if (a == wLast) {
+				wLast = wLastBefore;
+				break;
 			}
+			wLastBefore = a;
+		}
+
+		/* the end of the world. */
+		if (wLast == this)
+			return false;
 	}
 
-	memfree(tree);
-	return (false);
+	return false;
 }
 
 void

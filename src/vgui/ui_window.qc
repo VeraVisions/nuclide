@@ -64,6 +64,9 @@ public:
 	/** Called when the window has been repositioned by the user. */
 	nonvirtual void CallOnMove(void(void) vFunc);
 
+	/** Will focus the window when called. */
+	nonvirtual bool Focus(void);
+
 	/** Called when the VGUIWindow got moved successfully. */
 	virtual void WindowDidMove(vector, vector);
 	/** Called when the VGUIWindow got resized successfully. */
@@ -72,10 +75,12 @@ public:
 	virtual void WindowDidClose(void);
 
 	/* overrides */
+	virtual void Add(VGUIWidget);
 	virtual void Draw(void);
 	virtual void SizeChanged(vector, vector);
 	virtual bool Input(float, float, float, float);
 	virtual void Spawned(void);
+	virtual void NowVisible();
 
 private:
 	vector m_vecColor;
@@ -94,6 +99,57 @@ VGUIWindow::VGUIWindow(void)
 	m_vecColor = UI_MAINCOLOR;
 	m_flAlpha = 1.0f;
 	m_styleMask = VGUIWindowStyleDefault;
+}
+
+void
+VGUIWindow::NowVisible(void)
+{
+	Focus();
+}
+
+void
+VGUIWindow::Add(VGUIWidget wNew)
+{
+	VGUIWidget wNext = this;
+	VGUIWidget wParent;
+	do {
+		wParent = wNext;
+		wNext = wNext.m_children;
+	} while (wNext);
+	wParent.m_children = wNew;
+	wNew.m_parent = this;
+}
+
+bool
+VGUIWindow::Focus(void)
+{
+	VGUIWidget wLast = this;
+	VGUIWidget wEdit = m_parent; /* start at parent */
+//	error("Focusing!!!\n");
+
+	/* iterate through the main windows, we start at the parent of all windows... */
+	do {
+		//print(sprintf("At %S\n", wEdit.classname));
+		wLast = wEdit;
+		wEdit = wEdit.m_next; /* next window of parent */
+
+		/* skip over ourselves. */
+		if (wEdit == this) {
+			wEdit = this.m_next;
+			wLast.m_next = this.m_next;
+		//	print("Skipping over ourselves...\n");
+			//print(sprintf("At %S\n", wEdit.classname));
+		}
+
+		/* if empty... mark ourselves as the last window */
+		if (wEdit == __NULL__) {
+			//print("Last window is us...\n");
+			wLast.m_next = this;
+			this.m_next = __NULL__;
+		}
+	} while (wEdit);
+
+	return true;
 }
 
 void
@@ -247,6 +303,16 @@ void VGUIWindow::Draw(void)
 	}
 #endif
 
+	VGUIWidget wNext = this;
+	g_vguiWidgetCount = 0;
+	do {
+		wNext = wNext.m_children;
+		if (wNext && wNext.Visible() && wNext.m_parent.Visible()) {
+			g_vguiWidgetCount++;
+			wNext.Draw();
+		}
+	} while (wNext);
+
 #ifdef UI_DEVELOPER
 	if (m_iFlags & WINDOW_DRAGGING) {
 		Font_DrawText([8, video_res[1] - 18], sprintf("Window Position: %d, %d\n", m_vecOrigin[0], m_vecOrigin[1]), g_fntDefault);
@@ -265,9 +331,11 @@ bool VGUIWindow::Input (float flEVType, float flKey, float flChar, float flDevID
 		if (flKey == K_MOUSE1) {
 			if (m_styleMask & VGUIWindowResizeable && Util_MouseAbove(g_vecMousePos, m_vecOrigin + (m_vecSize - [16,16]), [16,16])) {
 				m_iFlags |= WINDOW_RESIZING;
+				return Focus();
 			} else if (m_styleMask & VGUIWindowMovable && Util_MouseAbove(g_vecMousePos, m_vecOrigin, [m_vecSize[0] - 32, 16])) {
 				m_iFlags |= WINDOW_DRAGGING;
 				m_vecDragOffset = m_vecOrigin - g_vecMousePos;
+				return Focus();
 			}
 		}
 	} else if (flEVType == IE_KEYUP) {
@@ -300,5 +368,19 @@ bool VGUIWindow::Input (float flEVType, float flKey, float flChar, float flDevID
 		}
 		ret = true;
 	}
+
+	if (ret == false) {
+		VGUIWidget wNext = this;
+		do {
+			wNext = wNext.m_children;
+			if (wNext && wNext.Visible() && wNext.m_parent.Visible()) {
+				ret = wNext.Input(flEVType, flKey, flChar, flDevID);
+			}
+
+			if (ret == true)
+				return true;
+		} while (wNext);
+	}
+
 	return (ret);
 }
