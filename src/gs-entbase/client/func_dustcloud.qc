@@ -80,7 +80,7 @@ func_dustcloud_cloud::predraw(void)
 	vector vecPlayer = g_view.GetCameraOrigin();
 	
 	if (checkpvs(vecPlayer, this) == FALSE) {
-		return;
+		return (PREDRAW_NEXT);
 	}
 
 	makevectors(view_angles);
@@ -107,7 +107,7 @@ func_dustcloud_cloud::predraw(void)
 
 	lifetime += frametime;
 
-	return PREDRAW_NEXT;
+	return (PREDRAW_NEXT);
 }
 
 void
