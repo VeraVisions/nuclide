@@ -290,8 +290,8 @@ env_glow::RenderNormal(vector forg, vector fsize)
 float
 env_glow::predraw(void)
 {
-	vector forg;
-	vector fsize;
+	vector forg = g_vec_null;
+	vector fsize = g_vec_null;
 	vector vecPlayer = g_view.GetCameraOrigin();
 	vector vecAngle = g_view.GetCameraAngle();
 	float flDist = vlen(vecPlayer - origin);
