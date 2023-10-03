@@ -78,7 +78,6 @@ func_smokevolume_cloud::predraw(void)
 {
 	float alpha;
 	vector vecPlayer = g_view.GetCameraOrigin();
-		return PREDRAW_NEXT;
 	
 	if (checkpvs(vecPlayer, this) == FALSE) {
 		return PREDRAW_NEXT;
