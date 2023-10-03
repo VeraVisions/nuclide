@@ -49,11 +49,6 @@ enumflags
 class
 path_corner:NSPointTrigger
 {
-	int m_iFired;
-	float m_flSpeed;
-	float m_flYawSpeed;
-	float m_flWait;
-
 public:
 	void path_corner(void);
 	
@@ -63,6 +58,11 @@ public:
 	virtual void Respawn(void);
 	virtual void Trigger(entity, triggermode_t);
 
+private:
+	int m_iFired;
+	float m_flSpeed;
+	float m_flYawSpeed;
+	float m_flWait;
 };
 
 void
@@ -148,6 +148,7 @@ path_corner::Trigger(entity act, triggermode_t state)
 		return;
 	}
 
+	if (m_strMessage)
 	for (a = world; (a = find(a, ::targetname, m_strMessage));) {
 		NSEntity trigger = (NSEntity)a;
 		trigger.Trigger(act, state);
