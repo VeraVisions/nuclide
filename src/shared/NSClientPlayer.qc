@@ -698,7 +698,7 @@ NSClientPlayer::Save(float handle)
 	SaveFloat(handle, "weapontime", weapontime);
 	SaveInt(handle, "g_items", g_items);
 	SaveFloat(handle, "activeweapon", activeweapon);
-	SaveFloat(handle, "vehicle", num_for_edict(vehicle));
+	SaveEntity(handle, "vehicle", vehicle);
 }
 
 void
@@ -775,7 +775,7 @@ NSClientPlayer::Restore(string strKey, string strValue)
 		activeweapon = ReadFloat(strValue);
 		break;
 	case "vehicle":
-		vehicle = edict_num(ReadFloat(strValue));
+		vehicle = ReadEntity(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);

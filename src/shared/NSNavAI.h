@@ -42,6 +42,8 @@ private:
 	nodeslist_t *m_pRoute;
 	vector m_vecLastNode;
 	vector m_vecTurnAngle;
+	string m_pathTarget;
+	NSEntity m_pathEntity;
 
 	/* These are defined in side defs\*.def, ammo_types and ammo_names */
 	int m_iAmmoTypes[MAX_AMMO_TYPES];
@@ -71,5 +73,9 @@ public:
 	virtual void CheckRoute(void);
 	/** When called, will plot a route to a given world coordinate and start moving. */
 	virtual void RouteToPosition(vector);
+	/** When called, will start following a path_corner */
+	virtual void ChasePath(string startPath);
+	/** Internal use only. Called every frame to see our route progression. */
+	virtual void CheckRoute_Path(void);
 #endif
 };

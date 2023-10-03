@@ -430,6 +430,8 @@ public:
 	nonvirtual int GetTriggerCondition(void);
 	/** Call to trigger their targets manually. */
 	virtual void TriggerTargets(void);
+
+	virtual void Trigger(entity, triggermode_t);
 #endif
 
 #ifdef CLIENT
@@ -572,6 +574,7 @@ private:
 	nonvirtual void _LerpTurnToPos(vector);
 	nonvirtual void _LerpTurnToYaw(vector);
 	virtual void _Alerted(void);
+	nonvirtual void _ChaseAfterSpawn(void);
 #endif
 };
 

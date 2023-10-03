@@ -117,6 +117,20 @@ bool
 VGUIMenuButton::Input (float flEVType, float flKey, float flChar, float flDevID)
 {
 	bool ret = false;
+	bool mouseHover = false;
+
+	if (Util_MouseAbove(g_vecMousePos, m_parent.m_vecOrigin + m_vecOrigin, m_vecSize)) {
+		mouseHover = true;
+	}
+
+	if (mouseHover == true && HasFlag(BUTTON_HOVER) == false) {
+		FlagAdd(MBUTTON_HOVER);
+	//	OnMouseEntered();
+	} else if (HasFlag(BUTTON_HOVER) && mouseHover == false) {
+		FlagRemove(MBUTTON_HOVER);
+	//	OnMouseExited();
+	}
+
 
 	// If we're not ingame
 	if (clientstate() == 2 && !g_background) {
@@ -131,14 +145,14 @@ VGUIMenuButton::Input (float flEVType, float flKey, float flChar, float flDevID)
 
 	if (flEVType == IE_KEYDOWN) {
 		if (flKey == K_MOUSE1) {
-			if (Util_MouseAbove(g_vecMousePos, m_parent.m_vecOrigin + m_vecOrigin, m_vecSize)) {
+			if (mouseHover == true) {
 				m_iFlags |= MBUTTON_DOWN;
 				ret = true;
 			}
 		}
 	} else if (flEVType == IE_KEYUP) {
 		if (flKey == K_MOUSE1) {
-			if (m_iFlags & MBUTTON_DOWN && Util_MouseAbove(g_vecMousePos, m_parent.m_vecOrigin + m_vecOrigin, m_vecSize)) {
+			if (m_iFlags & MBUTTON_DOWN && mouseHover == true) {
 				if (tmpVGUIMenuButton1) {
 					tmpVGUIMenuButton1();
 				}

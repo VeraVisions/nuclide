@@ -87,10 +87,33 @@ NSNavAI::RouteEnded(void)
 }
 
 void
+NSNavAI::CheckRoute_Path(void)
+{
+	float flDist = floor(vlen(m_pathEntity.GetOrigin() - GetOrigin()));
+
+	//print(sprintf("Check Path! %f\n", flDist));
+
+	/* close enough...? */
+	if (flDist < 80) {
+		NSNavAI_Log("^2%s::^3CheckRoute_Path^7: " \
+			"reached path node %s", classname, m_pathTarget);
+
+		m_pathTarget = m_pathEntity.target;
+		m_pathEntity = (NSEntity)m_pathEntity.GetTargetEntity();
+		velocity = [0,0,0]; /* clamp friction */
+	}
+}
+
+void
 NSNavAI::CheckRoute(void)
 {
 	float flDist;
 	vector evenpos;
+
+	if (m_pathTarget) {
+		CheckRoute_Path();
+		return;
+	}
 
 	if (!m_iNodes)
 		return;
@@ -194,28 +217,39 @@ NSNavAI::GetRouteMovevalues(void)
 {
 	vector vecDirection;
 
-	if (!m_iNodes)
-		return [0,0,0];
+	if (m_pathTarget) {
+		vecDirection = normalize(m_pathEntity.GetOrigin() - GetOrigin());
+	} else {
+		if (!m_iNodes)
+			return [0,0,0];
 
-	if (m_iCurNode < 0)
-		vecDirection = normalize(m_vecLastNode - origin);
-	else
-		vecDirection = normalize(m_pRoute[m_iCurNode].dest - origin);
+		if (m_iCurNode < 0)
+			vecDirection = normalize(m_vecLastNode - GetOrigin());
+		else
+			vecDirection = normalize(m_pRoute[m_iCurNode].dest - GetOrigin());
+	}
 
-	makevectors(angles);
+	makevectors(input_angles);
 	return [v_forward * vecDirection, v_right * vecDirection, v_up * vecDirection];
 }
 
 vector
 NSNavAI::GetRouteDirection(void)
 {
-	if (!m_iNodes)
-		return angles;
+	if (m_pathTarget) {
+		return vectoangles(m_pathEntity.GetOrigin() - GetOrigin());
+	} else {
 
-	if (m_iCurNode < 0)
-		return vectoangles(m_vecLastNode - origin);
-	else
-		return vectoangles(m_pRoute[m_iCurNode].dest - origin);
+		if (!m_iNodes) {
+			return angles;
+		}
+
+		if (m_iCurNode < 0) {
+			return vectoangles(m_vecLastNode - origin);
+		} else {
+			return vectoangles(m_pRoute[m_iCurNode].dest - origin);
+		}
+	}
 }
 
 void
@@ -235,11 +269,11 @@ NSNavAI::RouteToPosition(vector destination)
 		/* can we walk directly to our target destination? */
 		if (trace_fraction == 1.0) {
 			NSNavAI_Log("^2%s::^3RouteToPosition^7: " \
-				"Walking directly to last node", classname);
+				"Walking directly to last node", p.classname);
 			p.m_iCurNode = -1;
 		} else {
 			NSNavAI_Log("^2%s::^3RouteToPosition^7: " \
-				"Path obstructed, calculating route", classname);
+				"Path obstructed, calculating route", p.classname);
 
 			/* run through all nodes, mark the closest direct path possible */
 			for (int i = 0; i < p.m_iNodes; i++) {
@@ -271,6 +305,14 @@ NSNavAI::RouteToPosition(vector destination)
 		route_calculate(this, destination, 0, RouteToPosition_RouteCB);
 		m_vecLastNode = destination;
 	}
+}
+
+void
+NSNavAI::ChasePath(string startPath)
+{
+	m_pathTarget = startPath;
+	m_pathEntity = (NSEntity)find(world, ::targetname, m_pathTarget);
+	NSNavAI_Log("Actor %S chase Path set to %S\n", netname, m_pathEntity.targetname);
 }
 
 void

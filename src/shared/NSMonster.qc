@@ -816,7 +816,11 @@ void
 NSMonster::_LerpTurnToPos(vector turnPos)
 {
 	vector vecWishAngle = vectoangles(turnPos - origin);
+#if 1
 	_LerpTurnToYaw(vecWishAngle);
+#else
+	angles[1] = input_angles[1] = v_angle[1] = vecWishAngle[1];
+#endif
 }
 
 
@@ -1225,7 +1229,7 @@ NSMonster::WalkRoute(void)
 	if (GetState() == MONSTER_AIMING && m_eEnemy) {
 		input_angles = vectoangles(m_eEnemy.origin - origin);
 		input_angles[0] = input_angles[2] = 0;
-	} else if (m_iNodes && (GetState() == MONSTER_IDLE || GetState() == MONSTER_ALERT)) {
+	} else if ((m_iNodes || m_pathTarget) && (GetState() == MONSTER_IDLE || GetState() == MONSTER_ALERT)) {
 		input_angles = GetRouteDirection();
 		input_angles[0] = input_angles[2] = 0;
 		input_movevalues = GetRouteMovevalues() * m_flSequenceSpeed;
@@ -1730,6 +1734,25 @@ NSMonster::Respawn(void)
 		SetState(MONSTER_DEAD);
 		SetFrame(_m_flFrame);
 	}
+
+	/* automatically start */
+	if (!targetname)
+	if (HasTriggerTarget() == true) {
+		ScheduleThink(_ChaseAfterSpawn, 0.0f);
+	}
+}
+
+void
+NSMonster::Trigger(entity act, triggermode_t state)
+{
+	ChasePath(GetTriggerTarget());
+	m_flSequenceSpeed = m_flWalkSpeed;
+}
+
+void
+NSMonster::_ChaseAfterSpawn(void)
+{
+	Trigger(this, TRIG_TOGGLE);
 }
 
 void
@@ -1882,10 +1905,10 @@ NSMonster::SpawnKey(string strKey, string strValue)
 		m_iAlliance = ReadInt(strValue);
 		break;
 	case "health":
-		base_health = Skill_GetDefValue(strValue);
+		base_health = Skill_GetDefValue(ReadString(strValue));
 		break;
 	case "leap_damage":
-		m_flLeapDamage = Skill_GetDefValue(strValue);
+		m_flLeapDamage = Skill_GetDefValue(ReadString(strValue));
 		break;
 	/* simple tweaks */
 	case "dead":

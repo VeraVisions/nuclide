@@ -35,22 +35,22 @@ font_s g_fntDefault;
 var int g_vguiWidgetCount;
 
 /** Return whether a VGUI panel is active on the 2D overlay level. */
-int
+bool
 VGUI_Active(void)
 {
-	return (g_vguiWidgetCount > 0) ? TRUE : FALSE;
+	return (g_vguiWidgetCount > 0i) ? (true) : (false);
 }
 
 /** Returns whether our mouse cursor is in a specific region of the screen. */
-int
+bool
 Util_MouseAbove(vector vecMousePos, vector vecPos, vector vecSize)
 {
 	if (vecMousePos[0] >= vecPos[0] && vecMousePos[0] <= vecPos[0] + vecSize[0]) {
 		if (vecMousePos[1] >= vecPos[1] && vecMousePos[1] <= vecPos[1] + vecSize[1]) {
-			return (1);
+			return (true);
 		}
 	}
-	return (0);
+	return (false);
 }
 
 .bool isVGUI;
