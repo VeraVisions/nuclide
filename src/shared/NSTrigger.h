@@ -118,6 +118,9 @@ public:
 	/** Returns the name of the entity group it can trigger (legacy style). */
 	nonvirtual string GetTriggerTarget(void);
 
+	/** Returns the first entity named after the target field. */
+	nonvirtual entity GetTargetEntity(void);
+
 	/** Returns TRUE if the entity has a legacy trigger target. */
 	nonvirtual bool HasTriggerTarget(void);
 

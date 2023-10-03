@@ -193,6 +193,15 @@ NSTrigger::GetTriggerTarget(void)
 	return target;
 }
 
+entity
+NSTrigger::GetTargetEntity(void)
+{
+	if (HasTriggerTarget() == false)
+		return __NULL__;
+
+	return find(world, ::targetname, target);
+}
+
 bool
 NSTrigger::HasTriggerTarget(void)
 {
@@ -304,25 +313,25 @@ NSTrigger::SpawnKey(string strKey, string strValue)
 	switch (strKey) {
 #ifdef SERVER
 	case "killtarget":
-		m_strKillTarget = strValue;
+		m_strKillTarget = ReadString(strValue);
 		break;
 	case "message":
-		m_strMessage = strValue;
+		m_strMessage = ReadString(strValue);
 		break;
 	case "master":
-		m_strMaster = strValue;
+		m_strMaster = ReadString(strValue);
 		break;
 	case "team_no":
-		team_no = stof(strValue);
+		team_no = ReadFloat(strValue);
 		break;
 	case "delay":
-		m_flDelay = stof(strValue);
+		m_flDelay = ReadFloat(strValue);
 		break;
 	case "globalstate":
-		m_strGlobalState = strValue;
+		m_strGlobalState = ReadString(strValue);
 		break;
 	case "globalname":
-		m_strGlobalName = strValue;
+		m_strGlobalName = ReadString(strValue);
 		break;
 #endif
 	default:

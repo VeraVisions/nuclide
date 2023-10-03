@@ -34,8 +34,8 @@ NSVehicle::Save(float handle)
 	SaveInt(handle, "m_iVehicleFlags", m_iVehicleFlags);
 	SaveInt(handle, "m_iMoveButtons", m_iMoveButtons);
 	SaveVector(handle, "m_vecMoveValues",  m_vecMoveValues);
-	SaveFloat(handle, "m_eDriver", num_for_edict(m_eDriver));
-	SaveFloat(handle, "m_eDriverLast", num_for_edict(m_eDriverLast));
+	SaveEntity(handle, "m_eDriver", m_eDriver);
+	SaveEntity(handle, "m_eDriverLast", m_eDriverLast);
 	SaveVector(handle, "m_vecPlayerPos",  m_vecPlayerPos);
 	SaveVector(handle, "m_vecExitPos",  m_vecExitPos);
 }
@@ -54,10 +54,10 @@ NSVehicle::Restore(string strKey, string strValue)
 		m_vecMoveValues = ReadVector(strValue);
 		break;
 	case "m_eDriver":
-		m_eDriver = edict_num(stof(strValue));
+		m_eDriver = ReadEntity(strValue);
 		break;
 	case "m_eDriverLast":
-		m_eDriverLast = edict_num(stof(strValue));
+		m_eDriverLast = ReadEntity(strValue);
 		break;
 	case "m_vecPlayerPos":
 		m_vecPlayerPos = ReadVector(strValue);

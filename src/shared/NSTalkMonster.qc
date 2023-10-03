@@ -685,10 +685,10 @@ NSTalkMonster::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "UnUseSentence":
-		m_talkUnfollow = strcat("!", strValue);
+		m_talkUnfollow = strcat("!", ReadString(strValue));
 		break;
 	case "UseSentence":
-		m_talkFollow = strcat("!", strValue);
+		m_talkFollow = strcat("!", ReadString(strValue));
 		break;
 
 	/* entityDef */

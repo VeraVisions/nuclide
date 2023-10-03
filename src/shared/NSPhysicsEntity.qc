@@ -610,29 +610,35 @@ NSPhysicsEntity::Respawn(void)
 void
 NSPhysicsEntity::SpawnKey(string strKey, string strValue)
 {
+	bool tempCheck = false;
+
 	switch (strKey) {
 	case "physmodel":
-		m_iShape = stoi(strValue);
+		m_iShape = ReadInt(strValue);
 		if (m_iShape > PHYSM_CYLINDER)
 			m_iShape = 0;
 		break;
 	case "massscale":
-		mass = stof(strValue);
+		mass = ReadFloat(strValue);
 		break;
 	case "inertiascale":
-		m_flInertiaScale = stof(strValue);
+		m_flInertiaScale = ReadFloat(strValue);
 		break;
 	case "physdamagescale":
 		break;
 	case "material":
-		m_iMaterial = stof(strValue);
+		m_iMaterial = ReadFloat(strValue);
 		break;
 	case "nodamageforces":
-		if (strValue == "1")
+		tempCheck = ReadBool(strValue);
+
+		if (tempCheck == true)
 			m_iFlags |= BPHY_NODMGPUSH;
 		break;
 	case "Damagetype":
-		if (strValue == "1")
+		tempCheck = ReadBool(strValue);
+
+		if (tempCheck == true)
 			m_iFlags |= BPHY_SHARP;
 		break;
 	default:

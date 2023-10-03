@@ -24,7 +24,7 @@ NSRenderableEntity::NSRenderableEntity(void)
 	m_vecRenderColor[0] = 1.0f;
 	m_vecRenderColor[1] = 1.0f;
 	m_vecRenderColor[2] = 1.0f;
-	m_flRenderAmt = 1.0f;
+	m_flRenderAmt = 0.0f;
 	m_flBoneControl1 = 0.5f;
 	m_flBoneControl2 = 0.5f;
 	m_flBoneControl3 = 0.5f;
@@ -644,16 +644,13 @@ NSRenderableEntity::postdraw(void)
 	if not (autocvar(r_showRenderInfo, 0))
 		return;
 
-	if not (PointMessage_Visible(origin, g_view.GetCameraOrigin(), g_view.GetCameraAngle()))
+	if not (PointMessage_Visible(WorldSpaceCenter(), g_view.GetCameraOrigin(), g_view.GetCameraAngle()))
 		return;
 
-	string renderMode;
-	string renderFX;
+	string renderMode = "";
+	string renderFX = "";
 
 	switch (GetRenderMode()) {
-	case RM_NORMAL:
-		renderMode = "RM_NORMAL";
-		break;
 	case RM_COLOR:
 		renderMode = "RM_COLOR";
 		break;
@@ -681,12 +678,13 @@ NSRenderableEntity::postdraw(void)
 	case RM_DONTRENDER:
 		renderMode = "RM_DONTRENDER";
 		break;
+	case RM_NORMAL:
+	default:
+		renderMode = "RM_NORMAL";
+		break;
 	}
 
 	switch (GetRenderFX()) {
-	case RFX_NORMAL:
-		renderFX = "RFX_NORMAL";
-		break;
 	case RFX_SLOWPULSE:
 		renderFX = "RFX_SLOWPULSE";
 		break;
@@ -743,6 +741,10 @@ NSRenderableEntity::postdraw(void)
 		break;
 	case RFX_Q2PULSE:
 		renderFX = "RFX_Q2PULSE";
+		break;
+	case RFX_NORMAL:
+	default:
+		renderFX = "RFX_NORMAL";
 		break;
 	}
 	string renderString = sprintf("RC: %v\nRA: %f\nRM: %s\nRFX: %s",
@@ -1154,30 +1156,30 @@ NSRenderableEntity::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "body":
-		m_iBody = stoi(strValue);
+		m_iBody = ReadInt(strValue);
 		break;
 	case "body0":
-		SetBodyInGroup(0, stoi(strValue));
+		SetBodyInGroup(0, ReadInt(strValue));
 		break;
 	case "body1":
-		SetBodyInGroup(1, stoi(strValue));
+		SetBodyInGroup(1, ReadInt(strValue));
 		break;
 	case "body2":
-		SetBodyInGroup(2, stoi(strValue));
+		SetBodyInGroup(2, ReadInt(strValue));
 		break;
 	case "body3":
-		SetBodyInGroup(3, stoi(strValue));
+		SetBodyInGroup(3, ReadInt(strValue));
 		break;
 	case "modelscale":
 	case "scale":
-		scale = stof(strValue);
+		scale = ReadFloat(strValue);
 		break;
 	case "modelstretch":
 	case "axialscale":
-		m_vecAxialScale = stov(strValue);
+		m_vecAxialScale = ReadVector(strValue);
 		break;
 	case "skin":
-		skin = stof(strValue);
+		skin = ReadFloat(strValue);
 		break;
 	case "shadows":
 		if (stof(strValue) == 1) {
@@ -1191,25 +1193,25 @@ NSRenderableEntity::SpawnKey(string strKey, string strValue)
 		}
 		break;
 	case "renderamt":
-		m_flRenderAmt = stof(strValue) / 255;
+		m_flRenderAmt = ReadFloat(strValue) / 255;
 #ifdef SERVER
 		m_oldflRenderAmt = m_flRenderAmt;
 #endif
 		break;
 	case "rendercolor":
-		m_vecRenderColor = stov(strValue) / 255;
+		m_vecRenderColor = ReadVector(strValue) / 255;
 #ifdef SERVER
 		m_oldvecRenderColor = m_vecRenderColor;
 #endif
 		break;
 	case "rendermode":
-		m_iRenderMode = stof(strValue);
+		m_iRenderMode = ReadFloat(strValue);
 #ifdef SERVER
 		m_oldiRenderMode = m_iRenderMode;
 #endif
 		break;
 	case "renderfx":
-		m_iRenderFX = stof(strValue);
+		m_iRenderFX = ReadFloat(strValue);
 #ifdef SERVER
 		m_oldiRenderFX = m_iRenderFX;
 #endif

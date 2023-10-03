@@ -72,6 +72,9 @@ public:
 	/** Called when the entity has been successfully restored from a savegame file. */
 	virtual void RestoreComplete(void);
 
+	/** Called when the entity has successfully completed a level transition. */
+	virtual void TransitionComplete(void);
+
 	/** Called when we are being prompted by another object/function with an input message. */
 	virtual void Input(entity,string,string);
 
@@ -109,6 +112,7 @@ public:
 	nonvirtual void SaveBool(float,string,bool);
 	/** Saves an entity id key/value pair to a filehandle. */
 	nonvirtual void SaveEntity(float,string,entity);
+#endif
 
 	/* load game/spawn helper functions */
 	/** reads a floating point value from a string */
@@ -123,7 +127,6 @@ public:
 	nonvirtual bool ReadBool(string);
 	/** read an entity id, converted to entity, from a string */
 	nonvirtual entity ReadEntity(string);
-#endif
 
 	/** Get the level time the entity finds itself in.
 		Always use this instead of the `time` global. The `time` global may not

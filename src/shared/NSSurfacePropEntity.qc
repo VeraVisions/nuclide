@@ -619,7 +619,7 @@ NSSurfacePropEntity::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "health":
-		max_health = health = stof(strValue);
+		max_health = health = ReadFloat(strValue);
 		m_oldHealth = health;
 		break;
 	case "propdata":
@@ -636,7 +636,7 @@ NSSurfacePropEntity::SpawnKey(string strKey, string strValue)
 	/* Input/Output system */
 #ifdef SERVER
 	case "OnBreak":
-		m_strOnBreak = PrepareOutput(m_strOnBreak, strValue);
+		m_strOnBreak = PrepareOutput(m_strOnBreak, ReadString(strValue));
 		break;
 #endif
 	default:

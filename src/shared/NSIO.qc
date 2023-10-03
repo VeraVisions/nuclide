@@ -96,6 +96,53 @@ NSIO::Spawned(void)
 #endif
 }
 
+bool
+NSIO::ReadBool(string strValue)
+{
+	if (strValue && strValue != "")
+		return stof(Constants_LookUp(strValue, strValue));
+	return __NULL__;
+}
+float
+NSIO::ReadFloat(string strValue)
+{
+	if (strValue && strValue != "")
+		return stof(Constants_LookUp(strValue, strValue));
+	return __NULL__;
+}
+int
+NSIO::ReadInt(string strValue)
+{
+	if (strValue && strValue != "")
+		return stoi(Constants_LookUp(strValue, strValue));
+	return __NULL__;
+}
+string
+NSIO::ReadString(string strValue)
+{
+	if (strValue && strValue != "")
+		return Constants_LookUp(strValue, strValue);
+	return __NULL__;
+}
+vector
+NSIO::ReadVector(string strValue)
+{
+	if (strValue && strValue != "")
+		return stov(Constants_LookUp(strValue, strValue));
+	return __NULL__;
+}
+entity
+NSIO::ReadEntity(string strValue)
+{
+	if (strValue && strValue != "") {
+		float num = stof(strValue);
+
+		if (num)
+			return edict_num(num);
+	}
+	return __NULL__;
+}
+
 #ifdef SERVER
 /* Input/Output system */
 void
@@ -250,53 +297,6 @@ NSIO::SaveEntity(float handle, string key, entity targ)
 
 	//if (value)
 		fputs(handle, sprintf("%S \"%f\"\n", key, value));
-}
-
-bool
-NSIO::ReadBool(string strValue)
-{
-	if (strValue && strValue != "")
-		return stof(Constants_LookUp(strValue, strValue));
-	return __NULL__;
-}
-float
-NSIO::ReadFloat(string strValue)
-{
-	if (strValue && strValue != "")
-		return stof(Constants_LookUp(strValue, strValue));
-	return __NULL__;
-}
-int
-NSIO::ReadInt(string strValue)
-{
-	if (strValue && strValue != "")
-		return stoi(Constants_LookUp(strValue, strValue));
-	return __NULL__;
-}
-string
-NSIO::ReadString(string strValue)
-{
-	if (strValue && strValue != "")
-		return Constants_LookUp(strValue, strValue);
-	return __NULL__;
-}
-vector
-NSIO::ReadVector(string strValue)
-{
-	if (strValue && strValue != "")
-		return stov(Constants_LookUp(strValue, strValue));
-	return __NULL__;
-}
-entity
-NSIO::ReadEntity(string strValue)
-{
-	if (strValue && strValue != "") {
-		float num = stof(strValue);
-
-		if (num)
-			return edict_num(num);
-	}
-	return __NULL__;
 }
 
 void
@@ -697,6 +697,11 @@ NSIO::Restore(string strKey, string strValue)
 
 void
 NSIO::RestoreComplete( void ) {
+	/* this is where we can handle anything post-loading */
+}
+
+void
+NSIO::TransitionComplete( void ) {
 	/* this is where we can handle anything post-loading */
 }
 #endif

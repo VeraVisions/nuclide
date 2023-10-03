@@ -529,7 +529,7 @@ void NSEntity::SetNextThink( float fl ) {
 
 	/* HACK: to make sure things happen post-spawn */
 	if ( flTime == 0.0f )
-		flTime = 0.1f;
+		flTime = 0.001f;
 
 	if ( flTime >= 0 )
 		nextthink = flTime;
@@ -797,36 +797,43 @@ void NSEntity::Input( entity eAct, string strInput, string strData ) {
 #endif
 
 void NSEntity::SpawnKey( string strKey, string strValue ) {
+	bool tempCheck = false;
 	/* we do re-read a lot of the builtin fields in case we want to set
 	   defaults. just in case anybody is wondering. */
 	switch ( strKey ) {
 	case "spawnflags":
-		spawnflags = stof( strValue );
+		spawnflags = ReadFloat( strValue );
 		break;
 	case "origin":
-		origin = stov( strValue );
+		origin = ReadVector( strValue );
 		break;
 	case "model":
-		model = strValue;
+		model = ReadString(strValue);
 		break;
 	case "angles":
-		angles = stov( strValue );
+		angles = ReadVector( strValue );
 		break;
 	case "angle":
-		angles[1] = stof( strValue );
+		angles[1] = ReadFloat( strValue );
 		break;
 	case "solid":
-		solid = stof( strValue );
+		solid = ReadFloat( strValue );
 		break;
 #ifdef SERVER
 	case "health":
-		health = stof( strValue );
+		health = ReadFloat( strValue );
 		break;
 	case "parentname":
-		SetParent( strValue );
+		SetParent( ReadString(strValue) );
 		break;
 	case "ignorepvs":
-		pvsflags = PVSF_IGNOREPVS;
+		tempCheck = ReadBool(strValue);
+
+		if (tempCheck == true)
+			pvsflags = PVSF_IGNOREPVS;
+		else
+			pvsflags &= ~PVSF_IGNOREPVS;
+
 		break;
 #endif
 	default:
