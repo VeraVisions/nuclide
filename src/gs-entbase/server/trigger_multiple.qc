@@ -89,6 +89,9 @@ trigger_multiple::Save(float handle)
 {
 	super::Save(handle);
 	SaveFloat(handle, "m_flWait", m_flWait);
+	SaveBool(handle, "m_bStartDisabled", m_bStartDisabled);
+	SaveBool(handle, "m_bIsModern", m_bIsModern);
+	SaveBool(handle, "m_bEnabled", m_bEnabled);
 	SaveString(handle, "m_strOnStartTouch", m_strOnStartTouch);
 	SaveString(handle, "m_strOnEndTouchAll", m_strOnEndTouchAll);
 	SaveString(handle, "m_strOnTrigger", m_strOnTrigger);
@@ -100,6 +103,15 @@ trigger_multiple::Restore(string strKey, string strValue)
 	switch (strKey) {
 	case "m_flWait":
 		m_flWait = ReadFloat(strValue);
+		break;
+	case "m_bStartDisabled":
+		m_bStartDisabled = ReadBool(strValue);
+		break;
+	case "m_bIsModern":
+		m_bIsModern = ReadBool(strValue);
+		break;
+	case "m_bEnabled":
+		m_bEnabled = ReadBool(strValue);
 		break;
 	case "m_strOnStartTouch":
 		m_strOnStartTouch = ReadString(strValue);

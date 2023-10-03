@@ -53,12 +53,6 @@ This entity was introduced in The Wastes (2018).
 */
 class prop_rope:NSEntity
 {
-	string m_strShader;
-	PREDICTED_FLOAT(m_flSag)
-	PREDICTED_FLOAT(m_flSwingFactor)
-	PREDICTED_INT(m_iSegments)
-	PREDICTED_VECTOR(m_vecTarget)
-
 public:
 	void prop_rope(void);
 
@@ -67,11 +61,20 @@ public:
 	virtual void ReceiveEntity(float,float);
 	virtual void DrawSegment(vector, vector, vector);
 #else
+	virtual void SpawnKey(string,string);
 	virtual void Respawn(void);
+	virtual void Save(float);
+	virtual void Restore(string, string);
 	virtual void EvaluateEntity(void);
 	virtual float SendEntity(entity,float);
-	virtual void SpawnKey(string,string);
 #endif
+
+private:
+	string m_strShader;
+	PREDICTED_FLOAT(m_flSag)
+	PREDICTED_FLOAT(m_flSwingFactor)
+	PREDICTED_INT(m_iSegments)
+	PREDICTED_VECTOR(m_vecTarget)
 };
 
 #ifdef CLIENT
@@ -291,6 +294,42 @@ prop_rope::SpawnKey(string strKey, string strValue)
 		break;
 	default:
 		super::SpawnKey(strKey, strValue);
+	}
+}
+
+void
+prop_rope::Save(float handle)
+{
+	super::Save(handle);
+
+	SaveString(handle, "m_strShader", m_strShader);
+	SaveFloat(handle, "m_flSag", m_flSag);
+	SaveFloat(handle, "m_flSwingFactor", m_flSwingFactor);
+	SaveInt(handle, "m_iSegments", m_iSegments);
+	SaveVector(handle, "m_vecTarget", m_vecTarget);
+}
+
+void
+prop_rope::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "m_strShader":
+		m_strShader = ReadString(strValue);
+		break;
+	case "m_flSag":
+		m_flSag = ReadFloat(strValue);
+		break;
+	case "m_flSwingFactor":
+		m_flSwingFactor = ReadFloat(strValue);
+		break;
+	case "m_iSegments":
+		m_iSegments = ReadInt(strValue);
+		break;
+	case "m_vecTarget":
+		m_vecTarget = ReadVector(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
 	}
 }
 #endif

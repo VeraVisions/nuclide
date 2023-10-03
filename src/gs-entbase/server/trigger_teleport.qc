@@ -47,6 +47,8 @@ public:
 	virtual void Spawned(void);
 	virtual void Respawn(void);
 	virtual void SpawnKey(string, string);
+	virtual void Save(float);
+	virtual void Restore(string,string);
 
 	nonvirtual bool CanPass(NSEntity);
 
@@ -90,6 +92,40 @@ trigger_teleport::SpawnKey(string strKey, string strValue)
 	}
 }
 
+void
+trigger_teleport::Save(float handle)
+{
+	super::Save(handle);
+	SaveBool(handle, "m_bEnabled", m_bEnabled);
+	SaveString(handle, "m_sndTeleport", m_sndTeleport);
+	SaveString(handle, "m_sndTeleportEnter", m_sndTeleportEnter);
+	SaveString(handle, "m_sndTeleportExit", m_sndTeleportExit);
+	SaveBool(handle, "m_bIsModern", m_bIsModern);
+}
+
+void
+trigger_teleport::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "m_bEnabled":
+		m_bEnabled = ReadBool(strValue);
+		break;
+	case "m_sndTeleport":
+		m_sndTeleport = ReadString(strValue);
+		break;
+	case "m_sndTeleportEnter":
+		m_sndTeleportEnter = ReadString(strValue);
+		break;
+	case "m_sndTeleportExit":
+		m_sndTeleportExit = ReadString(strValue);
+		break;
+	case "m_bIsModern":
+		m_bIsModern = ReadBool(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
 
 bool
 trigger_teleport::CanPass(NSEntity target)

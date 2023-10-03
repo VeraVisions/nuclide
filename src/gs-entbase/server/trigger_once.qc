@@ -95,19 +95,31 @@ void
 trigger_once::Save(float handle)
 {
 	super::Save(handle);
+	SaveBool(handle, "m_bStartDisabled", m_bStartDisabled);
+	SaveBool(handle, "m_bEnabled", m_bEnabled);
 	SaveString(handle, "m_strOnStartTouch", m_strOnStartTouch);
 	SaveString(handle, "m_strOnTrigger", m_strOnTrigger);
+	SaveBool(handle, "m_bIsModern", m_bIsModern);
 }
 
 void
 trigger_once::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
+	case "m_bStartDisabled":
+		m_bStartDisabled = ReadBool(strValue);
+		break;
+	case "m_bEnabled":
+		m_bEnabled = ReadBool(strValue);
+		break;
 	case "m_strOnStartTouch":
 		m_strOnStartTouch = ReadString(strValue);
 		break;
 	case "m_strOnTrigger":
 		m_strOnTrigger = ReadString(strValue);
+		break;
+	case "m_bIsModern":
+		m_bIsModern = ReadBool(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);

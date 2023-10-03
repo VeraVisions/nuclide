@@ -44,22 +44,14 @@ This entity was introduced in Half-Life (1998).
 */
 class trigger_camera:NSPointTrigger
 {
-	entity m_eLooker;
-#ifdef CLIENT
-#else
-	float m_flWait;
-	string m_strAimAt;
-	string m_strMoveTo;
-	entity m_eLooker_net;
-	float m_flSpeed;
-#endif
-
 public:
 	void trigger_camera(void);
 
 #ifdef CLIENT
 	virtual void ReceiveEntity(float,float);
 #else
+	virtual void Save(float);
+	virtual void Restore(string, string);
 	virtual void NextPath(void);
 	virtual void GoToTarget(void);
 	virtual void Trigger(entity, triggermode_t);
@@ -68,16 +60,26 @@ public:
 	virtual float SendEntity(entity,float);
 	virtual void EvaluateEntity(void);
 #endif
+
+private:
+	NETWORKED_FLOAT(m_flWait)
+	entity m_eLooker;
+#ifdef SERVER
+	string m_strAimAt;
+	string m_strMoveTo;
+	entity m_eLooker_net;
+	float m_flSpeed;
+#endif
 };
 
 void
 trigger_camera::trigger_camera(void)
 {
-#ifndef CLIENT
 	m_flWait = 4.0f;
+	m_eLooker = __NULL__;
+#ifndef CLIENT
 	m_strAimAt = __NULL__;
 	m_strMoveTo = __NULL__;
-	m_eLooker = __NULL__;
 #endif
 }
 
@@ -85,28 +87,26 @@ trigger_camera::trigger_camera(void)
 void
 trigger_camera::ReceiveEntity(float flNew, float flFlags)
 {
-	float flWait = 0.0f;
-
-	if (flFlags & OCAMFL_CHANGED_ORIGIN) {
+	//if (flFlags & OCAMFL_CHANGED_ORIGIN) {
 		origin[0] = readcoord();
 		origin[1] = readcoord();
 		origin[2] = readcoord();
 		setorigin(this, origin);
-	}
+	//}
 
-	if (flFlags & OCAMFL_CHANGED_ANGLES) {
+	//if (flFlags & OCAMFL_CHANGED_ANGLES) {
 		angles[0] = readfloat();
 		angles[1] = readfloat();
 		angles[2] = readfloat();
-	}
+	//}
 
-	if (flFlags & OCAMFL_CHANGED_VIEWER) {
+	//if (flFlags & OCAMFL_CHANGED_VIEWER) {
 		m_eLooker = findfloat(world, ::entnum, readentitynum());
-	}
+	//}
 
-	if (flFlags & OCAMFL_CHANGED_WAIT) {
-		flWait = readfloat();
-	}
+	//if (flFlags & OCAMFL_CHANGED_WAIT) {
+		m_flWait = readfloat();
+	//}
 
 	int s = (float)getproperty(VF_ACTIVESEAT);
 	pSeat = &g_seats[s];
@@ -118,15 +118,16 @@ trigger_camera::ReceiveEntity(float flNew, float flFlags)
 	pSeat->m_vecCameraOrigin = origin;
 	pSeat->m_vecCameraAngle = angles;
 
-	if (flFlags & OCAMFL_CHANGED_WAIT) {
-		if (flWait == -1)
+	//if (flFlags & OCAMFL_CHANGED_WAIT) {
+		if (m_flWait == -1)
 			pSeat->m_flCameraTime = -1;
 		else
-			pSeat->m_flCameraTime = time + flWait;
+			pSeat->m_flCameraTime = time + m_flWait;
 
 		g_view.SetCameraAngle(angles);
 		g_view.SetClientAngle(angles);
-	}
+		//error(sprintf("Wait! %f %f\n", time, pSeat->m_flCameraTime));
+	//}
 
 	classname = "trigger_camera";
 }
@@ -158,7 +159,42 @@ trigger_camera::Respawn(void)
 	SetModel(GetSpawnModel());
 	SetOrigin(GetSpawnOrigin());
 	m_eLooker = world;
-	pvsflags = PVSF_IGNOREPVS;
+}
+
+void
+trigger_camera::Save(float handle)
+{
+	super::Save(handle);
+
+	SaveFloat(handle, "m_flWait", m_flWait);
+	SaveEntity(handle, "m_eLooker", m_eLooker);
+	SaveString(handle, "m_strAimAt", m_strAimAt);
+	SaveString(handle, "m_strMoveTo", m_strMoveTo);
+	SaveFloat(handle, "m_flSpeed", m_flSpeed);
+}
+
+void
+trigger_camera::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "m_flWait":
+		m_flWait = ReadFloat(strValue);
+		break;
+	case "m_eLooker":
+		m_eLooker = ReadEntity(strValue);
+		break;
+	case "m_strAimAt":
+		m_strAimAt = ReadString(strValue);
+		break;
+	case "m_strMoveTo":
+		m_strMoveTo = ReadString(strValue);
+		break;
+	case "m_flSpeed":
+		m_flSpeed = ReadFloat(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
 }
 
 float
@@ -167,25 +203,25 @@ trigger_camera::SendEntity(entity ePEnt, float flFlags)
 	WriteByte(MSG_ENTITY, ENT_OLDCAMERA);
 	WriteFloat(MSG_ENTITY, flFlags);
 
-	if (flFlags & OCAMFL_CHANGED_ORIGIN) {
+	//if (flFlags & OCAMFL_CHANGED_ORIGIN) {
 		WriteCoord(MSG_ENTITY, origin[0]);
 		WriteCoord(MSG_ENTITY, origin[1]);
 		WriteCoord(MSG_ENTITY, origin[2]);
-	}
+	//}
 
-	if (flFlags & OCAMFL_CHANGED_ANGLES) {
+	//if (flFlags & OCAMFL_CHANGED_ANGLES) {
 		WriteFloat(MSG_ENTITY, angles[0]);
 		WriteFloat(MSG_ENTITY, angles[1]);
 		WriteFloat(MSG_ENTITY, angles[2]);
-	}
+//	}
 
-	if (flFlags & OCAMFL_CHANGED_VIEWER) {
+	//if (flFlags & OCAMFL_CHANGED_VIEWER) {
 		WriteEntity(MSG_ENTITY, m_eLooker);
-	}
+	//}
 
-	if (flFlags & OCAMFL_CHANGED_WAIT) {
+	//if (flFlags & OCAMFL_CHANGED_WAIT) {
 		WriteFloat(MSG_ENTITY, m_flWait);
-	}
+	//}
 
 	return (1);
 }
@@ -193,7 +229,13 @@ trigger_camera::SendEntity(entity ePEnt, float flFlags)
 void
 trigger_camera::EvaluateEntity(void)
 {
-	entity t = find(world, ::targetname, m_strAimAt);
+	entity t;
+
+	if (!m_eLooker)
+		return;
+
+	t = find(world, ::targetname, m_strAimAt);
+
 	if (t) {
 		angles = vectoangles(t.origin - origin);
 	}
@@ -207,10 +249,14 @@ trigger_camera::EvaluateEntity(void)
 	if (ATTR_CHANGED(m_eLooker)) {
 		SetSendFlags(OCAMFL_CHANGED_VIEWER);
 	}
+	if (ATTR_CHANGED(m_flWait)) {
+		SetSendFlags(OCAMFL_CHANGED_WAIT);
+	}
 
 	SAVE_STATE(origin)
 	SAVE_STATE(angles)
 	SAVE_STATE(m_eLooker)
+	SAVE_STATE(m_flWait)
 }
 
 void
@@ -245,6 +291,12 @@ void
 trigger_camera::NextPath(void)
 {
 	path_corner eNode;
+
+	if (target == "") {
+		return;
+	}
+
+	print(sprintf("Looking for target %S\n", target));
 	eNode = (path_corner)find(world, ::targetname, target);
 
 	if (!eNode) {
@@ -288,7 +340,7 @@ trigger_camera::Trigger(entity act, triggermode_t state)
 		act = find(world, ::classname, "player");
 	}
 
-	NSLog("trigger_camera for %S is now %S\n", act.netname, targetname);
+	NSLog("trigger_camera for %s %S is now %S\n", act.classname, act.netname, targetname);
 
 	/* kill the other cams the player may be attached to */
 	for (trigger_camera cam = __NULL__; (cam = (trigger_camera)find(cam, ::classname, "trigger_camera"));) {
@@ -299,6 +351,7 @@ trigger_camera::Trigger(entity act, triggermode_t state)
 	}
 
 	m_eLooker = act;
+	m_eLooker.view2 = this;
 	NSLog("Triggering it on %s\n", act.netname);
 	SetOrigin(GetSpawnOrigin());
 	ClearVelocity();
@@ -306,6 +359,7 @@ trigger_camera::Trigger(entity act, triggermode_t state)
 	SetTriggerTarget(m_strMoveTo);
 	NextPath();
 	GoToTarget();
-	SetSendFlags(-1);
+	SetSendFlags(0xFFFFFF);
+	pvsflags = PVSF_IGNOREPVS;
 }
 #endif
