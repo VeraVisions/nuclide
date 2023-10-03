@@ -52,12 +52,12 @@ Util_TimeToString(float fTime)
 }
 
 /* returns whether or not the mode we're playing is a team game */
-int
+bool
 Util_IsTeamplay(void)
 {
 #ifdef SERVER
 	return g_grMode.IsTeamplay();
 #else
-	return (serverkeyfloat("teams") > 0) ? TRUE : FALSE;
+	return (serverkeyfloat("teams") > 0) ? (true) : (false);
 #endif
 }

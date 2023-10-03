@@ -131,6 +131,8 @@ func_door::func_door(void)
 	m_strSndClose =
 	m_strSndMove =
 	m_strSndStop = __NULL__;
+
+	m_waterType = 0i;
 }
 
 void
@@ -155,6 +157,7 @@ func_door::Save(float handle)
 	SaveString(handle, "m_strSndStop", m_strSndStop);
 	SaveString(handle, "m_strSndMove", m_strSndMove);
 	SaveString(handle, "targetClose", targetClose);
+	SaveInt(handle, "m_waterType", m_waterType);
 }
 
 void
@@ -207,6 +210,10 @@ func_door::Restore(string strKey, string strValue)
 		break;
 	case "targetClose":
 		targetClose = ReadString(strValue);
+		break;
+
+	case "m_waterType":
+		m_waterType = ReadInt(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
