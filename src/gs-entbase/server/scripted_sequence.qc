@@ -84,19 +84,6 @@ This entity was introduced in Half-Life (1998).
 class
 scripted_sequence:NSPointTrigger
 {
-	int m_iEnabled;
-
-	/* Target name OR classname description */
-	string m_strMonster;
-	/* After the monster has moved to the action point, play this animation */
-	string m_strActionAnim;
-	/* Animation to play until the scripted_sequence is triggered */
-	string m_strIdleAnim;
-	/* Search radius for m_targetMonster if a classname is specified */
-	float m_flSearchRadius;
-	/* How we move to perform m_iActionAnim */
-	int m_iMove;
-
 public:
 	void scripted_sequence(void);
 	
@@ -111,6 +98,13 @@ public:
 	nonvirtual void RunOnEntity(entity);
 	nonvirtual void InitIdle(void);
 
+private:
+	int m_iEnabled;
+	string m_strMonster;
+	string m_strActionAnim;
+	string m_strIdleAnim;
+	float m_flSearchRadius;
+	int m_iMove;
 };
 
 void
@@ -282,6 +276,12 @@ scripted_sequence::RunOnEntity(entity targ)
 
 	/* all the non-moving targets will do this at least */
 	if (m_strActionAnim) {
+		if (m_iMove == SS_NO) {
+			//f.SetAngles(GetAngles());
+			//f.SetOrigin(GetOrigin());
+			f.AnimPlay(f.m_flSequenceEnd);
+		}
+
 		duration = frameduration(f.modelindex, f.m_flSequenceEnd);
 		f.SetNextThink(duration);
 		NSLog(
