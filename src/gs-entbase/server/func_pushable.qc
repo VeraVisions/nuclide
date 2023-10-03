@@ -39,9 +39,6 @@ This entity was introduced in Half-Life (1998).
 class
 func_pushable:func_breakable
 {
-	entity m_pPuller;
-	entity m_eCollBox;
-
 public:
 	void func_pushable(void);
 	
@@ -53,6 +50,9 @@ public:
 	virtual void OnPlayerUse(void);
 	virtual void OnRemoveEntity(void);
 
+private:
+	entity m_pPuller;
+	entity m_eCollBox;
 };
 
 void
@@ -66,18 +66,18 @@ void
 func_pushable::Save(float handle)
 {
 	super::Save(handle);
-	SaveEntity(handle, "puller", m_pPuller);
-	SaveEntity(handle, "collbox", m_eCollBox);
+	SaveEntity(handle, "m_pPuller", m_pPuller);
+	SaveEntity(handle, "m_eCollBox", m_eCollBox);
 }
 
 void
 func_pushable::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "puller":
+	case "m_pPuller":
 		m_pPuller = ReadEntity(strValue);
 		break;
-	case "collbox":
+	case "m_eCollBox":
 		m_eCollBox = ReadEntity(strValue);
 		break;
 	default:
