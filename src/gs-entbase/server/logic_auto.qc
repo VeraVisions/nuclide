@@ -52,18 +52,6 @@ This entity was introduced in Half-Life 2 (2004).
 class
 logic_auto:NSPointTrigger
 {
-	/* outputs */
-	string m_strOnMapSpawn;
-	string m_strOnNewGame;
-	string m_strOnLoadGame;
-	string m_strOnMapTransition;
-	string m_strOnBackgroundMap;
-	string m_strOnMultiNewMap;
-	string m_strOnMultiNewRound;
-
-	/* temporary */
-	int m_iFromSaveGame;
-
 public:
 	void logic_auto(void);
 	
@@ -77,6 +65,18 @@ public:
 	
 	nonvirtual void Processing(void);
 
+private:
+	/* outputs */
+	string m_strOnMapSpawn;
+	string m_strOnNewGame;
+	string m_strOnLoadGame;
+	string m_strOnMapTransition;
+	string m_strOnBackgroundMap;
+	string m_strOnMultiNewMap;
+	string m_strOnMultiNewRound;
+
+	/* temporary */
+	int m_iFromSaveGame;
 };
 
 void

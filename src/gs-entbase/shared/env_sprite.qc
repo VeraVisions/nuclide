@@ -61,19 +61,6 @@ This entity was introduced in Half-Life (1998).
 */
 class env_sprite:NSRenderableEntity
 {
-private:
-	bool m_iIsShader;
-	int m_iToggled;
-	float m_flEffects;
-
-	NETWORKED_STRING(m_strMaterial)
-	NETWORKED_FLOAT(m_flFramerate)
-
-#ifdef CLIENT
-	int m_iMaxFrame;
-	bool m_bLoops;
-#endif
-
 public:
 	void env_sprite(void);
 
@@ -92,7 +79,19 @@ public:
 	virtual void ReceiveEntity(float,float);
 	virtual void SetMaxFrame(int);
 	virtual void SetLoopFlag(bool);
+#endif
 
+private:
+	bool m_iIsShader;
+	int m_iToggled;
+	float m_flEffects;
+
+	NETWORKED_STRING(m_strMaterial)
+	NETWORKED_FLOAT(m_flFramerate)
+
+#ifdef CLIENT
+	int m_iMaxFrame;
+	bool m_bLoops;
 #endif
 };
 

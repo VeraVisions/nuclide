@@ -35,10 +35,6 @@ This entity was introduced in Half-Life (1998).
 class
 multi_manager_sub:NSPointTrigger
 {
-	entity m_eActivator;
-	int m_iValue;
-	float m_flUntilTriggered;
-
 public:
 	void multi_manager_sub(void);
 
@@ -46,6 +42,10 @@ public:
 	virtual void Save(float);
 	virtual void Restore(string,string);
 
+private:
+	entity m_eActivator;
+	int m_iValue;
+	float m_flUntilTriggered;
 };
 
 void

@@ -71,18 +71,6 @@ This entity was introduced in Half-Life 2 (2004).
 */
 class light_dynamic:NSPointTrigger
 {
-	vector m_vecLight;
-	float m_flIntensity;
-	float m_flInnerCone;
-	float m_flCone;
-	float m_flDistance;
-	float m_flRadius;
-	float m_flStyle;
-	string m_strPattern;
-	int m_iState;
-	int m_iStartActive;
-	float m_light; /* our light handle */
-
 public:
 	void light_dynamic(void);
 	virtual void SpawnKey(string,string);
@@ -100,6 +88,19 @@ public:
 	virtual void EvaluateEntity(void);
 	virtual void Input(entity, string, string);
 #endif
+
+private:
+	vector m_vecLight;
+	float m_flIntensity;
+	float m_flInnerCone;
+	float m_flCone;
+	float m_flDistance;
+	float m_flRadius;
+	float m_flStyle;
+	string m_strPattern;
+	int m_iState;
+	int m_iStartActive;
+	float m_light; /* our light handle */
 };
 
 #ifdef CLIENT

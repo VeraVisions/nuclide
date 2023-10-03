@@ -36,9 +36,6 @@ to be played.
 class
 targ_speaker:NSPointTrigger
 {
-	string m_strSample;
-	float m_flVolume;
-
 public:
 	void targ_speaker(void);
 	
@@ -48,6 +45,9 @@ public:
 	virtual void Respawn(void);
 	virtual void Trigger(entity, triggermode_t);
 
+private:
+	string m_strSample;
+	float m_flVolume;
 };
 
 void

@@ -39,6 +39,7 @@ enumflags
 class
 func_vehicle_wheel
 {
+
 private:
 #ifdef CLIENT
 	vector origin_net;

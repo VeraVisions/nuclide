@@ -50,8 +50,6 @@ This entity was introduced in Half-Life (1998).
 class
 momentary_rot_button:NSMomentary
 {
-	int m_iTurnDir;
-
 public:
 	void momentary_rot_button(void);
 	
@@ -68,6 +66,8 @@ public:
 	virtual void MovementStateChanged(void);
 	virtual float GetProgress(void);
 
+private:
+	int m_iTurnDir;
 };
 
 void

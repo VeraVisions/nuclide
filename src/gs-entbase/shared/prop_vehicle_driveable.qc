@@ -32,16 +32,6 @@ enumflags
 
 class prop_vehicle_driveable_wheel
 {
-private:
-	float m_flSuspension;
-	float m_flSuspensionForce;
-
-#ifdef CLIENT
-	vector origin_net;
-	vector velocity_net;
-	vector angles_net;
-#endif
-
 public:
 	void prop_vehicle_driveable_wheel(void);
 
@@ -55,6 +45,16 @@ public:
 	virtual void Bounce(vector);
 	virtual void Accel(float,float);
 	virtual void Physics(float,float);
+
+private:
+	float m_flSuspension;
+	float m_flSuspensionForce;
+
+#ifdef CLIENT
+	vector origin_net;
+	vector velocity_net;
+	vector angles_net;
+#endif
 };
 
 /*!QUAKED prop_vehicle_driveable (1 0 0) (-50 -50 0) (50 50 70)

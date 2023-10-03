@@ -34,8 +34,6 @@ This entity was introduced in Quake II (1997).
 */
 class trigger_gravity:NSBrushTrigger
 {
-	float m_flGravity;
-
 public:
 	void trigger_gravity(void);
 	
@@ -47,6 +45,9 @@ public:
 	virtual void Spawned(void);
 	virtual void Respawn(void);
 	virtual void Touch(entity);
+
+private:
+	float m_flGravity;
 };
 
 void

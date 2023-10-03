@@ -66,11 +66,6 @@ This entity was introduced in Quake II (1997).
 class
 func_rotating:NSRenderableEntity
 {
-	vector m_vecMoveDir;
-	float m_flSpeed;
-	float m_flDamage;
-	float m_flDir;
-
 public:
 	void func_rotating(void);
 	
@@ -86,6 +81,11 @@ public:
 	virtual void Touch(entity);
 	virtual void SetMovementDirection(void);
 
+private:
+	vector m_vecMoveDir;
+	float m_flSpeed;
+	float m_flDamage;
+	float m_flDir;
 };
 
 void

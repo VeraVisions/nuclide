@@ -28,8 +28,6 @@ This entity was introduced in Half-Life (1998).
 class
 trigger_autosave:NSBrushTrigger
 {
-	float m_flDelay;
-
 public:
 	void trigger_autosave(void);
 	
@@ -38,6 +36,9 @@ public:
 	virtual void Spawned(void);
 	virtual void Respawn(void);
 	virtual void Touch(entity);
+
+private:
+	float m_flDelay;
 };
 
 void

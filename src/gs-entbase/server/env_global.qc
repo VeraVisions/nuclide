@@ -36,10 +36,7 @@ This entity was introduced in Half-Life (1998).
 */
 class
 env_global:NSPointTrigger
-{
-	int m_iTriggerMode;
-	int m_iInitialState;
-	
+{	
 public:
 	void env_global(void);
 	
@@ -54,6 +51,9 @@ public:
 	nonvirtual void AddNewGlobal(string, globalstate_t);
 	nonvirtual void SetGlobal(string, globalstate_t);
 
+private:
+	int m_iTriggerMode;
+	int m_iInitialState;
 };
 
 void

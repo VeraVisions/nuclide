@@ -74,18 +74,6 @@ This entity was introduced in Half-Life 2 (2004).
 */
 class func_monitor:NSRenderableEntity
 {
-	/* these mirror the fields of a point_camera */
-	PREDICTED_VECTOR(m_vecCamOrigin)
-	PREDICTED_VECTOR(m_vecCamAngles)
-	PREDICTED_FLOAT(m_flFOV)
-	PREDICTED_INT(m_iUseSAR)
-	PREDICTED_VECTOR(m_vecFogColor)
-	PREDICTED_FLOAT(m_flFogStart)
-	PREDICTED_FLOAT(m_flFogEnd)
-	PREDICTED_BOOL(m_bState)
-	int m_iCamValue;
-	int m_iUseFog;
-
 public:
 	void func_monitor(void);
 
@@ -100,6 +88,19 @@ public:
 	virtual void Trigger(entity, triggermode_t);
 	virtual void Input(entity, string, string);
 #endif
+
+private:
+	/* these mirror the fields of a point_camera */
+	PREDICTED_VECTOR(m_vecCamOrigin)
+	PREDICTED_VECTOR(m_vecCamAngles)
+	PREDICTED_FLOAT(m_flFOV)
+	PREDICTED_INT(m_iUseSAR)
+	PREDICTED_VECTOR(m_vecFogColor)
+	PREDICTED_FLOAT(m_flFogStart)
+	PREDICTED_FLOAT(m_flFogEnd)
+	PREDICTED_BOOL(m_bState)
+	int m_iCamValue;
+	int m_iUseFog;
 };
 
 #ifdef CLIENT

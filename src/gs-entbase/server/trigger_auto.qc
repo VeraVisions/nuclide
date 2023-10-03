@@ -37,9 +37,6 @@ This entity was introduced in Half-Life (1998).
 class
 trigger_auto:NSPointTrigger
 {
-	triggermode_t m_iTriggerState;
-	float m_flDelay;
-
 public:
 	void trigger_auto(void);
 	
@@ -52,6 +49,9 @@ public:
 	
 	nonvirtual void Processing(void);
 
+private:
+	triggermode_t m_iTriggerState;
+	float m_flDelay;
 };
 
 void

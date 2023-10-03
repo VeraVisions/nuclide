@@ -34,9 +34,6 @@ This entity was introduced in Half-Life (1998).
 class
 target_cdaudio:NSPointTrigger
 {
-	float m_flRadius;
-	int m_iCDTrack;
-
 public:
 	void target_cdaudio(void);
 	
@@ -46,6 +43,9 @@ public:
 	virtual void Respawn(void);
 	virtual void Touch(entity);
 
+private:
+	float m_flRadius;
+	int m_iCDTrack;
 };
 
 void

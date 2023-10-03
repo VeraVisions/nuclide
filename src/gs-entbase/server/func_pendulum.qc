@@ -52,11 +52,6 @@ This entity was introduced in Half-Life (1998).
 class
 func_pendulum:NSRenderableEntity
 {
-	int m_iActive;
-	float m_flProgress;
-	float m_flDampening;
-	float m_flDistance;
-
 public:
 	void func_pendulum(void);
 	
@@ -67,6 +62,11 @@ public:
 	virtual void Trigger(entity, triggermode_t);
 	virtual void customphysics(void);
 
+private:
+	int m_iActive;
+	float m_flProgress;
+	float m_flDampening;
+	float m_flDistance;
 };
 
 void

@@ -48,10 +48,6 @@ This entity was introduced in Half-Life (1998).
 class
 env_explosion:NSPointTrigger
 {
-	int m_iMagnitude;
-	float m_flMaxDelay;
-	bool m_bEnabled;
-
 public:
 	void env_explosion(void);
 	
@@ -62,6 +58,10 @@ public:
 	virtual void SpawnKey(string,string);
 	virtual void Respawn(void);
 
+private:
+	int m_iMagnitude;
+	float m_flMaxDelay;
+	bool m_bEnabled;
 };
 
 void

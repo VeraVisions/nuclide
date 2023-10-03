@@ -49,13 +49,6 @@ This entity was introduced in Half-Life (1998).
 class
 func_platrot:NSRenderableEntity
 {
-	int m_iState;
-	float m_flSpeed;
-	float m_flHeight;
-	string m_strNoise1;
-	string m_strNoise2;
-	float m_flRotation;
-
 public:
 	void func_platrot(void);
 	
@@ -70,6 +63,14 @@ public:
 	nonvirtual void ArrivedUp(void);
 	nonvirtual void ArrivedDown(void);
 	nonvirtual void MoveToggle(void);
+
+private:
+	int m_iState;
+	float m_flSpeed;
+	float m_flHeight;
+	string m_strNoise1;
+	string m_strNoise2;
+	float m_flRotation;
 };
 
 void

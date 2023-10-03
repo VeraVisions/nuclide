@@ -43,10 +43,6 @@ This entity was introduced in Half-Life (1998).
 class
 env_message:NSPointTrigger
 {
-	string m_strSound;
-	float m_flVolume;
-	int m_iAttenuation; /* FIXME: change this to a proper attenuation type */
-
 public:
 	void env_message(void);
 	
@@ -57,6 +53,10 @@ public:
 	
 	nonvirtual void Play(entity, triggermode_t);
 
+private:
+	string m_strSound;
+	float m_flVolume;
+	int m_iAttenuation; /* FIXME: change this to a proper attenuation type */
 };
 
 void

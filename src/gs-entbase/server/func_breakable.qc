@@ -118,16 +118,6 @@ This entity was introduced in Half-Life (1998).
 class
 func_breakable:NSSurfacePropEntity
 {
-	float m_flDelay;
-	float m_flExplodeMag;
-	float m_flExplodeRad;
-	string m_strBreakSpawn;
-	bool m_bCanTouch;
-
-	/*entity m_pressAttacker;
-	int m_pressType;
-	int m_pressDamage;*/
-
 public:
 	void func_breakable(void);
 	
@@ -145,6 +135,17 @@ public:
 	virtual void Touch(entity);
 
 	/*virtual void(void) PressureDeath;*/
+
+private:
+	float m_flDelay;
+	float m_flExplodeMag;
+	float m_flExplodeRad;
+	string m_strBreakSpawn;
+	bool m_bCanTouch;
+
+	/*entity m_pressAttacker;
+	int m_pressType;
+	int m_pressDamage;*/
 };
 
 void

@@ -40,10 +40,6 @@ This entity was introduced in Quake (1996).
 class
 trigger_relay:NSPointTrigger
 {
-private:
-	triggermode_t m_iTriggerState;
-	int m_iEnabled;
-
 public:
 	void trigger_relay(void);
 
@@ -53,6 +49,10 @@ public:
 
 	virtual void Save(float);
 	virtual void Restore(string,string);
+
+private:
+	triggermode_t m_iTriggerState;
+	int m_iEnabled;
 };
 
 void

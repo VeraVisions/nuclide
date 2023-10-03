@@ -41,9 +41,6 @@ This entity was introduced in Half-Life 2 (2004).
 class
 func_brush:NSRenderableEntity
 {
-	int m_iSolidity;
-	int m_iStartOff;
-
 public:
 	void func_brush(void);
 	
@@ -53,6 +50,9 @@ public:
 	virtual void Trigger(entity, triggermode_t);
 	virtual void SpawnKey(string,string);
 
+private:
+	int m_iSolidity;
+	int m_iStartOff;
 };
 
 void

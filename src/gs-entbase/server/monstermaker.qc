@@ -49,13 +49,6 @@ enumflags
 class
 monstermaker:NSPointTrigger
 {
-	string m_strMonster;
-	string m_strChildName;
-	int m_iMonsterSpawned;
-	int m_iTotalMonsters;
-	int m_iMaxChildren;
-	float m_flDelay;
-
 public:
 	void monstermaker(void);
 	
@@ -70,6 +63,13 @@ public:
 	nonvirtual void TurnOn(void);
 	nonvirtual void TurnOff(void);
 
+private:
+	string m_strMonster;
+	string m_strChildName;
+	int m_iMonsterSpawned;
+	int m_iTotalMonsters;
+	int m_iMaxChildren;
+	float m_flDelay;
 };
 
 void

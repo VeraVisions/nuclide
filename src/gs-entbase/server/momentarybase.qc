@@ -26,20 +26,6 @@ typedef enum
 class
 NSMomentary:NSRenderableEntity
 {
-private:
-	entity m_eUser;
-	vector m_vecMoveDir;
-	vector m_vecPos1;
-	vector m_vecPos2;
-	vector m_vecDest;
-
-	int m_iMoveState;
-
-	/* map keys */
-	float m_flDistance;
-	float m_flSpeed;
-	float m_flReturnspeed;
-
 public:
 	void NSMomentary(void);
 
@@ -54,6 +40,19 @@ public:
 	/** Returns the progress of the momentary, which is a value between 0.0 and 1.0. */
 	virtual float GetProgress(void);
 
+private:
+	entity m_eUser;
+	vector m_vecMoveDir;
+	vector m_vecPos1;
+	vector m_vecPos2;
+	vector m_vecDest;
+
+	int m_iMoveState;
+
+	/* map keys */
+	float m_flDistance;
+	float m_flSpeed;
+	float m_flReturnspeed;
 };
 
 void

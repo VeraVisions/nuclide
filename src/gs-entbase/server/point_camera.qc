@@ -43,13 +43,6 @@ This entity was introduced in Half-Life 2 (2004).
 class
 point_camera:NSPointTrigger
 {
-	int m_iUseSAR;
-	int m_iUseFog;
-	vector m_vecFogColor;
-	float m_flFogStart;
-	float m_flFogEnd;
-	float m_flFOV;
-
 public:
 	void point_camera(void);
 	
@@ -59,6 +52,14 @@ public:
 	virtual void SpawnKey(string,string);
 	virtual void Respawn(void);
 	virtual void Input(entity,string,string);
+
+private:
+	int m_iUseSAR;
+	int m_iUseFog;
+	vector m_vecFogColor;
+	float m_flFogStart;
+	float m_flFogEnd;
+	float m_flFOV;
 };
 
 void

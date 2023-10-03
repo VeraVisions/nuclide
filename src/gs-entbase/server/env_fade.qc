@@ -45,9 +45,6 @@ This entity was introduced in Half-Life (1998).
 class
 env_fade:NSRenderableEntity
 {
-	float m_flFadeDuration;
-	float m_flFadeHold;
-
 public:
 	void env_fade(void);
 	
@@ -56,6 +53,10 @@ public:
 	virtual void Restore(string,string);
 	virtual void Trigger(entity, triggermode_t);
 	virtual void SpawnKey(string,string);
+
+private:
+	float m_flFadeDuration;
+	float m_flFadeHold;
 };
 
 void

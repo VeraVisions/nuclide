@@ -33,10 +33,6 @@ This entity was introduced in Half-Life (1998).
 class
 func_guntarget:NSSurfacePropEntity
 {
-	float m_flSpeed;
-	string m_strOnDeath;
-	string m_strOnDeathLegacy;
-
 public:
 	void func_guntarget(void);
 	
@@ -56,6 +52,10 @@ public:
 
 	virtual void Input(entity, string, string);
 
+private:
+	float m_flSpeed;
+	string m_strOnDeath;
+	string m_strOnDeathLegacy;
 };
 
 void

@@ -34,11 +34,6 @@ It was introduced in Gunman Chronicles (2000).
 class
 random_trigger:NSPointTrigger
 {
-	float m_flMinTime;
-	float m_flRandMin;
-	float m_flRandMax;
-	int m_iStartState;
-
 public:
 	void random_trigger(void);
 	
@@ -48,6 +43,11 @@ public:
 	virtual void Respawn(void);
 	virtual void Trigger(entity, triggermode_t);
 
+private:
+	float m_flMinTime;
+	float m_flRandMin;
+	float m_flRandMax;
+	int m_iStartState;
 };
 
 void

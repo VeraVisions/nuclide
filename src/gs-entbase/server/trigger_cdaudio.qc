@@ -29,8 +29,6 @@ This entity was introduced in Half-Life (1998).
 class
 trigger_cdaudio:NSBrushTrigger
 {
-	int m_iCDTrack;
-
 public:
 	void trigger_cdaudio(void);
 	
@@ -41,6 +39,8 @@ public:
 	virtual void Trigger(entity, triggermode_t);
 	virtual void Touch(entity);
 
+private:
+	int m_iCDTrack;
 };
 
 void

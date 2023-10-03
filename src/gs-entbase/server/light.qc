@@ -68,12 +68,6 @@ This entity was introduced in Quake (1996).
 class
 light:NSPointTrigger
 {
-	int m_iEnabled;
-	int m_iStartActive;
-	float m_flStyle;
-	float m_flSwitchStyle;
-	string m_strPattern;
-
 public:
 	void light(void);
 	
@@ -86,6 +80,12 @@ public:
 	virtual void RestoreComplete(void);
 	virtual void Trigger(entity, triggermode_t);
 
+private:
+	int m_iEnabled;
+	int m_iStartActive;
+	float m_flStyle;
+	float m_flSwitchStyle;
+	string m_strPattern;
 };
 
 void
@@ -101,12 +101,12 @@ light::light(void)
 void
 light::Save(float handle)
 {
+	super::Save(handle);
 	SaveInt(handle, "m_iEnabled", m_iEnabled);
 	SaveInt(handle, "m_iStartActive", m_iStartActive);
 	SaveFloat(handle, "m_flStyle", m_flStyle);
 	SaveFloat(handle, "m_flSwitchStyle", m_flSwitchStyle);
 	SaveString(handle, "m_strPattern", m_strPattern);
-	super::Save(handle);
 }
 
 void

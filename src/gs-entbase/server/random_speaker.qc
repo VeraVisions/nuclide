@@ -41,11 +41,6 @@ It was introduced in Gunman Chronicles (2000).
 class
 random_speaker:NSPointTrigger
 {
-	string m_strSample;
-	float m_flVolume;
-	float m_flMinPos;
-	float m_flRandPercent;
-
 public:
 	void random_speaker(void);
 	
@@ -60,6 +55,11 @@ public:
 	nonvirtual void Enable(void);
 	nonvirtual void Disable(void);
 
+private:
+	string m_strSample;
+	float m_flVolume;
+	float m_flMinPos;
+	float m_flRandPercent;
 };
 
 void

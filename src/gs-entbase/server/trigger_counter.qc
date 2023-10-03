@@ -39,9 +39,6 @@ This entity was introduced in Quake (1996).
 class
 trigger_counter:NSBrushTrigger
 {
-	int m_iCounted;
-	int m_iMaxCount;
-
 public:
 	void trigger_counter(void);
 	
@@ -52,6 +49,9 @@ public:
 	virtual void Trigger(entity, triggermode_t);
 	virtual void Touch(entity);
 
+private:
+	int m_iCounted;
+	int m_iMaxCount;
 };
 
 void
@@ -116,7 +116,7 @@ trigger_counter::Trigger(entity act, triggermode_t state)
 
 	m_iCounted++;
 
-	dprint("^2trigger_counter::^3Trigger^7: " \
+	NSLog("^2trigger_counter::^3Trigger^7: " \
 	       "Incremented '%s' by 1 (%i/%i)\n", \
 	       targetname, m_iCounted, m_iMaxCount);
 

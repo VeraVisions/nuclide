@@ -69,6 +69,20 @@ This entity was introduced in Half-Life (1998).
 class
 func_tank:NSVehicle
 {
+public:
+	void func_tank(void);
+	
+	virtual void Spawned(void);
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void customphysics(void);
+	virtual void PlayerInput(void);
+	virtual void Respawn(void);
+	virtual void SpawnKey(string,string);
+	nonvirtual void SpriteSmoke(vector);
+	nonvirtual void SpriteFlash(vector);
+
+private:
 	/* attributes */
 	float m_flYawRate; /* TODO */
 	float m_flYawRange; /* TODO */
@@ -85,22 +99,7 @@ func_tank:NSVehicle
 	float m_flPersistance; /* TODO */
 	float m_flMinRange; /* TODO */
 	float m_flMaxRange; /* TODO */
-
 	float m_flFireTime;
-
-public:
-	void func_tank(void);
-	
-	virtual void Spawned(void);
-	virtual void Save(float);
-	virtual void Restore(string,string);
-	virtual void customphysics(void);
-	virtual void PlayerInput(void);
-	virtual void Respawn(void);
-	virtual void SpawnKey(string,string);
-	nonvirtual void SpriteSmoke(vector);
-	nonvirtual void SpriteFlash(vector);
-
 };
 
 void

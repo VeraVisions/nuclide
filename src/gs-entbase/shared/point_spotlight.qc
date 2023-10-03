@@ -49,12 +49,6 @@ This entity was introduced in Half-Life 2 (2004).
 */
 class point_spotlight:NSPointTrigger
 {
-private:
-	PREDICTED_VECTOR(m_vecColor)
-	PREDICTED_FLOAT(m_flBeamLength)
-	PREDICTED_FLOAT(m_flBeamWidth)
-	PREDICTED_INT(m_iState)
-
 public:
 	void point_spotlight(void);
 
@@ -76,6 +70,12 @@ public:
 	virtual void EvaluateEntity(void);
 	virtual void Input(entity, string, string);
 #endif
+
+private:
+	PREDICTED_VECTOR(m_vecColor)
+	PREDICTED_FLOAT(m_flBeamLength)
+	PREDICTED_FLOAT(m_flBeamWidth)
+	PREDICTED_INT(m_iState)
 };
 
 #ifdef CLIENT

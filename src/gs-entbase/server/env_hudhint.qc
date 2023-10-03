@@ -43,8 +43,6 @@ This entity was introduced in Half-Life 2 (2004).
 class
 env_hudhint:NSPointTrigger
 {
-	string m_strMessage;
-
 public:
 	void env_hudhint(void);
 	
@@ -53,6 +51,8 @@ public:
 	virtual void SpawnKey(string,string);
 	virtual void Trigger(entity, triggermode_t);
 
+private:
+	string m_strMessage;
 };
 
 void

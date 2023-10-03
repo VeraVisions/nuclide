@@ -140,15 +140,6 @@ However, that was never completed.
 class
 info_hint:NSPointTrigger
 {
-	hinttype_t m_hintType;
-	string m_strHintActivity;
-	float m_flNodeFOV;
-	bool m_bStartDisabled;
-	string m_strHintGroup;
-	ignorefacing_t m_ignoreFacing;
-	aistate_t m_minState;
-	aistate_t m_maxState;
-
 public:
 	void info_hint(void);
 	
@@ -157,6 +148,15 @@ public:
 	virtual void Restore(string,string);
 	virtual void SpawnKey(string,string);
 
+private:
+	hinttype_t m_hintType;
+	string m_strHintActivity;
+	float m_flNodeFOV;
+	bool m_bStartDisabled;
+	string m_strHintGroup;
+	ignorefacing_t m_ignoreFacing;
+	aistate_t m_minState;
+	aistate_t m_maxState;
 };
 
 void

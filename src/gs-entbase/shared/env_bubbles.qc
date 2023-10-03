@@ -58,16 +58,6 @@ This entity was introduced in Half-Life (1998).
 class
 env_bubbles:NSPointTrigger
 {
-	PREDICTED_INT(m_iDensity)
-	PREDICTED_FLOAT(m_flFrequency)
-	PREDICTED_FLOAT(m_flCurrent)
-	PREDICTED_BOOL(m_bEnabled)
-
-	/* spawn values */
-	int m_iSpawnDensity;
-	float m_flSpawnFrequency;
-	float m_flSpawnCurrent;
-
 public:
 	void env_bubbles(void);
 
@@ -87,6 +77,17 @@ public:
 	virtual void EmitBubbles(void);
 	virtual void ReceiveEntity(float,float);
 #endif
+
+private:
+	PREDICTED_INT(m_iDensity)
+	PREDICTED_FLOAT(m_flFrequency)
+	PREDICTED_FLOAT(m_flCurrent)
+	PREDICTED_BOOL(m_bEnabled)
+
+	/* spawn values */
+	int m_iSpawnDensity;
+	float m_flSpawnFrequency;
+	float m_flSpawnCurrent;
 };
 
 void

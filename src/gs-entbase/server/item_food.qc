@@ -30,8 +30,7 @@ It's also known as item_sodacan.
 class
 item_food:NSRenderableEntity
 {
-	int m_iIsCan;
-
+public:
 	void item_food(void);
 
 	virtual void Respawn(void);
@@ -39,6 +38,9 @@ item_food:NSRenderableEntity
 	virtual void Restore(string,string);
 	nonvirtual void Setup(void);
 	virtual void Touch(entity);
+
+private:
+	int m_iIsCan;
 };
 
 void
@@ -51,8 +53,8 @@ item_food::item_food(void)
 void
 item_food::Save(float handle)
 {
-	SaveInt(handle, "m_iIsCan", m_iIsCan);
 	super::Save(handle);
+	SaveInt(handle, "m_iIsCan", m_iIsCan);
 }
 
 void

@@ -47,15 +47,6 @@ This entity was introduced in The Orange Box (2007).
 */
 class info_particle_system:NSPointTrigger
 {
-private:
-#ifdef CLIENT
-	int m_iValue;
-	int m_iEffectID;
-#endif
-	string m_strEffectName;
-	float m_flInterval;
-	int m_iSpawnCount;
-
 public:
 	void info_particle_system(void);
 
@@ -70,6 +61,15 @@ public:
 	virtual void Trigger(entity, triggermode_t);
 	virtual void Input(entity, string, string);
 #endif
+
+private:
+#ifdef CLIENT
+	int m_iValue;
+	int m_iEffectID;
+#endif
+	string m_strEffectName;
+	float m_flInterval;
+	int m_iSpawnCount;
 };
 
 #ifdef CLIENT

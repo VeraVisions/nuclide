@@ -50,8 +50,6 @@ This entity was introduced in Half-Life (1998).
 class
 env_spark:NSPointTrigger
 {
-	float m_flMaxDelay;
-
 public:
 	void env_spark(void);
 	
@@ -64,6 +62,8 @@ public:
 	nonvirtual void CreateSpark(void);
 	nonvirtual void TimedSpark(void);
 
+private:
+	float m_flMaxDelay;
 };
 
 void

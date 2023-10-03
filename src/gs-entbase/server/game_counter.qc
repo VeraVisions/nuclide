@@ -43,10 +43,6 @@ This entity was introduced in Half-Life (1998).
 class
 game_counter:NSPointTrigger
 {
-	int m_iStartCount;
-	int m_iCounted;
-	int m_iMaxCount;
-
 public:
 	void game_counter(void);
 	
@@ -60,6 +56,10 @@ public:
 	nonvirtual int GetCount(void);
 	nonvirtual void SetCount(int);
 
+private:
+	int m_iStartCount;
+	int m_iCounted;
+	int m_iMaxCount;
 };
 
 void

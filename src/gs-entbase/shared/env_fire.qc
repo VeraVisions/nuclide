@@ -65,6 +65,14 @@ This entity was introduced in Half-Life 2 (2004).
 class
 env_fire:NSPointTrigger
 {
+public:
+	void env_fire(void);
+
+#ifdef SERVER
+	virtual void SpawnKey(string strKey, string strValue);
+#endif
+
+private:
 	PREDICTED_FLOAT(m_flSize)
 	PREDICTED_BOOL(m_bState)
 	PREDICTED_FLOAT m_flMaxSize)
@@ -73,12 +81,6 @@ env_fire:NSPointTrigger
 	float m_flIgnitionPoint;
 	float m_flDamageScale;
 	float m_flDuration;
-
-	void env_fire(void);
-
-#ifdef SERVER
-	virtual void SpawnKey(string strKey, string strValue);
-#endif
 };
 
 void

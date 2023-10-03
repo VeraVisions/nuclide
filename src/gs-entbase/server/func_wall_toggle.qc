@@ -35,9 +35,6 @@ This entity was introduced in Half-Life (1998).
 class
 func_wall_toggle:NSRenderableEntity
 {
-	int m_oldmodelindex;
-	int m_iVisible;
-
 public:
 	void func_wall_toggle(void);
 	
@@ -47,6 +44,9 @@ public:
 	virtual void Trigger(entity, triggermode_t);
 	virtual void Input(entity,string,string);
 
+private:
+	int m_oldmodelindex;
+	int m_iVisible;
 };
 
 void

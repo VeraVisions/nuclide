@@ -63,24 +63,6 @@ This entity was introduced in Half-Life (1998).
 */
 class func_tankmortar:NSVehicle
 {
-	/* attributes */
-	float m_flYawRate;
-	float m_flPitchRate;
-	vector m_vecTipPos;
-	float m_flFireRate;
-	int m_iDamage;
-	string m_strSpriteSmoke;
-	string m_strSpriteFlash;
-	float m_flSpriteScale;
-	vector m_vecSpread; /* TODO: Needs checking */
-	string m_strSndRotate; /* TODO */
-	float m_flPersistance; /* TODO */
-	float m_flMinRange; /* TODO */
-	float m_flMaxRange; /* TODO */
-	float m_flYawRange; /* TODO */
-	float m_flPitchRange; /* TODO */
-	float m_flFireTime;
-
 public:
 	void func_tankmortar(void);
 	
@@ -101,6 +83,24 @@ public:
 	virtual void SpawnKey(string,string);
 #endif
 
+private:
+	/* attributes */
+	float m_flYawRate;
+	float m_flPitchRate;
+	vector m_vecTipPos;
+	float m_flFireRate;
+	int m_iDamage;
+	string m_strSpriteSmoke;
+	string m_strSpriteFlash;
+	float m_flSpriteScale;
+	vector m_vecSpread; /* TODO: Needs checking */
+	string m_strSndRotate; /* TODO */
+	float m_flPersistance; /* TODO */
+	float m_flMinRange; /* TODO */
+	float m_flMaxRange; /* TODO */
+	float m_flYawRange; /* TODO */
+	float m_flPitchRange; /* TODO */
+	float m_flFireTime;
 };
 
 

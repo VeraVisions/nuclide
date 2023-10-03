@@ -67,9 +67,6 @@ This entity was introduced in Half-Life (1998).
 class
 speaker:NSTalkMonster
 {
-	string m_strSentence;
-	float m_flVolume;
-
 public:
 	void speaker(void);
 	
@@ -82,6 +79,9 @@ public:
 	
 	nonvirtual void Announce(void);
 
+private:
+	string m_strSentence;
+	float m_flVolume;
 };
 
 void

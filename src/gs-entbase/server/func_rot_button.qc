@@ -63,13 +63,6 @@ This entity was introduced in Half-Life (1998).
 class
 func_rot_button:NSSurfacePropEntity
 {
-	vector m_vecMoveAngle;
-	int m_iState;
-
-	float m_flSpeed;
-	float m_flDistance;
-	float m_flReturnTime;
-
 public:
 	void func_rot_button(void);
 	
@@ -88,6 +81,12 @@ public:
 	nonvirtual void Rotate(vector, void());
 	nonvirtual void TurnToggle(void);
 
+private:
+	vector m_vecMoveAngle;
+	int m_iState;
+	float m_flSpeed;
+	float m_flDistance;
+	float m_flReturnTime;
 };
 
 void

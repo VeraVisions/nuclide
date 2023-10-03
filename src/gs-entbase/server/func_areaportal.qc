@@ -34,11 +34,6 @@ This entity was introduced in Quake II (1997).
 class
 func_areaportal:NSEntity
 {
-	bool m_bPortalState;
-	bool m_bStartOpen;
-	int m_iPortalNumber; /* Source Engine only */
-	bool m_bSourcePortal;
-
 public:
 	void func_areaportal(void);
 	
@@ -52,6 +47,12 @@ public:
 	
 	nonvirtual void PortalOpen(void);
 	nonvirtual void PortalClose(void);
+
+private:
+	bool m_bPortalState;
+	bool m_bStartOpen;
+	int m_iPortalNumber; /* Source Engine only */
+	bool m_bSourcePortal;
 };
 
 void

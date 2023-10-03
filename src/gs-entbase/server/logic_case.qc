@@ -80,6 +80,8 @@ public:
 	virtual void Restore(string,string);
 	virtual void Input(entity, string, string);
 
+	nonvirtual void CompareCase(entity, string);
+
 private:
 
 	string m_strCase01;
@@ -117,8 +119,6 @@ private:
 	string m_strOnCase16;
 
 	string m_strOnDefault;
-
-	nonvirtual void CompareCase(entity, string);
 };
 
 void

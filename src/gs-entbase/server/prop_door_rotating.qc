@@ -24,11 +24,6 @@
 class
 prop_door_rotating:NSPointTrigger
 {
-	vector m_vecDest1;
-	vector m_vecDest2;
-	float m_flDistance;
-	float m_flSpeed;
-
 public:
 	void prop_door_rotating(void);
 
@@ -42,6 +37,12 @@ public:
 	nonvirtual void Turn(vector,void(void));
 	nonvirtual void Opened(void);
 	nonvirtual void Closed(void);
+
+private:
+	vector m_vecDest1;
+	vector m_vecDest2;
+	float m_flDistance;
+	float m_flSpeed;
 };
 
 void

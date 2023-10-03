@@ -49,8 +49,6 @@ This entity was introduced in Half-Life (1998).
 class
 game_player_equip:NSPointTrigger
 {
-	string m_strBuffer;
-
 public:
 	void game_player_equip(void);
 	
@@ -61,6 +59,8 @@ public:
 	
 	nonvirtual void SpawnUnit(string,vector);
 
+private:
+	string m_strBuffer;
 };
 
 void

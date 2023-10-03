@@ -39,9 +39,6 @@ This entity was introduced in Half-Life (1998).
 class
 infodecal:NSPointTrigger
 {
-	decal m_decChild;
-	string m_strTexture;
-
 public:
 	void infodecal(void);
 	
@@ -52,6 +49,9 @@ public:
 	virtual void Spawned(void);
 	virtual void Trigger(entity, triggermode_t);
 
+private:
+	decal m_decChild;
+	string m_strTexture;
 };
 
 void

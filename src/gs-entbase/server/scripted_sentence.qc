@@ -35,13 +35,6 @@ This entity was introduced in Half-Life (1998).
 class
 scripted_sentence:NSPointTrigger
 {
-	string m_strSpeaker;
-	string m_strSentence;
-	float m_flDelay;
-	float m_flWait;
-	float m_flPitch;
-	float m_flDuration;
-
 public:
 	void scripted_sentence(void);
 	
@@ -51,6 +44,13 @@ public:
 	virtual void SpawnKey(string,string);
 	virtual void Trigger(entity, triggermode_t);
 
+private:
+	string m_strSpeaker;
+	string m_strSentence;
+	float m_flDelay;
+	float m_flWait;
+	float m_flPitch;
+	float m_flDuration;
 };
 
 void

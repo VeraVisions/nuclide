@@ -63,20 +63,6 @@ This entity was introduced in Half-Life 2: Episode One (2006).
 */
 class env_projectedtexture:NSPointTrigger
 {
-private:
-	vector m_vecLight;
-	float m_flIntensity;
-	float m_flInnerCone;
-	float m_flCone;
-	float m_flFarZ;
-	float m_flNearZ;
-	float m_flRadius;
-	float m_flStyle;
-	string m_strPattern;
-	string m_strTextureName;
-	float m_flFOV;
-	int m_iState;
-
 public:
 	void env_projectedtexture(void);
 
@@ -91,6 +77,20 @@ public:
 	virtual void EvaluateEntity(void);
 	virtual void Input(entity, string, string);
 #endif
+
+private:
+	vector m_vecLight;
+	float m_flIntensity;
+	float m_flInnerCone;
+	float m_flCone;
+	float m_flFarZ;
+	float m_flNearZ;
+	float m_flRadius;
+	float m_flStyle;
+	string m_strPattern;
+	string m_strTextureName;
+	float m_flFOV;
+	int m_iState;
 };
 
 #ifdef CLIENT

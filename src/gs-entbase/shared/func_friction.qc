@@ -32,15 +32,15 @@ This entity was introduced in Half-Life (1998).
 */
 class func_friction:NSEntity
 {
-private:
-	float m_flFriction;
-
 public:
 	void func_friction(void);
 	
 	virtual void Touch(entity);
 	virtual void Respawn(void);
 	virtual void SpawnKey(string,string);
+
+private:
+	float m_flFriction;
 };
 
 void

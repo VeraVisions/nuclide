@@ -35,11 +35,6 @@ This entity was introduced in Half-Life (1998).
 class
 player_loadsaved:NSRenderableEntity /* for the rendercolor values */
 {
-	string m_strMessage;
-	float m_flLoadTime;
-	float m_flFadeDuration;
-	float m_flFadeHold;
-
 public:
 	void player_loadsaved(void);
 	
@@ -51,6 +46,11 @@ public:
 	
 	nonvirtual void ReloadSave(void);
 
+private:
+	string m_strMessage;
+	float m_flLoadTime;
+	float m_flFadeDuration;
+	float m_flFadeHold;
 };
 
 void

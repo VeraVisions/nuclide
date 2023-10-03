@@ -39,8 +39,6 @@ enumflags
 class
 game_counter_set:NSPointTrigger
 {
-	int m_iCount;
-
 public:
 	void game_counter_set(void);
 	
@@ -50,6 +48,8 @@ public:
 	virtual void Respawn(void);
 	virtual void SpawnKey(string,string);
 
+private:
+	int m_iCount;
 };
 
 void

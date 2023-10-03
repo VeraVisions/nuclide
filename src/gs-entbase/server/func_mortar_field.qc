@@ -45,12 +45,6 @@ This entity was introduced in Half-Life (1998).
 class
 func_mortar_field:NSBrushTrigger
 {
-	int m_iType;
-	int m_iCount;
-	float m_flSpread;
-	string m_strXController;
-	string m_strYController;
-
 public:
 	void func_mortar_field(void);
 	
@@ -65,6 +59,13 @@ public:
 	nonvirtual void FireRandom(void);
 	nonvirtual void FireTarget(entity);
 	nonvirtual void FireControlled(void);
+
+private:
+	int m_iType;
+	int m_iCount;
+	float m_flSpread;
+	string m_strXController;
+	string m_strYController;
 };
 
 void

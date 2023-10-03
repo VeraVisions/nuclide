@@ -49,6 +49,16 @@ This entity was introduced in Half-Life (1998).
 class
 game_text:NSPointTrigger
 {
+public:
+	void game_text(void);
+	
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void SpawnKey(string,string);
+	virtual void Trigger(entity, triggermode_t);
+	virtual void Input(entity, string, string);
+
+private:
 	vector m_vecColor1;
 	vector m_vecColor2;
 	float m_flPosX;
@@ -59,16 +69,6 @@ game_text:NSPointTrigger
 	float m_flFXTime;
 	int m_iChannel;
 	int m_iEffect;
-
-public:
-	void game_text(void);
-	
-	virtual void Save(float);
-	virtual void Restore(string,string);
-	virtual void SpawnKey(string,string);
-	virtual void Trigger(entity, triggermode_t);
-	virtual void Input(entity, string, string);
-
 };
 
 void

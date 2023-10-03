@@ -73,6 +73,24 @@ This entity was introduced in Quake (1996).
 class
 func_button:NSMoverEntity
 {
+public:
+	void func_button(void);
+	
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void SpawnKey(string,string);
+	virtual void Spawned(void);
+	virtual void Respawn(void);
+	virtual void Touch(entity);
+	virtual void Blocked(entity);
+	virtual void Trigger(entity, triggermode_t);
+	nonvirtual void DeathTrigger(void);
+	virtual void PlayerUse(void);
+
+	virtual void MoverStartsMoving(void);
+	virtual void MoverFinishesMoving(void);
+
+private:
 	moverState_t m_moverState;
 	float m_flSpeed;
 	float m_flLip;
@@ -90,23 +108,6 @@ func_button:NSMoverEntity
 	string m_strOnUseLocked;
 	string m_strOnIn;
 	string m_strOnOut;
-
-public:
-	void func_button(void);
-	
-	virtual void Save(float);
-	virtual void Restore(string,string);
-	virtual void SpawnKey(string,string);
-	virtual void Spawned(void);
-	virtual void Respawn(void);
-	virtual void Touch(entity);
-	virtual void Blocked(entity);
-	virtual void Trigger(entity, triggermode_t);
-	nonvirtual void DeathTrigger(void);
-	virtual void PlayerUse(void);
-
-	virtual void MoverStartsMoving(void);
-	virtual void MoverFinishesMoving(void);
 };
 
 void

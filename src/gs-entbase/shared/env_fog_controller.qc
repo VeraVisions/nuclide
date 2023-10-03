@@ -65,6 +65,28 @@ This entity was introduced in Half-Life 2 (2004).
 class
 env_fog_controller:NSPointTrigger
 {
+public:
+	void env_fog_controller(void);
+
+#ifdef CLIENT
+	virtual float StartToBias(void);
+	virtual float FogRender(void);
+	virtual void FogUpdate(void);
+	virtual void RendererRestarted(void);
+	virtual void ReceiveEntity(float,float);
+#endif
+
+#ifdef SERVER
+	virtual float SendEntity(entity,float);
+	virtual void EvaluateEntity(void);
+	virtual void Trigger(entity, triggermode_t);
+	virtual void Respawn(void);
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void SpawnKey(string,string);
+	virtual void Input(entity, string, string);
+#endif
+
 private:
 #ifdef CLIENT
 	/* temporary attributes */
@@ -94,28 +116,6 @@ private:
 	PREDICTED_VECTOR(m_vecFogColor)
 	PREDICTED_VECTOR(m_vecFogColor2)
 	PREDICTED_VECTOR(m_vecFogDir)
-
-public:
-	void env_fog_controller(void);
-
-#ifdef CLIENT
-	virtual float StartToBias(void);
-	virtual float FogRender(void);
-	virtual void FogUpdate(void);
-	virtual void RendererRestarted(void);
-	virtual void ReceiveEntity(float,float);
-#endif
-
-#ifdef SERVER
-	virtual float SendEntity(entity,float);
-	virtual void EvaluateEntity(void);
-	virtual void Trigger(entity, triggermode_t);
-	virtual void Respawn(void);
-	virtual void Save(float);
-	virtual void Restore(string,string);
-	virtual void SpawnKey(string,string);
-	virtual void Input(entity, string, string);
-#endif
 };
 
 #ifdef CLIENT

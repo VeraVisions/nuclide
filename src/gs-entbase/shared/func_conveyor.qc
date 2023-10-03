@@ -58,10 +58,6 @@ This entity was introduced in Quake II (1997).
 class
 func_conveyor:NSRenderableEntity
 {
-	PREDICTED_FLOAT(m_flSpeed)
-	PREDICTED_VECTOR(m_vecMoveDir)
-	PREDICTED_FLOAT_N(spawnflags)
-
 public:
 	void(void) func_conveyor;
 
@@ -83,6 +79,10 @@ public:
 	virtual void ReceiveEntity(float, float);
 #endif
 
+private:
+	PREDICTED_FLOAT(m_flSpeed)
+	PREDICTED_VECTOR(m_vecMoveDir)
+	PREDICTED_FLOAT_N(spawnflags)
 };
 
 void

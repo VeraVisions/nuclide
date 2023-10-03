@@ -38,8 +38,6 @@ This entity was introduced in Half-Life 2 (2004).
 */
 class prop_physics_multiplayer:NSPhysicsEntity
 {
-	int m_iPhysicsMode;
-
 public:
 	void prop_physics_multiplayer(void);
 
@@ -50,6 +48,9 @@ public:
 	virtual void SpawnKey(string,string);
 	virtual void Touch(entity);
 	virtual void TouchThink(void);
+
+private:
+	int m_iPhysicsMode;
 };
 
 void

@@ -38,11 +38,6 @@ This entity was introduced in Half-Life (1998).
 class
 env_shake:NSPointTrigger
 {
-	float m_flRadius;
-	float m_flAmplitude;
-	float m_flDuration;
-	float m_flFrequency;
-
 public:
 	void env_shake(void);
 	
@@ -51,6 +46,11 @@ public:
 	virtual void SpawnKey(string,string);
 	virtual void Trigger(entity, triggermode_t);
 
+private:
+	float m_flRadius;
+	float m_flAmplitude;
+	float m_flDuration;
+	float m_flFrequency;
 };
 
 void

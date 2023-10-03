@@ -32,14 +32,6 @@ This entity was introduced in Half-Life (1998).
 class
 func_healthcharger:NSRenderableEntity
 {
-	entity m_eUser;
-	float m_flDelay;
-	float m_flCheck;
-
-	string m_strSndFirst;
-	string m_strSndCharging;
-	string m_strSndDone;
-
 public:
 	void func_healthcharger(void);
 	
@@ -54,6 +46,14 @@ public:
 	virtual void OnPlayerUse(void);
 	nonvirtual void ResetHealth(void);
 
+private:
+	entity m_eUser;
+	float m_flDelay;
+	float m_flCheck;
+
+	string m_strSndFirst;
+	string m_strSndCharging;
+	string m_strSndDone;
 };
 
 void

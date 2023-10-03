@@ -83,13 +83,6 @@ ChangeTarget_Activate(void)
 class
 trigger_changelevel:NSBrushTrigger
 {
-	float m_flChangeDelay;
-	string m_strChangeTarget;
-	string m_strMap;
-	string m_strLandmark;
-	string m_strOnLevelChange;
-	entity m_activator;
-
 public:
 	void trigger_changelevel(void);
 
@@ -106,6 +99,14 @@ public:
 	virtual void Change(void);
 	virtual void Touch(entity);
 	virtual int IsInside(entity,entity);
+
+private:
+	float m_flChangeDelay;
+	string m_strChangeTarget;
+	string m_strMap;
+	string m_strLandmark;
+	string m_strOnLevelChange;
+	entity m_activator;
 };
 
 void
