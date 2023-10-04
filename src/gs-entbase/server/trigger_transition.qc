@@ -116,6 +116,7 @@ trigger_transition::LoadTransition(void)
 		if (argv(0) == "{") {
 			continue;
 		} else if (argv(0) == "}") {
+			carrierEntity.TransitionComplete();
 			carryEntity = false;
 			carrierEntity = __NULL__;
 			continue;
@@ -139,6 +140,7 @@ trigger_transition::LoadTransition(void)
 				case "origin":
 					vector newOrigin = stov(argv(1)) + Landmark_GetPosition();
 					print(sprintf("Offsetting %S by %v\n", carrierEntity.m_strGlobalName, Landmark_GetPosition()));
+					carrierEntity.m_vecRestoredOrigin = newOrigin;
 					carrierEntity.Restore("origin", vtos(newOrigin));
 					break;
 #endif
