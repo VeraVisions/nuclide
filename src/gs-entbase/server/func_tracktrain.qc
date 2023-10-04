@@ -68,6 +68,7 @@ public:
 
 	virtual void Save(float);
 	virtual void Restore(string,string);
+	virtual void TransitionComplete(void);
 	virtual void SpawnKey(string,string);
 	virtual void Spawned(void);
 	virtual void Respawn(void);
@@ -92,6 +93,7 @@ private:
 	string m_strMoveSnd;
 	string m_strStopSnd;
 	bool m_bIsModern;
+	vector m_vecRelationTarget;
 };
 
 void
@@ -119,6 +121,16 @@ func_tracktrain::Save(float handle)
 	SaveFloat(handle, "m_flStartSpeed", m_flStartSpeed);
 	SaveString(handle, "m_strMoveSnd", m_strMoveSnd);
 	SaveString(handle, "m_strStopSnd", m_strStopSnd);
+	SaveBool(handle, "m_bIsModern", m_bIsModern);
+
+	if (target) {
+		NSEntity targetEnt = (NSEntity)find(world, ::targetname, target);
+		m_vecRelationTarget = targetEnt.GetOrigin() - GetOrigin();
+	} else {
+		m_vecRelationTarget = g_vec_null;
+	}
+
+	SaveVector(handle, "m_vecRelationTarget", m_vecRelationTarget);
 }
 
 void
@@ -146,8 +158,23 @@ func_tracktrain::Restore(string strKey, string strValue)
 	case "m_strStopSnd":
 		m_strStopSnd = ReadString(strValue);
 		break;
+	case "m_bIsModern":
+		m_bIsModern = ReadBool(strValue);
+		break;
+	case "m_vecRelationTarget":
+		m_vecRelationTarget = ReadVector(strValue);
+		break;
 	default:
 		super::Restore(strKey, strValue);
+	}
+}
+
+void
+func_tracktrain::TransitionComplete(void)
+{
+	if (target) {
+		NSEntity targetEnt = (NSEntity)find(world, ::targetname, target);
+		SetOrigin(targetEnt.GetOrigin() - m_vecRelationTarget);
 	}
 }
 
@@ -209,11 +236,10 @@ func_tracktrain::Respawn(void)
 	SetMovetype(MOVETYPE_PUSH);
 	SetModel(GetSpawnModel());
 	SetOrigin(GetSpawnOrigin());
+
 	m_flSpeed = m_flStartSpeed;
 
-	/* let's wait 1/4 a second to give the path_corner entities a chance to
-	 * spawn in case they're after us in the ent lump */
-	ScheduleThink(AfterSpawn, 0.25f);
+	ScheduleThink(AfterSpawn, 0.0f);
 	SetTriggerTarget(m_oldstrTarget);
 }
 
@@ -286,11 +312,10 @@ func_tracktrain::PathMove(void)
 	vector vecDiff;
 	vector vecAngleDiff;
 
-	vecDiff = eNode.origin - origin;
+	vecDiff = origin - eNode.origin;
 
 	/* the direction we're aiming for */
 	vecAngleDest = vectoangles(vecDiff);
-	vecAngleDest[1] += 180.0f; /* this is an evil hack */
 
 	if (m_bIsModern == false) {
 		/* we only care about YAW */
@@ -308,7 +333,13 @@ func_tracktrain::PathMove(void)
 	vecAngleDest[1] = Math_FixDelta(vecAngleDest[1]);
 	vecAngleDest[2] = 0;
 
-	vecAngleDiff = vecAngleDest - angles;
+	{
+		makevectors(vecAngleDest);
+		vecAngleDest = vectoangles(v_forward);
+		makevectors(angles);
+	}
+
+	vecAngleDiff = vecAngleDest - vectoangles(v_forward);
 	vecAngleDiff[2] = 0;
 
 	//print(sprintf("vecAngleDiff: %v\n", vecAngleDiff));
@@ -409,7 +440,6 @@ func_tracktrain::AfterSpawn(void)
 		return;
 	}
 
-	
 	NSLog("^1func_tracktrain::^3AfterSpawn^7: Start at target %S (%s)", target, eNode.classname);
 
 	SetOrigin((eNode.origin) + [0,0,m_flHeight]);
