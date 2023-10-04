@@ -22,7 +22,7 @@ _NSAIScript_Log(string msg)
 	if (autocvar_ai_debugScripts == true)
 		print(sprintf("%f %s\n", time, msg));
 }
-#define NSAIScript_Log(...) _NSNavAI_Log(sprintf(__VA_ARGS__))
+#define NSAIScript_Log(...) _NSAIScript_Log(sprintf(__VA_ARGS__))
 
 float(float modidx, string framename) frameforname = #276;
 float(float modidx, float framenum) frameduration = #277;
@@ -315,7 +315,7 @@ scripted_sequence::RunOnEntity(entity targ)
 
 	if (HasSpawnFlags(SSFL_LEAVECORPSE))
 		f.SetThink(NSMonster::FreeStateDead);
-	else if (HasSpawnFlags(SSFL_NOSCRIPTMOVE))
+	else if (HasSpawnFlags(SSFL_NOSCRIPTMOVE) || m_iMove == SS_NO)
 		f.SetThink(NSMonster::FreeState);
 	else
 		f.SetThink(NSMonster::FreeStateMoved);
