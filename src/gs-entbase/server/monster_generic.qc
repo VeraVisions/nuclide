@@ -54,6 +54,7 @@ monster_generic::monster_generic(void)
 		base_maxs = [16,16,72];
 	}
 	base_health = 100;
+	m_iAlliance = MAL_NEUTRAL;
 
 	spawnflags |= MSF_MULTIPLAYER;
 }
@@ -61,7 +62,8 @@ monster_generic::monster_generic(void)
 void
 monster_generic::Respawn(void)
 {
-	NSTalkMonster::Respawn();
+	super::Respawn();
+	SetSize(base_mins, base_maxs);
 
 	if (HasSpawnFlags(MGF_NONSOLID)) {
 		takedamage = DAMAGE_NO;
