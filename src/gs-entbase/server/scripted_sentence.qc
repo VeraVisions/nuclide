@@ -164,4 +164,5 @@ scripted_sentence::Trigger(entity act, triggermode_t unused)
 	msg_entity = npc;
 	multicast(npc.origin, MULTICAST_PVS);
 	npc.m_flNextSentence = time + m_flDuration;
+	UseTargets(act, TRIG_TOGGLE, m_flDelay);
 }
