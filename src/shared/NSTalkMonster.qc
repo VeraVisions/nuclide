@@ -334,7 +334,7 @@ NSTalkMonster::TalkPlayerIdle(void)
 
 	for (entity p = world; (p = find(p, ::classname, "player"));) {
 
-		if (!IsFriend(p.m_iAlliance)) {
+		if (IsFriend(p.m_iAlliance) == false) {
 			continue;
 		}
 

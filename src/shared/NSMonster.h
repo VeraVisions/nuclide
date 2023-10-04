@@ -182,7 +182,8 @@ typedef enum
 	MAL_FRIEND, /**< 1, friendly towards the player */
 	MAL_ENEMY,  /**< 2, unfriendly towards the player */
 	MAL_ALIEN,  /**< 3, unfriendly towards anyone but themselves */
-	MAL_ROGUE   /**< 4, no allies, not even amongst themselves */
+	MAL_ROGUE,   /**< 4, no allies, not even amongst themselves */
+	MAL_NEUTRAL	/**< 5, neutral - will not attack, will not be attacked */
 } allianceState_t;
 
 /** Movement states */

@@ -555,6 +555,9 @@ NSMonster::AlertNoise(void)
 bool
 NSMonster::IsFriend(int al)
 {
+	/* neutrals are always friendly */
+	if (m_iAlliance == MAL_NEUTRAL)
+		return (true);
 	if (m_iAlliance == MAL_ROGUE)
 		return (false);
 	else if (al == m_iAlliance)
@@ -617,24 +620,24 @@ bool
 NSMonster::IsValidEnemy(entity enny)
 {
 	if (enny == __NULL__)
-		return FALSE;
+		return false;
 	/* dead enny should not be considered valid */
 	if ((enny.solid == SOLID_CORPSE) || (enny.health <= 0))
-		return FALSE;
+		return false;
 	/* such monster should ignore players */
 	if ((enny.flags & FL_CLIENT) && HasSpawnFlags(MSF_IGNOREPLAYER))
-		return FALSE;
+		return false;
 	/* monsters ignore enny who uses notarget cheat, useful for development */
 	if (enny.flags & FL_NOTARGET)
-		return FALSE;
+		return false;
 	/* if they're our friend... ignore */
 	if (IsFriend(enny.m_iAlliance))
-		return FALSE;
+		return false;
 	/* prevent from shooting non-sentient stuff */
 	if (!(enny.flags & (FL_MONSTER | FL_CLIENT)))
-		return FALSE;
+		return false;
 
-	return TRUE;
+	return true;
 }
 
 static bool
@@ -708,7 +711,7 @@ NSMonster::SeeThink(void)
 
 	m_flSeeTime = time + 0.25f;
 
-	/* a horse type monster always knows where the nearest player is */
+	/* a horde type monster always knows where the nearest player is */
 	if (m_iFlags & MSF_HORDE) {
 		m_eEnemy = NSMonster_FindClosestPlayer(this);
 
@@ -719,7 +722,7 @@ NSMonster::SeeThink(void)
 
 	for (entity w = world; (w = findfloat(w, ::takedamage, DAMAGE_YES));) {
 		/* check if 'w' could be a valid enemy */
-		if (!IsValidEnemy(w))
+		if (IsValidEnemy(w) == false)
 			continue;
 
 		/* first, is the potential enemy in our field of view? */
