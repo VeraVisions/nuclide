@@ -14,6 +14,16 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+
+var bool autocvar_ai_debugScripts = false;
+void
+_NSAIScript_Log(string msg)
+{
+	if (autocvar_ai_debugScripts == true)
+		print(sprintf("%f %s\n", time, msg));
+}
+#define NSAIScript_Log(...) _NSNavAI_Log(sprintf(__VA_ARGS__))
+
 float(float modidx, string framename) frameforname = #276;
 float(float modidx, float framenum) frameduration = #277;
  
@@ -219,9 +229,9 @@ scripted_sequence::RunOnEntity(entity targ)
 	if (!HasSpawnFlags(SSFL_REPEATABLE))
 		m_iEnabled = FALSE;
 
-	NSLog("\tName: %s", targetname);
-	NSLog("\tTarget: %s", m_strMonster);
-	NSLog("\tStarted: %f", time);
+	NSAIScript_Log("\tName: %s", targetname);
+	NSAIScript_Log("\tTarget: %s", m_strMonster);
+	NSAIScript_Log("\tStarted: %f", time);
 
 	/* if we're told an anim, we better have it... or else. */
 	if (m_strActionAnim) {
@@ -234,7 +244,7 @@ scripted_sequence::RunOnEntity(entity targ)
 
 	/* entity to trigger after sequence ends */
 	if (target) {
-		NSLog("\tTrigger when finished: %s", target);
+		NSAIScript_Log("\tTrigger when finished: %s", target);
 		f.m_strRouteEnded = target;
 		f.m_ssLast = this;
 		m_iValue = FALSE; /* will be marked as used once triggered */
@@ -255,23 +265,24 @@ scripted_sequence::RunOnEntity(entity targ)
 	f.m_iSequenceFlags = spawnflags;
 
 	if (m_iMove == SS_NO) {
-		NSLog("\tType: SS_NO (%i)", m_iMove);
+		f.m_vecSequenceAngle = f.angles;
+		NSAIScript_Log("\tType: SS_NO (%i)", m_iMove);
 	} else if (m_iMove == SS_WALK) {
 		f.RouteToPosition(GetOrigin());
 		f.m_flSequenceSpeed = f.GetWalkSpeed();
-		NSLog("\tType: SS_WALK (%i)", m_iMove);
+		NSAIScript_Log("\tType: SS_WALK (%i)", m_iMove);
 		return;
 	} else if (m_iMove == SS_RUN) {
 		f.RouteToPosition(GetOrigin());
 		f.m_flSequenceSpeed = f.GetRunSpeed();
-		NSLog("\tType: SS_RUN (%i)", m_iMove);
+		NSAIScript_Log("\tType: SS_RUN (%i)", m_iMove);
 		return;
 	} else if (m_iMove == SS_INSTANTANEOUS) {
 		f.SetOrigin(GetOrigin());
 		f.DropToFloor();
-		NSLog("\tType: SS_INSTANTANEOUS (%i)", m_iMove);
+		NSAIScript_Log("\tType: SS_INSTANTANEOUS (%i)", m_iMove);
 	} else if (m_iMove == SS_TURNTOFACE) {
-		NSLog("\tType: SS_TURNTOFACE (%i)", m_iMove);
+		NSAIScript_Log("\tType: SS_TURNTOFACE (%i)", m_iMove);
 	}
 
 	/* all the non-moving targets will do this at least */
@@ -284,7 +295,7 @@ scripted_sequence::RunOnEntity(entity targ)
 
 		duration = frameduration(f.modelindex, f.m_flSequenceEnd);
 		f.SetNextThink(duration);
-		NSLog(
+		NSAIScript_Log(
 			"\tAnimation: %s Duration: %f seconds (modelindex %d, frame %d)",
 			m_strActionAnim,
 			duration,
@@ -293,7 +304,7 @@ scripted_sequence::RunOnEntity(entity targ)
 		);
 	} else {
 		f.SetNextThink(0.0f);
-		NSLog(
+		NSAIScript_Log(
 			"\t^1WARNING: %s skipping animation on script type %i",
 			f.targetname,
 			m_iMove
@@ -309,7 +320,7 @@ scripted_sequence::RunOnEntity(entity targ)
 	else
 		f.SetThink(NSMonster::FreeStateMoved);
 
-	NSLog("\tEnding: %f", f.GetNextThinkTime());
+	NSAIScript_Log("\tEnding: %f", f.GetNextThinkTime());
 
 	/* make sure we're forgetting about enemies and attack states in sequence */
 	f.m_eEnemy = __NULL__;
@@ -321,7 +332,7 @@ scripted_sequence::Trigger(entity act, triggermode_t unused)
 {
 	NSMonster f;
 
-	NSLog("^2scripted_sequence::^3Trigger^7: with spawnflags %d", spawnflags);
+	NSAIScript_Log("^2scripted_sequence::^3Trigger^7: with spawnflags %d", spawnflags);
 	f = (NSMonster)find(world, ::targetname, m_strMonster);
 
 	/* target doesn't exist/hasn't spawned */
@@ -348,7 +359,7 @@ scripted_sequence::InitIdle(void)
 {
 	NSMonster f;
 
-	NSLog("^2scripted_sequence::^3InitIdle^7: with spawnflags %d on %S", spawnflags, m_strMonster);
+	NSAIScript_Log("^2scripted_sequence::^3InitIdle^7: with spawnflags %d on %S", spawnflags, m_strMonster);
 	f = (NSMonster)find(world, ::targetname, m_strMonster);
 
 	/* target doesn't exist/hasn't spawned */
@@ -364,22 +375,24 @@ scripted_sequence::InitIdle(void)
 
 		/* cancel out. this trigger is broken. */
 		if (!f) {
-			NSLog("^1scripted_sequence::^3InitIdle^7: Unknown target %s", m_strMonster);
+			NSAIScript_Log("^1scripted_sequence::^3InitIdle^7: Unknown target %s", m_strMonster);
 			return;
 		}
 	}
 
 	/* FIXME: does this filter apply to other types as well? */
 	if (m_iMove != SS_NO) {
-		NSLog("^2scripted_sequence::^3InitIdle^7: Moving %S to %v", m_strMonster, GetOrigin());
+		NSAIScript_Log("^2scripted_sequence::^3InitIdle^7: Moving %S to %v", m_strMonster, GetOrigin());
 		/* The entity may be configured to reposition itself on ::Respawn...*/
 		f.ReleaseThink();
 		setorigin(f, GetOrigin());
+		f.m_vecSequenceAngle = GetAngles();
+	} else {
+		f.m_vecSequenceAngle = f.angles;
 	}
 
 	f.m_flSequenceEnd = frameforname(f.GetModelindex(), m_strIdleAnim);
 	f.m_iSequenceState = SEQUENCESTATE_ENDING;
-	f.m_vecSequenceAngle = GetAngles();
 }
 
 void
