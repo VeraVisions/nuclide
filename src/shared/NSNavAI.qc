@@ -310,6 +310,12 @@ NSNavAI::RouteToPosition(vector destination)
 void
 NSNavAI::ChasePath(string startPath)
 {
+	if (!startPath || startPath == "") {
+		m_pathTarget = __NULL__;
+		m_pathEntity = __NULL__;
+		return;
+	}
+
 	m_pathTarget = startPath;
 	m_pathEntity = (NSEntity)find(world, ::targetname, m_pathTarget);
 	NSNavAI_Log("Actor %S chase Path set to %S\n", netname, m_pathEntity.targetname);
