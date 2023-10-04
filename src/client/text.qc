@@ -91,6 +91,11 @@ GameText_DrawMessage(gametext_t *txt, float timer, int highlight)
 			txt->m_flHoldTime;
 	}
 
+	if (txt->m_iEffect == 2) {
+		mtime = (strlen(txt->m_strMessage) * txt->m_flFadeIn) + txt->m_flHoldTime;
+		btime = mtime + txt->m_flFadeOut;
+	}
+
 	if (timer > mtime) {
 		return;
 	}
@@ -185,7 +190,14 @@ GameText_Draw(void)
 
 	g_textqueue[0].m_flTime += clframetime;
 
-	float maxTime = g_textqueue[0].m_flFadeIn + g_textqueue[0].m_flFadeOut + g_textqueue[0].m_flHoldTime + g_textqueue[0].m_flFXTime;
+	float maxTime;
+
+	if (g_textqueue[0].m_iEffect == 2) {
+		float charCount = strlen(g_textqueue[0].m_strMessage);
+		maxTime = (charCount * g_textqueue[0].m_flFadeIn) + g_textqueue[0].m_flFadeOut + g_textqueue[0].m_flHoldTime + g_textqueue[0].m_flFXTime;
+	} else {
+		maxTime = g_textqueue[0].m_flFadeIn + g_textqueue[0].m_flFadeOut + g_textqueue[0].m_flHoldTime + g_textqueue[0].m_flFXTime;
+	}
 
 	if (g_textqueue[0].m_flTime >= maxTime)
 		g_textqueue[0].m_strMessage = __NULL__;
