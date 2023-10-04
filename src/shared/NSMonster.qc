@@ -776,6 +776,9 @@ NSMonster::GetYawSpeed(void)
 void
 NSMonster::_LerpTurnToYaw(vector turnYaw)
 {
+#if 1
+	angles[1] = input_angles[1] = v_angle[1] = turnYaw[1];
+#else
 	float turnSpeed = GetYawSpeed();
 	vector vecWishAngle = turnYaw;
 	float yawDiff = anglesub(turnYaw[1], v_angle[1]);
@@ -813,17 +816,14 @@ NSMonster::_LerpTurnToYaw(vector turnYaw)
 	makevectors(v_angle);
 	vecWishAngle = vectoangles( v_forward );
 	angles[1] = input_angles[1] = v_angle[1] = vecWishAngle[1];
+#endif
 }
 
 void
 NSMonster::_LerpTurnToPos(vector turnPos)
 {
 	vector vecWishAngle = vectoangles(turnPos - origin);
-#if 1
 	_LerpTurnToYaw(vecWishAngle);
-#else
-	angles[1] = input_angles[1] = v_angle[1] = vecWishAngle[1];
-#endif
 }
 
 
@@ -1688,6 +1688,8 @@ NSMonster::Respawn(void)
 	   otherwise they may just fall through an entity (func_wall, func_train etc.)
 	   that came after this entity in the lump. */
 	static void AdjustSpawnPos(void) {
+		RestoreAngles();
+		m_vecSequenceAngle = angles;
 		SetOrigin(GetSpawnOrigin());
 		DropToFloor();
 		setorigin_safe(this, origin);
