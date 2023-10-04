@@ -474,6 +474,7 @@ private:
 	vector m_vecSequenceAngle;
 	int m_iSequenceFlags;
 	movementState_t m_iMoveState;
+	string m_strSequenceKillTarget;
 
 	int m_iTriggerCondition;
 	string m_strTriggerTarget;

@@ -256,13 +256,18 @@ scripted_sequence::RunOnEntity(entity targ)
 		m_iValue = TRUE;
 	}
 
-
 	/* mark the state */
 	f.m_iSequenceState = SEQUENCESTATE_ACTIVE;
 
 	/* seems to be active at all times? contrary to SS_TURNTOFACE existing? */
 	f.m_vecSequenceAngle = GetAngles();
 	f.m_iSequenceFlags = spawnflags;
+	f.m_strSequenceKillTarget = m_strKillTarget;
+
+	if (m_strKillTarget) {
+		readcmd(sprintf("watchpoint_ssqc %d.nextthink\n", num_for_edict(f)));
+		NSAIScript_Log("\tKillTarget when finished: %S", m_strKillTarget);
+	}
 
 	if (m_iMove == SS_NO) {
 		f.m_vecSequenceAngle = f.angles;
@@ -279,7 +284,6 @@ scripted_sequence::RunOnEntity(entity targ)
 		return;
 	} else if (m_iMove == SS_INSTANTANEOUS) {
 		f.SetOrigin(GetOrigin());
-		f.DropToFloor();
 		NSAIScript_Log("\tType: SS_INSTANTANEOUS (%i)", m_iMove);
 	} else if (m_iMove == SS_TURNTOFACE) {
 		NSAIScript_Log("\tType: SS_TURNTOFACE (%i)", m_iMove);
@@ -294,7 +298,6 @@ scripted_sequence::RunOnEntity(entity targ)
 		}
 
 		duration = frameduration(f.modelindex, f.m_flSequenceEnd);
-		f.SetNextThink(duration);
 		NSAIScript_Log(
 			"\tAnimation: %s Duration: %f seconds (modelindex %d, frame %d)",
 			m_strActionAnim,
@@ -303,7 +306,7 @@ scripted_sequence::RunOnEntity(entity targ)
 			f.m_flSequenceEnd
 		);
 	} else {
-		f.SetNextThink(0.0f);
+		duration = 0.0f;
 		NSAIScript_Log(
 			"\t^1WARNING: %s skipping animation on script type %i",
 			f.targetname,
@@ -314,11 +317,11 @@ scripted_sequence::RunOnEntity(entity targ)
 	f.m_iSequenceState = SEQUENCESTATE_ENDING;
 
 	if (HasSpawnFlags(SSFL_LEAVECORPSE))
-		f.SetThink(NSMonster::FreeStateDead);
+		f.ScheduleThink(f.FreeStateDead, duration);
 	else if (HasSpawnFlags(SSFL_NOSCRIPTMOVE) || m_iMove == SS_NO)
-		f.SetThink(NSMonster::FreeState);
+		f.ScheduleThink(f.FreeState, duration);
 	else
-		f.SetThink(NSMonster::FreeStateMoved);
+		f.ScheduleThink(f.FreeStateMoved, duration);
 
 	NSAIScript_Log("\tEnding: %f", f.GetNextThinkTime());
 

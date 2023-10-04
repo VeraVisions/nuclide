@@ -41,6 +41,7 @@ NSMonster::NSMonster(void)
 	m_flSequenceSpeed = 0.0f;
 	m_vecSequenceAngle = g_vec_null;
 	m_iSequenceFlags = 0i;
+	m_strSequenceKillTarget = __NULL__;
 	m_iMoveState = 0i;
 	m_iTriggerCondition = 0i;
 	m_strTriggerTarget = __NULL__;
@@ -140,6 +141,7 @@ NSMonster::Save(float handle)
 	SaveFloat(handle, "m_flSequenceSpeed", m_flSequenceSpeed);
 	SaveVector(handle, "m_vecSequenceAngle", m_vecSequenceAngle);
 	SaveInt(handle, "m_iSequenceFlags", m_iSequenceFlags);
+	SaveString(handle, "m_strSequenceKillTarget", m_strSequenceKillTarget);
 	SaveFloat(handle, "m_iMoveState", m_iMoveState);
 	SaveInt(handle, "m_iTriggerCondition", m_iTriggerCondition);
 	SaveString(handle, "m_strTriggerTarget", m_strTriggerTarget);
@@ -263,6 +265,9 @@ NSMonster::Restore(string strKey, string strValue)
 		break;
 	case "m_iSequenceFlags":
 		m_iSequenceFlags = ReadInt(strValue);
+		break;
+	case "m_strSequenceKillTarget":
+		m_strSequenceKillTarget = ReadString(strValue);
 		break;
 	case "m_iMoveState":
 		m_iMoveState = ReadFloat(strValue);
@@ -1144,6 +1149,25 @@ NSMonster::FreeState(void)
 	m_flSequenceEnd = 0;
 	m_iSequenceState = SEQUENCESTATE_NONE;
 	m_iSequenceFlags = 0;
+
+	/* scripted_sequence killtarget:
+	   We want to call this first. you may wonder why.
+	   Because a monster may call a scripted_sequence here
+	   which THEN sets its killtarget to be monster that triggers
+	   the scripted_sequence.
+	   If that happens, the monster will then killtarget itself right after. */ 
+	if (m_strSequenceKillTarget != "") {
+		NSEntity findKT = (NSEntity)find(world, ::targetname, m_strSequenceKillTarget);
+
+		if (findKT) {
+			NSMonster_Log("^2%s::^3FreeState^7: Killing %S", classname, m_strSequenceKillTarget);
+			findKT.Destroy();
+		} else {
+			error("Could not remove scripted killtarget!\n");
+		}
+
+		m_strSequenceKillTarget = __NULL__;
+	}
 
 	if (m_ssLast) {
 		scripted_sequence seq = (scripted_sequence)m_ssLast;
