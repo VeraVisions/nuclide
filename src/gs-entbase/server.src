@@ -20,6 +20,7 @@ server/env_explosion.qc
 server/env_render.qc
 server/env_shake.qc
 server/env_message.qc
+server/env_model.qc
 server/game_text.qc
 server/game_counter.qc
 server/game_counter_set.qc
