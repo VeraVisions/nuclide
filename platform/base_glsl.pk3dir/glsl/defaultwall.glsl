@@ -53,11 +53,9 @@ varying mat3 invsurface;
 		tex_c = v_texcoord;
 		gl_Position = ftetransform();
 
-#ifdef SCROLL
 		/* HACK: func_conveyor needs us to scroll this surface! */
 		if (e_glowmod.g == 0.5)
 			tex_c[0] += (e_time * (e_glowmod.b * 1024.0)) * -0.01;
-#endif
 
 #ifdef REFLECTCUBE
 		invsurface[0] = v_svector;
