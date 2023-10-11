@@ -21,6 +21,7 @@
 !!cvardf r_skipNormal
 !!cvardf r_skipEnvmap
 !!cvardf r_skipLightmap
+!!cvardf r_showEnvCubemap
 
 !!permu FAKESHADOWS
 !!cvardf r_glsl_pcf
@@ -122,7 +123,11 @@ varying mat3 invsurface;
 	
 	#if defined(BUMP) && r_skipEnvmap==0
 		vec3 cube_c;
-		float refl = 1.0 - texture2D(s_normalmap, tex_c).a;
+		#if r_showEnvCubemap == 0
+			float refl = 1.0 - texture2D(s_normalmap, tex_c).a;
+		#else
+			float refl = 1.0;
+		#endif
 		cube_c = reflect(normalize(eyevector), normal_f.rgb);
 		cube_c = cube_c.x * invsurface[0] + cube_c.y * invsurface[1] + cube_c.z * invsurface[2];
 		cube_c = (m_model * vec4(cube_c.xyz, 0.0)).xyz;
