@@ -324,10 +324,7 @@ fields that the engine cares about
 void
 NSRenderableEntity::RenderFXPass(void)
 {
-	vector vecPlayer;
-	int s = (float)getproperty(VF_ACTIVESEAT);
-	pSeat = &g_seats[s];
-	vecPlayer = pSeat->m_vecPredictedOrigin;
+	vector vecPlayer = g_view.GetCameraOrigin();
 
 	/* HACK: this tells our GLSL to render this masked */
 	//glowmod = [1.0,0.0,1.0];
@@ -382,7 +379,8 @@ NSRenderableEntity::RenderFXPass(void)
 		break;
 	case RM_SOLID:
 		colormod = [1,1,1];
-		alpha = (m_flRenderAmt == 0.0) ? 0.0f : 1.0f;
+		alpha = 1.0f;
+		glowmod[0] = 0.5f;
 		break;
 	case RM_ADDITIVE:
 		effects = EF_ADDITIVE;
@@ -512,13 +510,6 @@ NSRenderableEntity::RenderFXPass(void)
 	case RFX_Q2PULSE:
 	default:
 		break;
-	}
-
-	/* HACK: This marks this entity as alphatested in platform's defaultwall.glsl */
-	if (m_iRenderMode != RM_NORMAL) {
-		glowmod[0] = 0.5f;
-	} else {
-		glowmod[0] = 1.0f;
 	}
 }
 
@@ -1026,7 +1017,6 @@ NSRenderableEntity::HandleAnimEvent(float flTimeStamp, int iCode, string strData
 					Input(this, testInput, strData); /* no parms passed. */
 
 				tokenize(m_strModelEventCB); /* ensure argv() is 'rewound'... */
-				return;
 			}
 		}
 		
