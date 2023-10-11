@@ -44,6 +44,10 @@ private:
 	vector m_vecTurnAngle;
 	string m_pathTarget;
 	NSEntity m_pathEntity;
+	float _m_flRouteGiveUp;
+	vector _m_vecRoutePrev;
+	vector m_vecRouteEntity;
+	entity m_eFollowing;
 
 	/* These are defined in side defs\*.def, ammo_types and ammo_names */
 	int m_iAmmoTypes[MAX_AMMO_TYPES];

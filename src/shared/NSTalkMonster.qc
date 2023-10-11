@@ -51,6 +51,9 @@ NSTalkMonster::NSTalkMonster(void)
 	m_talkStopFollow = __NULL__;
 	m_talkDenyFollow = __NULL__;
 	m_bFollowOnUse = false;
+	m_flFollowDistance = 128.0f;
+	m_flMaxFollowDistance = 2048.0f;
+	m_bFollowGrouping = false;
 #else
 	m_flSentenceTime = 0.0f;
 	m_pSentenceQue = __NULL__;
@@ -102,6 +105,8 @@ NSTalkMonster::Save(float handle)
 	SaveFloat(handle, "m_flFollowSpeedChanged", m_flFollowSpeedChanged);
 	SaveFloat(handle, "m_flFollowSpeed", m_flFollowSpeed);
 	SaveBool(handle, "m_bFollowOnUse", m_bFollowOnUse);
+	SaveFloat(handle, "m_flFollowDistance", m_flFollowDistance);
+	SaveFloat(handle, "m_flMaxFollowDistance", m_flMaxFollowDistance);
 
 	SaveString(handle, "m_talkAnswer", m_talkAnswer);
 	SaveString(handle, "m_talkAsk", m_talkAsk);
@@ -163,6 +168,12 @@ NSTalkMonster::Restore(string strKey, string strValue)
 		break;
 	case "m_bFollowOnUse":
 		m_bFollowOnUse = ReadBool(strValue);
+		break;
+	case "m_flFollowDistance":
+		m_flFollowDistance = ReadFloat(strValue);
+		break;
+	case "m_flMaxFollowDistance":
+		m_flMaxFollowDistance = ReadFloat(strValue);
 		break;
 	case "m_talkAnswer":
 		m_talkAnswer = ReadString(strValue);
@@ -505,6 +516,22 @@ NSTalkMonster::TalkDenyFollow(void)
 	m_flNextSentence = time + 10.0;
 }
 
+void
+NSTalkMonster::Touch(entity eToucher)
+{
+	if (eToucher == m_eFollowing) {
+		makevectors(eToucher.angles);
+		velocity = v_forward * 250.0f;
+		return;
+	}
+
+	/* ugly hack */
+	if (eToucher.classname == "func_door_rotating") {
+		owner = eToucher;
+	}
+
+	super::Touch(eToucher);
+}
 
 void
 NSTalkMonster::FollowPlayer(void)
@@ -525,40 +552,70 @@ NSTalkMonster::FollowPlayer(void)
 	flPlayerDist = vlen(vecParent - origin);
 
 	/* Give up after 1024 units */
-	if (flPlayerDist > 1024) {
+	if (flPlayerDist > m_flMaxFollowDistance) {
 		m_eFollowing = world;
-	} else if (flPlayerDist > 128) {
+		NSMonster_Log("Maximum follow distance reached. Will stop following.");
+	} else if (flPlayerDist >= m_flFollowDistance) {
 		/* we only allow speed changes every second, avoid jitter */
 		if (m_flFollowSpeedChanged < time) {
 			float flNextSpeed = GetChaseSpeed();
 
 			/* if we're close enough, we ought to walk */
-			if (flPlayerDist < 256)
+			if (flPlayerDist < (m_flFollowDistance * 1.5f))
 				flNextSpeed = GetWalkSpeed();
 
 			/* only update the timer when speed changed */
 			if (flNextSpeed != m_flFollowSpeed) {
 				m_flFollowSpeed = flNextSpeed;
-				m_flFollowSpeedChanged = time + 1.0f;
+				m_flFollowSpeedChanged = time + 5.0f;
 			}
 		}
 
 		if (DistanceFromYaw(vecParent) > 0.9f)
 			input_movevalues[0] = m_flFollowSpeed;
 
-		other = world;
-		traceline(origin, m_eFollowingChain.origin, MOVE_OTHERONLY, this);
+		/* when we're in a chain... can we see the user any more? */
+		if (m_eFollowingChain != m_eFollowing) {
+			traceline(GetOrigin(), m_eFollowing.origin, MOVE_NORMAL, this);
+
+			/* the answer is no. */
+			if (trace_fraction < 1.0 || trace_ent != m_eFollowing) {
+				/* go straight to our user */
+				NSEntity zamn = (NSEntity)m_eFollowing;
+				vector endPos = zamn.GetNearbySpot();
+
+				if (endPos != g_vec_null) {
+					RouteToPosition(endPos);
+					m_flSequenceSpeed = GetChaseSpeed();
+				}
+				return;
+			}
+		}
+
+		traceline(origin, m_eFollowingChain.origin, MOVE_NORMAL, this);
 
 		/* Tracing failed, there's world geometry in the way */
-		if (trace_fraction < 1.0f) {
-			input_angles = vectoangles(m_vecLastUserPos - origin);
-			input_angles[0] = 0;
-			input_angles[1] = Math_FixDelta(input_angles[1]);
-			input_angles[2] = 0;
-			_LerpTurnToYaw(input_angles);
+		if (trace_fraction < 1.0f && trace_ent != m_eFollowingChain) {
+			/* are they still generally accessible? */
+			traceline(m_vecLastUserPos, vecParent, MOVE_NORMAL, this);
+
+			if (trace_fraction < 1.0f && trace_ent != m_eFollowing) {
+				RouteToPosition(m_eFollowing.origin); /* go directly to the source */
+				m_flSequenceSpeed = GetChaseSpeed();
+				return;
+			} else {
+				input_angles = vectoangles(m_vecLastUserPos - origin);
+				input_angles[0] = 0;
+				input_angles[1] = Math_FixDelta(input_angles[1]);
+				input_angles[2] = 0;
+				_LerpTurnToYaw(input_angles);
+			}
 		} else {
-			m_vecLastUserPos = m_eFollowingChain.origin;
+			m_vecLastUserPos = vecParent;
 		}
+
+		if (m_bFollowGrouping == false)
+			return;
 
 		/* Trace again to see if another hostage is in our path and if so
 		 * follow them instead, this makes pathing easier */
@@ -578,8 +635,7 @@ void
 NSTalkMonster::PanicFrame(void)
 {
 	m_iFlags |= MONSTER_METPLAYER;
-	maxspeed = 240;
-	input_movevalues = [maxspeed, 0, 0];
+	input_movevalues = [240, 0, 0];
 
 	if (m_flTraceTime < time) {
 		traceline(origin, origin + (v_forward * 64), FALSE, this);
@@ -625,7 +681,7 @@ NSTalkMonster::RunAI(void)
 	TalkPlayerGreet();
 	FollowChain();
 
-	if (m_eFollowing != world) {
+	if (m_eFollowing != world && m_iNodes <= 0) {
 		m_eLookAt = m_eFollowing;
 		FollowPlayer();
 	} else if (m_iFlags & MONSTER_FEAR) {
@@ -644,6 +700,7 @@ NSTalkMonster::Respawn(void)
 {
 	super::Respawn();
 
+	RouteClear();
 	m_eFollowing = world;
 	m_eFollowingChain = world;
 	PlayerUse = OnPlayerUse;
@@ -677,6 +734,7 @@ NSTalkMonster::OnPlayerUse(void)
 	} else {
 		TalkUnfollow();
 		m_eFollowing = world;
+		RouteClear();
 	}
 }
 
@@ -760,6 +818,13 @@ NSTalkMonster::SpawnKey(string strKey, string strValue)
 		break;
 	case "follow_on_use":
 		m_bFollowOnUse = ReadBool(strValue);
+		break;
+
+	case "follow_dist":
+		m_flFollowDistance = ReadFloat(strValue);
+		break;
+	case "follow_maxdist":
+		m_flMaxFollowDistance = ReadFloat(strValue);
 		break;
 	default:
 		super::SpawnKey(strKey, strValue);

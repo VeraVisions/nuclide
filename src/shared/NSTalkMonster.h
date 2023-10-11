@@ -67,6 +67,8 @@ They also can communicate with other NSTalkMonster based entities.
 - "talk_stop_follow" : SentenceDef to play for when they're being asked to unfollow someone.
 - "talk_deny_follow" : SentenceDef to play for when they're denying the follow request.
 - "follow_on_use" : Can be either 0 or 1, will decide if they can follow someone.
+- "follow_dist" : Distance between the it and the player its following.
+- "follow_maxdist" : Maximum distance between it and the player before giving up following them.
 
 For more keys, see NSMonster.
 */
@@ -102,6 +104,7 @@ public:
 	virtual float SendEntity(entity,float);
 	virtual void Save(float);
 	virtual void Restore(string,string);
+	virtual void Touch(entity);
 
 	/*virtual void(void) TalkAnswer;
 	virtual void(void) TalkAsk;
@@ -158,7 +161,6 @@ private:
 	float m_flNextSentence;
 	int m_iFlags;
 
-	entity m_eFollowing;
 	entity m_eFollowingChain;
 	vector m_vecLastUserPos;
 	float m_flChangePath;
@@ -166,6 +168,10 @@ private:
 	float m_flFollowSpeedChanged;
 	float m_flFollowSpeed;
 	bool m_bFollowOnUse;
+
+	float m_flFollowDistance;
+	float m_flMaxFollowDistance;
+	bool m_bFollowGrouping;
 
 	/* sentences identifiers */
 	string m_talkAnswer; /* random answer to whenever a question is asked */

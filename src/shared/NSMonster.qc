@@ -14,8 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-var float autocvar_ai_walkSpeed = 64;
-var float autocvar_ai_runSpeed = 364;
+var float autocvar_ai_walkSpeed = 150;
+var float autocvar_ai_runSpeed = 320;
 
 void
 NSMonster::NSMonster(void)
@@ -97,6 +97,7 @@ NSMonster::NSMonster(void)
 	m_flRunSpeed = autocvar_ai_runSpeed;
 	m_flLeapDamage = 0;
 	m_bLeapAttacked = false;
+	maxspeed = 1024;
 #endif
 }
 
@@ -781,14 +782,19 @@ NSMonster::GetYawSpeed(void)
 void
 NSMonster::_LerpTurnToYaw(vector turnYaw)
 {
-#if 1
+#if 0
 	angles[1] = input_angles[1] = v_angle[1] = turnYaw[1];
 #else
 	float turnSpeed = GetYawSpeed();
 	vector vecWishAngle = turnYaw;
 	float yawDiff = anglesub(turnYaw[1], v_angle[1]);
 
-	if (fabs(yawDiff) > 90) {
+	/* anything but small turns? halt the player */
+	if (fabs(yawDiff) > 5) {
+		input_movevalues = g_vec_null;
+	}
+
+	if (fabs(yawDiff) > 45) {
 		velocity = g_vec_null;
 		input_movevalues = g_vec_null;
 
@@ -1238,13 +1244,13 @@ NSMonster::RouteEnded(void)
 		m_iSequenceState = SEQUENCESTATE_ENDING;
 		think = (m_iSequenceFlags & SSFL_NOSCRIPTMOVE) ? FreeState : FreeStateMoved;
 		nextthink = time + duration;
-		NSMonster_Log("^2%s::^3CheckRoute^7: %s overriding anim for %f seconds (modelindex %d, frame %d)", \
+		NSMonster_Log("^2%s::^3RouteEnded^7: %s overriding anim for %f seconds (modelindex %d, frame %d)", \
 			classname, this.targetname, duration, modelindex, m_flSequenceEnd);
 	} else {
 		/* we still need to trigger targets */
 		think = (m_iSequenceFlags & SSFL_NOSCRIPTMOVE) ? FreeState : FreeStateMoved;
 		nextthink = time;
-		NSMonster_Log("^2%s::^3CheckRoute^7: %s has no anim, finished sequence", \
+		NSMonster_Log("^2%s::^3RouteEnded^7: %s has no anim, finished sequence", \
 			classname, this.targetname);
 	}
 }
@@ -1252,6 +1258,7 @@ NSMonster::RouteEnded(void)
 void
 NSMonster::WalkRoute(void)
 {
+
 	/* we're busy shooting at something, don't walk */
 	if (GetState() == MONSTER_AIMING && m_eEnemy) {
 		input_angles = vectoangles(m_eEnemy.origin - origin);
@@ -1260,6 +1267,33 @@ NSMonster::WalkRoute(void)
 		input_angles = GetRouteDirection();
 		input_angles[0] = input_angles[2] = 0;
 		input_movevalues = GetRouteMovevalues() * m_flSequenceSpeed;
+
+		/* is something in our way? */
+		makevectors(input_angles);
+		tracebox(origin, mins, maxs, origin + v_forward * 256, MOVE_NORMAL, this);
+
+		/* indeed it is */
+		if (trace_fraction < 1.0f) {
+			vector testOrg = origin + (v_right * 32);
+			testOrg[2] += mins[2] + 18.0f; /* test at feet level */
+
+			traceline(testOrg, testOrg + v_forward * 256, MOVE_NORMAL, this);
+
+			/* is space free to the right? */
+			if (trace_fraction == 1.0) {
+				input_movevalues[1] = m_flSequenceSpeed * 0.25f;
+			} else {
+
+				testOrg = origin - (v_right * 32);
+				testOrg[2] += mins[2] + 18.0f; /* test at feet level */
+
+				traceline(testOrg, testOrg + v_forward * 256, MOVE_NORMAL, this);
+
+				/* is space free to the left? */
+				if (trace_fraction == 1.0)
+					input_movevalues[1] = -m_flSequenceSpeed * 0.25f;
+			}
+		}
 	} else if (GetState() == MONSTER_CHASING && m_eEnemy) {
 		/* we've got 'em in our sights, just need to walk closer */
 		input_angles = vectoangles(m_eEnemy.origin - origin);
@@ -1267,6 +1301,11 @@ NSMonster::WalkRoute(void)
 		input_movevalues = [GetChaseSpeed(), 0, 0];
 	} else
 		return;
+
+	/* don't move while turning. */
+	if (m_bTurning == true) {
+		input_movevalues = [0,0,0];
+	}
 
 	/* yaw interpolation */
 	_LerpTurnToYaw(input_angles);
