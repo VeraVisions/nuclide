@@ -8,3 +8,8 @@ debugcone
 		blendFunc blend
 	}
 }
+
+trigger
+{
+	surfaceParm nodraw
+}
