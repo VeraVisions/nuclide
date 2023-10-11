@@ -353,7 +353,8 @@ bot::RunAI(void)
 		if (enemyvisible) {
 			WeaponAttack();
 		}
-	}
+	} else if (m_flForceWeaponAttack > time)
+		WeaponAttack();
 
 	BrainThink(enemyvisible, enemydistant);
 	CheckRoute();
@@ -381,6 +382,10 @@ bot::RunAI(void)
 			/* aim towards the enemy */
 			aimpos = m_eTarget.origin;
 		}
+
+		/* force bot to fire at a position if desired */
+		if (m_flForceWeaponAttack > time)
+			aimpos = m_vecForceWeaponAttackPos;
 
 		/* aim ahead if aimpos is somehow invalid */
 		if (aimpos == [0,0,0]) {
@@ -468,6 +473,15 @@ bot::RunAI(void)
 			}
 		} else {
 			RouteClear();
+		}
+
+		/* if there's a breakable in the way... */
+		traceline(origin, aimpos, MOVE_NORMAL, this);
+
+		/* Hackish: If there's a func_breakable in the way... */
+		if (trace_ent.classname == "func_breakable") {
+			NSEntity traceEnt = (NSEntity)trace_ent;
+			ForceWeaponAttack(traceEnt.WorldSpaceCenter(), 1.0f);
 		}
 
 		/* now we'll set the movevalues relative to the input_angle */

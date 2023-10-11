@@ -64,6 +64,8 @@ class bot:player
 	float m_flEnemyDist;
 	weapontype_t m_wtWeaponType;
 	vector m_vecLastPOI;
+	float m_flForceWeaponAttack;
+	vector m_vecForceWeaponAttackPos;
 
 	void(void) bot;
 
@@ -88,6 +90,7 @@ class bot:player
 	virtual void(entity) SetEnemy;
 	virtual float(void) GetRunSpeed;
 	virtual float(void) GetWalkSpeed;
+	nonvirtual void ForceWeaponAttack(vector, float);
 
 	virtual void(string) SetName;
 };

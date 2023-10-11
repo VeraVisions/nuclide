@@ -88,6 +88,9 @@ bot::WeaponAttack(void)
 			should_attack = 1;
 	}
 
+	if (m_flForceWeaponAttack > time)
+		should_attack = 1;
+
 	if (should_attack && m_flAttackTime < time) {
 		if (!m_iAttackMode) {
 			input_buttons |= INPUT_BUTTON0;
@@ -119,6 +122,13 @@ bot::WeaponAttack(void)
 		m_iAttackMode = 1 - m_iAttackMode;
 	else
 		m_iAttackMode = 0;
+}
+
+void
+bot::ForceWeaponAttack(vector attackPos, float attackTime)
+{
+	m_vecForceWeaponAttackPos = attackPos;
+	m_flForceWeaponAttack = attackTime + time;
 }
 
 var float g_botalert_timer;
