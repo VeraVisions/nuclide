@@ -14,6 +14,9 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+const float baseIconSize = 32.0;
+const float baseIconPadding = 16.0;
+
 /* main entry */
 void
 HUD_Init(void)
@@ -24,6 +27,18 @@ HUD_Init(void)
 void
 HUD_Draw(void)
 {
+	vector hudSize = g_view.GetHUDCanvasSize();
+	vector iconPos = g_view.GetHUDCanvasPos() + (hudSize / 2);
+	iconPos[1] = (hudSize[1] - baseIconSize) - baseIconPadding;
+
+	/* health, armor icons */
+	drawpic(iconPos + [-((baseIconSize/2) + (baseIconPadding/2)), 0], "gfx/hud/health", [baseIconSize, baseIconSize], [1,1,1], 1.0f);
+	drawpic(iconPos + [(baseIconSize/2) + (baseIconPadding/2), 0], "gfx/hud/armor", [baseIconSize, baseIconSize], [1,1,1], 1.0f);
+
+	/* ammo icon */
+	iconPos[0] = (hudSize[0] - baseIconSize) - baseIconPadding;
+	drawpic(iconPos, "gfx/hud/armor", [baseIconSize, baseIconSize], [1,1,1], 1.0f);
+
 	Textmenu_Draw();
 }
 
@@ -31,4 +46,5 @@ HUD_Draw(void)
 void
 HUD_DrawSpectator(void)
 {
+	
 }

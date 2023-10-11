@@ -44,8 +44,10 @@ Camera_RunBob(__inout vector camera_angle)
 		pCamBob->m_flMove = 0.0f;
 		pCamBob->m_flTime = 0.0f; /* progress has halted, start anew */
 		return;
-	} else if (pSeat->m_ePlayer.flags & FL_ONGROUND) {
+	} else if (pSeat->m_ePlayer.flags & FL_ONGROUND && pSeat->m_ePlayer.waterlevel == 0) {
 		pCamBob->m_flMove = clframetime * (pCamBob->m_flSpeed * 0.01);
+	} else {
+		pCamBob->m_flMove = 0.0f;
 	}
 
 	pCamBob->m_flTime = (pCamBob->m_flTime += pCamBob->m_flMove);

@@ -35,10 +35,10 @@ View_UpdateWeapon(player pl, entity vm, entity mflash)
 	 * thus we need to update all the net variables to
 	 * make sure these updates are recognized. this is
 	 * vile but it'll have to do for now */
-	SAVE_STATE(pl.w_attack_next);
-	SAVE_STATE(pl.w_idle_next);
-	SAVE_STATE(pl.viewzoom);
-	SAVE_STATE(pl.weapontime);
+	SAVE_STATE(pl.w_attack_next)
+	SAVE_STATE(pl.w_idle_next)
+	SAVE_STATE(pl.viewzoom)
+	SAVE_STATE(pl.weapontime)
 
 	/* figure out when the attachments start. in FTE attachments for
 	 * HLMDL are treated as bones. they start at numbones + 1 */

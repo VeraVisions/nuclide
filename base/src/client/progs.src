@@ -1,5 +1,4 @@
 #pragma target fte_5768
-//#pragma flag enable assumeint
 #pragma progs_dat  "../../csprogs.dat"
 
 #define CSQC
@@ -23,7 +22,8 @@ defs.h
 
 /* mod specific functions */
 ../shared/include.src
-../../../base/src/client/draw.qc
+
+draw.qc
 init.qc
 entities.qc
 camera.qc
