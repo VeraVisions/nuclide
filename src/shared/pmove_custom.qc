@@ -45,6 +45,8 @@ PMoveCustom_StartFrame(void)
 	PMoveCustom_UpdateVar("phy_wateraccelerate", "pm_wateraccelerate");
 	PMoveCustom_UpdateVar("phy_accelerate", "pm_accelerate");
 	PMoveCustom_UpdateVar("phy_maxspeed", "pm_maxspeed");
+	PMoveCustom_UpdateVar("phy_noclipspeed", "pm_noclipspeed");
+	PMoveCustom_UpdateVar("phy_noclipaccelerate", "pm_noclipaccelerate");
 }
 #endif
 
@@ -256,6 +258,12 @@ PMoveCustom_AccelFriction(float move_time, float premove, vector wish_dir, float
 	float flFriction;
 	vector vecTemp;
 
+	/* too finicky with monsters between the various game settings */
+	if (self.flags & FL_MONSTER) {
+		self.velocity = wish_dir * wish_speed;
+		return;
+	}
+
 	flApplyFriction = serverkeyfloat("phy_friction");
 
 	/* per frame basis friction modifier */
@@ -309,6 +317,65 @@ PMoveCustom_AccelFriction(float move_time, float premove, vector wish_dir, float
 }
 
 void
+PMoveCustom_AccelNoclip(float move_time, float premove, vector wish_dir, float wish_speed)
+{
+	float flApplyFriction;
+	float flFriction;
+	vector vecTemp;
+
+	flApplyFriction = serverkeyfloat("phy_friction");
+
+	/* per frame basis friction modifier */
+	if (self.friction != 0.0f) {
+		flApplyFriction /= self.friction;
+		self.friction = 0.0f;
+	}
+
+	/* apply friction */
+	if (self.velocity[0] || self.velocity[1]) {
+		vecTemp = self.velocity;
+		vecTemp[2] = 0;
+		flFriction = vlen(vecTemp);
+
+		/* Next few lines of code assumes self is using player's hull, however it could be a monster
+			who use differen hull size, therefore it is invalid, so we probably better of using mins/maxs,
+			on the other hand edge friction is probably not that important. */
+
+		// if the leading edge is over a dropoff, increase friction
+		vecTemp = self.origin + normalize(vecTemp) * 16 + [0,0,1] * self.mins[2];
+		traceline(vecTemp, vecTemp + [0,0,-34], TRUE, self);
+
+		// apply friction
+		if (trace_fraction == 1.0) {
+			if (flFriction < serverkeyfloat("phy_stopspeed")) {
+				flFriction = 1 - move_time * (serverkeyfloat("phy_stopspeed") / flFriction) * flApplyFriction * serverkeyfloat("phy_edgefriction");
+			} else {
+				flFriction = 1 - move_time * flApplyFriction * serverkeyfloat("phy_edgefriction");
+			}
+		} else {
+			if (flFriction < serverkeyfloat("phy_stopspeed")) {
+				flFriction = 1 - move_time * (serverkeyfloat("phy_stopspeed") / flFriction) * flApplyFriction;
+			} else {
+				
+				flFriction = 1 - move_time * flApplyFriction;
+			}
+		}
+
+		if (flFriction < 0) {
+			self.velocity = [0,0,0];
+		} else {
+			self.velocity = self.velocity * flFriction;
+		}
+	}
+
+	// acceleration
+	flFriction = wish_speed - (self.velocity * wish_dir);
+	if (flFriction > 0) {
+		self.velocity += wish_dir * min(flFriction, serverkeyfloat("phy_noclipaccelerate") * move_time * wish_speed);
+	}
+}
+
+void
 PMoveCustom_AccelGravity(float move_time, float premove, vector wish_dir, float wish_speed)
 {
 	float flFriction;
@@ -356,6 +423,12 @@ PMoveCustom_Acceleration(float move_time, float premove)
 			PMoveCustom_AccelWater(move_time, premove);
 			return;
 		}
+	} else {
+		vecWishVel = v_forward * input_movevalues[0] + v_right * input_movevalues[1];
+		wish_dir = normalize(vecWishVel);
+		wish_speed = serverkeyfloat("phy_noclipspeed");
+		PMoveCustom_AccelNoclip(move_time, premove, wish_dir, wish_speed);
+		return;
 	}
 
 	/*if (self.teleport_time > 0 && input_movevalues[0] < 0) {
@@ -495,7 +568,7 @@ PMoveCustom_Move(void)
 	float move_time;
 	float i;
 
-	/* no friction for the deceased */
+	/* noclippers don't need any of the below since they don't collide with anything */
 	if (self.movetype == MOVETYPE_NOCLIP) {
 		self.origin += self.velocity * input_timelength;
 		return;
@@ -615,6 +688,12 @@ PMoveCustom_Move(void)
 		PMoveCustom_DoTouch(trace_ent);
 		self.groundentity = trace_ent;
 	}
+}
+
+void
+PMoveCustom_NoclipMove(void)
+{
+	self.origin += self.velocity * input_timelength;
 }
 #endif
 

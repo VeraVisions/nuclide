@@ -92,6 +92,14 @@
 	#define PMOVE_STAMINATHRESHOLD 4
 #endif
 
+#ifndef PMOVE_NOCLIPSPEED
+	#define PMOVE_NOCLIPSPEED 500
+#endif
+
+#ifndef PMOVE_NOCLIPACCELERATE
+	#define PMOVE_NOCLIPACCELERATE 5
+#endif
+
 
 /* Those are constant for HL BSP and CANNOT be changed.
  * Blame Valve for purchasing a Quake II license but not
@@ -138,6 +146,8 @@ PMove_Init(void)
 	cvar_set("pm_wateraccelerate", ftos(PMOVE_WATERACCELERATE));
 	cvar_set("pm_accelerate", ftos(PMOVE_ACCELERATE));
 	cvar_set("pm_maxspeed", ftos(PMOVE_MAXSPEED));
+	cvar_set("pm_noclipspeed", ftos(PMOVE_NOCLIPSPEED));
+	cvar_set("pm_noclipaccelerate", ftos(PMOVE_NOCLIPACCELERATE));
 	cvar_set("g_gravity", ftos(PMOVE_GRAVITY)); /* global */
 	#endif
 
