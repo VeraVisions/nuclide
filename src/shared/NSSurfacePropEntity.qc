@@ -37,6 +37,9 @@ NSSurfacePropEntity::NSSurfacePropEntity(void)
 vector
 NSSurfacePropEntity::GetEyePos(void)
 {
+	if (HasFlags(FL_FAKESPEC))
+		return origin;
+
 	return origin + view_ofs;
 }
 
