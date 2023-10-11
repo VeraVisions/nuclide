@@ -424,10 +424,8 @@ ambient_generic::ReceiveEntity(float isnew, float flChanged)
 
 	if (m_bLoops == true) {
 		if (flChanged & AMBIENT_MODERN) {
-			print("MODERN!\n");
 			Sound_Update(this, CHAN_BODY, Sound_GetID(m_strActivePath), m_flVolume);
 		} else {
-			print("OLD!\n");
 			soundupdate(this, CHAN_BODY, 
 				m_strActivePath, m_flVolume, m_flRadius, m_flPitch, 0, 0);
 		}

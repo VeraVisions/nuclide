@@ -84,6 +84,8 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	else
 		cvar_set("_menu_singleplayer", "0");
 
+	g_cheats = (serverkey("*cheats") == "ON") ? true : false;
+
 	WorldSpawn_Init();
 
 	/* end msg */

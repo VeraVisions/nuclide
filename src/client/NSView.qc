@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+var bool autocvar_r_skipWorld = false;
+
 void
 NSView::NSView(void)
 {
@@ -31,7 +33,12 @@ NSView::SetupView(void)
 {
 	setproperty(VF_DRAWENGINESBAR, (float)0);
 	setproperty(VF_DRAWCROSSHAIR, (float)0);
-	setproperty(VF_DRAWWORLD, (float)1);
+
+	if (g_cheats == true)
+		setproperty(VF_DRAWWORLD, autocvar_r_skipWorld ? false : true);
+	else
+		setproperty(VF_DRAWWORLD, (float)1);
+
 	setproperty(VF_ACTIVESEAT, (float)m_iSeat);
 	setproperty(VF_MIN, m_vecPosition);
 	setproperty(VF_SIZE, m_vecSize);
@@ -53,6 +60,7 @@ NSView::SetupView(void)
 		setproperty(VF_ORIGIN, origin);
 		//setproperty(VF_CL_VIEWANGLES, angles);
 		setproperty(VF_ANGLES, angles);
+		pSeat->m_flCameraTime = 0.0f;
 	}
 
 	/* the view may not have gotten the chance to set the client angle early on */

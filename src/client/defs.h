@@ -25,6 +25,7 @@
 #include "crosshair.h"
 
 var bool g_net_debug = false;
+var bool g_cheats = false;
 
 #define PRINTFLAG(x) if (cvar("net_showUpdates") || g_net_debug) \
 	print(sprintf("%f %s read update %s\n", time, classname, #x));
