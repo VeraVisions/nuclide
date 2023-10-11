@@ -371,4 +371,7 @@ public:
 
 	/** Relink the entity against the world. Updates PVS info etc. */
 	nonvirtual void Relink(void);
+
+	/** Finds a free spot of an entity near itself of same size. Extra padding as argument. */
+	nonvirtual vector GetNearbySpot(void);
 };

@@ -823,6 +823,7 @@ void NSEntity::SpawnKey( string strKey, string strValue ) {
 	case "health":
 		health = ReadFloat( strValue );
 		break;
+	case "movewith":
 	case "parentname":
 		SetParent( ReadString(strValue) );
 		break;
@@ -990,4 +991,69 @@ void
 NSEntity::Relink(void)
 {
 	setorigin(this, origin);
+}
+
+vector
+NSEntity::GetNearbySpot(void)
+{
+	vector testPos;
+	float minDist = maxs[0];
+	makevectors([0,0,0]);
+
+	/* space in front? */
+	testPos = GetOrigin() + v_forward * minDist;
+	tracebox(testPos, mins, maxs, testPos, MOVE_NORMAL, this);
+
+	if (trace_fraction == 1.0f)
+		return testPos;
+
+	/* behind? */
+	testPos = GetOrigin() - v_forward * minDist;
+	tracebox(testPos, mins, maxs, testPos, MOVE_NORMAL, this);
+
+	if (trace_fraction == 1.0f)
+		return testPos;
+	/* left? */
+	testPos = GetOrigin() - v_right * minDist;
+	tracebox(testPos, mins, maxs, testPos, MOVE_NORMAL, this);
+
+	if (trace_fraction == 1.0f)
+		return testPos;
+
+	/* right? */
+	testPos = GetOrigin() + v_right * minDist;
+	tracebox(testPos, mins, maxs, testPos, MOVE_NORMAL, this);
+
+	if (trace_fraction == 1.0f)
+		return testPos;
+
+	/* front left? */
+	testPos = GetOrigin() + v_forward * minDist - v_right * minDist;
+	tracebox(testPos, mins, maxs, testPos, MOVE_NORMAL, this);
+
+	if (trace_fraction == 1.0f)
+		return testPos;
+
+	/* front right? */
+	testPos = GetOrigin() + v_forward * minDist + v_right * minDist;
+	tracebox(testPos, mins, maxs, testPos, MOVE_NORMAL, this);
+
+	if (trace_fraction == 1.0f)
+		return testPos;
+
+	/* back left? */
+	testPos = GetOrigin() - v_forward * minDist - v_right * minDist;
+	tracebox(testPos, mins, maxs, testPos, MOVE_NORMAL, this);
+
+	if (trace_fraction == 1.0f)
+		return testPos;
+
+	/* back right? */
+	testPos = GetOrigin() - v_forward * minDist + v_right * minDist;
+	tracebox(testPos, mins, maxs, testPos, MOVE_NORMAL, this);
+
+	if (trace_fraction == 1.0f)
+		return testPos;
+
+	return g_vec_null;
 }
