@@ -59,6 +59,7 @@ public:
 	virtual void SpawnKey(string,string);
 	virtual float SendEntity(entity,float);
 	virtual void EvaluateEntity(void);
+	nonvirtual void DeactivateCamera(void);
 #endif
 
 private:
@@ -87,6 +88,7 @@ trigger_camera::trigger_camera(void)
 void
 trigger_camera::ReceiveEntity(float flNew, float flFlags)
 {
+	bool deactiveLocalCam = false;
 	//if (flFlags & OCAMFL_CHANGED_ORIGIN) {
 		origin[0] = readcoord();
 		origin[1] = readcoord();
@@ -100,6 +102,11 @@ trigger_camera::ReceiveEntity(float flNew, float flFlags)
 		angles[2] = readfloat();
 	//}
 
+
+	if (m_eLooker == pSeat->m_ePlayer) {
+		deactiveLocalCam = true;
+	}
+
 	//if (flFlags & OCAMFL_CHANGED_VIEWER) {
 		m_eLooker = findfloat(world, ::entnum, readentitynum());
 	//}
@@ -110,6 +117,10 @@ trigger_camera::ReceiveEntity(float flNew, float flFlags)
 
 	int s = (float)getproperty(VF_ACTIVESEAT);
 	pSeat = &g_seats[s];
+
+	if (!m_eLooker && deactiveLocalCam == true) {
+		pSeat->m_flCameraTime = 0.0;
+	}
 
 	/* not us */
 	if (m_eLooker != pSeat->m_ePlayer)
@@ -126,7 +137,6 @@ trigger_camera::ReceiveEntity(float flNew, float flFlags)
 
 		g_view.SetCameraAngle(angles);
 		g_view.SetClientAngle(angles);
-		//error(sprintf("Wait! %f %f\n", time, pSeat->m_flCameraTime));
 	//}
 
 	classname = "trigger_camera";
@@ -137,13 +147,13 @@ trigger_camera::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "target":
-		m_strAimAt = strValue;
+		m_strAimAt = ReadString(strValue);
 		break;
 	case "moveto":
-		m_strMoveTo = strValue;
+		m_strMoveTo = ReadString(strValue);
 		break;
 	case "wait":
-		m_flWait = stof(strValue);
+		m_flWait = ReadFloat(strValue);
 		break;
 	default:
 		super::SpawnKey(strKey, strValue);
@@ -350,6 +360,11 @@ trigger_camera::Trigger(entity act, triggermode_t state)
 		}
 	}
 
+	if (act == m_eLooker) {
+		DeactivateCamera();
+		return;
+	}
+
 	m_eLooker = act;
 	m_eLooker.view2 = this;
 	NSLog("Triggering it on %s\n", act.netname);
@@ -360,6 +375,17 @@ trigger_camera::Trigger(entity act, triggermode_t state)
 	NextPath();
 	GoToTarget();
 	SetSendFlags(0xFFFFFF);
+	ScheduleThink(DeactivateCamera, m_flWait);
 	pvsflags = PVSF_IGNOREPVS;
+}
+
+
+void
+trigger_camera::DeactivateCamera(void)
+{
+	NSLog("Turning it off on %s\n", m_eLooker.netname);
+	m_eLooker.view2 = __NULL__;
+	m_eLooker = __NULL__;
+	SetSendFlags(-1);
 }
 #endif
