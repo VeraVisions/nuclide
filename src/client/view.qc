@@ -15,7 +15,6 @@
 */
 
 var bool autocvar_cg_viewmodelLag = 0;
-var bool autocvar_cg_muzzleDLight = 1;
 
 void
 View_Init(void)
@@ -33,12 +32,6 @@ View_Init(void)
 
 			setsize(pSeat->m_eViewModel, [0,0,0], [0,0,0]);
 
-			pSeat->m_eMuzzleflash = spawn();
-			pSeat->m_eMuzzleflash.classname = "mflash";
-			pSeat->m_eMuzzleflash.renderflags = RF_ADDITIVE | RF_FIRSTPERSON;
-			pSeat->m_eMuzzleflash.effects |= EF_NOSHADOW;
-			setsize(pSeat->m_eMuzzleflash, [0,0,0], [0,0,0]);
-
 			/* left side */
 			pSeat->m_eViewModelL = spawn(NSRenderableEntity);
 			pSeat->m_eViewModelL.classname = "vm";
@@ -47,12 +40,6 @@ View_Init(void)
 			pSeat->m_eViewModelL.alpha = 1.0f;
 			pSeat->m_eViewModelL.drawmask = 0;
 			setsize(pSeat->m_eViewModelL, [0,0,0], [0,0,0]);
-
-			pSeat->m_eMuzzleflashL = spawn();
-			pSeat->m_eMuzzleflashL.classname = "mflash";
-			pSeat->m_eMuzzleflashL.renderflags = RF_ADDITIVE | RF_FIRSTPERSON;
-			pSeat->m_eMuzzleflashL.effects |= EF_NOSHADOW;
-			setsize(pSeat->m_eMuzzleflashL, [0,0,0], [0,0,0]);
 		}
 	}
 }
@@ -60,7 +47,10 @@ View_Init(void)
 void
 View_SetMuzzleflash(int index)
 {
-	pSeat->m_eMuzzleflash.modelindex = (float)index;
+	NSRenderableEntity viewModel = (NSRenderableEntity)pSeat->m_eViewModelL;
+	viewModel.m_iMuzzleModel = (float)index;
+	viewModel = (NSRenderableEntity)pSeat->m_eViewModel;
+	viewModel.m_iMuzzleModel = (float)index;
 }
 
 void
@@ -85,12 +75,6 @@ View_ClearEvents(void)
 
 	pSeat->m_eViewModelL.frame1time = 0.0f;
 	pSeat->m_eViewModel.frame1time = 0.0f;
-	pSeat->m_eMuzzleflash.modelindex =
-	pSeat->m_eMuzzleflashL.modelindex =
-	pSeat->m_eMuzzleflash.alpha =
-	pSeat->m_eMuzzleflashL.alpha =
-	pSeat->m_eMuzzleflash.frame1time =
-	pSeat->m_eMuzzleflashL.frame1time = 0;
 }
 
 void
@@ -139,9 +123,7 @@ void
 View_DrawViewModel(void)
 {
 	NSRenderableEntity m_eViewModel = (NSRenderableEntity)pSeat->m_eViewModel;
-	entity m_eMuzzleflash = pSeat->m_eMuzzleflash;
 	NSRenderableEntity m_eViewModelL = (NSRenderableEntity)pSeat->m_eViewModelL;
-	entity m_eMuzzleflashL = pSeat->m_eMuzzleflashL;
 
 	player pl = __NULL__;
 	NSClient cl = (NSClient)pSeat->m_ePlayer;
@@ -185,7 +167,38 @@ View_DrawViewModel(void)
 	m_eViewModelL.SetRenderColor(pl.GetRenderColor());
 	m_eViewModelL.SetRenderAmt(pl.GetRenderAmt());
 
-	View_UpdateWeapon(pl, m_eViewModel, m_eMuzzleflash);
+	/* used to be View_UpdateWeapon */
+	/* only bother upon change */
+	if (pSeat->m_iLastWeapon != pl.activeweapon) {
+		pSeat->m_iOldWeapon = pSeat->m_iLastWeapon;
+		pSeat->m_iLastWeapon = pl.activeweapon;
+
+		if (pl.activeweapon) {
+			/* we forced a weapon call outside the prediction,
+			 * thus we need to update all the net variables to
+			 * make sure these updates are recognized. this is
+			 * vile but it'll have to do for now */
+			SAVE_STATE(pl.w_attack_next)
+			SAVE_STATE(pl.w_idle_next)
+			SAVE_STATE(pl.viewzoom)
+			SAVE_STATE(pl.weapontime)
+			SAVE_STATE(pl.weaponframe)
+
+			/* hack, we changed the wep, move this into Game_Input/PMove */
+			Weapons_Draw(pl);
+
+			/* we forced a weapon call outside the prediction,
+			 * thus we need to update all the net variables to
+			 * make sure these updates are recognized. this is
+			 * vile but it'll have to do for now */
+			ROLL_BACK(pl.w_attack_next)
+			ROLL_BACK(pl.w_idle_next)
+			ROLL_BACK(pl.viewzoom)
+			ROLL_BACK(pl.weapontime)
+			ROLL_BACK(pl.weaponframe)
+		}
+	}
+
 	float fBaseTime2 = m_eViewModel.frame1time;
 	float fBaseTime = m_eViewModel.frame1time;
 	m_eViewModelL.frame = m_eViewModel.frame = pl.weaponframe;
@@ -194,8 +207,12 @@ View_DrawViewModel(void)
 	m_eViewModel.frame2time =
 	m_eViewModel.frame1time = pl.weapontime;
 	Event_Callback(m_eViewModel.frame1time, fBaseTime2);
+
+	entity oldSelf = self;
+	self = m_eViewModel;
 	processmodelevents(m_eViewModel.modelindex, m_eViewModel.frame, fBaseTime,
-		m_eViewModel.frame1time, ClientGame_ModelEvent);
+		m_eViewModel.frame1time, NSRenderableEntity::HandleAnimEvent);
+	self = oldSelf;
 
 	makevectors(view_angles);
 
@@ -265,30 +282,6 @@ View_DrawViewModel(void)
 
 	/* only draw the model when it's 'enabled'... */
 	if (m_eViewModel.alpha != 0.0f) {
-		if (m_eMuzzleflash.alpha > 0.0f) {
-			makevectors(getproperty(VF_ANGLES));
-			m_eMuzzleflash.origin = gettaginfo(m_eViewModel, m_eMuzzleflash.skin);
-			m_eMuzzleflash.angles = m_eViewModel.angles;
-			m_eMuzzleflash.angles[2] += (random() * 10) - 5;
-
-			if (autocvar_cg_muzzleDLight == true)
-				dynamiclight_add(pSeat->m_vecPredictedOrigin + (v_forward * 32), 256, [1,0.45,0]);
-
-			setorigin(m_eMuzzleflash, m_eMuzzleflash.origin);
-			addentity(m_eMuzzleflash);
-		}
-		if (m_eMuzzleflashL.alpha > 0.0f) {
-			makevectors(getproperty(VF_ANGLES));
-			m_eMuzzleflashL.origin = gettaginfo(m_eViewModelL, m_eMuzzleflashL.skin);
-			m_eMuzzleflashL.angles = m_eViewModelL.angles;
-			m_eMuzzleflashL.angles[2] += (random() * 10) - 5;
-
-			if (autocvar_cg_muzzleDLight == true)
-				dynamiclight_add(pSeat->m_vecPredictedOrigin + (v_forward * 32), 256, [1,0.45,0]);
-
-			setorigin(m_eMuzzleflashL, m_eMuzzleflashL.origin);
-			addentity(m_eMuzzleflashL);
-		}
 		setorigin(m_eViewModel, m_eViewModel.origin);
 		setorigin(m_eViewModelL, m_eViewModel.origin);
 		m_eViewModel.RenderFXPass();
@@ -313,14 +306,6 @@ View_PreDraw(void)
 void
 View_PostDraw(void)
 {
-	// Take away alpha once it has drawn fully at least once
-	if (pSeat->m_eMuzzleflash.alpha > 0.0f) {
-		pSeat->m_eMuzzleflash.alpha -= (clframetime * 16);
-	}
-	if (pSeat->m_eMuzzleflashL.alpha > 0.0f) {
-		pSeat->m_eMuzzleflashL.alpha -= (clframetime * 16);
-	}
-
 	ClientGame_PostDraw();
 }
 

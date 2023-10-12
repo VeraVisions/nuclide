@@ -35,6 +35,9 @@ NSRenderableEntity::NSRenderableEntity(void)
 
 	effects |= EF_NOSHADOW;
 
+	m_iMuzzleModel = 0i;
+	m_flMuzzleScale = 0.25f;
+
 #ifdef CLIENT
 	drawmask = MASK_ENGINE;
 #endif
@@ -971,19 +974,19 @@ NSRenderableEntity::HandleAnimEvent(float flTimeStamp, int iCode, string strData
 		break;
 #ifdef CLIENT
 	case 5004: /* view model sound? */
-		sound(this, CHAN_AUTO, strData, 1.0, ATTN_NORM);
+		sound(this, CHAN_AUTO, strData, 1.0, ATTN_NORM, 100, SOUNDFLAG_FOLLOW | SOUNDFLAG_NOSPACIALISE);
 		break;
 	case 5001: /* muzzle flash on attachment 0 */
-		vector muzzleOrg = gettaginfo(this, m_iNumBones);
+		EV_MuzzleFlash_Create(this, m_iNumBones, m_flMuzzleScale, m_iMuzzleModel);
 		break;
 	case 5011: /* muzzle flash on attachment 1 */
-		vector muzzleOrg = gettaginfo(this, m_iNumBones + 1);
+		EV_MuzzleFlash_Create(this, m_iNumBones + 1, m_flMuzzleScale, m_iMuzzleModel);
 		break;
 	case 5021: /* muzzle flash on attachment 2 */
-		vector muzzleOrg = gettaginfo(this, m_iNumBones + 2);
+		EV_MuzzleFlash_Create(this, m_iNumBones + 2, m_flMuzzleScale, m_iMuzzleModel);
 		break;
 	case 5031: /* muzzle flash on attachment 3 */
-		vector muzzleOrg = gettaginfo(this, m_iNumBones + 3);
+		EV_MuzzleFlash_Create(this, m_iNumBones + 3, m_flMuzzleScale, m_iMuzzleModel);
 		break;
 #else
 	case 1003:	/* trigger SSQC entity with specific targetname */

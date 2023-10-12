@@ -108,6 +108,11 @@ private:
 	PREDICTED_VECTOR(m_vecRenderColor)
 	PREDICTED_VECTOR(m_vecAxialScale)
 
+	/* either a sprite model or a particle */
+	PREDICTED_INT(m_iMuzzleModel)
+	PREDICTED_INT(m_iMuzzlePart)
+	PREDICTED_FLOAT(m_flMuzzleScale)
+
 	/* model events */
 	float m_flBaseTime;
 
