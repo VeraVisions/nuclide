@@ -197,6 +197,10 @@ View_DrawViewModel(void)
 			ROLL_BACK(pl.weapontime)
 			ROLL_BACK(pl.weaponframe)
 		}
+		NSRenderableEntity viewModel = (NSRenderableEntity)pSeat->m_eViewModelL;
+		viewModel._UpdateBoneCount();
+		viewModel = (NSRenderableEntity)pSeat->m_eViewModel;
+		viewModel._UpdateBoneCount();
 	}
 
 	float fBaseTime2 = m_eViewModel.frame1time;
