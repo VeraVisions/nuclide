@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2023 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -17,7 +17,7 @@
 void
 bot::Pain(void)
 {
-	CGameRules rules = g_grMode;
+	NSGameRules rules = g_grMode;
 
 	super::Pain();
 
@@ -33,11 +33,13 @@ bot::Pain(void)
 		float enemydist = vlen(origin - m_eTarget.origin);
 		float newdist = vlen(origin - g_dmg_eAttacker.origin);
 
-		if (m_eTarget) 
-			if (newdist < enemydist)
+		if (m_eTarget) {
+			if (newdist < enemydist) {
 				SetEnemy(g_dmg_eAttacker);
-		else
+			}
+		} else {
 			SetEnemy(g_dmg_eAttacker);
+		}
 	}
 }
 
@@ -46,10 +48,11 @@ bot::SetEnemy(entity en)
 {
 	m_eTarget = en;
 
-	if (m_eTarget)
+	if (m_eTarget) {
 		m_flEnemyDist = vlen(origin - m_eTarget.origin);
-	else
+	} else {
 		m_flEnemyDist = -1;
+	}
 }
 
 void
@@ -59,9 +62,11 @@ bot::WeaponThink(void)
 
 	/* clip empty, but the whole weapon isn't */
 	if (r == 0 && a_ammo1 <= 0) {
+		/* stop fire, tap reload */
 		input_buttons &= ~INPUT_BUTTON0;
 		input_buttons |= INPUT_BUTTON4;
 	} else if (r == 1) {
+		/* if empty, switch to the next best weapon */
 		Weapons_SwitchBest(this, activeweapon);
 	}
 
@@ -71,27 +76,27 @@ bot::WeaponThink(void)
 void
 bot::WeaponAttack(void)
 {
-	int should_attack = 0;
+	bool shouldAttack = false;
 
 	/* only attack when the type's suggested distance makes sense to */
 	if (m_wtWeaponType == WPNTYPE_RANGED) {
 		if (m_flEnemyDist <= 1024)
-			should_attack = 1;
+			shouldAttack = true;
 	} else if (m_wtWeaponType == WPNTYPE_THROW) {
 		if (m_flEnemyDist <= 512)
-			should_attack = 1;
+			shouldAttack = true;
 	} else if (m_wtWeaponType == WPNTYPE_CLOSE) {
 		if (m_flEnemyDist <= 128)
-			should_attack = 1;
+			shouldAttack = true;
 	} else {
 		if (m_flEnemyDist <= 1024)
-			should_attack = 1;
+			shouldAttack = true;
 	}
 
 	if (m_flForceWeaponAttack > time)
-		should_attack = 1;
+		shouldAttack = true;
 
-	if (should_attack && m_flAttackTime < time) {
+	if (shouldAttack && m_flAttackTime < time) {
 		if (!m_iAttackMode) {
 			input_buttons |= INPUT_BUTTON0;
 		}
@@ -136,7 +141,7 @@ var float g_botalert_timer;
 void
 BotLib_Alert(vector pos, float radius, float t)
 {
-	CGameRules rules = g_grMode;
+	NSGameRules rules = g_grMode;
 
 	/* sometimes many alert-sounds happen at once... we don't really want
 	 * that */

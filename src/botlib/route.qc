@@ -94,10 +94,11 @@ Route_SelectNearestTeam(float type, vector org, float tt)
 	entity dest = __NULL__;
 
 	for (temp = world; (temp = findfloat(temp, ::botinfo, type));) {
+		NSEntity tempEnt = (NSEntity)temp;
 		if (temp.team != tt)
 			continue;
 
-		range = vlen(temp.origin - org);
+		range = vlen(tempEnt.WorldSpaceCenter() - org);
 
 		if ((range < bestrange) && (temp.solid != SOLID_NOT)) {
 			bestrange = range;
@@ -118,10 +119,11 @@ Route_SelectNearestEnemyTeam(float type, vector org, float tt)
 	entity dest = __NULL__;
 
 	for (temp = world; (temp = findfloat(temp, ::botinfo, type));) {
+		NSEntity tempEnt = (NSEntity)temp;
 		if (temp.team == tt)
 			continue;
 
-		range = vlen(temp.origin - org);
+		range = vlen(tempEnt.WorldSpaceCenter() - org);
 
 		if ((range < bestrange) && (temp.solid != SOLID_NOT)) {
 			bestrange = range;
@@ -169,7 +171,7 @@ Route_SelectDestination(bot target)
 	CGameRules rules;
 	rules = (CGameRules)g_grMode;
 
-	entity dest = world;
+	NSEntity dest = __NULL__;
 
 	if (rules.IsTeamplay()) {
 		/* we have the goal item, so capture it */
@@ -187,9 +189,11 @@ Route_SelectDestination(bot target)
 		}
 
 		if (dest != __NULL__) {
-			target.m_vecLastPOI = dest.origin;
-			return dest.origin + [0,0,32];
+			target.m_vecLastPOI = dest.WorldSpaceCenter();
+			return dest.WorldSpaceCenter() + [0,0,32];
 		}
+
+		/* by now, they need something else to do involving goal items probably */
 
 		print(sprintf("%s can't figure out where to go for the goal\n", target.netname));
 	}
@@ -200,7 +204,7 @@ Route_SelectDestination(bot target)
 		dest = Route_SelectNearest(BOTINFO_HEALTH, target.origin, target.m_vecLastPOI);
 
 		if (dest != __NULL__) {
-			target.m_vecLastPOI = dest.origin;
+			target.m_vecLastPOI = dest.WorldSpaceCenter();
 			return dest.origin + [0,0,32];
 		}
 

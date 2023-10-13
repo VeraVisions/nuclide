@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2023 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -69,11 +69,10 @@ bot::BrainThink(int enemyvisible, int enemydistant)
 void
 bot::UseButton(void)
 {
-#if 1
-	float best;
-	func_button best_button = __NULL__;
+	float bestDist;
+	func_button bestButton = __NULL__;
 
-	best = COST_INFINITE;
+	bestDist = COST_INFINITE;
 	for (entity e = world; (e = find(e, ::classname, "func_button"));) {
 		float dist;
 		vector pos;
@@ -82,54 +81,36 @@ bot::UseButton(void)
 		pos[2] = e.absmin[2] + (0.5 * (e.absmax[2] - e.absmin[2]));
 		dist = vlen(origin - pos);
 
-		if (dist < best) {
-			best = dist;
-			best_button = (func_button)e;
+		if (dist < bestDist) {
+			bestDist = dist;
+			bestButton = (func_button)e;
 		}
 	}
 
-	if (best_button == __NULL__)
+	if (bestButton == __NULL__) {
 		return;
-
-	best_button.Trigger(this, TRIG_TOGGLE);
-	sound(this, CHAN_ITEM, "common/wpn_select.wav", 0.25, ATTN_IDLE);
-#else
-	float best;
-	vector foo;
-
-	best = COST_INFINITE;
-	for (entity e = world; (e = find(e, ::classname, "func_button"));) {
-		float dist;
-		vector pos;
-		pos[0] = e.absmin[0] + (0.5 * (e.absmax[0] - e.absmin[0]));
-		pos[1] = e.absmin[1] + (0.5 * (e.absmax[1] - e.absmin[1]));
-		pos[2] = e.absmin[2] + (0.5 * (e.absmax[2] - e.absmin[2]));
-		dist = vlen(origin - pos);
-
-		if (dist < best) {
-			best = dist;
-			foo = pos;
-		}
 	}
 
-	v_angle = vectoangles(origin - foo);
-	Player_UseDown();
-#endif
+	bestButton.Trigger(this, TRIG_TOGGLE);
+	sound(this, CHAN_ITEM, "common/wpn_select.wav", 0.25, ATTN_IDLE);
 }
 
 void
 bot::SeeThink(void)
 {
-	CGameRules rules = (CGameRules)g_grMode;
+	NSGameRules rules = (NSGameRules)g_grMode;
 
 	/*if (m_eTarget)
 		return; */
 
-	if (m_flSeeTime > time)
+	if (m_flSeeTime > time) {
 		return;
+	}
 
-	if (autocvar_bot_pacifist)
+	/* DEVELOPER CVAR: don't attack */
+	if (autocvar_bot_dont_shoot) {
 		return;
+	}
 
 	/* reaction time, in a way */
 	switch (cvar("bot_skill")) {
@@ -158,7 +139,7 @@ bot::SeeThink(void)
 			continue;
 
 		/* ain't go hurt our brothers and sisters */
-		if (rules.IsTeamplay() == TRUE)
+		if (rules.IsTeamplay() == true)
 			if (team == w.team)
 				continue;
 
@@ -274,7 +255,7 @@ bot::CheckRoute(void)
 			input_buttons |= INPUT_BUTTON2;
 	} else {
 		/* entire way-link needs to be crouched. that's the law of the land */
-		if (Route_GetNodeFlags(&m_pRoute[m_iCurNode]) & LF_CROUCH)
+		if (Route_GetNodeFlags(&m_pRoute[m_iCurNode]) & LF_CROUCH || autocvar_bot_crouch)
 			input_buttons |= INPUT_BUTTON8;
 	}
 }
@@ -288,8 +269,8 @@ bot::CreateObjective(void)
 void
 bot::RunAI(void)
 {
-	vector aimdir, aimpos;
-	int enemyvisible, enemydistant;
+	vector aimDir, aimPos;
+	bool enemyVisible, enemyDistant;
 	float flLerp;
 
 	/* reset input frame */
@@ -298,15 +279,15 @@ bot::RunAI(void)
 	input_angles = [0,0,0];
 
 	/* attempt to respawn when dead */
-	if (health <= 0) {
+	if (IsDead() == true) {
 		RouteClear();
 		WeaponAttack();
 		SetEnemy(__NULL__);
 		return;
 	}
 
-	/* freeze the bot */
-	if (autocvar_bot_wait)
+	/* DEVELOPER CVAR: freeze the bot */
+	if (autocvar_bot_stop)
 		return;
 
 	/* create our first route */
@@ -335,66 +316,67 @@ bot::RunAI(void)
 		m_flEnemyDist = -1;
 	}
 
-	enemyvisible = FALSE;
-	enemydistant = FALSE;
+	enemyVisible = false;
+	enemyDistant = false;
 
 	if (m_eTarget != __NULL__) {
-		traceline(origin + view_ofs, m_eTarget.origin, TRUE, this);
+		traceline(GetEyePos(), m_eTarget.origin, MOVE_NORMAL, this);
 
 		/* is it 'visible'? can we 'see' them? */
-		enemyvisible = (trace_ent == m_eTarget || trace_fraction == 1.0f);
+		enemyVisible = (trace_ent == m_eTarget || trace_fraction == 1.0f);
 
 		/* if they're distant, remember that */
-		if (m_flEnemyDist > 1024) {
-			enemydistant = TRUE;
+		if (m_flEnemyDist > 1024.0f) {
+			enemyDistant = true;
 		}
 
 		/* attack if visible! */
-		if (enemyvisible) {
+		if (enemyVisible == true) {
 			WeaponAttack();
 		}
-	} else if (m_flForceWeaponAttack > time)
+	} else if (m_flForceWeaponAttack > time) {
 		WeaponAttack();
+	}
 
-	BrainThink(enemyvisible, enemydistant);
+	BrainThink(enemyVisible, enemyDistant);
 	CheckRoute();
 
-	aimpos = [0,0,0];
+	aimPos = [0,0,0];
 
 	/* if we've got a path (we always should) move the bot */
 	if (m_iNodes) {
-		float goroute = 0;
+		bool goRoute = false;
 		vector vecNewAngles;
 		vector vecDirection;
 
 		/* no enemy, or it isn't visible... then stare at nodes! */
-		if (!m_eTarget || !enemyvisible) {
+		if (!m_eTarget || enemyVisible == false) {
 			/* aim at the next node */
 			if (m_iCurNode == BOTROUTE_DESTINATION)
-				aimpos = m_vecLastNode;
+				aimPos = m_vecLastNode;
 			else {
 				if (m_iCurNode > 0 && !(Route_GetNodeFlags(&m_pRoute[m_iCurNode]) & LF_AIM))
-					aimpos = m_pRoute[m_iCurNode - 1].dest;
+					aimPos = m_pRoute[m_iCurNode - 1].dest;
 				else
-					aimpos = m_pRoute[m_iCurNode].dest;
+					aimPos = m_pRoute[m_iCurNode].dest;
 			}
 		} else {
 			/* aim towards the enemy */
-			aimpos = m_eTarget.origin;
+			aimPos = m_eTarget.origin;
 		}
 
 		/* force bot to fire at a position if desired */
 		if (m_flForceWeaponAttack > time)
-			aimpos = m_vecForceWeaponAttackPos;
+			aimPos = m_vecForceWeaponAttackPos;
 
-		/* aim ahead if aimpos is somehow invalid */
-		if (aimpos == [0,0,0]) {
+		/* aim ahead if aimPos is somehow invalid */
+		if (aimPos == [0,0,0]) {
 			makevectors(angles);
-			aimpos = origin + v_forward * 128;
+			aimPos = origin + v_forward * 128;
 		}
 
 		/* lerping speed, faster when we've got a target */
-		if (m_eTarget && enemyvisible)
+		if (m_eTarget && enemyVisible == true)
 			flLerp = bound(0.0f, frametime * 45, 1.0f);
 		else
 			flLerp = bound(0.0f, frametime * 30, 1.0f);
@@ -403,9 +385,9 @@ bot::RunAI(void)
 		makevectors(v_angle);
 		vecNewAngles = v_forward;
 
-		/* aimdir = new final angle */
-		aimdir = vectoangles(aimpos - origin);
-		makevectors(aimdir);
+		/* aimDir = new final angle */
+		aimDir = vectoangles(aimPos - origin);
+		makevectors(aimDir);
 
 		/* slowly lerp towards the final angle */
 		vecNewAngles[0] = Math_Lerp(vecNewAngles[0], v_forward[0], flLerp);
@@ -422,53 +404,53 @@ bot::RunAI(void)
 		angles[2] = Math_FixDelta(v_angle[2]);
 		input_angles = v_angle;
 
-		float shouldwalk = 0;
+		bool shouldWalk = autocvar_bot_walk;
 
 		if (m_wtWeaponType == WPNTYPE_RANGED) {
-			other = world;
-
 			if (m_eTarget) {
+				other = world;
 				tracebox(origin, m_eTarget.origin, mins, maxs, MOVE_OTHERONLY, this);
+
 				/* walk _directly_ towards the enemy if we're less than 512 units away */
-				if (trace_fraction >= 1.0 && m_eTarget && enemyvisible && m_eTarget.health < 50 && m_flEnemyDist < 512) {
-					aimpos = m_eTarget.origin;
-					goroute = 1;
+				if (trace_fraction >= 1.0 && m_eTarget && enemyVisible && m_eTarget.health < 50 && m_flEnemyDist < 512) {
+					aimPos = m_eTarget.origin;
+					goRoute = true;
 				} else {
-					goroute = 1;
+					goRoute = true;
 				}
 			} else {
-				goroute = 1;
+				goRoute = true;
 			}
 
 			/* we should probably walk we're distant enough to be more accurate */
-			if ((m_eTarget && enemyvisible && m_flEnemyDist < 512))
-				shouldwalk = 1;
+			if ((m_eTarget && enemyVisible && m_flEnemyDist < 512))
+				shouldWalk = true;
 		} else if (m_wtWeaponType == WPNTYPE_CLOSE) {
 			/* move directly towards the enemy if we're 256 units away */
-			if (m_eTarget && enemyvisible && m_flEnemyDist < 256) {
+			if (m_eTarget && enemyVisible && m_flEnemyDist < 256) {
 				/* we are far away, inch closer */
-				aimpos = m_eTarget.origin;
+				aimPos = m_eTarget.origin;
 				//printf("going to target\n");
 			} else {
-				goroute = 1;
+				goRoute = true;
 			}
 		} else if (m_wtWeaponType == WPNTYPE_THROW) {
-			if ((m_eTarget && enemyvisible && !enemydistant) && m_flEnemyDist < 512) {
-				aimpos = m_eTarget.origin;
+			if ((m_eTarget && enemyVisible && !enemyDistant) && m_flEnemyDist < 512) {
+				aimPos = m_eTarget.origin;
 				//printf("going to target\n");
 			} else {
-				goroute = 1;
+				goRoute = true;
 			}
 		} else {
-			goroute = 1;
+			goRoute = true;
 		}
 
-		if (goroute) {
+		if (goRoute) {
 			if (m_iCurNode <= BOTROUTE_DESTINATION) {
-				aimpos = m_vecLastNode;
+				aimPos = m_vecLastNode;
 				//printf("going to last node\n");
 			} else {
-				aimpos = m_pRoute[m_iCurNode].dest;
+				aimPos = m_pRoute[m_iCurNode].dest;
 				//printf("going to next node\n");
 			}
 		} else {
@@ -476,7 +458,7 @@ bot::RunAI(void)
 		}
 
 		/* if there's a breakable in the way... */
-		traceline(origin, aimpos, MOVE_NORMAL, this);
+		traceline(origin, aimPos, MOVE_NORMAL, this);
 
 		/* Hackish: If there's a func_breakable in the way... */
 		if (trace_ent.classname == "func_breakable") {
@@ -485,10 +467,10 @@ bot::RunAI(void)
 		}
 
 		/* now we'll set the movevalues relative to the input_angle */
-		if ((m_iCurNode >= 0 && Route_GetNodeFlags(&m_pRoute[m_iCurNode]) & LF_WALK) || shouldwalk)
-			vecDirection = normalize(aimpos - origin) * GetWalkSpeed();
+		if ((m_iCurNode >= 0 && Route_GetNodeFlags(&m_pRoute[m_iCurNode]) & LF_WALK) || shouldWalk)
+			vecDirection = normalize(aimPos - origin) * GetWalkSpeed();
 		else
-			vecDirection = normalize(aimpos - origin) * GetRunSpeed();
+			vecDirection = normalize(aimPos - origin) * GetRunSpeed();
 
 		makevectors(input_angles);
 		input_movevalues = [v_forward * vecDirection, v_right * vecDirection, v_up * vecDirection];
@@ -496,7 +478,7 @@ bot::RunAI(void)
 
 #if 1
 		/* duck and stand still when our enemy seems strong */
-		if (m_eTarget && enemyvisible && m_eTarget.health >= 75) {
+		if (m_eTarget && enemyVisible && m_eTarget.health >= 75) {
 			if (m_wtWeaponType == WPNTYPE_RANGED) {
 				input_buttons |= INPUT_BUTTON8;
 				input_movevalues = [0,0,0];
