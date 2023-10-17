@@ -122,6 +122,9 @@ Entity_EntityUpdate(float type, float new)
 	case ENT_PROPROPE:
 		NSENTITY_READENTITY(prop_rope, new)
 		break;
+	case ENT_PHYSROPE:
+		NSENTITY_READENTITY(phys_rope, new)
+		break;
 	case ENT_BUBBLES:
 		NSENTITY_READENTITY(env_bubbles, new)
 		break;

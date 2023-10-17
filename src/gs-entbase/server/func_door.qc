@@ -106,6 +106,8 @@ private:
 	string m_strSndStop;
 
 	int m_waterType;
+
+	string m_strFullyClosed;
 };
 
 void
@@ -133,6 +135,7 @@ func_door::func_door(void)
 	m_strSndStop = __NULL__;
 
 	m_waterType = 0i;
+	m_strFullyClosed = __NULL__;
 }
 
 void
@@ -158,6 +161,7 @@ func_door::Save(float handle)
 	SaveString(handle, "m_strSndMove", m_strSndMove);
 	SaveString(handle, "targetClose", targetClose);
 	SaveInt(handle, "m_waterType", m_waterType);
+	SaveString(handle, "m_strFullyClosed", m_strFullyClosed);
 }
 
 void
@@ -214,6 +218,9 @@ func_door::Restore(string strKey, string strValue)
 
 	case "m_waterType":
 		m_waterType = ReadInt(strValue);
+		break;
+	case "m_strFullyClosed":
+		m_strFullyClosed = ReadString(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
@@ -281,6 +288,10 @@ func_door::SpawnKey(string strKey, string strValue)
 		x = stoi(strValue);
 		m_strUnlockedSfx = sprintf("func_button.hlsfx_%i", x+1i);
 		break;
+	/* I/O */
+	case "OnFullyClosed":
+		m_strFullyClosed = PrepareOutput(m_strFullyClosed, strValue);
+		break;
 	default:
 		super::SpawnKey(strKey, strValue);
 	}
@@ -305,6 +316,10 @@ func_door::Spawned(void)
 		Sound_Precache(m_strLockedSfx);
 	if (m_strUnlockedSfx)
 		Sound_Precache(m_strUnlockedSfx);
+
+	/* I/O */
+	if (m_strFullyClosed)
+		m_strFullyClosed = CreateOutput(m_strFullyClosed);
 }
 
 void
@@ -371,10 +386,10 @@ func_door::Input(entity eAct, string strInput, string strData)
 {
 	switch (strInput) {
 	case "Open":
-		Trigger(eAct, TRIG_OFF);
+		Trigger(eAct, TRIG_ON);
 		break;
 	case "Close":
-		Trigger(eAct, TRIG_ON);
+		Trigger(eAct, TRIG_OFF);
 		break;
 	case "Toggle":
 		Trigger(eAct, TRIG_TOGGLE);
@@ -419,6 +434,9 @@ func_door::MoverFinishesMoving(void)
 
 		if (m_strSndMove)
 			StartSound("common/null.wav", CHAN_WEAPON, 0, true);
+
+		if (m_strFullyClosed)
+			UseOutput(this, m_strFullyClosed);
 
 	} else if (GetMoverState() == MOVER_POS2) {
 		if (m_strSndStop) {

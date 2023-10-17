@@ -15,9 +15,21 @@
 */
 
 #ifndef PHYSICS_STATIC
-#define PRPPHYS_ASLEEP 1
 
-/*!QUAKED prop_physics (1 0 0) (-16 -16 -16) (16 16 16) PRPPHYS_ASLEEP
+enumflags
+{
+	PHYSPROPSFL_ASLEEP,
+	PHYSPROPSFL_NOPHYSDMG,
+	PHYSPROPSFL_DEBRIS,
+	PHYSPROPSFL_NOMOTION,
+	PHYSPROPSFL_UNUSED1,
+	PHYSPROPSFL_UNUSED2,
+	PHYSPROPSFL_PHYSDEVICE,
+	PHYSPROPSFL_NOROTOR,
+	PHYSPROPSFL_USEOUT,
+};
+
+/*!QUAKED prop_physics (1 0 0) (-16 -16 -16) (16 16 16) ASLEEP NOPHYSDMG DEBRIS NOMOTION x x PHYSDEVICE NOROTOR USEOUT
 # OVERVIEW
 Physics model
 
@@ -25,7 +37,13 @@ Physics model
 - "targetname" : Name
 
 # SPAWNFLAGS
-- PRPPHYS_ASLEEP (1) : Prop starts without physics and stays until it is impacted.
+- ASLEEP (1) : Prop starts without physics and stays until it is impacted.
+- NOPHYSDMG (2) : Will not take physics damage.
+- DEBRIS (4) : Will not collide with players, or other types of debris
+- NOMOTION (8) : Disable motion
+- PHYSDEVICE (64) : Enable motion when grabbed with a physics device.
+- NOROTOR (128) : Unaffected by rotor contraptions.
+- USEOUT (256) : Generate output on +use.
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
@@ -50,19 +68,27 @@ prop_physics::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
 	default:
-		NSPhysicsEntity::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
 void
 prop_physics::Respawn(void)
 {
-	NSPhysicsEntity::Respawn();
+	super::Respawn();
 
-	if (HasSpawnFlags(PRPPHYS_ASLEEP))
-		PhysicsDisable();
+	if (HasSpawnFlags(PHYSPROPSFL_ASLEEP))
+		Sleep();
 	else
-		PhysicsEnable();
+		Wake();
+
+	if (HasSpawnFlags(PHYSPROPSFL_NOMOTION))
+		Sleep();
+
+	if (HasSpawnFlags(PHYSPROPSFL_PHYSDEVICE))
+		Sleep();
+
+	//Sleep();
 }
 #else
 class
@@ -85,3 +111,6 @@ prop_physics::Respawn(void)
 	SetSolid(SOLID_BBOX);
 }
 #endif
+
+CLASSEXPORT(prop_physics_override, prop_physics)
+CLASSEXPORT(prop_physics_respawnable, prop_physics)

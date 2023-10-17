@@ -75,9 +75,9 @@ prop_physics_multiplayer::TouchThink(void)
 
 		if (trace_ent.flags & FL_CLIENT) {
 			//print(sprintf("%s %f\n", trace_ent.classname, trace_fraction));
-			PhysicsEnable();
+			Wake();
 			makevectors(origin - trace_ent.origin);
-			ApplyForceCenter(v_forward * 64);
+			ApplyForceOffset(v_forward * 64, trace_endpos);
 			velocity = v_forward * 64;
 		}
 	}
@@ -86,7 +86,7 @@ prop_physics_multiplayer::TouchThink(void)
 	} else {
 		if (vlen(velocity) < 2) {
 			velocity = [0,0,0];
-			PhysicsDisable();
+			Sleep();
 		}
 	}
 
@@ -127,9 +127,9 @@ prop_physics_multiplayer::Respawn(void)
 	super::Respawn();
 
 	if (HasSpawnFlags(PRPPHYS_ASLEEP))
-		PhysicsDisable();
+		Sleep();
 	else
-		PhysicsEnable();
+		Wake();
 }
 
 void

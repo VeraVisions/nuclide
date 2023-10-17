@@ -123,15 +123,17 @@ varying mat3 invsurface;
 	
 	#if defined(BUMP) && r_skipEnvmap==0
 		vec3 cube_c;
-		#if r_showEnvCubemap == 0
-			float refl = 1.0 - texture2D(s_normalmap, tex_c).a;
-		#else
-			float refl = 1.0;
-		#endif
-		cube_c = reflect(normalize(eyevector), normal_f.rgb);
+		float refl = 1.0 - texture2D(s_normalmap, tex_c).a;
+
+		cube_c = reflect(normalize(eyevector), norm);
 		cube_c = cube_c.x * invsurface[0] + cube_c.y * invsurface[1] + cube_c.z * invsurface[2];
 		cube_c = (m_model * vec4(cube_c.xyz, 0.0)).xyz;
+
+		#if r_showEnvCubemap == 0
 		diff_f.rgb += textureCube(s_reflectcube, cube_c).rgb * refl;
+		#else
+		diff_f.rgb = textureCube(s_reflectcube, cube_c).rgb;
+		#endif
 	#endif
 
 	#if defined(FULLBRIGHT) && r_skipFullbright==0

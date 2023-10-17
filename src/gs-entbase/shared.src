@@ -35,5 +35,6 @@ shared/point_spotlight.qc
 shared/trigger_push.qc
 shared/func_conveyor.qc
 shared/prop_rope.qc
+shared/phys_rope.qc
 shared/worldspawn.qc
 #endlist

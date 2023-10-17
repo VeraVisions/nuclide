@@ -51,7 +51,7 @@ path_corner:NSPointTrigger
 {
 public:
 	void path_corner(void);
-	
+
 	virtual void Save(float);
 	virtual void Restore(string,string);
 	virtual void SpawnKey(string,string);

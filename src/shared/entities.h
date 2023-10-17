@@ -50,6 +50,7 @@ typedef enum
 	ENT_VEH_TANKMORTAR,	/**< of type func_tankmortar */
 	ENT_VEH_4WHEEL,	/**< of type prop_vehicle_driveable */
 	ENT_PROPROPE,	/**< of type prop_rope */
+	ENT_PHYSROPE,	/**< of type phys_rope */
 	ENT_BUBBLES,	/**< of type env_bubbles */
 	ENT_CONVEYOR,	/**< of type func_conveyor */
 	ENT_WAYPOINT,	/**< of type info_waypoint */

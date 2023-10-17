@@ -86,3 +86,6 @@ prop_dynamic::Respawn(void)
 	if (HasSpawnFlags(PRPDYN_NONSOLID))
 		SetSolid(SOLID_NOT);
 }
+
+CLASSEXPORT(prop_dynamic_override, prop_dynamic)
+CLASSEXPORT(prop_dynamic_respawnable, prop_dynamic)

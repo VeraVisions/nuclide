@@ -39,8 +39,8 @@ Compares an input value sent from another entity with one of the constant values
 
 # INPUTS
 - "InValue" : Compares the input in the data field with one of the constant values, then firing a matching output.
-- "PickRandom" : Not yet implemented. Triggers a random, valid output.
-- "PickRandomShuffle" : Not yet implemented. Triggers a random, valid output, but without repeats.
+- "PickRandom" : Triggers a random, valid output.
+- "PickRandomShuffle" : Triggers a random, valid output, but without repeats.
 
 # OUTPUTS
 - "OnCase01" - Triggered when Case01 matches the InValue input data.
@@ -81,6 +81,8 @@ public:
 	virtual void Input(entity, string, string);
 
 	nonvirtual void CompareCase(entity, string);
+	nonvirtual void PickRandom(entity);
+	nonvirtual void PickRandomShuffle(entity);
 
 private:
 
@@ -476,14 +478,26 @@ logic_case::Input(entity activatorEntity, string inputName, string dataField)
 		CompareCase(activatorEntity, dataField);
 		break;
 	case "PickRandom":
-		error("Not implemented.");
+		PickRandom(activatorEntity);
 		break;
 	case "PickRandomShuffle":
-		error("Not implemented.");
+		PickRandomShuffle(activatorEntity);
 		break;
 	default:
 		super::Input(activatorEntity, inputName, dataField);
 	}
+}
+
+void
+logic_case::PickRandom(entity activatorEntity)
+{
+	NSEntWarning("Not implemented.");
+}
+
+void
+logic_case::PickRandomShuffle(entity activatorEntity)
+{
+	NSEntWarning("Not implemented.");
 }
 
 void

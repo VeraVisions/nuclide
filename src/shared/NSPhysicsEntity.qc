@@ -14,30 +14,64 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-#define ODE_MODE 1
+.float max_angular;
 
 void
 NSPhysicsEntity::NSPhysicsEntity(void)
 {
-	isPhysics = true;
 	mass = 1.0f;
+	isPhysics = true;
 	m_flInertiaScale = 1.0f;
 
 	m_iEnabled = 0i;
 	m_iShape = PHYSM_BOX;
 	m_iMaterial = 0i;
 	m_iFlags = 0i;
+	damp_linear = 1.0f;
+	damp_angular = 1.0f;
+	max_angular = -1.0f;
 
-#ifdef ODE_MODE
-	cvar_set("physics_ode_iterationsperframe", "1");
-	cvar_set("physics_ode_movelimit", "0.1");
-#else
-	cvar_set("physics_bullet_maxiterationsperframe", "10");
-	cvar_set("physics_bullet_framerate", "60");
+
+	cvar_set("physics_ode_quadtree_depth",					"10");
+	cvar_set("physics_ode_contactsurfacelayer",				"0");
+	cvar_set("physics_ode_worldquickstep",					"1");
+	cvar_set("physics_ode_worldquickstep_iterations",		"20");
+	cvar_set("physics_ode_contact_mu",						"-1");
+	cvar_set("physics_ode_contact_erp",						"0.96");
+	cvar_set("physics_ode_contact_cfm",						"0.001");
+	cvar_set("physics_ode_world_damping",					"1");
+	cvar_set("physics_ode_world_damping_linear",			"-1");
+	cvar_set("physics_ode_world_damping_linear_threshold",	"-1");
+	cvar_set("physics_ode_world_damping_angular",			"-1");
+	cvar_set("physics_ode_world_damping_angular_threshold",	"-1");
+	cvar_set("physics_ode_world_erp",						"-1");
+	cvar_set("physics_ode_world_cfm",						"-1");
+	cvar_set("physics_ode_iterationsperframe",				"4");
+	cvar_set("physics_ode_movelimit",						"0.5");
+	cvar_set("physics_ode_spinlimit",						"10000");
+	cvar_set("physics_ode_autodisable",						"1");
+	cvar_set("physics_ode_autodisable_steps",				"10");
+	cvar_set("physics_ode_autodisable_time",					"0.1");
+	cvar_set("physics_ode_autodisable_threshold_linear",		"0.2");
+	cvar_set("physics_ode_autodisable_threshold_angular",	"0.3");
+	cvar_set("physics_ode_autodisable_threshold_samples",	"5");
+
+#ifdef SERVER
+	m_strOnDamaged = __NULL__;
 #endif
 }
 
 #ifdef SERVER
+void
+NSPhysicsEntity::Spawned(void)
+{
+	super::Spawned();
+
+	/* I/O */
+	if (m_strOnDamaged)
+		m_strOnDamaged = CreateOutput(m_strOnDamaged);
+}
+
 void
 NSPhysicsEntity::Save(float handle)
 {
@@ -47,6 +81,7 @@ NSPhysicsEntity::Save(float handle)
 	SaveInt(handle, "m_iMaterial", m_iMaterial);
 	SaveInt(handle, "m_iFlags", m_iFlags);
 	SaveFloat(handle, "m_flInertiaScale", m_flInertiaScale);
+	SaveString(handle, "m_strOnDamaged", m_strOnDamaged);
 }
 
 void
@@ -67,6 +102,9 @@ NSPhysicsEntity::Restore(string strKey, string strValue)
 		break;
 	case "m_flInertiaScale":
 		m_flInertiaScale = ReadFloat(strValue);
+		break;
+	case "m_strOnDamaged":
+		m_strOnDamaged = ReadString(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
@@ -141,6 +179,7 @@ NSPhysicsEntity::EvaluateEntity(void)
 	EVALUATE_FIELD(m_flBoneControl3, RDENT_CHANGED_CONTROLLER)
 	EVALUATE_FIELD(m_flBoneControl4, RDENT_CHANGED_CONTROLLER)
 	EVALUATE_FIELD(m_flBoneControl5, RDENT_CHANGED_CONTROLLER)
+	EVALUATE_FIELD(mass, RDENT_CHANGED_SOLIDMOVETYPE)
 }
 
 float
@@ -229,6 +268,9 @@ NSPhysicsEntity::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_ANGLE(m_flBoneControl4, RDENT_CHANGED_CONTROLLER)
 	SENDENTITY_ANGLE(m_flBoneControl5, RDENT_CHANGED_CONTROLLER)
 
+	/* physics specific flags */
+	SENDENTITY_FLOAT(mass, RDENT_CHANGED_SOLIDMOVETYPE)
+
 	return (1);
 }
 #else
@@ -290,6 +332,9 @@ NSPhysicsEntity::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_ANGLE(m_flBoneControl4, RDENT_CHANGED_CONTROLLER)
 	READENTITY_ANGLE(m_flBoneControl5, RDENT_CHANGED_CONTROLLER)
 
+	/* physics specific flags */
+	READENTITY_FLOAT(mass, RDENT_CHANGED_SOLIDMOVETYPE)
+
 	if (scale == 0.0)
 		scale = 1.0f;
 
@@ -300,46 +345,22 @@ NSPhysicsEntity::ReceiveEntity(float flNew, float flChanged)
 
 	movetype = MOVETYPE_NONE;
 }
+
+void
+NSPhysicsEntity::postdraw(void)
+{
+	if not (autocvar_r_showPhysicsInfo)
+		return;
+
+	if not (PointMessage_Visible(WorldSpaceCenter(), g_view.GetCameraOrigin(), g_view.GetCameraAngle()))
+		return;
+
+	string renderString = sprintf("Mass: %f\nEnergy: %f\nInertia:%d",
+		GetMass(), GetEnergy(), GetInertia());
+
+	PointMessage_StringAtPos(WorldSpaceCenter(), renderString);
+}
 #endif
-
-
-void
-NSPhysicsEntity::PhysicsEnable(void)
-{
-	if (physics_supported() == TRUE) {
-		SetMovetype(MOVETYPE_PHYSICS);
-		SetSolid(SOLID_PHYSICS_BOX + m_iShape);
-		physics_enable(this, TRUE);
-	} else {
-		SetMovetype(MOVETYPE_BOUNCE);
-		SetSolid(SOLID_CORPSE);
-	}
-	m_iEnabled = TRUE;
-}
-
-void
-NSPhysicsEntity::PhysicsDisable(void)
-{
-	if (physics_supported() == TRUE) {
-		physics_enable(this, FALSE);
-		SetMovetype(MOVETYPE_NONE);
-	} else {
-		SetMovetype(MOVETYPE_NONE);
-		SetSolid(SOLID_BBOX);
-	}
-	m_iEnabled = FALSE;
-}
-
-void
-NSPhysicsEntity::SetMass(float val)
-{
-	mass = val;
-}
-float
-NSPhysicsEntity::GetMass(void)
-{
-	return mass;
-}
 
 void
 NSPhysicsEntity::SetFriction(float val)
@@ -352,38 +373,6 @@ NSPhysicsEntity::GetFriction(void)
 	return friction;
 }
 
-void
-NSPhysicsEntity::SetBounceFactor(float val)
-{
-	bouncefactor = val;
-}
-float
-NSPhysicsEntity::GetBounceFactor(void)
-{
-	return bouncefactor;
-}
-
-void
-NSPhysicsEntity::SetBounceStop(float val)
-{
-	bouncestop = val;
-}
-float
-NSPhysicsEntity::GetBounceStop(void)
-{
-	return bouncestop;
-}
-
-void
-NSPhysicsEntity::SetInertia(float val)
-{
-	m_flInertiaScale = val;
-}
-float
-NSPhysicsEntity::GetInertia(void)
-{
-	return m_flInertiaScale;
-}
 
 float
 NSPhysicsEntity::CalculateImpactDamage(int iDamage, int dmgType)
@@ -403,57 +392,30 @@ NSPhysicsEntity::CalculateImpactDamage(int iDamage, int dmgType)
 	filter |= (dmgType & DMG_SLOWFREEZE);
 
 	if (filter == 0i)
-		return (float)iDamage * 100;
+		return (float)iDamage * autocvar_phys_impactforcescale;
 	else
 		return 0.0f;
 }
 
-void
-NSPhysicsEntity::ApplyForceCenter(vector vecForce)
+int
+NSPhysicsEntity_Contents(vector org)
 {
-	if (physics_supported() == TRUE) {
-		physics_addforce(this, vecForce, [0,0,0]);
-#ifdef ODE_MODE
-		//velocity += vecForce;
+	int oldhitcontents = self.hitcontentsmaski;
+	self.hitcontentsmaski = -1;
+	traceline(org, org, MOVE_EVERYTHING, self);
+	self.hitcontentsmaski = oldhitcontents;
+	return trace_endcontentsi;
+}
+
+#ifdef SERVER
+void
+NSPhysicsEntity::Touch(entity eToucher)
+{
+	if (eToucher)
+		if (eToucher.movetype)
+			Wake();
+}
 #endif
-	} else {
-		velocity += vecForce;
-	}
-
-	/* make sure touch think is called */
-	nextthink = time;
-}
-
-void
-NSPhysicsEntity::ApplyForceOffset(vector vecForce, vector vecOffset)
-{
-	if (physics_supported() == TRUE) {
-		physics_addforce(this, vecForce, vecOffset);
-#ifdef ODE_MODE
-		//velocity += vecForce;
-#endif
-	} else {
-		velocity += vecForce;
-	}
-
-	/* make sure touch think is called */
-	nextthink = time;
-}
-
-void
-NSPhysicsEntity::ApplyTorqueCenter(vector vecTorque)
-{
-	if (physics_supported() == TRUE)
-		physics_addtorque(this, vecTorque * m_flInertiaScale);
-	else {
-		avelocity = vecTorque;
-		velocity = vecTorque;
-		velocity[2] = 96;
-	}
-
-	/* make sure touch think is called */
-	nextthink = time;
-}
 
 void
 NSPhysicsEntity::_TouchThink(void)
@@ -473,21 +435,36 @@ NSPhysicsEntity::_TouchThink(void)
 	if (trace_startsolid) {
 		if (trace_ent.flags & FL_CLIENT) {
 			if (trace_ent.absmin[2] < absmax[2]) {
-				PhysicsEnable();
-				makevectors(vectoangles(origin - trace_ent.origin));
+				Wake();
+				makevectors(vectoangles(trace_endpos - trace_ent.origin));
 				ApplyTorqueCenter(v_forward * 240);
 			} else {
-				PhysicsDisable();
+				Sleep();
 				velocity = [0,0,0];
 			}
 		}
 	}
 	}
 
+#if 0
+	if (m_flCheckTime < time) {
+		bool should
+		if (vlen(m_vecPrevAngles - angles) < 1) {
+			avelocity = [0,0,0];
+		}
+		if (vlen(m_vecPrevOrigin - origin) < 1) {
+			velocity = [0,0,0];
+		}
+		m_flCheckTime = time + 1.0f;
+		m_vecPrevOrigin = origin;
+		m_vecPrevAngles = angles;
+	}
+
 	/* If we barely move, disable the physics simulator */
-	if (vlen(velocity) <= 1) {
+	if (velocity == g_vec_null && avelocity == g_vec_null) {
 		if (m_iEnabled) {
-			PhysicsDisable();
+			NSPhysics_Log("%s is now sleeping.", classname);
+			Sleep();
 			velocity = [0,0,0];
 			avelocity = [0,0,0];
 		}
@@ -508,6 +485,18 @@ NSPhysicsEntity::_TouchThink(void)
 			angles = vectoangles(newangle);
 		}
 	}
+#endif
+
+#if 0
+	if (m_flBuoyancyRatio > 0.0)
+	if (NSPhysicsEntity_Contents(origin) & CONTENTBIT_WATER) {
+		makevectors([0,0,0]);
+		velocity[2] += m_flBuoyancyRatio;
+		print(sprintf("in water... applying %v\n", v_up * (GetMass() * m_flBuoyancyRatio)));
+	}
+#endif
+
+	hitcontentsmaski &= ~CONTENTBITS_FLUID;
 
 	if (physics_supported() == FALSE) {
 		/* don't let players collide */
@@ -524,18 +513,22 @@ NSPhysicsEntity::_TouchThink(void)
 void
 NSPhysicsEntity::Pain(void)
 {
+	vector forceDir;
 	float force;
+
+	if (m_strOnDamaged)
+		UseOutput(this, m_strOnDamaged);
 
 	if (m_iFlags & BPHY_NODMGPUSH)
 		return;
 
-	PhysicsEnable();
+	Wake();
 
-	makevectors(vectoangles(origin - trace_endpos));
+	forceDir = normalize(GetOrigin() - g_dmg_vecLocation);
 	force = CalculateImpactDamage(g_dmg_iDamage, g_dmg_iFlags);
 
 	if (force > 0.0f)
-		ApplyForceOffset(v_forward * force, origin - trace_endpos);
+		ApplyForceOffset(forceDir * force, g_dmg_vecLocation);
 
 	/* if we don't have prop data, don't consider death */
 	if (HasPropData() == false)
@@ -564,28 +557,35 @@ NSPhysicsEntity::Death(void)
 void
 NSPhysicsEntity::Respawn(void)
 {
+	ClearVelocity();
 	SetMovetype(MOVETYPE_PHYSICS);
-	SetSolid(SOLID_PHYSICS_BOX + m_iShape);
+	SetSolid(SOLID_BSP);
 	SetModel(GetSpawnModel());
 
 #ifdef SERVER
 	SetTakedamage(DAMAGE_YES);
 #endif
 
-#ifndef ODE_MODE
-	PhysicsDisable();
-	SetFriction(4.0f);
-	SetBounceFactor(0.05f);
-	SetMass(1.0f);
-#else
-	PhysicsDisable();
-	SetMass(1.0f);
+	Sleep();
+	SetMass(10.0f);
 	SetFriction(1.0f);
-	SetBounceFactor(0.1f);
+	SetBuoyancyRatio(1.0f);
+	bouncefactor = 0.9f;
+	bouncestop = 0.1f / cvar("sv_gravity");
+
+	//bouncefactor = 0.0f;
+	//bouncestop = 0.0f;
+
 	geomtype = GEOMTYPE_TRIMESH;
-#endif
+	friction = 100.0f;
 
 	SetOrigin(GetSpawnOrigin());
+	m_flBuoyancyRatio = 1.0f;
+
+	SetDamping(0.0f, 0.0f);
+	EnableGravity(true);
+
+	hitcontentsmaski &= ~CONTENTBITS_FLUID;
 
 	if (physics_supported() == FALSE) {
 		/* don't let players collide */
@@ -641,8 +641,292 @@ NSPhysicsEntity::SpawnKey(string strKey, string strValue)
 		if (tempCheck == true)
 			m_iFlags |= BPHY_SHARP;
 		break;
+#ifdef SERVER
+	case "OnDamaged":
+		m_strOnDamaged = PrepareOutput(m_strOnDamaged, strValue);
+		break;
+#endif
 	default:
 		super::SpawnKey(strKey, strValue);
 		break;
 	}
+}
+
+/* GMod API starts here */
+
+vector
+NSPhysicsEntity::AlignAngles(vector from, vector to)
+{
+	NSEntWarning("Not implemented");
+	return angles;
+}
+
+void
+NSPhysicsEntity::ApplyForceCenter(vector vecForce)
+{
+	Wake();
+
+	if (physics_supported() == TRUE) {
+		vector finalForce = vecForce;
+		physics_addforce(this, finalForce, GetMassCenter());
+
+		NSPhysics_Log("%s::ApplyForceCenter: %v (val: %v)",
+			classname, finalForce, vecForce);
+	} else {
+		velocity += vecForce;
+	}
+
+	/* make sure touch think is called */
+	nextthink = time;
+}
+
+void
+NSPhysicsEntity::ApplyForceOffset(vector vecForce, vector vecOffset)
+{
+	Wake();
+
+	if (physics_supported() == TRUE) {
+		vector finalForce = vecForce;
+		physics_addforce(this, finalForce, vecOffset);
+
+		NSPhysics_Log("%s::ApplyForceOffset: %v at pos %v (val: %v)",
+			classname, finalForce, vecOffset, vecForce);
+
+#ifdef ODE_MODE
+		//velocity += vecForce;
+#endif
+	} else {
+		velocity += vecForce;
+	}
+
+	/* make sure touch think is called */
+	nextthink = time;
+}
+
+void
+NSPhysicsEntity::ApplyTorqueCenter(vector vecTorque)
+{
+	Wake();
+
+	if (physics_supported() == TRUE) {
+		vector finalTorque = vecTorque * m_flInertiaScale;
+		physics_addtorque(this, finalTorque);
+
+		NSPhysics_Log("%s::ApplyTorqueCenter: %v (val: %v, scale: %f)",
+			classname, finalTorque, vecTorque, m_flInertiaScale);
+	} else {
+		avelocity = vecTorque;
+		velocity = vecTorque;
+		velocity[2] = 96;
+	}
+
+	/* make sure touch think is called */
+	nextthink = time;
+}
+
+void
+NSPhysicsEntity::EnableDrag(bool setEnabled)
+{
+	NSEntWarning("Not implemented");
+}
+
+void
+NSPhysicsEntity::EnableGravity(bool setEnabled)
+{
+	/* the engine checks if .gravity is < 0.01...) */
+	gravity = setEnabled ? 1.0f : 0.005;
+}
+
+void
+NSPhysicsEntity::EnableMotion(bool setEnabled)
+{
+	NSEntWarning("Not implemented");
+}
+
+float
+NSPhysicsEntity::GetLinearDamping(void)
+{
+	return damp_linear;
+}
+
+float
+NSPhysicsEntity::GetAngularDamping(void)
+{
+	return damp_angular;
+}
+
+float
+NSPhysicsEntity::GetEnergy(void)
+{
+	float linearEnergy;
+	float rotationalEnergy;
+
+	linearEnergy = (0.5f * GetMass() * vlen(GetVelocity()));
+	linearEnergy *= linearEnergy;
+
+	rotationalEnergy = (0.5f * GetMass() * vlen(GetAngularVelocity()));
+	rotationalEnergy *= rotationalEnergy;
+
+	return linearEnergy + rotationalEnergy;
+}
+
+float
+NSPhysicsEntity::GetInertia(void)
+{
+	return m_flInertiaScale;
+}
+
+float
+NSPhysicsEntity::GetInvInertia(void)
+{
+	return 1.0f / m_flInertiaScale;
+}
+
+float
+NSPhysicsEntity::GetInvMass(void)
+{
+	return 1.0f / mass;
+}
+
+float
+NSPhysicsEntity::GetMass(void)
+{
+	return mass;
+}
+
+vector
+NSPhysicsEntity::GetMassCenter(void)
+{
+	return WorldSpaceCenter();
+}
+
+float
+NSPhysicsEntity::GetRotDamping(void)
+{
+	return 0.0f;
+}
+
+float
+NSPhysicsEntity::GetSpeedDamping(void)
+{
+	return 0.0f;
+}
+
+float
+NSPhysicsEntity::GetSurfaceArea(void)
+{
+	return vlen(size) / 4;
+}
+
+float
+NSPhysicsEntity::GetVolume(void)
+{
+	return vlen(size);
+}
+
+bool
+NSPhysicsEntity::IsAsleep(void)
+{
+	return false;
+}
+
+bool
+NSPhysicsEntity::IsCollisionEnabled(void)
+{
+	return true;
+}
+
+bool
+NSPhysicsEntity::IsDragEnabled(void)
+{
+	return true;
+}
+
+bool
+NSPhysicsEntity::IsGravityEnabled(void)
+{
+	return (gravity < 0.01) ? false : true;
+}
+
+bool
+NSPhysicsEntity::IsMotionEnabled(void)
+{
+	return true;
+}
+
+bool
+NSPhysicsEntity::IsMoveable(void)
+{
+	return true;
+}
+
+bool
+NSPhysicsEntity::IsPenetrating(void)
+{
+	return true;
+}
+
+void
+NSPhysicsEntity::SetAngleDragCoefficient(float setValue)
+{
+	NSEntWarning("Not implemented");
+}
+
+void
+NSPhysicsEntity::SetBuoyancyRatio(float setValue)
+{
+	m_flBuoyancyRatio = setValue;
+}
+
+void
+NSPhysicsEntity::SetDamping(float linearDamp, float angleDamp)
+{
+	damp_linear = linearDamp;
+	damp_angular = angleDamp;
+}
+
+void
+NSPhysicsEntity::SetDragCoefficient(float dragValue)
+{
+	NSEntWarning("Not implemented");
+}
+
+void
+NSPhysicsEntity::SetInertia(float val)
+{
+	m_flInertiaScale = val;
+}
+
+void
+NSPhysicsEntity::SetMass(float val)
+{
+	mass = val;
+}
+
+void
+NSPhysicsEntity::Wake(void)
+{
+	if (physics_supported() == TRUE) {
+		SetMovetype(MOVETYPE_PHYSICS);
+		SetSolid(SOLID_BSP);
+		physics_enable(this, TRUE);
+	} else {
+		SetMovetype(MOVETYPE_BOUNCE);
+		SetSolid(SOLID_CORPSE);
+	}
+	m_iEnabled = TRUE;
+}
+
+void
+NSPhysicsEntity::Sleep(void)
+{
+	if (physics_supported() == TRUE) {
+		ClearVelocity();
+		physics_enable(this, FALSE);
+		SetMovetype(MOVETYPE_NONE);
+	} else {
+		SetMovetype(MOVETYPE_NONE);
+		SetSolid(SOLID_BBOX);
+	}
+	m_iEnabled = FALSE;
 }

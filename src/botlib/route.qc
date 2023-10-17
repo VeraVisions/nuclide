@@ -14,13 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*
-* Begin calculating a route. 
-* The callback function will be called once the route has finished being calculated. 
-* The route must be memfreed once it is no longer needed. 
-* The route must be followed in reverse order (ie: the first node that must be reached 
-* is at index numnodes-1). If no route is available then the callback will be called with no nodes.
-*/
 int
 Route_RoundDistance(float flDist)
 {
@@ -37,7 +30,7 @@ Route_RoundDistance(float flDist)
 
 
 /* returns a botinfo point that's nearest to us */
-entity
+NSEntity
 Route_SelectFarthest(float type, vector org, optional vector lastpoi = [0,0,0]) 
 {
 	entity temp;
@@ -61,7 +54,7 @@ Route_SelectFarthest(float type, vector org, optional vector lastpoi = [0,0,0])
 }
 
 /* returns a botinfo point that's nearest to us */
-entity
+NSEntity
 Route_SelectNearest(float type, vector org, optional vector lastpoi = [0,0,0]) 
 {
 	entity temp;
@@ -85,7 +78,7 @@ Route_SelectNearest(float type, vector org, optional vector lastpoi = [0,0,0])
 }
 
 /* returns a botinfo point belonging to our team */
-entity
+NSEntity
 Route_SelectNearestTeam(float type, vector org, float tt) 
 {
 	entity temp;
@@ -110,7 +103,7 @@ Route_SelectNearestTeam(float type, vector org, float tt)
 }
 
 /* returns a botinfo point belonging to the enemy team */
-entity
+NSEntity
 Route_SelectNearestEnemyTeam(float type, vector org, float tt) 
 {
 	entity temp;
@@ -140,7 +133,7 @@ Route_SelectNearestEnemyTeam(float type, vector org, float tt)
 Spawn_SelectRandom
 ================
 */
-entity
+NSEntity
 Route_SelectRandom(string sEntname) 
 {
 	static entity eLastSpot;
@@ -153,7 +146,7 @@ Route_SelectRandom(string sEntname)
 Route_SelectRandomSpot
 ================
 */
-entity
+NSEntity
 Route_SelectRandomSpot(void)
 {
 	static entity eLastSpot;

@@ -82,7 +82,7 @@ private:
 void
 logic_auto::logic_auto(void)
 {
-	m_iFromSaveGame = 0;
+	m_iFromSaveGame = 0i;
 	m_strOnMapSpawn = __NULL__;
 	m_strOnNewGame = __NULL__;
 	m_strOnLoadGame = __NULL__;
@@ -108,7 +108,7 @@ logic_auto::Save(float handle)
 void
 logic_auto::Restore(string strKey, string strValue)
 {
-	m_iFromSaveGame = 1;
+	m_iFromSaveGame = 1i;
 
 	switch (strKey) {
 	case "m_strOnMapSpawn":
@@ -198,8 +198,6 @@ logic_auto::Spawned(void)
 void
 logic_auto::Respawn(void)
 {
-	
-	m_iFromSaveGame = 1;
 	ScheduleThink(Processing, 0.2f);
 }
 
@@ -220,8 +218,9 @@ logic_auto::Processing(void)
 				cvar_set("_bsp_change_auto", "");
 			} else
 				UseOutput(this, m_strOnLoadGame);
-		} else
+		} else {
 			UseOutput(this, m_strOnNewGame);
+		}
 	} else {
 		/* TODO: more reliable way of figuring out round restarts */
 		if (time > 5)

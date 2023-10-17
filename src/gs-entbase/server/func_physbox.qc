@@ -49,9 +49,9 @@ func_physbox::Respawn(void)
 	NSPhysicsEntity::Respawn();
 
 	if (HasSpawnFlags(FNCPHYBX_ASLEEP))
-		PhysicsDisable();
+		Sleep();
 	else
-		PhysicsEnable();
+		Wake();
 }
 
 void
@@ -85,7 +85,7 @@ func_physbox::Death(void)
 void
 func_physbox::Respawn(void)
 {
-	NSSurfacePropEntity::Respawn();
+	super::Respawn();
 	health = GetSpawnHealth();
 	SetTakedamage(DAMAGE_YES);
 	SetSolid(SOLID_BBOX);

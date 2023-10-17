@@ -39,7 +39,7 @@ waste disk space and memory. Use wisely.
 This entity was introduced in Half-Life 2 (2004).
 */
 class
-prop_static:NSRenderableEntity
+prop_static:NSPhysicsEntity
 {
 public:
 	void prop_static(void);
@@ -56,10 +56,13 @@ prop_static::prop_static(void)
 void
 prop_static::Respawn(void)
 {
-	SetSolid(SOLID_NOT);
 	SetModel(GetSpawnModel());
-	mins = [0,0,0];
-	maxs = [0,0,0];
-	SetSize(mins, maxs);
 	SetOrigin(GetSpawnOrigin());
+	SetMovetype(MOVETYPE_PHYSICS);
+	SetSolid(SOLID_PHYSICS_BOX);
+	geomtype = GEOMTYPE_TRIMESH;
+
+	Sleep();
+	SetTakedamage(DAMAGE_NO);
+	touch = __NULL__;
 }

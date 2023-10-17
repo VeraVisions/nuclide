@@ -37,6 +37,8 @@ public:
 	void env_muzzleflash(void);
 
 #ifdef SERVER
+	virtual void Save(float);
+	virtual void Restore(string,string);
 	virtual void SpawnKey(string, string);
 	virtual void Input(entity, string, string);
 	virtual void Input(entity, string, string);
@@ -63,10 +65,50 @@ env_muzzleflash::env_muzzleflash(void)
 	m_eOwner = __NULL__;
 	m_strModel = __NULL__;
 	m_strParticle = __NULL__;
+	m_eMuzzler = __NULL__;
 	scale = 1.0f;
 }
 
 #ifdef SERVER
+void
+env_muzzleflash::Save(float handle)
+{
+	super::Save(handle);
+	SaveString(handle, "m_strAttachmentName", m_strAttachmentName);
+	SaveInt(handle, "m_iAttachment", m_iAttachment);
+	SaveEntity(handle, "m_eOwner", m_eOwner);
+	SaveString(handle, "m_strModel", m_strModel);
+	SaveString(handle, "m_strParticle", m_strParticle);
+	SaveEntity(handle, "m_eMuzzler", m_eMuzzler);
+}
+
+void
+env_muzzleflash::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "m_strAttachmentName":
+		m_strAttachmentName = ReadString(strValue);
+		break;
+	case "m_iAttachment":
+		m_iAttachment = ReadInt(strValue);
+		break;
+	case "m_eOwner":
+		m_eOwner = (NSRenderableEntity)ReadEntity(strValue);
+		break;
+	case "m_strModel":
+		m_strModel = ReadString(strValue);
+		break;
+	case "m_strParticle":
+		m_strParticle = ReadString(strValue);
+		break;
+	case "m_eMuzzler":
+		m_eMuzzler = ReadEntity(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
+
 void
 env_muzzleflash::SpawnKey(string keyName, string setValue)
 {
@@ -107,11 +149,16 @@ env_muzzleflash::Input(entity eAct, string strKey, string strValue)
 void
 env_muzzleflash::Trigger(entity theActivator, triggermode_t triggerState)
 {
-	NSEntity targetEnt;
+	NSEntity targetEnt = __NULL__;
 	vector targetPosition = GetOrigin();
 
 	if (m_parent) {
 		targetEnt = (NSEntity)find(world, ::targetname, m_parent);
+
+		if (!targetEnt) {
+			NSEntWarning("Entity specified but not found.");
+			return;
+		}
 	}
 
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
@@ -155,7 +202,7 @@ EV_MuzzleFlash_Parse(void)
 {
 	env_muzzleflash tempMuzzle = spawn(env_muzzleflash);
 
-	tempMuzzle.m_eOwner = findfloat(world, entnum, readentitynum());
+	tempMuzzle.m_eOwner = (NSRenderableEntity)findfloat(world, entnum, readentitynum());
 	tempMuzzle.m_iAttachment = readbyte();
 	tempMuzzle.scale = readfloat();
 	tempMuzzle.modelindex = readshort();
@@ -171,7 +218,7 @@ EV_MuzzleFlash_Create(entity muzzleOwner, int attachmentID, float muzzleScale, i
 {
 	env_muzzleflash tempMuzzle = spawn(env_muzzleflash);
 
-	tempMuzzle.m_eOwner = muzzleOwner;
+	tempMuzzle.m_eOwner = (NSRenderableEntity)muzzleOwner;
 	tempMuzzle.m_iAttachment = attachmentID;
 	tempMuzzle.scale = muzzleScale;
 	tempMuzzle.alpha = 1.0f;

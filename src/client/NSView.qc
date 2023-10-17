@@ -369,7 +369,9 @@ NSView::UpdateView(void)
 	/* all 2D operations happen after this point */
 	for (entity b = world; (b = findfloat(b, ::isCSQC, 1));) {
 		NSEntity pf = (NSEntity) b;
-		pf.postdraw();
+
+		if (pf.postdraw)
+			pf.postdraw();
 	}
 
 	/* the blinding stuff */

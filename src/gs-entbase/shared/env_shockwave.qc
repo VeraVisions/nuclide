@@ -86,7 +86,7 @@ env_shockwave::env_shockwave(void)
 	m_flHeight = 32.0f;
 	m_flNoiseAmp = 0.0f;
 	m_vecColor = [1,1,1];
-	m_flBrightness = 1.0f;;
+	m_flBrightness = 1.0f;
 	m_flScrollSpeed = 0.0f;
 }
 

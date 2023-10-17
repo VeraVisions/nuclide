@@ -87,6 +87,7 @@ string __fullspawndata;
 #include "NSRenderableEntity.h"
 #include "NSSurfacePropEntity.h"
 #include "NSMoverEntity.h"
+#include "NSPhysicsConstraint.h"
 #include "NSPhysicsEntity.h"
 #include "NSBrushTrigger.h"
 #include "NSPointTrigger.h"

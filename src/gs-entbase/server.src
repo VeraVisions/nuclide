@@ -17,6 +17,7 @@ server/env_fade.qc
 server/env_hudhint.qc
 server/env_spark.qc
 server/env_explosion.qc
+server/env_physexplosion.qc
 server/env_render.qc
 server/env_shake.qc
 server/env_message.qc
@@ -64,6 +65,14 @@ server/player_weaponstrip.qc
 server/player_loadsaved.qc
 server/prop_dynamic.qc
 server/prop_physics.qc
+server/phys_ballsocket.qc
+server/phys_convert.qc
+server/phys_constraint.qc
+server/phys_keepupright.qc
+server/phys_hinge.qc
+server/phys_slideconstraint.qc
+//server/phys_constraintsystem.qc
+server/prop_static.qc
 server/point_camera.qc
 server/point_servercommand.qc
 server/point_trigger.qc
