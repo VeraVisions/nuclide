@@ -286,7 +286,7 @@ Sound_Parse(int i, string line, string shader)
 			Sound_ParseField(i, c, argv(0), argv(1));
 		} else {
 			/* name/identifer of our message */
-			t_name = strtolower(line);
+			t_name = line;
 			
 			if (t_name == shader) {
 				/* I guess it's what we want */
@@ -393,7 +393,6 @@ Sound_Precache(string shader)
 		return -1;
 
 	index = g_sounds_count;
-	shader = strtolower(shader);
 
 	dprint("[SOUND] Precaching sound shader ");
 	dprint(shader);
