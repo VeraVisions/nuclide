@@ -29,9 +29,7 @@ entities.qc
 camera.qc
 cmds.qc
 game_event.qc
-modelevent.qc
 viewmodel.qc
-view.qc
 hud.qc
 hud_weaponselect.qc
 scoreboard.qc

@@ -100,6 +100,7 @@ DecalGroups_Init(void)
 	filestream fh;
 	string line;
 
+	g_decalgroup_count = 0i;
 	print("--------- Initializing Decal Groups ----------\n");
 
 	/* create the hash-table if it doesn't exist */
@@ -194,6 +195,10 @@ void
 DecalGroups_Place(string group, vector org)
 {
 	int index;
+
+	if (g_decalgroup_count <= 0i)
+		return;
+
 	index = (int)hash_get(g_hashdecalgroup, strtolower(group), -1);
 
 #ifdef SERVER
