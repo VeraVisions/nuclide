@@ -255,8 +255,8 @@ View_DrawViewModel(void)
 	if (Client_IsSpectator(cl) || XR_Available(pl) == false) {
 		m_eViewModelL.origin = g_view.GetCameraOrigin();
 		m_eViewModel.origin = g_view.GetCameraOrigin();
-		m_eViewModel.angles = g_view.GetCameraAngle();
-		m_eViewModelL.angles = g_view.GetCameraAngle();
+		//m_eViewModel.angles = g_view.GetCameraAngle();
+		//m_eViewModelL.angles = g_view.GetCameraAngle();
 
 		/* we only calculate bob on the right model, to avoid double speed bobbing */
 		Viewmodel_CalcBob();

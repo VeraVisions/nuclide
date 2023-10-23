@@ -25,7 +25,7 @@ _NSPhysics_Log(string msg)
 
 
 var float autocvar_phys_pushscale = 1.0f;
-var float autocvar_phys_impactforcescale = 1.0f;
+var float autocvar_phys_impactforcescale = 100.0f;
 
 #ifdef CLIENT
 var bool autocvar_r_showPhysicsInfo = false;
@@ -91,17 +91,19 @@ private:
 	int m_iFlags;
 	float m_flInertiaScale;
 	float m_flBuoyancyRatio;
+	bool m_bInvincible;
+	float m_flVolume;
 
 	/* performance sanity checks */
 	vector m_vecPrevOrigin;
 	vector m_vecPrevAngles;
 	float m_flCheckTime;
+	PREDICTED_FLOAT(m_flMass)
 
 	virtual void _TouchThink(void);
 
 #ifdef SERVER
 	PREDICTED_VECTOR(m_vecNetAngles)
-	PREDICTED_FLOAT_N(mass)
 
 	string m_strOnDamaged;
 #endif
@@ -126,6 +128,9 @@ public:
 	virtual void ReceiveEntity(float,float);
 	virtual void postdraw(void);
 #endif
+
+	nonvirtual void _UpdateBuoyancy(void);
+	nonvirtual void _UpdateMass(void);
 
 	/** Sets the friction multiplier for this entity. Default is 1.0 */
 	nonvirtual void SetFriction(float);

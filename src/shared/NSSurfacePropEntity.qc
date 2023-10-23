@@ -659,9 +659,6 @@ NSSurfacePropEntity::Death(void)
 {
 	m_flDeathTime = time;
 
-	print(sprintf("%S", m_strOnBreak));
-	print("\n");
-
 	UseOutput(g_dmg_eAttacker, m_strOnBreak);
 
 	if (HasPropData() == false)
@@ -672,7 +669,8 @@ NSSurfacePropEntity::Death(void)
 	} else if (GetPropData(PROPINFO_BREAKMODEL) != __NULL__) {
 		string gibeffect = GetPropData(PROPINFO_BREAKMODEL);
 		int breakcount = GetPropData(PROPINFO_BREAKCOUNT);
-		BreakModel_Spawn(absmin, absmax, [0,0,0], 100, breakcount, gibeffect);
+		BreakModel_Entity(this, normalize(GetOrigin() - g_dmg_vecLocation), g_dmg_iDamage);
+		//BreakModel_Spawn(absmin, absmax, [0,0,0], 100, breakcount, gibeffect);
 		Disappear();
 	} else {
 		Disappear();

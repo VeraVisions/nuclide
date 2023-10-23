@@ -127,3 +127,14 @@ destruction.
 -   **breakable_model <string>**: Which models to spawn when it breaks.
 -   **breakable_count <int>**: The amount of models it'll spawn upon
     breaking.
+-   **surfaceprop <string>**: Surfaceprop override for the object.
+
+## Physics Object Commands {#physcommands}
+
+These are only relevant for when you want to use a phyics object, or rather an object that's handled by NSPhysicsEntity, such as prop_physics.
+
+-   **mass <float>**: Mass of the object, in kilograms.
+-   **volume <float>**: Volume of the object, in cubic meters.
+-   **inertia <float>**: Inertia multiplier.
+-   **damping <float>**: Linear movement damping multiplier.
+-   **rotdamping <float>**: Angular movement damping multiplier.

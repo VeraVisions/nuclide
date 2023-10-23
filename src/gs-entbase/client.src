@@ -15,6 +15,7 @@ client/func_dustmotes.qc
 client/func_dustcloud.qc
 client/func_smokevolume.qc
 client/light_environment.qc
+client/prop_static.qc
 client/infodecal.qc
 client/sky_camera.qc
 client/info_notnull.qc

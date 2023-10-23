@@ -83,6 +83,12 @@ typedef struct
 	string breakable_model;	/* name of BreakableModels entry in PropData.txt */
 	int breakable_count;
 	float breakable_skin;
+	float mass;
+	float damping_linear;
+	float damping_angular;
+	float inertia;
+	float volume;
+	string surfaceprop;
 } propdata_t;
 
 /* entity will have to have a .propdata field pointing to a propdata id */
@@ -113,7 +119,14 @@ typedef enum
 	PROPINFO_EXPLOSIVE_RADIUS,
 	PROPINFO_BREAKMODEL,
 	PROPINFO_BREAKCOUNT,
-	PROPINFO_SKIN
+	PROPINFO_SKIN,
+	/* physics related variables. */
+	PROPINFO_MASS,
+	PROPINFO_DAMPING_LINEAR,
+	PROPINFO_DAMPING_ANGULAR,
+	PROPINFO_INERTIA,
+	PROPINFO_VOLUME,
+	PROPINFO_SURFACEPROP
 } propinfo_t;
 __variant Prop_GetInfo(int, int);
 
@@ -121,20 +134,25 @@ typedef struct
 {
 	string name;
 	string data;
+	float modelindex; /* only used for networking */
+	bool physics; /* differentiate between Source and GS */
 } breakmodel_t;
 
 /* entity will have a .breakmodel field pointing to a breakmodel id */
 breakmodel_t *g_breakmodel;
 int g_breakmodel_count;
+int g_breakmodel_end;
 var hashtable g_hashbreakmodel;
 
 
 #ifdef CLIENT
 void BreakModel_SpawnID(vector smins, vector smaxs, vector dir, float speed, int count, int index);
 void BreakModel_Receive(void);
+void BreakModel_ReceiveClientData(void);
 #else
 void BreakModel_Spawn(vector pos, vector dir, vector spread, float speed, int count, string type);
 void BreakModel_Entity(NSSurfacePropEntity target, vector dir, float speed);
+void BreakModel_SendClientData(entity);
 #endif
 
 /* necessary API functions */

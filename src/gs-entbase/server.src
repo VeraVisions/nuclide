@@ -72,7 +72,7 @@ server/phys_keepupright.qc
 server/phys_hinge.qc
 server/phys_slideconstraint.qc
 //server/phys_constraintsystem.qc
-server/prop_static.qc
+//server/prop_static.qc
 server/point_camera.qc
 server/point_servercommand.qc
 server/point_trigger.qc

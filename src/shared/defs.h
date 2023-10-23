@@ -377,6 +377,29 @@ string Util_FixModel(string mdl)
 	return mdl;
 }
 
+/** Returns a string (usually filename) with only the file extension
+    at the end replaced with a given, new extension. */
+string
+Util_ChangeExtension(string baseString, string newExtension)
+{
+	float stringOffset = 0;
+	string tempString = "";
+	float foundOffset = 0;
+	
+	while ((tempString = substring(baseString, stringOffset, 1))) {
+		if (tempString == ".")
+			foundOffset = stringOffset;
+		if (tempString == "")
+			break;
+		if not (tempString)
+			break;
+
+		stringOffset++;
+	}
+
+	return strcat(substring(baseString, 0, foundOffset), ".", newExtension);
+}
+
 bool
 Util_IsSingleplayer(void)
 {

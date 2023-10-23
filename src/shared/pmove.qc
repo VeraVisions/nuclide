@@ -132,6 +132,7 @@ var float autocvar_pm_wateraccelerate = PMOVE_WATERACCELERATE;
 var float autocvar_pm_accelerate = PMOVE_ACCELERATE;
 var float autocvar_pm_maxspeed = PMOVE_MAXSPEED;
 var float autocvar_g_gravity = PMOVE_GRAVITY;
+var bool autocvar_pm_nospeedcap = false;
 
 void
 PMove_Init(void)
@@ -167,7 +168,7 @@ PMove_StartFrame(void)
 #endif
 
 /* simple bounds check */
-int
+bool
 PMove_IsStuck(entity eTarget, vector vOffset, vector vecMins, vector vecMaxs)
 {
 	vector bound;
@@ -179,15 +180,4 @@ PMove_IsStuck(entity eTarget, vector vOffset, vector vecMins, vector vecMaxs)
 	bound = eTarget.origin + vOffset;
 	tracebox(bound, vecMins, vecMaxs, bound, MOVE_NORMAL, eTarget);
 	return trace_startsolid;
-}
-
-/* it all starts here, this function is called by both CLIENT and SERVER for
-   obvious prediction purposes. The SERVER will usually do this in the
-   Game_RunClientCommand function and the CLIENT will do so in both the
-   prediction places of Predict_PreFrame and Player_ReceiveEntity */
-void
-PMove_Run(void)
-{
-	player pl = (player)self;
-	pl.Physics_Run();
 }

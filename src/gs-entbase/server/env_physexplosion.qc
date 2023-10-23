@@ -36,7 +36,7 @@ A force-centered explosion, primarily targetted at physics objects and optionall
 This entity was introduced in Half-Life 2 (2004).
 */
 class
-env_physexplosion:NSPhysicsConstraint
+env_physexplosion:NSEntity
 {
 public:
 	void env_physexplosion(void);

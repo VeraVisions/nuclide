@@ -35,5 +35,3 @@ void PMove_StartFrame(void);
 #endif
 
 void PMove_Init(void);
-
-void PMove_Run(void);

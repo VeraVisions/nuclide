@@ -228,6 +228,9 @@ Event_Parse(float type)
 	case EV_SHAKE:
 		EV_Shake();
 		break;
+	case EV_BREAKMODELDATA:
+		BreakModel_ReceiveClientData();
+		break;
 	case EV_BREAKMODEL:
 		BreakModel_Receive();
 		break;

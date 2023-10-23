@@ -16,6 +16,11 @@
 
 .float max_angular;
 
+/* taken from VPhysics-Jolt */
+const float InchesToMeters = 0.0254f;
+const float MetersToInches = 1.0f / 0.0254f;
+
+
 void
 NSPhysicsEntity::NSPhysicsEntity(void)
 {
@@ -30,17 +35,18 @@ NSPhysicsEntity::NSPhysicsEntity(void)
 	damp_linear = 1.0f;
 	damp_angular = 1.0f;
 	max_angular = -1.0f;
+	m_flMass = 1.0f;
 
 
-	cvar_set("physics_ode_quadtree_depth",					"10");
+	cvar_set("physics_ode_quadtree_depth",					"5");
 	cvar_set("physics_ode_contactsurfacelayer",				"0");
 	cvar_set("physics_ode_worldquickstep",					"1");
 	cvar_set("physics_ode_worldquickstep_iterations",		"20");
-	cvar_set("physics_ode_contact_mu",						"-1");
+	cvar_set("physics_ode_contact_mu",						"1");
 	cvar_set("physics_ode_contact_erp",						"0.96");
 	cvar_set("physics_ode_contact_cfm",						"0.001");
 	cvar_set("physics_ode_world_damping",					"1");
-	cvar_set("physics_ode_world_damping_linear",			"-1");
+	cvar_set("physics_ode_world_damping_linear",				"-1");
 	cvar_set("physics_ode_world_damping_linear_threshold",	"-1");
 	cvar_set("physics_ode_world_damping_angular",			"-1");
 	cvar_set("physics_ode_world_damping_angular_threshold",	"-1");
@@ -179,7 +185,7 @@ NSPhysicsEntity::EvaluateEntity(void)
 	EVALUATE_FIELD(m_flBoneControl3, RDENT_CHANGED_CONTROLLER)
 	EVALUATE_FIELD(m_flBoneControl4, RDENT_CHANGED_CONTROLLER)
 	EVALUATE_FIELD(m_flBoneControl5, RDENT_CHANGED_CONTROLLER)
-	EVALUATE_FIELD(mass, RDENT_CHANGED_SOLIDMOVETYPE)
+	EVALUATE_FIELD(m_flMass, RDENT_CHANGED_SOLIDMOVETYPE)
 }
 
 float
@@ -269,7 +275,7 @@ NSPhysicsEntity::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_ANGLE(m_flBoneControl5, RDENT_CHANGED_CONTROLLER)
 
 	/* physics specific flags */
-	SENDENTITY_FLOAT(mass, RDENT_CHANGED_SOLIDMOVETYPE)
+	SENDENTITY_FLOAT(m_flMass, RDENT_CHANGED_SOLIDMOVETYPE)
 
 	return (1);
 }
@@ -333,7 +339,7 @@ NSPhysicsEntity::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_ANGLE(m_flBoneControl5, RDENT_CHANGED_CONTROLLER)
 
 	/* physics specific flags */
-	READENTITY_FLOAT(mass, RDENT_CHANGED_SOLIDMOVETYPE)
+	READENTITY_FLOAT(m_flMass, RDENT_CHANGED_SOLIDMOVETYPE)
 
 	if (scale == 0.0)
 		scale = 1.0f;
@@ -344,6 +350,7 @@ NSPhysicsEntity::ReceiveEntity(float flNew, float flChanged)
 		_UpdateGeomset();
 
 	movetype = MOVETYPE_NONE;
+	_UpdateMass();
 }
 
 void
@@ -355,8 +362,11 @@ NSPhysicsEntity::postdraw(void)
 	if not (PointMessage_Visible(WorldSpaceCenter(), g_view.GetCameraOrigin(), g_view.GetCameraAngle()))
 		return;
 
-	string renderString = sprintf("Mass: %f\nEnergy: %f\nInertia:%d",
-		GetMass(), GetEnergy(), GetInertia());
+	float massVolume = (size[0] * size[1] * size[2]);
+	massVolume *= 0.0254f; /* from meters to inches */
+
+	string renderString = sprintf("Mass: %.2f kg (%.2f ODE)\nEnergy: %f kj\nInertia:%d\nVolume: %.2f",
+		GetMass(), mass, GetEnergy(), GetInertia(), massVolume);
 
 	PointMessage_StringAtPos(WorldSpaceCenter(), renderString);
 }
@@ -530,9 +540,10 @@ NSPhysicsEntity::Pain(void)
 	if (force > 0.0f)
 		ApplyForceOffset(forceDir * force, g_dmg_vecLocation);
 
-	/* if we don't have prop data, don't consider death */
-	if (HasPropData() == false)
+	/* HACK: */
+	if (m_bInvincible) {
 		health = 10000;
+	}
 
 	/* make sure touch think is called */
 	nextthink = time;
@@ -547,7 +558,11 @@ NSPhysicsEntity::Death(void)
 	if (takedamage != DAMAGE_YES) {
 		takedamage = (DAMAGE_YES);
 	}
-	health = 1000;
+
+	/* HACK: */
+	if (m_bInvincible) {
+		health = 10000;
+	}
 
 	/* make sure touch think is called */
 	nextthink = time;
@@ -567,22 +582,22 @@ NSPhysicsEntity::Respawn(void)
 #endif
 
 	Sleep();
-	SetMass(10.0f);
+	SetMass(1.0f);
 	SetFriction(1.0f);
 	SetBuoyancyRatio(1.0f);
 	bouncefactor = 0.9f;
 	bouncestop = 0.1f / cvar("sv_gravity");
 
-	//bouncefactor = 0.0f;
-	//bouncestop = 0.0f;
+	bouncefactor = 0.0f;
+	bouncestop = 0.0f;
 
 	geomtype = GEOMTYPE_TRIMESH;
-	friction = 100.0f;
+	friction = 1.0f;
 
 	SetOrigin(GetSpawnOrigin());
 	m_flBuoyancyRatio = 1.0f;
 
-	SetDamping(0.0f, 0.0f);
+	SetDamping(1.0f, 1.0f);
 	EnableGravity(true);
 
 	hitcontentsmaski &= ~CONTENTBITS_FLUID;
@@ -600,9 +615,25 @@ NSPhysicsEntity::Respawn(void)
 
 #ifdef SERVER
 	if (HasPropData()) {
-		health = GetPropData(PROPINFO_HEALTH);
+		SetHealth(GetPropData(PROPINFO_HEALTH));
+		SetMass(GetPropData(PROPINFO_MASS));
+		SetDamping(GetPropData(PROPINFO_DAMPING_LINEAR), GetPropData(PROPINFO_DAMPING_ANGULAR));
+		SetInertia(GetPropData(PROPINFO_INERTIA));
+		SetSurfaceData(GetPropData(PROPINFO_SURFACEPROP));
 	} else {
-		health = 100000;
+		health = 0;
+	}
+
+	/* no health set, either indistructible or too weak */
+	if (health == 0) {
+		/* it has no breakmodels set, therefore it cannot break. */
+		if (GetPropData(PROPINFO_BREAKMODEL) == __NULL__) {
+			m_bInvincible = true;
+			health = 10000;
+		} else {
+			/* something like glass bottles, maybe. */
+			health = 1.0f;
+		}
 	}
 #endif
 }
@@ -666,6 +697,8 @@ NSPhysicsEntity::ApplyForceCenter(vector vecForce)
 {
 	Wake();
 
+	vecForce *= MetersToInches;
+
 	if (physics_supported() == TRUE) {
 		vector finalForce = vecForce;
 		physics_addforce(this, finalForce, GetMassCenter());
@@ -684,6 +717,8 @@ void
 NSPhysicsEntity::ApplyForceOffset(vector vecForce, vector vecOffset)
 {
 	Wake();
+
+	vecForce *= MetersToInches;
 
 	if (physics_supported() == TRUE) {
 		vector finalForce = vecForce;
@@ -767,7 +802,7 @@ NSPhysicsEntity::GetEnergy(void)
 	rotationalEnergy = (0.5f * GetMass() * vlen(GetAngularVelocity()));
 	rotationalEnergy *= rotationalEnergy;
 
-	return linearEnergy + rotationalEnergy;
+	return (linearEnergy + rotationalEnergy) / (InchesToMeters * InchesToMeters);
 }
 
 float
@@ -791,7 +826,7 @@ NSPhysicsEntity::GetInvMass(void)
 float
 NSPhysicsEntity::GetMass(void)
 {
-	return mass;
+	return m_flMass;
 }
 
 vector
@@ -898,9 +933,38 @@ NSPhysicsEntity::SetInertia(float val)
 }
 
 void
+NSPhysicsEntity::_UpdateMass(void)
+{
+	/* in ODE, mass is relative. */
+	float massVolume = (size[0] * size[1] * size[2]);
+	massVolume *= 0.0254f; /* from inches to meters */
+
+	mass = 1.0f;
+	//mass = m_flMass / massVolume; /* really ODE's thing is density */
+}
+
+void
+NSPhysicsEntity::_UpdateBuoyancy(void)
+{
+#if 0
+	if ( m_flVolume != 0.0f )
+	{
+		float flVolume = max( m_flVolume, 5.0f ) * MeterstoInches * MeterstoInches * MeterstoInches;
+		float flDensity = m_flMass / flVolume;
+		m_flBuoyancyRatio = flDensity / m_flMaterialDensity;
+	}
+	else
+	{
+		m_flBuoyancyRatio = 1.0f;
+	}
+#endif
+}
+
+void
 NSPhysicsEntity::SetMass(float val)
 {
-	mass = val;
+	m_flMass = val;
+	_UpdateMass();
 }
 
 void

@@ -15,6 +15,7 @@
 */
 
 static int g_ent_spawned;
+.bool gotData;
 
 /** Called once every single tic on the server. */
 void
@@ -45,6 +46,7 @@ void
 ClientConnect(void)
 {
 	int playercount = 0;
+	self.gotData = false;
 
 	/* don't carry over team settings from a previous session */
 	forceinfokey(self, "*team", "0");
@@ -268,6 +270,11 @@ SV_RunClientCommand(void)
 
 	cl.SharedInputFrame();
 	cl.ServerInputFrame();
+
+	if (self.gotData == false) {
+		BreakModel_SendClientData(self);
+		self.gotData = true;
+	}
 }
 
 /** Any 'cmd' from the client get sent here and handled.
@@ -390,18 +397,21 @@ initents(void)
 	precache_sound("misc/null.wav");
 	precache_sound("common/null.wav");
 
-	Sound_Precache("player.gasplight");
-	Sound_Precache("player.gaspheavy");
-	Sound_Precache("player.waterenter");
-	Sound_Precache("player.waterexit");
+	Sound_Precache("player.GaspLight");
+	Sound_Precache("player.GaspHeavy");
+	Sound_Precache("player.WaterEnter");
+	Sound_Precache("player.WaterExit");
+	Sound_Precache("Player.Death");
+	Sound_Precache("Player.Pain");
+	Sound_Precache("Player.Wade");
+	Sound_Precache("Player.Swim");
+	Sound_Precache("Player.DenyWeaonSelection");
+	Sound_Precache("Player.WeaponSelected");
+
 	Sound_Precache("damage_bullet.hit");
 	Sound_Precache("player.spraylogo");
-	Sound_Precache("step_wade.left");
-	Sound_Precache("step_wade.right");
 	Sound_Precache("step_ladder.left");
 	Sound_Precache("step_ladder.right");
-	Sound_Precache("step_swim.left");
-	Sound_Precache("step_swim.right");
 
 	if (!g_grMode) {
 		Game_InitRules();
