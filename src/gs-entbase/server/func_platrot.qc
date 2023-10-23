@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2023 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,7 +16,14 @@
 
 enumflags
 {
-	FNCPLAT_TRIGGER,
+	FNCPLATROT_TOGGLE,
+	FNCPLATROT_UNUSED1,
+	FNCPLATROT_UNUSED2,
+	FNCPLATROT_UNUSED3,
+	FNCPLATROT_UNUSED4,
+	FNCPLATROT_UNUSED5,
+	FNCPLATROT_AXISX,
+	FNCPLATROT_AXISY,
 };
 
 enum
@@ -28,7 +35,7 @@ enum
 };
 
 
-/*!QUAKED func_platrot (0 .5 .8) ?
+/*!QUAKED func_platrot (0 .5 .8) ? TOGGLE x x x x x AXIS_X AXIS_Y
 # OVERVIEW
 A vertically moving platform that rotates.
 
@@ -40,6 +47,11 @@ A vertically moving platform that rotates.
 - "height"         : Vertical travel distance
 - "rotation"       : Rotation amount, in degrees
 
+# SPAWNFLAGS
+- TOGGLE (1) : Won't respond to touch.
+- AXIS_X (64) : Will rotate on the X-Axis. (Spirit of Half-Life addition)
+- AXIS_Y (128) : Will rotate on the Y-Axis. (Spirit of Half-Life addition)
+
 # NOTES
 Spins.
 
@@ -47,7 +59,7 @@ Spins.
 This entity was introduced in Half-Life (1998).
 */
 class
-func_platrot:NSRenderableEntity
+func_platrot:func_plat
 {
 public:
 	void func_platrot(void);
@@ -56,31 +68,17 @@ public:
 	virtual void Restore(string,string);
 	virtual void Trigger(entity, triggermode_t);
 	virtual void Respawn(void);
-	virtual void Touch(entity);
 	virtual void SpawnKey(string,string);
+	virtual void PlatformReturn(void);
 
-	nonvirtual void Move(vector, vector, void(void));
-	nonvirtual void ArrivedUp(void);
-	nonvirtual void ArrivedDown(void);
-	nonvirtual void MoveToggle(void);
 
 private:
-	int m_iState;
-	float m_flSpeed;
-	float m_flHeight;
-	string m_strNoise1;
-	string m_strNoise2;
 	float m_flRotation;
 };
 
 void
 func_platrot::func_platrot(void)
 {
-	m_iState = 0i;
-	m_flSpeed = 100.0f;
-	m_flHeight = 0.0f;
-	m_strNoise1 = __NULL__;
-	m_strNoise2 = __NULL__;
 	m_flRotation = 0.0f;
 }
 
@@ -88,11 +86,6 @@ void
 func_platrot::Save(float handle)
 {
 	super::Save(handle);
-	SaveInt(handle, "m_iState", m_iState);
-	SaveFloat(handle, "m_flSpeed", m_flSpeed);
-	SaveFloat(handle, "m_flHeight", m_flHeight);
-	SaveString(handle, "m_strNoise1", m_strNoise1);
-	SaveString(handle, "m_strNoise2", m_strNoise2);
 	SaveFloat(handle, "m_flRotation", m_flRotation);
 }
 
@@ -100,21 +93,6 @@ void
 func_platrot::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "m_iState":
-		m_iState = ReadInt(strValue);
-		break;
-	case "m_flSpeed":
-		m_flSpeed = ReadFloat(strValue);
-		break;
-	case "m_flHeight":
-		m_flHeight = ReadFloat(strValue);
-		break;
-	case "m_strNoise1":
-		m_strNoise1 = ReadString(strValue);
-		break;
-	case "m_strNoise2":
-		m_strNoise2 = ReadString(strValue);
-		break;
 	case "m_flRotation":
 		m_flRotation = ReadFloat(strValue);
 		break;
@@ -127,18 +105,6 @@ void
 func_platrot::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "height":
-		m_flHeight = stof(strValue);
-		break;
-	case "speed":
-		m_flSpeed = stof(strValue);
-		break;
-	case "noise1":
-		m_strNoise1 = strValue;
-		break;
-	case "noise2":
-		m_strNoise2 = strValue;
-		break;
 	case "rotation":
 		m_flRotation = stof(strValue);
 		break;
@@ -150,102 +116,39 @@ func_platrot::SpawnKey(string strKey, string strValue)
 void
 func_platrot::Respawn(void)
 {
-	SetMovetype(MOVETYPE_PUSH);
-	SetSolid(SOLID_BSP);
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
-	SetAngles(GetSpawnAngles());
+	super::Respawn();
 
-	m_iState = PLATSTATE_RAISED;
-	ReleaseThink();
-}
+	SetMoverRotation2(GetSpawnAngles());
+	SetMoverRotation1([0, m_flRotation, 0]);
 
-void
-func_platrot::ArrivedUp(void)
-{
-	ClearVelocity();
-	m_iState = PLATSTATE_RAISED;
-
-	sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
-
-	if (m_strNoise2)
-		sound(this, CHAN_WEAPON, m_strNoise2, 1.0f, ATTN_NORM);
-}
-
-void
-func_platrot::ArrivedDown(void)
-{
-	ClearVelocity();
-	m_iState = PLATSTATE_LOWERED;
-
-	sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
-
-	if (m_strNoise2)
-		sound(this, CHAN_WEAPON, m_strNoise2, 1.0f, ATTN_NORM);
-}
-
-void
-func_platrot::Move(vector vecDest, vector vecADest, void() vFunc)
-{
-	vector vecDifference, vecADifference;
-	float flTravel, fTravelTime;
-
-	m_iState = PLATSTATE_DOWN;
-	vecDifference = (vecDest - origin);
-	vecADifference = vecADest - angles;
-	flTravel = vlen(vecDifference);
-	fTravelTime = (flTravel / m_flSpeed);
-	SetThink(vFunc);
-
-	if (fTravelTime < 0.1) {
-		ClearVelocity();
-		SetNextThink(0.1f);
-		return;
+	if (HasTargetname() == false) {
+		SetAngles(GetMoverRotation2());
+	} else {
+		SetAngles(GetMoverRotation1());
 	}
-
-	
-	SetAngularVelocity(vecADifference * (1.0f / fTravelTime));
-	SetVelocity(vecDifference * (1.0f / fTravelTime));
-	SetNextThink(ltime + fTravelTime);
-
-	if (m_strNoise1)
-		sound(this, CHAN_VOICE, m_strNoise1, 1.0f, ATTN_NORM);
 }
 
 void
-func_platrot::MoveToggle(void)
+func_platrot::PlatformReturn(void)
 {
-	if (m_iState == PLATSTATE_RAISED) {
-		Move(GetSpawnOrigin() - [0,0,m_flHeight], GetSpawnAngles() + [0, m_flRotation, 0], ArrivedDown);
-	} else if (m_iState == PLATSTATE_LOWERED) {
-		Move(GetSpawnOrigin(), GetSpawnAngles(), ArrivedUp);
-	}
+	MoveAndRotateToPosition(GetMoverPosition2(), GetMoverRotation2(), m_flSpeed);
 }
 
 void
 func_platrot::Trigger(entity act, triggermode_t state)
 {
-	if (HasSpawnFlags(FNCPLAT_TRIGGER))
-		return;
-	
 	switch (state) {
 	case TRIG_OFF:
-		Move(GetSpawnOrigin() - [0,0,m_flHeight], GetSpawnAngles() + [0, m_flRotation, 0], ArrivedDown);
+		MoveAndRotateToPosition(GetMoverPosition1(), GetMoverRotation1(), m_flSpeed);
 		break;
 	case TRIG_ON:
-		Move(GetSpawnOrigin(), GetSpawnAngles(), ArrivedUp);
+		MoveAndRotateToPosition(GetMoverPosition2(), GetMoverRotation2(), m_flSpeed);
 		break;
 	default:
-		MoveToggle();
+		if ((GetMoverState() == MOVER_POS2) || (GetMoverState() == MOVER_1TO2)){
+			MoveAndRotateToPosition(GetMoverPosition1(), GetMoverRotation1(), m_flSpeed);
+		} else {
+			MoveAndRotateToPosition(GetMoverPosition2(), GetMoverRotation2(), m_flSpeed);
+		}
 	}
-}
-
-void
-func_platrot::Touch(entity eToucher)
-{
-	if (eToucher.movetype != MOVETYPE_WALK) {
-		return;
-	}
-
-	MoveToggle();
 }

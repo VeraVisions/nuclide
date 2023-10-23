@@ -68,6 +68,7 @@ public:
 
 	virtual void MoverStartsMoving(void);
 	virtual void MoverFinishesMoving(void);
+	virtual void PlatformReturn(void);
 
 private:
 	float m_flSpeed;
@@ -174,12 +175,14 @@ func_plat::MoverStartsMoving(void)
 }
 
 void
+func_plat::PlatformReturn(void)
+{
+	MoveToPosition(GetMoverPosition2(), m_flSpeed);
+}
+
+void
 func_plat::MoverFinishesMoving(void)
 {
-	static void MoveDown(void) {
-		MoveToPosition(GetMoverPosition2(), m_flSpeed);
-	}
-
 	/* cancel out any moving sfx */
 	if (m_strSndMove) {
 		StartSound("common/null.wav", CHAN_VOICE, 0, true);
@@ -189,8 +192,10 @@ func_plat::MoverFinishesMoving(void)
 		StartSoundDef(m_strSndStop, CHAN_VOICE, true);
 	}
 
-	if (GetMoverState() == MOVER_POS1) {
-		ScheduleThink(MoveDown, 3.0);
+	if (HasTargetname() == false) {
+		if (GetMoverState() == MOVER_POS1) {
+			ScheduleThink(PlatformReturn, 3.0);
+		}
 	}
 }
 
@@ -220,8 +225,13 @@ func_plat::Respawn(void)
 		m_handler.SetTargetPlatform(this);
 	}
 
-	SetOrigin(GetMoverPosition2());
-	SetMoverState(MOVER_POS2);
+	if (HasTargetname() == false) {
+		SetOrigin(GetMoverPosition2());
+		SetMoverState(MOVER_POS2);
+	} else {
+		SetOrigin(GetMoverPosition1());
+		SetMoverState(MOVER_POS1);
+	}
 }
 
 void
@@ -301,7 +311,7 @@ func_plat_helper::Touch(entity eToucher)
 		return;
 
 	if (targetPlat.GetMoverState() == MOVER_POS2)
-		targetPlat.MoveToPosition(targetPlat.GetMoverPosition1(), targetPlat.m_flSpeed);
+		targetPlat.Trigger(eToucher, TRIG_OFF);
 	else
 		targetPlat.SetNextThink(1.0);
 }
