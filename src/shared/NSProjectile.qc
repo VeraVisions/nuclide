@@ -34,10 +34,10 @@ NSProjectile::NSProjectile(void)
 	m_flMass = 0.0f;
 	m_flGravity = 0.0f;
 	m_flFuse = 0.0f;
-	m_bDetonateOnFuse = 0.0f;
-	m_bDetonateOnDeath = 0.0f;
-	m_bDetonateOnWorld = 0.0f;
-	m_bDetonateOnActor = 0.0f;
+	m_bDetonateOnFuse = false;
+	m_bDetonateOnDeath = true;
+	m_bDetonateOnWorld = true;
+	m_bDetonateOnActor = true;
 	m_bImpactEffect = false;
 	m_bImpactGib = false;
 	m_matDetonate = __NULL__;
@@ -525,6 +525,66 @@ NSProjectile::Death(void)
 }
 
 void
+NSProjectile::SetLightColor(vector newColor)
+{
+	m_vecLightColor = newColor;
+}
+
+void
+NSProjectile::SetLightRadius(float newRadius)
+{
+	m_flLightRadius = newRadius;
+}
+
+void
+NSProjectile::EnableDetonateOnFuse(bool enabled)
+{
+	m_bDetonateOnFuse = enabled;
+}
+
+void
+NSProjectile::EnableDetonateOnDeath(bool enabled)
+{
+	m_bDetonateOnDeath = enabled;
+}
+
+void
+NSProjectile::EnableDetonateOnWorld(bool enabled)
+{
+	m_bDetonateOnWorld = enabled;
+}
+
+void
+NSProjectile::EnableDetonateOnActor(bool enabled)
+{
+	m_bDetonateOnActor = enabled;
+}
+
+void
+NSProjectile::EnableStickToWorld(bool enabled)
+{
+	m_bStickToWorld = enabled;
+}
+
+void
+NSProjectile::EnableStickToActor(bool enabled)
+{
+	m_bStickToActor = enabled;
+}
+
+void
+NSProjectile::EnableThrustHoming(bool enabled)
+{
+	m_bThrustHoming = enabled;
+}
+
+void
+NSProjectile::EnableInheritVelocity(bool enabled)
+{
+	m_bInheritVelocity = enabled;
+}
+
+void
 NSProjectile::SetImpact(void(entity a,entity b) func)
 {
 	m_pImpact = func;
@@ -778,6 +838,10 @@ NSProjectile::EvaluateEntity(void)
 	EVALUATE_VECTOR(m_vecRenderColor, 1, PROJ_CHANGED_RENDERCOLOR)
 	EVALUATE_VECTOR(m_vecRenderColor, 2, PROJ_CHANGED_RENDERCOLOR)
 	EVALUATE_FIELD(m_flRenderAmt, PROJ_CHANGED_RENDERAMT)
+	EVALUATE_VECTOR(m_vecLightColor, 0, PROJ_CHANGED_RENDERCOLOR)
+	EVALUATE_VECTOR(m_vecLightColor, 1, PROJ_CHANGED_RENDERCOLOR)
+	EVALUATE_VECTOR(m_vecLightColor, 2, PROJ_CHANGED_RENDERCOLOR)
+	EVALUATE_FIELD(m_flLightRadius, PROJ_CHANGED_RENDERAMT)
 }
 
 /* Make sure StartFrame calls this */
@@ -810,6 +874,10 @@ NSProjectile::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_COLOR(m_vecRenderColor[1], PROJ_CHANGED_RENDERCOLOR)
 	SENDENTITY_COLOR(m_vecRenderColor[2], PROJ_CHANGED_RENDERCOLOR)
 	SENDENTITY_COLOR(m_flRenderAmt, PROJ_CHANGED_RENDERAMT)
+	SENDENTITY_COLOR(m_vecLightColor[0], PROJ_CHANGED_RENDERCOLOR)
+	SENDENTITY_COLOR(m_vecLightColor[1], PROJ_CHANGED_RENDERCOLOR)
+	SENDENTITY_COLOR(m_vecLightColor[2], PROJ_CHANGED_RENDERCOLOR)
+	SENDENTITY_FLOAT(m_flLightRadius, PROJ_CHANGED_RENDERAMT)
 
 	return (1);
 }
@@ -835,7 +903,22 @@ NSProjectile::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_COLOR(m_vecRenderColor[1], PROJ_CHANGED_RENDERCOLOR)
 	READENTITY_COLOR(m_vecRenderColor[2], PROJ_CHANGED_RENDERCOLOR)
 	READENTITY_COLOR(m_flRenderAmt, PROJ_CHANGED_RENDERAMT)
+	READENTITY_COLOR(m_vecLightColor[0], PROJ_CHANGED_RENDERCOLOR)
+	READENTITY_COLOR(m_vecLightColor[1], PROJ_CHANGED_RENDERCOLOR)
+	READENTITY_COLOR(m_vecLightColor[2], PROJ_CHANGED_RENDERCOLOR)
+	READENTITY_FLOAT(m_flLightRadius, PROJ_CHANGED_RENDERAMT)
 	setmodelindex(this, modelindex);
+	drawmask = MASK_ENGINE;
+}
+
+float
+NSProjectile::predraw(void)
+{
+	if (m_flLightRadius > 0.0f) {
+		dynamiclight_add(origin, m_flLightRadius, m_vecLightColor);
+	}
+
+	return super::predraw();
 }
 #endif
 

@@ -44,7 +44,9 @@ Objects such as rockets, grenades, bolts etc. should ideally be this. */
 class NSProjectile:NSSurfacePropEntity
 {
 private:
-	PREDICTED_FLOAT_N(traileffectnum)
+	NETWORKED_FLOAT_N(traileffectnum)
+	NETWORKED_VECTOR(m_vecLightColor)
+	NETWORKED_FLOAT(m_flLightRadius)
 
 #ifdef SERVER
 	/* sprite animation gubbins */
@@ -82,8 +84,7 @@ private:
 	string m_partSmokeFuse;
 	string m_defProjectileDebris;
 	int m_iDebrisCount;
-	vector m_vecLightColor; /* TODO */
-	float m_flLightRadius; /* TODO */
+
 	float m_flLightOffset; /* TODO */
 	vector m_vecExplodeLightColor; /* TODO */
 	float m_fExplodelLightRadius; /* TODO */
@@ -119,6 +120,7 @@ public:
 
 #ifdef CLIENT
 	virtual void ReceiveEntity(float, float);
+	virtual float predraw(void);
 #endif
 
 #ifdef SERVER
@@ -150,6 +152,18 @@ public:
 
 	/* launch the projectile into the world */
 	nonvirtual void Launch(vector, vector, float, float, float);
+
+	nonvirtual void SetLightColor(vector);
+	nonvirtual void SetLightRadius(float);
+
+	nonvirtual void EnableDetonateOnFuse(bool);
+	nonvirtual void EnableDetonateOnDeath(bool);
+	nonvirtual void EnableDetonateOnWorld(bool);
+	nonvirtual void EnableDetonateOnActor(bool);
+	nonvirtual void EnableStickToWorld(bool);
+	nonvirtual void EnableStickToActor(bool);
+	nonvirtual void EnableThrustHoming(bool);
+	nonvirtual void EnableInheritVelocity(bool);
 #endif
 };
 
