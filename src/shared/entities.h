@@ -31,6 +31,8 @@ typedef enum
 	ENT_PORTAL,		/**< of type NSPortal */
 	ENT_AMBIENTSOUND,	/**< of type ambient_generic */
 	ENT_BEAM,	/**< of type env_beam */
+	ENT_FUNNEL, /**< of type env_funnel */
+	ENT_SMOKER, /**< of type env_smoker */
 	ENT_DLIGHT,	/**< of type light_dynamic */
 	ENT_PROJECTEDTEXTURE, /**< of type env_projectedtexture */
 	ENT_SPOTLIGHT, /**< of type point_spotlight */
