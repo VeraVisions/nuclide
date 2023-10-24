@@ -15,6 +15,7 @@ shared/env_glow.qc
 shared/env_projectedtexture.qc
 shared/env_fog.qc
 shared/env_fog_controller.qc
+shared/env_smoker.qc
 shared/env_muzzleflash.qc
 //shared/env_fire.qc
 shared/env_steam.qc

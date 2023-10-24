@@ -31,6 +31,12 @@ Entity_EntityUpdate(float type, float new)
 	case ENT_BEAM:
 		NSENTITY_READENTITY(env_beam, new)
 		break;
+	case ENT_FUNNEL:
+		NSENTITY_READENTITY(env_funnel, new)
+		break;
+	case ENT_SMOKER:
+		NSENTITY_READENTITY(env_smoker, new)
+		break;
 	case ENT_LASER:
 		NSENTITY_READENTITY(env_laser, new)
 		break;
