@@ -27,6 +27,13 @@ Entity that emits items when triggered, or upon player spawn (MP-only).
 - "targetname" : Name
 - "master" : Team Master
 
+And any weapon or item you want to give to the player, you will list as a key,
+with the value being the amount of items of that type.
+
+For example:
+
+`"weapon_pistol" "1"`
+
 # SPAWNFLAGS
  - GPEFL_TRIGGERONLY (1) : See notes.
 
@@ -34,6 +41,7 @@ Entity that emits items when triggered, or upon player spawn (MP-only).
 When the flag GPEFL_TRIGGERONLY is set, the entity has to be triggered
 in order to 'give' the activator the item. Otherwise it'll automatically
 'give' every client its noted items upon spawning.
+
 However, this only applies to Multiplayer games. In Singleplayer, the entity
 will only work with GPEFL_TRIGGERONLY being set.
 

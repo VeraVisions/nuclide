@@ -503,6 +503,18 @@ void NSEntity::SetModelindex( float newModelIndex ) {
 
 }
 
+void
+NSEntity::AddAngularVelocity(vector addVel)
+{
+	avelocity += addVel;
+}
+
+void
+NSEntity::AddVelocity(vector addVel)
+{
+	velocity += addVel;
+}
+
 void NSEntity::AddEffects( float fl ) {
 	effects |= fl;
 }
@@ -790,6 +802,32 @@ void NSEntity::Input( entity eAct, string strInput, string strData ) {
 		velocity += v_right * velAdd[1];
 		velocity += v_up * velAdd[2];
 		break;
+	case "Shockwave":
+		int c = tokenize(strData);
+		
+		WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+		WriteByte(MSG_MULTICAST, EV_BEAMCYLINDER);
+		WriteCoord(MSG_MULTICAST, origin[0]);
+		WriteCoord(MSG_MULTICAST, origin[1]);
+		WriteCoord(MSG_MULTICAST, origin[2]);
+		WriteCoord(MSG_MULTICAST, angles[0]);
+		WriteCoord(MSG_MULTICAST, stof(argv(1)));
+		WriteCoord(MSG_MULTICAST, angles[2]);
+		WriteShort(MSG_MULTICAST, getmodelindex(argv(0)));
+		WriteByte(MSG_MULTICAST, stof(argv(2)));
+		WriteByte(MSG_MULTICAST, stof(argv(3)));
+		WriteByte(MSG_MULTICAST, stof(argv(4)));
+		WriteByte(MSG_MULTICAST, stof(argv(5)));
+		WriteByte(MSG_MULTICAST, stof(argv(6)));
+		WriteByte(MSG_MULTICAST, stof(argv(7)));
+		WriteByte(MSG_MULTICAST, stof(argv(8)));
+		WriteByte(MSG_MULTICAST, stof(argv(9)));
+		WriteByte(MSG_MULTICAST, stof(argv(10)));
+		WriteByte(MSG_MULTICAST, stof(argv(11)));
+
+		msg_entity = this;
+		multicast(origin, MULTICAST_PVS);
+		break;
 	default:
 		NSTrigger::Input( eAct, strInput, strData );
 	}
@@ -890,6 +928,17 @@ bool NSEntity::WithinBounds( entity check ) {
 	if not ( check.absmin[1] >= absmin[1] && check.absmax[1] <= absmax[1] )
 			return ( false );
 	if not ( check.absmin[2] >= absmin[2] && check.absmax[2] <= absmax[2] )
+			return ( false );
+
+	return ( true );
+}
+
+bool NSEntity::IntersectsWith( entity check ) {
+	if not ( check.origin[0] >= absmin[0] && check.origin[0] <= absmax[0] )
+			return ( false );
+	if not ( check.origin[1] >= absmin[1] && check.origin[1] <= absmax[1] )
+			return ( false );
+	if not ( check.origin[2] >= absmin[2] && check.origin[2] <= absmax[2] )
 			return ( false );
 
 	return ( true );

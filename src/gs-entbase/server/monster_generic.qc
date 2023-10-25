@@ -14,9 +14,11 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+#define MGF_NONSOLID 4
+
 /*!QUAKED monster_generic (1 0 0) (-8 -8 -8) (8 8 8) x x MGF_NONSOLID
 # OVERVIEW
-Decorative, does nothing yet.
+A 'monster' that is able to bleed, speak and follow scripted sequences.
 
 # KEYS
 - "targetname" : Name
@@ -29,9 +31,6 @@ Decorative, does nothing yet.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 */
-
-#define MGF_NONSOLID 4
-
 class
 monster_generic:NSTalkMonster
 {

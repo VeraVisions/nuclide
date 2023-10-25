@@ -142,8 +142,7 @@ speaker::Respawn(void)
 	/* force this thing to be networked */
 	SetModel("models/player.mdl");
 	SetOrigin(GetSpawnOrigin());
-	SetRenderMode(RM_COLOR);
-	SetRenderAmt(0);
+	Hide();
 
 	if (HasSpawnFlags(SPEAKFL_SILENT) == false)
 		ScheduleThink(Announce, 10.0f);

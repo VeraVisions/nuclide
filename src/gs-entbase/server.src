@@ -13,6 +13,8 @@ server/info_hint.qc
 server/button_target.qc
 server/cycler.qc
 server/cycler_sprite.qc
+server/cycler_weapon.qc
+server/cycler_wreckage.qc
 server/env_fade.qc
 server/env_hudhint.qc
 server/env_spark.qc
@@ -25,7 +27,15 @@ server/env_model.qc
 server/game_text.qc
 server/game_counter.qc
 server/game_counter_set.qc
+server/game_end.qc
 server/game_player_equip.qc
+server/game_player_hurt.qc
+server/game_score.qc
+server/multisource.qc
+server/game_team_master.qc
+server/game_team_set.qc
+server/game_player_team.qc
+server/game_zone_player.qc
 server/path_corner.qc
 server/path_track.qc
 server/func_areaportal.qc
@@ -107,7 +117,6 @@ server/func_mortar_field.qc
 server/monster_furniture.qc
 server/monster_generic.qc
 server/monstermaker.qc
-server/multisource.qc
 server/prop_door_rotating.qc
 server/random_speaker.qc
 server/random_trigger.qc

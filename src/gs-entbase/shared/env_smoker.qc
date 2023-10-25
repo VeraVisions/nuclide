@@ -199,6 +199,15 @@ env_smoker::Input(entity eAct, string strInput, string strData)
 	case "Use":
 		Trigger(eAct, TRIG_TOGGLE);
 		break;
+	case "SetScale":
+		m_flScale = ReadFloat(strData);
+		break;
+	case "SetDispersion":
+		m_flDispersion = ReadFloat(strData);
+		break;
+	case "SetDuration":
+		m_flDuration = ReadFloat(strData);
+		break;
 	default:
 		super::Input(eAct, strInput, strData);
 	}

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2023 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,54 +14,19 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-enumflags
-{
-	MF_WAITTILSEEN,
-	MF_GAG,
-	MF_MONSTERCLIP,
-	MF_PRISONER,
-	MF_UNUSED,
-	MF_WAITFORSCRIPT,
-	MF_PREDISASTER,
-	MF_FADECORPSE
-};
-
-/*!QUAKED monster_furniture (1 0 0) (-8 -8 -8) (8 8 8)
+/*!QUAKED cycler_weapon (1 .5 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
-A non-solid, decorative, entity.
+A development entity. When picked up, will display the viewmodel on the activating player.
 
 # KEYS
 - "targetname" : Name
-- "angles" : Sets the pitch, yaw and roll angles of the model.
-- "model" : Model file that will be displayed by the entity.
+- "model" : Model to display on the player.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 */
 class
-monster_furniture:NSMonster
+cycler_weapon:NSPointTrigger
 {
-public:
-	void monster_furniture(void);
-	
-	virtual void Respawn(void);
 
 };
-
-void
-monster_furniture::monster_furniture(void)
-{
-	spawnflags |= MSF_MULTIPLAYER;
-}
-
-void
-monster_furniture::Respawn(void)
-{
-	SetMovetype(MOVETYPE_NOCLIP);
-	SetSolid(SOLID_NOT);
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
-	SetAngles(GetSpawnAngles());
-}
-
-CLASSEXPORT(ts_model, monster_furniture)

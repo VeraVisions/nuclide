@@ -167,6 +167,12 @@ public:
 	/** Sets the movement velocity of the given entity. */
 	nonvirtual void SetVelocity(vector);
 
+
+	/** Adds onto the existing angular velocity. */
+	nonvirtual void AddAngularVelocity(vector);
+	/** Adds onto the existing velocity. */
+	nonvirtual void AddVelocity(vector);
+
 	/** Overrides the touch function of a the entity to the specified function.
 		As a result Start/EndTouch will be unreliable. */
 	nonvirtual void SetTouch(void());
@@ -333,8 +339,10 @@ public:
 	nonvirtual entity GetGroundEntity(void);
 	/** Returns if the entity was spawned by the map we're on. */
 	nonvirtual bool CreatedByMap(void);
-	/** Returns whether or not we are within the bounds of a given entity. */
+	/** Returns whether or not we are fully within the bounds of a given entity. */
 	nonvirtual bool WithinBounds(entity);
+	/** Returns whether or not the given entity insersects with us. Like a more lenient WithinBounds(). */
+	nonvirtual bool IntersectsWith(entity);
 
 	/* useful methods, (some) based on Doom 3's API */
 	/** Plays a sound sample directly onto the entity.
@@ -375,3 +383,20 @@ public:
 	/** Finds a free spot of an entity near itself of same size. Extra padding as argument. */
 	nonvirtual vector GetNearbySpot(void);
 };
+
+/** Will spawn a given classname in the type of an NSEntity at a given position and angle. */
+NSEntity
+NSEntity_SpawnClass(string className, vector spawnOrigin, vector spawnAngles)
+{
+	entity oldSelf;
+	NSEntity output = (NSEntity)spawn();
+	oldSelf = self;
+	self = output;
+	callfunction(strcat("spawnfunc_", className));
+	output.m_oldOrigin = spawnOrigin;
+	output.m_oldAngle = spawnAngles;
+	output.angles = spawnAngles;
+	setorigin(output, spawnOrigin);
+	self = oldSelf;
+	return output;
+}

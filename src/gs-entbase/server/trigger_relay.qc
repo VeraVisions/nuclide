@@ -90,7 +90,7 @@ trigger_relay::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "triggerstate":
-		m_iTriggerState = stoi(strValue);
+		m_iTriggerState = ReadInt(strValue);
 		break;
 	default:
 		super::SpawnKey(strKey, strValue);
