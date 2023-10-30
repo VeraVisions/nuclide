@@ -4,7 +4,7 @@
 ed_for_def()
 {
 printf -- "" > "/tmp/def_name"
-printf -- "" > "/tmp/def_color"
+printf -- "1 0 1" > "/tmp/def_color"
 printf -- "" > "/tmp/def_mins"
 printf -- "" > "/tmp/def_mins"
 printf -- "" > "/tmp/def_maxs"
@@ -62,6 +62,14 @@ do
 	if [ "$KEY" == "editor_usage" ]
 	then
 		printf -- "$VAL" > "/tmp/def_usage"
+	fi
+
+	if [ "$KEY" == "netname" ]
+	then
+		if [ -z "$(cat "/tmp/def_usage")" ]
+		then
+			printf -- "$VAL" > "/tmp/def_usage"
+		fi
 	fi
 
 	if [ "$KEY" == "editor_model" ]

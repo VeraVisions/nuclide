@@ -140,7 +140,7 @@ NSTrigger::SetTriggerTarget(string name)
 }
 
 int
-NSTrigger::GetValue(void)
+NSTrigger::GetValue(entity queryingEntity)
 {
 	return m_iValue;
 }
@@ -157,7 +157,7 @@ NSTrigger::GetGlobalValue(string strName)
 }
 
 int
-NSTrigger::GetMaster(void)
+NSTrigger::GetMaster(entity queryingEntity)
 {
 	NSTrigger t;
 
@@ -177,14 +177,14 @@ NSTrigger::GetMaster(void)
 		return (1);
 	}
 
-	if (t.GetValue() == 1)
+	if (t.GetValue(queryingEntity) == 1)
 		NSLog("^2%s::^3GetMaster^7: %s learns %s ^2POSITIVE", 
 			classname, targetname, m_strMaster);
 	else
 		NSLog("^2%s::^3GetMaster^7: %s learns %s ^1NEGATIVE", 
 			classname, targetname, m_strMaster);
 	
-	return t.GetValue();
+	return t.GetValue(queryingEntity);
 }
 
 string

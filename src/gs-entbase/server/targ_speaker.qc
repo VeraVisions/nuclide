@@ -104,7 +104,7 @@ targ_speaker::Respawn(void)
 void
 targ_speaker::Trigger(entity act, triggermode_t state)
 {
-	if (GetMaster() == FALSE)
+	if (GetMaster(act) == FALSE)
 		return;
 
 	sound(this, CHAN_AUTO, m_strSample, m_flVolume, ATTN_NORM);

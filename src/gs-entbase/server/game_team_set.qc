@@ -48,7 +48,7 @@ game_team_set::Trigger(entity activatorEntity, triggermode_t state)
 {
 	game_team_master toChange = __NULL__;
 
-	if (GetMaster() == FALSE) {
+	if (GetMaster(activatorEntity) == FALSE) {
 		return;
 	}
 

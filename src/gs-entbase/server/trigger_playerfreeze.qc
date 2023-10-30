@@ -55,7 +55,7 @@ trigger_playerfreeze::Respawn(void)
 void
 trigger_playerfreeze::Trigger(entity act, triggermode_t state)
 {
-	if (GetMaster() == FALSE)
+	if (GetMaster(act) == FALSE)
 		return;
 
 	m_iValue = 1 - m_iValue;

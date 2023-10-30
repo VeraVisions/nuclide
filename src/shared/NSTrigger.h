@@ -101,7 +101,7 @@ public:
 	/* master feature */
 	/** Returns what we will pass onto other's `::GetMaster()` calls if we're their master. */
 	/* multisource overrides this, so keep virtual */
-	virtual int GetValue(void);
+	virtual int GetValue(entity);
 
 	/** When called will trigger its legacy targets with a given delay. */
 	nonvirtual void UseTargets(entity,int,float);
@@ -109,8 +109,8 @@ public:
 	/** Sets the legacy target for this entity. */
 	nonvirtual void SetTriggerTarget(string);
 
-	/** Returns whether our master allows us to be triggered. */
-	nonvirtual int GetMaster(void);
+	/** Returns whether our master allows us to be triggered. The argument specifies who's requesting the info for the master. Required for game_team_master to verify against players. */
+	nonvirtual int GetMaster(entity);
 
 	/** Returns the value of a given env_global property */
 	nonvirtual globalstate_t GetGlobalValue(string);

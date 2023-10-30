@@ -60,6 +60,8 @@ func_train:NSRenderableEntity
 	float m_flWait;
 	float m_flSpeed;
 	float m_flDamage;
+	float m_flCurrentSpeed;
+
 	string m_strMoveSnd;
 	string m_strStopSnd;
 
@@ -87,7 +89,7 @@ void
 func_train::func_train(void)
 {
 	m_flWait = 0.0f;
-	m_flSpeed = 100.0f; /* FIXME: This is all decided by the first path_corner pretty much */
+	m_flSpeed = 0.0f; /* FIXME: This is all decided by the first path_corner pretty much */
 	m_flDamage = 0.0f;
 	m_strMoveSnd = __NULL__;
 	m_strStopSnd = __NULL__;
@@ -140,6 +142,9 @@ func_train::SpawnKey(string strKey, string strValue)
 		break;
 	case "snd_stop":
 		m_strStopSnd = strValue;
+		break;
+	case "speed":
+		m_flSpeed = ReadFloat(strValue);
 		break;
 	/* compatibility */
 	case "movesnd":
@@ -217,12 +222,15 @@ func_train::SoundStop(void)
 void
 func_train::PathMove(void)
 {
-	entity eNode;
+	path_corner eNode;
 	float flTravelTime;
 	vector vecVelocity;
 	vector vecWorldPos;
 
-	eNode = find(world, ::targetname, target);
+	if (!target)
+		return;
+
+	eNode = (path_corner)find(world, ::targetname, target);
 
 	if (!eNode) {
 		return;
@@ -230,7 +238,7 @@ func_train::PathMove(void)
 
 	vecWorldPos = WorldSpaceCenter();
 	vecVelocity = (eNode.origin - vecWorldPos);
-	flTravelTime = (vlen(vecVelocity) / m_flSpeed);
+	flTravelTime = (vlen(vecVelocity) / m_flCurrentSpeed);
 
 	if (!flTravelTime) {
 		print("^1func_train::^3PathMove^7: Distance short, going next\n");
@@ -240,6 +248,7 @@ func_train::PathMove(void)
 	}
 
 	SoundMove();
+	NSLog("Travelling at %f up/s", m_flSpeed);
 
 	SetVelocity(vecVelocity * (1 / flTravelTime));
 	ScheduleThink(PathNext, flTravelTime);
@@ -268,6 +277,10 @@ void
 func_train::PathNext(void)
 {
 	path_corner eNode;
+
+	if (!target)
+		return;
+
 	eNode = (path_corner)find(world, ::targetname, target);
 
 	if (!eNode) {
@@ -277,9 +290,15 @@ func_train::PathNext(void)
 	SetOrigin(eNode.origin - (mins + maxs) * 0.5);
 	PathDone();
 
+	if (eNode.m_flSpeed > 0.0f) {
+		m_flCurrentSpeed = eNode.m_flSpeed;
+	} else {
+		m_flCurrentSpeed = m_flSpeed;
+	}
+
 	/* if speed is 0, retain current speed */
-	if (eNode.m_flSpeed > 0)
-		m_flSpeed = eNode.m_flSpeed;
+	//if (eNode.m_flSpeed > 0.0f)
+		//m_flSpeed = eNode.m_flSpeed;
 
 	m_flWait = eNode.m_flWait;
 	SetTriggerTarget(eNode.target);

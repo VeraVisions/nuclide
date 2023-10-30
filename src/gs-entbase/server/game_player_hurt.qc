@@ -85,7 +85,7 @@ game_player_hurt::Restore(string strKey, string strValue)
 void
 game_player_hurt::Trigger(entity activatingEntity, triggermode_t triggerMode)
 {
-	if (GetMaster() == FALSE) {
+	if (GetMaster(activatingEntity) == FALSE) {
 		return;
 	}
 	if (!(activatingEntity.flags & FL_CLIENT)) {

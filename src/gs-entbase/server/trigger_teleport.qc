@@ -168,7 +168,7 @@ trigger_teleport::Respawn(void)
 void
 trigger_teleport::Touch(entity eToucher)
 {
-	if (GetMaster() == FALSE)
+	if (GetMaster(eToucher) == FALSE)
 		return;
 	if (m_bEnabled == false)
 		return;

@@ -157,7 +157,7 @@ trigger_look::Touch(entity eToucher)
 	float dot;
 	entity lt;
 
-	if (GetMaster() == FALSE)
+	if (GetMaster(eToucher) == FALSE)
 		return;
 
 	if (!(eToucher.flags & FL_CLIENT)) {

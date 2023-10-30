@@ -301,7 +301,7 @@ multi_manager::Trigger(entity act, triggermode_t state)
 		UseTargets(wow.m_eActivator, TRIG_TOGGLE, 0.0f);
 	}
 
-	if (GetMaster() == FALSE)
+	if (GetMaster(act) == FALSE)
 		return;
 
 	m_iValue = TRUE;

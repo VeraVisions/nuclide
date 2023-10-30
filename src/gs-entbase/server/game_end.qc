@@ -42,7 +42,7 @@ game_end::game_end(void)
 void
 game_end::Trigger(entity activatingEntity, triggermode_t triggerMode)
 {
-	if (GetMaster() == FALSE) {
+	if (GetMaster(activatingEntity) == FALSE) {
 		return;
 	}
 

@@ -50,7 +50,7 @@ trigger_endsection::Respawn(void)
 void
 trigger_endsection::Trigger(entity act, triggermode_t state)
 {
-	if (GetMaster() == FALSE)
+	if (GetMaster(act) == FALSE)
 		return;
 
 	localcmd("disconnect\n");

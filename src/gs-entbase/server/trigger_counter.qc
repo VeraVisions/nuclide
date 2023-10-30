@@ -111,7 +111,7 @@ trigger_counter::Trigger(entity act, triggermode_t state)
 		return;
 	if (HasSpawnFlags(TRCNT_NOCLIENTS) && act.flags & FL_CLIENT)
 		return;
-	if (GetMaster() == FALSE)
+	if (GetMaster(act) == FALSE)
 		return;
 
 	m_iCounted++;

@@ -173,7 +173,7 @@ trigger_once::Touch(entity eToucher)
 {
 	bool isPushable = (substring(eToucher.classname, 0, 5) == "func_") ? true : false;
 
-	if (GetMaster() == FALSE)
+	if (GetMaster(eToucher) == FALSE)
 		return;
 
 	if (m_bEnabled == false)

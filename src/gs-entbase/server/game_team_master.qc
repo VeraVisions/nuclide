@@ -42,7 +42,7 @@ public:
 	virtual void SpawnKey(string, string);
 	virtual void Input(entity, string, string);
 	virtual void Trigger(entity, triggermode_t);
-
+	virtual int GetValue(entity);
 	nonvirtual void SetTeamIndex(int);
 	nonvirtual int GetTeamIndex(void);
 
@@ -99,7 +99,7 @@ game_team_master::SpawnKey(string keyName, string setValue)
 void
 game_team_master::Trigger(entity entityActivator, triggermode_t state)
 {
-	if (GetMaster() == FALSE) {
+	if (GetMaster(entityActivator) == FALSE) {
 		return;
 	}
 
@@ -123,6 +123,15 @@ game_team_master::Input(entity entityActivator, string inputName, string dataFie
 		super::Input(entityActivator, inputName, dataField);
 		break;
 	}
+}
+
+int
+game_team_master::GetValue(entity queryingEntity)
+{
+	if (queryingEntity.team == (float)m_iTeamIndex)
+		return TRUE;
+
+	return FALSE;
 }
 
 void

@@ -411,7 +411,7 @@ func_door_rotating::MoverStartsMoving(void)
 void
 func_door_rotating::Trigger(entity act, triggermode_t state)
 {
-	if (GetMaster() == FALSE) {
+	if (GetMaster(act) == FALSE) {
 		return;
 	}
 
@@ -465,7 +465,7 @@ func_door_rotating::Touch(entity eToucher)
 		return;
 	}
 
-	if (m_iLocked || !GetMaster()) {
+	if (m_iLocked || !GetMaster(eToucher)) {
 		if (m_flSoundWait < time)
 			Sound_Play(this, CHAN_VOICE, m_strLockedSfx);
 

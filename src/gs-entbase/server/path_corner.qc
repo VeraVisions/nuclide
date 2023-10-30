@@ -69,7 +69,7 @@ void
 path_corner::path_corner(void)
 {
 	m_iFired = 0i;
-	m_flSpeed = 100.0f;
+	m_flSpeed = 0.0f;
 	m_flYawSpeed = 0.0f;
 	m_flWait = 1.0f;
 }
@@ -110,16 +110,16 @@ path_corner::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "speed":
-		m_flSpeed = stof(strValue);
+		m_flSpeed = ReadFloat(strValue);
 		break;
 	case "yaw_speed":
-		m_flYawSpeed = stof(strValue);
+		m_flYawSpeed = ReadFloat(strValue);
 		break;
 	case "wait":
-		m_flWait = stof(strValue);
+		m_flWait = ReadFloat(strValue);
 		break;
 	case "message":
-		m_strMessage = strValue;
+		m_strMessage = ReadString(strValue);
 		break;
 	default:
 		super::SpawnKey(strKey, strValue);

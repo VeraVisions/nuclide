@@ -37,7 +37,7 @@ public:
 	
 	virtual void Respawn(void);
 	virtual int QueryTargets(void);
-	virtual int GetValue(void);
+	virtual int GetValue(entity);
 	virtual void Trigger(entity, triggermode_t);
 
 };
@@ -68,7 +68,7 @@ multisource::Trigger(entity act, triggermode_t unused)
 }
 
 int
-multisource::GetValue(void)
+multisource::GetValue(entity queryingEntity)
 {
 	return QueryTargets();
 }
@@ -92,7 +92,7 @@ multisource::QueryTargets(void)
 		if (cvar("developer") == 1) {
 			dprint("[^1MULTISOURCE^7] ");
 			dprint(tTemp.classname);
-			if (tTemp.GetValue() == FALSE) {
+			if (tTemp.GetValue(this) == FALSE) {
 				dprint(" is ^1OFF^7, name: ");
 				out = FALSE;
 			} else {
@@ -102,7 +102,7 @@ multisource::QueryTargets(void)
 			dprint("\n");
 		} else {
 			/* exit out immediately as there's no point unless in-dev */
-			if (tTemp.GetValue() == FALSE) {
+			if (tTemp.GetValue(this) == FALSE) {
 				return (0);
 			}
 		}

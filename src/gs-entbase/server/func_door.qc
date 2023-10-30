@@ -487,7 +487,7 @@ func_door::MoverStartsMoving(void)
 void
 func_door::Trigger(entity act, triggermode_t triggerstate)
 {
-	if (GetMaster() == 0)
+	if (GetMaster(act) == 0)
 		return;
 
 	if (m_flNextTrigger > time) {
@@ -520,7 +520,7 @@ func_door::Touch(entity eToucher)
 	if (HasSpawnFlags(SF_MOV_USE) == true)
 		return;
 
-	if (m_iLocked || !GetMaster()) {
+	if (m_iLocked || !GetMaster(eToucher)) {
 		if (m_flSoundWait < time)
 			Sound_Play(this, CHAN_VOICE, m_strLockedSfx);
 

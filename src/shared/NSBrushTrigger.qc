@@ -20,7 +20,7 @@ NSBrushTrigger::NSBrushTrigger(void)
 }
 
 int
-NSBrushTrigger::GetValue(void)
+NSBrushTrigger::GetValue(entity queryingEntity)
 {
 	if (GetSolid() == SOLID_NOT) {
 		return (1);

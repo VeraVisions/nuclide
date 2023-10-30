@@ -86,7 +86,7 @@ trigger_autosave::Respawn(void)
 void
 trigger_autosave::Touch(entity eToucher)
 {
-	if (GetMaster() == FALSE)
+	if (GetMaster(eToucher) == FALSE)
 		return;
 
 	/* saved text */

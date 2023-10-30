@@ -89,6 +89,7 @@ private:
 	float m_flDamage;
 	float m_flHeight;
 	float m_flStartSpeed;
+	float m_flCurrentSpeed;
 	float m_flBank;
 	string m_strMoveSnd;
 	string m_strStopSnd;
@@ -182,6 +183,9 @@ void
 func_tracktrain::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
+	case "speed":
+		m_flSpeed = ReadFloat(strValue);
+		break;
 	case "startspeed":
 		m_flStartSpeed = stof(strValue);
 		break;
@@ -237,7 +241,7 @@ func_tracktrain::Respawn(void)
 	SetModel(GetSpawnModel());
 	SetOrigin(GetSpawnOrigin());
 
-	m_flSpeed = m_flStartSpeed;
+	m_flCurrentSpeed = m_flStartSpeed;
 
 	ScheduleThink(AfterSpawn, 0.0f);
 	SetTriggerTarget(m_oldstrTarget);
@@ -296,7 +300,7 @@ func_tracktrain::PathMove(void)
 	vecWorldPos = origin;
 
 	vecVelocity = (eNode.origin + [0,0,m_flHeight]) - vecWorldPos;
-	flTravelTime = (vlen(vecVelocity) / m_flSpeed);
+	flTravelTime = (vlen(vecVelocity) / m_flCurrentSpeed);
 
 	if (!flTravelTime) {
 		print("^1func_tracktrain::^3PathMove^7: Distance short, going next\n");
@@ -399,7 +403,9 @@ func_tracktrain::PathNext(void)
 
 	/* if speed is 0, retain current speed */
 	if (eNode.m_flSpeed > 0)
-		m_flSpeed = eNode.m_flSpeed;
+		m_flCurrentSpeed = eNode.m_flSpeed;
+	else
+		m_flCurrentSpeed = m_flSpeed;
 
 	m_flWait = eNode.m_flWait;
 	target = eNode.target;
@@ -447,7 +453,9 @@ func_tracktrain::AfterSpawn(void)
 
 	/* if speed is 0, retain current speed */
 	if (eNode.m_flSpeed > 0)
-		m_flSpeed = eNode.m_flSpeed;
+		m_flCurrentSpeed = eNode.m_flSpeed;
+	else
+		m_flCurrentSpeed = m_flSpeed;
 
 	m_flWait = eNode.m_flWait;
 	target = eNode.target;

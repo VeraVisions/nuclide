@@ -279,7 +279,7 @@ trigger_changelevel::Change(void)
 void
 trigger_changelevel::Trigger(entity act, triggermode_t unused)
 {
-	if (GetMaster() == FALSE)
+	if (GetMaster(act) == FALSE)
 		return;
 
 	/* disable meself */

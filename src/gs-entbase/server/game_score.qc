@@ -86,7 +86,7 @@ game_score::Trigger(entity entityActivator, triggermode_t state)
 {
 	int toAdd = m_iPoints;
 
-	if (GetMaster() == FALSE) {
+	if (GetMaster(entityActivator) == FALSE) {
 		return;
 	}
 

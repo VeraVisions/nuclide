@@ -51,7 +51,7 @@ game_player_team::Trigger(entity entityActivator, triggermode_t state)
 	NSClientPlayer targetPlayer = __NULL__;
 	game_team_master toRead = __NULL__;
 
-	if (GetMaster() == FALSE) {
+	if (GetMaster(entityActivator) == FALSE) {
 		return;
 	}
 

@@ -132,7 +132,7 @@ random_speaker::Respawn(void)
 void
 random_speaker::Trigger(entity act, triggermode_t state)
 {
-	if (GetMaster() == FALSE)
+	if (GetMaster(act) == FALSE)
 		return;
 
 	switch (state) {

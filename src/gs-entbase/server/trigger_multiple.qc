@@ -204,7 +204,7 @@ trigger_multiple::Input(entity entityActivator, string inputName, string dataFie
 void
 trigger_multiple::Touch(entity eToucher)
 {
-	if (GetMaster() == FALSE)
+	if (GetMaster(eToucher) == FALSE)
 		return;
 
 	if (m_bEnabled == false)
@@ -217,6 +217,8 @@ trigger_multiple::Touch(entity eToucher)
 		if (!HasSpawnFlags(TM_MONSTERS) && eToucher.flags & FL_MONSTER)
 			return;
 		if (!HasSpawnFlags(TM_PUSHABLES) && eToucher.classname == "func_pushable")
+			return;
+		if (eToucher.solid == SOLID_TRIGGER)
 			return;
 	} else if (CanBeTriggeredBy(eToucher) == false) {
 		return;

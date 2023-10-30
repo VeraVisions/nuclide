@@ -123,6 +123,7 @@ game_counter::Respawn(void)
 void
 game_counter::SetCount(int value)
 {
+	NSLog("%s's count set to %i", targetname, value);
 	m_iCounted = value;
 }
 
@@ -135,13 +136,19 @@ game_counter::GetCount(void)
 void
 game_counter::Trigger(entity act, triggermode_t state)
 {
-	if (GetMaster() == FALSE)
+	if (GetMaster(act) == FALSE)
 		return;
 
+	NSLog("%s's incremented by 1", targetname);
 	m_iCounted++;
 
 	if (m_iCounted < m_iMaxCount)
 		return;
+
+	NSLog("%s's triggering %s", targetname, target);
+	//print(sprintf("%s %s %i %i\n", classname, targetname, m_iCounted, m_iMaxCount ));
+	//error(sprintf("%s %i %i\n", act.classname, m_iCounted, m_iMaxCount ));
+	UseTargets(act, TRIG_TOGGLE, m_flDelay);
 
 	if (HasSpawnFlags(GMCNT_REMOVE))
 		Destroy();
@@ -150,5 +157,4 @@ game_counter::Trigger(entity act, triggermode_t state)
 	else
 		m_iValue = 1;
 
-	UseTargets(act, TRIG_TOGGLE, m_flDelay);
 }

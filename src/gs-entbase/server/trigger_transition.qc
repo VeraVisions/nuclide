@@ -45,6 +45,7 @@ void
 trigger_transition::Respawn(void)
 {
 	InitBrushTrigger();
+	SetSolid(SOLID_NOT);
 }
 
 void

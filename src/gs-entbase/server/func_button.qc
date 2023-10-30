@@ -343,7 +343,7 @@ func_button::MoverStartsMoving(void)
 void
 func_button::Trigger(entity act, triggermode_t state)
 {
-	if (GetMaster() == FALSE)
+	if (GetMaster(act) == FALSE)
 		return;
 
 	UseOutput(act, m_strOnUseLocked);

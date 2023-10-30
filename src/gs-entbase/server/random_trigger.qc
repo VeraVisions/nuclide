@@ -123,7 +123,7 @@ random_trigger::Trigger(entity act, triggermode_t state)
 {
 	float r;
 
-	if (GetMaster() == FALSE)
+	if (GetMaster(act) == FALSE)
 		return;
 
 	r = time + m_flMinTime + random(m_flRandMin, m_flRandMax);

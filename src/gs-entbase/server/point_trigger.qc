@@ -219,7 +219,7 @@ point_trigger::Input(entity eAct, string strInput, string strData)
 void
 point_trigger::Touch(entity eToucher)
 {
-	if (GetMaster() == false)
+	if (GetMaster(eToucher) == false)
 		return;
 	if (m_bEnabled == false)
 		return;
