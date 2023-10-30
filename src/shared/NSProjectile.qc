@@ -35,9 +35,9 @@ NSProjectile::NSProjectile(void)
 	m_flGravity = 0.0f;
 	m_flFuse = 0.0f;
 	m_bDetonateOnFuse = false;
-	m_bDetonateOnDeath = true;
-	m_bDetonateOnWorld = true;
-	m_bDetonateOnActor = true;
+	m_bDetonateOnDeath = false;
+	m_bDetonateOnWorld = false;
+	m_bDetonateOnActor = false;
 	m_bImpactEffect = false;
 	m_bImpactGib = false;
 	m_matDetonate = __NULL__;
