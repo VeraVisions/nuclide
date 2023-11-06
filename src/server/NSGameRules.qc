@@ -15,6 +15,8 @@
 */
 
 var bool autocvar_sv_friendlyFire = false;
+var int autocvar_mp_td_dmgToKick = 300i;
+var int autocvar_mp_td_dmgToWarn = 200i;
 
 void
 NSGameRules::NSGameRules(void)
@@ -265,6 +267,8 @@ NSGameRules::IsMultiplayer(void)
 void
 NSGameRules::DamageApply(entity t, entity c, float dmg, int w, damageType_t type)
 {
+	bool isFriendlyFire = false;
+
 	/* Damage */
 	NSSurfacePropEntity eTarget = (NSSurfacePropEntity)t;
 
@@ -280,13 +284,19 @@ NSGameRules::DamageApply(entity t, entity c, float dmg, int w, damageType_t type
 	if (eTarget.flags & FL_CLIENT && eTarget.flags & FL_GODMODE)
 		return;
 
-	/* friendly fire */
-	if (autocvar_sv_friendlyFire == false)
-	if (t != c)
-	if (IsTeamplay()) {
-		if (t.flags & FL_CLIENT && c.flags & FL_CLIENT)
-			if (t.team == c.team)
-				return;
+	/* friendly fire check */
+	if (t != c) {
+		if (IsTeamplay()) {
+			if (t.flags & FL_CLIENT && c.flags & FL_CLIENT) {
+				if (t.team == c.team) {
+					if (autocvar_sv_friendlyFire == false) {
+						return;
+					} else {
+						isFriendlyFire = true;
+					}
+				}
+			}
+		}
 	}
 
 	/* already dead, please avoid recursion */
@@ -345,6 +355,27 @@ NSGameRules::DamageApply(entity t, entity c, float dmg, int w, damageType_t type
 	NSLog("\tHit-body: %d", g_dmg_iHitBody);
 	NSLog("\tFlags: %i", g_dmg_iFlags);
 	NSLog("\tWeapon: %i", g_dmg_iWeapon);
+
+	/* friendly fire penalty */
+	if (isFriendlyFire) {
+		int lastDmg = 0i;
+		NSClientPlayer plC = (NSClientPlayer)c;
+		lastDmg = plC.m_iFriendlyDMG;
+		plC.m_iFriendlyDMG += dmg;
+
+		/* kick the client. */
+		if (plC.m_iFriendlyDMG >= autocvar_mp_td_dmgToKick) {
+			NSLog("Kicking %S due to team damage rules.", plC.netname);
+			dropclient(plC);
+		} else if (plC.m_iFriendlyDMG >= autocvar_mp_td_dmgToWarn) {
+			if (lastDmg < autocvar_mp_td_dmgToKick) {
+				// warn player here
+				sprint(plC, PRINT_CHAT, "Keep attacking teammates and you will be kicked!\n");
+			}
+		}
+
+		bprint(PRINT_CHAT, sprintf("%s ^7attacked a teammate.\n", c.netname));
+	}
 
 	if (dmg > 0 || flArmor > 0) {
 		vector dmg_origin;

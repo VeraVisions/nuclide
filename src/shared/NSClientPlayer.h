@@ -172,6 +172,8 @@ private:
 	float pb_angle_delta;
 	float pb_player_delta;
 	vector pb_last_angles;
+
+	int m_iFriendlyDMG;
 #endif
 };
 
