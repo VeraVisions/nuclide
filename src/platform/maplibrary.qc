@@ -20,6 +20,7 @@ typedef struct
 	string title;
 	string author;
 	string type;
+	string preview;
 } mapLibrary_t;
 
 mapLibrary_t *g_mapLibrary;
@@ -63,6 +64,31 @@ MapLibrary_MapInGameDir(string fileName, string gameDir)
 	}
 
 	return list;
+}
+
+static string
+MapLibrary_FindPreview(string mapFile)
+{
+	string imageExtensions = strcat(cvar_string("r_imageextensions"), " mat");
+	int imageFormats = (int)tokenize(imageExtensions);
+	string previewFile = "";
+	string mapName = substring(mapFile, 0, strlen(mapFile) - 4);
+
+	/* cycle through all possible extensions */
+	for (int i = 0; i < imageFormats; i++) {
+		previewFile = strcat("levelshots/", mapName, ".", argv(i));
+
+		if (whichpack(previewFile)) {
+			return previewFile;
+		}
+
+		previewFile = strcat("maps/", mapName, ".", argv(i));
+		if (whichpack(previewFile)) {
+			return previewFile;
+		}
+	}
+
+	return __NULL__;
 }
 
 void
@@ -137,6 +163,8 @@ MapLibrary_Init(void)
 			g_mapLibrary[c].title = mapFile;
 			g_mapLibrary[c].author = "Unknown";
 			g_mapLibrary[c].type = "Unknown";
+			g_mapLibrary[c].preview = MapLibrary_FindPreview(mapFile);
+
 			c++;
 		}
 	}
@@ -171,6 +199,9 @@ MapLibrary_GetInfo(int mapID, mapType_t infoType)
 		break;
 	case MAPINFO_TYPE:
 		return g_mapLibrary[mapID].type;
+		break;
+	case MAPINFO_PREVIEW:
+		return g_mapLibrary[mapID].preview;
 		break;
 	default:
 		return __NULL__;
