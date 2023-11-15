@@ -39,6 +39,19 @@ NSItem::Spawned(void)
 void
 NSItem::Respawn(void)
 {
+	/* we need to delay the DropToFloor() by at least a frame.
+	   otherwise they may just fall through an entity (func_wall, func_train etc.)
+	   that came after this entity in the lump. */
+	static void AdjustSpawnPos(void) {
+		RestoreAngles();
+		SetOrigin(GetSpawnOrigin());
+
+		if (!m_bFloating) {
+			DropToFloor();
+			SetMovetype(MOVETYPE_TOSS);
+		}
+	}
+
 	SetSolid(SOLID_TRIGGER);
 	SetOrigin(GetSpawnOrigin());
 	botinfo = BOTINFO_WEAPON;
@@ -54,12 +67,7 @@ NSItem::Respawn(void)
 	}
 
 	SetSize([-16,-16,0], [16,16,16]);
-	ReleaseThink();
-
-	if (!m_bFloating) {
-		DropToFloor();
-		SetMovetype(MOVETYPE_TOSS);
-	}
+	ScheduleThink(AdjustSpawnPos, 0.0f);
 }
 
 void
