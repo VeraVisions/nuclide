@@ -20,18 +20,46 @@ enumflags
 	TRIGTELE_NOCLIENTS
 };
 
-/*!QUAKED trigger_teleport (.5 .5 .5) ? MONSTERS NOCLIENTS
+/*!QUAKED trigger_teleport (.5 .5 .5) ? CLIENTS NPCS PUSHABLES PHYSICS FRIENDLIES CLIENTSINVEHICLES EVERYTHING x x CLIENTSNOTINVEHICLES DEBRIS NPCSINVEHICLES NOBOTS
 # OVERVIEW
 Teleportation volume. Teleports anything it touches to the position of
-any entity set as the "target". Works best with info_teleport_destination.
+any entity set as the "target".
 
 # KEYS
 - "targetname" : Name
 - "target" : Which target to teleport to.
+- "snd_teleport" : SoundDef to play on the entity teleporting.
+- "snd_teleport_enter" : SoundDef to play on the teleporter entrance.
+- "snd_teleport_exit" : SoundDef to play on the teleporter exit.
+- "StartDisabled" : Entity will have to be enabled in order to work when set to 1.
+
+# INPUTS
+- "Enable" : Enable the entity.
+- "Disable" : Disable the entity.
+- "Toggle" : Toggles between enabled/disabled states.
 
 # SPAWNFLAGS
-- MONSTERS (1) : Allow monsters to use this teleporter.
-- NOCLIENTS (2) : Disallow clients from using this teleporter.
+- TF_CLIENTS (1) : Clients can touch it.
+- TF_NPCS (2) : NPCs can touch it.
+- TF_PUSHABLE (4) : Pushables can touch it.
+- TF_PHYSICS (8) : NSPhysicsEntity based classes can touch it.
+- TF_FRIENDLIES (16) : Friendly NPCs can touch it.
+- TF_CLIENTSINVEHICLES (32) : Clients within vehicles can touch it.
+- TF_EVERYTHING (64) : Everything can touch it.
+- TF_CLIENTSNOTINVEHICLES (512) : Clients outside vehicles can touch it.
+- TF_DEBRIS (1024) : Debris can touch it.
+- TF_NPCSINVEHICLES (2048) : NPCs in vehicles can touch it.
+- TF_NOBOTS (4096) : Bots are never allowed to touch it.
+
+# SPAWNFLAGS (LEGACY)
+These work when 'StartDisabled' is not set in the entity definition.
+
+- TM_MONSTERS (1) : Allow NPCs to activate this entity.
+- TM_NOCLIENTS (2) : Don't allow players to activate this entity.
+- TM_PUSHABLES (4) : Allow func_pushables to trigger this entity.
+
+# NOTES
+Works best with info_teleport_destination, but you can in theory use any other point entity as well.
 
 # TRIVIA
 This entity was introduced in Quake (1996).
@@ -180,15 +208,23 @@ trigger_teleport::Touch(entity eToucher)
 		entity eTarget = find(world, ::targetname, target);
 
 		if (eTarget) {
-			vector endpos = eTarget.origin + [0,0,16];
+			vector endpos = eTarget.origin;
 			float flSpeed = vlen(eToucher.velocity);
 			makevectors(eTarget.angles);
 			eToucher.velocity = (v_forward * flSpeed);
 			eToucher.angles = eTarget.angles;
-			setorigin_safe(eToucher, endpos);
 
-			if (eToucher.flags & FL_CLIENT)
+			if (eToucher.flags & FL_CLIENT) {
 				Client_FixAngle(eToucher, eToucher.angles);
+
+				/* level designers place destinations where the feet
+				   are going to be, because monsters are mainly set up
+				   to be that way (0 0 0 being ground). players however 
+				   have their it at the center of mass, so nudge it a little. */
+				endpos[2] -= eToucher.mins[2]; 
+			}
+
+			setorigin_safe(eToucher, endpos);
 
 			if (m_sndTeleport) {
 				Sound_Play(eToucher, CHAN_VOICE, m_sndTeleport);
@@ -212,8 +248,13 @@ trigger_teleport::Touch(entity eToucher)
 }
 
 /*!QUAKED info_teleport_destination (1 0 0) (-8 -8 -8) (8 8 8)
+# OVERVIEW
+Entity designed to designate a destination for a trigger_teleport.
+
+# KEYS
 "targetname"    Name
 
-Entity designed to designate a destination for a trigger_teleport.
+# TRIVIA
+This entity was introduced in Quake (1996).
 */
 CLASSEXPORT(info_teleport_destination, info_notnull)
