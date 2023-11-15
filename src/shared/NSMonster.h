@@ -381,6 +381,8 @@ public:
 
 	/** Returns TRUE if 'enemy' should be considered a valid target for killing */
 	nonvirtual bool IsValidEnemy(entity);
+	/** Returns TRUE if the monster is currently on route to a position. */
+	virtual bool IsOnRoute(void);
 
 	/* sequences */
 	/** Internal use only. Called when a sequence is done. */

@@ -646,6 +646,12 @@ NSMonster::IsValidEnemy(entity enny)
 	return true;
 }
 
+bool
+NSMonster::IsOnRoute(void)
+{
+	return (m_iNodes || m_pathTarget) && (GetState() == MONSTER_IDLE || GetState() == MONSTER_ALERT) ? true : false;
+}
+
 static bool
 NSMonster_TraceAgainsTarget(NSMonster monster, NSEntity target)
 {
@@ -1258,12 +1264,11 @@ NSMonster::RouteEnded(void)
 void
 NSMonster::WalkRoute(void)
 {
-
 	/* we're busy shooting at something, don't walk */
 	if (GetState() == MONSTER_AIMING && m_eEnemy) {
 		input_angles = vectoangles(m_eEnemy.origin - origin);
 		input_angles[0] = input_angles[2] = 0;
-	} else if ((m_iNodes || m_pathTarget) && (GetState() == MONSTER_IDLE || GetState() == MONSTER_ALERT)) {
+	} else if (IsOnRoute()) {
 		input_angles = GetRouteDirection();
 		input_angles[0] = input_angles[2] = 0;
 		input_movevalues = GetRouteMovevalues() * m_flSequenceSpeed;
@@ -1548,8 +1553,30 @@ NSMonster::Touch(entity eToucher)
 
 	if (autocvar(pm_pushMonsters, 0))
 	if (eToucher.movetype == MOVETYPE_WALK) {
-		if (eToucher.absmin[2] < origin[2])
-			velocity = normalize(eToucher.origin - origin) * -128;
+		if (eToucher.absmin[2] < origin[2]) {
+			float bestYaw = 0.0f;
+			float best_fraction = 0.0f;
+			vector bestPos = g_vec_null;
+
+			for (float yaw = angles[1]; yaw < (angles[1] + 360.0f); yaw += 1.0f) {
+				makevectors([0, yaw, 0]);
+				tracebox(origin, mins, maxs, origin + (v_forward * 128.0f), FALSE, this);
+
+				if (trace_startsolid) {
+					bestYaw = random(0, 360);
+					break;
+				}
+
+				if (trace_fraction > best_fraction) {
+					best_fraction = trace_fraction;
+					bestYaw = yaw;
+					bestPos = trace_endpos;
+				}
+			}
+
+			RouteToPosition(bestPos);
+			m_flSequenceSpeed = GetWalkSpeed();
+		}
 	}
 }
 

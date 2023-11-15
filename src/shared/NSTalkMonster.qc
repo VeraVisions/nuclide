@@ -308,6 +308,9 @@ NSTalkMonster::Speak(string sentence)
 void
 NSTalkMonster::TalkPlayerGreet(void)
 {
+	if (HasSpawnFlags(MSF_GAG))
+		return;
+
 	if (m_iSequenceState != SEQUENCESTATE_NONE)
 		return;
 
@@ -336,10 +339,12 @@ NSTalkMonster::TalkPlayerGreet(void)
 void
 NSTalkMonster::TalkPlayerIdle(void)
 {
+	if (HasSpawnFlags(MSF_GAG))
+		return;
+
 	if (m_iSequenceState != SEQUENCESTATE_NONE)
 		return;
-	if (HasSpawnFlags(MSF_PREDISASTER))
-		return;
+
 	if (m_flNextSentence > time)
 		return;
 
@@ -366,10 +371,12 @@ NSTalkMonster::TalkPlayerIdle(void)
 void
 NSTalkMonster::TalkPlayerAsk(void)
 {
+	if (HasSpawnFlags(MSF_GAG))
+		return;
+
 	if (m_iSequenceState != SEQUENCESTATE_NONE)
 		return;
-	if (HasSpawnFlags(MSF_PREDISASTER))
-		return;
+
 	if (m_flNextSentence > time)
 		return;
 
@@ -391,6 +398,9 @@ NSTalkMonster::TalkPlayerAsk(void)
 void
 NSTalkMonster::TalkPlayerWounded1(void)
 {
+	if (HasSpawnFlags(MSF_GAG))
+		return;
+
 	if (m_iSequenceState != SEQUENCESTATE_NONE)
 		return;
 
@@ -417,6 +427,9 @@ NSTalkMonster::TalkPlayerWounded1(void)
 void
 NSTalkMonster::TalkPlayerWounded2(void)
 {
+	if (HasSpawnFlags(MSF_GAG))
+		return;
+
 	if (m_iSequenceState != SEQUENCESTATE_NONE)
 		return;
 
@@ -444,6 +457,9 @@ NSTalkMonster::TalkPlayerWounded2(void)
 void
 NSTalkMonster::TalkPlayerWounded3(void)
 {
+	if (HasSpawnFlags(MSF_GAG))
+		return;
+
 	if (m_iSequenceState != SEQUENCESTATE_NONE)
 		return;
 
@@ -468,6 +484,9 @@ NSTalkMonster::TalkPlayerWounded3(void)
 void
 NSTalkMonster::TalkPanic(void)
 {
+	if (HasSpawnFlags(MSF_GAG))
+		return;
+
 	if (m_iSequenceState != SEQUENCESTATE_NONE)
 		return;
 
@@ -519,6 +538,9 @@ NSTalkMonster::TalkDenyFollow(void)
 void
 NSTalkMonster::Touch(entity eToucher)
 {
+	if (eToucher == world)
+		return;
+
 	if (eToucher == m_eFollowing) {
 		makevectors(eToucher.angles);
 		velocity = v_forward * 250.0f;
@@ -634,23 +656,35 @@ NSTalkMonster::FollowPlayer(void)
 void
 NSTalkMonster::PanicFrame(void)
 {
+	float bestYaw = 0.0f;
+	float best_fraction = 0.0f;
+	float secondBest = 0.0f;
+
 	m_iFlags |= MONSTER_METPLAYER;
 	input_movevalues = [240, 0, 0];
 
 	if (m_flTraceTime < time) {
-		traceline(origin, origin + (v_forward * 64), FALSE, this);
-				
-		if (trace_fraction < 1.0f) {
-			m_flChangePath = 0.0f;
+		for (float yaw = -180.0f; yaw < 180.0f; yaw += 1.0f) {
+			makevectors([0, yaw, 0]);
+			tracebox(origin, mins, maxs, origin + (v_forward * 1024), FALSE, this);
+
+			if (trace_startsolid) {
+				bestYaw = random(0, 360);
+				break;
+			}
+
+			if (trace_fraction > best_fraction) {
+				best_fraction = trace_fraction;
+				bestYaw = yaw;
+			}
 		}
-		m_flTraceTime = time + 0.5f;
+
+		angles[1] = Math_FixDelta(bestYaw + random(-25, 25));
+		input_angles[1] = angles[1];
+		v_angle[1] = angles[1];
+		m_flTraceTime = time + 0.5f + random();
 	}
 
-	if (m_flChangePath < time) {
-		input_angles[1] -= 180 + ((random() - 0.5) * 90);
-		input_angles[1] = Math_FixDelta(input_angles[1]);
-		m_flChangePath = time + floor(random(2,10));
-	}
 
 	if (m_flNextSentence > time)
 		return;
@@ -1112,7 +1146,7 @@ NSTalkMonster_ParseSentence(void)
 	ent = findfloat(world, entnum, e);
 
 	if (ent) {
-		if (ent.classname != "NSTalkMonster" && ent.classname != "ambient_generic")
+		if (ent.classname != "speaker" && ent.classname != "NSTalkMonster" && ent.classname != "ambient_generic")
 		NSMonster_Log("^3 NSTalkMonster_ParseSentence ^7: Entity %d not a NSTalkMonster!", e);
 		else {
 			targ = (NSTalkMonster)ent;

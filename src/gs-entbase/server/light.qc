@@ -168,8 +168,14 @@ light::SpawnKey(string strKey, string strValue)
 	case "_cone":
 	case "_cone2":
 	case "_sky":
-	case "pitch":
 	case "_light":
+		break;
+	/* mostly for light_environment */
+	case "pitch":
+		angles[0] = ReadFloat(strValue);
+		break;
+	case "sunangle":
+		angles[1] = ReadFloat(strValue);
 		break;
 	default:
 		super::SpawnKey(strKey, strValue);
@@ -236,9 +242,22 @@ light::Trigger(entity act, triggermode_t state)
 }
 
 CLASSEXPORT(light_spot, light)
-CLASSEXPORT(light_environment, light)
+
+class
+light_environment:light
+{
+public:
+	void light_environment(void);
+};
+
+void
+light_environment::light_environment(void)
+{
+
+}
 
 /*!QUAKED light_surface (0 1 0) (-8 -8 -8) (8 8 8)
+# OVERVIEW
 Material property modifier related to lighting.
 
 # KEYS

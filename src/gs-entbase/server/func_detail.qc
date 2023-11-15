@@ -30,3 +30,14 @@ If you don't want this entity to have collision, consider using func_detail_illu
 # TRIVIA
 This entity was introduced in Quake II (1997).
 */
+class
+func_detail:info_null
+{
+public:
+	void func_detail(void);
+};
+
+void
+func_detail::func_detail(void)
+{
+}

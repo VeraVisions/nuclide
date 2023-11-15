@@ -87,11 +87,3 @@ CLASSEXPORT(func_dustmotes, info_null)
 CLASSEXPORT(env_soundscape, info_null)
 CLASSEXPORT(env_cubemap, info_null)
 CLASSEXPORT(sky_camera, info_null)
-
-void
-env_glow(void)
-{
-	if (self.model) {
-		precache_model(self.model);
-	}
-}

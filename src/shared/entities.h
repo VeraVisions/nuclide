@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2023 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -25,6 +25,7 @@ typedef enum
 	ENT_PHYSICS,	/**< of type NSPhysicsEntity */
 	ENT_MONSTER,	/**< of type NSMonster */
 	ENT_TALKMONSTER,	/**< of type NSTalkMonster */
+	ENT_SPEAKER, /**< of type speaker */
 	ENT_PLAYER,	/**< of type NSClientPlayer */
 	ENT_WEAPON, /**< of type NSWeapon */
 	ENT_SPECTATOR,	/**< of type NSClientSpectator */
@@ -37,8 +38,9 @@ typedef enum
 	ENT_PROJECTEDTEXTURE, /**< of type env_projectedtexture */
 	ENT_SPOTLIGHT, /**< of type point_spotlight */
 	ENT_FOG,			/*<< of type env_fog */
-	ENT_STEAM,
+	ENT_STEAM,	/*<< of type env_steam */
 	ENT_FOGCONTROLLER, /**< of type env_fog_controller */
+	ENT_CASCADELIGHT, /*<< of type env_cascade_light */
 	ENT_LASER,	/**< of type env_laser */
 	ENT_PARTSYSTEM,	/**< of type info_particle_system */
 	ENT_SPRITE,	/**< of type env_sprite */
@@ -56,6 +58,7 @@ typedef enum
 	ENT_BUBBLES,	/**< of type env_bubbles */
 	ENT_CONVEYOR,	/**< of type func_conveyor */
 	ENT_WAYPOINT,	/**< of type info_waypoint */
+	ENT_INSTRUCTOR, /**< of type env_instructor_hint */
 	ENT_PUSH,		/**< of type trigger_push */
 	ENT_SEPARATOR,	/**< This is a separator. This separator is used by you to add game-specific networked entities. When declaring your own entity-update types, you want the first value to equal ENT_SEPARATOR at all times to ensure you'll not be overriding existing slots. */
 } entupdate_t;

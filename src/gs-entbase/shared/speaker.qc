@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+#ifdef SERVER
 enumflags
 {
 	SPEAKFL_SILENT
@@ -33,6 +34,7 @@ string g_speaker_hlpresets[] = {
 	"!C3A1_",
 	"!C3A2_"
 };
+#endif
 
 /*!QUAKED speaker (1 0 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
@@ -69,7 +71,8 @@ speaker:NSTalkMonster
 {
 public:
 	void speaker(void);
-	
+
+#ifdef SERVER
 	/* overrides */
 	virtual void Save(float);
 	virtual void Restore(string,string);
@@ -79,18 +82,32 @@ public:
 	
 	nonvirtual void Announce(void);
 
+	virtual void EvaluateEntity(void);
+	virtual float SendEntity(entity,float);
+#endif
+
+#ifdef CLIENT
+	virtual void ReceiveEntity(float, float);
+#endif
+
+#ifdef SERVER
 private:
+
 	string m_strSentence;
 	float m_flVolume;
+#endif
 };
 
 void
 speaker::speaker(void)
 {
+#ifdef SERVER
 	m_strSentence = __NULL__;
 	m_flVolume = 1.0f;
+#endif
 }
 
+#ifdef SERVER
 void
 speaker::Save(float handle)
 {
@@ -139,10 +156,7 @@ speaker::SpawnKey(string strKey, string strValue)
 void
 speaker::Respawn(void)
 {
-	/* force this thing to be networked */
-	SetModel("models/player.mdl");
 	SetOrigin(GetSpawnOrigin());
-	Hide();
 
 	if (HasSpawnFlags(SPEAKFL_SILENT) == false)
 		ScheduleThink(Announce, 10.0f);
@@ -173,3 +187,42 @@ speaker::Trigger(entity eAct, triggermode_t foo)
 {
 	ScheduleThink(Announce, 0.0f);
 }
+
+void
+speaker::EvaluateEntity(void)
+{
+	EVALUATE_VECTOR(origin, 0, MONFL_CHANGED_ORIGIN_X)
+	EVALUATE_VECTOR(origin, 1, MONFL_CHANGED_ORIGIN_Y)
+	EVALUATE_VECTOR(origin, 2, MONFL_CHANGED_ORIGIN_Z)
+}
+
+/* Make sure StartFrame calls this */
+float
+speaker::SendEntity(entity ePEnt, float flChanged)
+{
+	if (clienttype(ePEnt) != CLIENTTYPE_REAL)
+		return (0);
+
+	WriteByte(MSG_ENTITY, ENT_SPEAKER);
+
+	/* broadcast how much data is expected to be read */
+	WriteFloat(MSG_ENTITY, flChanged);
+
+	SENDENTITY_COORD(origin[0], MONFL_CHANGED_ORIGIN_X)
+	SENDENTITY_COORD(origin[1], MONFL_CHANGED_ORIGIN_Y)
+	SENDENTITY_COORD(origin[2], MONFL_CHANGED_ORIGIN_Z)
+
+	return (1);
+}
+#endif
+
+#ifdef CLIENT
+void
+speaker::ReceiveEntity(float flNew, float flChanged)
+{
+	READENTITY_COORD(origin[0], MONFL_CHANGED_ORIGIN_X)
+	READENTITY_COORD(origin[1], MONFL_CHANGED_ORIGIN_Y)
+	READENTITY_COORD(origin[2], MONFL_CHANGED_ORIGIN_Z)
+	SetOrigin(origin);
+}
+#endif

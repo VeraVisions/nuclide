@@ -27,3 +27,14 @@ worldspawn upon compile.
 # TRIVIA
 This entity was introduced in Quake II (1997).
 */
+class
+func_group:info_null
+{
+public:
+	void func_group(void);
+};
+
+void
+func_group::func_group(void)
+{
+}

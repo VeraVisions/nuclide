@@ -166,6 +166,13 @@ EV_TraceDebug(void)
 }
 
 void
+EV_Achievement(void)
+{
+	string eventName = readstring();
+	NSLog("EV_Achievement: %S",  eventName);
+}
+
+void
 Event_Parse(float type)
 {
 	switch (type) {
@@ -239,6 +246,9 @@ Event_Parse(float type)
 		break;
 	case EV_TRACEDEBUG:
 		EV_TraceDebug();
+		break;
+	case EV_ACHIEVEMENT:
+		EV_Achievement();
 		break;
 	default:
 		error(sprintf("event id %d not recognized. abort immediately.\n", type));

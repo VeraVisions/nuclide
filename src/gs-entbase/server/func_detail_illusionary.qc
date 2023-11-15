@@ -29,5 +29,16 @@ except that it does not use an entity slot or require custom materials.
 If you want this entity to have collision, consider using func_detail.
 
 # TRIVIA
-This entity was introduced in Quake II (1997).
+This entity was introduced in ericw-tools (2017).
 */
+class
+func_detail_illusionary:info_null
+{
+public:
+	void func_detail_illusionary(void);
+};
+
+void
+func_detail_illusionary::func_detail_illusionary(void)
+{
+}

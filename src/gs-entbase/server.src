@@ -103,12 +103,12 @@ server/trigger_once.qc
 server/trigger_multiple.qc
 server/trigger_teleport.qc
 server/trigger_playerfreeze.qc
+server/trigger_monsterjump.qc
 server/trigger_relay.qc
 server/env_shooter.qc
 server/gibshooter.qc
 server/env_beverage.qc
 server/item_food.qc
-server/speaker.qc
 server/multi_manager.qc
 server/momentarybase.qc
 server/momentary_rot_button.qc

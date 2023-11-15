@@ -51,6 +51,10 @@ Entity_EntityUpdate(float type, float new)
 		NSENTITY_READENTITY(NSTalkMonster, new)
 		self.customphysics = Empty;
 		break;
+	case ENT_SPEAKER:
+		NSENTITY_READENTITY(speaker, new)
+		self.customphysics = Empty;
+		break;
 	case ENT_VEHICLE:
 		NSENTITY_READENTITY(NSVehicle, new)
 		break;
@@ -122,6 +126,9 @@ Entity_EntityUpdate(float type, float new)
 	case ENT_FOGCONTROLLER:
 		NSENTITY_READENTITY(env_fog_controller, new)
 		break;
+	case ENT_CASCADELIGHT:
+		NSENTITY_READENTITY(env_cascade_light, new)
+		break;
 	case ENT_PARTSYSTEM:
 		NSENTITY_READENTITY(info_particle_system, new)
 		break;
@@ -139,6 +146,9 @@ Entity_EntityUpdate(float type, float new)
 		break;
 	case ENT_WAYPOINT:
 		NSENTITY_READENTITY(info_waypoint, new)
+		break;
+	case ENT_INSTRUCTOR:
+		NSENTITY_READENTITY(env_instructor_hint, new)
 		break;
 	case ENT_PUSH:
 		NSENTITY_READENTITY(trigger_push, new)
