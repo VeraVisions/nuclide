@@ -55,6 +55,8 @@ enumflags
 	TOUCHFILTER_FRIENDLIES,
 	TOUCHFILTER_CLIENTSINVEHICLES,
 	TOUCHFILTER_EVERYTHING,
+	TOUCHFILTER_PADDING1,
+	TOUCHFILTER_PADDING2,
 	TOUCHFILTER_CLIENTSNOTINVEHICLES,
 	TOUCHFILTER_DEBRIS,
 	TOUCHFILTER_NPCSINVEHICLES,
@@ -153,6 +155,10 @@ private:
 	string m_strMaster;
 	int m_iUseType;
 	int m_iValue;
+
+	bool m_bEnabled;
+	bool m_bStartDisabled;
+	bool m_bIsModern;
 
 	float team_no;
 

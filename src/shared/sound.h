@@ -99,3 +99,5 @@ int Sound_GetID(string sndDef);
 /** Server-side only: Play a sentences.txt entry on a given entity. */
 void Sound_Speak(entity targetEntity, string sentencesEntry);
 #endif
+
+void Sound_DebugList();

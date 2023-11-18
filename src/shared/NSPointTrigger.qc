@@ -19,6 +19,10 @@ NSPointTrigger::InitPointTrigger(void)
 {
 	SetSize(VEC_HULL_MIN, VEC_HULL_MAX);
 	SetSolid(SOLID_TRIGGER);
+
+#ifdef SERVER
+	m_bEnabled = (m_bStartDisabled) ? false : true;
+#endif
 }
 
 

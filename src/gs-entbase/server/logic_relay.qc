@@ -59,60 +59,25 @@ public:
 	virtual void Respawn(void);
 	virtual void SpawnKey(string, string);
 	virtual void Input(entity, string, string);
-	virtual void Save(float);
-	virtual void Restore(string, string);
-
-private:
-	bool m_bStartDisabled;
-	bool m_bEnabled;
 };
 
 void
 logic_relay::logic_relay(void)
 {
-	m_bStartDisabled = false;
 }
 
 void
 logic_relay::Respawn(void)
 {
 	InitPointTrigger();
-	m_bEnabled = (m_bStartDisabled) ? false : true;
 }
 
 void
 logic_relay::SpawnKey(string keyName, string setValue)
 {
 	switch (keyName) {
-	case "StartDisabled":
-		m_bStartDisabled = ReadBool(setValue);
-		break;
 	default:
 		super::SpawnKey(keyName, setValue);
-	}
-}
-
-void
-logic_relay::Save(float handle)
-{
-	super::Save(handle);
-
-	SaveBool(handle, "m_bStartDisabled", m_bStartDisabled);
-	SaveBool(handle, "m_bEnabled", m_bEnabled);
-}
-
-void
-logic_relay::Restore(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "m_bStartDisabled":
-		m_bStartDisabled = ReadBool(strValue);
-		break;
-	case "m_bEnabled":
-		m_bEnabled = ReadBool(strValue);
-		break;
-	default:
-		super::Restore(strKey, strValue);
 	}
 }
 
@@ -120,12 +85,6 @@ void
 logic_relay::Input(entity activatorEntity, string inputName, string dataField)
 {
 	switch (inputName) {
-	case "Enable":
-		m_bEnabled = true;
-		break;
-	case "Disable":
-		m_bEnabled = false;
-		break;
 	case "Trigger":
 		if (m_bEnabled == true) {
 			/* if we don't allow fast retrigger... */
@@ -142,9 +101,6 @@ logic_relay::Input(entity activatorEntity, string inputName, string dataField)
 				Destroy();
 			}
 		}
-		break;
-	case "Toggle":
-		m_bEnabled = (m_bEnabled) ? false : true;
 		break;
 	/* TODO: complete this mess */
 	case "CancelPending":

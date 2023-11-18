@@ -21,18 +21,26 @@ enumflags
 
 /*!QUAKED trigger_relay (.5 .5 .5) ? TRLY_ONCE
 # OVERVIEW
-This is an inbetween trigger that forces a desired output state
+This is an in-between trigger that forces a desired output state
 instead of toggling e.g. a door open.
 
 # KEYS
 - "targetname" : Name
-- "target" : Target when triggered.
-- "killtarget" : Target to kill when triggered.
-- "delay" : Delay til the target is triggered.
+- "target" : Target to trigger.
 - "triggerstate" : Desired state of the triggered entity.
+- "delay" : Delay til the target is triggered, in seconds.
+- "killtarget" : Target to remove when triggered.
 
 # SPAWNFLAGS
-- TRLY_ONCE (1) : Will be removed upon triggering its targets.
+- TRLY_ONCE (1) : When set, this entity will be removed upon triggering its targets.
+
+# NOTES
+The `triggerstate` key can be one of three things:
+- 0: Off
+- 1: On
+- 2: Toggle
+
+Where 'off' will close entities like func_door, and 'on' will open them.
 
 # TRIVIA
 This entity was introduced in Quake (1996).

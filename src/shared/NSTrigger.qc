@@ -30,6 +30,9 @@ NSTrigger::NSTrigger(void)
 	team = 0;
 	m_iValue = 0i;
 	m_flDelay = 0.0f;
+	m_bStartDisabled = false;
+	m_bEnabled = true;
+	m_bIsModern = false;
 #endif
 }
 
@@ -236,6 +239,9 @@ NSTrigger::Save(float handle)
 	SaveInt(handle, "m_iValue", m_iValue);
 	SaveFloat(handle, "m_flDelay", m_flDelay);
 	SaveString(handle, "m_strGlobalName", m_strGlobalName);
+	SaveBool(handle, "m_bStartDisabled", m_bStartDisabled);
+	SaveBool(handle, "m_bEnabled", m_bEnabled);
+	SaveBool(handle, "m_bIsModern", m_bIsModern);
 }
 void
 NSTrigger::Restore(string strKey, string strValue)
@@ -271,6 +277,15 @@ NSTrigger::Restore(string strKey, string strValue)
 	case "m_strGlobalName":
 		m_strGlobalName = ReadString(strValue);
 		break;
+	case "m_bStartDisabled":
+		m_bStartDisabled = ReadBool(strValue);
+		break;
+	case "m_bEnabled":
+		m_bEnabled = ReadBool(strValue);
+		break;
+	case "m_bIsModern":
+		m_bIsModern = ReadBool(strValue);
+		break;
 	default:
 		super::Restore(strKey, strValue);
 	}
@@ -282,6 +297,15 @@ NSTrigger::Input(entity eAct, string strInput, string strData)
 	switch (strInput) {
 	case "Trigger":
 		Trigger(eAct, TRIG_TOGGLE);
+		break;
+	case "Enable":
+		m_bEnabled = true;
+		break;
+	case "Disable":
+		m_bEnabled = false;
+		break;
+	case "Toggle":
+		m_bEnabled = (m_bEnabled) ? false : true;
 		break;
 	default:
 		super:: Input(eAct, strInput, strData);
@@ -332,6 +356,10 @@ NSTrigger::SpawnKey(string strKey, string strValue)
 		break;
 	case "globalname":
 		m_strGlobalName = ReadString(strValue);
+		break;
+	case "StartDisabled":
+		m_bStartDisabled = ReadBool(strValue);
+		m_bIsModern = true;
 		break;
 #endif
 	default:

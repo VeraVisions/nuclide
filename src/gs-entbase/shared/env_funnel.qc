@@ -33,11 +33,13 @@ enumflags
 enumflags
 {
 	FUNNEL_REVERSE,
+	FUNNEL_REPEATABLE
 };
 
-/*!QUAKED env_funnel (1 .5 0) (-8 -8 -8) (8 8 8) REVERSE
+/*!QUAKED env_funnel (1 .5 0) (-8 -8 -8) (8 8 8) REVERSE REPEATABLE
 # OVERVIEW
-Controllable beam effect, akin to lightning. Also known as env_lightning.
+An effect that when triggered, will create lots of glowing orbs that funnel into
+the position of this entity.
 
 # KEYS
 - "targetname" : Name

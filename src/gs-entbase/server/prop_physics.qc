@@ -88,7 +88,7 @@ prop_physics::Respawn(void)
 	if (HasSpawnFlags(PHYSPROPSFL_PHYSDEVICE))
 		Sleep();
 
-	//Sleep();
+	Sleep();
 }
 #else
 class

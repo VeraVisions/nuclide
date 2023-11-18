@@ -265,6 +265,12 @@ Cmd_Parse(string sCMD)
 	case "listParticles":
 		CMD_ListParticles();
 		break;
+	case "listClientSoundDef":
+		Sound_DebugList();
+		break;
+	case "listServerSoundDef":
+		localcmd("sv listSoundDef\n");
+		break;
 	case "cleardecals":
 		CMD_Cleardecals();
 		break;
@@ -446,6 +452,8 @@ Cmd_Init(void)
 	registercommand("listSounds");
 	registercommand("listParticles");
 	registercommand("listTitles");
+	registercommand("listClientSoundDef");
+	registercommand("listServerSoundDef");
 
 	registercommand("cleardecals");
 	registercommand("testLight");

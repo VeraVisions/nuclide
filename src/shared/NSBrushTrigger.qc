@@ -35,4 +35,8 @@ NSBrushTrigger::InitBrushTrigger(void)
 	SetModel(GetSpawnModel());
 	SetMovetype(MOVETYPE_NONE);
 	SetSolid(SOLID_BSPTRIGGER);
+
+#ifdef SERVER
+	m_bEnabled = (m_bStartDisabled) ? false : true;
+#endif
 }

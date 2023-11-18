@@ -74,13 +74,11 @@ private:
 	float m_flRandMins;
 	float m_flRandMaxs;
 	float m_flRefireTime;
-	bool m_bStartDisabled;
 	bool m_bOscillator;
 
 	string m_strOnTimer;
 	string m_strOnTimerHigh;
 	string m_strOnTimerLow;
-	bool m_bEnabled;
 	entity m_eActivator;
 };
 
@@ -91,9 +89,7 @@ logic_timer::logic_timer(void)
 	m_flRandMins = 0.0f;
 	m_flRandMaxs = 1.0f;
 	m_flRefireTime = 0.0;
-	m_bStartDisabled = false;
 	m_bOscillator = false;
-	m_bEnabled = true;
 	m_eActivator = this;
 	m_strOnTimer = m_strOnTimerHigh = m_strOnTimerLow = __NULL__;
 }
@@ -113,9 +109,6 @@ logic_timer::SpawnKey(string keyName, string setValue)
 		break;
 	case "RefireTime":
 		m_flRefireTime = ReadFloat(setValue);
-		break;
-	case "StartDisabled":
-		m_bStartDisabled = ReadBool(setValue);
 		break;
 	/* I/O related */
 	case "OnTimer":
@@ -167,12 +160,10 @@ logic_timer::Save(float handle)
 	SaveFloat(handle, "m_flRandMins", m_flRandMins);
 	SaveFloat(handle, "m_flRandMaxs", m_flRandMaxs);
 	SaveFloat(handle, "m_flRefireTime", m_flRefireTime);
-	SaveBool(handle, "m_bStartDisabled", m_bStartDisabled);
 	SaveString(handle, "m_strOnTimer", m_strOnTimer);
 	SaveString(handle, "m_strOnTimerHigh", m_strOnTimerHigh);
 	SaveString(handle, "m_strOnTimerLow", m_strOnTimerLow);
 	SaveBool(handle, "m_bOscillator", m_bOscillator);
-	SaveBool(handle, "m_bEnabled", m_bEnabled);
 	SaveEntity(handle, "m_eActivator", m_eActivator);
 }
 
@@ -192,9 +183,6 @@ logic_timer::Restore(string strKey, string strValue)
 	case "m_flRefireTime":
 		m_flRefireTime = ReadFloat(strValue);
 		break;
-	case "m_bStartDisabled":
-		m_bStartDisabled = ReadBool(strValue);
-		break;
 	case "m_strOnTimer":
 		m_strOnTimer = ReadString(strValue);
 		break;
@@ -206,9 +194,6 @@ logic_timer::Restore(string strKey, string strValue)
 		break;
 	case "m_bOscillator":
 		m_bOscillator = ReadBool(strValue);
-		break;
-	case "m_bEnabled":
-		m_bEnabled = ReadBool(strValue);
 		break;
 	case "m_eActivator":
 		m_eActivator = ReadEntity(strValue);
@@ -241,9 +226,6 @@ logic_timer::Input(entity activatorEntity, string inputName, string dataField)
 	case "Enable":
 		m_bEnabled = true;
 		TimerSetup(); /* reset timer */
-		break;
-	case "Disable":
-		m_bEnabled = false;
 		break;
 	case "Toggle":
 		m_bEnabled = (m_bEnabled) ? false : true;

@@ -303,25 +303,28 @@ NSClientPlayer::predraw(void)
 		if (entnum == player_localentnum)
 			g_view.SetDrawLocalPlayer(true);
 
-		/* sucks we can't draw a shadow on this thing, maybe in the future when FTEQW allows it */
-		if (p_model) {
-			if (p_model.GetRenderMode() != RM_DONTRENDER)
-				addentity(p_model);
-		}
 	} else { /* we're doing first person stuff */
 		/* flags that the model appear in mirrors only */
 		renderflags |= RF_EXTERNALMODEL;
-
-		/* ditto */
 		p_model.renderflags |= RF_EXTERNALMODEL;
 
 		/* give mods a chance to de-render attachments */
-		UpdatePlayerAttachments(false);
+		UpdatePlayerAttachments(true);
 		Weapons_PreDraw((player)this, false);
 
 		/* this is here just to make sure our view hides us if it's the local player */
 		if (entnum == player_localentnum)
 			g_view.SetDrawLocalPlayer(false);
+	}
+
+	if (p_model) {
+		p_model.entnum = entnum;
+		p_model.drawmask = 0;
+
+		if (p_model.GetRenderMode() != RM_DONTRENDER)
+			addentity(p_model);
+
+		p_model.entnum = 0;
 	}
 
 	/* this needs to be called absolutely last */
@@ -1162,10 +1165,10 @@ NSClientPlayer::InputUse_Down(void)
 
 		/* Some entities want to support Use spamming */
 		if (HasFlags(FL_USE_RELEASED) == false) {
-			sound(this, CHAN_ITEM, "common/wpn_select.wav", 0.25, ATTN_IDLE);
+			StartSoundDef("Player.WeaponSelected", CHAN_ITEM, false);
 		}
 	} else {
-		sound(this, CHAN_ITEM, "common/wpn_denyselect.wav", 0.25, ATTN_IDLE);
+		StartSoundDef("Player.DenyWeaponSelection", CHAN_ITEM, false);
 		flags &= ~FL_USE_RELEASED;
 	}
 }
@@ -1208,27 +1211,15 @@ NSClientPlayer::Footsteps_Update(void)
 		return;
 
 	if (waterlevel == 1) {
-		if (step)
-			StartSoundDef("step_slosh.left", CHAN_BODY, true);
-		else
-			StartSoundDef("step_slosh.right", CHAN_BODY, true);
-
-		step_time = time + 0.35f;
+		StartSoundDef("Player.Wade", CHAN_BODY, true);
+		step_time = time + 2.0f;
 		return;
 	} else if (waterlevel == 2) {
-		if (step)
-			StartSoundDef("step_wade.left", CHAN_BODY, true);
-		else
-			StartSoundDef("step_wade.right", CHAN_BODY, true);
-		
-		step_time = time + 1.0f;
+		StartSoundDef("Player.Wade", CHAN_BODY, true);
+		step_time = time + 2.0f;
 		return;
 	}  else if (waterlevel == 3) {
-		if (step)
-			StartSoundDef("step_swim.left", CHAN_BODY, true);
-		else
-			StartSoundDef("step_swim.right", CHAN_BODY, true);
-
+		StartSoundDef("Player.Swim", CHAN_BODY, true);
 		step_time = time + 2.0f;
 		return;
 	} else {

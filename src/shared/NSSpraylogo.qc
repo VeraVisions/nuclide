@@ -170,6 +170,6 @@ CSEv_Spraylogo(void)
 	spray.SendEntity = Spray_SendEntity;
 	spray.SendFlags = 1;
 
-	Sound_Play(self, CHAN_VOICE, "player.spraylogo");
+	Sound_Play(self, CHAN_VOICE, "SprayCan.Paint");
 }
 #endif

@@ -67,6 +67,8 @@ Sound_Init(void)
 	SoundSource_Init();
 
 	precache_sound("misc/missing.wav");
+	precache_sound("misc/null.wav");
+	precache_sound("common/null.wav");
 
 	print("SoundDef initialized.\n");
 }
@@ -459,6 +461,7 @@ Sound_Precache(string shader)
 	print("^1no soundDef found for ");
 	print(shader);
 	print("\n");
+	g_sounds_count--;
 
 	search_end(sh);
 	return -1;
@@ -942,4 +945,16 @@ SoundSource_Init(void)
 		}
 	}
 	fclose(manifestFile);
+}
+
+
+/** Called by listSoundDef */
+void
+Sound_DebugList(void)
+{
+	for (int i = 0; i < g_sounds_count; i++) {
+		print(sprintf("%i: %s (%i samples)\n", i, g_sounds[i].name, g_sounds[i].sample_count));
+	}
+
+	print(sprintf("\t%i total soundDef loaded\n", g_sounds_count));
 }

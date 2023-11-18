@@ -21,7 +21,7 @@ Freezing a player means they're unable to move, they can still look around.
 
 # KEYS
 - "targetname" : Name
-- "killtarget" : Target to kill when triggered.
+- "killtarget" : Target to remove when triggered.
 
 # NOTES
 Ideas: Add ability to supress looking around, firing weapons, using items

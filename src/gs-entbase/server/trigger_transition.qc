@@ -16,11 +16,17 @@
 
 /*!QUAKED trigger_transition (.5 .5 .5) ?
 # OVERVIEW
-Currently unused. This is meant for defining level transition regions.
+Defines level transition regions.
 All entities touching this volume would carry across to the next level.
 
 # KEYS
 - "targetname" : Name
+
+# NOTES
+In order for this entity to work, you have to assign a working info_landmark entity to your trigger_changelevel, and give this entity the same targetname as said landmark.
+
+If you don't assign a transition, no entities will carry over currently. This is not accurate to vanilla behaviour in Half-Life but should mirror what Source does.
+In Half-Life, everything as part of the current PVS seems to carry over. This is probably not what you want to ever do, especially in large outdoor maps.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
@@ -28,9 +34,12 @@ This entity was introduced in Half-Life (1998).
 class
 trigger_transition:NSBrushTrigger
 {
+public:
 	void trigger_transition(void);
-	
+
+	/* overrides */
 	virtual void Respawn(void);
+
 	nonvirtual void SaveTransition(void);
 	nonvirtual NSEntity FindCarrierEntity(string);
 	nonvirtual void LoadTransition(void);

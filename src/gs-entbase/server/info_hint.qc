@@ -152,7 +152,6 @@ private:
 	hinttype_t m_hintType;
 	string m_strHintActivity;
 	float m_flNodeFOV;
-	bool m_bStartDisabled;
 	string m_strHintGroup;
 	ignorefacing_t m_ignoreFacing;
 	aistate_t m_minState;
@@ -165,7 +164,6 @@ info_hint::info_hint(void)
 	m_hintType = HINT_NONE;
 	m_strHintActivity = __NULL__;
 	m_flNodeFOV = 360;
-	m_bStartDisabled = false;
 	m_strHintGroup = __NULL__;
 	m_ignoreFacing = IGNORE_DEFAULT;
 	m_minState = AISTATE_IDLE;
@@ -179,7 +177,6 @@ info_hint::Save(float handle)
 	SaveFloat(handle, "m_hintType", m_hintType);
 	SaveString(handle, "m_strHintActivity", m_strHintActivity);
 	SaveFloat(handle, "m_flNodeFOV", m_flNodeFOV);
-	SaveBool(handle, "m_bStartDisabled", m_bStartDisabled);
 	SaveString(handle, "m_strHintGroup", m_strHintGroup);
 	SaveFloat(handle, "m_ignoreFacing", m_ignoreFacing);
 	SaveFloat(handle, "m_minState", m_minState);
@@ -198,9 +195,6 @@ info_hint::Restore(string strKey, string strValue)
 		break;
 	case "m_flNodeFOV":
 		m_flNodeFOV = ReadFloat(strValue);
-		break;
-	case "m_bStartDisabled":
-		m_bStartDisabled = ReadFloat(strValue);
 		break;
 	case "m_strHintGroup":
 		m_strHintGroup = ReadString(strValue);

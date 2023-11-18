@@ -58,13 +58,6 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	PropData_Init();	
 	DecalGroups_Init();
 
-	precache_sound("common/wpn_hudon.wav");
-	precache_sound("common/wpn_hudoff.wav");
-	precache_sound("common/wpn_moveselect.wav");
-	precache_sound("common/wpn_select.wav");
-
-	precache_sound("common/null.wav");
-
 	/* VGUI */
 	VGUI_Init();
 
@@ -87,6 +80,12 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	g_cheats = (serverkey("*cheats") == "ON") ? true : false;
 
 	WorldSpawn_Init();
+
+	Sound_Precache("Player.DenyWeaponSelection");
+	Sound_Precache("Player.WeaponSelected");
+	Sound_Precache("Player.WeaponSelectionMoveSlot");
+	Sound_Precache("Player.WeaponSelectionOpen");
+	Sound_Precache("Player.WeaponSelectionClose");
 
 	/* end msg */
 	print("Client game initialized.\n");

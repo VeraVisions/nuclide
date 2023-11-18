@@ -47,6 +47,7 @@ PMoveCustom_StartFrame(void)
 	PMoveCustom_UpdateVar("phy_maxspeed", "pm_maxspeed");
 	PMoveCustom_UpdateVar("phy_noclipspeed", "pm_noclipspeed");
 	PMoveCustom_UpdateVar("phy_noclipaccelerate", "pm_noclipaccelerate");
+	PMoveCustom_UpdateVar("phy_nospeedcap", "pm_nospeedcap");
 }
 #endif
 
@@ -82,6 +83,9 @@ PMoveCustom_Categorize(void)
 	bool inladder = false;
 	vector testPos;
 
+	if (self.movetype == MOVETYPE_NOCLIP)
+		return;
+
 	tracebox(self.origin, self.mins, self.maxs, self.origin - [0,0,1], MOVE_NORMAL, self);
 
 	if (!trace_startsolid) {
@@ -97,6 +101,7 @@ PMoveCustom_Categorize(void)
 		}
 	} else {
 		self.groundentity = __NULL__;
+		self.flags |= FL_ONGROUND;
 	}
 
 	self.flags &= ~FL_WATERJUMP;
@@ -198,7 +203,7 @@ PMoveCustom_AccelWater(float move_time, float premove)
 
 	wish_speed = vlen(vecWishVel);
 
-	if (wish_speed > self.maxspeed) {
+	if (serverkeyfloat("phy_nospeedcap") == 0 && wish_speed > self.maxspeed) {
 		wish_speed = self.maxspeed;
 	}
 
@@ -258,11 +263,17 @@ PMoveCustom_AccelFriction(float move_time, float premove, vector wish_dir, float
 	float flFriction;
 	vector vecTemp;
 
+#ifdef SERVER
 	/* too finicky with monsters between the various game settings */
 	if (self.flags & FL_MONSTER) {
-		self.velocity = wish_dir * wish_speed;
-		return;
+		NSMonster checkMe = (NSMonster)self;
+
+		if (checkMe.IsOnRoute() == true && checkMe.HasFlags(FL_ONGROUND) == true) {
+			self.velocity = wish_dir * wish_speed;
+			return;
+		}
 	}
+#endif
 
 	flApplyFriction = serverkeyfloat("phy_friction");
 
@@ -305,7 +316,12 @@ PMoveCustom_AccelFriction(float move_time, float premove, vector wish_dir, float
 		if (flFriction < 0) {
 			self.velocity = [0,0,0];
 		} else {
-			self.velocity = self.velocity * flFriction;
+			self.velocity[0] = self.velocity[0] * flFriction;
+			self.velocity[1] = self.velocity[1] * flFriction;
+
+			/* don't apply friction to horizontal movement... or else jumps get clamped */
+			if (self.flags & FL_JUMPRELEASED)
+				self.velocity[2] = self.velocity[2] * flFriction;
 		}
 	}
 
@@ -332,33 +348,14 @@ PMoveCustom_AccelNoclip(float move_time, float premove, vector wish_dir, float w
 	}
 
 	/* apply friction */
-	if (self.velocity[0] || self.velocity[1]) {
+	if (vlen(self.velocity)) {
 		vecTemp = self.velocity;
-		vecTemp[2] = 0;
 		flFriction = vlen(vecTemp);
 
-		/* Next few lines of code assumes self is using player's hull, however it could be a monster
-			who use differen hull size, therefore it is invalid, so we probably better of using mins/maxs,
-			on the other hand edge friction is probably not that important. */
-
-		// if the leading edge is over a dropoff, increase friction
-		vecTemp = self.origin + normalize(vecTemp) * 16 + [0,0,1] * self.mins[2];
-		traceline(vecTemp, vecTemp + [0,0,-34], TRUE, self);
-
-		// apply friction
-		if (trace_fraction == 1.0) {
-			if (flFriction < serverkeyfloat("phy_stopspeed")) {
-				flFriction = 1 - move_time * (serverkeyfloat("phy_stopspeed") / flFriction) * flApplyFriction * serverkeyfloat("phy_edgefriction");
-			} else {
-				flFriction = 1 - move_time * flApplyFriction * serverkeyfloat("phy_edgefriction");
-			}
+		if (flFriction < serverkeyfloat("phy_stopspeed")) {
+			flFriction = 1 - move_time * (serverkeyfloat("phy_stopspeed") / flFriction) * flApplyFriction;
 		} else {
-			if (flFriction < serverkeyfloat("phy_stopspeed")) {
-				flFriction = 1 - move_time * (serverkeyfloat("phy_stopspeed") / flFriction) * flApplyFriction;
-			} else {
-				
-				flFriction = 1 - move_time * flApplyFriction;
-			}
+			flFriction = 1 - move_time * flApplyFriction;
 		}
 
 		if (flFriction < 0) {
@@ -424,7 +421,9 @@ PMoveCustom_Acceleration(float move_time, float premove)
 			return;
 		}
 	} else {
-		vecWishVel = v_forward * input_movevalues[0] + v_right * input_movevalues[1];
+		vecWishVel = v_forward * input_movevalues[0];
+		vecWishVel += v_right * input_movevalues[1];
+		vecWishVel += v_up * input_movevalues[2];
 		wish_dir = normalize(vecWishVel);
 		wish_speed = serverkeyfloat("phy_noclipspeed");
 		PMoveCustom_AccelNoclip(move_time, premove, wish_dir, wish_speed);
@@ -450,21 +449,16 @@ PMoveCustom_Acceleration(float move_time, float premove)
 	wish_dir = normalize(vecWishVel);
 	wish_speed = vlen(vecWishVel);
 
-	if (wish_speed > self.maxspeed) {
+	if (serverkeyfloat("phy_nospeedcap") == 0 && wish_speed > self.maxspeed) {
 		wish_speed = self.maxspeed;
 	}
 
-	if (self.movetype == MOVETYPE_NOCLIP) {
-		self.flags &= ~FL_ONGROUND;
-		self.velocity = wish_dir * wish_speed;
+	if (self.flags & FL_ONLADDER) {
+		PMoveCustom_AccelLadder(move_time, premove, wish_dir, wish_speed);
+	} else if (self.flags & FL_ONGROUND) {
+		PMoveCustom_AccelFriction(move_time, premove, wish_dir, wish_speed);
 	} else {
-		if (self.flags & FL_ONLADDER) {
-			PMoveCustom_AccelLadder(move_time, premove, wish_dir, wish_speed);
-		} else if (self.flags & FL_ONGROUND) {
-			PMoveCustom_AccelFriction(move_time, premove, wish_dir, wish_speed);
-		} else {
-			PMoveCustom_AccelGravity(move_time, premove, wish_dir, wish_speed);
-		}
+		PMoveCustom_AccelGravity(move_time, premove, wish_dir, wish_speed);
 	}
 }
 
@@ -600,10 +594,11 @@ PMoveCustom_Move(void)
 			break;
 		}
 
+		/* there's something in the way, so let's try to bounce off of it, or step up */
 		saved_plane = trace_plane_normal;
 		move_time -= move_time * trace_fraction;
 
-		if (move_time) {
+		if (move_time > 0.0) {
 			/* step up if we can */
 			trace_endpos = self.origin;
 
@@ -622,7 +617,7 @@ PMoveCustom_Move(void)
 			dest = trace_endpos + (self.velocity * move_time);
 			dest += (self.basevelocity * move_time);
 			dest[2] = trace_endpos[2]; /*only horizontally*/
-
+	
 			/* clear base-velocity */
 			self.basevelocity = [0,0,0];
 
@@ -630,7 +625,7 @@ PMoveCustom_Move(void)
 			tracebox(trace_endpos, self.mins, self.maxs, dest, MOVE_NORMAL, self);
 
 			/* if we got anywhere, make this raised-step move count */
-			if (trace_fraction == 1.0f) {
+			if (trace_fraction >= 1.0f) {
 				float fwfrac = trace_fraction;
 				vector fwplane = trace_plane_normal;
 
@@ -641,10 +636,12 @@ PMoveCustom_Move(void)
 
 				if (trace_fraction < 1.0 && trace_plane_normal[2] > 0.7f) {
 					move_time -= move_time * fwfrac;
+
 					/* bounce off the ceiling */
 					if (roof_fraction < 1) {
 						PMoveCustom_Rebound(roof_plane_normal);
 					}
+
 					if (trace_fraction < 1) {
 						PMoveCustom_Rebound(trace_plane_normal);
 					} else if (fwfrac < 1) {
@@ -710,6 +707,20 @@ PMoveCustom_RunPlayerPhysics(entity target)
 	if (self.maxspeed <= 0)
 		self.maxspeed = 240;
 
+
+	bool flying = ((target.movetype == MOVETYPE_NOCLIP) || (target.movetype == MOVETYPE_FLY));
+
+	if (flying == true) {
+		/* move camera up (noclip, fly) when holding jump */
+		if (input_buttons & INPUT_BUTTON2) {
+			input_movevalues[2] = 240;
+		}
+		/* move camera down (noclip, fly) when holding crouching */
+		if (input_buttons & INPUT_BUTTON8) {
+			input_movevalues[2] = -240;
+		}
+	}
+
 #ifdef CUSTOMPLAYERPHYSICS
 	/* call accelerate before and after the actual move, 
 	 * with half the move each time. this reduces framerate dependence. 
@@ -726,8 +737,9 @@ PMoveCustom_RunPlayerPhysics(entity target)
 	self.angles[0] *= -0.333;
 
 #ifdef CUSTOMPLAYERPHYSICS
-	/* activate any SOLID_TRIGGER entities */
-	touchtriggers();
+	/* activate any SOLID_TRIGGER entities, when not in noclip anyway */
+	if (self.movetype != MOVETYPE_NOCLIP)
+		touchtriggers();
 #endif
 
 	setorigin(self, self.origin);
@@ -747,7 +759,7 @@ PMoveCustom_RunCrouchPhysics(entity target)
 	} else {	
 		// If we aren't holding down duck anymore and 'attempt' to stand up, prevent it
 		if (target.flags & FL_CROUCHING) {
-			if (PMove_IsStuck(target, [0,0,36], PHY_HULL_MIN, PHY_HULL_MAX) == FALSE) {
+			if (PMove_IsStuck(target, [0,0,36], PHY_HULL_MIN, PHY_HULL_MAX) == false) {
 				target.flags &= ~FL_CROUCHING;
 				iFixCrouch = TRUE;
 			}
@@ -764,7 +776,7 @@ PMoveCustom_RunCrouchPhysics(entity target)
 		if (iFixCrouch && PMove_IsStuck(target, [0,0,0], PHY_HULL_MIN, PHY_HULL_MAX)) {
 			for (int i = 0; i < 36; i++) {
 				target.origin[2] += 1;
-				if (PMove_IsStuck(target, [0,0,0], target.mins, target.maxs) == FALSE) {
+				if (PMove_IsStuck(target, [0,0,0], target.mins, target.maxs) == false) {
 					break;
 				}
 			}

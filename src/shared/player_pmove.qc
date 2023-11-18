@@ -81,9 +81,9 @@ NSClientPlayer::Physics_Fall(float flDownforce)
 		}
 
 		Damage_Apply(this, world, fFallDamage, 0, DMG_FALL | DMG_SKIP_ARMOR);
-		Sound_Play(this, CHAN_VOICE, "player.fall");
+		StartSoundDef("Player.FallDamage", CHAN_VOICE, true);
 	} else if (flDownforce >= PHY_FALL_DISTANCE) {
-		Sound_Play(this, CHAN_VOICE, "player.lightfall");
+		StartSoundDef("Player.LightFall", CHAN_VOICE, true);
 	}
 #endif
 }
@@ -135,6 +135,9 @@ NSClientPlayer::Physics_Crouch(void)
 void
 NSClientPlayer::Physics_Jump(void)
 {
+	if (GetMovetype() != MOVETYPE_WALK)
+		return;
+
 	/* we're underwater... */
 	if (WaterLevel() >= 2) {
 		/* different water contents allow for different speeds */
@@ -241,7 +244,6 @@ NSClientPlayer::Physics_WaterMove(void)
 		return;
 	}
 
-#ifdef SERVER
 	if (WaterLevel() > 0) {
 	if (watertype == CONTENT_LAVA) {
 		if (m_flPainTime < time) {
@@ -255,14 +257,13 @@ NSClientPlayer::Physics_WaterMove(void)
 		}
 	}
 	}
-#endif
 
 	/* we've just exited water */
 	if (WaterLevel() != 3) {
 		if (m_flUnderwaterTime < time) {
-			Sound_Play(this, CHAN_BODY, "player.gaspheavy");
+			StartSoundDef("Player.GaspHeavy", CHAN_BODY, true);
 		} else if (m_flUnderwaterTime < time + 9) {
-			Sound_Play(this, CHAN_BODY, "player.gasplight");
+			StartSoundDef("Player.GaspLight", CHAN_BODY, true);
 		}
 		m_flUnderwaterTime = time + 12;
 	} else if (m_flUnderwaterTime < time) {
@@ -279,7 +280,7 @@ NSClientPlayer::Physics_WaterMove(void)
 	if (!WaterLevel()){
 		if (GetFlags() & FL_INWATER) {
 #ifdef SERVER
-			Sound_Play(this, CHAN_BODY, "player.waterexit");
+			StartSoundDef("Player.WaterExit", CHAN_BODY, true);
 #endif
 			RemoveFlags(FL_INWATER);
 		}
@@ -288,7 +289,7 @@ NSClientPlayer::Physics_WaterMove(void)
 
 	if (!(GetFlags() & FL_INWATER)) {
 #ifdef SERVER
-		Sound_Play(this, CHAN_BODY, "player.waterenter");
+		StartSoundDef("Player.WaterEnter", CHAN_BODY, true);
 		m_flPainTime = 0;
 #endif
 		AddFlags(FL_INWATER);
@@ -303,53 +304,54 @@ NSClientPlayer::Physics_WaterMove(void)
 float
 NSClientPlayer::Physics_MaxSpeed(void)
 {
-	float maxspeed = serverkeyfloat("phy_maxspeed");
-	float desiredspeed = (GetFlags() & FL_CROUCHING) ? PMOVE_STEP_WALKSPEED : maxspeed;
-	return min(desiredspeed, maxspeed);
+	float maxValue = serverkeyfloat("phy_maxspeed");
+	float wishSpeed = (GetFlags() & FL_CROUCHING) ? PMOVE_STEP_WALKSPEED : maxValue;
+	return min(wishSpeed, maxValue);
 }
 
 void
 NSClientPlayer::Physics_InputPreMove(void)
 {
-	NSVehicle veh = (NSVehicle)vehicle;
-	bool canmove = true;
+	NSVehicle currentVehicle = (NSVehicle)vehicle;
+	bool canMove = true;
 
 	/* when pressing the 'use' button, we also walk slower for precision */
 	if (input_buttons & INPUT_BUTTON5) {
 		input_movevalues *= 0.25;
 	}
 
-	bool flying = ((GetMovetype() == MOVETYPE_NOCLIP) || (GetMovetype() == MOVETYPE_FLY));
-
-	if (flying == true) {
-		/* move camera up (noclip, fly) when holding jump */
-		if (input_buttons & INPUT_BUTTON2) {
-			input_movevalues[2] = 240;
-		}
-		/* move camera down (noclip, fly) when holding crouching */
-		if (input_buttons & INPUT_BUTTON8) {
-			input_movevalues[2] = -240;
-		}
+	/* find all the valid ways to freeze a player... */
+	if (currentVehicle) {
+		if (currentVehicle.PreventPlayerMovement() == true)
+			canMove = false;
 	}
 
-	/* find all the valid ways to freeze a player... */
-	if (veh)
-		if (veh.PreventPlayerMovement() == true)
-			canmove = false;
-
-	if (flags & FL_FROZEN || movetype == MOVETYPE_NONE)
-		canmove = false;
+	if (flags & FL_FROZEN || movetype == MOVETYPE_NONE) {
+		canMove = false;
+	}
 
 	/* freeze in place */
-	if (canmove == false) {
+	if (canMove == false) {
 		input_movevalues = [0,0,0];
 		input_buttons &= ~INPUT_BUTTON2;
 	}
 
+	/* clamp movement values to max speed */
+	{
+		float wishSpeed = vlen(input_movevalues);
+
+		if (wishSpeed > maxspeed) {
+			wishSpeed = maxspeed;
+		}
+
+		input_movevalues = normalize(input_movevalues) * wishSpeed;
+	}
+
 	/* suppress crouching in vehicles */
-	if (veh)
-		if (veh.CanDriverCrouch() == false)
+	if (currentVehicle) {
+		if (currentVehicle.CanDriverCrouch() == false)
 			input_buttons &= ~INPUT_BUTTON8;
+	}
 }
 
 /* timers get processed here after physics are run */
@@ -379,7 +381,7 @@ NSClientPlayer::Physics_Run(void)
 {
 	float flFallVel = (flags & FL_ONGROUND) ? 0 : -velocity[2];
 	float flBaseVel =  basevelocity[2];
-	bool onGround = (flags & FL_ONGROUND) ? true : false;
+	bool wasOnGround = (flags & FL_ONGROUND) ? true : false;
 
 	saved_input_movevalues = input_movevalues;
 	saved_input_buttons = input_buttons;
@@ -417,7 +419,7 @@ NSClientPlayer::Physics_Run(void)
 
 	Physics_CheckJump(FALSE);
 
-	if (onGround == false && (flags & FL_ONGROUND)) {
+	if (wasOnGround == false && (flags & FL_ONGROUND)) {
 		if (waterlevel != 0) {
 			flFallVel = 0;
 		}

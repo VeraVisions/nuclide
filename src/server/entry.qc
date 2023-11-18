@@ -394,11 +394,9 @@ initents(void)
 	PMove_Init();
 
 	/** compat... */
-	precache_sound("misc/null.wav");
-	precache_sound("common/null.wav");
 
-	Sound_Precache("player.GaspLight");
-	Sound_Precache("player.GaspHeavy");
+	Sound_Precache("Player.GaspLight");
+	Sound_Precache("Player.GaspHeavy");
 	Sound_Precache("player.WaterEnter");
 	Sound_Precache("player.WaterExit");
 	Sound_Precache("Player.Death");
@@ -407,9 +405,12 @@ initents(void)
 	Sound_Precache("Player.Swim");
 	Sound_Precache("Player.DenyWeaonSelection");
 	Sound_Precache("Player.WeaponSelected");
+	Sound_Precache("Player.FallDamage");
+	Sound_Precache("Player.LightFall");
+	Sound_Precache("Player.FallGib");
 
 	Sound_Precache("damage_bullet.hit");
-	Sound_Precache("player.spraylogo");
+	Sound_Precache("SprayCan.Paint");
 	Sound_Precache("step_ladder.left");
 	Sound_Precache("step_ladder.right");
 
@@ -558,6 +559,9 @@ ConsoleCmd(string cmd)
 		Way_Cmd();
 		break;
 #endif
+	case "listSoundDef":
+		Sound_DebugList();
+		break;
 	default:
 		return (0);
 	}

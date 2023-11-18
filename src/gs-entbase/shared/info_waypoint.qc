@@ -35,8 +35,9 @@ by players.
 - "Text" : A localised string to display next to it.
 
 # INPUTS
-- "Enable" : Enables the entity.
-- "Disable" : Disables the entity.
+- "Enable" : Enable the entity.
+- "Disable" : Disable the entity.
+- "Toggle" : Toggles between enabled/disabled states.
 
 # TRIVIA
 This entity was introduced in Obsidian Conflict (2006).
@@ -74,7 +75,6 @@ info_waypoint::info_waypoint(void)
 {
 	m_strIcon =
 	m_strText = __NULL__;
-	m_bEnabled = false;
 }
 
 #ifdef SERVER
@@ -99,7 +99,6 @@ info_waypoint::Save(float handle)
 	super::Save(handle);
 	SaveString(handle, "m_strIcon", m_strIcon);
 	SaveString(handle, "m_strText", m_strText);
-	SaveBool(handle, "m_bEnabled", m_bEnabled);
 }
 
 void
@@ -111,9 +110,6 @@ info_waypoint::Restore(string strKey, string strValue)
 		break;
 	case "m_strText":
 		m_strText = ReadString(strValue);
-		break;
-	case "m_bEnabled":
-		m_bEnabled = ReadBool(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
