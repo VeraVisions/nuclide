@@ -15,7 +15,6 @@
 */
 
 noref var string g_mapcycle_override = __NULL__;
-noref var string g_mapCycle = "mapcycle.txt";
 
 void
 Mapcycle_Load(string filename)
@@ -64,7 +63,7 @@ Mapcycle_Load(string filename)
 void
 Mapcycle_Init(void)
 {
-	string cycleFile = cvar_string("g_mapCycle");
+	string cycleFile = autocvar(g_mapCycle, "mapcycle.txt");
 
 	/* by default, this will be multiplayer only */
 	if (g_grMode.IsMultiplayer() == false)

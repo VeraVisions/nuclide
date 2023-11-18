@@ -203,6 +203,7 @@ GameLibrary_LibListParse(int id, string strKey, string strValue)
 	case "startmap":
 		games[id].startmap = strcat("map ", strValue, "\n");
 		break;
+	case "trainmap":
 	case "trainingmap":
 		games[id].trainingmap = strcat("map ", strValue, "\n");
 		break;
@@ -404,12 +405,9 @@ GameLibrary_SetDefaults(int id, string gamedirname)
 	games[id].readme = "readme.txt";
 	games[id].pkgid = -1;
 
-#if 0
 	if (games[id].gamedir == "valve") {
-		games[id].pkgname = "valve_patch;addon_furtherdata;addon_holidaymodels";
-		games[id].pkgfile = "maps/crossfire.bsp"; /* only found in patches */
+		games[id].chatroom = "halflife";
 	}
-#endif
 }
 
 /** Checks if a given game directory was installed manually. */
@@ -434,9 +432,11 @@ GameLibrary_InitCustom(void)
 	int id;
 	int foundself = 0;
 	string gamedirname = __NULL__;
-	gameinfo_count = 0;
+	int old_count = gameinfo_count;
 	int packageinfo_count = 0i;
 	int c = 0i;
+
+	gameinfo_count = 0i;
 
 	/* first count let's all manually installed mods */
 	for (id = 0; (gamedirname = getgamedirinfo(id, 0)); id++) {
@@ -465,15 +465,14 @@ GameLibrary_InitCustom(void)
 	}
 
 	/* re-allocate the game list */
-	memfree(games);
-	games = memalloc(sizeof(gameinfo_t) * (gameinfo_count + packageinfo_count));
+	games = (gameinfo_t *)memrealloc(games, sizeof(gameinfo_t), old_count, (gameinfo_count + packageinfo_count));
 
 	/* The things we do for frequent flyer mileage. */
 	if (!games)
 		error(sprintf("Attempting to allocate mod data for %i entries failed\n", gameinfo_count));
 
 	/* now loop through all the mods we found and load in the metadata */
-	for (id = 0; id < gameinfo_count; id++) {
+	for (id = 1; id < gameinfo_count; id++) {
 		gamedirname = getgamedirinfo(id, 0);
 		GameLibrary_SetDefaults(id, gamedirname);
 
@@ -828,4 +827,14 @@ GameLibrary_GetGameInfo(int gameID, gameInfo_t infoType)
 	default:
 		return __NULL__;
 	}
+}
+
+void
+GameLibrary_DebugList(void)
+{
+	for (int i = 0; i < gameinfo_count; i++) {
+		print(sprintf("%i %s (%s)\n", i, games[i].game, games[i].gamedir));
+	}
+
+	print(sprintf("\t%i game(s) loaded\n", gameinfo_count));
 }

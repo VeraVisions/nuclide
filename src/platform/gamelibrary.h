@@ -99,6 +99,9 @@ __variant GameLibrary_GetGameInfo(int, gameInfo_t);
 /** Retrieves fields for the currently running game. See gameInfo_t for a list of fields you can query. */
 __variant GameLibrary_GetInfo(gameInfo_t);
 
+/** Prints debug info about the currently cached games to the console. */
+void GameLibrary_DebugList(void);
+
 typedef enum
 {
 	GAMEINFO_NONE,		/**< No gameinfo available. This is probably the engine making assumptions. */
@@ -142,4 +145,5 @@ typedef struct
 
 int gameinfo_count;
 gameinfo_t *games;
+
 #endif
