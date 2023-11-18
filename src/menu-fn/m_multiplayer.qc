@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2023 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -344,6 +344,7 @@ menu_multiplayer_draw(void)
 			g_connected = TRUE;
 			g_connectstatus = CONNECT_NONE;
 			mp_btninet_start();
+			inet_btnrefresh();
 		}
 		mp_dgConnect.Draw();
 		WField_Static(162, 180, m_reslbl[IDS_FNET_LOGIN], 320, 260,
