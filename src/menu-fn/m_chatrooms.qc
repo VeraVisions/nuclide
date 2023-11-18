@@ -213,6 +213,50 @@ irc_decode_colors(string msg)
 	return ret;
 }
 
+void
+cr_message_wrap(string src, string out, bool isSelf)
+{
+	vector color1, color2;
+	string noColorOut = strdecolorize(out);
+	bool isAction = (substring(noColorOut, 0, 6) == "ACTION") ? true : false;
+
+	if (isSelf) {
+		color1 = [128, 100, 0];
+		color2 = [180, 128, 55];
+	} else {
+		color1 = [192, 192, 192];
+		color2 = [255, 255, 255];
+	}
+
+	/* is this a normal message? */
+	if (isAction == false) {		
+		string finalOutput = irc_decode_colors(out);
+
+		cr_print(
+			sprintf("%s<%s>%s %s",
+				Colors_RGB255_to_HEX(color1),
+				src,
+				Colors_RGB255_to_HEX(color2),
+				finalOutput
+			)
+		);
+
+		memfree((__variant *)finalOutput);
+	} else {
+		out = substring(out, 8, -1);
+
+		cr_print(
+			sprintf("%s%s %s",
+				Colors_RGB255_to_HEX(color1),
+				src,
+				out
+			)
+		);
+	}
+
+	localcmd(sprintf("_fnchat_msg \"^2[Chat-room] ^7%s^7: %s\"\n", src, out));
+}
+
 /* irc processing functions */
 void
 irc_receive(string buffer)
@@ -251,17 +295,7 @@ irc_receive(string buffer)
 	switch (argv(2)) {
 	case "PRIVMSG": /* a message */
 		string msg = substring(buffer, strstrofs(buffer, ":", 1) + 1, -1);
-		string out = irc_decode_colors(msg);
-		cr_print(
-			sprintf("%s<%s>%s %s",
-				Colors_RGB255_to_HEX([192,192,192]),
-				src,
-				Colors_RGB255_to_HEX([255,255,255]),
-				out
-			)
-		);
-		localcmd(sprintf("_fnchat_msg \"^2[Chat-room] ^7%s^7: %s\"\n", src, out));
-		memfree((__variant *)out);
+		cr_message_wrap(src, msg, false);
 		break;
 	case "321":
 		crl_clearrooms();
@@ -367,14 +401,7 @@ cr_input_enter(string text)
 	if (!g_ircroom.m_iStatus || TCP_GetState(&tcp_irc) != STATE_CONNECTED)
 		return;
 
-	cr_print(
-		sprintf("%s<%s>%s %s",
-			Colors_RGB255_to_HEX([128,100,0]),
-			g_ircroom.m_strNick,
-			Colors_RGB255_to_HEX([180,128,55]),
-			text
-		)
-	);
+	cr_message_wrap(g_ircroom.m_strNick, text, true);
 
 	irc_send(sprintf("PRIVMSG %s :%s\n", g_ircroom.m_strChannel, text));
 	cr_tbInput.SetText("");

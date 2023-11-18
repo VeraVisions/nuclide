@@ -45,10 +45,15 @@ void
 inet_btnjoin(void)
 {
 	string addr = inet_lbServers_Addresses.GetSelectedItem();
+	string mapName = inet_lbServers_Map.GetSelectedItem();
+	string hostName = strdecolorize(inet_lbServers_Name.GetSelectedItem());
 	
 	if (addr) {
 		localcmd("stopmusic\n");
 		localcmd(sprintf("connect %s\n", addr));
+		
+		cr_input_enter(sprintf("ACTION is connecting to '%s' on the map %s\n", hostName, mapName));
+
 		RichPresence_Clear();
 		RichPresence_Set("connect", strcat("+connect ", addr));
 		g_menupage = PAGE_MULTIPLAYER;
