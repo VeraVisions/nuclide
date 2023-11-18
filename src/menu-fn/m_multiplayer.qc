@@ -139,6 +139,7 @@ mp_btnchatrooms_start(void)
 	static void mp_btnchatrooms_end(void) {
 		g_menupage = PAGE_CHATROOMS;
 	}
+	g_menuChatInternet = false;
 	localsound("../media/launch_upmenu1.wav");
 	header.SetStartEndPos(50,239,45,45);
 	header.SetStartEndSize(156,26,460,80);
@@ -161,6 +162,28 @@ mp_btncustomize_start(void)
 	header.m_visible = TRUE;
 	header.SetHeader(HEAD_CUSTOMIZE);
 	header.SetExecute(mp_btncustomize_end);
+}
+
+
+void
+mp_btncontrols_start(void)
+{
+	static void btn_controls_end(void) {
+		g_menupage = PAGE_CONTROLS;
+	}
+	g_menuControlsMultiplayer = true;
+	localsound("../media/launch_upmenu1.wav");
+
+	if (mp_connected())
+		header.SetStartEndPos(50,364,45,45);
+	else
+		header.SetStartEndPos(50,332,45,45);
+
+	header.SetStartEndSize(156,26,460,80);
+	header.m_lerp = 0.0f;
+	header.m_visible = TRUE;
+	header.SetHeader(HEAD_CONTROLS);
+	header.SetExecute(btn_controls_end);
 }
 
 void
@@ -228,7 +251,7 @@ menu_multiplayer_init(void)
 	
 	mp_btnControls = spawn(CMainButton);
 	mp_btnControls.SetImage(BTN_CONTROLS);
-	//mp_btnControls.SetExecute(btn_console);
+	mp_btnControls.SetExecute(mp_btncontrols_start);
 	mp_btnControls.SetPos(50,332);
 	Widget_Add(fn_multiplayer, mp_btnControls);
 
@@ -238,7 +261,6 @@ menu_multiplayer_init(void)
 	mp_btnDone.SetPos(50,364);
 	Widget_Add(fn_multiplayer, mp_btnDone);
 
-	
 	/* connected menu */
 	mp_btn2Resume = spawn(CMainButton);
 	mp_btn2Resume.SetImage(BTN_RESUMEGAME);
@@ -284,7 +306,7 @@ menu_multiplayer_init(void)
 	
 	mp_btn2Controls = spawn(CMainButton);
 	mp_btn2Controls.SetImage(BTN_CONTROLS);
-	//mp_btn2Controls.SetExecute(btn_console);
+	mp_btn2Controls.SetExecute(mp_btncontrols_start);
 	mp_btn2Controls.SetPos(50,364);
 	Widget_Add(fn_multiplayer2, mp_btn2Controls);
 
@@ -302,7 +324,7 @@ menu_multiplayer_draw(void)
 {
 	Header_Draw(HEAD_MULTI);
 
-	if (!autocvar__menu_singleplayer && clientstate() == 2 && !g_background) {
+	if (mp_connected()) {
 		Widget_Draw(fn_multiplayer2);
 
 		WLabel_Static(215, 148, m_reslbl[IDS_MULTI_RESUMEHELP], HELPTXT_SIZE, HELPTXT_SIZE, col_help,
@@ -367,7 +389,7 @@ menu_multiplayer_input(float evtype, float scanx, float chary, float devid)
 	if (g_connectstatus)
 		return;
 
-	if (!autocvar__menu_singleplayer && clientstate() == 2 && !g_background)
+	if (mp_connected())
 		Widget_Input(fn_multiplayer2, evtype, scanx, chary, devid);
 	else
 		Widget_Input(fn_multiplayer, evtype, scanx, chary, devid);

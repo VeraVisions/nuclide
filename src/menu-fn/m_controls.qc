@@ -51,11 +51,22 @@ void
 ctrl_btnok_start(void)
 {
 	static void ctrl_btnok_end(void) {
-		g_menupage = PAGE_CONFIGURATION;
+		if (g_menuControlsMultiplayer == false)
+			g_menupage = PAGE_CONFIGURATION;
+		else
+			g_menupage = PAGE_MULTIPLAYER;
 	}
 
 	localsound("../media/launch_dnmenu1.wav");
-	header.SetStartEndPos(45, 45, 50, 140);
+
+	if (g_menuControlsMultiplayer == false)
+		header.SetStartEndPos(45, 45, 50, 140);
+	else
+		if (mp_connected())
+			header.SetStartEndPos(45, 45, 50, 364);
+		else
+			header.SetStartEndPos(45, 45, 50, 332);
+
 	header.SetStartEndSize(460, 80, 156, 26);
 	header.m_lerp = 0.0f;
 	header.m_visible = TRUE;
@@ -67,12 +78,24 @@ void
 ctrl_btncancel_start(void)
 {
 	static void ctrl_btnok_end(void) {
-		g_menupage = PAGE_CONFIGURATION;
+		if (g_menuControlsMultiplayer == false)
+			g_menupage = PAGE_CONFIGURATION;
+		else
+			g_menupage = PAGE_MULTIPLAYER;
 	}
 
 	localsound("../media/launch_dnmenu1.wav");
-	header.SetStartEndPos(45, 45, 50, 172);
+
+	if (g_menuControlsMultiplayer == false)
+		header.SetStartEndPos(45, 45, 50, 140);
+	else
+		if (mp_connected())
+			header.SetStartEndPos(45, 45, 50, 364);
+		else
+			header.SetStartEndPos(45, 45, 50, 332);
+
 	header.SetStartEndSize(460, 80, 156, 26);
+
 	header.m_lerp = 0.0f;
 	header.m_visible = TRUE;
 	header.SetHeader(HEAD_CONTROLS);

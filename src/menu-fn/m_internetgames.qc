@@ -105,6 +105,24 @@ inet_btndone_start(void)
 	header.SetExecute(inet_btndone_end);
 }
 
+
+
+void
+inet_btnchatrooms_start(void)
+{
+	static void mp_btnchatrooms_end(void) {
+		g_menupage = PAGE_CHATROOMS;
+	}
+	g_menuChatInternet = true;
+	localsound("../media/launch_upmenu1.wav");
+	header.SetStartEndPos(30,364,45,45);
+	header.SetStartEndSize(156,26,460,80);
+	header.m_lerp = 0.0f;
+	header.m_visible = TRUE;
+	header.SetHeader(HEAD_ROOMS);
+	header.SetExecute(mp_btnchatrooms_end);
+}
+
 void
 inet_btnrefresh(void)
 {
@@ -250,7 +268,7 @@ menu_internetgames_init(void)
 	
 	inet_btnChatRooms = spawn(CMainButton);
 	inet_btnChatRooms.SetImage(BTN_CHATROOMS);
-	//inet_btnChatRooms.SetExecute(btn_console);
+	inet_btnChatRooms.SetExecute(inet_btnchatrooms_start);
 	inet_btnChatRooms.SetPos(30,364);
 	Widget_Add(fn_inet, inet_btnChatRooms);
 

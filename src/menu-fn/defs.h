@@ -95,9 +95,9 @@ enum
 
 typedef enum
 {
-	RESOURCE_UNCHECKED,
-	RESOURCE_AVAILABLE,
-	RESOURCE_MISSING
+	RESOURCE_UNCHECKED,	/**<< State of the resource is unknown. Check it with Resource_Check() first. */
+	RESOURCE_AVAILABLE, /**<< The resource exists. */
+	RESOURCE_MISSING	/**<< The resource is unavailable. */
 } resource_t;
 
 resource_t
@@ -112,12 +112,10 @@ Resource_Check(string fname)
 bool
 Resource_Available(resource_t res)
 {
-	if (res == RESOURCE_MISSING)
-		return false;
-	else if (res == RESOURCE_AVAILABLE)
+	if (res == RESOURCE_AVAILABLE)
 		return true;
 
-	return RESOURCE_UNCHECKED;
+	return false;
 }
 
 void m_hide(void);
@@ -126,4 +124,10 @@ void
 warning(string msg)
 {
 	print(sprintf("^1WARNING: ^7%s\n", msg));
+}
+
+bool
+mp_connected(void)
+{
+	return (!autocvar__menu_singleplayer && clientstate() == 2 && !g_background) ? true : false;
 }

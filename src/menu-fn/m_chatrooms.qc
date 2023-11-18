@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+var bool g_menuChatInternet = false;
+
 CFrame cr_frLog;
 CFrame cr_frUsers;
 CTextBox cr_tbInput;
@@ -388,11 +390,19 @@ void
 cr_btndone_start(void)
 {
 	static void cr_btndone_end(void) {
-		g_menupage = PAGE_MULTIPLAYER;
+		if (g_menuChatInternet == false)
+			g_menupage = PAGE_MULTIPLAYER;
+		else
+			g_menupage = PAGE_INTERNETGAMES;
 	}
 	//cr_closeconnection();
 	localsound("../media/launch_dnmenu1.wav");
-	header.SetStartEndPos(45,45,50,239);
+
+	if (g_menuChatInternet == false)
+		header.SetStartEndPos(45,45,50,239);
+	else	
+		header.SetStartEndPos(45,45,30,364);
+
 	header.SetStartEndSize(460,80,156,26);
 	header.m_lerp = 0.0f;
 	header.m_visible = TRUE;

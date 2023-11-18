@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+var bool g_menuControlsMultiplayer = false;
+
 CWidget fn_configuration;
 CMainButton cf_btnControls;
 CMainButton cf_btnAudio;
@@ -29,6 +31,7 @@ btn_controls_start(void)
 	static void btn_controls_end(void) {
 		g_menupage = PAGE_CONTROLS;
 	}
+	g_menuControlsMultiplayer = false;
 	localsound("../media/launch_upmenu1.wav");
 	header.SetStartEndPos(50,140,45,45);
 	header.SetStartEndSize(156,26,460,80);
