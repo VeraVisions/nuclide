@@ -21,12 +21,6 @@ void
 NSMonster::NSMonster(void)
 {
 #ifdef SERVER
-	if (!HasSpawnFlags(MSF_MULTIPLAYER))
-	if (g_grMode.MonstersSpawn() == FALSE) {
-		remove(this);
-		return;
-	}
-
 	m_ssLast = __NULL__;
 	oldnet_velocity = g_vec_null;
 	m_flPitch = 1.0f;
@@ -1770,6 +1764,20 @@ NSMonster::Hide(void)
 	customphysics = __NULL__;
 }
 #endif
+
+void
+NSMonster::Spawned(void)
+{
+	if (!HasSpawnFlags(MSF_MULTIPLAYER)) {
+		if (g_grMode.MonstersSpawn() == FALSE) {
+			ReleaseThink();
+			Destroy();
+			return;
+		}
+	}
+
+	super::Spawned();
+}
 
 void
 NSMonster::Respawn(void)

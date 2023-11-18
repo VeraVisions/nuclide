@@ -310,6 +310,7 @@ public:
 	virtual float SendEntity(entity,float);
 	virtual void Touch(entity);
 	//virtual void Hide(void);
+	virtual void Spawned(void);
 	virtual void Respawn(void);
 	virtual void Pain(void);
 	virtual void Death(void);
