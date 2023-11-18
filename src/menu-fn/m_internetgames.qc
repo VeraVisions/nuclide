@@ -138,6 +138,7 @@ inet_refreshframe(void)
 		string address;
 		string players;
 		string ping;
+		float serverPing;
 
 		address = gethostcachestring(srv_fldAdress, i);
 
@@ -150,7 +151,14 @@ inet_refreshframe(void)
 						stof(gethostcachestring(srv_fldPlayers, i)),
 						stof(gethostcachestring(srv_fldMaxplayers, i))
 					);
-		ping = sprintf("%d", stof(gethostcachestring(srv_fldPing, i)));
+
+		serverPing = stof(gethostcachestring(srv_fldPing, i));
+
+		if (serverPing == 65534)
+			ping = _("PING_ICE_S");
+		else
+			ping = sprintf(_("PING_IN_MS"), serverPing);
+
 		inet_lbServers_Name.AddEntry(gethostcachestring(srv_fldName, i));
 		inet_lbServers_Ping.AddEntry(ping);
 		inet_lbServers_Map.AddEntry(gethostcachestring(srv_fldMap, i));

@@ -1682,3 +1682,12 @@ msgstr "Disable (pending)"
 
 msgid "UPDATE_PENDING_RETAIN"
 msgstr "Retain (pending)"
+
+msgid "PING_ICE"
+msgstr "Unavailable (ICE)"
+
+msgid "PING_ICE_S"
+msgstr "ICE"
+
+msgid "PING_IN_MS"
+msgstr "%d ms."

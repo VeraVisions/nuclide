@@ -36,7 +36,10 @@ static void
 vgi_btndone_start(void)
 {
 	static void vgi_btndone_end(void) {
-		g_menupage = PAGE_MULTIPLAYER;
+		if (g_menuLAN == true)
+			g_menupage = PAGE_LANGAMES;
+		else
+			g_menupage = PAGE_INTERNETGAMES;
 	}
 	localsound("../media/launch_dnmenu1.wav");
 	header.SetStartEndPos(45, 45, 50, 172);
@@ -88,12 +91,12 @@ menu_viewgameinfo_setserver(float serverNum)
 
 	vgi_sbPlayers.SetMax(playerCount+1);
 
-	print(sprintf("Server Num? %d\n", serverNum));
-	print(sprintf("PlayerCount? %d\n", playerCount));
-	print(sprintf("ServerInfo? %S\n", serverInfo));
-	print(sprintf("Player? %S\n", gethostcachestring( srv_fldPlayer0, serverNum )));
-	print(sprintf("Player1? %S\n", gethostcachestring( gethostcacheindexforkey("player1"), serverNum )));
-	print(sprintf("Player2? %S\n", gethostcachestring( gethostcacheindexforkey("player0"), serverNum )));
+	//print(sprintf("Server Num? %d\n", serverNum));
+	//print(sprintf("PlayerCount? %d\n", playerCount));
+	//print(sprintf("ServerInfo? %S\n", serverInfo));
+	//print(sprintf("Player? %S\n", gethostcachestring( srv_fldPlayer0, serverNum )));
+	//print(sprintf("Player1? %S\n", gethostcachestring( gethostcacheindexforkey("player1"), serverNum )));
+	//print(sprintf("Player2? %S\n", gethostcachestring( gethostcacheindexforkey("player0"), serverNum )));
 
 	vgi_lbPlayerNum.Clear();
 	vgi_lbPlayerName.Clear();
@@ -108,9 +111,9 @@ menu_viewgameinfo_setserver(float serverNum)
 	float serverPing = stof(gethostcachestring(srv_fldPing, serverNum));
 
 	if (serverPing == 65534)
-		g_vgiLabelPing = "Unavailable (ICE)";
+		g_vgiLabelPing = _("PING_ICE");
 	else
-		g_vgiLabelPing = sprintf("%d ms.", serverPing);
+		g_vgiLabelPing = sprintf(_("PING_IN_MS"), serverPing);
 
 	/* add the player info entries */
 	for (int i = 0; i < playerCount; i++) {

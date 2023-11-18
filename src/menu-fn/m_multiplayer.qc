@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+var bool g_menuLAN = false;
+
 CWidget fn_multiplayer;
 
 CMainButton mp_btnQuickstart;
@@ -71,6 +73,7 @@ mp_btninet_start(void)
 	}
 
 	localsound("../media/launch_upmenu1.wav");
+	g_menuLAN = false;
 	
 	if (g_connected == TRUE) {
 		header.SetStartEndPos(50,172,45,45);
@@ -118,6 +121,8 @@ mp_btnlan_start(void)
 	static void mp_btnlan_end(void) {
 		g_menupage = PAGE_LANGAMES;
 	}
+	g_menuLAN = true;
+
 	Master_GetLANList();
 	localsound("../media/launch_upmenu1.wav");
 	header.SetStartEndPos(50,268,45,45);
