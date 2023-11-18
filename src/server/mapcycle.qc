@@ -15,6 +15,7 @@
 */
 
 noref var string g_mapcycle_override = __NULL__;
+noref var string g_mapCycle = "mapcycle.txt";
 
 void
 Mapcycle_Load(string filename)
@@ -37,7 +38,7 @@ Mapcycle_Load(string filename)
 		if not (whichpack(strcat("maps/", temp, ".bsp")))
 			continue;
 
-		readcmd(sprintf("alias m%i \"map %s;alias nextmap m%i\"\n", mapcount, temp, mapcount + 1i));
+		localcmd(sprintf("alias m%i \"map %s;alias nextmap m%i\"\n", mapcount, temp, mapcount + 1i));
 
 		if (mapname == lastmap)
 			map_next = mapcount;
@@ -52,10 +53,10 @@ Mapcycle_Load(string filename)
 		return;
 
 	/* override the last map so that it goes back to m0 */
-	readcmd(sprintf("alias m%i \"map %s;alias nextmap m0\"\n", mapcount - 1i, lastmap));
+	localcmd(sprintf("alias m%i \"map %s;alias nextmap m0\"\n", mapcount - 1i, lastmap));
 
 	/* the current map in the list will decide the nextmap */
-	readcmd(sprintf("alias nextmap m%i\n", map_next));
+	localcmd(sprintf("alias nextmap m%i\n", map_next));
 
 	print(sprintf("mapcycle initialized with %i entries.\n", mapcount));
 }
@@ -69,12 +70,14 @@ Mapcycle_Init(void)
 	if (g_grMode.IsMultiplayer() == false)
 		return;
 
+	print("--------- Initializing MapCycle ----------\n");
+
 	/* in case some server admin wants a map to continously loop */
-	if not (cycleFile) {
+	if (cycleFile == "") {
 		print("mapcycle disabled via cvar. skipping\n");
+		localcmd("alias nextmap map_restart 0\n");
 		return;
 	}
 
-	print("--------- Initializing MapCycle ----------\n");
 	Mapcycle_Load(cycleFile);
 }
