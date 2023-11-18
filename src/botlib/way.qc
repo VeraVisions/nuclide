@@ -27,14 +27,14 @@ typedef struct waypoint_s
 	int m_numNeighbours;
 } waypoint_t;
 
-static waypoint_t *g_pWaypoints;
-static int g_iWaypoints;
+waypoint_t *g_pWaypoints;
+int g_iWaypoints;
 
 static int g_waylink_status;
 var int g_way1 = -1;
 var int g_way2 = -1;
 
-static void
+void
 Way_WipeWaypoints(void)
 {
 	for (int i = 0; i < g_iWaypoints; i++) {
@@ -45,7 +45,7 @@ Way_WipeWaypoints(void)
 	g_iWaypoints = 0;
 }
 
-static void
+void
 Way_LinkNodes(waypoint_t *wp, waypoint_t *w2)
 {
 	int w2n = w2 - g_pWaypoints;
@@ -103,7 +103,7 @@ Way_UnlinkNodes(waypoint_t *wp, waypoint_t *w2)
 	}
 }
 
-static void
+void
 Way_AutoLink(int wpidx)
 {
 	for (int i = 0i; i < g_iWaypoints; i++) {
@@ -518,21 +518,34 @@ Way_SaveFile(string filename)
 }
 
 void
-Way_ReadFile(string strFile)
+Way_ReadFile(string strFile, bool flush)
 {
-	float file = fopen(strFile, FILE_READ);
+	int startId = 0i;
+	int offSet = 0i;
+
+	filestream file = fopen(strFile, FILE_READ);
 	if (file < 0) {
 		print("Way_ReadFile: unable to open ", strFile, "\n");
 		return;
 	}
 
-	Way_WipeWaypoints();
-
+	/* read the number of waypoints */
 	tokenize(fgets(file));
-	g_iWaypoints = stoi(argv(0));
-	g_pWaypoints = memalloc(sizeof(*g_pWaypoints) * g_iWaypoints);
 
-	for (int i = 0i; i < g_iWaypoints; i++) {
+	if (flush) {
+		Way_WipeWaypoints();
+		g_iWaypoints = stoi(argv(0));
+		g_pWaypoints = memalloc(sizeof(*g_pWaypoints) * g_iWaypoints);
+	} else {
+		int oldSize = g_iWaypoints;
+		int newSize = g_iWaypoints + stoi(argv(0));
+		g_pWaypoints = (waypoint_t *)memrealloc(g_pWaypoints, sizeof(waypoint_t), oldSize, newSize);
+		g_iWaypoints = newSize;
+		startId = oldSize;
+		offSet = oldSize;
+	}
+
+	for (int i = startId; i < g_iWaypoints; i++) {
 		tokenize(fgets(file));
 		g_pWaypoints[i].m_vecOrigin[0] = stof(argv(0));
 		g_pWaypoints[i].m_vecOrigin[1] = stof(argv(1));
@@ -543,14 +556,13 @@ Way_ReadFile(string strFile)
 		
 		for (int j = 0i; j < g_pWaypoints[i].m_numNeighbours; j++) {
 			tokenize(fgets(file));
-			g_pWaypoints[i].m_pNeighbour[j].m_iNode = stoi(argv(0));
+			g_pWaypoints[i].m_pNeighbour[j].m_iNode = offSet + stoi(argv(0));
 			g_pWaypoints[i].m_pNeighbour[j].m_flCost = stof(argv(1));
 			g_pWaypoints[i].m_pNeighbour[j].m_iFlags = stoi(argv(2));
 		}
 	}
 	fclose(file);
 }
-
 
 void
 Way_ConnectOne(void)
@@ -725,6 +737,9 @@ Way_DrawDebugInfo(void)
 	}
 }
 
+void Way_ReadFBFile(string, bool);
+void Way_ReadPBFile(string, bool);
+void Way_ReadJumbotFile(string, bool);
 void
 Way_Cmd(void)
 {
@@ -780,6 +795,25 @@ Way_Cmd(void)
 			g_pWaypoints[i].m_flRadius = autocvar_nav_radius;
 		}
 		break;
+	case "offset":
+		for (int i = 0i; i < g_iWaypoints; i++) {
+			g_pWaypoints[i].m_vecOrigin += stov(argv(2));
+		}
+		break;
+	case "flipx":
+		for (int i = 0i; i < g_iWaypoints; i++) {
+			g_pWaypoints[i].m_vecOrigin[0] *= -1;
+		}
+	case "flipy":
+		for (int i = 0i; i < g_iWaypoints; i++) {
+			g_pWaypoints[i].m_vecOrigin[1] *= -1;
+		}
+		break;
+	case "flipz":
+		for (int i = 0i; i < g_iWaypoints; i++) {
+			g_pWaypoints[i].m_vecOrigin[2] *= -1;
+		}
+		break;
 	case "linkjump":
 		Way_FlagJump();
 		break;
@@ -821,7 +855,19 @@ Way_Cmd(void)
 		Way_SaveFile(argv(2));
 		break;
 	case "load":
-		Way_ReadFile(argv(2));
+		Way_ReadFile(argv(2), true);
+		break;
+	case "merge":
+		Way_ReadFile(argv(2), false);
+		break;
+	case "loadpb":
+		Way_ReadPBFile(argv(2), true);
+		break;
+	case "loadrich":
+		Way_ReadJumbotFile(argv(2), true);
+		break;
+	case "loadfb":
+		Way_ReadFBFile(argv(2), true);
 		break;
 	}
 }

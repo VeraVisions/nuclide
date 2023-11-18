@@ -7,5 +7,6 @@ bot_chat.qc
 bot_combat.qc
 route.qc
 way.qc
+way_convert.qc
 cmd.qc
 #endlist

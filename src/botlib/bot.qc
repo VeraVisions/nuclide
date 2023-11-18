@@ -92,7 +92,7 @@ bot::UseButton(void)
 	}
 
 	bestButton.Trigger(this, TRIG_TOGGLE);
-	sound(this, CHAN_ITEM, "common/wpn_select.wav", 0.25, ATTN_IDLE);
+	StartSoundDef("Player.WeaponSelected", CHAN_ITEM, false);
 }
 
 void
