@@ -263,6 +263,7 @@ SV_RunClientCommand(void)
 		return;
 
 	CheatersLament((NSClientPlayer)cl, input_angles, input_buttons, input_timelength);
+	self.v_angle = input_angles;
 
 	if (!Plugin_RunClientCommand()) {
 		/* TODO */
@@ -357,6 +358,9 @@ init(float prevprogs)
 	PropData_Init();
 	SurfData_Init();
 	DecalGroups_Init();
+
+	/* DO NOT EVER CHANGE THESE. */
+	cvar_set("r_meshpitch", "1");
 }
 
 /** Called inside initents() to make sure the entities have their Respawn()

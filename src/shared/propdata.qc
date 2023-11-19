@@ -285,9 +285,9 @@ PropData_ForModel(string modelname)
 	index = g_propdata_count;
 	modelname = strtolower(modelname);
 
-	print("[PROPDATA] Loading model propdata ");
-	print(modelname);
-	print("\n");
+	//print("[PROPDATA] Loading model propdata ");
+	//print(modelname);
+	//print("\n");
 
 	/* create the hash-table if it doesn't exist */
 	if (!g_hashpropdata) {
@@ -763,7 +763,7 @@ BreakModel_SpawnID(vector smins, vector smaxs, vector dir, float speed, int coun
 
 		gib.ScheduleThink(NSEntity::Destroy, fadetime);
 		gib.SetImpactDecal(impactDecal);
-		print(sprintf("%S\n", mname));
+		//print(sprintf("%S\n", mname));
 
 		#ifdef CLIENT
 			gib.drawmask = MASK_ENGINE;

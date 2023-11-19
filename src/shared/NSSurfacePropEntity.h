@@ -140,6 +140,8 @@ public:
 	nonvirtual vector GetEyePos(void);
 	/** Sets the relative position of the eyes. */
 	nonvirtual void SetEyePos(vector);
+	/** Returns an euler angle of where the entity is 'looking' at. These are not necessarily eye values. */
+	nonvirtual vector GetViewAngle(void);
 
 private:
 	float m_flBurnNext;

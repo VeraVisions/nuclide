@@ -43,6 +43,12 @@ NSSurfacePropEntity::GetEyePos(void)
 	return origin + view_ofs;
 }
 
+vector
+NSSurfacePropEntity::GetViewAngle(void)
+{
+	return v_angle;
+}
+
 void
 NSSurfacePropEntity::SetEyePos(vector value)
 {
