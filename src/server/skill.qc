@@ -44,6 +44,10 @@ float
 Skill_GetValue(string variable, float defaultvalue)
 {
 	float skill = cvar("skill");
+
+	if (skill == 0)
+		skill = 2; /* default to medium */
+
 	float val = fabs(cvar(sprintf("sk_%s%d", variable, skill)));
 	return (val == 0) ? defaultvalue : val;
 }
