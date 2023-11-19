@@ -1814,6 +1814,7 @@ NSMonster::Respawn(void)
 	SetModel(GetSpawnModel());
 	SetSize(base_mins, base_maxs);
 	SetEyePos([0, 0, m_flEyeHeight]);
+	SetOrigin(GetSpawnOrigin());
 	ScheduleThink(AdjustSpawnPos, 0.0f);
 
 	if (HasSpawnFlags(MSF_MONSTERCLIP)) {
