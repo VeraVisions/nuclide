@@ -1,5 +1,6 @@
 // Vera Visions Material
 {
-	program lightmapped
+	program lightmapped#MASK=0.5
+	surfaceParm alphashadow
 	diffusemap textures/measure/rail.tga
 }
