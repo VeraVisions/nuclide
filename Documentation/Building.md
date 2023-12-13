@@ -180,7 +180,7 @@ zypper in git
 #### FTE
 
 ```
-zypper in make gcc gcc-c++ mesa-libGL-devel libgnutls-devel
+zypper in make gcc gcc-c++ mesa-libGL-devel libgnutls-devel alsa-devel libopus-devel speex-devel libvorbis-devel
 ```
 
 #### SDL2
@@ -193,6 +193,12 @@ zypper in libSDL2-devel
 
 ```
 zypper in libX11-devel libXcursor-devel libXrandr-devel
+```
+
+#### Plugin: ODE
+
+```
+zypper in autoconf automake libtool zip
 ```
 
 #### Plugin: FFMPEG
@@ -212,7 +218,7 @@ zypper in make gtkglext-devel libxml2-devel libjpeg8-devel minizip-devel
 #### FTE
 
 ```
-dnf install make gcc gcc-c++ mesa-libGL-devel gnutls-devel
+dnf install make gcc gcc-c++ mesa-libGL-devel gnutls-devel alsa-devel libopus-devel speex-devel libvorbis-devel
 ```
 
 #### SDL2
@@ -230,7 +236,7 @@ dnf install libX11-devel libXcursor-devel libXrender-devel
 #### Plugin: ODE
 
 ```
-dnf install autoconf automake libtool
+dnf install autoconf automake libtool zip
 ```
 
 #### Plugin: FFMPEG
