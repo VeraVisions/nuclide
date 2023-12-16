@@ -140,20 +140,40 @@ typedef enum {
 /** Monster flags, these are defined by the level designers. */
 typedef enumflags
 {
-	MSF_WAITTILLSEEN,
-	MSF_GAG,
-	MSF_MONSTERCLIP,
-	MSF_RESERVED1,
-	MSF_PRISONER,
-	MSF_RESERVED2,
-	MSF_IGNOREPLAYER,
-	MSF_WAITFORSCRIPT,
-	MSF_RESERVED3,
-	MSF_FADECORPSE,
-	MSF_MULTIPLAYER,
-	MSF_FALLING,
-	MSF_HORDE
+	MSF_WAITTILLSEEN,	/**< AI will be enabled once seen (1) */
+	MSF_GAG,			/**< Won't talk (2) */
+	MSF_MONSTERCLIP,	/**< Collides against func_monsterclip (4) */
+	MSF_RESERVED1,		/**< Reserved for entityDef (8) */
+	MSF_PRISONER,		/**< Only reacts to scripted sequences (16) */
+	MSF_RESERVED2,		/**< Reserved for entityDef (32) */
+	MSF_IGNOREPLAYER,	/**< Ignores players (64) */
+	MSF_WAITFORSCRIPT,	/**< AI waits for scripted_sequence to end (128) */
+	MSF_RESERVED3,		/**< Reserved for entityDef (256) */
+	MSF_FADECORPSE,		/**< Corpse fades instead of staying (512) */
+	MSF_MULTIPLAYER,	/**< Will spawn in multiplayer NSGameRules (1024) */
+	MSF_FALLING,		/**< Is falling (2048) */
+	MSF_HORDE			/**< Part of a horde (4096) */
 } monsterFlag_t;
+
+/** For future use: SpawnFlags used in Source */
+typedef enumflags
+{
+	SMSF_WAITTILLSEEN,		/**< AI will be enable once seen (1) */
+	SMSF_GAG,				/**< Won't talk (2) */
+	SMSF_FALLTOGROUND,		/**< Fall to ground, instead of dropping instantly (4) */
+	SMSF_DROPHEALTHKIT,		/**< Drops healthkit (8) */
+	SMSF_EFFICIENT,			/**< Walks direct paths (16) */
+	SMSF_RESERVED1,			/**< Reserved for entityDef (32) */
+	SMSF_RESERVED2,			/**< Reserved for entityDef (64) */
+	SMSF_WAITFORSCRIPT,		/**< AI waits for scripted_sequence to end (128) */
+	SMSF_LONGVISIBILITY,	/**< Long visibility and line of sight (256) */
+	SMSF_FADECORPSE,		/**< Corpse fades instead of staying (512) */
+	SMSF_THINKOUTPVS,		/**< Think outside the PVS (1024) */
+	SMSF_TEMPLATE,			/**< Will spawn through npc_maker (2048) */
+	SMSF_ALTCOLLISION,		/**< Alternative collision, avoiding players (4096) */
+	SMSF_NODROPWEAPONS,		/**< Don't drop weapons (8192) */
+	SMSF_IGNOREPLAYERPUSH	/**< Ignore pushing players (16384) */
+} sourceMonsterFlag_t;
 
 /** Behaviour states. */
 typedef enum
