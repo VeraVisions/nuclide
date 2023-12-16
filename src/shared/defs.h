@@ -504,3 +504,13 @@ Route_GetJumpVelocity(vector vecFrom, vector vecTo, float flGravMod)
 #endif
 	return vecJump;
 }
+
+bool
+FileExists(string filePath)
+{
+	if (filePath != "") /* not empty */
+		if not(whichpack(filePath)) /* not present on disk */
+			return false;
+
+	return true;
+}
