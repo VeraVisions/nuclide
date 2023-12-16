@@ -161,7 +161,7 @@ NSInteractiveSurface::predraw(void)
 	makevectors(angles);
 	R_BeginPolygon(m_strSurfaceMat, 0, 0);
 	R_PolygonVertex(origin + v_right * fsize[0] - v_up * fsize[1],
-		[1,1], [1,0,0], 1.0f);
+		[1,1], [1,1,1], 1.0f);
 	R_PolygonVertex(origin - v_right * fsize[0] - v_up * fsize[1],
 		[0,1], [1,1,1], 1.0f);
 	R_PolygonVertex(origin - v_right * fsize[0] + v_up * fsize[1],
