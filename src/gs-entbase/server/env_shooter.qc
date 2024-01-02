@@ -30,7 +30,8 @@ Shoots model entities from its location.
 - "m_iGibs" : Amount of models shot in total.
 - "m_flDelay" : Delay before being able to be fired again.
 - "m_flVelocity" : Speed of the models in units per second.
-- "m_flVariance" : Delay between shots.
+- "delay" : Delay between shots.
+- "m_flVariance" : Variance in shot trajectory.
 - "m_flGibLife" : Life of the individual model piece.
 - "scale" : Scale modifier of the model pieces.
 
@@ -177,7 +178,7 @@ env_shooter::SpawnKey(string strKey, string strValue)
 	case "m_iGibs":
 		m_iGibs = stoi(strValue);
 		break;
-	case "m_flDelay":
+	case "delay":
 		m_flDelay = stof(strValue);
 		break;
 	case "m_flVelocity":
@@ -238,19 +239,19 @@ env_shooter::ShootGib(void)
 
 	switch (m_flShootSounds) {
 	case 0:	/* glass */
-		StartSoundDef("func_breakable.impact_glass", CHAN_VOICE, false);
+		StartSoundDef("sfx_impact.glass", CHAN_VOICE, false);
 		break;
 	case 1:	/* wood */
-		StartSoundDef("func_breakable.impact_wood", CHAN_VOICE, false);
+		StartSoundDef("sfx_impact.wood", CHAN_VOICE, false);
 		break;
 	case 2:	/* metal */
-		StartSoundDef("func_breakable.impact_metal", CHAN_VOICE, false);
+		StartSoundDef("sfx_impact.metal", CHAN_VOICE, false);
 		break;
 	case 3: /* flesh */
-		StartSoundDef("func_breakable.impact_flesh", CHAN_VOICE, false);
+		StartSoundDef("sfx_impact.flesh", CHAN_VOICE, false);
 		break;
 	case 4:	/* concrete */
-		StartSoundDef("func_breakable.impact_concrete", CHAN_VOICE, false);
+		StartSoundDef("sfx_impact.concrete", CHAN_VOICE, false);
 		break;
 	case -1: /* none */
 	default:
@@ -261,8 +262,11 @@ env_shooter::ShootGib(void)
 		m_flGibLife = 1.0f;
 
 	makevectors(GetAngles());
-	vecThrowVel = v_forward * m_flVelocity;
-	vecThrowVel += [0.0f, 0.0f, 32.0f + (random() * 32.0f)];
+	vecThrowVel = v_forward;
+	vecThrowVel += (random(-1,1) * v_right) * m_flVariance;
+	vecThrowVel += (random(-1,1) * v_up) * m_flVariance;
+	vecThrowVel *= m_flVelocity;
+
 	vecSpinVel[0] = random(-1,1) * 32;
 	vecSpinVel[1] = random(-1,1) * 32;
 	vecSpinVel[2] = random(-1,1) * 32;
@@ -272,8 +276,14 @@ env_shooter::ShootGib(void)
 
 	m_iGibsLeft--;
 
+	/* keep shooting til we're done */
 	if (m_iGibsLeft) {
-		ScheduleThink(ShootGib, m_flVariance);
+		ScheduleThink(ShootGib, m_flDelay);
+	} else {
+		/* no more gibs left, destroy if wanted */
+		if (HasSpawnFlags(EVSHOOTER_REPEATABLE) == false) {
+			ScheduleThink(Destroy, m_flDelay);
+		}
 	}
 }
 
@@ -285,10 +295,12 @@ env_shooter::Trigger(entity act, triggermode_t state)
 		ReleaseThink();
 		break;
 	case TRIG_ON:
-		if (spawnflags & EVSHOOTER_REPEATABLE)
+		/* reset gib count if repeatable. */
+		if (HasSpawnFlags(EVSHOOTER_REPEATABLE) == true) {
 			m_iGibsLeft = m_iGibs;
+		}
 
-		ScheduleThink(ShootGib, m_flVariance);
+		ScheduleThink(ShootGib, m_flDelay);
 		break;
 	default:
 		if (IsThinking() == false)
