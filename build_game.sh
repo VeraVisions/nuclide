@@ -11,17 +11,17 @@ safe_copy()
 
 radiant_build()
 {
+	./make_mapdef.sh "$1"
+
 	# copy files over to RADIANT
 	if [ ! -z "$RADIANT_PATH" ]
 	then
 		if [ -d "$RADIANT_PATH/gamepacks/games" ];
 		then
-			./make_mapdef.sh "$1"
 			mkdir -p "$RADIANT_PATH/gamepacks/$1.game/$1/"
 			safe_copy "./$1/radiant.game" "$RADIANT_PATH/gamepacks/games/$1.game"
 			safe_copy "./$1/entities.def" "$RADIANT_PATH/gamepacks/$1.game/$1/entities.def"
 			safe_copy "./$1/radiant.xml" "$RADIANT_PATH/gamepacks/$1.game/default_build_menu.xml"
-			exit
 		fi
 	fi
 }
@@ -34,7 +34,7 @@ fi
 if [ "$BUILD_UPDATE" -eq 1 ]; then
 	if ! [ -x "$(command -v git)" ]; then
 		printf "'git' is not installed.\n"
-		exit
+		exit 1
 	fi
 fi
 
