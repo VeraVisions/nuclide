@@ -14,15 +14,20 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/** Called internally by client/server modules for when a player joins. */
 void XR_Init(entity);
+/** Called internally by client/server modules for when a player leaves. */
 void XR_Shutdown(entity);
+/** Returns if XR features are available on the entity. */
 bool XR_Available(entity);
+/** Called on client/server modules after an input packet has been dispatched. */
 void XR_InputFrame(entity);
 
 #ifdef CLIENT
+/** Sets up view properties from a client entity before a rendering call. */
 void XR_UpdateView(entity);
 #endif
 
-var float autocvar_xr_roomscale = 1.0f;
-var float autocvar_xr_viewheight = -48.0f;
-var bool autocvar_xr_debug_fakeinputs = false;
+var float autocvar_xr_roomScale = 1.0f;
+var float autocvar_xr_viewHeight = -48.0f;
+var bool autocvar_xr_testInputs = false;

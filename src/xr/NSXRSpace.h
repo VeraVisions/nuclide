@@ -14,9 +14,16 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/** This class represents a local client space in the world.
+/*! @file NSXRSpace.h
+    @brief Managing of simulated Spaces.
 
-It's used to handle room to world translation for VR, for example.
+    NSXRSpace manages the conversion between real-world
+	 to game-world coordinates.
+
+	 It's used to handle room to world translation for VR, for example.
+*/
+
+/** This class represents a local client space in the world.
 */
 class NSXRSpace {
 public:

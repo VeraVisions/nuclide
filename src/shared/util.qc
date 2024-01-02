@@ -61,3 +61,12 @@ Util_IsTeamplay(void)
 	return (serverkeyfloat("teams") > 0) ? (true) : (false);
 #endif
 }
+
+void
+Util_ChangeClass(entity objectID, string className)
+{
+	entity oldSelf = self;
+	self = objectID;
+	callfunction(strcat("spawnfunc_", className));
+	self = oldSelf;
+}

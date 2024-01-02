@@ -23,6 +23,8 @@
 
     This is the code that handles how music track id's are translated
     into different path/naming conventions and file formats.
+
+    Some tracks may only want to be played once (as opposed to looping).
 */
 
 /* we're forced to support a few different paths */

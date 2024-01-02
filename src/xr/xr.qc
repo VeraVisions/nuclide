@@ -73,7 +73,7 @@ XR_UpdateView(entity ePlayer)
 
 		/* now we get the HMD's org/ang and send that off to the renderer */
 		setviewprop(VF_ANGLES, pl.m_xrInputHead.GetAngles());
-		setviewprop(VF_ORIGIN, pl.m_xrInputHead.GetOrigin() + [0,0,autocvar_xr_viewheight]);
+		setviewprop(VF_ORIGIN, pl.m_xrInputHead.GetOrigin() + [0,0, autocvar_xr_viewHeight]);
 	} else {
 		pl.m_xrSpace.SetOrigin(g_view.GetCameraOrigin());
 		pl.m_xrSpace.SetAngles(input_angles);
@@ -95,7 +95,7 @@ XR_InputFrame(entity ePlayer)
 	if (!pl.m_xrSpace)
 		return;
 
-	if (autocvar_xr_debug_fakeinputs) {
+	if (autocvar_xr_testInputs) {
 		input_head_status = (XR_STATUS_ORG | XR_STATUS_ANG);
 		input_left_status = (XR_STATUS_ORG | XR_STATUS_ANG);
 		input_right_status = (XR_STATUS_ORG | XR_STATUS_ANG);
@@ -113,7 +113,6 @@ XR_InputFrame(entity ePlayer)
 	pl.m_xrInputHead.InputFrame();
 	pl.m_xrInputLeft.InputFrame();
 	pl.m_xrInputRight.InputFrame();
-	
 }
 
 bool

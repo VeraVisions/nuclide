@@ -4,7 +4,6 @@ master.qc
 modserver.qc
 music.qc
 richpresence.qc
-servers.qc
 tcp.qc
 util.qc
 updates.qc

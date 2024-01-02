@@ -1,0 +1,1 @@
+void Util_ChangeClass(entity, string);

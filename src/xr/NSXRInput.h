@@ -14,6 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! @file NSXRInput.h
+    @brief Managing of Input sources.
+
+    An NSXRInput contains the state of a potential input source.
+*/
+
 /** Various input device types.
 Right now each client will have a single head, a 'left' and a 'right' NSXRInput. */
 typedef enum

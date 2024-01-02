@@ -126,6 +126,7 @@ string __fullspawndata;
 #include "colors.h"
 #include "weapons.h"
 #include "motd.h"
+#include "util.h"
 
 #define BSPVER_PREREL 	28
 #define BSPVER_Q1		29

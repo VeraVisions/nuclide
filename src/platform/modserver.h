@@ -14,6 +14,16 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! @file modserver.h
+    @brief Remote ModServer APIs
+
+    The ModServer API manages the retrieval of custom game info
+	 (usually modifications) into the ModLibrary.
+
+	 This is kept separate from ModLibrary, in case where
+	 connections to remote sources is disallowed.
+*/
+
 /* Emscripten builds and mods? Forgetaboutit! */
 #ifndef WEBMENU
 

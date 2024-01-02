@@ -14,6 +14,15 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! @file achievements.h
+    @brief Achievement APIs
+
+    The Achievements API manages the retrieval, storage and networking
+	 of game achievements.
+
+	 This is a work in progress.
+*/
+
 /** Data for an achievement definition. */
 typedef struct
 {

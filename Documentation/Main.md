@@ -9,6 +9,8 @@ This is a software development kit (SDK) and development environment created by 
 The Nuclide project produces a freely available game-logic component and 
 development platform on top of [FTEQW](https://www.fteqw.org); which is the engine we happen to use.
 
+**The general idea is that Nuclide takes care of ~90% of the code you shouldn't have to worry about.**
+
 The goal is to create a modern research base for new advancements, as well
 as to have a stable base with a decent API for making games.
 
@@ -16,13 +18,17 @@ It comes with a simple example game (simply referred to as 'Base') and some test
 
 General feature overview:
 
-- SDK in the spirit of 'id Tech' development environments
-- Client-side predicted movement, predicted weapons and vehicle systems
-- Implementations of well known, established entity classes as seen in popular and critically acclaimed games
-- Reference implementations for a lot of features exlusive to the FTEQW engine
-- Designed to be familar to developers who are used to GoldSrc and Source engine
-  project workflows
-- Everything written from scratch with the modern QuakeC language advancements in mind
+- The 'missing' SDK for engines like FTEQW
+- Support for client-side predicted movement, weaponry and vehicles
+- Documented APIs for everything you need to interface with the engine
+- APIs and Frameworks for managing updates, mods, servers, and platform specific features
+- Complete re-implementations of hundreds of entities, from GoldSrc/Source engine games
+- Entity communication via traditional one-way triggers, or our Source Engine I/O compatible system
+- Includes BotLib, a framework for multiplayer-AI that can receive game-specific overrides
+- Includes VGUILib, a re-imagining of Valve's GUI library, which can also be used for in-game surface based interfaces
+- Designed to be familar to developers coming from GoldSrc/Source
+- VR/XR aware codebase
+- All permissively licensed
 
 ### 1. Why might I want to use it? {#why}
 
@@ -67,9 +73,9 @@ If you do posess a basic knowledge of the following:
 
 Then you will have a good time.
 We strive to keep the codebase portable and conform to open standards wherever possible.
-This means that if you develop on Windows, you probably want to install something like [Cygwin](https://www.cygwin.com/) to make this bearable.
+This means that if you develop on Windows, you probably want to install something like WSL or even [Cygwin](https://www.cygwin.com/) to make this bearable.
 
-Please don't ask us how to learn UNIX/Cygwin.
+Please don't ask us how to use WSL or Cygwin. We do not provide support for either. We do not develop on Windows.
 
 **This is a development kit and a development environment. This is not a game.**
 

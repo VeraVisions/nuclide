@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2023 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -15,25 +15,32 @@
 */
 
 #define COST_INFINITE 99999
+
+/** The desired target destination has been reached. */
 #define BOTROUTE_DESTINATION	-1
+/** Unloading of the route in progress. */
 #define BOTROUTE_END			-2
 
+/** Bot Personality */
 typedef enum
 {
-	BOT_PERSONALITY_NORMAL,		/* this bot will be dynamic */
-	BOT_PERSONALITY_AGRESSIVE,	/* this bot will always prefer to be attacking */
-	BOT_PERSONALITY_DEFENSIVE	/* this bot will always prefer to stay behind */
+	BOT_PERSONALITY_NORMAL,		/**< this bot will be dynamic */
+	BOT_PERSONALITY_AGRESSIVE,	/**< this bot will always prefer to be attacking */
+	BOT_PERSONALITY_DEFENSIVE	/**< this bot will always prefer to stay behind */
 } botpersonality_t;
 
+/** Bot State */
 typedef enum
 {
-	BOT_STATE_IDLE,			/* this should rarely happen */
-	BOT_STATE_PATROLLING,	/* this is basically most deathmatch cases */
-	BOT_STATE_DEFENDING,	/* this is for when bots stay put and stay around spawn, or their teams goalitem */
-	BOT_STATE_ATTACKING,	/* this is for when bots go to the enemy spawn, or to the enemy team's goalitem */
-	BOT_STATE_FLEEING		/* this is for when the AI should just get as far away as possible */
+	BOT_STATE_IDLE,			/**< this should rarely happen */
+	BOT_STATE_PATROLLING,	/**< this is basically most deathmatch cases */
+	BOT_STATE_DEFENDING,	/**< this is for when bots stay put and stay around spawn, or their teams goalitem */
+	BOT_STATE_ATTACKING,	/**< this is for when bots go to the enemy spawn, or to the enemy team's goalitem */
+	BOT_STATE_FLEEING		/**< this is for when the AI should just get as far away as possible */
 } botstate_t;
 
+/** Base class for the Bot AI.
+*/
 class bot:player
 {
 	/* routing */
@@ -95,8 +102,10 @@ class bot:player
 	virtual void(string) SetName;
 };
 
+/** Adds a bot to the game with some basic info. Returns the resulting entity. __NULL__ if unavailable. */
 entity Bot_AddQuick(void);
 
+/** Applies random custom colors to the given bot entity. */
 void
 Bot_RandomColormap(bot target)
 {

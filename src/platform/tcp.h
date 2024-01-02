@@ -14,6 +14,21 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! @file tcp.h
+    @brief TCP/IP Networking API
+
+    The TCP API manages the sending/receiving of data over TCP sockets.
+
+    First, establish a connection with TCP_Connect(), which will return
+	 a file descriptior.
+	 If TCP_Connect returns a value below 0, no connection is possible.
+    You can send data through TCP_Send() once TCP_GetState returns
+    STATE_CONNECTED.
+
+    You need to run TCP_Frame() on your tcpinfo_t struct every frame
+    in order to listen to network activity.
+*/
+
 #define TCP_BUFFER_LENGTH 32
 
 /** State of a TCP connection. */

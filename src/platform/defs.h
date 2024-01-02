@@ -20,7 +20,6 @@
 #include "modserver.h"
 #include "music.h"
 #include "richpresence.h"
-#include "servers.h"
 #include "tcp.h"
 #include "updates.h"
 #include "gamelibrary.h"
