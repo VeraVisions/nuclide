@@ -137,7 +137,7 @@ NSRadar::RenderView(void)
 {
 	if (m_strMaterial != __NULL__) {
 		RenderOverviewPlane();
-	} else {
+	} else if (m_strMaterial == "wireframe") {
 		RenderWireframePlane();
 	}
 
@@ -150,12 +150,22 @@ NSRadar::RenderView(void)
 }
 
 NSRadar
-NSRadar::InitWireframe(void)
+NSRadar::InitEmpty(void)
 {
 	NSRadar newRadar = spawn(NSRadar);
 	newRadar.m_bDrawEntities = false;
 	newRadar.CalculateVertices();
 	newRadar.m_strMaterial = __NULL__;
+	return newRadar;
+}
+
+NSRadar
+NSRadar::InitWireframe(void)
+{
+	NSRadar newRadar = spawn(NSRadar);
+	newRadar.m_bDrawEntities = false;
+	newRadar.CalculateVertices();
+	newRadar.m_strMaterial = "wireframe";
 	return newRadar;
 }
 

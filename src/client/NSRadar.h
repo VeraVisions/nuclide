@@ -33,8 +33,10 @@ public:
 	nonvirtual NSRadar InitFromHLTVScript(string);
 	/** Init as Overview from Source Engine HLTV script file. */
 	nonvirtual NSRadar InitFromSourceHLTVScript(string);
-	/** Init an empty (wireframe) overview */
+	/** Init a wireframe overview. */
 	nonvirtual NSRadar InitWireframe(void);
+	/** Init an empty overview. */
+	nonvirtual NSRadar InitEmpty(void);
 
 	nonvirtual void RenderOverviewPlane(void);
 	nonvirtual void RenderWireframePlane(void);
