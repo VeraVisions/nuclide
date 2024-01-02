@@ -31,6 +31,32 @@ Requires to be positioned within an areaportal helper brush.
 # TRIVIA
 This entity was introduced in Quake II (1997).
 */
+
+/*!QUAKED func_areaportalwindow (0 .5 .8) ?
+# OVERVIEW
+Manages a space between two areas, but only renders
+when a player is in the specified range.
+
+Requires a helper func_brush entity that should be textured simple,
+and have 'Solidty' set to '1'. This entity will render instead
+of the culled area, and needs a targetname to be called by the
+areaportalwindow.
+
+# KEYS
+- "target" : The targetname of the helper func_brush entity.
+- "FadeStartDist"  : Sets the distance for rendering the helper entity.
+- "FadeDist"  : Sets the distance for closing the portal.
+- "TranslucencyLimit"  : How much should the helper brush fade. Set to '0' for complete fadeout.
+- "BackgroundBModel"  : Optional brush entity that can be drawn after the helper entity.
+
+# INPUTS
+- "SetFadeStartDistance" : Sets FadeStartDist.
+- "SetFadeEndDistance" : Sets FadeDist.
+
+# TRIVIA
+This entity was introduced in Half-Life 2 (2004).
+*/
+
 class
 func_areaportal:NSEntity
 {
