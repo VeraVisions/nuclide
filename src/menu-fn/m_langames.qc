@@ -62,7 +62,8 @@ lan_refreshframe(void)
 		string ping;
 
 		address = gethostcachestring(srv_fldAdress, i);
-		if (!address || !Server_IsLan(address)) {
+
+		if (!address) {
 			continue;
 		}
 

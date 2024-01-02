@@ -14,6 +14,18 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+static bool
+Server_IsLan(string address)
+{
+	tokenizebyseparator(address, ".");
+	
+	if (argv(0) == "192" && argv(1) == "168") {
+		return (1);
+	} else {
+		return (0);
+	}
+}
+
 string
 Master_Resolve(void)
 {

@@ -165,8 +165,7 @@ inet_refreshframe(void)
 
 		address = gethostcachestring(srv_fldAdress, i);
 
-		/* skip LAN */
-		if (!address || Server_IsLan(address)) {
+		if (!address) {
 			continue;
 		}
 
