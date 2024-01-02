@@ -77,6 +77,7 @@ public:
 	virtual void Save(float);
 	virtual void Restore(string,string);
 	virtual void SpawnKey(string,string);
+	virtual void Spawned(void);
 	virtual void Respawn(void);
 	virtual void Trigger(entity, triggermode_t);
 	
@@ -151,6 +152,15 @@ speaker::SpawnKey(string strKey, string strValue)
 	default:
 		super::SpawnKey(strKey, strValue);
 	}
+}
+
+void
+speaker::Spawned(void)
+{
+	/* HACK: avoid de-spawning */
+	spawnflags |= MSF_MULTIPLAYER;
+
+	super::Spawned();
 }
 
 void

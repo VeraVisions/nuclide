@@ -114,7 +114,6 @@ ambient_generic::ambient_generic(void)
 	m_strSpawnPath = __NULL__;
 	m_flSpawnVolume = 0.0f;
 	m_flSpawnPitch = 0.0f;
-	spawnflags |= MSF_MULTIPLAYER;
 }
 
 void
@@ -205,6 +204,7 @@ ambient_generic::SpawnKey(string strKey, string strValue)
 		break;	
 	case "radius":
 		m_bIsModern = true;
+		break;
 	default:
 		super::SpawnKey(strKey, strValue);
 		break;
@@ -214,6 +214,9 @@ ambient_generic::SpawnKey(string strKey, string strValue)
 void
 ambient_generic::Spawned(void)
 {
+	/* HACK: avoid de-spawning */
+	spawnflags |= MSF_MULTIPLAYER;
+
 	super::Spawned();
 	precache_sound(m_strSpawnPath);
 }
@@ -223,6 +226,7 @@ ambient_generic::Respawn(void)
 {
 	SetSize([0,0,0], [0,0,0]);
 	SetOrigin(GetSpawnOrigin());
+
 	m_strActivePath = m_strSpawnPath;
 	m_flPitch = m_flSpawnPitch;
 	m_flVolume = m_flSpawnVolume;
@@ -397,6 +401,7 @@ ambient_generic::ReceiveEntity(float isnew, float flChanged)
 		origin[0] = readcoord();
 		origin[1] = readcoord();
 		origin[2] = readcoord();
+		solid = SOLID_NOT;
 		setsize(this, [0,0,0], [0,0,0]);
 		setorigin(this, origin);
 		drawmask = MASK_ENGINE;
@@ -419,8 +424,7 @@ ambient_generic::ReceiveEntity(float isnew, float flChanged)
 	if (flChanged & AMBIENT_ENABLED)
 		m_bLoops = readbyte();
 
-	NSLog("Sound received: %S Volume: %f; Radius: %d; Pitch: %d", m_strActivePath, m_flVolume, m_flRadius, m_flPitch);
-
+	SndLog("Sound received: %S Volume: %f; Radius: %d; Pitch: %d, Org: %v", m_strActivePath, m_flVolume, m_flRadius, m_flPitch, origin);
 
 	if (m_bLoops == true) {
 		if (flChanged & AMBIENT_MODERN) {
