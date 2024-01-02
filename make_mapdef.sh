@@ -18,32 +18,32 @@ do
 	KEY=$(echo "$LINE" | awk -F"\"" '{ print $2 }')
 	VAL=$(echo "$LINE" | awk -F"\"" '{ print $4 }')
 
-	if [ "$KEY" == "entityDef" ]
+	if [ "$KEY" = "entityDef" ]
 	then
 		printf -- "$VAL" > "/tmp/def_name"
 	fi
 	
-	if [ "$SEG1" == "entityDef" ]
+	if [ "$SEG1" = "entityDef" ]
 	then
 		printf -- "$SEG2" > "/tmp/def_name"
 	fi
 
-	if [ "$KEY" == "editor_color" ]
+	if [ "$KEY" = "editor_color" ]
 	then
 		printf -- "$VAL" > "/tmp/def_color"
 	fi
 
-	if [ "$KEY" == "editor_mins" ]
+	if [ "$KEY" = "editor_mins" ]
 	then
 		printf -- "$VAL" > "/tmp/def_mins"
 	fi
 
-	if [ "$KEY" == "editor_maxs" ]
+	if [ "$KEY" = "editor_maxs" ]
 	then
 		printf -- "$VAL" > "/tmp/def_maxs"
 	fi
 
-	if [ "$KEY" == "mins" ]
+	if [ "$KEY" = "mins" ]
 	then
 		if [ -z $(cat "/tmp/def_mins") ]
 		then
@@ -51,7 +51,7 @@ do
 		fi
 	fi
 
-	if [ "$KEY" == "maxs" ]
+	if [ "$KEY" = "maxs" ]
 	then
 		if [ -z $(cat "/tmp/def_maxs") ]
 		then
@@ -59,12 +59,12 @@ do
 		fi
 	fi
 
-	if [ "$KEY" == "editor_usage" ]
+	if [ "$KEY" = "editor_usage" ]
 	then
 		printf -- "$VAL" > "/tmp/def_usage"
 	fi
 
-	if [ "$KEY" == "netname" ]
+	if [ "$KEY" = "netname" ]
 	then
 		if [ -z "$(cat "/tmp/def_usage")" ]
 		then
@@ -72,12 +72,12 @@ do
 		fi
 	fi
 
-	if [ "$KEY" == "editor_model" ]
+	if [ "$KEY" = "editor_model" ]
 	then
 		printf -- "$VAL" > "/tmp/def_model"
 	fi
 
-	if [ "$KEY" == "model" ]
+	if [ "$KEY" = "model" ]
 	then
 		if [ -z $(cat "/tmp/def_model") ]
 		then
@@ -85,7 +85,7 @@ do
 		fi
 	fi
 
-	if [ "$SEG1" == "}" ]
+	if [ "$SEG1" = "}" ]
 	then
 		KEY_NAME=$(cat "/tmp/def_name")
 		KEY_COLOR=$(cat "/tmp/def_color")
