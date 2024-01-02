@@ -949,21 +949,24 @@ bool NSEntity::StartSound( string strSample, float channel, float flags, bool br
 		return ( false );
 
 	if ( broadcast ) {
-		sound( this, channel, strSample, 1.0, ATTN_NORM );
+		sound( this, channel, strSample, 1.0f, ATTN_NORM, 0, SOUNDFLAG_FOLLOW );
 	} else {
 #ifdef SERVER
 		msg_entity = this;
-		sound( this, channel, strSample, 1.0, ATTN_NORM, 0, SOUNDFLAG_UNICAST );
+		sound( this, channel, strSample, 1.0f, ATTN_NORM, 0, SOUNDFLAG_UNICAST | SOUNDFLAG_FOLLOW);
 		msg_entity = __NULL__;
 #else
-		sound( this, channel, strSample, 1.0, ATTN_NORM );
+		sound( this, channel, strSample, 1.0f, ATTN_NORM, 0, SOUNDFLAG_FOLLOW );
 #endif
 	}
+
+	SndLog( "^2%s::^3StartSound^7: %s (chan: %d bcast: %d) (%v)", classname, strSample, channel, broadcast, origin );
+
 	return ( true );
 }
 
 bool NSEntity::StartSoundDef( string strSample, float channel, bool broadcast ) {
-	NSLog( "^2%s::^3StartSoundDef^7: %s (chan: %d bcast: %d)", classname, strSample, channel, broadcast );
+	SndLog( "^2%s::^3StartSoundDef^7: %s (chan: %d bcast: %d)", classname, strSample, channel, broadcast );
 	Sound_Play( this, channel, strSample );
 	return ( true );
 }

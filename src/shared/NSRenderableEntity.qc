@@ -959,23 +959,23 @@ NSRenderableEntity::HandleAnimEvent(float flTimeStamp, int iCode, string strData
 	case 1004:	/* plays a sound on CHAN_BODY */
 #ifdef CLIENT
 		if (substring(strData, 0, 1) == "*")
-			sound(self, CHAN_BODY, substring(strData, 1, -1), 1.0f, ATTN_NORM);
+			StartSound(substring(strData, 1, -1), CHAN_BODY, 0, true);
 		else
-			sound(self, CHAN_BODY, strData, 1.0f, ATTN_NORM);
+			StartSound(strData, CHAN_BODY, 0, true);
 #endif
 		break;
 	case 1008:	/* plays a sound on CHAN_VOICE */
 #ifdef CLIENT
 		if (substring(strData, 0, 1) == "*")
-			sound(self, CHAN_VOICE, substring(strData, 1, -1), 1.0f, ATTN_NORM);
+			StartSound(substring(strData, 1, -1), CHAN_VOICE, 0, true);
 		else
-			sound(self, CHAN_VOICE, strData, 1.0f, ATTN_NORM);
+			StartSound(strData, CHAN_VOICE, 0, true);
 #endif
 		break;
-#ifdef CLIENT
 	case 5004: /* view model sound? */
-		sound(this, CHAN_AUTO, strData, 1.0, ATTN_NORM, 100, SOUNDFLAG_FOLLOW | SOUNDFLAG_NOSPACIALISE);
+		StartSound(strData, CHAN_AUTO, 0, true);
 		break;
+#ifdef CLIENT
 	case 5001: /* muzzle flash on attachment 0 */
 		EV_MuzzleFlash_Create(this, m_iNumBones, m_flMuzzleScale, m_iMuzzleModel);
 		break;
@@ -993,10 +993,10 @@ NSRenderableEntity::HandleAnimEvent(float flTimeStamp, int iCode, string strData
 		for (entity f = world; (f = find(f, ::targetname, strData));) {
 			NSEntity trigger = (NSEntity)f;
 			if (trigger.Trigger != __NULL__) {
-				trigger.Trigger(self, TRIG_TOGGLE);
+				trigger.Trigger(this, TRIG_TOGGLE);
 				NSLog("^2%s^7::^3ModelEvent^7: " \
 					"Calling trigger '%s'\n",
-					self.classname, strData);
+					classname, strData);
 			}
 		}
 		break;

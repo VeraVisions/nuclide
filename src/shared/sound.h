@@ -28,6 +28,15 @@
 .float maxspeed;
 .float flags;
 
+var bool autocvar_s_developer = false;
+void
+_Sound_Log(string msg)
+{
+	if (autocvar_s_developer == true)
+		print(sprintf("%f %s\n", time, msg));
+}
+#define SndLog(...) _Sound_Log(sprintf(__VA_ARGS__))
+
 /** Global hash table for name > soundDef id lookup. */
 var hashtable g_hashsounds;
 

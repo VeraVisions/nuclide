@@ -396,9 +396,9 @@ Sound_Precache(string shader)
 
 	index = g_sounds_count;
 
-	dprint("[SOUND] Precaching sound shader ");
-	dprint(shader);
-	dprint("\n");
+	SndLog("Precaching SoundDef ");
+	SndLog(shader);
+	SndLog("\n");
 
 	/* create the hash-table if it doesn't exist */
 	if (!g_hashsounds) {
@@ -411,7 +411,7 @@ Sound_Precache(string shader)
 		cache = (int)hash_get(g_hashsounds, shader, -1);
 
 		if (cache >= 0) {
-			NSLog("^1Sound_Precache: shader %s already precached", shader);
+			SndLog("^1Sound_Precache: def %s already precached", shader);
 			return cache;
 		}
 	}
@@ -458,7 +458,7 @@ Sound_Precache(string shader)
 		fclose(fh);
 	}
 
-	print("^1no soundDef found for ");
+	print("^1no SoundDef found for ");
 	print(shader);
 	print("\n");
 	g_sounds_count--;
@@ -481,7 +481,7 @@ Sound_Distance(entity target, string shader)
 	sample = (int)hash_get(g_hashsounds, shader, -1);
 
 	if (sample < 0) {
-		crossprint(sprintf("^1Sound_Distance: shader %s is not precached\n", shader));
+		crossprint(sprintf("^1Sound_Distance: def %s is not precached\n", shader));
 		return;
 	}
 
@@ -544,7 +544,7 @@ Sound_DistancePos(vector pos, string shader)
 	sample = (int)hash_get(g_hashsounds, shader, -1);
 
 	if (sample < 0) {
-		crossprint(sprintf("^1Sound_DistancePos: shader %s is not precached (SERVER)\n", shader));
+		SndLog("^1Sound_DistancePos: def %s is not precached (SERVER)\n", shader);
 		return;
 	}
 
@@ -577,10 +577,7 @@ Sound_DistancePos(vector pos, string shader)
 	}
 #endif
 
-#ifdef DEVELOPER
-	print(sprintf("Sound_DistancePos: %s\n", argv(r)));
-#endif
-
+	SndLog(sprintf("Sound_DistancePos: %s\n", argv(r)));
 	pointsound_proper(pos, argv(r), volume, ATTN_NONE, pitch);
 }
 
@@ -601,7 +598,7 @@ Sound_Play(entity target, int chan, string shader)
 	sample = (int)hash_get(g_hashsounds, shader, -1);
 
 	if (sample < 0) {
-		crossprint(sprintf("^1Sound_Play: shader %s is not precached\n", shader));
+		SndLog("^1Sound_Play: def %s is not precached\n", shader);
 		return;
 	}
 
@@ -724,7 +721,7 @@ Sound_PlayAt(vector pos, string shader)
 	sample = (int)hash_get(g_hashsounds, shader, -1);
 
 	if (sample < 0) {
-		crossprint(sprintf("^1Sound_PlayAt: shader %s is not precached\n", shader));
+		SndLog("^1Sound_PlayAt: def %s is not precached\n", shader);
 		return;
 	}
 
@@ -780,7 +777,7 @@ Sound_PlayLocal(string shader)
 	sample = (int)hash_get(g_hashsounds, shader, -1);
 
 	if (sample < 0) {
-		crossprint(sprintf("^1Sound_PlayLocal: shader %s is not precached\n", shader));
+		SndLog("^1Sound_PlayLocal: def %s is not precached\n", shader);
 		return;
 	}
 
@@ -866,7 +863,7 @@ Sound_Speak(entity target, string shader)
 	sample = (int)hash_get(g_hashsounds, shader, -1);
 
 	if (sample < 0) {
-		crossprint(sprintf("^1Sound_Speak: shader %s is not precached (SERVER)\n", shader));
+		SndLog("^1Sound_Speak: def %s is not precached (SERVER)\n", shader);
 		return;
 	}
 

@@ -18,7 +18,7 @@
     @brief Constants macro loader
 
 Scripters and level designers are able to define parameters through the use
-of name-based lookups.
+of name-based lookups, so they can change them later in one convenient place.
 
 In the game directory, they are defined within `scripts/constants.txt`.
 An example file looks like this:
@@ -41,7 +41,7 @@ That would look something like this:
 The same applies to data read within level files and most routines related to parsing key/value pairs, so it is not limited to usage within EntityDef.
 */
 
-/** Called upon world init internally to populate our look-up table.
+/** Called upon game init internally to populate our look-up table.
 */
 void Constants_Init(void);
 
