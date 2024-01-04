@@ -142,6 +142,7 @@ private:
 	float m_flExplodeRad;
 	string m_strBreakSpawn;
 	bool m_bCanTouch;
+	int _m_iExplosionParticle;
 
 	/*entity m_pressAttacker;
 	int m_pressType;
@@ -156,6 +157,7 @@ func_breakable::func_breakable(void)
 	m_flExplodeRad = 0.0f;
 	m_strBreakSpawn = __NULL__;
 	m_bCanTouch = false;
+	_m_iExplosionParticle = 0i;
 
 	/* func_breakable defaults to glass */
 	if (classname == "func_breakable") {
@@ -236,7 +238,7 @@ func_breakable::Spawned(void)
 	/* needs to be called before super function */
 	SetSurfaceData(funcbreakable_surftable[material]);
 	SetPropData(funcbreakable_surftable[material]);
-
+	_m_iExplosionParticle = particleeffectnum("fx_explosion.main");
 	super::Spawned();
 }
 
@@ -299,7 +301,7 @@ func_breakable::Explode(void)
 	string breakModel = GetPropData(PROPINFO_BREAKMODEL);
 
 	BreakModel_Spawn(absmin, absmax, [0,0,0], m_flExplodeMag, vlen(size) / 10, breakModel);
-	pointparticles(particleeffectnum("fx_explosion.main"), rp, [0,0,0], 1);
+	pointparticles(_m_iExplosionParticle, rp, [0,0,0], 1);
 	Damage_Radius(rp, this, m_flExplodeMag, m_flExplodeRad, TRUE, 0);
 	UseTargets(this, TRIG_TOGGLE, 0.0f); /* delay... ignored. */
 	SetTakedamage(DAMAGE_NO);
