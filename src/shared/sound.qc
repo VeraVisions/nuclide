@@ -328,7 +328,7 @@ Sound_PrecacheFile(string fileName)
 		g_hashsounds = hash_createtab(2, HASH_ADD);
 	}
 
-	print(sprintf("Precaching SOURCE ENGINE file %S\n", fileName));
+	SndLog("Precaching SOURCE ENGINE file %S", fileName);
 
 	while ((lineStream = fgets(scriptFile))) {
 		/* when we found it, quit */
@@ -396,9 +396,7 @@ Sound_Precache(string shader)
 
 	index = g_sounds_count;
 
-	SndLog("Precaching SoundDef ");
-	SndLog(shader);
-	SndLog("\n");
+	SndLog("Precaching SoundDef %S", shader);
 
 	/* create the hash-table if it doesn't exist */
 	if (!g_hashsounds) {
