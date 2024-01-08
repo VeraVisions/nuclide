@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+var string autocvar_g_playerClass = "player";
+
 /*
 =================
 Predict_EntityUpdate
@@ -24,15 +26,15 @@ Propagate our pmove state to whatever the current frame before its stomped on
 =================
 */
 void
-Predict_EntityUpdate(player pl, float new)
+Predict_EntityUpdate(NSClientPlayer pl, float new)
 {
 	/* people expect a static camera when paused */
 	if (Util_IsPaused())
 		return;
 
 	/* this is a new client entity, let's set it up right */
-	if (new || self.classname != "player") {
-		spawnfunc_player();
+	if (new || pl.classname != "player") {
+		Util_ChangeClass(pl, "player");
 		pl.classname = "player";
 
 		/* is this **us** ? */

@@ -898,6 +898,15 @@ NSClientPlayer::MakePlayer(void)
 	forceinfokey(this, "*dead", "0");
 }
 
+void
+NSClientPlayer::MakeSpectator(void)
+{
+	ClientKill();
+	MakeTempSpectator();
+	team = 0;
+	forceinfokey(this, "*team", ftos(team)); 
+}
+
 /*
 =================
 NSClientPlayer::EvaluateEntity
@@ -910,6 +919,8 @@ at the top of player::EvaluateEntity
 void
 NSClientPlayer::EvaluateEntity(void)
 {
+	pvsflags = (flags & FL_FAKESPEC) ? 0 : PVSF_IGNOREPVS;
+
 	EVALUATE_FIELD(modelindex, PLAYER_MODELINDEX)
 	EVALUATE_FIELD(colormap, PLAYER_MODELINDEX)
 

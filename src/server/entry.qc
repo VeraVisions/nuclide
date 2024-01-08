@@ -269,8 +269,13 @@ SV_RunClientCommand(void)
 		/* TODO */
 	}
 
-	cl.SharedInputFrame();
-	cl.ServerInputFrame();
+	/* FIXME: before a splitscreen player disconnects, it often sends
+	   one last SV_RunClientCommand which causes an error if we don't
+	   check these two methods here */
+	if (cl.SharedInputFrame)
+		cl.SharedInputFrame();
+	if (cl.ServerInputFrame)
+		cl.ServerInputFrame();
 
 	if (self.gotData == false) {
 		BreakModel_SendClientData(self);
@@ -313,8 +318,9 @@ SV_ParseClientCommand(string cmd)
 	case "spectate":
 		if (self.classname != "player")
 			break;
-		ClientKill();
-		spawnfunc_NSClientSpectator();
+
+		player pl = (player)self;
+		pl.MakeSpectator();
 		break;
 	case "play":
 		if (self.classname != "spectator")

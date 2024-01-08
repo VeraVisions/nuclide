@@ -39,7 +39,7 @@ Event_Callback(float mtime, __inout float btime)
 		return;
 
 	/* weapon changed */
-	player pl = (player)(pSeat->m_ePlayer);
+	NSClientPlayer pl = (NSClientPlayer)(pSeat->m_ePlayer);
 
 	if (pSeat->m_iEventWeapon != pl.activeweapon)
 		return;

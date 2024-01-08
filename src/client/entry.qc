@@ -81,6 +81,8 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 
 	WorldSpawn_Init();
 
+	g_overview = NSRadar::InitForCurrentMap();
+
 	Sound_Precache("Player.DenyWeaponSelection");
 	Sound_Precache("Player.WeaponSelected");
 	Sound_Precache("Player.WeaponSelectionMoveSlot");
@@ -308,12 +310,13 @@ CSQC_UpdateView(float w, float h, float focus)
 
 			/* 2D calls happen here, after rendering is done */
 			CSQC_Update2D(w, h, focus);
+
+			EFX_UpdateListener(g_view);
+			DSP_UpdateSoundscape(g_view);
+			clframetime = 0.0f;
+			frametime = 0.0f;
 		}
 	}
-
-	/* this sucks and doesn't take seats into account */
-	EFX_UpdateListener();
-	DSP_UpdateSoundscape();
 
 	/* draw AL debug info (no regard for seating */
 	if (autocvar_s_al_debug)

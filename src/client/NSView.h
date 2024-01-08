@@ -132,6 +132,7 @@ private:
 	bool m_bSetClientAngle;
 
 	bool m_bDrawLocalPlayer;
+	bool m_bDrawEntities;
 };
 
 /** one NSView for each seat */

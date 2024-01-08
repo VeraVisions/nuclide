@@ -2022,7 +2022,7 @@ NSMonster::SpawnKey(string strKey, string strValue)
 		_m_flFrame = ReadFloat(strValue);
 		break;
 	default:
-		NSSurfacePropEntity::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 		break;
 	}
 }

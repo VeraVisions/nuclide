@@ -26,6 +26,7 @@ NSView::NSView(void)
 	m_flFieldOfView = 90.0f;
 	m_client = __NULL__;
 	m_flSensitivity = 1.0f;
+	m_bDrawEntities = true;
 }
 
 void
@@ -49,7 +50,7 @@ NSView::SetupView(void)
 	if (m_bDrawLocalPlayer)
 		setproperty(VF_VIEWENTITY, 0);
 	else
-		setproperty(VF_VIEWENTITY, player_localentnum);
+		setproperty(VF_VIEWENTITY, m_viewTarget.entnum);
 
 	/* handle camera override */
 	if (pSeat->m_flCameraTime > time || pSeat->m_flCameraTime == -1) {
@@ -260,28 +261,30 @@ void View_DrawViewModel();
 void
 NSView::UpdateView(void)
 {
-	player pl = (player)m_viewTarget;
+	NSClientPlayer pl = (NSClientPlayer)m_viewTarget;
 	NSClient cl = (NSClient)m_viewTarget;
 	NSClientSpectator spec = (NSClientSpectator)m_viewTarget;
 	entity c;
 
-	if (!cl)
-		return;
-
 	clearscene();
 
-	/* run preframe code on our viewtarget */
-	cl.PreFrame();
+	/* is a client attached to this view? */
+	if (cl) {
+		/* run preframe code on our viewtarget */
+		cl.PreFrame();
 
-	/* update our player seat info with predicted info */
-	pSeat->m_vecPredictedOrigin = cl.origin;
-	pSeat->m_flPredictedFlags = cl.flags;
-	pSeat->m_vecPredictedVelocity = cl.velocity;
+		/* update our player seat info with predicted info */
+		pSeat->m_vecPredictedOrigin = cl.origin;
+		pSeat->m_flPredictedFlags = cl.flags;
+		pSeat->m_vecPredictedVelocity = cl.velocity;
+	}
 
 	/* put entities into the scene (and call their predraws */
-	addentities(MASK_ENGINE);
+	if (m_bDrawEntities)
+		addentities(MASK_ENGINE);
 
 	/* after predraws we can act upon their new positions */
+	if (cl) {
 	switch (GetViewMode()) {
 	case VIEWMODE_FPS:
 		if (Client_InIntermission()) {
@@ -306,6 +309,8 @@ NSView::UpdateView(void)
 		spec = (NSClientSpectator)m_viewTarget;
 
 		switch (spec.spec_mode) {
+		case SPECMODE_LOCKEDCHASE:
+			view_angles = [0, spec.v_angle[1], 0];
 		case SPECMODE_THIRDPERSON:
 			makevectors(view_angles);
 			vector vecStart = spec.GetEyePos();
@@ -322,7 +327,7 @@ NSView::UpdateView(void)
 			c = findfloat(world, ::entnum, spec.spec_ent);
 
 			if (c.classname == "player") {
-				player bp = (player)c;
+				NSClientPlayer bp = (NSClientPlayer)c;
 				removeentity(c);
 				SetCameraOrigin(bp.GetEyePos());
 				SetCameraAngle(bp.v_angle);
@@ -334,7 +339,7 @@ NSView::UpdateView(void)
 
 					/* we found them */
 					if (c && c != spec) {
-						player ps = (player)c;
+						NSClientPlayer ps = (NSClientPlayer)c;
 						if (ps.health <= 0)
 							pl.UpdateDeathcam();
 						else
@@ -342,6 +347,27 @@ NSView::UpdateView(void)
 					}
 				}
 			}
+			break;
+		case SPECMODE_CHASEOVERVIEW:
+			c = findfloat(world, ::entnum, spec.spec_ent);
+			if (c.classname == "player") {
+				SetCameraOrigin(c.origin);
+			}
+			
+			drawfill(m_vecPosition, m_vecSize, [0,0,0], 1.0f, DRAWFLAG_NORMAL);
+			g_overview.SetViewPosition(m_vecPosition);
+			g_overview.SetViewSize(m_vecSize);
+			g_overview.SetRadarPitch(view_angles[0]);
+			g_overview.UpdateView();
+			return;
+		case SPECMODE_FREEOVERVIEW:
+			SetCameraOrigin(pSeat->m_vecPredictedOrigin);
+			drawfill(m_vecPosition, m_vecSize, [0,0,0], 1.0f, DRAWFLAG_NORMAL);
+			g_overview.SetViewPosition(m_vecPosition);
+			g_overview.SetViewSize(m_vecSize);
+			g_overview.SetRadarPitch(view_angles[0]);
+			g_overview.UpdateView();
+			return;
 			break;
 		default:
 			SetCameraOrigin(cl.GetEyePos());
@@ -354,13 +380,19 @@ NSView::UpdateView(void)
 
 	View_PreDraw();
 
+	}
+
 	/* prepare our scene properties */
 	SetupView();
 
 	/* properties are locked in place, run logic that depends on final values */
-	addentities(MASK_GLOWS);
+	if (m_bDrawEntities)
+		addentities(MASK_GLOWS);
+
 	SkyCamera_Setup(origin);
-	XR_UpdateView(m_viewTarget);
+
+	if (cl)
+		XR_UpdateView(m_viewTarget);
 
 	/* render our frame */
 	RenderView();
@@ -375,12 +407,14 @@ NSView::UpdateView(void)
 	}
 
 	/* the blinding stuff */
-	Fade_Update(m_vecPosition[0], m_vecPosition[1], m_vecSize[0], m_vecSize[1]);
+	if (cl) {
+		Fade_Update(m_vecPosition[0], m_vecPosition[1], m_vecSize[0], m_vecSize[1]);
 
-	View_PostDraw();
+		View_PostDraw();
 
-	/* move this into NSClient methods */
-	cl.PostFrame();
+		/* move this into NSClient methods */
+		cl.PostFrame();
+	}
 
 	if (autocvar(r_showView, 0) == false)
 		return;

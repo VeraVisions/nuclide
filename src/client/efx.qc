@@ -264,7 +264,7 @@ EFX_Interpolate(int id)
 }
 
 void
-EFX_UpdateListener(void)
+EFX_UpdateListener(NSView playerView)
 {
 	static int old_dsp;
 
@@ -301,8 +301,8 @@ EFX_UpdateListener(void)
 		EFX_SetEnvironment(scape.m_iRoomType);
 	}
 
-	makevectors(getproperty(VF_CL_VIEWANGLES));
-	SetListener(getproperty(VF_ORIGIN), v_forward, v_right, v_up, 12);
+	makevectors(playerView.GetCameraAngle());
+	SetListener(playerView.GetCameraOrigin(), v_forward, v_right, v_up, 12);
 
 	if (old_dsp == g_iEFX) {
 		return;

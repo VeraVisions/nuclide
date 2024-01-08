@@ -339,10 +339,14 @@ Cmd_Parse(string sCMD)
 			pSeat->m_iInputDuck = 1 - pSeat->m_iInputDuck;
 		else
 			pSeat->m_iInputDuck = TRUE;
+
+		pSeat->m_bSpecInput = true;
 		break;
 	case "-duck":
 		if (autocvar_pm_crouchToggle == false)
 			pSeat->m_iInputDuck = FALSE;
+
+		pSeat->m_bSpecInput = false;
 		break;
 	case "invnext":
 		HUD_DrawWeaponSelect_Back();

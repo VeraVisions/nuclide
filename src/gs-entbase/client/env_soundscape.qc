@@ -98,7 +98,7 @@ DSP_ResetSoundscape(void)
 }
 
 void
-DSP_UpdateSoundscape(void)
+DSP_UpdateSoundscape(NSView playerView)
 {
 	vector vecPlayer;
 

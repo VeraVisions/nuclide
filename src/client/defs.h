@@ -22,6 +22,7 @@
 #include "cmd.h"
 #include "util.h"
 #include "NSView.h"
+#include "NSRadar.h"
 #include "crosshair.h"
 
 var bool g_net_debug = false;
@@ -372,6 +373,11 @@ struct
 	bool m_bMoveForward;
 
 	bool m_bInterfaceFocused;
+	bool m_bSpecInput;
 } g_seats[4], *pSeat;
 
 var vector g_vecMousePos;
+var vector g_hudmins;
+var vector g_hudres;
+
+var NSRadar g_overview;

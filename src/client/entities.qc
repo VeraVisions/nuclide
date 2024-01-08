@@ -71,7 +71,7 @@ Entity_EntityUpdate(float type, float new)
 		NSENTITY_READENTITY(prop_vehicle_driveable, new)
 		break;
 	case ENT_PLAYER:
-		player pl = (player)self;
+		NSClientPlayer pl = (NSClientPlayer)self;
 
 		/* splitscreen */
 		CSQC_UpdateSeat();

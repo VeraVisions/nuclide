@@ -88,8 +88,10 @@ public:
 
 	/** When called, will turn the client into a proper player. */
 	virtual void MakePlayer(void);
-	/** When called, will turn the client into a spectator. */
+	/** When called, will turn the client into a spectator until the next round. */
 	virtual void MakeTempSpectator(void);
+	/** When called, will turn the client into a general spectator. */
+	virtual void MakeSpectator(void);
 
 	/** Called when we press the button bound to +use. */
 	virtual void InputUse_Down(void);

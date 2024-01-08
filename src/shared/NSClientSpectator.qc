@@ -18,6 +18,7 @@ void
 NSClientSpectator::NSClientSpectator(void)
 {
 	flags |= FL_CLIENT;
+	spec_mode = SPECMODE_FREE;
 }
 
 #ifdef SERVER
@@ -90,7 +91,11 @@ NSClientSpectator::SharedInputFrame(void)
 {
 	SetSize(g_vec_null, g_vec_null);
 
-	if (spec_mode == SPECMODE_FREE) {
+	if (spec_mode == SPECMODE_FREE || spec_mode == SPECMODE_FREEOVERVIEW) {
+		if (spec_mode == SPECMODE_FREEOVERVIEW) {
+			input_angles[0] = 0.0f;
+		}
+
 		SetSolid(SOLID_NOT);
 		SetMovetype(MOVETYPE_NOCLIP);
 	} else {
@@ -134,6 +139,8 @@ NSClientSpectator::SendEntity(entity ePVSent, float flChanged)
 void
 NSClientSpectator::ServerInputFrame(void)
 {
+	movetype = MOVETYPE_NOCLIP;
+
 	if (spec_mode == SPECMODE_FREE) {
 		runstandardplayerphysics(this);
 	} else {
@@ -163,7 +170,7 @@ NSClientSpectator::ClientInputFrame(void)
 void
 NSClientSpectator::ReceiveEntity(float new, float flChanged)
 {
-	if (spec_mode == SPECMODE_FREE)
+	if (spec_mode == SPECMODE_FREE || spec_mode == SPECMODE_FREEOVERVIEW)
 	if (new == FALSE) {
 		/* Go through all the physics code between the last received frame
 		 * and the newest frame and keep the changes this time around instead
@@ -274,8 +281,8 @@ NSClientSpectator::InputNext(void)
 
 	WarpToTarget();
 
-	if (spec_mode == SPECMODE_FREE)
-		spec_mode = SPECMODE_THIRDPERSON;
+	if (spec_mode == SPECMODE_CHASEOVERVIEW)
+		spec_mode = SPECMODE_CHASEOVERVIEW;
 }
 
 void
@@ -340,8 +347,8 @@ NSClientSpectator::InputPrevious(void)
 
 	WarpToTarget();
 
-	if (spec_mode == SPECMODE_FREE)
-		spec_mode = SPECMODE_THIRDPERSON;
+	if (spec_mode == SPECMODE_LOCKEDCHASE)
+		spec_mode = SPECMODE_CHASEOVERVIEW;
 }
 
 void
@@ -359,13 +366,16 @@ NSClientSpectator::InputMode(void)
 	f = (NSClient)edict_num(spec_ent);
 #endif
 
-	if (f == this || f.classname != "player")
-		spec_mode = SPECMODE_FREE;
-	else {
+	if (f == this || f.classname != "player") {
+		if (spec_mode != SPECMODE_FREE)
+			spec_mode = SPECMODE_FREE;
+		else
+			spec_mode = SPECMODE_FREEOVERVIEW;
+	} else {
 		spec_mode++;
 
-		if (spec_mode > SPECMODE_FIRSTPERSON)
-			spec_mode = SPECMODE_FREE;
+		if (spec_mode > SPECMODE_CHASEOVERVIEW)
+			spec_mode = SPECMODE_LOCKEDCHASE;
 	}
 }
 
@@ -412,7 +422,10 @@ NSClientSpectator::PreFrame(void)
 void
 NSClientSpectator::SpectatorTrackPlayer(void)
 {
-	if (spec_mode == SPECMODE_THIRDPERSON || spec_mode == SPECMODE_FIRSTPERSON ) {
+	if (spec_mode == SPECMODE_THIRDPERSON 
+		|| spec_mode == SPECMODE_FIRSTPERSON
+		|| spec_mode == SPECMODE_CHASEOVERVIEW
+		|| spec_mode == SPECMODE_LOCKEDCHASE ) {
 		NSClient b;
 
 	#ifdef CLIENT

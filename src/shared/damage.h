@@ -15,34 +15,34 @@
 */
 
 /** All available damage types. */
-typedef enumflags
+typedef enum
 {
-	DMG_GENERIC,		/**< Non specific. */
-	DMG_CRUSH,			/**< Being crushed by something heavy. */
-	DMG_BULLET,			/**< Shot by a gun. */
-	DMG_SLASH,			/**< Cutting, from swords or knives. */
-	DMG_FREEZE,			/**< Ice/freezing temperature damage. */
-	DMG_BURN,			/**< Short flame, or on-fire type damage. */
-	DMG_VEHICLE,		/**< Vehicle ramming into you at speed. */
-	DMG_FALL,			/**< Fall damage */
-	DMG_EXPLODE,		/**< Firery explosion damage. */
-	DMG_BLUNT,			/**< Blunt damage, like from a pipe or a bat. */
-	DMG_ELECTRO,		/**< Electric shock damage. */
-	DMG_SOUND,			/**< Noise so irritating it creates damage. */
-	DMG_ENERGYBEAM,		/**< Energy beam damage. */
-	DMG_GIB_NEVER,		/**< This damage type doesn't cause gibbing. */
-	DMG_GIB_ALWAYS,		/**< This damage type will always gib. */
-	DMG_DROWN,			/**< Drown damage, gets restored over time. */
-	DMG_PARALYZE,		/**< Paralyzation damage. */
-	DMG_NERVEGAS,		/**< Toxins to the nerve, special effect? */
-	DMG_POISON,			/**< Poisonous damage. Similar to nervegas? */
-	DMG_RADIATION,		/**< Radiation damage. Geiger counter go brrr */
-	DMG_DROWNRECOVER,	/**< Health increase from drown recovery. */
-	DMG_CHEMICAL,		/**< Chemical damage. */
-	DMG_SLOWBURN,		/**< Slow burning, just like burning but different rate. */
-	DMG_SLOWFREEZE,		/**< Slow freeze, just freezing but different rate. */
-	DMG_SKIP_ARMOR,		/**< This damage will skip armor checks entirely. */
-	DMG_SKIP_RAGDOLL	/**< This damage will not affect ragdolls. */
+	DMG_GENERIC = 1,		/**< Non specific. */
+	DMG_CRUSH = 2,			/**< Being crushed by something heavy. */
+	DMG_BULLET = 4,			/**< Shot by a gun. */
+	DMG_SLASH = 8,			/**< Cutting, from swords or knives. */
+	DMG_FREEZE = 16,			/**< Ice/freezing temperature damage. */
+	DMG_BURN = 32,			/**< Short flame, or on-fire type damage. */
+	DMG_VEHICLE = 64,		/**< Vehicle ramming into you at speed. */
+	DMG_FALL = 128,			/**< Fall damage */
+	DMG_EXPLODE = 256,		/**< Firery explosion damage. */
+	DMG_BLUNT = 512,			/**< Blunt damage, like from a pipe or a bat. */
+	DMG_ELECTRO = 1024,		/**< Electric shock damage. */
+	DMG_SOUND = 2048,			/**< Noise so irritating it creates damage. */
+	DMG_ENERGYBEAM = 4096,		/**< Energy beam damage. */
+	DMG_GIB_NEVER = 8192,		/**< This damage type doesn't cause gibbing. */
+	DMG_GIB_ALWAYS = 16384,		/**< This damage type will always gib. */
+	DMG_DROWN = 32768,			/**< Drown damage, gets restored over time. */
+	DMG_PARALYZE = 65536,		/**< Paralyzation damage. */
+	DMG_NERVEGAS = 131072,		/**< Toxins to the nerve, special effect? */
+	DMG_POISON = 262144,			/**< Poisonous damage. Similar to nervegas? */
+	DMG_RADIATION = 524288,		/**< Radiation damage. Geiger counter go brrr */
+	DMG_DROWNRECOVER = 1048576,	/**< Health increase from drown recovery. */
+	DMG_CHEMICAL = 2097152,		/**< Chemical damage. */
+	DMG_SLOWBURN = 4194304,		/**< Slow burning, just like burning but different rate. */
+	DMG_SLOWFREEZE = 8388608,		/**< Slow freeze, just freezing but different rate. */
+	DMG_SKIP_ARMOR = 16777216,		/**< This damage will skip armor checks entirely. */
+	DMG_SKIP_RAGDOLL = 33554432	/**< This damage will not affect ragdolls. */
 } damageType_t;
 
 #define DMG_ACID DMG_CHEMICAL

@@ -111,6 +111,13 @@ View_DrawViewmodel_Single(int weapon, float weapontime)
 	
 }
 
+static void 
+View_HandleAnimEvent(float flTimeStamp, int iCode, string strData)
+{
+	NSRenderableEntity viewModel = (NSRenderableEntity)self;
+	viewModel.HandleAnimEvent(flTimeStamp, iCode, strData);
+}
+
 /*
 ====================
 View_DrawViewModel
@@ -125,18 +132,18 @@ View_DrawViewModel(void)
 	NSRenderableEntity m_eViewModel = (NSRenderableEntity)pSeat->m_eViewModel;
 	NSRenderableEntity m_eViewModelL = (NSRenderableEntity)pSeat->m_eViewModelL;
 
-	player pl = __NULL__;
+	NSClientPlayer pl = __NULL__;
 	NSClient cl = (NSClient)pSeat->m_ePlayer;
 
 	/* it's either us or us spectating */
 	if (Client_IsSpectator(cl)) {
 		NSClientSpectator spec = (NSClientSpectator)pSeat->m_ePlayer;
-		pl = (player)findfloat(world, ::entnum, spec.spec_ent);
+		pl = (NSClientPlayer)findfloat(world, ::entnum, spec.spec_ent);
 
 		if (spec.spec_mode != SPECMODE_FIRSTPERSON)
 			return;
 	} else {
-		pl = (player)pSeat->m_ePlayer;
+		pl = (NSClientPlayer)pSeat->m_ePlayer;
 	}
 
 	if (!pl)
@@ -215,7 +222,7 @@ View_DrawViewModel(void)
 	entity oldSelf = self;
 	self = m_eViewModel;
 	processmodelevents(m_eViewModel.modelindex, m_eViewModel.frame, fBaseTime,
-		m_eViewModel.frame1time, NSRenderableEntity::HandleAnimEvent);
+		m_eViewModel.frame1time, View_HandleAnimEvent);
 	self = oldSelf;
 
 	makevectors(view_angles);
@@ -255,11 +262,17 @@ View_DrawViewModel(void)
 	if (Client_IsSpectator(cl) || XR_Available(pl) == false) {
 		m_eViewModelL.origin = g_view.GetCameraOrigin();
 		m_eViewModel.origin = g_view.GetCameraOrigin();
-		//m_eViewModel.angles = g_view.GetCameraAngle();
-		//m_eViewModelL.angles = g_view.GetCameraAngle();
+
+		if (Client_IsSpectator(cl)) {
+			m_eViewModel.angles = g_view.GetCameraAngle();
+			m_eViewModelL.angles = g_view.GetCameraAngle();
+			/* HACK: fool Viewmodel_CalcBob(); */
+			pSeat->m_vecPredictedVelocity = pl.velocity;
+		}
 
 		/* we only calculate bob on the right model, to avoid double speed bobbing */
 		Viewmodel_CalcBob();
+		makevectors(g_view.GetCameraAngle());
 		Viewmodel_ApplyBob(m_eViewModel);
 		Viewmodel_ApplyBob(m_eViewModelL);
 	} else {

@@ -26,11 +26,24 @@ typedef enumflags
 
 typedef enum
 {
-	SPECMODE_FREE,
+	SPECMODE_LOCKEDCHASE,
 	SPECMODE_THIRDPERSON,
+	SPECMODE_FREE,
 	SPECMODE_FIRSTPERSON,
-	SPECMODE_OVERVIEW
+	SPECMODE_FREEOVERVIEW,
+	SPECMODE_CHASEOVERVIEW
 } NSClientSpectatorMode_t;
+
+#ifdef CLIENT
+string g_specmodes[] = {
+	"Locked Chase Cam",
+	"Free Chase Cam",
+	"Free Look",
+	"First Person",
+	"Free Overview",
+	"Chase Overview"
+};
+#endif
 
 enumflags
 {

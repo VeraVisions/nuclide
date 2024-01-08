@@ -221,6 +221,14 @@ NSGameRules::IntermissionCycle(void)
 			WriteCoord(MSG_MULTICAST, cam.origin[0]);
 			WriteCoord(MSG_MULTICAST, cam.origin[1]);
 			WriteCoord(MSG_MULTICAST, cam.origin[2]);
+		} else {
+			WriteByte(MSG_MULTICAST, 1);
+			WriteFloat(MSG_MULTICAST, cam.angles[0]);
+			WriteFloat(MSG_MULTICAST, cam.angles[1]);
+			WriteFloat(MSG_MULTICAST, cam.angles[2]);
+			WriteCoord(MSG_MULTICAST, cam.origin[0]);
+			WriteCoord(MSG_MULTICAST, cam.origin[1]);
+			WriteCoord(MSG_MULTICAST, cam.origin[2]);
 		}
 
 		for (entity pl = world; (pl = find(pl, ::classname, "player"));) {
@@ -455,7 +463,7 @@ NSGameRules::DamageCheckTrace(entity t, vector vecHitPos)
 }
 
 void
-NSGameRules::DamageRadius(vector org, entity attacker, float dmg, float r, int check, int w)
+NSGameRules::DamageRadius(vector org, entity attacker, float dmg, float r, bool checkCollision, int w)
 {
 	float new_dmg;
 	float dist;
@@ -473,7 +481,7 @@ NSGameRules::DamageRadius(vector org, entity attacker, float dmg, float r, int c
 			continue;
 
 		/* can we physically hit this thing? */
-		if (check == TRUE)
+		if (checkCollision == true)
 			if (DamageCheckTrace(e, org) == FALSE)
 				continue;
 

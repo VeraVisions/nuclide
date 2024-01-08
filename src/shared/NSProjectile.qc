@@ -712,10 +712,13 @@ NSProjectile::_ThrustThink(void)
 
 	/* homing mode */
 	if (m_bThrustHoming) {
+		vector ownerPos;
+		vector endPos;
 		NSSurfacePropEntity projectileOwner = (NSSurfacePropEntity)GetOwner();
-		vector ownerPos = projectileOwner.GetEyePos();
-		makevectors(projectileOwner.v_angle);
-		traceline(ownerPos, ownerPos + v_forward * 8096, FALSE, projectileOwner);
+		ownerPos = projectileOwner.GetEyePos();
+		makevectors(projectileOwner.GetViewAngle());
+		endPos = ownerPos + (v_forward * 4096.0f);
+		traceline(ownerPos, endPos, MOVE_NORMAL, projectileOwner);
 		SetAngles(vectoangles(trace_endpos - GetOrigin()));
 	}
 

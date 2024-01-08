@@ -91,7 +91,7 @@ public:
 	/** Checks if an entity can be attacked from a given position. */
 	virtual bool DamageCheckTrace(entity,vector);
 	/** Overridable: shim to handle application of indirect radius damage. */
-	virtual void DamageRadius(vector,entity,float,float,int,int);
+	virtual void DamageRadius(vector,entity,float,float,bool,int);
 	
 	/* end of a game */
 	/** Called when intermission starts. */
