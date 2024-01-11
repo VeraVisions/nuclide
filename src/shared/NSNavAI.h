@@ -77,6 +77,8 @@ public:
 	virtual void CheckRoute(void);
 	/** When called, will plot a route to a given world coordinate and start moving. */
 	virtual void RouteToPosition(vector);
+	/** When called, will plot a route to a given world coordinate and start moving, ignoring any links that contain the given link flags. */
+	virtual void RouteToPositionDenyFlags(vector, int);
 	/** When called, will start following a path_corner */
 	virtual void ChasePath(string startPath);
 	/** Internal use only. Called every frame to see our route progression. */

@@ -285,6 +285,12 @@ NSNavAI::GetRouteDirection(void)
 void
 NSNavAI::RouteToPosition(vector destination)
 {
+	RouteToPositionDenyFlags(destination, 0i);
+}
+
+void
+NSNavAI::RouteToPositionDenyFlags(vector destination, int denylinkflags)
+{
 	/* engine calls this upon successfully creating a route */
 	static void RouteToPosition_RouteCB(entity ent, vector dest, int numnodes, nodeslist_t *nodelist)
 	{
@@ -332,7 +338,7 @@ NSNavAI::RouteToPosition(vector destination)
 	RouteClear();
 
 	if (!m_iNodes) {
-		route_calculate(this, destination, 0, RouteToPosition_RouteCB);
+		route_calculate(this, destination, denylinkflags, RouteToPosition_RouteCB);
 		m_vecLastNode = destination;
 	}
 }
