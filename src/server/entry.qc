@@ -407,17 +407,16 @@ initents(void)
 
 	Sound_Precache("Player.GaspLight");
 	Sound_Precache("Player.GaspHeavy");
-	Sound_Precache("player.WaterEnter");
-	Sound_Precache("player.WaterExit");
+	Sound_Precache("Player.WaterEnter");
+	Sound_Precache("Player.WaterExit");
 	Sound_Precache("Player.Death");
 	Sound_Precache("Player.Pain");
 	Sound_Precache("Player.Wade");
 	Sound_Precache("Player.Swim");
-	Sound_Precache("Player.DenyWeaonSelection");
+	Sound_Precache("Player.DenyWeaponSelection");
 	Sound_Precache("Player.WeaponSelected");
 	Sound_Precache("Player.FallDamage");
 	Sound_Precache("Player.LightFall");
-	Sound_Precache("Player.FallGib");
 
 	Sound_Precache("damage_bullet.hit");
 	Sound_Precache("SprayCan.Paint");
