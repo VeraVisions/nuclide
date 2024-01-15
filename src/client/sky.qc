@@ -26,7 +26,7 @@ Sky_Update(int force)
 		g_strSkyName = serverkey("skyname");
 		skyPrefix = substring(g_strSkyName, 0, 4);
 
-		print(sprintf("SKY PREFIX: %S\n", skyPrefix));
+		//print(sprintf("SKY PREFIX: %S\n", skyPrefix));
 
 		/* is it a Source Engine material? */
 		if (skyPrefix == "sky_") {
@@ -34,6 +34,9 @@ Sky_Update(int force)
 		} else {
 			skyPath = g_strSkyName;
 		}
+
+		if not (skyPath)
+			return;
 
 		localcmd(sprintf("sky \"%s\"\n", skyPath));
 		print(sprintf("sky update applying %s.\n", skyPath));
