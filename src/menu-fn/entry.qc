@@ -135,6 +135,8 @@ m_init(void)
 
 	localcmd("plug_load ffmpeg\n");
 
+	Strings_Init();
+
 	/* don't precache btns_main.bmp directly any more. */
 	CMainButton_InitSheets();
 
@@ -143,7 +145,6 @@ m_init(void)
 	main_init();
 
 	Colors_Init();
-	Strings_Init();
 
 	if (GameLibrary_GetInfo(GAMEINFO_GAMEDIR) != "valve") {
 		m_intro_skip();
