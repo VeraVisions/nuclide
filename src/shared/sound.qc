@@ -66,8 +66,6 @@ Sound_Init(void)
 	/* Source Engine conventions */
 	SoundSource_Init();
 
-	precache_sound("misc/missing.wav");
-	precache_sound("misc/null.wav");
 	precache_sound("common/null.wav");
 
 	print("SoundDef initialized.\n");
