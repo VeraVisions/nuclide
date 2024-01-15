@@ -1,16 +1,18 @@
-# Sound: EFX
+# Sound: EFX {#EFX}
+
+## EFX
 
 EFX is a system in [OpenAL](OpenAL.md) that delivers high quality sound reverberation. It is the successor to Creative's [Environmental Audio Extensions](EAX.md).
 
 **Nuclide** offers abstraction for new and old entities relying on **digital signal processing**.
 
-## Entities
+## Entities interacting with EFX
 
 **env_sound** is most commonly used to change the environmental sound processing of a room/area.
 
-In GoldSrc, it'll specify which enumeration of DSP preset to use for audio playback, in Nuclide however we just map it to a file in the filesystem.
+In GoldSrc, it'll specify which enumeration of DSP preset to use for audio playback, in Nuclide however we just map it to a definitions file in the filesystem. See **EFX files** below.
 
-## EFX files
+## EFX defintion files
 
 Entities that specify a EFX type, usually want to load one from a file.
 
@@ -44,15 +46,17 @@ Here's an example one, `efx/city.efx`:
 
 Most of the parameters are self explanatory.
 
-## Debug cvars
+## Console Variables
 
-With the cvar `>s_al_debug` you'll get an overlay of information about which EFX file is currently being used, as well as what every single parameter is set to.
+With the cvar `s_al_debug` set to 1 you'll get an overlay of information about which EFX file is currently being used, as well as what every single parameter is set to.
 
-You can refresh EFX definitions with a simple map restart.
-
+You can refresh EFX definitions with a map restart.
 
 ## Legacy translation table
-Here you can see which **.efx file** is responsible for handling a legacy **env_sound** room-type.
+
+*This section describes behaviour specific to converting entities from Half-Life based levels into the Nuclide environment.*
+
+Here you can see which **efx file** is responsible for handling a legacy **env_sound** room-type.
 
 **roomtype ID**|**EFX file**
 :-----:|:-----:
