@@ -69,5 +69,8 @@ bool VGUIView::Input (float flEVType, float flKey, float flChar, float flDevID)
 
 		if (ret == true)
 			return true;
+
 	} while (wNext);
+
+	return (ret);
 }
