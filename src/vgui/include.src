@@ -7,6 +7,7 @@
 ../vgui/ui_menubutton.qc
 ../vgui/ui_radio.qc
 ../vgui/ui_checkbox.qc
+../vgui/ui_view.qc
 ../vgui/ui_window.qc
 ../vgui/ui_frame.qc
 ../vgui/ui_label.qc

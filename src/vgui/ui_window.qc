@@ -41,7 +41,7 @@ typedef enumflags
 .void(void) tmpVGUIWindow2;
 
 /** Top-most window class in VGUILib */
-class VGUIWindow:VGUIWidget
+class VGUIWindow:VGUIView
 {
 public:
 	void VGUIWindow(void);
@@ -75,7 +75,6 @@ public:
 	virtual void WindowDidClose(void);
 
 	/* overrides */
-	virtual void Add(VGUIWidget);
 	virtual void Draw(void);
 	virtual void SizeChanged(vector, vector);
 	virtual bool Input(float, float, float, float);
@@ -105,19 +104,6 @@ void
 VGUIWindow::NowVisible(void)
 {
 	Focus();
-}
-
-void
-VGUIWindow::Add(VGUIWidget wNew)
-{
-	VGUIWidget wNext = this;
-	VGUIWidget wParent;
-	do {
-		wParent = wNext;
-		wNext = wNext.m_children;
-	} while (wNext);
-	wParent.m_children = wNew;
-	wNew.m_parent = this;
 }
 
 bool
@@ -303,15 +289,7 @@ void VGUIWindow::Draw(void)
 	}
 #endif
 
-	VGUIWidget wNext = this;
-	g_vguiWidgetCount = 0;
-	do {
-		wNext = wNext.m_children;
-		if (wNext && wNext.Visible() && wNext.m_parent.Visible()) {
-			g_vguiWidgetCount++;
-			wNext.Draw();
-		}
-	} while (wNext);
+	super::Draw();
 
 #ifdef UI_DEVELOPER
 	if (m_iFlags & WINDOW_DRAGGING) {
@@ -370,16 +348,7 @@ bool VGUIWindow::Input (float flEVType, float flKey, float flChar, float flDevID
 	}
 
 	if (ret == false) {
-		VGUIWidget wNext = this;
-		do {
-			wNext = wNext.m_children;
-			if (wNext && wNext.Visible() && wNext.m_parent.Visible()) {
-				ret = wNext.Input(flEVType, flKey, flChar, flDevID);
-			}
-
-			if (ret == true)
-				return true;
-		} while (wNext);
+		ret = super::Input(flEVType, flKey, flChar, flDevID);
 	}
 
 	return (ret);
