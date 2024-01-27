@@ -29,18 +29,19 @@ Math_Lerp(float fA, float fB, float fPercent)
 	return (fA * (1 - fPercent)) + (fB * fPercent);
 }
 
-/* tries to make sure an angle value stays within certain constraints...
- * however it doesn't account for much larger discrepancies */
+/* recursive function that fixes an euler angle */
 float
 Math_FixDelta(float fDelta)
 {
-	if (fDelta >= 180) {
+	if (fDelta > 180) {
 		fDelta -= 360;
-	} else if (fDelta <= -180) {
+	} else if (fDelta < -180) {
 		fDelta += 360;
+	} else {
+		return fDelta;
 	}
 
-	return fDelta;
+	return Math_FixDelta(fDelta);
 }
 
 vector
