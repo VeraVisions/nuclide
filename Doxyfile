@@ -881,6 +881,7 @@ INPUT                  = src/ \
                          Documentation/DedicatedServer.md \
                          Documentation/Filesystem.md \
                          Documentation/Networking.md \
+                         Documentation/Bots/BotOverview.md \
                          Documentation/EntityGuide.md \
                          Documentation/Classes.md \
                          Documentation/Materials/MatOverview.md \
