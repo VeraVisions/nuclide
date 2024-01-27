@@ -15,44 +15,44 @@
 */
 
 botstate_t
-bot::GetState(void)
+NSBot::GetState(void)
 {
 	return m_bsState;
 }
 
 void
-bot::SetState(botstate_t state)
+NSBot::SetState(botstate_t state)
 {
 	m_bsState = state;
 }
 
 botpersonality_t
-bot::GetPersonality(void)
+NSBot::GetPersonality(void)
 {
 	return m_bpPersonality;
 }
 
 float
-bot::GetWalkSpeed(void)
+NSBot::GetWalkSpeed(void)
 {
 	return 120;
 }
 
 float
-bot::GetRunSpeed(void)
+NSBot::GetRunSpeed(void)
 {
 	return 240;
 }
 
 void
-bot::RouteClear(void)
+NSBot::RouteClear(void)
 {
 	super::RouteClear();
 	m_flNodeGiveup = 0.0f;
 }
 
 void
-bot::BrainThink(int enemyvisible, int enemydistant)
+NSBot::BrainThink(int enemyvisible, int enemydistant)
 {
 	/* we had a target and it's now dead. now what? */
 	if (m_eTarget) {
@@ -67,7 +67,7 @@ bot::BrainThink(int enemyvisible, int enemydistant)
 }
 
 void
-bot::UseButton(void)
+NSBot::UseButton(void)
 {
 	float bestDist;
 	func_button bestButton = __NULL__;
@@ -96,7 +96,7 @@ bot::UseButton(void)
 }
 
 void
-bot::SeeThink(void)
+NSBot::SeeThink(void)
 {
 	NSGameRules rules = (NSGameRules)g_grMode;
 
@@ -163,7 +163,7 @@ bot::SeeThink(void)
 }
 
 void
-bot::CheckRoute(void)
+NSBot::CheckRoute(void)
 {
 	float flDist;
 	vector vecEndPos;
@@ -193,7 +193,7 @@ bot::CheckRoute(void)
 
 	/* we're inside the radius */
 	if (flDist <= flRadius) {
-		NSLog("^2bot::^3CheckRoute^7: " \
+		NSLog("^2NSBot::^3CheckRoute^7: " \
 			"%s reached node\n", this.targetname);
 		m_iCurNode--;
 
@@ -218,7 +218,7 @@ bot::CheckRoute(void)
 
 			/* can we walk directly to our target destination? */
 			if (trace_fraction == 1.0) {
-				print("^2bot::^3CheckRoute^7: " \
+				print("^2NSBot::^3CheckRoute^7: " \
 					"Walking directly to last node\n");
 				m_iCurNode = -1;
 			}
@@ -261,13 +261,13 @@ bot::CheckRoute(void)
 }
 
 void
-bot::CreateObjective(void)
+NSBot::CreateObjective(void)
 {
 	RouteToPosition(Route_SelectDestination(this));
 }
 
 void
-bot::RunAI(void)
+NSBot::RunAI(void)
 {
 	vector aimDir, aimPos;
 	bool enemyVisible, enemyDistant;
@@ -294,7 +294,7 @@ bot::RunAI(void)
 	if (!m_iNodes && autocvar_bot_aimless == 0) {
 		CreateObjective();
 
-		NSLog("bot::RunAI: %s is calculating first bot route",
+		NSLog("NSBot::RunAI: %s is calculating first bot route",
 			this.netname);
 
 		/* our route probably has not been processed yet */
@@ -500,12 +500,12 @@ bot::RunAI(void)
 }
 
 void
-bot::PreFrame(void)
+NSBot::PreFrame(void)
 {
 }
 
 void
-bot::PostFrame(void)
+NSBot::PostFrame(void)
 {
 #ifndef NEW_INVENTORY
 	/* we've picked something new up */
@@ -518,7 +518,7 @@ bot::PostFrame(void)
 }
 
 void
-bot::SetName(string nickname)
+NSBot::SetName(string nickname)
 {
 	if (autocvar_bot_prefix)
 		forceinfokey(this, "name", sprintf("%s %s", autocvar_bot_prefix, nickname));
@@ -527,9 +527,66 @@ bot::SetName(string nickname)
 }
 
 void
-bot::bot(void)
+NSBot::NSBot(void)
 {
 	classname = "player";
 	targetname = "_nuclide_bot_";
 	forceinfokey(this, "*bot", "1");
+}
+
+void
+Bot_KickRandom(void)
+{
+	for (entity e = world;(e = find(e, ::classname, "player"));) {
+		if (clienttype(e) == CLIENTTYPE_BOT) {
+			dropclient(e);
+			return;
+		}
+	}
+}
+
+void
+bot_spawner_think(void)
+{
+	int clientCount = 0i;
+	int botCount = 0i;
+	int minClientsCvar = (int)cvar("bot_minClients");
+
+	/* if -1, we are not managing _anything_ */
+	if (minClientsCvar == -1) {
+		self.nextthink = time + 5.0f;
+		return;
+	}
+
+	/* count total clients + bots */
+	for (entity e = world;(e = find(e, ::classname, "player"));) {
+		if (clienttype(e) == CLIENTTYPE_BOT) {
+			clientCount++;
+			botCount++;
+		}else if (clienttype(e) == CLIENTTYPE_REAL) {
+			clientCount++;
+		}
+	}
+
+	/* add remove as necessary */
+	if (clientCount < cvar("bot_minClients")) {
+		BotProfile_AddRandom();
+	} else if (clientCount > cvar("bot_minClients")) {
+		if (botCount > 0i) {
+			Bot_KickRandom();
+		}
+	}
+
+	self.nextthink = time + 1.0f;
+}
+
+void
+BotLib_Init(void)
+{
+	BotProfile_Init();
+
+	/* this spawner manages the active bots */
+	entity bot_spawner = spawn();
+	bot_spawner.think = bot_spawner_think;
+	bot_spawner.nextthink = time + 1.0f;
 }

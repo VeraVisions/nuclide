@@ -432,6 +432,47 @@ Cmd_Parse(string sCMD)
 	case "-menu_right":
 		pSeat->m_iInputReload = FALSE;
 		break;
+	/* client aliases for server commands */
+	case "addBot":
+		localcmd(sprintf("sv addBot %s\n", argv(1)));
+		break;
+	case "killAllBots":
+		localcmd(sprintf("sv killAllBots %s\n", argv(1)));
+		break;
+	case "resetAllBotsGoals":
+		localcmd(sprintf("sv resetAllBotsGoals %s\n", argv(1)));
+		break;
+	case "killClass":
+		localcmd(sprintf("sv killClass %s\n", argv(1)));
+		break;
+	case "killMovables":
+		localcmd(sprintf("sv killMovables %s\n", argv(1)));
+		break;
+	case "trigger":
+		localcmd(sprintf("sv trigger %s\n", argv(1)));
+		break;
+	case "input":
+		localcmd(sprintf("sv input %s\n", argv(1)));
+		break;
+	case "listBotProfiles":
+		localcmd(sprintf("sv listBotProfiles %s\n", argv(1)));
+		break;
+	case "listTargets":
+		localcmd(sprintf("sv listTargets %s\n", argv(1)));
+		break;
+	case "teleport":
+		localcmd(sprintf("sv teleport %s\n", argv(1)));
+		break;
+	case "teleportToClass":
+		localcmd(sprintf("sv teleportToClass %s\n", argv(1)));
+		break;
+	case "respawnEntities":
+		localcmd(sprintf("sv respawnEntities %s\n", argv(1)));
+		break;
+	case "spawn":
+		localcmd(sprintf("sv spawn %s\n", argv(1)));
+		break;
+
 	default:
 		return (false);
 	}
@@ -458,6 +499,21 @@ Cmd_Init(void)
 	registercommand("listTitles");
 	registercommand("listClientSoundDef");
 	registercommand("listServerSoundDef");
+
+	/* server commands */
+	registercommand("addBot");
+	registercommand("killAllBots");
+	registercommand("resetAllBotsGoals");
+	registercommand("killClass");
+	registercommand("killMovables");
+	registercommand("trigger");
+	registercommand("input");
+	registercommand("listTargets");
+	registercommand("teleport");
+	registercommand("teleportToClass");
+	registercommand("respawnEntities");
+	registercommand("spawn");
+	registercommand("listBotProfiles");
 
 	registercommand("cleardecals");
 	registercommand("testLight");

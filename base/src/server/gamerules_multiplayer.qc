@@ -109,9 +109,6 @@ MultiplayerRules::ConsoleCommand(NSClientPlayer pp, string cmd)
 	tokenize(cmd);
 
 	switch (argv(0)) {
-	case "bot_add":
-		Bot_AddQuick();
-		break;
 	default:
 		return (0);
 	}

@@ -61,3 +61,30 @@ Bot_AddQuick(void)
 	self = oself;
 	return (newbot);
 }
+
+void
+Bot_KillAllBots(void)
+{
+	entity oldSelf = self;
+
+	for ( other = world; ( other = find( other, classname, "player" ) ); ) {
+		if ( clienttype( other ) == CLIENTTYPE_BOT ) {
+			self = other;
+			ClientKill();
+		}
+	}
+
+	self = oldSelf;
+}
+
+void
+Bot_ResetAllBotsGoals(void)
+{
+	for ( other = world; ( other = find( other, classname, "player" ) ); ) {
+		if ( clienttype( other ) == CLIENTTYPE_BOT ) {
+			NSBot theBot = (NSBot)other;
+			theBot.SetEnemy(__NULL__);
+			theBot.RouteClear();
+		}
+	}
+}

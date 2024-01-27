@@ -493,10 +493,12 @@ EntityDef_SpawnClassname(string className)
 	for (int i = 0i; i < g_entDefCount; i++) {
 		if (className == g_entDefTable[i].entClass) {
 			EntityDef_Precaches(i);
+			NSLog("Spawning eDef %S", className);
 			return EntityDef_PrepareEntity(self, i);
 		}
 	}
 
+	NSLog("^1Failed spawning eDef %S", className);
 	return __NULL__;
 }
 

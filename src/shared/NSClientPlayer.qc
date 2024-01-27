@@ -666,7 +666,7 @@ NSClientPlayer::ServerInputFrame(void)
 #ifdef BOT_INCLUDED
 	/* wait a few seconds, as we may not have been spawned yet */
 	if (clienttype(this) == CLIENTTYPE_BOT) {
-		((bot)this).RunAI();
+		((NSBot)this).RunAI();
 	}
 #endif
 

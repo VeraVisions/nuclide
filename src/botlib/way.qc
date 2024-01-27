@@ -479,8 +479,8 @@ Way_GoToPoint(entity pl)
 
 	for (entity a = world; (a = find(a, classname, "player"));) {
 		if (clienttype(a) != CLIENTTYPE_REAL) {
-			bot targ;
-			targ = (bot)a;
+			NSBot targ;
+			targ = (NSBot)a;
 			targ.RouteClear();
 			targ.RouteToPosition(pl.origin);
 			print(sprintf("Told bot to go to %v\n", trace_endpos));

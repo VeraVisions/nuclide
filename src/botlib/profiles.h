@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2023 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,14 +14,29 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-void
-NSBot::ChatSay(string msg)
-{
-	g_grMode.ChatMessageAll(this, msg);
-}
+/* BotScript
+	script/bots.txt
 
-void
-NSBot::ChatSayTeam(string msg)
+	Listing of various bot profiles
+	where infokeys can be set and interpreted
+	by the game-logic at will.
+
+	The `name` keys has to _always_ be present.
+	The `funname` key is optional.
+
+	Name acts as both an identifier as well
+	as a nickname when `funname` is not present.
+
+	Anything else is considered to be extra.
+*/
+
+typedef struct
 {
-	g_grMode.ChatMessageTeam(this, msg);
-}
+	string m_strName;
+	string m_strNetName;
+	string m_strExtra;
+} botScript_t;
+
+#define BOTSCRIPT_MAX 32
+botScript_t g_bots[BOTSCRIPT_MAX];
+var int g_botScriptCount;

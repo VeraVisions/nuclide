@@ -54,7 +54,8 @@ ClientConnect(void)
 	/* bot needs special init */
 #ifdef BOT_INCLUDED
 	if (clienttype(self) == CLIENTTYPE_BOT) {
-		spawnfunc_bot();
+		/* from now on we're of type NSBot */
+		EntityDef_SpawnClassname("bot");
 	} else
 #endif
 
@@ -182,7 +183,7 @@ PlayerPreThink(void)
 
 #ifdef BOT_INCLUDED
 	if (clienttype(self) == CLIENTTYPE_BOT) {
-		((bot)self).PreFrame();
+		((NSBot)self).PreFrame();
 	}
 #endif
 
@@ -208,7 +209,7 @@ PlayerPostThink(void)
 
 #ifdef BOT_INCLUDED
 	if (clienttype(self) == CLIENTTYPE_BOT) {
-		((bot)self).PostFrame();
+		((NSBot)self).PostFrame();
 	}
 #endif
 
@@ -458,10 +459,14 @@ initents(void)
 	g_ents_initialized = TRUE;
 
 	/* engine hacks for dedicated servers */
-	cvar_set("s_nominaldistance", "1000");
+	cvar_set("s_nominaldistance", "2048");
 
 	/* other engine hacks */
 	cvar_set("sv_nqplayerphysics", "0");
+
+#ifdef BOT_INCLUDED
+	BotLib_Init();
+#endif
 }
 
 /** Any command executed on the server (either tty, rcon or `sv`) gets
@@ -507,12 +512,40 @@ ConsoleCmd(string cmd)
 	/* time to handle commands that apply to all games */
 	tokenize(cmd);
 	switch (argv(0)) {
-	case "trigger_ent":
+	case "addBot":
+		Bot_AddBot_f(strtolower(argv(1)));
+		break;
+	case "killAllBots":
+		Bot_KillAllBots();
+		break;
+	case "resetAllBotsGoals":
+		Bot_ResetAllBotsGoals();
+		break;
+	case "listBotProfiles":
+		Bot_ListBotProfiles_f();
+		break;
+	case "killClass":
+		string targetClass;
+		targetClass = argv(1);
+
+		if (targetClass)
+		for (entity a = world; (a = find(a, ::classname, targetClass));) {
+			NSEntity t = (NSEntity)a;
+			t.Destroy();
+		}
+		break;
+	case "killMovables":
+		for (entity a = world; (a = findfloat(a, ::movetype, MOVETYPE_PHYSICS));) {
+			NSEntity t = (NSEntity)a;
+			t.Destroy();
+		}
+		break;
+	case "trigger":
 		string targ;
 		targ = argv(1);
 
 		if (targ)
-		for (entity a = world; (a = find(a, ::targetname, argv(1)));) {
+		for (entity a = world; (a = find(a, ::targetname, targ));) {
 			NSEntity t = (NSEntity)a;
 
 			if (t.Trigger)
@@ -530,34 +563,42 @@ ConsoleCmd(string cmd)
 			print(sprintf("Sending input to %d, %S: %S\n", entNum, inputName, inputData));
 		}
 		break;
-	case "goto_ent":
+	case "listTargets":
+		for (entity a = world; (a = findfloat(a, ::identity, 1));) {
+			if (a.targetname) {
+				print(sprintf("%d: %s (%s)\n", num_for_edict(a), a.targetname, a.classname));
+			}
+		}
+		break;
+	case "teleport":
+		static entity targetFinder;
+		targetFinder = find(targetFinder, ::targetname, argv(1));
+
+		/* try at least one more time to skip world */
+		if (!targetFinder)
+			targetFinder = find(targetFinder, ::targetname, argv(1));
+
+		if (targetFinder)
+			setorigin(pl, targetFinder.origin);
+		break;
+	case "teleportToClass":
 		static entity finder;
 		finder = find(finder, ::classname, argv(1));
+
+		/* try at least one more time to skip world */
+		if (!finder)
+			finder = find(finder, ::classname, argv(1));
 
 		if (finder)
 			setorigin(pl, finder.origin);
 		break;
-	case "respawn_ents":
+	case "respawnEntities":
 		for (entity a = world; (a = findfloat(a, ::identity, 1));) {
 			NSEntity ent = (NSEntity)a;
 			ent.Respawn();
 		}
 		break;
 	case "spawn":
-		entity eDef = spawn();
-		eDef.classname =  strcat("spawnfunc_", argv(1));
-		self = eDef;
-		callfunction(self.classname);
-		self = pl;
-
-		makevectors(pl.v_angle);
-		if (eDef.identity == 1) {
-			NSEntity ent = (NSEntity)eDef;
-		}
-		traceline(pl.origin, pl.origin + (v_forward * 1024), MOVE_NORMAL, pl);
-		setorigin(eDef, trace_endpos);
-		break;
-	case "spawndef":
 		NSEntity unit = EntityDef_CreateClassname(argv(1));
 		makevectors(pl.v_angle);
 		traceline(pl.origin, pl.origin + (v_forward * 1024), MOVE_NORMAL, pl);

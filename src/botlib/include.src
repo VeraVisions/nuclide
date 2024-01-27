@@ -2,6 +2,7 @@
 
 #includelist
 defs.h
+profiles.qc
 bot.qc
 bot_chat.qc
 bot_combat.qc

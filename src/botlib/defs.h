@@ -17,6 +17,7 @@
 #include "bot.h"
 #include "botinfo.h"
 #include "cvar.h"
+#include "profiles.h"
 
 
-vector Route_SelectDestination( bot target );
+vector Route_SelectDestination( NSBot target );

@@ -159,7 +159,7 @@ Route_SelectRandomSpot(void)
 }
 
 vector
-Route_SelectDestination(bot target)
+Route_SelectDestination(NSBot target)
 {
 	CGameRules rules;
 	rules = (CGameRules)g_grMode;

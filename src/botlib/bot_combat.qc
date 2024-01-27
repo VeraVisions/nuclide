@@ -15,7 +15,7 @@
 */
 
 void
-bot::Pain(void)
+NSBot::Pain(void)
 {
 	NSGameRules rules = g_grMode;
 
@@ -44,7 +44,7 @@ bot::Pain(void)
 }
 
 void
-bot::SetEnemy(entity en)
+NSBot::SetEnemy(entity en)
 {
 	m_eTarget = en;
 
@@ -56,7 +56,7 @@ bot::SetEnemy(entity en)
 }
 
 void
-bot::WeaponThink(void)
+NSBot::WeaponThink(void)
 {
 	int r = Weapons_IsEmpty(this, activeweapon);
 
@@ -74,7 +74,7 @@ bot::WeaponThink(void)
 }
 
 void
-bot::WeaponAttack(void)
+NSBot::WeaponAttack(void)
 {
 	bool shouldAttack = false;
 
@@ -130,7 +130,7 @@ bot::WeaponAttack(void)
 }
 
 void
-bot::ForceWeaponAttack(vector attackPos, float attackTime)
+NSBot::ForceWeaponAttack(vector attackPos, float attackTime)
 {
 	m_vecForceWeaponAttackPos = attackPos;
 	m_flForceWeaponAttack = attackTime + time;
@@ -153,7 +153,7 @@ BotLib_Alert(vector pos, float radius, float t)
 		if (vlen(pos - w.origin) > radius)
 			continue;
 
-		bot f = (bot) w;
+		NSBot f = (NSBot) w;
 
 		/* they already got a target of some kind */
 		if (f.m_eTarget)

@@ -41,7 +41,7 @@ typedef enum
 
 /** Base class for the Bot AI.
 */
-class bot:player
+class NSBot:player
 {
 	/* routing */
 	int m_iNodes;
@@ -74,7 +74,7 @@ class bot:player
 	float m_flForceWeaponAttack;
 	vector m_vecForceWeaponAttackPos;
 
-	void(void) bot;
+	void(void) NSBot;
 
 	virtual void(botstate_t) SetState;
 	virtual botstate_t(void) GetState;
@@ -107,7 +107,7 @@ entity Bot_AddQuick(void);
 
 /** Applies random custom colors to the given bot entity. */
 void
-Bot_RandomColormap(bot target)
+Bot_RandomColormap(NSBot target)
 {
 	vector x = hsv2rgb(random() * 360, 100, 100);
 	float top = x[2] + (x[1] << 8) + (x[0] << 16);
