@@ -180,4 +180,3 @@ private:
 #ifdef CLIENT
 void NSSurfacePropEntity_ReadEntity(bool);
 #endif
-

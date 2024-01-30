@@ -180,7 +180,7 @@ NSTraceAttack::_FireSingle(vector vecPos, vector vecAngles, float flDamage, floa
 		_FireSingle(trace_endpos + (v_forward * 2), vecAngles, flDamage / 2, flRange);
 	}
 
-	if (trace_ent.takedamage == DAMAGE_YES && trace_ent.iBleeds) {
+	if (trace_ent.takedamage != DAMAGE_NO && trace_ent.iBleeds) {
 		Sound_Play(trace_ent, CHAN_BODY, "damage_bullet.hit");
 
 #ifdef CSTRIKE
@@ -232,7 +232,7 @@ NSTraceAttack::_FireSingle(vector vecPos, vector vecAngles, float flDamage, floa
 	}
 
 	/* combine them into one single Damage_Apply call later */
-	if (trace_ent.takedamage == DAMAGE_YES) {
+	if (trace_ent.takedamage != DAMAGE_NO) {
 		if (trace_ent != m_eMultiTarget) {
 			_ApplyDamage();
 			m_eMultiTarget = (NSSurfacePropEntity)trace_ent;
@@ -269,16 +269,22 @@ void
 NSTraceAttack::Fire(void)
 {
 	vector vecDir;
-	makevectors(m_eOwner.v_angle);
+	vector ownerAngle;
+	vector ownerDir;
 
 	m_eMultiTarget = __NULL__;
 	m_iMultiValue = 0;
+	makevectors(m_eOwner.v_angle);
+	ownerAngle = v_forward;
+	ownerDir = aim(m_eOwner, 100000);
 
 	while (m_iShots > 0) {
+		/* use cached value */
+		v_forward = ownerAngle;
+
 		if (m_eOwner.flags & FL_CLIENT) {
-			vecDir = aim(m_eOwner, 100000);
+			vecDir = ownerDir;
 		} else {
-			makevectors(m_eOwner.v_angle);
 			vecDir = v_forward;
 		}
 

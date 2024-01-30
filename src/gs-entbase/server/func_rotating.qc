@@ -206,11 +206,12 @@ func_rotating::Blocked(entity eBlocker)
 		return;
 	}
 
-	if (other.takedamage == DAMAGE_YES) {
+	/* this can be crushed */
+	if (eBlocker.takedamage != DAMAGE_NO) {
 		/* this is to work around a Q1 BSP bug. don't attempt to damage our
 		 * target unless we're absolutely sure he's within the bounds of the entity */
-		if (WithinBounds(other))
-			Damage_Apply(other, this, m_flDamage, 0, DMG_CRUSH);
+		if (WithinBounds(eBlocker))
+			Damage_Apply(eBlocker, this, m_flDamage, 0, DMG_CRUSH);
 	}
 }
 

@@ -461,7 +461,7 @@ SurfData_Impact(entity e, vector org, vector ang)
 			SurfData_ImpactID_Net(texdata, org, ang);
 		} else
 			SurfData_Impact_SurfaceParm(e, org, ang);
-	} else { /* anything with takedamage = DAMAGE_YES is a NSurfacePropEntity. */
+	} else { /* anything with else is a NSurfacePropEntity. */
 		NSSurfacePropEntity foo = (NSSurfacePropEntity)e;
 
 		if (foo.HasSurfaceData() && foo.GetSurfaceData(SURFDATA_MATERIAL) != -1)

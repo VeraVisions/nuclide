@@ -107,6 +107,7 @@ NSMonster::TriggerTargets(void)
 {
 	for (entity f = world; (f = find(f, ::targetname, m_strTriggerTarget));) {
 		NSTrigger trigger = (NSTrigger)f;
+
 		if (trigger.Trigger != __NULL__) {
 			trigger.Trigger(this, TRIG_TOGGLE);
 		}
@@ -206,7 +207,6 @@ void
 NSMonster::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-
 	case "m_flHeadYaw":
 		m_flHeadYaw = ReadFloat(strValue);
 		break;
@@ -494,9 +494,6 @@ NSMonster::ActPlay(float actName)
 void
 NSMonster::AnimPlay(float seq)
 {
-	/* forces a client-side update */
-	SetSendFlags(MONFL_CHANGED_FRAME);
-
 	SetFrame(seq);
 	m_flAnimTime = time + frameduration(modelindex, seq);
 }
@@ -592,7 +589,11 @@ NSMonster::AlertNearby(void)
 	if (m_eEnemy == __NULL__)
 		return;
 
-	for (entity w = world; (w = findfloat(w, ::takedamage, DAMAGE_YES));) {
+	/* iterate over all living things. */
+	for (entity w = world; (w = nextent(w));) {
+		if (w.takedamage == DAMAGE_NO)
+			continue;
+
 		if (w.classname != classname)
 			continue;
 
@@ -721,12 +722,18 @@ NSMonster::SeeThink(void)
 	if (m_iFlags & MSF_HORDE) {
 		m_eEnemy = NSMonster_FindClosestPlayer(this);
 
-		if (m_eEnemy)
+		if (m_eEnemy) {
 			RouteToPosition(m_eEnemy.origin);
+		}
+
 		return;
 	}
 
-	for (entity w = world; (w = findfloat(w, ::takedamage, DAMAGE_YES));) {
+	/* iterate through all players, monsters. */
+	for (entity w = world; (w = nextent(w));) {
+		if (w.takedamage == DAMAGE_NO)
+			continue;
+
 		/* check if 'w' could be a valid enemy */
 		if (IsValidEnemy(w) == false)
 			continue;
@@ -937,7 +944,7 @@ NSMonster::AttackMelee(void)
 		float meleeWait = Skill_GetDefValue(EntityDef_GetKeyValue(m_defMelee, "wait"));
 		traceline(origin, m_eEnemy.origin, FALSE, this);
 	
-		if (trace_fraction >= 1.0 || trace_ent.takedamage != DAMAGE_YES) {
+		if (trace_fraction >= 1.0 || trace_ent.takedamage == DAMAGE_NO) {
 			StartSoundDef(m_sndMeleeAttackMiss, CHAN_WEAPON, true);
 			return;
 		}
@@ -1536,7 +1543,7 @@ NSMonster::Touch(entity eToucher)
 	/* leap test, are we no longer on the ground? */
 	if (m_flLeapDamage && m_bLeapAttacked == false)
 	if (HasFlags(FL_ONGROUND) == false) {
-		if (eToucher.takedamage == DAMAGE_YES) {
+		if (eToucher.takedamage != DAMAGE_NO) {
 			Damage_Apply(eToucher, this, m_flLeapDamage, WEAPON_NONE, DMG_BLUNT);
 			m_bLeapAttacked = true;
 		}
@@ -1799,7 +1806,7 @@ NSMonster::Respawn(void)
 	v_angle[2] = Math_FixDelta(v_angle[2]);
 
 	AddFlags(FL_MONSTER);
-	SetTakedamage(DAMAGE_YES);
+	SetTakedamage(DAMAGE_AIM);
 	SetVelocity([0,0,0]);
 	SetState(MONSTER_IDLE);
 	SetHealth(base_health);
@@ -2270,7 +2277,10 @@ NSMonster_AlertEnemyAlliance(vector pos, float radius, int alliance)
 	if (autocvar_ai_alertdebug)
 		NSMonster_Log("AI alert from %v with radius %f and alliance %i\n", pos, radius, alliance);
 
-	for (entity w = world; (w = findfloat(w, ::takedamage, DAMAGE_YES));) {
+	for (entity w = world; (w = nextent(w));) {
+		if (w.takedamage == DAMAGE_NO)
+			continue;
+
 		/* out of radius */
 		if (vlen(pos - w.origin) > radius) {
 			continue;
