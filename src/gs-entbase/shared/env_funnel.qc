@@ -59,8 +59,12 @@ public:
 	void env_funnel(void);
 
 #ifdef SERVER
+	
 	virtual void Respawn(void);
 	virtual void SpawnKey(string,string);
+	virtual void Save(float);
+	virtual void Restore(string, string);
+
 	virtual void EvaluateEntity(void);
 	virtual float SendEntity(entity,float);
 	virtual void Trigger(entity, triggermode_t);
@@ -69,6 +73,7 @@ public:
 	virtual float predraw(void);
 	virtual void ReceiveEntity(float,float);
 	virtual void RendererRestarted(void);
+	nonvirtual void RenderGlow(vector, vector, float);
 #endif
 
 private:

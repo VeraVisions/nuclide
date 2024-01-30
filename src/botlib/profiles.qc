@@ -51,6 +51,7 @@ Bot_AddBot_f(string botName)
 	for (i = 0i; i < g_botScriptCount; i++) {
 		if (g_bots[i].m_strName == botName) {
 			foundID = i;
+			break;
 		}
 	}
 
@@ -125,6 +126,10 @@ BotProfile_Init(void)
 	string tempString;
 	botScript_t currentDef;
 	int braceDepth = 0i;
+
+	currentDef.m_strName = "";
+	currentDef.m_strNetName = "";
+	currentDef.m_strExtra = "";
 
 	g_botScriptCount = 0i;
 

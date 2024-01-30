@@ -98,6 +98,8 @@ public:
 	virtual float SendEntity(entity,float);
 	virtual void Trigger(entity, triggermode_t);
 	virtual void Input(entity, string, string);
+	virtual void Save(float);
+	virtual void Restore(string, string);
 
 	nonvirtual void DisableSmoker(void);
 #else

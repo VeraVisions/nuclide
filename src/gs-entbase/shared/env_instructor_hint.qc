@@ -296,7 +296,6 @@ env_instructor_hint::postdraw(void)
 		vector delta;
 		vector p2 = g_view.GetCameraOrigin();
 		vector ang = g_view.GetCameraAngle();
-		vector outputValue;
 		float leftValue;
 		float upValue;
 

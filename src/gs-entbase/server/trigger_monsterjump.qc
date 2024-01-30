@@ -100,7 +100,7 @@ trigger_monsterjump::Touch(entity touchingEntity)
 {
 	vector targetVelocity = g_vec_null;
 
-	if (!touchingEntity.flags & FL_MONSTER) {
+	if (!(touchingEntity.flags & FL_MONSTER)) {
 		return;
 	}
 

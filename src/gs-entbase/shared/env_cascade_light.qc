@@ -70,6 +70,7 @@ public:
 	virtual void OnRemoveEntity(void);
 	virtual void ReceiveEntity(float,float);
 	virtual void RendererRestarted(void);
+	nonvirtual void LightChanged(float);
 #endif
 
 private:
