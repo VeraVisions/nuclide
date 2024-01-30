@@ -75,6 +75,18 @@ NSClient::GetInfoKey(string strKey)
 	return infokey(this, strKey);
 }
 
+void
+NSClient::SetInfoKeyFloat(string strKey, float floatValue)
+{
+	forceinfokey(this, strKey, ftos(floatValue));
+}
+
+float
+NSClient::GetInfoKeyFloat(string strKey)
+{
+	return infokeyf(this, strKey);
+}
+
 #endif
 
 void

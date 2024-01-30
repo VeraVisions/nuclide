@@ -71,6 +71,11 @@ public:
 	/** Get the string value of an InfoKey. */
 	nonvirtual string GetInfoKey(string);
 
+	/** Floating point based version of SetInfoKey(). */
+	nonvirtual void SetInfoKeyFloat(string, float);
+	/** Floating point based version of GetInfoKey(). */
+	nonvirtual float GetInfoKeyFloat(string);
+
 	/* overrides */
 	virtual void Save(float);
 	virtual void Restore(string,string);
