@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2023 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -25,6 +25,9 @@ Node entities used for func_trains and func_guntargets.
 - "speed" : New speed for passing train.
 - "yaw_speed" : New yaw rotation for passing train. Currently unused.
 - "wait" : Waiting time until we go to the next node.
+
+# INPUTS
+- "OnPass" : Triggered when a 'train' passes over this node.
 
 # SPAWNFLAGS
 - PC_WAIT (1) : Train will stop moving once passed. Needs retrigger to progress.
@@ -52,17 +55,26 @@ path_corner:NSPointTrigger
 public:
 	void path_corner(void);
 
+	virtual void Spawned(void);
 	virtual void Save(float);
 	virtual void Restore(string,string);
 	virtual void SpawnKey(string,string);
 	virtual void Respawn(void);
 	virtual void Trigger(entity, triggermode_t);
+	virtual string GetPathTarget(void);
+	virtual string GetSelfTarget(void);
+	virtual path_corner GetPathTargetEntity(void);
+	virtual path_corner GetSelfTargetEntity(void);
+	virtual bool DisablesTrain(void);
+
+	virtual void PathPassTrigger(entity, triggermode_t);
 
 private:
 	int m_iFired;
 	float m_flSpeed;
 	float m_flYawSpeed;
 	float m_flWait;
+	string m_strOnPass;
 };
 
 void
@@ -72,6 +84,66 @@ path_corner::path_corner(void)
 	m_flSpeed = 0.0f;
 	m_flYawSpeed = 0.0f;
 	m_flWait = 1.0f;
+	m_strOnPass = __NULL__;
+}
+
+void
+path_corner::Spawned(void)
+{
+	super::Spawned();
+
+	if (m_strOnPass)
+		m_strOnPass = CreateOutput(m_strOnPass);
+}
+
+string
+path_corner::GetPathTarget(void)
+{
+	return target;
+}
+
+bool
+path_corner::DisablesTrain(void)
+{
+	return false;
+}
+
+string
+path_corner::GetSelfTarget(void)
+{
+	for (path_corner f = __NULL__; (f = (path_corner)find(f, ::classname, "path_corner"));) {
+		if (f.GetPathTarget() == targetname) {
+			return f.targetname;
+		}
+	}
+
+	return __NULL__;
+}
+
+path_corner
+path_corner::GetPathTargetEntity(void)
+{
+	string theTarget = GetPathTarget();
+
+	for (path_corner f = __NULL__; (f = (path_corner)find(f, ::classname, "path_corner"));) {
+		if (f.targetname == theTarget) {
+			return f;
+		}
+	}
+
+	return __NULL__;
+}
+
+path_corner
+path_corner::GetSelfTargetEntity(void)
+{
+	for (path_corner f = __NULL__; (f = (path_corner)find(f, ::classname, "path_corner"));) {
+		if (f.GetPathTarget() == targetname) {
+			return f;
+		}
+	}
+
+	return __NULL__;
 }
 
 void
@@ -82,6 +154,7 @@ path_corner::Save(float handle)
 	SaveFloat(handle, "m_flSpeed", m_flSpeed);
 	SaveFloat(handle, "m_flYawSpeed", m_flYawSpeed);
 	SaveFloat(handle, "m_flWait", m_flWait);
+	SaveString(handle, "m_strOnPass", m_strOnPass);
 }
 
 void
@@ -99,6 +172,9 @@ path_corner::Restore(string strKey, string strValue)
 		break;
 	case "m_flWait":
 		m_flWait = ReadFloat(strValue);
+		break;
+	case "m_strOnPass":
+		m_strOnPass = ReadString(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
@@ -121,6 +197,10 @@ path_corner::SpawnKey(string strKey, string strValue)
 	case "message":
 		m_strMessage = ReadString(strValue);
 		break;
+	/* I/O system */
+	case "OnPass":
+		m_strOnPass = PrepareOutput(m_strOnPass, strValue);
+		break;
 	default:
 		super::SpawnKey(strKey, strValue);
 	}
@@ -141,18 +221,32 @@ path_corner::Respawn(void)
 void
 path_corner::Trigger(entity act, triggermode_t state)
 {
-	entity a;
 
+}
+
+void
+path_corner::PathPassTrigger(entity activatingEntity, triggermode_t triggerMode)
+{
 	if (HasSpawnFlags(PC_FIREONCE) && m_iFired) {
 		NSLog("path_corner (%s) can only fire its targets once", targetname);
 		return;
 	}
 
-	if (m_strMessage)
-	for (a = world; (a = find(a, ::targetname, m_strMessage));) {
-		NSEntity trigger = (NSEntity)a;
-		trigger.Trigger(act, state);
-		m_iFired = TRUE;
-		NSLog("path_corner (%s) fired its %S targets", targetname, m_strMessage);
+	UseOutput(this, m_strOnPass);
+
+	if (!m_strMessage)
+		return;
+
+	for (entity f = world; (f = find(f, ::targetname, m_strMessage));) {
+		NSTrigger trigger = (NSTrigger)f;
+
+		NSLog("^2%s::^3PathPassTrigger^7:" \
+		       "Triggering %s `%s` from %s", \
+		        classname, f.classname, \
+		        trigger.targetname, activatingEntity.classname);
+
+		if (trigger.Trigger != __NULL__) {
+			trigger.Trigger(activatingEntity, triggerMode);
+		}
 	}
 }

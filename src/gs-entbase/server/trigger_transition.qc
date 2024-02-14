@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2023 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -40,7 +40,7 @@ public:
 	/* overrides */
 	virtual void Respawn(void);
 
-	nonvirtual void SaveTransition(void);
+	nonvirtual void SaveTransition(entity, bool);
 	nonvirtual NSEntity FindCarrierEntity(string);
 	nonvirtual void LoadTransition(void);
 };
@@ -58,7 +58,7 @@ trigger_transition::Respawn(void)
 }
 
 void
-trigger_transition::SaveTransition(void)
+trigger_transition::SaveTransition(entity pvsTest, bool usePVS)
 {
 	int i = 0i;
 	filestream transFile = fopen("trans.dat", FILE_WRITE);
@@ -69,12 +69,37 @@ trigger_transition::SaveTransition(void)
 
 	/* loop through all entities */
 	for (NSEntity a = __NULL__; (a = (NSEntity)findfloat(a, ::identity, 1));) {
-		print(sprintf("TRANSITION: %i %S %S\n", i, a.classname, a.m_strGlobalName));
+		bool replicateEntity = false;
+		//print(sprintf("TRANSITION: %i %S %S\n", i, a.classname, a.m_strGlobalName));
 
-		if (a == this)
-			continue;
+		/* if we're using the PVS, don't use the transition trigger as reference */
+		if (usePVS == true && !a.m_strGlobalName) {
+			if (checkpvs(a.origin, pvsTest) == true) {
+				replicateEntity = true;
 
-		if (WithinBounds(a) == true) {
+				/* these checks are somewhat safe assumptions. */
+				if (a.classname == "player") {
+					replicateEntity = false;
+				}
+				if (a.classname == "info_landmark") {
+					replicateEntity = false;
+				}
+
+				/* to get rid of the 'out of model slots' error */
+				if (a.model == "" && solid != SOLID_NOT) {
+					replicateEntity = false;
+				}
+
+				/* one thing is verified in GoldSrc: no brushes carry over. */
+				if (a.m_bIsBrush == true) {
+					continue;
+				}
+			}
+		} else if (WithinBounds(a) == true) {
+			replicateEntity = true;
+		}
+
+		if (replicateEntity == true) {
 			fputs(transFile, sprintf("ENTITY \"%i\" %S\n", i, a.classname));
 			fputs(transFile, "{\n");
 			a.Save(transFile);
@@ -84,7 +109,10 @@ trigger_transition::SaveTransition(void)
 			fputs(transFile, "{\n");
 			a.Save(transFile);
 			fputs(transFile, "}\n");
+		} else {
+			continue;
 		}
+
 		i++;
 	}
 
@@ -108,7 +136,7 @@ void
 trigger_transition::LoadTransition(void)
 {
 	string lineFeed;
-	bool carryEntity;
+	bool isNew = false;
 	NSEntity carrierEntity = __NULL__;
 
 	filestream transFile = fopen("trans.dat", FILE_READ);
@@ -127,7 +155,6 @@ trigger_transition::LoadTransition(void)
 			continue;
 		} else if (argv(0) == "}") {
 			carrierEntity.TransitionComplete();
-			carryEntity = false;
 			carrierEntity = __NULL__;
 			continue;
 		}
@@ -135,15 +162,18 @@ trigger_transition::LoadTransition(void)
 		if (c == 3) {
 			if (argv(0) == "CONTINUE") {
 				carrierEntity = FindCarrierEntity(argv(2));
-				carryEntity = true;
+				isNew = false;
 			} else if (argv(0) == "ENTITY") {
-				//carrierEntity = spawn
-				carryEntity = false;
+				carrierEntity = EntityDef_CreateClassname(argv(2));
+				isNew = true;
 			}
 		} else if (c == 2) { /* key value pairs */
 			if (carrierEntity) {
 				switch (argv(0)) {
 				case "model":
+					if (isNew) {
+						carrierEntity.Restore(argv(0), argv(1));
+					}
 				case "modelindex":
 					break;
 #if 0
@@ -161,6 +191,11 @@ trigger_transition::LoadTransition(void)
 		}
 	}
 
-
 	fremove("trans.dat");
+}
+
+void
+trigger_transition_pvsfallback(entity pvsTest)
+{
+	trigger_transition::SaveTransition(pvsTest, true);
 }

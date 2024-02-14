@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2023 Vera Visions LLC.
+ * Copyright (c) 2023 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,15 +14,29 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-#define MATH_PI 3.1415926
+class
+func_trackautochange:func_trackchange
+{
+	void func_trackautochange(void);
 
-float Math_LerpAngle(float fStart, float fEnd, float fAmount);
-float Math_Lerp(float fA, float fB, float fPercent);
-float Math_FixDelta(float fDelta);
-vector Math_FixDeltaVector(vector);
-vector Math_Reflect(vector v1, vector v2);
-vector Math_RandomVector(float flyup);
-vector Math_RotateAroundPivot(vector pos, vector pivot, float degr);
-vector Math_AngleDiff(vector from, vector to);
+	virtual void MoverFinishesMoving(void);
+};
 
-vector hsv2rgb(float h, float s, float v);
+void
+func_trackautochange::func_trackautochange(void)
+{
+
+}
+
+
+
+void
+func_trackautochange::MoverFinishesMoving(void)
+{
+	NSEntity ourTrain = (NSEntity)find(world, ::targetname, m_strTrainName);
+	super::MoverFinishesMoving();
+
+	if (ourTrain) {
+		ourTrain.Trigger(this, TRIG_TOGGLE);
+	}
+}

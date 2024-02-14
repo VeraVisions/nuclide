@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2023 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -86,6 +86,34 @@ Math_RotateAroundPivot(vector pos, vector pivot, float degr)
 	new[0] = pivot[0] + (pos[0] - pivot[0]) * cos(degr) - (pos[1] - pivot[1]) * sin(degr);
 	new[1] = pivot[1] + (pos[0] - pivot[0]) * sin(degr) + (pos[1] - pivot[1]) * cos(degr);
 	return new;
+}
+
+
+vector
+Math_AngleDiff(vector from, vector to)
+{
+	static float Math_AngleDiff_S(float from, float to) {
+		float angleDelta = from - to;
+
+		if (angleDelta > 180) {
+			angleDelta -= 360;
+		} else if (angleDelta < -180) {
+			angleDelta += 360;
+		}
+
+		return angleDelta;
+	}
+
+	vector newAngle;
+
+	/* clean up input angles */
+	from = Math_FixDeltaVector(from);
+	to = Math_FixDeltaVector(to);
+
+	newAngle[0] = Math_AngleDiff_S(from[0], to[0]);
+	newAngle[1] = Math_AngleDiff_S(from[1], to[1]);
+	newAngle[2] = Math_AngleDiff_S(from[2], to[2]);
+	return newAngle;
 }
 
 vector hsv2rgb(float h, float s, float v)

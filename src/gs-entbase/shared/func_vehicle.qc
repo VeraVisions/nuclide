@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2023 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -978,10 +978,10 @@ float
 func_vehicle::SendEntity(entity ePEnt, float flChanged)
 {
 	if (!modelindex)
-		return (0);
+		return (false);
 
 	if (clienttype(ePEnt) != CLIENTTYPE_REAL)
-		return (0);
+		return (false);
 
 	WriteByte(MSG_ENTITY, ENT_VEH_BRUSH);
 	WriteFloat(MSG_ENTITY, flChanged);
@@ -1017,6 +1017,6 @@ func_vehicle::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_COORD(maxs[2], FNCVEHNET_SOLIDMOVETYPE)
 
 
-	return true;
+	return (true);
 }
 #endif

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2023 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -54,6 +54,9 @@ Entity_EntityUpdate(float type, float new)
 	case ENT_SPEAKER:
 		NSENTITY_READENTITY(speaker, new)
 		self.customphysics = Empty;
+		break;
+	case ENT_TRACKTRAIN:
+		NSENTITY_READENTITY(func_tracktrain, new)
 		break;
 	case ENT_VEHICLE:
 		NSENTITY_READENTITY(NSVehicle, new)

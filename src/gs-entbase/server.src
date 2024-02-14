@@ -49,8 +49,7 @@ server/func_door_rotating.qc
 server/func_lod.qc
 server/func_train.qc
 server/func_guntarget.qc
-server/func_tracktrain.qc
-server/func_tracktraincontrols.qc
+server/func_traincontrols.qc
 server/func_tank.qc
 server/func_tankcontrols.qc
 server/func_pushable.qc
@@ -63,6 +62,8 @@ server/func_platrot.qc
 server/func_pendulum.qc
 server/func_vehiclecontrols.qc
 server/func_monsterclip.qc
+server/func_trackchange.qc
+server/func_trackautochange.qc
 server/light.qc
 server/logic_auto.qc
 server/logic_relay.qc

@@ -50,6 +50,7 @@ typedef enum
 	ENT_OLDCAMERA,	/**< of type trigger_camera */
 	ENT_MONITOR,	/**< of type func_monitor */
 	ENT_VEHICLE,	/**< Reserved. */
+	ENT_TRACKTRAIN, /**< of type func_tracktrain */
 	ENT_VEH_BRUSH,	/**< of type func_vehicle */
 	ENT_VEH_TANKMORTAR,	/**< of type func_tankmortar */
 	ENT_VEH_4WHEEL,	/**< of type prop_vehicle_driveable */

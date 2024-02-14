@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2023 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -142,11 +142,13 @@ trigger_auto_trigger(void)
 	trigger_auto loop;
 
 	/* don't do it more than once */
-	if (called)
+	if (called) {
 		return;
+	}
 
 	for (loop = __NULL__; (loop = (trigger_auto)find(loop, ::classname, "trigger_auto"));) {
-		loop.Processing();
+		loop.ScheduleThink(trigger_auto::Processing, 0.25f);
 	}
+
 	called = true;
 }

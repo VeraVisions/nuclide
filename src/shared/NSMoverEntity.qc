@@ -275,9 +275,9 @@ NSMoverEntity::MoveAndRotateToPosition(vector vecDest, vector vecAngle, float fl
 	}
 
 	/* schedule the movement and proceed to trigger the end after a certain time */
-	MoveToRotPosition_Done(fTravelTime);
 	SetVelocity(vecDifference * (1.0f / fTravelTime));
 	SetAngularVelocity((vecAngleDifference * (1.0 / fTravelTime)));
+	MoveToRotPosition_Done(fTravelTime);
 }
 
 void

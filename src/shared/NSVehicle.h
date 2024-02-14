@@ -14,6 +14,15 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+var bool autocvar_vehicle_developer = false;
+void
+_NSVehicle_Log(string msg)
+{
+	if (autocvar_vehicle_developer == true)
+		print(sprintf("%f %s\n", time, msg));
+}
+#define NSVehicle_Log(...) _NSVehicle_Log(sprintf(__VA_ARGS__))
+
 /** This entity class represents vehicles that are predicted across the network. */
 class NSVehicle:NSSurfacePropEntity
 {

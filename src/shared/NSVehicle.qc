@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2023 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -446,8 +446,6 @@ NSVehicle::PlayerEnter(NSClientPlayer pl)
 	m_eDriverLast = m_eDriver;
 	pl.vehicle = this;
 	pl.flags |= FL_INVEHICLE;
-
-	SetSendFlags(VEHFL_CHANGED_DRIVER);
 }
 
 void
@@ -458,6 +456,8 @@ NSVehicle::PlayerLeave(NSClientPlayer pl)
 
 	owner = __NULL__;
 	pl.flags &= ~FL_INVEHICLE;
+	pl.velocity = g_vec_null;
+	setorigin_safe(pl, pl.origin);
 
 	if (m_iVehicleFlags & VHF_FROZEN)
 		pl.flags &= ~FL_FROZEN;
@@ -467,6 +467,4 @@ NSVehicle::PlayerLeave(NSClientPlayer pl)
 
 	pl.vehicle = __NULL__;
 	m_eDriver = __NULL__;
-
-	SetSendFlags(VEHFL_CHANGED_DRIVER);
 }

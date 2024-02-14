@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2023 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -222,6 +222,8 @@ trigger_changelevel::IsInside(entity ePlayer, entity eVolume)
 void
 trigger_changelevel::Change(void)
 {
+	trigger_transition transitionHelper = __NULL__;
+
 	/* needed for logic_auto */
 	cvar_set("_bsp_change_auto", "1");
 
@@ -230,6 +232,7 @@ trigger_changelevel::Change(void)
 		NSLog("^2trigger_changelevel::^3Change^7: Change to `%s`", 
 			m_strMap);
 		parm_string = m_strChangeTarget;
+		trigger_transition_pvsfallback(this);
 		changelevel(m_strMap);
 		return;
 	}
@@ -247,10 +250,13 @@ trigger_changelevel::Change(void)
 	}
 
 	if (m_strLandmark) {
-		for (entity e = world; (e = find(e, ::classname, "trigger_transition"));) { 
-			if (e.targetname == m_strLandmark)
-				if (IsInside(m_activator, e) == FALSE)
+		for (entity e = world; (e = find(e, ::classname, "trigger_transition"));) {
+			transitionHelper = (trigger_transition)e;
+
+			if (e.targetname == m_strLandmark) {
+				if (IsInside(m_activator, e) == false)
 					return;
+			}
 		}
 	}
 
@@ -259,19 +265,17 @@ trigger_changelevel::Change(void)
 		info_landmark lm = (info_landmark)e;
 		/* found it */
 		if (lm.targetname == m_strLandmark) {
-			trigger_transition t;
 			NSLog("^2trigger_changelevel::^3Change^7: Found landmark for %s", m_strLandmark);
 			g_landmarkpos = m_activator.origin - lm.origin;
 
-			/* time to transition */
-			t = (trigger_transition)find(world, ::targetname, m_strLandmark);
-
-			if (t) {
-				t.SaveTransition();
+			if (transitionHelper) {
+				transitionHelper.SaveTransition(__NULL__, false);
+			} else {
+				trigger_transition_pvsfallback(this);
 			}
 
 			changelevel(m_strMap, m_strLandmark);
-			break;
+			return;
 		}
 	}
 }
@@ -279,7 +283,7 @@ trigger_changelevel::Change(void)
 void
 trigger_changelevel::Trigger(entity act, triggermode_t unused)
 {
-	if (GetMaster(act) == FALSE)
+	if (GetMaster(act) == false)
 		return;
 
 	/* disable meself */
@@ -301,6 +305,9 @@ trigger_changelevel::Touch(entity eToucher)
 		return;
 
 	if (!(eToucher.flags & FL_CLIENT))
+		return;
+
+	if (time < 2.0f)
 		return;
 
 	Trigger(eToucher, TRIG_TOGGLE);

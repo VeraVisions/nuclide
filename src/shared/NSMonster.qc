@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2023 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -1467,6 +1467,10 @@ NSMonster::Physics(void)
 	input_angles = angles;
 	m_bTurning = false;
 
+	/* HACK!!! */
+	if (!IsAlive)
+		return;
+
 	/* unset the leap attack */
 	if (m_bLeapAttacked == true && HasFlags(FL_ONGROUND) == true) {
 		m_bLeapAttacked = false;
@@ -2264,7 +2268,7 @@ NSMonster::_RenderDebugViewCone(void)
 #endif
 
 #ifdef SERVER
-var int autocvar_ai_alertdebug = 0;
+var bool autocvar_ai_debugAlerts = false;
 
 var float g_monsteralert_timer;
 void
@@ -2274,8 +2278,8 @@ NSMonster_AlertEnemyAlliance(vector pos, float radius, int alliance)
 	if (g_monsteralert_timer > time)
 		return;
 
-	if (autocvar_ai_alertdebug)
-		NSMonster_Log("AI alert from %v with radius %f and alliance %i\n", pos, radius, alliance);
+	if (autocvar_ai_debugAlerts)
+		NSMonster_Log("AI alert from %v with radius %f and alliance %i", pos, radius, alliance);
 
 	for (entity w = world; (w = nextent(w));) {
 		if (w.takedamage == DAMAGE_NO)
@@ -2288,8 +2292,8 @@ NSMonster_AlertEnemyAlliance(vector pos, float radius, int alliance)
 
 		/* only target monsters */
 		if (!(w.flags & FL_MONSTER)) {
-			if (autocvar_ai_alertdebug)
-				NSMonster_Log("\t%S is not a monster\n", w.classname);
+			if (autocvar_ai_debugAlerts)
+				NSMonster_Log("\t%S is not a monster", w.classname);
 			continue;
 		}
 
@@ -2297,27 +2301,27 @@ NSMonster_AlertEnemyAlliance(vector pos, float radius, int alliance)
 
 		/* they already got a target of some kind */
 		if (f.m_eEnemy) {
-			if (autocvar_ai_alertdebug)
-				NSMonster_Log("\t%S already has a target\n", w.classname);
+			if (autocvar_ai_debugAlerts)
+				NSMonster_Log("\t%S already has a target", w.classname);
 			continue;
 		}
 
 		/* if they're our friend... ignore*/
 		if (f.IsFriend(alliance)) {
-			if (autocvar_ai_alertdebug)
-				NSMonster_Log("\t%S is friend of alliance %i\n", w.classname, alliance);
+			if (autocvar_ai_debugAlerts)
+				NSMonster_Log("\t%S is friend of alliance %i", w.classname, alliance);
 			continue;
 		}
 
 		/* if the monster is dead... ignore */
 		if (f.health <= 0) {
-			if (autocvar_ai_alertdebug)
-				NSMonster_Log("\t%S is dead, cannot be alerted\n", w.classname);
+			if (autocvar_ai_debugAlerts)
+				NSMonster_Log("\t%S is dead, cannot be alerted", w.classname);
 			continue;
 		}
 
-		if (autocvar_ai_alertdebug)
-				NSMonster_Log("\twe're alerting %S to go to %v\n", w.classname, pos);
+		if (autocvar_ai_debugAlerts)
+				NSMonster_Log("\twe're alerting %S to go to %v", w.classname, pos);
 
 		/* we've heard a noise. investigate the location */
 		f.RouteClear();
