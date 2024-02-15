@@ -17,7 +17,8 @@
 enumflags
 {
 	TRIGTELE_MONSTERS,
-	TRIGTELE_NOCLIENTS
+	TRIGTELE_NOCLIENTS,
+	TRIGTELE_PUSHABLES
 };
 
 /*!QUAKED trigger_teleport (.5 .5 .5) ? CLIENTS NPCS PUSHABLES PHYSICS FRIENDLIES CLIENTSINVEHICLES EVERYTHING x x CLIENTSNOTINVEHICLES DEBRIS NPCSINVEHICLES NOBOTS
@@ -163,6 +164,8 @@ trigger_teleport::CanPass(NSEntity target)
 		if (HasSpawnFlags(TRIGTELE_NOCLIENTS) && target.flags & FL_CLIENT)
 			return false;
 		if (!HasSpawnFlags(TRIGTELE_MONSTERS) && target.flags & FL_MONSTER)
+			return false;
+		if (!HasSpawnFlags(TRIGTELE_PUSHABLES) && target.classname == "func_pushable")
 			return false;
 	} else {
 		if (CanBeTriggeredBy(target) == false)
