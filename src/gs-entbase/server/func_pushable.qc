@@ -14,7 +14,27 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*!QUAKED func_pushable (0 .5 .8) ? SF_TRIGGER SF_TOUCH SF_PRESSURE
+typedef enum
+{
+	PUSHABLESIZE_POINT,
+	PUSHABLESIZE_PLAYER,
+	PUSHABLESIZE_BIG,
+	PUSHABLESIZE_DUCKING,
+	PUSHABLESIZE_CUSTOM,
+} pushSize_t;
+
+#define PUSH_SIZE_PLAYER_MIN [-16,-16,-36]
+#define PUSH_SIZE_PLAYER_MAX [16,16,36]
+
+#define PUSH_SIZE_BIG_MIN [-16,-16,-36]
+#define PUSH_SIZE_BIG_MAX [16,16,36]
+
+#define PUSH_SIZE_DUCKING_MIN [-16,-16,-18]
+#define PUSH_SIZE_DUCKING_MAX [16,16,18]
+
+#define FNCPUSHABLE_BREAKABLE 128
+
+/*!QUAKED func_pushable (0 .5 .8) ? SF_TRIGGER SF_TOUCH SF_PRESSURE x x x x BREAKABLE
 # OVERVIEW
 This is essentially the same entity as a func_breakable, but
 a player can push and pull it around the level.
@@ -23,6 +43,7 @@ a player can push and pull it around the level.
 - "targetname" : Name
 - "target" : Target when triggered.
 - "killtarget" : Target to kill when triggered.
+- "size" : Hull size to use. 0: Point, 1: Player, 2: Big, 3: Player Crouched
 
 # SPAWNFLAGS
 - SF_TRIGGER (1) : Break only when triggered.
@@ -33,6 +54,8 @@ a player can push and pull it around the level.
 It uses stepping player physics to move around.
 Please look at func_breakable for more entity keys, inputs and outputs.
 
+The 'size' key only has to be specified when you use levels with hull-sizes.
+
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 */
@@ -41,7 +64,8 @@ func_pushable:func_breakable
 {
 public:
 	void func_pushable(void);
-	
+
+	virtual void SpawnKey(string, string);
 	virtual void Save(float);
 	virtual void Restore(string,string);
 	virtual void customphysics(void);
@@ -53,6 +77,7 @@ public:
 private:
 	entity m_pPuller;
 	entity m_eCollBox;
+	pushSize_t m_dHullSize;
 };
 
 void
@@ -60,28 +85,58 @@ func_pushable::func_pushable(void)
 {
 	m_pPuller = __NULL__;
 	m_eCollBox = __NULL__;
+	m_dHullSize = PUSHABLESIZE_CUSTOM;
 }
 
 void
-func_pushable::Save(float handle)
+func_pushable::SpawnKey(string keyName, string setValue)
 {
-	super::Save(handle);
-	SaveEntity(handle, "m_pPuller", m_pPuller);
-	SaveEntity(handle, "m_eCollBox", m_eCollBox);
-}
-
-void
-func_pushable::Restore(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "m_pPuller":
-		m_pPuller = ReadEntity(strValue);
-		break;
-	case "m_eCollBox":
-		m_eCollBox = ReadEntity(strValue);
+	switch (keyName) {
+	case "size":
+		switch (ReadFloat(setValue)) {
+		case 1:
+			m_dHullSize = PUSHABLESIZE_PLAYER;
+			break;
+		case 2:
+			m_dHullSize = PUSHABLESIZE_BIG;
+			break;
+		case 3:
+			m_dHullSize = PUSHABLESIZE_DUCKING;
+			break;
+		default:
+			m_dHullSize = PUSHABLESIZE_POINT;
+			break;
+		}
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(keyName, setValue);
+	}
+}
+
+void
+func_pushable::Save(float saveHandle)
+{
+	super::Save(saveHandle);
+	SaveEntity(saveHandle, "m_pPuller", m_pPuller);
+	SaveEntity(saveHandle, "m_eCollBox", m_eCollBox);
+	SaveFloat(saveHandle, "m_dHullSize", m_dHullSize);
+}
+
+void
+func_pushable::Restore(string keyName, string setValue)
+{
+	switch (keyName) {
+	case "m_pPuller":
+		m_pPuller = ReadEntity(setValue);
+		break;
+	case "m_eCollBox":
+		m_eCollBox = ReadEntity(setValue);
+		break;
+	case "m_dHullSize":
+		m_dHullSize = ReadFloat(setValue);
+		break;
+	default:
+		super::Restore(keyName, setValue);
 	}
 }
 
@@ -93,7 +148,12 @@ func_pushable::Respawn(void)
 	SetOrigin(GetSpawnOrigin());
 	SetMovetype(MOVETYPE_STEP);
 	PlayerUse = OnPlayerUse;
-	//hitcontentsmaski = CONTENTBIT_BODY | CONTENTBIT_BODY; /* don't collide with anything but players */
+
+	if (HasSpawnFlags(FNCPUSHABLE_BREAKABLE) == true) {
+		SetTakedamage(DAMAGE_YES);
+	} else {
+		SetTakedamage(DAMAGE_NO);
+	}
 
 	if (!m_eCollBox) {
 		m_eCollBox = spawn();
@@ -103,6 +163,26 @@ func_pushable::Respawn(void)
 		setsize(m_eCollBox, -(size/2) * 0.9f, (size/2) * 0.9f);
 		setorigin(m_eCollBox, WorldSpaceCenter());
 	}
+
+	/* size overrides for Q1 BSP */
+	if (m_dHullSize != PUSHABLESIZE_CUSTOM) {
+		switch (m_dHullSize) {
+		case PUSHABLESIZE_PLAYER:
+			setsize(m_eCollBox, PUSH_SIZE_PLAYER_MIN, PUSH_SIZE_PLAYER_MAX);
+			break;
+		case PUSHABLESIZE_BIG:
+			setsize(m_eCollBox, PUSH_SIZE_BIG_MIN, PUSH_SIZE_BIG_MAX);
+			break;
+		case PUSHABLESIZE_DUCKING:
+			setsize(m_eCollBox, PUSH_SIZE_DUCKING_MIN, PUSH_SIZE_DUCKING_MAX);
+			break;
+		default:
+			setsize(m_eCollBox, g_vec_null, g_vec_null);
+		}
+	}
+
+	/* force it to move around abit by the next frame */
+	SetVelocity([0,0,1]);
 }
 
 void
@@ -134,8 +214,8 @@ func_pushable::customphysics(void)
 		m_pPuller = world;
 	} else {
 		/* drag us, make sure we don't collide */
-		velocity[0] = m_pPuller.velocity[0] * 0.9f;
-		velocity[1] = m_pPuller.velocity[1] * 0.9f;
+		velocity[0] = m_pPuller.velocity[0];// * 0.9f;
+		velocity[1] = m_pPuller.velocity[1];// * 0.9f;
 	}
 
 	/* see if we're clipping against entities or other func_pushable_bbox helper entities */
@@ -145,7 +225,7 @@ func_pushable::customphysics(void)
 	if ((vlen(m_pPuller.origin - position) - vlen(size)) > 64)
 		m_pPuller = world;
 
-	tracebox(position, -(size/2) * 0.95f, (size/2) * 0.95f, \
+	tracebox(position, m_eCollBox.mins, m_eCollBox.maxs, \
 		position + (velocity * input_timelength), MOVE_NORMAL, this);
 
 	if (trace_fraction < 1.0f)
@@ -157,12 +237,16 @@ func_pushable::customphysics(void)
 	if (vlen(velocity))
 		runstandardplayerphysics(this);
 
-	setorigin(m_eCollBox, position);
+	if (m_eCollBox)
+		setorigin(m_eCollBox, position);
 }
 
 void
 func_pushable::Touch(entity eToucher)
 {
+	vector pusherPosition = eToucher.origin;
+	vector pushableOrigin;
+
 	/* don't cause bounces */
 	if (eToucher.movetype == MOVETYPE_NONE) {
 		return;
@@ -178,8 +262,11 @@ func_pushable::Touch(entity eToucher)
 		return;
 	}
 
+	pushableOrigin = WorldSpaceCenter();
+	pusherPosition[2] = pushableOrigin[2];
+
 	/* get the direction of the pushing player towards the pushable, then get a matrix */
-	makevectors(vectoangles(eToucher.origin - WorldSpaceCenter()));
+	makevectors(vectoangles(pusherPosition - pushableOrigin));
 
 	/* add forward direction times speed */
 	velocity = v_forward * -64;
