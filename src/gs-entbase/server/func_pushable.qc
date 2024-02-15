@@ -93,7 +93,7 @@ func_pushable::Respawn(void)
 	SetOrigin(GetSpawnOrigin());
 	SetMovetype(MOVETYPE_STEP);
 	PlayerUse = OnPlayerUse;
-	hitcontentsmaski = CONTENTBIT_BODY; /* don't collide with anything but players */
+	//hitcontentsmaski = CONTENTBIT_BODY | CONTENTBIT_BODY; /* don't collide with anything but players */
 
 	if (!m_eCollBox) {
 		m_eCollBox = spawn();
