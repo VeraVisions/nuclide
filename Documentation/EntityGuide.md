@@ -148,6 +148,8 @@
 
 [func_tankmortar](@ref func_tankmortar)
 
+[func_trackchange](@ref func_trackchange)
+
 [func_tracktrain](@ref func_tracktrain)
 
 [func_train](@ref func_train)

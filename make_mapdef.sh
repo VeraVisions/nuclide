@@ -15,8 +15,8 @@ printf -- "" > "/tmp/def_model"
 do
 	SEG1=$(echo "$LINE" | awk '{ print $1 }')
 	SEG2=$(echo "$LINE" | awk '{ print $2 }')
-	KEY=$(echo "$LINE" | awk -F"\"" '{ print $2 }')
-	VAL=$(echo "$LINE" | awk -F"\"" '{ print $4 }')
+	KEY="$(echo "$LINE" | awk -F"\"" '{ print $2 }')"
+	VAL="$(echo "$LINE" | awk -F"\"" '{ print $4 }')"
 
 	if [ "$KEY" = "entityDef" ]
 	then
@@ -45,7 +45,7 @@ do
 
 	if [ "$KEY" = "mins" ]
 	then
-		if [ -z $(cat "/tmp/def_mins") ]
+		if [ -z "$(cat /tmp/def_mins)" ]
 		then
 			printf -- "$VAL" > "/tmp/def_mins"
 		fi
@@ -53,7 +53,7 @@ do
 
 	if [ "$KEY" = "maxs" ]
 	then
-		if [ -z $(cat "/tmp/def_maxs") ]
+		if [ -z "$(cat /tmp/def_maxs)" ]
 		then
 			printf -- "$VAL" > "/tmp/def_maxs"
 		fi
@@ -66,7 +66,7 @@ do
 
 	if [ "$KEY" = "netname" ]
 	then
-		if [ -z "$(cat "/tmp/def_usage")" ]
+		if [ -z "$(cat /tmp/def_usage)" ]
 		then
 			printf -- "$VAL" > "/tmp/def_usage"
 		fi
@@ -79,7 +79,7 @@ do
 
 	if [ "$KEY" = "model" ]
 	then
-		if [ -z $(cat "/tmp/def_model") ]
+		if [ -z "$(cat /tmp/def_model)" ]
 		then
 			printf -- "$VAL" > "/tmp/def_model"
 		fi
@@ -87,12 +87,12 @@ do
 
 	if [ "$SEG1" = "}" ]
 	then
-		KEY_NAME=$(cat "/tmp/def_name")
-		KEY_COLOR=$(cat "/tmp/def_color")
-		KEY_MINS=$(cat "/tmp/def_mins")
-		KEY_MAXS=$(cat "/tmp/def_maxs")
-		KEY_USAGE=$(cat "/tmp/def_usage")
-		KEY_MODEL=$(cat "/tmp/def_model")
+		KEY_NAME="$(cat /tmp/def_name)"
+		KEY_COLOR="$(cat /tmp/def_color)"
+		KEY_MINS="$(cat /tmp/def_mins)"
+		KEY_MAXS="$(cat /tmp/def_maxs)"
+		KEY_USAGE="$(cat /tmp/def_usage)"
+		KEY_MODEL="$(cat /tmp/def_model)"
 		printf -- "" > "/tmp/def_name"
 		printf -- "" > "/tmp/def_color"
 		printf -- "" > "/tmp/def_mins"
