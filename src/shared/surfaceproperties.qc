@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+static bool g_spDefaultSet;
+
 static void
 SurfData_ParseField(int i, int a)
 {
@@ -99,6 +101,7 @@ SurfData_Parse(string line)
 	static string t_name;
 	static int braced = 0;
 	static int i;
+	static bool isDefault = false;
 
 	c = tokenize_console(line);
 	key = argv(0);
@@ -109,8 +112,34 @@ SurfData_Parse(string line)
 		break;
 	case "}":
 		/* increase counter when done */
-		if (t_name)
+		if (t_name) {
+			/* we now apply our values to everything else. */
+			if (isDefault) {
+				for (int m = 1i; m < g_surfdata_count; m++) {
+					g_surfdata[m].m_flMaterial = g_surfdata[0].m_flMaterial;
+					g_surfdata[m].m_flThickness = g_surfdata[0].m_flThickness;
+					g_surfdata[m].m_flDensity = g_surfdata[0].m_flDensity;
+					g_surfdata[m].m_flElasticity = g_surfdata[0].m_flElasticity;
+					g_surfdata[m].m_flFriction = g_surfdata[0].m_flFriction;
+					g_surfdata[m].m_flDampening = g_surfdata[0].m_flDampening;
+					g_surfdata[m].m_flJumpFactor = g_surfdata[0].m_flJumpFactor;
+					g_surfdata[m].m_flMaxSpeedFactor = g_surfdata[0].m_flMaxSpeedFactor;
+					g_surfdata[m].m_sndStepLeft = g_surfdata[0].m_sndStepLeft;
+					g_surfdata[m].m_sndStepRight = g_surfdata[0].m_sndStepRight;
+					g_surfdata[m].m_sndBulletImpact = g_surfdata[0].m_sndBulletImpact;
+					g_surfdata[m].m_sndScrapeRough = g_surfdata[0].m_sndScrapeRough;
+					g_surfdata[m].m_sndScrapeSoft = g_surfdata[0].m_sndScrapeSoft;
+					g_surfdata[m].m_sndImpactHard = g_surfdata[0].m_sndImpactHard;
+					g_surfdata[m].m_sndImpactSoft = g_surfdata[0].m_sndImpactSoft;
+					g_surfdata[m].m_sndShake = g_surfdata[0].m_sndShake;
+					g_surfdata[m].m_sndStrain = g_surfdata[0].m_sndStrain;
+					g_surfdata[m].m_sndRoll = g_surfdata[0].m_sndRoll;
+					g_surfdata[m].m_sndBreak = g_surfdata[0].m_sndBreak;
+				}
+			}
+
 			i++;
+		}
 
 		braced--;
 		t_name = "";
@@ -120,6 +149,13 @@ SurfData_Parse(string line)
 			SurfData_ParseField(i, c);
 		} else if (braced == 0) {
 			t_name = strtolower(line);
+
+			if (t_name == "default") {
+				isDefault = true;
+			} else {
+				isDefault = false;
+			}
+
 			hash_add(g_hashsurfdata, t_name, (int)i);
 		}
 	}
@@ -153,7 +189,8 @@ SurfData_CountLine(string line)
 	int c;
 	string key;
 	static string t_name;
-	static int braced = 0;
+	static int braced = 0i;
+	static int surfdataCount = 0i;
 
 	c = tokenize_console(line);
 	key = argv(0);
@@ -164,6 +201,7 @@ SurfData_CountLine(string line)
 		break;
 	case "}":
 		braced--;
+		surfdataCount++;
 		t_name = "";
 		break;
 	default:
@@ -173,6 +211,10 @@ SurfData_CountLine(string line)
 
 			if (t_name)
 				g_surfdata_count++;
+
+			/* sanity test */
+			if (t_name == "default" && surfdataCount == 0i)
+				g_spDefaultSet = true;
 		}
 	}
 	return;
@@ -258,8 +300,9 @@ SurfData_Shutdown(void)
 	if (g_surfdata) {
 		memfree(g_surfdata);
 	}
-	g_surfdata_count = 0;
+	g_surfdata_count = 0i;
 	g_hashsurfdata = 0;
+	g_spDefaultSet = false;
 }
 
 void
@@ -276,27 +319,36 @@ SurfData_Init(void)
 
 	index = g_surfdata_count;
 
-	/* create the hash-table if it doesn't exist */
-	if (!g_hashsurfdata) {
-		g_hashsurfdata = hash_createtab(2, HASH_ADD);
+	/* if it already exists, detroy it first */
+	if (g_hashsurfdata) {
+		hash_destroytab(g_hashsurfdata);
 	}
 
 	fh = fopen("scripts/surfaceproperties.txt", FILE_READ);
+
+	/* it's OK for one to not exist... */
 	if (fh < 0) {
 		print("^1[SURFDATA] Can't find surfaceproperties.txt\n");
 		return;
 	}
 
-	/* count content */
+	/* count surfaceproperty definitions */
 	while ((line = fgets(fh))) {
 		SurfData_CountLine(line);
 	}
 
+	/* we did not find 'default' as the first entry. */
+	if (g_spDefaultSet == false) {
+		error("^1no 'default' defined at the top of scripts/surfaceproperties.txt");
+		return;
+	}
+
 	/* alocate our stuff */
 	g_surfdata = (surfaceData_t *)memalloc(sizeof(surfaceData_t) * g_surfdata_count);
+	g_hashsurfdata = hash_createtab(2, HASH_ADD);
 
-	/* Defaults */
-	for (int i = 0; i < g_surfdata_count; i++) {
+	/* Internal, defaults. Most of them get overriden by the first entry ('default') */
+	for (int i = 0i; i < g_surfdata_count; i++) {
 		g_surfdata[i].m_strBase = "";
 		g_surfdata[i].m_flMaterial = -1;
 		g_surfdata[i].m_flThickness = 1.0f;
@@ -328,10 +380,17 @@ SurfData_Init(void)
 	}
 	fclose(fh);
 
-	for (int i = 0; i < g_surfdata_count; i++) {
+	for (int i = 0i; i < g_surfdata_count; i++) {
 		Sound_Precache(g_surfdata[i].m_sndStepLeft);
 		Sound_Precache(g_surfdata[i].m_sndStepRight);
 		Sound_Precache(g_surfdata[i].m_sndBulletImpact);
+		Sound_Precache(g_surfdata[i].m_sndScrapeRough);
+		Sound_Precache(g_surfdata[i].m_sndScrapeSoft);
+		Sound_Precache(g_surfdata[i].m_sndImpactHard);
+		Sound_Precache(g_surfdata[i].m_sndImpactSoft);
+		Sound_Precache(g_surfdata[i].m_sndShake);
+		Sound_Precache(g_surfdata[i].m_sndStrain);
+		Sound_Precache(g_surfdata[i].m_sndRoll);
 		Sound_Precache(g_surfdata[i].m_sndBreak);
 	}
 
