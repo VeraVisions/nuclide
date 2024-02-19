@@ -131,8 +131,8 @@ GameLibrary_FindInGameDir(string filename, string gamedirname)
 static void
 GameLibrary_LibListParse(int id, string strKey, string strValue)
 {
-	if (id == 0)
-		print(sprintf("%i %S %S\n", id, strKey, strValue));
+	//if (id == 0)
+		//print(sprintf("%i %S %S\n", id, strKey, strValue));
 
 	switch(strKey) {
 	case "game":
