@@ -227,6 +227,18 @@ trigger_teleport::Touch(entity eToucher)
 				endpos[2] -= eToucher.mins[2]; 
 			}
 
+			/* test if something is in the way. */
+			tracebox(endpos, eToucher.mins, eToucher.maxs, endpos, MOVE_NORMAL, eToucher);
+
+			/* indeed something is in the way... */
+			if (trace_ent && trace_startsolid == true) {
+				/* it can be killed */
+				if (trace_ent.takedamage != DAMAGE_NO) {
+					/* telefrag */
+					Damage_Apply(trace_ent, eToucher, trace_ent.health * 2.0, 0, DMG_SKIP_ARMOR);
+				}
+			}
+
 			setorigin_safe(eToucher, endpos);
 
 			if (m_sndTeleport) {
