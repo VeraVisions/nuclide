@@ -361,6 +361,8 @@ NSRenderableEntity::RenderFXPass(void)
 
 		break;
 	case RM_GLOW:
+		colormod = [1,1,1];
+		alpha = m_flRenderAmt == 0.0 ? 0.0f : 1.0f;
 	case RM_WORLDGLOW: /* TODO: Figure out what this does differently */
 		if (checkpvs(vecPlayer, this) == FALSE)
 			alpha -= clframetime;
@@ -900,22 +902,12 @@ NSRenderableEntity::GetRenderFX(void)
 float
 NSRenderableEntity::GetRenderAmt(void)
 {
-	if (m_iRenderMode == RM_NORMAL)
-		return 1.0f;
-	else if (m_iRenderMode == RM_GLOW && m_flRenderAmt == 0.0)
-		return 1.0f;
-
 	return m_flRenderAmt;
 }
 
 vector
 NSRenderableEntity::GetRenderColor(void)
 {
-	if (m_iRenderMode == RM_NORMAL)
-		return [1.0, 1.0, 1.0];
-	else if (m_iRenderMode == RM_GLOW)
-		return [1.0, 1.0, 1.0];
-
 	return m_vecRenderColor;
 }
 

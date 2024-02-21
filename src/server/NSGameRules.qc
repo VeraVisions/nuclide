@@ -192,7 +192,6 @@ NSGameRules::IntermissionStart(void)
 void
 NSGameRules::IntermissionCycle(void)
 {
-	static NSEntity cam;
 	NSEntity targ;
 
 	if (!m_iIntermission)
@@ -205,34 +204,28 @@ NSGameRules::IntermissionCycle(void)
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_INTERMISSION);
 
-	cam = (NSEntity)find(cam, ::classname, "info_intermission");
+	m_eIntermissionPoint = (NSEntity)find(m_eIntermissionPoint, ::classname, "info_intermission");
 
-	if (cam) {
-		targ = (NSEntity)find(world, ::targetname, cam.target);
+	/* if we have an intermission point, send it to all players. */
+	if (m_eIntermissionPoint) {
+		targ = (NSEntity)find(world, ::targetname, m_eIntermissionPoint.target);
 
 		if (targ) {
 			vector foo;
-			foo = vectoangles(targ.origin - cam.origin);
-
-			WriteByte(MSG_MULTICAST, 1);
-			WriteFloat(MSG_MULTICAST, foo[0]);
-			WriteFloat(MSG_MULTICAST, foo[1]);
-			WriteFloat(MSG_MULTICAST, foo[2]);
-			WriteCoord(MSG_MULTICAST, cam.origin[0]);
-			WriteCoord(MSG_MULTICAST, cam.origin[1]);
-			WriteCoord(MSG_MULTICAST, cam.origin[2]);
-		} else {
-			WriteByte(MSG_MULTICAST, 1);
-			WriteFloat(MSG_MULTICAST, cam.angles[0]);
-			WriteFloat(MSG_MULTICAST, cam.angles[1]);
-			WriteFloat(MSG_MULTICAST, cam.angles[2]);
-			WriteCoord(MSG_MULTICAST, cam.origin[0]);
-			WriteCoord(MSG_MULTICAST, cam.origin[1]);
-			WriteCoord(MSG_MULTICAST, cam.origin[2]);
+			foo = vectoangles(targ.origin - m_eIntermissionPoint.origin);
+			m_eIntermissionPoint.angles = foo;
 		}
 
+		WriteByte(MSG_MULTICAST, 1);
+		WriteFloat(MSG_MULTICAST, m_eIntermissionPoint.angles[0]);
+		WriteFloat(MSG_MULTICAST, m_eIntermissionPoint.angles[1]);
+		WriteFloat(MSG_MULTICAST, m_eIntermissionPoint.angles[2]);
+		WriteCoord(MSG_MULTICAST, m_eIntermissionPoint.origin[0]);
+		WriteCoord(MSG_MULTICAST, m_eIntermissionPoint.origin[1]);
+		WriteCoord(MSG_MULTICAST, m_eIntermissionPoint.origin[2]);
+
 		for (entity pl = world; (pl = find(pl, ::classname, "player"));) {
-			setorigin(pl, cam.origin);
+			setorigin(pl, m_eIntermissionPoint.origin);
 		}
 	} else {
 		WriteByte(MSG_MULTICAST, 0);
@@ -241,11 +234,33 @@ NSGameRules::IntermissionCycle(void)
 	msg_entity = world;
 	multicast([0,0,0], MULTICAST_ALL);
 
-	if (!cam)
+	if (!m_eIntermissionPoint)
 		m_flIntermissionCycle = 0.0f;
 	else
 		m_flIntermissionCycle = time + 5.0f;
-	
+}
+
+void
+NSGameRules::IntermissionToPlayer(NSClientPlayer targetPlayer)
+{
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_INTERMISSION);
+
+	/* we're in an intermission already, so this should be set. */
+	if (g_grMode.m_eIntermissionPoint) {
+		WriteByte(MSG_MULTICAST, 1);
+		WriteFloat(MSG_MULTICAST, g_grMode.m_eIntermissionPoint.angles[0]);
+		WriteFloat(MSG_MULTICAST, g_grMode.m_eIntermissionPoint.angles[1]);
+		WriteFloat(MSG_MULTICAST, g_grMode.m_eIntermissionPoint.angles[2]);
+		WriteCoord(MSG_MULTICAST, g_grMode.m_eIntermissionPoint.origin[0]);
+		WriteCoord(MSG_MULTICAST, g_grMode.m_eIntermissionPoint.origin[1]);
+		WriteCoord(MSG_MULTICAST, g_grMode.m_eIntermissionPoint.origin[2]);
+	} else {
+		WriteByte(MSG_MULTICAST, 0);
+	}
+
+	msg_entity = targetPlayer;
+	multicast([0,0,0], MULTICAST_ONE_R);
 }
 
 bool

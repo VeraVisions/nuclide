@@ -23,11 +23,6 @@
 /** This class represents active gamerules. */
 class NSGameRules:NSIO
 {
-private:
-	int m_iIntermission;
-	float m_flIntermissionTime;
-	float m_flIntermissionCycle;
-
 public:
 	void NSGameRules(void);
 
@@ -94,12 +89,14 @@ public:
 	virtual void DamageRadius(vector,entity,float,float,bool,int);
 	
 	/* end of a game */
-	/** Called when intermission starts. */
+	/** Called when intermission starts. Will send all current players to the intermission screen. */
 	virtual void IntermissionStart(void);
-	/** Called when intermission calls a new map. */
+	/** Called when the intermission system calls a new map. */
 	virtual void IntermissionCycle(void);
-	/** Called when intermission ents. */
+	/** Called when intermission ends. */
 	virtual void IntermissionEnd(void);
+	/** Run to send a specific player to an intermission. Like when joining late. */
+	virtual void IntermissionToPlayer(NSClientPlayer);
 	/** Returns if the gamerules find themselves in an intermission. */
 	virtual bool InIntermission(void);
 
@@ -126,7 +123,11 @@ public:
 	virtual void SpectatorDisconnect(NSClientPlayer);
 	virtual void SpectatorThink(NSClientPlayer);
 	*/
-
+private:
+	int m_iIntermission;
+	float m_flIntermissionTime;
+	float m_flIntermissionCycle;
+	entity m_eIntermissionPoint;
 };
 
 /* our currently running mode */

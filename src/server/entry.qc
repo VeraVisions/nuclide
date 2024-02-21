@@ -162,6 +162,10 @@ PutClientInServer(void)
 
 	/* the game and its triggers start when the player is ready to see it */
 	trigger_auto_trigger();
+
+	if (g_grMode.InIntermission() == true) {
+		g_grMode.IntermissionToPlayer((NSClientPlayer)self);
+	}
 }
 
 /** Run before game physics have taken place.
