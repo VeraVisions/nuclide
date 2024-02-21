@@ -71,6 +71,7 @@ NSRenderableEntity::_UpdateBoneCount(void)
 	m_iNumBones = skel_get_numbones(skeletonindex) + 1;
 	//print(sprintf("UPDATED GEOMSET FOR MODELINDEX %d, %d BONES\n", modelindex, m_iNumBones));
 	skel_delete(skeletonindex);
+	skeletonindex = 0;
 }
 #endif
 
