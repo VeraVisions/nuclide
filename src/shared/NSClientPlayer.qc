@@ -237,6 +237,7 @@ NSClientPlayer::predraw(void)
 
 	if (!p_model) {
 		p_model = spawn(NSRenderableEntity);
+		p_model.effects = 0; /* we want p-models to cast shadows, just like players */
 	}
 
 	/* make sure we're enabling shadow rendering on us! */
