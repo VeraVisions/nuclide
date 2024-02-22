@@ -27,21 +27,19 @@ This will almost always result in them using default values, or (worst case) 0.
 void
 Skill_Init(void)
 {
-	/* sometimes we have extra overrides that the original does not
-	   provide. so we execute our mod-specific config here */
-	readcmd(sprintf("exec skill_%s.cfg\n", cvar_string("game")));
-	readcmd(sprintf("exec maps/%s_skl.cfg\n", mapname));
+	Skill_ParseConfig("cfg/skill_manifest.cfg");
+	Skill_ParseConfig(sprintf("maps/%s_skl.cfg", mapname));
 }
 
 /*
 =================
 Skill_GetValue
 
-Return a skill variable's value or return a defaultvalue if it's undefined.
+Return a skill variable's value or return a defaultValue if it's undefined.
 =================
 */
 float
-Skill_GetValue(string variable, float defaultvalue)
+Skill_GetValue(string variable, float defaultValue)
 {
 	float skill = cvar("skill");
 
@@ -49,7 +47,7 @@ Skill_GetValue(string variable, float defaultvalue)
 		skill = 2; /* default to medium */
 
 	float val = fabs(cvar(sprintf("sk_%s%d", variable, skill)));
-	return (val == 0) ? defaultvalue : val;
+	return (val == 0) ? defaultValue : val;
 }
 
 /* input string is potentially a skill variable */
@@ -61,4 +59,33 @@ Skill_GetDefValue(string variable)
 	}
 
 	return stof(variable);
+}
+
+bool
+Skill_ParseConfig(string fileName)
+{
+	string tempString;
+	filestream configFile = fopen(fileName, FILE_READ);
+
+	if (configFile < 0) {
+		print(sprintf("^1Warning: Unable to exec %S for parsing.\n", fileName));
+		return (false);
+	}
+
+	while ((tempString = fgets(configFile))) {
+		int argCount = (int)tokenize_console(tempString);
+		string firstArg = argv(0);
+
+		if (argCount == 2i) {
+			if (firstArg == "exec") {
+				Skill_ParseConfig(sprintf("cfg/%s", argv(1)));
+			}
+		} else if (argCount == 3i) {
+			if (firstArg == "set" || firstArg == "seta")
+				cvar_set(argv(1), argv(2));
+		}
+	}
+
+	fclose(configFile);
+	return (true);
 }

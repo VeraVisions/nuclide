@@ -16,4 +16,7 @@
  */
 
 void Skill_Init(void);
+
+/** Return a skill variable's value or return a defaultvalue if it's undefined. */
 float Skill_GetValue(string, float);
+bool Skill_ParseConfig(string fileName);
