@@ -23,11 +23,15 @@ typedef enum
 	PUSHABLESIZE_CUSTOM,
 } pushSize_t;
 
+
+#define PUSH_SIZE_POINT_MIN [-8,-8,-8]
+#define PUSH_SIZE_POINT_MAX [8,8,8]
+
 #define PUSH_SIZE_PLAYER_MIN [-16,-16,-36]
 #define PUSH_SIZE_PLAYER_MAX [16,16,36]
 
-#define PUSH_SIZE_BIG_MIN [-16,-16,-36]
-#define PUSH_SIZE_BIG_MAX [16,16,36]
+#define PUSH_SIZE_BIG_MIN [-32,-32,-72]
+#define PUSH_SIZE_BIG_MAX [32,32,72]
 
 #define PUSH_SIZE_DUCKING_MIN [-16,-16,-18]
 #define PUSH_SIZE_DUCKING_MAX [16,16,18]
@@ -43,6 +47,7 @@ a player can push and pull it around the level.
 - "targetname" : Name
 - "target" : Target when triggered.
 - "killtarget" : Target to kill when triggered.
+- "friction" : Friction of the pushable. Default is 50.
 - "size" : Hull size to use. 0: Point, 1: Player, 2: Big, 3: Player Crouched
 
 # SPAWNFLAGS
@@ -65,6 +70,7 @@ func_pushable:func_breakable
 public:
 	void func_pushable(void);
 
+	virtual void Spawned(void);
 	virtual void SpawnKey(string, string);
 	virtual void Save(float);
 	virtual void Restore(string,string);
@@ -78,6 +84,8 @@ private:
 	entity m_pPuller;
 	entity m_eCollBox;
 	pushSize_t m_dHullSize;
+	float m_flPushFriction;
+	bool m_bIsMoving;
 };
 
 void
@@ -86,6 +94,13 @@ func_pushable::func_pushable(void)
 	m_pPuller = __NULL__;
 	m_eCollBox = __NULL__;
 	m_dHullSize = PUSHABLESIZE_CUSTOM;
+	m_flPushFriction = 0.5;
+}
+
+void
+func_pushable::Spawned(void)
+{
+	super::Spawned();
 }
 
 void
@@ -108,6 +123,9 @@ func_pushable::SpawnKey(string keyName, string setValue)
 			break;
 		}
 		break;
+	case "friction":
+		m_flPushFriction = ReadFloat(setValue) / 100;
+		break;
 	default:
 		super::Restore(keyName, setValue);
 	}
@@ -120,6 +138,7 @@ func_pushable::Save(float saveHandle)
 	SaveEntity(saveHandle, "m_pPuller", m_pPuller);
 	SaveEntity(saveHandle, "m_eCollBox", m_eCollBox);
 	SaveFloat(saveHandle, "m_dHullSize", m_dHullSize);
+	SaveFloat(saveHandle, "m_flPushFriction", m_flPushFriction);
 }
 
 void
@@ -134,6 +153,9 @@ func_pushable::Restore(string keyName, string setValue)
 		break;
 	case "m_dHullSize":
 		m_dHullSize = ReadFloat(setValue);
+		break;
+	case "m_flPushFriction":
+		m_flPushFriction = ReadFloat(setValue);
 		break;
 	default:
 		super::Restore(keyName, setValue);
@@ -177,7 +199,7 @@ func_pushable::Respawn(void)
 			setsize(m_eCollBox, PUSH_SIZE_DUCKING_MIN, PUSH_SIZE_DUCKING_MAX);
 			break;
 		default:
-			setsize(m_eCollBox, g_vec_null, g_vec_null);
+			setsize(m_eCollBox, PUSH_SIZE_POINT_MIN, PUSH_SIZE_POINT_MAX);
 		}
 	}
 
@@ -195,6 +217,7 @@ func_pushable::OnRemoveEntity(void)
 void
 func_pushable::customphysics(void)
 {
+	bool wasMoving;
 	input_movevalues = [0,0,0];
 	input_impulse = 0;
 	input_buttons = 0;
@@ -207,6 +230,18 @@ func_pushable::customphysics(void)
 		m_eCollBox.solid = SOLID_NOT;
 	} else {
 		m_eCollBox.solid = SOLID_BBOX;
+	}
+
+	wasMoving = m_bIsMoving;
+
+	if (vlen(velocity) <= 0.0) {
+		m_bIsMoving = false;
+	} else {
+		m_bIsMoving = true;
+	}
+
+	if (m_bIsMoving != wasMoving && m_bIsMoving == true) {
+		StartSoundDef(GetSurfaceData(SURFDATA_SND_SCRAPESOFT), CHAN_BODY, true);
 	}
 
 	/* when we pull the box, it'll follow us whereever we go, just not too fast so it doesn't clip into us! */
@@ -232,7 +267,7 @@ func_pushable::customphysics(void)
 		return;
 
 	/* run the physics, then fix our helper bbox! */
-	friction = 0.5f;
+	friction = m_flPushFriction;
 
 	if (vlen(velocity))
 		runstandardplayerphysics(this);
