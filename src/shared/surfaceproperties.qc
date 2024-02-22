@@ -456,14 +456,18 @@ void
 SurfData_Impact_Parse(void)
 {
 	entity surfnum = __NULL__;
-	vector impactorg = [0.0f, 0.0f, 0.0f];
+	vector impactorg = g_vec_null;
+	vector impactang = g_vec_null;
+	float impactSurface;
 
 	impactorg[0] = readcoord();
 	impactorg[1] = readcoord();
 	impactorg[2] = readcoord();
 	surfnum = findfloat(world, ::entnum, readentitynum()-1);
 
-	string tex_name = getsurfacetexture(surfnum, getsurfacenearpoint(surfnum, impactorg));
+	impactSurface = getsurfacenearpoint(surfnum, impactorg);
+	impactang = getsurfacenormal(surfnum, impactSurface);
+	string tex_name = getsurfacetexture(surfnum, impactSurface);
 
 	string impactsfx = SurfData_GetInfo(SurfData_TexToSurfData(tex_name), SURFDATA_SND_BULLETIMPACT);
 
@@ -476,7 +480,7 @@ SurfData_Impact_Parse(void)
 	NSLog("\temitting impact fx %S at %v", impactfx, impactorg);
 
 	Sound_PlayAt(impactorg, impactsfx);
-	pointparticles( impactid, impactorg, [0,0,0], 1 );
+	pointparticles( impactid, impactorg, impactang, 1 );
 }
 
 /** Called by EV_SURFIMPACTID */
