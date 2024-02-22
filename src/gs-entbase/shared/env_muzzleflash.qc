@@ -175,13 +175,14 @@ env_muzzleflash::Trigger(entity theActivator, triggermode_t triggerState)
 
 #ifdef CLIENT
 var bool autocvar_cg_muzzleDLight = true;
+var vector autocvar_cg_muzzleDLightColor = [1,0.45,0];
 float
 env_muzzleflash::predraw(void)
 {
 	vector muzzlePos = gettaginfo(m_eOwner, (float)m_iAttachment);
 
 	if (autocvar_cg_muzzleDLight == true)
-		dynamiclight_add(muzzlePos, 256, [1,0.45,0]);
+		dynamiclight_add(muzzlePos, 256, autocvar_cg_muzzleDLightColor);
 
 	setorigin(this, muzzlePos);
 	effects = EF_ADDITIVE;
