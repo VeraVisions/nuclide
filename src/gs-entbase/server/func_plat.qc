@@ -208,7 +208,7 @@ func_plat::Respawn(void)
 	SetOrigin(GetSpawnOrigin());
 
 	if (!m_flHeight) {
-		m_flHeight = size[2] + 8;
+		m_flHeight = size[2] - 8;
 	}
 
 	SetMoverPosition1(GetOrigin());
