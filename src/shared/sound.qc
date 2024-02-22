@@ -578,6 +578,12 @@ Sound_DistancePos(vector pos, string shader)
 }
 
 void
+Sound_Stop(entity target, int chan)
+{
+	sound(target, chan, "common/null.wav", 1.0f, ATTN_NORM, 100, SOUNDFLAG_FOLLOW, 0 );
+}
+
+void
 Sound_Play(entity target, int chan, string shader)
 {
 	int r;
