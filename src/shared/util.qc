@@ -70,3 +70,10 @@ Util_ChangeClass(entity objectID, string className)
 	callfunction(strcat("spawnfunc_", className));
 	self = oldSelf;
 }
+
+string
+Util_ExtensionFromString(string inputString)
+{
+	int modelNameLength = strlen(inputString);
+	return substring(inputString, modelNameLength - 3, modelNameLength);
+}

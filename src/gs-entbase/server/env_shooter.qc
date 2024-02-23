@@ -86,8 +86,9 @@ env_shooter::Spawned(void)
 {
 	super::Spawned();
 
-	if (m_strShootModel)
+	if (m_strShootModel) {
 		precache_model(m_strShootModel);
+	}
 
 	/* There isn't a much more portable to do this, maybe this can be abstracted
 		through separate soundDef entries but I don't know if that'll be less annoying. */
@@ -173,34 +174,34 @@ env_shooter::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "angle":
-		angles = [stof(strValue) * 90, 0, 0];
+		angles = [ReadFloat(strValue) * 90, 0, 0];
 		break;
 	case "m_iGibs":
-		m_iGibs = stoi(strValue);
+		m_iGibs = ReadInt(strValue);
 		break;
 	case "delay":
-		m_flDelay = stof(strValue);
+		m_flDelay = ReadFloat(strValue);
 		break;
 	case "m_flVelocity":
-		m_flVelocity = stof(strValue);
+		m_flVelocity = ReadFloat(strValue);
 		break;
 	case "m_flVariance":
-		m_flVariance = stof(strValue);
+		m_flVariance = ReadFloat(strValue);
 		break;
 	case "m_flGibLife":
-		m_flGibLife = stof(strValue);
+		m_flGibLife = ReadFloat(strValue);
 		break;
 	case "shootmodel":
 		m_strShootModel = strValue;
 		break;
 	case "shootsounds":
-		m_flShootSounds = stof(strValue);
+		m_flShootSounds = ReadFloat(strValue);
 		break;
 	case "scale":
-		m_flScale = stof(strValue);
+		m_flScale = ReadFloat(strValue);
 		break;
 	case "skin":
-		m_flSkin = stof(strValue);
+		m_flSkin = ReadFloat(strValue);
 		break;
 	default:
 		super::SpawnKey(strKey, strValue);
@@ -228,13 +229,23 @@ env_shooter::ShootGib(void)
 	NSRenderableEntity eGib = spawn(NSRenderableEntity);
 	eGib.SetMovetype(MOVETYPE_BOUNCE);
 	eGib.SetModel(m_strShootModel);
+	eGib.SetSize([-8,-8,-8],[8,8,8]);
 	eGib.SetOrigin(GetOrigin());
 	eGib.SetAngles(GetAngles());
 	eGib.SetRenderColor(m_vecRenderColor);
 	eGib.SetRenderMode(m_iRenderMode);
 	eGib.SetRenderFX(m_iRenderFX);
 	eGib.SetRenderAmt(m_flRenderAmt);
-	eGib.SetScale(m_flScale);
+
+	/* scale multiplier only works on sprites.
+	   the env_shooter entities in lambda_bunker.bsp rely
+	   on this exact behaviour. if Source added support
+	   for this you need to differentiate between the two. */
+	if (substring(m_strShootModel, 0, 8) == "sprites/") {
+		eGib.SetScale(m_flScale);
+	}
+
+	eGib.SetSize([-8,-8,-8],[8,8,8]);
 	eGib.SetSkin(m_flSkin);
 
 	switch (m_flShootSounds) {
