@@ -140,6 +140,8 @@ void
 NSTraceAttack::_FireSingle(vector vecPos, vector vecAngles, float flDamage, float flRange)
 {
 	vector range;
+	vector planeNormal;
+	vector endPos;
 
 	if (flRange <= 0)
 		return;
@@ -157,6 +159,8 @@ NSTraceAttack::_FireSingle(vector vecPos, vector vecAngles, float flDamage, floa
 	m_eOwner.hitcontentsmaski = CONTENTBITS_POINTSOLID | CONTENTBIT_CORPSE | CONTENTBIT_WATER | CONTENTBIT_SLIME | CONTENTBIT_LAVA | CONTENTBIT_PROJECTILE;
 	traceline(vecPos, vecPos + range, MOVE_LAGGED | MOVE_HITMODEL, m_eOwner);
 	m_eOwner.hitcontentsmaski = oldhitcontents;
+	planeNormal = trace_plane_normal;
+	endPos = trace_endpos;
 
 	flRange -= trace_plane_dist;
 
@@ -170,14 +174,14 @@ NSTraceAttack::_FireSingle(vector vecPos, vector vecAngles, float flDamage, floa
 
 	/* water impact */
 	if (trace_endcontentsi & CONTENTBIT_WATER) {
-		SurfData_ImpactOfNamedType("water", trace_endpos, trace_plane_normal);
-		_FireSingle(trace_endpos + (v_forward * 2), vecAngles, flDamage / 2, flRange);
+		SurfData_ImpactOfNamedType("water", endPos, planeNormal);
+		_FireSingle(endPos + (v_forward * 2), vecAngles, flDamage / 2, flRange);
 	} else if (trace_endcontentsi & CONTENTBIT_SLIME) {
-		SurfData_ImpactOfNamedType("slime", trace_endpos, trace_plane_normal);
-		_FireSingle(trace_endpos + (v_forward * 2), vecAngles, flDamage / 2, flRange);
+		SurfData_ImpactOfNamedType("slime", endPos, planeNormal);
+		_FireSingle(endPos + (v_forward * 2), vecAngles, flDamage / 2, flRange);
 	} else if (trace_endcontentsi & CONTENTBIT_LAVA) {
-		SurfData_ImpactOfNamedType("lama", trace_endpos, trace_plane_normal);
-		_FireSingle(trace_endpos + (v_forward * 2), vecAngles, flDamage / 2, flRange);
+		SurfData_ImpactOfNamedType("lama", endPos, planeNormal);
+		_FireSingle(endPos + (v_forward * 2), vecAngles, flDamage / 2, flRange);
 	}
 
 	if (trace_ent.takedamage != DAMAGE_NO && trace_ent.iBleeds) {
@@ -219,21 +223,22 @@ NSTraceAttack::_FireSingle(vector vecPos, vector vecAngles, float flDamage, floa
 #ifdef WASTES
 	player pl1 = (player)self;
 	if (pl1.m_iWillpowerValue > 0) {
-		FX_Crit(trace_endpos, vectoangles(trace_endpos - pl1.origin), 0);
+		FX_Crit(endPos, vectoangles(endPos - pl1.origin), 0);
 	}
 #endif
 
 	/* impact per bullet */
 	if (trace_ent.iBleeds == 0) {
 		if (m_strDecalGroup)
-			DecalGroups_Place(m_strDecalGroup, trace_endpos + (v_forward * -2));
+			DecalGroups_Place(m_strDecalGroup, endPos + (v_forward * -2));
 
-		SurfData_Impact(trace_ent, trace_endpos, trace_plane_normal);
+		SurfData_Impact(trace_ent, endPos, planeNormal);
 	}
 
 	/* combine them into one single Damage_Apply call later */
 	if (trace_ent.takedamage != DAMAGE_NO) {
 		if (trace_ent != m_eMultiTarget) {
+			trace_endpos = endPos;
 			_ApplyDamage();
 			m_eMultiTarget = (NSSurfacePropEntity)trace_ent;
 			m_iMultiValue = flDamage;
@@ -251,16 +256,16 @@ NSTraceAttack::_FireSingle(vector vecPos, vector vecAngles, float flDamage, floa
 
 		/* check if this wall is 6 units thick... */
 		if (m_iTotalPenetrations > 0) {
-			cont = pointcontents(trace_endpos + v_forward * 5);
+			cont = pointcontents(endPos + v_forward * 5);
 
 			if (cont == CONTENT_SOLID)
 				m_iTotalPenetrations -= 1; /* deduct 1 penetration power */
 		}
 
-		cont = pointcontents(trace_endpos + v_forward * m_flMaxThickness);
+		cont = pointcontents(endPos + v_forward * m_flMaxThickness);
 
 		if (cont == CONTENT_EMPTY)
-			_FireSingle(trace_endpos + (v_forward * 2), vecAngles, flDamage / 2, flRange);
+			_FireSingle(endPos + (v_forward * 2), vecAngles, flDamage / 2, flRange);
 	}
 #endif
 }
