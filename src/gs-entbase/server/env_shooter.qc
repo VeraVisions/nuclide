@@ -35,6 +35,9 @@ Shoots model entities from its location.
 - "m_flGibLife" : Life of the individual model piece.
 - "scale" : Scale modifier of the model pieces.
 
+# INPUTS
+- "Shoot" : Causes the shooter to shoot.
+
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 */
@@ -50,7 +53,9 @@ public:
 	virtual void SpawnKey(string,string);
 	virtual void Respawn(void);
 	virtual void Trigger(entity, triggermode_t);
+	virtual void Input(entity, string, string);
 	nonvirtual void ShootGib(void);
+	nonvirtual void ShooterLoop(void);
 
 private:
 	int m_iGibs;
@@ -64,6 +69,7 @@ private:
 	float m_flShootSounds;
 	float m_flScale;
 	float m_flSkin;
+	bool m_bCanScale;
 };
 
 void
@@ -79,6 +85,7 @@ env_shooter::env_shooter(void)
 	m_flShootSounds = 0;
 	m_flScale = 1.0;
 	m_flSkin = 0;
+	m_bCanScale = false;
 }
 
 void
@@ -112,6 +119,11 @@ env_shooter::Spawned(void)
 	default:
 		break;
 	}
+
+	/* figure out if we're a sprite... */
+	if (Util_ExtensionFromString(m_strShootModel) == "spr") {
+		m_bCanScale = true;
+	}
 }
 
 void
@@ -128,6 +140,7 @@ env_shooter::Save(float handle)
 	SaveFloat(handle, "m_flShootSounds", m_flShootSounds);
 	SaveFloat(handle, "m_flScale", m_flScale);
 	SaveFloat(handle, "m_flSkin", m_flSkin);
+	SaveBool(handle, "m_bCanScale", m_bCanScale);
 }
 
 void
@@ -163,6 +176,9 @@ env_shooter::Restore(string strKey, string strValue)
 		break;
 	case "m_flSkin":
 		m_flSkin = ReadFloat(strValue);
+		break;
+	case "m_bCanScale":
+		m_bCanScale = ReadBool(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
@@ -241,7 +257,7 @@ env_shooter::ShootGib(void)
 	   the env_shooter entities in lambda_bunker.bsp rely
 	   on this exact behaviour. if Source added support
 	   for this you need to differentiate between the two. */
-	if (substring(m_strShootModel, 0, 8) == "sprites/") {
+	if (m_bCanScale == true) {
 		eGib.SetScale(m_flScale);
 	}
 
@@ -284,12 +300,17 @@ env_shooter::ShootGib(void)
 	eGib.SetVelocity(vecThrowVel);
 	eGib.SetAngularVelocity(vecSpinVel);
 	eGib.ScheduleThink(Destroy, m_flGibLife);
+}
 
+void
+env_shooter::ShooterLoop(void)
+{
+	ShootGib();
 	m_iGibsLeft--;
 
 	/* keep shooting til we're done */
 	if (m_iGibsLeft) {
-		ScheduleThink(ShootGib, m_flDelay);
+		ScheduleThink(ShooterLoop, m_flDelay);
 	} else {
 		/* no more gibs left, destroy if wanted */
 		if (HasSpawnFlags(EVSHOOTER_REPEATABLE) == false) {
@@ -311,12 +332,23 @@ env_shooter::Trigger(entity act, triggermode_t state)
 			m_iGibsLeft = m_iGibs;
 		}
 
-		ScheduleThink(ShootGib, m_flDelay);
+		ScheduleThink(ShooterLoop, m_flDelay);
 		break;
 	default:
 		if (IsThinking() == false)
 			Trigger(act, TRIG_ON);
 		else
 			Trigger(act, TRIG_OFF);
+	}
+}
+
+void
+env_shooter::Input(entity entityActivator, string inputName, string dataField)
+{
+	switch (inputName) {
+	case "Shoot":
+		ShootGib();
+	default:
+		super::Input(entityActivator, inputName, dataField);
 	}
 }
