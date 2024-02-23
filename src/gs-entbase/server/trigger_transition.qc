@@ -17,16 +17,18 @@
 /*!QUAKED trigger_transition (.5 .5 .5) ?
 # OVERVIEW
 Defines level transition regions.
-All entities touching this volume would carry across to the next level.
+All entities touching this volume will carry across to the next level.
 
 # KEYS
 - "targetname" : Name
 
 # NOTES
-In order for this entity to work, you have to assign a working info_landmark entity to your trigger_changelevel, and give this entity the same targetname as said landmark.
+In order for this entity to work, one has to assign a working info_landmark entity to a trigger_changelevel, and give this entity the same targetname as said landmark.
 
-If you don't assign a transition, no entities will carry over currently. This is not accurate to vanilla behaviour in Half-Life but should mirror what Source does.
-In Half-Life, everything as part of the current PVS seems to carry over. This is probably not what you want to ever do, especially in large outdoor maps.
+In GoldSrc games, it appears that every point-entity that's part of the current PVS (mostly the 'room' and attached path-ways you're currently in) carries over to the next level - if a trigger_transition is not defined.
+This is probably not what you want to ever do, especially in large outdoor maps where the 'room' is the entire map.
+
+You can also have more than one trigger_transition with the same name, so if any entity is in any of them they will move with the player across the desired level.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).

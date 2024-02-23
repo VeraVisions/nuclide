@@ -21,7 +21,7 @@ typedef enumflags
 	BUTTA_TEXON	/**< Button texture starts in the **ON** state. */
 } sf_button_target_t;
 
-/*!QUAKED button_target (0 .5 .8) ? BUTTA_USE BUTTA_TEXON
+/*!QUAKED button_target (0 .5 .8) ? USE TEXTURE_ON
 # OVERVIEW
 Non-moving button that can either be used by hand, or shot.
 
@@ -31,8 +31,8 @@ Non-moving button that can either be used by hand, or shot.
 - "delay" : Time in seconds until target is triggered.
 
 # SPAWNFLAGS
-- BUTTA_USE (1) : Button becomes 'use' only, clients have to interact with it manually instead of shooting it.
-- BUTTA_TEXON (2) : Texture choices will be inverted in case multiple frames exist.
+- USE (1) : Button becomes 'use' only, clients have to interact with it manually instead of shooting it.
+- TEXTURE_ON (2) : Texture choices will be inverted in case multiple frames exist.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).

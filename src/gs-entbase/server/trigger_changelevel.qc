@@ -14,28 +14,19 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*!QUAKED trigger_changelevel (.5 .5 .5) ? LC_NOINTERMISSION LC_USEONLY
+vector g_landmarkpos;
+
+/*!QUAKED info_landmark (1 0 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
-When a Landmark is specified, you will have to position two info_landmark
-entities across your two levels with the same name. They'll mark a translation
-point for the coordinates in your levels.
+Defines a shared point between two levels. Used for level transitions, such
+as the ones produced by a trigger_changelevel.
 
 # KEYS
 - "targetname" : Name
-- "map" : Next .bsp file name to transition to.
-- "landmark" : Landmark name to target.
-- "changedelay" : Time in seconds until the transition happens.
-
-# SPAWNFLAGS
-- LC_NOINTERMISSION (1) : Don't show intermission cam (unimplemented).
-- LC_USEONLY (2) : Can't activate through touching, only via triggers.
 
 # TRIVIA
-This entity was introduced in Quake (1996).
+This entity was introduced in Half-Life (1998).
 */
-
-vector g_landmarkpos;
-
 class
 info_landmark:NSPointTrigger
 {
@@ -80,6 +71,36 @@ ChangeTarget_Activate(void)
 	foo.TemporaryTimer(self, Finalize, cvar("_bsp_changedelay"), false);
 }
 
+/*!QUAKED trigger_changelevel (.5 .5 .5) ? NO_INTERMISSION TRIGGER_ONLY
+# OVERVIEW
+A trigger volume that initiates a level change, from one map to the next.
+It can be used in combination with info_landmark and trigger_transition
+to define a shared point and a transition area for entities respectively.
+
+# KEYS
+- "targetname" : Name
+- "map" : Next .bsp file name to transition to.
+- "landmark" : Landmark name to target.
+- "changedelay" : Time in seconds until the transition happens.
+
+# INPUTS
+- "ChangeLevel" : Triggers the level to change.
+
+# OUTPUTS
+- "OnChangeLevel" : Fired when the level changes.
+
+# SPAWNFLAGS
+- NO_INTERMISSION (1) : Don't show intermission cam (unimplemented).
+- TRIGGER_ONLY (2) : Can't activate through touching, only via triggers.
+
+# NOTES
+When a Landmark is specified, you will have to position two info_landmark
+entities across your two levels with the same name. They'll mark a translation
+point for the coordinates in your levels.
+
+# TRIVIA
+This entity was introduced in Quake (1996).
+*/
 class
 trigger_changelevel:NSBrushTrigger
 {
