@@ -738,8 +738,9 @@ BreakModel_SpawnID(vector smins, vector smaxs, vector dir, float speed, int coun
 		gib.SetRenderAmt(renderamt);
 		gib.SetRenderMode(rendermode);
 		gib.SetRenderFX(renderfx);
-		gib.SetSize([0,0,0], [0,0,0]);
+		gib.SetSize([-8,-8,-8],[8,8,8]);
 		gib.SetOrigin(endpos);
+		gib.SetScale(1.0f);
 
 		if (usePhysics == false) {
 			makevectors(dir);
@@ -747,9 +748,9 @@ BreakModel_SpawnID(vector smins, vector smaxs, vector dir, float speed, int coun
 			gib.velocity[0] += (random() - 0.5) * (speed * 0.25);
 			gib.velocity[1] += (random() - 0.5) * (speed * 0.25);
 			gib.velocity[2] += (random() - 0.5) * (speed * 0.25);
-			gib.SetAngularVelocity(vectoangles(gib.velocity));
+			gib.SetAngularVelocity([300,300,300]);
 			gib.SetMovetype(MOVETYPE_BOUNCE);
-			gib.SetSolid(SOLID_BBOX);
+			gib.SetSolid(SOLID_NOT);
 		} else {
 			gib.SetMovetype(MOVETYPE_PHYSICS);
 			gib.SetSolid(SOLID_NOT);
