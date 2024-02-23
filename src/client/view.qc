@@ -118,6 +118,17 @@ View_HandleAnimEvent(float flTimeStamp, int iCode, string strData)
 	viewModel.HandleAnimEvent(flTimeStamp, iCode, strData);
 }
 
+void
+View_ForceChange(player pl, int targetWeapon)
+{
+	NSRenderableEntity m_eViewModel = (NSRenderableEntity)pSeat->m_eViewModel;
+	NSRenderableEntity m_eViewModelL = (NSRenderableEntity)pSeat->m_eViewModelL;
+	sendevent("PlayerSwitchWeapon", "i", targetWeapon);
+	View_ClearEvents();
+	View_DisableViewmodel();
+	View_SetMuzzleflash(0);
+}
+
 /*
 ====================
 View_DrawViewModel
@@ -129,6 +140,7 @@ muzzleflash, dynamic lights and so on appear
 void
 View_DrawViewModel(void)
 {
+	vector currentAngle = g_view.GetCameraAngle();
 	NSRenderableEntity m_eViewModel = (NSRenderableEntity)pSeat->m_eViewModel;
 	NSRenderableEntity m_eViewModelL = (NSRenderableEntity)pSeat->m_eViewModelL;
 
@@ -164,16 +176,6 @@ View_DrawViewModel(void)
 		return;
 	}
 
-	m_eViewModel.SetRenderMode(pl.GetRenderMode());
-	m_eViewModel.SetRenderFX(pl.GetRenderFX());
-	m_eViewModel.SetRenderColor(pl.GetRenderColor());
-	m_eViewModel.SetRenderAmt(pl.GetRenderAmt());
-
-	m_eViewModelL.SetRenderMode(pl.GetRenderMode());
-	m_eViewModelL.SetRenderFX(pl.GetRenderFX());
-	m_eViewModelL.SetRenderColor(pl.GetRenderColor());
-	m_eViewModelL.SetRenderAmt(pl.GetRenderAmt());
-
 	/* used to be View_UpdateWeapon */
 	/* only bother upon change */
 	if (pSeat->m_iLastWeapon != pl.activeweapon) {
@@ -181,33 +183,16 @@ View_DrawViewModel(void)
 		pSeat->m_iLastWeapon = pl.activeweapon;
 
 		if (pl.activeweapon) {
-			/* we forced a weapon call outside the prediction,
-			 * thus we need to update all the net variables to
-			 * make sure these updates are recognized. this is
-			 * vile but it'll have to do for now */
-			SAVE_STATE(pl.w_attack_next)
-			SAVE_STATE(pl.w_idle_next)
-			SAVE_STATE(pl.viewzoom)
-			SAVE_STATE(pl.weapontime)
-			SAVE_STATE(pl.weaponframe)
 
 			/* hack, we changed the wep, move this into Game_Input/PMove */
-			Weapons_Draw(pl);
-
-			/* we forced a weapon call outside the prediction,
-			 * thus we need to update all the net variables to
-			 * make sure these updates are recognized. this is
-			 * vile but it'll have to do for now */
-			ROLL_BACK(pl.w_attack_next)
-			ROLL_BACK(pl.w_idle_next)
-			ROLL_BACK(pl.viewzoom)
-			ROLL_BACK(pl.weapontime)
-			ROLL_BACK(pl.weaponframe)
+			Weapons_Draw((player)pl);
 		}
 		NSRenderableEntity viewModel = (NSRenderableEntity)pSeat->m_eViewModelL;
 		viewModel._UpdateBoneCount();
 		viewModel = (NSRenderableEntity)pSeat->m_eViewModel;
 		viewModel._UpdateBoneCount();
+		View_EnableViewmodel();
+		View_ClearEvents();
 	}
 
 	float fBaseTime2 = m_eViewModel.frame1time;
@@ -225,10 +210,10 @@ View_DrawViewModel(void)
 		m_eViewModel.frame1time, View_HandleAnimEvent);
 	self = oldSelf;
 
-	makevectors(view_angles);
+	makevectors(currentAngle);
 
 	if (autocvar_cg_viewmodelLag == 0)
-		m_eViewModel.angles = view_angles;
+		m_eViewModel.angles = currentAngle;
 	else {
 		float limit;
 		float speed;
@@ -259,20 +244,20 @@ View_DrawViewModel(void)
 	/* now apply the scale hack */
 	m_eViewModelL.scale = m_eViewModel.scale = autocvar_cg_viewmodelScale;
 
-	if (Client_IsSpectator(cl) || XR_Available(pl) == false) {
+	if (Client_IsSpectator(cl) || XR_Available(cl) == false) {
 		m_eViewModelL.origin = g_view.GetCameraOrigin();
 		m_eViewModel.origin = g_view.GetCameraOrigin();
 
 		if (Client_IsSpectator(cl)) {
-			m_eViewModel.angles = g_view.GetCameraAngle();
-			m_eViewModelL.angles = g_view.GetCameraAngle();
+			m_eViewModel.angles = currentAngle;
+			m_eViewModelL.angles = currentAngle;
 			/* HACK: fool Viewmodel_CalcBob(); */
 			pSeat->m_vecPredictedVelocity = pl.velocity;
 		}
 
 		/* we only calculate bob on the right model, to avoid double speed bobbing */
 		Viewmodel_CalcBob();
-		makevectors(g_view.GetCameraAngle());
+		makevectors(currentAngle);
 		Viewmodel_ApplyBob(m_eViewModel);
 		Viewmodel_ApplyBob(m_eViewModelL);
 	} else {
@@ -301,6 +286,17 @@ View_DrawViewModel(void)
 	if (m_eViewModel.alpha != 0.0f) {
 		setorigin(m_eViewModel, m_eViewModel.origin);
 		setorigin(m_eViewModelL, m_eViewModel.origin);
+
+		m_eViewModel.SetRenderMode(pl.GetRenderMode());
+		m_eViewModel.SetRenderFX(pl.GetRenderFX());
+		m_eViewModel.SetRenderColor(pl.GetRenderColor());
+		m_eViewModel.SetRenderAmt(pl.GetRenderAmt());
+
+		m_eViewModelL.SetRenderMode(pl.GetRenderMode());
+		m_eViewModelL.SetRenderFX(pl.GetRenderFX());
+		m_eViewModelL.SetRenderColor(pl.GetRenderColor());
+		m_eViewModelL.SetRenderAmt(pl.GetRenderAmt());
+
 		m_eViewModel.RenderFXPass();
 		m_eViewModelL.RenderFXPass();
 
@@ -369,4 +365,6 @@ View_DisableViewmodel(void)
 {
 	pSeat->m_eViewModel.alpha =
 	pSeat->m_eViewModelL.alpha = 0.0f;
+	pSeat->m_eViewModel.frame1time =
+	pSeat->m_eViewModelL.frame1time = 0.0f;
 }
