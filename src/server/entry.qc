@@ -369,6 +369,7 @@ init(float prevprogs)
 	PropData_Init();
 	SurfData_Init();
 	DecalGroups_Init();
+	Skill_Init();
 
 	/* DO NOT EVER CHANGE THESE. */
 	cvar_set("r_meshpitch", "1");
