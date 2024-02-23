@@ -194,12 +194,17 @@ DecalGroups_NumForName(string group)
 void
 DecalGroups_Place(string group, vector org)
 {
-	int index;
+	int index = -1i;
 
-	if (g_decalgroup_count <= 0i)
+	if (g_decalgroup_count <= 0i) {
 		return;
+	}
 
-	index = (int)hash_get(g_hashdecalgroup, strtolower(group), -1);
+	index = (int)hash_get(g_hashdecalgroup, strtolower(group), -1i);
+
+	if (index == -1i) {
+		return;
+	}
 
 #ifdef SERVER
 	/* on the server we only need to tell the clients in the PVS
