@@ -240,9 +240,9 @@ ambient_generic::Respawn(void)
 	if (HasSpawnFlags(AS_ARADIUS)) {
 		m_flRadius = ATTN_NONE;
 	} else if (HasSpawnFlags(AS_SRADIUS)) {
-		m_flRadius = ATTN_IDLE;
-	} else if (HasSpawnFlags(AS_MRADIUS)) {
 		m_flRadius = ATTN_STATIC;
+	} else if (HasSpawnFlags(AS_MRADIUS)) {
+		m_flRadius = ATTN_IDLE;
 	} else if (HasSpawnFlags(AS_LRADIUS)) {
 		m_flRadius = ATTN_NORM;
 	} else {

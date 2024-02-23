@@ -463,7 +463,7 @@ initents(void)
 	g_ents_initialized = TRUE;
 
 	/* engine hacks for dedicated servers */
-	cvar_set("s_nominaldistance", "2048");
+	cvar_set("s_nominaldistance", "1024");
 
 	/* other engine hacks */
 	cvar_set("sv_nqplayerphysics", "0");
