@@ -183,10 +183,13 @@ View_DrawViewModel(void)
 		pSeat->m_iLastWeapon = pl.activeweapon;
 
 		if (pl.activeweapon) {
-
 			/* hack, we changed the wep, move this into Game_Input/PMove */
 			Weapons_Draw((player)pl);
+		} else {
+			pSeat->m_eViewModel.modelindex =
+			pSeat->m_eViewModelL.modelindex = 0;
 		}
+
 		NSRenderableEntity viewModel = (NSRenderableEntity)pSeat->m_eViewModelL;
 		viewModel._UpdateBoneCount();
 		viewModel = (NSRenderableEntity)pSeat->m_eViewModel;
