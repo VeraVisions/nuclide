@@ -22,10 +22,13 @@ enumflags
 	EVSPARK_UNUSED4,
 	EVSPARK_UNUSED5,
 	EVSPARK_TOGGLE,
-	EVSPARK_STARTON
+	EVSPARK_STARTON,
+	EVSPARK_UNUSED6,
+	EVSPARK_SILENT,
+	EVSPARK_DIRECTIONAL
 };
 
-/*!QUAKED env_spark (1 .5 0) (-8 -8 -8) (8 8 8) x x x x x EVSPARK_TOGGLE EVSPARK_STARTON
+/*!QUAKED env_spark (1 .5 0) (-8 -8 -8) (8 8 8) x x x x x TOGGLE START_ON
 # OVERVIEW
 Creates a series (or just one) spark effect with sound when triggered.
 
@@ -36,13 +39,21 @@ Creates a series (or just one) spark effect with sound when triggered.
 - "angles" : Sets the pitch, yaw and roll angles of the spark.
 - "MaxDelay" : Delay between sparks when start-on (or toggle) is set
 
+# INPUTS
+- "StartSpark" : Enables a continous spark emitter.
+- "StopSpark" : Stops the ongoing spark emitter.
+- "ToggleSpark" : Toggles the state of the spark emitter.
+- "SparkOnce" : Creates a single spark effect, once.
+
 # SPAWNFLAGS
-- EVSPARK_TOGGLE (32) : When triggered, it'll spark continously with "MaxDelay" dictating the interval.
-- EVSPARK_STARTON (64) : Start sparking upon spawning, at least waiting til "MaxDelay" seconds has passed.
+- TOGGLE (32) : When triggered, it'll spark continously with "MaxDelay" dictating the interval.
+- START_ON (64) : Start sparking upon spawning, at least waiting til "MaxDelay" seconds has passed.
+- SILENT (256) : Do not play a sound.
+- DIRECTIONAL (512) : Angles are respected to direct the spark.
 
 # NOTES
-The spawnflags EVSPARK_TOGGLE and EVSPARK_STARTON are often used together.
-Without them set, it'll of course only spark once whenever it's triggered.
+The spawnflag START_ON (32) automatically enables the TOGGLE (64) flag
+as well.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
@@ -59,17 +70,24 @@ public:
 	virtual void Spawned(void);
 	virtual void Respawn(void);
 	virtual void Trigger(entity, triggermode_t);
-	nonvirtual void CreateSpark(void);
-	nonvirtual void TimedSpark(void);
+	virtual void Input(entity, string, string);
+	nonvirtual void _TimedSpark(void);
+
+	nonvirtual void StartSpark(void);
+	nonvirtual void StopSpark(void);
+	nonvirtual void ToggleSpark(void);
+	nonvirtual void SparkOnce(void);
 
 private:
 	float m_flMaxDelay;
+	int _m_iSparkParticle;
 };
 
 void
 env_spark::env_spark(void)
 {
 	m_flMaxDelay = 0.0f;
+	_m_iSparkParticle = 0i;
 }
 
 void
@@ -77,6 +95,7 @@ env_spark::Save(float handle)
 {
 	super::Save(handle);
 	SaveFloat(handle, "m_flMaxDelay", m_flMaxDelay);
+	SaveInt(handle, "_m_iSparkParticle", _m_iSparkParticle);
 }
 
 void
@@ -85,6 +104,9 @@ env_spark::Restore(string strKey, string strValue)
 	switch (strKey) {
 	case "m_flMaxDelay":
 		m_flMaxDelay = ReadFloat(strValue);
+		break;
+	case "_m_iSparkParticle":
+		_m_iSparkParticle = ReadInt(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
@@ -108,55 +130,104 @@ env_spark::Spawned(void)
 {
 	super::Spawned();
 
-	Sound_Precache("env_spark.sfx");
+	Sound_Precache("fx.spark");
+	_m_iSparkParticle = particleeffectnum("fx_spark.main");
 }
 
 void
 env_spark::Respawn(void)
 {
+	InitPointTrigger();
+
 	if (m_flMaxDelay <= 0) {
 		m_flMaxDelay = 1.0f;
 	}
 
 	if (HasSpawnFlags(EVSPARK_STARTON)) {
-		Trigger(this, TRIG_ON);
+		StartSpark();
 	}
+
+	if (HasSpawnFlags(EVSPARK_DIRECTIONAL) == false) {
+		SetAngles([0,0,0]);
+	}
+}
+
+void
+env_spark::StartSpark(void)
+{
+	ScheduleThink(_TimedSpark, (random() * m_flMaxDelay));
+}
+
+void
+env_spark::StopSpark(void)
+{
+	ReleaseThink();
+}
+
+void
+env_spark::ToggleSpark(void)
+{
+	if (IsThinking() == true) {
+		StopSpark();
+	} else {
+		StartSpark();
+	}
+}
+
+void
+env_spark::SparkOnce(void)
+{
+	if (HasSpawnFlags(EVSPARK_SILENT) == false) {
+		StartSoundDef("fx.spark", CHAN_AUTO, true);
+	}
+
+	pointparticles(_m_iSparkParticle, origin, angles, 1);
 }
 
 void
 env_spark::Trigger(entity act, triggermode_t state)
 {
-	if (!HasSpawnFlags(EVSPARK_TOGGLE)) {
-		CreateSpark();
+	if (!HasSpawnFlags(EVSPARK_TOGGLE) && !HasSpawnFlags(EVSPARK_STARTON)) {
+		SparkOnce();
 		return;
 	}
 
 	switch (state) {
 	case TRIG_OFF:
-		ReleaseThink();
+		StopSpark();
 		break;
 	case TRIG_ON:
-		ScheduleThink(CreateSpark, (random() * m_flMaxDelay));
+		StartSpark();
 		break;
 	default:
-		if (IsThinking() == true) {
-			Trigger(act, TRIG_OFF);
-		} else {
-			Trigger(act, TRIG_ON);
-		}
+		ToggleSpark();
 	}
 }
 
 void
-env_spark::CreateSpark(void)
+env_spark::Input(entity theActivator, string inputName, string dataField)
 {
-	Sound_Play(this, CHAN_AUTO, "env_spark.sfx");
-	pointparticles(particleeffectnum("platform.spark"), origin, angles, 1);
+	switch (inputName) {
+	case "StartSpark":
+		StartSpark();
+		break;
+	case "StopSpark":
+		StopSpark();
+		break;
+	case "ToggleSpark":
+		ToggleSpark();
+		break;
+	case "SparkOnce":
+		SparkOnce();
+		break;
+	default:
+		super::Input(theActivator, inputName, dataField);
+	}
 }
 
 void
-env_spark::TimedSpark(void)
+env_spark::_TimedSpark(void)
 {
-	CreateSpark();
-	ScheduleThink(CreateSpark, (random() * m_flMaxDelay));
+	SparkOnce();
+	ScheduleThink(_TimedSpark, (random() * m_flMaxDelay));
 }

@@ -394,14 +394,14 @@ env_laser::predraw(void)
 	if (m_iBeamFlags & (LASER_STARTSPARKS)) {
 		vector dir = vectoangles(origin - m_vecEndPos);
 		makevectors(dir);
-		pointparticles(particleeffectnum("platform.spark"), origin, -v_forward, 1);
+		pointparticles(particleeffectnum("fx.spark"), origin, -v_forward, 1);
 	}
 
 	if (m_iBeamFlags & (LASER_ENDSPARKS)) {
 		vector dir2 = vectoangles(m_vecEndPos - origin);
 
 		makevectors(dir2);
-		pointparticles(particleeffectnum("platform.spark"), m_vecEndPos, -v_forward, 1);
+		pointparticles(particleeffectnum("fx.spark"), m_vecEndPos, -v_forward, 1);
 	}
 
 	m_flSparkTime = time + 0.25f;
