@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2023 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -22,7 +22,7 @@ enumflags
 	TRAIN_NOTSOLID
 };
 
-/*!QUAKED func_train (0 .5 .8) ? TRAIN_WAIT x x TRAIN_NOTSOLID
+/*!QUAKED func_train (0 .5 .8) ? WAIT x x NOT_SOLID
 # OVERVIEW
 Moving platform following along path_corner entities, aka nodes.
 Most of its behaviour is controlled by the path_corner entities it passes over.
@@ -37,8 +37,8 @@ See the entity definition for path_corner to find out more.
 - "snd_stop" : Path to sound sample which plays when it stops moving.
 
 # SPAWNFLAGS
-- TRAIN_WAIT (1) : Stop at each path_corner until we're triggered again.
-- TRAIN_NOTSOLID (8) : Don't do collision testing against this entity.
+- WAIT (1) : Stop at each path_corner until we're triggered again.
+- NOT_SOLID (8) : Don't do collision testing against this entity.
 
 # NOTES
 Upon level entry, the func_train will spawn right where its first path_corner
@@ -47,7 +47,7 @@ box somewhere outside the playable area.
 
 If no targetname is specified, the train will move on its own at map-launch.
 
-Marking the func_train with the flag TRAIN_NOTSOLID will make entities not
+Marking the func_train with the spawnflag NOT_SOLID will make entities not
 collide with the train. This is best used for things in the distance or for
 when lasers are following this train as a sort of guide.
 
@@ -257,52 +257,54 @@ func_train::PathMove(void)
 void
 func_train::PathDone(void)
 {
-	path_corner eNode;
+	path_corner eNode = __NULL__;
+
 	eNode = (path_corner)find(world, ::targetname, target);
 
 	if (!eNode) {
 		return;
 	}
 
-	NSLog("func_train (%s): Touched base with path_corner %S", targetname, target);
+	if (HasTargetname()) {
+		NSLog("func_train (id %d, name %S): Touched base with path_corner %S", num_for_edict(this), targetname, target);
+	} else {
+		NSLog("func_train (id %d): Touched base with path_corner %S", num_for_edict(this), target);
+	}
 
 	/* fire the path_corners' target */
-	if (eNode.m_strMessage) {
-		eNode.Trigger(this, TRIG_TOGGLE);
-	}
+	eNode.PathPassTrigger(this, TRIG_TOGGLE);
 	SoundStop();
 }
 
 void
 func_train::PathNext(void)
 {
-	path_corner eNode;
+	path_corner eNode = __NULL__;
 
-	if (!target)
+	/* it's not as critical here to not have a target anymore */
+	if (HasTriggerTarget() == false) {
 		return;
+	}
 
 	eNode = (path_corner)find(world, ::targetname, target);
 
-	if (!eNode) {
+	/* a little more serious, but we don't want to break the map. */
+	if (eNode == __NULL__) {
+		print(sprintf("func_tracktrain (id %d) target %S does not exist.\n", num_for_edict(this), target));
 		return;
 	}
 
 	SetOrigin(eNode.origin - (mins + maxs) * 0.5);
 	PathDone();
+	m_flWait = eNode.m_flWait;
+	SetTriggerTarget(eNode.target);
+	ClearVelocity();
 
 	if (eNode.m_flSpeed > 0.0f) {
 		m_flCurrentSpeed = eNode.m_flSpeed;
 	} else {
 		m_flCurrentSpeed = m_flSpeed;
 	}
-
-	/* if speed is 0, retain current speed */
-	//if (eNode.m_flSpeed > 0.0f)
-		//m_flSpeed = eNode.m_flSpeed;
-
-	m_flWait = eNode.m_flWait;
-	SetTriggerTarget(eNode.target);
-	ClearVelocity();
 
 	/* warp */
 	if (eNode.HasSpawnFlags(PC_TELEPORT)) {
@@ -333,7 +335,34 @@ func_train::Trigger(entity act, triggermode_t state)
 void
 func_train::AfterSpawn(void)
 {
-	PathNext();
+	path_corner eNode = __NULL__;
+
+	if (HasTriggerTarget() == false) {
+		print(sprintf("func_tracktrain (id %d) has no target.\n", num_for_edict(this)));
+		Destroy();
+		return;
+	}
+
+	eNode = (path_corner)find(world, ::targetname, target);
+
+	if (eNode == __NULL__) {
+		print(sprintf("func_tracktrain (id %d) target %S does not exist.\n", num_for_edict(this), target));
+		Destroy();
+		return;
+	}
+
+	/* place us to the first node. */
+	SetOrigin(eNode.origin - (mins + maxs) * 0.5);
+	SetTriggerTarget(eNode.target);
+	ClearVelocity();
+	PathDone();
+
+	/* FIXME: Is this authentic? */
+	if (eNode.m_flSpeed > 0.0f) {
+		m_flCurrentSpeed = eNode.m_flSpeed;
+	} else {
+		m_flCurrentSpeed = m_flSpeed;
+	}
 
 	/* if we're unable to be triggered by anything, begin moving */
 	if (HasTargetname() == false) {
