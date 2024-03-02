@@ -234,7 +234,7 @@ logic_auto::Processing(void)
 		UseOutput(this, m_strOnBackgroundMap);
 
 	if (HasSpawnFlags(LOGICAUTO_USEONCE)) {
-		NSLog("^2logic_auto::^3Processing ^7: %s triggerer removed self",  target);
+		EntLog("%S triggerer removed self",  target);
 		Destroy();
 	}
 }

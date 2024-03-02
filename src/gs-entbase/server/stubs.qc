@@ -78,8 +78,8 @@ This entity was introduced in Quake (1996).
 */
 
 CLASSEXPORT(info_target, info_notnull)
-CLASSEXPORT(env_sound, info_notnull)
-CLASSEXPORT(env_sun, info_notnull)
+CLASSEXPORT(env_sound, info_null)
+CLASSEXPORT(env_sun, info_null)
 CLASSEXPORT(info_intermission, info_notnull)
 
 CLASSEXPORT(prop_static, info_null)

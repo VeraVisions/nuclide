@@ -211,7 +211,7 @@ prop_rope::EvaluateEntity(void)
 	entity eFind = find(world, ::targetname, target);
 
 	if (!eFind) {
-		print(sprintf("prop_rope: Unable to find target %S\n", target));
+		EntError("Unable to find rope target %S", target);
 		return;
 	}
 

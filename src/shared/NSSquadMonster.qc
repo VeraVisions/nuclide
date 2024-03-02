@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Vera Visions LLC.
+ * Copyright (c) 2023-2024 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -185,7 +185,7 @@ NSSquadMonster::AddToSquad(NSSquadMonster addMember)
 		m_eSquadLeader = this;
 		startMember = this;
 		m_inSquad = true;
-		NSMonster_Log("%s (%d) became squad leader\n", classname, num_for_edict(this));
+		NSMonsterLog("%s (%d) became squad leader\n", classname, num_for_edict(this));
 		//SetBody(GetBody() | m_iSquadLeaderBody);
 
 		/* apply the squad leader body */
@@ -211,7 +211,7 @@ NSSquadMonster::AddToSquad(NSSquadMonster addMember)
 			addMember.m_eSquadLeader = startMember;
 			addMember.m_inSquad = true;
 			addMember.HasJoinedSquad();
-			NSMonster_Log("%s (%d) added to squad, member %i\n", classname, num_for_edict(this), i);
+			NSMonsterLog("%s (%d) added to squad, member %i\n", classname, num_for_edict(this), i);
 			return;
 		}
 	}

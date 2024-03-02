@@ -94,9 +94,15 @@ to define a shared point and a transition area for entities respectively.
 - TRIGGER_ONLY (2) : Can't activate through touching, only via triggers.
 
 # NOTES
-When a Landmark is specified, you will have to position two info_landmark
+When a `landmark` is specified, you will have to position two info_landmark
 entities across your two levels with the same name. They'll mark a translation
 point for the coordinates in your levels.
+
+If you have set a landmark, you might also want to restrict the area in which entities get carried across to the next level. This is accomplished by placing a trigger_transition volume with the same name as the specified `landmark`.
+
+If you do not make use of the trigger_transition entity, it will carry over all of the entities that are in the same PVS (room and attached hallways) of the info_landmark.
+
+The PVS-culling method can prove difficult to work with. Developers have been spotted using 'killtarget' on entities before level transitions take place to manually filter through them (Half-Life's c1a0e - c1a0c).
 
 # TRIVIA
 This entity was introduced in Quake (1996).
@@ -250,10 +256,8 @@ trigger_changelevel::Change(void)
 
 	/* standard level change */
 	if (!m_strLandmark) {
-		NSLog("^2trigger_changelevel::^3Change^7: Change to `%s`", 
-			m_strMap);
+		EntLog("Change to %S", m_strMap);
 		parm_string = m_strChangeTarget;
-		trigger_transition_pvsfallback(this);
 		changelevel(m_strMap);
 		return;
 	}
@@ -286,13 +290,13 @@ trigger_changelevel::Change(void)
 		info_landmark lm = (info_landmark)e;
 		/* found it */
 		if (lm.targetname == m_strLandmark) {
-			NSLog("^2trigger_changelevel::^3Change^7: Found landmark for %s", m_strLandmark);
+			EntLog("Found landmark for %S", m_strLandmark);
 			g_landmarkpos = m_activator.origin - lm.origin;
 
 			if (transitionHelper) {
 				transitionHelper.SaveTransition(__NULL__, false);
 			} else {
-				trigger_transition_pvsfallback(this);
+				trigger_transition_pvsfallback(lm);
 			}
 
 			changelevel(m_strMap, m_strLandmark);
@@ -361,7 +365,7 @@ Landmark_GetSpot(void)
 
 	/* return something useful at least */
 	entity ips = find(world, ::classname, "info_player_start");
-	print(sprintf("^1ERROR^7: Landmark_GetSpot: Cannot find startspot '%s'!\n",startspot));
+	NSError("Cannot find startspot %S!\n", startspot);
 	return ips.origin;
 }
 

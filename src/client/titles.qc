@@ -121,14 +121,15 @@ Titles_Init(void)
 	int braced;
 	int id = 0;
 
-	print("--------- Initializing TitlesDef ----------\n");
+	InitStart();
 
 	Titles_Shutdown();
 
 	fs_titles = fopen("titles.txt", FILE_READ);
 
 	if (fs_titles < 0) {
-		print("^1could NOT load titles.txt\n");
+		NSError("missing titles.txt");
+		InitEnd();
 		return;
 	}
 
@@ -165,7 +166,7 @@ Titles_Init(void)
 		}
 	}
 
-	print(sprintf("read %i titleDefs (%i bytes).\n", g_titles_count, sizeof(titles_t) * g_titles_count));
+	NSLog("read %i titleDefs (%i bytes).", g_titles_count, sizeof(titles_t) * g_titles_count);
 	g_titles = memalloc(sizeof(titles_t) * g_titles_count);
 	fseek(fs_titles, 0);
 
@@ -256,6 +257,8 @@ Titles_Init(void)
 		}
 	}
 	fclose(fs_titles);
+
+	InitEnd();
 }
 
 

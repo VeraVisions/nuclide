@@ -236,7 +236,6 @@ void
 Entities_RendererRestarted(void)
 {
 	int c = 0;
-	print("--------- Reloading Entity Resources ----------\n");
 
 	for (entity b = world; (b = findfloat(b, ::isCSQC, TRUE));) {
 		NSEntity pf = (NSEntity) b;
@@ -244,5 +243,5 @@ Entities_RendererRestarted(void)
 		c++;
 	}
 
-	print(sprintf("resource reload called on %i entities\n", c));
+	NSLog("...resource reload called on %i entities", c);
 }

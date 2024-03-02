@@ -54,12 +54,12 @@ Menu_GammaHack(void)
 {
 	if (cvar("brightness") != cvar("vid_brightness")) {
 		localcmd("seta brightness 0\n");
-		print("^1Menu_RendererRestarted^7: Brightness hack.\n");
+		NSLog("Old config brightness. Applying brightness hack.");
 	}
 
 	if (cvar("gamma") != cvar("vid_gamma")) {
 		localcmd("seta gamma 1\n");
-		print("^1Menu_RendererRestarted^7: Gamma hack.\n");
+		NSLog("Old config gamma. Applying gamma hack.");
 	}
 }
 
@@ -75,7 +75,7 @@ Menu_HasStartupVideos(void)
 void
 Menu_PlayStartupVideos(void)
 {
-	print("playing startup videos\n");
+	NSLog("Playing startup videos.\n");
 	//localcmd("playvideo av:media/sierra.avi av:media/valve.avi\n");
 }
 
@@ -94,9 +94,9 @@ m_init(void)
 
 	string menuMap;
 
-	print("--------- Initializing Menu ----------\n");
-	print("Built: " __DATE__ " " __TIME__"\n");
-	print("QCC: " __QCCVER__ "\n");
+	NSLog("--------- Initializing Menu ----------");
+	NSLog("Built: %s %s", __DATE__, __TIME__);
+	NSLog("QCC: %s", __QCCVER__);
 
 	/* things that should really be default. platform_default.cfg is supposed to set
 	 * them the first time - however FTE doesn't do that when switching manifests

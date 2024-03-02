@@ -104,8 +104,8 @@ point_spotlight::BeamViewDelta(vector cameraAngle)
 	upDelta = (v * v_up);
 	forwardDelta = (v * v_forward);
 
-	//NSLog("forwardDelta: %f\n", forwardDelta);
-	//NSLog("upDelta: %f (%f)\n", upDelta, 1.0 - upDelta);
+	//EntLog("forwardDelta: %f\n", forwardDelta);
+	//EntLog("upDelta: %f (%f)\n", upDelta, 1.0 - upDelta);
 
 	if (forwardDelta < 0.0)
 		return upDelta * (1.0 - forwardDelta);
@@ -135,7 +135,7 @@ point_spotlight::predraw(void)
 		vector vecAngle = g_view.GetCameraAngle();
 		float coneAlpha = BeamViewDelta(vecAngle);
 
-		//NSLog("coneAlpha: %f\n", coneAlpha);
+		//EntLog("coneAlpha: %f\n", coneAlpha);
 
 		/* beam */
 		if (coneAlpha > 0.0) {

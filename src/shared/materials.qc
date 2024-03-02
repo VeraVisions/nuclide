@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2024 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -42,7 +42,7 @@ Materials_LoadFromText(string filename)
 
 		fclose(fileMaterial);
 	} else {
-		dprint(strcat("^1Failed to load ", filename,"!\n"));
+		NSError("Missing file %s", filename);
 	}
 #endif
 }
@@ -178,7 +178,7 @@ Materials_LoadFromLegacyText(string filename)
 		}
 		fclose(fileMaterial);
 	} else {
-		dprint(strcat("^1Failed to load ", filename,"!\n"));
+		NSError("Missing file %s", filename);
 	}
 }
 
@@ -186,7 +186,7 @@ Materials_LoadFromLegacyText(string filename)
 void
 Materials_Init(void)
 {
-	print("--------- Initializing Material Data ----------\n");
+	InitStart();
 	g_mat_total = 0i;
 
 	g_hashMaterials = __NULL__;
@@ -206,6 +206,9 @@ Materials_Init(void)
 
 	/* we're dealing with legacy materials */
 	if (g_materialsAreLegacy) {
+		string wastesName = sprintf("maps/%s.mat", mapname);
+		string svenName = sprintf("maps/%s_materials.txt", mapname);
+
 		/* prepare the mapper */
 		Materials_Mapper_Init();
 
@@ -225,10 +228,12 @@ Materials_Init(void)
 		search_end(pm);
 
 		/* the way TW did it back in '03 */
-		Materials_LoadFromLegacyText(sprintf("maps/%s.mat", mapname));
+		if (FileExists(wastesName))
+			Materials_LoadFromLegacyText(wastesName);
 
 		/* Trinity-Renderer does it this way */
-		Materials_LoadFromLegacyText(sprintf("maps/%s_materials.txt", mapname));
+		if (FileExists(svenName))
+			Materials_LoadFromLegacyText(svenName);
 
 		/* no longer needed! */
 		Materials_Mapper_Shutdown();
@@ -250,5 +255,6 @@ Materials_Init(void)
 		search_end(mdlsearch);
 	}
 
-	print(sprintf("material data initialized with %i entries.\n", g_mat_total));
+	NSLog("material data initialized with %i entries.", g_mat_total);
+	InitEnd();
 }

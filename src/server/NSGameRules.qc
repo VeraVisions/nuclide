@@ -374,10 +374,8 @@ NSGameRules::DamageApply(entity t, entity c, float dmg, int w, damageType_t type
 	g_dmg_iFlags = type;
 	g_dmg_iWeapon = w;
 
-	NSLog("Damage: %s damages %s with %d damage", c.classname, t.classname, dmg);
-	NSLog("\tHit-body: %d", g_dmg_iHitBody);
-	NSLog("\tFlags: %i", g_dmg_iFlags);
-	NSLog("\tWeapon: %i", g_dmg_iWeapon);
+	NSLog("%S does %d dmg to %S (body: %d, flags: %i, weapon: %i)",
+		c.classname, dmg, t.classname, g_dmg_iHitBody, g_dmg_iFlags, g_dmg_iWeapon);
 
 	/* friendly fire penalty */
 	if (isFriendlyFire) {
@@ -553,19 +551,25 @@ NSGameRules::PlayerRequestRespawn(NSClientPlayer bp)
 void
 NSGameRules::ChatMessageAll(NSClient cl, string strMessage)
 {
+	float edictNum = num_for_edict(cl) - 1;
+
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_CHAT);
-	WriteByte(MSG_MULTICAST, num_for_edict(cl) - 1);
+	WriteByte(MSG_MULTICAST, edictNum);
 	WriteByte(MSG_MULTICAST, cl.team); 
 	WriteString(MSG_MULTICAST, strMessage);
 	multicast([0,0,0], MULTICAST_ALL_R);
 
-	localcmd(sprintf("echo [ALL] %s: %s\n", cl.netname, strMessage));
+	/* TODO: don't print on listen games */
+	print(Util_ChatFormat(edictNum, 0, strMessage));
+	print("\n");
 }
 
 void
 NSGameRules::ChatMessageTeam(NSClient cl, string strMessage)
 {
+	float edictNum = num_for_edict(cl) - 1;
+
 	/* their finger probably slipped */
 	if (IsTeamplay() == false) {
 		ChatMessageAll(cl, strMessage);
@@ -580,7 +584,7 @@ NSGameRules::ChatMessageTeam(NSClient cl, string strMessage)
 
 		WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 		WriteByte(MSG_MULTICAST, EV_CHAT_TEAM);
-		WriteByte(MSG_MULTICAST, num_for_edict(cl) - 1); 
+		WriteByte(MSG_MULTICAST, edictNum); 
 		WriteByte(MSG_MULTICAST, cl.team); 
 		WriteString(MSG_MULTICAST, strMessage);
 
@@ -588,7 +592,8 @@ NSGameRules::ChatMessageTeam(NSClient cl, string strMessage)
 		multicast([0,0,0], MULTICAST_ONE_R);
 	}
 
-	localcmd(sprintf("echo [TEAM] %s: %s\n", cl.netname, strMessage));
+	print(Util_ChatFormat(edictNum, cl.team, strMessage));
+	print("\n");
 }
 
 string

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2024 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -62,19 +62,20 @@ public:
 	virtual float predraw(void);
 #endif
 
+	/** Get the string value of an InfoKey. */
+	nonvirtual string GetInfoKey(string);
+	/** Floating point based version of GetInfoKey(). */
+	nonvirtual float GetInfoKeyFloat(string);
+
 #ifdef SERVER
 	/** Server: This is where the input* variables arrive after sending them out from the client (see ClientInputFrame). This is also where we will instruct the server to run physics on the client. */
 	virtual void ServerInputFrame(void);
 
-	/** Set the value of an InfoKey. */
+	/** Server: Set the value of an InfoKey. */
 	nonvirtual void SetInfoKey(string, string);
-	/** Get the string value of an InfoKey. */
-	nonvirtual string GetInfoKey(string);
 
-	/** Floating point based version of SetInfoKey(). */
+	/** Server: Floating point based version of SetInfoKey(). */
 	nonvirtual void SetInfoKeyFloat(string, float);
-	/** Floating point based version of GetInfoKey(). */
-	nonvirtual float GetInfoKeyFloat(string);
 
 	/* overrides */
 	virtual void Save(float);

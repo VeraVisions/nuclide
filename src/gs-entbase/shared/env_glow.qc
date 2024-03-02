@@ -92,7 +92,7 @@ void
 env_glow::Respawn(void)
 {
 	if (!model && !m_strMaterial) {
-		NSEntWarning("no model specified");
+		EntWarning("no model specified");
 		Destroy();
 		return;
 	}
@@ -209,7 +209,7 @@ env_glow::RendererRestarted(void)
 		model = modelnameforindex(modelindex);
 		m_strMaterial = spriteframe(model, 0, 0.0f);
 		m_vecSize = drawgetimagesize(m_strMaterial) / 2;
-		//NSEntWarning("%S %d %S %v", model, modelindex, m_strMaterial, m_vecSize);
+		//EntWarning("%S %d %S %v", model, modelindex, m_strMaterial, m_vecSize);
 	}
 }
 

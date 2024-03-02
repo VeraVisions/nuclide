@@ -142,7 +142,7 @@ env_physexplosion::TriggerExplosion(void)
 		physEnt = (NSPhysicsEntity)find(world, ::targetname, m_strTargetEntity);
 
 		if (!physEnt) {
-			NSEntWarning("Target set, but not found!");
+			EntWarning("Target set, but not found!");
 			return;
 		}
 

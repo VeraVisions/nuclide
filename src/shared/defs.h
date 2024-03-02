@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2024 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -139,8 +139,6 @@ string __fullspawndata;
 
 #define CLASSEXPORT(a,b) void a(void) { if (!isfunction(#b)) { self.classname = strcat("spawnfunc_", #b); } else { self.classname = #b; } callfunction(self.classname); }
 
-#define printf(x, ...) print(sprintf(x, ...))
-
 const vector VEC_HULL_MIN = [-16,-16,-36];
 const vector VEC_HULL_MAX = [16,16,36];
 const vector VEC_CHULL_MIN = [-16,-16,-18];
@@ -204,27 +202,30 @@ crossprint(string m)
 #endif
 }
 
+#if 0
 __wrap string
 precache_model(string m)
 {
 	if not (m) {
 		breakpoint();
+		return "";
 	}
 
-#ifdef CLIENT
-	NSLog("^3Client precaching model ^7%s", m);
-#else
-	NSLog("^3Server precaching model ^7%s", m);
-#endif
+	if (m == "") {
+		breakpoint();
+		return "";
+	}
+
 	return prior(m);
 }
+#endif
 
 __wrap string
 precache_sound(string sample)
 {
 	if (sample != "") /* not empty */
 		if not(whichpack(strcat("sound/", sample))) { /* not present on disk */
-			print(strcat("^1sfx sample ", sample, " does not exist!\n"));
+			NSError("SFX sample %S does not exist.", sample);
 			return "misc/missing.wav";
 		}
 

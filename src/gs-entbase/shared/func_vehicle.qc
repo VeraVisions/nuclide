@@ -687,9 +687,9 @@ func_vehicle::Realign(void)
 		vector end_pos;
 		first = (NSEntity)first;
 		second = (NSEntity)second;
-		NSLog("func_vehicle angles were: %v\n", angles);
+		EntLog("func_vehicle angles were: %v\n", angles);
 		angles = vectoangles(first.origin - second.origin);
-		NSLog("func_vehicle angles is now: %v\n", angles);
+		EntLog("func_vehicle angles is now: %v\n", angles);
 
 		end_pos = first.origin;
 		end_pos[2] = m_oldOrigin[2] + 64;

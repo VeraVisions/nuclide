@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Vera Visions LLC.
+ * Copyright (c) 2023-2024 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -203,6 +203,9 @@ NSMoverEntity::GetMoverRotation2(void)
 void
 NSMoverEntity::MoveToPosition(vector vecDest, float flSpeed)
 {
+	if (vecDest == origin)
+		return;
+
 	MoveAndRotateToPosition(vecDest, GetAngles(), flSpeed);
 }
 
@@ -240,7 +243,7 @@ NSMoverEntity::MoveAndRotateToPosition(vector vecDest, vector vecAngle, float fl
 
 	/* abort if no speed is defined whatsoever */
 	if (!flSpeed) {
-		NSEntWarning("NSMoverEntity::MoveToPosition: No speed defined!");
+		EntWarning("NSMoverEntity::MoveToPosition: No speed defined!");
 		return;
 	}
 
@@ -261,7 +264,6 @@ NSMoverEntity::MoveAndRotateToPosition(vector vecDest, vector vecAngle, float fl
 
 	/* if we're already there, don't bother and trigger it right now. */
 	if (fTravelTime <= 0.0) {
-
 		if (m_moverState == MOVER_1TO2) {
 			MoverStartsMoving();
 			_ArrivedAtRotPosition2();

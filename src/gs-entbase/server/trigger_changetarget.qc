@@ -86,8 +86,7 @@ trigger_changetarget::Trigger(entity act, triggermode_t state)
 
 	for (f = __NULL__; (f = (NSEntity)find(f, ::targetname, target));) {
 
-		NSLog("^2trigger_changetarget::^3Trigger^7: " \
-		       "Changing %s (%s) target from '%s' to '%s'\n", \
+		EntLog("Changing %s (%s) target from '%s' to '%s'\n", \
 		       target, f.classname, f.target, target);
 
 		/* now change the target */

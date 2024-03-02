@@ -169,7 +169,7 @@ Route_SelectDestination(NSBot target)
 	if (rules.IsTeamplay()) {
 		/* we have the goal item, so capture it */
 		if (target.flags & FL_GOALITEM) {
-			print(sprintf("%s going for capture\n", target.netname));
+			BotLog("%s going for capture", target.netname);
 			dest = Route_SelectNearestTeam(BOTINFO_TEAM_GOALCAPTURE, target.origin, target.team);
 			
 			/* we may have to go to our teams' goal item then */
@@ -177,7 +177,7 @@ Route_SelectDestination(NSBot target)
 				dest = Route_SelectNearestTeam(BOTINFO_TEAM_GOALITEM, target.origin, target.team);
 			}
 		} else {
-			print(sprintf("%s hunting for goal item\n", target.netname));
+			BotLog("%s hunting for goal item", target.netname);
 			dest = Route_SelectNearestEnemyTeam(BOTINFO_TEAM_GOALITEM, target.origin, target.team);
 		}
 
@@ -187,13 +187,12 @@ Route_SelectDestination(NSBot target)
 		}
 
 		/* by now, they need something else to do involving goal items probably */
-
-		print(sprintf("%s can't figure out where to go for the goal\n", target.netname));
+		BotLog("%s can't figure out where to go for the goal", target.netname);
 	}
 
 	/* if we're low on health, look for health items */
 	if (target.health < 50) {
-		print(sprintf("%s going for health\n", target.netname));
+		BotLog("%s going for health", target.netname);
 		dest = Route_SelectNearest(BOTINFO_HEALTH, target.origin, target.m_vecLastPOI);
 
 		if (dest != __NULL__) {
@@ -201,13 +200,13 @@ Route_SelectDestination(NSBot target)
 			return dest.origin + [0,0,32];
 		}
 
-		print(sprintf("%s can't figure out where to go for health\n", target.netname));
+		BotLog("%s can't figure out where to go for health", target.netname);
 	}
 
 	/* armor is always a good idea to have */
 	if (random() < 0.25)
 	if (target.armor < 50) {
-		print(sprintf("%s going for armor\n", target.netname));
+		BotLog("%s going for armor", target.netname);
 		dest = Route_SelectNearest(BOTINFO_ARMOR, target.origin, target.m_vecLastPOI);
 		
 		if (dest != __NULL__) {
@@ -215,13 +214,13 @@ Route_SelectDestination(NSBot target)
 			return dest.origin + [0,0,32];
 		}
 
-		print(sprintf("%s can't figure out where to go for armor\n", target.netname));
+		BotLog("%s can't figure out where to go for armor", target.netname);
 	}
 
 	/* go for ammo, or weapon */
 	if (random() < 0.25)
 	if (!dest) {
-		print(sprintf("%s going for ammo/weapon\n", target.netname));
+		BotLog("%s going for ammo/weapon", target.netname);
 
 		if (random() < 0.5)
 			dest = Route_SelectFarthest(BOTINFO_WEAPON, target.origin, target.m_vecLastPOI);
@@ -233,7 +232,7 @@ Route_SelectDestination(NSBot target)
 			return dest.origin + [0,0,32];
 		}
 
-		print(sprintf("%s can't figure out where to go for ammo/weapon\n", target.netname));
+		BotLog("%s can't figure out where to go for ammo/weapon", target.netname);
 	}
 
 	if (random() < 0.25)
@@ -255,7 +254,7 @@ Route_SelectDestination(NSBot target)
 	}
 
 	/* if all else fails... select a random spot */
-	print(sprintf("%s found nothing, going for random PoI\n", target.netname));
+	BotLog("%s found nothing, going for random PoI", target.netname);
 	dest = Route_SelectRandomSpot();
 	target.m_eDestination = dest;
 	return (dest.origin);

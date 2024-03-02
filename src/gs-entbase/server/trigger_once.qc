@@ -187,11 +187,11 @@ trigger_once::Touch(entity eToucher)
 	m_iValue = 1;
 
 	if (!target && !m_strKillTarget) {
-		NSLog("^2trigger_once::^3Touch^7: %S is triggering OnStartTouch", eToucher.classname);
+		EntLog("%S is triggering OnStartTouch", eToucher.classname);
 		UseOutput(eToucher, m_strOnStartTouch);
 		return;
 	}
 
-	NSLog("^2trigger_once::^3Touch^7: %S is triggering %S", eToucher.classname, target);
+	EntLog("%S is triggering %S", eToucher.classname, target);
 	UseTargets(eToucher, TRIG_TOGGLE, m_flDelay);
 }

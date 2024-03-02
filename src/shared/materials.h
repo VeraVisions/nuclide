@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2024 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -208,7 +208,7 @@ Materials_FixName(string old_name)
 	/* limit to 12 chars! */
 	tex_name = substring(tex_name, 0, 12);
 
-	NSLog("%s > %s", old_name, tex_name);
+	//NSLog("%s > %s", old_name, tex_name);
 
 	return tex_name;
-}
+}

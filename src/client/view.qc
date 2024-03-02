@@ -127,6 +127,8 @@ View_ForceChange(player pl, int targetWeapon)
 	View_ClearEvents();
 	View_DisableViewmodel();
 	View_SetMuzzleflash(0);
+	m_eViewModel.frame1time = 0.0f;
+	m_eViewModelL.frame1time = 0.0f;
 }
 
 /*
@@ -286,7 +288,7 @@ View_DrawViewModel(void)
 #endif
 
 	/* only draw the model when it's 'enabled'... */
-	if (m_eViewModel.alpha != 0.0f) {
+	if (m_eViewModel.IsHidden() == false) {
 		setorigin(m_eViewModel, m_eViewModel.origin);
 		setorigin(m_eViewModelL, m_eViewModel.origin);
 
@@ -359,15 +361,26 @@ View_GetAnimation(void)
 void
 View_EnableViewmodel(void)
 {
-	pSeat->m_eViewModel.alpha =
-	pSeat->m_eViewModelL.alpha = 1.0f;
+	NSRenderableEntity viewModel;
+	viewModel = (NSRenderableEntity)pSeat->m_eViewModel;
+	viewModel.Show();
+	viewModel = (NSRenderableEntity)pSeat->m_eViewModelL;
+	viewModel.Show();
 }
 
 void
 View_DisableViewmodel(void)
 {
-	pSeat->m_eViewModel.alpha =
-	pSeat->m_eViewModelL.alpha = 0.0f;
-	pSeat->m_eViewModel.frame1time =
-	pSeat->m_eViewModelL.frame1time = 0.0f;
+	NSRenderableEntity viewModel;
+	viewModel = (NSRenderableEntity)pSeat->m_eViewModel;
+	viewModel.Hide();
+	viewModel = (NSRenderableEntity)pSeat->m_eViewModelL;
+	viewModel.Hide();
+}
+
+void
+View_SetViewmodelSkin(float skinValue)
+{
+	pSeat->m_eViewModel.skin =
+	pSeat->m_eViewModelL.skin = skinValue;
 }

@@ -148,7 +148,7 @@ func_guntarget::Move(void)
 	node = (path_corner)find(world, ::targetname, target);
 
 	if (!node) {
-		NSEntWarning("node %s for %s not found!", target, targetname);
+		EntWarning("node %s for %s not found!", target, targetname);
 		return;
 	}
 
@@ -172,7 +172,7 @@ func_guntarget::NextPath(void)
 {
 	path_corner node;
 
-	NSLog("^2func_guntarget::^3NextPath^7: Talking to current target %s... ", target);
+	EntLog("Talking to current target %s... ", target);
 	node = (path_corner)find(world, ::targetname, target);
 
 	if (!node) {

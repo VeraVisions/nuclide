@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2024 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -97,8 +97,7 @@ NSNavAI::CheckRoute_Path(void)
 
 	/* close enough...? */
 	if (flDist < 80) {
-		NSNavAI_Log("^2%s::^3CheckRoute_Path^7: " \
-			"reached path node %s", classname, m_pathTarget);
+		NSNavAI_Log("Reached path node %S", m_pathTarget);
 
 		m_pathTarget = m_pathEntity.target;
 		m_pathEntity = (NSEntity)m_pathEntity.GetTargetEntity();
@@ -127,12 +126,10 @@ NSNavAI::CheckRoute(void)
 			/* HACK: for followers */
 			if (m_eFollowing) {
 				RouteToPosition(m_eFollowing.origin);
-				NSNavAI_Log("^2%s::^3CheckRoute^7: " \
-					"Giving up current route to follower, re-calculating", classname);
+				NSNavAI_Log("Giving up current route to follower, re-calculating");
 			} else {
 				RouteToPosition(m_vecLastNode);
-				NSNavAI_Log("^2%s::^3CheckRoute^7: " \
-					"Giving up current route, re-calculating", classname);
+				NSNavAI_Log("Giving up current route, re-calculating.");
 			}
 		}
 		_m_flRouteGiveUp = time + 2.0f;
@@ -156,8 +153,7 @@ NSNavAI::CheckRoute(void)
 	flDist = floor(vlen(evenpos - origin));
 
 	if (flDist < flNodeRadius) {
-		NSNavAI_Log("^2%s::^3CheckRoute^7: " \
-			"%s reached node", classname, targetname);
+		NSNavAI_Log("%S reached node", targetname);
 		m_iCurNode--;
 		velocity = [0,0,0]; /* clamp friction */
 
@@ -168,8 +164,7 @@ NSNavAI::CheckRoute(void)
 
 			/* can we walk directly to our target destination? */
 			if (trace_fraction == 1.0) {
-				NSNavAI_Log("^2%s::^3CheckRoute^7: Walking directly to last node at '%v'", \
-					classname, m_vecLastNode);
+				NSNavAI_Log("Walking directly to last node at '%v'", m_vecLastNode);
 				m_iCurNode = -1;
 			}
 		}
@@ -188,8 +183,7 @@ NSNavAI::CheckRoute(void)
 		if (!trace_startsolid && trace_fraction == 1.0f) {
 			evenpos = vecNextNode;
 			m_iCurNode = iNextNode;
-			NSNavAI_Log("^2%s::^3CheckRoute^7: skipping to next node %i at '%v'", \
-				classname, iNextNode, vecNextNode);
+			NSNavAI_Log("Skipping to next node %i at '%v'", iNextNode, vecNextNode);
 			return;
 		}
 	}
@@ -199,7 +193,7 @@ NSNavAI::CheckRoute(void)
 	if (m_iCurNode < -1) {
 		RouteClear();
 		RouteEnded();
-		NSNavAI_Log("^2%s::^3CheckRoute^7: %s reached end", classname, targetname);
+		NSNavAI_Log("%S reached end", targetname);
 	}
 
 	/* crouch attempt */
@@ -304,12 +298,10 @@ NSNavAI::RouteToPositionDenyFlags(vector destination, int denylinkflags)
 
 		/* can we walk directly to our target destination? */
 		if (trace_fraction == 1.0) {
-			NSNavAI_Log("^2%s::^3RouteToPosition^7: " \
-				"Walking directly to last node", p.classname);
+			NSNavAI_Log("Walking directly to last node");
 			p.m_iCurNode = -1;
 		} else {
-			NSNavAI_Log("^2%s::^3RouteToPosition^7: " \
-				"Path obstructed, calculating route", p.classname);
+			NSNavAI_Log("Path obstructed, calculating route");
 
 			/* run through all nodes, mark the closest direct path possible */
 			for (int i = 0; i < p.m_iNodes; i++) {
@@ -354,7 +346,7 @@ NSNavAI::ChasePath(string startPath)
 
 	m_pathTarget = startPath;
 	m_pathEntity = (NSEntity)find(world, ::targetname, m_pathTarget);
-	NSNavAI_Log("Actor %S chase Path set to %S\n", netname, m_pathEntity.targetname);
+	NSNavAI_Log("Actor %S chase Path set to %S", netname, m_pathEntity.targetname);
 }
 
 void

@@ -58,7 +58,7 @@ game_player_team::Trigger(entity entityActivator, triggermode_t state)
 	toRead = (game_team_master)GetTargetEntity();
 
 	if (!toRead) {
-		NSEntWarning("Unable to find game_team_master named %S", GetTriggerTarget());
+		EntWarning("Unable to find game_team_master named %S", GetTriggerTarget());
 		return;
 	}
 

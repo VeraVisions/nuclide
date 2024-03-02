@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2024 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -49,26 +49,21 @@ void SoundSource_Init(void);
 void
 Sound_Init(void)
 {
-#ifdef SERVER
-	print("--------- Initializing SoundDef (SERVER) ----------\n");
-#else
-	print("--------- Initializing SoundDef (CLIENT) ----------\n");
-#endif
+	InitStart();
 
 	/* make sure it's all reset */
 	Sound_Shutdown();
 
 #ifndef SOUNDSHADER_DYNAMIC
 	g_sounds = (snd_t *)memalloc(sizeof(snd_t) * SOUNDSHADER_MAX);
-	print(sprintf("allocated %d bytes for soundDef\n", sizeof(snd_t) * SOUNDSHADER_MAX));
+	NSLog("...allocated %d bytes for SoundDef", sizeof(snd_t) * SOUNDSHADER_MAX);
 #endif
 
 	/* Source Engine conventions */
 	SoundSource_Init();
 
 	precache_sound("common/null.wav");
-
-	print("SoundDef initialized.\n");
+	InitEnd();
 }
 
 static void
@@ -407,7 +402,6 @@ Sound_Precache(string shader)
 		cache = (int)hash_get(g_hashsounds, shader, -1);
 
 		if (cache >= 0) {
-			SndLog("^1Sound_Precache: def %s already precached", shader);
 			return cache;
 		}
 	}
@@ -418,7 +412,7 @@ Sound_Precache(string shader)
 	g_sounds = (snd_t *)memrealloc(g_sounds, sizeof(snd_t), index, g_sounds_count);
 #else
 	if (g_sounds_count >= SOUNDSHADER_MAX) {
-		error(sprintf("Sound_Precache: Reached SOUNDSHADER_MAX (%d)\n", SOUNDSHADER_MAX));
+		NSError("Reached SOUNDSHADER_MAX (%d)", SOUNDSHADER_MAX);
 		return -1;
 	}
 #endif
@@ -454,11 +448,8 @@ Sound_Precache(string shader)
 		fclose(fh);
 	}
 
-	print("^1no SoundDef found for ");
-	print(shader);
-	print("\n");
+	NSError("No SoundDef %S found.", shader);
 	g_sounds_count--;
-
 	search_end(sh);
 	return -1;
 }
@@ -477,7 +468,7 @@ Sound_Distance(entity target, string shader)
 	sample = (int)hash_get(g_hashsounds, shader, -1);
 
 	if (sample < 0) {
-		crossprint(sprintf("^1Sound_Distance: def %s is not precached\n", shader));
+		NSError("SoundDef %S is not precached", shader);
 		return;
 	}
 
@@ -508,10 +499,6 @@ Sound_Distance(entity target, string shader)
 	if (g_sounds[sample].flags & SNDFL_OMNI) {
 		flag |= SOUNDFLAG_NOSPACIALISE;
 	}
-#endif
-
-#ifdef DEVELOPER
-	print(sprintf("Sound_Distance: %s\n", argv(r)));
 #endif
 
 	sound(
@@ -540,7 +527,7 @@ Sound_DistancePos(vector pos, string shader)
 	sample = (int)hash_get(g_hashsounds, shader, -1);
 
 	if (sample < 0) {
-		SndLog("^1Sound_DistancePos: def %s is not precached (SERVER)\n", shader);
+		NSError("SoundDef %S is not precached", shader);
 		return;
 	}
 
@@ -573,7 +560,7 @@ Sound_DistancePos(vector pos, string shader)
 	}
 #endif
 
-	SndLog(sprintf("Sound_DistancePos: %s\n", argv(r)));
+	SndLog("Playing %S", argv(r));
 	pointsound_proper(pos, argv(r), volume, ATTN_NONE, pitch);
 }
 
@@ -600,7 +587,7 @@ Sound_Play(entity target, int chan, string shader)
 	sample = (int)hash_get(g_hashsounds, shader, -1);
 
 	if (sample < 0) {
-		SndLog("^1Sound_Play: def %s is not precached\n", shader);
+		NSError("SoundDef %S is not precached", shader);
 		return;
 	}
 
@@ -661,9 +648,7 @@ Sound_Play(entity target, int chan, string shader)
 	}
 #endif
 
-#ifdef DEVELOPER
-	print(sprintf("Sound_Play: %s\n", argv(r)));
-#endif
+	SndLog("Playing %S", argv(r));
 
 #ifdef SERVER
 	if (g_sounds[sample].shakes > 0.0) {
@@ -688,7 +673,7 @@ Sound_Play(entity target, int chan, string shader)
 		pointparticles(g_sounds[sample].pointparticle, target.origin, [0,0,0], 1);
 #else
 	if (g_sounds[sample].pointparticle)
-		print(sprintf("SoundDef %S is attempting to spawn a particle on the server side.\n", shader));
+		NSWarning("SoundDef %S is attempting to spawn a particle on the server side.", shader);
 #endif
 
 	sound(
@@ -723,7 +708,7 @@ Sound_PlayAt(vector pos, string shader)
 	sample = (int)hash_get(g_hashsounds, shader, -1);
 
 	if (sample < 0) {
-		SndLog("^1Sound_PlayAt: def %s is not precached\n", shader);
+		NSError("SoundDef %S is not precached", shader);
 		return;
 	}
 
@@ -779,7 +764,7 @@ Sound_PlayLocal(string shader)
 	sample = (int)hash_get(g_hashsounds, shader, -1);
 
 	if (sample < 0) {
-		SndLog("^1Sound_PlayLocal: def %s is not precached\n", shader);
+		NSError("SoundDef %S is not precached", shader);
 		return;
 	}
 
@@ -865,7 +850,7 @@ Sound_Speak(entity target, string shader)
 	sample = (int)hash_get(g_hashsounds, shader, -1);
 
 	if (sample < 0) {
-		SndLog("^1Sound_Speak: def %s is not precached (SERVER)\n", shader);
+		NSError("SoundDef %S is not precached", shader);
 		return;
 	}
 

@@ -270,10 +270,7 @@ path_track::PathEndTrigger(entity activatingEntity, triggermode_t triggerMode)
 	for (entity f = world; (f = find(f, ::targetname, m_strEndTrigger));) {
 		NSTrigger trigger = (NSTrigger)f;
 
-		NSLog("^2%s::^3PathEndTrigger^7:" \
-		       "Triggering %s `%s` from %s", \
-		        classname, f.classname, \
-		        trigger.targetname, activatingEntity.classname);
+		EntLog("Triggering %S %S from %S", f.classname, trigger.targetname, activatingEntity.classname);
 
 		if (trigger.Trigger != __NULL__) {
 			trigger.Trigger(activatingEntity, triggerMode);

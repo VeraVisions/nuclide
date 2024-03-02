@@ -11,6 +11,10 @@ safe_copy()
 
 radiant_build()
 {
+	if [ "$SKIP_RADIANT" = "1" ]; then
+		exit 0
+	fi
+
 	./make_mapdef.sh "$1"
 
 	# copy files over to RADIANT

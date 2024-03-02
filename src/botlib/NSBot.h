@@ -39,7 +39,7 @@ typedef enum
 	BOT_STATE_FLEEING		/**< this is for when the AI should just get as far away as possible */
 } botstate_t;
 
-/** Base class for the Bot AI.
+/** A virtual multiplayer opponent. Base class for all bots.
 */
 class NSBot:player
 {

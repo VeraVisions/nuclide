@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2024 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -30,12 +30,34 @@
 
 var bool autocvar_s_developer = false;
 void
-_Sound_Log(string msg)
+_SndLog(string functionName, string msg)
 {
-	if (autocvar_s_developer == true)
-		print(sprintf("%f %s\n", time, msg));
+	if (autocvar_g_developerTimestamps)
+		print(sprintf("^9%f ^xF50%s^7: %s\n", time, functionName, msg));
+	else
+		print(sprintf("^xF50%s^7: %s\n", functionName, msg));
 }
-#define SndLog(...) _Sound_Log(sprintf(__VA_ARGS__))
+
+/** Logs an sound system specific log message.
+	 The console variable `s_developer` has to be `1` for them to be visible.
+
+@param description(...) contains a formatted string containing a description. */
+#define SndLog(...) if (autocvar_s_developer) _SndLog(__FUNC__, sprintf(__VA_ARGS__))
+
+void
+_SndEntLog(string className, string functionName, float edictNum, string warnMessage)
+{
+	if (autocvar_g_developerTimestamps)
+		print(sprintf("^9%f ^xF50%s (id: %d)^7: %s\n", time, functionName, edictNum, warnMessage));
+	else
+		print(sprintf("^xF50%s (id: %d)^7: %s\n", functionName, edictNum, warnMessage));
+}
+
+/** Logs an sound specific entity class log message.
+	 The console variable `s_developer` has to be `1` for them to be visible.
+
+@param description(...) contains a formatted string containing a description. */
+#define SndEntLog(...) if (autocvar_s_developer) _SndEntLog(classname, __FUNC__, num_for_edict(this), sprintf(__VA_ARGS__))
 
 /** Global hash table for name > soundDef id lookup. */
 var hashtable g_hashsounds;

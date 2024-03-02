@@ -37,7 +37,8 @@ Master_Resolve(void)
 	dprint("...\n");
 
 	if (!out) {
-		dprint("Failed to resolve address.\n");
+		NSError("Failed to resolve master server address.");
+		return __NULL__;
 	}
 
 	return out;
@@ -51,6 +52,7 @@ Master_GetTotalServers(void)
 	if (a) {
 		NSLog("Master reports a total of %i servers.", a);
 	}
+
 	return gethostcachevalue(SLIST_HOSTCACHETOTALCOUNT);
 }
 
@@ -95,7 +97,8 @@ Master_RecountServers(void)
 void
 Master_RefreshCache(void)
 {
-	dprint("Refreshing host cache...\n");
+	NSLog("Refreshing host cache...");
+
 	resethostcachemasks();
 	sethostcachemaskstring(0, gethostcacheindexforkey("gamedir"), cvar_string("game"), SLIST_TEST_EQUAL);
 	sethostcachesort(gethostcacheindexforkey("ping"), FALSE);
@@ -112,7 +115,7 @@ Master_RefreshCache(void)
 void
 Master_UpdateCache(void)
 {
-	dprint("Updating host cache...\n");
+	NSLog("Updating host cache...");
 	resethostcachemasks();
 	sethostcachemaskstring(0, gethostcacheindexforkey("gamedir"), cvar_string("game"), SLIST_TEST_EQUAL);
 	sethostcachesort(gethostcacheindexforkey("ping"), FALSE);

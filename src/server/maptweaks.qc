@@ -47,6 +47,8 @@ MapTweaks_Init(void)
 	string newCvar, newInfo, newItem;
 	int atTweak = 0i;
 
+	InitStart();
+
 	tweakFile = fopen("scripts/maptweaks.txt", FILE_READ);
 	g_mapTweakCount = 0;
 	newCvar = newInfo = newItem = "";
@@ -60,6 +62,8 @@ MapTweaks_Init(void)
 			}
 		}
 	} else {
+		NSError("Missing file scripts/maptweaks.txt");
+		InitEnd();
 		return;
 	}
 
@@ -97,6 +101,7 @@ MapTweaks_Init(void)
 	}
 
 	fclose(tweakFile);
+	InitEnd();
 }
 
 static bool

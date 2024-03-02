@@ -96,7 +96,8 @@ EFX_Load(string efx_file)
 	g_efx_name = (string *)memrealloc(g_efx_name, sizeof(string), i, g_efx_count);
 #else
 	if (g_efx_count > EFXDATA_MAX) {
-		error(sprintf("EFX_Load: Reached EFXDATA_MAX (%d)\n", EFXDATA_MAX));
+		NSError("EFX_Load: Reached EFXDATA_MAX (%d)", EFXDATA_MAX);
+		return (0);
 	}
 #endif
 
@@ -210,7 +211,7 @@ EFX_Load(string efx_file)
 		}
 	}
 
-	print(sprintf("parsed EFXDef file %s\n", efx_file));
+	NSLog("parsed EFXDef file %S", efx_file);
 	fclose(fh);
 	return i;
 }
@@ -318,7 +319,7 @@ EFX_UpdateListener(NSView playerView)
 	}
 	g_flEFXTime += clframetime;
 #else
-	NSLog("EFX_UpdateListener: Changed style to %s (%i)", 
+	SndLog("Changed style to %s (%i)", 
 		g_efx_name[g_iEFX], g_iEFX);
 
 	old_dsp = g_iEFX;
@@ -332,14 +333,14 @@ EFX_Init(void)
 	int efx_default;
 	int efx_underwater;
 
-	print("--------- Initializing EFXDefs ----------\n");
+	InitStart();
 
 #ifndef EFXDATA_DYNAMIC
 	g_efx = (reverbinfo_t *)memalloc(sizeof(reverbinfo_t) * EFXDATA_MAX);
 	g_efx_name = (string *)memalloc(sizeof(string) * EFXDATA_MAX);
-	print(sprintf("allocated %d bytes for EFXDefs.\n", (sizeof(string) * EFXDATA_MAX) + (sizeof(reverbinfo_t) * EFXDATA_MAX)));
+	NSLog("...allocated %d bytes for EFXDefs.", (sizeof(string) * EFXDATA_MAX) + (sizeof(reverbinfo_t) * EFXDATA_MAX));
 #else
-	print("dynamic allocation for EFXDefs enabled.\n");
+	NSLog("...dynamic allocation for EFXDefs enabled.");
 #endif
 
 	efx_default = EFX_Load("default");
@@ -354,6 +355,7 @@ EFX_Init(void)
 
 	setup_reverb(12, &g_efx[g_iEFX], sizeof(reverbinfo_t));
 	setup_reverb(10, &g_efx[efx_underwater], sizeof(reverbinfo_t));
+	InitEnd();
 }
 
 void

@@ -53,16 +53,15 @@ Fade_Update (int x, int y, int w, int h)
 	if (pSeat->m_iFadeActive == FALSE) {
 		return;
 	}
+	pSeat->m_flFadeAlpha = 1.0f;
+
 	if (pSeat->m_flFadeStyle & EVF_FADEDROM) {
-		pSeat->m_flFadeAlpha = 1.0f;
 		if (pSeat->m_flFadeTime > pSeat->m_flFadeDuration) {
 			pSeat->m_flFadeAlpha -= (pSeat->m_flFadeTime - pSeat->m_flFadeDuration) * (1.0 / pSeat->m_flFadeHold);
 		}
 	} else {
 		if (pSeat->m_flFadeTime < pSeat->m_flFadeDuration) {
 			pSeat->m_flFadeAlpha = pSeat->m_flFadeTime * (1.0 / pSeat->m_flFadeDuration);
-		} else {
-			pSeat->m_flFadeAlpha = (pSeat->m_flFadeTime - pSeat->m_flFadeDuration) * (1.0 / pSeat->m_flFadeHold);
 		}
 	}
 

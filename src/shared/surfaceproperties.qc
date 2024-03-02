@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2024 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -175,7 +175,7 @@ SurfData_Load(string type)
 	index = (int)hash_get(g_hashsurfdata, type, -1);
 
 	if (index < 0) {
-		crossprint(sprintf("^1 SurfData_Load: type %s is not defined\n", type));
+		NSError("SurfData %S is not defined.", type);
 		return -1;
 	} else {
 		return index;
@@ -207,7 +207,7 @@ SurfData_CountLine(string line)
 	default:
 		/* new definition starts */
 		if (c == 1 && braced == 0) {
-			t_name = strtolower(line);
+			t_name = strtolower(argv(0));
 
 			if (t_name)
 				g_surfdata_count++;
@@ -312,7 +312,7 @@ SurfData_Init(void)
 	string line;
 	int index;
 
-	print("--------- Initializing Surface Data ----------\n");
+	InitStart();
 
 	/* remove old data */
 	SurfData_Shutdown();
@@ -328,7 +328,7 @@ SurfData_Init(void)
 
 	/* it's OK for one to not exist... */
 	if (fh < 0) {
-		print("^1[SURFDATA] Can't find surfaceproperties.txt\n");
+		NSError("missing scripts/surfaceproperties.txt!");
 		return;
 	}
 
@@ -339,7 +339,7 @@ SurfData_Init(void)
 
 	/* we did not find 'default' as the first entry. */
 	if (g_spDefaultSet == false) {
-		error("^1no 'default' defined at the top of scripts/surfaceproperties.txt");
+		NSError("no 'default' defined at the top of scripts/surfaceproperties.txt!");
 		return;
 	}
 
@@ -394,7 +394,8 @@ SurfData_Init(void)
 		Sound_Precache(g_surfdata[i].m_sndBreak);
 	}
 
-	print(sprintf("surface data initialized with %i entries.\n", g_surfdata_count));
+	NSLog("...SurfData initialized with %i entries.", g_surfdata_count);
+	InitEnd();
 }
 
 static string g_curSurfData;
@@ -474,11 +475,6 @@ SurfData_Impact_Parse(void)
 	string impactfx = SurfData_GetInfo(SurfData_TexToSurfData(tex_name), SURFDATA_FX_BULLETIMPACT);
 	float impactid = SurfData_GetInfo(SurfData_TexToSurfData(tex_name), SURFDATA_FX_BULLETIMPACTID);
 
-	NSLog("SurfData_Impact_Parse:");
-	NSLog("\tent: %S texture: %S", surfnum.classname, tex_name);
-	NSLog("\tplaying impact sfx %S at %v", impactsfx, impactorg);
-	NSLog("\temitting impact fx %S at %v", impactfx, impactorg);
-
 	Sound_PlayAt(impactorg, impactsfx);
 	pointparticles( impactid, impactorg, impactang, 1 );
 }
@@ -520,7 +516,6 @@ SurfData_Impact(entity e, vector org, vector ang)
 		if (trace_surfacename != "") {
 			string n = strcat(dirname(e.model), "/", trace_surfacename);
 			int texdata = SurfData_TexToSurfData(n);
-			NSLog("SurfData_Impact: %S %i\n", n, texdata);
 			SurfData_ImpactID_Net(texdata, org, ang);
 		} else
 			SurfData_Impact_SurfaceParm(e, org, ang);

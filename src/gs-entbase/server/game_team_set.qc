@@ -55,7 +55,7 @@ game_team_set::Trigger(entity activatorEntity, triggermode_t state)
 	toChange = (game_team_master)GetTargetEntity();
 
 	if (!toChange) {
-		NSEntWarning("Unable to find game_team_master named %S", GetTriggerTarget());
+		EntWarning("Unable to find game_team_master named %S", GetTriggerTarget());
 		return;
 	}
 

@@ -168,35 +168,13 @@ monstermaker::TurnOff(void)
 void
 monstermaker::TurnOn(void)
 {
-	ScheduleThink(Spawner, m_flDelay);
+	ScheduleThink(Spawner, 0.0f);
 	m_iValue = 1;
 }
 
 void
 monstermaker::Spawner(void)
 {
-	static void monstermaker_spawnunit(void) {
-		/* these will get overwritten by the monster spawnfunction */
-		vector neworg = self.origin;
-		vector newang = self.angles;
-		string tname = self.netname;
-
-		/* prevent us from being deleted by callfunction() */
-		self.spawnflags |= MSF_MULTIPLAYER;
-
-		/* become the classname assigned */
-		NSMonster t = (NSMonster)self;
-		callfunction(self.classname);
-
-		/* apply the saved values back */
-		t.origin = t.m_oldOrigin = neworg;
-		t.angles = t.m_oldAngle = newang;
-		t.targetname = tname;
-
-		/* spawn anew */
-		t.Respawn();
-	}
-
 	int c = 0;
 
 	/* look and count the buggers that are still around */
@@ -222,30 +200,31 @@ monstermaker::Spawner(void)
 		return;
 	}
 
-	if (isfunction(strcat("spawnfunc_", m_strMonster))) {
-		entity unit = spawn();
-		unit.classname = strcat("spawnfunc_", m_strMonster);
-		unit.netname = m_strChildName;
-		unit.think = monstermaker_spawnunit;
-		unit.nextthink = time + 0.1f;
-		unit.real_owner = this;
-		NSLog("^2monstermaker::^3Trigger^7: Spawning %s", m_strMonster);
-		setorigin(unit, origin);
-		unit.angles = angles;
-		m_iMonsterSpawned++;
+	NSEntity unit = Entity_CreateClass(m_strMonster);
 
-		if (target) {
-			UseTargets(this, TRIG_TOGGLE, 0.0f);
-		}
-
-		/* inherit the monsterclip flag */
-		if (HasSpawnFlags(MMF_MONSTERCLIP)) {
-			unit.spawnflags |= MSF_MONSTERCLIP;
-		}
-	} else {
-		NSLog("^1monstermaker::^3Trigger^7: cannot call spawnfunction for %s", m_strMonster);
+	if (!unit) {
+		EntError("Cannot call spawnfunction for %s", m_strMonster);
 		Destroy();
 		return;
+	}
+
+	unit.real_owner = this;
+	EntLog("Spawning %s", m_strMonster);
+	unit.SetOrigin(GetOrigin());
+	unit.SetAngles(GetAngles());
+	unit.m_oldOrigin = GetOrigin();
+	unit.m_oldAngle = GetAngles();
+	unit.targetname = m_strChildName;
+
+	m_iMonsterSpawned++;
+
+	if (target) {
+		UseTargets(this, TRIG_TOGGLE, 0.0f);
+	}
+
+	/* inherit the monsterclip flag */
+	if (HasSpawnFlags(MMF_MONSTERCLIP)) {
+		unit.spawnflags |= MSF_MONSTERCLIP;
 	}
 
 	/* shut off for good when we've spawned all we ever wanted */

@@ -294,8 +294,8 @@ multi_manager::Trigger(entity act, triggermode_t state)
 		
 		entity eFind = find(world, ::targetname, wow.target);
 
-		NSLog("^2%s::^3Trigger^7: %s (%s)", 
-			this.classname, wow.target, eFind.classname);
+		EntLog("Triggering %S (%S)", 
+			wow.target, eFind.classname);
 
 		wow.m_iValue = TRUE;
 		UseTargets(wow.m_eActivator, TRIG_TOGGLE, 0.0f);

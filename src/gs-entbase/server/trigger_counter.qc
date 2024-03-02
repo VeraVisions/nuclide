@@ -116,9 +116,7 @@ trigger_counter::Trigger(entity act, triggermode_t state)
 
 	m_iCounted++;
 
-	NSLog("^2trigger_counter::^3Trigger^7: " \
-	       "Incremented '%s' by 1 (%i/%i)\n", \
-	       targetname, m_iCounted, m_iMaxCount);
+	EntLog("Incremented '%s' by 1 (%i/%i)\n", targetname, m_iCounted, m_iMaxCount);
 
 	if (m_iCounted < m_iMaxCount)
 		return;

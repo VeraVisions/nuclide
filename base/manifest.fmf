@@ -1,0 +1,13 @@
+FTEMANIFEST 1
+NAME "Test Game"
+GAME base
+BASEGAME platform
+BASEGAME base
+
+// you don't really want to change these
+RTCBROKER master.frag-net.com:27950
+PROTOCOLNAME "Nuclide"
+MAINCONFIG nuclide.cfg
+DOWNLOADSURL ""
+
+-exec platform_default.cfg

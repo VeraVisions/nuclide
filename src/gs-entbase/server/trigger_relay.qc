@@ -116,7 +116,7 @@ void
 trigger_relay::Trigger(entity act, triggermode_t state)
 {
 	if (m_iEnabled == FALSE) {
-		NSLog("trigger_relay (%s) has already been triggered", targetname);
+		EntLog("trigger_relay (%s) has already been triggered", targetname);
 		return;
 	}
 
@@ -125,6 +125,6 @@ trigger_relay::Trigger(entity act, triggermode_t state)
 	}
 
 	m_iValue = TRUE;
-	NSLog("trigger_relay (%s) will trigger %s with state %d", targetname, target, m_iTriggerState);
+	EntLog("trigger_relay (%s) will trigger %s with state %d", targetname, target, m_iTriggerState);
 	UseTargets(act, m_iTriggerState, m_flDelay);
 }

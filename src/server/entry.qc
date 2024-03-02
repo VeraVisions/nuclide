@@ -89,6 +89,8 @@ ClientDisconnect(void)
 	/* this will hide/remove the player from other clients */
 	player pl = (player)self;
 	pl.Disappear();
+	pl.classname = "";
+	pl.flags = 0;
 }
 
 /** Called by the `kill` console command.
@@ -147,6 +149,12 @@ PutClientInServer(void)
 
 	/* handle transitions */
 	if (whichpack("data/trans.dat")) {
+		
+		for (entity a = world; (a = findfloat(a, ::identity, 1));) {
+			NSEntity levelEnt = (NSEntity)a;
+			levelEnt.TransitionComplete();
+		}
+
 		trigger_transition::LoadTransition();
 	}
 
@@ -232,7 +240,7 @@ The `self` global does not refer to anything.
 void
 SetNewParms(void)
 {
-	print("--------- Setting New Level Parameters ----------\n");
+	InitPrint("Setting New Level Parameters");
 
 	if (g_ents_initialized)
 		g_grMode.LevelNewParms();
@@ -248,7 +256,7 @@ allocated for every client.
 void
 SetChangeParms(void)
 {
-	print("--------- Setting Level-Change Parameters ----------\n");
+	InitPrint("Setting Level-Change Parameters");
 
 	if (g_ents_initialized)
 		g_grMode.LevelChangeParms((NSClientPlayer)self);
@@ -358,9 +366,9 @@ So avoid calling spawn() related functions here. */
 void
 init(float prevprogs)
 {
-	print("--------- Initializing Server Game ----------\n");
-	print("Built: " __DATE__ " " __TIME__"\n");
-	print("QCC: " __QCCVER__ "\n");
+	InitPrint("Initializing Server Game");
+	NSLog("Built: %s %s", __DATE__, __TIME__);
+	NSLog("QCC: %s", __QCCVER__);
 
 	Plugin_Init();
 
@@ -369,7 +377,6 @@ init(float prevprogs)
 	PropData_Init();
 	SurfData_Init();
 	DecalGroups_Init();
-	Skill_Init();
 
 	/* DO NOT EVER CHANGE THESE. */
 	cvar_set("r_meshpitch", "1");
@@ -391,7 +398,9 @@ init_respawn(void)
 		endspawn++;
 	}
 
-	print(sprintf("...%i entities spawned (%i inhibited)\n", g_ent_spawned, g_ent_spawned - endspawn));
+	NSLog("...%i entities spawned (%i inhibited)", g_ent_spawned, g_ent_spawned - endspawn);
+
+	InitEnd();
 
 	remove(self);
 }
@@ -464,7 +473,7 @@ initents(void)
 	g_ents_initialized = TRUE;
 
 	/* engine hacks for dedicated servers */
-	cvar_set("s_nominaldistance", "1024");
+	cvar_set("s_nominaldistance", "1536");
 
 	/* other engine hacks */
 	cvar_set("sv_nqplayerphysics", "0");
@@ -518,7 +527,11 @@ ConsoleCmd(string cmd)
 	tokenize(cmd);
 	switch (argv(0)) {
 	case "addBot":
-		Bot_AddBot_f(strtolower(argv(1)));
+		string botProfile = strtolower(argv(1));
+		float teamValue = stof(argv(2));
+		float spawnDelay = stof(argv(3));
+		string newName = argv(4);
+		Bot_AddBot_f(botProfile, teamValue, spawnDelay, newName);
 		break;
 	case "killAllBots":
 		Bot_KillAllBots();
@@ -597,6 +610,12 @@ ConsoleCmd(string cmd)
 		if (finder)
 			setorigin(pl, finder.origin);
 		break;
+	case "renetworkEntities":
+		for (entity a = world; (a = findfloat(a, ::identity, 1));) {
+			NSEntity ent = (NSEntity)a;
+			ent.SendFlags = -1;
+		}
+		break;
 	case "respawnEntities":
 		for (entity a = world; (a = findfloat(a, ::identity, 1));) {
 			NSEntity ent = (NSEntity)a;
@@ -658,7 +677,7 @@ SV_PerformLoad(float fh, float entcount, float playerslots)
 	NSEntity loadent = __NULL__;
 	int num_loaded = 0i;
 
-	print("--------- Loading Existing Save ----------\n");
+	InitPrint("Loading Existing Save");
 	g_isloading = true;
 
 #if 0
@@ -695,7 +714,7 @@ SV_PerformLoad(float fh, float entcount, float playerslots)
 #ifndef REEDICT
 			n = stof(argv(1));
 			e = edict_num(n);
-			print(sprintf("Creating %s (edict %d)\n", cname, n));
+			NSLog("Creating %s (edict %d)", cname, n);
 #else
 			entity e = spawn();
 #endif
@@ -719,7 +738,7 @@ SV_PerformLoad(float fh, float entcount, float playerslots)
 				loadent = (NSEntity)e;
 				self = eold;
 			} else {
-				print(sprintf("Could not spawn %s\n", cname));
+				NSError("Could not spawn %s", cname);
 				remove(e);
 				self = eold;
 				continue;
@@ -729,7 +748,7 @@ SV_PerformLoad(float fh, float entcount, float playerslots)
 			if (loadent) {
 				loadent.RestoreComplete();
 				num_loaded++;
-				print(sprintf("completed %s (edict %d)\n\n", loadent.classname, n));
+				NSLog("completed %s (edict %d)", loadent.classname, n);
 				loadent = __NULL__;
 			}
 		} else {
@@ -744,7 +763,7 @@ SV_PerformLoad(float fh, float entcount, float playerslots)
 		}
 	}
 
-	print(sprintf("loaded %i entities\n", num_loaded));
+	NSLog("...loaded %i entities", num_loaded);
 	g_isloading = false;
 }
 
@@ -759,7 +778,7 @@ SV_PerformSave(float fh, float entcount, float playerslots)
 	int num_saved = 0i;
 	entity e;
 
-	print("--------- Performing Save ----------\n");
+	InitPrint("Performing Save");
 
 	for (i = 0; i < entcount; i++) {
 		NSEntity willsave;
@@ -782,7 +801,7 @@ SV_PerformSave(float fh, float entcount, float playerslots)
 		num_saved++;
 	}
 	fclose(fh);
-	print(sprintf("saved %i entities\n", num_saved));
+	NSLog("saved %i entities", num_saved);
 }
 
 /** Called by the engine to check with us if a spawn function exists.
@@ -793,17 +812,20 @@ to remove in case we won't initialize it.
 void
 CheckSpawn(void() spawnfunc)
 {
-	if (MapTweak_EntitySpawn(self))
-		return;
-	if (EntityDef_SpawnClassname(self.classname))
-		return;
+	string desiredClass = self.classname;
 
-	if (spawnfunc) {
+	if (MapTweak_EntitySpawn(self)) {
+		self._mapspawned = true;
+		self.classname = desiredClass;
+	} else if (EntityDef_SpawnClassname(desiredClass)) {
+		self._mapspawned = true;
+	} else if (spawnfunc) {
 		spawnfunc();
+		self.classname = desiredClass;
 		self._mapspawned = true;
 		g_ent_spawned++;
 	} else {
-		print(sprintf("^1Cannot find entity class ^7%s\n", self.classname));
+		NSError("Unable to spawn %s", desiredClass);
 		remove(self);
 	}
 

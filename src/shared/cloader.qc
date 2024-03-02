@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Vera Visions LLC.
+ * Copyright (c) 2023-2024 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -28,6 +28,8 @@ Constants_Init(void)
 	int arguments = 0i;
 	int indexCount = 0i;
 
+	InitStart();
+
 	if (!g_hashConstants) {
 		g_hashConstants = hash_createtab(2, HASH_ADD);
 	}
@@ -35,7 +37,8 @@ Constants_Init(void)
 	constFile = fopen("scripts/constants.txt", FILE_READ);
 
 	if (constFile < 0) {
-		print("Unable to load scripts/constants.txt");
+		NSError("Missing file scripts/constants.txt");
+		InitEnd();
 		return;
 	}
 
@@ -48,7 +51,8 @@ Constants_Init(void)
 
 		/* sanity bounds check */
 		if (indexCount == MAX_CONSTANTS_ID) {
-			print("Constants_Init: Hit maximum number of constants.\n");
+			NSError("Hit maximum number of %d constants.", MAX_CONSTANTS_ID);
+			InitEnd();
 			return;
 		}
 
@@ -56,6 +60,8 @@ Constants_Init(void)
 		hash_add(g_hashConstants, argv(0), indexCount);
 		indexCount++;
 	}
+
+	InitEnd();
 }
 
 string

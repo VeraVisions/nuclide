@@ -154,3 +154,4 @@ void main(void)
 
 NSEntity EntityDef_SpawnClassname(string className);
 NSEntity EntityDef_CreateClassname(string className);
+NSEntity Entity_CreateClass(string className);

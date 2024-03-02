@@ -142,10 +142,10 @@ func_trackchange::MoverStartsMoving(void)
 		ourTrain.SetVelocity(GetVelocity());
 		ourTrain.SetAngularVelocity(GetAngularVelocity());
 		ourTrain.ScheduleThink(ClearVelocity, 100.0f);
-		print(sprintf("Changing %s to have no target\n", m_strTrainName));
-		print(sprintf("%v %v\n", GetVelocity(), GetAngularVelocity()));
+		EntLog("Changing %s to have no target.", m_strTrainName);
+		EntLog("Velocity: %v; Angular Velocity: %v", GetVelocity(), GetAngularVelocity());
 	} else {
-		print(sprintf("No train to go with trackchange %s\n", targetname));
+		EntLog("No train to go with trackchange %S", targetname);
 	}
 }
 
@@ -159,13 +159,13 @@ func_trackchange::MoverFinishesMoving(void)
 		ourTrain.ClearVelocity();
 
 		if (GetMoverState() == MOVER_POS1) {
-			print(sprintf("Changing %s from %s to %s\n", m_strTrainName, m_strBottomTrack, m_strTopTrack));
+			EntLog("Changing %S from %S to %S", m_strTrainName, m_strBottomTrack, m_strTopTrack);
 			ourTrain.target = m_strTopTrack;
 		} else {
-			print(sprintf("Changing %s from %s to %s\n", m_strTrainName, m_strBottomTrack, m_strBottomTrack));
+			EntLog("Changing %S from %S to %S", m_strTrainName, m_strBottomTrack, m_strBottomTrack);
 			ourTrain.target = m_strBottomTrack;
 		}
 	} else {
-		print(sprintf("No train to go with trackchange %s\n", targetname));
+		EntLog("No train to go with trackchange %S", targetname);
 	}
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2024 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -137,3 +137,47 @@ public:
 };
 
 .bool _mapspawned;
+
+void
+_NSEntLog(string className, string functionName, float edictNum, string warnMessage)
+{
+	if (autocvar_g_developerTimestamps)
+		print(sprintf("^9%f ^7%s (%d)^7: %s\n", time, className, edictNum, warnMessage));
+	else
+		print(sprintf("^7%s (%d)^7: %s\n", className, edictNum, warnMessage));
+}
+
+void
+_NSEntWarning(string className, string functionName, float edictNum, string warnMessage)
+{
+	if (autocvar_g_developerTimestamps)
+		print(sprintf("^9%f ^3%s (%d)^7: %s\n", time, functionName, edictNum, warnMessage));
+	else
+		print(sprintf("^3%s (%d)^7: %s\n", functionName, edictNum, warnMessage));
+}
+
+void
+_NSEntError(string className, string functionName, float edictNum, string warnMessage)
+{
+	if (autocvar_g_developerTimestamps)
+		print(sprintf("^9%f ^1%s (id: %d)^7: %s\n", time, functionName, edictNum, warnMessage));
+	else
+		print(sprintf("^1%s (id: %d)^7: %s\n", functionName, edictNum, warnMessage));
+}
+/** Logs an entity class specific log message, with detailed info.
+	 The console variable `entity_developer` has to be `1` for them to be visible.
+
+@param description(...) contains a formatted string containing a description. */
+#define EntLog(...) if (autocvar_g_developer) _NSEntLog(classname, __FUNC__, num_for_edict(this), sprintf(__VA_ARGS__))
+
+/** Logs an entity class specific warning message, with detailed info.
+	 The console variable `entity_developer` has to be `1` for them to be visible.
+
+@param description(...) contains a formatted string containing a description. */
+#define EntWarning(...) _NSEntWarning(classname, __FUNC__, num_for_edict(this), sprintf(__VA_ARGS__))
+
+/** Logs an entity class specific error message, with detailed info.
+	 The console variable `entity_developer` has to be `1` for them to be visible.
+
+@param description(...) contains a formatted string containing a description. */
+#define EntError(...) _NSEntError(classname, __FUNC__, num_for_edict(this), sprintf(__VA_ARGS__))

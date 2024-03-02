@@ -268,7 +268,7 @@ NSInteractiveSurface::NSInteractiveSurface(void)
 	m_flScale = 0.25f;
 	m_flUseDistance = 64;
 	m_strSurfaceMat = sprintf("UISurface%d", num_for_edict(this));
-	print(sprintf("Surface mat: %S\n", m_strSurfaceMat));
+	EntLog("UI surface material: %S\n", m_strSurfaceMat);
 	drawmask = MASK_ENGINE;
 	m_bCached = false;
 	isCSQC = true;

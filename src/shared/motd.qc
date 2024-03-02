@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Vera Visions LLC.
+ * Copyright (c) 2024 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -22,7 +22,9 @@ static int g_motd_lines;
 void
 MOTD_Init(void)
 {
+	InitStart();
 #ifdef SERVER
+
 	/* wipe the slate clean */
 	for (int i = 0; i < MOTD_LINES; i++) {
 		localcmd(sprintf("serverinfo motdline%i \"\"\n", i));
@@ -44,6 +46,7 @@ MOTD_Init(void)
 
 	g_motd_lines = motdLines;
 #endif
+	InitEnd();
 }
 
 #ifdef SERVER

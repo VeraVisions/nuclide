@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2024 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -37,6 +37,12 @@ NSTrigger::NSTrigger(void)
 }
 
 #ifdef SERVER
+void
+NSTrigger::Respawn(void)
+{
+	super::Respawn();
+	SetTriggerTarget( m_oldstrTarget );
+}
 
 bool
 NSTrigger::CanBeTriggeredBy(entity testEnt)
@@ -78,34 +84,27 @@ NSTrigger::CanBeTriggeredBy(entity testEnt)
 void
 NSTrigger::Trigger(entity act, triggermode_t state)
 {
-	NSLog("^2%s::^3Trigger^7: Triggered by %s with no consequence", 
-		classname, act.classname);
+	EntWarning("Triggered by %S with no consequence", act.classname);
 }
 
 void
-NSTrigger::UseTargets(entity act, int state, float fDelay)
+NSTrigger::UseTargets(entity act, int state, float triggerDelay)
 {
 	static void Entities_UseTargets_Think(void) {
 		NSTrigger::UseTargets(self.owner, self.health, 0.0f);
 		remove(self);
 	}
 
-	if not (target)
+	if (!m_strKillTarget && !target)
 		return;
 
-	if not (m_strKillTarget)
-		if not (target)
-			return;
-
-	if (fDelay > 0.0f) {
-		NSLog("^2%s::^3UseTargets^7: Triggering `%s`", 
-			classname, target);
-
+	if (triggerDelay > 0.0f) {
+		EntLog("Scheduling trigger of %S in %f seconds.", target, triggerDelay);
 		NSTrigger eTimer = spawn(NSTrigger);
 		eTimer.owner = act;
 		eTimer.think = Entities_UseTargets_Think;
 		eTimer.target = target;
-		eTimer.nextthink = time + fDelay;
+		eTimer.nextthink = time + triggerDelay;
 		eTimer.health = state;  /* ugly */
 	} else {
 		if (m_strMessage) {
@@ -115,10 +114,9 @@ NSTrigger::UseTargets(entity act, int state, float fDelay)
 		for (entity f = world; (f = find(f, ::targetname, target));) {
 			NSTrigger trigger = (NSTrigger)f;
 
-			NSLog("^2%s::^3UseTargets^7:" \
-			       "Triggering %s `%s` from %s", \
-			        classname, f.classname, \
-			        trigger.targetname, act.classname);
+			EntLog("Triggering %s %S, activator %S (%d)", \
+			        f.classname, trigger.targetname, \
+					act.classname, num_for_edict(act));
 
 			if (trigger.Trigger != __NULL__) {
 				trigger.Trigger(act, state);
@@ -127,8 +125,8 @@ NSTrigger::UseTargets(entity act, int state, float fDelay)
 
 		if (m_strKillTarget && m_strKillTarget != "") {
 			NSEntity eKill = (NSEntity)find(world, ::targetname, m_strKillTarget);
-			NSLog("^2%s::^3UseTargets^7: Killing `%s`", 
-				classname, m_strKillTarget);
+			EntLog("Killtargeting %S", m_strKillTarget);
+
 			if (eKill) {
 				eKill.Destroy();
 			}
@@ -175,18 +173,20 @@ NSTrigger::GetMaster(entity queryingEntity)
 
 	/* we couldn't find it, so let's not even bother going further */
 	if (!t) {
-		NSLog("^2%s::^3GetMaster^7: Invalid master (%s), return success", 
-			classname, m_strMaster);
+		/*NSLog("^2%s::^3GetMaster^7: Invalid master (%s), return success", 
+			classname, m_strMaster);*/
 		return (1);
 	}
 
+/*
 	if (t.GetValue(queryingEntity) == 1)
 		NSLog("^2%s::^3GetMaster^7: %s learns %s ^2POSITIVE", 
 			classname, targetname, m_strMaster);
 	else
 		NSLog("^2%s::^3GetMaster^7: %s learns %s ^1NEGATIVE", 
 			classname, targetname, m_strMaster);
-	
+*/
+
 	return t.GetValue(queryingEntity);
 }
 

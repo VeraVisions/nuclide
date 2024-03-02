@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2024 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -190,7 +190,7 @@ NSProjectile::SpawnKey(string strKey, string strValue)
 	case "explode_light_color":
 		m_vecExplodeLightColor = ReadVector(strValue);
 		break;
-	case "explode_light_radus":
+	case "explode_light_radius":
 		m_fExplodelLightRadius = ReadFloat(strValue);
 		break;
 	case "explode_light_fadetime":

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2023 Vera Visions LLC.
+ * Copyright (c) 2016-2024 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -104,7 +104,7 @@ Entity_SelectRandom(string className)
 
 	/* immediately exit out if we've got none */
 	if (max < 1i) {
-		print(sprintf("^1Error: %s is not present on this map.\n", className));
+		NSError("%S is not present on this map.", className);
 		return __NULL__;
 	}
 

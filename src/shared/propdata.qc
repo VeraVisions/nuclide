@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2024 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -276,6 +276,9 @@ PropData_ForModel(string modelname)
 	string line;
 	int index;
 
+	if (!g_propdata_count)
+		return -1;
+
 	if (!modelname)
 		return -1;
 
@@ -309,7 +312,7 @@ PropData_ForModel(string modelname)
 	g_propdata = (propdata_t *)memrealloc(g_propdata, sizeof(propdata_t), index, g_propdata_count);
 #else
 	if (g_propdata_count >= PROPDATA_MAX) {
-		printf(sprintf("PropData_ForModel: Reached PROPDATA_MAX (%d)\n", PROPDATA_MAX));
+		NSError("PropData_ForModel: Reached PROPDATA_MAX (%d)", PROPDATA_MAX);
 		return -1i;
 	}
 #endif
@@ -323,7 +326,7 @@ PropData_ForModel(string modelname)
 
 		if (fh < 0) {
 			g_propdata_count--;
-			NSLog("Can't find propdata for model %s", modelname);
+			NSWarning("No PropData for model %S", modelname);
 			return -1;
 		}
 
@@ -398,10 +401,7 @@ PropData_ForModel(string modelname)
 	}
 	fclose(fh);
 
-	dprint("^1[PROPDATA] No type found for ");
-	dprint(modelname);
-	dprint("\n");
-
+	NSError("No type found for %s", modelname);
 	return -1;
 }
 
@@ -418,7 +418,7 @@ PropData_Load(string type)
 	index = (int)hash_get(g_hashpropdata, type, -1);
 
 	if (index < 0) {
-		crossprint(sprintf("^1 PropData_Load: type %s is not defined\n", type));
+		NSError("PropData type %S is not defined.", type);
 		return -1;
 	} else {
 		return index;
@@ -541,11 +541,7 @@ PropData_Init(void)
 	string line;
 	int index;
 
-#ifdef SERVER
-	print("--------- Initializing PropDefs (SERVER) ----------\n");
-#else
-	print("--------- Initializing PropDefs (CLIENT) ----------\n");
-#endif
+	InitStart();
 
 	/* remove old data */
 	PropData_Shutdown();
@@ -561,7 +557,8 @@ PropData_Init(void)
 	/* Defaults go here */
 	fh = fopen("scripts/propdata.txt", FILE_READ);
 	if (fh < 0) {
-		print("^1[PROPDATA] Can't find propdata.txt\n");
+		NSWarning("Missing file scripts/propdata.txt");
+		InitEnd();
 		return;
 	}
 
@@ -578,8 +575,8 @@ PropData_Init(void)
 	/* alocate our stuff */
 	g_propdata = (propdata_t *)memalloc(sizeof(propdata_t) * PROPDATA_MAX);
 	g_breakmodel = (breakmodel_t *)memalloc(sizeof(breakmodel_t) * PROPDATA_MAX);
-	print(sprintf("allocated %d bytes for prop data.\n", sizeof(propdata_t) * PROPDATA_MAX));
-	print(sprintf("allocated %d bytes for breakmodels.\n", sizeof(breakmodel_t) * PROPDATA_MAX));
+	NSLog("...allocated %d bytes for prop data.", sizeof(propdata_t) * PROPDATA_MAX);
+	NSLog("...allocated %d bytes for breakmodels.", sizeof(breakmodel_t) * PROPDATA_MAX);
 #endif
 
 	fseek(fh, 0);
@@ -607,7 +604,6 @@ PropData_Init(void)
 			}
 
 			precache_model(mname);
-			NSLog("precaching break model: %S", mname);
 
 			/* gotta tokenize our inputs again */
 			x = tokenize(g_breakmodel[i].data);
@@ -619,7 +615,7 @@ PropData_Init(void)
 	}
 
 	g_breakmodel_end = g_breakmodel_count;
-	print("PropData initialized.\n");
+	InitEnd();
 }
 
 /* we can only tokenize one thing at a time, so we save the type for the current
@@ -717,8 +713,8 @@ BreakModel_SpawnID(vector smins, vector smaxs, vector dir, float speed, int coun
 						impactDecal = value;
 						break;
 					default:
-						print(sprintf("^1BreakModel_Spawn: Unrecognized model attribute %S with value %S\n",
-							key, value));
+						NSError("Unrecognized model attribute %S with value %S",
+							key, value);
 					}
 				}
 
@@ -801,11 +797,11 @@ BreakModel_Receive(void)
 
 	/* sanity check */
 	if (index >= g_breakmodel_count) {
-		print(sprintf("^1Unable to spawn breakmodel of id %i. Not cached on client. (Client knows of %i)\n", index, g_breakmodel_count));
+		NSError("Unable to spawn breakmodel of id %i. Not cached on client. (Client knows of %i)", index, g_breakmodel_count);
 		return;
 	}
 
-	//print(sprintf("i: %i max: %i name: %S\n", index, g_breakmodel_count, g_breakmodel[index].name));
+	NSLog("BreakModel: i: %i max: %i name: %S", index, g_breakmodel_count, g_breakmodel[index].name);
 
 	BreakModel_SpawnID(smins, smaxs, dir, speed, count, index);
 }
@@ -846,10 +842,13 @@ void
 BreakModel_Spawn(vector smins, vector smaxs, vector dir, float speed, int count, string type)
 {
 	int index;
+	vector pvsPosition;
 	index = (int)hash_get(g_hashbreakmodel, type, -1);
 
 	if (index == -1)
 		return;
+
+	pvsPosition = (smins + ( 0.5 * ( smaxs - smins )));
 
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_BREAKMODEL);
@@ -865,7 +864,7 @@ BreakModel_Spawn(vector smins, vector smaxs, vector dir, float speed, int count,
 	WriteCoord(MSG_MULTICAST, dir[2]);
 	WriteFloat(MSG_MULTICAST, speed);
 	WriteByte(MSG_MULTICAST, count);
-	multicast((smins - smaxs), MULTICAST_PVS);
+	multicast(pvsPosition, MULTICAST_PVS);
 }
 
 void

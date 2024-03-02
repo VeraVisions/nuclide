@@ -39,6 +39,6 @@ Sky_Update(int force)
 			return;
 
 		localcmd(sprintf("sky \"%s\"\n", skyPath));
-		print(sprintf("sky update applying %s.\n", skyPath));
+		NSLog("sky update applying %s.", skyPath);
 	}
 }

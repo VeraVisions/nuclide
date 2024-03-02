@@ -468,8 +468,11 @@ GameLibrary_InitCustom(void)
 	games = (gameinfo_t *)memrealloc(games, sizeof(gameinfo_t), old_count, (gameinfo_count + packageinfo_count));
 
 	/* The things we do for frequent flyer mileage. */
-	if (!games)
-		error(sprintf("Attempting to allocate mod data for %i entries failed\n", gameinfo_count));
+	if (!games) {
+		NSError("Attempting to allocate mod data for %i entries failed.", gameinfo_count);
+		crash();
+		return;
+	}
 
 	/* now loop through all the mods we found and load in the metadata */
 	for (id = 1; id < gameinfo_count; id++) {
@@ -533,12 +536,12 @@ GameLibrary_InitCustom(void)
 
 	/* we may have some mods, but we're not running any of them. Fatal */
 	if (gameinfo_current == -1) {
-		print("^1FATAL ERROR: NO LIBLIST.GAM FOR CURRENT MOD FOUND!\n");
+		NSError("No definition for current game found. Fatal.");
 		crash();
 		return;
 	}
 
-	print(sprintf("GameLibrary initialized (%i entries).\n", gameinfo_count));
+	NSLog("...GameLibrary initialized (%i entries).", gameinfo_count);
 }
 #endif
 
@@ -583,7 +586,7 @@ static void
 GameLibrary_EndInstall(void)
 {
 	int gid = g_iModInstallCache;
-	print(sprintf("Installation ended for %S!\n", g_strModInstallCache));
+	NSLog("Installation ended for %S.", g_strModInstallCache);
 	localcmd(sprintf("game %s\n", g_strModInstallCache));
 
 	localcmd("stopmusic\nsnd_restart\nwait\nvid_reload\n");
@@ -662,14 +665,13 @@ GameLibrary_InstallStart(int gameid)
 	for (int i = 0; i < count; i++) {
 		int pkgid = GameLibrary_IDForPackageName(argv(i));
 		localcmd(sprintf("pkg add %s\n", argv(i)));
-		print(sprintf("Marking package %s for install.\n",
-		      argv(i)));
+		NSLog("Marking package %s for install.", argv(i));
 	}
 
 	g_iModInstallCache = gameid;
 	g_strModInstallCache = games[gameid].gamedir;
 	localcmd("pkg apply\n");
-	print("Starting installation of custom game packages\n");
+	NSLog("Starting installation of custom game packages.");
 }
 
 void
@@ -678,14 +680,11 @@ GameLibrary_Install(int gameID)
 	string st;
 
 	if (gameID >= gameinfo_count || gameID < 0i) {
-		print(sprintf("GameLibrary_Install: Invalid game id %i!\n", gameID));
+		NSError("Invalid game id %i!\n", gameID);
 		return;
 	}
 
 	st = getpackagemanagerinfo(games[gameID].pkgid, GPMI_INSTALLED);
-
-	print(st);
-	print("\n");
 
 	if (st != "enabled") {
 		GameLibrary_InstallStart(gameID);
@@ -701,7 +700,7 @@ void
 GameLibrary_Activate(int gameID)
 {
 	if (gameID >= gameinfo_count || gameID < 0i) {
-		print(sprintf("GameLibrary_Activate: Invalid game id %i!\n", gameID));
+		NSError("Invalid game id %i.", gameID);
 		return;
 	}
 
@@ -757,7 +756,7 @@ __variant
 GameLibrary_GetGameInfo(int gameID, gameInfo_t infoType)
 {
 	if (gameID >= gameinfo_count || gameID < 0i) {
-		print(sprintf("GameLibrary_GetGameInfo: Invalid game id %i!\n", gameID));
+		NSError("Invalid game id %i.", gameID);
 		return __NULL__;
 	}
 
@@ -836,5 +835,5 @@ GameLibrary_DebugList(void)
 		print(sprintf("%i %s (%s)\n", i, games[i].game, games[i].gamedir));
 	}
 
-	print(sprintf("\t%i game(s) loaded\n", gameinfo_count));
+	print(sprintf("\t%i game(s) loaded.", gameinfo_count));
 }

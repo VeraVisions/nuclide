@@ -101,7 +101,7 @@ game_counter_set::Trigger(entity act, triggermode_t state)
 	if (GetMaster(act) == FALSE)
 		return;
 
-	NSLog("%s's manipulating %s to be %i", targetname, target, m_iCount);
+	EntLog("%s's manipulating %s to be %i", targetname, target, m_iCount);
 
 	/* apply the value to all the relevant game_counter entities */
 	for (entity f = world; (f = find(f, ::targetname, target));) {

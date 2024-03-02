@@ -99,7 +99,7 @@ env_sound::SpawnKey(string strField, string strKey)
 			int efx_alias = stoi(strKey);
 
 			if (efx_alias >= g_hlefx.length) {
-				NSEntWarning("invalid roomtype!");
+				EntWarning("invalid roomtype!");
 				m_iRoomType = 0;
 			} else
 				m_iRoomType = EFX_Load(g_hlefx[efx_alias]);

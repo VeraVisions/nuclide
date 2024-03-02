@@ -82,7 +82,7 @@ Platform_FileInGamedir(string fileName, string gameDir)
 	fileSearch = search_begin(fileName, SEARCH_FULLPACKAGE, TRUE);
 	fileCount = search_getsize(fileSearch);
 
-	print(sprintf("looking for %S in %S\n", fileName, gameDir));
+	NSLog("Looking for %S in %S", fileName, gameDir);
 
 	/* doesn't exist */
 	if (fileCount <= 0)
@@ -94,10 +94,12 @@ Platform_FileInGamedir(string fileName, string gameDir)
 		fileDir = substring(fullPath, 0, strlen(gameDir)); /* only need to check same-ness */
 
 		if (fileDir == gameDir) {
-			print("found it\n");
+			NSLog("Found %S in %S", fileName, gameDir);
 			return true;
 		}
 	}
+
+	NSError("Did not find %S in %S", fileName, gameDir);
 
 	/* file exists but is in a different gamedir */
 	return false;

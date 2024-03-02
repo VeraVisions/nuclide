@@ -112,7 +112,7 @@ Way_Init(void)
 								"3.\tFlag ^1WALK^7 (2 steps)\n" \
 								"4.\tFlag ^4AIM^7 (2 steps)\n" \
 								"5.\tFlag ^4USE^7 (2 steps)\n" \
-								"\n" \
+								"6.\tFlag ^6HAZARDOUS^7 (2 steps)\n" \
 								"\n" \
 								"\n" \
 								"9.\tBack\n";
@@ -293,19 +293,22 @@ WAY_FLAGS(int n)
 {
 	switch (n) {
 	case 1:
-		localcmd("sv way linkjump\n");
+		localcmd("sv way flag 2\n");
 		break;
 	case 2:
-		localcmd("sv way linkcrouch\n");
+		localcmd("sv way flag 4\n");
 		break;
 	case 3:
-		localcmd("sv way linkwalk\n");
+		localcmd("sv way flag 16\n");
 		break;
 	case 4:
-		localcmd("sv way linkaim\n");
+		localcmd("sv way flag 32\n");
 		break;
 	case 5:
-		localcmd("sv way linkuse\n");
+		localcmd("sv way flag 64\n");
+		break;
+	case 6:
+		localcmd("sv way flag 128\n");
 		break;
 	case 9:
 		Textmenu_Call("WAY_MENU");

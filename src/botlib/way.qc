@@ -234,7 +234,7 @@ Way_SetRadius(int iID, float flRadValue)
 }
 
 void
-Way_FlagJump(void)
+Way_LinkFlag(int linkFlag)
 {
 	if (g_waylink_status == 0) {
 		g_way1 = Way_FindClosestNode(self.origin);
@@ -256,144 +256,8 @@ Way_FlagJump(void)
 			Way_LinkNodes(&g_pWaypoints[g_way1], &g_pWaypoints[g_way2]);
 			for (int b = 0i; b < g_pWaypoints[g_way1].m_numNeighbours; b++) {
 				if (g_pWaypoints[g_way1].m_pNeighbour[b].m_iNode == g_way2) {
-					g_pWaypoints[g_way1].m_pNeighbour[b].m_iFlags |= LF_JUMP;
-					env_message_single(self, "^2Jump-linked the two points!\n");
-				}
-			}
-		} else {
-			env_message_single(self, "^1Failed to link, the two points are the same!\n");
-		}
-		g_way1 = g_way2 = -1;
-	}
-}
-
-void
-Way_FlagCrouch(void)
-{
-	if (g_waylink_status == 0) {
-		g_way1 = Way_FindClosestNode(self.origin);
-
-		if (g_way1 == -1i)
-			return;
-
-		g_waylink_status = 1;
-		env_message_single(self, "^2Selected first waypoint!\n");
-	} else if (g_waylink_status == 1) {
-		g_way2 = Way_FindClosestNode(self.origin);
-
-		if (g_way2 == -1i)
-			return;
-
-		g_waylink_status = 0;
-
-		if (g_way1 != g_way2) {
-			Way_LinkNodes(&g_pWaypoints[g_way1], &g_pWaypoints[g_way2]);
-			for (int b = 0i; b < g_pWaypoints[g_way1].m_numNeighbours; b++) {
-				if (g_pWaypoints[g_way1].m_pNeighbour[b].m_iNode == g_way2) {
-					g_pWaypoints[g_way1].m_pNeighbour[b].m_iFlags |= LF_CROUCH;
+					g_pWaypoints[g_way1].m_pNeighbour[b].m_iFlags |= linkFlag;
 					env_message_single(self, "^2Crouch-linked the two points!\n");
-				}
-			}
-		} else {
-			env_message_single(self, "^1Failed to link, the two points are the same!\n");
-		}
-		g_way1 = g_way2 = -1;
-	}
-}
-
-void
-Way_FlagWalk(void)
-{
-	if (g_waylink_status == 0) {
-		g_way1 = Way_FindClosestNode(self.origin);
-
-		if (g_way1 == -1i)
-			return;
-
-		g_waylink_status = 1;
-		env_message_single(self, "^2Selected first waypoint!\n");
-	} else if (g_waylink_status == 1) {
-		g_way2 = Way_FindClosestNode(self.origin);
-
-		if (g_way2 == -1i)
-			return;
-
-		g_waylink_status = 0;
-
-		if (g_way1 != g_way2) {
-			Way_LinkNodes(&g_pWaypoints[g_way1], &g_pWaypoints[g_way2]);
-			for (int b = 0i; b < g_pWaypoints[g_way1].m_numNeighbours; b++) {
-				if (g_pWaypoints[g_way1].m_pNeighbour[b].m_iNode == g_way2) {
-					g_pWaypoints[g_way1].m_pNeighbour[b].m_iFlags |= LF_WALK;
-					env_message_single(self, "^2Walk-linked the two points!\n");
-				}
-			}
-		} else {
-			env_message_single(self, "^1Failed to link, the two points are the same!\n");
-		}
-		g_way1 = g_way2 = -1;
-	}
-}
-
-void
-Way_FlagAim(void)
-{
-	if (g_waylink_status == 0) {
-		g_way1 = Way_FindClosestNode(self.origin);
-
-		if (g_way1 == -1i)
-			return;
-
-		g_waylink_status = 1;
-		env_message_single(self, "^2Selected first waypoint!\n");
-	} else if (g_waylink_status == 1) {
-		g_way2 = Way_FindClosestNode(self.origin);
-
-		if (g_way2 == -1i)
-			return;
-
-		g_waylink_status = 0;
-
-		if (g_way1 != g_way2) {
-			Way_LinkNodes(&g_pWaypoints[g_way1], &g_pWaypoints[g_way2]);
-			for (int b = 0i; b < g_pWaypoints[g_way1].m_numNeighbours; b++) {
-				if (g_pWaypoints[g_way1].m_pNeighbour[b].m_iNode == g_way2) {
-					g_pWaypoints[g_way1].m_pNeighbour[b].m_iFlags |= LF_AIM;
-					env_message_single(self, "^2Aim-linked the two points!\n");
-				}
-			}
-		} else {
-			env_message_single(self, "^1Failed to link, the two points are the same!\n");
-		}
-		g_way1 = g_way2 = -1;
-	}
-}
-
-void
-Way_FlagUse(void)
-{
-	if (g_waylink_status == 0) {
-		g_way1 = Way_FindClosestNode(self.origin);
-
-		if (g_way1 == -1i)
-			return;
-
-		g_waylink_status = 1;
-		env_message_single(self, "^2Selected first waypoint!\n");
-	} else if (g_waylink_status == 1) {
-		g_way2 = Way_FindClosestNode(self.origin);
-
-		if (g_way2 == -1i)
-			return;
-
-		g_waylink_status = 0;
-
-		if (g_way1 != g_way2) {
-			Way_LinkNodes(&g_pWaypoints[g_way1], &g_pWaypoints[g_way2]);
-			for (int b = 0i; b < g_pWaypoints[g_way1].m_numNeighbours; b++) {
-				if (g_pWaypoints[g_way1].m_pNeighbour[b].m_iNode == g_way2) {
-					g_pWaypoints[g_way1].m_pNeighbour[b].m_iFlags |= LF_USER;
-					env_message_single(self, "^2Use-linked the two points!\n");
 				}
 			}
 		} else {
@@ -631,8 +495,7 @@ Way_DrawDebugInfo(void)
 	}
 
 	int iNearest = Way_FindClosestNode(self.origin);
-	makevectors(self.v_angle);
-	R_BeginPolygon("", 0, 0);
+		makevectors([-90, 0, 0]);
 	
 	for (int i = 0i; i < g_iWaypoints; i++) {
 		waypoint_t *w = g_pWaypoints + i;
@@ -643,10 +506,24 @@ Way_DrawDebugInfo(void)
 			rgb = [0,1,0];
 		}
 
-		R_PolygonVertex(org + v_right * 4 - v_up * 4, [1,1], rgb, 1);
-		R_PolygonVertex(org - v_right * 4 - v_up * 4, [0,1], rgb, 1);
-		R_PolygonVertex(org - v_right * 4 + v_up * 4, [0,0], rgb, 1);
-		R_PolygonVertex(org + v_right * 4 + v_up * 4, [1,0], rgb, 1);
+		R_BeginPolygon("", 0, 0);
+		R_PolygonVertex(org + v_right * 2 - v_up * 2, [1,1], rgb, 1);
+		R_PolygonVertex(org - v_right * 2 - v_up * 2, [0,1], rgb, 1);
+		R_EndPolygon();
+
+		R_BeginPolygon("", 0, 0);
+		R_PolygonVertex(org - v_right * 2 - v_up * 2, [0,1], rgb, 1);
+		R_PolygonVertex(org - v_right * 2 + v_up * 2, [0,0], rgb, 1);
+		R_EndPolygon();
+
+		R_BeginPolygon("", 0, 0);
+		R_PolygonVertex(org - v_right * 2 + v_up * 2, [0,0], rgb, 1);
+		R_PolygonVertex(org + v_right * 2 + v_up * 2, [1,0], rgb, 1);
+		R_EndPolygon();
+
+		R_BeginPolygon("", 0, 0);
+		R_PolygonVertex(org + v_right * 2 + v_up * 2, [1,0], rgb, 1);
+		R_PolygonVertex(org + v_right * 2 - v_up * 2, [1,1], rgb, 1);
 		R_EndPolygon();
 	}
 
@@ -706,6 +583,9 @@ Way_DrawDebugInfo(void)
 		R_PolygonVertex(self.origin, [1,1], [0,1,0], 1);
 		R_EndPolygon();
 	}
+
+	/* spheres need view angle */
+	makevectors(self.v_angle);
 
 	R_BeginPolygon("", 0, 0);
 	for (int i = 0i; i < g_iWaypoints; i++) {
@@ -814,20 +694,8 @@ Way_Cmd(void)
 			g_pWaypoints[i].m_vecOrigin[2] *= -1;
 		}
 		break;
-	case "linkjump":
-		Way_FlagJump();
-		break;
-	case "linkcrouch":
-		Way_FlagCrouch();
-		break;
-	case "linkwalk":
-		Way_FlagWalk();
-		break;
-	case "linkaim":
-		Way_FlagAim();
-		break;
-	case "linkuse":
-		Way_FlagUse();
+	case "flag":
+		Way_LinkFlag(stoi(argv(2)));
 		break;
 	case "unlink1":
 		Way_Unlink();

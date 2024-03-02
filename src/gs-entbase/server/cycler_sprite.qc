@@ -16,7 +16,7 @@
 
 /*!QUAKED cycler_sprite (1 0 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
-Decorative, does nothing yet.
+Decorative sprite cycler.
 
 # KEYS
 - "targetname" : Name
@@ -24,6 +24,7 @@ Decorative, does nothing yet.
 - "killtarget" : Target to kill when triggered.
 - "angles" : Sets the pitch, yaw and roll angles of the model.
 - "model" : Model file that will be displayed by the entity.
+- "framerate" : TODO: Frame rate of the sprite, in frames per second.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).

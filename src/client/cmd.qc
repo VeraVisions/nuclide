@@ -207,14 +207,14 @@ CMD_ListTitles(void)
 	int i = 0i;
 
 	for (i = 0; i < g_titles_count; i++) {
-		print(sprintf("%s, (x: %d, y: %d)\n", 
-			g_titles[i].m_strName, g_titles[i].m_flPosX, g_titles[i].m_flPosY));
-		print(sprintf("\teffect: %i, fade-in: %f, fade-out: %f\n", 
-			g_titles[i].m_iEffect, g_titles[i].m_flFadeIn, g_titles[i].m_flFadeOut));
-		print(sprintf("\thold-time: %f, fx-time: %f\n", 
-			g_titles[i].m_flHoldTime, g_titles[i].m_flFXTime));
-		print(sprintf("\tcolor 1: %v, color 2: %v\n", 
-			g_titles[i].m_vecColor1, g_titles[i].m_vecColor2));
+		printf("%s, (x: %d, y: %d)\n", 
+			g_titles[i].m_strName, g_titles[i].m_flPosX, g_titles[i].m_flPosY);
+		printf("\teffect: %i, fade-in: %f, fade-out: %f\n", 
+			g_titles[i].m_iEffect, g_titles[i].m_flFadeIn, g_titles[i].m_flFadeOut);
+		printf("\thold-time: %f, fx-time: %f\n", 
+			g_titles[i].m_flHoldTime, g_titles[i].m_flFXTime);
+		printf("\tcolor 1: %v, color 2: %v\n", 
+			g_titles[i].m_vecColor1, g_titles[i].m_vecColor2);
 	}
 	print(sprintf("\t%i total titles loaded\n", g_titles_count));
 }
@@ -226,12 +226,12 @@ CMD_ListModelFramegroups(void)
 	float modelIndex = getmodelindex(modelName);
 	string temp = "";
 
-	print(sprintf("// model: %S\n", modelName));
+	printf("// model: %S\n", modelName);
 
 	print("typedef enum {\n");
 	for (int i = 0; i < modelframecount(modelIndex); i++) {
 		temp = frametoname(modelIndex, i);
-		print(sprintf("\t%s = %i,\n", strtoupper(temp), i));
+		printf("\t%s = %i,\n", strtoupper(temp), i);
 	}
 	print("} framegroups_e;\n");
 }
@@ -271,7 +271,7 @@ Cmd_Parse(string sCMD)
 	case "listServerSoundDef":
 		localcmd("sv listSoundDef\n");
 		break;
-	case "cleardecals":
+	case "clearDecals":
 		CMD_Cleardecals();
 		break;
 	case "testPointLight":
@@ -437,28 +437,28 @@ Cmd_Parse(string sCMD)
 		localcmd(sprintf("sv addBot %s\n", argv(1)));
 		break;
 	case "killAllBots":
-		localcmd(sprintf("sv killAllBots %s\n", argv(1)));
+		localcmd("sv killAllBots\n");
 		break;
 	case "resetAllBotsGoals":
-		localcmd(sprintf("sv resetAllBotsGoals %s\n", argv(1)));
+		localcmd("sv resetAllBotsGoals\n");
 		break;
 	case "killClass":
 		localcmd(sprintf("sv killClass %s\n", argv(1)));
 		break;
 	case "killMovables":
-		localcmd(sprintf("sv killMovables %s\n", argv(1)));
+		localcmd("sv killMovables\n");
 		break;
 	case "trigger":
 		localcmd(sprintf("sv trigger %s\n", argv(1)));
 		break;
 	case "input":
-		localcmd(sprintf("sv input %s\n", argv(1)));
+		localcmd(sprintf("sv input %s %s %s\n", argv(1), argv(2), argv(3)));
 		break;
 	case "listBotProfiles":
-		localcmd(sprintf("sv listBotProfiles %s\n", argv(1)));
+		localcmd("sv listBotProfiles\n");
 		break;
 	case "listTargets":
-		localcmd(sprintf("sv listTargets %s\n", argv(1)));
+		localcmd("sv listTargets\n");
 		break;
 	case "teleport":
 		localcmd(sprintf("sv teleport %s\n", argv(1)));
@@ -467,10 +467,33 @@ Cmd_Parse(string sCMD)
 		localcmd(sprintf("sv teleportToClass %s\n", argv(1)));
 		break;
 	case "respawnEntities":
-		localcmd(sprintf("sv respawnEntities %s\n", argv(1)));
+		localcmd("sv respawnEntities\n");
 		break;
-	case "spawn":
+	case "spawnDef":
 		localcmd(sprintf("sv spawn %s\n", argv(1)));
+		break;
+
+
+	case "nodeAdd":
+		localcmd(sprintf("sv way addsingle %s\n", argv(1)));
+		break;
+	case "nodeDel":
+		localcmd(sprintf("sv way delete %s\n", argv(1)));
+		break;
+	case "nodeFlags":
+		localcmd(sprintf("sv way link %s\n", argv(1)));
+		break;
+	case "nodeLink":
+		localcmd(sprintf("sv way connect1 %s\n", argv(1)));
+		break;
+	case "nodeRadius":
+		localcmd(sprintf("sv way radius %s\n", argv(1)));
+		break;
+	case "nodeOffset":
+		localcmd(sprintf("sv way move %s\n", argv(1)));
+		break;
+	case "nodeUnlink":
+		localcmd(sprintf("sv way unlink1 %s\n", argv(1)));
 		break;
 
 	default:
@@ -489,7 +512,7 @@ Register our commands for Nuclide
 void
 Cmd_Init(void)
 {
-	print("--------- Initializing Cmds ----------\n");
+	InitStart();
 
 	/* developer/debug commands */
 	registercommand("listFramegroups");
@@ -512,10 +535,19 @@ Cmd_Init(void)
 	registercommand("teleport");
 	registercommand("teleportToClass");
 	registercommand("respawnEntities");
-	registercommand("spawn");
+	registercommand("spawnDef");
 	registercommand("listBotProfiles");
 
-	registercommand("cleardecals");
+	/* nav editing */
+	registercommand("nodeAdd");
+	registercommand("nodeDel");
+	registercommand("nodeFlags");
+	registercommand("nodeLink");
+	registercommand("nodeRadius");
+	registercommand("nodeOffset");
+	registercommand("nodeUnlink");
+
+	registercommand("clearDecals");
 	registercommand("testLight");
 	registercommand("testPointLight");
 	registercommand("getpos");
@@ -586,4 +618,6 @@ Cmd_Init(void)
 	registercommand("-menu_left");
 	registercommand("+menu_right");
 	registercommand("-menu_right");
+
+	InitEnd();
 }

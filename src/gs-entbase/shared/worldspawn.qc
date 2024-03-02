@@ -97,9 +97,9 @@ worldspawn::worldspawn(void)
 	m_strAmbientSound = "";
 	m_strBGMTrack = "";
 
-	print("--------- Map Initialization ---------\n");
-	print(sprintf("Map: %s\n", mapname));
-	print("----------- Game Map Init ------------\n");
+	InitPrint("Map Initialization");
+	NSLog("Map: %s", mapname);
+	InitPrint("Game Map Init");
 
 	lightstyle(0, "m");
 	lightstyle(1, "mmnmmommommnonmmonqnmmo");
@@ -125,7 +125,7 @@ worldspawn::worldspawn(void)
 	if (autocvar_sv_levelexec)
 		readcmd(sprintf("exec maps/%s.cfg\n", mapname));
 
-	print("Spawning entities\n");
+	InitStart();
 }
 
 void
@@ -201,6 +201,11 @@ worldspawn::SpawnKey(string strKey, string strValue)
 	case "hdr_iris_fade_down":
 		m_flHDRIrisFadeDown = ReadFloat(strValue);
 		m_bHDREnabled = true;
+		break;
+	/* empty, ignore */
+	case "wad":
+	case "MaxRange":
+	case "sounds":
 		break;
 	default:
 		super::SpawnKey(strKey, strValue);

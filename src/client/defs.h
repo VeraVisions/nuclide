@@ -175,6 +175,7 @@ void View_PlayAnimation(int);
 
 void View_EnableViewmodel(void);
 void View_DisableViewmodel(void);
+void View_SetViewmodelSkin(float);
 
 /** Draws a non-filled rectangle with a specified outline. */
 void drawrect(vector pos, vector sz, float thickness, vector rgb, float al, optional float dfl)

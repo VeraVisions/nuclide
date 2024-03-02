@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2024 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -147,6 +147,9 @@ public:
 
 	/** Unsets any any angle related values within the entity. */
 	nonvirtual void ClearAngles(void);
+
+	/** Forces the entity to re-network updates to all clients. */
+	nonvirtual void ForceNetworkUpdate(void);
 #endif
 
 	/* sets */
@@ -201,6 +204,11 @@ public:
 	nonvirtual void AddFlags(float);
 	/** Remove one or more special flags from the entity. */
 	nonvirtual void RemoveFlags(float);
+
+	/** Turns to the specified angle. */
+	nonvirtual void TurnTo(float);
+	/** Turns towards the specified position. */
+	nonvirtual void TurnToPos(vector);
 
 	/** Overrides the Think function of the entity.
 		Only use it when you want to retain a think timer that's already been set for the entity. */

@@ -114,8 +114,9 @@ trigger_auto::Respawn(void)
 	/* deliberately add a bit more time in case we're first in the ent-lump
 		also we'll only do this in multiplayer games. SP games will call
 	    trigger_auto_trigger() for when one player has fully joined */
-	if (cvar("sv_playerslots") > 1)
+	if (cvar("sv_playerslots") > 1) {
 		ScheduleThink(Processing, 0.25f);
+	}
 }
 
 void
@@ -130,7 +131,7 @@ trigger_auto::Processing(void)
 	//print(sprintf("%S %d %f %f\n", target, m_iTriggerState, m_flDelay, time));
 
 	if (HasSpawnFlags(1)) {
-		NSLog("^2trigger_auto::^3Processing^7: %s triggerer removed self",  target);
+		EntLog("Trigger instructed to destroy itself.");
 		Destroy();
 	}
 }

@@ -149,7 +149,7 @@ phys_convert::ConvertTarget(entity activatorEnt)
 	NSPhysicsEntity new;
 
 	if (!targetEnt) {
-		NSEntWarning("Cannot find target to convert.");
+		EntWarning("Cannot find target to convert.");
 		return;
 	}
 

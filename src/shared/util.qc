@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2024 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -76,4 +76,24 @@ Util_ExtensionFromString(string inputString)
 {
 	int modelNameLength = strlen(inputString);
 	return substring(inputString, modelNameLength - 3, modelNameLength);
+}
+
+string
+Util_ChatFormat(float playerNum, float teamNum, string chatMessage)
+{
+	vector teamColor = stov(serverkey(sprintf("teamcolor_%d", teamNum)));
+	string teamColorString = sprintf("^x%x%x%x", teamColor[0] * 15,teamColor[1] * 15,teamColor[2] * 15);
+	string teamName = serverkey(sprintf("team_%d", teamNum));
+
+#ifdef CLIENT
+	string playerName = getplayerkeyvalue(playerNum, "name");
+#else
+	string playerName = infokey(edict_num(playerNum+1), "name");
+#endif
+
+	if (teamNum == 0) {
+		return sprintf("%s^7: %s", playerName, chatMessage);
+	} else {
+		return sprintf("%s %s(%s)^7: %s", playerName, teamColorString, teamName, chatMessage);
+	}
 }

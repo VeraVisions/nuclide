@@ -193,8 +193,7 @@ NSBot::CheckRoute(void)
 
 	/* we're inside the radius */
 	if (flDist <= flRadius) {
-		NSLog("^2NSBot::^3CheckRoute^7: " \
-			"%s reached node\n", this.targetname);
+		BotEntLog("%s reached node", this.netname);
 		m_iCurNode--;
 
 		/* if we're inside an actual node (not a virtual one */
@@ -218,8 +217,7 @@ NSBot::CheckRoute(void)
 
 			/* can we walk directly to our target destination? */
 			if (trace_fraction == 1.0) {
-				print("^2NSBot::^3CheckRoute^7: " \
-					"Walking directly to last node\n");
+				BotEntLog("Walking directly to last node.");
 				m_iCurNode = -1;
 			}
 		}
@@ -245,7 +243,7 @@ NSBot::CheckRoute(void)
 
 	/* after one second, also give up the route */
 	if (m_flNodeGiveup >= 1.0f || m_iCurNode <= BOTROUTE_END) {
-		print("taking too long! giving up!\n");
+		BotEntLog("Taking too long! Giving up!");
 		RouteClear();
 	} else if (m_flNodeGiveup >= 0.5f) {
 		/* attempt a jump after half a second */
@@ -279,7 +277,7 @@ NSBot::RunAI(void)
 	input_angles = [0,0,0];
 
 	/* attempt to respawn when dead */
-	if (IsDead() == true) {
+	if (IsDead() == true || health <= 0) {
 		RouteClear();
 		WeaponAttack();
 		SetEnemy(__NULL__);
@@ -294,7 +292,7 @@ NSBot::RunAI(void)
 	if (!m_iNodes && autocvar_bot_aimless == 0) {
 		CreateObjective();
 
-		NSLog("NSBot::RunAI: %s is calculating first bot route",
+		BotEntLog("%S is calculating first bot route",
 			this.netname);
 
 		/* our route probably has not been processed yet */
@@ -430,14 +428,12 @@ NSBot::RunAI(void)
 			if (m_eTarget && enemyVisible && m_flEnemyDist < 256) {
 				/* we are far away, inch closer */
 				aimPos = m_eTarget.origin;
-				//printf("going to target\n");
 			} else {
 				goRoute = true;
 			}
 		} else if (m_wtWeaponType == WPNTYPE_THROW) {
 			if ((m_eTarget && enemyVisible && !enemyDistant) && m_flEnemyDist < 512) {
 				aimPos = m_eTarget.origin;
-				//printf("going to target\n");
 			} else {
 				goRoute = true;
 			}
@@ -448,10 +444,8 @@ NSBot::RunAI(void)
 		if (goRoute) {
 			if (m_iCurNode <= BOTROUTE_DESTINATION) {
 				aimPos = m_vecLastNode;
-				//printf("going to last node\n");
 			} else {
 				aimPos = m_pRoute[m_iCurNode].dest;
-				//printf("going to next node\n");
 			}
 		} else {
 			RouteClear();
@@ -511,7 +505,7 @@ NSBot::PostFrame(void)
 	/* we've picked something new up */
 	if (m_iOldItems != g_items) {
 		Weapons_SwitchBest(this);
-		print(sprintf("%s is now using %s (%d)\n", netname, g_weapons[activeweapon].name, activeweapon));
+		BotEntLog("%S is now using %S (%d)", netname, g_weapons[activeweapon].name, activeweapon);
 		m_iOldItems = g_items;
 	}
 #endif
@@ -553,7 +547,7 @@ bot_spawner_think(void)
 	int minClientsCvar = (int)cvar("bot_minClients");
 
 	/* if -1, we are not managing _anything_ */
-	if (minClientsCvar == -1) {
+	if (minClientsCvar == -1i) {
 		self.nextthink = time + 5.0f;
 		return;
 	}

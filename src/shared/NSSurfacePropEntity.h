@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2024 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -123,6 +123,16 @@ public:
 	nonvirtual void SetPropData(string);
 	/** Returns how many seconds have passed since we died. Will return -1 if not applicable. */
 	nonvirtual float TimeSinceDeath(void);
+
+	/** Called when a different entity gets damaged by this entity. */
+	virtual void DamageFeedback(NSSurfacePropEntity, NSSurfacePropEntity, int);
+
+	/** Sets which function to call upon taking pain. */
+	nonvirtual void SetPainCallback(void(void));
+	/** Sets which function to call upon taking death. */
+	nonvirtual void SetDeathCallback(void(void));
+	/** Returns whether this entity reacts to damage being inflicted. */
+	nonvirtual bool CanBeDamaged(void);
 
 	/** Sets the colour of the blood of this entity. */
 	nonvirtual void SetBloodColor(vector);

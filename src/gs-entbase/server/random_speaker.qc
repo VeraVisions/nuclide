@@ -173,19 +173,13 @@ random_speaker::Enable(void)
 	r += (m_flMinPos * (m_flRandPercent / 100)) * random();
 
 	ScheduleThink(PlaySample, r);
-
-	NSLog("^2random_speaker::^3Disable^7: " \
-	       "%s playing %s in %d\n", \
-	       targetname, m_strSample, r);
+	EntLog("%s playing %s in %d\n", targetname, m_strSample, r);
 }
 
 void
 random_speaker::Disable(void)
 {
-	NSLog("^2random_speaker::^3Disable^7: " \
-	       "Disabled %s playing %s\n", \
-	       targetname, m_strSample);
-
+	EntLog("Disabled %s playing %s\n", targetname, m_strSample);
 	m_iValue = 0;
 	ReleaseThink();
 }

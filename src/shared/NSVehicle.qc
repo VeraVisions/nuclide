@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2023 Vera Visions LLC.
+ * Copyright (c) 2016-2024 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -446,6 +446,7 @@ NSVehicle::PlayerEnter(NSClientPlayer pl)
 	m_eDriverLast = m_eDriver;
 	pl.vehicle = this;
 	pl.flags |= FL_INVEHICLE;
+	EntLog("Player %S entered this vehicle.", pl.GetInfoKey("name"));
 }
 
 void
@@ -453,6 +454,8 @@ NSVehicle::PlayerLeave(NSClientPlayer pl)
 {
 	if (!pl)
 		return;
+
+	EntLog("Player %S exits this vehicle.", pl.GetInfoKey("name"));
 
 	owner = __NULL__;
 	pl.flags &= ~FL_INVEHICLE;

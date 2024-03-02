@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2024 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -69,25 +69,38 @@ NSClient::SetInfoKey(string strKey, string strValue)
 	forceinfokey(this, strKey, strValue);
 }
 
-string
-NSClient::GetInfoKey(string strKey)
-{
-	return infokey(this, strKey);
-}
-
 void
 NSClient::SetInfoKeyFloat(string strKey, float floatValue)
 {
 	forceinfokey(this, strKey, ftos(floatValue));
 }
+#endif
+
+string
+NSClient::GetInfoKey(string strKey)
+{
+#ifdef SERVER
+	return infokey(this, strKey);
+#endif
+
+#ifdef CLIENT
+	return getplayerkeyvalue(entnum-1, strKey);
+#endif
+}
+
 
 float
 NSClient::GetInfoKeyFloat(string strKey)
 {
+#ifdef SERVER
 	return infokeyf(this, strKey);
+#endif
+
+#ifdef CLIENT
+	return getplayerkeyfloat(entnum-1, strKey);
+#endif
 }
 
-#endif
 
 void
 NSClient::SharedInputFrame(void)

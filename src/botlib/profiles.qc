@@ -29,7 +29,7 @@ Bot_ExistsInServer(string botName)
 }
 
 bool
-Bot_AddBot_f(string botName)
+Bot_AddBot_f(string botName, float teamValue, float spawnDelay, string newName)
 {
 	int extraCount = 0i;
 	int foundID = -1i;
@@ -43,7 +43,7 @@ Bot_AddBot_f(string botName)
 	}
 
 	if (!g_nodes_present) {
-		print("^1BotScript_Add^7: Can't add bot. No waypoints.\n");
+		NSError("Can't add bot. No nodes.");
 		return (false);
 	}
 
@@ -56,7 +56,7 @@ Bot_AddBot_f(string botName)
 	}
 
 	if (foundID == -1i) {
-		print("^1BotScript_Add^7: Named profile not found.\n");
+		NSError("Named profile %S not found.", botName);
 		return (false);
 	}
 
@@ -64,7 +64,7 @@ Bot_AddBot_f(string botName)
 	self = spawnclient();
 
 	if (!self) {
-		print("^1BotScript_Add^7: Can't add bot. Server is full\n");
+		NSError("Unable to add bot. Server is full.");
 		self = oldSelf;
 		return (false);
 	}
@@ -111,11 +111,11 @@ BotProfile_AddRandom(void)
 
 	/* every bot exists already */
 	if (spawnBot == -1i) {
-		print("^1BotProfile_AddRandom^7: Not enough profiles available.\n");
+		NSError("Not enough profiles available.");
 		return (false);
 	}
 
-	Bot_AddBot_f(g_bots[spawnBot].m_strName);
+	Bot_AddBot_f(g_bots[spawnBot].m_strName, 0, 0.0f, __NULL__);
 	return (true);
 }
 
@@ -126,6 +126,8 @@ BotProfile_Init(void)
 	string tempString;
 	botScript_t currentDef;
 	int braceDepth = 0i;
+
+	InitStart();
 
 	currentDef.m_strName = "";
 	currentDef.m_strNetName = "";
@@ -140,6 +142,7 @@ BotProfile_Init(void)
 	botScript = fopen("scripts/bots.txt", FILE_READ);
 
 	if (botScript < 0) {
+		NSError("Missing file scripts/bots.txt");
 		return;
 	}
 
@@ -197,14 +200,15 @@ BotProfile_Init(void)
 	}
 
 	fclose(botScript);
-	print(sprintf("%i bots parsed\n", g_botScriptCount));
+	NSLog("...%i bots parsed.", g_botScriptCount);
+	InitEnd();
 }
 
 void
 Bot_ListBotProfiles_f(void)
 {
 	if (!g_botScriptCount) {
-		print("no bot profiles found.\n");
+		NSError("No bot profiles available.");
 		return;
 	}
 

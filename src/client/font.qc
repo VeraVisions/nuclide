@@ -76,14 +76,14 @@ Font_Load(string strFile, font_s &fntNew)
 		}
 		fclose(fileFont);
 	} else {
-		error(sprintf("cannot load font file %s!", strFile));
+		NSError("Missing file %s", strFile);
 	}
 
 	if (!fntNew.iScaleX || !fntNew.iScaleY) {
-		error(sprintf("no valid size defined for %s!", strFile));
+		NSError("Invalid size defined for %s", strFile);
 	}
 
-	print(sprintf("loaded font definition for %s\n", strFile));
+	NSLog("Loaded font definition for %s", strFile);
 
 	if (strRenderSize != "") {
 		fntNew.iID = (int)loadfont("", strFontPath, strRenderSize, -1, 0, 0);

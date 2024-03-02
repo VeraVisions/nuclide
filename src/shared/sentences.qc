@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2024 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -53,14 +53,15 @@ Sentences_Init(void)
 	string temp;
 	int c, i;
 
-	print("--------- Initializing SentencesDef (CLIENT) ----------\n");
+	InitStart();
 
 	Sentences_Shutdown();
 
 	fs_sentences = fopen("sound/sentences.txt", FILE_READ);
 
 	if (fs_sentences < 0) {
-		print("^1could not load sound/sentences.txt\n");
+		NSError("Missing file sound/sentences.txt");
+		InitEnd();
 		return;
 	}
 
@@ -91,7 +92,7 @@ Sentences_Init(void)
 				g_sentences_count);
 #else
 		if (g_sentences_count + 1 >= SENTENCES_LIMIT) {
-			print("^1reached limit of max sentences!\n");
+			NSError("Reached limit of %d SentenceDefs.", SENTENCES_LIMIT);
 			return;
 		}
 
@@ -118,7 +119,8 @@ Sentences_Init(void)
 	}
 	
 	fclose(fs_sentences);
-	print(sprintf("SentencesDef initialized with %i entries.\n", g_sentences_count));
+	NSLog("...SentencesDef initialized with %i entries.", g_sentences_count);
+	InitEnd();
 }
 
 string
@@ -151,7 +153,7 @@ Sentences_GetSamples(string msg)
 	if (i != -1i)
 		return g_sentences[i].m_strSamples;
 	else {
-		print(sprintf("^1ERROR: Cannot find sentence %S\n", msg));
+		NSError("Can't find sentence %S", msg);
 		return "";
 	}
 }
@@ -171,7 +173,7 @@ Sentences_Init(void)
 	string temp;
 	int c;
 
-	print("--------- Initializing SentencesDef (SERVER) ----------\n");
+	InitStart();
 
 	if (g_sentences_count > 0) {
 		g_sentences_count = 0;
@@ -185,7 +187,8 @@ Sentences_Init(void)
 	fs_sentences = fopen("sound/sentences.txt", FILE_READ);
 
 	if (fs_sentences < 0) {
-		print("^1could not load sound/sentences.txt\n");
+		NSError("Missing file sound/sentences.txt");
+		InitEnd();
 		return;
 	}
 
@@ -216,7 +219,8 @@ Sentences_Init(void)
 				g_sentences_count);
 #else
 		if (g_sentences_count + 1 >= SENTENCES_LIMIT) {
-			print("^1reached limit of max sentences!\n");
+			NSError("Reached limit of max sentences!");
+			InitEnd();
 			return;
 		}
 
@@ -228,7 +232,8 @@ Sentences_Init(void)
 	}
 
 	fclose(fs_sentences);
-	print(sprintf("SentencesDef initialized with %i entries.\n", g_sentences_count));
+	NSLog("SentencesDef initialized with %i entries.", g_sentences_count);
+	InitEnd();
 }
 
 string
@@ -264,12 +269,12 @@ Sentences_GetSamples(string word)
 	/* if we've got one, choose a random sample of them */
 	if (gc) {
 		r = floor(random(0, gc));
-		NSLog("^3Sentences_GetSamples^7: Choosing %s%i", word, r);
+		SndLog("Choosing %s%i", word, r);
 		return sprintf("%s%i", word, r);
 	}
 
 	/* we've somehow messed up catastrophically */
-	print(sprintf("^1ERROR: Invalid sentence keyword %s\n", word));
+	NSError("Invalid sentence keyword %s", word);
 	return ("");
 }
 
@@ -279,10 +284,10 @@ Sentences_GetID(string sentence)
 	int i = (int)hash_get(g_hashsentences, sentence, -1i);
 
 	if (i != -1i) {
-		print(sprintf("^2SUCCESS: Found sentence %S\n", sentence));
+		SndLog("Found sentence %S", sentence);
 		return i;
 	} else {
-		print(sprintf("^1ERROR: Cannot find sentence %S\n", sentence));
+		NSError("Can't find sentence %S", sentence);
 		return 0;
 	}
 }

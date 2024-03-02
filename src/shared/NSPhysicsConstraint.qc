@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Vera Visions LLC.
+ * Copyright (c) 2023-2024 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -328,7 +328,7 @@ NSPhysicsConstraint::Ballsocket(entity firstEnt, entity secondEnt, vector pos1, 
 	new.velocity = pos2;
 	new.WakeTargets();
 
-	print(sprintf("Created ballsocket between %s and %s\n", firstEnt.classname, secondEnt.classname));
+	EntLog("Created ballsocket between %S and %S.", firstEnt.classname, secondEnt.classname);
 	return new;
 }
 
@@ -336,7 +336,7 @@ NSPhysicsConstraint
 NSPhysicsConstraint::Weld(entity firstEnt, entity secondEnt, float bone1, float bone2, float forceLimit, bool noCollide, bool deleteEnt1OnBreak)
 {
 	if (firstEnt == secondEnt) {
-		print("^1Cannot weld the entity with itself!\n");
+		EntError("Cannot weld the entity with itself!");
 		return __NULL__;
 	}
 
@@ -346,7 +346,7 @@ NSPhysicsConstraint::Weld(entity firstEnt, entity secondEnt, float bone1, float 
 	new.SetEntity2(secondEnt);
 	new.WakeTargets();
 
-	print(sprintf("Created weld between %s and %s\n", firstEnt.classname, secondEnt.classname));
+	EntLog("Created weld between %S and %S.", firstEnt.classname, secondEnt.classname);
 	return new;
 }
 
@@ -361,7 +361,7 @@ NSPhysicsConstraint::Rope(entity firstEnt, entity secondEnt, vector pos1, vector
 	new.velocity = pos2;
 	new.WakeTargets();
 
-	print(sprintf("Created rope between %s and %s\n", firstEnt.classname, secondEnt.classname));
+	EntLog("Created rope between %S and %S", firstEnt.classname, secondEnt.classname);
 	return new;
 }
 

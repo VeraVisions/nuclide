@@ -67,5 +67,6 @@ cycler::Pain(void)
 	} else {
 		SetFrame(GetFrame() + 1);
 	}
+
 	SetHealth(9999);
 }

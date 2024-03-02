@@ -156,7 +156,7 @@ env_muzzleflash::Trigger(entity theActivator, triggermode_t triggerState)
 		targetEnt = (NSEntity)find(world, ::targetname, m_parent);
 
 		if (!targetEnt) {
-			NSEntWarning("Entity specified but not found.");
+			EntWarning("Entity specified but not found.");
 			return;
 		}
 	}
@@ -189,6 +189,10 @@ env_muzzleflash::predraw(void)
 	angles = m_eOwner.angles;
 	addentity(this);
 	alpha -= frametime * 16.0f;
+
+	if (m_eOwner.alpha == 0.0f) {
+		alpha = 0.0f;
+	}
 
 	if (alpha <= 0.0) {
 		Destroy();

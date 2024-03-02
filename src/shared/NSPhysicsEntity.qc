@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2024 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -502,7 +502,6 @@ NSPhysicsEntity::_TouchThink(void)
 	if (NSPhysicsEntity_Contents(origin) & CONTENTBIT_WATER) {
 		makevectors([0,0,0]);
 		velocity[2] += m_flBuoyancyRatio;
-		print(sprintf("in water... applying %v\n", v_up * (GetMass() * m_flBuoyancyRatio)));
 	}
 #endif
 
@@ -688,7 +687,7 @@ NSPhysicsEntity::SpawnKey(string strKey, string strValue)
 vector
 NSPhysicsEntity::AlignAngles(vector from, vector to)
 {
-	NSEntWarning("Not implemented");
+	EntWarning("Not implemented");
 	return angles;
 }
 
@@ -762,7 +761,7 @@ NSPhysicsEntity::ApplyTorqueCenter(vector vecTorque)
 void
 NSPhysicsEntity::EnableDrag(bool setEnabled)
 {
-	NSEntWarning("Not implemented");
+	EntWarning("Not implemented");
 }
 
 void
@@ -775,7 +774,7 @@ NSPhysicsEntity::EnableGravity(bool setEnabled)
 void
 NSPhysicsEntity::EnableMotion(bool setEnabled)
 {
-	NSEntWarning("Not implemented");
+	EntWarning("Not implemented");
 }
 
 float
@@ -904,7 +903,7 @@ NSPhysicsEntity::IsPenetrating(void)
 void
 NSPhysicsEntity::SetAngleDragCoefficient(float setValue)
 {
-	NSEntWarning("Not implemented");
+	EntWarning("Not implemented");
 }
 
 void
@@ -923,7 +922,7 @@ NSPhysicsEntity::SetDamping(float linearDamp, float angleDamp)
 void
 NSPhysicsEntity::SetDragCoefficient(float dragValue)
 {
-	NSEntWarning("Not implemented");
+	EntWarning("Not implemented");
 }
 
 void

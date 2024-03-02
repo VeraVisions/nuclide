@@ -169,7 +169,7 @@ trigger_look::Touch(entity eToucher)
 	/* find the looktarget */
 	lt = find(world, ::targetname, m_strLookTarget);
 	if (!lt) {
-		NSLog("^1trigger_look:Touch^7: Invalid m_strLookTarget %s!", m_strLookTarget);
+		EntLog("^1trigger_look:Touch^7: Invalid m_strLookTarget %s!", m_strLookTarget);
 		Destroy();
 		return;
 	}

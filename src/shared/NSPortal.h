@@ -28,7 +28,9 @@ typedef enumflags
 	PORTALFL_CHANGED_TARG_ORIGIN_Z,
 	PORTALFL_CHANGED_TARG_ANGLES_X,
 	PORTALFL_CHANGED_TARG_ANGLES_Y,
-	PORTALFL_CHANGED_TARG_ANGLES_Z
+	PORTALFL_CHANGED_TARG_ANGLES_Z,
+	PORTALFL_CHANGED_ENABLED,
+	PORTALFL_CHANGED_MODELINDEX
 } nsportal_changed_t;
 
 class
@@ -50,27 +52,39 @@ NSPortal:NSEntity
 	virtual void EvaluateEntity(void);
 	virtual float SendEntity(entity, float);
 
+	virtual void PortalWasClosed(void);
+	virtual void PortalWasOpened(void);
+
 	/** Sets the NSPortal ID. Only used to link portals together via PortalAutoLink. */
 	nonvirtual void SetPortalID(int);
 	/** Will link this portal to another NSPortal. */
-	nonvirtual bool PortalLinkTo(NSPortal);
+	nonvirtual bool PortalLinkTo(NSPortal, bool);
 	/** Will link this portal to the youngest other NSPortal. */
-	nonvirtual void PortalAutoLink(void);
+	nonvirtual void PortalAutoLink(bool);
+	/** Closes the portal, will not remove it from world. */
+	nonvirtual void PortalClose(void);
+	/** Sets the model to use for the portal. */
+	nonvirtual void SetPortalModel(string);
 #endif
 #ifdef CLIENT
 	virtual void ReceiveEntity(float, float);
+	virtual float predraw(void);
 #endif
 
 private:
 	NSPortal m_ePortalTarget;
 	NSPortal m_ePortalTarget_net;
-	PREDICTED_VECTOR(m_vecTargetPos)
-	PREDICTED_VECTOR(m_vecTargetAngle)
+	NETWORKED_VECTOR(m_vecTargetPos)
+	NETWORKED_VECTOR(m_vecTargetAngle)
+	NETWORKED_BOOL(m_bEnabled)
+	NETWORKED_FLOAT(m_flPortalModel)
 
 	vector m_vecPortalPos;
 	vector m_vecPortalN;
 	vector m_vecPortalS;
 	vector m_vecPortalT;
+
+	bool m_bWasEnabled;
 
 	/** Will transport an entity from its position to the exit position. */
 	nonvirtual void TransportEntity(NSEntity);
@@ -80,6 +94,7 @@ private:
 	vector m_vecTargetN;
 	vector m_vecTargetS;
 	vector m_vecTargetT;
+	float m_flSize;
 #endif
 
 #ifdef SERVER
@@ -101,4 +116,5 @@ private:
 #define SOLID_PORTAL 21
 
 .float portalnum;
-.float impulse;	 //used as the radius for the solid_portal csg subtraction
+.float impulse;	 //used as the radius for the solid_portal csg subtraction
+.bool isPortal;

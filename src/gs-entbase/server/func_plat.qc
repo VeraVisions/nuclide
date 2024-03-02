@@ -62,6 +62,7 @@ public:
 	virtual void Save(float);
 	virtual void Restore(string,string);
 	virtual void Trigger(entity, triggermode_t);
+	virtual void Input(entity, string, string);
 	virtual void Respawn(void);
 	virtual void SpawnKey(string,string);
 	virtual void Spawned(void);
@@ -231,6 +232,21 @@ func_plat::Respawn(void)
 	} else {
 		SetOrigin(GetMoverPosition1());
 		SetMoverState(MOVER_POS1);
+	}
+}
+
+void
+func_plat::Input(entity entityActivator, string inputName, string dataField)
+{
+	switch (inputName) {
+	case "GoUp":
+		MoveToPosition(GetMoverPosition1(), m_flSpeed);
+		break;
+	case "GoDown":
+		MoveToPosition(GetMoverPosition2(), m_flSpeed);
+		break;
+	default:
+		super::Input(entityActivator, inputName, dataField);
 	}
 }
 

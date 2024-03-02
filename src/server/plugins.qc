@@ -31,18 +31,20 @@ Plugin_Init(void)
 	int i;
 
 	if (autocvar_sv_plugins) {
-		print("--------- Initializing Plugins ----------\n");
 		g_plugins_enabled = 1;
 	} else {
 		g_plugins_enabled = 0;
 		return;
 	}
 
+	InitStart();
+
 	pdb = fopen("plugins.txt", FILE_READ);
 
 	if (pdb < 0) {
-		print("^1no plugins.txt found.\n");
+		NSWarning("No plugins.txt found. Plugins disabled.\n");
 		g_plugins_enabled = 0;
+		InitEnd();
 		return;
 	}
 
@@ -85,7 +87,8 @@ Plugin_Init(void)
 		}
 	}
 
-	print(sprintf("initialized %i plugins.\n", g_plugincount));
+	NSLog("...initialized %i plugins.", g_plugincount);
+	InitEnd();
 }
 
 /*

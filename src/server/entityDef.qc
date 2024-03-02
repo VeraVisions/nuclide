@@ -125,13 +125,15 @@ EntityDef_ReadFile(string filePath)
 
 	/* bounds check */
 	if (g_entDefCount >= ENTITYDEF_MAX) {
-		error(sprintf("EntityDef_ReadFile: reached limit of %d defs\n", ENTITYDEF_MAX));
+		NSError("Reached limit of %d defs.", ENTITYDEF_MAX);
+		error("Crash.");
 	}
 
 	/* open file */
 	defFile = fopen(filePath, FILE_READ);
 	if (defFile < 0) {
-		error(sprintf("EntityDef_ReadFile: unable to read %S\n", filePath));
+		NSError("Unable to read %S\n", filePath);
+		error("Crash.");
 	}
 
 	/* line by line */
@@ -248,6 +250,8 @@ EntityDef_Init(void)
 {
 	searchhandle pm;
 
+	InitStart();
+
 	g_entDefInclude = "";
 
 	pm = search_begin("def/*.def", TRUE, TRUE);
@@ -284,6 +288,8 @@ EntityDef_Init(void)
 		}
 	}
 #endif
+
+	InitEnd();
 }
 
 static bool
@@ -330,6 +336,8 @@ EntityDef_CheckCondition(int id, string keyWord, float tweakCondition, string ke
 		case EDEFTWEAK_CONTAINS:
 			tmp1 = stof(keyValue);
 			tmp2 = stof(value);
+
+			print(sprintf("%d & %d\n", tmp1, tmp2));
 
 			if (key == keyWord && tmp2 & tmp1)
 				return true;
@@ -498,7 +506,6 @@ EntityDef_SpawnClassname(string className)
 		}
 	}
 
-	NSLog("^1Failed spawning eDef %S", className);
 	return __NULL__;
 }
 
@@ -507,9 +514,17 @@ EntityDef_CreateClassname(string className)
 {
 	entity oldSelf = self;
 	NSEntity new = spawn(NSEntity);
+	NSEntity test;
 	self = new;
-	EntityDef_SpawnClassname(className);
+	test = EntityDef_SpawnClassname(className);
 	self = oldSelf;
+
+	/* Failure */
+	if (test == __NULL__) {
+		new.Destroy();
+		return __NULL__;
+	}
+
 	return new;
 }
 
@@ -564,4 +579,27 @@ EntityDef_HasSpawnClass(string className)
 	}
 
 	return false;
+}
+
+static void
+CallSpawnfuncByName(entity target, string className)
+{
+	entity oldSelf = self;
+	string spawnClass = strcat("spawnfunc_", className);
+	self = target;
+	callfunction(spawnClass);
+	self = oldSelf;
+}
+
+NSEntity
+Entity_CreateClass(string className)
+{
+	NSEntity newEntity = EntityDef_CreateClassname(className);
+
+	if (!newEntity) {
+		newEntity = spawn(NSEntity);
+		CallSpawnfuncByName(newEntity, className);
+	}
+
+	return newEntity;
 }

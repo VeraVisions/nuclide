@@ -203,7 +203,7 @@ void
 func_train::SoundMove(void)
 {
 	if (m_strMoveSnd) {
-		Sound_Play(this, CHAN_VOICE, m_strMoveSnd);
+		StartSoundDef(m_strMoveSnd, CHAN_VOICE, true);
 	}
 }
 
@@ -211,7 +211,7 @@ void
 func_train::SoundStop(void)
 {
 	if (m_strStopSnd) {
-		Sound_Play(this, CHAN_BODY, m_strStopSnd);
+		StartSoundDef(m_strStopSnd, CHAN_BODY, true);
 	}
 
 	if (m_strMoveSnd) {
@@ -248,7 +248,7 @@ func_train::PathMove(void)
 	}
 
 	SoundMove();
-	NSLog("Travelling at %f up/s", m_flSpeed);
+	EntLog("Travelling at %f up/s", m_flSpeed);
 
 	SetVelocity(vecVelocity * (1 / flTravelTime));
 	ScheduleThink(PathNext, flTravelTime);
@@ -266,9 +266,9 @@ func_train::PathDone(void)
 	}
 
 	if (HasTargetname()) {
-		NSLog("func_train (id %d, name %S): Touched base with path_corner %S", num_for_edict(this), targetname, target);
+		EntLog("func_train (id %d, name %S): Touched base with path_corner %S", num_for_edict(this), targetname, target);
 	} else {
-		NSLog("func_train (id %d): Touched base with path_corner %S", num_for_edict(this), target);
+		EntLog("func_train (id %d): Touched base with path_corner %S", num_for_edict(this), target);
 	}
 
 	/* fire the path_corners' target */
@@ -290,7 +290,7 @@ func_train::PathNext(void)
 
 	/* a little more serious, but we don't want to break the map. */
 	if (eNode == __NULL__) {
-		print(sprintf("func_tracktrain (id %d) target %S does not exist.\n", num_for_edict(this), target));
+		NSError("func_tracktrain (id %d) target %S does not exist.", num_for_edict(this), target);
 		return;
 	}
 

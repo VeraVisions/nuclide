@@ -302,8 +302,7 @@ NSRadar::InitFromHLTVScript(string fileName)
 	r_uploadimage("overview", width, height, (void *)imgData);
 	memfree(imgData);
 	newRadar.m_strMaterial = "overview";
-
-	print("Overview loaded.\n");
+	NSLog("Map overview available.");
 	return newRadar;
 }
 
@@ -369,7 +368,6 @@ NSRadar::InitFromSourceHLTVScript(string fileName)
 	vector imageSize = drawgetimagesize(newRadar.m_strMaterial);
 	imageSize *= newRadar.m_flScale;
 	newRadar.CalculateVerticesSource(imageSize[0], imageSize[1]);
-
-	print("Overview loaded.\n");
+	NSLog("Map overview available.");
 	return newRadar;
 }

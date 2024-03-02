@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2024 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -288,6 +288,8 @@ NSTalkMonster::Sentence(string sentence)
 	WriteInt(MSG_MULTICAST, Sentences_GetID(seq));
 	msg_entity = this;
 	multicast(origin, MULTICAST_PVS);
+
+	SndEntLog("Attempting to say %S", seq);
 }
 
 void
@@ -576,7 +578,7 @@ NSTalkMonster::FollowPlayer(void)
 	/* Give up after 1024 units */
 	if (flPlayerDist > m_flMaxFollowDistance) {
 		m_eFollowing = world;
-		NSMonster_Log("Maximum follow distance reached. Will stop following.");
+		NSMonsterLog("Maximum follow distance reached. Will stop following.");
 	} else if (flPlayerDist >= m_flFollowDistance) {
 		/* we only allow speed changes every second, avoid jitter */
 		if (m_flFollowSpeedChanged < time) {
@@ -958,7 +960,7 @@ NSTalkMonster::ProcessWordQue(void)
 
 	SentenceSample(m_pSentenceQue[m_iSentencePos].m_strSnd);
 
-	NSMonster_Log("^2NSEntity::^3ProcessWordQue^7: Speaking %s", m_pSentenceQue[m_iSentencePos].m_strSnd);
+	NSMonsterLog("Speaking sentence sample %S", m_pSentenceQue[m_iSentencePos].m_strSnd);
 	m_iSentencePos++;
 
 	if (m_iSentencePos == m_iSentenceCount) {
@@ -1008,6 +1010,9 @@ NSTalkMonster::Sentence(string msg)
 		m_pSentenceQue[i].m_flPitch = 100;
 	}
 	m_flSentenceTime = time;
+
+
+	SndEntLog("Saying %S", msg);
 }
 
 float
@@ -1146,15 +1151,14 @@ NSTalkMonster_ParseSentence(void)
 	ent = findfloat(world, entnum, e);
 
 	if (ent) {
-		if (ent.classname != "speaker" && ent.classname != "NSTalkMonster" && ent.classname != "ambient_generic")
-		NSMonster_Log("^3 NSTalkMonster_ParseSentence ^7: Entity %d not a NSTalkMonster!", e);
-		else {
+		if (ent.classname != "speaker" && ent.classname != "NSTalkMonster" && ent.classname != "ambient_generic") {
+			NSError("Entity %d not a NSTalkMonster!", e);
+		} else {
 			targ = (NSTalkMonster)ent;
 			targ.Sentence(sentence);
-			NSMonster_Log("^3 NSTalkMonster_ParseSentence ^7: Entity %d saying %s", e, sentence);
 		}
 	} else {
-		NSMonster_Log("^3 NSTalkMonster_ParseSentence ^7: Entity %d not in PVS", e);
+		NSError("Entity %d not in PVS", e);
 	}
 }
 #endif

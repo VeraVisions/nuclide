@@ -180,7 +180,7 @@ func_pushable::Respawn(void)
 	if (!m_eCollBox) {
 		m_eCollBox = spawn();
 		m_eCollBox.classname = "func_pushable_bbox";
-		m_eCollBox.solid = SOLID_BBOX;
+		m_eCollBox.solid = SOLID_TRIGGER;
 		m_eCollBox.owner = this;
 		setsize(m_eCollBox, -(size/2) * 0.9f, (size/2) * 0.9f);
 		setorigin(m_eCollBox, WorldSpaceCenter());
@@ -229,7 +229,7 @@ func_pushable::customphysics(void)
 	if (modelindex == 0) {
 		m_eCollBox.solid = SOLID_NOT;
 	} else {
-		m_eCollBox.solid = SOLID_BBOX;
+		m_eCollBox.solid = SOLID_TRIGGER;
 	}
 
 	wasMoving = m_bIsMoving;

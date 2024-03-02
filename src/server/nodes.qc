@@ -164,7 +164,7 @@ Nodes_InsertNodeForClassname(string classn)
 void
 Nodes_BuildFromEnts(void)
 {
-	print("rebuilding node tree...");
+	NSLog("Rebuilding node tree...");
 
 	/* run through the ents and rebuild the tree */
 	Nodes_InsertNodeForClassname("info_node");
@@ -179,13 +179,13 @@ Nodes_BuildFromEnts(void)
 	if (g_iNodes == 0)
 		Nodes_InsertNodeForClassname("info_player_deathmatch");
 
-	print(sprintf("%i possible nodes found in %s\n", g_iNodes, mapname));
+	NSLog("%i possible nodes found in %s", g_iNodes, mapname);
 
 	if (g_iNodes) {
-		print(sprintf("saving nodes nodes for %s\n", mapname));
+		NSLog("saving nodes nodes for %s", mapname);
 		Nodes_Save(sprintf("%s.way", mapname));
 	} else {
-		print(sprintf("no node data found for %s\n", mapname));
+		NSLog("no node data found for %s", mapname);
 	}
 }
 
@@ -193,14 +193,14 @@ Nodes_BuildFromEnts(void)
 void
 Nodes_Init(void)
 {
-	print("--------- Initializing Nodes Subsystem ----------\n");
+	InitStart();
 	g_nodes_present = FALSE;
 
 	/* skip if present. TODO: check if they're out of date? */
 	if (whichpack(sprintf("data/%s.way", mapname))) {
 		g_nodes_present = TRUE;
 #ifdef NODE_DEBUG
-		print(sprintf("loading existing nodes for %s\n", mapname));
+		NSLog("loading existing nodes for %s", mapname);
 		Nodes_Load(sprintf("%s.way", mapname));
 #endif
 	} else {
@@ -216,7 +216,7 @@ Nodes_Init(void)
 	g_iNodes = 0;
 #endif
 
-	print("Nodes subsystem initialized.\n");
+	InitEnd();
 }
 
 #ifdef NODE_DEBUG
@@ -231,12 +231,15 @@ SV_AddDebugPolygons(void)
 {
 	Way_DrawDebugInfo();
 
-	if (!g_iNodes) {
-		return;
-	}
-
 	if (cvar("developer") != 1)
 		return;
+
+#if 1
+	for (entity s = world; (s = find(s, ::classname, "func_tracktrain"));) {
+		func_tracktrain train = (func_tracktrain)s;
+		train.RenderDebugInfo();
+	}
+#endif
 
 	makevectors(self.v_angle);
 
@@ -248,6 +251,22 @@ SV_AddDebugPolygons(void)
 		R_PolygonVertex(w->origin - v_right * 8 - v_up * 8, [0,1], NODE_RECT_COLOR, NODE_RECT_ALPHA);
 		R_PolygonVertex(w->origin - v_right * 8 + v_up * 8, [0,0], NODE_RECT_COLOR, NODE_RECT_ALPHA);
 		R_PolygonVertex(w->origin + v_right * 8 + v_up * 8, [1,0], NODE_RECT_COLOR, NODE_RECT_ALPHA);
+		R_EndPolygon();
+	}
+
+	for (entity s = world; (s = find(s, ::classname, "path_track"));) {
+		vector pos = s.origin;
+		pos[2] += 32;
+		R_BeginPolygon("textures/dev/path_track", 0, 0);
+		R_PolygonVertex(pos + v_right * 24 - v_up * 24, [1,1], [1,1,1], 1.0f);
+		R_PolygonVertex(pos - v_right * 24 - v_up * 24, [0,1], [1,1,1], 1.0f);
+		R_PolygonVertex(pos - v_right * 24 + v_up * 24, [0,0], [1,1,1], 1.0f);
+		R_PolygonVertex(pos + v_right * 24 + v_up * 24, [1,0], [1,1,1], 1.0f);
+		R_EndPolygon();
+
+		R_BeginPolygon("", 0, 0);
+		R_PolygonVertex(s.origin, [0,1], [1,1,1], NODE_LINE_ALPHA);
+		R_PolygonVertex(pos, [1,1], [1,1,1], NODE_LINE_ALPHA);
 		R_EndPolygon();
 	}
 
@@ -266,46 +285,6 @@ SV_AddDebugPolygons(void)
 		R_PolygonVertex(s.origin, [0,1], [1,1,1], NODE_LINE_ALPHA);
 		R_PolygonVertex(pos, [1,1], [1,1,1], NODE_LINE_ALPHA);
 		R_EndPolygon();
-	}
-
-	/* draw the radius */
-	R_BeginPolygon("", 0, 0);
-	for (int i = 0; i < g_iNodes; i++) {
-		node_t *w = g_pNodes + i;
-		vector org = w->origin;
-
-		for (float j = 0; j < (2 * M_PI); j += (2 * M_PI) / 4) {
-			R_PolygonVertex(
-				org + [sin(j),cos(j)]*w->radius,
-				[1,1],
-				[0,0.25,0],
-				1.0f
-			);
-		}
-		R_EndPolygon();
-	}
-
-	/* draw the lines */
-	R_BeginPolygon("", 1, 0);
-	for (int i = 0; i < g_iNodes; i++) {
-		node_t *w = g_pNodes+i;
-		vector org = w->origin;
-		vector rgb = [1,1,1];
-
-		for (int j = 0; j < w->nb_count; j++) {
-			int k = w->nb[j].node;
-
-			/* check for invalids */
-			if (k < 0 || k >= g_iNodes) {
-				break;
-			}
-
-			node_t *w2 = &g_pNodes[k];
-
-			R_PolygonVertex(org, [0,1], [1,1,1], NODE_LINE_ALPHA);
-			R_PolygonVertex(w2->origin, [1,1], [1,1,1], NODE_LINE_ALPHA);
-			R_EndPolygon();
-		}
 	}
 }
 #endif

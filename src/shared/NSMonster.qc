@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2023 Vera Visions LLC.
+ * Copyright (c) 2016-2024 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -604,7 +604,7 @@ NSMonster::AlertNearby(void)
 		if (vlen(origin - w.origin) > 512)
 			continue;
 
-		//NSMonster_Log("Alert! %s get %s", w.classname, m_eEnemy.classname);
+		//NSMonsterLog("Alert! %s get %s", w.classname, m_eEnemy.classname);
 		NSMonster f = (NSMonster)w;
 
 		/* we shouldn't override this when they already got a target */
@@ -663,6 +663,10 @@ NSMonster_TraceAgainsTarget(NSMonster monster, NSEntity target)
 void
 NSMonster::SeeThink(void)
 {
+	if (HasSpawnFlags(MSF_PRISONER) == true) {
+		return;
+	}
+
 	if (m_eLookAt) {
 		vector vecDelta;
 		makevectors( angles );
@@ -675,7 +679,7 @@ NSMonster::SeeThink(void)
 			makevectors(v_angle);
 			vector tmp = vectoangles(v_forward);
 			subblendfrac = tmp[0] / 90;
-			bonecontrol1 = m_flHeadYaw;	/* head turning */
+			bonecontrol1 = Math_Lerp(bonecontrol1, m_flHeadYaw, frametime * 15.0f);	/* head turning */
 		}	
 	}
 
@@ -983,7 +987,7 @@ NSMonster::AttackRanged(void)
 	}
 	static void AttackRanged_RangedSpecial(void)
 	{
-		NSMonster_Log("AttackRanged_RangedSpecial: %S", m_defRanged2);
+		NSMonsterLog("AttackRanged_RangedSpecial: %S", m_defRanged2);
 		NSProjectile_SpawnDef(m_defRanged2, this);
 	}
 
@@ -1001,7 +1005,7 @@ NSMonster::AttackRanged(void)
 		if (_m_flReloadTracker > m_flReloadCount) {
 			throwAnyway = true;
 			_m_bShouldThrow = true;
-			NSMonster_Log("throwAnyway: true!");
+			NSMonsterLog("throwAnyway: true!");
 		}
 
 	/* special always first if possible */
@@ -1027,14 +1031,14 @@ NSMonster::AttackRanged(void)
 
 			/* out of ammo, cannot reload */
 			if (m_flReserveAmmo == 0) {
-				//NSMonster_Log("Out of ammo!");
+				//NSMonsterLog("Out of ammo!");
 				return 0;
 			}
 
 			/* do we not have unlimited ammo? */
 			if (m_flReserveAmmo != -1) {
 				m_flReserveAmmo -= m_flReloadCount;
-				NSMonster_Log("Reserve ammo: %d", m_flReserveAmmo);
+				NSMonsterLog("Reserve ammo: %d", m_flReserveAmmo);
 
 				/* oh no, we're below 0 in terms of ammo. */
 				if (m_flReserveAmmo < 0) {
@@ -1043,7 +1047,7 @@ NSMonster::AttackRanged(void)
 				}
 			}
 
-			NSMonster_Log("Starting at %d bullets", startAmmo);
+			NSMonsterLog("Starting at %d bullets", startAmmo);
 			_m_flReloadTracker = startAmmo;
 			AnimPlay(actReload);
 			StartSoundDef(m_sndReload, CHAN_WEAPON, true);
@@ -1051,11 +1055,11 @@ NSMonster::AttackRanged(void)
 
 			if (m_flReloadDelay) {
 				m_flAttackThink = time + m_flReloadDelay;
-				NSMonster_Log("Reloading, delay %f seconds", m_flReloadDelay);
+				NSMonsterLog("Reloading, delay %f seconds", m_flReloadDelay);
 			} else {
 				float actDuration = frameduration(modelindex, actReload);
 				m_flAttackThink = time + actDuration;
-				NSMonster_Log("Reloading, act delays it by %f seconds", actDuration);
+				NSMonsterLog("Reloading, act delays it by %f seconds", actDuration);
 			}
 
 			return 1;
@@ -1068,10 +1072,10 @@ NSMonster::AttackRanged(void)
 		if (m_defRanged1)
 		if (EntityDef_HasSpawnClass(m_defRanged1)) {
 			NSProjectile_SpawnDef(m_defRanged1, this);
-			NSMonster_Log("Firing ranged def %S", m_defRanged1);
+			NSMonsterLog("Firing ranged def %S", m_defRanged1);
 		} else {
 			TraceAttack_FireBullets(1, GetEyePos(), rangedDmg, [0.01,0.01] * m_flAttackAccuracy, 0);
-			NSMonster_Log("Firing traceline def with %d", rangedDmg);
+			NSMonsterLog("Firing traceline def with %d", rangedDmg);
 		}
 
 		StartSoundDef(m_sndRangedAttack, CHAN_WEAPON, true);
@@ -1086,11 +1090,11 @@ NSMonster::AttackRanged(void)
 
 		if (rangedDly) {
 			m_flAttackThink = time + rangedDly + burstTime;
-			NSMonster_Log("Primary ranged attack, delay %f seconds (burst %d)", rangedDly, burstTime);
+			NSMonsterLog("Primary ranged attack, delay %f seconds (burst %d)", rangedDly, burstTime);
 		} else {
 			float actAttackTime = frameduration(modelindex, actRanged);
 			m_flAttackThink = time + actAttackTime + burstTime;
-			NSMonster_Log("Primary ranged attack, act delays it by %f seconds (burst %f)", actAttackTime, burstTime);
+			NSMonsterLog("Primary ranged attack, act delays it by %f seconds (burst %f)", actAttackTime, burstTime);
 		}
 
 		return 1;
@@ -1173,7 +1177,7 @@ NSMonster::FreeState(void)
 		NSEntity findKT = (NSEntity)find(world, ::targetname, m_strSequenceKillTarget);
 
 		if (findKT) {
-			NSMonster_Log("^2%s::^3FreeState^7: Killing %S", classname, m_strSequenceKillTarget);
+			NSMonsterLog("Killing %S", m_strSequenceKillTarget);
 			findKT.Destroy();
 		} else {
 			error("Could not remove scripted killtarget!\n");
@@ -1207,7 +1211,8 @@ NSMonster::FreeState(void)
 	if (m_iSequenceRemove) {
 		Hide();
 	}
-	NSMonster_Log("^2%s::^3FreeState^7: (%i, %S)", classname, m_iSequenceRemove, to_trigger);
+
+	NSMonsterLog("Sequence over (hidden: %i, triggering: %S)", m_iSequenceRemove, to_trigger);
 }
 
 void
@@ -1215,7 +1220,7 @@ NSMonster::FreeStateMoved(void)
 {
 	vector new_origin;
 	new_origin = gettaginfo(this, 1);
-	NSMonster_Log("^2%s::^3FreeStateMoved^7: moved to %v", classname, new_origin);
+	NSMonsterLog("Moved to %v", new_origin);
 	SetOrigin(new_origin);
 	DropToFloor();
 	FreeState();
@@ -1227,7 +1232,7 @@ NSMonster::FreeStateDead(void)
 	vector new_origin;
 
 	new_origin = gettaginfo(this, 1);
-	NSMonster_Log("^2%s::^3FreeStateMoved^7: moved to %v", classname, new_origin);
+	NSMonsterLog("Moved to %v", new_origin);
 	SetOrigin(new_origin);
 	DropToFloor();
 
@@ -1251,14 +1256,14 @@ NSMonster::RouteEnded(void)
 		m_iSequenceState = SEQUENCESTATE_ENDING;
 		think = (m_iSequenceFlags & SSFL_NOSCRIPTMOVE) ? FreeState : FreeStateMoved;
 		nextthink = time + duration;
-		NSMonster_Log("^2%s::^3RouteEnded^7: %s overriding anim for %f seconds (modelindex %d, frame %d)", \
-			classname, this.targetname, duration, modelindex, m_flSequenceEnd);
+		NSMonsterLog("%s overriding anim for %f seconds (modelindex %d, frame %d)", \
+			this.targetname, duration, modelindex, m_flSequenceEnd);
 	} else {
 		/* we still need to trigger targets */
 		think = (m_iSequenceFlags & SSFL_NOSCRIPTMOVE) ? FreeState : FreeStateMoved;
 		nextthink = time;
-		NSMonster_Log("^2%s::^3RouteEnded^7: %s has no anim, finished sequence", \
-			classname, this.targetname);
+		NSMonsterLog("%s has no anim, finished sequence", \
+			this.targetname);
 	}
 }
 
@@ -2279,7 +2284,7 @@ NSMonster_AlertEnemyAlliance(vector pos, float radius, int alliance)
 		return;
 
 	if (autocvar_ai_debugAlerts)
-		NSMonster_Log("AI alert from %v with radius %f and alliance %i", pos, radius, alliance);
+		NSLog("AI alert from %v with radius %f and alliance %i", pos, radius, alliance);
 
 	for (entity w = world; (w = nextent(w));) {
 		if (w.takedamage == DAMAGE_NO)
@@ -2293,7 +2298,7 @@ NSMonster_AlertEnemyAlliance(vector pos, float radius, int alliance)
 		/* only target monsters */
 		if (!(w.flags & FL_MONSTER)) {
 			if (autocvar_ai_debugAlerts)
-				NSMonster_Log("\t%S is not a monster", w.classname);
+				NSLog("\t%S is not a monster", w.classname);
 			continue;
 		}
 
@@ -2302,26 +2307,26 @@ NSMonster_AlertEnemyAlliance(vector pos, float radius, int alliance)
 		/* they already got a target of some kind */
 		if (f.m_eEnemy) {
 			if (autocvar_ai_debugAlerts)
-				NSMonster_Log("\t%S already has a target", w.classname);
+				NSLog("\t%S already has a target", w.classname);
 			continue;
 		}
 
 		/* if they're our friend... ignore*/
 		if (f.IsFriend(alliance)) {
 			if (autocvar_ai_debugAlerts)
-				NSMonster_Log("\t%S is friend of alliance %i", w.classname, alliance);
+				NSLog("\t%S is friend of alliance %i", w.classname, alliance);
 			continue;
 		}
 
 		/* if the monster is dead... ignore */
 		if (f.health <= 0) {
 			if (autocvar_ai_debugAlerts)
-				NSMonster_Log("\t%S is dead, cannot be alerted", w.classname);
+				NSLog("\t%S is dead, cannot be alerted", w.classname);
 			continue;
 		}
 
 		if (autocvar_ai_debugAlerts)
-				NSMonster_Log("\twe're alerting %S to go to %v", w.classname, pos);
+				NSLog("\twe're alerting %S to go to %v", w.classname, pos);
 
 		/* we've heard a noise. investigate the location */
 		f.RouteClear();

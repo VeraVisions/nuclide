@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Vera Visions LLC.
+ * Copyright (c) 2024 Vera Visions LLC.
  * Copyright (c) 2014 David Walton
  *
  * Permission to use, copy, modify, and distribute this software for any
@@ -30,6 +30,8 @@ NSPortal::NSPortal(void)
 	m_vecPortalS = g_vec_null;
 	m_vecPortalT = g_vec_null;
 	m_brushNum = -1;
+	m_bEnabled = false;
+	isPortal = true;
 
 #ifdef CLIENT
 	m_vecTargetPos = g_vec_null;
@@ -47,10 +49,14 @@ NSPortal::NSPortal(void)
 	/* unique portal IDs */
 	{
 		float numPortals = 0;
-		for (NSPortal e = __NULL__; (e = (NSPortal)find(e, ::classname, "NSPortal"));) {
+		for (NSPortal e = __NULL__; (e = (NSPortal)findfloat(e, ::isPortal, true));) {
 			e.portalnum = numPortals++;
 		}
 	}
+
+	/* default fallback */
+	precache_model("models/b_portal.bsp");
+	SetPortalModel("models/b_portal.bsp");
 #endif
 }
 
@@ -104,7 +110,7 @@ NSPortal::Restore(string strKey, string strValue)
 }
 
 void
-NSPortal::PortalAutoLink(void)
+NSPortal::PortalAutoLink(bool openPortal)
 {
 	/* this just links against the youngest portal of the same ID at this time */
 	NSPortal youngestPortal, oldestPortal;
@@ -113,7 +119,7 @@ NSPortal::PortalAutoLink(void)
 	float oldestTime = 0.0f;
 
 	/* delete any portal with the same id */
-	for (NSPortal e = __NULL__; (e = (NSPortal)find(e, ::classname, "NSPortal"));) {
+	for (NSPortal e = __NULL__; (e = (NSPortal)findfloat(e, ::isPortal, true));) {
 		if (e == this)
 			continue;
 
@@ -132,24 +138,43 @@ NSPortal::PortalAutoLink(void)
 
 	/* remove the first portal from the world */
 	if (youngestPortal != oldestPortal) {
-		oldestPortal.Destroy();
+		oldestPortal.PortalClose();
 	}
 
-	PortalLinkTo(youngestPortal);
+	PortalLinkTo(youngestPortal, openPortal);
+}
+
+void
+NSPortal::PortalClose(void)
+{
+	/* invalidate the other portal's reference to this one, only
+	   if we're still actively linked. */
+	if (m_ePortalTarget && m_ePortalTarget.m_ePortalTarget == this) {
+		m_ePortalTarget.m_bEnabled = false;
+		m_ePortalTarget.m_ePortalTarget = __NULL__;
+		m_ePortalTarget._PortalUpdated();
+	}
+
+	/* now kill our own reference */
+	m_ePortalTarget = __NULL__;
+	m_bEnabled = false;
+	_PortalUpdated();
 }
 
 bool
-NSPortal::PortalLinkTo(NSPortal target)
+NSPortal::PortalLinkTo(NSPortal target, bool openPortal)
 {
 	m_ePortalTarget = target;
-	skin = m_ePortalTarget ? 0 : 1;
-	SendFlags |= 1;
+
+	m_bEnabled = openPortal;
+
+	SendFlags = -1;
 	_PortalUpdated();
 
 	if (m_ePortalTarget) {
 		m_ePortalTarget.m_ePortalTarget = this;
-		m_ePortalTarget.skin = skin;
-		m_ePortalTarget.SendFlags |= 1;
+		m_ePortalTarget.m_bEnabled = openPortal;
+		m_ePortalTarget.SendFlags = -1;
 		m_ePortalTarget._PortalUpdated();
 	}
 
@@ -160,6 +185,22 @@ void
 NSPortal::SetPortalID(int value)
 {
 	m_iPortalValue = value;
+}
+
+void
+NSPortal::SetPortalModel(string modelPath)
+{
+	m_flPortalModel = getmodelindex(modelPath);
+}
+
+void
+NSPortal::PortalWasOpened(void)
+{
+}
+
+void
+NSPortal::PortalWasClosed(void)
+{
 }
 #endif
 
@@ -179,9 +220,29 @@ NSPortal::_PortalUpdated(void)
 
 	/* expand the size of the object along the plane, and set up a portal region. */
 	movetype = MOVETYPE_NONE;
-	solid = skin ? SOLID_BSP : SOLID_PORTAL;
-	precache_model("models/b_portal.bsp");
-	setmodel(this, "models/b_portal.bsp");
+
+	if (m_bEnabled == true) {
+		solid = SOLID_PORTAL;
+		setmodel(this, modelnameforindex(m_flPortalModel));
+		if (m_bWasEnabled == false) {
+			m_bWasEnabled = true;
+#ifdef SERVER
+			PortalWasOpened();
+#endif
+#ifdef CLIENT
+			m_flSize = 0.0f;
+#endif
+		}
+	} else {
+		if (m_bWasEnabled == true) {
+			m_bWasEnabled = false;
+#ifdef SERVER
+			PortalWasClosed();
+#endif
+		}
+		solid = SOLID_BSP;
+		//modelindex = 0;
+	}
 
 	/* determine size of major axis */
 	float portalSize = max(size[0], size[1], size[2]);
@@ -374,6 +435,8 @@ NSPortal::EvaluateEntity(void)
 	EVALUATE_VECTOR(m_vecTargetAngle, 0, PORTALFL_CHANGED_TARG_ANGLES_X)
 	EVALUATE_VECTOR(m_vecTargetAngle, 1, PORTALFL_CHANGED_TARG_ANGLES_Y)
 	EVALUATE_VECTOR(m_vecTargetAngle, 2, PORTALFL_CHANGED_TARG_ANGLES_Z)
+	EVALUATE_FIELD(m_bEnabled, PORTALFL_CHANGED_ENABLED)
+	EVALUATE_FIELD(m_flPortalModel, PORTALFL_CHANGED_MODELINDEX)
 }
 
 float
@@ -398,6 +461,9 @@ NSPortal::SendEntity(entity ePEnt, float flChanged)
 		SENDENTITY_FLOAT(m_vecTargetAngle[1], PORTALFL_CHANGED_TARG_ANGLES_Y)
 		SENDENTITY_FLOAT(m_vecTargetAngle[2], PORTALFL_CHANGED_TARG_ANGLES_Z)
 	}
+
+	SENDENTITY_BYTE(m_bEnabled, PORTALFL_CHANGED_ENABLED)
+	SENDENTITY_FLOAT(m_flPortalModel, PORTALFL_CHANGED_MODELINDEX)
 
 	return (true);
 }
@@ -427,13 +493,15 @@ NSPortal::ReceiveEntity(float flNew, float flChanged)
 		READENTITY_FLOAT(m_vecTargetAngle[1], PORTALFL_CHANGED_TARG_ANGLES_Y)
 		READENTITY_FLOAT(m_vecTargetAngle[2], PORTALFL_CHANGED_TARG_ANGLES_Z)
 
+	READENTITY_BYTE(m_bEnabled, PORTALFL_CHANGED_ENABLED)
+	READENTITY_FLOAT(m_flPortalModel, PORTALFL_CHANGED_MODELINDEX)
+
 	if (m_ePortalTarget) {
 		if (m_ePortalTarget.m_ePortalTarget)
 			m_ePortalTarget.m_ePortalTarget.m_ePortalTarget = __NULL__;
 
 		m_ePortalTarget. m_ePortalTarget = this;
 	} else {
-		skin = 1;
 		makevectors(angles);
 		m_vecTargetPos = origin;
 		m_vecTargetN = v_forward;
@@ -443,6 +511,21 @@ NSPortal::ReceiveEntity(float flNew, float flChanged)
 
 	_PortalUpdated();
 	drawmask = MASK_ENGINE;
-	predraw = 0;
+//	predraw = 0;
+}
+
+float
+NSPortal::predraw(void)
+{
+	scale = m_flSize;
+
+	addentity(this);
+
+	m_flSize += frametime * 10.0f;
+
+	if (m_flSize > 1.0)
+		m_flSize = 1.0f;
+
+	return PREDRAW_NEXT;
 }
 #endif

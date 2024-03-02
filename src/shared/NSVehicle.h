@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2024 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,12 +16,14 @@
 
 var bool autocvar_vehicle_developer = false;
 void
-_NSVehicle_Log(string msg)
+_NSVehicle_Log(string className, string functionName, float edictNum, string warnMessage)
 {
-	if (autocvar_vehicle_developer == true)
-		print(sprintf("%f %s\n", time, msg));
+	if (autocvar_g_developerTimestamps)
+		printf("^9%f ^2%s (%d) ^7: %s\n", time, functionName, edictNum, warnMessage);
+	else
+		printf("^2%s (%d) ^7: %s\n", functionName, edictNum, warnMessage);
 }
-#define NSVehicle_Log(...) _NSVehicle_Log(sprintf(__VA_ARGS__))
+#define NSVehicle_Log(...) if (autocvar_vehicle_developer == true) _NSVehicle_Log(classname, __FUNC__, num_for_edict(this), sprintf(__VA_ARGS__))
 
 /** This entity class represents vehicles that are predicted across the network. */
 class NSVehicle:NSSurfacePropEntity

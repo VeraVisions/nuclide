@@ -228,7 +228,7 @@ void
 path_corner::PathPassTrigger(entity activatingEntity, triggermode_t triggerMode)
 {
 	if (HasSpawnFlags(PC_FIREONCE) && m_iFired) {
-		NSLog("path_corner (%s) can only fire its targets once", targetname);
+		EntLog("tried to fire more than once");
 		return;
 	}
 
@@ -240,9 +240,7 @@ path_corner::PathPassTrigger(entity activatingEntity, triggermode_t triggerMode)
 	for (entity f = world; (f = find(f, ::targetname, m_strMessage));) {
 		NSTrigger trigger = (NSTrigger)f;
 
-		NSLog("^2%s::^3PathPassTrigger^7:" \
-		       "Triggering %s `%s` from %s", \
-		        classname, f.classname, \
+		EntLog("Triggering %s `%s` from %s", f.classname, \
 		        trigger.targetname, activatingEntity.classname);
 
 		if (trigger.Trigger != __NULL__) {

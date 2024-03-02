@@ -94,7 +94,7 @@ CMap_Shoot(void)
 	string strReflectcube;
 	if (self.owner) {
 		env_cubemap tmp = (env_cubemap) self.owner;
-		print("^3Cubemap processing...\n");
+		NSLog("Generating cubemap '%v' (%dx%d)", g_vecCubePos, g_dCubeSize, g_dCubeSize);
 		g_vecCubePos = tmp.origin;
 		g_dCubeSize = (float)tmp.m_iSize;
 
@@ -114,7 +114,7 @@ CMap_Shoot(void)
 		self.think = CMap_Check;
 		self.nextthink = time + 0.25f;
 	} else {
-		print("^2Cubemaps done...\n");
+		NSLog("Generating level cubemaps done.");
 		localcmd("r_skipEnvmap 0\n");
 		localcmd("vid_reload\n");
 		g_iCubeProcess = FALSE;
@@ -161,7 +161,8 @@ CMap_Build(void)
 	localcmd("r_hdr_irisadaptation 0\n");
 	localcmd("r_postprocshader \"\"0\n");
 	localcmd("r_skipEnvmap 1\n");
-	print("^4Building cubemaps...\n");
+
+	NSLog("Building cubemaps...\n");
 	g_eCubeCycle = spawn();
 	g_eCubeCycle.owner = find(world, classname, "env_cubemap");
 

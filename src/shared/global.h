@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2024 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,6 +14,11 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+var bool autocvar_g_developer = false;
+var bool autocvar_g_developerTimestamps = false;
+
+#define printf(...) print(sprintf(__VA_ARGS__))
+
 #ifdef DOXYGEN
 /** Doxygen doesn't know what enumflags (aka bitfields) are, used as e.g. */
 #define enumflags enum
@@ -22,8 +27,28 @@
 void
 _NSLog(string msg)
 {
-	if (cvar("g_developer") == 1)
-		print(sprintf("%f %s\n", time, msg));
+	if (autocvar_g_developerTimestamps)
+		print(sprintf("^9%f ^7%s\n", time, msg));
+	else
+		print(sprintf("^7%s\n", msg));
+}
+
+void
+_NSError(string functionName, string msg)
+{
+	if (autocvar_g_developerTimestamps)
+		print(sprintf("^9%f ^1%s^7: %s\n", time, functionName, msg));
+	else
+		print(sprintf("^1%s^7: %s\n", functionName, msg));
+}
+
+void
+_NSWarning(string functionName, string msg)
+{
+	if (autocvar_g_developerTimestamps)
+		print(sprintf("^9%f ^3%s^7: %s\n", time, functionName, msg));
+	else
+		print(sprintf("^3%s^7: %s\n", functionName, msg));
 }
 
 void
@@ -37,27 +62,31 @@ _NSAssert(bool condition, string function, string descr)
 	}
 }
 
-void
-_NSEntWarning(string className, vector classOrg, string warnMessage)
-{
-	print(sprintf("^1Class %s at %v: %s\n", className, classOrg, warnMessage));
-}
-
-/** Logs an error type message, with timestamp.
+/** Logs an message, with timestamp.
 	 The console variable `g_developer` has to be `1` for them to be visible.
 
 @param description(...) contains a formatted string containing a description. */
-#define NSLog(...) _NSLog(sprintf(__VA_ARGS__))
+#define NSLog(...) if (autocvar_g_developer) _NSLog(sprintf(__VA_ARGS__))
+
+/** Logs an error message, with timestamp.
+	 The console variable `g_developer` has to be `1` for them to be visible.
+
+@param description(...) contains a formatted string containing a description. */
+#define NSError(...) _NSError(__FUNC__, sprintf(__VA_ARGS__))
+
+/** Logs a warning message, with timestamp.
+	 The console variable `g_developer` has to be `1` for them to be visible.
+
+@param description(...) contains a formatted string containing a description. */
+#define NSWarning(...) _NSWarning(__FUNC__, sprintf(__VA_ARGS__))
 
 /** Generates an assertion, if a given condition is false.
+	 The console variable `g_developer` has to be `1` for them to be visible.
 
 @param condition is the expression to be evaluated.
 @param description(...) contains a formatted string containing an error description. */
 
-#define NSAssert(condition, ...) _NSAssert(condition, __FUNC__, sprintf(__VA_ARGS__))
-
-
-#define NSEntWarning(...) _NSEntWarning(classname, origin, sprintf(__VA_ARGS__))
+#define NSAssert(condition, ...) if (autocvar_g_developer) _NSAssert(condition, __FUNC__, sprintf(__VA_ARGS__))
 
 typedef enumflags
 {
@@ -70,3 +99,59 @@ typedef enumflags
 } searchFlags_t;
 
 const vector g_vec_null = [0.0f, 0.0f, 0.0f];
+
+/* the console needs some attention too. */
+var float g_initTime;
+
+void
+InitPrint(string functionName)
+{
+	int chars = 51i;
+	int charsLeft;
+	int charExtra;
+	string sideLeft = "";
+	string sideRight = "";
+
+	if (functionName == __NULL__) {
+		NSLog("---------------------------------------------------");
+		return;
+	}
+
+	/* word and padding */
+	chars = chars - (int)strlen(functionName) - 2i;
+	charsLeft = chars / 2i;
+	charExtra = chars % 2i;
+
+	for (int i = 0i; i < charsLeft; i++)
+		sideLeft = strcat(sideLeft,"-");
+
+	for (int i = 0i; i < (charsLeft + charExtra); i++) {
+		sideRight = strcat(sideRight,"-");
+	}
+
+	NSLog( "%s %s %s", sideLeft, functionName, sideRight);
+}
+
+void
+_InitStart(string functionName)
+{
+	if (g_initTime != 0)
+		error("Called InitStart() without InitEnd()ing the previous one!");
+
+	InitPrint(functionName);
+	g_initTime = gettime(1);
+}
+
+#define InitStart() _InitStart(__FUNC__)
+
+
+void
+_InitEnd(void)
+{
+	float endTime = gettime(1);
+	NSLog("loaded in %.1f seconds", (endTime - g_initTime));
+	NSLog("---------------------------------------------------");
+	g_initTime = 0;
+}
+
+#define InitEnd() _InitEnd()

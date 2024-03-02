@@ -243,13 +243,13 @@ logic_timer::Input(entity activatorEntity, string inputName, string dataField)
 		if (nextthink <= 0.0)
 			nextthink += stof(dataField);
 		else
-			NSEntWarning("AddToTimer when inactive!");
+			EntWarning("AddToTimer when inactive!");
 		break;
 	case "SubtractFromTimer":
 		if (nextthink <= 0.0)
 			nextthink -= stof(dataField);
 		else
-			NSEntWarning("SubtractFromTimer when inactive!");
+			EntWarning("SubtractFromTimer when inactive!");
 
 		break;
 	default:

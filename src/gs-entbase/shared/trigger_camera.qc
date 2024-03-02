@@ -70,13 +70,14 @@ private:
 	string m_strMoveTo;
 	entity m_eLooker_net;
 	float m_flSpeed;
+	float m_flInitialSpeed;
 #endif
 };
 
 void
 trigger_camera::trigger_camera(void)
 {
-	m_flWait = 4.0f;
+	m_flWait = 0.0f;
 	m_eLooker = __NULL__;
 #ifndef CLIENT
 	m_strAimAt = __NULL__;
@@ -155,6 +156,9 @@ trigger_camera::SpawnKey(string strKey, string strValue)
 	case "wait":
 		m_flWait = ReadFloat(strValue);
 		break;
+	case "speed":
+		m_flSpeed = ReadFloat(strValue);
+		break;
 	default:
 		super::SpawnKey(strKey, strValue);
 	}
@@ -200,7 +204,7 @@ trigger_camera::Restore(string strKey, string strValue)
 		m_strMoveTo = ReadString(strValue);
 		break;
 	case "m_flSpeed":
-		m_flSpeed = ReadFloat(strValue);
+		m_flInitialSpeed = ReadFloat(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
@@ -239,15 +243,18 @@ trigger_camera::SendEntity(entity ePEnt, float flFlags)
 void
 trigger_camera::EvaluateEntity(void)
 {
-	entity t;
+	NSEntity aimingAt;
 
 	if (!m_eLooker)
 		return;
 
-	t = find(world, ::targetname, m_strAimAt);
+	aimingAt = (NSEntity)find(world, ::targetname, m_strAimAt);
 
-	if (t) {
-		angles = vectoangles(t.origin - origin);
+	if (aimingAt) {
+		TurnToPos(aimingAt.GetOrigin());
+	} else {
+		//NSEntity targetNode = (NSEntity)find(world, ::targetname, target);
+		//TurnToPos(targetNode.GetOrigin());
 	}
 
 	if (ATTR_CHANGED(origin)) {
@@ -272,70 +279,87 @@ trigger_camera::EvaluateEntity(void)
 void
 trigger_camera::GoToTarget(void)
 {
-	float flTravelTime;
-	vector vecVelocity;
+	float travelTime;
+	vector camVelocity;
+	path_corner targetNode;
 
-	path_corner eNode;
-	eNode = (path_corner)find(world, ::targetname, target);
+	targetNode = (path_corner)find(world, ::targetname, target);
 
-	if (!eNode) {
+	if (!targetNode) {
+		EntError("Cannot find target %S", target);
 		return;
 	}
 
-	vecVelocity = (eNode.origin - origin);
-	flTravelTime = (vlen(vecVelocity) / eNode.m_flSpeed);
+	camVelocity = (targetNode.GetOrigin() - GetOrigin());
 
-	NSLog("trigger_camera (%s): Moving to path_corner %S within %f secs", targetname, target, flTravelTime);
+	if (targetNode.m_flSpeed) {
+		m_flSpeed = targetNode.m_flSpeed;
+	}
 
-	if (!flTravelTime) {
-		NSEntWarning("distance too short, going to next");
+	travelTime = (vlen(camVelocity) / m_flSpeed);
+
+	EntLog("Moving to path_corner %S at %d within %f secs (%v)", target, m_flSpeed, travelTime, camVelocity);
+
+	if (!travelTime) {
+		EntWarning("Distance too short, going to next.");
 		NextPath();
 		return;
 	}
 
-	SetVelocity(vecVelocity * (1 / flTravelTime));
-	ScheduleThink(NextPath, flTravelTime);
+	if (!m_strAimAt) {
+		vector vecAngleDiff = targetNode.GetOrigin() - GetOrigin();
+		vector vecAngleDest = vectoangles(vecAngleDiff);
+		vecAngleDiff = Math_AngleDiff(vecAngleDest, angles);
+		SetAngularVelocity(vecAngleDiff * (1 / travelTime));
+	}
+
+	SetVelocity(camVelocity * (1 / travelTime));
+	ScheduleThink(NextPath, travelTime);
 }
 
 void
 trigger_camera::NextPath(void)
 {
-	path_corner eNode;
+	path_corner nextNode;
 
 	if (target == "") {
 		return;
 	}
 
-	print(sprintf("Looking for target %S\n", target));
-	eNode = (path_corner)find(world, ::targetname, target);
+	nextNode = (path_corner)find(world, ::targetname, target);
 
-	if (!eNode) {
+	if (!nextNode) {
+		NSError("Node %S suddenly missing from map!", target);
 		return;
 	}
 
-	NSLog("trigger_camera (%s): Touched base with path_corner %S", targetname, target);
+	EntLog("Arrived at target node %S.", target);
 
 	/* fire the path_corners' target */
-	eNode.Trigger(this, TRIG_TOGGLE);
+	nextNode.PathPassTrigger(this, TRIG_TOGGLE);
 
-	SetOrigin(eNode.origin - (mins + maxs) * 0.5);
-	SetTriggerTarget(eNode.target);
+	if (target != m_strMoveTo)
+		m_strAimAt = __NULL__;
+
+	SetOrigin(nextNode.origin - (mins + maxs) * 0.5);
+	SetTriggerTarget(nextNode.target);
+
 	ClearVelocity();
 
 	/* warp next frame */
-	if (eNode.HasSpawnFlags(PC_TELEPORT)) {
-		NSLog("^1trigger_camera::^3NextPath^7: Node %s wants %s to teleport\n", eNode.targetname, targetname);
+	if (nextNode.HasSpawnFlags(PC_TELEPORT)) {
+		EntLog("Node %S wants %S to teleport.", nextNode.targetname, targetname);
 		ScheduleThink(NextPath, 0.0f);
 		return;
 	}
 
 	/* stop until triggered again */
-	if (eNode.HasSpawnFlags(PC_WAIT)) {
+	if (nextNode.HasSpawnFlags(PC_WAIT)) {
 		return;
 	}
 
-	if (eNode.m_flWait > 0) {
-		ScheduleThink(GoToTarget, eNode.m_flWait);
+	if (nextNode.m_flWait > 0) {
+		ScheduleThink(GoToTarget, nextNode.m_flWait);
 	} else {
 		GoToTarget();
 	}
@@ -350,7 +374,7 @@ trigger_camera::Trigger(entity act, triggermode_t state)
 		act = find(world, ::classname, "player");
 	}
 
-	NSLog("trigger_camera for %s %S is now %S\n", act.classname, act.netname, targetname);
+	EntLog("Controlling camera of %S", act.netname);
 
 	/* kill the other cams the player may be attached to */
 	for (trigger_camera cam = __NULL__; (cam = (trigger_camera)find(cam, ::classname, "trigger_camera"));) {
@@ -367,15 +391,20 @@ trigger_camera::Trigger(entity act, triggermode_t state)
 
 	m_eLooker = act;
 	m_eLooker.view2 = this;
-	NSLog("Triggering it on %s\n", act.netname);
+	m_flSpeed = m_flInitialSpeed;
+
+	if (!m_flSpeed) {
+		m_flSpeed = 100.0f;
+	}
+
+	/* Reset to the spawn values */
+	SetMovetype(MOVETYPE_PUSH);
+	SetSolid(SOLID_NOT);
 	SetOrigin(GetSpawnOrigin());
-	ClearVelocity();
-	ReleaseThink();
 	SetTriggerTarget(m_strMoveTo);
 	NextPath();
 	GoToTarget();
 	SetSendFlags(0xFFFFFF);
-	ScheduleThink(DeactivateCamera, m_flWait);
 	pvsflags = PVSF_IGNOREPVS;
 }
 
@@ -383,7 +412,7 @@ trigger_camera::Trigger(entity act, triggermode_t state)
 void
 trigger_camera::DeactivateCamera(void)
 {
-	NSLog("Turning it off on %s\n", m_eLooker.netname);
+	EntLog("Turning it off on %S", m_eLooker.netname);
 	m_eLooker.view2 = __NULL__;
 	m_eLooker = __NULL__;
 	SetSendFlags(-1);

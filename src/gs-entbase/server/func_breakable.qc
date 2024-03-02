@@ -23,7 +23,7 @@ enumflags
 
 enum
 {
-	BREAKMT_GLASS,
+	BREAKMT_GLASS = 0,
 	BREAKMT_WOOD,
 	BREAKMT_METAL,
 	BREAKMT_FLESH,
@@ -161,9 +161,9 @@ func_breakable::func_breakable(void)
 
 	/* func_breakable defaults to glass */
 	if (classname == "func_breakable") {
-		material = 0;
+		material = BREAKMT_GLASS;
 	} else {
-		material = 1;
+		material = BREAKMT_WOOD;
 	}
 }
 
@@ -176,6 +176,7 @@ func_breakable::Save(float handle)
 	SaveFloat(handle, "m_flExplodeRad", m_flExplodeRad);
 	SaveString(handle, "m_strBreakSpawn", m_strBreakSpawn);
 	SaveBool(handle, "m_bCanTouch", m_bCanTouch);
+	SaveFloat(handle, "material", material);
 }
 
 void
@@ -197,6 +198,9 @@ func_breakable::Restore(string strKey, string strValue)
 	case "m_bCanTouch":
 		m_bCanTouch = ReadBool(strValue);
 		break;
+	case "material":
+		material = ReadFloat(strValue);
+		break;
 	default:
 		super::Restore(strKey, strValue);
 	}
@@ -207,7 +211,7 @@ func_breakable::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "material":
-		material = stof(strValue);
+		material = ReadFloat(strValue);
 		break;
 	case "explodemagnitude":
 		m_flExplodeMag = stof(strValue);
@@ -218,7 +222,7 @@ func_breakable::SpawnKey(string strKey, string strValue)
 
 		if (oid >= funcbreakable_objtable.length) {
 			m_strBreakSpawn = "";
-			NSEntWarning("spawnobject %i out of bounds", oid);
+			EntWarning("spawnobject %i out of bounds", oid);
 		} else {
 			m_strBreakSpawn = funcbreakable_objtable[oid];
 		}
@@ -288,8 +292,9 @@ func_breakable::Pain(void)
 
 	painSound = GetSurfaceData(SURFDATA_SND_BULLETIMPACT);
 
-	if (painSound)
+	if (painSound) {
 		StartSoundDef(painSound, CHAN_VOICE, true);
+	}
 }
 
 
@@ -354,16 +359,17 @@ func_breakable::Death(void)
 		vector vecDir = vectoangles(WorldSpaceCenter() - g_dmg_vecLocation);
 		string sndBreak = GetSurfaceData(SURFDATA_SND_BREAK);
 		string breakModel = GetPropData(PROPINFO_BREAKMODEL);
+		int gibCount = (int)bound(5, vlen(size) / 10, 32);
 
 		if (breakModel != "")
-			BreakModel_Spawn(absmin, absmax, vecDir, g_dmg_iDamage * 2.5, vlen(size) / 10, breakModel);
+			BreakModel_Spawn(absmin, absmax, vecDir, g_dmg_iDamage * 2.5, gibCount, breakModel);
 		else
-			NSLog("func_breakable (%s) does not have a propdata break model", funcbreakable_surftable[material]);
+			EntLog("func_breakable (%s) does not have a propdata break model", funcbreakable_surftable[material]);
 
 		if (sndBreak != "")
 			StartSoundDef(sndBreak, CHAN_BODY, true);
 		else
-			NSLog("func_breakable (%s) does not have a surfaceproperty for break", funcbreakable_surftable[material]);
+			EntLog("func_breakable (%s) does not have a surfaceproperty for break", funcbreakable_surftable[material]);
 
 		Disappear();
 		SetTakedamage(DAMAGE_NO);

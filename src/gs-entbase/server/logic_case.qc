@@ -491,13 +491,13 @@ logic_case::Input(entity activatorEntity, string inputName, string dataField)
 void
 logic_case::PickRandom(entity activatorEntity)
 {
-	NSEntWarning("Not implemented.");
+	EntWarning("Not implemented.");
 }
 
 void
 logic_case::PickRandomShuffle(entity activatorEntity)
 {
-	NSEntWarning("Not implemented.");
+	EntWarning("Not implemented.");
 }
 
 void

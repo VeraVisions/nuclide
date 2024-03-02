@@ -28,7 +28,7 @@ Mapcycle_Load(string filename)
 	fs_mapcycle = fopen(filename, FILE_READ);
 
 	if (fs_mapcycle < 0) {
-		print(strcat("^1could not load ", filename, "\n"));
+		NSError("Missing file %s", filename);
 		return;
 	}
 
@@ -57,7 +57,7 @@ Mapcycle_Load(string filename)
 	/* the current map in the list will decide the nextmap */
 	localcmd(sprintf("alias nextmap m%i\n", map_next));
 
-	print(sprintf("mapcycle initialized with %i entries.\n", mapcount));
+	NSLog("...MapCycle initialized with %i entries.", mapcount);
 }
 
 void
@@ -69,14 +69,15 @@ Mapcycle_Init(void)
 	if (g_grMode.IsMultiplayer() == false)
 		return;
 
-	print("--------- Initializing MapCycle ----------\n");
+	InitStart();
 
 	/* in case some server admin wants a map to continously loop */
 	if (cycleFile == "") {
-		print("mapcycle disabled via cvar. skipping\n");
+		NSLog("MapCycle disabled via cvar. Skipping.");
 		localcmd("alias nextmap map_restart 0\n");
 		return;
 	}
 
 	Mapcycle_Load(cycleFile);
+	InitEnd();
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2024 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -204,7 +204,7 @@ NSIO::CreateOutput(string outmsg)
 		NSLog("Input: %s", new_minion.m_strInput);
 		NSLog("Data Message: %s", new_minion.m_strData);
 		NSLog("Delay: %f", new_minion.m_flDelay);
-		NSLog("Uses: %i\n", new_minion.m_iCount);
+		NSLog("Uses: %i", new_minion.m_iCount);
 	}
 
 	/* return the name that'll act as the trigger for all outputs */
@@ -251,12 +251,13 @@ NSIO::Input(entity eAct, string strInput, string strData)
 		UseOutput(eAct, m_strOnUser4);
 		break;
 	default:
-		if (strData != "")
-		NSLog("^2%s::^3Input^7: Receives input %s from %s with data %s\n", 
-			this.classname, strInput, eAct.classname, strData);
-		else
-		NSLog("^2%s::^3Input^7: Receives input %s from %s\n", 
-			this.classname, strInput, eAct.classname);
+		if (strData != "") {
+			EntWarning("Receives unknown input %S from %d with data %S", 
+				strInput, num_for_edict(eAct), strData);
+		} else {
+			EntWarning("Receives unknown input %S from %d", 
+				strInput, num_for_edict(eAct));
+		}
 	}
 }
 
@@ -737,8 +738,10 @@ NSIO::SpawnKey(string strKey, string strValue)
 		break;
 #endif
 	default:
-		NSLog("^3%s^7::SpawnKey:: Unknown key '%s' with value '%s'",
+#ifdef SERVER
+		EntWarning("%s has unknown key %S with value %S",
 		      classname, strKey, strValue);
+#endif
 		break;
 	}
 }

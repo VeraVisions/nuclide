@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2024 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,12 +16,14 @@
 
 var bool autocvar_ai_debugLogic = false;
 void
-_NSMonster_Log(string msg)
+_NSMonster_Log(string className, string functionName, float edictNum, string warnMessage)
 {
-	if (autocvar_ai_debugLogic == true)
-		print(sprintf("%f %s\n", time, msg));
+	if (autocvar_g_developerTimestamps)
+		printf("^9%f ^5%s (%d) ^7: %s\n", time, functionName, edictNum, warnMessage);
+	else
+		printf("^5%s (%d) ^7: %s\n", functionName, edictNum, warnMessage);
 }
-#define NSMonster_Log(...) _NSMonster_Log(sprintf(__VA_ARGS__))
+#define NSMonsterLog(...) if (autocvar_ai_debugLogic == true) _NSMonster_Log(classname, __FUNC__, num_for_edict(this), sprintf(__VA_ARGS__))
 
 /**
 Bitfield enumeration for NSMonster its SendFlags field.

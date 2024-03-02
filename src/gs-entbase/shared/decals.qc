@@ -157,7 +157,8 @@ decal::Place(vector org, string dname)
 
 	/* we never hit any wall. */
 	if (g_tracedDecal.fraction == 1.0f) {
-		print(sprintf("^1infodecal tracing failed at %v\n", org));
+		NSWarning("Placing of decal %S failed at %v", dname, org);
+
 		if (classname != "tempdecal")
 			remove(this);
 		return;

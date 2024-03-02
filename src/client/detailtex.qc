@@ -74,12 +74,10 @@ DetailTex_Reload(void)
 	if (!autocvar(r_detailtextures, 0, "High-res detail texture overlays for selected maps"))
 		return;
 
-	print("--------- Initializing DetailTex ----------\n");
-
 	fh = fopen(strcat("maps/", mapname, "_detail.txt"), FILE_READ);
 
 	if (fh < 0) {
-		print(sprintf("DeailTex definition not found for %s.\n", mapname));
+		NSError("DeailTex definition missing for %s.", mapname);
 		return;
 	}
 
@@ -93,7 +91,7 @@ DetailTex_Reload(void)
 		n++;
 	}
 
-	print(sprintf("DeailTex initialized with %i entries.\n", n));
+	NSLog("DeailTex initialized with %i entries.", n);
 	fclose(fh);
 	g_detail_initialized = 1;
 }

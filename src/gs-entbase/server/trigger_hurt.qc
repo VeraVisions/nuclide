@@ -266,10 +266,8 @@ trigger_hurt::Touch(entity eToucher)
 			type |= DMG_CHEMICAL;
 	}
 
+	EntLog("Hurting %S (%d) with %i.", eToucher.classname, num_for_edict(eToucher), m_iDamage);
 	Damage_Apply(eToucher, this, m_iDamage, 0, type);
-
-	NSLog("^2trigger_hurt::^3Touch^7: Hurting '%s' with %i", 
-		eToucher.netname, m_iDamage);
 
 	/* shut it down if used once */
 	if (HasSpawnFlags(SF_HURT_ONCE)) {

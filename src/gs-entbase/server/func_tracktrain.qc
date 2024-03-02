@@ -110,6 +110,7 @@ public:
 	nonvirtual vector GetTrainPivotPoint(bool);
 
 	nonvirtual void RenderDebugInfo(void);
+	nonvirtual bool ControlCheck(entity);
 
 	/* overrides */
 	virtual void Blocked(entity);
@@ -304,14 +305,14 @@ func_tracktrain::RenderDebugInfo(void)
 
 	/* line to the next node forward (green) */
 	if (eNode) {
-		eNode = eNode.GetPathTargetEntity();
+		eNode = (path_track)eNode.GetPathTargetEntity();
 		if (eNode) {
 			R_BeginPolygon("", 0, 0);
 			R_PolygonVertex(oldNode.GetOrigin() + [0,0, m_flHeight], [0,1], [0,0.75,0], 1.0);
 			R_PolygonVertex(eNode.GetOrigin() + [0,0, m_flHeight], [1,1], [0,0.75,0], 1.0);
 			R_EndPolygon();
 			oldNode = eNode;
-			eNode = eNode.GetPathTargetEntity();
+			eNode = (path_track)eNode.GetPathTargetEntity();
 
 			if (eNode) {
 				R_BeginPolygon("", 0, 0);
@@ -336,7 +337,7 @@ func_tracktrain::RenderDebugInfo(void)
 	oldNode = eNode;
 
 	if (eNode) {
-		eNode = eNode.GetSelfTargetEntity();
+		eNode = (path_track)eNode.GetSelfTargetEntity();
 
 		if (eNode) {
 			/* line to the next node forward (green) */
@@ -346,7 +347,7 @@ func_tracktrain::RenderDebugInfo(void)
 			R_EndPolygon();
 
 			oldNode = eNode;
-			eNode = eNode.GetSelfTargetEntity();
+			eNode = (path_track)eNode.GetSelfTargetEntity();
 
 			if (eNode) {
 				R_BeginPolygon("", 0, 0);
@@ -674,13 +675,13 @@ func_tracktrain::PathMoveBack(void)
 	flTravelTime = (vlen(vecVelocity) / travelSpeed);
 
 	if (flTravelTime <= 0.0) {
-		NSVehicle_Log("^1func_tracktrain::^3PathMoveBack^7: Distance short, teleporting next.");
+		NSVehicle_Log("^Distance short, teleporting next.");
 		ScheduleThink(_PathArrivedBack, 0.0f);
 		SetVelocity([1,1,1]);
 		return;
 	}
 
-	NSVehicle_Log("^1func_tracktrain::^3PathMoveBack^7: Changing velocity from '%v' to '%v'", GetVelocity(), vecVelocity);
+	NSVehicle_Log("Changing velocity from '%v' to '%v'", GetVelocity(), vecVelocity);
 	SetVelocity(vecVelocity * (1 / flTravelTime));
 	_SoundMove();
 
@@ -873,8 +874,6 @@ func_tracktrain::PathClear(void)
 void
 func_tracktrain::Trigger(entity act, triggermode_t state)
 {
-	breakpoint();
-
 	switch (state) {
 	case TRIG_ON:
 		PathMoveForward();
@@ -898,7 +897,7 @@ func_tracktrain::_AfterSpawn(void)
 	path_track nodeAhead;
 
 	/* get the first target */
-	targetNode = GetTrackNodeForward();
+	targetNode = (path_track)GetTrackNodeForward();
 
 	/* unpossible */
 	if (!targetNode || HasTriggerTarget() == false) {
@@ -914,7 +913,7 @@ func_tracktrain::_AfterSpawn(void)
 
 	/* face the train towards the next target. while it may be tempting to use
 	   GetPathTargetEntity() here, that node may be disabled. so look manually. */
-	nodeAhead = find(world, ::targetname, targetNode.target);
+	nodeAhead = (path_track)find(world, ::targetname, targetNode.target);
 
 	/* node found. */
 	if (nodeAhead) {

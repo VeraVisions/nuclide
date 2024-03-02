@@ -27,8 +27,13 @@ This will almost always result in them using default values, or (worst case) 0.
 void
 Skill_Init(void)
 {
+	string mapSkillFile = sprintf("maps/%s_skl.cfg", serverkey("mapname"));
+
 	Skill_ParseConfig("cfg/skill_manifest.cfg");
-	Skill_ParseConfig(sprintf("maps/%s_skl.cfg", mapname));
+
+	if (FileExists(mapSkillFile)) {
+		Skill_ParseConfig(mapSkillFile);
+	}
 }
 
 /*
@@ -68,7 +73,7 @@ Skill_ParseConfig(string fileName)
 	filestream configFile = fopen(fileName, FILE_READ);
 
 	if (configFile < 0) {
-		print(sprintf("^1Warning: Unable to exec %S for parsing.\n", fileName));
+		NSWarning("Unable to exec %S for parsing.", fileName);
 		return (false);
 	}
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2024 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -985,11 +985,10 @@ NSRenderableEntity::HandleAnimEvent(float flTimeStamp, int iCode, string strData
 	case 1003:	/* trigger SSQC entity with specific targetname */
 		for (entity f = world; (f = find(f, ::targetname, strData));) {
 			NSEntity trigger = (NSEntity)f;
+
 			if (trigger.Trigger != __NULL__) {
 				trigger.Trigger(this, TRIG_TOGGLE);
-				NSLog("^2%s^7::^3ModelEvent^7: " \
-					"Calling trigger '%s'\n",
-					classname, strData);
+				EntLog("Calling trigger '%s'", strData);
 			}
 		}
 		break;
@@ -1017,9 +1016,9 @@ NSRenderableEntity::HandleAnimEvent(float flTimeStamp, int iCode, string strData
 		}
 		
 		//print(sprintf("Received: %f %i %S\n", flTimeStamp, iCode, strData));
-		NSLog("SSQC model event: %f %i %S", flTimeStamp, iCode, strData);
+		EntWarning("Unknown server model event: %f %i %S", flTimeStamp, iCode, strData);
 #else
-		NSLog("CSQC model event: %f %i %S", flTimeStamp, iCode, strData);
+		EntWarning("Unknown client model event: %f %i %S", flTimeStamp, iCode, strData);
 #endif
 	}
 }
@@ -1110,6 +1109,9 @@ NSRenderableEntity::Input(entity eAct, string strInput, string strData)
 	case "Alpha":
 		SetRenderAmt(stof(strData) / 255);
 		break;
+	case "Skin":
+		SetSkin(stof(strData));
+		break;
 	case "DisableShadow":
 		effects |= EF_NOSHADOW;
 		break;
@@ -1119,7 +1121,7 @@ NSRenderableEntity::Input(entity eAct, string strInput, string strData)
 	case "SetAnimation":
 		float animFrame = frameforname(modelindex, strcat("@", strData));
 		SetFrame(animFrame);
-		print(sprintf("SetAnimation: %S (%d) on %S\n",strData, animFrame, model));
+		//print(sprintf("SetAnimation: %S (%d) on %S\n",strData, animFrame, model));
 		break;
 	case "SetBodyInGroup":
 		int argC = tokenize(strData);

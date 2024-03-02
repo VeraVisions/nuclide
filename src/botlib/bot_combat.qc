@@ -169,7 +169,7 @@ BotLib_Alert(vector pos, float radius, float t)
 			continue;
 
 		/* we've heard a noise. investigate the location */
-		print(sprintf("bot alerted by noise at %v\n", pos));
+		BotLog("Bot %S (%d) alerted by noise at %v", f.netname, num_for_edict(f), pos);
 		f.RouteClear();
 		f.RouteToPosition(pos);
 	}

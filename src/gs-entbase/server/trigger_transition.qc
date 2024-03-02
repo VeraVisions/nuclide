@@ -25,11 +25,6 @@ All entities touching this volume will carry across to the next level.
 # NOTES
 In order for this entity to work, one has to assign a working info_landmark entity to a trigger_changelevel, and give this entity the same targetname as said landmark.
 
-In GoldSrc games, it appears that every point-entity that's part of the current PVS (mostly the 'room' and attached path-ways you're currently in) carries over to the next level - if a trigger_transition is not defined.
-This is probably not what you want to ever do, especially in large outdoor maps where the 'room' is the entire map.
-
-You can also have more than one trigger_transition with the same name, so if any entity is in any of them they will move with the player across the desired level.
-
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 */
@@ -72,17 +67,25 @@ trigger_transition::SaveTransition(entity pvsTest, bool usePVS)
 	/* loop through all entities */
 	for (NSEntity a = __NULL__; (a = (NSEntity)findfloat(a, ::identity, 1));) {
 		bool replicateEntity = false;
+		bool continueInNextMap = false;
+
+		/* no classname? never allow */
+		if not (a.classname) {
+			continue;
+		}
+
 		//print(sprintf("TRANSITION: %i %S %S\n", i, a.classname, a.m_strGlobalName));
 
-		/* if we're using the PVS, don't use the transition trigger as reference */
-		if (usePVS == true && !a.m_strGlobalName) {
-			if (checkpvs(a.origin, pvsTest) == true) {
+		/* if we're using the PVS, use the info_landmark as a reference */
+		if (usePVS == true) {
+			if (checkpvs(pvsTest.origin, a) == true) {
 				replicateEntity = true;
 
 				/* these checks are somewhat safe assumptions. */
 				if (a.classname == "player") {
 					replicateEntity = false;
 				}
+
 				if (a.classname == "info_landmark") {
 					replicateEntity = false;
 				}
@@ -90,23 +93,31 @@ trigger_transition::SaveTransition(entity pvsTest, bool usePVS)
 				/* to get rid of the 'out of model slots' error */
 				if (a.model == "" && solid != SOLID_NOT) {
 					replicateEntity = false;
-				}
-
-				/* one thing is verified in GoldSrc: no brushes carry over. */
-				if (a.m_bIsBrush == true) {
-					continue;
+					continueInNextMap = false;
 				}
 			}
 		} else if (WithinBounds(a) == true) {
 			replicateEntity = true;
 		}
 
+		/* only carry brushes with a global name */
+		if (a.m_bIsBrush == true) {
+			replicateEntity = false;
+			continueInNextMap = false;
+		}
+
+		/* global name = always find target in next map */
+		if (a.m_strGlobalName) {
+			continueInNextMap = true;
+			replicateEntity = false;
+		} 
+
 		if (replicateEntity == true) {
 			fputs(transFile, sprintf("ENTITY \"%i\" %S\n", i, a.classname));
 			fputs(transFile, "{\n");
 			a.Save(transFile);
 			fputs(transFile, "}\n");
-		} else if (a.m_strGlobalName) {
+		} else if (continueInNextMap == true) {
 			fputs(transFile, sprintf("CONTINUE \"%i\" %S\n", i, a.m_strGlobalName));
 			fputs(transFile, "{\n");
 			a.Save(transFile);
@@ -129,10 +140,13 @@ trigger_transition::FindCarrierEntity(string globalName)
 			return a;
 		}
 	}
-	return __NULL__;
+
+	return (__NULL__);
 }
 
 vector Landmark_GetPosition(void);
+
+
 
 void
 trigger_transition::LoadTransition(void)
@@ -144,10 +158,10 @@ trigger_transition::LoadTransition(void)
 	filestream transFile = fopen("trans.dat", FILE_READ);
 
 	if (transFile < 0) {
-		error("this should never happen.");
+		NSError("Called to transition, but trans.dat does not exist.");
 	}
 
-	print(sprintf("Found transition file. Will transition over entities.\n"));
+	NSLog("Found transition file. Will transition over entities.");
 
 	while ((lineFeed = fgets(transFile))) {
 		int c = tokenize(lineFeed);
@@ -156,8 +170,17 @@ trigger_transition::LoadTransition(void)
 		if (argv(0) == "{") {
 			continue;
 		} else if (argv(0) == "}") {
-			carrierEntity.TransitionComplete();
-			carrierEntity = __NULL__;
+
+			if (carrierEntity.solid == 0 && carrierEntity.movetype == 0) {
+				carrierEntity.Destroy();
+				carrierEntity = __NULL__;
+			}
+
+			if (carrierEntity) {
+				carrierEntity.TransitionComplete();
+				carrierEntity.SendFlags = -1;
+				carrierEntity = __NULL__;
+			}
 			continue;
 		}
 
@@ -166,16 +189,20 @@ trigger_transition::LoadTransition(void)
 				carrierEntity = FindCarrierEntity(argv(2));
 				isNew = false;
 			} else if (argv(0) == "ENTITY") {
-				carrierEntity = EntityDef_CreateClassname(argv(2));
+				string desiredClass = argv(2);
+				if (desiredClass == "corpse") {
+					carrierEntity = __NULL__;
+					continue;
+				}
+
+				carrierEntity = Entity_CreateClass(desiredClass);
 				isNew = true;
 			}
 		} else if (c == 2) { /* key value pairs */
 			if (carrierEntity) {
 				switch (argv(0)) {
 				case "model":
-					if (isNew) {
-						carrierEntity.Restore(argv(0), argv(1));
-					}
+					carrierEntity.model = argv(1);
 				case "modelindex":
 					break;
 #if 0

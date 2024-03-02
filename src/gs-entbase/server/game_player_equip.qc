@@ -139,8 +139,7 @@ game_player_equip::SpawnUnit(string cname, vector org)
 	unit.nextthink = time;
 	unit.real_owner = this;
 	setorigin(unit, org);
-	NSLog("^2game_player_equip::^3Trigger^7: Spawning %s",
-	       cname);
+	EntLog("Spawning %s", cname);
 }
 
 void
@@ -150,7 +149,7 @@ game_player_equip::Trigger(entity act, triggermode_t state)
 	string cname;
 
 	if (!(act.flags & FL_CLIENT)) {
-		print("^1game_player_equip^7::^1Trigger: Activator not a client!\n");
+		EntError("Activator %S not a client!", act.classname);
 		return;
 	}
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2024 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -37,16 +37,17 @@ NSSurfacePropEntity::NSSurfacePropEntity(void)
 vector
 NSSurfacePropEntity::GetEyePos(void)
 {
-	if (HasFlags(FL_FAKESPEC))
-		return origin;
+	if (HasFlags(FL_FAKESPEC)) {
+		return (origin);
+	}
 
-	return origin + view_ofs;
+	return (origin + view_ofs);
 }
 
 vector
 NSSurfacePropEntity::GetViewAngle(void)
 {
-	return v_angle;
+	return (v_angle);
 }
 
 void
@@ -82,7 +83,7 @@ NSSurfacePropEntity::SetBloodColor(vector newColor)
 vector
 NSSurfacePropEntity::GetBloodColor(void)
 {
-	return m_vecBloodColor;
+	return (m_vecBloodColor);
 }
 
 bool
@@ -100,7 +101,7 @@ NSSurfacePropEntity::SetCanBleed(bool bleedValue)
 bool
 NSSurfacePropEntity::CanBleed(void)
 {
-	return iBleeds;
+	return (iBleeds);
 }
 
 void
@@ -129,17 +130,17 @@ NSSurfacePropEntity::SetMaxHealth(float new_health)
 float
 NSSurfacePropEntity::GetHealth(void)
 {
-	return health;
+	return (health);
 }
 float
 NSSurfacePropEntity::GetMaxHealth(void)
 {
-	return max_health;
+	return (max_health);
 }
 float
 NSSurfacePropEntity::GetSpawnHealth(void)
 {
-	return m_oldHealth;
+	return (m_oldHealth);
 }
 
 void
@@ -150,7 +151,7 @@ NSSurfacePropEntity::SetArmor(float new_armor)
 float
 NSSurfacePropEntity::GetArmor(void)
 {
-	return armor;
+	return (armor);
 }
 
 bool
@@ -264,96 +265,97 @@ NSSurfacePropEntity::Save(float handle)
 }
 
 void
-NSSurfacePropEntity::Restore(string strKey, string strValue)
+NSSurfacePropEntity::Restore(string keyName, string savedValue)
 {
-	switch (strKey) {
+	switch (keyName) {
 	case "m_flBurnNext":
-		m_flBurnNext = ReadFloat(strValue);
+		m_flBurnNext = ReadFloat(savedValue);
 		break;
 	case "armor":
-		armor = ReadFloat(strValue);
+		armor = ReadFloat(savedValue);
 		break;
 	case "health":
-		health = ReadFloat(strValue);
+		health = ReadFloat(savedValue);
 		break;
 	case "m_eBurner":
-		m_eBurner = edict_num(ReadFloat(strValue));
+		m_eBurner = edict_num(ReadFloat(savedValue));
 		break;
 	case "m_iBurnWeapon":
-		m_iBurnWeapon = ReadInt(strValue);
+		m_iBurnWeapon = ReadInt(savedValue);
 		break;
 	case "m_flBurnTime":
-		m_flBurnTime = ReadFloat(strValue);
+		m_flBurnTime = ReadFloat(savedValue);
 		break;
 	case "m_flBurnDmgTime":
-		m_flBurnDmgTime = ReadFloat(strValue);
+		m_flBurnDmgTime = ReadFloat(savedValue);
 		break;
 	case "m_strOnBreak":
-		m_strOnBreak = ReadString(strValue);
+		m_strOnBreak = ReadString(savedValue);
 		break;
 	case "m_oldHealth":
-		m_oldHealth = ReadFloat(strValue);
+		m_oldHealth = ReadFloat(savedValue);
 		break;
 	case "m_vecBloodColor":
-		m_vecBloodColor = ReadVector(strValue);
+		m_vecBloodColor = ReadVector(savedValue);
 		break;
 	case "m_iMaterial":
-		m_iMaterial = ReadInt(strValue);
+		m_iMaterial = ReadInt(savedValue);
 		break;
 	case "m_iPropData":
-		m_iPropData = ReadInt(strValue);
+		m_iPropData = ReadInt(savedValue);
 		break;
 	case "m_flDeathTime":
-		m_flDeathTime = ReadFloat(strValue);
+		m_flDeathTime = ReadFloat(savedValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(keyName, savedValue);
 	}
 }
 
 void
-NSSurfacePropEntity::Input(entity eAct, string strInput, string strData)
+NSSurfacePropEntity::Input(entity entityActivator, string inputName, string dataField)
 {
-	switch (strInput) {
+	switch (inputName) {
 	case "Ignite":
-		Ignite(eAct, 5000, 0);
+		Ignite(entityActivator, 5000, 0);
 		break;
 	case "IgniteLifetime":
-		Ignite(eAct, stof(strData), 0);
+		float lifeTime = stof(dataField);
+		Ignite(entityActivator, lifeTime, 0);
 		break;
 	case "Extinguish":
 		Extinguish();
 		break;
 	default:
-		super::Input(eAct, strInput, strData);
+		super::Input(entityActivator, inputName, dataField);
 	}
 }
 
 void
-NSSurfacePropEntity::SpawnKey(string strKey, string strValue)
+NSSurfacePropEntity::SpawnKey(string keyName, string setValue)
 {
-	switch (strKey) {
+	switch (keyName) {
 	case "health":
-		max_health = health = ReadFloat(strValue);
+		max_health = health = ReadFloat(setValue);
 		m_oldHealth = health;
 		break;
 	case "propdata":
-		m_strPropData = ReadString(strValue);
+		m_strPropData = ReadString(setValue);
 		break;
 	case "surfdata":
 	case "materialdata":
-		m_strSurfData = ReadString(strValue);
+		m_strSurfData = ReadString(setValue);
 		break;
 	/* entityDef */
 	case "blood_color":
-		m_vecBloodColor = ReadVector(strValue);
+		m_vecBloodColor = ReadVector(setValue);
 		break;
 	/* Input/Output system */
 	case "OnBreak":
-		m_strOnBreak = PrepareOutput(m_strOnBreak, ReadString(strValue));
+		m_strOnBreak = PrepareOutput(m_strOnBreak, ReadString(setValue));
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(keyName, setValue);
 		break;
 	}
 }
@@ -361,7 +363,13 @@ NSSurfacePropEntity::SpawnKey(string strKey, string strValue)
 void
 NSSurfacePropEntity::Pain(void)
 {
-	
+	/* implemented in sub-class */
+}
+
+void
+NSSurfacePropEntity::DamageFeedback(NSSurfacePropEntity theVictim, NSSurfacePropEntity theInflictor, int desiredDamage)
+{
+	/* implemented in sub-class */
 }
 
 void
@@ -371,8 +379,9 @@ NSSurfacePropEntity::Death(void)
 
 	UseOutput(g_dmg_eAttacker, m_strOnBreak);
 
-	if (HasPropData() == false)
+	if (HasPropData() == false) {
 		return;
+	}
 
 	if (GetPropData(PROPINFO_SKIN) != 0) {
 		SetSkin(GetPropData(PROPINFO_SKIN));
@@ -406,6 +415,7 @@ NSSurfacePropEntity::SetSurfaceData(string type)
 	m_strSurfData = type;
 	_SurfaceDataFinish();
 }
+
 void
 NSSurfacePropEntity::SetPropData(string type)
 {
@@ -423,6 +433,7 @@ NSSurfacePropEntity::_SurfaceDataFinish(void)
 	else
 		m_iMaterial = -1;
 }
+
 void
 NSSurfacePropEntity::_PropDataFinish(void)
 {
@@ -438,9 +449,27 @@ float
 NSSurfacePropEntity::TimeSinceDeath(void)
 {
 	if (IsAlive())
-		return -1;
+		return (-1);
 
-	return time - m_flDeathTime;
+	return (time - m_flDeathTime);
+}
+
+void
+NSSurfacePropEntity::SetPainCallback(void(void) painFunc)
+{
+	Pain = painFunc;
+}
+
+void
+NSSurfacePropEntity::SetDeathCallback(void(void) deathFunc)
+{
+	Death = deathFunc;
+}
+
+bool
+NSSurfacePropEntity::CanBeDamaged(void)
+{
+	return (takedamage == DAMAGE_NO) ? false : true;
 }
 
 void
@@ -602,10 +631,13 @@ NSSurfacePropEntity::ReceiveEntity(float flNew, float flChanged)
 	if (scale == 0.0)
 		scale = 1.0f;
 
-	if (flChanged & SRFENT_CHANGED_SIZE)
+	if (flChanged & SRFENT_CHANGED_SIZE) {
 		setsize(this, mins * scale, maxs * scale);
-	if (flChanged & SRFENT_CHANGED_BODY)
+	}
+
+	if (flChanged & SRFENT_CHANGED_BODY) {
 		setcustomskin(this, "", sprintf("geomset 0 %i\ngeomset 1 %i\n", m_iBody, m_iBody));
+	}
 }
 
 void
@@ -626,20 +658,27 @@ NSSurfacePropEntity::RenderFire(void)
 float
 NSSurfacePropEntity::predraw(void)
 {
-	RenderFire();
-	return super::predraw();
+	float returnValue = super::predraw();
+
+	if (returnValue) {
+		RenderFire();
+	}
+
+	return returnValue;
 }
 
 void
-NSSurfacePropEntity_ReadEntity(bool new)
+NSSurfacePropEntity_ReadEntity(bool isNew)
 {
-	float fl;
-	NSSurfacePropEntity rend = (NSSurfacePropEntity)self;
-	if (new) {
+	float networkFlags;
+	NSSurfacePropEntity rendEnt = (NSSurfacePropEntity)self;
+
+	if (isNew) {
 		spawnfunc_NSSurfacePropEntity();
 	}
-	fl = readfloat();
-	rend.ReceiveEntity(new, fl);
+
+	networkFlags = readfloat();
+	rendEnt.ReceiveEntity(isNew, networkFlags);
 }
 #endif
 

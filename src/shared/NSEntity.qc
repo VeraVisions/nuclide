@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2024 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -39,7 +39,7 @@ void NSEntity::Spawned( void ) {
 #ifdef SERVER
 	m_oldstrTarget = target;
 
-	if ( m_oldModel ) {
+	if ( m_oldModel && m_oldModel != "" ) {
 		precache_model( GetSpawnModel() );
 	}
 
@@ -332,7 +332,11 @@ void NSEntity::RestoreAngles( void ) {
 }
 
 void NSEntity::ClearAngles( void ) {
-	angles =[0, 0, 0];
+	angles = [0, 0, 0];
+}
+
+void NSEntity::ForceNetworkUpdate( void ) {
+	SendFlags = -1;
 }
 #endif
 
@@ -532,6 +536,14 @@ void NSEntity::RemoveFlags( float fl ) {
 	flags &= ~fl;
 }
 
+void NSEntity::TurnTo( float targetAngle ) {
+	angles[1] = targetAngle;
+}
+
+void NSEntity::TurnToPos( vector targetPos ) {
+	angles = vectoangles(targetPos - WorldSpaceCenter());
+}
+
 void NSEntity::SetThink( void ( void ) func ) {
 	think = func;
 }
@@ -546,7 +558,7 @@ void NSEntity::SetNextThink( float fl ) {
 	if ( flTime >= 0 )
 		nextthink = flTime;
 	else
-		NSLog( "%s sets bogus nextthink value %f\n", classname, flTime );
+		EntError( "%s sets bogus nextthink value %f\n", classname, flTime );
 }
 
 void NSEntity::ScheduleThink( void ( void ) func, float fl ) {
@@ -676,13 +688,11 @@ void NSEntity::ClearVelocity( void ) {
 
 #ifdef SERVER
 void NSEntity::Respawn( void ) {
-	NSTrigger::Respawn();
-
+	super::Respawn();
 	SetSolid( m_oldSolid );
 	SetAngles( GetSpawnAngles() );
 	SetOrigin( GetSpawnOrigin() );
 	SetModel( GetSpawnModel() );
-	SetTriggerTarget( m_oldstrTarget );	/* FIXME: Move into NSTrigger::Respawn */
 }
 
 void NSEntity::Save( float handle ) {
@@ -690,6 +700,7 @@ void NSEntity::Save( float handle ) {
 	SaveFloat( handle, "pvsflags", pvsflags );
 	SaveFloat( handle, "_mapspawned", _mapspawned );
 	SaveFloat( handle, "scale", scale );
+	SaveFloat( handle, "friction", friction );
 	SaveVector( handle, "m_vecMins", m_vecMins );
 	SaveVector( handle, "m_vecMaxs", m_vecMaxs );
 	SaveVector( handle, "m_oldOrigin", m_oldOrigin );
@@ -713,6 +724,9 @@ void NSEntity::Restore( string strKey, string strValue ) {
 		break;
 	case "scale":
 		scale = ReadFloat( strValue );
+		break;
+	case "friction":
+		friction = ReadFloat( strValue );
 		break;
 	case "m_vecMins":
 		m_vecMins = ReadVector( strValue );
@@ -857,6 +871,9 @@ void NSEntity::SpawnKey( string strKey, string strValue ) {
 	case "solid":
 		solid = ReadFloat( strValue );
 		break;
+	case "friction":
+		friction = ReadFloat( strValue );
+		break;
 #ifdef SERVER
 	case "health":
 		health = ReadFloat( strValue );
@@ -875,6 +892,8 @@ void NSEntity::SpawnKey( string strKey, string strValue ) {
 
 		break;
 #endif
+	case "_minlight":
+		break;
 	default:
 		super::SpawnKey( strKey, strValue );
 		break;
@@ -888,6 +907,10 @@ void NSEntity::Destroy( void ) {
 	removed = 1; /* mark this as cleanly removed */
 	OnRemoveEntity();
 	customphysics = __NULL__;
+	modelindex = 0;
+	solid = 0;
+	movetype = 0;
+	classname = 0;
 	ScheduleThink(Util_Destroy, 0.0f );
 }
 
@@ -960,13 +983,13 @@ bool NSEntity::StartSound( string strSample, float channel, float flags, bool br
 #endif
 	}
 
-	SndLog( "^2%s::^3StartSound^7: %s (chan: %d bcast: %d) (%v)", classname, strSample, channel, broadcast, origin );
+	SndEntLog( "%s (chan: %d bcast: %d) (%v)", strSample, channel, broadcast, origin );
 
 	return ( true );
 }
 
 bool NSEntity::StartSoundDef( string strSample, float channel, bool broadcast ) {
-	SndLog( "^2%s::^3StartSoundDef^7: %s (chan: %d bcast: %d)", classname, strSample, channel, broadcast );
+	SndEntLog( "%s (chan: %d bcast: %d)", strSample, channel, broadcast );
 	Sound_Play( this, channel, strSample );
 	return ( true );
 }

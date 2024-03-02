@@ -253,11 +253,9 @@ trigger_teleport::Touch(entity eToucher)
 				Sound_Play(eTarget, CHAN_VOICE, m_sndTeleportExit);
 			}
 
-			NSLog("^2trigger_teleport::^3Touch^7: Teleported '%s' to `%v`", 
-				eToucher.netname, endpos);
+			EntLog("Teleported %S to %v", eToucher.netname, endpos);
 		} else {
-			print(sprintf("^2trigger_teleport::^3Touch^7: Failed to teleport '%s'\n", 
-				eToucher.netname));
+			EntWarning("Failed to teleport %S", eToucher.netname);
 		}
 	}
 }

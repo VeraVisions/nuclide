@@ -35,9 +35,9 @@ Also called when map changes happen.
 void
 CSQC_Init(float apilevel, string enginename, float engineversion)
 {
-	print("--------- Initializing Client Game ----------\n");
-	print("Built: " __DATE__ " " __TIME__"\n");
-	print("QCC: " __QCCVER__ "\n");
+	InitPrint("Initializing Client Game");
+	NSLog("Built: %s %s", __DATE__, __TIME__);
+	NSLog("QCC: %s", __QCCVER__);
 
 	for (int i = 0; i < 4; i++) {
 		g_viewSeats[i] = spawn(NSView);
@@ -90,7 +90,7 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	Sound_Precache("Player.WeaponSelectionClose");
 
 	/* end msg */
-	print("Client game initialized.\n");
+	NSLog("Client game initialized.");
 
 	/* because the engine will do really bad hacks to our models otherwise. e.g. R6284 */
 	cvar_set("r_fullbrightSkins", "0");
@@ -108,7 +108,7 @@ somewhere in csprogs.dat to ensure their resources are reloaded properly.
 void
 CSQC_RendererRestarted(string rstr)
 {
-	print("--------- Reloading Graphical Resources ----------\n");
+	InitStart();
 
 	/* Fonts */
 	Font_Load("fonts/font16.font", FONT_16);
@@ -146,8 +146,7 @@ CSQC_RendererRestarted(string rstr)
 	g_shellchromeshader = shaderforname("shellchrome", sprintf("{\ndeformVertexes bulge 1.25 1.25 0\n{\nmap %s\ntcMod scroll -0.1 0.1\ntcGen environment\nrgbGen entity\n}\n}", "textures/sfx/reflection.tga"));
 	g_shellchromeshader_cull = shaderforname("shellchrome2", sprintf("{\ncull back\ndeformVertexes bulge 1.5 1.5 0\n{\nmap %s\ntcMod scroll -0.1 0.1\ntcGen environment\nrgbGen entity\n}\n}", "textures/sfx/reflection.tga"));
 
-	/* end msg */
-	print("Graphical resources reloaded\n");
+	InitEnd();
 }
 
 /** Always call this instead of renderscene(); !
@@ -548,7 +547,8 @@ ourselves if need be.
 void
 CSQC_WorldLoaded(void)
 {
-	print("--------- Initializing Client World ----------\n");
+	InitStart();
+
 	//DetailTex_Init();
 
 	/* Primarily for the flashlight */
@@ -567,11 +567,11 @@ CSQC_WorldLoaded(void)
 			break;
 		}
 		if (strTokenized != "{") {
-			print("^1[WARNING] ^7Bad entity data\n");
+			NSWarning("Bad entity data");
 			break;
 		}
 		if (!Entities_ParseLump()) {
-			print("^1[WARNING] ^7Bad entity data\n");
+			NSWarning("Bad entity data");
 			break;
 		}
 	}
@@ -586,7 +586,7 @@ CSQC_WorldLoaded(void)
 	/* wad files will most likely have loaded now */
 	DecalGroups_Precache();
 
-	print("Client world initialized.\n");
+	InitEnd();
 }
 
 /** Called when a server tells us an active entity gets removed.
@@ -626,12 +626,12 @@ that is the last thing that will be called.
 void
 CSQC_Shutdown(void)
 {
-	print("--------- Shutting Client Game ----------\n");
+	InitPrint("Shutting Client Game");
 	Decal_Shutdown();
 	Sentences_Shutdown();
 	Titles_Shutdown();
 	Sound_Shutdown();
 	PropData_Shutdown();
 	EFX_Shutdown();
-	print("Client game shutdown.\n");
+	NSLog("Client game shutdown.");
 }
