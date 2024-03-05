@@ -81,11 +81,6 @@ trigger_transition::SaveTransition(entity pvsTest, bool usePVS)
 			if (checkpvs(pvsTest.origin, a) == true) {
 				replicateEntity = true;
 
-				/* these checks are somewhat safe assumptions. */
-				if (a.classname == "player") {
-					replicateEntity = false;
-				}
-
 				if (a.classname == "info_landmark") {
 					replicateEntity = false;
 				}
@@ -98,6 +93,12 @@ trigger_transition::SaveTransition(entity pvsTest, bool usePVS)
 			}
 		} else if (WithinBounds(a) == true) {
 			replicateEntity = true;
+		}
+
+		/* these checks are somewhat safe assumptions. */
+		if (a.classname == "player") {
+			replicateEntity = false;
+			continueInNextMap = false;
 		}
 
 		/* only carry brushes with a global name */
