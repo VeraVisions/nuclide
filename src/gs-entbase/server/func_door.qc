@@ -416,16 +416,23 @@ func_door::MoverFinishesMoving(void)
 		MoveToPosition(GetMoverPosition1(), m_flSpeed);
 	}
 
-	/* we arrived at our starting position within the map */
-	if (GetMoverState() == MOVER_POS1) {
-		if (targetClose)
-		for (entity f = world; (f = find(f, ::targetname, targetClose));) {
-			NSEntity trigger = (NSEntity)f;
-			if (trigger.Trigger != __NULL__) {
-				trigger.Trigger(this, TRIG_TOGGLE);
+
+	if (targetClose && targetClose != "") {
+		/* when it starts open the positions are reversed... */
+		if (GetMoverState() == MOVER_POS1 || 
+			(HasSpawnFlags(SF_MOV_OPEN) && GetMoverState() == MOVER_POS2)) {
+			for (entity f = world; (f = find(f, ::targetname, targetClose));) {
+				NSEntity trigger = (NSEntity)f;
+				if (trigger.Trigger != __NULL__) {
+					trigger.Trigger(this, TRIG_TOGGLE);
+				}
 			}
 		}
+	}
 
+
+	/* we arrived at our starting position within the map */
+	if (GetMoverState() == MOVER_POS1) {
 		if (m_strSndStop) {
 			StartSoundDef(m_strSndStop, CHAN_VOICE, true);
 		} else {
