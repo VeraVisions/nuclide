@@ -112,9 +112,10 @@ Node_Link(node_t *n1, node_t *n2)
 	n->flags = 0;
 }
 
+
 /* loop through already existing nodes, test against them and link */
 static void
-Node_AutoLink(node_t *new)
+Node_AutoLink(node_t *new, entity nodeEntity)
 {
 	int x = new - g_pNodes;
 
@@ -124,20 +125,30 @@ Node_AutoLink(node_t *new)
 			continue;
 		}
 
-		// TODO: Check distance?
-
 		/* can't use full player size, because steps = messy */
 		tracebox(
 			new->origin,
-			[-16,-16,-8],
-			[16,16,32],
+			[-16, -16, -16],
+			[16, 16, 16],
 			g_pNodes[i].origin,
 			MOVE_NORMAL,
-			world
+			nodeEntity
 		);
 
+		/* HACK!: work around c0a0e where info_nodes are blocked by the train */
+		if (trace_ent.movetype == MOVETYPE_PUSH) {
+			tracebox(
+				new->origin,
+				[-16, -16, -16],
+				[16, 16, 16],
+				g_pNodes[i].origin,
+				MOVE_NORMAL,
+				trace_ent
+			);
+		}
+
 		/* line of sight blocked */
-		if (trace_fraction < 1) {
+		if (trace_fraction < 1.0f) {
 			continue;
 		}
 
@@ -153,11 +164,22 @@ Nodes_InsertNodeForClassname(string classn)
 		int iID = g_iNodes++;
 		g_pNodes = (node_t *)memrealloc(g_pNodes, sizeof(node_t), iID, g_iNodes);
 		node_t *n = g_pNodes + iID;
+
+		a.solid = SOLID_BBOX;
+		a.movetype = MOVETYPE_WALK;
+		setsize(a, [-16,-16,-16], [16,16,16]);
+		setorigin_safe(a, a.origin);
+
 		n->origin = a.origin;
 		n->nb = __NULL__;
 		n->nb_count = 0;
 		n->radius = 32;
-		Node_AutoLink(n);
+		Node_AutoLink(n, a);
+
+		/* reset it to stupid attributes. */
+		a.solid = SOLID_NOT;
+		a.movetype = MOVETYPE_NONE;
+		setsize(a, [0,0,0], [0,0,0]);
 	}
 }
 
@@ -197,7 +219,7 @@ Nodes_Init(void)
 	g_nodes_present = FALSE;
 
 	/* skip if present. TODO: check if they're out of date? */
-	if (whichpack(sprintf("data/%s.way", mapname))) {
+	if (FileExists(sprintf("data/%s.way", mapname))) {
 		g_nodes_present = TRUE;
 #ifdef NODE_DEBUG
 		NSLog("loading existing nodes for %s", mapname);
@@ -234,6 +256,10 @@ SV_AddDebugPolygons(void)
 	if (cvar("developer") != 1)
 		return;
 
+	if (!g_iWaypoints) {
+		Way_LoadCurrentMapNavMesh();
+	}
+
 #if 1
 	for (entity s = world; (s = find(s, ::classname, "func_tracktrain"));) {
 		func_tracktrain train = (func_tracktrain)s;
@@ -242,6 +268,13 @@ SV_AddDebugPolygons(void)
 #endif
 
 	makevectors(self.v_angle);
+
+	for (entity s = world; (s = findfloat(s, ::identity, 1));) {
+		NSEntity drawMe = (NSEntity)s;
+		drawMe.DebugDraw();
+	}
+
+	return;
 
 	/* draw the rectangles */
 	R_BeginPolygon("textures/dev/info_node", 0, 0);

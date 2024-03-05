@@ -617,6 +617,12 @@ Way_DrawDebugInfo(void)
 	}
 }
 
+void
+Way_LoadCurrentMapNavMesh(void)
+{
+	Way_ReadFile(sprintf("%s.way", mapname), true);
+}
+
 void Way_ReadFBFile(string, bool);
 void Way_ReadPBFile(string, bool);
 void Way_ReadJumbotFile(string, bool);
