@@ -170,6 +170,10 @@ env_explosion::Trigger(entity act, triggermode_t state)
 {
 	bool shouldDamage = true;
 
+	if (m_bEnabled == false) {
+		return;
+	}
+
 	if (HasSpawnFlags(ENVEXPLO_NOTUNDERWATER) == true && WaterLevel() > 0) {
 		shouldDamage = false;
 	} else if (HasSpawnFlags(ENVEXPLO_NODAMAGE) == true) {
