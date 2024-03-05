@@ -326,7 +326,7 @@ PropData_ForModel(string modelname)
 
 		if (fh < 0) {
 			g_propdata_count--;
-			NSWarning("No PropData for model %S", modelname);
+			NSLog("No PropData for model %S", modelname);
 			return -1;
 		}
 
