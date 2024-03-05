@@ -120,9 +120,10 @@ public:
 	virtual void Input(entity,string,string);
 	virtual void Save(float);
 	virtual void Restore(string,string);
-
-	/** Called when we need to re-align the entity to our parent entity. */
 	virtual void ParentUpdate(void);
+
+	/* Server-side rendering function. Expensive, but useful. */
+	virtual void DebugDraw(void);
 
 	/** Run each tic after physics are run to determine if we need to send updates over the network. */
 	virtual void EvaluateEntity(void);

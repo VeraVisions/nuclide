@@ -189,6 +189,12 @@ void NSEntity::postdraw( void ) {
 
 
 #else
+void
+NSEntity::DebugDraw(void)
+{
+
+}
+
 /* Make sure StartFrame calls this */
 float NSEntity::SendEntity( entity ePEnt, float flChanged ) {
 	if ( !modelindex )
