@@ -186,7 +186,7 @@ func_plat::MoverFinishesMoving(void)
 {
 	/* cancel out any moving sfx */
 	if (m_strSndMove) {
-		StartSound("common/null.wav", CHAN_VOICE, 0, true);
+		StopSound(CHAN_VOICE, 0, true);
 	}
 
 	if (m_strSndStop) {

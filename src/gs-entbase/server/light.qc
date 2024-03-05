@@ -79,6 +79,7 @@ public:
 	virtual void Respawn(void);
 	virtual void RestoreComplete(void);
 	virtual void Trigger(entity, triggermode_t);
+	virtual void DebugDraw(void);
 
 private:
 	int m_iEnabled;
@@ -86,6 +87,8 @@ private:
 	float m_flStyle;
 	float m_flSwitchStyle;
 	string m_strPattern;
+
+	vector _lightColor;
 };
 
 void
@@ -96,6 +99,7 @@ light::light(void)
 	m_strPattern = "m";
 	m_flStyle = 0;
 	m_flSwitchStyle = 0;
+	_lightColor = [1,1,1];
 }
 
 void
@@ -168,14 +172,19 @@ light::SpawnKey(string strKey, string strValue)
 	case "_cone":
 	case "_cone2":
 	case "_sky":
-	case "_light":
-		break;
 	/* mostly for light_environment */
 	case "pitch":
 		angles[0] = ReadFloat(strValue);
 		break;
 	case "sunangle":
 		angles[1] = ReadFloat(strValue);
+		break;
+	case "color":
+		_lightColor = ReadVector(strValue);
+		break;
+	case "_light":
+	case "color255":
+		_lightColor = ReadVector(strValue) / 255;
 		break;
 	default:
 		super::SpawnKey(strKey, strValue);
@@ -241,6 +250,19 @@ light::Trigger(entity act, triggermode_t state)
 	}
 
 	RestoreComplete();
+}
+
+void
+light::DebugDraw(void)
+{
+#ifdef SERVER
+	R_BeginPolygon(m_strDebugTexture, 0, 0);
+		R_PolygonVertex(GetOrigin() + v_right * 16 - v_up * 16, [1,1], _lightColor, 1.0f);
+		R_PolygonVertex(GetOrigin() - v_right * 16 - v_up * 16, [0,1], _lightColor, 1.0f);
+		R_PolygonVertex(GetOrigin() - v_right * 16 + v_up * 16, [0,0], _lightColor, 1.0f);
+		R_PolygonVertex(GetOrigin() + v_right * 16 + v_up * 16, [1,0], _lightColor, 1.0f);
+	R_EndPolygon();
+#endif
 }
 
 CLASSEXPORT(light_spot, light)

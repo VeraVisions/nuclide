@@ -359,7 +359,7 @@ NSRenderableEntity::RenderFXPass(void)
 
 		break;
 	case RM_GLOW:
-		colormod = [1,1,1];
+		colormod = m_vecRenderColor;
 		alpha = m_flRenderAmt == 0.0 ? 0.0f : 1.0f;
 	case RM_WORLDGLOW: /* TODO: Figure out what this does differently */
 		if (checkpvs(vecPlayer, this) == FALSE)

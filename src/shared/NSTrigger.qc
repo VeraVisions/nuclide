@@ -118,7 +118,7 @@ NSTrigger::UseTargets(entity act, int state, float triggerDelay)
 			env_message_single(act, m_strMessage);
 		}
 
-		if (HasTriggerTarget() == true)
+		if (target && target != "" && target != targetname)
 		for (entity f = world; (f = find(f, ::targetname, target));) {
 			NSTrigger trigger = (NSTrigger)f;
 

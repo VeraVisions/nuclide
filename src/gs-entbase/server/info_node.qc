@@ -43,6 +43,8 @@ info_node::info_node(void)
 void
 info_node::Respawn(void)
 {
+	InitPointTrigger();
+
 	SetSize([0,0,0], [0,0,0]);
 	SetSolid(SOLID_NOT);
 	SetMovetype(MOVETYPE_NONE);

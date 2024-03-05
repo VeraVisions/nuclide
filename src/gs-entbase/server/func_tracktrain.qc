@@ -146,7 +146,6 @@ private:
 	int m_iOldInputDirection;
 	int m_iInputLevel;
 	int m_iOldInputLevel;
-	float m_flStartSpeed;
 	NSTimer m_timerAngled;
 	float m_flTrainLength;
 	bool _m_bDriving;
@@ -169,10 +168,17 @@ func_tracktrain::func_tracktrain(void)
 	m_flDamage = 0.0f;
 	m_flHeight = 0.0f;
 	m_flStartSpeed = 0.0f;
+	m_flCurrentSpeed = 0.0f;
 	m_flBank = 0.0f;
 	m_strMoveSnd = __NULL__;
 	m_strStopSnd = __NULL__;
-	m_flStartSpeed = 0.0f;
+	m_vecRelationTarget = g_vec_null;
+	m_flUseTime = 0.0f;
+	m_iInputDirection = 0i;
+	m_iOldInputDirection = 0i;
+	m_iInputLevel = 0i;
+	m_iOldInputLevel = 0i;
+	m_timerAngled = __NULL__;
 	m_flTrainLength = 0.0f;
 	_m_bDriving = false;
 #endif
@@ -378,8 +384,17 @@ func_tracktrain::Save(float handle)
 	SaveFloat(handle, "m_flDamage", m_flDamage);
 	SaveFloat(handle, "m_flHeight", m_flHeight);
 	SaveFloat(handle, "m_flStartSpeed", m_flStartSpeed);
+	SaveFloat(handle, "m_flCurrentSpeed", m_flCurrentSpeed);
+	SaveFloat(handle, "m_flBank", m_flBank);
 	SaveString(handle, "m_strMoveSnd", m_strMoveSnd);
 	SaveString(handle, "m_strStopSnd", m_strStopSnd);
+	SaveFloat(handle, "m_flUseTime", m_flUseTime);
+	SaveInt(handle, "m_iInputDirection", m_iInputDirection);
+	SaveInt(handle, "m_iOldInputDirection", m_iOldInputDirection);
+	SaveInt(handle, "m_iInputLevel", m_iInputLevel);
+	SaveEntity(handle, "m_timerAngled", m_timerAngled);
+	SaveFloat(handle, "m_flTrainLength", m_flTrainLength);
+	SaveBool(handle, "_m_bDriving", _m_bDriving);
 
 	/* if we are on a track, take the difference in offset so we can smoothly transition */
 	if (target) {
@@ -411,11 +426,38 @@ func_tracktrain::Restore(string strKey, string strValue)
 	case "m_flStartSpeed":
 		m_flStartSpeed = ReadFloat(strValue);
 		break;
+	case "m_flCurrentSpeed":
+		m_flCurrentSpeed = ReadFloat(strValue);
+		break;
+	case "m_flBank":
+		m_flBank = ReadFloat(strValue);
+		break;
 	case "m_strMoveSnd":
 		m_strMoveSnd = ReadString(strValue);
 		break;
 	case "m_strStopSnd":
 		m_strStopSnd = ReadString(strValue);
+		break;
+	case "m_flUseTime":
+		m_flUseTime = ReadFloat(strValue);
+		break;
+	case "m_iInputDirection":
+		m_iInputDirection = ReadInt(strValue);
+		break;
+	case "m_iOldInputDirection":
+		m_iOldInputDirection = ReadInt(strValue);
+		break;
+	case "m_iInputLevel":
+		m_iInputLevel = ReadInt(strValue);
+		break;
+	case "m_timerAngled":
+		m_timerAngled = ReadEntity(strValue);
+		break;
+	case "m_flTrainLength":
+		m_flTrainLength = ReadFloat(strValue);
+		break;
+	case "_m_bDriving":
+		_m_bDriving = ReadBool(strValue);
 		break;
 	case "m_vecRelationTarget":
 		m_vecRelationTarget = ReadVector(strValue);
@@ -535,7 +577,7 @@ void
 func_tracktrain::_SoundMove(void)
 {
 	if (m_strMoveSnd) {
-		Sound_Play(this, CHAN_VOICE, m_strMoveSnd);
+		StartSoundDef(m_strMoveSnd, CHAN_VOICE, true);
 	}
 }
 
@@ -543,14 +585,14 @@ void
 func_tracktrain::_SoundStop(void)
 {
 	if (m_strStopSnd) {
-		Sound_Play(this, CHAN_BODY, m_strStopSnd);
+		StartSoundDef(m_strStopSnd, CHAN_BODY, true);
 	}
 
 	if (m_strMoveSnd) {
 		if (!m_strStopSnd) {
-			Sound_Play(this, CHAN_BODY, "func_tracktrain.stop_1");
+			StartSoundDef("func_tracktrain.stop_1", CHAN_BODY, true);
 		}
-		sound(this, CHAN_VOICE, "common/null.wav", 1.0, ATTN_NORM);
+		StopSound(CHAN_VOICE, true);
 	}
 }
 
@@ -597,7 +639,10 @@ func_tracktrain::PathMoveForward(void)
 
 	NSVehicle_Log("^1func_tracktrain::^3PathMoveForward^7: Changing velocity from '%v' to '%v'", GetVelocity(), vecVelocity);
 	SetVelocity(vecVelocity * (1 / flTravelTime));
-	_SoundMove();
+
+	if (_m_bDriving == false) {
+		_SoundMove();
+	}
 
 	/* the direction we're aiming for */
 	vecDiff = GetOrigin() - (eNode.GetOrigin() + [0, 0, m_flHeight]);
@@ -788,6 +833,7 @@ func_tracktrain::_PathArrivedForward(void)
 		/* first clear velocity, in case our trigger targets our train */
 		PathClear();
 		eNode.PathEndTrigger(this, TRIG_TOGGLE);
+		return;
 	}
 
 	/* warp */
@@ -880,6 +926,7 @@ func_tracktrain::Trigger(entity act, triggermode_t state)
 		break;
 	case TRIG_OFF:
 		PathClear();
+		break;
 	case TRIG_TOGGLE:
 	default:
 		if (_m_bDriving == false)
