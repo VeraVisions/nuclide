@@ -705,8 +705,8 @@ SV_PerformLoad(float fh, float entcount, float playerslots)
 #ifdef REEDICT
 	while ((e=nextent(e))) {
 		if (edict_num(1) != e)
-			NSEntity toRemove = (NSEntity)e;
-			if (toRemove.Destroy) {
+			if (e.identity) {
+				NSEntity toRemove = (NSEntity)e;
 				toRemove.Destroy();
 			} else {
 				remove(e);
@@ -753,9 +753,9 @@ SV_PerformLoad(float fh, float entcount, float playerslots)
 				loadent = (NSEntity)e;
 				self = eold;
 			} else {
-				NSEntity toRemove = (NSEntity)e;
 				NSError("Could not spawn %s", cname);
-				if (toRemove.Destroy) {
+				if (e.identity) {
+					NSEntity toRemove = (NSEntity)e;
 					toRemove.Destroy();
 				} else {
 					remove(e);
