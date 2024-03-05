@@ -200,7 +200,8 @@ Updates_Refresh(void)
 
 		updates[c].size = (int)stof(getpackagemanagerinfo(id, GPMI_FILESIZE));
 		updates[c].uid = i;
-		updates[c].preview_image = sprintf(FN_UPDATE_IMGURL, updates[c].name);
+		tokenizebyseparator(getpackagemanagerinfo(id, GPMI_NAME), "=");
+		updates[c].preview_image = sprintf(FN_UPDATE_IMGURL, argv(0));
 		Updates_RefreshStateValues(c);
 
 		c++;
