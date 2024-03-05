@@ -68,12 +68,18 @@ void
 NSTalkMonster::HandleAnimEvent(float flTimeStamp, int iCode, string strData)
 {
 	switch(iCode) {
-#ifdef SERVER
 	case 1005:	/* plays a dialogue sentence. monsters only right now */
-		NSTalkMonster targ = (NSTalkMonster)self;
-		targ.Sentence(strData);
-		break;
+#ifdef SERVER
+		Sentence(strData);
 #endif
+		break;
+	case 1009: /* play names sequence with 25% chance */
+#ifdef SERVER
+		if (random() < 0.25) {
+			Sentence(strData);
+		}
+#endif
+		break;
 	default:
 		super::HandleAnimEvent(flTimeStamp, iCode, strData);
 	}
