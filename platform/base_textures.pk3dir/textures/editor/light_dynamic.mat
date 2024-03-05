@@ -3,7 +3,7 @@
 	
 	{
 		map $diffuse
-		blendFunc blend
+		alphaFunc GE128
 		rgbGen vertex
 	}
 }

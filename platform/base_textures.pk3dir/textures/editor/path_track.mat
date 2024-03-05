@@ -3,6 +3,6 @@
 	
 	{
 		map $diffuse
-		blendFunc blend
+		alphaFunc GE128
 	}
 }

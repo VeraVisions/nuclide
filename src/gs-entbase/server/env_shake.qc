@@ -46,6 +46,8 @@ public:
 	virtual void SpawnKey(string,string);
 	virtual void Trigger(entity, triggermode_t);
 
+	virtual void OnRemoveEntity(void);
+
 private:
 	float m_flRadius;
 	float m_flAmplitude;
@@ -60,6 +62,19 @@ env_shake::env_shake(void)
 	m_flAmplitude = 0.0f;
 	m_flDuration = 0.0f;
 	m_flFrequency = 0.0f;
+}
+
+void
+env_shake::OnRemoveEntity(void)
+{
+	if (HasSpawnFlags(1)) {
+		WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+		WriteByte(MSG_MULTICAST, EV_SHAKE);
+		WriteFloat(MSG_MULTICAST, 1.0);
+		WriteFloat(MSG_MULTICAST, m_flAmplitude);
+		WriteFloat(MSG_MULTICAST, m_flFrequency);
+		multicast([0,0,0], MULTICAST_ALL_R);
+	}
 }
 
 void
@@ -117,5 +132,14 @@ env_shake::SpawnKey(string strKey, string strValue)
 void
 env_shake::Trigger(entity act, triggermode_t state)
 {
-	Client_ShakeOnce(origin, m_flRadius, m_flDuration, m_flFrequency, m_flAmplitude);
+	if (HasSpawnFlags(1)) {
+		WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+		WriteByte(MSG_MULTICAST, EV_SHAKE);
+		WriteFloat(MSG_MULTICAST, m_flDuration);
+		WriteFloat(MSG_MULTICAST, m_flAmplitude);
+		WriteFloat(MSG_MULTICAST, m_flFrequency);
+		multicast([0,0,0], MULTICAST_ALL_R);
+	} else {
+		Client_ShakeOnce(origin, m_flRadius, m_flDuration, m_flFrequency, m_flAmplitude);
+	}
 }
