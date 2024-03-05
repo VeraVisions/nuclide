@@ -41,6 +41,7 @@ public:
 	/* overrides */
 	virtual void Save(float);
 	virtual void Restore(string,string);
+	nonvirtual void ActivateSub(void);
 
 private:
 	entity m_eActivator;
@@ -81,6 +82,13 @@ multi_manager_sub::Restore(string strKey, string strValue)
 	default:
 		super::Restore(strKey, strValue);
 	}
+}
+
+void
+multi_manager_sub::ActivateSub(void)
+{
+	m_iValue = TRUE;
+	UseTargets(m_eActivator, TRIG_TOGGLE, 0.0f);
 }
 
 class
@@ -289,18 +297,6 @@ multi_manager::Respawn(void)
 void
 multi_manager::Trigger(entity act, triggermode_t state)
 {
-	static void mm_enttrigger (void) {
-		multi_manager_sub wow = (multi_manager_sub)self;
-		
-		entity eFind = find(world, ::targetname, wow.target);
-
-		EntLog("Triggering %S (%S)", 
-			wow.target, eFind.classname);
-
-		wow.m_iValue = TRUE;
-		UseTargets(wow.m_eActivator, TRIG_TOGGLE, 0.0f);
-	}
-
 	if (GetMaster(act) == FALSE)
 		return;
 
@@ -322,6 +318,6 @@ multi_manager::Trigger(entity act, triggermode_t state)
 
 		m_eTriggers[i].m_iValue = FALSE;
 		m_eTriggers[i].m_eActivator = act;
-		m_eTriggers[i].ScheduleThink(mm_enttrigger, m_eTriggers[i].m_flUntilTriggered);
+		m_eTriggers[i].ScheduleThink(multi_manager_sub::ActivateSub, m_eTriggers[i].m_flUntilTriggered);
 	}
 }
