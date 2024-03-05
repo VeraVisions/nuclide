@@ -99,6 +99,9 @@ public:
 	Input is the identifier of an output. */
 	nonvirtual bool CheckOutput(string);
 
+	/** Called when we need to re-align the entity to our parent entity. */
+	virtual void ParentUpdate(void);
+
 	/* save game related methods */
 	/** Saves a floating point key/value pair to a filehandle. */
 	nonvirtual void SaveFloat(float,string,float);

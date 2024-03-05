@@ -252,11 +252,11 @@ NSIO::Input(entity eAct, string strInput, string strData)
 		break;
 	default:
 		if (strData != "") {
-			EntWarning("Receives unknown input %S from %d with data %S", 
-				strInput, num_for_edict(eAct), strData);
+			EntWarning("Receives unknown input %S from %s (%d) with data %S", 
+				strInput, eAct.classname, num_for_edict(eAct), strData);
 		} else {
-			EntWarning("Receives unknown input %S from %d", 
-				strInput, num_for_edict(eAct));
+			EntWarning("Receives unknown input %S from %s (%d)", 
+				strInput, eAct.classname, num_for_edict(eAct));
 		}
 	}
 }
@@ -704,6 +704,12 @@ NSIO::RestoreComplete( void ) {
 void
 NSIO::TransitionComplete( void ) {
 	/* this is where we can handle anything post-loading */
+}
+
+void
+NSIO::ParentUpdate(void)
+{
+
 }
 #endif
 
