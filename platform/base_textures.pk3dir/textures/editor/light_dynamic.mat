@@ -1,0 +1,9 @@
+{
+	diffusemap textures/editor/light_dynamic.tga
+	
+	{
+		map $diffuse
+		blendFunc blend
+		rgbGen vertex
+	}
+}

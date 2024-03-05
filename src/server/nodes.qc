@@ -286,38 +286,5 @@ SV_AddDebugPolygons(void)
 		R_PolygonVertex(w->origin + v_right * 8 + v_up * 8, [1,0], NODE_RECT_COLOR, NODE_RECT_ALPHA);
 		R_EndPolygon();
 	}
-
-	for (entity s = world; (s = find(s, ::classname, "path_track"));) {
-		vector pos = s.origin;
-		pos[2] += 32;
-		R_BeginPolygon("textures/dev/path_track", 0, 0);
-		R_PolygonVertex(pos + v_right * 24 - v_up * 24, [1,1], [1,1,1], 1.0f);
-		R_PolygonVertex(pos - v_right * 24 - v_up * 24, [0,1], [1,1,1], 1.0f);
-		R_PolygonVertex(pos - v_right * 24 + v_up * 24, [0,0], [1,1,1], 1.0f);
-		R_PolygonVertex(pos + v_right * 24 + v_up * 24, [1,0], [1,1,1], 1.0f);
-		R_EndPolygon();
-
-		R_BeginPolygon("", 0, 0);
-		R_PolygonVertex(s.origin, [0,1], [1,1,1], NODE_LINE_ALPHA);
-		R_PolygonVertex(pos, [1,1], [1,1,1], NODE_LINE_ALPHA);
-		R_EndPolygon();
-	}
-
-	for (entity s = world; (s = find(s, ::classname, "scripted_sequence"));) {
-		vector pos = s.origin;
-		pos[2] += 32;
-
-		R_BeginPolygon("textures/dev/scripted_sequence", 0, 0);
-		R_PolygonVertex(pos + v_right * 24 - v_up * 24, [1,1], SEQUENCE_RECT_COLOR, NODE_RECT_ALPHA);
-		R_PolygonVertex(pos - v_right * 24 - v_up * 24, [0,1], SEQUENCE_RECT_COLOR, NODE_RECT_ALPHA);
-		R_PolygonVertex(pos - v_right * 24 + v_up * 24, [0,0], SEQUENCE_RECT_COLOR, NODE_RECT_ALPHA);
-		R_PolygonVertex(pos + v_right * 24 + v_up * 24, [1,0], SEQUENCE_RECT_COLOR, NODE_RECT_ALPHA);
-		R_EndPolygon();
-
-		R_BeginPolygon("", 0, 0);
-		R_PolygonVertex(s.origin, [0,1], [1,1,1], NODE_LINE_ALPHA);
-		R_PolygonVertex(pos, [1,1], [1,1,1], NODE_LINE_ALPHA);
-		R_EndPolygon();
-	}
 }
 #endif

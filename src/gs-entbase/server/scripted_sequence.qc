@@ -104,6 +104,7 @@ public:
 	virtual void Respawn(void);
 	virtual void SpawnKey(string,string);
 	virtual void Touch(entity);
+	virtual void DebugDraw(void);
 	
 	nonvirtual void RunOnEntity(entity);
 	nonvirtual void InitIdle(void);
@@ -126,6 +127,25 @@ scripted_sequence::scripted_sequence(void)
 	m_strIdleAnim = __NULL__;
 	m_flSearchRadius = 0.0f;
 	m_iMove = 0i;
+}
+
+void
+scripted_sequence::DebugDraw(void)
+{
+	vector pos = GetOrigin();
+	pos[2] += 32;
+
+	R_BeginPolygon("textures/editor/scripted_sequence", 0, 0);
+	R_PolygonVertex(pos + v_right * 24 - v_up * 24, [1,1], [1,1,1], 1.0f);
+	R_PolygonVertex(pos - v_right * 24 - v_up * 24, [0,1], [1,1,1], 1.0f);
+	R_PolygonVertex(pos - v_right * 24 + v_up * 24, [0,0], [1,1,1], 1.0f);
+	R_PolygonVertex(pos + v_right * 24 + v_up * 24, [1,0], [1,1,1], 1.0f);
+	R_EndPolygon();
+
+	R_BeginPolygon("", 0, 0);
+	R_PolygonVertex(GetOrigin(), [0,1], [1,1,1], 0.5);
+	R_PolygonVertex(pos, [1,1], [1,1,1], 0.5);
+	R_EndPolygon();
 }
 
 void

@@ -61,6 +61,7 @@ public:
 	nonvirtual void PathEndTrigger(entity, triggermode_t);
 
 	/* overrides */
+	virtual void DebugDraw(void);
 	virtual void Respawn(void);
 	virtual void SpawnKey(string, string);
 	virtual void Save(float);
@@ -88,6 +89,25 @@ path_track::path_track(void)
 	m_strAltPath = __NULL__;
 	m_strEndTrigger = __NULL__;
 }
+
+void
+path_track::DebugDraw(void)
+{
+	vector pos = GetOrigin();
+	pos[2] += 32;
+	R_BeginPolygon("textures/editor/path_track", 0, 0);
+	R_PolygonVertex(pos + v_right * 24 - v_up * 24, [1,1], [1,1,1], 1.0f);
+	R_PolygonVertex(pos - v_right * 24 - v_up * 24, [0,1], [1,1,1], 1.0f);
+	R_PolygonVertex(pos - v_right * 24 + v_up * 24, [0,0], [1,1,1], 1.0f);
+	R_PolygonVertex(pos + v_right * 24 + v_up * 24, [1,0], [1,1,1], 1.0f);
+	R_EndPolygon();
+
+	R_BeginPolygon("", 0, 0);
+	R_PolygonVertex(GetOrigin(), [0,1], [1,1,1], 0.5f);
+	R_PolygonVertex(pos, [1,1], [1,1,1], 0.5f);
+	R_EndPolygon();
+}
+
 
 void
 path_track::SpawnKey(string keyName, string setValue)

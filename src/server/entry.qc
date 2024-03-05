@@ -92,7 +92,9 @@ ClientDisconnect(void)
 	pl.Disappear();
 	pl.classname = "";
 	pl.flags = 0;
-
+	pl.deaths = 0;
+	pl.frags = 0;
+	pl.score = 0;
 }
 
 /** Called by the `kill` console command.
@@ -161,7 +163,10 @@ PutClientInServer(void)
 	}
 
 	Plugin_PlayerEntered((NSClientPlayer)self);
-	bprint(PRINT_HIGH, sprintf("%s^d entered the game.\n", self.netname));
+
+	if (g_grMode.IsMultiplayer() == true && self.deaths <= 0) {
+		bprint(PRINT_HIGH, sprintf("%s^d entered the game.\n", self.netname));
+	}
 
 	/* activate all game_playerspawn entities */
 	for (entity a = world; (a = find(a, ::targetname, "game_playerspawn"));) {
