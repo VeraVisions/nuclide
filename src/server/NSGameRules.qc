@@ -90,20 +90,12 @@ void
 NSGameRules::PlayerConnect(NSClientPlayer pl)
 {
 	if (Plugin_PlayerConnect(pl) == FALSE)
-		bprint(PRINT_HIGH, sprintf("%s connected\n", pl.netname));
+		bprint(PRINT_HIGH, sprintf("%s^d connected.\n", pl.netname));
 }
 void
 NSGameRules::PlayerDisconnect(NSClientPlayer pl)
 {
-	bprint(PRINT_HIGH, sprintf("%s disconnected\n", pl.netname));
-
-	/* make the client 'unusable' */
-	pl.SetSolid(SOLID_NOT);
-	pl.SetMovetype(MOVETYPE_NONE);
-	pl.SetModelindex(0);
-	pl.SetHealth(0);
-	pl.SetTakedamage(DAMAGE_NO);
-	pl.SetTeam(0);
+	bprint(PRINT_HIGH, sprintf("%s^d disconnected.\n", pl.netname));
 }
 
 void

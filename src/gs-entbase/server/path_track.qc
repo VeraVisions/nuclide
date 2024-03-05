@@ -212,7 +212,7 @@ path_track::GetPathTarget(void)
 		return targetname;
 	}
 
-	if (!target) {
+	if (HasTriggerTarget() == false) {
 		theTarget = targetname;
 	}
 

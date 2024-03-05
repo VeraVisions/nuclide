@@ -15,6 +15,14 @@
 */
 
 void
+NSPointTrigger::NSPointTrigger(void)
+{
+#ifdef SERVER
+	m_strDebugTexture = __NULL__;
+#endif
+}
+
+void
 NSPointTrigger::InitPointTrigger(void)
 {
 	SetSize(VEC_HULL_MIN, VEC_HULL_MAX);
@@ -22,11 +30,19 @@ NSPointTrigger::InitPointTrigger(void)
 
 #ifdef SERVER
 	m_bEnabled = (m_bStartDisabled) ? false : true;
+	m_strDebugTexture = strcat("textures/editor/", classname);
 #endif
 }
 
-
 void
-NSPointTrigger::NSPointTrigger(void)
+NSPointTrigger::DebugDraw(void)
 {
+#ifdef SERVER
+	R_BeginPolygon(m_strDebugTexture, 0, 0);
+		R_PolygonVertex(GetOrigin() + v_right * 16 - v_up * 16, [1,1], [1,1,1], 1.0f);
+		R_PolygonVertex(GetOrigin() - v_right * 16 - v_up * 16, [0,1], [1,1,1], 1.0f);
+		R_PolygonVertex(GetOrigin() - v_right * 16 + v_up * 16, [0,0], [1,1,1], 1.0f);
+		R_PolygonVertex(GetOrigin() + v_right * 16 + v_up * 16, [1,0], [1,1,1], 1.0f);
+	R_EndPolygon();
+#endif
 }

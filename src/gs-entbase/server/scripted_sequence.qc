@@ -197,6 +197,8 @@ scripted_sequence::SpawnKey(string strKey, string strValue)
 void
 scripted_sequence::Respawn(void)
 {
+	InitPointTrigger();
+
 	m_iEnabled = TRUE;
 	target = m_oldstrTarget;
 

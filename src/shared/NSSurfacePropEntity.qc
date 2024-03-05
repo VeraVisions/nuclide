@@ -360,6 +360,7 @@ NSSurfacePropEntity::SpawnKey(string keyName, string setValue)
 	}
 }
 
+
 void
 NSSurfacePropEntity::Pain(void)
 {

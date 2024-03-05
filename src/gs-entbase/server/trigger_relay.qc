@@ -108,6 +108,7 @@ trigger_relay::SpawnKey(string strKey, string strValue)
 void
 trigger_relay::Respawn(void)
 {
+	InitPointTrigger();
 	m_iEnabled = TRUE;
 	m_iValue = FALSE;
 }
@@ -116,15 +117,15 @@ void
 trigger_relay::Trigger(entity act, triggermode_t state)
 {
 	if (m_iEnabled == FALSE) {
-		EntLog("trigger_relay (%s) has already been triggered", targetname);
+		EntLog("trigger_relay %S has already been triggered", targetname);
 		return;
 	}
 
-	if (HasSpawnFlags(TRLY_ONCE)) {
+	if (HasSpawnFlags(TRLY_ONCE) == true) {
 		m_iEnabled = FALSE;
 	}
 
 	m_iValue = TRUE;
-	EntLog("trigger_relay (%s) will trigger %s with state %d", targetname, target, m_iTriggerState);
+	EntLog("trigger_relay %S will trigger %S with state %d", targetname, target, m_iTriggerState);
 	UseTargets(act, m_iTriggerState, m_flDelay);
 }

@@ -83,7 +83,7 @@ path_corner::path_corner(void)
 	m_iFired = 0i;
 	m_flSpeed = 0.0f;
 	m_flYawSpeed = 0.0f;
-	m_flWait = 1.0f;
+	m_flWait = 0.0f;
 	m_strOnPass = __NULL__;
 }
 
@@ -232,9 +232,13 @@ path_corner::PathPassTrigger(entity activatingEntity, triggermode_t triggerMode)
 		return;
 	}
 
+	EntLog("%S (%d) has passed us.", \
+		activatingEntity.classname, num_for_edict(activatingEntity));
+
 	UseOutput(this, m_strOnPass);
 
-	if (!m_strMessage)
+	/* never trigger "" */
+	if (!m_strMessage || m_strMessage == "")
 		return;
 
 	for (entity f = world; (f = find(f, ::targetname, m_strMessage));) {

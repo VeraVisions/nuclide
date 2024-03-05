@@ -196,6 +196,8 @@ light::Spawned(void)
 void
 light::Respawn(void)
 {
+	InitPointTrigger();
+
 	switch (serverkeyfloat("*bspversion")) {
 	case BSPVER_PREREL:
 	case BSPVER_Q1:

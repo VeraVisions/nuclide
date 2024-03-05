@@ -69,11 +69,6 @@ ClientConnect(void)
 
 	for (entity a = world; (a = find(a, ::classname, "player"));)
 		playercount++;
-
-	/* Force node init */
-	if (playercount == 1) {
-		Nodes_Init();
-	}
 }
 
 /** Called when a player leaves the server. At the end of the function the
@@ -88,9 +83,16 @@ ClientDisconnect(void)
 
 	/* this will hide/remove the player from other clients */
 	player pl = (player)self;
+	pl.SetSolid(SOLID_NOT);
+	pl.SetMovetype(MOVETYPE_NONE);
+	pl.SetModelindex(0);
+	pl.SetHealth(0);
+	pl.SetTakedamage(DAMAGE_NO);
+	pl.SetTeam(0);
 	pl.Disappear();
 	pl.classname = "";
 	pl.flags = 0;
+
 }
 
 /** Called by the `kill` console command.
@@ -148,7 +150,7 @@ PutClientInServer(void)
 		g_grMode.PlayerSpawn((NSClientPlayer)self);
 
 	/* handle transitions */
-	if (whichpack("data/trans.dat")) {
+	if (FileExists("data/trans.dat")) {
 		
 		for (entity a = world; (a = findfloat(a, ::identity, 1));) {
 			NSEntity levelEnt = (NSEntity)a;
@@ -159,6 +161,7 @@ PutClientInServer(void)
 	}
 
 	Plugin_PlayerEntered((NSClientPlayer)self);
+	bprint(PRINT_HIGH, sprintf("%s^d entered the game.\n", self.netname));
 
 	/* activate all game_playerspawn entities */
 	for (entity a = world; (a = find(a, ::targetname, "game_playerspawn"));) {
@@ -401,6 +404,8 @@ init_respawn(void)
 	NSLog("...%i entities spawned (%i inhibited)", g_ent_spawned, g_ent_spawned - endspawn);
 
 	InitEnd();
+
+	Nodes_Init();
 
 	remove(self);
 }
@@ -695,7 +700,12 @@ SV_PerformLoad(float fh, float entcount, float playerslots)
 #ifdef REEDICT
 	while ((e=nextent(e))) {
 		if (edict_num(1) != e)
-			remove(e);
+			NSEntity toRemove = (NSEntity)e;
+			if (toRemove.Destroy) {
+				toRemove.Destroy();
+			} else {
+				remove(e);
+			}
 	}
 #else
 	e = world;
@@ -738,8 +748,13 @@ SV_PerformLoad(float fh, float entcount, float playerslots)
 				loadent = (NSEntity)e;
 				self = eold;
 			} else {
+				NSEntity toRemove = (NSEntity)e;
 				NSError("Could not spawn %s", cname);
-				remove(e);
+				if (toRemove.Destroy) {
+					toRemove.Destroy();
+				} else {
+					remove(e);
+				}
 				self = eold;
 				continue;
 			}

@@ -27,4 +27,11 @@ public:
 
 	/** Sets up a point entity trigger with no size. */
 	nonvirtual void InitPointTrigger(void);
+
+	virtual void DebugDraw(void);
+
+#ifdef SERVER
+private:
+	string m_strDebugTexture;
+#endif
 };
