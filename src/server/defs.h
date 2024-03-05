@@ -75,7 +75,7 @@
 
 #define SENDENTITY_ANGLE(field, changedflag) {\
 	if (flChanged & changedflag)\
-		WriteShort(MSG_ENTITY, field * 32767 / 360);\
+		WriteAngle(MSG_ENTITY, field);\
 }
 
 #define SENDENTITY_ENTITY(field, changedflag) {\

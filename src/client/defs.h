@@ -75,7 +75,7 @@ var bool g_cheats = false;
 
 #define READENTITY_ANGLE(field, changedflag) {\
 	if (flChanged & changedflag) {\
-		field = readshort() / (32767 / 360);\
+		field = readangle();\
 		PRINTFLAG(changedflag); \
 	}\
 }
