@@ -201,7 +201,7 @@ phys_rope::EvaluateEntity(void)
 	entity eFind = find(world, ::targetname, target);
 
 	if (!eFind) {
-		EntError("phys_rope: Unable to find target %S\n", target);
+		EntError("phys_rope: Unable to find target %S", target);
 		return;
 	}
 
