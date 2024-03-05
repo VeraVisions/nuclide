@@ -101,16 +101,24 @@ NSTrigger::UseTargets(entity act, int state, float triggerDelay)
 	if (triggerDelay > 0.0f) {
 		EntLog("Scheduling trigger of %S in %f seconds.", target, triggerDelay);
 		NSTrigger eTimer = spawn(NSTrigger);
+		eTimer.netname = sprintf("%s_%d_target_trigger", classname, num_for_edict(this));
 		eTimer.owner = act;
 		eTimer.think = Entities_UseTargets_Think;
 		eTimer.target = target;
 		eTimer.nextthink = time + triggerDelay;
 		eTimer.health = state;  /* ugly */
+
+		if (m_strKillTarget) {
+			EntLog("Will kill %S before that happens.", m_strKillTarget);
+		}
+		eTimer.m_strKillTarget = m_strKillTarget;
+		eTimer.m_strMessage = m_strMessage;
 	} else {
 		if (m_strMessage) {
 			env_message_single(act, m_strMessage);
 		}
 
+		if (HasTriggerTarget() == true)
 		for (entity f = world; (f = find(f, ::targetname, target));) {
 			NSTrigger trigger = (NSTrigger)f;
 
