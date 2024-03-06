@@ -30,6 +30,7 @@ world. It'll enable mouth flapping and all sorts of other cool effects.
 - "wait" : Delay before it can be triggered again? UNUSED RIGHT NOW.
 - "listener" : The name of the entity we'll look at when speaking. Can be "player".
 - "refire" : Additional time in seconds before the entity can be triggered again.
+- "duration" : Time after which the target stops talking.
 
 # INPUTS
 - "BeginSentence" : Starts the sentence.
@@ -214,6 +215,7 @@ scripted_sentence::Input(entity entityActivator, string inputName, string dataFi
 void
 scripted_sentence::AllowRefire(void)
 {
+	EntLog("%S can now be refired.", targetname);
 	m_iValue = 0;
 }
 
@@ -221,7 +223,17 @@ scripted_sentence::AllowRefire(void)
 void
 scripted_sentence::SentenceEnded(void)
 {
-	StopSound(CHAN_VOICE, true);
+	NSTalkMonster targetMonster = __NULL__;
+
+	EntLog("%S finished speaking.", m_strSpeaker);
+
+	targetMonster = (NSTalkMonster)find(world, ::targetname, m_strSpeaker);
+
+	/* it might not exist anymore... */
+	if (targetMonster) {
+		targetMonster.StopSound(CHAN_VOICE, true);
+	}
+
 	UseOutput(this, m_strOnEndSentence);
 
 	if (m_flRefire > 0.0f) {
@@ -235,11 +247,12 @@ void
 scripted_sentence::Trigger(entity act, triggermode_t unused)
 {
 	entity spe;
-	spe = find(world, ::targetname, m_strSpeaker);
 
 	if (m_iValue == 1) {
 		return;
 	}
+
+	spe = find(world, ::targetname, m_strSpeaker);
 
 	if (!spe) {
 		/* time to look for a classname instead */
@@ -264,6 +277,10 @@ scripted_sentence::Trigger(entity act, triggermode_t unused)
 
 	EntLog("%s on %s", m_strSentence, m_strSpeaker);
 
+	/* ensure this is set here, so when UseTargets() gets called
+	   this entity will already be inaccessible. fixes ba_tram2. */
+	m_iValue = 1;
+
 	NSTalkMonster npc = (NSTalkMonster)spe;
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_SENTENCE);
@@ -271,14 +288,13 @@ scripted_sentence::Trigger(entity act, triggermode_t unused)
 	WriteInt(MSG_MULTICAST, m_iSentenceID);
 	msg_entity = npc;
 	multicast(npc.origin, MULTICAST_PVS);
-	npc.m_flNextSentence = time + m_flDuration + m_flRefire;
+	npc.m_flNextSentence = time + m_flDuration;
 	UseTargets(act, TRIG_TOGGLE, m_flDelay);
 
 	/* I/O */
 	/* Uncertain: Are we triggering the output on behalf of someone maybe? */
 	UseOutput(this, m_strOnBeginSentence);
 	ScheduleThink(SentenceEnded, m_flDuration);
-	m_iValue = 1;
 
 	if (m_strListener) {
 		if (m_strListener == "player") {
