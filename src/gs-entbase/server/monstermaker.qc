@@ -217,6 +217,7 @@ monstermaker::Spawner(void)
 	unit.m_oldOrigin = GetOrigin();
 	unit.m_oldAngle = GetAngles();
 	unit.targetname = m_strChildName;
+	unit.ReleaseThink();
 
 	m_iMonsterSpawned++;
 

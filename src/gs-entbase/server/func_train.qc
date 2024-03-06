@@ -102,6 +102,7 @@ func_train::Save(float handle)
 	SaveFloat(handle, "m_flWait", m_flWait);
 	SaveFloat(handle, "m_flSpeed", m_flSpeed);
 	SaveFloat(handle, "m_flDamage", m_flDamage);
+	SaveFloat(handle, "m_flCurrentSpeed", m_flCurrentSpeed);
 	SaveString(handle, "m_strMoveSnd", m_strMoveSnd);
 	SaveString(handle, "m_strStopSnd", m_strStopSnd);
 }
@@ -118,6 +119,9 @@ func_train::Restore(string strKey, string strValue)
 		break;
 	case "m_flDamage":
 		m_flDamage = ReadFloat(strValue);
+		break;
+	case "m_flCurrentSpeed":
+		m_flCurrentSpeed = ReadFloat(strValue);
 		break;
 	case "m_strMoveSnd":
 		m_strMoveSnd = ReadString(strValue);

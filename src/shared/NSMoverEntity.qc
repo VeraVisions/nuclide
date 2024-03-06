@@ -203,9 +203,6 @@ NSMoverEntity::GetMoverRotation2(void)
 void
 NSMoverEntity::MoveToPosition(vector vecDest, float flSpeed)
 {
-	if (vecDest == origin)
-		return;
-
 	MoveAndRotateToPosition(vecDest, GetAngles(), flSpeed);
 }
 
