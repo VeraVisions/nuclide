@@ -149,6 +149,8 @@ monstermaker::SpawnKey(string strKey, string strValue)
 void
 monstermaker::Respawn(void)
 {
+	InitPointTrigger();
+
 	if (HasSpawnFlags(MMF_STARTON)) {
 		TurnOn();
 	} else {

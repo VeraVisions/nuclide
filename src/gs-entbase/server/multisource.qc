@@ -50,6 +50,8 @@ multisource::multisource(void)
 void
 multisource::Respawn(void)
 {
+	InitPointTrigger();
+
 	m_iValue = FALSE;
 }
 

@@ -451,7 +451,7 @@ func_tracktrain::Restore(string strKey, string strValue)
 		m_iInputLevel = ReadInt(strValue);
 		break;
 	case "m_timerAngled":
-		m_timerAngled = ReadEntity(strValue);
+		m_timerAngled = (NSTimer)ReadEntity(strValue);
 		break;
 	case "m_flTrainLength":
 		m_flTrainLength = ReadFloat(strValue);

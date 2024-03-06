@@ -26,9 +26,10 @@ world. It'll enable mouth flapping and all sorts of other cool effects.
 - "entity" : Name of the entity that'll speak the sentence.
 - "sentence" : Name of sentence from titles.txt.
 - "pitch" : Desired sound pitch. May be overridden in the titles.txt entry.
-- "delay" : Delay before it'll be triggered? UNUSED RIGHT NOW.
+- "delay" : Delay before it'll be triggered.
 - "wait" : Delay before it can be triggered again? UNUSED RIGHT NOW.
 - "listener" : The name of the entity we'll look at when speaking. Can be "player".
+- "refire" : Additional time in seconds before the entity can be triggered again.
 
 # INPUTS
 - "BeginSentence" : Starts the sentence.
@@ -54,6 +55,7 @@ public:
 	virtual void Trigger(entity, triggermode_t);
 	virtual void Input(entity, string, string);
 
+	nonvirtual void AllowRefire(void);
 	nonvirtual void SentenceEnded(void);
 
 private:
@@ -67,6 +69,7 @@ private:
 	string m_strListener;
 	string m_strOnBeginSentence;
 	string m_strOnEndSentence;
+	float m_flRefire;
 };
 
 void
@@ -82,6 +85,7 @@ scripted_sentence::scripted_sentence(void)
 	m_strOnBeginSentence = __NULL__;
 	m_strOnEndSentence = __NULL__;
 	m_iSentenceID = 0i;
+	m_flRefire = 0.0f;
 }
 
 void
@@ -111,6 +115,7 @@ scripted_sentence::Save(float handle)
 	SaveString(handle, "m_strOnBeginSentence", m_strOnBeginSentence);
 	SaveString(handle, "m_strOnEndSentence", m_strOnEndSentence);
 	SaveInt(handle, "m_iSentenceID", m_iSentenceID);
+	SaveFloat(handle, "m_flRefire", m_flRefire);
 }
 
 void
@@ -147,6 +152,9 @@ scripted_sentence::Restore(string strKey, string strValue)
 	case "m_iSentenceID":
 		m_iSentenceID = ReadInt(strValue);
 		break;
+	case "m_flRefire":
+		m_flRefire = ReadFloat(strValue);
+		break;
 	default:
 		super::Restore(strKey, strValue);
 	}
@@ -174,6 +182,12 @@ scripted_sentence::SpawnKey(string keyName, string setValue)
 	case "listener":
 		m_strListener = ReadString(setValue);
 		break;
+	case "delay":
+		m_flDelay = ReadFloat(setValue);
+		break;
+	case "refire":
+		m_flRefire = ReadFloat(setValue);
+		break;
 	case "OnBeginSentence":
 		m_strOnBeginSentence = ReadString(setValue);
 		break;
@@ -198,9 +212,23 @@ scripted_sentence::Input(entity entityActivator, string inputName, string dataFi
 }
 
 void
+scripted_sentence::AllowRefire(void)
+{
+	m_iValue = 0;
+}
+
+
+void
 scripted_sentence::SentenceEnded(void)
 {
+	StopSound(CHAN_VOICE, true);
 	UseOutput(this, m_strOnEndSentence);
+
+	if (m_flRefire > 0.0f) {
+		ScheduleThink(AllowRefire, m_flRefire);
+	} else {
+		AllowRefire();
+	}
 }
 
 void
@@ -208,6 +236,10 @@ scripted_sentence::Trigger(entity act, triggermode_t unused)
 {
 	entity spe;
 	spe = find(world, ::targetname, m_strSpeaker);
+
+	if (m_iValue == 1) {
+		return;
+	}
 
 	if (!spe) {
 		/* time to look for a classname instead */
@@ -239,13 +271,14 @@ scripted_sentence::Trigger(entity act, triggermode_t unused)
 	WriteInt(MSG_MULTICAST, m_iSentenceID);
 	msg_entity = npc;
 	multicast(npc.origin, MULTICAST_PVS);
-	npc.m_flNextSentence = time + m_flDuration;
+	npc.m_flNextSentence = time + m_flDuration + m_flRefire;
 	UseTargets(act, TRIG_TOGGLE, m_flDelay);
 
 	/* I/O */
 	/* Uncertain: Are we triggering the output on behalf of someone maybe? */
 	UseOutput(this, m_strOnBeginSentence);
 	ScheduleThink(SentenceEnded, m_flDuration);
+	m_iValue = 1;
 
 	if (m_strListener) {
 		if (m_strListener == "player") {

@@ -286,6 +286,8 @@ multi_manager::Spawned(void)
 void
 multi_manager::Respawn(void)
 {
+	InitPointTrigger();
+
 	m_iValue = FALSE;
 
 	/* Mark them inactive */

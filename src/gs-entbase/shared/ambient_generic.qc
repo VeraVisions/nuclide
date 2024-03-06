@@ -78,6 +78,7 @@ public:
 	virtual void UseNormal(entity,triggermode_t);
 	virtual void UseLoop(entity, triggermode_t);
 	virtual void Input(entity, string, string);
+	virtual void DebugDraw(void);
 #else
 	virtual void ReceiveEntity(float,float);
 	virtual float predraw(void);
@@ -268,6 +269,17 @@ ambient_generic::Respawn(void)
 
 		Trigger = UseLoop;
 	}
+}
+
+void
+ambient_generic::DebugDraw(void)
+{
+	R_BeginPolygon("textures/editor/ambient_generic", 0, 0);
+		R_PolygonVertex(GetOrigin() + v_right * 16 - v_up * 16, [1,1], [1,1,1], 1.0f);
+		R_PolygonVertex(GetOrigin() - v_right * 16 - v_up * 16, [0,1], [1,1,1], 1.0f);
+		R_PolygonVertex(GetOrigin() - v_right * 16 + v_up * 16, [0,0], [1,1,1], 1.0f);
+		R_PolygonVertex(GetOrigin() + v_right * 16 + v_up * 16, [1,0], [1,1,1], 1.0f);
+	R_EndPolygon();
 }
 
 void

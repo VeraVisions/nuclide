@@ -451,11 +451,14 @@ EntityDef_PrepareEntity(entity target, int id)
 	}
 
 	targetEnt.m_strModelEventCB = g_entDefTable[id].eventList; /* pass over the event listing */
+
+	/* now we rename the classname for better visibility,
+	   but also because some classes need to know. */
+	targetEnt.classname = g_entDefTable[id].entClass;
+
 	targetEnt.Spawned();
 	targetEnt.Respawn();
 
-	/* now we rename the classname for better visibility */
-	targetEnt.classname = g_entDefTable[id].entClass;
 	g_lastSpawnData = "";
 	return targetEnt;
 }

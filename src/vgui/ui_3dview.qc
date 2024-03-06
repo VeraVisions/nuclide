@@ -114,6 +114,7 @@ VGUI3DView::Draw(void)
 	setproperty(VF_AFOV, 90);
 	setproperty(VF_ORIGIN, m_vec3DPos);
 	setproperty(VF_ANGLES, m_vec3DAngles);
+	setproperty(VF_DRAWWORLD, false);
 	tmpVGUI3DView1();
 	renderscene();
 }

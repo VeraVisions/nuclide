@@ -84,7 +84,7 @@ NSTrigger::CanBeTriggeredBy(entity testEnt)
 void
 NSTrigger::Trigger(entity act, triggermode_t state)
 {
-	EntWarning("Triggered by %S with no consequence", act.classname);
+	EntWarning("%S triggered by %S with no consequence", targetname, act.classname);
 }
 
 void

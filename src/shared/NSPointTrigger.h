@@ -25,10 +25,12 @@ class NSPointTrigger:NSEntity
 public:
 	void NSPointTrigger(void);
 
+	/* overrides */
+	virtual void Respawn(void);
+	virtual void DebugDraw(void);
+
 	/** Sets up a point entity trigger with no size. */
 	nonvirtual void InitPointTrigger(void);
-
-	virtual void DebugDraw(void);
 
 #ifdef SERVER
 private:

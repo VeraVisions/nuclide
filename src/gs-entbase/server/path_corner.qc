@@ -209,6 +209,8 @@ path_corner::SpawnKey(string strKey, string strValue)
 void
 path_corner::Respawn(void)
 {
+	InitPointTrigger();
+
 #ifdef DEVELOPER
 	if (autocvar_dev_cornerspeed != 0) {
 		m_flSpeed = autocvar_dev_cornerspeed;

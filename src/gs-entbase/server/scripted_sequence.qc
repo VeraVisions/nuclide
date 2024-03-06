@@ -136,10 +136,10 @@ scripted_sequence::DebugDraw(void)
 	pos[2] += 32;
 
 	R_BeginPolygon("textures/editor/scripted_sequence", 0, 0);
-	R_PolygonVertex(pos + v_right * 24 - v_up * 24, [1,1], [1,1,1], 1.0f);
-	R_PolygonVertex(pos - v_right * 24 - v_up * 24, [0,1], [1,1,1], 1.0f);
-	R_PolygonVertex(pos - v_right * 24 + v_up * 24, [0,0], [1,1,1], 1.0f);
-	R_PolygonVertex(pos + v_right * 24 + v_up * 24, [1,0], [1,1,1], 1.0f);
+	R_PolygonVertex(pos + v_right * 16 - v_up * 16, [1,1], [1,1,1], 1.0f);
+	R_PolygonVertex(pos - v_right * 16 - v_up * 16, [0,1], [1,1,1], 1.0f);
+	R_PolygonVertex(pos - v_right * 16 + v_up * 16, [0,0], [1,1,1], 1.0f);
+	R_PolygonVertex(pos + v_right * 16 + v_up * 16, [1,0], [1,1,1], 1.0f);
 	R_EndPolygon();
 
 	R_BeginPolygon("", 0, 0);
