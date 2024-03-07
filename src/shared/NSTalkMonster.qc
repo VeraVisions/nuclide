@@ -597,7 +597,7 @@ NSTalkMonster::FollowPlayer(void)
 			/* only update the timer when speed changed */
 			if (flNextSpeed != m_flFollowSpeed) {
 				m_flFollowSpeed = flNextSpeed;
-				m_flFollowSpeedChanged = time + 5.0f;
+				m_flFollowSpeedChanged = time + 1.0f;
 			}
 		}
 
