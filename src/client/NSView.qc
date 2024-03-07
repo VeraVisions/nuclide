@@ -329,13 +329,13 @@ NSView::UpdateView(void)
 		switch (spec.spec_mode) {
 		case SPECMODE_DEATHCAM:
 			vector deathAngle;
-			vector vecEnd;
+			vector vecCamEnd;
 			c = findfloat(world, ::entnum, spec.spec_ent);
-			vector vecStart = c.origin;
+			vector vecCamStart = c.origin;
 			float progression = time - spec.m_flLastSpecTargetChange;
 
-			vecStart[2] += 16;
-			vecStart += (v_right * 4);
+			vecCamStart[2] += 16;
+			vecCamStart += (v_right * 4);
 
 			deathAngle[0] = bound(0, progression * 15.0f, 90.0f);
 			deathAngle[1] = c.angles[1] + (progression * 22.5f);
@@ -343,8 +343,8 @@ NSView::UpdateView(void)
 
 			makevectors(deathAngle);
 
-			vecEnd = vecStart + (v_forward * -48) + [0,0,16] + (v_right * 4);
-			traceline(vecStart, vecEnd, FALSE, m_viewTarget);
+			vecCamEnd = vecCamStart + (v_forward * -48) + [0,0,16] + (v_right * 4);
+			traceline(vecCamStart, vecCamEnd, FALSE, m_viewTarget);
 
 			SetCameraOrigin(trace_endpos + (v_forward * 5));
 			SetCameraAngle(deathAngle);
