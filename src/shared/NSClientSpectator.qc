@@ -212,6 +212,10 @@ NSClientSpectator::ReceiveEntity(float new, float flChanged)
 	READENTITY_BYTE(spec_flags, SPECFL_FLAGS)
 	READENTITY_BYTE(movetype, SPECFL_TYPE)
 	READENTITY_BYTE(solid, SPECFL_TYPE)
+
+	if (flChanged & SPECFL_TARGET) {
+		m_flLastSpecTargetChange = time;
+	}
 };
 
 float
@@ -225,8 +229,22 @@ NSClientSpectator::predraw(void)
 void
 NSClientSpectator::InputNext(void)
 {
-	if (spec_flags & SPECFLAG_BUTTON_RELEASED)
+	if (m_flDeathCam > time)
 		return;
+
+	if (spec_flags & SPECFLAG_BUTTON_RELEASED) {
+		return;
+	}
+
+	if (spec_mode == SPECMODE_DEATHCAM && m_flDeathCam < time) {
+		spec_mode = SPECMODE_THIRDPERSON;
+		InputNext();
+		return;
+	} else if (spec_mode == SPECMODE_FREE) {
+		spec_mode = SPECMODE_THIRDPERSON;
+	} else if (spec_mode == SPECMODE_FREEOVERVIEW) {
+		spec_mode = SPECMODE_CHASEOVERVIEW;
+	}
 
 	spec_flags |= SPECFLAG_BUTTON_RELEASED;
 
@@ -288,8 +306,22 @@ NSClientSpectator::InputNext(void)
 void
 NSClientSpectator::InputPrevious(void)
 {
-	if (spec_flags & SPECFLAG_BUTTON_RELEASED)
+	if (m_flDeathCam > time)
 		return;
+
+	if (spec_flags & SPECFLAG_BUTTON_RELEASED) {
+		return;
+	}
+
+	if (spec_mode == SPECMODE_DEATHCAM && m_flDeathCam < time) {
+		spec_mode = SPECMODE_THIRDPERSON;
+		InputNext();
+		return;
+	} else if (spec_mode == SPECMODE_FREE) {
+		spec_mode = SPECMODE_THIRDPERSON;
+	} else if (spec_mode == SPECMODE_FREEOVERVIEW) {
+		spec_mode = SPECMODE_CHASEOVERVIEW;
+	}
 
 	spec_flags |= SPECFLAG_BUTTON_RELEASED;
 
@@ -354,8 +386,15 @@ NSClientSpectator::InputPrevious(void)
 void
 NSClientSpectator::InputMode(void)
 {
-	if (spec_flags & SPECFLAG_BUTTON_RELEASED)
+	if (spec_mode == SPECMODE_DEATHCAM && m_flDeathCam < time) {
+		spec_mode = SPECMODE_THIRDPERSON;
+		InputNext();
 		return;
+	}
+
+	if (spec_flags & SPECFLAG_BUTTON_RELEASED) {
+		return;
+	}
 
 	spec_flags |= SPECFLAG_BUTTON_RELEASED;
 
@@ -422,7 +461,8 @@ NSClientSpectator::PreFrame(void)
 void
 NSClientSpectator::SpectatorTrackPlayer(void)
 {
-	if (spec_mode == SPECMODE_THIRDPERSON 
+	if (spec_mode == SPECMODE_DEATHCAM
+		|| spec_mode == SPECMODE_THIRDPERSON 
 		|| spec_mode == SPECMODE_FIRSTPERSON
 		|| spec_mode == SPECMODE_CHASEOVERVIEW
 		|| spec_mode == SPECMODE_LOCKEDCHASE ) {
@@ -465,6 +505,14 @@ NSClientSpectator::EvaluateEntity(void)
 	EVALUATE_FIELD(spec_flags, SPECFL_FLAGS)
 	EVALUATE_FIELD(movetype, SPECFL_TYPE)
 	EVALUATE_FIELD(solid, SPECFL_TYPE)
+}
+
+void
+NSClientSpectator::SpectatorDeathcam(NSRenderableEntity ourCorpse, NSEntity trackEntity, float waitTime)
+{
+	spec_ent = num_for_edict(ourCorpse);
+	spec_mode = SPECMODE_DEATHCAM;
+	m_flDeathCam = time + waitTime;
 }
 #endif
 

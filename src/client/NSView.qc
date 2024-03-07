@@ -280,8 +280,9 @@ NSView::UpdateView(void)
 	}
 
 	/* put entities into the scene (and call their predraws */
-	if (m_bDrawEntities)
+	if (m_bDrawEntities) {
 		addentities(MASK_ENGINE);
+	}
 
 	/* after predraws we can act upon their new positions */
 	if (cl) {
@@ -309,6 +310,29 @@ NSView::UpdateView(void)
 		spec = (NSClientSpectator)m_viewTarget;
 
 		switch (spec.spec_mode) {
+		case SPECMODE_DEATHCAM:
+			vector deathAngle;
+			vector vecEnd;
+			c = findfloat(world, ::entnum, spec.spec_ent);
+			vector vecStart = c.origin;
+			float progression = time - spec.m_flLastSpecTargetChange;
+
+			vecStart[2] += 16;
+			vecStart += (v_right * 4);
+
+			deathAngle[0] = bound(0, progression * 15.0f, 90.0f);
+			deathAngle[1] = c.angles[1] + (progression * 22.5f);
+			deathAngle[2] = 0.0f;
+
+			makevectors(deathAngle);
+
+			vecEnd = vecStart + (v_forward * -48) + [0,0,16] + (v_right * 4);
+			traceline(vecStart, vecEnd, FALSE, m_viewTarget);
+
+			SetCameraOrigin(trace_endpos + (v_forward * 5));
+			SetCameraAngle(deathAngle);
+			SetClientAngle(deathAngle);
+			break;
 		case SPECMODE_LOCKEDCHASE:
 			view_angles = [0, spec.v_angle[1], 0];
 		case SPECMODE_THIRDPERSON:

@@ -568,6 +568,10 @@ NSClientPlayer::ReceiveEntity(float new, float flChanged)
 		setsize(this, mins, maxs);
 
 	setorigin(this, origin);
+
+	if (flChanged & PLAYER_SPECTATE) {
+		m_flLastSpecTargetChange = time;
+	}
 }
 
 /*

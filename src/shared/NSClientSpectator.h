@@ -26,6 +26,7 @@ typedef enumflags
 
 typedef enum
 {
+	SPECMODE_DEATHCAM,
 	SPECMODE_LOCKEDCHASE,
 	SPECMODE_THIRDPERSON,
 	SPECMODE_FREE,
@@ -36,6 +37,7 @@ typedef enum
 
 #ifdef CLIENT
 string g_specmodes[] = {
+	"Death Cam",
 	"Locked Chase Cam",
 	"Free Chase Cam",
 	"Free Look",
@@ -66,6 +68,8 @@ private:
 	PREDICTED_FLOAT(spec_ent)
 	PREDICTED_FLOAT(spec_flags)
 	NSClientSpectatorMode_t spec_mode; NSClientSpectatorMode_t spec_mode_net;
+	float m_flDeathCam;
+	float m_flLastSpecTargetChange;
 
 	vector spec_org;
 
@@ -110,6 +114,8 @@ public:
 	virtual void EvaluateEntity(void);
 	virtual float SendEntity(entity,float);
 	virtual void ServerInputFrame(void);
+
+	nonvirtual void SpectatorDeathcam(NSRenderableEntity, NSEntity, float);
 #endif
 };
 
