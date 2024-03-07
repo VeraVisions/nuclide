@@ -52,3 +52,25 @@ NSPointTrigger::DebugDraw(void)
 	R_EndPolygon();
 #endif
 }
+
+#ifdef SERVER
+void
+NSPointTrigger::Save(float handle)
+{
+	super::Save(handle);
+	SaveString(handle, "m_strDebugTexture", m_strDebugTexture);
+}
+
+void
+NSPointTrigger::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "m_strDebugTexture":
+		m_strDebugTexture = ReadString(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+		break;
+	}
+}
+#endif

@@ -119,6 +119,8 @@ infodecal::Spawned(void)
 void
 infodecal::Respawn(void)
 {
+	InitPointTrigger();
+
 	/* this will be invisible by default */
 	if (!targetname) {
 #if 0

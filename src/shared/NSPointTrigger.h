@@ -33,6 +33,9 @@ public:
 	nonvirtual void InitPointTrigger(void);
 
 #ifdef SERVER
+	virtual void Save(float);
+	virtual void Restore(string, string);
+
 private:
 	string m_strDebugTexture;
 #endif
