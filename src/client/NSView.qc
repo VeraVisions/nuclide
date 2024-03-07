@@ -277,6 +277,22 @@ NSView::UpdateView(void)
 		pSeat->m_vecPredictedOrigin = cl.origin;
 		pSeat->m_flPredictedFlags = cl.flags;
 		pSeat->m_vecPredictedVelocity = cl.velocity;
+
+		/* this player will respawn, so null visual damage cues */
+		if (Client_IsDead(cl)) {
+			if (_m_bWasAlive == true) {
+				pSeat->m_flDamageAlpha = 0.0f;
+				pSeat->m_vecDamagePos = g_vec_null;
+				pSeat->m_iDamageFlags = 0i;
+				pSeat->m_flShakeFreq = 0.0f;
+				pSeat->m_flShakeDuration = 0.0f;
+				pSeat->m_flShakeTime = 0.0f;
+				pSeat->m_flShakeAmp = 0.0f;
+			}
+			_m_bWasAlive = false;
+		} else {
+			_m_bWasAlive = true;
+		}
 	}
 
 	/* put entities into the scene (and call their predraws */
@@ -301,6 +317,7 @@ NSView::UpdateView(void)
 				cl.UpdateAliveCam();
 				StairSmooth();
 				View_DrawViewModel();
+				_m_bWasAlive = true;
 			}
 		}
 		break;

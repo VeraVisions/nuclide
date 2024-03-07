@@ -133,6 +133,8 @@ private:
 
 	bool m_bDrawLocalPlayer;
 	bool m_bDrawEntities;
+
+	bool _m_bWasAlive;
 };
 
 /** one NSView for each seat */
