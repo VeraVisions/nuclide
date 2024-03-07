@@ -74,16 +74,15 @@ private:
 	bool m_bHDREnabled;
 };
 
-
 void
 worldspawn::worldspawn(void)
 {
 	/* defaults */
-	m_flHDRIrisMinValue = 1.0;
-	m_flHDRIrisMaxValue = 2.0;
-	m_flHDRIrisMultiplier = 1.0;
+	m_flHDRIrisMinValue = 0.0;
+	m_flHDRIrisMaxValue = 1.25;
+	m_flHDRIrisMultiplier = 1.25;
 	m_flHDRIrisFadeUp = 0.1;
-	m_flHDRIrisFadeDown = 0.5;
+	m_flHDRIrisFadeDown = 0.2;
 	m_bHDREnabled = false;
 
 	if (serverkeyfloat("*bspversion") == BSPVER_HL) {
@@ -141,21 +140,11 @@ worldspawn::Spawned(void)
 	forceinfokey(world, "ambientsound", m_strAmbientSound);
 	forceinfokey(world, "bgm", m_strBGMTrack);
 	forceinfokey(world, "gametitle", ftos(m_bGameTitle));
-
-	if (m_bHDREnabled) {
-		forceinfokey(world, "hdr_iris_minvalue", ftos(m_flHDRIrisMinValue));
-		forceinfokey(world, "hdr_iris_maxvalue", ftos(m_flHDRIrisMaxValue));
-		forceinfokey(world, "hdr_iris_multiplier", ftos(m_flHDRIrisMultiplier));
-		forceinfokey(world, "hdr_iris_fade_up", ftos(m_flHDRIrisFadeUp));
-		forceinfokey(world, "hdr_iris_fade_down", ftos(m_flHDRIrisFadeDown));
-	} else {
-		forceinfokey(world, "hdr_iris_minvalue", "");
-		forceinfokey(world, "hdr_iris_maxvalue", "");
-		forceinfokey(world, "hdr_iris_multiplier", "");
-		forceinfokey(world, "hdr_iris_fade_up", "");
-		forceinfokey(world, "hdr_iris_fade_down", "");
-	}
-
+	forceinfokey(world, "hdr_iris_minvalue", ftos(m_flHDRIrisMinValue));
+	forceinfokey(world, "hdr_iris_maxvalue", ftos(m_flHDRIrisMaxValue));
+	forceinfokey(world, "hdr_iris_multiplier", ftos(m_flHDRIrisMultiplier));
+	forceinfokey(world, "hdr_iris_fade_up", ftos(m_flHDRIrisFadeUp));
+	forceinfokey(world, "hdr_iris_fade_down", ftos(m_flHDRIrisFadeDown));
 	forceinfokey(world, "hdr", ftos(m_bHDREnabled));
 }
 
