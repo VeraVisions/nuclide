@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2024 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,18 +14,18 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/* we need to keep this an enum so find() does its work faster */
-enum
+void
+NSSpawnPoint::NSSpawnPoint(void)
 {
-	BOTINFO_NONE,				/* no info */
-	BOTINFO_HEALTH,				/* health item */
-	BOTINFO_ARMOR,				/* armor item */
-	BOTINFO_AMMO,				/* ammo pickup */
-	BOTINFO_WEAPON,				/* weapon pickup */
-	BOTINFO_SPAWNPOINT,			/* place where to find new players */
-	BOTINFO_TEAM_GOALITEM,		/* team-mode goal item (flag, intel) */
-	BOTINFO_TEAM_GOALCAPTURE,	/* where to go when goal-item present */
-	BOTINFO_END					/* end destination */
-};
+}
 
-.float botinfo;
+void
+NSSpawnPoint::Respawn(void)
+{
+	InitPointTrigger();
+	setorigin_safe(this, GetSpawnOrigin());
+	SetSize(VEC_HULL_MIN, VEC_HULL_MAX);
+	SetSolid(SOLID_NOT);
+	SetMovetype(MOVETYPE_NONE);
+	botinfo = BOTINFO_SPAWNPOINT;
+}

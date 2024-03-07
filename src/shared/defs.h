@@ -78,6 +78,7 @@ string __fullspawndata;
 #include "../gs-entbase/server/defs.h"
 #endif
 
+#include "../botlib/botinfo.h"
 #include "sentences.h"
 
 #include "NSIO.h"
@@ -95,6 +96,7 @@ string __fullspawndata;
 #include "NSMonster.h"
 #include "NSSquadMonster.h"
 #include "NSTalkMonster.h"
+#include "NSSpawnPoint.h"
 #include "NSProjectile.h"
 #include "NSItem.h"
 #include "NSSpraylogo.h"

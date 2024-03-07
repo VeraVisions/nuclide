@@ -17,6 +17,7 @@ NSMonster.qc
 NSSquadMonster.qc
 NSTalkMonster.qc
 NSProjectile.qc
+NSSpawnPoint.qc
 NSItem.qc
 NSPortal.qc
 NSDebris.qc
