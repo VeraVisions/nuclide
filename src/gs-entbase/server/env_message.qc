@@ -115,6 +115,8 @@ env_message::SpawnKey(string strKey, string strValue)
 void
 env_message::Respawn(void)
 {
+	InitPointTrigger();
+
 	Trigger = Play;
 }
 

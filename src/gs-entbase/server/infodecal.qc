@@ -42,11 +42,11 @@ infodecal:NSPointTrigger
 public:
 	void infodecal(void);
 	
+	virtual void SpawnKey(string,string);
+	virtual void Spawned(void);
+	virtual void Respawn(void);
 	virtual void Save(float);
 	virtual void Restore(string,string);
-	virtual void SpawnKey(string,string);
-	virtual void Respawn(void);
-	virtual void Spawned(void);
 	virtual void Trigger(entity, triggermode_t);
 
 private:
@@ -59,29 +59,6 @@ infodecal::infodecal(void)
 {
 	m_decChild = __NULL__;
 	m_strTexture = __NULL__;
-}
-
-void
-infodecal::Save(float handle)
-{
-	super::Save(handle);
-	SaveEntity(handle, "m_decChild", m_decChild);
-	SaveString(handle, "m_strTexture", m_strTexture);
-}
-
-void
-infodecal::Restore(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "m_decChild":
-		m_decChild = (decal)ReadEntity(strValue);
-		break;
-	case "m_strTexture":
-		m_strTexture = ReadString(strValue);
-		break;
-	default:
-		super::Restore(strKey, strValue);
-	}
 }
 
 void
@@ -104,6 +81,8 @@ infodecal::Spawned(void)
 {
 	float bsp_version = serverkeyfloat("*bspversion");
 
+	super::Spawned();
+
 	switch (bsp_version) {
 	case BSPVER_HL:
 	case BSPVER_RBSP:
@@ -121,17 +100,36 @@ infodecal::Respawn(void)
 {
 	InitPointTrigger();
 
-	/* this will be invisible by default */
-	if (!targetname) {
-#if 0
-		/* spawn automatically, remove self */
-		Trigger(this, TRIG_ON);
-#else
+	if (HasTargetname() == false) {
+		/* we'll let the client-side handle this infodecal */
 		Destroy();
-#endif
 	} else {
+		/* this will be invisible by default. needs to be triggered. */
 		Trigger(this, TRIG_OFF);
 		m_decChild = __NULL__;
+	}
+}
+
+void
+infodecal::Save(float handle)
+{
+	super::Save(handle);
+	SaveEntity(handle, "m_decChild", m_decChild);
+	SaveString(handle, "m_strTexture", m_strTexture);
+}
+
+void
+infodecal::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "m_decChild":
+		m_decChild = (decal)ReadEntity(strValue);
+		break;
+	case "m_strTexture":
+		m_strTexture = ReadString(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
 	}
 }
 

@@ -198,6 +198,7 @@ logic_auto::Spawned(void)
 void
 logic_auto::Respawn(void)
 {
+	InitPointTrigger();
 	ScheduleThink(Processing, 0.2f);
 }
 

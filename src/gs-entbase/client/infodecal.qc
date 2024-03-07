@@ -22,11 +22,20 @@ public:
 	virtual void SpawnKey(string, string);
 	virtual float predraw(void);
 	virtual bool CanSpawn(bool);
+	virtual void Respawn(void);
 
 private:
 	decal m_decChild;
 	string m_strTexture;
 };
+
+void
+infodecal::infodecal(void)
+{
+	drawmask = MASK_ENGINE;
+	m_decChild = __NULL__;
+	m_strTexture = __NULL__;
+}
 
 float
 infodecal::predraw(void)
@@ -36,6 +45,7 @@ infodecal::predraw(void)
 		m_decChild.Place(origin, m_strTexture);
 		Destroy();
 	}
+
 	return (PREDRAW_NEXT);
 }
 
@@ -62,12 +72,10 @@ infodecal::SpawnKey(string strField, string strKey)
 }
 
 void
-infodecal::infodecal(void)
+infodecal::Respawn(void)
 {
+	/* if it has a targetname, it can't be made client-side only */
 	if (targetname) {
 		Destroy();
-		return;
 	}
-
-	drawmask = MASK_ENGINE;
 }

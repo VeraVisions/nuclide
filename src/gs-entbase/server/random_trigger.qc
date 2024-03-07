@@ -114,6 +114,8 @@ random_trigger::SpawnKey(string strKey, string strValue)
 void
 random_trigger::Respawn(void)
 {
+	InitPointTrigger();
+
 	if (m_iStartState == 1)
 		Trigger(this, TRIG_ON);
 }

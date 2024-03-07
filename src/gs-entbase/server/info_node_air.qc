@@ -43,6 +43,8 @@ info_node_air::info_node_air(void)
 void
 info_node_air::Respawn(void)
 {
+	InitPointTrigger();
+
 	SetSize([0,0,0], [0,0,0]);
 	SetSolid(SOLID_NOT);
 	SetMovetype(MOVETYPE_NONE);

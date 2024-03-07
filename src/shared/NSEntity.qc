@@ -564,7 +564,7 @@ void NSEntity::SetNextThink( float fl ) {
 	if ( flTime >= 0 )
 		nextthink = flTime;
 	else
-		EntError( "%s sets bogus nextthink value %f\n", classname, flTime );
+		EntError( "%s sets bogus nextthink value %f", classname, flTime );
 }
 
 void NSEntity::ScheduleThink( void ( void ) func, float fl ) {

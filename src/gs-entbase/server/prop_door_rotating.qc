@@ -103,6 +103,8 @@ prop_door_rotating::SpawnKey(string strKey, string strValue)
 void
 prop_door_rotating::Respawn(void)
 {
+	InitPointTrigger();
+
 	SetModel(GetSpawnModel());
 	SetSolid(SOLID_BSP);
 	SetMovetype(MOVETYPE_PUSH);

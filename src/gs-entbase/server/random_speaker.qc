@@ -126,6 +126,7 @@ random_speaker::SpawnKey(string strKey, string strValue)
 void
 random_speaker::Respawn(void)
 {
+	InitPointTrigger();
 	Disable();
 }
 

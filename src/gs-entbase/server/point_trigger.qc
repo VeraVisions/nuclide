@@ -177,6 +177,9 @@ void
 point_trigger::Respawn(void)
 {
 	vector vecMins, vecMaxs;
+
+	InitPointTrigger();
+
 	SetMovetype(MOVETYPE_NONE);
 	SetSolid(SOLID_TRIGGER);
 	SetOrigin(GetSpawnOrigin());

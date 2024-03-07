@@ -96,6 +96,8 @@ target_cdaudio::SpawnKey(string strKey, string strValue)
 void
 target_cdaudio::Respawn(void)
 {
+	InitPointTrigger();
+
 	geomtype = GEOMTYPE_SPHERE;
 	mins = [-m_flRadius, -m_flRadius, -m_flRadius];
 	maxs = [m_flRadius, m_flRadius, m_flRadius];

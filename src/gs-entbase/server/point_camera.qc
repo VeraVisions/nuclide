@@ -142,6 +142,8 @@ point_camera::SpawnKey(string strKey, string strValue)
 void
 point_camera::Respawn(void)
 {
+	InitPointTrigger();
+
 	SetModelindex(0);
 	SetSolid(SOLID_NOT);
 	SetSize([-16,-16,-16], [16,16,16]);

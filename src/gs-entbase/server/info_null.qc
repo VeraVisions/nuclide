@@ -71,6 +71,7 @@ info_null::WarnDeveloper(void)
 void
 info_null::Respawn(void)
 {
+	InitPointTrigger();
 	ScheduleThink(WarnDeveloper, 0.0f);
 }
 #endif
