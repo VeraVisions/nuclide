@@ -1476,6 +1476,15 @@ NSMonster::Physics(void)
 	if (!IsAlive)
 		return;
 
+	if (m_flForceSequence) {
+		if (m_iSequenceState != SEQUENCESTATE_IDLE) {
+			SetFrame(m_flForceSequence);
+		}
+		m_flAnimTime = time + 999.0f;
+		frame = m_flForceSequence;
+		m_iSequenceState = SEQUENCESTATE_IDLE;
+	}
+
 	/* unset the leap attack */
 	if (m_bLeapAttacked == true && HasFlags(FL_ONGROUND) == true) {
 		m_bLeapAttacked = false;
@@ -2036,6 +2045,9 @@ NSMonster::SpawnKey(string strKey, string strValue)
 		break;
 	case "frame":
 		_m_flFrame = ReadFloat(strValue);
+		break;
+	case "sequence":
+		m_flForceSequence = ReadFloat(strValue);
 		break;
 	default:
 		super::SpawnKey(strKey, strValue);

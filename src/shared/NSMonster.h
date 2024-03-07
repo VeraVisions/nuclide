@@ -596,6 +596,7 @@ private:
 
 	float m_flLeapDamage;
 	bool m_bLeapAttacked;
+	float m_flForceSequence;
 
 	nonvirtual void _LerpTurnToEnemy(void);
 	nonvirtual void _LerpTurnToPos(vector);
