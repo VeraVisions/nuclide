@@ -74,7 +74,7 @@ vm_btnok_start(void)
 		tokenizebyseparator(res, "x");
 		localcmd(sprintf("vid_width %s\n", argv(0)));
 		localcmd(sprintf("vid_height %s\n", argv(1)));
-		localcmd("vid_restart\n");
+		localcmd("vid_restart\ncfg_save\n");
 	}
 
 	localsound("../media/launch_dnmenu1.wav");

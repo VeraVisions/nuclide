@@ -55,6 +55,8 @@ ctrl_btnok_start(void)
 			g_menupage = PAGE_CONFIGURATION;
 		else
 			g_menupage = PAGE_MULTIPLAYER;
+
+		localcmd("cfg_save\n");
 	}
 
 	localsound("../media/launch_dnmenu1.wav");

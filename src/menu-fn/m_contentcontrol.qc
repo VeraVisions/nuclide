@@ -31,6 +31,7 @@ cc_btndone_start(void)
 {
 	static void cc_btndone_end(void) {
 		g_menupage = PAGE_CONFIGURATION;
+		localcmd("cfg_save\n");
 	}
 	localsound("../media/launch_dnmenu1.wav");
 	header.SetStartEndPos(45,45,50,236);

@@ -49,6 +49,7 @@ cz_btndone_start(void)
 {
 	static void cz_btndone_end(void) {
 		g_menupage = PAGE_MULTIPLAYER;
+		localcmd("cfg_save\n");
 	}
 	cvar_set("name", cz_tbNetname.m_text);
 	localsound("../media/launch_dnmenu1.wav");
