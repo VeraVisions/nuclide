@@ -215,7 +215,7 @@ EV_MuzzleFlash_Parse(void)
 
 	setorigin(tempMuzzle, tempMuzzle.m_eOwner.origin);
 	setsize(tempMuzzle, [0,0,0], [0,0,0]);
-	tempMuzzle.drawmask = MASK_ENGINE;
+	tempMuzzle.drawmask = MASK_GLOWS;
 }
 
 void
@@ -232,6 +232,6 @@ EV_MuzzleFlash_Create(entity muzzleOwner, int attachmentID, float muzzleScale, i
 
 	setorigin(tempMuzzle, tempMuzzle.m_eOwner.origin);
 	setsize(tempMuzzle, [0,0,0], [0,0,0]);
-	tempMuzzle.drawmask = MASK_ENGINE;
+	tempMuzzle.drawmask = MASK_GLOWS;
 }
 #endif
