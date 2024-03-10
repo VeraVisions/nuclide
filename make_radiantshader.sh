@@ -46,11 +46,16 @@ scan_dir()
 
 
 	#echo "Stripping GLSL parameters..."
+
+	sed -i '/Vera Visions Material/d' "$SHADER_FILE"
+	sed -i 's/.mat//g' "$SHADER_FILE"
+	sed -i '/if $programs/','/else/d' "$SHADER_FILE"
+	sed -i '/endif/d' "$SHADER_FILE"
+	sed -i '/nodraw2/d' "$SHADER_FILE"
 	sed -i '/program /d' "$SHADER_FILE"
-	sed -i '/reflectcube/d' "$SHADER_FILE"
-	sed -i '/reflectmask /d' "$SHADER_FILE"
-	sed -i '/normalmap /d' "$SHADER_FILE"
-	sed -i '/specularmap /d' "$SHADER_FILE"
+	sed -i '/normalmap/d' "$SHADER_FILE"
+	sed -i '/alphaGen portal/d' "$SHADER_FILE"
+	sed -i '/deformVertexes autoSprite/d' "$SHADER_FILE"
 
 	#echo "Replacing diffusemap calls with qer_editorimage..."
 	sed -i 's/diffusemap /qer_editorimage /g' "$SHADER_FILE"
