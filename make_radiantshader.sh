@@ -9,6 +9,8 @@ ROOT_DIR="$(pwd)"
 LEGACY_OUT="$ROOT_DIR/$1/scripts"
 SHADERLIST="$ROOT_DIR/$1/scripts/shaderlist.txt"
 
+mkdir -p "$LEGACY_OUT"
+
 echo "Dumping all ..mat files into one..."
 
 if [ -f "$SHADERLIST" ]
