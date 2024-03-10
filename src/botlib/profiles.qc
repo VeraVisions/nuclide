@@ -17,9 +17,13 @@
 bool
 Bot_ExistsInServer(string botName)
 {
+	string noColor1 = strdecolorize(botName);
+
 	for (entity e = world;(e = find(e, ::classname, "player"));) {
 		if (clienttype(e) == CLIENTTYPE_BOT) {
-			if (e.netname == botName) {
+			string noColor2 = strdecolorize(e.netname);
+
+			if (noColor1 == noColor2) {
 				return (true);
 			}
 		}
