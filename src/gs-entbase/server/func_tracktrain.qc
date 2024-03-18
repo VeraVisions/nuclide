@@ -470,6 +470,17 @@ func_tracktrain::Restore(string strKey, string strValue)
 void
 func_tracktrain::TransitionComplete(void)
 {
+	/* don't mess with this entity if it wasn't carrying over from someplace */
+	if (!m_strGlobalName) {
+		return;
+	}
+
+	/* it might have a globalname, but we may not have been carrying over the the next
+	   level yet! */
+	if (m_vecRelationTarget == g_vec_null) {
+		return;
+	}
+
 	/* targetting something, which was used as a reference point */
 	if (HasTriggerTarget() == true) {
 		path_track targetEnt = GetTrackNodeForward();
