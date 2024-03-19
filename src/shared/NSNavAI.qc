@@ -292,9 +292,10 @@ NSNavAI::RouteToPositionDenyFlags(vector destination, int denylinkflags)
 		p.m_iNodes = numnodes;
 		p.m_iCurNode = numnodes - 1;
 		p.m_pRoute = nodelist;
+		p._m_flRouteGiveUp = time + 4.0f;
 
 		//traceline(p.origin, dest, MOVE_NORMAL, this);
-		tracebox(p.origin, p.mins, p.maxs, dest, MOVE_NORMAL, this);
+		tracebox(p.origin, [-16, -16, -16], [16, 16, 16], dest, MOVE_NORMAL, this);
 
 		/* can we walk directly to our target destination? */
 		if (trace_fraction == 1.0) {
@@ -314,6 +315,7 @@ NSNavAI::RouteToPositionDenyFlags(vector destination, int denylinkflags)
 					break;
 				}
 			}
+
 		}
 	}
 
