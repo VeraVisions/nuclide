@@ -135,12 +135,11 @@ m_init(void)
 
 	localcmd("plug_load ffmpeg\n");
 
-	Strings_Init();
-
 	/* don't precache btns_main.bmp directly any more. */
 	CMainButton_InitSheets();
 
 	GameLibrary_Init();
+	Strings_Init();
 	MapLibrary_Init();
 	main_init();
 
