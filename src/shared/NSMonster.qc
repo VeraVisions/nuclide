@@ -1180,7 +1180,7 @@ NSMonster::FreeState(void)
 			NSMonsterLog("Killing %S", m_strSequenceKillTarget);
 			findKT.Destroy();
 		} else {
-			error("Could not remove scripted killtarget!\n");
+			NSError("Could not remove %S!", m_strSequenceKillTarget);
 		}
 
 		m_strSequenceKillTarget = __NULL__;
