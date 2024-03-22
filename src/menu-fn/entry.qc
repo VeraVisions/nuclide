@@ -337,7 +337,11 @@ m_drawloading(vector screensize, float opaque)
 {
 	vector pos;
 	pos = (screensize / 2) - [32,32];
-	drawfill([0,0], screensize, [0.5,0.5,0.5], 1.0f);
+
+	if (opaque) {
+		drawfill([0,0], screensize, [0.25,0.25,0.25], 1.0f);
+	}
+
 	drawpic(pos, "gfx/loading", [64,64], [1,1,1], 1.0f);
 }
 
