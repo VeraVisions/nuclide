@@ -120,6 +120,11 @@ m_init(void)
 	cvar_set("r_imageextensions", "tga bmp pcx png jpg");
 	cvar_set("cl_cursor_scale", "1");
 
+	/* the HL configs make the rate this low by default. */
+	if (cvar("rate") <= 2500) {
+		cvar_set("rate", "30000");
+	}
+
 	registercommand("menu_updates");
 	registercommand("menu_customgame");
 	registercommand("map_background");
