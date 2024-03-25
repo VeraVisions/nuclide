@@ -43,6 +43,7 @@ A sprite entity manager with fancy overrides.
 - "killtarget" : Target to kill when triggered.
 - "angles" : Sets the pitch, yaw and roll angles of the sprite.
 - "model" : Path to the sprite in question.
+- "material" : Instead of model, you can set the path of a material/image here.
 - "rendercolor" : Color modifier of the sprite.
 - "renderamt" : Alpha modifier of the sprite.
 - "rendermode" : Render mode of the sprite.
