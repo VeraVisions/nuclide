@@ -290,6 +290,10 @@ func_button::Respawn(void)
 		m_flSpeed = 100;
 	}
 
+	if (!m_flLip) {
+		m_flLip = 4.0f;
+	}
+
 	if (HasSpawnFlags(SF_BTT_NOMOVE)) {
 		SetMoverPosition2(GetMoverPosition1());
 	}
