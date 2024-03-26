@@ -127,7 +127,7 @@ func_pushable::SpawnKey(string keyName, string setValue)
 		m_flPushFriction = ReadFloat(setValue) / 100;
 		break;
 	default:
-		super::Restore(keyName, setValue);
+		super::SpawnKey(keyName, setValue);
 	}
 }
 

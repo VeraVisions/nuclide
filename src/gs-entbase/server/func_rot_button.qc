@@ -21,7 +21,7 @@ enumflags
 	FNCROTBUT_UNUSED1,
 	FNCROTBUT_UNUSED2,
 	FNCROTBUT_UNUSED3,
-	FNCROTBUT_TOGGLE,
+	FNCROTBUT_NOAUTORETURN,
 	FNCROTBUT_XAXIS,
 	FNCROTBUT_YAXIS,
 	FNCROTBUT_TOUCHABLE
@@ -35,7 +35,7 @@ enum
 	ROTBTNSTATE_CLOSING
 };
 
-/*!QUAKED func_rot_button (0 .5 .8) ? FNCROTBUT_NONSOLID FNCROTBUT_REVERSE x x x FNCROTBUT_TOGGLE FNCROTBUT_XAXIS FNCROTBUT_YAXIS FNCROTBUT_TOUCHABLE
+/*!QUAKED func_rot_button (0 .5 .8) ? NONSOLID REVERSE x x x NOAUTORETURN XAXIS YAXIS TOUCHABLE
 # OVERVIEW
 A button that rotates along a pivot point. Used for valves, spigots and alike.
 
@@ -48,11 +48,11 @@ A button that rotates along a pivot point. Used for valves, spigots and alike.
 - "distance" : Distance in degrees the button will rotate.
 
 # SPAWNFLAGS
-- FNCROTBUT_NONSOLID (1) : Don't do collision testing against this entity.
-- FNCROTBUT_REVERSE (2) : Rotate the counter-clockwise.
-- FNCROTBUT_TOGGLE (32) : Can only be activated via trigger, not player interaction.
-- FNCROTBUT_XAXIS (64) : Rotate along the X-axis.
-- FNCROTBUT_YAXIS (128) : Rotate along the Y-axis.
+- NONSOLID (1) : Don't do collision testing against this entity.
+- REVERSE (2) : Rotate the counter-clockwise.
+- NOAUTORETURN (32) : Will not return by itself.
+- XAXIS (64) : Rotate along the X-axis.
+- YAXIS (128) : Rotate along the Y-axis.
 
 # NOTES
 Please include an origin brush so that a pivot point will be defined.
@@ -207,6 +207,10 @@ func_rot_button::ArrivedClosed(void)
 	m_iState = ROTBTNSTATE_CLOSED;
 	TriggerTargets();
 
+	if (HasSpawnFlags(FNCROTBUT_NOAUTORETURN) == true) {
+		return;
+	}
+
 	if (m_flReturnTime > 0.0f) {
 		ScheduleThink(TurnToggle, m_flReturnTime);
 	}
@@ -255,10 +259,14 @@ func_rot_button::TurnToggle(void)
 	if (m_iState == ROTBTNSTATE_OPENED) {
 		Rotate(m_vecMoveAngle, ArrivedClosed);
 	} else if (m_iState == ROTBTNSTATE_CLOSED) {
+		if (m_flReturnTime == -1) {
+			return;
+		}
+
 		Rotate(GetSpawnAngles(), ArrivedOpened);
 
 		/* in toggle mode, we trigger our targets every turn */
-		if (HasSpawnFlags(FNCROTBUT_TOGGLE))
+		if (HasSpawnFlags(FNCROTBUT_NOAUTORETURN))
 			TriggerTargets();
 	}
 }

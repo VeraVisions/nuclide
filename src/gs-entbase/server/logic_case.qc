@@ -269,7 +269,7 @@ logic_case::SpawnKey(string keyName, string setValue)
 		m_strOnDefault = PrepareOutput(m_strOnDefault, setValue);
 		break;
 	default:
-		super::Restore(keyName, setValue);
+		super::SpawnKey(keyName, setValue);
 	}
 }
 
