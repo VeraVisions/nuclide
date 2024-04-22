@@ -161,10 +161,7 @@ env_projectedtexture::EvaluateEntity(void)
 		SetSendFlags(PRTEXFL_CHANGED_ORIGIN);
 	}
 	if (ATTR_CHANGED(angles)) {
-		angles[0] = Math_FixDelta(angles[0]);
-		angles[1] = Math_FixDelta(angles[1]);
-		angles[2] = Math_FixDelta(angles[2]);
-
+		angles = fixAngle(angles);
 		SetSendFlags(PRTEXFL_CHANGED_ANGLES);
 	}
 	SAVE_STATE(origin)

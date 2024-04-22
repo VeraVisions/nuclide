@@ -55,7 +55,7 @@ A sprite entity manager with fancy overrides.
 - ENVS_PLAYONCE (2) : Play once from start to finish, then make invisible.
 
 # NOTES
-Only used with an external sprite format, like SPR, SPRHL and SPR32.
+Only used with an external sprite format, like SPR, SPRHL and SPR32, unless the material key is specified.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).

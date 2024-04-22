@@ -393,10 +393,7 @@ env_funnel::predraw(void)
 
 		endPos[2] += rand3 * 512.0f;
 
-		finalPos[0] = Math_Lerp(startPos[0], endPos[0], progress);
-		finalPos[1] = Math_Lerp(startPos[1], endPos[1], progress);
-		finalPos[2] = Math_Lerp(startPos[2], endPos[2], progress);
-
+		finalPos = vectorLerp(startPos, endPos, progress);
 		RenderGlow(finalPos, [64, 64], m_flProgression);
 	}
 

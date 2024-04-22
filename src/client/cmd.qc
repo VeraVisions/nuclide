@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2024 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -236,6 +236,7 @@ CMD_ListModelFramegroups(void)
 	print("} framegroups_e;\n");
 }
 
+
 /*
 =================
 Cmd_Parse
@@ -305,10 +306,10 @@ Cmd_Parse(string sCMD)
 		sendevent("CallVote", "s", substring(sCMD, 9, strlen(sCMD)-9));
 		break;
 	case "+zoomin":
-		pSeat->m_iZoomed = TRUE;
+		pSeat->m_iZoomed = true;
 		break;
 	case "-zoomin":
-		pSeat->m_iZoomed = FALSE;
+		pSeat->m_iZoomed = false;
 		break;
 	case "buildcubemaps":
 		CMap_Build();
@@ -317,22 +318,24 @@ Cmd_Parse(string sCMD)
 		CMD_titles_test();
 		break;
 	case "+attack2":
-		pSeat->m_iInputAttack2 = TRUE;
+		pSeat->m_iInputAttack2 = true;
 		break;
 	case "-attack2":
-		pSeat->m_iInputAttack2 = FALSE;
+		pSeat->m_iInputAttack2 = false;
 		break;
 	case "+reload":
-		pSeat->m_iInputReload = TRUE;
+		pSeat->m_iInputReload = true;
 		break;
 	case "-reload":
-		pSeat->m_iInputReload = FALSE;
+		pSeat->m_iInputReload = false;
 		break;
+	case "+activate":
 	case "+use":
-		pSeat->m_iInputUse = TRUE;
+		pSeat->m_iInputUse = true;
 		break;
+	case "-activate":
 	case "-use":
-		pSeat->m_iInputUse = FALSE;
+		pSeat->m_iInputUse = false;
 		break;
 	case "+duck":
 		if (autocvar_pm_crouchToggle == true)
@@ -347,6 +350,46 @@ Cmd_Parse(string sCMD)
 			pSeat->m_iInputDuck = FALSE;
 
 		pSeat->m_bSpecInput = false;
+		break;
+	case "+prone":
+		pSeat->m_iInputProne = true;
+		break;
+	case "-prone":
+		pSeat->m_iInputProne = false;
+		break;
+	case "+sprint":
+		pSeat->m_iSprinting = true;
+		break;
+	case "-sprint":
+		pSeat->m_iSprinting = false;
+		break;
+	case "+leanleft":
+		pSeat->m_iLeanDir = -1;
+		break;
+	case "-leanleft":
+		pSeat->m_iLeanDir = 0;
+		break;
+	case "+leanright":
+		pSeat->m_iLeanDir = 1;
+		break;
+	case "-leanright":
+		pSeat->m_iLeanDir = 0;
+		break;
+	case "goprone":
+		pSeat->m_dForceStance = STANCE_PRONE;
+		break;
+	case "gocrouch":
+		pSeat->m_dForceStance = STANCE_CROUCH;
+		break;
+	case "+gostand":
+		if (pSeat->m_dForceStance != STANCE_DEFAULT) {
+			pSeat->m_dForceStance = STANCE_DEFAULT;
+		} else {
+			pSeat->m_iInputJump = true;
+		}
+		break;
+	case "-gostand":
+		pSeat->m_iInputJump = false;
 		break;
 	case "invnext":
 		HUD_DrawWeaponSelect_Back();
@@ -426,11 +469,12 @@ Cmd_Parse(string sCMD)
 	case "-attack_right":
 		pSeat->m_iInputAttack = false;
 		break;
+
 	case "+menu_right":
-		pSeat->m_iInputReload = TRUE;
+		pSeat->m_iInputReload = true;
 		break;
 	case "-menu_right":
-		pSeat->m_iInputReload = FALSE;
+		pSeat->m_iInputReload = false;
 		break;
 	/* client aliases for server commands */
 	case "addBot":
@@ -495,7 +539,13 @@ Cmd_Parse(string sCMD)
 	case "nodeUnlink":
 		localcmd(sprintf("sv way unlink1 %s\n", argv(1)));
 		break;
-
+	case "traceMaterial":
+		localcmd("sv traceMaterial\n");
+		break;
+	case "bobup":
+		break;
+	case "bobdn":
+		break;
 	default:
 		return (false);
 	}
@@ -522,6 +572,7 @@ Cmd_Init(void)
 	registercommand("listTitles");
 	registercommand("listClientSoundDef");
 	registercommand("listServerSoundDef");
+	registercommand("traceMaterial");
 
 	/* server commands */
 	registercommand("addBot");
@@ -569,12 +620,22 @@ Cmd_Init(void)
 	registercommand("-attack");
 	registercommand("+attack2");
 	registercommand("-attack2");
-	registercommand("+reload");
+	registercommand("+reload");
 	registercommand("-reload");
+	registercommand("+activate");
+	registercommand("-activate");
 	registercommand("+use");
 	registercommand("-use");
 	registercommand("+duck");
 	registercommand("-duck");
+	registercommand("+prone");
+	registercommand("-prone");
+	registercommand("goprone");
+	registercommand("gocrouch");
+	registercommand("+gostand");
+	registercommand("-gostand");
+	registercommand("+sprint");
+	registercommand("-sprint");
 
 	/* voting */
 	registercommand("vote");

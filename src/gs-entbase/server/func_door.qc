@@ -92,9 +92,9 @@ private:
 	float m_flDelay;
 	float m_flLip;
 	int m_iDamage;
-	int m_iLocked;
-	int m_iForceClosed;
-	bool m_iCanTouch;
+	bool m_bLocked;
+	bool m_bForceClosed;
+	bool m_bCanTouch;
 
 	float m_flSoundWait;
 	string m_strLockedSfx;
@@ -115,14 +115,14 @@ func_door::func_door(void)
 {
 	m_flLip =
 	m_flNextTrigger =
-	m_flWait =
+	m_flWait = -1; /* verified thorugh through test_door_locked.bsp */
 	m_flDelay = 0.0f;
 
-	m_iDamage =
-	m_iLocked =
-	m_iForceClosed = 0;
+	m_iDamage = 0i;
+	m_bLocked =
+	m_bForceClosed = false;
 
-	m_iCanTouch = false;
+	m_bCanTouch = false;
 	m_flSoundWait = 0.0f;
 
 	targetClose =
@@ -150,8 +150,8 @@ func_door::Save(float handle)
 	SaveFloat(handle, "m_flSoundWait", m_flSoundWait);
 
 	SaveInt(handle, "m_iDamage", m_iDamage);
-	SaveInt(handle, "m_iLocked", m_iLocked);
-	SaveInt(handle, "m_iForceClosed", m_iForceClosed);
+	SaveBool(handle, "m_bLocked", m_bLocked);
+	SaveBool(handle, "m_bForceClosed", m_bForceClosed);
 
 	SaveString(handle, "m_strLockedSfx", m_strLockedSfx);
 	SaveString(handle, "m_strUnlockedSfx", m_strUnlockedSfx);
@@ -187,11 +187,11 @@ func_door::Restore(string strKey, string strValue)
 	case "m_iDamage":
 		m_iDamage = ReadInt(strValue);
 		break;
-	case "m_iLocked":
-		m_iLocked = ReadInt(strValue);
+	case "m_bLocked":
+		m_bLocked = ReadBool(strValue);
 		break;
-	case "m_iForceClosed":
-		m_iForceClosed = ReadInt(strValue);
+	case "m_bForceClosed":
+		m_bForceClosed = ReadBool(strValue);
 		break;
 
 	case "m_strLockedSfx":
@@ -234,23 +234,23 @@ func_door::SpawnKey(string strKey, string strValue)
 
 	switch (strKey) {
 	case "skin":
-		m_waterType = stoi(strValue);
+		m_waterType = ReadInt(strValue);
 		break;
 	case "speed":
-		m_flSpeed = stof(strValue);
+		m_flSpeed = ReadFloat(strValue);
 		break;
 	case "lip":
-		m_flLip = stof(strValue);
+		m_flLip = ReadFloat(strValue);
 		break;
 	case "wait":
-		m_flWait = stof(strValue);
+		m_flWait = ReadFloat(strValue);
 		break;
 	case "netname":
 		targetClose = strValue;
 		netname = __NULL__;
 		break;
 	case "dmg":
-		m_iDamage = stoi(strValue);
+		m_iDamage = ReadInt(strValue);
 		break;
 	case "snd_open":
 		m_strSndOpen = strValue;
@@ -269,7 +269,7 @@ func_door::SpawnKey(string strKey, string strValue)
 		m_strSndMove = strValue;
 		break;
 	case "forceclosed":
-		m_iForceClosed = stoi(strValue);
+		m_bForceClosed = ReadInt(strValue);
 		break;
 	/* GoldSrc compat */
 	case "movesnd":
@@ -282,10 +282,18 @@ func_door::SpawnKey(string strKey, string strValue)
 		break;
 	case "locked_sound":
 		x = stoi(strValue);
+
+		if (x == 0i)
+			break;
+
 		m_strLockedSfx = sprintf("func_button.hlsfx_%i", x+1i);
 		break;
 	case "unlocked_sound":
 		x = stoi(strValue);
+
+		if (x == 0i)
+			break;
+
 		m_strUnlockedSfx = sprintf("func_button.hlsfx_%i", x+1i);
 		break;
 	/* I/O */
@@ -361,9 +369,9 @@ func_door::Respawn(void)
 	m_iValue = 0;
 
 	if (spawnflags & SF_MOV_USE)
-		m_iCanTouch = false;
+		m_bCanTouch = false;
 	else
-		m_iCanTouch = true;
+		m_bCanTouch = true;
 
 	if (HasSpawnFlags(SF_MOV_OPEN)) {
 		SetOrigin(m_vecPos2);
@@ -376,8 +384,12 @@ func_door::Respawn(void)
 		_PortalClose();
 	}
 
-	if (targetname) {
-		m_iLocked = TRUE;
+	if (HasTargetname()) {
+		m_bCanTouch = false;
+
+		if (m_strLockedSfx != __NULL__) {
+			m_bLocked = true;
+		}
 	}
 }
 
@@ -405,7 +417,7 @@ func_door::PlayerUse(void)
 	if (!HasSpawnFlags(SF_MOV_USE))
 		return;
 
-	eActivator.flags &= ~FL_USE_RELEASED;
+	eActivator.RemoveVFlags(VFL_USE_RELEASED);
 	Trigger(eActivator, TRIG_TOGGLE);
 }
 
@@ -416,23 +428,16 @@ func_door::MoverFinishesMoving(void)
 		MoveToPosition(GetMoverPosition1(), m_flSpeed);
 	}
 
-
-	if (targetClose && targetClose != "") {
-		/* when it starts open the positions are reversed... */
-		if (GetMoverState() == MOVER_POS1 || 
-			(HasSpawnFlags(SF_MOV_OPEN) && GetMoverState() == MOVER_POS2)) {
-			for (entity f = world; (f = find(f, ::targetname, targetClose));) {
-				NSEntity trigger = (NSEntity)f;
-				if (trigger.Trigger != __NULL__) {
-					trigger.Trigger(this, TRIG_TOGGLE);
-				}
-			}
-		}
-	}
-
-
 	/* we arrived at our starting position within the map */
 	if (GetMoverState() == MOVER_POS1) {
+		if (targetClose)
+		for (entity f = world; (f = find(f, ::targetname, targetClose));) {
+			NSEntity trigger = (NSEntity)f;
+			if (trigger.Trigger != __NULL__) {
+				trigger.Trigger(this, TRIG_TOGGLE);
+			}
+		}
+
 		if (m_strSndStop) {
 			StartSoundDef(m_strSndStop, CHAN_VOICE, true);
 		} else {
@@ -494,8 +499,19 @@ func_door::MoverStartsMoving(void)
 void
 func_door::Trigger(entity act, triggermode_t triggerstate)
 {
-	if (GetMaster(act) == 0)
+	/* Note: func_door, unlike func_door_rotating, does not respect locked here!
+	   This inconsistency is in the original Half-Life as well! */
+	if (!GetMaster(act)) {
 		return;
+	}
+
+	if (m_flWait == -1 && GetMoverState() == MOVER_POS2) {
+		return;
+	}
+
+	if ((GetMoverState() == MOVER_1TO2) || (GetMoverState() == MOVER_2TO1)) {
+		return;
+	}
 
 	if (m_flNextTrigger > time) {
 		if (HasSpawnFlags(SF_MOV_TOGGLE) == false) {
@@ -521,17 +537,25 @@ func_door::Trigger(entity act, triggermode_t triggerstate)
 void
 func_door::Touch(entity eToucher)
 {
-	if (m_iCanTouch == false)
+	/* locked sound plays only when touched. still need another check in Trigger()
+	   to see if it's locked in case it gets trigger targeted */
+	if (m_bLocked || !GetMaster(eToucher)) {
+		/* only bother playing the locked sound when the door is closed. */
+		if (GetMoverState() == MOVER_POS1) {
+			if (m_flSoundWait < time) {
+				StartSoundDef(m_strLockedSfx, CHAN_VOICE, true);
+			}
+
+			m_flSoundWait = time + 0.3f;
+		}
 		return;
+	}
 
-	if (HasSpawnFlags(SF_MOV_USE) == true)
+	if (m_bCanTouch == false) {
 		return;
+	}
 
-	if (m_iLocked || !GetMaster(eToucher)) {
-		if (m_flSoundWait < time)
-			Sound_Play(this, CHAN_VOICE, m_strLockedSfx);
-
-		m_flSoundWait = time + 0.3f;
+	if (HasSpawnFlags(SF_MOV_USE) == true) {
 		return;
 	}
 
@@ -540,6 +564,7 @@ func_door::Touch(entity eToucher)
 	}
 
 	if (eToucher.movetype == MOVETYPE_WALK) {
+		/* only trigger if we're not above the door. */
 		if (eToucher.absmin[2] <= maxs[2] - 2) {
 			Trigger(eToucher, TRIG_TOGGLE);
 		}
@@ -553,7 +578,7 @@ func_door::Blocked(entity eBlocker)
 		Damage_Apply(eBlocker, this, m_iDamage, 0, DMG_CRUSH);
 	}
 
-	if (!m_iForceClosed)
+	if (!m_bForceClosed)
 	if (m_flWait >= 0) {
 		MoveToReverse(m_flSpeed);
 	}

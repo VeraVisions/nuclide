@@ -11,6 +11,7 @@ NSPhysicsConstraint.qc
 NSPhysicsEntity.qc
 NSBrushTrigger.qc
 NSPointTrigger.qc
+pmove.qc
 NSVehicle.qc
 NSNavAI.qc
 NSMonster.qc
@@ -21,14 +22,11 @@ NSSpawnPoint.qc
 NSItem.qc
 NSPortal.qc
 NSDebris.qc
-
 NSClient.qc
 NSClientSpectator.qc
-pmove.qc
 pmove_custom.qc
 cloader.qc
 sound.qc
-math.qc
 NSClientPlayer.qc
 player_pmove.qc
 propdata.qc
@@ -41,5 +39,6 @@ util.qc
 weapons.qc
 motd.qc
 
+weapon_common.qc
 ../xr/include.src
 #endlist

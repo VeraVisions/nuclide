@@ -337,7 +337,7 @@ void
 trigger_push::Touch(entity eToucher)
 {
 #ifdef SERVER
-	eActivator = eToucher;
+	eActivator = (NSEntity)eToucher;
 #endif
 
 	switch(eToucher.movetype) {

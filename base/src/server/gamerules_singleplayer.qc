@@ -47,6 +47,7 @@ SingleplayerRules::PlayerSpawn(NSClientPlayer pl)
 	pl.viewzoom = 1.0;
 	pl.model = "models/player.mdl";
 	setmodel(pl, pl.model);
+	pl.AddEffects(EF_NOSHADOW);
 
 	setsize(pl, VEC_HULL_MIN, VEC_HULL_MAX);
 	pl.velocity = [0,0,0];

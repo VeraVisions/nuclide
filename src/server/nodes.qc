@@ -248,10 +248,20 @@ Nodes_Init(void)
 #define NODE_LINE_ALPHA 0.25f
 
 /* draws debug graphics of our node tree */
+var bool autocvar_r_renderEntityInfo = false;
 void
 SV_AddDebugPolygons(void)
 {
 	Way_DrawDebugInfo();
+
+	if (autocvar_r_renderEntityInfo) {
+		makevectors(self.v_angle);
+
+		for (entity s = world; (s = findfloat(s, ::identity, 1));) {
+			NSEntity drawMe = (NSEntity)s;
+			drawMe.DebugDraw();
+		}
+	}
 
 	if (cvar("developer") != 1)
 		return;
@@ -266,25 +276,5 @@ SV_AddDebugPolygons(void)
 		train.RenderDebugInfo();
 	}
 #endif
-
-	makevectors(self.v_angle);
-
-	for (entity s = world; (s = findfloat(s, ::identity, 1));) {
-		NSEntity drawMe = (NSEntity)s;
-		drawMe.DebugDraw();
-	}
-
-	return;
-
-	/* draw the rectangles */
-	R_BeginPolygon("textures/dev/info_node", 0, 0);
-	for (int i = 0; i < g_iNodes; i++) {
-		node_t *w = g_pNodes + i;
-		R_PolygonVertex(w->origin + v_right * 8 - v_up * 8, [1,1], NODE_RECT_COLOR, NODE_RECT_ALPHA);
-		R_PolygonVertex(w->origin - v_right * 8 - v_up * 8, [0,1], NODE_RECT_COLOR, NODE_RECT_ALPHA);
-		R_PolygonVertex(w->origin - v_right * 8 + v_up * 8, [0,0], NODE_RECT_COLOR, NODE_RECT_ALPHA);
-		R_PolygonVertex(w->origin + v_right * 8 + v_up * 8, [1,0], NODE_RECT_COLOR, NODE_RECT_ALPHA);
-		R_EndPolygon();
-	}
 }
 #endif

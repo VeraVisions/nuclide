@@ -207,7 +207,7 @@ trigger_teleport::Touch(entity eToucher)
 		return;
 
 	if (eToucher.movetype != MOVETYPE_NONE) {
-		eActivator = eToucher;
+		eActivator = (NSEntity)eToucher;
 		entity eTarget = find(world, ::targetname, target);
 
 		if (eTarget) {
@@ -242,15 +242,15 @@ trigger_teleport::Touch(entity eToucher)
 			setorigin_safe(eToucher, endpos);
 
 			if (m_sndTeleport) {
-				Sound_Play(eToucher, CHAN_VOICE, m_sndTeleport);
+				StartSoundDef(m_sndTeleport, CHAN_VOICE, true);
 			}
 
 			if (m_sndTeleportEnter) {
-				Sound_Play(this, CHAN_VOICE, m_sndTeleportEnter);
+				StartSoundDef(m_sndTeleportEnter, CHAN_VOICE, true);
 			}
 
 			if (m_sndTeleportExit) {
-				Sound_Play(eTarget, CHAN_VOICE, m_sndTeleportExit);
+				StartSoundDef(m_sndTeleportExit, CHAN_VOICE, true);
 			}
 
 			EntLog("Teleported %S to %v", eToucher.netname, endpos);

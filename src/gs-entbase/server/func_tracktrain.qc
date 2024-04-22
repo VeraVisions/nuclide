@@ -191,9 +191,7 @@ func_tracktrain::GetPointBetweenNodes(float percentageValue)
 	vector newPos = g_vec_null;
 	path_track nextNode = GetTrackNodeForward();
 	path_track prevNode = GetTrackNodeBack();
-	newPos[0] = Math_Lerp(prevNode.origin[0], nextNode.origin[0], percentageValue);
-	newPos[1] = Math_Lerp(prevNode.origin[1], nextNode.origin[1], percentageValue);
-	newPos[2] = Math_Lerp(prevNode.origin[2], nextNode.origin[2], percentageValue);
+	newPos = vectorLerp(prevNode.origin, nextNode.origin, percentageValue);
 	return newPos;
 }
 
@@ -658,7 +656,7 @@ func_tracktrain::PathMoveForward(void)
 	/* the direction we're aiming for */
 	vecDiff = GetOrigin() - (eNode.GetOrigin() + [0, 0, m_flHeight]);
 	vecAngleDest = vectoangles(vecDiff);
-	vecAngleDiff = Math_AngleDiff(vecAngleDest, angles);
+	vecAngleDiff = angleDifference(vecAngleDest, angles);
 	vecAngleDiff[2] = 0;
 
 	if (vecAngleDiff[0] > 180)
@@ -743,8 +741,8 @@ func_tracktrain::PathMoveBack(void)
 
 	/* the direction we're aiming for */
 	vecDiff = (eNode.GetOrigin() + [0, 0, m_flHeight]) - GetOrigin();
-	vecAngleDest = vectoangles(vecDiff);
-	vecAngleDiff = Math_AngleDiff(vecAngleDest, angles);
+	vecAngleDest = vectorToAngles(vecDiff);
+	vecAngleDiff = angleDifference(vecAngleDest, angles);
 	vecAngleDiff[2] = 0;
 
 	if (vecAngleDiff[0] > 180)
@@ -980,7 +978,7 @@ func_tracktrain::_AfterSpawn(void)
 		if (IgnoresPitch() == true) {
 			newAngle[0] = 0;
 		} else {
-			newAngle[0] = -Math_FixDelta(newAngle[0]);
+			newAngle[0] = -fixAngleDelta(newAngle[0]);
 		}
 
 		SetAngles(newAngle);
@@ -1074,9 +1072,7 @@ func_tracktrain::OnPlayerUse(void)
 void
 func_tracktrain::EvaluateEntity(void)
 {
-	angles[0] = Math_FixDelta(angles[0]);
-	angles[1] = Math_FixDelta(angles[1]);
-	angles[2] = Math_FixDelta(angles[2]);
+	angles = fixAngle(angles);
 	PlayerAlign();
 
 	EVALUATE_FIELD(modelindex, FNCTKTRNET_MODELINDEX)

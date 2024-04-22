@@ -235,10 +235,8 @@ View_DrawViewModel(void)
 			speed = clframetime * 20;
 		}
 
-		pSeat->m_vecLag[0] = Math_Lerp(pSeat->m_vecLag[0], v_forward[0], speed);
-		pSeat->m_vecLag[1] = Math_Lerp(pSeat->m_vecLag[1], v_forward[1], speed);
-		pSeat->m_vecLag[2] = Math_Lerp(pSeat->m_vecLag[2], v_forward[2], speed);
-		pSeat->m_vecLag = vectoangles(pSeat->m_vecLag);
+		pSeat->m_vecLag = vectorLerp(pSeat->m_vecLag, v_forward, speed);
+		pSeat->m_vecLag = vectorToAngles(pSeat->m_vecLag);
 		m_eViewModel.angles = pSeat->m_vecLag;
 	}
 

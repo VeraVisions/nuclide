@@ -15,5 +15,8 @@ modelevent.qc
 mapcycle.qc
 entityDef.qc
 maptweaks.qc
+scripts.qc
+cmd_cl.qc
+cmd_sv.qc
 entry.qc
 #endlist

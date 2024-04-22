@@ -32,12 +32,16 @@
 #define FLQW_LAGGEDMOVE			(1<<16) /**< Entity will move with lag compenstation. */
 
 /* nuclide */
-#define FL_ONLADDER			(1<<13) /**< Entity is attached to a ladder. */
-#define FL_CROUCHING		(1<<17) /**< Entity is crouching. */
-#define FL_INVEHICLE		(1<<18) /**< Entity is inside a vehicle. */
-#define FL_FROZEN			(1<<19) /**< Entity is not allowed to move. */
-#define FL_USE_RELEASED		(1<<20) /**< Entity has release the +use button. */
-#define FL_FAKESPEC			(1<<21) /**< Entity is a fake spectator. */
-#define FL_ONUSABLE			(1<<22) /**< Entity is able to +use a thing. */
-#define FL_ONFIRE			(1<<23) /**< Entity is on fire. */
-#define FL_GOALITEM			(1<<15) /**< Entity is a goal-item. */
+.float vv_flags;
+#define VFL_PRONE				(1<<0) /**< Entity is prone. */
+#define VFL_ONLADDER			(1<<1) /**< Entity is attached to a ladder. */
+#define VFL_CROUCHING			(1<<2) /**< Entity is crouching. */
+#define VFL_INVEHICLE			(1<<3) /**< Entity is inside a vehicle. */
+#define VFL_FROZEN				(1<<4) /**< Entity is not allowed to move. */
+#define VFL_USE_RELEASED		(1<<5) /**< Entity has release the +use button. */
+#define VFL_FAKESPEC			(1<<6) /**< Entity is a fake spectator. */
+#define VFL_ONUSABLE			(1<<7) /**< Entity is able to +use a thing. */
+#define VFL_SPRINTING			(1<<8) /**< Entity is on fire. */
+#define VFL_GOALITEM			(1<<9) /**< Entity is a goal-item. */
+#define VFL_NOATTACK			(1<<10) /**< Entity is not allowed to fire. */
+

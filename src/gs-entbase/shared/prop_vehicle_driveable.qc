@@ -15,7 +15,7 @@
 */
 
 
-#define VEH_SKIDDING FL_USE_RELEASED
+#define VEH_SKIDDING VFL_USE_RELEASED
 
 #define VEHSF_NOFLIP 2048
 
@@ -405,7 +405,7 @@ prop_vehicle_driveable_wheel::Accel(float flMoveTime, float m_flTurn)
 		/* test if this car is skidding */
 		float skid = (velocity * v_right);
 		if ( fabs(skid) > vehParent.m_flSkidSpeed ) {
-			vehParent.flags |= VEH_SKIDDING;
+			vehParent.vv_flags |= VEH_SKIDDING;
 		}
 
 		/* nuke sideways velocity. if a wheel is off the ground this probably
@@ -632,11 +632,9 @@ prop_vehicle_driveable::RunVehiclePhysics(void)
 		angles[2] = bound (-45, angles[2], 45);
 	}
 
-	flags &= ~VEH_SKIDDING;
+	vv_flags &= ~VEH_SKIDDING;
 
-	angles[0] = Math_FixDelta(angles[0]);
-	angles[1] = Math_FixDelta(angles[1]);
-	angles[2] = Math_FixDelta(angles[2]);
+	angles = fixAngle(angles);
 
 	velocity[0] = bound(-1000, velocity[0], 1000);
 	velocity[1] = bound(-1000, velocity[1], 1000);
@@ -821,10 +819,7 @@ prop_vehicle_driveable::EvaluateEntity(void)
 		SetSendFlags(VEHFL_ORIGIN);
 
 	if (ATTR_CHANGED(angles)) {
-		angles[0] = Math_FixDelta(angles[0]);
-		angles[1] = Math_FixDelta(angles[1]);
-		angles[2] = Math_FixDelta(angles[2]);
-
+		angles = fixAngle(angles);
 		SetSendFlags(VEHFL_ANGLES);
 	}
 	if (ATTR_CHANGED(modelindex))

@@ -36,3 +36,6 @@ Weapons_SwitchBest(NSClientPlayer pl, optional float skip)
 
 }
 #endif
+
+
+var int g_weapon_weights[32];

@@ -41,36 +41,52 @@ NSClientPlayer::IsRealSpectator(void)
 bool
 NSClientPlayer::IsDead(void)
 {
-	if (health > 0)
-		return (false);
-	else
-		return (true);
+	return (health > 0) ? (false) : true;
 }
 
 bool
 NSClientPlayer::IsPlayer(void)
 {
-	if (HasFlags(FL_FAKESPEC))
-		return (false);
-
-	return (true);
+	return !HasVFlags(VFL_FAKESPEC);
 }
 
 bool
 NSClientPlayer::IsFakeSpectator(void)
 {
-	if (HasFlags(FL_FAKESPEC))
-		return (true);
+	return HasVFlags(VFL_FAKESPEC);
+}
 
-	return (false);
+bool
+NSClientPlayer::CanSprint(void)
+{
+	return g_pmoveVars.pm_runspeed > 0 ? (true) : false;
+}
+
+bool
+NSClientPlayer::CanProne(void)
+{
+	return g_pmoveVars.pm_proneheight > 0 ? (true) : false;
+}
+
+bool
+NSClientPlayer::CanLean(void)
+{
+	return (true);
+}
+
+bool
+NSClientPlayer::CanCrouch(void)
+{
+	return g_pmoveVars.pm_crouchheight > 0 ? (true) : false;
 }
 
 void
 NSClientPlayer::PreFrame(void)
 {
 #ifdef CLIENT
-	if (Util_IsPaused())
+	if (Util_IsPaused()) {
 		return;
+	}
 
 	/* this is where a game/mod would decide to add more prediction rollback
 	 * information. */
@@ -110,8 +126,9 @@ void
 NSClientPlayer::PostFrame(void)
 {
 #ifdef CLIENT
-	if (Util_IsPaused())
+	if (Util_IsPaused()) {
 		return;
+	}
 
 	/* give the game/mod a chance to roll back its values too */
 	PredictPostFrame();
@@ -154,12 +171,12 @@ NSClientPlayer::ProcessInput(void)
 		rules.IntermissionEnd();
 		return;
 	} else if (IsAlive() == false) {
-		if (input_buttons & INPUT_BUTTON0)
+		if (input_buttons & INPUT_PRIMARY)
 			rules.PlayerRequestRespawn(this);
 	}
 
 	/* handle use button presses */
-	if (input_buttons & INPUT_BUTTON5)
+	if (input_buttons & INPUT_USE)
 		InputUse_Down(); 
 	else
 		InputUse_Up();
@@ -186,11 +203,11 @@ NSClientPlayer::ProcessInput(void)
 	}
 
 	/* weapon system */
-	if (input_buttons & INPUT_BUTTON3)
+	if (input_buttons & INPUT_SECONDARY)
 		Weapons_Secondary((player)this);
-	else if (input_buttons & INPUT_BUTTON0)
+	else if (input_buttons & INPUT_PRIMARY)
 		Weapons_Primary((player)this);
-	else if (input_buttons & INPUT_BUTTON4)
+	else if (input_buttons & INPUT_RELOAD)
 		Weapons_Reload((player)this);
 	else
 		Weapons_Release((player)this);
@@ -251,8 +268,8 @@ NSClientPlayer::predraw(void)
 			input_movevalues[0] = dotproduct(velocity, v_forward);
 			input_movevalues[1] = dotproduct(velocity, v_right);
 			input_movevalues[2] = dotproduct(velocity, v_up);
-			input_buttons = (flags & FL_JUMPRELEASED) ? 0 : INPUT_BUTTON2; /* this may not help that much... */
-			input_buttons |= (flags & FL_CROUCHING) ? INPUT_BUTTON8 : 0;
+			input_buttons = (flags & FL_JUMPRELEASED) ? 0 : INPUT_JUMP; /* this may not help that much... */
+			input_buttons |= IsCrouching() ? INPUT_CROUCH : 0;
 			input_angles = v_angle;
 			input_impulse = 0;
 			input_timelength = clframetime;
@@ -273,7 +290,7 @@ NSClientPlayer::predraw(void)
 	RenderFire();
 
 	/* if we're inside of a vehicle, it may want to hide or show us regardless */
-	if (localplayer && HasFlags(FL_INVEHICLE)) {
+	if (localplayer && HasVFlags(VFL_INVEHICLE)) {
 		NSVehicle veh = (NSVehicle)vehicle;
 
 		if (veh)
@@ -386,6 +403,10 @@ NSClientPlayer::UpdateAliveCam(void)
 	g_view.AddPunchAngle(punchangle);
 }
 
+var float autocvar_cl_forwardspeed = 190;
+var float autocvar_cl_sidespeed = 152;
+var float autocvar_cl_backspeed = 133;
+
 /*
 =================
 NSClientPlayer::ClientInputFrame
@@ -416,35 +437,40 @@ NSClientPlayer::ClientInputFrame(void)
 	if (serverkeyfloat("background") == 1)
 		return;
 
-	if (pSeat->m_iInputAttack2 == TRUE) {
-		input_buttons |= INPUT_BUTTON3;
+	if (pSeat->m_iInputAttack2 == true) {
+		input_buttons |= INPUT_SECONDARY;
+	}
+	if (pSeat->m_iInputReload == true) {
+		input_buttons |= INPUT_RELOAD;
+	}
+	if (pSeat->m_iInputUse == true) {
+		input_buttons |= INPUT_USE;
+	}
+	if (pSeat->m_iInputDuck == true) {
+		input_buttons |= INPUT_CROUCH;
+	}
+	if (pSeat->m_iInputProne == true) {
+		input_buttons |= INPUT_PRONE;
+	}
+	if (pSeat->m_iInputSprint == true) {
+		input_buttons |= INPUT_SPRINT;
+	}
+	if (pSeat->m_iInputJump == true) {
+		input_buttons |= INPUT_JUMP;
 	}
 
-	if (pSeat->m_iInputReload == TRUE) {
-		input_buttons |= INPUT_BUTTON4;
-	}
-
-	if (pSeat->m_iInputUse == TRUE) {
-		input_buttons |= INPUT_BUTTON5;
-	}
-
-	if (pSeat->m_iInputDuck == TRUE) {
-		input_buttons |= INPUT_BUTTON8;
-	}
-
-	if (pSeat->m_iInputExtra1 == TRUE) {
-		input_buttons |= INPUT_BUTTON6;
-	}
-
-	if (pSeat->m_iInputExtra2 == TRUE) {
-		input_buttons |= INPUT_BUTTON7;
+	/* IW style stance override */
+	if (pSeat->m_dForceStance == STANCE_CROUCH) {
+		input_buttons |= INPUT_CROUCH;
+	} else if (pSeat->m_dForceStance == STANCE_PRONE) {
+		input_buttons |= INPUT_PRONE;
 	}
 
 	/* The HUD needs more time */
 	if (pSeat->m_iHUDWeaponSelected) {
-		if ((input_buttons & INPUT_BUTTON0))
+		if ((input_buttons & INPUT_PRIMARY))
 			HUD_DrawWeaponSelect_Trigger();
-		else if ((input_buttons & INPUT_BUTTON3))
+		else if ((input_buttons & INPUT_SECONDARY))
 			pSeat->m_iHUDWeaponSelected = pSeat->m_flHUDWeaponSelectTime = 0;
 
 		pSeat->m_flInputBlockTime = time + 0.2;
@@ -452,9 +478,9 @@ NSClientPlayer::ClientInputFrame(void)
 
 	/* prevent accidental input packets */
 	if (pSeat->m_flInputBlockTime > time) {
-		input_buttons &= ~INPUT_BUTTON0;
-		input_buttons &= ~INPUT_BUTTON3;
-		pSeat->m_iInputAttack2 = FALSE;
+		input_buttons &= ~INPUT_PRIMARY;
+		input_buttons &= ~INPUT_SECONDARY;
+		pSeat->m_iInputAttack2 = false;
 		return;
 	}
 
@@ -465,7 +491,7 @@ NSClientPlayer::ClientInputFrame(void)
 		}
 
 		if (pSeat->m_iInputAttack) {
-			input_buttons |= INPUT_BUTTON0;
+			input_buttons |= INPUT_PRIMARY;
 		}
 	}
 
@@ -476,6 +502,28 @@ NSClientPlayer::ClientInputFrame(void)
 
 	if (pSeat->m_flCameraTime > time) {
 		/* TODO: Supress the changing of view_angles/input_angles. */
+	}
+
+	vector movementDir = vectorNormalize(input_movevalues);
+
+	/* normalize movement values */
+	input_movevalues[0] = movementDir[0] * fabs(input_movevalues[0]);
+	input_movevalues[1] = movementDir[1] * fabs(input_movevalues[1]);
+
+	//if (mode_tempstate == 0)
+	if (input_movevalues[0] > 0)
+	if (pSeat->m_iSprinting == true) {
+		input_buttons |= INPUT_SPRINT;
+		input_movevalues[0] *= 1.5f;
+		input_movevalues[1] *= 1.5f;
+		input_movevalues[2] *= 1.5f;
+
+		/* prevent firing of weapons */
+		input_buttons &= ~INPUT_PRIMARY;
+		input_buttons &= ~INPUT_SECONDARY;
+		input_buttons &= ~INPUT_RELOAD;
+	} else {
+		input_buttons &= ~INPUT_SPRINT;
 	}
 }
 
@@ -532,6 +580,7 @@ NSClientPlayer::ReceiveEntity(float new, float flChanged)
 	READENTITY_COORD(grapvelocity[1], PLAYER_VELOCITY)
 	READENTITY_COORD(grapvelocity[2], PLAYER_VELOCITY)
 	READENTITY_INT(flags, PLAYER_FLAGS)
+	READENTITY_INT(vv_flags, PLAYER_FLAGS)
 	READENTITY_INT(gflags, PLAYER_FLAGS)
 	READENTITY_INT(pmove_flags, PLAYER_FLAGS)
 	READENTITY_BYTE(activeweapon, PLAYER_WEAPON)
@@ -553,6 +602,7 @@ NSClientPlayer::ReceiveEntity(float new, float flChanged)
 	READENTITY_FLOAT(punchangle[2], PLAYER_PUNCHANGLE)
 	READENTITY_FLOAT(viewzoom, PLAYER_VIEWZOOM)
 	READENTITY_FLOAT(teleport_time, PLAYER_TIMINGS)
+	READENTITY_FLOAT(m_flStamina, PLAYER_TIMINGS)
 	READENTITY_FLOAT(weapontime, PLAYER_TIMINGS)
 	READENTITY_FLOAT(w_attack_next, PLAYER_TIMINGS)
 	READENTITY_FLOAT(w_idle_next, PLAYER_TIMINGS)
@@ -595,6 +645,7 @@ NSClientPlayer::PredictPreFrame(void)
 	SAVE_STATE(basevelocity)
 	SAVE_STATE(grapvelocity)
 	SAVE_STATE(flags)
+	SAVE_STATE(vv_flags)
 	SAVE_STATE(gflags)
 	SAVE_STATE(pmove_flags)
 	SAVE_STATE(activeweapon)
@@ -610,6 +661,7 @@ NSClientPlayer::PredictPreFrame(void)
 	SAVE_STATE(punchangle)
 	SAVE_STATE(viewzoom)
 	SAVE_STATE(teleport_time)
+	SAVE_STATE(m_flStamina)
 	SAVE_STATE(weapontime)
 	SAVE_STATE(w_attack_next)
 	SAVE_STATE(w_idle_next)
@@ -641,6 +693,7 @@ NSClientPlayer::PredictPostFrame(void)
 	ROLL_BACK(basevelocity)
 	ROLL_BACK(grapvelocity)
 	ROLL_BACK(flags)
+	ROLL_BACK(vv_flags)
 	ROLL_BACK(gflags)
 	ROLL_BACK(pmove_flags)
 	ROLL_BACK(activeweapon)
@@ -656,6 +709,7 @@ NSClientPlayer::PredictPostFrame(void)
 	ROLL_BACK(punchangle)
 	ROLL_BACK(viewzoom)
 	ROLL_BACK(teleport_time)
+	ROLL_BACK(m_flStamina)
 	ROLL_BACK(weapontime)
 	ROLL_BACK(w_attack_next)
 	ROLL_BACK(w_idle_next)
@@ -691,6 +745,7 @@ NSClientPlayer::Save(float handle)
 	SaveVector(handle, "angles", angles);
 	SaveFloat(handle, "colormap", colormap);
 	SaveFloat(handle, "flags", flags);
+	SaveFloat(handle, "vv_flags", vv_flags);
 	SaveFloat(handle, "gflags", gflags);
 	SaveFloat(handle, "viewzoom", viewzoom);
 	SaveVector(handle, "view_ofs", view_ofs);
@@ -702,6 +757,7 @@ NSClientPlayer::Save(float handle)
 	SaveFloat(handle, "w_attack_next", w_attack_next);
 	SaveFloat(handle, "w_idle_next", w_idle_next);
 	SaveFloat(handle, "teleport_time", teleport_time);
+	SaveFloat(handle, "m_flStamina", m_flStamina);
 	SaveInt(handle, "weaponframe", weaponframe);
 	SaveFloat(handle, "weapontime", weapontime);
 	SaveInt(handle, "g_items", g_items);
@@ -740,6 +796,9 @@ NSClientPlayer::Restore(string strKey, string strValue)
 	case "flags":
 		flags = ReadFloat(strValue);
 		break;
+	case "vv_flags":
+		vv_flags = ReadFloat(strValue);
+		break;
 	case "gflags":
 		gflags = ReadFloat(strValue);
 		break;
@@ -769,6 +828,9 @@ NSClientPlayer::Restore(string strKey, string strValue)
 		break;
 	case "teleport_time":
 		teleport_time = ReadFloat(strValue);
+		break;
+	case "m_flStamina":
+		m_flStamina = ReadFloat(strValue);
 		break;
 	case "weaponframe":
 		weaponframe = ReadInt(strValue);
@@ -821,7 +883,7 @@ NSClientPlayer::MakeTempSpectator(void)
 	SetMovetype(MOVETYPE_NOCLIP);
 	SetTakedamage(DAMAGE_NO);
 	maxspeed = 250;
-	flags |= FL_FAKESPEC;
+	AddVFlags(VFL_FAKESPEC);
 	max_health = health = 0;
 	armor = 0;
 	g_items = 0;
@@ -860,7 +922,7 @@ NSClientPlayer::Death(void)
 	SetVelocity([0,0,0]);
 	SetGravity(1.0f);
 	customphysics = Empty;
-	SetCanBleed(false);
+	DisableBleeding();
 	setsize(this, [0,0,0], [0,0,0]);
 	forceinfokey(this, "*deaths", ftos(deaths));
 	forceinfokey(this, "*dead", "1");
@@ -879,10 +941,14 @@ void
 NSClientPlayer::MakePlayer(void)
 {
 	classname = "player";
-	flags = FL_CLIENT;
-	health = max_health = 100;
-	armor = 0;
-	g_items = 0;
+	AddFlags(FL_CLIENT);
+	RemoveVFlags(VFL_FAKESPEC);
+
+	if (health <= 0) {
+		health = max_health = 100;
+		armor = 0;
+	}
+
 	activeweapon = 0;
 	effects = 0;
 	alpha = 1.0f;
@@ -895,12 +961,13 @@ NSClientPlayer::MakePlayer(void)
 	SetGravity(1.0f);
 	SendFlags = UPDATE_ALL;
 	customphysics = Empty;
-	SetCanBleed(true);
+	EnableBleeding();
 	scale = 1.0f;
 	SetSize(VEC_HULL_MIN, VEC_HULL_MAX);
 	forceinfokey(this, "*spectator", "0");
 	forceinfokey(this, "*deaths", ftos(deaths));
 	forceinfokey(this, "*dead", "0");
+	forceinfokey(this, "*spec", "0");
 }
 
 void
@@ -924,7 +991,7 @@ at the top of player::EvaluateEntity
 void
 NSClientPlayer::EvaluateEntity(void)
 {
-	pvsflags = (flags & FL_FAKESPEC) ? 0 : PVSF_IGNOREPVS;
+	pvsflags = !HasVFlags(VFL_FAKESPEC) ? 0 : PVSF_IGNOREPVS;
 
 	EVALUATE_FIELD(modelindex, PLAYER_MODELINDEX)
 	EVALUATE_FIELD(colormap, PLAYER_MODELINDEX)
@@ -956,6 +1023,7 @@ NSClientPlayer::EvaluateEntity(void)
 	EVALUATE_VECTOR(grapvelocity, 1, PLAYER_VELOCITY)
 	EVALUATE_VECTOR(grapvelocity, 2, PLAYER_VELOCITY)
 	EVALUATE_FIELD(flags, PLAYER_FLAGS)
+	EVALUATE_FIELD(vv_flags, PLAYER_FLAGS)
 	EVALUATE_FIELD(gflags, PLAYER_FLAGS)
 	EVALUATE_FIELD(pmove_flags, PLAYER_FLAGS)
 	EVALUATE_FIELD(activeweapon, PLAYER_WEAPON)
@@ -977,6 +1045,7 @@ NSClientPlayer::EvaluateEntity(void)
 	EVALUATE_VECTOR(punchangle, 2, PLAYER_PUNCHANGLE)
 	EVALUATE_FIELD(viewzoom, PLAYER_VIEWZOOM)
 	EVALUATE_FIELD(teleport_time, PLAYER_TIMINGS)
+	EVALUATE_FIELD(m_flStamina, PLAYER_TIMINGS)
 	EVALUATE_FIELD(weapontime, PLAYER_TIMINGS)
 	EVALUATE_FIELD(w_attack_next, PLAYER_TIMINGS)
 	EVALUATE_FIELD(w_idle_next, PLAYER_TIMINGS)
@@ -1028,6 +1097,7 @@ NSClientPlayer::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_COORD(grapvelocity[1], PLAYER_VELOCITY)
 	SENDENTITY_COORD(grapvelocity[2], PLAYER_VELOCITY)
 	SENDENTITY_INT(flags, PLAYER_FLAGS)
+	SENDENTITY_INT(vv_flags, PLAYER_FLAGS)
 	SENDENTITY_INT(gflags, PLAYER_FLAGS)
 	SENDENTITY_INT(pmove_flags, PLAYER_FLAGS)
 	SENDENTITY_BYTE(activeweapon, PLAYER_WEAPON)
@@ -1049,6 +1119,7 @@ NSClientPlayer::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_FLOAT(punchangle[2], PLAYER_PUNCHANGLE)
 	SENDENTITY_FLOAT(viewzoom, PLAYER_VIEWZOOM)
 	SENDENTITY_FLOAT(teleport_time, PLAYER_TIMINGS)
+	SENDENTITY_FLOAT(m_flStamina, PLAYER_TIMINGS)
 	SENDENTITY_FLOAT(weapontime, PLAYER_TIMINGS)
 	SENDENTITY_FLOAT(w_attack_next, PLAYER_TIMINGS)
 	SENDENTITY_FLOAT(w_idle_next, PLAYER_TIMINGS)
@@ -1104,7 +1175,7 @@ A wrapper to cleanly reset 'self' as to not mess up the QC VM
 void
 _NSClientPlayer_useworkaround(entity eTarget)
 {
-	eActivator = self;
+	eActivator = (NSEntity)self;
 	entity eOldSelf = self;
 	self = eTarget;
 	self.PlayerUse();
@@ -1121,7 +1192,7 @@ A wrapper to cleanly reset 'self' as to not mess up the QC VM
 void
 _NSClientPlayer_unuseworkaround(entity eTarget)
 {
-	eActivator = self;
+	eActivator = (NSEntity)self;
 	entity eOldSelf = self;
 	self = eTarget;
 	if (self.PlayerUseUnpressed)
@@ -1140,9 +1211,9 @@ looks for an entity that has the .PlayerUse field set to a function and calls it
 void
 NSClientPlayer::InputUse_Down(void)
 {
-	if (health <= 0) {
+	if (IsDead()) {
 		return;
-	} else if (!(flags & FL_USE_RELEASED)) {
+	} else if (!(vv_flags & VFL_USE_RELEASED)) {
 		return;
 	}
 	
@@ -1175,17 +1246,17 @@ NSClientPlayer::InputUse_Down(void)
 
 	/* TODO: maybe eRad will return something in the future that'll suppress a successfull use? */
 	if (eRad && found_use == true) {
-		flags &= ~FL_USE_RELEASED;
+		RemoveVFlags(VFL_USE_RELEASED);
 		_NSClientPlayer_useworkaround(eRad);
 		last_used = eRad;
 
 		/* Some entities want to support Use spamming */
-		if (HasFlags(FL_USE_RELEASED) == false) {
+		if (HasVFlags(VFL_USE_RELEASED) == false) {
 			StartSoundDef("Player.WeaponSelected", CHAN_ITEM, false);
 		}
 	} else {
 		StartSoundDef("Player.DenyWeaponSelection", CHAN_ITEM, false);
-		flags &= ~FL_USE_RELEASED;
+		RemoveVFlags(VFL_USE_RELEASED);
 	}
 }
 
@@ -1199,10 +1270,10 @@ Called when we let go of the +use button
 void
 NSClientPlayer::InputUse_Up(void)
 {
-	if (HasFlags(FL_USE_RELEASED) == false) {
+	if (HasVFlags(VFL_USE_RELEASED) == false) {
 		_NSClientPlayer_unuseworkaround(last_used);
 		last_used = world;
-		flags |= FL_USE_RELEASED;
+		AddVFlags(VFL_USE_RELEASED);
 	}
 }
 #endif
@@ -1240,7 +1311,7 @@ NSClientPlayer::Footsteps_Update(void)
 		return;
 	} else {
 		/* make it so we step once we land */
-		if (HasFlags(FL_ONGROUND | FL_ONLADDER) == false) {
+		if (HasFlags(FL_ONGROUND) == false && HasVFlags(VFL_ONLADDER) == false) {
 			step_time = 0.0f;
 			return;
 		}
@@ -1254,9 +1325,9 @@ NSClientPlayer::Footsteps_Update(void)
 	tex_name = getsurfacetexture(trace_ent, getsurfacenearpoint(trace_ent, trace_endpos));
 
 	/* don't step in air */
-	if (HasFlags(FL_ONGROUND | FL_ONLADDER) == false) {
+	if (HasFlags(FL_ONGROUND) == false && HasVFlags(VFL_ONLADDER) == false) {
 		return;
-	} else if (HasFlags(FL_ONLADDER) && HasFlags(FL_ONGROUND) == false) { /* play ladder sounds */
+	} else if (HasVFlags(VFL_ONLADDER) && HasFlags(FL_ONGROUND) == false) { /* play ladder sounds */
 		if (step)
 			StartSoundDef("step_ladder.left", CHAN_BODY, true);
 		else
@@ -1265,7 +1336,7 @@ NSClientPlayer::Footsteps_Update(void)
 		/* switch between feet */
 		step = 1 - step;
 		return;
-	} else if (HasFlags(FL_ONLADDER) && HasFlags(FL_ONGROUND)) { /* at a ladder, but not moving */
+	} else if (HasVFlags(VFL_ONLADDER) && HasFlags(FL_ONGROUND)) { /* at a ladder, but not moving */
 		return;
 	}
 

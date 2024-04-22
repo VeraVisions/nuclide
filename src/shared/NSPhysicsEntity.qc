@@ -445,9 +445,9 @@ NSPhysicsEntity::_TouchThink(void)
 	if (trace_startsolid) {
 		if (trace_ent.flags & FL_CLIENT) {
 			if (trace_ent.absmin[2] < absmax[2]) {
+				vector dirVec = trace_endpos - trace_ent.origin;
 				Wake();
-				makevectors(vectoangles(trace_endpos - trace_ent.origin));
-				ApplyTorqueCenter(v_forward * 240);
+				ApplyTorqueCenter(anglesToForward(vectorToAngles(dirVec)) * 240);
 			} else {
 				Sleep();
 				velocity = [0,0,0];
@@ -485,14 +485,8 @@ NSPhysicsEntity::_TouchThink(void)
 			wantangle[0] = (int)((angles[0] + 45) / 90) * 90;
 			wantangle[1] = angles[1];
 			wantangle[2] = (int)((angles[2] + 45) / 90) * 90;
-
-			makevectors(angles);
-			angles = v_forward;
-			makevectors(wantangle);
-			newangle[0] = Math_Lerp(angles[0], v_forward[0], frametime * 5.0f);
-			newangle[1] = Math_Lerp(angles[1], v_forward[1], frametime * 5.0f);
-			newangle[2] = Math_Lerp(angles[2], v_forward[2], frametime * 5.0f);
-			angles = vectoangles(newangle);
+			newangle = vectorLerp(anglesToForward(angles), anglesToForward(wantangle), frametime * 5.0f);
+			angles = vectorToAngles(newangle);
 		}
 	}
 #endif

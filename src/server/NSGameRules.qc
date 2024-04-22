@@ -327,8 +327,8 @@ NSGameRules::DamageApply(entity t, entity c, float dmg, int w, damageType_t type
 
 		/* don't allow any damage */
 		if (PlayerCanAttack(tp) == false) {
-			g_dmg_eAttacker = c;
-			g_dmg_eTarget = t;
+			g_dmg_eAttacker = (NSEntity)c;
+			g_dmg_eTarget = (NSEntity)t;
 			g_dmg_iDamage = 0;
 			g_dmg_iHitBody = 0;
 			g_dmg_iFlags = type;
@@ -359,8 +359,8 @@ NSGameRules::DamageApply(entity t, entity c, float dmg, int w, damageType_t type
 	eTarget.SetHealth(eTarget.GetHealth() - dmg);
 
 	/* the globals... */
-	g_dmg_eAttacker = c;
-	g_dmg_eTarget = t;
+	g_dmg_eAttacker = (NSEntity)c;
+	g_dmg_eTarget = (NSEntity)t;
 	g_dmg_iDamage = dmg;
 	g_dmg_iHitBody = trace_surface_id;
 	g_dmg_iFlags = type;
@@ -519,7 +519,7 @@ NSGameRules::IntermissionEnd(void)
 	if (time < m_flIntermissionTime)
 		return;
 
-	if (!(input_buttons & INPUT_BUTTON0) && !(input_buttons & INPUT_BUTTON2))
+	if (!(input_buttons & INPUT_PRIMARY) && !(input_buttons & INPUT_JUMP))
 		return;
 
 	localcmd("nextmap\n");

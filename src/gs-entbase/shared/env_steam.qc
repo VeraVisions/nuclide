@@ -61,31 +61,36 @@ float
 env_steam_particle::predraw(void)
 {
 	float partSize;
-	float lerp = (lifetime / m_flLifeTime);
-	float alpha = m_flAlpha * lerp;
+	float lerpPos = (lifetime / m_flLifeTime);
+	float alpha = m_flAlpha * lerpPos;
 	vector color;
+	vector spriteRight;
+	vector spriteUp;
 
 	if (m_bEmissive)
 		color = m_vecColor;
 	else
 		color = (getlight(origin) / 255);
 
-	partSize = Math_Lerp(m_flStartSize, m_flEndSize, lerp);
+	partSize = lerp(m_flStartSize, m_flEndSize, lerpPos);
 
-	makevectors(g_view.GetCameraAngle());
+	/* we really don't want to do this here, but people
+	   will mostly pass image samples and thus won't do orientation on the GPU. */
+	spriteRight = anglesToRight(g_view.GetCameraAngle());
+	spriteUp = anglesToUp(g_view.GetCameraAngle());
 
 	if (m_bType)
 		R_BeginPolygon("textures/sfx/heatsteam", 0, 0);
 	else
 		R_BeginPolygon("textures/sfx/steam", 0, 0);
 
-	R_PolygonVertex(origin + v_right * partSize - v_up * partSize, [1,1], m_vecColor, alpha);
-	R_PolygonVertex(origin - v_right * partSize - v_up * partSize, [0,1], m_vecColor, alpha);
-	R_PolygonVertex(origin - v_right * partSize + v_up * partSize, [0,0], m_vecColor, alpha);
-	R_PolygonVertex(origin + v_right * partSize + v_up * partSize, [1,0], m_vecColor, alpha);
+	R_PolygonVertex(origin + spriteRight * partSize - spriteUp * partSize, [1,1], m_vecColor, alpha);
+	R_PolygonVertex(origin - spriteRight * partSize - spriteUp * partSize, [0,1], m_vecColor, alpha);
+	R_PolygonVertex(origin - spriteRight * partSize + spriteUp * partSize, [0,0], m_vecColor, alpha);
+	R_PolygonVertex(origin + spriteRight * partSize + spriteUp * partSize, [1,0], m_vecColor, alpha);
 	R_EndPolygon();
 
-	if (lerp >= 1.0f) {
+	if (lerpPos >= 1.0f) {
 		remove(this);
 	}
 

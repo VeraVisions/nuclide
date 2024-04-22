@@ -23,7 +23,7 @@ NSTrigger::NSTrigger(void)
 #ifdef SERVER
 	m_oldstrTarget = __NULL__;
 	m_strGlobalState = __NULL__;
-	m_strKillTarget = __NULL__;
+	m_strKillTarget = "";
 	m_strMessage = __NULL__;
 	m_strMaster = __NULL__;
 	m_iUseType = 0i;
@@ -62,7 +62,7 @@ NSTrigger::CanBeTriggeredBy(entity testEnt)
 		return false;
 	if (!(spawnflags & TOUCHFILTER_FRIENDLIES) && (testEnt.flags & FL_MONSTER) && (testEnt.m_iAlliance == 0))
 		return false;
-	if (!(spawnflags & TOUCHFILTER_CLIENTSINVEHICLES) && (testEnt.flags & FL_CLIENT) && (testEnt.flags & FL_INVEHICLE))
+	if (!(spawnflags & TOUCHFILTER_CLIENTSINVEHICLES) && (testEnt.flags & FL_CLIENT) && (testEnt.vv_flags & VFL_INVEHICLE))
 		return false;
 
 /*
@@ -108,7 +108,7 @@ NSTrigger::UseTargets(entity act, int state, float triggerDelay)
 		eTimer.nextthink = time + triggerDelay;
 		eTimer.health = state;  /* ugly */
 
-		if (m_strKillTarget) {
+		if (m_strKillTarget != "") {
 			EntLog("Will kill %S before that happens.", m_strKillTarget);
 		}
 		eTimer.m_strKillTarget = m_strKillTarget;
@@ -131,7 +131,7 @@ NSTrigger::UseTargets(entity act, int state, float triggerDelay)
 			}
 		}
 
-		if (m_strKillTarget && m_strKillTarget != "") {
+		if (m_strKillTarget != "") {
 			NSEntity eKill = (NSEntity)find(world, ::targetname, m_strKillTarget);
 			EntLog("Killtargeting %S", m_strKillTarget);
 
@@ -250,6 +250,10 @@ NSTrigger::Save(float handle)
 	SaveBool(handle, "m_bStartDisabled", m_bStartDisabled);
 	SaveBool(handle, "m_bEnabled", m_bEnabled);
 	SaveBool(handle, "m_bIsModern", m_bIsModern);
+	SaveFloat(handle, "m_flTouchTime", m_flTouchTime);
+	SaveBool(handle, "m_beingTouched", m_beingTouched);
+	SaveEntity(handle, "m_eTouchLast", m_eTouchLast);
+	SaveFloat(handle, "team_no", team_no);
 }
 void
 NSTrigger::Restore(string strKey, string strValue)
@@ -293,6 +297,18 @@ NSTrigger::Restore(string strKey, string strValue)
 		break;
 	case "m_bIsModern":
 		m_bIsModern = ReadBool(strValue);
+		break;
+	case "m_flTouchTime":
+		m_flTouchTime = ReadFloat(strValue);
+		break;
+	case "m_beingTouched":
+		m_beingTouched = ReadBool(strValue);
+		break;
+	case "m_eTouchLast":
+		m_eTouchLast = ReadEntity(strValue);
+		break;
+	case "team_no":
+		team_no = ReadFloat(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);

@@ -66,11 +66,11 @@ void
 NSClientSpectator::ProcessInput(void)
 {
 #ifdef SERVER
-	if (input_buttons & INPUT_BUTTON0) {
+	if (input_buttons & INPUT_PRIMARY) {
 		InputNext();
-	} else if (input_buttons & INPUT_BUTTON3) {
+	} else if (input_buttons & INPUT_SECONDARY) {
 		InputPrevious();
-	} else if (input_buttons & INPUT_BUTTON2) {
+	} else if (input_buttons & INPUT_JUMP) {
 		InputMode();
 	} else {
 		spec_flags &= ~SPECFLAG_BUTTON_RELEASED;
@@ -163,8 +163,22 @@ NSClientSpectator::ClientInputFrame(void)
 	}
 
 	/* background maps have no input */
-	if (serverkeyfloat("background") == 1)
+	if (serverkeyfloat("background") == 1) {
+		input_impulse = 0;
+		input_buttons = 0;
+		input_movevalues = g_vec_null;
 		return;
+	}
+
+	vector movementDir = vectorNormalize(input_movevalues);
+
+	/* normalize movement values */
+	if (movementDir[0] > 0)
+		input_movevalues[0] = movementDir[0] * GetForwardSpeed();
+	else
+		input_movevalues[0] = movementDir[0] * GetBackSpeed();
+
+	input_movevalues[1] = movementDir[1] * GetSideSpeed();
 }
 
 void

@@ -1,7 +1,6 @@
 #includelist
 ../shared/fteextensions.qc
 ../shared/math.h
-../shared/math.qc
 ../shared/global.h
 ../shared/platform.h
 ../platform/defs.h

@@ -235,33 +235,33 @@ EFX_SetEnvironment(int id)
 void
 EFX_Interpolate(int id)
 {
-	mix.flDensity = Math_Lerp(mix.flDensity, g_efx[id].flDensity, g_flEFXTime);
-	mix.flDiffusion = Math_Lerp(mix.flDiffusion, g_efx[id].flDiffusion, g_flEFXTime);
-	mix.flGain = Math_Lerp(mix.flGain, g_efx[id].flGain, g_flEFXTime);
-	mix.flGainHF = Math_Lerp(mix.flGainHF, g_efx[id].flGainHF, g_flEFXTime);
-	mix.flGainLF = Math_Lerp(mix.flGainLF, g_efx[id].flGainLF, g_flEFXTime);
-	mix.flDecayTime = Math_Lerp(mix.flDecayTime, g_efx[id].flDecayTime, g_flEFXTime);
-	mix.flDecayHFRatio = Math_Lerp(mix.flDecayHFRatio, g_efx[id].flDecayHFRatio, g_flEFXTime);
-	mix.flDecayLFRatio = Math_Lerp(mix.flDecayLFRatio, g_efx[id].flDecayLFRatio, g_flEFXTime);
-	mix.flReflectionsGain = Math_Lerp(mix.flReflectionsGain, g_efx[id].flReflectionsGain, g_flEFXTime);
-	mix.flReflectionsDelay = Math_Lerp(mix.flReflectionsDelay, g_efx[id].flReflectionsDelay, g_flEFXTime);
-	mix.flReflectionsPan[0] = Math_Lerp(mix.flReflectionsPan[0], g_efx[id].flReflectionsPan[0], g_flEFXTime);
-	mix.flReflectionsPan[1] = Math_Lerp(mix.flReflectionsPan[1], g_efx[id].flReflectionsPan[1], g_flEFXTime);
-	mix.flReflectionsPan[1] = Math_Lerp(mix.flReflectionsPan[2], g_efx[id].flReflectionsPan[2], g_flEFXTime);
-	mix.flLateReverbGain = Math_Lerp(mix.flLateReverbGain, g_efx[id].flLateReverbGain, g_flEFXTime);
-	mix.flLateReverbDelay = Math_Lerp(mix.flLateReverbDelay, g_efx[id].flLateReverbDelay, g_flEFXTime);
-	mix.flLateReverbPan[0] = Math_Lerp(mix.flLateReverbPan[0], g_efx[id].flLateReverbPan[0], g_flEFXTime);
-	mix.flLateReverbPan[1] = Math_Lerp(mix.flLateReverbPan[1], g_efx[id].flLateReverbPan[1], g_flEFXTime);
-	mix.flLateReverbPan[2] = Math_Lerp(mix.flLateReverbPan[2], g_efx[id].flLateReverbPan[2], g_flEFXTime);
-	mix.flEchoTime = Math_Lerp(mix.flEchoTime, g_efx[id].flEchoTime, g_flEFXTime);
-	mix.flEchoDepth = Math_Lerp(mix.flEchoDepth, g_efx[id].flEchoDepth, g_flEFXTime);
-	mix.flModulationTime = Math_Lerp(mix.flModulationTime, g_efx[id].flModulationTime, g_flEFXTime);
-	mix.flModulationDepth = Math_Lerp(mix.flModulationDepth, g_efx[id].flModulationDepth, g_flEFXTime);
-	mix.flAirAbsorptionGainHF = Math_Lerp(mix.flAirAbsorptionGainHF, g_efx[id].flAirAbsorptionGainHF, g_flEFXTime);
-	mix.flHFReference = Math_Lerp(mix.flHFReference, g_efx[id].flHFReference, g_flEFXTime);
-	mix.flLFReference = Math_Lerp(mix.flLFReference, g_efx[id].flLFReference, g_flEFXTime);
-	mix.flRoomRolloffFactor = Math_Lerp(mix.flRoomRolloffFactor, g_efx[id].flRoomRolloffFactor, g_flEFXTime);
-	mix.iDecayHFLimit = Math_Lerp(mix.iDecayHFLimit, g_efx[id].iDecayHFLimit, g_flEFXTime);
+	mix.flDensity = lerp(mix.flDensity, g_efx[id].flDensity, g_flEFXTime);
+	mix.flDiffusion = lerp(mix.flDiffusion, g_efx[id].flDiffusion, g_flEFXTime);
+	mix.flGain = lerp(mix.flGain, g_efx[id].flGain, g_flEFXTime);
+	mix.flGainHF = lerp(mix.flGainHF, g_efx[id].flGainHF, g_flEFXTime);
+	mix.flGainLF = lerp(mix.flGainLF, g_efx[id].flGainLF, g_flEFXTime);
+	mix.flDecayTime = lerp(mix.flDecayTime, g_efx[id].flDecayTime, g_flEFXTime);
+	mix.flDecayHFRatio = lerp(mix.flDecayHFRatio, g_efx[id].flDecayHFRatio, g_flEFXTime);
+	mix.flDecayLFRatio = lerp(mix.flDecayLFRatio, g_efx[id].flDecayLFRatio, g_flEFXTime);
+	mix.flReflectionsGain = lerp(mix.flReflectionsGain, g_efx[id].flReflectionsGain, g_flEFXTime);
+	mix.flReflectionsDelay = lerp(mix.flReflectionsDelay, g_efx[id].flReflectionsDelay, g_flEFXTime);
+	mix.flReflectionsPan[0] = lerp(mix.flReflectionsPan[0], g_efx[id].flReflectionsPan[0], g_flEFXTime);
+	mix.flReflectionsPan[1] = lerp(mix.flReflectionsPan[1], g_efx[id].flReflectionsPan[1], g_flEFXTime);
+	mix.flReflectionsPan[1] = lerp(mix.flReflectionsPan[2], g_efx[id].flReflectionsPan[2], g_flEFXTime);
+	mix.flLateReverbGain = lerp(mix.flLateReverbGain, g_efx[id].flLateReverbGain, g_flEFXTime);
+	mix.flLateReverbDelay = lerp(mix.flLateReverbDelay, g_efx[id].flLateReverbDelay, g_flEFXTime);
+	mix.flLateReverbPan[0] = lerp(mix.flLateReverbPan[0], g_efx[id].flLateReverbPan[0], g_flEFXTime);
+	mix.flLateReverbPan[1] = lerp(mix.flLateReverbPan[1], g_efx[id].flLateReverbPan[1], g_flEFXTime);
+	mix.flLateReverbPan[2] = lerp(mix.flLateReverbPan[2], g_efx[id].flLateReverbPan[2], g_flEFXTime);
+	mix.flEchoTime = lerp(mix.flEchoTime, g_efx[id].flEchoTime, g_flEFXTime);
+	mix.flEchoDepth = lerp(mix.flEchoDepth, g_efx[id].flEchoDepth, g_flEFXTime);
+	mix.flModulationTime = lerp(mix.flModulationTime, g_efx[id].flModulationTime, g_flEFXTime);
+	mix.flModulationDepth = lerp(mix.flModulationDepth, g_efx[id].flModulationDepth, g_flEFXTime);
+	mix.flAirAbsorptionGainHF = lerp(mix.flAirAbsorptionGainHF, g_efx[id].flAirAbsorptionGainHF, g_flEFXTime);
+	mix.flHFReference = lerp(mix.flHFReference, g_efx[id].flHFReference, g_flEFXTime);
+	mix.flLFReference = lerp(mix.flLFReference, g_efx[id].flLFReference, g_flEFXTime);
+	mix.flRoomRolloffFactor = lerp(mix.flRoomRolloffFactor, g_efx[id].flRoomRolloffFactor, g_flEFXTime);
+	mix.iDecayHFLimit = lerp(mix.iDecayHFLimit, g_efx[id].iDecayHFLimit, g_flEFXTime);
 }
 
 void

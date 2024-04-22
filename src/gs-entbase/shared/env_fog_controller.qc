@@ -168,11 +168,9 @@ env_fog_controller::FogRender(void)
 	m_flNextDraw = cltime + 1.0f;
 
 	/* apply the fog. wish there was a builtin for this instead... */
-	localcmd(sprintf("set r_fog_linear 1; fog %f %f %f %f %f %f\n", \
+	localcmd(sprintf("set r_fog_linear 1; fog %f %v %f %f\n", \
 		m_flFogEnd,
-		Math_Lerp(m_vecFogColor[0], m_vecFogColor2[0], delta),
-		Math_Lerp(m_vecFogColor[1], m_vecFogColor2[1], delta),
-		Math_Lerp(m_vecFogColor[2], m_vecFogColor2[2], delta),
+		vectorLerp(m_vecFogColor, m_vecFogColor2, delta),
 		m_flFogMaxDensity,
 		m_flFogStart));
 

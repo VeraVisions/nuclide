@@ -81,7 +81,7 @@ CheatersLament(NSClientPlayer playerEntity, vector absAngles, float buttons, flo
 		playerEntity.pb_player_delta = 0.0f;
 
 	/* if the player is firing, calculate the player delta */
-	if (buttons & INPUT_BUTTON0 || buttons & INPUT_BUTTON3) { /* primary & secondary fire counts */
+	if (buttons & INPUT_PRIMARY || buttons & INPUT_SECONDARY) { /* primary & secondary fire counts */
 		vector deltaPosition;
 		float deltaDegrees;
 

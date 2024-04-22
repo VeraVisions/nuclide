@@ -90,6 +90,11 @@ server/point_trigger.qc
 server/targ_speaker.qc
 server/target_cdaudio.qc
 server/env_global.qc
+server/script_model.qc
+server/script_brushmodel.qc
+server/script_origin.qc
+server/script_struct.qc
+server/script_vehicle.qc
 server/trigger_auto.qc
 server/trigger_autosave.qc
 server/trigger_cdaudio.qc

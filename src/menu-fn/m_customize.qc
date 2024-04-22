@@ -121,7 +121,7 @@ cz_cbSprayChanged(void)
 void
 cz_sldTopcolorChanged(float val)
 {
-	vector x = hsv2rgb(val * 360, 100, 100);
+	vector x = hsvToRGB(val * 360, 100, 100);
 	float id = x[2] + (x[1] << 8) + (x[0] << 16);
 	cvar_set("topcolor", sprintf("0x%x", id));
 	localcmd(sprintf("seta _cl_topcolor %f\n", val));
@@ -131,7 +131,7 @@ cz_sldTopcolorChanged(float val)
 void
 cz_sldBottomcolorChanged(float val)
 {
-	vector x = hsv2rgb(val * 360, 100, 100);
+	vector x = hsvToRGB(val * 360, 100, 100);
 	float id = x[2] + (x[1] << 8) + (x[0] << 16);
 	cvar_set("bottomcolor", sprintf("0x%x", id));
 	localcmd(sprintf("seta _cl_bottomcolor %f\n", val));
@@ -435,8 +435,8 @@ menu_customize_init(void)
 		cz_sldBottomcolor.SetCallback(cz_sldBottomcolorChanged);
 		Widget_Add(fn_customize, cz_sldBottomcolor);
 
-		g_vecTopcolor = hsv2rgb(cvar("_cl_topcolor") * 360, 100, 100) / 255;
-		g_vecBottomcolor = hsv2rgb(cvar("_cl_bottomcolor") * 360, 100, 100) / 255;
+		g_vecTopcolor = hsvToRGB(cvar("_cl_topcolor") * 360, 100, 100) / 255;
+		g_vecBottomcolor = hsvToRGB(cvar("_cl_bottomcolor") * 360, 100, 100) / 255;
 	}
 }
 

@@ -23,6 +23,8 @@
 #include "weapons.h"
 #include "plugins.h"
 #include "NSTraceAttack.h"
+#include "../shared/weapons.h"
+#include "../shared/weapon_common.h"
 
 #include "route.h"
 #include "way.h"
@@ -109,7 +111,7 @@ void Event_ServerModelEvent(float, int, string);
 
 void Mapcycle_Load(string);
 
-entity eActivator;
+NSEntity eActivator;
 
 /* Generic entity fields */
 .void(void) PlayerUse;
@@ -129,8 +131,8 @@ string startspot;
 string __fullspawndata;
 
 /* damage related tempglobals, like trace_* */
-entity g_dmg_eAttacker;
-entity g_dmg_eTarget;
+NSEntity g_dmg_eAttacker;
+NSEntity g_dmg_eTarget;
 int g_dmg_iDamage;
 int g_dmg_iRealDamage;
 bodyType_t g_dmg_iHitBody;
@@ -152,6 +154,42 @@ void main(void)
 #define SAVE_STRING(x,y,z) fputs(x, sprintf("%S \"%s\" ", y, z))
 #define SAVE_HEX(x,y,z) fputs(x, sprintf("%S \"%x\" ", y, z))
 
+
+/** When called will turn the entity 'self' into the specified classname.
+
+This is useful for entities that are already in the game, and need to transition into a different type of entity.
+
+@param className is the type of class to be changed to. */
 NSEntity EntityDef_SpawnClassname(string className);
+
+
+/** Spawns an entity of a specific class. If class doesn't exist, returns __NULL__.
+
+@param className is the type of class to be instantiated. */
 NSEntity EntityDef_CreateClassname(string className);
+
+/** Spawns an entity of a class, guaranteed to be valid.
+
+This is the primary, encouraged method of spawning entities.
+If you don't spawn an entity class using this, it will not respond to sendInput().
+
+If a specified class does not exist, it will create an info_notnull type entity, but with the new, desired classname.
+
+The only time when this function returns __NULL__ is if the game is unable to allocate any more entities.
+
+@param className is the type of class to be instantiated. */
 NSEntity Entity_CreateClass(string className);
+
+/** Checks if an entity class was defined in an EntityDef.
+
+You can then use EntityDef_GetKeyValue() to get various key values from said EntityDef.
+
+@param className specifies which class definition to look for. */
+bool EntityDef_HasSpawnClass(string className);
+
+
+/** Retrieves the value of a specific key defined within an EntityDef.
+
+@param className specifies which class definition to look in.
+@param keyName specifies the 'key' we want to know its value of. */
+string EntityDef_GetKeyValue(string className, string keyName);

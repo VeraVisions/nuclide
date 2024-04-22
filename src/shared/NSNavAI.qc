@@ -23,12 +23,86 @@ NSNavAI::NSNavAI(void)
 	m_pRoute = __NULL__;
 	m_vecLastNode = [0,0,0];
 	m_vecTurnAngle = [0,0,0];
+	m_flMoveSpeedKey = 0.0f;
 	
 	_m_flRouteGiveUp = 0.0f;
+#endif
 
 	for (int i = 0; i < MAX_AMMO_TYPES; i++)
 		m_iAmmoTypes[i] = 0;
-#endif
+}
+
+bool
+NSNavAI::IsCrouching(void)
+{
+	return HasVFlags(VFL_CROUCHING);
+}
+
+bool
+NSNavAI::IsProne(void)
+{
+	return HasVFlags(VFL_PRONE);
+}
+
+bool
+NSNavAI::IsStanding(void)
+{
+	return !HasVFlags(VFL_PRONE | VFL_CROUCHING | VFL_SPRINTING);
+}
+
+bool
+NSNavAI::IsSprinting(void)
+{
+	return HasVFlags(VFL_SPRINTING);
+}
+
+bool
+NSNavAI::IsLeaning(void)
+{
+	return (false);
+}
+
+bool
+NSNavAI::CanSprint(void)
+{
+	return (false);
+}
+
+bool
+NSNavAI::CanProne(void)
+{
+	return (false);
+}
+
+bool
+NSNavAI::CanLean(void)
+{
+	return (false);
+}
+
+bool
+NSNavAI::CanCrouch(void)
+{
+	return (false);
+}
+
+/* filled these in with the (default) client side player movement values */
+float
+NSNavAI::GetForwardSpeed(void)
+{
+	return (PMOVE_FORWARD_SPEED);
+}
+
+float
+NSNavAI::GetSideSpeed(void)
+{
+	return (PMOVE_SIDE_SPEED);
+}
+
+float
+NSNavAI::GetBackSpeed(void)
+{
+	return (PMOVE_BACK_SPEED);
 }
 
 #ifdef SERVER
@@ -40,6 +114,7 @@ NSNavAI::Save(float handle)
 	SaveInt(handle, "m_iCurNode", m_iCurNode);
 	SaveVector(handle, "m_vecLastNode", m_vecLastNode);
 	SaveVector(handle, "m_vecTurnAngle", m_vecTurnAngle);
+	SaveFloat(handle, "m_flMoveSpeedKey", m_flMoveSpeedKey);
 }
 
 void
@@ -57,6 +132,9 @@ NSNavAI::Restore(string strKey, string strValue)
 		break;
 	case "m_vecTurnAngle":
 		m_vecTurnAngle = ReadVector(strValue);
+		break;
+	case "m_flMoveSpeedKey":
+		m_flMoveSpeedKey = ReadFloat(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
@@ -76,12 +154,6 @@ NSNavAI::RestoreComplete(void)
 
 
 #ifdef SERVER
-bool
-NSNavAI::CanCrouch(void)
-{
-	return false;
-}
-
 void
 NSNavAI::RouteEnded(void)
 {
@@ -121,8 +193,11 @@ NSNavAI::CheckRoute(void)
 		return;
 
 	if (_m_flRouteGiveUp < time) {
+		float distanceToLastFrame = distanceSquared(_m_vecRoutePrev, origin);
+		printf("distanceToLastFrame: %f\n", distanceToLastFrame);
+
 		/* 50 units in 2 seconds is not good. */
-		if (vlen(_m_vecRoutePrev - origin) < 50.0f) {
+		if (distanceToLastFrame < 50.0f) {
 			/* HACK: for followers */
 			if (m_eFollowing) {
 				RouteToPosition(m_eFollowing.origin);
@@ -204,12 +279,12 @@ NSNavAI::CheckRoute(void)
 		/* test up */
 		src = origin + [0,0,24];
 		makevectors(angles);
-		traceline(src, src + v_forward * 128, MOVE_NORMAL, this);
+		traceline(src, src + anglesToForward(angles) * 128, MOVE_NORMAL, this);
 
 		/* we hit something */
 		if (trace_fraction < 1.0) {
 			src = origin + [0,0, -8];
-			traceline(src, src + v_forward * 128, MOVE_NORMAL, this);
+			traceline(src, src + anglesToForward(angles) * 128, MOVE_NORMAL, this);
 
 			/* we can crouch here, so let's do it */
 			if (trace_fraction >= 1.0)
@@ -218,7 +293,7 @@ NSNavAI::CheckRoute(void)
 
 		/* entire way-link needs to be crouched. that's the law of the land */
 		if (shouldcrouch || Route_GetNodeFlags(&m_pRoute[m_iCurNode]) & LF_CROUCH)
-			input_buttons |= INPUT_BUTTON8;
+			input_buttons |= INPUT_CROUCH;
 	}
 
 	/*if (flDist == m_flLastDist) {
@@ -240,28 +315,32 @@ vector
 NSNavAI::GetRouteMovevalues(void)
 {
 	vector vecDirection;
+	vector fwdDir, rightDir, upDir;
+
+	fwdDir = anglesToForward(input_angles);
+	rightDir = anglesToRight(input_angles);
+	upDir = anglesToUp(input_angles);
 
 	if (m_pathTarget) {
-		vecDirection = normalize(m_pathEntity.GetOrigin() - GetOrigin());
+		vecDirection = vectorNormalize(m_pathEntity.GetOrigin() - GetOrigin());
 	} else {
 		if (!m_iNodes)
-			return [0,0,0];
+			return m_vecLastNode;
 
 		if (m_iCurNode < 0)
-			vecDirection = normalize(m_vecLastNode - GetOrigin());
+			vecDirection = vectorNormalize(m_vecLastNode - GetOrigin());
 		else
-			vecDirection = normalize(m_pRoute[m_iCurNode].dest - GetOrigin());
+			vecDirection = vectorNormalize(m_pRoute[m_iCurNode].dest - GetOrigin());
 	}
 
-	makevectors(input_angles);
-	return [v_forward * vecDirection, v_right * vecDirection, v_up * vecDirection];
+	return [fwdDir * vecDirection, rightDir * vecDirection, upDir * vecDirection];
 }
 
 vector
 NSNavAI::GetRouteDirection(void)
 {
 	if (m_pathTarget) {
-		return vectoangles(m_pathEntity.GetOrigin() - GetOrigin());
+		return vectorToAngles(m_pathEntity.GetOrigin() - GetOrigin());
 	} else {
 
 		if (!m_iNodes) {
@@ -269,9 +348,9 @@ NSNavAI::GetRouteDirection(void)
 		}
 
 		if (m_iCurNode < 0) {
-			return vectoangles(m_vecLastNode - origin);
+			return vectorToAngles(m_vecLastNode - origin);
 		} else {
-			return vectoangles(m_pRoute[m_iCurNode].dest - origin);
+			return vectorToAngles(m_pRoute[m_iCurNode].dest - origin);
 		}
 	}
 }
@@ -280,6 +359,30 @@ void
 NSNavAI::RouteToPosition(vector destination)
 {
 	RouteToPositionDenyFlags(destination, 0i);
+}
+
+void
+NSNavAI::DebugDraw(void)
+{
+	vector vecStart = GetOrigin();
+	vector vecEnd;
+	vector beamColor = [1,1,1];
+	float frac = 1.0 / m_iNodes;
+
+	for (int i = m_iCurNode; i < m_iNodes; i++) {
+		if (m_iCurNode < 0)
+			continue;
+
+		vecEnd = m_pRoute[i].dest;
+		R_BeginPolygon("", 0, 0);
+		R_PolygonVertex(vecStart, [1,1], beamColor, 1);
+		R_PolygonVertex(vecEnd, [0,1], beamColor, 1);
+		R_EndPolygon();
+		vecStart = vecEnd;
+		beamColor[0] -= frac;
+		beamColor[1] -= frac;
+		beamColor[2] -= frac;
+	}
 }
 
 void
@@ -362,4 +465,75 @@ NSNavAI::RouteClear(void)
 	memfree(m_pRoute);
 	NSNavAI_Log("Actor %S (%s) cleared their route.", netname, classname);
 }
+
+void
+NSNavAI::SetMoveSpeedScale(float newValue)
+{
+	m_flMoveSpeedKey = newValue;
+}
+
+float
+NSNavAI::GetMoveSpeedScale(void)
+{
+	return (m_flMoveSpeedKey == 0.0) ? 1.0f : m_flMoveSpeedKey;
+}
+
+void
+NSNavAI::Physics_Run(void)
+{
+	input_movevalues *= GetMoveSpeedScale();
+
+	if (CanCrouch())
+		PMoveCustom_RunCrouchPhysics(this);
+	else
+		PMoveCustom_RunPlayerPhysics(this);
+
+	SetOrigin(origin);
+}
 #endif
+
+bool
+NSNavAI::GiveAmmo(int ammoType, int ammoAmount)
+{
+	/* bounds check */
+	if (ammoType < 0i || ammoType >= MAX_AMMO_TYPES)
+		return (false);
+
+	/* already at max-ammo? */
+	if (m_iAmmoTypes[ammoType] >= 255i)
+		return (false);
+
+	m_iAmmoTypes[ammoType] += ammoAmount;
+
+	if (m_iAmmoTypes[ammoType] >= 255i)
+		m_iAmmoTypes[ammoType] = 255i;
+
+	return (true);
+}
+
+bool
+NSNavAI::UseAmmo(int ammoType, int ammoAmount)
+{
+	/* bounds check */
+	if (ammoType < 0i || ammoType >= MAX_AMMO_TYPES)
+		return (false);
+
+	/* will underflow when used. */
+	if ((m_iAmmoTypes[ammoType] - ammoAmount) < 0i)
+		return (false);
+
+	m_iAmmoTypes[ammoType] -= ammoAmount;
+	return (true);
+}
+
+bool
+NSNavAI::GiveItem(string itemName)
+{
+	return (false);
+}
+
+bool
+NSNavAI::RemoveItem(string itemName)
+{
+	return (false);
+}

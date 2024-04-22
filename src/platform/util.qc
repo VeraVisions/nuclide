@@ -56,9 +56,3 @@ Util_CmdToKey(string cmd)
 
 	return sBindTx;
 }
-
-float
-lerp(float fA, float fB, float fPercent)
-{
-	return (fA * (1 - fPercent)) + (fB * fPercent);
-}

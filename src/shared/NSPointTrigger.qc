@@ -36,7 +36,10 @@ NSPointTrigger::InitPointTrigger(void)
 
 #ifdef SERVER
 	m_bEnabled = (m_bStartDisabled) ? false : true;
-	m_strDebugTexture = strcat("textures/editor/", classname);
+
+	if (m_strDebugTexture == __NULL__) {
+		m_strDebugTexture = strcat("textures/editor/", classname);
+	}
 #endif
 }
 
@@ -44,16 +47,32 @@ void
 NSPointTrigger::DebugDraw(void)
 {
 #ifdef SERVER
+	vector centerPos = WorldSpaceCenter();
+	super::DebugDraw();
 	R_BeginPolygon(m_strDebugTexture, 0, 0);
-		R_PolygonVertex(GetOrigin() + v_right * 16 - v_up * 16, [1,1], [1,1,1], 1.0f);
-		R_PolygonVertex(GetOrigin() - v_right * 16 - v_up * 16, [0,1], [1,1,1], 1.0f);
-		R_PolygonVertex(GetOrigin() - v_right * 16 + v_up * 16, [0,0], [1,1,1], 1.0f);
-		R_PolygonVertex(GetOrigin() + v_right * 16 + v_up * 16, [1,0], [1,1,1], 1.0f);
+		R_PolygonVertex(centerPos + v_right * 16 - v_up * 16, [1,1], [1,1,1], 1.0f);
+		R_PolygonVertex(centerPos - v_right * 16 - v_up * 16, [0,1], [1,1,1], 1.0f);
+		R_PolygonVertex(centerPos - v_right * 16 + v_up * 16, [0,0], [1,1,1], 1.0f);
+		R_PolygonVertex(centerPos + v_right * 16 + v_up * 16, [1,0], [1,1,1], 1.0f);
 	R_EndPolygon();
 #endif
 }
 
 #ifdef SERVER
+
+void
+NSPointTrigger::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "editor_sprite":
+		m_strDebugTexture = ReadString(strValue);
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
+		break;
+	}
+}
+
 void
 NSPointTrigger::Save(float handle)
 {

@@ -71,6 +71,8 @@ string __fullspawndata;
 #include "global.h"
 #include "cloader.h"
 #include "sound.h"
+#include "effects.h"
+#include "math.h"
 
 #ifdef CLIENT
 #include "../gs-entbase/client/defs.h"
@@ -113,12 +115,10 @@ string __fullspawndata;
 #include "materials.h"
 #include "damage.h"
 #include "flags.h"
-#include "effects.h"
 #include "entities.h"
 #include "events.h"
 #include "flags.h"
 #include "hitmesh.h"
-#include "math.h"
 #include "pmove.h"
 #include "memory.h"
 #include "platform.h"
@@ -126,7 +126,6 @@ string __fullspawndata;
 #include "surfaceproperties.h"
 #include "decalgroups.h"
 #include "colors.h"
-#include "weapons.h"
 #include "motd.h"
 #include "util.h"
 
@@ -149,12 +148,21 @@ const vector VEC_CHULL_MAX = [16,16,18];
 // Actually used by input_button etc.
 #define INPUT_BUTTON0 0x00000001	/* attack 1*/
 #define INPUT_BUTTON2 0x00000002	/* jumping */
-#define INPUT_BUTTON3 0x00000004	/* attack 2 */
+#define INPUT_BUTTON3 0x00000004	/* prone */
 #define INPUT_BUTTON4 0x00000008	/* reload */
-#define INPUT_BUTTON5 0x00000010	/* use button */
-#define INPUT_BUTTON6 0x00000020	/* reserved */
+#define INPUT_BUTTON5 0x00000010	/* secondary */
+#define INPUT_BUTTON6 0x00000020	/* use */
 #define INPUT_BUTTON7 0x00000040	/* reserved */
 #define INPUT_BUTTON8 0x00000080	/* crouching */
+
+#define INPUT_PRIMARY INPUT_BUTTON0
+#define INPUT_JUMP INPUT_BUTTON2
+#define INPUT_PRONE INPUT_BUTTON3
+#define INPUT_RELOAD INPUT_BUTTON4
+#define INPUT_SECONDARY INPUT_BUTTON6
+#define INPUT_USE INPUT_BUTTON5 /* This can NEVER change. Engine hard-coded. */
+#define INPUT_SPRINT INPUT_BUTTON7
+#define INPUT_CROUCH INPUT_BUTTON8
 
 /* sendflags */
 #define UPDATE_ALL				16777215
@@ -517,4 +525,86 @@ FileExists(string filePath)
 			return false;
 
 	return true;
+}
+
+void
+DebugBox(vector absPos, vector minSize, vector maxSize, vector boxColor, float boxAlpha)
+{
+	vector a, b, c, d;
+	vector w, x, y, z;
+
+	a[0] = absPos[0] + minSize[0];
+	a[1] = absPos[1] + maxSize[1];
+
+	b[0] = absPos[0] + maxSize[0];
+	b[1] = absPos[1] + maxSize[1];
+
+	c[0] = absPos[0] + maxSize[0];
+	c[1] = absPos[1] + minSize[1];
+
+	d[0] = absPos[0] + minSize[0];
+	d[1] = absPos[1] + minSize[1];
+
+	a[2] = absPos[2] + maxSize[2];
+	c[2] = absPos[2] + maxSize[2];
+	d[2] = absPos[2] + maxSize[2];
+	b[2] = absPos[2] + maxSize[2];
+
+	w = a;
+	x = b;
+	y = c;
+	z = d;
+
+	w[2] = absPos[2] + minSize[2];
+	x[2] = absPos[2] + minSize[2];
+	y[2] = absPos[2] + minSize[2];
+	z[2] = absPos[2] + minSize[2];
+	
+	/* top */
+	R_BeginPolygon("", 0, 0);
+	R_PolygonVertex(a, [1,1], boxColor, boxAlpha);
+	R_PolygonVertex(b, [0,1], boxColor, boxAlpha);
+	R_PolygonVertex(c, [0,0], boxColor, boxAlpha);
+	R_PolygonVertex(d, [1,0], boxColor, boxAlpha);
+	R_EndPolygon();
+
+	/* front */
+	R_BeginPolygon("", 0, 0);
+	R_PolygonVertex(d, [1,1], boxColor * 0.9f, boxAlpha);
+	R_PolygonVertex(c, [0,1], boxColor * 0.9f, boxAlpha);
+	R_PolygonVertex(y, [0,0], boxColor * 0.9f, boxAlpha);
+	R_PolygonVertex(z, [1,0], boxColor * 0.9f, boxAlpha);
+	R_EndPolygon();
+
+	/* back */
+	R_BeginPolygon("", 0, 0);
+	R_PolygonVertex(w, [1,1], boxColor * 0.9f, boxAlpha);
+	R_PolygonVertex(x, [0,1], boxColor * 0.9f, boxAlpha);
+	R_PolygonVertex(b, [0,0], boxColor * 0.9f, boxAlpha);
+	R_PolygonVertex(a, [1,0], boxColor * 0.9f, boxAlpha);
+	R_EndPolygon();
+
+	/* left */
+	R_BeginPolygon("", 0, 0);
+	R_PolygonVertex(a, [1,1], boxColor * 0.8f, boxAlpha);
+	R_PolygonVertex(d, [0,1], boxColor * 0.8f, boxAlpha);
+	R_PolygonVertex(z, [0,0], boxColor * 0.8f, boxAlpha);
+	R_PolygonVertex(w, [1,0], boxColor * 0.8f, boxAlpha);
+	R_EndPolygon();
+
+	/* right */
+	R_BeginPolygon("", 0, 0);
+	R_PolygonVertex(c, [1,1], boxColor * 0.8f, boxAlpha);
+	R_PolygonVertex(b, [0,1], boxColor * 0.8f, boxAlpha);
+	R_PolygonVertex(x, [0,0], boxColor * 0.8f, boxAlpha);
+	R_PolygonVertex(y, [1,0], boxColor * 0.8f, boxAlpha);
+	R_EndPolygon();
+
+	/* bottom */
+	R_BeginPolygon("", 0, 0);
+	R_PolygonVertex(z, [1,1], boxColor, boxAlpha);
+	R_PolygonVertex(y, [0,1], boxColor, boxAlpha);
+	R_PolygonVertex(x, [0,0], boxColor, boxAlpha);
+	R_PolygonVertex(w, [1,0], boxColor, boxAlpha);
+	R_EndPolygon();
 }

@@ -24,6 +24,8 @@
 #include "NSView.h"
 #include "NSRadar.h"
 #include "crosshair.h"
+#include "../shared/weapons.h"
+#include "../shared/weapon_common.h"
 
 var bool g_net_debug = false;
 var bool g_cheats = false;
@@ -280,6 +282,13 @@ precache_cubemap(string path)
 	precache_pic(strcat(path, "_up"));
 }
 
+typedef enum
+{
+	STANCE_DEFAULT = 0,
+	STANCE_CROUCH = 1,
+	STANCE_PRONE = 2,
+} movementStance_t;
+
 struct
 {
 	/* viewmodel stuff */
@@ -340,12 +349,14 @@ struct
 	int m_iPrintLines;
 
 	bool m_iInputAttack;
-	int m_iInputAttack2;
-	int m_iInputReload;
-	int m_iInputUse;
-	int m_iInputDuck;
-	int m_iInputExtra1;
-	int m_iInputExtra2;
+	bool m_iInputAttack2;
+	bool m_iInputReload;
+	bool m_iInputUse;
+	bool m_iInputDuck;
+	bool m_iInputSprint;
+	bool m_iInputProne;
+	bool m_iInputJump;
+	movementStance_t m_dForceStance;
 	float m_flInputBlockTime;
 	
 	/* fading */
@@ -355,6 +366,7 @@ struct
 	float m_flFadeStyle;
 	float m_flFadeAlpha;
 	float m_flFadeTime;
+	float m_flSprintLerp;
 	vector m_vecFadeColor;
 	int m_iFadeActive;
 
@@ -375,6 +387,10 @@ struct
 
 	bool m_bInterfaceFocused;
 	bool m_bSpecInput;
+
+	int m_iLeanDir;
+	float m_flLeaning;
+	int m_iSprinting;
 } g_seats[4], *pSeat;
 
 var vector g_vecMousePos;

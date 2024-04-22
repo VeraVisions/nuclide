@@ -15,6 +15,9 @@
 */
 
 var bool autocvar_r_skipWorld = false;
+var float autocvar_cg_viewZSmoothingMax = 16;
+var float autocvar_cg_viewZSmoothingMin = 1;
+var float autocvar_cg_viewZSmoothingTime = 0.1;
 
 void
 NSView::NSView(void)
@@ -100,13 +103,13 @@ NSView::StairSmooth(void)
 
 		/* Have we gone up since last frame? */
 		if ((m_viewTarget.flags & FL_ONGROUND) && (endpos[2] - m_vecLastOrigin[2] > 0)) {
-			endpos[2] = m_vecLastOrigin[2] += (frametime * 150);
+			endpos[2] = m_vecLastOrigin[2] += (frametime * 1000) * autocvar_cg_viewZSmoothingTime;
 
 			if (endpos[2] > origin[2]) {
 				endpos[2] = origin[2];
 			}
-			if (origin[2] - endpos[2] > 18) {
-				endpos[2] = origin[2] - 18;
+			if (origin[2] - endpos[2] > autocvar_cg_viewZSmoothingMax) {
+				endpos[2] = origin[2] - autocvar_cg_viewZSmoothingMax;
 			}
 		}
 

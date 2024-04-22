@@ -153,6 +153,24 @@ NSClient::IsPlayer(void)
 	return (false);
 }
 
+float
+NSClient::GetForwardSpeed(void)
+{
+	return cvar("cl_forwardspeed");
+}
+
+float
+NSClient::GetSideSpeed(void)
+{
+	return cvar("cl_sidespeed");
+}
+
+float
+NSClient::GetBackSpeed(void)
+{
+	return cvar("cl_backspeed");
+}
+
 #ifdef CLIENT
 void
 NSClient::ClientInputFrame(void)

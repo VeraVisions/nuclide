@@ -35,6 +35,7 @@ class player:NSClientPlayer
 	virtual void(float,float) ReceiveEntity;
 	virtual void(void) PredictPreFrame;
 	virtual void(void) PredictPostFrame;
+	virtual void(void) UpdateAliveCam;
 #else
 	virtual void(void) EvaluateEntity;
 	virtual float(entity, float) SendEntity;
@@ -42,6 +43,41 @@ class player:NSClientPlayer
 };
 
 #ifdef CLIENT
+
+
+void Shake_Update(NSClientPlayer);
+vector Camera_RunBob(vector);
+vector Camera_StrafeRoll(vector);
+vector Camera_AddCamBob(vector);
+vector Camera_AddLean(vector);
+void View_DisableViewmodel(void);
+void
+player::UpdateAliveCam(void)
+{
+	vector cam_pos = GetEyePos();
+
+	g_view.SetCameraAngle(view_angles);
+	g_view.SetCameraOrigin(cam_pos + Camera_AddCamBob(view_angles) + Camera_AddLean(view_angles));
+
+	if (vehicle) {
+		NSVehicle veh = (NSVehicle)vehicle;
+
+		if (veh.UpdateView)
+			veh.UpdateView();
+	} else if (health) {
+		if (autocvar_pm_thirdPerson == TRUE) {
+			makevectors(view_angles);
+			vector vStart = [pSeat->m_vecPredictedOrigin[0], pSeat->m_vecPredictedOrigin[1], pSeat->m_vecPredictedOrigin[2] + 16] + (v_right * 4);
+			vector vEnd = vStart + (v_forward * -48) + [0,0,16] + (v_right * 4);
+			traceline(vStart, vEnd, FALSE, this);
+			g_view.SetCameraOrigin(trace_endpos + (v_forward * 5));
+		}
+	}
+
+	Shake_Update(this);
+	g_view.AddPunchAngle(punchangle);
+}
+
 /*
 =================
 player::ReceiveEntity

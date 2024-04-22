@@ -14,14 +14,50 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-#ifdef SERVER
-/* PICKUP ITEMS */
+/** id Tech 4 keys to support:
+
+
+*/
+
+
+
+/*! \brief This entity class represents non-player characters. */
+/*!QUAKED NSMonster (0 0.8 0.8) (-16 -16 0) (16 16 72) WAITTILLSEEN GAG MONSTERCLIP x PRISONER x IGNOREPLAYER WAITFORSCRIPT PREDISASTER FADECORPSE MULTIPLAYER FALLING HORDE
+# OVERVIEW
+Represents any item within the players' inventory.
+These can be used, or be dormant.
+
+# KEYS
+- "targetname" : Name
+- "model" : world model.
+- "model_view" : view model.
+- "model_world - same as model.
+- "inv_name" : Fancy title. Can be a localized string.
+- "inv_weapon" : name of the weapon to give on pickup. can be the same as this entitydef.
+- "inv_item" : item number. must be unique.
+- "weapon_scriptobject" : mapC progs with the weapon code within.
+- "ammoType" : name of the ammo type def entry which the gun uses
+- "ammoRequired" : set to 1 if we require ammo. 
+- "clipSize" : maximum clip size
+- "mtr_flashShader" : muzzleflash material to Use.
+- "model_flash" : muzzleflash model/sprite to use.
+- "flashColor" : muzzleflash dlight color
+- "flashRadius" : muzzleflash dlight radius
+- "def_dropItem" : when this item is dropped from someones inventory, will spawn this entityDef item instead.
+- "snd_acquire" : pickup noise
+- "snd_respawn" : respawn noise
+- "snd_hum" : idle shader
+- "smoke_muzzle" : smoke particle effect name
+- "continuousSmoke" : whether the particle effect is continous
+- "clipSizeDefault" : CUSTOM: Default clip size on pickup.
+*/
 class NSItem:NSRenderableEntity
 {
 public:
 	void NSItem(void);
 
 	/* overrides */
+#ifdef SERVER
 	virtual void Spawned(void);
 	virtual void Touch(entity);
 	virtual void Respawn(void);
@@ -35,8 +71,9 @@ public:
 	nonvirtual bool GetFloating(void);
 	nonvirtual void SetSpinning(bool);
 	nonvirtual bool GetSpinning(void);
-
 	nonvirtual void PickupRespawn(void);
+#endif
+
 
 private:
 	int m_iClip;
@@ -48,5 +85,5 @@ private:
 	string m_sndRespawn;
 	int m_bFloating;
 	bool m_bSpins;
+	string m_strInvWeapon;
 };
-#endif

@@ -815,9 +815,7 @@ func_vehicle::RunVehiclePhysics(void)
 		m_eDriver.velocity = [0,0,0];
 	}
 
-	angles[0] = Math_FixDelta(angles[0]);
-	angles[1] = Math_FixDelta(angles[1]);
-	angles[2] = Math_FixDelta(angles[2]);
+	angles = fixAngle(angles);
 	angles[0] = bound (-45, angles[0], 45);
 	angles[2] = bound (-15, angles[2], 15);
 
@@ -864,11 +862,7 @@ func_vehicle::RunVehiclePhysics(void)
 	v_forward = (m_wlFL.origin + m_wlFR.origin);
 	v_forward -= (m_wlBL.origin + m_wlBR.origin);
 	v_up = -crossproduct(v_forward, v_right);
-	angles = vectoangles(v_forward, v_up);
-
-	angles[0] = Math_FixDelta(angles[0]);
-	angles[1] = Math_FixDelta(angles[1]);
-	angles[2] = Math_FixDelta(angles[2]);
+	angles = vectorToAnglesRoll(v_forward, v_up);
 
 	/* figure out the new chassis position */
 	vector new_origin;

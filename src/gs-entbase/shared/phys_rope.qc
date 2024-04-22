@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2024 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -139,9 +139,7 @@ phys_rope::predraw(void)
 		}
 
 		/* travel further and sag */
-		pos2[0] = Math_Lerp(origin[0], m_vecTarget[0], progress);
-		pos2[1] = Math_Lerp(origin[1], m_vecTarget[1], progress);
-		pos2[2] = Math_Lerp(origin[2], m_vecTarget[2], progress);
+		pos2 = vectorLerp(origin, m_vecTarget, progress);
 		pos2 += (v_up * -sag) * autocvar_rope_sag;
 
 		if (!autocvar_rope_fast)
@@ -320,7 +318,7 @@ void
 phys_rope::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "RopeMaterial":
+	case "m_strShader":
 		m_strShader = ReadString(strValue);
 		break;
 	case "m_flSag":
@@ -329,7 +327,7 @@ phys_rope::Restore(string strKey, string strValue)
 	case "m_flSwingFactor":
 		m_flSwingFactor = ReadFloat(strValue);
 		break;
-	case "Subdiv":
+	case "m_iSegments":
 		m_iSegments = ReadInt(strValue);
 		break;
 	case "m_vecTarget":

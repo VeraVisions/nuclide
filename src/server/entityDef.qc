@@ -166,6 +166,11 @@ EntityDef_ReadFile(string filePath)
 						/* increment the def count */
 						if (g_entDefCount < ENTITYDEF_MAX)
 							g_entDefCount++;
+
+						if (g_entDefCount >= ENTITYDEF_MAX) {
+							NSError("Reached limit of %d defs.", ENTITYDEF_MAX);
+							return;
+						}
 					}
 					currentDef.entClass = "";
 					currentDef.spawnClass = "";
@@ -198,9 +203,6 @@ EntityDef_ReadFile(string filePath)
 						i++;
 					} else if (word == "inherit") {
 						currentDef.inheritKeys = argv(i+1);
-						i++;
-					} else if (substring(word, 0, 7) == "editor_") {
-						/* do nothing */
 						i++;
 					} else if (substring(word, 0, 4) == "when") {
 						switch (argv(i+2)) {
@@ -248,6 +250,7 @@ EntityDef_ReadFile(string filePath)
 void
 EntityDef_Init(void)
 {
+	string mapDef = sprintf("maps/%s.def", cvar_string("mapname"));
 	searchhandle pm;
 
 	InitStart();
@@ -272,22 +275,10 @@ EntityDef_Init(void)
 		}
 	}
 
-#if 0
-	for (int i = 0i; i < g_entDefCount; i++) {
-		int numKeys = tokenize_console(g_entDefTable[i].spawnData);
-		print(sprintf("edef %i: %S\n", i, g_entDefTable[i].entClass));
-		print(sprintf("\tspawnclass: %S\n", g_entDefTable[i].spawnClass));
-		print(sprintf("\tinheritKeys: %S\n", g_entDefTable[i].inheritKeys));
-		print(sprintf("\ttweakDefs %S\n", g_entDefTable[i].tweakDefs));
-		print(sprintf("\ttweakKeys %S\n", g_entDefTable[i].tweakKeys));
-		print(sprintf("\teventList %S\n", g_entDefTable[i].eventList));
-		print("\tspawnData:\n");
-		
-		for (int c = 0; c < numKeys; c+=2) {
-			print(sprintf("\t\t%S %S\n", argv(c), argv(c+1)));
-		}
+	/* load the map specific def file */
+	if (FileExists(mapDef)) {
+		EntityDef_ReadFile(mapDef);
 	}
-#endif
 
 	InitEnd();
 }
@@ -503,7 +494,10 @@ EntityDef_SpawnClassname(string className)
 
 	for (int i = 0i; i < g_entDefCount; i++) {
 		if (className == g_entDefTable[i].entClass) {
-			EntityDef_Precaches(i);
+			if (time < 1.0) {
+				EntityDef_Precaches(i);
+			}
+
 			NSLog("Spawning eDef %S", className);
 			return EntityDef_PrepareEntity(self, i);
 		}
@@ -594,6 +588,7 @@ CallSpawnfuncByName(entity target, string className)
 	self = oldSelf;
 }
 
+
 NSEntity
 Entity_CreateClass(string className)
 {
@@ -605,4 +600,23 @@ Entity_CreateClass(string className)
 	}
 
 	return newEntity;
+}
+
+void
+EntityDef_DebugList(void)
+{
+	for (int i = 0i; i < g_entDefCount; i++) {
+		int numKeys = tokenize_console(g_entDefTable[i].spawnData);
+		print(sprintf("edef %i: %S\n", i, g_entDefTable[i].entClass));
+		print(sprintf("\tspawnclass: %S\n", g_entDefTable[i].spawnClass));
+		print(sprintf("\tinheritKeys: %S\n", g_entDefTable[i].inheritKeys));
+		print(sprintf("\ttweakDefs %S\n", g_entDefTable[i].tweakDefs));
+		print(sprintf("\ttweakKeys %S\n", g_entDefTable[i].tweakKeys));
+		print(sprintf("\teventList %S\n", g_entDefTable[i].eventList));
+		print("\tspawnData:\n");
+		
+		for (int c = 0; c < numKeys; c+=2) {
+			print(sprintf("\t\t%S %S\n", argv(c), argv(c+1)));
+		}
+	}
 }

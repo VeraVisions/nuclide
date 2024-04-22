@@ -32,9 +32,9 @@ private:
 	int m_iVehicleFlags;
 	int m_iMoveButtons;
 	vector m_vecMoveValues;
-	entity m_eDriver;
-	entity m_eDriver_net;
-	entity m_eDriverLast;
+	NSEntity m_eDriver;
+	NSEntity m_eDriver_net;
+	NSEntity m_eDriverLast;
 	vector m_vecPlayerPos;
 	vector m_vecExitPos;
 

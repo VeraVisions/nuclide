@@ -155,14 +155,6 @@ DecalGroups_Init(void)
 
 	fclose(fh);
 
-#if 0
-#ifdef CLIENT
-	for (int i = 0; i < g_decalgroup_count; i++) {
-		print(sprintf("%i (members: %i) %s\n", i, g_decalgroup[i].members, g_decalgroup[i].materials));
-	}
-#endif
-#endif
-
 	NSLog("...decal groups initialized with %i entries.", g_decalgroup_count);
 	InitEnd();
 }

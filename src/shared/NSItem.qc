@@ -14,10 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-#ifdef SERVER
 void
 NSItem::NSItem(void)
 {
+#ifdef SERVER
 	m_iClip = -1;
 	m_iWasDropped = 0i;
 	m_iInvItem = 0i;
@@ -25,8 +25,10 @@ NSItem::NSItem(void)
 	m_sndRespawn = __NULL__;
 	m_bFloating = false;
 	m_bSpins = false;
+#endif
 }
 
+#ifdef SERVER
 void
 NSItem::Spawned(void)
 {
@@ -74,6 +76,9 @@ void
 NSItem::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
+	case "inv_weapon":
+		m_strInvWeapon = ReadString(strValue);
+		break;
 	case "inv_item":
 		m_iInvItem = ReadInt(strValue);
 		break;
@@ -112,6 +117,7 @@ NSItem::Save(float handle)
 	SaveString(handle, "m_sndRespawn", m_sndRespawn);
 	SaveBool(handle, "m_bFloating", m_bFloating);
 	SaveBool(handle, "m_bSpins", m_bSpins);
+	SaveString(handle, "m_strInvWeapon", m_strInvWeapon);
 }
 
 void
@@ -139,6 +145,9 @@ NSItem::Restore(string strKey, string strValue)
 	case "m_bSpins":
 		m_bSpins = ReadBool(strValue);
 		break;
+	case "m_strInvWeapon":
+		m_strInvWeapon = ReadString(strValue);
+		break;
 	default:
 		super::Restore(strKey, strValue);
 		break;
@@ -148,14 +157,18 @@ NSItem::Restore(string strKey, string strValue)
 void
 NSItem::Touch(entity eToucher)
 {
+	NSClientPlayer pl = (NSClientPlayer)eToucher;
+
 	if (eToucher.classname != "player") {
 		return;
 	}
 
+#if 0
 	/* don't remove if AddItem fails */
-	if (Weapons_AddItem((player)eToucher, m_iInvItem, m_iClip) == FALSE) {
+	if (pl.GiveWeapon(m_strInvWeapon) == false) {
 		return;
 	}
+#endif
 
 	Logging_Pickup(eToucher, this, __NULL__);
 	StartSoundDef(m_sndAcquire, CHAN_ITEM, true);
@@ -215,4 +228,45 @@ NSItem::PickupRespawn(void)
 	Respawn();
 	StartSoundDef(m_sndRespawn, CHAN_ITEM, true);
 }
+
+void
+NSItem::Draw(void)
+{
+}
+
+void
+NSItem::Holster(void)
+{
+}
+
+void
+NSItem::PrimaryAttack(void)
+{
+}
+
+void
+NSItem::SecondaryAttack(void)
+{
+}
+
+void
+NSItem::Reload(void)
+{
+}
+
+void
+NSItem::Release(void)
+{
+}
+
+void
+NSItem::OnPickup(void)
+{
+}
+
+void
+NSItem::OnInventoryUse(void)
+{
+}
 #endif
+

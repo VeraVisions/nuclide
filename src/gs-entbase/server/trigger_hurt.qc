@@ -233,11 +233,11 @@ trigger_hurt::Touch(entity eToucher)
 	} else {
 		if (HasSpawnFlags(SF_HURT_FIREONPLAYER)) {
 			if (eToucher.flags & FL_CLIENT) {
-				eActivator = eToucher;
+				eActivator = (NSEntity)eToucher;
 				UseTargets(eToucher, TRIG_TOGGLE, m_flDelay);
 			}
 		} else {
-			eActivator = eToucher;
+			eActivator = (NSEntity)eToucher;
 			UseTargets(eToucher, TRIG_TOGGLE, m_flDelay);
 		}
 	}

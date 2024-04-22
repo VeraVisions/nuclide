@@ -99,7 +99,6 @@ private:
 	float m_flDelay;
 	string m_strSndPressed;
 	string m_strSndUnpressed;
-
 	bool m_bCanTouch;
 
 	/* input/output */
@@ -281,8 +280,8 @@ func_button::Respawn(void)
 	SetMoverPosition2(GetDirectionalPosition(GetSpawnAngles(), m_flLip));
 	ClearAngles();
 
-	if (health > 0) {
-		takedamage = DAMAGE_YES;
+	if (GetHealth() > 0) {
+		MakeVulnerable();
 		Death = DeathTrigger;
 	}
 
@@ -298,6 +297,12 @@ func_button::Respawn(void)
 		SetMoverPosition2(GetMoverPosition1());
 	}
 
+	if (HasSpawnFlags(SF_BTT_TOUCH_ONLY) == true) {
+		m_bCanTouch = true;
+	} else {
+		m_bCanTouch = false;
+	}
+
 	m_iValue = 0;
 }
 
@@ -311,8 +316,9 @@ func_button::MoverFinishesMoving(void)
 	/* let's reset our button's health and mark it as shootable */
 	SetHealth(GetSpawnHealth());
 
-	if (GetHealth() > 0)
-		SetTakedamage(DAMAGE_YES);
+	if (GetHealth() > 0) {
+		MakeVulnerable();
+	}
 
 	if (GetMoverState() == MOVER_POS1) {
 		UseOutput(this, m_strOnOut);
@@ -324,7 +330,6 @@ func_button::MoverFinishesMoving(void)
 
 	m_bCanTouch = true;
 }
-
 
 void
 func_button::MoverStartsMoving(void)
@@ -338,7 +343,7 @@ func_button::MoverStartsMoving(void)
 		m_iValue = 0;
 
 		if (m_strSndUnpressed) {
-			Sound_Play(this, CHAN_VOICE, m_strSndUnpressed);
+			StartSoundDef(m_strSndUnpressed, CHAN_VOICE, true);
 		}
 	}
 }
@@ -347,10 +352,10 @@ func_button::MoverStartsMoving(void)
 void
 func_button::Trigger(entity act, triggermode_t state)
 {
-	if (GetMaster(act) == FALSE)
+	if (GetMaster(act) == false) {
+		UseOutput(act, m_strOnUseLocked);
 		return;
-
-	UseOutput(act, m_strOnUseLocked);
+	}
 
 	if (m_flNextTrigger > time) {
 		return;
@@ -365,15 +370,17 @@ func_button::Trigger(entity act, triggermode_t state)
 		return;
 	}
 
-	if (m_strSndPressed)
-		Sound_Play(this, CHAN_VOICE, m_strSndPressed);
+	if (m_strSndPressed) {
+		StartSoundDef(m_strSndPressed, CHAN_VOICE, true);
+	}
 
 	MoveToPosition(GetMoverPosition2(), m_flSpeed);
 	UseOutput(act, m_strOnPressed);
 	UseTargets(act, TRIG_TOGGLE, m_flDelay);
 
-	if (message)
+	if (message) {
 		env_message_single(act, message);
+	}
 
 	SetHealth(GetSpawnHealth());
 }
@@ -381,21 +388,18 @@ func_button::Trigger(entity act, triggermode_t state)
 void
 func_button::DeathTrigger(void)
 {
-	SetTakedamage(DAMAGE_NO);
+	MakeInvulnerable();
 	Trigger(g_dmg_eAttacker, TRIG_TOGGLE);
 }
 
 void
 func_button::Touch(entity eToucher)
 {
-	if (HasSpawnFlags(SF_BTT_TOUCH_ONLY) == false) {
+	if (m_bCanTouch == false) {
 		return;
 	}
 
-	if (m_bCanTouch == false)
-		return;
-
-	if (eToucher.movetype == MOVETYPE_WALK) {
+	if (eToucher.classname == "player") {
 		Trigger(eToucher, TRIG_TOGGLE);
 	}
 }
@@ -406,6 +410,7 @@ func_button::PlayerUse(void)
 	if (HasSpawnFlags(SF_BTT_TOUCH_ONLY)) {
 		return;
 	}
+
 	Trigger(eActivator, TRIG_TOGGLE);
 }
 

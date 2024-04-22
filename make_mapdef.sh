@@ -93,8 +93,10 @@ do
 		KEY_MAXS="$(cat /tmp/def_maxs)"
 		KEY_USAGE="$(cat /tmp/def_usage)"
 		KEY_MODEL="$(cat /tmp/def_model)"
+
+		# reset defaults
 		printf -- "" > "/tmp/def_name"
-		printf -- "" > "/tmp/def_color"
+		printf -- "1 0 1" > "/tmp/def_color"
 		printf -- "" > "/tmp/def_mins"
 		printf -- "" > "/tmp/def_mins"
 		printf -- "" > "/tmp/def_maxs"

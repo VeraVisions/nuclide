@@ -316,17 +316,18 @@ NSTalkMonster::Speak(string sentence)
 void
 NSTalkMonster::TalkPlayerGreet(void)
 {
-	if (HasSpawnFlags(MSF_GAG))
+	if (m_iSequenceState != SEQUENCESTATE_NONE) {
 		return;
-
-	if (m_iSequenceState != SEQUENCESTATE_NONE)
+	}
+	if (m_flNextSentence > time) {
 		return;
-
-	if (m_flNextSentence > time)
+	}
+	if (m_bGagged) {
 		return;
-
-	if (m_iFlags & MONSTER_METPLAYER)
+	}
+	if (m_iFlags & MONSTER_METPLAYER) {
 		return;
+	}
 
 	for (entity p = world; (p = find(p, ::classname, "player"));) {
 		/* Find players in a specific radius */
@@ -347,17 +348,17 @@ NSTalkMonster::TalkPlayerGreet(void)
 void
 NSTalkMonster::TalkPlayerIdle(void)
 {
-	if (HasSpawnFlags(MSF_GAG))
+	if (m_iSequenceState != SEQUENCESTATE_NONE) {
 		return;
-
-	if (m_iSequenceState != SEQUENCESTATE_NONE)
+	}
+	if (m_flNextSentence > time) {
 		return;
-
-	if (m_flNextSentence > time)
+	}
+	if (m_bGagged) {
 		return;
+	}
 
 	for (entity p = world; (p = find(p, ::classname, "player"));) {
-
 		if (IsFriend(p.m_iAlliance) == false) {
 			continue;
 		}
@@ -366,9 +367,11 @@ NSTalkMonster::TalkPlayerIdle(void)
 		if (vlen(p.origin - origin) < PLAYER_DETECT_RADIUS) {
 			/* If we can't physically see him, don't do anything */
 			traceline(origin, p.origin, FALSE, this);
+
 			if (trace_ent != p) {
 				continue;
 			}
+
 			Sentence(m_talkPlayerIdle);
 			m_flNextSentence = time + 10.0;
 			break;
@@ -379,14 +382,15 @@ NSTalkMonster::TalkPlayerIdle(void)
 void
 NSTalkMonster::TalkPlayerAsk(void)
 {
-	if (HasSpawnFlags(MSF_GAG))
+	if (m_iSequenceState != SEQUENCESTATE_NONE) {
 		return;
-
-	if (m_iSequenceState != SEQUENCESTATE_NONE)
+	}
+	if (m_flNextSentence > time) {
 		return;
-
-	if (m_flNextSentence > time)
+	}
+	if (m_bGagged) {
 		return;
+	}
 
 	for (entity p = world; (p = find(p, ::classname, "player"));) {
 		/* Find players in a specific radius */
@@ -406,14 +410,15 @@ NSTalkMonster::TalkPlayerAsk(void)
 void
 NSTalkMonster::TalkPlayerWounded1(void)
 {
-	if (HasSpawnFlags(MSF_GAG))
+	if (m_iSequenceState != SEQUENCESTATE_NONE) {
 		return;
-
-	if (m_iSequenceState != SEQUENCESTATE_NONE)
+	}
+	if (m_flNextSentence > time) {
 		return;
-
-	if (m_flNextSentence > time)
+	}
+	if (m_bGagged) {
 		return;
+	}
 
 	if (base_health < health)
 		return;
@@ -435,14 +440,15 @@ NSTalkMonster::TalkPlayerWounded1(void)
 void
 NSTalkMonster::TalkPlayerWounded2(void)
 {
-	if (HasSpawnFlags(MSF_GAG))
+	if (m_iSequenceState != SEQUENCESTATE_NONE) {
 		return;
-
-	if (m_iSequenceState != SEQUENCESTATE_NONE)
+	}
+	if (m_flNextSentence > time) {
 		return;
-
-	if (m_flNextSentence > time)
+	}
+	if (m_bGagged) {
 		return;
+	}
 
 	if ((base_health / 2) < health)
 		return;
@@ -465,14 +471,15 @@ NSTalkMonster::TalkPlayerWounded2(void)
 void
 NSTalkMonster::TalkPlayerWounded3(void)
 {
-	if (HasSpawnFlags(MSF_GAG))
+	if (m_iSequenceState != SEQUENCESTATE_NONE) {
 		return;
-
-	if (m_iSequenceState != SEQUENCESTATE_NONE)
+	}
+	if (m_flNextSentence > time) {
 		return;
-
-	if (m_flNextSentence > time)
+	}
+	if (m_bGagged) {
 		return;
+	}
 
 	for (entity p = world; (p = find(p, ::classname, "player"));) {
 		/* Find players in a specific radius */
@@ -492,11 +499,12 @@ NSTalkMonster::TalkPlayerWounded3(void)
 void
 NSTalkMonster::TalkPanic(void)
 {
-	if (HasSpawnFlags(MSF_GAG))
+	if (m_iSequenceState != SEQUENCESTATE_NONE) {
 		return;
-
-	if (m_iSequenceState != SEQUENCESTATE_NONE)
+	}
+	if (m_bGagged) {
 		return;
+	}
 
 	Sentence(m_talkPanic);
 	m_flNextSentence = time + 2.5;
@@ -506,8 +514,12 @@ NSTalkMonster::TalkPanic(void)
 void
 NSTalkMonster::TalkUnfollow(void)
 {
-	if (m_iSequenceState != SEQUENCESTATE_NONE)
+	if (m_iSequenceState != SEQUENCESTATE_NONE) {
 		return;
+	}
+	if (m_bGagged) {
+		return;
+	}
 
 	Sentence(m_talkUnfollow);
 	m_flNextSentence = time + 10.0;
@@ -516,8 +528,12 @@ NSTalkMonster::TalkUnfollow(void)
 void
 NSTalkMonster::TalkFollow(void)
 {
-	if (m_iSequenceState != SEQUENCESTATE_NONE)
+	if (m_iSequenceState != SEQUENCESTATE_NONE) {
 		return;
+	}
+	if (m_bGagged) {
+		return;
+	}
 
 	Sentence(m_talkFollow);
 	m_flNextSentence = time + 10.0;
@@ -526,8 +542,12 @@ NSTalkMonster::TalkFollow(void)
 void
 NSTalkMonster::TalkStopFollow(void)
 {
-	if (m_iSequenceState != SEQUENCESTATE_NONE)
+	if (m_iSequenceState != SEQUENCESTATE_NONE) {
 		return;
+	}
+	if (m_bGagged) {
+		return;
+	}
 
 	Sentence(m_talkStopFollow);
 	m_flNextSentence = time + 10.0;
@@ -536,8 +556,12 @@ NSTalkMonster::TalkStopFollow(void)
 void
 NSTalkMonster::TalkDenyFollow(void)
 {
-	if (m_iSequenceState != SEQUENCESTATE_NONE)
+	if (m_iSequenceState != SEQUENCESTATE_NONE) {
 		return;
+	}
+	if (m_bGagged) {
+		return;
+	}
 
 	Sentence(m_talkDenyFollow);
 	m_flNextSentence = time + 10.0;
@@ -569,7 +593,7 @@ NSTalkMonster::FollowPlayer(void)
 	float flPlayerDist;
 	input_angles = vectoangles(m_eFollowingChain.origin - origin);
 			input_angles[0] = 0;
-			input_angles[1] = Math_FixDelta(input_angles[1]);
+			input_angles[1] = fixAngleDelta(input_angles[1]);
 			input_angles[2] = 0;
 	_LerpTurnToYaw(input_angles);
 
@@ -636,7 +660,7 @@ NSTalkMonster::FollowPlayer(void)
 			} else {
 				input_angles = vectoangles(m_vecLastUserPos - origin);
 				input_angles[0] = 0;
-				input_angles[1] = Math_FixDelta(input_angles[1]);
+				input_angles[1] = fixAngleDelta(input_angles[1]);
 				input_angles[2] = 0;
 				_LerpTurnToYaw(input_angles);
 			}
@@ -687,7 +711,7 @@ NSTalkMonster::PanicFrame(void)
 			}
 		}
 
-		angles[1] = Math_FixDelta(bestYaw + random(-25, 25));
+		angles[1] = fixAngleDelta(bestYaw + random(-25, 25));
 		input_angles[1] = angles[1];
 		v_angle[1] = angles[1];
 		m_flTraceTime = time + 0.5f + random();
@@ -1073,7 +1097,41 @@ NSTalkMonster::predraw(void)
 
 	RenderAxialScale();
 
+#if 0
+	/* has the current top frame changed? */
+	if (frame != frame2) {
+		/* we're done lerping */
+		if (lerpfrac <= 0.0f) {
+			frame2 = frame;
+			lerpfrac = 0.0f;
+		}
+
+		lerpfrac = max(0.0, lerpfrac - (frametime * 5.0));
+	} else {
+		/* make sure we're set up for next lerp */
+		lerpfrac = 1.0f;
+		frame2time = frame1time;
+	}
+
+	/* are we inside of an interpolation? */
+	if (baseframe != baseframe2) {
+		/* we're done lerping */
+		if (baselerpfrac <= 0.0f) {
+			baseframe2 = baseframe;
+			baselerpfrac = 0.0f;
+		}
+
+		baselerpfrac = max(0.0, baselerpfrac - (frametime * 5.0));
+		//printf("baselerpfrac: %f\n", baselerpfrac);
+	} else {
+		/* make sure we're set up for next lerp */
+		baselerpfrac = 1.0f;
+		baseframe2time = baseframe1time;
+	}
+#endif
+
 	addentity(this);
+
 	_RenderDebugViewCone();
 	RenderGLQuakeShadow();
 

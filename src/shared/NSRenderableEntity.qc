@@ -1162,9 +1162,19 @@ NSRenderableEntity::SpawnKey(string strKey, string strValue)
 	case "scale":
 		scale = ReadFloat(strValue);
 		break;
+	case "modelscale_vec":
 	case "modelstretch":
 	case "axialscale":
 		m_vecAxialScale = ReadVector(strValue);
+		break;
+	case "lightingPrecalc":
+		m_vecRenderColor = ReadVector(strValue);
+		m_flRenderAmt = 1.0f;
+#ifdef SERVER
+		m_oldiRenderMode = m_iRenderMode;
+		m_oldflRenderAmt = m_flRenderAmt;
+		m_oldvecRenderColor = m_vecRenderColor;
+#endif
 		break;
 	case "skin":
 		skin = ReadFloat(strValue);

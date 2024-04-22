@@ -37,7 +37,7 @@ NSSurfacePropEntity::NSSurfacePropEntity(void)
 vector
 NSSurfacePropEntity::GetEyePos(void)
 {
-	if (HasFlags(FL_FAKESPEC)) {
+	if (HasVFlags(VFL_FAKESPEC)) {
 		return (origin);
 	}
 
@@ -72,6 +72,12 @@ NSSurfacePropEntity::Spawned(void)
 #endif
 }
 
+bool
+NSSurfacePropEntity::IsOnFire(void)
+{
+	return (effects & EF_ONFIRE) ? true : false;
+}
+
 /* networking */
 #ifdef SERVER
 void
@@ -92,10 +98,64 @@ NSSurfacePropEntity::IsAlive(void)
 	return (health > 0) ? true : false;
 }
 
-void
-NSSurfacePropEntity::SetCanBleed(bool bleedValue)
+bool
+NSSurfacePropEntity:: IsVulnerable(void)
 {
-	iBleeds = bleedValue;
+	return m_bTakesDamage;
+}
+
+void
+NSSurfacePropEntity::EnableBleeding(void)
+{
+	iBleeds = true;
+}
+
+void
+NSSurfacePropEntity::DisableBleeding(void)
+{
+	iBleeds = false;
+}
+
+void
+NSSurfacePropEntity::EnableAimAssist(void)
+{
+	m_bAutoAim = true;
+	_UpdateTakedamage();
+}
+
+void
+NSSurfacePropEntity::DisableAimAssist(void)
+{
+	m_bAutoAim = false;
+	_UpdateTakedamage();
+}
+
+void
+NSSurfacePropEntity::MakeVulnerable(void)
+{
+	m_bTakesDamage = true;
+	_UpdateTakedamage();
+}
+
+void
+NSSurfacePropEntity::MakeInvulnerable(void)
+{
+	m_bTakesDamage = false;
+	_UpdateTakedamage();
+}
+
+void
+NSSurfacePropEntity::_UpdateTakedamage(void)
+{
+	if (m_bTakesDamage) {
+		takedamage = DAMAGE_NO;
+	} else {
+		if (m_bAutoAim) {
+			takedamage = DAMAGE_AIM;
+		} else {
+			takedamage = DAMAGE_YES;
+		}
+	}
 }
 
 bool
@@ -182,10 +242,10 @@ void
 NSSurfacePropEntity::ParentUpdate(void)
 {
 	/* TODO: Move out */
-	if (flags & FL_ONFIRE) {
+	if (IsOnFire()) {
 		if (m_flBurnNext < time) {
 			if (time > m_flBurnTime) {
-				flags &= ~FL_ONFIRE;
+				Extinguish();
 			}
 
 			Damage_Apply(this, m_eBurner, 5, m_iBurnWeapon, DMG_BURN | DMG_SKIP_ARMOR);
@@ -193,14 +253,14 @@ NSSurfacePropEntity::ParentUpdate(void)
 		}
 	}
 
-	NSRenderableEntity::ParentUpdate();
+	super::ParentUpdate();
 }
 
 /* Burning, fire, flames, etc. */
 void
 NSSurfacePropEntity::Ignite(entity attacker, float flLifetime, int iWeapon)
 {
-	flags |= FL_ONFIRE;
+	effects |= EF_ONFIRE;
 	m_eBurner = attacker;
 	m_iBurnWeapon = iWeapon;
 	m_flBurnTime = time + flLifetime;
@@ -214,16 +274,10 @@ NSSurfacePropEntity::Ignite(entity attacker, float flLifetime, int iWeapon)
 void
 NSSurfacePropEntity::Extinguish(void)
 {
-	flags &= ~FL_ONFIRE;
+	effects &= ~EF_ONFIRE;
 	m_eBurner = __NULL__;
 	m_iBurnWeapon =
 	m_flBurnTime = 0;
-}
-
-bool
-NSSurfacePropEntity::IsOnFire(void)
-{
-	return (flags & FL_ONFIRE) ? true : false;
 }
 
 void
@@ -644,7 +698,7 @@ NSSurfacePropEntity::ReceiveEntity(float flNew, float flChanged)
 void
 NSSurfacePropEntity::RenderFire(void)
 {
-	if (flags & FL_ONFIRE) {
+	if (IsOnFire()) {
 		vector someorg;
 
 		if (m_flBurnNext < time) {

@@ -356,9 +356,7 @@ env_laser::predraw(void)
 			float a = 1.0f;
 
 			/* our steps from a - b */
-			point[0] = Math_Lerp(origin[0], m_vecEndPos[0], progression);
-			point[1] = Math_Lerp(origin[1], m_vecEndPos[1], progression);
-			point[2] = Math_Lerp(origin[2], m_vecEndPos[2], progression);
+			point = vectorLerp(origin, m_vecEndPos, progression);
 
 			/* get the direction the laser is 'looking' */
 			makevectors(vectoangles(m_vecEndPos - origin));

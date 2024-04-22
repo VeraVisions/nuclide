@@ -14,6 +14,11 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/* default client side player movement values */
+var float autocvar_bot_forwardspeed = 190;
+var float autocvar_bot_sidespeed = 152;
+var float autocvar_bot_backspeed = 133;
+
 botstate_t
 NSBot::GetState(void)
 {
@@ -42,6 +47,24 @@ float
 NSBot::GetRunSpeed(void)
 {
 	return 240;
+}
+
+float
+NSBot::GetForwardSpeed(void)
+{
+	return (autocvar_bot_forwardspeed);
+}
+
+float
+NSBot::GetSideSpeed(void)
+{
+	return (autocvar_bot_sidespeed);
+}
+
+float
+NSBot::GetBackSpeed(void)
+{
+	return (autocvar_bot_backspeed);
 }
 
 void
@@ -79,7 +102,7 @@ NSBot::UseButton(void)
 		pos[0] = e.absmin[0] + (0.5 * (e.absmax[0] - e.absmin[0]));
 		pos[1] = e.absmin[1] + (0.5 * (e.absmax[1] - e.absmin[1]));
 		pos[2] = e.absmin[2] + (0.5 * (e.absmax[2] - e.absmin[2]));
-		dist = vlen(origin - pos);
+		dist = distanceSquared(origin, pos);
 
 		if (dist < bestDist) {
 			bestDist = dist;
@@ -144,9 +167,7 @@ NSBot::SeeThink(void)
 				continue;
 
 		/* first, is the potential enemy in our field of view? */
-		makevectors(v_angle);
-		vector v = normalize(w.origin - origin);
-		flDot = v * v_forward;
+		flDot = vectorNormalize(w.origin - origin) * anglesToForward(v_angle);
 
 		if (flDot < 90/180)
 			continue;
@@ -200,7 +221,7 @@ NSBot::CheckRoute(void)
 		if (m_iCurNode >= 0) {
 			/* if a node is flagged as jumpy, jump! */
 			if (Route_GetNodeFlags(&m_pRoute[m_iCurNode]) & LF_JUMP) {
-				//input_buttons |= INPUT_BUTTON2;
+				//input_buttons |= INPUT_JUMP;
 				velocity = Route_GetJumpVelocity(origin, m_pRoute[m_iCurNode].dest, gravity);
 			}
 
@@ -245,16 +266,15 @@ NSBot::CheckRoute(void)
 	if (m_flNodeGiveup >= 1.0f || m_iCurNode <= BOTROUTE_END) {
 		BotEntLog("Taking too long! Giving up!");
 		RouteClear();
-	} else if (m_flNodeGiveup >= 0.5f) {
-		/* attempt a jump after half a second */
-
+	} else if (m_flNodeGiveup >= 0.5f) { /* attempt a jump after half a second */
 		/* don't bother if it's too high (we're aiming at air... */
-		if ((vecEndPos[2] - 32) < origin[2])
-			input_buttons |= INPUT_BUTTON2;
+		if ((vecEndPos[2] - 32) < origin[2]) {
+			input_buttons |= INPUT_JUMP;
+		}
 	} else {
 		/* entire way-link needs to be crouched. that's the law of the land */
 		if (Route_GetNodeFlags(&m_pRoute[m_iCurNode]) & LF_CROUCH || autocvar_bot_crouch)
-			input_buttons |= INPUT_BUTTON8;
+			input_buttons |= INPUT_CROUCH;
 	}
 }
 
@@ -285,7 +305,7 @@ NSBot::RunAI(void)
 	}
 
 	/* DEVELOPER CVAR: freeze the bot */
-	if (autocvar_bot_stop)
+	if (autocvar_bot_pause)
 		return;
 
 	/* create our first route */
@@ -344,8 +364,8 @@ NSBot::RunAI(void)
 	/* if we've got a path (we always should) move the bot */
 	if (m_iNodes) {
 		bool goRoute = false;
-		vector vecNewAngles;
-		vector vecDirection;
+		vector vecNewAngles = g_vec_null;
+		vector vecDirection = g_vec_null;
 
 		/* no enemy, or it isn't visible... then stare at nodes! */
 		if (!m_eTarget || enemyVisible == false) {
@@ -369,8 +389,7 @@ NSBot::RunAI(void)
 
 		/* aim ahead if aimPos is somehow invalid */
 		if (aimPos == [0,0,0]) {
-			makevectors(angles);
-			aimPos = origin + v_forward * 128;
+			aimPos = origin + anglesToForward(angles) * 128;
 		}
 
 		/* lerping speed, faster when we've got a target */
@@ -379,28 +398,17 @@ NSBot::RunAI(void)
 		else
 			flLerp = bound(0.0f, frametime * 30, 1.0f);
 
-		/* that's the old angle */
-		makevectors(v_angle);
-		vecNewAngles = v_forward;
+		/* that's actually the old angle */
+		vecNewAngles = anglesToForward(v_angle);
 
 		/* aimDir = new final angle */
-		aimDir = vectoangles(aimPos - origin);
-		makevectors(aimDir);
+		aimDir = vectorToAngles(aimPos - origin);
 
 		/* slowly lerp towards the final angle */
-		vecNewAngles[0] = Math_Lerp(vecNewAngles[0], v_forward[0], flLerp);
-		vecNewAngles[1] = Math_Lerp(vecNewAngles[1], v_forward[1], flLerp);
-		vecNewAngles[2] = Math_Lerp(vecNewAngles[2], v_forward[2], flLerp);
+		vecNewAngles = vectorLerp(vecNewAngles, anglesToForward(aimDir), flLerp);
 
 		/* make sure we're aiming tight */
-		v_angle = vectoangles(vecNewAngles);
-		v_angle[0] = Math_FixDelta(v_angle[0]);
-		v_angle[1] = Math_FixDelta(v_angle[1]);
-		v_angle[2] = Math_FixDelta(v_angle[2]);
-		angles[0] = Math_FixDelta(v_angle[0]);
-		angles[1] = Math_FixDelta(v_angle[1]);
-		angles[2] = Math_FixDelta(v_angle[2]);
-		input_angles = v_angle;
+		input_angles = angles = v_angle = vectorToAngles(vecNewAngles);
 
 		bool shouldWalk = autocvar_bot_walk;
 
@@ -460,21 +468,23 @@ NSBot::RunAI(void)
 			ForceWeaponAttack(traceEnt.WorldSpaceCenter(), 1.0f);
 		}
 
-		/* now we'll set the movevalues relative to the input_angle */
+		/* make them walk when they need to. */
 		if ((m_iCurNode >= 0 && Route_GetNodeFlags(&m_pRoute[m_iCurNode]) & LF_WALK) || shouldWalk)
-			vecDirection = normalize(aimPos - origin) * GetWalkSpeed();
+			SetMoveSpeedScale(0.5f);
 		else
-			vecDirection = normalize(aimPos - origin) * GetRunSpeed();
+			SetMoveSpeedScale(1.0f);
 
+		vecDirection = vectorNormalize(aimPos - GetEyePos()) * g_pmoveVars.pm_walkspeed;
 		makevectors(input_angles);
 		input_movevalues = [v_forward * vecDirection, v_right * vecDirection, v_up * vecDirection];
+
 		input_movevalues[2] = 0;
 
 #if 1
 		/* duck and stand still when our enemy seems strong */
 		if (m_eTarget && enemyVisible && m_eTarget.health >= 75) {
 			if (m_wtWeaponType == WPNTYPE_RANGED) {
-				input_buttons |= INPUT_BUTTON8;
+				input_buttons |= INPUT_CROUCH;
 				input_movevalues = [0,0,0];
 			}
 		}
@@ -482,14 +492,14 @@ NSBot::RunAI(void)
 	}
 
 	/* press any buttons needed */
-	button0 = input_buttons & INPUT_BUTTON0; // attack
-	button2 = input_buttons & INPUT_BUTTON2; // jump
-	button3 = input_buttons & INPUT_BUTTON3; // tertiary
-	button4 = input_buttons & INPUT_BUTTON4; // reload
-	button5 = input_buttons & INPUT_BUTTON5; // secondary
-	button6 = input_buttons & INPUT_BUTTON6; // use
-	button7 = input_buttons & INPUT_BUTTON7; // unused
-	button8 = input_buttons & INPUT_BUTTON8; // duck
+	button0 = input_buttons & INPUT_PRIMARY; // attack
+	button2 = input_buttons & INPUT_JUMP; // jump
+	button3 = input_buttons & INPUT_PRONE; // prone
+	button4 = input_buttons & INPUT_RELOAD; // reload
+	button5 = input_buttons & INPUT_SECONDARY; // secondary
+	button6 = input_buttons & INPUT_USE; // use
+	button7 = input_buttons & INPUT_SPRINT; // unused
+	button8 = input_buttons & INPUT_CROUCH; // duck
 	movement = input_movevalues;
 }
 
@@ -515,9 +525,9 @@ void
 NSBot::SetName(string nickname)
 {
 	if (autocvar_bot_prefix)
-		forceinfokey(this, "name", sprintf("%s %s", autocvar_bot_prefix, nickname));
+		SetInfoKey("name", sprintf("%s %s", autocvar_bot_prefix, nickname));
 	else
-		forceinfokey(this, "name", nickname);
+		SetInfoKey("name", nickname);
 }
 
 void
@@ -525,7 +535,7 @@ NSBot::NSBot(void)
 {
 	classname = "player";
 	targetname = "_nuclide_bot_";
-	forceinfokey(this, "*bot", "1");
+	SetInfoKey("*bot", "1");
 }
 
 void

@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+var bool autocvar_cg_damageShake = false;
+
 void
 EV_Damage(void)
 {
@@ -26,6 +28,13 @@ EV_Damage(void)
 	iDmgTake = readint();
 	iDmgFlags = readint();
 	CSQC_Parse_Damage_New(vecDmgPos, iDmgTake, iDmgFlags);
+
+	if (autocvar_cg_damageShake) {
+		pSeat->m_flShakeDuration += 1.25f;
+		pSeat->m_flShakeAmp += iDmgTake / 16;
+		pSeat->m_flShakeFreq += 0.1;
+		pSeat->m_flShakeTime += pSeat->m_flShakeDuration;
+	}
 }
 
 void

@@ -14,26 +14,13 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+#include "cvars.h"
 #include "NSBot.h"
 
 vector Route_SelectDestination( NSBot target );
 
-var int autocvar_bot_aimless = FALSE;
-
 var int autocvar_nav_linksize = 256;
 var int autocvar_nav_radius = 8;
-
-var bool autocvar_bot_crouch = false;
-var bool autocvar_bot_walk = false;
-var bool autocvar_bot_stop = false;
-var bool autocvar_bot_dont_shoot = false;
-
-var bool autocvar_bot_join_after_player = false;
-var float autocvar_bot_join_delay = 0.0f;
-var int autocvar_bot_quota = 0i;
-var string autocvar_bot_quota_mode = "normal";
-var string autocvar_bot_chatter = "normal";
-var bool autocvar_bot_developer = false;
 
 void
 _BotLog(string functionName, string msg)
@@ -58,15 +45,6 @@ _BotEntLog(string className, string functionName, float edictNum, string warnMes
 
 @param description(...) contains a formatted string containing a description. */
 #define BotEntLog(...) if (autocvar_bot_developer) _BotEntLog(classname, __FUNC__, num_for_edict(this), sprintf(__VA_ARGS__))
-
-typedef enum
-{
-	BOTSKILL_EASY = 1,
-	BOTSKILL_MEDIUM,
-	BOTSKILL_HARD
-} botskill_t;
-
-var botskill_t autocvar_bot_skill = BOTSKILL_MEDIUM;
 
 var string autocvar_bot_prefix = "";
 

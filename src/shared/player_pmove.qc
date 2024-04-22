@@ -35,14 +35,6 @@ int saved_input_buttons;
 	#define PHY_FALLDMG_TYPE 1
 #endif
 
-#ifndef PHY_JUMP_HEIGHT
-	#define PHY_JUMP_HEIGHT 240
-#endif
-
-#ifndef PHY_WATERJUMP_HEIGHT
-	#define PHY_WATERJUMP_HEIGHT 350
-#endif
-
 #ifndef PHY_DIVESPEED_WATER
 	#define PHY_DIVESPEED_WATER 100
 #endif
@@ -91,43 +83,162 @@ NSClientPlayer::Physics_Fall(float flDownforce)
 void
 NSClientPlayer::Physics_Crouch(void)
 {
-	bool crouchfix = false;
+	bool crouchFix = false;
+	vector testOrigin = origin;
+	vector testMins = g_vec_null;
+	vector testMaxs = g_vec_null;
+	bool stateChanged = false;
 
 	if (GetMovetype() != MOVETYPE_WALK)
 		return;
 
-	if (input_buttons & INPUT_BUTTON8) {
-		AddFlags(FL_CROUCHING);
+	if (CanCrouch() && input_buttons & INPUT_CROUCH) {
+		if (!IsCrouching()) {
+			testMins = g_pmoveVars.GetCrouchMins();
+			testMaxs = g_pmoveVars.GetCrouchMaxs();
+
+			if (PMove_IsStuck(this, origin, testMins, testMaxs) == false) {
+				AddVFlags(VFL_CROUCHING);
+				stateChanged = true;
+				/*printf("Now crouch.\n");*/
+			}
+		}
+	} else {
+		/* if we aren't ducking any longer, attempt to stand up */
+		if (IsCrouching()) {
+			/*printf("No longer crouch.\n");*/
+
+			/* if they're going prone mode, we'll have to test that */
+			if (input_buttons & INPUT_PRONE) {
+				testMins = g_pmoveVars.GetProneMins();
+				testMaxs = g_pmoveVars.GetProneMaxs();
+				/*printf("Want to prone.\n");*/
+			} else {
+				testMins = g_pmoveVars.GetStandingMins();
+				testMaxs = g_pmoveVars.GetStandingMaxs();
+				/*printf("Want to stand.\n");*/
+			}
+
+			testOrigin[2] = (origin[2] + mins[2]) - testMins[2];
+
+			/* will we fit here? if not, don't remove the CROUCH flag */
+			if (PMove_IsStuck(this, testOrigin, testMins, testMaxs) == false) {
+				RemoveVFlags(VFL_CROUCHING);
+				stateChanged = true;
+				/*printf("Fill fit.\n");*/
+			} else if (PMove_IsStuck(this, testOrigin + [0,0,18], testMins, testMaxs) == false) {
+				RemoveVFlags(VFL_CROUCHING);
+				stateChanged = true;
+				crouchFix = true;
+				/*printf("Fill have to nudge up to 18 units.\n");*/
+			}
+		}
+	}
+	/* state didn't change, don't update size */
+	if (!stateChanged)
+		return;
+
+	if (IsCrouching()) {
+		mins = g_pmoveVars.GetCrouchMins();
+		maxs = g_pmoveVars.GetCrouchMaxs();
+		/*printf("State change finished.\n");*/
+	} else {
+		mins = testMins;
+		maxs = testMaxs;
+
+		if (crouchFix == true && PMove_IsStuck(this, testOrigin, testMins, testMaxs)) {
+			/* check if we can get unstuck by testing up to a few units up */
+			for (int i = 0; i < 18; i++) {
+				if (PMove_IsStuck(this, testOrigin, testMins, testMaxs) == false) {
+					/*printf("State change finished after %i units.\n", i);*/
+					break;
+				}
+				testOrigin[2] += 1;
+			}
+		}
+		SetOrigin(testOrigin);
+	}
+}
+
+void
+NSClientPlayer::Physics_Prone(void)
+{
+	bool proneFix = false;
+	vector testOrigin = origin;
+	vector testMins = g_vec_null;
+	vector testMaxs = g_vec_null;
+	bool stateChanged = false;
+
+	if (GetMovetype() != MOVETYPE_WALK)
+		return;
+
+	if (CanProne() && input_buttons & INPUT_PRONE) {
+		if (!IsProne()) {
+			testMins = g_pmoveVars.GetProneMins();
+			testMaxs = g_pmoveVars.GetProneMaxs();
+
+			if (PMove_IsStuck(this, origin, testMins, testMaxs) == false) {
+				AddVFlags(VFL_PRONE);
+				stateChanged = true;
+				/*printf("Now prone.\n");*/
+			}
+		}
 	} else {
 		/* if we aren't holding down duck anymore and 'attempt' to stand up, prevent it */
-		if (GetFlags() & FL_CROUCHING) {
-			vector vecTest = [0, 0, PHY_HULL_MAX[2]];
-			if (PMove_IsStuck(this, vecTest, PHY_HULL_MIN, PHY_HULL_MAX) == FALSE) {
-				RemoveFlags(FL_CROUCHING);
-				crouchfix = true;
+		if (IsProne()) {
+			/*printf("No longer prone.\n");*/
+
+			/* if they're going prone mode, we'll have to test that */
+			if (input_buttons & INPUT_CROUCH) {
+				testMins = g_pmoveVars.GetCrouchMins();
+				testMaxs = g_pmoveVars.GetCrouchMaxs();
+				/*printf("Want to crouch.\n");*/
+			} else {
+				testMins = g_pmoveVars.GetStandingMins();
+				testMaxs = g_pmoveVars.GetStandingMaxs();
+				/*printf("Want to stand.\n");*/
 			}
-		} else {
-			RemoveFlags(FL_CROUCHING);
+
+			testOrigin[2] = (origin[2] + mins[2]) - testMins[2];
+
+			/* will we fit? */
+			if (PMove_IsStuck(this, testOrigin, testMins, testMaxs) == false) {
+				RemoveVFlags(VFL_PRONE);
+				stateChanged = true;
+				/*printf("Will fit.\n");*/
+			} else if (PMove_IsStuck(this, testOrigin + [0, 0, 18], testMins, testMaxs) == false) {
+				RemoveVFlags(VFL_PRONE);
+				proneFix = true;
+				stateChanged = true;
+				/*printf("Fill have to nudge up to 18 units.\n");*/
+			}
 		}
 	}
 
-	if (GetFlags() & FL_CROUCHING) {
-		SetSize(PHY_HULL_CROUCHED_MIN, PHY_HULL_CROUCHED_MAX);
-		view_ofs = PHY_VIEWPOS_CROUCHED;
-	} else {
-		SetSize(PHY_HULL_MIN, PHY_HULL_MAX);
+	/* prevent expensive operations. */
+	if (!stateChanged)
+		return;
 
-		if (crouchfix == true && PMove_IsStuck(this, [0,0,0], PHY_HULL_MIN, PHY_HULL_MAX)) {
+	if (IsProne()) {
+		mins = g_pmoveVars.GetProneMins();
+		maxs = g_pmoveVars.GetProneMaxs();
+		/*printf("State change finished.\n");*/
+	} else {
+		mins = testMins;
+		maxs = testMaxs;
+		origin = testOrigin;
+
+		if (proneFix == true && PMove_IsStuck(this, origin, mins, maxs)) {
 			/* check if we can get unstuck by testing up to a few units up */
-			for (int i = 0; i < 36; i++) {
-				origin[2] += 1;
-				if (PMove_IsStuck(this, [0,0,0], mins, maxs) == FALSE) {
+			for (int i = 1; i < 18; i++) {
+				if (PMove_IsStuck(this, origin, mins, maxs) == false) {
+					/*printf("State change finished after %i units.\n", i);*/
 					break;
 				}
+				origin[2] += 1;
 			}
 		}
 		SetOrigin(origin);
-		view_ofs = PHY_VIEWPOS;
 	}
 }
 
@@ -150,7 +261,7 @@ NSClientPlayer::Physics_Jump(void)
 	} else {
 		/* standard jump here */
 		if (GetFlags() & FL_ONGROUND)
-			velocity[2] += PHY_JUMP_HEIGHT;
+			velocity[2] += g_pmoveVars.pm_jumpheight;
 	}
 }
 
@@ -159,7 +270,7 @@ void
 NSClientPlayer::Physics_CheckJump(float premove)
 {
 	/* unset jump-key whenever it's not set */
-	if (!(input_buttons & INPUT_BUTTON2)) {
+	if (!(input_buttons & INPUT_JUMP)) {
 		AddFlags(FL_JUMPRELEASED);
 		return;
 	}
@@ -171,10 +282,10 @@ NSClientPlayer::Physics_CheckJump(float premove)
 
 	/* if a player wants to be able to hold jump, let them */
 	if (!(infokey(this, "autojump") == "1"))
-	if (!(GetFlags() & FL_JUMPRELEASED))
-		return;
+		if (HasFlags(FL_JUMPRELEASED) == false)
+			return;
 
-	if (input_buttons & INPUT_BUTTON2 && premove) {
+	if (input_buttons & INPUT_JUMP && premove) {
 		if (velocity[2] < 0) {
 			velocity[2] = 0;
 		}
@@ -189,17 +300,14 @@ NSClientPlayer::Physics_CheckJump(float premove)
 void
 NSClientPlayer::Physics_SetViewParms(void)
 {
-	if (GetFlags() & FL_CROUCHING) {
-		mins = PHY_HULL_CROUCHED_MIN;
-		maxs = PHY_HULL_CROUCHED_MAX;
-		view_ofs = PHY_VIEWPOS_CROUCHED;
+	/* cheap operations */
+	if (IsCrouching()) {
+		view_ofs = g_pmoveVars.GetCrouchViewOffset();
+	} else if (IsProne()) {
+		view_ofs = g_pmoveVars.GetProneViewOffset();
 	} else {
-		mins = PHY_HULL_MIN;
-		maxs = PHY_HULL_MAX;
-		view_ofs = PHY_VIEWPOS;
+		view_ofs = g_pmoveVars.GetStandingViewOffset();
 	}
-
-	SetSize(mins, maxs);
 }
 
 void
@@ -223,7 +331,7 @@ NSClientPlayer::Physics_WaterJump(void)
 
 		/* there's nothing preventing us from putting our hands up here */
 		if (trace_fraction == 1.0) {
-			velocity[2] = PHY_WATERJUMP_HEIGHT;
+			velocity[2] = g_pmoveVars.pm_waterjumpheight;
 			AddFlags(FL_WATERJUMP);
 			RemoveFlags(FL_JUMPRELEASED);
 			return;
@@ -304,9 +412,34 @@ NSClientPlayer::Physics_WaterMove(void)
 float
 NSClientPlayer::Physics_MaxSpeed(void)
 {
-	float maxValue = serverkeyfloat("phy_maxspeed");
-	float wishSpeed = (GetFlags() & FL_CROUCHING) ? PMOVE_STEP_WALKSPEED : maxValue;
-	return min(wishSpeed, maxValue);
+	float wishSpeed = 0.0f;
+	float runSpeed = g_pmoveVars.pm_runspeed;
+	float maxStamina = g_pmoveVars.pm_stamina;
+	float crouchSpeed = g_pmoveVars.pm_crouchspeed;
+	float walkSpeed = g_pmoveVars.pm_walkspeed;
+	float proneSpeed = g_pmoveVars.pm_pronespeed;
+
+	if (CanSprint() && IsSprinting()) {
+		if (m_flStamina < maxStamina) {
+			float slowDownThresh = g_pmoveVars.pm_staminathreshold;
+
+			if ((m_flStamina + slowDownThresh) > maxStamina) {
+				float delta = (m_flStamina + slowDownThresh) - maxStamina;
+				/* change maxValue to something between 1.0 and 1.5 */
+				runSpeed = lerp(runSpeed, walkSpeed, delta/slowDownThresh);
+			}
+		} 
+
+		wishSpeed = runSpeed;
+	} else if (IsCrouching()) {
+		wishSpeed = crouchSpeed;
+	} else if (IsProne()) {
+		wishSpeed = proneSpeed;
+	} else {
+		wishSpeed = walkSpeed;
+	}
+
+	return wishSpeed;
 }
 
 void
@@ -314,11 +447,7 @@ NSClientPlayer::Physics_InputPreMove(void)
 {
 	NSVehicle currentVehicle = (NSVehicle)vehicle;
 	bool canMove = true;
-
-	/* when pressing the 'use' button, we also walk slower for precision */
-	if (input_buttons & INPUT_BUTTON5) {
-		input_movevalues *= 0.25;
-	}
+	bool canFire = true;
 
 	/* find all the valid ways to freeze a player... */
 	if (currentVehicle) {
@@ -326,14 +455,25 @@ NSClientPlayer::Physics_InputPreMove(void)
 			canMove = false;
 	}
 
-	if (flags & FL_FROZEN || movetype == MOVETYPE_NONE) {
+	if (vv_flags & VFL_FROZEN || movetype == MOVETYPE_NONE) {
 		canMove = false;
 	}
 
 	/* freeze in place */
 	if (canMove == false) {
 		input_movevalues = [0,0,0];
-		input_buttons &= ~INPUT_BUTTON2;
+		input_buttons &= ~INPUT_JUMP;
+	}
+
+	/* freeze in place */
+	if (vv_flags & VFL_NOATTACK) {
+		input_buttons &= ~INPUT_PRIMARY;
+		input_buttons &= ~INPUT_RELOAD;
+	}
+
+	/* when pressing the 'use' button, we also walk slower for precision */
+	if (input_buttons & INPUT_USE) {
+		input_movevalues *= 0.5;
 	}
 
 	/* clamp movement values to max speed */
@@ -349,8 +489,10 @@ NSClientPlayer::Physics_InputPreMove(void)
 
 	/* suppress crouching in vehicles */
 	if (currentVehicle) {
-		if (currentVehicle.CanDriverCrouch() == false)
-			input_buttons &= ~INPUT_BUTTON8;
+		if (currentVehicle.CanDriverCrouch() == false) {
+			input_buttons &= ~INPUT_CROUCH;
+			input_buttons &= ~INPUT_PRONE;
+		}
 	}
 }
 
@@ -363,6 +505,21 @@ NSClientPlayer::Physics_InputPostMove(void)
 	w_attack_next = max(0, w_attack_next - input_timelength);
 	w_idle_next = max(0, w_idle_next - input_timelength);
 	weapontime += input_timelength;
+
+	if (input_buttons & INPUT_SPRINT) {
+		m_flStamina += input_timelength;
+	} else {
+		float toSubtract = input_timelength;
+		toSubtract *= g_pmoveVars.pm_staminarate;
+		m_flStamina = max(0, m_flStamina - toSubtract);
+	}
+
+	if (m_flStamina > g_pmoveVars.pm_stamina) {
+		m_flStamina = g_pmoveVars.pm_stamina;
+	}
+
+	//printf("stamina: %f\n", m_flStamina);
+
 	punch = max(0, 1.0f - (input_timelength * 4));
 	punchangle[0] *= punch;
 	punchangle[1] *= punch;
@@ -370,8 +527,6 @@ NSClientPlayer::Physics_InputPostMove(void)
 
 	/* player animation code */
 	UpdatePlayerAnimation(input_timelength);
-
-	RemoveFlags(FL_FROZEN);
 	ProcessInput();
 }
 
@@ -382,9 +537,18 @@ NSClientPlayer::Physics_Run(void)
 	float flFallVel = (flags & FL_ONGROUND) ? 0 : -velocity[2];
 	float flBaseVel =  basevelocity[2];
 	bool wasOnGround = (flags & FL_ONGROUND) ? true : false;
+	bool sprintFail = false;
 
 	saved_input_movevalues = input_movevalues;
 	saved_input_buttons = input_buttons;
+
+	sprintFail = ((input_buttons & INPUT_CROUCH) || (input_buttons & INPUT_PRONE)) ? true : false;
+
+	if (input_buttons & INPUT_SPRINT && sprintFail == false) {
+		AddVFlags(VFL_SPRINTING);
+	} else {
+		RemoveVFlags(VFL_SPRINTING);
+	}
 
 	/* maxspeed changes when crouching, TODO: make this game-specific */
 	maxspeed = Physics_MaxSpeed();
@@ -407,6 +571,7 @@ NSClientPlayer::Physics_Run(void)
 	Physics_SetViewParms();
 
 	Physics_Crouch();
+	Physics_Prone();
 	Physics_CheckJump(TRUE);
 
 #ifdef CUSTOMPLAYERPHYSICS
@@ -429,10 +594,7 @@ NSClientPlayer::Physics_Run(void)
 	input_movevalues = saved_input_movevalues;
 	input_buttons = saved_input_buttons;
 	Physics_InputPostMove();
-
-	angles[0] = Math_FixDelta(angles[0]);
-	angles[1] = Math_FixDelta(angles[1]);
-	angles[2] = Math_FixDelta(angles[2]);
+	angles = fixAngle(angles);
 
 #ifdef SERVER
 	/* Use Flagger */
@@ -441,12 +603,13 @@ NSClientPlayer::Physics_Run(void)
 	src = origin + view_ofs;
 	dest = src + v_forward * 64;
 	traceline(src, dest, MOVE_NORMAL, this);
+	RemoveVFlags(VFL_ONUSABLE);
 
-	RemoveFlags(FL_ONUSABLE);
 	if (trace_ent.identity == 1) {
 		NSEntity foo = (NSEntity)trace_ent;
+
 		if (foo.PlayerUse) {
-			flags |= FL_ONUSABLE;
+			AddVFlags(VFL_ONUSABLE);
 		}
 	}
 

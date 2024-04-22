@@ -44,6 +44,9 @@ public:
 
 	/* overrides */
 	virtual void OnRemoveEntity(void);
+	virtual float GetForwardSpeed(void);
+	virtual float GetSideSpeed(void);
+	virtual float GetBackSpeed(void);
 
 #ifdef CLIENT
 	/** Client: Called on the client to give a chance to override input_* variables before networking them takes place. */

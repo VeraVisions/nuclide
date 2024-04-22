@@ -54,10 +54,10 @@ NSVehicle::Restore(string strKey, string strValue)
 		m_vecMoveValues = ReadVector(strValue);
 		break;
 	case "m_eDriver":
-		m_eDriver = ReadEntity(strValue);
+		m_eDriver = (NSEntity)ReadEntity(strValue);
 		break;
 	case "m_eDriverLast":
-		m_eDriverLast = ReadEntity(strValue);
+		m_eDriverLast = (NSEntity)ReadEntity(strValue);
 		break;
 	case "m_vecPlayerPos":
 		m_vecPlayerPos = ReadVector(strValue);
@@ -125,7 +125,7 @@ NSVehicle::DriverRelink(void)
 		m_eDriver = __NULL__;
 	else {
 		NSClientPlayer pl;
-		m_eDriver = findentity(world, ::entnum, driver_entnum);
+		m_eDriver = (NSEntity)findentity(world, ::entnum, driver_entnum);
 		pl = (NSClientPlayer)m_eDriver;
 		pl.vehicle = this;
 	}
@@ -215,7 +215,7 @@ NSVehicle::ReceiveEntity(float new, float fChanged)
 	}
 
 	if (fChanged & VEHFL_CHANGED_DRIVER) {
-		m_eDriver = findfloat(world, ::entnum, readentitynum());
+		m_eDriver = (NSEntity)findfloat(world, ::entnum, readentitynum());
 	}
 
 	if (new)
@@ -302,10 +302,6 @@ NSVehicle::EvaluateEntity(void)
 		SetSendFlags(VEHFL_CHANGED_ORIGIN);
 
 	if (ATTR_CHANGED(angles)) {
-		angles[0] = Math_FixDelta(angles[0]);
-		angles[1] = Math_FixDelta(angles[1]);
-		angles[2] = Math_FixDelta(angles[2]);
-
 		SetSendFlags(VEHFL_CHANGED_ANGLES);
 	}
 	if (ATTR_CHANGED(velocity))
@@ -400,7 +396,7 @@ void
 NSVehicle::PlayerUpdateFlags(void)
 {
 	if (m_iVehicleFlags & VHF_FROZEN)
-		m_eDriver.flags |= FL_FROZEN;
+		m_eDriver.vv_flags |= VFL_FROZEN;
 
 	/*if (m_iVehicleFlags & VHF_NOATTACK)
 		m_eDriver.flags |= FL_NOATTACK;*/
@@ -442,10 +438,10 @@ NSVehicle::PlayerEnter(NSClientPlayer pl)
 	m_vecExitPos = m_vecPlayerPos;
 	owner = pl;
 	//pl.movetype = MOVETYPE_NOCLIP;
-	m_eDriver = (entity)pl;
+	m_eDriver = (NSEntity)pl;
 	m_eDriverLast = m_eDriver;
 	pl.vehicle = this;
-	pl.flags |= FL_INVEHICLE;
+	pl.vv_flags |= VFL_INVEHICLE;
 	EntLog("Player %S entered this vehicle.", pl.GetInfoKey("name"));
 }
 
@@ -458,12 +454,12 @@ NSVehicle::PlayerLeave(NSClientPlayer pl)
 	EntLog("Player %S exits this vehicle.", pl.GetInfoKey("name"));
 
 	owner = __NULL__;
-	pl.flags &= ~FL_INVEHICLE;
+	pl.vv_flags &= ~VFL_INVEHICLE;
 	pl.velocity = g_vec_null;
 	setorigin_safe(pl, pl.origin);
 
 	if (m_iVehicleFlags & VHF_FROZEN)
-		pl.flags &= ~FL_FROZEN;
+		pl.vv_flags &= ~VFL_FROZEN;
 
 	/*if (m_iVehicleFlags & VHF_NOATTACK)
 		pl.flags &= ~FL_NOATTACK;*/

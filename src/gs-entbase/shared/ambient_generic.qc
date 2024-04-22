@@ -288,7 +288,8 @@ ambient_generic::UseNormal(entity act, triggermode_t state)
 	SndEntLog("Sample: %S Volume: %f; Radius: %d; Pitch: %f", m_strActivePath, m_flVolume, m_flRadius, m_flPitch);
 
 	if (substring(m_strActivePath, 0, 1) == "!") {
-		string seq = Sentences_GetSamples(m_strActivePath);
+		string sentenceWord = strtoupper(m_strActivePath);
+		string seq = Sentences_GetSamples(sentenceWord);
 
 		if (seq == "")
 			return;
@@ -296,7 +297,7 @@ ambient_generic::UseNormal(entity act, triggermode_t state)
 		WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 		WriteByte(MSG_MULTICAST, EV_SENTENCE);
 		WriteEntity(MSG_MULTICAST, this);
-		WriteInt(MSG_MULTICAST, Sentences_GetID(m_strActivePath));
+		WriteInt(MSG_MULTICAST, Sentences_GetID(sentenceWord));
 		msg_entity = this;
 		multicast(origin, MULTICAST_PHS);
 	} else {

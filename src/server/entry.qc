@@ -21,8 +21,6 @@ static int g_ent_spawned;
 void
 StartFrame(void)
 {
-	PMove_StartFrame();
-
 	/* For entity parenting to work, we need to go through and run on every
 	 * this method on every NSEntity class */
 	for (entity a = world; (a = findfloat(a, ::identity, 1));) {
@@ -180,7 +178,8 @@ PutClientInServer(void)
 	trigger_auto_trigger();
 
 	if (g_grMode.InIntermission() == true) {
-		g_grMode.IntermissionToPlayer((NSClientPlayer)self);
+		NSClientPlayer pl = (NSClientPlayer)self;
+		g_grMode.IntermissionToPlayer(pl);
 	}
 }
 
@@ -321,51 +320,9 @@ SV_ParseClientCommand(string cmd)
 		if (g_grMode.ClientCommand((NSClient)self, cmd) == true)
 			return;
 
-	argc = tokenize(cmd);
+	argc = (int)tokenize(cmd);
 
-	switch (argv(0)) {
-	case "say":
-		if (argc == 2)
-			g_grMode.ChatMessageAll((NSClient)self, argv(1));
-		else
-			g_grMode.ChatMessageAll((NSClient)self, substring(cmd, 5, -2));
-		break;
-	case "say_team":
-		if (argc == 2)
-			g_grMode.ChatMessageTeam((NSClient)self, argv(1));
-		else
-			g_grMode.ChatMessageTeam((NSClient)self, substring(cmd, 10, -2));
-		break;
-	case "spectate":
-		if (self.classname != "player")
-			break;
-
-		player pl = (player)self;
-		pl.MakeSpectator();
-		break;
-	case "play":
-		if (self.classname != "spectator")
-			break;
-		spawnfunc_player();
-		PutClientInServer();
-		break;
-	case "setpos":
-		if (cvar("sv_cheats") == 1) {
-			setorigin(self, stov(argv(1)));
-		}
-		break;
-	case "timeleft":
-		string msg;
-		string timestring;
-		float timeleft;
-		timeleft = cvar("timelimit") - (time / 60);
-		timestring = Util_TimeToString(timeleft);
-		msg = sprintf("we have %s minutes remaining", timestring);
-		bprint(PRINT_CHAT, msg);
-		break;
-	default:
-		clientcommand(self, cmd);
-	}
+	Cmd_ParseClientCommand((NSClient)self, cmd, argc);
 }
 
 /** Called when the QC module gets loaded.
@@ -378,6 +335,10 @@ init(float prevprogs)
 	NSLog("Built: %s %s", __DATE__, __TIME__);
 	NSLog("QCC: %s", __QCCVER__);
 
+	Skill_Init();
+	EntityDef_Init();
+	MapTweaks_Init();
+	MapC_Init();
 	Plugin_Init();
 
 	Constants_Init();
@@ -475,6 +436,7 @@ initents(void)
 	 * let's add our own that we can actually trust. */
 	forceinfokey(world, "sv_playerslots", cvar_string("sv_playerslots"));
 
+	MapC_CallMainFunction();
 	Plugin_InitEnts();
 	Mapcycle_Init();
 	Vote_Init();
@@ -535,121 +497,7 @@ ConsoleCmd(string cmd)
 
 	/* time to handle commands that apply to all games */
 	tokenize(cmd);
-	switch (argv(0)) {
-	case "addBot":
-		string botProfile = strtolower(argv(1));
-		float teamValue = stof(argv(2));
-		float spawnDelay = stof(argv(3));
-		string newName = argv(4);
-		Bot_AddBot_f(botProfile, teamValue, spawnDelay, newName);
-		break;
-	case "killAllBots":
-		Bot_KillAllBots();
-		break;
-	case "resetAllBotsGoals":
-		Bot_ResetAllBotsGoals();
-		break;
-	case "listBotProfiles":
-		Bot_ListBotProfiles_f();
-		break;
-	case "killClass":
-		string targetClass;
-		targetClass = argv(1);
-
-		if (targetClass)
-		for (entity a = world; (a = find(a, ::classname, targetClass));) {
-			NSEntity t = (NSEntity)a;
-			t.Destroy();
-		}
-		break;
-	case "killMovables":
-		for (entity a = world; (a = findfloat(a, ::movetype, MOVETYPE_PHYSICS));) {
-			NSEntity t = (NSEntity)a;
-			t.Destroy();
-		}
-		break;
-	case "trigger":
-		string targ;
-		targ = argv(1);
-
-		if (targ)
-		for (entity a = world; (a = find(a, ::targetname, targ));) {
-			NSEntity t = (NSEntity)a;
-
-			if (t.Trigger)
-				t.Trigger(self, TRIG_TOGGLE);
-		}
-		break;
-	case "input":
-		float entNum = stof(argv(1));
-		string inputName = argv(2);
-		string inputData = argv(3);
-		NSEntity inputTarget = (NSEntity)edict_num(entNum);
-
-		if (inputTarget) {
-			inputTarget.Input(self, inputName, inputData);
-			print(sprintf("Sending input to %d, %S: %S\n", entNum, inputName, inputData));
-		}
-		break;
-	case "listTargets":
-		for (entity a = world; (a = findfloat(a, ::identity, 1));) {
-			if (a.targetname) {
-				print(sprintf("%d: %s (%s)\n", num_for_edict(a), a.targetname, a.classname));
-			}
-		}
-		break;
-	case "teleport":
-		static entity targetFinder;
-		targetFinder = find(targetFinder, ::targetname, argv(1));
-
-		/* try at least one more time to skip world */
-		if (!targetFinder)
-			targetFinder = find(targetFinder, ::targetname, argv(1));
-
-		if (targetFinder)
-			setorigin(pl, targetFinder.origin);
-		break;
-	case "teleportToClass":
-		static entity finder;
-		finder = find(finder, ::classname, argv(1));
-
-		/* try at least one more time to skip world */
-		if (!finder)
-			finder = find(finder, ::classname, argv(1));
-
-		if (finder)
-			setorigin(pl, finder.origin);
-		break;
-	case "renetworkEntities":
-		for (entity a = world; (a = findfloat(a, ::identity, 1));) {
-			NSEntity ent = (NSEntity)a;
-			ent.SendFlags = -1;
-		}
-		break;
-	case "respawnEntities":
-		for (entity a = world; (a = findfloat(a, ::identity, 1));) {
-			NSEntity ent = (NSEntity)a;
-			ent.Respawn();
-		}
-		break;
-	case "spawn":
-		NSEntity unit = EntityDef_CreateClassname(argv(1));
-		makevectors(pl.v_angle);
-		traceline(pl.origin, pl.origin + (v_forward * 1024), MOVE_NORMAL, pl);
-		setorigin(unit, trace_endpos);
-		break;
-#ifdef BOT_INCLUDED
-	case "way":
-		Way_Cmd();
-		break;
-#endif
-	case "listSoundDef":
-		Sound_DebugList();
-		break;
-	default:
-		return (0);
-	}
-	return (1);
+	return Cmd_ParseServerCommand();
 }
 
 /** Returns TRUE if the server can pause the server when the 'pause' command

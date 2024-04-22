@@ -37,7 +37,7 @@ GameRules::LevelDecodeParms(NSClientPlayer pp)
 	pl.activeweapon = parm11;
 	pl.flags = parm64;
 
-	if (pl.flags & FL_CROUCHING) {
+	if (pl.vv_flags & VFL_CROUCHING) {
 		setsize(pl, VEC_CHULL_MIN, VEC_CHULL_MAX);
 	} else {
 		setsize(pl, VEC_HULL_MIN, VEC_HULL_MAX);

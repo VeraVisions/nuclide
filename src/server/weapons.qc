@@ -383,3 +383,14 @@ CSEv_DropWeapon(void)
 	Weapon_DropCurrentWeapon(pl);
 }
 #endif
+
+void
+CSEv_PlayerSwitchWeapon_i(int w)
+{
+	player pl = (player)self;
+
+	if (pl.activeweapon != w) {
+		pl.activeweapon = w;
+		Weapons_Draw(pl);
+	}
+}

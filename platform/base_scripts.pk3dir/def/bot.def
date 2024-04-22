@@ -1,4 +1,4 @@
 entityDef bot
 {
-	spawnclass NSBot
+	"spawnclass" "NSBot"
 }

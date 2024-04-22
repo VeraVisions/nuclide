@@ -42,15 +42,15 @@ A button that rotates along a pivot point. Used for valves, spigots and alike.
 # KEYS
 - "targetname" : Name
 - "target" : Name of the entity to trigger when opened
-- "speed" : How fast the button rotates when activated.
+- "speed" : How fast the button turns when activated.
 - "health" : If non-zero, the button must be damaged to turn.
-- "wait" : Time to wait before button resets itself. -1 makes it stay set.
+- "wait" : Time until the button turns back. A value of -1 makes it stay static.
 - "distance" : Distance in degrees the button will rotate.
 
 # SPAWNFLAGS
-- NONSOLID (1) : Don't do collision testing against this entity.
-- REVERSE (2) : Rotate the counter-clockwise.
-- NOAUTORETURN (32) : Will not return by itself.
+- NONSOLID (1) : Button won't have collision.
+- REVERSE (2) : Rotates counter-clockwise.
+- NOAUTORETURN (32) : Will not return by itself. 
 - XAXIS (64) : Rotate along the X-axis.
 - YAXIS (128) : Rotate along the Y-axis.
 
@@ -247,7 +247,7 @@ func_rot_button::OnPlayerUse(void)
 void
 func_rot_button::Touch(entity eToucher)
 {
-	eActivator = eToucher;
+	eActivator = (NSEntity)eToucher;
 
 	if (HasSpawnFlags(FNCROTBUT_TOUCHABLE))
 		TurnToggle();

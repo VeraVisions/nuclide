@@ -154,9 +154,7 @@ prop_rope::predraw(void)
 		}
 
 		/* travel further and sag */
-		pos2[0] = Math_Lerp(origin[0], m_vecTarget[0], progress);
-		pos2[1] = Math_Lerp(origin[1], m_vecTarget[1], progress);
-		pos2[2] = Math_Lerp(origin[2], m_vecTarget[2], progress);
+		pos2 = vectorLerp(origin, m_vecTarget, progress);
 		pos2 += (v_up * -sag) * autocvar_rope_sag;
 
 		if (!autocvar_rope_fast)

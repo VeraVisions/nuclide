@@ -263,9 +263,9 @@ point_trigger::WillThisTrigger(entity eAct)
 		return true;
 	if (HasSpawnFlags(PTRIG_ALLIES) && eAct.flags & FL_MONSTER && eAct.m_iAlliance == MAL_FRIEND)
 		return true;
-	if (HasSpawnFlags(PTRIG_VEHPLAYER) && eAct.flags & FL_CLIENT && eAct.flags & FL_INVEHICLE)
+	if (HasSpawnFlags(PTRIG_VEHPLAYER) && eAct.flags & FL_CLIENT && eAct.vv_flags & VFL_INVEHICLE)
 		return true;
-	if (HasSpawnFlags(PTRIG_NOVEHCL) && eAct.flags & FL_CLIENT && !(eAct.flags & FL_INVEHICLE))
+	if (HasSpawnFlags(PTRIG_NOVEHCL) && eAct.flags & FL_CLIENT && !(eAct.vv_flags & VFL_INVEHICLE))
 		return true;
 
 	return false;

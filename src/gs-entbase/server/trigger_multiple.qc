@@ -139,7 +139,7 @@ trigger_multiple::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "wait":
-		m_flWait = stof(strValue);
+		m_flWait = ReadFloat(strValue);
 		break;
 	case "StartDisabled":
 		m_bStartDisabled = ReadBool(strValue);
@@ -201,7 +201,10 @@ trigger_multiple::Input(entity entityActivator, string inputName, string dataFie
 void
 trigger_multiple::Touch(entity eToucher)
 {
-	if (GetMaster(eToucher) == FALSE)
+	if (IsThinking() == true)
+		return;
+
+	if (GetMaster(eToucher) == false)
 		return;
 
 	if (m_bEnabled == false)

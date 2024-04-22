@@ -33,6 +33,7 @@ public:
 	nonvirtual void InitPointTrigger(void);
 
 #ifdef SERVER
+	virtual void SpawnKey(string, string);
 	virtual void Save(float);
 	virtual void Restore(string, string);
 

@@ -61,6 +61,7 @@ private:
 	string m_oldModel; /**< contains the model that the entity spawned with */
 	float m_oldSolid; /**< contains the collision type the entity spawned with */
 	bool m_bIsBrush;
+	vector m_vecEditorColor;
 
 	PREDICTED_VECTOR_N(origin)
 	PREDICTED_VECTOR_N(angles)
@@ -72,11 +73,13 @@ private:
 	PREDICTED_FLOAT_N(movetype)
 	PREDICTED_FLOAT_N(scale)
 	PREDICTED_FLOAT_N(flags)
+	PREDICTED_FLOAT_N(vv_flags)
 	PREDICTED_VECTOR_N(velocity)
 	PREDICTED_VECTOR_N(avelocity)
 
 #ifdef SERVER
 	string m_parent;
+	string m_parent_old;
 	string m_parent_attachment;
 	PREDICTED_FLOAT_N(frame)
 	PREDICTED_FLOAT_N(skin)
@@ -149,6 +152,9 @@ public:
 	/** Unsets any any angle related values within the entity. */
 	nonvirtual void ClearAngles(void);
 
+	/** Simulates the press of the use/activate key, with the passed entity being the activator. */
+	nonvirtual void UseBy(entity);
+
 	/** Forces the entity to re-network updates to all clients. */
 	nonvirtual void ForceNetworkUpdate(void);
 #endif
@@ -157,9 +163,9 @@ public:
 	/** Sets the whole effects field. Check the effects_t enum for available effects.*/
 	nonvirtual void SetEffects(float);
 	/** Appends one or more effects to the entity. Check the effects_t enum for available effects.*/
-	nonvirtual void AddEffects(float);
+	nonvirtual void AddEffects(effects_t);
 	/** Removes one or more effects from the entity. Check the effects_t enum for available effects.*/
-	nonvirtual void RemoveEffects(float);
+	nonvirtual void RemoveEffects(effects_t);
 	/** Sets the framegroup sequence of the entity. Must be positive.*/
 	nonvirtual void SetFrame(float);
 	/** Sets the skingroup of the entity. Must be positive. */
@@ -170,7 +176,6 @@ public:
 	nonvirtual void SetOwner(entity);
 	/** Sets the movement velocity of the given entity. */
 	nonvirtual void SetVelocity(vector);
-
 
 	/** Adds onto the existing angular velocity. */
 	nonvirtual void AddAngularVelocity(vector);
@@ -201,10 +206,14 @@ public:
 	/** Sets the bounding box size of the entity.
 		This affects both collision and rendering bounds checking. */
 	nonvirtual void SetSize(vector,vector);
-	/** Adds one or more special flags to the entity. */
+	/** Adds one or more engine specific flags to the entity. */
 	nonvirtual void AddFlags(float);
-	/** Remove one or more special flags from the entity. */
+	/** Remove one or more engine specific flags from the entity. */
 	nonvirtual void RemoveFlags(float);
+	/** Adds one or more nuclide specific flags to the entity. */
+	nonvirtual void AddVFlags(float);
+	/** Remove one or more nuclide specific flags from the entity. */
+	nonvirtual void RemoveVFlags(float);
 
 	/** Turns to the specified angle. */
 	nonvirtual void TurnTo(float);
@@ -275,10 +284,14 @@ public:
 	/** Returns the absolute bounding box maxs of the entity,
 		instead of being relative to the world position. */
 	nonvirtual vector GetAbsoluteMaxs(void);
-	/** Returns a flag bitfield that the entity associates with. */
+	/** Returns an engine flags bitfield that the entity associates with. */
 	nonvirtual float GetFlags(void);
-	/** Returns true if the entity has the specified flags. */
+	/** Returns true if the entity has the specified engine flags. */
 	nonvirtual float HasFlags(float);
+	/** Returns a nuclide flags bitfield that the entity associates with. */
+	nonvirtual float GetVFlags(void);
+	/** Returns true if the entity has the specified, nuclide specific, flags. */
+	nonvirtual float HasVFlags(float);
 	/** Returns an absolute value of when the entity will be think again.
 		Any result should be tested against `::GetTime()`. */
 	nonvirtual float GetNextThinkTime(void);
@@ -286,6 +299,8 @@ public:
 	nonvirtual bool IsThinking(void);
 	/** When called, will unset anything related to ongoing think operations. */
 	nonvirtual void ReleaseThink(void);
+	/** When called, will make the entity think busy for the specified amount of time. In that time, IsThinking() will return true. */
+	nonvirtual void ThinkBusy(float);
 	/** When called, will clear anything related to physical movement on the entity. */
 	nonvirtual void ClearVelocity(void);
 
@@ -296,7 +311,6 @@ public:
 	nonvirtual void Hide(void);
 	/** Returns if the entity is currently being hidden explicitly. */
 	nonvirtual bool IsHidden(void);
-
 	/** Returns if the entity is solid or non-solid */
 	nonvirtual bool IsSolid(void);
 

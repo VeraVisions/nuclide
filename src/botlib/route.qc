@@ -39,7 +39,7 @@ Route_SelectFarthest(float type, vector org, optional vector lastpoi = [0,0,0])
 	entity dest = __NULL__;
 
 	for (temp = world; (temp = findfloat(temp, ::botinfo, type));) {
-		range = vlen(temp.origin - org);
+		range = distanceSquared(temp.origin, org);
 
 		if (lastpoi == temp.origin)
 			continue;
@@ -63,7 +63,7 @@ Route_SelectNearest(float type, vector org, optional vector lastpoi = [0,0,0])
 	entity dest = __NULL__;
 
 	for (temp = world; (temp = findfloat(temp, ::botinfo, type));) {
-		range = vlen(temp.origin - org);
+		range = distanceSquared(temp.origin, org);
 
 		if (lastpoi == temp.origin)
 			continue;
@@ -91,7 +91,7 @@ Route_SelectNearestTeam(float type, vector org, float tt)
 		if (temp.team != tt)
 			continue;
 
-		range = vlen(tempEnt.WorldSpaceCenter() - org);
+		range = distanceSquared(tempEnt.WorldSpaceCenter(), org);
 
 		if ((range < bestrange) && (temp.solid != SOLID_NOT)) {
 			bestrange = range;
@@ -116,7 +116,7 @@ Route_SelectNearestEnemyTeam(float type, vector org, float tt)
 		if (temp.team == tt)
 			continue;
 
-		range = vlen(tempEnt.WorldSpaceCenter() - org);
+		range = distanceSquared(tempEnt.WorldSpaceCenter(), org);
 
 		if ((range < bestrange) && (temp.solid != SOLID_NOT)) {
 			bestrange = range;
@@ -161,14 +161,14 @@ Route_SelectRandomSpot(void)
 vector
 Route_SelectDestination(NSBot target)
 {
-	CGameRules rules;
-	rules = (CGameRules)g_grMode;
+	NSGameRules rules;
+	rules = (NSGameRules)g_grMode;
 
 	NSEntity dest = __NULL__;
 
 	if (rules.IsTeamplay()) {
 		/* we have the goal item, so capture it */
-		if (target.flags & FL_GOALITEM) {
+		if (target.vv_flags & VFL_GOALITEM) {
 			BotLog("%s going for capture", target.netname);
 			dest = Route_SelectNearestTeam(BOTINFO_TEAM_GOALCAPTURE, target.origin, target.team);
 			

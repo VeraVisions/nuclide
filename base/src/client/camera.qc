@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2021 Marco Cawthorne <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -12,7 +12,7 @@
  * WHATSOEVER RESULTING FROM LOSS OF MIND, USE, DATA OR PROFITS, WHETHER
  * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-*/
+ */
 
 struct
 {
@@ -25,11 +25,11 @@ struct
 } g_camBobVars[4], *pCamBob;
 
 /* tilts the camera for a head-bob like effect when moving */
-void
-Camera_RunBob(__inout vector camera_angle)
+vector
+Camera_RunBob(vector camera_angle)
 {
 	if (!autocvar(v_cambob, 1, "Enables bobbing effect for the first-person camera"))
-		return;
+		return camera_angle;
 
 	int s = (float)getproperty(VF_ACTIVESEAT);
 	pCamBob = &g_camBobVars[s];
@@ -39,15 +39,16 @@ Camera_RunBob(__inout vector camera_angle)
 	speed[2] = 0.0f;
 	pCamBob->m_flSpeed = vlen(speed);
 
+	if (pCamBob->m_flSpeed > 330.0f)
+		pCamBob->m_flSpeed = 330.0f;
+
 	/* don't bother on low speeds */
 	if ( pCamBob->m_flSpeed < 5.0f ) {
 		pCamBob->m_flMove = 0.0f;
 		pCamBob->m_flTime = 0.0f; /* progress has halted, start anew */
-		return;
-	} else if (pSeat->m_ePlayer.flags & FL_ONGROUND && pSeat->m_ePlayer.waterlevel == 0) {
-		pCamBob->m_flMove = clframetime * (pCamBob->m_flSpeed * 0.01);
+		return camera_angle;
 	} else {
-		pCamBob->m_flMove = 0.0f;
+		pCamBob->m_flMove = frametime * (pCamBob->m_flSpeed * 0.01);
 	}
 
 	pCamBob->m_flTime = (pCamBob->m_flTime += pCamBob->m_flMove);
@@ -62,14 +63,15 @@ Camera_RunBob(__inout vector camera_angle)
 	}
 
 	camera_angle[2] += pCamBob->m_flDelta;
+	return camera_angle;
 }
 
 /* applies a tilt to the camera for when we're strafing left to right */
-void
-Camera_StrafeRoll(__inout vector camera_angle)
+vector
+Camera_StrafeRoll(vector camera_angle)
 {
 	if (!autocvar(v_camroll, 0, "Enables strafe-roll for the first-person camera"))
-		return;
+		return camera_angle;
 
 	float roll;
 	makevectors(camera_angle);
@@ -78,4 +80,38 @@ Camera_StrafeRoll(__inout vector camera_angle)
 	roll *= 0.015f;
 
 	camera_angle[2] += roll;
+	return camera_angle;
+}
+
+vector
+Camera_AddLean(vector viewAngle)
+{
+	vector shift = anglesToRight(viewAngle);
+	vector output;
+	vector srcPos;
+	float heightChange;
+	player pl = (player)pSeat->m_ePlayer;
+
+	if (pSeat->m_iLeanDir > 0i) {
+		pSeat->m_flLeaning += frametime * 5;
+	} else if (pSeat->m_iLeanDir < 0i) {
+		pSeat->m_flLeaning -= frametime * 5;
+	} else {
+		pSeat->m_flLeaning = lerp(pSeat->m_flLeaning, 0.0, frametime * 10);
+	}
+
+	if (pSeat->m_flLeaning > 1.0) {
+		pSeat->m_flLeaning = 1.0f;
+	}
+
+	if (pSeat->m_flLeaning < -1.0) {
+		pSeat->m_flLeaning = -1.0f;
+	}
+
+	heightChange = cos(pSeat->m_flLeaning) * 4;
+	srcPos = pl.GetEyePos();
+	output = shift * (pSeat->m_flLeaning * 15.0);
+	tracebox(srcPos, [-8,-8,-8], [8,8,8], srcPos + output, MOVE_NORMAL, pl);
+
+	return output * trace_fraction + (shift * -1.0) + [0, 0, heightChange];
 }

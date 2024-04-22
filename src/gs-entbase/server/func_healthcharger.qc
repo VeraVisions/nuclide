@@ -47,7 +47,7 @@ public:
 	nonvirtual void ResetHealth(void);
 
 private:
-	entity m_eUser;
+	NSEntity m_eUser;
 	float m_flDelay;
 	float m_flCheck;
 
@@ -83,7 +83,7 @@ func_healthcharger::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "user":
-		m_eUser = ReadEntity(strValue);
+		m_eUser = (NSEntity)ReadEntity(strValue);
 		break;
 	case "delay":
 		m_flDelay = ReadFloat(strValue);
@@ -162,14 +162,14 @@ func_healthcharger::OnPlayerUse(void)
 	if (eActivator.health <= 0)
 		return;
 
-	eActivator.flags |= FL_USE_RELEASED;
+	eActivator.AddVFlags(VFL_USE_RELEASED);
 
 	/* First come first serve */ 
 	if (m_eUser && eActivator != m_eUser)
 		return;
 
 	/* First time */
-	if (m_eUser == world) {
+	if (m_eUser == __NULL__) {
 		StartSound(m_strSndFirst, CHAN_VOICE, 0, true);
 	}
 
@@ -177,17 +177,17 @@ func_healthcharger::OnPlayerUse(void)
 		return;
 
 	if (health <= 0) {
-		eActivator.flags &= ~FL_USE_RELEASED;
+		eActivator.RemoveVFlags(VFL_USE_RELEASED);
 		StartSound(m_strSndDone, CHAN_VOICE, 0, true);
-		m_eUser = world;
+		m_eUser = __NULL__;
 		return;
 	}
 
 	if (eActivator.health >= 100) {
-		eActivator.flags &= ~FL_USE_RELEASED;
+		eActivator.RemoveVFlags(VFL_USE_RELEASED);
 		StartSound(m_strSndDone, CHAN_VOICE, 0, true);
 	} else {
-		if (m_eUser == world) {
+		if (m_eUser == __NULL__) {
 			StartSound(m_strSndCharging, CHAN_ITEM, 0, true);
 		}
 
@@ -204,8 +204,8 @@ func_healthcharger::OnPlayerUse(void)
 			StopSound(CHAN_ITEM, true);
 			StartSound(m_strSndDone, CHAN_VOICE, 0, true);
 			SetFrame(1);
-			eActivator.flags &= ~FL_USE_RELEASED;
-			m_eUser = world;
+			eActivator.RemoveVFlags(VFL_USE_RELEASED);
+			m_eUser = __NULL__;
 			return;
 		}
 	}
@@ -223,7 +223,7 @@ func_healthcharger::customphysics(void)
 
 	if (m_eUser) {
 		StopSound(CHAN_ITEM, true);
-		m_eUser = world;
+		m_eUser = __NULL__;
 	}
 
 	HandleThink();

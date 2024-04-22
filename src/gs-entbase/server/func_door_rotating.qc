@@ -104,7 +104,7 @@ private:
 	float m_flWait;
 	float m_flDelay;
 	int m_iDamage;
-	int m_iLocked;
+	bool m_bLocked;
 	bool m_bCanTouch;
 	vector m_vecTurnDir;
 };
@@ -119,11 +119,11 @@ func_door_rotating::func_door_rotating(void)
 	m_strLockedSfx = __NULL__;
 	m_flSoundWait = 0.0f;
 	m_iDamage = 0i;
-	m_iLocked = 0i;
-	m_flDistance = 90.0f;
+	m_bLocked = false;
+	m_flDistance = 0.0f;
 	m_flSpeed = 100.0f;
 	m_flNextAction = 0.0f;
-	m_flWait = 0.0f;
+	m_flWait = -1;
 	m_flDelay = 4.0f;
 	m_bCanTouch = false;
 	m_vecTurnDir = g_vec_null;
@@ -145,7 +145,7 @@ func_door_rotating::Save(float handle)
 	SaveFloat(handle, "m_flWait", m_flWait);
 	SaveFloat(handle, "m_flDelay", m_flDelay);
 	SaveInt(handle, "m_iDamage", m_iDamage);
-	SaveInt(handle, "m_iLocked", m_iLocked);
+	SaveBool(handle, "m_bLocked", m_bLocked);
 	SaveBool(handle, "m_bCanTouch", m_bCanTouch);
 	SaveVector(handle, "m_vecTurnDir", m_vecTurnDir);
 }
@@ -190,11 +190,11 @@ func_door_rotating::Restore(string strKey, string strValue)
 	case "m_iDamage":
 		m_iDamage = ReadInt(strValue);
 		break;
-	case "m_iLocked":
-		m_iLocked = ReadInt(strValue);
+	case "m_bLocked":
+		m_bLocked = ReadBool(strValue);
 		break;
 	case "m_bCanTouch":
-		m_bCanTouch = ReadInt(strValue);
+		m_bCanTouch = ReadBool(strValue);
 		break;
 	case "m_vecTurnDir":
 		m_vecTurnDir = ReadVector(strValue);
@@ -280,8 +280,12 @@ func_door_rotating::Respawn(void)
 		SetSolid(SOLID_NOT);
 	}
 
-	if (targetname) {
-		m_iLocked = TRUE;
+	if (HasTargetname() || m_flDistance == 0.0) {
+		if (m_flDistance == 0.0 || m_strLockedSfx != __NULL__) {
+			m_bLocked = true;
+		} else {
+			m_bLocked = false;
+		}
 	}
 
 	SetAngles(GetMoverRotation1());
@@ -331,6 +335,10 @@ func_door_rotating::SpawnKey(string strKey, string strValue)
 		break;
 	case "locked_sound":
 		x = stoi(strValue);  /* sanitize */
+
+		if (x == 0i)
+			break;
+
 		m_strLockedSfx = sprintf("func_button.hlsfx_%i", x+1i);
 		break;
 	default:
@@ -347,7 +355,7 @@ func_door_rotating::Unhinge(void)
 	m_bCanTouch = false;
 	SetSolid(SOLID_PHYSICS_BOX);
 	SetMovetype(MOVETYPE_PHYSICS);
-	physics_enable(this, TRUE);
+	physics_enable(this, true);
 }
 #endif
 
@@ -411,11 +419,20 @@ func_door_rotating::MoverStartsMoving(void)
 void
 func_door_rotating::Trigger(entity act, triggermode_t state)
 {
-	if (GetMaster(act) == FALSE) {
+	/* Note: Unlike func_door, this does respect the locked state in Trigger() */
+	if (m_bLocked || !GetMaster(act)) {
 		return;
 	}
 
-	eActivator = act;
+	if (m_flWait == -1 && GetMoverState() == MOVER_POS2) {
+		return;
+	}
+
+	if ((GetMoverState() == MOVER_1TO2) || (GetMoverState() == MOVER_2TO1)) {
+		return;
+	}
+
+	eActivator = (NSEntity)act;
 
 	/* this door can swing both ways */
 	if (!HasSpawnFlags(SF_ROT_ONEWAY)) {
@@ -454,30 +471,32 @@ func_door_rotating::Trigger(entity act, triggermode_t state)
 void
 func_door_rotating::Use(void)
 {
-	eActivator.flags &= ~FL_USE_RELEASED;
+	eActivator.RemoveVFlags(VFL_USE_RELEASED);
 	Trigger(eActivator, TRIG_TOGGLE);
 }
 
 void
 func_door_rotating::Touch(entity eToucher)
 {
+	/* locked sound plays only when touched. still need another check in Trigger()
+	   to see if it's locked in case it gets trigger targeted */
+	if (m_bLocked || !GetMaster(eToucher)) {
+		/* only bother playing the locked sound when the door is closed. */
+		if (GetMoverState() == MOVER_POS1) {
+			if (m_flSoundWait < time) {
+				StartSoundDef(m_strLockedSfx, CHAN_VOICE, true);
+			}
+
+			m_flSoundWait = time + 0.3f;
+		}
+		return;
+	}
+
 	if (m_bCanTouch == false) {
 		return;
 	}
 
-	if (m_iLocked || !GetMaster(eToucher)) {
-		if (m_flSoundWait < time)
-			Sound_Play(this, CHAN_VOICE, m_strLockedSfx);
-
-		m_flSoundWait = time + 0.3f;
-		return;
-	}
-
 	if (HasSpawnFlags(SF_ROT_USE)) {
-		return;
-	}
-
-	if ((GetMoverState() == MOVER_1TO2) || (GetMoverState() == MOVER_2TO1)) {
 		return;
 	}
 

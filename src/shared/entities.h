@@ -19,6 +19,7 @@ typedef enum
 {
 	ENT_NONE = 0,	/**< invalid, but reserved. */
 	ENT_ENTITY,	/**< of type NSEntity */
+	ENT_PMOVEVARS, /** of type NSPMoveVars */
 	ENT_ENTITYRENDERABLE, /**< of type NSRenderableEntity */
 	ENT_ENTITYPROJECTILE, /**< of type NSProjectile */
 	ENT_SURFPROP, /**< of type NSSurfacePropEntity */

@@ -169,7 +169,7 @@ func_tankmortar::ReceiveEntity(float new, float fChanged)
 	}
 
 	if (fChanged & VEHFL_CHANGED_DRIVER) {
-		m_eDriver = findfloat(world, ::entnum, readentitynum());
+		m_eDriver = (NSEntity)findfloat(world, ::entnum, readentitynum());
 	}
 
 	if (new)
@@ -185,10 +185,7 @@ func_tankmortar::EvaluateEntity(void)
 		SetSendFlags(VEHFL_CHANGED_ORIGIN);
 	}
 	if (ATTR_CHANGED(angles)) {
-		angles[0] = Math_FixDelta(angles[0]);
-		angles[1] = Math_FixDelta(angles[1]);
-		angles[2] = Math_FixDelta(angles[2]);
-
+		angles = fixAngle(angles);
 		SetSendFlags(VEHFL_CHANGED_ANGLES);
 	}
 	if (ATTR_CHANGED(velocity)) {
@@ -322,10 +319,8 @@ func_tankmortar::PlayerInput(void)
 		wantang = v_forward;
 		makevectors(angles);
 
-		endang[0] = Math_Lerp(v_forward[0], wantang[0], input_timelength);
-		endang[1] = Math_Lerp(v_forward[1], wantang[1], input_timelength);
-		endang[2] = Math_Lerp(v_forward[2], wantang[2], input_timelength);
-		angles = vectoangles(endang);
+		endang = vectorLerp(v_forward, wantang, input_timelength);
+		angles = vectorToAngles(endang);
 		PlayerUpdateFlags();
 	}
 

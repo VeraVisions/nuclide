@@ -38,46 +38,48 @@ typedef struct
 	string() wmodel;
 	string() deathmsg;
 
-	/* player specific */
-	string(player) pmodel;
-	float(player) aimanim;
-	weapontype_t(player) type; /* required for bot-AI */
-	void(player) draw;
-	void(player) holster;
-	void(player) primary;
-	void(player) secondary;
-	void(player) reload;
-	void(player) release;
-	int(player, int, int) pickup;
-	void(player) updateammo;
+	/* NSClientPlayer specific */
+	string(NSClientPlayer) pmodel;
+	float(NSClientPlayer) aimanim;
+	weapontype_t(NSClientPlayer) type; /* required for bot-AI */
+	void(NSClientPlayer) draw;
+	void(NSClientPlayer) holster;
+	void(NSClientPlayer) primary;
+	void(NSClientPlayer) secondary;
+	void(NSClientPlayer) reload;
+	void(NSClientPlayer) release;
+	int(NSClientPlayer, int, int) pickup;
+	void(NSClientPlayer) updateammo;
 
-	void(player, int) predraw; /* predraw... */
-	void(player) postdraw; /* postdraw... */
+	void(NSClientPlayer, int) predraw; /* predraw... */
+	void(NSClientPlayer) postdraw; /* postdraw... */
 
-	int(player) isempty; /* kinda handy */
-	void(player, int, vector, float) hudpic;
+	int(NSClientPlayer) isempty; /* kinda handy */
+	void(NSClientPlayer, int, vector, float) hudpic;
 } weapon_t;
 
-void Weapons_Holster(player pl);
-void Weapons_Primary(player pl);
-void Weapons_Secondary(player pl);
-void Weapons_Reload(player pl);
-void Weapons_Release(player pl);
-void Weapons_PreDraw(player pl, int);
+void Weapons_Init(void);
+void Weapons_Draw(NSClientPlayer pl);
+void Weapons_Holster(NSClientPlayer pl);
+void Weapons_Primary(NSClientPlayer pl);
+void Weapons_Secondary(NSClientPlayer pl);
+void Weapons_Reload(NSClientPlayer pl);
+void Weapons_Release(NSClientPlayer pl);
+void Weapons_PreDraw(NSClientPlayer pl, int);
 
-float Weapons_GetAim(player, int);
-int Weapons_IsEmpty(player, int);
-void Weapons_DrawCrosshair(player pl);
-void Weapons_MakeVectors(player pl);
-vector Weapons_GetCameraPos(player pl);
-void Weapons_ViewAnimation(player pl, int);
-void Weapons_ViewPunchAngle(player pl, vector);
-int Weapons_IsPresent(player, int);
-void Weapons_UpdateAmmo(player, int, int, int);
-int Weapons_GetAnimation(player pl);
+float Weapons_GetAim(NSClientPlayer, int);
+int Weapons_IsEmpty(NSClientPlayer, int);
+void Weapons_DrawCrosshair(NSClientPlayer pl);
+void Weapons_MakeVectors(NSClientPlayer pl);
+vector Weapons_GetCameraPos(NSClientPlayer pl);
+void Weapons_ViewAnimation(NSClientPlayer pl, int);
+void Weapons_ViewPunchAngle(NSClientPlayer pl, vector);
+int Weapons_IsPresent(NSClientPlayer, int);
+void Weapons_UpdateAmmo(NSClientPlayer, int, int, int);
+int Weapons_GetAnimation(NSClientPlayer pl);
 void Weapons_EnableModel(void);
 void Weapons_DisableModel(void);
-weapontype_t Weapons_GetType(player, int);
+weapontype_t Weapons_GetType(NSClientPlayer, int);
 
 void Weapons_SetLeftModel(string);
 void Weapons_SetRightModel(string);
@@ -90,10 +92,11 @@ void Weapons_SetGeomset(string);
 void Weapons_SetModel(string);
 
 void Weapons_Sound(entity, float, string);
+string Weapons_GetWorldmodel(int);
 
 #ifdef CLIENT
-string Weapons_GetPlayermodel(player, int);
-void Weapons_HUDPic(player, int, int, vector, float);
+string Weapons_GetPlayermodel(NSClientPlayer, int);
+void Weapons_HUDPic(NSClientPlayer, int, int, vector, float);
 #endif
 #else
 #endif

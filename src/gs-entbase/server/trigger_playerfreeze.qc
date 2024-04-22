@@ -66,7 +66,7 @@ trigger_playerfreeze::Trigger(entity act, triggermode_t state)
 
 		/* force unfreeze */
 		for (entity f = world; (f = find(f, ::classname, "player"));) {
-			f.flags &= ~FL_FROZEN;
+			f.vv_flags &= ~VFL_FROZEN;
 		}
 	} else {
 		dprint("^2trigger_playerfreeze::^3Trigger^7: " \
@@ -82,6 +82,6 @@ trigger_playerfreeze::customphysics(void)
 
 	/* some games might unset this flag every single frame */
 	for (entity f = world; (f = find(f, ::classname, "player"));) {
-		f.flags |= FL_FROZEN;
+		f.vv_flags |= VFL_FROZEN;
 	}
 }

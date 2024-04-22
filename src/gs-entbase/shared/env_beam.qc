@@ -475,9 +475,7 @@ env_beam::predraw(void)
 
 				point = center + p;
 			} else {
-				point[0] = Math_Lerp(m_vecStartPos[0], m_vecEndPos[0], progression);
-				point[1] = Math_Lerp(m_vecStartPos[1], m_vecEndPos[1], progression);
-				point[2] = Math_Lerp(m_vecStartPos[2], m_vecEndPos[2], progression);
+				point = vectorLerp(m_vecStartPos, m_vecEndPos, progression);
 			}
 
 			/* get the direction the beam is 'looking' */

@@ -22,6 +22,9 @@ Entity_EntityUpdate(float type, float new)
 	case ENT_ENTITY:
 		NSENTITY_READENTITY(NSEntity, new)
 		break;
+	case ENT_PMOVEVARS:
+		NSENTITY_READENTITY(NSPMoveVars, new)
+		break;
 	case ENT_ENTITYRENDERABLE:
 		NSENTITY_READENTITY(NSRenderableEntity, new)
 		break;

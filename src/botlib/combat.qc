@@ -30,8 +30,8 @@ NSBot::Pain(void)
 
 	/* make this pain our new enemy! */
 	if (g_dmg_eAttacker && g_dmg_eAttacker != this) {
-		float enemydist = vlen(origin - m_eTarget.origin);
-		float newdist = vlen(origin - g_dmg_eAttacker.origin);
+		float enemydist = distanceSquared(origin, m_eTarget.origin);
+		float newdist = distanceSquared(origin, g_dmg_eAttacker.origin);
 
 		if (m_eTarget) {
 			if (newdist < enemydist) {
@@ -49,7 +49,7 @@ NSBot::SetEnemy(entity en)
 	m_eTarget = en;
 
 	if (m_eTarget) {
-		m_flEnemyDist = vlen(origin - m_eTarget.origin);
+		m_flEnemyDist = distanceSquared(origin, m_eTarget.origin);
 	} else {
 		m_flEnemyDist = -1;
 	}
@@ -150,7 +150,7 @@ BotLib_Alert(vector pos, float radius, float t)
 
 	for (entity w = world; (w = find(w,::targetname, "_nuclide_bot_"));) {
 		/* out of radius */
-		if (vlen(pos - w.origin) > radius)
+		if (distance(pos, w.origin) > radius)
 			continue;
 
 		NSBot f = (NSBot) w;

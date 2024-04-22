@@ -168,7 +168,7 @@ func_recharge::OnPlayerUse(void)
 		return;
 	}
 
-	eActivator.flags |= FL_USE_RELEASED;
+	eActivator.AddVFlags(VFL_USE_RELEASED);
 
 	/* First come first serve */ 
 	if (m_eUser && eActivator != m_eUser) {
@@ -185,7 +185,7 @@ func_recharge::OnPlayerUse(void)
 	}
 
 	if (health <= 0) {
-		eActivator.flags &= ~FL_USE_RELEASED;
+		eActivator.RemoveVFlags(VFL_USE_RELEASED);
 		StartSound(m_strSndDone, CHAN_VOICE, 0, true);
 		m_eUser = world;
 		return;
@@ -193,7 +193,7 @@ func_recharge::OnPlayerUse(void)
 
 	NSClientPlayer pl = (NSClientPlayer)eActivator;
 	if (pl.armor >= 100) {
-		eActivator.flags &= ~FL_USE_RELEASED;
+		eActivator.RemoveVFlags(VFL_USE_RELEASED);
 		StartSound(m_strSndDone, CHAN_VOICE, 0, true);
 	} else {
 		if (m_eUser == world) {
@@ -213,7 +213,7 @@ func_recharge::OnPlayerUse(void)
 			StopSound(CHAN_ITEM, true);
 			StartSound(m_strSndDone, CHAN_VOICE, 0, true);
 			SetFrame(1);
-			eActivator.flags &= ~FL_USE_RELEASED;
+			eActivator.RemoveVFlags(VFL_USE_RELEASED);
 			m_eUser = world;
 			return;
 		}

@@ -152,9 +152,7 @@ func_smokevolume::predraw(void)
 		func_smokevolume_cloud cloud = spawn(func_smokevolume_cloud);
 		setorigin(cloud, vecPos);
 		float r = random();
-		cloud.m_vecColor[0] = Math_Lerp(m_vecColor1[0], m_vecColor2[0], r);
-		cloud.m_vecColor[1] = Math_Lerp(m_vecColor1[1], m_vecColor2[1], r);
-		cloud.m_vecColor[2] = Math_Lerp(m_vecColor1[2], m_vecColor2[2], r);
+		cloud.m_vecColor = vectorLerp(m_vecColor1, m_vecColor2, r);
 		cloud.m_flMaxAlpha = m_flAlpha * fracDist;
 		cloud.cloudsize[0] = random(m_flSizeMin, m_flSizeMax);
 		cloud.cloudsize[1] = random(m_flSizeMin, m_flSizeMax);

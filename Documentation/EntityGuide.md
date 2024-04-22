@@ -192,6 +192,8 @@
 
 [info_intermission](@ref info_intermission)
 
+[info_landmark](@ref info_landmark)
+
 [info_node](@ref info_node)
 
 [info_node_air](@ref info_node_air)
@@ -286,6 +288,8 @@
 
 [prop_physics](@ref prop_physics)
 
+[prop_physics_multiplayer](@ref prop_physics_multiplayer)
+
 [prop_rope](@ref prop_rope)
 
 [prop_static](@ref prop_static)
@@ -295,6 +299,16 @@
 [random_speaker](@ref random_speaker)
 
 [random_trigger](@ref random_trigger)
+
+[script_brushmodel](@ref script_brushmodel)
+
+[script_model](@ref script_model)
+
+[script_origin](@ref script_origin)
+
+[script_struct](@ref script_struct)
+
+[script_vehicle](@ref script_vehicle)
 
 [scripted_sentence](@ref scripted_sentence)
 

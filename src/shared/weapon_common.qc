@@ -15,7 +15,6 @@
 */
 
 #ifndef NEW_INVENTORY
-var int g_weapon_weights[g_weapons.length];
 
 #ifdef CLIENT
 var int g_weapon_order[g_weapons.length];
@@ -165,16 +164,21 @@ Weapons_SetGeomset(string set)
 }
 
 void
-Weapons_Draw(player pl)
+Weapons_Draw(NSClientPlayer pl)
 {
 	int i = pl.activeweapon;
 
 	/* In case the previous weapon hid the model */
 	Weapons_EnableModel();
 
+#ifdef CLIENT
+	View_SetMuzzleflash(0);
+#endif
+
 	pl.w_attack_next = 0.5f;
 	pl.w_idle_next = 2.5f;
 	pl.viewzoom = 1.0f;
+	pl.weapontime = 0.0f;
 
 	/* we're meant to respawn when we're dead, don't unset! */
 	if (pl.health > 0) {
@@ -195,7 +199,7 @@ Weapons_Draw(player pl)
 }
 
 void
-Weapons_Holster(player pl)
+Weapons_Holster(NSClientPlayer pl)
 {
 	int i = pl.activeweapon;
 
@@ -204,7 +208,7 @@ Weapons_Holster(player pl)
 }
 
 void
-Weapons_Primary(player pl)
+Weapons_Primary(NSClientPlayer pl)
 {
 	int i = pl.activeweapon;
 
@@ -221,7 +225,7 @@ Weapons_Primary(player pl)
 void 
 Weapons_AmmoUpdate(entity target)
 {
-	player pl = (player)target;
+	NSClientPlayer pl = (NSClientPlayer)target;
 	int i = pl.activeweapon;
 
 	if (g_weapons[i].updateammo != __NULL__)
@@ -230,7 +234,7 @@ Weapons_AmmoUpdate(entity target)
 }
 
 void
-Weapons_Secondary(player pl)
+Weapons_Secondary(NSClientPlayer pl)
 {
 	int i = pl.activeweapon;
 
@@ -242,7 +246,7 @@ Weapons_Secondary(player pl)
 }
 
 void
-Weapons_Reload(player pl)
+Weapons_Reload(NSClientPlayer pl)
 {
 	int i = pl.activeweapon;
 
@@ -254,7 +258,7 @@ Weapons_Reload(player pl)
 }
 
 void
-Weapons_Release(player pl)
+Weapons_Release(NSClientPlayer pl)
 {
 	int i = pl.activeweapon;
 
@@ -265,7 +269,7 @@ Weapons_Release(player pl)
 }
 
 void
-Weapons_PreDraw(player pl, int thirdperson)
+Weapons_PreDraw(NSClientPlayer pl, int thirdperson)
 {
 	int i = pl.activeweapon;
 
@@ -274,7 +278,7 @@ Weapons_PreDraw(player pl, int thirdperson)
 }
 
 int
-Weapons_IsEmpty(player pl, int w)
+Weapons_IsEmpty(NSClientPlayer pl, int w)
 {
 	int r = 0;
 
@@ -291,7 +295,7 @@ Weapons_IsEmpty(player pl, int w)
 
 
 weapontype_t
-Weapons_GetType(player pl, int w)
+Weapons_GetType(NSClientPlayer pl, int w)
 {
 	weapontype_t r = WPNTYPE_INVALID;
 
@@ -307,7 +311,7 @@ Weapons_GetType(player pl, int w)
 }
 
 void
-Weapons_DrawCrosshair(player pl)
+Weapons_DrawCrosshair(NSClientPlayer pl)
 {
 	int i = pl.activeweapon;
 
@@ -325,7 +329,7 @@ Weapons_GetWorldmodel(int id)
 }
 
 string
-Weapons_GetPlayermodel(player pl, int id)
+Weapons_GetPlayermodel(NSClientPlayer pl, int id)
 {
 	if (g_weapons[id].pmodel != __NULL__)
 		return g_weapons[id].pmodel(pl);
@@ -343,7 +347,7 @@ Weapons_GetDeathmessage(int id)
 }
 
 float
-Weapons_GetAim(player pl, int id)
+Weapons_GetAim(NSClientPlayer pl, int id)
 {
 	if (g_weapons[id].aimanim != __NULL__)
 		return g_weapons[id].aimanim(pl);
@@ -353,7 +357,7 @@ Weapons_GetAim(player pl, int id)
 
 #ifdef CLIENT
 void
-Weapons_HUDPic(player pl, int id, int s, vector pos, float a)
+Weapons_HUDPic(NSClientPlayer pl, int id, int s, vector pos, float a)
 {
 	if (g_weapons[id].hudpic != __NULL__)
 		g_weapons[id].hudpic(pl, s, pos, a);
@@ -361,7 +365,7 @@ Weapons_HUDPic(player pl, int id, int s, vector pos, float a)
 #endif
 
 void
-Weapons_MakeVectors(player pl)
+Weapons_MakeVectors(NSClientPlayer pl)
 {
 #ifdef SERVER
 	makevectors(pl.v_angle);
@@ -371,7 +375,7 @@ Weapons_MakeVectors(player pl)
 }
 
 vector
-Weapons_GetCameraPos(player pl)
+Weapons_GetCameraPos(NSClientPlayer pl)
 {
 #ifdef SERVER
 	return (pl.origin + pl.view_ofs);
@@ -381,11 +385,8 @@ Weapons_GetCameraPos(player pl)
 }
 
 void
-Weapons_ViewAnimation(player pl, int i)
+Weapons_ViewAnimation(NSClientPlayer pl, int i)
 {
-#if 0
-	View_PlayAnimation(i);
-#endif
 	pl.weaponframe = i;
 	pl.weapontime = 0.0f;
 }
@@ -395,19 +396,19 @@ int View_GetAnimation(void);
 #endif
 
 int
-Weapons_GetAnimation(player pl)
+Weapons_GetAnimation(NSClientPlayer pl)
 {
 	return pl.weaponframe;
 }
 
 void
-Weapons_ViewPunchAngle(player pl, vector add)
+Weapons_ViewPunchAngle(NSClientPlayer pl, vector add)
 {
 	pl.punchangle += add;
 }
 
 int
-Weapons_IsPresent(player pl, int w)
+Weapons_IsPresent(NSClientPlayer pl, int w)
 {
 	if (pl.g_items & g_weapons[w].id) {
 		return (1);
@@ -440,7 +441,7 @@ Sets .a_ammoX fields and clamps them so they can be networked as a single byte.
 =================
 */
 void
-Weapons_UpdateAmmo(player pl, int a1, int a2, int a3)
+Weapons_UpdateAmmo(NSClientPlayer pl, int a1, int a2, int a3)
 {
 	/* no change */
 	if (a1 == -1)

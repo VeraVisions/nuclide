@@ -447,13 +447,7 @@ CSQC_ConsoleCommand(string sCMD)
 	tokenize(sCMD);
 
 	/* give us a chance to override commands */
-	int ret = ClientGame_ConsoleCommand();
-
-	/* successful override */
-	if (ret == (1))
-		return (1);
-
-	return Cmd_Parse(sCMD);
+	return (ClientGame_ConsoleCommand()) ? true : Cmd_Parse(sCMD);
 }
 
 

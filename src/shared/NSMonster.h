@@ -334,6 +334,7 @@ public:
 	//virtual void Hide(void);
 	virtual void Spawned(void);
 	virtual void Respawn(void);
+	virtual void Input(entity,string,string);
 	virtual void Pain(void);
 	virtual void Death(void);
 	virtual void Physics(void);
@@ -597,6 +598,8 @@ private:
 	float m_flLeapDamage;
 	bool m_bLeapAttacked;
 	float m_flForceSequence;
+	float m_flSkin;
+	bool m_bGagged;
 
 	nonvirtual void _LerpTurnToEnemy(void);
 	nonvirtual void _LerpTurnToPos(vector);

@@ -33,6 +33,7 @@ public:
 	
 	virtual void Physics_Fall(float);
 	virtual void Physics_Crouch(void);
+	virtual void Physics_Prone(void);
 	virtual void Physics_Jump(void);
 	virtual void Physics_CheckJump(float);
 	virtual void Physics_SetViewParms(void);
@@ -48,6 +49,15 @@ public:
 	virtual bool IsDead(void);
 	virtual bool IsPlayer(void);
 	virtual void SharedInputFrame(void);
+
+	/** Overridable: Returns whether the client can sprint, with the command +sprint */
+	virtual bool CanSprint(void);
+	/** Overridable: Returns whether the client can prone, with the commands +prone and goprone */
+	virtual bool CanProne(void);
+	/** Overridable: Returns whether the client can crouch, with the commands +crouch and gocrouch */
+	virtual bool CanCrouch(void);
+	/** Overridable: Returns whether the client can lean, with the commands +leanleft and +leanright */
+	virtual bool CanLean(void);
 	
 	/** Empty & shared between Client and Server. This is run on every player, every frame, to update their animation cycle. */
 	virtual void UpdatePlayerAnimation(float);
@@ -127,6 +137,7 @@ private:
 	PREDICTED_FLOAT(w_idle_next)
 	PREDICTED_FLOAT(teleport_time)
 	PREDICTED_FLOAT(weapontime)
+	PREDICTED_FLOAT(m_flStamina)
 	PREDICTED_VECTOR(punchangle)
 
 	/* We can't use the default .items field, because FTE will assume

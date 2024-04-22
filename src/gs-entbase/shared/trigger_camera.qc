@@ -308,8 +308,8 @@ trigger_camera::GoToTarget(void)
 
 	if (!m_strAimAt) {
 		vector vecAngleDiff = targetNode.GetOrigin() - GetOrigin();
-		vector vecAngleDest = vectoangles(vecAngleDiff);
-		vecAngleDiff = Math_AngleDiff(vecAngleDest, angles);
+		vector vecAngleDest = vectorToAngles(vecAngleDiff);
+		vecAngleDiff = angleDifference(vecAngleDest, angles);
 		SetAngularVelocity(vecAngleDiff * (1 / travelTime));
 	}
 

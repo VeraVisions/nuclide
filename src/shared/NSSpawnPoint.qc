@@ -22,10 +22,36 @@ NSSpawnPoint::NSSpawnPoint(void)
 void
 NSSpawnPoint::Respawn(void)
 {
+	vector newMins, newMaxs;
+
+	if (m_vecMins == g_vec_null) {
+		newMins = VEC_HULL_MIN;
+		newMaxs = VEC_HULL_MAX;
+	} else {
+		newMins = m_vecMins;
+		newMaxs = m_vecMaxs;
+	}
+
 	InitPointTrigger();
 	setorigin_safe(this, GetSpawnOrigin());
-	SetSize(VEC_HULL_MIN, VEC_HULL_MAX);
+	SetSize(newMins, newMaxs);
 	SetSolid(SOLID_NOT);
 	SetMovetype(MOVETYPE_NONE);
 	botinfo = BOTINFO_SPAWNPOINT;
 }
+
+void
+NSSpawnPoint::SpawnKey(string keyName, string setValue)
+{
+	switch (keyName) {
+	case "mins":
+		m_vecMins = ReadVector(setValue);
+		break;
+	case "maxs":
+		m_vecMaxs = ReadVector(setValue);
+		break;
+	default:
+		super::SpawnKey(keyName, setValue);
+	}
+}
+

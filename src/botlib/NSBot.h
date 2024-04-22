@@ -80,6 +80,10 @@ class NSBot:player
 	virtual botstate_t(void) GetState;
 	virtual botpersonality_t(void) GetPersonality;
 
+	virtual float GetForwardSpeed(void);
+	virtual float GetSideSpeed(void);
+	virtual float GetBackSpeed(void);
+
 	virtual void(string) ChatSay;
 	virtual void(string) ChatSayTeam;
 	virtual void(void) Pain;
@@ -109,9 +113,9 @@ entity Bot_AddQuick(void);
 void
 Bot_RandomColormap(NSBot target)
 {
-	vector x = hsv2rgb(random() * 360, 100, 100);
+	vector x = hsvToRGB(random() * 360, 100, 100);
 	float top = x[2] + (x[1] << 8) + (x[0] << 16);
-	x = hsv2rgb(random() * 360, 100, 100);
+	x = hsvToRGB(random() * 360, 100, 100);
 	float bottom = x[2] + (x[1] << 8) + (x[0] << 16);
 	forceinfokey(target, "topcolor", sprintf("0x%x", top));
 	forceinfokey(target, "bottomcolor", sprintf("0x%x", bottom));

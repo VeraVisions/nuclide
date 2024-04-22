@@ -92,6 +92,8 @@ NSMonster::NSMonster(void)
 	m_flLeapDamage = 0;
 	m_bLeapAttacked = false;
 	maxspeed = 1024;
+	m_bGagged = false;
+	m_flSkin = 0;
 #endif
 }
 
@@ -519,7 +521,7 @@ NSMonster::Sound(string msg)
 void
 NSMonster::Gib(void)
 {
-	vector vecDir = vectoangles(GetOrigin() - g_dmg_vecLocation);
+	vector vecDir = vectorToAngles(GetOrigin() - g_dmg_vecLocation);
 	SetState(MONSTER_DEAD);
 	SetTakedamage(DAMAGE_NO);
 
@@ -536,8 +538,12 @@ NSMonster::FallNoise(void)
 void
 NSMonster::IdleNoise(void)
 {
-	if (m_flIdleNext > time)
+	if (m_bGagged == true) {
 		return;
+	}
+	if (m_flIdleNext > time) {
+		return;
+	}
 
 	StartSoundDef(m_sndIdle, CHAN_VOICE, true);
 	m_flIdleNext = time + random(m_flIdleMin, m_flIdleMax);
@@ -546,6 +552,10 @@ NSMonster::IdleNoise(void)
 void
 NSMonster::AlertNoise(void)
 {
+	if (m_bGagged == true) {
+		return;
+	}
+
 	StartSoundDef(m_sndSight, CHAN_VOICE, true);
 }
 
@@ -669,17 +679,15 @@ NSMonster::SeeThink(void)
 
 	if (m_eLookAt) {
 		vector vecDelta;
-		makevectors( angles );
 		vecDelta = normalize( (m_eLookAt.origin + m_eLookAt.view_ofs) - GetEyePos() );
-		m_flHeadYaw = (vecDelta * v_right) * -60;
+		m_flHeadYaw = (vecDelta * anglesToRight(angles)) * -60;
 		//print(sprintf("head yaw: %f %v\n", m_flHeadYaw, vecDelta));
 
 		/* this will make the actor 'aim" at the target */
 		{
-			makevectors(v_angle);
-			vector tmp = vectoangles(v_forward);
+			vector tmp = vectorToAngles(anglesToForward(v_angle));
 			subblendfrac = tmp[0] / 90;
-			bonecontrol1 = Math_Lerp(bonecontrol1, m_flHeadYaw, frametime * 15.0f);	/* head turning */
+			bonecontrol1 = lerp(bonecontrol1, m_flHeadYaw, frametime * 15.0f);	/* head turning */
 		}	
 	}
 
@@ -707,8 +715,7 @@ NSMonster::SeeThink(void)
 		/* enemy is not valid anymore, reset it, clear route and search for new enemy */
 		RouteClear();
 
-		makevectors(angles);
-		RouteToPosition(m_eEnemy.origin + (v_forward * -64));
+		RouteToPosition(m_eEnemy.origin + (anglesToForward(angles) * -64));
 		m_flSequenceSpeed = GetWalkSpeed();
 
 		SetState(MONSTER_ALERT);
@@ -743,9 +750,8 @@ NSMonster::SeeThink(void)
 			continue;
 
 		/* first, is the potential enemy in our field of view? */
-		makevectors(angles);
 		vector v = normalize(w.origin - GetEyePos());
-		float flDot = v * v_forward;
+		float flDot = v * anglesToForward(angles);
 
 		if (flDot < SeeFOV()/180)
 			continue;
@@ -793,58 +799,38 @@ NSMonster::GetYawSpeed(void)
 void
 NSMonster::_LerpTurnToYaw(vector turnYaw)
 {
-#if 0
-	angles[1] = input_angles[1] = v_angle[1] = turnYaw[1];
-#else
-	float turnSpeed = GetYawSpeed();
-	vector vecWishAngle = turnYaw;
-	float yawDiff = anglesub(turnYaw[1], v_angle[1]);
+	vector oldAngle = angles;
+	vector angleDelta;
+	float oldYaw = angles[1];
+	float yawDiff = 0.0f;
+	yaw_speed = GetYawSpeed() * (frametime * 5);
+	ideal_yaw = turnYaw[1];
+	changeyaw();
+	angleDelta = angleDifference(oldAngle, angles);
+	
+	input_angles[1] = v_angle[1] = angles[1];
 
-	/* anything but small turns? halt the player */
-	if (fabs(yawDiff) > 5) {
-		input_movevalues = g_vec_null;
-	}
+	///printf("yawDiff: %f\n", angleDelta[1]);
 
-	if (fabs(yawDiff) > 45) {
-		velocity = g_vec_null;
-		input_movevalues = g_vec_null;
+	if (fabs(angleDelta[1]) > 1.0f) {
+		/* wasn't turning before */
+		if (m_bTurning == false) {
 
-		if (m_bTurning == false)
-		if (yawDiff < 0) {
-			SetFrame(FramegroupForAct(ACT_TURN_RIGHT));
-		} else {
-			SetFrame(FramegroupForAct(ACT_TURN_LEFT));
+			if (yawDiff < 0) {
+				AnimPlay(FramegroupForAct(ACT_TURN_RIGHT));
+			} else {
+				AnimPlay(FramegroupForAct(ACT_TURN_LEFT));
+			}
 		}
 
 		m_bTurning = true;
-	} else {
-		m_bTurning = false;
 	}
-
-	/* min/max out the diff */
-	if (yawDiff > 0) {
-		v_angle[1] += turnSpeed * frametime;
-
-		if (v_angle[1] > vecWishAngle[1])
-			v_angle[1] = vecWishAngle[1];
-	} else if (yawDiff < 0) {
-		v_angle[1] -= turnSpeed * frametime;
-
-		if (v_angle[1] < vecWishAngle[1])
-			v_angle[1] = vecWishAngle[1];
-	}
-
-	/* fix angles */
-	makevectors(v_angle);
-	vecWishAngle = vectoangles( v_forward );
-	angles[1] = input_angles[1] = v_angle[1] = vecWishAngle[1];
-#endif
 }
 
 void
 NSMonster::_LerpTurnToPos(vector turnPos)
 {
-	vector vecWishAngle = vectoangles(turnPos - origin);
+	vector vecWishAngle = vectorToAngles(turnPos - origin);
 	_LerpTurnToYaw(vecWishAngle);
 }
 
@@ -868,7 +854,7 @@ NSMonster::_LerpTurnToEnemy(void)
 
 	enemyEyePos = (m_eEnemy.origin + m_eEnemy.view_ofs);
 
-	dirAim = vectoangles(enemyEyePos - GetEyePos());
+	dirAim = vectorToAngles(enemyEyePos - GetEyePos());
 	v_angle[0] = dirAim[0];
 }
 
@@ -1179,8 +1165,9 @@ NSMonster::FreeState(void)
 		if (findKT) {
 			NSMonsterLog("Killing %S", m_strSequenceKillTarget);
 			findKT.Destroy();
+			findKT.targetname = "";
 		} else {
-			NSError("Could not remove %S!", m_strSequenceKillTarget);
+			EntError("Unable to find %S for removal", m_strSequenceKillTarget);
 		}
 
 		m_strSequenceKillTarget = __NULL__;
@@ -1270,35 +1257,36 @@ NSMonster::RouteEnded(void)
 void
 NSMonster::WalkRoute(void)
 {
+	vector wishAngle = input_angles;
+
 	/* we're busy shooting at something, don't walk */
 	if (GetState() == MONSTER_AIMING && m_eEnemy) {
-		input_angles = vectoangles(m_eEnemy.origin - origin);
-		input_angles[0] = input_angles[2] = 0;
+		wishAngle = vectorToAngles(m_eEnemy.origin - origin);
+		wishAngle[0] = wishAngle[2] = 0;
 	} else if (IsOnRoute()) {
-		input_angles = GetRouteDirection();
-		input_angles[0] = input_angles[2] = 0;
+		wishAngle = GetRouteDirection();
+		wishAngle[0] = wishAngle[2] = 0;
 		input_movevalues = GetRouteMovevalues() * m_flSequenceSpeed;
 
 		/* is something in our way? */
-		makevectors(input_angles);
-		tracebox(origin, mins, maxs, origin + v_forward * 256, MOVE_NORMAL, this);
+		tracebox(origin, [-16, -16, -16], [16, 16, 16], origin + anglesToForward(wishAngle) * 256, MOVE_NORMAL, this);
 
 		/* indeed it is */
 		if (trace_fraction < 1.0f) {
-			vector testOrg = origin + (v_right * 32);
+			vector testOrg = origin + (anglesToRight(wishAngle) * 32) + anglesToForward(wishAngle) * 128;
 			testOrg[2] += mins[2] + 18.0f; /* test at feet level */
 
-			traceline(testOrg, testOrg + v_forward * 256, MOVE_NORMAL, this);
+			traceline(origin, testOrg, MOVE_NORMAL, this);
 
 			/* is space free to the right? */
 			if (trace_fraction == 1.0) {
 				input_movevalues[1] = m_flSequenceSpeed * 0.25f;
 			} else {
 
-				testOrg = origin - (v_right * 32);
+				testOrg = origin - (anglesToRight(wishAngle) * 32) + anglesToForward(wishAngle) * 128;
 				testOrg[2] += mins[2] + 18.0f; /* test at feet level */
 
-				traceline(testOrg, testOrg + v_forward * 256, MOVE_NORMAL, this);
+				traceline(origin, testOrg, MOVE_NORMAL, this);
 
 				/* is space free to the left? */
 				if (trace_fraction == 1.0)
@@ -1307,19 +1295,14 @@ NSMonster::WalkRoute(void)
 		}
 	} else if (GetState() == MONSTER_CHASING && m_eEnemy) {
 		/* we've got 'em in our sights, just need to walk closer */
-		input_angles = vectoangles(m_eEnemy.origin - origin);
-		input_angles[0] = input_angles[2] = 0;
+		wishAngle = vectorToAngles(m_eEnemy.origin - origin);
+		wishAngle[0] = wishAngle[2] = 0;
 		input_movevalues = [GetChaseSpeed(), 0, 0];
 	} else
 		return;
 
-	/* don't move while turning. */
-	if (m_bTurning == true) {
-		input_movevalues = [0,0,0];
-	}
-
 	/* yaw interpolation */
-	_LerpTurnToYaw(input_angles);
+	_LerpTurnToYaw(wishAngle);
 }
 
 void
@@ -1460,8 +1443,6 @@ NSMonster::RunAI(void)
 	AttackThink();
 }
 
-void PMoveCustom_RunPlayerPhysics(entity target);
-void PMoveCustom_RunCrouchPhysics(entity target);
 void
 NSMonster::Physics(void)
 {
@@ -1498,8 +1479,10 @@ NSMonster::Physics(void)
 
 	/* we're ending a scripted sequence, so play its animation */
 	if (GetSequenceState() == SEQUENCESTATE_ENDING) {
-		angles[1] = input_angles[1] = m_vecSequenceAngle[1];
-		SetFrame(m_flSequenceEnd);
+		_LerpTurnToYaw(m_vecSequenceAngle);
+
+		if (m_bTurning == false)
+			SetFrame(m_flSequenceEnd);
 	} else {
 		/* if still alive... */
 		if (IsAlive()) {
@@ -1523,12 +1506,13 @@ NSMonster::Physics(void)
 
 		hitcontentsmaski = CONTENTBITS_MONSTER;
 
-		if (CanCrouch())
-			PMoveCustom_RunCrouchPhysics(this);
-		else
-			PMoveCustom_RunPlayerPhysics(this);
+		/* don't move while turning. */
+		if (m_bTurning == true) {
+			input_movevalues = [0,0,0];
+		}
 
-		SetOrigin(origin);
+		/* complete the move */
+		Physics_Run();
 	}
 
 	if (!(GetFlags() & FL_ONGROUND) && velocity[2] < -415) {
@@ -1578,8 +1562,7 @@ NSMonster::Touch(entity eToucher)
 			vector bestPos = g_vec_null;
 
 			for (float yaw = angles[1]; yaw < (angles[1] + 360.0f); yaw += 1.0f) {
-				makevectors([0, yaw, 0]);
-				tracebox(origin, mins, maxs, origin + (v_forward * 128.0f), FALSE, this);
+				tracebox(origin, mins, maxs, origin + (anglesToForward([0, yaw, 0]) * 128.0f), FALSE, this);
 
 				if (trace_startsolid) {
 					bestYaw = random(0, 360);
@@ -1818,10 +1801,7 @@ NSMonster::Respawn(void)
 		setorigin_safe(this, origin);
 	}
 
-	v_angle = GetSpawnAngles();
-	v_angle[0] = Math_FixDelta(v_angle[0]);
-	v_angle[1] = Math_FixDelta(v_angle[1]);
-	v_angle[2] = Math_FixDelta(v_angle[2]);
+	v_angle = fixAngle(GetSpawnAngles());
 
 	AddFlags(FL_MONSTER);
 	SetTakedamage(DAMAGE_AIM);
@@ -1830,7 +1810,7 @@ NSMonster::Respawn(void)
 	SetHealth(base_health);
 	m_eEnemy = __NULL__;
 	m_iFlags = 0x0;
-	SetCanBleed(true);
+	EnableBleeding();
 	customphysics = Physics;
 
 	SetAngles(v_angle);
@@ -1841,6 +1821,7 @@ NSMonster::Respawn(void)
 	SetEyePos([0, 0, m_flEyeHeight]);
 	SetOrigin(GetSpawnOrigin());
 	ScheduleThink(AdjustSpawnPos, 0.0f);
+	SetSkin(m_flSkin);
 
 	if (HasSpawnFlags(MSF_MONSTERCLIP)) {
 		hitcontentsmaski = CONTENTBITS_BOXSOLID | CONTENTBIT_MONSTERCLIP;
@@ -1864,10 +1845,41 @@ NSMonster::Respawn(void)
 		SetFrame(_m_flFrame);
 	}
 
+	if (HasSpawnFlags(MSF_GAG)) {
+		m_bGagged = true;
+	} else {
+		m_bGagged = false;
+	}
+
 	/* automatically start */
 	if (!targetname)
 	if (HasTriggerTarget() == true) {
 		ScheduleThink(_ChaseAfterSpawn, 0.0f);
+	}
+}
+
+void
+NSMonster::Input( entity entityActivator, string inputName, string dataField )
+{
+	switch (inputName) {
+	case "Sleep":
+		customphysics = __NULL__;
+		ReleaseThink();
+		break;
+	case "Wake":
+		customphysics = Physics;
+		break;
+	case "StartScripting":
+		m_iSequenceState = SEQUENCESTATE_IDLE;
+		break;
+	case "GagEnable":
+		m_bGagged = true;
+		break;
+	case "GagDisable":
+		m_bGagged = false;
+		break;
+	default:
+		super::Input(entityActivator, inputName, dataField);
 	}
 }
 
@@ -2046,6 +2058,9 @@ NSMonster::SpawnKey(string strKey, string strValue)
 	case "frame":
 		_m_flFrame = ReadFloat(strValue);
 		break;
+	case "skin":
+		m_flSkin = ReadFloat(strValue);
+		break;
 	case "sequence":
 		m_flForceSequence = ReadFloat(strValue);
 		break;
@@ -2171,19 +2186,6 @@ NSMonster::predraw(void)
 
 	render = super::predraw();
 
-	/* are we inside of an interpolation? */
-	if (frame != frame2) {
-		/* we're done lerping */
-		if (lerpfrac <= 0.0f)
-			frame2 = frame;
-
-		lerpfrac -= frametime * 4.0f;
-	} else {
-		/* make sure we're set up for next lerp */
-		lerpfrac = 1.0f;
-		frame2time = frame1time;
-	}
-
 	_RenderDebugViewCone();
 
 	return render;
@@ -2261,11 +2263,10 @@ NSMonster::_RenderDebugViewCone(void)
 
 	if (autocvar(r_showViewCone, 0) == 0)
 		return;
-	
-	makevectors(angles);
+
 	testOrg = pSeat->m_ePlayer.origin;
 	v = normalize(testOrg - GetEyePos());
-	flDot = v * v_forward;
+	flDot = v * anglesToForward(angles);
 
 	/* not inside our FoV at all */
 	if (flDot < 90.0f/180) {

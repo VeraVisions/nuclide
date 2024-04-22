@@ -70,14 +70,15 @@ public:
 	virtual void ReceiveEntity(float,float);
 #endif
 
+	/** Returns whether or not this entity is on fire. */
+	nonvirtual bool IsOnFire(void);
+
 	/* new */
 #ifdef SERVER
 	/** Sets the entity on fire. */
 	nonvirtual void Ignite(entity, float, int);
 	/** If the entity is on fire, it'll have it extinguished */
 	nonvirtual void Extinguish(void);
-	/** Returns whether or not this entity is on fire. */
-	nonvirtual bool IsOnFire(void);
 	/** Called whenever the entity receives damage. */
 	virtual void Pain(void);
 	/** Called when the health is equal or below 0 */
@@ -85,13 +86,25 @@ public:
 	/** Returns whether or not the entity is alive. */
 	virtual bool IsAlive(void);
 
-	/** Sets whether the entity can bleed. */
-	nonvirtual void SetCanBleed(bool);
 	/** Returns whether the entity can bleed. */
 	nonvirtual bool CanBleed(void);
+	/** Returns whether the entity can be damaged. */
+	nonvirtual bool IsVulnerable(void);
 
 	/* Generic Damage */
-	/** Sets whether the entity can take damage */
+	/** Makes the entity vulnerable if it wasn't already. */
+	nonvirtual void EnableBleeding(void);
+	/** Makes the entity invulnerable if it wasn't already. */
+	nonvirtual void DisableBleeding(void);
+	/** Makes the entity vulnerable if it wasn't already. */
+	nonvirtual void EnableAimAssist(void);
+	/** Makes the entity invulnerable if it wasn't already. */
+	nonvirtual void DisableAimAssist(void);
+	/** Makes the entity vulnerable if it wasn't already. */
+	nonvirtual void MakeVulnerable(void);
+	/** Makes the entity invulnerable if it wasn't already. */
+	nonvirtual void MakeInvulnerable(void);
+	/** Deprecated: Sets whether the entity can take damage */
 	nonvirtual void SetTakedamage(float);
 	/** Sets the current health of the entity. */
 	nonvirtual void SetHealth(float);
@@ -180,9 +193,12 @@ private:
 	string m_strPropData;
 
 	float m_flDeathTime;
+	bool m_bAutoAim;
+	bool m_bTakesDamage;
 
 	nonvirtual void _SurfaceDataFinish(void);
 	nonvirtual void _PropDataFinish(void);
+	nonvirtual void _UpdateTakedamage(void);
 #endif
 
 };

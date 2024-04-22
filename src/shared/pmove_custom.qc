@@ -21,36 +21,6 @@ PMoveCustom_Init(void)
 	
 }
 
-#ifdef SERVER
-/* we need to network our changes everytime cvars are updated */
-void
-PMoveCustom_UpdateVar(string info, string cv)
-{
-	float d = cvar(cv);
-	if (serverkeyfloat(info) != d) {
-		readcmd(sprintf("serverinfo %s %d\n", info, d));
-	}
-}
-
-void
-PMoveCustom_StartFrame(void)
-{
-	PMoveCustom_UpdateVar("phy_stepheight", "pm_stepsize");
-	PMoveCustom_UpdateVar("phy_airstepheight", "pm_airstepsize");
-	PMoveCustom_UpdateVar("phy_friction", "pm_friction");
-	PMoveCustom_UpdateVar("phy_edgefriction", "pm_edgefriction");
-	PMoveCustom_UpdateVar("phy_stopspeed", "pm_stopspeed");
-	PMoveCustom_UpdateVar("phy_gravity", "g_gravity");
-	PMoveCustom_UpdateVar("phy_airaccelerate", "pm_airaccelerate");
-	PMoveCustom_UpdateVar("phy_wateraccelerate", "pm_wateraccelerate");
-	PMoveCustom_UpdateVar("phy_accelerate", "pm_accelerate");
-	PMoveCustom_UpdateVar("phy_maxspeed", "pm_maxspeed");
-	PMoveCustom_UpdateVar("phy_noclipspeed", "pm_noclipspeed");
-	PMoveCustom_UpdateVar("phy_noclipaccelerate", "pm_noclipaccelerate");
-	PMoveCustom_UpdateVar("phy_nospeedcap", "pm_nospeedcap");
-}
-#endif
-
 /* pointcontents reimplementation, only way we can effectively trace 
  * against ladders and liquids that are defined in the game-logic.
  */
@@ -69,9 +39,9 @@ float
 PMoveCustom_Gravity(entity ent)
 {
 	if (ent.gravity) {
-		return serverkeyfloat("phy_gravity") * ent.gravity; 
+		return g_pmoveVars.g_gravity * ent.gravity; 
 	} else {
-		return serverkeyfloat("phy_gravity");
+		return g_pmoveVars.g_gravity;
 	}
 }
 
@@ -137,9 +107,9 @@ PMoveCustom_Categorize(void)
 #else
 	if (trace_endcontentsi & CONTENTBIT_FTELADDER) {
 #endif
-		self.flags |= FL_ONLADDER;
+		self.vv_flags |= VFL_ONLADDER;
 	} else {
-		self.flags &= ~FL_ONLADDER;
+		self.vv_flags &= ~VFL_ONLADDER;
 	}
 
 	testPos = self.origin + [0, 0, self.mins[2] + 4];
@@ -156,7 +126,7 @@ PMoveCustom_Categorize(void)
 	}
 
 	/* how far underwater are we? */
-	if (contents < CONTENT_SOLID && !(self.flags & FL_ONLADDER)) {
+	if (contents < CONTENT_SOLID && !(self.vv_flags & VFL_ONLADDER)) {
 		self.watertype = contents;
 
 		if (PMoveCustom_Contents(self.origin + (self.mins + self.maxs) * 0.5) 
@@ -203,7 +173,7 @@ PMoveCustom_AccelWater(float move_time, float premove)
 
 	wish_speed = vlen(vecWishVel);
 
-	if (serverkeyfloat("phy_nospeedcap") == 0 && wish_speed > self.maxspeed) {
+	if (g_pmoveVars.pm_nospeedcap == 0 && wish_speed > self.maxspeed) {
 		wish_speed = self.maxspeed;
 	}
 
@@ -211,7 +181,7 @@ PMoveCustom_AccelWater(float move_time, float premove)
 
 	// water friction
 	if (self.velocity != [0,0,0]) {
-		flFriction = vlen(self.velocity) * (1 - move_time * serverkeyfloat("phy_friction"));
+		flFriction = vlen(self.velocity) * (1 - move_time * g_pmoveVars.pm_friction);
 		if (flFriction > 0) {
 			self.velocity = normalize(self.velocity) * flFriction;
 		} else {
@@ -226,7 +196,7 @@ PMoveCustom_AccelWater(float move_time, float premove)
 		return;
 	}
 
-	flFriction = min(wish_speed - flFriction, serverkeyfloat("phy_wateraccelerate") * wish_speed * move_time);
+	flFriction = min(wish_speed - flFriction, g_pmoveVars.pm_wateraccelerate * wish_speed * move_time);
 	self.velocity = self.velocity + normalize(vecWishVel) * flFriction;
 }
 
@@ -245,7 +215,7 @@ PMoveCustom_AccelLadder(float move_time, float premove, vector wish_dir, float w
 		self.velocity = [0,0,0];
 	}
 
-	if (input_buttons & INPUT_BUTTON2) {
+	if (input_buttons & INPUT_JUMP) {
 		vector ladderpos = trace_ent.absmin + (0.5f * (trace_ent.absmax - trace_ent.absmin));
 		ladderpos[2] = self.origin[2];
 		makevectors(normalize(ladderpos - self.origin));
@@ -275,7 +245,7 @@ PMoveCustom_AccelFriction(float move_time, float premove, vector wish_dir, float
 	}
 #endif
 
-	flApplyFriction = serverkeyfloat("phy_friction");
+	flApplyFriction = g_pmoveVars.pm_friction;
 
 	/* per frame basis friction modifier */
 	if (self.friction != 0.0f) {
@@ -299,14 +269,14 @@ PMoveCustom_AccelFriction(float move_time, float premove, vector wish_dir, float
 
 		// apply friction
 		if (trace_fraction == 1.0) {
-			if (flFriction < serverkeyfloat("phy_stopspeed")) {
-				flFriction = 1 - move_time * (serverkeyfloat("phy_stopspeed") / flFriction) * flApplyFriction * serverkeyfloat("phy_edgefriction");
+			if (flFriction < g_pmoveVars.pm_stopspeed) {
+				flFriction = 1 - move_time * (g_pmoveVars.pm_stopspeed / flFriction) * flApplyFriction * g_pmoveVars.pm_edgefriction;
 			} else {
-				flFriction = 1 - move_time * flApplyFriction * serverkeyfloat("phy_edgefriction");
+				flFriction = 1 - move_time * flApplyFriction * g_pmoveVars.pm_edgefriction;
 			}
 		} else {
-			if (flFriction < serverkeyfloat("phy_stopspeed")) {
-				flFriction = 1 - move_time * (serverkeyfloat("phy_stopspeed") / flFriction) * flApplyFriction;
+			if (flFriction < g_pmoveVars.pm_stopspeed) {
+				flFriction = 1 - move_time * (g_pmoveVars.pm_stopspeed / flFriction) * flApplyFriction;
 			} else {
 				
 				flFriction = 1 - move_time * flApplyFriction;
@@ -328,7 +298,7 @@ PMoveCustom_AccelFriction(float move_time, float premove, vector wish_dir, float
 	// acceleration
 	flFriction = wish_speed - (self.velocity * wish_dir);
 	if (flFriction > 0) {
-		self.velocity += wish_dir * min(flFriction, serverkeyfloat("phy_accelerate") * move_time * wish_speed);
+		self.velocity += wish_dir * min(flFriction, g_pmoveVars.pm_accelerate * move_time * wish_speed);
 	}
 }
 
@@ -339,7 +309,7 @@ PMoveCustom_AccelNoclip(float move_time, float premove, vector wish_dir, float w
 	float flFriction;
 	vector vecTemp;
 
-	flApplyFriction = serverkeyfloat("phy_friction");
+	flApplyFriction = g_pmoveVars.pm_friction;
 
 	/* per frame basis friction modifier */
 	if (self.friction != 0.0f) {
@@ -348,12 +318,12 @@ PMoveCustom_AccelNoclip(float move_time, float premove, vector wish_dir, float w
 	}
 
 	/* apply friction */
-	if (vlen(self.velocity)) {
+	if (lengthSquared(self.velocity)) {
 		vecTemp = self.velocity;
 		flFriction = vlen(vecTemp);
 
-		if (flFriction < serverkeyfloat("phy_stopspeed")) {
-			flFriction = 1 - move_time * (serverkeyfloat("phy_stopspeed") / flFriction) * flApplyFriction;
+		if (flFriction < g_pmoveVars.pm_stopspeed) {
+			flFriction = 1 - move_time * (g_pmoveVars.pm_stopspeed / flFriction) * flApplyFriction;
 		} else {
 			flFriction = 1 - move_time * flApplyFriction;
 		}
@@ -368,7 +338,7 @@ PMoveCustom_AccelNoclip(float move_time, float premove, vector wish_dir, float w
 	// acceleration
 	flFriction = wish_speed - (self.velocity * wish_dir);
 	if (flFriction > 0) {
-		self.velocity += wish_dir * min(flFriction, serverkeyfloat("phy_noclipaccelerate") * move_time * wish_speed);
+		self.velocity += wish_dir * min(flFriction, g_pmoveVars.pm_noclipaccelerate * move_time * wish_speed);
 	}
 }
 
@@ -388,7 +358,7 @@ PMoveCustom_AccelGravity(float move_time, float premove, vector wish_dir, float 
 
 	if (flFriction > 0) {
 		float fric;
-		fric = min(flFriction, serverkeyfloat("phy_airaccelerate") * wish_speed * move_time);
+		fric = min(flFriction, g_pmoveVars.pm_airaccelerate * wish_speed * move_time);
 		self.velocity += wish_dir * fric;
 	}
 }
@@ -425,7 +395,7 @@ PMoveCustom_Acceleration(float move_time, float premove)
 		vecWishVel += v_right * input_movevalues[1];
 		vecWishVel += v_up * input_movevalues[2];
 		wish_dir = normalize(vecWishVel);
-		wish_speed = serverkeyfloat("phy_noclipspeed");
+		wish_speed = g_pmoveVars.pm_noclipspeed;
 		PMoveCustom_AccelNoclip(move_time, premove, wish_dir, wish_speed);
 		return;
 	}
@@ -449,11 +419,11 @@ PMoveCustom_Acceleration(float move_time, float premove)
 	wish_dir = normalize(vecWishVel);
 	wish_speed = vlen(vecWishVel);
 
-	if (serverkeyfloat("phy_nospeedcap") == 0 && wish_speed > self.maxspeed) {
+	if (g_pmoveVars.pm_nospeedcap == 0 && wish_speed > self.maxspeed) {
 		wish_speed = self.maxspeed;
 	}
 
-	if (self.flags & FL_ONLADDER) {
+	if (self.vv_flags & VFL_ONLADDER) {
 		PMoveCustom_AccelLadder(move_time, premove, wish_dir, wish_speed);
 	} else if (self.flags & FL_ONGROUND) {
 		PMoveCustom_AccelFriction(move_time, premove, wish_dir, wish_speed);
@@ -603,9 +573,9 @@ PMoveCustom_Move(void)
 			trace_endpos = self.origin;
 
 			if (self.flags & FL_ONGROUND) {
-				trace_endpos[2] += serverkeyfloat("phy_stepheight");
+				trace_endpos[2] += g_pmoveVars.pm_stepsize;
 			} else {
-				trace_endpos[2] += serverkeyfloat("phy_airstepheight");
+				trace_endpos[2] += g_pmoveVars.pm_airstepsize;
 			}
 
 			tracebox(self.origin, self.mins, self.maxs, trace_endpos, MOVE_NORMAL, self);
@@ -666,7 +636,7 @@ PMoveCustom_Move(void)
 	/* touch whatever is below */
 	if (self.flags & FL_ONGROUND) {
 		dest = self.origin;
-		dest[2] -= serverkeyfloat("phy_stepheight");
+		dest[2] -= g_pmoveVars.pm_stepsize;
 		tracebox(self.origin, self.mins, self.maxs, dest, MOVE_NORMAL, self);
 
 		if (trace_fraction == 1.0) {
@@ -712,11 +682,11 @@ PMoveCustom_RunPlayerPhysics(entity target)
 
 	if (flying == true) {
 		/* move camera up (noclip, fly) when holding jump */
-		if (input_buttons & INPUT_BUTTON2) {
+		if (input_buttons & INPUT_JUMP) {
 			input_movevalues[2] = 240;
 		}
 		/* move camera down (noclip, fly) when holding crouching */
-		if (input_buttons & INPUT_BUTTON8) {
+		if (input_buttons & INPUT_CROUCH) {
 			input_movevalues[2] = -240;
 		}
 	}
@@ -753,22 +723,23 @@ PMoveCustom_RunCrouchPhysics(entity target)
 	if (target.movetype == MOVETYPE_NONE)
 		return;
 
+#if 0
 	int iFixCrouch = FALSE;
-	if (input_buttons & INPUT_BUTTON8) {
-		target.flags |= FL_CROUCHING;
+	if (input_buttons & INPUT_CROUCH) {
+		target.vv_flags |= VFL_CROUCHING;
 	} else {	
 		// If we aren't holding down duck anymore and 'attempt' to stand up, prevent it
-		if (target.flags & FL_CROUCHING) {
-			if (PMove_IsStuck(target, [0,0,36], PHY_HULL_MIN, PHY_HULL_MAX) == false) {
-				target.flags &= ~FL_CROUCHING;
+		if (target.vv_flags & VFL_CROUCHING) {
+			if (PMove_IsStuck(target, [0,0,36], g_pmoveVars.GetStandingMins(),  g_pmoveVars.GetStandingMaxs()) == false) {
+				target.vv_flags &= ~VFL_CROUCHING;
 				iFixCrouch = TRUE;
 			}
 		} else {
-			target.flags &= ~FL_CROUCHING;
+			target.vv_flags &= ~VFL_CROUCHING;
 		}
 	}
 
-	if (target.flags & FL_CROUCHING) {
+	if (target.vv_flags & VFL_CROUCHING) {
 		setsize(target, PHY_HULL_CROUCHED_MIN, PHY_HULL_CROUCHED_MAX);
 		target.view_ofs = PHY_VIEWPOS_CROUCHED;
 	} else {
@@ -784,5 +755,7 @@ PMoveCustom_RunCrouchPhysics(entity target)
 		setorigin(target, target.origin);
 		target.view_ofs = PHY_VIEWPOS;
 	}
+#endif
+
 	PMoveCustom_RunPlayerPhysics(target);
 }
