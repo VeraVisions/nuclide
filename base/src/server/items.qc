@@ -21,7 +21,7 @@ void item_pickup::Touch(entity eToucher)
 	}
 
 	/* don't remove if AddItem fails */
-	if (Weapons_AddItem((player)eToucher, id, m_iClip) == FALSE) {
+	if (Weapons_AddItem(eToucher, id, m_iClip) == FALSE) {
 		return;
 	}
 

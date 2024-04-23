@@ -49,17 +49,9 @@ ClientConnect(void)
 	/* don't carry over team settings from a previous session */
 	forceinfokey(self, "*team", "0");
 
-	/* bot needs special init */
-#ifdef BOT_INCLUDED
-	if (clienttype(self) == CLIENTTYPE_BOT) {
-		/* from now on we're of type NSBot */
-		EntityDef_SpawnClassname("bot");
-	} else
-#endif
-
 	/* make sure you never change the classname. ever. */
 	if (self.classname != "player") {
-		spawnfunc_player();
+		EntityDef_SpawnClassname("player");
 	}
 
 	if (g_ents_initialized)
@@ -80,7 +72,7 @@ ClientDisconnect(void)
 		g_grMode.PlayerDisconnect((NSClientPlayer)self);
 
 	/* this will hide/remove the player from other clients */
-	player pl = (player)self;
+	NSClientPlayer pl = (NSClientPlayer)self;
 	pl.SetSolid(SOLID_NOT);
 	pl.SetMovetype(MOVETYPE_NONE);
 	pl.SetModelindex(0);
@@ -233,7 +225,7 @@ PlayerPostThink(void)
 #endif
 
 	if (g_ents_initialized) {
-		player pl = (player)self;
+		NSClientPlayer pl = (NSClientPlayer)self;
 		g_grMode.PlayerPostFrame((NSClientPlayer)self);
 		pl.EvaluateEntity();
 		forceinfokey(pl, "*score", ftos(pl.score));
@@ -467,7 +459,7 @@ The client-side equivalent is `CSQC_ConsoleCommand` (src/client/entry.qc)
 float
 ConsoleCmd(string cmd)
 {
-	player pl;
+	NSClientPlayer pl;
 
 	/* some sv commands can only be executed by a player in-world */
 	if ( !self ) {
@@ -488,7 +480,7 @@ ConsoleCmd(string cmd)
 		}
 	}
 
-	pl = (player)self;
+	pl = (NSClientPlayer)self;
 
 	/* give the game-mode a chance to override us */
 	if (g_ents_initialized)

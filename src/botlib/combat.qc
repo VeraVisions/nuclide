@@ -58,6 +58,7 @@ NSBot::SetEnemy(entity en)
 void
 NSBot::WeaponThink(void)
 {
+#if 0
 	int r = Weapons_IsEmpty(this, activeweapon);
 
 	/* clip empty, but the whole weapon isn't */
@@ -71,6 +72,7 @@ NSBot::WeaponThink(void)
 	}
 
 	m_wtWeaponType = Weapons_GetType(this, activeweapon);
+#endif
 }
 
 void

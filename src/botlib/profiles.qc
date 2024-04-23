@@ -38,7 +38,7 @@ Bot_AddBot_f(string botName, float teamValue, float spawnDelay, string newName)
 	int extraCount = 0i;
 	int foundID = -1i;
 	entity oldSelf;
-	NSBot newBot;
+	NSClientPlayer newBot;
 	int i = 0i;
 
 	if (!botName) {
@@ -73,7 +73,7 @@ Bot_AddBot_f(string botName, float teamValue, float spawnDelay, string newName)
 		return (false);
 	}
 
-	newBot = (NSBot)self;
+	newBot = (NSClientPlayer)self;
 	newBot.SetInfoKey("name", g_bots[foundID].m_strNetName);
 
 	extraCount = tokenize(g_bots[foundID].m_strExtra);

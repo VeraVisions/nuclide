@@ -45,7 +45,7 @@ FX_Corpse_Next(void)
 }
 
 entity
-FX_Corpse_Spawn(player pl, float anim)
+FX_Corpse_Spawn(NSClientPlayer pl, float anim)
 {
 	NSRenderableEntity body_next = (NSRenderableEntity)FX_Corpse_Next();
 	setorigin(body_next, pl.origin + [0,0,32]);

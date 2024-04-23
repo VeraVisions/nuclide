@@ -15,7 +15,6 @@
 */
 
 #include "cvars.h"
-#include "NSBot.h"
 
 vector Route_SelectDestination( NSBot target );
 

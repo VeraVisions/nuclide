@@ -198,19 +198,19 @@ NSClientPlayer::ProcessInput(void)
 		canfire = false;
 	
 	if (canfire == false) {
-		Weapons_Release((player)this);
+		Weapons_Release(this);
 		return;
 	}
 
 	/* weapon system */
 	if (input_buttons & INPUT_SECONDARY)
-		Weapons_Secondary((player)this);
+		Weapons_Secondary(this);
 	else if (input_buttons & INPUT_PRIMARY)
-		Weapons_Primary((player)this);
+		Weapons_Primary(this);
 	else if (input_buttons & INPUT_RELOAD)
-		Weapons_Reload((player)this);
+		Weapons_Reload(this);
 	else
-		Weapons_Release((player)this);
+		Weapons_Release(this);
 }
 
 /* this is where it gets mod specific really fast,
@@ -315,7 +315,7 @@ NSClientPlayer::predraw(void)
 
 		/* draw a 3D voice blob over its head */
 		Voice_Draw3D(this);
-		Weapons_PreDraw((player)this, true);
+		Weapons_PreDraw(this, true);
 
 		/* force drawing us if it's our local player and we're meant to show */
 		if (entnum == player_localentnum)
@@ -328,7 +328,7 @@ NSClientPlayer::predraw(void)
 
 		/* give mods a chance to de-render attachments */
 		UpdatePlayerAttachments(true);
-		Weapons_PreDraw((player)this, false);
+		Weapons_PreDraw(this, false);
 
 		/* this is here just to make sure our view hides us if it's the local player */
 		if (entnum == player_localentnum)
@@ -1067,6 +1067,17 @@ at the top of player::SendEntity
 float
 NSClientPlayer::SendEntity(entity ePEnt, float flChanged)
 {
+	/* don't broadcast invisible players */
+	if (IsFakeSpectator() && ePEnt != this)
+		return (0);
+	if (!GetModelindex() && ePEnt != this)
+		return (0);
+
+	flChanged = OptimiseChangedFlags(ePEnt, flChanged);
+
+	WriteByte(MSG_ENTITY, ENT_PLAYER);
+	WriteFloat(MSG_ENTITY, flChanged);
+
 	SENDENTITY_INT(modelindex, PLAYER_MODELINDEX)
 	SENDENTITY_BYTE(colormap, PLAYER_MODELINDEX)
 
@@ -1149,9 +1160,6 @@ NSClientPlayer::OptimiseChangedFlags(entity ePEnt, float flChanged)
 		flChanged &= ~PLAYER_ITEMS;
 		//flChanged &= ~PLAYER_HEALTH;
 		flChanged &= ~PLAYER_TIMINGS;
-		flChanged &= ~PLAYER_AMMO1;
-		flChanged &= ~PLAYER_AMMO2;
-		flChanged &= ~PLAYER_AMMO3;
 		//flChanged &= ~PLAYER_FLAGS;
 		flChanged &= ~PLAYER_PUNCHANGLE;
 		flChanged &= ~PLAYER_VIEWZOOM;

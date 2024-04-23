@@ -144,7 +144,7 @@ private:
 	 * effects of some bits. Such as invisibility, quad, etc. 
 	 * also, modders probably want 32 bits for items. */
 	PREDICTED_INT(g_items)
-	PREDICTED_FLOAT(activeweapon)
+	PREDICTED_FLOAT_N(activeweapon)
 
 #ifdef NEW_INVENTORY
 	NSWeapon m_weapons[MAX_WEAPONS];

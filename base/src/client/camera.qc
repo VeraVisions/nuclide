@@ -90,7 +90,7 @@ Camera_AddLean(vector viewAngle)
 	vector output;
 	vector srcPos;
 	float heightChange;
-	player pl = (player)pSeat->m_ePlayer;
+	NSClientPlayer pl = (NSClientPlayer)pSeat->m_ePlayer;
 
 	if (pSeat->m_iLeanDir > 0i) {
 		pSeat->m_flLeaning += frametime * 5;

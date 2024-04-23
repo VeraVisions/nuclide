@@ -64,7 +64,7 @@ Cross_DrawSubRGBA(string materialPath, vector sizeXY, vector sourcePosXY, vector
 	} else {
 		vector vecSrc;
 		vector vecDst;
-		player pl = (player)pSeat->m_ePlayer;
+		NSClientPlayer pl = (NSClientPlayer)pSeat->m_ePlayer;
 
 		vecSrc = pSeat->m_vecPredictedOrigin + pSeat->m_ePlayer.view_ofs;
 		makevectors(view_angles);

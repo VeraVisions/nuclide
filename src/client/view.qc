@@ -119,7 +119,7 @@ View_HandleAnimEvent(float flTimeStamp, int iCode, string strData)
 }
 
 void
-View_ForceChange(player pl, int targetWeapon)
+View_ForceChange(NSClientPlayer pl, int targetWeapon)
 {
 	NSRenderableEntity m_eViewModel = (NSRenderableEntity)pSeat->m_eViewModel;
 	NSRenderableEntity m_eViewModelL = (NSRenderableEntity)pSeat->m_eViewModelL;
@@ -186,7 +186,7 @@ View_DrawViewModel(void)
 
 		if (pl.activeweapon) {
 			/* hack, we changed the wep, move this into Game_Input/PMove */
-			Weapons_Draw((player)pl);
+			Weapons_Draw((NSClientPlayer)pl);
 		} else {
 			pSeat->m_eViewModel.modelindex =
 			pSeat->m_eViewModelL.modelindex = 0;

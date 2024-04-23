@@ -1,5 +1,4 @@
  #includelist
-player.qc
 weapons.h
 flags.h
 fx_blood.qc

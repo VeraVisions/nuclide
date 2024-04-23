@@ -50,7 +50,7 @@ Client_IsPlayer(NSClient cl)
 bool
 Client_InVehicle(void)
 {
-	player pl = (player)pSeat->m_ePlayer;
+	NSClientPlayer pl = (NSClientPlayer)pSeat->m_ePlayer;
 	return (pl.vehicle != world) ? true : false;
 }
 

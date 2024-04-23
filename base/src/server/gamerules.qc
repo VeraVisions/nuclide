@@ -21,9 +21,8 @@ GameRules::GameRules(void)
 }
 
 void
-GameRules::LevelDecodeParms(NSClientPlayer pp)
+GameRules::LevelDecodeParms(NSClientPlayer pl)
 {
-	player pl = (player)pp;
 	g_landmarkpos[0] = parm1;
 	g_landmarkpos[1] = parm2;
 	g_landmarkpos[2] = parm3;
@@ -36,18 +35,11 @@ GameRules::LevelDecodeParms(NSClientPlayer pp)
 	pl.g_items = parm10;
 	pl.activeweapon = parm11;
 	pl.flags = parm64;
-
-	if (pl.vv_flags & VFL_CROUCHING) {
-		setsize(pl, VEC_CHULL_MIN, VEC_CHULL_MAX);
-	} else {
-		setsize(pl, VEC_HULL_MIN, VEC_HULL_MAX);
-	}
 }
 
 void
-GameRules::LevelChangeParms(NSClientPlayer pp)
+GameRules::LevelChangeParms(NSClientPlayer pl)
 {
-	player pl = (player)pp;
 	parm1 = g_landmarkpos[0];
 	parm2 = g_landmarkpos[1];
 	parm3 = g_landmarkpos[2];

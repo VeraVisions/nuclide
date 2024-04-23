@@ -56,7 +56,7 @@ Vote_Reset(void)
 	forceinfokey(world, "vote_cmd", "");
 
 	for (entity e = world; (e = find(e, ::classname, "player"));) {
-		player pl = (player)e;
+		NSClientPlayer pl = (NSClientPlayer)e;
 		pl.voted = 0;
 	}
 }
@@ -128,7 +128,7 @@ CSEv_VoteY
 void
 CSEv_VoteY(void)
 {
-	player pl = (player)self;
+	NSClientPlayer pl = (NSClientPlayer)self;
 
 	/* No vote is in progress */
 	if (g_iVoteState != VOTE_INPROGRESS) {
@@ -173,7 +173,7 @@ CSEv_VoteN
 void
 CSEv_VoteN(void)
 {
-	player pl = (player)self;
+	NSClientPlayer pl = (NSClientPlayer)self;
 
 	/* No vote is in progress */
 	if (g_iVoteState != VOTE_INPROGRESS) {

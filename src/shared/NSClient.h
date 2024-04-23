@@ -20,7 +20,7 @@ It is mostly concerned with the features shared between players
 and spectating clients alike.
 */
 class
-NSClient:NSNavAI
+NSClient:NSBot
 {
 public:
 	void NSClient(void);
@@ -65,20 +65,9 @@ public:
 	virtual float predraw(void);
 #endif
 
-	/** Get the string value of an InfoKey. */
-	nonvirtual string GetInfoKey(string);
-	/** Floating point based version of GetInfoKey(). */
-	nonvirtual float GetInfoKeyFloat(string);
-
 #ifdef SERVER
 	/** Server: This is where the input* variables arrive after sending them out from the client (see ClientInputFrame). This is also where we will instruct the server to run physics on the client. */
 	virtual void ServerInputFrame(void);
-
-	/** Server: Set the value of an InfoKey. */
-	nonvirtual void SetInfoKey(string, string);
-
-	/** Server: Floating point based version of SetInfoKey(). */
-	nonvirtual void SetInfoKeyFloat(string, float);
 
 	/* overrides */
 	virtual void Save(float);

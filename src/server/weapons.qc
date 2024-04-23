@@ -72,7 +72,7 @@ void
 Weapons_RefreshAmmo(NSClientPlayer pl)
 {
 	if (g_weapons[pl.activeweapon].updateammo != __NULL__) {
-		g_weapons[pl.activeweapon].updateammo((player)pl);
+		g_weapons[pl.activeweapon].updateammo(pl);
     }
 }
 
@@ -99,7 +99,7 @@ Weapons_SwitchBest(NSClientPlayer pl, optional float skip = 0)
 			continue;
 
 		/* do we have the weapon and is not not empty? */
-		if ((pl.g_items & g_weapons[x].id) && (Weapons_IsEmpty((player)pl, x) == 0)) {
+		if ((pl.g_items & g_weapons[x].id) && (Weapons_IsEmpty(pl, x) == 0)) {
 			pl.activeweapon = x;
 			break;
 		}
@@ -108,7 +108,7 @@ Weapons_SwitchBest(NSClientPlayer pl, optional float skip = 0)
 	if (old == pl.activeweapon)
 		return;
 
-	Weapons_Draw((player)pl);
+	Weapons_Draw(pl);
 	self = oldself;
 	pl.gflags |= GF_SEMI_TOGGLED;
 }
@@ -159,7 +159,7 @@ Weapons_AddItem(NSClientPlayer pl, int w, int startammo)
 			/* it's new, so autoswitch? */
 			if (pl.activeweapon == 0 && autocvar_sv_forceweapondraw == 1) {
 				pl.activeweapon = w;
-				Weapons_Draw((player)pl);
+				Weapons_Draw(pl);
 			} else {
 				Weapons_PickupNotify(pl, w);
 			}
@@ -168,21 +168,21 @@ Weapons_AddItem(NSClientPlayer pl, int w, int startammo)
 		/* call pickup to handle the ammo */
 		if (pl.g_items & g_weapons[w].id) {
 			/* we have the item already, se let's see if we hit maxammo */
-			value = g_weapons[w].pickup((player)pl, FALSE, startammo);
+			value = g_weapons[w].pickup(pl, FALSE, startammo);
 
 			/* FALSE means maxammo is hit */
 			if (!value)
 				return value;
 		} else if (over_limit == false) {
 			/* new to our arsenal */
-			if (g_weapons[w].pickup((player)pl, TRUE, startammo) == TRUE) {
+			if (g_weapons[w].pickup(pl, TRUE, startammo) == TRUE) {
 				pl.g_items |= g_weapons[w].id;
 				value = TRUE;
 
 				/* it's new, so autoswitch? */
 				if (pl.activeweapon == 0 && autocvar_sv_forceweapondraw == 1) {
 					pl.activeweapon = w;
-					Weapons_Draw((player)pl);
+					Weapons_Draw(pl);
 				} else {
 					Weapons_PickupNotify(pl, w);
 				}
@@ -239,28 +239,28 @@ Weapons_AddItemSilent(NSClientPlayer pl, int w, int startammo)
 			/* it's new, so autoswitch? */
 			if (pl.activeweapon == 0 && autocvar_sv_forceweapondraw == 1) {
 				pl.activeweapon = w;
-				Weapons_Draw((player)pl);
+				Weapons_Draw(pl);
 			}
 		}
 	} else {
 		/* call pickup to handle the ammo */
 		if (pl.g_items & g_weapons[w].id) {
 			/* we have the item already, se let's see if we hit maxammo */
-			value = g_weapons[w].pickup((player)pl, FALSE, startammo);
+			value = g_weapons[w].pickup(pl, FALSE, startammo);
 
 			/* FALSE means maxammo is hit */
 			if (!value)
 				return value;
 		} else if (over_limit == false) {
 			/* new to our arsenal */
-			if (g_weapons[w].pickup((player)pl, TRUE, startammo) == TRUE) {
+			if (g_weapons[w].pickup(pl, TRUE, startammo) == TRUE) {
 				pl.g_items |= g_weapons[w].id;
 				value = TRUE;
 
 				/* it's new, so autoswitch? */
 				if (pl.activeweapon == 0 && autocvar_sv_forceweapondraw == 1) {
 					pl.activeweapon = w;
-					Weapons_Draw((player)pl);
+					Weapons_Draw(pl);
 				}
 			} else {
 				/* cannot pickup this weapon (weapon says no) */
@@ -379,7 +379,7 @@ The 'drop' command from the client-module calls this.
 void
 CSEv_DropWeapon(void)
 {
-	player pl = (player)self;
+	NSClientPlayer pl = (NSClientPlayer)self;
 	Weapon_DropCurrentWeapon(pl);
 }
 #endif
@@ -387,7 +387,7 @@ CSEv_DropWeapon(void)
 void
 CSEv_PlayerSwitchWeapon_i(int w)
 {
-	player pl = (player)self;
+	NSClientPlayer pl = (NSClientPlayer)self;
 
 	if (pl.activeweapon != w) {
 		pl.activeweapon = w;

@@ -145,17 +145,17 @@ NSGameRules::LevelChangeParms(NSClientPlayer pl)
 
 /* spectator */
 /*void
-NSGameRules::SpectatorConnect(player pl)
+NSGameRules::SpectatorConnect(NSClientSpectator pl)
 {
 	//print("SpectatorConnect!\n");
 }
 void
-NSGameRules::SpectatorDisconnect(player pl)
+NSGameRules::SpectatorDisconnect(NSClientSpectator pl)
 {
 	//print("SpectatorDisconnect!\n");
 }
 void
-NSGameRules::SpectatorThink(player pl)
+NSGameRules::SpectatorThink(NSClientSpectator pl)
 {
 	//print("SpectatorThink!\n");
 }*/
@@ -423,13 +423,13 @@ NSGameRules::DamageApply(entity t, entity c, float dmg, int w, damageType_t type
 	/* they died */
 	if (eTarget.GetHealth() <= 0) {
 		if (eTarget.flags & FL_CLIENT) {
-			PlayerDeath((player)eTarget);
+			PlayerDeath(eTarget);
 		} else {
 			eTarget.Death();
 		}
 	} else {
 		if (eTarget.flags & FL_CLIENT) {
-			PlayerPain((player)eTarget);
+			PlayerPain(eTarget);
 		} else {
 			eTarget.Pain();
 		}

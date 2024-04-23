@@ -41,8 +41,57 @@ typedef enum
 
 /** A virtual multiplayer opponent. Base class for all bots.
 */
-class NSBot:player
+class NSBot:NSNavAI
 {
+public:
+
+	void(void) NSBot;
+
+#ifdef SERVER
+	virtual void(botstate_t) SetState;
+	virtual botstate_t(void) GetState;
+	virtual botpersonality_t(void) GetPersonality;
+
+	virtual float GetForwardSpeed(void);
+	virtual float GetSideSpeed(void);
+	virtual float GetBackSpeed(void);
+
+	virtual void(string) ChatSay;
+	virtual void(string) ChatSayTeam;
+	virtual void(void) Pain;
+	virtual void(void) RouteClear;
+	virtual void(void) WeaponThink;
+	virtual void(void) WeaponAttack;
+	virtual void(void) SeeThink;
+	virtual void(int, int) BrainThink;
+	virtual void(void) RunAI;
+	virtual void(void) CreateObjective;
+	virtual void(void) CheckRoute;
+	virtual void(void) PreFrame;
+	virtual void(void) PostFrame;
+	virtual void(void) UseButton;
+	virtual void(entity) SetEnemy;
+	virtual float(void) GetRunSpeed;
+	virtual float(void) GetWalkSpeed;
+	nonvirtual void ForceWeaponAttack(vector, float);
+
+	virtual void(string) SetName;
+
+
+	/** Server: Set the value of an InfoKey. */
+	nonvirtual void SetInfoKey(string, string);
+
+	/** Server: Floating point based version of SetInfoKey(). */
+	nonvirtual void SetInfoKeyFloat(string, float);
+#endif
+
+	/** Get the string value of an InfoKey. */
+	nonvirtual string GetInfoKey(string);
+	/** Floating point based version of GetInfoKey(). */
+	nonvirtual float GetInfoKeyFloat(string);
+
+#ifdef SERVER
+private:
 	/* routing */
 	int m_iNodes;
 	int m_iCurNode;
@@ -73,41 +122,13 @@ class NSBot:player
 	vector m_vecLastPOI;
 	float m_flForceWeaponAttack;
 	vector m_vecForceWeaponAttackPos;
-
-	void(void) NSBot;
-
-	virtual void(botstate_t) SetState;
-	virtual botstate_t(void) GetState;
-	virtual botpersonality_t(void) GetPersonality;
-
-	virtual float GetForwardSpeed(void);
-	virtual float GetSideSpeed(void);
-	virtual float GetBackSpeed(void);
-
-	virtual void(string) ChatSay;
-	virtual void(string) ChatSayTeam;
-	virtual void(void) Pain;
-	virtual void(void) RouteClear;
-	virtual void(void) WeaponThink;
-	virtual void(void) WeaponAttack;
-	virtual void(void) SeeThink;
-	virtual void(int, int) BrainThink;
-	virtual void(void) RunAI;
-	virtual void(void) CreateObjective;
-	virtual void(void) CheckRoute;
-	virtual void(void) PreFrame;
-	virtual void(void) PostFrame;
-	virtual void(void) UseButton;
-	virtual void(entity) SetEnemy;
-	virtual float(void) GetRunSpeed;
-	virtual float(void) GetWalkSpeed;
-	nonvirtual void ForceWeaponAttack(vector, float);
-
-	virtual void(string) SetName;
+#endif
 };
 
+#ifdef SERVER
 /** Adds a bot to the game with some basic info. Returns the resulting entity. __NULL__ if unavailable. */
 entity Bot_AddQuick(void);
+void BotLib_Init(void);
 
 /** Applies random custom colors to the given bot entity. */
 void
@@ -120,3 +141,4 @@ Bot_RandomColormap(NSBot target)
 	forceinfokey(target, "topcolor", sprintf("0x%x", top));
 	forceinfokey(target, "bottomcolor", sprintf("0x%x", bottom));
 }
+#endif

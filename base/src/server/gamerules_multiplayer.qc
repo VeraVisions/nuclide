@@ -66,9 +66,8 @@ MultiplayerRules::PlayerDeath(NSClientPlayer pl)
 }
 
 void
-MultiplayerRules::PlayerSpawn(NSClientPlayer pp)
+MultiplayerRules::PlayerSpawn(NSClientPlayer pl)
 {
-	player pl = (player)pp;
 	/* this is where the mods want to deviate */
 	entity spot;
 

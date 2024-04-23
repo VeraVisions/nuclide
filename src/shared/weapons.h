@@ -1,14 +1,6 @@
+
+
 #ifdef NEW_INVENTORY
-/* for AI identification purposes */
-typedef enum
-{
-	WPNTYPE_INVALID,	/* no logic */
-	WPNTYPE_RANGED,		/* will want to keep their distance mostly */
-	WPNTYPE_THROW,		/* has to keep some distance, but not too far */
-	WPNTYPE_CLOSE,		/* have to get really close */
-	WPNTYPE_FULLAUTO,	/* for things that need to be held down */
-	WPNTYPE_SEMI		/* semi automatic */
-} weapontype_t;
 
 void Weapons_Draw(NSClientPlayer);
 void Weapons_Release(NSClientPlayer);

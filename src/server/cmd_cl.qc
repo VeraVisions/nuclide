@@ -34,14 +34,14 @@ Cmd_ParseClientCommand(NSClient sender, string cmd, int commandArguments)
 		if (sender.classname != "player")
 			break;
 
-		player pl = (player)sender;
+		NSClientPlayer pl = (NSClientPlayer)sender;
 		pl.MakeSpectator();
 		break;
 	case "play":
 		if (sender.classname != "spectator")
 			break;
 
-		spawnfunc_player();
+		EntityDef_SpawnClassname("player");
 		PutClientInServer();
 		break;
 	case "setpos":

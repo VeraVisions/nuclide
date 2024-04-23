@@ -3,7 +3,6 @@
 #includelist
 defs.h
 profiles.qc
-NSBot.qc
 chat.qc
 combat.qc
 route.qc

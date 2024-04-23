@@ -29,6 +29,18 @@ _NSNavAI_Log(string className, string functionName, float edictNum, string warnM
 #define MAX_AMMO_TYPES 16
 #endif
 
+
+/* for AI identification purposes */
+typedef enum
+{
+	WPNTYPE_INVALID,	/* no logic */
+	WPNTYPE_RANGED,		/* will want to keep their distance mostly */
+	WPNTYPE_THROW,		/* has to keep some distance, but not too far */
+	WPNTYPE_CLOSE,		/* have to get really close */
+	WPNTYPE_FULLAUTO,	/* for things that need to be held down */
+	WPNTYPE_SEMI		/* semi automatic */
+} weapontype_t;
+
 /** This entity class represents a moving/pathfinding object.
 It knows how to deal with waypoint based nodes and possibly other
 types of pathfinding in the future.
@@ -140,4 +152,5 @@ private:
 	/* These are defined in side defs\*.def, ammo_types and ammo_names */
 	int m_iAmmoTypes[MAX_AMMO_TYPES];
 	NSItem m_itemList;
+	float activeweapon;
 };

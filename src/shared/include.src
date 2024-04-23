@@ -41,4 +41,5 @@ motd.qc
 
 weapon_common.qc
 ../xr/include.src
+../botlib/NSBot.qc
 #endlist

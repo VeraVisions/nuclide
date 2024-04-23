@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+#ifdef SERVER
 /* default client side player movement values */
 var float autocvar_bot_forwardspeed = 190;
 var float autocvar_bot_sidespeed = 152;
@@ -297,7 +298,7 @@ NSBot::RunAI(void)
 	input_angles = [0,0,0];
 
 	/* attempt to respawn when dead */
-	if (IsDead() == true || health <= 0) {
+	if (IsAlive() == false || health <= 0) {
 		RouteClear();
 		WeaponAttack();
 		SetEnemy(__NULL__);
@@ -511,7 +512,7 @@ NSBot::PreFrame(void)
 void
 NSBot::PostFrame(void)
 {
-#ifndef NEW_INVENTORY
+#if 0
 	/* we've picked something new up */
 	if (m_iOldItems != g_items) {
 		Weapons_SwitchBest(this);
@@ -531,13 +532,54 @@ NSBot::SetName(string nickname)
 }
 
 void
-NSBot::NSBot(void)
+NSBot::SetInfoKey(string strKey, string strValue)
 {
-	classname = "player";
-	targetname = "_nuclide_bot_";
-	SetInfoKey("*bot", "1");
+	forceinfokey(this, strKey, strValue);
 }
 
+void
+NSBot::SetInfoKeyFloat(string strKey, float floatValue)
+{
+	forceinfokey(this, strKey, ftos(floatValue));
+}
+#endif
+
+string
+NSBot::GetInfoKey(string strKey)
+{
+#ifdef SERVER
+	return infokey(this, strKey);
+#endif
+
+#ifdef CLIENT
+	return getplayerkeyvalue(entnum-1, strKey);
+#endif
+}
+
+
+float
+NSBot::GetInfoKeyFloat(string strKey)
+{
+#ifdef SERVER
+	return infokeyf(this, strKey);
+#endif
+
+#ifdef CLIENT
+	return getplayerkeyfloat(entnum-1, strKey);
+#endif
+}
+
+
+void
+NSBot::NSBot(void)
+{
+#ifdef SERVER
+	targetname = "_nuclide_bot_";
+	SetInfoKey("*bot", "1");
+#endif
+}
+
+#ifdef SERVER
 void
 Bot_KickRandom(void)
 {
@@ -594,3 +636,4 @@ BotLib_Init(void)
 	bot_spawner.think = bot_spawner_think;
 	bot_spawner.nextthink = time + 1.0f;
 }
+#endif

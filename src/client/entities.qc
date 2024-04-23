@@ -78,6 +78,7 @@ Entity_EntityUpdate(float type, float new)
 		break;
 	case ENT_PLAYER:
 		NSClientPlayer pl = (NSClientPlayer)self;
+		spawnfunc_NSClientPlayer();
 
 		/* splitscreen */
 		CSQC_UpdateSeat();

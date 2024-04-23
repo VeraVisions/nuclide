@@ -106,6 +106,7 @@ string __fullspawndata;
 #include "NSDebris.h"
 
 #include "../xr/defs.h"
+#include "../botlib/NSBot.h"
 #include "NSClient.h"
 #include "NSClientSpectator.h"
 #include "NSClientPlayer.h"
