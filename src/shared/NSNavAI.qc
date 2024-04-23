@@ -527,13 +527,121 @@ NSNavAI::UseAmmo(int ammoType, int ammoAmount)
 }
 
 bool
-NSNavAI::GiveItem(string itemName)
+NSNavAI::HasItem(string itemName)
 {
+	NSItem linkedList = __NULL__;
+
+	/* we do not have an item. */
+	if (!m_itemList) {
+		return (false);
+	}
+
+	/* since we have something in the inventory, start there */
+	linkedList = m_itemList;
+
+	/* iterate through the inventory, then figure out if we already have it*/
+	while (linkedList) {
+		/* we already have the item. */
+		if (linkedList.classname == itemName) {
+			return (true);
+		}
+
+		linkedList = linkedList.chain;
+	}
+
 	return (false);
 }
 
 bool
+NSNavAI::GiveItem(string itemName)
+{
+#ifdef SERVER
+	NSItem linkedList = __NULL__;
+	NSItem lastItem = __NULL__;
+
+	/* we do not have an item yet. */
+	if (!m_itemList) {
+		m_itemList = (NSItem)Entity_CreateClass(itemName);
+		return (true);
+	}
+
+	/* since we have something in the inventory, start there */
+	linkedList = m_itemList;
+
+	/* iterate through the inventory, then figure out if we already have it*/
+	while (linkedList) {
+		/* we already have the item. */
+		if (linkedList.classname == itemName) {
+			return (false);
+		}
+
+		lastItem = linkedList;
+		linkedList = linkedList.chain;
+	}
+
+	/* add it to the back of the chain, so it's part of our inventory. */
+	if (lastItem && linkedList == __NULL__) {
+		NSItem newItem = (NSItem)Entity_CreateClass(itemName);
+		lastItem.chain = newItem;
+	}
+
+	return (true);
+#else
+	return (false);
+#endif
+}
+
+bool
 NSNavAI::RemoveItem(string itemName)
+{
+#ifdef SERVER
+	NSItem linkedList = __NULL__;
+	NSItem frontItem = __NULL__;
+	NSItem lastItem = __NULL__;
+	NSItem itemToRemove = __NULL__;
+	bool removeItem = false;
+
+	/* we posess nothing. auto return false. */
+	if (!m_itemList) {
+		return (false);
+	}
+
+	/* since we have something in the inventory, start there */
+	linkedList = m_itemList;
+
+	/* iterate through the inventory, then figure out if we already have it*/
+	while (linkedList) {
+		/* found the item, mark as needing to be removed */
+		if (linkedList.classname == itemName) {
+			removeItem = true;
+			frontItem = lastItem; /* the one before the current one */
+			itemToRemove = linkedList; /* the item to destroy */
+		}
+
+		lastItem = linkedList;
+		linkedList = linkedList.chain;
+	}
+
+	/* successfully remove the last item */
+	if (removeItem == true) {
+		/* we had an item in front, bridge across the removed item. */
+		if (frontItem) {
+			frontItem.chain = itemToRemove.chain;
+		} else {
+			/* this was the first item. set to chain (can be NULL) */
+			m_itemList = itemToRemove.chain;
+		}
+
+		itemToRemove.Destroy();
+		return (true);
+	}
+#endif
+
+	return (false);
+}
+
+bool
+NSNavAI::AddItem(NSItem theItem)
 {
 	return (false);
 }

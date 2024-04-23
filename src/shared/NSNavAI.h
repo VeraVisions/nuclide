@@ -78,6 +78,10 @@ public:
 	nonvirtual bool GiveItem(string);
 	/** Removes a named NSItem from the inventory Returns `false` when impossible. */
 	nonvirtual bool RemoveItem(string);
+	/** Adds the specified NSItem to the inventory. Returns `false` when impossible. */
+	nonvirtual bool AddItem(NSItem);
+	/** Returns `true` or `false` depending on if the entity has the named item. */
+	nonvirtual bool HasItem(string);
 
 #ifdef SERVER
 	/* overrides */
@@ -135,4 +139,5 @@ private:
 
 	/* These are defined in side defs\*.def, ammo_types and ammo_names */
 	int m_iAmmoTypes[MAX_AMMO_TYPES];
+	NSItem m_itemList;
 };
