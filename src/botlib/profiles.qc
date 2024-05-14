@@ -147,6 +147,7 @@ BotProfile_Init(void)
 
 	if (botScript < 0) {
 		NSError("Missing file scripts/bots.txt");
+		InitEnd();
 		return;
 	}
 
