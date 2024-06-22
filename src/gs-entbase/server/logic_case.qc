@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Comparison Trigger */
 /*!QUAKED logic_case (1 0 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Compares an input value sent from another entity with one of the constant values defined within this entity. When it matches a given 'case', that same numbered output will get triggered. You can have 16 different cases to test against.
@@ -66,6 +67,9 @@ Since we compare strings, case sensitivity and formatting needs to be identical 
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
+
+@ingroup server
+@ingroup pointentity
 */
 class
 logic_case:NSPointTrigger

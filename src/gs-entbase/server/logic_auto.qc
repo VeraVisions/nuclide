@@ -16,6 +16,7 @@
 
 #define LOGICAUTO_USEONCE 1
 
+/*! \brief Server-Entity: Map-Start Trigger */
 /*!QUAKED logic_auto (1 0 0) (-8 -8 -8) (8 8 8) USE_ONCE
 # OVERVIEW
 Will automatically trigger its outputs when the level has spawned.
@@ -48,6 +49,9 @@ not get called upon map start.
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
+
+@ingroup server
+@ingroup pointentity
 */
 class
 logic_auto:NSPointTrigger

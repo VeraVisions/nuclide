@@ -17,6 +17,7 @@
 var int autocvar_r_skipGlows = 0;
 var int autocvar_r_skipLensFlares = 0;
 
+/*! \brief Shared-Entity: Glowing Orbs/Flares */
 /*!QUAKED env_glow (1 .5 0) (-8 -8 -8) (8 8 8) EVGLOW_ORIENT
 # OVERVIEW
 Glare/glow orb effect like the flares in 1997's Unreal.
@@ -36,6 +37,9 @@ Glare/glow orb effect like the flares in 1997's Unreal.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup shared
+@ingroup pointentity
 */
 class env_glow:NSRenderableEntity
 {
@@ -97,23 +101,9 @@ env_glow::Respawn(void)
 		return;
 	}
 
-	SetModel(GetSpawnModel());
+	super::Respawn();
 	SetSize([0,0,0], [0,0,0]);
-	SetOrigin(GetSpawnOrigin());
 	AddEffects(EF_NOSHADOW);
-
-	SetRenderFX(GetSpawnRenderFX());
-	SetRenderMode(GetSpawnRenderMode());
-	SetRenderAmt(GetSpawnRenderAmt());
-	SetRenderColor(GetSpawnRenderColor());
-
-/*
-	if (HasSpawnFlags(1)) {
-		hitcontentsmaski = CONTENTBIT_SOLID;
-		decal_pickwall(this, origin);
-		angles = vectoangles(g_tracedDecal.normal * -1);
-	}
-*/
 }
 void
 env_glow::EvaluateEntity(void)

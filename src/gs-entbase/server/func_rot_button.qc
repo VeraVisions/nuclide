@@ -35,6 +35,7 @@ enum
 	ROTBTNSTATE_CLOSING
 };
 
+/*! \brief Server-Entity: Valve, Lever, Rotating Button */
 /*!QUAKED func_rot_button (0 .5 .8) ? NONSOLID REVERSE x x x NOAUTORETURN XAXIS YAXIS TOUCHABLE
 # OVERVIEW
 A button that rotates along a pivot point. Used for valves, spigots and alike.
@@ -59,6 +60,9 @@ Please include an origin brush so that a pivot point will be defined.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup server
+@ingroup brushentity
 */
 class
 func_rot_button:NSSurfacePropEntity
@@ -72,7 +76,7 @@ public:
 	virtual void SpawnKey(string,string);
 	virtual void Respawn(void);
 	virtual void Touch(entity);
-	virtual void Death(void);
+	virtual void Death(entity, entity, int, vector, int);
 	virtual void OnPlayerUse(void);
 	
 	nonvirtual void ArrivedClosed(void);
@@ -155,6 +159,8 @@ func_rot_button::SpawnKey(string strKey, string strValue)
 void
 func_rot_button::Respawn(void)
 {
+	super::Respawn();
+
 	SetMovetype(MOVETYPE_PUSH);
 
 	if (HasSpawnFlags(FNCROTBUT_NONSOLID))
@@ -162,9 +168,6 @@ func_rot_button::Respawn(void)
 	else
 		SetSolid(SOLID_BSP);
 
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
-	SetAngles(GetSpawnAngles());
 	AddFlags(FL_FINDABLE_NONSOLID);
 	PlayerUse = OnPlayerUse;
 
@@ -263,7 +266,7 @@ func_rot_button::TurnToggle(void)
 			return;
 		}
 
-		Rotate(GetSpawnAngles(), ArrivedOpened);
+		Rotate(GetSpawnVector("angles"), ArrivedOpened);
 
 		/* in toggle mode, we trigger our targets every turn */
 		if (HasSpawnFlags(FNCROTBUT_NOAUTORETURN))
@@ -272,7 +275,7 @@ func_rot_button::TurnToggle(void)
 }
 
 void
-func_rot_button::Death(void)
+func_rot_button::Death(entity inflictor, entity attacker, int damage, vector dir, int location)
 {
 	SetTakedamage(DAMAGE_NO);
 	TurnToggle();

@@ -1,0 +1,14 @@
+// Vera Visions Material
+{
+if $programs
+	program vertexlit
+	diffusemap "models/weapons/enforcer/coltskin_2.tga"
+	normalmap "models/weapons/enforcer/coltskin_2_n.tga"
+else
+	{
+		map "models/weapons/enforcer/coltskin_2.tga"
+		rgbGen lightingDiffuse
+	}
+endif
+} 
+

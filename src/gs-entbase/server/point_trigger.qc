@@ -29,6 +29,7 @@ typedef enumflags
 	PTRIG_NOVEHCL,		/**< Clients that are not in vehicles. */
 } pointTriggerFlags_t;
 
+/*! \brief Server-Entity: Radius Based Trigger */
 /*!QUAKED point_trigger (1 0 0) (-8 -8 -8) (8 8 8) CLIENT NPC PUSHABLE PHYS ALLIES VEHPLAYER ALL x x NOVEHCL
 # OVERVIEW
 Point based trigger. Define a radius and it will fire its targets when an entity touches
@@ -59,6 +60,9 @@ it within that radius.
 
 # TRIVIA
 This entity was introduced in Obsidian Conflict (2006).
+
+@ingroup server
+@ingroup pointentity
 */
 class
 point_trigger:NSPointTrigger
@@ -182,7 +186,6 @@ point_trigger::Respawn(void)
 
 	SetMovetype(MOVETYPE_NONE);
 	SetSolid(SOLID_TRIGGER);
-	SetOrigin(GetSpawnOrigin());
 	geomtype = GEOMTYPE_SPHERE;
 
 	/* adjust size */

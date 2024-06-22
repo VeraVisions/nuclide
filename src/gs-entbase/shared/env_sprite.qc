@@ -33,6 +33,7 @@ enumflags
 	ENVS_PLAYONCE
 };
 
+/*! \brief Shared-Entity: Animated Sprite */
 /*!QUAKED env_sprite (1 .5 0) (-8 -8 -8) (8 8 8) ENVS_STARTON ENVS_PLAYONCE
 # OVERVIEW
 A sprite entity manager with fancy overrides.
@@ -59,13 +60,16 @@ Only used with an external sprite format, like SPR, SPRHL and SPR32, unless the 
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup shared
+@ingroup pointentity
 */
 class env_sprite:NSRenderableEntity
 {
 public:
 	void env_sprite(void);
 
-	virtual void(bool) SetFramerate;
+	virtual void SetFramerate(bool);
 
 #ifdef SERVER
 	virtual void Spawned(void);

@@ -33,7 +33,7 @@ enumflags
 /*!QUAKED NSTalkMonster (0 0.8 0.8) (-16 -16 0) (16 16 72) WAITTILLSEEN GAG MONSTERCLIP x PRISONER x IGNOREPLAYER WAITFORSCRIPT PREDISASTER FADECORPSE MULTIPLAYER FALLING HORDE
 # OVERVIEW
 This class represents NSMonsters that talk. They need to network extra
-information and can speak more complicated dialogue.
+information and can speak more complicated dialogue using the [Sentences](Sentences.md) system.
 
 They also can communicate with other NSTalkMonster based entities.
 
@@ -71,6 +71,8 @@ They also can communicate with other NSTalkMonster based entities.
 - "follow_maxdist" : Maximum distance between it and the player before giving up following them.
 
 For more keys, see NSMonster.
+
+@ingroup baseclass
 */
 class NSTalkMonster:NSSquadMonster
 {

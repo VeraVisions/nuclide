@@ -189,7 +189,6 @@ separate cvars for overriding their speeds. */
 void
 NSPMoveVars::NSPMoveVars(void)
 {
-	
 }
 
 void
@@ -227,12 +226,6 @@ NSPMoveVars::UpdateBoundingBoxes(void)
 }
 
 #ifdef SERVER
-void
-NSPMoveVars::Respawn(void)
-{
-	pvsflags = PVSF_IGNOREPVS;
-}
-
 void
 NSPMoveVars::EvaluateEntity(void)
 {
@@ -451,6 +444,7 @@ PMove_Init(void)
 	#ifdef SERVER
 	if (!g_pmoveVars) {
 		g_pmoveVars = spawn(NSPMoveVars);
+		g_pmoveVars.pvsflags = PVSF_IGNOREPVS;
 	}
 	#endif
 

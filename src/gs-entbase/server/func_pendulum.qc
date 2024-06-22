@@ -26,6 +26,7 @@ enumflags
 	FUNCPEND_YAXIS
 };
 
+/*! \brief Server-Entity: Swinging Pendulum */
 /*!QUAKED func_pendulum (0 .5 .8) ? FUNCPEND_STARTON x x FUNCPEND_NONSOLID FUNCPEND_RETURNONTRIGGER x FUNCPEND_XAXIS FUNCPEND_YAXIS
 # OVERVIEW
 A brush that swings along a pivot point like a pendulum.
@@ -48,6 +49,9 @@ Please include an origin brush so that a pivot point will be defined.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup server
+@ingroup brushentity
 */
 class
 func_pendulum:NSRenderableEntity
@@ -127,6 +131,8 @@ func_pendulum::SpawnKey(string strKey, string strValue)
 void
 func_pendulum::Respawn(void)
 {
+	super::Respawn();
+
 	if (HasSpawnFlags(FUNCPEND_STARTON))
 		m_iActive = TRUE;
 
@@ -135,9 +141,7 @@ func_pendulum::Respawn(void)
 	else
 		SetSolid(SOLID_BSP);
 
-	movetype = MOVETYPE_PUSH;
-	SetModel(GetSpawnModel());
-	SetOrigin(origin);
+	SetMovetype(MOVETYPE_PUSH);
 }
 
 void

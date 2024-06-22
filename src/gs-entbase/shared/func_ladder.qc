@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Shared-Entity: Ladder Volume */
 /*!QUAKED func_ladder (0 .5 .8) ?
 # OVERVIEW
 Ladder volume. Climb up ladders with this one simple brush.
@@ -23,6 +24,9 @@ Ladder volume. Climb up ladders with this one simple brush.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup shared
+@ingroup brushentity
 */
 class
 func_ladder:NSRenderableEntity
@@ -58,12 +62,12 @@ func_ladder::Trigger(entity act, triggermode_t state)
 void
 func_ladder::Respawn(void)
 {
+	super::Respawn();
+
 	/* func_ladder specifics */
 	SetMovetype(MOVETYPE_NONE);
 	SetSolid(SOLID_BSP);
 	SetSkin(CONTENT_LADDER);
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
 	SetFrame(0);
 	Hide();
 }

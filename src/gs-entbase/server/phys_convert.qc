@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Static To Physics Converter */
 /*!QUAKED phys_convert (.5 .3 0) (-8 -8 -8) (8 8 8) ASLEEP DEBRIS
 # OVERVIEW
 Turns a standard entity into a physically simulated one.
@@ -36,6 +37,9 @@ Turns a standard entity into a physically simulated one.
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
+
+@ingroup server
+@ingroup pointentity
 */
 class
 phys_convert:NSPhysicsConstraint
@@ -133,7 +137,7 @@ phys_convert::Respawn(void)
 void
 phys_convert::AfterSpawn(void)
 {
-	SetOrigin(GetSpawnOrigin());
+	SetOrigin(GetSpawnVector("origin"));
 	SetEntity1(find(world, ::targetname, m_strEnt1));
 }
 

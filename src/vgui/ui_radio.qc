@@ -23,6 +23,10 @@ enumflags
 
 .void(void) tmpVGUIRadio1;
 
+/** VGUI Widget: Radio Button
+
+@ingroup vgui
+*/
 class VGUIRadio:VGUIWidget
 {
 public:

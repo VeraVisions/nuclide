@@ -14,6 +14,9 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+
+void EFX_UpdateListener(NSView);
+
 /** Updates our seat pointers. 
 Call this when you need to verify we're
 getting the current player's info and not someone elses on the same
@@ -55,7 +58,7 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	Constants_Init();
 	Sound_Init();
 	SurfData_Init();
-	PropData_Init();	
+	PropData_Init();
 	DecalGroups_Init();
 
 	/* VGUI */
@@ -63,7 +66,6 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 
 	/* Game specific inits */
 	ClientGame_Init(apilevel, enginename, engineversion);
-	EFX_Init();
 	Titles_Init();
 	Sentences_Init();
 	Decals_Init();
@@ -79,6 +81,8 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 
 	g_cheats = (serverkey("*cheats") == "ON") ? true : false;
 
+	EntityDef_Init();
+	Ammo_Init();
 	WorldSpawn_Init();
 
 	g_overview = NSRadar::InitForCurrentMap();
@@ -125,11 +129,6 @@ CSQC_RendererRestarted(string rstr)
 
 	/* View */
 	Chat_Reload();
-
-#ifndef NEW_INVENTORY
-	Weapons_Init();
-#endif
-
 	Scores_Init();
 	View_Init();
 	ClientGame_RendererRestart(rstr);
@@ -316,10 +315,6 @@ CSQC_UpdateView(float w, float h, float focus)
 			frametime = 0.0f;
 		}
 	}
-
-	/* draw AL debug info (no regard for seating */
-	if (autocvar_s_al_debug)
-		EFX_DebugInfo();
 
 	/* make sure we're not running these on invalid seats post frame */
 	pSeat = __NULL__;
@@ -552,6 +547,7 @@ CSQC_WorldLoaded(void)
 		localcmd("r_shadow_realtime_dlight 0\n");
 	}
 
+#if 0
 	string strTokenized;
 	getentitytoken(0);
 
@@ -569,11 +565,7 @@ CSQC_WorldLoaded(void)
 			break;
 		}
 	}
-
-	for (entity a = world; (a = findfloat(a, ::isCSQC, TRUE));) {
-		NSEntity ent = (NSEntity)a;
-		ent.Respawn();
-	}
+#endif
 
 	g_client_world_loaded = true;
 
@@ -626,6 +618,5 @@ CSQC_Shutdown(void)
 	Titles_Shutdown();
 	Sound_Shutdown();
 	PropData_Shutdown();
-	EFX_Shutdown();
 	NSLog("Client game shutdown.");
 }

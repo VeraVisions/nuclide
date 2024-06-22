@@ -19,7 +19,7 @@ enumflags
 	FNCPLAT_TRIGGER,
 };
 
-class
+static class
 func_plat_helper:NSEntity
 {
 public:
@@ -34,6 +34,7 @@ private:
 	entity m_eTargetPlat;
 };
 
+/*! \brief Server-Entity: Automatic Elevator */
 /*!QUAKED func_plat (0 .5 .8) ? FNCPLAT_TRIGGER
 # OVERVIEW
 It's a simple elevator. It goes down... and back up.
@@ -52,6 +53,9 @@ to be called up/down.
 
 # TRIVIA
 This entity was introduced in Quake (1996).
+
+@ingroup server
+@ingroup brushentity
 */
 class
 func_plat:NSMoverEntity
@@ -203,10 +207,10 @@ func_plat::MoverFinishesMoving(void)
 void
 func_plat::Respawn(void)
 {
+	super::Respawn();
+
 	SetMovetype(MOVETYPE_PUSH);
 	SetSolid(SOLID_BSP);
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
 
 	if (!m_flHeight) {
 		m_flHeight = size[2] - 8;

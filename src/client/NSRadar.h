@@ -14,10 +14,17 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/** @ingroup client
+ *
+ *  @{
+ */
+
 /** Tasked with managing overview/radar type widgets.
 It's able to load different types of overviews, in addition to none at all.
 
-It's able to load HLTV styled overviews used in GoldSrc and Source.*/
+It's able to load HLTV styled overviews used in GoldSrc and Source.
+@ingroup baseclass
+*/
 class
 NSRadar:NSView
 {
@@ -71,3 +78,5 @@ private:
 	nonvirtual void CalculateVertices(void);
 	nonvirtual void CalculateVerticesSource(float, float);
 };
+
+/** @} */ // end of client

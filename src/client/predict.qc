@@ -14,8 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-var string autocvar_g_playerClass = "player";
-
 /*
 =================
 Predict_EntityUpdate

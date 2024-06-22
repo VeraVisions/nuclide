@@ -29,6 +29,7 @@ enumflags
 	PRTEXFL_CHANGED_PATTERN
 };
 
+/*! \brief Shared-Entity: Light Texture Projector */
 /*!QUAKED env_projectedtexture (1 .5 0) (-8 -8 -8) (8 8 8) PRTEXSF_STARTON
 # OVERVIEW
 Textured light projected. This is the type of lighting that's used for
@@ -60,6 +61,9 @@ flashlights, lamp spotlights and so on.
 
 # TRIVIA
 This entity was introduced in Half-Life 2: Episode One (2006).
+
+@ingroup shared
+@ingroup pointentity
 */
 class env_projectedtexture:NSPointTrigger
 {
@@ -311,10 +315,10 @@ env_projectedtexture::SpawnKey(string strKey, string strValue)
 void
 env_projectedtexture::Respawn(void)
 {
+	super::Respawn();
+
 	SetSolid(SOLID_NOT);
 	SetSize([-16,-16,-16], [16,16,16]);
-	SetOrigin(GetSpawnOrigin());
-	SetAngles(GetSpawnAngles());
 
 	m_iState = HasSpawnFlags(1) ? 1 : 0;
 }

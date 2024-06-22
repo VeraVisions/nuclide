@@ -107,7 +107,7 @@ ModServer_ParseItem(string data)
 	/* new id */
 	id = gameinfo_count;
 	gameinfo_count++;
-	games = (gameinfo_t *)memrealloc(games, sizeof(gameinfo_t), id, gameinfo_count);
+	games = (gameEntry_t *)memrealloc(games, sizeof(gameEntry_t), id, gameinfo_count);
 
 	if (!games) {
 		print("No more memory. Bye bye.\n");
@@ -227,6 +227,9 @@ ModServer_URI_Callback(float id, float code, string data, int resourcebytes)
 		break;
 	case MODSERVER_REQ_PKGNAMES:
 		Updater_URI_Callback(id, code, data, resourcebytes);
+		break;
+	case ACTIVITYPUB_ACCOUNTS:
+		ActivityPub_UpdatePlayerInfo(data);
 		break;
 	default:
 		print(sprintf("^1ModServer_URI_Callback^7: Unknown request id %d with code %d\n", id, code));

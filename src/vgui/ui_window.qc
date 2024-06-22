@@ -40,7 +40,12 @@ typedef enumflags
 .void(void) tmpVGUIWindow1;
 .void(void) tmpVGUIWindow2;
 
-/** Top-most window class in VGUILib */
+/** VGUI: Window
+
+Top-most window class in VGUILib.
+
+@ingroup vgui
+*/
 class VGUIWindow:VGUIView
 {
 public:

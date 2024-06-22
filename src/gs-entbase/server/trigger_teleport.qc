@@ -21,6 +21,7 @@ enumflags
 	TRIGTELE_PUSHABLES
 };
 
+/*! \brief Server-Entity: Teleportation Volume */
 /*!QUAKED trigger_teleport (.5 .5 .5) ? CLIENTS NPCS PUSHABLES PHYSICS FRIENDLIES CLIENTSINVEHICLES EVERYTHING x x CLIENTSNOTINVEHICLES DEBRIS NPCSINVEHICLES NOBOTS
 # OVERVIEW
 Teleportation volume. Teleports anything it touches to the position of
@@ -64,6 +65,9 @@ Works best with info_teleport_destination, but you can in theory use any other p
 
 # TRIVIA
 This entity was introduced in Quake (1996).
+
+@ingroup server
+@ingroup brushentity
 */
 class
 trigger_teleport:NSBrushTrigger
@@ -232,10 +236,11 @@ trigger_teleport::Touch(entity eToucher)
 
 			/* indeed something is in the way... */
 			if (trace_ent && trace_startsolid == true) {
-				/* it can be killed */
+				/* it can be killed, telefrag */
 				if (trace_ent.takedamage != DAMAGE_NO) {
-					/* telefrag */
-					Damage_Apply(trace_ent, eToucher, trace_ent.health * 2.0, 0, DMG_SKIP_ARMOR);
+					NSSurfacePropEntity killThis = (NSSurfacePropEntity)trace_ent;
+					killThis.SetHealth(-100);
+					killThis.Death(this, eToucher, 1000, g_vec_null, 0i);
 				}
 			}
 

@@ -82,36 +82,3 @@ Camera_StrafeRoll(vector camera_angle)
 	camera_angle[2] += roll;
 	return camera_angle;
 }
-
-vector
-Camera_AddLean(vector viewAngle)
-{
-	vector shift = anglesToRight(viewAngle);
-	vector output;
-	vector srcPos;
-	float heightChange;
-	NSClientPlayer pl = (NSClientPlayer)pSeat->m_ePlayer;
-
-	if (pSeat->m_iLeanDir > 0i) {
-		pSeat->m_flLeaning += frametime * 5;
-	} else if (pSeat->m_iLeanDir < 0i) {
-		pSeat->m_flLeaning -= frametime * 5;
-	} else {
-		pSeat->m_flLeaning = lerp(pSeat->m_flLeaning, 0.0, frametime * 10);
-	}
-
-	if (pSeat->m_flLeaning > 1.0) {
-		pSeat->m_flLeaning = 1.0f;
-	}
-
-	if (pSeat->m_flLeaning < -1.0) {
-		pSeat->m_flLeaning = -1.0f;
-	}
-
-	heightChange = cos(pSeat->m_flLeaning) * 4;
-	srcPos = pl.GetEyePos();
-	output = shift * (pSeat->m_flLeaning * 15.0);
-	tracebox(srcPos, [-8,-8,-8], [8,8,8], srcPos + output, MOVE_NORMAL, pl);
-
-	return output * trace_fraction + (shift * -1.0) + [0, 0, heightChange];
-}

@@ -2,267 +2,96 @@
 
 ## Preface
 
-If you don't plan on modifying the engine, then you probably shouldn't! You can grab binaries from [FTEQW](https://www.fteqw.org) and move them into the Nuclide directory under `./bin`. 
-
-If you're on Microsoft Windows, you will most likely not be running the `nuclide` launch script anyway, so feel free to move the `fteqw.exe` into the root of the Nuclide directory, and run that as-is instead. 
-
-It will mount the game directories specified in the `default.fmf` file, which you can tweak as needed. [For more information, read the relevant documentation regarding launching Nuclide](Documentation/Launching.md)
-
-## Building the Engine {#engine}
-
-The **build_engine.sh** will do that for you. It will still ask you to have at least
-a certain amount of dependencies installed (such as the **GCC**, **GNU make** and the **X11/SDL**
-headers for your platform.
-
-### Optional: Building release binaries
-
-You'll have to manually go into `src/engine/engine` and issue:
-
-```
-$ make m-rel FTE_CONFIG=yourgameconfig
-```
-
-If you want to cross-compile to different platforms, you can pass the `FTE_TARGET` variable and select from **win32**, **win64**, **linux32**, **linux64** or **SDL2**.
-
-For example, this will build a release binary of **The Wastes** for Win32, using the configuration specified inside `src/engine/engine/common/config_wastes.h`:
-
-```
-$ make m-rel FTE_CONFIG=wastes FTE_TARGET=win32
-```
-
-The resulting binary can be found inside the `src/engine/engine/release` directory.
-
-**Note**: The **SDL2** target will require you to set the **ARCH** environment to the target of your choosing.
-
-## Building the Level Editor {#editor}
-
-Handled by **build_editor.sh**.
-
-## Building Game-Logic {#game}
-
-You can build the game source tree with **build_game.sh**. 
-
-The script also takes a parameter. If you specify:
-
-```
-./build_game.sh valve
-```
-
-then it will only build the game-logic for the `valve` directory.
-
-Otherwise, it will iterate through all of the game directories, look for a Makefile and build its default target.
-
-It'll try use the **fteqcc** binary that's in the *./bin/* directory.
-So make sure to build run **build_engine.sh** first.
-Some distributions may carry the **fteqcc** compiler, but it usually is a very ancient version
-that's probably not going to build any of this.
-
-## Custom Configuration {#config}
-
-There's a **build.cfg** file with which you can tweak build parameters of the various **build_** scripts.
-For example, this is where you select between X11 and SDL2 builds. There you can specify which engine revision
-you want to build and also which plugins you want to build along with it.
-It's well commented, so I encourage you to check it out. However on some platforms, changing those settings
-might introduce additional setup/dependency steps.
-
-## Additional Information {#notes}
-
-The game-logic is written in QuakeC, it is thus platform and architecture independent.
-
-You do not need to rebuild the logic for each and every platform.
-The results will be identical.
+If you don't plan on modifying the engine, then you can grab binaries
+from [FTEQW](https://www.fteqw.org) and move them into the root
+directory.
 
 ## Dependencies
 
-### Debian / Raspbian
-
-#### FTE
-
-```
-apt-get install libgl-dev gnutls-dev
-```
-
-#### SDL2
+Nuclide is entirely game-logic oriented, so it only requires a working
+QuakeC compiler. In our case [FTEQCC](https://www.fteqcc.org/). Which
+you can also build with:
 
 ```
-apt-get install libsdl2-dev
+$ make fteqcc
 ```
 
-#### GLX / X11 (part of libsdl2-dev)
+The resulting binary `./fteqcc` will then be used to build the
+game-logic related targets.
+
+Besides a working **C** compiler, such as `gcc` or `clang`, the QuakeC compiler shouldn't need any other dependencies. [Click here for a full list of dependencies for the various optional components.](Documentation/Dependencies.md)
+
+> [!tip]
+> `make help` will always show a list of available targets, including their purpose.
+
+## Keeping Up-To-Date
+
+You can issue the following to check for updates of tools/dependencies:
 
 ```
-apt-get install libx11-dev libxcursor-dev libxrender-dev
+$ make update
 ```
 
-#### Plugin: ODE
+## Building Game-Logic {#build-game}
+
+You can build games by running the following command:
 
 ```
-apt-get install autoconf automake libtool
+$ make game GAME=base
 ```
 
-#### Plugin: FFMPEG
+Adjust the **GAME** argument to select which game you want to
+build. The game `base` is the assumed, default target.
+
+Usually, the resulting files are `progs.dat`, `csprogs.dat` and
+(sometimes) `menu.dat`. Those are the libraries dealing with the
+**Server**, **Client** and **Menu** aspect of the game respectively.
+
+They are accompanied by name-matching `.lno` files. These contain
+extra debugging information helpful to the engine. *They can be
+stripped from a shipping build of your game.*
+
+> [!tip]
+> You do not need to rebuild the logic for each and every platform.
+> The results will be identical, since QuakeC is not machine code.
+
+## Building the Engine {#build-engine}
+
+Issue the following to build a generic version of the engine [FTEQW](https://www.fteqw.org/):
 
 ```
-apt-get install libavformat-dev libswscale-dev
+$ make fteqw
 ```
 
-### OpenBSD
+Which you can then run with `./fteqw -game base`. [For more information on launching games, mods, check out the page on Launching](Documentation/Launching.md).
 
-#### FTE
+Some engine features are only available as a plugin. See `$ make help` for info on how to build them.
 
-```
-pkg_add git
-```
+### Optional: Custom Branding & Features
 
-#### SDL2
-
-```
-pkg_add sdl2
-```
-
-#### Plugin: FFMPEG
+If you want to build a custom version of the engine,
+with custom branding and the ability to strip unneeded
+functionality out of the binary, you can make a copy of
+`ThirdParty/fteqw/engine/common/config_fteqw.h`, adjust it and save
+it under your game directory as `engine.h`. When issuing the command:
 
 ```
-pkg_add ffmpeg
+$ make engine GAME=yourgame
 ```
 
-### Arch Linux
+It will then look for `yourgame/engine.h`, and build a copy of FTEQW
+against it.  The output will normally be something along the lines of
+`yourgame_x64`.  The name can be changed by passing `NAME=YourGame`
+to the make program.
 
-#### FTE
+## Building the Level Editor {#build-editor}
 
-```
-pacman -S make gcc Xorg git
-```
-
-#### Plugin: ODE
-
-```
-pacman -S zip automake autoconf
-```
-
-#### Plugin: FFMPEG
+Issue the following to build [GtkRadiant](https://icculus.org/gtkradiant):
 
 ```
-pacman -S ffmpeg4.4
+$ make radiant
 ```
 
-*Note:* You will have to manually build this plugin due to FFMPEG breaking ABI between releases and Arch's rolling release nature. 
+A launcher will be created in the root directory allowing you to launch it via `./radiant`.
 
-1) Edit build.cfg and change `FFMPEG=YES` to `NO`
-2) Browse to src/engine/engine
-3) Run this command: 
-
-`make plugins-rel NATIVE_PLUGINS="ffmpeg" AV_BASE=/usr/include/ffmpeg4.4/ AV_LDFLAGS="-l:libavcodec.so.58 -l:libavformat.so.58 -l:libavutil.so.56 -l:libswscale.so.5"`
-
-4) Copy over `fteplug_ffmpeg.so` to the `bin` folder where nuclide and the build scripts are.
-
-
-#### SDL2
-
-```
-pacman -S sdl2
-```
-
-#### WorldSpawn
-
-```
-pacman -S pkgconf gtk2 gtkglext
-```
-
-### OpenSUSE
-
-#### Nuclide
-
-```
-zypper in git 
-```
-
-#### FTE
-
-```
-zypper in make gcc gcc-c++ mesa-libGL-devel libgnutls-devel alsa-devel libopus-devel speex-devel libvorbis-devel
-```
-
-#### SDL2
-
-```
-zypper in libSDL2-devel
-```
-
-#### GLX / X11
-
-```
-zypper in libX11-devel libXcursor-devel libXrandr-devel
-```
-
-#### Plugin: ODE
-
-```
-zypper in autoconf automake libtool zip
-```
-
-#### Plugin: FFMPEG
-
-```
-zypper in ffmpeg-4-libavformat-devel ffmpeg-4-libswscale-devel
-```
-
-#### Worldspawn
-
-```
-zypper in make gtkglext-devel libxml2-devel libjpeg8-devel minizip-devel
-```
-
-### Fedora
-
-#### FTE
-
-```
-dnf install make gcc gcc-c++ mesa-libGL-devel gnutls-devel alsa-devel libopus-devel speex-devel libvorbis-devel
-```
-
-#### SDL2
-
-```
-dnf install SDL2-devel
-```
-
-#### GLX / X11 (part of libsdl2-dev)
-
-```
-dnf install libX11-devel libXcursor-devel libXrender-devel
-```
-
-#### Plugin: ODE
-
-```
-dnf install autoconf automake libtool zip
-```
-
-#### Plugin: FFMPEG
-
-*Note:* You will have to manually build this plugin due to FFMPEG breaking ABI between releases as well as install a custom repository since Fedora ships only latest versions of FFMPEG. 
-
-First, you will need to install the RPM Fusion if you don't have it. We recommend reading their official guide: https://rpmfusion.org/Configuration
-
-Then, you can install the required version of FFMPEG:
-
-```
-dnf install compat-ffmpeg4-devel
-```
-
-Now to build:
-
-1) Edit build.cfg and change `FFMPEG=YES` to `NO`
-2) Browse to src/engine/engine
-3) Run this command: 
-
-`make plugins-rel NATIVE_PLUGINS="ffmpeg" AV_BASE=/usr/include/compat-ffmpeg4 AV_LDFLAGS="-l:libavcodec.so.58 -l:libavformat.so.58 -l:libavutil.so.56 -l:libswscale.so.5"`
-
-4) Copy over `fteplug_ffmpeg.so` to the `bin` folder where nuclide and the build scripts are.
-
-#### Worldspawn
-
-```
-dnf install make pkgconf gtkglext-devel libxml2-devel libjpeg-turbo-devel minizip-devel
-```
+For documentation regarding Radiant and general id Tech level design, [you can visit this page](https://icculus.org/gtkradiant/documentation.html).

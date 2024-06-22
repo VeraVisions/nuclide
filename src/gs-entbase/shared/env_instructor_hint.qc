@@ -26,6 +26,7 @@ enumflags
 	ENVINSTRUCTOR_CHANGED_STATE
 };
 
+/*! \brief Shared-Entity: Hints/Instructions With Key Bindings */
 /*!QUAKED env_instructor_hint (0 1 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Used to display hints throughout the environment.
@@ -58,6 +59,9 @@ Used to display hints throughout the environment.
 
 # TRIVIA
 This entity was introduced in Left 4 Dead 2 (2009).
+
+@ingroup shared
+@ingroup pointentity
 */
 class
 env_instructor_hint:NSPointTrigger

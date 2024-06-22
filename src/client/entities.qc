@@ -78,7 +78,10 @@ Entity_EntityUpdate(float type, float new)
 		break;
 	case ENT_PLAYER:
 		NSClientPlayer pl = (NSClientPlayer)self;
-		spawnfunc_NSClientPlayer();
+
+		if (new) {
+			spawnfunc_NSClientPlayer();
+		}
 
 		/* splitscreen */
 		CSQC_UpdateSeat();
@@ -160,8 +163,17 @@ Entity_EntityUpdate(float type, float new)
 	case ENT_PUSH:
 		NSENTITY_READENTITY(trigger_push, new)
 		break;
+	case ENT_ITEM:
+		NSENTITY_READENTITY(NSItem, new)
+		break;
+	case ENT_WEAPON:
+		NSENTITY_READENTITY(NSWeapon, new)
+		break;
 	case ENT_ENTITYPROJECTILE:
 		NSENTITY_READENTITY(NSProjectile, new)
+		break;
+	case ENT_SOUNDSCAPE:
+		NSENTITY_READENTITY(NSSoundScape, new)
 		break;
 	default:
 			//error(sprintf("Unknown entity type update received. (%d)\n", t));

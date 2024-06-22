@@ -14,6 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/** VGUI Widget: Tab View
+
+@ingroup vgui
+*/
 class VGUITabView:VGUIWidget
 {
 public:

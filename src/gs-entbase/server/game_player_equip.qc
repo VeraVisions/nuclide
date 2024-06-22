@@ -19,6 +19,7 @@ enumflags
 	GPEFL_TRIGGERONLY
 };
 
+/*! \brief Server-Entity: Player Inventory Controller */
 /*!QUAKED game_player_equip (1 0 0) (-8 -8 -8) (8 8 8) GPEFL_TRIGGERONLY
 # OVERVIEW
 Entity that emits items when triggered, or upon player spawn (MP-only).
@@ -53,6 +54,9 @@ I still need to implement the Team Master functionality.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup server
+@ingroup pointentity
 */
 class
 game_player_equip:NSPointTrigger
@@ -127,7 +131,7 @@ game_player_equip::SpawnUnit(string cname, vector org)
 		callfunction(self.classname);
 
 		/* apply the saved values back */
-		t.origin = t.GetSpawnOrigin() = neworg;
+		t.origin = t.GetSpawnVector("origin") = neworg;
 
 		/* spawn anew */
 		t.Respawn();

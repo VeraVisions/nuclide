@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Client-Entity: Dustmotes Volume */
 /*!QUAKED func_dustmotes (0 .5 .8) ?
 # OVERVIEW
 Dustmote emitting brush volume.
@@ -23,6 +24,9 @@ Dustmote emitting brush volume.
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
+
+@ingroup client
+@ingroup brushentity
 */
 class func_dustmotes:NSEntity
 {

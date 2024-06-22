@@ -1,6 +1,6 @@
 #pragma target fte_5768
 //#pragma flag enable assumeint
-#pragma progs_dat  "../../progs.dat"
+#pragma progs_dat  "../../progs.pk3dir/progs.dat"
 
 #define QWSSQC
 #define SERVER
@@ -25,7 +25,6 @@ defs.h
 gamerules.qc
 gamerules_singleplayer.qc
 gamerules_multiplayer.qc
-modelevent.qc
 items.qc
 
 /* global server/shared code */

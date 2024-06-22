@@ -194,7 +194,7 @@ NSNavAI::CheckRoute(void)
 
 	if (_m_flRouteGiveUp < time) {
 		float distanceToLastFrame = distanceSquared(_m_vecRoutePrev, origin);
-		printf("distanceToLastFrame: %f\n", distanceToLastFrame);
+		//printf("distanceToLastFrame: %f\n", distanceToLastFrame);
 
 		/* 50 units in 2 seconds is not good. */
 		if (distanceToLastFrame < 50.0f) {
@@ -422,13 +422,13 @@ NSNavAI::RouteToPositionDenyFlags(vector destination, int denylinkflags)
 		}
 	}
 
-	if (!g_nodes_present) {
+	if (!Nodes_Available()) {
 		Nodes_Init();
 		return;
 	}
 
 	/* still nothing... give up */
-	if (!g_nodes_present) {
+	if (!Nodes_Available()) {
 		return;
 	}
 
@@ -490,29 +490,124 @@ NSNavAI::Physics_Run(void)
 
 	SetOrigin(origin);
 }
+
 #endif
+
+void
+NSNavAI::LaunchProjectile(string defName, bool thrown, float timeOfs)
+{
+#ifdef SERVER
+	vector throwDirection;
+	float throwingStrength;
+
+	NSProjectile nade = (NSProjectile)EntityDef_CreateClassname(defName);
+	nade.SetOwner(this);
+
+	throwDirection = v_angle;
+	throwDirection[0] = -10.0f; /* always aim a bit up */
+
+	/* diminish when aiming up */
+	if (v_angle[0] < 0) {
+		throwDirection[0] += (v_angle[0] * 0.9f);
+	} else { /* increase when aiming down */
+		throwDirection[0] += (v_angle[0] * 1.1f);
+	}
+
+	throwingStrength = bound(0, (90 - throwDirection[0]) * 5.0f, 1000);
+
+	nade.Launch(GetEyePos(), GetViewAngle(), time - timeOfs, 0.0f, 0.0f);
+	makevectors(throwDirection);
+	nade.SetVelocity((v_forward * throwingStrength) + GetVelocity());
+#endif
+}
+
+bool
+NSNavAI::PlantCharge(string defName)
+{
+	vector forwardVec;
+	vector destinationVec;
+
+	if (!defName) {
+		return (false);
+	}
+
+	forwardVec = anglesToForward(v_angle) * 64;
+	destinationVec = g_vec_null;
+
+	traceline(GetEyePos(), GetEyePos() + forwardVec, MOVE_NORMAL, this);
+
+	/* trace failed */
+	if (trace_fraction >= 1.0f) {
+		return (false);
+	}
+
+	destinationVec = trace_endpos;
+
+#ifdef SERVER
+	NSEntity plantedEntity;
+	plantedEntity = spawnClass(defName, destinationVec);
+
+	if (!plantedEntity) {
+		EntError("Failed to plant %S", defName);
+	}
+	plantedEntity.SetOwner(this);
+	plantedEntity.real_owner = this;
+
+	printf("Planted %S at %v\n", plantedEntity.classname, origin);
+#endif
+
+	/* push us outta the way! */
+	setorigin_safe(this, GetOrigin());
+
+	return (true);
+}
+
+int
+NSNavAI::GetReserveAmmo(int ammoType)
+{
+	/* bounds check */
+	if (ammoType <= 0i || ammoType >= MAX_AMMO_TYPES)
+		return (0i);
+
+	return (m_iAmmoTypes[ammoType]);
+}
 
 bool
 NSNavAI::GiveAmmo(int ammoType, int ammoAmount)
 {
+	int maxAmmo = 0i;
+
 	/* bounds check */
-	if (ammoType < 0i || ammoType >= MAX_AMMO_TYPES)
+	if (ammoType <= 0i || ammoType >= MAX_AMMO_TYPES)
 		return (false);
 
+	maxAmmo = ammoMaxForNum(ammoType);
+
 	/* already at max-ammo? */
-	if (m_iAmmoTypes[ammoType] >= 255i)
+	if (m_iAmmoTypes[ammoType] >= maxAmmo)
 		return (false);
 
 	m_iAmmoTypes[ammoType] += ammoAmount;
 
-	if (m_iAmmoTypes[ammoType] >= 255i)
-		m_iAmmoTypes[ammoType] = 255i;
+	if (m_iAmmoTypes[ammoType] >= maxAmmo)
+		m_iAmmoTypes[ammoType] = maxAmmo;
 
 	return (true);
 }
 
 bool
 NSNavAI::UseAmmo(int ammoType, int ammoAmount)
+{
+	/* bounds check */
+	if (HasAmmo(ammoType, ammoAmount) == false)
+		return (false);
+
+	m_iAmmoTypes[ammoType] -= ammoAmount;
+	return (true);
+}
+
+bool
+NSNavAI::HasAmmo(int ammoType, int ammoAmount)
 {
 	/* bounds check */
 	if (ammoType < 0i || ammoType >= MAX_AMMO_TYPES)
@@ -522,9 +617,40 @@ NSNavAI::UseAmmo(int ammoType, int ammoAmount)
 	if ((m_iAmmoTypes[ammoType] - ammoAmount) < 0i)
 		return (false);
 
-	m_iAmmoTypes[ammoType] -= ammoAmount;
 	return (true);
 }
+
+bool
+NSNavAI::HasExactItem(NSItem itemEntity)
+{
+	NSItem linkedList = __NULL__;
+
+	/* sanity check */
+	if (!itemEntity) {
+		return (false);
+	}
+
+	/* we do not have an item. */
+	if (!m_itemList) {
+		return (false);
+	}
+
+	/* since we have something in the inventory, start there */
+	linkedList = m_itemList;
+
+	/* iterate through the inventory, then figure out if we already have it*/
+	while (linkedList) {
+		/* we already have the item. */
+		if (linkedList == itemEntity) {
+			return (true);
+		}
+
+		linkedList = (NSItem)linkedList.chain;
+	}
+
+	return (false);
+}
+
 
 bool
 NSNavAI::HasItem(string itemName)
@@ -546,7 +672,7 @@ NSNavAI::HasItem(string itemName)
 			return (true);
 		}
 
-		linkedList = linkedList.chain;
+		linkedList = (NSItem)linkedList.chain;
 	}
 
 	return (false);
@@ -561,7 +687,25 @@ NSNavAI::GiveItem(string itemName)
 
 	/* we do not have an item yet. */
 	if (!m_itemList) {
-		m_itemList = (NSItem)Entity_CreateClass(itemName);
+		m_itemList = (NSItem)EntityDef_CreateClassname(itemName);
+
+		if (m_itemList == world) {
+			EntError("Unable to give item %S", itemName);
+			return (false);
+		}
+
+		m_itemList.SetOwner(this);
+		m_itemList._AddedCallback();
+		//NSLog("First Item %S", m_itemList.classname);
+
+		/* TODO: Replace this with a 'SwitchBest' type function? */
+		/* we have no active weapon, and this is our pick */
+		if (!m_activeWeapon && m_itemList.IsWeapon() == true) {
+			m_activeWeapon = m_itemList;
+			m_activeWeapon._SwitchedToCallback();
+			//m_activeWeapon.PrintDebugInfo();
+		}
+
 		return (true);
 	}
 
@@ -572,17 +716,35 @@ NSNavAI::GiveItem(string itemName)
 	while (linkedList) {
 		/* we already have the item. */
 		if (linkedList.classname == itemName) {
+			//NSLog("we already have", linkedList.classname);
 			return (false);
 		}
 
 		lastItem = linkedList;
-		linkedList = linkedList.chain;
+		linkedList = (NSItem)linkedList.chain;
 	}
 
 	/* add it to the back of the chain, so it's part of our inventory. */
 	if (lastItem && linkedList == __NULL__) {
-		NSItem newItem = (NSItem)Entity_CreateClass(itemName);
+		NSItem newItem = (NSItem)EntityDef_CreateClassname(itemName);
+
+		if (!newItem) {
+			EntError("Unable to give item %S", itemName);
+			return (false);
+		}
+
+		newItem.SetOwner(this);
 		lastItem.chain = newItem;
+		linkedList = newItem;
+		newItem._AddedCallback();
+	}
+
+	/* TODO: Replace this with a 'SwitchBest' type function? */
+	/* we have no active weapon, and this is our pick */
+	if (!m_activeWeapon && linkedList.IsWeapon() == true) {
+		m_activeWeapon = linkedList;
+		m_activeWeapon._SwitchedToCallback();
+		//m_activeWeapon.PrintDebugInfo();
 	}
 
 	return (true);
@@ -619,20 +781,27 @@ NSNavAI::RemoveItem(string itemName)
 		}
 
 		lastItem = linkedList;
-		linkedList = linkedList.chain;
+		linkedList = (NSItem)linkedList.chain;
 	}
 
 	/* successfully remove the last item */
 	if (removeItem == true) {
-		/* we had an item in front, bridge across the removed item. */
-		if (frontItem) {
-			frontItem.chain = itemToRemove.chain;
-		} else {
-			/* this was the first item. set to chain (can be NULL) */
-			m_itemList = itemToRemove.chain;
+		/* Is the item our active weapon? Handle graceful removal. */
+		if (m_activeWeapon == itemToRemove) {
+			m_activeWeapon._SwitchedFromCallback();
+			m_activeWeapon = __NULL__;
 		}
 
-		itemToRemove.Destroy();
+		/* we had an item in front, bridge across the removed item. */
+		if (frontItem) {
+			frontItem.chain = (NSItem)itemToRemove.chain;
+		} else {
+			/* this was the first item. set to chain (can be NULL) */
+			m_itemList = (NSItem)itemToRemove.chain;
+		}
+
+		itemToRemove._RemovedCallback();
+		//itemToRemove.Destroy();
 		return (true);
 	}
 #endif
@@ -641,7 +810,98 @@ NSNavAI::RemoveItem(string itemName)
 }
 
 bool
+NSNavAI::RemoveAllItems(bool ignoreWeapons)
+{
+	NSItem linkedList = __NULL__;
+
+	/* we posess nothing. auto return false. */
+	if (!m_itemList) {
+		return (false);
+	}
+
+	/* since we have something in the inventory, start there */
+	linkedList = m_itemList;
+
+	/* iterate through the inventory, then figure out if we already have it*/
+	while (linkedList) {
+		NSItem nextItem = (NSItem)linkedList.chain;
+
+		/* respect weapon filter */
+		if (!(ignoreWeapons && linkedList.IsWeapon() == true)) {
+			linkedList._RemovedCallback();
+			linkedList.Destroy();
+
+			/* is this our active weapon? */
+			if (m_activeWeapon == linkedList) {
+				m_activeWeapon._SwitchedFromCallback();
+				m_activeWeapon = __NULL__;
+			}
+
+			continue;
+		}
+
+		linkedList = nextItem;
+	}
+
+	return (true);
+}
+
+bool
+NSNavAI::RemoveAllWeapons(void)
+{
+	NSItem linkedList = __NULL__;
+
+	/* we posess nothing. auto return false. */
+	if (!m_itemList) {
+		return (false);
+	}
+
+	/* since we have something in the inventory, start there */
+	linkedList = m_itemList;
+
+	/* iterate through the inventory, then figure out if we already have it*/
+	while (linkedList) {
+		NSItem nextItem = (NSItem)linkedList.chain;
+
+		/* respect weapon filter */
+		if (linkedList.IsWeapon() == true) {
+			linkedList._RemovedCallback();
+			linkedList.Destroy();
+
+			/* is this our active weapon? */
+			if (m_activeWeapon == linkedList) {
+				m_activeWeapon._SwitchedFromCallback();
+				m_activeWeapon = __NULL__;
+			}
+
+			continue;
+		}
+
+		linkedList = nextItem;
+	}
+
+	return (true);
+}
+
+bool
 NSNavAI::AddItem(NSItem theItem)
 {
 	return (false);
+}
+
+void
+NSNavAI_ListInventory(NSNavAI targetEntity)
+{
+	NSItem itemEntry = targetEntity.m_itemList;
+	NSWeapon activeWeapon = targetEntity.m_activeWeapon;
+	int i = 0i;
+
+	printf("active weapon: %s (%d)\n", activeWeapon.classname, num_for_edict(activeWeapon));
+
+	while (itemEntry) {
+		printf("%i %s (%d) (owner: %d); next: %d\n", i, itemEntry.classname, num_for_edict(itemEntry), num_for_edict(itemEntry.owner), num_for_edict(itemEntry.chain));
+		itemEntry = (NSItem)itemEntry.chain;
+		i += 1i;
+	}
+
 }

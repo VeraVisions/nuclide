@@ -16,6 +16,7 @@
 
 var int g_phys_constraintsystems;
 
+/*! \brief Server-Entity: Physics Constraint Grouping */
 /*!QUAKED phys_constraintsystem (.5 .3 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Turns a series of constraints into a ragdoll, so it can be managed better by the physics simulator.
@@ -30,6 +31,9 @@ in the individual constraints themselves. Set the 'constraintsystem' key to an i
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
+
+@ingroup server
+@ingroup pointentity
 */
 class
 phys_constraintsystem:NSPhysicsConstraint

@@ -56,6 +56,7 @@ enumflags
 	MONITORFL_CHANGED_STATUS
 };
 
+/*! \brief Shared-Entity: Rendertarget Surface */
 /*!QUAKED func_monitor (0 .5 .8) ?
 # OVERVIEW
 A monitor that renders the view of a linked point_camera entity.
@@ -71,6 +72,9 @@ A monitor that renders the view of a linked point_camera entity.
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
+
+@ingroup shared
+@ingroup brushentity
 */
 class func_monitor:NSRenderableEntity
 {
@@ -273,11 +277,9 @@ func_monitor::SpawnKey(string strKey, string strValue)
 void
 func_monitor::Respawn(void)
 {
+	super::Respawn();
 	SetSolid(SOLID_BSP);
 	SetMovetype(MOVETYPE_NONE);
-	SetOrigin(GetSpawnOrigin());
-	SetAngles(GetSpawnAngles());
-	SetModel(GetSpawnModel());
 	m_bState = true;
 }
 #endif

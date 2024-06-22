@@ -14,9 +14,9 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+#include "../shared/entityDef.h"
 #include "text.h"
 #include "textmenu.h"
-#include "efx.h"
 #include "font.h"
 #include "fade.h"
 #include "cmd.h"
@@ -24,8 +24,6 @@
 #include "NSView.h"
 #include "NSRadar.h"
 #include "crosshair.h"
-#include "../shared/weapons.h"
-#include "../shared/weapon_common.h"
 
 var bool g_net_debug = false;
 var bool g_cheats = false;
@@ -84,7 +82,7 @@ var bool g_cheats = false;
 
 #define READENTITY_ENTITY(field, changedflag) {\
 	if (flChanged & changedflag) {\
-		field = findfloat(world, ::entnum, readentitynum());\
+		field = findentity(world, ::entnum, readentitynum());\
 		PRINTFLAG(changedflag); \
 	}\
 }
@@ -99,6 +97,13 @@ var bool g_cheats = false;
 #define READENTITY_COLOR(field, changedflag) {\
 	if (flChanged & changedflag) {\
 		field = readbyte() / 255;\
+		PRINTFLAG(changedflag); \
+	}\
+}
+
+#define READENTITY_MODELINDEX(field, changedflag) {\
+	if (flChanged & changedflag) {\
+		field = readshort();\
 		PRINTFLAG(changedflag); \
 	}\
 }
@@ -391,6 +396,8 @@ struct
 	int m_iLeanDir;
 	float m_flLeaning;
 	int m_iSprinting;
+
+	int m_iSelectedWeapon;
 } g_seats[4], *pSeat;
 
 var vector g_vecMousePos;

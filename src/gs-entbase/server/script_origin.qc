@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Script Position Hint */
 /*!QUAKED script_origin (1 0 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 A position hint entity, designed to be used by MapC.
@@ -23,6 +24,9 @@ A position hint entity, designed to be used by MapC.
 
 # TRIVIA
 This entity was introduced in Call of Duty (2003).
+
+@ingroup server
+@ingroup pointentity
 */
 class
 script_origin:NSBrushTrigger

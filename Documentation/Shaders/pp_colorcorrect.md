@@ -1,3 +1,3 @@
-# Shaders: Overview {#shader_overview}
+# Shader List {#shader_list}
 
 ## pp_colorcorrect

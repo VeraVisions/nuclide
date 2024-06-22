@@ -15,6 +15,16 @@
 */
 
 #include "cvars.h"
+#include "profiles.h"
+
+/** @defgroup bot Bot
+@brief Multiplayer game opponents, allies.
+@ingroup ai
+
+# Bot {#bot}
+
+@{
+*/
 
 vector Route_SelectDestination( NSBot target );
 
@@ -47,29 +57,4 @@ _BotEntLog(string className, string functionName, float edictNum, string warnMes
 
 var string autocvar_bot_prefix = "";
 
-/* BotScript
-	script/bots.txt
-
-	Listing of various bot profiles
-	where infokeys can be set and interpreted
-	by the game-logic at will.
-
-	The `name` keys has to _always_ be present.
-	The `funname` key is optional.
-
-	Name acts as both an identifier as well
-	as a nickname when `funname` is not present.
-
-	Anything else is considered to be extra.
-*/
-
-typedef struct
-{
-	string m_strName;
-	string m_strNetName;
-	string m_strExtra;
-} botScript_t;
-
-#define BOTSCRIPT_MAX 32
-botScript_t g_bots[BOTSCRIPT_MAX];
-var int g_botScriptCount;
+/** @} */ // end of bot

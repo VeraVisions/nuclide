@@ -14,14 +14,17 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*! @file achievements.h
-    @brief Achievement APIs
-
-    The Achievements API manages the retrieval, storage and networking
-	 of game achievements.
-
-	 This is a work in progress.
-*/
+/** @defgroup achievements Achievements
+ *  @brief Achievements, unlockables API reference.
+ *  @ingroup menu
+ *  
+ *  The Achievements API manages the retrieval, storage and networking
+ *  of game achievements.
+ *  
+ *  This is a work in progress.
+ *  @{
+ *
+ */
 
 /** Data for an achievement definition. */
 typedef struct
@@ -74,3 +77,5 @@ void Achievement_IndicateProgress(string strName, int iCurrent, int iMax);
 @param ptr Pointer to an achievement_t array.
 @return Will return false upon failure. */
 bool Achievement_RequestStats(achievement_t *ptr, int count);
+
+/** @} */ // end of achievements

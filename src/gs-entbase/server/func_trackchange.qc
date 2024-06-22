@@ -25,6 +25,7 @@ enumflags
 	FNCTRACKCHANGE_YAXIS,
 };
 
+/*! \brief Server-Entity: func_tracktrain Track Controller */
 /*!QUAKED func_trackchange (0 .5 .8) ? x x x BOTTOM NOMOVE x X_AXIS Y_AXIS
 # OVERVIEW
 A rotating, moving platform that will transport func_tracktrain entities between two path_track entities.
@@ -50,6 +51,9 @@ with automated (trigger controlled) func_tracktrain entities, use func_trackauto
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup server
+@ingroup brushentity
 */
 class
 func_trackchange:func_platrot

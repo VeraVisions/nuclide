@@ -52,6 +52,8 @@ these inputs as well.
 
 Each input has the ability to have a NSWeapon reference tied to it.
 That way you can dual (or even triple) wield them.
+
+@ingroup xr
 */
 class NSXRInput {
   public:

@@ -26,6 +26,7 @@ enumflags
 	MRBFL_YAXIS
 };
 
+/*! \brief Server-Entity: Momentary Rotating Door/Lever/Valve */
 /*!QUAKED momentary_rot_button (0 .5 .8) ? MRBFL_DOORHACK MRBFL_NOTUSE x x MRBFL_AUTORETURN x MRBFL_XAXIS MRBFL_YAXIS
 # OVERVIEW
 Dyanmic button/wheel/lever that moves back into its original position when not
@@ -46,6 +47,9 @@ in use. It affects momentary_door.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup server
+@ingroup brushentity
 */
 class
 momentary_rot_button:NSMomentary
@@ -117,6 +121,7 @@ momentary_rot_button::SpawnKey(string strKey, string strValue)
 void
 momentary_rot_button::Respawn(void)
 {
+	super::Respawn();
 	RestoreAngles();
 	SetMovementDirection();
 	ClearAngles();
@@ -128,8 +133,6 @@ momentary_rot_button::Respawn(void)
 
 	SetSolid(SOLID_BSP);
 	SetMovetype(MOVETYPE_PUSH);
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
 
 	/* purely visual, can't use this */
 	if (!HasSpawnFlags(MRBFL_NOTUSE)) {

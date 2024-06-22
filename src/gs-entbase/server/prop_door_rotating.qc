@@ -22,7 +22,7 @@
 #define PRPDRFL_NOUSE		32768
 
 class
-prop_door_rotating:NSPointTrigger
+prop_door_rotating:NSRenderableEntity
 {
 public:
 	void prop_door_rotating(void);
@@ -103,14 +103,12 @@ prop_door_rotating::SpawnKey(string strKey, string strValue)
 void
 prop_door_rotating::Respawn(void)
 {
-	InitPointTrigger();
+	super::Respawn();
 
-	SetModel(GetSpawnModel());
 	SetSolid(SOLID_BSP);
 	SetMovetype(MOVETYPE_PUSH);
-	SetOrigin(GetSpawnOrigin());
 	PlayerUse = Interact;
-	m_vecDest1 = GetSpawnAngles();
+	m_vecDest1 = GetAngles();
 	m_vecDest2 = m_vecDest1 + [0, m_flDistance, 0];
 }
 

@@ -573,10 +573,6 @@ NSBot::GetInfoKeyFloat(string strKey)
 void
 NSBot::NSBot(void)
 {
-#ifdef SERVER
-	targetname = "_nuclide_bot_";
-	SetInfoKey("*bot", "1");
-#endif
 }
 
 #ifdef SERVER

@@ -14,47 +14,62 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* voice sentence samples for AI and other triggers that are supposed to talk.
- * the formatting is messy as hell and I feel dirty for even bothering with all
- * this to begin with.
- * 
- * the server will send a short string identifer over and we'll look it up.
- * what's annoying is that some NPCs got their own pitch overrides so I guess
- * we'll just default to those whenever there's no custom value set.
- */
+/** @defgroup sentences Sentences
+@brief Sentences are the voice-acting backbone of the sound system.
+@ingroup sound
 
-/* sentences are the voice-acting backbone of the sound system.
- * http://articles.thewavelength.net/230/
- * has pretty good documentation of how the format is meant to work */
+# Sentences Documentation
 
-/* Sentences Documentation
+A lot of information was implemented with the help of:
+http://articles.thewavelength.net/230/
 
-	Each line is a new sentence group.
-    [GROUPNAME] [...PARAMETERS] [...SAMPLES]
+## Specification of sound/sentences.txt
+Each line is a new sentence group.  
 
-    If a sample is not in a sub-directory, it'll be assumed to be part
-    of the 'vox' sub-directory, or the last valid path of a previous sample.
-    For example
-        attention male/hello how are you
-    becomes
-        vox/attention.wav male/hello.wav male/how.wav male/are.wav male/you.wav
+```
+[GROUPNAME] [...PARAMETERS] [...SAMPLES]
+```
 
-	When parameters are surrounded by spaces, this means they apply
-    to all current samples. They can be overwritten later down the parsing.
-    When a parameter is attached to a sample, e.g.
-        attention(p120)
-    Then this parameter only applies to said keyword.
-    Whereas...
-        (p120) attention everyone alive
-    Will apply the pitch effect to all three succeeding samples.
+If a sample is not in a sub-directory, it'll be assumed to be part
+of the 'vox' sub-directory, or the last valid path of a previous sample.  
+For example:
 
-	Parameters:
-    (pXX) = Pitch. Valid values are from 50 to 150.
-    (vXX) = Volume. Valid values are from 0 to 100.
-    (sXX) = Start point in %. E.g. 10 skips the first 10% of the sample.
-    (eXX) = End point in %. E.g. 75 ends playback 75% into the sample.
-    (tXX) = Time shift/compression in %. 100 is unaltered speed,
-            wheras 50 plays the sample back in half the time.
+```
+attention male/hello how are you  
+```
+
+becomes:
+
+```
+vox/attention.wav male/hello.wav male/how.wav male/are.wav male/you.wav
+```
+
+When parameters are surrounded by spaces, this means they apply
+to all current samples. They can be overwritten later down the parsing.  
+
+When a parameter is attached to a sample, e.g.:
+
+```
+attention(p120)
+```
+
+Then this parameter only applies to said keyword.  
+Whereas...
+
+```
+(p120) attention everyone alive
+```
+
+Will apply the pitch effect to all three succeeding samples.
+
+Parameters:  
+    (pXX) = Pitch. Valid values are from 50 to 150.  
+    (vXX) = Volume. Valid values are from 0 to 100.  
+    (sXX) = Start point in %. E.g. 10 skips the first 10% of the sample.  
+    (eXX) = End point in %. E.g. 75 ends playback 75% into the sample.  
+    (tXX) = Time shift/compression in %. 100 is unaltered speed, wheras 50 plays the sample back in half the time.  
+
+@{
 */
 
 #ifdef SERVER
@@ -69,15 +84,26 @@
 	int g_sentences_count;
 #endif
 
+/** Returns a string of sample for a given sentence. */
 string Sentences_GetSamples(string);
+/** Returns the shared network ID for a given sentence. */
 int Sentences_GetID(string);
+
+
 #endif
 
 #ifdef CLIENT
+/** Gets the sentences string for a given id. */
 string Sentences_GetString(int id);
+
+/** Called by CSQC_Shutdown() when the client game exits to clear the sentences buffer. */
 void Sentences_Shutdown(void);
+
 #endif
 
+/** @} */ // end of sentences
+
+/** Called by CSQC_Init on the client, as well as init() on the server. */
 void Sentences_Init(void);
 
 var hashtable g_hashsentences;

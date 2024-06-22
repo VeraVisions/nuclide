@@ -21,6 +21,10 @@ enumflags
 	TEXTBOX_FOCUS
 };
 
+/** VGUI Widget: Text Box
+
+@ingroup vgui
+*/
 class VGUITextBox:VGUIWidget
 {
 public:

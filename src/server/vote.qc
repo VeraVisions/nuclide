@@ -14,18 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-var string g_strVoteCmd;
-var float g_flVoteTime;
-var int g_iVoteState;
-var int autocvar_mp_allowvote = TRUE;
-
-enum
-{
-	VOTE_INACTIVE,
-	VOTE_INPROGRESS,
-	VOTE_PASSED
-};
-
 /*
 =================
 Vote_End

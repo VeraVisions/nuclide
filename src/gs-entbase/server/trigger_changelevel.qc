@@ -16,6 +16,7 @@
 
 vector g_landmarkpos;
 
+/*! \brief Server-Entity: Shared Point Between Levels */
 /*!QUAKED info_landmark (1 0 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Defines a shared point between two levels. Used for level transitions, such
@@ -26,6 +27,9 @@ as the ones produced by a trigger_changelevel.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup server
+@ingroup pointentity
 */
 class
 info_landmark:NSPointTrigger
@@ -71,6 +75,7 @@ ChangeTarget_Activate(void)
 	foo.TemporaryTimer(self, Finalize, cvar("_bsp_changedelay"), false);
 }
 
+/*! \brief Server-Entity: Triggers Level Changes */
 /*!QUAKED trigger_changelevel (.5 .5 .5) ? NO_INTERMISSION TRIGGER_ONLY
 # OVERVIEW
 A trigger volume that initiates a level change, from one map to the next.

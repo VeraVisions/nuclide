@@ -19,6 +19,7 @@
 #endif
 
 string g_constIndex[MAX_CONSTANTS_ID];
+static int g_constCount;
 
 void
 Constants_Init(void)
@@ -29,6 +30,8 @@ Constants_Init(void)
 	int indexCount = 0i;
 
 	InitStart();
+
+	g_constCount = 0i;
 
 	if (!g_hashConstants) {
 		g_hashConstants = hash_createtab(2, HASH_ADD);
@@ -50,18 +53,28 @@ Constants_Init(void)
 		}
 
 		/* sanity bounds check */
-		if (indexCount == MAX_CONSTANTS_ID) {
-			NSError("Hit maximum number of %d constants.", MAX_CONSTANTS_ID);
+		if (!Constants_Add(argv(0), argv(1))) {
 			InitEnd();
 			return;
 		}
-
-		g_constIndex[indexCount] = argv(1);
-		hash_add(g_hashConstants, argv(0), indexCount);
-		indexCount++;
 	}
 
 	InitEnd();
+}
+
+bool
+Constants_Add(string constantName, string constantValue)
+{
+	/* sanity bounds check */
+	if (g_constCount == MAX_CONSTANTS_ID) {
+		NSError("Hit maximum number of %d constants.", MAX_CONSTANTS_ID);
+		return (false);
+	}
+
+	g_constIndex[g_constCount] = constantValue;
+	hash_add(g_hashConstants, constantName, g_constCount);
+	g_constCount++;
+	return (true);
 }
 
 string

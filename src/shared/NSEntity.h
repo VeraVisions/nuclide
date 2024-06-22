@@ -47,6 +47,8 @@ It's responsible for handling practically every entity in Nuclide.
 
 Try to avoid using the built-in 'entity' type unless you know exactly
 what you are doing. Otherwise, you will deal with loss of savegames and much more.
+
+@ingroup baseclass
 */
 class NSEntity:NSTrigger
 {
@@ -56,13 +58,10 @@ private:
 	vector m_vecMins; /**< REAL min bounding box value, without .scale affecting it */
 	vector m_vecMaxs; /**< REAL max bounding box value, without .scale affecting it */
 
-	vector m_oldOrigin; /**< contains the origin that the entity spawned in */
-	vector m_oldAngle; /**< contains the angle that the entity spawned in */
-	string m_oldModel; /**< contains the model that the entity spawned with */
-	float m_oldSolid; /**< contains the collision type the entity spawned with */
 	bool m_bIsBrush;
 	vector m_vecEditorColor;
 
+	PREDICTED_FLOAT(entityDefID)
 	PREDICTED_VECTOR_N(origin)
 	PREDICTED_VECTOR_N(angles)
 	PREDICTED_FLOAT_N(modelindex)
@@ -86,6 +85,9 @@ private:
 	PREDICTED_FLOAT_N(effects)
 #endif
 
+	/** Will read from the named def to perform a projectile attack. */
+	nonvirtual bool _ProjectileAttack(string, bool);
+
 public:
 	/** The constructor.
 		Not much may be known of what the entity will be just yet. */
@@ -94,6 +96,10 @@ public:
 #ifdef CLIENT
 	/** Client: Handles network updates from the server for the associated entity. */
 	virtual void ReceiveEntity(float,float);
+
+	virtual void ReceiveEvent(float);
+
+	virtual float predraw(void);
 
 	/** Client: Run after the rendering of 3D world is complete. 2D calls can happen here. */
 	virtual void postdraw(void);
@@ -146,7 +152,7 @@ public:
 	/** Call this on an entity to remove the connection to its parent. */
 	nonvirtual void ClearParent(void);
 
-	/** Restore the entity's angles to the value they spawned with. */
+	/** Restore the entity's angles to the value the spawndata contains. */
 	nonvirtual void RestoreAngles(void);
 
 	/** Unsets any any angle related values within the entity. */
@@ -224,7 +230,7 @@ public:
 		Only use it when you want to retain a think timer that's already been set for the entity. */
 	nonvirtual void SetThink(void());
 	/** Sets the next think timer of the entity.
-		It has to be a positive value. For example `::SetNextThink(1.5f); will trigger the think
+		It has to be a positive value. For example `SetNextThink(1.5f); will trigger the think
 		1.5 seconds from then on.*/
 	nonvirtual void SetNextThink(float);
 	/** Schedules a think timer. You can only have one going at any given time.
@@ -234,12 +240,6 @@ public:
 	nonvirtual void ScheduleThink(void(void),float);
 
 	/* gets */
-	/** Returns the world coordinates of where the entity originally spawned. */
-	nonvirtual vector GetSpawnOrigin(void);
-	/** Returns the direction the entity was facing when it originally spawned. */
-	nonvirtual vector GetSpawnAngles(void);
-	/** Returns the 3D model representation of the entity of when it originally spawned. */
-	nonvirtual string GetSpawnModel(void);
 	/** Returns a bitfield of the active effects running on the entity. */
 	nonvirtual float GetEffects(void);
 	/** Returns the currently active framegroup of the entity. */
@@ -293,7 +293,7 @@ public:
 	/** Returns true if the entity has the specified, nuclide specific, flags. */
 	nonvirtual float HasVFlags(float);
 	/** Returns an absolute value of when the entity will be think again.
-		Any result should be tested against `::GetTime()`. */
+		Any result should be tested against `GetTime()`. */
 	nonvirtual float GetNextThinkTime(void);
 	/** Returns whether or not we're currently expecting to think any time soon. */
 	nonvirtual bool IsThinking(void);
@@ -303,6 +303,14 @@ public:
 	nonvirtual void ThinkBusy(float);
 	/** When called, will clear anything related to physical movement on the entity. */
 	nonvirtual void ClearVelocity(void);
+
+	/* eye/shoot pos/angle */
+	/** Returns the absolute world position of where the eyes are located. */
+	nonvirtual vector GetEyePos(void);
+	/** Sets the relative position of the eyes. */
+	nonvirtual void SetEyePos(vector);
+	/** Returns an euler angle of where the entity is 'looking' at. These are not necessarily eye values. */
+	nonvirtual vector GetViewAngle(void);
 
 	/* drawing related */
 	/** When called, will unhide the entity. */
@@ -358,7 +366,7 @@ public:
 	nonvirtual bool IsOnGround(void);
 	/** Returns the entity we're standing on.
 		If the result is `__NULL__` that does not mean that we're in air.
-		Check `::IsOnGround()` for that information. */
+		Check `NSEntity::IsOnGround()` for that information. */
 	nonvirtual entity GetGroundEntity(void);
 	/** Returns if the entity was spawned by the map we're on. */
 	nonvirtual bool CreatedByMap(void);
@@ -405,21 +413,28 @@ public:
 
 	/** Finds a free spot of an entity near itself of same size. Extra padding as argument. */
 	nonvirtual vector GetNearbySpot(void);
+
+	/** Returns a unique id between shared entities. */
+	nonvirtual int GetSharedID(void);
+
+	/** Will read from the named def to perform an attack. */
+	virtual bool AttackByDef(string, bool);
 };
 
-/** Will spawn a given classname in the type of an NSEntity at a given position and angle. */
-NSEntity
-NSEntity_SpawnClass(string className, vector spawnOrigin, vector spawnAngles)
-{
-	entity oldSelf;
-	NSEntity output = (NSEntity)spawn();
-	oldSelf = self;
-	self = output;
-	callfunction(strcat("spawnfunc_", className));
-	output.m_oldOrigin = spawnOrigin;
-	output.m_oldAngle = spawnAngles;
-	output.angles = spawnAngles;
-	setorigin(output, spawnOrigin);
-	self = oldSelf;
-	return output;
-}
+/** Returns a new entity. Guaranteed to be something. Never __NULL__
+   unless we're seriously out of memory. */
+NSEntity spawnClass(string className, vector desiredPos);
+
+void sendInput(entity target, string inputName, string dataString, entity activator);
+
+bool isAI(entity entityToCheck);
+
+bool isAlive(entity entityToCheck);
+
+bool isGodMode(entity entityToCheck);
+
+bool isPlayer(entity entityToCheck);
+
+bool isSentient(entity entityToCheck);
+
+bool isBot(entity entityToCheck);

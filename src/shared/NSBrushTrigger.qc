@@ -19,6 +19,12 @@ NSBrushTrigger::NSBrushTrigger(void)
 {
 }
 
+void
+NSBrushTrigger::Respawn(void)
+{
+	InitBrushTrigger();
+}
+
 int
 NSBrushTrigger::GetValue(entity queryingEntity)
 {
@@ -32,9 +38,12 @@ NSBrushTrigger::GetValue(entity queryingEntity)
 void
 NSBrushTrigger::InitBrushTrigger(void)
 {
-	SetModel(GetSpawnModel());
+	/* brush triggers generally only need model, origin. no angles. */
+	SetModel(GetSpawnString("model"));
+	SetOrigin(GetSpawnVector("origin"));
 	SetMovetype(MOVETYPE_NONE);
 	SetSolid(SOLID_BSPTRIGGER);
+	Hide();
 
 #ifdef SERVER
 	m_bEnabled = (m_bStartDisabled) ? false : true;

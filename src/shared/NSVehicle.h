@@ -25,7 +25,10 @@ _NSVehicle_Log(string className, string functionName, float edictNum, string war
 }
 #define NSVehicle_Log(...) if (autocvar_vehicle_developer == true) _NSVehicle_Log(classname, __FUNC__, num_for_edict(this), sprintf(__VA_ARGS__))
 
-/** This entity class represents vehicles that are predicted across the network. */
+/** This entity class represents vehicles that are predicted across the network.
+
+@ingroup baseclass
+*/
 class NSVehicle:NSSurfacePropEntity
 {
 private:

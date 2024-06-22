@@ -1,8 +1,11 @@
-# Models: VVM
+# Model Importing {#models}
+
+## Vera Visions Models (VVM) {#vvm}
+
 **Vera Visions Model**, also known as **VVM** or **IQM-FTE** is the main
 skeletal model format.
 
-## Features {#features}
+### Features {#vvm_features}
 
 Features that the original IQM exporter (by Lee Salzman) did not offer:
 
@@ -36,7 +39,7 @@ It also has a re-engineered exporter that takes control files as input,
 rather than a giant command-line string. This was done because some
 models have hundreds of model parameters in The Wastes.
 
-## History {#history}
+### History {#vvm_history}
 
 In 2016 when we had our first prototype of The Wastes, we started out
 using DPM for tool-chain related reasons and quickly migrated to IQM.
@@ -63,7 +66,7 @@ exposed to the game-logic.
 However, the initial extensions to the IQM format in FTE were designed
 by us; and this is the exporter that was used to make our game.
 
-## Viewing VVM Models {#viewing_vvm_models}
+### Previewing Models {#vvm_viewing}
 
 You can grab a binary build of FTE [1](https://www.fteqw.org/)
 (basically a generic, non The Wastes specific version) and use the
@@ -73,6 +76,6 @@ Shift+ESC.
 If you want to see for example the Winston viewmodel, type *modelviewer
 models/weapons/v_winchester.vvm*
 
-## External links {#external_links}
+### External links {#vvm_links}
 
 [vvmtool on GitHub](https://github.com/VeraVisions/vvmtool)

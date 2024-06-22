@@ -14,40 +14,46 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+#pragma target fte_5768
+//#pragma flag enable assumeint
+#pragma PROGS_DAT  "../../base/plug_connectsounds.dat"
+#define QWSSQC
+
+#include "../shared/fteextensions.qc"
+
 entity g_cnspk;
 
-int
-FMX_PlayerConnect(entity cl)
+bool
+Plug_ClientConnect(entity clientEntity)
 {
 	string strIP;
 	sound(g_cnspk, CHAN_VOICE, "sound/buttons/bell1.wav", 1.0f, ATTN_NONE);
-	strIP = infokey(cl, INFOKEY_P_IP);
-	bprint(PRINT_CHAT, sprintf("%s joined (%s)\n", cl.netname, strIP));
-	return (1);
+	strIP = infokey(clientEntity, INFOKEY_P_IP);
+	bprint(PRINT_CHAT, sprintf("%s joined (%s)\n", clientEntity.netname, strIP));
+	return (true);
 }
 
-int
-FMX_PlayerDisconnect(entity cl)
+void
+Plug_ClientDisconnect(entity clientEntity)
 {
 	string strIP;
 	sound(g_cnspk, CHAN_VOICE, "sound/buttons/blip1.wav", 1.0f, ATTN_NONE);
-	strIP = infokey(cl, INFOKEY_P_IP);
-	bprint(PRINT_CHAT, sprintf("%s left (%s)\n", cl.netname, strIP));
-	return (1);
+	strIP = infokey(clientEntity, INFOKEY_P_IP);
+	bprint(PRINT_CHAT, sprintf("%s left (%s)\n", clientEntity.netname, strIP));
 }
 
-void
-FMX_Init(void)
+bool
+Plug_Load(void)
 {
 	precache_sound("sound/buttons/blip1.wav");
 	precache_sound("sound/buttons/bell1.wav");
+	return (true);
 }
 
 void
-FMX_InitEnts(void)
+Plug_ServerActivate(void)
 {
 	if (!g_cnspk) {
 		g_cnspk = spawn();
 	}
 }
-

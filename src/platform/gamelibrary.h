@@ -14,40 +14,44 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*! @file gamelibrary.h
-    @brief Game library parsing and querying of metadata.
+/** @defgroup gamelibrary Game Library
+    @ingroup menu
+    @brief Locally-installed games, modification control functions
 
-The GameLibrary concerns itself with everything around what a game is,
-how to install, activate and deactivate it. Mods are included in this,
-so we'll proceed calling them 'games' or 'custom games'.
+    The GameLibrary concerns itself with everything around what a game is,
+    how to install, activate and deactivate it. Mods are included in this,
+    so we'll proceed calling them 'games' or 'custom games'.
 
-A game can be installed through two primary means:
+    A game can be installed through two primary means:
 
-- Manual install, like from a .zip or some installer or archive
-- Engine package manager install, through our own user interface
+    - Manual install, like from a .zip or some installer or archive
+    - Engine package manager install, through our own user interface
 
-And between these, they can come with different metadata/manifests.
+    And between these, they can come with different metadata/manifests.
 
-It assumed that every game has either a FTE Manifest description,
-a gameinfo.txt (Source Engine format) or liblist.gam (GoldSrc format)
-that describes various aspects of the game. Like which version it is, what
-map will be loaded when you press 'New Game' and so on.
+    It assumed that every game has either a FTE Manifest description,
+    a gameinfo.txt (Source Engine format) or liblist.gam (GoldSrc format)
+    that describes various aspects of the game. Like which version it is, what
+    map will be loaded when you press 'New Game' and so on.
 
-If that info is not available, some placeholder data will be used instead.
-However, games installed via the package manager will at least for the
-custom game menus not use the on-disk manifest file, but information
-provided by the package manager. Once you switch into said game everything
-within will be pulled from a file on disk, such as a liblist.gam or gameinfo.txt.
+    If that info is not available, some placeholder data will be used instead.
+    However, games installed via the package manager will at least for the
+    custom game menus not use the on-disk manifest file, but information
+    provided by the package manager. Once you switch into said game everything
+    within will be pulled from a file on disk, such as a liblist.gam or gameinfo.txt.
 
-The menu needs to call GameLibrary_Init() once for parsing the currently running
-game its own metadata. If you want to index custom games, aka mods, you need
-to do so with GameLibrary_InitCustom() afterwards.
+    The menu needs to call GameLibrary_Init() once for parsing the currently running
+    game its own metadata. If you want to index custom games, aka mods, you need
+    to do so with GameLibrary_InitCustom() afterwards.
 
-Because indexing mods can take a very long time depending on the amount
-that is stored on disk, you may want to call GameLibrary_InitCustom() at
-a later time.
+    Because indexing mods can take a very long time depending on the amount
+    that is stored on disk, you may want to call GameLibrary_InitCustom() at
+    a later time.
+
+@{
 */
 
+/** Options for querying Game Library entry information using `GameLibrary_GetInfo()` */
 typedef enum
 {
 	GAMEINFO_TITLE,			/**< (string) The title of the game. E.g. "Action Game" */
@@ -111,7 +115,7 @@ typedef enum
 	GAMEINFO_PACKAGE,
 } gi_type;
 
-#ifndef DOXYGEN
+/** Data holding Game Library entries. */
 typedef struct
 {
 	string game;
@@ -141,9 +145,11 @@ typedef struct
 	string menumap;
 	string introvideo;
 	gi_type info_type;
-} gameinfo_t;
+} gameEntry_t;
 
+#ifndef DOXYGEN
 int gameinfo_count;
-gameinfo_t *games;
-
+gameEntry_t *games;
 #endif
+
+/** @} */ // end of gamelibrary

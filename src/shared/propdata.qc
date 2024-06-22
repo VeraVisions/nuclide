@@ -570,13 +570,13 @@ PropData_Init(void)
 #ifdef PROPDATA_DYNAMIC
 	/* alocate our stuff */
 	g_propdata = (propdata_t *)memalloc(sizeof(propdata_t) * g_propdata_count);
-	g_breakmodel = (breakmodel_t *)memalloc(sizeof(breakmodel_t) * g_breakmodel_count);
+	g_breakmodel = (breakModel_t *)memalloc(sizeof(breakModel_t) * g_breakmodel_count);
 #else
 	/* alocate our stuff */
 	g_propdata = (propdata_t *)memalloc(sizeof(propdata_t) * PROPDATA_MAX);
-	g_breakmodel = (breakmodel_t *)memalloc(sizeof(breakmodel_t) * PROPDATA_MAX);
+	g_breakmodel = (breakModel_t *)memalloc(sizeof(breakModel_t) * PROPDATA_MAX);
 	NSLog("...allocated %d bytes for prop data.", sizeof(propdata_t) * PROPDATA_MAX);
-	NSLog("...allocated %d bytes for breakmodels.", sizeof(breakmodel_t) * PROPDATA_MAX);
+	NSLog("...allocated %d bytes for breakmodels.", sizeof(breakModel_t) * PROPDATA_MAX);
 #endif
 
 	fseek(fh, 0);

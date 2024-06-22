@@ -15,7 +15,8 @@
 */
 
 #ifdef CLIENT
-class env_smoker_cloud:NSEntity
+static class
+env_smoker_cloud:NSEntity
 {
 public:
 	void env_smoker_cloud(void);
@@ -72,6 +73,7 @@ enumflags
 	SMOKER_CHANGED_ACTIVE
 };
 
+/*! \brief Shared-Entity: Smoke Emitter */
 /*!QUAKED env_smoker (1 .5 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Basic emitter for smoke like effects.
@@ -84,6 +86,9 @@ Basic emitter for smoke like effects.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup shared
+@ingroup pointentity
 */
 class
 env_smoker:NSRenderableEntity
@@ -136,8 +141,9 @@ env_smoker::env_smoker(void)
 void
 env_smoker::Respawn(void)
 {
+	super::Respawn();
+
 	SetSize([0,0,0], [0,0,0]);
-	SetOrigin(GetSpawnOrigin());
 	m_bActive = true;
 
 	if (m_flDuration != -1.0f) {

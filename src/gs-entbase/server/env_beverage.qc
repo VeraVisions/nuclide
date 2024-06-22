@@ -28,6 +28,7 @@ typedef enum
 	SKIN_RANDOM
 } sodaskin_t;
 
+/*! \brief Server-Entity: Health Refuelling Beverage */
 /*!QUAKED env_beverage (1 .5 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Upon being triggered, the entity will spawn item_food in its place in
@@ -55,6 +56,9 @@ Beverage-list:
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup server
+@ingroup pointentity
 */
 class
 env_beverage:NSRenderableEntity

@@ -1,0 +1,12 @@
+{
+    "fsn_info_type" = <*I0>;
+    geometry = "1172 64 600 660 0 0  1920 1080 ";
+    lastselection = (
+	"/4TB/VCS/Nuclide-SDK/Documentation/Modules"
+    );
+    shelfdicts = (
+    );
+    shelfheight = <*R77>;
+    singlenode = <*BN>;
+    viewtype = Browser;
+}

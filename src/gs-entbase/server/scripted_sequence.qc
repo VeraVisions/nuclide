@@ -57,6 +57,7 @@ enum
     SS_TURNTOFACE /* Turn to the scripted_sequence's angle before performing the animation. */
 };
 
+/*! \brief Server-Entity: Scripted Sequence Controller */
 /*!QUAKED scripted_sequence (1 0 0) (-8 -8 -8) (8 8 8) x x SSFL_REPEATABLE SSFL_LEAVECORPSE x SSFL_NOINTERRUPT SSFL_OVERRIDEAI SSFL_NOSCRIPTMOVE
 # OVERVIEW
 Allow an actor to be selected and given an action to perform.
@@ -90,6 +91,9 @@ f_fMoveTo values:
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup server
+@ingroup pointentity
 */
 class
 scripted_sequence:NSPointTrigger
@@ -217,10 +221,10 @@ scripted_sequence::SpawnKey(string strKey, string strValue)
 void
 scripted_sequence::Respawn(void)
 {
-	InitPointTrigger();
+	super::Respawn();
 
 	m_iEnabled = TRUE;
-	target = m_oldstrTarget;
+	target = GetSpawnString("target");
 
 	if (m_flSearchRadius) {
 		SetSolid(SOLID_TRIGGER);
@@ -287,7 +291,7 @@ scripted_sequence::RunOnEntity(entity targ)
 	f.m_strSequenceKillTarget = m_strKillTarget;
 
 	if (m_strKillTarget) {
-		readcmd(sprintf("watchpoint_ssqc %d.nextthink\n", num_for_edict(f)));
+		//readcmd(sprintf("watchpoint_ssqc %d.nextthink\n", num_for_edict(f)));
 		NSAIScript_Log("\tKillTarget when finished: %S", m_strKillTarget);
 	}
 

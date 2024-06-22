@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Team Trigger Controller */
 /*!QUAKED game_team_master (1 .5 0) (-8 -8 -8) (8 8 8) REMOVE
 # OVERVIEW
 Regulates triggers in team based modes.
@@ -30,6 +31,9 @@ Regulates triggers in team based modes.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup server
+@ingroup pointentity
 */
 class
 game_team_master:multisource

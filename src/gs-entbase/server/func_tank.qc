@@ -25,6 +25,7 @@ enumflags
 	FNCTANK_CONTROLLABLE
 };
 
+/*! \brief Server-Entity: Mountable Gun Turret */
 /*!QUAKED func_tank (0 .5 .8) ? FNCTANK_ACTIVE x x x FNCTANK_DIRECTONLY FNCTANK_CONTROLLABLE
 # OVERVIEW
 A mountable tank gun turret type entity. A player (or NPC) can interact with
@@ -65,6 +66,9 @@ some random sprites needs to be treated additive.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup server
+@ingroup brushentity
 */
 class
 func_tank:NSVehicle
@@ -274,11 +278,10 @@ func_tank::Spawned(void)
 void
 func_tank::Respawn(void)
 {
+	super::Respawn();
+
 	SetMovetype(MOVETYPE_PUSH);
 	SetSolid(SOLID_BSP);
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
-	SetAngles(GetSpawnAngles());
 
 	if (m_eDriver)
 		PlayerLeave((NSClientPlayer)m_eDriver);
@@ -349,7 +352,7 @@ func_tank_shootsingle(entity shooter, vector org, vector spread, int damg)
 {
 	entity oldself = self;
 	self = shooter;
-	TraceAttack_FireBullets(1, org, damg, spread, 0);
+	//TraceAttack_FireBullets(1, org, damg, spread, 0);
 	self = oldself;
 }
 

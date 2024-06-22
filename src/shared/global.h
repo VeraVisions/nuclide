@@ -132,18 +132,19 @@ InitPrint(string functionName)
 	NSLog( "%s %s %s", sideLeft, functionName, sideRight);
 }
 
+var string g_lastInitFunc;
 void
 _InitStart(string functionName)
 {
 	if (g_initTime != 0)
-		error("Called InitStart() without InitEnd()ing the previous one!");
+		error(sprintf("Called InitStart() without InitEnd()ing %s!", g_lastInitFunc));
 
 	InitPrint(functionName);
+	g_lastInitFunc = functionName;
 	g_initTime = gettime(1);
 }
 
 #define InitStart() _InitStart(__FUNC__)
-
 
 void
 _InitEnd(void)
@@ -155,3 +156,9 @@ _InitEnd(void)
 }
 
 #define InitEnd() _InitEnd()
+
+/** Doesn't work yet. Compiler bug (!) */
+#define entity_def(x, ...) const string x[] = { __VA_ARGS__ }
+
+/** Calls a function (with parameters) in a new thread. */
+#define thread(x) if (fork()) { x; abort(); }

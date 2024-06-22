@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Triggers Game Ending To Menu */
 /*!QUAKED trigger_endsection (.5 .5 .5) ?
 # OVERVIEW
 This trigger shuts down the server.
@@ -24,6 +25,9 @@ Useful for when a singleplayer game ends, as it takes you to the main menu.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup server
+@ingroup brushentity
 */
 class
 trigger_endsection:NSBrushTrigger

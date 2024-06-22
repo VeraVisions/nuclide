@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Intermission Camera */
 /*!QUAKED info_intermission (1 0 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 An entity that's used to create an 'Intermission' camera.
@@ -30,6 +31,9 @@ and angles towards the aim target.
 
 # TRIVIA
 This entity was introduced in Quake (1996).
+
+@ingroup server
+@ingroup pointentity
 */
 class
 info_intermission:NSPointTrigger

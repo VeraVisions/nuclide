@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Shared-Entity: Muzzleflash Emitter */
 /*!QUAKED env_muzzleflash (1 .5 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Creates a muzzleflash effect when triggered.
@@ -28,7 +29,10 @@ Creates a muzzleflash effect when triggered.
 - "Fire" : Triggers the effect.
 
 # TRIVIA
-This entity was introduced in Half-Life 2 (2004)
+This entity was introduced in Half-Life 2 (2004).
+
+@ingroup shared
+@ingroup pointentity
 */
 class
 env_muzzleflash:NSEntity
@@ -40,7 +44,6 @@ public:
 	virtual void Save(float);
 	virtual void Restore(string,string);
 	virtual void SpawnKey(string, string);
-	virtual void Input(entity, string, string);
 	virtual void Input(entity, string, string);
 	virtual void Trigger(entity, triggermode_t);
 #endif

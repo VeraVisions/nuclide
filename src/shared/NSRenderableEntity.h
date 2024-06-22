@@ -86,7 +86,10 @@ var int autocvar_rm_unlit_texture = TRUE;
 This includes GoldSource and Source Engine style rendering effects.
 
 This is the bare minimum for most characters as it allows for body
-and bone control settings. */
+and bone control settings.
+
+@ingroup baseclass
+*/
 class NSRenderableEntity:NSEntity
 {
 private:
@@ -121,15 +124,6 @@ private:
 	nonvirtual void _UpdateGeomset();
 	nonvirtual void _UpdateBoneCount();
 #endif
-
-#ifdef SERVER
-	/* respawn */
-	float m_oldiRenderFX;
-	float m_oldiRenderMode;
-	float m_oldflRenderAmt;
-	vector m_oldvecRenderColor;
-#endif
-
 
 public:
 	void NSRenderableEntity(void);
@@ -184,13 +178,6 @@ public:
 	nonvirtual void SetBoneControl5(float);
 	/** Sets the axial, anisotropic scale of an entity, affecting the individual axis (forward, right, up). */
 	nonvirtual void SetAxialScale(vector);
-
-#ifdef SERVER
-	nonvirtual vector GetSpawnRenderColor(void);
-	nonvirtual float GetSpawnRenderAmt(void);
-	nonvirtual int GetSpawnRenderFX(void);
-	nonvirtual int GetSpawnRenderMode(void);
-#endif
 
 	/** Returns the bodygroup of the entity. */
 	nonvirtual int GetBody(void);

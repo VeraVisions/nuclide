@@ -318,6 +318,8 @@ capable of fighting if prompted to.
 - MULTIPLAYER (1024) - Available in multiplayer.
 - FALLING (2048) - Will not drop to the floor upon level spawn - but fall when in-game.
 - HORDE (4096) - Never used.
+
+@ingroup baseclass
 */
 class NSMonster:NSNavAI
 {
@@ -335,8 +337,8 @@ public:
 	virtual void Spawned(void);
 	virtual void Respawn(void);
 	virtual void Input(entity,string,string);
-	virtual void Pain(void);
-	virtual void Death(void);
+	virtual void Pain(entity, entity, int, vector, int);
+	virtual void Death(entity, entity, int, vector, int);
 	virtual void Physics(void);
 	virtual void Gib(void);
 	virtual void Sound(string);

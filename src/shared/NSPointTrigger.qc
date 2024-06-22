@@ -31,10 +31,13 @@ NSPointTrigger::Respawn(void)
 void
 NSPointTrigger::InitPointTrigger(void)
 {
+	SetOrigin(GetSpawnVector("origin"));
 	SetSize(VEC_HULL_MIN, VEC_HULL_MAX);
 	SetSolid(SOLID_NOT);
+	SetMovetype(MOVETYPE_NONE);
 
 #ifdef SERVER
+	RestoreAngles();
 	m_bEnabled = (m_bStartDisabled) ? false : true;
 
 	if (m_strDebugTexture == __NULL__) {

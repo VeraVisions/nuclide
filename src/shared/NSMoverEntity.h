@@ -38,7 +38,10 @@ typedef enum
 mainly brush-based entities that move and push other entities around
 the game world. Your sub-class will define the type of movement and
 the two positions within the entity will traverse - and then do so
-at your request. */
+at your request.
+
+@ingroup baseclass
+*/
 class
 NSMoverEntity:NSSurfacePropEntity
 {

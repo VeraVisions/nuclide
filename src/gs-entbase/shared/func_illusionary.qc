@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Shared-Entity: Non-Solid Brush Model */
 /*!QUAKED func_illusionary (0 .5 .8) ?
 # OVERVIEW
 Brush that lets light to pass through it and is non-solid.
@@ -26,6 +27,9 @@ On idTech 2 BSPs, it will change texture variants when triggered.
 
 # TRIVIA
 This entity was introduced in Quake (1996).
+
+@ingroup shared
+@ingroup brushentity
 */
 #ifdef SERVER
 class
@@ -67,8 +71,6 @@ func_illusionary::Respawn(void)
 	/* func_illusionary specifics */
 	SetMovetype(MOVETYPE_NONE);
 	SetSolid(SOLID_NOT);
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
 	SetSkin(0);
 	ClearAngles();
 

@@ -14,6 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/** VGUI Widget: Frame
+
+@ingroup vgui
+*/
 class VGUIFrame:VGUIWidget
 {
 public:

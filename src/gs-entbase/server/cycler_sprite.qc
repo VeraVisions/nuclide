@@ -14,9 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Debug Sprite Cycler */
 /*!QUAKED cycler_sprite (1 0 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
-Decorative sprite cycler.
+Decorative sprite cycler. For development purposes mainly.
 
 # KEYS
 - "targetname" : Name
@@ -28,6 +29,9 @@ Decorative sprite cycler.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup server
+@ingroup pointentity
 */
 class
 cycler_sprite:NSRenderableEntity

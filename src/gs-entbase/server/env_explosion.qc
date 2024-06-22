@@ -23,6 +23,7 @@ enum
 	ENVEXPLO_GENERICDAMAGE = 16384
 };
 
+/*! \brief Server-Entity: Explosion Creator */
 /*!QUAKED env_explosion (1 .5 0) (-8 -8 -8) (8 8 8) NO_DAMAGE REPEATABLE x x x NO_SOUND
 # OVERVIEW
 When triggered, creates an explosion at its location.
@@ -47,6 +48,9 @@ When triggered, creates an explosion at its location.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup server
+@ingroup pointentity
 */
 class
 env_explosion:NSPointTrigger
@@ -194,7 +198,7 @@ env_explosion::Trigger(entity act, triggermode_t state)
 			damageType = DMG_GENERIC;
 		}
 
-		Damage_Radius(GetOrigin(), this, GetExplosionDamage(), GetExplosionRadius(), damageType, 0);
+		radiusDamage(GetOrigin(), GetExplosionRadius(), 0i, GetExplosionDamage(), act);
 	}
 
 	if (HasSpawnFlags(ENVEXPLO_REPEATABLE) == false) {

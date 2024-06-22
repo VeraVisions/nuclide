@@ -22,6 +22,7 @@ enumflags
 	PATHTRACK_DISABLETRAIN
 };
 
+/*! \brief Server-Entity: Tracktrain Path Node */
 /*!QUAKED path_track (.5 .3 0) (-8 -8 -8) (8 8 8) DISABLED FIRE_ONCE BRANCHREVERSE DISABLETRAIN
 # OVERVIEW
 Node entities used for func_tracktrains.
@@ -50,6 +51,9 @@ It's like a path_corner, but for tracktrains.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup server
+@ingroup pointentity
 */
 
 class

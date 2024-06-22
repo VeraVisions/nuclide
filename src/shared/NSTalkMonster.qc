@@ -1056,9 +1056,6 @@ NSTalkMonster::predraw(void)
 	RenderFXPass();
 	RenderDebugSkeleton();
 
-	if (serverkeyfloat(SERVERKEY_PAUSESTATE) != 1)
-		frame1time += frametime;
-
 	processmodelevents(modelindex, frame, m_flBaseTime,
 		frame1time, HandleAnimEvent);
 	} /* TODO end */
@@ -1189,8 +1186,6 @@ NSTalkMonster::ReceiveEntity(float flNew, float flChanged)
 	if (scale == 0.0)
 		scale = 1.0f;
 
-	if (flChanged & MONFL_CHANGED_FRAME)
-		frame1time = 0.0f;
 	if (flChanged & MONFL_CHANGED_SIZE)
 		setsize(this, mins * scale, maxs * scale);
 

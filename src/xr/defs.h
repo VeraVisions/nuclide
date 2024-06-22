@@ -17,3 +17,10 @@
 #include "NSXRSpace.h"
 #include "NSXRInput.h"
 #include "xr.h"
+
+/** @defgroup xr Extended Reality
+    @ingroup shared
+    @brief Extended reality framework, handling **Virtual Reality (VR)**, **Augmented Reality (AR)** and **Mixed Reality (MR)** support
+
+You can take advantage of **Extended Reality**, aka **XR** by using the `openxr` engine plugin.
+*/

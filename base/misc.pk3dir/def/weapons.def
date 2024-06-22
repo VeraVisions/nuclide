@@ -1,0 +1,55 @@
+entityDef weapon_bat
+{
+	"spawnclass" "NSWeapon"
+	"model_view" "models/weapons/v_bat.vvm"
+	"model_world" "models/weapons/w_bat.vvm"
+	"inv_name" "Baseball Bat"
+	"inv_weapon" "weapon_bat"
+	"ammoType" ""
+	"ammoRequired" "0"
+	"def_dropItem" "weapon_bat"
+}
+
+
+entityDef weapon_pistol_shot
+{
+	"damage"	"100"
+	"delay"	"1.0"
+}
+
+entityDef weapon_pistol
+{
+	"spawnclass" "NSWeapon"
+	"model_view" "models/weapons/v_pistol.vvm"
+	"model_world" "models/weapons/w_pistol.vvm"
+	"inv_name" "Pistol"
+	"inv_weapon" "weapon_pistol"
+	"ammoType" ""
+	"ammoRequired" "0"
+	"def_dropItem" "weapon_pistol"
+	"def_projectile" "weapon_pistol_shot"
+
+	"fireRate" ".2"
+
+	"actFire" "14,16"
+	"actFireLast" "15,17"
+	"actReload" "8"
+	"actReloadEmpty" "9"
+	"actDrawEmpty" "3"
+	"actDraw" "2"
+	"actIdleEmpty" "1"
+	"actIdle" "0"
+}
+
+entityDef weapon_frag
+{
+	"spawnclass" "NSWeapon"
+	"model_view" "models/weapons/v_frag.vvm"
+	"model_world" "models/weapons/w_frag.vvm"
+	"inv_name" "Grenade"
+	"inv_weapon" "weapon_frag"
+	"ammoType" ""
+	"ammoRequired" "0"
+	"def_dropItem" "weapon_frag"
+}
+

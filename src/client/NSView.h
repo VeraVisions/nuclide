@@ -26,6 +26,11 @@
    is done in the NSView.
 */
 
+/** @ingroup client
+ *
+ *  @{
+ */
+
 /** The view mode type of the NSView. */
 typedef enum
 {
@@ -37,7 +42,9 @@ typedef enum
 
 /** This class represents 3D views, used for rendering the game.
 It can also be used to render picture-in-picture views on top
-of other views. */
+of other views. 
+
+@ingroup baseclass*/
 class
 NSView
 {
@@ -111,6 +118,9 @@ public:
 	/** Returns the 3D direction of the NSView. */
 	nonvirtual vector GetCameraAngle(void);
 
+	nonvirtual void SetSoundScape(NSSoundScape);
+	nonvirtual NSSoundScape GetSoundScape(void);
+
 private:
 	int m_iSeat;
 
@@ -128,6 +138,8 @@ private:
 
 	NSClient m_client;
 
+	NSSoundScape m_soundScape;
+
 	vector m_vecClientAngle;
 	bool m_bSetClientAngle;
 
@@ -142,3 +154,5 @@ NSView g_viewSeats[4];
 
 /** the current seat run for each draw call, for each player. always use talk to this! */
 NSView g_view;
+
+/** @} */ // end of client

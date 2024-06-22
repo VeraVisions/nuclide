@@ -16,9 +16,10 @@
 
 #define SF_GUNTARGET_ON 1
 
+/*! \brief Server-Entity: Target Practice Sign */
 /*!QUAKED func_guntarget (0 .5 .8) ?
 # OVERVIEW
-Gun targets brushes that trigger a target once they 'die'.
+Brushes that triggers a target once they 'die'. It moves around.
 
 # KEYS
 - "targetname" : Name
@@ -29,6 +30,9 @@ Gun targets brushes that trigger a target once they 'die'.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup server
+@ingroup brushentity
 */
 class
 func_guntarget:NSSurfacePropEntity
@@ -43,7 +47,7 @@ public:
 	virtual void Spawned(void);
 	virtual void Respawn(void);
 	virtual void Trigger(entity, triggermode_t);
-	virtual void Death(void);
+	virtual void Death(entity, entity, int, vector, int);
 	
 	nonvirtual void NextPath(void);
 	nonvirtual void Move(void);
@@ -127,11 +131,10 @@ func_guntarget::Respawn(void)
 		Trigger(this, TRIG_TOGGLE);
 	}
 
+	super::Respawn();
+
 	SetSolid(SOLID_BSP);
 	SetMovetype(MOVETYPE_PUSH);
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
-	SetHealth(GetSpawnHealth());
 
 	if (HasSpawnFlags(SF_GUNTARGET_ON) == true) {
 		ScheduleThink(ThinkWrap, 0.25f);
@@ -190,7 +193,7 @@ func_guntarget::NextPath(void)
 }
 
 void
-func_guntarget::Death(void)
+func_guntarget::Death(entity inflictor, entity attacker, int damage, vector dir, int location)
 {
 	Stop();
 

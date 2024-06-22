@@ -14,6 +14,27 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/** @defgroup sharedutilities Utilities
+    @brief Shared Utility API Reference
+    @ingroup shared
+
+    @{
+
+ */
+
+/** Changes the class of a given entity.
+@param objectID Target entity.
+@param className Name of the class the target entity will be changed to. */
 void Util_ChangeClass(entity, string);
-string Util_ExtensionFromString(string inputString);
-string Util_ChatFormat(float playerNum, float teamNum, string chatMessage);
+/** Extract the file extension from a given file name string.
+@param inputString Path to a file. Can be local or remote.
+@return The file extension, from the full path of a file. */
+string Util_ExtensionFromString(string);
+/** Format a chat message for a given player num, with a specific team set. 
+@param playerNum ID of the player whose name will be displayed.
+@param teamNum ID of the team the message should be displayed as being from.
+@param chatMessage String containing the chat message to be displayed.
+@return A colorized string with name, message and team identifier. */
+string Util_ChatFormat(float, float, string);
+
+/** @} */ // end of sharedutilities

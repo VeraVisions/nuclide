@@ -1,9 +1,9 @@
 #includelist
-
 NSIO.qc
 NSTrigger.qc
 NSEntity.qc
 NSTimer.qc
+NSDecal.qc
 NSRenderableEntity.qc
 NSSurfacePropEntity.qc
 NSMoverEntity.qc
@@ -19,7 +19,9 @@ NSSquadMonster.qc
 NSTalkMonster.qc
 NSProjectile.qc
 NSSpawnPoint.qc
+NSSoundScape.qc
 NSItem.qc
+NSWeapon.qc
 NSPortal.qc
 NSDebris.qc
 NSClient.qc
@@ -36,10 +38,9 @@ materials.qc
 sentences.qc
 NSSpraylogo.qc
 util.qc
-weapons.qc
 motd.qc
-
-weapon_common.qc
+entityDef.qc
+ammo.qc
 ../xr/include.src
 ../botlib/NSBot.qc
 #endlist

@@ -209,12 +209,14 @@ SurfData_CountLine(string line)
 		if (c == 1 && braced == 0) {
 			t_name = strtolower(argv(0));
 
-			if (t_name)
+			if (t_name) {
 				g_surfdata_count++;
+			}
 
 			/* sanity test */
-			if (t_name == "default" && surfdataCount == 0i)
+			if (t_name == "default" && surfdataCount == 0i) {
 				g_spDefaultSet = true;
+			}
 		}
 	}
 	return;
@@ -223,16 +225,7 @@ SurfData_CountLine(string line)
 int
 SurfData_TexToSurfData(string tex_name)
 {
-	string mat = "";
-
-	/* older map formats need their names 'fixed' */
-	if (g_materialsAreLegacy == true)
-		tex_name = Materials_FixName(tex_name);
-
-	mat = (string)hash_get(g_hashMaterials, tex_name);
-
-	if not (mat)
-		return __NULL__;
+	string mat = Materials_SurfDataForTexture(tex_name);
 
 	/* we got the surfdata string, return that */
 	return SurfData_Load(mat);
@@ -242,11 +235,11 @@ SurfData_TexToSurfData(string tex_name)
 __variant
 SurfData_GetInfo(int i, int type)
 {
-	if (i < 0)
-		return __NULL__;
+	if (i < 0) {
+		i = 0i;
+	}
 
-	switch (type)
-	{
+	switch (type) {
 	case SURFDATA_MATERIAL:
 		return __NULL__;
 	case SURFDATA_THICKNESS:
@@ -300,6 +293,7 @@ SurfData_Shutdown(void)
 	if (g_surfdata) {
 		memfree(g_surfdata);
 	}
+
 	g_surfdata_count = 0i;
 	g_hashsurfdata = 0;
 	g_spDefaultSet = false;
@@ -402,8 +396,9 @@ static string g_curSurfData;
 void
 SurfData_SetStage(string type)
 {
-	if (!type)
+	if (!type) {
 		return;
+	}
 
 	g_curSurfData = type;
 }
@@ -460,6 +455,7 @@ SurfData_Impact_Parse(void)
 	vector impactorg = g_vec_null;
 	vector impactang = g_vec_null;
 	float impactSurface;
+	int matid;
 
 	impactorg[0] = readcoord();
 	impactorg[1] = readcoord();
@@ -468,15 +464,15 @@ SurfData_Impact_Parse(void)
 
 	impactSurface = getsurfacenearpoint(surfnum, impactorg);
 	impactang = getsurfacenormal(surfnum, impactSurface);
+
 	string tex_name = getsurfacetexture(surfnum, impactSurface);
-
-	string impactsfx = SurfData_GetInfo(SurfData_TexToSurfData(tex_name), SURFDATA_SND_BULLETIMPACT);
-
-	string impactfx = SurfData_GetInfo(SurfData_TexToSurfData(tex_name), SURFDATA_FX_BULLETIMPACT);
-	float impactid = SurfData_GetInfo(SurfData_TexToSurfData(tex_name), SURFDATA_FX_BULLETIMPACTID);
+	matid = SurfData_TexToSurfData(tex_name);
+	string impactsfx = SurfData_GetInfo(matid, SURFDATA_SND_BULLETIMPACT);
+	string impactfx = SurfData_GetInfo(matid, SURFDATA_FX_BULLETIMPACT);
+	float impactid = SurfData_GetInfo(matid, SURFDATA_FX_BULLETIMPACTID);
 
 	Sound_PlayAt(impactorg, impactsfx);
-	pointparticles( impactid, impactorg, impactang, 1 );
+	pointparticles( impactid, impactorg, normalize(impactang), 1 );
 }
 
 /** Called by EV_SURFIMPACTID */
@@ -517,15 +513,17 @@ SurfData_Impact(entity e, vector org, vector ang)
 			string n = strcat(dirname(e.model), "/", trace_surfacename);
 			int texdata = SurfData_TexToSurfData(n);
 			SurfData_ImpactID_Net(texdata, org, ang);
-		} else
+		} else {
 			SurfData_Impact_SurfaceParm(e, org, ang);
+		}
 	} else { /* anything with else is a NSurfacePropEntity. */
 		NSSurfacePropEntity foo = (NSSurfacePropEntity)e;
 
-		if (foo.HasSurfaceData() && foo.GetSurfaceData(SURFDATA_MATERIAL) != -1)
+		if (foo.HasSurfaceData() && foo.GetSurfaceData(SURFDATA_MATERIAL) != -1) {
 			SurfData_ImpactOfType(foo.GetSurfaceData(SURFDATA_MATERIAL), org, ang);
-		else
+		} else {
 			SurfData_Impact_SurfaceParm(e, org, ang);
+		}
 	}
 #endif
 }

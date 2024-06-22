@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Voice Acted Sequence Controller */
 /*!QUAKED scripted_sentence (1 0 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Triggers a sound event on the client side associated with an entity in the
@@ -41,6 +42,9 @@ world. It'll enable mouth flapping and all sorts of other cool effects.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup server
+@ingroup pointentity
 */
 class
 scripted_sentence:NSPointTrigger

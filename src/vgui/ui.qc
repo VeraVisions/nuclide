@@ -34,6 +34,11 @@
 font_s g_fntDefault;
 var int g_vguiWidgetCount;
 
+/** @ingroup vgui
+ *
+ *  @{
+ */
+
 /** Return whether a VGUI panel is active on the 2D overlay level. */
 bool
 VGUI_Active(void)
@@ -478,3 +483,5 @@ UIClass_Spawn(string cname)
 	return __NULL__;
 }
 #endif
+
+/** @} */ // end of vgui

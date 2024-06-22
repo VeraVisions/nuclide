@@ -33,19 +33,26 @@ typedef struct
 	float m_flHoldTime; /**< Time in seconds on which we'll hold onto the text. */
 	float m_flFXTime; /**< Time in seconds that it takes for the effect to finish. */
 	float m_flTime; /**< The time that's passed on the active channel. */
-} gametext_t;
+} hudText_t;
 
 /** Global pool of text channels. */
-gametext_t g_textchannels[6];
+hudText_t g_textchannels[6];
 
 #define TEXTQUEUE_MAX 6
 
 /** this is reserved for channel 0 */
-gametext_t g_textqueue[TEXTQUEUE_MAX];
-
+hudText_t g_textqueue[TEXTQUEUE_MAX];
 
 int g_textqueue_next;
 int g_textqueue_count;
+
+/** @defgroup text Text Overlay
+    @brief Displays text messages on screen with different effects.
+    @ingroup client
+
+    @{
+
+ */
 
 /** Used by Nuclide to draw all active text channels to the screen. */
 void GameText_Draw(void);
@@ -70,3 +77,5 @@ void GameText_Parse(void);
 
 @sa env_message */
 void GameMessage_Parse(void);
+
+/** @} */ // end of client

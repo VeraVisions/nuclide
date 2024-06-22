@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Level Transition Volume */
 /*!QUAKED trigger_transition (.5 .5 .5) ?
 # OVERVIEW
 Defines level transition regions.
@@ -27,6 +28,9 @@ In order for this entity to work, one has to assign a working info_landmark enti
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup server
+@ingroup brushentity
 */
 class
 trigger_transition:NSBrushTrigger

@@ -25,6 +25,7 @@ enumflags
 	FNCTANK_CONTROLLABLE
 };
 
+/*! \brief Shared-Entity: Mountable Mortar Turret */
 /*!QUAKED func_tankmortar (0 .5 .8) ?
 # OVERVIEW
 A mountable tank mortar turret type entity. A player (or NPC) can interact with
@@ -60,6 +61,9 @@ some random sprites needs to be treated additive.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup shared
+@ingroup brushentity
 */
 class func_tankmortar:NSVehicle
 {
@@ -330,6 +334,7 @@ func_tankmortar::PlayerInput(void)
 		vector spos;
 		vector dir;
 		float dmg;
+		float damageRange;
 
 		/* barrel tip offset */
 		makevectors(angles);
@@ -343,8 +348,8 @@ func_tankmortar::PlayerInput(void)
 		dir += random(-1,1) * m_vecSpread[1] * v_up;
 		traceline(spos, spos + (dir * 4096), MOVE_NORMAL, this);
 		
-		dmg = (float)m_iDamage;
-		Damage_Radius(trace_endpos, m_eDriver, dmg, dmg * 2.5f, TRUE, 0);
+		damageRange = (float)m_iDamage * 2.5f;
+		radiusDamage(trace_endpos, damageRange, 0i, m_iDamage, m_eDriver);
 
 		/* fx */
 		pointparticles(particleeffectnum("fx_explosion.main"), trace_endpos, [0,0,0], 1);
@@ -364,11 +369,10 @@ func_tankmortar::PlayerInput(void)
 void
 func_tankmortar::Respawn(void)
 {
+	super::Respawn();
+
 	SetMovetype(MOVETYPE_PUSH);
 	SetSolid(SOLID_BSP);
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
-	SetAngles(GetSpawnAngles());
 
 	if (m_eDriver)
 		PlayerLeave((NSClientPlayer)m_eDriver);

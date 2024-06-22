@@ -14,7 +14,11 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/** An abstract control class for various VGUI related widgets. */
+/** VGUI: Abstract Control Class
+
+This is an abstract control class for various VGUI related widgets.
+@ingroup vgui
+*/
 class
 VGUIControl:VGUIWidget
 {

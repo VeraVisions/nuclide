@@ -19,6 +19,7 @@ enumflags
 	FTW_STARTHIDDEN
 };
 
+/*! \brief Server-Entity: Prototype func_brush */
 /*!QUAKED func_wall_toggle (0 .5 .8) ? FTW_STARTHIDDEN
 # OVERVIEW
 Brush that can be hidden and reappear when triggered.
@@ -31,6 +32,9 @@ Brush that can be hidden and reappear when triggered.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup server
+@ingroup brushentity
 */
 class
 func_wall_toggle:NSRenderableEntity
@@ -82,10 +86,10 @@ func_wall_toggle::Restore(string strKey, string strValue)
 void
 func_wall_toggle::Respawn(void)
 {
+	super::Respawn();
+
 	SetMovetype(MOVETYPE_PUSH);
 	SetSolid(SOLID_BSP);
-	SetModel(GetSpawnModel());
-	SetOrigin(origin);
 	ClearAngles();
 
 	m_iVisible = 1;
@@ -112,7 +116,7 @@ func_wall_toggle::Trigger(entity act, triggermode_t state)
 
 	if (m_iVisible) {
 		SetSolid(SOLID_BSP);
-		SetModel(GetSpawnModel());
+		SetModel(GetSpawnString("model"));
 	} else {
 		SetSolid(SOLID_NOT);
 		SetModelindex(0);

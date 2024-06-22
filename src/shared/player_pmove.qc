@@ -72,7 +72,7 @@ NSClientPlayer::Physics_Fall(float flDownforce)
 			fFallDamage = (flDownforce - flFallDist) * (100 / (flMaxDist - flFallDist));
 		}
 
-		Damage_Apply(this, world, fFallDamage, 0, DMG_FALL | DMG_SKIP_ARMOR);
+		//Damage_Apply(this, world, fFallDamage, 0, DMG_FALL | DMG_SKIP_ARMOR);
 		StartSoundDef("Player.FallDamage", CHAN_VOICE, true);
 	} else if (flDownforce >= PHY_FALL_DISTANCE) {
 		StartSoundDef("Player.LightFall", CHAN_VOICE, true);
@@ -355,12 +355,12 @@ NSClientPlayer::Physics_WaterMove(void)
 	if (WaterLevel() > 0) {
 	if (watertype == CONTENT_LAVA) {
 		if (m_flPainTime < time) {
-			Damage_Apply(this, world, 10 * WaterLevel(), 0, DMG_BURN);
+			//Damage_Apply(this, world, 10 * WaterLevel(), 0, DMG_BURN);
 			m_flPainTime = time + 0.2;
 		}
 	} else if (watertype == CONTENT_SLIME) {
 		if (m_flPainTime < time) {
-			Damage_Apply(this, world, 4 * WaterLevel(), 0, DMG_ACID);
+			//Damage_Apply(this, world, 4 * WaterLevel(), 0, DMG_ACID);
 			m_flPainTime = time + 1;
 		}
 	}
@@ -377,7 +377,7 @@ NSClientPlayer::Physics_WaterMove(void)
 	} else if (m_flUnderwaterTime < time) {
 		/* we've been underwater... for too long. */
 		if (m_flPainTime < time) {
-			Damage_Apply(this, world, 5, 0, DMG_DROWN);
+			//Damage_Apply(this, world, 5, 0, DMG_DROWN);
 			m_flPainTime = time + 1;
 		}
 	}

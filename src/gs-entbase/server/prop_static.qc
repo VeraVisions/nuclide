@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Static Prop Model */
 /*!QUAKED prop_static (1 0 0) (-8 -8 -8) (8 8 8) SF_BASIC_COL
 # OVERVIEW
 Decorative model entity that gets baked into the level file.
@@ -37,6 +38,9 @@ waste disk space and memory. Use wisely.
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
+
+@ingroup server
+@ingroup pointentity
 */
 class
 prop_static:NSPhysicsEntity

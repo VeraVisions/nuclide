@@ -14,6 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+#pragma target fte_5768
+//#pragma flag enable assumeint
+#pragma PROGS_DAT  "../../base/plug_voxannouncer.dat"
+#define QWSSQC
+
+#include "../shared/fteextensions.qc"
 #include "../shared/events.h"
 
 void
@@ -27,7 +33,7 @@ VoxFunc(string strMessage)
 }
 
 void
-FMX_PlayerObituary(entity attk, entity targ, int weapon, int body, int dmg)
+Plug_ClientObituary(entity attk, entity targ, int weapon, int body, int dmg)
 {
 	/* silly announcer */
 	if (attk != world && attk != targ) {

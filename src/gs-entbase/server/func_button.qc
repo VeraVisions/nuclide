@@ -33,6 +33,7 @@ enum
 	FRAME_ON
 };
 
+/*! \brief Server-Entity: Moving Button */
 /*!QUAKED func_button (0 .5 .8) ? SF_BTT_NOMOVE x x x x SF_BTT_TOGGLE SF_BTT_SPARKS x SF_BTT_TOUCH_ONLY
 # OVERVIEW
 A brush entity which can be used either by touching, interaction (via a games'
@@ -69,6 +70,9 @@ original position.
 
 # TRIVIA
 This entity was introduced in Quake (1996).
+
+@ingroup server
+@ingroup brushentity
 */
 class
 func_button:NSMoverEntity
@@ -266,18 +270,18 @@ func_button::Spawned(void)
 void
 func_button::Respawn(void)
 {
+	super::Respawn();
+
 	SetSolid(SOLID_BSP);
 	SetMovetype(MOVETYPE_PUSH);
-	SetOrigin(GetSpawnOrigin());
-	SetModel(GetSpawnModel());
 
 	ClearVelocity();
 	ReleaseThink();
 	SetHealth(GetSpawnHealth());
 
 	RestoreAngles();
-	SetMoverPosition1(GetSpawnOrigin());
-	SetMoverPosition2(GetDirectionalPosition(GetSpawnAngles(), m_flLip));
+	SetMoverPosition1(GetOrigin());
+	SetMoverPosition2(GetDirectionalPosition(GetAngles(), m_flLip));
 	ClearAngles();
 
 	if (GetHealth() > 0) {

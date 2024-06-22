@@ -14,31 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-typedef struct
-{
-	string name;
-	string category;
-	string title;
-	string version;
-	string description;
-	string license;
-	string author;
-	string website;
-	string installed;
-	updateState_t state;
-	updateAction_t pending_action;
-	int size;
-	int uid;
-	string preview_image;
-	float dlpercentage;
-} update_t;
-
 string(float id, float b) getgamedirinfo = #0;
 string(int packageidx, int desiredfield) getpackagemanagerinfo = #0;
 
 #define FN_UPDATE_IMGURL "http://www.frag-net.com/dl/img/%s.jpg"
 int g_platform_update_count;
-update_t *updates;
+updaterPackage_t *updates;
 
 var updaterStatus_t updater_package_status = UPDATER_NONE;
 
@@ -179,7 +160,7 @@ Updates_Refresh(void)
 		g_platform_update_count++;
 	}
 
-	updates = memalloc(sizeof(update_t) * g_platform_update_count);
+	updates = memalloc(sizeof(updaterPackage_t) * g_platform_update_count);
 
 	/* fill in all the package values */
 	for (int i = 0i; i < g_platform_update_count; i++) {

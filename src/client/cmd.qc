@@ -122,7 +122,7 @@ static void
 CMD_view_geomtest(void)
 {
 	print(sprintf("geomset %s %s\n", argv(1), argv(2)));
-	Weapons_SetGeomset(sprintf("geomset %s %s\n", argv(1), argv(2)));
+	//Weapons_SetGeomset(sprintf("geomset %s %s\n", argv(1), argv(2)));
 }
 
 static void
@@ -135,7 +135,7 @@ void
 CMD_Cleardecals(void)
 {
 	for (entity e = world; (e = find(e, ::classname, "tempdecal"));) {
-		decal dcl = (decal)e;
+		NSDecal dcl = (NSDecal)e;
 		dcl.m_strShader = "";
 	}
 }
@@ -234,6 +234,12 @@ CMD_ListModelFramegroups(void)
 		printf("\t%s = %i,\n", strtoupper(temp), i);
 	}
 	print("} framegroups_e;\n");
+}
+
+static void
+CMD_ListInventory(void)
+{
+	NSNavAI_ListInventory((NSNavAI)pSeat->m_ePlayer);
 }
 
 
@@ -542,6 +548,18 @@ Cmd_Parse(string sCMD)
 	case "traceMaterial":
 		localcmd("sv traceMaterial\n");
 		break;
+	case "listClientEntityDef":
+		EntityDef_DebugList();
+		break;
+	case "listServerEntityDef":
+		localcmd("sv listEntityDef\n");
+		break;
+	case "listInventory":
+		CMD_ListInventory();
+		break;
+	case "listAmmo":
+		Ammo_DebugList();
+		break;
 	case "bobup":
 		break;
 	case "bobdn":
@@ -573,6 +591,10 @@ Cmd_Init(void)
 	registercommand("listClientSoundDef");
 	registercommand("listServerSoundDef");
 	registercommand("traceMaterial");
+	registercommand("listClientEntityDef");
+	registercommand("listServerEntityDef");
+	registercommand("listInventory");
+	registercommand("listAmmo");
 
 	/* server commands */
 	registercommand("addBot");
@@ -620,7 +642,7 @@ Cmd_Init(void)
 	registercommand("-attack");
 	registercommand("+attack2");
 	registercommand("-attack2");
-	registercommand("+reload");
+	registercommand("+reload");
 	registercommand("-reload");
 	registercommand("+activate");
 	registercommand("-activate");
@@ -636,6 +658,10 @@ Cmd_Init(void)
 	registercommand("-gostand");
 	registercommand("+sprint");
 	registercommand("-sprint");
+	registercommand("+leanleft");
+	registercommand("-leanleft");
+	registercommand("+leanright");
+	registercommand("-leanright");
 
 	/* voting */
 	registercommand("vote");

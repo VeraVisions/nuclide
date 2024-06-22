@@ -16,6 +16,11 @@
 
 #define COST_INFINITE 99999
 
+/** @ingroup bot
+
+   @{
+*/
+
 /** The desired target destination has been reached. */
 #define BOTROUTE_DESTINATION	-1
 /** Unloading of the route in progress. */
@@ -40,42 +45,45 @@ typedef enum
 } botstate_t;
 
 /** A virtual multiplayer opponent. Base class for all bots.
+
+@ingroup bot
+@ingroup baseclass
 */
 class NSBot:NSNavAI
 {
 public:
 
-	void(void) NSBot;
+	void NSBot(void);
 
 #ifdef SERVER
-	virtual void(botstate_t) SetState;
-	virtual botstate_t(void) GetState;
-	virtual botpersonality_t(void) GetPersonality;
+	virtual void SetState(botstate_t);
+	virtual botstate_t GetState(void);
+	virtual botpersonality_t GetPersonality(void);
 
 	virtual float GetForwardSpeed(void);
 	virtual float GetSideSpeed(void);
 	virtual float GetBackSpeed(void);
 
-	virtual void(string) ChatSay;
-	virtual void(string) ChatSayTeam;
-	virtual void(void) Pain;
-	virtual void(void) RouteClear;
-	virtual void(void) WeaponThink;
-	virtual void(void) WeaponAttack;
-	virtual void(void) SeeThink;
-	virtual void(int, int) BrainThink;
-	virtual void(void) RunAI;
-	virtual void(void) CreateObjective;
-	virtual void(void) CheckRoute;
-	virtual void(void) PreFrame;
-	virtual void(void) PostFrame;
-	virtual void(void) UseButton;
-	virtual void(entity) SetEnemy;
-	virtual float(void) GetRunSpeed;
-	virtual float(void) GetWalkSpeed;
+	virtual void ChatSay(string);
+	virtual void ChatSayTeam(string);
+	virtual void Pain(entity, entity, int, vector, int);
+	virtual void RouteClear(void);
+	virtual void WeaponThink(void);
+	virtual void WeaponAttack(void);
+	virtual void SeeThink(void);
+	virtual void BrainThink(int, int);
+	virtual void RunAI(void);
+	virtual void CreateObjective(void);
+	virtual void CheckRoute(void);
+	virtual void PreFrame(void);
+	virtual void PostFrame(void);
+	virtual void UseButton(void);
+	virtual void SetEnemy(entity);
+	virtual float GetRunSpeed(void);
+	virtual float GetWalkSpeed(void);
 	nonvirtual void ForceWeaponAttack(vector, float);
 
-	virtual void(string) SetName;
+	virtual void SetName(string);
 
 
 	/** Server: Set the value of an InfoKey. */
@@ -93,13 +101,10 @@ public:
 #ifdef SERVER
 private:
 	/* routing */
-	int m_iNodes;
-	int m_iCurNode;
-	nodeslist_t *m_pRoute;
-	float m_flNodeGiveup;
 	float m_flLastDist;
+
+	float m_flNodeGiveup;
 	entity m_eDestination;
-	vector m_vecLastNode;
 
 	/* combat */
 	entity m_eTarget;
@@ -142,3 +147,5 @@ Bot_RandomColormap(NSBot target)
 	forceinfokey(target, "bottomcolor", sprintf("0x%x", bottom));
 }
 #endif
+
+/** @} */ // end of bot

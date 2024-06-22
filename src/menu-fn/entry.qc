@@ -125,12 +125,7 @@ m_init(void)
 		cvar_set("rate", "30000");
 	}
 
-	registercommand("menu_updates");
-	registercommand("menu_customgame");
-	registercommand("map_background");
-	registercommand("menu_musicstart");
-	registercommand("richpresence_dump");
-	registercommand("listGameLibrary");
+	Platform_RegisterCommands();
 
 	Font_Load("fonts/fontcon.font", font_console);
 	Font_Load("fonts/menu_label.font", font_label);
@@ -422,20 +417,8 @@ m_toggle(float fMode)
 float
 m_consolecommand(string cmd)
 {
-	tokenize(cmd);
+	int c = (int)tokenize(cmd);
 	switch (argv(0)) {
-	case "richpresence_dump":
-		RichPresence_DumpInfo();
-		break;
-	case "menu_musicstart":
-		Music_MenuStart();
-		break;
-	case "menu_musictrack":
-		Music_ParseTrack(argv(1));
-		break;
-	case "menu_musicloop":
-		Music_ParseLoop(argv(1));
-		break;
 	case "menu_updates":
 		g_menupage = PAGE_UPDATES;
 		m_intro_skip();
@@ -444,18 +427,8 @@ m_consolecommand(string cmd)
 		g_menupage = PAGE_CUSTOMGAME;
 		m_intro_skip();
 		break;
-	case "togglemenu":
-		m_display();
-		break;
-	case "map_background":
-		localcmd(sprintf("maxplayers 2\nset coop 1\nset sv_background 1\nmap %s\n",
-			argv(1)));
-		break;
-	case "listGameLibrary":
-		GameLibrary_DebugList();
-		break;
 	default:
-		return (0);
+		return Platform_ConsoleCommand(cmd, c);
 	}
 	return (1);
 }

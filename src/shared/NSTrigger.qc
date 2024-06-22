@@ -21,7 +21,6 @@ NSTrigger::NSTrigger(void)
 	touch = _TouchHandler;
 
 #ifdef SERVER
-	m_oldstrTarget = __NULL__;
 	m_strGlobalState = __NULL__;
 	m_strKillTarget = "";
 	m_strMessage = __NULL__;
@@ -41,7 +40,6 @@ void
 NSTrigger::Respawn(void)
 {
 	super::Respawn();
-	SetTriggerTarget( m_oldstrTarget );
 }
 
 bool
@@ -237,7 +235,6 @@ void
 NSTrigger::Save(float handle)
 {
 	super::Save(handle);
-	SaveString(handle, "m_oldstrTarget", m_oldstrTarget);
 	SaveString(handle, "m_strGlobalState", m_strGlobalState);
 	SaveString(handle, "m_strKillTarget", m_strKillTarget);
 	SaveString(handle, "m_strMessage", m_strMessage);
@@ -259,9 +256,6 @@ void
 NSTrigger::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "m_oldstrTarget":
-		m_oldstrTarget = ReadString(strValue);
-		break;
 	case "m_strGlobalState":
 		m_strGlobalState = ReadString(strValue);
 		break;

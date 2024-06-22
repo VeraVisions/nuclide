@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Player Movement Inhibitor */
 /*!QUAKED trigger_playerfreeze (.5 .5 .5) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Trigger that freezes all clients, until it is triggered again.
@@ -29,6 +30,9 @@ and so on.
 
 # TRIVIA
 This entity was introduced in Opposing Force (1999).
+
+@ingroup server
+@ingroup pointentity
 */
 class
 trigger_playerfreeze:NSBrushTrigger

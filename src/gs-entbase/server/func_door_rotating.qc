@@ -30,6 +30,7 @@ enumflags
 
 #define SF_DOOR_SILENT 0x80000000i
 
+/*! \brief Server-Entity: Rotating Door */
 /*!QUAKED func_door_rotating (0 .5 .8) ? SF_ROT_OPEN SF_ROT_BACKWARDS x SF_ROT_PASSABLE SF_ROT_ONEWAY SF_ROT_TOGGLE SF_ROT_ZAXIS SF_ROT_XAXIS SF_ROT_USE SF_ROT_NOMONSTERS
 # OVERVIEW
 Rotating brush door entity. It's basically the same as func_door, it just does
@@ -66,6 +67,9 @@ Please include an origin brush so that a pivot point will be defined.
 
 # TRIVIA
 This entity was introduced in Quake II (1997).
+
+@ingroup server
+@ingroup brushentity
 */
 class
 func_door_rotating:NSMoverEntity
@@ -222,6 +226,8 @@ func_door_rotating::Spawned(void)
 void
 func_door_rotating::Respawn(void)
 {
+	super::Respawn();
+
 #ifdef GS_PHYSICS
 	SetTakedamage(DAMAGE_YES);
 	SetHealth(100);
@@ -230,8 +236,6 @@ func_door_rotating::Respawn(void)
 
 	SetSolid(SOLID_BSP);
 	SetMovetype(MOVETYPE_PUSH);
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
 	ClearVelocity();
 	ReleaseThink();
 
@@ -260,7 +264,7 @@ func_door_rotating::Respawn(void)
 		PlayerUse = __NULL__;
 	}
 
-	SetMoverRotation1(GetSpawnAngles());
+	SetMoverRotation1(GetAngles());
 
 	RestoreAngles();
 	if (HasSpawnFlags(SF_ROT_BACKWARDS)) {
@@ -509,7 +513,11 @@ void
 func_door_rotating::Blocked(entity eBlocker)
 {
 	if (m_iDamage) {
-		Damage_Apply(eBlocker, this, m_iDamage, 0, DMG_CRUSH);
+		vector center = WorldSpaceCenter();
+		vector dmgDir = dirFromTarget(center, eBlocker.origin);
+		string dmgDef = sprintf("\"damage\" \"%i\"", m_iDamage);
+		m_bCanTouch = false;
+		entityDamage(eBlocker, this, eBlocker, dmgDef, "", center, dmgDir, eBlocker.origin);
 	}
 
 	if (m_flWait >= 0) {

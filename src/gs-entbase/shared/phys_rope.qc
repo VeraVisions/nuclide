@@ -26,23 +26,16 @@ enumflags
 	PHYSROPE_CHANGED_WIDTH
 };
 
+/*! \brief Shared-Entity: Physics Rope */
 /*!QUAKED phys_rope (1 0 0) (-8 -8 -8) (8 8 8) ROPE_VERTICAL
 # OVERVIEW
-Client-side decorative rope entity. 
-Connect the entity to a named info_notnull and watch it swing around.
-
-# KEYS
-- "sag" : Multiplier on how much sagginess will be applied to the rope.
-- "segments" : Number of total segments. Default is "16".
-- "material" : The texture to use on the rope.
-- "swingfactor" : Multiplier on how much the rope swings about.
-- "target" : The info_notnull to connect the rope to.
-
-# SPAWNFLAGS
-- ROPE_VERTICAL (1) : Only draw the first half of the rope, useful for vertical setups.
+Physics rope entity. 
 
 # TRIVIA
-This entity was introduced in The Wastes (2018).
+This entity was introduced in Half-Life 2 (2004).
+
+@ingroup shared
+@ingroup pointentity
 */
 class phys_rope:NSEntity
 {
@@ -184,10 +177,11 @@ phys_rope::ReceiveEntity(float new, float flSendFlags)
 void
 phys_rope::Respawn(void)
 {
+	super::Respawn();
+
 	if (HasSpawnFlags(1)) {
 		flags = 1;
 	}
-	SetOrigin(GetSpawnOrigin());
 	SetSize([0,0,0], [0,0,0]);
 }
 void

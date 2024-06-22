@@ -193,7 +193,7 @@ PlayerPreThink(void)
 	}
 
 #ifdef BOT_INCLUDED
-	if (clienttype(self) == CLIENTTYPE_BOT) {
+	if (isBot(self)) {
 		((NSBot)self).PreFrame();
 	}
 #endif
@@ -219,7 +219,7 @@ PlayerPostThink(void)
 	}
 
 #ifdef BOT_INCLUDED
-	if (clienttype(self) == CLIENTTYPE_BOT) {
+	if (isBot(self)) {
 		((NSBot)self).PostFrame();
 	}
 #endif
@@ -329,6 +329,7 @@ init(float prevprogs)
 
 	Skill_Init();
 	EntityDef_Init();
+	Ammo_Init();
 	MapTweaks_Init();
 	MapC_Init();
 	Plugin_Init();
@@ -672,30 +673,57 @@ to remove in case we won't initialize it.
 void
 CheckSpawn(void() spawnfunc)
 {
-	string desiredClass = self.classname;
+	NSEntity ent = (NSEntity)self;
+	string desiredClass = ent.classname;
 
-	if (MapTweak_EntitySpawn(self)) {
-		self._mapspawned = true;
-		self.classname = desiredClass;
-	} else if (EntityDef_SpawnClassname(desiredClass)) {
-		self._mapspawned = true;
+	if (ent.classname == "worldspawn") {
+		return;
+	}
+
+	/* give it a copy of its spawndata. */
+	ent.m_strSpawnData = __fullspawndata;
+
+	/* no longer needed, immediately discard. */
+	__fullspawndata = "";
+
+	if (MapTweak_EntitySpawn(ent) == true) {
+		ent._mapspawned = true;
+		ent.classname = desiredClass;
+	} else if (EntityDef_SpawnClassname(desiredClass) != __NULL__) {
+		ent._mapspawned = true;
 	} else if (spawnfunc) {
 		spawnfunc();
-		self.classname = desiredClass;
-		self._mapspawned = true;
+		ent.classname = desiredClass;
+		ent._mapspawned = true;
 		g_ent_spawned++;
-	} else {
-		NSError("Unable to spawn %s", desiredClass);
-		remove(self);
 	}
 
 	/* check if this entity was meant to spawn on the client-side only */
-	if (self.identity) {
-		NSEntity ent = (NSEntity)self;
-
+	if (ent.identity) {
 		if (ent.CanSpawn(false) == false) {
 			ent.Destroy();
 			g_ent_spawned--;
 		}
+	} else {
+		NSError("Unable to spawn %s", desiredClass);
+		remove(ent);
+		return;
 	}
+
+	/* this entity is good, attempt to spawn it. */
+	if (ent.m_strSpawnData) {
+		for (int i = 1; i < (tokenize(ent.m_strSpawnData) - 1); i += 2) {
+			ent.SpawnKey(argv(i), argv(i+1));
+		}
+	}
+
+	/* has to be called once, after the spawn values have been read in. */
+	ent.Spawned();
+
+	/* entity may be marked as deleted */
+	if (wasfreed(ent))
+		return;
+
+	/* needs to be called at least once after spawn, then any time after. */
+	ent.Respawn();
 }

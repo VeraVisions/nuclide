@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Scriptable Brush Model */
 /*!QUAKED script_brushmodel (0 .5 .8) ? DYNAMICPATH
 # OVERVIEW
 Scripted Brush Model
@@ -23,6 +24,9 @@ Scripted Brush Model
 
 # TRIVIA
 This entity was introduced in Call of Duty (2003).
+
+@ingroup server
+@ingroup brushentity
 */
 class
 script_brushmodel:NSBrushTrigger

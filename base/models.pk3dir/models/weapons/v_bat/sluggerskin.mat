@@ -1,0 +1,12 @@
+// Vera Visions Material
+{
+if $programs
+	program vertexlit
+	diffusemap "models/weapons/slugger/sluggerskin.tga"
+else
+	{
+		map "models/weapons/slugger/sluggerskin.tga"
+		rgbGen lightingDiffuse
+	}
+endif
+}

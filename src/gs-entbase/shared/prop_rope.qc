@@ -33,6 +33,7 @@ var float autocvar_rope_swing = 2.0;
 var bool autocvar_rope_fast = TRUE;
 var int autocvar_rope_maxsegments = -1;
 
+/*! \brief Shared-Entity: Faux Physics Rope */
 /*!QUAKED prop_rope (1 0 0) (-8 -8 -8) (8 8 8) ROPE_VERTICAL
 # OVERVIEW
 Client-side decorative rope entity. 
@@ -50,6 +51,9 @@ Connect the entity to a named info_notnull and watch it swing around.
 
 # TRIVIA
 This entity was introduced in The Wastes (2018).
+
+@ingroup shared
+@ingroup pointentity
 */
 class prop_rope:NSEntity
 {
@@ -197,10 +201,11 @@ prop_rope::ReceiveEntity(float new, float flSendFlags)
 void
 prop_rope::Respawn(void)
 {
+	super::Respawn();
+
 	if (HasSpawnFlags(1)) {
 		flags = 1;
 	}
-	SetOrigin(GetSpawnOrigin());
 	SetSize([0,0,0], [0,0,0]);
 }
 void

@@ -39,6 +39,7 @@ typedef enumflags
 #define SF_CONVEYOR_VISUAL	1
 #define SF_CONVEYOR_NOTSOLID	2
 
+/*! \brief Shared-Entity: Conveyor Belt */
 /*!QUAKED func_conveyor (0 .5 .8) ? SF_CONVEYOR_VISUAL SF_CONVEYOR_NOTSOLID
 # OVERVIEW
 A conveyor belt entity. Texture will move along in the direction and speed of the conveyor.
@@ -54,12 +55,15 @@ A conveyor belt entity. Texture will move along in the direction and speed of th
 
 # TRIVIA
 This entity was introduced in Quake II (1997).
+
+@ingroup shared
+@ingroup brushentity
 */
 class
 func_conveyor:NSRenderableEntity
 {
 public:
-	void(void) func_conveyor;
+	void func_conveyor(void);
 
 	virtual void Touch(entity);
 
@@ -132,6 +136,8 @@ func_conveyor::SpawnKey(string strKey, string strValue)
 void
 func_conveyor::Respawn(void)
 {
+	super::Respawn();
+
 	if (!m_flSpeed)
 		m_flSpeed = 100;
 
@@ -141,7 +147,6 @@ func_conveyor::Respawn(void)
 
 	SetMovetype(MOVETYPE_NONE);
 	SetSolid(SOLID_BSP);
-	SetModel(GetSpawnModel());
 
 	Trigger(this, TRIG_ON);
 

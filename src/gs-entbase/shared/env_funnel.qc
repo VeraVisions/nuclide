@@ -36,6 +36,7 @@ enumflags
 	FUNNEL_REPEATABLE
 };
 
+/*! \brief Shared-Entity: Funneling Sprite Controller */
 /*!QUAKED env_funnel (1 .5 0) (-8 -8 -8) (8 8 8) REVERSE REPEATABLE
 # OVERVIEW
 An effect that when triggered, will create lots of glowing orbs that funnel into
@@ -51,6 +52,9 @@ the position of this entity.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup shared
+@ingroup pointentity
 */
 class
 env_funnel:NSRenderableEntity
@@ -107,8 +111,8 @@ env_funnel::env_funnel(void)
 void
 env_funnel::Respawn(void)
 {
+	super::Respawn();
 	SetSize([0,0,0], [0,0,0]);
-	SetOrigin(GetSpawnOrigin());
 	m_vecStartPos = GetOrigin();
 	m_vecEndPos = GetOrigin() + [0.0f, 0.0f, m_flHeight];
 	m_iSpriteID = getmodelindex(m_strTexture, false);

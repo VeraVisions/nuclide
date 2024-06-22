@@ -16,6 +16,7 @@
 
 #define MGF_NONSOLID 4
 
+/*! \brief Server-Entity: Generic, Bleeding Character Actor */
 /*!QUAKED monster_generic (1 0 0) (-8 -8 -8) (8 8 8) x x MGF_NONSOLID
 # OVERVIEW
 A 'monster' that is able to bleed, speak and follow scripted sequences.
@@ -30,6 +31,9 @@ A 'monster' that is able to bleed, speak and follow scripted sequences.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup server
+@ingroup pointentity
 */
 class
 monster_generic:NSTalkMonster

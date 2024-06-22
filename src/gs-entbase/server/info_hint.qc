@@ -66,6 +66,7 @@ typedef enum
 
 #define HINTSF_ALLOWJUMPUP 65536
 
+/*! \brief Server-Entity: Nodegraph Hint */
 /*!QUAKED info_hint (0 0 0) (-8 -8 -8) (8 8 8) x x x x x x x x x x x x x x x x HINTSF_ALLOWJUMPUP
 # OVERVIEW
 Helper entity for the AI routines. Defines where to go for
@@ -136,6 +137,9 @@ This entity was introduced in Half-Life 2 (2004).
 
 Some functionality of this entity was meant to be part of `info_node` in the original Half-Life (1998).
 However, that was never completed.
+
+@ingroup server
+@ingroup pointentity
 */
 class
 info_hint:NSPointTrigger

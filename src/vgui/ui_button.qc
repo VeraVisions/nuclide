@@ -24,6 +24,10 @@ enumflags
 /* TODO: MOVE THESE INTO VGUIButton! COMPILER NEEDS TO BE FIXED FIRST HOWEVER. */
 .void(void) tmpVGUIButton1;
 
+/** VGUI Widget: Button
+
+@ingroup vgui
+*/
 class VGUIButton:VGUIControl
 {
 public:

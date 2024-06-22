@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Hinge Physics Constraint */
 /*!QUAKED phys_hinge (.5 .3 0) (-8 -8 -8) (8 8 8) BREAKCOLL x INACTIVE MASS NOCONNECT
 # OVERVIEW
 Creates a connection between two entities in the form of a hinge.
@@ -39,6 +40,9 @@ Creates a connection between two entities in the form of a hinge.
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
+
+@ingroup server
+@ingroup pointentity
 */
 class
 phys_hinge:NSPhysicsConstraint
@@ -114,7 +118,7 @@ void
 phys_hinge::AfterSpawn(void)
 {
 	SetConstraintType(CONSTRAINT_HINGE);
-	SetOrigin(GetSpawnOrigin());
+	SetOrigin(GetSpawnVector("origin"));
 
 	SetEntity1(find(world, ::targetname, m_strEnt1));
 

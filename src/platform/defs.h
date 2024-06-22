@@ -14,8 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+#include "cmd.h"
 #include "util.h"
 #include "achievements.h"
+#include "activitypub.h"
 #include "master.h"
 #include "modserver.h"
 #include "music.h"

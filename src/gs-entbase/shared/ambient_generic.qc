@@ -35,6 +35,7 @@ enumflags
 	AMBIENT_MODERN
 };
 
+/*! \brief Shared-Entity: Sound/Sentence Emitter */
 /*!QUAKED ambient_generic (0.3 0.1 0.6) (-8 -8 -8) (8 8 8) AS_ARADIUS AS_SRADIUS AS_MRADIUS AS_LRADIUS AS_SILENT AS_NOTTOGGLED
 # OVERVIEW
 Plays a sound sample of whatever format the engine is configured to support.
@@ -60,6 +61,9 @@ If you want it to loop, you have to give the file itself a loop flag.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup shared
+@ingroup pointentity
 */
 class ambient_generic:NSTalkMonster
 {
@@ -225,8 +229,9 @@ ambient_generic::Spawned(void)
 void
 ambient_generic::Respawn(void)
 {
+	super::Respawn();
+
 	SetSize([0,0,0], [0,0,0]);
-	SetOrigin(GetSpawnOrigin());
 
 	m_strActivePath = m_strSpawnPath;
 	m_flPitch = m_flSpawnPitch;

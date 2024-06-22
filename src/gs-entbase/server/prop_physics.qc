@@ -29,6 +29,7 @@ enumflags
 	PHYSPROPSFL_USEOUT,
 };
 
+/*! \brief Server-Entity: Physics Prop Model */
 /*!QUAKED prop_physics (1 0 0) (-16 -16 -16) (16 16 16) ASLEEP NOPHYSDMG DEBRIS NOMOTION x x PHYSDEVICE NOROTOR USEOUT
 # OVERVIEW
 Physics model
@@ -47,6 +48,9 @@ Physics model
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
+
+@ingroup server
+@ingroup pointentity
 */
 class
 prop_physics:NSPhysicsEntity

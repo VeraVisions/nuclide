@@ -465,7 +465,7 @@ GameLibrary_InitCustom(void)
 	}
 
 	/* re-allocate the game list */
-	games = (gameinfo_t *)memrealloc(games, sizeof(gameinfo_t), old_count, (gameinfo_count + packageinfo_count));
+	games = (gameEntry_t *)memrealloc(games, sizeof(gameEntry_t), old_count, (gameinfo_count + packageinfo_count));
 
 	/* The things we do for frequent flyer mileage. */
 	if (!games) {
@@ -554,7 +554,7 @@ GameLibrary_Init(void)
 	g_iModInstallCache = -1;
 	g_strModInstallCache = __NULL__;
 	gameinfo_count = 1; /* we start at 1 game, ours */
-	games = memalloc(sizeof(gameinfo_t) * gameinfo_count);
+	games = memalloc(sizeof(gameEntry_t) * gameinfo_count);
 
 	/* set the default packages for a given game */
 	GameLibrary_SetDefaults(id, gamedirname);

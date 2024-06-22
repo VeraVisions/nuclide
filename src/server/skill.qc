@@ -55,15 +55,16 @@ Skill_GetValue(string variable, float defaultValue)
 	return (val == 0) ? defaultValue : val;
 }
 
-/* input string is potentially a skill variable */
-float
-Skill_GetDefValue(string variable)
+string
+Skill_GetStringValue(string variable, string defaultValue)
 {
-	if (substring(variable, 0, 6) == "skill:") {
-		return Skill_GetValue(substring(variable, 6, -1), 0);
-	}
+	float skill = cvar("skill");
 
-	return stof(variable);
+	if (skill == 0)
+		skill = 2; /* default to medium */
+
+	string val = cvar_string(sprintf("sk_%s%d", variable, skill));
+	return (val == 0) ? defaultValue : val;
 }
 
 bool

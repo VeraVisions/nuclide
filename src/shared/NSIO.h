@@ -29,7 +29,7 @@ class NSIO
 private:
 	void NSIO(void);
 
-	virtual void Init(void);
+	string m_strSpawnData;
 
 #ifdef SERVER
 	string m_strOnTrigger;
@@ -58,14 +58,41 @@ public:
 		that are part of NSIO. */
 	virtual void SpawnKey(string,string);
 
+	/* EntityDef interactions */
+	/** Looks up a sequence from an act of a key within this entity's declaration. */
+	nonvirtual float GetDefAct(string);
+	/** Looks up the string value of a key within this entity's declaration. */
+	nonvirtual string GetDefString(string);
+	/** Looks up the floating-point value of a key within this entity's declaration. */
+	nonvirtual float GetDefFloat(string);
+	/** Looks up the boolean value of a key within this entity's declaration. */
+	nonvirtual bool GetDefBool(string);
+	/** Looks up the integer value of a key within this entity's declaration. */
+	nonvirtual int GetDefInt(string);
+	/** Looks up the integer value of a key within this entity's declaration. */
+	nonvirtual vector GetDefVector(string);
+
+	/** Like GetDefAct, but queries a specified def, falling back to reading from our own if it's not defined. */
+	nonvirtual float GetSubDefAct(string, string);
+	/** Like GetDefString, but queries a specified def, falling back to reading from our own if it's not defined. */
+	nonvirtual string GetSubDefString(string, string);
+	/** Like GetDefFloat, but queries a specified def, falling back to reading from our own if it's not defined. */
+	nonvirtual float GetSubDefFloat(string, string);
+	/** Like GetDefBool, but queries a specified def, falling back to reading from our own if it's not defined. */
+	nonvirtual bool GetSubDefBool(string, string);
+	/** Like GetDefInt, but queries a specified def, falling back to reading from our own if it's not defined. */
+	nonvirtual int GetSubDefInt(string, string);
+	/** Like GetDefVector, but queries a specified def, falling back to reading from our own if it's not defined. */
+	nonvirtual vector GetSubDefVector(string, string);
+
 #ifdef SERVER
 	/** Handles saving a copy of this entity to a given filehandle.
-		Within you want to use the ::SaveFloat() etc. methods to write
+		Within you want to use the NSIO::SaveFloat() etc. methods to write
 		the internal member attributes to the specified file handle. */
 	virtual void Save(float);
 
-	/** Similar to `::SpawnKey` but for save-game fields.
-		Whatever you write into file handles within your `::Save()` method
+	/** Similar to `NSIO::SpawnKey` but for save-game fields.
+		Whatever you write into file handles within your `NSIO::Save()` method
 		needs to be read back in here. */
 	virtual void Restore(string,string);
 
@@ -115,20 +142,36 @@ public:
 	nonvirtual void SaveBool(float,string,bool);
 	/** Saves an entity id key/value pair to a filehandle. */
 	nonvirtual void SaveEntity(float,string,entity);
+
 #endif
 
+	/** Returns the floating-point value of a named key in the entity's spawn data. */
+	nonvirtual float GetSpawnFloat(string);
+	/** Returns the integer value of a named key in the entity's spawn data. */
+	nonvirtual int GetSpawnInt(string);
+	/** Returns the string value of a named key in the entity's spawn data. */
+	nonvirtual string GetSpawnString(string);
+	/** Returns the vector value of a named key in the entity's spawn data. */
+	nonvirtual vector GetSpawnVector(string);
+	/** Returns the boolean value of a named key in the entity's spawn data. */
+	nonvirtual bool GetSpawnBool(string);
+	/** Returns an entity of a named key in the entity's spawn data. 
+	    @param keyName Name of the key in the spawn data.
+	    @param startEntity Start search at this entity. Can be `world` or `__NULL__`.*/
+	nonvirtual entity GetSpawnEntity(string, entity);
+
 	/* load game/spawn helper functions */
-	/** reads a floating point value from a string */
+	/** Returns a floating point value from a string value. */
 	nonvirtual float ReadFloat(string);
-	/** reads an integer value from a string */
+	/** Returns an integer value from a string. */
 	nonvirtual int ReadInt(string);
-	/** reads a string value from a string (with error checking) */
+	/** Returns a string value from a string (with error checking). */
 	nonvirtual string ReadString(string);
-	/** reads a vector from a string */
+	/** Returns a vector from a string. */
 	nonvirtual vector ReadVector(string);
-	/** reads a boolean value from a string */
+	/** Returns a boolean value from a string. */
 	nonvirtual bool ReadBool(string);
-	/** read an entity id, converted to entity, from a string */
+	/** Reads an entity id from a string and returns the entity. */
 	nonvirtual entity ReadEntity(string);
 
 	/** Get the level time the entity finds itself in.
@@ -137,6 +180,20 @@ public:
 		update upon movement (so that any think timers the entity may have are not triggered
 		when it is at rest. */
 	nonvirtual float GetTime(void);
+
+	/* save game related methods */
+	/** Debug print for a given float. */
+	nonvirtual void DebugFloat(string,float);
+	/** Debug print for a given integer. */
+	nonvirtual void DebugInt(string,int);
+	/** Debug print for a given string. */
+	nonvirtual void DebugString(string,string);
+	/** Debug print for a given vector. */
+	nonvirtual void DebugVector(string,vector);
+	/** Debug print for a given boolean. */
+	nonvirtual void DebugBool(string,bool);
+	/** Debug print for a given entity. */
+	nonvirtual void DebugEntity(string,entity);
 };
 
 .bool _mapspawned;

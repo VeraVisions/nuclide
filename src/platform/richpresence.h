@@ -14,8 +14,9 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*! @file richpresence.h
-    @brief Rich Presence handler.
+/** @defgroup richpresence Rich Presence
+    @ingroup menu
+    @brief Sharing of game state/info for social purposes.
 
     This is the internal rich presence handler.
     Rich presence is when the platform outside of the game communicates
@@ -30,6 +31,8 @@
 
     The console command `richpresence_dump` will output the current set
     of key/value pairs that will be shared with the platform.
+
+    @{
 */
 
 /** Sets a rich-presence key to the desired value.
@@ -51,3 +54,5 @@ bool RichPresence_WasSet(void);
 
 /** Debug function that prints the currently active rich-presence keys to console. */
 void RichPresence_DumpInfo(void);
+
+/** @} */ // end of richpresence

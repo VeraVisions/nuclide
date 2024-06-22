@@ -27,6 +27,10 @@ enumflags
 
 .void(void) tmpVGUIMenuButton1;
 
+/** VGUI Widget: Menu Button
+
+@ingroup vgui
+*/
 class
 VGUIMenuButton:VGUIWidget
 {

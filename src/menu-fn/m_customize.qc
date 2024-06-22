@@ -85,11 +85,11 @@ cz_cbModelChanged(void)
 	string mdl = cz_psModel.GetPic();
 #endif
 	tokenizebyseparator(mdl, "/");
-	localcmd(sprintf("seta _cl_playermodel %s\n", argv(2)));
-	localcmd(sprintf("setinfo model %s\n", argv(2)));
-	localcmd(sprintf("headmodel %s\n", argv(2)));
-	localcmd(sprintf("team_model %s\n", argv(2)));
-	localcmd(sprintf("team_headmodel %s\n", argv(2)));
+	localcmd(sprintf("seta _cl_playermodel %S\n", argv(2)));
+	localcmd(sprintf("setinfo model %S\n", argv(2)));
+	localcmd(sprintf("headmodel %S\n", argv(2)));
+	localcmd(sprintf("team_model %S\n", argv(2)));
+	localcmd(sprintf("team_headmodel %S\n", argv(2)));
 }
 
 void
@@ -105,7 +105,7 @@ spray_setinfokeys(void)
 	else
 		iType = 0i;
 
-	localcmd(sprintf("setinfoblob spray %s\n", strSpray));
+	localcmd(sprintf("setinfoblob spray %S\n", strSpray));
 	localcmd(sprintf("setinfo spraycolor \"%v\"\n", [1,1,1]));
 	localcmd(sprintf("setinfo spraytype %i\n", iType));
 }
@@ -114,8 +114,11 @@ void
 cz_cbSprayChanged(void)
 {
 	string mdl = cz_psSpray.GetPic();
-	localcmd(sprintf("seta _cl_playerspray %s\n", mdl));
-	spray_setinfokeys();
+
+	if (mdl != "") {
+		localcmd(sprintf("seta _cl_playerspray %S\n", mdl));
+		spray_setinfokeys();
+	}
 }
 
 void
@@ -196,8 +199,8 @@ cz_cxEnableMicChanged(float val)
 void
 menu_customize_init(void)
 {
-	int sid = 0;
-	g_sprayscount = 0;
+	int sid = 0i;
+	g_sprayscount = 0i;
 
 	/* scan and cache the sprays */
 	searchhandle searchy = search_begin("logos/*.*", SEARCH_NAMESORT, TRUE);
@@ -211,10 +214,10 @@ menu_customize_init(void)
 		}
 	}
 
-	if (g_sprayscount >= 1) {
+	if (g_sprayscount >= 1i) {
 		/* only allocate what we truly need */
 		g_sprays = memalloc(sizeof(string) * g_sprayscount);
-		for (int i = 0; i < search_getsize(searchy); i++) {
+		for (int i = 0i; i < (int)search_getsize(searchy); i++) {
 			string full = search_getfilename(searchy, i);
 			string filename = substring(full, 0, -5);
 			string extension = substring(full, strlen(full) - 3, 3);
@@ -230,11 +233,11 @@ menu_customize_init(void)
 	/* scan and cache the models */
 	searchy = search_begin("models/player/*/*.bmp:models/player/*/*.tga:models/players/*/icon_blue.tga", SEARCH_MULTISEARCH | SEARCH_NAMESORT, TRUE);
 
-	g_modelcount = search_getsize(searchy);
+	g_modelcount = (int)search_getsize(searchy);
 
-	if (g_modelcount >= 1) {
+	if (g_modelcount >= 1i) {
 		g_models = memalloc(sizeof(string) * g_modelcount);
-		for (int i = 0; i < g_modelcount; i++) {
+		for (int i = 0i; i < g_modelcount; i++) {
 			g_models[i] = substring(search_getfilename(searchy, i), 0, -5);
 			precache_pic(g_models[i]);
 		}
@@ -296,7 +299,13 @@ menu_customize_init(void)
 	cz_sldReceiveVol.SetCallback(cz_sldReceiveVolChanged);
 	Widget_Add(fn_customize, cz_sldReceiveVol);
 
-	if (GameLibrary_GetInfo(GAMEINFO_NOSPRAYS) == false) {
+	if (g_sprayscount > 0i && GameLibrary_GetInfo(GAMEINFO_NOSPRAYS) == false) {
+		string currentSpray = cvar_string("_cl_playerspray");
+
+		if (currentSpray == "") {
+			currentSpray = "fte.png";
+		}
+
 		cz_psSpray = spawn(CPictureSwitch);
 		cz_psSpray.SetPos(212,226);
 		cz_psSpray.SetSize(99,124);
@@ -305,11 +314,11 @@ menu_customize_init(void)
 		cz_psSpray.SetPics(g_sprays);
 		cz_psSpray.SetMax(g_sprayscount);
 		cz_psSpray.SetCallback(cz_cbSprayChanged);
-		cz_psSpray.SetValueS(cvar_string("_cl_playerspray"));
+		cz_psSpray.SetValueS(currentSpray);
 		Widget_Add(fn_customize, cz_psSpray);
 	}
 
-	if (GameLibrary_GetInfo(GAMEINFO_NOPLAYERMODELS) == false) {
+	if (g_modelcount > 0i && GameLibrary_GetInfo(GAMEINFO_NOPLAYERMODELS) == false) {
 #ifdef MODEL_PREVIEW
 		static vector vecDistance = [ 45, 0, 0 ];
 		static void ModelPreview_SetModel( string strModel ) {

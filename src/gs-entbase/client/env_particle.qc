@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Client-Entity: Particle Emitter */
 /*!QUAKED env_particle (1 .5 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Client-side particle effect. Active at runtime, fully client-side.
@@ -28,6 +29,9 @@ Cannot be triggered. Repeats automatically.
 
 # TRIVIA
 This entity was introduced in The Wastes (2018).
+
+@ingroup client
+@ingroup pointentity
 */
 class env_particle:NSEntity
 {
@@ -106,7 +110,7 @@ void env_particle::SpawnKey(string strField, string strKey)
 void
 env_particle::Respawn(void)
 {
-	SetOrigin(GetSpawnOrigin());
+	super::Respawn();
 	SetSize([0,0,0], [0,0,0]);
 }
 

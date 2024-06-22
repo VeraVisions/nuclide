@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Client-Entity: Dust Cloud Volume */
 /*!QUAKED func_dustcloud (0 .5 .8) ?
 # OVERVIEW
 Dust cloud emitting brush volume.
@@ -26,6 +27,9 @@ Dust cloud emitting brush volume.
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
+
+@ingroup client
+@ingroup brushentity
 */
 class func_dustcloud:NSEntity
 {
@@ -50,7 +54,8 @@ private:
 };
 
 #if 1
-class func_dustcloud_cloud
+static class
+func_dustcloud_cloud
 {
 public:
 	void func_dustcloud_cloud(void);

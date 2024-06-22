@@ -30,7 +30,8 @@ enumflags
 	VEHFL_FLAGS
 };
 
-class prop_vehicle_driveable_wheel
+static class
+prop_vehicle_driveable_wheel
 {
 public:
 	void prop_vehicle_driveable_wheel(void);
@@ -57,6 +58,7 @@ private:
 #endif
 };
 
+/*! \brief Shared-Entity: Model Based Vehicle */
 /*!QUAKED prop_vehicle_driveable (1 0 0) (-50 -50 0) (50 50 70)
 # OVERVIEW
 Point entity defining a 4-wheel vehicle that you can drive.
@@ -72,6 +74,9 @@ Point entity defining a 4-wheel vehicle that you can drive.
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
+
+@ingroup shared
+@ingroup pointentity
 */
 class prop_vehicle_driveable:NSVehicle
 {
@@ -456,7 +461,9 @@ prop_vehicle_driveable_wheel::Accel(float flMoveTime, float m_flTurn)
 #ifdef SERVER
 			if (trace_ent.takedamage) {
 				NSSurfacePropEntity foo = (NSSurfacePropEntity)trace_ent;
-				Damage_Apply(foo, vehParent.m_eDriver, iImpactDamage, 0, DMG_VEHICLE);
+				vector dmgDir = dirFromTarget(trace_endpos, foo.origin);
+				string dmgDef = sprintf("\"damage\" \"%i\"", iImpactDamage);
+				entityDamage(foo, this, vehParent.m_eDriver, dmgDef, "", trace_endpos, dmgDir, foo.origin);
 				//print(sprintf("Delivering %i impact damage\n", iImpactDamage));
 			}
 #endif
@@ -710,9 +717,9 @@ prop_vehicle_driveable::Respawn(void)
 {
 	SetMovetype(MOVETYPE_NONE);
 	SetSolid(SOLID_BBOX);
-	SetOrigin(GetSpawnOrigin() + [0,0,32]);
-	SetAngles(GetSpawnAngles());
-	SetModel(GetSpawnModel());
+	SetOrigin(GetSpawnVector("origin") + [0,0,32]);
+	SetAngles(GetSpawnVector("angles"));
+	SetModel(GetSpawnString("model"));
 
 	m_flBRWheelAxel = gettagindex( this, "RRWheelAxel" );
 	m_flBLWheelAxel = gettagindex( this, "RLWheelAxel" );

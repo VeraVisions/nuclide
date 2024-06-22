@@ -14,6 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/* We cache these, because the engine may purge our cache anyway */
+static int g_masterInternetServers;
+static int g_masterLANServers;
+
 static bool
 Server_IsLan(string address)
 {

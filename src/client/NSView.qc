@@ -257,6 +257,18 @@ NSView::AddPunchAngle(vector vecAdd)
 	angles += vecAdd;
 }
 
+void
+NSView::SetSoundScape(NSSoundScape newSoundScape)
+{
+	m_soundScape = newSoundScape;
+}
+
+NSSoundScape
+NSView::GetSoundScape(void)
+{
+	return (m_soundScape);
+}
+
 void View_PreDraw();
 void View_PostDraw();
 void View_DrawViewModel();
@@ -470,4 +482,9 @@ NSView::UpdateView(void)
 	Font_DrawText(m_vecPosition + [8,56], sprintf("Angles: %v", angles), FONT_CON);
 	Font_DrawText(m_vecPosition + [8,68], sprintf("View-Target: %d", num_for_edict(m_viewTarget)), FONT_CON);
 	Font_DrawText(m_vecPosition + [8,80], sprintf("View-Mode: %d", m_viewmode), FONT_CON);
+
+	if (!m_soundScape)
+		return;
+
+	m_soundScape.DebugDraw(m_vecPosition);
 }

@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Tool/Server-Entity: Light Source */
 /*!QUAKED light (0 1 0) (-8 -8 -8) (8 8 8) LFL_LINEAR x LFL_DARK LFL_NOGRID x x
 # OVERVIEW
 Infinitely small point of light illuminating the scene.
@@ -64,6 +65,9 @@ or env_projectedtexture for toggled or flickering lights.
 
 # TRIVIA
 This entity was introduced in Quake (1996).
+
+@ingroup server
+@ingroup pointentity
 */
 class
 light:NSPointTrigger
@@ -272,6 +276,9 @@ light_environment:light
 {
 public:
 	void light_environment(void);
+
+	virtual void SpawnKey(string, string);
+	virtual void Spawned(void);
 };
 
 void
@@ -280,6 +287,30 @@ light_environment::light_environment(void)
 
 }
 
+void
+light_environment::Spawned(void)
+{
+	super::Spawned();
+	//sunLight.m_vecLightColor = _lightColor;
+}
+
+void
+light_environment::SpawnKey(string strField, string strKey)
+{
+	switch (strField) {
+	case "pitch":
+		angles[0] = stof(strKey);
+		break;
+	case "angle":
+	case "sunangle":
+		angles[1] = stof(strKey);
+		break;
+	default:
+		super::SpawnKey(strField, strKey);
+	}
+}
+
+/*! \brief Tool/Server-Entity: Light Emitting Materials */
 /*!QUAKED light_surface (0 1 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Material property modifier related to lighting.

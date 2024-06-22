@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Mortar Drop Zone */
 /*!QUAKED func_mortar_field (0 .5 .8) ?
 # OVERVIEW
 This brush volume acts as mortar drop area.
@@ -41,6 +42,9 @@ sound, damage, delay and so on.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup server
+@ingroup brushentity
 */
 class
 func_mortar_field:NSBrushTrigger
@@ -55,10 +59,10 @@ public:
 	virtual void Respawn(void);
 	virtual void SpawnKey(string,string);
 	
-	nonvirtual void Fire(vector);
-	nonvirtual void FireRandom(void);
+	nonvirtual void Fire(entity, vector);
+	nonvirtual void FireRandom(entity);
 	nonvirtual void FireTarget(entity);
-	nonvirtual void FireControlled(void);
+	nonvirtual void FireControlled(entity);
 
 private:
 	int m_iType;
@@ -145,7 +149,7 @@ func_mortar_field::Respawn(void)
 }
 
 void
-func_mortar_field::Fire(vector vecOrg)
+func_mortar_field::Fire(entity firingEnt, vector vecOrg)
 {
 	/* the spread */
 	makevectors([90,0,0]);
@@ -155,13 +159,14 @@ func_mortar_field::Fire(vector vecOrg)
 	/* trace from the sky downwards */
 	traceline(vecOrg, vecOrg + (v_forward * 4096), FALSE, this);
 
-	float dmg = 200.0f;
-	Damage_Radius(trace_endpos, this, dmg, dmg * 2.5f, TRUE, 0);
+	int maxDamage = 200i;
+	float damageRadius = (float)maxDamage * 2.5f;
+	radiusDamage(trace_endpos, damageRadius, 0i, maxDamage, this);
 	pointparticles(particleeffectnum("fx_explosion.main"), trace_endpos, [0,0,0], 1);
 }
 
 void
-func_mortar_field::FireRandom(void)
+func_mortar_field::FireRandom(entity act)
 {
 	vector vecPos;
 
@@ -173,7 +178,7 @@ func_mortar_field::FireRandom(void)
 	vecPos[1] += mins[1] + (random() * size[1]);
 
 	for (int i = 0; i < m_iCount; i++);
-		Fire(vecPos);
+		Fire(act, vecPos);
 }
 
 void
@@ -189,11 +194,11 @@ func_mortar_field::FireTarget(entity act)
 	vecPos[1] = bound(vecPos[1] + mins[1], act.origin[1], vecPos[1] + maxs[0]);
 
 	for (int i = 0; i < m_iCount; i++);
-		Fire(vecPos);
+		Fire(act, vecPos);
 }
 
 void
-func_mortar_field::FireControlled(void)
+func_mortar_field::FireControlled(entity act)
 {
 	momentary_rot_button mX;
 	momentary_rot_button mY;
@@ -225,7 +230,7 @@ func_mortar_field::FireControlled(void)
 	vecPos[1] += mins[1] + (mY.GetProgress() * size[1]);
 
 	for (int i = 0; i < m_iCount; i++);
-		Fire(vecPos);
+		Fire(act, vecPos);
 }
 
 void
@@ -233,13 +238,13 @@ func_mortar_field::Trigger(entity act, triggermode_t state)
 {
 	switch (m_iType) {
 	case 0:
-		FireRandom();
+		FireRandom(act);
 		break;
 	case 1:
 		FireTarget(act);
 		break;
 	case 2:
-		FireControlled();
+		FireControlled(act);
 		break;
 	default:
 		break;

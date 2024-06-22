@@ -20,7 +20,6 @@ chat.qc
 textmenu.qc
 vgui.qc
 way.qc
-efx.qc
 detailtex.qc
 shake.qc
 cmd.qc

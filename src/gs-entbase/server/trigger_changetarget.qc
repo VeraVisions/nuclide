@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Changes Targets Of Other Entities */
 /*!QUAKED trigger_changetarget (.5 .5 .5) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 When triggered, trigger_changetarget changes the 'target' value of any entity
@@ -26,6 +27,9 @@ to something else.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup server
+@ingroup pointentity
 */
 class
 trigger_changetarget:NSPointTrigger

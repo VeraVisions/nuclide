@@ -14,21 +14,18 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include "../shared/entityDef.h"
 #include "NSOutput.h"
 #include "NSGameRules.h"
 #include "skill.h"
 #include "logging.h"
-#include "nodes.h"
+#include "../nav/defs.h"
 #include "spawn.h"
-#include "weapons.h"
 #include "plugins.h"
-#include "NSTraceAttack.h"
-#include "../shared/weapons.h"
-#include "../shared/weapon_common.h"
-
-#include "route.h"
-#include "way.h"
 #include "lament.h"
+#include "vote.h"
+#include "mapcycle.h"
+#include "maptweaks.h"
 
 /* helper macros */
 #define EVALUATE_FIELD(fieldname, changedflag) {\
@@ -90,24 +87,17 @@
 		WriteByte(MSG_ENTITY, field * 255.0);\
 }
 
+#define SENDENTITY_MODELINDEX(field, changedflag) {\
+	if (flChanged & changedflag)\
+		WriteShort(MSG_ENTITY, field);\
+}
+
 var bool g_isloading = false;
 
 var bool autocvar_mp_flashlight = true;
 
-
-void TraceAttack_FireBullets(int, vector, int, vector, int);
-#ifdef BULLETPENETRATION
-void TraceAttack_SetPenetrationPower(int);
-void TraceAttack_SetRangeModifier(float);
-#endif
-
-void Damage_Radius(vector, entity, float, float, int, int);
-void Damage_Apply(entity, entity, float, int, damageType_t);
 void Client_FixAngle(entity, vector);
 void Client_ShakeOnce(vector, float, float, float, float);
-
-void Game_ServerModelEvent(float, int, string);
-void Event_ServerModelEvent(float, int, string);
 
 void Mapcycle_Load(string);
 
@@ -193,3 +183,12 @@ bool EntityDef_HasSpawnClass(string className);
 @param className specifies which class definition to look in.
 @param keyName specifies the 'key' we want to know its value of. */
 string EntityDef_GetKeyValue(string className, string keyName);
+
+void
+WriteEntityEvent(float to, entity targetEntity, float eventType)
+{
+	WriteByte(to, SVC_CGAMEPACKET);
+	WriteByte(to, EV_ENTITYEVENT);
+	WriteEntity(to, targetEntity);
+	WriteFloat(to, eventType);
+}

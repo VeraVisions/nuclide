@@ -16,6 +16,10 @@
 
 .void(void) tmpVGUIList1;
 
+/** VGUI Widget: List
+
+@ingroup vgui
+*/
 class VGUIList:VGUIWidget
 {
 public:

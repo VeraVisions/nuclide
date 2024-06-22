@@ -40,7 +40,10 @@ typedef enumflags
 .float traileffectnum;
 
 /** This entity class represents an interactive projectile.
-Objects such as rockets, grenades, bolts etc. should ideally be this. */
+Objects such as rockets, grenades, bolts etc. should ideally be this.
+
+@ingroup baseclass
+*/
 class NSProjectile:NSSurfacePropEntity
 {
 private:
@@ -75,6 +78,7 @@ private:
 	bool m_bDetonateOnActor;
 	bool m_bImpactEffect; /* TODO */
 	bool m_bImpactGib; /* TODO */
+	bool m_bImpactSurfData; /* TODO */
 	string m_matDetonate;
 	float m_flDecalSize;
 	string m_partSmokeFly;
@@ -84,6 +88,9 @@ private:
 	string m_partSmokeFuse;
 	string m_defProjectileDebris;
 	int m_iDebrisCount;
+	bool m_bDebrisStick;
+	vector m_vecDebrisOffset;
+	vector m_vecImpactPos;
 
 	float m_flLightOffset; /* TODO */
 	vector m_vecExplodeLightColor; /* TODO */
@@ -99,6 +106,16 @@ private:
 
 	/* ETQW-additions */
 	bool m_bIsBullet;
+	NSSurfacePropEntity m_eMultiTarget;
+	int m_iMultiValue;
+	int m_iMultiBody;
+	int m_iShots;
+	vector m_vecSpread;
+	float m_flDamage;
+	string m_strDecalGroup;
+	float m_flRange;
+	int m_iTotalPenetrations;
+	float m_flMaxThickness;
 
 	/* Nuclide additions */
 	bool m_bStickToWorld;
@@ -111,6 +128,9 @@ private:
 	nonvirtual void _AnimateThink(void);
 	nonvirtual void _ThrustThink(void);
 	nonvirtual void _AnimateThinkDead(void);
+
+	virtual void _ApplyDamage(void);
+	virtual void _FireSingle(vector,vector,float,float);
 
 	virtual void OnRemoveEntity(void);
 #endif
@@ -134,8 +154,8 @@ public:
 	/** Called upon the projectile touching another object. */
 	virtual void Touch(entity);
 	virtual void Spawned(void);
-	virtual void Death(void);
-	virtual void Pain(void);
+	virtual void Pain(entity, entity, int, vector, int);
+	virtual void Death(entity, entity, int, vector, int);
 
 	virtual void SpawnKey(string, string);
 	virtual void EvaluateEntity(void);
@@ -151,7 +171,7 @@ public:
 	nonvirtual void _LaunchHitscan(vector, vector, float);
 
 	/* launch the projectile into the world */
-	nonvirtual void Launch(vector, vector, float, float, float);
+	virtual void Launch(vector, vector, float, float, float);
 
 	nonvirtual void SetLightColor(vector);
 	nonvirtual void SetLightRadius(float);

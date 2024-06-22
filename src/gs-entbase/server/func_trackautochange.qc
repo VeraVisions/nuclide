@@ -14,6 +14,32 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Automatic func_tracktrain Track Controller */
+/*!QUAKED func_tankcontrols (0 .5 .8) ?
+# OVERVIEW
+Much like func_trackchange, but it will automatically transport func_tracktrain entities between two path_track entities.
+
+# KEYS
+- "targetname" : Name
+- "height" : Travel altitude in game units.
+- "rotation" : Amount of spinning rotation in degrees.
+- "train" : Name of the train to be switched.
+- "toptrack" : Name of the top track.
+- "bottomtrack" : Name of the bottom track.
+- "speed" : Movement and rotation speed in game units per second.
+
+# SPAWNFLAGS
+- BOTTOM (8) : Start at the bottom track.
+- NOMOVE (16) : Only rotate, don't move.
+- X_AXIS (64) : Rotate on the X-Axis.
+- Y_AXIS (128) : Rotate on the Y-Axis.
+
+# TRIVIA
+This entity was introduced in Half-Life (1998).
+
+@ingroup server
+@ingroup brushentity
+*/
 class
 func_trackautochange:func_trackchange
 {

@@ -14,6 +14,14 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/** @defgroup font Fonts
+    @brief Typeface format loader/handler for rendering bitmap/vector based text and icons.
+    @ingroup client
+
+    @{
+
+ */
+
 /** Flags for 2D drawing operations. */
 typedef enum
 {
@@ -153,3 +161,5 @@ porting old code.
 @param fnt is the font to be queried.
 @return the internal 'drawfont' id of the specified font. */
 float Font_GetID(font_s fnt);
+
+/** @} */ // end of client

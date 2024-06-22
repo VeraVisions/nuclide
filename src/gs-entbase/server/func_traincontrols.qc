@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: func_tracktrain Controller */
 /*!QUAKED func_traincontrols (0 .5 .8) ?
 # OVERVIEW
 Brush that marks the usable region of a func_tracktrain, in order
@@ -25,6 +26,9 @@ to gain control.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup server
+@ingroup brushentity
 */
 class
 func_traincontrols:NSBrushTrigger
@@ -44,8 +48,7 @@ func_traincontrols::func_traincontrols(void)
 void
 func_traincontrols::Respawn(void)
 {
-	SetOrigin(GetSpawnOrigin());
-	SetModel(GetSpawnModel());
+	super::Respawn();
 	SetSolid(SOLID_TRIGGER);
 	SetParent(target);
 }

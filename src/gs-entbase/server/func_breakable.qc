@@ -78,6 +78,7 @@ const string funcbreakable_surftable[] = {
 "gs_material_rocks"
 };
 
+/*! \brief Server-Entity: Breakable Brush Model */
 /*!QUAKED func_breakable (0 .5 .8) ? SF_TRIGGER SF_TOUCH SF_PRESSURE
 # OVERVIEW
 Brush volume that can break into lots of little pieces.
@@ -114,6 +115,9 @@ Material-list:
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup server
+@ingroup brushentity
 */
 class
 func_breakable:NSSurfacePropEntity
@@ -127,8 +131,8 @@ public:
 	virtual void SpawnKey(string,string);
 	virtual void Spawned(void);
 	virtual void Respawn(void);
-	virtual void Pain(void);
-	virtual void Death(void);
+	virtual void Pain(entity, entity, int, vector, int);
+	virtual void Death(entity, entity, int, vector, int);
 	virtual void Trigger(entity, triggermode_t);
 	
 	virtual void Explode(void);
@@ -249,11 +253,10 @@ func_breakable::Spawned(void)
 void
 func_breakable::Respawn(void)
 {
+	super::Respawn();
+
 	SetMovetype(MOVETYPE_NONE);
 	SetSolid(SOLID_BSP);
-
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
 	ClearAngles();
 	ReleaseThink();
 	m_bCanTouch = true;
@@ -282,7 +285,7 @@ func_breakable::Respawn(void)
 }
 
 void
-func_breakable::Pain(void)
+func_breakable::Pain(entity inflictor, entity attacker, int damage, vector dir, int location)
 {
 	string painSound;
 
@@ -307,25 +310,19 @@ func_breakable::Explode(void)
 
 	BreakModel_Spawn(absmin, absmax, [0,0,0], m_flExplodeMag, vlen(size) / 10, breakModel);
 	pointparticles(_m_iExplosionParticle, rp, [0,0,0], 1);
-	Damage_Radius(rp, this, m_flExplodeMag, m_flExplodeRad, TRUE, 0);
+	radiusDamage(GetOrigin(), m_flExplodeMag, 0i, m_flExplodeRad, this);
 	UseTargets(this, TRIG_TOGGLE, 0.0f); /* delay... ignored. */
 	SetTakedamage(DAMAGE_NO);
 	Disappear();
 }
 
 void
-func_breakable::Death(void)
+func_breakable::Death(entity inflictor, entity attacker, int damage, vector dir, int location)
 {
 	static void break_spawnobject(void) {
-		/* these might get overwritten by the entity spawnfunction */
-		vector neworg = self.origin;
-
 		/* become the classname assigned */
 		NSEntity t = (NSEntity)self;
 		callfunction(self.classname);
-
-		/* apply the saved values back */
-		t.origin = t.GetSpawnOrigin() = neworg;
 
 		/* spawn anew */
 		if (t.Respawn)
@@ -381,7 +378,7 @@ void
 func_breakable::Trigger(entity act, triggermode_t state)
 {
 	if (GetHealth() > 0)
-		Death();
+		Death(act, act, 0i, g_vec_null, 0i);
 }
 
 void
@@ -405,15 +402,18 @@ func_breakable::Touch(entity eToucher)
 		}
 	}
 
+	/* break on touch */
 	if (HasSpawnFlags(SF_TOUCH)) {
-		int fDamage = (float)(vlen(eToucher.velocity) * 0.01f);
+		int dmgAmount = (float)(vlen(eToucher.velocity) * 0.01f);
 
-		if (fDamage >= health) {
+		if (dmgAmount >= health) {
+			vector dmgDir = dirFromTarget(eToucher.origin, WorldSpaceCenter());
+			string dmgDef = sprintf("\"damage\" \"%i\"", dmgAmount);
 			m_bCanTouch = false;
-			Damage_Apply(this, eToucher, fDamage, 0, DMG_CRUSH);
+			Damage(eToucher, eToucher, dmgDef, 1.0f, dmgDir, eToucher.origin);
 
 			if ((GetSurfaceData(SURFDATA_MATERIAL) == GSMATERIAL_GLASS) || (GetSurfaceData(SURFDATA_MATERIAL) == GSMATERIAL_COMPUTER)) {
-				Damage_Apply(eToucher, this, fDamage / 4, 0, DMG_CRUSH);
+				Damage(eToucher, eToucher, dmgDef, 0.25f, dmgDir, eToucher.origin);
 			}
 		}
 	}

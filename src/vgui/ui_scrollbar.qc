@@ -23,7 +23,10 @@ enumflags
 
 .void(void) tmpVGUIScrollbar1;
 
-/** This is a scollbar widget. It needs rework. */
+/** VGUI Widget: Scrollbar
+
+@ingroup vgui
+*/
 class VGUIScrollbar:VGUIWidget
 {
 public:

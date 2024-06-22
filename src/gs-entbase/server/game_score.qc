@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Player Score Controller */
 /*!QUAKED game_score (1 .5 0) (-8 -8 -8) (8 8 8) NEGATIVE TEAMSCORE
 # OVERVIEW
 Awards points to the activator when triggered.
@@ -29,6 +30,9 @@ Awards points to the activator when triggered.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup server
+@ingroup pointentity
 */
 class
 game_score:NSPointTrigger

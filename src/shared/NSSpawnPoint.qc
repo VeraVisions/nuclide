@@ -32,11 +32,10 @@ NSSpawnPoint::Respawn(void)
 		newMaxs = m_vecMaxs;
 	}
 
-	InitPointTrigger();
-	setorigin_safe(this, GetSpawnOrigin());
+	super::Respawn();
+
+	setorigin_safe(this, GetSpawnVector("origin"));
 	SetSize(newMins, newMaxs);
-	SetSolid(SOLID_NOT);
-	SetMovetype(MOVETYPE_NONE);
 	botinfo = BOTINFO_SPAWNPOINT;
 }
 

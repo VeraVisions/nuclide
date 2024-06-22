@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Detail Geometry */
 /*!QUAKED func_detail (0 .5 .8) ?
 # OVERVIEW
 A "fake" entity for level editors.
@@ -29,6 +30,9 @@ If you don't want this entity to have collision, consider using func_detail_illu
 
 # TRIVIA
 This entity was introduced in Quake II (1997).
+
+@ingroup server
+@ingroup brushentity
 */
 class
 func_detail:info_null

@@ -17,6 +17,7 @@
 #ifndef PHYSICS_STATIC
 #define FNCPHYBX_ASLEEP 4096
 
+/*! \brief Server-Entity: Physically Simulated Box */
 /*!QUAKED func_physbox (0 .5 .8) ? x x x x x x x x x x x x FNCPHYBX_ASLEEP
 # OVERVIEW
 Physics brush.
@@ -26,6 +27,9 @@ Physics brush.
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
+
+@ingroup server
+@ingroup brushentity
 */
 class
 func_physbox:NSPhysicsEntity

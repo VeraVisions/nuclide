@@ -19,6 +19,10 @@ enumflags
 	IMAGE_VISIBLE
 };
 
+/** VGUI Widget: Picture Frame
+
+@ingroup vgui
+*/
 class
 VGUIPic:VGUIWidget
 {

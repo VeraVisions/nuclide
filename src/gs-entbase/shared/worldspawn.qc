@@ -20,6 +20,7 @@ void MapTweaks_Init(void);
 var int autocvar_sv_levelexec = 1;
 #endif
 
+/*! \brief Shared-Entity: Game World */
 /*!QUAKED worldspawn (0 0 0) ?
 # OVERVIEW
 Only used for the world.
@@ -48,6 +49,9 @@ It's also not affected by "killtarget".
 
 # TRIVIA
 This entity was introduced in Quake (1996).
+
+@ingroup shared
+@ingroup brushentity
 */
 
 #ifdef SERVER
@@ -125,8 +129,8 @@ worldspawn::worldspawn(void)
 
 	precache_model("models/error.vvm");
 
-	if (autocvar_sv_levelexec)
-		readcmd(sprintf("exec maps/%s.cfg\n", mapname));
+	//if (autocvar_sv_levelexec)
+	//	readcmd(sprintf("exec maps/%s.cfg\n", mapname));
 
 	InitStart();
 }
@@ -169,6 +173,15 @@ worldspawn::Spawned(void)
 	} else {
 		forceinfokey(world, "litwater", "");
 	}
+
+#if 0
+	env_cascade_light sunLight = spawn(env_cascade_light);
+	sunLight.Respawn();
+	sunLight.SetOrigin(GetOrigin());
+	sunLight.m_bUseEnvAngles = true;
+	sunLight.m_bUseEnvColors = true;
+	sunLight.m_flShadowDistance = 1024;
+#endif
 }
 
 void

@@ -14,8 +14,9 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*! @file ammo.h
+/** @defgroup ammo Ammo
     @brief Ammo Handling Helper Functions.
+    @ingroup shared
 
     Helper functions for various ammo operations.
     This header can be included in other libraries and projects to help
@@ -23,10 +24,22 @@
     It is usually included by default in a library project.
     If you want to include this file into your own progs, you
     can include `math.h` from `src/shared/`.
+
+@{
 */
 
 /** Returns the name of the specified ammo type. Returns __NULL__ when invalid. */
 string ammoNameForNum(int);
 /** Returns the ammo id of a given name of ammo. Return -1 when invalid. */
 int ammoNumForName(string);
+/** Returns the max ammo given name of ammo. Returns 0 when invalid. */
+int ammoMaxForName(string);
+/** Returns the max ammo given name of ammo. Returns 0 when invalid. */
+int ammoMaxForNum(int);
 
+/** Called by Nuclide in CSQC_Init(). */
+void Ammo_Init(void);
+/** Called by the `listAmmo` console command. */
+void Ammo_DebugList(void);
+
+/** @} */ // end of ammo

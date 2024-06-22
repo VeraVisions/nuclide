@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Loads Last Auto-Save */
 /*!QUAKED player_loadsaved (1 0 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 This trigger reloads the last autosaved game with a custom message.
@@ -31,6 +32,9 @@ This is commonly used when a mission objective has failed.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup server
+@ingroup pointentity
 */
 class
 player_loadsaved:NSRenderableEntity /* for the rendercolor values */

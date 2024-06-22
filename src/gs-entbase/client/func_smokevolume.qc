@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Client-Entity: Smoke Cloud Volume */
 /*!QUAKED func_smokevolume (0 .5 .8) ? FULLBRIGHT
 # OVERVIEW
 Smoke cloud emitting brush volume.
@@ -27,6 +28,9 @@ Smoke cloud emitting brush volume.
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
+
+@ingroup client
+@ingroup brushentity
 */
 class func_smokevolume:NSEntity
 {
@@ -55,7 +59,8 @@ private:
 };
 
 #if 1
-class func_smokevolume_cloud
+static class
+func_smokevolume_cloud
 {
 public:
 	void func_smokevolume_cloud(void);

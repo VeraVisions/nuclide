@@ -44,4 +44,6 @@
 #define VFL_SPRINTING			(1<<8) /**< Entity is on fire. */
 #define VFL_GOALITEM			(1<<9) /**< Entity is a goal-item. */
 #define VFL_NOATTACK			(1<<10) /**< Entity is not allowed to fire. */
+#define VFL_PRIMEDFUSE			(1<<11) /**< Entity is not allowed to fire. */
+#define VFL_REDRAW				(1<<12) /**< Entity is not allowed to fire. */
 

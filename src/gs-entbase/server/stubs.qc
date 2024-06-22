@@ -33,6 +33,9 @@ of the entity, keep that in mind.
 
 # TRIVIA
 This entity was introduced in Quake (1996).
+
+@ingroup server
+@ingroup pointentity
 */
 
 /*!QUAKED info_player_deathmatch (1 0 1) (-16 -16 -36) (16 16 36)
@@ -55,6 +58,9 @@ of the entity, keep that in mind.
 
 # TRIVIA
 This entity was introduced in Quake (1996).
+
+@ingroup server
+@ingroup pointentity
 */
 
 /*!QUAKED info_player_coop (1 0 1) (-16 -16 -36) (16 16 36)
@@ -75,6 +81,9 @@ of the entity, keep that in mind.
 
 # TRIVIA
 This entity was introduced in Quake (1996).
+
+@ingroup server
+@ingroup pointentity
 */
 
 CLASSEXPORT(info_target, info_notnull)

@@ -44,7 +44,10 @@ typedef enumflags
 } nssurfacepropentity_changed_t;
 
 /** This entity represents an NSRenderableEntity with interactive surface properties.
-It can take damage and can handle variously different types of impact. */
+It can take damage and can handle variously different types of impact. 
+
+@ingroup baseclass
+*/
 class NSSurfacePropEntity:NSRenderableEntity
 {
 public:
@@ -75,16 +78,23 @@ public:
 
 	/* new */
 #ifdef SERVER
+	/** Applies damage to the entity. */
+	virtual void Damage(entity, entity, string, float, vector, vector);
+	/** Called when a different entity gets damaged by this entity. */
+	virtual void DamageFeedback(entity, entity, int);
+	/** Called whenever the entity receives damage. */
+	virtual void Pain(entity, entity, int, vector, int);
+	/** Called when the health is equal or below 0 */
+	virtual void Death(entity, entity, int, vector, int);
+	/** Called when the health is equal or below 0 */
+	virtual void BreakModel(int, vector, vector);
+	/** Returns whether or not the entity is alive. That is different from having health, as the entity may be a corpse that can be destroyed further.*/
+	virtual bool IsAlive(void);
+
 	/** Sets the entity on fire. */
 	nonvirtual void Ignite(entity, float, int);
 	/** If the entity is on fire, it'll have it extinguished */
 	nonvirtual void Extinguish(void);
-	/** Called whenever the entity receives damage. */
-	virtual void Pain(void);
-	/** Called when the health is equal or below 0 */
-	virtual void Death(void);
-	/** Returns whether or not the entity is alive. */
-	virtual bool IsAlive(void);
 
 	/** Returns whether the entity can bleed. */
 	nonvirtual bool CanBleed(void);
@@ -92,13 +102,13 @@ public:
 	nonvirtual bool IsVulnerable(void);
 
 	/* Generic Damage */
-	/** Makes the entity vulnerable if it wasn't already. */
+	/** Marks the entity as capable of bleeding. */
 	nonvirtual void EnableBleeding(void);
-	/** Makes the entity invulnerable if it wasn't already. */
+	/** Marks the entity as incapable of bleeding. */
 	nonvirtual void DisableBleeding(void);
-	/** Makes the entity vulnerable if it wasn't already. */
+	/** Makes the entity visible to other entity their aim-assists. */
 	nonvirtual void EnableAimAssist(void);
-	/** Makes the entity invulnerable if it wasn't already. */
+	/** Makes the entity invisible to other entity their aim-assists. */
 	nonvirtual void DisableAimAssist(void);
 	/** Makes the entity vulnerable if it wasn't already. */
 	nonvirtual void MakeVulnerable(void);
@@ -137,15 +147,8 @@ public:
 	/** Returns how many seconds have passed since we died. Will return -1 if not applicable. */
 	nonvirtual float TimeSinceDeath(void);
 
-	/** Called when a different entity gets damaged by this entity. */
-	virtual void DamageFeedback(NSSurfacePropEntity, NSSurfacePropEntity, int);
-
-	/** Sets which function to call upon taking pain. */
-	nonvirtual void SetPainCallback(void(void));
-	/** Sets which function to call upon taking death. */
-	nonvirtual void SetDeathCallback(void(void));
 	/** Returns whether this entity reacts to damage being inflicted. */
-	nonvirtual bool CanBeDamaged(void);
+	nonvirtual bool CanBeDamaged(vector,vector);
 
 	/** Sets the colour of the blood of this entity. */
 	nonvirtual void SetBloodColor(vector);
@@ -157,14 +160,6 @@ public:
 	/** Called every frame to render a fire effect, but will only do so if the entity is burning. */
 	virtual void RenderFire(void);
 #endif
-
-	/* misc 'being' methods */
-	/** Returns the absolute world position of where the eyes are located. */
-	nonvirtual vector GetEyePos(void);
-	/** Sets the relative position of the eyes. */
-	nonvirtual void SetEyePos(vector);
-	/** Returns an euler angle of where the entity is 'looking' at. These are not necessarily eye values. */
-	nonvirtual vector GetViewAngle(void);
 
 private:
 	float m_flBurnNext;
@@ -200,9 +195,11 @@ private:
 	nonvirtual void _PropDataFinish(void);
 	nonvirtual void _UpdateTakedamage(void);
 #endif
-
 };
 
 #ifdef CLIENT
 void NSSurfacePropEntity_ReadEntity(bool);
 #endif
+
+void entityDamage(entity, entity, entity, string, string, vector, vector, vector);
+void radiusDamage(vector, float, int, int, entity);

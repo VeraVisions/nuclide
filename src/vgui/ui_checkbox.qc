@@ -21,6 +21,10 @@ enumflags
 	CHECKBOX_CHECKED
 };
 
+/** VGUI Widget: Checkbox
+
+@ingroup vgui
+*/
 class VGUICheckbox:VGUIWidget
 {
 public:

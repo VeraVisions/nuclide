@@ -22,6 +22,7 @@ float g_dCubeSize;
 void CMap_Check(void);
 void CMap_Shoot(void);
 
+/*! \brief Client-Entity: Cubemap Reflection Marker */
 /*!QUAKED env_cubemap (1 .5 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Specifies a location for which a cubemap will be generated when the 
@@ -32,6 +33,9 @@ buildcubemaps console command is executed.
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
+
+@ingroup client
+@ingroup pointentity
 */
 class
 env_cubemap:NSEntity
@@ -152,15 +156,15 @@ CMap_Build(void)
 	        return;
 	}
 
-	localcmd("r_speeds 0\n");
-	localcmd("show_fps 0\n");
-	localcmd("r_showfields 0\n");
-	localcmd("r_showshaders 0\n");
-	localcmd("r_showbboxes 0\n");
-	localcmd("r_wireframe 0\n");
-	localcmd("r_hdr_irisadaptation 0\n");
-	localcmd("r_postprocshader \"\"0\n");
-	localcmd("r_skipEnvmap 1\n");
+	cvar_set("r_speeds", "0");
+	cvar_set("show_fps", "0");
+	cvar_set("r_showfields", "0");
+	cvar_set("r_showshaders", "0");
+	cvar_set("r_showbboxes", "0");
+	cvar_set("r_wireframe", "0");
+	cvar_set("r_hdr_irisadaptation", "0");
+	cvar_set("r_postprocshader", "\"\"0");
+	cvar_set("r_skipEnvmap", "1");
 
 	NSLog("Building cubemaps...\n");
 	g_eCubeCycle = spawn();

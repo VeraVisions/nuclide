@@ -25,11 +25,6 @@ _NSNavAI_Log(string className, string functionName, float edictNum, string warnM
 }
 #define NSNavAI_Log(...) _NSNavAI_Log(classname, __FUNC__, num_for_edict(this), sprintf(__VA_ARGS__))
 
-#ifndef MAX_AMMO_TYPES
-#define MAX_AMMO_TYPES 16
-#endif
-
-
 /* for AI identification purposes */
 typedef enum
 {
@@ -44,6 +39,8 @@ typedef enum
 /** This entity class represents a moving/pathfinding object.
 It knows how to deal with waypoint based nodes and possibly other
 types of pathfinding in the future.
+
+@ingroup baseclass
 */
 class
 NSNavAI:NSSurfacePropEntity
@@ -84,6 +81,10 @@ public:
 	nonvirtual bool GiveAmmo(int, int);
 	/** Uses ammo up of a specified type. Returns `false` when impossible. */
 	nonvirtual bool UseAmmo(int, int);
+	/** Returns whether or not the entity has enough of the specified ammo and type. */
+	nonvirtual bool HasAmmo(int, int);
+	/** Returns the amount of reserve ammo of a given type. */
+	nonvirtual int GetReserveAmmo(int);
 
 	/* inventory handling */
 	/** Adds a named NSItem to the inventory. Returns `false` when impossible. */
@@ -94,6 +95,15 @@ public:
 	nonvirtual bool AddItem(NSItem);
 	/** Returns `true` or `false` depending on if the entity has the named item. */
 	nonvirtual bool HasItem(string);
+	/** Returns `true` or `false` depending on if the entity has the exact item. */
+	nonvirtual bool HasExactItem(NSItem);
+	/** Removes all items from the inventory. Returns `false` when already empty. */
+	nonvirtual bool RemoveAllItems(bool);
+	/** Removes all weapons from the inventory. Returns `false` when already clear. */
+	nonvirtual bool RemoveAllWeapons(void);
+
+	nonvirtual void LaunchProjectile(string, bool, float);
+	nonvirtual bool PlantCharge(string);
 
 #ifdef SERVER
 	/* overrides */
@@ -152,5 +162,11 @@ private:
 	/* These are defined in side defs\*.def, ammo_types and ammo_names */
 	int m_iAmmoTypes[MAX_AMMO_TYPES];
 	NSItem m_itemList;
+	NSWeapon m_activeWeapon;
+	NSWeapon m_activeWeapon_net;
 	float activeweapon;
+	float m_flFirstInventoryItem;
 };
+
+void NSNavAI_ListInventory(NSNavAI);
+

@@ -32,6 +32,7 @@ Util_IsSky(vector pos)
 	return (0);
 }
 
+/*! \brief Client-Entity: Sun Flare Controller */
 /*!QUAKED env_sun (1 .5 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Visual representation of where the sun is positioned in the sky.
@@ -44,6 +45,9 @@ Visual representation of where the sun is positioned in the sky.
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
+
+@ingroup client
+@ingroup pointentity
 */
 class env_sun:NSEntity
 {

@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Non-Solid Detail Geometry */
 /*!QUAKED func_detail_illusionary (0 .5 .8) ?
 # OVERVIEW
 A "fake" entity for level editors.
@@ -30,6 +31,9 @@ If you want this entity to have collision, consider using func_detail.
 
 # TRIVIA
 This entity was introduced in ericw-tools (2017).
+
+@ingroup server
+@ingroup brushentity
 */
 class
 func_detail_illusionary:info_null

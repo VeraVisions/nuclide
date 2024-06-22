@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Player Team Controller */
 /*!QUAKED game_player_team (1 .5 0) (-8 -8 -8) (8 8 8) REMOVE KILL GIB
 # OVERVIEW
 Allows the player to change teams.
@@ -30,6 +31,9 @@ Allows the player to change teams.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup server
+@ingroup pointentity
 */
 class
 game_player_team:NSPointTrigger
@@ -66,9 +70,11 @@ game_player_team::Trigger(entity entityActivator, triggermode_t state)
 	targetPlayer.SetTeam((float)toRead.GetTeamIndex());
 
 	if (HasSpawnFlags(4) == true) {
-		Damage_Apply(targetPlayer, targetPlayer, targetPlayer.health + 100i, 0, DMG_SKIP_ARMOR);
+		string damageDef = sprintf("\"damage\" \"%i\"\n\"skip_armor\" \"1\"", targetPlayer.health + 100i);
+		entityDamage(targetPlayer, this, targetPlayer, damageDef, "", GetOrigin(), g_vec_null, targetPlayer.origin);
 	} else if (HasSpawnFlags(2) == true) {
-		Damage_Apply(targetPlayer, targetPlayer, targetPlayer.health, 0, DMG_SKIP_ARMOR);
+		string damageDef = sprintf("\"damage\" \"%i\"\n\"skip_armor\" \"1\"", targetPlayer.health);
+		entityDamage(targetPlayer, this, targetPlayer, damageDef, "", GetOrigin(), g_vec_null, targetPlayer.origin);
 	}
 
 	if (HasSpawnFlags(1)) {

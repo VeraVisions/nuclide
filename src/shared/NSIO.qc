@@ -36,49 +36,12 @@ NSIO::NSIO(void)
 	isCSQC = TRUE;
 	effects |= EF_NOSHADOW;
 #endif
-
-	/* called last */
-	Init();
 }
 
 void
 NSIO::Respawn(void)
 {
 	// Respawn code goes here...
-}
-
-void
-NSIO::Init(void)
-{
-	if (__fullspawndata) {
-	/* annoylingly our starting offsets differ */
-#ifdef CLIENT
-	for (int i = 0; i < (tokenize(__fullspawndata) - 1); i += 2)
-		SpawnKey(argv(i), argv(i+1));
-#else
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2)
-		SpawnKey(argv(i), argv(i+1));
-#endif
-	}
-
-	/* some entity might involuntarily call SpawnInit as part of being
-	   a member of NSIO. So we need to make sure that it doesn't
-	   inherit stuff from the last previously loaded entity */
-	__fullspawndata = "";
-
-	Spawned();
-
-	/* entity may be marked as deleted */
-	if (wasfreed(this))
-		return;
-
-#ifdef SERVER
-	/* we're loading entity data, don't call Respawn() */
-	if (g_isloading == true)
-		return;
-#endif
-
-	Respawn();
 }
 
 void
@@ -96,51 +59,211 @@ NSIO::Spawned(void)
 #endif
 }
 
-bool
-NSIO::ReadBool(string strValue)
+float
+NSIO::GetDefAct(string keyName)
 {
-	if (strValue && strValue != "")
-		return stof(Constants_LookUp(strValue, strValue));
-	return __NULL__;
+	float randomValue;
+	string actValue = EntityDef_GetKeyValue(classname, keyName);
+	float actCount = tokenizebyseparator(actValue, ",");
+
+	if (actCount == 1) {
+		return stof(actValue);
+	} else {
+		randomValue = floor(pseudorandom() * actCount);
+		return stof(argv(randomValue));
+	}
+}
+
+string
+NSIO::GetDefString(string keyName)
+{
+	return EntityDef_GetKeyValue(classname, keyName);
+}
+
+vector
+NSIO::GetDefVector(string keyName)
+{
+	return stov(GetDefString(keyName));
+}
+
+float
+NSIO::GetDefFloat(string keyName)
+{
+	return stof(GetDefString(keyName));
+}
+
+bool
+NSIO::GetDefBool(string keyName)
+{
+	return stof(GetDefString(keyName)) ? true : false;
+}
+
+int
+NSIO::GetDefInt(string keyName)
+{
+	return (int)stoi(GetDefString(keyName));
+}
+
+float
+NSIO::GetSubDefAct(string subDef, string keyName)
+{
+	float actCount;
+	string fireValue = GetSubDefString(subDef, keyName);
+
+	/* not in className either. make it known */
+	if (subDef == "") {
+		return (-1);
+	}
+
+	actCount = tokenizebyseparator(fireValue, ",");
+
+	if (actCount == 1) {
+		return stof(fireValue);
+	} else {
+		float randomValue = floor(pseudorandom() * actCount);
+		return stof(argv(randomValue));
+	}
+}
+
+string
+NSIO::GetSubDefString(string subDef, string keyName)
+{
+	string fireValue = EntityDef_GetKeyValue(subDef, keyName);
+
+	/* if not in FireInfo, check classname Def */
+	if (fireValue == "") {
+		fireValue = EntityDef_GetKeyValue(classname, keyName);
+	}
+
+	return (fireValue);
+}
+
+vector
+NSIO::GetSubDefVector(string subDef, string keyName)
+{
+	return stov(GetSubDefString(subDef, keyName));
+}
+
+float
+NSIO::GetSubDefFloat(string subDef, string keyName)
+{
+	return stof(GetSubDefString(subDef, keyName));
+}
+
+bool
+NSIO::GetSubDefBool(string subDef, string keyName)
+{
+	return stof(GetSubDefString(subDef, keyName)) ? true : false;
+}
+
+int
+NSIO::GetSubDefInt(string subDef, string keyName)
+{
+	return (int)stoi(GetSubDefString(subDef, keyName));
+}
+
+
+bool
+NSIO::ReadBool(string inputString)
+{
+	if (inputString && inputString != "")
+		return stof(ReadString(inputString)) ? true : false;
+	return false;
 }
 float
-NSIO::ReadFloat(string strValue)
+NSIO::ReadFloat(string inputString)
 {
-	if (strValue && strValue != "")
-		return stof(Constants_LookUp(strValue, strValue));
-	return __NULL__;
+	if (inputString && inputString != "")
+		return stof(ReadString(inputString));
+	return 0.0f;
 }
 int
-NSIO::ReadInt(string strValue)
+NSIO::ReadInt(string inputString)
 {
-	if (strValue && strValue != "")
-		return stoi(Constants_LookUp(strValue, strValue));
-	return __NULL__;
+	if (inputString && inputString != "")
+		return stoi(ReadString(inputString));
+	return 0i;
 }
 string
-NSIO::ReadString(string strValue)
+NSIO::ReadString(string inputString)
 {
-	if (strValue && strValue != "")
-		return Constants_LookUp(strValue, strValue);
-	return __NULL__;
+	if (inputString && inputString != "") {
+
+#ifdef SERVER
+		/* is this supposed to be read from a skill cvar? */
+		if (substring(inputString, 0, 6) == "skill:") {
+			return Skill_GetStringValue(substring(inputString, 6, -1), "");
+		}
+#endif
+
+		return Constants_LookUp(inputString, inputString);
+	}
+
+	return "";
 }
 vector
-NSIO::ReadVector(string strValue)
+NSIO::ReadVector(string inputString)
 {
-	if (strValue && strValue != "")
-		return stov(Constants_LookUp(strValue, strValue));
-	return __NULL__;
+	if (inputString && inputString != "")
+		return stov(ReadString(inputString));
+	return g_vec_null;
 }
 entity
-NSIO::ReadEntity(string strValue)
+NSIO::ReadEntity(string inputString)
 {
-	if (strValue && strValue != "") {
-		float num = stof(strValue);
+	if (inputString && inputString != "") {
+		float num = stof(inputString);
 
 		if (num)
 			return edict_num(num);
 	}
 	return __NULL__;
+}
+
+bool
+NSIO::GetSpawnBool(string keyName)
+{
+	return stof(GetSpawnString(keyName)) ? true : false;
+}
+
+float
+NSIO::GetSpawnFloat(string keyName)
+{
+	return stof(GetSpawnString(keyName));
+}
+
+int
+NSIO::GetSpawnInt(string keyName)
+{
+	return stoi(GetSpawnString(keyName));
+}
+
+string
+NSIO::GetSpawnString(string keyName)
+{
+	for (int i = 1; i < (tokenize(m_strSpawnData) - 1); i += 2) {
+		string key = argv(i);
+		string value = argv(i+1);
+
+		if (key == keyName) {
+			return ReadString(argv(i+1));
+		}
+	}
+
+	return ReadString(EntityDef_GetKeyValue(classname, keyName));
+}
+
+vector
+NSIO::GetSpawnVector(string keyName)
+{
+	return stov(GetSpawnString(keyName));
+}
+
+entity
+NSIO::GetSpawnEntity(string keyName, entity startEntity)
+{
+	string targetName = GetSpawnString(keyName);
+	return find(startEntity, ::targetname, targetName);
 }
 
 #ifdef SERVER
@@ -401,6 +524,7 @@ NSIO::Save(float handle)
 	SaveString(handle, "m_strOnUser3", m_strOnUser3);
 	SaveString(handle, "m_strOnUser4", m_strOnUser4);
 	SaveString(handle, "m_strModelEventCB", m_strModelEventCB);
+	SaveString(handle, "m_strSpawnData", m_strSpawnData);
 }
 void
 NSIO::Restore(string strKey, string strValue)
@@ -693,6 +817,9 @@ NSIO::Restore(string strKey, string strValue)
 	case "m_strModelEventCB":
 		m_strModelEventCB = ReadString(strValue);
 		break;
+	case "m_strSpawnData":
+		m_strSpawnData = ReadString(strValue);
+		break;
 	}
 }
 
@@ -721,6 +848,8 @@ NSIO::SpawnKey(string strKey, string strValue)
 	switch (strKey) {
 	case "classname":
 	case "spawnflags":
+	case "mins":
+	case "maxs":
 		break;
 	case "targetname":
 		targetname = strValue;
@@ -762,4 +891,37 @@ float
 NSIO::GetTime(void)
 {
 	return (movetype == MOVETYPE_PUSH) ? ltime : time;
+}
+
+
+void
+NSIO::DebugBool(string key, bool value)
+{
+	EntLog("%S \"%d\"", key, value);
+}
+void
+NSIO::DebugFloat(string key, float value)
+{
+	EntLog("%S \"%f\"", key, value);
+}
+void
+NSIO::DebugInt(string key, int value)
+{
+	EntLog("%S \"%i\"", key, value);
+}
+void
+NSIO::DebugString(string key, string value)
+{
+	EntLog("%S %S", key, value);
+}
+void
+NSIO::DebugVector(string key, vector value)
+{
+	EntLog("%S \"%v\"", key, value);
+}
+void
+NSIO::DebugEntity(string key, entity targ)
+{
+	float value = num_for_edict(targ);
+	EntLog("%S \"%f\"", key, value);
 }

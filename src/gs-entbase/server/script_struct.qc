@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: FIXME: Unknown */
 /*!QUAKED script_struct (1 0 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Unknown.
@@ -23,6 +24,9 @@ Unknown.
 
 # TRIVIA
 This entity was introduced in Call of Duty 2 (2005).
+
+@ingroup server
+@ingroup pointentity
 */
 class
 script_struct:NSBrushTrigger

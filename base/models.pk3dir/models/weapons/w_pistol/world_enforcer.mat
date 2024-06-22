@@ -1,0 +1,12 @@
+// Vera Visions Material
+{
+if $programs
+	program vertexlit
+	diffusemap "models/items/enforcer/world_enforcerskin.tga"
+else
+	{
+		map "models/items/enforcer/world_enforcerskin.tga"
+		rgbGen lightingDiffuse
+	}
+endif
+}

@@ -1,58 +1,12 @@
 # Launching
 
-## For development...
-
-For development, use the `nuclide` launch script inside the root directory.
+You run `./fteqw` with a parameter specifying the game directory:
 
 ```
-$ ./nuclide
+$ ./fteqw -game base
 ```
 
-Running it on its own will mount only the directory `platform/`. As that's the default defined inside the file `./default.fmf`.
-
-You can mount an additional mod over it like so:
-
-```
-$ ./nuclide -game some_other_mod
-```
-
-If you wanted to mount multiple game dirs, you could in theory do it like so:
-
-```
-$ ./nuclide -game first_mod -game second_mod -game third_mod
-```
-
-And it'll load those directories in order.
-
-However, if you'd like to be very specific in how a game is run/branded/launched
-you should really use **FTE Manifest** files.
-
-Simply plop one into your game directory with the name `manifest.fmf`, then launch
-nuclide like so:
-
-```
-$ ./nuclide first_mod
-```
-
-and it will load `first_mod/manifest.fmf`. You can supply arguments to it by putting them into the second parameter with quotes like so:
-
-```
-$ ./nuclide first_mod "-window +set sv_cheats 1"
-```
-
-However, we advise you only do this for development. If you want proper multiplayer compatibility (slightly different filesystem mount setups can confuse client-server negotation) please use the built-in **Custom game** menu to ensure maximum compatibility to other clients.
-
-If you are running a dedicated server and have issues with multiple game directories, check the value of the cvar `sv_gamedir` on the server. It is meant to be a semicolon separated list of game directories, if multiple ones are supposed to be mounted.
-
-## For release...
-
-You'll want to compile a custom build of the engine with your branding.
-Inside `src/engine/engine/common/` you can find a config file named `config_wastes.h`,
-which is a good example of how you can customize your engine binaries and filesystem mount-points.
-
-That way you **avoid** shipping a default.fmf file.
-
-**How to compile a custom config build**: You pass `FTE_CONFIG=wastes` to the make environment when building an engine binary - if you wanted to build with the `config_wastes.h` file. [For more information check out the building section](Building.md)
+If you [built a custom branded version of the engine](@ref build-engine), you can run that as is.
 
 ## Mod/Game Setup
 

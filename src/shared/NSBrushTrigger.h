@@ -19,14 +19,18 @@
 It's primary function is to consistently set up triggers.
 In your sub-class you'll probably want to call `InitBrushTrigger()`
 inside its `::Respawn()` reimplementation.
+
+@ingroup baseclass
 */
-class NSBrushTrigger:NSEntity
+class
+NSBrushTrigger:NSEntity
 {
 public:
-	void NSBrushTrigger(void);
+	void NSBrushTrigger (void);
 
 	/* overrides */
-	virtual int GetValue(entity);
+	virtual int GetValue (entity);
+	virtual void Respawn(void);
 
 	/** Sets up a brush trigger volume based on the brush information. */
 	nonvirtual void InitBrushTrigger(void);

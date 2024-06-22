@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Physics Upright Controller */
 /*!QUAKED phys_keepupright (.5 .3 0) (-8 -8 -8) (8 8 8) INACTIVE
 # OVERVIEW
 Keep an entity upright.
@@ -32,6 +33,9 @@ Keep an entity upright.
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
+
+@ingroup server
+@ingroup pointentity
 */
 class
 phys_keepupright:NSPhysicsConstraint
@@ -98,10 +102,10 @@ phys_keepupright::Respawn(void)
 void
 phys_keepupright::AfterSpawn(void)
 {
-	SetOrigin(GetSpawnOrigin());
+	SetOrigin(GetSpawnVector("origin"));
 	SetEntity1(find(world, ::targetname, m_strEnt1));
 	NSEntity targetEnt = (NSEntity)GetEntity1();
-	KeepUpright(targetEnt, targetEnt.GetSpawnAngles(), m_flAngularLimit);
+	KeepUpright(targetEnt, targetEnt.GetSpawnVector("angles"), m_flAngularLimit);
 }
 
 void
@@ -112,11 +116,11 @@ phys_keepupright::Input(entity activatorEnt, string inputName, string dataString
 	switch (inputName) {
 	case "TurnOn":
 		targetEnt = (NSEntity)GetEntity1();
-		KeepUpright(targetEnt, targetEnt.GetSpawnAngles(), m_flAngularLimit);
+		KeepUpright(targetEnt, targetEnt.GetSpawnVector("angles"), m_flAngularLimit);
 		break;
 	case "TurnOff":
 		targetEnt = (NSEntity)GetEntity1();
-		KeepUpright(targetEnt, targetEnt.GetSpawnAngles(), -1);
+		KeepUpright(targetEnt, targetEnt.GetSpawnVector("angles"), -1);
 		break;
 	default:
 		super::Input(activatorEnt, inputName, dataString);

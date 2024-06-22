@@ -14,12 +14,26 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/** @defgroup entities Entities
+    @brief Objects within the game world, serving various functions.
+
+Entities are what we call instantiated objects within our game world.
+They belong to a class, which can be read from their `.classname` field
+at any given time.
+
+In Nuclide, the lowest entity class you're meant to instantiate is NSEntity.
+There are multiple child-classes that do a lot more advanced and or specific
+things.
+
+@{
+*/
+
 /** Entity update identifiers */
 typedef enum
 {
 	ENT_NONE = 0,	/**< invalid, but reserved. */
 	ENT_ENTITY,	/**< of type NSEntity */
-	ENT_PMOVEVARS, /** of type NSPMoveVars */
+	ENT_PMOVEVARS, /**< of type NSPMoveVars */
 	ENT_ENTITYRENDERABLE, /**< of type NSRenderableEntity */
 	ENT_ENTITYPROJECTILE, /**< of type NSProjectile */
 	ENT_SURFPROP, /**< of type NSSurfacePropEntity */
@@ -28,6 +42,7 @@ typedef enum
 	ENT_TALKMONSTER,	/**< of type NSTalkMonster */
 	ENT_SPEAKER, /**< of type speaker */
 	ENT_PLAYER,	/**< of type NSClientPlayer */
+	ENT_ITEM, /**< of type NSItem */
 	ENT_WEAPON, /**< of type NSWeapon */
 	ENT_SPECTATOR,	/**< of type NSClientSpectator */
 	ENT_PORTAL,		/**< of type NSPortal */
@@ -38,16 +53,16 @@ typedef enum
 	ENT_DLIGHT,	/**< of type light_dynamic */
 	ENT_PROJECTEDTEXTURE, /**< of type env_projectedtexture */
 	ENT_SPOTLIGHT, /**< of type point_spotlight */
-	ENT_FOG,			/*<< of type env_fog */
-	ENT_STEAM,	/*<< of type env_steam */
+	ENT_FOG,			/**< of type env_fog */
+	ENT_STEAM,	/**< of type env_steam */
 	ENT_FOGCONTROLLER, /**< of type env_fog_controller */
-	ENT_CASCADELIGHT, /*<< of type env_cascade_light */
+	ENT_CASCADELIGHT, /**< of type env_cascade_light */
 	ENT_LASER,	/**< of type env_laser */
 	ENT_PARTSYSTEM,	/**< of type info_particle_system */
 	ENT_SPRITE,	/**< of type env_sprite */
 	ENT_GLOW, /**< of type env_glow */
-	ENT_SPRAY,	/**< of type spray */
-	ENT_DECAL,	/**< of type infodecal */
+	ENT_SPRAY,	/**< of type NSSpraylogo */
+	ENT_DECAL,	/**< of type NSDecal */
 	ENT_OLDCAMERA,	/**< of type trigger_camera */
 	ENT_MONITOR,	/**< of type func_monitor */
 	ENT_VEHICLE,	/**< Reserved. */
@@ -62,6 +77,7 @@ typedef enum
 	ENT_WAYPOINT,	/**< of type info_waypoint */
 	ENT_INSTRUCTOR, /**< of type env_instructor_hint */
 	ENT_PUSH,		/**< of type trigger_push */
+	ENT_SOUNDSCAPE, /**< of type NSSoundScape */
 	ENT_SEPARATOR,	/**< This is a separator. This separator is used by you to add game-specific networked entities. When declaring your own entity-update types, you want the first value to equal ENT_SEPARATOR at all times to ensure you'll not be overriding existing slots. */
 } entupdate_t;
 

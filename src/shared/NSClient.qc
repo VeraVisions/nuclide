@@ -181,3 +181,54 @@ Client_InIntermission(void)
 	return (float)g_grMode.InIntermission();
 #endif
 }
+
+#ifdef SERVER
+/*
+=================
+Client_FixAngle
+
+Forces the camera-angle on the specified 'target' client
+to the euler angle in the 'ang' parameter.
+=================
+*/
+void
+Client_FixAngle(entity target, vector ang)
+{
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_ANGLE);
+	WriteFloat(MSG_MULTICAST, ang[0]);
+	WriteFloat(MSG_MULTICAST, ang[1]);
+	WriteFloat(MSG_MULTICAST, ang[2]);
+	msg_entity = target;
+	multicast([0,0,0], MULTICAST_ONE_R);
+}
+
+/*
+=================
+Client_ShakeOnce
+
+Single unreliable request to shake the screen of all
+players within a specified radius by the desired parameters.
+=================
+*/
+void
+Client_ShakeOnce(vector pos, float radius, float duration, float frequency, float amplitude)
+{
+	for (entity pl = world; (pl = find(pl, ::classname, "player"));) {
+		float amp;
+
+		if (vlen(pos - pl.origin) > radius)
+			continue;
+
+		amp = 1.0 - (vlen(pos - pl.origin) / radius);
+		WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+		WriteByte(MSG_MULTICAST, EV_SHAKE);
+		WriteFloat(MSG_MULTICAST, duration);
+		WriteFloat(MSG_MULTICAST, amplitude * amp);
+		WriteFloat(MSG_MULTICAST, frequency);
+
+		msg_entity = pl;
+		multicast([0,0,0], MULTICAST_ONE);
+	}
+}
+#endif

@@ -17,7 +17,10 @@
 .void(void) _m_NSTimerFunc;
 
 /** This class provides a way to trigger a function in the future.
-It has the ability to clean itself up afterwards, too. */
+It has the ability to clean itself up afterwards, too. 
+
+@ingroup baseclass
+*/
 class
 NSTimer:NSEntity
 {

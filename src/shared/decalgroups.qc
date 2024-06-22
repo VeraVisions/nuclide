@@ -15,6 +15,7 @@
 */
 
 #ifdef CLIENT
+/** Data holding DecalGroup entries. */
 typedef struct
 {
 	string materials;

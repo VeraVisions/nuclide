@@ -61,8 +61,11 @@ NSClientPlayer is a sub-class which has the ability to interact with games.
 
 When clients connect via the `spectate` command, they will findthemselves
 of type NSClientSpectator.
+
+@ingroup baseclass
 */
-class NSClientSpectator:NSClient
+class
+NSClientSpectator:NSClient
 {
 private:
 	PREDICTED_FLOAT(spec_ent)

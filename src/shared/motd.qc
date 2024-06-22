@@ -53,11 +53,11 @@ MOTD_Init(void)
 void
 MOTD_LoadDefault(void)
 {
-	MOT_LoadFromFile(MOTD_FILE);
+	MOTD_LoadFromFile(MOTD_FILE);
 }
 
 void
-MOT_LoadFromFile(string fileName)
+MOTD_LoadFromFile(string fileName)
 {
 	/* init motd */
 	string tempString;

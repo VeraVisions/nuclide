@@ -32,18 +32,28 @@ XR_Init(entity ePlayer)
 {
 	NSClient pl = (NSClient)ePlayer;
 
-	pl.m_xrSpace = spawn(NSXRSpace);
+	if (!pl.m_xrSpace) {
+		pl.m_xrSpace = spawn(NSXRSpace);
+	}
 
 	/* the only 3 devices that matter right now */
-	pl.m_xrInputHead = spawn(NSXRInput);
-	pl.m_xrInputHead.SetType(XR_INPUT_HEAD);
-	pl.m_xrInputHead.SetParentSpace(pl.m_xrSpace);
-	pl.m_xrInputLeft = spawn(NSXRInput);
-	pl.m_xrInputLeft.SetType(XR_INPUT_LEFT);
-	pl.m_xrInputLeft.SetParentSpace(pl.m_xrSpace);
-	pl.m_xrInputRight = spawn(NSXRInput);
-	pl.m_xrInputRight.SetType(XR_INPUT_RIGHT);
-	pl.m_xrInputRight.SetParentSpace(pl.m_xrSpace);
+	if (!pl.m_xrInputHead) {
+		pl.m_xrInputHead = spawn(NSXRInput);
+		pl.m_xrInputHead.SetType(XR_INPUT_HEAD);
+		pl.m_xrInputHead.SetParentSpace(pl.m_xrSpace);
+	}
+
+	if (!pl.m_xrInputLeft) {
+		pl.m_xrInputLeft = spawn(NSXRInput);
+		pl.m_xrInputLeft.SetType(XR_INPUT_LEFT);
+		pl.m_xrInputLeft.SetParentSpace(pl.m_xrSpace);
+	}
+
+	if (!pl.m_xrInputRight) {
+		pl.m_xrInputRight = spawn(NSXRInput);
+		pl.m_xrInputRight.SetType(XR_INPUT_RIGHT);
+		pl.m_xrInputRight.SetParentSpace(pl.m_xrSpace);
+	}
 }
 
 void
@@ -63,8 +73,9 @@ XR_UpdateView(entity ePlayer)
 	NSClient pl = (NSClient)ePlayer;
 
 	/* not yet ready */
-	if (!pl.m_xrSpace)
+	if (!pl.m_xrSpace) {
 		return;
+	}
 
 	/* update our space */
 	if (XR_Available(ePlayer)) {
@@ -92,8 +103,9 @@ XR_InputFrame(entity ePlayer)
 	NSClient pl = (NSClient)ePlayer;
 
 	/* not yet ready */
-	if (!pl.m_xrSpace)
+	if (!pl.m_xrSpace) {
 		return;
+	}
 
 	if (autocvar_xr_testInputs) {
 		input_head_status = (XR_STATUS_ORG | XR_STATUS_ANG);

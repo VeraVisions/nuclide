@@ -16,10 +16,9 @@
 
 .float max_angular;
 
-/* taken from VPhysics-Jolt */
+/* taken from VPhysics-Jolt (with permission!) */
 const float InchesToMeters = 0.0254f;
 const float MetersToInches = 1.0f / 0.0254f;
-
 
 void
 NSPhysicsEntity::NSPhysicsEntity(void)
@@ -514,7 +513,7 @@ NSPhysicsEntity::_TouchThink(void)
 
 #ifdef SERVER
 void
-NSPhysicsEntity::Pain(void)
+NSPhysicsEntity::Pain(entity inflictor, entity attacker, int damage, vector dir, int location)
 {
 	vector forceDir;
 	float force;
@@ -543,10 +542,10 @@ NSPhysicsEntity::Pain(void)
 }
 
 void
-NSPhysicsEntity::Death(void)
+NSPhysicsEntity::Death(entity inflictor, entity attacker, int damage, vector dir, int location)
 {
-	Pain();
-	super::Death();
+	Pain(inflictor, attacker, damage, dir, location);
+	super::Death(inflictor, attacker, damage, dir, location);
 
 	if (takedamage != DAMAGE_YES) {
 		takedamage = (DAMAGE_YES);
@@ -565,10 +564,11 @@ NSPhysicsEntity::Death(void)
 void
 NSPhysicsEntity::Respawn(void)
 {
+	super::Respawn();
+
 	ClearVelocity();
 	SetMovetype(MOVETYPE_PHYSICS);
 	SetSolid(SOLID_BSP);
-	SetModel(GetSpawnModel());
 
 #ifdef SERVER
 	SetTakedamage(DAMAGE_YES);
@@ -587,7 +587,6 @@ NSPhysicsEntity::Respawn(void)
 	geomtype = GEOMTYPE_TRIMESH;
 	friction = 1.0f;
 
-	SetOrigin(GetSpawnOrigin());
 	m_flBuoyancyRatio = 1.0f;
 
 	SetDamping(1.0f, 1.0f);

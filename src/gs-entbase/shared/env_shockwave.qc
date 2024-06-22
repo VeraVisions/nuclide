@@ -18,6 +18,7 @@
 #define WAVE_POLY_COUNT 32
 #endif
 
+/*! \brief Shared-Entity: Shockwave Effect */
 /*!QUAKED env_shockwave (1 .5 0) (-8 -8 -8) (8 8 8) CENTERED REPEATABLE
 # OVERVIEW
 A temporary shockwave effect is produced when triggered.
@@ -41,7 +42,10 @@ A temporary shockwave effect is produced when triggered.
 - REPEATABLE (2) : If set, will not delete the effect after being triggered.
 
 # TRIVIA
-This entity was introduced in Spirit of Half-Life (2000)
+This entity was introduced in Spirit of Half-Life (2000).
+
+@ingroup shared
+@ingroup pointentity
 */
 class
 env_shockwave:NSEntity

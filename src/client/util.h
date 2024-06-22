@@ -14,6 +14,14 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/** @defgroup clientutils Utilities
+    @brief Client Utility API Reference
+    @ingroup client
+
+    @{
+
+ */
+
 /** Returns if the specified client is a NSClientSpectator, doesn't matter if real or fake */
 bool Client_IsSpectator(NSClient);
 
@@ -43,3 +51,5 @@ bool Client_InVehicle(void);
 string Util_GetTime(void);
 float Util_GetTimeLeft(void);
 string Util_GetAddress(void);
+
+/** @} */ // end of client

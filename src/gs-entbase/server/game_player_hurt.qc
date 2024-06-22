@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Player Health Controller */
 /*!QUAKED game_player_hurt (1 .5 0) (-8 -8 -8) (8 8 8) REMOVE
 # OVERVIEW
 Upon being triggered, the entity will damage/heal the activating player.
@@ -29,9 +30,12 @@ Upon being triggered, the entity will damage/heal the activating player.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup server
+@ingroup pointentity
 */
 class
-game_player_hurt:NSEntity
+game_player_hurt:NSPointTrigger
 {
 public:
 	void game_player_hurt(void);
@@ -92,7 +96,9 @@ game_player_hurt::Trigger(entity activatingEntity, triggermode_t triggerMode)
 		return;
 	}
 
-	Damage_Apply(activatingEntity, world, m_iDamage, 0, 0);
+	string damageDef = sprintf("\"damage\" \"%i\"", m_iDamage);
+
+	entityDamage(activatingEntity, this, activatingEntity, damageDef, "", GetOrigin(), g_vec_null, activatingEntity.origin);
 
 	if (HasSpawnFlags(1)) {
 		Destroy();

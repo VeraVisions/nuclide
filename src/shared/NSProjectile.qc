@@ -48,6 +48,9 @@ NSProjectile::NSProjectile(void)
 	m_partSmokeBounce = __NULL__;
 	m_partSmokeFuse = __NULL__;
 	m_iDebrisCount = 0i;
+	m_bDebrisStick = false;
+	m_vecDebrisOffset = g_vec_null;
+	m_vecImpactPos = g_vec_null;
 	m_vecLightColor = g_vec_null;
 	m_flLightRadius = 0.0f;
 	m_flLightOffset = 0.0f;
@@ -64,6 +67,11 @@ NSProjectile::NSProjectile(void)
 
 	/* ETQW-additions */
 	m_bIsBullet = false;
+	m_iShots = 1i;
+	m_vecSpread = [0.0, 0.0, 0.0];
+	m_strDecalGroup = __NULL__;
+	m_flRange = 4096.0f;
+
 
 	/* Nuclide additions */
 	m_bStickToWorld = false;
@@ -92,7 +100,6 @@ NSProjectile::SpawnKey(string strKey, string strValue)
 		break;
 	case "model":
 		model = ReadString(strValue);
-		m_oldModel = model;
 		break;
 	case "velocity":
 		velocity = ReadVector(strValue);
@@ -167,6 +174,12 @@ NSProjectile::SpawnKey(string strKey, string strValue)
 	case "debris_count":
 		m_iDebrisCount = ReadInt(strValue);
 		break;
+	case "debris_stick":
+		m_bDebrisStick = ReadBool(strValue);
+		break;
+	case "debris_offset":
+		m_vecDebrisOffset = ReadVector(strValue);
+		break;
 	case "projectile_debris":
 		m_defProjectileDebris = ReadString(strValue);
 		break;
@@ -209,6 +222,24 @@ NSProjectile::SpawnKey(string strKey, string strValue)
 	case "is_bullet":
 		m_bIsBullet = ReadBool(strValue);
 		break;
+	case "hitscans":
+		m_iShots = ReadInt(strValue);
+		break;
+	case "spread":
+		m_vecSpread = ReadVector(strValue);
+		break;
+	case "spread_x":
+		m_vecSpread[0] = ReadFloat(strValue);
+		break;
+	case "spread_y":
+		m_vecSpread[1] = ReadFloat(strValue);
+		break;
+	case "decal_impact":
+		m_strDecalGroup = ReadString(strValue);
+		break;
+	case "range":
+		m_flRange = ReadFloat(strValue);
+		break;
 	/* Nuclide additions */
 	case "stick_to_world":
 		m_bStickToWorld = ReadBool(strValue);
@@ -233,6 +264,9 @@ NSProjectile::SpawnKey(string strKey, string strValue)
 		break;
 	case "offset":
 		m_vecSpawnOrigin = ReadVector(strValue);
+		break;
+	case "damage":
+		m_flDamage = ReadFloat(strValue);
 		break;
 	default:
 		super::SpawnKey(strKey, strValue);
@@ -468,17 +502,21 @@ NSProjectile::Spawned(void)
 void
 NSProjectile::Touch(entity eToucher)
 {
-	if (m_defDamage)
+	m_vecImpactPos = trace_endpos;
+
 	if (eToucher.takedamage != DAMAGE_NO) {
+		NSSurfacePropEntity toucher = (NSSurfacePropEntity)eToucher;
 		float damageVal;
-		float baseDamage = Skill_GetDefValue(EntityDef_GetKeyValue(m_defDamage, "damage"));
-		float randomDamage = Skill_GetDefValue(EntityDef_GetKeyValue(m_defDamage, "damage_random"));
+		float baseDamage = GetSubDefFloat(m_defDamage, "damage");
+		float randomDamage = GetSubDefFloat(m_defDamage, "damage_random");
 		damageVal = (baseDamage + randomDamage);
 
 		if (m_flDmgMultiplier >= 0.0)
 			damageVal *= m_flDmgMultiplier;
 
-		Damage_Apply(eToucher, owner, damageVal, WEAPON_NONE, DMG_BLUNT);
+		//Damage_Apply(eToucher, owner, damageVal, 0, DMG_BLUNT);
+		toucher.Damage(this, owner, ftos(damageVal), 1.0, vectorNormalize(angles), origin);
+		//Damage(this, owner, ftos(m_flLeapDamage), 1.0, vectorNormalize(angles), trace_endpos);
 	}
 
 	if (m_bDetonateOnWorld) {
@@ -507,13 +545,13 @@ NSProjectile::Touch(entity eToucher)
 }
 
 void
-NSProjectile::Pain(void)
+NSProjectile::Pain(entity inflictor, entity attacker, int damage, vector dir, int location)
 {
 	/* do nothing. */
 }
 
 void
-NSProjectile::Death(void)
+NSProjectile::Death(entity inflictor, entity attacker, int damage, vector dir, int location)
 {
 	if (m_bDetonateOnDeath) {
 		_Explode();
@@ -647,16 +685,39 @@ NSProjectile::_FuseEnded(void)
 		return;
 	}
 
-	if (m_partSmokeFuse)
+	if (m_partSmokeFuse) {
 		pointparticles(particleeffectnum(m_partSmokeFuse), origin, velocity, 1);
+	}
+
 
 	Destroy();
 }
+
 void
 NSProjectile::_Explode(void)
 {
-	makevectors(vectoangles(velocity));
-	vector explodePos = origin - (v_forward * 32);
+	vector newAngles, aimFwd, aimRgt, aimUp;
+	vector debrisPos;
+	vector debrisOffset = g_vec_null;
+	vector explodePos = g_vec_null;
+	vector debrisAngle = GetAngles();
+
+	newAngles = vectorToAngles(GetVelocity());
+	aimFwd = anglesToForward(newAngles);
+	aimRgt = anglesToRight(newAngles);
+	aimUp = anglesToUp(newAngles);
+
+	debrisOffset = (aimFwd * m_vecDebrisOffset[0]);
+	debrisOffset += (aimRgt * m_vecDebrisOffset[1]);
+	debrisOffset += (aimUp * m_vecDebrisOffset[2]);
+
+	if (m_bDebrisStick) {
+		debrisPos = m_vecImpactPos + debrisOffset;
+		explodePos = m_vecImpactPos;
+	} else {
+		debrisPos = explodePos + debrisOffset;
+		explodePos = origin - (aimFwd * 32);
+	}
 
 	if (m_matDetonate) {
 		DecalGroups_Place(m_matDetonate, origin);
@@ -667,23 +728,23 @@ NSProjectile::_Explode(void)
 
 	//print(sprintf("%S\n", m_defSplashDamage));
 	if (m_defSplashDamage) {
-		float flDamage = Skill_GetDefValue(EntityDef_GetKeyValue(m_defSplashDamage, "damage"));
-		float flRadius = Skill_GetDefValue(EntityDef_GetKeyValue(m_defSplashDamage, "radius"));
+		float flDamage = GetSubDefFloat(m_defSplashDamage, "damage");
+		float flRadius = GetSubDefFloat(m_defSplashDamage, "radius");
 
 		if (m_flDmgMultiplier >= 0.0)
 			flDamage *= m_flDmgMultiplier;
 
 		//print(sprintf("Damage: %d; Radius: %d\n", flDamage, flRadius));
-		Damage_Radius(origin, owner, flDamage, flRadius, TRUE, WEAPON_NONE);
+		//Damage_Radius(origin, owner, flDamage, flRadius, TRUE, 0);
+		radiusDamage(origin, flRadius, 0i, (int)flDamage, owner);
 	}
 
 	/* another def that'll be spawned when this one detonates */
 	if (m_defProjectileDebris) {
-		vector debrisAngle = GetAngles();
 		float movementAmount = 360.0f / (float)m_iDebrisCount;
 
 		for (int i = 0; i < m_iDebrisCount; i++) {
-			NSProjectile_SpawnDefAtPosition(m_defProjectileDebris, (NSEntity)owner, explodePos, debrisAngle);
+			NSProjectile_SpawnDefAtPosition(m_defProjectileDebris, (NSEntity)owner, debrisPos, debrisAngle);
 			debrisAngle[1] += movementAmount;
 		}
 	}
@@ -695,7 +756,221 @@ NSProjectile::_Explode(void)
 void
 NSProjectile::_LaunchHitscan(vector startPos, vector launchDir, float dmgMultiplier)
 {
-	
+	vector vecDir;
+	vector ownerAngle;
+	vector ownerDir;
+
+	m_eMultiTarget = __NULL__;
+	m_iMultiValue = 0;
+
+	ownerAngle = anglesToForward(launchDir);
+	ownerDir = aim(owner, 100000);
+
+	while (m_iShots > 0) {
+		/* use cached value */
+		v_forward = ownerAngle;
+
+		if (owner.flags & FL_CLIENT) {
+			vecDir = ownerDir;
+		} else {
+			vecDir = v_forward;
+		}
+
+#ifndef BULLETPATTERNS
+		vecDir += random(-1,1) * m_vecSpread[0] * v_right;
+		vecDir += random(-1,1) * m_vecSpread[1] * v_up;
+#else
+		/* FOR NOW Monsters will not be able to do spread like players if patterns are enabled */
+		if (!(owner.flags & FL_CLIENT)) {
+			vecDir += random(-1,1) * m_vecSpread[0] * v_right;
+			vecDir += random(-1,1) * m_vecSpread[1] * v_up;
+		} else {
+			player pl = (player) owner;
+
+			/* weapons have already applied their multiplier... so attempt this */
+			int multiplier = pl.cs_shotmultiplier - m_iShots;
+			float frand = (multiplier / 6);
+
+			/* shoddy attempt at spray patterns */
+			if (frand < 1)
+				frand = frand;
+			else if (frand <= 2)
+				frand = 2 - (frand * 1.5);
+
+			vecDir += frand * m_vecSpread[0] * v_right;
+			vecDir += (m_vecSpread[1] * v_up) * 2;
+		}
+#endif
+		_FireSingle(startPos, vecDir, m_flDamage, m_flRange);
+		m_iShots--;
+	}
+
+	if (m_eMultiTarget) {
+		_ApplyDamage();
+	}
+}
+
+void
+NSProjectile::_ApplyDamage(void)
+{
+	/* may not be defined yet */
+	if (m_eMultiTarget == __NULL__)
+		return;
+
+	/* the location _could_ be more accurate... */
+	if (m_eMultiTarget.CanBleed() == true) {
+		FX_Blood(trace_endpos, m_eMultiTarget.GetBloodColor());
+	}
+
+	trace_surface_id = m_iMultiBody;
+	g_dmg_vecLocation = trace_endpos;
+	string dmgDef = sprintf("\"damage\" \"%i\"", m_iMultiValue);
+	vector dmgDir = dirFromTarget(GetOrigin(), m_eMultiTarget.origin);
+
+	NSError("Applying %i damage to %S", m_iMultiValue, m_eMultiTarget.classname);
+
+entityDamage(m_eMultiTarget, owner, owner, dmgDef, "", GetOrigin(), dmgDir, trace_endpos);
+	//Damage_Apply(m_eMultiTarget, owner, m_iMultiValue, m_iWeapon, DMG_BULLET);
+	m_eMultiTarget = __NULL__;
+	m_iMultiValue = 0;
+	m_iMultiBody = 0;
+}
+
+
+void
+NSProjectile::_FireSingle(vector vecPos, vector vecAngles, float flDamage, float flRange)
+{
+	vector range;
+	vector planeNormal;
+	vector endPos;
+
+	if (flRange <= 0)
+		return;
+
+	if (flDamage < 1)
+		return;
+
+	range = (vecAngles * 8196);
+
+	owner.dimension_solid = 255;
+	owner.dimension_hit = 255;
+
+	/* make sure we can gib corpses */
+	int oldhitcontents = owner.hitcontentsmaski;
+	owner.hitcontentsmaski = CONTENTBITS_POINTSOLID | CONTENTBIT_CORPSE | CONTENTBIT_WATER | CONTENTBIT_SLIME | CONTENTBIT_LAVA | CONTENTBIT_PROJECTILE;
+	traceline(vecPos, vecPos + range, MOVE_LAGGED | MOVE_HITMODEL, owner);
+	owner.hitcontentsmaski = oldhitcontents;
+	planeNormal = trace_plane_normal;
+	endPos = trace_endpos;
+
+	flRange -= trace_plane_dist;
+
+	owner.dimension_solid = 254;
+	owner.dimension_hit = 254;
+
+	m_iMultiBody |= trace_surface_id;
+
+	if (trace_fraction >= 1.0f)
+		return;
+
+	/* water impact */
+	if (trace_endcontentsi & CONTENTBIT_WATER) {
+		SurfData_ImpactOfNamedType("water", endPos, planeNormal);
+		_FireSingle(endPos + (v_forward * 2), vecAngles, flDamage / 2, flRange);
+	} else if (trace_endcontentsi & CONTENTBIT_SLIME) {
+		SurfData_ImpactOfNamedType("slime", endPos, planeNormal);
+		_FireSingle(endPos + (v_forward * 2), vecAngles, flDamage / 2, flRange);
+	} else if (trace_endcontentsi & CONTENTBIT_LAVA) {
+		SurfData_ImpactOfNamedType("lama", endPos, planeNormal);
+		_FireSingle(endPos + (v_forward * 2), vecAngles, flDamage / 2, flRange);
+	}
+
+	if (trace_ent.takedamage != DAMAGE_NO && trace_ent.iBleeds) {
+		Sound_Play(trace_ent, CHAN_BODY, "damage_bullet.hit");
+
+#ifdef CSTRIKE
+		NSClientPlayer pl = (NSClientPlayer)trace_ent;
+		/* modify the damage based on the location */
+		switch (trace_surface_id) {
+		case BODY_HEAD:
+			/* the helmet is one power house */
+			if (pl.g_items & ITEM_HELMET) {
+				flDamage = 0;
+				Sound_Play(trace_ent, CHAN_BODY, "player.headshotarmor");
+				pl.g_items &= ~ITEM_HELMET;
+				return;
+			} else {
+				flDamage *= 4;
+				Sound_Play(trace_ent, CHAN_BODY, "player.headshot");
+			}
+			break;
+		case BODY_STOMACH:
+			flDamage *= 0.9;
+			if (pl.armor > 0)
+				Sound_Play(trace_ent, CHAN_BODY, "player.hitarmor");
+			break;
+		case BODY_LEGLEFT:
+		case BODY_LEGRIGHT:
+			flDamage *= 0.4;
+			break;
+		}
+#else
+		/* only headshots count in HL */
+		if (trace_surface_id == BODY_HEAD)
+			flDamage *= 3;
+#endif
+	}
+
+#ifdef WASTES
+	TWPlayer pl1 = (TWPlayer)self;
+	if (pl1.m_iWillpowerValue > 0) {
+		FX_Crit(endPos, vectoangles(endPos - pl1.origin), 0);
+	}
+#endif
+
+	/* impact per bullet */
+	if (m_bDetonateOnWorld == true && trace_ent.iBleeds == 0) {
+		if (m_strDecalGroup)
+			DecalGroups_Place(m_strDecalGroup, endPos + (vecAngles * -2));
+
+		SurfData_Impact(trace_ent, endPos, planeNormal);
+	}
+
+	/* combine them into one single Damage_Apply call later */
+	if (trace_ent.takedamage != DAMAGE_NO) {
+		if (trace_ent != m_eMultiTarget) {
+			trace_endpos = endPos;
+			_ApplyDamage();
+			m_eMultiTarget = (NSSurfacePropEntity)trace_ent;
+			m_iMultiValue = flDamage;
+		} else {
+			m_iMultiValue += flDamage;
+		}
+	}
+
+#ifdef BULLETPENETRATION
+	if (m_iTotalPenetrations > 0) {
+		float cont;
+
+#if 0
+		if (!(trace_surfaceflagsi & SURF_PENETRATE))
+			m_iTotalPenetrations -= 1;
+#endif
+
+		/* check if this wall is 6 units thick... */
+		if (m_iTotalPenetrations > 0) {
+			cont = pointcontents(endPos + v_forward * 5);
+
+			if (cont == CONTENT_SOLID)
+				m_iTotalPenetrations -= 1; /* deduct 1 penetration power */
+		}
+
+		cont = pointcontents(endPos + v_forward * m_flMaxThickness);
+
+		if (cont == CONTENT_EMPTY)
+			_FireSingle(endPos + (v_forward * 2), vecAngles, flDamage / 2, flRange);
+	}
+#endif
 }
 
 void
@@ -755,7 +1030,6 @@ NSProjectile::Launch(vector startPos, vector launchDir, float fuseOffset, float 
 	}
 
 	SetAngles(launchDir);
-	SetModel(m_oldModel);
 	SetSize(m_vecSpawnMins, m_vecSpawnMaxs);
 
 	if (dmgMultiplier <= 0.0)
@@ -930,7 +1204,6 @@ NSProjectile
 NSProjectile_SpawnDef(string entityDef, NSEntity theOwner)
 {
 	entity oldself = self;
-	vector launchAngle;
 
 	NSProjectile rocket = spawn(NSProjectile);
 	rocket.owner = theOwner;
@@ -938,12 +1211,7 @@ NSProjectile_SpawnDef(string entityDef, NSEntity theOwner)
 	EntityDef_SpawnClassname(entityDef);
 	self = oldself;
 
-	if (theOwner.flags & FL_CLIENT)
-		launchAngle = theOwner.v_angle;
-	else
-		launchAngle = theOwner.GetAngles();
-
-	rocket.Launch(theOwner.GetOrigin() + theOwner.view_ofs, launchAngle, 0.0f, 0.0f, 0.0f);
+	rocket.Launch(theOwner.GetEyePos(), theOwner.GetViewAngle(), 0.0f, 0.0f, 0.0f);
 	return rocket;
 }
 
@@ -973,7 +1241,7 @@ NSProjectile_SpawnDefAttachment(string entityDef, NSEntity theOwner, int attachm
 	self = rocket;
 	EntityDef_SpawnClassname(entityDef);
 	self = oldself;
-	rocket.Launch(attachmentPos, theOwner.GetAngles(), 0.0f, 0.0f, 0.0f);
+	rocket.Launch(attachmentPos, theOwner.GetViewAngle(), 0.0f, 0.0f, 0.0f);
 	return rocket;
 }
 #endif

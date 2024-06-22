@@ -23,6 +23,7 @@ enumflags
 	ENVFOG_CHANGED_COLOR
 };
 
+/*! \brief Shared-Entity: Simple Fog Controller */
 /*!QUAKED env_fog (1 .5 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Covers the map in fog.
@@ -38,6 +39,9 @@ Covers the map in fog.
 
 # TRIVIA
 This entity was introduced in Counter-Strike (1998).
+
+@ingroup shared
+@ingroup pointentity
 */
 class
 env_fog:NSPointTrigger

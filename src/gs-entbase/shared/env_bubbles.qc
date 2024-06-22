@@ -26,6 +26,7 @@ enumflags
 
 #define BUBFL_STARTOFF 1
 
+/*! \brief Shared-Entity: Bubble Emitter */
 /*!QUAKED env_bubbles (1 .5 0) ? BUBFL_STARTOFF
 # OVERVIEW
 Brush volume that emits rising bubbles.
@@ -54,6 +55,9 @@ and rise up in varying speeds. This means you can only place vertical bubble emi
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup shared
+@ingroup brushentity
 */
 class
 env_bubbles:NSPointTrigger
@@ -325,10 +329,9 @@ env_bubbles::SpawnKey(string strKey, string strValue)
 void
 env_bubbles::Respawn(void)
 {
-	SetModel(GetSpawnModel());
+	super::Respawn();
+
 	SetSolid(SOLID_NOT);
-	SetOrigin(GetSpawnOrigin());
-	SetAngles(GetSpawnAngles());
 	m_iDensity = m_iSpawnDensity;
 	m_flFrequency = m_flSpawnFrequency;
 	m_flCurrent = m_flSpawnCurrent;

@@ -46,7 +46,7 @@ Bot_AddBot_f(string botName, float teamValue, float spawnDelay, string newName)
 		return (false);
 	}
 
-	if (!g_nodes_present) {
+	if (Nodes_Available() == false) {
 		NSError("Can't add bot. No nodes.");
 		return (false);
 	}
@@ -82,6 +82,7 @@ Bot_AddBot_f(string botName, float teamValue, float spawnDelay, string newName)
 		newBot.SetInfoKey(argv(i), argv(i+1));
 	}
 
+	newBot.SetInfoKey("*bot", "1");
 	ClientConnect();
 	PutClientInServer();
 
@@ -140,6 +141,7 @@ BotProfile_Init(void)
 	g_botScriptCount = 0i;
 
 	if (autocvar(bot_enable, 1) == 0) {
+		InitEnd();
 		return;
 	}
 
@@ -147,6 +149,7 @@ BotProfile_Init(void)
 
 	if (botScript < 0) {
 		NSError("Missing file scripts/bots.txt");
+		InitEnd();
 		return;
 	}
 

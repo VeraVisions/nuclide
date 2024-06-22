@@ -14,6 +14,18 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+#ifdef DEVELOPER
+var int autocvar_dev_cornerspeed = 0;
+#endif
+
+enumflags
+{
+	PC_WAIT,
+	PC_TELEPORT,
+	PC_FIREONCE
+};
+
+/*! \brief Server-Entity: Train/Mover Path Node */
 /*!QUAKED path_corner (.5 .3 0) (-8 -8 -8) (8 8 8) PC_WAIT PC_TELEPORT PC_FIREONCE
 # OVERVIEW
 Node entities used for func_trains and func_guntargets.
@@ -36,19 +48,10 @@ Node entities used for func_trains and func_guntargets.
 
 # TRIVIA
 This entity was introduced in Quake (1996).
+
+@ingroup server
+@ingroup pointentity
 */
-
-#ifdef DEVELOPER
-var int autocvar_dev_cornerspeed = 0;
-#endif
-
-enumflags
-{
-	PC_WAIT,
-	PC_TELEPORT,
-	PC_FIREONCE
-};
-
 class
 path_corner:NSPointTrigger
 {

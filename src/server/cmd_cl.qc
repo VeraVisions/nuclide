@@ -22,7 +22,7 @@ Cmd_ParseClientCommand(NSClient sender, string cmd, int commandArguments)
 		if (commandArguments == 2)
 			g_grMode.ChatMessageAll(sender, argv(1));
 		else
-			g_grMode.ChatMessageAll(sender, substring(cmd, 5, -2));
+			g_grMode.ChatMessageAll(sender, substring(cmd, 4, -1));
 		break;
 	case "say_team":
 		if (commandArguments == 2)

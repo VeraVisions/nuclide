@@ -3,7 +3,6 @@
 #endif
 
 #includelist
-decals.h
 server/info_null.qc
 server/info_notnull.qc
 server/info_intermission.qc
@@ -24,6 +23,7 @@ server/env_render.qc
 server/env_shake.qc
 server/env_message.qc
 server/env_model.qc
+server/env_sound.qc
 server/game_text.qc
 server/game_counter.qc
 server/game_counter_set.qc
@@ -40,13 +40,15 @@ server/path_corner.qc
 server/path_track.qc
 server/func_areaportal.qc
 server/func_recharge.qc
+server/item_recharge.qc
 server/func_healthcharger.qc
+server/item_healthcharger.qc
+server/item_eyescanner.qc
 server/func_breakable.qc
 server/func_button.qc
 server/func_brush.qc
 server/func_door.qc
 server/func_door_rotating.qc
-server/func_lod.qc
 server/func_train.qc
 server/func_guntarget.qc
 server/func_traincontrols.qc

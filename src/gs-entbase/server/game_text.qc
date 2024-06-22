@@ -19,6 +19,7 @@ enumflags
 	GTF_ALLPLAYERS
 };
 
+/*! \brief Server-Entity: Custom Text Message Display */
 /*!QUAKED game_text (1 0 0) (-8 -8 -8) (8 8 8) GTF_ALLPLAYERS
 # OVERVIEW
 This entity displays a message of your choice on-screen.
@@ -45,6 +46,9 @@ Line breaks inside "message" can be added with a \n character.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup server
+@ingroup pointentity
 */
 class
 game_text:NSPointTrigger

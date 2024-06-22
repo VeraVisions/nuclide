@@ -24,6 +24,7 @@ enumflags
 	PNTSPTLGHT_CHANGED_STATE,
 };
 
+/*! \brief Shared-Entity: Spotlight With Beam */
 /*!QUAKED point_spotlight (1 .5 0) (-8 -8 -8) (8 8 8) PNTSPTLGHT_STARTON PNTSPTLGHT_NOLIGHT
 # OVERVIEW
 An entity that draws a spotlight, with beam. Will also spawn a dynamic light, unless specifically disabled via the spawnflags field.
@@ -46,6 +47,9 @@ An entity that draws a spotlight, with beam. Will also spawn a dynamic light, un
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
+
+@ingroup shared
+@ingroup pointentity
 */
 class point_spotlight:NSPointTrigger
 {
@@ -333,15 +337,16 @@ point_spotlight::SpawnKey(string strKey, string strValue)
 void
 point_spotlight::Respawn(void)
 {
+	super::Respawn();
+
 	SetSolid(SOLID_NOT);
 	SetSize([-16,-16,-16], [16,16,16]);
-	SetOrigin(GetSpawnOrigin());
-	SetAngles(GetSpawnAngles());
 
 	m_iState = HasSpawnFlags(1) ? 1 : 0;
 
-	if (m_iState && HasSpawnFlags(2))
+	if (m_iState && HasSpawnFlags(2)) {
 		m_iState = 2;
+	}
 }
 #endif
 

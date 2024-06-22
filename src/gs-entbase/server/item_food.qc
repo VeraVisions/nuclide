@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Food Pickup */
 /*!QUAKED item_food (1 0 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 This is a food item that will give the user 1 health when touched.
@@ -26,6 +27,9 @@ This is a food item that will give the user 1 health when touched.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 It's also known as item_sodacan.
+
+@ingroup server
+@ingroup pointentity
 */
 class
 item_food:NSRenderableEntity
@@ -105,8 +109,8 @@ item_food::Touch(entity eToucher)
 		env_beverage bevOwner = (env_beverage)owner;
 		bevOwner.m_bReady = true;
 	}
-	
-	Damage_Apply(eToucher, this, -1, 0, DMG_GENERIC);
+
+	eToucher.health = bound(0, eToucher.health + 1, eToucher.max_health);
 	SetSolid(SOLID_NOT);
 	Destroy();
 }

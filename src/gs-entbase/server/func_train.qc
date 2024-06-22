@@ -22,6 +22,7 @@ enumflags
 	TRAIN_NOTSOLID
 };
 
+/*! \brief Server-Entity: Linear Moving Brush */
 /*!QUAKED func_train (0 .5 .8) ? WAIT x x NOT_SOLID
 # OVERVIEW
 Moving platform following along path_corner entities, aka nodes.
@@ -53,6 +54,9 @@ when lasers are following this train as a sort of guide.
 
 # TRIVIA
 This entity was introduced in Quake (1996).
+
+@ingroup server
+@ingroup brushentity
 */
 class
 func_train:NSRenderableEntity
@@ -176,14 +180,14 @@ func_train::Spawned(void)
 void
 func_train::Respawn(void)
 {
+	super::Respawn();
+
 	SetSolid(HasSpawnFlags(TRAIN_NOTSOLID) ? SOLID_NOT : SOLID_BSP);
 	SetMovetype(MOVETYPE_PUSH);
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
 
 	/* let's wait 1/4 a second to give the path_corner entities a chance to
 	 * spawn in case they're after us in the ent lump */
-	SetTriggerTarget(m_oldstrTarget);
+	SetTriggerTarget(GetSpawnString("target"));
 	ScheduleThink(AfterSpawn, 0.25f);
 }
 
@@ -191,13 +195,19 @@ void
 func_train::Blocked(entity eBlocker)
 {
 	/* HACK: Make corpses gib instantly */
-	if (other.solid == SOLID_CORPSE) {
-		Damage_Apply(eBlocker, this, 500, 0, DMG_EXPLODE);
+	if (eBlocker.solid == SOLID_CORPSE) {
+		vector center = WorldSpaceCenter();
+		vector dmgDir = dirFromTarget(center, eBlocker.origin);
+		string dmgDef = sprintf("\"damage\" \"%i\"", 500i);
+		entityDamage(eBlocker, this, eBlocker, dmgDef, "", center, dmgDir, eBlocker.origin);
 		return;
 	}
 
-	if (other.takedamage != DAMAGE_NO) {
-		Damage_Apply(eBlocker, this, m_flDamage, 0, DMG_CRUSH);
+	if (eBlocker.takedamage != DAMAGE_NO) {
+		vector center = WorldSpaceCenter();
+		vector dmgDir = dirFromTarget(center, eBlocker.origin);
+		string dmgDef = sprintf("\"damage\" \"%i\"", (int)m_flDamage);
+		entityDamage(eBlocker, this, eBlocker, dmgDef, "", center, dmgDir, eBlocker.origin);
 	} else {
 		remove(eBlocker);
 	}

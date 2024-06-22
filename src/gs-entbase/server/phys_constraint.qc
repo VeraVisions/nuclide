@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Fixed Physics Constraint */
 /*!QUAKED phys_constraint (.5 .3 0) (-8 -8 -8) (8 8 8) BREAKCOLL x INACTIVE MASS NOCONNECT
 # OVERVIEW
 Creates a fixed connection between two entities.
@@ -36,6 +37,9 @@ Creates a fixed connection between two entities.
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
+
+@ingroup server
+@ingroup pointentity
 */
 class
 phys_constraint:NSPhysicsConstraint
@@ -63,7 +67,7 @@ void
 phys_constraint::AfterSpawn(void)
 {
 	SetConstraintType(CONSTRAINT_FIXED);
-	SetOrigin(GetSpawnOrigin());
+	SetOrigin(GetSpawnVector("origin"));
 
 	SetEntity1(find(world, ::targetname, m_strEnt1));
 

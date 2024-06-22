@@ -59,7 +59,7 @@ GameText_DrawString(vector pos, string msg, vector col, float alpha)
 }
 
 static void
-GameText_DrawMessage(gametext_t *txt, float timer, int highlight)
+GameText_DrawMessage(hudText_t *txt, float timer, int highlight)
 {
 	float a = 0.0f;
 	vector rpos = [0.0f, 0.0f, 0.0f];
@@ -121,7 +121,7 @@ GameText_DrawMessage(gametext_t *txt, float timer, int highlight)
 }
 
 static void
-GameText_Copy(gametext_t *src, gametext_t *dest)
+GameText_Copy(hudText_t *src, hudText_t *dest)
 {
 	dest->m_strMessage = src->m_strMessage;
 	dest->m_flTime = src->m_flTime;
@@ -261,7 +261,7 @@ GameText_Parse(void)
 void
 GameMessage_Setup(string message, int channel)
 {
-	gametext_t *next;
+	hudText_t *next;
 	int findid = -1;
 
 	for (int i = 0; i < g_titles_count; i++) {

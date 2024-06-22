@@ -14,9 +14,13 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Armor Recharging Station */
 /*!QUAKED func_recharge (0 .5 .8) ?
 # OVERVIEW
 Brush that fills up your armor when used, to a maximum of 100 points.
+Known as the "H.E.V. Charger", formerly known as the "Super Charger".
+
+![A working func_recharge, mounted against a wall](@ref func_recharge.jpg)
 
 # KEYS
 - "targetname" : Name
@@ -28,6 +32,9 @@ Brush that fills up your armor when used, to a maximum of 100 points.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup server
+@ingroup brushentity
 */
 class
 func_recharge:NSRenderableEntity
@@ -137,10 +144,9 @@ func_recharge::Spawned(void)
 void
 func_recharge::Respawn(void)
 {
+	super::Respawn();
 	SetSolid(SOLID_BSP);
 	SetMovetype(MOVETYPE_NONE);
-	SetOrigin(GetSpawnOrigin());
-	SetModel(GetSpawnModel());
 	PlayerUse = OnPlayerUse;
 	ResetHealth();
 }

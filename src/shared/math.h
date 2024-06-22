@@ -25,14 +25,20 @@
     can include `math.h` from `src/shared/`.
 */
 
+/** @ingroup multiprogs
+ *  @ingroup client
+ *  @ingroup server
+ *  @{
+ */
+
 /** Approximation of Pi. */
 #define MATH_PI 3.1415926
 noref const vector g_vec_null = [0.0f, 0.0f, 0.0f];
 
 #ifdef MENU
 
-vector(vector fwd, optional vector up) vectoangles2 = #11;
-void(vector angle) rotatevectorsbyangle = #0;
+vector vectoangles2(vector fwd, optional vector up) = #11;
+void rotatevectorsbyangle(vector angle) = #0;
 
 #define vectoangles vectoangles2
 
@@ -267,5 +273,6 @@ hsvToRGB(float h, float s, float v)
 	}
 	return col;
 }
+/** @} */ // end of multiprogs, server
 
 #include "math_vector.h"

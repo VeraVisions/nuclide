@@ -16,6 +16,7 @@
 
 #define EVS_GLOBAL 1
 
+/*! \brief Server-Entity: Earthquake Maker */
 /*!QUAKED env_shake (1 .5 0) (-8 -8 -8) (8 8 8) EVS_GLOBAL
 # OVERVIEW
 Causes an earthquake/shaking effect when triggered.
@@ -34,6 +35,9 @@ Causes an earthquake/shaking effect when triggered.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup server
+@ingroup pointentity
 */
 class
 env_shake:NSPointTrigger

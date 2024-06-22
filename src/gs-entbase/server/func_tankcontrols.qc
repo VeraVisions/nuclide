@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: func_tankmortar Controller */
 /*!QUAKED func_tankcontrols (0 .5 .8) ?
 # OVERVIEW
 Brush that marks the usable region of a func_tankmortar, in order
@@ -24,6 +25,9 @@ to gain control.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup server
+@ingroup brushentity
 */
 class
 func_tankcontrols:NSBrushTrigger
@@ -31,8 +35,7 @@ func_tankcontrols:NSBrushTrigger
 public:
 	void func_tankcontrols(void);
 	
-	virtual void OnPlayerUse(void);
-	virtual void Respawn(void);
+	virtual void PlayerUse(void);
 
 };
 
@@ -42,16 +45,7 @@ func_tankcontrols::func_tankcontrols(void)
 }
 
 void
-func_tankcontrols::Respawn(void)
-{
-	InitBrushTrigger();
-	solid = SOLID_BBOX;
-	SetOrigin(GetSpawnOrigin());
-	PlayerUse = OnPlayerUse;
-}
-
-void
-func_tankcontrols::OnPlayerUse(void)
+func_tankcontrols:: PlayerUse(void)
 {
 	entity f;
 	NSVehicle tank;

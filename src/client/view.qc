@@ -180,13 +180,14 @@ View_DrawViewModel(void)
 
 	/* used to be View_UpdateWeapon */
 	/* only bother upon change */
+	/* TODO: MOVE THIS INTO NSWEAPON OR SOMETING */
 	if (pSeat->m_iLastWeapon != pl.activeweapon) {
 		pSeat->m_iOldWeapon = pSeat->m_iLastWeapon;
 		pSeat->m_iLastWeapon = pl.activeweapon;
 
 		if (pl.activeweapon) {
 			/* hack, we changed the wep, move this into Game_Input/PMove */
-			Weapons_Draw((NSClientPlayer)pl);
+			//Weapons_Draw((NSClientPlayer)pl);
 		} else {
 			pSeat->m_eViewModel.modelindex =
 			pSeat->m_eViewModelL.modelindex = 0;
@@ -268,6 +269,10 @@ View_DrawViewModel(void)
 		m_eViewModel.origin = pl.m_xrInputRight.GetOrigin();
 		m_eViewModel.angles = pl.m_xrInputRight.GetAngles();
 		m_eViewModelL.angles = pl.m_xrInputLeft.GetAngles();
+	}
+
+	if (pl.m_activeWeapon) {
+		pl.m_activeWeapon.ClientFX(false);
 	}
 
 	/* this is currently broken */

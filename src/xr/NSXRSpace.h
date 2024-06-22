@@ -24,6 +24,8 @@
 */
 
 /** This class represents a local client space in the world.
+
+@ingroup xr
 */
 class NSXRSpace {
 public:

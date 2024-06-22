@@ -9,4 +9,6 @@ util.qc
 updates.qc
 gamelibrary.qc
 maplibrary.qc
+activitypub.qc
+cmd.qc
 #endlist 

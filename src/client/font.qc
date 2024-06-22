@@ -81,6 +81,8 @@ Font_Load(string strFile, font_s &fntNew)
 
 	if (!fntNew.iScaleX || !fntNew.iScaleY) {
 		NSError("Invalid size defined for %s", strFile);
+		fntNew.iScaleX = 12i;
+		fntNew.iScaleY = 12i;
 	}
 
 	NSLog("Loaded font definition for %s", strFile);
@@ -90,15 +92,23 @@ Font_Load(string strFile, font_s &fntNew)
 	} else
 		fntNew.iID = (int)loadfont("", strFontPath, ftos((float)fntNew.iScaleY), -1, 0, 0);
 
+#ifdef MENU
+#if 0
 	/* this is the console font, so make sure we use it */
 	if (strFile == "fonts/fontcon.font") {
 		string r = ftos(fntNew.vecColor[0]);
-		string g = ftos(fntNew.vecColor[0]);
-		string b = ftos(fntNew.vecColor[0]);
-		string size = ftos((float)fntNew.iScaleY);
+		string g = ftos(fntNew.vecColor[1]);
+		string b = ftos(fntNew.vecColor[2]);
 		cvar_set("con_textfont", strcat(strFontPath, "?col=", r, ",", g, ",", b));
-		cvar_set("con_textsize", strcat("-", size));
+
+		/* just to be extra sure */
+		if (fntNew.iScaleY > 0i) {
+			string size = ftos((float)fntNew.iScaleY);
+			cvar_set("con_textsize", strcat("-", size));
+		}
 	}
+#endif
+#endif
 }
 
 void

@@ -588,6 +588,12 @@ only to relevant child-classes
 ============
 */
 .vector last_pos;
+
+var float autocvar_boney1 = 0.0f;
+var float autocvar_boney2 = 0.0f;
+var float autocvar_boney3 = 0.0f;
+var float autocvar_boney4 = 0.0f;
+var float autocvar_boney5 = 0.0f;
 float
 NSRenderableEntity::predraw(void)
 {
@@ -600,6 +606,19 @@ NSRenderableEntity::predraw(void)
 	bonecontrol3 = m_flBoneControl3;
 	bonecontrol4 = m_flBoneControl4;
 	bonecontrol5 = m_flBoneControl5;
+
+#if 1
+	if (autocvar_boney1 != 0.0f)
+		bonecontrol1 = autocvar_boney1;
+	if (autocvar_boney2 != 0.0f)
+		bonecontrol2 = autocvar_boney2;
+	if (autocvar_boney3 != 0.0f)
+		bonecontrol3 = autocvar_boney3;
+	if (autocvar_boney4 != 0.0f)
+		bonecontrol4 = autocvar_boney4;
+	if (autocvar_boney5 != 0.0f)
+		bonecontrol5 = autocvar_boney5;
+#endif
 
 	RenderFXPass();
 	RenderDebugSkeleton();
@@ -757,10 +776,22 @@ NSRenderableEntity::Respawn(void)
 {
 	super::Respawn();
 
-	SetRenderFX(GetSpawnRenderFX());
-	SetRenderMode(GetSpawnRenderMode());
-	SetRenderAmt(GetSpawnRenderAmt());
-	SetRenderColor(GetSpawnRenderColor());
+	SetRenderFX(GetSpawnFloat("renderfx"));
+	SetRenderMode(GetSpawnFloat("rendermode"));
+	SetRenderAmt(GetSpawnFloat("renderamt"));
+	SetRenderColor(GetSpawnVector("rendercolor"));
+
+	SetSkin(GetSpawnInt("skin"));
+	SetBody(GetSpawnInt("body"));
+	SetBodyInGroup(0, GetSpawnInt("body0"));
+	SetBodyInGroup(1, GetSpawnInt("body1"));
+	SetBodyInGroup(2, GetSpawnInt("body2"));
+	SetBodyInGroup(3, GetSpawnInt("body3"));
+
+	//SetRenderFX(GetSpawnRenderFX());
+	//SetRenderMode(GetSpawnRenderMode());
+	//SetRenderAmt(GetSpawnRenderAmt());
+	//SetRenderColor(GetSpawnRenderColor());
 }
 #endif
 
@@ -859,32 +890,6 @@ NSRenderableEntity::GetBodyInGroup(int bodyGroup)
 	return m_iBody;
 }
 
-#ifdef SERVER
-vector
-NSRenderableEntity::GetSpawnRenderColor(void)
-{
-	return m_oldvecRenderColor;
-}
-
-float
-NSRenderableEntity::GetSpawnRenderAmt(void)
-{
-	return m_oldflRenderAmt;
-}
-
-int
-NSRenderableEntity::GetSpawnRenderMode(void)
-{
-	return m_oldiRenderMode;
-}
-
-int
-NSRenderableEntity::GetSpawnRenderFX(void)
-{
-	return m_oldiRenderFX;
-}
-#endif
-
 float
 NSRenderableEntity::GetRenderMode(void)
 {
@@ -968,21 +973,28 @@ NSRenderableEntity::HandleAnimEvent(float flTimeStamp, int iCode, string strData
 	case 5004: /* view model sound? */
 		StartSound(strData, CHAN_AUTO, 0, true);
 		break;
-#ifdef CLIENT
 	case 5001: /* muzzle flash on attachment 0 */
+#ifdef CLIENT
 		EV_MuzzleFlash_Create(this, m_iNumBones, m_flMuzzleScale, m_iMuzzleModel);
+#endif
 		break;
 	case 5011: /* muzzle flash on attachment 1 */
+#ifdef CLIENT
 		EV_MuzzleFlash_Create(this, m_iNumBones + 1, m_flMuzzleScale, m_iMuzzleModel);
+#endif
 		break;
 	case 5021: /* muzzle flash on attachment 2 */
+#ifdef CLIENT
 		EV_MuzzleFlash_Create(this, m_iNumBones + 2, m_flMuzzleScale, m_iMuzzleModel);
+#endif
 		break;
 	case 5031: /* muzzle flash on attachment 3 */
+#ifdef CLIENT
 		EV_MuzzleFlash_Create(this, m_iNumBones + 3, m_flMuzzleScale, m_iMuzzleModel);
+#endif
 		break;
-#else
 	case 1003:	/* trigger SSQC entity with specific targetname */
+#ifdef SERVER
 		for (entity f = world; (f = find(f, ::targetname, strData));) {
 			NSEntity trigger = (NSEntity)f;
 
@@ -991,8 +1003,8 @@ NSRenderableEntity::HandleAnimEvent(float flTimeStamp, int iCode, string strData
 				EntLog("Calling trigger '%s'", strData);
 			}
 		}
-		break;
 #endif
+		break;
 	default:
 #ifdef SERVER
 		int eDefEvents = tokenize(m_strModelEventCB);
@@ -1170,11 +1182,6 @@ NSRenderableEntity::SpawnKey(string strKey, string strValue)
 	case "lightingPrecalc":
 		m_vecRenderColor = ReadVector(strValue);
 		m_flRenderAmt = 1.0f;
-#ifdef SERVER
-		m_oldiRenderMode = m_iRenderMode;
-		m_oldflRenderAmt = m_flRenderAmt;
-		m_oldvecRenderColor = m_vecRenderColor;
-#endif
 		break;
 	case "skin":
 		skin = ReadFloat(strValue);
@@ -1192,27 +1199,15 @@ NSRenderableEntity::SpawnKey(string strKey, string strValue)
 		break;
 	case "renderamt":
 		m_flRenderAmt = ReadFloat(strValue) / 255;
-#ifdef SERVER
-		m_oldflRenderAmt = m_flRenderAmt;
-#endif
 		break;
 	case "rendercolor":
 		m_vecRenderColor = ReadVector(strValue) / 255;
-#ifdef SERVER
-		m_oldvecRenderColor = m_vecRenderColor;
-#endif
 		break;
 	case "rendermode":
 		m_iRenderMode = ReadFloat(strValue);
-#ifdef SERVER
-		m_oldiRenderMode = m_iRenderMode;
-#endif
 		break;
 	case "renderfx":
 		m_iRenderFX = ReadFloat(strValue);
-#ifdef SERVER
-		m_oldiRenderFX = m_iRenderFX;
-#endif
 		break;
 	default:
 		super::SpawnKey(strKey, strValue);

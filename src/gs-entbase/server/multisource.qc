@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Conditional AND Gate */
 /*!QUAKED multisource (1 0 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 An AND-gate of sorts. Every entity that targets this must return a positive
@@ -28,6 +29,9 @@ state for it to trigger its target.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup server
+@ingroup pointentity
 */
 class
 multisource:NSPointTrigger

@@ -20,6 +20,8 @@ noref .vector v_angle;
 
 When clients connect via the connect command, they will findthemselves
 of type NSClientPlayer.
+
+@ingroup baseclass
 */
 class
 NSClientPlayer:NSClientSpectator
@@ -61,6 +63,8 @@ public:
 	
 	/** Empty & shared between Client and Server. This is run on every player, every frame, to update their animation cycle. */
 	virtual void UpdatePlayerAnimation(float);
+
+	virtual void Damage(entity, entity, string, float, vector, vector);
 	
 
 #ifdef CLIENT
@@ -70,6 +74,8 @@ public:
 	virtual void PredictPreFrame(void);
 	virtual void PredictPostFrame(void);
 	virtual void ClientInputFrame(void);
+
+	virtual vector CalculateLean(vector);
 	virtual void UpdateAliveCam(void);
 
 	/** Empty. Updates the bone controller responsible for mouth movement. */
@@ -90,7 +96,7 @@ public:
 	virtual void Respawn(void);
 	virtual void EvaluateEntity(void);
 	virtual float SendEntity(entity,float);
-	virtual void Death(void);
+	virtual void Death(entity, entity, int, vector, int);
 	virtual void ServerInputFrame(void);
 
 	/** Helper function that will optimise the changed-flags of your player entity. */
@@ -121,6 +127,7 @@ private:
 
 #ifdef SERVER
 	PREDICTED_INT_N(weaponframe)
+	float nadeCookingTime;
 #endif
 
 	PREDICTED_FLOAT(health)
@@ -145,11 +152,9 @@ private:
 	 * also, modders probably want 32 bits for items. */
 	PREDICTED_INT(g_items)
 	PREDICTED_FLOAT_N(activeweapon)
+	NSItem m_itemList_net;
+	int m_iAmmoTypes_net[MAX_AMMO_TYPES];
 
-#ifdef NEW_INVENTORY
-	NSWeapon m_weapons[MAX_WEAPONS];
-	NSWeapon m_activeweapon;
-#endif
 
 	/* vehicle info */
 	PREDICTED_ENT(vehicle)
@@ -208,5 +213,7 @@ enumflags
 	PLAYER_TIMINGS,
 	PLAYER_VEHICLE,
 	PLAYER_SPECTATE,
+	PLAYER_AMMOTYPES,
+	PLAYER_WEAPONFRAME,
 	PLAYER_CUSTOMFIELDSTART,
 };

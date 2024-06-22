@@ -25,7 +25,7 @@ public:
 	virtual void Respawn(void);
 
 private:
-	decal m_decChild;
+	NSDecal m_decChild;
 	string m_strTexture;
 };
 
@@ -41,7 +41,7 @@ float
 infodecal::predraw(void)
 {
 	if (!m_decChild) {
-		m_decChild = spawn(decal);
+		m_decChild = spawn(NSDecal);
 		m_decChild.Place(origin, m_strTexture);
 		Destroy();
 	}

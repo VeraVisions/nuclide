@@ -25,6 +25,12 @@
     can include `math.h` from `src/shared/`.
 */
 
+/** @ingroup multiprogs
+ *  @ingroup client
+ *  @ingroup server
+ *  @{
+ */
+
 var vector g_vectorCacheLast;
 var vector g_vectorCacheForward;
 var vector g_vectorCacheRight;
@@ -252,6 +258,8 @@ vectorToAngles(vector toAngles)
 
 /** Calculates a set of angles from a given vector, with roll support.
 
+@param forwardDir the normalized forward direction vector.
+@param rollDir the normalized roll direction vector.
 @return Euler-angles generated from the input. */
 vector
 vectorToAnglesRoll(vector forwardDir, vector rollDir)
@@ -270,6 +278,12 @@ vectorToAnglesRoll(vector forwardDir, vector rollDir)
 	return lastOutput;
 }
 
+/** Lerps between two angles.
+
+@param inputAngle is the current direction in euler angles.
+@param endAngle is the desired end direction in euler angles.
+@param lerpAmount sets the interpolation amount. From 0.0 to 1.0.
+@return Euler-angles generated from the input. */
 vector
 lerpAngleVector(vector inputAngle, vector endAngle, float lerpAmount)
 {
@@ -277,3 +291,16 @@ lerpAngleVector(vector inputAngle, vector endAngle, float lerpAmount)
 	vector desiredDir = anglesToForward(endAngle);
 	return vectorToAngles(vectorLerp(currentDir, desiredDir, lerpAmount));
 }
+
+/**
+@param lookingEnt is the point-of-view entity.
+@param targetEnt is the entity the lookingEnt is 'looking' at.
+@return a normalized vector with the world space direction 
+of entity A 'looking' at entity B. */
+vector
+dirFromTarget(vector lookingEnt, vector targetEnt)
+{
+	return vectorNormalize(vectorToAngles(targetEnt - lookingEnt)); 
+}
+
+/** @} */ // end of multiprogs, server

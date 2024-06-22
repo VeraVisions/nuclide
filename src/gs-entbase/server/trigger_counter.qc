@@ -21,6 +21,7 @@ enumflags
     TRCNT_PUSHABLES
 };
 
+/*! \brief Server-Entity: Activation Count Based Trigger */
 /*!QUAKED trigger_counter (.5 .5 .5) ? TRCNT_SILENT TRCNT_NOCLIENTS TRCNT_PUSHABLES
 # OVERVIEW
 This entity counts the number of times it has been triggered and activates its
@@ -35,6 +36,9 @@ target when it reaches a specified number.
 
 # TRIVIA
 This entity was introduced in Quake (1996).
+
+@ingroup server
+@ingroup brushentity
 */
 class
 trigger_counter:NSBrushTrigger

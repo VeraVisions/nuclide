@@ -14,7 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*!QUAKED scripted_sequence (1 0 0) (-8 -8 -8) (8 8 8)
+/*! \brief Server-Entity: Decorative Animated Entity */
+/*!QUAKED item_generic (1 0 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 A 'generic' decorative entity which uses an animation sequence.
 
@@ -28,6 +29,9 @@ A 'generic' decorative entity which uses an animation sequence.
 
 # TRIVIA
 This entity was introduced in Half-Life: Opposing Force (1999).
+
+@ingroup server
+@ingroup pointentity
 */
 class
 item_generic:NSRenderableEntity
@@ -84,13 +88,13 @@ item_generic::SpawnKey(string strKey, string strValue)
 void
 item_generic::Respawn(void)
 {
-	SetOrigin(GetSpawnOrigin());
-	SetAngles(GetSpawnAngles());
-	SetModel(GetSpawnModel());
+	super::Respawn();
+
 	SetSize([0,0,0], [0,0,0]);
 	SetSolid(SOLID_NOT);
 	SetMovetype(MOVETYPE_NONE);
 
-	if (m_strSequenceName)
+	if (m_strSequenceName) {
 		SetFrame(frameforname(GetModelindex(), m_strSequenceName));
+	}
 }

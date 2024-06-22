@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: FIXME: Unknown */
 /*!QUAKED script_vehicle (1 0 0) (-16 -16 -16) (16 16 16) USABLE
 # OVERVIEW
 Unknown.
@@ -25,6 +26,9 @@ Unknown.
 
 # TRIVIA
 This entity was introduced in Call of Duty (2003).
+
+@ingroup server
+@ingroup pointentity
 */
 class
 script_vehicle:NSRenderableEntity

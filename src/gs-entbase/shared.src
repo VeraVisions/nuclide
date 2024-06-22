@@ -4,7 +4,6 @@
 
 #includelist
 shared/ambient_generic.qc
-shared/decals.qc
 shared/func_friction.qc
 shared/env_beam.qc
 shared/env_sprite.qc
@@ -18,12 +17,12 @@ shared/env_fog_controller.qc
 shared/env_cascade_light.qc
 shared/env_smoker.qc
 shared/env_muzzleflash.qc
-//shared/env_fire.qc
 shared/env_steam.qc
 shared/env_shockwave.qc
 shared/light_dynamic.qc
 shared/logic_achievement.qc
 shared/func_monitor.qc
+shared/func_lod.qc
 shared/func_illusionary.qc
 shared/func_ladder.qc
 shared/func_wall.qc

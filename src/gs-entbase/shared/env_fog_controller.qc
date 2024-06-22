@@ -27,6 +27,7 @@ enumflags
 	ENVFOGCTRL_CHANGED_DIR
 };
 
+/*! \brief Shared-Entity: Fog Controller */
 /*!QUAKED env_fog_controller (1 .5 0) (-8 -8 -8) (8 8 8) EVFOGCTL_MASTER
 # OVERVIEW
 Controls fog that affects the entire map.
@@ -61,6 +62,9 @@ Controls fog that affects the entire map.
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
+
+@ingroup shared
+@ingroup pointentity
 */
 class
 env_fog_controller:NSPointTrigger
@@ -117,6 +121,15 @@ private:
 	PREDICTED_VECTOR(m_vecFogColor2)
 	PREDICTED_VECTOR(m_vecFogDir)
 };
+
+void
+env_fog_controller::env_fog_controller(void)
+{
+#ifdef SERVER
+	m_vecSpawnColor = [1.0, 1.0, 1.0];
+	m_flSpawnMaxDensity = 1.0f;
+#endif
+}
 
 #ifdef CLIENT
 float
@@ -330,10 +343,10 @@ env_fog_controller::Trigger(entity eAct, triggermode_t iState)
 void
 env_fog_controller::Respawn(void)
 {
+	super::Respawn();
+
 	SetSolid(SOLID_NOT);
 	SetMovetype(MOVETYPE_PUSH);
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
 	pvsflags = PVSF_IGNOREPVS;
 
 	m_iFogActive = m_iSpawnEnable;
@@ -346,7 +359,7 @@ env_fog_controller::Respawn(void)
 	m_vecFogColor2 = m_vecSpawnColor2;
 
 	if (m_iUseAngles)
-		m_vecFogDir = GetSpawnAngles();
+		m_vecFogDir = GetAngles();
 	else
 		m_vecFogDir = m_vecSpawnDir;
 }
@@ -518,12 +531,3 @@ env_fog_controller::SpawnKey(string strKey, string strValue)
 	}
 }
 #endif
-
-void
-env_fog_controller::env_fog_controller(void)
-{
-#ifdef SERVER
-	m_vecSpawnColor = [1.0, 1.0, 1.0];
-	m_flSpawnMaxDensity = 1.0f;
-#endif
-}

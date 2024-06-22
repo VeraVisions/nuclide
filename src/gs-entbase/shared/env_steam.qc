@@ -37,7 +37,8 @@ enumflags
 };
 
 #ifdef CLIENT
-class env_steam_particle
+static class
+env_steam_particle
 {
 public:
 	void env_steam_particle(void);
@@ -108,6 +109,7 @@ env_steam_particle::env_steam_particle(void)
 }
 #endif
 
+/*! \brief Shared-Entity: Steam Emitter */
 /*!QUAKED env_steam (1 .5 0) (-8 -8 -8) (8 8 8) EMISSIVE
 # OVERVIEW
 Environmental steam jet entity.
@@ -140,6 +142,9 @@ Environmental steam jet entity.
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
+
+@ingroup shared
+@ingroup pointentity
 */
 class
 env_steam:NSPointTrigger
@@ -358,8 +363,9 @@ env_steam::Trigger(entity act, triggermode_t state)
 void
 env_steam::Respawn(void)
 {
+	super::Respawn();
+
 	SetSize([0,0,0], [0,0,0]);
-	SetOrigin(GetSpawnOrigin());
 
 	if (m_bInitialState)
 		m_bState = true;

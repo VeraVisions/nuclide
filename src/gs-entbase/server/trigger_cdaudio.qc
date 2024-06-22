@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Trigger-Based CD Track Changer */
 /*!QUAKED trigger_cdaudio (.5 .5 .5) ?
 # OVERVIEW
 Switches the background music track when triggered.
@@ -24,6 +25,9 @@ Switches the background music track when triggered.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup server
+@ingroup brushentity
 */
 
 class

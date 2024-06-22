@@ -1,9 +1,0 @@
-#pragma target fte_5768
-//#pragma flag enable assumeint
-#pragma PROGS_DAT  "../../platform/plugins/chatfilter.dat"
-#define QWSSQC
-
-#includelist
-../shared/fteextensions.qc
-chatfilter.qc
-#endlist

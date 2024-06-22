@@ -30,30 +30,8 @@ NSSurfacePropEntity::NSSurfacePropEntity(void)
 	m_oldHealth = 0;
 	m_strSurfData = __NULL__;
 	m_strPropData = __NULL__;
-	m_vecBloodColor = [0.5, 0, 0];
+	m_vecBloodColor = [0.5f, 0.0f, 0.0f];
 #endif
-}
-
-vector
-NSSurfacePropEntity::GetEyePos(void)
-{
-	if (HasVFlags(VFL_FAKESPEC)) {
-		return (origin);
-	}
-
-	return (origin + view_ofs);
-}
-
-vector
-NSSurfacePropEntity::GetViewAngle(void)
-{
-	return (v_angle);
-}
-
-void
-NSSurfacePropEntity::SetEyePos(vector value)
-{
-	view_ofs = value;
 }
 
 void
@@ -147,7 +125,7 @@ NSSurfacePropEntity::MakeInvulnerable(void)
 void
 NSSurfacePropEntity::_UpdateTakedamage(void)
 {
-	if (m_bTakesDamage) {
+	if (!m_bTakesDamage) {
 		takedamage = DAMAGE_NO;
 	} else {
 		if (m_bAutoAim) {
@@ -185,7 +163,6 @@ NSSurfacePropEntity::SetMaxHealth(float new_health)
 	max_health = new_health;
 	health =  min(health, max_health);
 }
-
 
 float
 NSSurfacePropEntity::GetHealth(void)
@@ -243,17 +220,47 @@ NSSurfacePropEntity::ParentUpdate(void)
 {
 	/* TODO: Move out */
 	if (IsOnFire()) {
-		if (m_flBurnNext < time) {
-			if (time > m_flBurnTime) {
+		if (m_flBurnNext < GetTime()) {
+			if (GetTime() > m_flBurnTime) {
 				Extinguish();
 			}
 
-			Damage_Apply(this, m_eBurner, 5, m_iBurnWeapon, DMG_BURN | DMG_SKIP_ARMOR);
-			m_flBurnNext = time + 0.5f;
+			health -= 5;
+
+			if (health <= 0) {
+				Death(m_eBurner, m_eBurner, 5i, g_vec_null, 0i);
+			} else {
+				Pain(m_eBurner, m_eBurner, 5i, g_vec_null, 0i);
+			}
+
+			m_flBurnNext = GetTime() + 0.5f;
 		}
 	}
 
 	super::ParentUpdate();
+}
+
+void
+NSSurfacePropEntity::Damage(entity inflictor, entity attacker, string damageDef, float damageScale, vector dmgDir, vector hitLocation)
+{
+	string damageString = EntityDef_GetKeyValue(damageDef, "damage");
+	float damagePoints = (float)rint(stof(damageString) * damageScale);
+	NSSurfacePropEntity ourAttacker = (NSSurfacePropEntity)attacker;
+
+	/* notify them */
+	if (isSentient(attacker)) {
+		ourAttacker.DamageFeedback(this, inflictor, damagePoints);
+	}
+
+	if (damagePoints != 0) {
+		health = rint(health - damagePoints);
+
+		if (health <= 0) {
+			Death(inflictor, attacker, (int)damagePoints, dmgDir, 0i);
+		} else if (damagePoints > 0) {
+			Pain(inflictor, attacker, (int)damagePoints, dmgDir, 0i);
+		}
+	}
 }
 
 /* Burning, fire, flames, etc. */
@@ -263,12 +270,52 @@ NSSurfacePropEntity::Ignite(entity attacker, float flLifetime, int iWeapon)
 	effects |= EF_ONFIRE;
 	m_eBurner = attacker;
 	m_iBurnWeapon = iWeapon;
-	m_flBurnTime = time + flLifetime;
+	m_flBurnTime = GetTime() + flLifetime;
 
 	if (m_flBurnDmgTime < time) {
-		Damage_Apply(this, attacker, 5, iWeapon, DMG_BURN | DMG_SKIP_ARMOR);
+		string dmgDef = sprintf("\"damage\" \"%i\"\n\"skip_armor\" \"1\"", 5i);
+		Damage(m_eBurner, m_eBurner, dmgDef, 1.0f, g_vec_null, origin);
+		//Damage_Apply(this, attacker, 5, iWeapon, DMG_BURN | DMG_SKIP_ARMOR);
 		m_flBurnDmgTime = time + 0.25f;
 	}
+}
+
+bool
+NSSurfacePropEntity::CanBeDamaged(vector damageOrigin, vector hitLocation)
+{
+	vector testCenter = WorldSpaceCenter();
+
+	traceline(hitLocation, testCenter, MOVE_NORMAL, this);
+
+	if (trace_fraction == 1.0f) {
+		return (true);
+	}
+
+	traceline(hitLocation, testCenter + [15.0f, 15.0f, 0.0f], MOVE_NORMAL, this);
+
+	if (trace_fraction == 1.0f) {
+		return (true);
+	}
+
+	traceline(hitLocation, testCenter + [-15.0f, -15.0f, 0.0f], MOVE_NORMAL, this);
+
+	if (trace_fraction == 1.0f) {
+		return (true);
+	}
+
+	traceline(hitLocation, testCenter + [-15.0f, 15.0f, 0.0f], MOVE_NORMAL, this);
+
+	if (trace_fraction == 1.0f) {
+		return (true);
+	}
+
+	traceline(hitLocation, testCenter + [15.0f, -15.0f, 0.0f], MOVE_NORMAL, this);
+
+	if (trace_fraction == 1.0f) {
+		return (true);
+	}
+
+	return (false);
 }
 
 void
@@ -389,6 +436,14 @@ void
 NSSurfacePropEntity::SpawnKey(string keyName, string setValue)
 {
 	switch (keyName) {
+	case "bleed":
+		bool query = ReadBool(setValue);
+
+		if (query)
+			EnableBleeding();
+		else
+			DisableBleeding();
+
 	case "health":
 		max_health = health = ReadFloat(setValue);
 		m_oldHealth = health;
@@ -416,19 +471,25 @@ NSSurfacePropEntity::SpawnKey(string keyName, string setValue)
 
 
 void
-NSSurfacePropEntity::Pain(void)
+NSSurfacePropEntity::Pain(entity inflictor, entity attacker, int damage, vector dir, int location)
 {
 	/* implemented in sub-class */
 }
 
 void
-NSSurfacePropEntity::DamageFeedback(NSSurfacePropEntity theVictim, NSSurfacePropEntity theInflictor, int desiredDamage)
+NSSurfacePropEntity::Death(entity inflictor, entity attacker, int damage, vector dir, int location)
+{
+	BreakModel(damage, dir, location);
+}
+
+void
+NSSurfacePropEntity::DamageFeedback(entity theVictim, entity theInflictor, int desiredDamage)
 {
 	/* implemented in sub-class */
 }
 
 void
-NSSurfacePropEntity::Death(void)
+NSSurfacePropEntity::BreakModel(int damage, vector dir, vector location)
 {
 	m_flDeathTime = time;
 
@@ -443,7 +504,7 @@ NSSurfacePropEntity::Death(void)
 	} else if (GetPropData(PROPINFO_BREAKMODEL) != __NULL__) {
 		string gibeffect = GetPropData(PROPINFO_BREAKMODEL);
 		int breakcount = GetPropData(PROPINFO_BREAKCOUNT);
-		BreakModel_Entity(this, normalize(GetOrigin() - g_dmg_vecLocation), g_dmg_iDamage);
+		BreakModel_Entity(this, dir, g_dmg_iDamage);
 		//BreakModel_Spawn(absmin, absmax, [0,0,0], 100, breakcount, gibeffect);
 		Disappear();
 	} else {
@@ -460,7 +521,7 @@ NSSurfacePropEntity::Death(void)
 			flExplodeRad = flExplodeMag * 2.5f;
 
 		pointparticles(particleeffectnum("fx_explosion.main"), origin, angles, 1);
-		Damage_Radius(origin, this, flExplodeMag, flExplodeRad, TRUE, 0);
+		radiusDamage(origin, flExplodeRad, 0i, (int)flExplodeMag, this);
 	}
 }
 
@@ -486,7 +547,7 @@ NSSurfacePropEntity::_SurfaceDataFinish(void)
 	if (m_strSurfData)
 		m_iMaterial = SurfData_Finish();
 	else
-		m_iMaterial = -1;
+		m_iMaterial = -1i;
 }
 
 void
@@ -497,7 +558,7 @@ NSSurfacePropEntity::_PropDataFinish(void)
 	if (m_strPropData)
 		m_iPropData = PropData_Finish();
 	else
-		m_iPropData = -1;
+		m_iPropData = -1i;
 }
 
 float
@@ -507,24 +568,6 @@ NSSurfacePropEntity::TimeSinceDeath(void)
 		return (-1);
 
 	return (time - m_flDeathTime);
-}
-
-void
-NSSurfacePropEntity::SetPainCallback(void(void) painFunc)
-{
-	Pain = painFunc;
-}
-
-void
-NSSurfacePropEntity::SetDeathCallback(void(void) deathFunc)
-{
-	Death = deathFunc;
-}
-
-bool
-NSSurfacePropEntity::CanBeDamaged(void)
-{
-	return (takedamage == DAMAGE_NO) ? false : true;
 }
 
 void
@@ -683,9 +726,12 @@ NSSurfacePropEntity::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_ANGLE(m_flBoneControl4, SRFENT_CHANGED_CONTROLLER)
 	READENTITY_ANGLE(m_flBoneControl5, SRFENT_CHANGED_CONTROLLER)
 
-	if (scale == 0.0)
+	/* this shall never be valid. use Hide() */
+	if (scale == 0.0f) {
 		scale = 1.0f;
+	}
 
+	/* other post-eval operations happen here */
 	if (flChanged & SRFENT_CHANGED_SIZE) {
 		setsize(this, mins * scale, maxs * scale);
 	}
@@ -699,17 +745,18 @@ void
 NSSurfacePropEntity::RenderFire(void)
 {
 	if (IsOnFire()) {
-		vector someorg;
+		vector randomOrg;
 
 		if (m_flBurnNext < time) {
-			someorg[0] = absmin[0] + ( random() * ( absmax[0] - absmin[0] ) );
-			someorg[1] = absmin[1] + ( random() * ( absmax[1] - absmin[1] ) );
-			someorg[2] = absmin[2] + ( random() * ( absmax[2] - absmin[2] ) );
-			pointparticles(PART_BURNING, someorg, [0,0,0], 1);
+			randomOrg[0] = absmin[0] + ( random() * ( absmax[0] - absmin[0] ) );
+			randomOrg[1] = absmin[1] + ( random() * ( absmax[1] - absmin[1] ) );
+			randomOrg[2] = absmin[2] + ( random() * ( absmax[2] - absmin[2] ) );
+			pointparticles(PART_BURNING, randomOrg, g_vec_null, 1);
 			m_flBurnNext = time + 0.1f;
 		}
 	}
 }
+
 float
 NSSurfacePropEntity::predraw(void)
 {
@@ -745,6 +792,87 @@ NSSurfacePropEntity::SetModel(string newModel)
 #ifdef SERVER
 	if (model && HasPropData() == false) {
 		m_iPropData = PropData_ForModel(model);
+	}
+#endif
+}
+
+/* helper functions */
+
+void
+entityDamage(entity targetEnt, entity inflictingEnt, entity attackingEnt, string damageDef, string weaponDef, vector damageOrigin, vector damageDir, vector hitLocation)
+{
+#ifdef SERVER
+	NSSurfacePropEntity theTarget;
+
+	/* common filters */
+	if (targetEnt.takedamage == DAMAGE_NO) {
+		return;
+	}
+	if (isGodMode(targetEnt) == true) {
+		return;
+	}
+
+	theTarget = (NSSurfacePropEntity)targetEnt;
+
+	/* don't use IsAlive(), else we can't gib */
+	if (!theTarget.GetHealth()) {
+		return;
+	}
+
+	theTarget.Damage(inflictingEnt, attackingEnt, damageDef, 1.0, damageDir, hitLocation);
+#endif
+}
+
+void
+radiusDamage(vector damageCenter, float damageRange, int damageMin, int damageMax, entity attackingEnt)
+{
+#ifdef SERVER
+	vector entPos = g_vec_null;
+	float entDistance = 0.0f;
+	int newDamage = 0i;
+	float damageFrac = 0.0f;
+	vector dmgDir = g_vec_null;
+
+	for (NSSurfacePropEntity e = __NULL__; (e = (NSSurfacePropEntity)nextent(e));) {
+		if (e.takedamage == DAMAGE_NO) {
+			continue;
+		}
+
+		if (isGodMode(e) == true) {
+			return;
+		}
+
+		entPos = e.WorldSpaceCenter();
+
+		/* don't bother if it's not anywhere near us */
+		entDistance = length(damageCenter - entPos);
+
+		if (entDistance > damageRange) {
+			continue;
+		}
+
+		/* can we physically hit this thing? */
+		if (damageMax > 0i) {
+			if (e.CanBeDamaged(damageCenter, entPos) == false) {
+				continue;
+			}
+		}
+
+		/* calculate new damage values */
+		damageFrac = (damageRange - entDistance) / damageRange;
+		newDamage = (int)lerp(fabs((float)damageMin), (float)damageMax, damageFrac);
+		dmgDir = dirFromTarget(damageCenter, entPos);
+
+		if (newDamage > 0i) {
+			g_dmg_vecLocation = trace_endpos;
+			e.health = rint(e.health - newDamage);
+
+			if (e.health <= 0) {
+				e.Death(attackingEnt, attackingEnt, newDamage, dmgDir, 0i);
+			} else if (newDamage > 0) {
+				e.Pain(attackingEnt, attackingEnt, newDamage, dmgDir, 0i);
+			}
+		}
 	}
 #endif
 }

@@ -21,6 +21,7 @@ enumflags
 	TM_PUSHABLES
 };
 
+/*! \brief Server-Entity: Multi Use Trigger Volume */
 /*!QUAKED trigger_multiple (.5 .5 .5) ? CLIENTS NPCS PUSHABLES PHYSICS FRIENDLIES CLIENTSINVEHICLES EVERYTHING x x CLIENTSNOTINVEHICLES DEBRIS NPCSINVEHICLES NOBOTS
 # OVERVIEW
 A trigger volume which works more than once. 
@@ -67,6 +68,9 @@ If you want an entity like this that can only be used once, see trigger_once.
 
 # TRIVIA
 This entity was introduced in Quake (1996).
+
+@ingroup server
+@ingroup brushentity
 */
 class
 trigger_multiple:NSBrushTrigger
@@ -78,7 +82,6 @@ public:
 	virtual void Save(float);
 	virtual void Restore(string,string);
 	virtual void Touch(entity);
-	virtual void Respawn(void);
 	virtual void SpawnKey(string,string);
 	virtual void Input(entity,string,string);
 	virtual void EndTouch(entity);
@@ -171,12 +174,6 @@ trigger_multiple::Spawned(void)
 		m_strOnStartTouch = CreateOutput(m_strOnStartTouch);
 	if (m_strOnEndTouchAll)
 		m_strOnEndTouchAll = CreateOutput(m_strOnEndTouchAll);
-}
-
-void
-trigger_multiple::Respawn(void)
-{
-	InitBrushTrigger();
 }
 
 void

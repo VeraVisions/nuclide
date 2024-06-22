@@ -28,6 +28,7 @@ enumflags
 	EVSPARK_DIRECTIONAL
 };
 
+/*! \brief Server-Entity: Spark Maker */
 /*!QUAKED env_spark (1 .5 0) (-8 -8 -8) (8 8 8) x x x x x TOGGLE START_ON
 # OVERVIEW
 Creates a series (or just one) spark effect with sound when triggered.
@@ -57,6 +58,9 @@ as well.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup server
+@ingroup pointentity
 */
 class
 env_spark:NSPointTrigger

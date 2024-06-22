@@ -14,15 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-typedef struct
-{
-	string name;
-	string title;
-	string author;
-	string type;
-	string preview;
-} mapLibrary_t;
-
 mapLibrary_t *g_mapLibrary;
 var int g_mapLibrary_count = 0i;
 var int map_blacklist_count = 0i;

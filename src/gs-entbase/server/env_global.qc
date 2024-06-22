@@ -16,6 +16,7 @@
 
 #define GLOBAL_SETSPAWN 1
 
+/*! \brief Server-Entity: Global Variable Controller */
 /*!QUAKED env_global (1 .5 0) (-8 -8 -8) (8 8 8) GLOBAL_SETSPAWN
 # OVERVIEW
 Persistent storage for variables that carry over level changes.
@@ -33,6 +34,9 @@ Persistent storage for variables that carry over level changes.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup server
+@ingroup pointentity
 */
 class
 env_global:NSPointTrigger

@@ -27,6 +27,7 @@ enumflags
 	ENVFIRE_TOPVISIBLE
 };
 
+/*! \brief Shared-Entity: Fire/Flame Emitter */
 /*!QUAKED env_fire (1 .5 0) (-8 -8 -8) (8 8 8) INFINITE_DURATION SMOKELESS STARTON STARTFULL NODROP NOGLOW x DELETE TOPVISIBLE
 # OVERVIEW
 Environmental fire/flame entity. Will apply damage to entities, including other fire entities. They grow/shrink depending on their ignition level.
@@ -61,6 +62,9 @@ Environmental fire/flame entity. Will apply damage to entities, including other 
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
+
+@ingroup shared
+@ingroup pointentity
 */
 class
 env_fire:NSPointTrigger

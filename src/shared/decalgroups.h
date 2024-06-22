@@ -14,8 +14,9 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*
-	Decal Property List Specs
+/** @defgroup decalgroups Decal Groups
+    @brief Handle the placement of random decals from a group.
+    @ingroup shared
 
 	A decal group consists of one material per line:
 
@@ -37,7 +38,8 @@
 	the weapons are responsible for deciding which decals to use
 	on a surface. We obviously cannot do both, but the GoldSrc way
 	is the most appropriate one for our purposes.
-	
+
+@{
 */
 
 /* public API */
@@ -49,3 +51,5 @@ int DecalGroups_NumForName(string group);
 void DecalGroups_Precache(void);
 void DecalGroups_Receive(void);
 #endif
+
+/** @} */ // end of decalgroups

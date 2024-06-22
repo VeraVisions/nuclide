@@ -43,6 +43,7 @@ enumflags
 	BEAM_SHADEEND
 };
 
+/*! \brief Shared-Entity: Beam/Lightning Emitter */
 /*!QUAKED env_beam (1 .5 0) (-8 -8 -8) (8 8 8) BEAM_STARTON BEAM_TOGGLE BEAM_RANDOMSTRIKE BEAM_RING BEAM_STARTSPARKS BEAM_ENDSPARKS BEAM_DECAL BEAM_SHADESTART BEAM_SHADEEND
 # OVERVIEW
 Controllable beam effect, akin to lightning. Also known as env_lightning.
@@ -73,6 +74,9 @@ Controllable beam effect, akin to lightning. Also known as env_lightning.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup shared
+@ingroup pointentity
 */
 class
 env_beam:NSRenderableEntity
@@ -139,8 +143,9 @@ env_beam::env_beam(void)
 void
 env_beam::Respawn(void)
 {
+	super::Respawn();
+
 	SetSize([0,0,0], [0,0,0]);
-	SetOrigin(GetSpawnOrigin());
 	m_iValue = 0;
 
 	/* force us to precache the sprite model... and get a modelindex back */
@@ -204,7 +209,9 @@ env_beam::CastLaser(void)
 	if (trace_ent.takedamage == DAMAGE_NO)
 		return;
 
-	Damage_Apply(trace_ent, this, m_iDamage, 0, DMG_ELECTRO);
+	vector center = WorldSpaceCenter();
+	string dmgDef = sprintf("\"damage\" \"%i\"\n\"type\" \"electro\"", m_iDamage);
+	entityDamage(trace_ent, this, trace_ent, dmgDef, "", center, g_vec_null, trace_ent.origin);
 }
 
 /* called first */

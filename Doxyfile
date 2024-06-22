@@ -7,7 +7,7 @@
 # front of the TAG it is preceding.
 #
 # All text after a single hash (#) is considered a comment and will be ignored.
-# The format is:
+# The format is:E
 # TAG = value [value, ...]
 # For lists, items can also be appended using:
 # TAG += value [value, ...]
@@ -51,7 +51,7 @@ PROJECT_BRIEF          = "Software Development Kit for id Tech"
 # pixels and the maximum width should not exceed 200 pixels. Doxygen will copy
 # the logo to the output directory.
 
-PROJECT_LOGO           =
+PROJECT_LOGO           = Documentation/Images/Nuclide.png
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) path
 # into which the generated documentation will be written. If a relative path is
@@ -875,30 +875,35 @@ WARN_LOGFILE           =
 # Note: If this tag is empty the current directory is searched.
 
 INPUT                  = src/ \
-                         Documentation/Main.md \
+                         Documentation/ReadMe.md \
                          Documentation/Building.md \
+                         Documentation/Dependencies.md \
                          Documentation/Launching.md \
                          Documentation/DedicatedServer.md \
                          Documentation/Filesystem.md \
                          Documentation/Networking.md \
-                         Documentation/Bots/BotOverview.md \
+                         Documentation/Decl.md \
+                         Documentation/Decl/ \
+                         Documentation/Bots.md \
+                         Documentation/Bots/ \
+                         Documentation/Modules.md \
+                         Documentation/Modules/ \
                          Documentation/EntityGuide.md \
                          Documentation/Classes.md \
-                         Documentation/Materials/MatOverview.md \
-                         Documentation/Materials/MatCommands.md \
-                         Documentation/Materials/MatVMap.md \
-                         Documentation/Materials/commands/ \
-                         Documentation/Materials/MatShaders.md \
-                         Documentation/Materials/MatGoldSrc.md \
+                         Documentation/Singleplayer.md \
+                         Documentation/Singleplayer/ \
+                         Documentation/Multiplayer.md \
+                         Documentation/Multiplayer/ \
+                         Documentation/Materials.md \
+                         Documentation/Materials/ \
+                         Documentation/Shaders.md \
                          Documentation/Shaders/ \
-                         Documentation/Constants.md \
-                         Documentation/EntityDef.md \
-                         Documentation/MapC.md \
-                         Documentation/Surf_data.md \
-                         Documentation/Prop_data.md \
-                         Documentation/MapTweaks.md \
                          Documentation/Sound/ \
+                         Documentation/Models.md \
                          Documentation/Models/ \
+                         Documentation/Particles.md \
+                         Documentation/VMap.md \
+                         Documentation/VMap/ \
                          Documentation/History.md \
                          Documentation/Contributing.md \
                          Documentation/Support.md
@@ -949,10 +954,12 @@ RECURSIVE              = YES
 
 EXCLUDE                = src/engine \
                          src/worldspawn \
+                         src/netradiant-custom \
                          src/vvmtool \
                          src/menu-vgui \
                          src/menu-fn \
-                         src/plugins
+                         src/plugins \
+                         src/shared/fteextensions.qc
 
 # The EXCLUDE_SYMLINKS tag can be used to select whether or not files or
 # directories that are symbolic links (a Unix file system feature) are excluded
@@ -1011,7 +1018,8 @@ EXAMPLE_RECURSIVE      = NO
 # \image command).
 
 IMAGE_PATH	=	Documentation/Materials/ \
-		Documentation/Sound/ \
+		Documentation/Images/ \
+		Documentation/Sound/
 
 # The INPUT_FILTER tag can be used to specify a program that doxygen should
 # invoke to filter for each input file. Doxygen will invoke the filter program
@@ -1067,7 +1075,7 @@ FILTER_SOURCE_PATTERNS =
 # (index.html). This can be useful if you have a project on for instance GitHub
 # and want to reuse the introduction page also for the doxygen output.
 
-USE_MDFILE_AS_MAINPAGE = Main.md
+USE_MDFILE_AS_MAINPAGE = ReadMe.md
 
 #---------------------------------------------------------------------------
 # Configuration options related to source browsing
@@ -1251,7 +1259,7 @@ HTML_STYLESHEET        =
 # list). For an example see the documentation.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_EXTRA_STYLESHEET  =
+HTML_EXTRA_STYLESHEET  = Documentation/Theme/doxygen-awesome.css Documentation/Theme/custom.css
 
 # The HTML_EXTRA_FILES tag can be used to specify one or more extra images or
 # other source files which should be copied to the HTML output directory. Note
@@ -1263,7 +1271,8 @@ HTML_EXTRA_STYLESHEET  =
 
 HTML_EXTRA_FILES       =
 
-HTML_COLORSTYLE = DARK
+# To prevent newer doxygen from messing with colors
+HTML_COLORSTYLE = LIGHT
 
 # The HTML_COLORSTYLE_HUE tag controls the color of the HTML output. Doxygen
 # will adjust the colors in the style sheet and background images according to
@@ -1575,7 +1584,7 @@ GENERATE_TREEVIEW      = YES
 # The default value is: NO.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-FULL_SIDEBAR           = YES
+FULL_SIDEBAR           = NO
 
 # The ENUM_VALUES_PER_LINE tag can be used to set the number of enum values that
 # doxygen will group on one line in the generated HTML documentation.

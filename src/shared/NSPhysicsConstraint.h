@@ -27,7 +27,10 @@ typedef enum
 /** This entity class represents constraints for physically-simulated entities. 
 
 If you want to create an easy 'weld' type connection, a ballsocket or even a rope
-type connection - this class is what you need.*/
+type connection - this class is what you need.
+
+@ingroup baseclass
+*/
 class
 NSPhysicsConstraint:NSEntity
 {

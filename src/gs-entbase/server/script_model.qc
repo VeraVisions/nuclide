@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Scriptable Alias Model */
 /*!QUAKED script_model (1 0 0) (-16 -16 -16) (16 16 16) ORIENT_LOD NO_SHADOW  NO_STATIC_SHADOWS
 # OVERVIEW
 Upon being triggered, the entity will spawn item_food in its place in
@@ -30,6 +31,9 @@ the shape of a soda can.
 
 # TRIVIA
 This entity was introduced in Call of Duty (2003).
+
+@ingroup server
+@ingroup pointentity
 */
 class
 script_model:NSPointTrigger

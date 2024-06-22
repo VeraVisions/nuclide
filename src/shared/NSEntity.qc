@@ -38,21 +38,17 @@ NSEntity::Spawned(void)
 {
 	super::Spawned();
 
-	m_oldAngle = angles;
-	m_oldOrigin = origin;
-	m_oldModel = Util_FixModel(model);
-	m_oldSolid = solid;
-
 #ifdef SERVER
-	m_oldstrTarget = target;
-
-	if (m_oldModel && m_oldModel != "") {
-		precache_model(GetSpawnModel());
+	if (model) {
+		precache_model(model);
 	}
 
 	if (m_strOnTrigger) {
 		m_strOnTrigger = CreateOutput(m_strOnTrigger);
 	}
+
+	/* used to network our shared ID */
+	entityDefID = EntityDef_IDFromName(classname);
 #endif
 }
 
@@ -176,6 +172,17 @@ NSEntity::RendererRestarted(void)
 
 }
 
+float
+NSEntity::predraw(void)
+{
+	if (GetModelindex() == 0 || IsHidden()) {
+		return (PREDRAW_NEXT);
+	}
+
+	addentity(this);
+	return (PREDRAW_NEXT);
+}
+
 void
 NSEntity::ReceiveEntity(float flNew, float flChanged)
 {
@@ -217,6 +224,15 @@ NSEntity::ReceiveEntity(float flNew, float flChanged)
 }
 
 void
+NSEntity::ReceiveEvent(float eventType)
+{
+	switch (eventType) {
+	default:
+		EntError("Unknown event %d", eventType);
+	}
+}
+
+void
 NSEntity::postdraw(void)
 {
 }
@@ -229,7 +245,6 @@ NSEntity::DebugDraw(void)
 	DebugBox(GetOrigin(), GetMins(), GetMaxs(), m_vecEditorColor, 0.75f);
 }
 
-/* Make sure StartFrame calls this */
 float
 NSEntity::SendEntity(entity ePEnt, float flChanged)
 {
@@ -237,9 +252,6 @@ NSEntity::SendEntity(entity ePEnt, float flChanged)
 		return (0);
 
 	if (clienttype(ePEnt) != CLIENTTYPE_REAL)
-		return (0);
-
-	if (alpha == 0.0f)
 		return (0);
 
 	WriteByte(MSG_ENTITY, ENT_ENTITY);
@@ -374,13 +386,22 @@ NSEntity::ClearParent(void)
 void
 NSEntity::RestoreAngles(void)
 {
-	angles = GetSpawnAngles();
+	vector spawnAngles = g_vec_null;
+	string spawnAngleString = GetSpawnString("angles");
+
+	if (spawnAngleString == "") {
+		spawnAngles[1] = GetSpawnFloat("angle");
+	} else {
+		spawnAngles = stov(spawnAngleString);
+	}
+
+	SetAngles(spawnAngles);
 }
 
 void
 NSEntity::ClearAngles(void)
 {
-	angles = [0, 0, 0];
+	SetAngles(g_vec_null);
 }
 
 void
@@ -510,6 +531,35 @@ NSEntity::SetScale(float newScale)
 	setsize(this, m_vecMins * scale, m_vecMaxs * scale);
 }
 
+vector
+NSEntity::GetViewAngle(void)
+{
+	if (isSentient(this)) {
+		return (v_angle);
+	} else {
+		return (angles);
+	}
+}
+
+
+void
+NSEntity::SetEyePos(vector value)
+{
+	view_ofs = value;
+}
+
+
+vector
+NSEntity::GetEyePos(void)
+{
+	if (HasVFlags(VFL_FAKESPEC)) {
+		return (origin);
+	}
+
+	return (origin + view_ofs);
+}
+
+
 void
 NSEntity::UpdateBounds(void)
 {
@@ -604,7 +654,6 @@ NSEntity::SetModelindex(float newModelIndex) {
 
 	modelindex = newModelIndex;
 	SetSize(mins, maxs);
-
 }
 
 void
@@ -684,21 +733,6 @@ void
 NSEntity::ScheduleThink(void (void) func, float fl) {
 	SetThink(func);
 	SetNextThink(fl);
-}
-
-vector
-NSEntity::GetSpawnOrigin(void) {
-	return (m_oldOrigin);
-}
-
-vector
-NSEntity::GetSpawnAngles(void) {
-	return (m_oldAngle);
-}
-
-string
-NSEntity::GetSpawnModel(void) {
-	return (m_oldModel);
 }
 
 float
@@ -877,10 +911,10 @@ void
 NSEntity::Respawn(void)
 {
 	super::Respawn();
-	SetSolid(m_oldSolid);
-	SetAngles(GetSpawnAngles());
-	SetOrigin(GetSpawnOrigin());
-	SetModel(GetSpawnModel());
+
+	SetAngles(GetSpawnVector("angles"));
+	SetOrigin(GetSpawnVector("origin"));
+	SetModel(GetSpawnString("model"));
 }
 
 void
@@ -896,10 +930,6 @@ NSEntity::Save(float handle)
 	SaveFloat(handle, "friction", friction);
 	SaveVector(handle, "m_vecMins", m_vecMins);
 	SaveVector(handle, "m_vecMaxs", m_vecMaxs);
-	SaveVector(handle, "m_oldOrigin", m_oldOrigin);
-	SaveVector(handle, "m_oldAngle", m_oldAngle);
-	SaveString(handle, "m_oldModel", m_oldModel);
-	SaveFloat(handle, "m_oldSolid", m_oldSolid);
 	SaveFloat(handle, "m_flTouchTime", m_flTouchTime);
 	SaveBool(handle, "m_beingTouched", m_beingTouched);
 	SaveEntity(handle, "m_eTouchLast", m_eTouchLast);
@@ -936,18 +966,6 @@ NSEntity::Restore(string strKey, string strValue)
 		break;
 	case "m_vecMaxs":
 		m_vecMaxs = ReadVector(strValue);
-		break;
-	case "m_oldOrigin":
-		m_oldOrigin = ReadVector(strValue);
-		break;
-	case "m_oldAngle":
-		m_oldAngle = ReadVector(strValue);
-		break;
-	case "m_oldModel":
-		m_oldModel = ReadString(strValue);
-		break;
-	case "m_oldSolid":
-		m_oldSolid = ReadFloat(strValue);
 		break;
 	case "m_flTouchTime":
 		m_flTouchTime = ReadFloat(strValue);
@@ -1003,9 +1021,6 @@ NSEntity::Input(entity eAct, string strInput, string strData)
 	case "SpawnProjectileDef":
 		if (EntityDef_HasSpawnClass(strData)) {
 			NSProjectile_SpawnDefAttachment(strData, this, 0);
-		} else {
-			float rangedDmg = Skill_GetDefValue(EntityDef_GetKeyValue(strData, "damage"));
-			TraceAttack_FireBullets(1, origin + view_ofs, rangedDmg, [0.01,0.01], 0);
 		}
 		break;
 	case "StartSoundDef":
@@ -1045,9 +1060,6 @@ NSEntity::Input(entity eAct, string strInput, string strData)
 		break;
 	case "SetOrigin":
 		SetOrigin(stov(strData));
-		break;
-	case "SetSpawnOrigin":
-		m_oldOrigin = stov(strData);
 		break;
 	case "SetEditorColor":
 		m_vecEditorColor = ReadVector(strData);
@@ -1114,6 +1126,8 @@ NSEntity::SpawnKey(string strKey, string strValue)
 	case "editor_maxs":
 	case "editor_usage":
 	case "editor_model":
+	case "editor_rotatable":
+	case "editor_description":
 	case "_minlight":
 		break;
 	default:
@@ -1137,7 +1151,9 @@ NSEntity::Destroy(void)
 	solid = 0;
 	movetype = 0;
 	classname = 0;
-	ScheduleThink(Util_Destroy, 0.0f);
+	think = __NULL__;
+	nextthink = 0.0f;
+	remove(this);
 }
 
 void
@@ -1238,6 +1254,7 @@ void
 NSEntity::StopSound(float channel, bool broadcast)
 {
 	if (broadcast) {
+		sound(this, channel, "common/null.wav", 1.0f, ATTN_NORM, 100, SOUNDFLAG_FOLLOW, 0 );
 		Sound_Stop(this, channel);
 	} else {
 #ifdef SERVER
@@ -1306,8 +1323,9 @@ NSEntity::Transport(vector new_pos, vector new_ang)
 	SetAngles(new_ang);
 
 #ifdef SERVER
-	if (flags & FL_CLIENT)
+	if (flags & FL_CLIENT) {
 		Client_FixAngle(this, new_ang);
+	}
 #endif
 }
 
@@ -1333,56 +1351,212 @@ NSEntity::GetNearbySpot(void)
 	tracebox(testPos, mins, maxs, testPos, MOVE_NORMAL, this);
 
 	if (trace_fraction == 1.0f)
-		return testPos;
+		return (testPos);
 
 	/* behind? */
 	testPos = GetOrigin() - fwdDir * minDist;
 	tracebox(testPos, mins, maxs, testPos, MOVE_NORMAL, this);
 
 	if (trace_fraction == 1.0f)
-		return testPos;
+		return (testPos);
 
 	/* left? */
 	testPos = GetOrigin() - rightDir * minDist;
 	tracebox(testPos, mins, maxs, testPos, MOVE_NORMAL, this);
 
 	if (trace_fraction == 1.0f)
-		return testPos;
+		return (testPos);
 
 	/* right? */
 	testPos = GetOrigin() + rightDir * minDist;
 	tracebox(testPos, mins, maxs, testPos, MOVE_NORMAL, this);
 
 	if (trace_fraction == 1.0f)
-		return testPos;
+		return (testPos);
 
 	/* front left? */
 	testPos = GetOrigin() + fwdDir * minDist - rightDir * minDist;
 	tracebox(testPos, mins, maxs, testPos, MOVE_NORMAL, this);
 
 	if (trace_fraction == 1.0f)
-		return testPos;
+		return (testPos);
 
 	/* front right? */
 	testPos = GetOrigin() + fwdDir * minDist + rightDir * minDist;
 	tracebox(testPos, mins, maxs, testPos, MOVE_NORMAL, this);
 
 	if (trace_fraction == 1.0f)
-		return testPos;
+		return (testPos);
 
 	/* back left? */
 	testPos = GetOrigin() - fwdDir * minDist - rightDir * minDist;
 	tracebox(testPos, mins, maxs, testPos, MOVE_NORMAL, this);
 
 	if (trace_fraction == 1.0f)
-		return testPos;
+		return (testPos);
 
 	/* back right? */
 	testPos = GetOrigin() - fwdDir * minDist + rightDir * minDist;
 	tracebox(testPos, mins, maxs, testPos, MOVE_NORMAL, this);
 
 	if (trace_fraction == 1.0f)
-		return testPos;
+		return (testPos);
 
-	return g_vec_null;
+	return (g_vec_null);
+}
+
+bool
+NSEntity::_ProjectileAttack(string defName, bool wasReleased)
+{
+#ifdef SERVER
+	string attackDef;
+	int numProjectiles = EntityDef_GetKeyValue(defName, "numProjectiles");
+	float sX = stof(EntityDef_GetKeyValue(defName, "spread_x"));
+	float sY = stof(EntityDef_GetKeyValue(defName, "spread_y"));
+
+	/* always fire at least 1 */
+	if (numProjectiles <= 0i) {
+		numProjectiles = 1i;
+	}
+
+	if (wasReleased == true) {
+		attackDef = EntityDef_GetKeyValue(defName, "def_onRelease");
+	} else {
+		attackDef = EntityDef_GetKeyValue(defName, "def_onFire");
+	}
+
+	for (int i = 0i; i < numProjectiles; i++) {
+		EntLog("Launching %S at %v towards %v", attackDef, GetEyePos(), GetViewAngle());
+		NSProjectile_SpawnDefAtPosition(attackDef, this, GetEyePos(), GetViewAngle());
+	}
+#endif
+
+	return (true);
+}
+
+bool
+NSEntity::AttackByDef(string defName, bool wasReleased)
+{
+	if (!defName) {
+		return (false);
+	}
+
+#ifdef SERVER
+	_ProjectileAttack(defName, wasReleased);
+#endif
+
+	return (true);
+}
+
+
+int
+NSEntity::GetSharedID(void)
+{
+#ifdef CLIENT
+	return (int)(entnum);
+#else
+	return (int)num_for_edict(this);
+#endif
+}
+
+NSEntity
+spawnClass(string className, vector desiredPos)
+{
+	NSEntity newEntity = __NULL__;
+
+#ifdef SERVER
+	newEntity = Entity_CreateClass(className);
+
+	/* That class didn't exist, so let's take the base Nuclide one */
+	if (!newEntity) {
+		newEntity = Entity_CreateClass("NSEntity");
+	}
+
+	/* OOM. It's over. */
+	if (!newEntity) {
+		return (__NULL__);
+	}
+
+	newEntity.classname = className;
+	newEntity.Input(newEntity, "SetSpawnOrigin", vtos(desiredPos));
+	newEntity.Input(newEntity, "SetOrigin", vtos(desiredPos));
+	newEntity.Respawn();
+#endif
+
+	return (newEntity);
+}
+
+void
+sendInput(entity target, string inputName, string dataString, entity activator)
+{
+	NSEntity targetEntity = (NSEntity)target;
+#ifdef SERVER
+	targetEntity.Input(activator, inputName, dataString);
+#endif
+}
+
+/* helper functions */
+bool
+isAI(entity entityToCheck)
+{
+	if (entityToCheck.flags & FL_MONSTER) {
+		return (true);
+	}
+
+	return (false);
+}
+
+bool
+isAlive(entity entityToCheck)
+{
+#ifdef SERVER
+	if (entityToCheck.takedamage != DAMAGE_NO) {
+		NSSurfacePropEntity livingEnt = (NSSurfacePropEntity)entityToCheck;
+		return livingEnt.IsAlive();
+	}
+#endif
+
+	return (false);
+}
+
+bool
+isGodMode(entity entityToCheck)
+{
+	if (entityToCheck.flags & FL_GODMODE) {
+		return (true);
+	}
+
+	return (false);
+}
+
+bool
+isPlayer(entity entityToCheck)
+{
+	if (entityToCheck.flags & FL_CLIENT) {
+		NSClient pl = (NSClient)entityToCheck;
+
+		return pl.IsPlayer();
+	}
+
+	return (false);
+}
+
+bool
+isSentient(entity entityToCheck)
+{
+	if (isAI(entityToCheck) || isPlayer(entityToCheck)) {
+		return (true);
+	}
+
+	return (false);
+}
+
+bool
+isBot(entity entityToCheck)
+{
+#ifdef SERVER
+	return (clienttype(self) == CLIENTTYPE_BOT) ? (true) : (false);
+#else
+	return (false);
+#endif
 }

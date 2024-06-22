@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Visibility/Areaportal Manager */
 /*!QUAKED func_areaportal (0 .5 .8) ?
 # OVERVIEW
 Manages a space between two areas.
@@ -55,6 +56,9 @@ areaportalwindow.
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
+
+@ingroup server
+@ingroup brushentity
 */
 
 class
@@ -126,8 +130,8 @@ func_areaportal::Spawned(void)
 {
 	super::Spawned();
 
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
+	SetModel(GetSpawnString("model"));
+	SetOrigin(GetSpawnVector("origin"));
 	Hide();
 	SetSolid(SOLID_NOT);
 

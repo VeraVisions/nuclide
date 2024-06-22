@@ -20,6 +20,10 @@ enumflags
 	SLIDER_DOWN,
 };
 
+/** VGUI Widget: Slider
+
+@ingroup vgui
+*/
 class VGUISlider:VGUIWidget
 {
 public:

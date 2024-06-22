@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
  
+/*! \brief Client-Entity: Environmental Lighting Controller */
 /*!QUAKED light_environment (0 1 0) (-8 -8 -8) (8 8 8) ?
 # OVERVIEW
 Defines the overall ambient skylight in the map.
@@ -48,6 +49,9 @@ from 4 positions across the entire horizon - thus eliminating any harsh shadows.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup client
+@ingroup pointentity
 */
 
 class light_environment:NSEntity
@@ -74,10 +78,11 @@ light_environment::SpawnKey(string strField, string strKey)
 {
 	switch (strField) {
 	case "pitch":
-		g_vecSunDir[0] = stof(strKey);
+		angles[0] = stof(strKey);
 		break;
+	case "angle":
 	case "sunangle":
-		g_vecSunDir[1] = stof(strKey);
+		angles[1] = stof(strKey);
 		break;
 	default:
 		super::SpawnKey(strField, strKey);

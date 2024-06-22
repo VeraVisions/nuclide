@@ -22,6 +22,7 @@ enumflags
 	OCAMFL_CHANGED_VIEWER
 };
 
+/*! \brief Shared-Entity: Camera System Trigger */
 /*!QUAKED trigger_camera (.5 .5 .5) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Forces a camera change when triggered.
@@ -41,6 +42,9 @@ be respected.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup shared
+@ingroup pointentity
 */
 class trigger_camera:NSPointTrigger
 {
@@ -167,11 +171,8 @@ trigger_camera::SpawnKey(string strKey, string strValue)
 void
 trigger_camera::Respawn(void)
 {
-	SetSize([0,0,0], [0,0,0]);
-	SetSolid(SOLID_NOT);
-	SetMovetype(MOVETYPE_PUSH);
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
+	super::Respawn();
+
 	m_eLooker = world;
 }
 
@@ -400,7 +401,7 @@ trigger_camera::Trigger(entity act, triggermode_t state)
 	/* Reset to the spawn values */
 	SetMovetype(MOVETYPE_PUSH);
 	SetSolid(SOLID_NOT);
-	SetOrigin(GetSpawnOrigin());
+	SetOrigin(GetSpawnVector("origin"));
 	SetTriggerTarget(m_strMoveTo);
 	NextPath();
 	GoToTarget();

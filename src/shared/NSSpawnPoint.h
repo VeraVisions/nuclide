@@ -15,6 +15,8 @@
 */
 
 /** This entity class represents spawnpoints.
+
+@ingroup baseclass
 */
 class NSSpawnPoint:NSPointTrigger
 {

@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Triggers Physics Explosion */
 /*!QUAKED env_physexplosion (1 .5 0) (-8 -8 -8) (8 8 8) NODAMAGE PUSHCLIENTS RADIAL TRACE SHAKE
 # OVERVIEW
 A force-centered explosion, primarily targetted at physics objects and optionally, players/clients.
@@ -34,9 +35,12 @@ A force-centered explosion, primarily targetted at physics objects and optionall
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
+
+@ingroup server
+@ingroup pointentity
 */
 class
-env_physexplosion:NSEntity
+env_physexplosion:NSPointTrigger
 {
 public:
 	void env_physexplosion(void);
@@ -45,7 +49,6 @@ public:
 	virtual void Save(float);
 	virtual void Restore(string,string);
 	virtual void SpawnKey(string, string);
-	virtual void Respawn(void);
 	virtual void Input(entity, string, string);
 
 	nonvirtual void TriggerExplosion(void);
@@ -117,12 +120,6 @@ env_physexplosion::SpawnKey(string keyName, string setValue)
 		super::SpawnKey(keyName, setValue);
 		break;
 	}
-}
-
-void
-env_physexplosion::Respawn(void)
-{
-	SetOrigin(GetSpawnOrigin());
 }
 
 void

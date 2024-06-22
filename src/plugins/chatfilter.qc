@@ -14,6 +14,13 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+#pragma target fte_5768
+//#pragma flag enable assumeint
+#pragma PROGS_DAT  "../../base/plug_chatfilter.dat"
+#define QWSSQC
+
+#include "../shared/fteextensions.qc"
+
 var int autocvar_chatplug_filter = 1;
 
 string *g_wordlist;
@@ -42,19 +49,19 @@ ChatFilter(string cmd)
 
 /* plugin hook */
 string
-FMX_ParseClientCommand(string cmd)
+Plug_ClientCommand(entity clientEntity, string commandString)
 {
-	tokenize(cmd);
+	tokenize(commandString);
 	switch (argv(0)) {
 		case "say":
-			return ChatFilter(cmd);
+			return ChatFilter(commandString);
 			break;
 	}
-	return (cmd);
+	return (commandString);
 }
 
-void
-FMX_Init(void)
+bool
+Plug_Load(void)
 {
 	string temp;
 	int i = 0;
@@ -65,7 +72,7 @@ FMX_Init(void)
 
 	if (fhWords < 0) {
 		print("Chat Filter Plugin: chatfilter.txt not found.\n");
-		return;
+		return (false);
 	}
 
 	/* count lines */
@@ -90,4 +97,6 @@ FMX_Init(void)
 		i++;
 	}
 	fclose(fhWords);
+
+	return (true);
 }

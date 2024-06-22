@@ -15,7 +15,10 @@
 */
 
 #ifdef CLIENT
-/** This entity class represents a NSClientPlayer their spraylogo. */
+/** This entity class represents a NSClientPlayer their spraylogo. 
+
+@ingroup baseclass
+*/
 class NSSpraylogo:NSEntity
 {
 private:

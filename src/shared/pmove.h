@@ -22,6 +22,14 @@ int trace_endcontentsi;
 .vector basevelocity;
 .entity groundentity;
 
+
+/** @defgroup pmove Player Movement
+    @brief Physics routine for complex, moving characters.
+    @ingroup shared
+
+@{
+*/
+
 typedef enum
 {
 	WATERLEVEL_OUTSIDE,
@@ -91,7 +99,6 @@ public:
 	nonvirtual vector GetProneViewOffset(void);
 
 #ifdef SERVER
-	virtual void Respawn(void);
 	virtual void EvaluateEntity(void);
 	virtual bool SendEntity(entity, float);
 #endif
@@ -122,3 +129,5 @@ void PMove_Init(void);
 
 void PMoveCustom_RunPlayerPhysics(entity);
 void PMoveCustom_RunCrouchPhysics(entity);
+
+/** @} */ // end of pmove

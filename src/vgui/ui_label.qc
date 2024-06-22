@@ -14,7 +14,11 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/** A VGUI label/text field. */
+
+/** VGUI Widget: Label
+
+@ingroup vgui
+*/
 class VGUILabel:VGUIWidget
 {
 public:

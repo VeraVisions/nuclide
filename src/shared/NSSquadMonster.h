@@ -16,7 +16,9 @@
 
 #define NSSQUADMONSTER_MAXMEMBERS 5
 
-/** NSSquadMonster based NPCs are able to communicate strategies together. */
+/** NSSquadMonster based NPCs are able to communicate strategies together. 
+@ingroup baseclass
+*/
 class
 NSSquadMonster:NSMonster
 {

@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: game_counter Zone Controller */
 /*!QUAKED game_zone_player (1 .5 0) ?
 # OVERVIEW
 When triggered, will cause players inside/outside this volume to trigger entities. It also has the ability to set game_counter entities to the amount of players inside/outside of the volume.
@@ -27,6 +28,9 @@ When triggered, will cause players inside/outside this volume to trigger entitie
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup server
+@ingroup brushentity
 */
 class
 game_zone_player:NSBrushTrigger

@@ -1,5 +1,11 @@
 
 /** Container class that'll deal with handling colors via a variety of different means. */
+
+
+/** VGUI Widget: Color Container
+
+@ingroup vgui
+*/
 class VGUIColor
 {
 public:

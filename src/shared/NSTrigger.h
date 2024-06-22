@@ -102,7 +102,7 @@ public:
 	virtual void Trigger(entity, triggermode_t);
 
 	/* master feature */
-	/** Returns what we will pass onto other's `::GetMaster()` calls if we're their master. */
+	/** Returns what we will pass onto other's `NSTrigger::GetMaster()` calls if we're their master. */
 	/* multisource overrides this, so keep virtual */
 	virtual int GetValue(entity);
 
@@ -147,8 +147,6 @@ private:
 	nonvirtual void _BlockedHandler(void);
 
 #ifdef SERVER
-	string m_oldstrTarget; /* needed due to trigger_changetarget */
-
 	string m_strGlobalName;
 	string m_strGlobalState;
 	string m_strKillTarget;

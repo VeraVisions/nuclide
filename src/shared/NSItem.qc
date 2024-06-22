@@ -25,6 +25,11 @@ NSItem::NSItem(void)
 	m_sndRespawn = __NULL__;
 	m_bFloating = false;
 	m_bSpins = false;
+	m_iGiveHealth = 0i;
+	m_iGiveArmor = 0i;
+	m_bNoTouch = false;
+	m_bInvCarry = false;
+	m_strRequires = __NULL__;
 #endif
 }
 
@@ -36,6 +41,7 @@ NSItem::Spawned(void)
 
 	Sound_Precache(m_sndAcquire);
 	Sound_Precache(m_sndRespawn);
+	pvsflags = PVSF_IGNOREPVS;
 }
 
 void
@@ -46,7 +52,7 @@ NSItem::Respawn(void)
 	   that came after this entity in the lump. */
 	static void AdjustSpawnPos(void) {
 		RestoreAngles();
-		SetOrigin(GetSpawnOrigin());
+		SetOrigin(GetSpawnVector("origin"));
 
 		if (!m_bFloating) {
 			DropToFloor();
@@ -54,27 +60,22 @@ NSItem::Respawn(void)
 		}
 	}
 
-	SetSolid(SOLID_TRIGGER);
-	SetOrigin(GetSpawnOrigin());
-	botinfo = BOTINFO_WEAPON;
-
-	if (m_bSpins)
-		modelflags = MF_ROTATE;
-	else
-		modelflags &= ~MF_ROTATE;
-
-	/* At some points, the item id might not yet be set */
-	if (GetSpawnModel()) {
-		SetModel(GetSpawnModel());
-	}
-
-	SetSize([-16,-16,0], [16,16,16]);
+	super::Respawn();
+	BecomePickup();
 	ScheduleThink(AdjustSpawnPos, 0.0f);
 }
 
 void
 NSItem::SpawnKey(string strKey, string strValue)
 {
+	/* special case for ammo type parsing... */
+	if (substring(strKey, 0, 8) == "inv_ammo") {
+		string ammoType = substring(strKey, 4, -1);
+		int ammoID = ammoNumForName(ammoType);
+		m_GiveAmmo[ammoID] = stoi(strValue);
+		return;
+	}
+
 	switch (strKey) {
 	case "inv_weapon":
 		m_strInvWeapon = ReadString(strValue);
@@ -100,6 +101,21 @@ NSItem::SpawnKey(string strKey, string strValue)
 	case "body":
 		m_iBody = ReadInt(strValue);
 		break;
+	case "inv_health":
+		m_iGiveHealth = ReadFloat(strValue);
+		break;
+	case "inv_armor":
+		m_iGiveArmor = ReadFloat(strValue);
+		break;
+	case "no_touch":
+		m_bNoTouch = ReadBool(strValue);
+		break;
+	case "inv_carry":
+		m_bInvCarry = ReadBool(strValue);
+		break;
+	case "requires":
+		m_strRequires = ReadString(strValue);
+		break;
 	default:
 		super::SpawnKey(strKey, strValue);
 		break;
@@ -110,14 +126,21 @@ void
 NSItem::Save(float handle)
 {
 	super::Save(handle);
+
 	SaveInt(handle, "m_iClip", m_iClip);
 	SaveInt(handle, "m_iWasDropped", m_iWasDropped);
 	SaveInt(handle, "m_iInvItem", m_iInvItem);
 	SaveString(handle, "m_sndAcquire", m_sndAcquire);
 	SaveString(handle, "m_sndRespawn", m_sndRespawn);
+	SaveString(handle, "m_sndHum", m_sndHum);
 	SaveBool(handle, "m_bFloating", m_bFloating);
 	SaveBool(handle, "m_bSpins", m_bSpins);
 	SaveString(handle, "m_strInvWeapon", m_strInvWeapon);
+	SaveInt(handle, "m_iGiveHealth", m_iGiveHealth);
+	SaveInt(handle, "m_iGiveArmor", m_iGiveArmor);
+	SaveBool(handle, "m_bNoTouch", m_bNoTouch);
+	SaveBool(handle, "m_bInvCarry", m_bInvCarry);
+	SaveString(handle, "m_strRequires", m_strRequires);
 }
 
 void
@@ -139,6 +162,9 @@ NSItem::Restore(string strKey, string strValue)
 	case "m_sndRespawn":
 		m_sndRespawn = ReadString(strValue);
 		break;
+	case "m_sndHum":
+		m_sndHum = ReadString(strValue);
+		break;
 	case "m_bFloating":
 		m_bFloating = ReadBool(strValue);
 		break;
@@ -147,6 +173,22 @@ NSItem::Restore(string strKey, string strValue)
 		break;
 	case "m_strInvWeapon":
 		m_strInvWeapon = ReadString(strValue);
+		break;
+
+	case "m_iGiveHealth":
+		m_iGiveHealth = ReadInt(strValue);
+		break;
+	case "m_iGiveArmor":
+		m_iGiveArmor = ReadInt(strValue);
+		break;
+	case "m_bNoTouch":
+		m_bNoTouch = ReadBool(strValue);
+		break;
+	case "m_bInvCarry":
+		m_bInvCarry = ReadBool(strValue);
+		break;
+	case "m_strRequires":
+		m_strRequires = ReadString(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
@@ -158,22 +200,61 @@ void
 NSItem::Touch(entity eToucher)
 {
 	NSClientPlayer pl = (NSClientPlayer)eToucher;
+	bool removeItem = false;
 
 	if (eToucher.classname != "player") {
 		return;
 	}
 
-#if 0
+	if (m_strRequires) {
+		if (pl.HasItem(m_strRequires) == false) {
+			return;
+		}
+	}
+
 	/* don't remove if AddItem fails */
-	if (pl.GiveWeapon(m_strInvWeapon) == false) {
+	if (m_bInvCarry) {
+		string itemToAdd = (m_strInvWeapon) ? m_strInvWeapon : classname;
+
+		if (pl.GiveItem(itemToAdd) == true) {
+			removeItem = true;
+		}
+	}
+
+	/* proceed */
+	if (m_iGiveHealth > 0i) {
+		if (pl.GetHealth() < 100) {
+			//Damage_Apply(pl, this, -m_iGiveHealth, 0, DMG_GENERIC);
+			pl.health = bound(0, pl.health + m_iGiveHealth, pl.max_health);
+			removeItem = true;
+		}
+	}
+
+	if (m_iGiveArmor > 0i) {
+		if (pl.armor < 100) {
+			pl.armor += (float)m_iGiveArmor;
+			removeItem = true;
+
+			if (pl.armor > 100) {
+				pl.armor = 100;
+			}
+		}
+	}
+
+	for (int i = 0; i < MAX_AMMO_TYPES; i++) {
+		if (m_GiveAmmo[i] > 0i && pl.GiveAmmo(i, m_GiveAmmo[i]) == true) {
+			removeItem = true;
+		}
+	}
+
+	if (removeItem == false) {
 		return;
 	}
-#endif
 
-	Logging_Pickup(eToucher, this, __NULL__);
+	Logging_Pickup(pl, this, __NULL__);
 	StartSoundDef(m_sndAcquire, CHAN_ITEM, true);
 
-	UseTargets(eToucher, TRIG_TOGGLE, m_flDelay);
+	UseTargets(pl, TRIG_TOGGLE, m_flDelay);
 
 	if (real_owner || m_iWasDropped == 1 || cvar("sv_playerslots") == 1) {
 		Destroy();
@@ -181,14 +262,16 @@ NSItem::Touch(entity eToucher)
 		Disappear();
 		ScheduleThink(PickupRespawn, 30.0f);
 	}
+
+	OnPickup();
 }
 
 void
 NSItem::SetItem(int i)
 {
 	m_iInvItem = i;
-	m_oldModel = Weapons_GetWorldmodel(m_iInvItem);
-	SetModel(GetSpawnModel());
+	//m_oldModel = Weapons_GetWorldmodel(m_iInvItem);
+	SetModel(GetSpawnString("model"));
 	SetSize([-16,-16,0], [16,16,16]);
 }
 
@@ -230,36 +313,6 @@ NSItem::PickupRespawn(void)
 }
 
 void
-NSItem::Draw(void)
-{
-}
-
-void
-NSItem::Holster(void)
-{
-}
-
-void
-NSItem::PrimaryAttack(void)
-{
-}
-
-void
-NSItem::SecondaryAttack(void)
-{
-}
-
-void
-NSItem::Reload(void)
-{
-}
-
-void
-NSItem::Release(void)
-{
-}
-
-void
 NSItem::OnPickup(void)
 {
 }
@@ -268,5 +321,255 @@ void
 NSItem::OnInventoryUse(void)
 {
 }
+
+void
+NSItem::PrintDebugInfo(void)
+{
+	DebugInt("m_iClip", m_iClip);
+	DebugInt("m_iWasDropped", m_iWasDropped);
+	DebugInt("m_iInvItem", m_iInvItem);
+	DebugString("m_sndAcquire", m_sndAcquire);
+	DebugString("m_sndRespawn", m_sndRespawn);
+	DebugString("m_sndHum", m_sndHum);
+	DebugBool("m_bFloating", m_bFloating);
+	DebugBool("m_bSpins", m_bSpins);
+	DebugString("m_strInvWeapon", m_strInvWeapon);
+}
+
+void
+NSItem::BecomePickup(void)
+{
+	SetSolid(SOLID_TRIGGER);
+	botinfo = BOTINFO_WEAPON;
+
+	if (m_bSpins)
+		modelflags = MF_ROTATE;
+	else
+		modelflags &= ~MF_ROTATE;
+
+	SetSize([-16,-16,0], [16,16,16]);
+	Show();
+}
+
+float
+NSItem::SendEntity(entity ePEnt, float flChanged)
+{
+	WriteByte(MSG_ENTITY, ENT_ITEM);
+
+	/* broadcast how much data is expected to be read */
+	WriteFloat(MSG_ENTITY, flChanged);
+
+	if (1) {
+		SENDENTITY_COORD(origin[0], ITEMFL_CHANGED_ORIGIN_X)
+		SENDENTITY_COORD(origin[1], ITEMFL_CHANGED_ORIGIN_Y)
+		SENDENTITY_COORD(origin[2], ITEMFL_CHANGED_ORIGIN_Z)
+		SENDENTITY_ANGLE(angles[0], ITEMFL_CHANGED_ANGLES_X)
+		SENDENTITY_ANGLE(angles[1], ITEMFL_CHANGED_ANGLES_Y)
+		SENDENTITY_ANGLE(angles[2], ITEMFL_CHANGED_ANGLES_Z)
+		SENDENTITY_SHORT(entityDefID, ITEMFL_CHANGED_MODELINDEX)
+		SENDENTITY_SHORT(modelindex, ITEMFL_CHANGED_MODELINDEX)
+		SENDENTITY_BYTE(solid, ITEMFL_CHANGED_SOLID)
+		SENDENTITY_BYTE(movetype, ITEMFL_CHANGED_FLAGS)
+		SENDENTITY_INT(flags, ITEMFL_CHANGED_FLAGS)
+		SENDENTITY_INT(vv_flags, ITEMFL_CHANGED_FLAGS)
+		SENDENTITY_COORD(mins[0], ITEMFL_CHANGED_SIZE)
+		SENDENTITY_COORD(mins[1], ITEMFL_CHANGED_SIZE)
+		SENDENTITY_COORD(mins[2], ITEMFL_CHANGED_SIZE)
+		SENDENTITY_COORD(maxs[0], ITEMFL_CHANGED_SIZE)
+		SENDENTITY_COORD(maxs[1], ITEMFL_CHANGED_SIZE)
+		SENDENTITY_COORD(maxs[2], ITEMFL_CHANGED_SIZE)
+		SENDENTITY_BYTE(frame, ITEMFL_CHANGED_FRAME)
+		SENDENTITY_FLOAT(skin, ITEMFL_CHANGED_SKIN)
+		SENDENTITY_FLOAT(effects, ITEMFL_CHANGED_EFFECTS)
+		SENDENTITY_FLOAT(scale, ITEMFL_CHANGED_SCALE)
+		SENDENTITY_COORD(velocity[0], ITEMFL_CHANGED_VELOCITY_X)
+		SENDENTITY_COORD(velocity[1], ITEMFL_CHANGED_VELOCITY_Y)
+		SENDENTITY_COORD(velocity[2], ITEMFL_CHANGED_VELOCITY_Z)
+		SENDENTITY_COORD(avelocity[0], ITEMFL_CHANGED_ANGULARVELOCITY)
+		SENDENTITY_COORD(avelocity[1], ITEMFL_CHANGED_ANGULARVELOCITY)
+		SENDENTITY_COORD(avelocity[2], ITEMFL_CHANGED_ANGULARVELOCITY)
+		SENDENTITY_ENTITY(chain, ITEMFL_CHANGED_CHAIN)
+		SENDENTITY_ENTITY(owner, ITEMFL_CHANGED_CHAIN)
+	} else {
+		/* the item is in the inventory */
+	}
+
+	return (1);
+}
+
+void
+NSItem::EvaluateEntity(void)
+{
+	EVALUATE_VECTOR(origin, 0, ITEMFL_CHANGED_ORIGIN_X)
+	EVALUATE_VECTOR(origin, 1, ITEMFL_CHANGED_ORIGIN_Y)
+	EVALUATE_VECTOR(origin, 2, ITEMFL_CHANGED_ORIGIN_Z)
+	EVALUATE_VECTOR(angles, 0, ITEMFL_CHANGED_ANGLES_X)
+	EVALUATE_VECTOR(angles, 1, ITEMFL_CHANGED_ANGLES_Y)
+	EVALUATE_VECTOR(angles, 2, ITEMFL_CHANGED_ANGLES_Z)
+	EVALUATE_FIELD(modelindex, ITEMFL_CHANGED_MODELINDEX)
+	EVALUATE_FIELD(solid, BASEFL_CHANGED_MODELINDEX)
+	EVALUATE_FIELD(movetype, ITEMFL_CHANGED_FLAGS)
+	EVALUATE_FIELD(flags, ITEMFL_CHANGED_FLAGS)
+	EVALUATE_FIELD(vv_flags, ITEMFL_CHANGED_FLAGS)
+	EVALUATE_VECTOR(mins, 0, ITEMFL_CHANGED_SIZE)
+	EVALUATE_VECTOR(mins, 1, ITEMFL_CHANGED_SIZE)
+	EVALUATE_VECTOR(mins, 2, ITEMFL_CHANGED_SIZE)
+	EVALUATE_VECTOR(maxs, 0, ITEMFL_CHANGED_SIZE)
+	EVALUATE_VECTOR(maxs, 1, ITEMFL_CHANGED_SIZE)
+	EVALUATE_VECTOR(maxs, 2, ITEMFL_CHANGED_SIZE)
+	EVALUATE_FIELD(frame, ITEMFL_CHANGED_FRAME)
+	EVALUATE_FIELD(skin, ITEMFL_CHANGED_SKIN)
+	EVALUATE_FIELD(effects, ITEMFL_CHANGED_EFFECTS)
+	EVALUATE_FIELD(scale, ITEMFL_CHANGED_SCALE)
+	EVALUATE_VECTOR(velocity, 0, ITEMFL_CHANGED_VELOCITY_X)
+	EVALUATE_VECTOR(velocity, 1, ITEMFL_CHANGED_VELOCITY_Y)
+	EVALUATE_VECTOR(velocity, 2, ITEMFL_CHANGED_VELOCITY_Z)
+	EVALUATE_VECTOR(avelocity, 0, ITEMFL_CHANGED_ANGULARVELOCITY)
+	EVALUATE_VECTOR(avelocity, 1, ITEMFL_CHANGED_ANGULARVELOCITY)
+	EVALUATE_VECTOR(avelocity, 2, ITEMFL_CHANGED_ANGULARVELOCITY)
+	EVALUATE_FIELD(chain, ITEMFL_CHANGED_CHAIN)
+	EVALUATE_FIELD(owner, ITEMFL_CHANGED_CHAIN)
+}
 #endif
 
+#ifdef CLIENT
+void
+NSItem::ReceiveEntity(float flNew, float flChanged)
+{
+	READENTITY_COORD(origin[0], ITEMFL_CHANGED_ORIGIN_X)
+	READENTITY_COORD(origin[1], ITEMFL_CHANGED_ORIGIN_Y)
+	READENTITY_COORD(origin[2], ITEMFL_CHANGED_ORIGIN_Z)
+	READENTITY_ANGLE(angles[0], ITEMFL_CHANGED_ANGLES_X)
+	READENTITY_ANGLE(angles[1], ITEMFL_CHANGED_ANGLES_Y)
+	READENTITY_ANGLE(angles[2], ITEMFL_CHANGED_ANGLES_Z)
+	READENTITY_SHORT(entityDefID, ITEMFL_CHANGED_MODELINDEX)
+	READENTITY_SHORT(modelindex, ITEMFL_CHANGED_MODELINDEX)
+	READENTITY_BYTE(solid, ITEMFL_CHANGED_SOLID)
+	READENTITY_BYTE(movetype, ITEMFL_CHANGED_FLAGS)
+	READENTITY_INT(flags, ITEMFL_CHANGED_FLAGS)
+	READENTITY_INT(vv_flags, ITEMFL_CHANGED_FLAGS)
+	READENTITY_COORD(mins[0], ITEMFL_CHANGED_SIZE)
+	READENTITY_COORD(mins[1], ITEMFL_CHANGED_SIZE)
+	READENTITY_COORD(mins[2], ITEMFL_CHANGED_SIZE)
+	READENTITY_COORD(maxs[0], ITEMFL_CHANGED_SIZE)
+	READENTITY_COORD(maxs[1], ITEMFL_CHANGED_SIZE)
+	READENTITY_COORD(maxs[2], ITEMFL_CHANGED_SIZE)
+	READENTITY_BYTE(frame, ITEMFL_CHANGED_FRAME)
+	READENTITY_FLOAT(skin, ITEMFL_CHANGED_SKIN)
+	READENTITY_FLOAT(effects, ITEMFL_CHANGED_EFFECTS)
+	READENTITY_FLOAT(scale, ITEMFL_CHANGED_SCALE)
+	READENTITY_COORD(velocity[0], ITEMFL_CHANGED_VELOCITY_X)
+	READENTITY_COORD(velocity[1], ITEMFL_CHANGED_VELOCITY_Y)
+	READENTITY_COORD(velocity[2], ITEMFL_CHANGED_VELOCITY_Z)
+	READENTITY_COORD(avelocity[0], ITEMFL_CHANGED_ANGULARVELOCITY)
+	READENTITY_COORD(avelocity[1], ITEMFL_CHANGED_ANGULARVELOCITY)
+	READENTITY_COORD(avelocity[2], ITEMFL_CHANGED_ANGULARVELOCITY)
+	READENTITY_ENTNUM(chain_entnum, ITEMFL_CHANGED_CHAIN)
+	READENTITY_ENTNUM(owner_entnum, ITEMFL_CHANGED_CHAIN)
+
+	if (flChanged & ITEMFL_CHANGED_MODELINDEX) {
+		classname = EntityDef_NameFromID(entityDefID);
+	}
+
+	drawmask = (modelindex != 0) ? MASK_ENGINE : 0;
+
+	if (flChanged & ITEMFL_CHANGED_CHAIN) {
+		chain = __NULL__;
+	}
+
+	if (scale == 0.0f)
+		scale = 1.0f;
+
+	if (flChanged & ITEMFL_CHANGED_SIZE)
+		setsize(this, mins, maxs);
+}
+
+void
+NSItem::ReceiveEvent(float eventType)
+{
+}
+
+void
+NSItem::PredictPreFrame(void)
+{
+	/* relink */
+	if (chain == __NULL__ && chain_entnum)
+		chain = findentity(world, ::entnum, chain_entnum);
+
+	if (owner == __NULL__ && owner_entnum) {
+		owner = findentity(world, ::entnum, owner_entnum);
+
+		if (owner) {
+			_AddedCallback();
+		}
+	}
+
+	SAVE_STATE(origin)
+	SAVE_STATE(angles)
+	SAVE_STATE(solid)
+	SAVE_STATE(movetype)
+	SAVE_STATE(flags)
+	SAVE_STATE(vv_flags)
+	SAVE_STATE(mins)
+	SAVE_STATE(maxs)
+	SAVE_STATE(scale)
+	SAVE_STATE(velocity)
+	SAVE_STATE(avelocity)
+	SAVE_STATE(owner)
+	SAVE_STATE(chain)
+}
+
+void
+NSItem::PredictPostFrame(void)
+{
+	ROLL_BACK(origin)
+	ROLL_BACK(angles)
+	ROLL_BACK(solid)
+	ROLL_BACK(movetype)
+	ROLL_BACK(flags)
+	ROLL_BACK(vv_flags)
+	ROLL_BACK(mins)
+	ROLL_BACK(maxs)
+	ROLL_BACK(scale)
+	ROLL_BACK(velocity)
+	ROLL_BACK(avelocity)
+	ROLL_BACK(owner)
+	ROLL_BACK(chain)
+}
+#endif
+
+void
+NSItem::AddedToInventory(void)
+{
+}
+
+void
+NSItem::RemovedFromInventory(void)
+{
+#ifdef SERVER
+	BecomePickup();
+#endif
+}
+
+bool
+NSItem::IsWeapon(void)
+{
+	return (false);
+}
+
+
+void
+NSItem::_AddedCallback(void)
+{
+#ifdef SERVER
+	Disappear();
+#endif
+
+	AddedToInventory();
+}
+
+void
+NSItem::_RemovedCallback(void)
+{
+	RemovedFromInventory();
+}

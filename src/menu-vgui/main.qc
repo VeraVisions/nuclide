@@ -151,10 +151,10 @@ m_toggle(float fMode)
 		m_display();
 }
 
-float m_consolecommand(string strCommand)
+float
+m_consolecommand(string cmd)
 {
-	dprint(sprintf("[MENU] m_consolecommand: %s\n", strCommand));
-	tokenize(strCommand);
+	int c = (int)tokenize(cmd);
 
 	switch (argv(0)) {
 	case "menu_quit":
@@ -166,12 +166,8 @@ float m_consolecommand(string strCommand)
 	case "showconsole":
 		UI_Console_Show();
 		break;
-	case "map_background":
-		localcmd(sprintf("maxplayers 2\nset coop 1\nset sv_background 1\nmap %s\n",
-			argv(1)));
-		break;
 	default:
-		return (0);
+		return Platform_ConsoleCommand(cmd, c);
 	}
 
 	return (1);

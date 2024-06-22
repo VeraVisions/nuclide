@@ -1,5 +1,6 @@
 #ifdef CLIENT
-class NSDebris:NSPhysicsEntity
+class
+NSDebris:NSPhysicsEntity
 {
 public:
 	void NSDebris(void);

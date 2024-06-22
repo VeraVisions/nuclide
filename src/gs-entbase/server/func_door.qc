@@ -26,6 +26,7 @@ enumflags {
 	SF_MOV_USE
 };
 
+/*! \brief Server-Entity: Sliding Door */
 /*!QUAKED func_door (0 .5 .8) ? SF_MOV_OPEN x SF_MOV_UNLINK SF_MOV_PASSABLE x SF_MOV_TOGGLE x x SF_MOV_USE
 # OVERVIEW
 This sliding door entity has the ability to slide forth and back on any
@@ -62,6 +63,9 @@ X is the integer value set in "movesnd" and "stopsnd".
 
 # TRIVIA
 This entity was introduced in Quake (1996).
+
+@ingroup server
+@ingroup brushentity
 */
 class
 func_door:NSMoverEntity
@@ -333,6 +337,8 @@ func_door::Spawned(void)
 void
 func_door::Respawn(void)
 {
+	super::Respawn();
+
 	/* this is a terrible hack */
 	if (m_flWait == 0)
 		m_flWait = 0.01f;
@@ -343,14 +349,12 @@ func_door::Respawn(void)
 		SetSolid(SOLID_BSP);
 
 	SetMovetype(MOVETYPE_PUSH);
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
 	AddFlags(FL_FINDABLE_NONSOLID);
 	ReleaseThink();
 
 	RestoreAngles();
-	SetMoverPosition1(GetSpawnOrigin());
-	SetMoverPosition2(GetDirectionalPosition(GetSpawnAngles(), m_flLip));
+	SetMoverPosition1(GetSpawnVector("origin"));
+	SetMoverPosition2(GetDirectionalPosition(GetAngles(), m_flLip));
 	ClearAngles();
 
 	/* FIXME: Is this correct? */
@@ -374,7 +378,7 @@ func_door::Respawn(void)
 		m_bCanTouch = true;
 
 	if (HasSpawnFlags(SF_MOV_OPEN)) {
-		SetOrigin(m_vecPos2);
+		SetOrigin(GetMoverPosition2());
 		SetMoverPosition2(GetMoverPosition1());
 		SetMoverPosition1(GetOrigin());
 
@@ -575,7 +579,11 @@ void
 func_door::Blocked(entity eBlocker)
 {
 	if (m_iDamage) {
-		Damage_Apply(eBlocker, this, m_iDamage, 0, DMG_CRUSH);
+		vector center = WorldSpaceCenter();
+		vector dmgDir = dirFromTarget(center, eBlocker.origin);
+		string dmgDef = sprintf("\"damage\" \"%i\"", m_iDamage);
+		m_bCanTouch = false;
+		entityDamage(eBlocker, this, eBlocker, dmgDef, "", center, dmgDir, eBlocker.origin);
 	}
 
 	if (!m_bForceClosed)

@@ -21,6 +21,7 @@ enumflags
 	EHH_ALLPLAYERS
 };
 
+/*! \brief Server-Entity: Displays HUD Hint Messages */
 /*!QUAKED env_hudhint (1 .5 0) (-8 -8 -8) (8 8 8) EHH_ALLPLAYERS
 # OVERVIEW
 Will display a hint message to the client who activates it.
@@ -39,6 +40,9 @@ Will display a hint message to the client who activates it.
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
+
+@ingroup server
+@ingroup pointentity
 */
 class
 env_hudhint:NSPointTrigger

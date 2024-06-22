@@ -81,7 +81,10 @@ The physics simulator used is controlled by the engine and may be
 subject to change.
 
 Units of mass is defined in kilograms, a standard unit of measurement.
-You will find the API to be mostly compatible of that offered by Garry's Mod. */
+You will find the API to be mostly compatible of that offered by Garry's Mod.
+
+@ingroup baseclass
+*/
 class NSPhysicsEntity:NSSurfacePropEntity
 {
 private:
@@ -116,8 +119,8 @@ public:
 	virtual void SpawnKey(string,string);
 #ifdef SERVER
 	virtual void Spawned(void);
-	virtual void Pain(void);
-	virtual void Death(void);
+	virtual void Pain(entity, entity, int, vector, int);
+	virtual void Death(entity, entity, int, vector, int);
 	virtual void EvaluateEntity(void);
 	virtual float SendEntity(entity,float);
 	virtual void Save(float);

@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Generic In-Memory Hint */
 /*!QUAKED info_notnull (0 0.5 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Helper entity for the game-logic its vast array of entities.
@@ -30,6 +31,9 @@ its purpose.
 
 # TRIVIA
 This entity was introduced in Quake (1996).
+
+@ingroup server
+@ingroup pointentity
 */
 class
 info_notnull:NSPointTrigger

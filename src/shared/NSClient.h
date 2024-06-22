@@ -18,6 +18,8 @@
 
 It is mostly concerned with the features shared between players
 and spectating clients alike.
+
+@ingroup baseclass
 */
 class
 NSClient:NSBot

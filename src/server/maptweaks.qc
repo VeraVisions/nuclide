@@ -29,15 +29,8 @@
 	checks fail and don't even cache them.
 */
 
-typedef struct
-{
-	string cvarCheck;
-	string serverinfoCheck;
-	string itemTable;
-} mapTweak_t;
-
-mapTweak_t *g_mapTweakTable;
-var int g_mapTweakCount;
+static mapTweak_t *g_mapTweakTable;
+static int g_mapTweakCount;
 
 void
 MapTweaks_Init(void)
@@ -51,7 +44,7 @@ MapTweaks_Init(void)
 
 	tweakFile = fopen("scripts/maptweaks.txt", FILE_READ);
 	g_mapTweakCount = 0;
-	newCvar = newInfo = newItem = "";
+	tempString = newCvar = newInfo = newItem = "";
 
 	/* count valid entries. */
 	if (tweakFile >= 0) {
@@ -118,19 +111,19 @@ MapTweak_Check(int id)
 		switch (checkType) {
 		case "equals":
 			if not (cvar(cvarName) == cvarValue)
-				return false;
+				return (false);
 			break;
 		case "less-than":
 			if not (cvar(cvarName) < cvarValue)
-				return false;
+				return (false);
 			break;
 		case "greater-than":
 			if not (cvar(cvarName) > cvarValue)
-				return false;
+				return (false);
 			break;
 		case "is-not":
 			if not (cvar(cvarName) != cvarValue)
-				return false;
+				return (false);
 			break;
 		}
 	}
@@ -146,43 +139,38 @@ MapTweak_Check(int id)
 		switch (checkType) {
 		case "equals":
 			if not (serverkeyfloat(infoName) == infoValue)
-				return false;
+				return (false);
 			break;
 		case "less-than":
 			if not (serverkeyfloat(infoName) < infoValue)
-				return false;
+				return (false);
 			break;
 		case "greater-than":
 			if not (serverkeyfloat(infoName) > infoValue)
-				return false;
+				return (false);
 			break;
 		case "is-not":
 			if not (serverkeyfloat(infoName) != infoValue)
-				return false;
+				return (false);
 			break;
 		}
 	}
 
-	return true;
+	return (true);
 }
 
-static void
+static bool
 MapTweak_FinishSpawn(entity targetEntity, string newClassname)
 {
 	entity oldSelf = self;
 	self = targetEntity;
 
-	if (EntityDef_SpawnClassname(newClassname))
-		return;
-
-	if (!isfunction(newClassname)) {
-		self.classname = strcat("spawnfunc_", newClassname);
-	} else {
-		self.classname = newClassname;
+	/* found the edef alternative. */
+	if (EntityDef_SpawnClassname(newClassname) != __NULL__) {
+		return (true);
 	}
 
-	callfunction(self.classname);
-	self = oldSelf;
+	return (false);
 }
 
 bool
@@ -190,8 +178,9 @@ MapTweak_EntitySpawn(entity targetEntity)
 {
 	string classCheck = targetEntity.classname;
 
-	if (g_mapTweakCount <= 0)
-		return false;
+	if (g_mapTweakCount <= 0) {
+		return (false);
+	}
 
 	for (int i = 0; i < g_mapTweakCount; i++) {
 		int segments = tokenize(g_mapTweakTable[i].itemTable);
@@ -204,8 +193,7 @@ MapTweak_EntitySpawn(entity targetEntity)
 
 			if (classCheck == oldEnt) {
 				if (MapTweak_Check(i) == true) {
-					MapTweak_FinishSpawn(targetEntity, newEnt);
-					return true;
+					return MapTweak_FinishSpawn(targetEntity, newEnt);
 				} else {
 					break;
 				}
@@ -213,5 +201,5 @@ MapTweak_EntitySpawn(entity targetEntity)
 		}
 	}
 
-	return false;
+	return (false);
 }

@@ -15,11 +15,11 @@
 */
 
 void
-NSBot::Pain(void)
+NSBot::Pain(entity inflictor, entity attacker, int damage, vector dir, int location)
 {
 	NSGameRules rules = g_grMode;
 
-	super::Pain();
+	super::Pain(inflictor, attacker, damage, dir, location);
 
 	if (rules.IsTeamplay()) {
 		if (g_dmg_eAttacker.flags & FL_CLIENT && g_dmg_eAttacker.team == team) {
@@ -64,8 +64,8 @@ NSBot::WeaponThink(void)
 	/* clip empty, but the whole weapon isn't */
 	if (r == 0 && a_ammo1 <= 0) {
 		/* stop fire, tap reload */
-		input_buttons &= ~INPUT_BUTTON0;
-		input_buttons |= INPUT_BUTTON4;
+		input_buttons &= ~INPUT_PRIMARY;
+		input_buttons |= INPUT_RELOAD;
 	} else if (r == 1) {
 		/* if empty, switch to the next best weapon */
 		Weapons_SwitchBest(this, activeweapon);
@@ -100,7 +100,7 @@ NSBot::WeaponAttack(void)
 
 	if (shouldAttack && m_flAttackTime < time) {
 		if (!m_iAttackMode) {
-			input_buttons |= INPUT_BUTTON0;
+			input_buttons |= INPUT_PRIMARY;
 		}
 
 		/* this might not affect much */
@@ -120,9 +120,9 @@ NSBot::WeaponAttack(void)
 			}
 		}
 	} else {
-		input_buttons &= ~INPUT_BUTTON0;
-		input_buttons &= ~INPUT_BUTTON4;
-		input_buttons &= ~INPUT_BUTTON5;
+		input_buttons &= ~INPUT_PRIMARY;
+		input_buttons &= ~INPUT_RELOAD;
+		input_buttons &= ~INPUT_SECONDARY;
 	}
 
 	if (m_wtWeaponType != WPNTYPE_FULLAUTO)
@@ -150,7 +150,11 @@ BotLib_Alert(vector pos, float radius, float t)
 	if (g_botalert_timer > time)
 		return;
 
-	for (entity w = world; (w = find(w,::targetname, "_nuclide_bot_"));) {
+	for (entity w = world; (w = findfloat(w, ::identity, 1));) {
+		if (isBot(w) == false) {
+			continue;
+		}
+
 		/* out of radius */
 		if (distance(pos, w.origin) > radius)
 			continue;

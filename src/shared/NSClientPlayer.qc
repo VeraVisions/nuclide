@@ -21,6 +21,15 @@ NSClientPlayer::NSClientPlayer(void)
 	vehicle = __NULL__;
 }
 
+NSWeapon GetWeaponEntity(int theclientsnumber)
+{
+	entity e = edict_num((float)theclientsnumber); //can return world when out of range...
+
+	if (wasfreed(e))
+		e = world; //might have been freed...
+
+	return e; 
+}
 
 void
 NSClientPlayer::SharedInputFrame(void)
@@ -30,6 +39,19 @@ NSClientPlayer::SharedInputFrame(void)
 		NSClientSpectator::SharedInputFrame();
 		return;
 	}
+
+#ifdef SERVER
+	if (input_cursor_entitynumber) {
+		NSWeapon nextWeapon = GetWeaponEntity(input_cursor_entitynumber);
+
+		if (nextWeapon != m_activeWeapon) {
+			if (nextWeapon && HasExactItem(nextWeapon)) {
+				m_activeWeapon = nextWeapon;
+				m_activeWeapon._SwitchedToCallback();
+			}
+		}
+	}
+#endif
 }
 
 bool
@@ -92,6 +114,13 @@ NSClientPlayer::PreFrame(void)
 	 * information. */
 	PredictPreFrame();
 
+	NSItem itemEntry = m_itemList;
+
+	while (itemEntry) {
+		itemEntry.PredictPreFrame();
+		itemEntry = (NSItem)itemEntry.chain;
+	}
+
 	if (vehicle) {
 		NSVehicle veh = (NSVehicle)vehicle;
 		veh.PredictPreFrame();
@@ -132,6 +161,14 @@ NSClientPlayer::PostFrame(void)
 
 	/* give the game/mod a chance to roll back its values too */
 	PredictPostFrame();
+
+	NSItem itemEntry = m_itemList;
+
+	while (itemEntry) {
+		itemEntry.PredictPostFrame();
+		itemEntry = (NSItem)itemEntry.chain;
+	}
+
 	setorigin(this, origin);  /* update bounds */
 
 	if (vehicle) {
@@ -146,6 +183,8 @@ void
 NSClientPlayer::ProcessInput(void)
 {
 	NSVehicle veh = (NSVehicle)vehicle;
+
+	//printf("%d\n", input_buttons);
 
 	if (Util_IsPaused())
 		return;
@@ -198,19 +237,26 @@ NSClientPlayer::ProcessInput(void)
 		canfire = false;
 	
 	if (canfire == false) {
-		Weapons_Release(this);
+		if (m_activeWeapon) {
+			m_activeWeapon.Release();
+		}
+
+		return;
+	}
+
+	if (!m_activeWeapon) {
 		return;
 	}
 
 	/* weapon system */
 	if (input_buttons & INPUT_SECONDARY)
-		Weapons_Secondary(this);
+		m_activeWeapon.SecondaryAttack();
 	else if (input_buttons & INPUT_PRIMARY)
-		Weapons_Primary(this);
+		m_activeWeapon.PrimaryAttack();
 	else if (input_buttons & INPUT_RELOAD)
-		Weapons_Reload(this);
+		m_activeWeapon.Reload();
 	else
-		Weapons_Release(this);
+		m_activeWeapon.Release();
 }
 
 /* this is where it gets mod specific really fast,
@@ -315,7 +361,9 @@ NSClientPlayer::predraw(void)
 
 		/* draw a 3D voice blob over its head */
 		Voice_Draw3D(this);
-		Weapons_PreDraw(this, true);
+
+		if (m_activeWeapon)
+			m_activeWeapon.ClientFX(true);
 
 		/* force drawing us if it's our local player and we're meant to show */
 		if (entnum == player_localentnum)
@@ -328,7 +376,6 @@ NSClientPlayer::predraw(void)
 
 		/* give mods a chance to de-render attachments */
 		UpdatePlayerAttachments(true);
-		Weapons_PreDraw(this, false);
 
 		/* this is here just to make sure our view hides us if it's the local player */
 		if (entnum == player_localentnum)
@@ -361,10 +408,34 @@ NSClientPlayer::postdraw(void)
 void
 NSClientPlayer::VehicleRelink(void)
 {
+	NSWeapon oldWeapon = m_activeWeapon;
+
 	if (!vehicle_entnum)
 		vehicle = __NULL__;
 	else
 		vehicle = findentity(world, ::entnum, vehicle_entnum);
+
+	if (!activeweapon)
+		m_activeWeapon = __NULL__;
+	else
+		m_activeWeapon = (NSWeapon)findentity(world, ::entnum, activeweapon);
+
+	if (!m_flFirstInventoryItem)
+		m_itemList = __NULL__;
+	else {
+		m_itemList = (NSItem)findentity(world, ::entnum, m_flFirstInventoryItem);
+	}
+
+	/* that state has only just changed. */
+	if (oldWeapon != __NULL__ && m_activeWeapon == __NULL__) {
+		oldWeapon._SwitchedFromCallback();
+	}
+
+	if (m_activeWeapon != __NULL__ && oldWeapon == __NULL__) {
+		m_activeWeapon.SetOwner(this);
+		m_activeWeapon._SwitchedToCallback();
+		m_activeWeapon._AddedCallback();
+	}
 }
 
 void
@@ -376,13 +447,57 @@ NSClientPlayer::OnRemoveEntity(void)
 	super::OnRemoveEntity();
 }
 
+vector
+NSClientPlayer::CalculateLean(vector viewAngle)
+{
+	vector shift = anglesToRight(viewAngle);
+	vector output;
+	vector srcPos;
+	float heightChange;
+	NSClientPlayer pl = (NSClientPlayer)pSeat->m_ePlayer;
+
+	if (pSeat->m_iLeanDir > 0i) {
+		pSeat->m_flLeaning += frametime * 5;
+	} else if (pSeat->m_iLeanDir < 0i) {
+		pSeat->m_flLeaning -= frametime * 5;
+	} else {
+		pSeat->m_flLeaning = lerp(pSeat->m_flLeaning, 0.0, frametime * 10);
+	}
+
+	if (pSeat->m_flLeaning > 1.0) {
+		pSeat->m_flLeaning = 1.0f;
+	}
+
+	if (pSeat->m_flLeaning < -1.0) {
+		pSeat->m_flLeaning = -1.0f;
+	}
+
+	heightChange = cos(pSeat->m_flLeaning) * 4;
+	srcPos = pl.GetEyePos();
+	output = shift * (pSeat->m_flLeaning * 15.0);
+	tracebox(srcPos, [-8,-8,-8], [8,8,8], srcPos + output, MOVE_NORMAL, pl);
+
+	return output * trace_fraction + (shift * -1.0) + [0, 0, heightChange];
+}
+
 void
 NSClientPlayer::UpdateAliveCam(void)
 {
-	g_view.SetCameraOrigin(GetEyePos());
-	Camera_RunBob(view_angles);
-	Camera_StrafeRoll(view_angles);
+	vector cam_pos = GetEyePos();
+
+#if defined(VALVE) || defined(CSTRIKE) || defined(GEARBOX)
+	//view_angles = Camera_RunBob(view_angles);
+	//view_angles = Camera_StrafeRoll(view_angles);
+	cam_pos += CalculateLean(view_angles);
 	g_view.SetCameraAngle(view_angles);
+	g_view.SetCameraOrigin(cam_pos );
+#else
+	view_angles = Camera_RunBob(view_angles);
+	view_angles = Camera_StrafeRoll(view_angles);
+	cam_pos += CalculateLean(view_angles);
+	g_view.SetCameraAngle(view_angles);
+	g_view.SetCameraOrigin(cam_pos + Camera_AddCamBob(view_angles));
+#endif
 
 	if (vehicle) {
 		NSVehicle veh = (NSVehicle)vehicle;
@@ -459,6 +574,9 @@ NSClientPlayer::ClientInputFrame(void)
 		input_buttons |= INPUT_JUMP;
 	}
 
+	if (pSeat->m_iHUDWeaponSelected)
+		input_cursor_entitynumber = pSeat->m_iHUDWeaponSelected;
+
 	/* IW style stance override */
 	if (pSeat->m_dForceStance == STANCE_CROUCH) {
 		input_buttons |= INPUT_CROUCH;
@@ -466,6 +584,7 @@ NSClientPlayer::ClientInputFrame(void)
 		input_buttons |= INPUT_PRONE;
 	}
 
+#if 0
 	/* The HUD needs more time */
 	if (pSeat->m_iHUDWeaponSelected) {
 		if ((input_buttons & INPUT_PRIMARY))
@@ -475,6 +594,7 @@ NSClientPlayer::ClientInputFrame(void)
 
 		pSeat->m_flInputBlockTime = time + 0.2;
 	}
+#endif
 
 	/* prevent accidental input packets */
 	if (pSeat->m_flInputBlockTime > time) {
@@ -550,6 +670,10 @@ NSClientPlayer::ReceiveEntity(float new, float flChanged)
 		gravity = 1.0f;
 	}
 
+	if (new) {
+		classname = "player";
+	}
+
 	READENTITY_INT(modelindex, PLAYER_MODELINDEX)
 	READENTITY_BYTE(colormap, PLAYER_MODELINDEX)
 
@@ -583,9 +707,9 @@ NSClientPlayer::ReceiveEntity(float new, float flChanged)
 	READENTITY_INT(vv_flags, PLAYER_FLAGS)
 	READENTITY_INT(gflags, PLAYER_FLAGS)
 	READENTITY_INT(pmove_flags, PLAYER_FLAGS)
-	READENTITY_BYTE(activeweapon, PLAYER_WEAPON)
-	READENTITY_BYTE(weaponframe, PLAYER_WEAPON)
-	READENTITY_INT(g_items, PLAYER_ITEMS)
+	READENTITY_ENTNUM(m_flFirstInventoryItem, PLAYER_ITEMS)
+	READENTITY_ENTNUM(activeweapon, PLAYER_WEAPON)
+	READENTITY_BYTE(weaponframe, PLAYER_WEAPONFRAME)
 	READENTITY_BYTE(health, PLAYER_HEALTH)
 	READENTITY_BYTE(armor, PLAYER_HEALTH)
 	READENTITY_COORD(mins[0], PLAYER_SIZE)
@@ -611,13 +735,39 @@ NSClientPlayer::ReceiveEntity(float new, float flChanged)
 	READENTITY_BYTE(spec_mode, PLAYER_SPECTATE)
 	READENTITY_BYTE(spec_flags, PLAYER_SPECTATE)
 
-	VehicleRelink();
+	for (int i = 0i; i < MAX_AMMO_TYPES; i++) {
+		READENTITY_INT(m_iAmmoTypes[i], PLAYER_AMMOTYPES)
+	}
+
+	if (flChanged & PLAYER_AMMOTYPES) {
+		HUD_AmmoNotify_Check(this);
+	}
+
+	/* the entities might not be networked yet,
+	   so by tracking desired entnums and updating
+	   them every time they change is sensible. */
+	if (flChanged & PLAYER_VEHICLE) {
+		vehicle = __NULL__;
+	}
+
+	if (flChanged & PLAYER_WEAPON) {
+		m_activeWeapon = __NULL__;
+	}
+
+	if (flChanged & PLAYER_ITEMS) {
+		m_itemList = __NULL__;
+	}
+
+	/* only do as often as necessary */
+	if ((vehicle_entnum && !vehicle) || (m_flFirstInventoryItem && !m_itemList) || (activeweapon && !m_activeWeapon))
+		VehicleRelink();
+
 	PredictPreFrame();
 
 	if (flChanged & PLAYER_SIZE)
 		setsize(this, mins, maxs);
 
-	setorigin(this, origin);
+	Relink();
 
 	if (flChanged & PLAYER_SPECTATE) {
 		m_flLastSpecTargetChange = time;
@@ -636,6 +786,9 @@ at the top of player::PredictPreFrame
 void
 NSClientPlayer::PredictPreFrame(void)
 {
+	if (m_activeWeapon)
+		m_activeWeapon.PredictPreFrame();
+
 	SAVE_STATE(modelindex)
 	SAVE_STATE(origin)
 	SAVE_STATE(v_angle)
@@ -648,7 +801,8 @@ NSClientPlayer::PredictPreFrame(void)
 	SAVE_STATE(vv_flags)
 	SAVE_STATE(gflags)
 	SAVE_STATE(pmove_flags)
-	SAVE_STATE(activeweapon)
+	SAVE_STATE(m_itemList)
+	SAVE_STATE(m_activeWeapon)
 	SAVE_STATE(weaponframe)
 	SAVE_STATE(g_items)
 	SAVE_STATE(health)
@@ -669,6 +823,10 @@ NSClientPlayer::PredictPreFrame(void)
 	SAVE_STATE(spec_ent)
 	SAVE_STATE(spec_mode)
 	SAVE_STATE(spec_flags)
+
+	for (int i = 0i; i < MAX_AMMO_TYPES; i++) {
+		m_iAmmoTypes_net[i] = m_iAmmoTypes[i];
+	}
 }
 
 /*
@@ -696,7 +854,8 @@ NSClientPlayer::PredictPostFrame(void)
 	ROLL_BACK(vv_flags)
 	ROLL_BACK(gflags)
 	ROLL_BACK(pmove_flags)
-	ROLL_BACK(activeweapon)
+	ROLL_BACK(m_itemList)
+	ROLL_BACK(m_activeWeapon)
 	ROLL_BACK(weaponframe)
 	ROLL_BACK(g_items)
 	ROLL_BACK(health)
@@ -717,6 +876,14 @@ NSClientPlayer::PredictPostFrame(void)
 	ROLL_BACK(spec_ent)
 	ROLL_BACK(spec_mode)
 	ROLL_BACK(spec_flags)
+
+	for (int i = 0i; i < MAX_AMMO_TYPES; i++) {
+		m_iAmmoTypes[i] = m_iAmmoTypes_net[i];
+	}
+
+	if (m_activeWeapon) {
+		m_activeWeapon.PredictPostFrame();
+	}
 }
 #else
 void
@@ -761,7 +928,8 @@ NSClientPlayer::Save(float handle)
 	SaveInt(handle, "weaponframe", weaponframe);
 	SaveFloat(handle, "weapontime", weapontime);
 	SaveInt(handle, "g_items", g_items);
-	SaveFloat(handle, "activeweapon", activeweapon);
+	SaveEntity(handle, "m_itemList", m_itemList);
+	SaveEntity(handle, "m_activeWeapon", m_activeWeapon);
 	SaveEntity(handle, "vehicle", vehicle);
 }
 
@@ -841,8 +1009,11 @@ NSClientPlayer::Restore(string strKey, string strValue)
 	case "g_items":
 		g_items = ReadInt(strValue);
 		break;
-	case "activeweapon":
-		activeweapon = ReadFloat(strValue);
+	case "m_itemList":
+		m_itemList = ReadEntity(strValue);
+		break;
+	case "m_activeWeapon":
+		m_activeWeapon = ReadEntity(strValue);
 		break;
 	case "vehicle":
 		vehicle = ReadEntity(strValue);
@@ -887,7 +1058,17 @@ NSClientPlayer::MakeTempSpectator(void)
 	max_health = health = 0;
 	armor = 0;
 	g_items = 0;
-	activeweapon = 0;
+
+	if (m_activeWeapon) {
+		m_activeWeapon.Destroy();
+		m_activeWeapon = __NULL__;
+	}
+
+	if (m_itemList) {
+		m_itemList.Destroy();
+		m_itemList = __NULL__;
+	}
+
 	effects = 0;
 	alpha = 0.0f;
 	scale = 1.0f;
@@ -903,13 +1084,23 @@ Sets all the appropriate attributes to make sure we're dead
 =================
  */
 void
-NSClientPlayer::Death(void)
+NSClientPlayer::Death(entity inflictor, entity attacker, int damage, vector dir, int location)
 {
 	classname = "player";
 	health = max_health = 0;
 	armor = 0;
 	g_items = 0;
-	activeweapon = 0;
+
+	if (m_activeWeapon) {
+		m_activeWeapon.Destroy();
+		m_activeWeapon = __NULL__;
+	}
+
+	if (m_itemList) {
+		m_itemList.Destroy();
+		m_itemList = __NULL__;
+	}
+
 	effects = 0;
 	alpha = 1.0f;
 	SetModelindex(0);
@@ -949,7 +1140,16 @@ NSClientPlayer::MakePlayer(void)
 		armor = 0;
 	}
 
-	activeweapon = 0;
+	if (m_activeWeapon) {
+		m_activeWeapon.Destroy();
+		m_activeWeapon = __NULL__;
+	}
+
+	if (m_itemList) {
+		m_itemList.Destroy();
+		m_itemList = __NULL__;
+	}
+
 	effects = 0;
 	alpha = 1.0f;
 	SetSolid(SOLID_SLIDEBOX);
@@ -1026,9 +1226,9 @@ NSClientPlayer::EvaluateEntity(void)
 	EVALUATE_FIELD(vv_flags, PLAYER_FLAGS)
 	EVALUATE_FIELD(gflags, PLAYER_FLAGS)
 	EVALUATE_FIELD(pmove_flags, PLAYER_FLAGS)
-	EVALUATE_FIELD(activeweapon, PLAYER_WEAPON)
-	EVALUATE_FIELD(weaponframe, PLAYER_WEAPON)
-	EVALUATE_FIELD(g_items, PLAYER_ITEMS)
+	EVALUATE_FIELD(m_itemList, PLAYER_ITEMS)
+	EVALUATE_FIELD(m_activeWeapon, PLAYER_WEAPON)
+	EVALUATE_FIELD(weaponframe, PLAYER_WEAPONFRAME)
 	EVALUATE_FIELD(health, PLAYER_HEALTH)
 	EVALUATE_FIELD(armor, PLAYER_HEALTH)
 	EVALUATE_VECTOR(mins, 0, PLAYER_SIZE)
@@ -1053,6 +1253,10 @@ NSClientPlayer::EvaluateEntity(void)
 	EVALUATE_FIELD(spec_ent, PLAYER_SPECTATE)
 	EVALUATE_FIELD(spec_mode, PLAYER_SPECTATE)
 	EVALUATE_FIELD(spec_flags, PLAYER_SPECTATE)
+
+	for (int i = 0i; i < MAX_AMMO_TYPES; i++) {
+		EVALUATE_VECTOR(m_iAmmoTypes, i, PLAYER_AMMOTYPES)
+	}
 }
 
 /*
@@ -1111,9 +1315,9 @@ NSClientPlayer::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_INT(vv_flags, PLAYER_FLAGS)
 	SENDENTITY_INT(gflags, PLAYER_FLAGS)
 	SENDENTITY_INT(pmove_flags, PLAYER_FLAGS)
-	SENDENTITY_BYTE(activeweapon, PLAYER_WEAPON)
-	SENDENTITY_BYTE(weaponframe, PLAYER_WEAPON)
-	SENDENTITY_INT(g_items, PLAYER_ITEMS)
+	SENDENTITY_ENTITY(m_itemList, PLAYER_ITEMS)
+	SENDENTITY_ENTITY(m_activeWeapon, PLAYER_WEAPON)
+	SENDENTITY_BYTE(weaponframe, PLAYER_WEAPONFRAME)
 	SENDENTITY_BYTE(health, PLAYER_HEALTH)
 	SENDENTITY_BYTE(armor, PLAYER_HEALTH)
 	SENDENTITY_COORD(mins[0], PLAYER_SIZE)
@@ -1138,6 +1342,10 @@ NSClientPlayer::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_BYTE(spec_ent, PLAYER_SPECTATE)
 	SENDENTITY_BYTE(spec_mode, PLAYER_SPECTATE)
 	SENDENTITY_BYTE(spec_flags, PLAYER_SPECTATE)
+
+	for (int i = 0i; i < MAX_AMMO_TYPES; i++) {
+		SENDENTITY_INT(m_iAmmoTypes[i], PLAYER_AMMOTYPES)
+	}
 
 	return (1);
 }
@@ -1362,5 +1570,164 @@ NSClientPlayer::Footsteps_Update(void)
 
 	/* switch between feet */
 	step = 1 - step;
+#endif
+}
+
+void
+NSClientPlayer::Damage(entity inflictor, entity attacker, string damageDef, float damageScale, vector dmgDir, vector hitLocation)
+{
+#if 0
+	bool isFriendlyFire = false;
+
+	/* Damage */
+	NSSurfacePropEntity eTarget = (NSSurfacePropEntity)t;
+
+	/* sanity check */
+	if (t.takedamage == DAMAGE_NO)
+		return;
+
+	/* for armor damage */
+	float flArmor = 0;
+	float flNewDamage = 0;
+
+	/* player god mode */
+	if (eTarget.flags & FL_CLIENT && eTarget.flags & FL_GODMODE)
+		return;
+
+	/* friendly fire check */
+	if (t != c) {
+		if (IsTeamplay()) {
+			if (t.flags & FL_CLIENT && c.flags & FL_CLIENT) {
+				if (t.team == c.team) {
+					if (autocvar_sv_friendlyFire == false) {
+						return;
+					} else {
+						isFriendlyFire = true;
+					}
+				}
+			}
+		}
+	}
+
+	/* already dead, please avoid recursion */
+	if (eTarget.GetHealth() <= 0)
+		return;
+
+	/* before any calculation is done... */
+	g_dmg_iRealDamage = dmg;
+
+	/* only clients have armor */
+	if (eTarget.flags & FL_CLIENT) {
+		NSClientPlayer tp = (NSClientPlayer)t;
+
+		/* don't allow any damage */
+		if (PlayerCanAttack(tp) == false) {
+			g_dmg_eAttacker = (NSEntity)c;
+			g_dmg_eTarget = (NSEntity)t;
+			g_dmg_iDamage = 0;
+			g_dmg_iHitBody = 0;
+			g_dmg_iFlags = type;
+			g_dmg_iWeapon = w;
+			return;
+		}
+
+		/* skip armor */
+		if not (type & DMG_SKIP_ARMOR)
+		if (tp.armor && dmg > 0) {
+
+			flNewDamage = dmg * 0.2;
+			flArmor = (dmg - flNewDamage) * 0.5;
+
+			if (flArmor > tp.armor) {
+				flArmor = tp.armor;
+				flArmor *= (1/0.5);
+				flNewDamage = dmg - flArmor;
+				tp.armor = 0;
+			} else {
+				tp.armor -= flArmor;
+			}
+			dmg = flNewDamage;
+		}
+	}
+
+	dmg = rint(dmg);
+	eTarget.SetHealth(eTarget.GetHealth() - dmg);
+
+	/* the globals... */
+	g_dmg_eAttacker = (NSEntity)c;
+	g_dmg_eTarget = (NSEntity)t;
+	g_dmg_iDamage = dmg;
+	g_dmg_iHitBody = trace_surface_id;
+	g_dmg_iFlags = type;
+	g_dmg_iWeapon = w;
+
+	NSLog("%S does %d dmg to %S (body: %d, flags: %i, weapon: %i)",
+		c.classname, dmg, t.classname, g_dmg_iHitBody, g_dmg_iFlags, g_dmg_iWeapon);
+
+	/* friendly fire penalty */
+	if (isFriendlyFire) {
+		int lastDmg = 0i;
+		NSClientPlayer plC = (NSClientPlayer)c;
+		lastDmg = plC.m_iFriendlyDMG;
+		plC.m_iFriendlyDMG += dmg;
+
+		/* kick the client. */
+		if (plC.m_iFriendlyDMG >= autocvar_mp_td_dmgToKick) {
+			NSLog("Kicking %S due to team damage rules.", plC.netname);
+			dropclient(plC);
+		} else if (plC.m_iFriendlyDMG >= autocvar_mp_td_dmgToWarn) {
+			if (lastDmg < autocvar_mp_td_dmgToKick) {
+				// warn player here
+				sprint(plC, PRINT_CHAT, "Keep attacking teammates and you will be kicked!\n");
+			}
+		}
+
+		bprint(PRINT_CHAT, sprintf("%s ^7attacked a teammate.\n", c.netname));
+	}
+
+	if (dmg > 0 || flArmor > 0) {
+		vector dmg_origin;
+
+		if (c.origin == [0,0,0])
+			dmg_origin = g_dmg_eTarget.origin;
+		else
+			dmg_origin = g_dmg_eAttacker.origin;
+
+		WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+		WriteByte(MSG_MULTICAST, EV_DAMAGE);
+		WriteCoord(MSG_MULTICAST, dmg_origin[0]);
+		WriteCoord(MSG_MULTICAST, dmg_origin[1]);
+		WriteCoord(MSG_MULTICAST, dmg_origin[2]);
+		WriteInt(MSG_MULTICAST, g_dmg_iRealDamage);
+		WriteInt(MSG_MULTICAST, g_dmg_iFlags);
+		msg_entity = g_dmg_eTarget;
+		multicast([0,0,0], MULTICAST_ONE_R);
+	}
+
+	/* only hit notify on clients */
+	if ((g_dmg_eTarget.flags & FL_CLIENT) || (g_dmg_eTarget.flags & FL_MONSTER)) {
+		/* server-side hitnotify */
+		if ((g_dmg_eAttacker.flags & FL_CLIENT) && (g_dmg_eTarget != g_dmg_eAttacker)) {
+			WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+			WriteByte(MSG_MULTICAST, EV_HITNOTIFY);
+			msg_entity = c;
+			multicast([0,0,0], MULTICAST_ONE);
+		}
+	}
+
+	/* they died */
+	if (eTarget.GetHealth() <= 0) {
+		if (eTarget.flags & FL_CLIENT) {
+			PlayerDeath(eTarget);
+		} else {
+			eTarget.Death();
+		}
+	} else {
+		if (eTarget.flags & FL_CLIENT) {
+			PlayerPain(eTarget);
+		} else {
+			eTarget.Pain();
+		}
+	}
 #endif
 }

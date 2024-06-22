@@ -14,8 +14,9 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*! @file music.h
-    @brief Music handler.
+/** @defgroup music Music
+ *  @ingroup menu
+    @brief Music looping, stinger related functions
 
     This is the internal music handler.
     Games primarily will use in-game entities such as trigger_cdaudio
@@ -25,6 +26,8 @@
     into different path/naming conventions and file formats.
 
     Some tracks may only want to be played once (as opposed to looping).
+
+   @{
 */
 
 /* we're forced to support a few different paths */
@@ -89,3 +92,5 @@ void Music_ParseLoop(string parm);
 /** Called once when the menu is initialized.
 Will start playing whatever track is defined in the manifest or liblist file. */
 void Music_MenuStart(void);
+
+/** @} */ // end of music

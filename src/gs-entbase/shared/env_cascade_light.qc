@@ -26,11 +26,12 @@ enumflags
 	ENVCASLIGHT_CHANGED_DISTANCE,
 };
 
+/*! \brief Shared-Entity: Outdoor Shadow & Lighting Controller */
 /*!QUAKED env_cascade_light (1 .5 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Shadowmapped outdoor lighting entity.
 
-![Shadows cast by an env_cascade_light](@ref Documentation/Entities/env_cascade_light.png)
+![Shadows cast by an env_cascade_light](@ref env_cascade_light.png)
 
 # KEYS
 - "targetname" : Name
@@ -48,6 +49,9 @@ Shadowmapped outdoor lighting entity.
 
 # TRIVIA
 This entity was introduced in Counter-Strike: Global Offensive (2012).
+
+@ingroup shared
+@ingroup pointentity
 */
 class
 env_cascade_light:NSPointTrigger
@@ -82,6 +86,7 @@ private:
 	float m_lightHandle;
 #else
 	bool m_bUseEnvAngles;
+	bool m_bUseEnvColors;
 #endif
 };
 
@@ -91,6 +96,8 @@ env_cascade_light::env_cascade_light(void)
 #ifdef SERVER
 	m_vecLightColor = [1.0, 1.0, 1.0];
 	m_bLightActive = true;
+	m_bUseEnvColors = false;
+	m_bUseEnvAngles = false;
 	m_flShadowDistance = 512.0f;
 #endif
 }
@@ -108,6 +115,9 @@ env_cascade_light::SpawnKey(string keyName, string setValue)
 		break;
 	case "uselightenvangles":
 		m_bUseEnvAngles = ReadBool(setValue);
+		break;
+	case "uselightenvcolor":
+		m_bUseEnvColors = ReadBool(setValue);
 		break;
 	case "StartDisabled":
 		m_bLightActive = ReadBool(setValue) == true ? false : true;
@@ -200,13 +210,20 @@ env_cascade_light::EvaluateEntity(void)
 	if (m_bUseEnvAngles == true) {
 		light envLight = (light)find(world, ::classname, "light_environment");
 
+		/* this isn't going to do what we want. remove it altogether. */
 		if (!envLight) {
-			error("env_cascade_light unable to find light_environment.\n");
+			NSError("env_cascade_light unable to find light_environment.\n");
+			Destroy();
 			return;
 		}
 
+		if (m_bUseEnvColors) {
+			m_vecLightColor = envLight._lightColor;
+		}
+
 		makevectors(envLight.GetAngles());
-		angles = vectoangles(v_forward * -1);
+		angles = vectoangles(v_forward);
+		angles[0] *= -1;
 	}
 
 	//angles[0] = sin(time) * 180.0f;

@@ -14,6 +14,9 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+static int g_pointMessages;
+
+/*! \brief Client-Entity: In-world Debug Text */
 /*!QUAKED point_message (0.2 1 0.2) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Client-side overlay/message that is projected in relation to its position
@@ -28,6 +31,9 @@ Used for zoo and test maps in which less interactive overlays are desired.
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
+
+@ingroup client
+@ingroup pointentity
 */
 class point_message:NSEntity
 {
@@ -63,6 +69,7 @@ point_message::SpawnKey(string strField, string strKey)
 void
 point_message::point_message(void)
 {
+	g_pointMessages += 1i;
 	m_flRadius = 512;
 	m_strMessage = "No message";
 	isCSQC = true;
@@ -97,6 +104,10 @@ void
 PointMessage_Draw(void)
 {
 	vector vecPlayer;
+
+	if (g_pointMessages <= 0i) {
+		return;
+	}
 
 	int s = (float)getproperty(VF_ACTIVESEAT);
 	pSeat = &g_seats[s];

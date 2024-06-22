@@ -25,9 +25,6 @@ NSMonster::NSMonster(void)
 	oldnet_velocity = g_vec_null;
 	m_flPitch = 1.0f;
 	m_iFlags = 0i;
-	//base_mins = g_vec_null;
-	//base_maxs = g_vec_null;
-	//base_health = 100;
 	m_strRouteEnded = __NULL__;
 	m_iSequenceRemove = 0i;
 	m_iSequenceState = 0i;
@@ -129,9 +126,6 @@ NSMonster::Save(float handle)
 	SaveEntity(handle, "m_ssLast", m_ssLast);
 	SaveFloat(handle, "m_flPitch", m_flPitch);
 	SaveInt(handle, "m_iFlags", m_iFlags);
-	SaveVector(handle, "base_mins", base_mins);
-	SaveVector(handle, "base_maxs", base_maxs);
-	SaveFloat(handle, "base_health", base_health);
 	SaveString(handle, "m_strRouteEnded", m_strRouteEnded);
 	SaveInt(handle, "m_iSequenceRemove", m_iSequenceRemove);
 	SaveInt(handle, "m_iSequenceState", m_iSequenceState);
@@ -232,15 +226,6 @@ NSMonster::Restore(string strKey, string strValue)
 		break;
 	case "m_iFlags":
 		m_iFlags = ReadInt(strValue);
-		break;
-	case "base_mins":
-		base_mins = ReadVector(strValue);
-		break;
-	case "base_maxs":
-		base_maxs = ReadVector(strValue);
-		break;
-	case "base_health":
-		base_health = ReadFloat(strValue);
 		break;
 	case "m_strRouteEnded":
 		m_strRouteEnded = ReadString(strValue);
@@ -916,11 +901,12 @@ NSMonster::AttackThink(void)
 int
 NSMonster::AttackMelee(void)
 {
+#if 0
 	float actMelee1 = FramegroupForAct(ACT_MELEE_ATTACK1);
 	float actMelee2 = FramegroupForAct(ACT_MELEE_ATTACK2);
 
 	if (!m_defMelee)
-		return (0);
+		return (false);
 
 	_m_flMeleeDelay = Skill_GetDefValue(EntityDef_GetKeyValue(m_defMelee, "delay"));
 	_m_flMeleeAttempts = Skill_GetDefValue(EntityDef_GetKeyValue(m_defMelee, "attempts"));
@@ -936,7 +922,7 @@ NSMonster::AttackMelee(void)
 	
 		if (trace_fraction >= 1.0 || trace_ent.takedamage == DAMAGE_NO) {
 			StartSoundDef(m_sndMeleeAttackMiss, CHAN_WEAPON, true);
-			return;
+			return (false);
 		}
 
 		Damage_Apply(trace_ent, this, meleeDmg, 0, 0);
@@ -960,7 +946,8 @@ NSMonster::AttackMelee(void)
 
 	/* functional */
 	ScheduleThink(AttackMelee_AttackFlail, _m_flMeleeDelay);
-	return (1);
+#endif 
+	return (true);
 }
 
 int
@@ -996,12 +983,12 @@ NSMonster::AttackRanged(void)
 
 	/* special always first if possible */
 	if (throwAnyway == false && inRanged1Range && trace_ent == m_eEnemy) {
-		float rangedDmg = Skill_GetDefValue(EntityDef_GetKeyValue(m_defRanged1, "damage"));
-		float rangedDly = Skill_GetDefValue(EntityDef_GetKeyValue(m_defRanged1, "delay"));
-		float rangedMin = Skill_GetDefValue(EntityDef_GetKeyValue(m_defRanged1, "delay_min"));
-		float rangedMax = Skill_GetDefValue(EntityDef_GetKeyValue(m_defRanged1, "delay_max"));
-		float burstCount = Skill_GetDefValue(EntityDef_GetKeyValue(m_defRanged1, "burst"));
-		float burstDelay = Skill_GetDefValue(EntityDef_GetKeyValue(m_defRanged1, "burst_delay"));
+		float rangedDmg = GetSubDefFloat(m_defRanged1, "damage");
+		float rangedDly = GetSubDefFloat(m_defRanged1, "delay");
+		float rangedMin = GetSubDefFloat(m_defRanged1, "delay_min");
+		float rangedMax = GetSubDefFloat(m_defRanged1, "delay_max");
+		float burstCount = GetSubDefFloat(m_defRanged1, "burst");
+		float burstDelay = GetSubDefFloat(m_defRanged1, "burst_delay");
 		float actRanged = FramegroupForAct(ACT_RANGE_ATTACK1);
 		float burstTime = 0.0f;
 
@@ -1059,9 +1046,6 @@ NSMonster::AttackRanged(void)
 		if (EntityDef_HasSpawnClass(m_defRanged1)) {
 			NSProjectile_SpawnDef(m_defRanged1, this);
 			NSMonsterLog("Firing ranged def %S", m_defRanged1);
-		} else {
-			TraceAttack_FireBullets(1, GetEyePos(), rangedDmg, [0.01,0.01] * m_flAttackAccuracy, 0);
-			NSMonsterLog("Firing traceline def with %d", rangedDmg);
 		}
 
 		StartSoundDef(m_sndRangedAttack, CHAN_WEAPON, true);
@@ -1525,6 +1509,9 @@ NSMonster::Physics(void)
 		m_iFlags &= ~MSF_FALLING;
 	}
 
+	processmodelevents(modelindex, frame, m_flBaseTime,
+		frame1time, HandleAnimEvent);
+
 	/* support for think/nextthink */
 	if (think && nextthink > 0.0f) {
 		if (nextthink < time) {
@@ -1532,11 +1519,6 @@ NSMonster::Physics(void)
 			think();
 		}
 	}
-
-	//print(sprintf("%f was %f\n", frame1time, m_flBaseTime));
-
-	processmodelevents(modelindex, frame, m_flBaseTime,
-		frame1time, HandleAnimEvent);
 }
 
 void
@@ -1546,7 +1528,8 @@ NSMonster::Touch(entity eToucher)
 	if (m_flLeapDamage && m_bLeapAttacked == false)
 	if (HasFlags(FL_ONGROUND) == false) {
 		if (eToucher.takedamage != DAMAGE_NO) {
-			Damage_Apply(eToucher, this, m_flLeapDamage, WEAPON_NONE, DMG_BLUNT);
+			NSSurfacePropEntity toucher = (NSSurfacePropEntity)eToucher;
+			toucher.Damage(this, owner, ftos(m_flLeapDamage), 1.0, vectorNormalize(angles), trace_endpos);
 			m_bLeapAttacked = true;
 		}
 	}
@@ -1589,18 +1572,19 @@ NSMonster::HasBeenHit(void)
 }
 
 void
-NSMonster::Pain(void)
+NSMonster::Pain(entity inflictor, entity attacker, int damage, vector dir, int location)
 {
 	float actSmallFlinch = FramegroupForAct(ACT_SMALL_FLINCH);
 	float actBigFlinch = FramegroupForAct(ACT_BIG_FLINCH);
 	float actTwitch = FramegroupForAct(ACT_TWITCH);
 	float actPain = -1;
+	float baseHealth = GetSpawnFloat("health");
 
 	/* dead things tell nuthin */
 	if (IsAlive() == false)
 		return;
 
-	if (GetHealth() <= (base_health / 2)) {
+	if (GetHealth() <= (baseHealth / 2)) {
 		if (IsFriend(g_dmg_eAttacker.m_iAlliance) == true)
 			m_iAlliance = MAL_ROGUE;
 	}
@@ -1648,7 +1632,7 @@ NSMonster::Pain(void)
 	/* fallback in case we do not have specialized flinches */
 	if (actPain == -1) {
 		/* for big damage pain anim, we need to take at least 1/3rd of health */
-		if (actBigFlinch >= 0 && g_dmg_iDamage > (base_health / 3))
+		if (actBigFlinch >= 0 && g_dmg_iDamage > (baseHealth / 3))
 			actPain = actBigFlinch;
 		else if (actSmallFlinch >= 0)
 			actPain = actSmallFlinch;
@@ -1684,7 +1668,7 @@ NSMonster::_Alerted(void)
 }
 
 void
-NSMonster::Death(void)
+NSMonster::Death(entity inflictor, entity attacker, int damage, vector dir, int location)
 {
 	static void Death_Thud(void)
 	{
@@ -1785,6 +1769,11 @@ NSMonster::Spawned(void)
 	}
 
 	super::Spawned();
+
+	/* necessary so we can attribute deaths properly. */
+	if (!owner) {
+		owner = this;
+	}
 }
 
 void
@@ -1795,31 +1784,29 @@ NSMonster::Respawn(void)
 	   that came after this entity in the lump. */
 	static void AdjustSpawnPos(void) {
 		RestoreAngles();
-		m_vecSequenceAngle = angles;
-		SetOrigin(GetSpawnOrigin());
+		m_vecSequenceAngle = GetAngles();
+		SetOrigin(GetSpawnVector("origin"));
+		NSError("%S: %v, %v", classname, GetAngles(), GetOrigin());
 		DropToFloor();
 		setorigin_safe(this, origin);
 	}
 
-	v_angle = fixAngle(GetSpawnAngles());
+	super::Respawn();
 
+	RestoreAngles();
+	v_angle = fixAngle(GetAngles());
 	AddFlags(FL_MONSTER);
 	SetTakedamage(DAMAGE_AIM);
-	SetVelocity([0,0,0]);
 	SetState(MONSTER_IDLE);
-	SetHealth(base_health);
+	SetHealth(GetSpawnFloat("health"));
 	m_eEnemy = __NULL__;
 	m_iFlags = 0x0;
 	EnableBleeding();
 	customphysics = Physics;
-
-	SetAngles(v_angle);
 	SetSolid(SOLID_SLIDEBOX);
 	SetMovetype(MOVETYPE_WALK);
-	SetModel(GetSpawnModel());
-	SetSize(base_mins, base_maxs);
+	SetSize(GetSpawnVector("mins"), GetSpawnVector("maxs"));
 	SetEyePos([0, 0, m_flEyeHeight]);
-	SetOrigin(GetSpawnOrigin());
 	ScheduleThink(AdjustSpawnPos, 0.0f);
 	SetSkin(m_flSkin);
 
@@ -1840,7 +1827,7 @@ NSMonster::Respawn(void)
 		RemoveFlags(FL_MONSTER);
 		SetMovetype(MOVETYPE_NONE);
 		SetSolid(SOLID_CORPSE);
-		SetHealth(base_health);
+		SetHealth(GetSpawnFloat("health"));
 		SetState(MONSTER_DEAD);
 		SetFrame(_m_flFrame);
 	}
@@ -2035,21 +2022,11 @@ NSMonster::SpawnKey(string strKey, string strValue)
 	case "speed_run":
 		m_flRunSpeed = ReadFloat(strValue);
 		break;
-	/* compat */
-	case "maxs":
-		base_maxs = ReadVector(strValue);
-		break;
-	case "mins":
-		base_mins = ReadVector(strValue);
-		break;
 	case "team":
 		m_iAlliance = ReadInt(strValue);
 		break;
-	case "health":
-		base_health = Skill_GetDefValue(ReadString(strValue));
-		break;
 	case "leap_damage":
-		m_flLeapDamage = Skill_GetDefValue(ReadString(strValue));
+		m_flLeapDamage = ReadFloat(strValue);
 		break;
 	/* simple tweaks */
 	case "dead":

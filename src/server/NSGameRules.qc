@@ -101,41 +101,39 @@ NSGameRules::PlayerDisconnect(NSClientPlayer pl)
 void
 NSGameRules::PlayerKill(NSClientPlayer pl)
 {
-	Damage_Apply(pl, pl, pl.health, 0, DMG_SKIP_ARMOR);
+	//Damage_Apply(pl, pl, pl.health, 0, DMG_SKIP_ARMOR);
 }
 void
 NSGameRules::PlayerDeath(NSClientPlayer pl)
 {
-	//print("PlayerDeath!\n");
-	pl.Death();
+	/* implemented by sub-class */
 }
 void
 NSGameRules::PlayerPain(NSClientPlayer pl)
 {
-	//print("ClientKill!\n");
-	pl.Pain();
+	/* implemented by sub-class */
 }
 void
 NSGameRules::PlayerSpawn(NSClientPlayer pl)
 {
-	//print("PutClientInServer!\n");
+	/* implemented by sub-class */
 }
 void
 NSGameRules::PlayerPreFrame(NSClientPlayer pl)
 {
-	//print("PlayerPreThink!\n");
+	/* implemented by sub-class */
 }
 void
 NSGameRules::PlayerPostFrame(NSClientPlayer pl)
 {
-	//print("PlayerPostThink!\n");
+	/* implemented by sub-class */
 }
 
 /* level transitions */
 void
 NSGameRules::LevelNewParms(void)
 {
-	//print("LevelNewParms!\n");
+	/* implemented by sub-class */
 }
 void
 NSGameRules::LevelChangeParms(NSClientPlayer pl)
@@ -282,232 +280,21 @@ NSGameRules::IsMultiplayer(void)
 void
 NSGameRules::DamageApply(entity t, entity c, float dmg, int w, damageType_t type)
 {
-	bool isFriendlyFire = false;
-
-	/* Damage */
-	NSSurfacePropEntity eTarget = (NSSurfacePropEntity)t;
-
-	/* sanity check */
-	if (t.takedamage == DAMAGE_NO)
-		return;
-
-	/* for armor damage */
-	float flArmor = 0;
-	float flNewDamage = 0;
-
-	/* player god mode */
-	if (eTarget.flags & FL_CLIENT && eTarget.flags & FL_GODMODE)
-		return;
-
-	/* friendly fire check */
-	if (t != c) {
-		if (IsTeamplay()) {
-			if (t.flags & FL_CLIENT && c.flags & FL_CLIENT) {
-				if (t.team == c.team) {
-					if (autocvar_sv_friendlyFire == false) {
-						return;
-					} else {
-						isFriendlyFire = true;
-					}
-				}
-			}
-		}
-	}
-
-	/* already dead, please avoid recursion */
-	if (eTarget.GetHealth() <= 0)
-		return;
-
-	/* before any calculation is done... */
-	g_dmg_iRealDamage = dmg;
-
-	/* only clients have armor */
-	if (eTarget.flags & FL_CLIENT) {
-		NSClientPlayer tp = (NSClientPlayer)t;
-
-		/* don't allow any damage */
-		if (PlayerCanAttack(tp) == false) {
-			g_dmg_eAttacker = (NSEntity)c;
-			g_dmg_eTarget = (NSEntity)t;
-			g_dmg_iDamage = 0;
-			g_dmg_iHitBody = 0;
-			g_dmg_iFlags = type;
-			g_dmg_iWeapon = w;
-			return;
-		}
-
-		/* skip armor */
-		if not (type & DMG_SKIP_ARMOR)
-		if (tp.armor && dmg > 0) {
-
-			flNewDamage = dmg * 0.2;
-			flArmor = (dmg - flNewDamage) * 0.5;
-
-			if (flArmor > tp.armor) {
-				flArmor = tp.armor;
-				flArmor *= (1/0.5);
-				flNewDamage = dmg - flArmor;
-				tp.armor = 0;
-			} else {
-				tp.armor -= flArmor;
-			}
-			dmg = flNewDamage;
-		}
-	}
-
-	dmg = rint(dmg);
-	eTarget.SetHealth(eTarget.GetHealth() - dmg);
-
-	/* the globals... */
-	g_dmg_eAttacker = (NSEntity)c;
-	g_dmg_eTarget = (NSEntity)t;
-	g_dmg_iDamage = dmg;
-	g_dmg_iHitBody = trace_surface_id;
-	g_dmg_iFlags = type;
-	g_dmg_iWeapon = w;
-
-	NSLog("%S does %d dmg to %S (body: %d, flags: %i, weapon: %i)",
-		c.classname, dmg, t.classname, g_dmg_iHitBody, g_dmg_iFlags, g_dmg_iWeapon);
-
-	/* friendly fire penalty */
-	if (isFriendlyFire) {
-		int lastDmg = 0i;
-		NSClientPlayer plC = (NSClientPlayer)c;
-		lastDmg = plC.m_iFriendlyDMG;
-		plC.m_iFriendlyDMG += dmg;
-
-		/* kick the client. */
-		if (plC.m_iFriendlyDMG >= autocvar_mp_td_dmgToKick) {
-			NSLog("Kicking %S due to team damage rules.", plC.netname);
-			dropclient(plC);
-		} else if (plC.m_iFriendlyDMG >= autocvar_mp_td_dmgToWarn) {
-			if (lastDmg < autocvar_mp_td_dmgToKick) {
-				// warn player here
-				sprint(plC, PRINT_CHAT, "Keep attacking teammates and you will be kicked!\n");
-			}
-		}
-
-		bprint(PRINT_CHAT, sprintf("%s ^7attacked a teammate.\n", c.netname));
-	}
-
-	if (dmg > 0 || flArmor > 0) {
-		vector dmg_origin;
-
-		if (c.origin == [0,0,0])
-			dmg_origin = g_dmg_eTarget.origin;
-		else
-			dmg_origin = g_dmg_eAttacker.origin;
-
-		WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
-		WriteByte(MSG_MULTICAST, EV_DAMAGE);
-		WriteCoord(MSG_MULTICAST, dmg_origin[0]);
-		WriteCoord(MSG_MULTICAST, dmg_origin[1]);
-		WriteCoord(MSG_MULTICAST, dmg_origin[2]);
-		WriteInt(MSG_MULTICAST, g_dmg_iRealDamage);
-		WriteInt(MSG_MULTICAST, g_dmg_iFlags);
-		msg_entity = g_dmg_eTarget;
-		multicast([0,0,0], MULTICAST_ONE_R);
-	}
-
-	/* only hit notify on clients */
-	if ((g_dmg_eTarget.flags & FL_CLIENT) || (g_dmg_eTarget.flags & FL_MONSTER)) {
-		/* server-side hitnotify */
-		if ((g_dmg_eAttacker.flags & FL_CLIENT) && (g_dmg_eTarget != g_dmg_eAttacker)) {
-			WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
-			WriteByte(MSG_MULTICAST, EV_HITNOTIFY);
-			msg_entity = c;
-			multicast([0,0,0], MULTICAST_ONE);
-		}
-	}
-
-	/* they died */
-	if (eTarget.GetHealth() <= 0) {
-		if (eTarget.flags & FL_CLIENT) {
-			PlayerDeath(eTarget);
-		} else {
-			eTarget.Death();
-		}
-	} else {
-		if (eTarget.flags & FL_CLIENT) {
-			PlayerPain(eTarget);
-		} else {
-			eTarget.Pain();
-		}
-	}
+	NSError("Deprecated!");
 }
 
 /* checks if we can hit an entity at 5 of the same spots */
 bool
 NSGameRules::DamageCheckTrace(entity t, vector vecHitPos)
 {
-	/* We're lazy. Who cares */
-	if (t.solid == SOLID_BSP)
-		return (true);
-
-	traceline(vecHitPos, t.origin, 1, this);
-	if (trace_fraction == 1)
-		return (true);
-
-	traceline(vecHitPos, t.origin + [15,15,0], 1, this);
-	if (trace_fraction == 1)
-		return (true);
-
-	traceline(vecHitPos, t.origin + [-15,-15,0], 1, this);
-	if (trace_fraction == 1)
-		return (true);
-
-	traceline(vecHitPos, t.origin + [-15,15,0], 1, this);
-	if (trace_fraction == 1)
-		return (true);
-
-	traceline(vecHitPos, t.origin + [15,-15,0], 1, this);
-	if (trace_fraction == 1)
-		return (true);
-
+	NSError("Deprecated!");
 	return (false);
 }
 
 void
 NSGameRules::DamageRadius(vector org, entity attacker, float dmg, float r, bool checkCollision, int w)
 {
-	float new_dmg;
-	float dist;
-	float diff;
-	vector pos;
-
-	for (entity e = world; (e = nextent(e));) {
-		if (e.takedamage == DAMAGE_NO)
-			continue;
-
-		pos[0] = e.absmin[0] + (0.5 * (e.absmax[0] - e.absmin[0]));
-		pos[1] = e.absmin[1] + (0.5 * (e.absmax[1] - e.absmin[1]));
-		pos[2] = e.absmin[2] + (0.5 * (e.absmax[2] - e.absmin[2]));
-
-		/* don't bother if it's not anywhere near us */
-		dist = vlen(org - pos);
-		if (dist > r)
-			continue;
-
-		/* can we physically hit this thing? */
-		if (checkCollision == true)
-			if (DamageCheckTrace(e, org) == FALSE)
-				continue;
-
-		/* calculate new damage values */
-		diff = (r - dist) / r;
-		new_dmg = rint(dmg * diff);
-
-		if (diff > 0) {
-			g_dmg_vecLocation = trace_endpos;
-			DamageApply(e, attacker, new_dmg, w, DMG_EXPLODE);
-
-			/* approximate, feel free to tweak */
-			if (e.movetype == MOVETYPE_WALK) {
-				makevectors(vectoangles(e.origin - org));
-				e.velocity += v_forward * (new_dmg * 5); 
-			}
-		}
-	}
+	NSError("Deprecated!");
 }
 
 void

@@ -14,7 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*! @file tcp.h
+/** @defgroup tcp TCP/IP
+ *  @ingroup menu
     @brief TCP/IP Networking API
 
     The TCP API manages the sending/receiving of data over TCP sockets.
@@ -27,6 +28,8 @@
 
     You need to run TCP_Frame() on your tcpinfo_t struct every frame
     in order to listen to network activity.
+
+    @{
 */
 
 #define TCP_BUFFER_LENGTH 32
@@ -79,3 +82,5 @@ void TCP_Frame(tcpinfo_t *in);
 
 @param in Pointer to an active TCP connection.*/
 tcpstate_t TCP_GetState(tcpinfo_t *in);
+
+/** @} */ // end of tcp

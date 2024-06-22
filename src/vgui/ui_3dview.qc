@@ -24,6 +24,10 @@ noref .float frame, frame2, lerpfrac, renderflags, frame1time;
 .void(void) tmpVGUI3DView1;
 .float(float,float,float,float) tmpVGUI3DView2;
 
+/** VGUI Widget: 3D View
+
+@ingroup vgui
+*/
 class VGUI3DView:VGUIWidget
 {
 public:

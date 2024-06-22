@@ -1,8 +1,11 @@
 *~
 Documentation/html/
+ThirdParty/
 darkstar/
 noffice/
 pvk/
+czero/
+czeror/
 ship/
 src/client/cstrike.new
 src/server/cstrike.new
@@ -29,6 +32,8 @@ entities.def
 csqccore.txt
 *.log
 ssqccore.txt
+fullchain.pem
+privkey.pem
 menucore.txt
 conhistory.txt
 condump.txt

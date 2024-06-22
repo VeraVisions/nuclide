@@ -18,6 +18,7 @@ var int autocvar_dev_skyscale = 0;
 var vector g_skypos;
 var int g_skyscale;
 
+/*! \brief Client-Entity: Skybox Camera Controller */
 /*!QUAKED sky_camera (1 0.3 1) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Defines the position of a skyroom camera.
@@ -32,6 +33,9 @@ divisable by 2 to avoid any precision funkyness.
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
+
+@ingroup client
+@ingroup pointentity
 */
 class
 sky_camera:NSEntity

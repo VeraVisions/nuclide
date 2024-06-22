@@ -21,6 +21,7 @@
 #define NETWORKED_ENT(x) entity x; entity x ##_net;
 #define NETWORKED_STRING(x) string x; string x ##_net;
 #define NETWORKED_BOOL(x) bool x; bool x ##_net;
+#define NETWORKED_MODELINDEX(x) float x; float x ##_net;
 
 #define NETWORKED_INT_N(x) int x ##_net;
 #define NETWORKED_FLOAT_N(x) float x ##_net;
@@ -62,6 +63,10 @@
 #define ATTR_CHANGED(x) (x ##_net != x)
 #define VEC_CHANGED(x,y) (x ##_net[y] != x[y])
 
+#ifndef MAX_AMMO_TYPES
+#define MAX_AMMO_TYPES 16i
+#endif
+
 noref const float   SVC_TEMPENTITY          = 23;
 
 #ifdef CLIENT
@@ -80,6 +85,8 @@ string __fullspawndata;
 #include "../gs-entbase/server/defs.h"
 #endif
 
+#include "NSDecal.h"
+
 #include "../botlib/botinfo.h"
 #include "sentences.h"
 
@@ -95,11 +102,13 @@ string __fullspawndata;
 #include "NSBrushTrigger.h"
 #include "NSPointTrigger.h"
 #include "NSItem.h"
+#include "NSWeapon.h"
 #include "NSNavAI.h"
 #include "NSMonster.h"
 #include "NSSquadMonster.h"
 #include "NSTalkMonster.h"
 #include "NSSpawnPoint.h"
+#include "NSSoundScape.h"
 #include "NSProjectile.h"
 #include "NSSpraylogo.h"
 #include "NSPortal.h"
@@ -129,6 +138,7 @@ string __fullspawndata;
 #include "colors.h"
 #include "motd.h"
 #include "util.h"
+#include "ammo.h"
 
 #define BSPVER_PREREL 	28
 #define BSPVER_Q1		29
@@ -609,3 +619,82 @@ DebugBox(vector absPos, vector minSize, vector maxSize, vector boxColor, float b
 	R_PolygonVertex(w, [1,0], boxColor, boxAlpha);
 	R_EndPolygon();
 }
+
+/* doxygen definitions */
+
+/** @defgroup client Client Game
+ *  Part of the client-side progs (`csprogs.dat`).
+ */
+
+/** @defgroup server Server Game
+ *  Part of the server-side progs (`progs.dat`).
+ */
+
+/** @defgroup shared Shared Game
+ *  Part of both client and server-side progs.
+ */
+
+/** @defgroup menu Menu Game
+ *  Part of the menu progs (`menu.dat`).
+ */
+
+/** @defgroup multiprogs Multi-Progs, Plugin APIs
+ *  @ingroup server
+ *  APIs that are accessible via multiprogs.
+ */
+
+/** @defgroup vgui VGUI
+ *  @ingroup client
+ *  @ingroup menu
+ *
+ *  Our very own, very _true_ graphical user interface.
+ */
+
+/** @defgroup sound Sound System
+Classes and APIs that interact with the sound system.
+
+By default we assume the engine is talking to **OpenAL**,
+either **OpenAL-Soft** or a driver talking to [Creative](http://www.creative.com/)
+hardware with native support for Environmental Extensions.
+
+If not available, most new features will be unavailable.
+*/
+
+/** @defgroup nav Navigation System
+ *  @ingroup server
+ *  APIs to interact with the navigation system powering AI entities.
+ */
+
+/** @defgroup baseclass Base Classes
+ *  @ingroup entities
+ *  Base Classes powering all sorts of [entities](@ref entities).
+ */
+
+/** @defgroup brushentity Brush Entities
+ *  @ingroup entities
+ *  Entity class that expects to be used with brush models.
+ *
+ *  Brush models are commonly sub-models within a level file,
+ *  however they can also be loaded from a separate external file.
+ *
+ *  If an entity its model starts with and asterisk (*) and ends
+ *  with a numer right after, it usually refers to a sub-model
+ *  within the current world level.
+ *
+ *  Due to their simple visual complexity they are mostly
+ *  used for primitive geometry, triggers, volumes.
+ *
+ *  Mainly used for MOVETYPE_PUSH entities of variable
+ *  size and volume - even within a single class.
+ */
+
+/** @defgroup pointentity Point Entities
+ *  @ingroup entities
+ *  Point entities are the most common types of entities.
+ *
+ *  They exist at a single point in 3D-space.
+ *  Generally every class of point-entity is of equal
+ *  size and volume, unlike [brush-based entities](@ref brushentity).
+ *  Generally used for moving, or non moving objects
+ *  that interact with the world.
+ */

@@ -14,9 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Health Charging Station */
 /*!QUAKED func_healthcharger (0 .5 .8) ?
 # OVERVIEW
 Brush that fills up your health when used, to a maximum of 100 HP.
+
+![A working func_healthcharger, mounted against a wall](@ref func_healthcharger.jpg)
 
 # KEYS
 - "targetname" : Name
@@ -28,6 +31,9 @@ Brush that fills up your health when used, to a maximum of 100 HP.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup server
+@ingroup brushentity
 */
 class
 func_healthcharger:NSRenderableEntity
@@ -136,10 +142,9 @@ func_healthcharger::Spawned(void)
 void
 func_healthcharger::Respawn(void)
 {
+	super::Respawn();
 	SetSolid(SOLID_BSP);
 	SetMovetype(MOVETYPE_NONE);
-	SetOrigin(GetSpawnOrigin());
-	SetModel(GetSpawnModel());
 	PlayerUse = OnPlayerUse;
 	ResetHealth();
 }

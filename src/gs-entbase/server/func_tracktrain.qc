@@ -37,6 +37,7 @@ enumflags
 	FNCTKTRNET_FLAGS
 };
 
+/*! \brief Server-Entity: Interactive Moving Train */
 /*!QUAKED func_tracktrain (0 .5 .8) ? NOPITCH NOUSER NOTSOLID
 # OVERVIEW
 An interactive train that moves along a series of path_track entities.
@@ -71,6 +72,9 @@ entity. You can also set the NOUSER (2) spawnflag to disable it entirely.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup server
+@ingroup brushentity
 */
 class
 func_tracktrain:NSVehicle
@@ -542,16 +546,16 @@ func_tracktrain::Spawned(void)
 void
 func_tracktrain::Respawn(void)
 {
+	super::Respawn();
+
 	/* legacy compat */
 	SetSolid(HasSpawnFlags(TRAIN_NONSOLID) ? SOLID_NOT : SOLID_BSP);
 	SetMovetype(MOVETYPE_PUSH);
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
 
 	m_flCurrentSpeed = m_flStartSpeed;
 
 	ScheduleThink(_AfterSpawn, 0.0f);
-	SetTriggerTarget(m_oldstrTarget);
+	SetTriggerTarget(GetSpawnString("target"));
 	PlayerUse = OnPlayerUse;
 
 	if (m_flTrainLength == 0.0f)
@@ -569,17 +573,8 @@ func_tracktrain::Blocked(entity eBlocker)
 		return;
 	}
 
-	/* HACK: Make corpses gib instantly */
-	if (eBlocker.solid == SOLID_CORPSE) {
-		Damage_Apply(eBlocker, this, 500, 0, DMG_EXPLODE);
-		return;
-	}
-
-	if (eBlocker.takedamage != DAMAGE_NO) {
-		Damage_Apply(eBlocker, this, m_flDamage, 0, DMG_CRUSH);
-	} else {
-		remove(eBlocker);
-	}
+	/* evil, since we're not based on it (yet) */
+	func_train::Blocked(eBlocker);
 }
 
 void

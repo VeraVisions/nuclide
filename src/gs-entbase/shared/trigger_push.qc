@@ -43,6 +43,7 @@ enumflags
 	TP_STARTOFF
 };
 
+/*! \brief Shared-Entity: Push Force Volume */
 /*!QUAKED trigger_push (.5 .5 .5) ? TP_ONCE TP_STARTOFF
 # OVERVIEW
 Pushes anything in its volume into a direction of your choosing.
@@ -58,6 +59,9 @@ Pushes anything in its volume into a direction of your choosing.
 
 # TRIVIA
 This entity was introduced in Quake (1996).
+
+@ingroup shared
+@ingroup brushentity
 */
 class
 trigger_push:NSBrushTrigger
@@ -183,12 +187,12 @@ trigger_push::Trigger(entity act, triggermode_t state)
 void
 trigger_push::SetMovementDirection(void)
 {
-	if (GetSpawnAngles() == [0,-1,0]) {
+	if (GetAngles() == [0,-1,0]) {
 		m_vecMoveDir = [0,0,1];
-	} else if (angles == [0,-2,0]) {
+	} else if (GetAngles() == [0,-2,0]) {
 		m_vecMoveDir = [0,0,-1];
 	} else {
-		makevectors(GetSpawnAngles());
+		makevectors(GetAngles());
 		m_vecMoveDir = v_forward;
 	}
 }

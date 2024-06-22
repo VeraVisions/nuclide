@@ -14,14 +14,17 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*! @file modserver.h
-    @brief Remote ModServer APIs
+/** @defgroup modserver Mod Server
+    @ingroup menu
+    @brief Remotely available modifications, addons control/install functions
 
     The ModServer API manages the retrieval of custom game info
-	 (usually modifications) into the ModLibrary.
+	 (usually modifications) into the [Game Library](@ref gamelibrary).
 
-	 This is kept separate from ModLibrary, in case where
+	 This is kept separate, in case where
 	 connections to remote sources is disallowed.
+
+   @{
 */
 
 /* Emscripten builds and mods? Forgetaboutit! */
@@ -61,3 +64,5 @@ void ModServer_ParseItem(string data);
 /** Called as an eventual result of the uri_get builtin. */
 void ModServer_URI_Callback(float id, float code, string data, int resourcebytes);
 #endif
+
+/** @} */ // end of modserver

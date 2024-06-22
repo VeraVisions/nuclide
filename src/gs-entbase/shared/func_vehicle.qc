@@ -36,7 +36,7 @@ enumflags
 	FNCVEHNET_FLAGS
 };
 
-class
+static class
 func_vehicle_wheel
 {
 
@@ -60,6 +60,7 @@ public:
 	virtual void Physics(float,float);
 };
 
+/*! \brief Shared-Entity: Brush Vehicle */
 /*!QUAKED func_vehicle (0 .5 .8) ? FUNCVEH_NOPITCH FUNCVEH_NOUSER x FUNCVEH_PASSABLE FUNCVEH_FWDRIVE FUNCVEH_RWDRIVE
 # OVERVIEW
 Primitive brush-based vehicle entity.
@@ -103,6 +104,9 @@ entities.
 
 # TRIVIA
 This entity was introduced in Counter-Strike (2000).
+
+@ingroup shared
+@ingroup brushentity
 */
 class
 func_vehicle:NSVehicle
@@ -590,10 +594,9 @@ func_vehicle::SpawnKey(string strKey, string strValue)
 void
 func_vehicle::Respawn(void)
 {
+	super::Respawn();
 	SetMovetype(MOVETYPE_PUSH);
 	SetSolid(SOLID_BSP);
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
 	SetAngles([0,0,0]);
 	ScheduleThink(Realign, 0.0f);
 
@@ -684,6 +687,7 @@ func_vehicle::Realign(void)
 	}
 
 	if (first && second) {
+		vector oldOrigin = GetSpawnVector("origin");
 		vector end_pos;
 		first = (NSEntity)first;
 		second = (NSEntity)second;
@@ -692,7 +696,7 @@ func_vehicle::Realign(void)
 		EntLog("func_vehicle angles is now: %v\n", angles);
 
 		end_pos = first.origin;
-		end_pos[2] = m_oldOrigin[2] + 64;
+		end_pos[2] = oldOrigin[2] + 64;
 		setorigin(this, end_pos);
 		setorigin(m_wlFR, origin + v_right * m_flWidth + v_forward * m_flLength);
 		setorigin(m_wlFL, origin - v_right * m_flWidth + v_forward * m_flLength);

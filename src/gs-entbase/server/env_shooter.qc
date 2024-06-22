@@ -16,6 +16,7 @@
 
 #define EVSHOOTER_REPEATABLE 1
 
+/*! \brief Server-Entity: Model Shooter */
 /*!QUAKED env_shooter (1 .5 0) (-8 -8 -8) (8 8 8) EVSHOOTER_REPEATABLE
 # OVERVIEW
 Shoots model entities from its location.
@@ -40,6 +41,9 @@ Shoots model entities from its location.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup server
+@ingroup pointentity
 */
 class
 env_shooter:NSRenderableEntity

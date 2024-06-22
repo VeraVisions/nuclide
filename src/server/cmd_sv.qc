@@ -166,7 +166,7 @@ CMD_RenetworkEntities(void)
 static void
 CMD_RespawnEntities(void)
 {
-	for (entity a = world; (a = findfloat(a, ::identity, 1));) {
+	for (entity a = world; (a = findfloat(a, ::_mapspawned, true));) {
 		NSEntity ent = (NSEntity)a;
 		ent.Respawn();
 	}
@@ -229,7 +229,7 @@ Cmd_ParseServerCommand(void)
 		break;
 #ifdef BOT_INCLUDED
 	case "way":
-		Way_Cmd();
+		NodeEdit_Cmd();
 		break;
 #endif
 	case "listEntityDef":
@@ -240,6 +240,12 @@ Cmd_ParseServerCommand(void)
 		break;
 	case "traceMaterial":
 		CMD_TraceMaterial();
+		break;
+	case "listPlayerInventory":
+		NSNavAI_ListInventory(self);
+		break;
+	case "listInventory":
+		NSNavAI_ListInventory(self);
 		break;
 	default:
 		return (false);

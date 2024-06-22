@@ -21,6 +21,7 @@ enumflags
 	EVF_ONLYUSER
 };
 
+/*! \brief Server-Entity: Fade In/Out Controller */
 /*!QUAKED env_fade (1 .5 0) (-8 -8 -8) (8 8 8) EVF_FADEDROM EVF_MODULATE EVF_ONLYUSER
 # OVERVIEW
 Overlay that blinds/obscures players vision when triggered.
@@ -41,6 +42,9 @@ Overlay that blinds/obscures players vision when triggered.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup server
+@ingroup pointentity
 */
 class
 env_fade:NSRenderableEntity

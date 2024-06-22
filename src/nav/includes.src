@@ -1,0 +1,6 @@
+#includelist
+nodes.qc
+route.qc
+node_edit.qc
+way_convert.qc
+#endlist

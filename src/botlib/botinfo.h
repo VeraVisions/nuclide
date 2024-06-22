@@ -14,18 +14,27 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/** @defgroup bot_info Info Tags
+    @brief Info tags for bots used to identify objects.
+    @ingroup bot
+
+   @{
+*/
+
 /* we need to keep this an enum so find() does its work faster */
 enum
 {
-	BOTINFO_NONE,				/* no info */
-	BOTINFO_HEALTH,				/* health item */
-	BOTINFO_ARMOR,				/* armor item */
-	BOTINFO_AMMO,				/* ammo pickup */
-	BOTINFO_WEAPON,				/* weapon pickup */
-	BOTINFO_SPAWNPOINT,			/* place where to find new players */
-	BOTINFO_TEAM_GOALITEM,		/* team-mode goal item (flag, intel) */
-	BOTINFO_TEAM_GOALCAPTURE,	/* where to go when goal-item present */
-	BOTINFO_END					/* end destination */
+	BOTINFO_NONE,				/**< no info */
+	BOTINFO_HEALTH,				/**< health item */
+	BOTINFO_ARMOR,				/**< armor item */
+	BOTINFO_AMMO,				/**< ammo pickup */
+	BOTINFO_WEAPON,				/**< weapon pickup */
+	BOTINFO_SPAWNPOINT,			/**< place where to find new players */
+	BOTINFO_TEAM_GOALITEM,		/**< team-mode goal item (flag, intel) */
+	BOTINFO_TEAM_GOALCAPTURE,	/**< where to go when goal-item present */
+	BOTINFO_END					/**< end destination */
 };
 
 .float botinfo;
+
+/** @} */ // end of bot_info

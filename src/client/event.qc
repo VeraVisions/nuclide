@@ -182,6 +182,16 @@ EV_Achievement(void)
 }
 
 void
+EV_EntityEvent(void)
+{
+	NSEntity targetEntity = (NSEntity)findfloat(world, ::entnum, readentitynum());
+	float eventType = readfloat();
+
+	if (targetEntity) 
+		targetEntity.ReceiveEvent(eventType);
+}
+
+void
 Event_Parse(float type)
 {
 	switch (type) {
@@ -258,6 +268,9 @@ Event_Parse(float type)
 		break;
 	case EV_ACHIEVEMENT:
 		EV_Achievement();
+		break;
+	case EV_ENTITYEVENT:
+		EV_EntityEvent();
 		break;
 	default:
 		error(sprintf("event id %d not recognized. abort immediately.\n", type));
