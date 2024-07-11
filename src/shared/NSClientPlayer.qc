@@ -485,7 +485,7 @@ NSClientPlayer::UpdateAliveCam(void)
 {
 	vector cam_pos = GetEyePos();
 
-#if defined(VALVE) || defined(CSTRIKE) || defined(GEARBOX)
+#if defined(VALVE) || defined(CSTRIKE) || defined(GEARBOX) || defined(TFC)
 	//view_angles = Camera_RunBob(view_angles);
 	//view_angles = Camera_StrafeRoll(view_angles);
 	cam_pos += CalculateLean(view_angles);
@@ -1576,6 +1576,9 @@ NSClientPlayer::Footsteps_Update(void)
 void
 NSClientPlayer::Damage(entity inflictor, entity attacker, string damageDef, float damageScale, vector dmgDir, vector hitLocation)
 {
+#ifdef SERVER
+	super::Damage(inflictor, attacker, damageDef, damageScale, dmgDir, hitLocation);
+
 #if 0
 	bool isFriendlyFire = false;
 
@@ -1729,5 +1732,6 @@ NSClientPlayer::Damage(entity inflictor, entity attacker, string damageDef, floa
 			eTarget.Pain();
 		}
 	}
+#endif
 #endif
 }

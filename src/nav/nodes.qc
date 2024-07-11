@@ -162,7 +162,7 @@ Nodes_BuildFromEnts(void)
 
 	if (g_iNodes) {
 		NSLog("saving nodes nodes for %s", mapname);
-		NodeEdit_SaveFile(g_pNodes, g_iNodes, sprintf("%s.way", mapname));
+		NodeEdit_SaveFile(sprintf("%s.way", mapname));
 	} else {
 		NSLog("no node data found for %s", mapname);
 	}

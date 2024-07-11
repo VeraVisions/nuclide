@@ -273,8 +273,13 @@ trigger_hurt::Touch(entity eToucher)
 	EntLog("Hurting %S (%d) with %i.", eToucher.classname, num_for_edict(eToucher), m_iDamage);
 
 	vector center = WorldSpaceCenter();
-	string dmgDef = sprintf("\"damage\" \"%i\"", m_iDamage);
-	entityDamage(eToucher, this, eToucher, dmgDef, "", center, g_vec_null, eToucher.origin);
+
+	/* this is kinda ugly, but worth the price */
+	NSDict damageDecl = spawn(NSDict);
+	damageDecl.AddKey("damage", itos(m_iDamage));
+	damageDecl.AddKey("flags", itos(type));
+	entityDamage(eToucher, this, eToucher, damageDecl.GetDeclBody(), "", center, g_vec_null, eToucher.origin);
+	remove(damageDecl);
 
 	/* shut it down if used once */
 	if (HasSpawnFlags(SF_HURT_ONCE)) {

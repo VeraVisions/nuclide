@@ -46,4 +46,3 @@
 #define VFL_NOATTACK			(1<<10) /**< Entity is not allowed to fire. */
 #define VFL_PRIMEDFUSE			(1<<11) /**< Entity is not allowed to fire. */
 #define VFL_REDRAW				(1<<12) /**< Entity is not allowed to fire. */
-

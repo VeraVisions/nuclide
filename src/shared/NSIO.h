@@ -201,7 +201,7 @@ public:
 void
 _NSEntLog(string className, string functionName, float edictNum, string warnMessage)
 {
-	if (autocvar_g_developerTimestamps)
+	if (autocvar_g_logTimestamps)
 		print(sprintf("^9%f ^7%s (%d)^7: %s\n", time, className, edictNum, warnMessage));
 	else
 		print(sprintf("^7%s (%d)^7: %s\n", className, edictNum, warnMessage));
@@ -210,7 +210,7 @@ _NSEntLog(string className, string functionName, float edictNum, string warnMess
 void
 _NSEntWarning(string className, string functionName, float edictNum, string warnMessage)
 {
-	if (autocvar_g_developerTimestamps)
+	if (autocvar_g_logTimestamps)
 		print(sprintf("^9%f ^3%s (%d)^7: %s\n", time, functionName, edictNum, warnMessage));
 	else
 		print(sprintf("^3%s (%d)^7: %s\n", functionName, edictNum, warnMessage));
@@ -219,7 +219,7 @@ _NSEntWarning(string className, string functionName, float edictNum, string warn
 void
 _NSEntError(string className, string functionName, float edictNum, string warnMessage)
 {
-	if (autocvar_g_developerTimestamps)
+	if (autocvar_g_logTimestamps)
 		print(sprintf("^9%f ^1%s (id: %d)^7: %s\n", time, functionName, edictNum, warnMessage));
 	else
 		print(sprintf("^1%s (id: %d)^7: %s\n", functionName, edictNum, warnMessage));
@@ -228,16 +228,16 @@ _NSEntError(string className, string functionName, float edictNum, string warnMe
 	 The console variable `entity_developer` has to be `1` for them to be visible.
 
 @param description(...) contains a formatted string containing a description. */
-#define EntLog(...) if (autocvar_g_developer) _NSEntLog(classname, __FUNC__, num_for_edict(this), sprintf(__VA_ARGS__))
+#define EntLog(...) if (autocvar_g_logLevel >= LOGLEVEL_DEBUG) _NSEntLog(classname, __FUNC__, num_for_edict(this), sprintf(__VA_ARGS__))
 
 /** Logs an entity class specific warning message, with detailed info.
 	 The console variable `entity_developer` has to be `1` for them to be visible.
 
 @param description(...) contains a formatted string containing a description. */
-#define EntWarning(...) _NSEntWarning(classname, __FUNC__, num_for_edict(this), sprintf(__VA_ARGS__))
+#define EntWarning(...) if (autocvar_g_logLevel >= LOGLEVEL_WARNINGS) _NSEntWarning(classname, __FUNC__, num_for_edict(this), sprintf(__VA_ARGS__))
 
 /** Logs an entity class specific error message, with detailed info.
 	 The console variable `entity_developer` has to be `1` for them to be visible.
 
 @param description(...) contains a formatted string containing a description. */
-#define EntError(...) _NSEntError(classname, __FUNC__, num_for_edict(this), sprintf(__VA_ARGS__))
+#define EntError(...) if (autocvar_g_logLevel >= LOGLEVEL_ERRORS) _NSEntError(classname, __FUNC__, num_for_edict(this), sprintf(__VA_ARGS__))

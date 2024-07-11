@@ -14,8 +14,18 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-var bool autocvar_g_developer = false;
-var bool autocvar_g_developerTimestamps = false;
+var bool autocvar_g_logTimestamps = false;
+
+typedef enum
+{
+	LOGLEVEL_NONE,
+	LOGLEVEL_ERRORS,
+	LOGLEVEL_WARNINGS,
+	LOGLEVEL_DEBUG,
+} logLevel_t;
+
+#define LOGLEVEL_DEFAULT LOGLEVEL_WARNINGS
+var logLevel_t autocvar_g_logLevel = LOGLEVEL_DEFAULT;
 
 #define printf(...) print(sprintf(__VA_ARGS__))
 
@@ -27,7 +37,7 @@ var bool autocvar_g_developerTimestamps = false;
 void
 _NSLog(string msg)
 {
-	if (autocvar_g_developerTimestamps)
+	if (autocvar_g_logTimestamps)
 		print(sprintf("^9%f ^7%s\n", time, msg));
 	else
 		print(sprintf("^7%s\n", msg));
@@ -36,7 +46,7 @@ _NSLog(string msg)
 void
 _NSError(string functionName, string msg)
 {
-	if (autocvar_g_developerTimestamps)
+	if (autocvar_g_logTimestamps)
 		print(sprintf("^9%f ^1%s^7: %s\n", time, functionName, msg));
 	else
 		print(sprintf("^1%s^7: %s\n", functionName, msg));
@@ -45,7 +55,7 @@ _NSError(string functionName, string msg)
 void
 _NSWarning(string functionName, string msg)
 {
-	if (autocvar_g_developerTimestamps)
+	if (autocvar_g_logTimestamps)
 		print(sprintf("^9%f ^3%s^7: %s\n", time, functionName, msg));
 	else
 		print(sprintf("^3%s^7: %s\n", functionName, msg));
@@ -66,19 +76,19 @@ _NSAssert(bool condition, string function, string descr)
 	 The console variable `g_developer` has to be `1` for them to be visible.
 
 @param description(...) contains a formatted string containing a description. */
-#define NSLog(...) if (autocvar_g_developer) _NSLog(sprintf(__VA_ARGS__))
+#define NSLog(...) if (autocvar_g_logLevel >= LOGLEVEL_DEBUG) _NSLog(sprintf(__VA_ARGS__))
 
 /** Logs an error message, with timestamp.
 	 The console variable `g_developer` has to be `1` for them to be visible.
 
 @param description(...) contains a formatted string containing a description. */
-#define NSError(...) _NSError(__FUNC__, sprintf(__VA_ARGS__))
+#define NSError(...) if (autocvar_g_logLevel >= LOGLEVEL_ERRORS) _NSError(__FUNC__, sprintf(__VA_ARGS__))
 
 /** Logs a warning message, with timestamp.
 	 The console variable `g_developer` has to be `1` for them to be visible.
 
 @param description(...) contains a formatted string containing a description. */
-#define NSWarning(...) _NSWarning(__FUNC__, sprintf(__VA_ARGS__))
+#define NSWarning(...) if (autocvar_g_logLevel >= LOGLEVEL_WARNINGS) _NSWarning(__FUNC__, sprintf(__VA_ARGS__))
 
 /** Generates an assertion, if a given condition is false.
 	 The console variable `g_developer` has to be `1` for them to be visible.
@@ -86,7 +96,7 @@ _NSAssert(bool condition, string function, string descr)
 @param condition is the expression to be evaluated.
 @param description(...) contains a formatted string containing an error description. */
 
-#define NSAssert(condition, ...) if (autocvar_g_developer) _NSAssert(condition, __FUNC__, sprintf(__VA_ARGS__))
+#define NSAssert(condition, ...) if (autocvar_g_logLevel >= LOGLEVEL_ERRORS) _NSAssert(condition, __FUNC__, sprintf(__VA_ARGS__))
 
 typedef enumflags
 {

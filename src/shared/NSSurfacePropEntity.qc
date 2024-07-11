@@ -243,7 +243,17 @@ NSSurfacePropEntity::ParentUpdate(void)
 void
 NSSurfacePropEntity::Damage(entity inflictor, entity attacker, string damageDef, float damageScale, vector dmgDir, vector hitLocation)
 {
-	string damageString = EntityDef_GetKeyValue(damageDef, "damage");
+	bool defBody = EntityDef_IDFromName(damageDef) == -1i : true : false;
+	string damageString;
+
+	if (defBody == true) {
+		NSDict damageDecl = spawn(NSDict);
+		damageDecl.SetDeclBody(damageDef);
+		damageString = damageDecl.GetString("damage");
+	} else {
+		damageString = EntityDef_GetKeyValue(damageDef, "damage");
+	}
+
 	float damagePoints = (float)rint(stof(damageString) * damageScale);
 	NSSurfacePropEntity ourAttacker = (NSSurfacePropEntity)attacker;
 
@@ -808,6 +818,7 @@ entityDamage(entity targetEnt, entity inflictingEnt, entity attackingEnt, string
 	if (targetEnt.takedamage == DAMAGE_NO) {
 		return;
 	}
+
 	if (isGodMode(targetEnt) == true) {
 		return;
 	}

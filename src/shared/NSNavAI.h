@@ -18,7 +18,7 @@ var bool autocvar_ai_debugNav = false;
 void
 _NSNavAI_Log(string className, string functionName, float edictNum, string warnMessage)
 {
-	if (autocvar_g_developerTimestamps)
+	if (autocvar_g_logTimestamps)
 		printf("^9%f ^5%s (%d) ^7: %s\n", time, functionName, edictNum, warnMessage);
 	else
 		printf("^5%s (%d) ^7: %s\n", functionName, edictNum, warnMessage);

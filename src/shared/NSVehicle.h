@@ -18,7 +18,7 @@ var bool autocvar_vehicle_developer = false;
 void
 _NSVehicle_Log(string className, string functionName, float edictNum, string warnMessage)
 {
-	if (autocvar_g_developerTimestamps)
+	if (autocvar_g_logTimestamps)
 		printf("^9%f ^2%s (%d) ^7: %s\n", time, functionName, edictNum, warnMessage);
 	else
 		printf("^2%s (%d) ^7: %s\n", functionName, edictNum, warnMessage);

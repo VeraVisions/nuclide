@@ -91,6 +91,7 @@ string __fullspawndata;
 #include "sentences.h"
 
 #include "NSIO.h"
+#include "NSDict.h"
 #include "NSTrigger.h"
 #include "NSEntity.h"
 #include "NSTimer.h"

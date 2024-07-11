@@ -1,5 +1,6 @@
 #includelist
 NSIO.qc
+NSDict.qc
 NSTrigger.qc
 NSEntity.qc
 NSTimer.qc

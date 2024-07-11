@@ -112,11 +112,11 @@ possibilities are endless!
 .float maxspeed;
 .float flags;
 
-var bool autocvar_s_developer = false;
+var logLevel_t autocvar_s_logLevel = LOGLEVEL_DEFAULT;
 void
 _SndLog(string functionName, string msg)
 {
-	if (autocvar_g_developerTimestamps)
+	if (autocvar_g_logTimestamps)
 		print(sprintf("^9%f ^xF50%s^7: %s\n", time, functionName, msg));
 	else
 		print(sprintf("^xF50%s^7: %s\n", functionName, msg));
@@ -126,12 +126,12 @@ _SndLog(string functionName, string msg)
 	 The console variable `s_developer` has to be `1` for them to be visible.
 
 @param description(...) contains a formatted string containing a description. */
-#define SndLog(...) if (autocvar_s_developer) _SndLog(__FUNC__, sprintf(__VA_ARGS__))
+#define SndLog(...) if (autocvar_s_logLevel >= LOGLEVEL_DEBUG) _SndLog(__FUNC__, sprintf(__VA_ARGS__))
 
 void
 _SndEntLog(string className, string functionName, float edictNum, string warnMessage)
 {
-	if (autocvar_g_developerTimestamps)
+	if (autocvar_g_logTimestamps)
 		print(sprintf("^9%f ^xF50%s (id: %d)^7: %s\n", time, functionName, edictNum, warnMessage));
 	else
 		print(sprintf("^xF50%s (id: %d)^7: %s\n", functionName, edictNum, warnMessage));
@@ -141,7 +141,7 @@ _SndEntLog(string className, string functionName, float edictNum, string warnMes
 	 The console variable `s_developer` has to be `1` for them to be visible.
 
 @param description(...) contains a formatted string containing a description. */
-#define SndEntLog(...) if (autocvar_s_developer) _SndEntLog(classname, __FUNC__, num_for_edict(this), sprintf(__VA_ARGS__))
+#define SndEntLog(...) if (autocvar_s_logLevel >= LOGLEVEL_DEBUG) _SndEntLog(classname, __FUNC__, num_for_edict(this), sprintf(__VA_ARGS__))
 
 /** Global hash table for name > soundDef id lookup. */
 var hashtable g_hashsounds;
