@@ -397,14 +397,14 @@ Cmd_Parse(string sCMD)
 	case "-gostand":
 		pSeat->m_iInputJump = false;
 		break;
-	case "invnext":
-		HUD_DrawWeaponSelect_Back();
+	case "weapnext":
+		NSWeapon_NextWeapon((NSClientPlayer)pSeat->m_ePlayer);
 		break;
-	case "invprev":
-		HUD_DrawWeaponSelect_Forward();
+	case "weapprev":
+		NSWeapon_PrevWeapon((NSClientPlayer)pSeat->m_ePlayer);
 		break;
-	case "lastinv":
-		HUD_DrawWeaponSelect_Last();
+	case "weaplast":
+		NSWeapon_LastWeapon((NSClientPlayer)pSeat->m_ePlayer);
 		break;
 	case "+showscores":
 		pSeat->m_iScoresVisible = TRUE;
@@ -662,6 +662,8 @@ Cmd_Init(void)
 	registercommand("-leanleft");
 	registercommand("+leanright");
 	registercommand("-leanright");
+	registercommand("weapnext");
+	registercommand("weapprev");
 
 	/* voting */
 	registercommand("vote");
@@ -681,9 +683,6 @@ Cmd_Init(void)
 	registercommand("slot8");
 	registercommand("slot9");
 	registercommand("slot10");
-	registercommand("lastinv");
-	registercommand("invnext");
-	registercommand("invprev");
 
 	/* scoreboard */
 	registercommand("+showscores");

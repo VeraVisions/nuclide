@@ -123,6 +123,8 @@ NSWeapon::Spawned(void)
 	SetViewModel(m_strWeaponViewModel);
 	SetWorldModel(model);
 	SetPlayerModel(m_strWeaponPlayerModel);
+	
+	printf("%S\n", classname);
 }
 
 void
@@ -1354,4 +1356,162 @@ isWeaponDetonationTimed(string weaponDef)
 	string projectileDef = NSWeapon_GetPrimaryKeyValue(weaponDef, "def_projectile");
 	bool isFused = (bool)stof(EntityDef_GetKeyValue(projectileDef, "detonate_on_fuse"));
 	return (isFused);
+}
+
+.NSWeapon m_nextWeapon;
+.NSWeapon m_prevWeapon;
+
+NSWeapon
+NSWeapon_SortWeaponChain(NSClientPlayer targetPlayer)
+{
+	NSWeapon itemChain = targetPlayer.m_itemList;
+	int heighestSlot = -1i;
+	int heighestPos = -1i;
+	NSWeapon firstWeapon, lastWeapon;
+
+	firstWeapon = lastWeapon = __NULL__;
+
+	if (!targetPlayer.m_itemList) {
+		return __NULL__;
+	}
+
+	/* first we determine the range of our hud buckets. */
+	while (itemChain) {
+		if (itemChain.IsWeapon() == true) {
+			int hudSlot = itemChain.GetDefInt("hudSlot");
+			int hudPos = itemChain.GetDefInt("hudSlotPos");
+
+			if (hudSlot > heighestSlot) {
+				heighestSlot = hudSlot;
+			}
+			if (hudPos > heighestPos) {
+				heighestPos = hudPos;
+			}
+		}
+
+		itemChain = itemChain.chain;
+	}
+
+	for (int hS = 0i; hS <= heighestSlot; hS++) {
+		for (int hP = 0i; hP <= heighestPos; hP++) {
+			itemChain = targetPlayer.m_itemList;
+
+			while (itemChain) {
+				if (itemChain.IsWeapon() == true) {
+					int hudSlot = itemChain.GetDefInt("hudSlot");
+					int hudPos = itemChain.GetDefInt("hudSlotPos");
+
+					if (hudSlot == hS && hudPos == hP) {
+						/* first weapon in the chain? */
+						if (!lastWeapon) {
+							firstWeapon = itemChain;
+							lastWeapon = firstWeapon;
+						} else {
+							/* assign this weapon to the last weapon of our chain. */
+							lastWeapon.m_nextWeapon = itemChain;
+							itemChain.m_prevWeapon = lastWeapon;
+							lastWeapon = itemChain;
+						}
+					}
+				}
+
+				itemChain = itemChain.chain;
+			}
+		}
+	}
+
+	/* test */
+	NSWeapon weaponTest = firstWeapon;
+	while (weaponTest) {
+		weaponTest = weaponTest.m_nextWeapon;
+	}
+
+	firstWeapon.m_prevWeapon = lastWeapon;
+
+	return (firstWeapon);
+}
+
+#ifdef CLIENT
+bool
+NSWeapon_CanSwitch(NSClientPlayer pl)
+{
+	if (!pl.m_activeWeapon)
+		return false;
+
+	return true;
+}
+
+void
+NSWeapon_SelectWeapon(NSWeapon nextWeapon)
+{
+	if (!nextWeapon) {
+		pSeat->m_iHUDWeaponSelected = 0i;
+		return;
+	}
+
+	pSeat->m_iHUDWeaponSelected = nextWeapon.GetSharedID();
+}
+#endif
+
+/** Select the next item in the list. */
+void
+NSWeapon_NextWeapon(NSNavAI pl)
+{
+#ifdef CLIENT
+	NSWeapon firstWeapon;
+
+	if (NSWeapon_CanSwitch(pl) = false) {
+		return;
+	}
+
+	firstWeapon = NSWeapon_SortWeaponChain(pl);
+
+	if (pl.m_activeWeapon.m_nextWeapon) {
+		NSWeapon_SelectWeapon(pl.m_activeWeapon.m_nextWeapon);
+	} else {
+		NSWeapon_SelectWeapon(firstWeapon);
+	}
+#endif
+}
+
+/** Select the previous item in the list. */
+void
+NSWeapon_PrevWeapon(NSNavAI pl)
+{
+#ifdef CLIENT
+	NSWeapon firstWeapon;
+
+	if (NSWeapon_CanSwitch(pl) = false) {
+		return;
+	}
+
+	firstWeapon = NSWeapon_SortWeaponChain(pl);
+
+	if (pl.m_activeWeapon.m_prevWeapon) {
+		NSWeapon_SelectWeapon(pl.m_activeWeapon.m_prevWeapon);
+	} else {
+		NSWeapon_SelectWeapon(firstWeapon);
+	}
+#endif
+}
+
+/** Select the previous item in the list. */
+void
+NSWeapon_LastWeapon(NSNavAI pl)
+{
+#ifdef CLIENT
+	NSWeapon firstWeapon;
+
+	if (NSWeapon_CanSwitch(pl) = false) {
+		return;
+	}
+
+	firstWeapon = NSWeapon_SortWeaponChain(pl);
+
+	if (pl.m_activeWeapon.m_prevWeapon) {
+		NSWeapon_SelectWeapon(pl.m_activeWeapon.m_prevWeapon);
+	} else {
+		NSWeapon_SelectWeapon(firstWeapon);
+	}
+#endif
 }

@@ -34,9 +34,9 @@ NSSpawnPoint::Respawn(void)
 
 	super::Respawn();
 
-	setorigin_safe(this, GetSpawnVector("origin"));
+	SetOriginUnstick(GetSpawnVector("origin"));
 	SetSize(newMins, newMaxs);
-	botinfo = BOTINFO_SPAWNPOINT;
+	SetBotTag(BOTINFO_SPAWNPOINT);
 }
 
 void

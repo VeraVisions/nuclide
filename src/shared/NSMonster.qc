@@ -1788,7 +1788,7 @@ NSMonster::Respawn(void)
 		SetOrigin(GetSpawnVector("origin"));
 		NSError("%S: %v, %v", classname, GetAngles(), GetOrigin());
 		DropToFloor();
-		setorigin_safe(this, origin);
+		SetOriginUnstick(origin);
 	}
 
 	super::Respawn();

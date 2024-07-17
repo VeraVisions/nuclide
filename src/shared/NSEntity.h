@@ -209,6 +209,8 @@ public:
 	nonvirtual void SetAngularVelocity(vector);
 	/** Sets the absolute 3D world position of the entity. */
 	nonvirtual void SetOrigin(vector);
+	/** Same as SetOrigin(), but will push the entity out the ground if needed. */
+	nonvirtual void SetOriginUnstick(vector);
 	/** Sets the bounding box size of the entity.
 		This affects both collision and rendering bounds checking. */
 	nonvirtual void SetSize(vector,vector);
@@ -419,6 +421,9 @@ public:
 
 	/** Will read from the named def to perform an attack. */
 	virtual bool AttackByDef(string, bool);
+
+	/** Sets the @ref bot_info tag on this entity to the desired botInfo_t tag. */
+	nonvirtual void SetBotTag(botInfo_t);
 };
 
 /** Returns a new entity. Guaranteed to be something. Never __NULL__

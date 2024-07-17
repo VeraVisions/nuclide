@@ -455,8 +455,8 @@ NSVehicle::PlayerLeave(NSClientPlayer pl)
 
 	owner = __NULL__;
 	pl.vv_flags &= ~VFL_INVEHICLE;
-	pl.velocity = g_vec_null;
-	setorigin_safe(pl, pl.origin);
+	pl.ClearVelocity();
+	pl.SetOriginUnstick(pl.GetOrigin());
 
 	if (m_iVehicleFlags & VHF_FROZEN)
 		pl.vv_flags &= ~VFL_FROZEN;

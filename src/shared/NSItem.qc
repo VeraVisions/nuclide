@@ -340,7 +340,7 @@ void
 NSItem::BecomePickup(void)
 {
 	SetSolid(SOLID_TRIGGER);
-	botinfo = BOTINFO_WEAPON;
+	SetBotTag(BOTINFO_WEAPON);
 
 	if (m_bSpins)
 		modelflags = MF_ROTATE;

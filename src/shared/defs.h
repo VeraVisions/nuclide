@@ -105,6 +105,7 @@ string __fullspawndata;
 #include "NSItem.h"
 #include "NSWeapon.h"
 #include "NSNavAI.h"
+#include "NSWeapon_NSNavAI.h"
 #include "NSMonster.h"
 #include "NSSquadMonster.h"
 #include "NSTalkMonster.h"
@@ -268,6 +269,64 @@ pseudorandom()
 	/* like the engine its random(), never return 0, never return 1 */
 	return bound(0.01, (seed) / 100.0f, 0.99f);
 }
+
+#if 0
+__wrap void
+WriteByte(float to, float val)
+{
+	breakpoint();
+	prior(to, val);
+}
+
+__wrap void
+WriteChar(float to, float val)
+{
+	breakpoint();
+	prior(to, val);
+}
+
+__wrap void
+WriteShort(float to, float val)
+{
+	breakpoint();
+	prior(to, val);
+}
+
+__wrap void
+WriteLong(float to, float val)
+{
+	breakpoint();
+	prior(to, val);
+}
+
+__wrap void
+WriteCoord(float to, float val)
+{
+	breakpoint();
+	prior(to, val);
+}
+
+__wrap void
+WriteAngle(float to, float val)
+{
+	breakpoint();
+	prior(to, val);
+}
+
+__wrap void
+WriteString(float to, string val)
+{
+	breakpoint();
+	prior(to, val);
+}
+
+__wrap void
+WriteEntity(float to, entity val)
+{
+	breakpoint();
+	prior(to, val);
+}
+#endif
 
 __wrap void
 setmodel(entity ent, string mname)

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2024 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -18,11 +18,14 @@
     @brief Info tags for bots used to identify objects.
     @ingroup bot
 
+Any entity can have these tags set onto using NSEntity::SetBotTag(), it will help
+the AI figure out a lot of game specific details.
+
    @{
 */
 
 /* we need to keep this an enum so find() does its work faster */
-enum
+typedef enum
 {
 	BOTINFO_NONE,				/**< no info */
 	BOTINFO_HEALTH,				/**< health item */
@@ -32,8 +35,8 @@ enum
 	BOTINFO_SPAWNPOINT,			/**< place where to find new players */
 	BOTINFO_TEAM_GOALITEM,		/**< team-mode goal item (flag, intel) */
 	BOTINFO_TEAM_GOALCAPTURE,	/**< where to go when goal-item present */
-	BOTINFO_END					/**< end destination */
-};
+	BOTINFO_END				/**< end destination */
+} botInfo_t;
 
 .float botinfo;
 

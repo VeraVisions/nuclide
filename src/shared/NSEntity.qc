@@ -639,6 +639,11 @@ NSEntity::SetOrigin(vector newOrigin) {
 }
 
 void
+NSEntity::SetOriginUnstick(vector newOrigin) {
+	setorigin_safe(this, newOrigin);
+}
+
+void
 NSEntity::SetModel(string newModel) {
 	m_bIsBrush = substring(newModel, 0, 1) == "*" ? true : false;
 	model = newModel;
@@ -1448,6 +1453,13 @@ NSEntity::AttackByDef(string defName, bool wasReleased)
 	return (true);
 }
 
+void
+NSEntity::SetBotTag(botInfo_t newTag)
+{
+#ifdef SERVER
+	botinfo = newTag;
+#endif
+}
 
 int
 NSEntity::GetSharedID(void)

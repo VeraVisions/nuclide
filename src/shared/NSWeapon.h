@@ -276,3 +276,4 @@ bool isWeaponClipOnly(string weaponDef);
 @return true/false whether or not the weapon creates a timed, fused detonating charge of sorts.
 @param weaponDef the name of the entityDef that defines the weapon.*/
 bool isWeaponDetonationTimed(string weaponDef);
+

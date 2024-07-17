@@ -216,23 +216,23 @@ trigger_teleport::Touch(entity eToucher)
 
 		if (eTarget) {
 			vector endpos = eTarget.origin;
-			float flSpeed = vlen(eToucher.velocity);
+			float flSpeed = vlen(eActivator.velocity);
 			makevectors(eTarget.angles);
-			eToucher.velocity = (v_forward * flSpeed);
-			eToucher.angles = eTarget.angles;
+			eActivator.velocity = (v_forward * flSpeed);
+			eActivator.angles = eTarget.angles;
 
-			if (eToucher.flags & FL_CLIENT) {
-				Client_FixAngle(eToucher, eToucher.angles);
+			if (eActivator.flags & FL_CLIENT) {
+				Client_FixAngle(eActivator, eActivator.angles);
 
 				/* level designers place destinations where the feet
 				   are going to be, because monsters are mainly set up
 				   to be that way (0 0 0 being ground). players however 
 				   have their it at the center of mass, so nudge it a little. */
-				endpos[2] -= eToucher.mins[2]; 
+				endpos[2] -= eActivator.mins[2]; 
 			}
 
 			/* test if something is in the way. */
-			tracebox(endpos, eToucher.mins, eToucher.maxs, endpos, MOVE_NORMAL, eToucher);
+			tracebox(endpos, eActivator.mins, eActivator.maxs, endpos, MOVE_NORMAL, eActivator);
 
 			/* indeed something is in the way... */
 			if (trace_ent && trace_startsolid == true) {
@@ -240,11 +240,11 @@ trigger_teleport::Touch(entity eToucher)
 				if (trace_ent.takedamage != DAMAGE_NO) {
 					NSSurfacePropEntity killThis = (NSSurfacePropEntity)trace_ent;
 					killThis.SetHealth(-100);
-					killThis.Death(this, eToucher, 1000, g_vec_null, 0i);
+					killThis.Death(this, eActivator, 1000, g_vec_null, 0i);
 				}
 			}
 
-			setorigin_safe(eToucher, endpos);
+			eActivator.SetOriginUnstick(endpos);
 
 			if (m_sndTeleport) {
 				StartSoundDef(m_sndTeleport, CHAN_VOICE, true);
@@ -258,9 +258,9 @@ trigger_teleport::Touch(entity eToucher)
 				StartSoundDef(m_sndTeleportExit, CHAN_VOICE, true);
 			}
 
-			EntLog("Teleported %S to %v", eToucher.netname, endpos);
+			EntLog("Teleported %S to %v", eActivator.netname, endpos);
 		} else {
-			EntWarning("Failed to teleport %S", eToucher.netname);
+			EntWarning("Failed to teleport %S", eActivator.netname);
 		}
 	}
 }

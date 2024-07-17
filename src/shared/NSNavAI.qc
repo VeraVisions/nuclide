@@ -557,7 +557,7 @@ NSNavAI::PlantCharge(string defName)
 #endif
 
 	/* push us outta the way! */
-	setorigin_safe(this, GetOrigin());
+	SetOriginUnstick(GetOrigin());
 
 	return (true);
 }
