@@ -486,5 +486,5 @@ NSView::UpdateView(void)
 	if (!m_soundScape)
 		return;
 
-	m_soundScape.DebugDraw(m_vecPosition);
+	m_soundScape.DebugDraw();
 }

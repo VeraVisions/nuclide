@@ -1415,9 +1415,9 @@ NSEntity::_ProjectileAttack(string defName, bool wasReleased)
 {
 #ifdef SERVER
 	string attackDef;
-	int numProjectiles = EntityDef_GetKeyValue(defName, "numProjectiles");
-	float sX = stof(EntityDef_GetKeyValue(defName, "spread_x"));
-	float sY = stof(EntityDef_GetKeyValue(defName, "spread_y"));
+	int numProjectiles = GetSubDefInt(defName, "numProjectiles");
+	float sX = GetSubDefFloat(defName, "spread_x");
+	float sY = GetSubDefFloat(defName, "spread_y");
 
 	/* always fire at least 1 */
 	if (numProjectiles <= 0i) {
@@ -1425,9 +1425,9 @@ NSEntity::_ProjectileAttack(string defName, bool wasReleased)
 	}
 
 	if (wasReleased == true) {
-		attackDef = EntityDef_GetKeyValue(defName, "def_onRelease");
+		attackDef = GetSubDefString(defName, "def_onRelease");
 	} else {
-		attackDef = EntityDef_GetKeyValue(defName, "def_onFire");
+		attackDef = GetSubDefString(defName, "def_onFire");
 	}
 
 	for (int i = 0i; i < numProjectiles; i++) {

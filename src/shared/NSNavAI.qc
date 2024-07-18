@@ -701,7 +701,7 @@ NSNavAI::GiveItem(string itemName)
 		/* TODO: Replace this with a 'SwitchBest' type function? */
 		/* we have no active weapon, and this is our pick */
 		if (!m_activeWeapon && m_itemList.IsWeapon() == true) {
-			m_activeWeapon = m_itemList;
+			m_activeWeapon = (NSWeapon)m_itemList;
 			m_activeWeapon._SwitchedToCallback();
 			//m_activeWeapon.PrintDebugInfo();
 		}
@@ -710,7 +710,7 @@ NSNavAI::GiveItem(string itemName)
 	}
 
 	/* since we have something in the inventory, start there */
-	linkedList = m_itemList;
+	linkedList = (NSWeapon)m_itemList;
 
 	/* iterate through the inventory, then figure out if we already have it*/
 	while (linkedList) {
@@ -742,7 +742,7 @@ NSNavAI::GiveItem(string itemName)
 	/* TODO: Replace this with a 'SwitchBest' type function? */
 	/* we have no active weapon, and this is our pick */
 	if (!m_activeWeapon && linkedList.IsWeapon() == true) {
-		m_activeWeapon = linkedList;
+		m_activeWeapon = (NSWeapon)linkedList;
 		m_activeWeapon._SwitchedToCallback();
 		//m_activeWeapon.PrintDebugInfo();
 	}

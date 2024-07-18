@@ -177,9 +177,13 @@ env_laser::CastLaser(void)
 	if (trace_ent.takedamage == DAMAGE_NO)
 		return;
 
+	NSDict damageDecl = spawn(NSDict);
 	vector center = WorldSpaceCenter();
-	string dmgDef = sprintf("\"damage\" \"%i\"\n\"type\" \"electro\"", m_iDamage);
-	entityDamage(trace_ent, this, trace_ent, dmgDef, "", center, g_vec_null, trace_ent.origin);
+
+	damageDecl.AddKey("damage", itos(m_iDamage));
+	damageDecl.AddKey("type", "electro");
+	entityDamage(trace_ent, this, trace_ent, damageDecl.GetDeclBody(), "", center, g_vec_null, trace_ent.origin);
+	remove(damageDecl);
 	m_flTraceTime = time + 1.0f;
 }
 

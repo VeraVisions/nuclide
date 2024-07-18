@@ -1,4 +1,0 @@
-# Entity Guide
-
-# Overview
-

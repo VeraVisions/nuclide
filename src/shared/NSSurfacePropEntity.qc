@@ -243,7 +243,7 @@ NSSurfacePropEntity::ParentUpdate(void)
 void
 NSSurfacePropEntity::Damage(entity inflictor, entity attacker, string damageDef, float damageScale, vector dmgDir, vector hitLocation)
 {
-	bool defBody = EntityDef_IDFromName(damageDef) == -1i : true : false;
+	bool defBody = EntityDef_IDFromName(damageDef) == -1i ? true : false;
 	string damageString;
 
 	if (defBody == true) {
@@ -499,7 +499,7 @@ NSSurfacePropEntity::DamageFeedback(entity theVictim, entity theInflictor, int d
 }
 
 void
-NSSurfacePropEntity::BreakModel(int damage, vector dir, vector location)
+NSSurfacePropEntity::BreakModel(int damage, vector dir, int location)
 {
 	m_flDeathTime = time;
 

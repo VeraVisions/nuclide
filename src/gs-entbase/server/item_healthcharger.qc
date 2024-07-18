@@ -67,6 +67,8 @@ public:
 	nonvirtual void UpdateProgress(void);
 	nonvirtual void Disable(void);
 	nonvirtual void Enable(void);
+	nonvirtual void GiveShot(void);
+	nonvirtual void RetractShot(void);
 
 private:
 	entity m_toucher;
@@ -354,7 +356,6 @@ item_healthcharger::customphysics(void)
 {
 	if ((health && m_toucher) && (GetFrame() == HEALTHCHARGER_FRAMEGROUP_DEPLOY || GetFrame() == HEALTHCHARGER_FRAMEGROUP_RETRACTSHOT || GetFrame() == HEALTHCHARGER_FRAMEGROUP_GIVESHOT)) {
 		vector vecDelta;
-		float headYaw;
 		vecDelta = vectorNormalize(m_toucher.origin - GetOrigin() );
 		m_flSwingArm = ((1.0 + (vecDelta * anglesToRight(angles))) * 0.5);
 		m_flSwingArm = lerp(-80, 90, 1.0 - m_flSwingArm);

@@ -49,6 +49,8 @@ NSDict::GetString(string keyName)
 			return argv(c+1);
 		}
 	}
+
+	return "";
 }
 
 vector

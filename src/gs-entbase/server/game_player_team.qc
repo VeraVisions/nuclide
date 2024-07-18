@@ -54,6 +54,7 @@ game_player_team::Trigger(entity entityActivator, triggermode_t state)
 {
 	NSClientPlayer targetPlayer = __NULL__;
 	game_team_master toRead = __NULL__;
+	NSDict damageDecl;
 
 	if (GetMaster(entityActivator) == FALSE) {
 		return;
@@ -70,11 +71,17 @@ game_player_team::Trigger(entity entityActivator, triggermode_t state)
 	targetPlayer.SetTeam((float)toRead.GetTeamIndex());
 
 	if (HasSpawnFlags(4) == true) {
-		string damageDef = sprintf("\"damage\" \"%i\"\n\"skip_armor\" \"1\"", targetPlayer.health + 100i);
-		entityDamage(targetPlayer, this, targetPlayer, damageDef, "", GetOrigin(), g_vec_null, targetPlayer.origin);
+		damageDecl = spawn(NSDict);
+		damageDecl.AddKey("damage", ftos(targetPlayer.health + 100));
+		damageDecl.AddKey("skip_armor", "1");
+		entityDamage(targetPlayer, this, targetPlayer, damageDecl.GetDeclBody(), "", GetOrigin(), g_vec_null, targetPlayer.origin);
+		remove(damageDecl);
 	} else if (HasSpawnFlags(2) == true) {
-		string damageDef = sprintf("\"damage\" \"%i\"\n\"skip_armor\" \"1\"", targetPlayer.health);
-		entityDamage(targetPlayer, this, targetPlayer, damageDef, "", GetOrigin(), g_vec_null, targetPlayer.origin);
+		damageDecl = spawn(NSDict);
+		damageDecl.AddKey("damage", ftos(targetPlayer.health));
+		damageDecl.AddKey("skip_armor", "1");
+		entityDamage(targetPlayer, this, targetPlayer, damageDecl.GetDeclBody(), "", GetOrigin(), g_vec_null, targetPlayer.origin);
+		remove(damageDecl);
 	}
 
 	if (HasSpawnFlags(1)) {

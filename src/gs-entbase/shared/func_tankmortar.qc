@@ -333,7 +333,6 @@ func_tankmortar::PlayerInput(void)
 	if (input_buttons & INPUT_BUTTON0) {
 		vector spos;
 		vector dir;
-		float dmg;
 		float damageRange;
 
 		/* barrel tip offset */

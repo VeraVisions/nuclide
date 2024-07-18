@@ -1010,10 +1010,10 @@ NSClientPlayer::Restore(string strKey, string strValue)
 		g_items = ReadInt(strValue);
 		break;
 	case "m_itemList":
-		m_itemList = ReadEntity(strValue);
+		m_itemList = (NSItem)ReadEntity(strValue);
 		break;
 	case "m_activeWeapon":
-		m_activeWeapon = ReadEntity(strValue);
+		m_activeWeapon = (NSWeapon)ReadEntity(strValue);
 		break;
 	case "vehicle":
 		vehicle = ReadEntity(strValue);

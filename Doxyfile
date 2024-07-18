@@ -888,7 +888,6 @@ INPUT                  = src/ \
                          Documentation/Bots/ \
                          Documentation/Modules.md \
                          Documentation/Modules/ \
-                         Documentation/EntityGuide.md \
                          Documentation/Classes.md \
                          Documentation/Singleplayer.md \
                          Documentation/Singleplayer/ \

@@ -17,11 +17,11 @@
 void
 NSBot::ChatSay(string msg)
 {
-	g_grMode.ChatMessageAll(this, msg);
+	g_grMode.ChatMessageAll((NSClient)this, msg);
 }
 
 void
 NSBot::ChatSayTeam(string msg)
 {
-	g_grMode.ChatMessageTeam(this, msg);
+	g_grMode.ChatMessageTeam((NSClient)this, msg);
 }

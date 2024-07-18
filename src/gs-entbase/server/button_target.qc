@@ -75,7 +75,7 @@ button_target::Respawn(void)
 	} else {
 		SetHealth(1);
 		SetTakedamage(DAMAGE_YES);
-		Pain = Death = Damage;
+		Pain = Death = Damaged;
 	}
 
 	/* purely cosmetic */

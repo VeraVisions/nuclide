@@ -87,7 +87,7 @@ public:
 	/** Called when the health is equal or below 0 */
 	virtual void Death(entity, entity, int, vector, int);
 	/** Called when the health is equal or below 0 */
-	virtual void BreakModel(int, vector, vector);
+	virtual void BreakModel(int, vector, int);
 	/** Returns whether or not the entity is alive. That is different from having health, as the entity may be a corpse that can be destroyed further.*/
 	virtual bool IsAlive(void);
 

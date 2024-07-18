@@ -109,6 +109,9 @@ public:
 	nonvirtual void SetRoomRolloffFactor(float);
 	/** Decay HF Limit, integer value. Values are `0i` (false) and `1i` (true). Default is `1i` (true). */
 	nonvirtual void SetDecayHFLimit(int);
+
+	/** Sets the radius of the soundscape. When a client is outside the radius the effects are nil. */
+	nonvirtual void SetRadius(float);
 #endif
 
 #ifdef CLIENT

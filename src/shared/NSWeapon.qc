@@ -763,7 +763,6 @@ NSWeapon::Attack(string fireInfo)
 		vector traceStart = ourOwner.GetEyePos();
 		vector traceEnd = traceStart + (anglesToForward(eyeAngles) * meleeRange);
 		float meleeRate;
-		NSSurfacePropEntity targetEnt;
 
 		ourOwner.hitcontentsmaski = (CONTENTBITS_POINTSOLID | CONTENTBIT_CORPSE);
 		traceline(traceStart, traceEnd, MOVE_NORMAL, ourOwner);
@@ -789,6 +788,7 @@ NSWeapon::Attack(string fireInfo)
 
 		/* don't bother with decals, we got squibs */
 		if (trace_ent.iBleeds) {
+			NSSurfacePropEntity targetEnt;
 			targetEnt = (NSSurfacePropEntity)trace_ent;
 			FX_Blood(trace_endpos, targetEnt.GetBloodColor());
 		}
@@ -1362,12 +1362,13 @@ isWeaponDetonationTimed(string weaponDef)
 .NSWeapon m_prevWeapon;
 
 NSWeapon
-NSWeapon_SortWeaponChain(NSClientPlayer targetPlayer)
+NSWeapon_SortWeaponChain(NSNavAI targetPlayer)
 {
-	NSWeapon itemChain = targetPlayer.m_itemList;
+	NSWeapon itemChain = (NSWeapon)targetPlayer.m_itemList;
 	int heighestSlot = -1i;
 	int heighestPos = -1i;
 	NSWeapon firstWeapon, lastWeapon;
+	int hudSlot, hudPos;
 
 	firstWeapon = lastWeapon = __NULL__;
 
@@ -1378,8 +1379,8 @@ NSWeapon_SortWeaponChain(NSClientPlayer targetPlayer)
 	/* first we determine the range of our hud buckets. */
 	while (itemChain) {
 		if (itemChain.IsWeapon() == true) {
-			int hudSlot = itemChain.GetDefInt("hudSlot");
-			int hudPos = itemChain.GetDefInt("hudSlotPos");
+			hudSlot = itemChain.GetDefInt("hudSlot");
+			hudPos = itemChain.GetDefInt("hudSlotPos");
 
 			if (hudSlot > heighestSlot) {
 				heighestSlot = hudSlot;
@@ -1389,17 +1390,17 @@ NSWeapon_SortWeaponChain(NSClientPlayer targetPlayer)
 			}
 		}
 
-		itemChain = itemChain.chain;
+		itemChain = (NSWeapon)itemChain.chain;
 	}
 
 	for (int hS = 0i; hS <= heighestSlot; hS++) {
 		for (int hP = 0i; hP <= heighestPos; hP++) {
-			itemChain = targetPlayer.m_itemList;
+			itemChain = (NSWeapon)targetPlayer.m_itemList;
 
 			while (itemChain) {
 				if (itemChain.IsWeapon() == true) {
-					int hudSlot = itemChain.GetDefInt("hudSlot");
-					int hudPos = itemChain.GetDefInt("hudSlotPos");
+					hudSlot = itemChain.GetDefInt("hudSlot");
+					hudPos = itemChain.GetDefInt("hudSlotPos");
 
 					if (hudSlot == hS && hudPos == hP) {
 						/* first weapon in the chain? */
@@ -1415,7 +1416,7 @@ NSWeapon_SortWeaponChain(NSClientPlayer targetPlayer)
 					}
 				}
 
-				itemChain = itemChain.chain;
+				itemChain = (NSWeapon)itemChain.chain;
 			}
 		}
 	}
@@ -1433,7 +1434,7 @@ NSWeapon_SortWeaponChain(NSClientPlayer targetPlayer)
 
 #ifdef CLIENT
 bool
-NSWeapon_CanSwitch(NSClientPlayer pl)
+NSWeapon_CanSwitch(NSNavAI pl)
 {
 	if (!pl.m_activeWeapon)
 		return false;
@@ -1460,7 +1461,7 @@ NSWeapon_NextWeapon(NSNavAI pl)
 #ifdef CLIENT
 	NSWeapon firstWeapon;
 
-	if (NSWeapon_CanSwitch(pl) = false) {
+	if (NSWeapon_CanSwitch(pl) == false) {
 		return;
 	}
 
@@ -1481,7 +1482,7 @@ NSWeapon_PrevWeapon(NSNavAI pl)
 #ifdef CLIENT
 	NSWeapon firstWeapon;
 
-	if (NSWeapon_CanSwitch(pl) = false) {
+	if (NSWeapon_CanSwitch(pl) == false) {
 		return;
 	}
 
@@ -1502,7 +1503,7 @@ NSWeapon_LastWeapon(NSNavAI pl)
 #ifdef CLIENT
 	NSWeapon firstWeapon;
 
-	if (NSWeapon_CanSwitch(pl) = false) {
+	if (NSWeapon_CanSwitch(pl) == false) {
 		return;
 	}
 

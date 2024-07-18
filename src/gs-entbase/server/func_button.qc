@@ -88,7 +88,7 @@ public:
 	virtual void Touch(entity);
 	virtual void Blocked(entity);
 	virtual void Trigger(entity, triggermode_t);
-	nonvirtual void DeathTrigger(void);
+	nonvirtual void DeathTrigger(entity, entity, int, vector, int);
 	virtual void PlayerUse(void);
 
 	virtual void MoverStartsMoving(void);
@@ -390,10 +390,10 @@ func_button::Trigger(entity act, triggermode_t state)
 }
 
 void
-func_button::DeathTrigger(void)
+func_button::DeathTrigger(entity inflictor, entity attacker, int damage, vector dir, int location)
 {
 	MakeInvulnerable();
-	Trigger(g_dmg_eAttacker, TRIG_TOGGLE);
+	Trigger(attacker, TRIG_TOGGLE);
 }
 
 void

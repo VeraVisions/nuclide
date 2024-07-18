@@ -242,10 +242,10 @@ Cmd_ParseServerCommand(void)
 		CMD_TraceMaterial();
 		break;
 	case "listPlayerInventory":
-		NSNavAI_ListInventory(self);
+		NSNavAI_ListInventory((NSNavAI)self);
 		break;
 	case "listInventory":
-		NSNavAI_ListInventory(self);
+		NSNavAI_ListInventory((NSNavAI)self);
 		break;
 	default:
 		return (false);

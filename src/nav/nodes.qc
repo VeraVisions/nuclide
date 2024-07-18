@@ -187,5 +187,5 @@ Nodes_Init(void)
 void
 Nodes_Flush(void)
 {
-	NodeEdit_Flush(g_pNodes, g_iNodes);
+	NodeEdit_Flush();
 }

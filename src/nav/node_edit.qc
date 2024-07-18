@@ -353,6 +353,7 @@ NodeEdit_SaveFile(string filename)
 	}
 
 	fclose(file);
+	return (true);
 }
 
 void

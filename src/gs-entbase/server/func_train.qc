@@ -194,20 +194,28 @@ func_train::Respawn(void)
 void
 func_train::Blocked(entity eBlocker)
 {
+	vector center;
+	vector dmgDir;
+	NSDict damageDecl;
+
 	/* HACK: Make corpses gib instantly */
 	if (eBlocker.solid == SOLID_CORPSE) {
-		vector center = WorldSpaceCenter();
-		vector dmgDir = dirFromTarget(center, eBlocker.origin);
-		string dmgDef = sprintf("\"damage\" \"%i\"", 500i);
-		entityDamage(eBlocker, this, eBlocker, dmgDef, "", center, dmgDir, eBlocker.origin);
+		center = WorldSpaceCenter();
+		dmgDir = dirFromTarget(center, eBlocker.origin);
+		damageDecl = spawn(NSDict);
+		damageDecl.AddKey("damage", "500");
+		entityDamage(eBlocker, this, eBlocker, damageDecl.GetDeclBody(), "", center, dmgDir, eBlocker.origin);
+		remove(damageDecl);
 		return;
 	}
 
 	if (eBlocker.takedamage != DAMAGE_NO) {
-		vector center = WorldSpaceCenter();
-		vector dmgDir = dirFromTarget(center, eBlocker.origin);
-		string dmgDef = sprintf("\"damage\" \"%i\"", (int)m_flDamage);
-		entityDamage(eBlocker, this, eBlocker, dmgDef, "", center, dmgDir, eBlocker.origin);
+		center = WorldSpaceCenter();
+		dmgDir = dirFromTarget(center, eBlocker.origin);
+		damageDecl = spawn(NSDict);
+		damageDecl.AddKey("damage", ftos(m_flDamage));
+		entityDamage(eBlocker, this, eBlocker, damageDecl.GetDeclBody(), "", center, dmgDir, eBlocker.origin);
+		remove(damageDecl);
 	} else {
 		remove(eBlocker);
 	}

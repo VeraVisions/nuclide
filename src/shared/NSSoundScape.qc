@@ -773,7 +773,7 @@ NSSoundScape::SetupEFXReverb(reverbinfo_t *info)
 	info->flDensity = m_density;
 	info->flDiffusion = m_diffusion;
 	info->flGain = m_gain;
-	info->flGainHF =  m_gainHF;
+	info->flGainHF = m_gainHF;
 	info->flGainLF = m_gainLF;
 	info->flDecayTime = m_decayTime;
 	info->flDecayHFRatio = m_decayHFRatio;
