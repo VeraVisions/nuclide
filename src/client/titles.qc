@@ -119,7 +119,7 @@ Titles_Init(void)
 	string temp;
 	int c;
 	int braced;
-	int id = 0;
+	int titleID = 0;
 
 	InitStart();
 
@@ -229,21 +229,21 @@ Titles_Init(void)
 			/*print(sprintf("%s\n",
 					temp));*/
 			/* time to dump the info */
-			g_titles[id].m_strName = t_name;
-			g_titles[id].m_strMessage = t_message;
-			g_titles[id].m_flPosX = t_position[0];
-			g_titles[id].m_flPosY = t_position[1];
-			g_titles[id].m_iEffect = t_effect;
-			g_titles[id].m_vecColor1 = t_color;
-			g_titles[id].m_vecColor2 = t_color2;
-			g_titles[id].m_flFadeIn = t_fadein;
-			g_titles[id].m_flFadeOut = t_fadeout;
-			g_titles[id].m_flHoldTime = t_holdtime;
-			g_titles[id].m_flFXTime = t_fxtime;
+			g_titles[titleID].m_strName = t_name;
+			g_titles[titleID].m_strMessage = t_message;
+			g_titles[titleID].m_flPosX = t_position[0];
+			g_titles[titleID].m_flPosY = t_position[1];
+			g_titles[titleID].m_iEffect = t_effect;
+			g_titles[titleID].m_vecColor1 = t_color;
+			g_titles[titleID].m_vecColor2 = t_color2;
+			g_titles[titleID].m_flFadeIn = t_fadein;
+			g_titles[titleID].m_flFadeOut = t_fadeout;
+			g_titles[titleID].m_flHoldTime = t_holdtime;
+			g_titles[titleID].m_flFXTime = t_fxtime;
 			t_message = "";
 			t_name = "";
 			braced = FALSE;
-			id++;
+			titleID++;
 			break;
 		default:
 			if (braced == TRUE) {

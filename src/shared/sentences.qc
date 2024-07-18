@@ -159,9 +159,9 @@ Sentences_GetSamples(string msg)
 }
 
 string
-Sentences_GetString(int id)
+Sentences_GetString(int idx)
 {
-	return g_sentences[id].m_strID;
+	return g_sentences[idx].m_strID;
 }
 #endif
 

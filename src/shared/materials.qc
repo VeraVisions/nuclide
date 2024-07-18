@@ -20,7 +20,7 @@ static int g_mat_total;
 /** hlmaterial to classname mapper table */
 typedef struct
 {
-	string id;
+	string idx;
 	string matclass;
 } hlmaterials_lut;
 
@@ -332,7 +332,7 @@ Materials_Mapper_Init(void)
 			/* tokenize and just parse this stuff in */
 			if (tokenize_console(sTemp) == 2) {
 				if (argv(0) == "gamematerial") {
-					g_hlmlut[c].id = argv(1);
+					g_hlmlut[c].idx = argv(1);
 					g_hlmlut[c].matclass = spname;
 					c++;
 				}
@@ -355,7 +355,7 @@ Materials_Mapper_Lookup(string character)
 	int i;
 
 	for (i = 0; i < g_hlmlut_count; i++)
-		if (g_hlmlut[i].id == character)
+		if (g_hlmlut[i].idx == character)
 			return g_hlmlut[i].matclass;
 
 	return __NULL__;

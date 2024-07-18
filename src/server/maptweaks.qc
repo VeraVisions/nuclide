@@ -98,9 +98,9 @@ MapTweaks_Init(void)
 }
 
 static bool
-MapTweak_Check(int id)
+MapTweak_Check(int num)
 {
-	int segments = tokenize(g_mapTweakTable[id].cvarCheck);
+	int segments = tokenize(g_mapTweakTable[num].cvarCheck);
 
 	/* cvars first */
 	for (int i = 0; i < segments; i += 3) {
@@ -128,7 +128,7 @@ MapTweak_Check(int id)
 		}
 	}
 
-	segments = tokenize(g_mapTweakTable[id].serverinfoCheck);
+	segments = tokenize(g_mapTweakTable[num].serverinfoCheck);
 
 	/* infokeys second */
 	for (int i = 0; i < segments; i += 3) {

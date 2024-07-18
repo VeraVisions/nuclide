@@ -35,11 +35,11 @@
 	SAVE_STATE(fieldname);\
 }
 
-#define EVALUATE_VECTOR(fieldname, id, changedflag) {\
-	if (VEC_CHANGED(fieldname, id)) {\
+#define EVALUATE_VECTOR(fieldname, idx, changedflag) {\
+	if (VEC_CHANGED(fieldname, idx)) {\
 		SetSendFlags(changedflag);\
 	}\
-	SAVE_STATE_FIELD(fieldname, id);\
+	SAVE_STATE_FIELD(fieldname, idx);\
 }
 
 #define SENDENTITY_BYTE(field, changedflag) {\
