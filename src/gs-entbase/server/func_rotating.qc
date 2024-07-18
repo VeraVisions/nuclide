@@ -207,8 +207,10 @@ func_rotating::Blocked(entity eBlocker)
 		if (WithinBounds(eBlocker)) {
 			vector center = WorldSpaceCenter();
 			vector dmgDir = dirFromTarget(center, eBlocker.origin);
-			string dmgDef = sprintf("\"damage\" \"%i\"", (int)m_flDamage);
-			entityDamage(eBlocker, this, eBlocker, dmgDef, "", center, dmgDir, eBlocker.origin);
+			NSDict damageDecl = spawn(NSDict);
+			damageDecl.AddKey("damage", ftos(m_flDamage));
+			entityDamage(eBlocker, this, eBlocker, damageDecl.GetDeclBody(), "", center, dmgDir, eBlocker.origin);
+			remove(damageDecl);
 		}
 	}
 }

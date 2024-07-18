@@ -462,8 +462,10 @@ prop_vehicle_driveable_wheel::Accel(float flMoveTime, float m_flTurn)
 			if (trace_ent.takedamage) {
 				NSSurfacePropEntity foo = (NSSurfacePropEntity)trace_ent;
 				vector dmgDir = dirFromTarget(trace_endpos, foo.origin);
-				string dmgDef = sprintf("\"damage\" \"%i\"", iImpactDamage);
-				entityDamage(foo, this, vehParent.m_eDriver, dmgDef, "", trace_endpos, dmgDir, foo.origin);
+				NSDict damageDecl = spawn(NSDict);
+				damageDecl.AddKey("damage", itos(iImpactDamage));
+				entityDamage(foo, this, vehParent.m_eDriver, damageDecl.GetDeclBody(), "", trace_endpos, dmgDir, foo.origin);
+				remove(damageDecl);
 				//print(sprintf("Delivering %i impact damage\n", iImpactDamage));
 			}
 #endif

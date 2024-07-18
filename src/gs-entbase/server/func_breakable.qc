@@ -408,13 +408,15 @@ func_breakable::Touch(entity eToucher)
 
 		if (dmgAmount >= health) {
 			vector dmgDir = dirFromTarget(eToucher.origin, WorldSpaceCenter());
-			string dmgDef = sprintf("\"damage\" \"%i\"", dmgAmount);
+			NSDict damageDecl = spawn(NSDict);
+			damageDecl.AddKey("damage", itos(dmgAmount));
 			m_bCanTouch = false;
-			Damage(eToucher, eToucher, dmgDef, 1.0f, dmgDir, eToucher.origin);
+			Damage(eToucher, eToucher, damageDecl.GetDeclBody(), 1.0f, dmgDir, eToucher.origin);
 
 			if ((GetSurfaceData(SURFDATA_MATERIAL) == GSMATERIAL_GLASS) || (GetSurfaceData(SURFDATA_MATERIAL) == GSMATERIAL_COMPUTER)) {
-				Damage(eToucher, eToucher, dmgDef, 0.25f, dmgDir, eToucher.origin);
+				Damage(eToucher, eToucher, damageDecl.GetDeclBody(), 0.25f, dmgDir, eToucher.origin);
 			}
+			remove(damageDecl);
 		}
 	}
 

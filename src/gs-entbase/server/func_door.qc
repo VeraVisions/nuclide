@@ -581,9 +581,11 @@ func_door::Blocked(entity eBlocker)
 	if (m_iDamage) {
 		vector center = WorldSpaceCenter();
 		vector dmgDir = dirFromTarget(center, eBlocker.origin);
-		string dmgDef = sprintf("\"damage\" \"%i\"", m_iDamage);
+		NSDict damageDecl = spawn(NSDict);
+		damageDecl.AddKey("damage", itos(m_iDamage));
 		m_bCanTouch = false;
-		entityDamage(eBlocker, this, eBlocker, dmgDef, "", center, dmgDir, eBlocker.origin);
+		entityDamage(eBlocker, this, eBlocker, damageDecl.GetDeclBody(), "", center, dmgDir, eBlocker.origin);
+		remove(damageDecl);
 	}
 
 	if (!m_bForceClosed)
