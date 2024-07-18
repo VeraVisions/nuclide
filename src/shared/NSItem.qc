@@ -62,7 +62,10 @@ NSItem::Respawn(void)
 
 	super::Respawn();
 	BecomePickup();
-	ScheduleThink(AdjustSpawnPos, 0.0f);
+
+	if (CreatedByMap() == true) {
+		ScheduleThink(AdjustSpawnPos, 0.0f);
+	}
 }
 
 void

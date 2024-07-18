@@ -79,7 +79,7 @@ public:
 	/* new */
 #ifdef SERVER
 	/** Applies damage to the entity. */
-	virtual void Damage(entity, entity, string, float, vector, vector);
+	virtual void Damage(entity, entity, NSDict, float, vector, vector);
 	/** Called when a different entity gets damaged by this entity. */
 	virtual void DamageFeedback(entity, entity, int);
 	/** Called whenever the entity receives damage. */

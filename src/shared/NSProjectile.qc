@@ -506,17 +506,10 @@ NSProjectile::Touch(entity eToucher)
 
 	if (eToucher.takedamage != DAMAGE_NO) {
 		NSSurfacePropEntity toucher = (NSSurfacePropEntity)eToucher;
-		float damageVal;
-		float baseDamage = GetSubDefFloat(m_defDamage, "damage");
-		float randomDamage = GetSubDefFloat(m_defDamage, "damage_random");
-		damageVal = (baseDamage + randomDamage);
-
-		if (m_flDmgMultiplier >= 0.0)
-			damageVal *= m_flDmgMultiplier;
-
-		//Damage_Apply(eToucher, owner, damageVal, 0, DMG_BLUNT);
-		toucher.Damage(this, owner, ftos(damageVal), 1.0, vectorNormalize(angles), origin);
-		//Damage(this, owner, ftos(m_flLeapDamage), 1.0, vectorNormalize(angles), trace_endpos);
+		NSDict damageDecl = spawn(NSDict);
+		damageDecl.AddKey("damage", GetSubDefString(m_defDamage, "damage"));
+		toucher.Damage(this, owner, damageDecl, m_flDmgMultiplier, vectorNormalize(angles), trace_endpos);
+		remove(damageDecl);
 	}
 
 	if (m_bDetonateOnWorld) {
@@ -824,13 +817,13 @@ NSProjectile::_ApplyDamage(void)
 
 	trace_surface_id = m_iMultiBody;
 	g_dmg_vecLocation = trace_endpos;
-	string dmgDef = sprintf("\"damage\" \"%i\"", m_iMultiValue);
+	NSDict damageDecl = spawn(NSDict);
+	damageDecl.AddKey("damage", itos(m_iMultiValue));
 	vector dmgDir = dirFromTarget(GetOrigin(), m_eMultiTarget.origin);
 
-	NSError("Applying %i damage to %S", m_iMultiValue, m_eMultiTarget.classname);
+	entityDamage(m_eMultiTarget, owner, owner, damageDecl.GetDeclBody(), classname, GetOrigin(), dmgDir, trace_endpos);
+	remove(damageDecl);
 
-entityDamage(m_eMultiTarget, owner, owner, dmgDef, "", GetOrigin(), dmgDir, trace_endpos);
-	//Damage_Apply(m_eMultiTarget, owner, m_iMultiValue, m_iWeapon, DMG_BULLET);
 	m_eMultiTarget = __NULL__;
 	m_iMultiValue = 0;
 	m_iMultiBody = 0;

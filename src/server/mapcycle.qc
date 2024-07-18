@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2024 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,16 +14,14 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-noref var string g_mapcycle_override = __NULL__;
-
 void
 Mapcycle_Load(string filename)
 {
 	filestream fs_mapcycle;
 	string temp;
-	int mapcount = 0i;
-	string lastmap = "";
-	int map_next = 0i;
+	int mapCount = 0i;
+	string lastMap = "";
+	int nextMapID = 0i;
 
 	fs_mapcycle = fopen(filename, FILE_READ);
 
@@ -37,27 +35,29 @@ Mapcycle_Load(string filename)
 		if (FileExists(strcat("maps/", temp, ".bsp")) == false)
 			continue;
 
-		localcmd(sprintf("alias m%i \"map %s;alias nextmap m%i\"\n", mapcount, temp, mapcount + 1i));
+		localcmd(sprintf("alias m%i \"map %s;alias nextmap m%i\"\n", mapCount, temp, mapCount + 1i));
 
-		if (mapname == lastmap)
-			map_next = mapcount;
+		if (mapname == lastMap) {
+			nextMapID = mapCount;
+		}
 
-		lastmap = temp;
-		mapcount++;
+		lastMap = temp;
+		mapCount++;
 	}
 
 	fclose(fs_mapcycle);
 
-	if (mapcount <= 0i)
+	if (mapCount <= 0i) {
 		return;
+	}
 
 	/* override the last map so that it goes back to m0 */
-	localcmd(sprintf("alias m%i \"map %s;alias nextmap m0\"\n", mapcount - 1i, lastmap));
+	localcmd(sprintf("alias m%i \"map %s;alias nextmap m0\"\n", mapCount - 1i, lastMap));
 
 	/* the current map in the list will decide the nextmap */
-	localcmd(sprintf("alias nextmap m%i\n", map_next));
+	localcmd(sprintf("alias nextmap m%i\n", nextMapID));
 
-	NSLog("...MapCycle initialized with %i entries.", mapcount);
+	NSLog("...MapCycle initialized with %i entries.", mapCount);
 }
 
 void
@@ -66,8 +66,9 @@ Mapcycle_Init(void)
 	string cycleFile = autocvar(g_mapCycle, "mapcycle.txt");
 
 	/* by default, this will be multiplayer only */
-	if (g_grMode.IsMultiplayer() == false)
+	if (g_grMode.IsMultiplayer() == false) {
 		return;
+	}
 
 	InitStart();
 

@@ -64,7 +64,7 @@ public:
 	/** Empty & shared between Client and Server. This is run on every player, every frame, to update their animation cycle. */
 	virtual void UpdatePlayerAnimation(float);
 
-	virtual void Damage(entity, entity, string, float, vector, vector);
+	virtual void Damage(entity, entity, NSDict, float, vector, vector);
 	
 
 #ifdef CLIENT

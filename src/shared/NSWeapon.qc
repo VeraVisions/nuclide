@@ -763,9 +763,13 @@ NSWeapon::Attack(string fireInfo)
 		vector traceStart = ourOwner.GetEyePos();
 		vector traceEnd = traceStart + (anglesToForward(eyeAngles) * meleeRange);
 		float meleeRate;
+		NSSurfacePropEntity hitEnt;
+		vector hitLoc;
 
 		ourOwner.hitcontentsmaski = (CONTENTBITS_POINTSOLID | CONTENTBIT_CORPSE);
 		traceline(traceStart, traceEnd, MOVE_NORMAL, ourOwner);
+		hitEnt = (NSSurfacePropEntity)trace_ent;
+		hitLoc = trace_endpos;
 		ourOwner.hitcontentsmaski = oldhitcontents;
 
 		if (trace_fraction >= 1.0) {
@@ -787,25 +791,23 @@ NSWeapon::Attack(string fireInfo)
 		}
 
 		/* don't bother with decals, we got squibs */
-		if (trace_ent.iBleeds) {
-			NSSurfacePropEntity targetEnt;
-			targetEnt = (NSSurfacePropEntity)trace_ent;
-			FX_Blood(trace_endpos, targetEnt.GetBloodColor());
+		if (hitEnt.iBleeds) {
+			FX_Blood(hitLoc, hitEnt.GetBloodColor());
 		}
 
-		if (trace_ent.takedamage) {
-			NSSurfacePropEntity toHurt = (NSSurfacePropEntity) trace_ent;
-			int meleeDamage = GetSubDefInt(m_meleeDef, "damage");
-
-			toHurt.Damage(this, owner, itos(meleeDamage), 1.0, anglesToForward(eyeAngles), traceEnd);
+		if (hitEnt.takedamage) {
+			NSDict damageDecl = spawn(NSDict);
+			damageDecl.AddKey("damage", GetSubDefString(m_meleeDef, "damage"));
+			hitEnt.Damage(this, owner, damageDecl, 1.0, anglesToForward(eyeAngles), traceEnd);
+			remove(damageDecl);
 			//Damage_Apply(trace_ent, ourOwner, meleeDamage, 0, DMG_BLUNT);
 
-			if (trace_ent.iBleeds) {
+			if (hitEnt.iBleeds) {
 				Sound_Play(ourOwner, CHAN_WEAPON, GetSubDefString(m_meleeDef, "snd_flesh"));
 			}
 		} else {
 			Sound_Play(ourOwner, CHAN_WEAPON, GetSubDefString(m_meleeDef, "snd_hit"));
-			DecalGroups_Place("Impact.Shot", trace_endpos + (v_forward * -2));
+			DecalGroups_Place("Impact.Shot", hitLoc + (anglesToForward(eyeAngles) * -2));
 		}
 #endif
 

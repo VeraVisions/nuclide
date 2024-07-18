@@ -241,21 +241,19 @@ NSSurfacePropEntity::ParentUpdate(void)
 }
 
 void
-NSSurfacePropEntity::Damage(entity inflictor, entity attacker, string damageDef, float damageScale, vector dmgDir, vector hitLocation)
+NSSurfacePropEntity::Damage(entity inflictor, entity attacker, NSDict damageDecl, float damageScale, vector dmgDir, vector hitLocation)
 {
-	bool defBody = EntityDef_IDFromName(damageDef) == -1i ? true : false;
-	string damageString;
+	string damageString = ReadString(damageDecl.GetString("damage"));
 
-	if (defBody == true) {
-		NSDict damageDecl = spawn(NSDict);
-		damageDecl.SetDeclBody(damageDef);
-		damageString = damageDecl.GetString("damage");
-	} else {
-		damageString = EntityDef_GetKeyValue(damageDef, "damage");
-	}
+#if 0
+	float randomDamage = GetSubDefFloat(m_defDamage, "damage_random");
+	damageVal = (baseDamage + randomDamage);
+#endif
 
 	float damagePoints = (float)rint(stof(damageString) * damageScale);
 	NSSurfacePropEntity ourAttacker = (NSSurfacePropEntity)attacker;
+
+	EntLog("applying %d damage by %s", damagePoints, attacker.classname);
 
 	/* notify them */
 	if (isSentient(attacker)) {
@@ -283,9 +281,11 @@ NSSurfacePropEntity::Ignite(entity attacker, float flLifetime, int iWeapon)
 	m_flBurnTime = GetTime() + flLifetime;
 
 	if (m_flBurnDmgTime < time) {
-		string dmgDef = sprintf("\"damage\" \"%i\"\n\"skip_armor\" \"1\"", 5i);
-		Damage(m_eBurner, m_eBurner, dmgDef, 1.0f, g_vec_null, origin);
-		//Damage_Apply(this, attacker, 5, iWeapon, DMG_BURN | DMG_SKIP_ARMOR);
+		NSDict damageDecl = spawn(NSDict);
+		damageDecl.AddKey("damage", "5");
+		damageDecl.AddKey("skip_armor", "1");
+		damageDecl.AddKey("type", "burn");
+		Damage(m_eBurner, m_eBurner, damageDecl, 1.0f, g_vec_null, origin);
 		m_flBurnDmgTime = time + 0.25f;
 	}
 }
@@ -830,7 +830,10 @@ entityDamage(entity targetEnt, entity inflictingEnt, entity attackingEnt, string
 		return;
 	}
 
-	theTarget.Damage(inflictingEnt, attackingEnt, damageDef, 1.0, damageDir, hitLocation);
+	NSDict damageDecl = spawn(NSDict);
+	damageDecl.SetDeclBody(damageDef);
+	theTarget.Damage(inflictingEnt, attackingEnt, damageDecl, 1.0, damageDir, hitLocation);
+	remove(damageDecl);
 #endif
 }
 

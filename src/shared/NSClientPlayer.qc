@@ -1574,10 +1574,10 @@ NSClientPlayer::Footsteps_Update(void)
 }
 
 void
-NSClientPlayer::Damage(entity inflictor, entity attacker, string damageDef, float damageScale, vector dmgDir, vector hitLocation)
+NSClientPlayer::Damage(entity inflictor, entity attacker, NSDict damageDecl, float damageScale, vector dmgDir, vector hitLocation)
 {
 #ifdef SERVER
-	super::Damage(inflictor, attacker, damageDef, damageScale, dmgDir, hitLocation);
+	super::Damage(inflictor, attacker, damageDecl, damageScale, dmgDir, hitLocation);
 
 #if 0
 	bool isFriendlyFire = false;

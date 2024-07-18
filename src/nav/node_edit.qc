@@ -741,7 +741,7 @@ var bool autocvar_r_renderEntityInfo = false;
 void
 SV_AddDebugPolygons(void)
 {
-	NodeEdit_DrawDebugInfo();
+	//NodeEdit_DrawDebugInfo();
 
 	if (autocvar_r_renderEntityInfo) {
 		makevectors(self.v_angle);

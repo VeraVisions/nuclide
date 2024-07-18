@@ -1529,7 +1529,10 @@ NSMonster::Touch(entity eToucher)
 	if (HasFlags(FL_ONGROUND) == false) {
 		if (eToucher.takedamage != DAMAGE_NO) {
 			NSSurfacePropEntity toucher = (NSSurfacePropEntity)eToucher;
-			toucher.Damage(this, owner, ftos(m_flLeapDamage), 1.0, vectorNormalize(angles), trace_endpos);
+			NSDict damageDecl = spawn(NSDict);
+			damageDecl.AddKey("damage", ftos(m_flLeapDamage));
+			toucher.Damage(this, owner, damageDecl, 1.0, vectorNormalize(angles), trace_endpos);
+			remove(damageDecl);
 			m_bLeapAttacked = true;
 		}
 	}
@@ -1807,8 +1810,11 @@ NSMonster::Respawn(void)
 	SetMovetype(MOVETYPE_WALK);
 	SetSize(GetSpawnVector("mins"), GetSpawnVector("maxs"));
 	SetEyePos([0, 0, m_flEyeHeight]);
-	ScheduleThink(AdjustSpawnPos, 0.0f);
 	SetSkin(m_flSkin);
+
+	if (CreatedByMap() == true) {
+		ScheduleThink(AdjustSpawnPos, 0.0f);
+	}
 
 	if (HasSpawnFlags(MSF_MONSTERCLIP)) {
 		hitcontentsmaski = CONTENTBITS_BOXSOLID | CONTENTBIT_MONSTERCLIP;
