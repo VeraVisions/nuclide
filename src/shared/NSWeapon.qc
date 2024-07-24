@@ -40,6 +40,7 @@ NSWeapon::NSWeapon(void)
 	m_flFireRate = 1.0f;
 	m_dState = 0;
 	m_strLastFireInfo = __NULL__;
+	m_flSpeedMod = 1.0f;
 }
 
 void
@@ -546,6 +547,13 @@ NSWeapon::_CacheWeaponDefVariables(void)
 	string firstType, secondType;
 	string muzzleModel;
 	string ammoRequired;
+
+	/* movement vars */
+	m_flSpeedMod = GetDefFloat("speed_mod");
+
+	if (m_flSpeedMod <= 0.0) {
+		m_flSpeedMod = 1.0f;
+	}
 
 	/* string lookups can be expensive if done too often
 	   so we'll need to cache them whenever something

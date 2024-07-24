@@ -418,6 +418,11 @@ NSClientPlayer::Physics_MaxSpeed(void)
 	float crouchSpeed = g_pmoveVars.pm_crouchspeed;
 	float walkSpeed = g_pmoveVars.pm_walkspeed;
 	float proneSpeed = g_pmoveVars.pm_pronespeed;
+	float speedMod = 1.0f;
+
+	if (m_activeWeapon) {
+		speedMod = m_activeWeapon.m_flSpeedMod;
+	}
 
 	if (CanSprint() && IsSprinting()) {
 		if (m_flStamina < maxStamina) {
@@ -439,7 +444,7 @@ NSClientPlayer::Physics_MaxSpeed(void)
 		wishSpeed = walkSpeed;
 	}
 
-	return wishSpeed;
+	return wishSpeed * speedMod;
 }
 
 void

@@ -197,6 +197,7 @@ private:
 	string m_strLastFireInfo;
 	float m_jointTrailWorld;
 	float m_jointTrailView;
+	float m_flSpeedMod;
 
 	/* cached fireInfo */
 	string m_fiDetonateOnFire;
