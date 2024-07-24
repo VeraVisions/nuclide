@@ -1441,6 +1441,8 @@ NSMonster::Physics(void)
 	if (!IsAlive)
 		return;
 
+	/* editors like Hammer like putting 'sequence' into spawndata
+	   of monsters. so only ever force the animation when flagged as dead */
 	if (_m_bStartDead && m_flForceSequence) {
 		if (m_iSequenceState != SEQUENCESTATE_IDLE) {
 			SetFrame(m_flForceSequence);
