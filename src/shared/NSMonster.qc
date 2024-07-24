@@ -1441,7 +1441,7 @@ NSMonster::Physics(void)
 	if (!IsAlive)
 		return;
 
-	if (m_flForceSequence) {
+	if (_m_bStartDead && m_flForceSequence) {
 		if (m_iSequenceState != SEQUENCESTATE_IDLE) {
 			SetFrame(m_flForceSequence);
 		}
