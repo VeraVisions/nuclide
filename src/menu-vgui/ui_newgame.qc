@@ -95,5 +95,5 @@ void UI_NewGame_Show ( void )
 	}
 
 	winNewGame.Show();
-	winNewGame.SetPos( ( video_res / 2 ) - ( winNewGame.GetSize() / 2 ) );
+	winNewGame.SetPos( ( g_vidsize / 2 ) - ( winNewGame.GetSize() / 2 ) );
 }

@@ -739,9 +739,11 @@ NSClientPlayer::ReceiveEntity(float new, float flChanged)
 		READENTITY_INT(m_iAmmoTypes[i], PLAYER_AMMOTYPES)
 	}
 
+#ifdef VALVE
 	if (flChanged & PLAYER_AMMOTYPES) {
 		HUD_AmmoNotify_Check(this);
 	}
+#endif
 
 	/* the entities might not be networked yet,
 	   so by tracking desired entnums and updating

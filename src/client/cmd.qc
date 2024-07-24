@@ -412,36 +412,6 @@ Cmd_Parse(string sCMD)
 	case "-showscores":
 		pSeat->m_iScoresVisible = FALSE;
 		break;
-	case "slot1":
-		HUD_SlotSelect(0);
-		break;
-	case "slot2":
-		HUD_SlotSelect(1);
-		break;
-	case "slot3":
-		HUD_SlotSelect(2);
-		break;
-	case "slot4":
-		HUD_SlotSelect(3);
-		break;
-	case "slot5":
-		HUD_SlotSelect(4);
-		break;
-	case "slot6":
-		HUD_SlotSelect(5);
-		break;
-	case "slot7":
-		HUD_SlotSelect(6);
-		break;
-	case "slot8":
-		HUD_SlotSelect(7);
-		break;
-	case "slot9":
-		HUD_SlotSelect(8);
-		break;
-	case "slot10":
-		HUD_SlotSelect(9);
-		break;
 	case "way_menu":
 		CMD_way_menu();
 		break;

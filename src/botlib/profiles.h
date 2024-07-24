@@ -3,7 +3,7 @@
 @brief Different userinfo profiles for bot characters.
 @ingroup bot
 
-# BotScript {#bot}
+# BotScript {#bot_profile}
 `script/bots.txt`
 
 Nuclide has support for bot profiles, like in **Quake III Arena**. They work differently although they appear compatible by design. You can define them in a script that looks something like this and is located at `<gamedir>/scripts/bots.txt`:

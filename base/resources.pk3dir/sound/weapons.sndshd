@@ -1,0 +1,36 @@
+weapon_bat.hit
+{
+	alerts
+	sample common/null.wav
+}
+
+weapon_bat.hitbody
+{
+	alerts
+	sample common/null.wav
+}
+
+weapon_bat.miss
+{
+	sample common/null.wav
+}
+
+weapon_pistol.fire
+{
+	alerts
+	sample weapons/pl_gun3.wav
+}
+
+weapon_frag.bounce
+{
+	sample weapons/grenade_hit1.wav
+	sample weapons/grenade_hit2.wav
+	sample weapons/grenade_hit3.wav
+}
+
+weapon_frag.explode
+{
+	sample weapons/explode3.wav
+	sample weapons/explode4.wav
+	sample weapons/explode5.wav
+}

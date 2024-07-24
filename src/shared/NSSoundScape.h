@@ -43,6 +43,19 @@ Environmental soundscape and reverb controller.
  - "decay_limit" : See SetDecayHFLimit()
  - "radius" : See SetRadius()
 
+# HISTORY
+
+## Creative's Environmental Audio Extensions (EAX) {#eax}
+Creative Technology's **Environmental Audio Extensions**, also known as **EAX**, attempted to create more ambiance within video games by more accurately simulating a real-world audio environment.
+
+The release of Windows Vista deprecated the DirectSound3D API on which EAX relied on in 2007, so Creative Technology encouraged the move to OpenAL's EFX.
+
+## EFX
+
+EFX is a system in [OpenAL](https://www.openal.org/) that delivers high quality sound reverberation. It is the successor to @ref eax.
+
+**Nuclide** offers abstraction for new and old entities relying on **digital signal processing**.
+
 # NOTES
 Reverb effects only work with the OpenAL sound backend.
 

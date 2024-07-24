@@ -97,7 +97,6 @@ MultiplayerRules::PlayerSpawn(NSClientPlayer pl)
 	spot = Spawn_SelectRandom("info_player_deathmatch");
 	setorigin(pl, spot.origin);
 	pl.angles = spot.angles;
-	Weapons_RefreshAmmo(pl);
 
 	Client_FixAngle(pl, pl.angles);
 }

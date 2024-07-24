@@ -153,7 +153,7 @@ var float PART_BURNING;
 
 /* misc globals */
 vector video_mins;
-vector video_res;
+vector g_vidsize;
 vector mouse_pos;
 int g_iIntermission;
 

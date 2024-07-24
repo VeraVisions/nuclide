@@ -19,7 +19,7 @@ void Loading_Draw ( vector vecSize )
 	drawpic( [ 0, 0 ], "textures/gfx/background", vecSize, [ 1, 1, 1 ], 1.0f );
 	
 	vector vecLoadingSize = [ 256, 96 ];
-	vector vecLoadingPos = ( video_res / 2 ) - ( vecLoadingSize / 2 );
+	vector vecLoadingPos = ( g_vidsize / 2 ) - ( vecLoadingSize / 2 );
 	
 	drawfill( vecLoadingPos, vecLoadingSize, UI_MAINCOLOR, UI_MAINALPHA );
 	drawfill( vecLoadingPos, [vecLoadingSize[0], 1], [1,1,1], 0.5f );

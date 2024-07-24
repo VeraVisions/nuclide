@@ -221,18 +221,18 @@ CSQC_UpdateView(float w, float h, float focus)
 		/* First time we can effectively call VGUI
 		*  because until now we don't know the video res.
 		*/
-		if (!video_res[0] && !video_res[1]) {
-			video_res[0] = w;
-			video_res[1] = h;
+		if (!g_vidsize[0] && !g_vidsize[1]) {
+			g_vidsize[0] = w;
+			g_vidsize[1] = h;
 			ClientGame_InitDone();
 		}
 	}
 
 	/* While the init above may have already happened,
 	   people are able to resize windows dynamically too. */
-	if (w != video_res[0] || h != video_res[1]) {
-		video_res[0] = w;
-		video_res[1] = h;
+	if (w != g_vidsize[0] || h != g_vidsize[1]) {
+		g_vidsize[0] = w;
+		g_vidsize[1] = h;
 		VGUI_Reposition();
 	}
 
@@ -345,14 +345,14 @@ CSQC_InputEvent(float fEventType, float fKey, float fCharacter, float fDeviceID)
 
 		if (mouse_pos[0] < 0) {
 			mouse_pos[0] = 0;
-		} else if (mouse_pos[0] > video_res[0]) {
-			mouse_pos[0] = video_res[0];
+		} else if (mouse_pos[0] > g_vidsize[0]) {
+			mouse_pos[0] = g_vidsize[0];
 		}
 
 		if (mouse_pos[1] < 0) {
 			mouse_pos[1] = 0;
-		} else if (mouse_pos[1] > video_res[1]) {
-			mouse_pos[1] = video_res[1];
+		} else if (mouse_pos[1] > g_vidsize[1]) {
+			mouse_pos[1] = g_vidsize[1];
 		}
 		break;
 	default:

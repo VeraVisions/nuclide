@@ -14,8 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-int g_iMenuActive;
-vector video_res;
+int g_active;
+vector g_vidsize;
+vector g_mousepos;
+int g_menuofs[2];
 var int g_background = FALSE;
 
 var float frametime;

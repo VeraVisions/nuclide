@@ -62,5 +62,5 @@ void UI_QuitGame_Show ( void )
 	}
 
 	winQuitGame.Show();
-	winQuitGame.SetPos( ( video_res / 2 ) - ( winQuitGame.GetSize() / 2 ) );
+	winQuitGame.SetPos( ( g_vidsize / 2 ) - ( winQuitGame.GetSize() / 2 ) );
 }

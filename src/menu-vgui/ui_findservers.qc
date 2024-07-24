@@ -31,5 +31,5 @@ void UI_FindServers_Show ( void )
 	}
 
 	winFind.Show();
-	winFind.SetPos( ( video_res / 2 ) - ( winFind.GetSize() / 2 ) );
+	winFind.SetPos( ( g_vidsize / 2 ) - ( winFind.GetSize() / 2 ) );
 }

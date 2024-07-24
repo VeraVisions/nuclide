@@ -99,7 +99,7 @@ View_CalcViewport(int s, float fWinWidth, float fWinHeight)
 		break;
 	}
 
-	video_res = g_viewSeats[s].m_vecSize;
+	g_vidsize = g_viewSeats[s].m_vecSize;
 	video_mins = g_viewSeats[s].m_vecPosition;
 	g_hudmins = g_viewSeats[s].GetHUDCanvasPos();
 	g_hudres = g_viewSeats[s].GetHUDCanvasSize();

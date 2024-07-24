@@ -95,12 +95,6 @@ GameRules::PlayerDisconnect(NSClientPlayer pl)
 }
 
 void
-GameRules::PlayerKill(NSClientPlayer pl)
-{
-	Damage_Apply(pl, pl, pl.health, 0, DMG_SKIP_ARMOR);
-} 
-
-void
 Game_Worldspawn(void)
 {
 

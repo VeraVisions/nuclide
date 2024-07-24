@@ -352,8 +352,8 @@ env_instructor_hint::postdraw(void)
 	hintPos = project(origin + [0, m_flOffset]) - [(textLength * 0.5f), 0];
 
 	if (inView == false) {
-		hintPos[0] = lerp(32.0f, video_res[0] - sideOffset, positionValues[1]);
-		hintPos[1] = lerp(32.0f, video_res[1] - 32.0f, positionValues[2]);
+		hintPos[0] = lerp(32.0f, g_vidsize[0] - sideOffset, positionValues[1]);
+		hintPos[1] = lerp(32.0f, g_vidsize[1] - 32.0f, positionValues[2]);
 	}
 
 	/* draw the thing */

@@ -84,5 +84,5 @@ void UI_MusicPlayer_Show ( void )
 	}
 
 	winMusicPlayer.Show();
-	winMusicPlayer.SetPos( ( video_res / 2 ) - ( winMusicPlayer.GetSize() / 2 ) );
+	winMusicPlayer.SetPos( ( g_vidsize / 2 ) - ( winMusicPlayer.GetSize() / 2 ) );
 }

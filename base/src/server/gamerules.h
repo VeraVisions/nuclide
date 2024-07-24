@@ -20,7 +20,6 @@ class GameRules:CGameRules
 
 	virtual void(NSClientPlayer) PlayerConnect;
 	virtual void(NSClientPlayer) PlayerDisconnect;
-	virtual void(NSClientPlayer) PlayerKill;
 	virtual void(NSClientPlayer) PlayerPostFrame;
 
 	virtual void(NSClientPlayer) LevelDecodeParms;

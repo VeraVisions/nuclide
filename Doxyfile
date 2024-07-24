@@ -897,11 +897,9 @@ INPUT                  = src/ \
                          Documentation/Materials/ \
                          Documentation/Shaders.md \
                          Documentation/Shaders/ \
-                         Documentation/Sound/ \
                          Documentation/Models.md \
                          Documentation/Models/ \
                          Documentation/Particles.md \
-                         Documentation/VMap.md \
                          Documentation/VMap/ \
                          Documentation/History.md \
                          Documentation/Contributing.md \
@@ -1018,7 +1016,6 @@ EXAMPLE_RECURSIVE      = NO
 
 IMAGE_PATH	=	Documentation/Materials/ \
 		Documentation/Images/ \
-		Documentation/Sound/
 
 # The INPUT_FILTER tag can be used to specify a program that doxygen should
 # invoke to filter for each input file. Doxygen will invoke the filter program

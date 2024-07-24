@@ -25,7 +25,6 @@ defs.h
 gamerules.qc
 gamerules_singleplayer.qc
 gamerules_multiplayer.qc
-items.qc
 
 /* global server/shared code */
 ../../../src/server/include.src

@@ -1,7 +1,5 @@
  #includelist
-weapons.h
 flags.h
 fx_blood.qc
 fx_corpse.qc
-weapons.qc
 #endlist

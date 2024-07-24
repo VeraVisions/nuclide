@@ -464,7 +464,8 @@ EntityDef_Precaches(int index)
 		} else if (substring(strKey, 0, 4) == "def_") {
 			int defID = EntityDef_IDFromName(strValue);
 
-			if (defID != -1) {
+			/* only precache valid def, and avoid recursion */
+			if (defID != -1 && defID != index) {
 				EntityDef_Precaches(defID);
 			}
 		}

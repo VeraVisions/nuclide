@@ -24,7 +24,7 @@ Draws a little notification for anyone using voice chat
 void
 Voice_DrawHUD(void)
 {
-	vector pos = video_mins + [video_res[0] - 160, video_res[1] - 136];
+	vector pos = video_mins + [g_vidsize[0] - 160, g_vidsize[1] - 136];
 
 	for (int i = -1; i > -32; i--) {
 		if (getplayerkeyfloat(i, INFOKEY_P_VOIPSPEAKING) != 1) {

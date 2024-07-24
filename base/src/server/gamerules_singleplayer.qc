@@ -73,6 +73,5 @@ SingleplayerRules::PlayerSpawn(NSClientPlayer pl)
 		pl.angles = spot.angles;
 	}
 
-	Weapons_RefreshAmmo(pl);
 	Client_FixAngle(pl, pl.angles);
 } 

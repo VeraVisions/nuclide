@@ -52,7 +52,8 @@ Ammo_Init(void)
 	string ammoTypeData;
 
 	if (ammoTypeID == -1) {
-		error("ammo_types not defined in def/");
+		NSError("Decl `ammo_types` not defined in `def/`. Ammo unavailable.");
+		return;
 	}
 
 	ammoTypeData = EntityDef_GetSpawnData(ammoTypeID);

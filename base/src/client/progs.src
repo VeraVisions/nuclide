@@ -31,7 +31,6 @@ cmds.qc
 game_event.qc
 viewmodel.qc
 hud.qc
-hud_weaponselect.qc
 scoreboard.qc
 
 /* global client/shared code */

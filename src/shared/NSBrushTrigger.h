@@ -29,7 +29,7 @@ public:
 	void NSBrushTrigger (void);
 
 	/* overrides */
-	virtual int GetValue (entity);
+	virtual int GetValue(entity);
 	virtual void Respawn(void);
 
 	/** Sets up a brush trigger volume based on the brush information. */

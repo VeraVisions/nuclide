@@ -138,3 +138,6 @@ Entity_SelectRandom(string className)
 	/* we should have returned something valid now */
 	return spot;
 }
+
+
+/** @} */ // end of entities

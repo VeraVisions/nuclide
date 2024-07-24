@@ -1,14 +1,14 @@
 #includelist
 ../shared/fteextensions.qc
+../shared/math.h
 ../shared/global.h
 ../client/font.h
+../shared/platform.h
+../platform/defs.h
 defs.h
-
 ../vgui/include.src
-
 background.qc
 loading.qc
-
 main.h
 ui_console.qc
 ui_newgame.qc
@@ -19,5 +19,6 @@ ui_musicplayer.qc
 ui_modelviewer.qc
 desktop.qc
 main.qc
+../platform/includes.src
 ../client/font.qc
 #endlist

@@ -135,5 +135,5 @@ void UI_CreateServer_Show ( void )
 	}
 
 	winCreate.Show();
-	winCreate.SetPos( ( video_res / 2 ) - ( winCreate.GetSize() / 2 ) );
+	winCreate.SetPos( ( g_vidsize / 2 ) - ( winCreate.GetSize() / 2 ) );
 }

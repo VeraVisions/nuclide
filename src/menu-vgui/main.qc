@@ -61,9 +61,14 @@ m_shutdown(void)
 }
 
 void
-m_draw(vector vecScreensize)
+m_draw(vector screensize)
 {
-	if (vecScreensize != video_res) {
+	/* set new scale whenever the resolution changes */
+	if ((screensize[0] != g_vidsize[0]) || (screensize[1] != g_vidsize[1])) {
+		g_vidsize[0] = screensize[0];
+		g_vidsize[1] = screensize[1];
+		g_menuofs[0] = (g_vidsize[0] / 2) - 320;
+		g_menuofs[1] = (g_vidsize[1] / 2) - 240;
 		Menu_AutoScale();
 	}
 
@@ -78,7 +83,7 @@ m_draw(vector vecScreensize)
 		}
 	}
 
-	if (!g_iMenuActive && !g_background) {
+	if (!g_active && !g_background) {
 		/* make sure we're redirecting input when the background's gone */
 		if (getkeydest() != KEY_GAME) {
 			setkeydest(KEY_GAME);
@@ -91,8 +96,8 @@ m_draw(vector vecScreensize)
 	frametime = time - lasttime;
 	lasttime = time;
 
-	video_res = vecScreensize;
-	Background_Draw(vecScreensize);
+	g_vidsize = screensize;
+	Background_Draw(screensize);
 	Desktop_Draw();
 }
 
@@ -100,24 +105,32 @@ float
 Menu_InputEvent (float evtype, float scanx, float chary, float devid)
 {
 	switch (evtype) {
-		case IE_KEYDOWN:
-			if (chary == K_ESCAPE) {
-				if (clientstate() == 2 && !g_background) {
-					m_toggle(0);
-				}
+	case IE_KEYDOWN:
+		if (chary == K_ESCAPE) {
+			if (clientstate() == 2 && !g_background) {
+				m_toggle(0);
 			}
-			break;
+		}
+		break;
+	case IE_MOUSEABS:
+		g_mousepos[0] = scanx;
+		g_mousepos[1] = chary;
+		break;
+	case IE_MOUSEDELTA:
+		g_mousepos[0] += scanx;
+		g_mousepos[1] += chary;
+		break;
 	}
 
 	g_vecMousePos = getmousepos();
 	g_uiDesktop.Input(evtype, scanx, chary, devid);
-	return (float)g_iMenuActive;
+	return (float)g_active;
 }
 
 void
 m_display(void)
 {
-	g_iMenuActive = TRUE;
+	g_active = TRUE;
 	setkeydest(KEY_MENU);
 	setmousetarget(TARGET_MENU);
 	setcursormode(TRUE, "gfx/cursor");
@@ -131,7 +144,7 @@ m_hide
 void
 m_hide(void)
 {
-	g_iMenuActive = FALSE;
+	g_active = FALSE;
 	setkeydest(KEY_GAME);
 	setmousetarget(TARGET_CLIENT);
 	setcursormode(FALSE);

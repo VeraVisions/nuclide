@@ -245,7 +245,7 @@ void VGUIWindow::Draw(void)
 {
 #ifdef CLASSIC_VGUI
 	if (m_styleMask & VGUIWindowFullscreen)
-		drawfill([0,0], video_res, [0,0,0], 0.5);
+		drawfill([0,0], g_vidsize, [0,0,0], 0.5);
 	else
 		drawfill(m_vecOrigin, m_vecSize, [0,0,0], 0.5);
 
@@ -273,7 +273,7 @@ void VGUIWindow::Draw(void)
 	VGUITheme theme = GetTheme();
 
 	if (m_styleMask & VGUIWindowFullscreen)
-		theme.DrawWindowBackground([0, 0], video_res, VGUI_STATE_ACTIVE);
+		theme.DrawWindowBackground([0, 0], g_vidsize, VGUI_STATE_ACTIVE);
 	else if  (!(m_styleMask & VGUIWindowBorderless))
 		theme.DrawWindow(m_vecOrigin, m_vecSize, VGUI_STATE_ACTIVE);
 	else
@@ -298,10 +298,10 @@ void VGUIWindow::Draw(void)
 
 #ifdef UI_DEVELOPER
 	if (m_iFlags & WINDOW_DRAGGING) {
-		Font_DrawText([8, video_res[1] - 18], sprintf("Window Position: %d, %d\n", m_vecOrigin[0], m_vecOrigin[1]), g_fntDefault);
+		Font_DrawText([8, g_vidsize[1] - 18], sprintf("Window Position: %d, %d\n", m_vecOrigin[0], m_vecOrigin[1]), g_fntDefault);
 	}
 	if (m_iFlags & WINDOW_RESIZING) {
-		Font_DrawText([8, video_res[1] - 18], sprintf("Window Size: %d, %d\n", m_vecSize[0], m_vecSize[1]), g_fntDefault);
+		Font_DrawText([8, g_vidsize[1] - 18], sprintf("Window Size: %d, %d\n", m_vecSize[0], m_vecSize[1]), g_fntDefault);
 	}
 #endif
 }

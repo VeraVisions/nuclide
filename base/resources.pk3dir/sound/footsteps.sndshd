@@ -1,0 +1,14 @@
+step_default.left
+{
+	attenuation static
+	footstep
+	sample common/null.wav
+}
+
+step_default.right
+{
+	attenuation static
+	footstep
+	sample common/null.wav
+}
+
