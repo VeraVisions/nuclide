@@ -769,31 +769,9 @@ NSProjectile::_LaunchHitscan(vector startPos, vector launchDir, float dmgMultipl
 			vecDir = v_forward;
 		}
 
-#ifndef BULLETPATTERNS
 		vecDir += random(-1,1) * m_vecSpread[0] * v_right;
 		vecDir += random(-1,1) * m_vecSpread[1] * v_up;
-#else
-		/* FOR NOW Monsters will not be able to do spread like players if patterns are enabled */
-		if (!(owner.flags & FL_CLIENT)) {
-			vecDir += random(-1,1) * m_vecSpread[0] * v_right;
-			vecDir += random(-1,1) * m_vecSpread[1] * v_up;
-		} else {
-			player pl = (player) owner;
 
-			/* weapons have already applied their multiplier... so attempt this */
-			int multiplier = pl.cs_shotmultiplier - m_iShots;
-			float frand = (multiplier / 6);
-
-			/* shoddy attempt at spray patterns */
-			if (frand < 1)
-				frand = frand;
-			else if (frand <= 2)
-				frand = 2 - (frand * 1.5);
-
-			vecDir += frand * m_vecSpread[0] * v_right;
-			vecDir += (m_vecSpread[1] * v_up) * 2;
-		}
-#endif
 		_FireSingle(startPos, vecDir, m_flDamage, m_flRange);
 		m_iShots--;
 	}
@@ -940,30 +918,6 @@ NSProjectile::_FireSingle(vector vecPos, vector vecAngles, float flDamage, float
 			m_iMultiValue += flDamage;
 		}
 	}
-
-#ifdef BULLETPENETRATION
-	if (m_iTotalPenetrations > 0) {
-		float cont;
-
-#if 0
-		if (!(trace_surfaceflagsi & SURF_PENETRATE))
-			m_iTotalPenetrations -= 1;
-#endif
-
-		/* check if this wall is 6 units thick... */
-		if (m_iTotalPenetrations > 0) {
-			cont = pointcontents(endPos + v_forward * 5);
-
-			if (cont == CONTENT_SOLID)
-				m_iTotalPenetrations -= 1; /* deduct 1 penetration power */
-		}
-
-		cont = pointcontents(endPos + v_forward * m_flMaxThickness);
-
-		if (cont == CONTENT_EMPTY)
-			_FireSingle(endPos + (v_forward * 2), vecAngles, flDamage / 2, flRange);
-	}
-#endif
 }
 
 void

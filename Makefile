@@ -274,10 +274,10 @@ fteqcc:
 
 # stock engine
 fteqw:
-	cd ThirdParty/fteqw/engine && $(MAKE) makelibs ARCH=stock-x86_64
-	cp $(GAME)/engine.h ./ThirdParty/fteqw/engine/common/config_$(GAME).h
-	cd ThirdParty/fteqw/engine && $(MAKE) m-dbg FTE_CONFIG=fteqw ARCH=stock-x86_64
-	install -m 0777 ./ThirdParty/fteqw/engine/debug/fteqw ./fteqw
+	cd ThirdParty/fteqw/engine && $(MAKE) makelibs ARCH=x86_64
+	cd ThirdParty/fteqw/engine && $(MAKE) $(ENGINE_CLBUILD) ARCH=x86_64
+	install -m 0777 ./ThirdParty/fteqw/engine/debug/fteqw ./
+
 fteqwglqw64.exe:
 	cd ThirdParty/fteqw/engine && $(MAKE) makelibs FTE_TARGET=win64
 	cd ThirdParty/fteqw/engine && $(MAKE) m-rel FTE_TARGET=win64

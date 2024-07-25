@@ -732,6 +732,20 @@ NSWeapon::DetonateDef(string defName)
 }
 
 void
+NSWeapon::FiredWeapon(string fireInfo)
+{
+	NSClientPlayer ourOwner = (NSClientPlayer)GetOwner();
+	ourOwner.AttackByDef(fireInfo, false);
+}
+
+void
+NSWeapon::ReleasedWeapon(string fireInfo)
+{
+	NSClientPlayer ourOwner = (NSClientPlayer)GetOwner();
+	ourOwner.AttackByDef(fireInfo, true);
+}
+
+void
 NSWeapon::Attack(string fireInfo)
 {
 	NSClientPlayer ourOwner = (NSClientPlayer)GetOwner();
@@ -858,9 +872,10 @@ NSWeapon::Attack(string fireInfo)
 
 #ifdef SERVER
 	v_angle = input_angles;
-	ourOwner.AttackByDef(fireInfo, false);
 	ourOwner.StartSoundDef(m_fiSndFire, CHAN_WEAPON, true);
 #endif
+
+	FiredWeapon(fireInfo);
 
 	if (m_iClipSize > 0 && m_iClip == 0)
 		shotAnim = GetSubDefAct(fireInfo, "actFireLast");
@@ -1091,7 +1106,7 @@ NSWeapon::Release(void)
 			}
 		}
 
-		ourOwner.AttackByDef(m_strLastFireInfo, true);
+		ReleasedWeapon(m_strLastFireInfo);
 		m_fiWillRelease = false;
 		SetWeaponFrame(idleAnim);
 		SetAttackNext(1.0f);

@@ -114,8 +114,6 @@ private:
 	float m_flDamage;
 	string m_strDecalGroup;
 	float m_flRange;
-	int m_iTotalPenetrations;
-	float m_flMaxThickness;
 
 	/* Nuclide additions */
 	bool m_bStickToWorld;
@@ -168,7 +166,7 @@ public:
 	nonvirtual void _FuseEnded(void);
 	nonvirtual void _Explode(void);
 
-	nonvirtual void _LaunchHitscan(vector, vector, float);
+	virtual void _LaunchHitscan(vector, vector, float);
 
 	/* launch the projectile into the world */
 	virtual void Launch(vector, vector, float, float, float);

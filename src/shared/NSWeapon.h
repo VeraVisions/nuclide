@@ -137,6 +137,11 @@ public:
 	virtual bool CanIdle(void);
 	virtual bool UseAmmo(string);
 
+	/** Overridable: Called when the weapon has been fired. */
+	virtual void FiredWeapon(string);
+	/** Overridable: Called when the weapon has been released. */
+	virtual void ReleasedWeapon(string);
+
 	/** Overridable: Called when we've switched to this weapon successfully. */
 	virtual void SwitchedToWeapon(void);
 	/** Overridable: Called when we've switched from this weapon successfully. */
