@@ -547,7 +547,7 @@ NSItem::_AddedCallback(void)
 	}
 
 	Logging_Pickup(pl, this, __NULL__);
-	StartSoundDef(m_sndAcquire, CHAN_ITEM, true);
+	pl.StartSoundDef(m_sndAcquire, CHAN_ITEM, true);
 	OnPickup();
 	Disappear();
 #endif
