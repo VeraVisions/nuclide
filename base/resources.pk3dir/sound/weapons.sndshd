@@ -18,7 +18,9 @@ weapon_bat.miss
 weapon_pistol.fire
 {
 	alerts
-	sample weapons/pl_gun3.wav
+	pitch_min 0.95
+	pitch_max 1.05
+	sample weapons/pistol_fire.wav
 }
 
 weapon_frag.bounce

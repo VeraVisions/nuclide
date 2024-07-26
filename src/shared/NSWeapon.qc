@@ -680,6 +680,10 @@ NSWeapon::UseAmmo(string fireInfo)
 {
 	NSClientPlayer ourOwner = (NSClientPlayer)GetOwner();
 
+	if (autocvar_g_infiniteAmmo == true) {
+		return (true);
+	}
+
 	if (m_fiAmmoRequired) {
 		/* this weapon uses a clip/magazine */
 		if (m_iClipSize && m_fiAmmoType == m_primaryAmmoType) {
@@ -868,7 +872,7 @@ NSWeapon::Attack(string fireInfo)
 		return;
 	}
 
-	ourOwner.punchangle = m_fiPunchAngle;
+	ourOwner.punchangle += m_fiPunchAngle;
 
 #ifdef SERVER
 	v_angle = input_angles;

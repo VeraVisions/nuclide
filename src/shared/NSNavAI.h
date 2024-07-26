@@ -14,6 +14,9 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/* TODO: serverinfo based checks for prediction reasons */
+var bool autocvar_g_infiniteAmmo = false;
+
 var bool autocvar_ai_debugNav = false;
 void
 _NSNavAI_Log(string className, string functionName, float edictNum, string warnMessage)

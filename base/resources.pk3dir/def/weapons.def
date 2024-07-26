@@ -47,6 +47,7 @@ entityDef weapon_pistol
 
 	"fireRate"			".2"
 
+	"snd_fire"			"weapon_pistol.fire"
 	"actFire"			"14,16"
 	"actFireLast"		"15,17"
 	"actReload"			"8"

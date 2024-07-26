@@ -598,6 +598,10 @@ NSNavAI::GiveAmmo(int ammoType, int ammoAmount)
 bool
 NSNavAI::UseAmmo(int ammoType, int ammoAmount)
 {
+	if (autocvar_g_infiniteAmmo == true) {
+		return (true);
+	}
+
 	/* bounds check */
 	if (HasAmmo(ammoType, ammoAmount) == false)
 		return (false);
