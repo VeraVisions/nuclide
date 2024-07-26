@@ -203,7 +203,6 @@ void
 NSItem::Touch(entity eToucher)
 {
 	NSClientPlayer pl = (NSClientPlayer)eToucher;
-	bool removeItem = false;
 
 	if (eToucher.classname != "player") {
 		return;
@@ -216,47 +215,8 @@ NSItem::Touch(entity eToucher)
 	}
 
 	/* don't remove if AddItem fails */
-	if (m_bInvCarry) {
-		string itemToAdd = (m_strInvWeapon) ? m_strInvWeapon : classname;
-
-		if (pl.GiveItem(itemToAdd) == true) {
-			removeItem = true;
-		}
-	}
-
-	/* proceed */
-	if (m_iGiveHealth > 0i) {
-		if (pl.GetHealth() < 100) {
-			//Damage_Apply(pl, this, -m_iGiveHealth, 0, DMG_GENERIC);
-			pl.health = bound(0, pl.health + m_iGiveHealth, pl.max_health);
-			removeItem = true;
-		}
-	}
-
-	if (m_iGiveArmor > 0i) {
-		if (pl.armor < 100) {
-			pl.armor += (float)m_iGiveArmor;
-			removeItem = true;
-
-			if (pl.armor > 100) {
-				pl.armor = 100;
-			}
-		}
-	}
-
-	for (int i = 0; i < MAX_AMMO_TYPES; i++) {
-		if (m_GiveAmmo[i] > 0i && pl.GiveAmmo(i, m_GiveAmmo[i]) == true) {
-			removeItem = true;
-		}
-	}
-
-	if (removeItem == false) {
-		return;
-	}
-
-	Logging_Pickup(pl, this, __NULL__);
-	StartSoundDef(m_sndAcquire, CHAN_ITEM, true);
-
+	string itemToAdd = (m_strInvWeapon) ? m_strInvWeapon : classname;
+	pl.GiveItem(itemToAdd);
 	UseTargets(pl, TRIG_TOGGLE, m_flDelay);
 
 	if (real_owner || m_iWasDropped == 1 || cvar("sv_playerslots") == 1) {
@@ -265,8 +225,6 @@ NSItem::Touch(entity eToucher)
 		Disappear();
 		ScheduleThink(PickupRespawn, 30.0f);
 	}
-
-	OnPickup();
 }
 
 void
@@ -550,7 +508,7 @@ void
 NSItem::RemovedFromInventory(void)
 {
 #ifdef SERVER
-	BecomePickup();
+	//BecomePickup();
 #endif
 }
 
@@ -565,6 +523,32 @@ void
 NSItem::_AddedCallback(void)
 {
 #ifdef SERVER
+	NSNavAI pl = (NSNavAI)owner;
+
+	if (m_iGiveHealth > 0i) {
+		if (pl.GetHealth() < 100) {
+			//Damage_Apply(pl, this, -m_iGiveHealth, 0, DMG_GENERIC);
+			pl.health = bound(0, pl.health + m_iGiveHealth, pl.max_health);
+		}
+	}
+
+	if (m_iGiveArmor > 0i) {
+		if (pl.armor < 100) {
+			pl.armor += (float)m_iGiveArmor;
+
+			if (pl.armor > 100) {
+				pl.armor = 100;
+			}
+		}
+	}
+
+	for (int i = 0; i < MAX_AMMO_TYPES; i++) {
+		pl.GiveAmmo(i, m_GiveAmmo[i]);
+	}
+
+	Logging_Pickup(pl, this, __NULL__);
+	StartSoundDef(m_sndAcquire, CHAN_ITEM, true);
+	OnPickup();
 	Disappear();
 #endif
 

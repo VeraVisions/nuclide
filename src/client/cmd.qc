@@ -236,13 +236,6 @@ CMD_ListModelFramegroups(void)
 	print("} framegroups_e;\n");
 }
 
-static void
-CMD_ListInventory(void)
-{
-	NSNavAI_ListInventory((NSNavAI)pSeat->m_ePlayer);
-}
-
-
 /*
 =================
 Cmd_Parse
@@ -452,84 +445,47 @@ Cmd_Parse(string sCMD)
 	case "-menu_right":
 		pSeat->m_iInputReload = false;
 		break;
+
 	/* client aliases for server commands */
 	case "addBot":
-		localcmd(sprintf("sv addBot %s\n", argv(1)));
-		break;
 	case "killAllBots":
-		localcmd("sv killAllBots\n");
-		break;
 	case "resetAllBotsGoals":
-		localcmd("sv resetAllBotsGoals\n");
-		break;
 	case "killClass":
-		localcmd(sprintf("sv killClass %s\n", argv(1)));
-		break;
 	case "killMovables":
-		localcmd("sv killMovables\n");
-		break;
 	case "trigger":
-		localcmd(sprintf("sv trigger %s\n", argv(1)));
-		break;
 	case "input":
-		localcmd(sprintf("sv input %s %s %s\n", argv(1), argv(2), argv(3)));
-		break;
 	case "listBotProfiles":
-		localcmd("sv listBotProfiles\n");
-		break;
 	case "listTargets":
-		localcmd("sv listTargets\n");
-		break;
 	case "teleport":
-		localcmd(sprintf("sv teleport %s\n", argv(1)));
-		break;
 	case "teleportToClass":
-		localcmd(sprintf("sv teleportToClass %s\n", argv(1)));
-		break;
 	case "respawnEntities":
-		localcmd("sv respawnEntities\n");
-		break;
 	case "spawnDef":
-		localcmd(sprintf("sv spawn %s\n", argv(1)));
-		break;
-
-
 	case "nodeAdd":
-		localcmd(sprintf("sv way addsingle %s\n", argv(1)));
-		break;
 	case "nodeDel":
-		localcmd(sprintf("sv way delete %s\n", argv(1)));
-		break;
 	case "nodeFlags":
-		localcmd(sprintf("sv way link %s\n", argv(1)));
-		break;
 	case "nodeLink":
-		localcmd(sprintf("sv way connect1 %s\n", argv(1)));
-		break;
 	case "nodeRadius":
-		localcmd(sprintf("sv way radius %s\n", argv(1)));
-		break;
 	case "nodeOffset":
-		localcmd(sprintf("sv way move %s\n", argv(1)));
-		break;
 	case "nodeUnlink":
-		localcmd(sprintf("sv way unlink1 %s\n", argv(1)));
-		break;
 	case "traceMaterial":
-		localcmd("sv traceMaterial\n");
+		localcmd(sprintf("sv %s\n", sCMD));
 		break;
+	/* client aliases for client commands */
+	case "listInventory":
+	case "giveInventoryItem":
+	case "removeInventoryItem":
+	case "removeAllInventoryItems":
+	case "listAmmo":
+		localcmd(sprintf("cmd %s\n", sCMD));
+		break;
+
 	case "listClientEntityDef":
 		EntityDef_DebugList();
 		break;
 	case "listServerEntityDef":
 		localcmd("sv listEntityDef\n");
 		break;
-	case "listInventory":
-		CMD_ListInventory();
-		break;
-	case "listAmmo":
-		Ammo_DebugList();
-		break;
+
 	case "bobup":
 		break;
 	case "bobdn":
@@ -634,6 +590,10 @@ Cmd_Init(void)
 	registercommand("-leanright");
 	registercommand("weapnext");
 	registercommand("weapprev");
+
+	registercommand("giveInventoryItem");
+	registercommand("removeInventoryItem");
+	registercommand("removeAllInventoryItems");
 
 	/* voting */
 	registercommand("vote");

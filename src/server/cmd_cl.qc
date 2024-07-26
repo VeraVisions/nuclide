@@ -59,6 +59,24 @@ Cmd_ParseClientCommand(NSClient sender, string cmd, int commandArguments)
 		msg = sprintf("we have %s minutes remaining", timestring);
 		bprint(PRINT_CHAT, msg);
 		break;
+	case "listInventory":
+		NSNavAI_ListInventory((NSNavAI)self);
+		break;
+	case "giveInventoryItem":
+		NSNavAI player = (NSNavAI)self;
+		player.GiveItem(argv(1));
+		break;
+	case "removeInventoryItem":
+		NSNavAI player = (NSNavAI)self;
+		player.RemoveItem(argv(1));
+		break;
+	case "removeAllInventoryItems":
+		NSNavAI player = (NSNavAI)self;
+		player.RemoveAllItems(false);
+		break;
+	case "listAmmo":
+		Ammo_DebugList();
+		break;
 	default:
 		clientcommand(sender, cmd);
 	}

@@ -241,12 +241,6 @@ Cmd_ParseServerCommand(void)
 	case "traceMaterial":
 		CMD_TraceMaterial();
 		break;
-	case "listPlayerInventory":
-		NSNavAI_ListInventory((NSNavAI)self);
-		break;
-	case "listInventory":
-		NSNavAI_ListInventory((NSNavAI)self);
-		break;
 	default:
 		return (false);
 	}

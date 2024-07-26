@@ -689,6 +689,8 @@ NSNavAI::GiveItem(string itemName)
 	NSItem linkedList = __NULL__;
 	NSItem lastItem = __NULL__;
 
+	bool canCarry stof(EntityDef_GetKeyValue(itemName, "inv_carry")) ? true : false;
+
 	/* we do not have an item yet. */
 	if (!m_itemList) {
 		m_itemList = (NSItem)EntityDef_CreateClassname(itemName);
@@ -745,6 +747,11 @@ NSNavAI::GiveItem(string itemName)
 	/* we have no active weapon, and this is our pick */
 	if (!m_activeWeapon) {
 		SwitchToExactWeapon((NSWeapon)linkedList);
+	}
+
+	/* items (not weapons) may not be added permanently by default */
+	if (canCarry == false && linkedList.IsWeapon() == false) {
+		RemoveItem(itemName);
 	}
 
 	return (true);
