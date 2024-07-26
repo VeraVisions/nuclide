@@ -15,7 +15,7 @@
 */
 
 void
-NSNavAI::NSNavAI(void)
+NSActor::NSActor(void)
 {
 #ifdef SERVER
 	m_iNodes = 0i;
@@ -33,81 +33,81 @@ NSNavAI::NSNavAI(void)
 }
 
 bool
-NSNavAI::IsCrouching(void)
+NSActor::IsCrouching(void)
 {
 	return HasVFlags(VFL_CROUCHING);
 }
 
 bool
-NSNavAI::IsProne(void)
+NSActor::IsProne(void)
 {
 	return HasVFlags(VFL_PRONE);
 }
 
 bool
-NSNavAI::IsStanding(void)
+NSActor::IsStanding(void)
 {
 	return !HasVFlags(VFL_PRONE | VFL_CROUCHING | VFL_SPRINTING);
 }
 
 bool
-NSNavAI::IsSprinting(void)
+NSActor::IsSprinting(void)
 {
 	return HasVFlags(VFL_SPRINTING);
 }
 
 bool
-NSNavAI::IsLeaning(void)
+NSActor::IsLeaning(void)
 {
 	return (false);
 }
 
 bool
-NSNavAI::CanSprint(void)
+NSActor::CanSprint(void)
 {
 	return (false);
 }
 
 bool
-NSNavAI::CanProne(void)
+NSActor::CanProne(void)
 {
 	return (false);
 }
 
 bool
-NSNavAI::CanLean(void)
+NSActor::CanLean(void)
 {
 	return (false);
 }
 
 bool
-NSNavAI::CanCrouch(void)
+NSActor::CanCrouch(void)
 {
 	return (false);
 }
 
 /* filled these in with the (default) client side player movement values */
 float
-NSNavAI::GetForwardSpeed(void)
+NSActor::GetForwardSpeed(void)
 {
 	return (PMOVE_FORWARD_SPEED);
 }
 
 float
-NSNavAI::GetSideSpeed(void)
+NSActor::GetSideSpeed(void)
 {
 	return (PMOVE_SIDE_SPEED);
 }
 
 float
-NSNavAI::GetBackSpeed(void)
+NSActor::GetBackSpeed(void)
 {
 	return (PMOVE_BACK_SPEED);
 }
 
 #ifdef SERVER
 void
-NSNavAI::Save(float handle)
+NSActor::Save(float handle)
 {
 	super::Save(handle);
 	SaveInt(handle, "m_iNodes", m_iNodes);
@@ -118,7 +118,7 @@ NSNavAI::Save(float handle)
 }
 
 void
-NSNavAI::Restore(string strKey, string strValue)
+NSActor::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "m_iNodes":
@@ -142,7 +142,7 @@ NSNavAI::Restore(string strKey, string strValue)
 }
 
 void
-NSNavAI::RestoreComplete(void)
+NSActor::RestoreComplete(void)
 {
 	if (m_iNodes <= 0i)
 		return;
@@ -155,13 +155,13 @@ NSNavAI::RestoreComplete(void)
 
 #ifdef SERVER
 void
-NSNavAI::RouteEnded(void)
+NSActor::RouteEnded(void)
 {
 
 }
 
 void
-NSNavAI::CheckRoute_Path(void)
+NSActor::CheckRoute_Path(void)
 {
 	float flDist = floor(vlen(m_pathEntity.GetOrigin() - GetOrigin()));
 
@@ -169,7 +169,7 @@ NSNavAI::CheckRoute_Path(void)
 
 	/* close enough...? */
 	if (flDist < 80) {
-		NSNavAI_Log("Reached path node %S", m_pathTarget);
+		NSActor_Log("Reached path node %S", m_pathTarget);
 
 		m_pathTarget = m_pathEntity.target;
 		m_pathEntity = (NSEntity)m_pathEntity.GetTargetEntity();
@@ -178,7 +178,7 @@ NSNavAI::CheckRoute_Path(void)
 }
 
 void
-NSNavAI::CheckRoute(void)
+NSActor::CheckRoute(void)
 {
 	float flDist;
 	float flNodeRadius;
@@ -201,10 +201,10 @@ NSNavAI::CheckRoute(void)
 			/* HACK: for followers */
 			if (m_eFollowing) {
 				RouteToPosition(m_eFollowing.origin);
-				NSNavAI_Log("Giving up current route to follower, re-calculating");
+				NSActor_Log("Giving up current route to follower, re-calculating");
 			} else {
 				RouteToPosition(m_vecLastNode);
-				NSNavAI_Log("Giving up current route, re-calculating.");
+				NSActor_Log("Giving up current route, re-calculating.");
 			}
 		}
 		_m_flRouteGiveUp = time + 2.0f;
@@ -228,7 +228,7 @@ NSNavAI::CheckRoute(void)
 	flDist = floor(vlen(evenpos - origin));
 
 	if (flDist < flNodeRadius) {
-		NSNavAI_Log("%S reached node", targetname);
+		NSActor_Log("%S reached node", targetname);
 		m_iCurNode--;
 		velocity = [0,0,0]; /* clamp friction */
 
@@ -239,7 +239,7 @@ NSNavAI::CheckRoute(void)
 
 			/* can we walk directly to our target destination? */
 			if (trace_fraction == 1.0) {
-				NSNavAI_Log("Walking directly to last node at '%v'", m_vecLastNode);
+				NSActor_Log("Walking directly to last node at '%v'", m_vecLastNode);
 				m_iCurNode = -1;
 			}
 		}
@@ -258,7 +258,7 @@ NSNavAI::CheckRoute(void)
 		if (!trace_startsolid && trace_fraction == 1.0f) {
 			evenpos = vecNextNode;
 			m_iCurNode = iNextNode;
-			NSNavAI_Log("Skipping to next node %i at '%v'", iNextNode, vecNextNode);
+			NSActor_Log("Skipping to next node %i at '%v'", iNextNode, vecNextNode);
 			return;
 		}
 	}
@@ -268,7 +268,7 @@ NSNavAI::CheckRoute(void)
 	if (m_iCurNode < -1) {
 		RouteClear();
 		RouteEnded();
-		NSNavAI_Log("%S reached end", targetname);
+		NSActor_Log("%S reached end", targetname);
 	}
 
 	/* crouch attempt */
@@ -305,14 +305,14 @@ NSNavAI::CheckRoute(void)
 	m_flLastDist = flDist;
 
 	if (m_flNodeGiveup >= 1.0f) {
-		print(sprintf("NSNavAI::CheckNode: %s gave up route\n",
+		print(sprintf("NSActor::CheckNode: %s gave up route\n",
 			this.netname));
 		RouteClear();
 	}*/
 }
 
 vector
-NSNavAI::GetRouteMovevalues(void)
+NSActor::GetRouteMovevalues(void)
 {
 	vector vecDirection;
 	vector fwdDir, rightDir, upDir;
@@ -337,7 +337,7 @@ NSNavAI::GetRouteMovevalues(void)
 }
 
 vector
-NSNavAI::GetRouteDirection(void)
+NSActor::GetRouteDirection(void)
 {
 	if (m_pathTarget) {
 		return vectorToAngles(m_pathEntity.GetOrigin() - GetOrigin());
@@ -356,13 +356,13 @@ NSNavAI::GetRouteDirection(void)
 }
 
 void
-NSNavAI::RouteToPosition(vector destination)
+NSActor::RouteToPosition(vector destination)
 {
 	RouteToPositionDenyFlags(destination, 0i);
 }
 
 void
-NSNavAI::DebugDraw(void)
+NSActor::DebugDraw(void)
 {
 	vector vecStart = GetOrigin();
 	vector vecEnd;
@@ -386,12 +386,12 @@ NSNavAI::DebugDraw(void)
 }
 
 void
-NSNavAI::RouteToPositionDenyFlags(vector destination, int denylinkflags)
+NSActor::RouteToPositionDenyFlags(vector destination, int denylinkflags)
 {
 	/* engine calls this upon successfully creating a route */
 	static void RouteToPosition_RouteCB(entity ent, vector dest, int numnodes, nodeslist_t *nodelist)
 	{
-		NSNavAI p = (NSNavAI)ent;
+		NSActor p = (NSActor)ent;
 		p.m_iNodes = numnodes;
 		p.m_iCurNode = numnodes - 1;
 		p.m_pRoute = nodelist;
@@ -402,10 +402,10 @@ NSNavAI::RouteToPositionDenyFlags(vector destination, int denylinkflags)
 
 		/* can we walk directly to our target destination? */
 		if (trace_fraction == 1.0) {
-			NSNavAI_Log("Walking directly to last node");
+			NSActor_Log("Walking directly to last node");
 			p.m_iCurNode = -1;
 		} else {
-			NSNavAI_Log("Path obstructed, calculating route");
+			NSActor_Log("Path obstructed, calculating route");
 
 			/* run through all nodes, mark the closest direct path possible */
 			for (int i = 0; i < p.m_iNodes; i++) {
@@ -441,7 +441,7 @@ NSNavAI::RouteToPositionDenyFlags(vector destination, int denylinkflags)
 }
 
 void
-NSNavAI::ChasePath(string startPath)
+NSActor::ChasePath(string startPath)
 {
 	if (!startPath || startPath == "") {
 		m_pathTarget = __NULL__;
@@ -451,11 +451,11 @@ NSNavAI::ChasePath(string startPath)
 
 	m_pathTarget = startPath;
 	m_pathEntity = (NSEntity)find(world, ::targetname, m_pathTarget);
-	NSNavAI_Log("Actor %S chase Path set to %S", netname, m_pathEntity.targetname);
+	NSActor_Log("Actor %S chase Path set to %S", netname, m_pathEntity.targetname);
 }
 
 void
-NSNavAI::RouteClear(void)
+NSActor::RouteClear(void)
 {
 	if (!m_iNodes)
 		return;
@@ -463,23 +463,23 @@ NSNavAI::RouteClear(void)
 	m_iCurNode = BOTROUTE_END;
 	m_iNodes = 0;
 	memfree(m_pRoute);
-	NSNavAI_Log("Actor %S (%s) cleared their route.", netname, classname);
+	NSActor_Log("Actor %S (%s) cleared their route.", netname, classname);
 }
 
 void
-NSNavAI::SetMoveSpeedScale(float newValue)
+NSActor::SetMoveSpeedScale(float newValue)
 {
 	m_flMoveSpeedKey = newValue;
 }
 
 float
-NSNavAI::GetMoveSpeedScale(void)
+NSActor::GetMoveSpeedScale(void)
 {
 	return (m_flMoveSpeedKey == 0.0) ? 1.0f : m_flMoveSpeedKey;
 }
 
 void
-NSNavAI::Physics_Run(void)
+NSActor::Physics_Run(void)
 {
 	input_movevalues *= GetMoveSpeedScale();
 
@@ -494,7 +494,7 @@ NSNavAI::Physics_Run(void)
 #endif
 
 void
-NSNavAI::LaunchProjectile(string defName, bool thrown, float timeOfs)
+NSActor::LaunchProjectile(string defName, bool thrown, float timeOfs)
 {
 #ifdef SERVER
 	vector throwDirection;
@@ -522,7 +522,7 @@ NSNavAI::LaunchProjectile(string defName, bool thrown, float timeOfs)
 }
 
 bool
-NSNavAI::PlantCharge(string defName)
+NSActor::PlantCharge(string defName)
 {
 	vector forwardVec;
 	vector destinationVec;
@@ -563,7 +563,7 @@ NSNavAI::PlantCharge(string defName)
 }
 
 int
-NSNavAI::GetReserveAmmo(int ammoType)
+NSActor::GetReserveAmmo(int ammoType)
 {
 	/* bounds check */
 	if (ammoType <= 0i || ammoType >= MAX_AMMO_TYPES)
@@ -573,7 +573,7 @@ NSNavAI::GetReserveAmmo(int ammoType)
 }
 
 bool
-NSNavAI::GiveAmmo(int ammoType, int ammoAmount)
+NSActor::GiveAmmo(int ammoType, int ammoAmount)
 {
 	int maxAmmo = 0i;
 
@@ -596,7 +596,7 @@ NSNavAI::GiveAmmo(int ammoType, int ammoAmount)
 }
 
 bool
-NSNavAI::UseAmmo(int ammoType, int ammoAmount)
+NSActor::UseAmmo(int ammoType, int ammoAmount)
 {
 	if (autocvar_g_infiniteAmmo == true) {
 		return (true);
@@ -611,7 +611,7 @@ NSNavAI::UseAmmo(int ammoType, int ammoAmount)
 }
 
 bool
-NSNavAI::HasAmmo(int ammoType, int ammoAmount)
+NSActor::HasAmmo(int ammoType, int ammoAmount)
 {
 	/* bounds check */
 	if (ammoType < 0i || ammoType >= MAX_AMMO_TYPES)
@@ -625,7 +625,7 @@ NSNavAI::HasAmmo(int ammoType, int ammoAmount)
 }
 
 bool
-NSNavAI::HasExactItem(NSItem itemEntity)
+NSActor::HasExactItem(NSItem itemEntity)
 {
 	NSItem linkedList = __NULL__;
 
@@ -657,7 +657,7 @@ NSNavAI::HasExactItem(NSItem itemEntity)
 
 
 bool
-NSNavAI::HasItem(string itemName)
+NSActor::HasItem(string itemName)
 {
 	NSItem linkedList = __NULL__;
 
@@ -683,13 +683,13 @@ NSNavAI::HasItem(string itemName)
 }
 
 bool
-NSNavAI::GiveItem(string itemName)
+NSActor::GiveItem(string itemName)
 {
 #ifdef SERVER
 	NSItem linkedList = __NULL__;
 	NSItem lastItem = __NULL__;
 
-	bool canCarry stof(EntityDef_GetKeyValue(itemName, "inv_carry")) ? true : false;
+	bool canCarry = stof(EntityDef_GetKeyValue(itemName, "inv_carry")) ? true : false;
 
 	/* we do not have an item yet. */
 	if (!m_itemList) {
@@ -761,7 +761,7 @@ NSNavAI::GiveItem(string itemName)
 }
 
 bool
-NSNavAI::RemoveItem(string itemName)
+NSActor::RemoveItem(string itemName)
 {
 #ifdef SERVER
 	NSItem linkedList = __NULL__;
@@ -817,7 +817,7 @@ NSNavAI::RemoveItem(string itemName)
 }
 
 bool
-NSNavAI::RemoveAllItems(bool ignoreWeapons)
+NSActor::RemoveAllItems(bool ignoreWeapons)
 {
 	NSItem linkedList = __NULL__;
 
@@ -854,7 +854,7 @@ NSNavAI::RemoveAllItems(bool ignoreWeapons)
 }
 
 bool
-NSNavAI::RemoveAllWeapons(void)
+NSActor::RemoveAllWeapons(void)
 {
 	NSItem linkedList = __NULL__;
 
@@ -891,7 +891,7 @@ NSNavAI::RemoveAllWeapons(void)
 }
 
 string
-NSNavAI::GetCurrentWeapon(void)
+NSActor::GetCurrentWeapon(void)
 {
 	if (m_activeWeapon) {
 		return (m_activeWeapon.classname);
@@ -901,7 +901,7 @@ NSNavAI::GetCurrentWeapon(void)
 }
 
 void
-NSNavAI::SwitchToWeapon(string weaponName)
+NSActor::SwitchToWeapon(string weaponName)
 {
 	NSItem linkedList = __NULL__;
 
@@ -925,7 +925,7 @@ NSNavAI::SwitchToWeapon(string weaponName)
 }
 
 void
-NSNavAI::SwitchToExactWeapon(NSWeapon item)
+NSActor::SwitchToExactWeapon(NSWeapon item)
 {
 	if (item.IsWeapon() == false) {
 		return;
@@ -937,13 +937,13 @@ NSNavAI::SwitchToExactWeapon(NSWeapon item)
 }
 
 bool
-NSNavAI::AddItem(NSItem theItem)
+NSActor::AddItem(NSItem theItem)
 {
 	return (false);
 }
 
 void
-NSNavAI_ListInventory(NSNavAI targetEntity)
+NSActor_ListInventory(NSActor targetEntity)
 {
 	NSItem itemEntry = targetEntity.m_itemList;
 	NSWeapon activeWeapon = targetEntity.m_activeWeapon;

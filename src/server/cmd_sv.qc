@@ -224,7 +224,7 @@ Cmd_ParseServerCommand(void)
 	case "respawnEntities":
 		CMD_RespawnEntities();
 		break;
-	case "spawn":
+	case "spawnDef":
 		CMD_Spawn();
 		break;
 #ifdef BOT_INCLUDED

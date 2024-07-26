@@ -418,7 +418,7 @@ NSWeapon::ClientFX(bool isThirdperson)
 
 	vector src;
 	vector endpos;
-	NSNavAI pl = (NSNavAI)owner;
+	NSActor pl = (NSActor)owner;
 
 	if (isThirdperson == true) {
 		src = pl.GetEyePos();
@@ -1391,7 +1391,7 @@ isWeaponDetonationTimed(string weaponDef)
 .NSWeapon m_prevWeapon;
 
 NSWeapon
-NSWeapon_SortWeaponChain(NSNavAI targetPlayer)
+NSWeapon_SortWeaponChain(NSActor targetPlayer)
 {
 	NSWeapon itemChain = (NSWeapon)targetPlayer.m_itemList;
 	int heighestSlot = -1i;
@@ -1463,7 +1463,7 @@ NSWeapon_SortWeaponChain(NSNavAI targetPlayer)
 
 #ifdef CLIENT
 bool
-NSWeapon_CanSwitch(NSNavAI pl)
+NSWeapon_CanSwitch(NSActor pl)
 {
 	if (!pl.m_activeWeapon)
 		return false;
@@ -1485,7 +1485,7 @@ NSWeapon_SelectWeapon(NSWeapon nextWeapon)
 
 /** Select the next item in the list. */
 void
-NSWeapon_NextWeapon(NSNavAI pl)
+NSWeapon_NextWeapon(NSActor pl)
 {
 #ifdef CLIENT
 	NSWeapon firstWeapon;
@@ -1506,7 +1506,7 @@ NSWeapon_NextWeapon(NSNavAI pl)
 
 /** Select the previous item in the list. */
 void
-NSWeapon_PrevWeapon(NSNavAI pl)
+NSWeapon_PrevWeapon(NSActor pl)
 {
 #ifdef CLIENT
 	NSWeapon firstWeapon;
@@ -1527,7 +1527,7 @@ NSWeapon_PrevWeapon(NSNavAI pl)
 
 /** Select the previous item in the list. */
 void
-NSWeapon_LastWeapon(NSNavAI pl)
+NSWeapon_LastWeapon(NSActor pl)
 {
 #ifdef CLIENT
 	NSWeapon firstWeapon;

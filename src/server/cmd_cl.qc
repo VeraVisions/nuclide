@@ -60,18 +60,18 @@ Cmd_ParseClientCommand(NSClient sender, string cmd, int commandArguments)
 		bprint(PRINT_CHAT, msg);
 		break;
 	case "listInventory":
-		NSNavAI_ListInventory((NSNavAI)self);
+		NSActor_ListInventory((NSActor)self);
 		break;
 	case "giveInventoryItem":
-		NSNavAI player = (NSNavAI)self;
+		NSActor player = (NSActor)self;
 		player.GiveItem(argv(1));
 		break;
 	case "removeInventoryItem":
-		NSNavAI player = (NSNavAI)self;
+		NSActor player = (NSActor)self;
 		player.RemoveItem(argv(1));
 		break;
 	case "removeAllInventoryItems":
-		NSNavAI player = (NSNavAI)self;
+		NSActor player = (NSActor)self;
 		player.RemoveAllItems(false);
 		break;
 	case "listAmmo":

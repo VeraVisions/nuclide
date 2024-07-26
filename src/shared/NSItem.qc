@@ -523,7 +523,7 @@ void
 NSItem::_AddedCallback(void)
 {
 #ifdef SERVER
-	NSNavAI pl = (NSNavAI)owner;
+	NSActor pl = (NSActor)owner;
 
 	if (m_iGiveHealth > 0i) {
 		if (pl.GetHealth() < 100) {

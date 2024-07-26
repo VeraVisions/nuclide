@@ -321,7 +321,7 @@ capable of fighting if prompted to.
 
 @ingroup baseclass
 */
-class NSMonster:NSNavAI
+class NSMonster:NSActor
 {
 public:
 	void NSMonster(void);

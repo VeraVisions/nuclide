@@ -19,14 +19,14 @@ var bool autocvar_g_infiniteAmmo = false;
 
 var bool autocvar_ai_debugNav = false;
 void
-_NSNavAI_Log(string className, string functionName, float edictNum, string warnMessage)
+_NSActor_Log(string className, string functionName, float edictNum, string warnMessage)
 {
 	if (autocvar_g_logTimestamps)
 		printf("^9%f ^5%s (%d) ^7: %s\n", time, functionName, edictNum, warnMessage);
 	else
 		printf("^5%s (%d) ^7: %s\n", functionName, edictNum, warnMessage);
 }
-#define NSNavAI_Log(...) _NSNavAI_Log(classname, __FUNC__, num_for_edict(this), sprintf(__VA_ARGS__))
+#define NSActor_Log(...) _NSActor_Log(classname, __FUNC__, num_for_edict(this), sprintf(__VA_ARGS__))
 
 /* for AI identification purposes */
 typedef enum
@@ -39,18 +39,18 @@ typedef enum
 	WPNTYPE_SEMI		/* semi automatic */
 } weapontype_t;
 
-/** This entity class represents a moving/pathfinding object.
+/** This entity class represents an object with choreographed/free-form movement.
 It knows how to deal with waypoint based nodes and possibly other
 types of pathfinding in the future.
 
 @ingroup baseclass
 */
 class
-NSNavAI:NSSurfacePropEntity
+NSActor:NSSurfacePropEntity
 {
 
 public:
-	void NSNavAI(void);
+	void NSActor(void);
 
 	/** Overridable: Returns whether the client can sprint, with the command +sprint */
 	virtual bool CanSprint(void);
@@ -177,5 +177,5 @@ private:
 	float m_flFirstInventoryItem;
 };
 
-void NSNavAI_ListInventory(NSNavAI);
+void NSActor_ListInventory(NSActor);
 

@@ -49,7 +49,7 @@ typedef enum
 @ingroup bot
 @ingroup baseclass
 */
-class NSBot:NSNavAI
+class NSBot:NSActor
 {
 public:
 
