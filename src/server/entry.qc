@@ -342,6 +342,9 @@ init(float prevprogs)
 
 	/* DO NOT EVER CHANGE THESE. */
 	cvar_set("r_meshpitch", "1");
+
+	/* ENGINE, PLS FIX */
+	input_cursor_entitynumber = 0;
 }
 
 /** Called inside initents() to make sure the entities have their Respawn()

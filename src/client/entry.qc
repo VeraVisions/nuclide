@@ -98,6 +98,9 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 
 	/* because the engine will do really bad hacks to our models otherwise. e.g. R6284 */
 	cvar_set("r_fullbrightSkins", "0");
+
+	/* ENGINE, PLS FIX */
+	input_cursor_entitynumber = 0;
 }
 
 /** Called by the engine whenever video resources need to be reloaded.
