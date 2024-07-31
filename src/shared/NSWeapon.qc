@@ -1211,6 +1211,7 @@ NSWeapon::Release(void)
 #endif
 		break;
 	case WEAPONSTATE_RELOAD:
+		float reloadTime;
 		idleAnim = GetDefAct("actReload");
 		m_iClip++;
 		ourOwner.UseAmmo(m_primaryAmmoType, 1);
@@ -1222,6 +1223,16 @@ NSWeapon::Release(void)
 #ifdef SERVER
 		Sound_Play(ourOwner, CHAN_WEAPON, GetDefString("snd_reload"));
 #endif
+
+		if (m_flReloadSpeed == -1.0f) {
+			reloadTime = frameduration(m_viewModel, idleAnim);
+		} else {
+			reloadTime = m_flReloadSpeed;
+		}
+
+		SetWeaponFrame(idleAnim);
+		SetIdleNext(reloadTime);
+		return;
 		break;
 	case WEAPONSTATE_RELOAD_END:
 		idleAnim = GetDefAct("actReloadEnd");
