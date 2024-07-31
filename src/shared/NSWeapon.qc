@@ -124,8 +124,6 @@ NSWeapon::Spawned(void)
 	SetViewModel(m_strWeaponViewModel);
 	SetWorldModel(model);
 	SetPlayerModel(m_strWeaponPlayerModel);
-	
-	printf("%S\n", classname);
 }
 
 void
@@ -614,6 +612,7 @@ void
 NSWeapon::_SwitchedToCallback(void)
 {
 	_CacheWeaponDefVariables();
+	SwitchFireInfo(m_primaryFireInfo);
 	SetAttackNext(0.0f);
 	SetIdleNext(0.0f);
 
@@ -736,14 +735,14 @@ NSWeapon::DetonateDef(string defName)
 }
 
 void
-NSWeapon::FiredWeapon(string fireInfo)
+NSWeapon::FiredWeaponAttack(string fireInfo)
 {
 	NSClientPlayer ourOwner = (NSClientPlayer)GetOwner();
 	ourOwner.AttackByDef(fireInfo, false);
 }
 
 void
-NSWeapon::ReleasedWeapon(string fireInfo)
+NSWeapon::ReleasedWeaponAttack(string fireInfo)
 {
 	NSClientPlayer ourOwner = (NSClientPlayer)GetOwner();
 	ourOwner.AttackByDef(fireInfo, true);
@@ -879,7 +878,7 @@ NSWeapon::Attack(string fireInfo)
 	ourOwner.StartSoundDef(m_fiSndFire, CHAN_WEAPON, true);
 #endif
 
-	FiredWeapon(fireInfo);
+	FiredWeaponAttack(fireInfo);
 
 	if (m_iClipSize > 0 && m_iClip == 0)
 		shotAnim = GetSubDefAct(fireInfo, "actFireLast");
@@ -995,8 +994,6 @@ NSWeapon::Reload(void)
 	}
 	reloadStartAct = GetDefAct("actReloadStart");
 
-	//printf("m_iClip:%i m_iClipSize: %i\n", m_iClip, m_iClipSize);
-
 	/* we cannot reload this weapon by principle. */
 	if (!m_iClipSize) {
 		return;
@@ -1020,8 +1017,9 @@ NSWeapon::Reload(void)
 	}
 
 	/* no leftover ammo at all. */
-	if (ourOwner.HasAmmo(ammoTypeID, 1) == false)
+	if (ourOwner.HasAmmo(ammoTypeID, 1) == false) {
 		return;
+	}
 
 	/* we have a start-reload, so this is a shotgun styled weapon reload */
 	if (reloadStartAct) {
@@ -1031,17 +1029,21 @@ NSWeapon::Reload(void)
 	}
 
 	if (!m_iMode) {
-		if (m_iClipSize > 0 && m_iClip == 0)
+		if (m_iClipSize > 0 && m_iClip == 0) {
 			reloadAnimation = GetDefAct("actReloadEmpty");
+		}
 	
-		if (!reloadAnimation)
+		if (!reloadAnimation) {
 			reloadAnimation = GetDefAct("actReload");
+		}
 	} else {
-		if (m_iClipSize > 0 && m_iClip == 0)
+		if (m_iClipSize > 0 && m_iClip == 0) {
 			reloadAnimation = GetDefAct("actAltReloadEmpty");
+		}
 	
-		if (!reloadAnimation)
+		if (!reloadAnimation) {
 			reloadAnimation = GetDefAct("actAltReload");
+		}
 	}
 
 	reloadTime = frameduration(m_viewModel, reloadAnimation);
@@ -1083,6 +1085,46 @@ NSWeapon::HasReserveAmmo(void)
 }
 
 void
+NSWeapon::_WeaponStartedFiring(void)
+{
+	if (CanFire() == false) {
+		return;
+	}
+
+	/* hasn't been fired yet. */
+	if (!(vv_flags & VFL_FIRING)) {
+		WeaponStartedFiring();
+	}
+
+	vv_flags |= VFL_FIRING;
+}
+
+void
+NSWeapon::_WeaponStoppedFiring(void)
+{
+	if (CanFire() == false) {
+		return;
+	}
+
+	/* was still registed as firing */
+	if (vv_flags & VFL_FIRING) {
+		WeaponStoppedFiring();
+	}
+
+	vv_flags &= ~VFL_FIRING;
+}
+
+void
+NSWeapon::WeaponStartedFiring(void)
+{
+}
+
+void
+NSWeapon::WeaponStoppedFiring(void)
+{
+}
+
+void
 NSWeapon::Release(void)
 {
 	float idleAnim = 0;
@@ -1110,7 +1152,7 @@ NSWeapon::Release(void)
 			}
 		}
 
-		ReleasedWeapon(m_strLastFireInfo);
+		ReleasedWeaponAttack(m_strLastFireInfo);
 		m_fiWillRelease = false;
 		SetWeaponFrame(idleAnim);
 		SetAttackNext(1.0f);
@@ -1479,6 +1521,7 @@ NSWeapon_SelectWeapon(NSWeapon nextWeapon)
 		return;
 	}
 
+	/* this gets passed in NSClientPlayer::ClientInputFrame() to the server */
 	pSeat->m_iHUDWeaponSelected = nextWeapon.GetSharedID();
 }
 #endif

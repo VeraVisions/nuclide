@@ -14,6 +14,15 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/** This class is responsible for handling groups of key/value pairs.
+
+It handles entity spawns, respawns,
+save/load as well as key/value pair loading, as well as inputs/outputs
+which is our basic entity model.
+
+This is a very low-level class. You're never meant to use this.
+Use NSEntity as a basis for your classes.
+*/
 class
 NSDict
 {
@@ -30,6 +39,8 @@ public:
 
 	nonvirtual void AddKey(string, string);
 	nonvirtual void RemoveKey(string);
+
+	nonvirtual NSDict InitWithSpawnData(string);
 
 private:
 	nonvirtual void _AddRemoveKey(string, string, bool);

@@ -96,3 +96,11 @@ NSDict::RemoveKey(string keyName)
 {
 	_AddRemoveKey(keyName, "", true);
 }
+
+NSDict
+NSDict::InitWithSpawnData(string spawnData)
+{
+	NSDict newDict = spawn(NSDict);
+	newDict.SetDeclBody(spawnData);
+	return (newDict);
+}

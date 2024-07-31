@@ -137,10 +137,15 @@ public:
 	virtual bool CanIdle(void);
 	virtual bool UseAmmo(string);
 
-	/** Overridable: Called when the weapon has been fired. */
-	virtual void FiredWeapon(string);
-	/** Overridable: Called when the weapon has been released. */
-	virtual void ReleasedWeapon(string);
+	/** Overridable: Called once when the weapon started firing. */
+	virtual void WeaponStartedFiring(void);
+	/** Overridable: Called once when the weapon stopped firing. */
+	virtual void WeaponStoppedFiring(void);
+
+	/** Overridable: Controls def_onFire event. */
+	virtual void FiredWeaponAttack(string);
+	/** Overridable: Controls def_onRelease event. */
+	virtual void ReleasedWeaponAttack(string);
 
 	/** Overridable: Called when we've switched to this weapon successfully. */
 	virtual void SwitchedToWeapon(void);

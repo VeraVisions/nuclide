@@ -249,14 +249,18 @@ NSClientPlayer::ProcessInput(void)
 	}
 
 	/* weapon system */
-	if (input_buttons & INPUT_SECONDARY)
+	if (input_buttons & INPUT_SECONDARY) {
+		m_activeWeapon._WeaponStartedFiring();
 		m_activeWeapon.SecondaryAttack();
-	else if (input_buttons & INPUT_PRIMARY)
+	} else if (input_buttons & INPUT_PRIMARY) {
+		m_activeWeapon._WeaponStartedFiring();
 		m_activeWeapon.PrimaryAttack();
-	else if (input_buttons & INPUT_RELOAD)
+	} else if (input_buttons & INPUT_RELOAD) {
 		m_activeWeapon.Reload();
-	else
+	} else {
+		m_activeWeapon._WeaponStoppedFiring();
 		m_activeWeapon.Release();
+	}
 }
 
 /* this is where it gets mod specific really fast,

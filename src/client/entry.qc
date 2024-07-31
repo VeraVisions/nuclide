@@ -622,4 +622,7 @@ CSQC_Shutdown(void)
 	Sound_Shutdown();
 	PropData_Shutdown();
 	NSLog("Client game shutdown.");
+
+	/* ENGINE, PLS FIX */
+	input_cursor_entitynumber = 0;
 }

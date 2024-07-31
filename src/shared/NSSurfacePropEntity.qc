@@ -830,8 +830,7 @@ entityDamage(entity targetEnt, entity inflictingEnt, entity attackingEnt, string
 		return;
 	}
 
-	NSDict damageDecl = spawn(NSDict);
-	damageDecl.SetDeclBody(damageDef);
+	NSDict damageDecl = NSDict::InitWithSpawnData(damageDef);
 	theTarget.Damage(inflictingEnt, attackingEnt, damageDecl, 1.0, damageDir, hitLocation);
 	remove(damageDecl);
 #endif
