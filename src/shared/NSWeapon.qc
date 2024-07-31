@@ -1092,11 +1092,11 @@ NSWeapon::_WeaponStartedFiring(void)
 	}
 
 	/* hasn't been fired yet. */
-	if (!(vv_flags & VFL_FIRING)) {
+	if (!(owner.vv_flags & VFL_FIRING)) {
 		WeaponStartedFiring();
 	}
 
-	vv_flags |= VFL_FIRING;
+	owner.vv_flags |= VFL_FIRING;
 }
 
 void
@@ -1107,11 +1107,17 @@ NSWeapon::_WeaponStoppedFiring(void)
 	}
 
 	/* was still registed as firing */
-	if (vv_flags & VFL_FIRING) {
+	if (owner.vv_flags & VFL_FIRING) {
 		WeaponStoppedFiring();
 	}
 
-	vv_flags &= ~VFL_FIRING;
+	owner.vv_flags &= ~VFL_FIRING;
+}
+
+bool
+NSWeapon::WeaponIsFiring(void)
+{
+	return (owner.vv_flags & VFL_FIRING) ? (true) : (false);
 }
 
 void

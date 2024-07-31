@@ -142,6 +142,9 @@ public:
 	/** Overridable: Called once when the weapon stopped firing. */
 	virtual void WeaponStoppedFiring(void);
 
+	/** Returns whether the weapon is being actively fired by the owner. */
+	nonvirtual bool WeaponIsFiring(void);
+
 	/** Overridable: Controls def_onFire event. */
 	virtual void FiredWeaponAttack(string);
 	/** Overridable: Controls def_onRelease event. */
@@ -167,6 +170,8 @@ private:
 	nonvirtual void _SwitchedFromCallback(void);
 	/** Called to cache some entityDef values. */
 	nonvirtual void _CacheWeaponDefVariables(void);
+	nonvirtual void _WeaponStartedFiring(void);
+	nonvirtual void _WeaponStoppedFiring(void);
 
 #ifdef SERVER
 	nonvirtual void _ReloadFinished(void);
