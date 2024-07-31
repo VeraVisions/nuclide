@@ -41,6 +41,7 @@ NSWeapon::NSWeapon(void)
 	m_dState = 0;
 	m_strLastFireInfo = __NULL__;
 	m_flSpeedMod = 1.0f;
+	m_flReloadSpeed = -1.0f;
 }
 
 void
@@ -67,6 +68,7 @@ void
 NSWeapon::UpdateFireInfoCache(void)
 {
 	string ammoPerShot = GetSubDefString(m_strLastFireInfo, "ammoPerShot");
+	string reloadSpeed = GetSubDefString(m_strLastFireInfo, "reloadTime");
 	m_fiDetonateOnFire = GetSubDefString(m_strLastFireInfo, "detonateOnFire");
 	m_fiMeleeRange = GetSubDefFloat(m_strLastFireInfo, "melee_distance");
 	m_fiPunchAngle = GetSubDefVector(m_strLastFireInfo, "punchAngle");
@@ -79,11 +81,18 @@ NSWeapon::UpdateFireInfoCache(void)
 	m_fiOnRelease = GetSubDefString(m_strLastFireInfo, "def_onRelease");
 	m_fiSemiAuto = GetSubDefBool(m_strLastFireInfo, "semiAuto");
 
+	if (reloadSpeed != "") {
+		m_flReloadSpeed = stof(reloadSpeed);
+	} else {
+		m_flReloadSpeed = -1.0f;
+	}
+
 #if 0
 	NSError("Switched FireInfo to %S", m_strLastFireInfo);
 	NSError("m_fiAmmoType: %i", m_fiAmmoRequired);
 	NSError("m_fiAmmoRequired: %d", m_fiAmmoRequired);
 	NSError("m_fiFireRate: %f", m_fiAmmoRequired);
+	NSError("m_flReloadSpeed: %f", m_flReloadSpeed);
 #endif
 
 	/* validate */
@@ -1046,7 +1055,11 @@ NSWeapon::Reload(void)
 		}
 	}
 
-	reloadTime = frameduration(m_viewModel, reloadAnimation);
+	if (m_flReloadSpeed == -1.0f) {
+		reloadTime = frameduration(m_viewModel, reloadAnimation);
+	} else {
+		reloadTime = m_flReloadSpeed;
+	}
 
 #ifdef SERVER
 	string soundDef = GetDefString("snd_reload");

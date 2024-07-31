@@ -229,6 +229,7 @@ private:
 	bool m_fiWillRelease;
 	bool m_fiSemiAuto;
 	string m_fiSndFireLoop;
+	float m_flReloadSpeed;
 
 	NETWORKED_INT(m_iClip)
 	NETWORKED_INT(m_iClipSize)
