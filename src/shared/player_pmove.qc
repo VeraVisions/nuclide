@@ -72,6 +72,12 @@ NSClientPlayer::Physics_Fall(float flDownforce)
 			fFallDamage = (flDownforce - flFallDist) * (100 / (flMaxDist - flFallDist));
 		}
 
+		/* this is kinda ugly, but worth the price */
+		NSDict damageDecl = spawn(NSDict);
+		damageDecl.AddKey("damage", ftos((int)fFallDamage));
+		Damage(this, this, damageDecl, 1.0, g_vec_null, origin);
+		remove(damageDecl);
+
 		//Damage_Apply(this, world, fFallDamage, 0, DMG_FALL | DMG_SKIP_ARMOR);
 		StartSoundDef("Player.FallDamage", CHAN_VOICE, true);
 	} else if (flDownforce >= PHY_FALL_DISTANCE) {
