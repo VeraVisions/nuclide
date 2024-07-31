@@ -21,6 +21,12 @@
 */
 class NSSpraylogo:NSEntity
 {
+public:
+	void NSSpraylogo(void);
+
+	virtual float predraw(void);
+	virtual void RendererRestarted(void);
+
 private:
 	vector m_vecColor;
 	vector m_vecPosition;
@@ -30,12 +36,6 @@ private:
 	string m_m_strPath;
 	bool m_bInitialized;
 	bool m_bMonochrome;
-
-public:
-	void NSSpraylogo(void);
-
-	virtual float predraw(void);
-	virtual void RendererRestarted(void);
 };
 
 void Spray_Parse(void);

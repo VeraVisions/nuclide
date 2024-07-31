@@ -24,14 +24,6 @@ It has the ability to clean itself up afterwards, too.
 class
 NSTimer:NSEntity
 {
-private:
-	entity m_eReceiver;
-	float m_flTime;
-	bool m_bRepeats;
-
-	virtual void _TimerThink(void);
-	virtual void _TempTimerThink(void);
-
 public:
 	void NSTimer(void);
 
@@ -56,4 +48,12 @@ public:
 	virtual void Save(float);
 	virtual void Restore(string, string);
 #endif
+
+private:
+	entity m_eReceiver;
+	float m_flTime;
+	bool m_bRepeats;
+
+	virtual void _TimerThink(void);
+	virtual void _TempTimerThink(void);
 };

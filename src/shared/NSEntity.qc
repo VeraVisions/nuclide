@@ -120,12 +120,12 @@ NSEntity::Visible(entity ent)
 		traceline(origin, ent.origin, MOVE_NORMAL, this);
 
 		if (trace_fraction == 1.0f || trace_ent == ent) {
-			print(sprintf("%s can see %s\n", classname, ent.classname));
+			/*print(sprintf("%s can see %s\n", classname, ent.classname));*/
 			return (true);
 		}
 	}
 
-	print(sprintf("%s can not see %s\n", classname, ent.classname));
+	/*print(sprintf("%s can not see %s\n", classname, ent.classname));*/
 	return (false);
 }
 

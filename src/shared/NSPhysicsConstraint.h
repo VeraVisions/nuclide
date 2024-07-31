@@ -37,7 +37,6 @@ NSPhysicsConstraint:NSEntity
 public:
 	void NSPhysicsConstraint(void);
 
-
 	virtual void SpawnKey(string, string);
 
 #ifdef SERVER

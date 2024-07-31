@@ -67,17 +67,6 @@ of type NSClientSpectator.
 class
 NSClientSpectator:NSClient
 {
-private:
-	PREDICTED_FLOAT(spec_ent)
-	PREDICTED_FLOAT(spec_flags)
-	NSClientSpectatorMode_t spec_mode; NSClientSpectatorMode_t spec_mode_net;
-	float m_flDeathCam;
-	float m_flLastSpecTargetChange;
-
-	vector spec_org;
-
-	int sequence;
-
 public:
 	void NSClientSpectator(void);
 
@@ -120,6 +109,15 @@ public:
 
 	nonvirtual void SpectatorDeathcam(NSRenderableEntity, NSEntity, float);
 #endif
+
+private:
+	PREDICTED_FLOAT(spec_ent)
+	PREDICTED_FLOAT(spec_flags)
+	NSClientSpectatorMode_t spec_mode; NSClientSpectatorMode_t spec_mode_net;
+	float m_flDeathCam;
+	float m_flLastSpecTargetChange;
+	vector spec_org;
+	int sequence;
 };
 
 #ifdef CLIENT

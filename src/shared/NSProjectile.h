@@ -46,6 +46,57 @@ Objects such as rockets, grenades, bolts etc. should ideally be this.
 */
 class NSProjectile:NSSurfacePropEntity
 {
+public:
+	void NSProjectile(void);
+
+#ifdef CLIENT
+	virtual void ReceiveEntity(float, float);
+	virtual float predraw(void);
+#endif
+
+#ifdef SERVER
+	/** Sets the function that'll be called upon impact of the projectile onto a surface. */
+	nonvirtual void SetImpact(void(entity, entity));
+	/** When called, will animated between two frame positions at a specified framerate on loop. */
+	nonvirtual void Animate(int, int, float);
+	/** When called, will animated between two frame positions at a specified framerate and remove itself when it has finished playing the sequence. */
+	nonvirtual void AnimateOnce(int, int, float);
+
+	/** Called upon the projectile touching another object. */
+	virtual void Touch(entity);
+	virtual void Spawned(void);
+	virtual void Pain(entity, entity, int, vector, int);
+	virtual void Death(entity, entity, int, vector, int);
+
+	virtual void SpawnKey(string, string);
+	virtual void EvaluateEntity(void);
+	virtual float SendEntity(entity, float);
+	virtual void Save(float);
+	virtual void Restore(string, string);
+
+	virtual void Trigger(entity, triggermode_t);
+
+	nonvirtual void _FuseEnded(void);
+	nonvirtual void _Explode(entity);
+
+	virtual void _LaunchHitscan(vector, vector, float);
+
+	/* launch the projectile into the world */
+	virtual void Launch(vector, vector, float, float, float);
+
+	nonvirtual void SetLightColor(vector);
+	nonvirtual void SetLightRadius(float);
+
+	nonvirtual void EnableDetonateOnFuse(bool);
+	nonvirtual void EnableDetonateOnDeath(bool);
+	nonvirtual void EnableDetonateOnWorld(bool);
+	nonvirtual void EnableDetonateOnActor(bool);
+	nonvirtual void EnableStickToWorld(bool);
+	nonvirtual void EnableStickToActor(bool);
+	nonvirtual void EnableThrustHoming(bool);
+	nonvirtual void EnableInheritVelocity(bool);
+#endif
+
 private:
 	NETWORKED_FLOAT_N(traileffectnum)
 	NETWORKED_VECTOR(m_vecLightColor)
@@ -131,57 +182,6 @@ private:
 	virtual void _FireSingle(vector,vector,float,float);
 
 	virtual void OnRemoveEntity(void);
-#endif
-
-public:
-	void NSProjectile(void);
-
-#ifdef CLIENT
-	virtual void ReceiveEntity(float, float);
-	virtual float predraw(void);
-#endif
-
-#ifdef SERVER
-	/** Sets the function that'll be called upon impact of the projectile onto a surface. */
-	nonvirtual void SetImpact(void(entity, entity));
-	/** When called, will animated between two frame positions at a specified framerate on loop. */
-	nonvirtual void Animate(int, int, float);
-	/** When called, will animated between two frame positions at a specified framerate and remove itself when it has finished playing the sequence. */
-	nonvirtual void AnimateOnce(int, int, float);
-
-	/** Called upon the projectile touching another object. */
-	virtual void Touch(entity);
-	virtual void Spawned(void);
-	virtual void Pain(entity, entity, int, vector, int);
-	virtual void Death(entity, entity, int, vector, int);
-
-	virtual void SpawnKey(string, string);
-	virtual void EvaluateEntity(void);
-	virtual float SendEntity(entity, float);
-	virtual void Save(float);
-	virtual void Restore(string, string);
-
-	virtual void Trigger(entity, triggermode_t);
-
-	nonvirtual void _FuseEnded(void);
-	nonvirtual void _Explode(void);
-
-	virtual void _LaunchHitscan(vector, vector, float);
-
-	/* launch the projectile into the world */
-	virtual void Launch(vector, vector, float, float, float);
-
-	nonvirtual void SetLightColor(vector);
-	nonvirtual void SetLightRadius(float);
-
-	nonvirtual void EnableDetonateOnFuse(bool);
-	nonvirtual void EnableDetonateOnDeath(bool);
-	nonvirtual void EnableDetonateOnWorld(bool);
-	nonvirtual void EnableDetonateOnActor(bool);
-	nonvirtual void EnableStickToWorld(bool);
-	nonvirtual void EnableStickToActor(bool);
-	nonvirtual void EnableThrustHoming(bool);
-	nonvirtual void EnableInheritVelocity(bool);
 #endif
 };
 

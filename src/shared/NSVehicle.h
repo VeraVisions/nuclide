@@ -31,25 +31,6 @@ _NSVehicle_Log(string className, string functionName, float edictNum, string war
 */
 class NSVehicle:NSSurfacePropEntity
 {
-private:
-	int m_iVehicleFlags;
-	int m_iMoveButtons;
-	vector m_vecMoveValues;
-	NSEntity m_eDriver;
-	NSEntity m_eDriver_net;
-	NSEntity m_eDriverLast;
-	vector m_vecPlayerPos;
-	vector m_vecExitPos;
-
-	/* FIXME: Aren't those already defined in parent classes? */
-	PREDICTED_VECTOR_N(angles)
-	PREDICTED_VECTOR_N(origin)
-	PREDICTED_VECTOR_N(velocity)
-
-#ifdef CLIENT
-	PREDICTED_FLOAT(driver_entnum)
-#endif
-
 public:
 	void NSVehicle(void);
 
@@ -84,6 +65,25 @@ public:
 	virtual bool CanDriverCrouch(void);
 	virtual bool PreventPlayerMovement(void);
 	virtual bool PreventPlayerFire(void);
+
+private:
+	int m_iVehicleFlags;
+	int m_iMoveButtons;
+	vector m_vecMoveValues;
+	NSEntity m_eDriver;
+	NSEntity m_eDriver_net;
+	NSEntity m_eDriverLast;
+	vector m_vecPlayerPos;
+	vector m_vecExitPos;
+
+	/* FIXME: Aren't those already defined in parent classes? */
+	PREDICTED_VECTOR_N(angles)
+	PREDICTED_VECTOR_N(origin)
+	PREDICTED_VECTOR_N(velocity)
+
+#ifdef CLIENT
+	PREDICTED_FLOAT(driver_entnum)
+#endif
 };
 
 enumflags

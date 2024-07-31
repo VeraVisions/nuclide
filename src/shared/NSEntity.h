@@ -52,42 +52,6 @@ what you are doing. Otherwise, you will deal with loss of savegames and much mor
 */
 class NSEntity:NSTrigger
 {
-private:
-	float m_flSpawnTime;
-	bool m_bHidden; /**< decides whether the entity is visible or not, without affecting collision */
-	vector m_vecMins; /**< REAL min bounding box value, without .scale affecting it */
-	vector m_vecMaxs; /**< REAL max bounding box value, without .scale affecting it */
-
-	bool m_bIsBrush;
-	vector m_vecEditorColor;
-
-	PREDICTED_FLOAT(entityDefID)
-	PREDICTED_VECTOR_N(origin)
-	PREDICTED_VECTOR_N(angles)
-	PREDICTED_FLOAT_N(modelindex)
-	PREDICTED_VECTOR_N(size)
-	PREDICTED_VECTOR_N(mins)
-	PREDICTED_VECTOR_N(maxs)
-	PREDICTED_FLOAT_N(solid)
-	PREDICTED_FLOAT_N(movetype)
-	PREDICTED_FLOAT_N(scale)
-	PREDICTED_FLOAT_N(flags)
-	PREDICTED_FLOAT_N(vv_flags)
-	PREDICTED_VECTOR_N(velocity)
-	PREDICTED_VECTOR_N(avelocity)
-
-#ifdef SERVER
-	string m_parent;
-	string m_parent_old;
-	string m_parent_attachment;
-	PREDICTED_FLOAT_N(frame)
-	PREDICTED_FLOAT_N(skin)
-	PREDICTED_FLOAT_N(effects)
-#endif
-
-	/** Will read from the named def to perform a projectile attack. */
-	nonvirtual bool _ProjectileAttack(string, bool);
-
 public:
 	/** The constructor.
 		Not much may be known of what the entity will be just yet. */
@@ -424,6 +388,42 @@ public:
 
 	/** Sets the @ref bot_info tag on this entity to the desired botInfo_t tag. */
 	nonvirtual void SetBotTag(botInfo_t);
+
+private:
+	float m_flSpawnTime;
+	bool m_bHidden; /**< decides whether the entity is visible or not, without affecting collision */
+	vector m_vecMins; /**< REAL min bounding box value, without .scale affecting it */
+	vector m_vecMaxs; /**< REAL max bounding box value, without .scale affecting it */
+
+	bool m_bIsBrush;
+	vector m_vecEditorColor;
+
+	PREDICTED_FLOAT(entityDefID)
+	PREDICTED_VECTOR_N(origin)
+	PREDICTED_VECTOR_N(angles)
+	PREDICTED_FLOAT_N(modelindex)
+	PREDICTED_VECTOR_N(size)
+	PREDICTED_VECTOR_N(mins)
+	PREDICTED_VECTOR_N(maxs)
+	PREDICTED_FLOAT_N(solid)
+	PREDICTED_FLOAT_N(movetype)
+	PREDICTED_FLOAT_N(scale)
+	PREDICTED_FLOAT_N(flags)
+	PREDICTED_FLOAT_N(vv_flags)
+	PREDICTED_VECTOR_N(velocity)
+	PREDICTED_VECTOR_N(avelocity)
+
+#ifdef SERVER
+	string m_parent;
+	string m_parent_old;
+	string m_parent_attachment;
+	PREDICTED_FLOAT_N(frame)
+	PREDICTED_FLOAT_N(skin)
+	PREDICTED_FLOAT_N(effects)
+#endif
+
+	/** Will read from the named def to perform a projectile attack. */
+	nonvirtual bool _ProjectileAttack(string, bool);
 };
 
 /** Returns a new entity. Guaranteed to be something. Never __NULL__

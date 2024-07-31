@@ -92,39 +92,6 @@ and bone control settings.
 */
 class NSRenderableEntity:NSEntity
 {
-private:
-	/* new */
-	PREDICTED_FLOAT(m_flBoneControl1)
-	PREDICTED_FLOAT(m_flBoneControl2)
-	PREDICTED_FLOAT(m_flBoneControl3)
-	PREDICTED_FLOAT(m_flBoneControl4)
-	PREDICTED_FLOAT(m_flBoneControl5)
-	PREDICTED_FLOAT_N(modelflags)
-	PREDICTED_INT(m_iBody)
-	PREDICTED_FLOAT_N(colormap)
-	PREDICTED_VECTOR_N(glowmod)
-	PREDICTED_FLOAT_N(frame1time)
-
-	PREDICTED_FLOAT(m_iRenderFX)
-	PREDICTED_FLOAT(m_iRenderMode)
-	PREDICTED_FLOAT(m_flRenderAmt)
-	PREDICTED_VECTOR(m_vecRenderColor)
-	PREDICTED_VECTOR(m_vecAxialScale)
-
-	/* either a sprite model or a particle */
-	PREDICTED_INT(m_iMuzzleModel)
-	PREDICTED_INT(m_iMuzzlePart)
-	PREDICTED_FLOAT(m_flMuzzleScale)
-
-	/* model events */
-	float m_flBaseTime;
-
-#ifdef CLIENT
-	float m_iNumBones;
-	nonvirtual void _UpdateGeomset();
-	nonvirtual void _UpdateBoneCount();
-#endif
-
 public:
 	void NSRenderableEntity(void);
 
@@ -204,10 +171,43 @@ public:
 	/** Returns the axial/anisotropic scale of the entity, same as input format (forward, right, up) */
 	nonvirtual vector GetAxialScale(void);
 
-	#ifdef CLIENT
+#ifdef CLIENT
 	/** Called by predraw(); and will set the appropriate rendering specific fields. */
 	nonvirtual void RenderFXPass(void);
 	nonvirtual void RenderAxialScale(void);
 	nonvirtual void RenderGLQuakeShadow(void);
-	#endif
+#endif
+
+private:
+	/* new */
+	PREDICTED_FLOAT(m_flBoneControl1)
+	PREDICTED_FLOAT(m_flBoneControl2)
+	PREDICTED_FLOAT(m_flBoneControl3)
+	PREDICTED_FLOAT(m_flBoneControl4)
+	PREDICTED_FLOAT(m_flBoneControl5)
+	PREDICTED_FLOAT_N(modelflags)
+	PREDICTED_INT(m_iBody)
+	PREDICTED_FLOAT_N(colormap)
+	PREDICTED_VECTOR_N(glowmod)
+	PREDICTED_FLOAT_N(frame1time)
+
+	PREDICTED_FLOAT(m_iRenderFX)
+	PREDICTED_FLOAT(m_iRenderMode)
+	PREDICTED_FLOAT(m_flRenderAmt)
+	PREDICTED_VECTOR(m_vecRenderColor)
+	PREDICTED_VECTOR(m_vecAxialScale)
+
+	/* either a sprite model or a particle */
+	PREDICTED_INT(m_iMuzzleModel)
+	PREDICTED_INT(m_iMuzzlePart)
+	PREDICTED_FLOAT(m_flMuzzleScale)
+
+	/* model events */
+	float m_flBaseTime;
+
+#ifdef CLIENT
+	float m_iNumBones;
+	nonvirtual void _UpdateGeomset();
+	nonvirtual void _UpdateBoneCount();
+#endif
 };

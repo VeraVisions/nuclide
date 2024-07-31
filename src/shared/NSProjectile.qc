@@ -486,7 +486,7 @@ NSProjectile::Restore(string strKey, string strValue)
 void
 NSProjectile::Trigger(entity theActivator, triggermode_t theMode)
 {
-	_Explode();
+	_Explode(this);
 }
 
 void
@@ -514,13 +514,13 @@ NSProjectile::Touch(entity eToucher)
 
 	if (m_bDetonateOnWorld) {
 		if (eToucher == world || eToucher.takedamage == DAMAGE_NO) {
-			_Explode();
+			_Explode(eToucher);
 			return;
 		}
 	}
 	if (m_bDetonateOnActor) {
 		if (eToucher.takedamage != DAMAGE_NO) {
-			_Explode();
+			_Explode(eToucher);
 			return;
 		}
 	}
@@ -547,7 +547,7 @@ void
 NSProjectile::Death(entity inflictor, entity attacker, int damage, vector dir, int location)
 {
 	if (m_bDetonateOnDeath) {
-		_Explode();
+		_Explode(this);
 		return;
 	}
 
@@ -674,7 +674,7 @@ void
 NSProjectile::_FuseEnded(void)
 {
 	if (m_bDetonateOnFuse) {
-		_Explode();
+		_Explode(this);
 		return;
 	}
 
@@ -687,7 +687,7 @@ NSProjectile::_FuseEnded(void)
 }
 
 void
-NSProjectile::_Explode(void)
+NSProjectile::_Explode(entity explodedOn)
 {
 	vector newAngles, aimFwd, aimRgt, aimUp;
 	vector debrisPos;
@@ -733,7 +733,7 @@ NSProjectile::_Explode(void)
 	}
 
 	/* another def that'll be spawned when this one detonates */
-	if (m_defProjectileDebris) {
+	if (m_defProjectileDebris && !explodedOn && explodedOn != this) {
 		float movementAmount = 360.0f / (float)m_iDebrisCount;
 
 		for (int i = 0; i < m_iDebrisCount; i++) {

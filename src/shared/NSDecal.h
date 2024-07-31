@@ -24,9 +24,7 @@
 class
 NSDecal
 {
-	string m_strShader;
-	string m_strTexture;
-
+public:
 	void NSDecal(void);
 
 #ifdef SERVER
@@ -39,6 +37,10 @@ NSDecal
 
 	/** Paint the given decal at the specified position. */
 	virtual void Place(vector, string);
+
+private:
+	string m_strShader;
+	string m_strTexture;
 };
 
 typedef struct

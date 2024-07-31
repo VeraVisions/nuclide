@@ -874,7 +874,7 @@ NSIO::SpawnKey(string strKey, string strValue)
 #endif
 	default:
 #ifdef SERVER
-		EntWarning("%s has unknown key %S with value %S",
+		EntLog("%s has unknown key %S with value %S",
 		      classname, strKey, strValue);
 #endif
 		break;

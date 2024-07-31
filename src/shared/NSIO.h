@@ -25,24 +25,9 @@ Use NSEntity as a basis for your classes.
 */
 class NSIO
 {
-
-private:
+public:
 	void NSIO(void);
 
-	string m_strSpawnData;
-
-#ifdef SERVER
-	string m_strOnTrigger;
-	string m_strOnUser1;
-	string m_strOnUser2;
-	string m_strOnUser3;
-	string m_strOnUser4;
-
-	/* entityDef powered modelevent callbacks */
-	string m_strModelEventCB;
-#endif
-
-public:
 	/** Called when the entity is fulled initialized.
 		Any spawn key/value info pairs have already been
 		dealt with. So now we can make full decisions on the entity.
@@ -194,6 +179,19 @@ public:
 	nonvirtual void DebugBool(string,bool);
 	/** Debug print for a given entity. */
 	nonvirtual void DebugEntity(string,entity);
+
+private:
+	string m_strSpawnData;
+#ifdef SERVER
+	string m_strOnTrigger;
+	string m_strOnUser1;
+	string m_strOnUser2;
+	string m_strOnUser3;
+	string m_strOnUser4;
+
+	/* entityDef powered modelevent callbacks */
+	string m_strModelEventCB;
+#endif
 };
 
 .bool _mapspawned;

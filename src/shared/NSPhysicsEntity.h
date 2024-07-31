@@ -87,30 +87,6 @@ You will find the API to be mostly compatible of that offered by Garry's Mod.
 */
 class NSPhysicsEntity:NSSurfacePropEntity
 {
-private:
-	int m_iEnabled;
-	int m_iShape;
-	int m_iMaterial;
-	int m_iFlags;
-	float m_flInertiaScale;
-	float m_flBuoyancyRatio;
-	bool m_bInvincible;
-	float m_flVolume;
-
-	/* performance sanity checks */
-	vector m_vecPrevOrigin;
-	vector m_vecPrevAngles;
-	float m_flCheckTime;
-	PREDICTED_FLOAT(m_flMass)
-
-	virtual void _TouchThink(void);
-
-#ifdef SERVER
-	PREDICTED_VECTOR(m_vecNetAngles)
-
-	string m_strOnDamaged;
-#endif
-
 public:
 	void NSPhysicsEntity(void);
 
@@ -216,6 +192,30 @@ public:
 	nonvirtual void Wake(void);
 	/** Call to freeze physics simulation on this entity. */
 	nonvirtual void Sleep(void);
+
+private:
+	int m_iEnabled;
+	int m_iShape;
+	int m_iMaterial;
+	int m_iFlags;
+	float m_flInertiaScale;
+	float m_flBuoyancyRatio;
+	bool m_bInvincible;
+	float m_flVolume;
+
+	/* performance sanity checks */
+	vector m_vecPrevOrigin;
+	vector m_vecPrevAngles;
+	float m_flCheckTime;
+	PREDICTED_FLOAT(m_flMass)
+
+	virtual void _TouchThink(void);
+
+#ifdef SERVER
+	PREDICTED_VECTOR(m_vecNetAngles)
+
+	string m_strOnDamaged;
+#endif
 };
 
 noref .bool isPhysics;
