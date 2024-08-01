@@ -746,7 +746,7 @@ NSActor::GiveItem(string itemName)
 	/* TODO: Replace this with a 'SwitchBest' type function? */
 	/* we have no active weapon, and this is our pick */
 	if (!m_activeWeapon) {
-		SwitchToExactWeapon((NSWeapon)linkedList);
+		SwitchToBestWeapon(false);
 	}
 
 	/* items (not weapons) may not be added permanently by default */
@@ -758,6 +758,53 @@ NSActor::GiveItem(string itemName)
 #else
 	return (false);
 #endif
+}
+
+void
+NSActor::SwitchToBestWeapon(bool ignoreActive)
+{
+	string toIgnore = __NULL__;
+	NSItem linkedList = __NULL__;
+	NSItem bestWeapon = __NULL__;
+	float bestWeight = 0.0f;
+
+	if (ignoreActive && m_activeWeapon) {
+		toIgnore = m_activeWeapon.classname;
+	}
+
+	/* we posess nothing. auto return false. */
+	if (!m_itemList) {
+		return;
+	}
+
+	/* iterate over all the inventory items */
+	linkedList = m_itemList;
+
+	while (linkedList) {
+		/* inventory item may not be a weapon */
+		if (linkedList.IsWeapon()) {
+			string weaponName = linkedList.classname;
+			float weight;
+
+			if (toIgnore == weaponName) {
+				linkedList = linkedList.chain;
+				continue;
+			}
+
+			weight = stof(EntityDef_GetKeyValue(weaponName, "weight"));
+
+			if (weight > bestWeight) {
+				bestWeight = weight;
+				bestWeapon = linkedList;
+			}
+		}
+
+		linkedList = linkedList.chain;
+	}
+
+	if (bestWeapon) {
+		SwitchToExactWeapon(bestWeapon); 
+	}
 }
 
 bool
@@ -773,6 +820,11 @@ NSActor::RemoveItem(string itemName)
 	/* we posess nothing. auto return false. */
 	if (!m_itemList) {
 		return (false);
+	}
+
+	/* prevent nonsense */
+	if (GetCurrentWeapon() == itemName) {
+		SwitchToBestWeapon(true);
 	}
 
 	/* since we have something in the inventory, start there */
@@ -793,12 +845,6 @@ NSActor::RemoveItem(string itemName)
 
 	/* successfully remove the last item */
 	if (removeItem == true) {
-		/* Is the item our active weapon? Handle graceful removal. */
-		if (m_activeWeapon == itemToRemove) {
-			m_activeWeapon._SwitchedFromCallback();
-			m_activeWeapon = __NULL__;
-		}
-
 		/* we had an item in front, bridge across the removed item. */
 		if (frontItem) {
 			frontItem.chain = (NSItem)itemToRemove.chain;

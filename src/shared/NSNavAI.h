@@ -110,6 +110,7 @@ public:
 	nonvirtual void SwitchToWeapon(string);
 	/** Switches the entity to use the desired weapon. */
 	nonvirtual void SwitchToExactWeapon(NSWeapon);
+	nonvirtual void SwitchToBestWeapon(bool);
 
 	nonvirtual void LaunchProjectile(string, bool, float);
 	nonvirtual bool PlantCharge(string);
