@@ -44,7 +44,21 @@ typedef enum
 	WEAPONSTATE_RELOAD_START,
 	WEAPONSTATE_RELOAD,
 	WEAPONSTATE_RELOAD_END,
+	WEAPONSTATE_CHARGING,
+	WEAPONSTATE_FIRELOOP,
+	WEAPONSTATE_RELEASED
 } nsweapon_state_t;
+
+string nsweapon_state_s[] =
+{
+	"WEAPONSTATE_IDLE",
+	"WEAPONSTATE_RELOAD_START",
+	"WEAPONSTATE_RELOAD",
+	"WEAPONSTATE_RELOAD_END",
+	"WEAPONSTATE_CHARGING",
+	"WEAPONSTATE_FIRELOOP",
+	"WEAPONSTATE_RELEASED"
+};
 
 typedef enum
 {
@@ -63,9 +77,6 @@ related keys get forwarded only to items of this class.
 - "targetname" : Name
 
 - "weapon_scriptobject" : mapC progs with the weapon code within.
-- "ammoType" : name of the ammo type def entry which the gun uses
-- "ammoRequired" : set to 1 if we require ammo. 
-- "ammoPerShot" : Amount of ammo to deduct per shot.
 - "clipSize" : maximum clip size
 - "mtr_flashShader" : muzzleflash material to Use.
 - "model_flash" : muzzleflash model/sprite to use.
@@ -78,6 +89,25 @@ related keys get forwarded only to items of this class.
 - "smoke_muzzle" : smoke particle effect name
 - "continuousSmoke" : whether the particle effect is continous
 - "clipSizeDefault" : CUSTOM: Default clip size on pickup.
+
+## Attack related keys
+- "def_onFire" : Def to spawn when the weapon is fired.
+- "def_onRelease" : Def to spawn when the weapon has been released.
+
+## Ammo management related keys
+- "ammoType" : name of the ammo type def entry which the weapon uses
+- "ammoRequired" : set to 1 if we require ammo. 
+- "ammoPerShot" : Amount of ammo to deduct per successful shot.
+
+### Charging/Overcharging
+For an overcharge effect, spawn a self-destructive explosion on "def_onFire", and rely on "def_onRelease"
+for delivering a lethal charge to other enemies.
+- "chargeTime" : Amount of time the weapon has to charge before "def_onFire" is spawned.
+
+### Overheating weapons
+Overheating of the weapon is done when both keys are set.
+- "overheatLength"	 : Time in which it takes for the weapon to cool down.
+- "overheatPerShot" : Time added against "overheat_length" when a shot is fired.
 
 @ingroup baseclass
 */
@@ -111,7 +141,7 @@ public:
 	virtual bool IsWeapon(void);
 	virtual bool HasReserveAmmo(void);
 
-	/** Overridable: Called when we switch to this weapon */
+	/** Overridable: Called when we switch to this weapon from another. */
 	virtual void Draw(void);
 	/** Overridable: Called when we are about to switch to another weapon */
 	virtual void Holster(void);
@@ -121,8 +151,10 @@ public:
 	virtual void SecondaryAttack(void);
 	/** Overridable: On +reload execution. */
 	virtual void Reload(void);
-	/** Overridable: When no buttons are held. */
+	/** Overridable: When no buttons are held, or you forcefully want to stop firing. */
 	virtual void Release(void);
+	/** Overridable: When the weapon is supposed to be doing something on its own. */
+	virtual void Idle(void);
 	/** Overridable: When the HUD is requested to be drawn. */
 	virtual void UpdateGUI(void);
 
@@ -130,11 +162,18 @@ public:
 	nonvirtual void SetWorldModel(string);
 	nonvirtual void SetPlayerModel(string);
 	nonvirtual void SetWeaponFrame(float);
+	nonvirtual void PlaySound(string, bool);
+
+	/* state */
+	nonvirtual void SetWeaponState(nsweapon_state_t);
+	nonvirtual nsweapon_state_t GetWeaponState(void);
 
 	virtual void SetAttackNext(float);
+	virtual void SetReloadNext(float);
 	virtual void SetIdleNext(float);
 	virtual bool CanFire(void);
 	virtual bool CanIdle(void);
+	virtual bool CanReload(void);
 	virtual bool UseAmmo(string);
 
 	/** Overridable: Called once when the weapon started firing. */
@@ -172,6 +211,8 @@ private:
 	nonvirtual void _CacheWeaponDefVariables(void);
 	nonvirtual void _WeaponStartedFiring(void);
 	nonvirtual void _WeaponStoppedFiring(void);
+	nonvirtual void _PrimaryAttack(void);
+	nonvirtual void _SecondaryAttack(void);
 
 #ifdef SERVER
 	nonvirtual void _ReloadFinished(void);
@@ -230,6 +271,7 @@ private:
 	bool m_fiSemiAuto;
 	string m_fiSndFireLoop;
 	float m_flReloadSpeed;
+	float m_fiChargeTime;
 
 	NETWORKED_INT(m_iClip)
 	NETWORKED_INT(m_iClipSize)

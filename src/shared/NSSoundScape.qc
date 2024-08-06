@@ -853,12 +853,15 @@ void
 EFX_UpdateListener(NSView playerView)
 {
 	static NSSoundScape lastScape;
-	vector vecPlayer;
+	vector camPos = playerView.GetCameraOrigin();
+	vector camAngle = playerView.GetCameraAngle();
 	NSSoundScape bestScape = __NULL__;
 
-	vecPlayer = playerView.GetCameraOrigin();
-	makevectors(playerView.GetCameraAngle());
-	SetListener(vecPlayer, v_forward, v_right, v_up, 12);
+	if (lastScape) {
+		SetListener(camPos, anglesToForward(camAngle), anglesToRight(camAngle), anglesToUp(camAngle), 12);
+	} else {
+		SetListener(camPos, anglesToForward(camAngle), anglesToRight(camAngle), anglesToUp(camAngle), 0);
+	}
 
 	if (autocvar_s_al_use_reverb == false) {
 		return;
@@ -869,12 +872,12 @@ EFX_UpdateListener(NSView playerView)
 		NSSoundScape scape = (NSSoundScape)e;
 		
 		other = world;
-		traceline(scape.origin, vecPlayer, MOVE_OTHERONLY, scape);
+		traceline(scape.origin, camPos, MOVE_OTHERONLY, scape);
 		if (trace_fraction < 1.0f) {
 			continue;
 		}
 
-		float dist = vlen(e.origin - vecPlayer);
+		float dist = vlen(e.origin - camPos);
 		if (dist > scape.m_radius) {
 			continue;
 		}

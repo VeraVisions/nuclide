@@ -250,11 +250,9 @@ NSClientPlayer::ProcessInput(void)
 
 	/* weapon system */
 	if (input_buttons & INPUT_SECONDARY) {
-		m_activeWeapon._WeaponStartedFiring();
-		m_activeWeapon.SecondaryAttack();
+		m_activeWeapon._SecondaryAttack();
 	} else if (input_buttons & INPUT_PRIMARY) {
-		m_activeWeapon._WeaponStartedFiring();
-		m_activeWeapon.PrimaryAttack();
+		m_activeWeapon._PrimaryAttack();
 	} else if (input_buttons & INPUT_RELOAD) {
 		m_activeWeapon.Reload();
 	} else {
@@ -734,6 +732,7 @@ NSClientPlayer::ReceiveEntity(float new, float flChanged)
 	READENTITY_FLOAT(weapontime, PLAYER_TIMINGS)
 	READENTITY_FLOAT(w_attack_next, PLAYER_TIMINGS)
 	READENTITY_FLOAT(w_idle_next, PLAYER_TIMINGS)
+	READENTITY_FLOAT(w_reload_next, PLAYER_TIMINGS)
 	READENTITY_ENTNUM(vehicle_entnum, PLAYER_VEHICLE)
 	READENTITY_BYTE(spec_ent, PLAYER_SPECTATE)
 	READENTITY_BYTE(spec_mode, PLAYER_SPECTATE)
@@ -825,6 +824,7 @@ NSClientPlayer::PredictPreFrame(void)
 	SAVE_STATE(weapontime)
 	SAVE_STATE(w_attack_next)
 	SAVE_STATE(w_idle_next)
+	SAVE_STATE(w_reload_next)
 	SAVE_STATE(vehicle_entnum)
 	SAVE_STATE(spec_ent)
 	SAVE_STATE(spec_mode)
@@ -878,6 +878,7 @@ NSClientPlayer::PredictPostFrame(void)
 	ROLL_BACK(weapontime)
 	ROLL_BACK(w_attack_next)
 	ROLL_BACK(w_idle_next)
+	ROLL_BACK(w_reload_next)
 	ROLL_BACK(vehicle_entnum)
 	ROLL_BACK(spec_ent)
 	ROLL_BACK(spec_mode)
@@ -929,6 +930,7 @@ NSClientPlayer::Save(float handle)
 	SaveFloat(handle, "pmove_flags", pmove_flags);
 	SaveFloat(handle, "w_attack_next", w_attack_next);
 	SaveFloat(handle, "w_idle_next", w_idle_next);
+	SaveFloat(handle, "w_reload_next", w_reload_next);
 	SaveFloat(handle, "teleport_time", teleport_time);
 	SaveFloat(handle, "m_flStamina", m_flStamina);
 	SaveInt(handle, "weaponframe", weaponframe);
@@ -999,6 +1001,9 @@ NSClientPlayer::Restore(string strKey, string strValue)
 		break;
 	case "w_idle_next":
 		w_idle_next = ReadFloat(strValue);
+		break;
+	case "w_reload_next":
+		w_reload_next = ReadFloat(strValue);
 		break;
 	case "teleport_time":
 		teleport_time = ReadFloat(strValue);
@@ -1255,6 +1260,7 @@ NSClientPlayer::EvaluateEntity(void)
 	EVALUATE_FIELD(weapontime, PLAYER_TIMINGS)
 	EVALUATE_FIELD(w_attack_next, PLAYER_TIMINGS)
 	EVALUATE_FIELD(w_idle_next, PLAYER_TIMINGS)
+	EVALUATE_FIELD(w_reload_next, PLAYER_TIMINGS)
 	EVALUATE_FIELD(vehicle, PLAYER_VEHICLE)
 	EVALUATE_FIELD(spec_ent, PLAYER_SPECTATE)
 	EVALUATE_FIELD(spec_mode, PLAYER_SPECTATE)
@@ -1344,6 +1350,7 @@ NSClientPlayer::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_FLOAT(weapontime, PLAYER_TIMINGS)
 	SENDENTITY_FLOAT(w_attack_next, PLAYER_TIMINGS)
 	SENDENTITY_FLOAT(w_idle_next, PLAYER_TIMINGS)
+	SENDENTITY_FLOAT(w_reload_next, PLAYER_TIMINGS)
 	SENDENTITY_ENTITY(vehicle, PLAYER_VEHICLE)
 	SENDENTITY_BYTE(spec_ent, PLAYER_SPECTATE)
 	SENDENTITY_BYTE(spec_mode, PLAYER_SPECTATE)

@@ -65,6 +65,26 @@ NSWeapon::RemovedFromInventory(void)
 }
 
 void
+NSWeapon::SetWeaponState(nsweapon_state_t newState)
+{
+	if (m_dState == newState) {
+		return;
+	}
+
+	m_dState = newState;
+
+#ifdef SERVER
+	printf("State changed to %s\n", nsweapon_state_s[newState]);
+#endif
+}
+
+nsweapon_state_t
+NSWeapon::GetWeaponState(void)
+{
+	return (m_dState);
+}
+
+void
 NSWeapon::UpdateFireInfoCache(void)
 {
 	string ammoPerShot = GetSubDefString(m_strLastFireInfo, "ammoPerShot");
@@ -77,10 +97,14 @@ NSWeapon::UpdateFireInfoCache(void)
 	m_fiAmmoType = ammoNumForName(GetSubDefString(m_strLastFireInfo, "ammoType"));
 	m_fiAmmoRequired = GetSubDefBool(m_strLastFireInfo, "ammoRequired");
 	m_fiFireRate = GetSubDefFloat(m_strLastFireInfo, "fireRate");
-	m_fiOnFire = GetSubDefString(m_strLastFireInfo, "def_onFire");
-	m_fiOnRelease = GetSubDefString(m_strLastFireInfo, "def_onRelease");
 	m_fiSemiAuto = GetSubDefBool(m_strLastFireInfo, "semiAuto");
 
+	/* defs to spawn */
+	m_fiOnFire = GetSubDefString(m_strLastFireInfo, "def_onFire");
+	m_fiOnRelease = GetSubDefString(m_strLastFireInfo, "def_onRelease");
+	m_fiChargeTime = GetSubDefFloat(m_strLastFireInfo, "chargeTime");
+
+	/* when -1.0 we'll pull it from the animation. */
 	if (reloadSpeed != "") {
 		m_flReloadSpeed = stof(reloadSpeed);
 	} else {
@@ -96,10 +120,11 @@ NSWeapon::UpdateFireInfoCache(void)
 #endif
 
 	/* validate */
-	if (ammoPerShot != __NULL__)
+	if (ammoPerShot != __NULL__) {
 		m_fiAmmoPerShot = (int)stoi(ammoPerShot);
-	else
+	} else {
 		m_fiAmmoPerShot = 1i;
+	}
 }
 
 void
@@ -184,59 +209,6 @@ NSWeapon::SpawnKey(string keyName, string setValue)
 	case "continuousSmoke":
 		m_bSmokeContinous = ReadBool(setValue);
 		break;
-
-	case "actAltFire":
-	case "actAltFireLast":
-	case "actDraw":
-	case "actDrawEmpty":
-	case "actFire":
-	case "actFireLast":
-	case "actHolster":
-	case "actHolsterEmpty":
-	case "actLoop":
-	case "actIdle":
-	case "actIdleEmpty":
-	case "actMeleeHit":
-	case "actMeleeMiss":
-	case "actPull":
-	case "actReload":
-	case "actReloadEmpty":
-	case "actReloadEnd":
-	case "actReloadStart":
-	case "actThrow":
-	case "ammoRequired":
-	case "ammoPerShot":
-	case "def_altFireInfo":
-	case "def_damage_inhand":
-	case "def_explode_inhand":
-	case "def_fireInfo":
-	case "def_melee":
-	case "def_plant":
-	case "def_projectile":
-	case "detonateOnFire":
-	case "fireRate":
-	case "hudSlot":
-	case "hudSlotPos":
-	case "inv_name":
-	case "meleeRateHit":
-	case "meleeRateMiss":
-	case "melee_distance":
-	case "primed_fuse":
-	case "punchAngle":
-	case "powerAmmo":
-	case "removeOnEmpty":
-	case "silent_fire":
-	case "snd_altfire":
-	case "snd_empty":
-	case "snd_fire":
-	case "snd_reload":
-	case "snd_reload_start":
-	case "snd_reload_end":
-	case "weight":
-	case "trigger_delay":
-	case "zoomFov":
-		break;
-
 	default:
 		super::SpawnKey(keyName, setValue);
 		break;
@@ -585,7 +557,6 @@ NSWeapon::_CacheWeaponDefVariables(void)
 
 	muzzleModel = GetSubDefString(m_primaryFireInfo, "model_flash");
 	m_muzzleModelIndex = getmodelindex(muzzleModel, false);
-	m_flTriggerDelay = GetSubDefFloat(m_primaryFireInfo, "trigger_delay");
 	m_flPrimedFuse = GetDefFloat("primed_fuse");
 	m_flZoomFOV = GetDefFloat("zoomFov") / 90;
 	m_bPowerAmmo = GetDefBool("powerAmmo");
@@ -748,6 +719,12 @@ NSWeapon::FiredWeaponAttack(string fireInfo)
 {
 	NSClientPlayer ourOwner = (NSClientPlayer)GetOwner();
 	ourOwner.AttackByDef(fireInfo, false);
+	SetWeaponState(WEAPONSTATE_IDLE);
+
+	/* prevent release from firing it again */
+	if (m_bPowerAmmo) {
+		m_fiWillRelease = false;
+	}
 }
 
 void
@@ -755,6 +732,7 @@ NSWeapon::ReleasedWeaponAttack(string fireInfo)
 {
 	NSClientPlayer ourOwner = (NSClientPlayer)GetOwner();
 	ourOwner.AttackByDef(fireInfo, true);
+	SetWeaponState(WEAPONSTATE_RELEASED);
 }
 
 void
@@ -768,7 +746,7 @@ NSWeapon::Attack(string fireInfo)
 		ourOwner.gflags |= GF_SEMI_TOGGLED;
 	}
 
-	/* satchels, pipe bombs, etc. */
+	/* no real attack, detonate named satchels, pipe bombs, etc. */
 	if (m_fiDetonateOnFire != __NULL__) {
 		if (DetonateDef(m_fiDetonateOnFire) == true) {
 			SetWeaponFrame(GetSubDefAct(fireInfo, "actDetonate"));
@@ -789,6 +767,8 @@ NSWeapon::Attack(string fireInfo)
 		NSError("Will release.");
 	}
 
+	/* melee attacks go through their own routine because we have to test
+	   against objects and walls and if we can even hit them. */
 	if (m_meleeDef != "") {
 		vector eyePos = ourOwner.GetEyePos();
 		vector eyeAngles = ourOwner.v_angle;
@@ -818,7 +798,7 @@ NSWeapon::Attack(string fireInfo)
 		SetIdleNext(meleeRate + 1.0f);
 
 #ifdef SERVER
-		Sound_Play(ourOwner, CHAN_WEAPON, GetSubDefString(m_meleeDef, "snd_miss"));
+		PlaySound(GetSubDefString(m_meleeDef, "snd_miss"), false);
 
 		if (trace_fraction >= 1.0) {
 			return;
@@ -837,10 +817,10 @@ NSWeapon::Attack(string fireInfo)
 			//Damage_Apply(trace_ent, ourOwner, meleeDamage, 0, DMG_BLUNT);
 
 			if (hitEnt.iBleeds) {
-				Sound_Play(ourOwner, CHAN_WEAPON, GetSubDefString(m_meleeDef, "snd_flesh"));
+				PlaySound(GetSubDefString(m_meleeDef, "snd_flesh"), false);
 			}
 		} else {
-			Sound_Play(ourOwner, CHAN_WEAPON, GetSubDefString(m_meleeDef, "snd_hit"));
+			PlaySound(GetSubDefString(m_meleeDef, "snd_hit"), false);
 			DecalGroups_Place("Impact.Shot", hitLoc + (anglesToForward(eyeAngles) * -2));
 		}
 #endif
@@ -866,18 +846,19 @@ NSWeapon::Attack(string fireInfo)
 		return;
 	}
 
-	/* this weapon has a timed delay before something shoots out. */
-	if (m_flTriggerDelay > 0.0f) {
-		if (ourOwner.vv_flags & VFL_PRIMEDFUSE) {
-			Release();
+	/* this weapon has a delay before something shoots out. */
+	if (m_fiChargeTime > 0.0f) {
+		/* we haven't yet tried firing while charging */
+		if (GetWeaponState() != WEAPONSTATE_CHARGING) {
+			shotAnim = GetSubDefAct(fireInfo, "actDelay");
+			SetAttackNext(m_fiChargeTime);
+
+			/* mark as charging, play loop anim in Idle() next */
+			SetIdleNext(frameduration(m_viewModel, shotAnim));
+			SetWeaponFrame(shotAnim);
+			SetWeaponState(WEAPONSTATE_CHARGING);
 			return;
 		}
-		shotAnim = GetSubDefAct(fireInfo, "actDelay");
-		SetAttackNext(m_flTriggerDelay);
-		SetWeaponFrame(shotAnim);
-		ourOwner.vv_flags |= VFL_PRIMEDFUSE;
-		//ourOwner.gflags |= GF_SEMI_TOGGLED;
-		return;
 	}
 
 	ourOwner.punchangle += m_fiPunchAngle;
@@ -913,9 +894,42 @@ NSWeapon::Attack(string fireInfo)
 }
 
 void
+NSWeapon::_PrimaryAttack(void)
+{
+	SwitchFireInfo(m_primaryFireInfo);
+	_WeaponStartedFiring();
+	PrimaryAttack();
+}
+
+void
+NSWeapon::_SecondaryAttack(void)
+{
+	SwitchFireInfo(m_secondaryFireInfo);
+	_WeaponStartedFiring();
+	SecondaryAttack();
+}
+
+void
+NSWeapon::PlaySound(string soundDef, bool clientOnly)
+{
+#ifdef CLIENT
+	if (clientOnly) {
+		Sound_Play(owner, CHAN_WEAPON, soundDef);
+	}
+#endif
+
+#ifdef SERVER
+	if (!clientOnly) {
+		Sound_Play(owner, CHAN_WEAPON, soundDef);
+	}
+#endif
+}
+
+void
 NSWeapon::PrimaryAttack(void)
 {
 	NSClientPlayer ourOwner = (NSClientPlayer)GetOwner();
+
 	if (CanFire() == false) {
 		if (!(ourOwner.gflags & GF_SEMI_TOGGLED)) {
 			Release();
@@ -924,8 +938,97 @@ NSWeapon::PrimaryAttack(void)
 		return;
 	}
 
-	SwitchFireInfo(m_primaryFireInfo);
 	Attack(m_primaryFireInfo);
+}
+
+void
+NSWeapon::Idle(void)
+{
+	NSClientPlayer ourOwner = (NSClientPlayer)GetOwner();
+	float idleAnim = 0;
+
+	if (CanIdle() == false) {
+		return;
+	}
+
+	/* handle shotgun style reloads */
+	switch (m_dState) {
+	case WEAPONSTATE_RELOAD_START:
+		idleAnim = GetDefAct("actReloadStart");
+		SetWeaponState(WEAPONSTATE_RELOAD);
+		PlaySound(GetDefString("snd_reload_start"), false);
+		break;
+	case WEAPONSTATE_RELOAD:
+		float reloadTime;
+		idleAnim = GetDefAct("actReload");
+		m_iClip++;
+		ourOwner.UseAmmo(m_primaryAmmoType, 1);
+
+		if (HasReserveAmmo() == false || m_iClip >= m_iClipSize) {
+			SetWeaponState(WEAPONSTATE_RELOAD_END);
+		}
+
+#ifdef SERVER
+		PlaySound(GetDefString("snd_reload"), false);
+#endif
+
+		if (m_flReloadSpeed == -1.0f) {
+			reloadTime = frameduration(m_viewModel, idleAnim);
+		} else {
+			reloadTime = m_flReloadSpeed;
+		}
+
+		SetWeaponFrame(idleAnim);
+		SetIdleNext(reloadTime);
+		return;
+		break;
+	case WEAPONSTATE_RELOAD_END:
+		idleAnim = GetDefAct("actReloadEnd");
+		SetWeaponState(WEAPONSTATE_IDLE);
+#ifdef SERVER
+		PlaySound(GetDefString("snd_reload_end"), false);
+#endif
+		break;
+	case WEAPONSTATE_FIRELOOP:
+		idleAnim = GetDefAct("actLoop");
+		break;
+	case WEAPONSTATE_CHARGING:
+		idleAnim = GetDefAct("actLoop");
+		break;
+	case WEAPONSTATE_RELEASED:
+		//breakpoint();
+		idleAnim = GetDefAct("actRelease");
+		SetWeaponState(WEAPONSTATE_IDLE);
+		break;
+	case WEAPONSTATE_IDLE:
+	default:
+		if (!m_iMode) {
+			if (m_iClipSize > 0 && m_iClip == 0) {
+				idleAnim = GetDefAct("actIdleEmpty");
+	
+				/* this will mess with us otherwise */
+				if (!idleAnim)
+					return;
+			}
+
+			if (!idleAnim)
+				idleAnim = GetDefAct("actIdle");
+		} else {
+			if (m_iClipSize > 0 && m_iClip == 0) {
+				idleAnim = GetDefAct("actAltIdleEmpty");
+	
+				/* this will mess with us otherwise */
+				if (!idleAnim)
+					return;
+			}
+
+			if (!idleAnim)
+				idleAnim = GetDefAct("actAltIdle");
+		}
+	}
+
+	SetWeaponFrame(idleAnim);
+	SetIdleNext(frameduration(m_viewModel, idleAnim));
 }
 
 void
@@ -945,9 +1048,9 @@ NSWeapon::SecondaryAttack(void)
 
 #ifdef SERVER
 		if (ourOwner.viewzoom == 1.0) {
-			Sound_Play(ourOwner, CHAN_WEAPON, GetDefString("snd_lower_scope"));
+			PlaySound(GetDefString("snd_lower_scope"), false);
 		} else {
-			Sound_Play(ourOwner, CHAN_WEAPON, GetDefString("snd_raise_scope"));
+			PlaySound(GetDefString("snd_raise_scope"), false);
 		}
 #endif
 
@@ -961,10 +1064,12 @@ NSWeapon::SecondaryAttack(void)
 		return;
 	}
 
-	if (CanFire() == false)
+	/* don't run any further logic */
+	if (CanFire() == false) {
+		Idle();
 		return;
+	}
 
-	SwitchFireInfo(m_secondaryFireInfo);
 	Attack(m_secondaryFireInfo);
 }
 
@@ -978,8 +1083,9 @@ NSWeapon::_ReloadFinished(void)
 	ammoToDeduct = m_iClipSize - m_iClip;
 
 	/* not enough ammo. assign whatever is left. */
-	if (ourOwner.HasAmmo(m_primaryAmmoType, ammoToDeduct) == false)
+	if (ourOwner.HasAmmo(m_primaryAmmoType, ammoToDeduct) == false) {
 		ammoToDeduct = ourOwner.m_iAmmoTypes[m_primaryAmmoType];
+	}
 
 	m_iClip = m_iClipSize;
 	ourOwner.UseAmmo(m_primaryAmmoType, ammoToDeduct);
@@ -990,7 +1096,6 @@ void
 NSWeapon::Reload(void)
 {
 	NSClientPlayer ourOwner = (NSClientPlayer)GetOwner();
-	string fireInfo;
 	float reloadAnimation = 0;
 	float reloadTime;
 	string ammoType;
@@ -1008,17 +1113,11 @@ NSWeapon::Reload(void)
 		return;
 	}
 
-	if (CanFire() == false) {
+	if (CanReload() == false) {
 		return;
 	}
 
-	fireInfo = m_strLastFireInfo;
-
-	/* fall back to main weapon def */
-	if (!fireInfo)
-		fireInfo = classname;
-
-	ammoType = GetSubDefString(fireInfo, "ammoType");
+	ammoType = GetSubDefString(m_strLastFireInfo, "ammoType");
 	ammoTypeID = ammoNumForName(ammoType);
 
 	if (m_iClip == m_iClipSize) {
@@ -1032,7 +1131,7 @@ NSWeapon::Reload(void)
 
 	/* we have a start-reload, so this is a shotgun styled weapon reload */
 	if (reloadStartAct) {
-		m_dState = WEAPONSTATE_RELOAD_START;
+		SetWeaponState(WEAPONSTATE_RELOAD_START);
 		Release();
 		return;
 	}
@@ -1061,13 +1160,9 @@ NSWeapon::Reload(void)
 		reloadTime = m_flReloadSpeed;
 	}
 
+	PlaySound(GetDefString("snd_reload"), false);
+
 #ifdef SERVER
-	string soundDef = GetDefString("snd_reload");
-
-	if (soundDef) {
-		ourOwner.StartSoundDef(soundDef, CHAN_WEAPON, true);
-	}
-
 	ScheduleThink(_ReloadFinished, reloadTime - 0.1f);
 #endif
 
@@ -1106,6 +1201,19 @@ NSWeapon::_WeaponStartedFiring(void)
 
 	/* hasn't been fired yet. */
 	if (!(owner.vv_flags & VFL_FIRING)) {
+		float actFireStart = GetSubDefAct(m_strLastFireInfo, "actFireStart");
+
+#ifdef SERVER
+		printf("actFireStart %d %S\n", actFireStart, m_strLastFireInfo);
+#endif
+
+		if (actFireStart) {
+			SetWeaponFrame(actFireStart);
+			SetAttackNext(frameduration(m_viewModel, actFireStart));
+			SetIdleNext(frameduration(m_viewModel, actFireStart));
+			SetWeaponState(WEAPONSTATE_FIRELOOP);
+		}
+
 		WeaponStartedFiring();
 	}
 
@@ -1121,6 +1229,19 @@ NSWeapon::_WeaponStoppedFiring(void)
 
 	/* was still registed as firing */
 	if (owner.vv_flags & VFL_FIRING) {
+		float actFireStop = GetSubDefAct(m_strLastFireInfo, "actFireStop");
+
+#ifdef SERVER
+		printf("actFireStop %d %S\n", actFireStop, m_strLastFireInfo);
+#endif
+
+		if (actFireStop) {
+			SetWeaponFrame(actFireStop);
+			SetAttackNext(frameduration(m_viewModel, actFireStop));
+			SetIdleNext(frameduration(m_viewModel, actFireStop));
+			SetWeaponState(WEAPONSTATE_RELEASED);
+		}
+
 		WeaponStoppedFiring();
 	}
 
@@ -1189,10 +1310,6 @@ NSWeapon::Release(void)
 	}
 #endif
 
-	if (CanIdle() == false) {
-		return;
-	}
-
 	m_bFiring = false;
 
 	if (ourOwner.vv_flags & VFL_REDRAW) {
@@ -1201,75 +1318,7 @@ NSWeapon::Release(void)
 		return;
 	}
 
-	/* handle shotgun style reloads */
-	switch (m_dState) {
-	case WEAPONSTATE_RELOAD_START:
-		idleAnim = GetDefAct("actReloadStart");
-		m_dState = WEAPONSTATE_RELOAD;
-#ifdef SERVER
-		Sound_Play(ourOwner, CHAN_WEAPON, GetDefString("snd_reload_start"));
-#endif
-		break;
-	case WEAPONSTATE_RELOAD:
-		float reloadTime;
-		idleAnim = GetDefAct("actReload");
-		m_iClip++;
-		ourOwner.UseAmmo(m_primaryAmmoType, 1);
-
-		if (HasReserveAmmo() == false || m_iClip >= m_iClipSize) {
-			m_dState = WEAPONSTATE_RELOAD_END;
-		}
-
-#ifdef SERVER
-		Sound_Play(ourOwner, CHAN_WEAPON, GetDefString("snd_reload"));
-#endif
-
-		if (m_flReloadSpeed == -1.0f) {
-			reloadTime = frameduration(m_viewModel, idleAnim);
-		} else {
-			reloadTime = m_flReloadSpeed;
-		}
-
-		SetWeaponFrame(idleAnim);
-		SetIdleNext(reloadTime);
-		return;
-		break;
-	case WEAPONSTATE_RELOAD_END:
-		idleAnim = GetDefAct("actReloadEnd");
-		m_dState = WEAPONSTATE_IDLE;
-#ifdef SERVER
-		Sound_Play(ourOwner, CHAN_WEAPON, GetDefString("snd_reload_end"));
-#endif
-		break;
-	case WEAPONSTATE_IDLE:
-	default:
-		if (!m_iMode) {
-			if (m_iClipSize > 0 && m_iClip == 0) {
-				idleAnim = GetDefAct("actIdleEmpty");
-	
-				/* this will mess with us otherwise */
-				if (!idleAnim)
-					return;
-			}
-
-			if (!idleAnim)
-				idleAnim = GetDefAct("actIdle");
-		} else {
-			if (m_iClipSize > 0 && m_iClip == 0) {
-				idleAnim = GetDefAct("actAltIdleEmpty");
-	
-				/* this will mess with us otherwise */
-				if (!idleAnim)
-					return;
-			}
-
-			if (!idleAnim)
-				idleAnim = GetDefAct("actAltIdle");
-		}
-	}
-
-	SetWeaponFrame(idleAnim);
-	SetIdleNext(frameduration(m_viewModel, idleAnim));
+	Idle();
 }
 
 void
@@ -1332,6 +1381,14 @@ NSWeapon::SetAttackNext(float newDelay)
 {
 	NSClientPlayer ourOwner = (NSClientPlayer)GetOwner();
 	ourOwner.w_attack_next = newDelay;
+	SetReloadNext(newDelay);
+}
+
+void
+NSWeapon::SetReloadNext(float newDelay)
+{
+	NSClientPlayer ourOwner = (NSClientPlayer)GetOwner();
+	ourOwner.w_reload_next = newDelay;
 }
 
 void
@@ -1363,6 +1420,18 @@ NSWeapon::CanFire(void)
 	}
 
 	if (ourOwner.gflags & GF_SEMI_TOGGLED) {
+		return (false);
+	}
+
+	return (true);
+}
+
+bool
+NSWeapon::CanReload(void)
+{
+	NSClientPlayer ourOwner = (NSClientPlayer)GetOwner();
+	
+	if (ourOwner.w_reload_next > 0.0f) {
 		return (false);
 	}
 

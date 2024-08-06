@@ -142,6 +142,7 @@ private:
 
 	PREDICTED_FLOAT(w_attack_next)
 	PREDICTED_FLOAT(w_idle_next)
+	PREDICTED_FLOAT(w_reload_next)
 	PREDICTED_FLOAT(teleport_time)
 	PREDICTED_FLOAT(weapontime)
 	PREDICTED_FLOAT(m_flStamina)

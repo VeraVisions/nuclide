@@ -514,6 +514,7 @@ NSClientPlayer::Physics_InputPostMove(void)
 	float punch;
 	/* timers, these are predicted and shared across client and server */
 	w_attack_next = max(0, w_attack_next - input_timelength);
+	w_reload_next = max(0, w_reload_next - input_timelength);
 	w_idle_next = max(0, w_idle_next - input_timelength);
 	weapontime += input_timelength;
 
