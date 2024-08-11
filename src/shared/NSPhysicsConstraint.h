@@ -30,6 +30,7 @@ If you want to create an easy 'weld' type connection, a ballsocket or even a rop
 type connection - this class is what you need.
 
 @ingroup baseclass
+@ingroup physics
 */
 class
 NSPhysicsConstraint:NSEntity

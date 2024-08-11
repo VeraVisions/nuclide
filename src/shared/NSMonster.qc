@@ -1437,9 +1437,14 @@ NSMonster::Physics(void)
 	input_angles = angles;
 	m_bTurning = false;
 
-	/* HACK!!! */
-	if (!IsAlive)
+	if (autocvar_ai_enable == false) {
 		return;
+	}
+
+	/* HACK!!! */
+	if (!IsAlive()) {
+		return;
+	}
 
 	/* editors like Hammer like putting 'sequence' into spawndata
 	   of monsters. so only ever force the animation when flagged as dead */

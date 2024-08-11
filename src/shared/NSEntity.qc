@@ -1259,7 +1259,6 @@ void
 NSEntity::StopSound(float channel, bool broadcast)
 {
 	if (broadcast) {
-		sound(this, channel, "common/null.wav", 1.0f, ATTN_NORM, 100, SOUNDFLAG_FOLLOW, 0 );
 		Sound_Stop(this, channel);
 	} else {
 #ifdef SERVER

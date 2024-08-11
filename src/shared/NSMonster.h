@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+var bool autocvar_ai_enable = true;
 var bool autocvar_ai_debugLogic = false;
 void
 _NSMonster_Log(string className, string functionName, float edictNum, string warnMessage)

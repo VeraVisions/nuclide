@@ -176,7 +176,7 @@ EntityDef_Init(void)
 
 	g_entDefInclude = "";
 
-	pm = search_begin("def/*.def", TRUE, TRUE);
+	pm = search_begin("decls/def/*.def", TRUE, TRUE);
 	for (int i = 0; i < search_getsize(pm); i++) {
 		EntityDef_ReadFile(search_getfilename(pm, i));
 	}
@@ -188,7 +188,7 @@ EntityDef_Init(void)
 		int includeCount = tokenizebyseparator(g_entDefInclude, ";");
 
 		for (int i = 0; i < (includeCount-1); i++) {
-			string fileName = strcat("def/", argv(i));
+			string fileName = strcat("decls/def/", argv(i));
 			EntityDef_ReadFile(fileName);
 			includeCount = tokenizebyseparator(g_entDefInclude, ";");
 		}

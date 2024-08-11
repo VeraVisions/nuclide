@@ -248,6 +248,10 @@ NSClientPlayer::ProcessInput(void)
 		return;
 	}
 
+	m_activeWeapon.velocity = velocity;
+	m_activeWeapon.origin = origin;
+	m_activeWeapon.Relink();
+
 	/* weapon system */
 	if (input_buttons & INPUT_SECONDARY) {
 		m_activeWeapon._SecondaryAttack();
@@ -487,7 +491,7 @@ NSClientPlayer::UpdateAliveCam(void)
 {
 	vector cam_pos = GetEyePos();
 
-#if defined(VALVE) || defined(CSTRIKE) || defined(GEARBOX) || defined(TFC)
+#if defined(VALVE) || defined(CSTRIKE) || defined(GEARBOX) || defined(TFC) || defined(REWOLF)
 	//view_angles = Camera_RunBob(view_angles);
 	//view_angles = Camera_StrafeRoll(view_angles);
 	cam_pos += CalculateLean(view_angles);

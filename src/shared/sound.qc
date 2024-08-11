@@ -422,7 +422,7 @@ Sound_Precache(string shader)
 	g_sounds[index].pitch_min = g_sounds[index].pitch_max = 100;
 	g_sounds[index].offset = 0;
 
-	sh = search_begin("sound/*.sndshd", TRUE, TRUE);
+	sh = search_begin("decls/sound/*.sndshd", TRUE, TRUE);
 
 	for (int i = 0; i < search_getsize(sh); i++) {
 		fh = fopen(search_getfilename(sh, i), FILE_READ);
@@ -565,7 +565,7 @@ Sound_DistancePos(vector pos, string shader)
 }
 
 void
-Sound_Stop(entity target, int chan)
+Sound_Stop(entity target, float chan)
 {
 	sound(target, chan, "common/null.wav", 1.0f, ATTN_NORM, 100, SOUNDFLAG_FOLLOW, 0 );
 }

@@ -747,7 +747,7 @@ NSSoundScape::LoadFromEFX(string efxFile)
 		return (false);
 	}
 
-	fh = fopen(strcat("efx/", efxFile, ".efx"), FILE_READ);
+	fh = fopen(strcat("decls/efx/", efxFile, ".efx"), FILE_READ);
 
 	if (fh < 0) {
 		EntError("Unable to load EFX file %S", efxFile);
@@ -856,37 +856,43 @@ EFX_UpdateListener(NSView playerView)
 	vector camPos = playerView.GetCameraOrigin();
 	vector camAngle = playerView.GetCameraAngle();
 	NSSoundScape bestScape = __NULL__;
+	float bestDistance = 999999.0f;
 
 	if (lastScape) {
-		SetListener(camPos, anglesToForward(camAngle), anglesToRight(camAngle), anglesToUp(camAngle), 12);
+	//	printf("%s: %v: %v; %v\n", lastScape.classname, lastScape.origin, camPos, camAngle);
+		makevectors(camAngle);
+		SetListener(camPos, v_forward, v_right, v_up, 12);
 	} else {
-		SetListener(camPos, anglesToForward(camAngle), anglesToRight(camAngle), anglesToUp(camAngle), 0);
+		//printf("%v; %v\n", camPos, camAngle);
+		makevectors(camAngle);
+		SetListener(camPos, v_forward, v_right, v_up, 0);
 	}
 
 	if (autocvar_s_al_use_reverb == false) {
 		return;
 	}
 
-	float bestdist = 999999;
 	for (entity e = world; (e = find(e, classname, "NSSoundScape"));) {
+		float deltaPos;
 		NSSoundScape scape = (NSSoundScape)e;
-		
+
+		/* don't get blocked by entities */
 		other = world;
-		traceline(scape.origin, camPos, MOVE_OTHERONLY, scape);
+		traceline(scape.GetOrigin(), camPos, MOVE_OTHERONLY, scape);
+
+		/* collided */
 		if (trace_fraction < 1.0f) {
 			continue;
 		}
 
-		float dist = vlen(e.origin - camPos);
-		if (dist > scape.m_radius) {
+		/* max-radius check */
+		deltaPos = length(scape.GetOrigin() - camPos);
+
+		if ((deltaPos > scape.GetRadius()) || (deltaPos > bestDistance)) {
 			continue;
 		}
 
-		if (dist > bestdist) {
-			continue;
-		}
-
-		bestdist = dist;
+		bestDistance = deltaPos;
 		bestScape = scape;
 	}
 

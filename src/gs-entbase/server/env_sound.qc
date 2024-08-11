@@ -50,9 +50,9 @@ This works only with the OpenAL sound backend.
  - 20 - Big room style #1.
  - 21 - Big room style #2.
  - 22 - Big room style #3.
- - 23 - Small concrete room.
- - 24 - Medium concrete room.
- - 25 - Large concrete room.
+ - 23 - Small cavern.
+ - 24 - Medium cavern.
+ - 25 - Large cavern.
  - 26 - Weirdo preset #1.
  - 27 - Weirdo preset #2.
  - 28 - Weirdo preset #3.

@@ -216,7 +216,7 @@ void Sound_Speak(entity targetEntity, string sentencesEntry);
 #endif
 
 /** Stops sounds on a given channel, on a target entity. */
-void Sound_Stop(entity target, int chan);
+void Sound_Stop(entity target, float chan);
 
 void Sound_DebugList();
 

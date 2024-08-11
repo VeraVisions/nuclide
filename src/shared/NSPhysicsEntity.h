@@ -35,14 +35,6 @@ var bool autocvar_r_showPhysicsInfo = false;
 .float damp_angular;
 .float jointgroup;
 
-enum
-{
-	PHYSM_BOX,
-	PHYSM_SPHERE,
-	PHYSM_CAPSULE,
-	PHYSM_TRIMESH,
-	PHYSM_CYLINDER
-};
 
 enumflags
 {
@@ -75,15 +67,40 @@ typedef enumflags
 	PHYENT_CHANGED_RENDERMODE,
 } nsphyricsentity_changed_t;
 
-/** This entity class represents physically-simulated entities. 
+
+/** @defgroup physics Physics Simulator
+    @brief Anything involving a more advanced physics simulator.
+
+Gameplay features such as movement and projectiles don't usually
+tend to be complex because you want consistent behaviour.
+All objects that are handled by an external physics simulator tend
+to be more physically accurate, but less predictable - 
+reserved for effects or function where realistic motion
+is paramount. This section covers these types of entities and how to
+control them.
 
 The physics simulator used is controlled by the engine and may be
-subject to change.
+subject to change at any given time. Currently we're targeting ODE.
+
+@{
+*/
+
+enum
+{
+	PHYSM_BOX,
+	PHYSM_SPHERE,
+	PHYSM_CAPSULE,
+	PHYSM_TRIMESH,
+	PHYSM_CYLINDER
+};
+
+/** This entity class represents physically-simulated entities. 
 
 Units of mass is defined in kilograms, a standard unit of measurement.
 You will find the API to be mostly compatible of that offered by Garry's Mod.
 
 @ingroup baseclass
+@ingroup physics
 */
 class NSPhysicsEntity:NSSurfacePropEntity
 {
@@ -219,3 +236,5 @@ private:
 };
 
 noref .bool isPhysics;
+
+/** @} */ // end of pmove

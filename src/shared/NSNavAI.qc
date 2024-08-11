@@ -28,8 +28,9 @@ NSActor::NSActor(void)
 	_m_flRouteGiveUp = 0.0f;
 #endif
 
-	for (int i = 0; i < MAX_AMMO_TYPES; i++)
+	for (int i = 0; i < MAX_AMMO_TYPES; i++) {
 		m_iAmmoTypes[i] = 0;
+	}
 }
 
 bool
@@ -144,8 +145,9 @@ NSActor::Restore(string strKey, string strValue)
 void
 NSActor::RestoreComplete(void)
 {
-	if (m_iNodes <= 0i)
+	if (m_iNodes <= 0i) {
 		return;
+	}
 
 	/* re-plot our route */
 	RouteToPosition(m_vecLastNode);
@@ -189,8 +191,9 @@ NSActor::CheckRoute(void)
 		return;
 	}
 
-	if (!m_iNodes)
+	if (!m_iNodes) {
 		return;
+	}
 
 	if (_m_flRouteGiveUp < time) {
 		float distanceToLastFrame = distanceSquared(_m_vecRoutePrev, origin);
@@ -704,7 +707,6 @@ NSActor::GiveItem(string itemName)
 		m_itemList._AddedCallback();
 		//NSLog("First Item %S", m_itemList.classname);
 
-		/* TODO: Replace this with a 'SwitchBest' type function? */
 		/* we have no active weapon, and this is our pick */
 		if (!m_activeWeapon) {
 			SwitchToExactWeapon((NSWeapon)m_itemList);
@@ -743,8 +745,6 @@ NSActor::GiveItem(string itemName)
 		newItem._AddedCallback();
 	}
 
-	/* TODO: Replace this with a 'SwitchBest' type function? */
-	/* we have no active weapon, and this is our pick */
 	if (!m_activeWeapon) {
 		SwitchToBestWeapon(false);
 	}
@@ -1002,5 +1002,4 @@ NSActor_ListInventory(NSActor targetEntity)
 		itemEntry = (NSItem)itemEntry.chain;
 		i += 1i;
 	}
-
 }

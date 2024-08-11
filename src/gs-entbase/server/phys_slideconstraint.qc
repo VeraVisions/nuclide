@@ -40,6 +40,7 @@ This entity was introduced in Half-Life 2 (2004).
 
 @ingroup server
 @ingroup pointentity
+@ingroup physics
 */
 class
 phys_slideconstraint:NSPhysicsConstraint

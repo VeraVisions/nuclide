@@ -46,7 +46,8 @@ typedef enum
 	WEAPONSTATE_RELOAD_END,
 	WEAPONSTATE_CHARGING,
 	WEAPONSTATE_FIRELOOP,
-	WEAPONSTATE_RELEASED
+	WEAPONSTATE_RELEASED,
+	WEAPONSTATE_OVERHEATED
 } nsweapon_state_t;
 
 string nsweapon_state_s[] =
@@ -57,7 +58,8 @@ string nsweapon_state_s[] =
 	"WEAPONSTATE_RELOAD_END",
 	"WEAPONSTATE_CHARGING",
 	"WEAPONSTATE_FIRELOOP",
-	"WEAPONSTATE_RELEASED"
+	"WEAPONSTATE_RELEASED",
+	"WEAPONSTATE_OVERHEATED"
 };
 
 typedef enum
@@ -66,12 +68,26 @@ typedef enum
 	WEPEVENT_RELOADED
 } nsweapon_event_t;
 
+#define CHAN_LOOP 5
+
 /*! \brief This entity class represents weapon based items. */
 /*!QUAKED NSWeapon (0 0.8 0.8) (-16 -16 0) (16 16 72)
 # OVERVIEW
 This entity class represents weapon based items. 
 It is based on NSItem. The only difference is that the attack
 related keys get forwarded only to items of this class.
+
+## FireInfo
+Weapon firing events are split into optional decl titled 'FireInfo'
+that are queried for implemented attack types.
+
+The "def_fireInfo" key points to the decl containing the primary-attack
+FireInfo. If that doesn't exist, the keys that would be queried from
+there are read from the main decl. This goes for any key that is not
+present in a FireInfo.
+
+The "def_altFireInfo" key points to the decl containing the secondary-attack
+FireInfo. If that does not exist, secondary attacks are not possible.
 
 # KEYS
 - "targetname" : Name
@@ -90,11 +106,11 @@ related keys get forwarded only to items of this class.
 - "continuousSmoke" : whether the particle effect is continous
 - "clipSizeDefault" : CUSTOM: Default clip size on pickup.
 
-## Attack related keys
+## FireInfo related keys
 - "def_onFire" : Def to spawn when the weapon is fired.
 - "def_onRelease" : Def to spawn when the weapon has been released.
 
-## Ammo management related keys
+### Ammo management related keys
 - "ammoType" : name of the ammo type def entry which the weapon uses
 - "ammoRequired" : set to 1 if we require ammo. 
 - "ammoPerShot" : Amount of ammo to deduct per successful shot.
@@ -107,7 +123,43 @@ for delivering a lethal charge to other enemies.
 ### Overheating weapons
 Overheating of the weapon is done when both keys are set.
 - "overheatLength"	 : Time in which it takes for the weapon to cool down.
-- "overheatPerShot" : Time added against "overheat_length" when a shot is fired.
+- "overheatPerShot" : Time added against "overheatLength" when a shot is fired.
+
+### Mode switching
+- "altMode" : When 1, then secondary-attack will toggle between "def_fireInfo" and "def_altFireInfo" on primary-attack.
+
+### Act overrides
+Activities are used to decide which animation gets played and which actions are available for this object. If a model does not define them, you can override them here.
+This system is SUBJECT to change. It may be removed altogether when FTEQW adds a proper
+activity override format for existing models.
+- "actIdle" : Sequences to play when idle.
+- "actIdleEmpty" : Sequences to play when idle and with an empty clip.
+- "actDraw" : Sequences to play when drawing the weapon.
+- "actDrawEmpty" : Sequences to play when drawing the empty weapon.
+- "actHolster" : Sequences to play when holstering the weapon.
+- "actHolsterEmpty" : Sequences to play when holstering the empty weapon.
+- "actFire" : Sequences to play when "def_onFire" fires.
+- "actFireLast" : Sequences to play when firing the last shot in the weapon.
+- "actFireEmpty" : Sequences to play when failing to fire the weapon.
+- "actReload" : Sequences to play when reloading the weapon.
+- "actReloadEmpty" : Sequences to play when reloading the empty weapon.
+- "actReloadStart" : When set will play sequences for the start of a shotgun-style reload.
+- "actReloadEnd" : Like "actReloadStart" but for the end of the shotgun-style reload.
+- "actDelay" : Sequence to play while the weapon is charging (see "chargeTime")
+- "actLoop" : Sequence to play while the weapon is still charging, or in a firing-loop.
+- "actDetonate" : Sequences to play when "detonateOnFire" is triggered.
+- "actMeleeMiss" : Sequences to play when the melee attack fails.
+- "actMeleeHit" : Sequences to play when the melee attack hits.
+- "actFireStart" : Sequences to play at the start of a loop/charge attack.
+- "actFireStop" : Sequences to play at the end of a loop/charge attack.
+- "actRelease" : Sequences to play when "def_onRelease" fires.
+
+### Misc keys
+- "reloadTime" : Time in seconds between the start/end of a reload.
+- "detonateOnFire" : When set, will detonate all entities of specified classname.
+- "punchAngle" : Weapon punchangle to be applied to the camera when shooting "def_onFire".
+- "fireRate" : Firing rate between shots.
+- "semiAuto" : If not set to "1", the weapon will be fully automatic.
 
 @ingroup baseclass
 */
@@ -165,7 +217,6 @@ public:
 	nonvirtual void PlaySound(string, bool);
 
 	/* state */
-	nonvirtual void SetWeaponState(nsweapon_state_t);
 	nonvirtual nsweapon_state_t GetWeaponState(void);
 
 	virtual void SetAttackNext(float);
@@ -203,6 +254,8 @@ public:
 	nonvirtual void Attack(string);
 
 private:
+	/** Internal use Sets/overrides the weapon state. Subclasses track your own state! */
+	nonvirtual void _SetWeaponState(nsweapon_state_t);
 	/** Called to signal that the owner switched to this weapon. */
 	nonvirtual void _SwitchedToCallback(void);
 	/** Called to signal that the owner switched from this weapon. */
@@ -213,6 +266,7 @@ private:
 	nonvirtual void _WeaponStoppedFiring(void);
 	nonvirtual void _PrimaryAttack(void);
 	nonvirtual void _SecondaryAttack(void);
+	nonvirtual void _SwitchedWeaponMode(void);
 
 #ifdef SERVER
 	nonvirtual void _ReloadFinished(void);
@@ -254,12 +308,14 @@ private:
 	float m_jointTrailWorld;
 	float m_jointTrailView;
 	float m_flSpeedMod;
+	bool m_bAltModeSwitch;
 
 	/* cached fireInfo */
 	string m_fiDetonateOnFire;
 	float m_fiMeleeRange;
 	vector m_fiPunchAngle;
 	string m_fiSndFire;
+	string m_fiSndRelease;
 	string m_fiSndEmpty;
 	int m_fiAmmoType;
 	int m_fiAmmoPerShot;
@@ -272,6 +328,14 @@ private:
 	string m_fiSndFireLoop;
 	float m_flReloadSpeed;
 	float m_fiChargeTime;
+	bool m_bHasLoop;
+	string m_fiSndFireStart;
+	string m_fiSndFireStop;
+	string m_fiSndFireLoop;
+
+	/* overheating */
+	float m_fiOverheatLength;
+	float m_fiOverheatPoints;
 
 	NETWORKED_INT(m_iClip)
 	NETWORKED_INT(m_iClipSize)
@@ -282,6 +346,7 @@ private:
 	NETWORKED_FLOAT(m_flFireRate)
 	NETWORKED_FLOAT(m_dState)
 	NETWORKED_BOOL(m_bFiring)
+	NETWORKED_BOOL(m_flOverheating)
 };
 
 /* Helper functions for plugins, the rest of the codebase etc.
