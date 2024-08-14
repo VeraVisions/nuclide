@@ -1155,16 +1155,6 @@ NSClientPlayer::MakePlayer(void)
 		armor = 0;
 	}
 
-	if (m_activeWeapon) {
-		m_activeWeapon.Destroy();
-		m_activeWeapon = __NULL__;
-	}
-
-	if (m_itemList) {
-		m_itemList.Destroy();
-		m_itemList = __NULL__;
-	}
-
 	effects = 0;
 	alpha = 1.0f;
 	SetSolid(SOLID_SLIDEBOX);

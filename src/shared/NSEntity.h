@@ -438,6 +438,8 @@ bool isAlive(entity entityToCheck);
 
 bool isGodMode(entity entityToCheck);
 
+bool isClient(entity entityToCheck);
+
 bool isPlayer(entity entityToCheck);
 
 bool isSentient(entity entityToCheck);

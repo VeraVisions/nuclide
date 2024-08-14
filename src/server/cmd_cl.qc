@@ -19,27 +19,31 @@ Cmd_ParseClientCommand(NSClient sender, string cmd, int commandArguments)
 {
 	switch (argv(0)) {
 	case "say":
-		if (commandArguments == 2)
+		if (commandArguments == 2) {
 			g_grMode.ChatMessageAll(sender, argv(1));
-		else
+		} else {
 			g_grMode.ChatMessageAll(sender, substring(cmd, 4, -1));
+		}
 		break;
 	case "say_team":
-		if (commandArguments == 2)
+		if (commandArguments == 2) {
 			g_grMode.ChatMessageTeam(sender, argv(1));
-		else
+		} else {
 			g_grMode.ChatMessageTeam(sender, substring(cmd, 10, -2));
+		}
 		break;
 	case "spectate":
-		if (sender.classname != "player")
+		if (sender.classname != "player") {
 			break;
+		}
 
 		NSClientPlayer pl = (NSClientPlayer)sender;
 		pl.MakeSpectator();
 		break;
 	case "play":
-		if (sender.classname != "spectator")
+		if (sender.classname != "spectator") {
 			break;
+		}
 
 		EntityDef_SpawnClassname("player");
 		PutClientInServer();
@@ -63,16 +67,13 @@ Cmd_ParseClientCommand(NSClient sender, string cmd, int commandArguments)
 		NSActor_ListInventory((NSActor)self);
 		break;
 	case "giveInventoryItem":
-		NSActor player = (NSActor)self;
-		player.GiveItem(argv(1));
+		(NSActor)sender.GiveItem(argv(1));
 		break;
 	case "removeInventoryItem":
-		NSActor player = (NSActor)self;
-		player.RemoveItem(argv(1));
+		(NSActor)sender.RemoveItem(argv(1));
 		break;
 	case "removeAllInventoryItems":
-		NSActor player = (NSActor)self;
-		player.RemoveAllItems(false);
+		(NSActor)sender.RemoveAllItems(false);
 		break;
 	case "listAmmo":
 		Ammo_DebugList();

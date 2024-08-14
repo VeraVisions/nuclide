@@ -32,7 +32,7 @@ enumflags
 Environmental soundscape and reverb controller.
 
 # KEYS
- - "efx_file" : File to load EFX values from.
+ - "efx_file" : File to load EFX values from. See @decl_efx
  - "density" : See SetDensity()
  - "diffusion" : See SetDiffusion()
  - "gain" : See SetGain()
@@ -57,25 +57,6 @@ Environmental soundscape and reverb controller.
  - "room_rolloff_factor" : See SetRoomRolloffFactor()
  - "decay_limit" : See SetDecayHFLimit()
  - "radius" : See SetRadius()
-
-# HISTORY
-
-## Creative's Environmental Audio Extensions (EAX) {#eax}
-Creative Technology's **Environmental Audio Extensions**, also known as **EAX**, attempted to create more ambiance within video games by more accurately simulating a real-world audio environment.
-
-The release of Windows Vista deprecated the DirectSound3D API on which EAX relied on in 2007, so Creative Technology encouraged the move to OpenAL's EFX.
-
-## EFX
-
-EFX is a system in [OpenAL](https://www.openal.org/) that delivers high quality sound reverberation. It is the successor to @ref eax.
-
-**Nuclide** offers abstraction for new and old entities relying on **digital signal processing**.
-
-# NOTES
-Reverb effects only work with the OpenAL sound backend.
-
-# See Also
-- https://openal-soft.org/misc-downloads/Effects%20Extension%20Guide.pdf
 
 @ingroup shared
 @ingroup sound
@@ -214,6 +195,30 @@ private:
 	NETWORKED_INT(m_decayHFLimit)
 	NETWORKED_FLOAT(m_radius)
 };
+
+/** @defgroup decl_efx EFX Definition
+    @ingroup decl
+
+# HISTORY
+
+## Creative's Environmental Audio Extensions (EAX) {#eax}
+Creative Technology's **Environmental Audio Extensions**, also known as **EAX**, attempted to create more ambiance within video games by more accurately simulating a real-world audio environment.
+
+The release of Windows Vista deprecated the DirectSound3D API on which EAX relied on in 2007, so Creative Technology encouraged the move to OpenAL's EFX.
+
+## EFX
+
+EFX is a system in [OpenAL](https://www.openal.org/) that delivers high quality sound reverberation. It is the successor to @ref eax.
+
+# NOTES
+Reverb effects only work with the OpenAL sound backend.
+
+# See Also
+- https://openal-soft.org/misc-downloads/Effects%20Extension%20Guide.pdf
+@{
+*/
+
+/** @} */ // end of decl_efx
 
 #ifdef CLIENT
 void EFX_UpdateSoundScape(NSSoundScape);

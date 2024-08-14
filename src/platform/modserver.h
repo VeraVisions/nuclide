@@ -14,17 +14,18 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/** @defgroup modserver Mod Server
-    @ingroup menu
-    @brief Remotely available modifications, addons control/install functions
+/**
+@defgroup modserver Mod Server
+@ingroup menu
+@brief Remotely available modifications, addons control/install functions
 
-    The ModServer API manages the retrieval of custom game info
-	 (usually modifications) into the [Game Library](@ref gamelibrary).
+The ModServer API manages the retrieval of custom game info
+(usually modifications) into the [Game Library](@ref gamelibrary).
 
-	 This is kept separate, in case where
-	 connections to remote sources is disallowed.
+This is kept separate, in case where
+connections to remote sources is disallowed.
 
-   @{
+@{
 */
 
 /* Emscripten builds and mods? Forgetaboutit! */

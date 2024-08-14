@@ -1541,6 +1541,12 @@ isGodMode(entity entityToCheck)
 }
 
 bool
+isClient(entity entityToCheck)
+{
+	return (entityToCheck.flags & FL_CLIENT) ? (true) : (false);
+}
+
+bool
 isPlayer(entity entityToCheck)
 {
 	if (entityToCheck.flags & FL_CLIENT) {

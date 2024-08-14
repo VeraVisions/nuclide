@@ -1796,7 +1796,6 @@ NSMonster::Respawn(void)
 		RestoreAngles();
 		m_vecSequenceAngle = GetAngles();
 		SetOrigin(GetSpawnVector("origin"));
-		NSError("%S: %v, %v", classname, GetAngles(), GetOrigin());
 		DropToFloor();
 		SetOriginUnstick(origin);
 	}

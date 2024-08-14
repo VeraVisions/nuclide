@@ -18,17 +18,23 @@
 @brief Entity class declaration system.
 @ingroup shared
 @ingroup entities
+@ingroup decl
 
 # Introduction
 
+An 'entityDef' is a type of @ref decl containing spawn
+data. It is used for prefab entity configurations
+but is also the very definitions base for designing
+actors, items and weapons.
+
 These definitions are a further abstraction from how we view
 entity definitions. this system tries to be mostly compatible
-with the def system in id Tech 4 (Doom 3, Quake 4, Prey, etc.)
+with the def system in id Tech 4 [1] (Doom 3, Quake 4, Prey, etc.)
+but does not guarantee to be compatible as-is.
 
 The first references to such a system existing can be found when
 Team Fortress Software was working on Team Fortress 2, 
-originally on Quake II's engine.
-
+originally on Quake II's engine. [2]
 
 The gist is, that an entity def can set a base spawnclass (e.g. func_door)
 and populate it with key/value pairs.
@@ -74,8 +80,8 @@ entityDef foobar {
 
 # See Also
 
-- http://www.teamfortress.com/tfii/mc2mapc.html
-- http://icculus.org/~marco/notmine/id-dev/www.iddevnet.com/doom3/entitydefs.html
+- [1] http://www.teamfortress.com/tfii/mc2mapc.html
+- [2] http://icculus.org/~marco/notmine/id-dev/www.iddevnet.com/doom3/entitydefs.html
 
 @{
 

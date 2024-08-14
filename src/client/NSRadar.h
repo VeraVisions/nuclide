@@ -56,7 +56,6 @@ public:
 	virtual void RenderView(void);
 	virtual void SetupView(void);
 
-
 private:
 	/* internal */
 	vector m_vecOrigin;

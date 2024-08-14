@@ -14,20 +14,21 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/** @defgroup activitypub ActivityPub
-    @brief ActivityPub social networking integration
-    @ingroup menu
+/**
+@defgroup activitypub ActivityPub
+@brief ActivityPub social networking integration
+@ingroup menu
 
-    The console command `ap_userID` can be used
-    to set certain infokeys of the local user to mimic
-    that of a certain ActivityPub id. An example format
-    would look like: `/ap_userID @johndoe@example.com`
+The console command `ap_userID` can be used
+to set certain infokeys of the local user to mimic
+that of a certain ActivityPub id. An example format
+would look like: `/ap_userID @johndoe@example.com`
 
-    Currently we're not broadcasting the identity
-    because there's no real way of verifying who
-    you are without a central authority.
+Currently we're not broadcasting the identity
+because there's no real way of verifying who
+you are without a central authority.
 
-   @{
+@{
 */
 
 #define ACTIVITYPUB_ACCOUNTS 400

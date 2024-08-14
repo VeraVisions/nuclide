@@ -14,9 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/** @defgroup updates Update Manager
- *  @ingroup menu
-    @brief Game and content update handler functions.
+/**
+@defgroup updates Update Manager
+@ingroup menu
+@brief Game and content update handler functions.
 
 The updater is an abstraction of the engine its own package manager.
 Not all packages the engine offers are related to the game you're currently
@@ -30,7 +31,7 @@ The function Updates_GetPackageCount() will report the total amount of update pa
 
 Use Updates_GetInfo() to retrieve metadata about individual packages.
 
-   @{
+@{
 */
 
 /** Different options you can pass to Updates_GetInfo() to retrieve details about a given Update entry. */

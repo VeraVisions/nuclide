@@ -14,24 +14,24 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/** @defgroup maplibrary Map Library
-    @brief Locally installed maps/levels control functions
-    @ingroup menu
-    
-    Menus need to be aware of what levels aka maps are available for modes like
-    multiplayer. The MapLibrary is by configured to only parse levels from the
-    current game directory (much like GoldSrc) and optionally can blacklist
-    maps based on a variety of criteria which may be configurable at some point
-    in time.
-    
-    The menu needs to call MapLibrary_Init() at least once, after which you can
-    query the total amount of maps that are available via MapLibrary_GetMapCount().
-    
-    You can then iterate over the individual entries with MapLibrary_GetInfo().
-    
-    @{
+/**
+@defgroup maplibrary Map Library
+@brief Locally installed maps/levels control functions
+@ingroup menu
 
- */
+Menus need to be aware of what levels aka maps are available for modes like
+multiplayer. The MapLibrary is by configured to only parse levels from the
+current game directory (much like GoldSrc) and optionally can blacklist
+maps based on a variety of criteria which may be configurable at some point
+in time.
+
+The menu needs to call MapLibrary_Init() at least once, after which you can
+query the total amount of maps that are available via MapLibrary_GetMapCount().
+
+You can then iterate over the individual entries with MapLibrary_GetInfo().
+
+@{
+*/
 
 /** Options querying Map Library entries using `MapLibrary_GetInfo()`. */
 typedef enum

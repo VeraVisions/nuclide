@@ -236,6 +236,18 @@ CMD_ListModelFramegroups(void)
 	print("} framegroups_e;\n");
 }
 
+void
+NSWeapon_SelectWeapon(NSWeapon nextWeapon)
+{
+	if (!nextWeapon) {
+		pSeat->m_iHUDWeaponSelected = 0i;
+		return;
+	}
+
+	/* this gets passed in NSClientPlayer::ClientInputFrame() to the server */
+	pSeat->m_iHUDWeaponSelected = nextWeapon.GetSharedID();
+}
+
 /*
 =================
 Cmd_Parse
@@ -249,6 +261,7 @@ to handle it from there.
 bool
 Cmd_Parse(string sCMD)
 {
+	NSClient localPlayer = (NSClient)pSeat->m_ePlayer;
 	switch (argv(0)) {
 	case "listFramegroups":
 		CMD_ListModelFramegroups();
@@ -391,13 +404,13 @@ Cmd_Parse(string sCMD)
 		pSeat->m_iInputJump = false;
 		break;
 	case "weapnext":
-		NSWeapon_NextWeapon((NSClientPlayer)pSeat->m_ePlayer);
+		NSWeapon_SelectWeapon(localPlayer.GetNextWeapon());
 		break;
 	case "weapprev":
-		NSWeapon_PrevWeapon((NSClientPlayer)pSeat->m_ePlayer);
+		NSWeapon_SelectWeapon(localPlayer.GetPreviousWeapon());
 		break;
 	case "weaplast":
-		NSWeapon_LastWeapon((NSClientPlayer)pSeat->m_ePlayer);
+		NSWeapon_SelectWeapon(localPlayer.GetLastWeapon());
 		break;
 	case "+showscores":
 		pSeat->m_iScoresVisible = TRUE;

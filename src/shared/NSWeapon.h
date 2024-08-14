@@ -267,6 +267,13 @@ private:
 	nonvirtual void _PrimaryAttack(void);
 	nonvirtual void _SecondaryAttack(void);
 	nonvirtual void _SwitchedWeaponMode(void);
+	virtual void _AddedCallback(void);
+	virtual void _RemovedCallback(void);
+
+	/** Returns the weapon in the next slot of the owners' inventory. */
+	nonvirtual NSWeapon GetNextWeapon(void);
+	/** Returns the weapon in the previous slot of the owners' inventory. */
+	nonvirtual NSWeapon GetPreviousWeapon(void);
 
 #ifdef SERVER
 	nonvirtual void _ReloadFinished(void);
@@ -309,6 +316,9 @@ private:
 	float m_jointTrailView;
 	float m_flSpeedMod;
 	bool m_bAltModeSwitch;
+
+	NSWeapon m_nextWeapon;
+	NSWeapon m_prevWeapon;
 
 	/* cached fireInfo */
 	string m_fiDetonateOnFire;

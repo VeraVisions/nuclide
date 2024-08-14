@@ -45,7 +45,39 @@ NSWeapon::NSWeapon(void)
 }
 
 void
+NSWeapon::_AddedCallback(void)
+{
+	NSActor ourOwner = (NSActor)owner;
+	super::_AddedCallback();
+
+	if (!owner) {
+		return;
+	}
+
+	/* after being stored in someones inventory,
+	   re-sort our inventory according to their logic */
+	ourOwner.SortWeaponChain();
+}
+
+void
+NSWeapon::_RemovedCallback(void)
+{
+	if (owner) {
+		/* give the weapon a chance to clean up the owners inventory */
+		NSActor ourOwner = (NSActor)owner;
+		ourOwner.SortWeaponChain();
+	}
+
+	super::_RemovedCallback();
+}
+
+void
 NSWeapon::AddedToInventory(void)
+{
+}
+
+void
+NSWeapon::RemovedFromInventory(void)
 {
 }
 
@@ -60,11 +92,6 @@ NSWeapon::SwitchedFromWeapon(void)
 }
 
 void
-NSWeapon::RemovedFromInventory(void)
-{
-}
-
-void
 NSWeapon::_SetWeaponState(nsweapon_state_t newState)
 {
 	if (m_dState == newState) {
@@ -74,7 +101,7 @@ NSWeapon::_SetWeaponState(nsweapon_state_t newState)
 	m_dState = newState;
 
 #ifdef SERVER
-	printf("State changed to %s\n", nsweapon_state_s[newState]);
+	//printf("State changed to %s\n", nsweapon_state_s[newState]);
 #endif
 }
 
@@ -87,7 +114,6 @@ NSWeapon::GetWeaponState(void)
 void
 NSWeapon::UpdateFireInfoCache(void)
 {
-	string viewGeomset;
 	string ammoPerShot = GetSubDefString(m_strLastFireInfo, "ammoPerShot");
 	string reloadSpeed = GetSubDefString(m_strLastFireInfo, "reloadTime");
 	m_fiDetonateOnFire = GetSubDefString(m_strLastFireInfo, "detonateOnFire");
@@ -128,7 +154,7 @@ NSWeapon::UpdateFireInfoCache(void)
 	}
 
 #ifdef CLIENT
-	viewGeomset = GetSubDefString(m_strLastFireInfo, "view_geomset");
+	string viewGeomset = GetSubDefString(m_strLastFireInfo, "view_geomset");
 
 	if (viewGeomset) {
 		setcustomskin(pSeat->m_eViewModel, "", viewGeomset);
@@ -1421,7 +1447,6 @@ NSWeapon::Release(void)
 
 #ifdef SERVER
 	if (m_bFiring == true) {
-		NSClientPlayer ourOwner = (NSClientPlayer)GetOwner();
 
 		if (m_fiSndFireStop) {
 			ourOwner.StartSoundDef(m_fiSndFireStop, CHAN_WEAPON, true);
@@ -1567,6 +1592,18 @@ NSWeapon::CanReload(void)
 	return (true);
 }
 
+NSWeapon
+NSWeapon::GetNextWeapon(void)
+{
+	return (m_nextWeapon);
+}
+
+NSWeapon
+NSWeapon::GetPreviousWeapon(void)
+{
+	return (m_prevWeapon);
+}
+
 /* required because we might need to look it up inside the
 info for the primary attack mode. */
 static string
@@ -1657,9 +1694,6 @@ isWeaponDetonationTimed(string weaponDef)
 	return (isFused);
 }
 
-.NSWeapon m_nextWeapon;
-.NSWeapon m_prevWeapon;
-
 NSWeapon
 NSWeapon_SortWeaponChain(NSActor targetPlayer)
 {
@@ -1730,29 +1764,6 @@ NSWeapon_SortWeaponChain(NSActor targetPlayer)
 
 	return (firstWeapon);
 }
-
-#ifdef CLIENT
-bool
-NSWeapon_CanSwitch(NSActor pl)
-{
-	if (!pl.m_activeWeapon)
-		return false;
-
-	return true;
-}
-
-void
-NSWeapon_SelectWeapon(NSWeapon nextWeapon)
-{
-	if (!nextWeapon) {
-		pSeat->m_iHUDWeaponSelected = 0i;
-		return;
-	}
-
-	/* this gets passed in NSClientPlayer::ClientInputFrame() to the server */
-	pSeat->m_iHUDWeaponSelected = nextWeapon.GetSharedID();
-}
-#endif
 
 /** Select the next item in the list. */
 void

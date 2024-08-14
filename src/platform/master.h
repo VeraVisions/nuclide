@@ -14,12 +14,13 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*! @defgroup masterserver Master Server
-    @ingroup menu
-    @brief Master Server related functions.
+/*!
+@defgroup masterserver Master Server
+@ingroup menu
+@brief Master Server related functions.
 
-    Various functions to help communicate with the master
-    server(s).
+Various functions to help communicate with the master
+server(s).
 
 @{
 */

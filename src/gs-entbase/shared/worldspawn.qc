@@ -18,6 +18,13 @@
 void EntityDef_Init(void);
 void MapTweaks_Init(void);
 var int autocvar_sv_levelexec = 1;
+
+void serverinfoSet(string keyName, string setValue)
+{
+	//localcmd(sprintf("echo Server Info set: %S %S\n", keyName, setValue));
+	localcmd(sprintf("serverinfo %S %S\n", keyName, setValue));
+}
+
 #endif
 
 /*! \brief Shared-Entity: Game World */
@@ -55,10 +62,10 @@ This entity was introduced in Quake (1996).
 */
 
 #ifdef SERVER
-class worldspawn:NSEntity
+class NSWorldspawn:NSEntity
 {
 public:
-	void worldspawn(void);
+	void NSWorldspawn(void);
 
 	virtual void Spawned(void);
 	virtual void Save(float);
@@ -83,7 +90,7 @@ private:
 };
 
 void
-worldspawn::worldspawn(void)
+NSWorldspawn::NSWorldspawn(void)
 {
 	/* defaults */
 	m_flHDRIrisMinValue = 0.0;
@@ -110,7 +117,6 @@ worldspawn::worldspawn(void)
 
 	InitPrint("Map Initialization");
 	NSLog("Map: %s", mapname);
-	InitPrint("Game Map Init");
 
 	lightstyle(0, "m");
 	lightstyle(1, "mmnmmommommnonmmonqnmmo");
@@ -131,47 +137,46 @@ worldspawn::worldspawn(void)
 
 	//if (autocvar_sv_levelexec)
 	//	readcmd(sprintf("exec maps/%s.cfg\n", mapname));
-
-	InitStart();
 }
 
 void
-worldspawn::Spawned(void)
+NSWorldspawn::Spawned(void)
 {
 	super::Spawned();
+
 	touch = __NULL__;
 	blocked = __NULL__;
 
-	forceinfokey(world, "skyname", m_strSkyName);
-	forceinfokey(world, "chaptertitle", m_strChapterTitle);
-	forceinfokey(world, "ambientsound", m_strAmbientSound);
-	forceinfokey(world, "bgm", m_strBGMTrack);
+	serverinfoSet("skyname", m_strSkyName);
+	serverinfoSet("chaptertitle", m_strChapterTitle);
+	serverinfoSet("ambientsound", m_strAmbientSound);
+	serverinfoSet("bgm", m_strBGMTrack);
 
 	/* these set cvars so we kinda always want to set them to ~something~ */
-	forceinfokey(world, "hdr_iris_minvalue", ftos(m_flHDRIrisMinValue));
-	forceinfokey(world, "hdr_iris_maxvalue", ftos(m_flHDRIrisMaxValue));
-	forceinfokey(world, "hdr_iris_multiplier", ftos(m_flHDRIrisMultiplier));
-	forceinfokey(world, "hdr_iris_fade_up", ftos(m_flHDRIrisFadeUp));
-	forceinfokey(world, "hdr_iris_fade_down", ftos(m_flHDRIrisFadeDown));
-	forceinfokey(world, "hdr", ftos(m_bHDREnabled));
+	serverinfoSet("hdr_iris_minvalue", ftos(m_flHDRIrisMinValue));
+	serverinfoSet("hdr_iris_maxvalue", ftos(m_flHDRIrisMaxValue));
+	serverinfoSet("hdr_iris_multiplier", ftos(m_flHDRIrisMultiplier));
+	serverinfoSet("hdr_iris_fade_up", ftos(m_flHDRIrisFadeUp));
+	serverinfoSet("hdr_iris_fade_down", ftos(m_flHDRIrisFadeDown));
+	serverinfoSet("hdr", ftos(m_bHDREnabled));
 
 	/* don't want to litter serverinfo with '0' keys. */
 	if (m_bGameTitle) {
-		forceinfokey(world, "gametitle", ftos(m_bGameTitle));
+		serverinfoSet("gametitle", ftos(m_bGameTitle));
 	} else {
-		forceinfokey(world, "gametitle", "");
+		serverinfoSet("gametitle", "");
 	}
 
 	if (m_bStartDark) {
-		forceinfokey(world, "startdark", ftos(m_bStartDark));
+		serverinfoSet("startdark", ftos(m_bStartDark));
 	} else {
-		forceinfokey(world, "startdark", "");
+		serverinfoSet("startdark", "");
 	}
 
 	if (m_bLitWater) {
-		forceinfokey(world, "litwater", ftos(m_bLitWater));
+		serverinfoSet("litwater", ftos(m_bLitWater));
 	} else {
-		forceinfokey(world, "litwater", "");
+		serverinfoSet("litwater", "");
 	}
 
 #if 0
@@ -185,7 +190,7 @@ worldspawn::Spawned(void)
 }
 
 void
-worldspawn::SpawnKey(string strKey, string strValue)
+NSWorldspawn::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "skyname":
@@ -242,7 +247,7 @@ worldspawn::SpawnKey(string strKey, string strValue)
 }
 
 void
-worldspawn::Save(float handle)
+NSWorldspawn::Save(float handle)
 {
 	super::Save(handle);
 
@@ -262,7 +267,7 @@ worldspawn::Save(float handle)
 }
 
 void
-worldspawn::Restore(string strKey, string strValue)
+NSWorldspawn::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "m_strSkyName":
@@ -309,6 +314,23 @@ worldspawn::Restore(string strKey, string strValue)
 		break;
 	}
 }
+
+void
+worldspawn(void)
+{
+	NSWorldspawn ourWorld = spawn(NSWorldspawn);
+	ourWorld.pvsflags = PVSF_IGNOREPVS;
+
+	/* fill the delegate with spawndata */
+	if (__fullspawndata) {
+		for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
+			ourWorld.SpawnKey(argv(i), argv(i+1));
+		}
+	}
+
+	ourWorld.Spawned();
+}
+
 #endif
 
 #ifdef CLIENT

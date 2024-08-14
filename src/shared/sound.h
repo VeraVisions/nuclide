@@ -17,6 +17,7 @@
 /** @defgroup sounddefs Sound Definitions
     @brief SoundDef system functions.
     @ingroup sound
+    @ingroup decl
 
 # SoundDefs {#sounddefs}
 

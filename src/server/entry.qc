@@ -365,8 +365,6 @@ init_respawn(void)
 
 	NSLog("...%i entities spawned (%i inhibited)", g_ent_spawned, g_ent_spawned - endspawn);
 
-	InitEnd();
-
 	Nodes_Init();
 
 	remove(self);
@@ -679,7 +677,9 @@ CheckSpawn(void() spawnfunc)
 	NSEntity ent = (NSEntity)self;
 	string desiredClass = ent.classname;
 
-	if (ent.classname == "worldspawn") {
+	/* cancel out early */
+	if (ent == world) {
+		worldspawn();
 		return;
 	}
 

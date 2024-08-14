@@ -14,6 +14,18 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/** @defgroup decl Declaration Files
+    @brief External plain text files often containing groups of key-value pairs.
+
+The core of Nuclide embraces external files called 'declaration files'.
+They often contain key-value pairs, much like the entity spawn data
+within a level.
+
+You will commonly find them within `<gamedir>/decls/`.
+
+@{
+*/
+
 /** This class is responsible for handling groups of key/value pairs.
 
 It handles entity spawns, respawns,
@@ -22,6 +34,8 @@ which is our basic entity model.
 
 This is a very low-level class. You're never meant to use this.
 Use NSEntity as a basis for your classes.
+
+@ingroup decl
 */
 class
 NSDict
@@ -46,3 +60,5 @@ private:
 	nonvirtual void _AddRemoveKey(string, string, bool);
 	string m_strBody;
 };
+
+/** @} */ // end of decl

@@ -115,6 +115,15 @@ public:
 	nonvirtual void LaunchProjectile(string, bool, float);
 	nonvirtual bool PlantCharge(string);
 
+	/** Returns the first weapon in the chain, while ensuring the inventory is sorted. */
+	virtual NSWeapon SortWeaponChain(void);
+	/** Retrieve the 'next' weapon in the inventory, sorted by SortWeaponChain(). */
+	nonvirtual NSWeapon GetNextWeapon(void);
+	/** Retrieve the 'next' weapon in the inventory, sorted by SortWeaponChain(). */
+	nonvirtual NSWeapon GetPreviousWeapon(void);
+	/** Retrieve the 'last' weapon they had chosen. If not valid, returns the next best. */
+	nonvirtual NSWeapon GetLastWeapon(void);
+
 #ifdef SERVER
 	/* overrides */
 	virtual void Save(float);

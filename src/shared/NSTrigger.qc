@@ -427,7 +427,6 @@ NSTrigger::_TouchHandler(void)
 	}
 #endif
 
-
 	/* start touch in case we haven't */
 	if (m_beingTouched != true)
 		StartTouch(other);

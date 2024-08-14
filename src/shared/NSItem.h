@@ -116,9 +116,9 @@ public:
 
 private:
 	/** Called to signal that the owner added this weapon to their inventory. */
-	nonvirtual void _AddedCallback(void);
+	virtual void _AddedCallback(void);
 	/** Called to signal that the owner removed this weapon from their inventory. */
-	nonvirtual void _RemovedCallback(void);
+	virtual void _RemovedCallback(void);
 
 	int m_iClip;
 	int m_iWasDropped;

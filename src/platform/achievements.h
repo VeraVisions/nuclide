@@ -14,17 +14,18 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/** @defgroup achievements Achievements
- *  @brief Achievements, unlockables API reference.
- *  @ingroup menu
- *  
- *  The Achievements API manages the retrieval, storage and networking
- *  of game achievements.
- *  
- *  This is a work in progress.
- *  @{
- *
- */
+/**
+@defgroup achievements Achievements
+@brief Achievements, unlockables API reference.
+@ingroup menu
+
+The Achievements API manages the retrieval, storage and networking
+of game achievements.
+
+This is a work in progress.
+
+@{
+*/
 
 /** Data for an achievement definition. */
 typedef struct

@@ -787,7 +787,7 @@ NSActor::SwitchToBestWeapon(bool ignoreActive)
 			float weight;
 
 			if (toIgnore == weaponName) {
-				linkedList = linkedList.chain;
+				linkedList = (NSItem)linkedList.chain;
 				continue;
 			}
 
@@ -799,11 +799,11 @@ NSActor::SwitchToBestWeapon(bool ignoreActive)
 			}
 		}
 
-		linkedList = linkedList.chain;
+		linkedList = (NSItem)linkedList.chain;
 	}
 
 	if (bestWeapon) {
-		SwitchToExactWeapon(bestWeapon); 
+		SwitchToExactWeapon((NSWeapon)bestWeapon); 
 	}
 }
 
@@ -986,6 +986,129 @@ bool
 NSActor::AddItem(NSItem theItem)
 {
 	return (false);
+}
+
+NSWeapon
+NSActor::SortWeaponChain(void)
+{
+	NSWeapon itemChain = (NSWeapon)m_itemList;
+	int heighestSlot = -1i;
+	int heighestPos = -1i;
+	NSWeapon firstWeapon, lastWeapon;
+	int hudSlot, hudPos;
+
+	firstWeapon = lastWeapon = __NULL__;
+
+	if (!m_itemList) {
+		return __NULL__;
+	}
+
+	/* first we determine the range of our hud buckets. */
+	while (itemChain) {
+		if (itemChain.IsWeapon() == true) {
+			hudSlot = itemChain.GetDefInt("hudSlot");
+			hudPos = itemChain.GetDefInt("hudSlotPos");
+
+			if (hudSlot > heighestSlot) {
+				heighestSlot = hudSlot;
+			}
+			if (hudPos > heighestPos) {
+				heighestPos = hudPos;
+			}
+		}
+
+		itemChain = (NSWeapon)itemChain.chain;
+	}
+
+	for (int hS = 0i; hS <= heighestSlot; hS++) {
+		for (int hP = 0i; hP <= heighestPos; hP++) {
+			itemChain = (NSWeapon)m_itemList;
+
+			while (itemChain) {
+				if (itemChain.IsWeapon() == true) {
+					hudSlot = itemChain.GetDefInt("hudSlot");
+					hudPos = itemChain.GetDefInt("hudSlotPos");
+
+					if (hudSlot == hS && hudPos == hP) {
+						/* first weapon in the chain? */
+						if (!lastWeapon) {
+							firstWeapon = itemChain;
+							lastWeapon = firstWeapon;
+						} else {
+							/* assign this weapon to the last weapon of our chain. */
+							lastWeapon.m_nextWeapon = itemChain;
+							itemChain.m_prevWeapon = lastWeapon;
+							lastWeapon = itemChain;
+						}
+					}
+				}
+
+				itemChain = (NSWeapon)itemChain.chain;
+			}
+		}
+	}
+
+	/* test */
+	NSWeapon weaponTest = firstWeapon;
+	while (weaponTest) {
+		weaponTest = weaponTest.m_nextWeapon;
+	}
+
+	firstWeapon.m_prevWeapon = lastWeapon;
+
+	return (firstWeapon);
+}
+
+bool
+NSWeapon_CanSwitch(NSActor pl)
+{
+	if (!pl.m_activeWeapon)
+		return false;
+
+	return true;
+}
+
+NSWeapon
+NSActor::GetNextWeapon(void)
+{
+	NSWeapon firstWeapon;
+
+	if (NSWeapon_CanSwitch(this) == false) {
+		return (__NULL__);
+	}
+
+	firstWeapon = SortWeaponChain();
+
+	if (m_activeWeapon.m_nextWeapon) {
+		return (m_activeWeapon.m_nextWeapon);
+	} else {
+		return (firstWeapon);
+	}
+}
+
+NSWeapon
+NSActor::GetPreviousWeapon(void)
+{
+	NSWeapon firstWeapon;
+
+	if (NSWeapon_CanSwitch(this) == false) {
+		return (__NULL__);
+	}
+
+	firstWeapon = SortWeaponChain();
+
+	if (m_activeWeapon.m_prevWeapon) {
+		return (m_activeWeapon.m_prevWeapon);
+	} else {
+		return (firstWeapon);
+	}
+}
+
+NSWeapon
+NSActor::GetLastWeapon(void)
+{
+	/* TODO: Finish this */
+	return (m_activeWeapon);
 }
 
 void
