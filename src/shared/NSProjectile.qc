@@ -1072,9 +1072,6 @@ NSProjectile::EvaluateEntity(void)
 float
 NSProjectile::SendEntity(entity ePEnt, float flChanged)
 {
-	if (!modelindex)
-		return (0);
-
 	if (clienttype(ePEnt) != CLIENTTYPE_REAL)
 		return (0);
 
@@ -1141,6 +1138,12 @@ NSProjectile::predraw(void)
 	if (m_flLightRadius > 0.0f) {
 		dynamiclight_add(origin, m_flLightRadius, m_vecLightColor);
 	}
+
+	if (traileffectnum) {
+		if (oldorigin != g_vec_null)
+			trailparticles(traileffectnum, this, oldorigin, origin);
+	}
+	oldorigin = origin;
 
 	return super::predraw();
 }
