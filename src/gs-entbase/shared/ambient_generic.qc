@@ -307,7 +307,7 @@ ambient_generic::UseNormal(entity act, triggermode_t state)
 		multicast(origin, MULTICAST_PHS);
 	} else {
 		/* if the file doesn't exist, assume it's a SoundDef */
-		if (FileExists(strcat("sound/", m_strActivePath)) == false) {
+		if (fileExists(strcat("sound/", m_strActivePath)) == false) {
 			Sound_Play(this, CHAN_BODY, m_strActivePath);
 		} else {
 			sound(this, CHAN_BODY, m_strActivePath, m_flVolume, m_flRadius, m_flPitch);

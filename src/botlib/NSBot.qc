@@ -298,7 +298,7 @@ NSBot::RunAI(void)
 	input_angles = [0,0,0];
 
 	/* attempt to respawn when dead */
-	if (IsAlive() == false || health <= 0) {
+	if (IsAlive() == false) {
 		RouteClear();
 		WeaponAttack();
 		SetEnemy(__NULL__);
@@ -512,14 +512,16 @@ NSBot::PreFrame(void)
 void
 NSBot::PostFrame(void)
 {
-#if 0
-	/* we've picked something new up */
-	if (m_iOldItems != g_items) {
-		Weapons_SwitchBest(this);
-		BotEntLog("%S is now using %S (%d)", netname, g_weapons[activeweapon].name, activeweapon);
-		m_iOldItems = g_items;
+}
+
+void
+NSBot::AddedItemCallback(NSItem newItem)
+{
+	if (isBot(this) == true) {
+		SwitchToBestWeapon(false);
+	} else {
+		super::AddedItemCallback(newItem);
 	}
-#endif
 }
 
 void

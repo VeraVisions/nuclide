@@ -76,9 +76,6 @@ public:
 	virtual void SpawnKey(string,string);
 	virtual void Spawned(void);
 
-	/** Handles what happens before the entity gets removed from the client game. */
-	virtual void OnRemoveEntity(void);
-
 	/** Tells the engine to make the entity static, effectively making it inaccessible.
 		It will be removed from the game-logic but remain visible and it will retain its
 		collision and maintain the appearance it had before getting removed. */
@@ -291,8 +288,6 @@ public:
 	/** When called it'll make the entity uninteractable (but not destroy it).
 		It will hide it, as well as remove any collision associated with it. */
 	nonvirtual void Disappear(void);
-	/** When called, will remove the entity from the game entirely. */
-	nonvirtual void Destroy(void);
 	/** Call this if you want to update bounding boxes to take angles into account. */
 	nonvirtual void UpdateBounds(void);
 

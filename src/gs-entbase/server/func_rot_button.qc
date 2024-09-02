@@ -175,7 +175,7 @@ func_rot_button::Respawn(void)
 	ReleaseThink();
 
 	if (GetSpawnHealth() > 0) {
-		SetTakedamage(DAMAGE_YES);
+		MakeVulnerable();
 		SetHealth(GetSpawnHealth());
 	}
 
@@ -277,6 +277,6 @@ func_rot_button::TurnToggle(void)
 void
 func_rot_button::Death(entity inflictor, entity attacker, int damage, vector dir, int location)
 {
-	SetTakedamage(DAMAGE_NO);
+	MakeInvulnerable();
 	TurnToggle();
 }

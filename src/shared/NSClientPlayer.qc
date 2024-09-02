@@ -28,7 +28,7 @@ NSWeapon GetWeaponEntity(int theclientsnumber)
 	if (wasfreed(e))
 		e = world; //might have been freed...
 
-	return e; 
+	return e;
 }
 
 void
@@ -43,6 +43,17 @@ NSClientPlayer::SharedInputFrame(void)
 #ifdef SERVER
 	if (input_cursor_entitynumber) {
 		NSWeapon nextWeapon = GetWeaponEntity(input_cursor_entitynumber);
+
+		/* inpur_cursor_entity is not ours! */
+		if (nextWeapon.owner != this) {
+			return;
+		}
+		
+		if (nextWeapon.IsWeapon() == false) {
+			return;
+		}
+
+		input_cursor_entitynumber = 0;
 
 		if (nextWeapon != m_activeWeapon) {
 			if (nextWeapon && HasExactItem(nextWeapon)) {
@@ -117,8 +128,10 @@ NSClientPlayer::PreFrame(void)
 	NSItem itemEntry = m_itemList;
 
 	while (itemEntry) {
-		itemEntry.PredictPreFrame();
-		itemEntry = (NSItem)itemEntry.chain;
+		if (itemEntry.PredictPreFrame) {
+			itemEntry.PredictPreFrame();
+		}
+		itemEntry = (NSItem)itemEntry.m_nextItem;
 	}
 
 	if (vehicle) {
@@ -165,8 +178,10 @@ NSClientPlayer::PostFrame(void)
 	NSItem itemEntry = m_itemList;
 
 	while (itemEntry) {
-		itemEntry.PredictPostFrame();
-		itemEntry = (NSItem)itemEntry.chain;
+		if (itemEntry.PredictPostFrame) {
+			itemEntry.PredictPostFrame();
+		}
+		itemEntry = (NSItem)itemEntry.m_nextItem;
 	}
 
 	setorigin(this, origin);  /* update bounds */
@@ -216,7 +231,7 @@ NSClientPlayer::ProcessInput(void)
 
 	/* handle use button presses */
 	if (input_buttons & INPUT_USE)
-		InputUse_Down(); 
+		InputUse_Down();
 	else
 		InputUse_Up();
 
@@ -235,13 +250,17 @@ NSClientPlayer::ProcessInput(void)
 	/* can't fire when dead, sorry. */
 	if (health <= 0)
 		canfire = false;
-	
+
 	if (canfire == false) {
 		if (m_activeWeapon) {
 			m_activeWeapon.Release();
 		}
 
 		return;
+	}
+
+	if (wasfreed(m_activeWeapon)) {
+		m_activeWeapon = __NULL__;
 	}
 
 	if (!m_activeWeapon) {
@@ -439,8 +458,8 @@ NSClientPlayer::VehicleRelink(void)
 
 	if (m_activeWeapon != __NULL__ && oldWeapon == __NULL__) {
 		m_activeWeapon.SetOwner(this);
-		m_activeWeapon._SwitchedToCallback();
 		m_activeWeapon._AddedCallback();
+		m_activeWeapon._SwitchedToCallback();
 	}
 }
 
@@ -537,7 +556,7 @@ This is basically CSQC_Input_Frame! So games can override this as they please.
 */
 void
 NSClientPlayer::ClientInputFrame(void)
-{	
+{
 	if (Util_IsPaused())
 		return;
 
@@ -580,8 +599,9 @@ NSClientPlayer::ClientInputFrame(void)
 		input_buttons |= INPUT_JUMP;
 	}
 
-	if (pSeat->m_iHUDWeaponSelected)
+	if (pSeat->m_iHUDWeaponSelected) {
 		input_cursor_entitynumber = pSeat->m_iHUDWeaponSelected;
+	}
 
 	/* IW style stance override */
 	if (pSeat->m_dForceStance == STANCE_CROUCH) {
@@ -678,6 +698,9 @@ NSClientPlayer::ReceiveEntity(float new, float flChanged)
 
 	if (new) {
 		classname = "player";
+		mins = g_pmoveVars.GetStandingMins();
+		maxs = g_pmoveVars.GetStandingMaxs();
+		Physics_SetViewParms();
 	}
 
 	READENTITY_INT(modelindex, PLAYER_MODELINDEX)
@@ -690,6 +713,9 @@ NSClientPlayer::ReceiveEntity(float new, float flChanged)
 	READENTITY_FLOAT(m_vecRenderColor[1], PLAYER_MODELINDEX)
 	READENTITY_FLOAT(m_vecRenderColor[2], PLAYER_MODELINDEX)
 	READENTITY_FLOAT(m_flRenderAmt, PLAYER_MODELINDEX)
+
+	READENTITY_ENTNUM(m_flFirstInventoryItem, PLAYER_ITEMS)
+	READENTITY_ENTNUM(activeweapon, PLAYER_WEAPON)
 
 	READENTITY_COORD(origin[0], PLAYER_ORIGIN)
 	READENTITY_COORD(origin[1], PLAYER_ORIGIN)
@@ -713,8 +739,6 @@ NSClientPlayer::ReceiveEntity(float new, float flChanged)
 	READENTITY_INT(vv_flags, PLAYER_FLAGS)
 	READENTITY_INT(gflags, PLAYER_FLAGS)
 	READENTITY_INT(pmove_flags, PLAYER_FLAGS)
-	READENTITY_ENTNUM(m_flFirstInventoryItem, PLAYER_ITEMS)
-	READENTITY_ENTNUM(activeweapon, PLAYER_WEAPON)
 	READENTITY_BYTE(weaponframe, PLAYER_WEAPONFRAME)
 	READENTITY_BYTE(health, PLAYER_HEALTH)
 	READENTITY_BYTE(armor, PLAYER_HEALTH)
@@ -746,35 +770,24 @@ NSClientPlayer::ReceiveEntity(float new, float flChanged)
 		READENTITY_INT(m_iAmmoTypes[i], PLAYER_AMMOTYPES)
 	}
 
+	if (flChanged & PLAYER_SIZE) {
+		setsize(this, mins, maxs);
+	}
+
+	if (pSeat->m_ePlayer != this) {
+		return;
+	}
+	
 #ifdef VALVE
 	if (flChanged & PLAYER_AMMOTYPES) {
 		HUD_AmmoNotify_Check(this);
 	}
 #endif
 
-	/* the entities might not be networked yet,
-	   so by tracking desired entnums and updating
-	   them every time they change is sensible. */
-	if (flChanged & PLAYER_VEHICLE) {
-		vehicle = __NULL__;
-	}
 
-	if (flChanged & PLAYER_WEAPON) {
-		m_activeWeapon = __NULL__;
-	}
-
-	if (flChanged & PLAYER_ITEMS) {
-		m_itemList = __NULL__;
-	}
-
-	/* only do as often as necessary */
-	if ((vehicle_entnum && !vehicle) || (m_flFirstInventoryItem && !m_itemList) || (activeweapon && !m_activeWeapon))
-		VehicleRelink();
+	VehicleRelink();
 
 	PredictPreFrame();
-
-	if (flChanged & PLAYER_SIZE)
-		setsize(this, mins, maxs);
 
 	Relink();
 
@@ -796,13 +809,18 @@ void
 NSClientPlayer::PredictPreFrame(void)
 {
 	if (m_activeWeapon)
-		m_activeWeapon.PredictPreFrame();
+		if (m_activeWeapon.PredictPreFrame)
+			m_activeWeapon.PredictPreFrame();
 
 	SAVE_STATE(modelindex)
+	SAVE_STATE(colormap)
+	SAVE_STATE(m_iRenderMode)
+	SAVE_STATE(m_iRenderFX)
+	SAVE_STATE(m_vecRenderColor)
+	SAVE_STATE(m_flRenderAmt)
 	SAVE_STATE(origin)
 	SAVE_STATE(v_angle)
 	SAVE_STATE(angles)
-	SAVE_STATE(colormap)
 	SAVE_STATE(velocity)
 	SAVE_STATE(basevelocity)
 	SAVE_STATE(grapvelocity)
@@ -811,9 +829,8 @@ NSClientPlayer::PredictPreFrame(void)
 	SAVE_STATE(gflags)
 	SAVE_STATE(pmove_flags)
 	SAVE_STATE(m_itemList)
-	SAVE_STATE(m_activeWeapon)
+	SAVE_STATE(activeweapon)
 	SAVE_STATE(weaponframe)
-	SAVE_STATE(g_items)
 	SAVE_STATE(health)
 	SAVE_STATE(armor)
 	SAVE_STATE(mins)
@@ -834,6 +851,9 @@ NSClientPlayer::PredictPreFrame(void)
 	SAVE_STATE(spec_mode)
 	SAVE_STATE(spec_flags)
 
+	SAVE_STATE(m_itemList)
+	SAVE_STATE(m_activeWeapon)
+
 	for (int i = 0i; i < MAX_AMMO_TYPES; i++) {
 		m_iAmmoTypes_net[i] = m_iAmmoTypes[i];
 	}
@@ -853,10 +873,14 @@ void
 NSClientPlayer::PredictPostFrame(void)
 {
 	ROLL_BACK(modelindex)
+	ROLL_BACK(colormap)
+	ROLL_BACK(m_iRenderMode)
+	ROLL_BACK(m_iRenderFX)
+	ROLL_BACK(m_vecRenderColor)
+	ROLL_BACK(m_flRenderAmt)
 	ROLL_BACK(origin)
 	ROLL_BACK(v_angle)
 	ROLL_BACK(angles)
-	ROLL_BACK(colormap)
 	ROLL_BACK(velocity)
 	ROLL_BACK(basevelocity)
 	ROLL_BACK(grapvelocity)
@@ -865,9 +889,8 @@ NSClientPlayer::PredictPostFrame(void)
 	ROLL_BACK(gflags)
 	ROLL_BACK(pmove_flags)
 	ROLL_BACK(m_itemList)
-	ROLL_BACK(m_activeWeapon)
+	ROLL_BACK(activeweapon)
 	ROLL_BACK(weaponframe)
-	ROLL_BACK(g_items)
 	ROLL_BACK(health)
 	ROLL_BACK(armor)
 	ROLL_BACK(mins)
@@ -888,12 +911,19 @@ NSClientPlayer::PredictPostFrame(void)
 	ROLL_BACK(spec_mode)
 	ROLL_BACK(spec_flags)
 
+	ROLL_BACK(m_itemList)
+	ROLL_BACK(m_activeWeapon)
+
+	VehicleRelink();
+
 	for (int i = 0i; i < MAX_AMMO_TYPES; i++) {
 		m_iAmmoTypes[i] = m_iAmmoTypes_net[i];
 	}
 
 	if (m_activeWeapon) {
-		m_activeWeapon.PredictPostFrame();
+		if (m_activeWeapon.PredictPostFrame) {
+			m_activeWeapon.PredictPostFrame();
+		}
 	}
 }
 #else
@@ -1054,7 +1084,7 @@ NSClientPlayer::Respawn(void)
 /*
 =================
 NSClientPlayer::MakeTempSpectator
- 
+
 This is what dead players in round matches become, or when we spawn
 for the first time before selecting a loadout or something.
 =================
@@ -1067,7 +1097,7 @@ NSClientPlayer::MakeTempSpectator(void)
 	SetModelindex(0);
 	SetSolid(SOLID_NOT);
 	SetMovetype(MOVETYPE_NOCLIP);
-	SetTakedamage(DAMAGE_NO);
+	MakeInvulnerable();
 	maxspeed = 250;
 	AddVFlags(VFL_FAKESPEC);
 	max_health = health = 0;
@@ -1094,34 +1124,24 @@ NSClientPlayer::MakeTempSpectator(void)
 /*
 =================
 NSClientPlayer::MakeDead
- 
+
 Sets all the appropriate attributes to make sure we're dead
 =================
  */
 void
 NSClientPlayer::Death(entity inflictor, entity attacker, int damage, vector dir, int location)
 {
+	RemoveAllItems(false);
 	classname = "player";
 	health = max_health = 0;
 	armor = 0;
 	g_items = 0;
-
-	if (m_activeWeapon) {
-		m_activeWeapon.Destroy();
-		m_activeWeapon = __NULL__;
-	}
-
-	if (m_itemList) {
-		m_itemList.Destroy();
-		m_itemList = __NULL__;
-	}
-
 	effects = 0;
 	alpha = 1.0f;
 	SetModelindex(0);
 	SetMovetype(MOVETYPE_NONE);
 	SetSolid(SOLID_NOT);
-	SetTakedamage(DAMAGE_NO);
+	MakeInvulnerable();
 	viewzoom = 1.0;
 	view_ofs = [0,0,0];
 	vehicle = __NULL__;
@@ -1136,10 +1156,17 @@ NSClientPlayer::Death(entity inflictor, entity attacker, int damage, vector dir,
 	m_flDeathTime = time;
 }
 
+void
+NSClientPlayer::Spawned(void)
+{
+	super::Spawned();
+	MakePlayer();
+}
+
 /*
 =================
 NSClientPlayer::MakePlayer
- 
+
 True participating player, can walk around and everything.
 =================
  */
@@ -1159,16 +1186,18 @@ NSClientPlayer::MakePlayer(void)
 	alpha = 1.0f;
 	SetSolid(SOLID_SLIDEBOX);
 	SetMovetype(MOVETYPE_WALK);
-	SetTakedamage(DAMAGE_YES);
-	SetVelocity([0,0,0]);
+	MakeVulnerable();
+	SetSize(VEC_HULL_MIN, VEC_HULL_MAX);
+	ClearVelocity();
 	viewzoom = 1.0;
 	vehicle = __NULL__;
 	SetGravity(1.0f);
 	SendFlags = UPDATE_ALL;
 	customphysics = Empty;
 	EnableBleeding();
-	scale = 1.0f;
-	SetSize(VEC_HULL_MIN, VEC_HULL_MAX);
+	SetScale(1.0f);
+	Physics_SetViewParms();
+	SetSize(g_pmoveVars.GetStandingMins(), g_pmoveVars.GetStandingMaxs());
 	forceinfokey(this, "*spectator", "0");
 	forceinfokey(this, "*deaths", ftos(deaths));
 	forceinfokey(this, "*dead", "0");
@@ -1181,7 +1210,7 @@ NSClientPlayer::MakeSpectator(void)
 	ClientKill();
 	MakeTempSpectator();
 	team = 0;
-	forceinfokey(this, "*team", ftos(team)); 
+	forceinfokey(this, "*team", ftos(team));
 }
 
 /*
@@ -1200,15 +1229,12 @@ NSClientPlayer::EvaluateEntity(void)
 
 	EVALUATE_FIELD(modelindex, PLAYER_MODELINDEX)
 	EVALUATE_FIELD(colormap, PLAYER_MODELINDEX)
-
-	/* crap the render mode updates in here */
 	EVALUATE_FIELD(m_iRenderMode, PLAYER_MODELINDEX)
 	EVALUATE_FIELD(m_iRenderFX, PLAYER_MODELINDEX)
 	EVALUATE_VECTOR(m_vecRenderColor, 0, PLAYER_MODELINDEX)
 	EVALUATE_VECTOR(m_vecRenderColor, 1, PLAYER_MODELINDEX)
 	EVALUATE_VECTOR(m_vecRenderColor, 2, PLAYER_MODELINDEX)
 	EVALUATE_FIELD(m_flRenderAmt, PLAYER_MODELINDEX)
-
 	EVALUATE_VECTOR(origin, 0, PLAYER_ORIGIN)
 	EVALUATE_VECTOR(origin, 1, PLAYER_ORIGIN)
 	EVALUATE_VECTOR(origin, 2, PLAYER_ORIGIN)
@@ -1299,6 +1325,9 @@ NSClientPlayer::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_FLOAT(m_vecRenderColor[2], PLAYER_MODELINDEX)
 	SENDENTITY_FLOAT(m_flRenderAmt, PLAYER_MODELINDEX)
 
+	SENDENTITY_ENTITY(m_itemList, PLAYER_ITEMS)
+	SENDENTITY_ENTITY(m_activeWeapon, PLAYER_WEAPON)
+
 	SENDENTITY_COORD(origin[0], PLAYER_ORIGIN)
 	SENDENTITY_COORD(origin[1], PLAYER_ORIGIN)
 	SENDENTITY_COORD(origin[2], PLAYER_ORIGIN)
@@ -1321,8 +1350,6 @@ NSClientPlayer::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_INT(vv_flags, PLAYER_FLAGS)
 	SENDENTITY_INT(gflags, PLAYER_FLAGS)
 	SENDENTITY_INT(pmove_flags, PLAYER_FLAGS)
-	SENDENTITY_ENTITY(m_itemList, PLAYER_ITEMS)
-	SENDENTITY_ENTITY(m_activeWeapon, PLAYER_WEAPON)
 	SENDENTITY_BYTE(weaponframe, PLAYER_WEAPONFRAME)
 	SENDENTITY_BYTE(health, PLAYER_HEALTH)
 	SENDENTITY_BYTE(armor, PLAYER_HEALTH)
@@ -1439,7 +1466,7 @@ NSClientPlayer::InputUse_Down(void)
 	} else if (!(vv_flags & VFL_USE_RELEASED)) {
 		return;
 	}
-	
+
 	vector vecSource;
 	entity eRad;
 	bool found_use = false;
@@ -1528,7 +1555,7 @@ NSClientPlayer::Footsteps_Update(void)
 		StartSoundDef("Player.Wade", CHAN_BODY, true);
 		step_time = time + 2.0f;
 		return;
-	}  else if (waterlevel == 3) {
+	} else if (waterlevel == 3) {
 		StartSoundDef("Player.Swim", CHAN_BODY, true);
 		step_time = time + 2.0f;
 		return;
@@ -1584,31 +1611,27 @@ void
 NSClientPlayer::Damage(entity inflictor, entity attacker, NSDict damageDecl, float damageScale, vector dmgDir, vector hitLocation)
 {
 #ifdef SERVER
-	super::Damage(inflictor, attacker, damageDecl, damageScale, dmgDir, hitLocation);
-
-#if 0
+	float armorDamage = 0;
 	bool isFriendlyFire = false;
-
-	/* Damage */
-	NSSurfacePropEntity eTarget = (NSSurfacePropEntity)t;
+	string damageString = ReadString(damageDecl.GetString("damage"));
+	float damagePoints = (float)rint(stof(damageString) * damageScale);
+	NSSurfacePropEntity ourAttacker = (NSSurfacePropEntity)attacker;
 
 	/* sanity check */
-	if (t.takedamage == DAMAGE_NO)
+	if (isAlive(this) == false) {
 		return;
-
-	/* for armor damage */
-	float flArmor = 0;
-	float flNewDamage = 0;
+	}
 
 	/* player god mode */
-	if (eTarget.flags & FL_CLIENT && eTarget.flags & FL_GODMODE)
+	if (damageDecl.GetBool("noGod") == false && isGodMode(this)) {
 		return;
+	}
 
 	/* friendly fire check */
-	if (t != c) {
-		if (IsTeamplay()) {
-			if (t.flags & FL_CLIENT && c.flags & FL_CLIENT) {
-				if (t.team == c.team) {
+	if (this != attacker) {
+		if (g_grMode.IsTeamplay()) {
+			if (flags & FL_CLIENT && attacker.flags & FL_CLIENT) {
+				if (team == attacker.team) {
 					if (autocvar_sv_friendlyFire == false) {
 						return;
 					} else {
@@ -1620,66 +1643,61 @@ NSClientPlayer::Damage(entity inflictor, entity attacker, NSDict damageDecl, flo
 	}
 
 	/* already dead, please avoid recursion */
-	if (eTarget.GetHealth() <= 0)
+	if (GetHealth() <= 0) {
 		return;
+	}
 
-	/* before any calculation is done... */
-	g_dmg_iRealDamage = dmg;
+	/* don't allow any damage */
+	if (g_grMode.PlayerCanAttack(this) == false) {
+		return;
+	}
 
-	/* only clients have armor */
-	if (eTarget.flags & FL_CLIENT) {
-		NSClientPlayer tp = (NSClientPlayer)t;
+	/* skip armor */
+	if (damageDecl.GetBool("noArmor") == false) {
+		if (armor && damagePoints > 0) {
+			float postArmorDamage = 0;
+			float armorRatio = GetDefFloat("armorProtection");
+			float armorBonus = GetDefFloat("armorBonus");
 
-		/* don't allow any damage */
-		if (PlayerCanAttack(tp) == false) {
-			g_dmg_eAttacker = (NSEntity)c;
-			g_dmg_eTarget = (NSEntity)t;
-			g_dmg_iDamage = 0;
-			g_dmg_iHitBody = 0;
-			g_dmg_iFlags = type;
-			g_dmg_iWeapon = w;
-			return;
-		}
-
-		/* skip armor */
-		if not (type & DMG_SKIP_ARMOR)
-		if (tp.armor && dmg > 0) {
-
-			flNewDamage = dmg * 0.2;
-			flArmor = (dmg - flNewDamage) * 0.5;
-
-			if (flArmor > tp.armor) {
-				flArmor = tp.armor;
-				flArmor *= (1/0.5);
-				flNewDamage = dmg - flArmor;
-				tp.armor = 0;
-			} else {
-				tp.armor -= flArmor;
+			/* amount of damage the armor absorbs */
+			if (armorRatio <= 0.0) {
+				armorRatio = 0.2;
 			}
-			dmg = flNewDamage;
+
+			/* armor point cost for health point */
+			if (armorBonus <= 0.0) {
+				armorBonus = 1.0;
+			}
+
+			/* damage to be applied to health value */
+			postArmorDamage = (damagePoints * armorRatio);
+
+			/* figure out how much to deduct from armor. */
+			armorDamage = (damagePoints - postArmorDamage) * armorBonus;
+
+			/* to-deduct value exceeds armor value */
+			if (armorDamage > armor) {
+				/* armor points left will cushion whatever damage they can */
+				armorDamage = armor * (1.0 / armorBonus);
+				armor = 0;
+				postArmorDamage = (damagePoints - armorDamage);
+			} else {
+				armor -= armorDamage;
+			}
+
+			damagePoints = postArmorDamage;
 		}
 	}
 
-	dmg = rint(dmg);
-	eTarget.SetHealth(eTarget.GetHealth() - dmg);
-
-	/* the globals... */
-	g_dmg_eAttacker = (NSEntity)c;
-	g_dmg_eTarget = (NSEntity)t;
-	g_dmg_iDamage = dmg;
-	g_dmg_iHitBody = trace_surface_id;
-	g_dmg_iFlags = type;
-	g_dmg_iWeapon = w;
-
-	NSLog("%S does %d dmg to %S (body: %d, flags: %i, weapon: %i)",
-		c.classname, dmg, t.classname, g_dmg_iHitBody, g_dmg_iFlags, g_dmg_iWeapon);
+	damagePoints = rint(damagePoints);
+	SetHealth(GetHealth() - damagePoints);
 
 	/* friendly fire penalty */
 	if (isFriendlyFire) {
 		int lastDmg = 0i;
-		NSClientPlayer plC = (NSClientPlayer)c;
+		NSClientPlayer plC = (NSClientPlayer)attacker;
 		lastDmg = plC.m_iFriendlyDMG;
-		plC.m_iFriendlyDMG += dmg;
+		plC.m_iFriendlyDMG += damagePoints;
 
 		/* kick the client. */
 		if (plC.m_iFriendlyDMG >= autocvar_mp_td_dmgToKick) {
@@ -1692,13 +1710,13 @@ NSClientPlayer::Damage(entity inflictor, entity attacker, NSDict damageDecl, flo
 			}
 		}
 
-		bprint(PRINT_CHAT, sprintf("%s ^7attacked a teammate.\n", c.netname));
+		bprint(PRINT_CHAT, sprintf("%s ^7attacked a teammate.\n", attacker.netname));
 	}
 
-	if (dmg > 0 || flArmor > 0) {
+	if (damagePoints > 0 || armorDamage > 0) {
 		vector dmg_origin;
 
-		if (c.origin == [0,0,0])
+		if (attacker.origin == [0,0,0])
 			dmg_origin = g_dmg_eTarget.origin;
 		else
 			dmg_origin = g_dmg_eAttacker.origin;
@@ -1708,7 +1726,7 @@ NSClientPlayer::Damage(entity inflictor, entity attacker, NSDict damageDecl, flo
 		WriteCoord(MSG_MULTICAST, dmg_origin[0]);
 		WriteCoord(MSG_MULTICAST, dmg_origin[1]);
 		WriteCoord(MSG_MULTICAST, dmg_origin[2]);
-		WriteInt(MSG_MULTICAST, g_dmg_iRealDamage);
+		WriteInt(MSG_MULTICAST, damagePoints);
 		WriteInt(MSG_MULTICAST, g_dmg_iFlags);
 		msg_entity = g_dmg_eTarget;
 		multicast([0,0,0], MULTICAST_ONE_R);
@@ -1720,25 +1738,28 @@ NSClientPlayer::Damage(entity inflictor, entity attacker, NSDict damageDecl, flo
 		if ((g_dmg_eAttacker.flags & FL_CLIENT) && (g_dmg_eTarget != g_dmg_eAttacker)) {
 			WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 			WriteByte(MSG_MULTICAST, EV_HITNOTIFY);
-			msg_entity = c;
+			msg_entity = attacker;
 			multicast([0,0,0], MULTICAST_ONE);
 		}
 	}
 
+	damageDecl.AddKey("location", vtos(hitLocation));
+
 	/* they died */
-	if (eTarget.GetHealth() <= 0) {
-		if (eTarget.flags & FL_CLIENT) {
-			PlayerDeath(eTarget);
-		} else {
-			eTarget.Death();
-		}
+	if (GetHealth() <= 0) {
+		g_grMode.PlayerDeath(this, attacker, damageDecl);
+		Death(inflictor, attacker, (int)damagePoints, dmgDir, 0i);
 	} else {
-		if (eTarget.flags & FL_CLIENT) {
-			PlayerPain(eTarget);
-		} else {
-			eTarget.Pain();
-		}
+		g_grMode.PlayerPain(this, attacker, damageDecl);
+		Pain(inflictor, attacker, (int)damagePoints, dmgDir, 0i);
 	}
 #endif
-#endif
 }
+
+#ifdef SERVER
+void
+obituary(string targetName, string attackerName, string weaponDef, string meansOfDeath)
+{
+
+}
+#endif

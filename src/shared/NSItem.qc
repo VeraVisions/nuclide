@@ -17,7 +17,6 @@
 void
 NSItem::NSItem(void)
 {
-#ifdef SERVER
 	m_iClip = -1;
 	m_iWasDropped = 0i;
 	m_iInvItem = 0i;
@@ -30,7 +29,8 @@ NSItem::NSItem(void)
 	m_bNoTouch = false;
 	m_bInvCarry = false;
 	m_strRequires = __NULL__;
-#endif
+	m_nextItem = __NULL__;
+	owner = __NULL__;
 }
 
 #ifdef SERVER
@@ -75,7 +75,12 @@ NSItem::SpawnKey(string strKey, string strValue)
 	if (substring(strKey, 0, 8) == "inv_ammo") {
 		string ammoType = substring(strKey, 4, -1);
 		int ammoID = ammoNumForName(ammoType);
-		m_GiveAmmo[ammoID] = stoi(strValue);
+
+		if (ammoID != -1) {
+			m_GiveAmmo[ammoID] = stoi(unpackStringCommand(strValue));
+		} else {
+			NSError("Item %S tries to give invalid ammo type %S", declclass, ammoType);
+		}
 		return;
 	}
 
@@ -315,45 +320,47 @@ NSItem::BecomePickup(void)
 float
 NSItem::SendEntity(entity ePEnt, float flChanged)
 {
+	/* item is in somebody elses inventory. */
+	if (InInventory() == true && ePEnt != GetOwner()) {
+		return (false);
+	}
+
 	WriteByte(MSG_ENTITY, ENT_ITEM);
 
 	/* broadcast how much data is expected to be read */
 	WriteFloat(MSG_ENTITY, flChanged);
 
-	if (1) {
-		SENDENTITY_COORD(origin[0], ITEMFL_CHANGED_ORIGIN_X)
-		SENDENTITY_COORD(origin[1], ITEMFL_CHANGED_ORIGIN_Y)
-		SENDENTITY_COORD(origin[2], ITEMFL_CHANGED_ORIGIN_Z)
-		SENDENTITY_ANGLE(angles[0], ITEMFL_CHANGED_ANGLES_X)
-		SENDENTITY_ANGLE(angles[1], ITEMFL_CHANGED_ANGLES_Y)
-		SENDENTITY_ANGLE(angles[2], ITEMFL_CHANGED_ANGLES_Z)
-		SENDENTITY_SHORT(entityDefID, ITEMFL_CHANGED_MODELINDEX)
-		SENDENTITY_SHORT(modelindex, ITEMFL_CHANGED_MODELINDEX)
-		SENDENTITY_BYTE(solid, ITEMFL_CHANGED_SOLID)
-		SENDENTITY_BYTE(movetype, ITEMFL_CHANGED_FLAGS)
-		SENDENTITY_INT(flags, ITEMFL_CHANGED_FLAGS)
-		SENDENTITY_INT(vv_flags, ITEMFL_CHANGED_FLAGS)
-		SENDENTITY_COORD(mins[0], ITEMFL_CHANGED_SIZE)
-		SENDENTITY_COORD(mins[1], ITEMFL_CHANGED_SIZE)
-		SENDENTITY_COORD(mins[2], ITEMFL_CHANGED_SIZE)
-		SENDENTITY_COORD(maxs[0], ITEMFL_CHANGED_SIZE)
-		SENDENTITY_COORD(maxs[1], ITEMFL_CHANGED_SIZE)
-		SENDENTITY_COORD(maxs[2], ITEMFL_CHANGED_SIZE)
-		SENDENTITY_BYTE(frame, ITEMFL_CHANGED_FRAME)
-		SENDENTITY_FLOAT(skin, ITEMFL_CHANGED_SKIN)
-		SENDENTITY_FLOAT(effects, ITEMFL_CHANGED_EFFECTS)
-		SENDENTITY_FLOAT(scale, ITEMFL_CHANGED_SCALE)
-		SENDENTITY_COORD(velocity[0], ITEMFL_CHANGED_VELOCITY_X)
-		SENDENTITY_COORD(velocity[1], ITEMFL_CHANGED_VELOCITY_Y)
-		SENDENTITY_COORD(velocity[2], ITEMFL_CHANGED_VELOCITY_Z)
-		SENDENTITY_COORD(avelocity[0], ITEMFL_CHANGED_ANGULARVELOCITY)
-		SENDENTITY_COORD(avelocity[1], ITEMFL_CHANGED_ANGULARVELOCITY)
-		SENDENTITY_COORD(avelocity[2], ITEMFL_CHANGED_ANGULARVELOCITY)
-		SENDENTITY_ENTITY(chain, ITEMFL_CHANGED_CHAIN)
-		SENDENTITY_ENTITY(owner, ITEMFL_CHANGED_CHAIN)
-	} else {
-		/* the item is in the inventory */
-	}
+	SENDENTITY_ENTITY(m_nextItem, ITEMFL_CHANGED_CHAIN)
+	SENDENTITY_ENTITY(owner, ITEMFL_CHANGED_CHAIN)
+	SENDENTITY_COORD(origin[0], ITEMFL_CHANGED_ORIGIN_X)
+	SENDENTITY_COORD(origin[1], ITEMFL_CHANGED_ORIGIN_Y)
+	SENDENTITY_COORD(origin[2], ITEMFL_CHANGED_ORIGIN_Z)
+	SENDENTITY_ANGLE(angles[0], ITEMFL_CHANGED_ANGLES_X)
+	SENDENTITY_ANGLE(angles[1], ITEMFL_CHANGED_ANGLES_Y)
+	SENDENTITY_ANGLE(angles[2], ITEMFL_CHANGED_ANGLES_Z)
+	SENDENTITY_FLOAT(entityDefID, ITEMFL_CHANGED_MODELINDEX)
+	SENDENTITY_SHORT(modelindex, ITEMFL_CHANGED_MODELINDEX)
+	SENDENTITY_BYTE(solid, ITEMFL_CHANGED_SOLID)
+	SENDENTITY_BYTE(movetype, ITEMFL_CHANGED_FLAGS)
+	SENDENTITY_INT(flags, ITEMFL_CHANGED_FLAGS)
+	SENDENTITY_INT(modelflags, ITEMFL_CHANGED_FLAGS)
+	SENDENTITY_INT(vv_flags, ITEMFL_CHANGED_FLAGS)
+	SENDENTITY_COORD(mins[0], ITEMFL_CHANGED_SIZE)
+	SENDENTITY_COORD(mins[1], ITEMFL_CHANGED_SIZE)
+	SENDENTITY_COORD(mins[2], ITEMFL_CHANGED_SIZE)
+	SENDENTITY_COORD(maxs[0], ITEMFL_CHANGED_SIZE)
+	SENDENTITY_COORD(maxs[1], ITEMFL_CHANGED_SIZE)
+	SENDENTITY_COORD(maxs[2], ITEMFL_CHANGED_SIZE)
+	SENDENTITY_BYTE(frame, ITEMFL_CHANGED_FRAME)
+	SENDENTITY_FLOAT(skin, ITEMFL_CHANGED_SKIN)
+	SENDENTITY_FLOAT(effects, ITEMFL_CHANGED_EFFECTS)
+	SENDENTITY_FLOAT(scale, ITEMFL_CHANGED_SCALE)
+	SENDENTITY_COORD(velocity[0], ITEMFL_CHANGED_VELOCITY_X)
+	SENDENTITY_COORD(velocity[1], ITEMFL_CHANGED_VELOCITY_Y)
+	SENDENTITY_COORD(velocity[2], ITEMFL_CHANGED_VELOCITY_Z)
+	SENDENTITY_COORD(avelocity[0], ITEMFL_CHANGED_ANGULARVELOCITY)
+	SENDENTITY_COORD(avelocity[1], ITEMFL_CHANGED_ANGULARVELOCITY)
+	SENDENTITY_COORD(avelocity[2], ITEMFL_CHANGED_ANGULARVELOCITY)
 
 	return (1);
 }
@@ -361,6 +368,8 @@ NSItem::SendEntity(entity ePEnt, float flChanged)
 void
 NSItem::EvaluateEntity(void)
 {
+	EVALUATE_FIELD(m_nextItem, ITEMFL_CHANGED_CHAIN)
+	EVALUATE_FIELD(owner, ITEMFL_CHANGED_CHAIN)
 	EVALUATE_VECTOR(origin, 0, ITEMFL_CHANGED_ORIGIN_X)
 	EVALUATE_VECTOR(origin, 1, ITEMFL_CHANGED_ORIGIN_Y)
 	EVALUATE_VECTOR(origin, 2, ITEMFL_CHANGED_ORIGIN_Z)
@@ -368,9 +377,11 @@ NSItem::EvaluateEntity(void)
 	EVALUATE_VECTOR(angles, 1, ITEMFL_CHANGED_ANGLES_Y)
 	EVALUATE_VECTOR(angles, 2, ITEMFL_CHANGED_ANGLES_Z)
 	EVALUATE_FIELD(modelindex, ITEMFL_CHANGED_MODELINDEX)
+	EVALUATE_FIELD(entityDefID, ITEMFL_CHANGED_MODELINDEX)
 	EVALUATE_FIELD(solid, BASEFL_CHANGED_MODELINDEX)
 	EVALUATE_FIELD(movetype, ITEMFL_CHANGED_FLAGS)
 	EVALUATE_FIELD(flags, ITEMFL_CHANGED_FLAGS)
+	EVALUATE_FIELD(modelflags, ITEMFL_CHANGED_FLAGS)
 	EVALUATE_FIELD(vv_flags, ITEMFL_CHANGED_FLAGS)
 	EVALUATE_VECTOR(mins, 0, ITEMFL_CHANGED_SIZE)
 	EVALUATE_VECTOR(mins, 1, ITEMFL_CHANGED_SIZE)
@@ -388,8 +399,6 @@ NSItem::EvaluateEntity(void)
 	EVALUATE_VECTOR(avelocity, 0, ITEMFL_CHANGED_ANGULARVELOCITY)
 	EVALUATE_VECTOR(avelocity, 1, ITEMFL_CHANGED_ANGULARVELOCITY)
 	EVALUATE_VECTOR(avelocity, 2, ITEMFL_CHANGED_ANGULARVELOCITY)
-	EVALUATE_FIELD(chain, ITEMFL_CHANGED_CHAIN)
-	EVALUATE_FIELD(owner, ITEMFL_CHANGED_CHAIN)
 }
 #endif
 
@@ -397,17 +406,20 @@ NSItem::EvaluateEntity(void)
 void
 NSItem::ReceiveEntity(float flNew, float flChanged)
 {
+	READENTITY_ENTNUM(chain_entnum, ITEMFL_CHANGED_CHAIN)
+	READENTITY_ENTNUM(owner_entnum, ITEMFL_CHANGED_CHAIN)
 	READENTITY_COORD(origin[0], ITEMFL_CHANGED_ORIGIN_X)
 	READENTITY_COORD(origin[1], ITEMFL_CHANGED_ORIGIN_Y)
 	READENTITY_COORD(origin[2], ITEMFL_CHANGED_ORIGIN_Z)
 	READENTITY_ANGLE(angles[0], ITEMFL_CHANGED_ANGLES_X)
 	READENTITY_ANGLE(angles[1], ITEMFL_CHANGED_ANGLES_Y)
 	READENTITY_ANGLE(angles[2], ITEMFL_CHANGED_ANGLES_Z)
-	READENTITY_SHORT(entityDefID, ITEMFL_CHANGED_MODELINDEX)
+	READENTITY_FLOAT(entityDefID, ITEMFL_CHANGED_MODELINDEX)
 	READENTITY_SHORT(modelindex, ITEMFL_CHANGED_MODELINDEX)
 	READENTITY_BYTE(solid, ITEMFL_CHANGED_SOLID)
 	READENTITY_BYTE(movetype, ITEMFL_CHANGED_FLAGS)
 	READENTITY_INT(flags, ITEMFL_CHANGED_FLAGS)
+	READENTITY_INT(modelflags, ITEMFL_CHANGED_FLAGS)
 	READENTITY_INT(vv_flags, ITEMFL_CHANGED_FLAGS)
 	READENTITY_COORD(mins[0], ITEMFL_CHANGED_SIZE)
 	READENTITY_COORD(mins[1], ITEMFL_CHANGED_SIZE)
@@ -425,24 +437,25 @@ NSItem::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_COORD(avelocity[0], ITEMFL_CHANGED_ANGULARVELOCITY)
 	READENTITY_COORD(avelocity[1], ITEMFL_CHANGED_ANGULARVELOCITY)
 	READENTITY_COORD(avelocity[2], ITEMFL_CHANGED_ANGULARVELOCITY)
-	READENTITY_ENTNUM(chain_entnum, ITEMFL_CHANGED_CHAIN)
-	READENTITY_ENTNUM(owner_entnum, ITEMFL_CHANGED_CHAIN)
 
 	if (flChanged & ITEMFL_CHANGED_MODELINDEX) {
-		classname = EntityDef_NameFromID(entityDefID);
+		classname = EntityDef_NameFromNetID(entityDefID);
+		declclass = classname;
 	}
 
 	drawmask = (modelindex != 0) ? MASK_ENGINE : 0;
 
 	if (flChanged & ITEMFL_CHANGED_CHAIN) {
-		chain = __NULL__;
+		m_nextItem = __NULL__;
 	}
 
-	if (scale == 0.0f)
+	if (scale == 0.0f) {
 		scale = 1.0f;
+	}
 
-	if (flChanged & ITEMFL_CHANGED_SIZE)
-		setsize(this, mins, maxs);
+	if (flChanged & ITEMFL_CHANGED_SIZE || flChanged & ITEMFL_CHANGED_ORIGIN_X || flChanged & ITEMFL_CHANGED_ORIGIN_Y || flChanged & ITEMFL_CHANGED_ORIGIN_Z) {
+		Relink();
+	}
 }
 
 void
@@ -453,14 +466,18 @@ NSItem::ReceiveEvent(float eventType)
 void
 NSItem::PredictPreFrame(void)
 {
+	if (wasfreed(this)) {
+		return;
+	}
+
 	/* relink */
-	if (chain == __NULL__ && chain_entnum)
-		chain = findentity(world, ::entnum, chain_entnum);
+	if (m_nextItem == __NULL__ && chain_entnum)
+		m_nextItem = findentity(world, ::entnum, chain_entnum);
 
 	if (owner == __NULL__ && owner_entnum) {
 		owner = findentity(world, ::entnum, owner_entnum);
 
-		if (owner) {
+		if (owner && owner == pSeat->m_ePlayer) {
 			_AddedCallback();
 		}
 	}
@@ -477,7 +494,7 @@ NSItem::PredictPreFrame(void)
 	SAVE_STATE(velocity)
 	SAVE_STATE(avelocity)
 	SAVE_STATE(owner)
-	SAVE_STATE(chain)
+	SAVE_STATE(m_nextItem)
 }
 
 void
@@ -495,7 +512,7 @@ NSItem::PredictPostFrame(void)
 	ROLL_BACK(velocity)
 	ROLL_BACK(avelocity)
 	ROLL_BACK(owner)
-	ROLL_BACK(chain)
+	ROLL_BACK(m_nextItem)
 }
 #endif
 
@@ -507,9 +524,12 @@ NSItem::AddedToInventory(void)
 void
 NSItem::RemovedFromInventory(void)
 {
-#ifdef SERVER
-	//BecomePickup();
-#endif
+}
+
+bool
+NSItem::InInventory(void)
+{
+	return (owner) ? (true) : (false);
 }
 
 bool
@@ -522,36 +542,38 @@ NSItem::IsWeapon(void)
 void
 NSItem::_AddedCallback(void)
 {
+	NSActor ourOwner = (NSActor)owner;
+
 #ifdef SERVER
-	NSActor pl = (NSActor)owner;
 
 	if (m_iGiveHealth > 0i) {
-		if (pl.GetHealth() < 100) {
+		if (ourOwner.GetHealth() < 100) {
 			//Damage_Apply(pl, this, -m_iGiveHealth, 0, DMG_GENERIC);
-			pl.health = bound(0, pl.health + m_iGiveHealth, pl.max_health);
+			ourOwner.health = bound(0, ourOwner.health + m_iGiveHealth, ourOwner.max_health);
 		}
 	}
 
 	if (m_iGiveArmor > 0i) {
-		if (pl.armor < 100) {
-			pl.armor += (float)m_iGiveArmor;
+		if (ourOwner.armor < 100) {
+			ourOwner.armor += (float)m_iGiveArmor;
 
-			if (pl.armor > 100) {
-				pl.armor = 100;
+			if (ourOwner.armor > 100) {
+				ourOwner.armor = 100;
 			}
 		}
 	}
 
 	for (int i = 0; i < MAX_AMMO_TYPES; i++) {
-		pl.GiveAmmo(i, m_GiveAmmo[i]);
+		ourOwner.GiveAmmo(i, m_GiveAmmo[i]);
 	}
 
-	Logging_Pickup(pl, this, __NULL__);
-	pl.StartSoundDef(m_sndAcquire, CHAN_ITEM, true);
+	Logging_Pickup(ourOwner, this, __NULL__);
+	ourOwner.StartSoundDef(m_sndAcquire, CHAN_ITEM, true);
 	OnPickup();
 	Disappear();
 #endif
 
+	ourOwner.AddedItemCallback(this);
 	AddedToInventory();
 }
 
@@ -559,4 +581,8 @@ void
 NSItem::_RemovedCallback(void)
 {
 	RemovedFromInventory();
+	owner = __NULL__;
+	chain = __NULL__;
+	m_nextItem = __NULL__;
+	Destroy();
 }

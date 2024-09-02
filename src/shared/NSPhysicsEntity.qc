@@ -455,7 +455,7 @@ NSPhysicsEntity::_TouchThink(void)
 	}
 	}
 
-#if 0
+#if 1
 	if (m_flCheckTime < time) {
 		bool should
 		if (vlen(m_vecPrevAngles - angles) < 1) {
@@ -571,7 +571,7 @@ NSPhysicsEntity::Respawn(void)
 	SetSolid(SOLID_BSP);
 
 #ifdef SERVER
-	SetTakedamage(DAMAGE_YES);
+	MakeVulnerable();
 #endif
 
 	Sleep();

@@ -29,7 +29,7 @@ Font_Load(string strFile, font_s &fntNew)
 
 	filestream fileFont = fopen(strFile, FILE_READ);
 	fntNew.iID = 0;
-	fntNew.iScaleX = fntNew.iScaleY = -1;
+	fntNew.iScaleX = fntNew.iScaleY = 12;
 	fntNew.vecColor = [1,1,1];
 	fntNew.flAlpha = 1.0f;
 	fntNew.iFlags = 0;

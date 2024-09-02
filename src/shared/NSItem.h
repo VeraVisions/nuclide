@@ -113,6 +113,7 @@ public:
 #endif
 
 	virtual bool IsWeapon(void);
+	virtual bool InInventory(void);
 
 private:
 	/** Called to signal that the owner added this weapon to their inventory. */
@@ -146,6 +147,7 @@ private:
 	NETWORKED_FLOAT(owner_entnum)
 #endif
 
-	entity chain_net;
+	NSItem m_nextItem;
+	NSItem m_nextItem_net;
 	entity owner_net;
 };

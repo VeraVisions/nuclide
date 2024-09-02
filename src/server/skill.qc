@@ -31,7 +31,7 @@ Skill_Init(void)
 
 	Skill_ParseConfig("cfg/skill_manifest.cfg");
 
-	if (FileExists(mapSkillFile)) {
+	if (fileExists(mapSkillFile)) {
 		Skill_ParseConfig(mapSkillFile);
 	}
 }
@@ -48,10 +48,17 @@ Skill_GetValue(string variable, float defaultValue)
 {
 	float skill = cvar("skill");
 
-	if (skill == 0)
+	if (skill == 0) {
 		skill = 2; /* default to medium */
+	}
 
 	float val = fabs(cvar(sprintf("sk_%s%d", variable, skill)));
+
+	/* specific skill variable doesn't exist? */
+	if (val == 0) {
+		val = fabs(cvar(sprintf("sk_%s", variable)));
+	}
+
 	return (val == 0) ? defaultValue : val;
 }
 
@@ -60,11 +67,18 @@ Skill_GetStringValue(string variable, string defaultValue)
 {
 	float skill = cvar("skill");
 
-	if (skill == 0)
+	if (skill == 0) {
 		skill = 2; /* default to medium */
+	}
 
 	string val = cvar_string(sprintf("sk_%s%d", variable, skill));
-	return (val == 0) ? defaultValue : val;
+
+	/* specific skill variable doesn't exist? */
+	if (val == 0) {
+		val = cvar_string(sprintf("sk_%s", variable));
+	}
+
+	return (val == "") ? defaultValue : val;
 }
 
 bool
@@ -85,6 +99,9 @@ Skill_ParseConfig(string fileName)
 		if (argCount == 2i) {
 			if (firstArg == "exec") {
 				Skill_ParseConfig(sprintf("cfg/%s", argv(1)));
+			} else {
+				/* some games, like Source, don't use set/seta */
+				cvar_set(argv(0), argv(1));
 			}
 		} else if (argCount == 3i) {
 			if (firstArg == "set" || firstArg == "seta")

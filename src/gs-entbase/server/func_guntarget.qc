@@ -215,7 +215,7 @@ func_guntarget::Death(entity inflictor, entity attacker, int damage, vector dir,
 void
 func_guntarget::Start(void)
 {
-	SetTakedamage(DAMAGE_YES);
+	MakeVulnerable();
 	NextPath();
 	m_iValue = 0;
 }
@@ -223,7 +223,7 @@ func_guntarget::Start(void)
 void
 func_guntarget::Stop(void)
 {
-	SetTakedamage(DAMAGE_NO);
+	MakeInvulnerable();
 	ClearVelocity();
 	ReleaseThink();
 	m_iValue = 1;

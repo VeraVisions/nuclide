@@ -19,9 +19,7 @@ typedef enumflags
 	WEAPONFL_CHANGED_MODELINDEX,
 	WEAPONFL_CHANGED_ORIGIN,
 	WEAPONFL_CHANGED_ANGLES,
-	WEAPONFL_CHANGED_VELOCITY_X,
-	WEAPONFL_CHANGED_VELOCITY_Y,
-	WEAPONFL_CHANGED_VELOCITY_Z,
+	WEAPONFL_CHANGED_VELOCITY,
 	WEAPONFL_CHANGED_ANGULARVELOCITY,
 	WEAPONFL_CHANGED_SIZE,
 	WEAPONFL_CHANGED_FLAGS,
@@ -35,7 +33,9 @@ typedef enumflags
 	WEAPONFL_CHANGED_ENTITYDEF,
 	WEAPONFL_CHANGED_CLIP,
 	WEAPONFL_CHANGED_CHAIN,
-	WEAPONFL_CHANGED_STATE
+	WEAPONFL_CHANGED_STATE,
+	WEAPONFL_CHANGED_NEXTWEAPON,
+	WEAPONFL_CHANGED_PREVWEAPON,
 } nsweapon_changed_t;
 
 typedef enum
@@ -190,6 +190,7 @@ public:
 	virtual void ReceiveEvent(float);
 #endif
 
+	virtual bool IsEmpty(void);
 	virtual bool IsWeapon(void);
 	virtual bool HasReserveAmmo(void);
 
@@ -317,14 +318,17 @@ private:
 	float m_flSpeedMod;
 	bool m_bAltModeSwitch;
 
-	NSWeapon m_nextWeapon;
-	NSWeapon m_prevWeapon;
+	float m_nextWeapon_entnum;
+	float m_prevWeapon_entnum;
+	NSWeapon m_nextWeapon_net;
+	NSWeapon m_prevWeapon_net;
 
 	/* cached fireInfo */
 	string m_fiDetonateOnFire;
 	float m_fiMeleeRange;
 	vector m_fiPunchAngle;
 	string m_fiSndFire;
+	string m_fiSndFireLast;
 	string m_fiSndRelease;
 	string m_fiSndEmpty;
 	int m_fiAmmoType;
@@ -358,6 +362,9 @@ private:
 	NETWORKED_BOOL(m_bFiring)
 	NETWORKED_BOOL(m_flOverheating)
 };
+
+.NSWeapon m_nextWeapon;
+.NSWeapon m_prevWeapon;
 
 /* Helper functions for plugins, the rest of the codebase etc.
 

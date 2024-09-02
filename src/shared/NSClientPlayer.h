@@ -93,6 +93,7 @@ public:
 	/* overrides */
 	virtual void Save(float);
 	virtual void Restore(string,string);
+	virtual void Spawned(void);
 	virtual void Respawn(void);
 	virtual void EvaluateEntity(void);
 	virtual float SendEntity(entity,float);
@@ -218,3 +219,7 @@ enumflags
 	PLAYER_WEAPONFRAME,
 	PLAYER_CUSTOMFIELDSTART,
 };
+
+#ifdef SERVER
+void obituary(string, string, string, string);
+#endif

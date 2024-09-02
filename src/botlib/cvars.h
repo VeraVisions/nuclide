@@ -35,7 +35,6 @@ var bool autocvar_bot_enable = true;
 var bool autocvar_bot_pause = false;
 var bool autocvar_bot_noChat = false;
 var bool autocvar_bot_fastChat = false;
-var bool autocvar_bot_debug = false;
 var bool autocvar_bot_developer = false;
 var int autocvar_bot_minClients = -1i;
 

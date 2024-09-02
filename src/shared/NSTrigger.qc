@@ -325,6 +325,9 @@ NSTrigger::Input(entity eAct, string strInput, string strData)
 	case "Toggle":
 		m_bEnabled = (m_bEnabled) ? false : true;
 		break;
+	case "SetTeam":
+		SetTeam(stof(strData));
+		break;
 	default:
 		super:: Input(eAct, strInput, strData);
 	}
@@ -336,7 +339,7 @@ NSTrigger::SetTeam(float new_team)
 	team = new_team;
 
 	/* update the InfoKey too if it's a client entity */
-	if (flags & FL_CLIENT) {
+	if (isClient(this)) {
 		NSClient client = (NSClient)this;
 		client.SetInfoKey("*team", sprintf("%d", new_team));
 	}

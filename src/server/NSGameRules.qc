@@ -60,7 +60,7 @@ NSGameRules::RestoreComplete(void)
 void
 NSGameRules::InitPostEnts(void)
 {
-	//print("Init!\n");
+	RuleC_CallFunc(m_ruleProgs, world, "CodeCallback_StartGameType");
 }
 
 /* logic */
@@ -77,45 +77,86 @@ NSGameRules::ConsoleCommand(NSClientPlayer pl, string cmd)
 bool
 NSGameRules::ClientCommand(NSClient pl, string cmd)
 {
-	return (false);
+	return RuleC_CallString(m_ruleProgs, pl, cmd, "CodeCallback_ClientCommand");
 }
+
 bool
 NSGameRules::ImpulseCommand(NSClient pl, float num)
 {
-	return (false);
+	return RuleC_CallFloat(m_ruleProgs, pl, num, "CodeCallback_ImpulseCommand");
 }
 
-/* client */
 void
 NSGameRules::PlayerConnect(NSClientPlayer pl)
 {
-	if (Plugin_PlayerConnect(pl) == FALSE)
+	if (Plugin_PlayerConnect(pl) == false) {
 		bprint(PRINT_HIGH, sprintf("%s^d connected.\n", pl.netname));
+	}
+
+	RuleC_CallFunc(m_ruleProgs, pl, "CodeCallback_PlayerConnect");
 }
 void
 NSGameRules::PlayerDisconnect(NSClientPlayer pl)
 {
 	bprint(PRINT_HIGH, sprintf("%s^d disconnected.\n", pl.netname));
+	RuleC_CallFunc(m_ruleProgs, pl, "CodeCallback_PlayerDisconnect");
 }
 
 void
 NSGameRules::PlayerKill(NSClientPlayer pl)
 {
-	//Damage_Apply(pl, pl, pl.health, 0, DMG_SKIP_ARMOR);
+	NSDict damageDecl = spawn(NSDict);
+	damageDecl.AddKey("damage", itos(1000));
+	damageDecl.AddKey("noGod", "1");
+	damageDecl.AddKey("noArmor", "1");
+	pl.Damage(pl, pl, damageDecl, 1.0, g_vec_null, pl.GetOrigin());
+	remove(damageDecl);
 }
 void
-NSGameRules::PlayerDeath(NSClientPlayer pl)
+NSGameRules::PlayerDeath(NSClientPlayer pl, NSActor attacker, NSDict damageDecl)
 {
-	/* implemented by sub-class */
+	if (RuleC_CallDamage(m_ruleProgs, pl, attacker, attacker, "", "CodeCallback_PlayerKilled")) {
+		return;
+	}
+
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_OBITUARY);
+	WriteString(MSG_MULTICAST, (attacker.netname) ? attacker.netname : attacker.classname);
+	WriteString(MSG_MULTICAST, pl.netname);
+	WriteByte(MSG_MULTICAST, 0);
+	WriteByte(MSG_MULTICAST, 0);
+	msg_entity = world;
+	multicast([0,0,0], MULTICAST_ALL);
+
+	/* death-counter */
+	pl.deaths++;
+	pl.SetInfoKey("*deaths", ftos(pl.deaths));
+
+	/* update score-counter */
+	if (isPlayer(attacker)) {
+		if (pl == attacker) {
+			g_dmg_eAttacker.frags--;
+		} else {
+			g_dmg_eAttacker.frags++;
+		}
+	}
 }
+
 void
-NSGameRules::PlayerPain(NSClientPlayer pl)
+NSGameRules::PlayerPain(NSClientPlayer pl, NSActor attacker, NSDict damageDecl)
 {
-	/* implemented by sub-class */
+	if (RuleC_CallDamage(m_ruleProgs, pl, attacker, attacker, "", "CodeCallback_PlayerDamage")) {
+		return;
+	}
+
+	/* fallback code here, or rest implemented by sub-class */
 }
+
 void
 NSGameRules::PlayerSpawn(NSClientPlayer pl)
 {
+	RuleC_CallFunc(m_ruleProgs, pl, "CodeCallback_PlayerSpawn");
+
 	/* implemented by sub-class */
 }
 void
@@ -322,9 +363,9 @@ NSGameRules::PlayerCanAttack(NSClientPlayer bp)
 }
 
 bool
-NSGameRules::PlayerRequestRespawn(NSClientPlayer bp)
+NSGameRules::PlayerRequestRespawn(NSClientPlayer pl)
 {
-	return false;
+	return RuleC_CallRequestSpawn(m_ruleProgs, pl, "CodeCallback_PlayerRequestRespawn");
 }
 
 void
@@ -379,4 +420,45 @@ string
 NSGameRules::Title(void)
 {
 	return "Default";
+}
+
+NSGameRules
+NSGameRules::InitFromProgs(string pathToProgs)
+{
+	NSGameRules newRule;
+
+	/* No progs .dat, exit out */
+	if (fileExists(pathToProgs) == false) {
+		NSError("Progs at %S does not exist.", pathToProgs);
+		return (__NULL__);
+	}
+
+	newRule = spawn(NSGameRules);
+	newRule.m_ruleProgs = addprogs(pathToProgs);
+
+	if (newRule.m_ruleProgs) {
+		void(void) mainFunction;
+		mainFunction = externvalue(newRule.m_ruleProgs, "main");
+
+		if (mainFunction) {
+			externset(newRule.m_ruleProgs, this, "self");
+			thread(mainFunction());
+		} else {
+			NSError("%S does not have a main function.", pathToProgs);
+		}
+	}
+
+	return (newRule);
+}
+
+void
+setServerInfo(string serverKey, string setValue)
+{
+	forceinfokey(world, serverKey, setValue);
+}
+
+string
+getServerInfo(string serverKey)
+{
+	return infokey(world, serverKey);
 }

@@ -229,7 +229,7 @@ func_door_rotating::Respawn(void)
 	super::Respawn();
 
 #ifdef GS_PHYSICS
-	SetTakedamage(DAMAGE_YES);
+	MakeVulnerable();
 	SetHealth(100);
 	Death = func_door_rotating::Unhinge;
 #endif
@@ -354,7 +354,7 @@ func_door_rotating::SpawnKey(string strKey, string strValue)
 void
 func_door_rotating::Unhinge(void)
 {
-	SetTakedamage(DAMAGE_NO);
+	MakeInvulnerable();
 	ReleaseThink();
 	m_bCanTouch = false;
 	SetSolid(SOLID_PHYSICS_BOX);

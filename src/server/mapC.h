@@ -25,6 +25,8 @@
 #include "mapC_math.h"
 #include "mapC_weapons.h"
 
+.float deaths;
+
 /** @defgroup mapc MapC
     @brief MapC/Shared Game-Logic API
     @ingroup multiprogs
@@ -52,6 +54,20 @@ spawnClass(string className, vector desiredPos)
 	return spawnFunc(className, desiredPos);
 }
 
+bool
+changeClass(entity target, string newClass)
+{
+	bool(entity, string) spawnFunc = externvalue(0, "changeClass");
+	return spawnFunc(target, newClass);
+}
+
+bool
+cacheEntityDef(string className)
+{
+	bool(string) spawnFunc = externvalue(0, "EntityDef_Precache");
+	return spawnFunc(className);
+}
+
 /** Sends an input (See NSIO::Input) to an entity.
 
 While you're able to manipulate entities in most ways using bare MapC, you might want to change Nuclide specific attributes of them as well. This can only be done using the I/O system.
@@ -65,8 +81,8 @@ For the variety of inputs an entity supports, please look at the respective enti
 void
 sendInput(entity target, string inputName, string dataString, entity activator)
 {
-	void(entity, entity, string, string) inputFunc = externvalue(0, "sendInput");
-	inputFunc(target, activator, inputName, setValue);
+	void(entity, string, string, entity) inputFunc = externvalue(0, "sendInput");
+	inputFunc(target, inputName, dataString, activator);
 }
 
 /** Applies damage to a given entity.
@@ -177,11 +193,114 @@ timeToString(int realTime, int zoneType, string formatString)
 {
 	/* supposed to take extra (optional parameters...) */
 	if (zoneType == 1i) {
-		strftime(true, formatString);
+		return strftime(true, formatString);
 	} else {
-		strftime(true, formatString);
+		return strftime(true, formatString);
 	}
 }
 
+/** Returns the the value of a console variable.
+
+@param cvarName specifies the console variable to query.
+@return The value in string format. */
+string
+getCvar(string cvarName)
+{
+	return cvar_string(cvarName);
+}
+
+/** Returns the the value of a console variable.
+
+@param cvarName specifies the console variable to query.
+@return The value in integer format. */
+int
+getCvarInt(string cvarName)
+{
+	return (int)cvar(cvarName);
+}
+
+/** Returns the the value of a console variable.
+
+@param cvarName specifies the console variable to query.
+@return The value in integer format. */
+bool
+fileExists(string fileName)
+{
+	bool(string) checkFunc = externvalue(0, "fileExists");
+	return checkFunc(fileName);
+}
+
+/** Sets the specified serverinfo key to a set value.
+
+@param serverKey specifies the serverinfo key to set.
+@param setValue specifies the value of said key. */
+void
+setServerInfo(string serverKey, string setValue)
+{
+	void(string, string) checkFunc = externvalue(0, "setServerInfo");
+	checkFunc(serverKey, setValue);
+}
+
+/** Returns the the value of a serverinfo key.
+
+@param serverKey specifies the serverinfo key to query.
+@return The value in string format. */
+string
+getServerInfo(string serverKey)
+{
+	string(string) checkFunc = externvalue(0, "getServerInfo");
+	return checkFunc(serverKey);
+}
+
+/** Sets the specified userinfo key to a set value.
+
+@param clientEntity specifies the client to poke.
+@param userKey specifies the userinfo key to set.
+@param setValue specifies the value of said key. */
+void
+setUserInfo(entity clientEntity, string userKey, string setValue)
+{
+	void(entity, string, string) checkFunc = externvalue(0, "setUserInfo");
+	checkFunc(clientEntity, userKey, setValue);
+}
+
+/** Returns the the value of a userinfo key.
+
+@param clientEntity specifies the client to peek at.
+@param userKey specifies the userinfo key to query.
+@return The value in string format. */
+string
+getUserInfo(entity clientEntity, string userKey)
+{
+	string(entity, string) checkFunc = externvalue(0, "getUserInfo");
+	return checkFunc(clientEntity, userKey);
+}
+
+entity
+getSpawnpoint(string className)
+{
+	entity(string) checkFunc = externvalue(0, "Spawn_SelectRandom");
+	return checkFunc(className);
+}
+
+entity
+placeSpawnpoint(entity targetEntity)
+{
+	entity(entity) checkFunc = externvalue(0, "placeSpawnpoint");
+	return checkFunc(targetEntity);
+}
+
+void
+obituary(string A, string B, string C, string D)
+{
+	void(string, string, string, string) checkFunc = externvalue(0, "obituary");
+	checkFunc(A,B,C,D);
+}
+
+void
+damage(entity targetEntity, entity inflictingEntity, entity attackingEntity, int damagePoints, int damageFlags, string meansOfDeath, string weaponDef, vector damageOrigin, vector damageDir, string hitLocation, float timeOffset)
+{
+
+}
+
 /** @} */ // end of multiprogs
- 

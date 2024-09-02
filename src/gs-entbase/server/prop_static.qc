@@ -67,6 +67,6 @@ prop_static::Respawn(void)
 	geomtype = GEOMTYPE_TRIMESH;
 
 	Sleep();
-	SetTakedamage(DAMAGE_NO);
+	MakeInvulnerable();
 	touch = __NULL__;
 }

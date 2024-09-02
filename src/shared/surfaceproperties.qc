@@ -323,6 +323,7 @@ SurfData_Init(void)
 	/* it's OK for one to not exist... */
 	if (fh < 0) {
 		NSError("missing scripts/surfaceproperties.txt!");
+		InitEnd();
 		return;
 	}
 
@@ -334,6 +335,7 @@ SurfData_Init(void)
 	/* we did not find 'default' as the first entry. */
 	if (g_spDefaultSet == false) {
 		NSError("no 'default' defined at the top of scripts/surfaceproperties.txt!");
+		InitEnd();
 		return;
 	}
 

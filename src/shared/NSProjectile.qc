@@ -508,7 +508,7 @@ NSProjectile::Touch(entity eToucher)
 		NSSurfacePropEntity toucher = (NSSurfacePropEntity)eToucher;
 		NSDict damageDecl = spawn(NSDict);
 		damageDecl.AddKey("damage", GetSubDefString(m_defDamage, "damage"));
-		toucher.Damage(this, owner, damageDecl, m_flDmgMultiplier, vectorNormalize(angles), trace_endpos);
+		toucher.Damage(this, owner, damageDecl, m_flDmgMultiplier, vectorNormalize(angles), m_vecImpactPos);
 		remove(damageDecl);
 	}
 
@@ -565,6 +565,18 @@ void
 NSProjectile::SetLightRadius(float newRadius)
 {
 	m_flLightRadius = newRadius;
+}
+
+void
+NSProjectile::SetWeaponOwner(NSWeapon weaponOwner)
+{
+	m_weaponOwner = weaponOwner;
+}
+
+NSWeapon
+NSProjectile::GetWeaponOwner(void)
+{
+	return (m_weaponOwner);
 }
 
 void
@@ -724,12 +736,13 @@ NSProjectile::_Explode(entity explodedOn)
 		float flDamage = GetSubDefFloat(m_defSplashDamage, "damage");
 		float flRadius = GetSubDefFloat(m_defSplashDamage, "radius");
 
-		if (m_flDmgMultiplier >= 0.0)
+		if (m_flDmgMultiplier >= 0.0) {
 			flDamage *= m_flDmgMultiplier;
+		}
 
 		//print(sprintf("Damage: %d; Radius: %d\n", flDamage, flRadius));
 		//Damage_Radius(origin, owner, flDamage, flRadius, TRUE, 0);
-		radiusDamage(origin, flRadius, 0i, (int)flDamage, owner);
+		radiusDamage(GetOrigin(), flRadius, 0i, (int)flDamage, owner);
 	}
 
 	/* another def that'll be spawned when this one detonates */
@@ -796,10 +809,11 @@ NSProjectile::_ApplyDamage(void)
 	trace_surface_id = m_iMultiBody;
 	g_dmg_vecLocation = trace_endpos;
 	NSDict damageDecl = spawn(NSDict);
+	damageDecl.AddKey("hitbody", itos(trace_surface_id));
 	damageDecl.AddKey("damage", itos(m_iMultiValue));
 	vector dmgDir = dirFromTarget(GetOrigin(), m_eMultiTarget.origin);
 
-	entityDamage(m_eMultiTarget, owner, owner, damageDecl.GetDeclBody(), classname, GetOrigin(), dmgDir, trace_endpos);
+	entityDamage(m_eMultiTarget, owner, owner, damageDecl.GetDeclBody(), GetWeaponOwner().classname, GetOrigin(), dmgDir, trace_endpos);
 	remove(damageDecl);
 
 	m_eMultiTarget = __NULL__;
@@ -859,41 +873,13 @@ NSProjectile::_FireSingle(vector vecPos, vector vecAngles, float flDamage, float
 	if (trace_ent.takedamage != DAMAGE_NO && trace_ent.iBleeds) {
 		Sound_Play(trace_ent, CHAN_BODY, "damage_bullet.hit");
 
-#ifdef CSTRIKE
-		NSClientPlayer pl = (NSClientPlayer)trace_ent;
-		/* modify the damage based on the location */
-		switch (trace_surface_id) {
-		case BODY_HEAD:
-			/* the helmet is one power house */
-			if (pl.g_items & ITEM_HELMET) {
-				flDamage = 0;
-				Sound_Play(trace_ent, CHAN_BODY, "player.headshotarmor");
-				pl.g_items &= ~ITEM_HELMET;
-				return;
-			} else {
-				flDamage *= 4;
-				Sound_Play(trace_ent, CHAN_BODY, "player.headshot");
-			}
-			break;
-		case BODY_STOMACH:
-			flDamage *= 0.9;
-			if (pl.armor > 0)
-				Sound_Play(trace_ent, CHAN_BODY, "player.hitarmor");
-			break;
-		case BODY_LEGLEFT:
-		case BODY_LEGRIGHT:
-			flDamage *= 0.4;
-			break;
-		}
-#else
 		/* only headshots count in HL */
 		if (trace_surface_id == BODY_HEAD)
 			flDamage *= 3;
-#endif
 	}
 
 #ifdef WASTES
-	TWPlayer pl1 = (TWPlayer)self;
+	TWPlayer pl1 = (TWPlayer)owner;
 	if (pl1.m_iWillpowerValue > 0) {
 		FX_Crit(endPos, vectoangles(endPos - pl1.origin), 0);
 	}
@@ -1024,9 +1010,9 @@ NSProjectile::Launch(vector startPos, vector launchDir, float fuseOffset, float 
 	}
 
 	if (GetHealth() > 0) {
-		SetTakedamage(DAMAGE_YES);
+		MakeVulnerable();
 	} else {
-		SetTakedamage(DAMAGE_NO);
+		MakeInvulnerable();
 	}
 
 	if (m_flFuse > 0) {
@@ -1151,7 +1137,7 @@ NSProjectile::predraw(void)
 
 #ifdef SERVER
 NSProjectile
-NSProjectile_SpawnDef(string entityDef, NSEntity theOwner)
+NSProjectile_SpawnDef(string entityDef, NSActor theOwner)
 {
 	entity oldself = self;
 
@@ -1160,13 +1146,13 @@ NSProjectile_SpawnDef(string entityDef, NSEntity theOwner)
 	self = rocket;
 	EntityDef_SpawnClassname(entityDef);
 	self = oldself;
-
+	rocket.SetWeaponOwner(theOwner.m_activeWeapon);
 	rocket.Launch(theOwner.GetEyePos(), theOwner.GetViewAngle(), 0.0f, 0.0f, 0.0f);
 	return rocket;
 }
 
 NSProjectile
-NSProjectile_SpawnDefAtPosition(string entityDef, NSEntity theOwner, vector vecOrigin, vector vecAngles)
+NSProjectile_SpawnDefAtPosition(string entityDef, NSActor theOwner, vector vecOrigin, vector vecAngles)
 {
 	entity oldself = self;
 	NSProjectile rocket = spawn(NSProjectile);
@@ -1174,12 +1160,13 @@ NSProjectile_SpawnDefAtPosition(string entityDef, NSEntity theOwner, vector vecO
 	self = rocket;
 	EntityDef_SpawnClassname(entityDef);
 	self = oldself;
+	rocket.SetWeaponOwner(theOwner.m_activeWeapon);
 	rocket.Launch(vecOrigin, vecAngles, 0.0f, 0.0f, 0.0f);
 	return rocket;
 }
 
 NSProjectile
-NSProjectile_SpawnDefAttachment(string entityDef, NSEntity theOwner, int attachmentID)
+NSProjectile_SpawnDefAttachment(string entityDef, NSActor theOwner, int attachmentID)
 {
 	entity oldself = self;
 	float skeletonIndex = skel_create(theOwner.modelindex);
@@ -1191,6 +1178,7 @@ NSProjectile_SpawnDefAttachment(string entityDef, NSEntity theOwner, int attachm
 	self = rocket;
 	EntityDef_SpawnClassname(entityDef);
 	self = oldself;
+	rocket.SetWeaponOwner(theOwner.m_activeWeapon);
 	rocket.Launch(attachmentPos, theOwner.GetViewAngle(), 0.0f, 0.0f, 0.0f);
 	return rocket;
 }

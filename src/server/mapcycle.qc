@@ -32,7 +32,7 @@ Mapcycle_Load(string filename)
 
 	/* read the lines in, see if the map exists and define an enumerated alias */
 	while ((temp = fgets(fs_mapcycle))) {
-		if (FileExists(strcat("maps/", temp, ".bsp")) == false)
+		if (fileExists(strcat("maps/", temp, ".bsp")) == false)
 			continue;
 
 		localcmd(sprintf("alias m%i \"map %s;alias nextmap m%i\"\n", mapCount, temp, mapCount + 1i));

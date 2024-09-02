@@ -124,11 +124,15 @@ public:
 	/** Retrieve the 'last' weapon they had chosen. If not valid, returns the next best. */
 	nonvirtual NSWeapon GetLastWeapon(void);
 
+	virtual void AddedItemCallback(NSItem);
+
 #ifdef SERVER
 	/* overrides */
 	virtual void Save(float);
 	virtual void Restore(string,string);
 	virtual void RestoreComplete(void);
+	virtual void Spawned(void);
+	virtual void Input(entity, string, string);
 	virtual void DebugDraw(void);
 
 	/* methods we'd like others to override */
@@ -180,12 +184,15 @@ private:
 
 	/* These are defined in side defs\*.def, ammo_types and ammo_names */
 	int m_iAmmoTypes[MAX_AMMO_TYPES];
-	NSItem m_itemList;
-	NSWeapon m_activeWeapon;
 	NSWeapon m_activeWeapon_net;
 	float activeweapon;
-	float m_flFirstInventoryItem;
+	NETWORKED_FLOAT(m_flFirstInventoryItem)
 };
+
+/* for now here to make debugging easier */
+.NSItem m_itemList;
+.NSWeapon m_activeWeapon;
+.NSWeapon m_firstWeapon;
 
 void NSActor_ListInventory(NSActor);
 

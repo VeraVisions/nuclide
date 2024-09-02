@@ -246,7 +246,7 @@ CSEv_CallVote_s(string text)
 	tokenize(text);
 	switch (argv(0)) {
 	case "map":
-		if (FileExists(sprintf("maps/%s.bsp", argv(1))) == false) {
+		if (fileExists(sprintf("maps/%s.bsp", argv(1))) == false) {
 			sprint(self, PRINT_CHAT, sprintf("Map '%s' not available on server.\n", argv(1)));
 			break;
 		}

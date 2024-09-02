@@ -74,7 +74,7 @@ button_target::Respawn(void)
 		PlayerUse = PUseWrapper;
 	} else {
 		SetHealth(1);
-		SetTakedamage(DAMAGE_YES);
+		MakeVulnerable();
 		Pain = Death = Damaged;
 	}
 
@@ -87,7 +87,7 @@ button_target::Trigger(entity act, triggermode_t status)
 {
 	/* make unusable */
 	PlayerUse = __NULL__;
-	SetTakedamage(DAMAGE_NO);
+	MakeInvulnerable();
 
 	/* toggle texture frame */
 	float new_frame = (GetFrame() >= 1) ? 0 : 1;

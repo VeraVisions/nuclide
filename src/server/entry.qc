@@ -43,22 +43,15 @@ The `self` global is the connecting client in question.
 void
 ClientConnect(void)
 {
-	int playercount = 0;
 	self.gotData = false;
 
 	/* don't carry over team settings from a previous session */
 	forceinfokey(self, "*team", "0");
 
-	/* make sure you never change the classname. ever. */
-	if (self.classname != "player") {
-		EntityDef_SpawnClassname("player");
-	}
-
-	if (g_ents_initialized)
+	if (g_ents_initialized) {
+		Entity_CreateClass("player");
 		g_grMode.PlayerConnect((NSClientPlayer)self);
-
-	for (entity a = world; (a = find(a, ::classname, "player"));)
-		playercount++;
+	}
 }
 
 /** Called when a player leaves the server. At the end of the function the
@@ -77,7 +70,7 @@ ClientDisconnect(void)
 	pl.SetMovetype(MOVETYPE_NONE);
 	pl.SetModelindex(0);
 	pl.SetHealth(0);
-	pl.SetTakedamage(DAMAGE_NO);
+	pl.MakeInvulnerable();
 	pl.SetTeam(0);
 	pl.Disappear();
 	pl.classname = "";
@@ -142,7 +135,7 @@ PutClientInServer(void)
 		g_grMode.PlayerSpawn((NSClientPlayer)self);
 
 	/* handle transitions */
-	if (FileExists("data/trans.dat")) {
+	if (fileExists("data/trans.dat")) {
 		
 		for (entity a = world; (a = findfloat(a, ::identity, 1));) {
 			NSEntity levelEnt = (NSEntity)a;
@@ -464,18 +457,11 @@ ConsoleCmd(string cmd)
 	NSClientPlayer pl;
 
 	/* some sv commands can only be executed by a player in-world */
-	if ( !self ) {
-		for ( other = world; ( other = find( other, classname, "player" ) ); ) {
-			if ( clienttype( other ) == CLIENTTYPE_REAL ) {
-				self = other;
-				break;
-			}
-		}
-	}
-
 	if (!self) {
-		for ( other = world; ( other = find( other, classname, "spectator" ) ); ) {
-			if ( clienttype( other ) == CLIENTTYPE_REAL ) {
+		other = world;
+
+		while ((other = nextent(other))) {
+			if (clienttype(other) == CLIENTTYPE_REAL) {
 				self = other;
 				break;
 			}
@@ -500,14 +486,17 @@ is being executed.
 float
 SV_ShouldPause(float newstatus)
 {
-	if (serverkeyfloat("background") == 1)
+	if (serverkeyfloat("background") == 1) {
 		return (0);
+	}
 
-	if (cvar("pausable") == 1)
+	if (cvar("pausable") == 1) {
 		return (1);
+	}
 
-	if (cvar("sv_playerslots") > 1)
+	if (cvar("sv_playerslots") > 1) {
 		return (0);
+	}
 
 	return newstatus;
 }
@@ -691,7 +680,6 @@ CheckSpawn(void() spawnfunc)
 
 	if (MapTweak_EntitySpawn(ent) == true) {
 		ent._mapspawned = true;
-		ent.classname = desiredClass;
 	} else if (EntityDef_SpawnClassname(desiredClass) != __NULL__) {
 		ent._mapspawned = true;
 	} else if (spawnfunc) {
@@ -699,6 +687,8 @@ CheckSpawn(void() spawnfunc)
 		ent.classname = desiredClass;
 		ent._mapspawned = true;
 		g_ent_spawned++;
+	} else {
+		ent.identity = 0;
 	}
 
 	/* check if this entity was meant to spawn on the client-side only */

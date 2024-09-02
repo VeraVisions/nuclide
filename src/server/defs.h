@@ -26,6 +26,7 @@
 #include "vote.h"
 #include "mapcycle.h"
 #include "maptweaks.h"
+#include "scripts.h"
 
 /* helper macros */
 #define EVALUATE_FIELD(fieldname, changedflag) {\

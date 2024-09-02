@@ -70,6 +70,11 @@ public:
 	/** Like GetDefVector, but queries a specified def, falling back to reading from our own if it's not defined. */
 	nonvirtual vector GetSubDefVector(string, string);
 
+	/** When called, will remove the entity from the game entirely. */
+	nonvirtual void Destroy(void);
+	/** Handles what happens before the entity gets removed from the client game. */
+	virtual void OnRemoveEntity(void);
+
 #ifdef SERVER
 	/** Handles saving a copy of this entity to a given filehandle.
 		Within you want to use the NSIO::SaveFloat() etc. methods to write

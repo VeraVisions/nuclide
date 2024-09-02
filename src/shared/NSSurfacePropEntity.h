@@ -114,8 +114,6 @@ public:
 	nonvirtual void MakeVulnerable(void);
 	/** Makes the entity invulnerable if it wasn't already. */
 	nonvirtual void MakeInvulnerable(void);
-	/** Deprecated: Sets whether the entity can take damage */
-	nonvirtual void SetTakedamage(float);
 	/** Sets the current health of the entity. */
 	nonvirtual void SetHealth(float);
 	/** Sets the maximum amount of health the entity can have */

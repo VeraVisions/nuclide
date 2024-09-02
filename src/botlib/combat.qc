@@ -22,23 +22,23 @@ NSBot::Pain(entity inflictor, entity attacker, int damage, vector dir, int locat
 	super::Pain(inflictor, attacker, damage, dir, location);
 
 	if (rules.IsTeamplay()) {
-		if (g_dmg_eAttacker.flags & FL_CLIENT && g_dmg_eAttacker.team == team) {
+		if (isPlayer(attacker) && attacker.team == team) {
 			ChatSayTeam("Stop shooting me!");
 			return;
 		}
 	}
 
 	/* make this pain our new enemy! */
-	if (g_dmg_eAttacker && g_dmg_eAttacker != this) {
+	if (attacker && attacker != this) {
 		float enemydist = distanceSquared(origin, m_eTarget.origin);
-		float newdist = distanceSquared(origin, g_dmg_eAttacker.origin);
+		float newdist = distanceSquared(origin, attacker.origin);
 
 		if (m_eTarget) {
 			if (newdist < enemydist) {
-				SetEnemy(g_dmg_eAttacker);
+				SetEnemy(attacker);
 			}
 		} else {
-			SetEnemy(g_dmg_eAttacker);
+			SetEnemy(attacker);
 		}
 	}
 }
@@ -58,21 +58,19 @@ NSBot::SetEnemy(entity en)
 void
 NSBot::WeaponThink(void)
 {
-#if 0
-	int r = Weapons_IsEmpty(this, activeweapon);
+	bool isEmpty = m_activeWeapon.IsEmpty();
 
 	/* clip empty, but the whole weapon isn't */
-	if (r == 0 && a_ammo1 <= 0) {
+	if (isEmpty == false) {
 		/* stop fire, tap reload */
 		input_buttons &= ~INPUT_PRIMARY;
 		input_buttons |= INPUT_RELOAD;
-	} else if (r == 1) {
+	} else {
 		/* if empty, switch to the next best weapon */
-		Weapons_SwitchBest(this, activeweapon);
+		SwitchToBestWeapon(false);
 	}
 
-	m_wtWeaponType = Weapons_GetType(this, activeweapon);
-#endif
+	//m_wtWeaponType = Weapons_GetType(this, activeweapon);
 }
 
 void

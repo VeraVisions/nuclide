@@ -1,35 +1,54 @@
-!!ver 130
-!!permu LIGHTSTYLED
-!!permu FOG
-!!samps diffuse reflectcube normalmap
+//======= Copyright (c) 2015-2020 Vera Visions LLC. All rights reserved. =======
+//
+// Purpose: 
+//
+// Lightmapped surface that contains an environment cube as a reflection.
+// Alpha channel of the diffuse decides reflectivity.
+//==============================================================================
 
+!!ver 100 150
+
+!!permu FOG
+!!permu BUMP
+!!permu DELUXE
+!!permu SPECULAR
+!!permu FULLBRIGHT
 !!permu FAKESHADOWS
-!!cvardf r_glsl_pcf
+!!permu OFFSETMAPPING
+
+!!samps diffuse lightmap
+!!samps =BUMP normalmap
+!!samps =DELUXE deluxemap
+!!samps =SPECULAR specular reflectcube
+!!samps =FULLBRIGHT fullbright
+!!samps =LIGHTSTYLED lightmap1 lightmap2 lightmap3
+!!samps =LIGHTSTYLED =DELUXE deluxemap1 deluxemap2 deluxemap3
 !!samps =FAKESHADOWS shadowmap
 
-!!samps lightmap
-!!samps =LIGHTSTYLED lightmap1 lightmap2 lightmap3
-!!cvardf gl_mono
-!!cvardf gl_kdither
-!!cvardf gl_stipplealpha
-!!cvardf gl_ldr
-
+!!cvardf r_glsl_pcf
+!!cvarf r_glsl_offsetmapping_scale
 !!cvardf r_skipDiffuse
+!!cvardf r_skipNormal
+!!cvardf r_skipSpecular
 !!cvardf r_skipLightmap
 
+#ifndef FRESNEL
+#define FRESNEL 0.25f
+#endif
+
 #include "sys/defs.h"
-#include "sys/fog.h"
 
 varying vec2 tex_c;
+
+#ifdef BUMP
+varying vec3 eyevector;
+varying mat3 invsurface;
+#define PBR
+#endif
 
 varying vec2 lm0;
 #ifdef LIGHTSTYLED
 varying vec2 lm1, lm2, lm3;
-#endif
-
-#ifdef REFLECTCUBE
-varying vec3 eyevector;
-varying mat3 invsurface;
 #endif
 
 #ifdef FAKESHADOWS
@@ -47,179 +66,183 @@ varying mat3 invsurface;
 		#endif
 	}
 
-	void main ()
+	void main (void)
 	{
 		lightmapped_init();
-		tex_c = v_texcoord;
-		gl_Position = ftetransform();
 
-		/* HACK: func_conveyor needs us to scroll this surface! */
-		if (e_glowmod.g == 0.5)
-			tex_c[0] += (e_time * (e_glowmod.b * 1024.0)) * -0.01;
-
-#ifdef REFLECTCUBE
+	#ifdef PBR
 		invsurface[0] = v_svector;
 		invsurface[1] = v_tvector;
 		invsurface[2] = v_normal;
 		vec3 eyeminusvertex = e_eyepos - v_position.xyz;
-		eyevector.x = dot( eyeminusvertex, v_svector.xyz );
-		eyevector.y = dot( eyeminusvertex, v_tvector.xyz );
-		eyevector.z = dot( eyeminusvertex, v_normal.xyz );
-#endif
+		eyevector.x = dot(eyeminusvertex, v_svector.xyz);
+		eyevector.y = dot(eyeminusvertex, v_tvector.xyz);
+		eyevector.z = dot(eyeminusvertex, v_normal.xyz);
+	#endif
+
+		tex_c = v_texcoord;
+		gl_Position = ftetransform();
+		
+		#ifdef FAKESHADOWS
+		vtexprojcoord = (l_cubematrix*vec4(v_position.xyz, 1.0));
+		#endif
 	}
 #endif
 
 #ifdef FRAGMENT_SHADER
+	#include "sys/fog.h"
 	#include "sys/pcf.h"
 
+	#ifdef OFFSETMAPPING
+		#include "sys/offsetmapping.h"
+	#endif
+
 #if r_skipLightmap==0
-	vec3 lightmap_fragment(void)
+	#ifdef LIGHTSTYLED
+		#define LIGHTMAP0 texture2D(s_lightmap0, lm0).rgb
+		#define LIGHTMAP1 texture2D(s_lightmap1, lm1).rgb
+		#define LIGHTMAP2 texture2D(s_lightmap2, lm2).rgb
+		#define LIGHTMAP3 texture2D(s_lightmap3, lm3).rgb
+	#else
+		#define LIGHTMAP texture2D(s_lightmap, lm0).rgb 
+	#endif
+#else
+	#ifdef LIGHTSTYLED
+		#define LIGHTMAP0 vec3(0.5,0.5,0.5)
+		#define LIGHTMAP1 vec3(0.5,0.5,0.5)
+		#define LIGHTMAP2 vec3(0.5,0.5,0.5)
+		#define LIGHTMAP3 vec3(0.5,0.5,0.5)
+	#else
+		#define LIGHTMAP vec3(0.5,0.5,0.5)
+	#endif
+#endif
+
+	float LightingFuncGGX(vec3 N, vec3 V, vec3 L, float roughness, float F0)
+	{
+		float alpha = roughness*roughness;
+
+		vec3 H = normalize(V+L);
+
+		float dotNL = clamp(dot(N,L), 0.0, 1.0);
+		float dotLH = clamp(dot(L,H), 0.0, 1.0);
+		float dotNH = clamp(dot(N,H), 0.0, 1.0);
+
+		float F, D, vis;
+
+		// D
+		float alphaSqr = alpha*alpha;
+		float pi = 3.14159f;
+		float denom = dotNH * dotNH *(alphaSqr-1.0) + 1.0f;
+		D = alphaSqr/(pi * denom * denom);
+
+		// F
+		float dotLH5 = pow(1.0f-dotLH,5);
+		F = F0 + (1.0-F0)*(dotLH5);
+
+		// V
+		float k = alpha/2.0f;
+		float k2 = k*k;
+		float invK2 = 1.0f-k2;
+		vis = 1.0/(dotLH*dotLH*invK2 + k2);
+
+		float specular = dotNL * D * F * vis;
+		return specular;
+	}
+
+	vec3 lightmap_fragment()
 	{
 		vec3 lightmaps;
 
-#ifdef LIGHTSTYLED
-		lightmaps  = texture2D(s_lightmap0, lm0).rgb * e_lmscale[0].rgb;
-		lightmaps += texture2D(s_lightmap1, lm1).rgb * e_lmscale[1].rgb;
-		lightmaps += texture2D(s_lightmap2, lm2).rgb * e_lmscale[2].rgb;
-		lightmaps += texture2D(s_lightmap3, lm3).rgb * e_lmscale[3].rgb;
-#else
-		lightmaps  = texture2D(s_lightmap, lm0).rgb * e_lmscale.rgb;
-#endif
-		if (gl_ldr == 1.0) {
-
-			if (lightmaps.r > 1.5)
-				lightmaps.r = 1.5;
-			if (lightmaps.g > 1.5)
-				lightmaps.g = 1.5;
-			if (lightmaps.b > 1.5)
-				lightmaps.b = 1.5;
-
-			lightmaps.rgb * 0.5;
-			lightmaps.rgb = floor(lightmaps.rgb * vec3(32,64,32))/vec3(32,64,32);
-			lightmaps.rgb * 2.0;
-		}
-
+	#ifdef LIGHTSTYLED
+		lightmaps  = LIGHTMAP0 * e_lmscale[0].rgb;
+		lightmaps += LIGHTMAP1 * e_lmscale[1].rgb;
+		lightmaps += LIGHTMAP2 * e_lmscale[2].rgb;
+		lightmaps += LIGHTMAP3 * e_lmscale[3].rgb;
+	#else
+		lightmaps  = LIGHTMAP * e_lmscale.rgb;
+	#endif
 		return lightmaps;
 	}
-#else
-	vec3 lightmap_fragment(void)
+
+#if r_skipNormal==0
+	vec3 lightmap_fragment(vec3 normal_f)
 	{
-		return vec3(1.0,1.0,1.0);
+	#ifndef DELUXE
+		return lightmap_fragment();
+	#else
+		vec3 lightmaps;
+
+	#ifdef LIGHTSTYLED
+		lightmaps  = LIGHTMAP0 * e_lmscale[0].rgb * dot(normal_f, texture2D(s_deluxemap0, lm0).rgb);
+		lightmaps += LIGHTMAP1 * e_lmscale[1].rgb * dot(normal_f, texture2D(s_deluxemap1, lm1).rgb);
+		lightmaps += LIGHTMAP2 * e_lmscale[2].rgb * dot(normal_f, texture2D(s_deluxemap2, lm2).rgb);
+		lightmaps += LIGHTMAP3 * e_lmscale[3].rgb * dot(normal_f, texture2D(s_deluxemap3, lm3).rgb);
+	#else 
+		lightmaps  = LIGHTMAP * e_lmscale.rgb * dot(normal_f, texture2D(s_deluxemap, lm0).rgb);
+	#endif
+
+		return lightmaps;
+	#endif
 	}
 #endif
 
-	vec4 kernel_dither(sampler2D targ, vec2 texc)
+	void main (void)
 	{
-		int x = int(mod(gl_FragCoord.x, 2.0));
-		int y = int(mod(gl_FragCoord.y, 2.0));
-		int index = x + y * 2;
-		vec2 coord_ofs;
-		vec2 size;
-
-		size.x = 1.0 / textureSize(targ, 0).x;
-		size.y = 1.0 / textureSize(targ, 0).y;
-
-		if (index == 0)
-			coord_ofs = vec2(0.25, 0.0);
-		else if (index == 1)
-			coord_ofs = vec2(0.50, 0.75);
-		else if (index == 2)
-			coord_ofs = vec2(0.75, 0.50);
-		else if (index == 3)
-			coord_ofs = vec2(0.00, 0.25);
-
-		return texture2D(targ, texc + coord_ofs * size);
-	}
-
-	void main ( void )
-	{
-		vec4 diffuse_f;
-
-#if r_skipDiffuse==1
-		diffuse_f = vec4(1.0,1.0,1.0,1.0);
-#else
-	#if gl_kdither==1
-		diffuse_f = kernel_dither(s_diffuse, tex_c);
+	#ifdef OFFSETMAPPING
+		vec2 tcoffsetmap = offsetmap(s_normalmap, tex_c, eyevector);
 	#else
-		diffuse_f = texture2D(s_diffuse, tex_c);
+		#define tcoffsetmap tex_c
 	#endif
-#endif
 
-/* get the alphatesting out of the way first */
-#ifdef MASK
-		/* HACK: terrible hack, CSQC sets this to mark surface as an entity
-		   only entities are alphatested - ever */
-		if (e_glowmod.r == 0.5)
-		if (diffuse_f.a < 0.6) {
-			discard;
-		}
-#endif
-		/* lighting */
-		//diffuse_f.rgb = vec3(1,1,1);
-		diffuse_f.rgb *= lightmap_fragment();
+		/* samplers */
+		vec4 albedo_f = texture2D(s_diffuse, tcoffsetmap); // diffuse RGBA
+		vec3 normal_f = normalize(texture2D(s_normalmap, tcoffsetmap).rgb - 0.5); // normalmap RGB
 
-#ifdef REFLECTCUBE
-	#ifdef BUMP
-		#ifndef FLATTENNORM
-			vec3 normal_f = normalize(texture2D(s_normalmap, tex_c).rgb - 0.5);
-		#else
-			// For very flat surfaces and gentle surface distortions, the 8-bit precision per channel in the normalmap
-			// can be insufficient. This is a hack to instead have very wobbly normalmaps that make use of the 8 bits
-			// and then scale the wobblyness back once in the floating-point domain.
-			vec3 normal_f = texture2D(s_normalmap, tex_c).rgb - 0.5;
-			normal_f.x *= 0.0625;
-			normal_f.y *= 0.0625;
-			normal_f = normalize(normal_f);
-		#endif
-	#else
-			vec3 normal_f = vec3(0, 0, 1);
-	#endif
+		/* deluxe/light */
+		vec3 deluxe = normalize(texture2D(s_deluxemap, lm0).rgb);
+
+	#ifdef PBR
+		float metalness_f =texture2D(s_specular, tcoffsetmap).r; // specularmap R
+		float roughness_f = texture2D(s_specular, tcoffsetmap).g; // specularmap G
+		float ao = texture2D(s_specular, tcoffsetmap).b; // specularmap B
+		
+		/* coords */
 		vec3 cube_c;
 
-		cube_c = reflect( normalize(-eyevector), normal_f);
+		/* calculate cubemap texcoords */
+		cube_c = reflect(-normalize(eyevector), normal_f.rgb);
 		cube_c = cube_c.x * invsurface[0] + cube_c.y * invsurface[1] + cube_c.z * invsurface[2];
-		cube_c = ( m_model * vec4(cube_c.xyz, 0.0)).xyz;
-		diffuse_f.rgb = mix( textureCube(s_reflectcube, cube_c ).rgb, diffuse_f.rgb, diffuse_f.a);
-#endif
+		cube_c = (m_model * vec4(cube_c.xyz, 0.0)).xyz;
 
-		diffuse_f *= e_colourident;
+		/* do PBR reflection using cubemap */
+		gl_FragColor = albedo_f + (metalness_f * textureCube(s_reflectcube, cube_c));
 
-	#if gl_stipplealpha==1
-		float alpha = e_colourident.a;
-		int x = int(mod(gl_FragCoord.x, 2.0));
-		int y = int(mod(gl_FragCoord.y, 2.0));
-
-		if (alpha <= 0.0) {
-				discard;
-		} else if (alpha <= 0.25) {
-			diffuse_f.a = 1.0;
-			if (x + y == 2)
-				discard;
-			if (x + y == 1)
-				discard;
-		} else if (alpha <= 0.5) {
-			diffuse_f.a = 1.0;
-			if (x + y == 2)
-				discard;
-			if (x + y == 0)
-				discard;
-		} else if (alpha < 1.0) {
-			diffuse_f.a = 1.0;
-			if (x + y == 2)
-				discard;
-		}
+		/* do PBR specular using our handy function */
+		gl_FragColor += (LightingFuncGGX(normal_f, normalize(eyevector), deluxe, roughness_f, FRESNEL) * gl_FragColor);
+	#else
+		gl_FragColor = albedo_f;
 	#endif
 
-	#if gl_mono==1
-		float bw = (diffuse_f.r + diffuse_f.g + diffuse_f.b) / 3.0;
-		diffuse_f.rgb = vec3(bw, bw, bw);
-	#endif
+		/* calculate lightmap fragment on top */
+		gl_FragColor.rgb *= lightmap_fragment(normal_f);
 
+		/* r_shadows 2 */
 	#ifdef FAKESHADOWS
-		diffuse_f.rgb *= ShadowmapFilter(s_shadowmap, vtexprojcoord);
+		gl_FragColor.rgb *= ShadowmapFilter(s_shadowmap, vtexprojcoord);
 	#endif
 
-		gl_FragColor = fog4(diffuse_f);
-		
+		/* emissive texture/fullbright bits */
+	#ifdef FULLBRIGHT
+		vec3 emission_f = texture2D(s_fullbright, tcoffsetmap).rgb; // fullbrightmap RGB
+		gl_FragColor.rgb += emission_f;
+	#endif
+
+		/* ambient occlusion */
+	#ifdef PBR
+		gl_FragColor.rgb *= ao;
+	#endif
+
+		/* and let the engine add fog on top */
+		gl_FragColor = fog4(gl_FragColor);
 	}
 #endif

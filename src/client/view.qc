@@ -131,6 +131,10 @@ View_ForceChange(NSClientPlayer pl, int targetWeapon)
 	m_eViewModelL.frame1time = 0.0f;
 }
 
+var float autocvar_cg_gunX = 0.0f;
+var float autocvar_cg_gunY = 0.0f;
+var float autocvar_cg_gunZ = 0.0f;
+
 /*
 ====================
 View_DrawViewModel
@@ -250,7 +254,11 @@ View_DrawViewModel(void)
 
 	if (Client_IsSpectator(cl) || XR_Available(cl) == false) {
 		m_eViewModelL.origin = g_view.GetCameraOrigin();
-		m_eViewModel.origin = g_view.GetCameraOrigin();
+		makevectors(currentAngle);
+		m_eViewModelL.origin += (v_forward * cvar("cg_gunX"));
+		m_eViewModelL.origin += (v_right * cvar("cg_gunY"));
+		m_eViewModelL.origin += (v_up * cvar("cg_gunZ"));
+		m_eViewModel.origin = m_eViewModelL.origin;
 
 		if (Client_IsSpectator(cl)) {
 			m_eViewModel.angles = currentAngle;

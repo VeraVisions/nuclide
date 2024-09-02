@@ -24,9 +24,11 @@ NSActor::NSActor(void)
 	m_vecLastNode = [0,0,0];
 	m_vecTurnAngle = [0,0,0];
 	m_flMoveSpeedKey = 0.0f;
-	
+
 	_m_flRouteGiveUp = 0.0f;
 #endif
+
+	m_itemList = __NULL__;
 
 	for (int i = 0; i < MAX_AMMO_TYPES; i++) {
 		m_iAmmoTypes[i] = 0;
@@ -143,6 +145,63 @@ NSActor::Restore(string strKey, string strValue)
 }
 
 void
+NSActor::Spawned(void)
+{
+	super::Spawned();
+
+	/* let's not waste time and resources */
+	if (wasfreed(this)) {
+		return;
+	}
+
+	/* start ammo */
+	for (int i = 0; i < MAX_AMMO_TYPES; i++) {
+		string defKey = ammoNameForNum(i);
+
+		if (defKey != "") {
+			int defValue = GetDefInt(defKey);
+			EntLog("Giving %S some %i units of %S", classname, defValue, defKey);
+			GiveAmmo(i, defValue);
+		}
+	}
+
+	/* give them their inventory */
+	string weaponList = GetDefString("weapon");
+	string itemList = GetDefString("item");
+	int desiredWeapon = GetDefInt("current_weapon");
+	string switchTo = "";
+	int weaponCount = tokenizebyseparator(weaponList, ",");
+
+	/* append items to the end */
+	if (itemList != "") {
+		weaponList = sprintf("%s,%s", weaponList, itemList);
+	}
+
+	for (int i = 0; i < weaponCount; i++) {
+		string itemName = argv(i);
+		GiveItem(itemName);
+
+		if (i == desiredWeapon) {
+			switchTo = itemName;
+		}
+
+		/* re-calculate because GiveItem may overwrite argv() */
+		weaponCount = tokenizebyseparator(weaponList, ",");
+	}
+
+	if (switchTo != "") {
+		SwitchToWeapon(switchTo);
+	}
+
+	/* give them their desired appearance */
+	string spawnModel = GetSpawnString("model");
+
+	if (spawnModel != "") {
+		SetModel(GetSpawnString("model"));
+	}
+}
+
+void
 NSActor::RestoreComplete(void)
 {
 	if (m_iNodes <= 0i) {
@@ -151,6 +210,27 @@ NSActor::RestoreComplete(void)
 
 	/* re-plot our route */
 	RouteToPosition(m_vecLastNode);
+}
+
+void
+NSActor::Input(entity eAct, string strInput, string strData)
+{
+	switch (strInput) {
+	case "GiveItem":
+		GiveItem(strData);
+		break;
+	case "GiveAmmo":
+		tokenize_console(strData);
+		int ammoNum = ammoNumForName(argv(0));
+		int ammoCount = stoi(argv(1));
+
+		if (ammoNum != -1i) {
+			GiveAmmo(ammoNum, ammoCount);
+		}
+		break;
+	default:
+		super::Input(eAct, strInput, strData);
+	}
 }
 #endif
 
@@ -518,6 +598,7 @@ NSActor::LaunchProjectile(string defName, bool thrown, float timeOfs)
 
 	throwingStrength = bound(0, (90 - throwDirection[0]) * 5.0f, 1000);
 
+	nade.SetWeaponOwner(m_activeWeapon);
 	nade.Launch(GetEyePos(), GetViewAngle(), time - timeOfs, 0.0f, 0.0f);
 	makevectors(throwDirection);
 	nade.SetVelocity((v_forward * throwingStrength) + GetVelocity());
@@ -584,7 +665,13 @@ NSActor::GiveAmmo(int ammoType, int ammoAmount)
 	if (ammoType <= 0i || ammoType >= MAX_AMMO_TYPES)
 		return (false);
 
-	maxAmmo = ammoMaxForNum(ammoType);
+	/* read max ammo from entityDef decl first */
+	maxAmmo = GetDefInt(sprintf("max_%s", ammoNameForNum(ammoType)));
+
+	/* default when above is 0 */
+	if (!maxAmmo) {
+		maxAmmo = ammoMaxForNum(ammoType);
+	}
 
 	/* already at max-ammo? */
 	if (m_iAmmoTypes[ammoType] >= maxAmmo)
@@ -652,7 +739,7 @@ NSActor::HasExactItem(NSItem itemEntity)
 			return (true);
 		}
 
-		linkedList = (NSItem)linkedList.chain;
+		linkedList = (NSItem)linkedList.m_nextItem;
 	}
 
 	return (false);
@@ -679,10 +766,22 @@ NSActor::HasItem(string itemName)
 			return (true);
 		}
 
-		linkedList = (NSItem)linkedList.chain;
+		linkedList = (NSItem)linkedList.m_nextItem;
 	}
 
 	return (false);
+}
+
+void
+NSActor::AddedItemCallback(NSItem itemAdded)
+{
+#ifdef SERVER
+	if (!m_activeWeapon) {
+		if (itemAdded.IsWeapon()) {
+			SwitchToExactWeapon(itemAdded);
+		}
+	}
+#endif
 }
 
 bool
@@ -707,11 +806,6 @@ NSActor::GiveItem(string itemName)
 		m_itemList._AddedCallback();
 		//NSLog("First Item %S", m_itemList.classname);
 
-		/* we have no active weapon, and this is our pick */
-		if (!m_activeWeapon) {
-			SwitchToExactWeapon((NSWeapon)m_itemList);
-		}
-
 		return (true);
 	}
 
@@ -727,7 +821,7 @@ NSActor::GiveItem(string itemName)
 		}
 
 		lastItem = linkedList;
-		linkedList = (NSItem)linkedList.chain;
+		linkedList = (NSItem)linkedList.m_nextItem;
 	}
 
 	/* add it to the back of the chain, so it's part of our inventory. */
@@ -740,7 +834,7 @@ NSActor::GiveItem(string itemName)
 		}
 
 		newItem.SetOwner(this);
-		lastItem.chain = newItem;
+		lastItem.m_nextItem = newItem;
 		linkedList = newItem;
 		newItem._AddedCallback();
 	}
@@ -787,7 +881,7 @@ NSActor::SwitchToBestWeapon(bool ignoreActive)
 			float weight;
 
 			if (toIgnore == weaponName) {
-				linkedList = (NSItem)linkedList.chain;
+				linkedList = (NSItem)linkedList.m_nextItem;
 				continue;
 			}
 
@@ -799,11 +893,13 @@ NSActor::SwitchToBestWeapon(bool ignoreActive)
 			}
 		}
 
-		linkedList = (NSItem)linkedList.chain;
+		linkedList = (NSItem)linkedList.m_nextItem;
 	}
 
 	if (bestWeapon) {
-		SwitchToExactWeapon((NSWeapon)bestWeapon); 
+		if (bestWeapon != m_activeWeapon) {
+			SwitchToExactWeapon((NSWeapon)bestWeapon);
+		}
 	}
 }
 
@@ -837,24 +933,30 @@ NSActor::RemoveItem(string itemName)
 			removeItem = true;
 			frontItem = lastItem; /* the one before the current one */
 			itemToRemove = linkedList; /* the item to destroy */
+			break;
 		}
 
 		lastItem = linkedList;
-		linkedList = (NSItem)linkedList.chain;
+		linkedList = (NSItem)linkedList.m_nextItem;
 	}
 
 	/* successfully remove the last item */
 	if (removeItem == true) {
 		/* we had an item in front, bridge across the removed item. */
 		if (frontItem) {
-			frontItem.chain = (NSItem)itemToRemove.chain;
+			frontItem.m_nextItem = (NSItem)itemToRemove.m_nextItem;
 		} else {
 			/* this was the first item. set to chain (can be NULL) */
-			m_itemList = (NSItem)itemToRemove.chain;
+			m_itemList = (NSItem)itemToRemove.m_nextItem;
+		}
+
+		/* is this our active weapon? */
+		if (m_activeWeapon == linkedList) {
+			m_activeWeapon._SwitchedFromCallback();
+			m_activeWeapon = __NULL__;
 		}
 
 		itemToRemove._RemovedCallback();
-		//itemToRemove.Destroy();
 		return (true);
 	}
 #endif
@@ -877,19 +979,18 @@ NSActor::RemoveAllItems(bool ignoreWeapons)
 
 	/* iterate through the inventory, then figure out if we already have it*/
 	while (linkedList) {
-		NSItem nextItem = (NSItem)linkedList.chain;
+		NSItem nextItem = (NSItem)linkedList.m_nextItem;
 
 		/* respect weapon filter */
 		if (!(ignoreWeapons && linkedList.IsWeapon() == true)) {
-			linkedList._RemovedCallback();
-			linkedList.Destroy();
-
-			/* is this our active weapon? */
+			/* is this our active weapon? give it a chance to do work first */
 			if (m_activeWeapon == linkedList) {
 				m_activeWeapon._SwitchedFromCallback();
 				m_activeWeapon = __NULL__;
 			}
 
+			RemoveItem(linkedList.classname);
+			linkedList = nextItem;
 			continue;
 		}
 
@@ -914,19 +1015,16 @@ NSActor::RemoveAllWeapons(void)
 
 	/* iterate through the inventory, then figure out if we already have it*/
 	while (linkedList) {
-		NSItem nextItem = (NSItem)linkedList.chain;
+		NSItem nextItem = (NSItem)linkedList.m_nextItem;
 
-		/* respect weapon filter */
 		if (linkedList.IsWeapon() == true) {
-			linkedList._RemovedCallback();
-			linkedList.Destroy();
-
-			/* is this our active weapon? */
+			/* is this our active weapon? give it a chance to do work first */
 			if (m_activeWeapon == linkedList) {
 				m_activeWeapon._SwitchedFromCallback();
 				m_activeWeapon = __NULL__;
 			}
 
+			linkedList._RemovedCallback();
 			continue;
 		}
 
@@ -966,7 +1064,7 @@ NSActor::SwitchToWeapon(string weaponName)
 			SwitchToExactWeapon((NSWeapon)linkedList);
 		}
 
-		linkedList = (NSItem)linkedList.chain;
+		linkedList = (NSItem)linkedList.m_nextItem;
 	}
 }
 
@@ -1005,9 +1103,18 @@ NSActor::SortWeaponChain(void)
 
 	/* first we determine the range of our hud buckets. */
 	while (itemChain) {
+
+		/* no longer in inventory */
+		if (itemChain.owner != this) {
+			itemChain = (NSWeapon)itemChain.m_nextItem;
+			continue;
+		}
+
 		if (itemChain.IsWeapon() == true) {
 			hudSlot = itemChain.GetDefInt("hudSlot");
 			hudPos = itemChain.GetDefInt("hudSlotPos");
+			itemChain.m_nextWeapon = __NULL__;
+			itemChain.m_prevWeapon = __NULL__;
 
 			if (hudSlot > heighestSlot) {
 				heighestSlot = hudSlot;
@@ -1017,7 +1124,7 @@ NSActor::SortWeaponChain(void)
 			}
 		}
 
-		itemChain = (NSWeapon)itemChain.chain;
+		itemChain = (NSWeapon)itemChain.m_nextItem;
 	}
 
 	for (int hS = 0i; hS <= heighestSlot; hS++) {
@@ -1025,6 +1132,12 @@ NSActor::SortWeaponChain(void)
 			itemChain = (NSWeapon)m_itemList;
 
 			while (itemChain) {
+				/* no longer in inventory */
+				if (itemChain.owner != this) {
+					itemChain = (NSWeapon)itemChain.m_nextItem;
+					continue;
+				}
+
 				if (itemChain.IsWeapon() == true) {
 					hudSlot = itemChain.GetDefInt("hudSlot");
 					hudPos = itemChain.GetDefInt("hudSlotPos");
@@ -1043,7 +1156,7 @@ NSActor::SortWeaponChain(void)
 					}
 				}
 
-				itemChain = (NSWeapon)itemChain.chain;
+				itemChain = (NSWeapon)itemChain.m_nextItem;
 			}
 		}
 	}
@@ -1054,7 +1167,10 @@ NSActor::SortWeaponChain(void)
 		weaponTest = weaponTest.m_nextWeapon;
 	}
 
-	firstWeapon.m_prevWeapon = lastWeapon;
+	if (firstWeapon) {
+		firstWeapon.m_prevWeapon = lastWeapon;
+		m_firstWeapon = firstWeapon;
+	}
 
 	return (firstWeapon);
 }
@@ -1062,8 +1178,9 @@ NSActor::SortWeaponChain(void)
 bool
 NSWeapon_CanSwitch(NSActor pl)
 {
-	if (!pl.m_activeWeapon)
+	if (!pl.m_activeWeapon) {
 		return false;
+	}
 
 	return true;
 }
@@ -1071,36 +1188,28 @@ NSWeapon_CanSwitch(NSActor pl)
 NSWeapon
 NSActor::GetNextWeapon(void)
 {
-	NSWeapon firstWeapon;
-
 	if (NSWeapon_CanSwitch(this) == false) {
 		return (__NULL__);
 	}
 
-	firstWeapon = SortWeaponChain();
-
 	if (m_activeWeapon.m_nextWeapon) {
 		return (m_activeWeapon.m_nextWeapon);
 	} else {
-		return (firstWeapon);
+		return (m_firstWeapon);
 	}
 }
 
 NSWeapon
 NSActor::GetPreviousWeapon(void)
 {
-	NSWeapon firstWeapon;
-
 	if (NSWeapon_CanSwitch(this) == false) {
 		return (__NULL__);
 	}
 
-	firstWeapon = SortWeaponChain();
-
 	if (m_activeWeapon.m_prevWeapon) {
 		return (m_activeWeapon.m_prevWeapon);
 	} else {
-		return (firstWeapon);
+		return (m_firstWeapon);
 	}
 }
 
@@ -1121,8 +1230,8 @@ NSActor_ListInventory(NSActor targetEntity)
 	printf("active weapon: %s (%d)\n", activeWeapon.classname, num_for_edict(activeWeapon));
 
 	while (itemEntry) {
-		printf("%i %s (%d) (owner: %d); next: %d\n", i, itemEntry.classname, num_for_edict(itemEntry), num_for_edict(itemEntry.owner), num_for_edict(itemEntry.chain));
-		itemEntry = (NSItem)itemEntry.chain;
+		printf("%i %s (%d) (owner: %d); next: %d\n", i, itemEntry.classname, num_for_edict(itemEntry), num_for_edict(itemEntry.owner), num_for_edict(itemEntry.m_nextItem));
+		itemEntry = (NSItem)itemEntry.m_nextItem;
 		i += 1i;
 	}
 }

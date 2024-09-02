@@ -508,7 +508,7 @@ NSMonster::Gib(void)
 {
 	vector vecDir = vectorToAngles(GetOrigin() - g_dmg_vecLocation);
 	SetState(MONSTER_DEAD);
-	SetTakedamage(DAMAGE_NO);
+	MakeInvulnerable();
 
 	string breakModel = GetPropData(PROPINFO_BREAKMODEL);
 	BreakModel_Spawn(absmin, absmax, vecDir, g_dmg_iDamage * 2.5f, vlen(size) / 10, breakModel);
@@ -1805,7 +1805,8 @@ NSMonster::Respawn(void)
 	RestoreAngles();
 	v_angle = fixAngle(GetAngles());
 	AddFlags(FL_MONSTER);
-	SetTakedamage(DAMAGE_AIM);
+	MakeVulnerable();
+	EnableAimAssist();
 	SetState(MONSTER_IDLE);
 	SetHealth(GetSpawnFloat("health"));
 	m_eEnemy = __NULL__;

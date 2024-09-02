@@ -272,6 +272,32 @@ Event_Parse(float type)
 	case EV_ENTITYEVENT:
 		EV_EntityEvent();
 		break;
+	case EV_BLOOD:
+		vector vBloodPos = g_vec_null;
+		vector vBloodColor = g_vec_null;
+
+		vBloodPos[0] = readcoord();
+		vBloodPos[1] = readcoord();
+		vBloodPos[2] = readcoord();
+
+		vBloodColor[0] = readbyte() / 255;
+		vBloodColor[1] = readbyte() / 255;
+		vBloodColor[2] = readbyte() / 255;
+		break;
+	case EV_CHAT:
+		float fSender = readbyte();
+		float fTeam = readbyte();
+		string sMessage = readstring();
+
+		CSQC_Parse_Print(Util_ChatFormat(fSender, 0, sMessage), PRINT_CHAT);
+		break;
+	case EV_CHAT_TEAM:
+		float fSender2 = readbyte();
+		float fTeam2 = readbyte();
+		string sMessage2 = readstring();
+
+		CSQC_Parse_Print(Util_ChatFormat(fSender2, fTeam2, sMessage2), PRINT_CHAT);
+		break;
 	default:
 		error(sprintf("event id %d not recognized. abort immediately.\n", type));
 	}

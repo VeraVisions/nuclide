@@ -3258,7 +3258,7 @@ void(entity e, string s) clientcommand = #440; /* Part of KRIMZON_SV_PARSECLIENT
 float(string s) tokenize = #441; /* Part of KRIMZON_SV_PARSECLIENTCOMMAND*/
 string(float n) argv = #442; /* Part of KRIMZON_SV_PARSECLIENTCOMMAND*/
 void(entity e, entity tagentity, string tagname) setattachment = #443; /* Part of DP_GFX_QUAKE3MODELTAGS*/
-searchhandle(string pattern, enumflags:float{SB_CASEINSENSITIVE=1<<0,SB_FULLPACKAGEPATH=1<<1,SB_ALLOWDUPES=1<<2,SB_FORCESEARCH=1<<3} flags, float quiet, optional string filterpackage) search_begin = #444; /* Part of DP_QC_FS_SEARCH, DP_QC_FS_SEARCH_PACKFILE
+searchhandle(string pattern, enumflags:float{SB_CASEINSENSITIVE=1<<0,SB_FULLPACKAGEPATH=1<<1,SB_ALLOWDUPES=1<<2,SB_FORCESEARCH=1<<3,SB_MULTISEARCH=1<<4,SB_NAMESORT=1<<5} flags, float quiet, optional string filterpackage) search_begin = #444; /* Part of DP_QC_FS_SEARCH, DP_QC_FS_SEARCH_PACKFILE
 		initiate a filesystem scan based upon filenames. Be sure to call search_end on the returned handle. SB_FULLPACKAGEPATH interprets the filterpackage arg as a full package path to avoid gamedir ambiguity, equivelent to whichpack's WP_FULLPACKAGEPATH flag. SB_ALLOWDUPES allows returning multiple entries with the same name (but different package, useful with search_fopen). SB_FORCESEARCH requires use of the filterpackage and SB_FULLPACKAGEPATH flag, initiating searches from gamedirs/packages which are not currently active. */
 
 void(searchhandle handle) search_end = #445; /* Part of DP_QC_FS_SEARCH, DP_QC_FS_SEARCH_PACKFILE*/

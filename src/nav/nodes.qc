@@ -175,7 +175,7 @@ Nodes_Init(void)
 	InitStart();
 
 	/* skip if present. TODO: check if they're out of date? */
-	if (FileExists(sprintf("data/%s.way", mapname))) {
+	if (fileExists(sprintf("data/%s.way", mapname))) {
 		NodeEdit_ReadFile(sprintf("%s.way", mapname), true);
 	} else {
 		Nodes_BuildFromEnts();

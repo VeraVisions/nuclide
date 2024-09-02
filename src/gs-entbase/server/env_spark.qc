@@ -134,7 +134,7 @@ env_spark::Spawned(void)
 {
 	super::Spawned();
 
-	Sound_Precache("fx.spark");
+	Sound_Precache("DoSpark");
 	_m_iSparkParticle = particleeffectnum("fx_spark.main");
 }
 
@@ -182,7 +182,7 @@ void
 env_spark::SparkOnce(void)
 {
 	if (HasSpawnFlags(EVSPARK_SILENT) == false) {
-		StartSoundDef("fx.spark", CHAN_AUTO, true);
+		StartSoundDef("DoSpark", CHAN_AUTO, true);
 	}
 
 	pointparticles(_m_iSparkParticle, origin, angles, 1);

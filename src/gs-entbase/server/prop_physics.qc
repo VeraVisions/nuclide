@@ -14,8 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-#ifndef PHYSICS_STATIC
-
 enumflags
 {
 	PHYSPROPSFL_ASLEEP,
@@ -95,27 +93,6 @@ prop_physics::Respawn(void)
 
 	Sleep();
 }
-#else
-class
-prop_physics:NSRenderableEntity
-{
-	void(void) prop_physics;
-
-	virtual void(void) Respawn;
-};
-
-void
-prop_physics::prop_physics(void)
-{
-}
-
-void
-prop_physics::Respawn(void)
-{
-	super::Respawn();
-	SetSolid(SOLID_BBOX);
-}
-#endif
 
 CLASSEXPORT(prop_physics_override, prop_physics)
 CLASSEXPORT(prop_physics_respawnable, prop_physics)

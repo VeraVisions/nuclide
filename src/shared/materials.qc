@@ -443,11 +443,11 @@ Materials_Init(void)
 		search_end(pm);
 
 		/* the way TW did it back in '03 */
-		if (FileExists(wastesName))
+		if (fileExists(wastesName))
 			Materials_LoadFromLegacyText(wastesName);
 
 		/* Trinity-Renderer does it this way */
-		if (FileExists(svenName))
+		if (fileExists(svenName))
 			Materials_LoadFromLegacyText(svenName);
 
 		/* no longer needed! */

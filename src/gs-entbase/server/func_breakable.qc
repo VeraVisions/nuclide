@@ -262,9 +262,9 @@ func_breakable::Respawn(void)
 	m_bCanTouch = true;
 
 	if (HasSpawnFlags(SF_TRIGGER)) {
-		SetTakedamage(DAMAGE_NO);
+		MakeInvulnerable();
 	} else {
-		SetTakedamage(DAMAGE_YES);
+		MakeVulnerable();
 	}
 
 	/* initially set the health to that of the ent-data */
@@ -312,7 +312,7 @@ func_breakable::Explode(void)
 	pointparticles(_m_iExplosionParticle, rp, [0,0,0], 1);
 	radiusDamage(GetOrigin(), m_flExplodeMag, 0i, m_flExplodeRad, this);
 	UseTargets(this, TRIG_TOGGLE, 0.0f); /* delay... ignored. */
-	SetTakedamage(DAMAGE_NO);
+	MakeInvulnerable();
 	Disappear();
 }
 
@@ -369,7 +369,7 @@ func_breakable::Death(entity inflictor, entity attacker, int damage, vector dir,
 			EntLog("func_breakable (%s) does not have a surfaceproperty for break", funcbreakable_surftable[material]);
 
 		Disappear();
-		SetTakedamage(DAMAGE_NO);
+		MakeInvulnerable();
 		UseTargets(eActivator, TRIG_TOGGLE, 0.0f);
 	}
 }

@@ -87,6 +87,9 @@ public:
 	nonvirtual void SetLightColor(vector);
 	nonvirtual void SetLightRadius(float);
 
+	nonvirtual void SetWeaponOwner(NSWeapon);
+	nonvirtual NSWeapon GetWeaponOwner(void);
+
 	nonvirtual void EnableDetonateOnFuse(bool);
 	nonvirtual void EnableDetonateOnDeath(bool);
 	nonvirtual void EnableDetonateOnWorld(bool);
@@ -154,6 +157,7 @@ private:
 	vector m_vecSpawnMaxs;
 	float m_flSpawnFrame;
 	vector m_vecSpawnOrigin;
+	NSWeapon m_weaponOwner;
 
 	/* ETQW-additions */
 	bool m_bIsBullet;
@@ -186,7 +190,7 @@ private:
 };
 
 #ifdef SERVER
-NSProjectile NSProjectile_SpawnDef(string entityDef, NSEntity theOwner);
-NSProjectile NSProjectile_SpawnDefAtPosition(string entityDef, NSEntity theOwner, vector vecOrigin, vector vecAngles);
-NSProjectile NSProjectile_SpawnDefAttachment(string entityDef, NSEntity theOwner, int attachmentID);
+NSProjectile NSProjectile_SpawnDef(string entityDef, NSActor theOwner);
+NSProjectile NSProjectile_SpawnDefAtPosition(string entityDef, NSActor theOwner, vector vecOrigin, vector vecAngles);
+NSProjectile NSProjectile_SpawnDefAttachment(string entityDef, NSActor theOwner, int attachmentID);
 #endif

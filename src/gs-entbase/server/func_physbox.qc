@@ -91,8 +91,8 @@ void
 func_physbox::Respawn(void)
 {
 	super::Respawn();
-	health = GetSpawnHealth();
-	SetTakedamage(DAMAGE_YES);
+	SetHealth(GetSpawnFloat("health"));
+	MakeVulnerable();
 	SetSolid(SOLID_BBOX);
 }
 #endif

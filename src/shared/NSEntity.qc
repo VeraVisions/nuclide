@@ -48,7 +48,7 @@ NSEntity::Spawned(void)
 	}
 
 	/* used to network our shared ID */
-	entityDefID = EntityDef_IDFromName(classname);
+	entityDefID = EntityDef_NetIDFromName(classname);
 #endif
 }
 
@@ -1142,26 +1142,6 @@ NSEntity::SpawnKey(string strKey, string strValue)
 }
 
 void
-NSEntity::OnRemoveEntity(void)
-{
-}
-
-void
-NSEntity::Destroy(void)
-{
-	removed = 1; /* mark this as cleanly removed */
-	OnRemoveEntity();
-	customphysics = __NULL__;
-	modelindex = 0;
-	solid = 0;
-	movetype = 0;
-	classname = 0;
-	think = __NULL__;
-	nextthink = 0.0f;
-	remove(this);
-}
-
-void
 NSEntity::Show(void)
 {
 	effects &= ~EF_NODRAW;
@@ -1497,6 +1477,14 @@ spawnClass(string className, vector desiredPos)
 	return (newEntity);
 }
 
+#ifdef SERVER
+bool
+changeClass(entity target, string className)
+{
+	return EntityDef_SwitchClass((NSEntity)target, className) ? (true) : (false);
+}
+#endif
+
 void
 sendInput(entity target, string inputName, string dataString, entity activator)
 {
@@ -1572,8 +1560,46 @@ bool
 isBot(entity entityToCheck)
 {
 #ifdef SERVER
-	return (clienttype(self) == CLIENTTYPE_BOT) ? (true) : (false);
+	return (clienttype(entityToCheck) == CLIENTTYPE_BOT) ? (true) : (false);
 #else
 	return (false);
 #endif
+}
+
+
+#ifdef SERVER
+void
+setUserInfo(entity clientEntity, string serverKey, string setValue)
+{
+	if (isClient(clientEntity)) {
+		NSClient client = (NSClient) clientEntity;
+		client.SetInfoKey(serverKey, setValue);
+	}
+}
+
+string
+getUserInfo(entity clientEntity, string serverKey)
+{
+	if (isClient(clientEntity)) {
+		NSClient client = (NSClient) clientEntity;
+		return client.GetInfoKey(serverKey);
+	}
+}
+#endif
+
+void
+placeSpawnpoint(entity target)
+{
+	vector testorg = target.origin;
+
+	for (int i = 0; i < 32; i++) {
+		tracebox(testorg, target.mins, target.maxs, testorg, MOVE_NORMAL, target);
+
+		if (!trace_startsolid) {
+			setorigin(target, testorg);
+			break;
+		}
+
+		testorg[2] += 1.0;
+	}
 }

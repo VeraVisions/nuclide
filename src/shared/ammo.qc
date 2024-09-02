@@ -65,7 +65,9 @@ Ammo_Init(void)
 		int ammoIndex = stoi(argv(c+1));
 		g_ammoInfo[ammoIndex].m_strName = ammoName;
 		g_ammoInfo[ammoIndex].m_strTitle = EntityDef_GetKeyValue("ammo_names", ammoName);
-		g_ammoInfo[ammoIndex].m_iMax = (int)stof(EntityDef_GetKeyValue("ammo_max", ammoName));
+		string maxString = EntityDef_GetKeyValue("ammo_max", ammoName);
+		string unpackedString = unpackStringCommand(maxString);
+		g_ammoInfo[ammoIndex].m_iMax = (int)stof(unpackedString);
 		numKeys = tokenize_console(ammoTypeData);
 	}
 }

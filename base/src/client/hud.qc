@@ -32,12 +32,15 @@ HUD_Draw(void)
 	iconPos[1] = (hudSize[1] - baseIconSize) - baseIconPadding;
 
 	/* health, armor icons */
+	Font_DrawRText(iconPos + [-((baseIconSize/2) + (baseIconPadding/2)) - baseIconPadding, 0], "100", FONT_16);
 	drawpic(iconPos + [-((baseIconSize/2) + (baseIconPadding/2)), 0], "gfx/hud/health", [baseIconSize, baseIconSize], [1,1,1], 1.0f);
+	Font_DrawText(iconPos + [(baseIconSize/2) + (baseIconPadding/2) + baseIconSize + baseIconPadding, 0], "100", FONT_16);
 	drawpic(iconPos + [(baseIconSize/2) + (baseIconPadding/2), 0], "gfx/hud/armor", [baseIconSize, baseIconSize], [1,1,1], 1.0f);
 
-	/* ammo icon */
-	iconPos[0] = (hudSize[0] - baseIconSize) - baseIconPadding;
-	drawpic(iconPos, "gfx/hud/armor", [baseIconSize, baseIconSize], [1,1,1], 1.0f);
+	/* little point in not drawing these, even if you don't have a suit */
+	if (pl.m_activeWeapon) {
+		pl.m_activeWeapon.UpdateGUI();
+	}
 
 	Textmenu_Draw();
 }

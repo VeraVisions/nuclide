@@ -60,9 +60,9 @@ public:
 	/** Overridable: Called after running physics on the NSClientPlayer in question. */
 	virtual void PlayerPostFrame(NSClientPlayer);
 	/** Overridable: Called when a NSClientPlayer dies in the game. */
-	virtual void PlayerDeath(NSClientPlayer);
+	virtual void PlayerDeath(NSClientPlayer, NSActor, NSDict);
 	/** Overridable: Called when a NSClientPlayer feels pain. */
-	virtual void PlayerPain(NSClientPlayer);
+	virtual void PlayerPain(NSClientPlayer, NSActor, NSDict);
 	/** Overridable: Called to check if a NSClientPlayer can attack. */
 	virtual bool PlayerCanAttack(NSClientPlayer);
 
@@ -118,6 +118,8 @@ public:
 
 	/** Returns the title of the gamemode running. */
 	virtual string Title(void);
+
+	nonvirtual NSGameRules InitFromProgs(string pathToProgs);
 	
 	/* spectator */
 	/*
@@ -130,6 +132,7 @@ private:
 	float m_flIntermissionTime;
 	float m_flIntermissionCycle;
 	entity m_eIntermissionPoint;
+	float m_ruleProgs;
 };
 
 /* our currently running mode */

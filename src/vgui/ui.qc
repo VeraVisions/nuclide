@@ -447,7 +447,7 @@ UISystem_Init(void)
 		}
 		fclose(fileUI);
 	} else {
-		error(sprintf("[MENU] Cannot load UI file %s!", strUIFile));
+		NSError(sprintf("[MENU] Cannot load UI file %s!", strUIFile));
 	}
 #endif
 

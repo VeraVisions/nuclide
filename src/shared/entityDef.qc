@@ -195,7 +195,7 @@ EntityDef_Init(void)
 	}
 
 	/* load the map specific def file */
-	if (FileExists(mapDef)) {
+	if (fileExists(mapDef)) {
 		EntityDef_ReadFile(mapDef);
 	}
 
@@ -220,9 +220,9 @@ EntityDef_Init(void)
 }
 
 static bool
-EntityDef_CheckCondition(int id, string keyWord, float tweakCondition, string keyValue)
+EntityDef_CheckCondition(NSEntity target, int id, string keyWord, float tweakCondition, string keyValue)
 {
-	int spawnWords = tokenize_console(g_lastSpawnData);
+	int spawnWords = tokenize_console(target.m_strSpawnData);
 	string key, value;
 	float tmp1, tmp2;
 
@@ -273,7 +273,7 @@ EntityDef_CheckCondition(int id, string keyWord, float tweakCondition, string ke
 		}
 	}
 
-	return false;
+	return (false);
 }
 
 
@@ -337,6 +337,8 @@ EntityDef_PrepareEntity(entity target, int id)
 		targetEnt = spawn(NSEntity);
 	}
 
+	targetEnt.declclass = g_entDefTable[id].entClass;
+
 	/* check if the spawnclass is an entityDef */
 	for (int i = 0i; i < g_entDefCount; i++) {
 		if (g_entDefTable[id].spawnClass == g_entDefTable[i].entClass) {
@@ -356,8 +358,8 @@ EntityDef_PrepareEntity(entity target, int id)
 
 		if (!isfunction(spawnClass)) {
 			NSError("Unable to find entityDef spawnclass %S", spawnClass);
-			targetEnt.Destroy();
-			return __NULL__;
+			remove(targetEnt);
+			return (__NULL__);
 		}
 
 		/* init */
@@ -405,7 +407,7 @@ EntityDef_PrepareEntity(entity target, int id)
 		string keyValue = argv(2);
 
 		/* iterate through a bunch of different data to check our condition */
-		if (EntityDef_CheckCondition(id, keyWord, tweakCondition, keyValue)) {
+		if (EntityDef_CheckCondition(target, id, keyWord, tweakCondition, keyValue)) {
 			int tweakGroups = tokenizebyseparator(g_entDefTable[id].tweakKeys, ";");
 
 			//print(sprintf("%S passed the check\n", keyWord));
@@ -420,30 +422,44 @@ EntityDef_PrepareEntity(entity target, int id)
 					for (int y = 0; y < tweakSpawns; y+= 2) {
 						//print(sprintf("applying %S and %S\n", argv(y), argv(y+1)));
 						targetEnt.SpawnKey(argv(y), argv(y+1));
+						targetEnt.m_strSpawnData = sprintf("%s TWEAK %S %S }", targetEnt.m_strSpawnData, argv(y), argv(y+1));
 					}
 				}
 
 				/* retokenize */
 				tweakGroups = tokenizebyseparator(g_entDefTable[id].tweakKeys, ";");
 			}
+
+			print("\n");
+			print("\n");
+			print("\n");
+			print("\n");
+			print(targetEnt.m_strSpawnData);
+			print("\n");
+			print("\n");
+			print("\n");
+			print("\n");
 		}
 
 		/* retokenize our condition */
 		spawnWords = tokenizebyseparator(g_entDefTable[id].tweakDefs, ";");
 	}
 
-	targetEnt.m_strModelEventCB = g_entDefTable[id].eventList; /* pass over the event listing */
+	/* now that that all methods have been called, we're ready to decide whether to continue this spawn */
+	if (wasfreed(targetEnt) == false) {
+		targetEnt.m_strModelEventCB = g_entDefTable[id].eventList; /* pass over the event listing */
 
-	/* now we rename the classname for better visibility,
-	   but also because some classes need to know. */
-	targetEnt.classname = g_entDefTable[id].entClass;
-	targetEnt.entityDefID = EntityDef_IDFromName(targetEnt.classname);
+		/* now we rename the classname for better visibility,
+		   but also because some classes need to know. */
+		targetEnt.classname = g_entDefTable[id].entClass;
+		targetEnt.entityDefID = EntityDef_NetIDFromName(targetEnt.classname);
 
-	targetEnt.Spawned();
-	targetEnt.Respawn();
+		targetEnt.Spawned();
+		targetEnt.Respawn();
+	}
 
 	g_lastSpawnData = "";
-	return targetEnt;
+	return (targetEnt);
 }
 
 /* precache resources inside an entityDef */
@@ -514,6 +530,10 @@ EntityDef_SpawnClassname(string className)
 {
 	g_lastSpawnData = __fullspawndata;
 
+	if not (className) {
+		return (__NULL__);
+	}
+
 	for (int i = 0i; i < g_entDefCount; i++) {
 		if (className == g_entDefTable[i].entClass) {
 			if (time < 5.0) {
@@ -525,7 +545,30 @@ EntityDef_SpawnClassname(string className)
 		}
 	}
 
-	return __NULL__;
+	return (__NULL__);
+}
+
+NSEntity
+EntityDef_SwitchClass(NSEntity target, string className)
+{
+	NSEntity returnEntity = __NULL__;
+	float oldTeam = target.team;
+	g_lastSpawnData = target.m_strSpawnData;
+
+	for (int i = 0i; i < g_entDefCount; i++) {
+		if (className == g_entDefTable[i].entClass) {
+			if (time < 5.0) {
+				EntityDef_Precaches(i);
+			}
+
+			NSLog("Spawning eDef %S", className);
+			returnEntity = EntityDef_PrepareEntity(target, i);
+			returnEntity.team = oldTeam;
+			return (returnEntity);
+		}
+	}
+
+	return (returnEntity);
 }
 
 NSEntity
@@ -541,10 +584,10 @@ EntityDef_CreateClassname(string className)
 	/* Failure */
 	if (test == __NULL__) {
 		new.Destroy();
-		return __NULL__;
+		return (__NULL__);
 	}
 
-	return new;
+	return (new);
 }
 
 static void
@@ -603,6 +646,23 @@ EntityDef_DebugList(void)
 	}
 }
 
+float
+EntityDef_NetIDFromName(string defName)
+{
+#if 1
+	return crc16(true, defName);
+#else
+	if (defName) {
+		for (int i = 0i; i < g_entDefCount; i++) {
+			if (defName == g_entDefTable[i].entClass) {
+				return (i);
+			}
+		}
+	}
+
+	return (-1i);
+#endif
+}
 
 int
 EntityDef_IDFromName(string defName)
@@ -619,13 +679,17 @@ EntityDef_IDFromName(string defName)
 }
 
 string
-EntityDef_NameFromID(int defNum)
+EntityDef_NameFromNetID(float defNum)
 {
-	if (defNum == -1i) {
-		return "";
+	for (int i = 0i; i < g_entDefCount; i++) {
+		int checkSum = crc16(true, g_entDefTable[i].entClass);
+
+		if (checkSum == defNum) {
+			return (g_entDefTable[i].entClass);
+		}
 	}
 
-	return g_entDefTable[defNum].entClass;
+	return "";
 }
 
 

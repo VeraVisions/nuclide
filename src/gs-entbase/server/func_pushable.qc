@@ -175,9 +175,9 @@ func_pushable::Respawn(void)
 	PlayerUse = OnPlayerUse;
 
 	if (HasSpawnFlags(FNCPUSHABLE_BREAKABLE) == true) {
-		SetTakedamage(DAMAGE_YES);
+		MakeVulnerable();
 	} else {
-		SetTakedamage(DAMAGE_NO);
+		MakeInvulnerable();
 	}
 
 	if (!m_eCollBox) {

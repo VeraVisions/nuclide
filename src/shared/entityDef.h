@@ -120,14 +120,15 @@ typedef struct
 void EntityDef_Init(void);
 void EntityDef_DebugList(void);
 string EntityDef_GetKeyValue(string, string);
-
+float EntityDef_NetIDFromName(string);
+string EntityDef_NameFromNetID(float);
 int EntityDef_IDFromName(string);
-string EntityDef_NameFromID(int);
 string EntityDef_GetSpawnData(int);
 bool EntityDef_HasSpawnClass(string className);
 
 #ifdef SERVER
 bool EntityDef_Precache(string);
+NSEntity EntityDef_SwitchClass(NSEntity target, string className);
 NSEntity Entity_CreateClass(string className);
 #endif
 

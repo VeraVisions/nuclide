@@ -77,6 +77,7 @@ public:
 	virtual void CheckRoute(void);
 	virtual void PreFrame(void);
 	virtual void PostFrame(void);
+	virtual void AddedItemCallback(NSItem);
 	virtual void UseButton(void);
 	virtual void SetEnemy(entity);
 	virtual float GetRunSpeed(void);

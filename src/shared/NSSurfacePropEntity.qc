@@ -77,9 +77,9 @@ NSSurfacePropEntity::IsAlive(void)
 }
 
 bool
-NSSurfacePropEntity:: IsVulnerable(void)
+NSSurfacePropEntity::IsVulnerable(void)
 {
-	return m_bTakesDamage;
+	return (m_bTakesDamage);
 }
 
 void
@@ -140,12 +140,6 @@ bool
 NSSurfacePropEntity::CanBleed(void)
 {
 	return (iBleeds);
-}
-
-void
-NSSurfacePropEntity::SetTakedamage(float type)
-{
-	takedamage = type;
 }
 
 void
@@ -436,6 +430,13 @@ NSSurfacePropEntity::Input(entity entityActivator, string inputName, string data
 		break;
 	case "Extinguish":
 		Extinguish();
+		break;
+	case "Damage":
+		NSDict damageDecl = spawn(NSDict);
+		float damagePoints = stof(dataField);
+		damageDecl.AddKey("damage", dataField);
+		Damage(this, this, damageDecl, 1.0, g_vec_null, GetOrigin());
+		remove(damageDecl);
 		break;
 	default:
 		super::Input(entityActivator, inputName, dataField);
@@ -831,6 +832,7 @@ entityDamage(entity targetEnt, entity inflictingEnt, entity attackingEnt, string
 	}
 
 	NSDict damageDecl = NSDict::InitWithSpawnData(damageDef);
+	damageDecl.AddKey("weapon", weaponDef);
 	theTarget.Damage(inflictingEnt, attackingEnt, damageDecl, 1.0, damageDir, hitLocation);
 	remove(damageDecl);
 #endif

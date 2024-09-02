@@ -67,6 +67,10 @@ void NSRenderableEntity::_UpdateGeomset(void)
 void
 NSRenderableEntity::_UpdateBoneCount(void)
 {
+	if (!modelindex) {
+		return;
+	}
+
 	skeletonindex = skel_create(modelindex);
 	m_iNumBones = skel_get_numbones(skeletonindex) + 1;
 	//print(sprintf("UPDATED GEOMSET FOR MODELINDEX %d, %d BONES\n", modelindex, m_iNumBones));
@@ -163,10 +167,7 @@ NSRenderableEntity::EvaluateEntity(void)
 float
 NSRenderableEntity::SendEntity(entity ePEnt, float flChanged)
 {
-	if (!modelindex)
-		return (0);
-
-	if (clienttype(ePEnt) != CLIENTTYPE_REAL)
+	if (!modelindex && solid == SOLID_NOT)
 		return (0);
 
 	WriteByte(MSG_ENTITY, ENT_ENTITYRENDERABLE);
@@ -215,7 +216,7 @@ NSRenderableEntity::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_COORD(maxs[0], RDENT_CHANGED_SIZE)
 	SENDENTITY_COORD(maxs[1], RDENT_CHANGED_SIZE)
 	SENDENTITY_COORD(maxs[2], RDENT_CHANGED_SIZE)
-	SENDENTITY_BYTE(frame, RDENT_CHANGED_FRAME)
+	SENDENTITY_FLOAT(frame, RDENT_CHANGED_FRAME)
 	SENDENTITY_FLOAT(frame1time, RDENT_CHANGED_FRAME)
 	SENDENTITY_FLOAT(skin, RDENT_CHANGED_SKIN)
 	SENDENTITY_FLOAT(effects, RDENT_CHANGED_EFFECTS)
@@ -275,7 +276,7 @@ NSRenderableEntity::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_COORD(maxs[0], RDENT_CHANGED_SIZE)
 	READENTITY_COORD(maxs[1], RDENT_CHANGED_SIZE)
 	READENTITY_COORD(maxs[2], RDENT_CHANGED_SIZE)
-	READENTITY_BYTE(frame, RDENT_CHANGED_FRAME)
+	READENTITY_FLOAT(frame, RDENT_CHANGED_FRAME)
 	READENTITY_FLOAT(frame1time, RDENT_CHANGED_FRAME)
 	READENTITY_FLOAT(skin, RDENT_CHANGED_SKIN)
 	READENTITY_FLOAT(effects, RDENT_CHANGED_EFFECTS)
@@ -1026,7 +1027,7 @@ NSRenderableEntity::HandleAnimEvent(float flTimeStamp, int iCode, string strData
 				tokenize(m_strModelEventCB); /* ensure argv() is 'rewound'... */
 			}
 		}
-		
+
 		//print(sprintf("Received: %f %i %S\n", flTimeStamp, iCode, strData));
 		EntWarning("Unknown server model event: %f %i %S", flTimeStamp, iCode, strData);
 #else

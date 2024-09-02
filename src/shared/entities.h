@@ -14,6 +14,9 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/* used to keep track of decl across different classnames */
+.string declclass;
+
 /** @defgroup entities Entities
     @brief Objects within the game world, serving various functions.
 

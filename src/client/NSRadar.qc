@@ -182,9 +182,9 @@ NSRadar::InitWithMapname(string mapName)
 	string hlFile = strcat("overviews/", mapName, ".txt");
 
 	/* try Source first, then GoldSrc */
-	if (FileExists(sourceFile)) {
+	if (fileExists(sourceFile)) {
 		return InitFromSourceHLTVScript(sourceFile);
-	} else if (FileExists(hlFile)) {
+	} else if (fileExists(hlFile)) {
 		return InitFromHLTVScript(hlFile);
 	}
 

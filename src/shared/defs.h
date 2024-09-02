@@ -107,7 +107,6 @@ string __fullspawndata;
 #include "NSItem.h"
 #include "NSWeapon.h"
 #include "NSNavAI.h"
-#include "NSWeapon_NSNavAI.h"
 #include "NSMonster.h"
 #include "NSSquadMonster.h"
 #include "NSTalkMonster.h"
@@ -415,6 +414,23 @@ setorigin_safe(entity target, vector testorg)
 	setorigin(target, testorg);
 }
 
+#ifdef SERVER
+string Skill_GetStringValue(string, string);
+#endif
+
+string
+unpackStringCommand(string commandString)
+{
+#ifdef SERVER
+	/* is this supposed to be read from a skill cvar? */
+	if (substring(commandString, 0, 6) == "skill:") {
+		return Skill_GetStringValue(substring(commandString, 6, -1), "");
+	}
+#endif
+
+	return Constants_LookUp(commandString, commandString);
+}
+
 #ifdef NO_LEGACY
 void
 readcmd(string foo)
@@ -591,7 +607,7 @@ Route_GetJumpVelocity(vector vecFrom, vector vecTo, float flGravMod)
 }
 
 bool
-FileExists(string filePath)
+fileExists(string filePath)
 {
 	if (filePath != "") /* not empty */
 		if not(whichpack(filePath)) /* not present on disk */

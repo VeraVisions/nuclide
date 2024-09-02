@@ -21,7 +21,7 @@ NSIO::NSIO(void)
 	/* Not in Deathmatch */
 	if (spawnflags & 2048) {
 		if (cvar("sv_playerslots") > 1) {
-			remove(this);
+			Destroy();
 			return;
 		}
 	}
@@ -33,6 +33,8 @@ NSIO::NSIO(void)
 	m_strOnUser3 =
 	m_strOnUser4 = __NULL__;
 #else
+	owner = __NULL__;
+	chain = __NULL__;
 	isCSQC = TRUE;
 	effects |= EF_NOSHADOW;
 #endif
@@ -59,6 +61,26 @@ NSIO::Spawned(void)
 #endif
 }
 
+void
+NSIO::OnRemoveEntity(void)
+{
+}
+
+void
+NSIO::Destroy(void)
+{
+	removed = 1; /* mark this as cleanly removed */
+	OnRemoveEntity();
+	customphysics = __NULL__;
+	modelindex = 0;
+	solid = 0;
+	movetype = 0;
+	classname = 0;
+	think = __NULL__;
+	nextthink = 0.0f;
+	remove(this);
+}
+
 float
 NSIO::GetDefAct(string keyName)
 {
@@ -77,7 +99,7 @@ NSIO::GetDefAct(string keyName)
 string
 NSIO::GetDefString(string keyName)
 {
-	return EntityDef_GetKeyValue(classname, keyName);
+	return ReadString(EntityDef_GetKeyValue(declclass, keyName));
 }
 
 vector
@@ -109,12 +131,12 @@ NSIO::GetSubDefAct(string subDef, string keyName)
 {
 	float actCount;
 	string fireValue = GetSubDefString(subDef, keyName);
-
-	/* not in className either. make it known */
-	if (subDef == "") {
+	
+	/* not in classname either. make it known */
+	if (fireValue == "") {
 		return (-1);
 	}
-
+	
 	actCount = tokenizebyseparator(fireValue, ",");
 
 	if (actCount == 1) {
@@ -128,11 +150,12 @@ NSIO::GetSubDefAct(string subDef, string keyName)
 string
 NSIO::GetSubDefString(string subDef, string keyName)
 {
-	string fireValue = EntityDef_GetKeyValue(subDef, keyName);
+	string fireDefString = EntityDef_GetKeyValue(subDef, keyName);
+	string fireValue = ReadString(fireDefString);
 
 	/* if not in FireInfo, check classname Def */
 	if (fireValue == "") {
-		fireValue = EntityDef_GetKeyValue(classname, keyName);
+		fireValue = GetDefString(keyName);
 	}
 
 	return (fireValue);
@@ -188,15 +211,7 @@ string
 NSIO::ReadString(string inputString)
 {
 	if (inputString && inputString != "") {
-
-#ifdef SERVER
-		/* is this supposed to be read from a skill cvar? */
-		if (substring(inputString, 0, 6) == "skill:") {
-			return Skill_GetStringValue(substring(inputString, 6, -1), "");
-		}
-#endif
-
-		return Constants_LookUp(inputString, inputString);
+		return unpackStringCommand(inputString);
 	}
 
 	return "";
@@ -250,7 +265,7 @@ NSIO::GetSpawnString(string keyName)
 		}
 	}
 
-	return ReadString(EntityDef_GetKeyValue(classname, keyName));
+	return ReadString(EntityDef_GetKeyValue(declclass, keyName));
 }
 
 vector

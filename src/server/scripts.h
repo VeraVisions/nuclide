@@ -14,8 +14,18 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*! @file mapC_math.h
-    @brief Server-side plugin wrappers for math related functions.
-*/
+void MapC_Init(void);
 
-#include "../shared/math.h"
+void MapC_CallMainFunction(void);
+
+void MapC_CallNamedFunction(entity, string);
+
+bool RuleC_CallFunc(float, entity, string);
+
+bool RuleC_CallDamage(float, entity, entity, entity, string, string);
+
+bool RuleC_CallRequestSpawn(float, entity, string);
+
+bool RuleC_CallString(float, entity, string, string);
+
+bool RuleC_CallFloat(float, entity, float, string);

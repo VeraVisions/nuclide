@@ -162,11 +162,8 @@ MapTweak_Check(int num)
 static bool
 MapTweak_FinishSpawn(entity targetEntity, string newClassname)
 {
-	entity oldSelf = self;
-	self = targetEntity;
-
 	/* found the edef alternative. */
-	if (EntityDef_SpawnClassname(newClassname) != __NULL__) {
+	if (EntityDef_SwitchClass(targetEntity, newClassname) != __NULL__) {
 		return (true);
 	}
 
@@ -181,7 +178,7 @@ MapTweak_EntitySpawn(entity targetEntity)
 	if (g_mapTweakCount <= 0) {
 		return (false);
 	}
-
+	
 	for (int i = 0; i < g_mapTweakCount; i++) {
 		int segments = tokenize(g_mapTweakTable[i].itemTable);
 

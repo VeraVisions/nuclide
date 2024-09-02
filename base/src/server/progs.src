@@ -22,8 +22,6 @@ defs.h
 ../../../src/botlib/include.src
 
 /* mod specific functions */
-gamerules.qc
-gamerules_singleplayer.qc
 gamerules_multiplayer.qc
 
 /* global server/shared code */
