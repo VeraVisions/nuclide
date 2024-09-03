@@ -14,10 +14,13 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-static string g_lastSpawnData;
 static entityDef_t g_entDefTable[ENTITYDEF_MAX];
 static int g_entDefCount;
 static string g_entDefInclude;
+
+#ifdef SERVER
+static string g_lastSpawnData;
+#endif
 
 void
 EntityDef_ReadFile(string filePath)

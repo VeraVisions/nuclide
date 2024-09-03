@@ -509,6 +509,7 @@ NSPhysicsEntity::_TouchThink(void)
 	/* continue testing next frame */
 	nextthink = time;
 	effects &= ~EF_NOSHADOW;
+	solid = SOLID_BSP;
 }
 
 #ifdef SERVER
@@ -518,19 +519,21 @@ NSPhysicsEntity::Pain(entity inflictor, entity attacker, int damage, vector dir,
 	vector forceDir;
 	float force;
 
-	if (m_strOnDamaged)
+	if (m_strOnDamaged) {
 		UseOutput(this, m_strOnDamaged);
+	}
 
-	if (m_iFlags & BPHY_NODMGPUSH)
+	if (m_iFlags & BPHY_NODMGPUSH) {
 		return;
+	}
 
 	Wake();
 
-	forceDir = normalize(GetOrigin() - g_dmg_vecLocation);
-	force = CalculateImpactDamage(g_dmg_iDamage, g_dmg_iFlags);
+	force = CalculateImpactDamage(damage, g_dmg_iFlags);
 
-	if (force > 0.0f)
-		ApplyForceOffset(forceDir * force, g_dmg_vecLocation);
+	if (force > 0.0f) {
+		ApplyForceOffset(dir * force, g_dmg_vecLocation);
+	}
 
 	/* HACK: */
 	if (m_bInvincible) {
@@ -546,16 +549,6 @@ NSPhysicsEntity::Death(entity inflictor, entity attacker, int damage, vector dir
 {
 	Pain(inflictor, attacker, damage, dir, location);
 	super::Death(inflictor, attacker, damage, dir, location);
-
-	if (takedamage != DAMAGE_YES) {
-		takedamage = (DAMAGE_YES);
-	}
-
-	/* HACK: */
-	if (m_bInvincible) {
-		health = 10000;
-	}
-
 	/* make sure touch think is called */
 	nextthink = time;
 }
@@ -584,7 +577,7 @@ NSPhysicsEntity::Respawn(void)
 	bouncefactor = 0.0f;
 	bouncestop = 0.0f;
 
-	geomtype = GEOMTYPE_TRIMESH;
+	geomtype = GEOMTYPE_BOX;
 	friction = 1.0f;
 
 	m_flBuoyancyRatio = 1.0f;
@@ -965,6 +958,14 @@ NSPhysicsEntity::Wake(void)
 	if (physics_supported() == TRUE) {
 		SetMovetype(MOVETYPE_PHYSICS);
 		SetSolid(SOLID_BSP);
+
+		/* Don't need a lot of precision during this */
+		if (time < 5.0) {
+			geomtype = GEOMTYPE_BOX;
+		} else {
+			geomtype = GEOMTYPE_TRIMESH;
+		}
+		
 		physics_enable(this, TRUE);
 	} else {
 		SetMovetype(MOVETYPE_BOUNCE);
@@ -980,6 +981,7 @@ NSPhysicsEntity::Sleep(void)
 		ClearVelocity();
 		physics_enable(this, FALSE);
 		SetMovetype(MOVETYPE_NONE);
+		SetSolid(SOLID_CORPSE);
 	} else {
 		SetMovetype(MOVETYPE_NONE);
 		SetSolid(SOLID_BBOX);

@@ -334,20 +334,22 @@ NSSurfacePropEntity::Extinguish(void)
 void
 NSSurfacePropEntity::Respawn(void)
 {
-	float sh = GetSpawnHealth();
-	NSRenderableEntity::Respawn();
+	float sh = GetSpawnFloat("health");
+
+	super::Respawn();
 
 	/* only use spawndata's health if we aren't overriding it */
 	if (HasPropData() != false && sh <= 0) {
-		health = (float)GetPropData(PROPINFO_HEALTH);
+		SetHealth((float)GetPropData(PROPINFO_HEALTH));
 	} else {
-		health = sh;
+		SetHealth(sh);
 	}
 
-	if (health > 0)
-		takedamage = DAMAGE_YES;
-	else
-		takedamage = DAMAGE_NO;
+	if (GetHealth() > 0) {
+		MakeVulnerable();
+	} else {
+		MakeInvulnerable();
+	}
 }
 
 void
@@ -504,6 +506,7 @@ NSSurfacePropEntity::BreakModel(int damage, vector dir, int location)
 {
 	m_flDeathTime = time;
 
+	MakeInvulnerable();
 	UseOutput(g_dmg_eAttacker, m_strOnBreak);
 
 	if (HasPropData() == false) {
@@ -516,7 +519,6 @@ NSSurfacePropEntity::BreakModel(int damage, vector dir, int location)
 		string gibeffect = GetPropData(PROPINFO_BREAKMODEL);
 		int breakcount = GetPropData(PROPINFO_BREAKCOUNT);
 		BreakModel_Entity(this, dir, g_dmg_iDamage);
-		//BreakModel_Spawn(absmin, absmax, [0,0,0], 100, breakcount, gibeffect);
 		Disappear();
 	} else {
 		Disappear();
@@ -528,8 +530,9 @@ NSSurfacePropEntity::BreakModel(int damage, vector dir, int location)
 	flExplodeRad = GetPropData(PROPINFO_EXPLOSIVE_RADIUS);
 
 	if (flExplodeMag) {
-		if (!flExplodeRad)
+		if (!flExplodeRad) {
 			flExplodeRad = flExplodeMag * 2.5f;
+		}
 
 		pointparticles(particleeffectnum("fx_explosion.main"), origin, angles, 1);
 		radiusDamage(origin, flExplodeRad, 0i, (int)flExplodeMag, this);
@@ -555,10 +558,11 @@ NSSurfacePropEntity::_SurfaceDataFinish(void)
 {
 	SurfData_SetStage(m_strSurfData);
 
-	if (m_strSurfData)
+	if (m_strSurfData) {
 		m_iMaterial = SurfData_Finish();
-	else
+	} else {
 		m_iMaterial = -1i;
+	}
 }
 
 void
@@ -566,17 +570,19 @@ NSSurfacePropEntity::_PropDataFinish(void)
 {
 	PropData_SetStage(m_strPropData);
 
-	if (m_strPropData)
+	if (m_strPropData) {
 		m_iPropData = PropData_Finish();
-	else
+	} else {
 		m_iPropData = -1i;
+	}
 }
 
 float
 NSSurfacePropEntity::TimeSinceDeath(void)
 {
-	if (IsAlive())
-		return (-1);
+	if (IsAlive()) {
+		return (-1.0f);
+	}
 
 	return (time - m_flDeathTime);
 }

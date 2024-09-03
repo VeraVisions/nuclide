@@ -472,7 +472,7 @@ NSItem::PredictPreFrame(void)
 
 	/* relink */
 	if (m_nextItem == __NULL__ && chain_entnum)
-		m_nextItem = findentity(world, ::entnum, chain_entnum);
+		m_nextItem = (NSItem)findentity(world, ::entnum, chain_entnum);
 
 	if (owner == __NULL__ && owner_entnum) {
 		owner = findentity(world, ::entnum, owner_entnum);

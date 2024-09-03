@@ -790,6 +790,7 @@ NSProjectile::_LaunchHitscan(vector startPos, vector launchDir, float dmgMultipl
 	}
 
 	if (m_eMultiTarget) {
+		angles = launchDir;
 		_ApplyDamage();
 	}
 }
@@ -811,7 +812,7 @@ NSProjectile::_ApplyDamage(void)
 	NSDict damageDecl = spawn(NSDict);
 	damageDecl.AddKey("hitbody", itos(trace_surface_id));
 	damageDecl.AddKey("damage", itos(m_iMultiValue));
-	vector dmgDir = dirFromTarget(GetOrigin(), m_eMultiTarget.origin);
+	vector dmgDir = normalize(angles);
 
 	entityDamage(m_eMultiTarget, owner, owner, damageDecl.GetDeclBody(), GetWeaponOwner().classname, GetOrigin(), dmgDir, trace_endpos);
 	remove(damageDecl);
@@ -897,6 +898,7 @@ NSProjectile::_FireSingle(vector vecPos, vector vecAngles, float flDamage, float
 	if (trace_ent.takedamage != DAMAGE_NO) {
 		if (trace_ent != m_eMultiTarget) {
 			trace_endpos = endPos;
+			angles = vecAngles;
 			_ApplyDamage();
 			m_eMultiTarget = (NSSurfacePropEntity)trace_ent;
 			m_iMultiValue = flDamage;

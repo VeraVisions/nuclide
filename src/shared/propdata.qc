@@ -259,6 +259,12 @@ PropData_ParsePhyFile(int i, string line, string type)
 				case "fadetime":
 					gibFadeTime = argv(x+1);
 					break;
+				case "health":
+					/* TODO: what's this? */
+					break;
+				case "burst":
+					/* TODO: what's this? */
+					break;
 				}
 			} else if (braced == 0i) {
 				t_name = strtolower(key);
@@ -845,8 +851,9 @@ BreakModel_Spawn(vector smins, vector smaxs, vector dir, float speed, int count,
 	vector pvsPosition;
 	index = (int)hash_get(g_hashbreakmodel, type, -1);
 
-	if (index == -1)
+	if (index == -1) {
 		return;
+	}
 
 	pvsPosition = (smins + ( 0.5 * ( smaxs - smins )));
 
@@ -875,8 +882,9 @@ BreakModel_Entity(NSSurfacePropEntity target, vector dir, float speed)
 	int index = (int)hash_get(g_hashbreakmodel, type, -1);
 	vector pos = target.GetOrigin();
 
-	if not (index)
+	if not (index) {
 		return;
+	}
 
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_BREAKMODEL);
