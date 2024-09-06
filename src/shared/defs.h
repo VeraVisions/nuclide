@@ -426,6 +426,10 @@ unpackStringCommand(string commandString)
 	if (substring(commandString, 0, 6) == "skill:") {
 		return Skill_GetStringValue(substring(commandString, 6, -1), "");
 	}
+	/* is this supposed to be read from a skill cvar? */
+	if (substring(commandString, 0, 5) == "cvar:") {
+		return cvar_string(substring(commandString, 5, -1), "");
+	}
 #endif
 
 	return Constants_LookUp(commandString, commandString);
