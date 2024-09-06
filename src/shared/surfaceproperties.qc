@@ -141,6 +141,10 @@ SurfData_Parse(string line)
 			i++;
 		}
 
+		/* when we found it, quit */
+		tokenize_console(t_name);
+		hash_add(g_hashsurfdata, argv(0), (int)i);
+
 		braced--;
 		t_name = "";
 		break;
@@ -155,8 +159,6 @@ SurfData_Parse(string line)
 			} else {
 				isDefault = false;
 			}
-
-			hash_add(g_hashsurfdata, t_name, (int)i);
 		}
 	}
 	return (0);
@@ -287,6 +289,47 @@ SurfData_GetInfo(int i, int type)
 	}
 }
 
+static void
+SurfData_CountEntries(string filePath)
+{
+	filestream fh;
+	string line;
+
+	fh = fopen(filePath, FILE_READ);
+	
+	if (fh < 0) {
+		NSError("failed to parse %S!", filePath);
+		return;
+	}
+
+	/* count surfaceproperty definitions */
+	while ((line = fgets(fh))) {
+		SurfData_CountLine(line);
+	}
+
+	fclose(fh);
+}
+
+static void
+SurfData_LoadFile(string filePath)
+{
+	filestream fh;
+	string line;
+
+	fh = fopen(filePath, FILE_READ);
+	
+	if (fh < 0) {
+		NSError("failed to parse %S!", filePath);
+		return;
+	}
+
+	while ((line = fgets(fh))) {
+		SurfData_Parse(line);
+	}
+
+	fclose(fh);
+}
+
 void
 SurfData_Shutdown(void)
 {
@@ -318,28 +361,27 @@ SurfData_Init(void)
 		hash_destroytab(g_hashsurfdata);
 	}
 
-	fh = fopen("scripts/surfaceproperties.txt", FILE_READ);
+	fh = fopen("scripts/surfaceproperties_manifest.txt", FILE_READ);
 
 	/* it's OK for one to not exist... */
 	if (fh < 0) {
-		NSError("missing scripts/surfaceproperties.txt!");
+		NSError("missing scripts/surfaceproperties_manifest.txt!");
 		InitEnd();
 		return;
 	}
 
-	/* count surfaceproperty definitions */
+	/* first we count all valid entries. yes, this is not how you're meant to parse it, but w/e */
 	while ((line = fgets(fh))) {
-		SurfData_CountLine(line);
+		int args = tokenize_console(line);
+
+		if (args == 2) {
+			if (argv(0) == "file") {
+				SurfData_CountEntries(argv(1));
+			}
+		}
 	}
 
-	/* we did not find 'default' as the first entry. */
-	if (g_spDefaultSet == false) {
-		NSError("no 'default' defined at the top of scripts/surfaceproperties.txt!");
-		InitEnd();
-		return;
-	}
-
-	/* alocate our stuff */
+	/* now that we've counted the valid entries, alocate our stuff */
 	g_surfdata = (surfaceData_t *)memalloc(sizeof(surfaceData_t) * g_surfdata_count);
 	g_hashsurfdata = hash_createtab(2, HASH_ADD);
 
@@ -367,14 +409,18 @@ SurfData_Init(void)
 		g_surfdata[i].m_sndRoll = "";
 		g_surfdata[i].m_sndBreak = "";
 	}
-	
+
 	fseek(fh, 0);
 
 	while ((line = fgets(fh))) {
-		/* when we found it, quit */
-		SurfData_Parse(line);
+		int args = tokenize_console(line);
+
+		if (args == 2) {
+			if (argv(0) == "file") {
+				SurfData_LoadFile(argv(1));
+			}
+		}
 	}
-	fclose(fh);
 
 	for (int i = 0i; i < g_surfdata_count; i++) {
 		Sound_Precache(g_surfdata[i].m_sndStepLeft);
