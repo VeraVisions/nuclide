@@ -34,18 +34,15 @@ fi
 # build the archives from the pk3dir directories
 find "./$GAMEDIR" -name "*.pk3dir" -maxdepth 1 | sort | xargs -I @ sh -c 'echo `basename "@"`' | while read PK3DIR
 do
-	# strip the .pk3dir from the folder name to get the final .pk4 basename
-	PAKNAME=$(echo "$PK3DIR" | sed 's/\.pk3dir/\.pk4/g')
-
 	if [ -f "$GAMEROOT/$GAMEDIR/$PK3DIR/PAK_NAME" ]
 	then
 		PAKNAME=$(head -n 1 "$GAMEROOT/$GAMEDIR/$PK3DIR/PAK_NAME")
+	else
+		PAKNAME=""
 	fi
 
-	if [ -z "$PAKNAME" ]
+	if [ -n "$PAKNAME" ]
 	then
-		PAKNAME=$(echo "$PK3DIR" | sed 's/\.pk3dir/\.pk4/g')
-	fi
 
 	# go into the pk3dir and compile your zip file listing
 	cd "$GAMEROOT/$GAMEDIR/$PK3DIR"
@@ -84,4 +81,6 @@ do
 	fi
 
 	PAKNAME=""
+
+	fi
 done
