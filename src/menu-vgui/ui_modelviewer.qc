@@ -253,7 +253,7 @@ void UI_ModelViewer_Show ( void )
 		winViewer.CallOnResize( UI_ModelViewer_Resize );
 
 		picBackground = spawn( CUIPic );
-		picBackground.SetImage( "textures/dev/black" );
+		picBackground.SetImage( "gfx/background" );
 		picBackground.SetPos( [ 6, 32 ] );
 
 		viewModel = spawn( CUI3DView );
