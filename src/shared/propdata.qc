@@ -89,14 +89,14 @@ Prop_GetInfo(int i, int type)
 }
 
 void
-PropData_ParseField(int i, int a)
+PropData_ParseField(int i, string keyName, string setValue)
 {
-	switch (argv(0)) {
+	switch (keyName) {
 	case "name":
-		g_propdata[i].name = argv(1);
+		g_propdata[i].name = setValue;
 		break;
 	case "base":
-		g_propdata[i].base = argv(1);
+		g_propdata[i].base = setValue;
 		break;
 	case "blockLOS":
 		g_propdata[i].flags |= PDFL_BLOCKLOS;
@@ -108,52 +108,52 @@ PropData_ParseField(int i, int a)
 		g_propdata[i].flags |= PDFL_ALLOWSTATIC;
 		break;
 	case "dmg.bullets":
-		g_propdata[i].damage_bullets = stof(argv(1));
+		g_propdata[i].damage_bullets = stof(setValue);
 		break;
 	case "dmg.club":
-		g_propdata[i].damage_melee = stof(argv(1));
+		g_propdata[i].damage_melee = stof(setValue);
 		break;
 	case "dmg.explosive":
-		g_propdata[i].damage_explosive = stof(argv(1));
+		g_propdata[i].damage_explosive = stof(setValue);
 		break;
 	case "health":
-		g_propdata[i].health = stof(argv(1));
+		g_propdata[i].health = stof(setValue);
 		break;
 	case "explosive_damage":
-		g_propdata[i].explosive_damage = stof(argv(1));
+		g_propdata[i].explosive_damage = stof(setValue);
 		break;
 	case "explosive_radius":
-		g_propdata[i].explosive_radius = stof(argv(1));
+		g_propdata[i].explosive_radius = stof(setValue);
 		break;
 	case "breakable_particle":
-		g_propdata[i].breakable_particle = argv(1);
+		g_propdata[i].breakable_particle = setValue;
 		break;
 	case "breakable_model":
-		g_propdata[i].breakable_model = argv(1);
+		g_propdata[i].breakable_model = setValue;
 		break;
 	case "breakable_count":
-		g_propdata[i].breakable_count = stoi(argv(1));
+		g_propdata[i].breakable_count = stoi(setValue);
 		break;
 	case "breakable_skin":
-		g_propdata[i].breakable_skin = stof(argv(1));
+		g_propdata[i].breakable_skin = stof(setValue);
 		break;
 	case "mass":
-		g_propdata[i].mass = stof(argv(1));
+		g_propdata[i].mass = stof(setValue);
 		break;
 	case "damping":
-		g_propdata[i].damping_linear = stof(argv(1));
+		g_propdata[i].damping_linear = stof(setValue);
 		break;
 	case "rotdamping":
-		g_propdata[i].damping_angular = stof(argv(1));
+		g_propdata[i].damping_angular = stof(setValue);
 		break;
 	case "inertia":
-		g_propdata[i].inertia = stof(argv(1));
+		g_propdata[i].inertia = stof(setValue);
 		break;
 	case "volume":
-		g_propdata[i].volume = stof(argv(1));
+		g_propdata[i].volume = stof(setValue);
 		break;
 	case "surfaceprop":
-		g_propdata[i].surfaceprop = argv(1);
+		g_propdata[i].surfaceprop = setValue;
 		break;
 	}
 }
@@ -195,7 +195,7 @@ PropData_Parse(int i, string line, string type)
 		break;
 	default:
 		if (braced == 2 && t_name != "") {
-			PropData_ParseField(i, c);
+			PropData_ParseField(i, argv(0), argv(1));
 		} else if (braced == 1 && key != "BreakableModels") {
 			/* name/identifer of our message */
 			t_name = strtolower(key);
@@ -250,7 +250,7 @@ PropData_ParsePhyFile(int i, string line, string type)
 			break;
 		default:
 			if (braced == 1i && t_name == "solid") {
-				PropData_ParseField(i, c);
+				PropData_ParseField(i, argv(0), argv(1));
 			} else if (braced == 1i && t_name == "break") {
 				switch (key) {
 				case "model":
@@ -324,8 +324,9 @@ PropData_ForModel(string modelname)
 #endif
 
 	/* Defaults go here */
-
 	fh = fopen(strcat(modelname, ".propdata"), FILE_READ);
+
+	/* not found. try again? */
 	if (fh < 0) {
 		/* try the Source Engine version */
 		fh = fopen(Util_ChangeExtension(modelname, "phy"), FILE_READ);
@@ -390,6 +391,60 @@ PropData_ForModel(string modelname)
 				}
 			}
 		}
+		
+		fclose(fh);
+
+		/* now, we read the Source .mdl file to get the extra prop_data keys that couldn't make it */
+		fh = fopen(modelname, FILE_READ);
+
+		if (fh >= 0) {
+			int surfaceProp;
+			int keyValueIndex;
+			int keyValueCount;
+			bool readData = false;
+
+			filePos = fseek(fh, 0x0134); /* forward to surfaceProp address */
+			fread(fh, (void*)&surfaceProp, 4);
+			fread(fh, (void*)&keyValueIndex, 4);
+			fread(fh, (void*)&keyValueCount, 4);
+
+			/* read surfaceProp */
+			filePos = fseek(fh, surfaceProp);
+			g_propdata[index].surfaceprop = strcat(fgets(fh));
+
+			/* read key/value pairs */
+			filePos = fseek(fh, keyValueIndex);
+
+			for (int keys = 0i; keys < keyValueCount; keys++) {
+				string keyValueLine = fgets(fh);
+				int ab = tokenize(keyValueLine);
+				
+				if (keyValueLine == "prop_data {") {
+					readData = true;
+					continue;
+				}
+
+				if (readData && keyValueLine != "") {
+					int keyCount = tokenize(keyValueLine);
+
+					for (int realKeys = 0i; realKeys < keyCount; realKeys+=2) {
+						PropData_ParseField(index, argv(realKeys), argv(realKeys+1));
+					}
+
+					readData = false;
+				}
+			}
+
+			float ofs = strstrofs(g_propdata[index].surfaceprop, "\xc0\x80");
+
+			if (ofs >= 0) {
+				g_propdata[index].surfaceprop = substring(g_propdata[index].surfaceprop, 0, ofs);
+			}
+
+			fclose(fh);
+		}
+
+
 
 		//print(sprintf("Added %S at id %i with name %S\n", modelname, index, g_propdata[index].name));
 		hash_add(g_hashpropdata, modelname, (int)index);
@@ -397,6 +452,7 @@ PropData_ForModel(string modelname)
 
 		//error(sprintf("phy file (size %i): size: %i id: %i numSolids: %i\n", fsize(fh), fileSize, phyID, numSolids));
 	}
+
 	while ((line = fgets(fh))) {
 		/* when we found it, quit */
 		if (PropData_Parse(index, line, modelname) == TRUE) {
@@ -517,7 +573,7 @@ PropData_ParseLine(string line)
 		if (key == "") {
 			break;
 		} else if (braced == 2 && t_name != "" && inmodel == FALSE) {
-			PropData_ParseField(i_p, c);
+			PropData_ParseField(i_p, argv(0), argv(1));
 		} else if (braced == 3 && t_name != "" && inmodel == TRUE) {
 			BreakModel_ParseField(i_b, c);
 		} else if (braced == 1) {
