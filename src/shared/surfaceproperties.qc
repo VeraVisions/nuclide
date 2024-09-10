@@ -237,6 +237,10 @@ SurfData_TexToSurfData(string tex_name)
 __variant
 SurfData_GetInfo(int i, int type)
 {
+	if (g_surfdata_count <= 0i) {
+		return (__NULL__);	
+	}
+
 	if (i < 0) {
 		i = 0i;
 	}
@@ -285,7 +289,7 @@ SurfData_GetInfo(int i, int type)
 	case SURFDATA_FX_BULLETIMPACTID:
 		return (__variant)g_surfdata[i].m_fxBulletImpactID;
 	default:
-		return __NULL__;
+		return (__NULL__);
 	}
 }
 
@@ -348,6 +352,7 @@ SurfData_Init(void)
 	filestream fh;
 	string line;
 	int index;
+	bool fromManifest = true;
 
 	InitStart();
 
@@ -365,18 +370,30 @@ SurfData_Init(void)
 
 	/* it's OK for one to not exist... */
 	if (fh < 0) {
-		NSError("missing scripts/surfaceproperties_manifest.txt!");
-		InitEnd();
-		return;
-	}
+		NSWarning("missing scripts/surfaceproperties_manifest.txt!");
+		fromManifest = false;
 
-	/* first we count all valid entries. yes, this is not how you're meant to parse it, but w/e */
-	while ((line = fgets(fh))) {
-		int args = tokenize_console(line);
+		/* older games may only have one file */
+		fh = fopen("scripts/surfaceproperties.txt", FILE_READ);
 
-		if (args == 2) {
-			if (argv(0) == "file") {
-				SurfData_CountEntries(argv(1));
+		/* now we're out of options. sorry */
+		if (fh < 0) {
+			NSError("missing scripts/surfaceproperties.txt");
+			InitEnd();
+			return;
+		}
+
+		SurfData_CountEntries("scripts/surfaceproperties.txt");
+	} else {
+
+		/* first we count all valid entries. yes, this is not how you're meant to parse it, but w/e */
+		while ((line = fgets(fh))) {
+			int args = tokenize_console(line);
+
+			if (args == 2) {
+				if (argv(0) == "file") {
+					SurfData_CountEntries(argv(1));
+				}
 			}
 		}
 	}
@@ -410,14 +427,18 @@ SurfData_Init(void)
 		g_surfdata[i].m_sndBreak = "";
 	}
 
-	fseek(fh, 0);
+	if (fromManifest == false) {
+		SurfData_LoadFile("scripts/surfaceproperties.txt");
+	} else {
+		fseek(fh, 0);
 
-	while ((line = fgets(fh))) {
-		int args = tokenize_console(line);
+		while ((line = fgets(fh))) {
+			int args = tokenize_console(line);
 
-		if (args == 2) {
-			if (argv(0) == "file") {
-				SurfData_LoadFile(argv(1));
+			if (args == 2) {
+				if (argv(0) == "file") {
+					SurfData_LoadFile(argv(1));
+				}
 			}
 		}
 	}
