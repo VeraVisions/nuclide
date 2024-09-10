@@ -237,6 +237,10 @@ NSSurfacePropEntity::ParentUpdate(void)
 void
 NSSurfacePropEntity::Damage(entity inflictor, entity attacker, NSDict damageDecl, float damageScale, vector dmgDir, vector hitLocation)
 {
+	if (IsVulnerable() == false) {
+		return;
+	}
+
 	string damageString = ReadString(damageDecl.GetString("damage"));
 
 #if 0
@@ -280,6 +284,7 @@ NSSurfacePropEntity::Ignite(entity attacker, float flLifetime, int iWeapon)
 		damageDecl.AddKey("skip_armor", "1");
 		damageDecl.AddKey("type", "burn");
 		Damage(m_eBurner, m_eBurner, damageDecl, 1.0f, g_vec_null, origin);
+		remove(damageDecl);
 		m_flBurnDmgTime = time + 0.25f;
 	}
 }
@@ -519,6 +524,9 @@ NSSurfacePropEntity::BreakModel(int damage, vector dir, int location)
 		string gibeffect = GetPropData(PROPINFO_BREAKMODEL);
 		int breakcount = GetPropData(PROPINFO_BREAKCOUNT);
 		BreakModel_Entity(this, dir, g_dmg_iDamage);
+		
+		string sndBreak = GetSurfaceData(SURFDATA_SND_BREAK);
+		Sound_PlayAt(GetOrigin(), sndBreak);
 		Disappear();
 	} else {
 		Disappear();
@@ -551,6 +559,15 @@ NSSurfacePropEntity::SetPropData(string type)
 {
 	m_strPropData = type;
 	_PropDataFinish();
+
+	/* no surfdata? maybe the propdata has got one set. */
+	if (m_iMaterial == -1i) {
+		string propDataSurf = GetPropData(PROPINFO_SURFACEPROP);
+
+		if (propDataSurf != "") {
+			SetSurfaceData(propDataSurf);
+		}
+	}
 }
 
 void
