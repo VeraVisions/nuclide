@@ -158,9 +158,6 @@ env_laser::SpawnKey(string strKey, string strValue)
 	case "NoiseAmplitude":
 		m_flAmplitude = ReadFloat(strValue);
 		break;
-	case "rendercolor":
-		m_vecRenderColor = ReadVector(strValue);
-		break;
 	default:
 		super::SpawnKey(strValue, strKey);
 	}
@@ -389,7 +386,7 @@ env_laser::predraw(void)
 			R_PolygonVertex(point, [1, 0], m_vecRenderColor / 255, a);
 
 			if (autocvar(cl_showoff, 0))
-				dynamiclight_add(point, 150, m_vecRenderColor/255);
+				dynamiclight_add(point, 150, m_vecRenderColor / 255);
 
 			last_progression = progression;
 		}

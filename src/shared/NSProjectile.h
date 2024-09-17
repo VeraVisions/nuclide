@@ -44,7 +44,7 @@ Objects such as rockets, grenades, bolts etc. should ideally be this.
 
 @ingroup baseclass
 */
-class NSProjectile:NSSurfacePropEntity
+class NSProjectile:NSAttack
 {
 public:
 	void NSProjectile(void);
@@ -136,6 +136,7 @@ private:
 	string m_matDetonate;
 	float m_flDecalSize;
 	string m_partSmokeFly;
+	string m_partFXPath;
 	string m_partModelDetonate;
 	string m_partSmokeDetonate;
 	string m_partSmokeBounce; 
@@ -145,6 +146,7 @@ private:
 	bool m_bDebrisStick;
 	vector m_vecDebrisOffset;
 	vector m_vecImpactPos;
+	bool m_bThrown;
 
 	float m_flLightOffset; /* TODO */
 	vector m_vecExplodeLightColor; /* TODO */

@@ -261,8 +261,7 @@ View_DrawViewModel(void)
 		m_eViewModel.origin = m_eViewModelL.origin;
 
 		if (Client_IsSpectator(cl)) {
-			m_eViewModel.angles = currentAngle;
-			m_eViewModelL.angles = currentAngle;
+			m_eViewModelL.angles = m_eViewModel.angles = currentAngle;
 			/* HACK: fool Viewmodel_CalcBob(); */
 			pSeat->m_vecPredictedVelocity = pl.velocity;
 		}
@@ -319,10 +318,34 @@ View_DrawViewModel(void)
 		m_eViewModelL.renderflags = RF_DEPTHHACK | RF_FIRSTPERSON;
 		m_eViewModel.renderflags = RF_DEPTHHACK | RF_FIRSTPERSON;
 
-		if (m_eViewModel.GetRenderMode() != RM_DONTRENDER)
+		if (m_eViewModel.GetRenderMode() != RM_DONTRENDER) {
 			addentity(m_eViewModel);
-		if (m_eViewModelL.GetRenderMode() != RM_DONTRENDER)
+
+			/* TODO: clean this up. */
+			if (m_eViewModel.modelindex2) {
+				float oldModelindex = m_eViewModel.modelindex;
+				m_eViewModel.modelindex = m_eViewModel.modelindex2;
+				addentity(m_eViewModel);
+				m_eViewModel.modelindex = oldModelindex;
+			}
+
+			if (m_eViewModel.modelindex3) {
+				float oldModelindex = m_eViewModel.modelindex;
+				m_eViewModel.modelindex = m_eViewModel.modelindex3;
+				addentity(m_eViewModel);
+				m_eViewModel.modelindex = oldModelindex;
+			}
+
+			if (m_eViewModel.modelindex4) {
+				float oldModelindex = m_eViewModel.modelindex;
+				m_eViewModel.modelindex = m_eViewModel.modelindex4;
+				addentity(m_eViewModel);
+				m_eViewModel.modelindex = oldModelindex;
+			}
+		}
+		if (m_eViewModelL.GetRenderMode() != RM_DONTRENDER) {
 			addentity(m_eViewModelL);
+		}
 	}
 }
 

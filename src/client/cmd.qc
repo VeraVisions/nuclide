@@ -246,6 +246,7 @@ NSWeapon_SelectWeapon(NSWeapon nextWeapon)
 
 	/* this gets passed in NSClientPlayer::ClientInputFrame() to the server */
 	pSeat->m_iHUDWeaponSelected = nextWeapon.GetSharedID();
+	pSeat->m_flHUDWeaponSelectTime = time + 0.5f;
 }
 
 /*

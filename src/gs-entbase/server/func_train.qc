@@ -217,7 +217,7 @@ func_train::Blocked(entity eBlocker)
 		entityDamage(eBlocker, this, eBlocker, damageDecl.GetDeclBody(), "", center, dmgDir, eBlocker.origin);
 		remove(damageDecl);
 	} else {
-		remove(eBlocker);
+		/* remove(eBlocker); */
 	}
 }
 

@@ -259,14 +259,14 @@ NSPhysicsEntity::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_COORD(avelocity[2], RDENT_CHANGED_ANGULARVELOCITY)
 	SENDENTITY_BYTE(m_iRenderMode, RDENT_CHANGED_RENDERMODE)
 	SENDENTITY_BYTE(m_iRenderFX, RDENT_CHANGED_RENDERMODE)
-	SENDENTITY_COLOR(m_vecRenderColor[0], RDENT_CHANGED_RENDERCOLOR)
-	SENDENTITY_COLOR(m_vecRenderColor[1], RDENT_CHANGED_RENDERCOLOR)
-	SENDENTITY_COLOR(m_vecRenderColor[2], RDENT_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_vecRenderColor[0], RDENT_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_vecRenderColor[1], RDENT_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_vecRenderColor[2], RDENT_CHANGED_RENDERCOLOR)
 	/* these need more precision for shader hacks... */
 	SENDENTITY_FLOAT(glowmod[0], RDENT_CHANGED_RENDERCOLOR)
 	SENDENTITY_FLOAT(glowmod[1], RDENT_CHANGED_RENDERCOLOR)
 	SENDENTITY_FLOAT(glowmod[2], RDENT_CHANGED_RENDERCOLOR)
-	SENDENTITY_COLOR(m_flRenderAmt, RDENT_CHANGED_RENDERAMT)
+	SENDENTITY_BYTE(m_flRenderAmt, RDENT_CHANGED_RENDERAMT)
 	SENDENTITY_ANGLE(m_flBoneControl1, RDENT_CHANGED_CONTROLLER)
 	SENDENTITY_ANGLE(m_flBoneControl2, RDENT_CHANGED_CONTROLLER)
 	SENDENTITY_ANGLE(m_flBoneControl3, RDENT_CHANGED_CONTROLLER)
@@ -323,14 +323,14 @@ NSPhysicsEntity::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_COORD(avelocity[2], RDENT_CHANGED_ANGULARVELOCITY)
 	READENTITY_BYTE(m_iRenderMode, RDENT_CHANGED_RENDERMODE)
 	READENTITY_BYTE(m_iRenderFX, RDENT_CHANGED_RENDERMODE)
-	READENTITY_COLOR(m_vecRenderColor[0], RDENT_CHANGED_RENDERCOLOR)
-	READENTITY_COLOR(m_vecRenderColor[1], RDENT_CHANGED_RENDERCOLOR)
-	READENTITY_COLOR(m_vecRenderColor[2], RDENT_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_vecRenderColor[0], RDENT_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_vecRenderColor[1], RDENT_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_vecRenderColor[2], RDENT_CHANGED_RENDERCOLOR)
 	/* these need more precision for shader hacks... */
 	READENTITY_FLOAT(glowmod[0], RDENT_CHANGED_RENDERCOLOR)
 	READENTITY_FLOAT(glowmod[1], RDENT_CHANGED_RENDERCOLOR)
 	READENTITY_FLOAT(glowmod[2], RDENT_CHANGED_RENDERCOLOR)
-	READENTITY_COLOR(m_flRenderAmt, RDENT_CHANGED_RENDERAMT)
+	READENTITY_BYTE(m_flRenderAmt, RDENT_CHANGED_RENDERAMT)
 	READENTITY_ANGLE(m_flBoneControl1, RDENT_CHANGED_CONTROLLER)
 	READENTITY_ANGLE(m_flBoneControl2, RDENT_CHANGED_CONTROLLER)
 	READENTITY_ANGLE(m_flBoneControl3, RDENT_CHANGED_CONTROLLER)
@@ -420,6 +420,29 @@ NSPhysicsEntity_Contents(vector org)
 void
 NSPhysicsEntity::Touch(entity eToucher)
 {
+	/* if we're being held by a player, don't do anything funny! */
+	if (owner) {
+		return;
+	}
+
+	if (GetHealth() <= 0) {
+		return;
+	}
+
+	if (IsAsleep() == true) {
+		return;
+	}
+
+	float impactForce = length(GetVelocity()) * 0.01;
+
+	if (impactForce > GetHealth()) {
+		NSDict damageDecl = spawn(NSDict);
+		damageDecl.AddKey("damage", ftos(impactForce));
+		Damage(eToucher, eToucher, damageDecl, 1.0f, g_vec_null, GetOrigin());
+		remove(damageDecl);
+		printf("New health: %d, impact force: %d\n", health, impactForce);
+	}
+
 	if (eToucher)
 		if (eToucher.movetype)
 			Wake();
@@ -429,30 +452,28 @@ NSPhysicsEntity::Touch(entity eToucher)
 void
 NSPhysicsEntity::_TouchThink(void)
 {
-	if (!m_iEnabled) {
+	if (IsAsleep() == true) {
 		return;
 	}
 
-	if (physics_supported() == FALSE) {
-	/* let players collide */
-	dimension_solid = 255;
-	dimension_hit = 255;
+	if (physics_supported() == FALSE && GetSolid() != SOLID_TRIGGER) {
+		EnablePlayerCollision();
 
-	tracebox(origin, mins, maxs, origin, FALSE, this);
+		tracebox(origin, mins, maxs, origin, FALSE, this);
 
-	/* stuck */
-	if (trace_startsolid) {
-		if (trace_ent.flags & FL_CLIENT) {
-			if (trace_ent.absmin[2] < absmax[2]) {
-				vector dirVec = trace_endpos - trace_ent.origin;
-				Wake();
-				ApplyTorqueCenter(anglesToForward(vectorToAngles(dirVec)) * 240);
-			} else {
-				Sleep();
-				velocity = [0,0,0];
+		/* stuck */
+		if (trace_startsolid) {
+			if (trace_ent.flags & FL_CLIENT) {
+				if (trace_ent.absmin[2] < absmax[2]) {
+					vector dirVec = trace_endpos - trace_ent.origin;
+					Wake();
+					ApplyTorqueCenter(anglesToForward(vectorToAngles(dirVec)) * 240);
+				} else {
+					Sleep();
+					velocity = [0,0,0];
+				}
 			}
 		}
-	}
 	}
 
 #if 1
@@ -500,10 +521,8 @@ NSPhysicsEntity::_TouchThink(void)
 
 	hitcontentsmaski &= ~CONTENTBITS_FLUID;
 
-	if (physics_supported() == FALSE) {
-		/* don't let players collide */
-		dimension_solid = 1;
-		dimension_hit = 1;
+	if (physics_supported() == FALSE && GetSolid() != SOLID_TRIGGER) {
+		DisablePlayerCollision();
 	}
 
 	/* continue testing next frame */
@@ -587,10 +606,8 @@ NSPhysicsEntity::Respawn(void)
 
 	hitcontentsmaski &= ~CONTENTBITS_FLUID;
 
-	if (physics_supported() == FALSE) {
-		/* don't let players collide */
-		dimension_solid = 1;
-		dimension_hit = 1;
+	if (physics_supported() == FALSE && GetSolid() != SOLID_TRIGGER) {
+		DisablePlayerCollision();
 	}
 
 	think = _TouchThink;
@@ -847,7 +864,7 @@ NSPhysicsEntity::GetVolume(void)
 bool
 NSPhysicsEntity::IsAsleep(void)
 {
-	return false;
+	return (m_iEnabled) ? (false) : (true);
 }
 
 bool

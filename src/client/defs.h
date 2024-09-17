@@ -28,6 +28,18 @@
 var bool g_net_debug = false;
 var bool g_cheats = false;
 
+var float autocvar_cg_modelSpinSpeed = 120.0f;
+var float g_modelSpinAngle;
+var float g_modelSpinPitch;
+var float g_modelSpinRoll;
+var float g_modelBobHeight;
+var float autocvar_cg_modelSpinRoll = 0.0f;
+var float autocvar_cg_modelSpinRollSpeed = 0.0f;
+var float autocvar_cg_modelSpinPitch = 0.0f;
+var float autocvar_cg_modelSpinPitchSpeed = 0.0f;
+var float autocvar_cg_modelBobHeight = 0.0f;
+var float autocvar_cg_modelBobHeightSpeed = 0.0f;
+
 #define PRINTFLAG(x) if (cvar("net_showUpdates") || g_net_debug) \
 	print(sprintf("%f %s read update %s\n", time, classname, #x));
 
@@ -399,6 +411,10 @@ struct
 
 	int m_iSelectedWeapon;
 } g_seats[4], *pSeat;
+
+.float modelindex2;
+.float modelindex3;
+.float modelindex4;
 
 var vector g_vecMousePos;
 var vector g_hudmins;

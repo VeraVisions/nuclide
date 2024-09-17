@@ -142,10 +142,10 @@ env_glow::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_FLOAT(scale, SPRITE_CHANGED_SCALE)
 	SENDENTITY_BYTE(m_iRenderMode, SPRITE_CHANGED_RENDERMODE)
 	SENDENTITY_BYTE(m_iRenderFX, SPRITE_CHANGED_RENDERFX)
-	SENDENTITY_COLOR(m_vecRenderColor[0], SPRITE_CHANGED_RENDERCOLOR)
-	SENDENTITY_COLOR(m_vecRenderColor[1], SPRITE_CHANGED_RENDERCOLOR)
-	SENDENTITY_COLOR(m_vecRenderColor[2], SPRITE_CHANGED_RENDERCOLOR)
-	SENDENTITY_COLOR(m_flRenderAmt, SPRITE_CHANGED_RENDERAMT)
+	SENDENTITY_BYTE(m_vecRenderColor[0], SPRITE_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_vecRenderColor[1], SPRITE_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_vecRenderColor[2], SPRITE_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_flRenderAmt, SPRITE_CHANGED_RENDERAMT)
 	SENDENTITY_STRING(m_strMaterial, SPRITE_CHANGED_MATERIAL)
 
 	return (1);
@@ -186,7 +186,7 @@ env_glow::postdraw(void)
 {
 	if (GetRenderMode() == RM_GLOW)
 		if (!autocvar_r_skipLensFlares)
-			env_sun_lensflare(origin, m_flMaxAlpha, m_vecRenderColor);
+			env_sun_lensflare(origin, m_flMaxAlpha, m_vecRenderColor / 255);
 }
 
 void
@@ -206,8 +206,8 @@ env_glow::RendererRestarted(void)
 void
 env_glow::RenderGlow(vector forg, vector fsize)
 {
-	float alphaTint = GetRenderAmt();
-	vector renderColor = m_vecRenderColor;
+	float alphaTint = GetRenderAmt() / 255;
+	vector renderColor = m_vecRenderColor / 255;
 
 #ifndef FTE_QUADFIX
 	R_BeginPolygon(m_strMaterial, 1, 0);
@@ -243,8 +243,8 @@ env_glow::RenderGlow(vector forg, vector fsize)
 void
 env_glow::RenderNormal(vector forg, vector fsize)
 {
-	float alphaTint = GetRenderAmt();
-	vector renderColor = GetRenderColor();
+	float alphaTint = GetRenderAmt() / 255;
+	vector renderColor = m_vecRenderColor / 255;
 
 #ifndef FTE_QUADFIX
 	R_BeginPolygon(m_strMaterial, 0, 0);
@@ -337,10 +337,10 @@ env_glow::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_FLOAT(scale, SPRITE_CHANGED_SCALE)
 	READENTITY_BYTE(m_iRenderMode, SPRITE_CHANGED_RENDERMODE)
 	READENTITY_BYTE(m_iRenderFX, SPRITE_CHANGED_RENDERFX)
-	READENTITY_COLOR(m_vecRenderColor[0], SPRITE_CHANGED_RENDERCOLOR)
-	READENTITY_COLOR(m_vecRenderColor[1], SPRITE_CHANGED_RENDERCOLOR)
-	READENTITY_COLOR(m_vecRenderColor[2], SPRITE_CHANGED_RENDERCOLOR)
-	READENTITY_COLOR(m_flRenderAmt, SPRITE_CHANGED_RENDERAMT)
+	READENTITY_BYTE(m_vecRenderColor[0], SPRITE_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_vecRenderColor[1], SPRITE_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_vecRenderColor[2], SPRITE_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_flRenderAmt, SPRITE_CHANGED_RENDERAMT)
 	READENTITY_STRING(m_strMaterial, SPRITE_CHANGED_MATERIAL)
 
 	if (flNew)

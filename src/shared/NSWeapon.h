@@ -182,7 +182,10 @@ public:
 	virtual float SendEntity(entity,float);
 #endif
 
+	virtual bool TestFireAbility(string);
+
 #ifdef CLIENT
+	virtual void UpdateViewmodel(void);
 	virtual void ClientFX(bool);
 	virtual void PredictPreFrame(void);
 	virtual void PredictPostFrame(void);
@@ -306,7 +309,6 @@ private:
 	int m_secondaryAmmoType;
 	float m_muzzleModelIndex;
 	float m_altMuzzleModelIndex;
-	string m_meleeDef;
 	float m_flPrimedFuse;
 	float m_flTriggerDelay;
 	float m_flZoomFOV;
@@ -317,6 +319,7 @@ private:
 	float m_jointTrailView;
 	float m_flSpeedMod;
 	bool m_bAltModeSwitch;
+	bool m_bBuggyIdleAnim;
 
 	float m_nextWeapon_entnum;
 	float m_prevWeapon_entnum;
@@ -328,6 +331,7 @@ private:
 	float m_fiMeleeRange;
 	vector m_fiPunchAngle;
 	string m_fiSndFire;
+	string m_fiSndFailed;
 	string m_fiSndFireLast;
 	string m_fiSndRelease;
 	string m_fiSndEmpty;

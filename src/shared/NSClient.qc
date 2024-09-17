@@ -216,11 +216,13 @@ Client_ShakeOnce(vector pos, float radius, float duration, float frequency, floa
 {
 	for (entity pl = world; (pl = find(pl, ::classname, "player"));) {
 		float amp;
+		float distanceCheck = distance(pos, pl.origin);
 
-		if (vlen(pos - pl.origin) > radius)
+		if (distanceCheck > radius) {
 			continue;
+		}
 
-		amp = 1.0 - (vlen(pos - pl.origin) / radius);
+		amp = 1.0 - (distanceCheck / radius);
 		WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 		WriteByte(MSG_MULTICAST, EV_SHAKE);
 		WriteFloat(MSG_MULTICAST, duration);

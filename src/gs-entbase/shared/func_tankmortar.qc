@@ -273,8 +273,8 @@ func_tankmortar::SpriteSmoke(vector org)
 	smoke.nextthink = time + 0.1f;
 	smoke.scale = m_flSpriteScale;
 	smoke.SetRenderMode(RM_ADDITIVE);
-	smoke.SetRenderColor([1,1,1]);
-	smoke.SetRenderAmt(1.0f);
+	smoke.SetRenderColor([255,255,255]);
+	smoke.SetRenderAmt(255);
 #endif
 }
 
@@ -296,8 +296,8 @@ func_tankmortar::SpriteFlash(vector org)
 	flash.nextthink = time + 0.1f;
 	flash.scale = m_flSpriteScale;
 	flash.SetRenderMode(RM_ADDITIVE);
-	flash.SetRenderColor([1,1,1]);
-	flash.SetRenderAmt(1.0f);
+	flash.SetRenderColor([255,255,255]);
+	flash.SetRenderAmt(255);
 #endif
 }
 

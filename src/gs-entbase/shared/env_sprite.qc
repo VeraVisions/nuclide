@@ -156,10 +156,10 @@ env_sprite::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_FLOAT(scale, SPRITE_CHANGED_SCALE)
 	SENDENTITY_BYTE(m_iRenderMode, SPRITE_CHANGED_RENDERMODE)
 	SENDENTITY_BYTE(m_iRenderFX, SPRITE_CHANGED_RENDERFX)
-	SENDENTITY_COLOR(m_vecRenderColor[0], SPRITE_CHANGED_RENDERCOLOR)
-	SENDENTITY_COLOR(m_vecRenderColor[1], SPRITE_CHANGED_RENDERCOLOR)
-	SENDENTITY_COLOR(m_vecRenderColor[2], SPRITE_CHANGED_RENDERCOLOR)
-	SENDENTITY_COLOR(m_flRenderAmt, SPRITE_CHANGED_RENDERAMT)
+	SENDENTITY_BYTE(m_vecRenderColor[0], SPRITE_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_vecRenderColor[1], SPRITE_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_vecRenderColor[2], SPRITE_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_flRenderAmt, SPRITE_CHANGED_RENDERAMT)
 	SENDENTITY_STRING(m_strMaterial, SPRITE_CHANGED_MATERIAL)
 
 	return (1);
@@ -178,10 +178,10 @@ env_sprite::NetworkOnce(void)
 	WriteFloat(MSG_MULTICAST, scale);
 	WriteByte(MSG_MULTICAST, m_iRenderMode);
 	WriteByte(MSG_MULTICAST, m_iRenderFX);
-	WriteFloat(MSG_MULTICAST, m_vecRenderColor[0]);
-	WriteFloat(MSG_MULTICAST, m_vecRenderColor[1]);
-	WriteFloat(MSG_MULTICAST, m_vecRenderColor[2]);
-	WriteFloat(MSG_MULTICAST, m_flRenderAmt);
+	WriteByte(MSG_MULTICAST, m_vecRenderColor[0]);
+	WriteByte(MSG_MULTICAST, m_vecRenderColor[1]);
+	WriteByte(MSG_MULTICAST, m_vecRenderColor[2]);
+	WriteByte(MSG_MULTICAST, m_flRenderAmt);
 	WriteString(MSG_MULTICAST, m_strMaterial);
 
 	msg_entity = this;
@@ -235,6 +235,7 @@ env_sprite::predraw(void)
 		return super::predraw();
 	}
 
+	vector color = m_vecRenderColor / 255;
 	int s = (float)getproperty(VF_ACTIVESEAT);
 	pSeat = &g_seats[s];
 	vector vecPlayer = pSeat->m_vecPredictedOrigin;
@@ -250,13 +251,13 @@ env_sprite::predraw(void)
 
 	R_BeginPolygon(m_strMaterial, 1, 0);
 	R_PolygonVertex(forg + v_right * fsize[0] - v_up * fsize[1],
-		[1,1], m_vecRenderColor, 1.0);
+		[1,1], color, 1.0);
 	R_PolygonVertex(forg - v_right * fsize[0] - v_up * fsize[1],
-		[0,1], m_vecRenderColor, 1.0);
+		[0,1], color, 1.0);
 	R_PolygonVertex(forg - v_right * fsize[0] + v_up * fsize[1],
-		[0,0], m_vecRenderColor, 1.0);
+		[0,0], color, 1.0);
 	R_PolygonVertex(forg + v_right * fsize[0] + v_up * fsize[1],
-		[1,0], m_vecRenderColor, 1.0);
+		[1,0], color, 1.0);
 	R_EndPolygon();
 
 	addentity(this);
@@ -292,10 +293,10 @@ env_sprite::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_FLOAT(scale, SPRITE_CHANGED_SCALE)
 	READENTITY_BYTE(m_iRenderMode, SPRITE_CHANGED_RENDERMODE)
 	READENTITY_BYTE(m_iRenderFX, SPRITE_CHANGED_RENDERFX)
-	READENTITY_COLOR(m_vecRenderColor[0], SPRITE_CHANGED_RENDERCOLOR)
-	READENTITY_COLOR(m_vecRenderColor[1], SPRITE_CHANGED_RENDERCOLOR)
-	READENTITY_COLOR(m_vecRenderColor[2], SPRITE_CHANGED_RENDERCOLOR)
-	READENTITY_COLOR(m_flRenderAmt, SPRITE_CHANGED_RENDERAMT)
+	READENTITY_BYTE(m_vecRenderColor[0], SPRITE_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_vecRenderColor[1], SPRITE_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_vecRenderColor[2], SPRITE_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_flRenderAmt, SPRITE_CHANGED_RENDERAMT)
 	READENTITY_STRING(m_strMaterial, SPRITE_CHANGED_MATERIAL)
 
 	drawmask = MASK_ENGINE;
@@ -338,10 +339,10 @@ EnvSprite_ParseEvent(void)
 	spr.scale = readfloat();
 	spr.m_iRenderMode = readbyte();
 	spr.m_iRenderFX = readbyte();
-	spr.m_vecRenderColor[0] = readfloat();
-	spr.m_vecRenderColor[1] = readfloat();
-	spr.m_vecRenderColor[2] = readfloat();
-	spr.m_flRenderAmt = readfloat();
+	spr.m_vecRenderColor[0] = readbyte();
+	spr.m_vecRenderColor[1] = readbyte();
+	spr.m_vecRenderColor[2] = readbyte();
+	spr.m_flRenderAmt = readbyte();
 	spr.m_strMaterial = readstring();
 
 	spr.drawmask = MASK_ENGINE;

@@ -23,10 +23,9 @@ typedef enumflags
 	ITEMFL_CHANGED_ANGLES_X,
 	ITEMFL_CHANGED_ANGLES_Y,
 	ITEMFL_CHANGED_ANGLES_Z,
-	ITEMFL_CHANGED_VELOCITY_X,
-	ITEMFL_CHANGED_VELOCITY_Y,
-	ITEMFL_CHANGED_VELOCITY_Z,
+	ITEMFL_CHANGED_VELOCITY,
 	ITEMFL_CHANGED_ANGULARVELOCITY,
+	ITEMFL_CHANGED_RENDERPROPS,
 	ITEMFL_CHANGED_SIZE,
 	ITEMFL_CHANGED_FLAGS,
 	ITEMFL_CHANGED_SOLID,
@@ -64,7 +63,7 @@ These can be used, or be dormant.
 
 @ingroup baseclass
 */
-class NSItem:NSRenderableEntity
+class NSItem:NSPhysicsEntity
 {
 public:
 	void NSItem(void);
@@ -81,8 +80,6 @@ public:
 	virtual float SendEntity(entity,float);
 
 	/* item related accessors */
-	nonvirtual void SetItem(int i);
-	nonvirtual int GetItem(void);
 	nonvirtual void SetFloating(int);
 	nonvirtual bool GetFloating(void);
 	nonvirtual void SetSpinning(bool);

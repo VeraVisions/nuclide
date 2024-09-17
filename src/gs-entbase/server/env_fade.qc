@@ -114,10 +114,10 @@ env_fade::Trigger(entity eAct, triggermode_t iState)
 	/* Half-Life ignores states entirely for env_fade's being triggered */
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_FADE);
-	WriteFloat(MSG_MULTICAST, m_vecRenderColor[0]);
-	WriteFloat(MSG_MULTICAST, m_vecRenderColor[1]);
-	WriteFloat(MSG_MULTICAST, m_vecRenderColor[2]);
-	WriteFloat(MSG_MULTICAST, m_flRenderAmt);
+	WriteByte(MSG_MULTICAST, m_vecRenderColor[0]);
+	WriteByte(MSG_MULTICAST, m_vecRenderColor[1]);
+	WriteByte(MSG_MULTICAST, m_vecRenderColor[2]);
+	WriteByte(MSG_MULTICAST, m_flRenderAmt);
 	WriteFloat(MSG_MULTICAST, m_flFadeDuration);
 	WriteFloat(MSG_MULTICAST, m_flFadeHold);
 	WriteByte(MSG_MULTICAST, spawnflags);

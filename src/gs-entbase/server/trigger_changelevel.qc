@@ -228,8 +228,9 @@ trigger_changelevel::Spawned(void)
 {
 	super::Spawned();
 
-	if (m_strOnLevelChange)
+	if (m_strOnLevelChange) {
 		m_strOnLevelChange = CreateOutput(m_strOnLevelChange);
+	}
 }
 
 void
@@ -246,8 +247,10 @@ trigger_changelevel::IsInside(entity ePlayer, entity eVolume)
 		 ePlayer.absmin[2] > eVolume.absmax[2] ||
 		 ePlayer.absmax[0] < eVolume.absmin[0] ||
 		 ePlayer.absmax[1] < eVolume.absmin[1] ||
-		 ePlayer.absmax[2] < eVolume.absmin[2])
+		 ePlayer.absmax[2] < eVolume.absmin[2]) {
 		 return (0);
+	}
+
 	return (1);
 }
 
@@ -313,8 +316,9 @@ trigger_changelevel::Change(void)
 void
 trigger_changelevel::Trigger(entity act, triggermode_t unused)
 {
-	if (GetMaster(act) == false)
+	if (GetMaster(act) == false) {
 		return;
+	}
 
 	/* disable meself */
 	SetSolid(SOLID_NOT);
@@ -331,14 +335,17 @@ trigger_changelevel::Trigger(entity act, triggermode_t unused)
 void
 trigger_changelevel::Touch(entity eToucher)
 {
-	if (HasSpawnFlags(LC_USEONLY))
+	if (HasSpawnFlags(LC_USEONLY)) {
 		return;
+	}
 
-	if (!(eToucher.flags & FL_CLIENT))
+	if (isPlayer(eToucher) == false) {
 		return;
+	}
 
-	if (time < 2.0f)
+	if (time < 2.0f) {
 		return;
+	}
 
 	Trigger(eToucher, TRIG_TOGGLE);
 }

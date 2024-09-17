@@ -43,7 +43,7 @@ NSEntity::Spawned(void)
 		precache_model(model);
 	}
 
-	if (m_strOnTrigger) {
+	if (m_strOnTrigger != "") {
 		m_strOnTrigger = CreateOutput(m_strOnTrigger);
 	}
 
@@ -105,10 +105,12 @@ NSEntity::VisibleVec(vector org)
 
 	if (flFoV > 0.3f) {
 		traceline(origin, org, TRUE, this);
+
 		if (trace_fraction == 1.0f) {
 			return (true);
 		}
 	}
+
 	return (false);
 }
 
@@ -216,11 +218,13 @@ NSEntity::ReceiveEntity(float flNew, float flChanged)
 
 	drawmask = (modelindex != 0) ? MASK_ENGINE : 0;
 
-	if (scale == 0.0f)
+	if (scale == 0.0f) {
 		scale = 1.0f;
+	}
 
-	if (flChanged & BASEFL_CHANGED_SIZE)
+	if (flChanged & BASEFL_CHANGED_SIZE) {
 		setsize(this, mins, maxs);
+	}
 }
 
 void
@@ -248,11 +252,13 @@ NSEntity::DebugDraw(void)
 float
 NSEntity::SendEntity(entity ePEnt, float flChanged)
 {
-	if (!modelindex)
+	if (!modelindex) {
 		return (0);
+	}
 
-	if (clienttype(ePEnt) != CLIENTTYPE_REAL)
+	if (clienttype(ePEnt) != CLIENTTYPE_REAL) {
 		return (0);
+	}
 
 	WriteByte(MSG_ENTITY, ENT_ENTITY);
 
@@ -346,12 +352,13 @@ NSEntity::ParentUpdate(void)
 	frame1time += frametime;
 
 	/* handle end-touch */
-	if (m_beingTouched == true)
+	if (m_beingTouched == true) {
 		if (m_flTouchTime < GetTime()) {
 			EndTouch(m_eTouchLast);
 			m_beingTouched = false;
 			m_eTouchLast = __NULL__;
 		}
+	}
 }
 
 entity
@@ -363,7 +370,7 @@ NSEntity::GetParent(void)
 void
 NSEntity::SetParent(string name)
 {
-	tag_entity = find(world, ::targetname, m_parent);
+	tag_entity = find(world, ::targetname, name);
 }
 
 void
@@ -429,8 +436,9 @@ NSEntity::SetEffects(float newEffects)
 void
 NSEntity::SetFrame(float newFrame)
 {
-	if (newFrame == frame)
+	if (newFrame == frame) {
 		return;
+	}
 
 	frame = newFrame;
 	frame1time = 0.0f;
@@ -456,10 +464,11 @@ NSEntity::SetFrame(float newFrame)
 			string testData = argv(i+2);
 
 			if (ourName == testName) {
-				if (testData != "")
+				if (testData != "") {
 					Input(this, testInput, testData);
-				else
+				} else {
 					Input(this, testInput, ""); /* no parms passed. */
+				}
 
 				tokenize(m_strModelEventCB); /* ensure argv() is 'rewound'... */
 			}
@@ -492,9 +501,6 @@ NSEntity::SetTouch(void ()newTouch)
 	touch = newTouch;
 }
 
-/* we want to really use those set functions because they'll notify of any
- * networking related changes. otherwise we'll have to keep track of copies
- * that get updated every frame */
 void
 NSEntity::SetSendFlags(float flSendFlags)
 {
@@ -524,8 +530,9 @@ NSEntity::SetSolid(float newSolid)
 void
 NSEntity::SetScale(float newScale)
 {
-	if (newScale == scale)
+	if (newScale == scale) {
 		return;
+	}
 
 	scale = newScale;
 	setsize(this, m_vecMins * scale, m_vecMaxs * scale);
@@ -541,13 +548,11 @@ NSEntity::GetViewAngle(void)
 	}
 }
 
-
 void
 NSEntity::SetEyePos(vector value)
 {
 	view_ofs = value;
 }
-
 
 vector
 NSEntity::GetEyePos(void)
@@ -559,7 +564,6 @@ NSEntity::GetEyePos(void)
 	return (origin + view_ofs);
 }
 
-
 void
 NSEntity::UpdateBounds(void)
 {
@@ -570,7 +574,7 @@ NSEntity::UpdateBounds(void)
 	newMaxs = m_vecMaxs;
 
 	/* avoid useless computation */
-	if (angles !=[0, 0, 0]) {
+	if (angles != [0, 0, 0]) {
 		/* adjust bbox according to rotation */
 		vector vecCorner[8];
 
@@ -600,8 +604,9 @@ NSEntity::UpdateBounds(void)
 	}
 
 	/* 0.0 is never valid, if you want it to disappear do something else */
-	if (scale != 0.0)
+	if (scale != 0.0) {
 		flScale = scale;
+	}
 
 	setsize(this, newMins * flScale, newMaxs * flScale);
 }
@@ -627,24 +632,28 @@ NSEntity::SetSize(vector newMins, vector newMaxs)
 	m_vecMaxs = newMaxs;
 
 	/* 0.0 is never valid, if you want it to disappear do something else */
-	if (scale != 0.0f)
+	if (scale != 0.0f) {
 		flScale = scale;
+	}
 
 	setsize(this, newMins * flScale, newMaxs * flScale);
 }
 
 void
-NSEntity::SetOrigin(vector newOrigin) {
+NSEntity::SetOrigin(vector newOrigin)
+{
 	setorigin(this, newOrigin);
 }
 
 void
-NSEntity::SetOriginUnstick(vector newOrigin) {
+NSEntity::SetOriginUnstick(vector newOrigin)
+{
 	setorigin_safe(this, newOrigin);
 }
 
 void
-NSEntity::SetModel(string newModel) {
+NSEntity::SetModel(string newModel)
+{
 	m_bIsBrush = substring(newModel, 0, 1) == "*" ? true : false;
 	model = newModel;
 	setmodel(this, newModel);
@@ -652,10 +661,13 @@ NSEntity::SetModel(string newModel) {
 	/* mins/maxs have been updated by setmodel */
 	SetSize(mins, maxs);
 }
+
 void
-NSEntity::SetModelindex(float newModelIndex) {
-	if (newModelIndex == modelindex)
+NSEntity::SetModelindex(float newModelIndex)
+{
+	if (newModelIndex == modelindex) {
 		return;
+	}
 
 	modelindex = newModelIndex;
 	SetSize(mins, maxs);
@@ -725,13 +737,15 @@ NSEntity::SetNextThink(float fl) {
 	float flTime = GetTime() + fl;
 
 	/* HACK: to make sure things happen post-spawn */
-	if (flTime == 0.0f)
+	if (flTime == 0.0f) {
 		flTime = 0.001f;
+	}
 
-	if (flTime >= 0)
+	if (flTime >= 0) {
 		nextthink = flTime;
-	else
+	} else {
 		EntError("%s sets bogus nextthink value %f", classname, flTime);
+	}
 }
 
 void
@@ -917,8 +931,11 @@ NSEntity::Respawn(void)
 {
 	super::Respawn();
 
+	if (CreatedByMap()) {
+		SetOrigin(GetSpawnVector("origin"));
+	}
+
 	SetAngles(GetSpawnVector("angles"));
-	SetOrigin(GetSpawnVector("origin"));
 	SetModel(GetSpawnString("model"));
 }
 
@@ -1256,7 +1273,7 @@ NSEntity::NearestWallPointForRadius(float radius)
 {
 	vector vecRadius = [radius, radius, radius];
 	tracebox(origin, -vecRadius, vecRadius, origin, MOVE_EVERYTHING, this);
-	return (trace_fraction <= 1.0) ? trace_endpos : origin;
+	return (trace_fraction <= 1.0) ? (trace_endpos) : (origin);
 }
 
 void
@@ -1307,7 +1324,7 @@ NSEntity::Transport(vector new_pos, vector new_ang)
 	SetAngles(new_ang);
 
 #ifdef SERVER
-	if (flags & FL_CLIENT) {
+	if (isClient(this)) {
 		Client_FixAngle(this, new_ang);
 	}
 #endif
@@ -1334,57 +1351,65 @@ NSEntity::GetNearbySpot(void)
 	testPos = GetOrigin() + fwdDir * minDist;
 	tracebox(testPos, mins, maxs, testPos, MOVE_NORMAL, this);
 
-	if (trace_fraction == 1.0f)
+	if (trace_fraction == 1.0f) {
 		return (testPos);
+	}
 
 	/* behind? */
 	testPos = GetOrigin() - fwdDir * minDist;
 	tracebox(testPos, mins, maxs, testPos, MOVE_NORMAL, this);
 
-	if (trace_fraction == 1.0f)
+	if (trace_fraction == 1.0f) {
 		return (testPos);
+	}
 
 	/* left? */
 	testPos = GetOrigin() - rightDir * minDist;
 	tracebox(testPos, mins, maxs, testPos, MOVE_NORMAL, this);
 
-	if (trace_fraction == 1.0f)
+	if (trace_fraction == 1.0f) {
 		return (testPos);
+	}
 
 	/* right? */
 	testPos = GetOrigin() + rightDir * minDist;
 	tracebox(testPos, mins, maxs, testPos, MOVE_NORMAL, this);
 
-	if (trace_fraction == 1.0f)
+	if (trace_fraction == 1.0f) {
 		return (testPos);
+	}
 
 	/* front left? */
 	testPos = GetOrigin() + fwdDir * minDist - rightDir * minDist;
 	tracebox(testPos, mins, maxs, testPos, MOVE_NORMAL, this);
 
-	if (trace_fraction == 1.0f)
+	if (trace_fraction == 1.0f) {
 		return (testPos);
+	}
 
 	/* front right? */
 	testPos = GetOrigin() + fwdDir * minDist + rightDir * minDist;
 	tracebox(testPos, mins, maxs, testPos, MOVE_NORMAL, this);
 
-	if (trace_fraction == 1.0f)
+	if (trace_fraction == 1.0f) {
 		return (testPos);
+	}
 
 	/* back left? */
 	testPos = GetOrigin() - fwdDir * minDist - rightDir * minDist;
 	tracebox(testPos, mins, maxs, testPos, MOVE_NORMAL, this);
 
-	if (trace_fraction == 1.0f)
+	if (trace_fraction == 1.0f) {
 		return (testPos);
+	}
 
 	/* back right? */
 	testPos = GetOrigin() - fwdDir * minDist + rightDir * minDist;
 	tracebox(testPos, mins, maxs, testPos, MOVE_NORMAL, this);
 
-	if (trace_fraction == 1.0f)
+	if (trace_fraction == 1.0f) {
 		return (testPos);
+	}
 
 	return (g_vec_null);
 }
@@ -1411,7 +1436,7 @@ NSEntity::_ProjectileAttack(string defName, bool wasReleased)
 
 	for (int i = 0i; i < numProjectiles; i++) {
 		EntLog("Launching %S at %v towards %v", attackDef, GetEyePos(), GetViewAngle());
-		NSProjectile_SpawnDefAtPosition(attackDef, this, GetEyePos(), GetViewAngle());
+		NSAttack_SpawnDefAtPosition(attackDef, this, GetEyePos(), GetViewAngle());
 	}
 #endif
 
@@ -1450,6 +1475,20 @@ NSEntity::GetSharedID(void)
 #endif
 }
 
+void
+NSEntity::EnablePlayerCollision(void)
+{
+	dimension_solid = 255;
+	dimension_hit = 255;
+}
+
+void
+NSEntity::DisablePlayerCollision(void)
+{
+	dimension_solid = 1;
+	dimension_hit = 1;
+}
+
 NSEntity
 spawnClass(string className, vector desiredPos)
 {
@@ -1469,7 +1508,6 @@ spawnClass(string className, vector desiredPos)
 	}
 
 	newEntity.classname = className;
-	newEntity.Input(newEntity, "SetSpawnOrigin", vtos(desiredPos));
 	newEntity.Input(newEntity, "SetOrigin", vtos(desiredPos));
 	newEntity.Respawn();
 #endif
@@ -1537,7 +1575,7 @@ isClient(entity entityToCheck)
 bool
 isPlayer(entity entityToCheck)
 {
-	if (entityToCheck.flags & FL_CLIENT) {
+	if (isClient(entityToCheck)) {
 		NSClient pl = (NSClient)entityToCheck;
 
 		return pl.IsPlayer();

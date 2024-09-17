@@ -274,8 +274,8 @@ item_recharge::Respawn(void)
 		m_eProgressMeter.SetAngles(GetAngles());
 		m_eProgressMeter.SetMovetype(MOVETYPE_NONE);
 		m_eProgressMeter.SetRenderMode(RM_COLOR);
-		m_eProgressMeter.SetRenderColor([1,1,1]);
-		m_eProgressMeter.SetRenderAmt(0.25f);
+		m_eProgressMeter.SetRenderColor([255,255,255]);
+		m_eProgressMeter.SetRenderAmt(64);
 		m_eProgressMeter.SetModel("models/field.mdl");
 	}
 }

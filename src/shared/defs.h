@@ -65,6 +65,8 @@ typedef entity id;
 #define ATTR_CHANGED(x) (x ##_net != x)
 #define VEC_CHANGED(x,y) (x ##_net[y] != x[y])
 
+#define STRING_SET(x) ((x != __NULL__) && (x != ""))
+
 #ifndef MAX_AMMO_TYPES
 #define MAX_AMMO_TYPES 16i
 #endif
@@ -112,6 +114,7 @@ string __fullspawndata;
 #include "NSTalkMonster.h"
 #include "NSSpawnPoint.h"
 #include "NSSoundScape.h"
+#include "NSAttack.h"
 #include "NSProjectile.h"
 #include "NSSpraylogo.h"
 #include "NSPortal.h"

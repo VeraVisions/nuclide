@@ -43,6 +43,7 @@ NSProjectile::NSProjectile(void)
 	m_matDetonate = __NULL__;
 	m_flDecalSize = 0.0f;
 	m_partSmokeFly = __NULL__;
+	m_partFXPath = __NULL__;
 	m_partModelDetonate = __NULL__;
 	m_partSmokeDetonate = __NULL__;
 	m_partSmokeBounce = __NULL__;
@@ -159,6 +160,9 @@ NSProjectile::SpawnKey(string strKey, string strValue)
 	case "smoke_fly":
 		m_partSmokeFly = ReadString(strValue);
 		break;
+	case "fx_path":
+		m_partFXPath = ReadString(strValue);
+		break;
 	case "model_detonate":
 		m_partModelDetonate = ReadString(strValue);
 		break;
@@ -268,6 +272,9 @@ NSProjectile::SpawnKey(string strKey, string strValue)
 	case "damage":
 		m_flDamage = ReadFloat(strValue);
 		break;
+	case "thrown":
+		m_bThrown = ReadBool(strValue);
+		break;
 	default:
 		super::SpawnKey(strKey, strValue);
 		break;
@@ -303,6 +310,7 @@ NSProjectile::Save(float handle)
 	SaveString(handle, "m_matDetonate", m_matDetonate);
 	SaveFloat(handle, "m_flDecalSize", m_flDecalSize);
 	SaveString(handle, "m_partSmokeFly", m_partSmokeFly);
+	SaveString(handle, "m_partFXPath", m_partFXPath);
 	SaveString(handle, "m_partModelDetonate", m_partModelDetonate);
 	SaveString(handle, "m_partSmokeDetonate", m_partSmokeDetonate);
 	SaveString(handle, "m_partSmokeBounce", m_partSmokeBounce); 
@@ -327,6 +335,7 @@ NSProjectile::Save(float handle)
 	SaveEntity(handle, "m_thrustHandler", m_thrustHandler);
 	SaveFloat(handle, "m_flSpawnFrame", m_flSpawnFrame);
 	SaveBool(handle, "m_bInheritVelocity", m_bInheritVelocity);
+	SaveBool(handle, "m_bThrown", m_bThrown);
 }
 
 void
@@ -405,6 +414,9 @@ NSProjectile::Restore(string strKey, string strValue)
 	case "m_partSmokeFly":
 		m_partSmokeFly = ReadString(strValue);
 		break;
+	case "m_partFXPath":
+		m_partFXPath = ReadString(strValue);
+		break;
 	case "m_partModelDetonate":
 		m_partModelDetonate = ReadString(strValue);
 		break;
@@ -476,6 +488,9 @@ NSProjectile::Restore(string strKey, string strValue)
 		break;
 	case "m_bInheritVelocity":
 		m_bInheritVelocity = ReadBool(strValue);
+		break;
+	case "m_bThrown":
+		m_bThrown = ReadBool(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
@@ -724,6 +739,10 @@ NSProjectile::_Explode(entity explodedOn)
 		explodePos = origin - (aimFwd * 32);
 	}
 
+	if (m_fExplodelLightRadius > 0.0f) {
+		te_customflash(explodePos, m_fExplodelLightRadius, m_fExplodelLightFadetime, m_vecExplodeLightColor);
+	}
+
 	if (m_matDetonate) {
 		DecalGroups_Place(m_matDetonate, origin);
 	}
@@ -772,6 +791,10 @@ NSProjectile::_LaunchHitscan(vector startPos, vector launchDir, float dmgMultipl
 	ownerAngle = anglesToForward(launchDir);
 	ownerDir = aim(owner, 100000);
 
+	if (STRING_SET(m_defDamage)) {
+		m_flDamage = GetSubDefFloat(m_defDamage, "damage");
+	}
+
 	while (m_iShots > 0) {
 		/* use cached value */
 		v_forward = ownerAngle;
@@ -810,6 +833,12 @@ NSProjectile::_ApplyDamage(void)
 	trace_surface_id = m_iMultiBody;
 	g_dmg_vecLocation = trace_endpos;
 	NSDict damageDecl = spawn(NSDict);
+
+	if (STRING_SET(m_defDamage)) {
+		int declID = EntityDef_IDFromName(m_defDamage);
+		damageDecl.InitWithSpawnData(EntityDef_GetSpawnData(declID));
+	}
+
 	damageDecl.AddKey("hitbody", itos(trace_surface_id));
 	damageDecl.AddKey("damage", itos(m_iMultiValue));
 	vector dmgDir = normalize(angles);
@@ -856,6 +885,10 @@ NSProjectile::_FireSingle(vector vecPos, vector vecAngles, float flDamage, float
 
 	m_iMultiBody |= trace_surface_id;
 
+	if (STRING_SET(m_partFXPath)) {
+		trailparticles(particleeffectnum(m_partFXPath), world, vecPos, trace_endpos);
+	}
+
 	if (trace_fraction >= 1.0f)
 		return;
 
@@ -888,6 +921,8 @@ NSProjectile::_FireSingle(vector vecPos, vector vecAngles, float flDamage, float
 
 	/* impact per bullet */
 	if (m_bDetonateOnWorld == true && trace_ent.iBleeds == 0) {
+		StartSoundDef(m_sndExplode, CHAN_VOICE, true);
+	
 		if (m_strDecalGroup)
 			DecalGroups_Place(m_strDecalGroup, endPos + (vecAngles * -2));
 
@@ -959,11 +994,6 @@ NSProjectile::Launch(vector startPos, vector launchDir, float fuseOffset, float 
 {
 	vector moveVel = g_vec_null;
 
-	if (m_bIsBullet) {
-		_LaunchHitscan(startPos, launchDir, dmgMultiplier);
-		return;
-	}
-
 	SetAngles(launchDir);
 	SetSize(m_vecSpawnMins, m_vecSpawnMaxs);
 
@@ -986,8 +1016,32 @@ NSProjectile::Launch(vector startPos, vector launchDir, float fuseOffset, float 
 	startPos += v_up * m_vecSpawnOrigin[2];
 	SetOrigin(startPos);
 
-	if (m_bInheritVelocity == true)
+	if (m_bIsBullet) {
+		_LaunchHitscan(startPos, launchDir, dmgMultiplier);
+		return;
+	}
+
+	if (m_bInheritVelocity == true) {
 		moveVel += owner.velocity;
+	}
+
+	if (m_bThrown) {
+		vector throwDirection;
+		float throwingStrength;
+
+		throwDirection = launchDir;
+		throwDirection[0] = -10.0f; /* always aim a bit up */
+
+		/* diminish when aiming up */
+		if (launchDir[0] < 0) {
+			throwDirection[0] += (launchDir[0] * 0.9f);
+		} else { /* increase when aiming down */
+			throwDirection[0] += (launchDir[0] * 1.1f);
+		}
+
+		throwingStrength = bound(0, (90 - throwDirection[0]) * 5.0f, 1000);
+		moveVel = (v_forward * throwingStrength) + owner.velocity;
+	}
 
 	/* fire slower underwater */
 	if (pointcontents(startPos) == CONTENT_WATER) {
@@ -1007,7 +1061,7 @@ NSProjectile::Launch(vector startPos, vector launchDir, float fuseOffset, float 
 		SetMovetype(MOVETYPE_FLYMISSILE);
 	}
 
-	if (m_partSmokeFly) {
+	if (STRING_SET(m_partSmokeFly)) {
 		traileffectnum = particleeffectnum(m_partSmokeFly);
 	}
 
@@ -1025,7 +1079,25 @@ NSProjectile::Launch(vector startPos, vector launchDir, float fuseOffset, float 
 		m_thrustHandler = NSTimer::TemporaryTimer(this, _ThrustThink, 0.0, true);
 	}
 
-	SetFrame(m_flSpawnFrame);
+	string startFrame = GetSpawnString("animStartFrame");
+
+	if (STRING_SET(startFrame)) {
+		int iStartFrame = stoi(startFrame);
+		int iEndFrame = GetSpawnInt("animEndFrame");
+		float flFrameRate = (1 / GetSpawnFloat("animFrameRate"));
+		bool animEndRemoves = GetSpawnInt("animEndRemoves");
+
+		SetFrame((float)iStartFrame);
+		
+		if (animEndRemoves) {
+			AnimateOnce(iStartFrame, iEndFrame, flFrameRate);
+		} else {
+			Animate(iStartFrame, iEndFrame, flFrameRate);
+		}
+	} else {
+		SetFrame(m_flSpawnFrame);
+	}
+
 	SetGravity(m_flGravity);
 	StartSoundDef(m_sndFly, CHAN_BODY, true);
 	SendFlags = (-1);
@@ -1079,10 +1151,10 @@ NSProjectile::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_FLOAT(traileffectnum, PROJ_CHANGED_MODELINDEX)
 	SENDENTITY_BYTE(m_iRenderMode, PROJ_CHANGED_RENDERMODE)
 	SENDENTITY_BYTE(m_iRenderFX, PROJ_CHANGED_RENDERMODE)
-	SENDENTITY_COLOR(m_vecRenderColor[0], PROJ_CHANGED_RENDERCOLOR)
-	SENDENTITY_COLOR(m_vecRenderColor[1], PROJ_CHANGED_RENDERCOLOR)
-	SENDENTITY_COLOR(m_vecRenderColor[2], PROJ_CHANGED_RENDERCOLOR)
-	SENDENTITY_COLOR(m_flRenderAmt, PROJ_CHANGED_RENDERAMT)
+	SENDENTITY_BYTE(m_vecRenderColor[0], PROJ_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_vecRenderColor[1], PROJ_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_vecRenderColor[2], PROJ_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_flRenderAmt, PROJ_CHANGED_RENDERAMT)
 	SENDENTITY_COLOR(m_vecLightColor[0], PROJ_CHANGED_RENDERCOLOR)
 	SENDENTITY_COLOR(m_vecLightColor[1], PROJ_CHANGED_RENDERCOLOR)
 	SENDENTITY_COLOR(m_vecLightColor[2], PROJ_CHANGED_RENDERCOLOR)
@@ -1108,10 +1180,10 @@ NSProjectile::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_FLOAT(traileffectnum, PROJ_CHANGED_MODELINDEX)
 	READENTITY_BYTE(m_iRenderMode, PROJ_CHANGED_RENDERMODE)
 	READENTITY_BYTE(m_iRenderFX, PROJ_CHANGED_RENDERMODE)
-	READENTITY_COLOR(m_vecRenderColor[0], PROJ_CHANGED_RENDERCOLOR)
-	READENTITY_COLOR(m_vecRenderColor[1], PROJ_CHANGED_RENDERCOLOR)
-	READENTITY_COLOR(m_vecRenderColor[2], PROJ_CHANGED_RENDERCOLOR)
-	READENTITY_COLOR(m_flRenderAmt, PROJ_CHANGED_RENDERAMT)
+	READENTITY_BYTE(m_vecRenderColor[0], PROJ_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_vecRenderColor[1], PROJ_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_vecRenderColor[2], PROJ_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_flRenderAmt, PROJ_CHANGED_RENDERAMT)
 	READENTITY_COLOR(m_vecLightColor[0], PROJ_CHANGED_RENDERCOLOR)
 	READENTITY_COLOR(m_vecLightColor[1], PROJ_CHANGED_RENDERCOLOR)
 	READENTITY_COLOR(m_vecLightColor[2], PROJ_CHANGED_RENDERCOLOR)
@@ -1132,8 +1204,8 @@ NSProjectile::predraw(void)
 			trailparticles(traileffectnum, this, oldorigin, origin);
 	}
 	oldorigin = origin;
-
-	return super::predraw();
+	
+	return NSRenderableEntity::predraw();
 }
 #endif
 

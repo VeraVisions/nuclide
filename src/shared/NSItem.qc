@@ -53,15 +53,18 @@ NSItem::Respawn(void)
 	static void AdjustSpawnPos(void) {
 		RestoreAngles();
 		SetOrigin(GetSpawnVector("origin"));
+		placeSpawnpoint(this);
 
 		if (!m_bFloating) {
 			DropToFloor();
-			SetMovetype(MOVETYPE_TOSS);
 		}
 	}
 
 	super::Respawn();
 	BecomePickup();
+
+	/* being a physics entity, we might have to restore player physics */
+	EnablePlayerCollision();
 
 	if (CreatedByMap() == true) {
 		ScheduleThink(AdjustSpawnPos, 0.0f);
@@ -102,6 +105,9 @@ NSItem::SpawnKey(string strKey, string strValue)
 		break;
 	case "spin":
 		m_bSpins = ReadBool(strValue);
+		break;
+	case "floating":
+		m_bFloating = ReadBool(strValue);
 		break;
 	case "frame":
 		frame = ReadFloat(strValue);
@@ -207,13 +213,15 @@ NSItem::Restore(string strKey, string strValue)
 void
 NSItem::Touch(entity eToucher)
 {
-	NSClientPlayer pl = (NSClientPlayer)eToucher;
+	NSClientPlayer pl;
 
-	if (eToucher.classname != "player") {
+	if (isPlayer(eToucher) == false) {
 		return;
 	}
 
-	if (m_strRequires) {
+	pl = (NSClientPlayer)eToucher;
+
+	if (STRING_SET(m_strRequires)) {
 		if (pl.HasItem(m_strRequires) == false) {
 			return;
 		}
@@ -230,21 +238,6 @@ NSItem::Touch(entity eToucher)
 		Disappear();
 		ScheduleThink(PickupRespawn, 30.0f);
 	}
-}
-
-void
-NSItem::SetItem(int i)
-{
-	m_iInvItem = i;
-	//m_oldModel = Weapons_GetWorldmodel(m_iInvItem);
-	SetModel(GetSpawnString("model"));
-	SetSize([-16,-16,0], [16,16,16]);
-}
-
-int
-NSItem::GetItem(void)
-{
-	return m_iInvItem;
 }
 
 void NSItem::SetFloating(int i)
@@ -276,6 +269,7 @@ NSItem::PickupRespawn(void)
 {
 	Respawn();
 	StartSoundDef(m_sndRespawn, CHAN_ITEM, true);
+	ReleaseThink();
 }
 
 void
@@ -305,16 +299,42 @@ NSItem::PrintDebugInfo(void)
 void
 NSItem::BecomePickup(void)
 {
-	SetSolid(SOLID_TRIGGER);
 	SetBotTag(BOTINFO_WEAPON);
+	SetModel(GetSpawnString("model"));
 
 	if (m_bSpins)
 		modelflags = MF_ROTATE;
 	else
 		modelflags &= ~MF_ROTATE;
 
-	SetSize([-16,-16,0], [16,16,16]);
 	Show();
+
+	if (GetSpawnBool("physics") == true) {
+		/* be shootable! */
+		Wake();
+		SetMovetype(MOVETYPE_PHYSICS);
+		SetSolid(SOLID_CORPSE);
+	} else {
+		vector desiredMins = GetSpawnVector("mins");
+		vector desiredMaxs = GetSpawnVector("maxs");
+		Sleep();
+		SetMovetype(MOVETYPE_NONE);
+		SetSolid(SOLID_TRIGGER);
+		MakeInvulnerable();
+		
+		if (desiredMins != g_vec_null) {
+			mins = desiredMins;
+		}
+		
+		if (desiredMaxs != g_vec_null) {
+			maxs = desiredMaxs;
+		}
+	
+		SetSize(mins, maxs);
+	}
+
+	Relink();
+
 }
 
 float
@@ -355,12 +375,18 @@ NSItem::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_FLOAT(skin, ITEMFL_CHANGED_SKIN)
 	SENDENTITY_FLOAT(effects, ITEMFL_CHANGED_EFFECTS)
 	SENDENTITY_FLOAT(scale, ITEMFL_CHANGED_SCALE)
-	SENDENTITY_COORD(velocity[0], ITEMFL_CHANGED_VELOCITY_X)
-	SENDENTITY_COORD(velocity[1], ITEMFL_CHANGED_VELOCITY_Y)
-	SENDENTITY_COORD(velocity[2], ITEMFL_CHANGED_VELOCITY_Z)
+	SENDENTITY_COORD(velocity[0], ITEMFL_CHANGED_VELOCITY)
+	SENDENTITY_COORD(velocity[1], ITEMFL_CHANGED_VELOCITY)
+	SENDENTITY_COORD(velocity[2], ITEMFL_CHANGED_VELOCITY)
 	SENDENTITY_COORD(avelocity[0], ITEMFL_CHANGED_ANGULARVELOCITY)
 	SENDENTITY_COORD(avelocity[1], ITEMFL_CHANGED_ANGULARVELOCITY)
 	SENDENTITY_COORD(avelocity[2], ITEMFL_CHANGED_ANGULARVELOCITY)
+	SENDENTITY_BYTE(m_vecRenderColor[0], ITEMFL_CHANGED_RENDERPROPS)
+	SENDENTITY_BYTE(m_vecRenderColor[1], ITEMFL_CHANGED_RENDERPROPS)
+	SENDENTITY_BYTE(m_vecRenderColor[2], ITEMFL_CHANGED_RENDERPROPS)
+	SENDENTITY_BYTE(m_flRenderAmt, ITEMFL_CHANGED_RENDERPROPS)
+	SENDENTITY_BYTE(m_iRenderMode, ITEMFL_CHANGED_RENDERPROPS)
+	SENDENTITY_BYTE(m_iRenderFX, ITEMFL_CHANGED_RENDERPROPS)
 
 	return (1);
 }
@@ -393,12 +419,18 @@ NSItem::EvaluateEntity(void)
 	EVALUATE_FIELD(skin, ITEMFL_CHANGED_SKIN)
 	EVALUATE_FIELD(effects, ITEMFL_CHANGED_EFFECTS)
 	EVALUATE_FIELD(scale, ITEMFL_CHANGED_SCALE)
-	EVALUATE_VECTOR(velocity, 0, ITEMFL_CHANGED_VELOCITY_X)
-	EVALUATE_VECTOR(velocity, 1, ITEMFL_CHANGED_VELOCITY_Y)
-	EVALUATE_VECTOR(velocity, 2, ITEMFL_CHANGED_VELOCITY_Z)
+	EVALUATE_VECTOR(velocity, 0, ITEMFL_CHANGED_VELOCITY)
+	EVALUATE_VECTOR(velocity, 1, ITEMFL_CHANGED_VELOCITY)
+	EVALUATE_VECTOR(velocity, 2, ITEMFL_CHANGED_VELOCITY)
 	EVALUATE_VECTOR(avelocity, 0, ITEMFL_CHANGED_ANGULARVELOCITY)
 	EVALUATE_VECTOR(avelocity, 1, ITEMFL_CHANGED_ANGULARVELOCITY)
 	EVALUATE_VECTOR(avelocity, 2, ITEMFL_CHANGED_ANGULARVELOCITY)
+	EVALUATE_VECTOR(m_vecRenderColor, 0, ITEMFL_CHANGED_RENDERPROPS)
+	EVALUATE_VECTOR(m_vecRenderColor, 1, ITEMFL_CHANGED_RENDERPROPS)
+	EVALUATE_VECTOR(m_vecRenderColor, 2, ITEMFL_CHANGED_RENDERPROPS)
+	EVALUATE_FIELD(m_flRenderAmt, ITEMFL_CHANGED_RENDERPROPS)
+	EVALUATE_FIELD(m_iRenderMode, ITEMFL_CHANGED_RENDERPROPS)
+	EVALUATE_FIELD(m_iRenderFX, ITEMFL_CHANGED_RENDERPROPS)
 }
 #endif
 
@@ -431,18 +463,25 @@ NSItem::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_FLOAT(skin, ITEMFL_CHANGED_SKIN)
 	READENTITY_FLOAT(effects, ITEMFL_CHANGED_EFFECTS)
 	READENTITY_FLOAT(scale, ITEMFL_CHANGED_SCALE)
-	READENTITY_COORD(velocity[0], ITEMFL_CHANGED_VELOCITY_X)
-	READENTITY_COORD(velocity[1], ITEMFL_CHANGED_VELOCITY_Y)
-	READENTITY_COORD(velocity[2], ITEMFL_CHANGED_VELOCITY_Z)
+	READENTITY_COORD(velocity[0], ITEMFL_CHANGED_VELOCITY)
+	READENTITY_COORD(velocity[1], ITEMFL_CHANGED_VELOCITY)
+	READENTITY_COORD(velocity[2], ITEMFL_CHANGED_VELOCITY)
 	READENTITY_COORD(avelocity[0], ITEMFL_CHANGED_ANGULARVELOCITY)
 	READENTITY_COORD(avelocity[1], ITEMFL_CHANGED_ANGULARVELOCITY)
 	READENTITY_COORD(avelocity[2], ITEMFL_CHANGED_ANGULARVELOCITY)
+	READENTITY_BYTE(m_vecRenderColor[0], ITEMFL_CHANGED_RENDERPROPS)
+	READENTITY_BYTE(m_vecRenderColor[1], ITEMFL_CHANGED_RENDERPROPS)
+	READENTITY_BYTE(m_vecRenderColor[2], ITEMFL_CHANGED_RENDERPROPS)
+	READENTITY_BYTE(m_flRenderAmt, ITEMFL_CHANGED_RENDERPROPS)
+	READENTITY_BYTE(m_iRenderMode, ITEMFL_CHANGED_RENDERPROPS)
+	READENTITY_BYTE(m_iRenderFX, ITEMFL_CHANGED_RENDERPROPS)
 
 	if (flChanged & ITEMFL_CHANGED_MODELINDEX) {
 		classname = EntityDef_NameFromNetID(entityDefID);
 		declclass = classname;
 	}
 
+	movetype = MOVETYPE_NONE;
 	drawmask = (modelindex != 0) ? MASK_ENGINE : 0;
 
 	if (flChanged & ITEMFL_CHANGED_CHAIN) {

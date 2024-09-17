@@ -182,6 +182,7 @@ private:
 	float m_flMoveSpeedKey;
 #endif
 
+	float nadeCookingTime;
 	/* These are defined in side defs\*.def, ammo_types and ammo_names */
 	int m_iAmmoTypes[MAX_AMMO_TYPES];
 	NSWeapon m_activeWeapon_net;

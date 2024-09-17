@@ -24,8 +24,9 @@ NSDebris::NSDebris(void)
 void
 NSDebris::Touch(entity touchingEnt)
 {
-	if (m_strImpactDecal)
+	if (STRING_SET(m_strImpactDecal)) {
 		DecalGroups_Place(m_strImpactDecal, origin);
+	}
 }
 
 void

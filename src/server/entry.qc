@@ -665,6 +665,7 @@ CheckSpawn(void() spawnfunc)
 {
 	NSEntity ent = (NSEntity)self;
 	string desiredClass = ent.classname;
+	static string lastClass;
 
 	/* cancel out early */
 	if (ent == world) {
@@ -679,14 +680,12 @@ CheckSpawn(void() spawnfunc)
 	__fullspawndata = "";
 
 	if (MapTweak_EntitySpawn(ent) == true) {
-		ent._mapspawned = true;
+		;
 	} else if (EntityDef_SpawnClassname(desiredClass) != __NULL__) {
-		ent._mapspawned = true;
+		;
 	} else if (spawnfunc) {
 		spawnfunc();
 		ent.classname = desiredClass;
-		ent._mapspawned = true;
-		g_ent_spawned++;
 	} else {
 		ent.identity = 0;
 	}
@@ -698,7 +697,12 @@ CheckSpawn(void() spawnfunc)
 			g_ent_spawned--;
 		}
 	} else {
-		NSError("Unable to spawn %s", desiredClass);
+		/* don't need to spam repetitive messages */
+		if (lastClass != desiredClass) {
+			NSError("Unable to spawn %s", desiredClass);
+		}
+
+		lastClass = desiredClass;
 		remove(ent);
 		return;
 	}
@@ -710,12 +714,17 @@ CheckSpawn(void() spawnfunc)
 		}
 	}
 
+	/* count and mark as map spawned */
+	ent._mapspawned = true;
+	g_ent_spawned++;
+
 	/* has to be called once, after the spawn values have been read in. */
 	ent.Spawned();
 
 	/* entity may be marked as deleted */
-	if (wasfreed(ent))
+	if (wasfreed(ent)) {
 		return;
+	}
 
 	/* needs to be called at least once after spawn, then any time after. */
 	ent.Respawn();

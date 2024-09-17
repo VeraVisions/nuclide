@@ -14,6 +14,7 @@ NSBrushTrigger.qc
 NSPointTrigger.qc
 pmove.qc
 NSVehicle.qc
+NSAttack.qc
 NSNavAI.qc
 NSMonster.qc
 NSSquadMonster.qc

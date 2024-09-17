@@ -148,7 +148,7 @@ point_spotlight::predraw(void)
 #if 0
 			//vecPlayer[2] = origin[2];
 			makevectors(vectoangles(origin - vecPlayer));
-			R_BeginPolygon("textures/sfx/spot_cone");
+			R_BeginPolygon("materials/sprites/glow_test02");
 			R_PolygonVertex(m_vecBeamEnd + (v_right * m_flBeamHalfwidth),
 				[1,1], m_vecColor * coneAlpha, 1.0f);
 			R_PolygonVertex(m_vecBeamEnd - (v_right * m_flBeamHalfwidth),
@@ -161,7 +161,7 @@ point_spotlight::predraw(void)
 #else
 			makevectors(vecAngle);
 			setproperty(VF_ORIGIN, vecPlayer);
-			R_BeginPolygon("textures/sfx/spot_cone");
+			R_BeginPolygon("materials/sprites/glow_test02");
 			R_PolygonVertex(origin, [1,0], finalColor, 1.0f);
 			R_PolygonVertex(m_vecBeamEnd, [1,1], finalColor, 1.0f);
 			R_EndPolygonRibbon(m_flBeamWidth, [-1,0]);
@@ -181,7 +181,7 @@ point_spotlight::predraw(void)
 			makevectors(vectoangles(origin - vecPlayer));
 			flareOrg += v_forward * - 16.0f;
 
-			R_BeginPolygon("textures/sfx/spot_flare");
+			R_BeginPolygon("sprites/light_glow03");
 			R_PolygonVertex(flareOrg + v_right * m_flBeamHalfwidth - v_up * m_flBeamHalfwidth,
 				[1,1], m_vecColor * coneAlpha, 1.0f);
 			R_PolygonVertex(flareOrg - v_right * m_flBeamHalfwidth - v_up * m_flBeamHalfwidth,

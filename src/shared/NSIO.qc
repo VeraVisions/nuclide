@@ -126,17 +126,27 @@ NSIO::GetDefInt(string keyName)
 	return (int)stoi(GetDefString(keyName));
 }
 
+/** Returns the framegroup for a given activity. */
 float
-NSIO::GetSubDefAct(string subDef, string keyName)
+NSIO::GetSubDefAct(string subDef, string activityName)
 {
 	float actCount;
-	string fireValue = GetSubDefString(subDef, keyName);
-	
-	/* not in classname either. make it known */
-	if (fireValue == "") {
-		return (-1);
+	string actNameCheck;
+	string fireValue;
+
+	/* check within sub-def, then classname decl */
+	actNameCheck = strcat("act_", activityName);
+	fireValue = GetSubDefString(subDef, actNameCheck);
+
+	/* not in class decl either. look it up in the model */
+	if (!STRING_SET(fireValue)) {
+		/* look it up in the model itself now */
+		float actModelNum = stof(EntityDef_GetKeyValue("activities", actNameCheck));
+		float frameGroup = frameforaction(modelindex, actModelNum);
+		return (frameGroup);
+		//return (-1);
 	}
-	
+
 	actCount = tokenizebyseparator(fireValue, ",");
 
 	if (actCount == 1) {
@@ -145,6 +155,12 @@ NSIO::GetSubDefAct(string subDef, string keyName)
 		float randomValue = floor(pseudorandom() * actCount);
 		return stof(argv(randomValue));
 	}
+}
+
+float
+NSIO::GetAct(string activityName)
+{
+	return GetSubDefAct(classname, activityName);
 }
 
 string
@@ -390,11 +406,11 @@ NSIO::Input(entity eAct, string strInput, string strData)
 		break;
 	default:
 		if (strData != "") {
-			EntWarning("Receives unknown input %S from %s (%d) with data %S", 
-				strInput, eAct.classname, num_for_edict(eAct), strData);
+			EntWarning("%S receives unknown input %S from %s (%d) with data %S", 
+				classname, strInput, eAct.classname, num_for_edict(eAct), strData);
 		} else {
-			EntWarning("Receives unknown input %S from %s (%d)", 
-				strInput, eAct.classname, num_for_edict(eAct));
+			EntWarning("%S receives unknown input %S from %s (%d)", 
+				classname, strInput, eAct.classname, num_for_edict(eAct));
 		}
 	}
 }

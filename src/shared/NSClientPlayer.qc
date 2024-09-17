@@ -21,12 +21,14 @@ NSClientPlayer::NSClientPlayer(void)
 	vehicle = __NULL__;
 }
 
-NSWeapon GetWeaponEntity(int theclientsnumber)
+NSWeapon
+GetWeaponEntity(int theclientsnumber)
 {
-	entity e = edict_num((float)theclientsnumber); //can return world when out of range...
+	entity e = edict_num((float)theclientsnumber);
 
-	if (wasfreed(e))
-		e = world; //might have been freed...
+	if (wasfreed(e)) {
+		e = world;
+	}
 
 	return e;
 }
@@ -41,16 +43,24 @@ NSClientPlayer::SharedInputFrame(void)
 	}
 
 #ifdef SERVER
+	/* here is where we check if the clients' desired weapon object exists,
+	   is valid and is assigned to us. clients may send outdated or straight
+	   up bogus values to mess with the server game. any checks go here
+	   as this is where they'll be received first. */
 	if (input_cursor_entitynumber) {
 		NSWeapon nextWeapon = GetWeaponEntity(input_cursor_entitynumber);
 
-		/* inpur_cursor_entity is not ours! */
-		if (nextWeapon.owner != this) {
-			return;
-		}
-		
-		if (nextWeapon.IsWeapon() == false) {
-			return;
+		/* might be nothing */
+		if (nextWeapon != __NULL__) {
+			/* item is not ours */
+			if (nextWeapon.owner != this) {
+				return;
+			}
+
+			/* item isn't a weapon */
+			if (nextWeapon.IsWeapon() == false) {
+				return;
+			}
 		}
 
 		input_cursor_entitynumber = 0;
@@ -456,9 +466,12 @@ NSClientPlayer::VehicleRelink(void)
 		oldWeapon._SwitchedFromCallback();
 	}
 
+	/* complete new weapon */
 	if (m_activeWeapon != __NULL__ && oldWeapon == __NULL__) {
 		m_activeWeapon.SetOwner(this);
 		m_activeWeapon._AddedCallback();
+		m_activeWeapon._SwitchedToCallback();
+	} else if (m_activeWeapon != __NULL__ && oldWeapon != m_activeWeapon) {
 		m_activeWeapon._SwitchedToCallback();
 	}
 }
@@ -601,6 +614,8 @@ NSClientPlayer::ClientInputFrame(void)
 
 	if (pSeat->m_iHUDWeaponSelected) {
 		input_cursor_entitynumber = pSeat->m_iHUDWeaponSelected;
+	} else {
+		input_cursor_entitynumber = 0;
 	}
 
 	/* IW style stance override */
@@ -609,18 +624,6 @@ NSClientPlayer::ClientInputFrame(void)
 	} else if (pSeat->m_dForceStance == STANCE_PRONE) {
 		input_buttons |= INPUT_PRONE;
 	}
-
-#if 0
-	/* The HUD needs more time */
-	if (pSeat->m_iHUDWeaponSelected) {
-		if ((input_buttons & INPUT_PRIMARY))
-			HUD_DrawWeaponSelect_Trigger();
-		else if ((input_buttons & INPUT_SECONDARY))
-			pSeat->m_iHUDWeaponSelected = pSeat->m_flHUDWeaponSelectTime = 0;
-
-		pSeat->m_flInputBlockTime = time + 0.2;
-	}
-#endif
 
 	/* prevent accidental input packets */
 	if (pSeat->m_flInputBlockTime > time) {
@@ -709,10 +712,10 @@ NSClientPlayer::ReceiveEntity(float new, float flChanged)
 	/* crap the render mode updates in here */
 	READENTITY_BYTE(m_iRenderMode, PLAYER_MODELINDEX)
 	READENTITY_BYTE(m_iRenderFX, PLAYER_MODELINDEX)
-	READENTITY_FLOAT(m_vecRenderColor[0], PLAYER_MODELINDEX)
-	READENTITY_FLOAT(m_vecRenderColor[1], PLAYER_MODELINDEX)
-	READENTITY_FLOAT(m_vecRenderColor[2], PLAYER_MODELINDEX)
-	READENTITY_FLOAT(m_flRenderAmt, PLAYER_MODELINDEX)
+	READENTITY_BYTE(m_vecRenderColor[0], PLAYER_MODELINDEX)
+	READENTITY_BYTE(m_vecRenderColor[1], PLAYER_MODELINDEX)
+	READENTITY_BYTE(m_vecRenderColor[2], PLAYER_MODELINDEX)
+	READENTITY_BYTE(m_flRenderAmt, PLAYER_MODELINDEX)
 
 	READENTITY_ENTNUM(m_flFirstInventoryItem, PLAYER_ITEMS)
 	READENTITY_ENTNUM(activeweapon, PLAYER_WEAPON)
@@ -784,11 +787,8 @@ NSClientPlayer::ReceiveEntity(float new, float flChanged)
 	}
 #endif
 
-
 	VehicleRelink();
-
 	PredictPreFrame();
-
 	Relink();
 
 	if (flChanged & PLAYER_SPECTATE) {
@@ -808,6 +808,22 @@ at the top of player::PredictPreFrame
 void
 NSClientPlayer::PredictPreFrame(void)
 {
+	if (!vehicle_entnum)
+		vehicle = __NULL__;
+	else
+		vehicle = findentity(world, ::entnum, vehicle_entnum);
+
+	if (!activeweapon)
+		m_activeWeapon = __NULL__;
+	else
+		m_activeWeapon = (NSWeapon)findentity(world, ::entnum, activeweapon);
+
+	if (!m_flFirstInventoryItem)
+		m_itemList = __NULL__;
+	else {
+		m_itemList = (NSItem)findentity(world, ::entnum, m_flFirstInventoryItem);
+	}
+
 	if (m_activeWeapon)
 		if (m_activeWeapon.PredictPreFrame)
 			m_activeWeapon.PredictPreFrame();
@@ -1098,7 +1114,6 @@ NSClientPlayer::MakeTempSpectator(void)
 	SetSolid(SOLID_NOT);
 	SetMovetype(MOVETYPE_NOCLIP);
 	MakeInvulnerable();
-	maxspeed = 250;
 	AddVFlags(VFL_FAKESPEC);
 	max_health = health = 0;
 	armor = 0;
@@ -1320,10 +1335,10 @@ NSClientPlayer::SendEntity(entity ePEnt, float flChanged)
 	/* crap the render mode updates in here */
 	SENDENTITY_BYTE(m_iRenderMode, PLAYER_MODELINDEX)
 	SENDENTITY_BYTE(m_iRenderFX, PLAYER_MODELINDEX)
-	SENDENTITY_FLOAT(m_vecRenderColor[0], PLAYER_MODELINDEX)
-	SENDENTITY_FLOAT(m_vecRenderColor[1], PLAYER_MODELINDEX)
-	SENDENTITY_FLOAT(m_vecRenderColor[2], PLAYER_MODELINDEX)
-	SENDENTITY_FLOAT(m_flRenderAmt, PLAYER_MODELINDEX)
+	SENDENTITY_BYTE(m_vecRenderColor[0], PLAYER_MODELINDEX)
+	SENDENTITY_BYTE(m_vecRenderColor[1], PLAYER_MODELINDEX)
+	SENDENTITY_BYTE(m_vecRenderColor[2], PLAYER_MODELINDEX)
+	SENDENTITY_BYTE(m_flRenderAmt, PLAYER_MODELINDEX)
 
 	SENDENTITY_ENTITY(m_itemList, PLAYER_ITEMS)
 	SENDENTITY_ENTITY(m_activeWeapon, PLAYER_WEAPON)

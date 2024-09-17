@@ -40,9 +40,6 @@ Platform_ConsoleCommand(string commandString, int wordCount)
 	case "listGameLibrary":
 		GameLibrary_DebugList();
 		break;
-	case "devMap":
-		localcmd(sprintf("disconnect;set sv_cheats 1;map %S\n", argv(1)));
-		break;
 	case "ap_userID":
 		ActivityPub_FetchAccountData(argv(1));
 		break;
@@ -62,6 +59,5 @@ Platform_RegisterCommands(void)
 	registercommand("menu_musicloop");
 	registercommand("map_background");
 	registercommand("listGameLibrary");
-	registercommand("devMap");
 	registercommand("ap_userID");
 }

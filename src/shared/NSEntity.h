@@ -384,6 +384,11 @@ public:
 	/** Sets the @ref bot_info tag on this entity to the desired botInfo_t tag. */
 	nonvirtual void SetBotTag(botInfo_t);
 
+	/** Will enable collision with players, which is the default. */
+	nonvirtual void EnablePlayerCollision(void);
+	/** Will disable collision with player entities. */
+	nonvirtual void DisablePlayerCollision(void);
+
 private:
 	float m_flSpawnTime;
 	bool m_bHidden; /**< decides whether the entity is visible or not, without affecting collision */

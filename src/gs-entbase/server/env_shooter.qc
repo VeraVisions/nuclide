@@ -252,10 +252,10 @@ env_shooter::ShootGib(void)
 	eGib.SetSize([-8,-8,-8],[8,8,8]);
 	eGib.SetOrigin(GetOrigin());
 	eGib.SetAngles(GetAngles());
-	eGib.SetRenderColor(m_vecRenderColor);
-	eGib.SetRenderMode(m_iRenderMode);
-	eGib.SetRenderFX(m_iRenderFX);
-	eGib.SetRenderAmt(m_flRenderAmt);
+	eGib.SetRenderColor(GetRenderColor());
+	eGib.SetRenderMode(GetRenderMode());
+	eGib.SetRenderFX(GetRenderFX());
+	eGib.SetRenderAmt(GetRenderAmt());
 
 	/* scale multiplier only works on sprites.
 	   the env_shooter entities in lambda_bunker.bsp rely

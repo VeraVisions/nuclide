@@ -322,6 +322,14 @@ CSQC_UpdateView(float w, float h, float focus)
 	/* make sure we're not running these on invalid seats post frame */
 	pSeat = __NULL__;
 	pSeatLocal = __NULL__;
+	
+	g_modelSpinAngle = time * autocvar_cg_modelSpinSpeed;
+	g_modelSpinRoll = sin(time * autocvar_cg_modelSpinRollSpeed);
+	g_modelSpinPitch = sin(time * autocvar_cg_modelSpinPitchSpeed);
+	g_modelSpinRoll *= autocvar_cg_modelSpinRoll;
+	g_modelSpinPitch *= autocvar_cg_modelSpinPitch;
+	g_modelBobHeight = sin(time * autocvar_cg_modelBobHeightSpeed);
+	g_modelBobHeight *= autocvar_cg_modelBobHeight;
 }
 
 /** Called every time an input event (keys pressed, mouse moved etc.) happens.
@@ -543,14 +551,14 @@ CSQC_WorldLoaded(void)
 
 	//DetailTex_Init();
 
-	/* Primarily for the flashlight */
-	if (serverkeyfloat("*bspversion") != BSPVER_HL) {
+	///* Primarily for the flashlight */
+	//if (serverkeyfloat("*bspversion") != BSPVER_HL) {
 		localcmd("r_shadow_realtime_dlight 1\n");
-	} else {
-		localcmd("r_shadow_realtime_dlight 0\n");
-	}
+	//} else {
+	//	localcmd("r_shadow_realtime_dlight 0\n");
+	//}
 
-#if 0
+#if 1
 	string strTokenized;
 	getentitytoken(0);
 

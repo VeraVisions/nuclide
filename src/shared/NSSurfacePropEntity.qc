@@ -242,6 +242,7 @@ NSSurfacePropEntity::Damage(entity inflictor, entity attacker, NSDict damageDecl
 	}
 
 	string damageString = ReadString(damageDecl.GetString("damage"));
+	float knockBack = damageDecl.GetFloat("knockback");
 
 #if 0
 	float randomDamage = GetSubDefFloat(m_defDamage, "damage_random");
@@ -252,6 +253,11 @@ NSSurfacePropEntity::Damage(entity inflictor, entity attacker, NSDict damageDecl
 	NSSurfacePropEntity ourAttacker = (NSSurfacePropEntity)attacker;
 
 	EntLog("applying %d damage by %s", damagePoints, attacker.classname);
+
+	/* apply knockback */
+	if (knockBack >= 0) {
+		SetVelocity(dmgDir * knockBack);
+	}
 
 	/* notify them */
 	if (isSentient(attacker)) {
@@ -696,10 +702,10 @@ NSSurfacePropEntity::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_COORD(avelocity[2], SRFENT_CHANGED_ANGULARVELOCITY)
 	SENDENTITY_BYTE(m_iRenderMode, SRFENT_CHANGED_RENDERMODE)
 	SENDENTITY_BYTE(m_iRenderFX, SRFENT_CHANGED_RENDERMODE)
-	SENDENTITY_COLOR(m_vecRenderColor[0], SRFENT_CHANGED_RENDERCOLOR)
-	SENDENTITY_COLOR(m_vecRenderColor[1], SRFENT_CHANGED_RENDERCOLOR)
-	SENDENTITY_COLOR(m_vecRenderColor[2], SRFENT_CHANGED_RENDERCOLOR)
-	SENDENTITY_COLOR(m_flRenderAmt, SRFENT_CHANGED_RENDERAMT)
+	SENDENTITY_BYTE(m_vecRenderColor[0], SRFENT_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_vecRenderColor[1], SRFENT_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_vecRenderColor[2], SRFENT_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_flRenderAmt, SRFENT_CHANGED_RENDERAMT)
 	SENDENTITY_ANGLE(m_flBoneControl1, SRFENT_CHANGED_CONTROLLER)
 	SENDENTITY_ANGLE(m_flBoneControl2, SRFENT_CHANGED_CONTROLLER)
 	SENDENTITY_ANGLE(m_flBoneControl3, SRFENT_CHANGED_CONTROLLER)
@@ -750,10 +756,10 @@ NSSurfacePropEntity::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_COORD(avelocity[2], SRFENT_CHANGED_ANGULARVELOCITY)
 	READENTITY_BYTE(m_iRenderMode, SRFENT_CHANGED_RENDERMODE)
 	READENTITY_BYTE(m_iRenderFX, SRFENT_CHANGED_RENDERMODE)
-	READENTITY_COLOR(m_vecRenderColor[0], SRFENT_CHANGED_RENDERCOLOR)
-	READENTITY_COLOR(m_vecRenderColor[1], SRFENT_CHANGED_RENDERCOLOR)
-	READENTITY_COLOR(m_vecRenderColor[2], SRFENT_CHANGED_RENDERCOLOR)
-	READENTITY_COLOR(m_flRenderAmt, SRFENT_CHANGED_RENDERAMT)
+	READENTITY_BYTE(m_vecRenderColor[0], SRFENT_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_vecRenderColor[1], SRFENT_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_vecRenderColor[2], SRFENT_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_flRenderAmt, SRFENT_CHANGED_RENDERAMT)
 	READENTITY_ANGLE(m_flBoneControl1, SRFENT_CHANGED_CONTROLLER)
 	READENTITY_ANGLE(m_flBoneControl2, SRFENT_CHANGED_CONTROLLER)
 	READENTITY_ANGLE(m_flBoneControl3, SRFENT_CHANGED_CONTROLLER)

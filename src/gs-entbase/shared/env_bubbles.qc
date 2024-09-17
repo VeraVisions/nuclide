@@ -251,10 +251,10 @@ env_bubbles::EmitBubbles(void)
 		setorigin(eBubble, vecPos);
 		setmodel(eBubble, "sprites/bubble.spr");
 		eBubble.drawmask = MASK_ENGINE;
-		eBubble.m_vecRenderColor = [1,1,1];
-		eBubble.m_iRenderMode = RM_ADDITIVE;
-		eBubble.m_flRenderAmt = 1.0f;
-		eBubble.movetype = MOVETYPE_FLY;
+		eBubble.SetRenderColor([255,255,255]);
+		eBubble.SetRenderMode(RM_ADDITIVE);
+		eBubble.SetRenderAmt(255);
+		eBubble.SetMovetype(MOVETYPE_FLY);
 		eBubble.velocity[2] = 100 + random(0, 50);
 
 		/* apply current */

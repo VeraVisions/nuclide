@@ -82,7 +82,6 @@ void
 NSClientSpectator::WarpToTarget(void)
 {
 	entity b = edict_num(spec_ent);
-
 	setorigin(this, b.origin);
 }
 

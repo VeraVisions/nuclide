@@ -14,17 +14,15 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-
-
 void
 NSRenderableEntity::NSRenderableEntity(void)
 {
 	m_iRenderMode = RM_NORMAL;
 	m_iRenderFX = RFX_NORMAL;
-	m_vecRenderColor[0] = 1.0f;
-	m_vecRenderColor[1] = 1.0f;
-	m_vecRenderColor[2] = 1.0f;
-	m_flRenderAmt = 0.0f;
+	m_vecRenderColor[0] = 255;
+	m_vecRenderColor[1] = 255;
+	m_vecRenderColor[2] = 255;
+	m_flRenderAmt = 0;
 	m_flBoneControl1 = 0.5f;
 	m_flBoneControl2 = 0.5f;
 	m_flBoneControl3 = 0.5f;
@@ -42,7 +40,6 @@ NSRenderableEntity::NSRenderableEntity(void)
 	drawmask = MASK_ENGINE;
 #endif
 }
-
 
 #ifdef CLIENT
 void NSRenderableEntity::RendererRestarted( void ) {
@@ -333,8 +330,8 @@ NSRenderableEntity::RenderFXPass(void)
 
 	/* HACK: this tells our GLSL to render this masked */
 	//glowmod = [1.0,0.0,1.0];
-	colormod = m_vecRenderColor;
-	alpha = m_flRenderAmt;
+	colormod = m_vecRenderColor / 255;
+	alpha = m_flRenderAmt / 255;
 
 	/* these should be reset! */
 	renderflags = 0;
@@ -360,8 +357,8 @@ NSRenderableEntity::RenderFXPass(void)
 
 		break;
 	case RM_GLOW:
-		colormod = m_vecRenderColor;
-		alpha = m_flRenderAmt == 0.0 ? 0.0f : 1.0f;
+		colormod = m_vecRenderColor / 255;
+		alpha = (m_flRenderAmt == 0) ? 0.0f : 1.0f;
 	case RM_WORLDGLOW: /* TODO: Figure out what this does differently */
 		if (checkpvs(vecPlayer, this) == FALSE)
 			alpha -= clframetime;
@@ -376,7 +373,7 @@ NSRenderableEntity::RenderFXPass(void)
 			alpha += clframetime;
 
 		/* max alpha will be applied here to the color instead */
-		colormod *= m_flRenderAmt;
+		colormod *= (m_flRenderAmt / 255);
 		alpha = bound(0.0f, alpha, 1.0f);
 		effects = EF_ADDITIVE | EF_FULLBRIGHT;
 
@@ -386,7 +383,7 @@ NSRenderableEntity::RenderFXPass(void)
 		break;
 	case RM_SOLID:
 		colormod = [1,1,1];
-		alpha = m_flRenderAmt == 0.0 ? 0.0f : 1.0f;
+		alpha = (m_flRenderAmt == 0) ? 0.0f : 1.0f;
 		glowmod[0] = 0.5f;
 		break;
 	case RM_ADDITIVE:
@@ -473,7 +470,7 @@ NSRenderableEntity::RenderFXPass(void)
 			float distalpha = dist / 256;
 			alpha = 1.0 - distalpha;
 			alpha -= r;
-			alpha *= m_flRenderAmt;
+			alpha *= (m_flRenderAmt / 255);
 		} else {
 			alpha = 0.00001f;
 		}
@@ -486,9 +483,9 @@ NSRenderableEntity::RenderFXPass(void)
 		/* make this entity shellchrome */
 		effects = EF_ADDITIVE;
 		fatness = 0;
-		colormod = m_vecRenderColor;
+		colormod = (m_vecRenderColor / 255);
 		forceshader = g_shellchromeshader_cull;
-		alpha = m_flRenderAmt;
+		alpha = (m_flRenderAmt / 255);
 		/* copy entity into rendering queue */
 		addentity(this);
 		/* reset */
@@ -502,9 +499,9 @@ NSRenderableEntity::RenderFXPass(void)
 		/* make this entity shellchrome */
 		effects = EF_ADDITIVE;
 		fatness = 0;
-		colormod = m_vecRenderColor;
+		colormod = (m_vecRenderColor / 255);
 		forceshader = g_shellchromeshader;
-		alpha = m_flRenderAmt;
+		alpha = (m_flRenderAmt / 255);
 		/* copy entity into rendering queue */
 		addentity(this);
 		/* reset */
@@ -625,13 +622,22 @@ NSRenderableEntity::predraw(void)
 	RenderDebugSkeleton();
 
 	if (modelflags & MF_ROTATE) {
-		angles[1] -= frametime * 120.0;
+		angles[1] = g_modelSpinAngle;
+		angles[2] = g_modelSpinRoll;
+		angles[0] = g_modelSpinPitch;
 	}
 
 	processmodelevents(modelindex, frame, m_flBaseTime,
 		frame1time, HandleAnimEvent);
 
 	RenderAxialScale();
+
+	vector oldOrg = origin;
+
+	/* TODO: make this a separate field */
+	if (modelflags & MF_ROTATE) {
+		origin[2] += g_modelBobHeight;
+	}
 
 	if (alpha > 0.0) {
 		/* TODO: Move this somewhere more sane */
@@ -643,6 +649,7 @@ NSRenderableEntity::predraw(void)
 			addentity(this);
 		}
 	}
+	origin = oldOrg;
 
 	if (traileffectnum) {
 		if (oldorigin != g_vec_null)
@@ -837,8 +844,9 @@ void
 NSRenderableEntity::SetRenderColor(vector newColor)
 {
 	/* rendercolor can NEVER be pitch black. */
-	if (newColor == g_vec_null)
-		m_vecRenderColor = [1.0, 1.0, 1.0];
+	if (newColor == g_vec_null) {
+		m_vecRenderColor = [255, 255, 255];
+	}
 
 	m_vecRenderColor = newColor;
 }
@@ -1117,10 +1125,10 @@ NSRenderableEntity::Input(entity eAct, string strInput, string strData)
 {
 	switch (strInput) {
 	case "Color":
-		SetRenderColor(stov(strData) / 255);
+		SetRenderColor(stov(strData));
 		break;
 	case "Alpha":
-		SetRenderAmt(stof(strData) / 255);
+		SetRenderAmt(stof(strData));
 		break;
 	case "Skin":
 		SetSkin(stof(strData));
@@ -1181,8 +1189,8 @@ NSRenderableEntity::SpawnKey(string strKey, string strValue)
 		m_vecAxialScale = ReadVector(strValue);
 		break;
 	case "lightingPrecalc":
-		m_vecRenderColor = ReadVector(strValue);
-		m_flRenderAmt = 1.0f;
+		m_vecRenderColor = ReadVector(strValue) * 255;
+		m_flRenderAmt = 255;
 		break;
 	case "skin":
 		skin = ReadFloat(strValue);
@@ -1199,10 +1207,10 @@ NSRenderableEntity::SpawnKey(string strKey, string strValue)
 		}
 		break;
 	case "renderamt":
-		m_flRenderAmt = ReadFloat(strValue) / 255;
+		m_flRenderAmt = ReadFloat(strValue);
 		break;
 	case "rendercolor":
-		m_vecRenderColor = ReadVector(strValue) / 255;
+		m_vecRenderColor = ReadVector(strValue);
 		break;
 	case "rendermode":
 		m_iRenderMode = ReadFloat(strValue);
@@ -1214,4 +1222,10 @@ NSRenderableEntity::SpawnKey(string strKey, string strValue)
 		super::SpawnKey(strKey, strValue);
 		break;
 	}
+}
+
+float
+NSRenderableEntity::PlayActOnChannel(float animChannel, string activityName)
+{
+	
 }

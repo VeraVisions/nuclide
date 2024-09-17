@@ -204,7 +204,7 @@ EntityDef_Init(void)
 
 	/* if spawnclass wasn't set, read the one from the inheritkeys entityDef */
 	for (int i = 0i; i < g_entDefCount; i++) {
-		if (!g_entDefTable[i].spawnClass) {
+		if (!STRING_SET(g_entDefTable[i].spawnClass)) {
 			if (g_entDefTable[i].inheritID != -1i) {
 				int baseID = g_entDefTable[i].inheritID;
 

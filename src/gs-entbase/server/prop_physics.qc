@@ -90,8 +90,6 @@ prop_physics::Respawn(void)
 
 	if (HasSpawnFlags(PHYSPROPSFL_PHYSDEVICE))
 		Sleep();
-
-	Sleep();
 }
 
 CLASSEXPORT(prop_physics_override, prop_physics)

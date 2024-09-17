@@ -117,8 +117,8 @@ env_funnel::Respawn(void)
 	m_vecEndPos = GetOrigin() + [0.0f, 0.0f, m_flHeight];
 	m_iSpriteID = getmodelindex(m_strTexture, false);
 	pvsflags = PVSF_IGNOREPVS;
-	m_vecRenderColor = [1,1,1];
-	m_flRenderAmt = 1.0f;
+	SetRenderColor([255,255,255]);
+	SetRenderAmt(255);
 }
 
 void
@@ -268,8 +268,8 @@ env_funnel::RendererRestarted(void)
 void
 env_funnel::RenderGlow(vector forg, vector fsize, float amount)
 {
-	float alphaTint = m_flRenderAmt * (1.0 - amount);
-	vector renderColor = m_vecRenderColor;
+	float alphaTint = (m_flRenderAmt / 255) * (1.0 - amount);
+	vector renderColor = m_vecRenderColor / 255;
 
 	R_BeginPolygon(m_strTexture, 1, 0);
 	R_PolygonVertex(forg + v_right * fsize[0] - v_up * fsize[1],

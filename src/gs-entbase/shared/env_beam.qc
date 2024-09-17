@@ -190,9 +190,6 @@ env_beam::SpawnKey(string strKey, string strValue)
 	case "NoiseAmplitude":
 		m_flAmplitude = ReadFloat(strValue);
 		break;
-	case "rendercolor":
-		m_vecRenderColor = ReadVector(strValue);
-		break;
 	default:
 		super::SpawnKey(strValue, strKey);
 	}
