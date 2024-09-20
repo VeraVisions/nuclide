@@ -3,7 +3,7 @@
 	surfaceParm dirt
 
 if $programs
-	program lightmapped
+	program defaultwall
 	diffusemap textures/measure/mat_dirt.tga
 else
 	{

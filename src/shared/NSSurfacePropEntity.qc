@@ -242,7 +242,6 @@ NSSurfacePropEntity::Damage(entity inflictor, entity attacker, NSDict damageDecl
 	}
 
 	string damageString = ReadString(damageDecl.GetString("damage"));
-	float knockBack = damageDecl.GetFloat("knockback");
 
 #if 0
 	float randomDamage = GetSubDefFloat(m_defDamage, "damage_random");
@@ -253,11 +252,6 @@ NSSurfacePropEntity::Damage(entity inflictor, entity attacker, NSDict damageDecl
 	NSSurfacePropEntity ourAttacker = (NSSurfacePropEntity)attacker;
 
 	EntLog("applying %d damage by %s", damagePoints, attacker.classname);
-
-	/* apply knockback */
-	if (knockBack >= 0) {
-		SetVelocity(dmgDir * knockBack);
-	}
 
 	/* notify them */
 	if (isSentient(attacker)) {
@@ -549,7 +543,7 @@ NSSurfacePropEntity::BreakModel(int damage, vector dir, int location)
 		}
 
 		pointparticles(particleeffectnum("fx_explosion.main"), origin, angles, 1);
-		radiusDamage(origin, flExplodeRad, 0i, (int)flExplodeMag, this);
+		radiusDamage(origin, flExplodeRad, 0i, (int)flExplodeMag, this, "");
 	}
 }
 
@@ -868,7 +862,7 @@ entityDamage(entity targetEnt, entity inflictingEnt, entity attackingEnt, string
 }
 
 void
-radiusDamage(vector damageCenter, float damageRange, int damageMin, int damageMax, entity attackingEnt)
+radiusDamage(vector damageCenter, float damageRange, int damageMin, int damageMax, entity attackingEnt, string strDamageDecl)
 {
 #ifdef SERVER
 	vector entPos = g_vec_null;
@@ -880,10 +874,6 @@ radiusDamage(vector damageCenter, float damageRange, int damageMin, int damageMa
 	for (NSSurfacePropEntity e = __NULL__; (e = (NSSurfacePropEntity)nextent(e));) {
 		if (e.takedamage == DAMAGE_NO) {
 			continue;
-		}
-
-		if (isGodMode(e) == true) {
-			return;
 		}
 
 		entPos = e.WorldSpaceCenter();
@@ -907,16 +897,23 @@ radiusDamage(vector damageCenter, float damageRange, int damageMin, int damageMa
 		newDamage = (int)lerp(fabs((float)damageMin), (float)damageMax, damageFrac);
 		dmgDir = dirFromTarget(damageCenter, entPos);
 
-		if (newDamage > 0i) {
-			g_dmg_vecLocation = trace_endpos;
-			e.health = rint(e.health - newDamage);
-
-			if (e.health <= 0) {
-				e.Death(attackingEnt, attackingEnt, newDamage, dmgDir, 0i);
-			} else if (newDamage > 0) {
-				e.Pain(attackingEnt, attackingEnt, newDamage, dmgDir, 0i);
-			}
+		if (e == attackingEnt) {
+			newDamage *= 0.5f;
 		}
+
+		NSDict damageDecl;
+		
+		if (STRING_SET(strDamageDecl)) {
+			int declID = EntityDef_IDFromName(strDamageDecl);
+			damageDecl = NSDict::InitWithSpawnData(EntityDef_GetSpawnData(declID));
+		} else {
+			damageDecl = spawn(NSDict);
+		}
+		
+	
+		damageDecl.AddKey("damage", itos(newDamage));
+		e.Damage(attackingEnt, attackingEnt, damageDecl, 1.0, dmgDir, trace_endpos);
+		remove(damageDecl);
 	}
 #endif
 }

@@ -210,6 +210,45 @@ NSItem::Restore(string strKey, string strValue)
 	}
 }
 
+bool
+NSItem::ItemPickupCheck(entity pickerUpper)
+{
+	NSActor pl = (NSActor)pickerUpper;
+
+	/* do we already have the item? */
+	if (STRING_SET(m_strInvWeapon) || m_bInvCarry) {
+		string itemToAdd = (m_strInvWeapon != "") ? m_strInvWeapon : classname;
+
+		if (STRING_SET(itemToAdd)) {
+			if (pl.HasItem(itemToAdd) == false) {
+				return (true);
+			}
+		}
+	}
+
+	if (m_iGiveHealth > 0i) {
+		if (pl.GetHealth() < 100) {
+			return (true);
+		}
+	}
+
+	if (m_iGiveArmor > 0i) {
+		if (pl.armor < 100) {
+			return (true);
+		}
+	}
+
+	for (int i = 0; i < MAX_AMMO_TYPES; i++) {
+		if (m_GiveAmmo[i] > 0i) {
+			if (pl.MaxAmmo(i) == false) {
+				return (true);
+			}
+		}
+	}
+
+	return (false);
+}
+
 void
 NSItem::Touch(entity eToucher)
 {
@@ -225,6 +264,10 @@ NSItem::Touch(entity eToucher)
 		if (pl.HasItem(m_strRequires) == false) {
 			return;
 		}
+	}
+
+	if (ItemPickupCheck(pl) == false) {
+		return;
 	}
 
 	/* don't remove if AddItem fails */
@@ -583,11 +626,16 @@ NSItem::_AddedCallback(void)
 {
 	NSActor ourOwner = (NSActor)owner;
 
+#ifdef CLIENT
+	if (pSeat->m_ePlayer == owner) {
+		localcmd("bf\n");
+	}
+#endif
+
 #ifdef SERVER
 
 	if (m_iGiveHealth > 0i) {
 		if (ourOwner.GetHealth() < 100) {
-			//Damage_Apply(pl, this, -m_iGiveHealth, 0, DMG_GENERIC);
 			ourOwner.health = bound(0, ourOwner.health + m_iGiveHealth, ourOwner.max_health);
 		}
 	}
@@ -602,7 +650,7 @@ NSItem::_AddedCallback(void)
 		}
 	}
 
-	for (int i = 0; i < MAX_AMMO_TYPES; i++) {
+	for (int i = 0i; i < MAX_AMMO_TYPES; i++) {
 		ourOwner.GiveAmmo(i, m_GiveAmmo[i]);
 	}
 

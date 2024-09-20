@@ -4,7 +4,7 @@ if $programs
 	diffusemap "textures/next/asphalt2.tga"
 	normalmap "textures/next/asphalt2_normal.tga"
 	{
-		program lightmapped
+		program defaultwall
 		map $diffuse
 		map $normalmap
 	}

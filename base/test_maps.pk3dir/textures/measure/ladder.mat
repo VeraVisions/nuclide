@@ -4,7 +4,7 @@
 	surfaceparm trans
 
 if $programs
-	program lightmapped
+	program defaultwall
 	diffusemap "textures/measure/ladder.tga"
 else
 	{

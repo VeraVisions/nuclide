@@ -30,8 +30,8 @@ NSActor::NSActor(void)
 
 	m_itemList = __NULL__;
 
-	for (int i = 0; i < MAX_AMMO_TYPES; i++) {
-		m_iAmmoTypes[i] = 0;
+	for (int i = 0i; i < MAX_AMMO_TYPES; i++) {
+		m_iAmmoTypes[i] = 0i;
 	}
 }
 
@@ -657,13 +657,13 @@ NSActor::GetReserveAmmo(int ammoType)
 }
 
 bool
-NSActor::GiveAmmo(int ammoType, int ammoAmount)
+NSActor::MaxAmmo(int ammoType)
 {
 	int maxAmmo = 0i;
 
 	/* bounds check */
 	if (ammoType <= 0i || ammoType >= MAX_AMMO_TYPES)
-		return (false);
+		return (true);
 
 	/* read max ammo from entityDef decl first */
 	maxAmmo = GetDefInt(sprintf("max_%s", ammoNameForNum(ammoType)));
@@ -675,7 +675,28 @@ NSActor::GiveAmmo(int ammoType, int ammoAmount)
 
 	/* already at max-ammo? */
 	if (m_iAmmoTypes[ammoType] >= maxAmmo)
+		return (true);
+
+	return (false);
+}
+
+bool
+NSActor::GiveAmmo(int ammoType, int ammoAmount)
+{
+	int maxAmmo = 0i;
+
+	/* bounds check */
+	if (MaxAmmo(ammoType) == true) {
 		return (false);
+	}
+
+	/* read max ammo from entityDef decl first */
+	maxAmmo = GetDefInt(sprintf("max_%s", ammoNameForNum(ammoType)));
+
+	/* default when above is 0 */
+	if (!maxAmmo) {
+		maxAmmo = ammoMaxForNum(ammoType);
+	}
 
 	m_iAmmoTypes[ammoType] += ammoAmount;
 

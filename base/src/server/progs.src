@@ -12,17 +12,13 @@
 ../../../src/server/defs.h
 ../../../src/gs-entbase/server.src
 ../../../src/gs-entbase/shared.src
-
-/* mod specific header */
-defs.h
-
 ../shared/include.src
 
 /* include the botlib if desired (optional) */
 ../../../src/botlib/include.src
 
 /* mod specific functions */
-gamerules_multiplayer.qc
+main.qc
 
 /* global server/shared code */
 ../../../src/server/include.src

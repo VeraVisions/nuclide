@@ -93,7 +93,6 @@ Font_Load(string strFile, font_s &fntNew)
 		fntNew.iID = (int)loadfont("", strFontPath, ftos((float)fntNew.iScaleY), -1, 0, 0);
 
 #ifdef MENU
-#if 0
 	/* this is the console font, so make sure we use it */
 	if (strFile == "fonts/fontcon.font") {
 		string r = ftos(fntNew.vecColor[0]);
@@ -107,7 +106,6 @@ Font_Load(string strFile, font_s &fntNew)
 			cvar_set("con_textsize", strcat("-", size));
 		}
 	}
-#endif
 #endif
 }
 

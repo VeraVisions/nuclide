@@ -161,7 +161,7 @@ func_mortar_field::Fire(entity firingEnt, vector vecOrg)
 
 	int maxDamage = 200i;
 	float damageRadius = (float)maxDamage * 2.5f;
-	radiusDamage(trace_endpos, damageRadius, 0i, maxDamage, this);
+	radiusDamage(trace_endpos, damageRadius, 0i, maxDamage, this, "");
 	pointparticles(particleeffectnum("fx_explosion.main"), trace_endpos, [0,0,0], 1);
 }
 

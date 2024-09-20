@@ -300,7 +300,7 @@ of entity A 'looking' at entity B. */
 vector
 dirFromTarget(vector lookingEnt, vector targetEnt)
 {
-	return vectorNormalize(vectorToAngles(targetEnt - lookingEnt)); 
+	return anglesToForward(vectorToAngles(targetEnt - lookingEnt)); 
 }
 
 /** @} */ // end of multiprogs, server

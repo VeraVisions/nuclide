@@ -3,7 +3,7 @@
 	surfaceParm alien
 
 if $programs
-	program lightmapped
+	program defaultwall
 	diffusemap textures/measure/mat_alien.tga
 else
 	{

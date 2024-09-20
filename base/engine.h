@@ -1,6 +1,6 @@
 /***
 *
-*   Copyright (c) 2000-2022, Vera Visions. All rights reserved.
+*   Copyright (c) 2000-2024, Vera Visions. All rights reserved.
 *
 ****/
 

@@ -32,6 +32,8 @@ NSView::NSView(void)
 	m_bDrawEntities = true;
 }
 
+string Sky_GetMaterial(void);
+
 void
 NSView::SetupView(void)
 {
@@ -48,6 +50,10 @@ NSView::SetupView(void)
 	setproperty(VF_SIZE, m_vecSize);
 	setproperty(VF_AFOV, m_flFieldOfView);
 	setsensitivityscaler(m_flSensitivity);
+	
+	//if (autocvar(cg_skySetsCube, 0) == true) {
+	setproperty(VF_ENVMAP, "materials/skybox/sky_wasteland02");
+	//}
 
 	/* if yes, draw everything. */
 	if (m_bDrawLocalPlayer)

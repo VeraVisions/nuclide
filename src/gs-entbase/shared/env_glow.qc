@@ -180,13 +180,13 @@ env_glow::IsVisible(vector vecPlayer)
 	return (true);
 }
 
-void env_sun_lensflare(vector, float, vector);
+void env_sun_lensflare(vector, float, vector, bool);
 void
 env_glow::postdraw(void)
 {
 	if (GetRenderMode() == RM_GLOW)
 		if (!autocvar_r_skipLensFlares)
-			env_sun_lensflare(origin, m_flMaxAlpha, m_vecRenderColor / 255);
+			env_sun_lensflare(origin, m_flMaxAlpha, m_vecRenderColor / 255, true);
 }
 
 void

@@ -10,26 +10,27 @@ entityDef weapon_bat
 	"ammoRequired"	"0"
 	"def_dropItem"	"weapon_bat"
 
-	"def_melee"			"damage_bat"
-	"melee_distance"	"32"
+	"def_onFire"		"damage_bat"
+	"testDistance"		"-32"
 
 	"meleeRateMiss"		"0.6"
 	"meleeRateHit"		"0.75"
 
-	"actIdle"			"0,2"
-	"actDraw"			"4"
-	"actHolster"		"6"
-	"actMeleeMiss"		"9,11,13"
-	"actMeleeHit"		"8,10,12"
+	"act_idle"			"0,2"
+	"act_draw"			"4"
+	"act_holster"		"6"
+	"act_fireFailed"	"9,11,13"
+	"act_fire"			"8,10,12"
+	"snd_fire"			"weapon_bat.hit"
+	"snd_fireFailed"	"weapon_bat.miss"
 }
 
 entityDef damage_bat
 {
+	"spawnclass"		"NSProjectile"
+	"is_bullet"			"1"
 	"damage"			"15"
 	"gib"				"1"
-
-	"snd_hit"			"weapon_bat.hit"
-	"snd_miss"			"weapon_bat.miss"
 }
 
 // Pistol
@@ -48,14 +49,14 @@ entityDef weapon_pistol
 	"fireRate"			".2"
 
 	"snd_fire"			"weapon_pistol.fire"
-	"actFire"			"14,16"
-	"actFireLast"		"15,17"
-	"actReload"			"8"
-	"actReloadEmpty"	"9"
-	"actDrawEmpty"		"3"
-	"actDraw"			"2"
-	"actIdleEmpty"		"1"
-	"actIdle"			"0"
+	"act_fire"			"14,16"
+	"act_fireLast"		"15,17"
+	"act_reload"			"8"
+	"act_reloadEmpty"	"9"
+	"act_drawEmpty"		"3"
+	"act_draw"			"2"
+	"act_idleEmpty"		"1"
+	"act_idle"			"0"
 }
 
 entityDef projectile_pistol
@@ -80,11 +81,11 @@ entityDef weapon_frag
 	"def_dropItem"	"weapon_frag"
 	"def_onRelease"	"projectile_frag"
 
-	"actIdle"		"0"
-	"actDraw"		"1"
-	"actHolster"	"2"
-	"actFire"		"4"
-	"actRelease"	"6"
+	"act_idle"		"0"
+	"act_draw"		"1"
+	"act_holster"	"2"
+	"act_fire"		"4"
+	"act_release"	"6"
 }
 
 entityDef projectile_frag
@@ -101,7 +102,6 @@ entityDef projectile_frag
 	"snd_explode"		"fx.explosion"
 	"snd_bounce"		"weapon_frag.bounce"
 	"decal_detonate"	"ExplosionScorch"
-
 	"def_damage"		"damage_fragDirect"
 	"def_splash_damage"	"damage_fragSplash"
 }
@@ -115,10 +115,4 @@ entityDef damage_fragSplash
 {
 	"damage"	"150"
 	"radius"	"250"
-}
-
-entityDef env_frag_explodeinhand
-{
-	"spawnclass"				"idAnimatedEntity"
-	"model"						"grenadeExplosion.prt"
 }

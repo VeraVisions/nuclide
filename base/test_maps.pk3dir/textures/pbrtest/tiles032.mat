@@ -1,0 +1,10 @@
+// Vera Visions Material
+{
+	diffusemap textures/pbrtest/tiles032.tga
+	normalmap textures/pbrtest/tiles032_local.tga
+	specularmap textures/pbrtest/tiles032_mra.tga
+	
+	{
+		program defaultwall
+	}
+}

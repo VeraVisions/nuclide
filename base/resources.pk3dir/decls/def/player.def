@@ -2,3 +2,8 @@ entityDef player
 {
 	"spawnclass" "NSClientPlayer"
 }
+
+entityDef player_mp
+{
+	"inherit" "player"
+}

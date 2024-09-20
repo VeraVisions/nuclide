@@ -51,6 +51,8 @@ NSProjectile::NSProjectile(void)
 	m_iDebrisCount = 0i;
 	m_bDebrisStick = false;
 	m_vecDebrisOffset = g_vec_null;
+	m_vecDetonateOffset = g_vec_null;
+	m_vecDamageOffset = g_vec_null;
 	m_vecImpactPos = g_vec_null;
 	m_vecLightColor = g_vec_null;
 	m_flLightRadius = 0.0f;
@@ -183,6 +185,12 @@ NSProjectile::SpawnKey(string strKey, string strValue)
 		break;
 	case "debris_offset":
 		m_vecDebrisOffset = ReadVector(strValue);
+		break;
+	case "detonate_offset":
+		m_vecDetonateOffset = ReadVector(strValue);
+		break;
+	case "damage_offset":
+		m_vecDamageOffset = ReadVector(strValue);
 		break;
 	case "projectile_debris":
 		m_defProjectileDebris = ReadString(strValue);
@@ -718,11 +726,19 @@ NSProjectile::_Explode(entity explodedOn)
 {
 	vector newAngles, aimFwd, aimRgt, aimUp;
 	vector debrisPos;
+	vector damagePos;
+	vector detonatePos;
 	vector debrisOffset = g_vec_null;
-	vector explodePos = g_vec_null;
+	vector detonateOffset = g_vec_null;
+	vector damageOffset = g_vec_null;
 	vector debrisAngle = GetAngles();
 
-	newAngles = vectorToAngles(GetVelocity());
+	if (length(trace_plane_normal) == 0) {
+		newAngles = vectorToAngles(GetVelocity());
+	} else {
+		newAngles = vectorToAngles(trace_plane_normal);
+	}
+
 	aimFwd = anglesToForward(newAngles);
 	aimRgt = anglesToRight(newAngles);
 	aimUp = anglesToUp(newAngles);
@@ -731,41 +747,44 @@ NSProjectile::_Explode(entity explodedOn)
 	debrisOffset += (aimRgt * m_vecDebrisOffset[1]);
 	debrisOffset += (aimUp * m_vecDebrisOffset[2]);
 
-	if (m_bDebrisStick) {
-		debrisPos = m_vecImpactPos + debrisOffset;
-		explodePos = m_vecImpactPos;
-	} else {
-		debrisPos = explodePos + debrisOffset;
-		explodePos = origin - (aimFwd * 32);
-	}
+	detonateOffset = (aimFwd * m_vecDetonateOffset[0]);
+	detonateOffset += (aimRgt * m_vecDetonateOffset[1]);
+	detonateOffset += (aimUp * m_vecDetonateOffset[2]);
+
+	damageOffset = (aimFwd * m_vecDamageOffset[0]);
+	damageOffset += (aimRgt * m_vecDamageOffset[1]);
+	damageOffset += (aimUp * m_vecDamageOffset[2]);
+
+	debrisPos = m_vecImpactPos + debrisOffset;
+	detonatePos = m_vecImpactPos + detonateOffset;
+	damagePos = m_vecImpactPos + damageOffset;
 
 	if (m_fExplodelLightRadius > 0.0f) {
-		te_customflash(explodePos, m_fExplodelLightRadius, m_fExplodelLightFadetime, m_vecExplodeLightColor);
+		te_customflash(detonatePos, m_fExplodelLightRadius, m_fExplodelLightFadetime, m_vecExplodeLightColor);
 	}
 
-	if (m_matDetonate) {
-		DecalGroups_Place(m_matDetonate, origin);
+	if (STRING_SET(m_matDetonate)) {
+		DecalGroups_Place(m_matDetonate, m_vecImpactPos);
 	}
 
-	if (m_partModelDetonate)
-		pointparticles(particleeffectnum(m_partModelDetonate), explodePos, trace_plane_normal, 1);
+	if (STRING_SET(m_partModelDetonate)) {
+		pointparticles(particleeffectnum(m_partModelDetonate), detonatePos, trace_plane_normal, 1);
+	}
 
-	//print(sprintf("%S\n", m_defSplashDamage));
-	if (m_defSplashDamage) {
+	if (STRING_SET(m_defSplashDamage)) {
 		float flDamage = GetSubDefFloat(m_defSplashDamage, "damage");
+		float flMinDamage = GetSubDefFloat(m_defSplashDamage, "damage_min");
 		float flRadius = GetSubDefFloat(m_defSplashDamage, "radius");
 
 		if (m_flDmgMultiplier >= 0.0) {
 			flDamage *= m_flDmgMultiplier;
 		}
 
-		//print(sprintf("Damage: %d; Radius: %d\n", flDamage, flRadius));
-		//Damage_Radius(origin, owner, flDamage, flRadius, TRUE, 0);
-		radiusDamage(GetOrigin(), flRadius, 0i, (int)flDamage, owner);
+		radiusDamage(damagePos, flRadius, (int)flMinDamage, (int)flDamage, owner, m_defSplashDamage);
 	}
 
 	/* another def that'll be spawned when this one detonates */
-	if (m_defProjectileDebris && !explodedOn && explodedOn != this) {
+	if (STRING_SET(m_defProjectileDebris) && !explodedOn && explodedOn != this) {
 		float movementAmount = 360.0f / (float)m_iDebrisCount;
 
 		for (int i = 0; i < m_iDebrisCount; i++) {
@@ -782,32 +801,18 @@ void
 NSProjectile::_LaunchHitscan(vector startPos, vector launchDir, float dmgMultiplier)
 {
 	vector vecDir;
-	vector ownerAngle;
-	vector ownerDir;
 
 	m_eMultiTarget = __NULL__;
 	m_iMultiValue = 0;
-
-	ownerAngle = anglesToForward(launchDir);
-	ownerDir = aim(owner, 100000);
 
 	if (STRING_SET(m_defDamage)) {
 		m_flDamage = GetSubDefFloat(m_defDamage, "damage");
 	}
 
 	while (m_iShots > 0) {
-		/* use cached value */
-		v_forward = ownerAngle;
-
-		if (owner.flags & FL_CLIENT) {
-			vecDir = ownerDir;
-		} else {
-			vecDir = v_forward;
-		}
-
-		vecDir += random(-1,1) * m_vecSpread[0] * v_right;
-		vecDir += random(-1,1) * m_vecSpread[1] * v_up;
-
+		vecDir = anglesToForward(launchDir);
+		vecDir += random(-1,1) * m_vecSpread[0] * anglesToRight(launchDir);
+		vecDir += random(-1,1) * m_vecSpread[1] * anglesToUp(launchDir);
 		_FireSingle(startPos, vecDir, m_flDamage, m_flRange);
 		m_iShots--;
 	}
@@ -816,6 +821,7 @@ NSProjectile::_LaunchHitscan(vector startPos, vector launchDir, float dmgMultipl
 		angles = launchDir;
 		_ApplyDamage();
 	}
+	Destroy();
 }
 
 void
@@ -832,11 +838,13 @@ NSProjectile::_ApplyDamage(void)
 
 	trace_surface_id = m_iMultiBody;
 	g_dmg_vecLocation = trace_endpos;
-	NSDict damageDecl = spawn(NSDict);
+	NSDict damageDecl; 
 
 	if (STRING_SET(m_defDamage)) {
 		int declID = EntityDef_IDFromName(m_defDamage);
-		damageDecl.InitWithSpawnData(EntityDef_GetSpawnData(declID));
+		damageDecl = NSDict::InitWithSpawnData(EntityDef_GetSpawnData(declID));
+	} else {
+		damageDecl = spawn(NSDict);
 	}
 
 	damageDecl.AddKey("hitbody", itos(trace_surface_id));
@@ -993,7 +1001,7 @@ void
 NSProjectile::Launch(vector startPos, vector launchDir, float fuseOffset, float powerMultiplier, float dmgMultiplier)
 {
 	vector moveVel = g_vec_null;
-
+	vector projPos = g_vec_null;
 	SetAngles(launchDir);
 	SetSize(m_vecSpawnMins, m_vecSpawnMaxs);
 
@@ -1006,14 +1014,18 @@ NSProjectile::Launch(vector startPos, vector launchDir, float fuseOffset, float 
 	m_flDmgMultiplier = dmgMultiplier;
 
 	/* convert absolute vel from def into relative */
-	makevectors(launchDir);
-	moveVel = (m_vecLaunchVelocity[0] * powerMultiplier) * v_forward;
-	moveVel += (m_vecLaunchVelocity[1] * powerMultiplier) * v_right;
-	moveVel += (m_vecLaunchVelocity[2] * powerMultiplier) * v_up;
+	moveVel = (m_vecLaunchVelocity[0] * powerMultiplier) * anglesToForward(launchDir);
+	moveVel += (m_vecLaunchVelocity[1] * powerMultiplier) * anglesToRight(launchDir);
+	moveVel += (m_vecLaunchVelocity[2] * powerMultiplier) * anglesToUp(launchDir);
 
-	startPos += v_forward * m_vecSpawnOrigin[0];
-	startPos += v_right * m_vecSpawnOrigin[1];
-	startPos += v_up * m_vecSpawnOrigin[2];
+	projPos = startPos;
+	projPos += v_forward * m_vecSpawnOrigin[0];
+	projPos += v_right * m_vecSpawnOrigin[1];
+	projPos += v_up * m_vecSpawnOrigin[2];
+
+	/* prevent from spawning in-walls */
+	traceline(startPos, projPos, MOVE_NORMAL, owner);
+	startPos = trace_endpos;
 	SetOrigin(startPos);
 
 	if (m_bIsBullet) {
@@ -1132,8 +1144,13 @@ NSProjectile::EvaluateEntity(void)
 float
 NSProjectile::SendEntity(entity ePEnt, float flChanged)
 {
-	if (clienttype(ePEnt) != CLIENTTYPE_REAL)
-		return (0);
+	if (m_bIsBullet == true) {
+		return (false);
+	}
+
+	if (clienttype(ePEnt) != CLIENTTYPE_REAL) {
+		return (false);
+	}
 
 	WriteByte(MSG_ENTITY, ENT_ENTITYPROJECTILE);
 

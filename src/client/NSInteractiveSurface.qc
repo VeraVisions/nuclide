@@ -310,5 +310,6 @@ TestUI::Spawned(void)
 void
 TestUI::TestUI(void)
 {
+	testbutton = __NULL__;
 }
 #endif

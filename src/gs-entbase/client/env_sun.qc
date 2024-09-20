@@ -176,7 +176,7 @@ env_sun::env_sun(void)
 }
 
 void
-env_sun_lensflare(vector m_vecLensPos, float m_flLensAlpha, vector vecColor)
+env_sun_lensflare(vector m_vecLensPos, float m_flLensAlpha, vector vecColor, bool isBlinding)
 {
 	vector lens_pos = project(m_vecLensPos);
 	vector lens_1 = lens_pos - (FLARE_SIZE / 2);
@@ -226,6 +226,10 @@ env_sun_lensflare(vector m_vecLensPos, float m_flLensAlpha, vector vecColor)
 	drawpic(lens_1 - c * 0.3, "textures/sfx/flare4", FLARE_SIZE, vecColor * m_flLensAlpha, 1.0f, DRAWFLAG_ADDITIVE);
 	drawpic(lens_1 + c * 0.4, "textures/sfx/flare2", FLARE_SIZE, vecColor * m_flLensAlpha, 1.0f, DRAWFLAG_ADDITIVE);
 	drawpic(lens_1 - c * 0.5, "textures/sfx/flare3", FLARE_SIZE, vecColor * m_flLensAlpha, 1.0f, DRAWFLAG_ADDITIVE);
+	
+	if (isBlinding == false) {
+		return;
+	}
 
 	m_flLensAlpha = bound(0.0, 1.0 - (vlen(c) / 100), 1.0f) * m_flLensAlpha;
 	drawfill(video_mins, g_vidsize, vecColor, m_flLensAlpha * dist_alpha);

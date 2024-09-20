@@ -5,7 +5,7 @@
 if $programs
 	diffusemap "textures/next/bunker8.tga"
 	{
-		program lightmapped
+		program defaultwall
 		map $diffuse
 		map $normalmap
 	}

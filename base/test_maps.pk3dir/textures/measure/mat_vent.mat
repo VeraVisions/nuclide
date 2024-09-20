@@ -3,7 +3,7 @@
 	surfaceParm vent
 
 if $programs
-	program lightmapped
+	program defaultwall
 	diffusemap textures/measure/mat_vent.tga
 else
 	{

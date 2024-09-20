@@ -28,11 +28,11 @@
 var bool g_net_debug = false;
 var bool g_cheats = false;
 
-var float autocvar_cg_modelSpinSpeed = 120.0f;
 var float g_modelSpinAngle;
 var float g_modelSpinPitch;
 var float g_modelSpinRoll;
 var float g_modelBobHeight;
+var float autocvar_cg_modelSpinSpeed = 120.0f;
 var float autocvar_cg_modelSpinRoll = 0.0f;
 var float autocvar_cg_modelSpinRollSpeed = 0.0f;
 var float autocvar_cg_modelSpinPitch = 0.0f;

@@ -145,6 +145,8 @@ private:
 	int m_iDebrisCount;
 	bool m_bDebrisStick;
 	vector m_vecDebrisOffset;
+	vector m_vecDetonateOffset;
+	vector m_vecDamageOffset;
 	vector m_vecImpactPos;
 	bool m_bThrown;
 

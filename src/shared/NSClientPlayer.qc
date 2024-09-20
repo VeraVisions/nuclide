@@ -1637,11 +1637,6 @@ NSClientPlayer::Damage(entity inflictor, entity attacker, NSDict damageDecl, flo
 		return;
 	}
 
-	/* player god mode */
-	if (damageDecl.GetBool("noGod") == false && isGodMode(this)) {
-		return;
-	}
-
 	/* friendly fire check */
 	if (this != attacker) {
 		if (g_grMode.IsTeamplay()) {
@@ -1659,6 +1654,17 @@ NSClientPlayer::Damage(entity inflictor, entity attacker, NSDict damageDecl, flo
 
 	/* already dead, please avoid recursion */
 	if (GetHealth() <= 0) {
+		return;
+	}
+
+	/* apply knockback */
+	float knockBack = damageDecl.GetFloat("knockback");
+	if (knockBack >= 0) {
+		AddVelocity(dmgDir * knockBack);
+	}
+
+	/* player god mode */
+	if (damageDecl.GetBool("noGod") == false && isGodMode(this)) {
 		return;
 	}
 

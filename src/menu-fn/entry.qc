@@ -98,28 +98,6 @@ m_init(void)
 	NSLog("Built: %s %s", __DATE__, __TIME__);
 	NSLog("QCC: %s", __QCCVER__);
 
-	/* things that should really be default. platform_default.cfg is supposed to set
-	 * them the first time - however FTE doesn't do that when switching manifests
-	 * for unknown reasons. It'll be fixed */
-	cvar_set("r_ignoreentpvs", "0");
-	cvar_set("_pext_infoblobs", "1");
-	cvar_set("_pext_vrinputs", "0");
-	cvar_set("_q3bsp_bihtraces", "1");
-	cvar_set("sv_gameplayfix_setmodelsize_qw", "1");
-	cvar_set("sv_gameplayfix_setmodelrealbox", "1");
-	cvar_set("cl_bob", "0");
-	cvar_set("maxpitch", "89");
-	cvar_set("minpitch", "-89");
-	cvar_set("r_meshpitch", "1");
-	cvar_set("v_contentblend", "0");
-	cvar_set("gl_mindist", "4");
-	cvar_set("con_textsize", "12");
-	cvar_set("scr_conalpha", "1");
-	cvar_set("con_notifylines", "0");
-	cvar_set("cfg_save_auto", "1");
-	cvar_set("r_imageextensions", "tga bmp pcx png jpg");
-	cvar_set("cl_cursor_scale", "1");
-
 	/* the HL configs make the rate this low by default. */
 	if (cvar("rate") <= 2500) {
 		cvar_set("rate", "30000");

@@ -80,6 +80,8 @@ public:
 	nonvirtual bool IsLeaning(void);
 
 	/* ammo handling */
+	/** Returns whether the specified type is maxed out. */
+	nonvirtual bool MaxAmmo(int);
 	/** Gives ammo up of a specified type. Returns `false` when impossible. */
 	nonvirtual bool GiveAmmo(int, int);
 	/** Uses ammo up of a specified type. Returns `false` when impossible. */

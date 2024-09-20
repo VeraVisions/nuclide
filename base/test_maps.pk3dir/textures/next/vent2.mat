@@ -5,7 +5,7 @@
 if $programs
 	diffusemap "textures/next/vent2.tga"
 	{
-		program lightmapped
+		program defaultwall
 		map $diffuse
 		map $normalmap
 	}

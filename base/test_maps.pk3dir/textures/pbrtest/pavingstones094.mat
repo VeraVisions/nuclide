@@ -1,0 +1,10 @@
+// Vera Visions Material
+{
+	diffusemap textures/pbrtest/pavingstones094.tga
+	normalmap textures/pbrtest/pavingstones094_local.tga
+	specularmap textures/pbrtest/pavingstones094_mra.tga
+	
+	{
+		program defaultwall
+	}
+}

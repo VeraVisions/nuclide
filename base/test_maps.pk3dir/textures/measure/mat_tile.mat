@@ -3,7 +3,7 @@
 	surfaceParm tile
 
 if $programs
-	program lightmapped
+	program defaultwall
 	diffusemap textures/measure/mat_tile.tga
 else
 	{

@@ -204,16 +204,28 @@ Entities_ParseLump(void)
 				break;
 			}
 
-			__fullspawndata = "";
-
 			/* remove if we've found no valid class to go with us */
 			if (eEnt && eEnt.isCSQC == false) {
 				remove(eEnt);
 			}
 
-			if (eEnt.identity)
-			if (eEnt.CanSpawn(true) == false)
-				eEnt.Destroy();
+			if (eEnt.identity) {
+				if (eEnt.CanSpawn(true) == false) {
+					eEnt.Destroy();
+				}
+
+				eEnt.m_strSpawnData = __fullspawndata;
+
+				/* this entity is good, attempt to spawn it. */
+				if (eEnt.m_strSpawnData) {
+					for (int i = 0; i < (tokenize(eEnt.m_strSpawnData) - 1); i += 2) {
+						eEnt.SpawnKey(argv(i), argv(i+1));
+					}
+				}
+
+				eEnt.Spawned();
+				__fullspawndata = "";
+			}
 
 			return (1);
 		}
@@ -224,6 +236,9 @@ Entities_ParseLump(void)
 		}
 
 		switch (strField) {
+		case "{":
+		case "}":
+			break;
 		case "classname":
 			eEnt = (NSEntity)spawn();
 

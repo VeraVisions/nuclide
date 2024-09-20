@@ -200,4 +200,4 @@ void NSSurfacePropEntity_ReadEntity(bool);
 #endif
 
 void entityDamage(entity, entity, entity, string, string, vector, vector, vector);
-void radiusDamage(vector, float, int, int, entity);
+void radiusDamage(vector, float, int, int, entity, string);

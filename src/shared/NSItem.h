@@ -71,6 +71,7 @@ public:
 	/* overrides */
 #ifdef SERVER
 	virtual void Spawned(void);
+	virtual bool ItemPickupCheck(entity);
 	virtual void Touch(entity);
 	virtual void Respawn(void);
 	virtual void SpawnKey(string, string);

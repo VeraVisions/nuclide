@@ -551,13 +551,6 @@ CSQC_WorldLoaded(void)
 
 	//DetailTex_Init();
 
-	///* Primarily for the flashlight */
-	//if (serverkeyfloat("*bspversion") != BSPVER_HL) {
-		localcmd("r_shadow_realtime_dlight 1\n");
-	//} else {
-	//	localcmd("r_shadow_realtime_dlight 0\n");
-	//}
-
 #if 1
 	string strTokenized;
 	getentitytoken(0);

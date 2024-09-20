@@ -3,7 +3,7 @@
 	surfaceParm glass
 
 if $programs
-	program lightmapped
+	program defaultwall
 	diffusemap textures/measure/mat_glass.tga
 else
 	{

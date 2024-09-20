@@ -1,7 +1,7 @@
 // Vera Visions Material
 {
 if $programs
-	program lightmapped
+	program defaultwall
 	diffusemap textures/measure/wall128.tga
 else
 	{
