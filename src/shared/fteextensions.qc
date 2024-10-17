@@ -2623,7 +2623,7 @@ string(entity player, optional string newnode) clustertransfer = #0:clustertrans
 		Only functions in mapcluster mode. Initiate transfer of the player to a different node. Can take some time. If dest is specified, returns null on error. Otherwise returns the current/new target node (or null if not transferring). */
 
 #endif
-#if defined(CSQC) || defined(SSQC)
+#if defined(CSQC) || defined(SSQC) || defined(MENU)
 float(float mdlidx) modelframecount = #0:modelframecount; /*
 		Retrieves the number of frames in the specified model. */
 

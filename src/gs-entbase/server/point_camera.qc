@@ -55,6 +55,7 @@ public:
 	virtual void Restore(string,string);
 	virtual void SpawnKey(string,string);
 	virtual void Input(entity,string,string);
+	virtual void Respawn(void);
 
 private:
 	int m_iUseSAR;
@@ -139,6 +140,16 @@ point_camera::SpawnKey(string strKey, string strValue)
 		break;
 	default:
 		super::SpawnKey(strKey, strValue);
+	}
+}
+
+void
+point_camera::Respawn(void)
+{
+	if (HasSpawnFlags(1)) {
+		m_iValue = false;
+	} else {
+		m_iValue = true;
 	}
 }
 

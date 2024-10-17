@@ -14,11 +14,29 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/* all the documented phys vars...*/
+.float geomtype;
+.float friction;
+.float erp;
+.float jointtype;
+.float mass;
+.float bouncefactor;
+.float bouncestop;
 .float max_angular;
 
 /* taken from VPhysics-Jolt (with permission!) */
 const float InchesToMeters = 0.0254f;
 const float MetersToInches = 1.0f / 0.0254f;
+
+bool
+Physics_Simple(void)
+{
+	if (time < 5.0f) {
+		return (true);
+	}
+
+	return (false);
+}
 
 void
 NSPhysicsEntity::NSPhysicsEntity(void)
@@ -26,40 +44,12 @@ NSPhysicsEntity::NSPhysicsEntity(void)
 	mass = 1.0f;
 	isPhysics = true;
 	m_flInertiaScale = 1.0f;
-
 	m_iEnabled = 0i;
-	m_iShape = PHYSM_BOX;
+	m_iShape = GEOMTYPE_TRIMESH;
 	m_iMaterial = 0i;
 	m_iFlags = 0i;
-	damp_linear = 1.0f;
-	damp_angular = 1.0f;
-	max_angular = -1.0f;
 	m_flMass = 1.0f;
-
-
-	cvar_set("physics_ode_quadtree_depth",					"5");
-	cvar_set("physics_ode_contactsurfacelayer",				"0");
-	cvar_set("physics_ode_worldquickstep",					"1");
-	cvar_set("physics_ode_worldquickstep_iterations",		"20");
-	cvar_set("physics_ode_contact_mu",						"1");
-	cvar_set("physics_ode_contact_erp",						"0.96");
-	cvar_set("physics_ode_contact_cfm",						"0.001");
-	cvar_set("physics_ode_world_damping",					"1");
-	cvar_set("physics_ode_world_damping_linear",				"-1");
-	cvar_set("physics_ode_world_damping_linear_threshold",	"-1");
-	cvar_set("physics_ode_world_damping_angular",			"-1");
-	cvar_set("physics_ode_world_damping_angular_threshold",	"-1");
-	cvar_set("physics_ode_world_erp",						"-1");
-	cvar_set("physics_ode_world_cfm",						"-1");
-	cvar_set("physics_ode_iterationsperframe",				"4");
-	cvar_set("physics_ode_movelimit",						"0.5");
-	cvar_set("physics_ode_spinlimit",						"10000");
-	cvar_set("physics_ode_autodisable",						"1");
-	cvar_set("physics_ode_autodisable_steps",				"10");
-	cvar_set("physics_ode_autodisable_time",					"0.1");
-	cvar_set("physics_ode_autodisable_threshold_linear",		"0.2");
-	cvar_set("physics_ode_autodisable_threshold_angular",	"0.3");
-	cvar_set("physics_ode_autodisable_threshold_samples",	"5");
+	max_angular = 6500.0f;
 
 #ifdef SERVER
 	m_strOnDamaged = __NULL__;
@@ -124,14 +114,6 @@ bool physics_supported(void)
 }
 #endif
 
-/* all the documented phys vars...*/
-.float geomtype;
-.float friction;
-.float erp;
-.float jointtype;
-.float mass;
-.float bouncefactor;
-.float bouncestop;
 
 #ifdef SERVER
 void
@@ -407,12 +389,11 @@ NSPhysicsEntity::CalculateImpactDamage(int iDamage, int dmgType)
 }
 
 int
-NSPhysicsEntity_Contents(vector org)
+NSPhysicsEntity_Contents(entity target, vector org)
 {
-	int oldhitcontents = self.hitcontentsmaski;
-	self.hitcontentsmaski = -1;
-	traceline(org, org, MOVE_EVERYTHING, self);
-	self.hitcontentsmaski = oldhitcontents;
+	target.hitcontentsmaski = -1;
+	traceline(org, org, MOVE_EVERYTHING, target);
+	target.hitcontentsmaski = CONTENTBITS_POINTSOLID;
 	return trace_endcontentsi;
 }
 
@@ -429,18 +410,24 @@ NSPhysicsEntity::Touch(entity eToucher)
 		return;
 	}
 
-	if (IsAsleep() == true) {
+	if (time < 10.0) {
+		return;
+	}
+
+	if (Physics_Simple() == true) {
 		return;
 	}
 
 	float impactForce = length(GetVelocity()) * 0.01;
+
+	//printf("Impact force: %d; required: %d\n", impactForce, GetHealth());
 
 	if (impactForce > GetHealth()) {
 		NSDict damageDecl = spawn(NSDict);
 		damageDecl.AddKey("damage", ftos(impactForce));
 		Damage(eToucher, eToucher, damageDecl, 1.0f, g_vec_null, GetOrigin());
 		remove(damageDecl);
-		printf("New health: %d, impact force: %d\n", health, impactForce);
+		//printf("New health: %d, impact force: %d\n", health, impactForce);
 	}
 
 	if (eToucher)
@@ -456,7 +443,7 @@ NSPhysicsEntity::_TouchThink(void)
 		return;
 	}
 
-	if (physics_supported() == FALSE && GetSolid() != SOLID_TRIGGER) {
+	if (physics_supported() == FALSE && GetSolid() != SOLID_CORPSE) {
 		EnablePlayerCollision();
 
 		tracebox(origin, mins, maxs, origin, FALSE, this);
@@ -478,13 +465,13 @@ NSPhysicsEntity::_TouchThink(void)
 
 #if 1
 	if (m_flCheckTime < time) {
-		bool should
-		if (vlen(m_vecPrevAngles - angles) < 1) {
-			avelocity = [0,0,0];
+		if (lengthSquared(m_vecPrevAngles - angles) < 4) {
+			avelocity = g_vec_null;
 		}
-		if (vlen(m_vecPrevOrigin - origin) < 1) {
-			velocity = [0,0,0];
+		if (lengthSquared(m_vecPrevOrigin - origin) < 4) {
+			velocity = g_vec_null;
 		}
+
 		m_flCheckTime = time + 1.0f;
 		m_vecPrevOrigin = origin;
 		m_vecPrevAngles = angles;
@@ -511,32 +498,30 @@ NSPhysicsEntity::_TouchThink(void)
 	}
 #endif
 
-#if 0
+#if 1
 	if (m_flBuoyancyRatio > 0.0)
-	if (NSPhysicsEntity_Contents(origin) & CONTENTBIT_WATER) {
-		makevectors([0,0,0]);
-		velocity[2] += m_flBuoyancyRatio;
+	if (NSPhysicsEntity_Contents(this, origin) & CONTENTBIT_WATER) {
+		velocity[2] += m_flBuoyancyRatio * frametime;
 	}
 #endif
 
-	hitcontentsmaski &= ~CONTENTBITS_FLUID;
-
-	if (physics_supported() == FALSE && GetSolid() != SOLID_TRIGGER) {
+	if (physics_supported() == FALSE && GetSolid() != SOLID_CORPSE) {
 		DisablePlayerCollision();
 	}
 
 	/* continue testing next frame */
 	nextthink = time;
-	effects &= ~EF_NOSHADOW;
-	solid = SOLID_BSP;
 }
 
 #ifdef SERVER
 void
 NSPhysicsEntity::Pain(entity inflictor, entity attacker, int damage, vector dir, int location)
 {
-	vector forceDir;
 	float force;
+
+	if (modelindex == 0) {
+		return;
+	}
 
 	if (m_strOnDamaged) {
 		UseOutput(this, m_strOnDamaged);
@@ -566,10 +551,14 @@ NSPhysicsEntity::Pain(entity inflictor, entity attacker, int damage, vector dir,
 void
 NSPhysicsEntity::Death(entity inflictor, entity attacker, int damage, vector dir, int location)
 {
+	if (modelindex == 0) {
+		return;
+	}
+
 	Pain(inflictor, attacker, damage, dir, location);
 	super::Death(inflictor, attacker, damage, dir, location);
-	/* make sure touch think is called */
-	nextthink = time;
+	SetSolid(SOLID_NOT);
+	ReleaseThink();
 }
 #endif
 
@@ -579,51 +568,45 @@ NSPhysicsEntity::Respawn(void)
 	super::Respawn();
 
 	ClearVelocity();
-	SetMovetype(MOVETYPE_PHYSICS);
-	SetSolid(SOLID_BSP);
+	Sleep();
 
 #ifdef SERVER
 	MakeVulnerable();
 #endif
 
-	Sleep();
 	SetMass(1.0f);
 	SetFriction(1.0f);
 	SetBuoyancyRatio(1.0f);
-	bouncefactor = 0.9f;
-	bouncestop = 0.1f / cvar("sv_gravity");
-
-	bouncefactor = 0.0f;
-	bouncestop = 0.0f;
 
 	geomtype = GEOMTYPE_BOX;
 	friction = 1.0f;
 
 	m_flBuoyancyRatio = 1.0f;
 
-	SetDamping(1.0f, 1.0f);
+	SetDamping(0.0f, 0.0f);
 	EnableGravity(true);
 
-	hitcontentsmaski &= ~CONTENTBITS_FLUID;
+	hitcontentsmaski = CONTENTBITS_POINTSOLID;
 
-	if (physics_supported() == FALSE && GetSolid() != SOLID_TRIGGER) {
+	if (physics_supported() == FALSE && GetSolid() != SOLID_CORPSE) {
 		DisablePlayerCollision();
 	}
 
-	think = _TouchThink;
-	nextthink = time + 0.1f;
-
-	effects &= ~EF_NOSHADOW;
+	Wake();
 
 #ifdef SERVER
 	if (HasPropData()) {
-		SetHealth(GetPropData(PROPINFO_HEALTH));
 		SetMass(GetPropData(PROPINFO_MASS));
 		SetDamping(GetPropData(PROPINFO_DAMPING_LINEAR), GetPropData(PROPINFO_DAMPING_ANGULAR));
 		SetInertia(GetPropData(PROPINFO_INERTIA));
 		SetSurfaceData(GetPropData(PROPINFO_SURFACEPROP));
+	}
+
+
+	if (HasPropData()) {
+		SetHealth(GetPropData(PROPINFO_HEALTH));
 	} else {
-		health = 0;
+		health = 1;
 	}
 
 	/* no health set, either indistructible or too weak */
@@ -634,7 +617,7 @@ NSPhysicsEntity::Respawn(void)
 			health = 10000;
 		} else {
 			/* something like glass bottles, maybe. */
-			health = 1.0f;
+			health = 1;
 		}
 	}
 #endif
@@ -648,7 +631,7 @@ NSPhysicsEntity::SpawnKey(string strKey, string strValue)
 	switch (strKey) {
 	case "physmodel":
 		m_iShape = ReadInt(strValue);
-		if (m_iShape > PHYSM_CYLINDER)
+		if (m_iShape > GEOMTYPE_CYLINDER)
 			m_iShape = 0;
 		break;
 	case "massscale":
@@ -972,36 +955,58 @@ NSPhysicsEntity::SetMass(float val)
 void
 NSPhysicsEntity::Wake(void)
 {
+	if (!modelindex) {
+		return;
+	}
+
 	if (physics_supported() == TRUE) {
 		SetMovetype(MOVETYPE_PHYSICS);
 		SetSolid(SOLID_BSP);
 
 		/* Don't need a lot of precision during this */
-		if (time < 5.0) {
+		if (Physics_Simple() == true) {
 			geomtype = GEOMTYPE_BOX;
+			friction = 10000.0f;
+			//SetDamping(1.0f, 1.0f);
 		} else {
-			geomtype = GEOMTYPE_TRIMESH;
+			geomtype = m_iShape;
+			friction = 1.0f;
+			//SetDamping(0.0f, 0.0f);
 		}
-		
+
 		physics_enable(this, TRUE);
 	} else {
 		SetMovetype(MOVETYPE_BOUNCE);
 		SetSolid(SOLID_CORPSE);
 	}
+
+	if (isItem(this) == true) {
+		SetSolid(SOLID_CORPSE);
+	}
+
 	m_iEnabled = TRUE;
 }
 
 void
 NSPhysicsEntity::Sleep(void)
 {
-	if (physics_supported() == TRUE) {
-		ClearVelocity();
-		physics_enable(this, FALSE);
-		SetMovetype(MOVETYPE_NONE);
+	if (!modelindex) {
+		return;
+	}
+
+	ClearVelocity();
+	SetMovetype(MOVETYPE_NONE);
+
+	if (isItem(this) == true) {
 		SetSolid(SOLID_CORPSE);
 	} else {
-		SetMovetype(MOVETYPE_NONE);
 		SetSolid(SOLID_BBOX);
 	}
+
+	if (physics_supported() == TRUE) {
+		physics_enable(this, FALSE);
+	}
+
+	Relink();
 	m_iEnabled = FALSE;
 }

@@ -72,6 +72,7 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	Way_Init();
 	Materials_Init();
 	MOTD_Init();
+	Commandmenu_Init();
 
 	/* let the menu know we're a multi or a singleplayer game */
 	if (serverkeyfloat("sv_playerslots") == 1)
@@ -87,11 +88,8 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 
 	g_overview = NSRadar::InitForCurrentMap();
 
-	Sound_Precache("Player.DenyWeaponSelection");
-	Sound_Precache("Player.WeaponSelected");
-	Sound_Precache("Player.WeaponSelectionMoveSlot");
-	Sound_Precache("Player.WeaponSelectionOpen");
-	Sound_Precache("Player.WeaponSelectionClose");
+
+	HUD_Init();
 
 	/* end msg */
 	NSLog("Client game initialized.");
@@ -121,6 +119,7 @@ CSQC_RendererRestarted(string rstr)
 	Font_Load("fonts/font16.font", FONT_16);
 	Font_Load("fonts/font20.font", FONT_20);
 	Font_Load("fonts/fontcon.font", FONT_CON);
+	Font_Load("fonts/centerprint.font", FONT_CENTERPRINT);
 
 	/* Particles */
 	PART_DUSTMOTE = particleeffectnum("volume.dustmote");
@@ -135,7 +134,7 @@ CSQC_RendererRestarted(string rstr)
 	Scores_Init();
 	View_Init();
 	ClientGame_RendererRestart(rstr);
-	HUD_Init();
+	HUD_RendererRestarted();
 
 	/* GS-Entbase */
 	Fade_Reload();
@@ -228,6 +227,7 @@ CSQC_UpdateView(float w, float h, float focus)
 			g_vidsize[0] = w;
 			g_vidsize[1] = h;
 			ClientGame_InitDone();
+			Sky_Update(true);
 		}
 	}
 
@@ -241,7 +241,7 @@ CSQC_UpdateView(float w, float h, float focus)
 
 	/* these have to be checked every frame */
 	Fog_Update();
-	Sky_Update(FALSE);
+	Sky_Update(false);
 	cvar_set("_background", serverkey("background"));
 
 	/* ensure background maps do not get paused */
@@ -311,6 +311,7 @@ CSQC_UpdateView(float w, float h, float focus)
 
 			/* 2D calls happen here, after rendering is done */
 			CSQC_Update2D(w, h, focus);
+			Commandmenu_Draw();
 
 			EFX_UpdateListener(g_view);
 			DSP_UpdateSoundscape(g_view);
@@ -385,7 +386,12 @@ CSQC_InputEvent(float fEventType, float fKey, float fCharacter, float fDeviceID)
 
 	g_vecMousePos = getmousepos();
 
-	bool vgui_pressed = VGUI_Input(fEventType, fKey, fCharacter, fDeviceID);
+	bool vgui_pressed;
+	vgui_pressed = Commandmenu_Input(fEventType, fKey, fCharacter, fDeviceID);
+
+	if (!vgui_pressed) {
+		vgui_pressed = VGUI_Input(fEventType, fKey, fCharacter, fDeviceID);
+	}
 
 	if (g_vguiWidgetCount) {
 		setcursormode(TRUE, "gfx/cursor", [0,0,0], 1.0f);
@@ -414,7 +420,20 @@ CSQC_Input_Frame(void)
 	if (me.classname == "player" || me.classname == "spectator") {
 		NSClient pl = (NSClient)me;
 		pl.SharedInputFrame();
+		float delayInputs = HUD_ClientInputFrame(input_buttons);
+
+		if (delayInputs > 0.0f) {
+			pSeat->m_flInputBlockTime = time + delayInputs;
+		}
+
 		pl.ClientInputFrame();
+
+		if (pSeat->m_flInputBlockTime > time) {
+			input_buttons &= ~INPUT_PRIMARY;
+			input_buttons &= ~INPUT_SECONDARY;
+			pSeat->m_iInputAttack2 = false;
+			return;
+		}
 	}
 }
 

@@ -124,9 +124,9 @@ public:
 	/** Called when they want to ask the player a question. */
 	virtual void TalkPlayerAsk(void);
 	/** Called when they are greeting the player. */
-	virtual void TalkPlayerGreet(void);
+	virtual void SeenPlayer(NSActor);
 	/** Called when they are chit-chatting with the player. */
-	virtual void TalkPlayerIdle(void);
+	virtual void SeenFriend(NSActor);
 	/** Called when they tell the player that they're wounded. */
 	virtual void TalkPlayerWounded1(void);
 	/** Called when they tell the player that severely wounded. */

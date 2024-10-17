@@ -69,18 +69,14 @@ string VGUITextBox::GetText(void)
 
 void VGUITextBox::Draw(void)
 {
-
-#ifdef CLASSIC_VGUI
 	VGUITheme theme = GetTheme();
 
-	theme. DrawTextBackground(m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, VGUI_STATE_NORMAL);
-#else
 	drawfill(m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, [0,0,0], 0.25f);
 	drawfill(m_parent.m_vecOrigin + m_vecOrigin, [m_vecSize[0], 1], [0,0,0], 0.5f);
 	drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, m_vecSize[1] - 1], [m_vecSize[0], 1], [1,1,1], 0.5f);
 	drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, 1], [1, m_vecSize[1] - 2], [0,0,0], 0.5f);
 	drawfill(m_parent.m_vecOrigin + m_vecOrigin + [m_vecSize[0] - 1, 1], [1, m_vecSize[1] - 2], [1,1,1], 0.5f);
-#endif
+
 	m_flTime += frametime * 2;
 
 	/* these are to deal with text going off-screen */
@@ -90,17 +86,13 @@ void VGUITextBox::Draw(void)
 	// blinking cursor
 	if (m_iFlags & TEXTBOX_FOCUS) {
 		if (rint(m_flTime) & 1) {
-			drawsetcliparea(m_parent.m_vecOrigin[0] + m_vecOrigin[0], m_parent.m_vecOrigin[1] + m_vecOrigin[1], m_vecSize[0], m_vecSize[1]);
-			Font_DrawText(m_parent.m_vecOrigin + m_vecOrigin + [8 - ofs, 8], sprintf("%s|", m_strText), g_fntDefault);
-			drawresetcliparea();
+			theme.DrawText(m_parent.m_vecOrigin + m_vecOrigin + [8 - ofs, 8], sprintf("%s|", m_strText), m_vecSize, g_fntDefault);
 			return;
 		}
 	}
 	
 	if (m_strText) {
-			drawsetcliparea(m_parent.m_vecOrigin[0] + m_vecOrigin[0], m_parent.m_vecOrigin[1] + m_vecOrigin[1], m_vecSize[0], m_vecSize[1]);
-		Font_DrawText(m_parent.m_vecOrigin + m_vecOrigin + [8 - ofs, 8], m_strText, g_fntDefault);
-		drawresetcliparea();
+		theme.DrawText(m_parent.m_vecOrigin + m_vecOrigin + [8 - ofs, 8], m_strText, m_vecSize, g_fntDefault);
 	}
 }
 

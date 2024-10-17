@@ -31,11 +31,11 @@ var bool autocvar_menu_steambg = false;
 #define DRAWFLAG_ADDITIVE 1
 
 /* Basic Menu Globals */
-int g_vidsize[2];
-int g_menuofs[2];
-int g_mousepos[2];
+vector g_vidsize;
+vector g_menuofs;
+vector g_mousepos;
 vector g_logosize;
-int g_lastmousepos[2];
+vector g_lastmousepos;
 int g_active;
 float frametime;
 var int g_background = FALSE;
@@ -48,7 +48,7 @@ font_s font_console;
 font_s font_arial;
 font_s font_label_p;
 
-var int autocvar_menu_helptext_size = 11;
+var int autocvar_menu_helptext_size = 13;
 
 #define HELPTXT_SIZE autocvar_menu_helptext_size
 

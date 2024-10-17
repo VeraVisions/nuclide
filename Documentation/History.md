@@ -29,7 +29,7 @@ A lot had been learned about prediction and taking full advantage of the
 custom networking available in **FTEQW**, but new features have also been
 added to the engine to take full advantage of what the content had to offer:
 
-Features like interacting with [OpenAL's EAX extension](EFX.md), [model-events](VVM.md), support
+Features like interacting with [OpenAL's EAX extension](@ref efx), [model-events](VVM.md), support
 for WAD3 decal parsing and countless QuakeC extensions were all added by
 either Spike (FTEQW Author) or eukara himself to make everything possible.
 

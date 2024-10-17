@@ -52,6 +52,7 @@ PMoveCustom_Categorize(void)
 	int contents;
 	bool inladder = false;
 	vector testPos;
+	vector ladderTestPos;
 
 	if (self.movetype == MOVETYPE_NOCLIP)
 		return;
@@ -80,14 +81,16 @@ PMoveCustom_Categorize(void)
 		self.flags &= ~FL_ONGROUND;*/
 
 	/* ladder content testing */
+	makevectors(self.v_angle);
+	ladderTestPos = self.origin + v_forward * 8.0f;
 	int oldhitcontents = self.hitcontentsmaski;
-	self.hitcontentsmaski = CONTENTBIT_FTELADDER;
-	tracebox(self.origin, self.mins, self.maxs, self.origin, MOVE_NORMAL, self);
+	self.hitcontentsmaski = CONTENTBIT_FTELADDER | CONTENTBIT_Q2LADDER;
+	tracebox(ladderTestPos, self.mins, self.maxs, ladderTestPos, MOVE_NORMAL, self);
 	self.hitcontentsmaski = oldhitcontents;
 
 	/* if set, you need to directly face the ladder or else you'll fall right off */
 #ifdef LADDERFACING
-	if (trace_endcontentsi & CONTENTBIT_FTELADDER) {
+	if (trace_endcontentsi & CONTENTBIT_FTELADDER || trace_endcontentsi & CONTENTBIT_Q2LADDER) {
 		/* place the ladder into a virtual space */
 		vector ladderpos = trace_ent.absmin + (0.5f * (trace_ent.absmax - trace_ent.absmin));
 		ladderpos[2] = self.origin[2];
@@ -105,7 +108,7 @@ PMoveCustom_Categorize(void)
 
 	if (inladder) {
 #else
-	if (trace_endcontentsi & CONTENTBIT_FTELADDER) {
+	if (trace_endcontentsi & CONTENTBIT_FTELADDER || trace_endcontentsi & CONTENTBIT_Q2LADDER) {
 #endif
 		self.vv_flags |= VFL_ONLADDER;
 	} else {

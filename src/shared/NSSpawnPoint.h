@@ -25,9 +25,4 @@ public:
 
 	/* overrides */
 	virtual void Respawn(void);
-	virtual void SpawnKey(string, string);
-
-private:
-	vector m_vecMins;
-	vector m_vecMaxs;
 };

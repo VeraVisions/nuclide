@@ -108,7 +108,9 @@ public:
 #endif
 
 private:
+	nonvirtual void Refresh(void);
 	nonvirtual void UpdateBoundingBoxes(void);
+	nonvirtual void LinkToEntity(string declClass);
 
 	vector m_vecStandingMins;
 	vector m_vecStandingMaxs;
@@ -119,6 +121,7 @@ private:
 	vector m_vecNormalViewOffset;
 	vector m_vecCrouchViewOffset;
 	vector m_vecProneViewOffset;
+	string m_defLink;
 };
 
 /** The global, shared object containing all currently valid pmove parameters. */

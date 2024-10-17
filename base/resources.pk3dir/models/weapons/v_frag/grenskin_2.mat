@@ -2,10 +2,10 @@
 {
 if $programs
 	program vertexlit
-	diffusemap "models/weapons/frag/grenskin_2.tga"
+	diffusemap "models/weapons/v_frag/grenskin_2.tga"
 else
 	{
-		map "models/weapons/frag/grenskin_2.tga"
+		map "models/weapons/v_frag/grenskin_2.tga"
 		rgbGen lightingDiffuse
 	}
 endif

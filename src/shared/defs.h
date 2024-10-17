@@ -46,12 +46,15 @@ typedef entity id;
 #define NSENTITY_READENTITY(x, y) \
 	{ \
 		local x x ##_e = ( x )self;\
+		local float x ##receivedFlags;\
 		if (y == true) { \
 			self.classname = strcat("spawnfunc_", #x); \
 			callfunction(self.classname); \
 		} \
-		x ##_e.ReceiveEntity( y, readfloat() );\
+		x ##receivedFlags = readfloat();\
+		x ##_e.ReceiveEntity( y, x ##receivedFlags );\
 		x ##_e.Relink();\
+		x ##_e._ReceiveComplete( y, x ##receivedFlags );\
 	}
 #else
 
@@ -64,8 +67,6 @@ typedef entity id;
 #define SAVE_STATE_FIELD(x, y) x ##_net[y] = x[y];
 #define ATTR_CHANGED(x) (x ##_net != x)
 #define VEC_CHANGED(x,y) (x ##_net[y] != x[y])
-
-#define STRING_SET(x) ((x != __NULL__) && (x != ""))
 
 #ifndef MAX_AMMO_TYPES
 #define MAX_AMMO_TYPES 16i
@@ -101,6 +102,7 @@ string __fullspawndata;
 #include "NSTimer.h"
 #include "NSRenderableEntity.h"
 #include "NSSurfacePropEntity.h"
+#include "NSRagdoll.h"
 #include "NSMoverEntity.h"
 #include "NSPhysicsConstraint.h"
 #include "NSPhysicsEntity.h"
@@ -118,12 +120,14 @@ string __fullspawndata;
 #include "NSProjectile.h"
 #include "NSSpraylogo.h"
 #include "NSPortal.h"
+#include "NSSound.h"
 #include "NSDebris.h"
 
 #include "../xr/defs.h"
 #include "../botlib/NSBot.h"
 #include "NSClient.h"
 #include "NSClientSpectator.h"
+#include "pmove.h"
 #include "NSClientPlayer.h"
 
 #include "NSVehicle.h"
@@ -132,10 +136,7 @@ string __fullspawndata;
 #include "damage.h"
 #include "flags.h"
 #include "entities.h"
-#include "events.h"
-#include "flags.h"
 #include "hitmesh.h"
-#include "pmove.h"
 #include "memory.h"
 #include "platform.h"
 #include "propdata.h"
@@ -162,24 +163,7 @@ const vector VEC_HULL_MAX = [16,16,36];
 const vector VEC_CHULL_MIN = [-16,-16,-18];
 const vector VEC_CHULL_MAX = [16,16,18];
 
-// Actually used by input_button etc.
-#define INPUT_BUTTON0 0x00000001	/* attack 1*/
-#define INPUT_BUTTON2 0x00000002	/* jumping */
-#define INPUT_BUTTON3 0x00000004	/* prone */
-#define INPUT_BUTTON4 0x00000008	/* reload */
-#define INPUT_BUTTON5 0x00000010	/* secondary */
-#define INPUT_BUTTON6 0x00000020	/* use */
-#define INPUT_BUTTON7 0x00000040	/* reserved */
-#define INPUT_BUTTON8 0x00000080	/* crouching */
-
-#define INPUT_PRIMARY INPUT_BUTTON0
-#define INPUT_JUMP INPUT_BUTTON2
-#define INPUT_PRONE INPUT_BUTTON3
-#define INPUT_RELOAD INPUT_BUTTON4
-#define INPUT_SECONDARY INPUT_BUTTON6
-#define INPUT_USE INPUT_BUTTON5 /* This can NEVER change. Engine hard-coded. */
-#define INPUT_SPRINT INPUT_BUTTON7
-#define INPUT_CROUCH INPUT_BUTTON8
+#include "input.h"
 
 /* sendflags */
 #define UPDATE_ALL				16777215
@@ -200,6 +184,10 @@ enumflags
 .float teleport_time;
 .vector basevelocity;
 .float gflags;
+.float identity;
+
+.bool _isWeapon;
+.bool _isItem;
 
 void
 Empty(void)
@@ -355,7 +343,6 @@ memalloc(int size)
 	return prior(size);
 }
 
-.float identity;
 .float removed;
 __wrap void
 remove(entity target)
@@ -431,7 +418,7 @@ unpackStringCommand(string commandString)
 	}
 	/* is this supposed to be read from a skill cvar? */
 	if (substring(commandString, 0, 5) == "cvar:") {
-		return cvar_string(substring(commandString, 5, -1), "");
+		return cvar_string(substring(commandString, 5, -1));
 	}
 #endif
 
@@ -611,16 +598,6 @@ Route_GetJumpVelocity(vector vecFrom, vector vecTo, float flGravMod)
 	vecJump[2] = 280;
 #endif
 	return vecJump;
-}
-
-bool
-fileExists(string filePath)
-{
-	if (filePath != "") /* not empty */
-		if not(whichpack(filePath)) /* not present on disk */
-			return false;
-
-	return true;
 }
 
 void

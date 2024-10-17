@@ -2,11 +2,11 @@
 {
 if $programs
 	program vertexlit
-	diffusemap "models/weapons/enforcer/coltskin_1.tga"
-	normalmap "models/weapons/enforcer/coltskin_1_n.tga"
+	diffusemap "models/weapons/v_pistol/coltskin_1.tga"
+	normalmap "models/weapons/v_pistol/coltskin_1_n.tga"
 else
 	{
-		map "models/weapons/enforcer/coltskin_1.tga"
+		map "models/weapons/v_pistol/coltskin_1.tga"
 		rgbGen lightingDiffuse
 	}
 endif

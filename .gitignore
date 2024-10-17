@@ -56,6 +56,7 @@ ssqccore.txt
 # Ideally you would add
 # your project here as well
 
+action/
 AbsoluteZero/
 base_pbr/
 baseq2/
@@ -93,6 +94,9 @@ ship/
 tf/
 tf2/
 tfc/
+dk/
+basedk/
+mainkp/
 ts/
 valve/
 wastes/

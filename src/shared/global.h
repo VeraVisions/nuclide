@@ -172,3 +172,22 @@ _InitEnd(void)
 
 /** Calls a function (with parameters) in a new thread. */
 #define thread(x) if (fork()) { x; abort(); }
+
+#define STRING_SET(x) ((x != __NULL__) && (x != ""))
+
+bool
+fileExists(string filePath)
+{
+	if (filePath != "") /* not empty */
+		if not(whichpack(filePath)) /* not present on disk */
+			return false;
+
+	return true;
+}
+
+/* other parts of shared to include */
+
+
+#include "teams.h"
+#include "events.h"
+#include "flags.h"

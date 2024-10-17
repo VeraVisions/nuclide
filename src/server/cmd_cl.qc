@@ -29,7 +29,7 @@ Cmd_ParseClientCommand(NSClient sender, string cmd, int commandArguments)
 		if (commandArguments == 2) {
 			g_grMode.ChatMessageTeam(sender, argv(1));
 		} else {
-			g_grMode.ChatMessageTeam(sender, substring(cmd, 10, -2));
+			g_grMode.ChatMessageTeam(sender, substring(cmd, 9, -1));
 		}
 		break;
 	case "spectate":
@@ -77,6 +77,9 @@ Cmd_ParseClientCommand(NSClient sender, string cmd, int commandArguments)
 		break;
 	case "listAmmo":
 		Ammo_DebugList();
+		break;
+	case "joinTeam":
+		g_grMode.PlayerRequestTeam((NSClientPlayer)sender, (int)stoi(argv(1)));
 		break;
 	default:
 		clientcommand(sender, cmd);

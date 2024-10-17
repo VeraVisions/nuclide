@@ -518,7 +518,7 @@ func_door_rotating::Blocked(entity eBlocker)
 		NSDict damageDecl = spawn(NSDict);
 		damageDecl.AddKey("damage", itos(m_iDamage));
 		m_bCanTouch = false;
-		entityDamage(eBlocker, this, eBlocker, damageDecl.GetDeclBody(), "", center, dmgDir, eBlocker.origin);
+		combat.Damage(eBlocker, this, eBlocker, damageDecl.GetDeclBody(), center, dmgDir, eBlocker.origin);
 		remove(damageDecl);
 	}
 

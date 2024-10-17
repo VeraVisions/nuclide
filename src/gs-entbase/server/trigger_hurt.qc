@@ -278,7 +278,7 @@ trigger_hurt::Touch(entity eToucher)
 	NSDict damageDecl = spawn(NSDict);
 	damageDecl.AddKey("damage", itos(m_iDamage));
 	damageDecl.AddKey("flags", itos(type));
-	entityDamage(eToucher, this, eToucher, damageDecl.GetDeclBody(), "", center, g_vec_null, eToucher.origin);
+	combat.Damage(eToucher, this, eToucher, damageDecl.GetDeclBody(), center, g_vec_null, eToucher.origin);
 	remove(damageDecl);
 
 	/* shut it down if used once */

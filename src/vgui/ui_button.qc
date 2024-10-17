@@ -18,7 +18,8 @@ enumflags
 {
 	BUTTON_HOVER,
 	BUTTON_DOWN,
-	BUTTON_LASTACTIVE
+	BUTTON_LASTACTIVE,
+	BUTTON_CUSTOMFLAGS
 };
 
 /* TODO: MOVE THESE INTO VGUIButton! COMPILER NEEDS TO BE FIXED FIRST HOWEVER. */
@@ -97,14 +98,14 @@ void
 VGUIButton::SetIconColor(vector vecColor)
 {
 	m_vecIconColor = vecColor;
-};
+}
 
 void
 VGUIButton::SetTitle(string strName)
 {
 	vector newsize = [0.0f, 0.0f, 0.0f];
 
-	m_strTitle = strName;
+	m_strTitle = sprintf("%s%s", Font_RGBtoHex(UI_FGCOLOR), strName);
 	m_strTitleActive = sprintf("^3%s", m_strTitle);
 	//m_strTitle = sprintf("%s%s", Font_RGBtoHex(UI_MAINCOLOR), strName);
 	drawfont = g_fntDefault.iID;
@@ -161,11 +162,12 @@ VGUIButton::GetKeyEquivalent(void)
 void
 VGUIButton::Draw(void)
 {
-#ifndef CLASSIC_VGUI
 	VGUITheme theme = GetTheme();
 
 	if (m_iFlags & BUTTON_DOWN) {
 		theme.DrawButton(m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, VGUI_STATE_ACTIVE);
+	} else if (m_iFlags & BUTTON_HOVER) {
+		theme.DrawButton(m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, VGUI_STATE_HOVER);
 	} else {
 		theme.DrawButton(m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, VGUI_STATE_NORMAL);
 	}
@@ -181,63 +183,22 @@ VGUIButton::Draw(void)
 		theme.DrawText(m_parent.m_vecOrigin + m_vecOrigin + [8, 8], keyText, m_vecSize, g_fntDefault);
 	}
 
-	if (m_strTitle) {
+	if (STRING_SET(m_strIcon) && UI_NOICONS == false) {
+		if (m_iFlags & BUTTON_DOWN)
+			drawpic(m_parent.m_vecOrigin + m_vecOrigin + [4,4], m_strIcon, m_vecIMGSize, m_vecIconColor * 0.25, 1.0f, 0);
+		else
+			drawpic(m_parent.m_vecOrigin + m_vecOrigin + [4,4], m_strIcon, m_vecIMGSize, m_vecIconColor, 1.0f, 0);
+
+		textPadding += m_vecIMGSize[0] + 4;
+	}
+
+	if (STRING_SET(m_strTitle)) {
 		if (m_iFlags & BUTTON_HOVER) {
 			theme.DrawText(m_parent.m_vecOrigin + m_vecOrigin + [textPadding, 8], m_strTitle, m_vecSize, g_fntDefault);
 		} else {
 			theme.DrawText(m_parent.m_vecOrigin + m_vecOrigin + [textPadding, 8], m_strTitle, m_vecSize, g_fntDefault);
 		}
 	}
-
-	if (m_strIcon) {
-		if (m_iFlags & BUTTON_DOWN)
-			drawpic(m_parent.m_vecOrigin + m_vecOrigin + [2,2], m_strIcon, m_vecIMGSize, m_vecIconColor * 0.25, 1.0f, 0);
-		else
-			drawpic(m_parent.m_vecOrigin + m_vecOrigin + [2,2], m_strIcon, m_vecIMGSize, m_vecIconColor, 1.0f, 0);
-	}
-
-#else
-	if (m_iFlags & BUTTON_HOVER) {
-		drawfill(m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, m_vecColor, 0.25f);
-	}
-	drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, m_vecSize[1] - 1], [m_vecSize[0], 1], m_vecColor, 1.0f);
-	drawfill(m_parent.m_vecOrigin + m_vecOrigin, [m_vecSize[0], 1], m_vecColor, 1.0f);
-	drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, 1], [1, m_vecSize[1] - 2], m_vecColor, 1.0f);
-	drawfill(m_parent.m_vecOrigin + m_vecOrigin + [m_vecSize[0] - 1, 1], [1, m_vecSize[1] - 2], m_vecColor, 1.0f);
-
-
-	float textPadding = 8;
-
-	{
-		vector pos = m_parent.m_vecOrigin + m_vecOrigin;
-		drawsetcliparea(pos[0], pos[1], m_vecSize[0], m_vecSize[1]);
-	}
-
-	if (m_keyEquivalent >= 0) {
-		float length;
-		string keyText = GetKeyEquivalent();
-
-		length = Font_StringWidth(keyText, FALSE, g_fntDefault);
-		textPadding += length + 8;
-		Font_DrawText(m_parent.m_vecOrigin + m_vecOrigin + [8, 8], keyText, g_fntDefault);
-	}
-
-	if (m_strTitle) {
-		if (m_iFlags & BUTTON_LASTACTIVE) {
-			Font_DrawText(m_parent.m_vecOrigin + m_vecOrigin + [textPadding, 8], m_strTitleActive, g_fntDefault);
-		} else {
-			Font_DrawText(m_parent.m_vecOrigin + m_vecOrigin + [textPadding, 8], m_strTitle, g_fntDefault);
-		}
-	}
-	if (m_strIcon) {
-		if (m_iFlags & BUTTON_DOWN)
-			drawpic(m_parent.m_vecOrigin + m_vecOrigin + [2,2], m_strIcon, m_vecIMGSize, m_vecIconColor * 0.25, 1.0f, 0);
-		else
-			drawpic(m_parent.m_vecOrigin + m_vecOrigin + [2,2], m_strIcon, m_vecIMGSize, m_vecIconColor, 1.0f, 0);
-	}
-
-	drawresetcliparea();
-#endif
 }
 
 bool

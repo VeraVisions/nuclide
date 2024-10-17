@@ -71,6 +71,7 @@ public:
 	virtual void VehicleRelink(void);
 	virtual void OnRemoveEntity(void);
 	virtual void ReceiveEntity(float,float);
+	virtual void _ReceiveComplete(float, float);
 	virtual void PredictPreFrame(void);
 	virtual void PredictPostFrame(void);
 	virtual void ClientInputFrame(void);
@@ -99,6 +100,7 @@ public:
 	virtual float SendEntity(entity,float);
 	virtual void Death(entity, entity, int, vector, int);
 	virtual void ServerInputFrame(void);
+	virtual void Input(entity, string, string);
 
 	/** Helper function that will optimise the changed-flags of your player entity. */
 	virtual float OptimiseChangedFlags(entity,float);
@@ -119,54 +121,55 @@ public:
 
 	virtual void Footsteps_Update(void);
 
+	nonvirtual void _UpdatePMoveVars(void);
+
 private:
 
 #ifdef CLIENT
-	PREDICTED_INT(weaponframe)
-	PREDICTED_FLOAT(vehicle_entnum)
+	NETWORKED_INT(weaponframe)
+	NETWORKED_FLOAT(vehicle_entnum)
 #endif
 
 #ifdef SERVER
-	PREDICTED_INT_N(weaponframe)
+	NETWORKED_INT_N(weaponframe)
 	float nadeCookingTime;
 #endif
 
-	PREDICTED_FLOAT(health)
+	NETWORKED_FLOAT(health)
 
-	PREDICTED_FLOAT_N(colormap)
-	PREDICTED_FLOAT_N(gflags)
-	PREDICTED_FLOAT(viewzoom)
-	PREDICTED_VECTOR_N(view_ofs)
-	PREDICTED_VECTOR_N(basevelocity)
-	PREDICTED_VECTOR_N(v_angle)
-	PREDICTED_FLOAT_N(pmove_flags)
+	NETWORKED_FLOAT_N(colormap)
+	NETWORKED_FLOAT_N(gflags)
+	NETWORKED_FLOAT(viewzoom)
+	NETWORKED_VECTOR_N(view_ofs)
+	NETWORKED_VECTOR_N(basevelocity)
+	NETWORKED_VECTOR_N(v_angle)
+	NETWORKED_FLOAT_N(pmove_flags)
 
-	PREDICTED_FLOAT(w_attack_next)
-	PREDICTED_FLOAT(w_idle_next)
-	PREDICTED_FLOAT(w_reload_next)
-	PREDICTED_FLOAT(teleport_time)
-	PREDICTED_FLOAT(weapontime)
-	PREDICTED_FLOAT(m_flStamina)
-	PREDICTED_VECTOR(punchangle)
+	NETWORKED_FLOAT(w_attack_next)
+	NETWORKED_FLOAT(w_idle_next)
+	NETWORKED_FLOAT(w_reload_next)
+	NETWORKED_FLOAT(teleport_time)
+	NETWORKED_FLOAT(weapontime)
+	NETWORKED_VECTOR(punchangle)
 
 	/* We can't use the default .items field, because FTE will assume
 	 * effects of some bits. Such as invisibility, quad, etc. 
 	 * also, modders probably want 32 bits for items. */
-	PREDICTED_INT(g_items)
-	PREDICTED_FLOAT_N(activeweapon)
+	NETWORKED_INT(g_items)
+	NETWORKED_FLOAT_N(activeweapon)
 	NSItem m_itemList_net;
 	int m_iAmmoTypes_net[MAX_AMMO_TYPES];
 
 
 	/* vehicle info */
-	PREDICTED_ENT(vehicle)
+	NETWORKED_ENT(vehicle)
 
 	/* these are NOT networked */
 	int a_ammo1;
 	int a_ammo2;
 	int a_ammo3;
 
-	PREDICTED_VECTOR(grapvelocity)
+	NETWORKED_VECTOR(grapvelocity)
 
 #ifdef CLIENT
 	int sequence;
@@ -177,6 +180,7 @@ private:
 	int p_model_bone;
 	float lastweapon;
 #endif
+	NSPMoveVars m_pmoveVars;
 
 #ifdef SERVER
 	int voted;

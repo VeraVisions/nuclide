@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+#include "api_func.h"
+#include "../shared/api.h"
 #include "../shared/entityDef.h"
 #include "text.h"
 #include "textmenu.h"
@@ -24,6 +26,7 @@
 #include "NSView.h"
 #include "NSRadar.h"
 #include "crosshair.h"
+#include "hud.h"
 
 var bool g_net_debug = false;
 var bool g_cheats = false;
@@ -140,6 +143,7 @@ int Util_GetMaxPlayers(void);
 font_s FONT_16;
 font_s FONT_20;
 font_s FONT_CON;
+font_s FONT_CENTERPRINT;
 
 //var string g_shellchrome;
 var float g_shellchromeshader;
@@ -208,7 +212,6 @@ void drawrect(vector pos, vector sz, float thickness, vector rgb, float al, opti
 	/* right */
 	drawfill(pos + [sz[0] - thickness, thickness], [thickness, sz[1] - (thickness * 2)], rgb, al, dfl);
 }
-
 
 /** Like drawpic, but instead of screen coords, it will take world coords.
 Will project the 2D image relative to the active NSView that we're currently
@@ -410,6 +413,7 @@ struct
 	int m_iSprinting;
 
 	int m_iSelectedWeapon;
+	bool m_bCommandMenu;
 } g_seats[4], *pSeat;
 
 .float modelindex2;

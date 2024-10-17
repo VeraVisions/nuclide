@@ -96,7 +96,31 @@ PropData_ParseField(int i, string keyName, string setValue)
 		g_propdata[i].name = setValue;
 		break;
 	case "base":
+#if 0
+		/* HACK: This should be loaded much, much later. */
+		int baseID = -1i;
 		g_propdata[i].base = setValue;
+		baseID = PropData_Load(setValue);
+
+		if (baseID != -1) {
+			g_propdata[i].health = g_propdata[baseID].health;
+			g_propdata[i].flags = g_propdata[baseID].flags;
+			g_propdata[i].damage_bullets = g_propdata[baseID].damage_bullets;
+			g_propdata[i].damage_melee = g_propdata[baseID].damage_melee;
+			g_propdata[i].damage_explosive = g_propdata[baseID].damage_explosive;
+			g_propdata[i].explosive_damage = g_propdata[baseID].explosive_damage;
+			g_propdata[i].explosive_radius = g_propdata[baseID].explosive_radius;
+			g_propdata[i].breakable_model = g_propdata[baseID].breakable_model;
+			g_propdata[i].breakable_count = g_propdata[baseID].breakable_count;
+			g_propdata[i].breakable_skin = g_propdata[baseID].breakable_skin;
+			g_propdata[i].mass = g_propdata[baseID].mass;
+			g_propdata[i].damping_linear = g_propdata[baseID].damping_linear;
+			g_propdata[i].damping_angular = g_propdata[baseID].damping_angular;
+			g_propdata[i].inertia = g_propdata[baseID].inertia;
+			g_propdata[i].volume = g_propdata[baseID].volume;
+			g_propdata[i].surfaceprop = g_propdata[baseID].surfaceprop;
+		}
+#endif
 		break;
 	case "blockLOS":
 		g_propdata[i].flags |= PDFL_BLOCKLOS;
@@ -312,10 +336,22 @@ PropData_ForModel(string modelname)
 			return cache;
 	}
 
+	/* harsh optimisation. don't attempt to load new propdata after. */
+	/*if (time > 1.0f) {
+		return -1;
+	}*/
+
 	g_propdata_count++;
 
 #ifdef PROPDATA_DYNAMIC
 	g_propdata = (propdata_t *)memrealloc(g_propdata, sizeof(propdata_t), index, g_propdata_count);
+
+	if (!g_propdata) {
+		NSError("Memory re-allocation failed.");
+		g_propdata_count = 0;
+		return -1i;
+	}
+
 #else
 	if (g_propdata_count >= PROPDATA_MAX) {
 		NSError("PropData_ForModel: Reached PROPDATA_MAX (%d)", PROPDATA_MAX);
@@ -347,7 +383,9 @@ PropData_ForModel(string modelname)
 		filePos = fread(fh, (void*)&fileSize, 4i); /* header size, sanity check */
 
 		if (fileSize != 16i) {
-			error("Only .phy files from Source are supported.");
+			NSError("Only .phy files from Source are supported.");
+			fclose(fh);
+			return -1;
 		}
 
 		filePos = fread(fh, (void*)&phyID, 4i); /* some header id */
@@ -360,8 +398,11 @@ PropData_ForModel(string modelname)
 		//print(sprintf("num fileSum: %i\n", fileSum));
 
 		/* HACK: We won't support ragdolls, for now. */
-		if (numSolids > 1)
+		if (numSolids > 1) {
+			NSError("Only .phy files from Source are supported.");
+			fclose(fh);
 			return -1;
+		}
 
 		/* we skip over all these to get to the bottom of the file */
 		for (int i = 0i; i < numSolids; i++) {
@@ -463,7 +504,7 @@ PropData_ForModel(string modelname)
 	}
 	fclose(fh);
 
-	NSError("No type found for %s", modelname);
+	NSLog("No type found for %s", modelname);
 	return -1;
 }
 
@@ -475,12 +516,15 @@ PropData_Load(string type)
 	if (!type)
 		return -1;
 
+	if (substring(type, 0, 1) == "*")
+		return -1;
+
 	type = strtolower(type);
 
 	index = (int)hash_get(g_hashpropdata, type, -1);
 
 	if (index < 0) {
-		NSError("PropData type %S is not defined.", type);
+		NSLog("PropData type %S is not defined.", type);
 		return -1;
 	} else {
 		return index;
@@ -602,6 +646,8 @@ PropData_Init(void)
 	filestream fh;
 	string line;
 	int index;
+	int pdMemSize;
+	int bmMemSize;
 
 	InitStart();
 
@@ -630,16 +676,35 @@ PropData_Init(void)
 	}
 
 #ifdef PROPDATA_DYNAMIC
-	/* alocate our stuff */
-	g_propdata = (propdata_t *)memalloc(sizeof(propdata_t) * g_propdata_count);
-	g_breakmodel = (breakModel_t *)memalloc(sizeof(breakModel_t) * g_breakmodel_count);
+	pdMemSize = sizeof(propdata_t) * g_propdata_count;
 #else
-	/* alocate our stuff */
-	g_propdata = (propdata_t *)memalloc(sizeof(propdata_t) * PROPDATA_MAX);
-	g_breakmodel = (breakModel_t *)memalloc(sizeof(breakModel_t) * PROPDATA_MAX);
-	NSLog("...allocated %d bytes for prop data.", sizeof(propdata_t) * PROPDATA_MAX);
-	NSLog("...allocated %d bytes for breakmodels.", sizeof(breakModel_t) * PROPDATA_MAX);
+	pdMemSize = sizeof(propdata_t) * PROPDATA_MAX;
 #endif
+
+	g_propdata = (propdata_t *)memalloc(pdMemSize);
+
+	if (!g_propdata) {
+		NSError("Memory allocation failed for %i bytes.", pdMemSize);
+		InitEnd();
+		return;
+	}
+
+#ifdef PROPDATA_DYNAMIC
+	bmMemSize = sizeof(breakModel_t) * g_breakmodel_count;
+#else
+	bmMemSize = sizeof(breakModel_t) * PROPDATA_MAX;
+#endif
+
+	g_breakmodel = (breakModel_t *)memalloc(bmMemSize);
+
+	if (!g_breakmodel) {
+		NSError("Memory allocation failed for %i bytes.", bmMemSize);
+		InitEnd();
+		return;
+	}
+
+	NSLog("...allocated %i bytes for prop data.", pdMemSize);
+	NSLog("...allocated %i bytes for breakmodels.", bmMemSize);
 
 	fseek(fh, 0);
 
@@ -647,6 +712,7 @@ PropData_Init(void)
 		/* when we found it, quit */
 		PropData_ParseLine(line);
 	}
+
 	fclose(fh);
 
 	/* now let's precache all of our breakmodel units.
@@ -811,12 +877,10 @@ BreakModel_SpawnID(vector smins, vector smaxs, vector dir, float speed, int coun
 			gib.SetSolid(SOLID_NOT);
 		} else {
 			gib.SetMovetype(MOVETYPE_PHYSICS);
-			gib.SetSolid(SOLID_NOT);
+			gib.SetSolid(SOLID_CORPSE);
 			gib.mass = 1.0f;
 			gib.friction = 1.0f;
-			gib.bouncefactor = 0.9f;
-			gib.bouncestop = 0.1f / cvar("sv_gravity");
-			gib.geomtype = GEOMTYPE_TRIMESH;
+			gib.m_iShape = GEOMTYPE_TRIMESH;
 			gib.ApplyForceOffset(dir * speed, endpos);
 		}
 

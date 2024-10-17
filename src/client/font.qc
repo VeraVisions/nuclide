@@ -31,6 +31,7 @@ Font_Load(string strFile, font_s &fntNew)
 	fntNew.iID = 0;
 	fntNew.iScaleX = fntNew.iScaleY = 12;
 	fntNew.vecColor = [1,1,1];
+	fntNew.hexColor = "^xFFF";
 	fntNew.flAlpha = 1.0f;
 	fntNew.iFlags = 0;
 
@@ -44,6 +45,7 @@ Font_Load(string strFile, font_s &fntNew)
 			switch (argv(0)) {
 			case "color":
 				fntNew.vecColor = stov(argv(1)) / 255;
+				fntNew.hexColor = Font_RGBtoHex(fntNew.vecColor);
 				break;
 			case "alpha":
 				fntNew.flAlpha = stof(argv(1)) / 255;
@@ -175,7 +177,7 @@ Font_DrawField(vector vecOrigin, vector vecSize, string strText, font_s fnt, ali
 	drawfont = (float)fnt.iID;
 	drawfontscale[0] = (float)fnt.iScaleX / 8;
 	drawfontscale[1] = (float)fnt.iScaleY / 8;
-	drawtextfield(vecOrigin, vecSize, (float)iAlignFlags, strText);
+	drawtextfield(vecOrigin, vecSize, (float)iAlignFlags, strcat(fnt.hexColor, strText));
 	drawfont = 0;
 	drawfontscale = [1,1,0];
 }

@@ -38,6 +38,8 @@ NSIO::NSIO(void)
 	isCSQC = TRUE;
 	effects |= EF_NOSHADOW;
 #endif
+	m_strEditorIcon = "gfx/icon16/bullet_purple";
+	isActor = false;
 }
 
 void
@@ -59,6 +61,9 @@ NSIO::Spawned(void)
 	if (m_strOnUser4)
 		m_strOnUser4 = CreateOutput(m_strOnUser4);
 #endif
+
+	_isWeapon = false;
+	_isItem = false;
 }
 
 void
@@ -69,7 +74,6 @@ NSIO::OnRemoveEntity(void)
 void
 NSIO::Destroy(void)
 {
-	removed = 1; /* mark this as cleanly removed */
 	OnRemoveEntity();
 	customphysics = __NULL__;
 	modelindex = 0;
@@ -78,22 +82,11 @@ NSIO::Destroy(void)
 	classname = 0;
 	think = __NULL__;
 	nextthink = 0.0f;
+	identity = 1;
+	_isWeapon = false;
+	_isItem = false;
+	removed = true;
 	remove(this);
-}
-
-float
-NSIO::GetDefAct(string keyName)
-{
-	float randomValue;
-	string actValue = EntityDef_GetKeyValue(classname, keyName);
-	float actCount = tokenizebyseparator(actValue, ",");
-
-	if (actCount == 1) {
-		return stof(actValue);
-	} else {
-		randomValue = floor(pseudorandom() * actCount);
-		return stof(argv(randomValue));
-	}
 }
 
 string
@@ -140,25 +133,31 @@ NSIO::GetSubDefAct(string subDef, string activityName)
 
 	/* not in class decl either. look it up in the model */
 	if (!STRING_SET(fireValue)) {
-		/* look it up in the model itself now */
-		float actModelNum = stof(EntityDef_GetKeyValue("activities", actNameCheck));
-		float frameGroup = frameforaction(modelindex, actModelNum);
-		return (frameGroup);
-		//return (-1);
-	}
+		string actValue = EntityDef_GetKeyValue("activities", actNameCheck);
 
-	actCount = tokenizebyseparator(fireValue, ",");
-
-	if (actCount == 1) {
-		return stof(fireValue);
+		if (STRING_SET(actValue)) {
+			/* look it up in the model itself now */
+			float actModelNum = stof(actValue);
+			float frameGroup = frameforaction(modelindex, actModelNum);
+			return (frameGroup);
+		}
 	} else {
-		float randomValue = floor(pseudorandom() * actCount);
-		return stof(argv(randomValue));
+		actCount = tokenizebyseparator(fireValue, ",");
+
+		if (actCount == 1) {
+			return stof(fireValue);
+		} else {
+			float randomValue = floor(pseudorandom() * actCount);
+			return stof(argv(randomValue));
+		}
 	}
+
+	/* not in fireInfo, not in model... skip! */
+	return (-1);
 }
 
 float
-NSIO::GetAct(string activityName)
+NSIO::GetDefAct(string activityName)
 {
 	return GetSubDefAct(classname, activityName);
 }
@@ -556,6 +555,7 @@ NSIO::Save(float handle)
 	SaveString(handle, "m_strOnUser4", m_strOnUser4);
 	SaveString(handle, "m_strModelEventCB", m_strModelEventCB);
 	SaveString(handle, "m_strSpawnData", m_strSpawnData);
+	SaveString(handle, "m_strEditorIcon", m_strEditorIcon);
 }
 void
 NSIO::Restore(string strKey, string strValue)
@@ -851,6 +851,9 @@ NSIO::Restore(string strKey, string strValue)
 	case "m_strSpawnData":
 		m_strSpawnData = ReadString(strValue);
 		break;
+	case "m_strEditorIcon":
+		m_strEditorIcon = ReadString(strValue);
+		break;
 	}
 }
 
@@ -884,6 +887,9 @@ NSIO::SpawnKey(string strKey, string strValue)
 		break;
 	case "targetname":
 		targetname = strValue;
+		break;
+	case "editor_icon":
+		m_strEditorIcon = ReadString(strValue);
 		break;
 #ifdef SERVER
 	/* Input/Output system */
@@ -955,4 +961,9 @@ NSIO::DebugEntity(string key, entity targ)
 {
 	float value = num_for_edict(targ);
 	EntLog("%S \"%f\"", key, value);
+}
+void
+NSIO::SetEditorIcon(string newIcon)
+{
+	m_strEditorIcon = strcat("gfx/icon16/", newIcon);
 }

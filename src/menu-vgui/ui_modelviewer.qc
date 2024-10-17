@@ -48,6 +48,9 @@ void AngleVectors ( vector angles )
 	v_up[2] = cr*cp;
 }
 
+string(float modidx, float framenum) frametoname = #0;
+.float modelindex;
+
 void UI_ModelViewer_Show ( void )
 {
 	static entity eModel;
@@ -80,17 +83,25 @@ void UI_ModelViewer_Show ( void )
 		viewModel.Set3DPos( [0,0,0] );
 	}
 	static void UI_ModelViewer_SetFrame( int iFrame ) {
+		float maxFrame = modelframecount(eModel.modelindex) - 1;
 		eModel.frame = (float)iFrame;
-		lblSeqFrame.SetTitle( sprintf( "Frame: %i", iFrame ) );
+
+		if (eModel.frame > maxFrame) {
+			eModel.frame = (maxFrame);
+		}
+
+		if (eModel.frame < 0) {
+			eModel.frame = 0;
+		}
+
+		lblSeqFrame.SetTitle( sprintf( "Frame %d: %s", eModel.frame, frametoname(eModel.modelindex, eModel.frame) ) );
 		eModel.frame1time = 0;
 	}
 	static void UI_ModelViewer_SetFrameP( void ) {
-		UI_ModelViewer_SetFrame( ++eModel.frame );
+		UI_ModelViewer_SetFrame( eModel.frame + 1 );
 	}
 	static void UI_ModelViewer_SetFrameM( void ) {
-		if ( eModel.frame ) {
-			UI_ModelViewer_SetFrame( --eModel.frame );
-		}
+		UI_ModelViewer_SetFrame( eModel.frame - 1 );
 	}
 	static void UI_ModelViewer_SetModel( string strModel ) {
 		setmodel( eModel, strModel );
@@ -111,10 +122,10 @@ void UI_ModelViewer_Show ( void )
 		
 		if ( chkGround.GetValue() == TRUE ) {
 			R_BeginPolygon( "", 0, FALSE );
-			R_PolygonVertex( [ 64, -64, 0 ], '1 0', [1,1,1], 1.0f ); // Top Right
-			R_PolygonVertex( [ -64, -64, 0 ], '0 0', [1,1,1], 1.0f ); // Top left
-			R_PolygonVertex( [ -64, 64, 0 ], '0 1', [1,1,1], 1.0f ); // Bottom left
-			R_PolygonVertex( [ 64, 64, 0 ], '1 1', [1,1,1], 1.0f ); // Bottom right
+			R_PolygonVertex( [ 64, -64, 0 ], [1,0], [1,1,1], 1.0f ); // Top Right
+			R_PolygonVertex( [ -64, -64, 0 ], [0,0], [1,1,1], 1.0f ); // Top left
+			R_PolygonVertex( [ -64, 64, 0 ], [0,1], [1,1,1], 1.0f ); // Bottom left
+			R_PolygonVertex( [ 64, 64, 0 ], [1,1], [1,1,1], 1.0f ); // Bottom right
 			R_EndPolygon();
 		}
 	
@@ -249,7 +260,7 @@ void UI_ModelViewer_Show ( void )
 		winViewer.SetMaxSize( [ 9999, 9999 ] );
 		winViewer.SetStyleMask( VGUIWindowStyleDefault | VGUIWindowResizeable );
 		winViewer.SetPos( [ 172, 64 ] );
-		winViewer.SetIcon( "textures/ui/icons/hdd" );
+		winViewer.SetIcon( "gfx/icon16/images" );
 		winViewer.CallOnResize( UI_ModelViewer_Resize );
 
 		picBackground = spawn( CUIPic );
@@ -287,11 +298,14 @@ void UI_ModelViewer_Show ( void )
 		
 		lblSeqFrame = spawn( CUILabel );
 		lblSeqFrame.SetTitle( "Frame: 0" );
+		lblSeqFrame.SetSize([550,16]);
 		btnSeqNext = spawn( CUIButton );
 		btnSeqNext.SetTitle( ">>" );
+		btnSeqNext.SetSize([48,24]);
 		btnSeqNext.SetFunc( UI_ModelViewer_SetFrameP );
 		btnSeqPrev = spawn( CUIButton );
 		btnSeqPrev.SetTitle( "<<" );
+		btnSeqPrev.SetSize([48,24]);
 		btnSeqPrev.SetFunc( UI_ModelViewer_SetFrameM );
 		
 		searchhandle shModels = search_begin( "models/*.mdl:models/*.vvm:models/*/*.mdl:models/*/*.vvm:models/*/*/*.mdl:models/*/*/*.vvm:models/*/*/*/*.mdl:models/*/*/*/*.vvm", SEARCH_NAMESORT | SEARCH_MULTISEARCH, TRUE );
@@ -301,7 +315,7 @@ void UI_ModelViewer_Show ( void )
 
 		for ( int i = 0; i < search_getsize( shModels ); i++ ) {
 			string strAdd = search_getfilename( shModels, i );
-			lstModels.AddItem( substring( strAdd , 6, strlen( strAdd ) - 6 ) );
+			lstModels.AddItem( substring( strAdd , 7, -1 ) );
 		}
 		search_end( shModels );
 		
@@ -316,7 +330,7 @@ void UI_ModelViewer_Show ( void )
 		btnLoadModel = spawn( CUIButton );
 		btnLoadModel.SetTitle( "Load Selected" );
 		btnLoadModel.SetFunc( UI_ModelViewer_LoadSelected );
-		btnLoadModel.SetSize( '192 24' );
+		btnLoadModel.SetSize( [192,24] );
 
 		UI_ModelViewer_Resize();
 		UI_ModelViewer_ShowRenderer();
@@ -326,8 +340,8 @@ void UI_ModelViewer_Show ( void )
 		winViewer.Add( viewModel );
 		winViewer.Add( btnTabRenderer );
 		winViewer.Add( btnTabSequence );
-		winViewer.Add( btnTabBody );
-		winViewer.Add( btnTabTexture );
+		//winViewer.Add( btnTabBody );
+		//winViewer.Add( btnTabTexture );
 		winViewer.Add( chkBackground );
 		winViewer.Add( chkGround );
 		winViewer.Add( chkMirror );

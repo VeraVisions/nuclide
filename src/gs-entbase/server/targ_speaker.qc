@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*! \brief Server-Entity: Redundant Sound Emitter */
+/*! \brief Server-Entity: Redundant Sound Emitter #2 */
 /*!QUAKED targ_speaker (1 0 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 This entity plays a sample upon triggering at a specified volume.
@@ -88,6 +88,7 @@ void
 targ_speaker::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
+	case "noise":
 	case "tsnoise":
 		m_strSample = strValue;
 		break;

@@ -43,7 +43,7 @@
 #define USEAREAGRID /* leave it on, improves performance */
 #define AVAIL_DINPUT /* input for Windows */
 #define AVAIL_FREETYPE	/* for truetype font rendering */
-#define AVAIL_STBI /* avoid libpng/libjpeg dependancies */
+#undef AVAIL_STBI /* avoid libpng/libjpeg dependancies */
 #define ENGINE_ROUTING /* engine-side, fast routing */
 
 #ifndef LEGACY_GPU
@@ -140,8 +140,8 @@
 #undef HAVE_SPEEX	/* .xz decompression */
 #undef AVAIL_GZDEC	/* .gz decompression */
 #undef PACKAGE_DZIP	/* .dzip special-case archive support */
-#undef AVAIL_PNGLIB	/* .png image format support (read+screenshots) */
-#undef AVAIL_JPEGLIB	/* .jpeg image format support (read+screenshots) */
+#define AVAIL_PNGLIB	/* .png image format support (read+screenshots) */
+#define AVAIL_JPEGLIB	/* .jpeg image format support (read+screenshots) */
 #undef AVAIL_MP3_ACM	/* .mp3 support (in windows). */
 #undef IMAGEFMT_DDS
 #undef IMAGEFMT_PKM
@@ -192,8 +192,8 @@
 #undef IMAGEFMT_PSD
 #undef IMAGEFMT_XCF
 #undef IMAGEFMT_LMP
-#undef IMAGEFMT_PNG
-#undef IMAGEFMT_JPG
+#define IMAGEFMT_PNG
+#define IMAGEFMT_JPG
 #undef IMAGEFMT_GIF
 #undef IMAGEFMT_EXR
 #undef IPLOG

@@ -32,6 +32,12 @@ NSDict::SetDeclBody(string textBody)
 	m_strBody = textBody;
 }
 
+int
+NSDict::GetInteger(string keyName)
+{
+	return (int)stoi(GetString(keyName));
+}
+
 float
 NSDict::GetFloat(string keyName)
 {
@@ -97,6 +103,12 @@ NSDict::RemoveKey(string keyName)
 	_AddRemoveKey(keyName, "", true);
 }
 
+int
+NSDict::TokenCount(void)
+{
+	return (int)tokenize_console(m_strBody);
+}
+
 NSDict
 NSDict::InitWithSpawnData(string spawnData)
 {
@@ -104,3 +116,87 @@ NSDict::InitWithSpawnData(string spawnData)
 	newDict.SetDeclBody(spawnData);
 	return (newDict);
 }
+
+NSDict
+NSDict::LoadDeclFromFile(string declName, string fileName)
+{
+	filestream fh;
+	NSDict newDict;
+	string tempString;
+	int braceDepth = 0i;
+	string lastWord = __NULL__;
+	string lastDecl = "";
+
+	fh = fopen(strcat("decls/", fileName), FILE_READ);
+
+	if (fh < 0) {
+		NSError("Can't read %S", fileName);
+		return __NULL__;
+	}
+
+	newDict = spawn(NSDict);
+
+	while ((tempString = fgets(fh))) {
+		int lineSegments = tokenize_console(tempString);
+
+		for (int i = 0i; i < lineSegments; i++) {
+			string word = argv(i);
+
+			switch (word) {
+			case "{":
+				braceDepth++;
+				break;
+			case "}":
+				braceDepth--;
+
+				/* we've reached the end of a definition */
+				if (braceDepth == 0) {
+					/* we found it, we're done */
+					if (STRING_SET(lastDecl) && lastDecl == declName) {
+						break;
+					}
+					lastDecl = "";
+				}
+				break;
+			default:
+				/* anything outside braces defines the classname for the next def */
+				if (braceDepth == 0 && lastWord == "typeInfo") {
+					lastDecl = word;
+				} /* else if (braceDepth == 0 && lastWord == "#include") {
+					g_entDefInclude = strcat(g_entDefInclude, word, ";");
+				} else if (braceDepth == 0 && lastWord == "#define") {
+					Constants_Add(argv(i), argv(i+1));
+				} */ else if (braceDepth == 1) {
+					/* spawnclass is reserved and the next keyword specs it */
+					/*if (word == "spawnclass") {
+						currentDef.spawnClass = argv(i+1);
+						i++;
+					} else if (word == "inherit") {
+						currentDef.inheritKeys = argv(i+1);
+						i++;
+					} else*/ if (lastDecl == declName) { /* rest gets dumped into spawndata */
+						newDict.m_strBody = strcat(newDict.m_strBody, "\"", word, "\"", " ");
+					}
+				}
+			}
+			lastWord = word;
+		}
+
+#if 0
+		if (c == 1) {
+
+		} else if (c == 2) {
+			newDict.AddKey(argv(0), argv(1));
+		}
+#endif
+	}
+
+	/* failed to find any key-value pairs. empty */
+	if (!STRING_SET(newDict.m_strBody)) {
+		remove(newDict);
+		return (__NULL__);
+	}
+
+	return (newDict);
+}
+

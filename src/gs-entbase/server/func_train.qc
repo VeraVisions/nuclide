@@ -204,7 +204,7 @@ func_train::Blocked(entity eBlocker)
 		dmgDir = dirFromTarget(center, eBlocker.origin);
 		damageDecl = spawn(NSDict);
 		damageDecl.AddKey("damage", "500");
-		entityDamage(eBlocker, this, eBlocker, damageDecl.GetDeclBody(), "", center, dmgDir, eBlocker.origin);
+		combat.Damage(eBlocker, this, eBlocker, damageDecl.GetDeclBody(), center, dmgDir, eBlocker.origin);
 		remove(damageDecl);
 		return;
 	}
@@ -214,7 +214,7 @@ func_train::Blocked(entity eBlocker)
 		dmgDir = dirFromTarget(center, eBlocker.origin);
 		damageDecl = spawn(NSDict);
 		damageDecl.AddKey("damage", ftos(m_flDamage));
-		entityDamage(eBlocker, this, eBlocker, damageDecl.GetDeclBody(), "", center, dmgDir, eBlocker.origin);
+		combat.Damage(eBlocker, this, eBlocker, damageDecl.GetDeclBody(), center, dmgDir, eBlocker.origin);
 		remove(damageDecl);
 	} else {
 		/* remove(eBlocker); */

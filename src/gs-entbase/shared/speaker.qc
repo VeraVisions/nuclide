@@ -175,6 +175,11 @@ speaker::Respawn(void)
 	if (HasSpawnFlags(SPEAKFL_SILENT) == false) {
 		ScheduleThink(Announce, 10.0f);
 	}
+
+	SetSize([0,0,0], [0,0,0]);
+	SetSolid(SOLID_NOT);
+	SetMovetype(MOVETYPE_NONE);
+	customphysics = __NULL__;
 }
 
 void

@@ -52,6 +52,7 @@ public:
 #ifdef CLIENT
 	virtual void ReceiveEntity(float, float);
 	virtual float predraw(void);
+	virtual void postdraw(void);
 #endif
 
 #ifdef SERVER
@@ -179,6 +180,7 @@ private:
 	bool m_bStickToActor;
 	bool m_bThrustHoming;
 	bool m_bInheritVelocity;
+	bool m_bReflect;
 
 	NSTimer m_thrustHandler;
 

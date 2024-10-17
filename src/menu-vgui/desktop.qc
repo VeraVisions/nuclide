@@ -26,6 +26,7 @@ void Desktop_Init ( void )
 	static CUIMenuButton btnMViewer;
 	static CUIMenuButton btnResume;
 	static CUIMenuButton btnDisconnect;
+	static CUIMenuButton btnMods;
 	
 	static void Desktop_ResumeGame ( void ) {
 		m_toggle( 0 );
@@ -43,7 +44,7 @@ void Desktop_Init ( void )
 	btnNewgame.SetPos( '32 64' );
 	btnNewgame.SetFunc( UI_NewGame_Show );
 	btnNewgame.FlagRemove( MBUTTON_SHOWSP | MBUTTON_SHOWMP );
-	btnNewgame.SetIcon( "textures/ui/icons/desktop" );
+	btnNewgame.SetIcon( "gfx/icon16/new" );
 
 	btnDisconnect = spawn( CUIMenuButton );
 	btnDisconnect.SetTitle( "Disconnect" );
@@ -51,54 +52,63 @@ void Desktop_Init ( void )
 	btnDisconnect.SetPos( '32 64' );
 	btnDisconnect.SetFunc( Desktop_DisconnectGame );
 	btnDisconnect.FlagRemove( MBUTTON_SHOWOFFLINE );
-	btnDisconnect.SetIcon( "textures/ui/icons/disconnect" );
+	btnDisconnect.SetIcon( "gfx/icon16/disconnect" );
 
 	btnLoadgame = spawn( CUIMenuButton );
 	btnLoadgame.SetTitle( "Load Game" );
 	btnLoadgame.SetSize( '128 24' );
 	btnLoadgame.SetPos( '32 96' );
-	btnLoadgame.SetIcon( "textures/ui/icons/folder" );
+	btnLoadgame.SetIcon( "gfx/icon16/book_edit" );
+	btnLoadgame.SetFunc( UI_LoadGame_Show );
 
 	btnFindserver = spawn( CUIMenuButton );
 	btnFindserver.SetTitle( "Find Servers" );
 	btnFindserver.SetSize( '128 24' );
 	btnFindserver.SetPos( '32 128' );
 	btnFindserver.SetFunc( UI_FindServers_Show );
-	btnFindserver.SetIcon( "textures/ui/icons/servers" );
+	btnFindserver.SetIcon( "gfx/icon16/world_go" );
 
 	btnCreateserver = spawn( CUIMenuButton );
 	btnCreateserver.SetTitle( "Create Server" );
 	btnCreateserver.SetSize( '128 24' );
 	btnCreateserver.SetPos( '32 160' );
 	btnCreateserver.SetFunc( UI_CreateServer_Show );
-	btnCreateserver.SetIcon( "textures/ui/icons/server-new" );
+	btnCreateserver.SetIcon( "gfx/icon16/server_add" );
+
+	btnMods = spawn( CUIMenuButton );
+	btnMods.SetTitle( "Custom Game" );
+	btnMods.SetSize( '128 24' );
+	btnMods.SetPos( '32 192' );
+	btnMods.SetIcon( "gfx/icon16/rainbow" );
+	btnMods.SetFunc( UI_CustomGame_Show );
+	btnMods.FlagRemove( MBUTTON_SHOWSP | MBUTTON_SHOWMP );
 
 	btnOptions = spawn( CUIMenuButton );
 	btnOptions.SetTitle( "Options" );
 	btnOptions.SetSize( '128 24' );
-	btnOptions.SetPos( '32 192' );
-	btnOptions.SetIcon( "textures/ui/icons/gear" );
+	btnOptions.SetPos( '32 224' );
+	btnOptions.SetIcon( "gfx/icon16/cog" );
 
 	btnQuit = spawn( CUIMenuButton );
 	btnQuit.SetTitle( "Quit Game" );
 	btnQuit.SetSize( '128 24' );
-	btnQuit.SetPos( '32 224' );
+	btnQuit.SetPos( '32 256' );
 	btnQuit.SetFunc( UI_QuitGame_Show );
-	btnQuit.SetIcon( "textures/ui/icons/cancel" );
+	btnQuit.SetIcon( "gfx/icon16/stop" );
 
 	btnMPlayer = spawn( CUIMenuButton );
 	btnMPlayer.SetTitle( "Music Player" );
 	btnMPlayer.SetSize( '128 24' );
 	btnMPlayer.SetPos( '32 288' );
 	btnMPlayer.SetFunc( UI_MusicPlayer_Show );
-	btnMPlayer.SetIcon( "textures/ui/icons/cd" );
+	btnMPlayer.SetIcon( "gfx/icon16/ipod" );
 
 	btnMViewer = spawn( CUIMenuButton );
 	btnMViewer.SetTitle( "Model Viewer" );
 	btnMViewer.SetSize( '128 24' );
 	btnMViewer.SetPos( '32 320' );
 	btnMViewer.SetFunc( UI_ModelViewer_Show );
-	btnMViewer.SetIcon( "textures/ui/icons/hdd" );
+	btnMViewer.SetIcon( "gfx/icon16/images" );
 
 	btnResume = spawn( CUIMenuButton );
 	btnResume.SetTitle( "Resume Game" );
@@ -106,6 +116,7 @@ void Desktop_Init ( void )
 	btnResume.SetPos( '32 384' );
 	btnResume.SetFunc( Desktop_ResumeGame );
 	btnResume.FlagRemove( MBUTTON_SHOWOFFLINE );
+	btnResume.SetIcon( "gfx/icon16/control_play" );
 
 	g_uiDesktop.Add( btnNewgame );
 	g_uiDesktop.Add( btnLoadgame );
@@ -117,9 +128,16 @@ void Desktop_Init ( void )
 	g_uiDesktop.Add( btnMViewer );
 	g_uiDesktop.Add( btnResume );
 	g_uiDesktop.Add( btnDisconnect );
+	g_uiDesktop.Add( btnMods );
 }
 
 void Desktop_Draw ( void )
 {
 	g_uiDesktop.Draw();
 }
+
+void Desktop_CanvasChanged ( void )
+{
+	g_uiDesktop.Reposition();
+}
+

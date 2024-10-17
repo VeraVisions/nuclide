@@ -22,7 +22,7 @@ var bool g_input_received = false;
 /* r_autoscale forces vid_conautoscale to be one of 4 integer values.
  * this is due to vid_conautoscale 0 scaling with in floating point... which
  * in turns results in skipped rows/columns and shimmering. */
-var int autocvar_r_autoscale = TRUE;
+var int autocvar_r_autoscale = false;
 var int autocvar_r_pixelscale = FALSE;
 void
 Menu_AutoScale(void)
@@ -66,7 +66,7 @@ Menu_GammaHack(void)
 bool
 Menu_HasStartupVideos(void)
 {
-	if (Platform_FileInCurrentGamedir("media/valve.avi"))
+	if (fileExists("media/valve.avi"))
 		return true;
 
 	return false;
@@ -103,7 +103,6 @@ m_init(void)
 		cvar_set("rate", "30000");
 	}
 
-	Platform_RegisterCommands();
 
 	Font_Load("fonts/fontcon.font", font_console);
 	Font_Load("fonts/menu_label.font", font_label);
@@ -113,12 +112,11 @@ m_init(void)
 
 	localcmd("plug_load ffmpeg\n");
 
+	Platform_Init();
+
 	/* don't precache btns_main.bmp directly any more. */
 	CMainButton_InitSheets();
-
-	GameLibrary_Init();
 	Strings_Init();
-	MapLibrary_Init();
 	main_init();
 
 	Colors_Init();
@@ -166,6 +164,7 @@ m_init(void)
 void
 Menu_RendererRestarted(string rendererdesc)
 {
+	Platform_RendererRestarted();
 	CMainButton_InitSheets();
 	Menu_AutoScale();
 	Menu_GammaHack();
@@ -262,21 +261,7 @@ m_draw(vector screensize)
 		return;
 	}
 
-	/* when ingame, we'll draw a slight black tint... */
-	if (clientstate() == 2) {
-		/* ...unless we're in background map mode. */
-		if (!g_background)
-			drawpic([0,0], "menutint", screensize, [1,1,1], 1.0f);
-	} else {
-		/* clear screen */
-		drawfill([0,0], screensize, [0,0,0], 1.0f);
-
-		/* draw either WON or Steam background */
-		if (autocvar_menu_steambg == false)
-				Background_WON();
-		else
-				Background_Steam();
-	}
+	Background_Draw((g_vidsize / 2) - [320,240], [640,480]);
 
 	/* water mark for version info */
 	const string ver = "Nuclide (build " __DATE__ ")";
@@ -360,7 +345,7 @@ m_display(void)
 	g_active = TRUE;
 	setkeydest(KEY_MENU);
 	setmousetarget(TARGET_MENU);
-	setcursormode(TRUE, "gfx/cursor");
+	setcursormode(TRUE, "gfx/icon16/cursor");
 }
 
 /*

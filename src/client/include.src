@@ -2,6 +2,7 @@
 NSInteractiveSurface.qc
 NSView.qc
 NSRadar.qc
+hud.qc
 fog.qc
 font.qc
 sky.qc
@@ -24,7 +25,9 @@ detailtex.qc
 shake.qc
 cmd.qc
 event.qc
+commandmenu.qc
 entry.qc
 crosshair.qc
 util.qc
+api.qc
 #endlist

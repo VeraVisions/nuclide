@@ -198,7 +198,7 @@ env_explosion::Trigger(entity act, triggermode_t state)
 			damageType = DMG_GENERIC;
 		}
 
-		radiusDamage(GetOrigin(), GetExplosionRadius(), 0i, GetExplosionDamage(), act, "");
+		combat.RadiusDamage(GetOrigin(), GetExplosionRadius(), 0i, GetExplosionDamage(), act, "");
 	}
 
 	if (HasSpawnFlags(ENVEXPLO_REPEATABLE) == false) {

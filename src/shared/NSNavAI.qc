@@ -35,6 +35,12 @@ NSActor::NSActor(void)
 	}
 }
 
+float
+NSActor::GetStamina(void)
+{
+	return (m_flStamina / g_pmoveVars.pm_stamina);
+}
+
 bool
 NSActor::IsCrouching(void)
 {
@@ -148,6 +154,7 @@ void
 NSActor::Spawned(void)
 {
 	super::Spawned();
+	isActor = true;
 
 	/* let's not waste time and resources */
 	if (wasfreed(this)) {
@@ -170,33 +177,37 @@ NSActor::Spawned(void)
 	string itemList = GetDefString("item");
 	int desiredWeapon = GetDefInt("current_weapon");
 	string switchTo = "";
-	int weaponCount = tokenizebyseparator(weaponList, ",");
+	float weaponCount = 0;
+
+	float desiredTeam = GetSpawnFloat("team");
+
+	if (desiredTeam == 0)
+		SetTeam(TEAM_UNASSIGNED);
+	else
+		SetTeam(desiredTeam);
 
 	/* append items to the end */
-	if (itemList != "") {
+	if (STRING_SET(itemList)) {
 		weaponList = sprintf("%s,%s", weaponList, itemList);
 	}
 
-	for (int i = 0; i < weaponCount; i++) {
+	for (float i = 0; i < tokenizebyseparator(weaponList, ","); i++) {
 		string itemName = argv(i);
 		GiveItem(itemName);
 
 		if (i == desiredWeapon) {
 			switchTo = itemName;
 		}
-
-		/* re-calculate because GiveItem may overwrite argv() */
-		weaponCount = tokenizebyseparator(weaponList, ",");
 	}
 
-	if (switchTo != "") {
+	if (STRING_SET(switchTo)) {
 		SwitchToWeapon(switchTo);
 	}
 
 	/* give them their desired appearance */
 	string spawnModel = GetSpawnString("model");
 
-	if (spawnModel != "") {
+	if (STRING_SET(spawnModel)) {
 		SetModel(GetSpawnString("model"));
 	}
 }
@@ -216,6 +227,22 @@ void
 NSActor::Input(entity eAct, string strInput, string strData)
 {
 	switch (strInput) {
+	case "UseItem":
+		if (HasItem(strData)) {
+			NSItem linkedList;
+
+			linkedList = m_itemList;
+
+			while (linkedList) {
+				/* inventory item may not be a weapon */
+				if (linkedList.classname == strData) {
+					linkedList.OnUse(eAct);
+					break;
+				}
+				linkedList = (NSItem)linkedList.m_nextItem;
+			}
+		}
+		break;
 	case "GiveItem":
 		GiveItem(strData);
 		break;
@@ -245,13 +272,18 @@ NSActor::RouteEnded(void)
 void
 NSActor::CheckRoute_Path(void)
 {
-	float flDist = floor(vlen(m_pathEntity.GetOrigin() - GetOrigin()));
+	float flDist = distance(m_pathEntity.GetOrigin(), GetOrigin());
 
 	//print(sprintf("Check Path! %f\n", flDist));
 
 	/* close enough...? */
 	if (flDist < 80) {
-		NSActor_Log("Reached path node %S", m_pathTarget);
+
+		if (targetname) {
+			NSActor_Log("%S reached path node %S", targetname, m_pathTarget);
+		} else {
+			NSActor_Log("Reached path node %S", m_pathTarget);
+		}
 
 		m_pathTarget = m_pathEntity.target;
 		m_pathEntity = (NSEntity)m_pathEntity.GetTargetEntity();
@@ -266,7 +298,12 @@ NSActor::CheckRoute(void)
 	float flNodeRadius;
 	vector evenpos;
 
-	if (m_pathTarget) {
+	/* if we're targetting ourselves, we act like a turret */
+	if (m_pathTarget == targetname) {
+		return;
+	}
+
+	if (STRING_SET(m_pathTarget)) {
 		CheckRoute_Path();
 		return;
 	}
@@ -799,7 +836,7 @@ NSActor::AddedItemCallback(NSItem itemAdded)
 #ifdef SERVER
 	if (!m_activeWeapon) {
 		if (itemAdded.IsWeapon()) {
-			SwitchToExactWeapon(itemAdded);
+			SwitchToExactWeapon((NSWeapon)itemAdded);
 		}
 	}
 #endif

@@ -34,6 +34,7 @@ typedef struct
 #endif
 
 var string g_sentences_samplepath;
+const string g_sentencesFile = "sound/sentences.txt";
 
 void
 Sentences_Shutdown(void)
@@ -57,10 +58,10 @@ Sentences_Init(void)
 
 	Sentences_Shutdown();
 
-	fs_sentences = fopen("sound/sentences.txt", FILE_READ);
+	fs_sentences = fopen(g_sentencesFile, FILE_READ);
 
 	if (fs_sentences < 0) {
-		NSError("Missing file sound/sentences.txt");
+		NSWarning("No Sentences, missing %S", g_sentencesFile);
 		InitEnd();
 		return;
 	}

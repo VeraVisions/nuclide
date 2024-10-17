@@ -1,9 +1,0 @@
-// Vera Visions Material
-{
-	diffusemap "textures/ui/icons/exit.tga"
-	{
-		program sprite
-		map $diffusemap
-		blendFunc GL_SRC_ALPHA GL_ONE_MINUS_SRC_ALPHA
-	}
-}

@@ -66,23 +66,17 @@ void VGUIList::Spawned(void)
 
 void VGUIList::Draw(void)
 {
+	VGUITheme theme = GetTheme();
 	int iMaxDisplay;
 	if (!m_iItemCount) {
 		return;
 	}
 	
-#ifdef CLASSIC_VGUI
-	drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, m_vecSize[1] - 1], [m_vecSize[0], 1], UI_MAINCOLOR, 1.0f);
-	drawfill(m_parent.m_vecOrigin + m_vecOrigin, [m_vecSize[0], 1], UI_MAINCOLOR, 1.0f);
-	drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, 1], [1, m_vecSize[1] - 2], UI_MAINCOLOR, 1.0f);
-	drawfill(m_parent.m_vecOrigin + m_vecOrigin + [m_vecSize[0] - 1, 1], [1, m_vecSize[1] - 2], UI_MAINCOLOR, 1.0f);
-#else
 	drawfill(m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, [0,0,0], 0.25f);
 	drawfill(m_parent.m_vecOrigin + m_vecOrigin, [m_vecSize[0], 1], [0,0,0], 0.5f);
 	drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, m_vecSize[1] - 1], [m_vecSize[0], 1], [1,1,1], 0.5f);
 	drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, 1], [1, m_vecSize[1] - 2], [0,0,0], 0.5f);
 	drawfill(m_parent.m_vecOrigin + m_vecOrigin + [m_vecSize[0] - 1, 1], [1, m_vecSize[1] - 2], [1,1,1], 0.5f);
-#endif
 
 	vector vecOffset = [8,8];
 	
@@ -100,7 +94,7 @@ void VGUIList::Draw(void)
 			drawfill(m_parent.m_vecOrigin + m_vecOrigin + vecOffset + [-7,-3], [m_vecSize[0] - 2, 18], [1,1,1], 0.1f);
 		}
 		
-		Font_DrawText(m_parent.m_vecOrigin + m_vecOrigin + vecOffset, m_strItems[i], g_fntDefault);
+		theme.DrawText(m_parent.m_vecOrigin + m_vecOrigin + vecOffset, m_strItems[i], m_vecSize, g_fntDefault);
 		vecOffset[1] += 20;
 	}
 	drawresetcliparea();

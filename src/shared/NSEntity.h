@@ -75,6 +75,7 @@ public:
 	/* overrides */
 	virtual void SpawnKey(string,string);
 	virtual void Spawned(void);
+	nonvirtual void Spawn(void);
 
 	/** Tells the engine to make the entity static, effectively making it inaccessible.
 		It will be removed from the game-logic but remain visible and it will retain its
@@ -398,30 +399,35 @@ private:
 	bool m_bIsBrush;
 	vector m_vecEditorColor;
 
-	PREDICTED_FLOAT(entityDefID)
-	PREDICTED_VECTOR_N(origin)
-	PREDICTED_VECTOR_N(angles)
-	PREDICTED_FLOAT_N(modelindex)
-	PREDICTED_VECTOR_N(size)
-	PREDICTED_VECTOR_N(mins)
-	PREDICTED_VECTOR_N(maxs)
-	PREDICTED_FLOAT_N(solid)
-	PREDICTED_FLOAT_N(movetype)
-	PREDICTED_FLOAT_N(scale)
-	PREDICTED_FLOAT_N(flags)
-	PREDICTED_FLOAT_N(vv_flags)
-	PREDICTED_VECTOR_N(velocity)
-	PREDICTED_VECTOR_N(avelocity)
+	NETWORKED_INT(entityDefID)
+	NETWORKED_VECTOR_N(origin)
+	NETWORKED_VECTOR_N(angles)
+	NETWORKED_FLOAT_N(modelindex)
+	NETWORKED_VECTOR_N(size)
+	NETWORKED_VECTOR_N(mins)
+	NETWORKED_VECTOR_N(maxs)
+	NETWORKED_FLOAT_N(solid)
+	NETWORKED_FLOAT_N(movetype)
+	NETWORKED_FLOAT_N(scale)
+	NETWORKED_FLOAT_N(flags)
+	NETWORKED_FLOAT_N(vv_flags)
+	NETWORKED_VECTOR_N(velocity)
+	NETWORKED_VECTOR_N(avelocity)
+
+#ifdef CLIENT
+	/** Called once ReceiveEntity has done its job. */
+	virtual void _ReceiveComplete(float, float);
+#endif
+
 
 #ifdef SERVER
 	string m_parent;
 	string m_parent_old;
 	string m_parent_attachment;
-	PREDICTED_FLOAT_N(frame)
-	PREDICTED_FLOAT_N(skin)
-	PREDICTED_FLOAT_N(effects)
+	NETWORKED_FLOAT_N(frame)
+	NETWORKED_FLOAT_N(skin)
+	NETWORKED_FLOAT_N(effects)
 #endif
-
 	/** Will read from the named def to perform a projectile attack. */
 	nonvirtual bool _ProjectileAttack(string, bool);
 };
@@ -429,6 +435,10 @@ private:
 /** Returns a new entity. Guaranteed to be something. Never __NULL__
    unless we're seriously out of memory. */
 NSEntity spawnClass(string className, vector desiredPos);
+
+#ifdef SERVER
+bool changeClass(entity target, string className)
+#endif
 
 void sendInput(entity target, string inputName, string dataString, entity activator);
 
@@ -445,3 +455,7 @@ bool isPlayer(entity entityToCheck);
 bool isSentient(entity entityToCheck);
 
 bool isBot(entity entityToCheck);
+
+bool isItem(entity entityToCheck);
+
+bool isWeapon(entity entityToCheck);

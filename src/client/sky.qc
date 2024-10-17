@@ -30,7 +30,7 @@ Sky_Update(int force)
 		//print(sprintf("SKY PREFIX: %S\n", skyPrefix));
 
 		/* is it a Source Engine material? */
-		if (skyPrefix == "sky_") {
+		if (fileExists(strcat("materials/skybox/", g_strSkyName, "bk.vmt")) == true) {
 			skyPath = strcat("materials/skybox/", g_strSkyName);
 		} else {
 			skyPath = g_strSkyName;

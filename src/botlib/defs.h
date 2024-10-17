@@ -21,7 +21,14 @@
 @brief Multiplayer game opponents, allies.
 @ingroup ai
 
-# Bot {#bot}
+![](computer.png) Computer controlled opponents are called "Bots". If a game supports them, they will be added with either `bot_minClients #` in the server console, or with the `addBot` command.
+
+## See also
+
+- @ref bot_profile
+- @ref bot_cvars
+- @ref bot_info
+- @ref NSBot
 
 @{
 */

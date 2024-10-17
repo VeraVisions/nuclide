@@ -27,7 +27,10 @@ void UI_NewGame_Show ( void )
 	static CUIRadio radHard;
 
 	static void NewGame_Play ( void ) {
-		localcmd( "maxplayers 1\nmap measure\n" );
+		if (radTraining.GetValue())
+			localcmd( sprintf("maxplayers 1\ndeathmatch 0\ncoop 0\n%s", GameLibrary_GetInfo(GAMEINFO_TRAININGMAP)) );
+		else
+			localcmd( sprintf("maxplayers 1\ndeathmatch 0\ncoop 0\n%s", GameLibrary_GetInfo(GAMEINFO_STARTMAP)) );
 		winNewGame.Hide();
 	}
 	static void NewGame_Cancel ( void ) {
@@ -45,7 +48,7 @@ void UI_NewGame_Show ( void )
 		winNewGame = spawn( CUIWindow );
 		winNewGame.SetTitle( "New Game" );
 		winNewGame.SetSize( '192 168' );
-		winNewGame.SetIcon( "textures/ui/icons/desktop" );
+		winNewGame.SetIcon( "gfx/icon16/new" );
 		g_uiDesktop.Add( winNewGame );
 
 		btnPlay = spawn( CUIButton );

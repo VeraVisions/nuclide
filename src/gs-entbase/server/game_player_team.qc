@@ -74,13 +74,13 @@ game_player_team::Trigger(entity entityActivator, triggermode_t state)
 		damageDecl = spawn(NSDict);
 		damageDecl.AddKey("damage", ftos(targetPlayer.health + 100));
 		damageDecl.AddKey("skip_armor", "1");
-		entityDamage(targetPlayer, this, targetPlayer, damageDecl.GetDeclBody(), "", GetOrigin(), g_vec_null, targetPlayer.origin);
+		combat.Damage(targetPlayer, this, targetPlayer, damageDecl.GetDeclBody(), GetOrigin(), g_vec_null, targetPlayer.origin);
 		remove(damageDecl);
 	} else if (HasSpawnFlags(2) == true) {
 		damageDecl = spawn(NSDict);
 		damageDecl.AddKey("damage", ftos(targetPlayer.health));
 		damageDecl.AddKey("skip_armor", "1");
-		entityDamage(targetPlayer, this, targetPlayer, damageDecl.GetDeclBody(), "", GetOrigin(), g_vec_null, targetPlayer.origin);
+		combat.Damage(targetPlayer, this, targetPlayer, damageDecl.GetDeclBody(), GetOrigin(), g_vec_null, targetPlayer.origin);
 		remove(damageDecl);
 	}
 

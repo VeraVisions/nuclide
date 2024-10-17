@@ -43,6 +43,7 @@ NSDict
 public:
 	void NSDict(void);
 
+	nonvirtual int GetInteger(string);
 	nonvirtual float GetFloat(string);
 	nonvirtual string GetString(string);
 	nonvirtual vector GetVector(string);
@@ -54,7 +55,10 @@ public:
 	nonvirtual void AddKey(string, string);
 	nonvirtual void RemoveKey(string);
 
-	nonvirtual NSDict InitWithSpawnData(string);
+	nonvirtual int TokenCount(void);
+
+	static NSDict InitWithSpawnData(string);
+	static NSDict LoadDeclFromFile(string, string);
 
 private:
 	nonvirtual void _AddRemoveKey(string, string, bool);

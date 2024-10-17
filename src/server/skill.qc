@@ -27,7 +27,7 @@ This will almost always result in them using default values, or (worst case) 0.
 void
 Skill_Init(void)
 {
-	string mapSkillFile = sprintf("maps/%s_skl.cfg", serverkey("mapname"));
+	string mapSkillFile = sprintf("maps/%s_skl.cfg", serverinfo.GetString("mapname"));
 
 	Skill_ParseConfig("cfg/skill_manifest.cfg");
 
@@ -46,17 +46,17 @@ Return a skill variable's value or return a defaultValue if it's undefined.
 float
 Skill_GetValue(string variable, float defaultValue)
 {
-	float skill = cvar("skill");
+	float skill = cvars.GetFloat("skill");
 
 	if (skill == 0) {
 		skill = 2; /* default to medium */
 	}
 
-	float val = fabs(cvar(sprintf("sk_%s%d", variable, skill)));
+	float val = fabs(cvars.GetFloat(sprintf("sk_%s%d", variable, skill)));
 
 	/* specific skill variable doesn't exist? */
 	if (val == 0) {
-		val = fabs(cvar(sprintf("sk_%s", variable)));
+		val = fabs(cvars.GetFloat(sprintf("sk_%s", variable)));
 	}
 
 	return (val == 0) ? defaultValue : val;
@@ -71,11 +71,11 @@ Skill_GetStringValue(string variable, string defaultValue)
 		skill = 2; /* default to medium */
 	}
 
-	string val = cvar_string(sprintf("sk_%s%d", variable, skill));
+	string val = cvars.GetString(sprintf("sk_%s%d", variable, skill));
 
 	/* specific skill variable doesn't exist? */
 	if (val == 0) {
-		val = cvar_string(sprintf("sk_%s", variable));
+		val = cvars.GetString(sprintf("sk_%s", variable));
 	}
 
 	return (val == "") ? defaultValue : val;
@@ -101,11 +101,11 @@ Skill_ParseConfig(string fileName)
 				Skill_ParseConfig(sprintf("cfg/%s", argv(1)));
 			} else {
 				/* some games, like Source, don't use set/seta */
-				cvar_set(argv(0), argv(1));
+				cvars.SetString(argv(0), argv(1));
 			}
 		} else if (argCount == 3i) {
 			if (firstArg == "set" || firstArg == "seta")
-				cvar_set(argv(1), argv(2));
+				cvars.SetString(argv(1), argv(2));
 		}
 	}
 

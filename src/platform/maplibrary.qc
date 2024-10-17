@@ -36,6 +36,8 @@ MapLibrary_MapInGameDir(string fileName, string gameDir)
 {
 	bool list = true;
 
+	//printf("Checking %S %S...\n", fileName, gameDir);
+
 	/* only look for maps in the current gamedir, requires SEARCH_FULLPACKAGE */
 	if (gameDir != MapLibrary_GetMapGamedir()) {
 		return false;
@@ -122,7 +124,7 @@ MapLibrary_Init(void)
 	}
 
 	/* search for all maps in the current PATH */
-	mapsearch = search_begin("maps/*.bsp", SEARCH_NAMESORT | SEARCH_FULLPACKAGE, TRUE);
+	mapsearch = search_begin("maps/*.bsp:maps/*/*.bsp", SEARCH_NAMESORT | SEARCH_FULLPACKAGE | SEARCH_MULTISEARCH, TRUE);
 	mapCount = search_getsize(mapsearch);
 
 	/* we now iterate over the search entries to filter results out */
@@ -142,7 +144,7 @@ MapLibrary_Init(void)
 	g_mapLibrary = (mapLibrary_t *)memalloc(sizeof(mapLibrary_t) * g_mapLibrary_count);
 
 	/* let's do it again, but this time we'll sort the data into our array */
-	mapsearch = search_begin("maps/*.bsp", SEARCH_NAMESORT | SEARCH_FULLPACKAGE, TRUE);
+	mapsearch = search_begin("maps/*.bsp:maps/*/*.bsp", SEARCH_NAMESORT | SEARCH_FULLPACKAGE | SEARCH_MULTISEARCH, TRUE);
 	mapCount = search_getsize(mapsearch);
 
 	for (i = 0i; i < mapCount; i++) {

@@ -31,6 +31,7 @@
 
 static mapTweak_t *g_mapTweakTable;
 static int g_mapTweakCount;
+const string g_maptweakFile = "scripts/maptweaks.txt";
 
 void
 MapTweaks_Init(void)
@@ -42,7 +43,7 @@ MapTweaks_Init(void)
 
 	InitStart();
 
-	tweakFile = fopen("scripts/maptweaks.txt", FILE_READ);
+	tweakFile = fopen(g_maptweakFile, FILE_READ);
 	g_mapTweakCount = 0;
 	tempString = newCvar = newInfo = newItem = "";
 
@@ -55,7 +56,7 @@ MapTweaks_Init(void)
 			}
 		}
 	} else {
-		NSError("Missing file scripts/maptweaks.txt");
+		NSWarning("No map tweaks, missing %S", g_maptweakFile);
 		InitEnd();
 		return;
 	}
@@ -163,7 +164,7 @@ static bool
 MapTweak_FinishSpawn(entity targetEntity, string newClassname)
 {
 	/* found the edef alternative. */
-	if (EntityDef_SwitchClass(targetEntity, newClassname) != __NULL__) {
+	if (ents.ChangeToClass((NSEntity)targetEntity, newClassname) != __NULL__) {
 		return (true);
 	}
 

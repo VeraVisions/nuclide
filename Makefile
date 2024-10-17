@@ -2,6 +2,7 @@
 # Nuclide Makefile
 #
 # Apr 2024 by Marco Cawthorne <marco@vera-visions.com>
+# Last updated: 2024/10/12
 #
 
 # set `GAME` when issuing make. E.g. `make GAME=wastes`
@@ -13,6 +14,8 @@ GAME_ARCH=x64
 GAME_EXT=
 GAME_BINARY=$(NAME)_$(GAME_ARCH)$(GAME_EXT)
 GAMEDS_BINARY=$(NAME)DS_$(GAME_ARCH)$(GAME_EXT)
+
+ENGINE_URL=https://www.github.com/fte-team/fteqw
 
 # FTE specific builds
 ENGINE_ARCH=amd64
@@ -56,6 +59,7 @@ help:
 all: game engine dedicated plugins
 
 game: fteqcc
+	-cp src/cvar_defaults.cfg "$(GAME)/zpak001.pk3dir/default_cvar.cfg"
 	cd "$(GAME)/src/" && $(MAKE) QCC=$(QCC_DIR)/../../fteqcc
 
 client: fteqcc
@@ -148,6 +152,10 @@ clean-engine:
 	cd ThirdParty/fteqw/engine && $(MAKE) clean
 	-rm $(NAME)_x64$(GAME_EXT) $(NAME)_x86$(GAME_EXT) $(NAME)DS_x64$(GAME_EXT) $(NAME)DS_x86$(GAME_EXT) fteqw fteqw-sv
 
+clean-fteqw:
+	cd ThirdParty/fteqw/engine && $(MAKE) clean
+	-rm fteqw fteqw-sv
+
 clean-tools:
 	cd Tools/vmap && $(MAKE) clean
 	cd Tools/vvmtool && $(MAKE) clean
@@ -157,7 +165,7 @@ clean-tools:
 update:
 	if [ -f ./.git/config ];then git pull;fi
 	if [ -f $(GAME)/.git/config ];then cd $(GAME) && git pull;fi
-	if [ ! -d ThirdParty/fteqw ];then git clone https://www.github.com/fte-team/fteqw ThirdParty/fteqw;else cd ./ThirdParty/fteqw && git pull;fi
+	if [ ! -d ThirdParty/fteqw ];then git clone $(ENGINE_URL) ThirdParty/fteqw;else cd ./ThirdParty/fteqw && git pull;fi
 	if [ ! -d Tools/vvmtool ];then git clone https://github.com/VeraVisions/vvmtool Tools/vvmtool;else cd ./Tools/vvmtool && git pull;fi
 	if [ ! -d Tools/vmap ];then git clone https://github.com/VeraVisions/vmap Tools/vmap;else cd ./Tools/vmap && git pull;fi
 	if [ ! -d Tools/worldspawn ];then git clone https://github.com/VeraVisions/worldspawn Tools/worldspawn;else cd ./Tools/worldspawn && git pull;fi

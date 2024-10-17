@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include "api_func.h"
+#include "../shared/api.h"
 #include "../shared/entityDef.h"
 #include "NSOutput.h"
 #include "NSGameRules.h"
@@ -127,7 +129,6 @@ NSEntity g_dmg_eTarget;
 int g_dmg_iDamage;
 bodyType_t g_dmg_iHitBody;
 int g_dmg_iFlags;
-int g_dmg_iWeapon;
 vector g_dmg_vecLocation;
 
 var bool g_ents_initialized = FALSE;

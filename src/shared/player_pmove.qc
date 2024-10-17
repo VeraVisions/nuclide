@@ -100,8 +100,8 @@ NSClientPlayer::Physics_Crouch(void)
 
 	if (CanCrouch() && input_buttons & INPUT_CROUCH) {
 		if (!IsCrouching()) {
-			testMins = g_pmoveVars.GetCrouchMins();
-			testMaxs = g_pmoveVars.GetCrouchMaxs();
+			testMins = m_pmoveVars.GetCrouchMins();
+			testMaxs = m_pmoveVars.GetCrouchMaxs();
 
 			if (PMove_IsStuck(this, origin, testMins, testMaxs) == false) {
 				AddVFlags(VFL_CROUCHING);
@@ -116,12 +116,12 @@ NSClientPlayer::Physics_Crouch(void)
 
 			/* if they're going prone mode, we'll have to test that */
 			if (input_buttons & INPUT_PRONE) {
-				testMins = g_pmoveVars.GetProneMins();
-				testMaxs = g_pmoveVars.GetProneMaxs();
+				testMins = m_pmoveVars.GetProneMins();
+				testMaxs = m_pmoveVars.GetProneMaxs();
 				/*printf("Want to prone.\n");*/
 			} else {
-				testMins = g_pmoveVars.GetStandingMins();
-				testMaxs = g_pmoveVars.GetStandingMaxs();
+				testMins = m_pmoveVars.GetStandingMins();
+				testMaxs = m_pmoveVars.GetStandingMaxs();
 				/*printf("Want to stand.\n");*/
 			}
 
@@ -145,8 +145,8 @@ NSClientPlayer::Physics_Crouch(void)
 		return;
 
 	if (IsCrouching()) {
-		mins = g_pmoveVars.GetCrouchMins();
-		maxs = g_pmoveVars.GetCrouchMaxs();
+		mins = m_pmoveVars.GetCrouchMins();
+		maxs = m_pmoveVars.GetCrouchMaxs();
 		/*printf("State change finished.\n");*/
 	} else {
 		mins = testMins;
@@ -180,8 +180,8 @@ NSClientPlayer::Physics_Prone(void)
 
 	if (CanProne() && input_buttons & INPUT_PRONE) {
 		if (!IsProne()) {
-			testMins = g_pmoveVars.GetProneMins();
-			testMaxs = g_pmoveVars.GetProneMaxs();
+			testMins = m_pmoveVars.GetProneMins();
+			testMaxs = m_pmoveVars.GetProneMaxs();
 
 			if (PMove_IsStuck(this, origin, testMins, testMaxs) == false) {
 				AddVFlags(VFL_PRONE);
@@ -196,12 +196,12 @@ NSClientPlayer::Physics_Prone(void)
 
 			/* if they're going prone mode, we'll have to test that */
 			if (input_buttons & INPUT_CROUCH) {
-				testMins = g_pmoveVars.GetCrouchMins();
-				testMaxs = g_pmoveVars.GetCrouchMaxs();
+				testMins = m_pmoveVars.GetCrouchMins();
+				testMaxs = m_pmoveVars.GetCrouchMaxs();
 				/*printf("Want to crouch.\n");*/
 			} else {
-				testMins = g_pmoveVars.GetStandingMins();
-				testMaxs = g_pmoveVars.GetStandingMaxs();
+				testMins = m_pmoveVars.GetStandingMins();
+				testMaxs = m_pmoveVars.GetStandingMaxs();
 				/*printf("Want to stand.\n");*/
 			}
 
@@ -226,8 +226,8 @@ NSClientPlayer::Physics_Prone(void)
 		return;
 
 	if (IsProne()) {
-		mins = g_pmoveVars.GetProneMins();
-		maxs = g_pmoveVars.GetProneMaxs();
+		mins = m_pmoveVars.GetProneMins();
+		maxs = m_pmoveVars.GetProneMaxs();
 		/*printf("State change finished.\n");*/
 	} else {
 		mins = testMins;
@@ -267,7 +267,7 @@ NSClientPlayer::Physics_Jump(void)
 	} else {
 		/* standard jump here */
 		if (GetFlags() & FL_ONGROUND)
-			velocity[2] += g_pmoveVars.pm_jumpheight;
+			velocity[2] += m_pmoveVars.pm_jumpheight;
 	}
 }
 
@@ -308,11 +308,11 @@ NSClientPlayer::Physics_SetViewParms(void)
 {
 	/* cheap operations */
 	if (IsCrouching()) {
-		view_ofs = g_pmoveVars.GetCrouchViewOffset();
+		view_ofs = m_pmoveVars.GetCrouchViewOffset();
 	} else if (IsProne()) {
-		view_ofs = g_pmoveVars.GetProneViewOffset();
+		view_ofs = m_pmoveVars.GetProneViewOffset();
 	} else {
-		view_ofs = g_pmoveVars.GetStandingViewOffset();
+		view_ofs = m_pmoveVars.GetStandingViewOffset();
 	}
 }
 
@@ -337,7 +337,7 @@ NSClientPlayer::Physics_WaterJump(void)
 
 		/* there's nothing preventing us from putting our hands up here */
 		if (trace_fraction == 1.0) {
-			velocity[2] = g_pmoveVars.pm_waterjumpheight;
+			velocity[2] = m_pmoveVars.pm_waterjumpheight;
 			AddFlags(FL_WATERJUMP);
 			RemoveFlags(FL_JUMPRELEASED);
 			return;
@@ -419,11 +419,11 @@ float
 NSClientPlayer::Physics_MaxSpeed(void)
 {
 	float wishSpeed = 0.0f;
-	float runSpeed = g_pmoveVars.pm_runspeed;
-	float maxStamina = g_pmoveVars.pm_stamina;
-	float crouchSpeed = g_pmoveVars.pm_crouchspeed;
-	float walkSpeed = g_pmoveVars.pm_walkspeed;
-	float proneSpeed = g_pmoveVars.pm_pronespeed;
+	float runSpeed = m_pmoveVars.pm_runspeed;
+	float maxStamina = m_pmoveVars.pm_stamina;
+	float crouchSpeed = m_pmoveVars.pm_crouchspeed;
+	float walkSpeed = m_pmoveVars.pm_walkspeed;
+	float proneSpeed = m_pmoveVars.pm_pronespeed;
 	float speedMod = 1.0f;
 
 	if (m_activeWeapon) {
@@ -432,16 +432,16 @@ NSClientPlayer::Physics_MaxSpeed(void)
 
 	if (CanSprint() && IsSprinting()) {
 		if (m_flStamina < maxStamina) {
-			float slowDownThresh = g_pmoveVars.pm_staminathreshold;
+			float slowDownThresh = m_pmoveVars.pm_staminathreshold;
 
 			if ((m_flStamina + slowDownThresh) > maxStamina) {
 				float delta = (m_flStamina + slowDownThresh) - maxStamina;
 				/* change maxValue to something between 1.0 and 1.5 */
 				runSpeed = lerp(runSpeed, walkSpeed, delta/slowDownThresh);
 			}
-		} 
+		}
 
-		wishSpeed = runSpeed;
+		wishSpeed = (m_flStamina >= maxStamina) ? walkSpeed : runSpeed;
 	} else if (IsCrouching()) {
 		wishSpeed = crouchSpeed;
 	} else if (IsProne()) {
@@ -522,12 +522,12 @@ NSClientPlayer::Physics_InputPostMove(void)
 		m_flStamina += input_timelength;
 	} else {
 		float toSubtract = input_timelength;
-		toSubtract *= g_pmoveVars.pm_staminarate;
+		toSubtract *= m_pmoveVars.pm_staminarate;
 		m_flStamina = max(0, m_flStamina - toSubtract);
 	}
 
-	if (m_flStamina > g_pmoveVars.pm_stamina) {
-		m_flStamina = g_pmoveVars.pm_stamina;
+	if (m_flStamina > m_pmoveVars.pm_stamina) {
+		m_flStamina = m_pmoveVars.pm_stamina;
 	}
 
 	//printf("stamina: %f\n", m_flStamina);

@@ -260,11 +260,17 @@ void
 light::DebugDraw(void)
 {
 #ifdef SERVER
-	R_BeginPolygon(m_strDebugTexture, 0, 0);
-		R_PolygonVertex(GetOrigin() + v_right * 16 - v_up * 16, [1,1], _lightColor, 1.0f);
-		R_PolygonVertex(GetOrigin() - v_right * 16 - v_up * 16, [0,1], _lightColor, 1.0f);
-		R_PolygonVertex(GetOrigin() - v_right * 16 + v_up * 16, [0,0], _lightColor, 1.0f);
-		R_PolygonVertex(GetOrigin() + v_right * 16 + v_up * 16, [1,0], _lightColor, 1.0f);
+	if (m_iEnabled) {
+		m_strEditorIcon = "gfx/icon16/lightbulb";
+	} else {
+		m_strEditorIcon = "gfx/icon16/lightbulb_off";
+	}
+
+	R_BeginPolygon(m_strEditorIcon, 0, 0);
+		R_PolygonVertex(GetOrigin() + v_right * 8 - v_up * 8, [1,1], _lightColor, 1.0f);
+		R_PolygonVertex(GetOrigin() - v_right * 8 - v_up * 8, [0,1], _lightColor, 1.0f);
+		R_PolygonVertex(GetOrigin() - v_right * 8 + v_up * 8, [0,0], _lightColor, 1.0f);
+		R_PolygonVertex(GetOrigin() + v_right * 8 + v_up * 8, [1,0], _lightColor, 1.0f);
 	R_EndPolygon();
 #endif
 }

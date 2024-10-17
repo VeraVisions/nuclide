@@ -189,6 +189,7 @@ separate cvars for overriding their speeds. */
 void
 NSPMoveVars::NSPMoveVars(void)
 {
+	m_defLink = __NULL__;
 }
 
 void
@@ -225,10 +226,198 @@ NSPMoveVars::UpdateBoundingBoxes(void)
 	}
 }
 
+void
+NSPMoveVars::Refresh(void)
+{
+	printf("Refreshing pmove Vars %S\n", m_defLink);
+
+	/* global. */
+	if (!STRING_SET(m_defLink)) {
+		UpdateBoundingBoxes();
+		return;
+	}
+
+	if (STRING_SET(EntityDef_GetKeyValue(m_defLink, "g_gravity")))
+		g_gravity = stof(EntityDef_GetKeyValue(m_defLink, "g_gravity"));
+	else
+		g_gravity = g_pmoveVars.g_gravity;
+
+	if (STRING_SET(EntityDef_GetKeyValue(m_defLink, "pm_accelerate")))
+		pm_accelerate = stof(EntityDef_GetKeyValue(m_defLink, "pm_accelerate"));
+	else
+		pm_accelerate = g_pmoveVars.pm_accelerate;
+
+	if (STRING_SET(EntityDef_GetKeyValue(m_defLink, "pm_airaccelerate")))
+		pm_airaccelerate = stof(EntityDef_GetKeyValue(m_defLink, "pm_airaccelerate"));
+	else
+		pm_airaccelerate = g_pmoveVars.pm_airaccelerate;
+
+	if (STRING_SET(EntityDef_GetKeyValue(m_defLink, "pm_airstepsize")))
+		pm_airstepsize = stof(EntityDef_GetKeyValue(m_defLink, "pm_airstepsize"));
+	else
+		pm_airstepsize = g_pmoveVars.pm_airstepsize;
+
+	if (STRING_SET(EntityDef_GetKeyValue(m_defLink, "pm_boxcenter")))
+		pm_boxcenter = stof(EntityDef_GetKeyValue(m_defLink, "pm_boxcenter"));
+	else
+		pm_boxcenter = g_pmoveVars.pm_boxcenter;
+
+	if (STRING_SET(EntityDef_GetKeyValue(m_defLink, "pm_boxwidth")))
+		pm_boxwidth = stof(EntityDef_GetKeyValue(m_defLink, "pm_boxwidth"));
+	else
+		pm_boxwidth = g_pmoveVars.pm_boxwidth;
+
+	if (STRING_SET(EntityDef_GetKeyValue(m_defLink, "pm_crouchheight")))
+		pm_crouchheight = stof(EntityDef_GetKeyValue(m_defLink, "pm_crouchheight"));
+	else
+		pm_crouchheight = g_pmoveVars.pm_crouchheight;
+
+	if (STRING_SET(EntityDef_GetKeyValue(m_defLink, "pm_crouchspeed")))
+		pm_crouchspeed = stof(EntityDef_GetKeyValue(m_defLink, "pm_crouchspeed"));
+	else
+		pm_crouchspeed = g_pmoveVars.pm_crouchspeed;
+
+	if (STRING_SET(EntityDef_GetKeyValue(m_defLink, "pm_crouchviewheight")))
+		pm_crouchviewheight = stof(EntityDef_GetKeyValue(m_defLink, "pm_crouchviewheight"));
+	else
+		pm_crouchviewheight = g_pmoveVars.pm_crouchviewheight;
+
+	if (STRING_SET(EntityDef_GetKeyValue(m_defLink, "pm_edgefriction")))
+		pm_edgefriction = stof(EntityDef_GetKeyValue(m_defLink, "pm_edgefriction"));
+	else
+		pm_edgefriction = g_pmoveVars.pm_edgefriction;
+
+	if (STRING_SET(EntityDef_GetKeyValue(m_defLink, "pm_friction")))
+		pm_friction = stof(EntityDef_GetKeyValue(m_defLink, "pm_friction"));
+	else
+		pm_friction = g_pmoveVars.pm_friction;
+
+	if (STRING_SET(EntityDef_GetKeyValue(m_defLink, "pm_gravity")))
+		pm_gravity = stof(EntityDef_GetKeyValue(m_defLink, "pm_gravity"));
+	else
+		pm_gravity = g_pmoveVars.pm_gravity;
+
+	if (STRING_SET(EntityDef_GetKeyValue(m_defLink, "pm_jumpheight")))
+		pm_jumpheight = stof(EntityDef_GetKeyValue(m_defLink, "pm_jumpheight"));
+	else
+		pm_jumpheight = g_pmoveVars.pm_jumpheight;
+
+	if (STRING_SET(EntityDef_GetKeyValue(m_defLink, "pm_maxviewpitch")))
+		pm_maxviewpitch = stof(EntityDef_GetKeyValue(m_defLink, "pm_maxviewpitch"));
+	else
+		pm_maxviewpitch = g_pmoveVars.pm_maxviewpitch;
+
+	if (STRING_SET(EntityDef_GetKeyValue(m_defLink, "pm_minviewpitch")))
+		pm_minviewpitch = stof(EntityDef_GetKeyValue(m_defLink, "pm_minviewpitch"));
+	else
+		pm_minviewpitch = g_pmoveVars.pm_minviewpitch;
+
+	if (STRING_SET(EntityDef_GetKeyValue(m_defLink, "pm_noclipaccelerate")))
+		pm_noclipaccelerate = stof(EntityDef_GetKeyValue(m_defLink, "pm_noclipaccelerate"));
+	else
+		pm_noclipaccelerate = g_pmoveVars.pm_noclipaccelerate;
+
+	if (STRING_SET(EntityDef_GetKeyValue(m_defLink, "pm_noclipspeed")))
+		pm_noclipspeed = stof(EntityDef_GetKeyValue(m_defLink, "pm_noclipspeed"));
+	else
+		pm_noclipspeed = g_pmoveVars.pm_noclipspeed;
+
+	if (STRING_SET(EntityDef_GetKeyValue(m_defLink, "pm_normalheight")))
+		pm_normalheight = stof(EntityDef_GetKeyValue(m_defLink, "pm_normalheight"));
+	else
+		pm_normalheight = g_pmoveVars.pm_normalheight;
+
+	if (STRING_SET(EntityDef_GetKeyValue(m_defLink, "pm_normalviewheight")))
+		pm_normalviewheight = stof(EntityDef_GetKeyValue(m_defLink, "pm_normalviewheight"));
+	else
+		pm_normalviewheight = g_pmoveVars.pm_normalviewheight;
+
+	if (STRING_SET(EntityDef_GetKeyValue(m_defLink, "pm_nospeedcap")))
+		pm_nospeedcap = stof(EntityDef_GetKeyValue(m_defLink, "pm_nospeedcap"));
+	else
+		pm_nospeedcap = g_pmoveVars.pm_nospeedcap;
+
+	if (STRING_SET(EntityDef_GetKeyValue(m_defLink, "pm_proneheight")))
+		pm_proneheight = stof(EntityDef_GetKeyValue(m_defLink, "pm_proneheight"));
+	else
+		pm_proneheight = g_pmoveVars.pm_proneheight;
+
+	if (STRING_SET(EntityDef_GetKeyValue(m_defLink, "pm_pronespeed")))
+		pm_pronespeed = stof(EntityDef_GetKeyValue(m_defLink, "pm_pronespeed"));
+	else
+		pm_pronespeed = g_pmoveVars.pm_pronespeed;
+
+	if (STRING_SET(EntityDef_GetKeyValue(m_defLink, "pm_proneviewheight")))
+		pm_proneviewheight = stof(EntityDef_GetKeyValue(m_defLink, "pm_proneviewheight"));
+	else
+		pm_proneviewheight = g_pmoveVars.pm_proneviewheight;
+
+	if (STRING_SET(EntityDef_GetKeyValue(m_defLink, "pm_runspeed")))
+		pm_runspeed = stof(EntityDef_GetKeyValue(m_defLink, "pm_runspeed"));
+	else
+		pm_runspeed = g_pmoveVars.pm_runspeed;
+
+	if (STRING_SET(EntityDef_GetKeyValue(m_defLink, "pm_stamina")))
+		pm_stamina = stof(EntityDef_GetKeyValue(m_defLink, "pm_stamina"));
+	else
+		pm_stamina = g_pmoveVars.pm_stamina;
+
+	if (STRING_SET(EntityDef_GetKeyValue(m_defLink, "pm_staminarate")))
+		pm_staminarate = stof(EntityDef_GetKeyValue(m_defLink, "pm_staminarate"));
+	else
+		pm_staminarate = g_pmoveVars.pm_staminarate;
+
+	if (STRING_SET(EntityDef_GetKeyValue(m_defLink, "pm_staminathreshold")))
+		pm_staminathreshold = stof(EntityDef_GetKeyValue(m_defLink, "pm_staminathreshold"));
+	else
+		pm_staminathreshold = g_pmoveVars.pm_staminathreshold;
+
+	if (STRING_SET(EntityDef_GetKeyValue(m_defLink, "pm_stepsize")))
+		pm_stepsize = stof(EntityDef_GetKeyValue(m_defLink, "pm_stepsize"));
+	else
+		pm_stepsize = g_pmoveVars.pm_stepsize;
+
+	if (STRING_SET(EntityDef_GetKeyValue(m_defLink, "pm_stopspeed")))
+		pm_stopspeed = stof(EntityDef_GetKeyValue(m_defLink, "pm_stopspeed"));
+	else
+		pm_stopspeed = g_pmoveVars.pm_stopspeed;
+
+	if (STRING_SET(EntityDef_GetKeyValue(m_defLink, "pm_walkspeed")))
+		pm_walkspeed = stof(EntityDef_GetKeyValue(m_defLink, "pm_walkspeed"));
+	else
+		pm_walkspeed = g_pmoveVars.pm_walkspeed;
+
+	if (STRING_SET(EntityDef_GetKeyValue(m_defLink, "pm_wateraccelerate")))
+		pm_wateraccelerate = stof(EntityDef_GetKeyValue(m_defLink, "pm_wateraccelerate"));
+	else
+		pm_wateraccelerate = g_pmoveVars.pm_wateraccelerate;
+
+	if (STRING_SET(EntityDef_GetKeyValue(m_defLink, "pm_waterjumpheight")))
+		pm_waterjumpheight = stof(EntityDef_GetKeyValue(m_defLink, "pm_waterjumpheight"));
+	else
+		pm_waterjumpheight = g_pmoveVars.pm_waterjumpheight;
+
+
+	UpdateBoundingBoxes();
+}
+
+void
+NSPMoveVars::LinkToEntity(string defName)
+{
+	m_defLink = defName;
+	Refresh();
+
+}
+
 #ifdef SERVER
 void
 NSPMoveVars::EvaluateEntity(void)
 {
+	/* this is belonging to a decl */
+	if (STRING_SET(m_defLink)) {
+		return;
+	}
+
 	g_gravity = autocvar_g_gravity;
 	pm_accelerate = autocvar_pm_accelerate;
 	pm_airaccelerate = autocvar_pm_airaccelerate;
@@ -300,6 +489,11 @@ NSPMoveVars::EvaluateEntity(void)
 bool
 NSPMoveVars::SendEntity(entity pvsEnt, float flChanged)
 {
+	/* this is belonging to a decl */
+	if (STRING_SET(m_defLink)) {
+		return (false);
+	}
+
 	WriteByte(MSG_ENTITY, ENT_PMOVEVARS);
 	WriteFloat(MSG_ENTITY, flChanged);
 
@@ -380,7 +574,12 @@ NSPMoveVars::ReceiveEntity(float flNew, float flChanged)
 		g_pmoveVars = this;
 	}
 
-	UpdateBoundingBoxes();
+	printf("Refreshing all pmove vars.\n");
+
+	for (NSPMoveVars vars = __NULL__;(vars = (NSPMoveVars)find(vars, ::classname, "NSPMoveVars"));) {
+		vars.Refresh();
+	}
+
 }
 #endif
 

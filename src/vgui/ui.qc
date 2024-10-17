@@ -33,6 +33,7 @@
 
 font_s g_fntDefault;
 var int g_vguiWidgetCount;
+int g_lastmousepos[2];
 
 /** @ingroup vgui
  *
@@ -328,7 +329,14 @@ VGUIWidget::HasFlag(int flag)
 void
 VGUIWidget::Reposition(void)
 {
+	VGUIWidget wNext = this;
 
+	do {
+		wNext = wNext.m_next;
+		if (wNext) {
+			wNext.Reposition();
+		}
+	} while (wNext);
 }
 
 void
@@ -420,27 +428,79 @@ VGUIWidget::Spawned(void)
 {
 }
 
+
 void
 UISystem_Init(void)
 {
-	/* we support fancier stuff in non-classic mode */
-#ifndef CLASSIC_VGUI
 	string strTemp;
-	string strUIFile = "scripts/ui_style.txt";
+
+#ifdef CLIENT
+	string strUIFile = "scripts/client_style.txt";
+#else
+	string strUIFile = "scripts/menu_style.txt";
+#endif
+
 	filestream fileUI = fopen(strUIFile, FILE_READ);
 
+	if (fileUI < 0) {
+		strUIFile = "scripts/ui_style.txt";
+		fileUI = fopen(strUIFile, FILE_READ);
+	}
+
 	UI_MAINCOLOR = [68,68,68] / 255;
+	UI_FGCOLOR = [255,255,255] / 255;
 	UI_MAINALPHA = 1.0f;
+	UI_ROUNDED = false;
+	UI_NOICONS = false;
+	UI_HICOLOR = [255,255,255] / 255;
+	UI_LOCOLOR = [0,0,0] / 255;
+	UI_BORDERCOLOR = [255,255,255] / 255;
+	UI_BORDERALPHA = 0 / 255;
+	UI_FILLCOLOR = [255,255,255] / 255;
+	UI_HOVERCOLOR = [255,255,255] / 255;
+	UI_HOVERALPHA = 0;
 
 	if (fileUI >= 0) {
 		while ((strTemp = fgets(fileUI))) {
 			if (tokenizebyseparator(strTemp, "=") == 2) {
 				switch (argv(0)) {
+					case "BG_COLOR":
 					case "COLOR":
 						UI_MAINCOLOR = stov(argv(1)) / 255;
 						break;
+					case "FG_COLOR":
+						UI_FGCOLOR = stov(argv(1)) / 255;
+						break;
+					case "HILIGHT_COLOR":
+						UI_HICOLOR = stov(argv(1)) / 255;
+						break;
+					case "SHADOW_COLOR":
+						UI_LOCOLOR = stov(argv(1)) / 255;
+						break;
+					case "BORDER_COLOR":
+						UI_BORDERCOLOR = stov(argv(1)) / 255;
+						break;
+					case "FILL_COLOR":
+						UI_FILLCOLOR = stov(argv(1)) / 255;
+						break;
+					case "BORDER_ALPHA":
+						UI_BORDERALPHA = stof(argv(1)) / 255;
+						break;
+					case "HOVER_COLOR":
+						UI_HOVERCOLOR = stov(argv(1)) / 255;
+						break;
+					case "HOVER_ALPHA":
+						UI_HOVERALPHA = stof(argv(1)) / 255;
+						break;
+					case "BG_ALPHA":
 					case "ALPHA":
 						UI_MAINALPHA = stof(argv(1)) / 255;
+						break;
+					case "ROUNDED":
+						UI_ROUNDED = (bool)stof(argv(1));
+						break;
+					case "NOICONS":
+						UI_NOICONS = (bool)stof(argv(1));
 						break;
 				}
 			}
@@ -449,16 +509,9 @@ UISystem_Init(void)
 	} else {
 		NSError(sprintf("[MENU] Cannot load UI file %s!", strUIFile));
 	}
-#endif
 
 	Font_Load("fonts/ui.font", g_fntDefault);
-	precache_pic("textures/ui/steam/icon_radiosel");
-	precache_pic("textures/ui/steam/icon_radiounsel");
-	precache_pic("textures/ui/steam/icon_checked");
-	precache_pic("textures/ui/steam/icon_emptybox");
-	precache_pic("textures/ui/steam/icon_down");
-	precache_pic("textures/ui/steam/icon_up");
-	precache_pic("textures/ui/steam/icon_close");
+
 }
 
 #ifdef CLIENT

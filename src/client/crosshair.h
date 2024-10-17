@@ -26,6 +26,12 @@
     @{
 */
 
+
+/** Returns the end-coordinates for a crosshair of a given size.
+
+@param sizeXY is the size in pixels it is meant to take up on screen. */
+vector Cross_GetPos(vector sizeXY);
+
 /** Draws a crosshair on the screen with the desired material and size.
 
 @param materialPath is the material to use.

@@ -78,6 +78,7 @@ public:
 	virtual float SendEntity(entity,float);
 	virtual void SpawnKey(string,string);
 	virtual void NetworkOnce(void);
+	virtual void Respawn(void);
 #else
 	virtual float predraw(void);
 	virtual void think(void);
@@ -142,7 +143,7 @@ env_sprite::SendEntity(entity ePEnt, float flChanged)
 		return (0);
 
 	/* strings are expensive. */
-	if (!m_strMaterial)
+	if (!STRING_SET(m_strMaterial))
 		flChanged &= ~SPRITE_CHANGED_MATERIAL;
 
 	WriteByte(MSG_ENTITY, ENT_SPRITE);
@@ -173,7 +174,12 @@ env_sprite::NetworkOnce(void)
 	WriteCoord(MSG_MULTICAST, origin[0]);
 	WriteCoord(MSG_MULTICAST, origin[1]);
 	WriteCoord(MSG_MULTICAST, origin[2]);
-	WriteFloat(MSG_MULTICAST, modelindex);
+
+	if (STRING_SET(m_strMaterial))
+		WriteFloat(MSG_MULTICAST, 0);
+	else
+		WriteFloat(MSG_MULTICAST, modelindex);
+
 	WriteFloat(MSG_MULTICAST, m_flFramerate);
 	WriteFloat(MSG_MULTICAST, scale);
 	WriteByte(MSG_MULTICAST, m_iRenderMode);
@@ -227,6 +233,26 @@ env_sprite::Spawned(void)
 	if (!targetname)
 		m_iToggled = TRUE;
 }
+
+void
+env_sprite::Respawn(void)
+{
+	super::Respawn();
+
+	string modelTest = GetSpawnString("model");
+
+	/* HACK: Source Engine support. Yes, they re-used 'model' for this. */
+	if (exists.InVFS(modelTest) == false) {
+
+		string sourceVMT = strcat("materials/", Util_ChangeExtension(modelTest, "vmt"));
+
+		if (exists.InVFS(sourceVMT)) {
+			m_strMaterial = sourceVMT;
+			model = __NULL__;
+			modelindex = 0;
+		}
+	}
+}
 #else
 float
 env_sprite::predraw(void)
@@ -245,6 +271,8 @@ env_sprite::predraw(void)
 	vector fsize = [64,64];
 
 	traceline(origin, vecPlayer, MOVE_WORLDONLY, this);
+
+	trace_fraction = 1.0f;
 
 	if (trace_fraction < 1.0)
 		return (PREDRAW_NEXT);
@@ -299,6 +327,7 @@ env_sprite::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_BYTE(m_flRenderAmt, SPRITE_CHANGED_RENDERAMT)
 	READENTITY_STRING(m_strMaterial, SPRITE_CHANGED_MATERIAL)
 
+	effects = EF_NODEPTHTEST;
 	drawmask = MASK_ENGINE;
 	nextthink = time + (1 / m_flFramerate);
 	m_iMaxFrame = modelframecount(modelindex);

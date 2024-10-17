@@ -39,9 +39,9 @@ Make sure all the cached stuff is reset.
 void
 Vote_Reset(void)
 {
-	forceinfokey(world, "votes_y", "0");
-	forceinfokey(world, "votes_n", "0");
-	forceinfokey(world, "vote_cmd", "");
+	serverinfo.SetFloat("votes_y", 0);
+	serverinfo.SetFloat("votes_n", 0);
+	serverinfo.SetString("vote_cmd", "");
 
 	for (entity e = world; (e = find(e, ::classname, "player"));) {
 		NSClientPlayer pl = (NSClientPlayer)e;
@@ -95,7 +95,7 @@ Vote_Frame(void)
 	if (time >= g_flVoteTime) {
 		
 		if (g_iVoteState == VOTE_INPROGRESS) {
-			if (serverkeyfloat("votes_y") > serverkeyfloat("votes_n")) {
+			if (serverinfo.GetFloat("votes_y") > serverinfo.GetFloat("votes_n")) {
 				Vote_Passed();
 			} else {
 				Vote_Failed();
@@ -131,7 +131,7 @@ CSEv_VoteY(void)
 		return;
 	}
 
-	forceinfokey(world, "votes_y", ftos(serverkeyfloat("votes_y")+1));
+	serverinfo.SetFloat("votes_y", serverinfo.GetFloat("votes_y") + 1);
 	pl.voted = 1;
 
 	/* HACK: Is there a better way to do this? */
@@ -141,12 +141,12 @@ CSEv_VoteY(void)
 	}
 
 	/* We need at least half the players agreeing. */
-	if (serverkeyfloat("votes_y") > rint(playernums / 2)) {
+	if (serverinfo.GetFloat("votes_y") > rint(playernums / 2)) {
 		Vote_Passed();
 		return;
 	}
 
-	if (serverkeyfloat("votes_n") + serverkeyfloat("votes_y") == playernums) {
+	if (serverinfo.GetFloat("votes_n") + serverinfo.GetFloat("votes_y") == playernums) {
 		g_flVoteTime = time + 0.0f;
 	}
 }
@@ -176,7 +176,7 @@ CSEv_VoteN(void)
 		return;
 	}
 
-	forceinfokey(world, "votes_n", ftos(serverkeyfloat("votes_n")+1));
+	serverinfo.SetFloat("votes_n", serverinfo.GetFloat("votes_n") + 1);
 	pl.voted = 1;
 
 	/* HACK: Is there a better way to do this? */
@@ -186,12 +186,12 @@ CSEv_VoteN(void)
 	}
 
 	/* We need at least half the players disagreeing. */
-	if (serverkeyfloat("votes_n") > rint(playernums / 2)) {
+	if (serverinfo.GetFloat("votes_n") > rint(playernums / 2)) {
 		Vote_Failed();
 		return;
 	}
 
-	if (serverkeyfloat("votes_n") + serverkeyfloat("votes_y") == playernums) {
+	if (serverinfo.GetFloat("votes_n") + serverinfo.GetFloat("votes_y") == playernums) {
 		g_flVoteTime = time + 0.0f;
 	}
 }
@@ -218,7 +218,7 @@ Vote_InitiateVote(string votemsg)
 
 	Vote_Reset();
 
-	forceinfokey(world, "vote_cmd", votemsg);
+	serverinfo.SetString("vote_cmd", votemsg);
 	g_flVoteTime = time + 30.0f;
 	g_iVoteState = VOTE_INPROGRESS;
 }

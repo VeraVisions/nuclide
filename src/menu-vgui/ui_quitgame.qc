@@ -35,7 +35,7 @@ void UI_QuitGame_Show ( void )
 		winQuitGame = spawn( CUIWindow );
 		winQuitGame.SetTitle( "Quit Game" );
 		winQuitGame.SetSize( '256 128' );
-		winQuitGame.SetIcon( "textures/ui/icons/cancel" );
+		winQuitGame.SetIcon( "gfx/icon16/stop" );
 		g_uiDesktop.Add( winQuitGame );
 
 		btnQuit = spawn( CUIButton );
@@ -52,6 +52,7 @@ void UI_QuitGame_Show ( void )
 		lblSure.SetTitle( "Do you wish to stop playing now?" );
 		lblSure.SetSize( '256 16' );
 		lblSure.SetPos( '0 48' );
+		lblSure.SetAlignment(AF_NONE);
 
 		btnQuit.SetFunc( QuitGame_Yes );
 		btnCancel.SetFunc( QuitGame_No );

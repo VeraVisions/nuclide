@@ -532,6 +532,9 @@ NSSurfacePropEntity::BreakModel(int damage, vector dir, int location)
 		Disappear();
 	}
 
+	SetSolid(SOLID_NOT);
+	SetMovetype(MOVETYPE_NONE);
+
 	/* handle explosions */
 	float flExplodeMag, flExplodeRad;
 	flExplodeMag = GetPropData(PROPINFO_EXPLOSIVE_DMG);
@@ -543,7 +546,7 @@ NSSurfacePropEntity::BreakModel(int damage, vector dir, int location)
 		}
 
 		pointparticles(particleeffectnum("fx_explosion.main"), origin, angles, 1);
-		radiusDamage(origin, flExplodeRad, 0i, (int)flExplodeMag, this, "");
+		combat.RadiusDamage(origin, flExplodeRad, 0i, (int)flExplodeMag, this, "");
 	}
 }
 
@@ -559,15 +562,6 @@ NSSurfacePropEntity::SetPropData(string type)
 {
 	m_strPropData = type;
 	_PropDataFinish();
-
-	/* no surfdata? maybe the propdata has got one set. */
-	if (m_iMaterial == -1i) {
-		string propDataSurf = GetPropData(PROPINFO_SURFACEPROP);
-
-		if (propDataSurf != "") {
-			SetSurfaceData(propDataSurf);
-		}
-	}
 }
 
 void
@@ -575,7 +569,7 @@ NSSurfacePropEntity::_SurfaceDataFinish(void)
 {
 	SurfData_SetStage(m_strSurfData);
 
-	if (m_strSurfData) {
+	if (STRING_SET(m_strSurfData)) {
 		m_iMaterial = SurfData_Finish();
 	} else {
 		m_iMaterial = -1i;
@@ -587,10 +581,19 @@ NSSurfacePropEntity::_PropDataFinish(void)
 {
 	PropData_SetStage(m_strPropData);
 
-	if (m_strPropData) {
+	if (STRING_SET(m_strPropData)) {
 		m_iPropData = PropData_Finish();
 	} else {
 		m_iPropData = -1i;
+	}
+
+	/* no surfdata? maybe the propdata has got one set. */
+	if (m_iMaterial == -1i && m_iPropData != -1i) {
+		string propDataSurf = GetPropData(PROPINFO_SURFACEPROP);
+
+		if (STRING_SET(propDataSurf)) {
+			SetSurfaceData(propDataSurf);
+		}
 	}
 }
 
@@ -778,7 +781,7 @@ NSSurfacePropEntity::ReceiveEntity(float flNew, float flChanged)
 void
 NSSurfacePropEntity::RenderFire(void)
 {
-	if (IsOnFire()) {
+	if (IsOnFire() == true) {
 		vector randomOrg;
 
 		if (m_flBurnNext < time) {
@@ -794,12 +797,15 @@ NSSurfacePropEntity::RenderFire(void)
 float
 NSSurfacePropEntity::predraw(void)
 {
-	float returnValue = super::predraw();
+	float oldEffects = effects;
 
-	if (returnValue) {
+	if (modelindex != 0) {
 		RenderFire();
 	}
 
+	float returnValue = super::predraw();
+
+	effects = oldEffects;
 	return returnValue;
 }
 
@@ -824,96 +830,10 @@ NSSurfacePropEntity::SetModel(string newModel)
 	NSRenderableEntity::SetModel(newModel);
 
 #ifdef SERVER
-	if (model && HasPropData() == false) {
+	if (STRING_SET(model) && HasPropData() == false) {
 		m_iPropData = PropData_ForModel(model);
-	}
-#endif
-}
-
-/* helper functions */
-
-void
-entityDamage(entity targetEnt, entity inflictingEnt, entity attackingEnt, string damageDef, string weaponDef, vector damageOrigin, vector damageDir, vector hitLocation)
-{
-#ifdef SERVER
-	NSSurfacePropEntity theTarget;
-
-	/* common filters */
-	if (targetEnt.takedamage == DAMAGE_NO) {
-		return;
-	}
-
-	if (isGodMode(targetEnt) == true) {
-		return;
-	}
-
-	theTarget = (NSSurfacePropEntity)targetEnt;
-
-	/* don't use IsAlive(), else we can't gib */
-	if (!theTarget.GetHealth()) {
-		return;
-	}
-
-	NSDict damageDecl = NSDict::InitWithSpawnData(damageDef);
-	damageDecl.AddKey("weapon", weaponDef);
-	theTarget.Damage(inflictingEnt, attackingEnt, damageDecl, 1.0, damageDir, hitLocation);
-	remove(damageDecl);
-#endif
-}
-
-void
-radiusDamage(vector damageCenter, float damageRange, int damageMin, int damageMax, entity attackingEnt, string strDamageDecl)
-{
-#ifdef SERVER
-	vector entPos = g_vec_null;
-	float entDistance = 0.0f;
-	int newDamage = 0i;
-	float damageFrac = 0.0f;
-	vector dmgDir = g_vec_null;
-
-	for (NSSurfacePropEntity e = __NULL__; (e = (NSSurfacePropEntity)nextent(e));) {
-		if (e.takedamage == DAMAGE_NO) {
-			continue;
-		}
-
-		entPos = e.WorldSpaceCenter();
-
-		/* don't bother if it's not anywhere near us */
-		entDistance = length(damageCenter - entPos);
-
-		if (entDistance > damageRange) {
-			continue;
-		}
-
-		/* can we physically hit this thing? */
-		if (damageMax > 0i) {
-			if (e.CanBeDamaged(damageCenter, entPos) == false) {
-				continue;
-			}
-		}
-
-		/* calculate new damage values */
-		damageFrac = (damageRange - entDistance) / damageRange;
-		newDamage = (int)lerp(fabs((float)damageMin), (float)damageMax, damageFrac);
-		dmgDir = dirFromTarget(damageCenter, entPos);
-
-		if (e == attackingEnt) {
-			newDamage *= 0.5f;
-		}
-
-		NSDict damageDecl;
-		
-		if (STRING_SET(strDamageDecl)) {
-			int declID = EntityDef_IDFromName(strDamageDecl);
-			damageDecl = NSDict::InitWithSpawnData(EntityDef_GetSpawnData(declID));
-		} else {
-			damageDecl = spawn(NSDict);
-		}
-		
-	
-		damageDecl.AddKey("damage", itos(newDamage));
-		e.Damage(attackingEnt, attackingEnt, damageDecl, 1.0, dmgDir, trace_endpos);
-		remove(damageDecl);
+		m_strPropData = model;
+		_PropDataFinish();
 	}
 #endif
 }

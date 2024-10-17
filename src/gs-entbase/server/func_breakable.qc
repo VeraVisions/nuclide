@@ -310,7 +310,7 @@ func_breakable::Explode(void)
 
 	BreakModel_Spawn(absmin, absmax, [0,0,0], m_flExplodeMag, vlen(size) / 10, breakModel);
 	pointparticles(_m_iExplosionParticle, rp, [0,0,0], 1);
-	radiusDamage(GetOrigin(), m_flExplodeMag, 0i, m_flExplodeRad, this, "");
+	combat.RadiusDamage(GetOrigin(), m_flExplodeMag, 0i, m_flExplodeRad, this, "");
 	UseTargets(this, TRIG_TOGGLE, 0.0f); /* delay... ignored. */
 	MakeInvulnerable();
 	Disappear();

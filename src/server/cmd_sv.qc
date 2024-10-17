@@ -112,7 +112,7 @@ CMD_Input(void)
 
 	if (inputTarget) {
 		inputTarget.Input(self, inputName, inputData);
-		print(sprintf("Sending input to %d, %S: %S\n", entNum, inputName, inputData));
+		printf("Sending input to %d, %S: %S\n", entNum, inputName, inputData);
 	}
 }
 
@@ -121,7 +121,7 @@ CMD_ListTargets(void)
 {
 	for (entity a = world; (a = findfloat(a, ::identity, 1));) {
 		if (a.targetname) {
-			print(sprintf("%d: %s (%s)\n", num_for_edict(a), a.targetname, a.classname));
+			printf("%d: %s (%s)\n", num_for_edict(a), a.targetname, a.classname);
 		}
 	}
 }
@@ -181,6 +181,23 @@ CMD_Spawn(void)
 	setorigin(unit, trace_endpos);
 }
 
+static void
+CMD_PropSpawn(void)
+{
+	string newModel = argv(1);
+	makevectors(self.v_angle);
+	traceline(self.origin, self.origin + (v_forward * 1024), MOVE_NORMAL, self);
+
+	prop_physics newProp = spawn(prop_physics);
+	newProp.SetModel(newModel);
+	newProp.SetOriginUnstick(trace_endpos + [0,0,32]);
+	newProp.Spawn();
+	newProp.SetModel(newModel);
+	newProp.SetOriginUnstick(trace_endpos + [0,0,32]);
+	newProp.ClearVelocity();
+	newProp.Wake();
+}
+
 bool
 Cmd_ParseServerCommand(void)
 {
@@ -226,6 +243,9 @@ Cmd_ParseServerCommand(void)
 		break;
 	case "spawnDef":
 		CMD_Spawn();
+		break;
+	case "propSpawn":
+		CMD_PropSpawn();
 		break;
 #ifdef BOT_INCLUDED
 	case "way":

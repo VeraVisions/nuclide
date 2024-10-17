@@ -25,7 +25,7 @@ void UI_FindServers_Show ( void )
 		winFind = spawn( CUIWindow );
 		winFind.SetTitle( "Find Servers" );
 		winFind.SetSize( '600 400' );
-		winFind.SetIcon( "textures/ui/icons/servers" );
+		winFind.SetIcon( "gfx/icon16/world" );
 
 		g_uiDesktop.Add( winFind );
 	}

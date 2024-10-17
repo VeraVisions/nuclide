@@ -314,7 +314,7 @@ NSTalkMonster::Speak(string sentence)
 }
 
 void
-NSTalkMonster::TalkPlayerGreet(void)
+NSTalkMonster::SeenPlayer(NSActor thePlayer)
 {
 	if (m_iSequenceState != SEQUENCESTATE_NONE) {
 		return;
@@ -329,24 +329,14 @@ NSTalkMonster::TalkPlayerGreet(void)
 		return;
 	}
 
-	for (entity p = world; (p = find(p, ::classname, "player"));) {
-		/* Find players in a specific radius */
-		if (vlen(p.origin - origin) < PLAYER_DETECT_RADIUS) {
-			/* If we can't physically see him, don't do anything */
-			if (VisibleVec(p.origin + p.view_ofs) == false)
-				continue;
-
-			Sentence(m_talkPlayerGreet);
-			m_flNextSentence = time + 10.0;
-			m_iFlags |= MONSTER_METPLAYER;
-			m_eLookAt = p;
-			break;
-		}
-	}
+	Sentence(m_talkPlayerGreet);
+	m_flNextSentence = time + 10.0;
+	m_iFlags |= MONSTER_METPLAYER;
+	m_eLookAt = thePlayer;
 }
 
 void
-NSTalkMonster::TalkPlayerIdle(void)
+NSTalkMonster::SeenFriend(NSActor theActor)
 {
 	if (m_iSequenceState != SEQUENCESTATE_NONE) {
 		return;
@@ -358,25 +348,8 @@ NSTalkMonster::TalkPlayerIdle(void)
 		return;
 	}
 
-	for (entity p = world; (p = find(p, ::classname, "player"));) {
-		if (IsFriend(p.m_iAlliance) == false) {
-			continue;
-		}
-
-		/* Find players in a specific radius */
-		if (vlen(p.origin - origin) < PLAYER_DETECT_RADIUS) {
-			/* If we can't physically see him, don't do anything */
-			traceline(origin, p.origin, FALSE, this);
-
-			if (trace_ent != p) {
-				continue;
-			}
-
-			Sentence(m_talkPlayerIdle);
-			m_flNextSentence = time + 10.0;
-			break;
-		}
-	}
+	Sentence(m_talkPlayerIdle);
+	m_flNextSentence = time + 10.0;
 }
 
 void
@@ -603,7 +576,7 @@ NSTalkMonster::FollowPlayer(void)
 	vector vecParent = m_eFollowingChain.origin;
 	vecParent[2] = origin[2];
 
-	flPlayerDist = vlen(vecParent - origin);
+	flPlayerDist = distance(vecParent, origin);
 
 	/* Give up after 1024 units */
 	if (flPlayerDist > m_flMaxFollowDistance) {
@@ -742,11 +715,15 @@ NSTalkMonster::FollowChain(void)
 void
 NSTalkMonster::RunAI(void)
 {
+	if (GetMovetype() == MOVETYPE_NONE) {
+		return;
+	}
+
 	SeeThink();
 	AttackThink();
-	TalkPlayerGreet();
 	FollowChain();
 
+#if 0
 	if (m_eFollowing != world && m_iNodes <= 0) {
 		m_eLookAt = m_eFollowing;
 		FollowPlayer();
@@ -756,9 +733,9 @@ NSTalkMonster::RunAI(void)
 		if (random() < 0.5) {
 			TalkPlayerAsk();
 		} else {
-			TalkPlayerIdle();
 		}
 	}
+#endif
 }
 
 void

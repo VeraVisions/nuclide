@@ -38,8 +38,5 @@ public:
 	virtual void SpawnKey(string, string);
 	virtual void Save(float);
 	virtual void Restore(string, string);
-
-private:
-	string m_strDebugTexture;
 #endif
 };

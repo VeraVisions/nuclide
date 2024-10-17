@@ -68,7 +68,6 @@ m_updates.qc
 m_intro.qc
 m_main.qc
 menu.qc
-background.qc
 
 ../platform/includes.src
 

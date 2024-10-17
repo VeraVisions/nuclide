@@ -98,7 +98,7 @@ game_player_hurt::Trigger(entity activatingEntity, triggermode_t triggerMode)
 
 	NSDict damageDecl = spawn(NSDict);
 	damageDecl.AddKey("damage", itos(m_iDamage));
-	entityDamage(activatingEntity, this, activatingEntity, damageDecl.GetDeclBody(), "", GetOrigin(), g_vec_null, activatingEntity.origin);
+	combat.Damage(activatingEntity, this, activatingEntity, damageDecl.GetDeclBody(), GetOrigin(), g_vec_null, activatingEntity.origin);
 	remove(damageDecl);
 
 	if (HasSpawnFlags(1)) {

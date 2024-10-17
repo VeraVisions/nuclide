@@ -339,6 +339,14 @@ public:
 	virtual void RouteEnded(void);
 	/** Internal use only. Called every frame to progress through a route. */
 	virtual void WalkRoute(void);
+
+	/* callbacks */
+	/** Called when a player is seen by the monster. */
+	virtual void SeenPlayer(NSActor);
+	/** Called when an enemy is seen by the monster. */
+	virtual void SeenEnemy(NSActor);
+	/** Called when a friend is seen by the monster. */
+	virtual void SeenFriend(NSActor);
 	
 	/** Returns the type of sequence they're currently in. */
 	nonvirtual int GetSequenceState(void);

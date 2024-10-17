@@ -35,29 +35,6 @@ var bool g_materialsAreLegacy;
 /* FIXME: world.... sigh, we should box this into a worldspawn class */
 .string materials_file;
 
-// Impact types
-typedef enum
-{
-	IMPACT_MELEE,
-	IMPACT_EXPLOSION,
-	IMPACT_DEFAULT,
-	IMPACT_ALIEN,
-	IMPACT_COMPUTER,
-	IMPACT_CONCRETE,
-	IMPACT_DIRT,
-	IMPACT_FLESH,
-	IMPACT_FOLIAGE,
-	IMPACT_GLASS,
-	IMPACT_GRATE,
-	IMPACT_METAL,
-	IMPACT_SAND,
-	IMPACT_SLOSH,
-	IMPACT_SNOW,
-	IMPACT_TILE,
-	IMPACT_VENT,
-	IMPACT_WOOD
-} impactType_t;
-
 typedef enum
 {
 	GSMATERIAL_GLASS,
@@ -295,57 +272,38 @@ Materials_LoadFromMat(string filename)
 	}
 }
 
-/** FIXME: all this should be done exclusively in surfaceproperties.qc, however that
-is currently server-side only. Make it shared and then we can get rid of this
-whole file! */
-
 /** loads a temporary mapper so we can map letters to class names. */
 static void
 Materials_Mapper_Init(void)
 {
-	string sTemp;
+	NSDict matDecl = NSDict::LoadDeclFromFile("material", "typeinfo/hlmat.decl");
+	int tokenCount;
 	int c = 0;
-	filestream fileLUT;
-	string spname = "";
-	bool inbrace = false;
+	int lutSize = 0i;
 
-	fileLUT = fopen("scripts/surfaceproperties.txt", FILE_READ);
-	g_hlmlut_count = 0;
-
-	/* count valid entries. */
-	if (fileLUT >= 0) {
-		while ((sTemp = fgets(fileLUT))) {
-			if (tokenize_console(sTemp) == 2) {
-				if (argv(0) == "gamematerial")
-					g_hlmlut_count++;
-			}
-		}
+	if (!matDecl) {
+		return;
 	}
 
-	/* back to the beginning... */
-	fseek(fileLUT, 0);
-	g_hlmlut = memalloc(sizeof(hlmaterials_lut) * g_hlmlut_count);
+	tokenCount = matDecl.TokenCount();
+	g_hlmlut_count = tokenCount / 2;
+	lutSize = sizeof(hlmaterials_lut) * g_hlmlut_count;
+	g_hlmlut = memalloc(lutSize);
 
-	/* read in the elements */
-	if (fileLUT >= 0) {
-		while ((sTemp = fgets(fileLUT))) {
-			/* tokenize and just parse this stuff in */
-			if (tokenize_console(sTemp) == 2) {
-				if (argv(0) == "gamematerial") {
-					g_hlmlut[c].idx = argv(1);
-					g_hlmlut[c].matclass = spname;
-					c++;
-				}
-			}
-			
-			if (argv(0) == "{")
-				inbrace = true;
-			else if (argv(0) == "}")
-				inbrace = false;
-			else if (inbrace == false)
-				spname = argv(0);
-		}
+	if (!g_hlmlut) {
+		NSError("Memory allocation failed for %i bytes.", lutSize);
+		g_hlmlut_count = 0;
+		remove(matDecl);
+		return;
 	}
+
+	for (int i = 0; i < tokenCount; i+=2) {
+		g_hlmlut[c].idx = argv(i);
+		g_hlmlut[c].matclass = argv(i+1);
+		c++;
+	}
+
+	remove(matDecl);
 }
 
 /** takes a mat id and returns a classname */

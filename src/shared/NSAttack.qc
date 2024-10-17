@@ -73,7 +73,7 @@ NSAttack::Restore(string strKey, string strValue)
 		m_vecSpread = ReadVector(strValue);
 		break;
 	case "m_weaponOwner":
-		m_weaponOwner = ReadEntity(strValue);
+		m_weaponOwner = (NSWeapon)ReadEntity(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);

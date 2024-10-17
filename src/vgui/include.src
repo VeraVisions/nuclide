@@ -4,6 +4,7 @@
 ../vgui/ui.qc
 ../vgui/ui_control.qc
 ../vgui/ui_button.qc
+../vgui/ui_commandbutton.qc
 ../vgui/ui_menubutton.qc
 ../vgui/ui_radio.qc
 ../vgui/ui_checkbox.qc
@@ -18,4 +19,7 @@
 ../vgui/ui_listbox.qc
 ../vgui/ui_textbox.qc
 ../vgui/ui_tabview.qc
+../vgui/ui_progressbar.qc
+../vgui/ui_loadingpanel.qc
+../vgui/ui_console.qc
 #endlist

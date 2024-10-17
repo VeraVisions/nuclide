@@ -232,6 +232,8 @@ ambient_generic::Respawn(void)
 	super::Respawn();
 
 	SetSize([0,0,0], [0,0,0]);
+	SetSolid(SOLID_NOT);
+	SetMovetype(MOVETYPE_NONE);
 
 	m_strActivePath = m_strSpawnPath;
 	m_flPitch = m_flSpawnPitch;
@@ -274,6 +276,8 @@ ambient_generic::Respawn(void)
 
 		Trigger = UseLoop;
 	}
+
+	customphysics = __NULL__;
 }
 
 void
@@ -385,27 +389,23 @@ ambient_generic::SendEntity(entity ePEnt, float flChanged)
 
 	WriteFloat(MSG_ENTITY, flChanged);
 
-	if (flChanged & AMBIENT_ORIGIN) {
-		WriteCoord(MSG_ENTITY, origin[0]);
-		WriteCoord(MSG_ENTITY, origin[1]);
-		WriteCoord(MSG_ENTITY, origin[2]);
-	}
-	
+	SENDENTITY_COORD(origin[0], AMBIENT_ORIGIN)
+	SENDENTITY_COORD(origin[1], AMBIENT_ORIGIN)
+	SENDENTITY_COORD(origin[2], AMBIENT_ORIGIN)
+
 	if (flChanged & AMBIENT_PATH) {
 		if (flChanged & AMBIENT_MODERN) {
-			WriteString(MSG_ENTITY, m_strActivePath);
+			SENDENTITY_STRING(m_strActivePath, AMBIENT_PATH)
 		} else {
 			WriteFloat(MSG_ENTITY, getsoundindex(m_strActivePath, true));
+			m_strActivePath_net = m_strActivePath;
 		}
 	}
-	if (flChanged & AMBIENT_VOLUME)
-		WriteFloat(MSG_ENTITY, m_flVolume);
-	if (flChanged & AMBIENT_RADIUS)
-		WriteByte(MSG_ENTITY, m_flRadius);
-	if (flChanged & AMBIENT_PITCH)
-		WriteFloat(MSG_ENTITY, m_flPitch);
-	if (flChanged & AMBIENT_ENABLED)
-		WriteByte(MSG_ENTITY, m_bLoops);
+
+	SENDENTITY_FLOAT(m_flVolume, AMBIENT_VOLUME)
+	SENDENTITY_BYTE(m_flRadius, AMBIENT_RADIUS)
+	SENDENTITY_FLOAT(m_flPitch, AMBIENT_PITCH)
+	SENDENTITY_BYTE(m_bLoops, AMBIENT_ENABLED)
 
 	return (1);
 }
@@ -414,6 +414,7 @@ void
 ambient_generic::ReceiveEntity(float isnew, float flChanged)
 {
 	if (flChanged & AMBIENT_ORIGIN) {
+		vector oldOrg = origin;
 		origin[0] = readcoord();
 		origin[1] = readcoord();
 		origin[2] = readcoord();

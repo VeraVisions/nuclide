@@ -14,12 +14,23 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+VGUILoadingPanel loadingPanel;
+
 void Loading_Draw ( vector vecSize )
 {
-	drawpic( [ 0, 0 ], "textures/gfx/background", vecSize, [ 1, 1, 1 ], 1.0f );
+	g_vidsize = vecSize;
+
+	if (!loadingPanel) {
+		loadingPanel = spawn(VGUILoadingPanel);
+	}
+
+#if 1
+	loadingPanel.Draw();
+	loadingPanel.UpdateProgress();
+#else
 	
 	vector vecLoadingSize = [ 256, 96 ];
-	vector vecLoadingPos = ( g_vidsize / 2 ) - ( vecLoadingSize / 2 );
+	vector vecLoadingPos = ( vecSize / 2 ) - ( vecLoadingSize / 2 );
 	
 	drawfill( vecLoadingPos, vecLoadingSize, UI_MAINCOLOR, UI_MAINALPHA );
 	drawfill( vecLoadingPos, [vecLoadingSize[0], 1], [1,1,1], 0.5f );
@@ -27,4 +38,5 @@ void Loading_Draw ( vector vecSize )
 	drawfill( vecLoadingPos + [ 0, 1], [1, vecLoadingSize[1] - 2], [1,1,1], 0.5f );
 	drawfill( vecLoadingPos + [ vecLoadingSize[0] - 1, 1], [1, vecLoadingSize[1] - 2], [0,0,0], 0.5f );
 	Font_DrawText( vecLoadingPos + [ 8, 8 ], "Loading...", g_fntDefault );
+#endif
 }

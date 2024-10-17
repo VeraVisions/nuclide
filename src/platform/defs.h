@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2024 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,7 +14,9 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+#include "init.h"
 #include "cmd.h"
+#include "background.h"
 #include "util.h"
 #include "achievements.h"
 #include "activitypub.h"
@@ -27,6 +29,7 @@
 #include "gamelibrary.h"
 #include "maplibrary.h"
 #include "error.h"
+#include "saves.h"
 
 /** Definitions for FTE's internal package manager. We don't want you to talk to this one directly within Nuclide. */
 typedef enum

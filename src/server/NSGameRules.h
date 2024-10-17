@@ -32,6 +32,7 @@ public:
 	virtual void Save(float);
 	virtual void Restore(string,string);
 	virtual void RestoreComplete(void);
+	virtual void Input(entity, string, string);
 
 	/** Overridable: Called when all map entities have initialized. */
 	virtual void InitPostEnts(void);
@@ -71,6 +72,10 @@ public:
 	In a singleplayer game, it might load the most recent save.
 	@return True/false depending on the respawn succeeded. */
 	virtual bool PlayerRequestRespawn(NSClientPlayer);
+
+	/** Overridable: called when a NSClientPlayer requests joining a specific team.
+	@return True/false depending on the team change success. */
+	virtual bool PlayerRequestTeam(NSClientPlayer, int team);
 	
 	/* level transitions */
 	/** Overridable: Called to set up new level parms for any NSClientPlayer. */
@@ -106,6 +111,7 @@ public:
 	virtual bool IsTeamplay(void);
 	/** Returns if the gamerule is a multiplayer game. */
 	virtual bool IsMultiplayer(void);
+
 
 	/* chat related methods */
 	/** Called by Nuclide when the server has received a chat message

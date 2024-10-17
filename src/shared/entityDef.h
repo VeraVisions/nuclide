@@ -41,7 +41,7 @@ and populate it with key/value pairs.
 
 # Overview
 
-Using this example definition, we can re-invent func_illusionary using an already existing entity class (func_wall) and making it non-solid:
+Using this example definition, we can re-invent func_illusionary using an already existing entity class (func_wall), making it non-solid:
 
 ```
 entityDef func_illusionary {
@@ -50,7 +50,7 @@ entityDef func_illusionary {
 }
 ```
 
-We also have features exclusive to our entityDef format. In the following example, you can change the `body` key equals `1`, the switch will `skin` to id `4`. You can as many conditions as you like.
+We also have features exclusive to our entityDef format. In the following example, when the`body` key equals `1`, it will switch `skin` to id `4`. You can have as many conditions as you like.
 
 ```
 entityDef foobar {
@@ -62,10 +62,10 @@ entityDef foobar {
 }
 ```
 
-Will allow developers to configure other fields when certain
+It essentially allows developers to configure other fields when certain
 conditions are met.
 
-This is also expanded to include model event callbacks to the tried
+Another feature exclusive to our entityDef spec is how we can tie model event callbacks to the tried
 and true I/O system:
 
 ```
@@ -78,10 +78,13 @@ entityDef foobar {
 }
 ```
 
+This way, an animation that is played by a weapon or a monster can call back
+to in-game events without you having to dig into the source code.
+
 # See Also
 
-- [1] http://www.teamfortress.com/tfii/mc2mapc.html
-- [2] http://icculus.org/~marco/notmine/id-dev/www.iddevnet.com/doom3/entitydefs.html
+- [1] http://icculus.org/~marco/notmine/id-dev/www.iddevnet.com/doom3/entitydefs.html
+- [2] http://www.teamfortress.com/tfii/mc2mapc.html
 
 @{
 
@@ -120,8 +123,8 @@ typedef struct
 void EntityDef_Init(void);
 void EntityDef_DebugList(void);
 string EntityDef_GetKeyValue(string, string);
-float EntityDef_NetIDFromName(string);
-string EntityDef_NameFromNetID(float);
+int EntityDef_NetIDFromName(string);
+string EntityDef_NameFromNetID(int);
 int EntityDef_IDFromName(string);
 string EntityDef_GetSpawnData(int);
 bool EntityDef_HasSpawnClass(string className);

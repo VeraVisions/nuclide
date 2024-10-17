@@ -142,3 +142,30 @@ entity Spawn_SelectRandom(string cname)
 	lastspot = spot;
 	return spot;
 }
+
+
+void
+Spawn_TeleportToSpawn(entity targetEnt)
+{
+	string desiredSpawn = teams.SpawnPoint((int)targetEnt.team);
+
+	/* singleplayer */
+	if (STRING_SET(startspot)) {
+		targetEnt.origin = Landmark_GetSpot();
+		setorigin_safe(targetEnt, targetEnt.origin);
+		return;
+	}
+
+	/* if not set, don't bother teleporting */
+	if (!STRING_SET(desiredSpawn)) {
+		return;
+	}
+
+	entity spawnPoint = Spawn_SelectRandom(desiredSpawn);
+
+	if (spawnPoint) {
+		targetEnt.origin = spawnPoint.origin;
+		targetEnt.angles = spawnPoint.angles;
+		setorigin_safe(targetEnt, targetEnt.origin);
+	}
+}

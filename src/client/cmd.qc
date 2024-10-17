@@ -14,6 +14,9 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+void Commandmenu_Open(void);
+void Commandmenu_Close(void);
+
 static void
 CMD_testPointLight(void)
 {
@@ -490,6 +493,7 @@ Cmd_Parse(string sCMD)
 	case "removeInventoryItem":
 	case "removeAllInventoryItems":
 	case "listAmmo":
+	case "joinTeam":
 		localcmd(sprintf("cmd %s\n", sCMD));
 		break;
 
@@ -504,8 +508,18 @@ Cmd_Parse(string sCMD)
 		break;
 	case "bobdn":
 		break;
+
+	case "+commandmenu":
+		Commandmenu_Open();
+		break;
+	case "-commandmenu":
+		Commandmenu_Close();
+		break;
+	case "ragdollCreate":
+		NSRagdoll_Create(argv(1));
+		break;
 	default:
-		return (false);
+		return HUD_ConsoleCommand(sCMD);
 	}
 	return (true);
 }
@@ -535,6 +549,7 @@ Cmd_Init(void)
 	registercommand("listServerEntityDef");
 	registercommand("listInventory");
 	registercommand("listAmmo");
+	registercommand("ragdollCreate");
 
 	/* server commands */
 	registercommand("addBot");
@@ -613,6 +628,9 @@ Cmd_Init(void)
 	registercommand("vote");
 	registercommand("callvote");
 
+	/* teamplay */
+	registercommand("joinTeam");
+
 	/* motd */
 	registercommand("motd");
 
@@ -627,6 +645,10 @@ Cmd_Init(void)
 	registercommand("slot8");
 	registercommand("slot9");
 	registercommand("slot10");
+
+	/* commandmenu */
+	registercommand("+commandmenu");
+	registercommand("-commandmenu");
 
 	/* scoreboard */
 	registercommand("+showscores");

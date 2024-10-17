@@ -22,11 +22,17 @@ Entity_EntityUpdate(float type, float new)
 	case ENT_ENTITY:
 		NSENTITY_READENTITY(NSEntity, new)
 		break;
+	case ENT_SOUND:
+		NSENTITY_READENTITY(NSSound, new)
+		break;
 	case ENT_PMOVEVARS:
 		NSENTITY_READENTITY(NSPMoveVars, new)
 		break;
 	case ENT_ENTITYRENDERABLE:
 		NSENTITY_READENTITY(NSRenderableEntity, new)
+		break;
+	case ENT_RAGDOLL:
+		NSENTITY_READENTITY(NSRagdoll, new)
 		break;
 	case ENT_SURFPROP:
 		NSENTITY_READENTITY(NSSurfacePropEntity, new)

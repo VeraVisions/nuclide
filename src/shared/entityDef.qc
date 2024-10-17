@@ -268,8 +268,6 @@ EntityDef_CheckCondition(NSEntity target, int id, string keyWord, float tweakCon
 			tmp1 = stof(keyValue);
 			tmp2 = stof(value);
 
-			print(sprintf("%d & %d\n", tmp1, tmp2));
-
 			if (key == keyWord && tmp2 & tmp1)
 				return true;
 			break;
@@ -393,8 +391,9 @@ EntityDef_PrepareEntity(entity target, int id)
 	for (int i = 1; i < (spawnWords - 1); i+= 2) {
 
 		/* ignore this, always */
-		if (argv(i) != "classname")
+		if (argv(i) != "classname") {
 			targetEnt.SpawnKey(argv(i), argv(i+1));
+		}
 	}
 
 	/* now after everything else is done, check our entityDef tweaks */
@@ -410,7 +409,7 @@ EntityDef_PrepareEntity(entity target, int id)
 		string keyValue = argv(2);
 
 		/* iterate through a bunch of different data to check our condition */
-		if (EntityDef_CheckCondition(target, id, keyWord, tweakCondition, keyValue)) {
+		if (EntityDef_CheckCondition((NSEntity)target, id, keyWord, tweakCondition, keyValue)) {
 			int tweakGroups = tokenizebyseparator(g_entDefTable[id].tweakKeys, ";");
 
 			//print(sprintf("%S passed the check\n", keyWord));
@@ -432,16 +431,6 @@ EntityDef_PrepareEntity(entity target, int id)
 				/* retokenize */
 				tweakGroups = tokenizebyseparator(g_entDefTable[id].tweakKeys, ";");
 			}
-
-			print("\n");
-			print("\n");
-			print("\n");
-			print("\n");
-			print(targetEnt.m_strSpawnData);
-			print("\n");
-			print("\n");
-			print("\n");
-			print("\n");
 		}
 
 		/* retokenize our condition */
@@ -457,8 +446,7 @@ EntityDef_PrepareEntity(entity target, int id)
 		targetEnt.classname = g_entDefTable[id].entClass;
 		targetEnt.entityDefID = EntityDef_NetIDFromName(targetEnt.classname);
 
-		targetEnt.Spawned();
-		targetEnt.Respawn();
+		targetEnt.Spawn();
 	}
 
 	g_lastSpawnData = "";
@@ -555,7 +543,6 @@ NSEntity
 EntityDef_SwitchClass(NSEntity target, string className)
 {
 	NSEntity returnEntity = __NULL__;
-	float oldTeam = target.team;
 	g_lastSpawnData = target.m_strSpawnData;
 
 	for (int i = 0i; i < g_entDefCount; i++) {
@@ -566,7 +553,6 @@ EntityDef_SwitchClass(NSEntity target, string className)
 
 			NSLog("Spawning eDef %S", className);
 			returnEntity = EntityDef_PrepareEntity(target, i);
-			returnEntity.team = oldTeam;
 			return (returnEntity);
 		}
 	}
@@ -649,11 +635,18 @@ EntityDef_DebugList(void)
 	}
 }
 
-float
+int
+ourCRC(string name)
+{
+	int crcValue = (int)(stoh(digest_hex("CRC16", strtolower(name))));
+	return (crcValue);
+}
+
+int
 EntityDef_NetIDFromName(string defName)
 {
 #if 1
-	return crc16(true, defName);
+	return ourCRC(defName);
 #else
 	if (defName) {
 		for (int i = 0i; i < g_entDefCount; i++) {
@@ -682,10 +675,10 @@ EntityDef_IDFromName(string defName)
 }
 
 string
-EntityDef_NameFromNetID(float defNum)
+EntityDef_NameFromNetID(int defNum)
 {
 	for (int i = 0i; i < g_entDefCount; i++) {
-		int checkSum = crc16(true, g_entDefTable[i].entClass);
+		int checkSum = ourCRC(g_entDefTable[i].entClass);
 
 		if (checkSum == defNum) {
 			return (g_entDefTable[i].entClass);
@@ -694,7 +687,6 @@ EntityDef_NameFromNetID(float defNum)
 
 	return "";
 }
-
 
 string
 EntityDef_GetSpawnData(int defNum)

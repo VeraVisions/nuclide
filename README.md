@@ -16,3 +16,8 @@ Run the engine in the root of this repository, after having issued `make progs G
 
 You can build your own offline version of the online manual by running `doxygen` in the root of this repository. The output will be under **Documentation/html/index.html**.
 
+# Credits
+
+Silk Icons: https://github.com/markjames/famfamfam-silk-icons
+Flag Icons: https://github.com/markjames/famfamfam-flag-icons
+https://heyter.github.io/js-famfamfam-search/

@@ -1,5 +1,6 @@
 #includelist
 achievements.qc
+background.qc
 master.qc
 modserver.qc
 music.qc
@@ -10,5 +11,7 @@ updates.qc
 gamelibrary.qc
 maplibrary.qc
 activitypub.qc
+saves.qc
 cmd.qc
+init.qc
 #endlist 

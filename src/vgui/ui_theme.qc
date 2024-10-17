@@ -10,17 +10,19 @@ also referred to as TrackerUI has changed many times in appearance and we'd like
 means of handling any such styles.
 */
 
-#ifdef CLASSIC_VGUI
-	#ifndef UI_MAINCOLOR
-		#define UI_MAINCOLOR [255,170,0] / 255
-	#endif
-	#ifndef UI_MAINALPHA
-		#define UI_MAINALPHA 255
-	#endif
-#else
-	var vector UI_MAINCOLOR;
-	var float UI_MAINALPHA;
-#endif
+
+var vector UI_MAINCOLOR;
+var vector UI_FGCOLOR;
+var float UI_MAINALPHA;
+var vector UI_HICOLOR;
+var vector UI_FILLCOLOR;
+var vector UI_LOCOLOR;
+var vector UI_BORDERCOLOR;
+var float UI_BORDERALPHA;
+var bool UI_ROUNDED;
+var bool UI_NOICONS;
+var vector UI_HOVERCOLOR;
+var float UI_HOVERALPHA;
 
 /** State of the widget we're going to draw. */
 typedef enum
@@ -61,6 +63,8 @@ public:
 	virtual void DrawTextBackground(vector, vector, VGUIDrawState_t);
 	/** Draw a window background at the specified position, size and VGUIDrawState_t. */
 	virtual void DrawWindowBackground(vector, vector, VGUIDrawState_t);
+	/** Draw a window background at the specified position, size and VGUIDrawState_t. */
+	virtual void DrawWindowTitle(vector, vector, string, string, font_s, VGUIDrawState_t);
 	/** Draw a button body at the specified position, size and VGUIDrawState_t. */
 	virtual void DrawButton(vector, vector, VGUIDrawState_t);
 	/** Draw a scroller at the specified position, size and VGUIDrawState_t. */
@@ -80,26 +84,33 @@ private:
 	VGUIColor m_textBackgroundColor;
 	VGUIColor m_textColor;
 	VGUIColor m_windowBorderColor;
+	VGUIColor m_hilightColor;
+	VGUIColor m_shadowColor;
 };
 
 void
 VGUITheme::VGUITheme(void)
 {
 	m_controlBackgroundColor = spawn(VGUIColor);
-	//m_controlBackgroundColor.SetColor([0.298, 0.345, 0.267]);
-	m_controlBackgroundColor.SetColor(UI_MAINCOLOR);
+	m_controlBackgroundColor. SetColorWithAlpha(UI_MAINCOLOR, 0.0f);
+
 	m_windowBackgroundColor = spawn(VGUIColor);
-	//m_windowBackgroundColor.SetColor([0.298, 0.345, 0.267]);
-	m_windowBackgroundColor.SetColor(UI_MAINCOLOR);
+	m_windowBackgroundColor.SetColorWithAlpha(UI_MAINCOLOR, UI_MAINALPHA);
+
 	m_textBackgroundColor = spawn(VGUIColor);
-	//m_textBackgroundColor.SetColor([0.243, 0.275, 0.216]);
 	m_textBackgroundColor.SetColor(UI_MAINCOLOR);
+
 	m_textColor = spawn(VGUIColor);
-	//m_textColor.SetColor([0.847, 0.871, 0.827]);
-	m_textColor.SetColor(UI_MAINCOLOR);
+	m_textColor.SetColor(UI_FGCOLOR);
+
 	m_windowBorderColor = spawn(VGUIColor);
-	//m_windowBorderColor.SetColor([0.533, 0.569, 0.502]);
-	m_windowBorderColor.SetColor(UI_MAINCOLOR);
+	m_windowBorderColor.SetColor(UI_BORDERCOLOR);
+
+	m_hilightColor = spawn(VGUIColor);
+	m_hilightColor.SetColorWithAlpha(UI_HICOLOR, 0.5f);
+
+	m_shadowColor = spawn(VGUIColor);
+	m_shadowColor.SetColorWithAlpha(UI_LOCOLOR, 0.5f);
 }
 
 void
@@ -107,16 +118,16 @@ VGUITheme::DrawBorder(vector atPos, vector withSize, VGUIBorderStyle_t borderSty
 {
 	switch (borderStyle) {
 	case VGUI_BORDER_INSET:
-		drawfill(atPos + [0, withSize[1] - 1], [withSize[0], 1], [1,1,1], 0.5f);
-		drawfill(atPos, [withSize[0], 1], [0,0,0], 0.5f);
-		drawfill(atPos + [0, 1], [1, withSize[1] - 2], [0,0,0], 0.5f);
-		drawfill(atPos + [withSize[0] - 1, 1], [1, withSize[1] - 2], [1,1,1], 0.5f);
+		drawfill(atPos + [0, withSize[1] - 1], [withSize[0], 1], m_hilightColor.GetColor(), m_hilightColor.GetAlpha());
+		drawfill(atPos, [withSize[0], 1], m_shadowColor.GetColor(), m_shadowColor.GetAlpha());
+		drawfill(atPos + [0, 1], [1, withSize[1] - 2], m_shadowColor.GetColor(), m_shadowColor.GetAlpha());
+		drawfill(atPos + [withSize[0] - 1, 1], [1, withSize[1] - 2], m_hilightColor.GetColor(), m_hilightColor.GetAlpha());
 		break;
 	case VGUI_BORDER_OUTSET:
-		drawfill(atPos + [0, withSize[1] - 1], [withSize[0], 1], [0,0,0], 0.5f);
-		drawfill(atPos, [withSize[0], 1], [1,1,1], 0.5f);
-		drawfill(atPos + [0, 1], [1, withSize[1] - 2], [1,1,1], 0.5f);
-		drawfill(atPos + [withSize[0] - 1, 1], [1, withSize[1] - 2], [0,0,0], 0.5f);
+		drawfill(atPos + [0, withSize[1] - 1], [withSize[0], 1], m_shadowColor.GetColor(), 0.5f);
+		drawfill(atPos, [withSize[0], 1], m_hilightColor.GetColor(), 0.5f);
+		drawfill(atPos + [0, 1], [1, withSize[1] - 2], m_hilightColor.GetColor(), 0.5f);
+		drawfill(atPos + [withSize[0] - 1, 1], [1, withSize[1] - 2], m_shadowColor.GetColor(), 0.5f);
 		break;
 	case VGUI_BORDER_LINE:
 		drawfill(atPos + [0, withSize[1] - 1], [withSize[0], 1], color.GetColor(), color.GetAlpha());
@@ -154,15 +165,19 @@ VGUITheme::DrawButton(vector atPos, vector withSize, VGUIDrawState_t drawStyle)
 	DrawControlBackground(atPos, withSize, drawStyle);
 
 	if (drawStyle == VGUI_STATE_ACTIVE) {
-		drawfill(atPos + [0, withSize[1] - 1], [withSize[0], 1], [1,1,1], 0.5f);
-		drawfill(atPos, [withSize[0], 1], [0,0,0], 0.5f);
-		drawfill(atPos + [0, 1], [1, withSize[1] - 2], [0,0,0], 0.5f);
-		drawfill(atPos + [withSize[0] - 1, 1], [1, withSize[1] - 2], [1,1,1], 0.5f);
+		drawfill(atPos + [0, withSize[1] - 1], [withSize[0], 1], m_hilightColor.GetColor(), m_hilightColor.GetAlpha());
+		drawfill(atPos, [withSize[0], 1], m_shadowColor.GetColor(), m_shadowColor.GetAlpha());
+		drawfill(atPos + [0, 1], [1, withSize[1] - 2], m_shadowColor.GetColor(), m_shadowColor.GetAlpha());
+		drawfill(atPos + [withSize[0] - 1, 1], [1, withSize[1] - 2], m_hilightColor.GetColor(), m_hilightColor.GetAlpha());
 	} else {
-		drawfill(atPos + [0, withSize[1] - 1], [withSize[0], 1], [0,0,0], 0.5f);
-		drawfill(atPos, [withSize[0], 1], [1,1,1], 0.5f);
-		drawfill(atPos + [0, 1], [1, withSize[1] - 2], [1,1,1], 0.5f);
-		drawfill(atPos + [withSize[0] - 1, 1], [1, withSize[1] - 2], [0,0,0], 0.5f);
+		drawfill(atPos + [0, withSize[1] - 1], [withSize[0], 1], m_shadowColor.GetColor(), m_shadowColor.GetAlpha());
+		drawfill(atPos, [withSize[0], 1], m_hilightColor.GetColor(), m_hilightColor.GetAlpha());
+		drawfill(atPos + [0, 1], [1, withSize[1] - 2], m_hilightColor.GetColor(), m_hilightColor.GetAlpha());
+		drawfill(atPos + [withSize[0] - 1, 1], [1, withSize[1] - 2], m_shadowColor.GetColor(), m_shadowColor.GetAlpha());
+	}
+
+	if (drawStyle == VGUI_STATE_HOVER) {
+		drawfill(atPos, withSize, UI_HOVERCOLOR, UI_HOVERALPHA);
 	}
 }
 
@@ -170,10 +185,10 @@ void
 VGUITheme::DrawScroller(vector atPos, vector withSize, VGUIDrawState_t drawStyle)
 {
 	DrawControlBackground(atPos, withSize, drawStyle);
-	drawfill(atPos + [0, withSize[1] - 1], [withSize[0], 1], [0,0,0], 0.5f);
-	drawfill(atPos, [withSize[0], 1], [1,1,1], 0.5f);
-	drawfill(atPos + [0, 1], [1, withSize[1] - 2], [1,1,1], 0.5f);
-	drawfill(atPos + [withSize[0] - 1, 1], [1, withSize[1] - 2], [0,0,0], 0.5f);
+	drawfill(atPos + [0, withSize[1] - 1], [withSize[0], 1], m_shadowColor.GetColor(), m_shadowColor.GetAlpha());
+	drawfill(atPos, [withSize[0], 1], m_hilightColor.GetColor(), m_hilightColor.GetAlpha());
+	drawfill(atPos + [0, 1], [1, withSize[1] - 2], m_hilightColor.GetColor(), m_hilightColor.GetAlpha());
+	drawfill(atPos + [withSize[0] - 1, 1], [1, withSize[1] - 2], m_shadowColor.GetColor(), m_shadowColor.GetAlpha());
 }
 
 void
@@ -185,9 +200,19 @@ VGUITheme::DrawScrollbar(vector atPos, vector withSize, VGUIDrawState_t drawStyl
 void
 VGUITheme::DrawProgressIndicator(vector atPos, vector withSize, float progressValue, VGUIDrawState_t drawStyle)
 {
-	float barLength = (withSize[0] - 4) * progressValue;
-	DrawTextBackground(atPos, withSize, drawStyle);
-	drawfill(atPos + [2, 2], [barLength, withSize[1] - 4], [1,1,1], 1.0f); 
+	drawfill(atPos, [withSize[0], 1], m_shadowColor.GetColor(), m_shadowColor.GetAlpha());
+	drawfill(atPos + [0, withSize[1] - 1], [withSize[0], 1], m_hilightColor.GetColor(), m_hilightColor.GetAlpha());
+	drawfill(atPos + [0, 1], [1, withSize[1] - 2], m_shadowColor.GetColor(), m_shadowColor.GetAlpha());
+	drawfill(atPos + [withSize[0] - 1, 1], [1, withSize[1] - 2], m_hilightColor.GetColor(), m_hilightColor.GetAlpha());
+	drawfill(atPos + [1,1], [withSize[0] - 2, withSize[1]-2], m_shadowColor.GetColor(), m_shadowColor.GetAlpha());
+
+	vector drawPos = [4,4];
+	float max = floor(((withSize[0] - 8) * progressValue) / 12);
+
+	for (float i = 0; i < max; i++ ) {
+		drawfill(atPos + drawPos, [8, 16], UI_FILLCOLOR, 1.0f);
+		drawPos[0] += 12;
+	}
 }
 
 void
@@ -195,13 +220,74 @@ VGUITheme::DrawText(vector atPos, string withText, vector boundSize, font_s text
 {
 	//drawsetcliparea(atPos[0], atPos[1], boundSize[0], boundSize[1]);
 	//drawfill(atPos, boundSize, [1,1,1], 0.5f);
-	Font_DrawText(atPos, withText, textFont);
+	Font_DrawText_RGB(atPos, withText, UI_FGCOLOR, textFont);
 	//drawresetcliparea();
 }
 
 void
 VGUITheme::DrawWindow(vector atPos, vector withSize, VGUIDrawState_t drawStyle)
 {
-	DrawWindowBackground(atPos, withSize, drawStyle);
-	DrawBorder(atPos, withSize, VGUI_BORDER_OUTSET, m_windowBorderColor);
+	static void
+	DRB(vector pos, vector size, vector rgb, float a)
+	{
+		drawpic(pos, "textures/ui/m_topleft.tga", [16,16], rgb, a, 0);
+		drawpic(pos + [size[0] - 16, 0], "textures/ui/m_topright.tga", [16,16], rgb, a, 0);
+		drawpic(pos + [0, size[1] - 16], "textures/ui/m_bottomleft.tga", [16,16], rgb, a, 0);
+		drawpic(pos + [size[0] - 16, size[1] - 16], "textures/ui/m_bottomright.tga", [16,16], rgb, a, 0);
+
+		if (size_x > 32) {
+			drawpic(pos + [16, 0], "textures/ui/m_top.tga", [size[0] - 32, 16], rgb, a, 0);
+			drawpic(pos + [16, size[1] - 16], "textures/ui/m_bottom.tga", [size[0] - 32, 16], rgb, a, 0);
+		}
+
+		if (size_y > 32) {
+			drawpic(pos + [0, 16], "textures/ui/m_left.tga", [16, size[1] - 32], rgb, a, 0);
+			drawpic(pos + [size[0] - 16, 16], "textures/ui/m_right.tga", [16, size[1] - 32], rgb, a, 0);
+			drawpic(pos + [16, 16], "textures/ui/m_mid.tga", [size[0] - 32, size[1] - 32], rgb, a, 0);
+		}
+	}
+
+	static void
+	DRB2(vector pos, vector size, vector rgb, float a)
+	{
+		drawpic(pos, "textures/ui/m_linetopleft.tga", [16,16], rgb, a, 0);
+		drawpic(pos + [size[0] - 16, 0], "textures/ui/m_linetopright.tga", [16,16], rgb, a, 0);
+		drawpic(pos + [0, size[1] - 16], "textures/ui/m_linebottomleft.tga", [16,16], rgb, a, 0);
+		drawpic(pos + [size[0] - 16, size[1] - 16], "textures/ui/m_linebottomright.tga", [16,16], rgb, a, 0);
+
+		if (size_x > 32) {
+			drawpic(pos + [16, 0], "textures/ui/m_linetop.tga", [size[0] - 32, 16], rgb, a, 0);
+			drawpic(pos + [16, size[1] - 16], "textures/ui/m_linebottom.tga", [size[0] - 32, 16], rgb, a, 0);
+		}
+
+		if (size_y > 32) {
+			drawpic(pos + [0, 16], "textures/ui/m_lineleft.tga", [16, size[1] - 32], rgb, a, 0);
+			drawpic(pos + [size[0] - 16, 16], "textures/ui/m_lineright.tga", [16, size[1] - 32], rgb, a, 0);
+			drawpic(pos + [16, 16], "textures/ui/m_linemid.tga", [size[0] - 32, size[1] - 32], rgb, a, 0);
+		}
+	}
+
+	if (UI_ROUNDED == true) {
+		DRB(atPos, withSize, m_windowBackgroundColor.GetColor(), m_windowBackgroundColor.GetAlpha());
+
+		if (UI_BORDERALPHA > 0.0f) {
+			DRB2(atPos, withSize, m_windowBorderColor.GetColor(), m_windowBorderColor.GetAlpha());
+		}
+	} else {
+		DrawWindowBackground(atPos, withSize, drawStyle);
+		DrawBorder(atPos, withSize, VGUI_BORDER_OUTSET, m_windowBorderColor);
+	}
+}
+
+void
+VGUITheme::DrawWindowTitle(vector atPos, vector withSize, string titleText, string withIcon, font_s textFont, VGUIDrawState_t drawStyle)
+{
+	if (STRING_SET(titleText)) {
+		if (STRING_SET(withIcon) && UI_NOICONS == false) {
+			DrawText(atPos + [26, 8], titleText, withSize, textFont);
+			drawpic(atPos + [4, 4], withIcon, [16,16], [1,1,1], 1.0f, 0);
+		} else {
+			DrawText(atPos + [8, 8], titleText, withSize, textFont);
+		}
+	}
 }

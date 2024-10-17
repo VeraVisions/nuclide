@@ -194,6 +194,7 @@ phys_rope::EvaluateEntity(void)
 
 	if (!eFind) {
 		EntError("phys_rope: Unable to find target %S", target);
+		Destroy();
 		return;
 	}
 

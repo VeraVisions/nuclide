@@ -1,6 +1,7 @@
 entityDef player
 {
-	"spawnclass" "NSClientPlayer"
+	"spawnclass"	"NSClientPlayer"
+	"model"			"models/player.vvm"
 }
 
 entityDef player_mp

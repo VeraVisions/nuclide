@@ -102,13 +102,16 @@ NSClientPlayer::IsFakeSpectator(void)
 bool
 NSClientPlayer::CanSprint(void)
 {
-	return g_pmoveVars.pm_runspeed > 0 ? (true) : false;
+	if ((IsProne() == true) || (IsCrouching() == true))
+		return (false);
+
+	return m_pmoveVars.pm_runspeed > 0 ? (true) : false;
 }
 
 bool
 NSClientPlayer::CanProne(void)
 {
-	return g_pmoveVars.pm_proneheight > 0 ? (true) : false;
+	return m_pmoveVars.pm_proneheight > 0 ? (true) : false;
 }
 
 bool
@@ -120,7 +123,19 @@ NSClientPlayer::CanLean(void)
 bool
 NSClientPlayer::CanCrouch(void)
 {
-	return g_pmoveVars.pm_crouchheight > 0 ? (true) : false;
+	return m_pmoveVars.pm_crouchheight > 0 ? (true) : false;
+}
+
+void
+NSClientPlayer::_UpdatePMoveVars(void)
+{
+	if (m_pmoveVars) {
+		m_pmoveVars.Destroy();
+		m_pmoveVars = 0;
+	}
+
+	m_pmoveVars = spawn(NSPMoveVars);
+	m_pmoveVars.LinkToEntity(declclass);
 }
 
 void
@@ -280,6 +295,8 @@ NSClientPlayer::ProcessInput(void)
 	m_activeWeapon.velocity = velocity;
 	m_activeWeapon.origin = origin;
 	m_activeWeapon.Relink();
+
+	m_activeWeapon.InputFrame();
 
 	/* weapon system */
 	if (input_buttons & INPUT_SECONDARY) {
@@ -482,6 +499,9 @@ NSClientPlayer::OnRemoveEntity(void)
 	if (p_model)
 		p_model.Destroy();
 
+	if (m_pmoveVars)
+		m_pmoveVars.Destroy();
+
 	super::OnRemoveEntity();
 }
 
@@ -560,13 +580,6 @@ var float autocvar_cl_forwardspeed = 190;
 var float autocvar_cl_sidespeed = 152;
 var float autocvar_cl_backspeed = 133;
 
-/*
-=================
-NSClientPlayer::ClientInputFrame
-
-This is basically CSQC_Input_Frame! So games can override this as they please.
-=================
-*/
 void
 NSClientPlayer::ClientInputFrame(void)
 {
@@ -625,14 +638,6 @@ NSClientPlayer::ClientInputFrame(void)
 		input_buttons |= INPUT_PRONE;
 	}
 
-	/* prevent accidental input packets */
-	if (pSeat->m_flInputBlockTime > time) {
-		input_buttons &= ~INPUT_PRIMARY;
-		input_buttons &= ~INPUT_SECONDARY;
-		pSeat->m_iInputAttack2 = false;
-		return;
-	}
-
 	/* some input overrides for XR */
 	if (XR_Available(this)) {
 		if (pSeat->m_bMoveForward) {
@@ -676,15 +681,12 @@ NSClientPlayer::ClientInputFrame(void)
 	}
 }
 
-/*
-=================
-NSClientPlayer::ReceiveEntity
+void
+NSClientPlayer::_ReceiveComplete(float flNew, float flChanged)
+{
 
-Receive the generic client attributes from the server.
-If you want to override this, do not call this
-at the top of player::ReceiveEntity
-=================
-*/
+}
+
 void
 NSClientPlayer::ReceiveEntity(float new, float flChanged)
 {
@@ -701,11 +703,12 @@ NSClientPlayer::ReceiveEntity(float new, float flChanged)
 
 	if (new) {
 		classname = "player";
-		mins = g_pmoveVars.GetStandingMins();
-		maxs = g_pmoveVars.GetStandingMaxs();
+		mins = m_pmoveVars.GetStandingMins();
+		maxs = m_pmoveVars.GetStandingMaxs();
 		Physics_SetViewParms();
 	}
 
+	READENTITY_INT(entityDefID, PLAYER_MODELINDEX)
 	READENTITY_INT(modelindex, PLAYER_MODELINDEX)
 	READENTITY_BYTE(colormap, PLAYER_MODELINDEX)
 
@@ -773,8 +776,18 @@ NSClientPlayer::ReceiveEntity(float new, float flChanged)
 		READENTITY_INT(m_iAmmoTypes[i], PLAYER_AMMOTYPES)
 	}
 
+	/* we only really care about the declclass for decl lookups. */
+	if (flChanged & PLAYER_MODELINDEX) {
+		declclass = EntityDef_NameFromNetID(entityDefID);
+	}
+
 	if (flChanged & PLAYER_SIZE) {
 		setsize(this, mins, maxs);
+	}
+
+	/* our decl class has changed. refresh movement values. */
+	if (flChanged & PLAYER_MODELINDEX && STRING_SET(declclass)) {
+		_UpdatePMoveVars();
 	}
 
 	if (pSeat->m_ePlayer != this) {
@@ -796,15 +809,6 @@ NSClientPlayer::ReceiveEntity(float new, float flChanged)
 	}
 }
 
-/*
-=================
-NSClientPlayer::PredictPreFrame
-
-Save the state of the last server-confirmed attributes.
-If you want to override this, do not call this
-at the top of player::PredictPreFrame
-=================
-*/
 void
 NSClientPlayer::PredictPreFrame(void)
 {
@@ -875,16 +879,6 @@ NSClientPlayer::PredictPreFrame(void)
 	}
 }
 
-/*
-=================
-NSClientPlayer::PredictPostFrame
-
-After running prediction on the client, roll back the values
-to the server's confirmed saved attributes from PredictPreFrame.
-If you want to override this, do not call this
-at the top of player::PredictPostFrame
-=================
-*/
 void
 NSClientPlayer::PredictPostFrame(void)
 {
@@ -1097,6 +1091,18 @@ NSClientPlayer::Respawn(void)
 	/* make sure nothing happens here */
 }
 
+void
+NSClientPlayer::Input(entity eAct, string strInput, string strData)
+{
+	switch (strInput) {
+	case "Spectate":
+		MakeTempSpectator();
+		break;
+	default:
+		super::Input(eAct, strInput, strData);
+	}
+}
+
 /*
 =================
 NSClientPlayer::MakeTempSpectator
@@ -1136,13 +1142,6 @@ NSClientPlayer::MakeTempSpectator(void)
 	forceinfokey(this, "*dead", "0");
 }
 
-/*
-=================
-NSClientPlayer::MakeDead
-
-Sets all the appropriate attributes to make sure we're dead
-=================
- */
 void
 NSClientPlayer::Death(entity inflictor, entity attacker, int damage, vector dir, int location)
 {
@@ -1175,16 +1174,19 @@ void
 NSClientPlayer::Spawned(void)
 {
 	super::Spawned();
-	MakePlayer();
+
+	/* we really need to check if whether we're a real client yet. */
+	if (clienttype(this) == CLIENTTYPE_REAL) {
+		MakePlayer();
+	} else {
+		Disappear(); /* hide us for now */
+	}
+
+#ifdef SERVER
+	_UpdatePMoveVars();
+#endif
 }
 
-/*
-=================
-NSClientPlayer::MakePlayer
-
-True participating player, can walk around and everything.
-=================
- */
 void
 NSClientPlayer::MakePlayer(void)
 {
@@ -1212,7 +1214,7 @@ NSClientPlayer::MakePlayer(void)
 	EnableBleeding();
 	SetScale(1.0f);
 	Physics_SetViewParms();
-	SetSize(g_pmoveVars.GetStandingMins(), g_pmoveVars.GetStandingMaxs());
+	SetSize(m_pmoveVars.GetStandingMins(), m_pmoveVars.GetStandingMaxs());
 	forceinfokey(this, "*spectator", "0");
 	forceinfokey(this, "*deaths", ftos(deaths));
 	forceinfokey(this, "*dead", "0");
@@ -1224,24 +1226,16 @@ NSClientPlayer::MakeSpectator(void)
 {
 	ClientKill();
 	MakeTempSpectator();
-	team = 0;
+	team = TEAM_SPECTATOR;
 	forceinfokey(this, "*team", ftos(team));
 }
 
-/*
-=================
-NSClientPlayer::EvaluateEntity
-
-Check which attributes have changed and flag the ones that did.
-If you want to override this, do not call this
-at the top of player::EvaluateEntity
-=================
-*/
 void
 NSClientPlayer::EvaluateEntity(void)
 {
 	pvsflags = !HasVFlags(VFL_FAKESPEC) ? 0 : PVSF_IGNOREPVS;
 
+	EVALUATE_FIELD(entityDefID, PLAYER_MODELINDEX)
 	EVALUATE_FIELD(modelindex, PLAYER_MODELINDEX)
 	EVALUATE_FIELD(colormap, PLAYER_MODELINDEX)
 	EVALUATE_FIELD(m_iRenderMode, PLAYER_MODELINDEX)
@@ -1306,15 +1300,6 @@ NSClientPlayer::EvaluateEntity(void)
 	}
 }
 
-/*
-=================
-NSClientPlayer::SendEntity
-
-Network any attributes that have been flagged for networking.
-If you want to override this, do not call this
-at the top of player::SendEntity
-=================
-*/
 float
 NSClientPlayer::SendEntity(entity ePEnt, float flChanged)
 {
@@ -1329,6 +1314,7 @@ NSClientPlayer::SendEntity(entity ePEnt, float flChanged)
 	WriteByte(MSG_ENTITY, ENT_PLAYER);
 	WriteFloat(MSG_ENTITY, flChanged);
 
+	SENDENTITY_INT(entityDefID, PLAYER_MODELINDEX)
 	SENDENTITY_INT(modelindex, PLAYER_MODELINDEX)
 	SENDENTITY_BYTE(colormap, PLAYER_MODELINDEX)
 
@@ -1424,19 +1410,12 @@ NSClientPlayer::OptimiseChangedFlags(entity ePEnt, float flChanged)
 	} else {
 		/* always keep us alive to ourselves or the person spectating */
 		/* this will make prediction smoother */
-		flChanged |= PLAYER_MODELINDEX;
+		//flChanged |= PLAYER_MODELINDEX;
 	}
 
 	return flChanged;
 }
 
-/*
-====================
-_NSClientPlayer_useworkaround
-
-A wrapper to cleanly reset 'self' as to not mess up the QC VM
-====================
-*/
 void
 _NSClientPlayer_useworkaround(entity eTarget)
 {
@@ -1447,13 +1426,7 @@ _NSClientPlayer_useworkaround(entity eTarget)
 	self = eOldSelf;
 }
 
-/*
-====================
-_NSClientPlayer_useworkaround
 
-A wrapper to cleanly reset 'self' as to not mess up the QC VM
-====================
-*/
 void
 _NSClientPlayer_unuseworkaround(entity eTarget)
 {
@@ -1465,14 +1438,6 @@ _NSClientPlayer_unuseworkaround(entity eTarget)
 	self = eOldSelf;
 }
 
-/*
-=================
-NSClientPlayer:: InputUse_Down
-
-Called when we hold down the +use button for the first time,
-looks for an entity that has the .PlayerUse field set to a function and calls it.
-=================
-*/
 void
 NSClientPlayer::InputUse_Down(void)
 {
@@ -1525,13 +1490,6 @@ NSClientPlayer::InputUse_Down(void)
 	}
 }
 
-/*
-=================
-NSClientPlayer:: InputUse_Down
-
-Called when we let go of the +use button
-=================
-*/
 void
 NSClientPlayer::InputUse_Up(void)
 {
@@ -1768,10 +1726,10 @@ NSClientPlayer::Damage(entity inflictor, entity attacker, NSDict damageDecl, flo
 
 	/* they died */
 	if (GetHealth() <= 0) {
-		g_grMode.PlayerDeath(this, attacker, damageDecl);
+		g_grMode.PlayerDeath(this, (NSActor)attacker, damageDecl);
 		Death(inflictor, attacker, (int)damagePoints, dmgDir, 0i);
 	} else {
-		g_grMode.PlayerPain(this, attacker, damageDecl);
+		g_grMode.PlayerPain(this, (NSActor)attacker, damageDecl);
 		Pain(inflictor, attacker, (int)damagePoints, dmgDir, 0i);
 	}
 #endif

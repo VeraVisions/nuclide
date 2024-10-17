@@ -26,11 +26,13 @@ NSItem.qc
 NSWeapon.qc
 NSPortal.qc
 NSDebris.qc
+NSSound.qc
 NSClient.qc
 NSClientSpectator.qc
 pmove_custom.qc
 cloader.qc
 sound.qc
+NSRagdoll.qc
 NSClientPlayer.qc
 player_pmove.qc
 propdata.qc
@@ -43,6 +45,7 @@ util.qc
 motd.qc
 entityDef.qc
 ammo.qc
+api.qc
 ../xr/include.src
 ../botlib/NSBot.qc
 #endlist

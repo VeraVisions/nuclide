@@ -41,13 +41,15 @@ typedef enumflags
 typedef enum
 {
 	WEAPONSTATE_IDLE,
-	WEAPONSTATE_RELOAD_START,
-	WEAPONSTATE_RELOAD,
-	WEAPONSTATE_RELOAD_END,
+	WEAPONSTATE_COCK,
 	WEAPONSTATE_CHARGING,
 	WEAPONSTATE_FIRELOOP,
 	WEAPONSTATE_RELEASED,
-	WEAPONSTATE_OVERHEATED
+	WEAPONSTATE_OVERHEATED,
+	WEAPONSTATE_DRAW,
+	WEAPONSTATE_RELOAD_START,
+	WEAPONSTATE_RELOAD,
+	WEAPONSTATE_RELOAD_END
 } nsweapon_state_t;
 
 string nsweapon_state_s[] =
@@ -169,6 +171,7 @@ NSWeapon:NSItem
 public:
 	void NSWeapon(void);
 
+	virtual void InputFrame(void);
 	virtual void AddedToInventory(void);
 	virtual void RemovedFromInventory(void);
 
@@ -193,6 +196,7 @@ public:
 	virtual void ReceiveEvent(float);
 #endif
 
+	virtual bool UsesSecondaryAmmo(void);
 	virtual bool IsEmpty(void);
 	virtual bool IsWeapon(void);
 	virtual bool HasReserveAmmo(void);
@@ -218,7 +222,7 @@ public:
 	nonvirtual void SetWorldModel(string);
 	nonvirtual void SetPlayerModel(string);
 	nonvirtual void SetWeaponFrame(float);
-	nonvirtual void PlaySound(string, bool);
+	nonvirtual void PlaySound(string, float, bool);
 
 	/* state */
 	nonvirtual nsweapon_state_t GetWeaponState(void);
@@ -284,6 +288,12 @@ private:
 #endif
 
 	/* weapon related spawn keys */
+	string m_strWeaponTitle;
+	int m_iHudSlot;
+	int m_iHudSlotPos;
+	string m_icon;
+	string m_iconSel;
+
 	string m_strWeaponViewModel;
 	string m_strWeaponPlayerModel;
 	string m_strWeaponScript;
@@ -350,6 +360,10 @@ private:
 	string m_fiSndFireStart;
 	string m_fiSndFireStop;
 	string m_fiSndFireLoop;
+	bool m_fiDrawAfterRelease;
+
+	bool m_fiCocks;
+	string m_fiSndCock;
 
 	/* overheating */
 	float m_fiOverheatLength;
@@ -369,56 +383,4 @@ private:
 
 .NSWeapon m_nextWeapon;
 .NSWeapon m_prevWeapon;
-
-/* Helper functions for plugins, the rest of the codebase etc.
-
-These are, according to IW, common operations. Makes sense to
-handle the implementation ourselves as it'll prevent 
-entityDefs changing from breaking plugins as a result.
-Some of these don't just do direct look-ups of keys. */
-
-/** @return the "attack" type of the weapon.
-@param weaponDef the name of the entityDef that defines the weapon.
-@return Attack type of the weapon. */
-string weaponType(string weaponDef);
-
-/** @return The amount of ammo the specified weapon is meant to start with, when first given to the player. This can be distributed to both clip and reserve ammo types. 
-@param weaponDef the name of the entityDef that defines the weapon. */
-int weaponStartAmmo(string weaponDef);
-
-/** @return The amount of ammo the weapon can hold in total when it comes to reserve ammo. So this is really returning the max ammo of a given ammo type.
-@param weaponDef the name of the entityDef that defines the weapon. */
-int weaponMaxAmmo(string weaponDef);
-
-/** @return Whether the weapon is semi automatic.
-@param weaponDef the name of the entityDef that defines the weapon. */
-bool weaponIsSemiAuto(string weaponDef);
-
-/** @return How this weapon is stored. Usually "item", unless it's temporary.
-@param weaponDef the name of the entityDef that defines the weapon. */
-string weaponInventoryType(string weaponDef);
-
-/** @return The delay (in seconds) betwen shots of the specified weapon.
-@param weaponDef the name of the entityDef that defines the weapon. */
-float weaponFireTime(string weaponDef);
-
-/**
-@return The delay (in seconds) betwen shots of the specified weapon. 
-@param weaponDef the name of the entityDef that defines the weapon. */
-int weaponClipSize(string weaponDef);
-
-/** 
-@return The 'class' of weapon. Not spawnclass. 
-@param weaponDef the name of the entityDef that defines the weapon.*/
-string weaponClass(string weaponDef);
-
-/** 
-@return true/false whether the weapon takes its ammo only through its clip.
-@param weaponDef the name of the entityDef that defines the weapon.*/
-bool isWeaponClipOnly(string weaponDef);
-
-/** 
-@return true/false whether or not the weapon creates a timed, fused detonating charge of sorts.
-@param weaponDef the name of the entityDef that defines the weapon.*/
-bool isWeaponDetonationTimed(string weaponDef);
 

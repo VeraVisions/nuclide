@@ -346,6 +346,7 @@ env_glow::ReceiveEntity(float flNew, float flChanged)
 	if (flNew)
 		RendererRestarted();
 
+	effects = EF_NODEPTHTEST;
 	drawmask = MASK_GLOWS;
 	setsize(this, g_vec_null, g_vec_null);
 	setorigin(this, origin);

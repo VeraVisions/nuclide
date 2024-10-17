@@ -109,6 +109,9 @@ DecalGroups_Parse(string line)
 	}
 }
 
+
+const string g_decalGroupFile = "scripts/decals.txt";
+
 void
 DecalGroups_Init(void)
 {
@@ -123,21 +126,32 @@ DecalGroups_Init(void)
 		g_hashdecalgroup = hash_createtab(2, EV_STRING | HASH_REPLACE);
 	}
 
-	fh = fopen("scripts/decals.txt", FILE_READ);
+	fh = fopen(g_decalGroupFile, FILE_READ);
+
 	if (fh < 0) {
-		NSError("Missing file scripts/decals.txt");
+		NSWarning("No groups, no %S", g_decalGroupFile);
 		InitEnd();
 		return;
 	}
 
 #ifdef CLIENT
+	int dgMemSize;
+
 	/* count content */
 	while ((line = fgets(fh))) {
 		DecalGroups_CountLine(line);
 	}
 
 	/* alocate our stuff */
-	g_decalgroup = (decalGroup_t *)memalloc(sizeof(decalGroup_t) * g_decalgroup_count);
+	dgMemSize = sizeof(decalGroup_t) * g_decalgroup_count;
+	g_decalgroup = (decalGroup_t *)memalloc(dgMemSize);
+
+	if (!g_decalgroup) {
+		NSError("Memory allocation failed for %i bytes.", dgMemSize);
+		g_decalgroup_count = 0;
+		InitEnd();
+		return;
+	}
 
 	/* Defaults */
 	for (int i = 0; i < g_decalgroup_count; i++) {

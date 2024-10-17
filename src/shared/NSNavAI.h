@@ -26,7 +26,7 @@ _NSActor_Log(string className, string functionName, float edictNum, string warnM
 	else
 		printf("^5%s (%d) ^7: %s\n", functionName, edictNum, warnMessage);
 }
-#define NSActor_Log(...) _NSActor_Log(classname, __FUNC__, num_for_edict(this), sprintf(__VA_ARGS__))
+#define NSActor_Log(...) if (autocvar_g_logLevel >= LOGLEVEL_DEBUG) _NSActor_Log(classname, __FUNC__, num_for_edict(this), sprintf(__VA_ARGS__))
 
 /* for AI identification purposes */
 typedef enum
@@ -67,6 +67,8 @@ public:
 	virtual float GetSideSpeed(void);
 	/** Overridable: Returns the desired maximum backwardss movement speed. */
 	virtual float GetBackSpeed(void);
+
+	nonvirtual float GetStamina(void);
 
 	/** Returns `true` when the entity is ducked/crouching */
 	nonvirtual bool IsCrouching(void);
@@ -190,6 +192,7 @@ private:
 	NSWeapon m_activeWeapon_net;
 	float activeweapon;
 	NETWORKED_FLOAT(m_flFirstInventoryItem)
+	NETWORKED_FLOAT(m_flStamina)
 };
 
 /* for now here to make debugging easier */

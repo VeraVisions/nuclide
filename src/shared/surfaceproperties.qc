@@ -85,9 +85,6 @@ SurfData_ParseField(int i, int a)
 	case "fx_bulletimpact":
 	case "part_bulletimpact":
 		g_surfdata[i].m_fxBulletImpact = argv(1);
-#ifdef CLIENT
-		g_surfdata[i].m_fxBulletImpactID = particleeffectnum(g_surfdata[i].m_fxBulletImpact);
-#endif
 		break;
 	}
 }
@@ -138,12 +135,12 @@ SurfData_Parse(string line)
 				}
 			}
 
-			i++;
 		}
 
 		/* when we found it, quit */
 		tokenize_console(t_name);
 		hash_add(g_hashsurfdata, argv(0), (int)i);
+		i++;
 
 		braced--;
 		t_name = "";
@@ -352,7 +349,9 @@ SurfData_Init(void)
 	filestream fh;
 	string line;
 	int index;
+	int args;
 	bool fromManifest = true;
+	int spMemSize;
 
 	InitStart();
 
@@ -388,7 +387,7 @@ SurfData_Init(void)
 
 		/* first we count all valid entries. yes, this is not how you're meant to parse it, but w/e */
 		while ((line = fgets(fh))) {
-			int args = tokenize_console(line);
+			args = tokenize_console(line);
 
 			if (args == 2) {
 				if (argv(0) == "file") {
@@ -399,7 +398,16 @@ SurfData_Init(void)
 	}
 
 	/* now that we've counted the valid entries, alocate our stuff */
-	g_surfdata = (surfaceData_t *)memalloc(sizeof(surfaceData_t) * g_surfdata_count);
+	spMemSize = sizeof(surfaceData_t) * g_surfdata_count;
+	g_surfdata = (surfaceData_t *)memalloc(spMemSize);
+
+	if (!g_surfdata) {
+		NSError("Memory allocation failed for %i bytes.", spMemSize);
+		g_surfdata_count = 0;
+		InitEnd();
+		return;
+	}
+
 	g_hashsurfdata = hash_createtab(2, HASH_ADD);
 
 	/* Internal, defaults. Most of them get overriden by the first entry ('default') */
@@ -425,15 +433,17 @@ SurfData_Init(void)
 		g_surfdata[i].m_sndStrain = "";
 		g_surfdata[i].m_sndRoll = "";
 		g_surfdata[i].m_sndBreak = "";
+		g_surfdata[i].m_fxBulletImpact = "";
+		g_surfdata[i].m_fxBulletImpactID = -1;
 	}
+
+	fseek(fh, 0);
 
 	if (fromManifest == false) {
 		SurfData_LoadFile("scripts/surfaceproperties.txt");
 	} else {
-		fseek(fh, 0);
-
 		while ((line = fgets(fh))) {
-			int args = tokenize_console(line);
+			args = tokenize_console(line);
 
 			if (args == 2) {
 				if (argv(0) == "file") {
@@ -442,6 +452,58 @@ SurfData_Init(void)
 			}
 		}
 	}
+
+	fclose(fh);
+
+#if 1
+	for (int i = 1i; i < g_surfdata_count; i++) {
+		int matID = -1;
+
+		if (!STRING_SET(g_surfdata[i].m_strBase)) {
+			continue;
+		}
+
+		matID = SurfData_Load(g_surfdata[i].m_strBase);
+
+		/* ugly inheriting */
+		if (matID == -1) {
+			continue;
+		}
+
+		//printf("%i inheriting %S from %i\n", i, g_surfdata[i].m_strBase, matID);
+
+		if (g_surfdata[i].m_flMaterial == -1) {
+			g_surfdata[i].m_flMaterial = g_surfdata[matID].m_flMaterial;
+			//printf("%i inheriting material %d %d from %i\n", i, g_surfdata[i].m_flMaterial, g_surfdata[matID].m_flMaterial, matID);
+		}
+
+		if (!STRING_SET(g_surfdata[i].m_sndStepLeft))
+			g_surfdata[i].m_sndStepLeft = g_surfdata[matID].m_sndStepLeft;
+		if (!STRING_SET(g_surfdata[i].m_sndStepRight))
+			g_surfdata[i].m_sndStepRight = g_surfdata[matID].m_sndStepRight;
+		if (!STRING_SET(g_surfdata[i].m_sndBulletImpact))
+			g_surfdata[i].m_sndBulletImpact = g_surfdata[matID].m_sndBulletImpact;
+		if (!STRING_SET(g_surfdata[i].m_sndScrapeRough))
+			g_surfdata[i].m_sndScrapeRough = g_surfdata[matID].m_sndScrapeRough;
+		if (!STRING_SET(g_surfdata[i].m_sndScrapeSoft))
+			g_surfdata[i].m_sndScrapeSoft = g_surfdata[matID].m_sndScrapeSoft;
+		if (!STRING_SET(g_surfdata[i].m_sndImpactHard))
+			g_surfdata[i].m_sndImpactHard = g_surfdata[matID].m_sndImpactHard;
+		if (!STRING_SET(g_surfdata[i].m_sndImpactSoft))
+			g_surfdata[i].m_sndImpactSoft = g_surfdata[matID].m_sndImpactSoft;
+		if (!STRING_SET(g_surfdata[i].m_sndShake))
+			g_surfdata[i].m_sndShake = g_surfdata[matID].m_sndShake;
+		if (!STRING_SET(g_surfdata[i].m_sndStrain))
+			g_surfdata[i].m_sndStrain = g_surfdata[matID].m_sndStrain;
+		if (!STRING_SET(g_surfdata[i].m_sndRoll))
+			g_surfdata[i].m_sndRoll = g_surfdata[matID].m_sndRoll;
+		if (!STRING_SET(g_surfdata[i].m_sndBreak))
+			g_surfdata[i].m_sndBreak = g_surfdata[matID].m_sndBreak;
+		if (!STRING_SET(g_surfdata[i].m_fxBulletImpact))
+			g_surfdata[i].m_fxBulletImpact = g_surfdata[matID].m_fxBulletImpact;
+
+	}
+#endif
 
 	for (int i = 0i; i < g_surfdata_count; i++) {
 		Sound_Precache(g_surfdata[i].m_sndStepLeft);
@@ -455,6 +517,44 @@ SurfData_Init(void)
 		Sound_Precache(g_surfdata[i].m_sndStrain);
 		Sound_Precache(g_surfdata[i].m_sndRoll);
 		Sound_Precache(g_surfdata[i].m_sndBreak);
+#if 1
+		/* HACK: HL2 hard-codes these! */
+		if (!STRING_SET(g_surfdata[i].m_fxBulletImpact) && g_surfdata[i].m_flMaterial != -1) {
+			string newFXImpact = "";
+
+			switch (g_surfdata[i].m_flMaterial) {
+			case 'C':
+			case 'T':
+				newFXImpact = "impact.concrete";
+				break;
+			case 'W':
+				newFXImpact = "impact.wood";
+				break;
+			case 'D':
+				newFXImpact = "impact.dirt";
+				break;
+			case 'N':
+				newFXImpact = "impact.sand";
+				break;
+			case 'A':
+				newFXImpact = "impact.alien";
+				break;
+			case 'M':
+			case 'V':
+				newFXImpact = "impact.metal";
+				break;
+			case 'C':
+				newFXImpact = "impact.computer";
+				break;
+			}
+
+			g_surfdata[i].m_fxBulletImpact = newFXImpact;
+		}
+#endif
+
+		if (STRING_SET(g_surfdata[i].m_fxBulletImpact)) {
+			g_surfdata[i].m_fxBulletImpactID = particleeffectnum(g_surfdata[i].m_fxBulletImpact);
+		}
 	}
 
 	NSLog("...SurfData initialized with %i entries.", g_surfdata_count);
@@ -541,6 +641,11 @@ SurfData_Impact_Parse(void)
 	float impactid = SurfData_GetInfo(matid, SURFDATA_FX_BULLETIMPACTID);
 
 	Sound_PlayAt(impactorg, impactsfx);
+
+#if 0
+	impactid = particleeffectnum("impact.concrete");
+#endif
+
 	pointparticles( impactid, impactorg, normalize(impactang), 1 );
 }
 
@@ -564,6 +669,13 @@ SurfData_ImpactID_Parse(void)
 	string impactsfx = SurfData_GetInfo(matid, SURFDATA_SND_BULLETIMPACT);
 	float impactid = SurfData_GetInfo(matid, SURFDATA_FX_BULLETIMPACTID);
 	Sound_PlayAt(impactorg, impactsfx);
+
+	//printf("Prop Impact Receive %i %S %S\n", matid, impactsfx, SurfData_GetInfo(matid, SURFDATA_FX_BULLETIMPACT));
+
+#if 0
+	impactid = particleeffectnum("impact.concrete");
+#endif
+
 	pointparticles( impactid, impactorg, normalize(impactang), 1 );
 }
 #endif
@@ -588,8 +700,9 @@ SurfData_Impact(entity e, vector org, vector ang)
 	} else { /* anything with else is a NSurfacePropEntity. */
 		NSSurfacePropEntity foo = (NSSurfacePropEntity)e;
 
-		if (foo.HasSurfaceData() && foo.GetSurfaceData(SURFDATA_MATERIAL) != -1) {
-			SurfData_ImpactOfType(foo.GetSurfaceData(SURFDATA_MATERIAL), org, ang);
+		if (foo.HasSurfaceData()) {
+			SurfData_ImpactOfType(foo.m_iMaterial, org, ang);
+			//printf("Prop Impact Send %i\n", foo.m_iMaterial);
 		} else {
 			SurfData_Impact_SurfaceParm(e, org, ang);
 		}

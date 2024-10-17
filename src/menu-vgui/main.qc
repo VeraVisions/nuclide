@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-var int autocvar_r_autoscale = TRUE;
+var int autocvar_r_autoscale = false;
 
 void
 Menu_AutoScale(void)
@@ -22,6 +22,7 @@ Menu_AutoScale(void)
 	if (autocvar_r_autoscale) {
 		/* override for vid_conautoscales */
 		vector psize = getproperty(VF_SCREENPSIZE);
+
 		if (psize[1] >= (480 * 4)) {
 			cvar_set("vid_conautoscale", "4");
 		} else if (psize[1] >= (480 * 3)) {
@@ -37,10 +38,11 @@ Menu_AutoScale(void)
 void
 m_init(void)
 {
+	Platform_Init();
 	UISystem_Init();
-	Background_Init();
 	Desktop_Init();
 	
+	registercommand("console");
 	registercommand("menu_quit");
 	registercommand("menu_music");
 	registercommand("map_background");
@@ -50,7 +52,7 @@ m_init(void)
 void
 Menu_RendererRestarted(string renderer)
 {
-	localcmd("menu_restart\n");
+	Platform_RendererRestarted();
 	Menu_AutoScale();
 }
 
@@ -70,6 +72,7 @@ m_draw(vector screensize)
 		g_menuofs[0] = (g_vidsize[0] / 2) - 320;
 		g_menuofs[1] = (g_vidsize[1] / 2) - 240;
 		Menu_AutoScale();
+		Desktop_CanvasChanged();
 	}
 
 	g_background = cvar("_background");
@@ -79,7 +82,7 @@ m_draw(vector screensize)
 		if (getkeydest() != KEY_MENU) {
 			setkeydest(KEY_MENU);
 			setmousetarget(TARGET_MENU);
-			setcursormode(TRUE, "gfx/cursor");
+			setcursormode(TRUE, "gfx/icon16/cursor");
 		}
 	}
 
@@ -97,8 +100,22 @@ m_draw(vector screensize)
 	lasttime = time;
 
 	g_vidsize = screensize;
-	Background_Draw(screensize);
+
+	Background_Draw([0,0], g_vidsize);
 	Desktop_Draw();
+}
+
+void
+m_drawloading(vector screensize, float opaque)
+{
+	vector pos;
+	pos = (screensize / 2) - [32,32];
+
+	if (opaque || (clientstate() != 2)) {
+		Background_Draw([0,0], screensize);
+	}
+
+	Loading_Draw(screensize);
 }
 
 float
@@ -133,7 +150,7 @@ m_display(void)
 	g_active = TRUE;
 	setkeydest(KEY_MENU);
 	setmousetarget(TARGET_MENU);
-	setcursormode(TRUE, "gfx/cursor");
+	setcursormode(TRUE, "gfx/icon16/cursor");
 }
 
 /*
@@ -170,6 +187,14 @@ m_consolecommand(string cmd)
 	int c = (int)tokenize(cmd);
 
 	switch (argv(0)) {
+	case "console":
+		static VGUIConsole consoleWindow;
+
+		if (!consoleWindow)
+			consoleWindow = spawn(VGUIConsole);
+
+		g_uiDesktop.Add( consoleWindow );
+		break;
 	case "menu_quit":
 		UI_QuitGame_Show();
 		break;

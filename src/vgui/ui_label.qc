@@ -30,6 +30,7 @@ public:
 	virtual bool Input(float, float, float, float);
 	virtual void Spawned(void);
 	virtual void SetTextSize(int);
+	virtual void SetAlignment(float);
 
 private:
 	string m_strTitle;
@@ -53,11 +54,7 @@ VGUILabel::Spawned(void)
 void
 VGUILabel::SetTitle (string strName)
 {
-#ifndef CLASSIC_VGUI
-	m_strTitle = strName;
-#else
-	m_strTitle = sprintf("%s%s", Font_RGBtoHex(UI_MAINCOLOR), strName);
-#endif
+	m_strTitle = sprintf("%s%s", Font_RGBtoHex(UI_FGCOLOR), strName);
 	drawfont = g_fntDefault.iID;
 
 	if (GetSize() == [0,0]) {
@@ -74,6 +71,16 @@ VGUILabel::SetTextSize(int val)
 }
 
 void
+VGUILabel::SetAlignment(float alignment)
+{
+	m_labelFlags &= ~AF_LEFT;
+	m_labelFlags &= ~AF_TOP;
+	m_labelFlags &= ~AF_RIGHT;
+	m_labelFlags &= ~AF_BOTTOM;
+	m_labelFlags |= alignment;
+}
+
+void
 VGUILabel::Draw(void)
 {
 	if (m_strTitle) {
@@ -82,14 +89,11 @@ VGUILabel::Draw(void)
 
 		pos = m_parent.m_vecOrigin + m_vecOrigin;
 		size = m_vecSize;
-		drawsetcliparea(pos[0], pos[1], size[0], size[1]);
 
 		if (!m_textSize)
 			Font_DrawField(pos, size, m_strTitle, g_fntDefault, m_labelFlags);
 		else
 			Font_DrawFieldAtHeight(pos, size, m_textSize, m_strTitle, g_fntDefault, m_labelFlags);
-
-		drawresetcliparea();
 	}
 }
 

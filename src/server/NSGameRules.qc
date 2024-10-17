@@ -22,6 +22,9 @@ void
 NSGameRules::NSGameRules(void)
 {
 	forceinfokey(world, "teamplay", "0");
+	forceinfokey(world, sprintf("teamspawn_%d", TEAM_CONNECTING), "");
+	forceinfokey(world, sprintf("teamspawn_%d", TEAM_UNASSIGNED), "info_player_start");
+	forceinfokey(world, sprintf("teamspawn_%d", TEAM_SPECTATOR), "info_spectator_start");
 	identity = 2;
 }
 
@@ -50,6 +53,12 @@ NSGameRules::Restore(string strKey, string strValue)
 }
 
 void
+NSGameRules::Input(entity eAct, string strInput, string strData)
+{
+	RuleC_CallInput(m_ruleProgs, eAct, strInput, strData);
+}
+
+void
 NSGameRules::RestoreComplete(void)
 {
 	/* mark this as our active game-rule upon restore. */
@@ -68,6 +77,13 @@ void
 NSGameRules::FrameStart(void)
 {
 	//print("StartFrame!\n");
+
+	/* hack */
+	if (time < 2.5f) {
+		return;
+	}
+
+	RuleC_CallFrame(m_ruleProgs, "CodeCallback_FrameStart");
 }
 bool
 NSGameRules::ConsoleCommand(NSClientPlayer pl, string cmd)
@@ -202,6 +218,10 @@ NSGameRules::SpectatorThink(NSClientSpectator pl)
 int
 NSGameRules::MaxItemPerSlot(int slot)
 {
+	if (m_ruleProgs) {
+		return RuleC_CallMaxItemsPerSlot(m_ruleProgs, slot, "CodeCallback_MaxItemPerSlot");
+	}
+
 	return (-1);
 }
 
@@ -368,6 +388,12 @@ NSGameRules::PlayerRequestRespawn(NSClientPlayer pl)
 	return RuleC_CallRequestSpawn(m_ruleProgs, pl, "CodeCallback_PlayerRequestRespawn");
 }
 
+bool
+NSGameRules::PlayerRequestTeam(NSClientPlayer pl, int teamNum)
+{
+	return RuleC_CallRequestTeam(m_ruleProgs, pl, teamNum, "CodeCallback_CallRequestTeam");
+}
+
 void
 NSGameRules::ChatMessageAll(NSClient cl, string strMessage)
 {
@@ -442,23 +468,11 @@ NSGameRules::InitFromProgs(string pathToProgs)
 
 		if (mainFunction) {
 			externset(newRule.m_ruleProgs, this, "self");
-			thread(mainFunction());
+			thread(mainFunction())
 		} else {
 			NSError("%S does not have a main function.", pathToProgs);
 		}
 	}
 
 	return (newRule);
-}
-
-void
-setServerInfo(string serverKey, string setValue)
-{
-	forceinfokey(world, serverKey, setValue);
-}
-
-string
-getServerInfo(string serverKey)
-{
-	return infokey(world, serverKey);
 }

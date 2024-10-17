@@ -209,7 +209,7 @@ func_rotating::Blocked(entity eBlocker)
 			vector dmgDir = dirFromTarget(center, eBlocker.origin);
 			NSDict damageDecl = spawn(NSDict);
 			damageDecl.AddKey("damage", ftos(m_flDamage));
-			entityDamage(eBlocker, this, eBlocker, damageDecl.GetDeclBody(), "", center, dmgDir, eBlocker.origin);
+			combat.Damage(eBlocker, this, eBlocker, damageDecl.GetDeclBody(), center, dmgDir, eBlocker.origin);
 			remove(damageDecl);
 		}
 	}

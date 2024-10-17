@@ -14,9 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-string *g_savegames;
-int g_savegame_count;
-
 CWidget fn_loadgame;
 CMainButton lg_btnLoad;
 CMainButton lg_btnDelete;
@@ -30,14 +27,14 @@ void
 lg_btnload(void)
 {
 	int i = lg_lbSaves.GetSelected();
-	localcmd(sprintf("load %s\n", g_savegames[i]));
+	localcmd(sprintf("load %s\n", Saves_GetInfo(i, SAVEINFO_NAME)));
 }
 
 void
 lg_btnunsave(void)
 {
 	int i = lg_lbSaves.GetSelected();
-	localcmd(sprintf("unsavegame %s\n", g_savegames[i]));
+	localcmd(sprintf("unsavegame %s\n", Saves_GetInfo(i, SAVEINFO_NAME)));
 }
 
 void
@@ -58,7 +55,7 @@ lg_btncancel_start(void)
 void
 lg_lbsaves_changed(int val)
 {
-	
+
 }
 void
 up_sbsaves_changed(int val)
@@ -66,21 +63,19 @@ up_sbsaves_changed(int val)
 	lg_lbSaves.SetScroll(val);
 }
 
+
+
+
+
 void
 menu_loadgame_refreshsaves(void)
 {
-	searchhandle searchy;
 	lg_lbSaves.Clear();
-	searchy = search_begin("saves/*/info.fsv", SEARCH_NAMESORT, TRUE);
-	g_savegame_count = search_getsize(searchy);
-	g_savegames = memalloc(sizeof(string) * g_savegame_count);
-	for (int i = 0; i < g_savegame_count; i++) {
-		string fullpath = search_getfilename(searchy, i);
-		g_savegames[i] = substring(fullpath, 6, strlen(fullpath) - 15);
-		precache_pic(sprintf("saves/%s/screeny.tga", g_savegames[i]));
-		lg_lbSaves.AddEntry(g_savegames[i]);
+
+	for (int i = 0; i < Saves_GetSaveCount(); i++) {
+		lg_lbSaves.AddEntry(Saves_GetInfo(i, SAVEINFO_NAME));
 	}
-	search_end(searchy);
+
 	lg_lbSaves.SetSelected(0, TRUE);
 }
 
@@ -125,7 +120,7 @@ menu_loadgame_init(void)
 	lg_sbSaves.SetCallback(up_sbsaves_changed);
 	lg_sbSaves.SetMax(0);
 	Widget_Add(fn_loadgame, lg_sbSaves);
-	
+
 	lg_frPreview = spawn(CFrame);
 	lg_frPreview.SetPos(390,140);
 	lg_frPreview.SetSize(220,165);
@@ -145,7 +140,7 @@ menu_loadgame_draw(void)
 	}
 
 	int i = lg_lbSaves.GetSelected();
-	drawpic([g_menuofs[0]+390,g_menuofs[1]+140], sprintf("saves/%s/screeny.tga", g_savegames[i]),[220,165], [1,1,1], 1.0f, 1);
+	drawpic([g_menuofs[0]+390,g_menuofs[1]+140], Saves_GetInfo(i, SAVEINFO_PREVIEW),[220,165], [1,1,1], 1.0f, 1);
 }
 
 void

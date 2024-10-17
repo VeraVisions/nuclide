@@ -185,13 +185,8 @@ VGUIWindow::Spawned(void)
 
 	m_btnClose = spawn(VGUIButton);
 	m_btnClose.SetTitle(__NULL__);
-	m_btnClose.SetIcon("textures/ui/steam/icon_close");
 
-#ifdef CLASSIC_VGUI
-	m_btnClose.SetIconColor(m_vecColor);
-#else
 	m_btnClose.SetIconColor([1,1,1]);
-#endif
 	m_btnClose.SetColor(m_vecColor);
 	m_btnClose.SetFunc(VGUIWindowButtonClose);
 	m_btnClose.SetSize([20,20]);
@@ -243,33 +238,6 @@ VGUIWindow::WindowDidClose(void)
 
 void VGUIWindow::Draw(void)
 {
-#ifdef CLASSIC_VGUI
-	if (m_styleMask & VGUIWindowFullscreen)
-		drawfill([0,0], g_vidsize, [0,0,0], 0.5);
-	else
-		drawfill(m_vecOrigin, m_vecSize, [0,0,0], 0.5);
-
-	if (!(m_styleMask & VGUIWindowBorderless)) {
-	drawfill(m_vecOrigin, [m_vecSize[0], 1], m_vecColor, 1.0f);
-	drawfill(m_vecOrigin + [0, m_vecSize[1] - 1], [m_vecSize[0], 1], m_vecColor, 1.0f);
-	drawfill(m_vecOrigin + [0, 1], [1, m_vecSize[1] - 2], m_vecColor, 1.0f);
-	drawfill(m_vecOrigin + [m_vecSize[0] - 1, 1], [1, m_vecSize[1] - 2], m_vecColor, 1.0f);
-	}
-
-	if (m_styleMask & VGUIWindowResizeable) {
-		drawpic(m_vecOrigin + m_vecSize - [16,16], "textures/ui/steam/icon_resizer", [16,16], m_vecColor, 1.0f, 0);
-	}
-
-	if (m_styleMask & VGUIWindowTitled)
-	if (m_strTitle) {
-		if (m_strIcon) {
-			Font_DrawText(m_vecOrigin + [26, 8], m_strTitle, g_fntDefault);
-			drawpic(m_vecOrigin + [4, 4], m_strIcon, [16,16], [1,1,1], 1.0f, 0);
-		} else {
-			Font_DrawText(m_vecOrigin + [8, 8], m_strTitle, g_fntDefault);
-		}
-	}
-#else
 	VGUITheme theme = GetTheme();
 
 	if (m_styleMask & VGUIWindowFullscreen)
@@ -280,21 +248,18 @@ void VGUIWindow::Draw(void)
 		theme.DrawWindowBackground(m_vecOrigin, m_vecSize, VGUI_STATE_ACTIVE);
 
 	if (m_styleMask & VGUIWindowResizeable) {
-		drawpic(m_vecOrigin + m_vecSize - [16,16], "textures/ui/steam/icon_resizer", [16,16], m_vecColor, 1.0f, 0);
+		drawpic(m_vecOrigin + m_vecSize - [16,16], "gfx/icon16/arrow_out", [16,16], m_vecColor, 1.0f, 0);
 	}
 
-	if (m_styleMask & VGUIWindowTitled)
-	if (m_strTitle) {
-		if (m_strIcon) {
-			theme.DrawText(m_vecOrigin + [26, 8], m_strTitle, m_vecSize, g_fntDefault);
-			drawpic(m_vecOrigin + [4, 4], m_strIcon, [16,16], [1,1,1], 1.0f, 0);
-		} else {
-			theme.DrawText(m_vecOrigin + [8, 8], m_strTitle, m_vecSize, g_fntDefault);
-		}
+	if (m_styleMask & VGUIWindowTitled) {
+		theme.DrawWindowTitle(m_vecOrigin, m_vecSize, m_strTitle, m_strIcon, g_fntDefault, VGUI_STATE_ACTIVE);
 	}
-#endif
 
 	super::Draw();
+
+	if (m_styleMask & VGUIWindowClosable) {
+		drawpic(m_vecOrigin + m_btnClose.m_vecOrigin + [2,2], "gfx/icon16/cross_mono", [16,16], [1,1,1], 1.0f, 0);
+	}
 
 #ifdef UI_DEVELOPER
 	if (m_iFlags & WINDOW_DRAGGING) {
@@ -352,8 +317,19 @@ bool VGUIWindow::Input (float flEVType, float flKey, float flChar, float flDevID
 		ret = true;
 	}
 
+	/* if we hadn't had a successful input yet, pass it onto the children */
 	if (ret == false) {
 		ret = super::Input(flEVType, flKey, flChar, flDevID);
+	}
+
+	/* don't send clicks to elements behind our window */
+	if (flEVType == IE_KEYDOWN && flKey == K_MOUSE1 && ret == false && Util_MouseAbove(g_vecMousePos, m_vecOrigin, m_vecSize)) {
+		ret = true;
+	}
+
+	/* if an input was a success? refocus */
+	if (ret == true) {
+		Focus();
 	}
 
 	return (ret);

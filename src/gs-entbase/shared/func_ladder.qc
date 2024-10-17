@@ -42,6 +42,11 @@ public:
 
 };
 
+void
+func_ladder::func_ladder(void)
+{
+}
+
 #ifdef SERVER
 void
 func_ladder::Trigger(entity act, triggermode_t state)
@@ -66,13 +71,8 @@ func_ladder::Respawn(void)
 
 	/* func_ladder specifics */
 	SetMovetype(MOVETYPE_NONE);
-	SetSolid(SOLID_BSP);
-	SetSkin(CONTENT_LADDER);
 	SetFrame(0);
 	Hide();
-}
-
-void
-func_ladder::func_ladder(void)
-{
+	SetSolid(SOLID_BSP);
+	SetSkin(CONTENT_LADDER);
 }

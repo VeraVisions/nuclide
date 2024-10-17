@@ -348,7 +348,7 @@ func_tankmortar::PlayerInput(void)
 		traceline(spos, spos + (dir * 4096), MOVE_NORMAL, this);
 		
 		damageRange = (float)m_iDamage * 2.5f;
-		radiusDamage(trace_endpos, damageRange, 0i, m_iDamage, m_eDriver, "");
+		combat.RadiusDamage(trace_endpos, damageRange, 0i, m_iDamage, m_eDriver, "");
 
 		/* fx */
 		pointparticles(particleeffectnum("fx_explosion.main"), trace_endpos, [0,0,0], 1);

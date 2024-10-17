@@ -32,8 +32,9 @@ Mapcycle_Load(string filename)
 
 	/* read the lines in, see if the map exists and define an enumerated alias */
 	while ((temp = fgets(fs_mapcycle))) {
-		if (fileExists(strcat("maps/", temp, ".bsp")) == false)
+		if (fileExists(strcat("maps/", temp, ".bsp")) == false) {
 			continue;
+		}
 
 		localcmd(sprintf("alias m%i \"map %s;alias nextmap m%i\"\n", mapCount, temp, mapCount + 1i));
 
@@ -73,7 +74,7 @@ Mapcycle_Init(void)
 	InitStart();
 
 	/* in case some server admin wants a map to continously loop */
-	if (cycleFile == "") {
+	if (!STRING_SET(cycleFile)) {
 		NSLog("MapCycle disabled via cvar. Skipping.");
 		localcmd("alias nextmap map_restart 0\n");
 		return;

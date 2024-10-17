@@ -28,8 +28,8 @@ Logging_Pickup(entity cl, entity it, string altname)
 	}
 
 	if (altname) {
-		print(sprintf("%s picked up %s\n", cl.netname, altname));
+		printf("%s picked up %s\n", cl.netname, altname);
 	} else {
-		print(sprintf("%s picked up %s\n", cl.netname, it.classname));
+		printf("%s picked up %s\n", cl.netname, it.classname);
 	}
 }

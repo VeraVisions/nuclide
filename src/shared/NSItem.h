@@ -75,6 +75,7 @@ public:
 	virtual void Touch(entity);
 	virtual void Respawn(void);
 	virtual void SpawnKey(string, string);
+	virtual void Input(entity, string, string);
 	virtual void Save(float);
 	virtual void Restore(string,string);
 	virtual void EvaluateEntity(void);
@@ -92,6 +93,9 @@ public:
 
 	/** Overridable: Called when this item is picked up. */
 	virtual void OnPickup(void);
+
+	/** Overridable: Called when this item is used. */
+	virtual void OnUse(entity);
 
 	virtual void PrintDebugInfo(void);
 	/** Call to turn a weapon into a pickup. */

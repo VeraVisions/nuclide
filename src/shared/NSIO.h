@@ -184,8 +184,11 @@ public:
 	nonvirtual void DebugBool(string,bool);
 	/** Debug print for a given entity. */
 	nonvirtual void DebugEntity(string,entity);
+	/** Sets the editor icon. Must be 16x16 px and located in `gfx/icon16/`. */
+	nonvirtual void SetEditorIcon(string);
 
 private:
+	string m_strEditorIcon;
 	string m_strSpawnData;
 #ifdef SERVER
 	string m_strOnTrigger;
@@ -199,6 +202,7 @@ private:
 #endif
 };
 
+.bool isActor;
 .bool _mapspawned;
 
 void

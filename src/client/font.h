@@ -40,6 +40,7 @@ typedef enumflags
 	AF_RIGHT,
 	AF_BOTTOM
 } alignflags_t;
+#define AF_NONE 0
 
 /** Representation of a font. */
 typedef struct
@@ -50,6 +51,7 @@ typedef struct
 	vector vecColor; /**< Suggested default color of the font. */
 	float flAlpha; /**< Suggested default alpha of the font. */
 	int iFlags;	/**< Rendering flags that the font posesses. @sa drawflag_t */
+	string hexColor;
 } font_s;
 
 /** Load a desired .font definition into memory.

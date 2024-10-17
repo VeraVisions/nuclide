@@ -283,6 +283,9 @@ NSProjectile::SpawnKey(string strKey, string strValue)
 	case "thrown":
 		m_bThrown = ReadBool(strValue);
 		break;
+	case "reflects":
+		m_bReflect = ReadBool(strValue);
+		break;
 	default:
 		super::SpawnKey(strKey, strValue);
 		break;
@@ -522,10 +525,24 @@ NSProjectile::Spawned(void)
 	SetSize(m_vecSpawnMins, m_vecSpawnMaxs);
 }
 
+
+
 void
 NSProjectile::Touch(entity eToucher)
 {
 	m_vecImpactPos = trace_endpos;
+
+	if (eToucher == world && m_bReflect) {
+		vector currentAngle = GetAngles();
+		currentAngle[0] *= -1;
+		vector currentVelocity = anglesToForward(currentAngle);
+		SetMovetype(MOVETYPE_FLYMISSILE);
+		SetVelocity(reflect(currentVelocity, trace_plane_normal) * m_vecLaunchVelocity[0]);
+		SetAngles(vectoangles(GetVelocity()));
+		SetOrigin(GetOrigin() + (anglesToForward(GetAngles() * 2.0f)));
+		StartSoundDef(m_sndBounce, CHAN_BODY, true);
+		return;
+	}
 
 	if (eToucher.takedamage != DAMAGE_NO) {
 		NSSurfacePropEntity toucher = (NSSurfacePropEntity)eToucher;
@@ -780,7 +797,7 @@ NSProjectile::_Explode(entity explodedOn)
 			flDamage *= m_flDmgMultiplier;
 		}
 
-		radiusDamage(damagePos, flRadius, (int)flMinDamage, (int)flDamage, owner, m_defSplashDamage);
+		combat.RadiusDamage(damagePos, flRadius, (int)flMinDamage, (int)flDamage, owner, m_defSplashDamage);
 	}
 
 	/* another def that'll be spawned when this one detonates */
@@ -788,7 +805,7 @@ NSProjectile::_Explode(entity explodedOn)
 		float movementAmount = 360.0f / (float)m_iDebrisCount;
 
 		for (int i = 0; i < m_iDebrisCount; i++) {
-			NSProjectile_SpawnDefAtPosition(m_defProjectileDebris, (NSEntity)owner, debrisPos, debrisAngle);
+			NSProjectile_SpawnDefAtPosition(m_defProjectileDebris, (NSActor)owner, debrisPos, debrisAngle);
 			debrisAngle[1] += movementAmount;
 		}
 	}
@@ -849,9 +866,9 @@ NSProjectile::_ApplyDamage(void)
 
 	damageDecl.AddKey("hitbody", itos(trace_surface_id));
 	damageDecl.AddKey("damage", itos(m_iMultiValue));
-	vector dmgDir = normalize(angles);
-
-	entityDamage(m_eMultiTarget, owner, owner, damageDecl.GetDeclBody(), GetWeaponOwner().classname, GetOrigin(), dmgDir, trace_endpos);
+	damageDecl.AddKey("weapon", GetWeaponOwner().classname);
+	vector dmgDir = anglesToForward(angles);
+	m_eMultiTarget.Damage(this, owner, damageDecl, m_flDmgMultiplier, vectorNormalize(angles), m_vecImpactPos);
 	remove(damageDecl);
 
 	m_eMultiTarget = __NULL__;
@@ -979,7 +996,7 @@ NSProjectile::_ThrustThink(void)
 	newVelocity = v_forward * (newSpeed);
 
 	/* prevent thrusting early */
-	if ((m_flThrustStart > 0) && GetSpawnAge() < m_flThrustStart) { 
+	if ((m_flThrustStart > 0) && GetSpawnAge() < m_flThrustStart) {
 		return;
 	}
 
@@ -1005,11 +1022,13 @@ NSProjectile::Launch(vector startPos, vector launchDir, float fuseOffset, float 
 	SetAngles(launchDir);
 	SetSize(m_vecSpawnMins, m_vecSpawnMaxs);
 
-	if (dmgMultiplier <= 0.0)
+	if (dmgMultiplier <= 0.0) {
 		dmgMultiplier = 1.0f;
+	}
 
-	if (powerMultiplier <= 0.0)
+	if (powerMultiplier <= 0.0) {
 		powerMultiplier = 1.0f;
+	}
 
 	m_flDmgMultiplier = dmgMultiplier;
 
@@ -1083,7 +1102,14 @@ NSProjectile::Launch(vector startPos, vector launchDir, float fuseOffset, float 
 		MakeInvulnerable();
 	}
 
-	if (m_flFuse > 0) {
+	if (m_flFuse > 0.0f) {
+		/* quit early */
+		if ((m_flFuse - fuseOffset)<= 0.0f) {
+			m_vecImpactPos = startPos;
+			_Explode(owner);
+			return;
+		}
+
 		ScheduleThink(_FuseEnded, m_flFuse - fuseOffset);
 	}
 
@@ -1207,6 +1233,16 @@ NSProjectile::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_FLOAT(m_flLightRadius, PROJ_CHANGED_RENDERAMT)
 	setmodelindex(this, modelindex);
 	drawmask = MASK_ENGINE;
+}
+
+void
+NSProjectile::postdraw(void)
+{
+#if 1
+	if (m_flLightRadius > 0.0) {
+		env_sun_lensflare(origin, 1.0f, m_vecLightColor, false);
+	}
+#endif
 }
 
 float

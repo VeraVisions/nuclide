@@ -14,4 +14,5 @@ cmd_cl.qc
 cmd_sv.qc
 entry.qc
 ../nav/includes.src
+api.qc
 #endlist

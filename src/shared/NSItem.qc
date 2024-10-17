@@ -42,24 +42,12 @@ NSItem::Spawned(void)
 	Sound_Precache(m_sndAcquire);
 	Sound_Precache(m_sndRespawn);
 	pvsflags = PVSF_IGNOREPVS;
+	_isItem = true;
 }
 
 void
 NSItem::Respawn(void)
 {
-	/* we need to delay the DropToFloor() by at least a frame.
-	   otherwise they may just fall through an entity (func_wall, func_train etc.)
-	   that came after this entity in the lump. */
-	static void AdjustSpawnPos(void) {
-		RestoreAngles();
-		SetOrigin(GetSpawnVector("origin"));
-		placeSpawnpoint(this);
-
-		if (!m_bFloating) {
-			DropToFloor();
-		}
-	}
-
 	super::Respawn();
 	BecomePickup();
 
@@ -67,7 +55,12 @@ NSItem::Respawn(void)
 	EnablePlayerCollision();
 
 	if (CreatedByMap() == true) {
-		ScheduleThink(AdjustSpawnPos, 0.0f);
+		RestoreAngles();
+		SetOriginUnstick(GetSpawnVector("origin"));
+
+		if (!m_bFloating) {
+			DropToFloor();
+		}
 	}
 }
 
@@ -208,6 +201,21 @@ NSItem::Restore(string strKey, string strValue)
 		super::Restore(strKey, strValue);
 		break;
 	}
+}
+
+void
+NSItem::Input(entity eAct, string strInput, string strData)
+{
+	switch (strInput) {
+	default:
+		NSTrigger::Input(eAct, strInput, strData);
+	}
+}
+
+void
+NSItem::OnUse(entity user)
+{
+
 }
 
 bool
@@ -401,7 +409,7 @@ NSItem::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_ANGLE(angles[0], ITEMFL_CHANGED_ANGLES_X)
 	SENDENTITY_ANGLE(angles[1], ITEMFL_CHANGED_ANGLES_Y)
 	SENDENTITY_ANGLE(angles[2], ITEMFL_CHANGED_ANGLES_Z)
-	SENDENTITY_FLOAT(entityDefID, ITEMFL_CHANGED_MODELINDEX)
+	SENDENTITY_INT(entityDefID, ITEMFL_CHANGED_MODELINDEX)
 	SENDENTITY_SHORT(modelindex, ITEMFL_CHANGED_MODELINDEX)
 	SENDENTITY_BYTE(solid, ITEMFL_CHANGED_SOLID)
 	SENDENTITY_BYTE(movetype, ITEMFL_CHANGED_FLAGS)
@@ -489,7 +497,7 @@ NSItem::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_ANGLE(angles[0], ITEMFL_CHANGED_ANGLES_X)
 	READENTITY_ANGLE(angles[1], ITEMFL_CHANGED_ANGLES_Y)
 	READENTITY_ANGLE(angles[2], ITEMFL_CHANGED_ANGLES_Z)
-	READENTITY_FLOAT(entityDefID, ITEMFL_CHANGED_MODELINDEX)
+	READENTITY_INT(entityDefID, ITEMFL_CHANGED_MODELINDEX)
 	READENTITY_SHORT(modelindex, ITEMFL_CHANGED_MODELINDEX)
 	READENTITY_BYTE(solid, ITEMFL_CHANGED_SOLID)
 	READENTITY_BYTE(movetype, ITEMFL_CHANGED_FLAGS)
@@ -626,7 +634,7 @@ NSItem::_AddedCallback(void)
 {
 	NSActor ourOwner = (NSActor)owner;
 
-#ifdef CLIENT
+#if 0
 	if (pSeat->m_ePlayer == owner) {
 		localcmd("bf\n");
 	}
@@ -657,11 +665,13 @@ NSItem::_AddedCallback(void)
 	Logging_Pickup(ourOwner, this, __NULL__);
 	ourOwner.StartSoundDef(m_sndAcquire, CHAN_ITEM, true);
 	OnPickup();
-	Disappear();
+	MakeInvulnerable();
 #endif
 
+	Disappear();
 	ourOwner.AddedItemCallback(this);
 	AddedToInventory();
+	SetMovetype(MOVETYPE_NONE);
 }
 
 void

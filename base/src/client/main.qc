@@ -127,45 +127,6 @@ ClientGame_EventParse(float fHeader)
 	return (1);
 }
 
-const float baseIconSize = 32.0;
-const float baseIconPadding = 16.0;
-
-void
-HUD_Init(void)
-{
-}
-
-void
-HUD_Draw(void)
-{
-	NSClientPlayer pl = (NSClientPlayer)pSeat->m_ePlayer;
-	vector hudSize = g_view.GetHUDCanvasSize();
-	vector iconPos = g_view.GetHUDCanvasPos() + (hudSize / 2);
-	iconPos[1] = (hudSize[1] - baseIconSize) - baseIconPadding;
-
-	string healthValue = ftos(pl.health);
-	string armorValue = ftos(pl.armor);
-
-	/* health, armor icons */
-	Font_DrawRText(iconPos + [-((baseIconSize/2) + (baseIconPadding/2)) - baseIconPadding, 0], healthValue, FONT_16);
-	drawpic(iconPos + [-((baseIconSize/2) + (baseIconPadding/2)), 0], "gfx/hud/health", [baseIconSize, baseIconSize], [1,1,1], 1.0f);
-	Font_DrawText(iconPos + [(baseIconSize/2) + (baseIconPadding/2) + baseIconSize + baseIconPadding, 0], armorValue, FONT_16);
-	drawpic(iconPos + [(baseIconSize/2) + (baseIconPadding/2), 0], "gfx/hud/armor", [baseIconSize, baseIconSize], [1,1,1], 1.0f);
-
-	/* little point in not drawing these, even if you don't have a suit */
-	if (pl.m_activeWeapon) {
-		pl.m_activeWeapon.UpdateGUI();
-	}
-
-	Textmenu_Draw();
-}
-
-void
-HUD_DrawSpectator(void)
-{
-	
-}
-
 void
 ClientGame_Init(float apilevel, string enginename, float engineversion)
 {

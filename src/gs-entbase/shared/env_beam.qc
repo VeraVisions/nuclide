@@ -211,7 +211,7 @@ env_beam::CastLaser(void)
 
 	damageDecl.AddKey("damage", itos(m_iDamage));
 	damageDecl.AddKey("type", "electro");
-	entityDamage(trace_ent, this, trace_ent, damageDecl.GetDeclBody(), "", center, g_vec_null, trace_ent.origin);
+	combat.Damage(trace_ent, this, trace_ent, damageDecl.GetDeclBody(), center, g_vec_null, trace_ent.origin);
 	remove(damageDecl);
 }
 

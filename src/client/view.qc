@@ -299,6 +299,7 @@ View_DrawViewModel(void)
 
 	/* only draw the model when it's 'enabled'... */
 	if (m_eViewModel.IsHidden() == false) {
+		float oldModelindex;
 		setorigin(m_eViewModel, m_eViewModel.origin);
 		setorigin(m_eViewModelL, m_eViewModel.origin);
 
@@ -323,21 +324,21 @@ View_DrawViewModel(void)
 
 			/* TODO: clean this up. */
 			if (m_eViewModel.modelindex2) {
-				float oldModelindex = m_eViewModel.modelindex;
+				oldModelindex = m_eViewModel.modelindex;
 				m_eViewModel.modelindex = m_eViewModel.modelindex2;
 				addentity(m_eViewModel);
 				m_eViewModel.modelindex = oldModelindex;
 			}
 
 			if (m_eViewModel.modelindex3) {
-				float oldModelindex = m_eViewModel.modelindex;
+				oldModelindex = m_eViewModel.modelindex;
 				m_eViewModel.modelindex = m_eViewModel.modelindex3;
 				addentity(m_eViewModel);
 				m_eViewModel.modelindex = oldModelindex;
 			}
 
 			if (m_eViewModel.modelindex4) {
-				float oldModelindex = m_eViewModel.modelindex;
+				oldModelindex = m_eViewModel.modelindex;
 				m_eViewModel.modelindex = m_eViewModel.modelindex4;
 				addentity(m_eViewModel);
 				m_eViewModel.modelindex = oldModelindex;

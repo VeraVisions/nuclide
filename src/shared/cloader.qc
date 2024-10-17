@@ -20,6 +20,7 @@
 
 string g_constIndex[MAX_CONSTANTS_ID];
 static int g_constCount;
+const string g_constantsFile = "scripts/constants.txt";
 
 void
 Constants_Init(void)
@@ -37,10 +38,10 @@ Constants_Init(void)
 		g_hashConstants = hash_createtab(2, HASH_ADD);
 	}
 
-	constFile = fopen("scripts/constants.txt", FILE_READ);
+	constFile = fopen(g_constantsFile, FILE_READ);
 
 	if (constFile < 0) {
-		NSError("Missing file scripts/constants.txt");
+		NSWarning("No constants, missing %S", g_constantsFile);
 		InitEnd();
 		return;
 	}
@@ -54,11 +55,13 @@ Constants_Init(void)
 
 		/* sanity bounds check */
 		if (!Constants_Add(argv(0), argv(1))) {
+			fclose(constFile);
 			InitEnd();
 			return;
 		}
 	}
 
+	fclose(constFile);
 	InitEnd();
 }
 
@@ -83,8 +86,9 @@ Constants_LookUp(string constName, string returnValue)
 	int constIndex = -1i;
 
 	/* only if we're prefixed */
-	if (substring(constName, 0, 1) == "$")
+	if (substring(constName, 0, 1) == "$") {
 		constIndex = hash_get(g_hashConstants, substring(constName, 1, -1), -1i);
+	}
 
 	return (constIndex == -1i) ? returnValue : g_constIndex[constIndex];
 }

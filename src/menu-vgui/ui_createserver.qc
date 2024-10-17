@@ -48,7 +48,7 @@ void UI_CreateServer_Show ( void )
 		lsbMaps.SetOffset( scrlMaps.GetValue(), FALSE );
 	}
 	static void CreateServer_Scrolled ( void ) {
-		scrlMaps.SetValue( lsbMaps.GetOffset(), FALSE );
+		scrlMaps.SetValue( lsbMaps.GetOffset() );
 	}
 
 	if ( !g_iCreateServerInitialized ) {
@@ -56,20 +56,19 @@ void UI_CreateServer_Show ( void )
 		winCreate = spawn( CUIWindow );
 		winCreate.SetTitle( "Create Server" );
 		winCreate.SetSize( '338 385' );
-		winCreate.SetIcon( "textures/ui/icons/server-new" );
+		winCreate.SetIcon( "gfx/icon16/server_add" );
 
-		searchhandle shMaps = search_begin( "maps/*.bsp", SEARCH_NAMESORT, TRUE );
 		lsbMaps = spawn( CUIList );
 		lsbMaps.SetSize( '128 306' );
 		lsbMaps.SetPos( '175 32 ' );
-		lsbMaps.SetItemCount( search_getsize( shMaps ) );
+		lsbMaps.SetItemCount( MapLibrary_GetMapCount() );
 		lsbMaps.CallOnScroll( CreateServer_Scrolled );
 		lsbMaps.SetSelected( 0 );
 
 		lsbMaps.AddItem( "< Random Map >" );
-		for ( int i = 0; i < search_getsize( shMaps ); i++ ) {
-			string strMap = search_getfilename( shMaps, i );
-			lsbMaps.AddItem( substring( strMap, 5, strlen( strMap ) - 9 ) );
+		for ( int i = 0; i < MapLibrary_GetMapCount(); i++ ) {
+			string strMap = MapLibrary_GetInfo(i, MAPINFO_NAME);
+			lsbMaps.AddItem( strMap );
 			//lsbMaps.AddItem( search_getfilename( shMaps, i ) );
 		}
 
@@ -109,7 +108,7 @@ void UI_CreateServer_Show ( void )
 		txbMaxplayers = spawn( CUITextBox );
 		txbMaxplayers.SetPos( [ 20, 102 ] );
 		txbMaxplayers.SetSize( [ 124, 24 ] );
-		txbMaxplayers.SetText( cvar_string( "sv_playerslots" ) );
+		txbMaxplayers.SetText( cvar_string( "sv_playerslots" ) != "1" ? cvar_string( "sv_playerslots" ) : "8" );
 
 		lblPassword = spawn( CUILabel );
 		lblPassword.SetPos( '20 136' );
@@ -131,7 +130,6 @@ void UI_CreateServer_Show ( void )
 		winCreate.Add( txbMaxplayers );
 		winCreate.Add( lblPassword );
 		winCreate.Add( txbPassword );
-		search_end( shMaps );
 	}
 
 	winCreate.Show();

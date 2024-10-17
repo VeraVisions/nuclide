@@ -94,6 +94,8 @@ void VGUIListBox::AddItem (string strItem)
 
 void VGUIListBox::Draw(void)
 {
+	VGUITheme theme = GetTheme();
+
 	int iMaxDisplay;
 	if (!m_iItemCount) {
 		return;
@@ -117,7 +119,7 @@ void VGUIListBox::Draw(void)
 			drawfill(m_parent.m_vecOrigin + m_vecOrigin + vecOffset + [-7,-3], [m_vecSize[0] - 2, 18], [1,1,1], 0.5f);
 		}
 		
-		Font_DrawText(m_parent.m_vecOrigin + m_vecOrigin + vecOffset, m_strItems[i], g_fntDefault);
+		theme.DrawText(m_parent.m_vecOrigin + m_vecOrigin + vecOffset, m_strItems[i], m_vecSize, g_fntDefault);
 		vecOffset[1] += 20;
 	}
 }

@@ -26,12 +26,24 @@ MapC_Init(void)
 
 	/* No mapname.dat, exit out */
 	if (fileExists(mapProgs) == false) {
-		NSError("MapC for level %s at %S does not exist.", mapname, mapProgs);
+		NSWarning("No MapC for level %s loaded. (%s)", cvar_string("mapname"), mapProgs);
 		return;
 	}
 
 	NSLog("...adding MapC progs %S",mapProgs);
 	g_mapCProgs = addprogs(mapProgs);
+
+	if (g_mapCProgs > 0) {
+		void(void) mainFunction;
+		mainFunction = externvalue(g_mapCProgs, "main");
+
+		if (mainFunction) {
+			externset(g_mapCProgs, world, "self");
+			mainFunction();
+		} else {
+			NSError("%s does not have a main function.", mapProgs);
+		}
+	}
 }
 
 void
@@ -74,6 +86,25 @@ RuleC_CallFunc(float progsNum, entity pl, string funcName)
 			entity oldSelf = self;
 			//externset(progsNum, pl, "self");
 			self = pl;
+			mainFunction();
+			self = oldSelf;
+			return (true);
+		}
+	}
+
+	return (false);
+}
+bool
+RuleC_CallFrame(float progsNum, string funcName)
+{
+	if (progsNum) {
+		void(void) mainFunction;
+		mainFunction = externvalue(progsNum, funcName);
+
+		if (mainFunction) {
+			entity oldSelf = self;
+			externset(progsNum, frametime, "frametime");
+			self = world;
 			mainFunction();
 			self = oldSelf;
 			return (true);
@@ -127,6 +158,28 @@ RuleC_CallRequestSpawn(float progsNum, entity pl, string funcName)
 }
 
 bool
+RuleC_CallRequestTeam(float progsNum, entity pl, int teamNum, string funcName)
+{
+	bool returnValue = false;
+
+	if (progsNum) {
+		bool(int) mainFunction;
+		mainFunction = externvalue(progsNum, funcName);
+
+		if (mainFunction) {
+			entity oldSelf = self;
+			externset(progsNum, pl, "self");
+			self = pl;
+			returnValue = mainFunction(teamNum);
+			self = oldSelf;
+			return (returnValue);
+		}
+	}
+
+	return (returnValue);
+}
+
+bool
 RuleC_CallString(float progsNum, entity pl, string targetString, string funcName)
 {
 	bool returnValue = false;
@@ -168,4 +221,37 @@ RuleC_CallFloat(float progsNum, entity pl, float targetFloat, string funcName)
 	}
 
 	return (returnValue);
+}
+
+int
+RuleC_CallMaxItemsPerSlot(float progsNum, int targetFloat, string funcName)
+{
+	int returnValue = -1i;
+
+	if (progsNum) {
+		int(int) mainFunction;
+		mainFunction = externvalue(progsNum, funcName);
+
+		if (mainFunction) {
+			returnValue = mainFunction(targetFloat);
+			return (returnValue);
+		}
+	}
+
+	return (returnValue);
+}
+
+
+
+void
+RuleC_CallInput(float progsNum, entity activator, string inputName, string inputData)
+{
+	if (progsNum) {
+		void(entity, string, string) mainFunction;
+		mainFunction = externvalue(progsNum, "CodeCallback_Input");
+
+		if (mainFunction) {
+			mainFunction(activator, inputName, inputData);
+		}
+	}
 }

@@ -482,10 +482,10 @@ NSRenderableEntity::RenderFXPass(void)
 	case RFX_GLOWSHELL2:
 		/* make this entity shellchrome */
 		effects = EF_ADDITIVE;
-		fatness = 0;
+		fatness = m_flRenderAmt / 25.5;
 		colormod = (m_vecRenderColor / 255);
 		forceshader = g_shellchromeshader_cull;
-		alpha = (m_flRenderAmt / 255);
+		alpha = 1.0f;
 		/* copy entity into rendering queue */
 		addentity(this);
 		/* reset */
@@ -498,10 +498,10 @@ NSRenderableEntity::RenderFXPass(void)
 	case RFX_GLOWSHELL:
 		/* make this entity shellchrome */
 		effects = EF_ADDITIVE;
-		fatness = 0;
+		fatness = m_flRenderAmt / 25.5;
 		colormod = (m_vecRenderColor / 255);
 		forceshader = g_shellchromeshader;
-		alpha = (m_flRenderAmt / 255);
+		alpha = 1.0f;
 		/* copy entity into rendering queue */
 		addentity(this);
 		/* reset */
@@ -620,6 +620,7 @@ NSRenderableEntity::predraw(void)
 
 	RenderFXPass();
 	RenderDebugSkeleton();
+
 
 	if (modelflags & MF_ROTATE) {
 		angles[1] = g_modelSpinAngle;
@@ -789,17 +790,14 @@ NSRenderableEntity::Respawn(void)
 	SetRenderAmt(GetSpawnFloat("renderamt"));
 	SetRenderColor(GetSpawnVector("rendercolor"));
 
+	SetScale(GetSpawnFloat("modelscale"));
+
 	SetSkin(GetSpawnInt("skin"));
 	SetBody(GetSpawnInt("body"));
 	SetBodyInGroup(0, GetSpawnInt("body0"));
 	SetBodyInGroup(1, GetSpawnInt("body1"));
 	SetBodyInGroup(2, GetSpawnInt("body2"));
 	SetBodyInGroup(3, GetSpawnInt("body3"));
-
-	//SetRenderFX(GetSpawnRenderFX());
-	//SetRenderMode(GetSpawnRenderMode());
-	//SetRenderAmt(GetSpawnRenderAmt());
-	//SetRenderColor(GetSpawnRenderColor());
 }
 #endif
 
@@ -1224,8 +1222,10 @@ NSRenderableEntity::SpawnKey(string strKey, string strValue)
 	}
 }
 
+#if 0
 float
 NSRenderableEntity::PlayActOnChannel(float animChannel, string activityName)
 {
-	
+
 }
+#endif

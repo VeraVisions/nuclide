@@ -24,6 +24,7 @@ shared/logic_achievement.qc
 shared/func_monitor.qc
 shared/func_lod.qc
 shared/func_illusionary.qc
+shared/func_useableladder.qc
 shared/func_ladder.qc
 shared/func_wall.qc
 shared/func_vehicle.qc

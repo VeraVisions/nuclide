@@ -90,6 +90,7 @@ server/point_camera.qc
 server/point_servercommand.qc
 server/point_trigger.qc
 server/targ_speaker.qc
+server/target_speaker.qc
 server/target_cdaudio.qc
 server/env_global.qc
 server/script_model.qc

@@ -34,6 +34,18 @@ NSEntity::NSEntity(void)
 }
 
 void
+NSEntity::Spawn(void)
+{
+	Spawned();
+
+	if (wasfreed(this)) {
+		return;
+	}
+
+	Respawn();
+}
+
+void
 NSEntity::Spawned(void)
 {
 	super::Spawned();
@@ -225,6 +237,12 @@ NSEntity::ReceiveEntity(float flNew, float flChanged)
 	if (flChanged & BASEFL_CHANGED_SIZE) {
 		setsize(this, mins, maxs);
 	}
+}
+
+void
+NSEntity::_ReceiveComplete(float flNew, float flChanged)
+{
+
 }
 
 void
@@ -1042,7 +1060,7 @@ NSEntity::Input(entity eAct, string strInput, string strData)
 		break;
 	case "SpawnProjectileDef":
 		if (EntityDef_HasSpawnClass(strData)) {
-			NSProjectile_SpawnDefAttachment(strData, this, 0);
+			NSProjectile_SpawnDefAttachment(strData, (NSActor)this, 0);
 		}
 		break;
 	case "StartSoundDef":
@@ -1436,7 +1454,7 @@ NSEntity::_ProjectileAttack(string defName, bool wasReleased)
 
 	for (int i = 0i; i < numProjectiles; i++) {
 		EntLog("Launching %S at %v towards %v", attackDef, GetEyePos(), GetViewAngle());
-		NSAttack_SpawnDefAtPosition(attackDef, this, GetEyePos(), GetViewAngle());
+		NSAttack_SpawnDefAtPosition(attackDef, (NSActor)this, GetEyePos(), GetViewAngle());
 	}
 #endif
 
@@ -1487,157 +1505,4 @@ NSEntity::DisablePlayerCollision(void)
 {
 	dimension_solid = 1;
 	dimension_hit = 1;
-}
-
-NSEntity
-spawnClass(string className, vector desiredPos)
-{
-	NSEntity newEntity = __NULL__;
-
-#ifdef SERVER
-	newEntity = Entity_CreateClass(className);
-
-	/* That class didn't exist, so let's take the base Nuclide one */
-	if (!newEntity) {
-		newEntity = Entity_CreateClass("NSEntity");
-	}
-
-	/* OOM. It's over. */
-	if (!newEntity) {
-		return (__NULL__);
-	}
-
-	newEntity.classname = className;
-	newEntity.Input(newEntity, "SetOrigin", vtos(desiredPos));
-	newEntity.Respawn();
-#endif
-
-	return (newEntity);
-}
-
-#ifdef SERVER
-bool
-changeClass(entity target, string className)
-{
-	return EntityDef_SwitchClass((NSEntity)target, className) ? (true) : (false);
-}
-#endif
-
-void
-sendInput(entity target, string inputName, string dataString, entity activator)
-{
-	NSEntity targetEntity = (NSEntity)target;
-#ifdef SERVER
-	targetEntity.Input(activator, inputName, dataString);
-#endif
-}
-
-/* helper functions */
-bool
-isAI(entity entityToCheck)
-{
-	if (entityToCheck.flags & FL_MONSTER) {
-		return (true);
-	}
-
-	return (false);
-}
-
-bool
-isAlive(entity entityToCheck)
-{
-#ifdef SERVER
-	if (entityToCheck.takedamage != DAMAGE_NO) {
-		NSSurfacePropEntity livingEnt = (NSSurfacePropEntity)entityToCheck;
-		return livingEnt.IsAlive();
-	}
-#endif
-
-	return (false);
-}
-
-bool
-isGodMode(entity entityToCheck)
-{
-	if (entityToCheck.flags & FL_GODMODE) {
-		return (true);
-	}
-
-	return (false);
-}
-
-bool
-isClient(entity entityToCheck)
-{
-	return (entityToCheck.flags & FL_CLIENT) ? (true) : (false);
-}
-
-bool
-isPlayer(entity entityToCheck)
-{
-	if (isClient(entityToCheck)) {
-		NSClient pl = (NSClient)entityToCheck;
-
-		return pl.IsPlayer();
-	}
-
-	return (false);
-}
-
-bool
-isSentient(entity entityToCheck)
-{
-	if (isAI(entityToCheck) || isPlayer(entityToCheck)) {
-		return (true);
-	}
-
-	return (false);
-}
-
-bool
-isBot(entity entityToCheck)
-{
-#ifdef SERVER
-	return (clienttype(entityToCheck) == CLIENTTYPE_BOT) ? (true) : (false);
-#else
-	return (false);
-#endif
-}
-
-
-#ifdef SERVER
-void
-setUserInfo(entity clientEntity, string serverKey, string setValue)
-{
-	if (isClient(clientEntity)) {
-		NSClient client = (NSClient) clientEntity;
-		client.SetInfoKey(serverKey, setValue);
-	}
-}
-
-string
-getUserInfo(entity clientEntity, string serverKey)
-{
-	if (isClient(clientEntity)) {
-		NSClient client = (NSClient) clientEntity;
-		return client.GetInfoKey(serverKey);
-	}
-}
-#endif
-
-void
-placeSpawnpoint(entity target)
-{
-	vector testorg = target.origin;
-
-	for (int i = 0; i < 32; i++) {
-		tracebox(testorg, target.mins, target.maxs, testorg, MOVE_NORMAL, target);
-
-		if (!trace_startsolid) {
-			setorigin(target, testorg);
-			break;
-		}
-
-		testorg[2] += 1.0;
-	}
 }

@@ -33,6 +33,10 @@ GameLibrary_IDForPackageName(string packageName)
 {
 	string f;
 
+	if (!checkbuiltin(getpackagemanagerinfo)) {
+		return (-1i);
+	}
+
 	for (int i = 0; (getpackagemanagerinfo(i, GPMI_NAME)); i++) {
 		string name;
 		name = getpackagemanagerinfo(i, GPMI_NAME);
@@ -444,6 +448,7 @@ GameLibrary_InitCustom(void)
 	}
 
 	/* count the package installed mods after */
+	if (checkextension("getpackagemanagerinfo"))
 	for (int i = 0; (getpackagemanagerinfo(i, GPMI_NAME)); i++) {
 		string packageName = getpackagemanagerinfo(i, GPMI_NAME);
 		string installStatus = getpackagemanagerinfo(i, GPMI_INSTALLED);
@@ -496,6 +501,7 @@ GameLibrary_InitCustom(void)
 	}
 
 	/* iterate through all packages again */
+	if (checkextension("getpackagemanagerinfo"))
 	for (int i = 0i; (getpackagemanagerinfo(i, GPMI_NAME)); i++) {
 		string packageName = getpackagemanagerinfo(i, GPMI_NAME);
 		string installStatus = getpackagemanagerinfo(i, GPMI_INSTALLED);
@@ -832,8 +838,8 @@ void
 GameLibrary_DebugList(void)
 {
 	for (int i = 0; i < gameinfo_count; i++) {
-		print(sprintf("%i %s (%s)\n", i, games[i].game, games[i].gamedir));
+		printf("%i %s (%s)\n", i, games[i].game, games[i].gamedir);
 	}
 
-	print(sprintf("\t%i game(s) loaded.", gameinfo_count));
+	printf("\t%i game(s) loaded.\n", gameinfo_count);
 }
