@@ -185,7 +185,6 @@ enumflags
 .vector basevelocity;
 .float gflags;
 .float identity;
-
 .bool _isWeapon;
 .bool _isItem;
 
@@ -473,7 +472,8 @@ string Util_FixModel(string mdl)
 }
 
 /** Returns a string (usually filename) with only the file extension
-    at the end replaced with a given, new extension. */
+    at the end replaced with a given, new extension.
+    If the base string does not contain a file extension, it'll be appended to the end result. */
 string
 Util_ChangeExtension(string baseString, string newExtension)
 {
@@ -490,6 +490,11 @@ Util_ChangeExtension(string baseString, string newExtension)
 			break;
 
 		stringOffset++;
+	}
+
+	/* no extension found? append to the end then. */
+	if (foundOffset == 0) {
+		return strcat(baseString, ".", newExtension);
 	}
 
 	return strcat(substring(baseString, 0, foundOffset), ".", newExtension);

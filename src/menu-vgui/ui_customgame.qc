@@ -28,7 +28,7 @@ void UI_CustomGame_Show ( void )
 	}
 
 	static void CustomGame_ScrollUpdate ( void ) {
-		scrlGames.SetValue( lsbGames.GetOffset(), FALSE );
+		scrlGames.SetValue( lsbGames.GetOffset() );
 	}
 	static void CustomGame_ListUpdate ( void ) {
 		lsbGames.SetOffset( scrlGames.GetValue(), FALSE );

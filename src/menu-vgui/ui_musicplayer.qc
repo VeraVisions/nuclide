@@ -33,7 +33,7 @@ void UI_MusicPlayer_Show ( void )
 		localcmd( "stopsound\n" );
 	}
 	static void MusicPlayer_ScrollUpdate ( void ) {
-		scrlSong.SetValue( lsbSongs.GetOffset(), FALSE );
+		scrlSong.SetValue( lsbSongs.GetOffset() );
 	}
 	static void MusicPlayer_ListUpdate ( void ) {
 		lsbSongs.SetOffset( scrlSong.GetValue(), FALSE );

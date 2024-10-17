@@ -134,6 +134,18 @@ trshaders:
 	Tools/make_trshaders.sh $(GAME)
 
 # recycling center
+vacuum:
+	-rm ./$(GAME)/csqccore.txt
+	-rm ./$(GAME)/ssqccore.txt
+	-rm ./$(GAME)/menucore.txt
+	-rm ./$(GAME)/condump.txt
+	-rm ./$(GAME)/fte.cfg
+	-rm ./$(GAME)/config.cfg
+	-rm ./$(GAME)/*.lno
+	-rm -rfv ./$(GAME)/csprogsvers
+	-rm -rfv ./$(GAME)/data
+	-rm -rfv ./$(GAME)/saves
+
 clean: clean-game clean-engine clean-tools clean-dist
 
 clean-dist:
@@ -161,6 +173,9 @@ clean-tools:
 	cd Tools/vvmtool && $(MAKE) clean
 	cd ThirdParty/fteqw/engine && $(MAKE) clean
 	-rm vmap vvmtool iqmtool imgtool fteqcc generatebuiltinsl makevulkanblob
+
+debug:
+	gdb --args ./$(GAME_BINARY) +set sv_cheats 1 +set sv_csqcdebug 1 +set g_logLevel 3 +set g_logTimestamps 1
 
 update:
 	if [ -f ./.git/config ];then git pull;fi

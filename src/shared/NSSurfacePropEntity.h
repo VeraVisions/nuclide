@@ -128,6 +128,11 @@ public:
 	/** Returns the current armor of the entity. */
 	nonvirtual float GetArmor(void);
 
+	/** Sets the maximum amount of armor the entity can have */
+	nonvirtual void SetMaxArmor(float);
+	/** Returns the maximum armor value the entity can have. */
+	nonvirtual float GetMaxArmor(void);
+
 	/** Returns the health the entity spawned with at map load */
 	nonvirtual float GetSpawnHealth(void);
 	/** Returns if the entity has prop data information set. */ 
@@ -166,6 +171,8 @@ private:
 	PREDICTED_FLOAT_N(health)
 
 #ifdef SERVER
+	float max_armor;
+
 	/* fire/burning */
 	entity m_eBurner;
 	int m_iBurnWeapon;

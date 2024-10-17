@@ -245,7 +245,7 @@ void UI_ModelViewer_Show ( void )
 	}
 	
 	static void ModelViewer_ScrollUpdate ( void ) {
-		scrlModels.SetValue( lstModels.GetOffset(), FALSE );
+		scrlModels.SetValue( lstModels.GetOffset() );
 	}
 	static void ModelViewer_ListUpdate ( void ) {
 		lstModels.SetOffset( scrlModels.GetValue(), FALSE );

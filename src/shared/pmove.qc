@@ -229,7 +229,7 @@ NSPMoveVars::UpdateBoundingBoxes(void)
 void
 NSPMoveVars::Refresh(void)
 {
-	printf("Refreshing pmove Vars %S\n", m_defLink);
+// 	printf("Refreshing pmove Vars %S\n", m_defLink);
 
 	/* global. */
 	if (!STRING_SET(m_defLink)) {
@@ -574,7 +574,7 @@ NSPMoveVars::ReceiveEntity(float flNew, float flChanged)
 		g_pmoveVars = this;
 	}
 
-	printf("Refreshing all pmove vars.\n");
+// 	printf("Refreshing all pmove vars.\n");
 
 	for (NSPMoveVars vars = __NULL__;(vars = (NSPMoveVars)find(vars, ::classname, "NSPMoveVars"));) {
 		vars.Refresh();

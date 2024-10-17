@@ -158,16 +158,31 @@ NSSurfacePropEntity::SetMaxHealth(float new_health)
 	health =  min(health, max_health);
 }
 
+void
+NSSurfacePropEntity::SetMaxArmor(float new_armor)
+{
+	max_armor = new_armor;
+	armor =  min(armor, max_armor);
+}
+
 float
 NSSurfacePropEntity::GetHealth(void)
 {
 	return (health);
 }
+
 float
 NSSurfacePropEntity::GetMaxHealth(void)
 {
 	return (max_health);
 }
+
+float
+NSSurfacePropEntity::GetMaxArmor(void)
+{
+	return (max_armor);
+}
+
 float
 NSSurfacePropEntity::GetSpawnHealth(void)
 {
@@ -179,6 +194,7 @@ NSSurfacePropEntity::SetArmor(float new_armor)
 {
 	armor = new_armor;
 }
+
 float
 NSSurfacePropEntity::GetArmor(void)
 {

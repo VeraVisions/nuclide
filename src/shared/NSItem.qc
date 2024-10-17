@@ -235,13 +235,13 @@ NSItem::ItemPickupCheck(entity pickerUpper)
 	}
 
 	if (m_iGiveHealth > 0i) {
-		if (pl.GetHealth() < 100) {
+		if (pl.GetHealth() < pl.GetMaxHealth()) {
 			return (true);
 		}
 	}
 
 	if (m_iGiveArmor > 0i) {
-		if (pl.armor < 100) {
+		if (pl.armor < pl.GetMaxArmor()) {
 			return (true);
 		}
 	}

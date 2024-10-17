@@ -30,7 +30,7 @@ void UI_LoadGame_Show ( void )
 	}
 
 	static void LoadGame_ScrollUpdate ( void ) {
-		scrlSaves.SetValue( lsbSaves.GetOffset(), FALSE );
+		scrlSaves.SetValue( lsbSaves.GetOffset() );
 	}
 	static void LoadGame_ListUpdate ( void ) {
 		lsbSaves.SetOffset( scrlSaves.GetValue(), FALSE );

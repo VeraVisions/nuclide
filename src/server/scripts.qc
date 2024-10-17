@@ -22,7 +22,7 @@ MapC_Init(void)
 	string mapProgs;
 
 	/* mapname global is not set yet in init() */
-	mapProgs = sprintf("maps/%s.dat", cvar_string("mapname"));
+	mapProgs = Util_ChangeExtension(strcat("maps/", cvar_string("mapname")), "dat");
 
 	/* No mapname.dat, exit out */
 	if (fileExists(mapProgs) == false) {
