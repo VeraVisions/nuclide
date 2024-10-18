@@ -27,22 +27,19 @@ public:
 	virtual void Draw(void);
 
 private:
-	vector m_vecColor;
-	float m_flAlpha;
+	VGUIColor m_frameColor;
 };
 
 void
 VGUIFrame::VGUIFrame(void)
 {
-	m_vecColor = UI_MAINCOLOR;
-	m_flAlpha = 1.0f;
+	m_frameColor = spawn(VGUIColor);
+	m_frameColor. SetColorWithAlpha(UI_MAINCOLOR, 0.0f);
 }
 
 void VGUIFrame::Draw(void)
 {
-	drawfill(m_parent.m_vecOrigin + m_vecOrigin, [m_vecSize[0], 1], [1,1,1], 0.5f);
-	drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, m_vecSize[1] - 1], [m_vecSize[0], 1], [0,0,0], 0.5f);
-	drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, 1], [1, m_vecSize[1] - 2], [1,1,1], 0.5f);
-	drawfill(m_parent.m_vecOrigin + m_vecOrigin + [m_vecSize[0] - 1, 1], [1, m_vecSize[1] - 2], [0,0,0], 0.5f);
+	VGUITheme ourTheme = GetTheme();
+	ourTheme.DrawBorder(m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, VGUI_BORDER_INSET, m_frameColor);
 }
 

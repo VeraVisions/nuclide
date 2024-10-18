@@ -51,3 +51,7 @@ menumap "test_dlights"
 introvideo ""
 // whether to use a steam styled resource background cut into multiple parts
 steambg 0
+// the title text of the game
+title "Nuclide"
+// the subtitle of the game
+subtitle "Test Game"

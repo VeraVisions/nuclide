@@ -32,6 +32,9 @@
 #define CUIWindow VGUIWindow
 
 font_s g_fntDefault;
+font_s g_fntTitle;
+font_s g_fntSubTitle;
+font_s g_fntMenuButton;
 var int g_vguiWidgetCount;
 int g_lastmousepos[2];
 
@@ -511,6 +514,18 @@ UISystem_Init(void)
 	}
 
 	Font_Load("fonts/ui.font", g_fntDefault);
+	Font_Load("fonts/title.font", g_fntTitle);
+	Font_Load("fonts/subtitle.font", g_fntSubTitle);
+	Font_Load("fonts/menu_button.font", g_fntMenuButton);
+
+	if (g_fntMenuButton.iID == 0)
+		g_fntMenuButton = g_fntDefault;
+
+	if (g_fntSubTitle.iID == 0)
+		g_fntSubTitle = g_fntDefault;
+
+	if (g_fntTitle.iID == 0)
+		g_fntTitle = g_fntDefault;
 
 }
 

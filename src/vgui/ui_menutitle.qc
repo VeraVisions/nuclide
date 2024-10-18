@@ -1,0 +1,106 @@
+/*
+ * Copyright (c) 2016-2022 Vera Visions LLC.
+ *
+ * Permission to use, copy, modify, and distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF MIND, USE, DATA OR PROFITS, WHETHER
+ * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
+ * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+*/
+
+#ifdef MENU
+/** VGUI Widget: Menu Title
+
+@ingroup vgui
+*/
+class VGUIMenuTitle:VGUILabel
+{
+public:
+	void VGUIMenuTitle(void);
+
+	virtual void Draw(void);
+	virtual void Reposition(void);
+	virtual float Input(float, float, float, float);
+
+	bool m_bIsImage;
+	bool m_hover;
+};
+
+void
+VGUIMenuTitle::VGUIMenuTitle(void)
+{
+	m_bIsImage = false;
+}
+
+void
+VGUIMenuTitle::Reposition(void)
+{
+	string title = GameLibrary_GetInfo(GAMEINFO_TITLE);
+	string subTitle = GameLibrary_GetInfo(GAMEINFO_SUBTITLE);
+	super::Reposition();
+	vector newPosition;
+
+	if (STRING_SET(!title)) {
+		if (fileExists("resource/game_menu_mouseover.tga")) {
+			newPosition = [g_vidsize[0] / 16, g_vidsize[1] / 2 - 64];
+			newPosition[1] -= 32;
+			m_bIsImage = true;
+			SetSize([196,32]);
+		}
+	} else {
+		newPosition = [g_vidsize[0] / 16, g_vidsize[1] / 2 - 64];
+		newPosition[1] -= 32;
+		SetSize([Font_StringWidth(title, true, g_fntTitle), 32]);
+	}
+
+	SetPos(newPosition);
+}
+
+void
+VGUIMenuTitle::Draw(void)
+{
+	if (m_bIsImage) {
+		if (m_hover)
+			drawpic(m_parent.m_vecOrigin + m_vecOrigin, "resource/game_menu_mouseover.tga", m_vecSize, [1,1,1], 1.0f, 0);
+		else
+			drawpic(m_parent.m_vecOrigin + m_vecOrigin, "resource/game_menu.tga", m_vecSize, [1,1,1], 1.0f, 0);
+		return;
+	}
+
+	string title = 	GameLibrary_GetInfo(GAMEINFO_TITLE);
+	string subTitle = GameLibrary_GetInfo(GAMEINFO_SUBTITLE);
+
+	vector pos;
+	vector size;
+
+	pos = m_parent.m_vecOrigin + m_vecOrigin;
+	size = m_vecSize;
+
+	if (STRING_SET(title))
+		Font_DrawField(pos, size + [64,0], title, g_fntTitle, m_labelFlags);
+
+	if (STRING_SET(subTitle))
+		Font_DrawField(pos + [0, 32], size + [64,0], subTitle, g_fntSubTitle, AF_RIGHT | AF_TOP);
+}
+
+bool
+VGUIMenuTitle::Input(float flEVType, float flKey, float flChar, float flDevID)
+{
+	bool ret = false;
+
+	if (Util_MouseAbove(g_vecMousePos, m_parent.m_vecOrigin + m_vecOrigin, m_vecSize)) {
+		m_hover = true;
+	} else {
+		m_hover = false;
+	}
+
+	return (ret);
+}
+
+#endif

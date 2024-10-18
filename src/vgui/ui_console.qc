@@ -14,7 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-#ifdef MENU
 /** VGUI: Console
 
 A 'portable' console. It takes up less space.
@@ -29,10 +28,15 @@ public:
 	virtual void Spawned(void);
 	nonvirtual void ConsoleResized(void);
 
+	virtual void Draw(void);
+	virtual void Submit(void);
+	virtual float Input(float, float, float, float);
+
 private:
 	VGUIFrame m_outlineFrame;
 	VGUIButton m_submitButton;
 	VGUITextBox m_commandBox;
+	string m_conInstance;
 };
 
 void
@@ -41,6 +45,7 @@ VGUIConsole::VGUIConsole(void)
 	m_outlineFrame = __NULL__;
 	m_submitButton = __NULL__;
 	m_commandBox = __NULL__;
+	m_conInstance = __NULL__;
 }
 
 void
@@ -53,12 +58,27 @@ VGUIConsole::ConsoleResized(void)
 }
 
 void
+VGUIConsole::Submit(void)
+{
+	localcmd(strcat(m_commandBox.GetText(), "\n"));
+	//con_printf(m_conInstance, strcat("/", m_commandBox.GetText(), "\n"));
+	m_commandBox.SetText("");
+}
+
+void
 VGUIConsole::Spawned(void)
 {
+	static void VGUIConsole_Submit(void) {
+		VGUIWidget winSelf = (VGUIWidget)self;
+		VGUIConsole ourConsole = (VGUIConsole)winSelf.m_parent;
+		ourConsole.Submit();
+	}
+
 	super::Spawned();
 
 	SetTitle("Console");
 	SetSize([560, 400]);
+	SetMaxSize([9999,9999]);
 	SetPos([40, 40]);
 	m_outlineFrame = spawn(VGUIFrame);
 	m_outlineFrame.SetPos([8,36]);
@@ -67,16 +87,51 @@ VGUIConsole::Spawned(void)
 	m_commandBox = spawn(VGUITextBox);
 	m_commandBox.SetPos([8,368]);
 	m_commandBox.SetSize([472,24]);
+	m_commandBox.CallOnEnter(VGUIConsole_Submit);
 
 	m_submitButton = spawn(VGUIButton);
 	m_submitButton.SetSize([64,24]);
 	m_submitButton.SetPos([488,368]);
 	m_submitButton.SetTitle("Submit");
+	m_submitButton.SetFunc(VGUIConsole_Submit);
 
 	SetStyleMask( VGUIWindowStyleDefault | VGUIWindowResizeable );
 	CallOnResize(ConsoleResized);
 	Add(m_outlineFrame);
 	Add(m_commandBox);
 	Add(m_submitButton);
+
+	m_conInstance = con_getset("", "next");
 }
-#endif
+
+void
+VGUIConsole::Draw(void)
+{
+	super::Draw();
+
+	drawfont = g_fntDefault.iID;
+
+	float xPos = m_parent.m_vecOrigin[0] + m_vecOrigin[0] + m_outlineFrame.GetPosWidth() + 8;
+	float yPos = m_parent.m_vecOrigin[1] + m_vecOrigin[1] + m_outlineFrame.GetPosHeight() + 8;
+	float wSize = m_outlineFrame.GetSizeWidth() -16;
+	float wHeight = m_outlineFrame.GetSizeHeight() -16;
+
+	drawsetcliparea(xPos, yPos, wSize, wHeight);
+	con_draw(m_conInstance, [xPos, yPos], [wSize, wHeight], g_fntDefault.iScaleY);
+	drawresetcliparea();
+}
+
+float
+VGUIConsole::Input(float type, float x, float y, float devid)
+{
+	float ret = super::Input(type, x, y, devid);
+
+	if (!ret) {
+		if (Util_MouseAbove(g_vecMousePos, m_parent.m_vecOrigin + m_vecOrigin + m_outlineFrame.GetPos() + [8,8], m_outlineFrame.GetSize() + [-16,-16])) {
+			con_input(m_conInstance, type, x, y, 0);
+			ret = true;
+		}
+	}
+
+	return (ret);
+}

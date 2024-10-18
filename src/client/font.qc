@@ -188,7 +188,7 @@ Font_DrawFieldAtHeight(vector vecOrigin, vector vecSize, int iTextHeight, string
 	drawfont = (float)fnt.iID;
 	drawfontscale[0] = (float)iTextHeight / 8;
 	drawfontscale[1] = (float)iTextHeight / 8;
-	drawtextfield(vecOrigin, vecSize, (float)iAlignFlags, strText);
+	drawtextfield(vecOrigin, vecSize, (float)iAlignFlags, strcat(fnt.hexColor, strText));
 	drawfont = 0;
 	drawfontscale = [1,1,0];
 }

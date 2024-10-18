@@ -55,13 +55,15 @@ a later time.
 /** Options for querying Game Library entry information using `GameLibrary_GetInfo()` */
 typedef enum
 {
-	GAMEINFO_TITLE,			/**< (string) The title of the game. E.g. "Action Game" */
+	GAMEINFO_NAME,			/**< (string) The name of the game. E.g. "Action Game" */
 	GAMEINFO_GAMEDIR,		/**< (string) The game directory name. E.g. "data" */
 	GAMEINFO_FALLBACKDIR,	/**< (string) The directory to be loaded before the game directory. */
 	GAMEINFO_BASEDIR,		/**< (string) The first game directory to be loaded. */
 	GAMEINFO_WEBSITE,		/**< (string) The game its official website. */
 	GAMEINFO_VERSION,		/**< (string) Version number string. */
 	GAMEINFO_SIZE,			/**< (int) The size of the game, in bytes. */
+	GAMEINFO_TITLE,			/**< (string) The title of the game in the main menu. */
+	GAMEINFO_SUBTITLE,			/**< (string) The sub-title of the game in the main menu. */
 	GAMEINFO_TYPE,			/**< (string) The game type. E.g. "Singleplayer" */
 	GAMEINFO_NOPLAYERMODELS,/**< (bool) If the game allows player model selection. */
 	GAMEINFO_NOSPRAYS,		/**< (bool) If the game allows custom spray logos. */
@@ -120,6 +122,8 @@ typedef enum
 typedef struct
 {
 	string game;
+	string title;
+	string subtitle;
 	string gamedir;
 	string base_dir;
 	string url_info;

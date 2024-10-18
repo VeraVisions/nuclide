@@ -21,6 +21,8 @@ enumflags
 	TEXTBOX_FOCUS
 };
 
+.void(void) tmpVGUITextBox1;
+
 /** VGUI Widget: Text Box
 
 @ingroup vgui
@@ -67,15 +69,25 @@ string VGUITextBox::GetText(void)
 	return m_strText;
 }
 
+void
+VGUITextBox::CallOnEnter(void(void) func)
+{
+	//#warning "SetFunc in VGUIButton is DEPRECATED. Compiler IS generating JUNK in the old way. Please override VGUIButton and define a OnMouseDown/Up method instead"
+	//m_vFunc = vFunc;
+	tmpVGUITextBox1 = func;
+}
+
 void VGUITextBox::Draw(void)
 {
 	VGUITheme theme = GetTheme();
+	vector pos = m_parent.m_vecOrigin + m_vecOrigin;
+	drawsetcliparea(pos[0], pos[1], m_vecSize[0], m_vecSize[1]);
 
-	drawfill(m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, [0,0,0], 0.25f);
-	drawfill(m_parent.m_vecOrigin + m_vecOrigin, [m_vecSize[0], 1], [0,0,0], 0.5f);
-	drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, m_vecSize[1] - 1], [m_vecSize[0], 1], [1,1,1], 0.5f);
-	drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, 1], [1, m_vecSize[1] - 2], [0,0,0], 0.5f);
-	drawfill(m_parent.m_vecOrigin + m_vecOrigin + [m_vecSize[0] - 1, 1], [1, m_vecSize[1] - 2], [1,1,1], 0.5f);
+	drawfill(pos, m_vecSize, [0,0,0], 0.25f);
+	drawfill(pos, [m_vecSize[0], 1], [0,0,0], 0.5f);
+	drawfill(pos + [0, m_vecSize[1] - 1], [m_vecSize[0], 1], [1,1,1], 0.5f);
+	drawfill(pos + [0, 1], [1, m_vecSize[1] - 2], [0,0,0], 0.5f);
+	drawfill(pos + [m_vecSize[0] - 1, 1], [1, m_vecSize[1] - 2], [1,1,1], 0.5f);
 
 	m_flTime += frametime * 2;
 
@@ -86,14 +98,17 @@ void VGUITextBox::Draw(void)
 	// blinking cursor
 	if (m_iFlags & TEXTBOX_FOCUS) {
 		if (rint(m_flTime) & 1) {
-			theme.DrawText(m_parent.m_vecOrigin + m_vecOrigin + [8 - ofs, 8], sprintf("%s|", m_strText), m_vecSize, g_fntDefault);
+			theme.DrawText(pos + [8 - ofs, 8], sprintf("%s|", m_strText), m_vecSize, g_fntDefault);
+			drawresetcliparea();
 			return;
 		}
 	}
-	
+
 	if (m_strText) {
-		theme.DrawText(m_parent.m_vecOrigin + m_vecOrigin + [8 - ofs, 8], m_strText, m_vecSize, g_fntDefault);
+		theme.DrawText(pos + [8 - ofs, 8], m_strText, m_vecSize, g_fntDefault);
 	}
+
+	drawresetcliparea();
 }
 
 bool VGUITextBox::Input (float flEVType, float flKey, float flChar, float flDevID)
@@ -123,6 +138,9 @@ bool VGUITextBox::Input (float flEVType, float flKey, float flChar, float flDevI
 					m_strText = substring(m_strText, 0, strlen(m_strText) - 1);
 		break;
 	case K_ENTER:
+		if (tmpVGUITextBox1) {
+			tmpVGUITextBox1();
+		}
 		break;
 	default:
 		if (m_iFlags & TEXTBOX_DOWN)

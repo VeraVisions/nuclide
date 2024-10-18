@@ -38,6 +38,12 @@ public:
 	virtual void Draw(void);
 	virtual bool Input(float, float, float, float);
 	virtual void Spawned(void);
+	virtual void Reposition(void);
+
+	nonvirtual void SetPosition(int);
+
+private:
+	int m_menuPosition;
 };
 
 void
@@ -50,6 +56,17 @@ VGUIMenuButton::Spawned(void)
 {
 	super::Spawned();
 	FlagAdd(MBUTTON_SHOWOFFLINE | MBUTTON_SHOWSP | MBUTTON_SHOWMP);
+}
+
+void
+VGUIMenuButton::Reposition(void)
+{
+	super::Reposition();
+
+	vector newPosition = [g_vidsize[0] / 16, g_vidsize[1] / 2 - 64];
+
+	newPosition[1] += m_menuPosition * 24;
+	SetPos(newPosition);
 }
 
 void
@@ -66,7 +83,43 @@ VGUIMenuButton::Draw(void)
 		}
 	}
 
-	super::Draw();
+	VGUITheme theme = GetTheme();
+
+	if (m_iFlags & BUTTON_DOWN) {
+		//theme.DrawButton(m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, VGUI_STATE_ACTIVE);
+	} else if (m_iFlags & BUTTON_HOVER) {
+		//theme.DrawButton(m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, VGUI_STATE_HOVER);
+	} else {
+		//theme.DrawButton(m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, VGUI_STATE_NORMAL);
+	}
+
+	float textPadding = 8;
+
+	if (m_keyEquivalent >= 0) {
+		float length;
+		string keyText = GetKeyEquivalent();
+
+		length = Font_StringWidth(keyText, FALSE, g_fntMenuButton);
+		textPadding += length + 8;
+		theme.DrawText(m_parent.m_vecOrigin + m_vecOrigin + [8, 8], keyText, m_vecSize, g_fntMenuButton);
+	}
+
+	if (STRING_SET(m_strIcon) && UI_NOICONS == false) {
+		if (m_iFlags & BUTTON_DOWN)
+			drawpic(m_parent.m_vecOrigin + m_vecOrigin + [4,4], m_strIcon, m_vecIMGSize, m_vecIconColor * 0.25, 1.0f, 0);
+		else
+			drawpic(m_parent.m_vecOrigin + m_vecOrigin + [4,4], m_strIcon, m_vecIMGSize, m_vecIconColor, 1.0f, 0);
+
+		textPadding += m_vecIMGSize[0] + 4;
+	}
+
+	if (STRING_SET(m_strTitle)) {
+		if (m_iFlags & BUTTON_HOVER) {
+			Font_DrawText_RGB(m_parent.m_vecOrigin + m_vecOrigin + [textPadding, 8], m_strTitle, [1,1,1], g_fntMenuButton);
+		} else {
+			Font_DrawText_RGB(m_parent.m_vecOrigin + m_vecOrigin + [textPadding, 8], m_strTitle, [0.75,0.75,0.75], g_fntMenuButton);
+		}
+	}
 }
 
 bool
@@ -84,6 +137,13 @@ VGUIMenuButton::Input (float flEVType, float flKey, float flChar, float flDevID)
 	}
 
 	return super::Input(flEVType, flKey, flChar, flDevID);
+}
+
+void
+VGUIMenuButton::SetPosition(int newPosition)
+{
+	m_menuPosition = newPosition;
+	Reposition();
 }
 
 #endif

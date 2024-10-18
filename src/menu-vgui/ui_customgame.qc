@@ -51,7 +51,7 @@ void UI_CustomGame_Show ( void )
 		lsbGames.CallOnScroll( CustomGame_ScrollUpdate );
 
 		for ( int i = 0; i < GameLibrary_GetGameCount(); i++ ) {
-			lsbGames.AddItem( GameLibrary_GetGameInfo(i, GAMEINFO_TITLE) );
+			lsbGames.AddItem( GameLibrary_GetGameInfo(i, GAMEINFO_NAME) );
 		}
 
 		scrlGames = spawn( CUIScrollbar );

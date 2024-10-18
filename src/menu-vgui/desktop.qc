@@ -27,6 +27,7 @@ void Desktop_Init ( void )
 	static CUIMenuButton btnResume;
 	static CUIMenuButton btnDisconnect;
 	static CUIMenuButton btnMods;
+	static VGUIMenuTitle title;
 	
 	static void Desktop_ResumeGame ( void ) {
 		m_toggle( 0 );
@@ -41,7 +42,7 @@ void Desktop_Init ( void )
 	btnNewgame = spawn( CUIMenuButton );
 	btnNewgame.SetTitle( "New Game" );
 	btnNewgame.SetSize( '128 24' );
-	btnNewgame.SetPos( '32 64' );
+	btnNewgame.SetPosition( 1 );
 	btnNewgame.SetFunc( UI_NewGame_Show );
 	btnNewgame.FlagRemove( MBUTTON_SHOWSP | MBUTTON_SHOWMP );
 	btnNewgame.SetIcon( "gfx/icon16/new" );
@@ -49,7 +50,7 @@ void Desktop_Init ( void )
 	btnDisconnect = spawn( CUIMenuButton );
 	btnDisconnect.SetTitle( "Disconnect" );
 	btnDisconnect.SetSize( '128 24' );
-	btnDisconnect.SetPos( '32 64' );
+	btnDisconnect.SetPosition( 1 );
 	btnDisconnect.SetFunc( Desktop_DisconnectGame );
 	btnDisconnect.FlagRemove( MBUTTON_SHOWOFFLINE );
 	btnDisconnect.SetIcon( "gfx/icon16/disconnect" );
@@ -57,28 +58,28 @@ void Desktop_Init ( void )
 	btnLoadgame = spawn( CUIMenuButton );
 	btnLoadgame.SetTitle( "Load Game" );
 	btnLoadgame.SetSize( '128 24' );
-	btnLoadgame.SetPos( '32 96' );
+	btnLoadgame.SetPosition( 2 );
 	btnLoadgame.SetIcon( "gfx/icon16/book_edit" );
 	btnLoadgame.SetFunc( UI_LoadGame_Show );
 
 	btnFindserver = spawn( CUIMenuButton );
 	btnFindserver.SetTitle( "Find Servers" );
 	btnFindserver.SetSize( '128 24' );
-	btnFindserver.SetPos( '32 128' );
+	btnFindserver.SetPosition(3 );
 	btnFindserver.SetFunc( UI_FindServers_Show );
 	btnFindserver.SetIcon( "gfx/icon16/world_go" );
 
 	btnCreateserver = spawn( CUIMenuButton );
 	btnCreateserver.SetTitle( "Create Server" );
 	btnCreateserver.SetSize( '128 24' );
-	btnCreateserver.SetPos( '32 160' );
+	btnCreateserver.SetPosition( 4 );
 	btnCreateserver.SetFunc( UI_CreateServer_Show );
 	btnCreateserver.SetIcon( "gfx/icon16/server_add" );
 
 	btnMods = spawn( CUIMenuButton );
 	btnMods.SetTitle( "Custom Game" );
 	btnMods.SetSize( '128 24' );
-	btnMods.SetPos( '32 192' );
+	btnMods.SetPosition( 5 );
 	btnMods.SetIcon( "gfx/icon16/rainbow" );
 	btnMods.SetFunc( UI_CustomGame_Show );
 	btnMods.FlagRemove( MBUTTON_SHOWSP | MBUTTON_SHOWMP );
@@ -86,42 +87,54 @@ void Desktop_Init ( void )
 	btnOptions = spawn( CUIMenuButton );
 	btnOptions.SetTitle( "Options" );
 	btnOptions.SetSize( '128 24' );
-	btnOptions.SetPos( '32 224' );
+	btnOptions.SetPosition( 6 );
 	btnOptions.SetIcon( "gfx/icon16/cog" );
 
 	btnQuit = spawn( CUIMenuButton );
 	btnQuit.SetTitle( "Quit Game" );
 	btnQuit.SetSize( '128 24' );
-	btnQuit.SetPos( '32 256' );
+	btnQuit.SetPosition( 7 );
 	btnQuit.SetFunc( UI_QuitGame_Show );
 	btnQuit.SetIcon( "gfx/icon16/stop" );
 
 	btnMPlayer = spawn( CUIMenuButton );
 	btnMPlayer.SetTitle( "Music Player" );
 	btnMPlayer.SetSize( '128 24' );
-	btnMPlayer.SetPos( '32 288' );
+	btnMPlayer.SetPosition( 8 );
 	btnMPlayer.SetFunc( UI_MusicPlayer_Show );
 	btnMPlayer.SetIcon( "gfx/icon16/ipod" );
 
 	btnMViewer = spawn( CUIMenuButton );
 	btnMViewer.SetTitle( "Model Viewer" );
 	btnMViewer.SetSize( '128 24' );
-	btnMViewer.SetPos( '32 320' );
+	btnMViewer.SetPosition( 9 );
 	btnMViewer.SetFunc( UI_ModelViewer_Show );
 	btnMViewer.SetIcon( "gfx/icon16/images" );
 
 	btnResume = spawn( CUIMenuButton );
 	btnResume.SetTitle( "Resume Game" );
 	btnResume.SetSize( '128 24' );
-	btnResume.SetPos( '32 384' );
+	btnResume.SetPosition( 10 );
 	btnResume.SetFunc( Desktop_ResumeGame );
 	btnResume.FlagRemove( MBUTTON_SHOWOFFLINE );
 	btnResume.SetIcon( "gfx/icon16/control_play" );
 
-	g_uiDesktop.Add( btnNewgame );
-	g_uiDesktop.Add( btnLoadgame );
-	g_uiDesktop.Add( btnFindserver );
-	g_uiDesktop.Add( btnCreateserver );
+	title = spawn(VGUIMenuTitle);
+
+	g_uiDesktop.Add( title );
+
+	if (GameLibrary_GetInfo(GAMEINFO_TYPE) != "Multiplayer")
+		g_uiDesktop.Add( btnNewgame );
+
+	if (GameLibrary_GetInfo(GAMEINFO_TYPE) != "Multiplayer")
+		g_uiDesktop.Add( btnLoadgame );
+
+	if (GameLibrary_GetInfo(GAMEINFO_TYPE) != "Singleplayer")
+		g_uiDesktop.Add( btnFindserver );
+
+	if (GameLibrary_GetInfo(GAMEINFO_TYPE) != "Singleplayer")
+		g_uiDesktop.Add( btnCreateserver );
+
 	g_uiDesktop.Add( btnOptions );
 	g_uiDesktop.Add( btnQuit );
 	g_uiDesktop.Add( btnMPlayer );

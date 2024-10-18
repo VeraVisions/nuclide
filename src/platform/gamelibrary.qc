@@ -234,6 +234,12 @@ GameLibrary_LibListParse(int id, string strKey, string strValue)
 	case "base_dir":
 		games[id].base_dir = strValue;
 		break;
+	case "title":
+		games[id].title = strValue;
+		break;
+	case "subtitle":
+		games[id].subtitle = strValue;
+		break;
 	default:
 		break;
 	}
@@ -278,7 +284,19 @@ GameLibrary_CheckGameInfo(int id, string gamedirname)
 					games[id].game = argv(1);
 					break;
 				case "type":
-					games[id].type = argv(1);
+					GameLibrary_LibListParse(id, token, argv(1));
+					break;
+				case "title":
+					games[id].title = argv(1);
+					break;
+				case "title2":
+					games[id].subtitle = argv(1);
+					break;
+				case "nomodels":
+					games[id].nomodels = (int)stof(argv(1));
+					break;
+				case "developer_url":
+					games[id].url_info = argv(1);
 					break;
 				}
 			} else if (braced == 2) {
@@ -407,6 +425,8 @@ GameLibrary_SetDefaults(int id, string gamedirname)
 	games[id].installed = 1;
 	games[id].chatroom = gamedirname;
 	games[id].readme = "readme.txt";
+	games[id].title = "";
+	games[id].subtitle = "";
 	games[id].pkgid = -1;
 
 	if (games[id].gamedir == "valve") {
@@ -767,8 +787,14 @@ GameLibrary_GetGameInfo(int gameID, gameInfo_t infoType)
 	}
 
 	switch (infoType) {
-	case GAMEINFO_TITLE:
+	case GAMEINFO_NAME:
 		return (string)games[gameID].game;
+		break;
+	case GAMEINFO_TITLE:
+		return (string)games[gameID].title;
+		break;
+	case GAMEINFO_SUBTITLE:
+		return (string)games[gameID].subtitle;
 		break;
 	case GAMEINFO_GAMEDIR:
 		return (string)games[gameID].gamedir;

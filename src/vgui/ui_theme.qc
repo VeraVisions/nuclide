@@ -118,6 +118,7 @@ VGUITheme::DrawBorder(vector atPos, vector withSize, VGUIBorderStyle_t borderSty
 {
 	switch (borderStyle) {
 	case VGUI_BORDER_INSET:
+		drawfill(atPos + [1, 1], withSize + [-2, -2], [0,0,0], 0.25f);
 		drawfill(atPos + [0, withSize[1] - 1], [withSize[0], 1], m_hilightColor.GetColor(), m_hilightColor.GetAlpha());
 		drawfill(atPos, [withSize[0], 1], m_shadowColor.GetColor(), m_shadowColor.GetAlpha());
 		drawfill(atPos + [0, 1], [1, withSize[1] - 2], m_shadowColor.GetColor(), m_shadowColor.GetAlpha());
