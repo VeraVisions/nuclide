@@ -372,8 +372,8 @@ EntityDef_PrepareEntity(entity target, int id)
 		for (int x = 0; x < g_entDefCount; x++) {
 			/* found the thing we're supposed to inherit */
 			if (g_entDefTable[x].entClass == g_entDefTable[id].inheritKeys) {
-				spawnWords = tokenize_console(g_entDefTable[x].spawnData);
-				for (int i = 0; i < spawnWords; i+= 2) {
+
+				for (int i = 0; i < tokenize_console(g_entDefTable[x].spawnData); i+= 2) {
 					targetEnt.SpawnKey(argv(i), argv(i+1));
 				}
 			}
@@ -381,14 +381,15 @@ EntityDef_PrepareEntity(entity target, int id)
 	}
 
 	/* now we load the field overrides from the entDef */
-	spawnWords = tokenize_console(g_entDefTable[id].spawnData);
-	for (int i = 0; i < spawnWords; i+= 2) {
-		targetEnt.SpawnKey(argv(i), argv(i+1));
+	for (int i = 0; i < tokenize_console(g_entDefTable[id].spawnData); i+= 2) {
+		string keyName = argv(i);
+		string setValue = argv(i+1);
+
+		targetEnt.SpawnKey(keyName, setValue);
 	}
 
 	/* now we load our own spawndata, which starts and ends with braces */
-	spawnWords = tokenize_console(g_lastSpawnData);
-	for (int i = 1; i < (spawnWords - 1); i+= 2) {
+	for (int i = 1; i < (tokenize_console(g_lastSpawnData) - 1); i+= 2) {
 
 		/* ignore this, always */
 		if (argv(i) != "classname") {
@@ -397,8 +398,7 @@ EntityDef_PrepareEntity(entity target, int id)
 	}
 
 	/* now after everything else is done, check our entityDef tweaks */
-	spawnWords = tokenizebyseparator(g_entDefTable[id].tweakDefs, ";");
-	for (int i = 0; i < spawnWords; i++) {
+	for (int i = 0; i < tokenizebyseparator(g_entDefTable[id].tweakDefs, ";"); i++) {
 		string groupSegment = argv(i);
 
 		//print(sprintf("group: %S\n", groupSegment));
@@ -410,31 +410,21 @@ EntityDef_PrepareEntity(entity target, int id)
 
 		/* iterate through a bunch of different data to check our condition */
 		if (EntityDef_CheckCondition((NSEntity)target, id, keyWord, tweakCondition, keyValue)) {
-			int tweakGroups = tokenizebyseparator(g_entDefTable[id].tweakKeys, ";");
-
 			//print(sprintf("%S passed the check\n", keyWord));
 
 			/* iterate through the ; key groups */
-			for (int x = 0; x < tweakGroups; x++) {
-				int tweakSpawns = tokenize_console(argv(x));
-
+			for (int x = 0; x < tokenizebyseparator(g_entDefTable[id].tweakKeys, ";"); x++) {
 				/* ignore any other key group */
 				if (x == i) {
 					/* iterate through key/value pairs within the ; key groups */
-					for (int y = 0; y < tweakSpawns; y+= 2) {
+					for (int y = 0; y < tokenize_console(argv(x)); y+= 2) {
 						//print(sprintf("applying %S and %S\n", argv(y), argv(y+1)));
 						targetEnt.SpawnKey(argv(y), argv(y+1));
 						targetEnt.m_strSpawnData = sprintf("%s TWEAK %S %S }", targetEnt.m_strSpawnData, argv(y), argv(y+1));
 					}
 				}
-
-				/* retokenize */
-				tweakGroups = tokenizebyseparator(g_entDefTable[id].tweakKeys, ";");
 			}
 		}
-
-		/* retokenize our condition */
-		spawnWords = tokenizebyseparator(g_entDefTable[id].tweakDefs, ";");
 	}
 
 	/* now that that all methods have been called, we're ready to decide whether to continue this spawn */
@@ -457,8 +447,7 @@ EntityDef_PrepareEntity(entity target, int id)
 static void
 EntityDef_Precaches(int index)
 {
-	int spawnWords = tokenize_console(g_entDefTable[index].spawnData);
-	for (int i = 0; i < spawnWords; i+= 2) {
+	for (int i = 0; i < tokenize_console(g_entDefTable[index].spawnData); i+= 2) {
 		string strKey = argv(i);
 		string strValue = argv(i+1);
 
@@ -476,12 +465,10 @@ EntityDef_Precaches(int index)
 				EntityDef_Precaches(defID);
 			}
 		}
-		spawnWords = tokenize_console(g_entDefTable[index].spawnData);
 	}
 
 	/* handle soundDef events */
-	spawnWords = tokenize(g_entDefTable[index].eventList);
-	for (int i = 0; i < spawnWords; i+=3) {
+	for (int i = 0; i < tokenize(g_entDefTable[index].eventList); i+=3) {
 		int testCode = stoi(argv(i+0));
 		string testInput = argv(i+1);
 		string testData = argv(i+2);
@@ -514,6 +501,29 @@ EntityDef_Precache(string defName)
 	}
 
 	return (true);
+}
+
+NSEntity
+EntityDef_NewClassname(string className)
+{
+	g_lastSpawnData = __fullspawndata;
+
+	if not (className) {
+		return (__NULL__);
+	}
+
+	for (int i = 0i; i < g_entDefCount; i++) {
+		if (className == g_entDefTable[i].entClass) {
+			if (time < 5.0) {
+				EntityDef_Precaches(i);
+			}
+
+			NSLog("Spawning eDef %S", className);
+			return EntityDef_PrepareEntity(self, i);
+		}
+	}
+
+	return (__NULL__);
 }
 
 NSEntity

@@ -28,6 +28,10 @@ MapLibrary_GetMapGamedir(void)
 	if (gdir == "ftehl")
 		gdir = "valve";
 
+	/* HACK: work around FTEQW's path choice */
+	if (gdir == "fteq2")
+		gdir = "baseq2";
+
 	return gdir;
 }
 

@@ -18,10 +18,14 @@
 
 @ingroup baseclass
 */
-class NSRagdoll:NSRenderableEntity
+class NSRagdoll:NSSurfacePropEntity
 {
 public:
 	void NSRagdoll(void);
+
+	nonvirtual void CreateRagdoll(void);
+
+	virtual void OnRemoveEntity(void);
 
 #ifdef SERVER
 	virtual void EvaluateEntity(void);
@@ -35,7 +39,7 @@ public:
 
 
 private:
-	float m_skelRagdoll;
+	float m_morphTime;
 };
 
 

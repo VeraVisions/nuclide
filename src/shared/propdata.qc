@@ -399,7 +399,7 @@ PropData_ForModel(string modelname)
 
 		/* HACK: We won't support ragdolls, for now. */
 		if (numSolids > 1) {
-			NSError("Only .phy files from Source are supported.");
+			NSError("Only non-ragdoll models are currently supported.");
 			fclose(fh);
 			return -1;
 		}
@@ -874,7 +874,7 @@ BreakModel_SpawnID(vector smins, vector smaxs, vector dir, float speed, int coun
 			gib.velocity[2] += (random() - 0.5) * (speed * 0.25);
 			gib.SetAngularVelocity([300,300,300]);
 			gib.SetMovetype(MOVETYPE_BOUNCE);
-			gib.SetSolid(SOLID_NOT);
+			gib.SetSolid(SOLID_CORPSE);
 		} else {
 			gib.SetMovetype(MOVETYPE_PHYSICS);
 			gib.SetSolid(SOLID_CORPSE);

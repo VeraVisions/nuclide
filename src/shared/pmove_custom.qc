@@ -39,7 +39,7 @@ float
 PMoveCustom_Gravity(entity ent)
 {
 	if (ent.gravity) {
-		return g_pmoveVars.g_gravity * ent.gravity; 
+		return g_pmoveVars.g_gravity * ent.gravity;
 	} else {
 		return g_pmoveVars.g_gravity;
 	}
@@ -232,8 +232,8 @@ PMoveCustom_AccelLadder(float move_time, float premove, vector wish_dir, float w
 void
 PMoveCustom_AccelFriction(float move_time, float premove, vector wish_dir, float wish_speed)
 {
-	float flApplyFriction;
-	float flFriction;
+	float frictionMultiplier;
+	float retainSpeed;
 	vector vecTemp;
 
 #ifdef SERVER
@@ -248,11 +248,11 @@ PMoveCustom_AccelFriction(float move_time, float premove, vector wish_dir, float
 	}
 #endif
 
-	flApplyFriction = g_pmoveVars.pm_friction;
+	frictionMultiplier = g_pmoveVars.pm_friction;
 
 	/* per frame basis friction modifier */
 	if (self.friction != 0.0f) {
-		flApplyFriction /= self.friction;
+		frictionMultiplier /= self.friction;
 		self.friction = 0.0f;
 	}
 
@@ -260,7 +260,7 @@ PMoveCustom_AccelFriction(float move_time, float premove, vector wish_dir, float
 	if (self.velocity[0] || self.velocity[1]) {
 		vecTemp = self.velocity;
 		vecTemp[2] = 0;
-		flFriction = vlen(vecTemp);
+		retainSpeed = length(vecTemp);
 
 		/* Next few lines of code assumes self is using player's hull, however it could be a monster
 			who use differen hull size, therefore it is invalid, so we probably better of using mins/maxs,
@@ -272,36 +272,37 @@ PMoveCustom_AccelFriction(float move_time, float premove, vector wish_dir, float
 
 		// apply friction
 		if (trace_fraction == 1.0) {
-			if (flFriction < g_pmoveVars.pm_stopspeed) {
-				flFriction = 1 - move_time * (g_pmoveVars.pm_stopspeed / flFriction) * flApplyFriction * g_pmoveVars.pm_edgefriction;
+			if (retainSpeed < g_pmoveVars.pm_stopspeed) {
+				retainSpeed = 1 - move_time * (g_pmoveVars.pm_stopspeed / retainSpeed) * frictionMultiplier * g_pmoveVars.pm_edgefriction;
 			} else {
-				flFriction = 1 - move_time * flApplyFriction * g_pmoveVars.pm_edgefriction;
+				retainSpeed = 1 - move_time * frictionMultiplier * g_pmoveVars.pm_edgefriction;
 			}
 		} else {
-			if (flFriction < g_pmoveVars.pm_stopspeed) {
-				flFriction = 1 - move_time * (g_pmoveVars.pm_stopspeed / flFriction) * flApplyFriction;
+			if (retainSpeed < g_pmoveVars.pm_stopspeed) {
+				retainSpeed = 1 - move_time * (g_pmoveVars.pm_stopspeed / retainSpeed) * frictionMultiplier;
 			} else {
 				
-				flFriction = 1 - move_time * flApplyFriction;
+				retainSpeed = 1 - move_time * frictionMultiplier;
 			}
 		}
 
-		if (flFriction < 0) {
+		if (retainSpeed < 0) {
 			self.velocity = [0,0,0];
 		} else {
-			self.velocity[0] = self.velocity[0] * flFriction;
-			self.velocity[1] = self.velocity[1] * flFriction;
+			self.velocity[0] = self.velocity[0] * retainSpeed;
+			self.velocity[1] = self.velocity[1] * retainSpeed;
 
 			/* don't apply friction to horizontal movement... or else jumps get clamped */
 			if (self.flags & FL_JUMPRELEASED)
-				self.velocity[2] = self.velocity[2] * flFriction;
+				self.velocity[2] = self.velocity[2] * retainSpeed;
 		}
 	}
 
 	// acceleration
-	flFriction = wish_speed - (self.velocity * wish_dir);
-	if (flFriction > 0) {
-		self.velocity += wish_dir * min(flFriction, g_pmoveVars.pm_accelerate * move_time * wish_speed);
+	retainSpeed = wish_speed - (self.velocity * wish_dir);
+
+	if (retainSpeed > 0) {
+		self.velocity += wish_dir * min(retainSpeed, (g_pmoveVars.pm_accelerate * wish_speed) * move_time);
 	}
 }
 
@@ -309,7 +310,7 @@ void
 PMoveCustom_AccelNoclip(float move_time, float premove, vector wish_dir, float wish_speed)
 {
 	float flApplyFriction;
-	float flFriction;
+	float retainSpeed;
 	vector vecTemp;
 
 	flApplyFriction = g_pmoveVars.pm_friction;
@@ -323,45 +324,45 @@ PMoveCustom_AccelNoclip(float move_time, float premove, vector wish_dir, float w
 	/* apply friction */
 	if (lengthSquared(self.velocity)) {
 		vecTemp = self.velocity;
-		flFriction = vlen(vecTemp);
+		retainSpeed = vlen(vecTemp);
 
-		if (flFriction < g_pmoveVars.pm_stopspeed) {
-			flFriction = 1 - move_time * (g_pmoveVars.pm_stopspeed / flFriction) * flApplyFriction;
+		if (retainSpeed < g_pmoveVars.pm_stopspeed) {
+			retainSpeed = 1 - move_time * (g_pmoveVars.pm_stopspeed / retainSpeed) * flApplyFriction;
 		} else {
-			flFriction = 1 - move_time * flApplyFriction;
+			retainSpeed = 1 - move_time * flApplyFriction;
 		}
 
-		if (flFriction < 0) {
+		if (retainSpeed <= 0) {
 			self.velocity = [0,0,0];
 		} else {
-			self.velocity = self.velocity * flFriction;
+			self.velocity = self.velocity * retainSpeed;
 		}
 	}
 
 	// acceleration
-	flFriction = wish_speed - (self.velocity * wish_dir);
-	if (flFriction > 0) {
-		self.velocity += wish_dir * min(flFriction, g_pmoveVars.pm_noclipaccelerate * move_time * wish_speed);
+	retainSpeed = wish_speed - (self.velocity * wish_dir);
+	if (retainSpeed > 0) {
+		self.velocity += wish_dir * min(retainSpeed, (g_pmoveVars.pm_noclipaccelerate * wish_speed) * move_time);
 	}
 }
 
 void
 PMoveCustom_AccelGravity(float move_time, float premove, vector wish_dir, float wish_speed)
 {
-	float flFriction;
+	float retainSpeed;
 
 	/* apply gravity */
 	self.velocity[2] = self.velocity[2] - (PMoveCustom_Gravity(self) * move_time);
 
 	if (wish_speed < 30) {
-		flFriction = wish_speed - (self.velocity * wish_dir);
+		retainSpeed = wish_speed - (self.velocity * wish_dir);
 	} else {
-		flFriction = 30 - (self.velocity * wish_dir);
+		retainSpeed = 30 - (self.velocity * wish_dir);
 	}
 
-	if (flFriction > 0) {
+	if (retainSpeed > 0) {
 		float fric;
-		fric = min(flFriction, g_pmoveVars.pm_airaccelerate * wish_speed * move_time);
+		fric = min(retainSpeed, (g_pmoveVars.pm_airaccelerate * wish_speed) * move_time);
 		self.velocity += wish_dir * fric;
 	}
 }
@@ -677,10 +678,6 @@ PMoveCustom_RunPlayerPhysics(entity target)
 	entity oldself = self;
 	self = target;
 
-	if (self.maxspeed <= 0)
-		self.maxspeed = 240;
-
-
 	bool flying = ((target.movetype == MOVETYPE_NOCLIP) || (target.movetype == MOVETYPE_FLY));
 
 	if (flying == true) {
@@ -694,26 +691,20 @@ PMoveCustom_RunPlayerPhysics(entity target)
 		}
 	}
 
-#ifdef CUSTOMPLAYERPHYSICS
 	/* call accelerate before and after the actual move, 
 	 * with half the move each time. this reduces framerate dependence. 
 	 * and makes controlling jumps slightly easier */
 	PMoveCustom_Acceleration(input_timelength / 2, TRUE);
 	PMoveCustom_Move();
 	PMoveCustom_Acceleration(input_timelength / 2, FALSE);
-#else
-	runstandardplayerphysics(target);
-#endif
 
 	/* NOTE: should clip to network precision here if lower than a float */
 	self.angles = input_angles;
 	self.angles[0] *= -0.333;
 
-#ifdef CUSTOMPLAYERPHYSICS
 	/* activate any SOLID_TRIGGER entities, when not in noclip anyway */
 	if (self.movetype != MOVETYPE_NOCLIP)
 		touchtriggers();
-#endif
 
 	setorigin(self, self.origin);
 	self = oldself;

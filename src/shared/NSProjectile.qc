@@ -286,6 +286,15 @@ NSProjectile::SpawnKey(string strKey, string strValue)
 	case "reflects":
 		m_bReflect = ReadBool(strValue);
 		break;
+	case "trackEnemy":
+		m_bTrackEnemy = ReadBool(strValue);
+		break;
+	case "trackJitter":
+		m_trackJitter = ReadVector(strValue);
+		break;
+	case "trackDelay":
+		m_trackDelay = ReadFloat(strValue);
+		break;
 	default:
 		super::SpawnKey(strKey, strValue);
 		break;
@@ -525,8 +534,6 @@ NSProjectile::Spawned(void)
 	SetSize(m_vecSpawnMins, m_vecSpawnMaxs);
 }
 
-
-
 void
 NSProjectile::Touch(entity eToucher)
 {
@@ -679,11 +686,11 @@ NSProjectile::_AnimateThink(void)
 {
 	SetFrame(frame + 1);
 
-	if (frame > (float)m_iProjectileAnimEnd)
+	if (frame > (float)m_iProjectileAnimEnd) {
 		SetFrame(m_iProjectileAnimStart);
+	}
 
-	think = _AnimateThink;
-	nextthink = time + m_flProjectileFramerate;
+	ScheduleThink(_AnimateThink, m_flProjectileFramerate);
 }
 
 void
@@ -696,8 +703,7 @@ NSProjectile::_AnimateThinkDead(void)
 		return;
 	}
 
-	think = _AnimateThinkDead;
-	nextthink = time + m_flProjectileFramerate;
+	ScheduleThink(_AnimateThinkDead, m_flProjectileFramerate);
 }
 
 void
@@ -706,9 +712,8 @@ NSProjectile::Animate(int startframe, int endframe, float framerate)
 	m_iProjectileAnimStart = startframe;
 	m_iProjectileAnimEnd = endframe;
 	m_flProjectileFramerate = framerate;
-	frame = startframe;
-	think = _AnimateThink;
-	nextthink = time + m_flProjectileFramerate;
+	SetFrame(startframe);
+	ScheduleThink(_AnimateThink, m_flProjectileFramerate);
 }
 
 void
@@ -717,9 +722,8 @@ NSProjectile::AnimateOnce(int startframe, int endframe, float framerate)
 	m_iProjectileAnimStart = startframe;
 	m_iProjectileAnimEnd = endframe;
 	m_flProjectileFramerate = framerate;
-	frame = startframe;
-	think = _AnimateThinkDead;
-	nextthink = time + m_flProjectileFramerate;
+	SetFrame(startframe);
+	ScheduleThink(_AnimateThinkDead, m_flProjectileFramerate);
 }
 
 void
@@ -733,7 +737,6 @@ NSProjectile::_FuseEnded(void)
 	if (m_partSmokeFuse) {
 		pointparticles(particleeffectnum(m_partSmokeFuse), origin, velocity, 1);
 	}
-
 
 	Destroy();
 }
@@ -845,12 +848,18 @@ void
 NSProjectile::_ApplyDamage(void)
 {
 	/* may not be defined yet */
-	if (m_eMultiTarget == __NULL__)
+	if (m_eMultiTarget == __NULL__) {
 		return;
+	}
 
 	/* the location _could_ be more accurate... */
 	if (m_eMultiTarget.CanBleed() == true) {
-		FX_Blood(trace_endpos, m_eMultiTarget.GetBloodColor());
+		NSSurfacePropEntity targetEnt = (NSSurfacePropEntity)m_eMultiTarget;
+		string surfType = targetEnt.GetPropData(PROPINFO_SURFACEPROP);
+
+		if (STRING_SET(surfType)) {
+			SurfData_ImpactOfNamedType(surfType, trace_endpos, trace_plane_normal);
+		}
 	}
 
 	trace_surface_id = m_iMultiBody;
@@ -876,22 +885,23 @@ NSProjectile::_ApplyDamage(void)
 	m_iMultiBody = 0;
 }
 
-
 void
 NSProjectile::_FireSingle(vector vecPos, vector vecAngles, float flDamage, float flRange)
 {
 	vector range;
 	vector planeNormal;
 	vector endPos;
+	bool skipFX = false;
 
-	if (flRange <= 0)
+	if (flRange <= 0) {
 		return;
+	}
 
-	if (flDamage < 1)
+	if (flDamage < 1) {
 		return;
+	}
 
 	range = (vecAngles * 8196);
-
 	owner.dimension_solid = 255;
 	owner.dimension_hit = 255;
 
@@ -903,7 +913,7 @@ NSProjectile::_FireSingle(vector vecPos, vector vecAngles, float flDamage, float
 	planeNormal = trace_plane_normal;
 	endPos = trace_endpos;
 
-	flRange -= trace_plane_dist;
+	flRange -= distance(vecPos, endPos);
 
 	owner.dimension_solid = 254;
 	owner.dimension_hit = 254;
@@ -914,19 +924,23 @@ NSProjectile::_FireSingle(vector vecPos, vector vecAngles, float flDamage, float
 		trailparticles(particleeffectnum(m_partFXPath), world, vecPos, trace_endpos);
 	}
 
-	if (trace_fraction >= 1.0f)
+	if (trace_fraction >= 1.0f) {
 		return;
+	}
 
 	/* water impact */
 	if (trace_endcontentsi & CONTENTBIT_WATER) {
 		SurfData_ImpactOfNamedType("water", endPos, planeNormal);
-		_FireSingle(endPos + (v_forward * 2), vecAngles, flDamage / 2, flRange);
+		_FireSingle(endPos + ((vecAngles) * 2), vecAngles, flDamage / 2, flRange);
+		skipFX = true;
 	} else if (trace_endcontentsi & CONTENTBIT_SLIME) {
 		SurfData_ImpactOfNamedType("slime", endPos, planeNormal);
-		_FireSingle(endPos + (v_forward * 2), vecAngles, flDamage / 2, flRange);
+		_FireSingle(endPos + ((vecAngles) * 2), vecAngles, flDamage / 2, flRange);
+		skipFX = true;
 	} else if (trace_endcontentsi & CONTENTBIT_LAVA) {
 		SurfData_ImpactOfNamedType("lama", endPos, planeNormal);
-		_FireSingle(endPos + (v_forward * 2), vecAngles, flDamage / 2, flRange);
+		_FireSingle(endPos + ((vecAngles) * 2), vecAngles, flDamage / 2, flRange);
+		skipFX = true;
 	}
 
 	if (trace_ent.takedamage != DAMAGE_NO && trace_ent.iBleeds) {
@@ -945,7 +959,7 @@ NSProjectile::_FireSingle(vector vecPos, vector vecAngles, float flDamage, float
 #endif
 
 	/* impact per bullet */
-	if (m_bDetonateOnWorld == true && trace_ent.iBleeds == 0) {
+	if (m_bDetonateOnWorld == true && trace_ent.iBleeds == 0 && skipFX == false) {
 		StartSoundDef(m_sndExplode, CHAN_VOICE, true);
 	
 		if (m_strDecalGroup)
@@ -990,6 +1004,18 @@ NSProjectile::_ThrustThink(void)
 		endPos = ownerPos + (v_forward * 4096.0f);
 		traceline(ownerPos, endPos, MOVE_NORMAL, projectileOwner);
 		SetAngles(vectoangles(trace_endpos - GetOrigin()));
+	} else if (m_bTrackEnemy) {
+
+		if (m_trackDelayTime > time) {
+			NSMonster monOwner = (NSMonster)owner;
+			vector angleToTarget = vectoangles(monOwner.m_eEnemy.origin - GetOrigin());
+			angleToTarget[0] += random(-m_trackJitter[0],m_trackJitter[0]);
+			angleToTarget[1] += random(-m_trackJitter[1],m_trackJitter[1]);
+			angleToTarget[2] += random(-m_trackJitter[2],m_trackJitter[2]);
+			SetAngles(angleToTarget);
+		}
+
+		m_trackDelayTime = time + m_trackDelay;
 	}
 
 	makevectors(GetAngles());
@@ -1113,7 +1139,7 @@ NSProjectile::Launch(vector startPos, vector launchDir, float fuseOffset, float 
 		ScheduleThink(_FuseEnded, m_flFuse - fuseOffset);
 	}
 
-	if (m_flThrust != 0) {
+	if (m_flThrust != 0 || m_bTrackEnemy == true) {
 		m_thrustHandler = NSTimer::TemporaryTimer(this, _ThrustThink, 0.0, true);
 	}
 

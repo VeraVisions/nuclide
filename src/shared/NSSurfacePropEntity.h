@@ -135,18 +135,6 @@ public:
 
 	/** Returns the health the entity spawned with at map load */
 	nonvirtual float GetSpawnHealth(void);
-	/** Returns if the entity has prop data information set. */ 
-	nonvirtual bool HasPropData(void) ;
-	/** Returns a variable type of information about the entity's prop data */
-	nonvirtual __variant GetPropData(int);
-	/** Returns if the entity has surface data information set. */ 
-	nonvirtual bool HasSurfaceData(void);
-	/** Returns a variable type of information about the entity's surface data */
-	nonvirtual __variant GetSurfaceData(int);
-	/** Assigns the surface data of a given description onto this entity. */
-	nonvirtual void SetSurfaceData(string);
-	/** Assigns the prop data of a given description onto this entity. */
-	nonvirtual void SetPropData(string);
 	/** Returns how many seconds have passed since we died. Will return -1 if not applicable. */
 	nonvirtual float TimeSinceDeath(void);
 
@@ -159,6 +147,20 @@ public:
 	nonvirtual vector GetBloodColor(void);
 #endif
 
+
+	/** Assigns the surface data of a given description onto this entity. */
+	nonvirtual void SetSurfaceData(string);
+	/** Assigns the prop data of a given description onto this entity. */
+	nonvirtual void SetPropData(string);
+	/** Returns if the entity has prop data information set. */
+	nonvirtual bool HasPropData(void) ;
+	/** Returns a variable type of information about the entity's prop data */
+	nonvirtual __variant GetPropData(int);
+	/** Returns if the entity has surface data information set. */
+	nonvirtual bool HasSurfaceData(void);
+	/** Returns a variable type of information about the entity's surface data */
+	nonvirtual __variant GetSurfaceData(int);
+
 #ifdef CLIENT
 	/** Called every frame to render a fire effect, but will only do so if the entity is burning. */
 	virtual void RenderFire(void);
@@ -169,6 +171,14 @@ private:
 
 	PREDICTED_FLOAT(armor)
 	PREDICTED_FLOAT_N(health)
+
+	/* Surface/PropKit */
+	int m_iMaterial;
+	string m_strSurfData;
+	int m_iPropData;
+	string m_strPropData;
+	nonvirtual void _SurfaceDataFinish(void);
+	nonvirtual void _PropDataFinish(void);
 
 #ifdef SERVER
 	float max_armor;
@@ -186,18 +196,10 @@ private:
 	float m_oldHealth;
 	vector m_vecBloodColor;
 
-	/* Surface/PropKit */
-	int m_iMaterial;
-	string m_strSurfData;
-	int m_iPropData;
-	string m_strPropData;
-
 	float m_flDeathTime;
 	bool m_bAutoAim;
 	bool m_bTakesDamage;
 
-	nonvirtual void _SurfaceDataFinish(void);
-	nonvirtual void _PropDataFinish(void);
 	nonvirtual void _UpdateTakedamage(void);
 #endif
 };

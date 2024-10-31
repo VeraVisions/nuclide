@@ -198,6 +198,12 @@ CMD_PropSpawn(void)
 	newProp.Wake();
 }
 
+static void
+CMD_SetLightStyle(void)
+{
+	lightstyle(stof(argv(1)), argv(2));
+}
+
 bool
 Cmd_ParseServerCommand(void)
 {
@@ -260,6 +266,9 @@ Cmd_ParseServerCommand(void)
 		break;
 	case "traceMaterial":
 		CMD_TraceMaterial();
+		break;
+	case "setLightStyle":
+		CMD_SetLightStyle();
 		break;
 	default:
 		return (false);

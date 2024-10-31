@@ -204,9 +204,9 @@ private:
 
 	/* model events */
 	float m_flBaseTime;
+	float m_iNumBones;
 
 #ifdef CLIENT
-	float m_iNumBones;
 	nonvirtual void _UpdateGeomset();
 	nonvirtual void _UpdateBoneCount();
 #endif

@@ -114,6 +114,7 @@ private:
 
 	/* temp */
 	float m_flDmgMultiplier;
+	float m_trackDelayTime;
 
 	/* defAPI */
 	string m_defDamage;
@@ -181,6 +182,9 @@ private:
 	bool m_bThrustHoming;
 	bool m_bInheritVelocity;
 	bool m_bReflect;
+	bool m_bTrackEnemy;
+	vector m_trackJitter;
+	float m_trackDelay;
 
 	NSTimer m_thrustHandler;
 

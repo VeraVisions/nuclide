@@ -74,6 +74,16 @@ float Spawn_PlayerRange(entity spot) {
 		}
 	}
 
+	for (pl = world; (pl = findfloat(pl, takedamage, DAMAGE_AIM));) {
+		if (pl->health <= 0) {
+			continue;
+		}
+		dist = vlen(spot.origin - pl.origin);
+		if (dist < bestdist) {
+			bestdist = dist;
+		}
+	}
+
 	return bestdist;
 }
 

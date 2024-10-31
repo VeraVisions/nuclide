@@ -60,6 +60,7 @@ void NSRenderableEntity::_UpdateGeomset(void)
 		sprintf("geomset 0 %i\ngeomset 1 %i\ngeomset 2 %i\ngeomset 3 %i\n", firstBody, secondBody, thirdBody, fourthBody)
 	);
 }
+#endif
 
 void
 NSRenderableEntity::_UpdateBoneCount(void)
@@ -74,7 +75,6 @@ NSRenderableEntity::_UpdateBoneCount(void)
 	skel_delete(skeletonindex);
 	skeletonindex = 0;
 }
-#endif
 
 /*
 ============
@@ -1014,10 +1014,10 @@ NSRenderableEntity::HandleAnimEvent(float flTimeStamp, int iCode, string strData
 		break;
 	default:
 #ifdef SERVER
-		int eDefEvents = tokenize(m_strModelEventCB);
-		//print(sprintf("%i\n", eDefEvents));
+		bool success = false;
 
-		for (int i = 0; i < eDefEvents; i+=3) {
+		//print(sprintf("%i\n", eDefEvents));
+		for (int i = 0; i < tokenize(m_strModelEventCB); i+=3) {
 			int testCode = stoi(argv(i+0));
 			string testInput = argv(i+1);
 			string testData = argv(i+2);
@@ -1031,7 +1031,12 @@ NSRenderableEntity::HandleAnimEvent(float flTimeStamp, int iCode, string strData
 					Input(this, testInput, strData); /* no parms passed. */
 
 				tokenize(m_strModelEventCB); /* ensure argv() is 'rewound'... */
+				success = true;
 			}
+		}
+
+		if (success == true) {
+			return;
 		}
 
 		//print(sprintf("Received: %f %i %S\n", flTimeStamp, iCode, strData));
@@ -1119,9 +1124,53 @@ NSRenderableEntity::Restore(string strKey, string strValue)
 }
 
 void
+NSRenderableEntity::Event_SpawnDefBone(string classDef, string boneName)
+{
+	_UpdateBoneCount();
+	NSEntity rocket = Entity_CreateClass(classDef);
+	rocket.SetOrigin(GetOrigin());
+	rocket.SetAngles(GetAngles());
+	rocket.tag_entity = this;
+	rocket.tag_index = gettagindex(this, boneName);
+	rocket.owner = this;
+	EntLog("Spawned decl %S at bone %S (%v)", classDef, boneName, rocket.origin);
+}
+
+void
+NSRenderableEntity::Event_SpawnDefAttachment(string classDef, float attachmentID)
+{
+	_UpdateBoneCount();
+	NSEntity rocket = Entity_CreateClass(classDef);
+	rocket.SetOrigin(GetOrigin());
+	rocket.SetAngles(GetAngles());
+	rocket.tag_entity = this;
+	rocket.tag_index = m_iNumBones + attachmentID;
+	rocket.owner = this;
+	EntLog("Spawned decl %S at attachment %f (%v)", classDef, attachmentID, rocket.origin);
+}
+
+void
 NSRenderableEntity::Input(entity eAct, string strInput, string strData)
 {
 	switch (strInput) {
+	case "SpawnDefBone":
+#ifdef SERVER
+		tokenize_console(strData);
+		Event_SpawnDefBone(argv(0), argv(1));
+#endif
+		break;
+	case "SpawnDefAttachment":
+#ifdef SERVER
+		string declName;
+		string attachment;
+		float attachmentID;
+		tokenize_console(strData);
+		declName = argv(0);
+		attachment = argv(1);
+		attachmentID = stof(attachment);
+		Event_SpawnDefAttachment(declName, attachmentID);
+#endif
+		break;
 	case "Color":
 		SetRenderColor(stov(strData));
 		break;

@@ -334,8 +334,14 @@ typedef struct
 	@return The value in vector form. */
 	vector GetVector(string defName, string keyName);
 } entityDefAPI_t;
-
 entityDefAPI_t entityDef;
+
+typedef struct
+{
+	float Model(string);
+	float Sound(string);
+} precacheAPI_t;
+precacheAPI_t precache;
 
 typedef string decl;
 
@@ -485,6 +491,9 @@ _shared_main(void)
 	teams.SetScore = linkToSharedProgs("SHPF_teams_SetScore");
 	teams.SetUp = linkToSharedProgs("SHPF_teams_SetUp");
 	teams.SetSpawnPoint = linkToSharedProgs("SHPF_teams_SetSpawnPoint");
+
+	precache.Model = linkToSharedProgs("SHPF_precache_Model");
+	precache.Sound = linkToSharedProgs("SHPF_precache_Sound");
 
 	weaponInfo.Type = linkToSharedProgs("SHPF_weaponInfo_Type");
 	weaponInfo.StartAmmo = linkToSharedProgs("SHPF_weaponInfo_StartAmmo");

@@ -565,6 +565,12 @@ NSClientPlayer::Physics_Run(void)
 	/* maxspeed changes when crouching, TODO: make this game-specific */
 	maxspeed = Physics_MaxSpeed();
 
+#ifdef SERVER
+	//printf("SERVER: %v; max: %f; fric: %f; grav: %f\n", input_movevalues, maxspeed, friction, gravity);
+#else
+	//printf("CLIENT: %v; max: %f; fric: %f; grav: %f\n", input_movevalues, maxspeed, friction, gravity);
+#endif
+
 	/* give us a chance to manipulate input_ globals before running physics */
 	Physics_InputPreMove();
 
@@ -586,13 +592,13 @@ NSClientPlayer::Physics_Run(void)
 	Physics_Prone();
 	Physics_CheckJump(TRUE);
 
-#ifdef CUSTOMPLAYERPHYSICS
-	/* QuakeC powered physics (slow, but more customizable) */
-	PMoveCustom_RunPlayerPhysics(this);
-#else
-	/* fast engine-side player physics */
-	runstandardplayerphysics(this);
-#endif
+	if (autocvar(pm_enginepmove, 0) > 0) {
+		/* fast engine-side player physics */
+		runstandardplayerphysics(this);
+	} else {
+		/* QuakeC powered physics (slow, but more customizable) */
+		PMoveCustom_RunPlayerPhysics(this);
+	}
 
 	Physics_CheckJump(FALSE);
 

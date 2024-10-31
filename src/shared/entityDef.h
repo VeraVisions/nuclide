@@ -133,6 +133,8 @@ bool EntityDef_HasSpawnClass(string className);
 bool EntityDef_Precache(string);
 NSEntity EntityDef_SwitchClass(NSEntity target, string className);
 NSEntity Entity_CreateClass(string className);
+
+NSEntity EntityDef_NewClassname(string className);
 #endif
 
 /** @} */ // end of entitydef

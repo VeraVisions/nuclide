@@ -298,6 +298,7 @@ NSView::UpdateView(void)
 		pSeat->m_vecPredictedOrigin = cl.origin;
 		pSeat->m_flPredictedFlags = cl.flags;
 		pSeat->m_vecPredictedVelocity = cl.velocity;
+		SetCameraOrigin(cl.origin);
 
 		/* this player will respawn, so null visual damage cues */
 		if (Client_IsDead(cl)) {

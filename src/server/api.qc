@@ -112,6 +112,38 @@ SVPF_actor_GetInventory(NSActor targetActor)
 	return (outputString);
 }
 
+int
+SVPF_actor_TotalActors(void)
+{
+	int actorCount = 0i;
+
+	for (NSActor actorEnum = __NULL__; (actorEnum = (NSActor)nextent(actorEnum));) {
+		if (actorEnum.flags & FL_MONSTER) {
+			if (actorEnum.IsAlive() == true) {
+				actorCount++;
+			}
+		}
+	}
+
+	return (actorCount);
+}
+
+int
+SVPF_actor_TotalActorsOnTeam(int teamID)
+{
+	int actorCount = 0i;
+
+	for (NSActor actorEnum = __NULL__; (actorEnum = (NSActor)nextent(actorEnum));) {
+		if (actorEnum.flags & FL_MONSTER) {
+			if (actorEnum.team == (float)teamID && actorEnum.IsAlive() == true) {
+				actorCount++;
+			}
+		}
+	}
+
+	return (actorCount);
+}
+
 string
 SVPF_util_TimeToString(int realTime, int zoneType, string formatString)
 {

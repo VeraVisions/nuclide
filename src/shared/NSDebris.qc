@@ -19,13 +19,19 @@ void
 NSDebris::NSDebris(void)
 {
 	m_strImpactDecal = __NULL__;
+	m_flPlaceTime = 0.0f;
 }
 
 void
 NSDebris::Touch(entity touchingEnt)
 {
+	if (m_flPlaceTime > time) {
+		return;
+	}
+
 	if (STRING_SET(m_strImpactDecal)) {
 		DecalGroups_Place(m_strImpactDecal, origin);
+		m_flPlaceTime = time + 1.0f;
 	}
 }
 

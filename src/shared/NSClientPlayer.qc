@@ -166,18 +166,19 @@ NSClientPlayer::PreFrame(void)
 
 	/* run physics code for all the input frames which we've not heard back
 	 * from yet. This continues on in Player_ReceiveEntity! */
-	for (int i = sequence + 1; i <= clientcommandframe; i++) {
-		float flSuccess = getinputstate(i);
-		if (flSuccess == FALSE) {
+	for (float i = sequence + 1; i <= clientcommandframe; i++) {
+		bool inputPackets = getinputstate(i);
+
+		if (inputPackets == false) {
 			continue;
 		}
 
 		/* don't do partial frames, aka incomplete input packets */
-		if (input_timelength == 0) {
+		if (input_timelength <= 0) {
 			break;
 		}
 
-		if (i==clientcommandframe){
+		if (i == clientcommandframe){
 			CSQC_Input_Frame();
 		}
 
@@ -679,6 +680,10 @@ NSClientPlayer::ClientInputFrame(void)
 	} else {
 		input_buttons &= ~INPUT_SPRINT;
 	}
+
+	input_movevalues[0] = floor(input_movevalues[0]);
+	input_movevalues[1] = floor(input_movevalues[1]);
+	input_movevalues[2] = floor(input_movevalues[2]);
 }
 
 void
@@ -703,9 +708,6 @@ NSClientPlayer::ReceiveEntity(float new, float flChanged)
 
 	if (new) {
 		classname = "player";
-		mins = m_pmoveVars.GetStandingMins();
-		maxs = m_pmoveVars.GetStandingMaxs();
-		Physics_SetViewParms();
 	}
 
 	READENTITY_INT(entityDefID, PLAYER_MODELINDEX)
@@ -744,7 +746,10 @@ NSClientPlayer::ReceiveEntity(float new, float flChanged)
 	READENTITY_INT(flags, PLAYER_FLAGS)
 	READENTITY_INT(vv_flags, PLAYER_FLAGS)
 	READENTITY_INT(gflags, PLAYER_FLAGS)
-	READENTITY_INT(pmove_flags, PLAYER_FLAGS)
+	READENTITY_FLOAT(gravity, PLAYER_FLAGS)
+	READENTITY_FLOAT(friction, PLAYER_FLAGS)
+	READENTITY_FLOAT(jump_time, PLAYER_FLAGS)
+	READENTITY_FLOAT(teleport_time, PLAYER_FLAGS)
 	READENTITY_BYTE(weaponframe, PLAYER_WEAPONFRAME)
 	READENTITY_BYTE(health, PLAYER_HEALTH)
 	READENTITY_BYTE(armor, PLAYER_HEALTH)
@@ -793,7 +798,13 @@ NSClientPlayer::ReceiveEntity(float new, float flChanged)
 	if (pSeat->m_ePlayer != this) {
 		return;
 	}
-	
+
+	if (new) {
+		mins = m_pmoveVars.GetStandingMins();
+		maxs = m_pmoveVars.GetStandingMaxs();
+		Physics_SetViewParms();
+	}
+
 #ifdef VALVE
 	if (flChanged & PLAYER_AMMOTYPES) {
 		HUD_AmmoNotify_Check(this);
@@ -832,6 +843,11 @@ NSClientPlayer::PredictPreFrame(void)
 		if (m_activeWeapon.PredictPreFrame)
 			m_activeWeapon.PredictPreFrame();
 
+	if (vehicle) {
+		NSVehicle veh = (NSVehicle)vehicle;
+		veh.PredictPreFrame();
+	}
+
 	SAVE_STATE(modelindex)
 	SAVE_STATE(colormap)
 	SAVE_STATE(m_iRenderMode)
@@ -847,7 +863,10 @@ NSClientPlayer::PredictPreFrame(void)
 	SAVE_STATE(flags)
 	SAVE_STATE(vv_flags)
 	SAVE_STATE(gflags)
-	SAVE_STATE(pmove_flags)
+	SAVE_STATE(gravity)
+	SAVE_STATE(friction)
+	SAVE_STATE(jump_time)
+	SAVE_STATE(teleport_time)
 	SAVE_STATE(m_itemList)
 	SAVE_STATE(activeweapon)
 	SAVE_STATE(weaponframe)
@@ -897,7 +916,10 @@ NSClientPlayer::PredictPostFrame(void)
 	ROLL_BACK(flags)
 	ROLL_BACK(vv_flags)
 	ROLL_BACK(gflags)
-	ROLL_BACK(pmove_flags)
+	ROLL_BACK(gravity)
+	ROLL_BACK(friction)
+	ROLL_BACK(jump_time)
+	ROLL_BACK(teleport_time)
 	ROLL_BACK(m_itemList)
 	ROLL_BACK(activeweapon)
 	ROLL_BACK(weaponframe)
@@ -935,6 +957,11 @@ NSClientPlayer::PredictPostFrame(void)
 			m_activeWeapon.PredictPostFrame();
 		}
 	}
+
+	if (vehicle) {
+		NSVehicle veh = (NSVehicle)vehicle;
+		veh.PredictPostFrame();
+	}
 }
 #else
 void
@@ -971,7 +998,6 @@ NSClientPlayer::Save(float handle)
 	SaveVector(handle, "punchangle", punchangle);
 	SaveFloat(handle, "movetype", movetype);
 	SaveFloat(handle, "solid", solid);
-	SaveFloat(handle, "pmove_flags", pmove_flags);
 	SaveFloat(handle, "w_attack_next", w_attack_next);
 	SaveFloat(handle, "w_idle_next", w_idle_next);
 	SaveFloat(handle, "w_reload_next", w_reload_next);
@@ -1036,9 +1062,6 @@ NSClientPlayer::Restore(string strKey, string strValue)
 		break;
 	case "movetype":
 		movetype = ReadFloat(strValue);
-		break;
-	case "pmove_flags":
-		pmove_flags = ReadFloat(strValue);
 		break;
 	case "w_attack_next":
 		w_attack_next = ReadFloat(strValue);
@@ -1265,7 +1288,10 @@ NSClientPlayer::EvaluateEntity(void)
 	EVALUATE_FIELD(flags, PLAYER_FLAGS)
 	EVALUATE_FIELD(vv_flags, PLAYER_FLAGS)
 	EVALUATE_FIELD(gflags, PLAYER_FLAGS)
-	EVALUATE_FIELD(pmove_flags, PLAYER_FLAGS)
+	EVALUATE_FIELD(gravity, PLAYER_FLAGS)
+	EVALUATE_FIELD(friction, PLAYER_FLAGS)
+	EVALUATE_FIELD(jump_time, PLAYER_FLAGS)
+	EVALUATE_FIELD(teleport_time, PLAYER_FLAGS)
 	EVALUATE_FIELD(m_itemList, PLAYER_ITEMS)
 	EVALUATE_FIELD(m_activeWeapon, PLAYER_WEAPON)
 	EVALUATE_FIELD(weaponframe, PLAYER_WEAPONFRAME)
@@ -1350,7 +1376,10 @@ NSClientPlayer::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_INT(flags, PLAYER_FLAGS)
 	SENDENTITY_INT(vv_flags, PLAYER_FLAGS)
 	SENDENTITY_INT(gflags, PLAYER_FLAGS)
-	SENDENTITY_INT(pmove_flags, PLAYER_FLAGS)
+	SENDENTITY_FLOAT(gravity, PLAYER_FLAGS)
+	SENDENTITY_FLOAT(friction, PLAYER_FLAGS)
+	SENDENTITY_FLOAT(jump_time, PLAYER_FLAGS)
+	SENDENTITY_FLOAT(teleport_time, PLAYER_FLAGS)
 	SENDENTITY_BYTE(weaponframe, PLAYER_WEAPONFRAME)
 	SENDENTITY_BYTE(health, PLAYER_HEALTH)
 	SENDENTITY_BYTE(armor, PLAYER_HEALTH)
@@ -1613,12 +1642,6 @@ NSClientPlayer::Damage(entity inflictor, entity attacker, NSDict damageDecl, flo
 	/* already dead, please avoid recursion */
 	if (GetHealth() <= 0) {
 		return;
-	}
-
-	/* apply knockback */
-	float knockBack = damageDecl.GetFloat("knockback");
-	if (knockBack >= 0) {
-		AddVelocity(dmgDir * knockBack);
 	}
 
 	/* player god mode */

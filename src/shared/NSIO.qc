@@ -881,9 +881,15 @@ NSIO::SpawnKey(string strKey, string strValue)
 	   defaults. just in case anybody is wondering. */
 	switch (strKey) {
 	case "classname":
+		break;
 	case "spawnflags":
+		spawnflags = ReadFloat(strValue);
+		break;
 	case "mins":
+		mins = ReadVector(strValue);
+		break;
 	case "maxs":
+		maxs = ReadVector(strValue);
 		break;
 	case "targetname":
 		targetname = strValue;

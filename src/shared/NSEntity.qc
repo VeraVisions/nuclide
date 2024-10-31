@@ -1026,6 +1026,21 @@ NSEntity::Restore(string strKey, string strValue)
 }
 
 void
+NSEntity::Event_SpawnDefRelative(string classDef, float xOfs, float yOfs, float zOfs)
+{
+	vector posOffset;
+	posOffset = anglesToForward(GetAngles()) * xOfs;
+	posOffset += anglesToRight(GetAngles()) * yOfs;
+	posOffset += anglesToUp(GetAngles()) * zOfs;
+	NSEntity rocket = EntityDef_NewClassname(classDef);
+	rocket.SetOrigin(GetOrigin() + posOffset);
+	rocket.SetAngles(GetAngles());
+	rocket.owner = this;
+	rocket.Spawn();
+	EntLog("Spawned decl %S at relative offset %v (%v)", classDef, posOffset, rocket.origin);
+}
+
+void
 NSEntity::Input(entity eAct, string strInput, string strData)
 {
 	switch (strInput) {
@@ -1056,7 +1071,40 @@ NSEntity::Input(entity eAct, string strInput, string strData)
 		if (PlayerUse)
 			PlayerUse();
 		break;
+	case "ShootGib":
+		tokenize_console(strData);
+		string breakModel = argv(0);
+		float breakSpeed = stof(argv(1));
+		int breakCount = stoi(argv(2));
+		BreakModel_Spawn(origin, origin, v_angle, breakSpeed, breakCount, breakModel);
+		break;
 	case "SpawnDef":
+		break;
+	case "SpawnDefOffset":
+#ifdef SERVER
+		tokenize_console(strData);
+		Event_SpawnDefRelative(argv(0), stof(argv(1)), stof(argv(2)), stof(argv(3)));
+#endif
+		break;
+	case "KillChildClass":
+		for (entity e = world; (e = findfloat(e, ::owner, this));) {
+			if (strData == e.classname) {
+				NSEntity ent = (NSEntity) e;
+				ent.Destroy();
+			}
+		}
+		break;
+	case "SpawnProjectileOffset":
+		vector launchOffset;
+		tokenize_console(strData);
+		string defName = argv(0);
+		launchOffset[0]= stof(argv(1));
+		launchOffset[1]= stof(argv(2));
+		launchOffset[2]= stof(argv(3));
+
+		if (EntityDef_HasSpawnClass(defName)) {
+			NSProjectile_SpawnDefAtPosition(defName, (NSActor)this, GetOrigin() + launchOffset, GetViewAngle());
+		}
 		break;
 	case "SpawnProjectileDef":
 		if (EntityDef_HasSpawnClass(strData)) {

@@ -770,8 +770,8 @@ spawnClass(string className, vector desiredPos)
 	}
 
 	newEntity.classname = className;
-	newEntity.Spawn();
 	newEntity.SetOrigin(desiredPos);
+	newEntity.Spawn();
 #endif
 
 	return (newEntity);
@@ -919,4 +919,18 @@ vector
 SHPF_entityDef_GetVector(string declName, string keyName)
 {
 	return stov(SHPF_entityDef_GetString(declName, keyName));
+}
+
+
+int
+SHPF_precache_Model(string modelPath)
+{
+	precache_model(modelPath);
+	PropData_ForModel(modelPath);
+}
+
+int
+SHPF_precache_Sound(string modelPath)
+{
+	Sound_Precache(modelPath);
 }

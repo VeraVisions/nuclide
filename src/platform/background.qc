@@ -53,9 +53,9 @@ backResource_t g_back800[] =
 void
 Background_RendererRestarted(void)
 {
-	if (fileExists("resource/background/800_1_a_loading.tga")) {
+	if (Platform_FileInCurrentGamedir("resource/background/800_1_a_loading.tga")) {
 		g_bgMode = BACK_VGUI1;
-	} else if (fileExists("gfx/shell/splash.bmp")) {
+	} else if (Platform_FileInCurrentGamedir("gfx/shell/splash.bmp")) {
 		g_bgMode = BACK_WON;
 	} else {
 		g_bgMode = BACK_MATERIAL;

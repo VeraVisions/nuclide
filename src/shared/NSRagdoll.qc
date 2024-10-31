@@ -17,7 +17,47 @@
 void
 NSRagdoll::NSRagdoll(void)
 {
-	m_skelRagdoll = 0;
+	m_morphTime = 1.0f;
+}
+
+void
+NSRagdoll::OnRemoveEntity(void)
+{
+	skel_ragupdate(this, "cleardoll", 0);
+
+	/* decouple */
+	if (skeletonindex) {
+		skel_delete(skeletonindex);
+		skeletonindex = 0;
+	}
+
+	modelindex = 0;
+}
+
+void
+NSRagdoll::CreateRagdoll(void)
+{
+
+	skeletonindex = skel_create(modelindex);
+	skel_build(skeletonindex, this, modelindex, 0, 0, 0, 1);
+
+#if 0
+	string dollString = GetPropData(PROPINFO_DOLL);
+	printf("Doll file:\n");
+	printf(dollString);
+	printf("\n");
+
+	if (STRING_SET(dollString))
+		skel_ragupdate(this, strcat("dollstring ", dollString), 0);
+	else
+#else
+		if (fileExists(strcat(modelnameforindex(modelindex), ".doll")))
+			skel_ragupdate(this, strcat("doll ", modelnameforindex(modelindex), ".doll"), 0);
+		else
+#endif
+		skel_ragupdate(this, "doll models/rt2/human.doll", 0);
+
+	skel_ragupdate(this, "animate 0", 0);
 }
 
 #ifdef SERVER
@@ -168,6 +208,7 @@ NSRagdoll::ReceiveEntity
 void
 NSRagdoll::ReceiveEntity(float flNew, float flChanged)
 {
+	vector oldVelocity = velocity;
 	READENTITY_COORD(origin[0], RDENT_CHANGED_ORIGIN_X)
 	READENTITY_COORD(origin[1], RDENT_CHANGED_ORIGIN_Y)
 	READENTITY_COORD(origin[2], RDENT_CHANGED_ORIGIN_Z)
@@ -217,13 +258,12 @@ NSRagdoll::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_ANGLE(m_flBoneControl4, RDENT_CHANGED_CONTROLLER)
 	READENTITY_ANGLE(m_flBoneControl5, RDENT_CHANGED_CONTROLLER)
 
-	movetype = MOVETYPE_PHYSICS;
+	if (flNew == false) {
+		velocity = oldVelocity;
+	}
 
 	if (!skeletonindex && modelindex) {
-		skeletonindex = skel_create(modelindex);
-		skel_build(skeletonindex, this, modelindex, 0, 0, 0, 1);
-		skel_ragupdate(this, "doll models/rt2/human.doll", 0);
-		skel_ragupdate(this, "animate 0", 0);
+		CreateRagdoll();
 	}
 
 	if (scale == 0.0)
@@ -244,14 +284,18 @@ NSRagdoll::predraw(void)
 		return (PREDRAW_NEXT);
 	}
 
-	frame1time = time;
-	frame2time = time;
-	frame = 0;
-	frame2 = 1;
+	frame1time += frametime;
+	frame2time += frametime;
 	lerpfrac = 0.0;
 	skel_build(this.skeletonindex, this, this.modelindex, 0, 0, 0, 1);
-	skel_ragupdate(this, "", 0);
+	skel_ragupdate(this, "", m_morphTime);
 	addentity(this);
+
+	m_morphTime -= frametime;
+
+	if (m_morphTime < 0.0f)
+		m_morphTime = 0.0f;
+
 	return (PREDRAW_NEXT);
 }
 
@@ -260,14 +304,17 @@ NSRagdoll_Create(string modelFile)
 {
 	NSRagdoll rag = spawn(NSRagdoll);
 	rag.Spawn();
-	rag.movetype = MOVETYPE_PHYSICS;
+	rag.SetMovetype(MOVETYPE_PHYSICS);
 	rag.drawmask = MASK_ENGINE;
+	rag.SetSolid(SOLID_CORPSE);
 	rag.SetOrigin(g_view.GetCameraOrigin());
-	rag.SetModel("models/humans/group03/male_07.mdl");
 
-	rag.skeletonindex = skel_create(rag.modelindex);
-	skel_build(rag.skeletonindex, rag, rag.modelindex, 0, 0, 0, 1);
-	skel_ragupdate(rag, "doll models/rt2/human.doll", 0);
-	skel_ragupdate(rag, "animate 0", 0);
+	if (STRING_SET(modelFile))
+		rag.SetModel(modelFile);
+	else
+		rag.SetModel("models/police.mdl");
+
+	//rag.m_iPropData = PropData_ForModel(rag.model);
+	rag.CreateRagdoll();
 }
 #endif

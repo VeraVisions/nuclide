@@ -201,30 +201,6 @@ NSSurfacePropEntity::GetArmor(void)
 	return (armor);
 }
 
-bool
-NSSurfacePropEntity::HasPropData(void)
-{
-	return (m_iPropData != -1) ? true : false;
-}
-
-__variant
-NSSurfacePropEntity::GetPropData(int type)
-{
-	return Prop_GetInfo(m_iPropData, type);
-}
-
-bool
-NSSurfacePropEntity::HasSurfaceData(void)
-{
-	return (m_iMaterial != -1) ? true : false;
-}
-
-__variant
-NSSurfacePropEntity::GetSurfaceData(int type)
-{
-	return SurfData_GetInfo(m_iMaterial, type);
-}
-
 void
 NSSurfacePropEntity::ParentUpdate(void)
 {
@@ -268,6 +244,7 @@ NSSurfacePropEntity::Damage(entity inflictor, entity attacker, NSDict damageDecl
 	NSSurfacePropEntity ourAttacker = (NSSurfacePropEntity)attacker;
 
 	EntLog("applying %d damage by %s", damagePoints, attacker.classname);
+	g_dmg_vecLocation = hitLocation;
 
 	/* notify them */
 	if (isSentient(attacker)) {
@@ -278,9 +255,15 @@ NSSurfacePropEntity::Damage(entity inflictor, entity attacker, NSDict damageDecl
 		health = rint(health - damagePoints);
 
 		if (health <= 0) {
-			Death(inflictor, attacker, (int)damagePoints, dmgDir, 0i);
+			/* apply knockback */
+			float knockBack = damageDecl.GetFloat("knockback");
+			if (knockBack >= 0) {
+				AddVelocity(dmgDir * knockBack);
+			}
+
+			Death(inflictor, attacker, (int)damagePoints, dmgDir, damageDecl.GetInteger("hitbody"));
 		} else if (damagePoints > 0) {
-			Pain(inflictor, attacker, (int)damagePoints, dmgDir, 0i);
+			Pain(inflictor, attacker, (int)damagePoints, dmgDir, damageDecl.GetInteger("hitbody"));
 		}
 	}
 }
@@ -565,54 +548,6 @@ NSSurfacePropEntity::BreakModel(int damage, vector dir, int location)
 		combat.RadiusDamage(origin, flExplodeRad, 0i, (int)flExplodeMag, this, "");
 	}
 }
-
-void
-NSSurfacePropEntity::SetSurfaceData(string type)
-{
-	m_strSurfData = type;
-	_SurfaceDataFinish();
-}
-
-void
-NSSurfacePropEntity::SetPropData(string type)
-{
-	m_strPropData = type;
-	_PropDataFinish();
-}
-
-void
-NSSurfacePropEntity::_SurfaceDataFinish(void)
-{
-	SurfData_SetStage(m_strSurfData);
-
-	if (STRING_SET(m_strSurfData)) {
-		m_iMaterial = SurfData_Finish();
-	} else {
-		m_iMaterial = -1i;
-	}
-}
-
-void
-NSSurfacePropEntity::_PropDataFinish(void)
-{
-	PropData_SetStage(m_strPropData);
-
-	if (STRING_SET(m_strPropData)) {
-		m_iPropData = PropData_Finish();
-	} else {
-		m_iPropData = -1i;
-	}
-
-	/* no surfdata? maybe the propdata has got one set. */
-	if (m_iMaterial == -1i && m_iPropData != -1i) {
-		string propDataSurf = GetPropData(PROPINFO_SURFACEPROP);
-
-		if (STRING_SET(propDataSurf)) {
-			SetSurfaceData(propDataSurf);
-		}
-	}
-}
-
 float
 NSSurfacePropEntity::TimeSinceDeath(void)
 {
@@ -841,15 +776,84 @@ NSSurfacePropEntity_ReadEntity(bool isNew)
 #endif
 
 void
+NSSurfacePropEntity::SetSurfaceData(string type)
+{
+	m_strSurfData = type;
+	_SurfaceDataFinish();
+}
+
+void
+NSSurfacePropEntity::SetPropData(string type)
+{
+	m_strPropData = type;
+	_PropDataFinish();
+}
+
+bool
+NSSurfacePropEntity::HasPropData(void)
+{
+	return (m_iPropData != -1) ? true : false;
+}
+
+__variant
+NSSurfacePropEntity::GetPropData(int type)
+{
+	return Prop_GetInfo(m_iPropData, type);
+}
+
+bool
+NSSurfacePropEntity::HasSurfaceData(void)
+{
+	return (m_iMaterial != -1) ? true : false;
+}
+
+__variant
+NSSurfacePropEntity::GetSurfaceData(int type)
+{
+	return SurfData_GetInfo(m_iMaterial, type);
+}
+
+void
+NSSurfacePropEntity::_SurfaceDataFinish(void)
+{
+	SurfData_SetStage(m_strSurfData);
+
+	if (STRING_SET(m_strSurfData)) {
+		m_iMaterial = SurfData_Finish();
+	} else {
+		m_iMaterial = -1i;
+	}
+}
+
+void
+NSSurfacePropEntity::_PropDataFinish(void)
+{
+	PropData_SetStage(m_strPropData);
+
+	if (STRING_SET(m_strPropData)) {
+		m_iPropData = PropData_Finish();
+	} else {
+		m_iPropData = -1i;
+	}
+
+	/* no surfdata? maybe the propdata has got one set. */
+	if (m_iMaterial == -1i && m_iPropData != -1i) {
+		string propDataSurf = GetPropData(PROPINFO_SURFACEPROP);
+
+		if (STRING_SET(propDataSurf)) {
+			SetSurfaceData(propDataSurf);
+		}
+	}
+}
+
+void
 NSSurfacePropEntity::SetModel(string newModel)
 {
 	NSRenderableEntity::SetModel(newModel);
 
-#ifdef SERVER
 	if (STRING_SET(model) && HasPropData() == false) {
 		m_iPropData = PropData_ForModel(model);
 		m_strPropData = model;
 		_PropDataFinish();
 	}
-#endif
 }

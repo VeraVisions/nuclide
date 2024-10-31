@@ -26,5 +26,6 @@ public:
 
 private:
 	string m_strImpactDecal;
+	float m_flPlaceTime;
 };
 #endif

@@ -122,6 +122,15 @@ typedef struct
 	string GetInventory(entity);
 	int GetReserveAmmo(entity, int);
 	bool MaxAmmo(entity, int);
+	int TotalActors(void);
+	int TotalActorsOnTeam(int);
+
+	float AimAtPos(entity, vector);
+	float MoveToPos(entity, vector);
+	bool CanSee(entity, entity);
+	bool CanShoot(entity, vector, vector);
+	bool ClearEnemy();
+	entity FindCoverNode(entity);
 } actorAPI_t;
 var actorAPI_t actor;
 
@@ -206,6 +215,9 @@ _server_main(void)
 	actor.GetInventory = linkToServerProgs("SVPF_actor_GetInventory");
 	actor.GetReserveAmmo = linkToServerProgs("SVPF_actor_GetReserveAmmo");
 	actor.MaxAmmo = linkToServerProgs("SVPF_actor_MaxAmmo");
+	actor.TotalActors = linkToServerProgs("SVPF_actor_TotalActors");
+	actor.TotalActorsOnTeam = linkToServerProgs("SVPF_actor_TotalActorsOnTeam");
+	actor.MoveToPos = linkToServerProgs("SVPF_actor_MoveToPos");
 
 	exists.InMap = linkToServerProgs("SVPF_exists_InMap");
 	exists.InVFS = linkToServerProgs("SVPF_exists_InVFS");

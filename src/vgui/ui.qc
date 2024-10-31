@@ -236,8 +236,10 @@ VGUIWidget::SizeChanged(vector vecOld, vector vecNew)
 void
 VGUIWidget::SetPos(vector vecNewPos)
 {
+	vector vecOld = m_vecOrigin;
 	m_vecOrigin[0] = bound(0, vecNewPos[0], 9999.0);
 	m_vecOrigin[1] = bound(0, vecNewPos[1], 9999.0);
+	PositionChanged(vecOld, m_vecOrigin);
 }
 
 vector
@@ -262,10 +264,8 @@ void
 VGUIWidget::SetSize(vector vecNewSize)
 {
 	vector vecOld = m_vecSize;
-	m_vecSize = vecNewSize;
 	m_vecSize[0] = bound(m_vecMinSize[0], vecNewSize[0], m_vecMaxSize[0]);
 	m_vecSize[1] = bound(m_vecMinSize[1], vecNewSize[1], m_vecMaxSize[1]);
-
 	SizeChanged(vecOld, m_vecSize);
 }
 
