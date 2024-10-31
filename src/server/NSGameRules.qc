@@ -129,6 +129,14 @@ NSGameRules::PlayerKill(NSClientPlayer pl)
 	remove(damageDecl);
 }
 void
+NSGameRules::NPCDeath(NSActor npc, NSActor attacker, NSActor inflictor)
+{
+	if (RuleC_CallDamage(m_ruleProgs, npc, attacker, inflictor, "", "CodeCallback_NPCKilled")) {
+		return;
+	}
+}
+
+void
 NSGameRules::PlayerDeath(NSClientPlayer pl, NSActor attacker, NSDict damageDecl)
 {
 	if (RuleC_CallDamage(m_ruleProgs, pl, attacker, attacker, "", "CodeCallback_PlayerKilled")) {

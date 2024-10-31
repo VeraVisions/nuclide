@@ -66,6 +66,8 @@ public:
 	virtual void PlayerPain(NSClientPlayer, NSActor, NSDict);
 	/** Overridable: Called to check if a NSClientPlayer can attack. */
 	virtual bool PlayerCanAttack(NSClientPlayer);
+	/** Overridable:: Called when an NPC gets killed. */
+	virtual void NPCDeath(NSActor, NSActor, NSActor);
 
 	/** Overridable: called when a NSClientPlayer requests a respawn.
 	In a multiplayer game, it'll put you back into the game as a player.
