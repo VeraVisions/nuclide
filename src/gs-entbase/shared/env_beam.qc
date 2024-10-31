@@ -94,6 +94,7 @@ public:
 	nonvirtual void LaunchBeam(void);
 	nonvirtual void EndBeam(void);
 	nonvirtual void StopBeam(void);
+	nonvirtual void FindLocation(void);
 #else
 	virtual float predraw(void);
 	virtual void ReceiveEntity(float,float);
@@ -119,6 +120,9 @@ private:
 	float m_flLifeTime;
 	float m_flStrikeTime;
 	float m_iDamage;
+	vector m_vecBeamDir;
+	vector m_radiusScale;
+	vector m_chosenDest;
 #endif
 };
 
@@ -136,6 +140,8 @@ env_beam::env_beam(void)
 
 	m_strTexture = __NULL__;
 	m_flBeamWidth = 0.0f;
+	m_vecBeamDir = g_vec_null;
+	m_radiusScale = [1,1,1];
 #endif
 }
 
@@ -151,12 +157,14 @@ env_beam::Respawn(void)
 	/* force us to precache the sprite model... and get a modelindex back */
 	m_iSpriteID = getmodelindex(m_strTexture, false);
 
-	if (HasSpawnFlags(BEAM_STARTON))
-		Trigger(this, TRIG_ON);
-
 	/* keep it simple */
 	m_iBeamFlags = spawnflags | BEAM_SHADEEND;
 	pvsflags = PVSF_IGNOREPVS;
+
+	FindLocation();
+
+	if (HasSpawnFlags(BEAM_STARTON))
+		Trigger(this, TRIG_ON);
 }
 
 void
@@ -171,6 +179,9 @@ env_beam::SpawnKey(string strKey, string strValue)
 		break;
 	case "Radius":
 		m_flRadius = ReadFloat(strValue);
+		break;
+	case "RadiusScale":
+		m_radiusScale = ReadVector(strValue);
 		break;
 	case "life":
 		m_flLifeTime = ReadFloat(strValue);
@@ -190,8 +201,28 @@ env_beam::SpawnKey(string strKey, string strValue)
 	case "NoiseAmplitude":
 		m_flAmplitude = ReadFloat(strValue);
 		break;
+	case "BeamDir":
+		m_vecBeamDir = ReadVector(strValue);
+		break;
 	default:
-		super::SpawnKey(strValue, strKey);
+		super::SpawnKey(strKey, strValue);
+	}
+}
+
+void
+env_beam::FindLocation(void)
+{
+	for (int i = 0; i < 16; i++) {
+		vector destVec = (anglesToForward(random(-1,1) * 360) * m_flRadius) * m_radiusScale[0];
+		destVec += (anglesToRight(random(-1,1) * 360) * m_flRadius) * m_radiusScale[1];
+		destVec += (anglesToUp(random(-1,1) * 360) * m_flRadius) * m_radiusScale[2];
+
+		traceline(origin, origin + destVec, MOVE_NORMAL, this);
+
+		if (trace_fraction < 1.0f) {
+			m_chosenDest = trace_endpos;
+			break;
+		}
 	}
 }
 
@@ -206,12 +237,12 @@ env_beam::CastLaser(void)
 	if (trace_ent.takedamage == DAMAGE_NO)
 		return;
 
-	NSDict damageDecl = spawn(NSDict);
-	vector center = WorldSpaceCenter();
+	NSSurfacePropEntity targetEnt = (NSSurfacePropEntity)trace_ent;
 
+	NSDict damageDecl = spawn(NSDict);
 	damageDecl.AddKey("damage", itos(m_iDamage));
 	damageDecl.AddKey("type", "electro");
-	combat.Damage(trace_ent, this, trace_ent, damageDecl.GetDeclBody(), center, g_vec_null, trace_ent.origin);
+	targetEnt.Damage(this, this, damageDecl, 1.0, g_vec_null, trace_ent.origin);
 	remove(damageDecl);
 }
 
@@ -238,6 +269,12 @@ env_beam::LaunchBeam(void)
 	/* if we have a specific life time set */
 	lifetime = m_flLifeTime;
 
+	string placeDecal = GetSpawnString("decal_detonate");
+
+	if (STRING_SET(placeDecal)) {
+		//DecalGroups_Place(placeDecal, m_chosenDest);
+	}
+
 	if (HasSpawnFlags(BEAM_RANDOMSTRIKE))
 		lifetime *= random();
 
@@ -250,8 +287,11 @@ env_beam::EndBeam(void)
 {
 	float striketime;
 
-	m_iActive = 0i; /* beam is now active */
+	m_iActive = 0i; /* beam is now inactive */
 	striketime = m_flStrikeTime;
+
+	if (striketime <= 0.0f)
+		return;
 
 	if (HasSpawnFlags(BEAM_RANDOMSTRIKE))
 		striketime *= random();
@@ -300,23 +340,28 @@ env_beam::EvaluateEntity(void)
 
 	/* only bother updating our start/end pos if we're running */
 	if (m_iActive) {
+
 		m_vecStartPos = origin;
 		m_vecEndPos = origin;
 
 		/* Get updated positions */
-		if (m_strStartEnt) {
-			eFind = find(world, ::targetname, m_strStartEnt);
+		if (!GetParent()) {
+			if (STRING_SET(m_strStartEnt)) {
+				eFind = find(world, ::targetname, m_strStartEnt);
 
-			if (eFind) {
-				m_vecStartPos = eFind.origin;
+				if (eFind) {
+					m_vecStartPos = eFind.origin;
+				} else {
+					m_vecStartPos = NearestWallPointForRadius(m_flRadius);
+				}
 			} else {
 				m_vecStartPos = NearestWallPointForRadius(m_flRadius);
 			}
 		} else {
-			m_vecStartPos = NearestWallPointForRadius(m_flRadius);
+			m_vecStartPos = gettaginfo(GetParent(), tag_index);
 		}
 
-		if (m_strEndEnt) {
+		if (STRING_SET(m_strEndEnt)) {
 			eFind = find(world, ::targetname, m_strEndEnt);
 
 			if (eFind) {
@@ -325,7 +370,18 @@ env_beam::EvaluateEntity(void)
 				m_vecEndPos = NearestWallPointForRadius(m_flRadius);
 			}
 		} else {
-			m_vecEndPos = NearestWallPointForRadius(m_flRadius);
+			if (m_vecBeamDir != g_vec_null) {
+				m_vecEndPos = anglesToForward(GetAngles()) * m_vecBeamDir[0];
+				m_vecEndPos += anglesToRight(GetAngles()) * m_vecBeamDir[1];
+				m_vecEndPos += anglesToUp(GetAngles()) * m_vecBeamDir[2];
+
+				traceline(m_vecStartPos, m_vecStartPos + m_vecEndPos, MOVE_NORMAL, this);
+				m_vecEndPos = trace_endpos;
+			} else {
+				FindLocation();
+				m_vecEndPos = m_chosenDest;
+				//m_vecEndPos = NearestWallPointForRadius(m_flRadius);
+			}
 		}
 	}
 
@@ -348,6 +404,7 @@ env_beam::EvaluateEntity(void)
 float
 env_beam::SendEntity(entity ePEnt, float flChanged)
 {
+	float scaler = m_flRenderAmt / 255;
 	WriteByte(MSG_ENTITY, ENT_BEAM);
 	WriteFloat(MSG_ENTITY, flChanged);
 
@@ -360,9 +417,9 @@ env_beam::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_COORD(m_vecEndPos[2], BEAM_CHANGED_ENDPOS_Z)
 	SENDENTITY_BYTE(m_iActive, BEAM_CHANGED_ACTIVE)
 	SENDENTITY_BYTE(m_iBeamFlags, BEAM_CHANGED_FLAGS)
-	SENDENTITY_BYTE(m_vecRenderColor[0], BEAM_CHANGED_COLOR)
-	SENDENTITY_BYTE(m_vecRenderColor[1], BEAM_CHANGED_COLOR)
-	SENDENTITY_BYTE(m_vecRenderColor[2], BEAM_CHANGED_COLOR)
+	SENDENTITY_BYTE(m_vecRenderColor[0] * scaler, BEAM_CHANGED_COLOR)
+	SENDENTITY_BYTE(m_vecRenderColor[1] * scaler, BEAM_CHANGED_COLOR)
+	SENDENTITY_BYTE(m_vecRenderColor[2] * scaler, BEAM_CHANGED_COLOR)
 	SENDENTITY_BYTE(m_flBeamWidth, BEAM_CHANGED_WIDTH)
 	SENDENTITY_BYTE(m_flAmplitude, BEAM_CHANGED_AMPLITUDE)
 
