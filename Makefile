@@ -162,7 +162,7 @@ clean-game:
 
 clean-engine:
 	cd ThirdParty/fteqw/engine && $(MAKE) clean
-	-rm $(NAME)_x64$(GAME_EXT) $(NAME)_x86$(GAME_EXT) $(NAME)DS_x64$(GAME_EXT) $(NAME)DS_x86$(GAME_EXT) fteqw fteqw-sv
+	-rm $(NAME)_x64$(GAME_EXT) $(NAME)_x86$(GAME_EXT) $(NAME)DS_x64$(GAME_EXT) $(NAME)DS_x86$(GAME_EXT)
 
 clean-fteqw:
 	cd ThirdParty/fteqw/engine && $(MAKE) clean
