@@ -313,6 +313,9 @@ void
 NSTrigger::Input(entity eAct, string strInput, string strData)
 {
 	switch (strInput) {
+	case "UseTargets":
+		UseTargets(eAct, TRIG_TOGGLE, 0.0);
+		break;
 	case "Trigger":
 		Trigger(eAct, TRIG_TOGGLE);
 		break;
