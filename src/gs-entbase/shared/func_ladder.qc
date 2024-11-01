@@ -40,11 +40,14 @@ public:
 	virtual void Trigger(entity, triggermode_t);
 #endif
 
+private:
+	entity m_collisionEntity;
 };
 
 void
 func_ladder::func_ladder(void)
 {
+	m_collisionEntity = __NULL__;
 }
 
 #ifdef SERVER
@@ -69,7 +72,14 @@ func_ladder::Respawn(void)
 {
 	super::Respawn();
 
-	/* func_ladder specifics */
+	/* func_ladder volumes are solid. CONTENT_LADDER volumes usually aren't. */
+	if (!m_collisionEntity && STRING_SET(model)) {
+		m_collisionEntity = spawn();
+		m_collisionEntity.solid = SOLID_BSP;
+		setmodel(m_collisionEntity, model);
+		setorigin(m_collisionEntity, origin);
+	}
+
 	SetMovetype(MOVETYPE_NONE);
 	SetFrame(0);
 	Hide();
