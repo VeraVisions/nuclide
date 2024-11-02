@@ -38,7 +38,7 @@ MapTweaks_Init(void)
 {
 	filestream tweakFile;
 	string tempString;
-	string newCvar, newInfo, newItem;
+	string newCvar, newInfo, newItem, newName;
 	int atTweak = 0i;
 
 	InitStart();
@@ -68,6 +68,7 @@ MapTweaks_Init(void)
 		int segments = tokenize_console(tempString);
 		if (segments == 1) {
 			if (argv(0) == "}") {
+				g_mapTweakTable[atTweak].name = newName;
 				g_mapTweakTable[atTweak].cvarCheck = newCvar;
 				g_mapTweakTable[atTweak].serverinfoCheck = newInfo;
 				g_mapTweakTable[atTweak].itemTable = newItem;
@@ -75,6 +76,8 @@ MapTweaks_Init(void)
 				atTweak++;
 			} else if (argv(0) == "{") {
 				/* ??? */
+			} else {
+				newName = argv(0);
 			}
 		} else if (segments == 4) {
 			switch (argv(0)) {
@@ -164,7 +167,7 @@ static bool
 MapTweak_FinishSpawn(entity targetEntity, string newClassname)
 {
 	/* found the edef alternative. */
-	if (ents.ChangeToClass((NSEntity)targetEntity, newClassname) != __NULL__) {
+	if (EntityDef_SwitchClass((NSEntity)targetEntity, newClassname) != __NULL__) {
 		return (true);
 	}
 
@@ -179,11 +182,9 @@ MapTweak_EntitySpawn(entity targetEntity)
 	if (g_mapTweakCount <= 0) {
 		return (false);
 	}
-	
-	for (int i = 0; i < g_mapTweakCount; i++) {
-		int segments = tokenize(g_mapTweakTable[i].itemTable);
 
-		for (int y = 0; y < segments; y += 2) {
+	for (int i = 0; i < g_mapTweakCount; i++) {
+		for (int y = 0; y < tokenize(g_mapTweakTable[i].itemTable); y += 2) {
 			string newEnt, oldEnt;
 
 			oldEnt = argv(y);
@@ -200,4 +201,23 @@ MapTweak_EntitySpawn(entity targetEntity)
 	}
 
 	return (false);
+}
+
+void
+MapTweak_ListActive(void)
+{
+	for (int i = 0; i < g_mapTweakCount; i++) {
+		if (MapTweak_Check(i) == true) {
+			printf("%i %S:\n", i, g_mapTweakTable[i].name);
+
+			for (int y = 0; y < tokenize(g_mapTweakTable[i].itemTable); y += 2) {
+				string newEnt, oldEnt;
+
+				oldEnt = argv(y);
+				newEnt = argv(y + 1);
+
+				printf("\t%s > %s\n", oldEnt, newEnt);
+			}
+		}
+	}
 }

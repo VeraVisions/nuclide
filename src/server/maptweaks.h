@@ -61,6 +61,7 @@ At this time, `when-cvar` and `when-serverinfo` only do comparisons on numbers. 
 /** Data holding MapTweak entries. */
 typedef struct
 {
+	string name;
 	string cvarCheck;
 	string serverinfoCheck;
 	string itemTable;
@@ -71,5 +72,7 @@ void MapTweaks_Init(void);
 
 /** Will take an existing entity, and apply the currently valid map tweaks to it. */
 bool MapTweak_EntitySpawn(entity);
+
+void MapTweak_ListActive(void);
 
 /** @} */ // end of maptweaks

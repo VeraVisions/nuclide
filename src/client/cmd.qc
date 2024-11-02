@@ -472,6 +472,7 @@ Cmd_Parse(string sCMD)
 	case "trigger":
 	case "input":
 	case "listBotProfiles":
+	case "listMapTweaks":
 	case "listTargets":
 	case "teleport":
 	case "teleportToClass":
@@ -565,6 +566,7 @@ Cmd_Init(void)
 	registercommand("respawnEntities");
 	registercommand("spawnDef");
 	registercommand("listBotProfiles");
+	registercommand("listMapTweaks");
 
 	/* nav editing */
 	registercommand("nodeAdd");

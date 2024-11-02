@@ -264,6 +264,9 @@ Cmd_ParseServerCommand(void)
 	case "listSoundDef":
 		Sound_DebugList();
 		break;
+	case "listMapTweaks":
+		MapTweak_ListActive();
+		break;
 	case "traceMaterial":
 		CMD_TraceMaterial();
 		break;

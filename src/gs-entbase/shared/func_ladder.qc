@@ -78,6 +78,7 @@ func_ladder::Respawn(void)
 		m_collisionEntity.solid = SOLID_BSP;
 		setmodel(m_collisionEntity, model);
 		setorigin(m_collisionEntity, origin);
+		m_collisionEntity.effects = EF_NODRAW;
 	}
 
 	SetMovetype(MOVETYPE_NONE);
