@@ -103,6 +103,7 @@ void
 NSAttack::Launch(vector startPos, vector launchDir, float fuseOffset, float powerMultiplier, float dmgMultiplier)
 {
 	bool willPlant = GetSpawnBool("plant");
+	bool willDrop = GetSpawnBool("drop");
 
 	if (willPlant) {
 		string classToPlant = GetSpawnString("def_plant");
@@ -115,6 +116,12 @@ NSAttack::Launch(vector startPos, vector launchDir, float fuseOffset, float powe
 		traceline(startPos, startPos + forwardPos, MOVE_NORMAL, m_weaponOwner);
 		NSEntity plantedEntity = spawnClass(classToPlant, trace_endpos + (trace_plane_normal * plantOffset));
 		plantedEntity.SetAngles(vectoangles(trace_plane_normal));
+	} else if (willDrop) {
+		string classToDrop = GetSpawnString("def_drop");
+		float dropDistance = GetSpawnFloat("dropDistance");
+		NSEntity plantedEntity = spawnClass(classToDrop, startPos + (anglesToForward(launchDir) * dropDistance));
+		plantedEntity.SetAngles([0, launchDir[1], 0]);
+		plantedEntity.Spawn();
 	}
 
 	/* free up the entity slot */
