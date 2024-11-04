@@ -272,13 +272,20 @@ Entities_ParseLump(void)
 void
 Entities_RendererRestarted(void)
 {
-	int c = 0;
+	int c = 0i;
+	int f = 0i;
 
 	for (entity b = world; (b = findfloat(b, ::isCSQC, TRUE));) {
 		NSEntity pf = (NSEntity) b;
-		pf.RendererRestarted();
-		c++;
+
+		if (pf.vv_flags & VFL_VIDREMOVE) {
+			pf.Destroy();
+			f++;
+		} else {
+			pf.RendererRestarted();
+			c++;
+		}
 	}
 
-	NSLog("...resource reload called on %i entities", c);
+	NSLog("...resource reload called on %i entities, flushed %i", c, f);
 }

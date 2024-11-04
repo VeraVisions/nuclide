@@ -47,3 +47,4 @@
 #define VFL_PRIMEDFUSE			(1<<11) /**< Entity is not allowed to fire. */
 #define VFL_REDRAW				(1<<12) /**< Entity is not allowed to fire. */
 #define VFL_FIRING				(1<<13) /**< Entity is firing. */
+#define VFL_VIDREMOVE			(1<<14) /**< Entity will be flushed upon vid_reload. */
