@@ -17,6 +17,13 @@
 
 void EFX_UpdateListener(NSView);
 
+void
+init(float prevprogs)
+{
+	_client_main();
+	_shared_main();
+}
+
 /** Updates our seat pointers. 
 Call this when you need to verify we're
 getting the current player's info and not someone elses on the same
