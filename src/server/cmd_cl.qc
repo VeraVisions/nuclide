@@ -49,8 +49,17 @@ Cmd_ParseClientCommand(NSClient sender, string cmd, int commandArguments)
 		PutClientInServer();
 		break;
 	case "setpos":
+		printf("%i %S\n", commandArguments, cmd);
 		if (cvar("sv_cheats") == 1) {
-			setorigin(sender, stov(argv(1)));
+			if (commandArguments == 2) { /* setpos "0 0 0" */
+				setorigin(sender, stov(argv(1)));
+			} else if (commandArguments == 3) {  /* setpos "0 0 0" "0 0 0" */
+				setorigin(sender, stov(argv(1)));
+			} else if (commandArguments == 4) { /* setpos 0 0 0 */
+				setorigin(sender, [stof(argv(1)), stof(argv(2)), stof(argv(3))]);
+			} else if (commandArguments == 7) { /* setpos 0 0 0 0 0 0 */
+				setorigin(sender, [stof(argv(1)), stof(argv(2)), stof(argv(3))]);
+			}
 		}
 
 		break;
@@ -60,8 +69,7 @@ Cmd_ParseClientCommand(NSClient sender, string cmd, int commandArguments)
 		float timeleft;
 		timeleft = cvar("timelimit") - (time / 60);
 		timestring = Util_TimeToString(timeleft);
-		msg = sprintf("we have %s minutes remaining", timestring);
-		bprint(PRINT_CHAT, msg);
+		bprint(PRINT_CHAT, sprintf("we have %s minutes remaining", timestring));
 		break;
 	case "listInventory":
 		NSActor_ListInventory((NSActor)self);

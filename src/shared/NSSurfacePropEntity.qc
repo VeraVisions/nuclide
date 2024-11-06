@@ -19,9 +19,10 @@ NSSurfacePropEntity::NSSurfacePropEntity(void)
 {
 	m_flBurnNext = 0.0f;
 #ifdef SERVER
+	max_health = 100;
+	max_armor = 100;
 	m_iPropData = -1i;
 	m_iMaterial = -1i;
-	max_health = 100;
 	m_strOnBreak = __NULL__;
 	m_eBurner= __NULL__;
 	m_iBurnWeapon = 0i;
@@ -255,7 +256,7 @@ NSSurfacePropEntity::Damage(entity inflictor, entity attacker, NSDict damageDecl
 		health = rint(health - damagePoints);
 
 		if (health <= 0) {
-			/* apply knockback */
+			/* apply knockback, but only on death */
 			float knockBack = damageDecl.GetFloat("knockback");
 			if (knockBack >= 0) {
 				AddVelocity(dmgDir * knockBack);

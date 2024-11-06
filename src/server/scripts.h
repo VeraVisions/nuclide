@@ -19,17 +19,3 @@ void MapC_Init(void);
 void MapC_CallMainFunction(void);
 
 void MapC_CallNamedFunction(entity, string);
-
-bool RuleC_CallFunc(float, entity, string);
-bool RuleC_CallFrame(float, string);
-
-bool RuleC_CallDamage(float, entity, entity, entity, string, string);
-
-bool RuleC_CallRequestSpawn(float, entity, string);
-bool RuleC_CallRequestTeam(float, entity, int, string);
-
-bool RuleC_CallString(float, entity, string, string);
-
-bool RuleC_CallFloat(float, entity, float, string);
-int RuleC_CallMaxItemsPerSlot(float, int, string);
-void RuleC_CallInput(float, entity, string, string);

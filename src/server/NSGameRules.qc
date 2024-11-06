@@ -18,10 +18,24 @@ var bool autocvar_sv_friendlyFire = false;
 var int autocvar_mp_td_dmgToKick = 300i;
 var int autocvar_mp_td_dmgToWarn = 200i;
 
+#warning NSGameRule progs need to have their functions cached for speed reasons
+
 void
 NSGameRules::NSGameRules(void)
 {
-	forceinfokey(world, "teamplay", "0");
+	forceinfokey(world, "teams", "");
+	forceinfokey(world, "teamplay", "");
+	forceinfokey(world, "coop", "");
+
+	/* clean up... */
+	for (int teamID = 1; teamID < 1000; teamID++) {
+		forceinfokey(world, sprintf("team_%i", teamID), "");
+		forceinfokey(world, sprintf("teamscore_%i", teamID), "");
+		forceinfokey(world, sprintf("teamcolor_%i", teamID), "");
+		forceinfokey(world, sprintf("teamclosed_%i", teamID), "");
+		forceinfokey(world, sprintf("teamspawn_%i", teamID), "");
+	}
+
 	forceinfokey(world, sprintf("teamspawn_%d", TEAM_CONNECTING), "");
 	forceinfokey(world, sprintf("teamspawn_%d", TEAM_UNASSIGNED), "info_player_start");
 	forceinfokey(world, sprintf("teamspawn_%d", TEAM_SPECTATOR), "info_spectator_start");
@@ -55,7 +69,6 @@ NSGameRules::Restore(string strKey, string strValue)
 void
 NSGameRules::Input(entity eAct, string strInput, string strData)
 {
-	RuleC_CallInput(m_ruleProgs, eAct, strInput, strData);
 }
 
 void
@@ -69,21 +82,13 @@ NSGameRules::RestoreComplete(void)
 void
 NSGameRules::InitPostEnts(void)
 {
-	RuleC_CallFunc(m_ruleProgs, world, "CodeCallback_StartGameType");
 }
 
 /* logic */
 void
 NSGameRules::FrameStart(void)
 {
-	//print("StartFrame!\n");
 
-	/* hack */
-	if (time < 2.5f) {
-		return;
-	}
-
-	RuleC_CallFrame(m_ruleProgs, "CodeCallback_FrameStart");
 }
 bool
 NSGameRules::ConsoleCommand(NSClientPlayer pl, string cmd)
@@ -93,13 +98,11 @@ NSGameRules::ConsoleCommand(NSClientPlayer pl, string cmd)
 bool
 NSGameRules::ClientCommand(NSClient pl, string cmd)
 {
-	return RuleC_CallString(m_ruleProgs, pl, cmd, "CodeCallback_ClientCommand");
 }
 
 bool
 NSGameRules::ImpulseCommand(NSClient pl, float num)
 {
-	return RuleC_CallFloat(m_ruleProgs, pl, num, "CodeCallback_ImpulseCommand");
 }
 
 void
@@ -108,14 +111,11 @@ NSGameRules::PlayerConnect(NSClientPlayer pl)
 	if (Plugin_PlayerConnect(pl) == false) {
 		bprint(PRINT_HIGH, sprintf("%s^d connected.\n", pl.netname));
 	}
-
-	RuleC_CallFunc(m_ruleProgs, pl, "CodeCallback_PlayerConnect");
 }
 void
 NSGameRules::PlayerDisconnect(NSClientPlayer pl)
 {
 	bprint(PRINT_HIGH, sprintf("%s^d disconnected.\n", pl.netname));
-	RuleC_CallFunc(m_ruleProgs, pl, "CodeCallback_PlayerDisconnect");
 }
 
 void
@@ -131,18 +131,11 @@ NSGameRules::PlayerKill(NSClientPlayer pl)
 void
 NSGameRules::NPCDeath(NSActor npc, NSActor attacker, NSActor inflictor)
 {
-	if (RuleC_CallDamage(m_ruleProgs, npc, attacker, inflictor, "", "CodeCallback_NPCKilled")) {
-		return;
-	}
 }
 
 void
 NSGameRules::PlayerDeath(NSClientPlayer pl, NSActor attacker, NSDict damageDecl)
 {
-	if (RuleC_CallDamage(m_ruleProgs, pl, attacker, attacker, "", "CodeCallback_PlayerKilled")) {
-		return;
-	}
-
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_OBITUARY);
 	WriteString(MSG_MULTICAST, (attacker.netname) ? attacker.netname : attacker.classname);
@@ -169,18 +162,12 @@ NSGameRules::PlayerDeath(NSClientPlayer pl, NSActor attacker, NSDict damageDecl)
 void
 NSGameRules::PlayerPain(NSClientPlayer pl, NSActor attacker, NSDict damageDecl)
 {
-	if (RuleC_CallDamage(m_ruleProgs, pl, attacker, attacker, "", "CodeCallback_PlayerDamage")) {
-		return;
-	}
-
 	/* fallback code here, or rest implemented by sub-class */
 }
 
 void
 NSGameRules::PlayerSpawn(NSClientPlayer pl)
 {
-	RuleC_CallFunc(m_ruleProgs, pl, "CodeCallback_PlayerSpawn");
-
 	/* implemented by sub-class */
 }
 void
@@ -226,10 +213,6 @@ NSGameRules::SpectatorThink(NSClientSpectator pl)
 int
 NSGameRules::MaxItemPerSlot(int slot)
 {
-	if (m_ruleProgs) {
-		return RuleC_CallMaxItemsPerSlot(m_ruleProgs, slot, "CodeCallback_MaxItemPerSlot");
-	}
-
 	return (-1);
 }
 
@@ -338,32 +321,12 @@ NSGameRules::MonstersSpawn(void)
 bool
 NSGameRules::IsTeamplay(void)
 {
-	return (false);
+	return (serverkeyfloat("teams") > 0);
 }
 bool
 NSGameRules::IsMultiplayer(void)
 {
 	return (false);
-}
-
-void
-NSGameRules::DamageApply(entity t, entity c, float dmg, int w, damageType_t type)
-{
-	NSError("Deprecated!");
-}
-
-/* checks if we can hit an entity at 5 of the same spots */
-bool
-NSGameRules::DamageCheckTrace(entity t, vector vecHitPos)
-{
-	NSError("Deprecated!");
-	return (false);
-}
-
-void
-NSGameRules::DamageRadius(vector org, entity attacker, float dmg, float r, bool checkCollision, int w)
-{
-	NSError("Deprecated!");
 }
 
 void
@@ -393,13 +356,11 @@ NSGameRules::PlayerCanAttack(NSClientPlayer bp)
 bool
 NSGameRules::PlayerRequestRespawn(NSClientPlayer pl)
 {
-	return RuleC_CallRequestSpawn(m_ruleProgs, pl, "CodeCallback_PlayerRequestRespawn");
 }
 
 bool
 NSGameRules::PlayerRequestTeam(NSClientPlayer pl, int teamNum)
 {
-	return RuleC_CallRequestTeam(m_ruleProgs, pl, teamNum, "CodeCallback_CallRequestTeam");
 }
 
 void
@@ -453,6 +414,12 @@ NSGameRules::ChatMessageTeam(NSClient cl, string strMessage)
 string
 NSGameRules::Title(void)
 {
+	string gameType = cvars.GetString("g_gametype");
+
+	if (STRING_SET(gameType)) {
+		return gameType;
+	}
+
 	return "Default";
 }
 
@@ -477,6 +444,24 @@ NSGameRules::InitFromProgs(string pathToProgs)
 		if (mainFunction) {
 			externset(newRule.m_ruleProgs, this, "self");
 			thread(mainFunction())
+
+			/* map progs functions to class methods */
+			RULEMAP(newRule, ClientCommand, "CodeCallback_ClientCommand")
+			RULEMAP(newRule, ConsoleCommand, "CodeCallback_ConsoleCommand")
+			RULEMAP(newRule, FrameStart, "CodeCallback_FrameStart")
+			RULEMAP(newRule, ImpulseCommand, "CodeCallback_ImpulseCommand")
+			RULEMAP(newRule, InitPostEnts, "CodeCallback_StartGameType")
+			RULEMAP(newRule, Input, "CodeCallback_Input")
+			RULEMAP(newRule, NPCDeath, "CodeCallback_NPCKilled")
+			RULEMAP(newRule, PlayerCanAttack, "CodeCallback_PlayerCanAttack")
+			RULEMAP(newRule, PlayerConnect, "CodeCallback_PlayerConnect")
+			RULEMAP(newRule, PlayerDeath, "CodeCallback_PlayerKilled")
+			RULEMAP(newRule, PlayerDisconnect, "CodeCallback_PlayerDisconnect")
+			RULEMAP(newRule, PlayerPain, "CodeCallback_PlayerDamage")
+			RULEMAP(newRule, PlayerRequestRespawn, "CodeCallback_PlayerRequestRespawn")
+			RULEMAP(newRule, PlayerRequestTeam, "CodeCallback_CallRequestTeam")
+			RULEMAP(newRule, PlayerSpawn, "CodeCallback_PlayerSpawn")
+			RULEMAP(newRule, Title, "CodeCallback_Title")
 		} else {
 			NSError("%S does not have a main function.", pathToProgs);
 		}

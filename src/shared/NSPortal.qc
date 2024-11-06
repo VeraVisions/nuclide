@@ -32,13 +32,10 @@ NSPortal::NSPortal(void)
 	m_brushNum = -1;
 	m_bEnabled = false;
 	isPortal = true;
-
-#ifdef CLIENT
 	m_vecTargetPos = g_vec_null;
 	m_vecTargetN = g_vec_null;
 	m_vecTargetS = g_vec_null;
 	m_vecTargetT = g_vec_null;
-#endif
 
 #ifdef SERVER
 
@@ -171,7 +168,8 @@ NSPortal::PortalLinkTo(NSPortal target, bool openPortal)
 	SendFlags = -1;
 	_PortalUpdated();
 
-	if (m_ePortalTarget) {
+	if (m_ePortalTarget)
+ {
 		m_ePortalTarget.m_ePortalTarget = this;
 		m_ePortalTarget.m_bEnabled = openPortal;
 		m_ePortalTarget.SendFlags = -1;
@@ -208,7 +206,8 @@ void
 NSPortal::_PortalUpdated(void)
 {
 	/* the displayed surface must be in a known position.
-	we're not going to compensate for the model here, because I'm too lazy. */
+	we're not going to compensate for the model here, because I'm too lazy.
+ */
 	vector newAngles = angles;
 	//newAngles[0] * -1;
 	makevectors(newAngles);
@@ -218,7 +217,8 @@ NSPortal::_PortalUpdated(void)
 	m_vecPortalT = v_up;
 	m_vecPortalPos = origin;
 
-	/* expand the size of the object along the plane, and set up a portal region. */
+	/* expand the size of the object along the plane, and set up a portal region.
+ */
 	movetype = MOVETYPE_NONE;
 
 	if (m_bEnabled == true) {
@@ -244,11 +244,14 @@ NSPortal::_PortalUpdated(void)
 		//modelindex = 0;
 	}
 
-	/* determine size of major axis */
+	/* determine size of major axis
+ */
 	float portalSize = max(size[0], size[1], size[2]);
-	impulse = portalSize;	/* let the engine know how wide the portal should be */
+	impulse = portalSize;	/* let the engine know how wide the portal should be
+ */
 		
-	/* make sure the abs size contains the entire portal. */
+	/* make sure the abs size contains the entire portal.
+ */
 	portalSize = sqrt(portalSize * portalSize * 2);
 	mins -= portalSize * [1, 1, 1];
 	maxs += portalSize * [1, 1, 1];
@@ -258,7 +261,8 @@ NSPortal::_PortalUpdated(void)
 vector
 NSPortal::_DirectionTransform(vector v)
 {
-	/* FIXME: this should include .angles stuff */
+	/* FIXME: this should include .angles stuff
+ */
 	vector tmp, r;
 	tmp[0] = v * m_vecPortalN;
 	tmp[1] = v * m_vecPortalS;
@@ -266,17 +270,11 @@ NSPortal::_DirectionTransform(vector v)
 
 	r = [0, 0, 0];
 
-	if (!m_ePortalTarget) {
-#ifdef CSQC
+	if (!m_ePortalTarget) {
 		r += tmp[2] * m_vecTargetT;
 		r -= tmp[1] * m_vecTargetS;
 		r -= tmp[0] * m_vecTargetN;
-#else
-		r += tmp[2] * this.m_vecPortalT;
-		r -= tmp[1] * this.m_vecPortalS;
-		r -= tmp[0] * this.m_vecPortalN;
-#endif
-	} else {
+	} else {
 		r += tmp[2] * m_ePortalTarget.m_vecPortalT;
 		r -= tmp[1] * m_ePortalTarget.m_vecPortalS;
 		r -= tmp[0] * m_ePortalTarget.m_vecPortalN;
@@ -288,12 +286,8 @@ NSPortal::_DirectionTransform(vector v)
 vector
 NSPortal::_OriginTransform(vector p)
 {
-	if (!m_ePortalTarget) {
-#ifdef CSQC
-		return m_vecTargetPos - _DirectionTransform(m_vecPortalPos - p);
-#else
-		return this.m_vecPortalPos - _DirectionTransform(m_vecPortalPos - p);
-#endif
+	if (!m_ePortalTarget) {
+		return m_vecPortalPos - _DirectionTransform(m_vecPortalPos - p);
 	}
 
 	return m_ePortalTarget.m_vecPortalPos - _DirectionTransform(m_vecPortalPos - p);

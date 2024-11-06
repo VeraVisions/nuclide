@@ -1747,6 +1747,12 @@ NSClientPlayer::Damage(entity inflictor, entity attacker, NSDict damageDecl, flo
 
 	damageDecl.AddKey("location", vtos(hitLocation));
 
+	/* apply knockback, but only on death */
+	float knockBack = damageDecl.GetFloat("knockback");
+	if (knockBack >= 0) {
+		AddVelocity(dmgDir * knockBack);
+	}
+
 	/* they died */
 	if (GetHealth() <= 0) {
 		g_grMode.PlayerDeath(this, (NSActor)attacker, damageDecl);

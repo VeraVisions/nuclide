@@ -89,11 +89,12 @@ private:
 	/** Will transport an entity from its position to the exit position. */
 	nonvirtual void TransportEntity(NSEntity);
 
-#ifdef CLIENT
 	vector m_vecTargetPos;
 	vector m_vecTargetN;
 	vector m_vecTargetS;
 	vector m_vecTargetT;
+
+#ifdef CLIENT
 	float m_flSize;
 #endif
 

@@ -90,12 +90,6 @@ public:
 	virtual int MaxItemPerSlot(int);
 	/** Overridable: Returns if NSMonster or NSTalkMonster entities can spawn. */
 	virtual bool MonstersSpawn(void);
-	/** Overridable: shim to handle application of direct damage. */
-	nonvirtual void DamageApply(entity,entity,float,int,damageType_t);
-	/** Checks if an entity can be attacked from a given position. */
-	nonvirtual bool DamageCheckTrace(entity,vector);
-	/** Overridable: shim to handle application of indirect radius damage. */
-	nonvirtual void DamageRadius(vector,entity,float,float,bool,int);
 	
 	/* end of a game */
 	/** Called when intermission starts. Will send all current players to the intermission screen. */
@@ -147,3 +141,4 @@ private:
 NSGameRules g_grMode;
 
 #define CGameRules NSGameRules
+#define RULEMAP(x, y, z) x.y = externvalue(x.m_ruleProgs, z); if (!x.y) { x.y = NSGameRules::y; }
