@@ -6,6 +6,9 @@ mv_wsfile()
 	if [ -f "./build/$1" ]
 	then
 		cp -v "./build/$1" "../../bin/$1"
+	else
+		printf "'%s' file not found!\n" "$1"
+		exit
 	fi
 }
 
@@ -14,6 +17,9 @@ mv_msysfile()
 	if [ -f "./build/$1" ]
 	then
 		cp -v "./build/$1" "../../bin/$1"
+	else
+		printf "'%s' file not found!\n" "$1"
+		exit
 	fi
 }
 
