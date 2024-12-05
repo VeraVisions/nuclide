@@ -75,11 +75,11 @@ Controllable beam effect, akin to lightning. Also known as env_lightning.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup shared
+@ingroup sharedentity
 @ingroup pointentity
 */
 class
-env_beam:NSRenderableEntity
+env_beam:ncRenderableEntity
 {
 public:
 	void env_beam(void);
@@ -90,12 +90,15 @@ public:
 	virtual void EvaluateEntity(void);
 	virtual float SendEntity(entity,float);
 	virtual void Trigger(entity, triggermode_t);
+	virtual void Input(entity, string, string);
 	nonvirtual void CastLaser(void);
 	nonvirtual void LaunchBeam(void);
 	nonvirtual void EndBeam(void);
 	nonvirtual void StopBeam(void);
 	nonvirtual void FindLocation(void);
-#else
+#endif
+
+#ifdef CLIENT
 	virtual float predraw(void);
 	virtual void ReceiveEntity(float,float);
 	virtual void RendererRestarted(void);
@@ -213,9 +216,11 @@ void
 env_beam::FindLocation(void)
 {
 	for (int i = 0; i < 16; i++) {
-		vector destVec = (anglesToForward(random(-1,1) * 360) * m_flRadius) * m_radiusScale[0];
-		destVec += (anglesToRight(random(-1,1) * 360) * m_flRadius) * m_radiusScale[1];
-		destVec += (anglesToUp(random(-1,1) * 360) * m_flRadius) * m_radiusScale[2];
+		vector destVec;
+		destVec[0] = (random(-1,1) * 180);
+		destVec[1] = (random(-1,1) * 180);
+		destVec[2] = (random(-1,1) * 180);
+		destVec = anglesToForward(destVec) * m_flRadius;
 
 		traceline(origin, origin + destVec, MOVE_NORMAL, this);
 
@@ -237,9 +242,9 @@ env_beam::CastLaser(void)
 	if (trace_ent.takedamage == DAMAGE_NO)
 		return;
 
-	NSSurfacePropEntity targetEnt = (NSSurfacePropEntity)trace_ent;
+	ncSurfacePropEntity targetEnt = (ncSurfacePropEntity)trace_ent;
 
-	NSDict damageDecl = spawn(NSDict);
+	ncDict damageDecl = spawn(ncDict);
 	damageDecl.AddKey("damage", itos(m_iDamage));
 	damageDecl.AddKey("type", "electro");
 	targetEnt.Damage(this, this, damageDecl, 1.0, g_vec_null, trace_ent.origin);
@@ -272,7 +277,7 @@ env_beam::LaunchBeam(void)
 	string placeDecal = GetSpawnString("decal_detonate");
 
 	if (STRING_SET(placeDecal)) {
-		//DecalGroups_Place(placeDecal, m_chosenDest);
+		DecalGroups_Place(placeDecal, m_chosenDest);
 	}
 
 	if (HasSpawnFlags(BEAM_RANDOMSTRIKE))
@@ -305,6 +310,18 @@ env_beam::StopBeam(void)
 {
 	m_iActive = 0i; /* beam is now active */
 	ReleaseThink();
+}
+
+void
+env_beam::Input(entity act, string inputName, string dataString)
+{
+	switch (inputName) {
+	case "StrikeOnce":
+		LaunchBeam();
+		break;
+	default:
+		super::Input(act, inputName, dataString);
+	}
 }
 
 void
@@ -427,7 +444,9 @@ env_beam::SendEntity(entity ePEnt, float flChanged)
 
 	return (1);
 }
-#else
+#endif
+
+#ifdef CLIENT
 void
 env_beam::ReceiveEntity(float flNew, float flChanged)
 {
@@ -567,8 +586,10 @@ env_beam::predraw(void)
 
 			R_PolygonVertex(point, [1, 0], m_vecRenderColor / 255, a);
 
-			if (autocvar(cl_showoff, 0))
-				dynamiclight_add(point, 150, m_vecRenderColor/255);
+			if (autocvar(cl_showoff, 0)) {
+				float dli = dynamiclight_add(point, 150, m_vecRenderColor/255);
+				dynamiclight_set(dli, LFIELD_STYLE, 64);
+			}
 
 			last_progression = progression;
 		}

@@ -16,7 +16,7 @@
 
 
 void
-NSSound::NSSound( void )
+ncSound::ncSound( void )
 {
 	m_radius = 128.0f;
 	m_volume = 0.5f;
@@ -30,7 +30,7 @@ NSSound::NSSound( void )
 }
 
 void
-NSSound::Spawned( void )
+ncSound::Spawned( void )
 {
 	super::Spawned();
 	m_soundIndex = getsoundindex(m_sample, false);
@@ -41,62 +41,62 @@ NSSound::Spawned( void )
 }
 
 void
-NSSound::SetSample( string newSample )
+ncSound::SetSample( string newSample )
 {
 	m_sample = newSample;
 	m_soundIndex = getsoundindex(m_sample, true);
 }
 
 void
-NSSound::SetVolume( float newVolume )
+ncSound::SetVolume( float newVolume )
 {
 	m_volume = newVolume;
 }
 
 void
-NSSound::SetPitch( float newPitch )
+ncSound::SetPitch( float newPitch )
 {
 	m_pitch = newPitch;
 }
 
 void
-NSSound::SetRadius( float newRadius )
+ncSound::SetRadius( float newRadius )
 {
 	m_radius = newRadius;
 }
 
 void
-NSSound::SetSoundOffset( float newOffset )
+ncSound::SetSoundOffset( float newOffset )
 {
 	m_offset = newOffset;
 }
 
 void
-NSSound::MakeOmniDirectional( void )
+ncSound::MakeOmniDirectional( void )
 {
 	m_omniDirectional = true;
 }
 
 void
-NSSound::MakeDirectional( void )
+ncSound::MakeDirectional( void )
 {
 	m_omniDirectional = false;
 }
 
 void
-NSSound::EnableReverb( void )
+ncSound::EnableReverb( void )
 {
 	m_ignoreReverb = false;
 }
 
 void
-NSSound::DisableReverb( void )
+ncSound::DisableReverb( void )
 {
 	m_ignoreReverb = true;
 }
 
 void
-NSSound::ForceLoop( bool forceLooping )
+ncSound::ForceLoop( bool forceLooping )
 {
 	m_forceLoop = forceLooping;
 
@@ -111,7 +111,7 @@ NSSound::ForceLoop( bool forceLooping )
 }
 
 void
-NSSound::Play( void )
+ncSound::Play( void )
 {
 	float soundFlags = 0;
 
@@ -129,13 +129,13 @@ NSSound::Play( void )
 
 #ifdef SERVER
 void
-NSSound::Respawn(void)
+ncSound::Respawn(void)
 {
 	super::Respawn();
 }
 
 void
-NSSound::EvaluateEntity(void)
+ncSound::EvaluateEntity(void)
 {
 	EVALUATE_VECTOR(origin, 0, RDENT_CHANGED_ORIGIN_X)
 	EVALUATE_VECTOR(origin, 1, RDENT_CHANGED_ORIGIN_Y)
@@ -148,7 +148,7 @@ NSSound::EvaluateEntity(void)
 }
 
 float
-NSSound::SendEntity(entity ePEnt, float flChanged)
+ncSound::SendEntity(entity ePEnt, float flChanged)
 {
 	if (distance(ePEnt.origin, origin) >= m_radius) {
 		return (false);
@@ -172,7 +172,7 @@ NSSound::SendEntity(entity ePEnt, float flChanged)
 
 #ifdef CLIENT
 void
-NSSound::ReceiveEntity(float isnew, float flChanged)
+ncSound::ReceiveEntity(float isnew, float flChanged)
 {
 	READENTITY_COORD(origin[0], SOUND_ORIGIN)
 	READENTITY_COORD(origin[1], SOUND_ORIGIN)
@@ -208,7 +208,7 @@ NSSound::ReceiveEntity(float isnew, float flChanged)
 #endif
 
 void
-NSSound::OnRemoveEntity(void)
+ncSound::OnRemoveEntity(void)
 {
 	SndEntLog("stopping\n");
 	StopSound(CHAN_BODY, true);

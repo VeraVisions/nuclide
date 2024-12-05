@@ -38,18 +38,18 @@ Non-moving button that can either be used by hand, or shot.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup brushentity
 */
 class
-button_target:NSSurfacePropEntity
+button_target:ncSurfacePropEntity
 {
 public:
 	void button_target(void);
 	
 	virtual void Respawn(void);
 	virtual void Trigger(entity,triggermode_t);
-	virtual void Damaged(entity, entity, int, vector, int);
+	virtual void Damaged(entity, entity, int, vector, vector, int);
 };
 
 void
@@ -97,7 +97,7 @@ button_target::Trigger(entity act, triggermode_t status)
 }
 
 void
-button_target::Damaged(entity inflictor, entity attacker, int damage, vector dir, int location)
+button_target::Damaged(entity inflictor, entity attacker, int damage, vector dir, vector absImpactPos, int hitBody)
 {
-	Trigger(g_dmg_eAttacker, TRIG_TOGGLE);
+	Trigger(attacker, TRIG_TOGGLE);
 }

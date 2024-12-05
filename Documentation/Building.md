@@ -1,14 +1,14 @@
-# Building
+# Building {#building}
 
 ## Preface
 
 If you don't plan on modifying the engine, then you can grab binaries
-from [FTEQW](https://www.fteqw.org) and move them into the root
-directory.
+from [FTE's website](https://www.fteqw.org) and move the binaries for your platform into the root
+directory of Nuclide.
 
 ## Dependencies
 
-Nuclide is entirely game-logic oriented, so it only requires a working
+![](application_osx_terminal.png) Nuclide is entirely game-logic oriented, so it only requires a working
 QuakeC compiler. In our case [FTEQCC](https://www.fteqcc.org/). Which
 you can also build with:
 
@@ -21,8 +21,7 @@ game-logic related targets.
 
 Besides a working **C** compiler, such as `gcc` or `clang`, the QuakeC compiler shouldn't need any other dependencies. [Click here for a full list of dependencies for the various optional components.](Documentation/Dependencies.md)
 
-> [!tip]
-> `make help` will always show a list of available targets, including their purpose.
+@note `make help` will always show a list of available targets, including their purpose.
 
 ## Keeping Up-To-Date
 
@@ -51,23 +50,21 @@ They are accompanied by name-matching `.lno` files. These contain
 extra debugging information helpful to the engine. *They can be
 stripped from a shipping build of your game.*
 
-> [!tip]
-> You do not need to rebuild the logic for each and every platform.
-> The results will be identical, since QuakeC is not machine code.
+@note You do not need to rebuild the logic for each and every platform. The results will be identical, since QuakeC is not machine code!
 
 ## Building the Engine {#build-engine}
 
-Issue the following to build a generic version of the engine [FTEQW](https://www.fteqw.org/):
+Issue the following to build a generic, non-branded version of the engine [FTE](https://www.fteqw.org/):
 
 ```
 $ make fteqw
 ```
 
-Which you can then run with `./fteqw -game base`. [For more information on launching games, mods, check out the page on Launching](Documentation/Launching.md).
+Which you can then use to run 'Test Game' with `./fteqw +game base`. [For more information on launching games, mods, check out the page on Launching](Documentation/Launching.md).
 
-Some engine features are only available as a plugin. See `$ make help` for info on how to build them.
+@note Some engine features are only available as a plugin. See the section on plugins for details.
 
-### Optional: Custom Branding & Features
+### Building a Branded Build {#build-branded}
 
 If you want to build a custom version of the engine,
 with custom branding and the ability to strip unneeded
@@ -81,17 +78,33 @@ $ make engine GAME=yourgame
 
 It will then look for `yourgame/engine.h`, and build a copy of FTEQW
 against it.  The output will normally be something along the lines of
-`yourgame_x64`.  The name can be changed by passing `NAME=YourGame`
-to the make program.
+`yourgame_x64`.
+
+@note The name can be changed by passing **NAME=YourGame** to the `make` program, or by placing a file named `PROJECT` in your game directory with a short name on the first line.
+
+### Building plugins {#build-plugins}
+
+You can build plugins for your game by specifying **NATIVE_PLUGINS** as an argument to the `make` command, like so:
+
+```
+make plugins GAME=base NATIVE_PLUGINS="ode ffmpeg"
+```
+
+However, once you've settled on a set of plugins for your game, you can list the contents of the **NATIVE_PLUGINS** string in a file named `PLUGINS` in your game directory.
+
+@note For generic builds of **FTE** you can use the target **fteqw-plugins** instead of **plugins**. You shouldn't specify a **GAME** argument however.
+
+## Building a dedicated server build {#build-dedicated}
+
+![](server.png) If you want a minimal, dedicated server binary for your game that doesn't include all the code related to being a client, you can issue:
+
+```
+make dedicated GAME=yourgame
+```
+
+And it will, much like a branded build, compile a dedicated binary specific to your game configuration.
+
 
 ## Building the Level Editor {#build-editor}
 
-Issue the following to build [GtkRadiant](https://icculus.org/gtkradiant):
-
-```
-$ make radiant
-```
-
-A launcher will be created in the root directory allowing you to launch it via `./radiant`.
-
-For documentation regarding Radiant and general id Tech level design, [you can visit this page](https://icculus.org/gtkradiant/documentation.html).
+![](map_edit.png) See [the page dedicated to level editing](@ref radiant) for more information.

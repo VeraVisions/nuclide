@@ -28,12 +28,12 @@
 - @ref bot_profile
 - @ref bot_cvars
 - @ref bot_info
-- @ref NSBot
+- @ref ncBot
 
 @{
 */
 
-vector Route_SelectDestination( NSBot target );
+vector Route_SelectDestination( ncBot target );
 
 var int autocvar_nav_linksize = 256;
 var int autocvar_nav_radius = 8;
@@ -47,7 +47,7 @@ _BotLog(string functionName, string msg)
 /** Logs an bot system specific log message.
 	 The console variable `bot_developer` has to be `1` for them to be visible.
 
-@param description(...) contains a formatted string containing a description. */
+@param ... contains a formatted string containing a description. */
 #define BotLog(...) if (autocvar_bot_developer) _BotLog(__FUNC__, sprintf(__VA_ARGS__))
 
 void
@@ -59,7 +59,7 @@ _BotEntLog(string className, string functionName, float edictNum, string warnMes
 /** Logs an bot specific entity class log message.
 	 The console variable `bot_developer` has to be `1` for them to be visible.
 
-@param description(...) contains a formatted string containing a description. */
+@param ... contains a formatted string containing a description. */
 #define BotEntLog(...) if (autocvar_bot_developer) _BotEntLog(classname, __FUNC__, num_for_edict(this), sprintf(__VA_ARGS__))
 
 var string autocvar_bot_prefix = "";

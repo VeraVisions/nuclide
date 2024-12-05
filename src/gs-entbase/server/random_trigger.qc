@@ -32,11 +32,11 @@ its targets, based on some limits given.
 # TRIVIA
 It was introduced in Gunman Chronicles (2000).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-random_trigger:NSPointTrigger
+random_trigger:ncPointTrigger
 {
 public:
 	void random_trigger(void);

@@ -31,10 +31,10 @@ around the primary volume in case that's the effect that you desire.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup shared
+@ingroup sharedentity
 @ingroup brushentity
 */
-class func_friction:NSEntity
+class func_friction:ncEntity
 {
 public:
 	void func_friction(void);

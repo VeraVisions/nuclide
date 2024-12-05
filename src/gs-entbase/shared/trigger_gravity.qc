@@ -33,10 +33,10 @@ Other than that gravity will naturally reset when the entity respawns.
 # TRIVIA
 This entity was introduced in Quake II (1997).
 
-@ingroup shared
+@ingroup sharedentity
 @ingroup brushentity
 */
-class trigger_gravity:NSBrushTrigger
+class trigger_gravity:ncBrushTrigger
 {
 public:
 	void trigger_gravity(void);
@@ -45,6 +45,7 @@ public:
 	virtual void Save(float);
 	virtual void Restore(string,string);
 #endif
+
 	virtual void SpawnKey(string,string);
 	virtual void Respawn(void);
 	virtual void Touch(entity);

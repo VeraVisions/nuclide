@@ -1,6 +1,0 @@
-// Vera Visions Material
-{
-	program defaultwall#MASK=0.5
-	surfaceParm alphashadow
-	diffusemap textures/measure/rail.tga
-}

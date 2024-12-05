@@ -47,11 +47,11 @@ Line breaks inside "message" can be added with a \n character.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-game_text:NSPointTrigger
+game_text:ncPointTrigger
 {
 public:
 	void game_text(void);

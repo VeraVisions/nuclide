@@ -18,10 +18,10 @@
 
 @ingroup vgui
 */
-class VGUIProgressBar:VGUIWidget
+class vguiProgressBar:vguiWidget
 {
 public:
-	void VGUIProgressBar(void);
+	void vguiProgressBar(void);
 
 	/* overrides */
 	virtual void Draw(void);
@@ -33,19 +33,19 @@ private:
 };
 
 void
-VGUIProgressBar::VGUIProgressBar(void)
+vguiProgressBar::vguiProgressBar(void)
 {
 	m_flProgress = 1.0f;
 }
 
 void
-VGUIProgressBar::SetProgress(float newProgress)
+vguiProgressBar::SetProgress(float newProgress)
 {
 	m_flProgress = newProgress;
 }
 
-void VGUIProgressBar::Draw(void)
+void vguiProgressBar::Draw(void)
 {
-	VGUITheme theme = GetTheme();
+	vguiTheme theme = GetTheme();
 	theme.DrawProgressIndicator(m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, m_flProgress, VGUI_STATE_NORMAL);
 }

@@ -26,24 +26,24 @@ It's able to load HLTV styled overviews used in GoldSrc and Source.
 @ingroup baseclass
 */
 class
-NSRadar:NSView
+ncRadar:ncView
 {
 public:
-	void NSRadar(void);
+	void ncRadar(void);
 
 	/** Init a radar for the map we're currently on. */
-	nonvirtual NSRadar InitForCurrentMap(void);
+	nonvirtual ncRadar InitForCurrentMap(void);
 	/** Init a radar for a specified map, will automatically choose the best available type. */
-	nonvirtual NSRadar InitWithMapname(string);
+	nonvirtual ncRadar InitWithMapname(string);
 
 	/** Init as Overview from GoldSrc HLTV script file. */
-	nonvirtual NSRadar InitFromHLTVScript(string);
+	nonvirtual ncRadar InitFromHLTVScript(string);
 	/** Init as Overview from Source Engine HLTV script file. */
-	nonvirtual NSRadar InitFromSourceHLTVScript(string);
+	nonvirtual ncRadar InitFromSourceHLTVScript(string);
 	/** Init a wireframe overview. */
-	nonvirtual NSRadar InitWireframe(void);
+	nonvirtual ncRadar InitWireframe(void);
 	/** Init an empty overview. */
-	nonvirtual NSRadar InitEmpty(void);
+	nonvirtual ncRadar InitEmpty(void);
 
 	nonvirtual void RenderOverviewPlane(void);
 	nonvirtual void RenderWireframePlane(void);

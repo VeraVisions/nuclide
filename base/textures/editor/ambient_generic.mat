@@ -1,0 +1,8 @@
+{
+	diffusemap editor/ambient_generic.ktx
+	
+	{
+		map $diffuse
+		alphaFunc GE128
+	}
+}

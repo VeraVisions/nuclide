@@ -37,7 +37,7 @@ Much like func_trackchange, but it will automatically transport func_tracktrain 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup brushentity
 */
 class
@@ -59,7 +59,7 @@ func_trackautochange::func_trackautochange(void)
 void
 func_trackautochange::MoverFinishesMoving(void)
 {
-	NSEntity ourTrain = (NSEntity)find(world, ::targetname, m_strTrainName);
+	ncEntity ourTrain = (ncEntity)find(world, ::targetname, m_strTrainName);
 	super::MoverFinishesMoving();
 
 	if (ourTrain) {

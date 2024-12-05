@@ -1,0 +1,8 @@
+// Vera Visions Material
+{
+	program defaultwall
+	polygonOffset 1
+	diffusemap $whiteimage
+	normalmap dev/flat_normal.ktx
+	specularmap dev/shiny_mra.ktx
+}

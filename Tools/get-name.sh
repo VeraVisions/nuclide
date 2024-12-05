@@ -6,7 +6,7 @@ then
 else
 	if [ -f "$1/PROJECT" ]
 	then
-		head -n 1 "$1/PROJECT"
+		head -n 1 "$1/PROJECT" | sed 's/ //g' | sed 's/-//g'
 	else
 		printf "%s\n" "$1"
 	fi

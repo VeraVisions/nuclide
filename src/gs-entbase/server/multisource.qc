@@ -30,11 +30,11 @@ state for it to trigger its target.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-multisource:NSPointTrigger
+multisource:ncPointTrigger
 {
 public:
 	void multisource(void);
@@ -94,7 +94,7 @@ multisource::QueryTargets(void)
 
 	/* normal triggers */
 	for (a = world; (a = find(a, ::target, targetname));) {
-		NSEntity tTemp = (NSEntity) a;
+		ncEntity tTemp = (ncEntity) a;
 		if (cvar("developer") == 1) {
 			dprint("[^1MULTISOURCE^7] ");
 			dprint(tTemp.classname);

@@ -76,6 +76,7 @@ void Achievement_IndicateProgress(string strName, int iCurrent, int iMax);
 /** Updates the achievement_t pointer with what's been achieved and what's not been achieved from a remote location.
 
 @param ptr Pointer to an achievement_t array.
+@param count Local version of the achivement stat count.
 @return Will return false upon failure. */
 bool Achievement_RequestStats(achievement_t *ptr, int count);
 

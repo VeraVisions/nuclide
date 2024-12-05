@@ -40,11 +40,14 @@ surfaceproperties.qc
 decalgroups.qc
 materials.qc
 sentences.qc
+NSCharger.qc
 NSSpraylogo.qc
 util.qc
 motd.qc
+bodyque.qc
 entityDef.qc
 ammo.qc
+activities.qc
 api.qc
 ../xr/include.src
 ../botlib/NSBot.qc

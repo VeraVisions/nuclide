@@ -1,0 +1,10 @@
+{
+	program unlit
+	diffusemap "textures/lights/k_2000.tga"
+
+	nomipmaps
+	surfaceParm nolightmap
+	vmap_surfaceLight 5000
+	vmap_lightImage "textures/lights/k_2000.tga"
+}
+ 

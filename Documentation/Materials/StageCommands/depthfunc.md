@@ -1,11 +1,11 @@
 # Material Command List {#mat_commands}
 
-### depthFunc {#depthFunc}
-#### Syntax
+## depthFunc {#depthFunc}
+### Syntax
 
-**depthFunc <func>**
+**depthFunc \<func\>**
 
-#### Overview
+### Overview
 
 This controls the depth comparison function used while rendering.
 

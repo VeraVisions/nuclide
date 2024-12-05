@@ -39,11 +39,11 @@ By default it's visible and has collision.
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
 
-@ingroup server
+@ingroup serverentity
 @ingroup brushentity
 */
 class
-func_brush:NSRenderableEntity
+func_brush:ncRenderableEntity
 {
 public:
 	void func_brush(void);

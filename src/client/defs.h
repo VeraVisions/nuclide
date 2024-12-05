@@ -136,9 +136,6 @@ const float MASK_GLOWS = 16;
 var bool g_focus;
 bool Util_IsFocused(void);
 
-var int g_numplayerslots;
-int Util_GetMaxPlayers(void);
-
 /* fonts */
 font_s FONT_16;
 font_s FONT_20;
@@ -214,7 +211,7 @@ void drawrect(vector pos, vector sz, float thickness, vector rgb, float al, opti
 }
 
 /** Like drawpic, but instead of screen coords, it will take world coords.
-Will project the 2D image relative to the active NSView that we're currently
+Will project the 2D image relative to the active ncView that we're currently
 rendering in (g_view). So it may only be called within certain contexts. */
 void
 drawpic3d(vector worldpos, string mat, vector sz, vector rgb, float alpha)
@@ -323,7 +320,7 @@ struct
 	float m_flEventTime;
 	float m_flEventFrame;
 	float m_flEventMdl;
-	int m_iEventWeapon;
+	entity m_iEventEntity;
 
 	int m_iLastWeapon;
 	int m_iOldWeapon;
@@ -424,4 +421,10 @@ var vector g_vecMousePos;
 var vector g_hudmins;
 var vector g_hudres;
 
-var NSRadar g_overview;
+var ncRadar g_overview;
+
+/** @defgroup cliententity Entities that are client-side
+ *  @ingroup client
+ *  @ingroup entities
+ *  Entity classes that run entirely on the client.
+ */

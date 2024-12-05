@@ -36,11 +36,11 @@ at lights and stuff? No...? Well... ever played Splinter Cell?... Nevermind.
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
 
-@ingroup server
+@ingroup serverentity
 @ingroup brushentity
 */
 class
-trigger_look:NSBrushTrigger
+trigger_look:ncBrushTrigger
 {
 public:
 	void trigger_look(void);

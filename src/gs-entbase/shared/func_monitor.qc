@@ -74,10 +74,10 @@ A monitor that renders the view of a linked point_camera entity.
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
 
-@ingroup shared
+@ingroup sharedentity
 @ingroup brushentity
 */
-class func_monitor:NSRenderableEntity
+class func_monitor:ncRenderableEntity
 {
 public:
 	void func_monitor(void);
@@ -85,7 +85,9 @@ public:
 #ifdef CLIENT
 	virtual void ReceiveEntity(float,float);
 
-#else
+#endif
+
+#ifdef SERVER
 	virtual void Respawn(void);
 	virtual void EvaluateEntity(void);
 	virtual float SendEntity(entity,float);
@@ -149,7 +151,9 @@ func_monitor::ReceiveEntity(float flNew, float flChanged)
 	g_vecRenderTargetPos = m_vecCamOrigin;
 	g_vecRenderTargetAngles = m_vecCamAngles;
 }
-#else
+#endif
+
+#ifdef SERVER
 float
 func_monitor::SendEntity(entity ePEnt, float flChanged)
 {

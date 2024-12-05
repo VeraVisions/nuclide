@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#pragma PROGS_DAT  "../../progs.pk3dir/progs/deathmatch.dat"
+#pragma PROGS_DAT  "../../progs/deathmatch.dat"
 
 #include "../../../src/server/api.h"
 
@@ -25,42 +25,42 @@ CodeCallback_StartGameType(void)
 }
 
 void
-CodeCallback_PlayerSpawn(void)
+CodeCallback_PlayerSpawn(entity playerTarget)
 {
-	ents.ChangeToClass(self, "player_mp");
-	game.TeleportToSpawn(self);
+	ents.ChangeToClass(playerTarget, "player_mp");
+	game.TeleportToSpawn(playerTarget);
 }
 
 void
-CodeCallback_PlayerDisconnect(void)
+CodeCallback_PlayerDisconnect(entity playerTarget)
 {
 
 }
 
 bool
-CodeCallback_PlayerRequestRespawn(void)
+CodeCallback_PlayerRequestRespawn(entity playerTarget)
 {
-	CodeCallback_PlayerSpawn();
+	CodeCallback_PlayerSpawn(playerTarget);
 	return (true);
 }
 
 void
-CodeCallback_PlayerDamage(entity inflictor, entity attacker)
+CodeCallback_PlayerDamage(entity playerTarget, entity inflictor, entity attacker)
 {
 
 }
 
 void
-CodeCallback_PlayerKilled(entity inflictor, entity attacker, string weapon)
+CodeCallback_PlayerKilled(entity playerTarget, entity inflictor, entity attacker, string weapon)
 {
-	combat.Obituary(self.netname, attacker.netname, weapon, "");
+	combat.Obituary(playerTarget.netname, attacker.netname, weapon, "");
 
 	/* death-counter */
-	self.deaths++;
+	playerTarget.deaths++;
 
 	/* update score-counter */
 	if (ents.isPlayer(attacker)) {
-		if (self == attacker) {
+		if (playerTarget == attacker) {
 			attacker.frags--;
 		} else {
 			attacker.frags++;

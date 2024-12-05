@@ -1,0 +1,8 @@
+{
+	diffusemap editor/trigger_auto.ktx
+	
+	{
+		map $diffuse
+		alphaFunc GE128
+	}
+}

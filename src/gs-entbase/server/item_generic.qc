@@ -30,11 +30,11 @@ A 'generic' decorative entity which uses an animation sequence.
 # TRIVIA
 This entity was introduced in Half-Life: Opposing Force (1999).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-item_generic:NSRenderableEntity
+item_generic:ncRenderableEntity
 {
 public:
 	void item_generic(void);

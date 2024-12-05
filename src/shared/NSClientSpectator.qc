@@ -15,7 +15,7 @@
 */
 
 void
-NSClientSpectator::NSClientSpectator(void)
+ncSpectator::ncSpectator(void)
 {
 	flags |= FL_CLIENT;
 	spec_mode = SPECMODE_FREE;
@@ -23,13 +23,13 @@ NSClientSpectator::NSClientSpectator(void)
 
 #ifdef SERVER
 void
-NSClientSpectator::Save(float handle)
+ncSpectator::Save(float handle)
 {
 	super::Save(handle);
 }
 
 void
-NSClientSpectator::Restore(string strKey, string strValue)
+ncSpectator::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
 	default:
@@ -39,31 +39,31 @@ NSClientSpectator::Restore(string strKey, string strValue)
 #endif
 
 bool
-NSClientSpectator::IsRealSpectator(void)
+ncSpectator::IsRealSpectator(void)
 {
 	return (true);
 }
 
 bool
-NSClientSpectator::IsDead(void)
+ncSpectator::IsDead(void)
 {
 	return (false);
 }
 
 bool
-NSClientSpectator::IsPlayer(void)
+ncSpectator::IsPlayer(void)
 {
 	return (false);
 }
 
 bool
-NSClientSpectator::IsFakeSpectator(void)
+ncSpectator::IsFakeSpectator(void)
 {
 	return (false);
 }
 
 void
-NSClientSpectator::ProcessInput(void)
+ncSpectator::ProcessInput(void)
 {
 #ifdef SERVER
 	if (input_buttons & INPUT_PRIMARY) {
@@ -79,14 +79,14 @@ NSClientSpectator::ProcessInput(void)
 }
 
 void
-NSClientSpectator::WarpToTarget(void)
+ncSpectator::WarpToTarget(void)
 {
 	entity b = edict_num(spec_ent);
 	setorigin(this, b.origin);
 }
 
 void
-NSClientSpectator::SharedInputFrame(void)
+ncSpectator::SharedInputFrame(void)
 {
 	SetSize(g_vec_null, g_vec_null);
 
@@ -105,7 +105,7 @@ NSClientSpectator::SharedInputFrame(void)
 
 #ifdef SERVER
 float
-NSClientSpectator::SendEntity(entity ePVSent, float flChanged)
+ncSpectator::SendEntity(entity ePVSent, float flChanged)
 {
 	if (this != ePVSent) {
 		return (0);
@@ -136,7 +136,7 @@ NSClientSpectator::SendEntity(entity ePVSent, float flChanged)
 }
 
 void
-NSClientSpectator::ServerInputFrame(void)
+ncSpectator::ServerInputFrame(void)
 {
 	movetype = MOVETYPE_NOCLIP;
 
@@ -152,7 +152,7 @@ NSClientSpectator::ServerInputFrame(void)
 
 #else
 void
-NSClientSpectator::ClientInputFrame(void)
+ncSpectator::ClientInputFrame(void)
 {
 	/* If we are inside a VGUI, don't let the client do stuff outside */
 	if (VGUI_Active()) {
@@ -181,7 +181,7 @@ NSClientSpectator::ClientInputFrame(void)
 }
 
 void
-NSClientSpectator::ReceiveEntity(float new, float flChanged)
+ncSpectator::ReceiveEntity(float new, float flChanged)
 {
 	if (spec_mode == SPECMODE_FREE || spec_mode == SPECMODE_FREEOVERVIEW)
 	if (new == FALSE) {
@@ -232,7 +232,7 @@ NSClientSpectator::ReceiveEntity(float new, float flChanged)
 };
 
 float
-NSClientSpectator::predraw(void)
+ncSpectator::predraw(void)
 {
 	addentity(this);
 	return (PREDRAW_NEXT);
@@ -240,7 +240,7 @@ NSClientSpectator::predraw(void)
 #endif
 
 void
-NSClientSpectator::InputNext(void)
+ncSpectator::InputNext(void)
 {
 	if (m_flDeathCam > time)
 		return;
@@ -276,7 +276,7 @@ NSClientSpectator::InputNext(void)
 	float max_edict;
 	float sep = spec_ent;
 	float best = 0;
-	NSClient cl;
+	ncClient cl;
 
 	max_edict = serverkeyfloat("sv_playerslots");
 
@@ -286,7 +286,7 @@ NSClientSpectator::InputNext(void)
 		if (i <= sep && best == 0) {
 			f = edict_num(i);
 			if (f && f.classname == "player" && f != this) {
-				cl = (NSClient)f;
+				cl = (ncClient)f;
 				if (!cl.IsFakeSpectator())
 					best = i;
 			}
@@ -295,7 +295,7 @@ NSClientSpectator::InputNext(void)
 		if (i > sep) {
 			f = edict_num(i);
 			if (f && f.classname == "player" && f != this) {
-				cl = (NSClient)f;
+				cl = (ncClient)f;
 				if (!cl.IsFakeSpectator()) {
 					best = i;
 					break;
@@ -317,7 +317,7 @@ NSClientSpectator::InputNext(void)
 }
 
 void
-NSClientSpectator::InputPrevious(void)
+ncSpectator::InputPrevious(void)
 {
 	if (m_flDeathCam > time)
 		return;
@@ -351,7 +351,7 @@ NSClientSpectator::InputPrevious(void)
 	float max_edict;
 	float sep = spec_ent;
 	float best = 0;
-	NSClient cl;
+	ncClient cl;
 
 	max_edict = serverkeyfloat("sv_playerslots");
 
@@ -363,7 +363,7 @@ NSClientSpectator::InputPrevious(void)
 			f = edict_num(i);
 
 			if (f && f.classname == "player") {
-				cl = (NSClient)f;
+				cl = (ncClient)f;
 
 				if (!cl.IsFakeSpectator())
 					best = i;
@@ -374,7 +374,7 @@ NSClientSpectator::InputPrevious(void)
 		if (i < sep) {
 			f = edict_num(i);
 			if (f && f.classname == "player") {
-				cl = (NSClient)f;
+				cl = (ncClient)f;
 				if (!cl.IsFakeSpectator()) {
 					best = i;
 					break;
@@ -397,7 +397,7 @@ NSClientSpectator::InputPrevious(void)
 }
 
 void
-NSClientSpectator::InputMode(void)
+ncSpectator::InputMode(void)
 {
 	if (spec_mode == SPECMODE_DEATHCAM && m_flDeathCam < time) {
 		spec_mode = SPECMODE_THIRDPERSON;
@@ -411,11 +411,11 @@ NSClientSpectator::InputMode(void)
 
 	spec_flags |= SPECFLAG_BUTTON_RELEASED;
 
-	NSClient f;
+	ncClient f;
 #ifdef CLIENT
-	f = (NSClient)findfloat(world, ::entnum, spec_ent);
+	f = (ncClient)findfloat(world, ::entnum, spec_ent);
 #else
-	f = (NSClient)edict_num(spec_ent);
+	f = (ncClient)edict_num(spec_ent);
 #endif
 
 	if (f == this || f.classname != "player") {
@@ -432,7 +432,7 @@ NSClientSpectator::InputMode(void)
 }
 
 void
-NSClientSpectator::PreFrame(void)
+ncSpectator::PreFrame(void)
 {
 #ifdef CLIENT
 	/* base player attributes/fields we're going to roll back */
@@ -472,19 +472,19 @@ NSClientSpectator::PreFrame(void)
 }
 
 void
-NSClientSpectator::SpectatorTrackPlayer(void)
+ncSpectator::SpectatorTrackPlayer(void)
 {
 	if (spec_mode == SPECMODE_DEATHCAM
 		|| spec_mode == SPECMODE_THIRDPERSON 
 		|| spec_mode == SPECMODE_FIRSTPERSON
 		|| spec_mode == SPECMODE_CHASEOVERVIEW
 		|| spec_mode == SPECMODE_LOCKEDCHASE ) {
-		NSClient b;
+		ncClient b;
 
 	#ifdef CLIENT
-		b = (NSClient)findfloat(world, ::entnum, spec_ent);
+		b = (ncClient)findfloat(world, ::entnum, spec_ent);
 	#else
-		b = (NSClient)edict_num(spec_ent);
+		b = (ncClient)edict_num(spec_ent);
 	#endif
 
 		if (b && b.classname == "player")
@@ -507,7 +507,7 @@ NSClientSpectator::SpectatorTrackPlayer(void)
 
 #ifdef SERVER
 void
-NSClientSpectator::EvaluateEntity(void)
+ncSpectator::EvaluateEntity(void)
 {
 	/* check for which values have changed in this frame
 	   and announce to network said changes */
@@ -521,7 +521,7 @@ NSClientSpectator::EvaluateEntity(void)
 }
 
 void
-NSClientSpectator::SpectatorDeathcam(NSRenderableEntity ourCorpse, NSEntity trackEntity, float waitTime)
+ncSpectator::SpectatorDeathcam(ncRenderableEntity ourCorpse, ncEntity trackEntity, float waitTime)
 {
 	spec_ent = num_for_edict(ourCorpse);
 	spec_mode = SPECMODE_DEATHCAM;
@@ -530,7 +530,7 @@ NSClientSpectator::SpectatorDeathcam(NSRenderableEntity ourCorpse, NSEntity trac
 #endif
 
 void
-NSClientSpectator::PostFrame(void)
+ncSpectator::PostFrame(void)
 {
 #ifdef CLIENT
 	ROLL_BACK(origin)
@@ -545,10 +545,10 @@ NSClientSpectator::PostFrame(void)
 void
 Spectator_ReadEntity(float new)
 {
-	NSClientSpectator spec = (NSClientSpectator)self;
+	ncSpectator spec = (ncSpectator)self;
 
 	if (new || self.classname != "spectator") {
-		spawnfunc_NSClientSpectator();
+		spawnfunc_ncSpectator();
 		spec.classname = "spectator";
 		spec.solid = SOLID_NOT;
 		spec.drawmask = MASK_ENGINE;

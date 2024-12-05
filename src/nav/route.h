@@ -22,7 +22,6 @@
 int Route_RoundDistance(float);
 int Route_GetNodeFlags(nodeslist_t *);
 vector Route_GetJumpVelocity(vector, vector, float);
-vector Nodes_PositionOfClosestNode(vector);
-NSEntity Route_SelectRandom(string);
+ncEntity Route_SelectRandom(string);
 
 /** @} */ // end of nav

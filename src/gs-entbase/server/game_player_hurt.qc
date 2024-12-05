@@ -31,11 +31,11 @@ Upon being triggered, the entity will damage/heal the activating player.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-game_player_hurt:NSPointTrigger
+game_player_hurt:ncPointTrigger
 {
 public:
 	void game_player_hurt(void);
@@ -96,7 +96,7 @@ game_player_hurt::Trigger(entity activatingEntity, triggermode_t triggerMode)
 		return;
 	}
 
-	NSDict damageDecl = spawn(NSDict);
+	ncDict damageDecl = spawn(ncDict);
 	damageDecl.AddKey("damage", itos(m_iDamage));
 	combat.Damage(activatingEntity, this, activatingEntity, damageDecl.GetDeclBody(), GetOrigin(), g_vec_null, activatingEntity.origin);
 	remove(damageDecl);

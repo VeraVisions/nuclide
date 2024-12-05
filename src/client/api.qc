@@ -35,6 +35,12 @@ Surface_ScreenHeight(void)
 }
 
 vector
+Surface_ScreenMins(void)
+{
+	return (video_mins);
+}
+
+vector
 Surface_ScreenSize(void)
 {
 	return (g_vidsize);
@@ -53,6 +59,16 @@ Surface_HUDSize(void)
 }
 
 /* player functions */
+vector
+Player_GetCameraPosition(void)
+{
+	return (g_view.GetCameraOrigin());
+}
+vector
+Player_GetCameraAngles(void)
+{
+	return (g_view.GetCameraAngle());
+}
 float
 Player_GetHealth(void)
 {
@@ -62,13 +78,13 @@ Player_GetHealth(void)
 float
 Player_GetArmor(void)
 {
-	return (((NSClientPlayer)pSeat->m_ePlayer).armor);
+	return (((ncPlayer)pSeat->m_ePlayer).armor);
 }
 
 float
 Player_GetStamina(void)
 {
-	return (((NSClientPlayer)pSeat->m_ePlayer).GetStamina());
+	return (((ncPlayer)pSeat->m_ePlayer).GetStamina());
 }
 
 int
@@ -80,37 +96,37 @@ Player_GetTeam(void)
 bool
 Player_HasItem(string itemName)
 {
-	return (((NSClientPlayer)pSeat->m_ePlayer).HasItem(itemName));
+	return (((ncPlayer)pSeat->m_ePlayer).HasItem(itemName));
 }
 
 bool
 Player_IsSprinting(string itemName)
 {
-	return ((NSClientPlayer)pSeat->m_ePlayer).IsSprinting();
+	return ((ncPlayer)pSeat->m_ePlayer).IsSprinting();
 }
 
 bool
 Player_IsCrouching(string itemName)
 {
-	return ((NSClientPlayer)pSeat->m_ePlayer).IsCrouching();
+	return ((ncPlayer)pSeat->m_ePlayer).IsCrouching();
 }
 
 bool
 Player_IsProne(string itemName)
 {
-	return ((NSClientPlayer)pSeat->m_ePlayer).IsProne();
+	return ((ncPlayer)pSeat->m_ePlayer).IsProne();
 }
 
 bool
 Player_IsStanding(string itemName)
 {
-	return ((NSClientPlayer)pSeat->m_ePlayer).IsStanding();
+	return ((ncPlayer)pSeat->m_ePlayer).IsStanding();
 }
 
 bool
 Player_IsLeaning(string itemName)
 {
-	return ((NSClientPlayer)pSeat->m_ePlayer).IsLeaning();
+	return ((ncPlayer)pSeat->m_ePlayer).IsLeaning();
 }
 
 
@@ -148,7 +164,7 @@ Team_GetCount(void)
 bool
 Weapon_IsValid(entity weaponEntity)
 {
-	NSWeapon weapon = (NSWeapon)weaponEntity;
+	ncWeapon weapon = (ncWeapon)weaponEntity;
 
 	if (weapon) {
 		return (weapon.IsWeapon());
@@ -160,7 +176,7 @@ Weapon_IsValid(entity weaponEntity)
 string
 Weapon_GetTitle(entity weaponEntity)
 {
-	NSWeapon weapon = (NSWeapon)weaponEntity;
+	ncWeapon weapon = (ncWeapon)weaponEntity;
 
 	if (weapon) {
 		return (weapon.m_strWeaponTitle);
@@ -172,7 +188,7 @@ Weapon_GetTitle(entity weaponEntity)
 string
 Weapon_GetIcon(entity weaponEntity)
 {
-	NSWeapon weapon = (NSWeapon)weaponEntity;
+	ncWeapon weapon = (ncWeapon)weaponEntity;
 
 	if (weapon) {
 		return (weapon.m_icon);
@@ -184,7 +200,7 @@ Weapon_GetIcon(entity weaponEntity)
 string
 Weapon_GetSelectedIcon(entity weaponEntity)
 {
-	NSWeapon weapon = (NSWeapon)weaponEntity;
+	ncWeapon weapon = (ncWeapon)weaponEntity;
 
 	if (weapon) {
 		return (weapon.m_iconSel);
@@ -196,7 +212,7 @@ Weapon_GetSelectedIcon(entity weaponEntity)
 int
 Weapon_GetSlot(entity weaponEntity)
 {
-	NSWeapon weapon = (NSWeapon)weaponEntity;
+	ncWeapon weapon = (ncWeapon)weaponEntity;
 
 	if (weapon) {
 		return (weapon.m_iHudSlot);
@@ -208,7 +224,7 @@ Weapon_GetSlot(entity weaponEntity)
 int
 Weapon_GetSlotPos(entity weaponEntity)
 {
-	NSWeapon weapon = (NSWeapon)weaponEntity;
+	ncWeapon weapon = (ncWeapon)weaponEntity;
 
 	if (weapon) {
 		return (weapon.m_iHudSlotPos);
@@ -220,8 +236,8 @@ Weapon_GetSlotPos(entity weaponEntity)
 int
 Weapon_GetClip(void)
 {
-	NSActor owner = (NSActor)pSeat->m_ePlayer;
-	NSWeapon weapon = owner.m_activeWeapon;
+	ncActor owner = (ncActor)pSeat->m_ePlayer;
+	ncWeapon weapon = owner.m_activeWeapon;
 
 	if (weapon) {
 		return (weapon.m_iClip);
@@ -233,8 +249,8 @@ Weapon_GetClip(void)
 int
 Weapon_GetClipSize(void)
 {
-	NSActor owner = (NSActor)pSeat->m_ePlayer;
-	NSWeapon weapon = owner.m_activeWeapon;
+	ncActor owner = (ncActor)pSeat->m_ePlayer;
+	ncWeapon weapon = owner.m_activeWeapon;
 
 	if (weapon) {
 		return (weapon.m_iClipSize);
@@ -246,8 +262,8 @@ Weapon_GetClipSize(void)
 bool
 Weapon_UsesSecondaryAmmo(void)
 {
-	NSActor owner = (NSActor)pSeat->m_ePlayer;
-	NSWeapon weapon = owner.m_activeWeapon;
+	ncActor owner = (ncActor)pSeat->m_ePlayer;
+	ncWeapon weapon = owner.m_activeWeapon;
 
 	if (weapon) {
 		return weapon.UsesSecondaryAmmo();
@@ -259,8 +275,8 @@ Weapon_UsesSecondaryAmmo(void)
 int
 Weapon_GetAmmo1(void)
 {
-	NSActor owner = (NSActor)pSeat->m_ePlayer;
-	NSWeapon weapon = owner.m_activeWeapon;
+	ncActor owner = (ncActor)pSeat->m_ePlayer;
+	ncWeapon weapon = owner.m_activeWeapon;
 
 	if (weapon) {
 		return owner.GetReserveAmmo(weapon.m_primaryAmmoType);
@@ -272,8 +288,8 @@ Weapon_GetAmmo1(void)
 int
 Weapon_GetAmmo2(void)
 {
-	NSActor owner = (NSActor)pSeat->m_ePlayer;
-	NSWeapon weapon = owner.m_activeWeapon;
+	ncActor owner = (ncActor)pSeat->m_ePlayer;
+	ncWeapon weapon = owner.m_activeWeapon;
 
 	if (weapon) {
 		return owner.GetReserveAmmo(weapon.m_secondaryAmmoType);
@@ -285,8 +301,8 @@ Weapon_GetAmmo2(void)
 bool
 Weapon_AmmoRequired(void)
 {
-	NSActor owner = (NSActor)pSeat->m_ePlayer;
-	NSWeapon weapon = owner.m_activeWeapon;
+	ncActor owner = (ncActor)pSeat->m_ePlayer;
+	ncWeapon weapon = owner.m_activeWeapon;
 
 	if (weapon) {
 		return (weapon.m_fiAmmoRequired);
@@ -298,30 +314,30 @@ Weapon_AmmoRequired(void)
 entity
 Weapon_GetActiveWeapon(void)
 {
-	return ((NSActor)pSeat->m_ePlayer).m_activeWeapon;
+	return ((ncActor)pSeat->m_ePlayer).m_activeWeapon;
 }
 
 entity
 Weapon_GetFirstWeaponInInventory(void)
 {
 #if 0
-	return ((NSActor)pSeat->m_ePlayer).m_firstWeapon;
+	return ((ncActor)pSeat->m_ePlayer).m_firstWeapon;
 #else
-	return ((NSActor)pSeat->m_ePlayer).SortWeaponChain();
+	return ((ncActor)pSeat->m_ePlayer).SortWeaponChain();
 #endif
 }
 
 entity
 Weapon_GetLastWeaponInInventory(void)
 {
-	return ((NSActor)pSeat->m_ePlayer).m_firstWeapon.m_prevWeapon;
+	return ((ncActor)pSeat->m_ePlayer).m_firstWeapon.m_prevWeapon;
 }
 
 entity
 Weapon_GetNextWeaponRelativeTo(entity weaponCheck)
 {
 	if (weaponCheck)
-		return ((NSWeapon)weaponCheck).m_nextWeapon;
+		return ((ncWeapon)weaponCheck).m_nextWeapon;
 
 	return __NULL__;
 }
@@ -330,7 +346,7 @@ entity
 Weapon_GetPreviousWeaponRelativeTo(entity weaponCheck)
 {
 	if (weaponCheck)
-		return ((NSWeapon)weaponCheck).m_prevWeapon;
+		return ((ncWeapon)weaponCheck).m_prevWeapon;
 
 	return __NULL__;
 }
@@ -339,7 +355,7 @@ bool
 Weapon_SelectWeapon(entity weaponCheck)
 {
 	if (weaponCheck) {
-		NSWeapon_SelectWeapon((NSWeapon)weaponCheck);
+		ncWeapon_SelectWeapon((ncWeapon)weaponCheck);
 		return (true);
 	}
 
@@ -361,20 +377,30 @@ Draw_RectOutline(vector pos, vector size, float thickness, vector rgb, float a)
 void
 Draw_RoundedBox(vector pos, vector size, vector rgb, float a)
 {
-	drawpic(pos, "textures/ui/m_topleft.tga", [16,16], rgb, a, 0);
-	drawpic(pos + [size[0] - 16, 0], "textures/ui/m_topright.tga", [16,16], rgb, a, 0);
-	drawpic(pos + [0, size[1] - 16], "textures/ui/m_bottomleft.tga", [16,16], rgb, a, 0);
-	drawpic(pos + [size[0] - 16, size[1] - 16], "textures/ui/m_bottomright.tga", [16,16], rgb, a, 0);
+	float tileScale = 1.0f;
+
+	if (size[1] < 32) {
+		tileScale = size[1] / 32;
+	}
+
+	vector tileSize = g_vec_null;
+	tileSize[0] = tileSize[1] =  (16 * tileScale);
+
+
+	drawpic(pos, "textures/ui/m_topleft.tga", tileSize, rgb, a, 0);
+	drawpic(pos + [size[0] - tileSize[0], 0], "textures/ui/m_topright.tga", tileSize, rgb, a, 0);
+	drawpic(pos + [0, size[1] - tileSize[1]], "textures/ui/m_bottomleft.tga", tileSize, rgb, a, 0);
+	drawpic(pos + [size[0] - tileSize[0], size[1] - tileSize[1]], "textures/ui/m_bottomright.tga", tileSize, rgb, a, 0);
 
 	if (size_x > 32) {
-		drawpic(pos + [16, 0], "textures/ui/m_top.tga", [size[0] - 32, 16], rgb, a, 0);
-		drawpic(pos + [16, size[1] - 16], "textures/ui/m_bottom.tga", [size[0] - 32, 16], rgb, a, 0);
+		drawpic(pos + [tileSize[0], 0], "textures/ui/m_top.tga", [size[0] - (tileSize[0] * 2), tileSize[1]], rgb, a, 0);
+		drawpic(pos + [tileSize[0], size[1] - tileSize[1]], "textures/ui/m_bottom.tga", [size[0] - (tileSize[0] * 2), tileSize[1]], rgb, a, 0);
 	}
 
 	if (size_y > 32) {
-		drawpic(pos + [0, 16], "textures/ui/m_left.tga", [16, size[1] - 32], rgb, a, 0);
-		drawpic(pos + [size[0] - 16, 16], "textures/ui/m_right.tga", [16, size[1] - 32], rgb, a, 0);
-		drawpic(pos + [16, 16], "textures/ui/m_mid.tga", [size[0] - 32, size[1] - 32], rgb, a, 0);
+		drawpic(pos + [0, tileSize[1]], "textures/ui/m_left.tga", [tileSize[0], size[1] - (tileSize[0] * 2)], rgb, a, 0);
+		drawpic(pos + [size[0] - tileSize[0], tileSize[1]], "textures/ui/m_right.tga", [tileSize[0], size[1] - (tileSize[0] * 2)], rgb, a, 0);
+		drawpic(pos + [tileSize[0], tileSize[1]], "textures/ui/m_mid.tga", [size[0] - (tileSize[0] * 2), size[1] - (tileSize[0] * 2)], rgb, a, 0);
 	}
 }
 

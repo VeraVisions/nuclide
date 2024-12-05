@@ -1,0 +1,8 @@
+{
+	diffusemap dev/info_node_air.ktx
+	
+	{
+		map $diffuse
+		blendFunc blend
+	}
+}

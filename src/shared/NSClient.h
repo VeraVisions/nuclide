@@ -22,10 +22,10 @@ and spectating clients alike.
 @ingroup baseclass
 */
 class
-NSClient:NSBot
+ncClient:ncBot
 {
 public:
-	void NSClient(void);
+	void ncClient(void);
 
 	/** Called within the class to deal with the final input handling of the client. */
 	virtual void ProcessInput(void);
@@ -37,9 +37,9 @@ public:
 	virtual bool IsFakeSpectator(void);
 	/** Returns if we're a 'real' spectator. That is a client that can only spectate. */
 	virtual bool IsRealSpectator(void);
-	/** Returns if we're considered 'dead'. NSClient, NSClientSpectator will always return false. */
+	/** Returns if we're considered 'dead'. ncClient, ncSpectator will always return false. */
 	virtual bool IsDead(void);
-	/** Returns if we're a player. That is a type of client that is built on top of NSClientPlayer. */
+	/** Returns if we're a player. That is a type of client that is built on top of ncPlayer. */
 	virtual bool IsPlayer(void);
 	/** Like ClientInputFrame and ServerInputFrame, but run on both client and server at the same time. It is run before ClientInputFrame and ServerInputFrame. When overriding, Make sure to call the super method to enable Nuclide to handle spectator controls properly. */
 	virtual void SharedInputFrame(void);
@@ -54,13 +54,13 @@ public:
 	/** Client: Called on the client to give a chance to override input_* variables before networking them takes place. */
 	virtual void ClientInputFrame(void);
 
-	/** Client: Called every single client frame when this client is alive. You are expected to manipulate the g_view global here, which is of type NSView. */
+	/** Client: Called every single client frame when this client is alive. You are expected to manipulate the g_view global here, which is of type ncView. */
 	virtual void UpdateAliveCam(void);
 
-	/** Client: Called every single client frame when this client is dead. You are expected to manipulate the g_view global here, which is of type NSView. */
+	/** Client: Called every single client frame when this client is dead. You are expected to manipulate the g_view global here, which is of type ncView. */
 	virtual void UpdateDeathcam(void);
 
-	/** Client: Called every single client frame during intermission. You are expected to manipulate the g_view global here, which is of type NSView. */
+	/** Client: Called every single client frame during intermission. You are expected to manipulate the g_view global here, which is of type ncView. */
 	virtual void UpdateIntermissionCam(void);
 
 	/* overrides */

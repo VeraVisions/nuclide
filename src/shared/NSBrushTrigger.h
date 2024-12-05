@@ -17,16 +17,16 @@
 /** This entity class represents brush volume based triggers.
 
 It's primary function is to consistently set up triggers.
-In your sub-class you'll probably want to call `InitBrushTrigger()`
-inside its `::Respawn()` reimplementation.
+In your sub-class you'll probably want to call ncBrushTrigger::InitBrushTrigger()
+inside its ncIO::Respawn() reimplementation.
 
 @ingroup baseclass
 */
 class
-NSBrushTrigger:NSEntity
+ncBrushTrigger:ncEntity
 {
 public:
-	void NSBrushTrigger (void);
+	void ncBrushTrigger (void);
 
 	/* overrides */
 	virtual int GetValue(entity);

@@ -46,6 +46,36 @@ MapC_Init(void)
 	}
 }
 
+/* Rule specific Scripting, nicknamed 'RuleC' because MapC exists. */
+void
+RuleC_Init(void)
+{
+	string gameType = cvars.GetString("g_gametype");
+	string pathToProgs = strcat("progs/", gameType, ".dat");
+
+	/* No progs .dat, exit out */
+	if (fileExists(pathToProgs) == false) {
+		NSError("Progs at %S does not exist.", pathToProgs);
+		g_ruleCProgs = 0;
+		return;
+	}
+
+	g_ruleCProgs = addprogs(pathToProgs);
+
+	if (g_ruleCProgs) {
+		void(void) mainFunction;
+		mainFunction = externvalue(g_ruleCProgs, "main");
+
+		if (mainFunction) {
+			externset(g_ruleCProgs, world, "self");
+			thread(mainFunction())
+		} else {
+			NSError("%S does not have a main function.", pathToProgs);
+		}
+	}
+
+}
+
 void
 MapC_CallMainFunction(void)
 {

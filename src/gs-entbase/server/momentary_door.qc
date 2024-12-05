@@ -25,11 +25,11 @@ Dynamic door that will move back down if it's not being used.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup brushentity
 */
 class
-momentary_door:NSMomentary
+momentary_door:ncMomentary
 {
 public:
 	void momentary_door(void);

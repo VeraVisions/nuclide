@@ -68,11 +68,11 @@ Since we compare strings, case sensitivity and formatting needs to be identical 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-logic_case:NSPointTrigger
+logic_case:ncPointTrigger
 {
 public:
 	void logic_case(void);

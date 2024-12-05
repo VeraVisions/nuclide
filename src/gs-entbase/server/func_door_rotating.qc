@@ -68,11 +68,11 @@ Please include an origin brush so that a pivot point will be defined.
 # TRIVIA
 This entity was introduced in Quake II (1997).
 
-@ingroup server
+@ingroup serverentity
 @ingroup brushentity
 */
 class
-func_door_rotating:NSMoverEntity
+func_door_rotating:ncMoverEntity
 {
 public:
 	void func_door_rotating(void);
@@ -90,6 +90,7 @@ public:
 	virtual void MoverFinishesMoving(void);
 
 	virtual void Trigger(entity, triggermode_t);
+	virtual void Input(entity, string, string);
 
 #ifdef GS_PHYSICS
 	nonvirtual void Unhinge(void);
@@ -379,7 +380,7 @@ func_door_rotating::MoverFinishesMoving(void)
 
 		if (targetClose)
 		for (entity f = world; (f = find(f, ::targetname, targetClose));) {
-			NSEntity trigger = (NSEntity)f;
+			ncEntity trigger = (ncEntity)f;
 			if (trigger.Trigger != __NULL__) {
 				trigger.Trigger(this, TRIG_TOGGLE);
 			}
@@ -420,6 +421,22 @@ func_door_rotating::MoverStartsMoving(void)
 	}
 }
 
+
+void
+func_door_rotating::Input(entity act, string inputName, string dataString)
+{
+	switch (inputName) {
+		case "Open":
+			Trigger(act, TRIG_ON);
+			break;
+		case "Close":
+			Trigger(act, TRIG_OFF);
+			break;
+		default:
+			super::Input(act, inputName, dataString);
+	}
+}
+
 void
 func_door_rotating::Trigger(entity act, triggermode_t state)
 {
@@ -436,7 +453,7 @@ func_door_rotating::Trigger(entity act, triggermode_t state)
 		return;
 	}
 
-	eActivator = (NSEntity)act;
+	eActivator = (ncEntity)act;
 
 	/* this door can swing both ways */
 	if (!HasSpawnFlags(SF_ROT_ONEWAY)) {
@@ -515,7 +532,7 @@ func_door_rotating::Blocked(entity eBlocker)
 	if (m_iDamage) {
 		vector center = WorldSpaceCenter();
 		vector dmgDir = dirFromTarget(center, eBlocker.origin);
-		NSDict damageDecl = spawn(NSDict);
+		ncDict damageDecl = spawn(ncDict);
 		damageDecl.AddKey("damage", itos(m_iDamage));
 		m_bCanTouch = false;
 		combat.Damage(eBlocker, this, eBlocker, damageDecl.GetDeclBody(), center, dmgDir, eBlocker.origin);

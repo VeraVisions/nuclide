@@ -1,0 +1,8 @@
+{
+	diffusemap editor/info_intermission.ktx
+	
+	{
+		map $diffuse
+		alphaFunc GE128
+	}
+}

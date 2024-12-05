@@ -27,12 +27,12 @@ enumflags
 };
 
 /*! \brief Shared-Entity: Sound System Scape/Reverb Controller */
-/*!QUAKED NSSoundScape (1 .5 0) (-8 -8 -8) (8 8 8)
+/*!QUAKED ncSoundScape (1 .5 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Environmental soundscape and reverb controller.
 
 # KEYS
- - "efx_file" : File to load EFX values from. See @decl_efx
+ - "efx_file" : File to load EFX values from. See @ref decl_efx
  - "density" : See SetDensity()
  - "diffusion" : See SetDiffusion()
  - "gain" : See SetGain()
@@ -63,10 +63,10 @@ Environmental soundscape and reverb controller.
 @ingroup baseclass
 */
 class
-NSSoundScape:NSPointTrigger
+ncSoundScape:ncPointTrigger
 {
 public:
-	void NSSoundScape(void);
+	void ncSoundScape(void);
 
 	/* overrides */
 	
@@ -221,5 +221,5 @@ Reverb effects only work with the OpenAL sound backend.
 /** @} */ // end of decl_efx
 
 #ifdef CLIENT
-void EFX_UpdateSoundScape(NSSoundScape);
+void EFX_UpdateSoundScape(ncSoundScape);
 #endif

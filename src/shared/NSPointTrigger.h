@@ -17,15 +17,15 @@
 /** This entity class represents point-entity triggers.
 
 It's primary function is to consistently set up triggers.
-In your sub-class you'll probably want to call `NSTrigger::InitPointTrigger()`
-inside its `NSIO::Respawn()` reimplementation.
+In your sub-class you'll probably want to call `ncTrigger::InitPointTrigger()`
+inside its `ncIO::Respawn()` reimplementation.
 
 @ingroup baseclass
 */
-class NSPointTrigger:NSEntity
+class ncPointTrigger:ncEntity
 {
 public:
-	void NSPointTrigger(void);
+	void ncPointTrigger(void);
 
 	/* overrides */
 	virtual void Respawn(void);

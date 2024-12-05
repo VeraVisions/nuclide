@@ -51,11 +51,11 @@ When a logic_relay is removed via spawnflag ONCE it won't survive match respawns
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-logic_relay:NSPointTrigger
+logic_relay:ncPointTrigger
 {
 public:
 	void logic_relay(void);

@@ -50,11 +50,11 @@ not get called upon map start.
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-logic_auto:NSPointTrigger
+logic_auto:ncPointTrigger
 {
 public:
 	void logic_auto(void);

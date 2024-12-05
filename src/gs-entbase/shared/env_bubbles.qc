@@ -56,11 +56,11 @@ and rise up in varying speeds. This means you can only place vertical bubble emi
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup shared
+@ingroup sharedentity
 @ingroup brushentity
 */
 class
-env_bubbles:NSPointTrigger
+env_bubbles:ncPointTrigger
 {
 public:
 	void env_bubbles(void);
@@ -77,7 +77,9 @@ public:
 	virtual float SendEntity(entity,float);
 	virtual void Trigger(entity, triggermode_t);
 	virtual void Input(entity,string,string);
-#else
+#endif
+
+#ifdef CLIENT
 	virtual void EmitBubbles(void);
 	virtual void ReceiveEntity(float,float);
 #endif
@@ -234,7 +236,9 @@ env_bubbles::SendEntity(entity ePVSent, float flChanged)
 
 	return (1);
 }
-#else
+#endif
+
+#ifdef CLIENT
 void
 env_bubbles::EmitBubbles(void)
 {

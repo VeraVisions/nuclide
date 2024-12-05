@@ -36,7 +36,7 @@ enumflags
 };
 
 /*! \brief Shared-Entity: Sound/Sentence Emitter */
-/*!QUAKED ambient_generic (0.3 0.1 0.6) (-8 -8 -8) (8 8 8) AS_ARADIUS AS_SRADIUS AS_MRADIUS AS_LRADIUS AS_SILENT AS_NOTTOGGLED
+/*!QUAKED ambient_generic (0.3 0.1 0.6) (-8 -8 -8) (8 8 8) ARADIUS SRADIUS MRADIUS LRADIUS SILENT NOTTOGGLED
 # OVERVIEW
 Plays a sound sample of whatever format the engine is configured to support.
 
@@ -44,28 +44,28 @@ Plays a sound sample of whatever format the engine is configured to support.
 - "targetname" : Name
 - "target" : Target when triggered.
 - "killtarget" : Target to kill when triggered.
-- "message" : Sound file to play, or sentences.txt entry if prefixed with a '!'
+- "message" : Sound file to play, or [sentences.txt entry](@ref sentences) if prefixed with a '!'
 - "volume" : Playback volume from 0.0 to 1.0 (default)
 - "pitch" : Playback pitch, default is 100.
 
 # SPAWNFLAGS
-- AS_ARADIUS (1) : Plays the sound everywhere. Heard by everyone.
-- AS_SRADIUS (2) : Small playback radius.
-- AS_MRADIUS (4) : Medium playback radius.
-- AS_LRADIUS (8) : Large playback radius.
-- AS_SILENT (16) : Start silent, trigger to make it play!
-- AS_NOTTOGGLED (32) : Don't toggle playback. When triggered, only play the sample once.
+- ARADIUS (1) : Plays the sound everywhere. Heard by everyone.
+- SRADIUS (2) : Small playback radius.
+- MRADIUS (4) : Medium playback radius.
+- LRADIUS (8) : Large playback radius.
+- SILENT (16) : Start silent, trigger to make it play!
+- NOTTOGGLED (32) : Don't toggle playback. When triggered, only play the sample once.
 
 # NOTES
-If you want it to loop, you have to give the file itself a loop flag.
+If you want it to loop, you have to give the sound file itself a loop flag.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup shared
+@ingroup sharedentity
 @ingroup pointentity
 */
-class ambient_generic:NSTalkMonster
+class ambient_generic:ncTalkMonster
 {
 public:
 	void ambient_generic(void);
@@ -83,7 +83,9 @@ public:
 	virtual void UseLoop(entity, triggermode_t);
 	virtual void Input(entity, string, string);
 	virtual void DebugDraw(void);
-#else
+#endif
+
+#ifdef CLIENT
 	virtual void ReceiveEntity(float,float);
 	virtual float predraw(void);
 	virtual void SentenceSample(string);
@@ -409,7 +411,9 @@ ambient_generic::SendEntity(entity ePEnt, float flChanged)
 
 	return (1);
 }
-#else
+#endif
+
+#ifdef CLIENT
 void
 ambient_generic::ReceiveEntity(float isnew, float flChanged)
 {

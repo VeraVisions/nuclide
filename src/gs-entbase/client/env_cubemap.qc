@@ -34,11 +34,11 @@ buildcubemaps console command is executed.
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
 
-@ingroup client
+@ingroup cliententity
 @ingroup pointentity
 */
 class
-env_cubemap:NSEntity
+env_cubemap:ncEntity
 {
 public:
 	void env_cubemap(void);
@@ -96,6 +96,7 @@ void
 CMap_Shoot(void)
 {
 	string strReflectcube;
+
 	if (self.owner) {
 		env_cubemap tmp = (env_cubemap) self.owner;
 		NSLog("Generating cubemap '%v' (%dx%d)", g_vecCubePos, g_dCubeSize, g_dCubeSize);
@@ -111,10 +112,12 @@ CMap_Shoot(void)
 					g_vecCubePos[0],
 					g_vecCubePos[1],
 					g_vecCubePos[2]);
+
 		localcmd(sprintf(
 			"screenshot_cubemap %S %i\n",
 			strReflectcube,
 			tmp.m_iSize));
+
 		self.think = CMap_Check;
 		self.nextthink = time + 0.25f;
 	} else {

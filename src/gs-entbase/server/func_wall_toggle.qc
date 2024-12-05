@@ -33,11 +33,11 @@ Brush that can be hidden and reappear when triggered.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup brushentity
 */
 class
-func_wall_toggle:NSRenderableEntity
+func_wall_toggle:ncRenderableEntity
 {
 public:
 	void func_wall_toggle(void);

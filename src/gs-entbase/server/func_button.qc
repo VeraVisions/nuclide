@@ -71,11 +71,11 @@ original position.
 # TRIVIA
 This entity was introduced in Quake (1996).
 
-@ingroup server
+@ingroup serverentity
 @ingroup brushentity
 */
 class
-func_button:NSMoverEntity
+func_button:ncMoverEntity
 {
 public:
 	void func_button(void);
@@ -88,7 +88,7 @@ public:
 	virtual void Touch(entity);
 	virtual void Blocked(entity);
 	virtual void Trigger(entity, triggermode_t);
-	nonvirtual void DeathTrigger(entity, entity, int, vector, int);
+	nonvirtual void DeathTrigger(entity, entity, int, vector, vector, int);
 	virtual void PlayerUse(void);
 
 	virtual void MoverStartsMoving(void);
@@ -390,7 +390,7 @@ func_button::Trigger(entity act, triggermode_t state)
 }
 
 void
-func_button::DeathTrigger(entity inflictor, entity attacker, int damage, vector dir, int location)
+func_button::DeathTrigger(entity inflictor, entity attacker, int damage, vector dir, vector absImpactPos, int hitBody)
 {
 	MakeInvulnerable();
 	Trigger(attacker, TRIG_TOGGLE);

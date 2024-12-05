@@ -40,11 +40,11 @@ Used for props to be animated within a scripted sequence.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-monster_furniture:NSMonster
+monster_furniture:ncMonster
 {
 public:
 	void monster_furniture(void);

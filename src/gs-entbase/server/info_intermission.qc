@@ -32,11 +32,11 @@ and angles towards the aim target.
 # TRIVIA
 This entity was introduced in Quake (1996).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-info_intermission:NSPointTrigger
+info_intermission:ncPointTrigger
 {
 public:
 	void info_intermission(void);

@@ -1,4 +1,4 @@
-#pragma PROGS_DAT  "../../progs.pk3dir/hud.dat"
+#pragma PROGS_DAT  "../../hud.dat"
 
 #include "../../../src/client/api.h"
 
@@ -16,8 +16,11 @@ HUD_Init(void)
 }
 
 void
-HUD_Draw(vector hud_mins, vector hud_size)
+HUD_Draw(void)
 {
+
+	vector hud_mins = screen.HUDMins();
+	vector hud_size = screen.HUDSize();
 	vector hudSize = hud_size;
 	vector iconPos = hud_mins + (hudSize / 2);
 	iconPos[1] = (hudSize[1] - baseIconSize) - baseIconPadding;

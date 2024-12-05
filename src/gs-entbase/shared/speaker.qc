@@ -67,11 +67,11 @@ Valid values for 'preset":
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup shared
+@ingroup sharedentity
 @ingroup pointentity
 */
 class
-speaker:NSTalkMonster
+speaker:ncTalkMonster
 {
 public:
 	void speaker(void);

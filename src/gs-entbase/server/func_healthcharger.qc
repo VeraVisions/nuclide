@@ -32,11 +32,11 @@ Brush that fills up your health when used, to a maximum of 100 HP.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup brushentity
 */
 class
-func_healthcharger:NSRenderableEntity
+func_healthcharger:ncRenderableEntity
 {
 public:
 	void func_healthcharger(void);
@@ -53,7 +53,7 @@ public:
 	nonvirtual void ResetHealth(void);
 
 private:
-	NSEntity m_eUser;
+	ncEntity m_eUser;
 	float m_flDelay;
 	float m_flCheck;
 
@@ -89,7 +89,7 @@ func_healthcharger::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "user":
-		m_eUser = (NSEntity)ReadEntity(strValue);
+		m_eUser = (ncEntity)ReadEntity(strValue);
 		break;
 	case "delay":
 		m_flDelay = ReadFloat(strValue);

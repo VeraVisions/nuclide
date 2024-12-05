@@ -15,4 +15,29 @@
 */
 
 void Platform_Init(void);
+void Platform_Shutdown(void);
+bool Platform_Draw(vector);
 void Platform_RendererRestarted(void);
+void Platform_CalculateRenderingScale(vector);
+bool Platform_DimensionsChanged(vector);
+bool Platform_HasStartupVideos(void);
+void Platform_PlayStartupVideos(void);
+
+
+/* Basic Menu Globals */
+int g_active;
+
+var float frametime;
+
+#ifdef MENU
+noref float lasttime;
+#endif
+
+var int g_background = FALSE;
+var int g_gamestate;
+var vector g_vecMousePos;
+vector g_menuofs;
+vector g_vidsize;
+
+noref vector g_lastmousepos;
+noref vector g_logosize;

@@ -1,0 +1,11 @@
+// Vera Visions Material
+{
+	polygonOffset 1
+	diffusemap "sfx/mirror.ktx"
+	normalmap "sfx/mirror_n.ktx"
+
+	{
+		program lightmapped_reflect
+		map $reflection
+	}
+}

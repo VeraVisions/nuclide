@@ -52,10 +52,10 @@ Connect the entity to a named info_notnull and watch it swing around.
 # TRIVIA
 This entity was introduced in The Wastes (2018).
 
-@ingroup shared
+@ingroup sharedentity
 @ingroup pointentity
 */
-class prop_rope:NSEntity
+class prop_rope:ncEntity
 {
 public:
 	void prop_rope(void);
@@ -64,7 +64,9 @@ public:
 	virtual float predraw(void);
 	virtual void ReceiveEntity(float,float);
 	virtual void DrawSegment(vector, vector, vector);
-#else
+#endif
+
+#ifdef SERVER
 	virtual void SpawnKey(string,string);
 	virtual void Respawn(void);
 	virtual void Save(float);
@@ -112,11 +114,11 @@ prop_rope::predraw(void)
 	vector pos2;
 	float segments;
 	vector vecPlayer;
-	NSClientPlayer pl;
+	ncPlayer pl;
 
 	int s = (float)getproperty(VF_ACTIVESEAT);
 	pSeat = &g_seats[s];
-	pl = (NSClientPlayer)pSeat->m_ePlayer;
+	pl = (ncPlayer)pSeat->m_ePlayer;
 	vecPlayer = pl.GetEyePos();
 
 	/* draw the start/end without segments */
@@ -197,7 +199,9 @@ prop_rope::ReceiveEntity(float new, float flSendFlags)
 	if (flSendFlags & PROPROPE_CHANGED_FLAGS)
 		flags = readfloat();
 }
-#else
+#endif
+
+#ifdef SERVER
 void
 prop_rope::Respawn(void)
 {
@@ -289,6 +293,7 @@ prop_rope::SpawnKey(string strKey, string strValue)
 	case "segments":
 		m_iSegments = stoi(strValue);
 		break;
+	case "RopeMaterial":
 	case "shader":
 		m_strShader = strValue;
 		break;
@@ -345,7 +350,9 @@ prop_rope::prop_rope(void)
 	m_flSag = 15.0f;
 	m_iSegments = 16;
 	m_strShader = "textures/props/wire_default";
-#else
+#endif
+
+#ifdef CLIENT
 	/* this is empty for a good reason */
 	drawmask = MASK_ENGINE;
 #endif

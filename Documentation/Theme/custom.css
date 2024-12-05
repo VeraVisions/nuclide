@@ -1,7 +1,7 @@
 html {
        color-scheme: dark;
 
-        --primary-color: #fb923c;
+        --primary-color: #aaaaff;
         --primary-dark-color: #86a9c4;
         --primary-light-color: #4779ac;
 
@@ -27,9 +27,9 @@ html {
         --warning-color: #3b2e04;
         --warning-color-dark: #f1b602;
         --warning-color-darker: #ceb670;
-        --note-color: #163750;
-        --note-color-dark: #1982D2;
-        --note-color-darker: #dcf0fa;
+        --note-color: #303050;
+        --note-color-dark: #9999ff;
+        --note-color-darker: #aaf;
         --todo-color: #2a2536;
         --todo-color-dark: #7661b3;
         --todo-color-darker: #ae9ed6;

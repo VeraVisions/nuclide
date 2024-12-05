@@ -15,7 +15,7 @@
 */
 
 void
-NSSquadMonster::NSSquadMonster(void)
+ncSquadMonster::ncSquadMonster(void)
 {
 #ifdef SERVER
 	m_inSquad = false;
@@ -32,7 +32,7 @@ NSSquadMonster::NSSquadMonster(void)
 
 #ifdef SERVER
 void
-NSSquadMonster::SpawnKey(string strKey, string strValue)
+ncSquadMonster::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "squad_leader":
@@ -47,7 +47,7 @@ NSSquadMonster::SpawnKey(string strKey, string strValue)
 }
 
 void
-NSSquadMonster::Save(float handle)
+ncSquadMonster::Save(float handle)
 {
 	super::Save(handle);
 
@@ -63,7 +63,7 @@ NSSquadMonster::Save(float handle)
 }
 
 void
-NSSquadMonster::Restore(string strKey, string strValue)
+ncSquadMonster::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "m_strSquadLeaderBody":
@@ -76,22 +76,22 @@ NSSquadMonster::Restore(string strKey, string strValue)
 		m_inSquad = ReadBool(strValue);
 		break;
 	case "m_eSquadLeader":
-		m_eSquadLeader = (NSSquadMonster)ReadEntity(strValue);
+		m_eSquadLeader = (ncSquadMonster)ReadEntity(strValue);
 		break;
 	case "m_eSquadMembers0":
-		m_eSquadMembers[0] = (NSSquadMonster)ReadEntity(strValue);
+		m_eSquadMembers[0] = (ncSquadMonster)ReadEntity(strValue);
 		break;
 	case "m_eSquadMembers1":
-		m_eSquadMembers[1] = (NSSquadMonster)ReadEntity(strValue);
+		m_eSquadMembers[1] = (ncSquadMonster)ReadEntity(strValue);
 		break;
 	case "m_eSquadMembers2":
-		m_eSquadMembers[2] = (NSSquadMonster)ReadEntity(strValue);
+		m_eSquadMembers[2] = (ncSquadMonster)ReadEntity(strValue);
 		break;
 	case "m_eSquadMembers3":
-		m_eSquadMembers[3] = (NSSquadMonster)ReadEntity(strValue);
+		m_eSquadMembers[3] = (ncSquadMonster)ReadEntity(strValue);
 		break;
 	case "m_eSquadMembers4":
-		m_eSquadMembers[4] = (NSSquadMonster)ReadEntity(strValue);
+		m_eSquadMembers[4] = (ncSquadMonster)ReadEntity(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
@@ -100,7 +100,7 @@ NSSquadMonster::Restore(string strKey, string strValue)
 }
 
 void
-NSSquadMonster::Spawned(void)
+ncSquadMonster::Spawned(void)
 {
 	static void AttachToNearBySquad(void) {
 		FindSquadNearMe(1024);
@@ -118,25 +118,25 @@ NSSquadMonster::Spawned(void)
 }
 
 void
-NSSquadMonster::HasBecomeSquadLeader(void)
+ncSquadMonster::HasBecomeSquadLeader(void)
 {
 	/* implemented by sub-class */
 }
 
 void
-NSSquadMonster::HasJoinedSquad(void)
+ncSquadMonster::HasJoinedSquad(void)
 {
 	/* implemented by sub-class */
 }
 
 bool
-NSSquadMonster::InSquad(void)
+ncSquadMonster::InSquad(void)
 {
 	return m_inSquad;
 }
 
 bool
-NSSquadMonster::IsSquadLeader(void)
+ncSquadMonster::IsSquadLeader(void)
 {
 	if (m_eSquadLeader == this)
 		return true;
@@ -144,14 +144,14 @@ NSSquadMonster::IsSquadLeader(void)
 	return false;
 }
 
-NSSquadMonster
-NSSquadMonster::GetSquadLeader(void)
+ncSquadMonster
+ncSquadMonster::GetSquadLeader(void)
 {
 	return m_eSquadLeader;
 }
 
 void
-NSSquadMonster::FindSquadNearMe(float searchRadius)
+ncSquadMonster::FindSquadNearMe(float searchRadius)
 {
 	entity searchResult = findradius(GetOrigin(), searchRadius);
 
@@ -159,7 +159,7 @@ NSSquadMonster::FindSquadNearMe(float searchRadius)
 		/* found someone just like us */
 		if (searchResult != this)
 		if (searchResult.classname == classname) {
-			NSSquadMonster squadMember = (NSSquadMonster)searchResult;
+			ncSquadMonster squadMember = (ncSquadMonster)searchResult;
 
 			/* we found someone, they may not be in a squad (that's ok!) 
 			   as they will then create one. */
@@ -173,9 +173,9 @@ NSSquadMonster::FindSquadNearMe(float searchRadius)
 }
 
 void
-NSSquadMonster::AddToSquad(NSSquadMonster addMember)
+ncSquadMonster::AddToSquad(ncSquadMonster addMember)
 {
-	NSSquadMonster startMember = __NULL__;
+	ncSquadMonster startMember = __NULL__;
 
 	if (!addMember)
 		return;
@@ -185,7 +185,7 @@ NSSquadMonster::AddToSquad(NSSquadMonster addMember)
 		m_eSquadLeader = this;
 		startMember = this;
 		m_inSquad = true;
-		NSMonsterLog("%s (%d) became squad leader\n", classname, num_for_edict(this));
+		ncMonsterLog("%s (%d) became squad leader\n", classname, num_for_edict(this));
 		//SetBody(GetBody() | m_iSquadLeaderBody);
 
 		/* apply the squad leader body */
@@ -211,16 +211,16 @@ NSSquadMonster::AddToSquad(NSSquadMonster addMember)
 			addMember.m_eSquadLeader = startMember;
 			addMember.m_inSquad = true;
 			addMember.HasJoinedSquad();
-			NSMonsterLog("%s (%d) added to squad, member %i\n", classname, num_for_edict(this), i);
+			ncMonsterLog("%s (%d) added to squad, member %i\n", classname, num_for_edict(this), i);
 			return;
 		}
 	}
 }
 
 void
-NSSquadMonster::RemoveFromSquad(NSSquadMonster toRemove)
+ncSquadMonster::RemoveFromSquad(ncSquadMonster toRemove)
 {
-	NSSquadMonster startMember = __NULL__;
+	ncSquadMonster startMember = __NULL__;
 
 	/* don't bother if not in squad. */
 	if (InSquad() == false)
@@ -241,14 +241,14 @@ NSSquadMonster::RemoveFromSquad(NSSquadMonster toRemove)
 	}
 }
 
-NSSquadMonster
-NSSquadMonster::GetNearestSquadMember(void)
+ncSquadMonster
+ncSquadMonster::GetNearestSquadMember(void)
 {
-	NSSquadMonster member = __NULL__;
-	NSSquadMonster nearestMember = __NULL__;
+	ncSquadMonster member = __NULL__;
+	ncSquadMonster nearestMember = __NULL__;
 	float dist = 0.0f;
 	float nearestDist = 99999.0f;
-	NSSquadMonster startMember;
+	ncSquadMonster startMember;
 
 	if (InSquad() == false)
 		return __NULL__;
@@ -278,14 +278,14 @@ NSSquadMonster::GetNearestSquadMember(void)
 	return nearestMember;
 }
 
-NSSquadMonster
-NSSquadMonster::GetFarthestSquadMember(void)
+ncSquadMonster
+ncSquadMonster::GetFarthestSquadMember(void)
 {
-	NSSquadMonster member = __NULL__;
-	NSSquadMonster farthestMember = __NULL__;
+	ncSquadMonster member = __NULL__;
+	ncSquadMonster farthestMember = __NULL__;
 	float dist = 0.0f;
 	float farthestDist = 0.0f;
-	NSSquadMonster startMember;
+	ncSquadMonster startMember;
 
 	if (InSquad() == false)
 		return __NULL__;

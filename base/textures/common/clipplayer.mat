@@ -1,0 +1,9 @@
+{
+	qer_editorImage "common/clipplayer.ktx"
+	qer_trans 0.50
+	surfaceParm nodraw
+	surfaceParm trans
+	surfaceParm playerclip
+	surfaceParm nolightmap
+	nomipmaps
+}

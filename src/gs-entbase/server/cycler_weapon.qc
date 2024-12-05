@@ -26,11 +26,11 @@ A development entity. When picked up, will display the viewmodel on the activati
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-cycler_weapon:NSPointTrigger
+cycler_weapon:ncPointTrigger
 {
 
 };

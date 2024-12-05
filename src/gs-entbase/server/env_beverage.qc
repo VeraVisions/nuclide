@@ -57,11 +57,11 @@ Beverage-list:
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-env_beverage:NSRenderableEntity
+env_beverage:ncRenderableEntity
 {
 public:
 	void env_beverage(void);
@@ -150,7 +150,7 @@ env_beverage::Trigger(entity act, triggermode_t unused)
 		return;
 	}
 
-	NSEntity eCan = spawn(NSEntity);
+	ncEntity eCan = spawn(ncEntity);
 	eCan.Respawn();
 	eCan.SetOrigin(GetOrigin());
 	eCan.SetAngles(GetAngles());

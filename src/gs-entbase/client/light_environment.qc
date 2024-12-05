@@ -50,11 +50,11 @@ from 4 positions across the entire horizon - thus eliminating any harsh shadows.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup client
+@ingroup cliententity
 @ingroup pointentity
 */
 
-class light_environment:NSEntity
+class light_environment:ncEntity
 {
 public:
 	void light_environment(void);

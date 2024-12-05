@@ -24,10 +24,10 @@ enumflags
 
 @ingroup vgui
 */
-class VGUISlider:VGUIWidget
+class vguiSlider:vguiWidget
 {
 public:
-	void VGUISlider(void);
+	void vguiSlider(void);
 
 	nonvirtual void SetTitle(string);
 
@@ -42,19 +42,19 @@ private:
 	vector m_vecColor;
 };
 
-void VGUISlider::VGUISlider(void)
+void vguiSlider::vguiSlider(void)
 {
 	m_vecColor = [76,88,68] / 255;
 	m_flAlpha = 1.0f;
 }
 
 void
-VGUISlider::Spawned(void)
+vguiSlider::Spawned(void)
 {
 	SetSize([96,24]);
 }
 
-void VGUISlider::Draw(void)
+void vguiSlider::Draw(void)
 {
 	drawfill(m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, m_vecColor, m_flAlpha);
 	
@@ -78,12 +78,12 @@ void VGUISlider::Draw(void)
 	}
 }
 
-bool VGUISlider::Input (float flEVType, float flKey, float flChar, float flDevID)
+bool vguiSlider::Input (float flEVType, float flKey, float flChar, float flDevID)
 {
 	return false;
 }
 
-void VGUISlider::SetTitle (string strName)
+void vguiSlider::SetTitle (string strName)
 {
 	m_strTitle = strName;
 }

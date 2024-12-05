@@ -14,13 +14,15 @@
 ../vgui/ui_label.qc
 ../vgui/ui_menutitle.qc
 ../vgui/ui_pic.qc
+../vgui/ui_rect.qc
 ../vgui/ui_3dview.qc
 ../vgui/ui_scrollbar.qc
 ../vgui/ui_list.qc
 ../vgui/ui_listbox.qc
 ../vgui/ui_textbox.qc
+../vgui/ui_tabviewitem.qc
 ../vgui/ui_tabview.qc
 ../vgui/ui_progressbar.qc
 ../vgui/ui_loadingpanel.qc
-../vgui/ui_console.qc
+../vgui/ui_textview.qc
 #endlist

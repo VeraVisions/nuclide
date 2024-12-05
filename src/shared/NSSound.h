@@ -25,10 +25,10 @@ enumflags
 };
 
 class
-NSSound:NSPointTrigger
+ncSound:ncPointTrigger
 {
 public:
-	void NSSound( void );
+	void ncSound( void );
 
 	nonvirtual void SetSample( string );
 	nonvirtual void SetVolume( float );

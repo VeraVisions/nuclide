@@ -1,0 +1,8 @@
+{
+	diffusemap editor/prop_door_rotating.ktx
+	
+	{
+		map $diffuse
+		alphaFunc GE128
+	}
+}

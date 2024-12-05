@@ -1,0 +1,14 @@
+// Vera Visions Material
+{
+if $programs
+	program defaultskin
+	diffusemap "pbrtest/metalplates006.ktx"
+	normalmap "pbrtest/metalplates006_local.ktx"
+	specularmap "pbrtest/metalplates006_mra.ktx"
+else
+	{
+		map "pbrtest/metal022.ktx"
+		rgbGen lightingdiffuse
+	}
+endif
+} 

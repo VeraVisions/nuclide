@@ -55,11 +55,11 @@ Will trigger its outputs at fixed/random intervals, much like the entity random_
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-logic_timer:NSPointTrigger
+logic_timer:ncPointTrigger
 {
 public:
 	void logic_timer(void);

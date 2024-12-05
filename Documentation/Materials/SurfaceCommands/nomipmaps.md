@@ -1,14 +1,14 @@
 # Material Command List {#mat_commands}
 
-### noMipmaps {#noMipmaps}
+## noMipmaps {#noMipmaps}
 
-#### Syntax
+### Syntax
 
 **noMipmaps**
 
-#### Overview
+### Overview
 
-This implies [noPicMip](nopicmip.md), but
+This implies [noPicMip](@ref noPicMip), but
 also prevents the generation of any lower resolution mipmaps for use by
 the 3d card. This will cause the texture to alias when it gets smaller,
 but there are some cases where you would rather have this than a blurry

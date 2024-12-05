@@ -55,11 +55,11 @@ when lasers are following this train as a sort of guide.
 # TRIVIA
 This entity was introduced in Quake (1996).
 
-@ingroup server
+@ingroup serverentity
 @ingroup brushentity
 */
 class
-func_train:NSRenderableEntity
+func_train:ncRenderableEntity
 {
 	float m_flWait;
 	float m_flSpeed;
@@ -196,13 +196,13 @@ func_train::Blocked(entity eBlocker)
 {
 	vector center;
 	vector dmgDir;
-	NSDict damageDecl;
+	ncDict damageDecl;
 
 	/* HACK: Make corpses gib instantly */
 	if (eBlocker.solid == SOLID_CORPSE) {
 		center = WorldSpaceCenter();
 		dmgDir = dirFromTarget(center, eBlocker.origin);
-		damageDecl = spawn(NSDict);
+		damageDecl = spawn(ncDict);
 		damageDecl.AddKey("damage", "500");
 		combat.Damage(eBlocker, this, eBlocker, damageDecl.GetDeclBody(), center, dmgDir, eBlocker.origin);
 		remove(damageDecl);
@@ -212,7 +212,7 @@ func_train::Blocked(entity eBlocker)
 	if (eBlocker.takedamage != DAMAGE_NO) {
 		center = WorldSpaceCenter();
 		dmgDir = dirFromTarget(center, eBlocker.origin);
-		damageDecl = spawn(NSDict);
+		damageDecl = spawn(ncDict);
 		damageDecl.AddKey("damage", ftos(m_flDamage));
 		combat.Damage(eBlocker, this, eBlocker, damageDecl.GetDeclBody(), center, dmgDir, eBlocker.origin);
 		remove(damageDecl);

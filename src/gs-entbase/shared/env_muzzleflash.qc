@@ -31,11 +31,11 @@ Creates a muzzleflash effect when triggered.
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
 
-@ingroup shared
+@ingroup sharedentity
 @ingroup pointentity
 */
 class
-env_muzzleflash:NSEntity
+env_muzzleflash:ncEntity
 {
 public:
 	void env_muzzleflash(void);
@@ -55,7 +55,7 @@ public:
 private:
 	string m_strAttachmentName;
 	int m_iAttachment;
-	NSRenderableEntity m_eOwner;
+	ncRenderableEntity m_eOwner;
 	string m_strModel;
 	string m_strParticle;
 	entity m_eMuzzler; /* lol */
@@ -96,7 +96,7 @@ env_muzzleflash::Restore(string strKey, string strValue)
 		m_iAttachment = ReadInt(strValue);
 		break;
 	case "m_eOwner":
-		m_eOwner = (NSRenderableEntity)ReadEntity(strValue);
+		m_eOwner = (ncRenderableEntity)ReadEntity(strValue);
 		break;
 	case "m_strModel":
 		m_strModel = ReadString(strValue);
@@ -152,11 +152,11 @@ env_muzzleflash::Input(entity eAct, string strKey, string strValue)
 void
 env_muzzleflash::Trigger(entity theActivator, triggermode_t triggerState)
 {
-	NSEntity targetEnt = __NULL__;
+	ncEntity targetEnt = __NULL__;
 	vector targetPosition = GetOrigin();
 
-	if (m_parent) {
-		targetEnt = (NSEntity)find(world, ::targetname, m_parent);
+	if (STRING_SET(m_parent)) {
+		targetEnt = (ncEntity)find(world, ::targetname, m_parent);
 
 		if (!targetEnt) {
 			EntWarning("Entity specified but not found.");
@@ -182,13 +182,21 @@ var vector autocvar_cg_muzzleDLightColor = [1,0.45,0];
 float
 env_muzzleflash::predraw(void)
 {
-	vector muzzlePos = gettaginfo(m_eOwner, (float)m_iAttachment);
+	vector muzzlePos;
 
-	if (autocvar_cg_muzzleDLight == true)
-		dynamiclight_add(muzzlePos, 256, autocvar_cg_muzzleDLightColor);
+	if (m_iAttachment) {
+		muzzlePos = gettaginfo(m_eOwner, (float)m_iAttachment);
+	} else {
+		muzzlePos = origin;
+	}
+
+	if (autocvar_cg_muzzleDLight == true) {
+		float p = dynamiclight_add(muzzlePos, 150, autocvar_cg_muzzleDLightColor);
+		dynamiclight_set(p, LFIELD_STYLE, 64);
+	}
 
 	setorigin(this, muzzlePos);
-	effects = EF_ADDITIVE;
+// 	effects = EF_ADDITIVE;
 	angles = m_eOwner.angles;
 	addentity(this);
 	alpha -= frametime * 16.0f;
@@ -210,7 +218,7 @@ EV_MuzzleFlash_Parse(void)
 {
 	env_muzzleflash tempMuzzle = spawn(env_muzzleflash);
 
-	tempMuzzle.m_eOwner = (NSRenderableEntity)findfloat(world, entnum, readentitynum());
+	tempMuzzle.m_eOwner = (ncRenderableEntity)findfloat(world, entnum, readentitynum());
 	tempMuzzle.m_iAttachment = readbyte();
 	tempMuzzle.scale = readfloat();
 	tempMuzzle.modelindex = readshort();
@@ -226,7 +234,7 @@ EV_MuzzleFlash_Create(entity muzzleOwner, int attachmentID, float muzzleScale, i
 {
 	env_muzzleflash tempMuzzle = spawn(env_muzzleflash);
 
-	tempMuzzle.m_eOwner = (NSRenderableEntity)muzzleOwner;
+	tempMuzzle.m_eOwner = (ncRenderableEntity)muzzleOwner;
 	tempMuzzle.m_iAttachment = attachmentID;
 	tempMuzzle.scale = muzzleScale;
 	tempMuzzle.alpha = 1.0f;
@@ -234,6 +242,22 @@ EV_MuzzleFlash_Create(entity muzzleOwner, int attachmentID, float muzzleScale, i
 	setmodel(tempMuzzle, modelnameforindex(muzzleModel));
 
 	setorigin(tempMuzzle, tempMuzzle.m_eOwner.origin);
+	setsize(tempMuzzle, [0,0,0], [0,0,0]);
+	tempMuzzle.drawmask = MASK_GLOWS;
+}
+
+void
+EV_MuzzleFlash_CreateAtPos(entity muzzleOwner, vector pos, float muzzleScale, int muzzleModel)
+{
+	env_muzzleflash tempMuzzle = spawn(env_muzzleflash);
+
+	tempMuzzle.m_eOwner = (ncRenderableEntity)muzzleOwner;
+	tempMuzzle.scale = muzzleScale;
+	tempMuzzle.alpha = 1.0f;
+	tempMuzzle.modelindex = muzzleModel;
+	setmodel(tempMuzzle, modelnameforindex(muzzleModel));
+
+	setorigin(tempMuzzle, pos);
 	setsize(tempMuzzle, [0,0,0], [0,0,0]);
 	tempMuzzle.drawmask = MASK_GLOWS;
 }

@@ -41,11 +41,11 @@ target when it reaches a specified number.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-game_counter:NSPointTrigger
+game_counter:ncPointTrigger
 {
 public:
 	void game_counter(void);

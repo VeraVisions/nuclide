@@ -28,11 +28,11 @@ to something else.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-trigger_changetarget:NSPointTrigger
+trigger_changetarget:ncPointTrigger
 {
 	string m_strNewTarget;
 
@@ -86,9 +86,9 @@ trigger_changetarget::SpawnKey(string strKey, string strValue)
 void
 trigger_changetarget::Trigger(entity act, triggermode_t state)
 {
-	NSEntity f;
+	ncEntity f;
 
-	for (f = __NULL__; (f = (NSEntity)find(f, ::targetname, target));) {
+	for (f = __NULL__; (f = (ncEntity)find(f, ::targetname, target));) {
 
 		EntLog("Changing %s (%s) target from '%s' to '%s'\n", \
 		       target, f.classname, f.target, target);

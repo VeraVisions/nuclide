@@ -57,12 +57,12 @@ areaportalwindow.
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
 
-@ingroup server
+@ingroup serverentity
 @ingroup brushentity
 */
 
 class
-func_areaportal:NSEntity
+func_areaportal:ncEntity
 {
 public:
 	void func_areaportal(void);

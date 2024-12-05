@@ -87,7 +87,7 @@ ChatLoadFile(string filename)
 	}
 	fseek(chatfile, 0);
 
-	g_table = (chatsentence_t *)memrealloc(g_table, sizeof(chatsentence_t), i, g_sounds);
+	g_table = (chatsentence_t *)memreallocOld(g_table, sizeof(chatsentence_t), i, g_sounds);
 
 	while ((temp = fgets(chatfile))) {
 		c = tokenize_console(temp);

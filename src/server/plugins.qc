@@ -33,6 +33,7 @@ Plugin_Init(void)
 
 	InitStart();
 
+#warning Read active plugins from cvar instead of a text file, so server admins can change them on the fly
 	pdb = fopen("plugins.txt", FILE_READ);
 
 	if (pdb < 0) {
@@ -211,7 +212,7 @@ Called whenever a new client connect to the game
 =================
 */
 int
-Plugin_PlayerConnect(NSClientPlayer cl)
+Plugin_PlayerConnect(ncPlayer cl)
 {
 	int rval;
 	int tval;
@@ -246,7 +247,7 @@ Called whenever a client leaves the game
 =================
 */
 int
-Plugin_PlayerDisconnect(NSClientPlayer cl)
+Plugin_PlayerDisconnect(ncPlayer cl)
 {
 	int rval;
 	int tval;
@@ -281,7 +282,7 @@ Called when a player has fully connected and entered the server
 =================
 */
 int
-Plugin_PlayerEntered(NSClientPlayer cl)
+Plugin_PlayerEntered(ncPlayer cl)
 {
 	int rval;
 	int tval;

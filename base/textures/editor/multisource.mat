@@ -1,0 +1,8 @@
+{
+	diffusemap editor/multisource.ktx
+	
+	{
+		map $diffuse
+		alphaFunc GE128
+	}
+}

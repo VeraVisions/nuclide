@@ -37,11 +37,11 @@ target when it reaches a specified number.
 # TRIVIA
 This entity was introduced in Quake (1996).
 
-@ingroup server
+@ingroup serverentity
 @ingroup brushentity
 */
 class
-trigger_counter:NSBrushTrigger
+trigger_counter:ncBrushTrigger
 {
 public:
 	void trigger_counter(void);

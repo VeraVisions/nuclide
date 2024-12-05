@@ -15,7 +15,7 @@
 */
 
 void
-NSAttack::NSAttack(void)
+ncAttack::ncAttack(void)
 {
 #ifdef SERVER
 	m_iShots = 1i;
@@ -27,7 +27,7 @@ NSAttack::NSAttack(void)
 
 #ifdef SERVER
 void
-NSAttack::SpawnKey(string strKey, string strValue)
+ncAttack::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "fuse": /* fuse time in seconds */
@@ -49,7 +49,7 @@ NSAttack::SpawnKey(string strKey, string strValue)
 }
 
 void
-NSAttack::Save(float handle)
+ncAttack::Save(float handle)
 {
 	super::Save(handle);
 
@@ -60,7 +60,7 @@ NSAttack::Save(float handle)
 }
 
 void
-NSAttack::Restore(string strKey, string strValue)
+ncAttack::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "m_iShots":
@@ -73,7 +73,7 @@ NSAttack::Restore(string strKey, string strValue)
 		m_vecSpread = ReadVector(strValue);
 		break;
 	case "m_weaponOwner":
-		m_weaponOwner = (NSWeapon)ReadEntity(strValue);
+		m_weaponOwner = (ncWeapon)ReadEntity(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
@@ -82,26 +82,27 @@ NSAttack::Restore(string strKey, string strValue)
 }
 
 void
-NSAttack::Spawned(void)
+ncAttack::Spawned(void)
 {
 	super::Spawned();
 }
 
 void
-NSAttack::SetWeaponOwner(NSWeapon weaponOwner)
+ncAttack::SetWeaponOwner(ncWeapon weaponOwner)
 {
 	m_weaponOwner = weaponOwner;
 }
 
-NSWeapon
-NSAttack::GetWeaponOwner(void)
+ncWeapon
+ncAttack::GetWeaponOwner(void)
 {
 	return (m_weaponOwner);
 }
 
 void
-NSAttack::Launch(vector startPos, vector launchDir, float fuseOffset, float powerMultiplier, float dmgMultiplier)
+ncAttack::Launch(vector startPos, vector launchDir, float fuseOffset, float powerMultiplier, float dmgMultiplier)
 {
+	ncEntity plantedEntity;
 	bool willPlant = GetSpawnBool("plant");
 	bool willDrop = GetSpawnBool("drop");
 
@@ -112,14 +113,14 @@ NSAttack::Launch(vector startPos, vector launchDir, float fuseOffset, float powe
 		vector forwardPos = (anglesToForward(launchDir) * plantDistance);
 		float plantOffset = GetSpawnFloat("plantOffset");
 
-		/* this doesn't need to be customize right now, as testDistance in NSWeapon handles a test */
+		/* this doesn't need to be customize right now, as testDistance in ncWeapon handles a test */
 		traceline(startPos, startPos + forwardPos, MOVE_NORMAL, m_weaponOwner);
-		NSEntity plantedEntity = spawnClass(classToPlant, trace_endpos + (trace_plane_normal * plantOffset));
+		plantedEntity = spawnClass(classToPlant, trace_endpos + (trace_plane_normal * plantOffset));
 		plantedEntity.SetAngles(vectoangles(trace_plane_normal));
 	} else if (willDrop) {
 		string classToDrop = GetSpawnString("def_drop");
 		float dropDistance = GetSpawnFloat("dropDistance");
-		NSEntity plantedEntity = spawnClass(classToDrop, startPos + (anglesToForward(launchDir) * dropDistance));
+		plantedEntity = spawnClass(classToDrop, startPos + (anglesToForward(launchDir) * dropDistance));
 		plantedEntity.SetAngles([0, launchDir[1], 0]);
 		plantedEntity.Spawn();
 	}
@@ -132,12 +133,12 @@ NSAttack::Launch(vector startPos, vector launchDir, float fuseOffset, float powe
 
 
 #ifdef SERVER
-NSAttack
-NSAttack_SpawnDef(string entityDef, NSActor theOwner)
+ncAttack
+ncAttack_SpawnDef(string entityDef, ncActor theOwner)
 {
 	entity oldself = self;
 
-	NSAttack rocket = spawn(NSAttack);
+	ncAttack rocket = spawn(ncAttack);
 	rocket.owner = theOwner;
 	self = rocket;
 	EntityDef_SpawnClassname(entityDef);
@@ -147,28 +148,29 @@ NSAttack_SpawnDef(string entityDef, NSActor theOwner)
 	return rocket;
 }
 
-NSAttack
-NSAttack_SpawnDefAtPosition(string entityDef, NSActor theOwner, vector vecOrigin, vector vecAngles)
+ncAttack
+ncAttack_SpawnDefAtPosition(string entityDef, ncActor theOwner, vector vecOrigin, vector vecAngles)
 {
 	entity oldself = self;
-	NSAttack rocket = spawn(NSAttack);
+	ncAttack rocket = spawn(ncAttack);
 	rocket.owner = theOwner;
 	self = rocket;
 	EntityDef_SpawnClassname(entityDef);
 	self = oldself;
 	rocket.SetWeaponOwner(theOwner.m_activeWeapon);
 	rocket.Launch(vecOrigin, vecAngles, (time - theOwner.nadeCookingTime), 0.0f, 0.0f);
+	NSLog("%S %v, %v", entityDef, vecOrigin, vecAngles);
 	return rocket;
 }
 
-NSAttack
-NSAttack_SpawnDefAttachment(string entityDef, NSActor theOwner, int attachmentID)
+ncAttack
+ncAttack_SpawnDefAttachment(string entityDef, ncActor theOwner, int attachmentID)
 {
 	entity oldself = self;
 	float skeletonIndex = skel_create(theOwner.modelindex);
 	vector attachmentPos =  gettaginfo(theOwner, skel_get_numbones(skeletonIndex) + attachmentID);
 	skel_delete(skeletonIndex);
-	NSAttack rocket = spawn(NSAttack);
+	ncAttack rocket = spawn(ncAttack);
 	rocket.owner = theOwner;
 	self = rocket;
 	EntityDef_SpawnClassname(entityDef);

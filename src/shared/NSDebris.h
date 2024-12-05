@@ -16,10 +16,10 @@
 
 #ifdef CLIENT
 class
-NSDebris:NSPhysicsEntity
+ncDebris:ncPhysicsEntity
 {
 public:
-	void NSDebris(void);
+	void ncDebris(void);
 
 	virtual void Touch(entity);
 	nonvirtual void SetImpactDecal(string);

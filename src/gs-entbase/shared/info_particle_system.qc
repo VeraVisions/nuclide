@@ -46,10 +46,10 @@ An entity that's spawns particles from the engine's particle system.
 # TRIVIA
 This entity was introduced in The Orange Box (2007).
 
-@ingroup shared
+@ingroup sharedentity
 @ingroup pointentity
 */
-class info_particle_system:NSPointTrigger
+class info_particle_system:ncPointTrigger
 {
 public:
 	void info_particle_system(void);
@@ -57,7 +57,9 @@ public:
 #ifdef CLIENT
 	virtual void Emit(void);
 	virtual void ReceiveEntity(float,float);
-#else
+#endif
+
+#ifdef SERVER
 	virtual void Respawn(void);
 	virtual void EvaluateEntity(void);
 	virtual float SendEntity(entity,float);
@@ -128,7 +130,9 @@ info_particle_system::ReceiveEntity(float flNew, float flFlags)
 	setorigin(this, origin);
 	setsize(this, mins, maxs);
 }
-#else
+#endif
+
+#ifdef SERVER
 float
 info_particle_system::SendEntity(entity ePEnt, float flFlags)
 {

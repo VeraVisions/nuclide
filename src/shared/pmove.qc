@@ -21,57 +21,57 @@
 #endif
 
 #ifndef PMOVE_STEPHEIGHT
-	#define PMOVE_STEPHEIGHT 18
+	#define PMOVE_STEPHEIGHT 18.0f
 #endif
 var int autocvar_pm_stepsize = PMOVE_STEPHEIGHT;
 
 #ifndef PMOVE_AIRSTEPHEIGHT
-	#define PMOVE_AIRSTEPHEIGHT 18
+	#define PMOVE_AIRSTEPHEIGHT 18.0f
 #endif
 var int autocvar_pm_airstepsize = PMOVE_AIRSTEPHEIGHT;
 
 #ifndef PMOVE_FRICTION
-	#define PMOVE_FRICTION 4
+	#define PMOVE_FRICTION 4.0f
 #endif
 var float autocvar_pm_friction = PMOVE_FRICTION;
 
 #ifndef PMOVE_EDGEFRICTION
-	#define PMOVE_EDGEFRICTION 1
+	#define PMOVE_EDGEFRICTION 1.0f
 #endif
 var float autocvar_pm_edgefriction = PMOVE_EDGEFRICTION;
 
 #ifndef PMOVE_STOPSPEED
-	#define PMOVE_STOPSPEED 75
+	#define PMOVE_STOPSPEED 75.0f
 #endif
 var float autocvar_pm_stopspeed = PMOVE_STOPSPEED;
 
 #ifndef PMOVE_GRAVITY
-	#define PMOVE_GRAVITY 800
+	#define PMOVE_GRAVITY 800.0f
 #endif
 var float autocvar_pm_gravity = PMOVE_GRAVITY;
 
 #ifndef PMOVE_AIRACCELERATE
-	#define PMOVE_AIRACCELERATE 10
+	#define PMOVE_AIRACCELERATE 10.0f
 #endif
 var float autocvar_pm_airaccelerate = PMOVE_AIRACCELERATE;
 
 #ifndef PMOVE_WATERACCELERATE
-	#define PMOVE_WATERACCELERATE 8
+	#define PMOVE_WATERACCELERATE 8.0f
 #endif
 var float autocvar_pm_wateraccelerate = PMOVE_WATERACCELERATE;
 
 #ifndef PMOVE_ACCELERATE
-	#define PMOVE_ACCELERATE 8
+	#define PMOVE_ACCELERATE 8.0f
 #endif
 var float autocvar_pm_accelerate = PMOVE_ACCELERATE;
 
 #ifndef PMOVE_STEP_WALKSPEED
-	#define PMOVE_STEP_WALKSPEED 190
+	#define PMOVE_STEP_WALKSPEED 190.0f
 #endif
 var float autocvar_pm_walkspeed = PMOVE_STEP_WALKSPEED;
 
 #ifndef PMOVE_STEP_RUNSPEED
-	#define PMOVE_STEP_RUNSPEED (PMOVE_STEP_WALKSPEED * 1.5)
+	#define PMOVE_STEP_RUNSPEED (PMOVE_STEP_WALKSPEED * 1.5f)
 #endif
 var float autocvar_pm_runspeed = PMOVE_STEP_RUNSPEED;
 
@@ -81,43 +81,43 @@ var float autocvar_pm_runspeed = PMOVE_STEP_RUNSPEED;
 var float autocvar_pm_crouchspeed = PMOVE_STEP_CROUCHSPEED;
 
 #ifndef PMOVE_STEP_PRONESPEED
-	#define PMOVE_STEP_PRONESPEED (PMOVE_STEP_WALKSPEED * 0.15)
+	#define PMOVE_STEP_PRONESPEED (PMOVE_STEP_WALKSPEED * 0.15f)
 #endif
 var float autocvar_pm_pronespeed = PMOVE_STEP_PRONESPEED;
 
 /* stamina system, inspired by idTech 4 */
 #ifndef PMOVE_STAMINA
-	#define PMOVE_STAMINA 24
+	#define PMOVE_STAMINA 24.0f
 #endif
 var float autocvar_pm_stamina = PMOVE_STAMINA;
 
 #ifndef PMOVE_STAMINARATE
-	#define PMOVE_STAMINARATE 0.75
+	#define PMOVE_STAMINARATE 0.75f
 #endif
 var float autocvar_pm_staminarate = PMOVE_STAMINARATE;
 
 #ifndef PMOVE_STAMINATHRESHOLD
-	#define PMOVE_STAMINATHRESHOLD 4
+	#define PMOVE_STAMINATHRESHOLD 4.0f
 #endif
 var float autocvar_pm_staminathreshold = PMOVE_STAMINATHRESHOLD;
 
 #ifndef PMOVE_NOCLIPSPEED
-	#define PMOVE_NOCLIPSPEED 500
+	#define PMOVE_NOCLIPSPEED 500.0f
 #endif
 var float autocvar_pm_noclipspeed = PMOVE_NOCLIPSPEED;
 
 #ifndef PMOVE_NOCLIPACCELERATE
-	#define PMOVE_NOCLIPACCELERATE 5
+	#define PMOVE_NOCLIPACCELERATE 5.0f
 #endif
 var float autocvar_pm_noclipaccelerate = PMOVE_NOCLIPACCELERATE;
 
 #ifndef PMOVE_JUMP_HEIGHT
-	#define PMOVE_JUMP_HEIGHT 240
+	#define PMOVE_JUMP_HEIGHT 240.0f
 #endif
 var float autocvar_pm_jumpheight = PMOVE_JUMP_HEIGHT;
 
 #ifndef PMOVE_WATERJUMP_HEIGHT
-	#define PMOVE_WATERJUMP_HEIGHT 350
+	#define PMOVE_WATERJUMP_HEIGHT 350.0f
 #endif
 var float autocvar_pm_waterjumpheight = PMOVE_WATERJUMP_HEIGHT;
 
@@ -127,43 +127,48 @@ var float autocvar_pm_waterjumpheight = PMOVE_WATERJUMP_HEIGHT;
 var bool autocvar_pm_boxcenter = PMOVE_BOXCENTER;
 
 #ifndef PMOVE_BOXWIDTH
-	#define PMOVE_BOXWIDTH 32
+	#define PMOVE_BOXWIDTH 32.0f
 #endif
 var float autocvar_pm_boxwidth = PMOVE_BOXWIDTH;
 
-var float autocvar_pm_maxviewpitch = 89;
-var float autocvar_pm_minviewpitch = -89;
+var float autocvar_pm_maxviewpitch = 89.0f;
+var float autocvar_pm_minviewpitch = -89.0f;
 
 
 #ifndef PMOVE_NORMAL_HEIGHT
-	#define PMOVE_NORMAL_HEIGHT 74
+	#define PMOVE_NORMAL_HEIGHT 74.0f
 #endif
 var float autocvar_pm_normalheight = PMOVE_NORMAL_HEIGHT;
 
 #ifndef PMOVE_NORMAL_VIEWHEIGHT
-	#define PMOVE_NORMAL_VIEWHEIGHT 68
+	#define PMOVE_NORMAL_VIEWHEIGHT 68.0f
 #endif
 var float autocvar_pm_normalviewheight = PMOVE_NORMAL_VIEWHEIGHT;
 
 #ifndef PMOVE_CROUCH_HEIGHT
-	#define PMOVE_CROUCH_HEIGHT 38
+	#define PMOVE_CROUCH_HEIGHT 38.0f
 #endif
 var float autocvar_pm_crouchheight = PMOVE_CROUCH_HEIGHT;
 
 #ifndef PMOVE_CROUCH_VIEWHEIGHT
-	#define PMOVE_CROUCH_VIEWHEIGHT 32
+	#define PMOVE_CROUCH_VIEWHEIGHT 32.0f
 #endif
 var float autocvar_pm_crouchviewheight = PMOVE_CROUCH_VIEWHEIGHT;
 
 #ifndef PMOVE_PRONE_HEIGHT
-	#define PMOVE_PRONE_HEIGHT 20
+	#define PMOVE_PRONE_HEIGHT 20.0f
 #endif
 var float autocvar_pm_proneheight = PMOVE_PRONE_HEIGHT;
 
 #ifndef PMOVE_PRONE_VIEWHEIGHT
-	#define PMOVE_PRONE_VIEWHEIGHT 16
+	#define PMOVE_PRONE_VIEWHEIGHT 16.0f
 #endif
 var float autocvar_pm_proneviewheight = PMOVE_PRONE_VIEWHEIGHT;
+
+#ifndef PMOVE_PRONE_RUNFIRING
+	#define PMOVE_PRONE_RUNFIRING 1.0f
+#endif
+var float autocvar_pm_runfiring = PMOVE_PRONE_RUNFIRING;
 
 /* if they're undefined by a config, they'll be set by the game/mod default */
 var float autocvar_g_gravity = PMOVE_GRAVITY;
@@ -187,13 +192,13 @@ separate cvars for overriding their speeds. */
 #define PMOVEVARS_UPDATE 1
 
 void
-NSPMoveVars::NSPMoveVars(void)
+ncPMoveVars::ncPMoveVars(void)
 {
 	m_defLink = __NULL__;
 }
 
 void
-NSPMoveVars::UpdateBoundingBoxes(void)
+ncPMoveVars::UpdateBoundingBoxes(void)
 {
 	float halfWidth = pm_boxwidth * 0.5f;
 	float halfHeight = pm_normalheight * 0.5f;
@@ -227,7 +232,7 @@ NSPMoveVars::UpdateBoundingBoxes(void)
 }
 
 void
-NSPMoveVars::Refresh(void)
+ncPMoveVars::Refresh(void)
 {
 // 	printf("Refreshing pmove Vars %S\n", m_defLink);
 
@@ -357,6 +362,11 @@ NSPMoveVars::Refresh(void)
 	else
 		pm_runspeed = g_pmoveVars.pm_runspeed;
 
+	if (STRING_SET(EntityDef_GetKeyValue(m_defLink, "pm_runfiring")))
+		pm_runfiring = stof(EntityDef_GetKeyValue(m_defLink, "pm_runfiring"));
+	else
+		pm_runfiring = g_pmoveVars.pm_runfiring;
+
 	if (STRING_SET(EntityDef_GetKeyValue(m_defLink, "pm_stamina")))
 		pm_stamina = stof(EntityDef_GetKeyValue(m_defLink, "pm_stamina"));
 	else
@@ -402,7 +412,7 @@ NSPMoveVars::Refresh(void)
 }
 
 void
-NSPMoveVars::LinkToEntity(string defName)
+ncPMoveVars::LinkToEntity(string defName)
 {
 	m_defLink = defName;
 	Refresh();
@@ -411,7 +421,7 @@ NSPMoveVars::LinkToEntity(string defName)
 
 #ifdef SERVER
 void
-NSPMoveVars::EvaluateEntity(void)
+ncPMoveVars::EvaluateEntity(void)
 {
 	/* this is belonging to a decl */
 	if (STRING_SET(m_defLink)) {
@@ -442,6 +452,7 @@ NSPMoveVars::EvaluateEntity(void)
 	pm_pronespeed = autocvar_pm_pronespeed;
 	pm_proneviewheight = autocvar_pm_proneviewheight;
 	pm_runspeed = autocvar_pm_runspeed;
+	pm_runfiring = autocvar_pm_runfiring;
 	pm_stamina = autocvar_pm_stamina;
 	pm_staminarate = autocvar_pm_staminarate;
 	pm_staminathreshold = autocvar_pm_staminathreshold;
@@ -475,6 +486,7 @@ NSPMoveVars::EvaluateEntity(void)
 	EVALUATE_FIELD(pm_pronespeed, PMOVEVARS_UPDATE)
 	EVALUATE_FIELD(pm_proneviewheight, PMOVEVARS_UPDATE)
 	EVALUATE_FIELD(pm_runspeed, PMOVEVARS_UPDATE)
+	EVALUATE_FIELD(pm_runfiring, PMOVEVARS_UPDATE)
 	EVALUATE_FIELD(pm_stamina, PMOVEVARS_UPDATE)
 	EVALUATE_FIELD(pm_staminarate, PMOVEVARS_UPDATE)
 	EVALUATE_FIELD(pm_staminathreshold, PMOVEVARS_UPDATE)
@@ -487,7 +499,7 @@ NSPMoveVars::EvaluateEntity(void)
 }
 
 bool
-NSPMoveVars::SendEntity(entity pvsEnt, float flChanged)
+ncPMoveVars::SendEntity(entity pvsEnt, float flChanged)
 {
 	/* this is belonging to a decl */
 	if (STRING_SET(m_defLink)) {
@@ -521,6 +533,7 @@ NSPMoveVars::SendEntity(entity pvsEnt, float flChanged)
 	SENDENTITY_FLOAT(pm_pronespeed, PMOVEVARS_UPDATE)
 	SENDENTITY_FLOAT(pm_proneviewheight, PMOVEVARS_UPDATE)
 	SENDENTITY_FLOAT(pm_runspeed, PMOVEVARS_UPDATE)
+	SENDENTITY_FLOAT(pm_runfiring, PMOVEVARS_UPDATE)
 	SENDENTITY_FLOAT(pm_stamina, PMOVEVARS_UPDATE)
 	SENDENTITY_FLOAT(pm_staminarate, PMOVEVARS_UPDATE)
 	SENDENTITY_FLOAT(pm_staminathreshold, PMOVEVARS_UPDATE)
@@ -535,7 +548,7 @@ NSPMoveVars::SendEntity(entity pvsEnt, float flChanged)
 
 #ifdef CLIENT
 void
-NSPMoveVars::ReceiveEntity(float flNew, float flChanged)
+ncPMoveVars::ReceiveEntity(float flNew, float flChanged)
 {
 	READENTITY_FLOAT(g_gravity, PMOVEVARS_UPDATE)
 	READENTITY_FLOAT(pm_accelerate, PMOVEVARS_UPDATE)
@@ -561,6 +574,7 @@ NSPMoveVars::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_FLOAT(pm_pronespeed, PMOVEVARS_UPDATE)
 	READENTITY_FLOAT(pm_proneviewheight, PMOVEVARS_UPDATE)
 	READENTITY_FLOAT(pm_runspeed, PMOVEVARS_UPDATE)
+	READENTITY_FLOAT(pm_runfiring, PMOVEVARS_UPDATE)
 	READENTITY_FLOAT(pm_stamina, PMOVEVARS_UPDATE)
 	READENTITY_FLOAT(pm_staminarate, PMOVEVARS_UPDATE)
 	READENTITY_FLOAT(pm_staminathreshold, PMOVEVARS_UPDATE)
@@ -576,7 +590,7 @@ NSPMoveVars::ReceiveEntity(float flNew, float flChanged)
 
 // 	printf("Refreshing all pmove vars.\n");
 
-	for (NSPMoveVars vars = __NULL__;(vars = (NSPMoveVars)find(vars, ::classname, "NSPMoveVars"));) {
+	for (ncPMoveVars vars = __NULL__;(vars = (ncPMoveVars)find(vars, ::classname, "ncPMoveVars"));) {
 		vars.Refresh();
 	}
 
@@ -584,55 +598,55 @@ NSPMoveVars::ReceiveEntity(float flNew, float flChanged)
 #endif
 
 vector
-NSPMoveVars::GetStandingMins(void)
+ncPMoveVars::GetStandingMins(void)
 {
 	return (m_vecStandingMins);
 }
 
 vector
-NSPMoveVars::GetStandingMaxs(void)
+ncPMoveVars::GetStandingMaxs(void)
 {
 	return (m_vecStandingMaxs);
 }
 
 vector
-NSPMoveVars::GetCrouchMins(void)
+ncPMoveVars::GetCrouchMins(void)
 {
 	return (m_vecCrouchMins);
 }
 
 vector
-NSPMoveVars::GetCrouchMaxs(void)
+ncPMoveVars::GetCrouchMaxs(void)
 {
 	return (m_vecCrouchMaxs);
 }
 
 vector
-NSPMoveVars::GetProneMins(void)
+ncPMoveVars::GetProneMins(void)
 {
 	return (m_vecProneMins);
 }
 
 vector
-NSPMoveVars::GetProneMaxs(void)
+ncPMoveVars::GetProneMaxs(void)
 {
 	return (m_vecProneMaxs);
 }
 
 vector
-NSPMoveVars::GetStandingViewOffset(void)
+ncPMoveVars::GetStandingViewOffset(void)
 {
 	return (m_vecNormalViewOffset);
 }
 
 vector
-NSPMoveVars::GetCrouchViewOffset(void)
+ncPMoveVars::GetCrouchViewOffset(void)
 {
 	return (m_vecCrouchViewOffset);
 }
 
 vector
-NSPMoveVars::GetProneViewOffset(void)
+ncPMoveVars::GetProneViewOffset(void)
 {
 	return (m_vecProneViewOffset);
 }
@@ -642,7 +656,7 @@ PMove_Init(void)
 {
 	#ifdef SERVER
 	if (!g_pmoveVars) {
-		g_pmoveVars = spawn(NSPMoveVars);
+		g_pmoveVars = spawn(ncPMoveVars);
 		g_pmoveVars.pvsflags = PVSF_IGNOREPVS;
 	}
 	#endif
@@ -650,6 +664,36 @@ PMove_Init(void)
 	#ifdef CUSTOMPLAYERPHYSICS
 	PMoveCustom_Init();
 	#endif
+
+	g_waterDecl = ncDict::LoadDeclFromFile("water", "typeinfo/water.decl");
+	g_slimeDecl = ncDict::LoadDeclFromFile("slime", "typeinfo/slime.decl");
+	g_lavaDecl = ncDict::LoadDeclFromFile("lava", "typeinfo/lava.decl");
+	g_fallDamageDecl = ncDict::LoadDeclFromFile("falldamage", "typeinfo/falldamage.decl");
+
+	if (g_waterDecl.GetString("def_damage") == "") {
+		g_waterDamageDecl = spawn(ncDict);
+		g_waterDamageDecl.AddKey("damage", g_waterDecl.GetString("damage"));
+	} else {
+		g_waterDamageDecl = ncDict::LoadDeclFromFile(g_waterDecl.GetString("def_damage"), "typeinfo/water.decl");
+	}
+
+	if (g_slimeDecl.GetString("def_damage") == "") {
+		g_slimeDamageDecl = spawn(ncDict);
+		g_slimeDamageDecl.AddKey("damage", g_slimeDecl.GetString("damage"));
+	} else {
+		g_slimeDamageDecl = ncDict::LoadDeclFromFile(g_slimeDecl.GetString("def_damage"), "typeinfo/slime.decl");
+	}
+
+	if (g_lavaDecl.GetString("def_damage") == "") {
+		g_lavaDamageDecl = spawn(ncDict);
+		g_lavaDamageDecl.AddKey("damage", g_lavaDecl.GetString("damage"));
+	} else {
+		g_lavaDamageDecl = ncDict::LoadDeclFromFile(g_lavaDecl.GetString("def_damage"), "typeinfo/lava.decl");
+	}
+
+// 	printf("WATER DAMAGE: %i %i\n", g_waterDecl.GetInteger("damage"), g_waterDamageDecl.GetInteger("damage"));
+// 	printf("SLIME DAMAGE: %i %i\n", g_slimeDecl.GetInteger("damage"), g_slimeDamageDecl.GetInteger("damage"));
+// 	printf("LAVA DAMAGE: %i %i\n", g_lavaDecl.GetInteger("damage"), g_lavaDamageDecl.GetInteger("damage"));
 }
 
 /* simple bounds check */

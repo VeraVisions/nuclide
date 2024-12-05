@@ -16,10 +16,10 @@
 
 #pragma target fte_5768
 #define QWSSQC
+#define SERVER
 
 #include "../shared/fteextensions.qc"
-#include "../shared/global.h"
-#include "../shared/math.h"
+#include "../common/defs.h"
 #include "api_func.h"
 #include "../shared/api.h"
 

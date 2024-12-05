@@ -41,11 +41,11 @@ This plays well with the func_monitor entity.
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-point_camera:NSPointTrigger
+point_camera:ncPointTrigger
 {
 public:
 	void point_camera(void);

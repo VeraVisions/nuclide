@@ -15,13 +15,13 @@
 */
 
 void
-NSClientPlayer::NSClientPlayer(void)
+ncPlayer::ncPlayer(void)
 {
 	flags |= FL_CLIENT;
 	vehicle = __NULL__;
 }
 
-NSWeapon
+ncWeapon
 GetWeaponEntity(int theclientsnumber)
 {
 	entity e = edict_num((float)theclientsnumber);
@@ -33,12 +33,45 @@ GetWeaponEntity(int theclientsnumber)
 	return e;
 }
 
+
+bool
+ncPlayer::CanPickupEntity(ncEntity toPickUp, float massLimit, float sizeLimit)
+{
+	if (!toPickUp) {
+		return (false);
+	}
+
+	if (massLimit > 0.0 && toPickUp.GetMovetype() == MOVETYPE_PHYSICS) {
+		ncPhysicsEntity physicsEntity = (ncPhysicsEntity)toPickUp;
+		float entityMass = physicsEntity.GetMass();
+
+		if (entityMass > massLimit) {
+			EntError("%s (%d) is above mass limit (%d kg > %d kg)", toPickUp.classname, num_for_edict(toPickUp), entityMass, massLimit);
+			return (false);
+		}
+	}
+
+	if (sizeLimit > 0.0) {
+		vector entitySize = GetSize();
+
+		/* if any dimension  is above the size limit, prevent it */
+		if (entitySize[0] > sizeLimit ||
+			entitySize[1] > sizeLimit ||
+			entitySize[2] > sizeLimit) {
+			EntError("%s (%d) is above size limit (%v > %d)", toPickUp.classname, num_for_edict(toPickUp), entitySize, sizeLimit);
+			return (false);
+		}
+	}
+
+	return (true);
+}
+
 void
-NSClientPlayer::SharedInputFrame(void)
+ncPlayer::SharedInputFrame(void)
 {
 	/* if spectator, we want to make sure we call this */
 	if (!Client_InIntermission() && IsFakeSpectator()) {
-		NSClientSpectator::SharedInputFrame();
+		ncSpectator::SharedInputFrame();
 		return;
 	}
 
@@ -48,7 +81,7 @@ NSClientPlayer::SharedInputFrame(void)
 	   up bogus values to mess with the server game. any checks go here
 	   as this is where they'll be received first. */
 	if (input_cursor_entitynumber) {
-		NSWeapon nextWeapon = GetWeaponEntity(input_cursor_entitynumber);
+		ncWeapon nextWeapon = GetWeaponEntity(input_cursor_entitynumber);
 
 		/* might be nothing */
 		if (nextWeapon != __NULL__) {
@@ -76,31 +109,31 @@ NSClientPlayer::SharedInputFrame(void)
 }
 
 bool
-NSClientPlayer::IsRealSpectator(void)
+ncPlayer::IsRealSpectator(void)
 {
 	return (false);
 }
 
 bool
-NSClientPlayer::IsDead(void)
+ncPlayer::IsDead(void)
 {
 	return (health > 0) ? (false) : true;
 }
 
 bool
-NSClientPlayer::IsPlayer(void)
+ncPlayer::IsPlayer(void)
 {
-	return !HasVFlags(VFL_FAKESPEC);
+	return (true);
 }
 
 bool
-NSClientPlayer::IsFakeSpectator(void)
+ncPlayer::IsFakeSpectator(void)
 {
 	return HasVFlags(VFL_FAKESPEC);
 }
 
 bool
-NSClientPlayer::CanSprint(void)
+ncPlayer::CanSprint(void)
 {
 	if ((IsProne() == true) || (IsCrouching() == true))
 		return (false);
@@ -109,37 +142,37 @@ NSClientPlayer::CanSprint(void)
 }
 
 bool
-NSClientPlayer::CanProne(void)
+ncPlayer::CanProne(void)
 {
 	return m_pmoveVars.pm_proneheight > 0 ? (true) : false;
 }
 
 bool
-NSClientPlayer::CanLean(void)
+ncPlayer::CanLean(void)
 {
 	return (true);
 }
 
 bool
-NSClientPlayer::CanCrouch(void)
+ncPlayer::CanCrouch(void)
 {
 	return m_pmoveVars.pm_crouchheight > 0 ? (true) : false;
 }
 
 void
-NSClientPlayer::_UpdatePMoveVars(void)
+ncPlayer::_UpdatePMoveVars(void)
 {
 	if (m_pmoveVars) {
 		m_pmoveVars.Destroy();
 		m_pmoveVars = 0;
 	}
 
-	m_pmoveVars = spawn(NSPMoveVars);
+	m_pmoveVars = spawn(ncPMoveVars);
 	m_pmoveVars.LinkToEntity(declclass);
 }
 
 void
-NSClientPlayer::PreFrame(void)
+ncPlayer::PreFrame(void)
 {
 #ifdef CLIENT
 	if (Util_IsPaused()) {
@@ -150,17 +183,17 @@ NSClientPlayer::PreFrame(void)
 	 * information. */
 	PredictPreFrame();
 
-	NSItem itemEntry = m_itemList;
+	ncItem itemEntry = m_itemList;
 
 	while (itemEntry) {
 		if (itemEntry.PredictPreFrame) {
 			itemEntry.PredictPreFrame();
 		}
-		itemEntry = (NSItem)itemEntry.m_nextItem;
+		itemEntry = (ncItem)itemEntry.m_nextItem;
 	}
 
 	if (vehicle) {
-		NSVehicle veh = (NSVehicle)vehicle;
+		ncVehicle veh = (ncVehicle)vehicle;
 		veh.PredictPreFrame();
 	}
 
@@ -191,7 +224,7 @@ NSClientPlayer::PreFrame(void)
 #endif
 }
 void
-NSClientPlayer::PostFrame(void)
+ncPlayer::PostFrame(void)
 {
 #ifdef CLIENT
 	if (Util_IsPaused()) {
@@ -201,19 +234,19 @@ NSClientPlayer::PostFrame(void)
 	/* give the game/mod a chance to roll back its values too */
 	PredictPostFrame();
 
-	NSItem itemEntry = m_itemList;
+	ncItem itemEntry = m_itemList;
 
 	while (itemEntry) {
 		if (itemEntry.PredictPostFrame) {
 			itemEntry.PredictPostFrame();
 		}
-		itemEntry = (NSItem)itemEntry.m_nextItem;
+		itemEntry = (ncItem)itemEntry.m_nextItem;
 	}
 
 	setorigin(this, origin);  /* update bounds */
 
 	if (vehicle) {
-		NSVehicle veh = (NSVehicle)vehicle;
+		ncVehicle veh = (ncVehicle)vehicle;
 		veh.PredictPostFrame();
 		setorigin(veh, veh.origin);
 	}
@@ -221,9 +254,10 @@ NSClientPlayer::PostFrame(void)
 }
 
 void
-NSClientPlayer::ProcessInput(void)
+ncPlayer::ProcessInput(void)
 {
-	NSVehicle veh = (NSVehicle)vehicle;
+	bool canfire = true;
+	ncVehicle veh = (ncVehicle)vehicle;
 
 	//printf("%d\n", input_buttons);
 
@@ -233,7 +267,7 @@ NSClientPlayer::ProcessInput(void)
 	XR_InputFrame(this);
 
 	if (!Client_InIntermission() && IsFakeSpectator()) {
-		NSClientSpectator::ProcessInput();
+		ncSpectator::ProcessInput();
 		SpectatorTrackPlayer();
 		return;
 	}
@@ -251,8 +285,14 @@ NSClientPlayer::ProcessInput(void)
 		rules.IntermissionEnd();
 		return;
 	} else if (IsAlive() == false) {
-		if (input_buttons & INPUT_PRIMARY)
-			rules.PlayerRequestRespawn(this);
+		/* don't go when left click was held... */
+		if (input_buttons & INPUT_PRIMARY && !(gflags & GF_SEMI_TOGGLED)) {
+			if (TimeSinceDeath() > 1.0f) {
+				rules.PlayerRequestRespawn(this);
+			}
+		} else if (input_buttons & INPUT_PRIMARY) {
+			gflags &= ~GF_SEMI_TOGGLED; /* this is usually done in the weapon code, which won't be run. */
+		}
 	}
 
 	/* handle use button presses */
@@ -266,7 +306,23 @@ NSClientPlayer::ProcessInput(void)
 	impulse = 0;
 #endif
 
-	bool canfire = true;
+	if (vv_flags & VFL_HOLDING) {
+		canfire = false;
+	}
+
+	/* throw it if we're holding something */
+	if (vv_flags & VFL_HOLDING && input_buttons & INPUT_PRIMARY) {
+#ifdef SERVER
+		ncEntity heldProp = (ncEntity)m_holdingEntity;
+		m_holdingEntity = false;
+		heldProp.m_holdingPlayer = __NULL__;
+		heldProp.think = __NULL__;
+		heldProp.nextthink = 0.0f;
+		heldProp.m_lastHeldTime = time;
+		heldProp.SetVelocity(anglesToForward(GetViewAngle()) * 1024.0f);
+#endif
+		vv_flags &= ~VFL_HOLDING;
+	}
 
 	/* can't fire in some vehicles */
 	if (veh)
@@ -315,33 +371,33 @@ NSClientPlayer::ProcessInput(void)
 /* this is where it gets mod specific really fast,
    as some models may not even support skeletal animation */
 void
-NSClientPlayer::UpdatePlayerAnimation(float timelength)
+ncPlayer::UpdatePlayerAnimation(float timelength)
 {
 
 }
 
 #ifdef CLIENT
 void
-NSClientPlayer::UpdatePlayerJaw(float voip_volume)
+ncPlayer::UpdatePlayerJaw(float voip_volume)
 {
 }
 
 void
-NSClientPlayer::UpdatePlayerAttachments(bool visible)
+ncPlayer::UpdatePlayerAttachments(bool visible)
 {
 
 }
 
 float
-NSClientPlayer::predraw(void)
+ncPlayer::predraw(void)
 {
 	bool localplayer = false;
 
-	NSClient cl = (NSClient)pSeat->m_ePlayer;
+	ncPlayer cl = (ncPlayer)pSeat->m_ePlayer;
 
 	/* figure out if this is the local player. it's either us or us spectating */
 	if (Client_IsSpectator(cl)) {
-		NSClientSpectator spec = (NSClientSpectator)pSeat->m_ePlayer;
+		ncSpectator spec = (ncSpectator)pSeat->m_ePlayer;
 		if (entnum == spec.spec_ent && spec.spec_mode == SPECMODE_FIRSTPERSON) {
 			localplayer = true;
 		}
@@ -352,7 +408,7 @@ NSClientPlayer::predraw(void)
 	}
 
 	if (!p_model) {
-		p_model = spawn(NSRenderableEntity);
+		p_model = spawn(ncRenderableEntity);
 		p_model.effects = 0; /* we want p-models to cast shadows, just like players */
 	}
 
@@ -382,15 +438,15 @@ NSClientPlayer::predraw(void)
 	/* mouth flapping */
 	UpdatePlayerJaw(getplayerkeyfloat(this.entnum - 1, "voiploudness"));
 
-	/* apply any necessary filters from NSRenderableEntity */
+	/* apply any necessary filters from ncRenderableEntity */
 	RenderFXPass();
 
-	/* apply any fire effects, if we're burning (we're of type NSSurfacePropEntity that can burn) */
+	/* apply any fire effects, if we're burning (we're of type ncSurfacePropEntity that can burn) */
 	RenderFire();
 
 	/* if we're inside of a vehicle, it may want to hide or show us regardless */
 	if (localplayer && HasVFlags(VFL_INVEHICLE)) {
-		NSVehicle veh = (NSVehicle)vehicle;
+		ncVehicle veh = (ncVehicle)vehicle;
 
 		if (veh)
 			localplayer = veh.HidePlayermodel();
@@ -454,14 +510,14 @@ NSClientPlayer::predraw(void)
 }
 
 void
-NSClientPlayer::postdraw(void)
+ncPlayer::postdraw(void)
 {
 }
 
 void
-NSClientPlayer::VehicleRelink(void)
+ncPlayer::VehicleRelink(void)
 {
-	NSWeapon oldWeapon = m_activeWeapon;
+	ncWeapon oldWeapon = m_activeWeapon;
 
 	if (!vehicle_entnum)
 		vehicle = __NULL__;
@@ -471,12 +527,12 @@ NSClientPlayer::VehicleRelink(void)
 	if (!activeweapon)
 		m_activeWeapon = __NULL__;
 	else
-		m_activeWeapon = (NSWeapon)findentity(world, ::entnum, activeweapon);
+		m_activeWeapon = (ncWeapon)findentity(world, ::entnum, activeweapon);
 
 	if (!m_flFirstInventoryItem)
 		m_itemList = __NULL__;
 	else {
-		m_itemList = (NSItem)findentity(world, ::entnum, m_flFirstInventoryItem);
+		m_itemList = (ncItem)findentity(world, ::entnum, m_flFirstInventoryItem);
 	}
 
 	/* that state has only just changed. */
@@ -495,7 +551,7 @@ NSClientPlayer::VehicleRelink(void)
 }
 
 void
-NSClientPlayer::OnRemoveEntity(void)
+ncPlayer::OnRemoveEntity(void)
 {
 	if (p_model)
 		p_model.Destroy();
@@ -507,13 +563,13 @@ NSClientPlayer::OnRemoveEntity(void)
 }
 
 vector
-NSClientPlayer::CalculateLean(vector viewAngle)
+ncPlayer::CalculateLean(vector viewAngle)
 {
 	vector shift = anglesToRight(viewAngle);
 	vector output;
 	vector srcPos;
 	float heightChange;
-	NSClientPlayer pl = (NSClientPlayer)pSeat->m_ePlayer;
+	ncPlayer pl = (ncPlayer)pSeat->m_ePlayer;
 
 	if (pSeat->m_iLeanDir > 0i) {
 		pSeat->m_flLeaning += frametime * 5;
@@ -540,7 +596,7 @@ NSClientPlayer::CalculateLean(vector viewAngle)
 }
 
 void
-NSClientPlayer::UpdateAliveCam(void)
+ncPlayer::UpdateAliveCam(void)
 {
 	vector cam_pos = GetEyePos();
 
@@ -559,7 +615,7 @@ NSClientPlayer::UpdateAliveCam(void)
 #endif
 
 	if (vehicle) {
-		NSVehicle veh = (NSVehicle)vehicle;
+		ncVehicle veh = (ncVehicle)vehicle;
 
 		if (veh.UpdateView)
 			veh.UpdateView();
@@ -582,14 +638,14 @@ var float autocvar_cl_sidespeed = 152;
 var float autocvar_cl_backspeed = 133;
 
 void
-NSClientPlayer::ClientInputFrame(void)
+ncPlayer::ClientInputFrame(void)
 {
 	if (Util_IsPaused())
 		return;
 
 	/* fake spectators want the same input as real ones. */
 	if (IsFakeSpectator()) {
-		NSClientSpectator::ClientInputFrame();
+		ncSpectator::ClientInputFrame();
 		return;
 	}
 
@@ -672,11 +728,6 @@ NSClientPlayer::ClientInputFrame(void)
 		input_movevalues[0] *= 1.5f;
 		input_movevalues[1] *= 1.5f;
 		input_movevalues[2] *= 1.5f;
-
-		/* prevent firing of weapons */
-		input_buttons &= ~INPUT_PRIMARY;
-		input_buttons &= ~INPUT_SECONDARY;
-		input_buttons &= ~INPUT_RELOAD;
 	} else {
 		input_buttons &= ~INPUT_SPRINT;
 	}
@@ -687,13 +738,13 @@ NSClientPlayer::ClientInputFrame(void)
 }
 
 void
-NSClientPlayer::_ReceiveComplete(float flNew, float flChanged)
+ncPlayer::_ReceiveComplete(float flNew, float flChanged)
 {
 
 }
 
 void
-NSClientPlayer::ReceiveEntity(float new, float flChanged)
+ncPlayer::ReceiveEntity(float new, float flChanged)
 {
 	/* store which input sequence we're on, this helps us
 	 * later when we run prediction again between last/latest
@@ -765,6 +816,9 @@ NSClientPlayer::ReceiveEntity(float new, float flChanged)
 	READENTITY_FLOAT(punchangle[0], PLAYER_PUNCHANGLE)
 	READENTITY_FLOAT(punchangle[1], PLAYER_PUNCHANGLE)
 	READENTITY_FLOAT(punchangle[2], PLAYER_PUNCHANGLE)
+	READENTITY_FLOAT(punchvelocity[0], PLAYER_PUNCHANGLE)
+	READENTITY_FLOAT(punchvelocity[1], PLAYER_PUNCHANGLE)
+	READENTITY_FLOAT(punchvelocity[2], PLAYER_PUNCHANGLE)
 	READENTITY_FLOAT(viewzoom, PLAYER_VIEWZOOM)
 	READENTITY_FLOAT(teleport_time, PLAYER_TIMINGS)
 	READENTITY_FLOAT(m_flStamina, PLAYER_TIMINGS)
@@ -821,7 +875,7 @@ NSClientPlayer::ReceiveEntity(float new, float flChanged)
 }
 
 void
-NSClientPlayer::PredictPreFrame(void)
+ncPlayer::PredictPreFrame(void)
 {
 	if (!vehicle_entnum)
 		vehicle = __NULL__;
@@ -831,12 +885,12 @@ NSClientPlayer::PredictPreFrame(void)
 	if (!activeweapon)
 		m_activeWeapon = __NULL__;
 	else
-		m_activeWeapon = (NSWeapon)findentity(world, ::entnum, activeweapon);
+		m_activeWeapon = (ncWeapon)findentity(world, ::entnum, activeweapon);
 
 	if (!m_flFirstInventoryItem)
 		m_itemList = __NULL__;
 	else {
-		m_itemList = (NSItem)findentity(world, ::entnum, m_flFirstInventoryItem);
+		m_itemList = (ncItem)findentity(world, ::entnum, m_flFirstInventoryItem);
 	}
 
 	if (m_activeWeapon)
@@ -844,7 +898,7 @@ NSClientPlayer::PredictPreFrame(void)
 			m_activeWeapon.PredictPreFrame();
 
 	if (vehicle) {
-		NSVehicle veh = (NSVehicle)vehicle;
+		ncVehicle veh = (ncVehicle)vehicle;
 		veh.PredictPreFrame();
 	}
 
@@ -878,6 +932,7 @@ NSClientPlayer::PredictPreFrame(void)
 	SAVE_STATE(movetype)
 	SAVE_STATE(solid)
 	SAVE_STATE(punchangle)
+	SAVE_STATE(punchvelocity)
 	SAVE_STATE(viewzoom)
 	SAVE_STATE(teleport_time)
 	SAVE_STATE(m_flStamina)
@@ -899,7 +954,7 @@ NSClientPlayer::PredictPreFrame(void)
 }
 
 void
-NSClientPlayer::PredictPostFrame(void)
+ncPlayer::PredictPostFrame(void)
 {
 	ROLL_BACK(modelindex)
 	ROLL_BACK(colormap)
@@ -931,6 +986,7 @@ NSClientPlayer::PredictPostFrame(void)
 	ROLL_BACK(movetype)
 	ROLL_BACK(solid)
 	ROLL_BACK(punchangle)
+	ROLL_BACK(punchvelocity)
 	ROLL_BACK(viewzoom)
 	ROLL_BACK(teleport_time)
 	ROLL_BACK(m_flStamina)
@@ -959,26 +1015,24 @@ NSClientPlayer::PredictPostFrame(void)
 	}
 
 	if (vehicle) {
-		NSVehicle veh = (NSVehicle)vehicle;
+		ncVehicle veh = (ncVehicle)vehicle;
 		veh.PredictPostFrame();
 	}
 }
 #else
 void
-NSClientPlayer::ServerInputFrame(void)
+ncPlayer::ServerInputFrame(void)
 {
-#ifdef BOT_INCLUDED
 	/* wait a few seconds, as we may not have been spawned yet */
-	if (clienttype(this) == CLIENTTYPE_BOT) {
-		((NSBot)this).RunAI();
+	if (isBot(this)) {
+		((ncBot)this).RunAI();
 	}
-#endif
 
 	Physics_Run();
 }
 
 void
-NSClientPlayer::Save(float handle)
+ncPlayer::Save(float handle)
 {
 	super::Save(handle);
 	SaveFloat(handle, "max_health", max_health);
@@ -996,6 +1050,7 @@ NSClientPlayer::Save(float handle)
 	SaveVector(handle, "view_ofs", view_ofs);
 	SaveVector(handle, "v_angle", v_angle);
 	SaveVector(handle, "punchangle", punchangle);
+	SaveVector(handle, "punchvelocity", punchvelocity);
 	SaveFloat(handle, "movetype", movetype);
 	SaveFloat(handle, "solid", solid);
 	SaveFloat(handle, "w_attack_next", w_attack_next);
@@ -1012,7 +1067,7 @@ NSClientPlayer::Save(float handle)
 }
 
 void
-NSClientPlayer::Restore(string strKey, string strValue)
+ncPlayer::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "max_health":
@@ -1057,6 +1112,9 @@ NSClientPlayer::Restore(string strKey, string strValue)
 	case "punchangle":
 		punchangle = ReadVector(strValue);
 		break;
+	case "punchvelocity":
+		punchvelocity = ReadVector(strValue);
+		break;
 	case "solid":
 		solid = ReadFloat(strValue);
 		break;
@@ -1088,10 +1146,10 @@ NSClientPlayer::Restore(string strKey, string strValue)
 		g_items = ReadInt(strValue);
 		break;
 	case "m_itemList":
-		m_itemList = (NSItem)ReadEntity(strValue);
+		m_itemList = (ncItem)ReadEntity(strValue);
 		break;
 	case "m_activeWeapon":
-		m_activeWeapon = (NSWeapon)ReadEntity(strValue);
+		m_activeWeapon = (ncWeapon)ReadEntity(strValue);
 		break;
 	case "vehicle":
 		vehicle = ReadEntity(strValue);
@@ -1103,21 +1161,24 @@ NSClientPlayer::Restore(string strKey, string strValue)
 
 /*
 =================
-NSClientPlayer::Respawn
+ncPlayer::Respawn
 
 it'd be pretty unfortunate if 'sv respawn_ents' or something called this
 =================
 */
 void
-NSClientPlayer::Respawn(void)
+ncPlayer::Respawn(void)
 {
 	/* make sure nothing happens here */
 }
 
 void
-NSClientPlayer::Input(entity eAct, string strInput, string strData)
+ncPlayer::Input(entity eAct, string strInput, string strData)
 {
 	switch (strInput) {
+	case "Message":
+		env_message_single(this, strData);
+		break;
 	case "Spectate":
 		MakeTempSpectator();
 		break;
@@ -1128,14 +1189,14 @@ NSClientPlayer::Input(entity eAct, string strInput, string strData)
 
 /*
 =================
-NSClientPlayer::MakeTempSpectator
+ncPlayer::MakeTempSpectator
 
 This is what dead players in round matches become, or when we spawn
 for the first time before selecting a loadout or something.
 =================
  */
 void
-NSClientPlayer::MakeTempSpectator(void)
+ncPlayer::MakeTempSpectator(void)
 {
 	classname = "player";
 	flags = FL_CLIENT;
@@ -1166,7 +1227,7 @@ NSClientPlayer::MakeTempSpectator(void)
 }
 
 void
-NSClientPlayer::Death(entity inflictor, entity attacker, int damage, vector dir, int location)
+ncPlayer::Death(entity inflictor, entity attacker, int damage, vector dir, vector absImpactPos, int hitBody)
 {
 	RemoveAllItems(false);
 	classname = "player";
@@ -1194,24 +1255,22 @@ NSClientPlayer::Death(entity inflictor, entity attacker, int damage, vector dir,
 }
 
 void
-NSClientPlayer::Spawned(void)
+ncPlayer::Spawned(void)
 {
 	super::Spawned();
 
 	/* we really need to check if whether we're a real client yet. */
-	if (clienttype(this) == CLIENTTYPE_REAL) {
+	if (clienttype(this) == CLIENTTYPE_REAL || clienttype(this) == CLIENTTYPE_BOT) {
 		MakePlayer();
 	} else {
 		Disappear(); /* hide us for now */
 	}
 
-#ifdef SERVER
 	_UpdatePMoveVars();
-#endif
 }
 
 void
-NSClientPlayer::MakePlayer(void)
+ncPlayer::MakePlayer(void)
 {
 	classname = "player";
 	AddFlags(FL_CLIENT);
@@ -1245,7 +1304,7 @@ NSClientPlayer::MakePlayer(void)
 }
 
 void
-NSClientPlayer::MakeSpectator(void)
+ncPlayer::MakeSpectator(void)
 {
 	ClientKill();
 	MakeTempSpectator();
@@ -1254,7 +1313,7 @@ NSClientPlayer::MakeSpectator(void)
 }
 
 void
-NSClientPlayer::EvaluateEntity(void)
+ncPlayer::EvaluateEntity(void)
 {
 	pvsflags = !HasVFlags(VFL_FAKESPEC) ? 0 : PVSF_IGNOREPVS;
 
@@ -1309,6 +1368,9 @@ NSClientPlayer::EvaluateEntity(void)
 	EVALUATE_VECTOR(punchangle, 0, PLAYER_PUNCHANGLE)
 	EVALUATE_VECTOR(punchangle, 1, PLAYER_PUNCHANGLE)
 	EVALUATE_VECTOR(punchangle, 2, PLAYER_PUNCHANGLE)
+	EVALUATE_VECTOR(punchvelocity, 0, PLAYER_PUNCHANGLE)
+	EVALUATE_VECTOR(punchvelocity, 1, PLAYER_PUNCHANGLE)
+	EVALUATE_VECTOR(punchvelocity, 2, PLAYER_PUNCHANGLE)
 	EVALUATE_FIELD(viewzoom, PLAYER_VIEWZOOM)
 	EVALUATE_FIELD(teleport_time, PLAYER_TIMINGS)
 	EVALUATE_FIELD(m_flStamina, PLAYER_TIMINGS)
@@ -1327,7 +1389,7 @@ NSClientPlayer::EvaluateEntity(void)
 }
 
 float
-NSClientPlayer::SendEntity(entity ePEnt, float flChanged)
+ncPlayer::SendEntity(entity ePEnt, float flChanged)
 {
 	/* don't broadcast invisible players */
 	if (IsFakeSpectator() && ePEnt != this)
@@ -1395,6 +1457,9 @@ NSClientPlayer::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_FLOAT(punchangle[0], PLAYER_PUNCHANGLE)
 	SENDENTITY_FLOAT(punchangle[1], PLAYER_PUNCHANGLE)
 	SENDENTITY_FLOAT(punchangle[2], PLAYER_PUNCHANGLE)
+	SENDENTITY_FLOAT(punchvelocity[0], PLAYER_PUNCHANGLE)
+	SENDENTITY_FLOAT(punchvelocity[1], PLAYER_PUNCHANGLE)
+	SENDENTITY_FLOAT(punchvelocity[2], PLAYER_PUNCHANGLE)
 	SENDENTITY_FLOAT(viewzoom, PLAYER_VIEWZOOM)
 	SENDENTITY_FLOAT(teleport_time, PLAYER_TIMINGS)
 	SENDENTITY_FLOAT(m_flStamina, PLAYER_TIMINGS)
@@ -1415,14 +1480,14 @@ NSClientPlayer::SendEntity(entity ePEnt, float flChanged)
 }
 
 float
-NSClientPlayer::OptimiseChangedFlags(entity ePEnt, float flChanged)
+ncPlayer::OptimiseChangedFlags(entity ePEnt, float flChanged)
 {
 	bool is_spec = false;
 	bool spectarget = false;
 
 	/* figure out if we should optimise this player */
 	if (ePEnt.flags & FL_CLIENT && ePEnt != this) {
-		NSClientSpectator sp = (NSClientSpectator)ePEnt;
+		ncSpectator sp = (ncSpectator)ePEnt;
 		is_spec = (sp.IsFakeSpectator() || sp.IsRealSpectator());
 		spectarget = (is_spec == true && edict_num(sp.spec_ent) == this);
 	}
@@ -1446,9 +1511,9 @@ NSClientPlayer::OptimiseChangedFlags(entity ePEnt, float flChanged)
 }
 
 void
-_NSClientPlayer_useworkaround(entity eTarget)
+_ncPlayer_useworkaround(entity eTarget)
 {
-	eActivator = (NSEntity)self;
+	eActivator = (ncEntity)self;
 	entity eOldSelf = self;
 	self = eTarget;
 	self.PlayerUse();
@@ -1457,9 +1522,9 @@ _NSClientPlayer_useworkaround(entity eTarget)
 
 
 void
-_NSClientPlayer_unuseworkaround(entity eTarget)
+_ncPlayer_unuseworkaround(entity eTarget)
 {
-	eActivator = (NSEntity)self;
+	eActivator = (ncEntity)self;
 	entity eOldSelf = self;
 	self = eTarget;
 	if (self.PlayerUseUnpressed)
@@ -1468,7 +1533,54 @@ _NSClientPlayer_unuseworkaround(entity eTarget)
 }
 
 void
-NSClientPlayer::InputUse_Down(void)
+Holding_UpdatePos(void)
+{
+	ncEntity meSelf = (ncEntity)self;
+	ncPlayer ourOwner = (ncPlayer)meSelf.m_holdingPlayer;
+
+	/* did the owner die? unpickup */
+	if (ourOwner.health <= 0) {
+		ourOwner.m_holdingEntity = false;
+		meSelf.m_holdingPlayer = __NULL__;
+		meSelf.think = __NULL__;
+		meSelf.nextthink = 0.0f;
+		meSelf.m_lastHeldTime = time;
+		ourOwner.vv_flags &= ~VFL_HOLDING;
+#ifdef SERVER
+		NSLog("%s stopped holding onto %s", ourOwner.netname, meSelf.classname);
+#endif
+		return;
+	}
+
+	vector forwardDir = anglesToForward(ourOwner.v_angle);
+	vector targetOrg = ourOwner.GetEyePos() + forwardDir * 96.0f;
+	meSelf.velocity = (targetOrg - meSelf.origin) * 10.0;
+	meSelf.nextthink = time;
+	meSelf.think = Holding_UpdatePos;
+}
+
+void
+ncPlayer::PickupEntity(ncEntity toPickUp)
+{
+	if (!toPickUp) {
+		EntError("Cannot pickup null entity.");
+		return;
+	}
+
+	/* make it impossible to pick it back up in a short amount of time */
+	if ((toPickUp.m_lastHeldTime + 1.0f) > time) {
+		return;
+	}
+
+	vv_flags |= VFL_HOLDING;
+	m_holdingEntity = toPickUp;
+	toPickUp.m_holdingPlayer = this;
+	toPickUp.ScheduleThink(Holding_UpdatePos, 0.0f);
+	EntLog("Now holding %s", toPickUp.classname);
+}
+
+void
+ncPlayer::InputUse_Down(void)
 {
 	if (IsDead()) {
 		return;
@@ -1476,54 +1588,70 @@ NSClientPlayer::InputUse_Down(void)
 		return;
 	}
 
-	vector vecSource;
-	entity eRad;
+	if (vv_flags & VFL_HOLDING) {
+		ncEntity heldProp = (ncEntity)m_holdingEntity;
+		m_holdingEntity = false;
+		heldProp.m_holdingPlayer = __NULL__;
+		heldProp.think = __NULL__;
+		heldProp.nextthink = 0.0f;
+		heldProp.m_lastHeldTime = time;
+		vv_flags &= ~VFL_HOLDING;
+		return;
+	}
+
+	vector vecSource, vecDest;
+	entity eRad = __NULL__;
 	bool found_use = false;
 
-	makevectors(v_angle);
-	vecSource = origin + view_ofs;
+	/* TODO: Expand this to provide for XR input based pickup. instead of casting a trace from
+	 * the eye position, we see if we're able close to our desired input hand. */
 
-	traceline(vecSource, vecSource + (v_forward * 64), MOVE_EVERYTHING, this);
+	/* how way we trace from the FPS/HMD view */
+	vecSource = GetEyePos();
+	vecDest = vecSource + (anglesToForward(GetViewAngle()) * 96);
+	traceline(vecSource, vecDest, MOVE_EVERYTHING, this);
 
 	/* first see if we traced something head-on, else we'll findradius something */
-	if (trace_ent.PlayerUse) {
-		found_use = true;
-		eRad = trace_ent;
-	} else {
-		/* find anything in a 8 unit radius, including certain non-solids (func_door, func_rot_button etc. */
-		eRad = findradius(trace_endpos, 8);
+	if (trace_fraction < 1.0f) {
+		if (trace_ent.PlayerUse) {
+			found_use = true;
+			eRad = trace_ent;
+		} else {
+			/* find anything in a 8 unit radius, including certain non-solids (func_door, func_rot_button etc. */
+			eRad = findradius(trace_endpos, 8);
 
-		/* loop through our chain and just pick the first valid one */
-		while (eRad) {
-			if (eRad.PlayerUse) {
-				found_use = true;
-				break;
+			/* loop through our chain and just pick the first valid one */
+			while (eRad) {
+				if (eRad.PlayerUse) {
+					found_use = true;
+					break;
+				}
+				eRad = eRad.chain;
 			}
-			eRad = eRad.chain;
 		}
 	}
 
 	/* TODO: maybe eRad will return something in the future that'll suppress a successfull use? */
 	if (eRad && found_use == true) {
 		RemoveVFlags(VFL_USE_RELEASED);
-		_NSClientPlayer_useworkaround(eRad);
+		_ncPlayer_useworkaround(eRad);
 		last_used = eRad;
 
 		/* Some entities want to support Use spamming */
 		if (HasVFlags(VFL_USE_RELEASED) == false) {
-			StartSoundDef("Player.WeaponSelected", CHAN_ITEM, false);
+			StartSoundDef(m_sndUseSuccess, CHAN_ITEM, false);
 		}
 	} else {
-		StartSoundDef("Player.DenyWeaponSelection", CHAN_ITEM, false);
+		StartSoundDef(m_sndUseDeny, CHAN_ITEM, false);
 		RemoveVFlags(VFL_USE_RELEASED);
 	}
 }
 
 void
-NSClientPlayer::InputUse_Up(void)
+ncPlayer::InputUse_Up(void)
 {
 	if (HasVFlags(VFL_USE_RELEASED) == false) {
-		_NSClientPlayer_unuseworkaround(last_used);
+		_ncPlayer_unuseworkaround(last_used);
 		last_used = world;
 		AddVFlags(VFL_USE_RELEASED);
 	}
@@ -1531,7 +1659,7 @@ NSClientPlayer::InputUse_Up(void)
 #endif
 
 void
-NSClientPlayer::Footsteps_Update(void)
+ncPlayer::Footsteps_Update(void)
 {
 #ifdef SERVER
 	string mat_name = "";
@@ -1550,15 +1678,15 @@ NSClientPlayer::Footsteps_Update(void)
 		return;
 
 	if (waterlevel == 1) {
-		StartSoundDef("Player.Wade", CHAN_BODY, true);
+		StartSoundDef(m_sndWaterWade, CHAN_BODY, true);
 		step_time = time + 2.0f;
 		return;
 	} else if (waterlevel == 2) {
-		StartSoundDef("Player.Wade", CHAN_BODY, true);
+		StartSoundDef(m_sndWaterWade, CHAN_BODY, true);
 		step_time = time + 2.0f;
 		return;
 	} else if (waterlevel == 3) {
-		StartSoundDef("Player.Swim", CHAN_BODY, true);
+		StartSoundDef(m_sndWaterSwim, CHAN_BODY, true);
 		step_time = time + 2.0f;
 		return;
 	} else {
@@ -1581,9 +1709,9 @@ NSClientPlayer::Footsteps_Update(void)
 		return;
 	} else if (HasVFlags(VFL_ONLADDER) && HasFlags(FL_ONGROUND) == false) { /* play ladder sounds */
 		if (step)
-			StartSoundDef("step_ladder.left", CHAN_BODY, true);
+			StartSoundDef(m_sndStepLadderLeft, CHAN_BODY, true);
 		else
-			StartSoundDef("step_ladder.right", CHAN_BODY, true);
+			StartSoundDef(m_sndStepLadderRight, CHAN_BODY, true);
 
 		/* switch between feet */
 		step = 1 - step;
@@ -1610,14 +1738,14 @@ NSClientPlayer::Footsteps_Update(void)
 }
 
 void
-NSClientPlayer::Damage(entity inflictor, entity attacker, NSDict damageDecl, float damageScale, vector dmgDir, vector hitLocation)
+ncPlayer::Damage(entity inflictor, entity attacker, ncDict damageDecl, float damageScale, vector dmgDir, vector hitLocation)
 {
 #ifdef SERVER
 	float armorDamage = 0;
 	bool isFriendlyFire = false;
 	string damageString = ReadString(damageDecl.GetString("damage"));
 	float damagePoints = (float)rint(stof(damageString) * damageScale);
-	NSSurfacePropEntity ourAttacker = (NSSurfacePropEntity)attacker;
+	ncSurfacePropEntity ourAttacker = (ncSurfacePropEntity)attacker;
 
 	/* sanity check */
 	if (isAlive(this) == false) {
@@ -1697,7 +1825,7 @@ NSClientPlayer::Damage(entity inflictor, entity attacker, NSDict damageDecl, flo
 	/* friendly fire penalty */
 	if (isFriendlyFire) {
 		int lastDmg = 0i;
-		NSClientPlayer plC = (NSClientPlayer)attacker;
+		ncPlayer plC = (ncPlayer)attacker;
 		lastDmg = plC.m_iFriendlyDMG;
 		plC.m_iFriendlyDMG += damagePoints;
 
@@ -1719,9 +1847,9 @@ NSClientPlayer::Damage(entity inflictor, entity attacker, NSDict damageDecl, flo
 		vector dmg_origin;
 
 		if (attacker.origin == [0,0,0])
-			dmg_origin = g_dmg_eTarget.origin;
+			dmg_origin = this.origin;
 		else
-			dmg_origin = g_dmg_eAttacker.origin;
+			dmg_origin = attacker.origin;
 
 		WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 		WriteByte(MSG_MULTICAST, EV_DAMAGE);
@@ -1729,23 +1857,21 @@ NSClientPlayer::Damage(entity inflictor, entity attacker, NSDict damageDecl, flo
 		WriteCoord(MSG_MULTICAST, dmg_origin[1]);
 		WriteCoord(MSG_MULTICAST, dmg_origin[2]);
 		WriteInt(MSG_MULTICAST, damagePoints);
-		WriteInt(MSG_MULTICAST, g_dmg_iFlags);
-		msg_entity = g_dmg_eTarget;
+		WriteInt(MSG_MULTICAST, 0);
+		msg_entity = this;
 		multicast([0,0,0], MULTICAST_ONE_R);
 	}
 
 	/* only hit notify on clients */
-	if ((g_dmg_eTarget.flags & FL_CLIENT) || (g_dmg_eTarget.flags & FL_MONSTER)) {
+	if ((this.flags & FL_CLIENT) || (this.flags & FL_MONSTER)) {
 		/* server-side hitnotify */
-		if ((g_dmg_eAttacker.flags & FL_CLIENT) && (g_dmg_eTarget != g_dmg_eAttacker)) {
+		if ((attacker.flags & FL_CLIENT) && (this != attacker)) {
 			WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 			WriteByte(MSG_MULTICAST, EV_HITNOTIFY);
 			msg_entity = attacker;
 			multicast([0,0,0], MULTICAST_ONE);
 		}
 	}
-
-	damageDecl.AddKey("location", vtos(hitLocation));
 
 	/* apply knockback, but only on death */
 	float knockBack = damageDecl.GetFloat("knockback");
@@ -1755,12 +1881,13 @@ NSClientPlayer::Damage(entity inflictor, entity attacker, NSDict damageDecl, flo
 
 	/* they died */
 	if (GetHealth() <= 0) {
-		g_grMode.PlayerDeath(this, (NSActor)attacker, damageDecl);
-		Death(inflictor, attacker, (int)damagePoints, dmgDir, 0i);
+		g_grMode.PlayerDeath(this, (ncActor)inflictor, (ncActor)attacker, damageDecl.GetString("weapon"));
+		Death(inflictor, attacker, (int)damagePoints, dmgDir, hitLocation, 0i);
 	} else {
-		g_grMode.PlayerPain(this, (NSActor)attacker, damageDecl);
-		Pain(inflictor, attacker, (int)damagePoints, dmgDir, 0i);
+		g_grMode.PlayerPain(this, (ncActor)attacker, damageDecl);
+		Pain(inflictor, attacker, (int)damagePoints, dmgDir, hitLocation, 0i);
 	}
+
 #endif
 }
 

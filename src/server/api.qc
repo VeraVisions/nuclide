@@ -32,7 +32,7 @@ SVPF_game_CleanUpMap(void)
 
 	/* respawn all entities. */
 	for (entity a = world; (a = findfloat(a, ::identity, 1));) {
-		NSEntity caw = (NSEntity)a;
+		ncEntity caw = (ncEntity)a;
 		if (caw.classname != "player")
 			caw.Respawn();
 	}
@@ -40,7 +40,7 @@ SVPF_game_CleanUpMap(void)
 	/* clear the corpses/items, you name it*/
 	for (entity eFind = world; (eFind = find(eFind, ::classname, "remove_me"));) {
 		if (eFind.identity) {
-			NSEntity toRemove = (NSEntity)eFind;
+			ncEntity toRemove = (ncEntity)eFind;
 			toRemove.Destroy();
 		} else {
 			remove(eFind);
@@ -78,7 +78,7 @@ SVPF_game_SetSpawnPoint(string spawnPoint)
 }
 
 int
-SVPF_actor_GetReserveAmmo(NSActor targetActor, int ammoID)
+SVPF_actor_GetReserveAmmo(ncActor targetActor, int ammoID)
 {
 	if (!targetActor) {
 		return (0i);
@@ -88,7 +88,7 @@ SVPF_actor_GetReserveAmmo(NSActor targetActor, int ammoID)
 }
 
 bool
-SVPF_actor_MaxAmmo(NSActor targetActor, int ammoID)
+SVPF_actor_MaxAmmo(ncActor targetActor, int ammoID)
 {
 	/* deny anything funny */
 	if (!targetActor) {
@@ -99,10 +99,10 @@ SVPF_actor_MaxAmmo(NSActor targetActor, int ammoID)
 }
 
 string
-SVPF_actor_GetInventory(NSActor targetActor)
+SVPF_actor_GetInventory(ncActor targetActor)
 {
 	string outputString = "";
-	NSItem m_listStart = targetActor.m_itemList;
+	ncItem m_listStart = targetActor.m_itemList;
 
 	while (m_listStart) {
 		outputString = strcat(outputString, m_listStart.classname, " ");
@@ -112,12 +112,18 @@ SVPF_actor_GetInventory(NSActor targetActor)
 	return (outputString);
 }
 
+bool
+SVPF_actor_HasItem(ncActor targetActor, string itemName)
+{
+	return (targetActor.HasItem(itemName));
+}
+
 int
 SVPF_actor_TotalActors(void)
 {
 	int actorCount = 0i;
 
-	for (NSActor actorEnum = __NULL__; (actorEnum = (NSActor)nextent(actorEnum));) {
+	for (ncActor actorEnum = __NULL__; (actorEnum = (ncActor)nextent(actorEnum));) {
 		if (actorEnum.flags & FL_MONSTER) {
 			if (actorEnum.IsAlive() == true) {
 				actorCount++;
@@ -133,7 +139,7 @@ SVPF_actor_TotalActorsOnTeam(int teamID)
 {
 	int actorCount = 0i;
 
-	for (NSActor actorEnum = __NULL__; (actorEnum = (NSActor)nextent(actorEnum));) {
+	for (ncActor actorEnum = __NULL__; (actorEnum = (ncActor)nextent(actorEnum));) {
 		if (actorEnum.flags & FL_MONSTER) {
 			if (actorEnum.team == (float)teamID && actorEnum.IsAlive() == true) {
 				actorCount++;
@@ -179,7 +185,7 @@ SVPF_exists_InVFS(string fileName)
 void
 SVPF_combat_Damage(entity targetEnt, entity inflictingEnt, entity attackingEnt, string damageDef, vector damageOrigin, vector damageDir, vector hitLocation)
 {
-	NSSurfacePropEntity theTarget;
+	ncSurfacePropEntity theTarget;
 
 	/* common filters */
 	if (targetEnt.takedamage == DAMAGE_NO) {
@@ -190,14 +196,14 @@ SVPF_combat_Damage(entity targetEnt, entity inflictingEnt, entity attackingEnt, 
 		return;
 	}
 
-	theTarget = (NSSurfacePropEntity)targetEnt;
+	theTarget = (ncSurfacePropEntity)targetEnt;
 
 	/* don't use IsAlive(), else we can't gib */
 	if (!theTarget.GetHealth()) {
 		return;
 	}
 
-	NSDict findDecl = (NSDict)find(world, ::declclass, damageDef);
+	ncDict findDecl = (ncDict)find(world, ::declclass, damageDef);
 
 	if (findDecl) {
 		theTarget.Damage(inflictingEnt, attackingEnt, findDecl, 1.0, damageDir, hitLocation);
@@ -216,7 +222,7 @@ SVPF_combat_RadiusDamage(vector damageCenter, float damageRange, int damageMin, 
 	float damageFrac = 0.0f;
 	vector dmgDir = g_vec_null;
 
-	for (NSSurfacePropEntity e = __NULL__; (e = (NSSurfacePropEntity)nextent(e));) {
+	for (ncSurfacePropEntity e = __NULL__; (e = (ncSurfacePropEntity)nextent(e));) {
 		if (e.takedamage == DAMAGE_NO) {
 			continue;
 		}
@@ -246,18 +252,19 @@ SVPF_combat_RadiusDamage(vector damageCenter, float damageRange, int damageMin, 
 			newDamage *= 0.5f;
 		}
 
-		NSDict damageDecl;
+		ncDict damageDecl;
 
 		if (STRING_SET(strDamageDecl)) {
 			int declID = EntityDef_IDFromName(strDamageDecl);
-			damageDecl = NSDict::InitWithSpawnData(EntityDef_GetSpawnData(declID));
+			damageDecl = ncDict::InitWithSpawnData(EntityDef_GetSpawnData(declID));
 		} else {
-			damageDecl = spawn(NSDict);
+			damageDecl = spawn(ncDict);
 		}
 
-
 		damageDecl.AddKey("damage", itos(newDamage));
-		e.Damage(attackingEnt, attackingEnt, damageDecl, 1.0, dmgDir, trace_endpos);
+		damageDecl.AddKey("location", vtos(entPos - (anglesToForward(dmgDir) * e.size[0])));
+		damageDecl.AddKey("push", itos(newDamage * 100));
+		e.Damage(attackingEnt, attackingEnt, damageDecl, 1.0, dmgDir, e.origin);
 		remove(damageDecl);
 	}
 }

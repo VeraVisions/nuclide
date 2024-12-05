@@ -46,11 +46,11 @@ Where 'off' will close entities like func_door, and 'on' will open them.
 # TRIVIA
 This entity was introduced in Quake (1996).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-trigger_relay:NSPointTrigger
+trigger_relay:ncPointTrigger
 {
 public:
 	void trigger_relay(void);

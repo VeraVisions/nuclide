@@ -28,7 +28,7 @@ Node_Link(node_t *n1, node_t *n2)
 	}
 
 	int idx = n1->m_numNeighbours ++;
-	n1->m_pNeighbour = (neighbour_s *)memrealloc(n1->m_pNeighbour, \
+	n1->m_pNeighbour = (neighbour_s *)memreallocOld(n1->m_pNeighbour, \
 											sizeof(*n1->m_pNeighbour), \
 											idx, n1->m_numNeighbours);
 
@@ -88,7 +88,7 @@ Nodes_InsertNodeForClassname(string classn)
 {
 	for (entity a = world; (a = find(a, ::classname, classn));) {
 		int iID = g_iNodes++;
-		g_pNodes = (node_t *)memrealloc(g_pNodes, sizeof(node_t), iID, g_iNodes);
+		g_pNodes = (node_t *)memreallocOld(g_pNodes, sizeof(node_t), iID, g_iNodes);
 		node_t *n = g_pNodes + iID;
 
 		a.solid = SOLID_BBOX;
@@ -113,31 +113,6 @@ bool
 Nodes_Available(void)
 {
 	return (g_iNodes) > 0i ? true : false;
-}
-
-vector
-Nodes_PositionOfClosestNode(vector pointOrigin)
-{
-	float flBestDist = COST_INFINITE;
-	int iBestNodeIndex = -1;
-
-	for (int i = 0; i < g_iNodes; i++) {
-		float fDist = vlen(g_pNodes[i].m_vecOrigin - pointOrigin) - g_pNodes[i].m_flRadius;
-
-#if 0
-		if (fDist > (float)maxDistance) {
-			/* Distance is greater then our maxDistance */
-			continue;
-		}
-#endif
-
-		if (fDist < flBestDist) {
-			flBestDist = fDist;
-			iBestNodeIndex = i;
-		}
-	}
-
-	return (g_pNodes[iBestNodeIndex].m_vecOrigin);
 }
 
 static void
@@ -168,6 +143,27 @@ Nodes_BuildFromEnts(void)
 	}
 }
 
+void
+NodeHints_Init(void)
+{
+	info_hint pinchPoint;
+
+	for (int i = 0; i < g_iNodes; i++) {
+		/* is this a pinch point? */
+		if (g_pNodes[i].m_numNeighbours == 2) {
+			pinchPoint = spawn(info_hint);
+			pinchPoint.Spawn();
+			pinchPoint.m_hintType = HINT_TACTICAL_PINCH;
+			setorigin(pinchPoint, g_pNodes[i].m_vecOrigin);
+		} else if (g_pNodes[i].m_numNeighbours > 4) {
+			pinchPoint = spawn(info_hint);
+			pinchPoint.Spawn();
+			pinchPoint.m_hintType = HINT_TACTICAL_ENEMY_DISADVANTAGED;
+			setorigin(pinchPoint, g_pNodes[i].m_vecOrigin);
+		}
+	}
+}
+
 /* generate node tree, used for AI movement/navigation */
 void
 Nodes_Init(void)
@@ -176,10 +172,12 @@ Nodes_Init(void)
 
 	/* skip if present. TODO: check if they're out of date? */
 	if (fileExists(sprintf("data/%s.way", mapname))) {
-		NodeEdit_ReadFile(sprintf("%s.way", mapname), true);
+		NodeEdit_ReadFile(sprintf("data/%s.way", mapname), true);
 	} else {
 		Nodes_BuildFromEnts();
 	}
+
+	NodeHints_Init();
 
 	InitEnd();
 }
@@ -188,4 +186,130 @@ void
 Nodes_Flush(void)
 {
 	NodeEdit_Flush();
+}
+
+/* Helper functions for tasks/nav */
+vector
+Nodes_PositionOfClosestNode(vector pointOrigin)
+{
+	float bestDistance = COST_INFINITE;
+	int bestNodeID = -1;
+
+	for (int i = 0; i < g_iNodes; i++) {
+		vector nodePosition = g_pNodes[i].m_vecOrigin;
+		float nodeDistance = distanceSquared(nodePosition, pointOrigin);
+
+		if (nodeDistance < bestDistance) {
+			bestDistance = nodeDistance;
+			bestNodeID = i;
+		}
+	}
+
+	return (g_pNodes[bestNodeID].m_vecOrigin);
+}
+
+vector
+Nodes_FindCoverFromEnemy(ncActor targetEnemy)
+{
+	float bestDistance = COST_INFINITE;
+	int bestNodeID = -1;
+
+	for (int i = 0; i < g_iNodes; i++) {
+		vector nodePosition = g_pNodes[i].m_vecOrigin;
+		float nodeRadius = g_pNodes[i].m_flRadius;
+		float nodeDistance = distanceSquared(nodePosition, targetEnemy.origin);
+		traceline(targetEnemy.origin, nodePosition, MOVE_NORMAL, targetEnemy);
+
+		if (trace_fraction < 1.0 && nodeDistance < bestDistance) {
+			bestDistance = nodeDistance;
+			bestNodeID = i;
+		}
+	}
+
+	return (g_pNodes[bestNodeID].m_vecOrigin);
+}
+
+vector
+Nodes_FindBackFromPosition(vector targetPosition, vector eulerDirection)
+{
+	float bestDistance = COST_INFINITE;
+	int bestNodeID = -1;
+	vector forwardDir = anglesToForward(eulerDirection);
+
+	for (int i = 0; i < g_iNodes; i++) {
+		vector nodePosition = g_pNodes[i].m_vecOrigin;
+		float nodeRadius = g_pNodes[i].m_flRadius;
+		float nodeDistance = distanceSquared(nodePosition, targetPosition);
+		traceline(targetPosition, nodePosition, MOVE_NORMAL, world);
+
+		if (trace_fraction < 1.0 && nodeDistance < bestDistance) {
+			bestDistance = nodeDistance;
+			bestNodeID = i;
+		}
+	}
+
+	return (g_pNodes[bestNodeID].m_vecOrigin);
+}
+
+vector
+Nodes_FindCoverFromEnemyNearNode(ncActor targetEnemy, vector targetNode)
+{
+	float bestDistance = COST_INFINITE;
+	int bestNodeID = -1;
+
+	for (int i = 0; i < g_iNodes; i++) {
+		vector nodePosition = g_pNodes[i].m_vecOrigin;
+		float nodeDistance = distanceSquared(nodePosition, targetNode);
+
+		traceline(targetEnemy.origin, nodePosition, MOVE_NORMAL, targetEnemy);
+
+		if (trace_fraction < 1.0 && nodeDistance < bestDistance) {
+			bestDistance = nodeDistance;
+			bestNodeID = i;
+		}
+	}
+
+	return (g_pNodes[bestNodeID].m_vecOrigin);
+}
+
+vector
+Nodes_FindCoverFromEnemyFarNode(ncActor targetEnemy, vector targetNode)
+{
+	float bestDistance = 0;
+	int bestNodeID = -1;
+
+	for (int i = 0; i < g_iNodes; i++) {
+		vector nodePosition = g_pNodes[i].m_vecOrigin;
+		float nodeDistance = distanceSquared(nodePosition, targetNode);
+
+		traceline(targetEnemy.origin, nodePosition, MOVE_NORMAL, targetEnemy);
+
+		if (trace_fraction < 1.0 && nodeDistance > bestDistance) {
+			bestDistance = nodeDistance;
+			bestNodeID = i;
+		}
+	}
+
+	return (g_pNodes[bestNodeID].m_vecOrigin);
+}
+
+vector
+Nodes_FindCoverFromPosition(vector targetOrigin)
+{
+	float bestDistance = 0;
+	int bestNodeID = -1;
+
+	for (int i = 0; i < g_iNodes; i++) {
+		vector nodePosition = g_pNodes[i].m_vecOrigin;
+		float nodeDistance = distanceSquared(nodePosition, targetOrigin);
+
+		traceline(targetOrigin, nodePosition, MOVE_WORLDONLY, world);
+
+		if (trace_fraction < 1.0 && nodeDistance > bestDistance) {
+			bestDistance = nodeDistance;
+			bestNodeID = i;
+		}
+	}
+
+	return (g_pNodes[bestNodeID].m_vecOrigin);
 }

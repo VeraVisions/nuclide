@@ -60,11 +60,11 @@ Pushes anything in its volume into a direction of your choosing.
 # TRIVIA
 This entity was introduced in Quake (1996).
 
-@ingroup shared
+@ingroup sharedentity
 @ingroup brushentity
 */
 class
-trigger_push:NSBrushTrigger
+trigger_push:ncBrushTrigger
 {
 public:
 	void trigger_push(void);
@@ -341,7 +341,7 @@ void
 trigger_push::Touch(entity eToucher)
 {
 #ifdef SERVER
-	eActivator = (NSEntity)eToucher;
+	eActivator = (ncEntity)eToucher;
 #endif
 
 	switch(eToucher.movetype) {

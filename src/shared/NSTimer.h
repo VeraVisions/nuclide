@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-.void(void) _m_NSTimerFunc;
+.void(void) _m_ncTimerFunc;
 
 /** This class provides a way to trigger a function in the future.
 It has the ability to clean itself up afterwards, too. 
@@ -22,22 +22,22 @@ It has the ability to clean itself up afterwards, too.
 @ingroup baseclass
 */
 class
-NSTimer:NSEntity
+ncTimer:ncEntity
 {
 public:
-	void NSTimer(void);
+	void ncTimer(void);
 
 	/** When called, creates and sets up a new timer, starts immediately. */
-	static NSTimer ScheduleTimer(entity, void(), float, bool);
+	static ncTimer ScheduleTimer(entity, void(), float, bool);
 
 	/** When called, creates a self garbage collecting version of a timer. */
-	static NSTimer TemporaryTimer(entity, void(), float, bool);
+	static ncTimer TemporaryTimer(entity, void(), float, bool);
 
 	/** Runs the timer that's set up. */
 	virtual void RunTimer(void);
 
 	/** When called, sets up a timer that has to be run manually later. */
-	static NSTimer SetupTimer(entity, void(), float, bool);
+	static ncTimer SetupTimer(entity, void(), float, bool);
 
 	/** Invalidates the timer when called. */
 	nonvirtual void StopTimer(void);

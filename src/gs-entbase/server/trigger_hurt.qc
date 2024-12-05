@@ -66,11 +66,11 @@ Trigger volume that damages everything it touches.
 # TRIVIA
 This entity was introduced in Quake (1996).
 
-@ingroup server
+@ingroup serverentity
 @ingroup brushentity
 */
 class
-trigger_hurt:NSBrushTrigger
+trigger_hurt:ncBrushTrigger
 {
 public:
 	void trigger_hurt(void);
@@ -237,11 +237,11 @@ trigger_hurt::Touch(entity eToucher)
 	} else {
 		if (HasSpawnFlags(SF_HURT_FIREONPLAYER)) {
 			if (eToucher.flags & FL_CLIENT) {
-				eActivator = (NSEntity)eToucher;
+				eActivator = (ncEntity)eToucher;
 				UseTargets(eToucher, TRIG_TOGGLE, m_flDelay);
 			}
 		} else {
-			eActivator = (NSEntity)eToucher;
+			eActivator = (ncEntity)eToucher;
 			UseTargets(eToucher, TRIG_TOGGLE, m_flDelay);
 		}
 	}
@@ -272,13 +272,12 @@ trigger_hurt::Touch(entity eToucher)
 
 	EntLog("Hurting %S (%d) with %i.", eToucher.classname, num_for_edict(eToucher), m_iDamage);
 
-	vector center = WorldSpaceCenter();
-
 	/* this is kinda ugly, but worth the price */
-	NSDict damageDecl = spawn(NSDict);
+	ncDict damageDecl = spawn(ncDict);
+	ncSurfacePropEntity toAttack = (ncSurfacePropEntity)eToucher;
 	damageDecl.AddKey("damage", itos(m_iDamage));
 	damageDecl.AddKey("flags", itos(type));
-	combat.Damage(eToucher, this, eToucher, damageDecl.GetDeclBody(), center, g_vec_null, eToucher.origin);
+	toAttack.Damage(this, this, damageDecl, 1.0f, anglesToForward(angles), toAttack.GetOrigin());
 	remove(damageDecl);
 
 	/* shut it down if used once */

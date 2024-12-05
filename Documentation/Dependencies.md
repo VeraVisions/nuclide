@@ -1,79 +1,77 @@
-# Dependencies
+# Dependencies {#deps}
 
 Here we *attempt* to document the dependencies you may require to
 build certain aspects yourself, on various different platforms.
 
-### Debian / Raspbian
+## Debian / Raspbian {#deps-debian}
 
-#### FTEQW
+### FTEQW
 
 ```
-> apt-get install libgl-dev gnutls-dev
+# apt-get install libgl-dev gnutls-dev
 ```
 
-#### SDL2
+### SDL2
 
 ```
 # apt-get install libsdl2-dev
 ```
 
-#### GLX / X11 (part of libsdl2-dev)
+### GLX / X11 (part of libsdl2-dev)
 
 ```
 # apt-get install libx11-dev libxcursor-dev libxrender-dev
 ```
 
-#### Plugin: ODE
+### Plugin: ODE
 
 ```
 # apt-get install autoconf automake libtool
 ```
 
-#### Plugin: FFMPEG
+### Plugin: FFMPEG
 
 ```
 # apt-get install libavformat-dev libswscale-dev
 ```
 
-### OpenBSD
+## OpenBSD {#deps-openbsd}
 
-#### FTE
+### FTE
 
 ```
 # pkg_add git
 ```
 
-#### SDL2
+### SDL2
 
 ```
 # pkg_add sdl2
 ```
 
-#### Plugin: FFMPEG
+### Plugin: FFMPEG
 
 ```
 # pkg_add ffmpeg
 ```
 
-### Arch Linux
+## Arch Linux {#deps-arch}
 
-#### FTE
+### FTE
 
 ```
 # pacman -S make gcc Xorg git
 ```
 
-#### Plugin: ODE
+### Plugin: ODE
 
 ```
 # pacman -S zip automake autoconf
 ```
 
-#### Plugin: FFMPEG
+### Plugin: FFMPEG
 
-> [!important]
-> You will have to manually build this plugin due to FFMPEG
-> breaking ABI between releases and Arch's rolling release nature.
+@note You will have to manually build this plugin due to FFMPEG breaking ABI between releases and Arch's rolling release nature.
 
 First install the legacy version of **ffmpeg**:
 
@@ -90,94 +88,91 @@ $ make plugins-rel NATIVE_PLUGINS="ffmpeg" AV_BASE=/usr/include/ffmpeg4.4/ AV_LD
 Last, copy over `fteplug_ffmpeg_*.so` to the root directory where the
 engine binaries (and other plugins) are.
 
-#### SDL2
+### SDL2
 
 ```
 # pacman -S sdl2
 ```
 
-#### WorldSpawn
+### WorldSpawn
 
 ```
 # pacman -S pkgconf gtk2 gtkglext
 ```
 
-### OpenSUSE
+## OpenSUSE {#deps-suse}
 
-#### Nuclide
+### Nuclide
 
 ```
 # zypper in git 
 ```
 
-#### FTE
+### FTE
 
 ```
 # zypper in make gcc gcc-c++ mesa-libGL-devel libgnutls-devel alsa-devel libopus-devel speex-devel libvorbis-devel
 ```
 
-#### SDL2
+### SDL2
 
 ```
 # zypper in libSDL2-devel
 ```
 
-#### GLX / X11
+### GLX / X11
 
 ```
 # zypper in libX11-devel libXcursor-devel libXrandr-devel
 ```
 
-#### Plugin: ODE
+### Plugin: ODE
 
 ```
 # zypper in autoconf automake libtool zip
 ```
 
-#### Plugin: FFMPEG
+### Plugin: FFMPEG
 
 ```
 # zypper in ffmpeg-4-libavformat-devel ffmpeg-4-libswscale-devel
 ```
 
-#### Worldspawn
+### Worldspawn
 
 ```
 # zypper in make gtkglext-devel libxml2-devel libjpeg8-devel minizip-devel
 ```
 
-### Fedora
+## Fedora {#deps-fedora}
 
-#### FTE
+### FTE
 
 ```
 # dnf install make gcc gcc-c++ mesa-libGL-devel gnutls-devel alsa-devel libopus-devel speex-devel libvorbis-devel
 ```
 
-#### SDL2
+### SDL2
 
 ```
 # dnf install SDL2-devel
 ```
 
-#### GLX / X11 (part of libsdl2-dev)
+### GLX / X11 (part of libsdl2-dev)
 
 ```
 # dnf install libX11-devel libXcursor-devel libXrender-devel
 ```
 
-#### Plugin: ODE
+### Plugin: ODE
 
 ```
 # dnf install autoconf automake libtool zip
 ```
 
-#### Plugin: FFMPEG
+### Plugin: FFMPEG
 
-> [!important]
-> You will have to manually build this plugin due to FFMPEG
-> breaking ABI between releases as well as install a custom repository
-> since Fedora ships only latest versions of FFMPEG.
+@note You will have to manually build this plugin due to FFMPEG breaking ABI between releases as well as install a custom repository since Fedora ships only latest versions of FFMPEG.
 
 First, you will need to install the RPM Fusion if you
 don't have it. We recommend reading their official guide:
@@ -201,7 +196,7 @@ $ make plugins-rel NATIVE_PLUGINS="ffmpeg" AV_BASE=/usr/include/compat-ffmpeg4 A
 Last, copy over `fteplug_ffmpeg.so` to the root directory where the
 engine binaries (and other plugins) are.
 
-#### Worldspawn
+### Worldspawn
 
 ```
 # dnf install make pkgconf gtkglext-devel libxml2-devel libjpeg-turbo-devel minizip-devel

@@ -26,11 +26,11 @@ This entity does not work in multiplayer.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup brushentity
 */
 class
-trigger_autosave:NSBrushTrigger
+trigger_autosave:ncBrushTrigger
 {
 public:
 	void trigger_autosave(void);

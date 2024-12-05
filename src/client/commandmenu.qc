@@ -14,15 +14,15 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-VGUIWidget g_uiCommandMenu;
+vguiWidget g_uiCommandMenu;
 
 void
 Commandmenu_Init(void)
 {
 	filestream commandFile;
 	string line;
-	VGUICommandButton lastButton = __NULL__;
-	VGUICommandButton newButton = __NULL__;
+	vguiCommandButton lastButton = __NULL__;
+	vguiCommandButton newButton = __NULL__;
 	int braceDepth = 0i;
 	vector buttonPos = g_vec_null;
 	vector mainPos = g_vec_null;
@@ -36,7 +36,7 @@ Commandmenu_Init(void)
 		return;
 	}
 
-	g_uiCommandMenu = spawn(VGUIWidget);
+	g_uiCommandMenu = spawn(vguiWidget);
 
 	while ((line = fgets(commandFile))) {
 		int tokensPerLine = tokenize_console(line);
@@ -52,7 +52,7 @@ Commandmenu_Init(void)
 			braceDepth++;
 
 			/* positions are relative to the parent, not absolute */
-			buttonPos = [lastButton.GetSizeWidth(), 0];
+			buttonPos = [lastButton.GetWidth(), 0];
 		} else if (argv(0) == "}") { /* end of button menu */
 			braceDepth--;
 			mapFilter = "";
@@ -60,8 +60,8 @@ Commandmenu_Init(void)
 			if (braceDepth == 0) {
 				buttonPos = mainPos;
 			} else {
-				buttonPos = lastButton.GetPos() + [0, lastButton.GetSizeHeight()];
-				lastButton = (VGUICommandButton)lastButton.m_parent;
+				buttonPos = lastButton.GetPos() + [0, lastButton.GetHeight()];
+				lastButton = (vguiCommandButton)lastButton.m_parent;
 			}
 		} else if (tokensPerLine >= 2) {
 			string buttonTitle = "";
@@ -97,7 +97,7 @@ Commandmenu_Init(void)
 				}
 			}
 
-			newButton = spawn(VGUICommandButton);
+			newButton = spawn(vguiCommandButton);
 			newButton.SetPos(buttonPos);
 			newButton.SetSize([192,24]);
 			newButton.SetKeyEquivalent(buttonKey);
@@ -111,9 +111,9 @@ Commandmenu_Init(void)
 
 			if (braceDepth == 0) {
 				g_uiCommandMenu.Add(newButton);
-				buttonPos = mainPos = newButton.GetPos() + [0, newButton.GetSizeHeight()];
+				buttonPos = mainPos = newButton.GetPos() + [0, newButton.GetHeight()];
 			} else {
-				buttonPos[1] += newButton.GetSizeHeight();
+				buttonPos[1] += newButton.GetHeight();
 				lastButton.Add(newButton);
 			}
 		}

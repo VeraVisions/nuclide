@@ -14,34 +14,90 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/* compatibility wrappers */
-#define CUI3DView VGUI3DView
-#define CUIButton VGUIButton
-#define CUICheckbox VGUICheckbox
-#define CUILabel	VGUILabel
-#define CUIList VGUIList
-#define CUIListBox VGUIListBox
-#define CUIMenuButton VGUIMenuButton
-#define CUIPic VGUIPic
-#define CUIRadio VGUIRadio
-#define CUIScrollbar VGUIScrollbar
-#define CUISlider VGUISlider
-#define CUITabView VGUITabView
-#define CUITextBox VGUITextBox
-#define CUIWidget VGUIWidget
-#define CUIWindow VGUIWindow
+#warning vguiWidget needs methods to deal with .res/.gui type files.
+
+.string classname;
+.bool isVGUI;
 
 font_s g_fntDefault;
 font_s g_fntTitle;
 font_s g_fntSubTitle;
 font_s g_fntMenuButton;
 var int g_vguiWidgetCount;
-int g_lastmousepos[2];
+vector g_lastmousepos;
 
-/** @ingroup vgui
- *
- *  @{
- */
+/** @defgroup vgui Vera GUI
+    @brief Truly versatile user interface, for menus and in-game surfaces.
+
+    Nuclide ships with this component as the default interface library.
+
+![Menu using Vera GUI](nuclide-base.png)
+
+Its design goals were to be easily customizable through some common parameters,
+and a per-object based [theme engine](@ref vguiTheme) for anything more advanced.
+It also needed to be usable on in-game surfaces.
+
+![Interactive surfaces](vgui-interactive.png)
+
+## Customization
+
+You can make trivial changes using external **UI** styling files, this is not
+following any specific spec and may be subject to change some day to
+adopt something more standardized.
+
+Currently however you can modify the file (create them if they don't exist)
+named `scripts/ui_style.txt`. Said file will contain a variety of key/value pairs:
+
+
+- "BG_COLOR" : Background color.
+- "FG_COLOR" : Foreground color. Used by text.
+- "HILIGHT_COLOR" : Highlighted  text color.
+- "SHADOW_COLOR" : Shadow color.
+- "BORDER_COLOR" : Border color.
+- "FILL_COLOR" : Fill color, used by progress bars elements and the like.
+- "BORDER_ALPHA" : Border alpha value.
+- "HOVER_COLOR" : Hover overlay color. Active when hovering over elements.
+- "HOVER_ALPHA" : Hover overlay alpha. Set this to 0 if you don't want them.
+- "BG_ALPHA" : Background alpha.
+- "ROUNDED" : Use rounded borders on windows.
+- "NOICONS" : Disable the use of most icons.
+
+@note Color and alpha values target channels with values between 0 and 255.
+
+If a file named `scripts/client_style.txt` exists, it will be read instead by the client-game - but not by the main menu. That way you can have different colorschemes for both modules at the same time.
+
+### Example Style File
+
+This file will give you a grey menu, with white text that's slightly transparent and has no icons, but rounded corners:
+
+```
+COLOR=200 200 200
+FG_COLOR=255 255 255
+ALPHA=196
+NOICONS=1
+ROUNDED=1
+
+```
+
+## Advanced Themes
+
+Theming an object through more advanced means is possible with vguiTheme.
+vguiTheme is responsible for theming everything, but it is also designed to
+co-exist with other theme engines.
+
+Use vguiWidget::SetTheme() to override the theme engine any of your widgets are using
+with an instance of your own.
+For that, make a child-class of vguiTheme and override the methods you want changed within it.
+Then use the aforementioned method to override it on a per-object basis.
+
+While you can theme individual elements, all of their child-widgets (e.g. the close button
+on a window) will inherit the theme of their parent by default.
+
+@note For most use-cases, you will want to call vguiWidget::SetTheme() on the very first vguiWidget, the one
+everything else will be added to using vguiWidget::Add()
+
+@{
+*/
 
 /** Return whether a VGUI panel is active on the 2D overlay level. */
 bool
@@ -59,25 +115,25 @@ Util_MouseAbove(vector vecMousePos, vector vecPos, vector vecSize)
 			return (true);
 		}
 	}
+
 	return (false);
 }
 
-.bool isVGUI;
 /** @brief The base VGUI widget class.
 
 Every VGUI widget is based off of this. */
-class VGUIWidget
+class vguiWidget
 {
 public:
-	void VGUIWidget(void);
+	void vguiWidget(void);
 
 	/** Adds a widget into this one. */
-	virtual void Add(VGUIWidget);
+	virtual void Add(vguiWidget);
 	/** Add a flag to the widget. */
 	nonvirtual void FlagAdd(int);
 	/** Remove a flag from the widget. */
 	nonvirtual void FlagRemove(int);
-	/** Check if the VGUIWidget has a flag attached. */
+	/** Check if the vguiWidget has a flag attached. */
 	nonvirtual bool HasFlag(int);
 
 	/** Set the position within its context. */
@@ -95,9 +151,9 @@ public:
 	nonvirtual vector GetSize(void);
 
 	/** Returns the width of the widget, in pixels. */
-	nonvirtual int GetSizeWidth(void);
+	nonvirtual int GetWidth(void);
 	/** Returns the height of the widget, in pixels. */
-	nonvirtual int GetSizeHeight(void);
+	nonvirtual int GetHeight(void);
 
 	/** Sets the minimum size of the widget. */
 	nonvirtual void SetMinSize(vector);
@@ -116,10 +172,10 @@ public:
 	/** Hide the widget. */
 	nonvirtual void Hide(void);
 
-	/** Sets the VGUITheme to use on this widget (and any children it may have) */
-	nonvirtual void SetTheme(VGUITheme);
+	/** Sets the vguiTheme to use on this widget (and any children it may have) */
+	nonvirtual void SetTheme(vguiTheme);
 	/** Returns the VGUI that will be used on this widget. */
-	nonvirtual VGUITheme GetTheme(void);
+	nonvirtual vguiTheme GetTheme(void);
 
 	/** Called when the position of the widget was changed in any capacity. */
 	virtual void PositionChanged(vector, vector);
@@ -141,20 +197,22 @@ public:
 	virtual void Spawned(void);
 
 private:
+	/* why are these 3D vectors? because drawpic() etc. take it. ..you never know what that may be used for some day! */
 	vector m_vecOrigin;
 	vector m_vecSize;
 	vector m_vecMinSize;
 	vector m_vecMaxSize;
-	VGUIWidget m_next;
-	VGUIWidget m_parent;
-	VGUIWidget m_children;
+
+	vguiWidget m_next;
+	vguiWidget m_parent;
+	vguiWidget m_children;
 	int m_iFlags;
 	bool m_bVisible;
-	VGUITheme m_theme;
+	vguiTheme m_theme;
 };
 
 void
-VGUIWidget::VGUIWidget(void)
+vguiWidget::vguiWidget(void)
 {
 	m_vecOrigin = [0.0f, 0.0f];
 	m_vecSize = [0.0f, 0.0f];
@@ -170,71 +228,73 @@ VGUIWidget::VGUIWidget(void)
 }
 
 void
-VGUIWidget::SetTheme(VGUITheme theme)
+vguiWidget::SetTheme(vguiTheme theme)
 {
 	m_theme = theme;
 }
 
-VGUITheme
-VGUIWidget::GetTheme(void)
+vguiTheme
+vguiWidget::GetTheme(void)
 {
 	/* if no theme set, but we have a parent... inherit the parents' theme recursively */
-	if (!m_theme && m_parent)
+	if (!m_theme && m_parent) {
 		return m_parent.GetTheme();
+	}
 
 	/* we have nothing, use the default one. */
-	if (!m_theme)
-		m_theme = spawn(VGUITheme);
+	if (!m_theme) {
+		m_theme = spawn(vguiTheme);
+	}
 
-	return m_theme;
+	return (m_theme);
 }
 
 bool
-VGUIWidget::Visible(void)
+vguiWidget::Visible(void)
 {
-	return m_bVisible;
+	return (m_bVisible);
 }
 
 void
-VGUIWidget::Hide(void)
+vguiWidget::Hide(void)
 {
 	m_bVisible = false;
 	NowHidden();
 }
 
 void
-VGUIWidget::NowHidden(void)
+vguiWidget::NowHidden(void)
 {
 }
 
 
 void
-VGUIWidget::NowVisible(void)
+vguiWidget::NowVisible(void)
 {
 }
 
 
 void
-VGUIWidget::Show(void)
+vguiWidget::Show(void)
 {
 	m_bVisible = true;
 	NowVisible();
 }
 
 void
-VGUIWidget::PositionChanged(vector vecOld, vector vecNew)
+vguiWidget::PositionChanged(vector vecOld, vector vecNew)
 {
 
 }
 
 void
-VGUIWidget::SizeChanged(vector vecOld, vector vecNew)
+vguiWidget::SizeChanged(vector vecOld, vector vecNew)
 {
 
 }
 
 void
-VGUIWidget::SetPos(vector vecNewPos)
+vguiWidget::SetPos(vector vecNewPos)
 {
 	vector vecOld = m_vecOrigin;
 	m_vecOrigin[0] = bound(0, vecNewPos[0], 9999.0);
@@ -243,25 +303,25 @@ VGUIWidget::SetPos(vector vecNewPos)
 }
 
 vector
-VGUIWidget::GetPos(void)
+vguiWidget::GetPos(void)
 {
-	return m_vecOrigin;
+	return (m_vecOrigin);
 }
 
 int
-VGUIWidget::GetPosWidth(void)
+vguiWidget::GetPosWidth(void)
 {
-	return m_vecOrigin[0];
+	return (m_vecOrigin[0]);
 }
 
 int
-VGUIWidget::GetPosHeight(void)
+vguiWidget::GetPosHeight(void)
 {
-	return m_vecOrigin[1];
+	return (m_vecOrigin[1]);
 }
 
 void
-VGUIWidget::SetSize(vector vecNewSize)
+vguiWidget::SetSize(vector vecNewSize)
 {
 	vector vecOld = m_vecSize;
 	m_vecSize[0] = bound(m_vecMinSize[0], vecNewSize[0], m_vecMaxSize[0]);
@@ -270,72 +330,73 @@ VGUIWidget::SetSize(vector vecNewSize)
 }
 
 vector
-VGUIWidget::GetSize(void)
+vguiWidget::GetSize(void)
 {
-	return m_vecSize;
+	return (m_vecSize);
 }
 
 int
-VGUIWidget::GetSizeWidth(void)
+vguiWidget::GetWidth(void)
 {
-	return m_vecSize[0];
+	return (m_vecSize[0]);
 }
 
 int
-VGUIWidget::GetSizeHeight(void)
+vguiWidget::GetHeight(void)
 {
-	return m_vecSize[1];
+	return (m_vecSize[1]);
 }
 
 void
-VGUIWidget::SetMinSize (vector vecNewSize)
+vguiWidget::SetMinSize (vector vecNewSize)
 {
 	m_vecMinSize = vecNewSize;
 }
 
 vector
-VGUIWidget::GetMinSize(void)
+vguiWidget::GetMinSize(void)
 {
-	return m_vecMinSize;
+	return (m_vecMinSize);
 }
 
 void
-VGUIWidget::SetMaxSize (vector vecNewSize)
+vguiWidget::SetMaxSize (vector vecNewSize)
 {
 	m_vecMaxSize = vecNewSize;
 }
 
 vector
-VGUIWidget::GetMaxSize(void)
+vguiWidget::GetMaxSize(void)
 {
-	return m_vecMaxSize;
+	return (m_vecMaxSize);
 }
 
 void
-VGUIWidget::FlagAdd(int iFlag)
+vguiWidget::FlagAdd(int iFlag)
 {
 	m_iFlags |= iFlag;
 }
 
 void
-VGUIWidget::FlagRemove(int iFlag)
+vguiWidget::FlagRemove(int iFlag)
 {
 	m_iFlags -= (m_iFlags & iFlag);
 }
 
 bool
-VGUIWidget::HasFlag(int flag)
+vguiWidget::HasFlag(int flag)
 {
-	return (m_iFlags & flag) ? true : false;
+	return (m_iFlags & flag) ? (true) : (false);
 }
 
 void
-VGUIWidget::Reposition(void)
+vguiWidget::Reposition(void)
 {
-	VGUIWidget wNext = this;
+	vguiWidget wNext = this;
 
 	do {
 		wNext = wNext.m_next;
+
 		if (wNext) {
 			wNext.Reposition();
 		}
@@ -343,24 +404,26 @@ VGUIWidget::Reposition(void)
 }
 
 void
-VGUIWidget::Add(VGUIWidget wNew)
+vguiWidget::Add(vguiWidget wNew)
 {
-	VGUIWidget wNext = this;
-	VGUIWidget wParent;
+	vguiWidget wNext = this;
+	vguiWidget wParent;
+
 	do {
 		wParent = wNext;
 		wNext = wNext.m_next;
 	} while (wNext);
+
 	wParent.m_next = wNew;
 	wNew.m_parent = this;
 }
 
-.string classname;
 void
-VGUIWidget::Draw(void)
+vguiWidget::Draw(void)
 {
-	VGUIWidget wNext = this;
+	vguiWidget wNext = this;
 	g_vguiWidgetCount = 0;
+
 	do {
 		wNext = wNext.m_next;
 		if (wNext && wNext.Visible() && wNext.m_parent.Visible()) {
@@ -370,17 +433,12 @@ VGUIWidget::Draw(void)
 	} while (wNext);
 }
 
-typedef struct
-{
-	VGUIWidget member;
-} vgui_input_scene_t;
-
 bool
-VGUIWidget::Input(float flEVType, float flKey, float flChar, float flDevID)
+vguiWidget::Input(float flEVType, float flKey, float flChar, float flDevID)
 {
-	VGUIWidget wNext = this;
-	VGUIWidget wLast = __NULL__;
-	VGUIWidget wLastBefore = __NULL__;
+	vguiWidget wNext = this;
+	vguiWidget wLast = __NULL__;
+	vguiWidget wLastBefore = __NULL__;
 
 	/* figure out the last window in the chain... */
 	do {
@@ -405,11 +463,11 @@ VGUIWidget::Input(float flEVType, float flKey, float flChar, float flDevID)
 
 		/* input successful */
 		if (test == true) {
-			return true;
+			return (true);
 		}
 
 		/* select the former input */
-		for (VGUIWidget a = this; a != __NULL__; a = a.m_next) {
+		for (vguiWidget a = this; a != __NULL__; a = a.m_next) {
 			/* we've reached the end, take one from before */
 			if (a == wLast) {
 				wLast = wLastBefore;
@@ -420,17 +478,16 @@ VGUIWidget::Input(float flEVType, float flKey, float flChar, float flDevID)
 
 		/* the end of the world. */
 		if (wLast == this)
-			return false;
+			return (false);
 	}
 
-	return false;
+	return (false);
 }
 
 void
-VGUIWidget::Spawned(void)
+vguiWidget::Spawned(void)
 {
 }
-
 
 void
 UISystem_Init(void)
@@ -518,37 +575,43 @@ UISystem_Init(void)
 	Font_Load("fonts/subtitle.font", g_fntSubTitle);
 	Font_Load("fonts/menu_button.font", g_fntMenuButton);
 
-	if (g_fntMenuButton.iID == 0)
+	if (g_fntMenuButton.iID == 0) {
 		g_fntMenuButton = g_fntDefault;
+	}
 
-	if (g_fntSubTitle.iID == 0)
+	if (g_fntSubTitle.iID == 0) {
 		g_fntSubTitle = g_fntDefault;
+	}
 
-	if (g_fntTitle.iID == 0)
+	if (g_fntTitle.iID == 0) {
 		g_fntTitle = g_fntDefault;
-
+	}
 }
 
 #ifdef CLIENT
-VGUIWidget
+vguiWidget
 UIClass_Spawn(string cname)
 {
 	string func = strcat("spawnfunc_", cname);
 
 	if (isfunction(func)) {
+		vguiWidget new_uiclass = __NULL__;
 		entity oldself = self;
 		void(void) vFunc;
+
 		vFunc = externvalue(-2, func);
-		VGUIWidget new_uiclass = spawn(VGUIWidget);
+		new_uiclass = spawn(vguiWidget);
+
 		self = new_uiclass;
 		vFunc();
 		self = oldself;
+
 		return (new_uiclass);
 	} else {
 		error("UIClass_Spawn: failed loading designated UI class\n");
 	}
 
-	return __NULL__;
+	return (__NULL__);
 }
 #endif
 

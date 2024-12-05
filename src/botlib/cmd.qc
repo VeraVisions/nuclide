@@ -82,7 +82,7 @@ Bot_ResetAllBotsGoals(void)
 {
 	for ( other = world; ( other = find( other, classname, "player" ) ); ) {
 		if ( clienttype( other ) == CLIENTTYPE_BOT ) {
-			NSBot theBot = (NSBot)other;
+			ncBot theBot = (ncBot)other;
 			theBot.SetEnemy(__NULL__);
 			theBot.RouteClear();
 		}

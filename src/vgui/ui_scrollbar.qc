@@ -14,9 +14,9 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-const vector VGUIScrollbar_ArrowSize = [19,20];
+const vector vguiScrollBar_ArrowSize = [19,20];
 
-class VGUIScrollbar:VGUIWidget
+class vguiScrollBar:vguiWidget
 {
 	int m_hold;
 	int m_hover;
@@ -35,7 +35,7 @@ class VGUIScrollbar:VGUIWidget
 	int m_dn_hover;
 	int m_dn_hold;
 
-	void VGUIScrollbar(void);
+	void vguiScrollBar(void);
 	virtual void Draw(void);
 	virtual float Input(float, float, float, float);
 
@@ -53,7 +53,7 @@ class VGUIScrollbar:VGUIWidget
 };
 
 void
-VGUIScrollbar::VGUIScrollbar(void)
+vguiScrollBar::vguiScrollBar(void)
 {
 	/* There's the physical length (t_length) and the actual length
 	 * (border, etc. ignored) */
@@ -62,57 +62,57 @@ VGUIScrollbar::VGUIScrollbar(void)
 }
 
 void
-VGUIScrollbar::SetStep(int step)
+vguiScrollBar::SetStep(int step)
 {
 
 }
 
 void
-VGUIScrollbar::SetMin(int step)
+vguiScrollBar::SetMin(int step)
 {
 
 }
 
 
 void
-VGUIScrollbar::DrawArrowUp(vector vecPos)
+vguiScrollBar::DrawArrowUp(vector vecPos)
 {
-	VGUITheme theme = GetTheme();
+	vguiTheme theme = GetTheme();
 	if (m_up_hold) {
-		theme.DrawButton(vecPos, VGUIScrollbar_ArrowSize, VGUI_STATE_ACTIVE);
+		theme.DrawButton(vecPos, vguiScrollBar_ArrowSize, VGUI_STATE_ACTIVE);
 	} else {
-		theme.DrawButton(vecPos, VGUIScrollbar_ArrowSize, VGUI_STATE_NORMAL);
+		theme.DrawButton(vecPos, vguiScrollBar_ArrowSize, VGUI_STATE_NORMAL);
 	}
 
 	drawpic(vecPos + [2,2], "gfx/icon16/bullet_arrow_up", [16,16], [1,1,1], 1.0f, 0);
 }
 
 void
-VGUIScrollbar::DrawArrowDown(vector vecPos)
+vguiScrollBar::DrawArrowDown(vector vecPos)
 {
-	VGUITheme theme = GetTheme();
+	vguiTheme theme = GetTheme();
 	if (m_dn_hold) {
-		theme.DrawButton(vecPos, VGUIScrollbar_ArrowSize, VGUI_STATE_ACTIVE);
+		theme.DrawButton(vecPos, vguiScrollBar_ArrowSize, VGUI_STATE_ACTIVE);
 	} else {
-		theme.DrawButton(vecPos, VGUIScrollbar_ArrowSize, VGUI_STATE_NORMAL);
+		theme.DrawButton(vecPos, vguiScrollBar_ArrowSize, VGUI_STATE_NORMAL);
 	}
 
 	drawpic(vecPos + [2,2], "gfx/icon16/bullet_arrow_down", [16,16], [1,1,1], 1.0f, 0);
 }
 
 void
-VGUIScrollbar::Draw(void)
+vguiScrollBar::Draw(void)
 {
-	VGUITheme theme = GetTheme();
+	vguiTheme theme = GetTheme();
 	int barheight = 0;
 	float barstep = 0;
 
 	barheight = (float)(m_minus) / (float)(m_totalentries) * m_theight;
 
-	drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0,VGUIScrollbar_ArrowSize[1]], [VGUIScrollbar_ArrowSize[0],m_theight], [1.0f,1.0f,1.0f], 0.1f);
+	drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0,vguiScrollBar_ArrowSize[1]], [vguiScrollBar_ArrowSize[0],m_theight], [1.0f,1.0f,1.0f], 0.1f);
 
 	DrawArrowUp([m_parent.m_vecOrigin[0]+m_vecOrigin[0],m_parent.m_vecOrigin[1]+m_vecOrigin[1]]);
-	DrawArrowDown([m_parent.m_vecOrigin[0]+m_vecOrigin[0],m_parent.m_vecOrigin[1]+m_vecOrigin[1]+m_theight + VGUIScrollbar_ArrowSize[1]]);
+	DrawArrowDown([m_parent.m_vecOrigin[0]+m_vecOrigin[0],m_parent.m_vecOrigin[1]+m_vecOrigin[1]+m_theight + vguiScrollBar_ArrowSize[1]]);
 
 
 	if (barheight < 20)
@@ -123,21 +123,21 @@ VGUIScrollbar::Draw(void)
 
 	/* too few entries? don't even bother */
 	if (m_totalentries * m_itemheight < m_height) {
-		drawfill([m_parent.m_vecOrigin[0]+m_vecOrigin[0],m_parent.m_vecOrigin[1]+m_vecOrigin[1]+VGUIScrollbar_ArrowSize[1]], [VGUIScrollbar_ArrowSize[0],m_theight], [0.25,0.25,0.25], 1.0f);
+		drawfill([m_parent.m_vecOrigin[0]+m_vecOrigin[0],m_parent.m_vecOrigin[1]+m_vecOrigin[1]+vguiScrollBar_ArrowSize[1]], [vguiScrollBar_ArrowSize[0],m_theight], [0.25,0.25,0.25], 1.0f);
 		return;
 	}
 
-	drawfill([m_parent.m_vecOrigin[0]+m_vecOrigin[0],m_parent.m_vecOrigin[1]+m_vecOrigin[1]+VGUIScrollbar_ArrowSize[1]+barstep], [VGUIScrollbar_ArrowSize[0],barheight], UI_MAINCOLOR, UI_MAINALPHA);
+	drawfill([m_parent.m_vecOrigin[0]+m_vecOrigin[0],m_parent.m_vecOrigin[1]+m_vecOrigin[1]+vguiScrollBar_ArrowSize[1]+barstep], [vguiScrollBar_ArrowSize[0],barheight], UI_MAINCOLOR, UI_MAINALPHA);
 
 	if (!m_hold) {
-		theme.DrawButton([m_parent.m_vecOrigin[0]+m_vecOrigin[0],m_parent.m_vecOrigin[1]+m_vecOrigin[1]+VGUIScrollbar_ArrowSize[1]+barstep], [VGUIScrollbar_ArrowSize[0],barheight], VGUI_STATE_NORMAL);
+		theme.DrawButton([m_parent.m_vecOrigin[0]+m_vecOrigin[0],m_parent.m_vecOrigin[1]+m_vecOrigin[1]+vguiScrollBar_ArrowSize[1]+barstep], [vguiScrollBar_ArrowSize[0],barheight], VGUI_STATE_NORMAL);
 	} else {
-		theme.DrawButton([m_parent.m_vecOrigin[0]+m_vecOrigin[0],m_parent.m_vecOrigin[1]+m_vecOrigin[1]+VGUIScrollbar_ArrowSize[1]+barstep], [VGUIScrollbar_ArrowSize[0],barheight], VGUI_STATE_ACTIVE);
+		theme.DrawButton([m_parent.m_vecOrigin[0]+m_vecOrigin[0],m_parent.m_vecOrigin[1]+m_vecOrigin[1]+vguiScrollBar_ArrowSize[1]+barstep], [vguiScrollBar_ArrowSize[0],barheight], VGUI_STATE_ACTIVE);
 	}
 }
 
 float
-VGUIScrollbar::Input(float type, float x, float y, float devid)
+vguiScrollBar::Input(float type, float x, float y, float devid)
 {
 	int barheight = 0;
 	float barstep = 0;
@@ -156,19 +156,19 @@ VGUIScrollbar::Input(float type, float x, float y, float devid)
 	barstep = m_theight - barheight;
 	barstep *= (float)(m_scroll) / (float)(m_maxvisible);
 
-	if (Util_MouseAbove(g_vecMousePos, m_parent.m_vecOrigin + m_vecOrigin, VGUIScrollbar_ArrowSize)) {
+	if (Util_MouseAbove(g_vecMousePos, m_parent.m_vecOrigin + m_vecOrigin, vguiScrollBar_ArrowSize)) {
 		m_up_hover = TRUE;
 	} else {
 		m_up_hover = FALSE;
 	}
 
-	if (Util_MouseAbove(g_vecMousePos, m_parent.m_vecOrigin + m_vecOrigin + [0, m_theight + VGUIScrollbar_ArrowSize[1]], VGUIScrollbar_ArrowSize)) {
+	if (Util_MouseAbove(g_vecMousePos, m_parent.m_vecOrigin + m_vecOrigin + [0, m_theight + vguiScrollBar_ArrowSize[1]], vguiScrollBar_ArrowSize)) {
 		m_dn_hover = TRUE;
 	} else {
 		m_dn_hover = FALSE;
 	}
 
-	if (Util_MouseAbove(g_vecMousePos, m_parent.m_vecOrigin + m_vecOrigin + [0, barstep + VGUIScrollbar_ArrowSize[1]], [VGUIScrollbar_ArrowSize[0],barheight])) {
+	if (Util_MouseAbove(g_vecMousePos, m_parent.m_vecOrigin + m_vecOrigin + [0, barstep + vguiScrollBar_ArrowSize[1]], [vguiScrollBar_ArrowSize[0],barheight])) {
 		m_hover = TRUE;
 	} else {
 		m_hover = FALSE;
@@ -224,13 +224,13 @@ VGUIScrollbar::Input(float type, float x, float y, float devid)
 }
 
 int
-VGUIScrollbar::GetValue(void)
+vguiScrollBar::GetValue(void)
 {
 	return m_scroll;
 }
 
 void
-VGUIScrollbar::SetValue(int val)
+vguiScrollBar::SetValue(int val)
 {
 	m_scroll = bound(0,val,m_totalentries);
 
@@ -240,7 +240,7 @@ VGUIScrollbar::SetValue(int val)
 }
 
 void
-VGUIScrollbar::SetMax(int val)
+vguiScrollBar::SetMax(int val)
 {
 	m_minus = m_height / m_itemheight;
 	m_totalentries = val;
@@ -248,20 +248,20 @@ VGUIScrollbar::SetMax(int val)
 }
 
 void
-VGUIScrollbar::SetLength(int val)
+vguiScrollBar::SetLength(int val)
 {
 	m_height = val;
-	m_theight = m_height - (VGUIScrollbar_ArrowSize[1] * 2);
+	m_theight = m_height - (vguiScrollBar_ArrowSize[1] * 2);
 }
 
 void
-VGUIScrollbar::SetItemheight(int val)
+vguiScrollBar::SetItemheight(int val)
 {
 	m_itemheight = val;
 }
 
 void
-VGUIScrollbar::CallOnChange(void(void) vFunc)
+vguiScrollBar::CallOnChange(void(void) vFunc)
 {
 	m_changed = vFunc;
 }

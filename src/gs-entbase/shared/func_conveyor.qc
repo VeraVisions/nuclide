@@ -56,11 +56,11 @@ A conveyor belt entity. Texture will move along in the direction and speed of th
 # TRIVIA
 This entity was introduced in Quake II (1997).
 
-@ingroup shared
+@ingroup sharedentity
 @ingroup brushentity
 */
 class
-func_conveyor:NSRenderableEntity
+func_conveyor:ncRenderableEntity
 {
 public:
 	void func_conveyor(void);
@@ -376,6 +376,10 @@ func_conveyor::Touch(entity eToucher)
 {
 	if (HasSpawnFlags(SF_CONVEYOR_VISUAL))
 		return;
+
+	if (isSentient(eToucher) == false) {
+		return;
+	}
 
 	eToucher.basevelocity = m_vecMoveDir * (m_flSpeed);
 }

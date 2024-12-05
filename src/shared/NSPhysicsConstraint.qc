@@ -18,7 +18,7 @@
 .entity aiment;
 
 void
-NSPhysicsConstraint::NSPhysicsConstraint(void)
+ncPhysicsConstraint::ncPhysicsConstraint(void)
 {
 	m_flTorqueLimit = 0.0f;
 	m_flForceLimit = 0.0f;
@@ -30,10 +30,10 @@ NSPhysicsConstraint::NSPhysicsConstraint(void)
 }
 
 void
-NSPhysicsConstraint::ConstraintThink(void)
+ncPhysicsConstraint::ConstraintThink(void)
 {
-	NSPhysicsEntity target1 = (NSPhysicsEntity)GetEntity1();
-	NSPhysicsEntity target2 = (NSPhysicsEntity)GetEntity1();
+	ncPhysicsEntity target1 = (ncPhysicsEntity)GetEntity1();
+	ncPhysicsEntity target2 = (ncPhysicsEntity)GetEntity1();
 
 	/* never run again */
 	if (m_flForceLimit <= 0 && m_flTorqueLimit <= 0)
@@ -67,7 +67,7 @@ NSPhysicsConstraint::ConstraintThink(void)
 
 #ifdef SERVER
 void
-NSPhysicsConstraint::Save(float handle)
+ncPhysicsConstraint::Save(float handle)
 {
 	super::Save(handle);
 	SaveFloat(handle, "m_flTorqueLimit", m_flTorqueLimit);
@@ -80,7 +80,7 @@ NSPhysicsConstraint::Save(float handle)
 }
 
 void
-NSPhysicsConstraint::Restore(string strKey, string strValue)
+ncPhysicsConstraint::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "m_flTorqueLimit":
@@ -111,7 +111,7 @@ NSPhysicsConstraint::Restore(string strKey, string strValue)
 #endif
 
 void
-NSPhysicsConstraint::SpawnKey(string keyName, string setValue)
+ncPhysicsConstraint::SpawnKey(string keyName, string setValue)
 {
 	switch (keyName) {
 	case "attach1":
@@ -146,7 +146,7 @@ NSPhysicsConstraint::SpawnKey(string keyName, string setValue)
 }
 
 float
-NSPhysicsConstraint::GetConstraintSystemID(void)
+ncPhysicsConstraint::GetConstraintSystemID(void)
 {
 	entity system;
 
@@ -165,7 +165,7 @@ NSPhysicsConstraint::GetConstraintSystemID(void)
 }
 
 void
-NSPhysicsConstraint::Spawned(void)
+ncPhysicsConstraint::Spawned(void)
 {
 	super::Spawned();
 
@@ -177,7 +177,7 @@ NSPhysicsConstraint::Spawned(void)
 
 #ifdef SERVER
 void
-NSPhysicsConstraint::Input(entity activatorEnt, string inputName, string dataString)
+ncPhysicsConstraint::Input(entity activatorEnt, string inputName, string dataString)
 {
 	switch (inputName) {
 	case "Break":
@@ -195,7 +195,7 @@ NSPhysicsConstraint::Input(entity activatorEnt, string inputName, string dataStr
 #endif
 
 void
-NSPhysicsConstraint::Break(entity activatingEnt)
+ncPhysicsConstraint::Break(entity activatingEnt)
 {
 #ifdef SERVER
 	if (m_strOnBreak)
@@ -209,52 +209,52 @@ NSPhysicsConstraint::Break(entity activatingEnt)
 }
 
 void
-NSPhysicsConstraint::OnRemoveEntity(void)
+ncPhysicsConstraint::OnRemoveEntity(void)
 {
 	WakeTargets();
 }
 
 void
-NSPhysicsConstraint::WakeTargets(void)
+ncPhysicsConstraint::WakeTargets(void)
 {
-	NSPhysicsEntity physTarget;
+	ncPhysicsEntity physTarget;
 
 	if (enemy.isPhysics) {
-		physTarget = (NSPhysicsEntity)enemy;
+		physTarget = (ncPhysicsEntity)enemy;
 		physTarget.Wake();
 	}
 	if (aiment.isPhysics) {
-		physTarget = (NSPhysicsEntity)aiment;
+		physTarget = (ncPhysicsEntity)aiment;
 		physTarget.Wake();
 	}
 }
 
 constraint_t
-NSPhysicsConstraint::GetConstraintType(void)
+ncPhysicsConstraint::GetConstraintType(void)
 {
 	return (constraint_t )jointtype;
 }
 
 entity
-NSPhysicsConstraint::GetEntity1(void)
+ncPhysicsConstraint::GetEntity1(void)
 {
 	return enemy;
 }
 
 entity
-NSPhysicsConstraint::GetEntity2(void)
+ncPhysicsConstraint::GetEntity2(void)
 {
 	return aiment;
 }
 
 void
-NSPhysicsConstraint::SetConstraintType(constraint_t setValue)
+ncPhysicsConstraint::SetConstraintType(constraint_t setValue)
 {
 	jointtype = (float)setValue;
 }
 
 void
-NSPhysicsConstraint::SetEntity1(entity targetEnt)
+ncPhysicsConstraint::SetEntity1(entity targetEnt)
 {
 	enemy = targetEnt;
 	jointgroup = GetConstraintSystemID();
@@ -264,63 +264,63 @@ NSPhysicsConstraint::SetEntity1(entity targetEnt)
 }
 
 void
-NSPhysicsConstraint::SetEntity2(entity targetEnt)
+ncPhysicsConstraint::SetEntity2(entity targetEnt)
 {
 	aiment = targetEnt;
 }
 
 void
-NSPhysicsConstraint::SetSliderVelocity(float slideVel)
+ncPhysicsConstraint::SetSliderVelocity(float slideVel)
 {
 	movedir[0] = slideVel;
 }
 
 void
-NSPhysicsConstraint::SetSliderMaxVelocity(float maxVel)
+ncPhysicsConstraint::SetSliderMaxVelocity(float maxVel)
 {
 	movedir[1] = -fabs(maxVel);
 }
 
 void
-NSPhysicsConstraint::SetSliderStop(float stopVal)
+ncPhysicsConstraint::SetSliderStop(float stopVal)
 {
 	movedir[2] = stopVal;
 }
 
 void
-NSPhysicsConstraint::SetSliderFriction(float frictionValue)
+ncPhysicsConstraint::SetSliderFriction(float frictionValue)
 {
 	friction = frictionValue;
 }
 
 float
-NSPhysicsConstraint::GetSliderVelocity(void)
+ncPhysicsConstraint::GetSliderVelocity(void)
 {
 	return movedir[0];
 }
 
 float
-NSPhysicsConstraint::GetSliderMaxVelocity(void)
+ncPhysicsConstraint::GetSliderMaxVelocity(void)
 {
 	return movedir[1];
 }
 
 float
-NSPhysicsConstraint::GetSliderStop(void)
+ncPhysicsConstraint::GetSliderStop(void)
 {
 	return movedir[2];
 }
 
 float
-NSPhysicsConstraint::GetSliderFriction(void)
+ncPhysicsConstraint::GetSliderFriction(void)
 {
 	return friction;
 }
 
-NSPhysicsConstraint
-NSPhysicsConstraint::Ballsocket(entity firstEnt, entity secondEnt, vector pos1, vector pos2, float forceLimit, bool noCollide)
+ncPhysicsConstraint
+ncPhysicsConstraint::Ballsocket(entity firstEnt, entity secondEnt, vector pos1, vector pos2, float forceLimit, bool noCollide)
 {
-	NSPhysicsConstraint new = spawn(NSPhysicsConstraint);
+	ncPhysicsConstraint new = spawn(ncPhysicsConstraint);
 	new.SetConstraintType(CONSTRAINT_POINT);
 	new.SetEntity1(firstEnt);
 	new.SetEntity2(secondEnt);
@@ -332,15 +332,15 @@ NSPhysicsConstraint::Ballsocket(entity firstEnt, entity secondEnt, vector pos1, 
 	return new;
 }
 
-NSPhysicsConstraint
-NSPhysicsConstraint::Weld(entity firstEnt, entity secondEnt, float bone1, float bone2, float forceLimit, bool noCollide, bool deleteEnt1OnBreak)
+ncPhysicsConstraint
+ncPhysicsConstraint::Weld(entity firstEnt, entity secondEnt, float bone1, float bone2, float forceLimit, bool noCollide, bool deleteEnt1OnBreak)
 {
 	if (firstEnt == secondEnt) {
 		EntError("Cannot weld the entity with itself!");
 		return __NULL__;
 	}
 
-	NSPhysicsConstraint new = spawn(NSPhysicsConstraint);
+	ncPhysicsConstraint new = spawn(ncPhysicsConstraint);
 	new.SetConstraintType(CONSTRAINT_FIXED);
 	new.SetEntity1(firstEnt);
 	new.SetEntity2(secondEnt);
@@ -350,10 +350,10 @@ NSPhysicsConstraint::Weld(entity firstEnt, entity secondEnt, float bone1, float 
 	return new;
 }
 
-NSPhysicsConstraint
-NSPhysicsConstraint::Rope(entity firstEnt, entity secondEnt, vector pos1, vector pos2)
+ncPhysicsConstraint
+ncPhysicsConstraint::Rope(entity firstEnt, entity secondEnt, vector pos1, vector pos2)
 {
-	NSPhysicsConstraint new = spawn(NSPhysicsConstraint);
+	ncPhysicsConstraint new = spawn(ncPhysicsConstraint);
 	new.SetConstraintType(CONSTRAINT_POINT);
 	new.SetEntity1(firstEnt);
 	new.SetEntity2(secondEnt);
@@ -366,8 +366,8 @@ NSPhysicsConstraint::Rope(entity firstEnt, entity secondEnt, vector pos1, vector
 }
 
 .float max_angular;
-NSPhysicsConstraint
-NSPhysicsConstraint::KeepUpright(entity firstEnt, vector uprightAngle, float angleLimit)
+ncPhysicsConstraint
+ncPhysicsConstraint::KeepUpright(entity firstEnt, vector uprightAngle, float angleLimit)
 {
 	firstEnt.angles = uprightAngle;
 	firstEnt.max_angular = angleLimit;

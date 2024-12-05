@@ -39,7 +39,7 @@ typedef enumflags
 } nsitem_changed_t;
 
 /*! \brief This entity class represents inventory items, weapons. */
-/*!QUAKED NSItem (0 0.8 0.8) (-16 -16 0) (16 16 72)
+/*!QUAKED ncItem (0 0.8 0.8) (-16 -16 0) (16 16 72)
 # OVERVIEW
 Represents any item within the players' inventory.
 These can be used, or be dormant.
@@ -63,10 +63,10 @@ These can be used, or be dormant.
 
 @ingroup baseclass
 */
-class NSItem:NSPhysicsEntity
+class ncItem:ncPhysicsEntity
 {
 public:
-	void NSItem(void);
+	void ncItem(void);
 
 	/* overrides */
 #ifdef SERVER
@@ -149,7 +149,7 @@ private:
 	NETWORKED_FLOAT(owner_entnum)
 #endif
 
-	NSItem m_nextItem;
-	NSItem m_nextItem_net;
+	ncItem m_nextItem;
+	ncItem m_nextItem_net;
 	entity owner_net;
 };

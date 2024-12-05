@@ -1,0 +1,15 @@
+// Vera Visions Material
+{
+if $programs
+	program defaultskin
+	diffusemap "pbrtest/metal022.tga"
+	normalmap "pbrtest/metal022_local.tga"
+	specularmap "pbrtest/metal022_mra.tga"
+	fullbrightmap "modelsrc/props_lights/light02_emissive.tga"
+else
+	{
+		map "pbrtest/metal022.tga"
+		rgbGen lightingdiffuse
+	}
+endif
+} 

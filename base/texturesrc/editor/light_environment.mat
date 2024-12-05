@@ -1,0 +1,9 @@
+{
+	diffusemap editor/light.tga
+	
+	{
+		map $diffuse
+		rgbGen vertex
+		alphaFunc GE128
+	}
+}

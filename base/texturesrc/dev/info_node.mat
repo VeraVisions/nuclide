@@ -1,0 +1,8 @@
+{
+	diffusemap dev/info_node.tga
+	
+	{
+		map $diffuse
+		blendFunc blend
+	}
+}

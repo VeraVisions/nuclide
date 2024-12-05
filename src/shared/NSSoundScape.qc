@@ -1,5 +1,5 @@
 void
-NSSoundScape::NSSoundScape(void)
+ncSoundScape::ncSoundScape(void)
 {
 	m_density = 1.0f;
 	m_diffusion = 1.0f;
@@ -29,145 +29,145 @@ NSSoundScape::NSSoundScape(void)
 
 #ifdef SERVER
 void
-NSSoundScape::SetDensity(float newDensity)
+ncSoundScape::SetDensity(float newDensity)
 {
 	m_density = newDensity;
 }
 
 void
-NSSoundScape::SetDiffusion(float newDiffusion)
+ncSoundScape::SetDiffusion(float newDiffusion)
 {
 	m_diffusion = newDiffusion;
 }
 
 void
-NSSoundScape::SetGain(float newGain)
+ncSoundScape::SetGain(float newGain)
 {
 	m_gain = newGain;
 }
 
 void
-NSSoundScape::SetGainHF(float newGainHF)
+ncSoundScape::SetGainHF(float newGainHF)
 {
 	m_gainHF = newGainHF;
 }
 
 void
-NSSoundScape::SetGainLF(float newGainLF)
+ncSoundScape::SetGainLF(float newGainLF)
 {
 	m_gainLF = newGainLF;
 }
 
 void
-NSSoundScape::SetDecayTime(float newDecayTime)
+ncSoundScape::SetDecayTime(float newDecayTime)
 {
 	m_decayTime = newDecayTime;
 }
 
 void
-NSSoundScape::SetDecayHFRatio(float newDecayHFRatio)
+ncSoundScape::SetDecayHFRatio(float newDecayHFRatio)
 {
 	m_decayHFRatio = newDecayHFRatio;
 }
 
 void
-NSSoundScape::SetDecayLFRatio(float newDecayLFRatio)
+ncSoundScape::SetDecayLFRatio(float newDecayLFRatio)
 {
 	m_decayLFRatio = newDecayLFRatio;
 }
 
 void
-NSSoundScape::SetReflectionGain(float newReflectionGain)
+ncSoundScape::SetReflectionGain(float newReflectionGain)
 {
 	m_reflectionGain = newReflectionGain;
 }
 
 void
-NSSoundScape::SetReflectionDelay(float newReflectionDelay)
+ncSoundScape::SetReflectionDelay(float newReflectionDelay)
 {
 	m_reflectionDelay = newReflectionDelay;
 }
 
 void
-NSSoundScape::SetReflectionPan(vector newReflectionPan)
+ncSoundScape::SetReflectionPan(vector newReflectionPan)
 {
 	m_reflectionPan = newReflectionPan;
 }
 
 void
-NSSoundScape::SetLateGain(float newLateGain)
+ncSoundScape::SetLateGain(float newLateGain)
 {
 	m_LateGain = newLateGain;
 }
 
 void
-NSSoundScape::SetLateDelay(float newLateDelay)
+ncSoundScape::SetLateDelay(float newLateDelay)
 {
 	m_LateDelay = newLateDelay;
 }
 
 void
-NSSoundScape::SetLatePan(vector newLatePan)
+ncSoundScape::SetLatePan(vector newLatePan)
 {
 	m_LatePan = newLatePan;
 }
 
 void
-NSSoundScape::SetEchoTime(float newLateEchoTime)
+ncSoundScape::SetEchoTime(float newLateEchoTime)
 {
 	m_echoTime = newLateEchoTime;
 }
 
 void
-NSSoundScape::SetEchoDepth(float newEchoDepth)
+ncSoundScape::SetEchoDepth(float newEchoDepth)
 {
 	m_echoDepth = newEchoDepth;
 }
 
 void
-NSSoundScape::SetModulationTime(float newModulationTime)
+ncSoundScape::SetModulationTime(float newModulationTime)
 {
 	m_modulationTime = newModulationTime;
 }
 
 void
-NSSoundScape::SetModulationDepth(float newModulationDepth)
+ncSoundScape::SetModulationDepth(float newModulationDepth)
 {
 	m_modulationDepth = newModulationDepth;
 }
 
 void
-NSSoundScape::SetAirAbsorptionGainHF(float newAirAbsorptionGainHF)
+ncSoundScape::SetAirAbsorptionGainHF(float newAirAbsorptionGainHF)
 {
 	m_airAbsorptionGainHF = newAirAbsorptionGainHF;
 }
 
 void
-NSSoundScape::SetHFReference(float newHFReference)
+ncSoundScape::SetHFReference(float newHFReference)
 {
 	m_HFReference = newHFReference;
 }
 
 void
-NSSoundScape::SetLFReference(float newLFReference)
+ncSoundScape::SetLFReference(float newLFReference)
 {
 	m_LFReference = newLFReference;
 }
 
 void
-NSSoundScape::SetRoomRolloffFactor(float newRoomRolloffFactor)
+ncSoundScape::SetRoomRolloffFactor(float newRoomRolloffFactor)
 {
 	m_roomRolloffFactor = newRoomRolloffFactor;
 }
 
 void
-NSSoundScape::SetDecayHFLimit(int newDecayHFLimit)
+ncSoundScape::SetDecayHFLimit(int newDecayHFLimit)
 {
 	m_decayHFLimit = newDecayHFLimit;
 }
 
 void
-NSSoundScape::SetRadius(float newRadius)
+ncSoundScape::SetRadius(float newRadius)
 {
 	m_radius = newRadius;
 }
@@ -175,145 +175,145 @@ NSSoundScape::SetRadius(float newRadius)
 
 #ifdef CLIENT
 float
-NSSoundScape::GetDensity(void)
+ncSoundScape::GetDensity(void)
 {
 	return (m_density);
 }
 
 float
-NSSoundScape::GetDiffusion(void)
+ncSoundScape::GetDiffusion(void)
 {
 	return (m_diffusion);
 }
 
 float
-NSSoundScape::GetGain(void)
+ncSoundScape::GetGain(void)
 {
 	return (m_gain);
 }
 
 float
-NSSoundScape::GetGainHF(void)
+ncSoundScape::GetGainHF(void)
 {
 	return (m_gainHF);
 }
 
 float
-NSSoundScape::GetGainLF(void)
+ncSoundScape::GetGainLF(void)
 {
 	return (m_gainLF);
 }
 
 float
-NSSoundScape::GetDecayTime(void)
+ncSoundScape::GetDecayTime(void)
 {
 	return (m_decayTime);
 }
 
 float
-NSSoundScape::GetDecayHFRatio(void)
+ncSoundScape::GetDecayHFRatio(void)
 {
 	return (m_decayHFRatio);
 }
 
 float
-NSSoundScape::GetDecayLFRatio(void)
+ncSoundScape::GetDecayLFRatio(void)
 {
 	return (m_decayLFRatio);
 }
 
 float
-NSSoundScape::GetReflectionGain(void)
+ncSoundScape::GetReflectionGain(void)
 {
 	return (m_reflectionGain);
 }
 
 float
-NSSoundScape::GetReflectionDelay(void)
+ncSoundScape::GetReflectionDelay(void)
 {
 	return (m_reflectionDelay);
 }
 
 vector
-NSSoundScape::GetReflectionPan(void)
+ncSoundScape::GetReflectionPan(void)
 {
 	return (m_reflectionPan);
 }
 
 float
-NSSoundScape::GetLateGain(void)
+ncSoundScape::GetLateGain(void)
 {
 	return (m_LateGain);
 }
 
 float
-NSSoundScape::GetLateDelay(void)
+ncSoundScape::GetLateDelay(void)
 {
 	return (m_LateDelay);
 }
 
 vector
-NSSoundScape::GetLatePan(void)
+ncSoundScape::GetLatePan(void)
 {
 	return (m_LatePan);
 }
 
 float
-NSSoundScape::GetEchoTime(void)
+ncSoundScape::GetEchoTime(void)
 {
 	return (m_echoTime);
 }
 
 float
-NSSoundScape::GetEchoDepth(void)
+ncSoundScape::GetEchoDepth(void)
 {
 	return (m_echoDepth);
 }
 
 float
-NSSoundScape::GetModulationTime(void)
+ncSoundScape::GetModulationTime(void)
 {
 	return (m_modulationTime);
 }
 
 float
-NSSoundScape::GetModulationDepth(void)
+ncSoundScape::GetModulationDepth(void)
 {
 	return (m_modulationDepth);
 }
 
 float
-NSSoundScape::GetAirAbsorptionGainHF(void)
+ncSoundScape::GetAirAbsorptionGainHF(void)
 {
 	return (m_airAbsorptionGainHF);
 }
 
 float
-NSSoundScape::GetHFReference(void)
+ncSoundScape::GetHFReference(void)
 {
 	return (m_HFReference);
 }
 
 float
-NSSoundScape::GetLFReference(void)
+ncSoundScape::GetLFReference(void)
 {
 	return (m_LFReference);
 }
 
 float
-NSSoundScape::GetRoomRolloffFactor(void)
+ncSoundScape::GetRoomRolloffFactor(void)
 {
 	return (m_roomRolloffFactor);
 }
 
 int
-NSSoundScape::GetDecayHFLimit(void)
+ncSoundScape::GetDecayHFLimit(void)
 {
 	return (m_decayHFLimit);
 }
 
 float
-NSSoundScape::GetRadius(void)
+ncSoundScape::GetRadius(void)
 {
 	return (m_radius);
 }
@@ -322,7 +322,7 @@ NSSoundScape::GetRadius(void)
 /* Networking */
 #ifdef SERVER
 void
-NSSoundScape::EvaluateEntity(void)
+ncSoundScape::EvaluateEntity(void)
 {
 	EVALUATE_VECTOR(origin, 0, SOUNDSCAPE_ORIGIN)
 	EVALUATE_VECTOR(origin, 1, SOUNDSCAPE_ORIGIN)
@@ -358,7 +358,7 @@ NSSoundScape::EvaluateEntity(void)
 }
 
 float
-NSSoundScape::SendEntity(entity ePEnt, float flChanged)
+ncSoundScape::SendEntity(entity ePEnt, float flChanged)
 {
 	WriteByte(MSG_ENTITY, ENT_SOUNDSCAPE);
 
@@ -408,7 +408,7 @@ NSSoundScape::SendEntity(entity ePEnt, float flChanged)
 }
 #else
 void
-NSSoundScape::ReceiveEntity(float flNew, float flChanged)
+ncSoundScape::ReceiveEntity(float flNew, float flChanged)
 {
 	READENTITY_COORD(origin[0], SOUNDSCAPE_ORIGIN)
 	READENTITY_COORD(origin[1], SOUNDSCAPE_ORIGIN)
@@ -458,7 +458,7 @@ NSSoundScape::ReceiveEntity(float flNew, float flChanged)
 /* Input/Output */
 #ifdef SERVER
 void
-NSSoundScape::Input(entity entityActivator, string inputName, string dataString)
+ncSoundScape::Input(entity entityActivator, string inputName, string dataString)
 {
 	switch (inputName) {
 	case "LoadFromEFX":
@@ -542,7 +542,7 @@ NSSoundScape::Input(entity entityActivator, string inputName, string dataString)
 }
 
 void
-NSSoundScape::SpawnKey(string keyName, string setValue)
+ncSoundScape::SpawnKey(string keyName, string setValue)
 {
 	switch (keyName) {
 	case "efx_file":
@@ -626,7 +626,7 @@ NSSoundScape::SpawnKey(string keyName, string setValue)
 }
 
 void
-NSSoundScape::Save(float handle)
+ncSoundScape::Save(float handle)
 {
 	super::Save(handle);
 	SaveFloat(handle, "m_density", m_density);
@@ -656,7 +656,7 @@ NSSoundScape::Save(float handle)
 }
 
 void
-NSSoundScape::Restore(string keyName, string setValue)
+ncSoundScape::Restore(string keyName, string setValue)
 {
 	switch (keyName) {
 	case "m_density":
@@ -738,7 +738,7 @@ NSSoundScape::Restore(string keyName, string setValue)
 #endif
 
 bool
-NSSoundScape::LoadFromEFX(string efxFile)
+ncSoundScape::LoadFromEFX(string efxFile)
 {
 	filestream fh;
 	string line;
@@ -768,7 +768,7 @@ NSSoundScape::LoadFromEFX(string efxFile)
 
 #ifdef CLIENT
 void
-NSSoundScape::SetupEFXReverb(reverbinfo_t *info)
+ncSoundScape::SetupEFXReverb(reverbinfo_t *info)
 {
 	info->flDensity = m_density;
 	info->flDiffusion = m_diffusion;
@@ -796,7 +796,7 @@ NSSoundScape::SetupEFXReverb(reverbinfo_t *info)
 }
 
 void
-NSSoundScape::DebugDraw(void)
+ncSoundScape::DebugDraw(void)
 {
 	static vector pos = [16, 16];
 
@@ -835,7 +835,7 @@ NSSoundScape::DebugDraw(void)
 var bool autocvar_s_al_use_reverb = true;
 
 void
-EFX_UpdateSoundScape(NSSoundScape scape)
+EFX_UpdateSoundScape(ncSoundScape scape)
 {
 	reverbinfo_t reverbInfo;
 
@@ -850,12 +850,12 @@ EFX_UpdateSoundScape(NSSoundScape scape)
 }
 
 void
-EFX_UpdateListener(NSView playerView)
+EFX_UpdateListener(ncView playerView)
 {
-	static NSSoundScape lastScape;
+	static ncSoundScape lastScape;
 	vector camPos = playerView.GetCameraOrigin();
 	vector camAngle = playerView.GetCameraAngle();
-	NSSoundScape bestScape = __NULL__;
+	ncSoundScape bestScape = __NULL__;
 	float bestDistance = 999999.0f;
 
 	if (lastScape) {
@@ -872,9 +872,9 @@ EFX_UpdateListener(NSView playerView)
 		return;
 	}
 
-	for (entity e = world; (e = find(e, classname, "NSSoundScape"));) {
+	for (entity e = world; (e = find(e, classname, "ncSoundScape"));) {
 		float deltaPos;
-		NSSoundScape scape = (NSSoundScape)e;
+		ncSoundScape scape = (ncSoundScape)e;
 
 		/* don't get blocked by entities */
 		other = world;

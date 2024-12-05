@@ -1,10 +1,10 @@
 # Material Command List {#mat_commands}
 
-### skyParms {#skyParms}
+## skyParms {#skyParms}
 
-#### Overview
+### Overview
 
-**skyParms <farbox> <cloudheight> <nearbox>**
+**skyParms \<farbox\> \<cloudheight\> \<nearbox\>**
 
 Specifies how to use the surface as a sky, including an optional far box
 (stars, moon, etc), optional cloud layers with any shader attributes,
@@ -32,25 +32,25 @@ clouds are mapped. Good ranges are 64 to 256. The default value is 128.
 clouds. This has not be tested in a long time, so it probably doesn't
 actually work. Set to "-" to ignore.
 
-#### Example Sky Material {#example_sky_material}
+### Example Sky Material {#example_sky_material}
 
 ```
-   // Vera Visions Material
-   {
-       qer_editorImage textures/skies/dune.tga
-       skyParms textures/skies/dune/bg 256 -
-       noPicMip
-       noMipmaps
-       
-       surfaceParm sky
-       surfaceParm noimpact
-       surfaceParm nolightmap
-       surfaceParm nodlight
-       {
-           program skybox
-           map $cube:textures/skies/dune/bg
-           map textures/skies/clouds/dunecloud.tga
-           map textures/skies/clouds/dunecloud_layer.tga
-       }
-   }
+   // Vera Visions Material
+   {
+       qer_editorImage textures/skies/dune.tga
+       skyParms textures/skies/dune/bg 256 -
+       noPicMip
+       noMipmaps
+
+       surfaceParm sky
+       surfaceParm noimpact
+       surfaceParm nolightmap
+       surfaceParm nodlight
+       {
+              program skybox
+              map $cube:textures/skies/dune/bg
+              map textures/skies/clouds/dunecloud.tga
+              map textures/skies/clouds/dunecloud_layer.tga
+       }
+    }
 ```

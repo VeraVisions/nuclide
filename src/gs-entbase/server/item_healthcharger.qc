@@ -43,11 +43,11 @@ Brush that fills up your health when used, to a maximum of 100 HP.
 # TRIVIA
 This entity was introduced in Half-Life for PS2 (2001).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-item_healthcharger:NSRenderableEntity
+item_healthcharger:ncRenderableEntity
 {
 public:
 	void item_healthcharger(void);
@@ -73,8 +73,8 @@ public:
 private:
 	entity m_toucher;
 	entity m_chargeZone;
-	NSEntity m_eUser;
-	NSRenderableEntity m_eProgressMeter;
+	ncEntity m_eUser;
+	ncRenderableEntity m_eProgressMeter;
 	float m_flDelay;
 	float m_flCheck;
 
@@ -114,7 +114,7 @@ item_healthcharger::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "user":
-		m_eUser = (NSEntity)ReadEntity(strValue);
+		m_eUser = (ncEntity)ReadEntity(strValue);
 		break;
 	case "delay":
 		m_flDelay = ReadFloat(strValue);
@@ -269,7 +269,7 @@ item_healthcharger::Respawn(void)
 	}
 
 	if (!m_eProgressMeter) {
-		m_eProgressMeter = spawn(NSRenderableEntity);
+		m_eProgressMeter = spawn(ncRenderableEntity);
 		m_eProgressMeter.SetOrigin(GetOrigin());
 		m_eProgressMeter.SetAngles(GetAngles());
 		m_eProgressMeter.SetMovetype(MOVETYPE_NONE);

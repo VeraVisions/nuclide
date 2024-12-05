@@ -80,14 +80,14 @@ This one has multiple sound files specified, which means that **Nuclide** will r
 |-----------------|-------------------------|-------------------------------------------------------------------------------------------------------------|
 | **Key**         | **Value**               | **Description**                                                                                             |
 | attenuation     | idle/static/none/normal | Changes the sound's attenuation, aka playback radius/distance. This essentially just changes **dist_max**.  |
-| dist_min        | <float>                 | Sets the minimum playback distance in quake units.                                                          |
-| dist_max        | <float>                 | Sets the maximum playback distance in quake units.                                                          |
-| volume          | <float>                 | Sets the playback volume. 0.0 - 1.0 range.                                                                  |
-| shakes          | <float>                 | Will shake the screen with an intensity specified. Play around with this, 256 is a good starting value.     |
-| pitch           | <float>                 | Will set a specific pitch change. 0.0 - 2.0 range most commonly, but there's wiggle room.                   |
-| pitch_min       | <float>                 | Will set a minimum pitch instead of an exact one. This means it'll play a random pitch between min and max. |
-| pitch_max       | <float>                 | Will set a maximum pitch instead of an exact one. This means it'll play a random pitch between min and max. |
-| offset          | <float>                 | Sound sample offset in seconds.                                                                             |
+| dist_min        | \<float\>                 | Sets the minimum playback distance in quake units.                                                          |
+| dist_max        | \<float\>                 | Sets the maximum playback distance in quake units.                                                          |
+| volume          | \<float\>                 | Sets the playback volume. 0.0 - 1.0 range.                                                                  |
+| shakes          | \<float\>                 | Will shake the screen with an intensity specified. Play around with this, 256 is a good starting value.     |
+| pitch           | \<float\>                 | Will set a specific pitch change. 0.0 - 2.0 range most commonly, but there's wiggle room.                   |
+| pitch_min       | \<float\>                 | Will set a minimum pitch instead of an exact one. This means it'll play a random pitch between min and max. |
+| pitch_max       | \<float\>                 | Will set a maximum pitch instead of an exact one. This means it'll play a random pitch between min and max. |
+| offset          | \<float\>                 | Sound sample offset in seconds.                                                                             |
 | looping         | none                    | Sound set to force loop, regardless of sound markers in file.                                               |
 | nodups          | none                    | Don't play duplicate samples in sequence.                                                                   |
 | global          | none                    | Play samples everywhere.                                                                                    |
@@ -96,8 +96,8 @@ This one has multiple sound files specified, which means that **Nuclide** will r
 | omnidirectional | none                    | Samples won't play from any particular direction.                                                           |
 | follow          | none                    | Samples will move alongside the entity it's being played on                                                 |
 | footstep        | none                    | Determines sample volume based upon the speed of the entity.                                                |
-| distshader      | <string>                | Which sound def to play to everyone who is out of playback reach of this one.                            |
-| sample          | <string>                | Adds a sample to play to the list. Will only play one at a time.                                            |
+| distshader      | \<string\>                | Which sound def to play to everyone who is out of playback reach of this one.                            |
+| sample          | \<string\>                | Adds a sample to play to the list. Will only play one at a time.                                            |
 
 ## Power to the developer {#power_to_the_developer}
 
@@ -126,7 +126,7 @@ _SndLog(string functionName, string msg)
 /** Logs an sound system specific log message.
 	 The console variable `s_developer` has to be `1` for them to be visible.
 
-@param description(...) contains a formatted string containing a description. */
+@param ... contains a formatted string containing a description. */
 #define SndLog(...) if (autocvar_s_logLevel >= LOGLEVEL_DEBUG) _SndLog(__FUNC__, sprintf(__VA_ARGS__))
 
 void
@@ -141,7 +141,7 @@ _SndEntLog(string className, string functionName, float edictNum, string warnMes
 /** Logs an sound specific entity class log message.
 	 The console variable `s_developer` has to be `1` for them to be visible.
 
-@param description(...) contains a formatted string containing a description. */
+@param ... contains a formatted string containing a description. */
 #define SndEntLog(...) if (autocvar_s_logLevel >= LOGLEVEL_DEBUG) _SndEntLog(classname, __FUNC__, num_for_edict(this), sprintf(__VA_ARGS__))
 
 /** Global hash table for name > soundDef id lookup. */

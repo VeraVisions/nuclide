@@ -15,7 +15,7 @@
 */
 
 void
-CheatersLament(NSClientPlayer playerEntity, vector absAngles, float buttons, float timeLength)
+CheatersLament(ncPlayer playerEntity, vector absAngles, float buttons, float timeLength)
 {
 	vector angleDelta = playerEntity.pb_last_angles - absAngles; /* diff between old and new */
 

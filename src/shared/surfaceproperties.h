@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+#warning Rename to SurfaceKit
+
 /** @defgroup surfdata Surface Data
     @brief Interactive surface properties.
     @ingroup shared
@@ -21,7 +23,7 @@
 # Surface Properties {#surfdata}
 
 Surfaces are being abstracted into one API with the help of **Surface Data**
-helper functions and large parts of NSSurfacePropEntity.
+helper functions and large parts of ncSurfacePropEntity.
 
 ## Preface {#surfdata_preface}
 
@@ -70,7 +72,7 @@ what property anything is made of.
     to choose from there.
 -   Entities can **specify** which entry from
     `scripts/surfaceproperties.txt` get's used. This is required for
-    NSPhysicsEntity derived classes.
+    ncPhysicsEntity derived classes.
     Those entities set their `surfdata` or `materialdata` key/value
     field to be the name of an entity listed inside the
     `surfaceproperties.txt` file.

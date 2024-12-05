@@ -19,8 +19,8 @@
     @brief Skill/Difficulty related APIs.
     @ingroup server
 
-The skill/difficulty APIs are used to retrieve variables that change
-depending on the selected game difficulty setting.
+The skill/difficulty APIs are used to retrieve values that differ
+based on the selected game difficulty setting.
 
 The setting is controlled via the `skill` console variable, which is represented
 by three different modes:
@@ -30,9 +30,11 @@ by three different modes:
 3. Hard
 
 The framework will then query the active skill variables.
-If a skill value isn't set, a fallback value will be used.
+If a skill value isn't set, a fallback value (defined by your code, querying the API)
+will be used.
+
 If the console variable `skill` is empty, or `0` it will
-assume the default setting of `2` - the *medium* difficulty.
+assume the default setting of `2` - which is the *medium* difficulty.
 
 You can technically query higher values then `3`, just ensure you set them all up in your skill manifest.
 
@@ -52,6 +54,15 @@ While you can set these in the `skill_manifest.cfg` file directly, it is encoura
 to put your own values in a separate config.  
 That way when people mod your game, they can inherit updates from the other, separate config without having to duplicate the variables every time your game updates.
 
+Also, if there is no difference whatsoever between your different skill values,
+or you don't want to have a concept of difficulty in your game (but still allow
+players or server operators to change game variables defined through them) you
+can define a single skill variable in the configs too:
+
+```
+set sk_starthealth 100
+```
+
 ## Querying Skill Variables
 
 Developers can query the variable set in the skill system using Skill_GetValue():
@@ -70,6 +81,7 @@ entityDef some_def
 }
 ```
 
+You will see most reference defs use them like so.
 
 @{
 */

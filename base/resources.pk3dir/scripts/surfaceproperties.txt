@@ -1,7 +1,0 @@
-default
-{
-	fx_bulletimpact "impact_default.main"
-	bulletimpact "sfx_impact.default"
-	stepleft "step_default.left"
-	stepright "step_default.right"
-}

@@ -1,0 +1,9 @@
+{
+	diffusemap editor/light_dynamic.ktx
+	
+	{
+		map $diffuse
+		alphaFunc GE128
+		rgbGen vertex
+	}
+}

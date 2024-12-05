@@ -125,7 +125,7 @@ Way_ReadFBFile(string strFile, bool flush)
 	} else {
 		int oldSize = g_iNodes;
 		int newSize = g_iNodes + fbHeader.numNodes;
-		g_pNodes = (node_t *)memrealloc(g_pNodes, sizeof(node_t), oldSize, newSize);
+		g_pNodes = (node_t *)memreallocOld(g_pNodes, sizeof(node_t), oldSize, newSize);
 		g_iNodes = newSize;
 		startId = oldSize;
 		offSet = oldSize;
@@ -253,7 +253,7 @@ Way_ReadPBFile(string strFile, bool flush)
 	} else {
 		int oldSize = g_iNodes;
 		int newSize = g_iNodes + pbHeader.numNodes;
-		g_pNodes = (node_t *)memrealloc(g_pNodes, sizeof(node_t), oldSize, newSize);
+		g_pNodes = (node_t *)memreallocOld(g_pNodes, sizeof(node_t), oldSize, newSize);
 		g_iNodes = newSize;
 		startId = oldSize;
 		offSet = oldSize;
@@ -481,7 +481,7 @@ Way_ReadJumbotFile(string strFile, bool flush)
 	} else {
 		int oldSize = g_iNodes;
 		int newSize = g_iNodes + nodeCount;
-		g_pNodes = (node_t *)memrealloc(g_pNodes, sizeof(node_t), oldSize, newSize);
+		g_pNodes = (node_t *)memreallocOld(g_pNodes, sizeof(node_t), oldSize, newSize);
 		g_iNodes = newSize;
 		startId = oldSize;
 		offSet = oldSize;

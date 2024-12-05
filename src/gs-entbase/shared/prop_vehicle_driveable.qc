@@ -31,7 +31,7 @@ enumflags
 };
 
 static class
-prop_vehicle_driveable_wheel:NSIO
+prop_vehicle_driveable_wheel:ncIO
 {
 public:
 	void prop_vehicle_driveable_wheel(void);
@@ -77,10 +77,10 @@ None currently.
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
 
-@ingroup shared
+@ingroup sharedentity
 @ingroup pointentity
 */
-class prop_vehicle_driveable:NSVehicle
+class prop_vehicle_driveable:ncVehicle
 {
 private:
 	/* map-entity fields */
@@ -96,8 +96,8 @@ private:
 	vector m_vecSeatOffest;
 
 	/* collision boxes */
-	NSEntity m_eCollBox1;
-	NSEntity m_eCollBox2;
+	ncEntity m_eCollBox1;
+	ncEntity m_eCollBox2;
 
 	prop_vehicle_driveable_wheel m_wlFL;
 	prop_vehicle_driveable_wheel m_wlFR;
@@ -132,7 +132,9 @@ public:
 	virtual void PredictPostFrame(void);
 	virtual void ReceiveEntity(float,float);
 	virtual void UpdateView(void);
-#else
+#endif
+
+#ifdef SERVER
 	virtual void Respawn(void);
 	virtual void OnPlayerUse(void);
 	virtual void EvaluateEntity(void);
@@ -186,7 +188,9 @@ prop_vehicle_driveable::Physics(void)
 		m_vecMoveValues = [0,0,0];
 		m_iMoveButtons = 0;
 		RunVehiclePhysics();
-#else
+#endif
+
+#ifdef CLIENT
 		setorigin(this, origin);
 #endif
 	} else {
@@ -449,9 +453,9 @@ prop_vehicle_driveable_wheel::Accel(float flMoveTime, float m_flTurn)
 			velocity *= 0.25f;
 #ifdef SERVER
 			if (trace_ent.takedamage) {
-				NSSurfacePropEntity foo = (NSSurfacePropEntity)trace_ent;
+				ncSurfacePropEntity foo = (ncSurfacePropEntity)trace_ent;
 				vector dmgDir = dirFromTarget(trace_endpos, foo.origin);
-				NSDict damageDecl = spawn(NSDict);
+				ncDict damageDecl = spawn(ncDict);
 				damageDecl.AddKey("damage", itos(iImpactDamage));
 				combat.Damage(foo, this, vehParent.m_eDriver, damageDecl.GetDeclBody(), trace_endpos, dmgDir, foo.origin);
 				remove(damageDecl);
@@ -594,7 +598,7 @@ prop_vehicle_driveable::RunVehiclePhysics(void)
 #if SERVER
 	/* eject the dead */
 	if (m_eDriver && m_eDriver.health <= 0) {
-		PlayerLeave((NSClientPlayer)m_eDriver);
+		PlayerLeave((ncPlayer)m_eDriver);
 	}
 #endif
 
@@ -694,10 +698,10 @@ prop_vehicle_driveable::OnPlayerUse(void)
 		return;
 
 	if (m_eDriver == eActivator) {
-		PlayerLeave((NSClientPlayer)eActivator);
+		PlayerLeave((ncPlayer)eActivator);
 		setorigin(eActivator, GetExitPos());
 	} else if (!m_eDriver) {
-		PlayerEnter((NSClientPlayer)eActivator);
+		PlayerEnter((ncPlayer)eActivator);
 		m_vecPlayerPos = [0,0,0];
 	}
 	m_flUseTime = time + 2.0f;
@@ -726,7 +730,7 @@ prop_vehicle_driveable::Respawn(void)
 	setsize( this, [-50,-50,0], [50,50,64]);
 
 	if (m_eDriver)
-		PlayerLeave((NSClientPlayer)m_eDriver);
+		PlayerLeave((ncPlayer)m_eDriver);
 
 	SendFlags = -1;
 }
@@ -736,9 +740,9 @@ void
 prop_vehicle_driveable::SpawnWheels(void)
 {
 	if (!m_eCollBox1)
-		m_eCollBox1 = spawn(NSEntity);
+		m_eCollBox1 = spawn(ncEntity);
 	if (!m_eCollBox2)
-		m_eCollBox2 = spawn(NSEntity);
+		m_eCollBox2 = spawn(ncEntity);
 
 	{
 		m_eCollBox1.SetSize([-32,-32,0], [32,32,32]);
@@ -841,7 +845,9 @@ prop_vehicle_driveable::ReceiveEntity(float flNew, float flSendFlags)
 
 	PredictPreFrame();
 }
-#else
+#endif
+
+#ifdef SERVER
 void
 prop_vehicle_driveable::EvaluateEntity(void)
 {

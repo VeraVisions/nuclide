@@ -15,7 +15,7 @@
 */
 
 /**
-Bitfield enumeration for NSEntity its SendFlags field.
+Bitfield enumeration for ncEntity its SendFlags field.
 
 These give hint as to which internal fields get networked to the client.
 */
@@ -42,7 +42,7 @@ typedef enumflags
 	BASEFL_CHANGED_SCALE,
 } nsentity_changed_t;
 
-/** NSEntity is the lowest of the user-accessible entity class.
+/** ncEntity is the lowest of the user-accessible entity class.
 It's responsible for handling practically every entity in Nuclide.
 
 Try to avoid using the built-in 'entity' type unless you know exactly
@@ -50,12 +50,12 @@ what you are doing. Otherwise, you will deal with loss of savegames and much mor
 
 @ingroup baseclass
 */
-class NSEntity:NSTrigger
+class ncEntity:ncTrigger
 {
 public:
 	/** The constructor.
 		Not much may be known of what the entity will be just yet. */
-	void NSEntity(void);
+	void ncEntity(void);
 
 #ifdef CLIENT
 	/** Client: Handles network updates from the server for the associated entity. */
@@ -86,12 +86,19 @@ public:
 	@param clientSide If it's being spawned on the client-side. */
 	virtual bool CanSpawn(bool clientSide);
 
+	/** Returns if this entity has a model set. */
+	nonvirtual bool HasModel(void);
+
 #ifdef SERVER
 	virtual void Respawn(void);
 	virtual void Input(entity,string,string);
 	virtual void Save(float);
 	virtual void Restore(string,string);
 	virtual void ParentUpdate(void);
+
+	nonvirtual void Event_SpawnDefRelative(string, float, float, float);
+
+	nonvirtual bool SharesPVSWithPlayer(void);
 
 	/* Server-side rendering function. Expensive, but useful. */
 	virtual void DebugDraw(void);
@@ -129,11 +136,11 @@ public:
 
 	/* sets */
 	/** Sets the whole effects field. Check the effects_t enum for available effects.*/
-	nonvirtual void SetEffects(float);
+	nonvirtual void SetEffects(__int32);
 	/** Appends one or more effects to the entity. Check the effects_t enum for available effects.*/
-	nonvirtual void AddEffects(effects_t);
+	nonvirtual void AddEffects(__int32);
 	/** Removes one or more effects from the entity. Check the effects_t enum for available effects.*/
-	nonvirtual void RemoveEffects(effects_t);
+	nonvirtual void RemoveEffects(__int32);
 	/** Sets the framegroup sequence of the entity. Must be positive.*/
 	nonvirtual void SetFrame(float);
 	/** Sets the skingroup of the entity. Must be positive. */
@@ -190,22 +197,9 @@ public:
 	/** Turns towards the specified position. */
 	nonvirtual void TurnToPos(vector);
 
-	/** Overrides the Think function of the entity.
-		Only use it when you want to retain a think timer that's already been set for the entity. */
-	nonvirtual void SetThink(void());
-	/** Sets the next think timer of the entity.
-		It has to be a positive value. For example `SetNextThink(1.5f); will trigger the think
-		1.5 seconds from then on.*/
-	nonvirtual void SetNextThink(float);
-	/** Schedules a think timer. You can only have one going at any given time.
-		This is the preferred way of setting think timers.
-		Note that when an entity of movement type `MOVETYPE_PUSH` is not moving, 
-		it will never get to think. */
-	nonvirtual void ScheduleThink(void(void),float);
-
 	/* gets */
 	/** Returns a bitfield of the active effects running on the entity. */
-	nonvirtual float GetEffects(void);
+	nonvirtual __int32 GetEffects(void);
 	/** Returns the currently active framegroup of the entity. */
 	nonvirtual float GetFrame(void);
 	/** Returns the currently equipped skin of the entity. */
@@ -232,6 +226,8 @@ public:
 	nonvirtual vector GetAngularVelocity(void);
 	/** Returns the absolute world position of the entity. */
 	nonvirtual vector GetOrigin(void);
+	/** Returns the virtual size of the entity. */
+	nonvirtual vector GetSize(void);
 	/** Returns the bounding box mins of the entity. */
 	nonvirtual vector GetMins(void);
 	/** Returns the bounding box maxs of the entity. */
@@ -256,15 +252,7 @@ public:
 	nonvirtual float GetVFlags(void);
 	/** Returns true if the entity has the specified, nuclide specific, flags. */
 	nonvirtual float HasVFlags(float);
-	/** Returns an absolute value of when the entity will be think again.
-		Any result should be tested against `GetTime()`. */
-	nonvirtual float GetNextThinkTime(void);
-	/** Returns whether or not we're currently expecting to think any time soon. */
-	nonvirtual bool IsThinking(void);
-	/** When called, will unset anything related to ongoing think operations. */
-	nonvirtual void ReleaseThink(void);
-	/** When called, will make the entity think busy for the specified amount of time. In that time, IsThinking() will return true. */
-	nonvirtual void ThinkBusy(float);
+
 	/** When called, will clear anything related to physical movement on the entity. */
 	nonvirtual void ClearVelocity(void);
 
@@ -328,7 +316,7 @@ public:
 	nonvirtual bool IsOnGround(void);
 	/** Returns the entity we're standing on.
 		If the result is `__NULL__` that does not mean that we're in air.
-		Check `NSEntity::IsOnGround()` for that information. */
+		Check `ncEntity::IsOnGround()` for that information. */
 	nonvirtual entity GetGroundEntity(void);
 	/** Returns if the entity was spawned by the map we're on. */
 	nonvirtual bool CreatedByMap(void);
@@ -389,6 +377,10 @@ public:
 	nonvirtual void EnablePlayerCollision(void);
 	/** Will disable collision with player entities. */
 	nonvirtual void DisablePlayerCollision(void);
+	/** Returns whether this entity is being held in the hands of a player. As in via ncPlayer::PickupEntity(). */
+	nonvirtual bool HeldByPlayer(void);
+	/** Returns whether this entity is a brush or using a sub-model of the level. */
+	nonvirtual bool IsBrush(void);
 
 private:
 	float m_flSpawnTime;
@@ -419,6 +411,8 @@ private:
 	virtual void _ReceiveComplete(float, float);
 #endif
 
+	entity m_holdingPlayer;
+	float m_lastHeldTime;
 
 #ifdef SERVER
 	string m_parent;
@@ -426,7 +420,11 @@ private:
 	string m_parent_attachment;
 	NETWORKED_FLOAT_N(frame)
 	NETWORKED_FLOAT_N(skin)
-	NETWORKED_FLOAT_N(effects)
+	__int32 effects_net;
+	vector m_vecModelMins;
+	vector m_vecModelMaxs;
+	nonvirtual vector GetModelMins(void);
+	nonvirtual vector GetModelMaxs(void);
 #endif
 	/** Will read from the named def to perform a projectile attack. */
 	nonvirtual bool _ProjectileAttack(string, bool);
@@ -434,7 +432,7 @@ private:
 
 /** Returns a new entity. Guaranteed to be something. Never __NULL__
    unless we're seriously out of memory. */
-NSEntity spawnClass(string className, vector desiredPos);
+ncEntity spawnClass(string className, vector desiredPos);
 
 #ifdef SERVER
 bool changeClass(entity target, string className)

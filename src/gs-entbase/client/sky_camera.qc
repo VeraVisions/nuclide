@@ -34,11 +34,11 @@ divisable by 2 to avoid any precision funkyness.
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
 
-@ingroup client
+@ingroup cliententity
 @ingroup pointentity
 */
 class
-sky_camera:NSEntity
+sky_camera:ncEntity
 {
 public:
 	void sky_camera(void);

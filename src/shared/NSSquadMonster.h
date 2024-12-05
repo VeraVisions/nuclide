@@ -16,14 +16,14 @@
 
 #define NSSQUADMONSTER_MAXMEMBERS 5
 
-/** NSSquadMonster based NPCs are able to communicate strategies together. 
+/** ncSquadMonster based NPCs are able to communicate strategies together. 
 @ingroup baseclass
 */
 class
-NSSquadMonster:NSMonster
+ncSquadMonster:ncMonster
 {
 public:
-	void NSSquadMonster(void);
+	void ncSquadMonster(void);
 
 #ifdef SERVER
 	/* overrides */
@@ -42,19 +42,19 @@ public:
 	/** Returns whether or not they're the squad leader. */
 	nonvirtual bool IsSquadLeader(void);
 	/** Returns the leader of their squad. Invalid if none. */
-	nonvirtual NSSquadMonster GetSquadLeader(void);
+	nonvirtual ncSquadMonster GetSquadLeader(void);
 
 	/** Will find and attach to a Squad in the specified radius. */
 	nonvirtual void FindSquadNearMe(float);
 
 	/** Will add the specified NPC to this entity's current squad. */
-	nonvirtual void AddToSquad(NSSquadMonster);
+	nonvirtual void AddToSquad(ncSquadMonster);
 	/** Will remove the specified NPC from this entity's current squad. Can be called on self. */
-	nonvirtual void RemoveFromSquad(NSSquadMonster);
+	nonvirtual void RemoveFromSquad(ncSquadMonster);
 	/** Returns the nearest available member of its squad. */
-	nonvirtual NSSquadMonster GetNearestSquadMember(void);
+	nonvirtual ncSquadMonster GetNearestSquadMember(void);
 	/** Returns the farthest available member of its squad. */
-	nonvirtual NSSquadMonster GetFarthestSquadMember(void);
+	nonvirtual ncSquadMonster GetFarthestSquadMember(void);
 #endif
 
 #ifdef SERVER
@@ -62,9 +62,9 @@ private:
 	string m_strSquadLeaderBody;
 	bool m_bStartAsLeader;
 	bool m_inSquad;
-	NSSquadMonster m_eSquadLeader;
+	ncSquadMonster m_eSquadLeader;
 
 	/* stored only in the squad leader's memory */
-	NSSquadMonster m_eSquadMembers[NSSQUADMONSTER_MAXMEMBERS];
+	ncSquadMonster m_eSquadMembers[NSSQUADMONSTER_MAXMEMBERS];
 #endif
 };

@@ -30,10 +30,10 @@ Cannot be triggered. Repeats automatically.
 # TRIVIA
 This entity was introduced in The Wastes (2018).
 
-@ingroup client
+@ingroup cliententity
 @ingroup pointentity
 */
-class env_particle:NSEntity
+class env_particle:ncEntity
 {
 public:
 	void env_particle(void);

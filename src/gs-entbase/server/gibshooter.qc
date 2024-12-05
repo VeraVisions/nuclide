@@ -39,7 +39,7 @@ Shoots model bouncy entities from its location.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class

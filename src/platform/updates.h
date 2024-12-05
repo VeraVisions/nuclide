@@ -23,9 +23,7 @@ The updater is an abstraction of the engine its own package manager.
 Not all packages the engine offers are related to the game you're currently
 running. Therefore we offer our own API within Nuclide to deal with game updates.
 
-You want to call Updates_Init() once, after which Updates_GetUpdaterStatus() should be queried to determine when the Updater is ready. That is not necessary, but it might be helpful to throw up a loading screen while that is returning UPDATER_PENDING.
-
-Once Updates_GetUpdaterStatus() reports UPDATER_INITIALIZED, you can expect the loading to be fully done.
+You want to call Updates_Init() once, which is done once you include the platform header.
 
 The function Updates_GetPackageCount() will report the total amount of update packages available for the game. These are not 'new' updates, they contain every package associated with the game that can and should be installed and kept updated.
 

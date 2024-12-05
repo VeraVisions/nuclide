@@ -46,11 +46,11 @@ monster entities.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-monstermaker:NSPointTrigger
+monstermaker:ncPointTrigger
 {
 public:
 	void monstermaker(void);
@@ -205,7 +205,7 @@ monstermaker::Spawner(void)
 		return;
 	}
 
-	NSEntity unit = Entity_CreateClass(m_strMonster);
+	ncEntity unit = Entity_CreateClass(m_strMonster);
 
 	if (!unit) {
 		EntError("Cannot call spawnfunction for %s", m_strMonster);

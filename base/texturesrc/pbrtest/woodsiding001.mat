@@ -1,0 +1,11 @@
+// Vera Visions Material
+{
+	surfaceprop wood
+	diffusemap pbrtest/woodsiding001.tga
+	normalmap pbrtest/woodsiding001_local.tga
+	specularmap pbrtest/woodsiding001_mra.tga
+	
+	{
+		program defaultwall
+	}
+}

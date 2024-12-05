@@ -184,7 +184,7 @@ EV_Achievement(void)
 void
 EV_EntityEvent(void)
 {
-	NSEntity targetEntity = (NSEntity)findfloat(world, ::entnum, readentitynum());
+	ncEntity targetEntity = (ncEntity)findfloat(world, ::entnum, readentitynum());
 	float eventType = readfloat();
 
 	if (targetEntity) 
@@ -192,9 +192,20 @@ EV_EntityEvent(void)
 }
 
 void
+EV_Pickup(void)
+{
+	int entityDefID = readint();
+	string itemClass = EntityDef_NameFromNetID(entityDefID);
+	NSLog("Player picked up item %S", itemClass);
+}
+
+void
 Event_Parse(float type)
 {
 	switch (type) {
+	case EV_PICKUP:
+		EV_Pickup();
+		break;
 	case EV_DAMAGE:
 		EV_Damage();
 		break;
@@ -213,7 +224,7 @@ Event_Parse(float type)
 		EV_Speak();
 		break;
 	case EV_SENTENCE:
-		NSTalkMonster_ParseSentence();
+		ncTalkMonster_ParseSentence();
 		break;
 	case EV_HUDHINT:
 		EV_HUDHint();

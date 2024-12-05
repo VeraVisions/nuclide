@@ -45,7 +45,7 @@ MapTweaks_Init(void)
 
 	tweakFile = fopen(g_maptweakFile, FILE_READ);
 	g_mapTweakCount = 0;
-	tempString = newCvar = newInfo = newItem = "";
+	tempString = newCvar = newInfo = newItem = newName = "";
 
 	/* count valid entries. */
 	if (tweakFile >= 0) {
@@ -72,7 +72,7 @@ MapTweaks_Init(void)
 				g_mapTweakTable[atTweak].cvarCheck = newCvar;
 				g_mapTweakTable[atTweak].serverinfoCheck = newInfo;
 				g_mapTweakTable[atTweak].itemTable = newItem;
-				newCvar = newInfo = newItem = "";
+				newName = newCvar = newInfo = newItem = "";
 				atTweak++;
 			} else if (argv(0) == "{") {
 				/* ??? */
@@ -167,7 +167,7 @@ static bool
 MapTweak_FinishSpawn(entity targetEntity, string newClassname)
 {
 	/* found the edef alternative. */
-	if (EntityDef_SwitchClass((NSEntity)targetEntity, newClassname) != __NULL__) {
+	if (EntityDef_SwitchClass((ncEntity)targetEntity, newClassname) != __NULL__) {
 		return (true);
 	}
 

@@ -1,12 +1,12 @@
 # Material Command List {#mat_commands}
 
-### fogParms {#fogParms}
+## fogParms {#fogParms}
 
-#### Syntax
+### Syntax
 
-**fogParms <red value> <green value> <blue value> <distance to opaque>**
+**fogParms \<red value\> \<green value\> \<blue value\> \<distance to opaque\>**
 
-#### Overview
+### Overview
 
 **Note**: you must also specify "surfaceparm fog" to cause
 [vmap](vmap.md) to identify the surfaces inside the volume.
@@ -23,7 +23,7 @@ observer. By making the height of the fog brush shorter than the
 distance to opaque, the apparent density of the fog can be reduced
 (because it never reaches the depth at which full opacity occurs).
 
-#### Notes {#notes}
+### Notes {#notes}
 
 -   The fog volume can only have one surface visible (from outside the
     fog).

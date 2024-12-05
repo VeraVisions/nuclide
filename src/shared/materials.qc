@@ -259,10 +259,10 @@ Materials_LoadFromMat(string filename)
 				command = strtolower(argv(0));
 				parameters = argv(1);
 
-				if (command == "surfaceprop") {
+				if (command == "surfaceprop" || command == "$surfaceprop") {
 					hash_add(g_hashMaterials, materialname, parameters, EV_STRING);
 					g_mat_total++;
-					//print(sprintf("added Material %S type %S\n", materialname, parameters));
+					//printf("added Material %S type %S\n", materialname, parameters);
 					break;
 				}
 			}
@@ -276,7 +276,7 @@ Materials_LoadFromMat(string filename)
 static void
 Materials_Mapper_Init(void)
 {
-	NSDict matDecl = NSDict::LoadDeclFromFile("material", "typeinfo/hlmat.decl");
+	ncDict matDecl = ncDict::LoadDeclFromFile("material", "typeinfo/hlmat.decl");
 	int tokenCount;
 	int c = 0;
 	int lutSize = 0i;
@@ -367,14 +367,16 @@ Materials_Init(void)
 
 	/* save away the type of material formats we're dealing with */
 	switch (serverkeyfloat("*bspversion")) {
+	case BSPVER_HL:
+	case 29:
+		g_materialsAreLegacy = true;
+		break;
+	default:
 	case BSPVER_Q3: /* Q3 */
 	case BSPVER_RTCW: /* RtCW */
 	case BSPVER_RBSP: /* RFVBSP */
 		g_materialsAreLegacy = false;
 		break;
-	case BSPVER_HL:
-	default:
-		g_materialsAreLegacy = true;
 	}
 
 	/* we're dealing with legacy materials */
@@ -410,24 +412,20 @@ Materials_Init(void)
 
 		/* no longer needed! */
 		Materials_Mapper_Shutdown();
-	} else {
-		/* iterate through our mat files */
-		searchhandle searchy = search_begin("textures/*/*.mat", SEARCH_NAMESORT, TRUE);
-		for (int i = 0; i < search_getsize(searchy); i++) {
-			Materials_LoadFromMat(search_getfilename(searchy, i));
-		}
-		search_end(searchy);
-
-		/* don't judge me for this abhorrent path, father */
-		searchhandle mdlsearch = search_begin("models/*/*/*/*.mat:models/*/*/*.mat:models/*/*.mat:models/*.mat", SEARCH_MULTISEARCH | SEARCH_NAMESORT, TRUE);
-		for (int i = 0; i < search_getsize(mdlsearch); i++) {
-			string mdlmat = search_getfilename(mdlsearch, i);
-			//printf("model: %S\n", mdlmat);
-			Materials_LoadFromMat(mdlmat);
-		}
-		search_end(mdlsearch);
+		NSLog("material data initialized with %i entries.", g_mat_total);
 	}
 
-	NSLog("material data initialized with %i entries.", g_mat_total);
 	InitEnd();
+}
+
+void
+Materials_OnLoad(string engineMaterial)
+{
+	if (g_materialsAreLegacy == true) {
+		return;
+	}
+
+	Materials_LoadFromMat(strcat(engineMaterial, ".mat"));
+	// lazy attempt 
+	Materials_LoadFromMat(strcat("materials/", engineMaterial, ".vmt"));
 }

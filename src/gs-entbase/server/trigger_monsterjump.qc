@@ -28,11 +28,11 @@ When monsters touch this volume, they will be forced to jump.
 # TRIVIA
 This entity was introduced in Quake (1996).
 
-@ingroup server
+@ingroup serverentity
 @ingroup brushentity
 */
 class
-trigger_monsterjump:NSBrushTrigger
+trigger_monsterjump:ncBrushTrigger
 {
 public:
 	void trigger_monsterjump(void);
@@ -112,7 +112,7 @@ trigger_monsterjump::Touch(entity touchingEntity)
 		return;
 	}
 
-	NSMonster theMonster = (NSMonster)touchingEntity;
+	ncMonster theMonster = (ncMonster)touchingEntity;
 	targetVelocity = theMonster.GetForward() * m_flSpeed;
 	targetVelocity[2] += m_flHeight;
 	theMonster.SetVelocity(targetVelocity);

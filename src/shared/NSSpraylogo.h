@@ -15,14 +15,14 @@
 */
 
 #ifdef CLIENT
-/** This entity class represents a NSClientPlayer their spraylogo. 
+/** This entity class represents a ncPlayer their spraylogo. 
 
 @ingroup baseclass
 */
-class NSSpraylogo:NSEntity
+class ncSpraylogo:ncEntity
 {
 public:
-	void NSSpraylogo(void);
+	void ncSpraylogo(void);
 
 	virtual float predraw(void);
 	virtual void RendererRestarted(void);

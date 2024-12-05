@@ -22,17 +22,17 @@ enumflags
 	BUTTON_CUSTOMFLAGS
 };
 
-/* TODO: MOVE THESE INTO VGUIButton! COMPILER NEEDS TO BE FIXED FIRST HOWEVER. */
-.void(void) tmpVGUIButton1;
+/* TODO: MOVE THESE INTO vguiButton! COMPILER NEEDS TO BE FIXED FIRST HOWEVER. */
+.void(void) tmpvguiButton1;
 
 /** VGUI Widget: Command Menu Button
 
 @ingroup vgui
 */
-class VGUICommandButton:VGUIButton
+class vguiCommandButton:vguiButton
 {
 public:
-	void VGUICommandButton(void);
+	void vguiCommandButton(void);
 
 	/* overrides */
 	virtual void Draw(void);
@@ -51,7 +51,7 @@ private:
 };
 
 void
-VGUICommandButton::VGUICommandButton(void)
+vguiCommandButton::vguiCommandButton(void)
 {
 	m_strMapCondition = __NULL__;
 	m_strTeamCondition = __NULL__;
@@ -59,30 +59,30 @@ VGUICommandButton::VGUICommandButton(void)
 }
 
 void
-VGUICommandButton::SetMapCondition(string condition)
+vguiCommandButton::SetMapCondition(string condition)
 {
 	m_strMapCondition = condition;
 }
 
 void
-VGUICommandButton::SetTeamCondition(string condition)
+vguiCommandButton::SetTeamCondition(string condition)
 {
 	m_strTeamCondition = condition;
 }
 
 void
-VGUICommandButton::SetClassCondition(string condition)
+vguiCommandButton::SetClassCondition(string condition)
 {
 	m_strClassCondition = condition;
 }
 
 void
-VGUICommandButton::SetClientCommand(string condition)
+vguiCommandButton::SetClientCommand(string condition)
 {
 }
 
 bool
-VGUICommandButton::WillDisplay(void)
+vguiCommandButton::WillDisplay(void)
 {
 	if (STRING_SET(m_strMapCondition)) {
 
@@ -100,19 +100,19 @@ VGUICommandButton::WillDisplay(void)
 }
 
 void
-VGUICommandButton::Draw(void)
+vguiCommandButton::Draw(void)
 {
 	super::Draw();
-	//VGUIWidget::Draw();
+	//vguiWidget::Draw();
 }
 
 bool
-VGUICommandButton::Input(float flEVType, float flKey, float flChar, float flDevID)
+vguiCommandButton::Input(float flEVType, float flKey, float flChar, float flDevID)
 {
 	bool returnValue = super::Input(flEVType, flKey, flChar, flDevID);
 
 	if (!returnValue) {
-		//return VGUIWidget::Input(flEVType, flKey, flChar, flDevID);
+		//return vguiWidget::Input(flEVType, flKey, flChar, flDevID);
 	}
 
 	return (returnValue);

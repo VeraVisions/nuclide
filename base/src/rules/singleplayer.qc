@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#pragma PROGS_DAT  "../../progs.pk3dir/progs/singleplayer.dat"
+#pragma PROGS_DAT  "../../progs/singleplayer.dat"
 
 #include "../../../src/server/api.h"
 
@@ -24,14 +24,14 @@ CodeCallback_StartGameType(void)
 }
 
 void
-CodeCallback_PlayerSpawn(void)
+CodeCallback_PlayerSpawn(entity playerTarget)
 {
-	ents.ChangeToClass(self, "player");
-	game.TeleportToSpawn(self);
+	ents.ChangeToClass(playerTarget, "player");
+	game.TeleportToSpawn(playerTarget);
 }
 
 bool
-CodeCallback_PlayerRequestRespawn(void)
+CodeCallback_PlayerRequestRespawn(entity playerTarget)
 {
 	localcmd("load quick\n");
 	return (true);
@@ -39,42 +39,42 @@ CodeCallback_PlayerRequestRespawn(void)
 
 
 bool
-CodeCallback_ImpulseCommand(float impulseNum)
+CodeCallback_ImpulseCommand(entity playerTarget, float impulseNum)
 {
 	switch (impulseNum) {
 	case 100:
-		ents.Input(self, "UseItem", "item_suit", self);
+		ents.Input(playerTarget, "UseItem", "item_suit", playerTarget);
 		break;
 	case 101:
-		ents.Input(self, "SetHealth", "100", self);
-		ents.Input(self, "SetArmor", "100", self);
-		ents.Input(self, "GiveItem", "item_suit", self);
-		ents.Input(self, "GiveItem", "weapon_357", self);
-		ents.Input(self, "GiveItem", "weapon_9mmAR", self);
-		ents.Input(self, "GiveItem", "weapon_9mmhandgun", self);
-		ents.Input(self, "GiveItem", "weapon_crossbow", self);
-		ents.Input(self, "GiveItem", "weapon_crowbar", self);
-		ents.Input(self, "GiveItem", "weapon_egon", self);
-		ents.Input(self, "GiveItem", "weapon_gauss", self);
-		ents.Input(self, "GiveItem", "weapon_handgrenade", self);
-		ents.Input(self, "GiveItem", "weapon_hornetgun", self);
-		ents.Input(self, "GiveItem", "weapon_rpg", self);
-		ents.Input(self, "GiveItem", "weapon_satchel", self);
-		ents.Input(self, "GiveItem", "weapon_shotgun", self);
-		ents.Input(self, "GiveItem", "weapon_snark", self);
-		ents.Input(self, "GiveItem", "weapon_tripmine", self);
-		ents.Input(self, "GiveAmmo", "ammo_9mm 255", self);
-		ents.Input(self, "GiveAmmo", "ammo_357 255", self);
-		ents.Input(self, "GiveAmmo", "ammo_buckshot 255", self);
-		ents.Input(self, "GiveAmmo", "ammo_bolt 255", self);
-		ents.Input(self, "GiveAmmo", "ammo_rocket 255", self);
-		ents.Input(self, "GiveAmmo", "ammo_uranium 255", self);
-		ents.Input(self, "GiveAmmo", "ammo_handgrenade 255", self);
-		ents.Input(self, "GiveAmmo", "ammo_satchel 255", self);
-		ents.Input(self, "GiveAmmo", "ammo_tripmine 255", self);
-		ents.Input(self, "GiveAmmo", "ammo_snark 255", self);
-		ents.Input(self, "GiveAmmo", "ammo_hornet 255", self);
-		ents.Input(self, "GiveAmmo", "ammo_m203_grenade 255", self);
+		ents.Input(playerTarget, "SetHealth", "100", playerTarget);
+		ents.Input(playerTarget, "SetArmor", "100", playerTarget);
+		ents.Input(playerTarget, "GiveItem", "item_suit", playerTarget);
+		ents.Input(playerTarget, "GiveItem", "weapon_357", playerTarget);
+		ents.Input(playerTarget, "GiveItem", "weapon_9mmAR", playerTarget);
+		ents.Input(playerTarget, "GiveItem", "weapon_9mmhandgun", playerTarget);
+		ents.Input(playerTarget, "GiveItem", "weapon_crossbow", playerTarget);
+		ents.Input(playerTarget, "GiveItem", "weapon_crowbar", playerTarget);
+		ents.Input(playerTarget, "GiveItem", "weapon_egon", playerTarget);
+		ents.Input(playerTarget, "GiveItem", "weapon_gauss", playerTarget);
+		ents.Input(playerTarget, "GiveItem", "weapon_handgrenade", playerTarget);
+		ents.Input(playerTarget, "GiveItem", "weapon_hornetgun", playerTarget);
+		ents.Input(playerTarget, "GiveItem", "weapon_rpg", playerTarget);
+		ents.Input(playerTarget, "GiveItem", "weapon_satchel", playerTarget);
+		ents.Input(playerTarget, "GiveItem", "weapon_shotgun", playerTarget);
+		ents.Input(playerTarget, "GiveItem", "weapon_snark", playerTarget);
+		ents.Input(playerTarget, "GiveItem", "weapon_tripmine", playerTarget);
+		ents.Input(playerTarget, "GiveAmmo", "ammo_9mm 255", playerTarget);
+		ents.Input(playerTarget, "GiveAmmo", "ammo_357 255", playerTarget);
+		ents.Input(playerTarget, "GiveAmmo", "ammo_buckshot 255", playerTarget);
+		ents.Input(playerTarget, "GiveAmmo", "ammo_bolt 255", playerTarget);
+		ents.Input(playerTarget, "GiveAmmo", "ammo_rocket 255", playerTarget);
+		ents.Input(playerTarget, "GiveAmmo", "ammo_uranium 255", playerTarget);
+		ents.Input(playerTarget, "GiveAmmo", "ammo_handgrenade 255", playerTarget);
+		ents.Input(playerTarget, "GiveAmmo", "ammo_satchel 255", playerTarget);
+		ents.Input(playerTarget, "GiveAmmo", "ammo_tripmine 255", playerTarget);
+		ents.Input(playerTarget, "GiveAmmo", "ammo_snark 255", playerTarget);
+		ents.Input(playerTarget, "GiveAmmo", "ammo_hornet 255", playerTarget);
+		ents.Input(playerTarget, "GiveAmmo", "ammo_m203_grenade 255", playerTarget);
 		break;
 	default:
 		return (false);

@@ -1,0 +1,18 @@
+{
+	surfaceParm slosh
+
+if $programs
+	program defaultwall
+	diffusemap measure/mat_slosh.ktx
+else
+	{
+		map $lightmap
+		rgbGen identity
+	}
+	{
+		map measure/mat_slosh.ktx
+		rgbGen identity
+		blendFunc GL_DST_COLOR GL_ZERO
+	}
+endif
+}

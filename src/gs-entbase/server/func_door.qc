@@ -64,11 +64,11 @@ X is the integer value set in "movesnd" and "stopsnd".
 # TRIVIA
 This entity was introduced in Quake (1996).
 
-@ingroup server
+@ingroup serverentity
 @ingroup brushentity
 */
 class
-func_door:NSMoverEntity
+func_door:ncMoverEntity
 {
 public:
 	void func_door(void);
@@ -339,6 +339,11 @@ func_door::Respawn(void)
 {
 	super::Respawn();
 
+	if (modelindex == 0) {
+		Destroy();
+		return;
+	}
+
 	/* this is a terrible hack */
 	if (m_flWait == 0)
 		m_flWait = 0.01f;
@@ -436,7 +441,7 @@ func_door::MoverFinishesMoving(void)
 	if (GetMoverState() == MOVER_POS1) {
 		if (targetClose)
 		for (entity f = world; (f = find(f, ::targetname, targetClose));) {
-			NSEntity trigger = (NSEntity)f;
+			ncEntity trigger = (ncEntity)f;
 			if (trigger.Trigger != __NULL__) {
 				trigger.Trigger(this, TRIG_TOGGLE);
 			}
@@ -581,7 +586,7 @@ func_door::Blocked(entity eBlocker)
 	if (m_iDamage) {
 		vector center = WorldSpaceCenter();
 		vector dmgDir = dirFromTarget(center, eBlocker.origin);
-		NSDict damageDecl = spawn(NSDict);
+		ncDict damageDecl = spawn(ncDict);
 		damageDecl.AddKey("damage", itos(m_iDamage));
 		m_bCanTouch = false;
 		combat.Damage(eBlocker, this, eBlocker, damageDecl.GetDeclBody(), center, dmgDir, eBlocker.origin);
@@ -613,4 +618,5 @@ func_water(void)
 
 	door.effects |= EF_FULLBRIGHT;
 	setorigin(door, door.origin); // relink. have to do this.
+	door.geomtype = GEOMTYPE_NONE;
 }

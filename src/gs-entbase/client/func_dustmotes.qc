@@ -25,10 +25,10 @@ Dustmote emitting brush volume.
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
 
-@ingroup client
+@ingroup cliententity
 @ingroup brushentity
 */
-class func_dustmotes:NSEntity
+class func_dustmotes:ncEntity
 {
 public:
 	void func_dustmotes(void);

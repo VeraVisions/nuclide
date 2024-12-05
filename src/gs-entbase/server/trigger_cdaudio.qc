@@ -26,12 +26,12 @@ Switches the background music track when triggered.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup brushentity
 */
 
 class
-trigger_cdaudio:NSBrushTrigger
+trigger_cdaudio:ncBrushTrigger
 {
 public:
 	void trigger_cdaudio(void);

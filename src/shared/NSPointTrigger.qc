@@ -15,19 +15,24 @@
 */
 
 void
-NSPointTrigger::NSPointTrigger(void)
+ncPointTrigger::ncPointTrigger(void)
 {
 }
 
 void
-NSPointTrigger::Respawn(void)
+ncPointTrigger::Respawn(void)
 {
 	InitPointTrigger();
 }
 
 void
-NSPointTrigger::InitPointTrigger(void)
+ncPointTrigger::InitPointTrigger(void)
 {
+	static void HackFixMe(void) {
+		this.origin = this.tag_entity.origin;
+		this.angles = this.tag_entity.angles + [90, 0, 0];
+	}
+
 	SetOrigin(GetSpawnVector("origin"));
 	SetSize(VEC_HULL_MIN, VEC_HULL_MAX);
 	SetSolid(SOLID_NOT);
@@ -36,11 +41,21 @@ NSPointTrigger::InitPointTrigger(void)
 #ifdef SERVER
 	RestoreAngles();
 	m_bEnabled = (m_bStartDisabled) ? false : true;
+
+	string parentName = GetSpawnString("parentname");
+
+	if (STRING_SET(parentName)) {
+		SetParent(parentName);
+
+		if (GetParent()) {
+			customphysics = HackFixMe;
+		}
+	}
 #endif
 }
 
 void
-NSPointTrigger::DebugDraw(void)
+ncPointTrigger::DebugDraw(void)
 {
 #ifdef SERVER
 	if (!STRING_SET(m_strEditorIcon)) {
@@ -61,7 +76,7 @@ NSPointTrigger::DebugDraw(void)
 #ifdef SERVER
 
 void
-NSPointTrigger::SpawnKey(string strKey, string strValue)
+ncPointTrigger::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
 	default:
@@ -71,13 +86,13 @@ NSPointTrigger::SpawnKey(string strKey, string strValue)
 }
 
 void
-NSPointTrigger::Save(float handle)
+ncPointTrigger::Save(float handle)
 {
 	super::Save(handle);
 }
 
 void
-NSPointTrigger::Restore(string strKey, string strValue)
+ncPointTrigger::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
 	default:

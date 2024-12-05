@@ -15,7 +15,7 @@
 */
 
 void
-NSRenderableEntity::NSRenderableEntity(void)
+ncRenderableEntity::ncRenderableEntity(void)
 {
 	m_iRenderMode = RM_NORMAL;
 	m_iRenderFX = RFX_NORMAL;
@@ -42,11 +42,11 @@ NSRenderableEntity::NSRenderableEntity(void)
 }
 
 #ifdef CLIENT
-void NSRenderableEntity::RendererRestarted( void ) {
+void ncRenderableEntity::RendererRestarted( void ) {
 	_UpdateGeomset();
 }
 
-void NSRenderableEntity::_UpdateGeomset(void)
+void ncRenderableEntity::_UpdateGeomset(void)
 {
 	/* unpack our half bytes */
 	int firstBody = (m_iBody & 0x0F);
@@ -63,7 +63,7 @@ void NSRenderableEntity::_UpdateGeomset(void)
 #endif
 
 void
-NSRenderableEntity::_UpdateBoneCount(void)
+ncRenderableEntity::_UpdateBoneCount(void)
 {
 	if (!modelindex) {
 		return;
@@ -78,7 +78,7 @@ NSRenderableEntity::_UpdateBoneCount(void)
 
 /*
 ============
-NSRenderableEntity::MakeStatic
+ncRenderableEntity::MakeStatic
 
 after this gets called the entity is unreachable in the QC-logic
 and merged with the world to optimise drawcalls
@@ -88,7 +88,7 @@ a valid targetname
 ============
 */
 void
-NSRenderableEntity::MakeStatic(void)
+ncRenderableEntity::MakeStatic(void)
 {
 #ifdef CLIENT
 	/* give renderFX the opportunity to write into renderable
@@ -109,7 +109,7 @@ NSRenderableEntity::MakeStatic(void)
 
 #ifdef SERVER
 void
-NSRenderableEntity::EvaluateEntity(void)
+ncRenderableEntity::EvaluateEntity(void)
 {
 	EVALUATE_VECTOR(origin, 0, RDENT_CHANGED_ORIGIN_X)
 	EVALUATE_VECTOR(origin, 1, RDENT_CHANGED_ORIGIN_Y)
@@ -162,7 +162,7 @@ NSRenderableEntity::EvaluateEntity(void)
 
 /* Make sure StartFrame calls this */
 float
-NSRenderableEntity::SendEntity(entity ePEnt, float flChanged)
+ncRenderableEntity::SendEntity(entity ePEnt, float flChanged)
 {
 	if (!modelindex && solid == SOLID_NOT)
 		return (0);
@@ -249,11 +249,11 @@ NSRenderableEntity::SendEntity(entity ePEnt, float flChanged)
 #else
 /*
 ============
-NSRenderableEntity::ReceiveEntity
+ncRenderableEntity::ReceiveEntity
 ============
 */
 void
-NSRenderableEntity::ReceiveEntity(float flNew, float flChanged)
+ncRenderableEntity::ReceiveEntity(float flNew, float flChanged)
 {
 	READENTITY_COORD(origin[0], RDENT_CHANGED_ORIGIN_X)
 	READENTITY_COORD(origin[1], RDENT_CHANGED_ORIGIN_Y)
@@ -276,7 +276,7 @@ NSRenderableEntity::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_FLOAT(frame, RDENT_CHANGED_FRAME)
 	READENTITY_FLOAT(frame1time, RDENT_CHANGED_FRAME)
 	READENTITY_FLOAT(skin, RDENT_CHANGED_SKIN)
-	READENTITY_FLOAT(effects, RDENT_CHANGED_EFFECTS)
+	READENTITY_FLOAT(m_netEffects, RDENT_CHANGED_EFFECTS)
 	READENTITY_SHORT(m_iBody, RDENT_CHANGED_BODY)
 	READENTITY_FLOAT(scale, RDENT_CHANGED_SCALE)
 	READENTITY_FLOAT(m_vecAxialScale[0], RDENT_CHANGED_SCALE)
@@ -317,14 +317,14 @@ NSRenderableEntity::ReceiveEntity(float flNew, float flChanged)
 
 /*
 ============
-NSRenderableEntity::RenderFXPass
+ncRenderableEntity::RenderFXPass
 
 all the render-modes manipulating the final colormod, alpha and effects
 fields that the engine cares about
 ============
 */
 void
-NSRenderableEntity::RenderFXPass(void)
+ncRenderableEntity::RenderFXPass(void)
 {
 	vector vecPlayer = g_view.GetCameraOrigin();
 
@@ -335,7 +335,7 @@ NSRenderableEntity::RenderFXPass(void)
 
 	/* these should be reset! */
 	renderflags = 0;
-	effects = 0;
+	effects = m_netEffects;
 	drawflags = 0;
 	abslight = 0;
 
@@ -375,7 +375,7 @@ NSRenderableEntity::RenderFXPass(void)
 		/* max alpha will be applied here to the color instead */
 		colormod *= (m_flRenderAmt / 255);
 		alpha = bound(0.0f, alpha, 1.0f);
-		effects = EF_ADDITIVE | EF_FULLBRIGHT;
+		effects |= EF_ADDITIVE | EF_FULLBRIGHT;
 
 		/* Scale the glow somewhat with the players distance */
 		if (alpha > 0.0f)
@@ -393,7 +393,7 @@ NSRenderableEntity::RenderFXPass(void)
 		effects = EF_ADDITIVE;
 		break;
 	case RM_ADDFRAC: /* TODO: Figure out what this does differently */
-		effects = EF_ADDITIVE;
+		effects |= EF_ADDITIVE;
 		if (autocvar_rm_unlit_additive == 0) {
 			drawflags = 0;
 			abslight = 0;
@@ -478,13 +478,13 @@ NSRenderableEntity::RenderFXPass(void)
 			alpha = 0.00001f;
 		}
 		colormod *= 0.5;
-		effects = EF_ADDITIVE;
+		effects |= EF_ADDITIVE;
 		drawflags = 7;
 		abslight = 128;
 		break;
 	case RFX_GLOWSHELL2:
 		/* make this entity shellchrome */
-		effects = EF_ADDITIVE;
+		effects |= EF_ADDITIVE;
 		fatness = m_flRenderAmt / 25.5;
 		colormod = (m_vecRenderColor / 255);
 		forceshader = g_shellchromeshader_cull;
@@ -496,7 +496,6 @@ NSRenderableEntity::RenderFXPass(void)
 		fatness = 0;
 		colormod = [1,1,1];
 		alpha = 1.0f;
-		effects = 0;
 		break;
 	case RFX_GLOWSHELL:
 		/* make this entity shellchrome */
@@ -512,16 +511,24 @@ NSRenderableEntity::RenderFXPass(void)
 		fatness = 0;
 		colormod = [1,1,1];
 		alpha = 1.0f;
-		effects = 0;
 		break;
 	case RFX_Q2PULSE:
 	default:
 		break;
 	}
+
+	/* HACK: let the GLSL know to cull this */
+	switch (skin) {
+	case CONTENT_WATER:
+	case CONTENT_SLIME:
+	case CONTENT_LAVA:
+		glowmod[0] = 0.25f;
+		break;
+	}
 }
 
 void
-NSRenderableEntity::RenderDebugSkeleton(void)
+ncRenderableEntity::RenderDebugSkeleton(void)
 {
 	if (autocvar(r_showSkeleton, 0))
 	for (int i = 1; i < 64; i++) {
@@ -543,7 +550,7 @@ NSRenderableEntity::RenderDebugSkeleton(void)
 }
 
 void
-NSRenderableEntity::RenderAxialScale(void)
+ncRenderableEntity::RenderAxialScale(void)
 {
 	/* only bother if we're non-standard */
 	if (m_vecAxialScale != [1,1,1]) {
@@ -556,14 +563,14 @@ NSRenderableEntity::RenderAxialScale(void)
 }
 
 void
-NSRenderableEntity::RenderGLQuakeShadow(void)
+ncRenderableEntity::RenderGLQuakeShadow(void)
 {
 	vector oldOrigin = origin;
 
 	if (autocvar(r_drawGLQuakeShadow, 0) == 0)
 		return;
 
-	if (effects & EF_NOSHADOW)
+	if (m_netEffects & EF_NOSHADOW)
 		return;
 
 	if (m_bIsBrush == true)
@@ -581,7 +588,7 @@ NSRenderableEntity::RenderGLQuakeShadow(void)
 
 /*
 ============
-NSRenderableEntity::predraw
+ncRenderableEntity::predraw
 
 a lot of the things in here don't even apply to most
 entities, so TODO: make things like anims, sentences apply
@@ -596,7 +603,7 @@ var float autocvar_boney3 = 0.0f;
 var float autocvar_boney4 = 0.0f;
 var float autocvar_boney5 = 0.0f;
 float
-NSRenderableEntity::predraw(void)
+ncRenderableEntity::predraw(void)
 {
 	if (GetModelindex() == 0 || IsHidden()) {
 		return (PREDRAW_NEXT);
@@ -667,7 +674,7 @@ NSRenderableEntity::predraw(void)
 }
 
 void
-NSRenderableEntity::postdraw(void)
+ncRenderableEntity::postdraw(void)
 {
 	if not (autocvar(r_showRenderInfo, 0))
 		return;
@@ -778,13 +785,13 @@ NSRenderableEntity::postdraw(void)
 	string renderString = sprintf("RC: %v\nRA: %f\nRM: %s\nRFX: %s",
 		m_vecRenderColor, m_flRenderAmt, renderMode, renderFX);
 
-	PointMessage_StringAtPos(WorldSpaceCenter(), renderString);
+	PointMessage_FieldAtPos(WorldSpaceCenter(), renderString, 128);
 }
 #endif
 
 #ifdef SERVER
 void
-NSRenderableEntity::Respawn(void)
+ncRenderableEntity::Respawn(void)
 {
 	super::Respawn();
 
@@ -805,7 +812,7 @@ NSRenderableEntity::Respawn(void)
 #endif
 
 void
-NSRenderableEntity::SetBody(int newBody)
+ncRenderableEntity::SetBody(int newBody)
 {
 	m_iBody = newBody;
 
@@ -815,7 +822,7 @@ NSRenderableEntity::SetBody(int newBody)
 }
 
 void
-NSRenderableEntity::SetBodyInGroup(int groupID, int bodyValue)
+ncRenderableEntity::SetBodyInGroup(int groupID, int bodyValue)
 {
 	/* pack our half bytes */
 	m_iBody |= (bodyValue << (4 * groupID));
@@ -824,25 +831,25 @@ NSRenderableEntity::SetBodyInGroup(int groupID, int bodyValue)
 }
 
 void
-NSRenderableEntity::SetRenderFX(float newFX)
+ncRenderableEntity::SetRenderFX(float newFX)
 {
 	m_iRenderFX = newFX;
 }
 
 void
-NSRenderableEntity::SetRenderMode(float newMode)
+ncRenderableEntity::SetRenderMode(float newMode)
 {
 	m_iRenderMode = newMode;
 }
 
 void
-NSRenderableEntity::SetRenderAmt(float newAmt)
+ncRenderableEntity::SetRenderAmt(float newAmt)
 {
 	m_flRenderAmt = newAmt;
 }
 
 void
-NSRenderableEntity::SetRenderColor(vector newColor)
+ncRenderableEntity::SetRenderColor(vector newColor)
 {
 	/* rendercolor can NEVER be pitch black. */
 	if (newColor == g_vec_null) {
@@ -853,115 +860,115 @@ NSRenderableEntity::SetRenderColor(vector newColor)
 }
 
 void
-NSRenderableEntity::SetBoneControl1(float val)
+ncRenderableEntity::SetBoneControl1(float val)
 {
 	m_flBoneControl1 = val;
 }
 
 void
-NSRenderableEntity::SetBoneControl2(float val)
+ncRenderableEntity::SetBoneControl2(float val)
 {
 	m_flBoneControl2 = val;
 }
 
 void
-NSRenderableEntity::SetBoneControl3(float val)
+ncRenderableEntity::SetBoneControl3(float val)
 {
 	m_flBoneControl3 = val;
 }
 
 void
-NSRenderableEntity::SetBoneControl4(float val)
+ncRenderableEntity::SetBoneControl4(float val)
 {
 	m_flBoneControl4 = val;
 }
 
 void
-NSRenderableEntity::SetBoneControl5(float val)
+ncRenderableEntity::SetBoneControl5(float val)
 {
 	m_flBoneControl5 = val;
 }
 
 void
-NSRenderableEntity::SetAxialScale(vector scaleVec)
+ncRenderableEntity::SetAxialScale(vector scaleVec)
 {
 	m_vecAxialScale = scaleVec;
 }
 
 int
-NSRenderableEntity::GetBody(void)
+ncRenderableEntity::GetBody(void)
 {
 	return m_iBody;
 }
 
 int
-NSRenderableEntity::GetBodyInGroup(int bodyGroup)
+ncRenderableEntity::GetBodyInGroup(int bodyGroup)
 {
 	return m_iBody;
 }
 
 float
-NSRenderableEntity::GetRenderMode(void)
+ncRenderableEntity::GetRenderMode(void)
 {
 	return m_iRenderMode;
 }
 
 float
-NSRenderableEntity::GetRenderFX(void)
+ncRenderableEntity::GetRenderFX(void)
 {
 	return m_iRenderFX;
 }
 
 float
-NSRenderableEntity::GetRenderAmt(void)
+ncRenderableEntity::GetRenderAmt(void)
 {
 	return m_flRenderAmt;
 }
 
 vector
-NSRenderableEntity::GetRenderColor(void)
+ncRenderableEntity::GetRenderColor(void)
 {
 	return m_vecRenderColor;
 }
 
 float
-NSRenderableEntity::GetBoneControl1(void)
+ncRenderableEntity::GetBoneControl1(void)
 {
 	return m_flBoneControl1;
 }
 
 float
-NSRenderableEntity::GetBoneControl2(void)
+ncRenderableEntity::GetBoneControl2(void)
 {
 	return m_flBoneControl2;
 }
 
 float
-NSRenderableEntity::GetBoneControl3(void)
+ncRenderableEntity::GetBoneControl3(void)
 {
 	return m_flBoneControl3;
 }
 
 float
-NSRenderableEntity::GetBoneControl4(void)
+ncRenderableEntity::GetBoneControl4(void)
 {
 	return m_flBoneControl4;
 }
 
 float
-NSRenderableEntity::GetBoneControl5(void)
+ncRenderableEntity::GetBoneControl5(void)
 {
 	return m_flBoneControl5;
 }
 
 vector
-NSRenderableEntity::GetAxialScale(void)
+ncRenderableEntity::GetAxialScale(void)
 {
 	return m_vecAxialScale;
 }
 
 void
-NSRenderableEntity::HandleAnimEvent(float flTimeStamp, int iCode, string strData)
+ncRenderableEntity::HandleAnimEvent(float flTimeStamp, int iCode, string strData)
 {
 	switch(iCode) {
 	case 1004:	/* plays a sound on CHAN_BODY */
@@ -983,6 +990,7 @@ NSRenderableEntity::HandleAnimEvent(float flTimeStamp, int iCode, string strData
 	case 5004: /* view model sound? */
 		StartSound(strData, CHAN_AUTO, 0, true);
 		break;
+	/* GS events */
 	case 5001: /* muzzle flash on attachment 0 */
 #ifdef CLIENT
 		EV_MuzzleFlash_Create(this, m_iNumBones, m_flMuzzleScale, m_iMuzzleModel);
@@ -1006,7 +1014,7 @@ NSRenderableEntity::HandleAnimEvent(float flTimeStamp, int iCode, string strData
 	case 1003:	/* trigger SSQC entity with specific targetname */
 #ifdef SERVER
 		for (entity f = world; (f = find(f, ::targetname, strData));) {
-			NSEntity trigger = (NSEntity)f;
+			ncEntity trigger = (ncEntity)f;
 
 			if (trigger.Trigger != __NULL__) {
 				trigger.Trigger(this, TRIG_TOGGLE);
@@ -1052,7 +1060,7 @@ NSRenderableEntity::HandleAnimEvent(float flTimeStamp, int iCode, string strData
 
 #ifdef SERVER
 void
-NSRenderableEntity::Save(float handle)
+ncRenderableEntity::Save(float handle)
 {
 	super::Save(handle);
 	SaveFloat(handle, "m_flBoneControl1", m_flBoneControl1);
@@ -1073,7 +1081,7 @@ NSRenderableEntity::Save(float handle)
 }
 
 void
-NSRenderableEntity::Restore(string strKey, string strValue)
+ncRenderableEntity::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "m_flBoneControl1":
@@ -1127,10 +1135,10 @@ NSRenderableEntity::Restore(string strKey, string strValue)
 }
 
 void
-NSRenderableEntity::Event_SpawnDefBone(string classDef, string boneName)
+ncRenderableEntity::Event_SpawnDefBone(string classDef, string boneName)
 {
 	_UpdateBoneCount();
-	NSEntity rocket = Entity_CreateClass(classDef);
+	ncEntity rocket = Entity_CreateClass(classDef);
 	rocket.SetOrigin(GetOrigin());
 	rocket.SetAngles(GetAngles());
 	rocket.tag_entity = this;
@@ -1140,10 +1148,10 @@ NSRenderableEntity::Event_SpawnDefBone(string classDef, string boneName)
 }
 
 void
-NSRenderableEntity::Event_SpawnDefAttachment(string classDef, float attachmentID)
+ncRenderableEntity::Event_SpawnDefAttachment(string classDef, float attachmentID)
 {
 	_UpdateBoneCount();
-	NSEntity rocket = Entity_CreateClass(classDef);
+	ncEntity rocket = Entity_CreateClass(classDef);
 	rocket.SetOrigin(GetOrigin());
 	rocket.SetAngles(GetAngles());
 	rocket.tag_entity = this;
@@ -1153,7 +1161,7 @@ NSRenderableEntity::Event_SpawnDefAttachment(string classDef, float attachmentID
 }
 
 void
-NSRenderableEntity::Input(entity eAct, string strInput, string strData)
+ncRenderableEntity::Input(entity eAct, string strInput, string strData)
 {
 	switch (strInput) {
 	case "SpawnDefBone":
@@ -1211,7 +1219,7 @@ NSRenderableEntity::Input(entity eAct, string strInput, string strData)
 #endif
 
 void
-NSRenderableEntity::SpawnKey(string strKey, string strValue)
+ncRenderableEntity::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "body":
@@ -1254,6 +1262,8 @@ NSRenderableEntity::SpawnKey(string strKey, string strValue)
 	case "disableshadows":
 		if (stof(strValue) == 1) {
 			effects |= EF_NOSHADOW;
+		} else {
+			effects &= ~EF_NOSHADOW;
 		}
 		break;
 	case "renderamt":
@@ -1276,7 +1286,7 @@ NSRenderableEntity::SpawnKey(string strKey, string strValue)
 
 #if 0
 float
-NSRenderableEntity::PlayActOnChannel(float animChannel, string activityName)
+ncRenderableEntity::PlayActOnChannel(float animChannel, string activityName)
 {
 
 }

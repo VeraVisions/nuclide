@@ -44,7 +44,7 @@ any entity set as the "target".
 - TF_CLIENTS (1) : Clients can touch it.
 - TF_NPCS (2) : NPCs can touch it.
 - TF_PUSHABLE (4) : Pushables can touch it.
-- TF_PHYSICS (8) : NSPhysicsEntity based classes can touch it.
+- TF_PHYSICS (8) : ncPhysicsEntity based classes can touch it.
 - TF_FRIENDLIES (16) : Friendly NPCs can touch it.
 - TF_CLIENTSINVEHICLES (32) : Clients within vehicles can touch it.
 - TF_EVERYTHING (64) : Everything can touch it.
@@ -66,11 +66,11 @@ Works best with info_teleport_destination, but you can in theory use any other p
 # TRIVIA
 This entity was introduced in Quake (1996).
 
-@ingroup server
+@ingroup serverentity
 @ingroup brushentity
 */
 class
-trigger_teleport:NSBrushTrigger
+trigger_teleport:ncBrushTrigger
 {
 public:
 	void trigger_teleport(void);
@@ -83,7 +83,7 @@ public:
 	virtual void Save(float);
 	virtual void Restore(string,string);
 
-	nonvirtual bool CanPass(NSEntity);
+	nonvirtual bool CanPass(ncEntity);
 
 private:
 	bool m_bEnabled;
@@ -161,7 +161,7 @@ trigger_teleport::Restore(string strKey, string strValue)
 }
 
 bool
-trigger_teleport::CanPass(NSEntity target)
+trigger_teleport::CanPass(ncEntity target)
 {
 	/* legacy entity check */
 	if (m_bIsModern == false) {
@@ -207,11 +207,11 @@ trigger_teleport::Touch(entity eToucher)
 		return;
 	if (m_bEnabled == false)
 		return;
-	if (CanPass((NSEntity)eToucher) == false)
+	if (CanPass((ncEntity)eToucher) == false)
 		return;
 
 	if (eToucher.movetype != MOVETYPE_NONE) {
-		eActivator = (NSEntity)eToucher;
+		eActivator = (ncEntity)eToucher;
 		entity eTarget = find(world, ::targetname, target);
 
 		if (eTarget) {
@@ -238,9 +238,9 @@ trigger_teleport::Touch(entity eToucher)
 			if (trace_ent && trace_startsolid == true) {
 				/* it can be killed, telefrag */
 				if (trace_ent.takedamage != DAMAGE_NO) {
-					NSSurfacePropEntity killThis = (NSSurfacePropEntity)trace_ent;
+					ncSurfacePropEntity killThis = (ncSurfacePropEntity)trace_ent;
 					killThis.SetHealth(-100);
-					killThis.Death(this, eActivator, 1000, g_vec_null, 0i);
+					killThis.Death(this, eActivator, 1000, g_vec_null, trace_endpos, 0i);
 				}
 			}
 

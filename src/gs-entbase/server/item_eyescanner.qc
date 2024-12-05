@@ -40,11 +40,11 @@ An Iris Scanner that animates and triggers different targets depending on who's 
 # TRIVIA
 This entity was introduced in Half-Life for PS2 (2001).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-item_eyescanner:NSRenderableEntity
+item_eyescanner:ncRenderableEntity
 {
 public:
 	void item_eyescanner(void);

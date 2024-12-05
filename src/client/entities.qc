@@ -20,22 +20,22 @@ Entity_EntityUpdate(float type, float new)
 {
 	switch (type) {
 	case ENT_ENTITY:
-		NSENTITY_READENTITY(NSEntity, new)
+		NSENTITY_READENTITY(ncEntity, new)
 		break;
 	case ENT_SOUND:
-		NSENTITY_READENTITY(NSSound, new)
+		NSENTITY_READENTITY(ncSound, new)
 		break;
 	case ENT_PMOVEVARS:
-		NSENTITY_READENTITY(NSPMoveVars, new)
+		NSENTITY_READENTITY(ncPMoveVars, new)
 		break;
 	case ENT_ENTITYRENDERABLE:
-		NSENTITY_READENTITY(NSRenderableEntity, new)
+		NSENTITY_READENTITY(ncRenderableEntity, new)
 		break;
 	case ENT_RAGDOLL:
-		NSENTITY_READENTITY(NSRagdoll, new)
+		NSENTITY_READENTITY(ncRagdoll, new)
 		break;
 	case ENT_SURFPROP:
-		NSENTITY_READENTITY(NSSurfacePropEntity, new)
+		NSENTITY_READENTITY(ncSurfacePropEntity, new)
 		break;
 	case ENT_BEAM:
 		NSENTITY_READENTITY(env_beam, new)
@@ -50,14 +50,14 @@ Entity_EntityUpdate(float type, float new)
 		NSENTITY_READENTITY(env_laser, new)
 		break;
 	case ENT_PHYSICS:
-		NSENTITY_READENTITY(NSPhysicsEntity, new)
+		NSENTITY_READENTITY(ncPhysicsEntity, new)
 		break;
 	case ENT_MONSTER:
-		NSENTITY_READENTITY(NSMonster, new)
+		NSENTITY_READENTITY(ncMonster, new)
 		self.customphysics = Empty;
 		break;
 	case ENT_TALKMONSTER:
-		NSENTITY_READENTITY(NSTalkMonster, new)
+		NSENTITY_READENTITY(ncTalkMonster, new)
 		self.customphysics = Empty;
 		break;
 	case ENT_SPEAKER:
@@ -68,10 +68,10 @@ Entity_EntityUpdate(float type, float new)
 		NSENTITY_READENTITY(func_tracktrain, new)
 		break;
 	case ENT_VEHICLE:
-		NSENTITY_READENTITY(NSVehicle, new)
+		NSENTITY_READENTITY(ncVehicle, new)
 		break;
 	case ENT_PORTAL:
-		NSENTITY_READENTITY(NSPortal, new)
+		NSENTITY_READENTITY(ncPortal, new)
 		break;
 	case ENT_VEH_BRUSH:
 		NSENTITY_READENTITY(func_vehicle, new)
@@ -83,10 +83,10 @@ Entity_EntityUpdate(float type, float new)
 		NSENTITY_READENTITY(prop_vehicle_driveable, new)
 		break;
 	case ENT_PLAYER:
-		NSClientPlayer pl = (NSClientPlayer)self;
+		ncPlayer pl = (ncPlayer)self;
 
 		if (new) {
-			spawnfunc_NSClientPlayer();
+			spawnfunc_ncPlayer();
 		}
 
 		/* splitscreen */
@@ -170,16 +170,16 @@ Entity_EntityUpdate(float type, float new)
 		NSENTITY_READENTITY(trigger_push, new)
 		break;
 	case ENT_ITEM:
-		NSENTITY_READENTITY(NSItem, new)
+		NSENTITY_READENTITY(ncItem, new)
 		break;
 	case ENT_WEAPON:
-		NSENTITY_READENTITY(NSWeapon, new)
+		NSENTITY_READENTITY(ncWeapon, new)
 		break;
 	case ENT_ENTITYPROJECTILE:
-		NSENTITY_READENTITY(NSProjectile, new)
+		NSENTITY_READENTITY(ncProjectile, new)
 		break;
 	case ENT_SOUNDSCAPE:
-		NSENTITY_READENTITY(NSSoundScape, new)
+		NSENTITY_READENTITY(ncSoundScape, new)
 		break;
 	default:
 			//error(sprintf("Unknown entity type update received. (%d)\n", t));
@@ -190,7 +190,7 @@ float
 Entities_ParseLump(void)
 {
 	entity eOld;
-	NSEntity eEnt = __NULL__;
+	ncEntity eEnt = __NULL__;
 	string strField, strValue;
 	__fullspawndata = "";
 	int iClass = FALSE;
@@ -246,7 +246,7 @@ Entities_ParseLump(void)
 		case "}":
 			break;
 		case "classname":
-			eEnt = (NSEntity)spawn();
+			eEnt = (ncEntity)spawn();
 
 			/* check if our classname has a matching class */
 			if (isfunction(strcat("spawnfunc_", strValue))) {
@@ -276,7 +276,7 @@ Entities_RendererRestarted(void)
 	int f = 0i;
 
 	for (entity b = world; (b = findfloat(b, ::isCSQC, TRUE));) {
-		NSEntity pf = (NSEntity) b;
+		ncEntity pf = (ncEntity) b;
 
 		if (pf.vv_flags & VFL_VIDREMOVE) {
 			pf.Destroy();

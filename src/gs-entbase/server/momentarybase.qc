@@ -24,10 +24,10 @@ typedef enum
 
 /** This entity class represents momentary entities. */
 class
-NSMomentary:NSRenderableEntity
+ncMomentary:ncRenderableEntity
 {
 public:
-	void NSMomentary(void);
+	void ncMomentary(void);
 
 	/* overrides */
 	virtual void Save(float);
@@ -56,7 +56,7 @@ private:
 };
 
 void
-NSMomentary::NSMomentary(void)
+ncMomentary::ncMomentary(void)
 {
 	m_eUser = __NULL__;
 	m_vecMoveDir = [0.0f, 0.0f, 0.0f];
@@ -70,7 +70,7 @@ NSMomentary::NSMomentary(void)
 }
 
 void
-NSMomentary::Save(float handle)
+ncMomentary::Save(float handle)
 {
 	super::Save(handle);
 	SaveEntity(handle, "m_eUser", m_eUser);
@@ -84,7 +84,7 @@ NSMomentary::Save(float handle)
 }
 
 void
-NSMomentary::Restore(string strKey, string strValue)
+ncMomentary::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "m_eUser":
@@ -117,19 +117,19 @@ NSMomentary::Restore(string strKey, string strValue)
 }
 
 float
-NSMomentary::GetProgress(void)
+ncMomentary::GetProgress(void)
 {
 	return 0.0f;
 }
 
 void
-NSMomentary::MovementStateChanged(void)
+ncMomentary::MovementStateChanged(void)
 {
 	/* this is handled by the respective sub entity */
 }
 
 void
-NSMomentary::SetMoveState(int status)
+ncMomentary::SetMoveState(int status)
 {
 	if (m_iMoveState == status)
 		return;

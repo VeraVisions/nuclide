@@ -35,11 +35,11 @@ Model that can switch framegroups when triggered.
 # TRIVIA
 This entity was introduced in Spirit of Half-Life (2000).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-env_model:NSRenderableEntity
+env_model:ncRenderableEntity
 {
 public:
 	void env_model(void);

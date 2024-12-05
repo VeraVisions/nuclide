@@ -15,17 +15,17 @@
 */
 
 void
-NSTimer::NSTimer(void)
+ncTimer::ncTimer(void)
 {
 	m_eReceiver = __NULL__;
-	_m_NSTimerFunc = __NULL__;
+	_m_ncTimerFunc = __NULL__;
 	m_flTime = 0.0f;
 	m_bRepeats = false;
 }
 
 /* wrapper to execute our trigger */
 static void
-_NSTimerWrapper(entity receiver, void() func)
+_ncTimerWrapper(entity receiver, void() func)
 {
 	entity oldself = self;
 	self = receiver;
@@ -34,23 +34,23 @@ _NSTimerWrapper(entity receiver, void() func)
 }
 
 void
-NSTimer::_TimerThink(void)
+ncTimer::_TimerThink(void)
 {
 	if (!m_eReceiver) {
 		Destroy();
 		return;
 	}
 
-	_NSTimerWrapper(m_eReceiver, _m_NSTimerFunc);
+	_ncTimerWrapper(m_eReceiver, _m_ncTimerFunc);
 
 	if (m_bRepeats == true)
 		nextthink = time + m_flTime;
 }
 
 void
-NSTimer::_TempTimerThink(void)
+ncTimer::_TempTimerThink(void)
 {
-	_NSTimerWrapper(m_eReceiver, _m_NSTimerFunc);
+	_ncTimerWrapper(m_eReceiver, _m_ncTimerFunc);
 
 	if (m_bRepeats == true)
 		nextthink = time + m_flTime;
@@ -60,87 +60,87 @@ NSTimer::_TempTimerThink(void)
 	}
 }
 
-NSTimer
-NSTimer::ScheduleTimer(entity receiver, void() call, float interval, bool repeats)
+ncTimer
+ncTimer::ScheduleTimer(entity receiver, void() call, float interval, bool repeats)
 {
-	NSTimer ret;
+	ncTimer ret;
 
 	if (this)
 		ret = this;
 	else {
-		ret = spawn(NSTimer);
+		ret = spawn(ncTimer);
 		this = ret;
 	}
 
 	ret.m_eReceiver = receiver;
 	ret.m_flTime = interval;
-	ret._m_NSTimerFunc = call;
+	ret._m_ncTimerFunc = call;
 	ret.m_bRepeats = repeats;
 
 	/* time to start running */
-	ret.think = NSTimer::_TimerThink;
+	ret.think = ncTimer::_TimerThink;
 	ret.nextthink = time + interval;
 	return ret;
 }
 
-NSTimer
-NSTimer::TemporaryTimer(entity receiver, void() call, float interval, bool repeats)
+ncTimer
+ncTimer::TemporaryTimer(entity receiver, void() call, float interval, bool repeats)
 {
-	NSTimer ret;
+	ncTimer ret;
 
 	if (this)
 		ret = this;
 	else {
-		ret = spawn(NSTimer);
+		ret = spawn(ncTimer);
 		this = ret;
 	}
 
 	ret.m_eReceiver = receiver;
 	ret.m_flTime = interval;
-	ret._m_NSTimerFunc = call;
+	ret._m_ncTimerFunc = call;
 	ret.m_bRepeats = repeats;
 
 	/* time to start running */
-	ret.think = NSTimer::_TempTimerThink;
+	ret.think = ncTimer::_TempTimerThink;
 	ret.nextthink = time + interval;
 	return ret;
 }
 
 void
-NSTimer::RunTimer(void)
+ncTimer::RunTimer(void)
 {
-	think = NSTimer::_TimerThink;
+	think = ncTimer::_TimerThink;
 	nextthink = time + m_flTime;
 }
 
-NSTimer
-NSTimer::SetupTimer(entity receiver, void() call, float interval, bool repeats)
+ncTimer
+ncTimer::SetupTimer(entity receiver, void() call, float interval, bool repeats)
 {
-	NSTimer ret;
+	ncTimer ret;
 
 	if (this)
 		ret = this;
 	else {
-		ret = spawn(NSTimer);
+		ret = spawn(ncTimer);
 		this = ret;
 	}
 
 	ret.m_eReceiver = receiver;
 	ret.m_flTime = interval;
-	ret._m_NSTimerFunc = call;
+	ret._m_ncTimerFunc = call;
 	ret.m_bRepeats = repeats;
 	return ret;
 }
 
 void
-NSTimer::OnRemoveEntity(void)
+ncTimer::OnRemoveEntity(void)
 {
 	nextthink = 0.0f;
 	think = __NULL__;
 }
 
 void
-NSTimer::StopTimer(void)
+ncTimer::StopTimer(void)
 {
 	if (this) {
 		nextthink = 0.0f;
@@ -150,24 +150,24 @@ NSTimer::StopTimer(void)
 
 #ifdef SERVER
 void
-NSTimer::Save(float handle)
+ncTimer::Save(float handle)
 {
 	super::Save(handle);
 	SaveEntity(handle, "m_eReceiver", m_eReceiver);
-	SaveString(handle, "_m_NSTimerFunc", getentityfieldstring(findentityfield("_m_NSTimerFunc"), this));
+	SaveString(handle, "_m_ncTimerFunc", getentityfieldstring(findentityfield("_m_ncTimerFunc"), this));
 	SaveFloat(handle, "m_flTime", m_flTime);
 	SaveBool(handle, "m_bRepeats", m_bRepeats);
 }
 
 void
-NSTimer::Restore(string strKey, string strValue)
+ncTimer::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "m_eReceiver":
 		m_eReceiver = ReadEntity(strValue);
 		break;
-	case "_m_NSTimerFunc":
-		_m_NSTimerFunc = externvalue(-1, strValue);
+	case "_m_ncTimerFunc":
+		_m_ncTimerFunc = externvalue(-1, strValue);
 		break;
 	case "m_flTime":
 		m_flTime = ReadFloat(strValue);

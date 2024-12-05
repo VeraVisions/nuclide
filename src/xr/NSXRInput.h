@@ -22,35 +22,35 @@
 
 /** Various input device types.
 Right now each client will have a single head, a 'left' and a 'right' NSXRInput. */
-typedef enum
+typedef enum : __uint64
 {
 	XR_INPUT_UNKNOWN,	/**< Unknown device. Don't use! */
 	XR_INPUT_HEAD,		/**< Device represents a single head. 
-							A client will have a NSView camera tied to it. */
+							A client will have a ncView camera tied to it. */
 	XR_INPUT_LEFT,		/**< Device represents a left hand. */
 	XR_INPUT_RIGHT		/**< Device represents a right hand. */
 } xrinput_t;
 
 /** The NSXRInput is updating its position within the NSXRSpace. */
-#define XR_STATUS_ORG	(1u<<0)
+#define XR_STATUS_ORG	(1u<<0u)
 /** The NSXRInput is updating its aim direction within the NSXRSpace. */
-#define XR_STATUS_ANG	(1u<<1)
+#define XR_STATUS_ANG	(1u<<1u)
 /** The NSXRInput is updating its velocity. */
-#define XR_STATUS_VEL	(1u<<2)
+#define XR_STATUS_VEL	(1u<<2u)
 /** The NSXRInput is updating its angular velocity. */
-#define XR_STATUS_AVEL	(1u<<3)
+#define XR_STATUS_AVEL	(1u<<3u)
 
 /** This class represents an input device in the world.
 
 An input device can be a few different things.
 They can interpret updates from an external source, such as a VR headset
 or a VR controller. In the case of a headset (XR_INPUT_HEAD) it will let
-Nuclide know where we will position the client's NSView within the world.
+Nuclide know where we will position the client's ncView within the world.
 
 Other sources, such as keyboard and mice can totally position and control
 these inputs as well.
 
-Each input has the ability to have a NSWeapon reference tied to it.
+Each input has the ability to have a ncWeapon reference tied to it.
 That way you can dual (or even triple) wield them.
 
 @ingroup xr
@@ -102,8 +102,8 @@ class NSXRInput {
 	vector m_vecAngles;
 	vector m_vecVelocity;
 	vector m_vecAVelocity;
-	unsigned int m_iStatus;
-	unsigned int m_iWeapon;
+	__uint64 m_iStatus;
+	__uint64 m_iWeapon;
 
 	xrinput_t m_inputType;
 };

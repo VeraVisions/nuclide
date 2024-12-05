@@ -32,6 +32,8 @@ Sky_Update(int force)
 		/* is it a Source Engine material? */
 		if (fileExists(strcat("materials/skybox/", g_strSkyName, "bk.vmt")) == true) {
 			skyPath = strcat("materials/skybox/", g_strSkyName);
+		} else if (fileExists(strcat("env/", g_strSkyName, ".mat")) == true) {
+			skyPath = strcat("env/", g_strSkyName);
 		} else {
 			skyPath = g_strSkyName;
 		}

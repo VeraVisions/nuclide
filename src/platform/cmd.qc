@@ -43,6 +43,18 @@ Platform_ConsoleCommand(string commandString, int wordCount)
 	case "ap_userID":
 		ActivityPub_FetchAccountData(argv(1));
 		break;
+	case "signOn":
+		FragNet_SignOn();
+		break;
+	case "signOff":
+		FragNet_SignOff();
+		break;
+	case "addFriend":
+		FragNet_AddFriend(argv(1));
+		break;
+	case "removeFriend":
+		FragNet_RemoveFriend(argv(1));
+		break;
 	default:
 		return (false);
 	}
@@ -60,4 +72,10 @@ Platform_RegisterCommands(void)
 	registercommand("map_background");
 	registercommand("listGameLibrary");
 	registercommand("ap_userID");
+
+	/* online service */
+	registercommand("signOn");
+	registercommand("signOff");
+	registercommand("addFriend");
+	registercommand("removeFriend");
 }

@@ -15,7 +15,7 @@
 */
 
 void
-NSWeapon::NSWeapon(void)
+ncWeapon::ncWeapon(void)
 {
 	m_iClipStartSize = 0i;
 	m_bRemoveOnEmpty = false;
@@ -44,13 +44,13 @@ NSWeapon::NSWeapon(void)
 	m_flReloadSpeed = -1.0f;
 	m_nextWeapon = __NULL__;
 	m_prevWeapon = __NULL__;
-	m_fiMeleeRange = 0.0f;
+	m_fireUnderwater = true;
 }
 
 void
-NSWeapon::_AddedCallback(void)
+ncWeapon::_AddedCallback(void)
 {
-	NSActor ourOwner = (NSActor)owner;
+	ncActor ourOwner = (ncActor)owner;
 	super::_AddedCallback();
 
 	if (!owner) {
@@ -67,14 +67,17 @@ NSWeapon::_AddedCallback(void)
 	if (!ourOwner.m_activeWeapon) {
 		ourOwner.SwitchToExactWeapon(this);
 	}
+
+	/* Become the visible attachment */
+	SetModelindex(m_playerModel);
 }
 
 void
-NSWeapon::_RemovedCallback(void)
+ncWeapon::_RemovedCallback(void)
 {
 	if (owner) {
 		/* give the weapon a chance to clean up the owners inventory */
-		NSActor ourOwner = (NSActor)owner;
+		ncActor ourOwner = (ncActor)owner;
 		owner = __NULL__;
 		ourOwner.SortWeaponChain();
 		owner = ourOwner;
@@ -84,27 +87,27 @@ NSWeapon::_RemovedCallback(void)
 }
 
 void
-NSWeapon::AddedToInventory(void)
+ncWeapon::AddedToInventory(void)
 {
 }
 
 void
-NSWeapon::RemovedFromInventory(void)
+ncWeapon::RemovedFromInventory(void)
 {
 }
 
 void
-NSWeapon::SwitchedToWeapon(void)
+ncWeapon::SwitchedToWeapon(void)
 {
 }
 
 void
-NSWeapon::SwitchedFromWeapon(void)
+ncWeapon::SwitchedFromWeapon(void)
 {
 }
 
 void
-NSWeapon::_SetWeaponState(nsweapon_state_t newState)
+ncWeapon::_SetWeaponState(nsweapon_state_t newState)
 {
 	if (m_dState == newState) {
 		return;
@@ -118,19 +121,19 @@ NSWeapon::_SetWeaponState(nsweapon_state_t newState)
 }
 
 nsweapon_state_t
-NSWeapon::GetWeaponState(void)
+ncWeapon::GetWeaponState(void)
 {
 	return (m_dState);
 }
 
 void
-NSWeapon::UpdateFireInfoCache(void)
+ncWeapon::UpdateFireInfoCache(void)
 {
 	string ammoPerShot = GetSubDefString(m_strLastFireInfo, "ammoPerShot");
 	string reloadSpeed = GetSubDefString(m_strLastFireInfo, "reloadTime");
 	m_fiDetonateOnFire = GetSubDefString(m_strLastFireInfo, "detonateOnFire");
-	m_fiMeleeRange = GetSubDefFloat(m_strLastFireInfo, "melee_distance");
 	m_fiPunchAngle = GetSubDefVector(m_strLastFireInfo, "punchAngle");
+	m_fiPunchSpring = GetSubDefVector(m_strLastFireInfo, "punchSpring");
 	m_fiSndFire = GetSubDefString(m_strLastFireInfo, "snd_fire");
 	m_fiSndFailed = GetSubDefString(m_strLastFireInfo, "snd_fireFailed");
 	m_fiSndFireLast = GetSubDefString(m_strLastFireInfo, "snd_fireLast");
@@ -151,9 +154,23 @@ NSWeapon::UpdateFireInfoCache(void)
 	m_fiSndFireStart = GetSubDefString(m_strLastFireInfo, "snd_fireStart");
 	m_fiSndFireStop = GetSubDefString(m_strLastFireInfo, "snd_fireStop");
 	m_fiSndFireLoop = GetSubDefString(m_strLastFireInfo, "snd_fireLoop");
+	m_fireUnderwater = GetSubDefBool(m_strLastFireInfo, "fireUnderwater");
+
+	/* firing cosmetics */
+#ifdef CLIENT
+	setmodel(pSeat->m_eViewModel, GetSubDefString(m_strLastFireInfo, "model_view"));
+	pSeat->m_eViewModel.declclass = declclass;
+	m_fiJointMuzzle = gettagindex(pSeat->m_eViewModel, GetSubDefString(m_strLastFireInfo, "muzzle"));
+	m_fiJointBarrel = gettagindex(pSeat->m_eViewModel, GetSubDefString(m_strLastFireInfo, "barrel"));
+
+// 	printf("%S %S %d\n", pSeat->m_eViewModel.model, GetSubDefString(m_strLastFireInfo, "barrel"), m_fiJointBarrel);
+#endif
+
+	m_fiBrassDef = GetSubDefString(m_strLastFireInfo, "def_ejectBrass");
+	m_fiBrassDelay = GetSubDefFloat(m_strLastFireInfo, "ejectBrassDelay");
 
 	/* only check if it's present. */
-	m_bHasLoop = GetSubDefBool(m_strLastFireInfo, "loop");
+	m_bHasLoop = GetSubDefBool(m_strLastFireInfo, "act_loop");
 	m_fiCocks = GetSubDefBool(m_strLastFireInfo, "cocks");
 	m_fiDrawAfterRelease = GetSubDefBool(m_strLastFireInfo, "drawAfterRelease");
 
@@ -192,7 +209,7 @@ NSWeapon::UpdateFireInfoCache(void)
 	NSError("m_flReloadSpeed: %f", m_flReloadSpeed);
 #endif
 
-	NSClientPlayer ourOwner = (NSClientPlayer)GetOwner();
+	ncPlayer ourOwner = (ncPlayer)GetOwner();
 	float zoomFov = GetSubDefFloat(m_strLastFireInfo, "zoomFov");
 
 	if (zoomFov > 0) {
@@ -210,7 +227,7 @@ NSWeapon::UpdateFireInfoCache(void)
 }
 
 void
-NSWeapon::SwitchFireInfo(string newInfo)
+ncWeapon::SwitchFireInfo(string newInfo)
 {
 	/* nothing changed. */
 	if (m_strLastFireInfo == newInfo) {
@@ -223,7 +240,7 @@ NSWeapon::SwitchFireInfo(string newInfo)
 
 #ifdef SERVER
 void
-NSWeapon::Spawned(void)
+ncWeapon::Spawned(void)
 {
 	super::Spawned();
 
@@ -244,7 +261,7 @@ NSWeapon::Spawned(void)
 }
 
 void
-NSWeapon::SpawnKey(string keyName, string setValue)
+ncWeapon::SpawnKey(string keyName, string setValue)
 {
 	switch (keyName) {
 	case "model_view":
@@ -286,9 +303,6 @@ NSWeapon::SpawnKey(string keyName, string setValue)
 	case "snd_hum":
 		m_sndHum = ReadString(setValue);
 		break;
-	case "smoke_muzzle":
-		m_strSmokeParticle = ReadString(setValue);
-		break;
 	case "continuousSmoke":
 		m_bSmokeContinous = ReadBool(setValue);
 		break;
@@ -299,7 +313,7 @@ NSWeapon::SpawnKey(string keyName, string setValue)
 }
 
 void
-NSWeapon::Save(float handle)
+ncWeapon::Save(float handle)
 {
 	super::Save(handle);
 
@@ -321,7 +335,7 @@ NSWeapon::Save(float handle)
 }
 
 void
-NSWeapon::Restore(string strKey, string strValue)
+ncWeapon::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "m_strWeaponViewModel":
@@ -374,7 +388,7 @@ NSWeapon::Restore(string strKey, string strValue)
 
 /* Make sure StartFrame calls this */
 float
-NSWeapon::SendEntity(entity ePEnt, float flChanged)
+ncWeapon::SendEntity(entity ePEnt, float flChanged)
 {
 	/* item is in somebody elses inventory. */
 	if (InInventory() == true && ePEnt != GetOwner()) {
@@ -432,7 +446,7 @@ NSWeapon::SendEntity(entity ePEnt, float flChanged)
 }
 
 void
-NSWeapon::EvaluateEntity(void)
+ncWeapon::EvaluateEntity(void)
 {
 	EVALUATE_FIELD(m_nextItem, WEAPONFL_CHANGED_CHAIN)
 	EVALUATE_FIELD(owner, WEAPONFL_CHANGED_CHAIN)
@@ -481,7 +495,48 @@ NSWeapon::EvaluateEntity(void)
 
 #ifdef CLIENT
 void
-NSWeapon::ClientFX(bool isThirdperson)
+ncWeapon::HandleAnimEvent(float timeStamp, int eventCode, string dataString)
+{
+	switch (eventCode) {
+	case 5000:
+		string muzzModel = GetSubDefString(m_strLastFireInfo, "model_flash");
+		string partSmoke = GetSubDefString(m_strLastFireInfo, "smoke_muzzle");
+		vector muzzOffset = GetSubDefVector(m_strLastFireInfo, "muzzleOffset");
+		vector muzzlePos = g_vec_null;
+
+		if (m_fiJointBarrel > 0) {
+			muzzlePos = gettaginfo(pSeat->m_eViewModel, m_fiJointBarrel);
+		} else {
+			vector muzzOfs = GetSubDefVector(m_strLastFireInfo, "muzzleRelativeOffset");
+			vector camPos = pSeat->m_eViewModel.origin;
+
+			muzzlePos = camPos + anglesToForward(pSeat->m_eViewModel.angles) * muzzOfs[0];
+			muzzlePos += anglesToRight(pSeat->m_eViewModel.angles) * muzzOfs[1];
+			muzzlePos += anglesToUp(pSeat->m_eViewModel.angles) * muzzOfs[2];
+		}
+
+
+		muzzlePos += anglesToForward(pSeat->m_eViewModel.angles) * muzzOffset[0];
+		muzzlePos += anglesToRight(pSeat->m_eViewModel.angles) * muzzOffset[1];
+		muzzlePos += anglesToUp(pSeat->m_eViewModel.angles) * muzzOffset[2];
+
+		if (STRING_SET(muzzModel)) {
+			EV_MuzzleFlash_CreateAtPos(pSeat->m_eViewModel, muzzlePos, 1.0, getmodelindex(muzzModel));
+		}
+
+		if (STRING_SET(partSmoke)) {
+			setproperty(VF_ANGLES,g_view.GetCameraAngle());
+			setproperty(VF_ORIGIN, g_view.GetCameraOrigin());
+			pointparticles(particleeffectnum(partSmoke), muzzlePos, g_vec_null, 1);
+		}
+		break;
+	default:
+		super::HandleAnimEvent(timeStamp, eventCode, dataString);
+	}
+}
+
+void
+ncWeapon::ClientFX(bool isThirdperson)
 {
 	if (m_bFiring == false) {
 		return;
@@ -489,7 +544,7 @@ NSWeapon::ClientFX(bool isThirdperson)
 
 	vector src;
 	vector endpos;
-	NSActor pl = (NSActor)owner;
+	ncActor pl = (ncActor)owner;
 
 	if (isThirdperson == true) {
 		src = pl.GetEyePos();
@@ -506,7 +561,7 @@ NSWeapon::ClientFX(bool isThirdperson)
 }
 
 void
-NSWeapon::ReceiveEntity(float flNew, float flChanged)
+ncWeapon::ReceiveEntity(float flNew, float flChanged)
 {
 	READENTITY_SHORT(modelindex, WEAPONFL_CHANGED_MODELINDEX)
 	READENTITY_ENTNUM(chain_entnum, WEAPONFL_CHANGED_CHAIN)
@@ -553,7 +608,7 @@ NSWeapon::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_FLOAT(m_flOverheating, WEAPONFL_CHANGED_STATE)
 
 	/* weapon view model update */
-	NSActor ourOwner = (NSActor)findfloat(world, ::entnum, owner_entnum);
+	ncActor ourOwner = (ncActor)findfloat(world, ::entnum, owner_entnum);
 
 	if (ourOwner.m_activeWeapon == this) {
 		UpdateViewmodel();
@@ -590,7 +645,7 @@ NSWeapon::ReceiveEntity(float flNew, float flChanged)
 
 
 void
-NSWeapon::ReceiveEvent(float eventID)
+ncWeapon::ReceiveEvent(float eventID)
 {
 	switch (eventID) {
 	case WEPEVENT_FIRED:
@@ -601,16 +656,16 @@ NSWeapon::ReceiveEvent(float eventID)
 
 
 void
-NSWeapon::PredictPreFrame(void)
+ncWeapon::PredictPreFrame(void)
 {
 	super::PredictPreFrame();
 
 	if (m_nextWeapon == __NULL__ && m_nextWeapon_entnum) {
-		m_nextWeapon = (NSWeapon)findentity(world, ::entnum, m_nextWeapon_entnum);
+		m_nextWeapon = (ncWeapon)findentity(world, ::entnum, m_nextWeapon_entnum);
 	}
 
 	if (m_prevWeapon == __NULL__ && m_prevWeapon_entnum) {
-		m_prevWeapon = (NSWeapon)findentity(world, ::entnum, m_prevWeapon_entnum);
+		m_prevWeapon = (ncWeapon)findentity(world, ::entnum, m_prevWeapon_entnum);
 	}
 
 	SAVE_STATE(m_nextWeapon)
@@ -643,7 +698,7 @@ NSWeapon::PredictPreFrame(void)
 }
 
 void
-NSWeapon::PredictPostFrame(void)
+ncWeapon::PredictPostFrame(void)
 {
 	super::PredictPostFrame();
 
@@ -679,7 +734,7 @@ NSWeapon::PredictPostFrame(void)
 #endif
 
 void
-NSWeapon::_CacheWeaponDefVariables(void)
+ncWeapon::_CacheWeaponDefVariables(void)
 {
 	string firstType, secondType;
 	string muzzleModel;
@@ -746,7 +801,7 @@ NSWeapon::_CacheWeaponDefVariables(void)
 }
 
 void
-NSWeapon::_SwitchedToCallback(void)
+ncWeapon::_SwitchedToCallback(void)
 {
 	SwitchFireInfo(m_primaryFireInfo);
 	SetAttackNext(0.0f);
@@ -761,22 +816,22 @@ NSWeapon::_SwitchedToCallback(void)
 }
 
 void
-NSWeapon::_SwitchedFromCallback(void)
+ncWeapon::_SwitchedFromCallback(void)
 {
 	//printf("Switched from %S\n", classname);
 	Holster();
 }
 
 bool
-NSWeapon::IsWeapon(void)
+ncWeapon::IsWeapon(void)
 {
 	return (true);
 }
 
 bool
-NSWeapon::IsEmpty(void)
+ncWeapon::IsEmpty(void)
 {
-	NSClientPlayer ourOwner = (NSClientPlayer)GetOwner();
+	ncPlayer ourOwner = (ncPlayer)GetOwner();
 
 	if (autocvar_g_infiniteAmmo == true) {
 		return (false);
@@ -805,11 +860,11 @@ NSWeapon::IsEmpty(void)
 #ifdef CLIENT
 .float vw_index;
 void
-NSWeapon::UpdateViewmodel(void)
+ncWeapon::UpdateViewmodel(void)
 {
 	if (pSeat != __NULL__) {
-		NSRenderableEntity viewModel = (NSRenderableEntity)pSeat->m_eViewModel;
-		NSRenderableEntity viewModel2 = (NSRenderableEntity)pSeat->m_eViewModelL;
+		ncRenderableEntity viewModel = (ncRenderableEntity)pSeat->m_eViewModel;
+		ncRenderableEntity viewModel2 = (ncRenderableEntity)pSeat->m_eViewModelL;
 
 		if (viewModel && viewModel.classname == "vm") {
 			string viewModelPath2 = GetSubDefString(m_primaryFireInfo, "model_view2");
@@ -834,7 +889,7 @@ NSWeapon::UpdateViewmodel(void)
 #endif
 
 void
-NSWeapon::Draw(void)
+ncWeapon::Draw(void)
 {
 #ifdef CLIENT
 	UpdateViewmodel();
@@ -865,20 +920,30 @@ NSWeapon::Draw(void)
 	SetAttackNext(drawTime);
 	SetIdleNext(drawTime);
 	
-	NSClientPlayer ourOwner = (NSClientPlayer)GetOwner();
+	ncPlayer ourOwner = (ncPlayer)GetOwner();
 	ourOwner.viewzoom = 1.0f;
 }
 
 void
-NSWeapon::Holster(void)
+ncWeapon::Holster(void)
 {
 	EntLog("Holstering Weapon!");
 }
 
-bool
-NSWeapon::UseAmmo(string fireInfo)
+void
+ncWeapon::EmptySound(void)
 {
-	NSClientPlayer ourOwner = (NSClientPlayer)GetOwner();
+#ifdef SERVER
+	ncPlayer ourOwner = (ncPlayer)GetOwner();
+	ourOwner.StartSoundDef(m_fiSndEmpty, CHAN_WEAPON, true);
+	ourOwner.gflags |= GF_SEMI_TOGGLED;
+#endif
+}
+
+bool
+ncWeapon::UseAmmo(string fireInfo)
+{
+	ncPlayer ourOwner = (ncPlayer)GetOwner();
 
 	if (autocvar_g_infiniteAmmo == true) {
 		return (true);
@@ -894,10 +959,7 @@ NSWeapon::UseAmmo(string fireInfo)
 					Reload();
 					return (false);
 				} else { /* no, play empty sound */
-#ifdef SERVER
-					ourOwner.StartSoundDef(m_fiSndEmpty, CHAN_WEAPON, true);
-#endif
-					ourOwner.gflags |= GF_SEMI_TOGGLED;
+					EmptySound();
 					m_bFiring = false;
 				}
 				return (false);
@@ -905,10 +967,7 @@ NSWeapon::UseAmmo(string fireInfo)
 
 			m_iClip -= m_fiAmmoPerShot;
 		} else if (ourOwner.UseAmmo(m_fiAmmoType, m_fiAmmoPerShot) == false) {
-#ifdef SERVER
-			ourOwner.StartSoundDef(m_fiSndEmpty, CHAN_WEAPON, true);
-#endif
-			ourOwner.gflags |= GF_SEMI_TOGGLED;
+			EmptySound();
 			m_bFiring = false;
 			return (false);
 		}
@@ -943,14 +1002,14 @@ NSWeapon::UseAmmo(string fireInfo)
 }
 
 bool
-NSWeapon::DetonateDef(string defName)
+ncWeapon::DetonateDef(string defName)
 {
 	bool success = false;
 
 	for ( entity b = world; ( b = find( b, ::classname, defName ) ); ) {
 		if ( b.owner == owner ) {
 #ifdef SERVER
-			NSProjectile toDetonate = (NSProjectile)b;
+			ncProjectile toDetonate = (ncProjectile)b;
 			toDetonate.Trigger(owner, TRIG_TOGGLE);
 #endif
 			success = true;
@@ -961,9 +1020,9 @@ NSWeapon::DetonateDef(string defName)
 }
 
 void
-NSWeapon::FiredWeaponAttack(string fireInfo)
+ncWeapon::FiredWeaponAttack(string fireInfo)
 {
-	NSClientPlayer ourOwner = (NSClientPlayer)GetOwner();
+	ncPlayer ourOwner = (ncPlayer)GetOwner();
 	ourOwner.AttackByDef(fireInfo, false);
 	_SetWeaponState(WEAPONSTATE_IDLE);
 
@@ -980,15 +1039,15 @@ NSWeapon::FiredWeaponAttack(string fireInfo)
 }
 
 void
-NSWeapon::InputFrame(void)
+ncWeapon::InputFrame(void)
 {
 
 }
 
 void
-NSWeapon::ReleasedWeaponAttack(string fireInfo)
+ncWeapon::ReleasedWeaponAttack(string fireInfo)
 {
-	NSClientPlayer ourOwner = (NSClientPlayer)GetOwner();
+	ncPlayer ourOwner = (ncPlayer)GetOwner();
 	ourOwner.AttackByDef(fireInfo, true);
 
 	/* knockback */
@@ -1001,9 +1060,9 @@ NSWeapon::ReleasedWeaponAttack(string fireInfo)
 }
 
 void
-NSWeapon::Attack(string fireInfo)
+ncWeapon::Attack(string fireInfo)
 {
-	NSClientPlayer ourOwner = (NSClientPlayer)GetOwner();
+	ncPlayer ourOwner = (ncPlayer)GetOwner();
 	float shotAnim = -1;
 	float fireRate = 1.0f;
 	
@@ -1014,14 +1073,15 @@ NSWeapon::Attack(string fireInfo)
 		return;
 	}
 
+	SwitchFireInfo(fireInfo);
+
 	if (m_fiSemiAuto == true) {
 		ourOwner.gflags |= GF_SEMI_TOGGLED;
 	}
 
-	SwitchFireInfo(fireInfo);
 
 	/* no real attack, detonate named satchels, pipe bombs, etc. */
-	if (m_fiDetonateOnFire != __NULL__) {
+	if (STRING_SET(m_fiDetonateOnFire)) {
 		if (DetonateDef(m_fiDetonateOnFire) == true) {
 			float detonateAct = GetSubDefAct(fireInfo, "detonate");
 			
@@ -1045,7 +1105,14 @@ NSWeapon::Attack(string fireInfo)
 		ourOwner.vv_flags |= VFL_PRIMEDFUSE;
 	}
 
+	/* "fireUnderwater" check */
+	if (m_fireUnderwater == false && owner.waterlevel >= WATERLEVEL_SUBMERGED) {
+		EmptySound();
+		return;
+	}
+
 	if (IsEmpty() == true) {
+		EmptySound();
 		return;
 	}
 
@@ -1080,6 +1147,7 @@ NSWeapon::Attack(string fireInfo)
 	}
 
 	ourOwner.punchangle += m_fiPunchAngle;
+	ourOwner.punchvelocity += m_fiPunchSpring * 20.0f;
 
 #ifdef SERVER
 	string fireSound = m_fiSndFire;
@@ -1098,6 +1166,10 @@ NSWeapon::Attack(string fireInfo)
 
 	FiredWeaponAttack(fireInfo);
 
+	if (wasfreed(this)) {
+		return;
+	}
+
 	if (m_bHasLoop == false) {
 		if (m_iClipSize > 0 && m_iClip == 0) {
 			shotAnim = GetSubDefAct(fireInfo, "fireLast");
@@ -1106,10 +1178,6 @@ NSWeapon::Attack(string fireInfo)
 		if (shotAnim <= 0) {
 			shotAnim = GetSubDefAct(fireInfo, "fire");
 		}
-
-#ifdef CLIENT
-		View_SetMuzzleflash(m_muzzleModelIndex);
-#endif
 
 		SetWeaponFrame(shotAnim);
 		SetIdleNext(frameduration(m_viewModel, shotAnim));
@@ -1142,18 +1210,33 @@ NSWeapon::Attack(string fireInfo)
 	}
 	SetIdleNext(animTime);
 
+#if 0
+#ifdef CLIENT
+	/* dispatch brass */
+	if (STRING_SET(m_fiBrassDef)) {
+	//	View_AddEvent(_EjectBrass, m_fiBrassDelay);
+	}
+
+	/* dispatch muzzle */
+	if (m_fiJointBarrel) {
+		View_AddEvent(_EjectMuzzleFlash, 0.0f);
+		pSeat->m_iEventEntity = this;
+	}
+#endif
+#endif
+
 	m_bFiring = true;
 }
 
 void
-NSWeapon::_PrimaryAttack(void)
+ncWeapon::_PrimaryAttack(void)
 {
 	_WeaponStartedFiring();
 	PrimaryAttack();
 }
 
 void
-NSWeapon::_SecondaryAttack(void)
+ncWeapon::_SecondaryAttack(void)
 {
 	if (GetDefBool("altAlternates") == true) {
 		return;
@@ -1164,7 +1247,7 @@ NSWeapon::_SecondaryAttack(void)
 }
 
 void
-NSWeapon::_SwitchedWeaponMode(void)
+ncWeapon::_SwitchedWeaponMode(void)
 {
 	float animMode = -1;
 
@@ -1184,7 +1267,7 @@ NSWeapon::_SwitchedWeaponMode(void)
 }
 
 void
-NSWeapon::PlaySound(string soundDef, float soundChannel, bool clientOnly)
+ncWeapon::PlaySound(string soundDef, float soundChannel, bool clientOnly)
 {
 #ifdef CLIENT
 	if (clientOnly) {
@@ -1200,9 +1283,9 @@ NSWeapon::PlaySound(string soundDef, float soundChannel, bool clientOnly)
 }
 
 bool
-NSWeapon::TestFireAbility(string fireInfo)
+ncWeapon::TestFireAbility(string fireInfo)
 {
-	NSClientPlayer ourOwner = (NSClientPlayer)GetOwner();
+	ncPlayer ourOwner = (ncPlayer)GetOwner();
 	float fiTestDistance = GetSubDefFloat(fireInfo, "testDistance");
 
 	if (fiTestDistance != 0.0f) {
@@ -1232,9 +1315,9 @@ NSWeapon::TestFireAbility(string fireInfo)
 }
 
 void
-NSWeapon::Idle(void)
+ncWeapon::Idle(void)
 {
-	NSClientPlayer ourOwner = (NSClientPlayer)GetOwner();
+	ncPlayer ourOwner = (ncPlayer)GetOwner();
 	float idleAnim = -1;
 
 	m_flOverheating = max(0.0f, m_flOverheating - input_timelength);
@@ -1259,7 +1342,7 @@ NSWeapon::Idle(void)
 		idleAnim = GetSubDefAct(m_strLastFireInfo, "reloadStart");
 		_SetWeaponState(WEAPONSTATE_RELOAD);
 #ifdef SERVER
-		PlaySound(GetDefString("snd_reload_start"), CHAN_AUTO, false);
+		PlaySound(GetDefString("snd_reloadStart"), CHAN_AUTO, false);
 #endif
 		SetAttackNext(frameduration(m_viewModel, idleAnim));
 		break;
@@ -1290,7 +1373,7 @@ NSWeapon::Idle(void)
 		idleAnim = GetSubDefAct(m_strLastFireInfo, "reloadEnd");
 		_SetWeaponState(WEAPONSTATE_IDLE);
 #ifdef SERVER
-		PlaySound(GetDefString("snd_reload_end"), CHAN_AUTO, false);
+		PlaySound(GetDefString("snd_reloadEnd"), CHAN_AUTO, false);
 #endif
 		SetAttackNext(frameduration(m_viewModel, idleAnim));
 		break;
@@ -1312,11 +1395,14 @@ NSWeapon::Idle(void)
 	case WEAPONSTATE_RELEASED:
 		//breakpoint();
 
-		if (m_fiSndRelease) {
+		if (STRING_SET(m_fiSndRelease)) {
 			ourOwner.StartSoundDef(m_fiSndRelease, CHAN_WEAPON, true);
 		}
 
-		UseAmmo(m_strLastFireInfo);
+		if (STRING_SET(m_fiOnRelease)) {
+			UseAmmo(m_strLastFireInfo);
+		}
+
 		ReleasedWeaponAttack(m_strLastFireInfo);
 		ourOwner.vv_flags &= ~VFL_PRIMEDFUSE;
 		idleAnim = GetSubDefAct(m_strLastFireInfo, "release");
@@ -1367,9 +1453,9 @@ NSWeapon::Idle(void)
 }
 
 void
-NSWeapon::PrimaryAttack(void)
+ncWeapon::PrimaryAttack(void)
 {
-	NSClientPlayer ourOwner = (NSClientPlayer)GetOwner();
+	ncPlayer ourOwner = (ncPlayer)GetOwner();
 
 	if (CanFire() == false) {
 		if (!(ourOwner.gflags & GF_SEMI_TOGGLED)) {
@@ -1405,10 +1491,10 @@ NSWeapon::PrimaryAttack(void)
 }
 
 void
-NSWeapon::SecondaryAttack(void)
+ncWeapon::SecondaryAttack(void)
 {
 	float shotAnim = 0;
-	NSClientPlayer ourOwner;
+	ncPlayer ourOwner;
 	float fireRate = 0.0f;
 
 	/* zoom takes priority */
@@ -1417,14 +1503,14 @@ NSWeapon::SecondaryAttack(void)
 			return;
 		}
 
-		ourOwner = (NSClientPlayer)GetOwner();
+		ourOwner = (ncPlayer)GetOwner();
 		ourOwner.viewzoom = (ourOwner.viewzoom == 1.0) ? m_flZoomFOV : 1.0;
 
 #ifdef SERVER
 		if (ourOwner.viewzoom == 1.0) {
-			PlaySound(GetDefString("snd_lower_scope"), CHAN_AUTO, false);
+			PlaySound(GetDefString("snd_lowerScope"), CHAN_AUTO, false);
 		} else {
-			PlaySound(GetDefString("snd_raise_scope"), CHAN_AUTO, false);
+			PlaySound(GetDefString("snd_raiseScope"), CHAN_AUTO, false);
 		}
 #endif
 
@@ -1437,6 +1523,15 @@ NSWeapon::SecondaryAttack(void)
 		}
 
 		m_iMode = 1 - m_iMode;
+
+#ifdef SERVER
+		if (m_iMode) {
+			PlaySound(GetDefString("snd_modeOn"), CHAN_AUTO, false);
+		} else {
+			PlaySound(GetDefString("snd_modeOff"), CHAN_AUTO, false);
+		}
+#endif
+
 		SetAttackNext(1.0);
 		SetIdleNext(1.0f);
 		_SwitchedWeaponMode();
@@ -1461,9 +1556,9 @@ NSWeapon::SecondaryAttack(void)
 
 #ifdef SERVER
 void
-NSWeapon::_ReloadFinished(void)
+ncWeapon::_ReloadFinished(void)
 {
-	NSClientPlayer ourOwner = (NSClientPlayer)GetOwner();
+	ncPlayer ourOwner = (ncPlayer)GetOwner();
 	int ammoToDeduct;
 
 	ammoToDeduct = m_iClipSize - m_iClip;
@@ -1481,10 +1576,11 @@ NSWeapon::_ReloadFinished(void)
 #endif
 
 void
-NSWeapon::Reload(void)
+ncWeapon::Reload(void)
 {
-	NSClientPlayer ourOwner = (NSClientPlayer)GetOwner();
+	ncPlayer ourOwner = (ncPlayer)GetOwner();
 	float reloadAnimation = -1;
+	float reloadEndAnimation = -1;
 	float reloadTime;
 	string ammoType;
 	int ammoTypeID;
@@ -1534,6 +1630,11 @@ NSWeapon::Reload(void)
 
 	if (reloadAnimation < 0) {
 		reloadAnimation = GetSubDefAct(m_strLastFireInfo, "reload");
+		
+		/* check if we should schedule a reload-end */
+		if (GetSubDefAct(m_strLastFireInfo, "reloadEnd") >= 0) {
+			_SetWeaponState(WEAPONSTATE_RELOAD_END);
+		}
 	}
 
 	if (m_flReloadSpeed == -1.0f) {
@@ -1564,9 +1665,9 @@ NSWeapon::Reload(void)
 }
 
 bool
-NSWeapon::HasReserveAmmo(void)
+ncWeapon::HasReserveAmmo(void)
 {
-	NSClientPlayer ourOwner = (NSClientPlayer)GetOwner();
+	ncPlayer ourOwner = (ncPlayer)GetOwner();
 	string ammoType1 = GetSubDefString(m_primaryFireInfo, "ammoType");
 	int ammoTypeID1 = ammoNumForName(ammoType1);
 
@@ -1585,7 +1686,7 @@ NSWeapon::HasReserveAmmo(void)
 }
 
 void
-NSWeapon::_WeaponStartedFiring(void)
+ncWeapon::_WeaponStartedFiring(void)
 {
 	if (CanFire() == false) {
 		return;
@@ -1595,8 +1696,22 @@ NSWeapon::_WeaponStartedFiring(void)
 	if (!(owner.vv_flags & VFL_FIRING)) {
 		float actFireStart = GetSubDefAct(m_strLastFireInfo, "fireStart");
 
+		/* we may be supposed to be looping */
+		if (m_bHasLoop) {
+			_SetWeaponState(WEAPONSTATE_FIRELOOP);
+			SetIdleNext(0.0); /* to be potentially overriden by actFireStart! */
+		}
+
+		/* if we got a 'start firing' animation play it */
+		if (actFireStart >= 0) {
+			SetWeaponFrame(actFireStart);
+			SetAttackNext(frameduration(m_viewModel, actFireStart));
+			SetIdleNext(frameduration(m_viewModel, actFireStart));
+		}
+
+
 #ifdef SERVER
-		NSClientPlayer ourOwner = (NSClientPlayer)GetOwner();
+		ncPlayer ourOwner = (ncPlayer)GetOwner();
 
 		if (m_fiSndFireStart) {
 			ourOwner.StartSoundDef(m_fiSndFireStart, CHAN_WEAPON, true);
@@ -1609,13 +1724,6 @@ NSWeapon::_WeaponStartedFiring(void)
 		//printf("actFireStart %d %S\n", actFireStart, m_strLastFireInfo);
 #endif
 
-		if (actFireStart >= 0) {
-			SetWeaponFrame(actFireStart);
-			SetAttackNext(frameduration(m_viewModel, actFireStart));
-			SetIdleNext(frameduration(m_viewModel, actFireStart));
-			_SetWeaponState(WEAPONSTATE_FIRELOOP);
-		}
-
 		WeaponStartedFiring();
 	}
 
@@ -1623,29 +1731,34 @@ NSWeapon::_WeaponStartedFiring(void)
 }
 
 void
-NSWeapon::_WeaponStoppedFiring(void)
+ncWeapon::_WeaponStoppedFiring(void)
 {
-	if (m_bHasLoop == false)
-	if (CanFire() == false) {
-		return;
+	if (m_bHasLoop == false) {
+		if (CanFire() == false) {
+			return;
+		}
 	}
 
 	/* was still registed as firing */
-	if (owner.vv_flags & VFL_FIRING) {
-		NSClientPlayer ourOwner = (NSClientPlayer)GetOwner();
+	if (WeaponIsFiring() == true) {
+		ncPlayer ourOwner = (ncPlayer)GetOwner();
 		float actFireStop = GetSubDefAct(m_strLastFireInfo, "fireStop");
 
 		if (actFireStop >= 0) {
 			SetWeaponFrame(actFireStop);
 			SetAttackNext(frameduration(m_viewModel, actFireStop));
 			SetIdleNext(frameduration(m_viewModel, actFireStop));
+		}
+
+		/* only go through the 'released' arc if we were either looping or got something to release? */
+		if (m_bHasLoop || actFireStop >= 0) {
 			_SetWeaponState(WEAPONSTATE_RELEASED);
 		}
 
 		WeaponStoppedFiring();
 
-		/* Remove when empty */
-		if (m_bRemoveOnEmpty && HasReserveAmmo() == false && m_iClipSize <= 0i) {
+		/* Remove when empty, but not when we're supposed to be detonating on fire */
+		if (!STRING_SET(m_fiDetonateOnFire) && m_bRemoveOnEmpty && HasReserveAmmo() == false && m_iClipSize <= 0i) {
 			ourOwner.RemoveItem(classname);
 			return;
 		}
@@ -1655,26 +1768,26 @@ NSWeapon::_WeaponStoppedFiring(void)
 }
 
 bool
-NSWeapon::WeaponIsFiring(void)
+ncWeapon::WeaponIsFiring(void)
 {
 	return (owner.vv_flags & VFL_FIRING) ? (true) : (false);
 }
 
 void
-NSWeapon::WeaponStartedFiring(void)
+ncWeapon::WeaponStartedFiring(void)
 {
 }
 
 void
-NSWeapon::WeaponStoppedFiring(void)
+ncWeapon::WeaponStoppedFiring(void)
 {
 }
 
 void
-NSWeapon::Release(void)
+ncWeapon::Release(void)
 {
 	float idleAnim = -1;
-	NSClientPlayer ourOwner = (NSClientPlayer)GetOwner();
+	ncPlayer ourOwner = (ncPlayer)GetOwner();
 	ourOwner.gflags &= ~GF_SEMI_TOGGLED;
 
 	/* we're allowed to release any time. allow it! */
@@ -1702,26 +1815,26 @@ NSWeapon::Release(void)
 #endif
 
 #ifdef SERVER
-	if (m_bFiring == true) {
+	if (WeaponIsFiring() == true) {
 
 		if (m_fiSndFireStop) {
 			ourOwner.StartSoundDef(m_fiSndFireStop, CHAN_WEAPON, true);
 		}
 
 		ourOwner.StopSound(CHAN_LOOP, true);
-		//printf("actFireStop %d %S\n", actFireStop, m_strLastFireInfo);
 	}
 #endif
 
 	m_bFiring = false;
+
 	Idle();
 }
 
 void
-NSWeapon::UpdateGUI(void)
+ncWeapon::UpdateGUI(void)
 {
 #ifdef CLIENT
-	NSClientPlayer ourOwner = __NULL__;
+	ncPlayer ourOwner = __NULL__;
 	static float baseIconSize = 32.0f;
 	static float baseIconPadding = 16.0f;
 
@@ -1729,7 +1842,7 @@ NSWeapon::UpdateGUI(void)
 		return;
 	}
 
-	ourOwner = (NSClientPlayer)GetOwner();
+	ourOwner = (ncPlayer)GetOwner();
 
 	vector hudSize = g_view.GetHUDCanvasSize();
 	vector iconPos = g_view.GetHUDCanvasPos() + (hudSize / 2);
@@ -1751,7 +1864,7 @@ NSWeapon::UpdateGUI(void)
 }
 
 void
-NSWeapon::SetViewModel(string modelPath)
+ncWeapon::SetViewModel(string modelPath)
 {
 	if (!modelPath) {
 		return;
@@ -1765,7 +1878,7 @@ NSWeapon::SetViewModel(string modelPath)
 }
 
 void
-NSWeapon::SetWorldModel(string modelPath)
+ncWeapon::SetWorldModel(string modelPath)
 {
 	if (!modelPath) {
 		return;
@@ -1779,7 +1892,7 @@ NSWeapon::SetWorldModel(string modelPath)
 }
 
 void
-NSWeapon::SetPlayerModel(string modelPath)
+ncWeapon::SetPlayerModel(string modelPath)
 {
 	if (!modelPath) {
 		return;
@@ -1793,32 +1906,49 @@ NSWeapon::SetPlayerModel(string modelPath)
 }
 
 void
-NSWeapon::SetWeaponFrame(float newSequence)
+ncWeapon::SetWeaponFrame(float newSequence)
 {
-	NSClientPlayer ourOwner = (NSClientPlayer)GetOwner();
-	ourOwner.weaponframe = newSequence;
-	ourOwner.weapontime = 0.0f;
+	ncPlayer ourOwner = (ncPlayer)GetOwner();
+
+	if (ourOwner) {
+		ourOwner.weaponframe = newSequence;
+		ourOwner.weapontime = 0.0f;
+	}
 }
 
 void
-NSWeapon::SetAttackNext(float newDelay)
+ncWeapon::SetAttackNext(float newDelay)
 {
-	NSClientPlayer ourOwner = (NSClientPlayer)GetOwner();
+	ncPlayer ourOwner = (ncPlayer)GetOwner();
+
+	if (!ourOwner) {
+		return;
+	}
+
 	ourOwner.w_attack_next = newDelay;
 	SetReloadNext(newDelay);
 }
 
 void
-NSWeapon::SetReloadNext(float newDelay)
+ncWeapon::SetReloadNext(float newDelay)
 {
-	NSClientPlayer ourOwner = (NSClientPlayer)GetOwner();
+	ncPlayer ourOwner = (ncPlayer)GetOwner();
+
+	if (!ourOwner) {
+		return;
+	}
+
 	ourOwner.w_reload_next = newDelay;
 }
 
 void
-NSWeapon::SetIdleNext(float newDelay)
+ncWeapon::SetIdleNext(float newDelay)
 {
-	NSClientPlayer ourOwner = (NSClientPlayer)GetOwner();
+	ncPlayer ourOwner = (ncPlayer)GetOwner();
+
+	if (!ourOwner) {
+		return;
+	}
 
 	/* HACK: RT2 requires this as their anims have junk at the end :/ */
 	if (m_bBuggyIdleAnim == true)
@@ -1828,9 +1958,9 @@ NSWeapon::SetIdleNext(float newDelay)
 }
 
 bool
-NSWeapon::CanIdle(void)
+ncWeapon::CanIdle(void)
 {
-	NSClientPlayer ourOwner = (NSClientPlayer)GetOwner();
+	ncPlayer ourOwner = (ncPlayer)GetOwner();
 
 	if (ourOwner.w_idle_next > 0.0f) {
 		return (false);
@@ -1840,9 +1970,9 @@ NSWeapon::CanIdle(void)
 }
 
 bool
-NSWeapon::CanFire(void)
+ncWeapon::CanFire(void)
 {
-	NSClientPlayer ourOwner = (NSClientPlayer)GetOwner();
+	ncPlayer ourOwner = (ncPlayer)GetOwner();
 
 	if (ourOwner.w_attack_next > 0.0f) {
 		return (false);
@@ -1861,9 +1991,9 @@ NSWeapon::CanFire(void)
 }
 
 bool
-NSWeapon::CanReload(void)
+ncWeapon::CanReload(void)
 {
-	NSClientPlayer ourOwner = (NSClientPlayer)GetOwner();
+	ncPlayer ourOwner = (ncPlayer)GetOwner();
 
 	if (ourOwner.w_reload_next > 0.0f) {
 		return (false);
@@ -1872,20 +2002,20 @@ NSWeapon::CanReload(void)
 	return (true);
 }
 
-NSWeapon
-NSWeapon::GetNextWeapon(void)
+ncWeapon
+ncWeapon::GetNextWeapon(void)
 {
 	return (m_nextWeapon);
 }
 
-NSWeapon
-NSWeapon::GetPreviousWeapon(void)
+ncWeapon
+ncWeapon::GetPreviousWeapon(void)
 {
 	return (m_prevWeapon);
 }
 
 bool
-NSWeapon::UsesSecondaryAmmo(void)
+ncWeapon::UsesSecondaryAmmo(void)
 {
 	return (m_secondaryAmmoType && m_primaryAmmoType != m_secondaryAmmoType) ? (true) : (false);
 }

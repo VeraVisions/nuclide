@@ -1,0 +1,7 @@
+{
+	program defaultskin
+	diffusemap models/props_gltf/boombox.ktx 
+	normalmap models/props_gltf/boombox_local.ktx 
+	specularmap models/props_gltf/boombox_mra.ktx 
+	fullbrightmap models/props_gltf/boombox_emissive.ktx 
+}

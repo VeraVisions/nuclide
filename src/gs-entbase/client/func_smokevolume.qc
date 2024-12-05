@@ -29,10 +29,10 @@ Smoke cloud emitting brush volume.
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
 
-@ingroup client
+@ingroup cliententity
 @ingroup brushentity
 */
-class func_smokevolume:NSEntity
+class func_smokevolume:ncEntity
 {
 public:
 	void func_smokevolume(void);

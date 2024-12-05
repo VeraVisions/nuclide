@@ -1,0 +1,8 @@
+{
+	diffusemap editor/env_laser.ktx
+	
+	{
+		map $diffuse
+		alphaFunc GE128
+	}
+}

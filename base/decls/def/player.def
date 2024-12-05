@@ -1,0 +1,10 @@
+entityDef player
+{
+	"spawnclass"	"ncPlayer"
+	"model"		"models/player.vvm"
+}
+
+entityDef player_mp
+{
+	"inherit" "player"
+}

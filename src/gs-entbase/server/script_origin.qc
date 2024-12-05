@@ -25,11 +25,11 @@ A position hint entity, designed to be used by MapC.
 # TRIVIA
 This entity was introduced in Call of Duty (2003).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-script_origin:NSBrushTrigger
+script_origin:ncBrushTrigger
 {
 public:
 	void script_origin(void);

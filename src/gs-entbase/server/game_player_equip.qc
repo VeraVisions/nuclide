@@ -55,11 +55,11 @@ I still need to implement the Team Master functionality.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-game_player_equip:NSPointTrigger
+game_player_equip:ncPointTrigger
 {
 public:
 	void game_player_equip(void);
@@ -127,7 +127,7 @@ game_player_equip::SpawnUnit(string cname, vector org)
 		vector neworg = self.origin;
 
 		/* become the classname assigned */
-		NSEntity t = (NSEntity)self;
+		ncEntity t = (ncEntity)self;
 		callfunction(self.classname);
 
 		/* apply the saved values back */

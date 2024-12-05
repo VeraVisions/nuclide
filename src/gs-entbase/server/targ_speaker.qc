@@ -34,11 +34,11 @@ I suspect it's a carry-over from when Gunman was a Quake II mod, as
 Quake/Quake II did not have an entity that allowed custom sound samples
 to be played.
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-targ_speaker:NSPointTrigger
+targ_speaker:ncPointTrigger
 {
 public:
 	void targ_speaker(void);

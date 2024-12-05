@@ -31,7 +31,7 @@ func_vehicle instead of func_tracktrain.
 # TRIVIA
 This entity was introduced in Counter-Strike (2000).
 
-@ingroup server
+@ingroup serverentity
 @ingroup brushentity
 */
 class

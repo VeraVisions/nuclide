@@ -28,11 +28,11 @@ Issues console commands on server when triggered.
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-point_servercommand:NSPointTrigger
+point_servercommand:ncPointTrigger
 {
 public:
 	void point_servercommand(void);

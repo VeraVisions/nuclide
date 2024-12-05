@@ -19,15 +19,15 @@ noref .vector v_angle;
 /** This entity class represents every player client.
 
 When clients connect via the connect command, they will findthemselves
-of type NSClientPlayer.
+of type ncPlayer.
 
 @ingroup baseclass
 */
 class
-NSClientPlayer:NSClientSpectator
+ncPlayer:ncSpectator
 {
 public:
-	void NSClientPlayer(void);
+	void ncPlayer(void);
 	
 	virtual void ProcessInput(void);
 	virtual void PreFrame(void);
@@ -64,8 +64,8 @@ public:
 	/** Empty & shared between Client and Server. This is run on every player, every frame, to update their animation cycle. */
 	virtual void UpdatePlayerAnimation(float);
 
-	virtual void Damage(entity, entity, NSDict, float, vector, vector);
-	
+	virtual void Damage(entity, entity, ncDict, float, vector, vector);
+	virtual bool CanPickupEntity(ncEntity toPickUp, float massLimit, float sizeLimit);
 
 #ifdef CLIENT
 	virtual void VehicleRelink(void);
@@ -98,7 +98,7 @@ public:
 	virtual void Respawn(void);
 	virtual void EvaluateEntity(void);
 	virtual float SendEntity(entity,float);
-	virtual void Death(entity, entity, int, vector, int);
+	virtual void Death(entity, entity, int, vector, vector, int);
 	virtual void ServerInputFrame(void);
 	virtual void Input(entity, string, string);
 
@@ -116,6 +116,11 @@ public:
 	virtual void InputUse_Down(void);
 	/** Called when we let go of the button bound to +use. */
 	virtual void InputUse_Up(void);
+
+	/* Returns whether we're able to pick up an entity in the game with +use. If `true` you can then use PickupEntity() to attach it to the player. */
+	virtual bool  CanPickupEntity(ncEntity, float, float);
+	/* Will attach an entity to the player. It's position will continously update in front of the player camera, but in XR modes it may be attached to one of the hands instead.*/
+	nonvirtual void PickupEntity(ncEntity);
 
 #endif
 
@@ -153,13 +158,14 @@ private:
 	NETWORKED_FLOAT(teleport_time)
 	NETWORKED_FLOAT(weapontime)
 	NETWORKED_VECTOR(punchangle)
+	NETWORKED_VECTOR(punchvelocity)
 
 	/* We can't use the default .items field, because FTE will assume
 	 * effects of some bits. Such as invisibility, quad, etc. 
 	 * also, modders probably want 32 bits for items. */
 	NETWORKED_INT(g_items)
 	NETWORKED_FLOAT_N(activeweapon)
-	NSItem m_itemList_net;
+	ncItem m_itemList_net;
 	int m_iAmmoTypes_net[MAX_AMMO_TYPES];
 
 
@@ -177,12 +183,12 @@ private:
 	int sequence;
 
 	/* external weapon model */
-	NSRenderableEntity p_model;
+	ncRenderableEntity p_model;
 	int p_hand_bone;
 	int p_model_bone;
 	float lastweapon;
 #endif
-	NSPMoveVars m_pmoveVars;
+	ncPMoveVars m_pmoveVars;
 
 #ifdef SERVER
 	int voted;
@@ -201,6 +207,8 @@ private:
 
 	int m_iFriendlyDMG;
 #endif
+
+	entity m_holdingEntity;
 };
 
 /* all potential SendFlags bits we can possibly send */

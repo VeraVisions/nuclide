@@ -15,7 +15,7 @@
 */
 
 class
-prop_static:NSEntity
+prop_static:ncEntity
 {
 public:
 	void prop_static(void);

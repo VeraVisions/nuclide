@@ -1,12 +1,12 @@
 # Material Command List {#mat_commands}
 
-### diffuseMap {#diffuseMap}
+## diffuseMap {#diffuseMap}
 
-#### Syntax
+### Syntax
 
-**diffuseMap <texturepath/texturename>**
+**diffuseMap \<texturepath/texturename\>**
 
-#### Overview
+### Overview
 
 Specifies the default texture asset to use on the diffuse/albedo pass of
 the material. This is the base texture in most cases. Some special

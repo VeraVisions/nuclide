@@ -18,31 +18,82 @@ void Commandmenu_Open(void);
 void Commandmenu_Close(void);
 
 static void
+CMD_testLight(void)
+{
+	float p;
+	string cubeTexture = argv(1);
+
+	if (STRING_SET(cubeTexture)) {
+		p = dynamiclight_spawnstatic(g_view.GetCameraOrigin(), 512, [1,1,1], 0, cubeTexture);
+		dynamiclight_set(p, LFIELD_ANGLES, g_view.GetCameraAngle());
+		dynamiclight_set(p, LFIELD_FLAGS, LFLAG_NORMALMODE | LFLAG_REALTIMEMODE | LFLAG_SHADOWMAP);
+		dynamiclight_set(p, LFIELD_STYLE, 64);
+	} else {
+		p = dynamiclight_spawnstatic(g_view.GetCameraOrigin(), 512, [1,1,1], 0);
+		dynamiclight_set(p, LFIELD_STYLE, 2);
+	}
+
+
+}
+
+static void
+CMD_testSpotLight(void)
+{
+	float p;
+	string cubeTexture = argv(1);
+
+	if (STRING_SET(cubeTexture)) {
+		point_spotlight spot = spawn(point_spotlight);
+		spot.SetOrigin(g_view.GetCameraOrigin());
+		spot.SetAngles(g_view.GetCameraAngle());
+		spot.m_iState = 1;
+		spot.SetBeamLength(500.0f);
+		spot.SetBeamWidth(256.0f);
+		spot.SetRenderColor([255,255,255]);
+		spot.SetGlowMaterial("textures/sfx/spot_flare");
+		spot.SetBeamMaterial("textures/sfx/spot_cone");
+		spot.drawmask = MASK_ENGINE;
+		spot.vv_flags |= VFL_VIDREMOVE;
+		spot.SetLightStyle(64);
+
+		env_glow glow = spawn(env_glow);
+		glow.SetOrigin(g_view.GetCameraOrigin());
+		glow.SetAngles(g_view.GetCameraAngle());
+		glow.m_strMaterial = "textures/sfx/flare1";
+		glow.drawmask = MASK_ENGINE;
+		glow.SetRenderMode(RM_GLOW);
+		glow.RendererRestarted();
+		glow.vv_flags |= VFL_VIDREMOVE;
+	} else {
+		p = dynamiclight_spawnstatic(g_view.GetCameraOrigin(), 512, [1,1,1], 0);
+		dynamiclight_set(p, LFIELD_STYLE, 2);
+	}
+
+
+}
+
+static void
 CMD_testPointLight(void)
 {
-	makevectors(getproperty(VF_ANGLES));
-	traceline(getproperty(VF_ORIGIN), getproperty(VF_ORIGIN) + v_forward * 4096, FALSE, pSeat->m_ePlayer);
-	dynamiclight_spawnstatic(trace_endpos + (v_forward * -16), 1024, [1,1,1]);
+	makevectors(g_view.GetCameraAngle());
+	traceline(g_view.GetCameraOrigin(), g_view.GetCameraOrigin() + (v_forward * 4096.0f), MOVE_NORMAL, pSeat->m_ePlayer);
+	dynamiclight_spawnstatic(trace_endpos + (v_forward * -16.0f), 1024, [1,1,1]);
 }
 
 static void
 CMD_dev_modeltest(void)
 {
-	entity mt = spawn();
-	mt.drawmask = MASK_ENGINE;
-	setmodel(mt, argv(1));
-	setsize(mt, [0,0,0], [0,0,0]);
-	setorigin(mt, getproperty(VF_ORIGIN));
-	mt.angles = getproperty(VF_ANGLES);
-	mt.angles[0] = mt.angles[2] = 0;
-}
+	string modelName = argv(1);
 
-static void
-CMD_dev_explode(void)
-{
-	makevectors(getproperty(VF_ANGLES));
-	traceline(getproperty(VF_ORIGIN), getproperty(VF_ORIGIN) + v_forward * 4096, FALSE, pSeat->m_ePlayer);
-//	FX_Explosion(trace_endpos);
+	if (STRING_SET(modelName)) {
+		entity mt = spawn();
+		mt.drawmask = MASK_ENGINE;
+		setmodel(mt, argv(1));
+		setsize(mt, [0,0,0], [0,0,0]);
+		setorigin(mt, g_view.GetCameraOrigin());
+		mt.angles = g_view.GetCameraAngle();
+		mt.angles[0] = mt.angles[2] = 0;
+	}
 }
 
 static void
@@ -51,11 +102,11 @@ CMD_dev_sunpos(void)
 	vector sunpos, sunang;
 	vector lepos, leang;
 
-	makevectors(getproperty(VF_ANGLES));
+	makevectors(g_view.GetCameraAngle());
 	sunpos = v_forward * -1;
 	sunang = vectoangles(sunpos);
 
-	makevectors(getproperty(VF_ANGLES));
+	makevectors(g_view.GetCameraAngle());
 	lepos = v_forward * -1;
 	leang = vectoangles(lepos);
 	leang[1] -= 180;
@@ -70,11 +121,12 @@ static void
 CMD_dev_measure(void)
 {
 	static vector measurepos;
-	if (!vlen(measurepos)) {
-		measurepos = getproperty(VF_ORIGIN);
+
+	if (lengthSquared(measurepos) > 0.0f) {
+		measurepos = g_view.GetCameraOrigin();
 		CSQC_Parse_CenterPrint(sprintf( "First marker set at\n%v", measurepos));
 	} else {
-		CSQC_Parse_CenterPrint(sprintf("Distance: %d\n", vlen(measurepos - getproperty(VF_ORIGIN))));
+		CSQC_Parse_CenterPrint(sprintf("Distance: %d\n", vlen(measurepos - g_view.GetCameraOrigin())));
 		measurepos = [0,0,0];
 	}
 }
@@ -92,13 +144,7 @@ CMD_vote(void)
 static void
 CMD_getpos(void)
 {
-	print(sprintf("setpos %v;setang -%v\n", getproperty(VF_ORIGIN), getproperty(VF_ANGLES)));
-}
-
-static void
-CMD_setpos(void)
-{
-	localcmd(sprintf("cmd setpos \"%s\"\n", argv(1)));
+	printf("setpos %v;setang -%v\n", g_view.GetCameraOrigin(), g_view.GetCameraAngle());
 }
 
 static void
@@ -124,7 +170,7 @@ CMD_way_menu(void)
 static void
 CMD_view_geomtest(void)
 {
-	print(sprintf("geomset %s %s\n", argv(1), argv(2)));
+	printf("geomset %s %s\n", argv(1), argv(2));
 	//Weapons_SetGeomset(sprintf("geomset %s %s\n", argv(1), argv(2)));
 }
 
@@ -138,7 +184,7 @@ void
 CMD_Cleardecals(void)
 {
 	for (entity e = world; (e = find(e, ::classname, "tempdecal"));) {
-		NSDecal dcl = (NSDecal)e;
+		ncDecal dcl = (ncDecal)e;
 		dcl.m_strShader = "";
 	}
 }
@@ -155,11 +201,12 @@ CMD_ListModels(void)
 		tmp = modelnameforindex(i);
 
 		if (strlen(tmp) > 1) {
-			print(sprintf("%i %s\n", i, tmp));
+			printf("%i %s\n", i, tmp);
 			actual_count++;
 		}
 	}
-	print(sprintf("\t%i total models loaded\n", actual_count));
+
+	printf("\t%i total models loaded\n", actual_count);
 }
 
 /* Wishlist: list size and samplerate/bitdepth */
@@ -177,13 +224,13 @@ CMD_ListSounds(void)
 		length = soundlength(tmp);
 
 		if (strlen(tmp) > 1) {
-			print(sprintf("%i %s (%f seconds)\n", i, tmp, length));
+			printf("%i %s (%f seconds)\n", i, tmp, length);
 			actual_count++;
 			total_length += length;
 		}
 	}
-	print(sprintf("\t%i total samples loaded\n", actual_count));
-	print(sprintf("\t%f seconds worth of samples\n", total_length));
+	printf("\t%i total samples loaded\n", actual_count);
+	printf("\t%f seconds worth of samples\n", total_length);
 }
 
 static void
@@ -197,11 +244,11 @@ CMD_ListParticles(void)
 		tmp = particleeffectquery(i, 0);
 
 		if (strlen(tmp) > 1) {
-			print(sprintf("%i %s\n", i, tmp));
+			printf("%i %s\n", i, tmp);
 			actual_count++;
 		}
 	}
-	print(sprintf("\t%i total particles loaded\n", actual_count));
+	printf("\t%i total particles loaded\n", actual_count);
 }
 
 static void
@@ -219,7 +266,7 @@ CMD_ListTitles(void)
 		printf("\tcolor 1: %v, color 2: %v\n", 
 			g_titles[i].m_vecColor1, g_titles[i].m_vecColor2);
 	}
-	print(sprintf("\t%i total titles loaded\n", g_titles_count));
+	printf("\t%i total titles loaded\n", g_titles_count);
 }
 
 static void
@@ -240,33 +287,55 @@ CMD_ListModelFramegroups(void)
 }
 
 void
-NSWeapon_SelectWeapon(NSWeapon nextWeapon)
+ncWeapon_SelectWeapon(ncWeapon nextWeapon)
 {
 	if (!nextWeapon) {
 		pSeat->m_iHUDWeaponSelected = 0i;
 		return;
 	}
 
-	/* this gets passed in NSClientPlayer::ClientInputFrame() to the server */
+	/* this gets passed in ncPlayer::ClientInputFrame() to the server */
 	pSeat->m_iHUDWeaponSelected = nextWeapon.GetSharedID();
 	pSeat->m_flHUDWeaponSelectTime = time + 0.5f;
 }
 
-/*
-=================
-Cmd_Parse
-
-Called from CSQC_ConsoleCommand to handle any builtin
-commands from the Nuclide SDK.
-Returns 0 if the command isn't handled and the engine is expected
-to handle it from there.
-=================
-*/
 bool
 Cmd_Parse(string sCMD)
 {
-	NSClient localPlayer = (NSClient)pSeat->m_ePlayer;
+	ncClient localPlayer = (ncClient)pSeat->m_ePlayer;
 	switch (argv(0)) {
+
+	case "slot1":
+		Textmenu_Input(0);
+		break;
+	case "slot2":
+		Textmenu_Input(1);
+		break;
+	case "slot3":
+		Textmenu_Input(2);
+		break;
+	case "slot4":
+		Textmenu_Input(3);
+		break;
+	case "slot5":
+		Textmenu_Input(4);
+		break;
+	case "slot6":
+		Textmenu_Input(5);
+		break;
+	case "slot7":
+		Textmenu_Input(6);
+		break;
+	case "slot8":
+		Textmenu_Input(7);
+		break;
+	case "slot9":
+		Textmenu_Input(8);
+		break;
+	case "slot10":
+		Textmenu_Input(9);
+		break;
+
 	case "listFramegroups":
 		CMD_ListModelFramegroups();
 		break;
@@ -291,14 +360,14 @@ Cmd_Parse(string sCMD)
 	case "clearDecals":
 		CMD_Cleardecals();
 		break;
+	case "testLight":
+		CMD_testLight();
+		break;
 	case "testPointLight":
 		CMD_testPointLight();
 		break;
 	case "dev_modeltest":
 		CMD_dev_modeltest();
-		break;
-	case "dev_explode":
-		CMD_dev_explode();
 		break;
 	case "dev_sunpos":
 		CMD_dev_sunpos();
@@ -311,9 +380,6 @@ Cmd_Parse(string sCMD)
 		break;
 	case "getpos":
 		CMD_getpos();
-		break;
-	case "setpos":
-		CMD_setpos();
 		break;
 	case "setang":
 		CMD_setang();
@@ -408,13 +474,13 @@ Cmd_Parse(string sCMD)
 		pSeat->m_iInputJump = false;
 		break;
 	case "weapnext":
-		NSWeapon_SelectWeapon(localPlayer.GetNextWeapon());
+		ncWeapon_SelectWeapon(localPlayer.GetNextWeapon());
 		break;
 	case "weapprev":
-		NSWeapon_SelectWeapon(localPlayer.GetPreviousWeapon());
+		ncWeapon_SelectWeapon(localPlayer.GetPreviousWeapon());
 		break;
 	case "weaplast":
-		NSWeapon_SelectWeapon(localPlayer.GetLastWeapon());
+		ncWeapon_SelectWeapon(localPlayer.GetLastWeapon());
 		break;
 	case "+showscores":
 		pSeat->m_iScoresVisible = TRUE;
@@ -425,7 +491,7 @@ Cmd_Parse(string sCMD)
 	case "way_menu":
 		CMD_way_menu();
 		break;
-	case "_fnchat_msg":
+	case "addChatLine":
 		CSQC_Parse_Print(argv(1), PRINT_CHAT);
 		break;
 	case "view_geomtest":
@@ -486,9 +552,11 @@ Cmd_Parse(string sCMD)
 	case "nodeOffset":
 	case "nodeUnlink":
 	case "traceMaterial":
+	case "listSpawnData":
 		localcmd(sprintf("sv %s\n", sCMD));
 		break;
 	/* client aliases for client commands */
+	case "setpos":
 	case "listInventory":
 	case "giveInventoryItem":
 	case "removeInventoryItem":
@@ -517,7 +585,7 @@ Cmd_Parse(string sCMD)
 		Commandmenu_Close();
 		break;
 	case "ragdollCreate":
-		NSRagdoll_Create(argv(1));
+		ncRagdoll_Create(argv(1));
 		break;
 	default:
 		return HUD_ConsoleCommand(sCMD);
@@ -525,13 +593,6 @@ Cmd_Parse(string sCMD)
 	return (true);
 }
 
-/*
-=================
-Cmd_Init
-
-Register our commands for Nuclide
-=================
-*/
 void
 Cmd_Init(void)
 {
@@ -657,7 +718,7 @@ Cmd_Init(void)
 	registercommand("-showscores");
 
 	/* meant to be hidden */
-	registercommand("_fnchat_msg");
+	registercommand("addChatLine");
 
 	/* Requested by Slacer */
 	registercommand("+zoomin");

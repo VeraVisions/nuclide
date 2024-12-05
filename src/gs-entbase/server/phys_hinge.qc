@@ -41,12 +41,12 @@ Creates a connection between two entities in the form of a hinge.
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 @ingroup physics
 */
 class
-phys_hinge:NSPhysicsConstraint
+phys_hinge:ncPhysicsConstraint
 {
 public:
 	void phys_hinge(void);

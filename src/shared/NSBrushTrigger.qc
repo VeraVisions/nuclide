@@ -15,18 +15,18 @@
 */
 
 void
-NSBrushTrigger::NSBrushTrigger(void)
+ncBrushTrigger::ncBrushTrigger(void)
 {
 }
 
 void
-NSBrushTrigger::Respawn(void)
+ncBrushTrigger::Respawn(void)
 {
 	InitBrushTrigger();
 }
 
 int
-NSBrushTrigger::GetValue(entity queryingEntity)
+ncBrushTrigger::GetValue(entity queryingEntity)
 {
 	if (GetSolid() == SOLID_NOT) {
 		return (1);
@@ -36,13 +36,14 @@ NSBrushTrigger::GetValue(entity queryingEntity)
 }
 
 void
-NSBrushTrigger::InitBrushTrigger(void)
+ncBrushTrigger::InitBrushTrigger(void)
 {
 	/* brush triggers generally only need model, origin. no angles. */
 	SetModel(GetSpawnString("model"));
 	SetOrigin(GetSpawnVector("origin"));
 	SetMovetype(MOVETYPE_NONE);
 	SetSolid(SOLID_BSPTRIGGER);
+	geomtype = GEOMTYPE_NONE; /* disable RBE collision... */
 	Hide();
 
 #ifdef SERVER

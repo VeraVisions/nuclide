@@ -1,0 +1,100 @@
+step_default.left
+{
+	attenuation static
+	footstep
+	sample common/null.wav
+}
+
+step_default.right
+{
+	attenuation static
+	footstep
+	sample common/null.wav
+}
+
+Player.GaspHeavy
+{
+	sample common/null.wav
+}
+
+Player.GaspLight
+{
+	sample common/null.wav
+}
+
+
+Player.WaterEnter
+{
+	sample common/null.wav
+}
+
+
+Player.WaterExit
+{
+	sample common/null.wav
+}
+
+Player.Death
+{
+	sample common/null.wav
+}
+
+Player.Pain
+{
+	sample common/null.wav
+}
+
+Player.Wade
+{
+	sample common/null.wav
+}
+
+Player.Swim
+{
+	sample common/null.wav
+}
+
+Player.DenyWeaponSelection
+{
+	sample common/null.wav
+}
+
+Player.WeaponSelected
+{
+	sample common/null.wav
+}
+
+Player.FallDamage
+{
+	sample common/null.wav
+}
+
+Player.LightFall
+{
+	sample common/null.wav
+}
+
+SprayCan.Paint
+{
+	sample common/null.wav
+}
+
+damage_bullet.hit
+{
+	sample common/null.wav
+}
+
+step_ladder.left
+{
+	sample common/null.wav
+}
+
+step_ladder.right
+{
+	sample common/null.wav
+}
+
+sfx_impact.default
+{
+	sample common/null.wav
+}

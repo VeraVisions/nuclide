@@ -18,7 +18,7 @@
     @brief Info tags for bots used to identify objects.
     @ingroup bot
 
-Any entity can have these tags set onto using NSEntity::SetBotTag(), it will help
+Any entity can have these tags set onto using ncEntity::SetBotTag(), it will help
 the AI figure out a lot of game specific details.
 
    @{

@@ -34,7 +34,7 @@ Only use this if you really, really want to use the things we developed. You wil
 
 ### Other Formats
 
-While the engine can read other formats, such as BSP30 and beyond - please ensure you do have the rights to use the tools in such fashion. For example, for developers coming from the Half-Life SDK you are not allowed to use compilers and versions deriving from the original sources to make maps for Nuclide based projects. You will have to negotiate a license with Valve or use a free-software tool such as [ericw-tools](https://ericwa.github.io/ericw-tools/).
+While the engine can read other formats, such as BSP30 and beyond - please ensure you do have the rights to use the tools in such fashion. For example, for developers coming from the Half-Life SDK you are not allowed to use compilers and versions deriving from the original sources to make maps for Nuclide based projects. You will have to negotiate a license with [Valve](https://www.valvesoftware.com/) or use a free-software tool such as [ericw-tools](https://ericwa.github.io/ericw-tools/).
 
 ## Recommended Tools
 

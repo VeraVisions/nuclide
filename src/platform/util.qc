@@ -28,8 +28,8 @@ Util_CheckMouse(int x, int y, int sx, int sy)
 	maxs[0] = x + sx;
 	maxs[1] = y + sy;
 
-	if (g_mousepos[0] >= mins[0] && g_mousepos[0] <= maxs[0]) {
-		if (g_mousepos[1] >= mins[1] && g_mousepos[1] <= maxs[1]) {
+	if (g_vecMousePos[0] >= mins[0] && g_vecMousePos[0] <= maxs[0]) {
+		if (g_vecMousePos[1] >= mins[1] && g_vecMousePos[1] <= maxs[1]) {
 			return (1);
 		}
 	}

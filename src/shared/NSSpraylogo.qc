@@ -16,13 +16,13 @@
 
 #ifdef CLIENT
 void
-NSSpraylogo::RendererRestarted(void)
+ncSpraylogo::RendererRestarted(void)
 {
 	m_bInitialized = false;
 }
 
 float
-NSSpraylogo::predraw(void)
+ncSpraylogo::predraw(void)
 {
 	int iSize;
 
@@ -72,7 +72,7 @@ NSSpraylogo::predraw(void)
 }
 
 void
-NSSpraylogo::NSSpraylogo(void)
+ncSpraylogo::ncSpraylogo(void)
 {
 	// boo
 	m_vecColor = [1,1,1];
@@ -84,8 +84,8 @@ NSSpraylogo::NSSpraylogo(void)
 void
 Spray_Parse(void)
 {
-	spawnfunc_NSSpraylogo();
-	NSSpraylogo spSelf =(NSSpraylogo)self;
+	spawnfunc_ncSpraylogo();
+	ncSpraylogo spSelf =(ncSpraylogo)self;
 	spSelf.drawmask = MASK_ENGINE;
 	spSelf.m_vecPosition[0] = readcoord();
 	spSelf.m_vecPosition[1] = readcoord();

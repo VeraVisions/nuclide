@@ -31,11 +31,11 @@ Brushes that triggers a target once they 'die'. It moves around.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup brushentity
 */
 class
-func_guntarget:NSSurfacePropEntity
+func_guntarget:ncSurfacePropEntity
 {
 public:
 	void func_guntarget(void);
@@ -47,7 +47,7 @@ public:
 	virtual void Spawned(void);
 	virtual void Respawn(void);
 	virtual void Trigger(entity, triggermode_t);
-	virtual void Death(entity, entity, int, vector, int);
+	virtual void Death(entity, entity, int, vector, vector, int);
 	
 	nonvirtual void NextPath(void);
 	nonvirtual void Move(void);
@@ -193,7 +193,7 @@ func_guntarget::NextPath(void)
 }
 
 void
-func_guntarget::Death(entity inflictor, entity attacker, int damage, vector dir, int location)
+func_guntarget::Death(entity inflictor, entity attacker, int damage, vector dir, vector absImpactPos, int hitBody)
 {
 	Stop();
 
@@ -202,12 +202,12 @@ func_guntarget::Death(entity inflictor, entity attacker, int damage, vector dir,
 	}
 
 	if (!m_strOnDeathLegacy) {
-		UseOutput(g_dmg_eAttacker, m_strOnDeath);
+		UseOutput(attacker, m_strOnDeath);
 	} else {
 		entity a;
 		for (a = world; (a = find(a, ::targetname, m_strOnDeathLegacy));) {
-			NSEntity trigger = (NSEntity)a;
-			trigger.Trigger(g_dmg_eAttacker, TRIG_TOGGLE);
+			ncEntity trigger = (ncEntity)a;
+			trigger.Trigger(attacker, TRIG_TOGGLE);
 		}
 	}
 }

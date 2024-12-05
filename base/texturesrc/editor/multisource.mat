@@ -1,0 +1,8 @@
+{
+	diffusemap editor/multisource.tga
+	
+	{
+		map $diffuse
+		alphaFunc GE128
+	}
+}

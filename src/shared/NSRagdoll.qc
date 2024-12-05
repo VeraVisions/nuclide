@@ -15,13 +15,13 @@
 */
 
 void
-NSRagdoll::NSRagdoll(void)
+ncRagdoll::ncRagdoll(void)
 {
 	m_morphTime = 1.0f;
 }
 
 void
-NSRagdoll::OnRemoveEntity(void)
+ncRagdoll::OnRemoveEntity(void)
 {
 	skel_ragupdate(this, "cleardoll", 0);
 
@@ -32,10 +32,13 @@ NSRagdoll::OnRemoveEntity(void)
 	}
 
 	modelindex = 0;
+	SetSolid(SOLID_NOT);
+	SetMovetype(MOVETYPE_NONE);
+	ClearVelocity();
 }
 
 void
-NSRagdoll::CreateRagdoll(void)
+ncRagdoll::CreateRagdoll(void)
 {
 
 	skeletonindex = skel_create(modelindex);
@@ -58,11 +61,12 @@ NSRagdoll::CreateRagdoll(void)
 		skel_ragupdate(this, "doll models/rt2/human.doll", 0);
 
 	skel_ragupdate(this, "animate 0", 0);
+	m_morphTime = 1.0f;
 }
 
 #ifdef SERVER
 void
-NSRagdoll::EvaluateEntity(void)
+ncRagdoll::EvaluateEntity(void)
 {
 	EVALUATE_VECTOR(origin, 0, RDENT_CHANGED_ORIGIN_X)
 	EVALUATE_VECTOR(origin, 1, RDENT_CHANGED_ORIGIN_Y)
@@ -73,7 +77,6 @@ NSRagdoll::EvaluateEntity(void)
 	EVALUATE_FIELD(modelindex, RDENT_CHANGED_MODELINDEX)
 	EVALUATE_FIELD(colormap, RDENT_CHANGED_MODELINDEX)
 	EVALUATE_FIELD(solid, RDENT_CHANGED_SOLIDMOVETYPE)
-	EVALUATE_FIELD(movetype, RDENT_CHANGED_SOLIDMOVETYPE)
 	EVALUATE_FIELD(flags, RDENT_CHANGED_FLAGS)
 	EVALUATE_FIELD(modelflags, RDENT_CHANGED_FLAGS)
 	EVALUATE_VECTOR(mins, 0, RDENT_CHANGED_SIZE)
@@ -115,7 +118,7 @@ NSRagdoll::EvaluateEntity(void)
 
 /* Make sure StartFrame calls this */
 float
-NSRagdoll::SendEntity(entity ePEnt, float flChanged)
+ncRagdoll::SendEntity(entity ePEnt, float flChanged)
 {
 	if (!modelindex && solid == SOLID_NOT)
 		return (0);
@@ -157,7 +160,6 @@ NSRagdoll::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_SHORT(modelindex, RDENT_CHANGED_MODELINDEX)
 	SENDENTITY_BYTE(colormap, RDENT_CHANGED_MODELINDEX)
 	SENDENTITY_BYTE(solid, RDENT_CHANGED_SOLIDMOVETYPE)
-	SENDENTITY_BYTE(movetype, RDENT_CHANGED_SOLIDMOVETYPE)
 	SENDENTITY_INT(flags, RDENT_CHANGED_FLAGS)
 	SENDENTITY_INT(modelflags, RDENT_CHANGED_FLAGS)
 	SENDENTITY_COORD(mins[0], RDENT_CHANGED_SIZE)
@@ -202,11 +204,11 @@ NSRagdoll::SendEntity(entity ePEnt, float flChanged)
 #else
 /*
 ============
-NSRagdoll::ReceiveEntity
+ncRagdoll::ReceiveEntity
 ============
 */
 void
-NSRagdoll::ReceiveEntity(float flNew, float flChanged)
+ncRagdoll::ReceiveEntity(float flNew, float flChanged)
 {
 	vector oldVelocity = velocity;
 	READENTITY_COORD(origin[0], RDENT_CHANGED_ORIGIN_X)
@@ -218,7 +220,6 @@ NSRagdoll::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_SHORT(modelindex, RDENT_CHANGED_MODELINDEX)
 	READENTITY_BYTE(colormap, RDENT_CHANGED_MODELINDEX)
 	READENTITY_BYTE(solid, RDENT_CHANGED_SOLIDMOVETYPE)
-	READENTITY_BYTE(movetype, RDENT_CHANGED_SOLIDMOVETYPE)
 	READENTITY_INT(flags, RDENT_CHANGED_FLAGS)
 	READENTITY_INT(modelflags, RDENT_CHANGED_FLAGS)
 	READENTITY_COORD(mins[0], RDENT_CHANGED_SIZE)
@@ -258,6 +259,8 @@ NSRagdoll::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_ANGLE(m_flBoneControl4, RDENT_CHANGED_CONTROLLER)
 	READENTITY_ANGLE(m_flBoneControl5, RDENT_CHANGED_CONTROLLER)
 
+	movetype = MOVETYPE_PHYSICS;
+
 	if (flNew == false) {
 		velocity = oldVelocity;
 	}
@@ -278,7 +281,7 @@ NSRagdoll::ReceiveEntity(float flNew, float flChanged)
 }
 
 float
-NSRagdoll::predraw(void)
+ncRagdoll::predraw(void)
 {
 	if (!modelindex || !skeletonindex) {
 		return (PREDRAW_NEXT);
@@ -291,18 +294,22 @@ NSRagdoll::predraw(void)
 	skel_ragupdate(this, "", m_morphTime);
 	addentity(this);
 
-	m_morphTime -= frametime;
+	m_morphTime -= frametime * 0.25f;
 
 	if (m_morphTime < 0.0f)
 		m_morphTime = 0.0f;
+
+	if (frame1time >= 10.0f) {
+		OnRemoveEntity();
+	}
 
 	return (PREDRAW_NEXT);
 }
 
 void
-NSRagdoll_Create(string modelFile)
+ncRagdoll_Create(string modelFile)
 {
-	NSRagdoll rag = spawn(NSRagdoll);
+	ncRagdoll rag = spawn(ncRagdoll);
 	rag.Spawn();
 	rag.SetMovetype(MOVETYPE_PHYSICS);
 	rag.drawmask = MASK_ENGINE;

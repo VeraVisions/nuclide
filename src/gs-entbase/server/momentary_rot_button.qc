@@ -48,11 +48,11 @@ in use. It affects momentary_door.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup brushentity
 */
 class
-momentary_rot_button:NSMomentary
+momentary_rot_button:ncMomentary
 {
 public:
 	void momentary_rot_button(void);
@@ -216,12 +216,12 @@ momentary_rot_button::OnPlayerUse(void)
 	m_iTurnDir = 1 - m_iTurnDir;
 
 	for (entity e = world; (e = find(e, ::targetname, target));) { 
-		NSMomentary b = (NSMomentary)e;
+		ncMomentary b = (ncMomentary)e;
 		b.SetMoveState(iEndState);
 	}
 
 	for (entity e = world; (e = find(e, ::targetname, targetname));) { 
-		NSMomentary b = (NSMomentary)e;
+		ncMomentary b = (ncMomentary)e;
 
 		/* door hack: any entity with the same name as ours will follow our states */
 		if (b.HasSpawnFlags(MRBFL_DOORHACK))
@@ -246,12 +246,12 @@ momentary_rot_button::OnPlayerUnUse(void)
 	SetMoveState(iEndState);
 
 	for (entity e = world; (e = find(e, ::targetname, target));) { 
-		NSMomentary b = (NSMomentary)e;
+		ncMomentary b = (ncMomentary)e;
 		b.SetMoveState(iEndState);
 	}
 
 	for (entity e = world; (e = find(e, ::targetname, targetname));) {
-		NSMomentary b = (NSMomentary)e;
+		ncMomentary b = (ncMomentary)e;
 		
 		/* door hack: any entity with the same name as ours will follow our states */
 		if (b.HasSpawnFlags(MRBFL_DOORHACK))

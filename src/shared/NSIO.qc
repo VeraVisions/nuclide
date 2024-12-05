@@ -15,7 +15,7 @@
 */
 
 void
-NSIO::NSIO(void)
+ncIO::ncIO(void)
 {
 #ifdef SERVER
 	/* Not in Deathmatch */
@@ -43,13 +43,13 @@ NSIO::NSIO(void)
 }
 
 void
-NSIO::Respawn(void)
+ncIO::Respawn(void)
 {
 	// Respawn code goes here...
 }
 
 void
-NSIO::Spawned(void)
+ncIO::Spawned(void)
 {
 #ifdef SERVER
 	if (m_strOnUser1)
@@ -67,12 +67,12 @@ NSIO::Spawned(void)
 }
 
 void
-NSIO::OnRemoveEntity(void)
+ncIO::OnRemoveEntity(void)
 {
 }
 
 void
-NSIO::Destroy(void)
+ncIO::Destroy(void)
 {
 	OnRemoveEntity();
 	customphysics = __NULL__;
@@ -90,80 +90,50 @@ NSIO::Destroy(void)
 }
 
 string
-NSIO::GetDefString(string keyName)
+ncIO::GetDefString(string keyName)
 {
 	return ReadString(EntityDef_GetKeyValue(declclass, keyName));
 }
 
 vector
-NSIO::GetDefVector(string keyName)
+ncIO::GetDefVector(string keyName)
 {
 	return stov(GetDefString(keyName));
 }
 
 float
-NSIO::GetDefFloat(string keyName)
+ncIO::GetDefFloat(string keyName)
 {
 	return stof(GetDefString(keyName));
 }
 
 bool
-NSIO::GetDefBool(string keyName)
+ncIO::GetDefBool(string keyName)
 {
 	return stof(GetDefString(keyName)) ? true : false;
 }
 
 int
-NSIO::GetDefInt(string keyName)
+ncIO::GetDefInt(string keyName)
 {
 	return (int)stoi(GetDefString(keyName));
 }
 
 /** Returns the framegroup for a given activity. */
 float
-NSIO::GetSubDefAct(string subDef, string activityName)
+ncIO::GetSubDefAct(string subDef, string activityName)
 {
-	float actCount;
-	string actNameCheck;
-	string fireValue;
-
-	/* check within sub-def, then classname decl */
-	actNameCheck = strcat("act_", activityName);
-	fireValue = GetSubDefString(subDef, actNameCheck);
-
-	/* not in class decl either. look it up in the model */
-	if (!STRING_SET(fireValue)) {
-		string actValue = EntityDef_GetKeyValue("activities", actNameCheck);
-
-		if (STRING_SET(actValue)) {
-			/* look it up in the model itself now */
-			float actModelNum = stof(actValue);
-			float frameGroup = frameforaction(modelindex, actModelNum);
-			return (frameGroup);
-		}
-	} else {
-		actCount = tokenizebyseparator(fireValue, ",");
-
-		if (actCount == 1) {
-			return stof(fireValue);
-		} else {
-			float randomValue = floor(pseudorandom() * actCount);
-			return stof(argv(randomValue));
-		}
-	}
-
-	/* not in fireInfo, not in model... skip! */
-	return (-1);
+	return Activities_GetSequenceForEntityDef((ncEntity)this, activityName, subDef);
 }
 
 float
-NSIO::GetDefAct(string activityName)
+ncIO::GetDefAct(string activityName)
 {
-	return GetSubDefAct(classname, activityName);
+	return Activities_GetSequenceForEntity((ncEntity)this, activityName);
 }
 
 string
-NSIO::GetSubDefString(string subDef, string keyName)
+ncIO::GetSubDefString(string subDef, string keyName)
 {
 	string fireDefString = EntityDef_GetKeyValue(subDef, keyName);
 	string fireValue = ReadString(fireDefString);
@@ -177,53 +147,53 @@ NSIO::GetSubDefString(string subDef, string keyName)
 }
 
 vector
-NSIO::GetSubDefVector(string subDef, string keyName)
+ncIO::GetSubDefVector(string subDef, string keyName)
 {
 	return stov(GetSubDefString(subDef, keyName));
 }
 
 float
-NSIO::GetSubDefFloat(string subDef, string keyName)
+ncIO::GetSubDefFloat(string subDef, string keyName)
 {
 	return stof(GetSubDefString(subDef, keyName));
 }
 
 bool
-NSIO::GetSubDefBool(string subDef, string keyName)
+ncIO::GetSubDefBool(string subDef, string keyName)
 {
 	return stof(GetSubDefString(subDef, keyName)) ? true : false;
 }
 
 int
-NSIO::GetSubDefInt(string subDef, string keyName)
+ncIO::GetSubDefInt(string subDef, string keyName)
 {
 	return (int)stoi(GetSubDefString(subDef, keyName));
 }
 
 
 bool
-NSIO::ReadBool(string inputString)
+ncIO::ReadBool(string inputString)
 {
 	if (inputString && inputString != "")
 		return stof(ReadString(inputString)) ? true : false;
 	return false;
 }
 float
-NSIO::ReadFloat(string inputString)
+ncIO::ReadFloat(string inputString)
 {
 	if (inputString && inputString != "")
 		return stof(ReadString(inputString));
 	return 0.0f;
 }
 int
-NSIO::ReadInt(string inputString)
+ncIO::ReadInt(string inputString)
 {
 	if (inputString && inputString != "")
 		return stoi(ReadString(inputString));
 	return 0i;
 }
 string
-NSIO::ReadString(string inputString)
+ncIO::ReadString(string inputString)
 {
 	if (inputString && inputString != "") {
 		return unpackStringCommand(inputString);
@@ -232,14 +202,14 @@ NSIO::ReadString(string inputString)
 	return "";
 }
 vector
-NSIO::ReadVector(string inputString)
+ncIO::ReadVector(string inputString)
 {
 	if (inputString && inputString != "")
 		return stov(ReadString(inputString));
 	return g_vec_null;
 }
 entity
-NSIO::ReadEntity(string inputString)
+ncIO::ReadEntity(string inputString)
 {
 	if (inputString && inputString != "") {
 		float num = stof(inputString);
@@ -251,25 +221,25 @@ NSIO::ReadEntity(string inputString)
 }
 
 bool
-NSIO::GetSpawnBool(string keyName)
+ncIO::GetSpawnBool(string keyName)
 {
 	return stof(GetSpawnString(keyName)) ? true : false;
 }
 
 float
-NSIO::GetSpawnFloat(string keyName)
+ncIO::GetSpawnFloat(string keyName)
 {
 	return stof(GetSpawnString(keyName));
 }
 
 int
-NSIO::GetSpawnInt(string keyName)
+ncIO::GetSpawnInt(string keyName)
 {
 	return stoi(GetSpawnString(keyName));
 }
 
 string
-NSIO::GetSpawnString(string keyName)
+ncIO::GetSpawnString(string keyName)
 {
 	for (int i = 1; i < (tokenize(m_strSpawnData) - 1); i += 2) {
 		string key = argv(i);
@@ -284,13 +254,13 @@ NSIO::GetSpawnString(string keyName)
 }
 
 vector
-NSIO::GetSpawnVector(string keyName)
+ncIO::GetSpawnVector(string keyName)
 {
 	return stov(GetSpawnString(keyName));
 }
 
 entity
-NSIO::GetSpawnEntity(string keyName, entity startEntity)
+ncIO::GetSpawnEntity(string keyName, entity startEntity)
 {
 	string targetName = GetSpawnString(keyName);
 	return find(startEntity, ::targetname, targetName);
@@ -299,7 +269,7 @@ NSIO::GetSpawnEntity(string keyName, entity startEntity)
 #ifdef SERVER
 /* Input/Output system */
 void
-NSIO::UseOutput(entity act, string outname)
+ncIO::UseOutput(entity act, string outname)
 {
 	if (!outname || outname == "")
 		return;
@@ -308,7 +278,7 @@ NSIO::UseOutput(entity act, string outname)
 		return;
 
 	for (entity f = world; (f = find(f, ::targetname, outname));) {
-		NSOutput op = (NSOutput)f;
+		ncOutput op = (ncOutput)f;
 
 		/* no more tries and not -1 (infinite) */
 		if (op.m_iCount == 0) {
@@ -320,7 +290,7 @@ NSIO::UseOutput(entity act, string outname)
 }
 
 string
-NSIO::CreateOutput(string outmsg)
+ncIO::CreateOutput(string outmsg)
 {
 	static int outcount = 0;
 	string outname = "";
@@ -340,7 +310,7 @@ NSIO::CreateOutput(string outmsg)
 	   only way to keep them at 5 argv() calls per output */
 	c = tokenizebyseparator(outmsg, ",");
 	for (float i = 1; i < c; i+=5) {
-		NSOutput new_minion = spawn(NSOutput);
+		ncOutput new_minion = spawn(ncOutput);
 
 		new_minion.classname = "triggerminion";
 		new_minion.targetname = outname;
@@ -365,10 +335,10 @@ NSIO::CreateOutput(string outmsg)
 }
 
 bool
-NSIO::CheckOutput(string strOut)
+ncIO::CheckOutput(string strOut)
 {
 	for (entity f = world; (f = find(f, ::targetname, strOut));) {
-		NSOutput op = (NSOutput)f;
+		ncOutput op = (ncOutput)f;
 
 		if (op.nextthink != 0.0f)
 			return false;
@@ -378,7 +348,7 @@ NSIO::CheckOutput(string strOut)
 }
 
 string
-NSIO::PrepareOutput(string strOut, string strValue)
+ncIO::PrepareOutput(string strOut, string strValue)
 {
 	strValue = strreplace(",", ",_", strValue);
 	strOut = strcat(strOut, ",_", strValue);
@@ -388,7 +358,7 @@ NSIO::PrepareOutput(string strOut, string strValue)
 /* entities receive the inputs here and need to act on intype and data
    accordingly. this is just a stub for unknown event troubleshooting */
 void
-NSIO::Input(entity eAct, string strInput, string strData)
+ncIO::Input(entity eAct, string strInput, string strData)
 {
 	switch (strInput) {
 	case "FireUser1":
@@ -415,37 +385,37 @@ NSIO::Input(entity eAct, string strInput, string strData)
 }
 
 void
-NSIO::SaveBool(float handle, string key, bool value)
+ncIO::SaveBool(float handle, string key, bool value)
 {
 	//if (value)
 		fputs(handle, sprintf("%S \"%d\"\n", key, value));
 }
 void
-NSIO::SaveFloat(float handle, string key, float value)
+ncIO::SaveFloat(float handle, string key, float value)
 {
 	//if (value)
 		fputs(handle, sprintf("%S \"%f\"\n", key, value));
 }
 void
-NSIO::SaveInt(float handle, string key, int value)
+ncIO::SaveInt(float handle, string key, int value)
 {
 	//if (value)
 		fputs(handle, sprintf("%S \"%i\"\n", key, value));
 }
 void
-NSIO::SaveString(float handle, string key, string value)
+ncIO::SaveString(float handle, string key, string value)
 {
 	//if (value && value != "")
 		fputs(handle, sprintf("%S %S\n", key, value));
 }
 void
-NSIO::SaveVector(float handle, string key, vector value)
+ncIO::SaveVector(float handle, string key, vector value)
 {
 	//if (value)
 		fputs(handle, sprintf("%S \"%v\"\n", key, value));
 }
 void
-NSIO::SaveEntity(float handle, string key, entity targ)
+ncIO::SaveEntity(float handle, string key, entity targ)
 {
 	float value = num_for_edict(targ);
 
@@ -454,7 +424,7 @@ NSIO::SaveEntity(float handle, string key, entity targ)
 }
 
 void
-NSIO::Save(float handle)
+ncIO::Save(float handle)
 {
 	/* all the stock Quake fields the engine is aware of */
 	SaveFloat(handle, "modelindex", modelindex);
@@ -558,7 +528,7 @@ NSIO::Save(float handle)
 	SaveString(handle, "m_strEditorIcon", m_strEditorIcon);
 }
 void
-NSIO::Restore(string strKey, string strValue)
+ncIO::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
 	/* START: all the stock Quake fields the engine is aware of */
@@ -858,24 +828,24 @@ NSIO::Restore(string strKey, string strValue)
 }
 
 void
-NSIO::RestoreComplete( void ) {
+ncIO::RestoreComplete( void ) {
 	/* this is where we can handle anything post-loading */
 }
 
 void
-NSIO::TransitionComplete( void ) {
+ncIO::TransitionComplete( void ) {
 	/* this is where we can handle anything post-loading */
 }
 
 void
-NSIO::ParentUpdate(void)
+ncIO::ParentUpdate(void)
 {
 
 }
 #endif
 
 void
-NSIO::SpawnKey(string strKey, string strValue)
+ncIO::SpawnKey(string strKey, string strValue)
 {
 	/* we do re-read a lot of the builtin fields in case we want to set
 	   defaults. just in case anybody is wondering. */
@@ -931,45 +901,103 @@ noref .float ltime;
 #endif
 
 float
-NSIO::GetTime(void)
+ncIO::GetTime(void)
 {
 	return (movetype == MOVETYPE_PUSH) ? ltime : time;
 }
 
 
 void
-NSIO::DebugBool(string key, bool value)
+ncIO::DebugBool(string key, bool value)
 {
 	EntLog("%S \"%d\"", key, value);
 }
 void
-NSIO::DebugFloat(string key, float value)
+ncIO::DebugFloat(string key, float value)
 {
 	EntLog("%S \"%f\"", key, value);
 }
 void
-NSIO::DebugInt(string key, int value)
+ncIO::DebugInt(string key, int value)
 {
 	EntLog("%S \"%i\"", key, value);
 }
 void
-NSIO::DebugString(string key, string value)
+ncIO::DebugString(string key, string value)
 {
 	EntLog("%S %S", key, value);
 }
 void
-NSIO::DebugVector(string key, vector value)
+ncIO::DebugVector(string key, vector value)
 {
 	EntLog("%S \"%v\"", key, value);
 }
 void
-NSIO::DebugEntity(string key, entity targ)
+ncIO::DebugEntity(string key, entity targ)
 {
 	float value = num_for_edict(targ);
 	EntLog("%S \"%f\"", key, value);
 }
 void
-NSIO::SetEditorIcon(string newIcon)
+ncIO::SetEditorIcon(string newIcon)
 {
 	m_strEditorIcon = strcat("gfx/icon16/", newIcon);
+}
+
+float
+ncIO::GetNextThinkTime(void)
+{
+	return (nextthink);
+}
+
+bool
+ncIO::IsThinking(void)
+{
+	return (nextthink > GetTime()) ? (true) : (false);
+}
+
+void
+ncIO::ReleaseThink(void)
+{
+	think = __NULL__;
+	nextthink = 0.0f;
+}
+
+void
+ncIO::ThinkBusy(float busyTime)
+{
+	static void ThinkBusy_Done(void) {
+		/* Guess we're done here... */
+	}
+	ScheduleThink(ThinkBusy_Done, busyTime);
+}
+
+void
+ncIO::SetThink(void (void) func)
+{
+	think = func;
+}
+
+void
+ncIO::SetNextThink(float fl)
+{
+	float flTime = GetTime() + fl;
+
+	/* HACK: to make sure things happen post-spawn */
+	if (flTime == 0.0f) {
+		flTime = 0.001f;
+	}
+
+	if (flTime >= 0) {
+		nextthink = flTime;
+	} else {
+		EntError("%s sets bogus nextthink value %f", classname, flTime);
+	}
+}
+
+void
+ncIO::ScheduleThink(void (void) func, float fl)
+{
+	SetThink(func);
+	SetNextThink(fl);
 }

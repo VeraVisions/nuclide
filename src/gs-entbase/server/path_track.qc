@@ -52,7 +52,7 @@ It's like a path_corner, but for tracktrains.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 
@@ -292,7 +292,7 @@ path_track::PathEndTrigger(entity activatingEntity, triggermode_t triggerMode)
 		return;
 
 	for (entity f = world; (f = find(f, ::targetname, m_strEndTrigger));) {
-		NSTrigger trigger = (NSTrigger)f;
+		ncTrigger trigger = (ncTrigger)f;
 
 		EntLog("Triggering %S %S from %S", f.classname, trigger.targetname, activatingEntity.classname);
 

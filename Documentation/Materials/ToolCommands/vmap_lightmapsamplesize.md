@@ -1,11 +1,11 @@
 # Material Command List {#mat_commands}
 
-### vmap_lightmapsamplesize
-#### Syntax
+## vmap_lightmapsamplesize
+### Syntax
 
-**vmap_lightmapSampleSize <int>**
+**vmap_lightmapSampleSize \<int\>**
 
-#### Overview
+### Overview
 
 Surfaces using a material with this option will have the pixel size of
 the lightmaps set to N world grid units. This option can be used to

@@ -18,10 +18,10 @@
 
 @ingroup baseclass
 */
-class NSAttack:NSSurfacePropEntity
+class ncAttack:ncSurfacePropEntity
 {
 public:
-	void NSAttack(void);
+	void ncAttack(void);
 
 #ifdef SERVER
 	virtual void Spawned(void);
@@ -32,21 +32,21 @@ public:
 	/* launch the attack into the world */
 	virtual void Launch(vector, vector, float, float, float);
 
-	nonvirtual void SetWeaponOwner(NSWeapon);
-	nonvirtual NSWeapon GetWeaponOwner(void);
+	nonvirtual void SetWeaponOwner(ncWeapon);
+	nonvirtual ncWeapon GetWeaponOwner(void);
 #endif
 
 #ifdef SERVER
 private:
 	float m_flFuse;
-	NSWeapon m_weaponOwner;
+	ncWeapon m_weaponOwner;
 	int m_iShots;
 	vector m_vecSpread;
 #endif
 };
 
 #ifdef SERVER
-NSAttack NSAttack_SpawnDef(string entityDef, NSActor theOwner);
-NSAttack NSAttack_SpawnDefAtPosition(string entityDef, NSActor theOwner, vector vecOrigin, vector vecAngles);
-NSAttack NSAttack_SpawnDefAttachment(string entityDef, NSActor theOwner, int attachmentID);
+ncAttack ncAttack_SpawnDef(string entityDef, ncActor theOwner);
+ncAttack ncAttack_SpawnDefAtPosition(string entityDef, ncActor theOwner, vector vecOrigin, vector vecAngles);
+ncAttack ncAttack_SpawnDefAttachment(string entityDef, ncActor theOwner, int attachmentID);
 #endif

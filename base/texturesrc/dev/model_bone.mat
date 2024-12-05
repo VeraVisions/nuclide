@@ -1,0 +1,8 @@
+{
+	diffusemap dev/model_bone.tga
+	
+	{
+		map $diffuse
+		blendFunc blend
+	}
+}

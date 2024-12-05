@@ -14,15 +14,15 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-VGUIWidget g_uiSpawnMenu;
+vguiWidget g_uiSpawnMenu;
 
 void
 SpawnMenu_Init(void)
 {
 	filestream commandFile;
 	string line;
-	VGUICommandButton lastButton;
-	VGUICommandButton newButton;
+	vguiCommandButton lastButton;
+	vguiCommandButton newButton;
 	int braceDepth = 0i;
 	vector buttonPos = g_vec_null;
 	vector mainPos = g_vec_null;
@@ -36,7 +36,7 @@ SpawnMenu_Init(void)
 		return;
 	}
 
-	g_uiSpawnMenu = spawn(VGUIWidget);
+	g_uiSpawnMenu = spawn(vguiWidget);
 
 	while ((line = fgets(commandFile))) {
 		int tokensPerLine = tokenize_console(line);
@@ -61,7 +61,7 @@ SpawnMenu_Init(void)
 				buttonPos = mainPos;
 			} else {
 				buttonPos = lastButton.GetPos() + [0, lastButton.GetSizeHeight()];
-				lastButton = (VGUICommandButton)lastButton.m_parent;
+				lastButton = (vguiCommandButton)lastButton.m_parent;
 			}
 		} else if (tokensPerLine >= 2) {
 			string buttonTitle = "";
@@ -97,7 +97,7 @@ SpawnMenu_Init(void)
 				}
 			}
 
-			newButton = spawn(VGUICommandButton);
+			newButton = spawn(vguiCommandButton);
 			newButton.SetPos(buttonPos);
 			newButton.SetSize([192,24]);
 			newButton.SetKeyEquivalent(buttonKey);

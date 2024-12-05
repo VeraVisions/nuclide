@@ -1,0 +1,12 @@
+{
+	qer_editorImage "textures/common/donotenter.tga"
+	qer_trans 0.50
+	surfaceparm nodraw
+	surfaceparm nonsolid
+	surfaceparm trans
+	surfaceparm nomarks
+	surfaceparm detail
+	surfaceparm donotenter
+	surfaceParm nolightmap
+	nomipmaps
+}

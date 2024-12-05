@@ -19,14 +19,14 @@ var bool autocvar_g_infiniteAmmo = false;
 
 var bool autocvar_ai_debugNav = false;
 void
-_NSActor_Log(string className, string functionName, float edictNum, string warnMessage)
+_ncActor_Log(string className, string functionName, float edictNum, string warnMessage)
 {
 	if (autocvar_g_logTimestamps)
 		printf("^9%f ^5%s (%d) ^7: %s\n", time, functionName, edictNum, warnMessage);
 	else
 		printf("^5%s (%d) ^7: %s\n", functionName, edictNum, warnMessage);
 }
-#define NSActor_Log(...) if (autocvar_g_logLevel >= LOGLEVEL_DEBUG) _NSActor_Log(classname, __FUNC__, num_for_edict(this), sprintf(__VA_ARGS__))
+#define ncActor_Log(...) if (autocvar_g_logLevel >= LOGLEVEL_DEBUG) _ncActor_Log(classname, __FUNC__, num_for_edict(this), sprintf(__VA_ARGS__))
 
 /* for AI identification purposes */
 typedef enum
@@ -43,14 +43,36 @@ typedef enum
 It knows how to deal with waypoint based nodes and possibly other
 types of pathfinding in the future.
 
+# KEYS
+
+- "snd_stepladder" : Sound to play when climbing a ladder.
+- "snd_death" : Sound to play upon death.
+- "snd_fall" : Sound to play upon taking falldamage.
+- "snd_painSmall" : Sound to play when their health is still above 75%.
+- "snd_painMedium" : Sound to play when their health is still above 50%.
+- "snd_painLarge" : Sound to play when their health is still above 25%.
+- "snd_painHuge" : Sound to play when their health is below 25%.
+- "snd_landSoft" : Sound to play when landing from any height.
+- "snd_landHard" : Sound to play upon a fall, although not damaging.
+- "snd_hitArmor" : Sound to play when receiving damage and having some armor protection.
+- "snd_hitFlesh" : Sound to play when receiving damage and having no armor protection.
+- "snd_airGasp" : Sound to play when coming back up from under water.
+- "snd_noAir" : Sound to play when struggling to breathe under water.
+- "snd_teleportExit" : Sound to play when having exited a teleporter.
+- "snd_teleportStart" : Sound to play when having entered a teleporter.
+- "snd_burn" : Sound to play whenever incremental burn damage occurs.
+- "snd_healthtake" : Sound to play when receiving a health increase.
+- "snd_waterEnter" : Sound to play when entering water.
+- "snd_waterExit" : Sound to play when exiting water.
+
 @ingroup baseclass
 */
 class
-NSActor:NSSurfacePropEntity
+ncActor:ncSurfacePropEntity
 {
 
 public:
-	void NSActor(void);
+	void ncActor(void);
 
 	/** Overridable: Returns whether the client can sprint, with the command +sprint */
 	virtual bool CanSprint(void);
@@ -67,6 +89,7 @@ public:
 	virtual float GetSideSpeed(void);
 	/** Overridable: Returns the desired maximum backwardss movement speed. */
 	virtual float GetBackSpeed(void);
+	
 
 	nonvirtual float GetStamina(void);
 
@@ -94,16 +117,16 @@ public:
 	nonvirtual int GetReserveAmmo(int);
 
 	/* inventory handling */
-	/** Adds a named NSItem to the inventory. Returns `false` when impossible. */
+	/** Adds a named ncItem to the inventory. Returns `false` when impossible. */
 	nonvirtual bool GiveItem(string);
-	/** Removes a named NSItem from the inventory Returns `false` when impossible. */
+	/** Removes a named ncItem from the inventory Returns `false` when impossible. */
 	nonvirtual bool RemoveItem(string);
-	/** Adds the specified NSItem to the inventory. Returns `false` when impossible. */
-	nonvirtual bool AddItem(NSItem);
+	/** Adds the specified ncItem to the inventory. Returns `false` when impossible. */
+	nonvirtual bool AddItem(ncItem);
 	/** Returns `true` or `false` depending on if the entity has the named item. */
 	nonvirtual bool HasItem(string);
 	/** Returns `true` or `false` depending on if the entity has the exact item. */
-	nonvirtual bool HasExactItem(NSItem);
+	nonvirtual bool HasExactItem(ncItem);
 	/** Removes all items from the inventory. Returns `false` when already empty. */
 	nonvirtual bool RemoveAllItems(bool);
 	/** Removes all weapons from the inventory. Returns `false` when already clear. */
@@ -113,22 +136,23 @@ public:
 	/** Switches the entity to use the desired weapon. */
 	nonvirtual void SwitchToWeapon(string);
 	/** Switches the entity to use the desired weapon. */
-	nonvirtual void SwitchToExactWeapon(NSWeapon);
+	nonvirtual void SwitchToExactWeapon(ncWeapon);
 	nonvirtual void SwitchToBestWeapon(bool);
 
 	nonvirtual void LaunchProjectile(string, bool, float);
 	nonvirtual bool PlantCharge(string);
 
 	/** Returns the first weapon in the chain, while ensuring the inventory is sorted. */
-	virtual NSWeapon SortWeaponChain(void);
+	virtual ncWeapon SortWeaponChain(void);
 	/** Retrieve the 'next' weapon in the inventory, sorted by SortWeaponChain(). */
-	nonvirtual NSWeapon GetNextWeapon(void);
+	nonvirtual ncWeapon GetNextWeapon(void);
 	/** Retrieve the 'next' weapon in the inventory, sorted by SortWeaponChain(). */
-	nonvirtual NSWeapon GetPreviousWeapon(void);
+	nonvirtual ncWeapon GetPreviousWeapon(void);
 	/** Retrieve the 'last' weapon they had chosen. If not valid, returns the next best. */
-	nonvirtual NSWeapon GetLastWeapon(void);
+	nonvirtual ncWeapon GetLastWeapon(void);
 
-	virtual void AddedItemCallback(NSItem);
+	virtual void AddedItemCallback(ncItem);
+	virtual void SpawnKey(string,string);
 
 #ifdef SERVER
 	/* overrides */
@@ -138,6 +162,13 @@ public:
 	virtual void Spawned(void);
 	virtual void Input(entity, string, string);
 	virtual void DebugDraw(void);
+
+	/** Overridable: Called regularily to select a new schedule to perform. */
+	virtual void SelectNewSchedule(void);
+
+	/** Forces a named schedule to be performed. */
+	nonvirtual void PerformSchedule(string);
+	nonvirtual bool IsPerforming(void);
 
 	/* methods we'd like others to override */
 	/** Returns if this class is capable of crouching. */
@@ -178,7 +209,7 @@ private:
 	vector m_vecLastNode;
 	vector m_vecTurnAngle;
 	string m_pathTarget;
-	NSEntity m_pathEntity;
+	ncEntity m_pathEntity;
 	float _m_flRouteGiveUp;
 	vector _m_vecRoutePrev;
 	vector m_vecRouteEntity;
@@ -186,19 +217,46 @@ private:
 	float m_flMoveSpeedKey;
 #endif
 
+	/* sounds, may even be predicted. */
+	string m_sndStepLadderLeft;
+	string m_sndStepLadderRight;
+	string m_sndDeath;
+	string m_sndFall;
+	string m_sndPainSmall;
+	string m_sndPainMedium;
+	string m_sndPainLarge;
+	string m_sndPainHuge;
+	string m_sndLandSoft;
+	string m_sndLandHard;
+	string m_sndHitArmor;
+	string m_sndHitFlesh;
+	string m_sndAirGaspHeavy;
+	string m_sndAirGaspLight;
+	string m_sndNoAir;
+	string m_sndTeleportExit;
+	string m_sndTeleportStart;
+	string m_sndWaterExit;
+	string m_sndWaterEnter;
+	string m_sndWaterWade;
+	string m_sndWaterSwim;
+	string m_sndBurn;
+	string m_sndHealthtake;
+	string m_sndUseDeny;
+	string m_sndUseSuccess;
+
 	float nadeCookingTime;
 	/* These are defined in side defs\*.def, ammo_types and ammo_names */
 	int m_iAmmoTypes[MAX_AMMO_TYPES];
-	NSWeapon m_activeWeapon_net;
+	ncWeapon m_activeWeapon_net;
 	float activeweapon;
 	NETWORKED_FLOAT(m_flFirstInventoryItem)
 	NETWORKED_FLOAT(m_flStamina)
 };
 
 /* for now here to make debugging easier */
-.NSItem m_itemList;
-.NSWeapon m_activeWeapon;
-.NSWeapon m_firstWeapon;
+.ncItem m_itemList;
+.ncWeapon m_activeWeapon;
+.ncWeapon m_firstWeapon;
 
-void NSActor_ListInventory(NSActor);
+void ncActor_ListInventory(ncActor);
 

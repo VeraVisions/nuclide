@@ -41,6 +41,7 @@ typedef enumflags
 	AF_BOTTOM
 } alignflags_t;
 #define AF_NONE 0
+#define AF_DEFAULT (AF_TOP | AF_LEFT)
 
 /** Representation of a font. */
 typedef struct

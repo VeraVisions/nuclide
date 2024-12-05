@@ -33,15 +33,15 @@ save/load as well as key/value pair loading, as well as inputs/outputs
 which is our basic entity model.
 
 This is a very low-level class. You're never meant to use this.
-Use NSEntity as a basis for your classes.
+Use ncEntity as a basis for your classes.
 
 @ingroup decl
 */
 class
-NSDict
+ncDict
 {
 public:
-	void NSDict(void);
+	void ncDict(void);
 
 	nonvirtual int GetInteger(string);
 	nonvirtual float GetFloat(string);
@@ -57,8 +57,8 @@ public:
 
 	nonvirtual int TokenCount(void);
 
-	static NSDict InitWithSpawnData(string);
-	static NSDict LoadDeclFromFile(string, string);
+	static ncDict InitWithSpawnData(string);
+	static ncDict LoadDeclFromFile(string, string);
 
 private:
 	nonvirtual void _AddRemoveKey(string, string, bool);

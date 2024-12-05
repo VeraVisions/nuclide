@@ -53,6 +53,7 @@ Controllable laser effect. More or less a stripped-down version of env_beam.
 - "texture"        : Path to the sprite to use in place of a texture.
 - "BoltWidth"      : Thickness multiplier. 0-255 range.
 - "NoiseAmplitude" : Amplitude multiplier. 0-255 range.
+- "rendercolor"    : Laser color.
 
 # SPAWNFLAGS
 - LASER_STARTON (1) : Activate the laser at map start.
@@ -63,11 +64,11 @@ Controllable laser effect. More or less a stripped-down version of env_beam.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup shared
+@ingroup sharedentity
 @ingroup pointentity
 */
 class
-env_laser:NSRenderableEntity
+env_laser:ncRenderableEntity
 {
 public:
 	void env_laser(void);
@@ -79,7 +80,9 @@ public:
 	virtual float SendEntity(entity,float);
 	virtual void Trigger(entity, triggermode_t);
 	nonvirtual void CastLaser(void);
-#else
+#endif
+
+#ifdef CLIENT
 	virtual float predraw(void);
 	virtual void ReceiveEntity(float,float);
 	virtual void RendererRestarted(void);
@@ -100,7 +103,9 @@ private:
 	string m_strEndEnt;
 	float m_iDamage;
 	float m_flTraceTime;
-#else
+#endif
+
+#ifdef CLIENT
 	float m_flSparkTime;
 #endif
 };
@@ -115,7 +120,9 @@ env_laser::env_laser(void)
 
 	m_strTexture = __NULL__;
 	m_flBeamWidth = 4.0f;
-#else
+#endif
+
+#ifdef CLIENT
 	m_flSparkTime = 0.0f;
 #endif
 }
@@ -166,20 +173,23 @@ env_laser::SpawnKey(string strKey, string strValue)
 void
 env_laser::CastLaser(void)
 {
-	traceline(origin, m_vecEndPos, MOVE_NORMAL, this);
+	vector hitLocation = g_vec_null;
+	traceline(GetOrigin(), m_vecEndPos, MOVE_NORMAL, this);
+	hitLocation = trace_endpos;
 
-	if (trace_fraction >= 1.0)
+	if (trace_fraction >= 1.0) {
 		return;
+	}
 
-	if (trace_ent.takedamage == DAMAGE_NO)
+	if (trace_ent.takedamage == DAMAGE_NO) {
 		return;
+	}
 
-	NSDict damageDecl = spawn(NSDict);
-	vector center = WorldSpaceCenter();
-
+	ncSurfacePropEntity toAttack = (ncSurfacePropEntity)trace_ent;
+	ncDict damageDecl = spawn(ncDict);
 	damageDecl.AddKey("damage", itos(m_iDamage));
 	damageDecl.AddKey("type", "electro");
-	combat.Damage(trace_ent, this, trace_ent, damageDecl.GetDeclBody(), center, g_vec_null, trace_ent.origin);
+	toAttack.Damage(this, this, damageDecl, 1.0f, anglesToForward(angles), hitLocation);
 	remove(damageDecl);
 	m_flTraceTime = time + 1.0f;
 }
@@ -210,12 +220,15 @@ env_laser::EvaluateEntity(void)
 	if (m_iActive) {
 		m_vecEndPos = origin;
 
-		if (m_strEndEnt) {
+		if (STRING_SET(m_strEndEnt)) {
 			eFind = find(world, ::targetname, m_strEndEnt);
 
 			if (eFind) {
 				m_vecEndPos = eFind.origin;
 			}
+		} else {
+			traceline(GetOrigin(), GetOrigin() + anglesToForward(GetAngles()) * 1024.0f, MOVE_NORMAL, this);
+			m_vecEndPos = trace_endpos;
 		}
 	}
 
@@ -267,7 +280,9 @@ env_laser::SendEntity(entity ePEnt, float flChanged)
 
 	return (1);
 }
-#else
+#endif
+
+#ifdef CLIENT
 void
 env_laser::ReceiveEntity(float flNew, float flChanged)
 {
@@ -301,7 +316,11 @@ env_laser::ReceiveEntity(float flNew, float flChanged)
 void
 env_laser::RendererRestarted(void)
 {
-	m_strTexture = spriteframe(modelnameforindex(m_iSpriteID), 0, 0.0f);
+	if (m_iSpriteID) {
+		m_strTexture = spriteframe(modelnameforindex(m_iSpriteID), 0, 0.0f);
+	} else {
+		m_strTexture = "sprites/laser";
+	}
 }
 
 #define LASER_COUNT 16
@@ -329,11 +348,11 @@ float
 env_laser::predraw(void)
 {
 	vector vecPlayer;
-	NSClientPlayer pl;
+	ncPlayer pl;
 
 	int s = (float)getproperty(VF_ACTIVESEAT);
 	pSeat = &g_seats[s];
-	pl = (NSClientPlayer)pSeat->m_ePlayer;
+	pl = (ncPlayer)pSeat->m_ePlayer;
 	vecPlayer = pl.GetEyePos();
 
 	/* only draw when active. */
@@ -351,7 +370,11 @@ env_laser::predraw(void)
 	R_EndPolygon();
 #endif
 
-	if (m_strTexture) {
+	if (!STRING_SET(m_strTexture)) {
+		m_strTexture = "sprites/laser";
+	}
+
+	if (STRING_SET(m_strTexture)) {
 		float last_progression = 0.0f;
 		makevectors(g_view.GetCameraAngle());
 		setproperty(VF_ORIGIN, vecPlayer);
@@ -385,8 +408,10 @@ env_laser::predraw(void)
 
 			R_PolygonVertex(point, [1, 0], m_vecRenderColor / 255, a);
 
-			if (autocvar(cl_showoff, 0))
-				dynamiclight_add(point, 150, m_vecRenderColor / 255);
+			if (autocvar(cl_showoff, 0)) {
+				float p = dynamiclight_add(point, 64, m_vecRenderColor/255);
+				dynamiclight_set(p, LFIELD_STYLE, 64);
+			}
 
 			last_progression = progression;
 		}

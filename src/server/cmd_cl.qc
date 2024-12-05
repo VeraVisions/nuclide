@@ -15,7 +15,7 @@
 */
 
 bool
-Cmd_ParseClientCommand(NSClient sender, string cmd, int commandArguments)
+Cmd_ParseClientCommand(ncClient sender, string cmd, int commandArguments)
 {
 	switch (argv(0)) {
 	case "say":
@@ -37,7 +37,7 @@ Cmd_ParseClientCommand(NSClient sender, string cmd, int commandArguments)
 			break;
 		}
 
-		NSClientPlayer pl = (NSClientPlayer)sender;
+		ncPlayer pl = (ncPlayer)sender;
 		pl.MakeSpectator();
 		break;
 	case "play":
@@ -64,7 +64,6 @@ Cmd_ParseClientCommand(NSClient sender, string cmd, int commandArguments)
 
 		break;
 	case "timeleft":
-		string msg;
 		string timestring;
 		float timeleft;
 		timeleft = cvar("timelimit") - (time / 60);
@@ -72,22 +71,22 @@ Cmd_ParseClientCommand(NSClient sender, string cmd, int commandArguments)
 		bprint(PRINT_CHAT, sprintf("we have %s minutes remaining", timestring));
 		break;
 	case "listInventory":
-		NSActor_ListInventory((NSActor)self);
+		ncActor_ListInventory((ncActor)self);
 		break;
 	case "giveInventoryItem":
-		(NSActor)sender.GiveItem(argv(1));
+		(ncActor)sender.GiveItem(argv(1));
 		break;
 	case "removeInventoryItem":
-		(NSActor)sender.RemoveItem(argv(1));
+		(ncActor)sender.RemoveItem(argv(1));
 		break;
 	case "removeAllInventoryItems":
-		(NSActor)sender.RemoveAllItems(false);
+		(ncActor)sender.RemoveAllItems(false);
 		break;
 	case "listAmmo":
 		Ammo_DebugList();
 		break;
 	case "joinTeam":
-		g_grMode.PlayerRequestTeam((NSClientPlayer)sender, (int)stoi(argv(1)));
+		g_grMode.PlayerRequestTeam((ncPlayer)sender, (int)stoi(argv(1)));
 		break;
 	default:
 		clientcommand(sender, cmd);

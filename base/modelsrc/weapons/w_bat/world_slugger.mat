@@ -1,0 +1,14 @@
+// Vera Visions Material
+{
+if $programs
+	program defaultskin
+	diffusemap "pbrtest/woodfloor041.tga"
+	normalmap "pbrtest/woodfloor041_local.tga"
+	specularmap "pbrtest/woodfloor041_mra.tga"
+else
+	{
+		map "pbrtest/woodfloor041.tga"
+		rgbGen lightingDiffuse
+	}
+endif
+}

@@ -25,10 +25,10 @@ enumflags
 
 @ingroup vgui
 */
-class VGUICheckbox:VGUIWidget
+class vguiCheckbox:vguiWidget
 {
 public:
-	void VGUICheckbox(void);
+	void vguiCheckbox(void);
 	
 	nonvirtual void SetTitle(string);
 	nonvirtual int GetValue(void);
@@ -44,23 +44,23 @@ private:
 	string m_strTitle;
 };
 
-void VGUICheckbox::VGUICheckbox(void)
+void vguiCheckbox::vguiCheckbox(void)
 {
 	m_vecColor = UI_MAINCOLOR;
 	m_flAlpha = 1.0f;
 }
 
 void
-VGUICheckbox::Spawned(void)
+vguiCheckbox::Spawned(void)
 {
 	SetSize([96,18]);
 }
 
-void VGUICheckbox::SetTitle (string strName)
+void vguiCheckbox::SetTitle (string strName)
 {
 	m_strTitle = strName;
 }
-int VGUICheckbox::GetValue(void)
+int vguiCheckbox::GetValue(void)
 {
 	if (m_iFlags & CHECKBOX_CHECKED) {
 		return (1);
@@ -68,7 +68,7 @@ int VGUICheckbox::GetValue(void)
 		return (0);
 	}
 }
-void VGUICheckbox::SetValue (int iValue)
+void vguiCheckbox::SetValue (int iValue)
 {
 	if (iValue == TRUE) {
 		m_iFlags |= CHECKBOX_CHECKED;
@@ -77,9 +77,9 @@ void VGUICheckbox::SetValue (int iValue)
 	}
 }
 
-void VGUICheckbox::Draw(void)
+void vguiCheckbox::Draw(void)
 {
-	VGUITheme theme = GetTheme();
+	vguiTheme theme = GetTheme();
 
 	theme.DrawControlBackground(m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, VGUI_STATE_ACTIVE);
 	
@@ -98,7 +98,7 @@ void VGUICheckbox::Draw(void)
 	}
 }
 
-bool VGUICheckbox::Input (float flEVType, float flKey, float flChar, float flDevID)
+bool vguiCheckbox::Input (float flEVType, float flKey, float flChar, float flDevID)
 {
 	bool ret = false;
 

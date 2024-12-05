@@ -15,11 +15,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-#define PORTAL_MINS [8, -64, -64]
-#define PORTAL_MAXS [0, 64, 64]
-
 void
-NSPortal::NSPortal(void)
+ncPortal::ncPortal(void)
 {
 	m_ePortalTarget = __NULL__;
 	m_ePortalTarget_net = __NULL__;
@@ -46,7 +43,7 @@ NSPortal::NSPortal(void)
 	/* unique portal IDs */
 	{
 		float numPortals = 0;
-		for (NSPortal e = __NULL__; (e = (NSPortal)findfloat(e, ::isPortal, true));) {
+		for (ncPortal e = __NULL__; (e = (ncPortal)findfloat(e, ::isPortal, true));) {
 			e.portalnum = numPortals++;
 		}
 	}
@@ -59,7 +56,7 @@ NSPortal::NSPortal(void)
 
 #ifdef SERVER
 void
-NSPortal::Save(float handle)
+ncPortal::Save(float handle)
 {
 	super::Save(handle);
 	SaveEntity(handle, "m_ePortalTarget", m_ePortalTarget);
@@ -73,11 +70,11 @@ NSPortal::Save(float handle)
 }
 
 void
-NSPortal::Restore(string strKey, string strValue)
+ncPortal::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "m_ePortalTarget":
-		m_ePortalTarget = (NSPortal)ReadEntity(strValue);
+		m_ePortalTarget = (ncPortal)ReadEntity(strValue);
 		break;
 	case "m_vecTargetPos":
 		m_vecTargetPos = ReadVector(strValue);
@@ -107,16 +104,16 @@ NSPortal::Restore(string strKey, string strValue)
 }
 
 void
-NSPortal::PortalAutoLink(bool openPortal)
+ncPortal::PortalAutoLink(bool openPortal)
 {
 	/* this just links against the youngest portal of the same ID at this time */
-	NSPortal youngestPortal, oldestPortal;
+	ncPortal youngestPortal, oldestPortal;
 	oldestPortal = youngestPortal = __NULL__;
 	float youngestTime = 99999.0f;
 	float oldestTime = 0.0f;
 
 	/* delete any portal with the same id */
-	for (NSPortal e = __NULL__; (e = (NSPortal)findfloat(e, ::isPortal, true));) {
+	for (ncPortal e = __NULL__; (e = (ncPortal)findfloat(e, ::isPortal, true));) {
 		if (e == this)
 			continue;
 
@@ -142,7 +139,7 @@ NSPortal::PortalAutoLink(bool openPortal)
 }
 
 void
-NSPortal::PortalClose(void)
+ncPortal::PortalClose(void)
 {
 	/* invalidate the other portal's reference to this one, only
 	   if we're still actively linked. */
@@ -159,7 +156,7 @@ NSPortal::PortalClose(void)
 }
 
 bool
-NSPortal::PortalLinkTo(NSPortal target, bool openPortal)
+ncPortal::PortalLinkTo(ncPortal target, bool openPortal)
 {
 	m_ePortalTarget = target;
 
@@ -180,30 +177,30 @@ NSPortal::PortalLinkTo(NSPortal target, bool openPortal)
 }
 
 void
-NSPortal::SetPortalID(int value)
+ncPortal::SetPortalID(int value)
 {
 	m_iPortalValue = value;
 }
 
 void
-NSPortal::SetPortalModel(string modelPath)
+ncPortal::SetPortalModel(string modelPath)
 {
 	m_flPortalModel = getmodelindex(modelPath);
 }
 
 void
-NSPortal::PortalWasOpened(void)
+ncPortal::PortalWasOpened(void)
 {
 }
 
 void
-NSPortal::PortalWasClosed(void)
+ncPortal::PortalWasClosed(void)
 {
 }
 #endif
 
 void
-NSPortal::_PortalUpdated(void)
+ncPortal::_PortalUpdated(void)
 {
 	/* the displayed surface must be in a known position.
 	we're not going to compensate for the model here, because I'm too lazy.
@@ -240,7 +237,7 @@ NSPortal::_PortalUpdated(void)
 			PortalWasClosed();
 #endif
 		}
-		solid = SOLID_BSP;
+		solid = SOLID_NOT;
 		//modelindex = 0;
 	}
 
@@ -256,10 +253,11 @@ NSPortal::_PortalUpdated(void)
 	mins -= portalSize * [1, 1, 1];
 	maxs += portalSize * [1, 1, 1];
 	setsize(this, mins, maxs);
+	geomtype = GEOMTYPE_NONE;
 }
 
 vector
-NSPortal::_DirectionTransform(vector v)
+ncPortal::_DirectionTransform(vector v)
 {
 	/* FIXME: this should include .angles stuff
  */
@@ -284,7 +282,7 @@ NSPortal::_DirectionTransform(vector v)
 }
 
 vector
-NSPortal::_OriginTransform(vector p)
+ncPortal::_OriginTransform(vector p)
 {
 	if (!m_ePortalTarget) {
 		return m_vecPortalPos - _DirectionTransform(m_vecPortalPos - p);
@@ -297,7 +295,7 @@ NSPortal::_OriginTransform(vector p)
 // return value is the new view origin.
 // trace_end_pos needs to contain the pvs origin.
 vector
-NSPortal::camera_transform(vector originalOrg, vector originalAngles)
+ncPortal::camera_transform(vector originalOrg, vector originalAngles)
 {
 	vector newCameraPos;
 
@@ -319,7 +317,7 @@ NSPortal::camera_transform(vector originalOrg, vector originalAngles)
    we have to do the portal transformation manually. DO NOT USE THIS METHOD YOURSELF
 	unless you really know what you're doing. This is a private method! */
 void
-NSPortal::TransportEntity(NSEntity target)
+ncPortal::TransportEntity(ncEntity target)
 {
 	static void getMatrixDiff(vector aX, vector aY, vector aZ, vector bX, vector bY, vector bZ) {
 		v_forward.x = aX.x * bX.x + aY.x * bX.y + aZ.x * bX.z;
@@ -414,7 +412,7 @@ NSPortal::TransportEntity(NSEntity target)
 
 #ifdef SERVER
 void
-NSPortal::EvaluateEntity(void)
+ncPortal::EvaluateEntity(void)
 {
 	EVALUATE_VECTOR(origin, 0, PORTALFL_CHANGED_ORIGIN_X)
 	EVALUATE_VECTOR(origin, 1, PORTALFL_CHANGED_ORIGIN_Y)
@@ -434,7 +432,7 @@ NSPortal::EvaluateEntity(void)
 }
 
 float
-NSPortal::SendEntity(entity ePEnt, float flChanged)
+ncPortal::SendEntity(entity ePEnt, float flChanged)
 {
 	WriteByte(MSG_ENTITY, ENT_PORTAL);
 	WriteFloat(MSG_ENTITY, flChanged);
@@ -465,7 +463,7 @@ NSPortal::SendEntity(entity ePEnt, float flChanged)
 
 #ifdef CLIENT
 void
-NSPortal::ReceiveEntity(float flNew, float flChanged)
+ncPortal::ReceiveEntity(float flNew, float flChanged)
 {
 	if (m_ePortalTarget) {
 		m_ePortalTarget.m_ePortalTarget = __NULL__;
@@ -509,7 +507,7 @@ NSPortal::ReceiveEntity(float flNew, float flChanged)
 }
 
 float
-NSPortal::predraw(void)
+ncPortal::predraw(void)
 {
 	scale = m_flSize;
 

@@ -46,11 +46,15 @@ typedef struct
 	string hexColor;
 } font_s;
 
-/** @defgroup hudc HudC
-    @brief Client-side Game-Logic API
+/** @defgroup clientAPI API: Client-side
+    @brief Client-side Game-Logic APIs
     @ingroup multiprogs
+    @ingroup client
 
 APIs used by HudC progs and the client progs exclusively.
+
+# HudC {#hudC}
+To be written.
 
 @{
 */
@@ -70,6 +74,8 @@ var fontAPI_t font;
 /* Surface library */
 typedef struct
 {
+	vector Mins(void);
+	vector Size(void);
 	float Width(void);
 	float Height(void);
 	vector HUDMins(void);
@@ -101,6 +107,8 @@ var drawAPI_t draw;
 /* Player library */
 typedef struct
 {
+	vector GetCameraPosition(void);
+	vector GetCameraAngles(void);
 	float GetArmor(void);
 	float GetHealth(void);
 	float GetStamina(void);
@@ -176,10 +184,13 @@ _client_main(void)
 
 	screen.Width = linkToClientProgs("Surface_ScreenHeight");
 	screen.Height = linkToClientProgs("Surface_ScreenHeight");
-
+	screen.Size = linkToClientProgs("Surface_ScreenSize");
+	screen.Mins = linkToClientProgs("Surface_ScreenMins");
 	screen.HUDMins = linkToClientProgs("Surface_HUDMins");
 	screen.HUDSize = linkToClientProgs("Surface_HUDSize");
 
+	player.GetCameraPosition = linkToClientProgs("Player_GetCameraPosition");
+	player.GetCameraAngles = linkToClientProgs("Player_GetCameraAngles");
 	player.GetHealth = linkToClientProgs("Player_GetHealth");
 	player.GetArmor = linkToClientProgs("Player_GetArmor");
 	player.GetStamina = linkToClientProgs("Player_GetStamina");

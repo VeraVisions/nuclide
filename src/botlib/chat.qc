@@ -15,13 +15,13 @@
 */
 
 void
-NSBot::ChatSay(string msg)
+ncBot::ChatSay(string msg)
 {
-	g_grMode.ChatMessageAll((NSClient)this, msg);
+	g_grMode.ChatMessageAll((ncClient)this, msg);
 }
 
 void
-NSBot::ChatSayTeam(string msg)
+ncBot::ChatSayTeam(string msg)
 {
-	g_grMode.ChatMessageTeam((NSClient)this, msg);
+	g_grMode.ChatMessageTeam((ncClient)this, msg);
 }

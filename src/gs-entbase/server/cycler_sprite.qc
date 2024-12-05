@@ -30,11 +30,11 @@ Decorative sprite cycler. For development purposes mainly.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-cycler_sprite:NSRenderableEntity
+cycler_sprite:ncRenderableEntity
 {
 
 };

@@ -1,0 +1,11 @@
+// Vera Visions Material
+{
+	surfaceprop wood
+	diffusemap pbrtest/woodfloor041.ktx
+	normalmap pbrtest/woodfloor041_local.ktx
+	specularmap pbrtest/woodfloor041_mra.ktx
+	
+	{
+		program defaultwall
+	}
+}

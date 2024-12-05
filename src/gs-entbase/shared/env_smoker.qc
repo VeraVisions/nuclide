@@ -16,7 +16,7 @@
 
 #ifdef CLIENT
 static class
-env_smoker_cloud:NSEntity
+env_smoker_cloud:ncEntity
 {
 public:
 	void env_smoker_cloud(void);
@@ -87,11 +87,11 @@ Basic emitter for smoke like effects.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup shared
+@ingroup sharedentity
 @ingroup pointentity
 */
 class
-env_smoker:NSRenderableEntity
+env_smoker:ncRenderableEntity
 {
 public:
 	void env_smoker(void);
@@ -107,7 +107,9 @@ public:
 	virtual void Restore(string, string);
 
 	nonvirtual void DisableSmoker(void);
-#else
+#endif
+
+#ifdef CLIENT
 	virtual float predraw(void);
 	virtual void ReceiveEntity(float,float);
 #endif
@@ -119,7 +121,9 @@ private:
 
 #ifdef SERVER
 	float m_flDuration;
-#else
+#endif
+
+#ifdef CLIENT
 	float m_flNextSmoke;
 #endif
 };
@@ -282,7 +286,9 @@ env_smoker::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_BYTE(m_bActive, SMOKER_CHANGED_ACTIVE)
 	return (1);
 }
-#else
+#endif
+
+#ifdef CLIENT
 void
 env_smoker::ReceiveEntity(float flNew, float flChanged)
 {

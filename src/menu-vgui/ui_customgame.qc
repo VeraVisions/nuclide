@@ -18,10 +18,10 @@ int g_iCustomGameInitialized;
 
 void UI_CustomGame_Show ( void )
 {
-	static CUIWindow winCustomGame;
-	static CUIList lsbGames;
-	static CUIScrollbar scrlGames;
-	static CUIButton btnLoad;
+	static vguiWindow winCustomGame;
+	static vguiList lsbGames;
+	static vguiScrollBar scrlGames;
+	static vguiButton btnLoad;
 
 	static void CustomGame_Play ( void ) {
 		GameLibrary_Activate(lsbGames.GetSelected());
@@ -39,12 +39,12 @@ void UI_CustomGame_Show ( void )
 
 		GameLibrary_InitCustom();
 
-		winCustomGame = spawn( CUIWindow );
+		winCustomGame = spawn( vguiWindow );
 		winCustomGame.SetTitle( "Custom Game" );
 		winCustomGame.SetSize( [256,180] );
 		winCustomGame.SetIcon( "gfx/icon16/rainbow" );
 
-		lsbGames = spawn( CUIList );
+		lsbGames = spawn( vguiList );
 		lsbGames.SetSize( [192, 96] );
 		lsbGames.SetPos( [8, 32] );
 		lsbGames.SetItemCount( GameLibrary_GetGameCount() );
@@ -54,7 +54,7 @@ void UI_CustomGame_Show ( void )
 			lsbGames.AddItem( GameLibrary_GetGameInfo(i, GAMEINFO_NAME) );
 		}
 
-		scrlGames = spawn( CUIScrollbar );
+		scrlGames = spawn( vguiScrollBar );
 		scrlGames.SetLength( 96 );
 		scrlGames.SetPos( [201,32] );
 		scrlGames.SetMin( 0 );
@@ -62,7 +62,7 @@ void UI_CustomGame_Show ( void )
 		scrlGames.SetMax( lsbGames.GetMaxVisibleItems() );
 		scrlGames.CallOnChange( CustomGame_ListUpdate );
 
-		btnLoad = spawn( CUIButton );
+		btnLoad = spawn( vguiButton );
 		btnLoad.SetTitle( "Load" );
 		btnLoad.SetIcon( "gfx/icon16/control_play" );
 		btnLoad.SetPos( [8,132] );

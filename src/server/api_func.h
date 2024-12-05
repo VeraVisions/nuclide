@@ -1,13 +1,20 @@
 .float deaths;
 
-/** @defgroup serverAPI Server-side multiprogs API
-    @brief Server-side multiprogs API
+/** @defgroup serverAPI API: Server-side
+    @brief Server-side Game-Logic APIs
     @ingroup multiprogs
     @ingroup server
 
 APIs used by MapC progs, game rules and the server progs exclusively.
 
-![Package](package_add.png)
+# AddonC {#addonC}
+To be written.
+
+# MapC {#mapC}
+To be written.
+
+# RuleC {#ruleC}
+To be written.
 
 @{
 */
@@ -58,7 +65,7 @@ typedef struct
 	@param className is the class type to change targetEntity to.
 	@return The created entity. */
 	entity ChangeToClass(entity targetEntity, string className);
-	/** Sends an input (See NSIO::Input) to an entity.
+	/** Sends an input (See ncIO::Input) to an entity.
 
 	While you're able to manipulate entities in most ways using bare MapC, you might want to change Nuclide specific attributes of them as well. This can only be done using the I/O system.
 
@@ -105,6 +112,7 @@ typedef struct
 	string GetNextMap(void);
 	void SetSpawnPoint(string);
 	void TeleportToSpawn(entity);
+	entity FindRandomClassObject(string);
 } gameAPI_t;
 var gameAPI_t game;
 
@@ -120,6 +128,7 @@ var motdAPI_t motd;
 typedef struct
 {
 	string GetInventory(entity);
+	bool HasItem(entity, string);
 	int GetReserveAmmo(entity, int);
 	bool MaxAmmo(entity, int);
 	int TotalActors(void);
@@ -156,7 +165,7 @@ typedef struct
 	@param damageMax is the maximum damage that can be done by this wave.
 	@param damageMin is the minimum amount of damage done, at the very edge.
 	@param attackingEnt is the entity owning up to the damage.
-	@param attackingEnt is the entity owning up to the damage. */
+	@param damageDef is decl containing damage info. */
 	void RadiusDamage(vector damageCenter, float damageRange, int damageMin, int damageMax, entity attackingEnt, string damageDef);
 	/** Lets everyone in the game know that something, or something, has passed.
 
@@ -197,6 +206,7 @@ _server_main(void)
 	game.GetNextMap = linkToServerProgs("SVPF_game_GetNextMap");
 	game.SetSpawnPoint = linkToServerProgs("SVPF_game_SetSpawnPoint");
 	game.TeleportToSpawn = linkToServerProgs("SVPF_game_TeleportToSpawn");
+	game.FindRandomClassObject = linkToServerProgs("Spawn_SelectRandom");
 
 	combat.Damage = linkToServerProgs("SVPF_combat_Damage");
 	combat.RadiusDamage = linkToServerProgs("SVPF_combat_RadiusDamage");
@@ -218,6 +228,7 @@ _server_main(void)
 	actor.TotalActors = linkToServerProgs("SVPF_actor_TotalActors");
 	actor.TotalActorsOnTeam = linkToServerProgs("SVPF_actor_TotalActorsOnTeam");
 	actor.MoveToPos = linkToServerProgs("SVPF_actor_MoveToPos");
+	actor.HasItem = linkToServerProgs("SVPF_actor_HasItem");
 
 	exists.InMap = linkToServerProgs("SVPF_exists_InMap");
 	exists.InVFS = linkToServerProgs("SVPF_exists_InVFS");

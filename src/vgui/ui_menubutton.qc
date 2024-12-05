@@ -19,26 +19,31 @@ enumflags
 {
 	MBUTTON_SHOWOFFLINE = BUTTON_CUSTOMFLAGS,
 	MBUTTON_SHOWSP,
-	MBUTTON_SHOWMP
+	MBUTTON_SHOWMP,
+	MBUTTON_AUTHONLY
 };
 
-.void(void) tmpVGUIMenuButton1;
+.void(void) tmpvguiMenuButton1;
 
 /** VGUI Widget: Menu Button
 
 @ingroup vgui
 */
 class
-VGUIMenuButton: VGUIButton
+vguiMenuButton: vguiButton
 {
 public:
-	void VGUIMenuButton(void);
+	void vguiMenuButton(void);
 
 
 	virtual void Draw(void);
 	virtual bool Input(float, float, float, float);
 	virtual void Spawned(void);
 	virtual void Reposition(void);
+	virtual void OnMouseEntered(void);
+	virtual void OnMouseDown(void);
+	virtual void OnMouseUp(void);
+
 
 	nonvirtual void SetPosition(int);
 
@@ -47,31 +52,60 @@ private:
 };
 
 void
-VGUIMenuButton::VGUIMenuButton(void)
+vguiMenuButton::vguiMenuButton(void)
 {
 }
 
 void
-VGUIMenuButton::Spawned(void)
+vguiMenuButton::OnMouseEntered(void)
+{
+	localsound("UI/buttonrollover.wav");
+}
+
+void
+vguiMenuButton::OnMouseDown(void)
+{
+	localsound("UI/buttonclick.wav");
+}
+
+void
+vguiMenuButton::OnMouseUp(void)
+{
+	localsound("UI/buttonclickrelease.wav");
+}
+
+void
+vguiMenuButton::Spawned(void)
 {
 	super::Spawned();
 	FlagAdd(MBUTTON_SHOWOFFLINE | MBUTTON_SHOWSP | MBUTTON_SHOWMP);
 }
 
 void
-VGUIMenuButton::Reposition(void)
+vguiMenuButton::Reposition(void)
 {
+	vector newPosition = g_vec_null;
 	super::Reposition();
 
-	vector newPosition = [g_vidsize[0] / 16, g_vidsize[1] / 2 - 64];
+	if (m_iFlags & MBUTTON_AUTHONLY) {
+		newPosition = [(g_vidsize[0] - (g_vidsize[0] / 16) - m_vecSize[0]), g_vidsize[1] / 2 - 64];
+	} else {
+		newPosition = [g_vidsize[0] / 16, g_vidsize[1] / 2 - 64];
+	}
 
 	newPosition[1] += m_menuPosition * 24;
 	SetPos(newPosition);
 }
 
 void
-VGUIMenuButton::Draw(void)
+vguiMenuButton::Draw(void)
 {
+	if (m_iFlags & MBUTTON_AUTHONLY) {
+		if (FragNet_Status() != STATE_ONLINE) {
+			return;
+		}
+	}
+
 	// If we're not ingame
 	if (clientstate() == 2 && !g_background) {
 		if (!(m_iFlags & MBUTTON_SHOWSP)) {
@@ -83,7 +117,7 @@ VGUIMenuButton::Draw(void)
 		}
 	}
 
-	VGUITheme theme = GetTheme();
+	vguiTheme theme = GetTheme();
 
 	if (m_iFlags & BUTTON_DOWN) {
 		//theme.DrawButton(m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, VGUI_STATE_ACTIVE);
@@ -123,8 +157,14 @@ VGUIMenuButton::Draw(void)
 }
 
 bool
-VGUIMenuButton::Input (float flEVType, float flKey, float flChar, float flDevID)
+vguiMenuButton::Input (float flEVType, float flKey, float flChar, float flDevID)
 {
+	if (m_iFlags & MBUTTON_AUTHONLY) {
+		if (FragNet_Status() != STATE_ONLINE) {
+			return;
+		}
+	}
+
 	// If we're not ingame
 	if (clientstate() == 2 && !g_background) {
 		if (!(m_iFlags & MBUTTON_SHOWSP)) {
@@ -140,7 +180,7 @@ VGUIMenuButton::Input (float flEVType, float flKey, float flChar, float flDevID)
 }
 
 void
-VGUIMenuButton::SetPosition(int newPosition)
+vguiMenuButton::SetPosition(int newPosition)
 {
 	m_menuPosition = newPosition;
 	Reposition();

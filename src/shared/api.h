@@ -14,9 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+#define bool float
+#define true 1
+#define false 0
 
-/** @defgroup sharedAPI Shared multiprogs API
-    @brief Shared multiprogs API
+/** @defgroup sharedAPI API: Shared
+    @brief Shared Game-Logic APIs
     @ingroup multiprogs
     @ingroup shared
 
@@ -268,6 +271,7 @@ typedef struct
 {
 	 int BestAutoJoinTeam(void);
 	 int TeamCount(void);
+	 int OpenTeamCount(void);
 	 vector Color(int);
 	 string Name(int);
 	 int Score(int);
@@ -289,11 +293,36 @@ typedef struct
 	@param teamID specifies which team slot to occupy.
 	@param teamTitle specifies the title of the team.
 	@param teamColor specifies the color of the team (e.g. [0, 255, 0] for green).
-	@param openTeam specifies whether people can join the team manually. */
+	@param openTeam specifies whether players can join the team manually. */
 	void SetUp(int teamID, string teamTitle, vector teamColor, bool openTeam);
 
 
-	void SetSpawnPoint(int, string);
+	/** Sets up a team class for the current session. Making them available to choose
+	in the team selection menu. You can have different classes per teams also.
+
+	@param teamID specifies which team slot to occupy.
+	@param classType specifies the name of the player class. Used as an identifer in rules and menus.*/
+	void AddClass(int teamID, string classType);
+
+
+	/** Returns the maximum number of classes this team can select.
+
+	@param teamID specifies which team slot to query for class types. */
+	int TotalClasses(int teamID);
+
+	/** Returns the class type of a given team + index.
+
+	@param teamID specifies which team slot to query for class types.
+	@param classIndex specifies the index of the class to query. Use teams.TotalClasses() for the range. */
+	string ClassForIndex(int teamID, int classIndex);
+
+	/** Sets up a team spawn point for the current session.
+	Using this function you can override the default team spawn, such as info_player_deathmatch
+	type entities - and reroute spawns for a specific team to a different class.
+
+	@param teamID specifies which team slot to occupy.
+	@param spawnPointEntityClassname specifies the classname of this team's spawn point. */
+	void SetSpawnPoint(int teamID, string spawnPointEntityClassname);
 } teamAPI_t;
 
 teamAPI_t teams;
@@ -342,6 +371,15 @@ typedef struct
 	float Sound(string);
 } precacheAPI_t;
 precacheAPI_t precache;
+
+
+
+typedef struct
+{
+	float Play(string soundDef, float level = 75, float pitch = 100, float volume = 100, float channel = CHAN_AUTO);
+} soundAPI_t;
+soundAPI_t soundKit;
+
 
 typedef string decl;
 
@@ -403,6 +441,7 @@ typedef struct
 } declAPI_t;
 
 declAPI_t declManager;
+/** @} */ // end of shared
 
 __variant
 linkToSharedProgs(string funcName)
@@ -474,6 +513,7 @@ _shared_main(void)
 
 	teams.BestAutoJoinTeam = linkToSharedProgs("SHPF_teams_BestAutoJoinTeam");
 	teams.TeamCount = linkToSharedProgs("SHPF_teams_TeamCount");
+	teams.OpenTeamCount = linkToSharedProgs("SHPF_teams_OpenTeamCount");
 	teams.Color = linkToSharedProgs("SHPF_teams_Color");
 	teams.Name = linkToSharedProgs("SHPF_teams_Name");
 	teams.Score = linkToSharedProgs("SHPF_teams_Score");
@@ -490,10 +530,15 @@ _shared_main(void)
 	teams.AddScore = linkToSharedProgs("SHPF_teams_AddScore");
 	teams.SetScore = linkToSharedProgs("SHPF_teams_SetScore");
 	teams.SetUp = linkToSharedProgs("SHPF_teams_SetUp");
+	teams.AddClass = linkToSharedProgs("SHPF_teams_AddClass");
+	teams.TotalClasses = linkToSharedProgs("SHPF_teams_TotalClasses");
+	teams.ClassForIndex = linkToSharedProgs("SHPF_teams_ClassForIndex");
 	teams.SetSpawnPoint = linkToSharedProgs("SHPF_teams_SetSpawnPoint");
 
 	precache.Model = linkToSharedProgs("SHPF_precache_Model");
 	precache.Sound = linkToSharedProgs("SHPF_precache_Sound");
+
+	soundKit.Play = linkToSharedProgs("SHPF_sounds_Play");
 
 	weaponInfo.Type = linkToSharedProgs("SHPF_weaponInfo_Type");
 	weaponInfo.StartAmmo = linkToSharedProgs("SHPF_weaponInfo_StartAmmo");

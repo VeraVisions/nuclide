@@ -16,14 +16,14 @@
 
 #ifdef CLIENT
 void
-NSDebris::NSDebris(void)
+ncDebris::ncDebris(void)
 {
 	m_strImpactDecal = __NULL__;
 	m_flPlaceTime = 0.0f;
 }
 
 void
-NSDebris::Touch(entity touchingEnt)
+ncDebris::Touch(entity touchingEnt)
 {
 	if (m_flPlaceTime > time) {
 		return;
@@ -36,7 +36,7 @@ NSDebris::Touch(entity touchingEnt)
 }
 
 void
-NSDebris::SetImpactDecal(string impactDecal)
+ncDebris::SetImpactDecal(string impactDecal)
 {
 	m_strImpactDecal = impactDecal;
 }

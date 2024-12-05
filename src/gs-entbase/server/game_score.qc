@@ -31,11 +31,11 @@ Awards points to the activator when triggered.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-game_score:NSPointTrigger
+game_score:ncPointTrigger
 {
 public:
 	void game_score(void);

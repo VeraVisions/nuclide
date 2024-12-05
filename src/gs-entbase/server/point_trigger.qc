@@ -61,11 +61,11 @@ it within that radius.
 # TRIVIA
 This entity was introduced in Obsidian Conflict (2006).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-point_trigger:NSPointTrigger
+point_trigger:ncPointTrigger
 {
 public:
 	void point_trigger(void);

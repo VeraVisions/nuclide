@@ -1,12 +1,12 @@
 # Material Command List {#mat_commands}
 
-### vmap_backmaterial
+## vmap_backmaterial
 
-#### Syntax
+### Syntax
 
-**vmap_backMaterial <material>**
+**vmap_backMaterial \<material\>**
 
-#### Overview
+### Overview
 
 This allows a brush surface to use a different material when you are
 inside it looking out.
@@ -16,8 +16,8 @@ have a different sort order or appearance when seen from the inside.
 
 **vmap_backMaterial** only works on brush faces. For this reason, it is
 often deprecated in favor of using
-[vmap_cloneMaterial](vmap_cloneMaterial)
+[vmap_cloneMaterial](@ref vmap_cloneMaterial)
 where the target material contains
-[vmap_invert](vmap_invert).
+[vmap_invert](@ref vmap_invert).
 
 It can still be useful as a kind of shorthand.

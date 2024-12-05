@@ -49,11 +49,11 @@ When triggered, creates an explosion at its location.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-env_explosion:NSPointTrigger
+env_explosion:ncPointTrigger
 {
 public:
 	void env_explosion(void);

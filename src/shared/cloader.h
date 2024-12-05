@@ -38,7 +38,7 @@ RM_WORLDGLOW		9
 RM_DONTRENDER		10
 ```
 
-Within [EntityDefs](Documentation/EntityDef.md) files, you will then be able to set a given key to the value
+Within [EntityDefs](@ref entitydef) files, you will then be able to set a given key to the value
 of one of the defined constants by prefixing the name with a `$` symbol.
 That would look something like this:
 

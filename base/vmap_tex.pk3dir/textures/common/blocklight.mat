@@ -1,9 +1,0 @@
-// Vera Visions Material
-{
-	qer_editorImage "textures/common/blocklight.tga"
-	surfaceParm nodraw2
-	surfaceParm nonsolid
-	surfaceParm nomarks
-	surfaceParm nolightmap
-	nomipmaps
-}

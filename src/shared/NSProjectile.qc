@@ -15,7 +15,7 @@
 */
 
 void
-NSProjectile::NSProjectile(void)
+ncProjectile::ncProjectile(void)
 {
 #ifdef SERVER
 	m_iProjectileAnimEnd = 0i;
@@ -73,7 +73,7 @@ NSProjectile::NSProjectile(void)
 	m_iShots = 1i;
 	m_vecSpread = [0.0, 0.0, 0.0];
 	m_strDecalGroup = __NULL__;
-	m_flRange = 4096.0f;
+	m_flRange = 8192.0f;
 
 
 	/* Nuclide additions */
@@ -81,12 +81,13 @@ NSProjectile::NSProjectile(void)
 	m_bStickToActor = false;
 	m_bThrustHoming = false;
 	m_bInheritVelocity = false;
+	m_noFX = false;
 #endif
 }
 
 #ifdef SERVER
 void
-NSProjectile::SpawnKey(string strKey, string strValue)
+ncProjectile::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "def_damage": /* direct damage, upon touch */
@@ -295,6 +296,12 @@ NSProjectile::SpawnKey(string strKey, string strValue)
 	case "trackDelay":
 		m_trackDelay = ReadFloat(strValue);
 		break;
+	case "def_planeImpact":
+		m_defPlaneImpact = ReadString(strValue);
+		break;
+	case "noFX":
+		m_noFX = ReadBool(strValue);
+		break;
 	default:
 		super::SpawnKey(strKey, strValue);
 		break;
@@ -302,7 +309,7 @@ NSProjectile::SpawnKey(string strKey, string strValue)
 }
 
 void
-NSProjectile::Save(float handle)
+ncProjectile::Save(float handle)
 {
 	super::Save(handle);
 
@@ -359,7 +366,7 @@ NSProjectile::Save(float handle)
 }
 
 void
-NSProjectile::Restore(string strKey, string strValue)
+ncProjectile::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "m_iProjectileAnimEnd":
@@ -501,7 +508,7 @@ NSProjectile::Restore(string strKey, string strValue)
 		m_bThrustHoming = ReadBool(strValue);
 		break;
 	case "m_thrustHandler":
-		m_thrustHandler = (NSTimer)ReadEntity(strValue);
+		m_thrustHandler = (ncTimer)ReadEntity(strValue);
 		break;
 	case "m_flSpawnFrame":
 		m_flSpawnFrame = ReadFloat(strValue);
@@ -519,13 +526,13 @@ NSProjectile::Restore(string strKey, string strValue)
 }
 
 void
-NSProjectile::Trigger(entity theActivator, triggermode_t theMode)
+ncProjectile::Trigger(entity theActivator, triggermode_t theMode)
 {
 	_Explode(this);
 }
 
 void
-NSProjectile::Spawned(void)
+ncProjectile::Spawned(void)
 {
 	super::Spawned();
 
@@ -535,7 +542,7 @@ NSProjectile::Spawned(void)
 }
 
 void
-NSProjectile::Touch(entity eToucher)
+ncProjectile::Touch(entity eToucher)
 {
 	m_vecImpactPos = trace_endpos;
 
@@ -552,11 +559,10 @@ NSProjectile::Touch(entity eToucher)
 	}
 
 	if (eToucher.takedamage != DAMAGE_NO) {
-		NSSurfacePropEntity toucher = (NSSurfacePropEntity)eToucher;
-		NSDict damageDecl = spawn(NSDict);
-		damageDecl.AddKey("damage", GetSubDefString(m_defDamage, "damage"));
-		toucher.Damage(this, owner, damageDecl, m_flDmgMultiplier, vectorNormalize(angles), m_vecImpactPos);
-		remove(damageDecl);
+		m_hitLocation = m_vecImpactPos;
+		m_eMultiTarget = eToucher;
+		m_iMultiValue = GetSubDefInt(m_defDamage, "damage");
+		_ApplyDamage();
 	}
 
 	if (m_bDetonateOnWorld) {
@@ -585,13 +591,13 @@ NSProjectile::Touch(entity eToucher)
 }
 
 void
-NSProjectile::Pain(entity inflictor, entity attacker, int damage, vector dir, int location)
+ncProjectile::Pain(entity inflictor, entity attacker, int damage, vector dir, vector absImpactPos, int hitBody)
 {
 	/* do nothing. */
 }
 
 void
-NSProjectile::Death(entity inflictor, entity attacker, int damage, vector dir, int location)
+ncProjectile::Death(entity inflictor, entity attacker, int damage, vector dir, vector absImpactPos, int hitBody)
 {
 	if (m_bDetonateOnDeath) {
 		_Explode(this);
@@ -603,86 +609,86 @@ NSProjectile::Death(entity inflictor, entity attacker, int damage, vector dir, i
 }
 
 void
-NSProjectile::SetLightColor(vector newColor)
+ncProjectile::SetLightColor(vector newColor)
 {
 	m_vecLightColor = newColor;
 }
 
 void
-NSProjectile::SetLightRadius(float newRadius)
+ncProjectile::SetLightRadius(float newRadius)
 {
 	m_flLightRadius = newRadius;
 }
 
 void
-NSProjectile::SetWeaponOwner(NSWeapon weaponOwner)
+ncProjectile::SetWeaponOwner(ncWeapon weaponOwner)
 {
 	m_weaponOwner = weaponOwner;
 }
 
-NSWeapon
-NSProjectile::GetWeaponOwner(void)
+ncWeapon
+ncProjectile::GetWeaponOwner(void)
 {
 	return (m_weaponOwner);
 }
 
 void
-NSProjectile::EnableDetonateOnFuse(bool enabled)
+ncProjectile::EnableDetonateOnFuse(bool enabled)
 {
 	m_bDetonateOnFuse = enabled;
 }
 
 void
-NSProjectile::EnableDetonateOnDeath(bool enabled)
+ncProjectile::EnableDetonateOnDeath(bool enabled)
 {
 	m_bDetonateOnDeath = enabled;
 }
 
 void
-NSProjectile::EnableDetonateOnWorld(bool enabled)
+ncProjectile::EnableDetonateOnWorld(bool enabled)
 {
 	m_bDetonateOnWorld = enabled;
 }
 
 void
-NSProjectile::EnableDetonateOnActor(bool enabled)
+ncProjectile::EnableDetonateOnActor(bool enabled)
 {
 	m_bDetonateOnActor = enabled;
 }
 
 void
-NSProjectile::EnableStickToWorld(bool enabled)
+ncProjectile::EnableStickToWorld(bool enabled)
 {
 	m_bStickToWorld = enabled;
 }
 
 void
-NSProjectile::EnableStickToActor(bool enabled)
+ncProjectile::EnableStickToActor(bool enabled)
 {
 	m_bStickToActor = enabled;
 }
 
 void
-NSProjectile::EnableThrustHoming(bool enabled)
+ncProjectile::EnableThrustHoming(bool enabled)
 {
 	m_bThrustHoming = enabled;
 }
 
 void
-NSProjectile::EnableInheritVelocity(bool enabled)
+ncProjectile::EnableInheritVelocity(bool enabled)
 {
 	m_bInheritVelocity = enabled;
 }
 
 void
-NSProjectile::SetImpact(void(entity a,entity b) func)
+ncProjectile::SetImpact(void(entity a,entity b) func)
 {
 	m_pImpact = func;
 	Spawned();
 }
 
 void
-NSProjectile::_AnimateThink(void)
+ncProjectile::_AnimateThink(void)
 {
 	SetFrame(frame + 1);
 
@@ -694,7 +700,7 @@ NSProjectile::_AnimateThink(void)
 }
 
 void
-NSProjectile::_AnimateThinkDead(void)
+ncProjectile::_AnimateThinkDead(void)
 {
 	SetFrame(frame + 1);
 
@@ -707,7 +713,7 @@ NSProjectile::_AnimateThinkDead(void)
 }
 
 void
-NSProjectile::Animate(int startframe, int endframe, float framerate)
+ncProjectile::Animate(int startframe, int endframe, float framerate)
 {
 	m_iProjectileAnimStart = startframe;
 	m_iProjectileAnimEnd = endframe;
@@ -717,7 +723,7 @@ NSProjectile::Animate(int startframe, int endframe, float framerate)
 }
 
 void
-NSProjectile::AnimateOnce(int startframe, int endframe, float framerate)
+ncProjectile::AnimateOnce(int startframe, int endframe, float framerate)
 {
 	m_iProjectileAnimStart = startframe;
 	m_iProjectileAnimEnd = endframe;
@@ -727,7 +733,7 @@ NSProjectile::AnimateOnce(int startframe, int endframe, float framerate)
 }
 
 void
-NSProjectile::_FuseEnded(void)
+ncProjectile::_FuseEnded(void)
 {
 	if (m_bDetonateOnFuse) {
 		_Explode(this);
@@ -742,7 +748,7 @@ NSProjectile::_FuseEnded(void)
 }
 
 void
-NSProjectile::_Explode(entity explodedOn)
+ncProjectile::_Explode(entity explodedOn)
 {
 	vector newAngles, aimFwd, aimRgt, aimUp;
 	vector debrisPos;
@@ -795,6 +801,7 @@ NSProjectile::_Explode(entity explodedOn)
 		float flDamage = GetSubDefFloat(m_defSplashDamage, "damage");
 		float flMinDamage = GetSubDefFloat(m_defSplashDamage, "damage_min");
 		float flRadius = GetSubDefFloat(m_defSplashDamage, "radius");
+		float flPushForce = 0.0f;
 
 		if (m_flDmgMultiplier >= 0.0) {
 			flDamage *= m_flDmgMultiplier;
@@ -808,9 +815,32 @@ NSProjectile::_Explode(entity explodedOn)
 		float movementAmount = 360.0f / (float)m_iDebrisCount;
 
 		for (int i = 0; i < m_iDebrisCount; i++) {
-			NSProjectile_SpawnDefAtPosition(m_defProjectileDebris, (NSActor)owner, debrisPos, debrisAngle);
+			ncProjectile_SpawnDefAtPosition(m_defProjectileDebris, (ncActor)owner, debrisPos, debrisAngle);
 			debrisAngle[1] += movementAmount;
 		}
+	}
+
+	if (STRING_SET(m_defPlaneImpact)) {
+		vector portalAngle;
+		vector coPlanar;
+		makevectors(GetAngles());
+		coPlanar = v_forward -(v_forward * trace_plane_normal) * trace_plane_normal;
+
+		/* quick fix */
+		if (trace_plane_normal[2] == 0) {
+			coPlanar = '0 0 1';
+		}
+
+		portalAngle = vectoangles(trace_plane_normal, coPlanar);
+#if 1
+		prop_portal_spawn(trace_endpos, portalAngle, owner, m_defPlaneImpact == "portal_red" ? true : false);
+#else
+		ncEntity rocket = EntityDef_NewClassname(m_defPlaneImpact);
+		rocket.SetOrigin(trace_endpos);
+		rocket.SetAngles(portalAngle);
+		rocket.owner = this;
+		rocket.Spawn();
+#endif
 	}
 
 	StartSoundDef(m_sndExplode, CHAN_VOICE, true);
@@ -818,7 +848,7 @@ NSProjectile::_Explode(entity explodedOn)
 }
 
 void
-NSProjectile::_LaunchHitscan(vector startPos, vector launchDir, float dmgMultiplier)
+ncProjectile::_LaunchHitscan(vector startPos, vector launchDir, float dmgMultiplier)
 {
 	vector vecDir;
 
@@ -845,7 +875,7 @@ NSProjectile::_LaunchHitscan(vector startPos, vector launchDir, float dmgMultipl
 }
 
 void
-NSProjectile::_ApplyDamage(void)
+ncProjectile::_ApplyDamage(void)
 {
 	/* may not be defined yet */
 	if (m_eMultiTarget == __NULL__) {
@@ -854,30 +884,45 @@ NSProjectile::_ApplyDamage(void)
 
 	/* the location _could_ be more accurate... */
 	if (m_eMultiTarget.CanBleed() == true) {
-		NSSurfacePropEntity targetEnt = (NSSurfacePropEntity)m_eMultiTarget;
-		string surfType = targetEnt.GetPropData(PROPINFO_SURFACEPROP);
+		ncSurfacePropEntity targetEnt = (ncSurfacePropEntity)m_eMultiTarget;
 
-		if (STRING_SET(surfType)) {
-			SurfData_ImpactOfNamedType(surfType, trace_endpos, trace_plane_normal);
+		if (targetEnt.HasSurfaceData()) {
+			SurfData_ImpactOfType(targetEnt.m_iMaterial, m_hitLocation, trace_plane_normal);
 		}
 	}
 
 	trace_surface_id = m_iMultiBody;
-	g_dmg_vecLocation = trace_endpos;
-	NSDict damageDecl; 
+	ncDict damageDecl; 
 
 	if (STRING_SET(m_defDamage)) {
 		int declID = EntityDef_IDFromName(m_defDamage);
-		damageDecl = NSDict::InitWithSpawnData(EntityDef_GetSpawnData(declID));
+		damageDecl = ncDict::InitWithSpawnData(EntityDef_GetSpawnData(declID));
 	} else {
-		damageDecl = spawn(NSDict);
+		damageDecl = spawn(ncDict);
 	}
+
+	string weaponName = GetWeaponOwner().classname;
 
 	damageDecl.AddKey("hitbody", itos(trace_surface_id));
 	damageDecl.AddKey("damage", itos(m_iMultiValue));
-	damageDecl.AddKey("weapon", GetWeaponOwner().classname);
+
+	if (STRING_SET(weaponName)) {
+		damageDecl.AddKey("weapon", GetWeaponOwner().classname);
+	}
+
+	string pushString = GetSubDefString(m_defDamage, "push");
+	float pushForce = 0.0f;
+
+	if (STRING_SET(pushString)) {
+		pushForce = stof(pushString);
+	} else {
+		pushForce = (float)m_iMultiValue * 25.0f;
+	}
+
+	damageDecl.AddKey("push", ftos(pushForce));
+	damageDecl.AddKey("location", vtos(m_hitLocation));
 	vector dmgDir = anglesToForward(angles);
-	m_eMultiTarget.Damage(this, owner, damageDecl, m_flDmgMultiplier, vectorNormalize(angles), m_vecImpactPos);
+	m_eMultiTarget.Damage(this, owner, damageDecl, m_flDmgMultiplier, vectorNormalize(angles), m_hitLocation);
 	remove(damageDecl);
 
 	m_eMultiTarget = __NULL__;
@@ -886,12 +931,11 @@ NSProjectile::_ApplyDamage(void)
 }
 
 void
-NSProjectile::_FireSingle(vector vecPos, vector vecAngles, float flDamage, float flRange)
+ncProjectile::_FireSingle(vector vecPos, vector vecAngles, float flDamage, float flRange)
 {
 	vector range;
 	vector planeNormal;
-	vector endPos;
-	bool skipFX = false;
+	bool skipFX = m_noFX;
 
 	if (flRange <= 0) {
 		return;
@@ -901,7 +945,9 @@ NSProjectile::_FireSingle(vector vecPos, vector vecAngles, float flDamage, float
 		return;
 	}
 
-	range = (vecAngles * 8196);
+	#warning TODO: add bubble trail when underwater
+
+	range = (vecAngles * m_flRange);
 	owner.dimension_solid = 255;
 	owner.dimension_hit = 255;
 
@@ -911,9 +957,9 @@ NSProjectile::_FireSingle(vector vecPos, vector vecAngles, float flDamage, float
 	traceline(vecPos, vecPos + range, MOVE_LAGGED | MOVE_HITMODEL, owner);
 	owner.hitcontentsmaski = oldhitcontents;
 	planeNormal = trace_plane_normal;
-	endPos = trace_endpos;
+	m_hitLocation = trace_endpos;
 
-	flRange -= distance(vecPos, endPos);
+	flRange -= distance(vecPos, m_hitLocation);
 
 	owner.dimension_solid = 254;
 	owner.dimension_hit = 254;
@@ -930,16 +976,16 @@ NSProjectile::_FireSingle(vector vecPos, vector vecAngles, float flDamage, float
 
 	/* water impact */
 	if (trace_endcontentsi & CONTENTBIT_WATER) {
-		SurfData_ImpactOfNamedType("water", endPos, planeNormal);
-		_FireSingle(endPos + ((vecAngles) * 2), vecAngles, flDamage / 2, flRange);
+		SurfData_ImpactOfNamedType("water", m_hitLocation, planeNormal);
+		_FireSingle(m_hitLocation + ((vecAngles) * 2), vecAngles, flDamage / 2, flRange);
 		skipFX = true;
 	} else if (trace_endcontentsi & CONTENTBIT_SLIME) {
-		SurfData_ImpactOfNamedType("slime", endPos, planeNormal);
-		_FireSingle(endPos + ((vecAngles) * 2), vecAngles, flDamage / 2, flRange);
+		SurfData_ImpactOfNamedType("slime", m_hitLocation, planeNormal);
+		_FireSingle(m_hitLocation + ((vecAngles) * 2), vecAngles, flDamage / 2, flRange);
 		skipFX = true;
 	} else if (trace_endcontentsi & CONTENTBIT_LAVA) {
-		SurfData_ImpactOfNamedType("lama", endPos, planeNormal);
-		_FireSingle(endPos + ((vecAngles) * 2), vecAngles, flDamage / 2, flRange);
+		SurfData_ImpactOfNamedType("lava", m_hitLocation, planeNormal);
+		_FireSingle(m_hitLocation + ((vecAngles) * 2), vecAngles, flDamage / 2, flRange);
 		skipFX = true;
 	}
 
@@ -954,7 +1000,7 @@ NSProjectile::_FireSingle(vector vecPos, vector vecAngles, float flDamage, float
 #ifdef WASTES
 	TWPlayer pl1 = (TWPlayer)owner;
 	if (pl1.m_iWillpowerValue > 0) {
-		FX_Crit(endPos, vectoangles(endPos - pl1.origin), 0);
+		FX_Crit(m_hitLocation, vectoangles(m_hitLocation - pl1.origin), 0);
 	}
 #endif
 
@@ -963,18 +1009,17 @@ NSProjectile::_FireSingle(vector vecPos, vector vecAngles, float flDamage, float
 		StartSoundDef(m_sndExplode, CHAN_VOICE, true);
 	
 		if (m_strDecalGroup)
-			DecalGroups_Place(m_strDecalGroup, endPos + (vecAngles * -2));
+			DecalGroups_Place(m_strDecalGroup, m_hitLocation + (vecAngles * -2));
 
-		SurfData_Impact(trace_ent, endPos, planeNormal);
+		SurfData_Impact(trace_ent, m_hitLocation, planeNormal);
 	}
 
 	/* combine them into one single Damage_Apply call later */
 	if (trace_ent.takedamage != DAMAGE_NO) {
 		if (trace_ent != m_eMultiTarget) {
-			trace_endpos = endPos;
 			angles = vecAngles;
 			_ApplyDamage();
-			m_eMultiTarget = (NSSurfacePropEntity)trace_ent;
+			m_eMultiTarget = (ncSurfacePropEntity)trace_ent;
 			m_iMultiValue = flDamage;
 		} else {
 			m_iMultiValue += flDamage;
@@ -983,7 +1028,7 @@ NSProjectile::_FireSingle(vector vecPos, vector vecAngles, float flDamage, float
 }
 
 void
-NSProjectile::_ThrustThink(void)
+ncProjectile::_ThrustThink(void)
 {
 	vector currentVelocity;
 	float currentSpeed;
@@ -998,7 +1043,7 @@ NSProjectile::_ThrustThink(void)
 	if (m_bThrustHoming) {
 		vector ownerPos;
 		vector endPos;
-		NSSurfacePropEntity projectileOwner = (NSSurfacePropEntity)GetOwner();
+		ncSurfacePropEntity projectileOwner = (ncSurfacePropEntity)GetOwner();
 		ownerPos = projectileOwner.GetEyePos();
 		makevectors(projectileOwner.GetViewAngle());
 		endPos = ownerPos + (v_forward * 4096.0f);
@@ -1007,7 +1052,7 @@ NSProjectile::_ThrustThink(void)
 	} else if (m_bTrackEnemy) {
 
 		if (m_trackDelayTime > time) {
-			NSMonster monOwner = (NSMonster)owner;
+			ncMonster monOwner = (ncMonster)owner;
 			vector angleToTarget = vectoangles(monOwner.m_eEnemy.origin - GetOrigin());
 			angleToTarget[0] += random(-m_trackJitter[0],m_trackJitter[0]);
 			angleToTarget[1] += random(-m_trackJitter[1],m_trackJitter[1]);
@@ -1036,12 +1081,12 @@ NSProjectile::_ThrustThink(void)
 }
 
 void
-NSProjectile::OnRemoveEntity(void)
+ncProjectile::OnRemoveEntity(void)
 {
 }
 
 void
-NSProjectile::Launch(vector startPos, vector launchDir, float fuseOffset, float powerMultiplier, float dmgMultiplier)
+ncProjectile::Launch(vector startPos, vector launchDir, float fuseOffset, float powerMultiplier, float dmgMultiplier)
 {
 	vector moveVel = g_vec_null;
 	vector projPos = g_vec_null;
@@ -1140,7 +1185,7 @@ NSProjectile::Launch(vector startPos, vector launchDir, float fuseOffset, float 
 	}
 
 	if (m_flThrust != 0 || m_bTrackEnemy == true) {
-		m_thrustHandler = NSTimer::TemporaryTimer(this, _ThrustThink, 0.0, true);
+		m_thrustHandler = ncTimer::TemporaryTimer(this, _ThrustThink, 0.0, true);
 	}
 
 	string startFrame = GetSpawnString("animStartFrame");
@@ -1169,7 +1214,7 @@ NSProjectile::Launch(vector startPos, vector launchDir, float fuseOffset, float 
 }
 
 void
-NSProjectile::EvaluateEntity(void)
+ncProjectile::EvaluateEntity(void)
 {
 	EVALUATE_VECTOR(origin, 0, PROJ_CHANGED_ORIGIN_X)
 	EVALUATE_VECTOR(origin, 1, PROJ_CHANGED_ORIGIN_Y)
@@ -1194,7 +1239,7 @@ NSProjectile::EvaluateEntity(void)
 
 /* Make sure StartFrame calls this */
 float
-NSProjectile::SendEntity(entity ePEnt, float flChanged)
+ncProjectile::SendEntity(entity ePEnt, float flChanged)
 {
 	if (m_bIsBullet == true) {
 		return (false);
@@ -1236,7 +1281,7 @@ NSProjectile::SendEntity(entity ePEnt, float flChanged)
 .float emiteffectnum;
 #ifdef CLIENT
 void
-NSProjectile::ReceiveEntity(float flNew, float flChanged)
+ncProjectile::ReceiveEntity(float flNew, float flChanged)
 {
 	READENTITY_COORD(origin[0], PROJ_CHANGED_ORIGIN_X)
 	READENTITY_COORD(origin[1], PROJ_CHANGED_ORIGIN_Y)
@@ -1262,7 +1307,7 @@ NSProjectile::ReceiveEntity(float flNew, float flChanged)
 }
 
 void
-NSProjectile::postdraw(void)
+ncProjectile::postdraw(void)
 {
 #if 1
 	if (m_flLightRadius > 0.0) {
@@ -1272,7 +1317,7 @@ NSProjectile::postdraw(void)
 }
 
 float
-NSProjectile::predraw(void)
+ncProjectile::predraw(void)
 {
 	if (m_flLightRadius > 0.0f) {
 		dynamiclight_add(origin, m_flLightRadius, m_vecLightColor);
@@ -1284,17 +1329,17 @@ NSProjectile::predraw(void)
 	}
 	oldorigin = origin;
 	
-	return NSRenderableEntity::predraw();
+	return ncRenderableEntity::predraw();
 }
 #endif
 
 #ifdef SERVER
-NSProjectile
-NSProjectile_SpawnDef(string entityDef, NSActor theOwner)
+ncProjectile
+ncProjectile_SpawnDef(string entityDef, ncActor theOwner)
 {
 	entity oldself = self;
 
-	NSProjectile rocket = spawn(NSProjectile);
+	ncProjectile rocket = spawn(ncProjectile);
 	rocket.owner = theOwner;
 	self = rocket;
 	EntityDef_SpawnClassname(entityDef);
@@ -1304,11 +1349,11 @@ NSProjectile_SpawnDef(string entityDef, NSActor theOwner)
 	return rocket;
 }
 
-NSProjectile
-NSProjectile_SpawnDefAtPosition(string entityDef, NSActor theOwner, vector vecOrigin, vector vecAngles)
+ncProjectile
+ncProjectile_SpawnDefAtPosition(string entityDef, ncActor theOwner, vector vecOrigin, vector vecAngles)
 {
 	entity oldself = self;
-	NSProjectile rocket = spawn(NSProjectile);
+	ncProjectile rocket = spawn(ncProjectile);
 	rocket.owner = theOwner;
 	self = rocket;
 	EntityDef_SpawnClassname(entityDef);
@@ -1318,15 +1363,15 @@ NSProjectile_SpawnDefAtPosition(string entityDef, NSActor theOwner, vector vecOr
 	return rocket;
 }
 
-NSProjectile
-NSProjectile_SpawnDefAttachment(string entityDef, NSActor theOwner, int attachmentID)
+ncProjectile
+ncProjectile_SpawnDefAttachment(string entityDef, ncActor theOwner, int attachmentID)
 {
 	entity oldself = self;
 	float skeletonIndex = skel_create(theOwner.modelindex);
 	vector attachmentPos =  gettaginfo(theOwner, skel_get_numbones(skeletonIndex) + attachmentID);
 	skel_delete(skeletonIndex);
 
-	NSProjectile rocket = spawn(NSProjectile);
+	ncProjectile rocket = spawn(ncProjectile);
 	rocket.owner = theOwner;
 	self = rocket;
 	EntityDef_SpawnClassname(entityDef);

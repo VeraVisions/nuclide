@@ -15,7 +15,7 @@
 */
 
 void
-NSItem::NSItem(void)
+ncItem::ncItem(void)
 {
 	m_iClip = -1;
 	m_iWasDropped = 0i;
@@ -35,7 +35,7 @@ NSItem::NSItem(void)
 
 #ifdef SERVER
 void
-NSItem::Spawned(void)
+ncItem::Spawned(void)
 {
 	super::Spawned();
 
@@ -46,7 +46,7 @@ NSItem::Spawned(void)
 }
 
 void
-NSItem::Respawn(void)
+ncItem::Respawn(void)
 {
 	super::Respawn();
 	BecomePickup();
@@ -65,7 +65,7 @@ NSItem::Respawn(void)
 }
 
 void
-NSItem::SpawnKey(string strKey, string strValue)
+ncItem::SpawnKey(string strKey, string strValue)
 {
 	/* special case for ammo type parsing... */
 	if (substring(strKey, 0, 8) == "inv_ammo") {
@@ -130,7 +130,7 @@ NSItem::SpawnKey(string strKey, string strValue)
 }
 
 void
-NSItem::Save(float handle)
+ncItem::Save(float handle)
 {
 	super::Save(handle);
 
@@ -151,7 +151,7 @@ NSItem::Save(float handle)
 }
 
 void
-NSItem::Restore(string strKey, string strValue)
+ncItem::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "m_iClip":
@@ -204,24 +204,24 @@ NSItem::Restore(string strKey, string strValue)
 }
 
 void
-NSItem::Input(entity eAct, string strInput, string strData)
+ncItem::Input(entity eAct, string strInput, string strData)
 {
 	switch (strInput) {
 	default:
-		NSTrigger::Input(eAct, strInput, strData);
+		ncTrigger::Input(eAct, strInput, strData);
 	}
 }
 
 void
-NSItem::OnUse(entity user)
+ncItem::OnUse(entity user)
 {
 
 }
 
 bool
-NSItem::ItemPickupCheck(entity pickerUpper)
+ncItem::ItemPickupCheck(entity pickerUpper)
 {
-	NSActor pl = (NSActor)pickerUpper;
+	ncActor pl = (ncActor)pickerUpper;
 
 	/* do we already have the item? */
 	if (STRING_SET(m_strInvWeapon) || m_bInvCarry) {
@@ -258,15 +258,15 @@ NSItem::ItemPickupCheck(entity pickerUpper)
 }
 
 void
-NSItem::Touch(entity eToucher)
+ncItem::Touch(entity eToucher)
 {
-	NSClientPlayer pl;
+	ncPlayer pl;
 
 	if (isPlayer(eToucher) == false) {
 		return;
 	}
 
-	pl = (NSClientPlayer)eToucher;
+	pl = (ncPlayer)eToucher;
 
 	if (STRING_SET(m_strRequires)) {
 		if (pl.HasItem(m_strRequires) == false) {
@@ -291,32 +291,32 @@ NSItem::Touch(entity eToucher)
 	}
 }
 
-void NSItem::SetFloating(int i)
+void ncItem::SetFloating(int i)
 {
 	m_bFloating = i ? true : false;
 }
 
 bool
-NSItem::GetFloating(void)
+ncItem::GetFloating(void)
 {
 	return m_bFloating;
 }
 
 void
-NSItem::SetSpinning(bool value)
+ncItem::SetSpinning(bool value)
 {
 	m_bSpins = value;
 }
 
 bool
-NSItem::GetSpinning(void)
+ncItem::GetSpinning(void)
 {
 	return m_bSpins;
 }
 
 
 void
-NSItem::PickupRespawn(void)
+ncItem::PickupRespawn(void)
 {
 	Respawn();
 	StartSoundDef(m_sndRespawn, CHAN_ITEM, true);
@@ -324,17 +324,17 @@ NSItem::PickupRespawn(void)
 }
 
 void
-NSItem::OnPickup(void)
+ncItem::OnPickup(void)
 {
 }
 
 void
-NSItem::OnInventoryUse(void)
+ncItem::OnInventoryUse(void)
 {
 }
 
 void
-NSItem::PrintDebugInfo(void)
+ncItem::PrintDebugInfo(void)
 {
 	DebugInt("m_iClip", m_iClip);
 	DebugInt("m_iWasDropped", m_iWasDropped);
@@ -348,7 +348,7 @@ NSItem::PrintDebugInfo(void)
 }
 
 void
-NSItem::BecomePickup(void)
+ncItem::BecomePickup(void)
 {
 	SetBotTag(BOTINFO_WEAPON);
 	SetModel(GetSpawnString("model"));
@@ -389,7 +389,7 @@ NSItem::BecomePickup(void)
 }
 
 float
-NSItem::SendEntity(entity ePEnt, float flChanged)
+ncItem::SendEntity(entity ePEnt, float flChanged)
 {
 	/* item is in somebody elses inventory. */
 	if (InInventory() == true && ePEnt != GetOwner()) {
@@ -443,7 +443,7 @@ NSItem::SendEntity(entity ePEnt, float flChanged)
 }
 
 void
-NSItem::EvaluateEntity(void)
+ncItem::EvaluateEntity(void)
 {
 	EVALUATE_FIELD(m_nextItem, ITEMFL_CHANGED_CHAIN)
 	EVALUATE_FIELD(owner, ITEMFL_CHANGED_CHAIN)
@@ -487,7 +487,7 @@ NSItem::EvaluateEntity(void)
 
 #ifdef CLIENT
 void
-NSItem::ReceiveEntity(float flNew, float flChanged)
+ncItem::ReceiveEntity(float flNew, float flChanged)
 {
 	READENTITY_ENTNUM(chain_entnum, ITEMFL_CHANGED_CHAIN)
 	READENTITY_ENTNUM(owner_entnum, ITEMFL_CHANGED_CHAIN)
@@ -532,7 +532,11 @@ NSItem::ReceiveEntity(float flNew, float flChanged)
 		declclass = classname;
 	}
 
-	movetype = MOVETYPE_NONE;
+	/* HACK: PHYSICS should not run client-side, act as if it's 'none' */
+	if (movetype == MOVETYPE_PHYSICS) {
+		movetype = MOVETYPE_NONE;
+	}
+
 	drawmask = (modelindex != 0) ? MASK_ENGINE : 0;
 
 	if (flChanged & ITEMFL_CHANGED_CHAIN) {
@@ -549,26 +553,36 @@ NSItem::ReceiveEntity(float flNew, float flChanged)
 }
 
 void
-NSItem::ReceiveEvent(float eventType)
+ncItem::ReceiveEvent(float eventType)
 {
 }
 
 void
-NSItem::PredictPreFrame(void)
+ncItem::PredictPreFrame(void)
 {
+	/* may no longer be valid */
 	if (wasfreed(this)) {
 		return;
 	}
 
-	/* relink */
+	/* relink, if still valid */
 	if (m_nextItem == __NULL__ && chain_entnum)
-		m_nextItem = (NSItem)findentity(world, ::entnum, chain_entnum);
+		m_nextItem = (ncItem)findentity(world, ::entnum, chain_entnum);
+
+	if (wasfreed(m_nextItem)) {
+		m_nextItem = __NULL__;
+	}
 
 	if (owner == __NULL__ && owner_entnum) {
 		owner = findentity(world, ::entnum, owner_entnum);
 
 		if (owner && owner == pSeat->m_ePlayer) {
 			_AddedCallback();
+
+			/* we may have been removed in _AddedCallback */
+			if (wasfreed(this)) {
+				owner = __NULL__;
+			}
 		}
 	}
 
@@ -588,7 +602,7 @@ NSItem::PredictPreFrame(void)
 }
 
 void
-NSItem::PredictPostFrame(void)
+ncItem::PredictPostFrame(void)
 {
 	ROLL_BACK(origin)
 	ROLL_BACK(angles)
@@ -607,32 +621,32 @@ NSItem::PredictPostFrame(void)
 #endif
 
 void
-NSItem::AddedToInventory(void)
+ncItem::AddedToInventory(void)
 {
 }
 
 void
-NSItem::RemovedFromInventory(void)
+ncItem::RemovedFromInventory(void)
 {
 }
 
 bool
-NSItem::InInventory(void)
+ncItem::InInventory(void)
 {
 	return (owner) ? (true) : (false);
 }
 
 bool
-NSItem::IsWeapon(void)
+ncItem::IsWeapon(void)
 {
 	return (false);
 }
 
 
 void
-NSItem::_AddedCallback(void)
+ncItem::_AddedCallback(void)
 {
-	NSActor ourOwner = (NSActor)owner;
+	ncActor ourOwner = (ncActor)owner;
 
 #if 0
 	if (pSeat->m_ePlayer == owner) {
@@ -662,6 +676,13 @@ NSItem::_AddedCallback(void)
 		ourOwner.GiveAmmo(i, m_GiveAmmo[i]);
 	}
 
+	/* let the client-game know, reliably - both us and our spectators perhaps. */
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_PICKUP);
+	WriteInt(MSG_MULTICAST, entityDefID);
+	msg_entity = ourOwner;
+	multicast([0,0,0], MULTICAST_ONE_R);
+
 	Logging_Pickup(ourOwner, this, __NULL__);
 	ourOwner.StartSoundDef(m_sndAcquire, CHAN_ITEM, true);
 	OnPickup();
@@ -675,11 +696,11 @@ NSItem::_AddedCallback(void)
 }
 
 void
-NSItem::_RemovedCallback(void)
+ncItem::_RemovedCallback(void)
 {
 	RemovedFromInventory();
 	owner = __NULL__;
 	chain = __NULL__;
 	m_nextItem = __NULL__;
-	Destroy();
+	ScheduleThink(Destroy, 0.0f);
 }

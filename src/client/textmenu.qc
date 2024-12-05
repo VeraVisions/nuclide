@@ -71,6 +71,10 @@ Textmenu_Draw(void)
 void
 Textmenu_Input(int nr)
 {
+	if (!STRING_SET(g_textmenu)) {
+		return;
+	}
+
 	void(int) vFunc = externvalue(-1, g_textmenu);
 
 	if (vFunc) {

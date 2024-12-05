@@ -1,0 +1,18 @@
+{
+	surfaceParm computer
+
+if $programs
+	program defaultwall
+	diffusemap textures/measure/mat_computer.tga
+else
+	{
+		map $lightmap
+		rgbGen identity
+	}
+	{
+		map textures/measure/mat_computer.tga
+		rgbGen identity
+		blendFunc GL_DST_COLOR GL_ZERO
+	}
+endif
+}

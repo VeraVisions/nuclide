@@ -204,17 +204,17 @@ CScrollbar::Input(float type, float x, float y, float devid)
 	}
 
 	if (m_hold) {
-		if (g_mousepos[0] != g_lastmousepos[0] || g_mousepos[1] != g_lastmousepos[1]) {
+		if (g_vecMousePos[0] != g_lastmousepos[0] || g_vecMousePos[1] != g_lastmousepos[1]) {
 			int mdelta;
 			float m_value;
 			/* The - 10 is putting the slider in the middle of the cursor */
-			mdelta = (g_mousepos[1] - (barheight / 2)) - (g_menuofs[1]+m_y);
+			mdelta = (g_vecMousePos[1] - (barheight / 2)) - (g_menuofs[1]+m_y);
 			m_value = ((float)mdelta / (float)m_theight);
 			m_value = bound(0.0f, m_value, 1.0f);
 			
 			SetScroll(rint(m_totalentries * m_value));
-			g_lastmousepos[0] = g_mousepos[0];
-			g_lastmousepos[1] = g_mousepos[1];
+			g_lastmousepos[0] = g_vecMousePos[0];
+			g_lastmousepos[1] = g_vecMousePos[1];
 			
 			/*if (m_changed) {
 				m_changed(m_value);

@@ -61,10 +61,10 @@ Only used with an external sprite format, like SPR, SPRHL and SPR32, unless the 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup shared
+@ingroup sharedentity
 @ingroup pointentity
 */
-class env_sprite:NSRenderableEntity
+class env_sprite:ncRenderableEntity
 {
 public:
 	void env_sprite(void);
@@ -74,12 +74,15 @@ public:
 #ifdef SERVER
 	virtual void Spawned(void);
 	virtual void Trigger(entity, triggermode_t);
+	virtual void Input(entity, string, string);
 	virtual void EvaluateEntity(void);
 	virtual float SendEntity(entity,float);
 	virtual void SpawnKey(string,string);
 	virtual void NetworkOnce(void);
 	virtual void Respawn(void);
-#else
+#endif
+
+#ifdef CLIENT
 	virtual float predraw(void);
 	virtual void think(void);
 	virtual void ReceiveEntity(float,float);
@@ -201,8 +204,34 @@ env_sprite::Trigger(entity act, triggermode_t state)
 	if (HasSpawnFlags(ENVS_PLAYONCE)) {
 		NetworkOnce();
 	} else {
-		m_iToggled = 1 - m_iToggled;
+		switch (state) {
+		case TRIG_ON:
+			m_iToggled = 1;
+			break;
+		case TRIG_OFF:
+			m_iToggled = 0;
+			break;
+		case TRIG_TOGGLE:
+		default:
+			m_iToggled = 1 - m_iToggled;
+		}
+
 		SendFlags = 1;
+	}
+}
+
+void
+env_sprite::Input(entity theActivator, string inputName, string dataString)
+{
+	switch (inputName) {
+	case "ShowSprite":
+		Trigger(theActivator, TRIG_ON);
+		break;
+	case "HideSprite":
+		Trigger(theActivator, TRIG_OFF);
+		break;
+	default:
+		super::Input(theActivator, inputName, dataString);
 	}
 }
 
@@ -253,7 +282,9 @@ env_sprite::Respawn(void)
 		}
 	}
 }
-#else
+#endif
+
+#ifdef CLIENT
 float
 env_sprite::predraw(void)
 {

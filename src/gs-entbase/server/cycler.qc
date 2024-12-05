@@ -34,17 +34,17 @@ sequences. This is really for test-maps and showroom entities.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-cycler:NSSurfacePropEntity
+cycler:ncSurfacePropEntity
 {
 public:
 	void cycler(void);
 	
 	virtual void Respawn(void);
-	virtual void Pain(entity, entity, int, vector, int);
+	virtual void Pain(entity, entity, int, vector, vector, int);
 };
 
 void
@@ -63,11 +63,16 @@ cycler::Respawn(void)
 	EnableBleeding();
 	SetBloodColor([0.5, 0.5, 0.5]);
 	SetHealth(9999);
-	SetSize(VEC_HULL_MIN + [0,0,36], VEC_HULL_MAX + [0,0,36]);
+
+	if (serverkeyfloat("*bspversion") == BSPVER_HL) {
+		SetSize(VEC_HULL_MIN + [0,0,36], VEC_HULL_MAX + [0,0,36]);
+	} else {
+		SetSize(GetModelMins(), GetModelMaxs());
+	}
 }
 
 void
-cycler::Pain(entity inflictor, entity attacker, int damage, vector dir, int location)
+cycler::Pain(entity inflictor, entity attacker, int damage, vector dir, vector absImpactPos, int hitBody)
 {
 	if (frame >= modelframecount(modelindex)) {
 		SetFrame(0);

@@ -14,16 +14,17 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-.void(void) tmpVGUIList1;
+.void(void) tmpvguiList1;
+.void(void) tmpvguiList3;
 
 /** VGUI Widget: List
 
 @ingroup vgui
 */
-class VGUIList:VGUIWidget
+class vguiList:vguiWidget
 {
 public:
-	void VGUIList(void);
+	void vguiList(void);
 
 	nonvirtual void SetOffset(int,int);
 
@@ -41,6 +42,8 @@ public:
 	nonvirtual int GetOffset(void);
 
 	nonvirtual void CallOnScroll(void(void));
+	nonvirtual void CallOnDoubleClick(void(vguiList, int));
+	nonvirtual void CallOnSelectionChanged(void(void));
 
 	virtual void Draw(void);
 	virtual bool Input(float, float, float, float);
@@ -52,21 +55,28 @@ private:
 	int m_iItemCount;
 	int m_iSelected;
 	int m_iDrawOffset;
+	float m_flClickTimer;
 };
 
-void VGUIList::VGUIList(void)
+.void(vguiList, int) tmpvguiList2;
+
+void vguiList::vguiList(void)
 {
 	m_iSelected = -1;
+	m_iDrawOffset = 0;
+	tmpvguiList1 = __NULL__;
+	tmpvguiList2 = __NULL__;
+	tmpvguiList3 = __NULL__;
 }
 
-void VGUIList::Spawned(void)
+void vguiList::Spawned(void)
 {
 	SetSize([96,16]);
 }
 
-void VGUIList::Draw(void)
+void vguiList::Draw(void)
 {
-	VGUITheme theme = GetTheme();
+	vguiTheme theme = GetTheme();
 	int iMaxDisplay;
 	if (!m_iItemCount) {
 		return;
@@ -100,19 +110,37 @@ void VGUIList::Draw(void)
 	drawresetcliparea();
 }
 
-bool VGUIList::Input (float flEVType, float flKey, float flChar, float flDevID)
+bool vguiList::Input (float flEVType, float flKey, float flChar, float flDevID)
 {
 	bool ret = false;
 	int iMaxDisplay;
 	int iMouseOver = Util_MouseAbove(g_vecMousePos, m_parent.m_vecOrigin + m_vecOrigin, m_vecSize);
 	iMaxDisplay = bound(0, m_iItemCount, floor(m_vecSize[1] / 20));
-	
+
+	if (!m_iItemCount) {
+		return (false);
+	}
+
 	vector vecOffset = [8,8];
 	if (flEVType == IE_KEYDOWN) {
 		if (flKey == K_MOUSE1) {
 			for (int i = m_iDrawOffset; i < iMaxDisplay + m_iDrawOffset; i++) {
 				if (Util_MouseAbove(g_vecMousePos, m_parent.m_vecOrigin + m_vecOrigin + vecOffset, [m_vecSize[0] - 16, 20])) {
+					/* last item as last time */
+					if (m_iSelected == i) {
+						/* double click timer */
+						if (m_flClickTimer > time) {
+							if (tmpvguiList2)
+								tmpvguiList2(this, i);
+						}
+					}
 					m_iSelected = i;
+
+					if (tmpvguiList3) {
+						tmpvguiList3();
+					}
+
+					m_flClickTimer = time + 0.5f;
 					ret = true;
 				}
 				vecOffset[1] += 20;
@@ -128,74 +156,84 @@ bool VGUIList::Input (float flEVType, float flKey, float flChar, float flDevID)
 	return (ret);
 }
 
-int VGUIList::GetMaxVisibleItems(void)
+int vguiList::GetMaxVisibleItems(void)
 {
 	int iMaxDisplay = bound(0, m_iItemCount, floor(m_vecSize[1] / 20));
 	return m_iItemCount - iMaxDisplay;
 }
 
-void VGUIList::SetOffset (int iOffset, int iCallBack)
+void vguiList::SetOffset (int iOffset, int iCallBack)
 {
 	int iMaxDisplay = bound(0, m_iItemCount, floor(m_vecSize[1] / 20));
 	m_iDrawOffset = bound(0, iOffset, m_iItemCount - iMaxDisplay);
 	
-	if (tmpVGUIList1 && iCallBack) {
-		tmpVGUIList1();
+	if (tmpvguiList1 && iCallBack) {
+		tmpvguiList1();
 	}
 }
-int VGUIList::GetOffset(void)
+int vguiList::GetOffset(void)
 {
 	return m_iDrawOffset;
 }
 
-void VGUIList::SetItemCount (int iCount)
+void vguiList::SetItemCount (int iCount)
 {
 	if (!m_iItemCount) {
-		NSLog("VGUIList: Initialized with a maximum of %i entries", iCount);
+		NSLog("vguiList: Initialized with a maximum of %i entries", iCount);
 		m_iItemCount = iCount;
 		m_strItems = memalloc(iCount * sizeof(string));
 	}
 }
-int VGUIList::GetItemCount(void)
+int vguiList::GetItemCount(void)
 {
 	return m_iItemCount;
 }
 
-string VGUIList::GetItem (int iIndex)
+string vguiList::GetItem (int iIndex)
 {
-	if (m_iSelected < 0 || m_iItemCount <= 0) {
-		dprint("VGUIList: GetItem on empty/unselected list!\n");
+	if (iIndex < 0i || m_iItemCount <= 0i) {
+		NSError("vguiList: GetItem on empty/unselected list! %i/%i\n", iIndex, m_iItemCount);
 		return "ERROR";
 	}
 	return m_strItems[iIndex];
 }
 
-void VGUIList::SetSelected (int iVal)
+void vguiList::SetSelected (int iVal)
 {
 	m_iSelected = iVal;
 }
-int VGUIList::GetSelected(void)
+int vguiList::GetSelected(void)
 {
 	return m_iSelected;
 }
 
-void VGUIList::AddItem (string strItem)
+void vguiList::AddItem (string strItem)
 {
 	if (!m_iItemCount) {
-		dprint("VGUIList: Can't add item to empty list!\n");
+		dprint("vguiList: Can't add item to empty list!\n");
 		return;
 	}
 	
 	for (int i = 0; i < m_iItemCount; i++) {
 		if (!m_strItems[i]) {
 			m_strItems[i] = strItem;
-			dprint("VGUIList: Item added\n");
+			dprint("vguiList: Item added\n");
 			break;
 		}
 	}
 }
 
-void VGUIList::CallOnScroll (void(void) vFunc)
+void vguiList::CallOnScroll (void(void) vFunc)
 {
-	tmpVGUIList1 = vFunc;
+	tmpvguiList1 = vFunc;
+}
+
+void vguiList::CallOnSelectionChanged (void(void) vFunc)
+{
+	tmpvguiList3 = vFunc;
+}
+
+void vguiList::CallOnDoubleClick (void(vguiList, int) vFunc)
+{
+	tmpvguiList2 = vFunc;
 }

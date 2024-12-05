@@ -15,7 +15,7 @@
 */
 
 void
-NSTrigger::NSTrigger(void)
+ncTrigger::ncTrigger(void)
 {
 	blocked = _BlockedHandler;
 	touch = _TouchHandler;
@@ -26,7 +26,6 @@ NSTrigger::NSTrigger(void)
 	m_strMessage = __NULL__;
 	m_strMaster = __NULL__;
 	m_iUseType = 0i;
-	team = 0;
 	m_iValue = 0i;
 	m_flDelay = 0.0f;
 	m_bStartDisabled = false;
@@ -37,13 +36,13 @@ NSTrigger::NSTrigger(void)
 
 #ifdef SERVER
 void
-NSTrigger::Respawn(void)
+ncTrigger::Respawn(void)
 {
 	super::Respawn();
 }
 
 bool
-NSTrigger::CanBeTriggeredBy(entity testEnt)
+ncTrigger::CanBeTriggeredBy(entity testEnt)
 {
 	/* easy way out */
 	if (spawnflags & TOUCHFILTER_EVERYTHING)
@@ -80,16 +79,16 @@ NSTrigger::CanBeTriggeredBy(entity testEnt)
 
 /* legacy trigger architecture */
 void
-NSTrigger::Trigger(entity act, triggermode_t state)
+ncTrigger::Trigger(entity act, triggermode_t state)
 {
 	EntWarning("%S triggered by %S with no consequence", targetname, act.classname);
 }
 
 void
-NSTrigger::UseTargets(entity act, int state, float triggerDelay)
+ncTrigger::UseTargets(entity act, int state, float triggerDelay)
 {
 	static void Entities_UseTargets_Think(void) {
-		NSTrigger::UseTargets(self.owner, self.health, 0.0f);
+		ncTrigger::UseTargets(self.owner, self.health, 0.0f);
 		remove(self);
 	}
 
@@ -98,7 +97,7 @@ NSTrigger::UseTargets(entity act, int state, float triggerDelay)
 
 	if (triggerDelay > 0.0f) {
 		EntLog("Scheduling trigger of %S in %f seconds.", target, triggerDelay);
-		NSTrigger eTimer = spawn(NSTrigger);
+		ncTrigger eTimer = spawn(ncTrigger);
 		eTimer.netname = sprintf("%s_%d_target_trigger", classname, num_for_edict(this));
 		eTimer.owner = act;
 		eTimer.think = Entities_UseTargets_Think;
@@ -118,7 +117,7 @@ NSTrigger::UseTargets(entity act, int state, float triggerDelay)
 
 		if (target && target != "" && target != targetname)
 		for (entity f = world; (f = find(f, ::targetname, target));) {
-			NSTrigger trigger = (NSTrigger)f;
+			ncTrigger trigger = (ncTrigger)f;
 
 			EntLog("Triggering %s %S, activator %S (%d)", \
 			        f.classname, trigger.targetname, \
@@ -130,7 +129,7 @@ NSTrigger::UseTargets(entity act, int state, float triggerDelay)
 		}
 
 		if (m_strKillTarget != "") {
-			NSEntity eKill = (NSEntity)find(world, ::targetname, m_strKillTarget);
+			ncEntity eKill = (ncEntity)find(world, ::targetname, m_strKillTarget);
 			EntLog("Killtargeting %S", m_strKillTarget);
 
 			if (eKill) {
@@ -141,19 +140,19 @@ NSTrigger::UseTargets(entity act, int state, float triggerDelay)
 }
 
 void
-NSTrigger::SetTriggerTarget(string name)
+ncTrigger::SetTriggerTarget(string name)
 {
 	target = name;
 }
 
 int
-NSTrigger::GetValue(entity queryingEntity)
+ncTrigger::GetValue(entity queryingEntity)
 {
 	return m_iValue;
 }
 
 globalstate_t
-NSTrigger::GetGlobalValue(string strName)
+ncTrigger::GetGlobalValue(string strName)
 {
 	for (int i = 0; i < (tokenize(cvar_string(CENVGLOBAL_CVAR))); i += 2) {
 		if (argv(i) == strName) {
@@ -164,9 +163,9 @@ NSTrigger::GetGlobalValue(string strName)
 }
 
 int
-NSTrigger::GetMaster(entity queryingEntity)
+ncTrigger::GetMaster(entity queryingEntity)
 {
-	NSTrigger t;
+	ncTrigger t;
 
 	/* default to success */
 	if (!m_strMaster) {
@@ -175,7 +174,7 @@ NSTrigger::GetMaster(entity queryingEntity)
 		return (1);
 	}
 
-	t = (NSTrigger)find(world, ::targetname, m_strMaster);
+	t = (ncTrigger)find(world, ::targetname, m_strMaster);
 
 	/* we couldn't find it, so let's not even bother going further */
 	if (!t) {
@@ -197,13 +196,13 @@ NSTrigger::GetMaster(entity queryingEntity)
 }
 
 string
-NSTrigger::GetTriggerTarget(void)
+ncTrigger::GetTriggerTarget(void)
 {
 	return target;
 }
 
 entity
-NSTrigger::GetTargetEntity(void)
+ncTrigger::GetTargetEntity(void)
 {
 	if (HasTriggerTarget() == false)
 		return __NULL__;
@@ -212,18 +211,13 @@ NSTrigger::GetTargetEntity(void)
 }
 
 bool
-NSTrigger::HasTriggerTarget(void)
+ncTrigger::HasTriggerTarget(void)
 {
-	if not (target)
-		return false;
-	if (target == "")
-		return false;
-
-	return true;
+	return STRING_SET(target) ? (true) : (false);
 }
 
 bool
-NSTrigger::HasTargetname(void)
+ncTrigger::HasTargetname(void)
 {
 	if not (targetname)
 		return false;
@@ -232,7 +226,7 @@ NSTrigger::HasTargetname(void)
 }
 
 void
-NSTrigger::Save(float handle)
+ncTrigger::Save(float handle)
 {
 	super::Save(handle);
 	SaveString(handle, "m_strGlobalState", m_strGlobalState);
@@ -253,7 +247,7 @@ NSTrigger::Save(float handle)
 	SaveFloat(handle, "team_no", team_no);
 }
 void
-NSTrigger::Restore(string strKey, string strValue)
+ncTrigger::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "m_strGlobalState":
@@ -310,7 +304,7 @@ NSTrigger::Restore(string strKey, string strValue)
 }
 
 void
-NSTrigger::Input(entity eAct, string strInput, string strData)
+ncTrigger::Input(entity eAct, string strInput, string strData)
 {
 	switch (strInput) {
 	case "UseTargets":
@@ -337,26 +331,26 @@ NSTrigger::Input(entity eAct, string strInput, string strData)
 }
 
 void
-NSTrigger::SetTeam(float new_team)
+ncTrigger::SetTeam(float new_team)
 {
 	team = new_team;
 
 	/* update the InfoKey too if it's a client entity */
 	if (isClient(this)) {
-		NSClient client = (NSClient)this;
+		ncClient client = (ncClient)this;
 		client.SetInfoKey("*team", sprintf("%d", new_team));
 	}
 }
 
 float
-NSTrigger::GetTeam(void)
+ncTrigger::GetTeam(void)
 {
 	return (team);
 }
 #endif
 
 void
-NSTrigger::SpawnKey(string strKey, string strValue)
+ncTrigger::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
 #ifdef SERVER
@@ -393,53 +387,68 @@ NSTrigger::SpawnKey(string strKey, string strValue)
 }
 
 void
-NSTrigger::Blocked(entity eBlocker)
+ncTrigger::Blocked(entity eBlocker)
 {
 	/* To be handled by sub-classes */
 }
 
 void
-NSTrigger::_BlockedHandler(void)
+ncTrigger::_BlockedHandler(void)
 {
 	Blocked(other);
 }
 
 void
-NSTrigger::Touch(entity eToucher)
+ncTrigger::Touch(entity eToucher)
 {
 	/* To be handled by sub-classes */
 }
 
 void
-NSTrigger::StartTouch(entity eToucher)
+ncTrigger::StartTouch(entity eToucher)
 {
 	/* To be handled by sub-classes */
 }
 
 void
-NSTrigger::EndTouch(entity eToucher)
+ncTrigger::EndTouch(entity eToucher)
 {
 	/* To be handled by sub-classes */
 }
 
-void
-NSTrigger::_TouchHandler(void)
+vector
+ncTrigger::GetTouchPosition(void)
 {
+	return (m_touchPosition);
+}
+
+vector
+ncTrigger::GetTouchNormal(void)
+{
+	return (m_touchNormal);
+}
+
+void
+ncTrigger::_TouchHandler(void)
+{
+	m_touchPosition = trace_endpos;
+	m_touchNormal = trace_plane_normal;
+	m_eTouchLast = other;
+
 #ifdef SERVER
 	if (g_grMode.IsTeamplay())
 	if (team_no > 0i)
-	if (other.team != team_no) {
+	if (m_eTouchLast.team != team_no) {
 		return;
 	}
 #endif
 
 	/* start touch in case we haven't */
 	if (m_beingTouched != true)
-		StartTouch(other);
+		StartTouch(m_eTouchLast);
 
-	Touch(other);
+	Touch(m_eTouchLast);
 
 	m_flTouchTime = GetTime();
 	m_beingTouched = true;
-	m_eTouchLast = other;
 }

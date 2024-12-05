@@ -1,46 +1,46 @@
 # Material Command List {#mat_commands}
 
-### blendFunc {#blendFunc}
+## blendFunc {#blendFunc}
 
 ![OpenGL blending cheat-sheet](gl_blendmodes.jpg "from zanir.wz.cz/?p=60")
 
-#### Syntax
+### Syntax
 
-**blendFunc <simplefunc>**
+**blendFunc \<simplefunc\>**
 
-**blendFunc <srcBlend> <destBlend>**
+**blendFunc \<srcBlend\> \<destBlend\>**
 
-#### Overview
+### Overview
 
 Blend functions are the keyword commands that tell the renderer how
 graphic layers are to be mixed together.
 
-#### Usage
+### Usage
 
-#### Simplified blend functions
+### Simplified blend functions
 
 The most common blend functions are set up here as simple commands, and
 should be used unless you really know what you are doing.
 
-###### add
+##### add
 
 This is a shorthand command for `blendFunc GL_ONE GL_ONE`. Effects like
 fire and energy are additive.
 
-###### filter
+##### filter
 
 This is a shorthand command that can be substituted for either
 `blendFunc GL_DST_COLOR GL_ZERO` or `blendFunc GL_ZERO GL_SRC_COLOR`. A
 filter will always result in darker pixels than what is behind it, but
 it can also remove color selectively. Lightmaps are filters.
 
-###### blend
+##### blend
 
 Shorthand for `blendFunc GL_SRC_ALPHA GL_ONE_MINUS_SRC_ALPHA`. This is
 conventional transparency, where part of the background is mixed with
 part of the texture.
 
-##### Explicit blend functions
+#### Explicit blend functions
 
 Getting a handle on this concept is absolutely key to understanding all
 shader manipulation of graphics.
@@ -48,7 +48,7 @@ shader manipulation of graphics.
 BlendFunc or "Blend Function" is the equation at the core of processing
 shader graphics. The formula reads as follows:
 
-` [Source *`<srcBlend>`] + [Destination * `<dstBlend>`]`
+`[Source * <srcBlend>] + [Destination * <dstBlend>]`
 
 **Source** is usually the RGB color data in a texture file.
 
@@ -80,7 +80,7 @@ A general rule is that any Source Blend other than **GL_ONE** (or
 **GL_SRC_ALPHA** where the alpha channel is entirely white) will cause
 the Source to become darker.
 
-###### Source Blend <srcBlend>
+##### Source Blend <srcBlend>
 
 The following values are valid for the Source Blend part of the
 equation.
@@ -106,7 +106,7 @@ equation.
     except that the value in the alpha channel is inverted by
     subtracting it from one.(i.e. A=1.0 - SRC.A)
 
-###### Destination Blend <dstBlend>
+##### Destination Blend <dstBlend>
 
 The following values are valid for the Destination Blend part of the
 equation.
@@ -129,7 +129,7 @@ equation.
     except that the value in the alpha channel is inverted by
     subtracting it from one. (i.e. A=1.0 - SRC.A).
 
-###### Doing the Math: The Final Result
+##### Doing the Math: The Final Result
 
 The product of the Source side of the equation is added to the product
 of the Destination side of the equation. The sum is then placed into the
@@ -138,7 +138,7 @@ Ultimately, the equation creates a modified color value that is used by
 other functions to define what happens in the texture when it is
 displayed in the game world.
 
-##### Default Blend Function
+#### Default Blend Function
 
 If no blendFunc is specified then no blending will take place. That's
 just a fact of life.

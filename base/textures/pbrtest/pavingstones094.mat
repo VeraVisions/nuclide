@@ -1,0 +1,10 @@
+// Vera Visions Material
+{
+	diffusemap pbrtest/pavingstones094.ktx
+	normalmap pbrtest/pavingstones094_local.ktx
+	specularmap pbrtest/pavingstones094_mra.ktx
+	
+	{
+		program defaultwall
+	}
+}

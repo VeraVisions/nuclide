@@ -30,11 +30,11 @@ prepare to crash.
 # TRIVIA
 This entity was introduced in Quake (1996).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-info_null:NSPointTrigger
+info_null:ncPointTrigger
 {
 public:
 	void info_null(void);
@@ -62,7 +62,7 @@ info_null::WarnDeveloper(void)
 		return;
 
 	for (entity f = world; (f = find(f, ::target, targetname));) {
-		NSEntity enty = (NSEntity)f;
+		ncEntity enty = (ncEntity)f;
 		if (enty.identity)
 		if (enty.target == targetname) {
 			print(sprintf("^1info_null::WarnDeveloper^7: " \

@@ -14,31 +14,28 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+#warning Rename to PropKit
+
 /** @defgroup propdata Prop Data
     @brief Moving, interactive object properties.
     @ingroup shared
 
-## Prop data {#propdata}
-
 The prop data system was introduced in **Source Engine
-2004**, it's been integrated into Nuclide and supported in a few different ways.
+2004**, it's been replicated by Nuclide and supported in a few different ways.
 
-## Overview {#propdata_overview}
+# Overview {#propdata_overview}
 
 It allows you to easily create, without any programming knowledge,
 breakable props and entities.
 
-That way, when you place prop_dynamic
-entities into the world for example, they will all have the same
-material, health and behavior when being interacted with.
+That way, when you place entities such as prop_dynamic with a similar model
+into the world, they will all have the same material, health and behavior when being interacted with.
 
-Other entities, such as func_breakable can
-also take advantage of them.
+Any ncSurfacePropEntity can take advantage of its features.
 
-## Specs {#propdata_specs}
+# Specs {#propdata_specs}
 
-According to Source SDK's propdata.txt we've got
-a kinda sorta hacky definition table for this stuff:
+Prop data is defined in Valve's VDF format, under `scripts/propdata.txt`:
 
 ```
 "PropData.txt"
@@ -74,22 +71,18 @@ a kinda sorta hacky definition table for this stuff:
 ```
 
 The idea is that props specify the type of prop they are ("sometype") and it defines
-a set of sensible defaults.
+a set of sensible defaults for them.
 
-However, props can override any parts of this inside the model data itself.
-Currently no model format FTEQW supports allows for reading of said propdata.
-However we'll be loading "foobar.vvm.propdata" to remedy this for those.
+# Usage {#propdata_usage}
 
-## Usage {#propdata_usage}
-
-Any entity in Nuclide that inherits NSSurfacePropEntity can take advantage
+Any entity in Nuclide that inherits ncSurfacePropEntity can take advantage
 of the propdata features.
 
-Either the entity inside the map defines which propdata definition it
-wants to use (via the .propdata string field), or the model file has a
-text definition alongside as mentioned above.
+Either the entityDef or entity-data inside the map defines which definition it
+wants to use (via the "propdata" key), or the model file has a
+text definition alongside it.
 
-### Map entity key {#map_entity_key}
+## Map entity key {#map_entity_key}
 
 An example for the example specification listed above would be a
 propdata key/value pair as part of the entity definition:
@@ -102,7 +95,7 @@ propdata key/value pair as part of the entity definition:
  }
 ```
 
-### Model propdata definition {#model_propdata_definition}
+## Model propdata definition {#model_propdata_definition}
 
 If you had a model, e.g. located at `models/foobar.vvm` then if you were
 to place a file named `models/foobar.vvm.propdata` alongside it with the
@@ -130,36 +123,36 @@ You don't have to do anything else in the entity, the prop model will
 now have health of 30 and break into 'somematerial' upon its
 destruction.
 
-## Commands {#propdata_commands}
+# Commands {#propdata_commands}
 
--   **base <string>**: Which propdata fields to inherit.
--   **blockLOS <bool>**: Will this prop break the line-of-sight of NPCs?
--   **AIWalkable <bool>**: Can AI walk over this?
--   **allow_static <bool>**: Will static props use this definition?
--   **dmg.bullets <float>**: Damage multiplier for bullets.
--   **dmg.club <float>**: Damage multiplier for melee weapons.
--   **dmg.explosive <float>**: Damage multiplier for explosive weapons.
--   **health <int>**: Absolute amount of health on spawn.
--   **explosive_damage <int>**: Makes the entity explosive, with <int>
+-   **base \<string\>**: Which propdata fields to inherit.
+-   **blockLOS \<bool\>**: Will this prop break the line-of-sight of NPCs?
+-   **AIWalkable \<bool\>**: Can AI walk over this?
+-   **allow_static \<bool\>**: Will static props use this definition?
+-   **dmg.bullets \<float\>**: Damage multiplier for bullets.
+-   **dmg.club \<float\>**: Damage multiplier for melee weapons.
+-   **dmg.explosive \<float\>**: Damage multiplier for explosive weapons.
+-   **health \<int\>**: Absolute amount of health on spawn.
+-   **explosive_damage \<int\>**: Makes the entity explosive, with \<int\>
     specifying the max amount of damage.
--   **explosive_radius <float>**: Sets the explosion radius in q units.
+-   **explosive_radius \<float\>**: Sets the explosion radius in q units.
     Is 2.5 times the damage by default.
--   **breakable_particle <string>**: Which particle effect to play when
+-   **breakable_particle \<string\>**: Which particle effect to play when
     this entity breaks.
--   **breakable_model <string>**: Which models to spawn when it breaks.
--   **breakable_count <int>**: The amount of models it'll spawn upon
+-   **breakable_model \<string\>**: Which models to spawn when it breaks.
+-   **breakable_count \<int\>**: The amount of models it'll spawn upon
     breaking.
--   **surfaceprop <string>**: Surfaceprop override for the object.
+-   **surfaceprop \<string\>**: Surfaceprop override for the object.
 
-## Physics Object Commands {#propdata_physcommands}
+# Physics Object Commands {#propdata_physcommands}
 
-These are only relevant for when you want to use a phyics object, or rather an object that's handled by NSPhysicsEntity, such as prop_physics.
+These are only relevant for when you want to use a phyics object, or rather an object that's handled by ncPhysicsEntity, such as prop_physics.
 
--   **mass <float>**: Mass of the object, in kilograms.
--   **volume <float>**: Volume of the object, in cubic meters.
--   **inertia <float>**: Inertia multiplier.
--   **damping <float>**: Linear movement damping multiplier.
--   **rotdamping <float>**: Angular movement damping multiplier.
+-   **mass \<float\>**: Mass of the object, in kilograms.
+-   **volume \<float\>**: Volume of the object, in cubic meters.
+-   **inertia \<float\>**: Inertia multiplier.
+-   **damping \<float\>**: Linear movement damping multiplier.
+-   **rotdamping \<float\>**: Angular movement damping multiplier.
 
 @{
 
@@ -173,6 +166,34 @@ typedef enumflags
 	PDFL_AIWALKABLE,	/* can AI walk on this? */
 	PDFL_ALLOWSTATIC	/* static simulation possible? */
 } propdataFlag_t;
+
+typedef struct
+{
+	int parent;
+	int child;
+	float xmin;
+	float xmax;
+	float xfriction;
+	float ymin;
+	float ymax;
+	float yfriction;
+	float zmin;
+	float zmax;
+	float zfriction;
+} propdata_constraint_t;
+
+typedef struct
+{
+	int index;
+	string name;
+	string parent;
+	float mass;
+	string surfaceprop;
+	float damping;
+	float rotdamping;
+	float inertia;
+	float volume;
+} propdata_solids_t;
 
 /** Data holding PropData entries. */
 typedef struct
@@ -196,6 +217,9 @@ typedef struct
 	float inertia;
 	float volume;
 	string surfaceprop;
+	int solids;
+	propdata_solids_t *solidInfo;
+	string doll;
 } propdata_t;
 
 /* entity will have to have a .propdata field pointing to a propdata id */
@@ -233,7 +257,8 @@ typedef enum
 	PROPINFO_DAMPING_ANGULAR,
 	PROPINFO_INERTIA,
 	PROPINFO_VOLUME,
-	PROPINFO_SURFACEPROP
+	PROPINFO_SURFACEPROP,
+	PROPINFO_DOLL
 } propinfo_t;
 __variant Prop_GetInfo(int, int);
 
@@ -259,7 +284,7 @@ void BreakModel_Receive(void);
 void BreakModel_ReceiveClientData(void);
 #else
 void BreakModel_Spawn(vector pos, vector dir, vector spread, float speed, int count, string type);
-void BreakModel_Entity(NSSurfacePropEntity target, vector dir, float speed);
+void BreakModel_Entity(ncSurfacePropEntity target, vector dir, float speed);
 void BreakModel_SendClientData(entity);
 #endif
 

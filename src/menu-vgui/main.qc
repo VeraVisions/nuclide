@@ -41,7 +41,9 @@ m_init(void)
 	Platform_Init();
 	UISystem_Init();
 	Desktop_Init();
-	
+
+	registercommand("packageList");
+	registercommand("friendsList");
 	registercommand("console");
 	registercommand("menu_quit");
 	registercommand("menu_music");
@@ -59,47 +61,25 @@ Menu_RendererRestarted(string renderer)
 void
 m_shutdown(void)
 {
-	
+	Platform_Shutdown();
 }
 
 void
 m_draw(vector screensize)
 {
 	/* set new scale whenever the resolution changes */
-	if ((screensize[0] != g_vidsize[0]) || (screensize[1] != g_vidsize[1])) {
-		g_vidsize[0] = screensize[0];
-		g_vidsize[1] = screensize[1];
-		g_menuofs[0] = (g_vidsize[0] / 2) - 320;
-		g_menuofs[1] = (g_vidsize[1] / 2) - 240;
-		Menu_AutoScale();
+	if (Platform_DimensionsChanged(screensize) == true) {
+		Platform_CalculateRenderingScale(screensize);
 		Desktop_CanvasChanged();
 	}
 
-	g_background = cvar("_background");
-
-	/* make sure input carries over when a map background is active */
-	if (g_background) {
-		if (getkeydest() != KEY_MENU) {
-			setkeydest(KEY_MENU);
-			setmousetarget(TARGET_MENU);
-			setcursormode(TRUE, "gfx/icon16/cursor");
-		}
-	}
-
-	if (!g_active && !g_background) {
-		/* make sure we're redirecting input when the background's gone */
-		if (getkeydest() != KEY_GAME) {
-			setkeydest(KEY_GAME);
-			setmousetarget(TARGET_CLIENT);
-			setcursormode(FALSE);
-		}
-		return;
-	}
 
 	frametime = time - lasttime;
 	lasttime = time;
 
-	g_vidsize = screensize;
+	if (Platform_Draw(screensize) == false) {
+		return;
+	}
 
 	Background_Draw([0,0], g_vidsize);
 	Desktop_Draw();
@@ -109,6 +89,13 @@ void
 m_drawloading(vector screensize, float opaque)
 {
 	vector pos;
+
+	/* set new scale whenever the resolution changes */
+	if (Platform_DimensionsChanged(screensize) == true) {
+		Platform_CalculateRenderingScale(screensize);
+		Desktop_CanvasChanged();
+	}
+
 	pos = (screensize / 2) - [32,32];
 
 	if (opaque || (clientstate() != 2)) {
@@ -130,12 +117,12 @@ Menu_InputEvent (float evtype, float scanx, float chary, float devid)
 		}
 		break;
 	case IE_MOUSEABS:
-		g_mousepos[0] = scanx;
-		g_mousepos[1] = chary;
+		g_vecMousePos[0] = scanx;
+		g_vecMousePos[1] = chary;
 		break;
 	case IE_MOUSEDELTA:
-		g_mousepos[0] += scanx;
-		g_mousepos[1] += chary;
+		g_vecMousePos[0] += scanx;
+		g_vecMousePos[1] += chary;
 		break;
 	}
 
@@ -201,8 +188,11 @@ m_consolecommand(string cmd)
 	case "menu_music":
 		UI_MusicPlayer_Show();
 		break;
-	case "showconsole":
-		UI_Console_Show();
+	case "friendsList":
+		UI_Friends_Show();
+		break;
+	case "packageList":
+		UI_Packages_Show();
 		break;
 	default:
 		return Platform_ConsoleCommand(cmd, c);

@@ -1,0 +1,9 @@
+{
+	diffusemap editor/light.ktx
+	
+	{
+		map $diffuse
+		rgbGen vertex
+		alphaFunc GE128
+	}
+}

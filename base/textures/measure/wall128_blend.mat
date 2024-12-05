@@ -1,0 +1,31 @@
+{
+	vmap_lightmapMergable
+	qer_editorImage "measure/wall128.ktx"
+	polygonOffset 1
+
+if $programs
+	{
+		program terrain
+		map "measure/wall128.ktx"
+		map "measure/wall128b.ktx"
+		map $whiteimage
+		map $whiteimage
+	}
+else
+	{
+		map "measure/wall128.ktx"
+		rgbGen identity
+	}
+	{
+		map "measure/wall128b.ktx"
+		blendFunc GL_SRC_ALPHA GL_ONE_MINUS_SRC_ALPHA
+		alphaGen vertex
+	}
+        {
+		map $lightmap
+		rgbGen identity
+		blendFunc filter
+		depthFunc equal
+	}
+endif
+}

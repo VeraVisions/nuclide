@@ -28,11 +28,11 @@ as the ones produced by a trigger_changelevel.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-info_landmark:NSPointTrigger
+info_landmark:ncPointTrigger
 {
 	
 };
@@ -47,7 +47,7 @@ void
 ChangeTarget_Activate(void)
 {
 	string ctarg = cvar_string("_bsp_changetarget");
-	NSTimer foo = __NULL__;
+	ncTimer foo = __NULL__;
 
 	static void Finalize(void) {
 		string ctarg = cvar_string("_bsp_changetarget");
@@ -59,7 +59,7 @@ ChangeTarget_Activate(void)
 			return;
 
 		for (entity a = world; (a = find(a, ::targetname, ctarg));) {
-			NSEntity t = (NSEntity)a;
+			ncEntity t = (ncEntity)a;
 
 			if (t.Trigger)
 				t.Trigger(self, TRIG_TOGGLE);
@@ -113,7 +113,7 @@ The PVS-culling method can prove difficult to work with. Developers have been sp
 This entity was introduced in Quake (1996).
 */
 class
-trigger_changelevel:NSBrushTrigger
+trigger_changelevel:ncBrushTrigger
 {
 public:
 	void trigger_changelevel(void);

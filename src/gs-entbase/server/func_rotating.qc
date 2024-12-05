@@ -60,11 +60,11 @@ Please include an origin brush so that a pivot point will be defined.
 # TRIVIA
 This entity was introduced in Quake II (1997).
 
-@ingroup server
+@ingroup serverentity
 @ingroup brushentity
 */
 class
-func_rotating:NSRenderableEntity
+func_rotating:ncRenderableEntity
 {
 public:
 	void func_rotating(void);
@@ -207,7 +207,7 @@ func_rotating::Blocked(entity eBlocker)
 		if (WithinBounds(eBlocker)) {
 			vector center = WorldSpaceCenter();
 			vector dmgDir = dirFromTarget(center, eBlocker.origin);
-			NSDict damageDecl = spawn(NSDict);
+			ncDict damageDecl = spawn(ncDict);
 			damageDecl.AddKey("damage", ftos(m_flDamage));
 			combat.Damage(eBlocker, this, eBlocker, damageDecl.GetDeclBody(), center, dmgDir, eBlocker.origin);
 			remove(damageDecl);

@@ -24,13 +24,15 @@ MapLibrary_GetMapGamedir(void)
 {
 	string gdir = cvar_string("fs_game");
 
-	/* HACK: work around FTEQW's path choice */
+	/* HACK: work around FTEQW's path choices */
 	if (gdir == "ftehl")
 		gdir = "valve";
 
-	/* HACK: work around FTEQW's path choice */
 	if (gdir == "fteq2")
 		gdir = "baseq2";
+
+	if (gdir == "fteq3")
+		gdir = "baseq3";
 
 	return gdir;
 }
@@ -39,6 +41,10 @@ static bool
 MapLibrary_MapInGameDir(string fileName, string gameDir)
 {
 	bool list = true;
+
+	if (autocvar(fs_mapFilter, 1) == 0) {
+		return (true);
+	}
 
 	//printf("Checking %S %S...\n", fileName, gameDir);
 

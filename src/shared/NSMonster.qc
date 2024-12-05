@@ -18,7 +18,7 @@ var float autocvar_ai_walkSpeed = 150;
 var float autocvar_ai_runSpeed = 320;
 
 void
-NSMonster::NSMonster(void)
+ncMonster::ncMonster(void)
 {
 #ifdef SERVER
 	m_ssLast = __NULL__;
@@ -48,7 +48,7 @@ NSMonster::NSMonster(void)
 	m_actIdle = -1;
 	m_flIdleNext = 0.0f;
 	m_flEyeHeight = 64.0f;
-
+	m_usesNav = true;
 	m_sndSight = __NULL__;
 	m_sndIdle = __NULL__;
 	m_flIdleMin = 5.0f;
@@ -61,7 +61,6 @@ NSMonster::NSMonster(void)
 	m_sndMeleeAttackHit = __NULL__;
 	m_sndMeleeAttackMiss = __NULL__;
 	m_sndDeath = __NULL__;
-	m_sndThud = __NULL__;
 	m_defMelee = __NULL__;
 	m_defSpecial1 = __NULL__;
 	m_iNumProjectiles = 1i;
@@ -70,6 +69,7 @@ NSMonster::NSMonster(void)
 	m_flAttackCone = 0.0f;
 	m_flAttackAccuracy = 1.0f;
 	m_flMeleeRange = -1;
+	m_fireFromHead = false;
 
 	m_defRanged1 = __NULL__;
 	m_defRanged2 = __NULL__;
@@ -91,21 +91,28 @@ NSMonster::NSMonster(void)
 	maxspeed = 1024;
 	m_bGagged = false;
 	m_flSkin = 0;
+	m_flyOffset = 0.0f;
 #endif
+}
+
+vector
+ncMonster::GetHeadAngles(void)
+{
+	return (GetAngles() + [0, m_flHeadYaw, 0]);
 }
 
 #ifdef SERVER
 int
-NSMonster::GetTriggerCondition(void)
+ncMonster::GetTriggerCondition(void)
 {
 	return m_iTriggerCondition;
 }
 
 void
-NSMonster::TriggerTargets(void)
+ncMonster::TriggerTargets(void)
 {
 	for (entity f = world; (f = find(f, ::targetname, m_strTriggerTarget));) {
-		NSTrigger trigger = (NSTrigger)f;
+		ncTrigger trigger = (ncTrigger)f;
 
 		if (trigger.Trigger != __NULL__) {
 			trigger.Trigger(this, TRIG_TOGGLE);
@@ -114,7 +121,7 @@ NSMonster::TriggerTargets(void)
 }
 
 void
-NSMonster::Save(float handle)
+ncMonster::Save(float handle)
 {
 	super::Save(handle);
 
@@ -169,7 +176,6 @@ NSMonster::Save(float handle)
 	SaveString(handle, "m_sndMeleeAttackHit", m_sndMeleeAttackHit);
 	SaveString(handle, "m_sndMeleeAttackMiss", m_sndMeleeAttackMiss);
 	SaveString(handle, "m_sndDeath", m_sndDeath);
-	SaveString(handle, "m_sndThud", m_sndThud);
 	SaveString(handle, "m_defSpecial1", m_defSpecial1);
 	SaveFloat(handle, "m_flSpecial1Range", m_flSpecial1Range);
 	SaveString(handle, "m_defSpecial2", m_defSpecial2);
@@ -200,7 +206,7 @@ NSMonster::Save(float handle)
 }
 
 void
-NSMonster::Restore(string strKey, string strValue)
+ncMonster::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "m_flHeadYaw":
@@ -356,9 +362,6 @@ NSMonster::Restore(string strKey, string strValue)
 	case "m_sndDeath":
 		m_sndDeath = ReadString(strValue);
 		break;
-	case "m_sndThud":
-		m_sndThud = ReadString(strValue);
-		break;
 	case "m_defSpecial1":
 		m_defSpecial1 = ReadString(strValue);
 		break;
@@ -447,68 +450,68 @@ NSMonster::Restore(string strKey, string strValue)
 }
 
 int
-NSMonster::AnimIdle(void)
+ncMonster::AnimIdle(void)
 {
 	return GetDefAct("idle");
 }
 
 int
-NSMonster::AnimWalk(void)
+ncMonster::AnimWalk(void)
 {
 	return GetDefAct("walk");
 }
 
 int
-NSMonster::AnimRun(void)
+ncMonster::AnimRun(void)
 {
 	float runAnim = GetDefAct("run");
 	return (runAnim == -1) ? AnimWalk() : runAnim;
 }
 
 void
-NSMonster::AnimPlay(float seq)
+ncMonster::AnimPlay(float seq)
 {
 	SetFrame(seq);
 	m_flAnimTime = time + frameduration(modelindex, seq);
 }
 
 void
-NSMonster::AnimReset(void)
+ncMonster::AnimReset(void)
 {
 	frame1time = 0.0f;
 }
 
 bool
-NSMonster::InAnimation(void)
+ncMonster::InAnimation(void)
 {
 	return (m_flAnimTime > time) ? true : false;
 }
 
 void
-NSMonster::Sound(string msg)
+ncMonster::Sound(string msg)
 {
 	sound(this, CHAN_VOICE, msg, 1.0, ATTN_NORM);
 }
 
 void
-NSMonster::Gib(void)
+ncMonster::Gib(int damage, vector dir)
 {
-	vector vecDir = vectorToAngles(GetOrigin() - g_dmg_vecLocation);
+	vector vecDir = vectorToAngles(GetOrigin() - dir);
 	SetState(MONSTER_DEAD);
 	MakeInvulnerable();
 
 	string breakModel = GetPropData(PROPINFO_BREAKMODEL);
-	BreakModel_Spawn(absmin, absmax, vecDir, g_dmg_iDamage * 2.5f, vlen(size) / 10, breakModel);
+	BreakModel_Spawn(absmin, absmax, dir, damage * 2.5f, vlen(size) / 10, breakModel);
 	Disappear();
 }
 
 void
-NSMonster::FallNoise(void)
+ncMonster::FallNoise(void)
 {
 }
 
 void
-NSMonster::IdleNoise(void)
+ncMonster::IdleNoise(void)
 {
 	if (m_bGagged == true) {
 		return;
@@ -522,7 +525,7 @@ NSMonster::IdleNoise(void)
 }
 
 void
-NSMonster::AlertNoise(void)
+ncMonster::AlertNoise(void)
 {
 	if (m_bGagged == true) {
 		return;
@@ -532,7 +535,7 @@ NSMonster::AlertNoise(void)
 }
 
 bool
-NSMonster::IsFriend(int al)
+ncMonster::IsFriend(int al)
 {
 	/* neutrals are always friendly */
 	if (m_iAlliance == MAL_NEUTRAL)
@@ -547,26 +550,26 @@ NSMonster::IsFriend(int al)
 
 /* The maximum distance to which we should attempt an attack */
 float
-NSMonster::MeleeMaxDistance(void)
+ncMonster::MeleeMaxDistance(void)
 {
 	return m_flMeleeRange;
 }
 
 /* Whether or not we should attempt a melee attack */
 bool
-NSMonster::MeleeCondition(void)
+ncMonster::MeleeCondition(void)
 {
 	return (vlen(origin - m_eEnemy.origin) < MeleeMaxDistance()) ? true : false;
 }
 
 float
-NSMonster::SeeFOV(void)
+ncMonster::SeeFOV(void)
 {
 	return 90;
 }
 
 void
-NSMonster::AlertNearby(void)
+ncMonster::AlertNearby(void)
 {
 	if (m_eEnemy == __NULL__)
 		return;
@@ -586,8 +589,8 @@ NSMonster::AlertNearby(void)
 		if (vlen(origin - w.origin) > 512)
 			continue;
 
-		//NSMonsterLog("Alert! %s get %s", w.classname, m_eEnemy.classname);
-		NSMonster f = (NSMonster)w;
+		//ncMonsterLog("Alert! %s get %s", w.classname, m_eEnemy.classname);
+		ncMonster f = (ncMonster)w;
 
 		/* we shouldn't override this when they already got a target */
 		if (f.m_eEnemy != __NULL__)
@@ -600,37 +603,57 @@ NSMonster::AlertNearby(void)
 
 /* returns TRUE if 'enemy' should be considered a valid target for killing */
 bool
-NSMonster::IsValidEnemy(entity enny)
+ncMonster::IsValidEnemy(entity enny)
 {
+// 	printf("A\n");
+
 	if (enny == __NULL__)
 		return false;
+
+// 	printf("B\n");
+
 	/* dead enny should not be considered valid */
 	if ((enny.solid == SOLID_CORPSE) || (enny.health <= 0))
 		return false;
+
+// 	printf("C\n");
+
 	/* such monster should ignore players */
 	if ((enny.flags & FL_CLIENT) && HasSpawnFlags(MSF_IGNOREPLAYER))
 		return false;
+
+// 	printf("D\n");
+
 	/* monsters ignore enny who uses notarget cheat, useful for development */
 	if (enny.flags & FL_NOTARGET)
 		return false;
+
+// 	printf("E\n");
+
 	/* if they're our friend... ignore */
 	if (IsFriend(enny.m_iAlliance))
 		return false;
+
+// 	printf("F\n");
+
 	/* prevent from shooting non-sentient stuff */
 	if (!(enny.flags & (FL_MONSTER | FL_CLIENT)))
 		return false;
+
+// 	printf("G\n");
+
 
 	return true;
 }
 
 bool
-NSMonster::IsOnRoute(void)
+ncMonster::IsOnRoute(void)
 {
 	return (m_iNodes || m_pathTarget) && (GetState() == MONSTER_IDLE || GetState() == MONSTER_ALERT) ? true : false;
 }
 
 static bool
-NSMonster_TraceAgainsTarget(NSMonster monster, NSEntity target)
+ncMonster_TraceAgainsTarget(ncMonster monster, ncEntity target)
 {
 	traceline(monster.GetEyePos(), target.GetOrigin(), MOVE_NORMAL, monster);
 
@@ -643,22 +666,22 @@ NSMonster_TraceAgainsTarget(NSMonster monster, NSEntity target)
 }
 
 void
-NSMonster::SeenPlayer(NSActor theActor)
+ncMonster::SeenPlayer(ncActor theActor)
 {
 }
 
 void
-NSMonster::SeenEnemy(NSActor theActor)
+ncMonster::SeenEnemy(ncActor theActor)
 {
 }
 
 void
-NSMonster::SeenFriend(NSActor theActor)
+ncMonster::SeenFriend(ncActor theActor)
 {
 }
 
 void
-NSMonster::SeeThink(void)
+ncMonster::SeeThink(void)
 {
 	if (HasSpawnFlags(MSF_PRISONER) == true) {
 		return;
@@ -666,9 +689,9 @@ NSMonster::SeeThink(void)
 
 	if (m_eLookAt) {
 		vector vecDelta;
-		vecDelta = normalize( (m_eLookAt.origin + m_eLookAt.view_ofs) - GetEyePos() );
+		vecDelta = normalize( (m_eLookAt.origin + (m_eLookAt.view_ofs * 0.5f)) - GetEyePos() );
 		m_flHeadYaw = (vecDelta * anglesToRight(angles)) * -60;
-		//print(sprintf("head yaw: %f %v\n", m_flHeadYaw, vecDelta));
+// 		printf("head yaw: %f %v\n", m_flHeadYaw, vecDelta);
 
 		/* this will make the actor 'aim" at the target */
 		{
@@ -678,7 +701,24 @@ NSMonster::SeeThink(void)
 		}	
 	}
 
-	if (m_flAttackThink < time)
+	if (m_flSeeTime > time)
+		return;
+
+	m_flSeeTime = time + 0.25f;
+
+	/* a horde type monster always knows where the nearest player is */
+	if (m_iFlags & MSF_HORDE) {
+		if (!m_eEnemy || m_iNodes < 1i) {
+			m_eEnemy = ncMonster_FindClosestPlayer(this);
+
+			if (m_eEnemy) {
+				RouteToPositionDenyFlags(m_eEnemy.origin, LF_JUMP | LF_CROUCH | LF_HAZARDOUS | LF_AIM);
+			}
+		}
+
+		return;
+	}
+
 	if (m_eEnemy) {
 		/* check if we should invalidate current enemy */
 		if (IsValidEnemy(m_eEnemy)) {
@@ -690,41 +730,25 @@ NSMonster::SeeThink(void)
 			m_eLookAt = m_eEnemy;
 
 			/* see if we can trace our target, if yes, update our timestamp */
-			if (NSMonster_TraceAgainsTarget(this, (NSEntity) m_eEnemy) == true) {
+			if (ncMonster_TraceAgainsTarget(this, (ncEntity) m_eEnemy) == true) {
 				m_flTrackingTime = time;
 			}
 
 			/* if we haven't gotten a trace in 5 seconds, give up. */
 			if ((m_flTrackingTime + 5.0) > time)
-				return;
+				m_eEnemy = __NULL__;
+		} else {
+			/* enemy is not valid anymore, reset it, clear route and search for new enemy */
+			RouteClear();
+
+			RouteToPosition(m_eEnemy.origin + (anglesToForward(angles) * -64));
+			m_flSequenceSpeed = GetWalkSpeed();
+
+			SetState(MONSTER_ALERT);
+			m_eEnemy = __NULL__;
+			m_eLookAt = __NULL__;
+			m_flSeeTime = 0;
 		}
-
-		/* enemy is not valid anymore, reset it, clear route and search for new enemy */
-		RouteClear();
-
-		RouteToPosition(m_eEnemy.origin + (anglesToForward(angles) * -64));
-		m_flSequenceSpeed = GetWalkSpeed();
-
-		SetState(MONSTER_ALERT);
-		m_eEnemy = __NULL__;
-		m_eLookAt = __NULL__;
-		m_flSeeTime = 0;
-	}
-
-	if (m_flSeeTime > time)
-		return;
-
-	m_flSeeTime = time + 0.25f;
-
-	/* a horde type monster always knows where the nearest player is */
-	if (m_iFlags & MSF_HORDE) {
-		m_eEnemy = NSMonster_FindClosestPlayer(this);
-
-		if (m_eEnemy) {
-			RouteToPosition(m_eEnemy.origin);
-		}
-
-		return;
 	}
 
 	/* iterate through all players, monsters. */
@@ -740,45 +764,45 @@ NSMonster::SeeThink(void)
 			continue;
 
 		/* we have line of sight with the entity */
-		if (NSMonster_TraceAgainsTarget(this, (NSEntity)w) == true) {
+		if (ncMonster_TraceAgainsTarget(this, (ncEntity)w) == true) {
 			/* check if 'w' could be a valid enemy */
 			if (IsValidEnemy(w) == true) {
 				if (m_eEnemy != w) {
-					SeenEnemy((NSActor)w);
-					m_eEnemy = w;
+					SeenEnemy((ncActor)w);
+					m_eEnemy = m_eLookAt = w;
 					m_flTrackingTime = time;
 					_Alerted();
 					AlertNearby();
 				}
 			} else if (isPlayer(w)) {
-				SeenPlayer((NSActor)w);
+				SeenPlayer((ncActor)w);
 			} else if (IsFriend(w.m_iAlliance)) {
-				SeenFriend((NSActor)w);
+				SeenFriend((ncActor)w);
 			}
 		}
 	}
 }
 
 float
-NSMonster::GetWalkSpeed(void)
+ncMonster::GetWalkSpeed(void)
 {
 	return m_flWalkSpeed;
 }
 
 float
-NSMonster::GetChaseSpeed(void)
+ncMonster::GetChaseSpeed(void)
 {
 	return m_flRunSpeed;
 }
 
 float
-NSMonster::GetRunSpeed(void)
+ncMonster::GetRunSpeed(void)
 {
 	return m_flRunSpeed;
 }
 
 float
-NSMonster::GetYawSpeed(void)
+ncMonster::GetYawSpeed(void)
 {
 	if (GetState() == MONSTER_AIMING)
 		return 128;
@@ -787,12 +811,20 @@ NSMonster::GetYawSpeed(void)
 }
 
 void
-NSMonster::_LerpTurnToYaw(vector turnYaw)
+ncMonster::_LerpTurnToYaw(vector turnYaw)
 {
+#if 1
+	input_angles[1] = v_angle[1] = angles[1] = turnYaw[1];
+#else
 	vector oldAngle = angles;
 	vector angleDelta;
 	float oldYaw = angles[1];
 	float yawDiff = 0.0f;
+
+	if (IsThinking()) {
+		input_angles[1] = v_angle[1] = angles[1] = turnYaw[1];
+	}
+
 	yaw_speed = GetYawSpeed() * (frametime * 5);
 	ideal_yaw = turnYaw[1];
 	changeyaw();
@@ -805,6 +837,7 @@ NSMonster::_LerpTurnToYaw(vector turnYaw)
 	if (fabs(angleDelta[1]) > 1.0f) {
 		/* wasn't turning before */
 		if (m_bTurning == false) {
+			AnimReset();
 
 			if (yawDiff < 0) {
 				AnimPlay(GetDefAct("turnRight"));
@@ -815,10 +848,11 @@ NSMonster::_LerpTurnToYaw(vector turnYaw)
 
 		m_bTurning = true;
 	}
+#endif
 }
 
 void
-NSMonster::_LerpTurnToPos(vector turnPos)
+ncMonster::_LerpTurnToPos(vector turnPos)
 {
 	vector vecWishAngle = vectorToAngles(turnPos - origin);
 	_LerpTurnToYaw(vecWishAngle);
@@ -826,7 +860,7 @@ NSMonster::_LerpTurnToPos(vector turnPos)
 
 
 void
-NSMonster::_LerpTurnToEnemy(void)
+ncMonster::_LerpTurnToEnemy(void)
 {
 	vector enemyEyePos;
 	vector dirAim;
@@ -845,11 +879,11 @@ NSMonster::_LerpTurnToEnemy(void)
 	enemyEyePos = (m_eEnemy.origin + m_eEnemy.view_ofs);
 
 	dirAim = vectorToAngles(enemyEyePos - GetEyePos());
-	v_angle[0] = dirAim[0];
+	v_angle = dirAim;
 }
 
 void
-NSMonster::AttackThink(void)
+ncMonster::AttackThink(void)
 {
 	if (InSequence()) {
 		return;
@@ -883,6 +917,7 @@ NSMonster::AttackThink(void)
 
 		/* make sure we remember the last known position. */
 		m_vecLKPos = m_eEnemy.origin;
+		angles = vectorToAngles(m_vecLKPos - origin);
 	}
 
 	/* the state may have switched */
@@ -892,8 +927,6 @@ NSMonster::AttackThink(void)
 
 	if (GetState() == MONSTER_AIMING) {
 		int m;
-
-		_LerpTurnToEnemy();
 
 		if (MeleeCondition() == TRUE)
 			m = AttackMelee();
@@ -908,33 +941,44 @@ NSMonster::AttackThink(void)
 }
 
 int
-NSMonster::AttackMelee(void)
+ncMonster::AttackMelee(void)
 {
-#if 0
-	float actMelee1 = GetAct("meleeAttack1");
-	float actMelee2 = GetAct("meleeAttack2");
+#if 1
+	float actMelee1 = GetDefAct("meleeAttack1");
+	float actMelee2 = GetDefAct("meleeAttack2");
 
 	if (!m_defMelee)
 		return (false);
 
-	_m_flMeleeDelay = Skill_GetDefValue(EntityDef_GetKeyValue(m_defMelee, "delay"));
-	_m_flMeleeAttempts = Skill_GetDefValue(EntityDef_GetKeyValue(m_defMelee, "attempts"));
+	_m_flMeleeDelay = GetSubDefFloat(m_defMelee, "delay");
+	_m_flMeleeAttempts = GetSubDefFloat(m_defMelee, "attempts");
 
 	//print(sprintf("Melee attack %S with delay %f and %d attempts\n", m_defMelee, _m_flMeleeDelay, _m_flMeleeAttempts));
 
 	static void
 	AttackMelee_AttackFlail(void)
 	{
-		float meleeDmg = Skill_GetDefValue(EntityDef_GetKeyValue(m_defMelee, "damage"));
-		float meleeWait = Skill_GetDefValue(EntityDef_GetKeyValue(m_defMelee, "wait"));
-		traceline(origin, m_eEnemy.origin, FALSE, this);
+		ncActor targetEnt;
 	
+		if (distance(origin, m_eEnemy.origin) > m_flMeleeRange) {
+			return (false);
+		}
+
+		float meleeWait = GetSubDefFloat(m_defMelee, "wait");
+		traceline(origin, m_eEnemy.origin, FALSE, this);
+
 		if (trace_fraction >= 1.0 || trace_ent.takedamage == DAMAGE_NO) {
 			StartSoundDef(m_sndMeleeAttackMiss, CHAN_WEAPON, true);
 			return (false);
 		}
 
-		Damage_Apply(trace_ent, this, meleeDmg, 0, 0);
+		targetEnt = (ncActor)trace_ent;
+
+		ncDict damageDecl = spawn(ncDict);
+		damageDecl.AddKey("damage", GetSubDefString(m_defMelee, "damage"));
+		targetEnt.Damage(this, this, damageDecl, 1.0, vectorNormalize(angles), trace_endpos);
+		remove(damageDecl);
+
 		StartSoundDef(m_sndMeleeAttackHit, CHAN_WEAPON, true);
 
 		_m_flMeleeAttempts--;
@@ -959,18 +1003,32 @@ NSMonster::AttackMelee(void)
 	return (true);
 }
 
+void
+ncMonster::PerformAttack(string attackDef)
+{
+	if (!m_fireFromHead) {
+		ncAttack_SpawnDef(attackDef, this);
+	} else {
+		ncAttack_SpawnDefAtPosition(attackDef, this, GetEyePos(), GetHeadAngles());
+	}
+}
+
 int
-NSMonster::AttackRanged(void)
+ncMonster::AttackRanged(void)
 {
 	static void AttackRanged_Throw(void)
 	{
-		for (int i = 0; i < m_iNumProjectiles; i++)
-			NSAttack_SpawnDef(m_defSpecial1, this);
+		self.nadeCookingTime = time;
+
+		for (int i = 0; i < m_iNumProjectiles; i++) {
+
+		}
 	}
 	static void AttackRanged_RangedSpecial(void)
 	{
-		NSMonsterLog("AttackRanged_RangedSpecial: %S", m_defRanged2);
-		NSAttack_SpawnDef(m_defRanged2, this);
+		self.nadeCookingTime = time;
+		ncMonsterLog("AttackRanged_RangedSpecial: %S", m_defRanged2);
+		PerformAttack(m_defRanged2);
 	}
 
 	float distToEnemy = distance(m_eEnemy.origin, GetOrigin());
@@ -987,19 +1045,28 @@ NSMonster::AttackRanged(void)
 		if (_m_flReloadTracker > m_flReloadCount) {
 			throwAnyway = true;
 			_m_bShouldThrow = true;
-			NSMonsterLog("throwAnyway: true!");
+			ncMonsterLog("throwAnyway: true!");
 		}
 
 	/* special always first if possible */
 	if (throwAnyway == false && inRanged1Range && trace_ent == m_eEnemy) {
-		float rangedDmg = GetSubDefFloat(m_defRanged1, "damage");
-		float rangedDly = GetSubDefFloat(m_defRanged1, "delay");
-		float rangedMin = GetSubDefFloat(m_defRanged1, "delay_min");
-		float rangedMax = GetSubDefFloat(m_defRanged1, "delay_max");
-		float burstCount = GetSubDefFloat(m_defRanged1, "burst");
-		float burstDelay = GetSubDefFloat(m_defRanged1, "burst_delay");
+		float rangedDly = 0.0f;
+		float rangedMin = 0.0f;
+		float rangedMax = 0.0f;
+		float burstCount = 0;
+		float burstDelay = 0.0;
 		float actRanged = GetDefAct("rangeAttack1");
 		float burstTime = 0.0f;
+
+		if (STRING_SET(m_defRanged1)) {
+			rangedDly = GetSubDefFloat(m_defRanged1, "delay");
+			rangedMin = GetSubDefFloat(m_defRanged1, "delay_min");
+			rangedMax = GetSubDefFloat(m_defRanged1, "delay_max");
+			burstCount = GetSubDefFloat(m_defRanged1, "burst");
+			burstDelay = GetSubDefFloat(m_defRanged1, "burst_delay");
+		} else {
+			rangedDly = frameduration(modelindex, actRanged);
+		}
 
 		if (rangedDly <= 0.0) {
 			rangedDly = random(rangedMin, rangedMax);
@@ -1013,14 +1080,14 @@ NSMonster::AttackRanged(void)
 
 			/* out of ammo, cannot reload */
 			if (m_flReserveAmmo == 0) {
-				//NSMonsterLog("Out of ammo!");
+				//ncMonsterLog("Out of ammo!");
 				return 0;
 			}
 
 			/* do we not have unlimited ammo? */
 			if (m_flReserveAmmo != -1) {
 				m_flReserveAmmo -= m_flReloadCount;
-				NSMonsterLog("Reserve ammo: %d", m_flReserveAmmo);
+				ncMonsterLog("Reserve ammo: %d", m_flReserveAmmo);
 
 				/* oh no, we're below 0 in terms of ammo. */
 				if (m_flReserveAmmo < 0) {
@@ -1029,7 +1096,7 @@ NSMonster::AttackRanged(void)
 				}
 			}
 
-			NSMonsterLog("Starting at %d bullets", startAmmo);
+			ncMonsterLog("Starting at %d bullets", startAmmo);
 			_m_flReloadTracker = startAmmo;
 			AnimPlay(actReload);
 			StartSoundDef(m_sndReload, CHAN_WEAPON, true);
@@ -1037,11 +1104,11 @@ NSMonster::AttackRanged(void)
 
 			if (m_flReloadDelay) {
 				m_flAttackThink = time + m_flReloadDelay;
-				NSMonsterLog("Reloading, delay %f seconds", m_flReloadDelay);
+				ncMonsterLog("Reloading, delay %f seconds", m_flReloadDelay);
 			} else {
 				float actDuration = frameduration(modelindex, actReload);
 				m_flAttackThink = time + actDuration;
-				NSMonsterLog("Reloading, act delays it by %f seconds", actDuration);
+				ncMonsterLog("Reloading, act delays it by %f seconds", actDuration);
 			}
 
 			return 1;
@@ -1053,8 +1120,8 @@ NSMonster::AttackRanged(void)
 		/* if we have no spawnclass, it must be a hitscan weapon */
 		if (STRING_SET(m_defRanged1)) {
 			if (EntityDef_HasSpawnClass(m_defRanged1)) {
-				NSAttack_SpawnDef(m_defRanged1, this);
-				NSMonsterLog("Firing ranged def %S", m_defRanged1);
+				PerformAttack(m_defRanged1);
+				ncMonsterLog("Firing ranged def %S", m_defRanged1);
 			}
 		}
 
@@ -1070,11 +1137,11 @@ NSMonster::AttackRanged(void)
 
 		if (rangedDly) {
 			m_flAttackThink = time + rangedDly + burstTime;
-			NSMonsterLog("Primary ranged attack, delay %f seconds (burst %d)", rangedDly, burstTime);
+			ncMonsterLog("Primary ranged attack, delay %f seconds (burst %d)", rangedDly, burstTime);
 		} else {
 			float actAttackTime = frameduration(modelindex, actRanged);
 			m_flAttackThink = time + actAttackTime + burstTime;
-			NSMonsterLog("Primary ranged attack, act delays it by %f seconds (burst %f)", actAttackTime, burstTime);
+			ncMonsterLog("Primary ranged attack, act delays it by %f seconds (burst %f)", actAttackTime, burstTime);
 		}
 
 		return 1;
@@ -1114,7 +1181,7 @@ NSMonster::AttackRanged(void)
 }
 
 void
-NSMonster::AttackDraw(void)
+ncMonster::AttackDraw(void)
 {
 	float actDraw = GetDefAct("arm");
 	AnimPlay(actDraw);
@@ -1132,7 +1199,7 @@ NSMonster::AttackDraw(void)
 }
 
 void
-NSMonster::AttackHolster(void)
+ncMonster::AttackHolster(void)
 {
 	float actHolster = GetDefAct("disarm");
 	AnimPlay(actHolster);
@@ -1140,7 +1207,7 @@ NSMonster::AttackHolster(void)
 }
 
 void
-NSMonster::FreeState(void)
+ncMonster::FreeState(void)
 {
 	string to_trigger;
 	m_flSequenceEnd = 0;
@@ -1154,10 +1221,10 @@ NSMonster::FreeState(void)
 	   the scripted_sequence.
 	   If that happens, the monster will then killtarget itself right after. */ 
 	if (STRING_SET(m_strSequenceKillTarget)) {
-		NSEntity findKT = (NSEntity)find(world, ::targetname, m_strSequenceKillTarget);
+		ncEntity findKT = (ncEntity)find(world, ::targetname, m_strSequenceKillTarget);
 
 		if (findKT) {
-			NSMonsterLog("Killing %S", m_strSequenceKillTarget);
+			ncMonsterLog("Killing %S", m_strSequenceKillTarget);
 			findKT.Destroy();
 			findKT.targetname = "";
 		} else {
@@ -1182,7 +1249,7 @@ NSMonster::FreeState(void)
 	/* trigger when required */
 	if (STRING_SET(to_trigger)) {
 		for (entity f = world; (f = find(f, ::targetname, to_trigger));) {
-			NSEntity trigger = (NSEntity)f;
+			ncEntity trigger = (ncEntity)f;
 			if (trigger.Trigger != __NULL__) {
 				trigger.Trigger(this, TRIG_TOGGLE);
 			}
@@ -1193,29 +1260,36 @@ NSMonster::FreeState(void)
 		Hide();
 	}
 
-	NSMonsterLog("Sequence over (hidden: %i, triggering: %S)", m_iSequenceRemove, to_trigger);
+	ncMonsterLog("Sequence over (hidden: %i, triggering: %S)", m_iSequenceRemove, to_trigger);
 }
 
 void
-NSMonster::FreeStateMoved(void)
+ncMonster::FreeStateMoved(void)
 {
 	vector new_origin;
 	new_origin = gettaginfo(this, 1);
-	NSMonsterLog("Moved to %v", new_origin);
+	ncMonsterLog("Moved to %v", new_origin);
 	SetOrigin(new_origin);
-	DropToFloor();
+
+	if (GetMovetype() != MOVETYPE_FLY) {
+		DropToFloor();
+	}
+
 	FreeState();
 }
 
 void
-NSMonster::FreeStateDead(void)
+ncMonster::FreeStateDead(void)
 {
 	vector new_origin;
 
 	new_origin = gettaginfo(this, 1);
-	NSMonsterLog("Moved to %v", new_origin);
+	ncMonsterLog("Moved to %v", new_origin);
 	SetOrigin(new_origin);
-	DropToFloor();
+
+	if (GetMovetype() != MOVETYPE_FLY) {
+		DropToFloor();
+	}
 
 	RemoveFlags(FL_MONSTER);
 	SetSolid(SOLID_CORPSE);
@@ -1224,7 +1298,7 @@ NSMonster::FreeStateDead(void)
 }
 
 void
-NSMonster::RouteEnded(void)
+ncMonster::RouteEnded(void)
 {
 	super::RouteEnded();
 
@@ -1237,70 +1311,152 @@ NSMonster::RouteEnded(void)
 		m_iSequenceState = SEQUENCESTATE_ENDING;
 		think = (m_iSequenceFlags & SSFL_NOSCRIPTMOVE) ? FreeState : FreeStateMoved;
 		nextthink = time + duration;
-		NSMonsterLog("%s overriding anim for %f seconds (modelindex %d, frame %d)", \
+		ncMonsterLog("%s overriding anim for %f seconds (modelindex %d, frame %d)", \
 			this.targetname, duration, modelindex, m_flSequenceEnd);
 	} else {
 		/* we still need to trigger targets */
 		think = (m_iSequenceFlags & SSFL_NOSCRIPTMOVE) ? FreeState : FreeStateMoved;
 		nextthink = time;
-		NSMonsterLog("%s has no anim, finished sequence", \
+		ncMonsterLog("%s has no anim, finished sequence", \
 			this.targetname);
 	}
 }
 
 void
-NSMonster::WalkRoute(void)
+ncMonster::WalkRoute(void)
 {
+	float zDifference = 0.0f;
+	float distToEnemy = 0.0f;
 	vector wishAngle = input_angles;
+	bool followRoute = false;
+	bool aimAtEnemy = false;
+	bool followEnemy = false;
+	bool stopMovement = false;
 
-	/* we're busy shooting at something, don't walk */
-	if (GetState() == MONSTER_AIMING && m_eEnemy) {
+	if (m_eEnemy) {
+		zDifference = fabs(m_eEnemy.origin[2] - origin[2]);
+		distToEnemy = distance(m_eEnemy.origin, GetOrigin());
+	}
+
+	/* in range for attacks?... */
+	if (GetState() == MONSTER_AIMING) {
+		bool inSpecial1Range = (distToEnemy < m_flSpecial1Range && m_flSpecial1Range != -1.0) ? true : false;
+		bool inSpecial2Range = (distToEnemy < m_flSpecial2Range && m_flSpecial2Range != -1.0) ? true : false;
+		bool inRanged1Range = (distToEnemy < m_flRanged1Range && m_flRanged1Range != -1.0) ? true : false;
+		bool inRanged2Range = (distToEnemy < m_flRanged2Range && m_flRanged2Range != -1.0) ? true : false;
+
+		if (inSpecial1Range || inSpecial2Range || inRanged1Range || inRanged2Range) {
+			aimAtEnemy = true;
+			stopMovement = true;
+		}
+	}
+
+	/* are we on the same plane as the player? if not, walk-route there. */
+	if (zDifference > 32.0f) {
+		followRoute = true;
+		aimAtEnemy = false;
+	} else if (IsOnRoute()) { /* else, if we're supposed to be following a route, do it. */
+		followRoute = true;
+	} else if (GetState() == MONSTER_CHASING && m_eEnemy) {
+		followEnemy = true;
+		aimAtEnemy = true;
+	} else if (GetState() == MONSTER_AIMING && m_eEnemy) {
+		followEnemy = true;
+		aimAtEnemy = true;
+		stopMovement = true;
+	}
+
+	if (followRoute && m_iNodes < 0) {
+		RouteToPosition(m_eEnemy.origin);
+	}
+
+	if (aimAtEnemy) {
 		wishAngle = vectorToAngles(m_eEnemy.origin - origin);
 		wishAngle[0] = wishAngle[2] = 0;
-	} else if (IsOnRoute()) {
+	} else if (followRoute) {
 		wishAngle = GetRouteDirection();
 		wishAngle[0] = wishAngle[2] = 0;
-		input_movevalues = GetRouteMovevalues() * m_flSequenceSpeed;
+	} else {
+		wishAngle = [0, angles[1], 0];
+	}
 
-		/* is something in our way? */
-		tracebox(origin, [-16, -16, -16], [16, 16, 16], origin + anglesToForward(wishAngle) * 256, MOVE_NORMAL, this);
+	if (m_flStopTime > time) {
+		input_movevalues = g_vec_null;
 
-		/* indeed it is */
-		if (trace_fraction < 1.0f) {
-			vector testOrg = origin + (anglesToRight(wishAngle) * 32) + anglesToForward(wishAngle) * 128;
-			testOrg[2] += mins[2] + 18.0f; /* test at feet level */
+		if (movetype == MOVETYPE_FLY) {
+			input_movevalues[2] = ((m_eEnemy.origin[2] + m_flyOffset) - origin[2]);
+			input_movevalues[2] += sin(time) * 32.0f;
+		}
 
-			traceline(origin, testOrg, MOVE_NORMAL, this);
+		/* yaw interpolation */
+		_LerpTurnToYaw(wishAngle);
+		return;
+	}
 
-			/* is space free to the right? */
-			if (trace_fraction == 1.0) {
-				input_movevalues[1] = m_flSequenceSpeed * 0.25f;
-			} else {
+	if (stopMovement == false) {
+		if (followEnemy) {
+			input_movevalues = [GetChaseSpeed(), 0, 0];
+		} else if (followRoute) {
+			if (m_flSequenceSpeed <= 0) {
+				if (m_eEnemy)
+					m_flSequenceSpeed = GetChaseSpeed();
+				else
+					m_flSequenceSpeed = GetWalkSpeed();
+			}
 
-				testOrg = origin - (anglesToRight(wishAngle) * 32) + anglesToForward(wishAngle) * 128;
+			input_movevalues = GetRouteMovevalues() * m_flSequenceSpeed;
+
+			//printf("Move values: %v\n", input_movevalues);
+
+			/* is something in our way? */
+			tracebox(origin, [-16, -16, -16], [16, 16, 16], origin + anglesToForward(wishAngle) * 256, MOVE_NORMAL, this);
+
+			/* indeed it is */
+			if (trace_fraction < 1.0f) {
+				vector testOrg = origin + (anglesToRight(wishAngle) * 32) + anglesToForward(wishAngle) * 128;
 				testOrg[2] += mins[2] + 18.0f; /* test at feet level */
 
 				traceline(origin, testOrg, MOVE_NORMAL, this);
 
-				/* is space free to the left? */
-				if (trace_fraction == 1.0)
-					input_movevalues[1] = -m_flSequenceSpeed * 0.25f;
+				/* is space free to the right? */
+				if (trace_fraction == 1.0) {
+					input_movevalues[1] = m_flSequenceSpeed * 0.25f;
+				} else {
+
+					testOrg = origin - (anglesToRight(wishAngle) * 32) + anglesToForward(wishAngle) * 128;
+					testOrg[2] += mins[2] + 18.0f; /* test at feet level */
+
+					traceline(origin, testOrg, MOVE_NORMAL, this);
+
+					/* is space free to the left? */
+					if (trace_fraction == 1.0)
+						input_movevalues[1] = -m_flSequenceSpeed * 0.25f;
+				}
 			}
+		} else {
+			if (movetype == MOVETYPE_FLY) {
+				input_movevalues[2] = ((m_eEnemy.origin[2] + m_flyOffset) - origin[2]);
+				input_movevalues[2] += sin(time) * 32.0f;
+			}
+			return;
 		}
-	} else if (GetState() == MONSTER_CHASING && m_eEnemy) {
-		/* we've got 'em in our sights, just need to walk closer */
-		wishAngle = vectorToAngles(m_eEnemy.origin - origin);
-		wishAngle[0] = wishAngle[2] = 0;
-		input_movevalues = [GetChaseSpeed(), 0, 0];
-	} else
-		return;
+	}
+
+	if (movetype == MOVETYPE_FLY) {
+		input_movevalues[2] = ((m_eEnemy.origin[2] + m_flyOffset) - origin[2]);
+		input_movevalues[2] += sin(time) * 32.0f;
+	}
 
 	/* yaw interpolation */
-	_LerpTurnToYaw(wishAngle);
+	if (aimAtEnemy) {
+		_LerpTurnToEnemy();
+	} else {
+		_LerpTurnToYaw(wishAngle);
+	}
 }
 
 void
-NSMonster::AnimationUpdate(void)
+ncMonster::AnimationUpdate(void)
 {
 	int fr = 0;
 	int act = 0;
@@ -1364,9 +1520,9 @@ NSMonster::AnimationUpdate(void)
 		SetFrame(fr);
 }
 
-/* for an NSMonster, health doesn't matter that much, as we could be a corpse */
+/* for an ncMonster, health doesn't matter that much, as we could be a corpse */
 bool
-NSMonster::IsAlive(void)
+ncMonster::IsAlive(void)
 {
 	if (GetState() == MONSTER_DEAD)
 		return false;
@@ -1375,7 +1531,7 @@ NSMonster::IsAlive(void)
 }
 
 void
-NSMonster::StateChanged(monsterState_t oldState, monsterState_t newState)
+ncMonster::StateChanged(monsterState_t oldState, monsterState_t newState)
 {
 	switch (newState) {
 	case MONSTER_AIMING:
@@ -1401,7 +1557,7 @@ NSMonster::StateChanged(monsterState_t oldState, monsterState_t newState)
 }
 
 void
-NSMonster::SetState(monsterState_t newState)
+ncMonster::SetState(monsterState_t newState)
 {
 	if (newState == m_iMState)
 		return;
@@ -1412,25 +1568,25 @@ NSMonster::SetState(monsterState_t newState)
 }
 
 monsterState_t
-NSMonster::GetState(void)
+ncMonster::GetState(void)
 {
 	return m_iMState;
 }
 
 int
-NSMonster::GetSequenceState(void)
+ncMonster::GetSequenceState(void)
 {
 	return m_iSequenceState;
 }
 
 bool
-NSMonster::InSequence(void)
+ncMonster::InSequence(void)
 {
 	return (GetSequenceState() == SEQUENCESTATE_NONE) ? false : true;
 }
 
 void
-NSMonster::RunAI(void)
+ncMonster::RunAI(void)
 {
 	IdleNoise();
 	SeeThink();
@@ -1438,7 +1594,7 @@ NSMonster::RunAI(void)
 }
 
 void
-NSMonster::Physics(void)
+ncMonster::Physics(void)
 {
 	input_movevalues = [0,0,0];
 	input_impulse = 0;
@@ -1449,6 +1605,16 @@ NSMonster::Physics(void)
 
 	if (autocvar_ai_enable == false) {
 		return;
+	}
+
+	/* check if we're supposed to be awake */
+	if (m_pvsSleep == false) {
+		if (SharesPVSWithPlayer() == false) {
+			return;
+		}
+
+		m_pvsSleep = true;
+		EntLog("Unfreezing entity, in discovered PVS");
 	}
 
 	/* editors like Hammer like putting 'sequence' into spawndata
@@ -1465,6 +1631,9 @@ NSMonster::Physics(void)
 
 	/* HACK!!! */
 	if (!IsAlive()) {
+
+		processmodelevents(modelindex, frame, m_flBaseTime,
+			frame1time, HandleAnimEvent);
 		return;
 	}
 
@@ -1478,6 +1647,7 @@ NSMonster::Physics(void)
 		m_eEnemy = __NULL__;
 		SetState(MONSTER_IDLE);
 	}
+
 
 	/* we're ending a scripted sequence, so play its animation */
 	if (GetSequenceState() == SEQUENCESTATE_ENDING) {
@@ -1493,24 +1663,27 @@ NSMonster::Physics(void)
 				RunAI();
 			}
 
-			_LerpTurnToEnemy();
 			AnimationUpdate();
 		}
 
 		/* suppress movement when playing an animation outside
 		   a scripted sequence */
-		if (InAnimation() == true && InSequence() == false) {
+		if (InSequence() == true) {
 			input_movevalues = [0,0,0];
-		} else {
+		} else if (m_usesNav) {
 			CheckRoute();
 			WalkRoute();
+		} else {
+			if (IsPerforming() == false) {
+				SelectNewSchedule();
+			}
 		}
 
 		hitcontentsmaski = CONTENTBITS_MONSTER;
 
 		/* don't move while turning. */
 		if (m_bTurning == true) {
-			input_movevalues = [0,0,0];
+ 			input_movevalues = [0,0,0];
 		}
 
 		/* complete the move */
@@ -1540,14 +1713,14 @@ NSMonster::Physics(void)
 }
 
 void
-NSMonster::Touch(entity eToucher)
+ncMonster::Touch(entity eToucher)
 {
 	/* leap test, are we no longer on the ground? */
 	if (m_flLeapDamage && m_bLeapAttacked == false)
 	if (HasFlags(FL_ONGROUND) == false) {
 		if (eToucher.takedamage != DAMAGE_NO) {
-			NSSurfacePropEntity toucher = (NSSurfacePropEntity)eToucher;
-			NSDict damageDecl = spawn(NSDict);
+			ncSurfacePropEntity toucher = (ncSurfacePropEntity)eToucher;
+			ncDict damageDecl = spawn(ncDict);
 			damageDecl.AddKey("damage", ftos(m_flLeapDamage));
 			toucher.Damage(this, owner, damageDecl, 1.0, vectorNormalize(angles), trace_endpos);
 			remove(damageDecl);
@@ -1587,13 +1760,13 @@ NSMonster::Touch(entity eToucher)
 }
 
 void
-NSMonster::HasBeenHit(void)
+ncMonster::HasBeenHit(void)
 {
 	/* to be filled in by the sub-class */
 }
 
 void
-NSMonster::Pain(entity inflictor, entity attacker, int damage, vector dir, int location)
+ncMonster::Pain(entity inflictor, entity attacker, int damage, vector dir,  vector absImpactPos, int hitBody)
 {
 	float actSmallFlinch = GetDefAct("smallFlinch");
 	float actBigFlinch = GetDefAct("bigFlinch");
@@ -1618,7 +1791,7 @@ NSMonster::Pain(entity inflictor, entity attacker, int damage, vector dir, int l
 
 	/* if don't have an enemy, set one; else make it random */
 	if (!m_eEnemy || (random() < 0.5)) {
-		m_eEnemy = attacker;
+		m_eEnemy = m_eLookAt = attacker;
 	}
 
 	/* an alert monster will take a while to calm back down */
@@ -1633,7 +1806,7 @@ NSMonster::Pain(entity inflictor, entity attacker, int damage, vector dir, int l
 	/* alert all nearby friendlies */
 	AlertNearby();
 
-	switch (location) {
+	switch (hitBody) {
 	case BODY_HEAD:
 		actPain = GetDefAct("flinchHead");
 		break;
@@ -1664,70 +1837,65 @@ NSMonster::Pain(entity inflictor, entity attacker, int damage, vector dir, int l
 			actPain = actBigFlinch;
 		else if (actSmallFlinch >= 0)
 			actPain = actSmallFlinch;
+		else if (actTwitch >= 0)
+			actPain = actTwitch;
 	}
 
+	if (actPain == -1) {
+		return;
+	}
+
+	m_flStopTime = time + frameduration(modelindex, actPain);
 	AnimPlay(actPain);
 	StartSoundDef(m_sndPain, CHAN_VOICE, true);
 	HasBeenHit();
 }
 
 void
-NSMonster::HasBeenKilled(void)
+ncMonster::HasBeenKilled(void)
 {
 	/* to be filled in by the sub-class */
 }
 
 void
-NSMonster::HasBeenGibbed(void)
+ncMonster::HasBeenGibbed(void)
 {
 	/* to be filled in by the sub-class */
 }
 
 void
-NSMonster::HasBeenAlerted(void)
+ncMonster::HasBeenAlerted(void)
 {
 	/* to be filled in by the sub-class */
 }
 
 void
-NSMonster::_Alerted(void)
+ncMonster::_Alerted(void)
 {
 	HasBeenAlerted();
 }
 
 void
-NSMonster::Death(entity inflictor, entity attacker, int damage, vector dir, int location)
+ncMonster::Death(entity inflictor, entity attacker, int damage, vector dir, vector absImpactPos, int hitBody)
 {
-	static void Death_Thud(void)
-	{
-		StartSoundDef(m_sndThud, CHAN_BODY, true);
-	}
-
 	float actViolent = GetDefAct("dieViolent");
 	float actForward = GetDefAct("dieForward");
 	float actBackward = GetDefAct("dieBackward");
 	float actSimple = GetDefAct("dieSimple");
 	float actBackshot = GetDefAct("dieBackshot");
-
 	float actDeath = -1;
+
 
 	/* we were already dead before, so gib */
 	if (GetState() == MONSTER_DEAD) {
 		HasBeenGibbed();
-		Gib();
+		Gib(damage, dir);
 		return;
 	}
 
 	m_iFlags = 0x0;
 
-	/* if we make more than 50 damage, gib immediately */
-	if (GetHealth() < -50) {
-		HasBeenGibbed();
-		Gib();
-		return;
-	}
-
-	switch (g_dmg_iHitBody) {
+	switch (hitBody) {
 	case BODY_HEAD:
 		actDeath = GetDefAct("dieHeadshot");
 		break;
@@ -1739,45 +1907,67 @@ NSMonster::Death(entity inflictor, entity attacker, int damage, vector dir, int 
 		break;
 	}
 
-	if (actDeath == -1) {
-		if (actViolent >= 0 && GetHealth() < -15) /* lots of damage */
-			AnimPlay(actViolent);
-		else if (actBackshot >= 0 && IsFacingPosition(g_dmg_vecLocation) == false)
-			AnimPlay(actBackshot);
-		else if (actForward >= 0 && IsFacingPosition(g_dmg_vecLocation) == false)
-			AnimPlay(actForward);
-		else if (actBackward >= 0 && IsFacingPosition(g_dmg_vecLocation) == true)
-			AnimPlay(actBackward);
-		else
-			AnimPlay(actSimple);
+	if (actDeath < 0) {
+		if (actViolent >= 0 && GetHealth() < -25) { /* lots of damage */
+			actDeath = (actViolent);
+		} else if (actBackshot >= 0 && IsFacingPosition(absImpactPos) == false) {
+			actDeath = (actBackshot);
+		} else if (actForward >= 0 && IsFacingPosition(absImpactPos) == false) {
+			actDeath = (actForward);
+		} else if (actBackward >= 0 && IsFacingPosition(absImpactPos) == true) {
+			actDeath = (actBackward);
+		} else {
+			actDeath = actSimple;
+		}
 	} else {
-		AnimPlay(actDeath);
+		actDeath = actSimple;
+	}
+
+	AnimPlay(actDeath);
+
+	if (autocvar(g_forceRagdolls, 0) || GetDefBool("ragdoll") == true) {
+		BodyQue_Spawn((ncActor)this, frame);
+		Disappear();
+		SetState(MONSTER_DEAD);
+	} else {
+		/* if we make more than 50 damage, gib immediately */
+		if (GetHealth() < -50) {
+			HasBeenGibbed();
+			Gib(damage, dir);
+			return;
+		}
+
+		/* set the monster up for getting gibbed */
+		SetSolid(SOLID_CORPSE);
+		SetHealth(50 + GetHealth());
+		SetState(MONSTER_DEAD);
 	}
 
 	StartSoundDef(m_sndDeath, CHAN_VOICE, true);
 	HasBeenKilled();
+	g_grMode.NPCDeath(this, (ncActor)inflictor, (ncActor)attacker);
 
 	/* make sure we're not causing any more obituaries */
 	RemoveFlags(FL_MONSTER);
 
-	/* set the monster up for getting gibbed */
-	SetMovetype(MOVETYPE_NONE);
-	SetSolid(SOLID_CORPSE);
-	SetHealth(50 + GetHealth());
-	SetState(MONSTER_DEAD);
+	if (GetMovetype() == MOVETYPE_FLY) {
+		AddVelocity([0,0,128]);
+		//SetSize([-8,-8,-8], [8,8,16]);
+		SetMovetype(MOVETYPE_BOUNCE);
+		customphysics = __NULL__;
+	} else if (GetMovetype() != MOVETYPE_NONE) {
+		SetMovetype(MOVETYPE_TOSS);
+	}
 
 	/* monsters trigger their targets when dead */
 	if (GetTriggerCondition() == MTRIG_DEATH) {
 		TriggerTargets();
 	}
-
-	/* play thud sound */
-	ScheduleThink(Death_Thud, frameduration(modelindex, frame) * 0.5f);
 }
 
 #if 0
 void
-NSMonster::Hide(void)
+ncMonster::Hide(void)
 {
 	SetModelindex(0);
 	SetSolid(SOLID_NOT);
@@ -1787,10 +1977,10 @@ NSMonster::Hide(void)
 #endif
 
 void
-NSMonster::Spawned(void)
+ncMonster::Spawned(void)
 {
 	if (!HasSpawnFlags(MSF_MULTIPLAYER)) {
-		if (g_grMode.MonstersSpawn() == FALSE) {
+		if (CreatedByMap() == true && g_grMode.MonstersSpawn() == FALSE) {
 			ReleaseThink();
 			Destroy();
 			return;
@@ -1808,7 +1998,7 @@ NSMonster::Spawned(void)
 }
 
 void
-NSMonster::Respawn(void)
+ncMonster::Respawn(void)
 {
 	super::Respawn();
 
@@ -1821,16 +2011,30 @@ NSMonster::Respawn(void)
 	SetHealth(GetSpawnFloat("health"));
 	m_eEnemy = __NULL__;
 	m_iFlags = 0x0;
+	m_flyOffset = GetSpawnFloat("fly_offset");
+	m_flAnimTime = 0.0f;
 	EnableBleeding();
 	SetSize(GetSpawnVector("mins"), GetSpawnVector("maxs"));
 	SetSkin(GetSpawnFloat("skin"));
 	customphysics = Physics;
 	SetSolid(SOLID_SLIDEBOX);
-	SetMovetype(MOVETYPE_WALK);
+	AnimPlay(AnimIdle());
+	ClearVelocity();
+	RouteClear();
+
 	SetEyePos([0, 0, m_flEyeHeight]);
 	SetOrigin(GetSpawnVector("origin"));
-	DropToFloor();
-	SetOriginUnstick(origin);
+
+	if (GetSpawnBool("flying"))
+		SetMovetype(MOVETYPE_FLY);
+	else if (GetSpawnBool("static"))
+		SetMovetype(MOVETYPE_NONE);
+	else {
+		SetMovetype(MOVETYPE_WALK);
+		DropToFloor();
+		SetOriginUnstick(origin);
+	}
+
 
 	if (HasSpawnFlags(MSF_MONSTERCLIP)) {
 		hitcontentsmaski = CONTENTBITS_BOXSOLID | CONTENTBIT_MONSTERCLIP;
@@ -1852,6 +2056,8 @@ NSMonster::Respawn(void)
 		SetHealth(GetSpawnFloat("health"));
 		SetState(MONSTER_DEAD);
 		SetFrame(_m_flFrame);
+	} else {
+		SetState(MONSTER_IDLE);
 	}
 
 	if (HasSpawnFlags(MSF_GAG)) {
@@ -1871,7 +2077,7 @@ NSMonster::Respawn(void)
 }
 
 void
-NSMonster::Input( entity entityActivator, string inputName, string dataField )
+ncMonster::Input( entity entityActivator, string inputName, string dataField )
 {
 	switch (inputName) {
 	case "Sleep":
@@ -1880,6 +2086,22 @@ NSMonster::Input( entity entityActivator, string inputName, string dataField )
 		break;
 	case "Wake":
 		customphysics = Physics;
+		break;
+	case "HordeOn":
+		m_iFlags |= MSF_HORDE;
+		m_eEnemy = ncMonster_FindClosestPlayer(this);
+
+		if (m_eEnemy) {
+			m_flSequenceSpeed = 300.0f;
+			RouteToPosition(m_eEnemy.origin);
+		}
+
+		/* clear their chase path */
+		ChasePath("");
+
+		break;
+	case "HordeOff":
+		m_iFlags &= ~MSF_HORDE;
 		break;
 	case "StartScripting":
 		m_iSequenceState = SEQUENCESTATE_IDLE;
@@ -1890,26 +2112,48 @@ NSMonster::Input( entity entityActivator, string inputName, string dataField )
 	case "GagDisable":
 		m_bGagged = false;
 		break;
+	case "Wait":
+		float waitTime = stof(dataField);
+		m_flStopTime = GetTime() + waitTime;
+		m_activeSchedule.AdvanceLater(waitTime);
+		break;
+	case "WaitRandom":
+		float waitTime = stof(dataField);
+
+		/* if not specified... make something up */
+		if (waitTime > 0.0f) {
+			m_flStopTime = GetTime() + random(0.0f, waitTime);
+		} else {
+			m_flStopTime = GetTime() + random(0.0f, 1.0f);
+		}
+
+		m_activeSchedule.AdvanceLater(waitTime);
+		break;
+	case "WaitIndefinitely":
+		m_flStopTime = (60 * 60) * 24; /* 24 hours is enough... */
+		break;
 	default:
 		super::Input(entityActivator, inputName, dataField);
 	}
 }
 
 void
-NSMonster::Trigger(entity act, triggermode_t state)
+ncMonster::Trigger(entity act, triggermode_t state)
 {
+	m_eEnemy = __NULL__;
+	RouteClear();
 	ChasePath(GetTriggerTarget());
 	m_flSequenceSpeed = m_flWalkSpeed;
 }
 
 void
-NSMonster::_ChaseAfterSpawn(void)
+ncMonster::_ChaseAfterSpawn(void)
 {
 	Trigger(this, TRIG_TOGGLE);
 }
 
 void
-NSMonster::SpawnKey(string strKey, string strValue)
+ncMonster::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
 	/* The legacy GoldSrc trigger condition system */
@@ -1952,9 +2196,6 @@ NSMonster::SpawnKey(string strKey, string strValue)
 		break;
 	case "snd_death":
 		m_sndDeath = ReadString(strValue);
-		break;
-	case "snd_thud":
-		m_sndThud = ReadString(strValue);
 		break;
 	case "def_melee":	/* melee attack information */
 	case "def_attack_melee":
@@ -2066,6 +2307,15 @@ NSMonster::SpawnKey(string strKey, string strValue)
 	case "sequence":
 		m_flForceSequence = ReadFloat(strValue);
 		break;
+	case "fly_offset":
+		m_flyOffset = ReadFloat(strValue);
+		break;
+	case "use_nav":
+		m_usesNav = ReadBool(strValue);
+		break;
+	case "fireFromHead":
+		m_fireFromHead = ReadBool(strValue);
+		break;
 	default:
 		super::SpawnKey(strKey, strValue);
 		break;
@@ -2073,7 +2323,7 @@ NSMonster::SpawnKey(string strKey, string strValue)
 }
 
 void
-NSMonster::EvaluateEntity(void)
+ncMonster::EvaluateEntity(void)
 {
 	EVALUATE_VECTOR(origin, 0, MONFL_CHANGED_ORIGIN_X)
 	EVALUATE_VECTOR(origin, 1, MONFL_CHANGED_ORIGIN_Y)
@@ -2118,7 +2368,7 @@ NSMonster::EvaluateEntity(void)
 
 /* Make sure StartFrame calls this */
 float
-NSMonster::SendEntity(entity ePEnt, float flChanged)
+ncMonster::SendEntity(entity ePEnt, float flChanged)
 {
 	if (!modelindex) {
 		return (0);
@@ -2178,13 +2428,13 @@ NSMonster::SendEntity(entity ePEnt, float flChanged)
 #else
 
 void
-NSMonster::customphysics(void)
+ncMonster::customphysics(void)
 {
 	/* Page intentionally left blank */
 }
 
 float
-NSMonster::predraw(void)
+ncMonster::predraw(void)
 {
 	float render;
 	render = super::predraw();
@@ -2194,11 +2444,11 @@ NSMonster::predraw(void)
 
 /*
 ============
-NSMonster::ReceiveEntity
+ncMonster::ReceiveEntity
 ============
 */
 void
-NSMonster::ReceiveEntity(float flNew, float flChanged)
+ncMonster::ReceiveEntity(float flNew, float flChanged)
 {
 	READENTITY_COORD(origin[0], MONFL_CHANGED_ORIGIN_X)
 	READENTITY_COORD(origin[1], MONFL_CHANGED_ORIGIN_Y)
@@ -2258,7 +2508,7 @@ NSMonster::ReceiveEntity(float flNew, float flChanged)
 }
 
 void
-NSMonster::_RenderDebugViewCone(void)
+ncMonster::_RenderDebugViewCone(void)
 {
 	vector v;
 	float flDot;
@@ -2298,7 +2548,7 @@ var bool autocvar_ai_debugAlerts = false;
 
 var float g_monsteralert_timer;
 void
-NSMonster_AlertEnemyAlliance(vector pos, float radius, int alliance)
+ncMonster_AlertEnemyAlliance(vector pos, float radius, int alliance)
 {
 	/* sometimes many alert-sounds happen at once... we don't really want that */
 	if (g_monsteralert_timer > time) {
@@ -2314,7 +2564,7 @@ NSMonster_AlertEnemyAlliance(vector pos, float radius, int alliance)
 			continue;
 		}
 
-		NSMonster f = (NSMonster)w;
+		ncMonster f = (ncMonster)w;
 
 		/* they already got a target of some kind */
 		if (f.m_eEnemy) {
@@ -2357,9 +2607,9 @@ NSMonster_AlertEnemyAlliance(vector pos, float radius, int alliance)
 }
 
 entity
-NSMonster_FindClosestPlayer(entity target)
+ncMonster_FindClosestPlayer(entity target)
 {
-	NSMonster t = (NSMonster)target;
+	ncMonster t = (ncMonster)target;
 	entity best = world;
 	float bestdist;
 	float dist;

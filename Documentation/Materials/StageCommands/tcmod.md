@@ -1,12 +1,12 @@
 # Material Command List {#mat_commands}
 
-### tcMod {#tcMod}
+## tcMod {#tcMod}
 
-#### Syntax
+### Syntax
 
-**tcMod <func> [...]**
+**tcMod \<func\> [...]**
 
-#### Overview
+### Overview
 
 Specifies how texture coordinates are modified after they are generated.
 
@@ -24,15 +24,15 @@ Texture coordinates are modified in the order in which **tcMods** are
 specified. In otherwords, if you see:
 
 ```
- tcMod scale 0.5 0.5
- tcMod scroll 1 1
+	tcMod scale 0.5 0.5
+	tcMod scroll 1 1
 ```
 
 Then the texture coordinates will be **scaled** then **scrolled**.
 
-#### Functions 
+### Functions 
 
-##### rotate <degrees per per second>
+#### rotate <degrees per per second>
 
 This keyword causes the texture coordinates to rotate. The value is
 expressed in degrees rotated each second. A positive value means
@@ -43,7 +43,7 @@ center point of the texture map, so you are rotating a texture with a
 single repetition, be careful to center it on the brush (unless
 off-center rotation is desired).
 
-##### scale <sScale> <tScale>
+#### scale <sScale> <tScale>
 
 Resizes (enlarges or shrinks) the texture coordinates by multiplying
 them against the given factors of <sScale> and &lt;tScale). The values
@@ -60,7 +60,7 @@ Example: `tcMod scale 0.5 2` would cause the texture to repeat twice
 along its width, but expand to twice its height (in which case half of
 the texture would be seen in the same area as the original)
 
-##### scroll <sSpeed> <tSpeed>
+#### scroll <sSpeed> <tSpeed>
 
 Scrolls the texture coordinates with the given speeds. The values "s"
 and "t" conform to the "x" and "y" values (respectively) as they are
@@ -77,7 +77,7 @@ texture each second of travel.
 **This should be the LAST tcMod in a stage.** Otherwise there maybe
 popping or snapping visual effects in some materials.
 
-##### stretch <func> <base> <amplitude> <phase> <frequency>
+#### stretch <func> <base> <amplitude> <phase> <frequency>
 
 Stretches the texture coordinates with the given function. Stretching is
 defined as stretching the texture coordinate away from the center of the
@@ -109,7 +109,7 @@ keyword.
     wave.
 -   **Inversesawtooth**: this is the reverse of the sawtooth wave.
 
-##### transform <m00> <m01> <m10> <m11> <t0> <t1>
+#### transform <m00> <m01> <m10> <m11> <t0> <t1>
 
 Transforms each texture coordinate as follows:
 
@@ -117,7 +117,7 @@ S' = s \* m00 + t \* m10 + t0 T' = s \* m01 + t \* m11 + t1
 
 This is for use by programmers.
 
-##### turb <base> <amplitude> <phase> <freq>
+#### turb <base> <amplitude> <phase> <freq>
 
 Applies turbulence to the texture coordinate. Turbulence is a back and
 forth churning and swirling effect on the texture.

@@ -22,7 +22,7 @@
 #define PRPDRFL_NOUSE		32768
 
 class
-prop_door_rotating:NSRenderableEntity
+prop_door_rotating:ncRenderableEntity
 {
 public:
 	void prop_door_rotating(void);

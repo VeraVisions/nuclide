@@ -1,9 +1,0 @@
-// Vera Visions Material
-{
-	surfaceParm nolightmap
-	{
-		map $whiteimage
-		rgbGen vertex
-		alphaGen vertex
-	}
-}

@@ -1,0 +1,8 @@
+{
+	diffusemap dev/model_bone.ktx
+	
+	{
+		map $diffuse
+		blendFunc blend
+	}
+}

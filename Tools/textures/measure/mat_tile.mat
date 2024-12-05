@@ -1,0 +1,18 @@
+{
+	surfaceParm tile
+
+if $programs
+	program defaultwall
+	diffusemap textures/measure/mat_tile.tga
+else
+	{
+		map $lightmap
+		rgbGen identity
+	}
+	{
+		map textures/measure/mat_tile.tga
+		rgbGen identity
+		blendFunc GL_DST_COLOR GL_ZERO
+	}
+endif
+}

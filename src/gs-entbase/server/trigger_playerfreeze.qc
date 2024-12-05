@@ -31,11 +31,11 @@ and so on.
 # TRIVIA
 This entity was introduced in Opposing Force (1999).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-trigger_playerfreeze:NSBrushTrigger
+trigger_playerfreeze:ncBrushTrigger
 {
 public:
 	void trigger_playerfreeze(void);

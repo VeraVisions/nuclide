@@ -1,6 +1,0 @@
-// Vera Visions Material
-{
-	program unlit
-	diffusemap models/logos/visions_eye.ktx
-	normalmap models/logos/visions_eye_n.tga
-}

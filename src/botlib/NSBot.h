@@ -22,7 +22,7 @@
 */
 
 /** The desired target destination has been reached. */
-#define BOTROUTE_DESTINATION	-1
+#define BOTROUTE_DESTINATION		-1
 /** Unloading of the route in progress. */
 #define BOTROUTE_END			-2
 
@@ -49,11 +49,11 @@ typedef enum
 @ingroup bot
 @ingroup baseclass
 */
-class NSBot:NSActor
+class ncBot:ncActor
 {
 public:
 
-	void NSBot(void);
+	void ncBot(void);
 
 #ifdef SERVER
 	virtual void SetState(botstate_t);
@@ -66,7 +66,7 @@ public:
 
 	virtual void ChatSay(string);
 	virtual void ChatSayTeam(string);
-	virtual void Pain(entity, entity, int, vector, int);
+	virtual void Pain(entity, entity, int, vector, vector, int);
 	virtual void RouteClear(void);
 	virtual void WeaponThink(void);
 	virtual void WeaponAttack(void);
@@ -75,9 +75,9 @@ public:
 	virtual void RunAI(void);
 	virtual void CreateObjective(void);
 	virtual void CheckRoute(void);
-	virtual void PreFrame(void);
-	virtual void PostFrame(void);
-	virtual void AddedItemCallback(NSItem);
+	virtual void BotPreFrame(void);
+	virtual void BotPostFrame(void);
+	virtual void AddedItemCallback(ncItem);
 	virtual void UseButton(void);
 	virtual void SetEnemy(entity);
 	virtual float GetRunSpeed(void);
@@ -138,7 +138,7 @@ void BotLib_Init(void);
 
 /** Applies random custom colors to the given bot entity. */
 void
-Bot_RandomColormap(NSBot target)
+Bot_RandomColormap(ncBot target)
 {
 	vector x = hsvToRGB(random() * 360, 100, 100);
 	float top = x[2] + (x[1] << 8) + (x[0] << 16);

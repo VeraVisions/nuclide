@@ -15,13 +15,21 @@
 */
 
 
-void EFX_UpdateListener(NSView);
+void EFX_UpdateListener(ncView);
 
 void
 init(float prevprogs)
 {
 	_client_main();
 	_shared_main();
+}
+
+string CSQC_GenerateMaterial(string shadername)
+{
+	Materials_OnLoad(shadername);
+	return (__NULL__);
+// 	return (shadername);
+// 	NSError("%S", shadername);
 }
 
 /** Updates our seat pointers. 
@@ -50,7 +58,7 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	NSLog("QCC: %s", __QCCVER__);
 
 	for (int i = 0; i < 4; i++) {
-		g_viewSeats[i] = spawn(NSView);
+		g_viewSeats[i] = spawn(ncView);
 		g_viewSeats[i].SetSeatID(i);
 	}
 
@@ -80,6 +88,7 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	Materials_Init();
 	MOTD_Init();
 	Commandmenu_Init();
+	Activities_Init();
 
 	/* let the menu know we're a multi or a singleplayer game */
 	if (serverkeyfloat("sv_playerslots") == 1)
@@ -93,7 +102,7 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	Ammo_Init();
 	WorldSpawn_Init();
 
-	g_overview = NSRadar::InitForCurrentMap();
+	g_overview = ncRadar::InitForCurrentMap();
 
 
 	HUD_Init();
@@ -125,7 +134,7 @@ CSQC_RendererRestarted(string rstr)
 	/* Fonts */
 	Font_Load("fonts/font16.font", FONT_16);
 	Font_Load("fonts/font20.font", FONT_20);
-	Font_Load("fonts/fontcon.font", FONT_CON);
+	Font_Load("fonts/console.font", FONT_CON);
 	Font_Load("fonts/centerprint.font", FONT_CENTERPRINT);
 
 	/* Particles */
@@ -178,7 +187,7 @@ distinction from 3D world elements and overlays.
 void
 CSQC_Update2D(float w, float h, bool focus)
 {
-	NSClientPlayer cl = (NSClientPlayer)pSeat->m_ePlayer;
+	ncPlayer cl = (ncPlayer)pSeat->m_ePlayer;
 	self = cl;
 
 	if (Util_GetMaxPlayers() > 1 && !VGUI_Active() && (Client_InIntermission() || (!cl.IsFakeSpectator() && cl.IsDead()))) {
@@ -218,7 +227,7 @@ in here.
 void
 CSQC_UpdateView(float w, float h, float focus)
 {
-	NSClient cl = __NULL__;
+	ncPlayer cl = __NULL__;
 	int s;
 	vector vecViewAngles = view_angles;
 
@@ -295,14 +304,14 @@ CSQC_UpdateView(float w, float h, float focus)
             if (pSeat->m_ePlayer == world)
                 continue;
 
-			cl = (NSClient)pSeat->m_ePlayer;
+			cl = (ncPlayer)pSeat->m_ePlayer;
 			setproperty(VF_ACTIVESEAT, (float)s);
 
 			/* set up our single/split viewport */
 			View_CalcViewport(s, w, h);
 
 			/* our view target ourselves, if we're alive... */
-			g_view.SetViewTarget((NSEntity)pSeat->m_ePlayer);
+			g_view.SetViewTarget((ncEntity)pSeat->m_ePlayer);
 
 			if (Client_IsSpectator(cl))
 				g_view.SetViewMode(VIEWMODE_SPECTATING);
@@ -380,9 +389,9 @@ CSQC_InputEvent(float fEventType, float fKey, float fCharacter, float fDeviceID)
 
 	pSeat->m_bInterfaceFocused = false;
 
-	for (entity e = world; (e = find(e, ::classname, "NSInteractiveSurface"));) {
+	for (entity e = world; (e = find(e, ::classname, "ncInteractiveSurface"));) {
 		vector vecPos = pSeat->m_ePlayer.origin + pSeat->m_ePlayer.view_ofs;
-		NSInteractiveSurface surf = (NSInteractiveSurface) e;
+		ncInteractiveSurface surf = (ncInteractiveSurface) e;
 		
 		if (surf.FocusCheck(vecPos, view_angles)) {
 			pSeat->m_bInterfaceFocused = true;
@@ -425,7 +434,7 @@ CSQC_Input_Frame(void)
 	me = pSeat->m_ePlayer;
 
 	if (me.classname == "player" || me.classname == "spectator") {
-		NSClient pl = (NSClient)me;
+		ncClient pl = (ncClient)me;
 		pl.SharedInputFrame();
 		float delayInputs = HUD_ClientInputFrame(input_buttons);
 
@@ -615,7 +624,7 @@ void
 CSQC_Ent_Remove(void)
 {
 	if (self.identity) {
-		NSEntity me = (NSEntity)self;
+		ncEntity me = (ncEntity)self;
 		me.removed = 1; /* mark this as cleanly removed */
 
 		/* we don't want to call Destroy, as that's delayed by a frame...

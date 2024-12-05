@@ -41,10 +41,10 @@ typedef enum
 
 /** This class networks pmove related variables to each client. */
 class
-NSPMoveVars:NSEntity
+ncPMoveVars:ncEntity
 {
 public:
-	void NSPMoveVars(void);
+	void ncPMoveVars(void);
 
 	NETWORKED_FLOAT(g_gravity)
 	NETWORKED_FLOAT(pm_accelerate)
@@ -70,6 +70,7 @@ public:
 	NETWORKED_FLOAT(pm_pronespeed)
 	NETWORKED_FLOAT(pm_proneviewheight)
 	NETWORKED_FLOAT(pm_runspeed)
+	NETWORKED_FLOAT(pm_runfiring)
 	NETWORKED_FLOAT(pm_stamina)
 	NETWORKED_FLOAT(pm_staminarate)
 	NETWORKED_FLOAT(pm_staminathreshold)
@@ -125,7 +126,14 @@ private:
 };
 
 /** The global, shared object containing all currently valid pmove parameters. */
-NSPMoveVars g_pmoveVars;
+ncPMoveVars g_pmoveVars;
+ncDict g_waterDecl;
+ncDict g_slimeDecl;
+ncDict g_lavaDecl;
+ncDict g_fallDamageDecl;
+ncDict g_waterDamageDecl;
+ncDict g_slimeDamageDecl;
+ncDict g_lavaDamageDecl;
 
 /** Called by Nuclide. Sets up g_pmoveVars. */
 void PMove_Init(void);

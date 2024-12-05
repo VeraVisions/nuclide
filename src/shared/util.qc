@@ -72,13 +72,6 @@ Util_ChangeClass(entity objectID, string className)
 }
 
 string
-Util_ExtensionFromString(string inputString)
-{
-	int modelNameLength = strlen(inputString);
-	return substring(inputString, modelNameLength - 3, modelNameLength);
-}
-
-string
 Util_ChatFormat(float playerNum, float teamNum, string chatMessage)
 {
 	vector teamColor = stov(serverkey(sprintf("teamcolor_%d", teamNum)));
@@ -96,4 +89,53 @@ Util_ChatFormat(float playerNum, float teamNum, string chatMessage)
 	} else {
 		return sprintf("%s %s(%s)^7: %s", playerName, teamColorString, teamName, chatMessage);
 	}
+}
+
+int
+Util_GetMaxPlayers(void)
+{
+	return g_numplayerslots;
+}
+
+string
+Util_GetTime( void )
+{
+	static int iS, iM, iT, iMS;
+	float timeLimit = stof( serverkey( "timelimit" ) ) * 60;
+
+	/* display a count-down timer if we've got a time limit */
+	if (timeLimit <= 0)
+		iMS = (int)time;
+	else
+		iMS = timeLimit - time;
+
+	if ( iMS < 0 ) {
+		iMS = 0;
+	}
+	
+	iS = iMS;
+	iM = iS / 60;
+	iS -= iM * 60;
+	iT = iS / 10;
+	iS -= iT * 10;
+	
+	return sprintf( "%i:%i%i", iM, iT, iS );
+}
+
+float
+Util_GetTimeLeft(void)
+{
+	float timeLimit = stof( serverkey( "timelimit" ) ) * 60;
+	return timeLimit - time;
+}
+
+string
+Util_GetAddress(void)
+{
+	string host = serverkey("ip");
+
+	if (host == "QLoopBack:0")
+		return "localhost";
+	else
+		return host;
 }

@@ -13,6 +13,7 @@ scripts.qc
 cmd_cl.qc
 cmd_sv.qc
 entry.qc
+ai_schedule.qc
 ../nav/includes.src
 api.qc
 #endlist

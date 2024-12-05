@@ -35,11 +35,11 @@ Persistent storage for variables that carry over level changes.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-env_global:NSPointTrigger
+env_global:ncPointTrigger
 {	
 public:
 	void env_global(void);

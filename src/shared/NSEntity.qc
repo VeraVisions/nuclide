@@ -26,15 +26,16 @@ droptofloorwrapper(entity foo)
 }
 
 void
-NSEntity::NSEntity(void)
+ncEntity::ncEntity(void)
 {
 	identity = 1;
 	m_flSpawnTime = time;
 	m_vecEditorColor = [1,1,1];
+	m_holdingPlayer = __NULL__;
 }
 
 void
-NSEntity::Spawn(void)
+ncEntity::Spawn(void)
 {
 	Spawned();
 
@@ -46,7 +47,7 @@ NSEntity::Spawn(void)
 }
 
 void
-NSEntity::Spawned(void)
+ncEntity::Spawned(void)
 {
 	super::Spawned();
 
@@ -64,50 +65,56 @@ NSEntity::Spawned(void)
 #endif
 }
 
+bool
+ncEntity::HasModel(void)
+{
+	return (modelindex == 0) ? (false) : (true);
+}
+
 float
-NSEntity::EntIndex(void)
+ncEntity::EntIndex(void)
 {
 	return (num_for_edict(this));
 }
 
 bool
-NSEntity::DropToFloor(void)
+ncEntity::DropToFloor(void)
 {
 	return droptofloorwrapper(this);
 }
 
 vector
-NSEntity::GetForward(void)
+ncEntity::GetForward(void)
 {
 	return anglesToForward(angles);
 }
 
 vector
-NSEntity::GetRight(void)
+ncEntity::GetRight(void)
 {
 	return anglesToRight(angles);
 }
 
 vector
-NSEntity::GetUp(void)
+ncEntity::GetUp(void)
 {
 	return anglesToUp(angles);
 }
 
 vector
-NSEntity::WorldSpaceCenter(void)
+ncEntity::WorldSpaceCenter(void)
 {
 	return (absmin + (0.5 * (absmax - absmin)));
 }
 
 float
-NSEntity::WaterLevel(void)
+ncEntity::WaterLevel(void)
 {
 	return (waterlevel);
 }
 
 bool
-NSEntity::VisibleVec(vector org)
+ncEntity::VisibleVec(vector org)
 {
 	vector flDelta;
 	float flFoV;
@@ -127,7 +134,7 @@ NSEntity::VisibleVec(vector org)
 }
 
 bool
-NSEntity::Visible(entity ent)
+ncEntity::Visible(entity ent)
 {
 	/* is it in our field of view? */
 	if (DistanceFromYaw(ent.origin) > 0.3f) {
@@ -144,50 +151,56 @@ NSEntity::Visible(entity ent)
 }
 
 float
-NSEntity::DistanceFromYaw(vector targetPos)
+ncEntity::DistanceFromYaw(vector targetPos)
 {
 	return vectorNormalize(targetPos - origin) * GetForward();
 }
 
 bool
-NSEntity::HasSpawnFlags(float sf)
+ncEntity::HasSpawnFlags(float sf)
 {
 	return (spawnflags & sf) ? (true) : (false);
 }
 
 bool
-NSEntity::IsOnGround(void)
+ncEntity::IsOnGround(void)
 {
 	return (flags & FL_ONGROUND) ? (true) : (false);
 }
 
 bool
-NSEntity::IsSolid(void)
+ncEntity::IsSolid(void)
 {
 	return (solid != SOLID_NOT) ? (true) : (false);
 }
 
 entity
-NSEntity::GetGroundEntity(void)
+ncEntity::GetGroundEntity(void)
 {
 	return (groundentity);
 }
 
 bool
-NSEntity::CreatedByMap(void)
+ncEntity::CreatedByMap(void)
 {
 	return (_mapspawned);
 }
 
+bool
+ncEntity::HeldByPlayer(void)
+{
+	return (m_holdingPlayer) ? (true) : (false);
+}
+
 #ifdef CLIENT
 void
-NSEntity::RendererRestarted(void)
+ncEntity::RendererRestarted(void)
 {
 
 }
 
 float
-NSEntity::predraw(void)
+ncEntity::predraw(void)
 {
 	if (GetModelindex() == 0 || IsHidden()) {
 		return (PREDRAW_NEXT);
@@ -198,7 +211,7 @@ NSEntity::predraw(void)
 }
 
 void
-NSEntity::ReceiveEntity(float flNew, float flChanged)
+ncEntity::ReceiveEntity(float flNew, float flChanged)
 {
 	READENTITY_COORD(origin[0], BASEFL_CHANGED_ORIGIN_X)
 	READENTITY_COORD(origin[1], BASEFL_CHANGED_ORIGIN_Y)
@@ -219,7 +232,7 @@ NSEntity::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_COORD(maxs[2], BASEFL_CHANGED_SIZE)
 	READENTITY_BYTE(frame, BASEFL_CHANGED_FRAME)
 	READENTITY_FLOAT(skin, BASEFL_CHANGED_SKIN)
-	READENTITY_FLOAT(effects, BASEFL_CHANGED_EFFECTS)
+	READENTITY_INT(effects, BASEFL_CHANGED_EFFECTS)
 	READENTITY_FLOAT(scale, BASEFL_CHANGED_SCALE)
 	READENTITY_COORD(velocity[0], BASEFL_CHANGED_VELOCITY_X)
 	READENTITY_COORD(velocity[1], BASEFL_CHANGED_VELOCITY_Y)
@@ -240,13 +253,13 @@ NSEntity::ReceiveEntity(float flNew, float flChanged)
 }
 
 void
-NSEntity::_ReceiveComplete(float flNew, float flChanged)
+ncEntity::_ReceiveComplete(float flNew, float flChanged)
 {
 
 }
 
 void
-NSEntity::ReceiveEvent(float eventType)
+ncEntity::ReceiveEvent(float eventType)
 {
 	switch (eventType) {
 	default:
@@ -255,20 +268,20 @@ NSEntity::ReceiveEvent(float eventType)
 }
 
 void
-NSEntity::postdraw(void)
+ncEntity::postdraw(void)
 {
 }
 
 
 #else
 void
-NSEntity::DebugDraw(void)
+ncEntity::DebugDraw(void)
 {
 	DebugBox(GetOrigin(), GetMins(), GetMaxs(), m_vecEditorColor, 0.75f);
 }
 
 float
-NSEntity::SendEntity(entity ePEnt, float flChanged)
+ncEntity::SendEntity(entity ePEnt, float flChanged)
 {
 	if (!modelindex) {
 		return (0);
@@ -318,7 +331,7 @@ NSEntity::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_COORD(maxs[2], BASEFL_CHANGED_SIZE)
 	SENDENTITY_BYTE(frame, BASEFL_CHANGED_FRAME)
 	SENDENTITY_FLOAT(skin, BASEFL_CHANGED_SKIN)
-	SENDENTITY_FLOAT(effects, BASEFL_CHANGED_EFFECTS)
+	SENDENTITY_INT(effects, BASEFL_CHANGED_EFFECTS)
 	SENDENTITY_FLOAT(scale, BASEFL_CHANGED_SCALE)
 	SENDENTITY_COORD(velocity[0], BASEFL_CHANGED_VELOCITY_X)
 	SENDENTITY_COORD(velocity[1], BASEFL_CHANGED_VELOCITY_Y)
@@ -330,7 +343,7 @@ NSEntity::SendEntity(entity ePEnt, float flChanged)
 }
 
 void
-NSEntity::EvaluateEntity(void)
+ncEntity::EvaluateEntity(void)
 {
 	EVALUATE_VECTOR(origin, 0, BASEFL_CHANGED_ORIGIN_X)
 	EVALUATE_VECTOR(origin, 1, BASEFL_CHANGED_ORIGIN_Y)
@@ -363,11 +376,13 @@ NSEntity::EvaluateEntity(void)
 
 /* Make sure StartFrame calls this */
 void
-NSEntity::ParentUpdate(void)
+ncEntity::ParentUpdate(void)
 {
 	EvaluateEntity();
 
-	frame1time += frametime;
+	if (!(vv_flags & VFL_NOFRAMEADVANCE)) {
+		frame1time += frametime;
+	}
 
 	/* handle end-touch */
 	if (m_beingTouched == true) {
@@ -379,20 +394,41 @@ NSEntity::ParentUpdate(void)
 	}
 }
 
+bool
+ncEntity::SharesPVSWithPlayer(void)
+{
+	entity entLoop = world;
+
+	for (entLoop = world; ((entLoop = find(entLoop, ::classname, "player")));) {
+		ncActor testPlayer = (ncActor)entLoop;
+
+		/* players are first N entity slots after world, so exit when they're done */
+		if (entLoop.classname != "player") {
+			return (false);
+		}
+
+		if (checkpvs(testPlayer.GetEyePos(), this) == true) {
+			return (true);
+		}
+	}
+
+	return (false);
+}
+
 entity
-NSEntity::GetParent(void)
+ncEntity::GetParent(void)
 {
 	return tag_entity;
 }
 
 void
-NSEntity::SetParent(string name)
+ncEntity::SetParent(string name)
 {
 	tag_entity = find(world, ::targetname, name);
 }
 
 void
-NSEntity::SetParentAttachment(string name)
+ncEntity::SetParentAttachment(string name)
 {
 	if (name != "origin") {
 		tag_index = gettagindex(tag_entity, name);
@@ -402,14 +438,14 @@ NSEntity::SetParentAttachment(string name)
 }
 
 void
-NSEntity::ClearParent(void)
+ncEntity::ClearParent(void)
 {
 	tag_entity = world;
 	tag_index = 0;
 }
 
 void
-NSEntity::RestoreAngles(void)
+ncEntity::RestoreAngles(void)
 {
 	vector spawnAngles = g_vec_null;
 	string spawnAngleString = GetSpawnString("angles");
@@ -424,35 +460,35 @@ NSEntity::RestoreAngles(void)
 }
 
 void
-NSEntity::ClearAngles(void)
+ncEntity::ClearAngles(void)
 {
 	SetAngles(g_vec_null);
 }
 
 void
-NSEntity::ForceNetworkUpdate(void)
+ncEntity::ForceNetworkUpdate(void)
 {
 	SendFlags = -1;
 }
 
 void
-NSEntity::UseBy(entity ourActivator)
+ncEntity::UseBy(entity ourActivator)
 {
 	if (PlayerUse) {
-		eActivator = (NSEntity)ourActivator;
+		eActivator = (ncEntity)ourActivator;
 		PlayerUse();
 	}
 }
 #endif
 
 void
-NSEntity::SetEffects(float newEffects)
+ncEntity::SetEffects(__int32 newEffects)
 {
 	effects = newEffects;
 }
 
 void
-NSEntity::SetFrame(float newFrame)
+ncEntity::SetFrame(float newFrame)
 {
 	if (newFrame == frame) {
 		return;
@@ -496,31 +532,31 @@ NSEntity::SetFrame(float newFrame)
 }
 
 void
-NSEntity::SetSkin(float newSkin)
+ncEntity::SetSkin(float newSkin)
 {
 	skin = newSkin;
 }
 
 void
-NSEntity::SetOwner(entity newOwner)
+ncEntity::SetOwner(entity newOwner)
 {
 	owner = newOwner;
 }
 
 void
-NSEntity::SetVelocity(vector vecNew)
+ncEntity::SetVelocity(vector vecNew)
 {
 	velocity = vecNew;
 }
 
 void
-NSEntity::SetTouch(void ()newTouch)
+ncEntity::SetTouch(void ()newTouch)
 {
 	touch = newTouch;
 }
 
 void
-NSEntity::SetSendFlags(float flSendFlags)
+ncEntity::SetSendFlags(float flSendFlags)
 {
 #ifdef SERVER
 	SendFlags |= flSendFlags;
@@ -528,25 +564,25 @@ NSEntity::SetSendFlags(float flSendFlags)
 }
 
 void
-NSEntity::SetMovetype(float newMovetype)
+ncEntity::SetMovetype(float newMovetype)
 {
 	movetype = newMovetype;
 }
 
 void
-NSEntity::SetGravity(float newGrav)
+ncEntity::SetGravity(float newGrav)
 {
 	gravity = newGrav;
 }
 
 void
-NSEntity::SetSolid(float newSolid)
+ncEntity::SetSolid(float newSolid)
 {
 	solid = newSolid;
 }
 
 void
-NSEntity::SetScale(float newScale)
+ncEntity::SetScale(float newScale)
 {
 	if (newScale == scale) {
 		return;
@@ -557,7 +593,7 @@ NSEntity::SetScale(float newScale)
 }
 
 vector
-NSEntity::GetViewAngle(void)
+ncEntity::GetViewAngle(void)
 {
 	if (isSentient(this)) {
 		return (v_angle);
@@ -567,13 +603,13 @@ NSEntity::GetViewAngle(void)
 }
 
 void
-NSEntity::SetEyePos(vector value)
+ncEntity::SetEyePos(vector value)
 {
 	view_ofs = value;
 }
 
 vector
-NSEntity::GetEyePos(void)
+ncEntity::GetEyePos(void)
 {
 	if (HasVFlags(VFL_FAKESPEC)) {
 		return (origin);
@@ -583,7 +619,7 @@ NSEntity::GetEyePos(void)
 }
 
 void
-NSEntity::UpdateBounds(void)
+ncEntity::UpdateBounds(void)
 {
 	vector newMins, newMaxs;
 	float flScale = 1.0f;
@@ -630,19 +666,19 @@ NSEntity::UpdateBounds(void)
 }
 
 void
-NSEntity::SetAngles(vector newAngles)
+ncEntity::SetAngles(vector newAngles)
 {
 	angles = newAngles;
 }
 
 void
-NSEntity::SetAngularVelocity(vector newAvel)
+ncEntity::SetAngularVelocity(vector newAvel)
 {
 	avelocity = newAvel;
 }
 
 void
-NSEntity::SetSize(vector newMins, vector newMaxs)
+ncEntity::SetSize(vector newMins, vector newMaxs)
 {
 	float flScale = 1.0f;
 
@@ -658,30 +694,41 @@ NSEntity::SetSize(vector newMins, vector newMaxs)
 }
 
 void
-NSEntity::SetOrigin(vector newOrigin)
+ncEntity::SetOrigin(vector newOrigin)
 {
 	setorigin(this, newOrigin);
 }
 
 void
-NSEntity::SetOriginUnstick(vector newOrigin)
+ncEntity::SetOriginUnstick(vector newOrigin)
 {
 	setorigin_safe(this, newOrigin);
 }
 
+bool
+ncEntity::IsBrush(void)
+{
+	return (m_bIsBrush);
+}
+
 void
-NSEntity::SetModel(string newModel)
+ncEntity::SetModel(string newModel)
 {
 	m_bIsBrush = substring(newModel, 0, 1) == "*" ? true : false;
-	model = newModel;
-	setmodel(this, newModel);
+	model = Util_FixModel(newModel);
+	setmodel(this, model);
+
+#ifdef SERVER
+	m_vecModelMins = mins;
+	m_vecModelMaxs = maxs;
+#endif
 
 	/* mins/maxs have been updated by setmodel */
 	SetSize(mins, maxs);
 }
 
 void
-NSEntity::SetModelindex(float newModelIndex)
+ncEntity::SetModelindex(float newModelIndex)
 {
 	if (newModelIndex == modelindex) {
 		return;
@@ -692,261 +739,229 @@ NSEntity::SetModelindex(float newModelIndex)
 }
 
 void
-NSEntity::AddAngularVelocity(vector addVel)
+ncEntity::AddAngularVelocity(vector addVel)
 {
 	avelocity += addVel;
 }
 
 void
-NSEntity::AddVelocity(vector addVel)
+ncEntity::AddVelocity(vector addVel)
 {
 	velocity += addVel;
 }
 
 void
-NSEntity::AddEffects(float fl) {
+ncEntity::AddEffects(__int32 fl) {
 	effects |= fl;
 }
 
 void
-NSEntity::RemoveEffects(float fl) {
+ncEntity::RemoveEffects(__int32 fl) {
 	effects &= ~fl;
 }
 
 
 void
-NSEntity::AddFlags(float fl) {
+ncEntity::AddFlags(float fl) {
 	flags |= fl;
 }
 
 void
-NSEntity::RemoveFlags(float fl) {
+ncEntity::RemoveFlags(float fl) {
 	flags &= ~fl;
 }
 
 
 void
-NSEntity::AddVFlags(float fl) {
+ncEntity::AddVFlags(float fl) {
 	vv_flags |= fl;
 }
 
 void
-NSEntity::RemoveVFlags(float fl) {
+ncEntity::RemoveVFlags(float fl) {
 	vv_flags &= ~fl;
 }
 
 void
-NSEntity::TurnTo(float targetAngle) {
+ncEntity::TurnTo(float targetAngle) {
 	angles[1] = targetAngle;
 }
 
 void
-NSEntity::TurnToPos(vector targetPos) {
+ncEntity::TurnToPos(vector targetPos) {
 	angles = vectorToAngles(targetPos - WorldSpaceCenter());
 }
 
-void
-NSEntity::SetThink(void (void) func) {
-	think = func;
-}
-
-void
-NSEntity::SetNextThink(float fl) {
-	float flTime = GetTime() + fl;
-
-	/* HACK: to make sure things happen post-spawn */
-	if (flTime == 0.0f) {
-		flTime = 0.001f;
-	}
-
-	if (flTime >= 0) {
-		nextthink = flTime;
-	} else {
-		EntError("%s sets bogus nextthink value %f", classname, flTime);
-	}
-}
-
-void
-NSEntity::ScheduleThink(void (void) func, float fl) {
-	SetThink(func);
-	SetNextThink(fl);
-}
-
-float
-NSEntity::GetEffects(void) {
+__int32
+ncEntity::GetEffects(void) {
 	return (effects);
 }
 
 float
-NSEntity::GetFrame(void) {
+ncEntity::GetFrame(void) {
 	return (frame);
 }
 
 float
-NSEntity::GetSkin(void) {
+ncEntity::GetSkin(void) {
 	return (skin);
 }
 
 float
-NSEntity::GetScale(void) {
+ncEntity::GetScale(void) {
 	return (scale);
 }
 
 entity
-NSEntity::GetOwner(void) {
+ncEntity::GetOwner(void) {
 	return (owner);
 }
 
 vector
-NSEntity::GetVelocity(void) {
+ncEntity::GetVelocity(void) {
 	return (velocity);
 }
 
 float
-NSEntity::GetSolid(void) {
+ncEntity::GetSolid(void) {
 	return (solid);
 }
 
 string
-NSEntity::GetModel(void)
+ncEntity::GetModel(void)
 {
 	return (model);
 }
 
 float
-NSEntity::GetModelindex(void)
+ncEntity::GetModelindex(void)
 {
 	return (modelindex);
 }
 
 float
-NSEntity::GetMovetype(void)
+ncEntity::GetMovetype(void)
 {
 	return (movetype);
 }
 
 float
-NSEntity::GetGravity(void)
+ncEntity::GetGravity(void)
 {
 	return (gravity);
 }
 
 vector
-NSEntity::GetAngles(void)
+ncEntity::GetAngles(void)
 {
 	return (angles);
 }
 
 vector
-NSEntity::GetAngularVelocity(void)
+ncEntity::GetAngularVelocity(void)
 {
 	return (avelocity);
 }
 
 vector
-NSEntity::GetOrigin(void)
+ncEntity::GetOrigin(void)
 {
 	return (origin);
 }
 
 vector
-NSEntity::GetMins(void)
+ncEntity::GetSize(void)
+{
+	return (size);
+}
+
+vector
+ncEntity::GetMins(void)
 {
 	return (mins);
 }
 
 vector
-NSEntity::GetMaxs(void)
+ncEntity::GetMaxs(void)
 {
 	return (maxs);
 }
 
 vector
-NSEntity::GetRealMins(void)
+ncEntity::GetRealMins(void)
 {
 	return (m_vecMins);
 }
 
 vector
-NSEntity::GetRealMaxs(void)
+ncEntity::GetRealMaxs(void)
 {
 	return (m_vecMaxs);
 }
 
 vector
-NSEntity::GetAbsoluteMins(void)
+ncEntity::GetAbsoluteMins(void)
 {
 	return (absmin);
 }
 
 vector
-NSEntity::GetAbsoluteMaxs(void)
+ncEntity::GetAbsoluteMaxs(void)
 {
 	return (absmax);
 }
 
 float
-NSEntity::GetFlags(void)
+ncEntity::GetFlags(void)
 {
 	return (flags);
 }
 
 float
-NSEntity::GetVFlags(void)
+ncEntity::GetVFlags(void)
 {
 	return (vv_flags);
 }
 
 bool
-NSEntity::HasFlags(float bits)
+ncEntity::HasFlags(float bits)
 {
 	return (flags & bits) ? (true) : (false);
 }
 
 bool
-NSEntity::HasVFlags(float bits)
+ncEntity::HasVFlags(float bits)
 {
 	return (vv_flags & bits) ? (true) : (false);
 }
 
-float
-NSEntity::GetNextThinkTime(void)
-{
-	return (nextthink);
-}
-
-bool
-NSEntity::IsThinking(void)
-{
-	return (nextthink > GetTime()) ? (true) : (false);
-}
-
 void
-NSEntity::ReleaseThink(void)
-{
-	think = __NULL__;
-	nextthink = 0.0f;
-}
-
-void
-NSEntity::ThinkBusy(float busyTime)
-{
-	static void ThinkBusy_Done(void) {
-		/* Guess we're done here... */
-	}
-	ScheduleThink(ThinkBusy_Done, busyTime);
-}
-
-void
-NSEntity::ClearVelocity(void)
+ncEntity::ClearVelocity(void)
 {
 	velocity = avelocity = [0.0f, 0.0f, 0.0f];
 }
 
 #ifdef SERVER
-void
-NSEntity::Respawn(void)
+vector
+ncEntity::GetModelMins(void)
 {
+	return (m_vecModelMins);
+}
+
+vector
+ncEntity::GetModelMaxs(void)
+{
+	return (m_vecModelMaxs);
+}
+
+void
+ncEntity::Respawn(void)
+{
+	static void HackFixMe(void) {
+		this.origin = this.tag_entity.origin;
+		this.angles = this.tag_entity.angles + [90, 0, 0];
+	}
+
 	super::Respawn();
 
 	if (CreatedByMap()) {
@@ -955,10 +970,20 @@ NSEntity::Respawn(void)
 
 	SetAngles(GetSpawnVector("angles"));
 	SetModel(GetSpawnString("model"));
+
+	string parentName = GetSpawnString("parentname");
+
+	if (STRING_SET(parentName)) {
+		SetParent(parentName);
+
+		if (GetParent()) {
+			customphysics = HackFixMe;
+		}
+	}
 }
 
 void
-NSEntity::Save(float handle)
+ncEntity::Save(float handle)
 {
 	super::Save(handle);
 	SaveEntity(handle, "tag_entity", tag_entity);
@@ -977,7 +1002,7 @@ NSEntity::Save(float handle)
 }
 
 void
-NSEntity::Restore(string strKey, string strValue)
+ncEntity::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "tag_entity":
@@ -1026,13 +1051,13 @@ NSEntity::Restore(string strKey, string strValue)
 }
 
 void
-NSEntity::Event_SpawnDefRelative(string classDef, float xOfs, float yOfs, float zOfs)
+ncEntity::Event_SpawnDefRelative(string classDef, float xOfs, float yOfs, float zOfs)
 {
 	vector posOffset;
 	posOffset = anglesToForward(GetAngles()) * xOfs;
 	posOffset += anglesToRight(GetAngles()) * yOfs;
 	posOffset += anglesToUp(GetAngles()) * zOfs;
-	NSEntity rocket = EntityDef_NewClassname(classDef);
+	ncEntity rocket = EntityDef_NewClassname(classDef);
 	rocket.SetOrigin(GetOrigin() + posOffset);
 	rocket.SetAngles(GetAngles());
 	rocket.owner = this;
@@ -1041,7 +1066,7 @@ NSEntity::Event_SpawnDefRelative(string classDef, float xOfs, float yOfs, float 
 }
 
 void
-NSEntity::Input(entity eAct, string strInput, string strData)
+ncEntity::Input(entity eAct, string strInput, string strData)
 {
 	switch (strInput) {
 	case "Kill":
@@ -1050,7 +1075,7 @@ NSEntity::Input(entity eAct, string strInput, string strData)
 	case "KillHierarchy":
 		/* this works because ents are basically just entnums */
 		for (entity e = world; (e = findfloat(e, ::owner, this));) {
-			NSEntity ent = (NSEntity) e;
+			ncEntity ent = (ncEntity) e;
 
 			ent.Destroy();
 		}
@@ -1066,7 +1091,7 @@ NSEntity::Input(entity eAct, string strInput, string strData)
 		ClearParent();
 		break;
 	case "Use":
-		eActivator = (NSEntity)eAct;
+		eActivator = (ncEntity)eAct;
 
 		if (PlayerUse)
 			PlayerUse();
@@ -1089,7 +1114,7 @@ NSEntity::Input(entity eAct, string strInput, string strData)
 	case "KillChildClass":
 		for (entity e = world; (e = findfloat(e, ::owner, this));) {
 			if (strData == e.classname) {
-				NSEntity ent = (NSEntity) e;
+				ncEntity ent = (ncEntity) e;
 				ent.Destroy();
 			}
 		}
@@ -1103,12 +1128,12 @@ NSEntity::Input(entity eAct, string strInput, string strData)
 		launchOffset[2]= stof(argv(3));
 
 		if (EntityDef_HasSpawnClass(defName)) {
-			NSProjectile_SpawnDefAtPosition(defName, (NSActor)this, GetOrigin() + launchOffset, GetViewAngle());
+			ncProjectile_SpawnDefAtPosition(defName, (ncActor)this, GetOrigin() + launchOffset, GetViewAngle());
 		}
 		break;
 	case "SpawnProjectileDef":
 		if (EntityDef_HasSpawnClass(strData)) {
-			NSProjectile_SpawnDefAttachment(strData, (NSActor)this, 0);
+			ncProjectile_SpawnDefAttachment(strData, (ncActor)this, 0);
 		}
 		break;
 	case "StartSoundDef":
@@ -1156,13 +1181,13 @@ NSEntity::Input(entity eAct, string strInput, string strData)
 		Respawn();
 		break;
 	default:
-		NSTrigger::Input(eAct, strInput, strData);
+		ncTrigger::Input(eAct, strInput, strData);
 	}
 }
 #endif
 
 void
-NSEntity::SpawnKey(string strKey, string strValue)
+ncEntity::SpawnKey(string strKey, string strValue)
 {
 	bool tempCheck = false;
 	/* we do re-read a lot of the builtin fields in case we want to set
@@ -1198,7 +1223,7 @@ NSEntity::SpawnKey(string strKey, string strValue)
 		break;
 	case "movewith":
 	case "parentname":
-		SetParent(ReadString(strValue));
+		m_parent = ReadString(strValue);
 		break;
 	case "ignorepvs":
 		tempCheck = ReadBool(strValue);
@@ -1225,44 +1250,44 @@ NSEntity::SpawnKey(string strKey, string strValue)
 }
 
 void
-NSEntity::Show(void)
+ncEntity::Show(void)
 {
 	effects &= ~EF_NODRAW;
 }
 
 void
-NSEntity::Hide(void)
+ncEntity::Hide(void)
 {
 	effects |= EF_NODRAW;
 }
 
 bool
-NSEntity::IsHidden(void)
+ncEntity::IsHidden(void)
 {
 	return (effects & EF_NODRAW) ? true : false;
 }
 
 void
-NSEntity::Disappear(void)
+ncEntity::Disappear(void)
 {
 	modelindex = (0);
 	SetSolid(SOLID_NOT);
 }
 
 void
-NSEntity::MakeStatic(void)
+ncEntity::MakeStatic(void)
 {
 	makestatic(this);
 }
 
 bool
-NSEntity::CanSpawn(bool clientSide)
+ncEntity::CanSpawn(bool clientSide)
 {
 	return !(clientSide);
 }
 
 bool
-NSEntity::WithinBounds(entity check)
+ncEntity::WithinBounds(entity check)
 {
 	if not (check.absmin[0] >= absmin[0] && check.absmax[0] <= absmax[0])
 			return (false);
@@ -1275,7 +1300,7 @@ NSEntity::WithinBounds(entity check)
 }
 
 bool
-NSEntity::IntersectsWith(entity check)
+ncEntity::IntersectsWith(entity check)
 {
 	if not (check.origin[0] >= absmin[0] && check.origin[0] <= absmax[0])
 			return (false);
@@ -1288,7 +1313,7 @@ NSEntity::IntersectsWith(entity check)
 }
 
 bool
-NSEntity::StartSound(string strSample, float channel, float flags, bool broadcast)
+ncEntity::StartSound(string strSample, float channel, float flags, bool broadcast)
 {
 	if not (whichpack(strcat("sound/", strSample))) 
 		return (false);
@@ -1311,7 +1336,7 @@ NSEntity::StartSound(string strSample, float channel, float flags, bool broadcas
 }
 
 bool
-NSEntity::StartSoundDef(string strSample, float channel, bool broadcast)
+ncEntity::StartSoundDef(string strSample, float channel, bool broadcast)
 {
 	SndEntLog("%s (chan: %d bcast: %d)", strSample, channel, broadcast);
 	Sound_Play(this, channel, strSample);
@@ -1319,14 +1344,14 @@ NSEntity::StartSoundDef(string strSample, float channel, bool broadcast)
 }
 
 void
-NSEntity::StopSound(float channel, bool broadcast)
+ncEntity::StopSound(float channel, bool broadcast)
 {
 	if (broadcast) {
 		Sound_Stop(this, channel);
 	} else {
 #ifdef SERVER
 		msg_entity = this;
-		sound(this, channel, "common/null.wav", 1.0f, ATTN_NORM, 100, SOUNDFLAG_UNICAST  | SOUNDFLAG_FOLLOW, 0 );
+		sound(this, channel, "common/null.wav", 0.1f, ATTN_NORM, 100, SOUNDFLAG_UNICAST  | SOUNDFLAG_FOLLOW, 0 );
 		msg_entity = __NULL__;
 #else
 		Sound_Stop(this, channel);
@@ -1335,7 +1360,7 @@ NSEntity::StopSound(float channel, bool broadcast)
 }
 
 vector
-NSEntity::NearestWallPointForRadius(float radius)
+ncEntity::NearestWallPointForRadius(float radius)
 {
 	vector vecRadius = [radius, radius, radius];
 	tracebox(origin, -vecRadius, vecRadius, origin, MOVE_EVERYTHING, this);
@@ -1343,7 +1368,7 @@ NSEntity::NearestWallPointForRadius(float radius)
 }
 
 void
-NSEntity::HandleThink(void)
+ncEntity::HandleThink(void)
 {
 	/* support for think/nextthink */
 	if (think && nextthink > 0.0f) {
@@ -1355,33 +1380,33 @@ NSEntity::HandleThink(void)
 }
 
 bool
-NSEntity::IsFacing(entity target)
+ncEntity::IsFacing(entity target)
 {
 	vector vecDiff = vectorNormalize(target.origin - origin);
 	return ((vecDiff * GetForward()) > 0) ? true : false;
 }
 
 bool
-NSEntity::IsFacingPosition(vector targetPos)
+ncEntity::IsFacingPosition(vector targetPos)
 {
 	vector vecDiff = vectorNormalize(targetPos - origin);
 	return ((vecDiff * GetForward()) > 0) ? true : false;
 }
 
 float
-NSEntity::GetSpawnAge(void)
+ncEntity::GetSpawnAge(void)
 {
 	return (time - m_flSpawnTime);
 }
 
 float
-NSEntity::GetSpawnTime(void)
+ncEntity::GetSpawnTime(void)
 {
 	return (m_flSpawnTime);
 }
 
 void
-NSEntity::Transport(vector new_pos, vector new_ang)
+ncEntity::Transport(vector new_pos, vector new_ang)
 {
 	float flSpeed = length(this.GetVelocity());
 	SetVelocity(anglesToForward(new_ang) * flSpeed);
@@ -1397,13 +1422,13 @@ NSEntity::Transport(vector new_pos, vector new_ang)
 }
 
 void
-NSEntity::Relink(void)
+ncEntity::Relink(void)
 {
 	setorigin(this, origin);
 }
 
 vector
-NSEntity::GetNearbySpot(void)
+ncEntity::GetNearbySpot(void)
 {
 	vector testPos;
 	float minDist = maxs[0];
@@ -1481,7 +1506,7 @@ NSEntity::GetNearbySpot(void)
 }
 
 bool
-NSEntity::_ProjectileAttack(string defName, bool wasReleased)
+ncEntity::_ProjectileAttack(string defName, bool wasReleased)
 {
 #ifdef SERVER
 	string attackDef;
@@ -1502,7 +1527,7 @@ NSEntity::_ProjectileAttack(string defName, bool wasReleased)
 
 	for (int i = 0i; i < numProjectiles; i++) {
 		EntLog("Launching %S at %v towards %v", attackDef, GetEyePos(), GetViewAngle());
-		NSAttack_SpawnDefAtPosition(attackDef, (NSActor)this, GetEyePos(), GetViewAngle());
+		ncAttack_SpawnDefAtPosition(attackDef, (ncActor)this, GetEyePos(), GetViewAngle());
 	}
 #endif
 
@@ -1510,7 +1535,7 @@ NSEntity::_ProjectileAttack(string defName, bool wasReleased)
 }
 
 bool
-NSEntity::AttackByDef(string defName, bool wasReleased)
+ncEntity::AttackByDef(string defName, bool wasReleased)
 {
 	if (!defName) {
 		return (false);
@@ -1524,7 +1549,7 @@ NSEntity::AttackByDef(string defName, bool wasReleased)
 }
 
 void
-NSEntity::SetBotTag(botInfo_t newTag)
+ncEntity::SetBotTag(botInfo_t newTag)
 {
 #ifdef SERVER
 	botinfo = newTag;
@@ -1532,7 +1557,7 @@ NSEntity::SetBotTag(botInfo_t newTag)
 }
 
 int
-NSEntity::GetSharedID(void)
+ncEntity::GetSharedID(void)
 {
 #ifdef CLIENT
 	return (int)(entnum);
@@ -1542,14 +1567,14 @@ NSEntity::GetSharedID(void)
 }
 
 void
-NSEntity::EnablePlayerCollision(void)
+ncEntity::EnablePlayerCollision(void)
 {
 	dimension_solid = 255;
 	dimension_hit = 255;
 }
 
 void
-NSEntity::DisablePlayerCollision(void)
+ncEntity::DisablePlayerCollision(void)
 {
 	dimension_solid = 1;
 	dimension_hit = 1;

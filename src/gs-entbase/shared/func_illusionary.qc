@@ -28,12 +28,12 @@ On idTech 2 BSPs, it will change texture variants when triggered.
 # TRIVIA
 This entity was introduced in Quake (1996).
 
-@ingroup shared
+@ingroup sharedentity
 @ingroup brushentity
 */
 #ifdef SERVER
 class
-func_illusionary:NSRenderableEntity
+func_illusionary:ncRenderableEntity
 {
 public:
 	void func_illusionary(void);

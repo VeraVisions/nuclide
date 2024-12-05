@@ -23,7 +23,7 @@ View_Init(void)
 		pSeat = &g_seats[s];
 		if(!pSeat->m_eViewModel) {
 			/* right side */
-			pSeat->m_eViewModel = spawn(NSRenderableEntity);
+			pSeat->m_eViewModel = spawn(ncRenderableEntity);
 			pSeat->m_eViewModel.classname = "vm";
 			pSeat->m_eViewModel.renderflags = RF_DEPTHHACK | RF_FIRSTPERSON;
 			pSeat->m_eViewModel.effects |= EF_NOSHADOW;
@@ -33,7 +33,7 @@ View_Init(void)
 			setsize(pSeat->m_eViewModel, [0,0,0], [0,0,0]);
 
 			/* left side */
-			pSeat->m_eViewModelL = spawn(NSRenderableEntity);
+			pSeat->m_eViewModelL = spawn(ncRenderableEntity);
 			pSeat->m_eViewModelL.classname = "vm";
 			pSeat->m_eViewModelL.renderflags = RF_DEPTHHACK | RF_FIRSTPERSON;
 			pSeat->m_eViewModelL.effects |= EF_NOSHADOW;
@@ -47,9 +47,9 @@ View_Init(void)
 void
 View_SetMuzzleflash(int index)
 {
-	NSRenderableEntity viewModel = (NSRenderableEntity)pSeat->m_eViewModelL;
+	ncRenderableEntity viewModel = (ncRenderableEntity)pSeat->m_eViewModelL;
 	viewModel.m_iMuzzleModel = (float)index;
-	viewModel = (NSRenderableEntity)pSeat->m_eViewModel;
+	viewModel = (ncRenderableEntity)pSeat->m_eViewModel;
 	viewModel.m_iMuzzleModel = (float)index;
 }
 
@@ -60,8 +60,8 @@ View_AddEvent(void(void) pCallback, float flTime)
 	pSeat->m_flEventTime = flTime;
 	pSeat->m_flEventFrame = pSeat->m_eViewModel.frame;
 	pSeat->m_flEventMdl = pSeat->m_eViewModel.modelindex;
-	NSClientPlayer pl = (NSClientPlayer)pSeat->m_ePlayer;
-	pSeat->m_iEventWeapon = pl.activeweapon;
+	ncPlayer pl = (ncPlayer)pSeat->m_ePlayer;
+	pSeat->m_iEventEntity = self;
 }
 
 void
@@ -71,7 +71,7 @@ View_ClearEvents(void)
 	pSeat->m_flEventTime = 0;
 	pSeat->m_flEventFrame = 0;
 	pSeat->m_flEventMdl = 0;
-	pSeat->m_iEventWeapon = 0;
+	pSeat->m_iEventEntity = __NULL__;
 
 	pSeat->m_eViewModelL.frame1time = 0.0f;
 	pSeat->m_eViewModel.frame1time = 0.0f;
@@ -114,15 +114,17 @@ View_DrawViewmodel_Single(int weapon, float weapontime)
 static void 
 View_HandleAnimEvent(float flTimeStamp, int iCode, string strData)
 {
-	NSRenderableEntity viewModel = (NSRenderableEntity)self;
-	viewModel.HandleAnimEvent(flTimeStamp, iCode, strData);
+	ncWeapon viewModel = (ncWeapon)self;
+
+	if (viewModel)
+		viewModel.HandleAnimEvent(flTimeStamp, iCode, strData);
 }
 
 void
-View_ForceChange(NSClientPlayer pl, int targetWeapon)
+View_ForceChange(ncPlayer pl, int targetWeapon)
 {
-	NSRenderableEntity m_eViewModel = (NSRenderableEntity)pSeat->m_eViewModel;
-	NSRenderableEntity m_eViewModelL = (NSRenderableEntity)pSeat->m_eViewModelL;
+	ncRenderableEntity m_eViewModel = (ncRenderableEntity)pSeat->m_eViewModel;
+	ncRenderableEntity m_eViewModelL = (ncRenderableEntity)pSeat->m_eViewModelL;
 	sendevent("PlayerSwitchWeapon", "i", targetWeapon);
 	View_ClearEvents();
 	View_DisableViewmodel();
@@ -147,21 +149,22 @@ void
 View_DrawViewModel(void)
 {
 	vector currentAngle = g_view.GetCameraAngle();
-	NSRenderableEntity m_eViewModel = (NSRenderableEntity)pSeat->m_eViewModel;
-	NSRenderableEntity m_eViewModelL = (NSRenderableEntity)pSeat->m_eViewModelL;
+	ncRenderableEntity m_eViewModel = (ncRenderableEntity)pSeat->m_eViewModel;
+	ncRenderableEntity m_eViewModelL = (ncRenderableEntity)pSeat->m_eViewModelL;
 
-	NSClientPlayer pl = __NULL__;
-	NSClient cl = (NSClient)pSeat->m_ePlayer;
+	ncPlayer pl = __NULL__;
+	ncPlayer cl = (ncPlayer)pSeat->m_ePlayer;
 
 	/* it's either us or us spectating */
 	if (Client_IsSpectator(cl)) {
-		NSClientSpectator spec = (NSClientSpectator)pSeat->m_ePlayer;
-		pl = (NSClientPlayer)findfloat(world, ::entnum, spec.spec_ent);
+		ncSpectator spec = (ncSpectator)pSeat->m_ePlayer;
+		pl = (ncPlayer)findfloat(world, ::entnum, spec.spec_ent);
 
-		if (spec.spec_mode != SPECMODE_FIRSTPERSON)
+		if (spec.spec_mode != SPECMODE_FIRSTPERSON) {
 			return;
+		}
 	} else {
-		pl = (NSClientPlayer)pSeat->m_ePlayer;
+		pl = (ncPlayer)pSeat->m_ePlayer;
 	}
 
 	if (!pl)
@@ -172,7 +175,7 @@ View_DrawViewModel(void)
 	}
 
 	if (pl.vehicle) {
-		NSVehicle veh = (NSVehicle)pl.vehicle;
+		ncVehicle veh = (ncVehicle)pl.vehicle;
 
 		if (veh.HideViewWeapon() == true)
 			return;
@@ -191,15 +194,15 @@ View_DrawViewModel(void)
 
 		if (pl.activeweapon) {
 			/* hack, we changed the wep, move this into Game_Input/PMove */
-			//Weapons_Draw((NSClientPlayer)pl);
+			//Weapons_Draw((ncPlayer)pl);
 		} else {
 			pSeat->m_eViewModel.modelindex =
 			pSeat->m_eViewModelL.modelindex = 0;
 		}
 
-		NSRenderableEntity viewModel = (NSRenderableEntity)pSeat->m_eViewModelL;
+		ncRenderableEntity viewModel = (ncRenderableEntity)pSeat->m_eViewModelL;
 		viewModel._UpdateBoneCount();
-		viewModel = (NSRenderableEntity)pSeat->m_eViewModel;
+		viewModel = (ncRenderableEntity)pSeat->m_eViewModel;
 		viewModel._UpdateBoneCount();
 		View_EnableViewmodel();
 		View_ClearEvents();
@@ -215,7 +218,7 @@ View_DrawViewModel(void)
 	Event_Callback(m_eViewModel.frame1time, fBaseTime2);
 
 	entity oldSelf = self;
-	self = m_eViewModel;
+	self = pl.m_activeWeapon;
 	processmodelevents(m_eViewModel.modelindex, m_eViewModel.frame, fBaseTime,
 		m_eViewModel.frame1time, View_HandleAnimEvent);
 	self = oldSelf;
@@ -319,7 +322,7 @@ View_DrawViewModel(void)
 		m_eViewModelL.renderflags = RF_DEPTHHACK | RF_FIRSTPERSON;
 		m_eViewModel.renderflags = RF_DEPTHHACK | RF_FIRSTPERSON;
 
-		if (m_eViewModel.GetRenderMode() != RM_DONTRENDER) {
+		if (m_eViewModel.GetRenderMode() != RM_DONTRENDER || pl.viewzoom < 1.0f) {
 			addentity(m_eViewModel);
 
 			/* TODO: clean this up. */
@@ -396,20 +399,20 @@ View_GetAnimation(void)
 void
 View_EnableViewmodel(void)
 {
-	NSRenderableEntity viewModel;
-	viewModel = (NSRenderableEntity)pSeat->m_eViewModel;
+	ncRenderableEntity viewModel;
+	viewModel = (ncRenderableEntity)pSeat->m_eViewModel;
 	viewModel.Show();
-	viewModel = (NSRenderableEntity)pSeat->m_eViewModelL;
+	viewModel = (ncRenderableEntity)pSeat->m_eViewModelL;
 	viewModel.Show();
 }
 
 void
 View_DisableViewmodel(void)
 {
-	NSRenderableEntity viewModel;
-	viewModel = (NSRenderableEntity)pSeat->m_eViewModel;
+	ncRenderableEntity viewModel;
+	viewModel = (ncRenderableEntity)pSeat->m_eViewModel;
 	viewModel.Hide();
-	viewModel = (NSRenderableEntity)pSeat->m_eViewModelL;
+	viewModel = (ncRenderableEntity)pSeat->m_eViewModelL;
 	viewModel.Hide();
 }
 

@@ -82,7 +82,7 @@ var int autocvar_rm_unlit_additive = TRUE;
 var int autocvar_rm_unlit_texture = TRUE;
 #endif
 
-/** This entity represents any NSEntity with advanced rendering properties.
+/** This entity represents any ncEntity with advanced rendering properties.
 This includes GoldSource and Source Engine style rendering effects.
 
 This is the bare minimum for most characters as it allows for body
@@ -90,10 +90,10 @@ and bone control settings.
 
 @ingroup baseclass
 */
-class NSRenderableEntity:NSEntity
+class ncRenderableEntity:ncEntity
 {
 public:
-	void NSRenderableEntity(void);
+	void ncRenderableEntity(void);
 
 	/* overrides */
 	virtual void SpawnKey(string,string);
@@ -104,6 +104,9 @@ public:
 	virtual void Restore(string,string);
 	virtual void EvaluateEntity(void);
 	virtual float SendEntity(entity,float);
+
+	nonvirtual void Event_SpawnDefBone(string, string);
+	nonvirtual void Event_SpawnDefAttachment(string, float);
 #endif
 
 #ifdef CLIENT
@@ -205,9 +208,11 @@ private:
 	/* model events */
 	float m_flBaseTime;
 	float m_iNumBones;
+	nonvirtual void _UpdateBoneCount();
 
 #ifdef CLIENT
+	float m_netEffects;
+
 	nonvirtual void _UpdateGeomset();
-	nonvirtual void _UpdateBoneCount();
 #endif
 };

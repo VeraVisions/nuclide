@@ -19,67 +19,6 @@ var bool g_input_received = false;
 
 #define FN_UPDATE_PKGLIST "http://www.frag-net.com/dl/%s_packages"
 
-/* r_autoscale forces vid_conautoscale to be one of 4 integer values.
- * this is due to vid_conautoscale 0 scaling with in floating point... which
- * in turns results in skipped rows/columns and shimmering. */
-var int autocvar_r_autoscale = false;
-var int autocvar_r_pixelscale = FALSE;
-void
-Menu_AutoScale(void)
-{
-	if (autocvar_r_autoscale) {
-		vector psize = getproperty(VF_SCREENPSIZE);
-		if (psize[1] >= (480 * 4)) {
-			cvar_set("vid_conautoscale", "4");
-		} else if (psize[1] >= (480 * 3)) {
-			cvar_set("vid_conautoscale", "3");
-		} else if (psize[1] >= (480 * 2)) {
-			cvar_set("vid_conautoscale", "2");
-		} else {
-			cvar_set("vid_conautoscale", "1");
-		}
-
-		if (autocvar_r_pixelscale) {
-			float scale = bound(0.0, 480 / psize[1], 1.0);
-			cvar_set("r_renderscale", sprintf("-%f", scale));
-		}
-	}
-}
-
-/* old Half-Life configs that have a completely different gamma model would
- * mess up visibility on initial launch - so we catch that and and force
- * our default to fix it */
-void
-Menu_GammaHack(void)
-{
-	if (cvar("brightness") != cvar("vid_brightness")) {
-		localcmd("seta brightness 0\n");
-		NSLog("Old config brightness. Applying brightness hack.");
-	}
-
-	if (cvar("gamma") != cvar("vid_gamma")) {
-		localcmd("seta gamma 1\n");
-		NSLog("Old config gamma. Applying gamma hack.");
-	}
-}
-
-bool
-Menu_HasStartupVideos(void)
-{
-	if (fileExists("media/valve.avi"))
-		return true;
-
-	return false;
-}
-
-void
-Menu_PlayStartupVideos(void)
-{
-	NSLog("Playing startup videos.\n");
-	//localcmd("playvideo av:media/sierra.avi av:media/valve.avi\n");
-}
-
-
 CDialog main_dgDisconnect;
 CMainButton main_btnRefOK;
 var bool serverDisconnect = false;
@@ -92,61 +31,37 @@ m_init(void)
 		serverDisconnect = false;
 	}
 
-	string menuMap;
-
 	NSLog("--------- Initializing Menu ----------");
 	NSLog("Built: %s %s", __DATE__, __TIME__);
 	NSLog("QCC: %s", __QCCVER__);
-
-	/* the HL configs make the rate this low by default. */
-	if (cvar("rate") <= 2500) {
-		cvar_set("rate", "30000");
-	}
-
-
-	Font_Load("fonts/fontcon.font", font_console);
-	Font_Load("fonts/menu_label.font", font_label);
-	Font_Load("fonts/menu_main.font", font_arial);
-	Font_Load("fonts/menu_label_bold.font", font_label_b);
-	Font_Load("fonts/menu_header.font", font_label_p);
 
 	localcmd("plug_load ffmpeg\n");
 
 	Platform_Init();
 
+	Font_Load("fonts/menu_label.font", font_label);
+	Font_Load("fonts/menu_main.font", font_arial);
+	Font_Load("fonts/menu_label_bold.font", font_label_b);
+	Font_Load("fonts/menu_header.font", font_label_p);
+	Font_Load("fonts/console.font", font_console);
+
 	/* don't precache btns_main.bmp directly any more. */
 	CMainButton_InitSheets();
 	Strings_Init();
 	main_init();
-
 	Colors_Init();
+
+	/* prepare spray logo keys */
+	spray_setinfokeys();
 
 	if (GameLibrary_GetInfo(GAMEINFO_GAMEDIR) != "valve") {
 		m_intro_skip();
 		Music_MenuStart();
 	}
 
-	Menu_AutoScale();
-	Menu_GammaHack();
-
-	if (g_intro_stage == 0) {
-		string videofile = GameLibrary_GetInfo(GAMEINFO_INTROVIDEO);
-		
-		if (videofile) {
-			localcmd(strcat("playvideo ", videofile, "\n"));
-		}
+	if (Platform_HasStartupVideos() == true) {
+		Platform_PlayStartupVideos();
 	}
-
-	menuMap = GameLibrary_GetInfo(GAMEINFO_MENUMAP);
-	if (menuMap != "") {
-		localcmd(strcat("map_background ", menuMap, "\n"));
-	}
-
-	/* prepare spray logo keys */
-	spray_setinfokeys();
-
-	if (Menu_HasStartupVideos() == true)
-		Menu_PlayStartupVideos();
 
 	/* init the disconnect dialog */
 	main_dgDisconnect = spawn(CDialog);
@@ -166,8 +81,6 @@ Menu_RendererRestarted(string rendererdesc)
 {
 	Platform_RendererRestarted();
 	CMainButton_InitSheets();
-	Menu_AutoScale();
-	Menu_GammaHack();
 }
 
 /* called, in theory, whenever the menu gets killed */
@@ -209,55 +122,10 @@ m_draw(vector screensize)
 		return;
 	}
 
-	/* set new scale whenever the resolution changes */
-	if ((screensize[0] != g_vidsize[0]) || (screensize[1] != g_vidsize[1])) {
-		g_vidsize[0] = screensize[0];
-		g_vidsize[1] = screensize[1];
-		g_menuofs[0] = (g_vidsize[0] / 2) - 320;
-		g_menuofs[1] = (g_vidsize[1] / 2) - 240;
-		Menu_AutoScale();
-	}
-
-	g_background = cvar("_background");
-
-	/* make sure input carries over when a map background is active */
-	if (g_background) {
-		if (getkeydest() != KEY_MENU) {
-			setkeydest(KEY_MENU);
-			setmousetarget(TARGET_MENU);
-			setcursormode(TRUE, "gfx/cursor");
-		}
-	}
-
 	/* to prevent TCP timeouts */
 	menu_chatrooms_keepalive();
 
-	/* clear rich presence whenever the state suddenly changes */
-	if (g_gamestate != clientstate()) {
-		g_gamestate = clientstate();
-
-		if (g_gamestate == 1)
-			RichPresence_Clear();
-	}
-
-	/* rich presence sanity check */
-	if (RichPresence_WasSet() == false) {
-		if (clientstate() == 2)
-			RichPresence_Set("status", "In-game (Unknown)");
-		else
-			RichPresence_Set("status", "Main Menu");
-	}
-
-	/* if the menu is not visible and we're no background map... */
-	if (!g_active && !g_background) {
-		/* make sure we're redirecting input when the background's gone */
-		if (getkeydest() != KEY_GAME) {
-			setkeydest(KEY_GAME);
-			setmousetarget(TARGET_CLIENT);
-			setcursormode(FALSE);
-		}
-
-		/* don't draw the menu below */
+	if (Platform_Draw(screensize) == false) {
 		return;
 	}
 
@@ -322,12 +190,12 @@ Menu_InputEvent(float evtype, float scanx, float chary, float devid)
 		}
 		break;
 	case IE_MOUSEABS:
-		g_mousepos[0] = scanx;
-		g_mousepos[1] = chary;
+		g_vecMousePos[0] = scanx;
+		g_vecMousePos[1] = chary;
 		break;
 	case IE_MOUSEDELTA:
-		g_mousepos[0] += scanx;
-		g_mousepos[1] += chary;
+		g_vecMousePos[0] += scanx;
+		g_vecMousePos[1] += chary;
 		break;
 	}
 

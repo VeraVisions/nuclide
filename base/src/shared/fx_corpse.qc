@@ -21,12 +21,12 @@ entity g_bodies;
 void
 FX_Corpse_Init(void)
 {
-	entity next = spawn(NSRenderableEntity);
+	entity next = spawn(ncRenderableEntity);
 	g_bodies = next;
 
 	for ( int i = 0; i <= CORPSES_MAX; i++ ) {
 		next.classname = "corpse";
-		next.owner = spawn(NSRenderableEntity);
+		next.owner = spawn(ncRenderableEntity);
 		
 		if ( i == CORPSES_MAX ) {
 			next.owner = g_bodies;
@@ -45,9 +45,9 @@ FX_Corpse_Next(void)
 }
 
 entity
-FX_Corpse_Spawn(NSClientPlayer pl, float anim)
+FX_Corpse_Spawn(ncActor pl, float anim)
 {
-	NSRenderableEntity body_next = (NSRenderableEntity)FX_Corpse_Next();
+	ncRenderableEntity body_next = (ncRenderableEntity)FX_Corpse_Next();
 	setorigin(body_next, pl.origin + [0,0,32]);
 	body_next.SetMovetype(MOVETYPE_TOSS);
 	body_next.SetSolid(SOLID_CORPSE);

@@ -24,7 +24,7 @@ Entities are what we call instantiated objects within our game world.
 They belong to a class, which can be read from their `.classname` field
 at any given time.
 
-In Nuclide, the lowest entity class you're meant to instantiate is NSEntity.
+In Nuclide, the lowest entity class you're meant to instantiate is ncEntity.
 There are multiple child-classes that do a lot more advanced and or specific
 things.
 
@@ -35,22 +35,22 @@ things.
 typedef enum
 {
 	ENT_NONE = 0,	/**< invalid, but reserved. */
-	ENT_ENTITY,	/**< of type NSEntity */
-	ENT_SOUND,	/**< of type NSSound */
-	ENT_PMOVEVARS, /**< of type NSPMoveVars */
-	ENT_ENTITYRENDERABLE, /**< of type NSRenderableEntity */
-	ENT_ENTITYPROJECTILE, /**< of type NSProjectile */
-	ENT_SURFPROP, /**< of type NSSurfacePropEntity */
-	ENT_PHYSICS,	/**< of type NSPhysicsEntity */
-	ENT_MONSTER,	/**< of type NSMonster */
-	ENT_TALKMONSTER,	/**< of type NSTalkMonster */
+	ENT_ENTITY,	/**< of type ncEntity */
+	ENT_SOUND,	/**< of type ncSound */
+	ENT_PMOVEVARS, /**< of type ncPMoveVars */
+	ENT_ENTITYRENDERABLE, /**< of type ncRenderableEntity */
+	ENT_ENTITYPROJECTILE, /**< of type ncProjectile */
+	ENT_SURFPROP, /**< of type ncSurfacePropEntity */
+	ENT_PHYSICS,	/**< of type ncPhysicsEntity */
+	ENT_MONSTER,	/**< of type ncMonster */
+	ENT_TALKMONSTER,	/**< of type ncTalkMonster */
 	ENT_SPEAKER, /**< of type speaker */
-	ENT_PLAYER,	/**< of type NSClientPlayer */
-	ENT_ITEM, /**< of type NSItem */
-	ENT_WEAPON, /**< of type NSWeapon */
-	ENT_RAGDOLL, /**< of type NSRagdoll */
-	ENT_SPECTATOR,	/**< of type NSClientSpectator */
-	ENT_PORTAL,		/**< of type NSPortal */
+	ENT_PLAYER,	/**< of type ncPlayer */
+	ENT_ITEM, /**< of type ncItem */
+	ENT_WEAPON, /**< of type ncWeapon */
+	ENT_RAGDOLL, /**< of type ncRagdoll */
+	ENT_SPECTATOR,	/**< of type ncSpectator */
+	ENT_PORTAL,		/**< of type ncPortal */
 	ENT_AMBIENTSOUND,	/**< of type ambient_generic */
 	ENT_BEAM,	/**< of type env_beam */
 	ENT_FUNNEL, /**< of type env_funnel */
@@ -66,8 +66,8 @@ typedef enum
 	ENT_PARTSYSTEM,	/**< of type info_particle_system */
 	ENT_SPRITE,	/**< of type env_sprite */
 	ENT_GLOW, /**< of type env_glow */
-	ENT_SPRAY,	/**< of type NSSpraylogo */
-	ENT_DECAL,	/**< of type NSDecal */
+	ENT_SPRAY,	/**< of type ncSpraylogo */
+	ENT_DECAL,	/**< of type ncDecal */
 	ENT_OLDCAMERA,	/**< of type trigger_camera */
 	ENT_MONITOR,	/**< of type func_monitor */
 	ENT_VEHICLE,	/**< Reserved. */
@@ -82,7 +82,7 @@ typedef enum
 	ENT_WAYPOINT,	/**< of type info_waypoint */
 	ENT_INSTRUCTOR, /**< of type env_instructor_hint */
 	ENT_PUSH,		/**< of type trigger_push */
-	ENT_SOUNDSCAPE, /**< of type NSSoundScape */
+	ENT_SOUNDSCAPE, /**< of type ncSoundScape */
 	ENT_SEPARATOR,	/**< This is a separator. This separator is used by you to add game-specific networked entities. When declaring your own entity-update types, you want the first value to equal ENT_SEPARATOR at all times to ensure you'll not be overriding existing slots. */
 } entupdate_t;
 

@@ -60,11 +60,11 @@ Used to display hints throughout the environment.
 # TRIVIA
 This entity was introduced in Left 4 Dead 2 (2009).
 
-@ingroup shared
+@ingroup sharedentity
 @ingroup pointentity
 */
 class
-env_instructor_hint:NSPointTrigger
+env_instructor_hint:ncPointTrigger
 {
 public:
 	void env_instructor_hint(void);

@@ -67,11 +67,11 @@ some random sprites needs to be treated additive.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup brushentity
 */
 class
-func_tank:NSVehicle
+func_tank:ncVehicle
 {
 public:
 	void func_tank(void);
@@ -284,7 +284,7 @@ func_tank::Respawn(void)
 	SetSolid(SOLID_BSP);
 
 	if (m_eDriver)
-		PlayerLeave((NSClientPlayer)m_eDriver);
+		PlayerLeave((ncPlayer)m_eDriver);
 }
 
 void
@@ -297,7 +297,7 @@ func_tank::SpriteSmoke(vector org)
 	if (!m_strSpriteSmoke)
 		return;
 
-	NSRenderableEntity smoke = spawn(NSRenderableEntity);
+	ncRenderableEntity smoke = spawn(ncRenderableEntity);
 	smoke.SetModel(m_strSpriteSmoke);
 	smoke.SetOrigin(org);
 	smoke.think = Die;
@@ -318,7 +318,7 @@ func_tank::SpriteFlash(vector org)
 	if (!m_strSpriteFlash)
 		return;
 
-	NSRenderableEntity flash = spawn(NSRenderableEntity);
+	ncRenderableEntity flash = spawn(ncRenderableEntity);
 	flash.SetModel(m_strSpriteFlash);
 	flash.SetOrigin(org);
 	flash.think = Die;
@@ -333,7 +333,7 @@ void
 func_tank::customphysics(void)
 {
 	if (m_eDriver && m_eDriver.health <= 0)
-		PlayerLeave((NSClientPlayer)m_eDriver);
+		PlayerLeave((ncPlayer)m_eDriver);
 
 	if (m_eDriver) {
 		vector endorg;
@@ -343,7 +343,7 @@ func_tank::customphysics(void)
 		PlayerUpdateFlags();
 
 		if (vlen(m_eDriver.origin - origin) > 128)
-			PlayerLeave((NSClientPlayer)m_eDriver);
+			PlayerLeave((ncPlayer)m_eDriver);
 	}
 }
 

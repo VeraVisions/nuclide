@@ -14,14 +14,14 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-VGUILoadingPanel loadingPanel;
+vguiLoadingPanel loadingPanel;
 
 void Loading_Draw ( vector vecSize )
 {
 	g_vidsize = vecSize;
 
 	if (!loadingPanel) {
-		loadingPanel = spawn(VGUILoadingPanel);
+		loadingPanel = spawn(vguiLoadingPanel);
 	}
 
 #if 1

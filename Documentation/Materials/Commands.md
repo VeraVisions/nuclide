@@ -12,6 +12,6 @@ Surface specific commands affect the entire surface, or sometimes whole brush-vo
 
 Stage/Layer specific commands only affect one part of the rendering stage. Generally anything within a sub-block of braces (`{ }`) is a stage. It defines a layer to draw on top of the surface.
 
-Due to how simple most surfaces are, you don't have to define a stage. It is often enough to set @ref mat_program, @ref diffuseMap and you're rendering a surface handled entirely by the GPU.
+Due to how simple most surfaces are, you don't have to define a stage. It is often enough to set @ref program, @ref diffuseMap and you're rendering a surface handled entirely by the GPU.
 
-Some operations, such as @ref deformVertexes or @ref tcMod are done on the CPU. While you can use those, know that moving that action into a [Shader Program](@ref shaders) is recommended.
+Some operations, such as [deformVertexes](@ref deformVertexes) or [tcMod](@ref tcMod) are done on the CPU. While you can use those, know that moving that action into a [Shader Program](@ref shaders) is recommended.

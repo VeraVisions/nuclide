@@ -1,26 +1,26 @@
 # Material Command List {#mat_commands}
 
-### tcGen {#tcGen}
+## tcGen {#tcGen}
 
-#### Syntax
+### Syntax
 
-**tcGen <coordinate source>**
+**tcGen \<coordinate source\>**
 
-#### Overview
+### Overview
 
 Specifies how texture coordinates are generated and where they come
 from. Valid functions are **base**, **lightmap** and **environment**.
 
-#### Sources {#sources}
+### Sources
 
-##### base {#base}
+#### base
 
 Base texture coordinates from the original art.
 
-##### lightmap {#lightmap}
+#### lightmap
 
 Lightmap texture coordinates.
 
-##### environment {#environment}
+#### environment
 
 Make this object environment mapped.

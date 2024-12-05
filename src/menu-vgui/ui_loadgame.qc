@@ -18,10 +18,10 @@ int g_iLoadGameInitialized;
 
 void UI_LoadGame_Show ( void )
 {
-	static CUIWindow winLoadGame;
-	static CUIList lsbSaves;
-	static CUIScrollbar scrlSaves;
-	static CUIButton btnLoad;
+	static vguiWindow winLoadGame;
+	static vguiList lsbSaves;
+	static vguiScrollBar scrlSaves;
+	static vguiButton btnLoad;
 
 	static void LoadGame_Play ( void ) {
 		string strSong;
@@ -38,12 +38,12 @@ void UI_LoadGame_Show ( void )
 
 	if ( !g_iLoadGameInitialized ) {
 		g_iLoadGameInitialized = TRUE;
-		winLoadGame = spawn( CUIWindow );
+		winLoadGame = spawn( vguiWindow );
 		winLoadGame.SetTitle( "Load Game" );
 		winLoadGame.SetSize( [256,180] );
 		winLoadGame.SetIcon( "gfx/icon16/music" );
 
-		lsbSaves = spawn( CUIList );
+		lsbSaves = spawn( vguiList );
 		lsbSaves.SetSize( [192, 96] );
 		lsbSaves.SetPos( [8, 32] );
 		lsbSaves.SetItemCount( Saves_GetSaveCount() );
@@ -53,7 +53,7 @@ void UI_LoadGame_Show ( void )
 			lsbSaves.AddItem( Saves_GetInfo(i, SAVEINFO_NAME) );
 		}
 
-		scrlSaves = spawn( CUIScrollbar );
+		scrlSaves = spawn( vguiScrollBar );
 		scrlSaves.SetLength( 96 );
 		scrlSaves.SetPos( [201,32] );
 		scrlSaves.SetMin( 0 );
@@ -61,7 +61,7 @@ void UI_LoadGame_Show ( void )
 		scrlSaves.SetMax( lsbSaves.GetMaxVisibleItems() );
 		scrlSaves.CallOnChange( LoadGame_ListUpdate );
 
-		btnLoad = spawn( CUIButton );
+		btnLoad = spawn( vguiButton );
 		btnLoad.SetTitle( "Load" );
 		btnLoad.SetIcon( "gfx/icon16/book_edit" );
 		btnLoad.SetPos( [8,132] );

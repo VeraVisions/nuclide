@@ -1,19 +1,15 @@
-/***
-*
-*   Copyright (c) 2000-2024, Vera Visions. All rights reserved.
-*
-****/
-
 #define FULLENGINENAME		"Nuclide"
 #define GAME_SHORTNAME		"NC"
 #define GAME_BASEGAMES		"base"
 #define GAME_PROTOCOL		"Nuclide"
+#define GAME_DEFAULTCMDS	"fteplug_ffmpeg;fteplug_ode;plug_load ffmpeg;plug_load ode;exec quake.rc"
+#define GAME_DOWNLOADSURL	"https://www.frag-net.com/pkgs/list"
 
 #define BRANDING_ICON "wastes.ico"
 #define DISTRIBUTION "VTW"
 #define DISTRIBUTIONLONG "Vera Visions"
 #define GAME_FULLNAME		FULLENGINENAME
-#define GAME_DEFAULTPORT	23000
+#define GAME_DEFAULTPORT	27500
 #define ENGINEWEBSITE "https://www.vera-visions.com/"
 
 #ifndef GLQUAKE
@@ -43,7 +39,7 @@
 #define USEAREAGRID /* leave it on, improves performance */
 #define AVAIL_DINPUT /* input for Windows */
 #define AVAIL_FREETYPE	/* for truetype font rendering */
-#undef AVAIL_STBI /* avoid libpng/libjpeg dependancies */
+#define AVAIL_STBI /* avoid libpng/libjpeg dependancies */
 #define ENGINE_ROUTING /* engine-side, fast routing */
 
 #ifndef LEGACY_GPU
@@ -105,23 +101,23 @@
 
 /* Model formats, IQM/VVM and HLMDL for legacy maps */
 #define INTERQUAKEMODELS
-#undef HALFLIFEMODELS
+#define HALFLIFEMODELS
 
 /* physics */
 #undef USE_INTERNAL_ODE
 #undef USE_INTERNAL_BULLET
-#define USERBE 
 #define RAGDOLL
+#define USERBE
 
 /* we don't need any of these */
 #undef IMAGEFMT_PCX
 #undef PACKAGE_DOOMWAD
 #undef DOOMWADS
 #undef MAP_PROC
-#undef Q2BSPS
+#define Q2BSPS
 #define RFBSPS
 #define	VERTEXINDEXBYTES	2	//16bit indexes work everywhere but may break some file types, 32bit indexes are optional in gles<=2 and d3d<=9 and take more memory/copying but allow for bigger batches/models. Plugins need to be compiled the same way so this is no longer set per-renderer.
-#undef SPRMODELS
+#define SPRMODELS
 #undef SP2MODELS
 #undef DSPMODELS
 #undef MD1MODELS
@@ -181,7 +177,7 @@
 #define HAVE_MEDIA_DECODER	/* can play cin/roq, more with plugins */
 #undef HAVE_MEDIA_ENCODER	/* capture/capturedemo work */
 #undef HAVE_SPEECHTOTEXT	/* Windows speech-to-text thing */
-#undef SAVEDGAMES
+#define SAVEDGAMES
 #undef PACKAGEMANAGER		/* enable/disable/download packages and plugins */
 #undef HEADLESSQUAKE
 #undef WAYLANDQUAKE
@@ -210,7 +206,7 @@
 /* things to configure qclib, which annoyingly doesn't include this
  * file itself */
 -DOMIT_QCC	/* disable the built-in qcc */
--DSIMPLE_QCVM	/* disable qc debugging and 32bit opcodes */
+//-DSIMPLE_QCVM	/* disable qc debugging and 32bit opcodes */
 #ifndef AVAIL_ZLIB
 -DNO_ZLIB	/* disable zlib */
 #endif

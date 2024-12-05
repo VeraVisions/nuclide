@@ -29,11 +29,11 @@ When triggered, will cause players inside/outside this volume to trigger entitie
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup brushentity
 */
 class
-game_zone_player:NSBrushTrigger
+game_zone_player:ncBrushTrigger
 {
 public:
 	void game_zone_player(void);
@@ -124,8 +124,8 @@ game_zone_player::Trigger(entity entityActivator, triggermode_t state)
 {
 	int playersIn = 0i;
 	int playersOut = 0i;
-	NSEntity inTarget = (NSEntity)find(world, ::targetname, m_strInTarget);
-	NSEntity outTarget = (NSEntity)find(world, ::targetname, m_strOutTarget);
+	ncEntity inTarget = (ncEntity)find(world, ::targetname, m_strInTarget);
+	ncEntity outTarget = (ncEntity)find(world, ::targetname, m_strOutTarget);
 
 	for (other = world; (other = find(other, ::classname, "player"));) {
 		if (IntersectsWith(other)) {

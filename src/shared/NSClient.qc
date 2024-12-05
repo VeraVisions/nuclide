@@ -15,7 +15,7 @@
 */
 
 void
-NSClient::NSClient(void)
+ncClient::ncClient(void)
 {
 	customphysics = Empty; /* we don't want any engine physics to run on clients, ever. */
 	flags |= FL_CLIENT;
@@ -24,7 +24,7 @@ NSClient::NSClient(void)
 
 #ifdef SERVER
 void
-NSClient::Save(float handle)
+ncClient::Save(float handle)
 {
 	super::Save(handle);
 	/*SaveEntity(handle, "m_xrSpace", m_xrSpace);
@@ -35,7 +35,7 @@ NSClient::Save(float handle)
 }
 
 void
-NSClient::Restore(string strKey, string strValue)
+ncClient::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
 	/*case "m_xrSpace":
@@ -59,95 +59,95 @@ NSClient::Restore(string strKey, string strValue)
 }
 
 void
-NSClient::ServerInputFrame(void)
+ncClient::ServerInputFrame(void)
 {
 }
 #endif
 
 void
-NSClient::SharedInputFrame(void)
+ncClient::SharedInputFrame(void)
 {
 
 }
 
 void
-NSClient::OnRemoveEntity(void)
+ncClient::OnRemoveEntity(void)
 {
 	XR_Shutdown(this);
 }
 
 void
-NSClient::ProcessInput(void)
+ncClient::ProcessInput(void)
 {
 }
 
 void
-NSClient::PreFrame(void)
+ncClient::PreFrame(void)
 {
 }
 
 void
-NSClient::PostFrame(void)
+ncClient::PostFrame(void)
 {
 }
 
 bool
-NSClient::IsFakeSpectator(void)
-{
-	return (false);
-}
-
-bool
-NSClient::IsRealSpectator(void)
+ncClient::IsFakeSpectator(void)
 {
 	return (false);
 }
 
 bool
-NSClient::IsDead(void)
+ncClient::IsRealSpectator(void)
 {
 	return (false);
 }
 
 bool
-NSClient::IsPlayer(void)
+ncClient::IsDead(void)
+{
+	return (false);
+}
+
+bool
+ncClient::IsPlayer(void)
 {
 	return (false);
 }
 
 float
-NSClient::GetForwardSpeed(void)
+ncClient::GetForwardSpeed(void)
 {
 	return cvar("cl_forwardspeed");
 }
 
 float
-NSClient::GetSideSpeed(void)
+ncClient::GetSideSpeed(void)
 {
 	return cvar("cl_sidespeed");
 }
 
 float
-NSClient::GetBackSpeed(void)
+ncClient::GetBackSpeed(void)
 {
 	return cvar("cl_backspeed");
 }
 
 #ifdef CLIENT
 void
-NSClient::ClientInputFrame(void)
+ncClient::ClientInputFrame(void)
 {
 }
 
 void
-NSClient::UpdateAliveCam(void)
+ncClient::UpdateAliveCam(void)
 {
 	g_view.SetCameraOrigin(GetEyePos());
 	g_view.SetCameraAngle(view_angles);
 }
 
 void
-NSClient::UpdateDeathcam(void)
+ncClient::UpdateDeathcam(void)
 {
 	/* death cam */
 	view_angles[2] = 45.0f;
@@ -157,7 +157,7 @@ NSClient::UpdateDeathcam(void)
 }
 
 void
-NSClient::UpdateIntermissionCam(void)
+ncClient::UpdateIntermissionCam(void)
 {
 	view_angles = pSeat->m_vecCameraAngle;
 	view_angles += [sin(time), sin(time * 1.5f)] * 0.1f;
@@ -166,7 +166,7 @@ NSClient::UpdateIntermissionCam(void)
 }
 
 float
-NSClient::predraw(void)
+ncClient::predraw(void)
 {
 	return (PREDRAW_NEXT);
 }

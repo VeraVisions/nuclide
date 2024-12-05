@@ -38,12 +38,12 @@ Creates a connection between two entities in the form of a 'ballsocket'.
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 @ingroup physics
 */
 class
-phys_ballsocket:NSPhysicsConstraint
+phys_ballsocket:ncPhysicsConstraint
 {
 public:
 	void phys_ballsocket(void);

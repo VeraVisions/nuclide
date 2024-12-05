@@ -43,11 +43,11 @@ sound, damage, delay and so on.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup brushentity
 */
 class
-func_mortar_field:NSBrushTrigger
+func_mortar_field:ncBrushTrigger
 {
 public:
 	void func_mortar_field(void);

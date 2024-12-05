@@ -1,0 +1,8 @@
+{
+	diffusemap editor/env_spark.ktx
+	
+	{
+		map $diffuse
+		alphaFunc GE128
+	}
+}

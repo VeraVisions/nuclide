@@ -27,11 +27,11 @@ A model with smoke all around it.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-cycler_wreckage:NSRenderableEntity
+cycler_wreckage:ncRenderableEntity
 {
 public:
 	void cycler_wreckage(void);
@@ -40,7 +40,7 @@ public:
 	virtual void OnRemoveEntity(void);
 
 private:
-	NSEntity m_eSmoke;
+	ncEntity m_eSmoke;
 };
 
 void

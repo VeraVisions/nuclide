@@ -1,17 +1,17 @@
 # Material Command List {#mat_commands}
 
-### fullbrightMap {#fullbrightMap}
+## fullbrightMap {#fullbrightMap}
 
-#### Syntax
+### Syntax
 
-**fullbrightMap <texturepath/texturename>**
+**fullbrightMap \<texturepath/texturename\>**
 
-#### Overview
+### Overview
 
 The texture is essentially a fullbright overlay on top of the
 diffuse/albedomap.
 
-Not all [Shaders](Shaders.md) support them. In some, like the
-[unlit](unlit.md) shader, the
-[diffusemap](diffusemap.md) is always
+Not all [Shaders](@ref shaders) support them. In some, like the
+[unlit](@ref unlit) shader, the
+[diffusemap](@ref diffusemap) is always
 fullbright.

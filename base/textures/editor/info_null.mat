@@ -1,0 +1,8 @@
+{
+	diffusemap editor/info_null.ktx
+	
+	{
+		map $diffuse
+		alphaFunc GE128
+	}
+}

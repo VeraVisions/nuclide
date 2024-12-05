@@ -79,12 +79,12 @@ SHPF_cvars_SetVector(string cvarName, vector setValue)
 string
 SHPF_declManager_New(void)
 {
-	NSDict newDict = spawn(NSDict);
+	ncDict newDict = spawn(ncDict);
 
 	/* not out of memory */
 	if (newDict) {
 		/* assign it a new name, return */
-		newDict.declclass = sprintf("NSDict_%x", num_for_edict(newDict));
+		newDict.declclass = sprintf("ncDict_%x", num_for_edict(newDict));
 		return (newDict.declclass);
 	}
 
@@ -95,7 +95,7 @@ SHPF_declManager_New(void)
 string
 SHPF_declManager_GetString(string defName, string keyName)
 {
-	NSDict findDecl = (NSDict)find(world, ::declclass, defName);
+	ncDict findDecl = (ncDict)find(world, ::declclass, defName);
 
 	if (findDecl) {
 		return (findDecl.GetString(keyName));
@@ -108,7 +108,7 @@ SHPF_declManager_GetString(string defName, string keyName)
 int
 SHPF_declManager_GetInteger(string defName, string keyName)
 {
-	NSDict findDecl = (NSDict)find(world, ::declclass, defName);
+	ncDict findDecl = (ncDict)find(world, ::declclass, defName);
 
 	if (findDecl) {
 		return (findDecl.GetInteger(keyName));
@@ -121,7 +121,7 @@ SHPF_declManager_GetInteger(string defName, string keyName)
 float
 SHPF_declManager_GetFloat(string defName, string keyName)
 {
-	NSDict findDecl = (NSDict)find(world, ::declclass, defName);
+	ncDict findDecl = (ncDict)find(world, ::declclass, defName);
 
 	if (findDecl) {
 		return (findDecl.GetFloat(keyName));
@@ -134,7 +134,7 @@ SHPF_declManager_GetFloat(string defName, string keyName)
 bool
 SHPF_declManager_GetBool(string defName, string keyName)
 {
-	NSDict findDecl = (NSDict)find(world, ::declclass, defName);
+	ncDict findDecl = (ncDict)find(world, ::declclass, defName);
 
 	if (findDecl) {
 		return (findDecl.GetBool(keyName));
@@ -147,7 +147,7 @@ SHPF_declManager_GetBool(string defName, string keyName)
 vector
 SHPF_declManager_GetVector(string defName, string keyName)
 {
-	NSDict findDecl = (NSDict)find(world, ::declclass, defName);
+	ncDict findDecl = (ncDict)find(world, ::declclass, defName);
 
 	if (findDecl) {
 		return (findDecl.GetVector(keyName));
@@ -160,7 +160,7 @@ SHPF_declManager_GetVector(string defName, string keyName)
 void
 SHPF_declManager_AddKey(string defName, string keyName, string setValue)
 {
-	NSDict findDecl = (NSDict)find(world, ::declclass, defName);
+	ncDict findDecl = (ncDict)find(world, ::declclass, defName);
 
 	if (findDecl) {
 		findDecl.AddKey(keyName, setValue);
@@ -173,7 +173,7 @@ SHPF_declManager_AddKey(string defName, string keyName, string setValue)
 void
 SHPF_declManager_RemoveKey(string defName, string keyName)
 {
-	NSDict findDecl = (NSDict)find(world, ::declclass, defName);
+	ncDict findDecl = (ncDict)find(world, ::declclass, defName);
 
 	if (findDecl) {
 		findDecl.RemoveKey(keyName);
@@ -186,7 +186,7 @@ SHPF_declManager_RemoveKey(string defName, string keyName)
 void
 SHPF_declManager_Delete(string defName, string keyName)
 {
-	NSDict findDecl = (NSDict)find(world, ::declclass, defName);
+	ncDict findDecl = (ncDict)find(world, ::declclass, defName);
 
 	if (findDecl) {
 		remove(findDecl);
@@ -369,7 +369,31 @@ SHPF_serverinfo_SetVector(string serverKey, vector setValue)
 
 
 /* team library */
+string
+SHPF_teams_Name(int teamID)
+{
+	return SHPF_serverinfo_GetString(sprintf("team_%i", teamID));
+}
 
+bool
+SHPF_teams_Valid(int teamID)
+{
+	string teamName = SHPF_teams_Name(teamID);
+
+	if (teamName == "") {
+		return (false);
+	}
+
+	if (teamID <= 0i) {
+		NSError("Team ID cannot be 0 or negative.");
+	}
+
+	if (teamID > 1000i) {
+		NSError("Team ID cannot be over 1000. Reserved.");
+	}
+
+	return (true);
+}
 
 int
 SHPF_teams_TeamCount(void)
@@ -377,16 +401,26 @@ SHPF_teams_TeamCount(void)
 	return SHPF_serverinfo_GetInteger("teams");
 }
 
+int
+SHPF_teams_OpenTeamCount(void)
+{
+	int openTeams = 0i;
+
+	for (int i = 1; i <= 1000; i++) {
+		if (SHPF_teams_Valid(i) == true) {
+			if (SHPF_serverinfo_GetBool(sprintf("teamclosed_%i", i)) == false) {
+				openTeams++;
+			}
+		}
+	}
+
+	return (openTeams);
+}
+
 vector
 SHPF_teams_Color(int teamID)
 {
 	return SHPF_serverinfo_GetVector(sprintf("teamcolor_%i", teamID));
-}
-
-string
-SHPF_teams_Name(int teamID)
-{
-	return SHPF_serverinfo_GetString(sprintf("team_%i", teamID));
 }
 
 int
@@ -488,7 +522,7 @@ SHPF_teams_NumDeadPlayers(int teamID)
 #else
 	for (entity a = world; (a = findfloat(a, ::identity, 1));) {
 		if (isPlayer(a)) {
-			NSClientPlayer pl = (NSClientPlayer)a;
+			ncPlayer pl = (ncPlayer)a;
 			if (pl.GetTeam() == (float)teamID && pl.IsAlive() == false) {
 				countedPlayers++;
 			}
@@ -515,7 +549,7 @@ SHPF_teams_TotalDeaths(int teamID)
 #else
 	for (entity a = world; (a = findfloat(a, ::identity, 1));) {
 		if (isPlayer(a)) {
-			NSClientPlayer pl = (NSClientPlayer)a;
+			ncPlayer pl = (ncPlayer)a;
 			if (pl.GetTeam() == (float)teamID) {
 				deathCounter += pl.deaths;
 			}
@@ -541,7 +575,7 @@ SHPF_teams_TotalFrags(int teamID)
 #else
 	for (entity a = world; (a = findfloat(a, ::identity, 1));) {
 		if (isPlayer(a)) {
-			NSClientPlayer pl = (NSClientPlayer)a;
+			ncPlayer pl = (ncPlayer)a;
 			if (pl.GetTeam() == (float)teamID) {
 				fragCounter += pl.frags;
 			}
@@ -552,17 +586,6 @@ SHPF_teams_TotalFrags(int teamID)
 	return (fragCounter);
 }
 
-bool
-SHPF_teams_Valid(int teamID)
-{
-	string teamName = SHPF_teams_Name(teamID);
-
-	if (teamName == "") {
-		return (false);
-	}
-
-	return (true);
-}
 
 int
 SHPF_teams_BestAutoJoinTeam(void)
@@ -571,7 +594,7 @@ SHPF_teams_BestAutoJoinTeam(void)
 	int sadCount = 1995i; /* unlikely high player number. */
 
 	/* maximum of 1000 teams. */
-	for (int i = 0; i <= 1000; i++) {
+	for (int i = 1; i <= 1000; i++) {
 		/* gaps in team id setup can now act as divider, allowing which teams are auto-join. */
 		if (SHPF_teams_Valid(i) == false) {
 			break;
@@ -591,6 +614,10 @@ SHPF_teams_BestAutoJoinTeam(void)
 void
 SHPF_teams_SetScore(int teamID, int setValue)
 {
+	if (SHPF_teams_Valid(teamID) == false) {
+		return;
+	}
+
 #ifdef SERVER
 	SHPF_serverinfo_SetInteger(sprintf("teamscore_%i", teamID), setValue);
 #else
@@ -600,6 +627,10 @@ SHPF_teams_SetScore(int teamID, int setValue)
 void
 SHPF_teams_AddScore(int teamID, int addValue)
 {
+	if (SHPF_teams_Valid(teamID) == false) {
+		return;
+	}
+
 #ifdef SERVER
 	int newValue = SHPF_teams_Score(teamID) + addValue;
 	SHPF_teams_SetScore(teamID, newValue);
@@ -612,7 +643,7 @@ SHPF_teams_SetUp(int teamID, string teamTitle, vector teamColor, bool openTeam)
 #ifdef SERVER
 	int teamCount = 0i;
 
-	if (!teamTitle || teamTitle == "") {
+	if (!STRING_SET(teamTitle)) {
 		NSError("Team title cannot be empty.");
 	}
 
@@ -650,8 +681,69 @@ SHPF_teams_SetUp(int teamID, string teamTitle, vector teamColor, bool openTeam)
 }
 
 void
+SHPF_teams_AddClass(int teamID, string classType)
+{
+	if (SHPF_teams_Valid(teamID) == false) {
+		return;
+	}
+
+#ifdef SERVER
+	int teamCount = 0i;
+	string teamInfo = __NULL__;
+	string currentClasses = __NULL__;
+
+	if (!STRING_SET(classType)) {
+		NSError("Class type cannot be empty.");
+	}
+
+	teamInfo = sprintf("teamclass_%i", teamID);
+	currentClasses = SHPF_serverinfo_GetString(teamInfo);
+	SHPF_serverinfo_SetString(teamInfo, strcat(currentClasses, classType, " "));
+#else
+#endif
+}
+
+int
+SHPF_teams_TotalClasses(int teamID)
+{
+	if (SHPF_teams_Valid(teamID) == false) {
+		return 0i;
+	}
+
+	int numClasses = 0i;
+	int realCount = 0i;
+	string teamInfo = sprintf("teamclass_%i", teamID);
+	string currentClasses = SHPF_serverinfo_GetString(teamInfo);
+	return (int)tokenize_console(currentClasses);
+}
+
+string
+SHPF_teams_ClassForIndex(int teamID, int classIndex)
+{
+	if (SHPF_teams_Valid(teamID) == false) {
+		return "";
+	}
+
+	int numClasses = 0i;
+	int realCount = 0i;
+	string teamInfo = sprintf("teamclass_%i", teamID);
+	string currentClasses = SHPF_serverinfo_GetString(teamInfo);
+	numClasses = (int)tokenize_console(currentClasses);
+
+	if (numClasses < classIndex) {
+		return "";
+	}
+
+	return (argv(classIndex));
+}
+
+void
 SHPF_teams_SetSpawnPoint(int teamID, string spawnPoint)
 {
+	if (SHPF_teams_Valid(teamID) == false) {
+		return;
+	}
+
 #ifdef SERVER
 	SHPF_serverinfo_SetString(sprintf("teamspawn_%i", teamID), spawnPoint);
 #else
@@ -663,7 +755,7 @@ SHPF_teams_SetSpawnPoint(int teamID, string spawnPoint)
 /* required because we might need to look it up inside the
 info for the primary attack mode. */
 static string
-NSWeapon_GetPrimaryKeyValue(string weaponDef, string keyName)
+ncWeapon_GetPrimaryKeyValue(string weaponDef, string keyName)
 {
 	string fireInfo1 = EntityDef_GetKeyValue(weaponDef, "def_fireInfo");
 	string defValue = EntityDef_GetKeyValue(weaponDef, keyName);
@@ -692,14 +784,14 @@ SHPF_weaponInfo_StartAmmo(string weaponDef)
 int
 SHPF_weaponInfo_MaxAmmo(string weaponDef)
 {
-	string ammoType = NSWeapon_GetPrimaryKeyValue(weaponDef, "ammoType");
+	string ammoType = ncWeapon_GetPrimaryKeyValue(weaponDef, "ammoType");
 	return (ammoMaxForName(ammoType));
 }
 
 bool
 SHPF_weaponInfo_IsSemiAuto(string weaponDef)
 {
-	return (bool)stof(NSWeapon_GetPrimaryKeyValue(weaponDef, "semiAuto"));
+	return (bool)stof(ncWeapon_GetPrimaryKeyValue(weaponDef, "semiAuto"));
 }
 
 string
@@ -711,7 +803,7 @@ SHPF_weaponInfo_InventoryType(string weaponDef)
 float
 SHPF_weaponInfo_FireTime(string weaponDef)
 {
-	return stof(NSWeapon_GetPrimaryKeyValue(weaponDef, "fireRate"));
+	return stof(ncWeapon_GetPrimaryKeyValue(weaponDef, "fireRate"));
 }
 
 int
@@ -730,7 +822,7 @@ bool
 SHPF_weaponInfo_IsClipOnly(string weaponDef)
 {
 	int clipSize = (int)stoi(EntityDef_GetKeyValue(weaponDef, "clipSize"));
-	string ammoType = NSWeapon_GetPrimaryKeyValue(weaponDef, "ammoType");
+	string ammoType = ncWeapon_GetPrimaryKeyValue(weaponDef, "ammoType");
 
 	/* no ammo type... */
 	if (!ammoType) {
@@ -745,23 +837,23 @@ SHPF_weaponInfo_IsClipOnly(string weaponDef)
 bool
 SHPF_weaponInfo_IsDetonationTimed(string weaponDef)
 {
-	string projectileDef = NSWeapon_GetPrimaryKeyValue(weaponDef, "def_projectile");
+	string projectileDef = ncWeapon_GetPrimaryKeyValue(weaponDef, "def_projectile");
 	bool isFused = (bool)stof(EntityDef_GetKeyValue(projectileDef, "detonate_on_fuse"));
 	return (isFused);
 }
 
 
-NSEntity
+ncEntity
 spawnClass(string className, vector desiredPos)
 {
-	NSEntity newEntity = __NULL__;
+	ncEntity newEntity = __NULL__;
 
 #ifdef SERVER
 	newEntity = Entity_CreateClass(className);
 
 	/* That class didn't exist, so let's take the base Nuclide one */
 	if (!newEntity) {
-		newEntity = Entity_CreateClass("NSEntity");
+		newEntity = Entity_CreateClass("ncEntity");
 	}
 
 	/* OOM. It's over. */
@@ -784,7 +876,7 @@ changeClass(entity target, string className)
 	/* hijack that decl. you don't to mess with this. */
 	if (target.flags & FL_CLIENT) {
 		if (className == "spectator") {
-			NSClientPlayer theClient = (NSClientPlayer)target;
+			ncPlayer theClient = (ncPlayer)target;
 			changeClass(theClient, "player");
 			theClient.MakeTempSpectator();
 			theClient.team = TEAM_SPECTATOR;
@@ -792,14 +884,14 @@ changeClass(entity target, string className)
 		}
 	}
 
-	return EntityDef_SwitchClass((NSEntity)target, className) ? (true) : (false);
+	return EntityDef_SwitchClass((ncEntity)target, className) ? (true) : (false);
 }
 #endif
 
 void
 sendInput(entity target, string inputName, string dataString, entity activator)
 {
-	NSEntity targetEntity = (NSEntity)target;
+	ncEntity targetEntity = (ncEntity)target;
 #ifdef SERVER
 	targetEntity.Input(activator, inputName, dataString);
 #endif
@@ -821,7 +913,7 @@ isAlive(entity entityToCheck)
 {
 #ifdef SERVER
 	if (entityToCheck.takedamage != DAMAGE_NO) {
-		NSSurfacePropEntity livingEnt = (NSSurfacePropEntity)entityToCheck;
+		ncSurfacePropEntity livingEnt = (ncSurfacePropEntity)entityToCheck;
 		return livingEnt.IsAlive();
 	}
 #endif
@@ -849,8 +941,7 @@ bool
 isPlayer(entity entityToCheck)
 {
 	if (isClient(entityToCheck)) {
-		NSClient pl = (NSClient)entityToCheck;
-
+		ncClient pl = (ncClient)entityToCheck;
 		return pl.IsPlayer();
 	}
 
@@ -870,11 +961,7 @@ isSentient(entity entityToCheck)
 bool
 isBot(entity entityToCheck)
 {
-#ifdef SERVER
-	return (clienttype(entityToCheck) == CLIENTTYPE_BOT) ? (true) : (false);
-#else
-	return (false);
-#endif
+	return userinfo.GetBool(self, "*bot");
 }
 
 bool
@@ -921,16 +1008,22 @@ SHPF_entityDef_GetVector(string declName, string keyName)
 	return stov(SHPF_entityDef_GetString(declName, keyName));
 }
 
-
 int
 SHPF_precache_Model(string modelPath)
 {
 	precache_model(modelPath);
 	PropData_ForModel(modelPath);
+	return (int)getmodelindex(modelPath, false);
 }
 
 int
 SHPF_precache_Sound(string modelPath)
 {
-	Sound_Precache(modelPath);
+	return (int)Sound_Precache(modelPath);
+}
+
+void
+SHPF_sounds_Play(string soundDef, float level = 75, float pitch = 100, float volume = 100, float channel = CHAN_AUTO)
+{
+
 }

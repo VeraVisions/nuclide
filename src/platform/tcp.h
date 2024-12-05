@@ -60,7 +60,7 @@ int TCP_Connect(tcpinfo_t *in, string path);
 
 /** Closes a TCP socket connection.
 
-@parm in Pointer to a tcpinfo_t that is to be closed. */
+@param in Pointer to a tcpinfo_t that is to be closed. */
 void TCP_Disconnect(tcpinfo_t *in);
 
 /** Send a string buffer to a specified TCP connection.

@@ -39,11 +39,11 @@ a random interval between 10 and 15 seconds in total.
 # TRIVIA
 It was introduced in Gunman Chronicles (2000).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-random_speaker:NSPointTrigger
+random_speaker:ncPointTrigger
 {
 public:
 	void random_speaker(void);

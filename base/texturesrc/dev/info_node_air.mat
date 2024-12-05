@@ -1,0 +1,8 @@
+{
+	diffusemap dev/info_node_air.tga
+	
+	{
+		map $diffuse
+		blendFunc blend
+	}
+}

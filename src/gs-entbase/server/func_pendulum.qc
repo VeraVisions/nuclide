@@ -50,11 +50,11 @@ Please include an origin brush so that a pivot point will be defined.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup brushentity
 */
 class
-func_pendulum:NSRenderableEntity
+func_pendulum:ncRenderableEntity
 {
 public:
 	void func_pendulum(void);

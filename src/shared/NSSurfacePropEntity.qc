@@ -15,7 +15,7 @@
 */
 
 void
-NSSurfacePropEntity::NSSurfacePropEntity(void)
+ncSurfacePropEntity::ncSurfacePropEntity(void)
 {
 	m_flBurnNext = 0.0f;
 #ifdef SERVER
@@ -36,7 +36,7 @@ NSSurfacePropEntity::NSSurfacePropEntity(void)
 }
 
 void
-NSSurfacePropEntity::Spawned(void)
+ncSurfacePropEntity::Spawned(void)
 {
 	super::Spawned();
 
@@ -52,7 +52,7 @@ NSSurfacePropEntity::Spawned(void)
 }
 
 bool
-NSSurfacePropEntity::IsOnFire(void)
+ncSurfacePropEntity::IsOnFire(void)
 {
 	return (effects & EF_ONFIRE) ? true : false;
 }
@@ -60,71 +60,71 @@ NSSurfacePropEntity::IsOnFire(void)
 /* networking */
 #ifdef SERVER
 void
-NSSurfacePropEntity::SetBloodColor(vector newColor)
+ncSurfacePropEntity::SetBloodColor(vector newColor)
 {
 	m_vecBloodColor = newColor;
 }
 
 vector
-NSSurfacePropEntity::GetBloodColor(void)
+ncSurfacePropEntity::GetBloodColor(void)
 {
 	return (m_vecBloodColor);
 }
 
 bool
-NSSurfacePropEntity::IsAlive(void)
+ncSurfacePropEntity::IsAlive(void)
 {
 	return (health > 0) ? true : false;
 }
 
 bool
-NSSurfacePropEntity::IsVulnerable(void)
+ncSurfacePropEntity::IsVulnerable(void)
 {
 	return (m_bTakesDamage);
 }
 
 void
-NSSurfacePropEntity::EnableBleeding(void)
+ncSurfacePropEntity::EnableBleeding(void)
 {
 	iBleeds = true;
 }
 
 void
-NSSurfacePropEntity::DisableBleeding(void)
+ncSurfacePropEntity::DisableBleeding(void)
 {
 	iBleeds = false;
 }
 
 void
-NSSurfacePropEntity::EnableAimAssist(void)
+ncSurfacePropEntity::EnableAimAssist(void)
 {
 	m_bAutoAim = true;
 	_UpdateTakedamage();
 }
 
 void
-NSSurfacePropEntity::DisableAimAssist(void)
+ncSurfacePropEntity::DisableAimAssist(void)
 {
 	m_bAutoAim = false;
 	_UpdateTakedamage();
 }
 
 void
-NSSurfacePropEntity::MakeVulnerable(void)
+ncSurfacePropEntity::MakeVulnerable(void)
 {
 	m_bTakesDamage = true;
 	_UpdateTakedamage();
 }
 
 void
-NSSurfacePropEntity::MakeInvulnerable(void)
+ncSurfacePropEntity::MakeInvulnerable(void)
 {
 	m_bTakesDamage = false;
 	_UpdateTakedamage();
 }
 
 void
-NSSurfacePropEntity::_UpdateTakedamage(void)
+ncSurfacePropEntity::_UpdateTakedamage(void)
 {
 	if (!m_bTakesDamage) {
 		takedamage = DAMAGE_NO;
@@ -138,13 +138,13 @@ NSSurfacePropEntity::_UpdateTakedamage(void)
 }
 
 bool
-NSSurfacePropEntity::CanBleed(void)
+ncSurfacePropEntity::CanBleed(void)
 {
 	return (iBleeds);
 }
 
 void
-NSSurfacePropEntity::SetHealth(float new_health)
+ncSurfacePropEntity::SetHealth(float new_health)
 {
 	if (max_health > 0)
 		health = min(new_health, max_health);
@@ -153,57 +153,57 @@ NSSurfacePropEntity::SetHealth(float new_health)
 }
 
 void
-NSSurfacePropEntity::SetMaxHealth(float new_health)
+ncSurfacePropEntity::SetMaxHealth(float new_health)
 {
 	max_health = new_health;
 	health =  min(health, max_health);
 }
 
 void
-NSSurfacePropEntity::SetMaxArmor(float new_armor)
+ncSurfacePropEntity::SetMaxArmor(float new_armor)
 {
 	max_armor = new_armor;
 	armor =  min(armor, max_armor);
 }
 
 float
-NSSurfacePropEntity::GetHealth(void)
+ncSurfacePropEntity::GetHealth(void)
 {
 	return (health);
 }
 
 float
-NSSurfacePropEntity::GetMaxHealth(void)
+ncSurfacePropEntity::GetMaxHealth(void)
 {
 	return (max_health);
 }
 
 float
-NSSurfacePropEntity::GetMaxArmor(void)
+ncSurfacePropEntity::GetMaxArmor(void)
 {
 	return (max_armor);
 }
 
 float
-NSSurfacePropEntity::GetSpawnHealth(void)
+ncSurfacePropEntity::GetSpawnHealth(void)
 {
 	return (m_oldHealth);
 }
 
 void
-NSSurfacePropEntity::SetArmor(float new_armor)
+ncSurfacePropEntity::SetArmor(float new_armor)
 {
 	armor = new_armor;
 }
 
 float
-NSSurfacePropEntity::GetArmor(void)
+ncSurfacePropEntity::GetArmor(void)
 {
 	return (armor);
 }
 
 void
-NSSurfacePropEntity::ParentUpdate(void)
+ncSurfacePropEntity::ParentUpdate(void)
 {
 	/* TODO: Move out */
 	if (IsOnFire()) {
@@ -215,9 +215,9 @@ NSSurfacePropEntity::ParentUpdate(void)
 			health -= 5;
 
 			if (health <= 0) {
-				Death(m_eBurner, m_eBurner, 5i, g_vec_null, 0i);
+				Death(m_eBurner, m_eBurner, 5i, g_vec_null, origin, 0i);
 			} else {
-				Pain(m_eBurner, m_eBurner, 5i, g_vec_null, 0i);
+				Pain(m_eBurner, m_eBurner, 5i, g_vec_null, origin, 0i);
 			}
 
 			m_flBurnNext = GetTime() + 0.5f;
@@ -228,7 +228,7 @@ NSSurfacePropEntity::ParentUpdate(void)
 }
 
 void
-NSSurfacePropEntity::Damage(entity inflictor, entity attacker, NSDict damageDecl, float damageScale, vector dmgDir, vector hitLocation)
+ncSurfacePropEntity::Damage(entity inflictor, entity attacker, ncDict damageDecl, float damageScale, vector dmgDir, vector hitLocation)
 {
 	if (IsVulnerable() == false) {
 		return;
@@ -242,14 +242,22 @@ NSSurfacePropEntity::Damage(entity inflictor, entity attacker, NSDict damageDecl
 #endif
 
 	float damagePoints = (float)rint(stof(damageString) * damageScale);
-	NSSurfacePropEntity ourAttacker = (NSSurfacePropEntity)attacker;
+	ncSurfacePropEntity ourAttacker = (ncSurfacePropEntity)attacker;
 
 	EntLog("applying %d damage by %s", damagePoints, attacker.classname);
-	g_dmg_vecLocation = hitLocation;
 
 	/* notify them */
 	if (isSentient(attacker)) {
 		ourAttacker.DamageFeedback(this, inflictor, damagePoints);
+	}
+
+	if (GetMovetype() == MOVETYPE_PHYSICS) {
+		ncPhysicsEntity meSelf = (ncPhysicsEntity)this;
+		float pushForce = damageDecl.GetFloat("push");
+
+		if (pushForce > 0.0f) {
+			meSelf.ApplyForceOffset(dmgDir * pushForce, hitLocation);
+		}
 	}
 
 	if (damagePoints != 0) {
@@ -262,16 +270,16 @@ NSSurfacePropEntity::Damage(entity inflictor, entity attacker, NSDict damageDecl
 				AddVelocity(dmgDir * knockBack);
 			}
 
-			Death(inflictor, attacker, (int)damagePoints, dmgDir, damageDecl.GetInteger("hitbody"));
+			Death(inflictor, attacker, (int)damagePoints, dmgDir, hitLocation, damageDecl.GetInteger("hitbody"));
 		} else if (damagePoints > 0) {
-			Pain(inflictor, attacker, (int)damagePoints, dmgDir, damageDecl.GetInteger("hitbody"));
+			Pain(inflictor, attacker, (int)damagePoints, dmgDir, hitLocation, damageDecl.GetInteger("hitbody"));
 		}
 	}
 }
 
 /* Burning, fire, flames, etc. */
 void
-NSSurfacePropEntity::Ignite(entity attacker, float flLifetime, int iWeapon)
+ncSurfacePropEntity::Ignite(entity attacker, float flLifetime, int iWeapon)
 {
 	effects |= EF_ONFIRE;
 	m_eBurner = attacker;
@@ -279,9 +287,9 @@ NSSurfacePropEntity::Ignite(entity attacker, float flLifetime, int iWeapon)
 	m_flBurnTime = GetTime() + flLifetime;
 
 	if (m_flBurnDmgTime < time) {
-		NSDict damageDecl = spawn(NSDict);
+		ncDict damageDecl = spawn(ncDict);
 		damageDecl.AddKey("damage", "5");
-		damageDecl.AddKey("skip_armor", "1");
+		damageDecl.AddKey("noArmor", "1");
 		damageDecl.AddKey("type", "burn");
 		Damage(m_eBurner, m_eBurner, damageDecl, 1.0f, g_vec_null, origin);
 		remove(damageDecl);
@@ -290,7 +298,7 @@ NSSurfacePropEntity::Ignite(entity attacker, float flLifetime, int iWeapon)
 }
 
 bool
-NSSurfacePropEntity::CanBeDamaged(vector damageOrigin, vector hitLocation)
+ncSurfacePropEntity::CanBeDamaged(vector damageOrigin, vector hitLocation)
 {
 	vector testCenter = WorldSpaceCenter();
 
@@ -328,7 +336,7 @@ NSSurfacePropEntity::CanBeDamaged(vector damageOrigin, vector hitLocation)
 }
 
 void
-NSSurfacePropEntity::Extinguish(void)
+ncSurfacePropEntity::Extinguish(void)
 {
 	effects &= ~EF_ONFIRE;
 	m_eBurner = __NULL__;
@@ -337,7 +345,7 @@ NSSurfacePropEntity::Extinguish(void)
 }
 
 void
-NSSurfacePropEntity::Respawn(void)
+ncSurfacePropEntity::Respawn(void)
 {
 	float sh = GetSpawnFloat("health");
 
@@ -355,10 +363,16 @@ NSSurfacePropEntity::Respawn(void)
 	} else {
 		MakeInvulnerable();
 	}
+
+	string surfDataOverride = GetSpawnString("surfdata");
+
+	if (STRING_SET(surfDataOverride)) {
+		SetSurfaceData(surfDataOverride);
+	}
 }
 
 void
-NSSurfacePropEntity::Save(float handle)
+ncSurfacePropEntity::Save(float handle)
 {
 	super::Save(handle);
 	SaveFloat(handle, "m_flBurnNext", m_flBurnNext);
@@ -377,7 +391,7 @@ NSSurfacePropEntity::Save(float handle)
 }
 
 void
-NSSurfacePropEntity::Restore(string keyName, string savedValue)
+ncSurfacePropEntity::Restore(string keyName, string savedValue)
 {
 	switch (keyName) {
 	case "m_flBurnNext":
@@ -425,7 +439,7 @@ NSSurfacePropEntity::Restore(string keyName, string savedValue)
 }
 
 void
-NSSurfacePropEntity::Input(entity entityActivator, string inputName, string dataField)
+ncSurfacePropEntity::Input(entity entityActivator, string inputName, string dataField)
 {
 	switch (inputName) {
 	case "Ignite":
@@ -439,7 +453,7 @@ NSSurfacePropEntity::Input(entity entityActivator, string inputName, string data
 		Extinguish();
 		break;
 	case "Damage":
-		NSDict damageDecl = spawn(NSDict);
+		ncDict damageDecl = spawn(ncDict);
 		float damagePoints = stof(dataField);
 		damageDecl.AddKey("damage", dataField);
 		Damage(this, this, damageDecl, 1.0, g_vec_null, GetOrigin());
@@ -451,7 +465,7 @@ NSSurfacePropEntity::Input(entity entityActivator, string inputName, string data
 }
 
 void
-NSSurfacePropEntity::SpawnKey(string keyName, string setValue)
+ncSurfacePropEntity::SpawnKey(string keyName, string setValue)
 {
 	switch (keyName) {
 	case "bleed":
@@ -489,30 +503,35 @@ NSSurfacePropEntity::SpawnKey(string keyName, string setValue)
 
 
 void
-NSSurfacePropEntity::Pain(entity inflictor, entity attacker, int damage, vector dir, int location)
+ncSurfacePropEntity::Pain(entity inflictor, entity attacker, int damage, vector dir, vector absImpactPos, int hitBody)
 {
 	/* implemented in sub-class */
 }
 
 void
-NSSurfacePropEntity::Death(entity inflictor, entity attacker, int damage, vector dir, int location)
+ncSurfacePropEntity::Death(entity inflictor, entity attacker, int damage, vector dir, vector absImpactPos, int hitBody)
 {
-	BreakModel(damage, dir, location);
+	if (takedamage == DAMAGE_NO) {
+		return;
+	}
+
+	/* FIXME: reliably call this with the right attacker inside BreakModel? */
+	UseOutput(attacker, m_strOnBreak);
+	BreakModel(damage, dir, hitBody);
 }
 
 void
-NSSurfacePropEntity::DamageFeedback(entity theVictim, entity theInflictor, int desiredDamage)
+ncSurfacePropEntity::DamageFeedback(entity theVictim, entity theInflictor, int desiredDamage)
 {
 	/* implemented in sub-class */
 }
 
 void
-NSSurfacePropEntity::BreakModel(int damage, vector dir, int location)
+ncSurfacePropEntity::BreakModel(int damage, vector dir, int location)
 {
 	m_flDeathTime = time;
 
 	MakeInvulnerable();
-	UseOutput(g_dmg_eAttacker, m_strOnBreak);
 
 	if (HasPropData() == false) {
 		return;
@@ -523,7 +542,13 @@ NSSurfacePropEntity::BreakModel(int damage, vector dir, int location)
 	} else if (GetPropData(PROPINFO_BREAKMODEL) != __NULL__) {
 		string gibeffect = GetPropData(PROPINFO_BREAKMODEL);
 		int breakcount = GetPropData(PROPINFO_BREAKCOUNT);
-		BreakModel_Entity(this, dir, g_dmg_iDamage);
+		float speedValue = length(GetVelocity());
+
+		/* if we have enough momentum of our own, use that instead. */
+		if (speedValue > damage)
+			BreakModel_Entity(this, normalize(GetVelocity()), speedValue * 0.5f); /* absorb some power */
+		else
+			BreakModel_Entity(this, dir, damage);
 		
 		string sndBreak = GetSurfaceData(SURFDATA_SND_BREAK);
 		Sound_PlayAt(GetOrigin(), sndBreak);
@@ -550,7 +575,7 @@ NSSurfacePropEntity::BreakModel(int damage, vector dir, int location)
 	}
 }
 float
-NSSurfacePropEntity::TimeSinceDeath(void)
+ncSurfacePropEntity::TimeSinceDeath(void)
 {
 	if (IsAlive()) {
 		return (-1.0f);
@@ -560,7 +585,7 @@ NSSurfacePropEntity::TimeSinceDeath(void)
 }
 
 void
-NSSurfacePropEntity::EvaluateEntity(void)
+ncSurfacePropEntity::EvaluateEntity(void)
 {
 	EVALUATE_VECTOR(origin, 0, SRFENT_CHANGED_ORIGIN_X)
 	EVALUATE_VECTOR(origin, 1, SRFENT_CHANGED_ORIGIN_Y)
@@ -607,7 +632,7 @@ NSSurfacePropEntity::EvaluateEntity(void)
 
 /* Make sure StartFrame calls this */
 float
-NSSurfacePropEntity::SendEntity(entity ePEnt, float flChanged)
+ncSurfacePropEntity::SendEntity(entity ePEnt, float flChanged)
 {
 	if (!modelindex)
 		return (0);
@@ -667,11 +692,11 @@ NSSurfacePropEntity::SendEntity(entity ePEnt, float flChanged)
 #else
 /*
 ============
-NSSurfacePropEntity::ReceiveEntity
+ncSurfacePropEntity::ReceiveEntity
 ============
 */
 void
-NSSurfacePropEntity::ReceiveEntity(float flNew, float flChanged)
+ncSurfacePropEntity::ReceiveEntity(float flNew, float flChanged)
 {
 	READENTITY_COORD(origin[0], SRFENT_CHANGED_ORIGIN_X)
 	READENTITY_COORD(origin[1], SRFENT_CHANGED_ORIGIN_Y)
@@ -731,7 +756,7 @@ NSSurfacePropEntity::ReceiveEntity(float flNew, float flChanged)
 }
 
 void
-NSSurfacePropEntity::RenderFire(void)
+ncSurfacePropEntity::RenderFire(void)
 {
 	if (IsOnFire() == true) {
 		vector randomOrg;
@@ -747,7 +772,7 @@ NSSurfacePropEntity::RenderFire(void)
 }
 
 float
-NSSurfacePropEntity::predraw(void)
+ncSurfacePropEntity::predraw(void)
 {
 	float oldEffects = effects;
 
@@ -762,13 +787,13 @@ NSSurfacePropEntity::predraw(void)
 }
 
 void
-NSSurfacePropEntity_ReadEntity(bool isNew)
+ncSurfacePropEntity_ReadEntity(bool isNew)
 {
 	float networkFlags;
-	NSSurfacePropEntity rendEnt = (NSSurfacePropEntity)self;
+	ncSurfacePropEntity rendEnt = (ncSurfacePropEntity)self;
 
 	if (isNew) {
-		spawnfunc_NSSurfacePropEntity();
+		spawnfunc_ncSurfacePropEntity();
 	}
 
 	networkFlags = readfloat();
@@ -777,45 +802,45 @@ NSSurfacePropEntity_ReadEntity(bool isNew)
 #endif
 
 void
-NSSurfacePropEntity::SetSurfaceData(string type)
+ncSurfacePropEntity::SetSurfaceData(string type)
 {
 	m_strSurfData = type;
 	_SurfaceDataFinish();
 }
 
 void
-NSSurfacePropEntity::SetPropData(string type)
+ncSurfacePropEntity::SetPropData(string type)
 {
 	m_strPropData = type;
 	_PropDataFinish();
 }
 
 bool
-NSSurfacePropEntity::HasPropData(void)
+ncSurfacePropEntity::HasPropData(void)
 {
 	return (m_iPropData != -1) ? true : false;
 }
 
 __variant
-NSSurfacePropEntity::GetPropData(int type)
+ncSurfacePropEntity::GetPropData(int type)
 {
 	return Prop_GetInfo(m_iPropData, type);
 }
 
 bool
-NSSurfacePropEntity::HasSurfaceData(void)
+ncSurfacePropEntity::HasSurfaceData(void)
 {
 	return (m_iMaterial != -1) ? true : false;
 }
 
 __variant
-NSSurfacePropEntity::GetSurfaceData(int type)
+ncSurfacePropEntity::GetSurfaceData(int type)
 {
 	return SurfData_GetInfo(m_iMaterial, type);
 }
 
 void
-NSSurfacePropEntity::_SurfaceDataFinish(void)
+ncSurfacePropEntity::_SurfaceDataFinish(void)
 {
 	SurfData_SetStage(m_strSurfData);
 
@@ -827,7 +852,7 @@ NSSurfacePropEntity::_SurfaceDataFinish(void)
 }
 
 void
-NSSurfacePropEntity::_PropDataFinish(void)
+ncSurfacePropEntity::_PropDataFinish(void)
 {
 	PropData_SetStage(m_strPropData);
 
@@ -848,10 +873,11 @@ NSSurfacePropEntity::_PropDataFinish(void)
 }
 
 void
-NSSurfacePropEntity::SetModel(string newModel)
+ncSurfacePropEntity::SetModel(string newModel)
 {
-	NSRenderableEntity::SetModel(newModel);
+	ncRenderableEntity::SetModel(newModel);
 
+	if (IsBrush() == false)
 	if (STRING_SET(model) && HasPropData() == false) {
 		m_iPropData = PropData_ForModel(model);
 		m_strPropData = model;

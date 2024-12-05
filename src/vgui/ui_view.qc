@@ -18,27 +18,27 @@
 
 @ingroup vgui
 */
-class VGUIView:VGUIWidget
+class vguiView:vguiWidget
 {
 public:
-	void VGUIView(void);
+	void vguiView(void);
 
 	/* overrides */
-	virtual void Add(VGUIWidget);
+	virtual void Add(vguiWidget);
 	virtual void Draw(void);
 	virtual bool Input(float, float, float, float);
 };
 
 void
-VGUIView::VGUIView(void)
+vguiView::vguiView(void)
 {
 }
 
 void
-VGUIView::Add(VGUIWidget wNew)
+vguiView::Add(vguiWidget wNew)
 {
-	VGUIWidget wNext = this;
-	VGUIWidget wParent;
+	vguiWidget wNext = this;
+	vguiWidget wParent;
 	do {
 		wParent = wNext;
 		wNext = wNext.m_children;
@@ -47,9 +47,9 @@ VGUIView::Add(VGUIWidget wNew)
 	wNew.m_parent = this;
 }
 
-void VGUIView::Draw(void)
+void vguiView::Draw(void)
 {
-	VGUIWidget wNext = this;
+	vguiWidget wNext = this;
 	g_vguiWidgetCount = 0;
 	do {
 		wNext = wNext.m_children;
@@ -60,11 +60,11 @@ void VGUIView::Draw(void)
 	} while (wNext);
 }
 
-bool VGUIView::Input (float flEVType, float flKey, float flChar, float flDevID)
+bool vguiView::Input (float flEVType, float flKey, float flChar, float flDevID)
 {
 	float ret = false;
 
-	VGUIWidget wNext = this;
+	vguiWidget wNext = this;
 	do {
 		wNext = wNext.m_children;
 		if (wNext && wNext.Visible() && wNext.m_parent.Visible()) {

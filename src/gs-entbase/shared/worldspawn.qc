@@ -18,13 +18,6 @@
 void EntityDef_Init(void);
 void MapTweaks_Init(void);
 var int autocvar_sv_levelexec = 1;
-
-void serverinfoSet(string keyName, string setValue)
-{
-	//localcmd(sprintf("echo Server Info set: %S %S\n", keyName, setValue));
-	localcmd(sprintf("serverinfo %S %S\n", keyName, setValue));
-}
-
 #endif
 
 /*! \brief Shared-Entity: Game World */
@@ -57,12 +50,12 @@ It's also not affected by "killtarget".
 # TRIVIA
 This entity was introduced in Quake (1996).
 
-@ingroup shared
+@ingroup sharedentity
 @ingroup brushentity
 */
 
 #ifdef SERVER
-class NSWorldspawn:NSEntity
+class NSWorldspawn:ncEntity
 {
 public:
 	void NSWorldspawn(void);
@@ -132,6 +125,8 @@ NSWorldspawn::NSWorldspawn(void)
 	lightstyle(11, "abcdefghijklmnopqrrqponmlkjihgfedcba");
 	lightstyle(12, "mmnnmmnnnmmnn");
 	lightstyle(63, "a");
+	lightstyle(64, "m");
+	lightstyle(65, "z");
 
 	precache_model("models/error.vvm");
 
@@ -147,37 +142,23 @@ NSWorldspawn::Spawned(void)
 	touch = __NULL__;
 	blocked = __NULL__;
 
-	serverinfoSet("skyname", m_strSkyName);
-	serverinfoSet("chaptertitle", m_strChapterTitle);
-	serverinfoSet("ambientsound", m_strAmbientSound);
-	serverinfoSet("bgm", m_strBGMTrack);
+	serverinfo.SetString("skyname", m_strSkyName);
+	serverinfo.SetString("chaptertitle", m_strChapterTitle);
+	serverinfo.SetString("ambientsound", m_strAmbientSound);
+	serverinfo.SetString("bgm", m_strBGMTrack);
 
 	/* these set cvars so we kinda always want to set them to ~something~ */
-	serverinfoSet("hdr_iris_minvalue", ftos(m_flHDRIrisMinValue));
-	serverinfoSet("hdr_iris_maxvalue", ftos(m_flHDRIrisMaxValue));
-	serverinfoSet("hdr_iris_multiplier", ftos(m_flHDRIrisMultiplier));
-	serverinfoSet("hdr_iris_fade_up", ftos(m_flHDRIrisFadeUp));
-	serverinfoSet("hdr_iris_fade_down", ftos(m_flHDRIrisFadeDown));
-	serverinfoSet("hdr", ftos(m_bHDREnabled));
+	serverinfo.SetFloat("hdr_iris_minvalue", m_flHDRIrisMinValue);
+	serverinfo.SetFloat("hdr_iris_maxvalue", m_flHDRIrisMaxValue);
+	serverinfo.SetFloat("hdr_iris_multiplier", m_flHDRIrisMultiplier);
+	serverinfo.SetFloat("hdr_iris_fade_up", m_flHDRIrisFadeUp);
+	serverinfo.SetFloat("hdr_iris_fade_down", m_flHDRIrisFadeDown);
+	serverinfo.SetBool("hdr", m_bHDREnabled);
 
-	/* don't want to litter serverinfo with '0' keys. */
-	if (m_bGameTitle) {
-		serverinfoSet("gametitle", ftos(m_bGameTitle));
-	} else {
-		serverinfoSet("gametitle", "");
-	}
+	serverinfo.SetBool("gametitle", m_bGameTitle);
+	serverinfo.SetBool("startdark", m_bStartDark);
+	serverinfo.SetBool("litwater", m_bLitWater);
 
-	if (m_bStartDark) {
-		serverinfoSet("startdark", ftos(m_bStartDark));
-	} else {
-		serverinfoSet("startdark", "");
-	}
-
-	if (m_bLitWater) {
-		serverinfoSet("litwater", ftos(m_bLitWater));
-	} else {
-		serverinfoSet("litwater", "");
-	}
 
 #if 0
 	env_cascade_light sunLight = spawn(env_cascade_light);

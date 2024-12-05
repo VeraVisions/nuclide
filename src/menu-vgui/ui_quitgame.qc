@@ -18,10 +18,10 @@ int g_iQuitGameInitialized;
 
 void UI_QuitGame_Show ( void )
 {
-	static CUIWindow winQuitGame;
-	static CUILabel lblSure;
-	static CUIButton btnQuit;
-	static CUIButton btnCancel;
+	static vguiWindow winQuitGame;
+	static vguiLabel lblSure;
+	static vguiButton btnQuit;
+	static vguiButton btnCancel;
 
 	static void QuitGame_Yes ( void ) {
 		winQuitGame.Hide();
@@ -32,23 +32,23 @@ void UI_QuitGame_Show ( void )
 	}
 	if ( !g_iQuitGameInitialized ) {
 		g_iQuitGameInitialized = TRUE;
-		winQuitGame = spawn( CUIWindow );
+		winQuitGame = spawn( vguiWindow );
 		winQuitGame.SetTitle( "Quit Game" );
 		winQuitGame.SetSize( '256 128' );
 		winQuitGame.SetIcon( "gfx/icon16/stop" );
 		g_uiDesktop.Add( winQuitGame );
 
-		btnQuit = spawn( CUIButton );
+		btnQuit = spawn( vguiButton );
 		btnQuit.SetTitle( "Quit" );
 		btnQuit.SetSize( '64 24' );
 		btnQuit.SetPos( winQuitGame.GetSize() - '152 32' );
 		
-		btnCancel = spawn( CUIButton );
+		btnCancel = spawn( vguiButton );
 		btnCancel.SetTitle( "Cancel" );
 		btnCancel.SetSize( '64 24' );
 		btnCancel.SetPos( winQuitGame.GetSize() - '80 32' );
 
-		lblSure = spawn( CUILabel );
+		lblSure = spawn( vguiLabel );
 		lblSure.SetTitle( "Do you wish to stop playing now?" );
 		lblSure.SetSize( '256 16' );
 		lblSure.SetPos( '0 48' );

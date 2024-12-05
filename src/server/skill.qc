@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+var string autocvar_skill_manifest = "cfg/skill_manifest.cfg";
+
 /*
 =================
 Skill_Init
@@ -29,7 +31,7 @@ Skill_Init(void)
 {
 	string mapSkillFile = sprintf("maps/%s_skl.cfg", serverinfo.GetString("mapname"));
 
-	Skill_ParseConfig("cfg/skill_manifest.cfg");
+	Skill_ParseConfig(autocvar_skill_manifest);
 
 	if (fileExists(mapSkillFile)) {
 		Skill_ParseConfig(mapSkillFile);

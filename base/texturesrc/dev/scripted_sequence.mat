@@ -1,0 +1,8 @@
+{
+	diffusemap dev/scripted_sequence.tga
+	
+	{
+		map $diffuse
+		blendFunc blend
+	}
+}

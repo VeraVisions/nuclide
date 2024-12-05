@@ -34,12 +34,12 @@ Keep an entity upright.
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 @ingroup physics
 */
 class
-phys_keepupright:NSPhysicsConstraint
+phys_keepupright:ncPhysicsConstraint
 {
 public:
 	void phys_keepupright(void);
@@ -105,22 +105,22 @@ phys_keepupright::AfterSpawn(void)
 {
 	SetOrigin(GetSpawnVector("origin"));
 	SetEntity1(find(world, ::targetname, m_strEnt1));
-	NSEntity targetEnt = (NSEntity)GetEntity1();
+	ncEntity targetEnt = (ncEntity)GetEntity1();
 	KeepUpright(targetEnt, targetEnt.GetSpawnVector("angles"), m_flAngularLimit);
 }
 
 void
 phys_keepupright::Input(entity activatorEnt, string inputName, string dataString)
 {
-	NSEntity targetEnt;
+	ncEntity targetEnt;
 
 	switch (inputName) {
 	case "TurnOn":
-		targetEnt = (NSEntity)GetEntity1();
+		targetEnt = (ncEntity)GetEntity1();
 		KeepUpright(targetEnt, targetEnt.GetSpawnVector("angles"), m_flAngularLimit);
 		break;
 	case "TurnOff":
-		targetEnt = (NSEntity)GetEntity1();
+		targetEnt = (ncEntity)GetEntity1();
 		KeepUpright(targetEnt, targetEnt.GetSpawnVector("angles"), -1);
 		break;
 	default:

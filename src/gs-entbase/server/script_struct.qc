@@ -25,11 +25,11 @@ Unknown.
 # TRIVIA
 This entity was introduced in Call of Duty 2 (2005).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-script_struct:NSBrushTrigger
+script_struct:ncBrushTrigger
 {
 public:
 	void script_struct(void);

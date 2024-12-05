@@ -17,7 +17,7 @@
 #define MM_MULTITHREADED 1
 
 static class
-multi_manager_sub:NSPointTrigger
+multi_manager_sub:ncPointTrigger
 {
 public:
 	void multi_manager_sub(void);
@@ -92,11 +92,11 @@ finished triggering it's previous list of entities.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-multi_manager:NSPointTrigger
+multi_manager:ncPointTrigger
 {
 private:
 	multi_manager_sub m_eTriggers[16];

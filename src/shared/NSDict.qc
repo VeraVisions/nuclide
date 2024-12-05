@@ -15,37 +15,37 @@
 */
 
 void
-NSDict::NSDict(void)
+ncDict::ncDict(void)
 {
 	m_strBody = "";
 }
 
 string
-NSDict::GetDeclBody(void)
+ncDict::GetDeclBody(void)
 {
 	return (m_strBody);
 }
 
 void
-NSDict::SetDeclBody(string textBody)
+ncDict::SetDeclBody(string textBody)
 {
 	m_strBody = textBody;
 }
 
 int
-NSDict::GetInteger(string keyName)
+ncDict::GetInteger(string keyName)
 {
 	return (int)stoi(GetString(keyName));
 }
 
 float
-NSDict::GetFloat(string keyName)
+ncDict::GetFloat(string keyName)
 {
 	return stof(GetString(keyName));
 }
 
 string
-NSDict::GetString(string keyName)
+ncDict::GetString(string keyName)
 {
 	int spawnWords = (int)tokenize_console(m_strBody);
 
@@ -60,19 +60,19 @@ NSDict::GetString(string keyName)
 }
 
 vector
-NSDict::GetVector(string keyName)
+ncDict::GetVector(string keyName)
 {
 	return stov(GetString(keyName));
 }
 
 bool
-NSDict::GetBool(string keyName)
+ncDict::GetBool(string keyName)
 {
 	return stof(GetString(keyName)) ? true : false;
 }
 
 void
-NSDict::_AddRemoveKey(string keyName, string setValue, bool delete)
+ncDict::_AddRemoveKey(string keyName, string setValue, bool delete)
 {
 	string newBody = "";
 	int spawnWords = (int)tokenize_console(m_strBody);
@@ -92,36 +92,36 @@ NSDict::_AddRemoveKey(string keyName, string setValue, bool delete)
 }
 
 void
-NSDict::AddKey(string keyName, string setValue)
+ncDict::AddKey(string keyName, string setValue)
 {
 	_AddRemoveKey(keyName, setValue, false);
 }
 
 void
-NSDict::RemoveKey(string keyName)
+ncDict::RemoveKey(string keyName)
 {
 	_AddRemoveKey(keyName, "", true);
 }
 
 int
-NSDict::TokenCount(void)
+ncDict::TokenCount(void)
 {
 	return (int)tokenize_console(m_strBody);
 }
 
-NSDict
-NSDict::InitWithSpawnData(string spawnData)
+ncDict
+ncDict::InitWithSpawnData(string spawnData)
 {
-	NSDict newDict = spawn(NSDict);
+	ncDict newDict = spawn(ncDict);
 	newDict.SetDeclBody(spawnData);
 	return (newDict);
 }
 
-NSDict
-NSDict::LoadDeclFromFile(string declName, string fileName)
+ncDict
+ncDict::LoadDeclFromFile(string declName, string fileName)
 {
 	filestream fh;
-	NSDict newDict;
+	ncDict newDict;
 	string tempString;
 	int braceDepth = 0i;
 	string lastWord = __NULL__;
@@ -134,7 +134,7 @@ NSDict::LoadDeclFromFile(string declName, string fileName)
 		return __NULL__;
 	}
 
-	newDict = spawn(NSDict);
+	newDict = spawn(ncDict);
 
 	while ((tempString = fgets(fh))) {
 		int lineSegments = tokenize_console(tempString);
@@ -190,6 +190,8 @@ NSDict::LoadDeclFromFile(string declName, string fileName)
 		}
 #endif
 	}
+
+	fclose(fh);
 
 	/* failed to find any key-value pairs. empty */
 	if (!STRING_SET(newDict.m_strBody)) {

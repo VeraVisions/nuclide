@@ -84,13 +84,13 @@ PMoveCustom_Categorize(void)
 	makevectors(self.v_angle);
 	ladderTestPos = self.origin + v_forward * 8.0f;
 	int oldhitcontents = self.hitcontentsmaski;
-	self.hitcontentsmaski = CONTENTBIT_FTELADDER | CONTENTBIT_Q2LADDER;
+	self.hitcontentsmaski = CONTENTBIT_FTELADDER;
 	tracebox(ladderTestPos, self.mins, self.maxs, ladderTestPos, MOVE_NORMAL, self);
 	self.hitcontentsmaski = oldhitcontents;
 
 	/* if set, you need to directly face the ladder or else you'll fall right off */
 #ifdef LADDERFACING
-	if (trace_endcontentsi & CONTENTBIT_FTELADDER || trace_endcontentsi & CONTENTBIT_Q2LADDER) {
+	if (trace_endcontentsi & CONTENTBIT_FTELADDER) {
 		/* place the ladder into a virtual space */
 		vector ladderpos = trace_ent.absmin + (0.5f * (trace_ent.absmax - trace_ent.absmin));
 		ladderpos[2] = self.origin[2];
@@ -108,7 +108,7 @@ PMoveCustom_Categorize(void)
 
 	if (inladder) {
 #else
-	if (trace_endcontentsi & CONTENTBIT_FTELADDER || trace_endcontentsi & CONTENTBIT_Q2LADDER) {
+	if (trace_endcontentsi & CONTENTBIT_FTELADDER) {
 #endif
 		self.vv_flags |= VFL_ONLADDER;
 	} else {
@@ -239,7 +239,7 @@ PMoveCustom_AccelFriction(float move_time, float premove, vector wish_dir, float
 #ifdef SERVER
 	/* too finicky with monsters between the various game settings */
 	if (self.flags & FL_MONSTER) {
-		NSMonster checkMe = (NSMonster)self;
+		ncMonster checkMe = (ncMonster)self;
 
 		if (checkMe.IsOnRoute() == true && checkMe.HasFlags(FL_ONGROUND) == true) {
 			self.velocity = wish_dir * wish_speed;
@@ -441,6 +441,7 @@ void
 PMoveCustom_DoTouch(entity tother)
 {
 	entity oself = self;
+
 	if (tother.touch) {
 		other = self;
 		self = tother;
@@ -626,8 +627,8 @@ PMoveCustom_Move(void)
 				}
 			} else {
 				if (trace_ent.solid == SOLID_PORTAL) {
-					NSPortal portalEntry = (NSPortal)trace_ent;
-					portalEntry.TransportEntity((NSEntity)self);
+					ncPortal portalEntry = (ncPortal)trace_ent;
+					portalEntry.TransportEntity((ncEntity)self);
 				}
 			}
 		}
@@ -646,8 +647,8 @@ PMoveCustom_Move(void)
 		if (trace_fraction == 1.0) {
 			return;
 		} else if (trace_ent.solid == SOLID_PORTAL) {
-			NSPortal portalEntry = (NSPortal)trace_ent;
-			portalEntry.TransportEntity((NSEntity)self);
+			ncPortal portalEntry = (ncPortal)trace_ent;
+			portalEntry.TransportEntity((ncEntity)self);
 			return;
 		}
 

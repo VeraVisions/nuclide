@@ -37,4 +37,11 @@ string Util_ExtensionFromString(string);
 @return A colorized string with name, message and team identifier. */
 string Util_ChatFormat(float, float, string);
 
+
+var int g_numplayerslots;
+int Util_GetMaxPlayers(void);
+string Util_GetTime(void);
+float Util_GetTimeLeft(void);
+string Util_GetAddress(void);
+
 /** @} */ // end of sharedutilities

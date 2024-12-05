@@ -56,10 +56,8 @@ EntityDef_ReadFile(string filePath)
 
 	/* line by line */
 	while ((tempString = fgets(defFile))) {
-		int lineSegments = tokenize_console(tempString);
-
 		/* word for word */
-		for (int i = 0i; i < lineSegments; i++) {
+		for (int i = 0i; i < tokenize_console(tempString); i++) {
 			string word = argv(i);
 
 			switch (word) {
@@ -185,15 +183,10 @@ EntityDef_Init(void)
 	}
 	search_end(pm);
 
-	//print(sprintf("includes: %S\n", g_entDefInclude));
-
-	if (g_entDefInclude != "") {
-		int includeCount = tokenizebyseparator(g_entDefInclude, ";");
-
-		for (int i = 0; i < (includeCount-1); i++) {
+	if (STRING_SET(g_entDefInclude)) {
+		for (int i = 0; i < (tokenizebyseparator(g_entDefInclude, ";")-1); i++) {
 			string fileName = strcat("decls/def/", argv(i));
 			EntityDef_ReadFile(fileName);
-			includeCount = tokenizebyseparator(g_entDefInclude, ";");
 		}
 	}
 
@@ -223,15 +216,14 @@ EntityDef_Init(void)
 }
 
 static bool
-EntityDef_CheckCondition(NSEntity target, int id, string keyWord, float tweakCondition, string keyValue)
+EntityDef_CheckCondition(ncEntity target, int id, string keyWord, float tweakCondition, string keyValue)
 {
-	int spawnWords = tokenize_console(target.m_strSpawnData);
 	string key, value;
 	float tmp1, tmp2;
 
 	//print(sprintf("%i %S %d %S\n", id, keyWord, tweakCondition, keyValue));
 
-	for (int i = 1; i < (spawnWords - 1); i+= 2) {
+	for (int i = 1; i < (tokenize_console(target.m_strSpawnData) - 1); i+= 2) {
 		key = argv(i);
 		value = argv(i+1);
 
@@ -325,17 +317,17 @@ EntityDef_GetKeyValue(string className, string keyName)
 
 #ifdef SERVER
 
-static NSEntity
+static ncEntity
 EntityDef_PrepareEntity(entity target, int id)
 {
 	string spawnClass;
 	int spawnWords = 0i;
-	NSEntity targetEnt = (NSEntity)target;
+	ncEntity targetEnt = (ncEntity)target;
 	entity oldSelf = self;
 	bool isEntDefBased = false;
 
 	if (!targetEnt) {
-		targetEnt = spawn(NSEntity);
+		targetEnt = spawn(ncEntity);
 	}
 
 	targetEnt.declclass = g_entDefTable[id].entClass;
@@ -409,7 +401,7 @@ EntityDef_PrepareEntity(entity target, int id)
 		string keyValue = argv(2);
 
 		/* iterate through a bunch of different data to check our condition */
-		if (EntityDef_CheckCondition((NSEntity)target, id, keyWord, tweakCondition, keyValue)) {
+		if (EntityDef_CheckCondition((ncEntity)target, id, keyWord, tweakCondition, keyValue)) {
 			//print(sprintf("%S passed the check\n", keyWord));
 
 			/* iterate through the ; key groups */
@@ -503,7 +495,7 @@ EntityDef_Precache(string defName)
 	return (true);
 }
 
-NSEntity
+ncEntity
 EntityDef_NewClassname(string className)
 {
 	g_lastSpawnData = __fullspawndata;
@@ -526,7 +518,7 @@ EntityDef_NewClassname(string className)
 	return (__NULL__);
 }
 
-NSEntity
+ncEntity
 EntityDef_SpawnClassname(string className)
 {
 	g_lastSpawnData = __fullspawndata;
@@ -549,10 +541,10 @@ EntityDef_SpawnClassname(string className)
 	return (__NULL__);
 }
 
-NSEntity
-EntityDef_SwitchClass(NSEntity target, string className)
+ncEntity
+EntityDef_SwitchClass(ncEntity target, string className)
 {
-	NSEntity returnEntity = __NULL__;
+	ncEntity returnEntity = __NULL__;
 	g_lastSpawnData = target.m_strSpawnData;
 
 	for (int i = 0i; i < g_entDefCount; i++) {
@@ -570,12 +562,12 @@ EntityDef_SwitchClass(NSEntity target, string className)
 	return (returnEntity);
 }
 
-NSEntity
+ncEntity
 EntityDef_CreateClassname(string className)
 {
 	entity oldSelf = self;
-	NSEntity new = spawn(NSEntity);
-	NSEntity test;
+	ncEntity new = spawn(ncEntity);
+	ncEntity test;
 	self = new;
 	test = EntityDef_SpawnClassname(className);
 	self = oldSelf;
@@ -600,13 +592,13 @@ CallSpawnfuncByName(entity target, string className)
 }
 
 /** Always returns a valid entity. Even if the entity def does not exist. */
-NSEntity
+ncEntity
 Entity_CreateClass(string className)
 {
-	NSEntity newEntity = EntityDef_CreateClassname(className);
+	ncEntity newEntity = EntityDef_CreateClassname(className);
 
 	if (!newEntity) {
-		newEntity = spawn(NSEntity);
+		newEntity = spawn(ncEntity);
 		CallSpawnfuncByName(newEntity, className);
 	}
 

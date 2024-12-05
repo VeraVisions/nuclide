@@ -18,19 +18,6 @@ vector saved_input_movevalues;
 int saved_input_buttons;
 
 /* distance after which we take damage */
-#ifndef PHY_FALLDMG_DISTANCE
-	#define PHY_FALLDMG_DISTANCE 580
-#endif
-
-/* distance after which we'll receive 100 damage */
-#ifndef PHY_FALLDMG_MAXDISTANCE
-	#define PHY_FALLDMG_MAXDISTANCE 1024
-#endif
-
-#ifndef PHY_FALL_DISTANCE
-	#define PHY_FALL_DISTANCE 400
-#endif
-
 #ifndef PHY_FALLDMG_TYPE
 	#define PHY_FALLDMG_TYPE 1
 #endif
@@ -48,46 +35,61 @@ int saved_input_buttons;
 #endif
 
 void
-NSClientPlayer::Physics_Fall(float flDownforce)
+ncPlayer::Physics_Fall(float flDownforce)
 {
-	/* apply some predicted punch to the player */
-	if (flDownforce >= PHY_FALLDMG_DISTANCE)
-		punchangle += [15,0,(input_sequence & 1) ? 15 : -15];
-	else if (flDownforce >= PHY_FALL_DISTANCE)
-		punchangle += [15,0,0];
+	float minFallDistance = g_fallDamageDecl.GetFloat("minFallDistance");
+	float maxFallDistance = g_fallDamageDecl.GetFloat("maxFallDistance");
+	float minLandDistance = g_fallDamageDecl.GetFloat("minLandDistance");
+	float punchAngleScale = g_fallDamageDecl.GetFloat("punchAngleScale");
+	float punchSpringScale = g_fallDamageDecl.GetFloat("punchSpringScale");
+	int fixedDamage = g_fallDamageDecl.GetInteger("damage");
+
+	if (punchAngleScale > 0.0f) {
+		/* apply some predicted punch to the player */
+		if (flDownforce >= minFallDistance)
+			punchangle += [punchAngleScale,0,(input_sequence & 1) ? punchAngleScale : -punchAngleScale];
+		else if (flDownforce >= minLandDistance)
+			punchangle += [punchAngleScale,0,0];
+	} else if (punchSpringScale > 0.0f) {
+		/* apply some predicted punch to the player */
+		if (flDownforce >= minFallDistance)
+			punchvelocity += [punchSpringScale,0,(input_sequence & 1) ? punchSpringScale : -punchSpringScale];
+		else if (flDownforce >= minLandDistance)
+			punchvelocity += [punchSpringScale,0,0];
+	}
+
 
 	/* basic server-side falldamage */
 #ifdef SERVER
-	/* if we've reached a fallheight of PHY_FALLDMG_DISTANCE qu, start applying damage */
-	if (flDownforce >= PHY_FALLDMG_DISTANCE) {
-		float fFallDamage;
+	/* if we've reached a fallheight of minFallDistance qu, start applying damage */
+	if (flDownforce >= minFallDistance) {
+		float finalDamage;
 
-		/* 0 = basic quake style, 1 = 'realistic' HL style */
-		if (PHY_FALLDMG_TYPE == 0)
-			fFallDamage = 10;
-		else if (PHY_FALLDMG_TYPE == 1) {
+		if (fixedDamage != 0i) {
+			finalDamage = fixedDamage;
+		} else {
 			/* distance of A to B decides how much of 100 HP dmg we get*/
-			float flFallDist = PHY_FALLDMG_DISTANCE;
-			float flMaxDist = PHY_FALLDMG_MAXDISTANCE;
-			fFallDamage = (flDownforce - flFallDist) * (100 / (flMaxDist - flFallDist));
+			finalDamage = (flDownforce - minFallDistance) * (100 / (maxFallDistance - minFallDistance));
 		}
 
-		/* this is kinda ugly, but worth the price */
-		NSDict damageDecl = spawn(NSDict);
-		damageDecl.AddKey("damage", ftos((int)fFallDamage));
-		Damage(this, this, damageDecl, 1.0, g_vec_null, origin);
+		ncDict damageDecl = spawn(ncDict);
+		damageDecl.AddKey("damage", itos((int)finalDamage));
+		damageDecl.AddKey("noArmor", "1");
+		Damage(this, this, damageDecl, 1.0, g_vec_null, GetOrigin() + [0,0, mins[2]]);
 		remove(damageDecl);
 
 		//Damage_Apply(this, world, fFallDamage, 0, DMG_FALL | DMG_SKIP_ARMOR);
-		StartSoundDef("Player.FallDamage", CHAN_VOICE, true);
-	} else if (flDownforce >= PHY_FALL_DISTANCE) {
-		StartSoundDef("Player.LightFall", CHAN_VOICE, true);
+		StartSoundDef(m_sndFall, CHAN_VOICE, true);
+	} else if (flDownforce >= minLandDistance) {
+		StartSoundDef(m_sndLandHard, CHAN_VOICE, true);
+	} else {
+		StartSoundDef(m_sndLandSoft, CHAN_VOICE, true);
 	}
 #endif
 }
 
 void
-NSClientPlayer::Physics_Crouch(void)
+ncPlayer::Physics_Crouch(void)
 {
 	bool crouchFix = false;
 	vector testOrigin = origin;
@@ -167,7 +169,7 @@ NSClientPlayer::Physics_Crouch(void)
 }
 
 void
-NSClientPlayer::Physics_Prone(void)
+ncPlayer::Physics_Prone(void)
 {
 	bool proneFix = false;
 	vector testOrigin = origin;
@@ -250,7 +252,7 @@ NSClientPlayer::Physics_Prone(void)
 
 
 void
-NSClientPlayer::Physics_Jump(void)
+ncPlayer::Physics_Jump(void)
 {
 	if (GetMovetype() != MOVETYPE_WALK)
 		return;
@@ -273,7 +275,7 @@ NSClientPlayer::Physics_Jump(void)
 
 /* check if we're elligible to jump */
 void
-NSClientPlayer::Physics_CheckJump(float premove)
+ncPlayer::Physics_CheckJump(float premove)
 {
 	/* unset jump-key whenever it's not set */
 	if (!(input_buttons & INPUT_JUMP)) {
@@ -304,7 +306,7 @@ NSClientPlayer::Physics_CheckJump(float premove)
 
 /* establish the right size and camera position */
 void
-NSClientPlayer::Physics_SetViewParms(void)
+ncPlayer::Physics_SetViewParms(void)
 {
 	/* cheap operations */
 	if (IsCrouching()) {
@@ -317,7 +319,7 @@ NSClientPlayer::Physics_SetViewParms(void)
 }
 
 void
-NSClientPlayer::Physics_WaterJump(void)
+ncPlayer::Physics_WaterJump(void)
 {
 	vector vecStart;
 
@@ -347,7 +349,7 @@ NSClientPlayer::Physics_WaterJump(void)
 
 /* handle your time underwater */
 void
-NSClientPlayer::Physics_WaterMove(void)
+ncPlayer::Physics_WaterMove(void)
 {
 	if (GetMovetype() == MOVETYPE_NOCLIP) {
 		return;
@@ -361,13 +363,13 @@ NSClientPlayer::Physics_WaterMove(void)
 	if (WaterLevel() > 0) {
 	if (watertype == CONTENT_LAVA) {
 		if (m_flPainTime < time) {
-			//Damage_Apply(this, world, 10 * WaterLevel(), 0, DMG_BURN);
-			m_flPainTime = time + 0.2;
+			Damage(world, world, g_lavaDamageDecl, 1.0f, g_vec_null, GetOrigin());
+			m_flPainTime = time + g_lavaDecl.GetFloat("dmgtime");
 		}
 	} else if (watertype == CONTENT_SLIME) {
 		if (m_flPainTime < time) {
-			//Damage_Apply(this, world, 4 * WaterLevel(), 0, DMG_ACID);
-			m_flPainTime = time + 1;
+			Damage(world, world, g_slimeDamageDecl, 1.0f, g_vec_null, GetOrigin());
+			m_flPainTime = time + g_slimeDecl.GetFloat("dmgtime");
 		}
 	}
 	}
@@ -375,16 +377,18 @@ NSClientPlayer::Physics_WaterMove(void)
 	/* we've just exited water */
 	if (WaterLevel() != 3) {
 		if (m_flUnderwaterTime < time) {
-			StartSoundDef("Player.GaspHeavy", CHAN_BODY, true);
+#warning Read sound from player decl
+			StartSoundDef(m_sndAirGaspHeavy, CHAN_BODY, true);
 		} else if (m_flUnderwaterTime < time + 9) {
-			StartSoundDef("Player.GaspLight", CHAN_BODY, true);
+			StartSoundDef(m_sndAirGaspLight, CHAN_BODY, true);
 		}
+#warning Read lung capacity for water from typeInfo water
 		m_flUnderwaterTime = time + 12;
 	} else if (m_flUnderwaterTime < time) {
 		/* we've been underwater... for too long. */
 		if (m_flPainTime < time) {
-			//Damage_Apply(this, world, 5, 0, DMG_DROWN);
-			m_flPainTime = time + 1;
+			Damage(world, world, g_waterDamageDecl, 1.0f, g_vec_null, GetOrigin());
+			m_flPainTime = time + g_waterDecl.GetFloat("dmgtime");
 		}
 	}
 #endif
@@ -394,7 +398,7 @@ NSClientPlayer::Physics_WaterMove(void)
 	if (!WaterLevel()){
 		if (GetFlags() & FL_INWATER) {
 #ifdef SERVER
-			StartSoundDef("Player.WaterExit", CHAN_BODY, true);
+			StartSoundDef(m_sndWaterExit, CHAN_BODY, true);
 #endif
 			RemoveFlags(FL_INWATER);
 		}
@@ -403,7 +407,7 @@ NSClientPlayer::Physics_WaterMove(void)
 
 	if (!(GetFlags() & FL_INWATER)) {
 #ifdef SERVER
-		StartSoundDef("Player.WaterEnter", CHAN_BODY, true);
+		StartSoundDef(m_sndWaterEnter, CHAN_BODY, true);
 		m_flPainTime = 0;
 #endif
 		AddFlags(FL_INWATER);
@@ -416,7 +420,7 @@ NSClientPlayer::Physics_WaterMove(void)
 }
 
 float
-NSClientPlayer::Physics_MaxSpeed(void)
+ncPlayer::Physics_MaxSpeed(void)
 {
 	float wishSpeed = 0.0f;
 	float runSpeed = m_pmoveVars.pm_runspeed;
@@ -454,9 +458,9 @@ NSClientPlayer::Physics_MaxSpeed(void)
 }
 
 void
-NSClientPlayer::Physics_InputPreMove(void)
+ncPlayer::Physics_InputPreMove(void)
 {
-	NSVehicle currentVehicle = (NSVehicle)vehicle;
+	ncVehicle currentVehicle = (ncVehicle)vehicle;
 	bool canMove = true;
 	bool canFire = true;
 
@@ -509,7 +513,7 @@ NSClientPlayer::Physics_InputPreMove(void)
 
 /* timers get processed here after physics are run */
 void
-NSClientPlayer::Physics_InputPostMove(void)
+ncPlayer::Physics_InputPostMove(void)
 {
 	float punch;
 	/* timers, these are predicted and shared across client and server */
@@ -530,12 +534,41 @@ NSClientPlayer::Physics_InputPostMove(void)
 		m_flStamina = m_pmoveVars.pm_stamina;
 	}
 
+	if (m_pmoveVars.pm_runfiring == 0 && input_buttons & INPUT_SPRINT) {
+		input_buttons &= ~INPUT_PRIMARY;
+		input_buttons &= ~INPUT_SECONDARY;
+		input_buttons &= ~INPUT_RELOAD;
+	}
+
 	//printf("stamina: %f\n", m_flStamina);
 
-	punch = max(0, 1.0f - (input_timelength * 4));
-	punchangle[0] *= punch;
-	punchangle[1] *= punch;
-	punchangle[2] *= punch;
+#if 0
+#else
+	float flDamp;
+	float flForce;
+	if ( vlen( punchvelocity ) > 0.001 ) {
+		punchangle += punchvelocity * input_timelength;
+
+		flForce = bound( 0, input_timelength * 65, 2 );
+		flDamp = 1 - ( input_timelength * 9 );
+
+		if ( flDamp < 0 ) {
+			flDamp = 0;
+		}
+		punchvelocity *= flDamp;
+		punchvelocity -= punchangle * flForce;
+
+		punchangle[0] = bound( -89, punchangle[0], 89 );
+		punchangle[1] = bound( -179, punchangle[1], 179 );
+		punchangle[2] = bound( -89, punchangle[2], 89 );
+	} else if (vlen( punchangle ) > 0.001) {
+
+		punch = max(0, 1.0f - (input_timelength * 4));
+		punchangle[0] *= punch;
+		punchangle[1] *= punch;
+		punchangle[2] *= punch;
+	}
+#endif
 
 	/* player animation code */
 	UpdatePlayerAnimation(input_timelength);
@@ -544,7 +577,7 @@ NSClientPlayer::Physics_InputPostMove(void)
 
 /* the main physics routine, the head */
 void
-NSClientPlayer::Physics_Run(void)
+ncPlayer::Physics_Run(void)
 {
 	float flFallVel = (flags & FL_ONGROUND) ? 0 : -velocity[2];
 	float flBaseVel =  basevelocity[2];
@@ -624,7 +657,7 @@ NSClientPlayer::Physics_Run(void)
 	RemoveVFlags(VFL_ONUSABLE);
 
 	if (trace_ent.identity == 1) {
-		NSEntity foo = (NSEntity)trace_ent;
+		ncEntity foo = (ncEntity)trace_ent;
 
 		if (foo.PlayerUse) {
 			AddVFlags(VFL_ONUSABLE);

@@ -1,0 +1,17 @@
+{
+	climb		0x00004000
+	vehicleclip	0x00008000
+	grenadeclip	0x00000080
+	projectile	0x00040000
+}
+{
+	leakssteam	0x00080000
+	leakswater	0x00100000
+	fl_r1		0x00200000
+	fl_r2		0x00400000
+	fl_r3		0x00800000
+	fl_r4		0x01000000
+	fl_r5		0x02000000
+	fl_r6		0x04000000
+	penetrate	0x08000000
+}

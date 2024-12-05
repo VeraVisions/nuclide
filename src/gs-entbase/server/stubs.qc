@@ -34,7 +34,7 @@ of the entity, keep that in mind.
 # TRIVIA
 This entity was introduced in Quake (1996).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 
@@ -59,7 +59,7 @@ of the entity, keep that in mind.
 # TRIVIA
 This entity was introduced in Quake (1996).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 
@@ -82,7 +82,7 @@ of the entity, keep that in mind.
 # TRIVIA
 This entity was introduced in Quake (1996).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 

@@ -28,11 +28,11 @@ This is a food item that will give the user 1 health when touched.
 This entity was introduced in Half-Life (1998).
 It's also known as item_sodacan.
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-item_food:NSRenderableEntity
+item_food:ncRenderableEntity
 {
 public:
 	void item_food(void);

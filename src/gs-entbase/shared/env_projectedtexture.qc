@@ -62,10 +62,10 @@ flashlights, lamp spotlights and so on.
 # TRIVIA
 This entity was introduced in Half-Life 2: Episode One (2006).
 
-@ingroup shared
+@ingroup sharedentity
 @ingroup pointentity
 */
-class env_projectedtexture:NSPointTrigger
+class env_projectedtexture:ncPointTrigger
 {
 public:
 	void env_projectedtexture(void);
@@ -73,7 +73,9 @@ public:
 #ifdef CLIENT
 	virtual void ReceiveEntity(float,float);
 	virtual float predraw(void);
-#else
+#endif
+
+#ifdef SERVER
 	virtual void Trigger(entity, triggermode_t);
 	virtual void Respawn(void);
 	virtual float SendEntity(entity,float);
@@ -157,7 +159,9 @@ env_projectedtexture::ReceiveEntity(float flNew, float flFlags)
 	classname = "env_projectedtexture";
 	drawmask = MASK_ENGINE;
 }
-#else
+#endif
+
+#ifdef SERVER
 void
 env_projectedtexture::EvaluateEntity(void)
 {
@@ -333,7 +337,7 @@ env_projectedtexture::env_projectedtexture(void)
 	m_flIntensity = 512;
 	m_flFarZ = 512;
 	m_flNearZ = 0;
-	m_strTextureName = "textures/flashlight";
+	m_strTextureName = "lights/flashlight";
 	m_flFOV = 90;
 
 	if (m_flStyle > 0 && m_flStyle < 12)

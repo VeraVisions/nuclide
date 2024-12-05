@@ -34,7 +34,7 @@ This entity was introduced in Quake (1996).
 
 #ifdef SERVER
 class
-func_wall:NSRenderableEntity
+func_wall:ncRenderableEntity
 {
 public:
 	void func_wall(void);

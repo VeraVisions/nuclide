@@ -22,17 +22,17 @@ enumflags
 	BUTTON_CUSTOMFLAGS
 };
 
-/* TODO: MOVE THESE INTO VGUIButton! COMPILER NEEDS TO BE FIXED FIRST HOWEVER. */
-.void(void) tmpVGUIButton1;
+/* TODO: MOVE THESE INTO vguiButton! COMPILER NEEDS TO BE FIXED FIRST HOWEVER. */
+.void(void) tmpvguiButton1;
 
 /** VGUI Widget: Button
 
 @ingroup vgui
 */
-class VGUIButton:VGUIControl
+class vguiButton:vguiControl
 {
 public:
-	void VGUIButton(void);
+	void vguiButton(void);
 
 	/** Sets the title of the button. */
 	nonvirtual void SetTitle(string);
@@ -74,7 +74,7 @@ private:
 };
 
 void
-VGUIButton::VGUIButton(void)
+vguiButton::vguiButton(void)
 {
 	m_vecColor = UI_MAINCOLOR;
 	m_flAlpha = 1.0f;
@@ -83,25 +83,25 @@ VGUIButton::VGUIButton(void)
 }
 
 void
-VGUIButton::Spawned(void)
+vguiButton::Spawned(void)
 {
 	SetSize([96,24]);
 }
 
 void
-VGUIButton::SetColor(vector vecColor)
+vguiButton::SetColor(vector vecColor)
 {
 	m_vecColor = vecColor;
 }
 
 void
-VGUIButton::SetIconColor(vector vecColor)
+vguiButton::SetIconColor(vector vecColor)
 {
 	m_vecIconColor = vecColor;
 }
 
 void
-VGUIButton::SetTitle(string strName)
+vguiButton::SetTitle(string strName)
 {
 	vector newsize = [0.0f, 0.0f, 0.0f];
 
@@ -118,13 +118,13 @@ VGUIButton::SetTitle(string strName)
 }
 
 string
-VGUIButton::GetTitle(void)
+vguiButton::GetTitle(void)
 {
 	return m_strTitle;
 }
 
 void
-VGUIButton::SetIcon(string strName)
+vguiButton::SetIcon(string strName)
 {
 	m_strIcon = strName;
 	m_vecIMGSize = drawgetimagesize(strName);
@@ -134,37 +134,39 @@ VGUIButton::SetIcon(string strName)
 	}
 }
 void
-VGUIButton::SetFunc(void(void) func)
+vguiButton::SetFunc(void(void) func)
 {
-	//#warning "SetFunc in VGUIButton is DEPRECATED. Compiler IS generating JUNK in the old way. Please override VGUIButton and define a OnMouseDown/Up method instead"
+	//#warning "SetFunc in vguiButton is DEPRECATED. Compiler IS generating JUNK in the old way. Please override vguiButton and define a OnMouseDown/Up method instead"
 	//m_vFunc = vFunc;
-	tmpVGUIButton1 = func;
+	tmpvguiButton1 = func;
 }
 void
-VGUIButton::SetExec(string exe)
+vguiButton::SetExec(string exe)
 {
 	m_strExec = exe;
 }
 
 void
-VGUIButton::SetKeyEquivalent(string keyValue)
+vguiButton::SetKeyEquivalent(string keyValue)
 {
 	m_keyEquivalent = stringtokeynum(keyValue);
 }
 
 string
-VGUIButton::GetKeyEquivalent(void)
+vguiButton::GetKeyEquivalent(void)
 {
 	return keynumtostring(m_keyEquivalent);
 }
 
 
 void
-VGUIButton::Draw(void)
+vguiButton::Draw(void)
 {
-	VGUITheme theme = GetTheme();
+	vguiTheme theme = GetTheme();
 
-	if (m_iFlags & BUTTON_DOWN) {
+	if (!tmpvguiButton1) {
+		theme.DrawButton(m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, VGUI_STATE_DISABLED);
+	} else if (m_iFlags & BUTTON_DOWN) {
 		theme.DrawButton(m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, VGUI_STATE_ACTIVE);
 	} else if (m_iFlags & BUTTON_HOVER) {
 		theme.DrawButton(m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, VGUI_STATE_HOVER);
@@ -202,11 +204,16 @@ VGUIButton::Draw(void)
 }
 
 bool
-VGUIButton::Input(float flEVType, float flKey, float flChar, float flDevID)
+vguiButton::Input(float flEVType, float flKey, float flChar, float flDevID)
 {
 	bool ret = false;
 
 	bool mouseHover = false;
+
+
+	if (!tmpvguiButton1) {
+		return (false);
+	}
 
 	if (Util_MouseAbove(g_vecMousePos, m_parent.m_vecOrigin + m_vecOrigin, m_vecSize)) {
 		mouseHover = true;
@@ -244,8 +251,8 @@ VGUIButton::Input(float flEVType, float flKey, float flChar, float flDevID)
 			if (m_iFlags & BUTTON_DOWN && mouseHover) {
 				OnMouseUp();
 
-				if (tmpVGUIButton1)
-					tmpVGUIButton1();
+				if (tmpvguiButton1)
+					tmpvguiButton1();
 
 				if (m_strExec)
 					localcmd(sprintf("%s\n", m_strExec));

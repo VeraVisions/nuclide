@@ -16,23 +16,23 @@
 
 var bool autocvar_vehicle_developer = false;
 void
-_NSVehicle_Log(string className, string functionName, float edictNum, string warnMessage)
+_ncVehicle_Log(string className, string functionName, float edictNum, string warnMessage)
 {
 	if (autocvar_g_logTimestamps)
 		printf("^9%f ^2%s (%d) ^7: %s\n", time, functionName, edictNum, warnMessage);
 	else
 		printf("^2%s (%d) ^7: %s\n", functionName, edictNum, warnMessage);
 }
-#define NSVehicle_Log(...) if (autocvar_vehicle_developer == true) _NSVehicle_Log(classname, __FUNC__, num_for_edict(this), sprintf(__VA_ARGS__))
+#define ncVehicle_Log(...) if (autocvar_vehicle_developer == true) _ncVehicle_Log(classname, __FUNC__, num_for_edict(this), sprintf(__VA_ARGS__))
 
 /** This entity class represents vehicles that are predicted across the network.
 
 @ingroup baseclass
 */
-class NSVehicle:NSSurfacePropEntity
+class ncVehicle:ncSurfacePropEntity
 {
 public:
-	void NSVehicle(void);
+	void ncVehicle(void);
 
 #ifdef CLIENT
 	virtual void DriverRelink(void);
@@ -57,8 +57,8 @@ public:
 	nonvirtual entity GetDriver(void);
 	virtual void PlayerUpdateFlags(void);
 	virtual void PlayerAlign(void);
-	virtual void PlayerEnter(NSClientPlayer);
-	virtual void PlayerLeave(NSClientPlayer);
+	virtual void PlayerEnter(ncPlayer);
+	virtual void PlayerLeave(ncPlayer);
 	virtual void PlayerInput(void);
 	virtual float DriverAnimation(void);
 	
@@ -70,9 +70,9 @@ private:
 	int m_iVehicleFlags;
 	int m_iMoveButtons;
 	vector m_vecMoveValues;
-	NSEntity m_eDriver;
-	NSEntity m_eDriver_net;
-	NSEntity m_eDriverLast;
+	ncEntity m_eDriver;
+	ncEntity m_eDriver_net;
+	ncEntity m_eDriverLast;
 	vector m_vecPlayerPos;
 	vector m_vecExitPos;
 

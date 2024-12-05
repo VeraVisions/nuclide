@@ -27,6 +27,22 @@
 /* taken from VPhysics-Jolt (with permission!) */
 const float InchesToMeters = 0.0254f;
 const float MetersToInches = 1.0f / 0.0254f;
+const float MinimumImpactForce = 2.5;
+const float MinimumScrapeSpeed = 100.0f;
+
+
+#ifdef SERVER
+var float LastImpactTime;
+#endif
+
+#ifdef PHYSICS_LIMIT_OPS
+/* possible future optimisation */
+//#define PHYSICS_LIMIT_OPS
+const int g_physMaxDamageOperations = 32;
+var int g_physDamageOperations = 0;
+#endif
+
+var bool autocvar_phys_lowspec = true;
 
 bool
 Physics_Simple(void)
@@ -39,13 +55,13 @@ Physics_Simple(void)
 }
 
 void
-NSPhysicsEntity::NSPhysicsEntity(void)
+ncPhysicsEntity::ncPhysicsEntity(void)
 {
 	mass = 1.0f;
 	isPhysics = true;
 	m_flInertiaScale = 1.0f;
 	m_iEnabled = 0i;
-	m_iShape = GEOMTYPE_TRIMESH;
+	m_iShape = autocvar_phys_lowspec == false ? GEOMTYPE_TRIMESH : GEOMTYPE_BOX;
 	m_iMaterial = 0i;
 	m_iFlags = 0i;
 	m_flMass = 1.0f;
@@ -54,21 +70,40 @@ NSPhysicsEntity::NSPhysicsEntity(void)
 #ifdef SERVER
 	m_strOnDamaged = __NULL__;
 #endif
+
+	m_lastTouchTime = 0.0f;
+}
+
+void
+ncPhysicsEntity::SetModel(string modelPath)
+{
+	super::SetModel(modelPath);
+
+	float sizeLength = length(GetSize());
+
+	//printf("Gib Size: %f\n", sizeLength);
+
+	/* smaller/thinner models benefit from not being an expensive trimesh. */
+	if (sizeLength < 32) {
+		m_iShape = GEOMTYPE_BOX;
+	} else {
+		m_iShape = autocvar_phys_lowspec == false ? GEOMTYPE_TRIMESH : GEOMTYPE_BOX;
+	}
 }
 
 #ifdef SERVER
 void
-NSPhysicsEntity::Spawned(void)
+ncPhysicsEntity::Spawned(void)
 {
 	super::Spawned();
 
 	/* I/O */
-	if (m_strOnDamaged)
+	if (STRING_SET(m_strOnDamaged))
 		m_strOnDamaged = CreateOutput(m_strOnDamaged);
 }
 
 void
-NSPhysicsEntity::Save(float handle)
+ncPhysicsEntity::Save(float handle)
 {
 	super::Save(handle);
 	SaveInt(handle, "m_iEnabled", m_iEnabled);
@@ -80,7 +115,7 @@ NSPhysicsEntity::Save(float handle)
 }
 
 void
-NSPhysicsEntity::Restore(string strKey, string strValue)
+ncPhysicsEntity::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "m_iEnabled":
@@ -117,8 +152,26 @@ bool physics_supported(void)
 
 #ifdef SERVER
 void
-NSPhysicsEntity::EvaluateEntity(void)
+ncPhysicsEntity::EvaluateEntity(void)
 {
+	/* attempt at making of a less of a mess at spawn time */
+	if (m_spawnPhysTime > GetTime()) {
+// 		cvar_set("physics_ode_maxspeed", "100");
+		friction = 400.0f;
+		bouncefactor = -1;
+		max_angular = 100;
+		gravity = 100;
+		velocity[0] = velocity[1] = 0;
+		avelocity = g_vec_null;
+		velocity[2] *= 0.5f;
+	} else {
+// 		cvar_set("physics_ode_maxspeed", "800");
+		friction = 1.0f;
+		bouncefactor = 0.0;
+		max_angular = 6500.0f;
+		gravity = 1;
+	}
+
 	EVALUATE_VECTOR(origin, 0, RDENT_CHANGED_ORIGIN_X)
 	EVALUATE_VECTOR(origin, 1, RDENT_CHANGED_ORIGIN_Y)
 	EVALUATE_VECTOR(origin, 2, RDENT_CHANGED_ORIGIN_Z)
@@ -170,7 +223,7 @@ NSPhysicsEntity::EvaluateEntity(void)
 }
 
 float
-NSPhysicsEntity::SendEntity(entity ePEnt, float flChanged)
+ncPhysicsEntity::SendEntity(entity ePEnt, float flChanged)
 {
 	if (!modelindex)
 		return (0);
@@ -264,11 +317,11 @@ NSPhysicsEntity::SendEntity(entity ePEnt, float flChanged)
 
 /*
 ============
-NSPhysicsEntity::ReceiveEntity
+ncPhysicsEntity::ReceiveEntity
 ============
 */
 void
-NSPhysicsEntity::ReceiveEntity(float flNew, float flChanged)
+ncPhysicsEntity::ReceiveEntity(float flNew, float flChanged)
 {
 	READENTITY_COORD(origin[0], RDENT_CHANGED_ORIGIN_X)
 	READENTITY_COORD(origin[1], RDENT_CHANGED_ORIGIN_Y)
@@ -335,8 +388,10 @@ NSPhysicsEntity::ReceiveEntity(float flNew, float flChanged)
 }
 
 void
-NSPhysicsEntity::postdraw(void)
+ncPhysicsEntity::postdraw(void)
 {
+	super::postdraw();
+
 	if not (autocvar_r_showPhysicsInfo)
 		return;
 
@@ -344,29 +399,29 @@ NSPhysicsEntity::postdraw(void)
 		return;
 
 	float massVolume = (size[0] * size[1] * size[2]);
-	massVolume *= 0.0254f; /* from meters to inches */
+	massVolume *= InchesToMeters; /* from meters to inches */
 
-	string renderString = sprintf("Mass: %.2f kg (%.2f ODE)\nEnergy: %f kj\nInertia:%d\nVolume: %.2f",
-		GetMass(), mass, GetEnergy(), GetInertia(), massVolume);
+	string renderString = sprintf("Mass: %.2f kg (%.2f ODE)\nEnergy: %d kj\nInertia: %d\nVolume: %.2f",
+		GetMass(), mass, GetEnergy() * (1.0 / 1024), GetInertia(), massVolume);
 
-	PointMessage_StringAtPos(WorldSpaceCenter(), renderString);
+	PointMessage_FieldAtPos(WorldSpaceCenter(), renderString, 256);
 }
 #endif
 
 void
-NSPhysicsEntity::SetFriction(float val)
+ncPhysicsEntity::SetFriction(float val)
 {
 	friction = val;
 }
 float
-NSPhysicsEntity::GetFriction(void)
+ncPhysicsEntity::GetFriction(void)
 {
 	return friction;
 }
 
 
 float
-NSPhysicsEntity::CalculateImpactDamage(int iDamage, int dmgType)
+ncPhysicsEntity::CalculateImpactDamage(int iDamage, int dmgType)
 {
 	int filter = 0i;
 
@@ -379,17 +434,16 @@ NSPhysicsEntity::CalculateImpactDamage(int iDamage, int dmgType)
 	filter |= (dmgType & DMG_POISON);
 	filter |= (dmgType & DMG_RADIATION);
 	filter |= (dmgType & DMG_ACID);
-	filter |= (dmgType & DMG_ACID);
 	filter |= (dmgType & DMG_SLOWFREEZE);
 
 	if (filter == 0i)
-		return (float)iDamage * autocvar_phys_impactforcescale;
+		return (float)iDamage;
 	else
 		return 0.0f;
 }
 
 int
-NSPhysicsEntity_Contents(entity target, vector org)
+ncPhysicsEntity_Contents(entity target, vector org)
 {
 	target.hitcontentsmaski = -1;
 	traceline(org, org, MOVE_EVERYTHING, target);
@@ -399,45 +453,189 @@ NSPhysicsEntity_Contents(entity target, vector org)
 
 #ifdef SERVER
 void
-NSPhysicsEntity::Touch(entity eToucher)
+ncPhysicsEntity::Touch(entity eToucher)
 {
+	if (eToucher.solid == SOLID_TRIGGER)
+		return;
+
+	float timeDelta = time - m_lastTouchTime;
+#if 1
+	float impactForce = (GetEnergy()) * timeDelta;
+
+	/* very, very large number. we pulled this one out of a hat (trial and error for what felt okay.)
+	   for precision reasons, this is applied twice (we cannot have floats with that many decimal
+	   places...) and we're also only multiplying the 2nd magic-number to try and preserve as much of
+	   impactForce as possible. */
+	impactForce *= 0.00001;
+	impactForce *= (0.00001 * autocvar_phys_impactforcescale);
+#else
+	float impactForce = GetMass() * ((length(GetVelocity()) * InchesToMeters) * timeDelta);
+#endif
+
+	vector forward = normalize(GetVelocity());
+	float scrapeDot = dotproduct(GetTouchNormal(), forward); /* < 0.9 == scraping across instead of facing towards plane */
+
+	if (time != m_lastTouchTime) {
+		/* scrape check */
+		if (impactForce > MinimumImpactForce && scrapeDot < 0.5f) {
+			if (fabs(avelocity[0]) > MinimumScrapeSpeed) {
+				StartSoundDef(GetSurfaceData(SURFDATA_SND_ROLL), CHAN_BODY, true);
+			} else {
+				#warning TODO: differentiate between rough & smooth
+				StartSoundDef(GetSurfaceData(SURFDATA_SND_SCRAPEROUGH), CHAN_BODY, true);
+			}
+			m_bFeedbackSounds = true;
+		} else if (impactForce > MinimumImpactForce) {
+			string newFXImpact = "";
+			float materialID = GetSurfaceData(SURFDATA_MATERIAL);
+			#warning TODO: Move this into typeinfo decl
+			switch (materialID) {
+	// 		case 'C':
+	// 		case 'T':
+	// 			newFXImpact = "impact.concrete";
+	//			break;
+	// 		case 'W':
+	// 			newFXImpact = "impact.wood";
+	// 			break;
+	// 		case 'D':
+	// 			newFXImpact = "impact.dirt";
+	// 			break;
+	// 		case 'N':
+	// 			newFXImpact = "impact.sand";
+	// 			break;
+	// 		case 'A':
+	// 			newFXImpact = "impact.alien";
+	//			break;
+			case 'M':
+			case 'V':
+				newFXImpact = "impact.metal";
+				break;
+	//		case 'C':
+	// 			newFXImpact = "impact.computer";
+	//			break;
+	//		case 'F':
+	// 			newFXImpact = "impact.flesh";
+			default:
+				newFXImpact = "impact.dust";
+				break;
+			}
+
+			if (STRING_SET(newFXImpact)) {
+				pointparticles(particleeffectnum(newFXImpact), GetTouchPosition(), GetTouchNormal(), 1);
+			}
+
+			#warning TODO: differentiate between rough & smooth
+			StartSoundDef(GetSurfaceData(SURFDATA_SND_IMPACTHARD), CHAN_VOICE, true);
+		} else if (m_bFeedbackSounds == true) {
+			StopSound(CHAN_BODY, true);
+			m_bFeedbackSounds = false;
+		}
+	}
+
 	/* if we're being held by a player, don't do anything funny! */
 	if (owner) {
+		m_lastTouchTime = time;
 		return;
 	}
 
 	if (GetHealth() <= 0) {
-		return;
-	}
-
-	if (time < 10.0) {
+		m_lastTouchTime = time;
 		return;
 	}
 
 	if (Physics_Simple() == true) {
+		m_lastTouchTime = time;
 		return;
 	}
 
-	float impactForce = length(GetVelocity()) * 0.01;
+	/* ensure that on map spawn, things just fall to the ground without taking damage */
+	if (impactForce > 0.0 && time != m_lastTouchTime) {
+		//float opposingForce = length(eToucher.velocity) * 0.01;
 
-	//printf("Impact force: %d; required: %d\n", impactForce, GetHealth());
+		if (m_spawnPhysTime > GetTime()) {
+			impactForce = 0.0f;
+		}
 
-	if (impactForce > GetHealth()) {
-		NSDict damageDecl = spawn(NSDict);
-		damageDecl.AddKey("damage", ftos(impactForce));
-		Damage(eToucher, eToucher, damageDecl, 1.0f, g_vec_null, GetOrigin());
-		remove(damageDecl);
-		//printf("New health: %d, impact force: %d\n", health, impactForce);
+		if (impactForce < 5.0f) {
+			impactForce = 0.0f;
+		} else {
+			impactForce = floor(impactForce);
+		#ifdef PHYSICS_LIMIT_OPS
+			/* same frame as last impact? limit damage we can do per frame to avoid gib spawns */
+			if (LastImpactTime == GetTime()) {
+				g_physDamageOperations++;
+
+				if (g_physDamageOperations > g_physMaxDamageOperations) {
+					m_lastTouchTime = time;
+					return;
+				}
+			} else {
+				g_physDamageOperations = 0;
+			}
+		#endif
+
+			/* HACK: If the toucher is standing on the entity, reduce damage done and kick them up. */
+			if (eToucher.groundentity == this) {
+#if 1
+				impactForce = 0.0f;
+#else
+				/* when we stand on top of it, we have a certain weight and minimum damage requirement */
+				if (impactForce < 20.0f) {
+					impactForce = 0.0f;
+				} else {
+					/* get us unstuck */
+					setorigin_safe(eToucher, eToucher.origin);
+					eToucher.velocity[2] = (impactForce * 10.0f);
+					impactForce *= 0.1f;
+					velocity *= 0.25f;
+				}
+#endif
+			}
+		}
+
+		if (eToucher && impactForce >= 1.0 && eToucher.takedamage != DAMAGE_NO) {
+			ncSurfacePropEntity impactingEntity = (ncSurfacePropEntity)eToucher;
+			ncDict damageDecl = spawn(ncDict);
+			damageDecl.AddKey("damage", ftos(impactForce));
+			damageDecl.AddKey("push", "0"); /* avoid physics recursion/amplification */
+			impactingEntity.Damage(this, this, damageDecl, 1.0f, g_vec_null, GetOrigin());
+			remove(damageDecl);
+		} else {
+			if (impactForce > GetHealth()) {
+				ncDict damageDecl = spawn(ncDict);
+				damageDecl.AddKey("damage", ftos(impactForce));
+				damageDecl.AddKey("push", "0"); /* avoid physics recursion/amplification */
+				Damage(eToucher, eToucher, damageDecl, 1.0f, g_vec_null, GetOrigin());
+				remove(damageDecl);
+				//printf("New health: %d, impact force: %d\n", health, impactForce);
+			}
+		}
 	}
 
-	if (eToucher)
-		if (eToucher.movetype)
+	/* we've gotten into contact with another entity */
+	if (eToucher && impactForce > 5.0f) {
+		/* it's probably able to push us out of the way. */
+		if (eToucher.movetype) {
 			Wake();
+		}
+	}
+
+#if 0
+	/* we're getting someone stuck or something */
+	if (eToucher && eToucher.velocity[2] < 0.0) {
+		eToucher.velocity[2] *= -1;
+		ClearVelocity();
+	}
+#endif
+
+	m_lastTouchTime = time;
+	LastImpactTime = GetTime();
 }
 #endif
 
+#if 0
 void
-NSPhysicsEntity::_TouchThink(void)
+ncPhysicsEntity::_TouchThink(void)
 {
 	if (IsAsleep() == true) {
 		return;
@@ -500,7 +698,7 @@ NSPhysicsEntity::_TouchThink(void)
 
 #if 1
 	if (m_flBuoyancyRatio > 0.0)
-	if (NSPhysicsEntity_Contents(this, origin) & CONTENTBIT_WATER) {
+	if (ncPhysicsEntity_Contents(this, origin) & CONTENTBIT_WATER) {
 		velocity[2] += m_flBuoyancyRatio * frametime;
 	}
 #endif
@@ -508,17 +706,13 @@ NSPhysicsEntity::_TouchThink(void)
 	if (physics_supported() == FALSE && GetSolid() != SOLID_CORPSE) {
 		DisablePlayerCollision();
 	}
-
-	/* continue testing next frame */
-	nextthink = time;
 }
+#endif
 
 #ifdef SERVER
 void
-NSPhysicsEntity::Pain(entity inflictor, entity attacker, int damage, vector dir, int location)
+ncPhysicsEntity::Pain(entity inflictor, entity attacker, int damage, vector dir, vector absImpactPos, int hitBody)
 {
-	float force;
-
 	if (modelindex == 0) {
 		return;
 	}
@@ -533,40 +727,46 @@ NSPhysicsEntity::Pain(entity inflictor, entity attacker, int damage, vector dir,
 
 	Wake();
 
-	force = CalculateImpactDamage(damage, g_dmg_iFlags);
-
-	if (force > 0.0f) {
-		ApplyForceOffset(dir * force, g_dmg_vecLocation);
-	}
-
 	/* HACK: */
 	if (m_bInvincible) {
 		health = 10000;
 	}
-
-	/* make sure touch think is called */
-	nextthink = time;
 }
 
 void
-NSPhysicsEntity::Death(entity inflictor, entity attacker, int damage, vector dir, int location)
+ncPhysicsEntity::Death(entity inflictor, entity attacker, int damage, vector dir, vector absImpactPos, int hitBody)
 {
 	if (modelindex == 0) {
 		return;
 	}
 
-	Pain(inflictor, attacker, damage, dir, location);
-	super::Death(inflictor, attacker, damage, dir, location);
-	SetSolid(SOLID_NOT);
-	ReleaseThink();
+	if (m_bInvincible) {
+		health = 10000;
+		return;
+	}
+
+	Pain(inflictor, attacker, damage, dir, absImpactPos, hitBody);
+	super::Death(inflictor, attacker, damage, dir, absImpactPos, hitBody);
+
+	if (!modelindex) {
+		geomtype = GEOMTYPE_NONE;
+		SetMovetype(MOVETYPE_NONE);
+		SetSolid(SOLID_NOT);
+		ReleaseThink();
+	}
 }
 #endif
 
 void
-NSPhysicsEntity::Respawn(void)
+ncPhysicsEntity::Respawn(void)
 {
 	super::Respawn();
 
+	/* make turning on spawn difficult, see EvaluateEntity() */
+	m_spawnPhysTime = GetTime() + 2.0f;
+	max_angular = 0.1f;
+	SetSolid(SOLID_BSP);
+	SetMovetype(MOVETYPE_PHYSICS);
 	ClearVelocity();
 	Sleep();
 
@@ -605,8 +805,6 @@ NSPhysicsEntity::Respawn(void)
 
 	if (HasPropData()) {
 		SetHealth(GetPropData(PROPINFO_HEALTH));
-	} else {
-		health = 1;
 	}
 
 	/* no health set, either indistructible or too weak */
@@ -617,14 +815,36 @@ NSPhysicsEntity::Respawn(void)
 			health = 10000;
 		} else {
 			/* something like glass bottles, maybe. */
-			health = 1;
+			health = 5;
+			m_bInvincible = false;
 		}
 	}
+
+	customphysics = PVSCheck;
 #endif
+
 }
 
+#ifdef SERVER
 void
-NSPhysicsEntity::SpawnKey(string strKey, string strValue)
+ncPhysicsEntity::PVSCheck(void)
+{
+	/* check if we're supposed to be awake */
+	if (m_pvsSleep == false) {
+		if (SharesPVSWithPlayer() == false) {
+			return;
+		}
+
+		m_pvsSleep = true;
+		EntLog("Unfreezing entity, in discovered PVS");
+	}
+
+	customphysics = __NULL__;
+}
+#endif
+
+void
+ncPhysicsEntity::SpawnKey(string strKey, string strValue)
 {
 	bool tempCheck = false;
 
@@ -671,15 +891,16 @@ NSPhysicsEntity::SpawnKey(string strKey, string strValue)
 /* GMod API starts here */
 
 vector
-NSPhysicsEntity::AlignAngles(vector from, vector to)
+ncPhysicsEntity::AlignAngles(vector from, vector to)
 {
 	EntWarning("Not implemented");
 	return angles;
 }
 
 void
-NSPhysicsEntity::ApplyForceCenter(vector vecForce)
+ncPhysicsEntity::ApplyForceCenter(vector vecForce)
 {
+	velocity = [0,0,1];
 	Wake();
 
 	vecForce *= MetersToInches;
@@ -693,14 +914,12 @@ NSPhysicsEntity::ApplyForceCenter(vector vecForce)
 	} else {
 		velocity += vecForce;
 	}
-
-	/* make sure touch think is called */
-	nextthink = time;
 }
 
 void
-NSPhysicsEntity::ApplyForceOffset(vector vecForce, vector vecOffset)
+ncPhysicsEntity::ApplyForceOffset(vector vecForce, vector vecOffset)
 {
+	velocity = [0,0,1];
 	Wake();
 
 	vecForce *= MetersToInches;
@@ -711,20 +930,13 @@ NSPhysicsEntity::ApplyForceOffset(vector vecForce, vector vecOffset)
 
 		NSPhysics_Log("%s::ApplyForceOffset: %v at pos %v (val: %v)",
 			classname, finalForce, vecOffset, vecForce);
-
-#ifdef ODE_MODE
-		//velocity += vecForce;
-#endif
 	} else {
 		velocity += vecForce;
 	}
-
-	/* make sure touch think is called */
-	nextthink = time;
 }
 
 void
-NSPhysicsEntity::ApplyTorqueCenter(vector vecTorque)
+ncPhysicsEntity::ApplyTorqueCenter(vector vecTorque)
 {
 	Wake();
 
@@ -739,197 +951,199 @@ NSPhysicsEntity::ApplyTorqueCenter(vector vecTorque)
 		velocity = vecTorque;
 		velocity[2] = 96;
 	}
-
-	/* make sure touch think is called */
-	nextthink = time;
 }
 
 void
-NSPhysicsEntity::EnableDrag(bool setEnabled)
+ncPhysicsEntity::EnableDrag(bool setEnabled)
 {
 	EntWarning("Not implemented");
 }
 
 void
-NSPhysicsEntity::EnableGravity(bool setEnabled)
+ncPhysicsEntity::EnableGravity(bool setEnabled)
 {
 	/* the engine checks if .gravity is < 0.01...) */
 	gravity = setEnabled ? 1.0f : 0.005;
 }
 
 void
-NSPhysicsEntity::EnableMotion(bool setEnabled)
+ncPhysicsEntity::EnableMotion(bool setEnabled)
 {
-	EntWarning("Not implemented");
+	if (setEnabled) {
+		Wake();
+	} else {
+		Sleep();
+	}
 }
 
 float
-NSPhysicsEntity::GetLinearDamping(void)
+ncPhysicsEntity::GetLinearDamping(void)
 {
 	return damp_linear;
 }
 
 float
-NSPhysicsEntity::GetAngularDamping(void)
+ncPhysicsEntity::GetAngularDamping(void)
 {
 	return damp_angular;
 }
 
 float
-NSPhysicsEntity::GetEnergy(void)
+ncPhysicsEntity::GetEnergy(void)
 {
+	/* should match JoltPhysicsObject::GetEnergy() */
 	float linearEnergy;
 	float rotationalEnergy;
 
-	linearEnergy = (0.5f * GetMass() * vlen(GetVelocity()));
+	linearEnergy = (0.5f * GetMass() * length(GetVelocity()));
 	linearEnergy *= linearEnergy;
 
-	rotationalEnergy = (0.5f * GetMass() * vlen(GetAngularVelocity()));
+	rotationalEnergy = (0.5f * GetMass() * length(GetAngularVelocity()));
 	rotationalEnergy *= rotationalEnergy;
 
 	return (linearEnergy + rotationalEnergy) / (InchesToMeters * InchesToMeters);
 }
 
 float
-NSPhysicsEntity::GetInertia(void)
+ncPhysicsEntity::GetInertia(void)
 {
 	return m_flInertiaScale;
 }
 
 float
-NSPhysicsEntity::GetInvInertia(void)
+ncPhysicsEntity::GetInvInertia(void)
 {
 	return 1.0f / m_flInertiaScale;
 }
 
 float
-NSPhysicsEntity::GetInvMass(void)
+ncPhysicsEntity::GetInvMass(void)
 {
 	return 1.0f / mass;
 }
 
 float
-NSPhysicsEntity::GetMass(void)
+ncPhysicsEntity::GetMass(void)
 {
 	return m_flMass;
 }
 
 vector
-NSPhysicsEntity::GetMassCenter(void)
+ncPhysicsEntity::GetMassCenter(void)
 {
 	return WorldSpaceCenter();
 }
 
 float
-NSPhysicsEntity::GetRotDamping(void)
+ncPhysicsEntity::GetRotDamping(void)
 {
 	return 0.0f;
 }
 
 float
-NSPhysicsEntity::GetSpeedDamping(void)
+ncPhysicsEntity::GetSpeedDamping(void)
 {
 	return 0.0f;
 }
 
 float
-NSPhysicsEntity::GetSurfaceArea(void)
+ncPhysicsEntity::GetSurfaceArea(void)
 {
 	return vlen(size) / 4;
 }
 
 float
-NSPhysicsEntity::GetVolume(void)
+ncPhysicsEntity::GetVolume(void)
 {
 	return vlen(size);
 }
 
 bool
-NSPhysicsEntity::IsAsleep(void)
+ncPhysicsEntity::IsAsleep(void)
 {
 	return (m_iEnabled) ? (false) : (true);
 }
 
 bool
-NSPhysicsEntity::IsCollisionEnabled(void)
+ncPhysicsEntity::IsCollisionEnabled(void)
 {
 	return true;
 }
 
 bool
-NSPhysicsEntity::IsDragEnabled(void)
+ncPhysicsEntity::IsDragEnabled(void)
 {
 	return true;
 }
 
 bool
-NSPhysicsEntity::IsGravityEnabled(void)
+ncPhysicsEntity::IsGravityEnabled(void)
 {
 	return (gravity < 0.01) ? false : true;
 }
 
 bool
-NSPhysicsEntity::IsMotionEnabled(void)
+ncPhysicsEntity::IsMotionEnabled(void)
 {
 	return true;
 }
 
 bool
-NSPhysicsEntity::IsMoveable(void)
+ncPhysicsEntity::IsMoveable(void)
 {
 	return true;
 }
 
 bool
-NSPhysicsEntity::IsPenetrating(void)
+ncPhysicsEntity::IsPenetrating(void)
 {
 	return true;
 }
 
 void
-NSPhysicsEntity::SetAngleDragCoefficient(float setValue)
+ncPhysicsEntity::SetAngleDragCoefficient(float setValue)
 {
 	EntWarning("Not implemented");
 }
 
 void
-NSPhysicsEntity::SetBuoyancyRatio(float setValue)
+ncPhysicsEntity::SetBuoyancyRatio(float setValue)
 {
 	m_flBuoyancyRatio = setValue;
 }
 
 void
-NSPhysicsEntity::SetDamping(float linearDamp, float angleDamp)
+ncPhysicsEntity::SetDamping(float linearDamp, float angleDamp)
 {
 	damp_linear = linearDamp;
 	damp_angular = angleDamp;
 }
 
 void
-NSPhysicsEntity::SetDragCoefficient(float dragValue)
+ncPhysicsEntity::SetDragCoefficient(float dragValue)
 {
 	EntWarning("Not implemented");
 }
 
 void
-NSPhysicsEntity::SetInertia(float val)
+ncPhysicsEntity::SetInertia(float val)
 {
 	m_flInertiaScale = val;
 }
 
 void
-NSPhysicsEntity::_UpdateMass(void)
+ncPhysicsEntity::_UpdateMass(void)
 {
 	/* in ODE, mass is relative. */
 	float massVolume = (size[0] * size[1] * size[2]);
-	massVolume *= 0.0254f; /* from inches to meters */
+	massVolume *= InchesToMeters; /* from inches to meters */
 
 	mass = 1.0f;
 	//mass = m_flMass / massVolume; /* really ODE's thing is density */
 }
 
 void
-NSPhysicsEntity::_UpdateBuoyancy(void)
+ncPhysicsEntity::_UpdateBuoyancy(void)
 {
 #if 0
 	if ( m_flVolume != 0.0f )
@@ -946,14 +1160,14 @@ NSPhysicsEntity::_UpdateBuoyancy(void)
 }
 
 void
-NSPhysicsEntity::SetMass(float val)
+ncPhysicsEntity::SetMass(float val)
 {
 	m_flMass = val;
 	_UpdateMass();
 }
 
 void
-NSPhysicsEntity::Wake(void)
+ncPhysicsEntity::Wake(void)
 {
 	if (!modelindex) {
 		return;
@@ -961,7 +1175,6 @@ NSPhysicsEntity::Wake(void)
 
 	if (physics_supported() == TRUE) {
 		SetMovetype(MOVETYPE_PHYSICS);
-		SetSolid(SOLID_BSP);
 
 		/* Don't need a lot of precision during this */
 		if (Physics_Simple() == true) {
@@ -977,31 +1190,20 @@ NSPhysicsEntity::Wake(void)
 		physics_enable(this, TRUE);
 	} else {
 		SetMovetype(MOVETYPE_BOUNCE);
-		SetSolid(SOLID_CORPSE);
-	}
-
-	if (isItem(this) == true) {
-		SetSolid(SOLID_CORPSE);
 	}
 
 	m_iEnabled = TRUE;
 }
 
 void
-NSPhysicsEntity::Sleep(void)
+ncPhysicsEntity::Sleep(void)
 {
 	if (!modelindex) {
 		return;
 	}
 
-	ClearVelocity();
 	SetMovetype(MOVETYPE_NONE);
 
-	if (isItem(this) == true) {
-		SetSolid(SOLID_CORPSE);
-	} else {
-		SetSolid(SOLID_BBOX);
-	}
 
 	if (physics_supported() == TRUE) {
 		physics_enable(this, FALSE);

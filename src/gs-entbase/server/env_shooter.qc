@@ -42,11 +42,11 @@ Shoots model entities from its location.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-env_shooter:NSRenderableEntity
+env_shooter:ncRenderableEntity
 {
 public:
 	void env_shooter(void);
@@ -246,7 +246,7 @@ env_shooter::ShootGib(void)
 	vector vecSpinVel = [0.0f, 0.0f, 0.0f];
 	vector vecThrowVel = [0.0f, 0.0f, 0.0f];
 
-	NSRenderableEntity eGib = spawn(NSRenderableEntity);
+	ncRenderableEntity eGib = spawn(ncRenderableEntity);
 	eGib.SetMovetype(MOVETYPE_BOUNCE);
 	eGib.SetModel(m_strShootModel);
 	eGib.SetSize([-8,-8,-8],[8,8,8]);

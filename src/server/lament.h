@@ -70,6 +70,6 @@ moderating a game server.
 
  
 /** Called by Nuclide within `SV_RunClientCommand()` every time an input packet is received. */
-void CheatersLament(NSClientPlayer, vector, float, float);
+void CheatersLament(ncPlayer, vector, float, float);
 
 /** @} */ // end of lament

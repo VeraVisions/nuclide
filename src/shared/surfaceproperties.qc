@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+#warning SurfaceProperties should be stored in ncDict
+
 static bool g_spDefaultSet;
 
 static void
@@ -244,7 +246,7 @@ SurfData_GetInfo(int i, int type)
 
 	switch (type) {
 	case SURFDATA_MATERIAL:
-		return __NULL__;
+		return (__variant)g_surfdata[i].m_flMaterial;
 	case SURFDATA_THICKNESS:
 		return (__variant)g_surfdata[i].m_flThickness;
 	case SURFDATA_DENSITY:
@@ -352,6 +354,7 @@ SurfData_Init(void)
 	int args;
 	bool fromManifest = true;
 	int spMemSize;
+	searchhandle sh;
 
 	InitStart();
 
@@ -395,6 +398,12 @@ SurfData_Init(void)
 				}
 			}
 		}
+	}
+
+	/* TODO: ensure that the above paths aren't necessary? */
+	sh = search_begin("scripts/surfaceproperties/*.txt", TRUE, TRUE);
+	for (int i = 0; i < search_getsize(sh); i++) {
+		SurfData_CountEntries(search_getfilename(sh, i));
 	}
 
 	/* now that we've counted the valid entries, alocate our stuff */
@@ -454,6 +463,11 @@ SurfData_Init(void)
 	}
 
 	fclose(fh);
+
+	/* GMod search paths */
+	for (int i = 0; i < search_getsize(sh); i++) {
+		SurfData_LoadFile(search_getfilename(sh, i));
+	}
 
 #if 1
 	for (int i = 1i; i < g_surfdata_count; i++) {
@@ -546,6 +560,9 @@ SurfData_Init(void)
 			case 'C':
 				newFXImpact = "impact.computer";
 				break;
+			case 'F':
+				newFXImpact = "impact.flesh";
+				break;
 			}
 
 			g_surfdata[i].m_fxBulletImpact = newFXImpact;
@@ -557,6 +574,7 @@ SurfData_Init(void)
 		}
 	}
 
+	search_end(sh);
 	NSLog("...SurfData initialized with %i entries.", g_surfdata_count);
 	InitEnd();
 }
@@ -670,8 +688,6 @@ SurfData_ImpactID_Parse(void)
 	float impactid = SurfData_GetInfo(matid, SURFDATA_FX_BULLETIMPACTID);
 	Sound_PlayAt(impactorg, impactsfx);
 
-	//printf("Prop Impact Receive %i %S %S\n", matid, impactsfx, SurfData_GetInfo(matid, SURFDATA_FX_BULLETIMPACT));
-
 #if 0
 	impactid = particleeffectnum("impact.concrete");
 #endif
@@ -698,7 +714,7 @@ SurfData_Impact(entity e, vector org, vector ang)
 			SurfData_Impact_SurfaceParm(e, org, ang);
 		}
 	} else { /* anything with else is a NSurfacePropEntity. */
-		NSSurfacePropEntity foo = (NSSurfacePropEntity)e;
+		ncSurfacePropEntity foo = (ncSurfacePropEntity)e;
 
 		if (foo.HasSurfaceData()) {
 			SurfData_ImpactOfType(foo.m_iMaterial, org, ang);
@@ -714,6 +730,7 @@ void
 SurfData_ImpactOfType(int materialID, vector worldPosition, vector impactNormal)
 {
 #ifdef SERVER
+// 	printf("Impact: %i %s\n", materialID, SurfData_GetInfo(materialID, SURFDATA_FX_BULLETIMPACT));
 	SurfData_ImpactID_Net(materialID, worldPosition, impactNormal);
 #endif
 	/* TODO: client side only version */

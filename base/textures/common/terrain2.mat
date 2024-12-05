@@ -1,0 +1,9 @@
+{
+	qer_editorImage "common/terrain.ktx"
+	vmap_terrain
+	surfaceParm dust
+	surfaceParm nodraw
+	surfaceParm nomarks
+	surfaceParm nolightmap
+	nomipmaps
+}

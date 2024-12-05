@@ -1,14 +1,14 @@
 # Material Command List {#mat_commands}
 
-### specularMap {#specularMap}
+## specularMap {#specularMap}
 
-#### Syntax
+### Syntax
 
-**specularMap <texturepath/texturename>**
+**specularMap \<texturepath/texturename\>**
 
-#### Overview
+### Overview
 
 Can set the specularity of the surface in relation to dlights.
 Specularity is the intensity of the light reflecting off the surface. In
-special cases some [GLSL programs](Shaders) might use the
+special cases some [GLSL programs](@ref shaders) might use the
 texture it for other purposes, too.

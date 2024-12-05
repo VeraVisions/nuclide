@@ -128,9 +128,13 @@ Titles_Init(void)
 	fs_titles = fopen("titles.txt", FILE_READ);
 
 	if (fs_titles < 0) {
-		NSError("missing titles.txt");
-		InitEnd();
-		return;
+		fs_titles = fopen("scripts/titles.txt", FILE_READ);
+
+		if (fs_titles < 0) {
+			NSWarning("No titles, missing [scripts/]titles.txt");
+			InitEnd();
+			return;
+		}
 	}
 
 	/* fill in some sane defaults */
@@ -269,7 +273,7 @@ void
 Titles_AddEntry(titles_t new)
 {
 	int newcount = g_titles_count + 1;
-	g_titles = (titles_t *)memrealloc(g_titles, sizeof(titles_t), g_titles_count, newcount);
+	g_titles = (titles_t *)memreallocOld(g_titles, sizeof(titles_t), g_titles_count, newcount);
 	g_titles[g_titles_count].m_strName = new.m_strName;
 	g_titles[g_titles_count].m_strMessage = new.m_strMessage;
 	g_titles[g_titles_count].m_flPosX = new.m_flPosX;

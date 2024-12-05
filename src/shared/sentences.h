@@ -16,51 +16,66 @@
 
 /** @defgroup sentences Sentences
 @brief Sentences are the voice-acting backbone of the sound system.
-@ingroup sound
 
-# Sentences Documentation
+@ingroup sound
 
-A lot of information was implemented with the help of:
-http://articles.thewavelength.net/230/
+The sentences subsystem allows us to stitch sound samples together for the purpose of speech. Segments can have their volume pitch and other attributes altered as they're being played back within it. It's all defined using external text definitions.
 
-## Specification of sound/sentences.txt
-Each line is a new sentence group.  
+## Defining Sentences
+
+Each line inside `sound/sentences.txt` is a new sentence group.
 
 ```
-[GROUPNAME] [...PARAMETERS] [...SAMPLES]
+GROUPNAME [PARAMETERS] SAMPLES [...]
 ```
+
+### Group names
+
+The name of the group is the name you'll be referring to in entity work such as ambient_generic.
+You can even call a random group, as long as you enumerate a name, of which you can have up to 31:
+
+```
+FOOBAR0 one
+FOOBAR1 two
+FOOBAR2 three
+```
+
+You'll still only refer to the group `FOOBAR`, but a random entry from your enumeration will be chosen.
+
+### Samples
 
 If a sample is not in a sub-directory, it'll be assumed to be part
-of the 'vox' sub-directory, or the last valid path of a previous sample.  
+of the 'vox' sub-directory, or the last valid path of the previous sample in a group.
 For example:
 
 ```
-attention male/hello how are you  
+[...] attention male/hello how are you
 ```
 
 becomes:
 
 ```
-vox/attention.wav male/hello.wav male/how.wav male/are.wav male/you.wav
+[...] vox/attention.wav male/hello.wav male/how.wav male/are.wav male/you.wav
 ```
 
+### Parameters
 When parameters are surrounded by spaces, this means they apply
 to all current samples. They can be overwritten later down the parsing.  
 
 When a parameter is attached to a sample, e.g.:
 
 ```
-attention(p120)
+[...] attention(p120)
 ```
 
-Then this parameter only applies to said keyword.  
+Then this parameter only applies to said segment.
 Whereas...
 
 ```
-(p120) attention everyone alive
+[...] (p120) attention everyone alive
 ```
 
-Will apply the pitch effect to all three succeeding samples.
+Will apply the pitch effect to all three succeeding segments.
 
 Parameters:  
     (pXX) = Pitch. Valid values are from 50 to 150.  
@@ -69,17 +84,22 @@ Parameters:
     (eXX) = End point in %. E.g. 75 ends playback 75% into the sample.  
     (tXX) = Time shift/compression in %. 100 is unaltered speed, wheras 50 plays the sample back in half the time.  
 
+# Acknowledgements
+
+A lot of information was implemented with the help of:
+http://articles.thewavelength.net/230/
+
 @{
 */
 
 #ifdef SERVER
-#define DYNAMIC_SENTENCES
+//#define DYNAMIC_SENTENCES
 
 #ifdef DYNAMIC_SENTENCES
 	string *g_sentences;
 	int g_sentences_count;
 #else
-	#define SENTENCES_LIMIT 1024
+	#define SENTENCES_LIMIT 1536
 	string g_sentences[SENTENCES_LIMIT];
 	int g_sentences_count;
 #endif
@@ -106,4 +126,4 @@ void Sentences_Shutdown(void);
 /** Called by CSQC_Init on the client, as well as init() on the server. */
 void Sentences_Init(void);
 
-var hashtable g_hashsentences;
+var hashtable g_hashsentences;

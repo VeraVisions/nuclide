@@ -22,20 +22,20 @@
 
  */
 
-/** Returns if the specified client is a NSClientSpectator, doesn't matter if real or fake */
-bool Client_IsSpectator(NSClient);
+/** Returns if the specified client is a ncSpectator, doesn't matter if real or fake */
+bool Client_IsSpectator(ncPlayer);
 
-/** Returns if we're a permanent NSClientSpectator, USE THIS if you want to access NSClientSpectator class attributes */
-bool Client_IsRealSpectator(NSClient cl);
+/** Returns if we're a permanent ncSpectator, USE THIS if you want to access ncSpectator class attributes */
+bool Client_IsRealSpectator(ncClient cl);
 
-/** Returns if we're a fake NSClientSpectator, in case you need to be certain */
-bool Client_IsFakeSpectator(NSClient cl);
+/** Returns if we're a fake ncSpectator, in case you need to be certain */
+bool Client_IsFakeSpectator(ncClient cl);
 
-/** Return if the specified client is dead. If they're a NSClientSpectator they're always alive. */
-bool Client_IsDead(NSClient);
+/** Return if the specified client is dead. If they're a ncSpectator they're always alive. */
+bool Client_IsDead(ncClient);
 
 /** Returns if the specified client is a playable client class */
-bool Client_IsPlayer(NSClient cl);
+bool Client_IsPlayer(ncClient cl);
 
 /** Are we in an intermission? (Match ending screen) */
 bool Client_InIntermission(void);
@@ -47,9 +47,5 @@ string Util_GetKeyString(string strBind);
 
 /** Returns if the currently active client-seat is in a vehicle. */
 bool Client_InVehicle(void);
-
-string Util_GetTime(void);
-float Util_GetTimeLeft(void);
-string Util_GetAddress(void);
 
 /** @} */ // end of client

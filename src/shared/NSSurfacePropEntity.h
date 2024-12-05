@@ -43,15 +43,15 @@ typedef enumflags
 	SRFENT_CHANGED_CONTROLLER
 } nssurfacepropentity_changed_t;
 
-/** This entity represents an NSRenderableEntity with interactive surface properties.
+/** This entity represents an ncRenderableEntity with interactive surface properties.
 It can take damage and can handle variously different types of impact. 
 
 @ingroup baseclass
 */
-class NSSurfacePropEntity:NSRenderableEntity
+class ncSurfacePropEntity:ncRenderableEntity
 {
 public:
-	void NSSurfacePropEntity(void);
+	void ncSurfacePropEntity(void);
 
 	/* overrides */
 	virtual void Spawned(void);
@@ -79,13 +79,13 @@ public:
 	/* new */
 #ifdef SERVER
 	/** Applies damage to the entity. */
-	virtual void Damage(entity, entity, NSDict, float, vector, vector);
+	virtual void Damage(entity, entity, ncDict, float, vector, vector);
 	/** Called when a different entity gets damaged by this entity. */
 	virtual void DamageFeedback(entity, entity, int);
 	/** Called whenever the entity receives damage. */
-	virtual void Pain(entity, entity, int, vector, int);
+	virtual void Pain(entity, entity, int, vector, vector, int);
 	/** Called when the health is equal or below 0 */
-	virtual void Death(entity, entity, int, vector, int);
+	virtual void Death(entity, entity, int, vector, vector, int);
 	/** Called when the health is equal or below 0 */
 	virtual void BreakModel(int, vector, int);
 	/** Returns whether or not the entity is alive. That is different from having health, as the entity may be a corpse that can be destroyed further.*/
@@ -205,5 +205,5 @@ private:
 };
 
 #ifdef CLIENT
-void NSSurfacePropEntity_ReadEntity(bool);
+void ncSurfacePropEntity_ReadEntity(bool);
 #endif

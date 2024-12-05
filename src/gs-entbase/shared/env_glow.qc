@@ -38,10 +38,10 @@ Glare/glow orb effect like the flares in 1997's Unreal.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup shared
+@ingroup sharedentity
 @ingroup pointentity
 */
-class env_glow:NSRenderableEntity
+class env_glow:ncRenderableEntity
 {
 public:
 	void env_glow(void);
@@ -51,7 +51,9 @@ public:
 	virtual void SpawnKey(string,string);
 	virtual void EvaluateEntity(void);
 	virtual float SendEntity(entity,float);
-#else
+#endif
+
+#ifdef CLIENT
 	float m_flMaxAlpha;
 	vector m_vecSize;
 	vector m_vecRotate;
@@ -150,7 +152,9 @@ env_glow::SendEntity(entity ePEnt, float flChanged)
 
 	return (1);
 }
-#else
+#endif
+
+#ifdef CLIENT
 bool
 env_glow::IsVisible(vector vecPlayer)
 {
@@ -192,7 +196,7 @@ env_glow::postdraw(void)
 void
 env_glow::RendererRestarted(void)
 {
-	if (!modelindex && m_strMaterial) {
+	if (!modelindex && STRING_SET(m_strMaterial)) {
 		precache_pic(m_strMaterial);
 		m_vecSize = drawgetimagesize(m_strMaterial) / 2;
 	} else {

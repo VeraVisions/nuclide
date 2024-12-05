@@ -73,7 +73,7 @@ CMD_KillClass(void)
 
 	if (targetClass)
 	for (entity a = world; (a = find(a, ::classname, targetClass));) {
-		NSEntity t = (NSEntity)a;
+		ncEntity t = (ncEntity)a;
 		t.Destroy();
 	}
 }
@@ -82,7 +82,7 @@ static void
 CMD_KillMovables(void)
 {
 		for (entity a = world; (a = findfloat(a, ::movetype, MOVETYPE_PHYSICS));) {
-			NSEntity t = (NSEntity)a;
+			ncEntity t = (ncEntity)a;
 			t.Destroy();
 		}
 }
@@ -95,7 +95,7 @@ CMD_Trigger(void)
 
 	if (targ)
 	for (entity a = world; (a = find(a, ::targetname, targ));) {
-		NSEntity t = (NSEntity)a;
+		ncEntity t = (ncEntity)a;
 
 		if (t.Trigger)
 			t.Trigger(self, TRIG_TOGGLE);
@@ -108,7 +108,7 @@ CMD_Input(void)
 	float entNum = stof(argv(1));
 	string inputName = argv(2);
 	string inputData = argv(3);
-	NSEntity inputTarget = (NSEntity)edict_num(entNum);
+	ncEntity inputTarget = (ncEntity)edict_num(entNum);
 
 	if (inputTarget) {
 		inputTarget.Input(self, inputName, inputData);
@@ -158,7 +158,7 @@ static void
 CMD_RenetworkEntities(void)
 {
 	for (entity a = world; (a = findfloat(a, ::identity, 1));) {
-		NSEntity ent = (NSEntity)a;
+		ncEntity ent = (ncEntity)a;
 		ent.SendFlags = -1;
 	}
 }
@@ -167,7 +167,7 @@ static void
 CMD_RespawnEntities(void)
 {
 	for (entity a = world; (a = findfloat(a, ::_mapspawned, true));) {
-		NSEntity ent = (NSEntity)a;
+		ncEntity ent = (ncEntity)a;
 		ent.Respawn();
 	}
 }
@@ -175,7 +175,7 @@ CMD_RespawnEntities(void)
 static void
 CMD_Spawn(void)
 {
-	NSEntity unit = EntityDef_CreateClassname(argv(1));
+	ncEntity unit = EntityDef_CreateClassname(argv(1));
 	makevectors(self.v_angle);
 	traceline(self.origin, self.origin + (v_forward * 1024), MOVE_NORMAL, self);
 	setorigin(unit, trace_endpos);
@@ -202,6 +202,25 @@ static void
 CMD_SetLightStyle(void)
 {
 	lightstyle(stof(argv(1)), argv(2));
+}
+
+static void
+CMD_ListSpawnData(void)
+{
+	string entString = argv(1);
+	float entNum = stof(entString);
+	ncEntity foundEnt = (ncEntity)edict_num(entNum);
+
+	if (foundEnt) {
+		printf("Spawn data for %s (%d):\n{\n", foundEnt.classname, entNum);
+
+		for (int i = 1; i < (tokenize(foundEnt.m_strSpawnData) - 1); i += 2) {
+			printf("\t%S\t\t%S\n", argv(i), argv(i+1));
+		}
+
+		printf("}\n");
+	} else
+		printf("Unable to find entity with ID %S\n", entString);
 }
 
 bool
@@ -272,6 +291,9 @@ Cmd_ParseServerCommand(void)
 		break;
 	case "setLightStyle":
 		CMD_SetLightStyle();
+		break;
+	case "listSpawnData":
+		CMD_ListSpawnData();
 		break;
 	default:
 		return (false);

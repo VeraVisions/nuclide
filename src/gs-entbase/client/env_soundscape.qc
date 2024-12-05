@@ -30,10 +30,10 @@ Client-side environmental soundscape modifier.
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
 
-@ingroup client
+@ingroup cliententity
 @ingroup pointentity
 */
-class env_soundscape:NSEntity
+class env_soundscape:ncEntity
 {
 public:
 	void env_soundscape(void);
@@ -102,7 +102,7 @@ DSP_ResetSoundscape(void)
 }
 
 void
-DSP_UpdateSoundscape(NSView playerView)
+DSP_UpdateSoundscape(ncView playerView)
 {
 	vector vecPlayer;
 

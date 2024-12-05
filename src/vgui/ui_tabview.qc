@@ -14,17 +14,20 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+#warning TabView: Complete me.
+
 /** VGUI Widget: Tab View
 
 @ingroup vgui
 */
-class VGUITabView:VGUIWidget
+class vguiTabView:vguiWidget
 {
 public:
-	void VGUITabView(void);
+	void vguiTabView(void);
 
 	/** Sets the title of the tab view. */
 	nonvirtual void SetTitle(string);
+	nonvirtual void AddItem(vguiTabViewItem);
 
 	/* overrides */
 	virtual void PositionChanged(vector, vector);
@@ -39,44 +42,49 @@ private:
 	string m_strTitle;
 };
 
-void VGUITabView::VGUITabView(void)
+void vguiTabView::vguiTabView(void)
 {
 	m_vecOutlinePos = m_vecOutlineSize = g_vec_null;
 	m_strTitle = __NULL__;
 }
 
-void VGUITabView::Spawned(void)
+void vguiTabView::Spawned(void)
 {
 	SetSize([96,16]);
 }
 
-void VGUITabView:: PositionChanged (vector vecOld, vector vecNew)
+void vguiTabView::AddItem(vguiTabViewItem addItem)
+{
+
+}
+
+void vguiTabView::PositionChanged (vector vecOld, vector vecNew)
 {
 	m_vecOutlinePos = vecNew + [0, 20];
 }
 
-void VGUITabView::SizeChanged (vector vecOld, vector vecNew)
+void vguiTabView::SizeChanged (vector vecOld, vector vecNew)
 {
 	m_vecOutlineSize = vecNew - [0, 20];
 }
 
-void VGUITabView::SetTitle (string strName)
+void vguiTabView::SetTitle (string strName)
 {
 	m_strTitle = strName;
 	SetSize([stringwidth(m_strTitle, TRUE, [g_fntDefault.iScaleX, g_fntDefault.iScaleY]), 16]);
 }
-void VGUITabView::Draw(void)
+void vguiTabView::Draw(void)
 {
 	
 	//drawfill(m_parent.m_vecOrigin + m_vecOutlinePos, [m_vecOutlineSize[0], 1], [1,1,1], 0.5f);
-	drawfill(m_parent.m_vecOrigin + m_vecOutlinePos + [0, m_vecOutlineSize[1] - 1], [m_vecOutlineSize[0], 1], [0,0,0], 0.5f);
-	drawfill(m_parent.m_vecOrigin + m_vecOutlinePos + [0, 1], [1, m_vecOutlineSize[1] - 2], [1,1,1], 0.5f);
-	drawfill(m_parent.m_vecOrigin + m_vecOutlinePos + [m_vecOutlineSize[0] - 1, 1], [1, m_vecOutlineSize[1] - 2], [0,0,0], 0.5f);
+	drawfill(m_parent.m_vecOrigin  + m_vecOutlinePos + [0, m_vecOutlineSize[1] - 1], [m_vecOutlineSize[0], 1], [0,0,0], 0.5f);
+	drawfill(m_parent.m_vecOrigin  + m_vecOutlinePos + [0, 1], [1, m_vecOutlineSize[1] - 2], [1,1,1], 0.5f);
+	drawfill(m_parent.m_vecOrigin  + m_vecOutlinePos + [m_vecOutlineSize[0] - 1, 1], [1, m_vecOutlineSize[1] - 2], [0,0,0], 0.5f);
 	
 	//Font_DrawText(m_parent.m_vecOrigin + m_vecOrigin + [8, 8], m_strTitle, g_fntDefault);
 }
 
-bool VGUITabView::Input (float flEVType, float flKey, float flChar, float flDevID)
+bool vguiTabView::Input (float flEVType, float flKey, float flChar, float flDevID)
 {
 	return false;
 }

@@ -25,11 +25,11 @@ It's a node, helping monsters navigate in the air as well as underwater.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-info_node_air:NSPointTrigger
+info_node_air:ncPointTrigger
 {
 public:
 	void info_node_air(void);

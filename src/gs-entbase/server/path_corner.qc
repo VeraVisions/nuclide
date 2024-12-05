@@ -49,11 +49,11 @@ Node entities used for func_trains and func_guntargets.
 # TRIVIA
 This entity was introduced in Quake (1996).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-path_corner:NSPointTrigger
+path_corner:ncPointTrigger
 {
 public:
 	void path_corner(void);
@@ -247,7 +247,7 @@ path_corner::PathPassTrigger(entity activatingEntity, triggermode_t triggerMode)
 		return;
 
 	for (entity f = world; (f = find(f, ::targetname, m_strMessage));) {
-		NSTrigger trigger = (NSTrigger)f;
+		ncTrigger trigger = (ncTrigger)f;
 
 		EntLog("Triggering %s `%s` from %s", f.classname, \
 		        trigger.targetname, activatingEntity.classname);

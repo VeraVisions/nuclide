@@ -1,0 +1,7 @@
+{
+	qer_editorimage "measure/rtsurface.ktx"
+
+	{
+		map $rt:base
+	}
+}

@@ -44,7 +44,7 @@ PROJECT_NUMBER         =
 # for a project that appears at the top of each page and should give viewer a
 # quick idea about the purpose of the project. Keep the description short.
 
-PROJECT_BRIEF          = "Software Development Kit for id Tech"
+PROJECT_BRIEF          = "Software Development Kit for id Technology (BETA)"
 
 # With the PROJECT_LOGO tag one can specify a logo or an icon that is included
 # in the documentation. The maximum height of the logo should not exceed 55
@@ -882,28 +882,21 @@ INPUT                  = src/ \
                          Documentation/Dependencies.md \
                          Documentation/Launching.md \
                          Documentation/DedicatedServer.md \
+                         Documentation/LevelEditing.md \
                          Documentation/Filesystem.md \
                          Documentation/Networking.md \
-                         Documentation/Decl.md \
-                         Documentation/Decl/ \
                          Documentation/Bots.md \
                          Documentation/Bots/ \
-                         Documentation/Modules.md \
-                         Documentation/Modules/ \
+                         Documentation/Progs.md \
                          Documentation/Classes.md \
-                         Documentation/Singleplayer.md \
-                         Documentation/Singleplayer/ \
-                         Documentation/Multiplayer.md \
-                         Documentation/Multiplayer/ \
                          Documentation/Materials.md \
                          Documentation/Materials/ \
                          Documentation/Shaders.md \
-                         Documentation/Shaders/ \
                          Documentation/Models.md \
                          Documentation/Models/ \
                          Documentation/Particles.md \
                          Documentation/VMap/ \
-                         Documentation/History.md \
+                         Documentation/Icons.md \
                          Documentation/Contributing.md \
                          Documentation/Support.md
 
@@ -1017,8 +1010,8 @@ EXAMPLE_RECURSIVE      = NO
 # \image command).
 
 IMAGE_PATH	=	Documentation/Materials/ \
-		Documentation/Images/ \
-		base/resources.pk3dir/gfx/icon16/
+				Documentation/Images/ \
+				base/resources.pk3dir/gfx/icon16/
 
 # The INPUT_FILTER tag can be used to specify a program that doxygen should
 # invoke to filter for each input file. Doxygen will invoke the filter program
@@ -1380,7 +1373,7 @@ DOCSET_FEEDURL         =
 # The default value is: org.doxygen.Project.
 # This tag requires that the tag GENERATE_DOCSET is set to YES.
 
-DOCSET_BUNDLE_ID       = org.doxygen.Project
+DOCSET_BUNDLE_ID       = com.veravisions.Nuclide
 
 # The DOCSET_PUBLISHER_ID tag specifies a string that should uniquely identify
 # the documentation publisher. This should be a reverse domain-name style
@@ -1388,13 +1381,13 @@ DOCSET_BUNDLE_ID       = org.doxygen.Project
 # The default value is: org.doxygen.Publisher.
 # This tag requires that the tag GENERATE_DOCSET is set to YES.
 
-DOCSET_PUBLISHER_ID    = org.doxygen.Publisher
+DOCSET_PUBLISHER_ID    = com.veravisions.Nuclide.Docs
 
 # The DOCSET_PUBLISHER_NAME tag identifies the documentation publisher.
 # The default value is: Publisher.
 # This tag requires that the tag GENERATE_DOCSET is set to YES.
 
-DOCSET_PUBLISHER_NAME  = Publisher
+DOCSET_PUBLISHER_NAME  = Docs
 
 # If the GENERATE_HTMLHELP tag is set to YES then doxygen generates three
 # additional HTML index files: index.hhp, index.hhc, and index.hhk. The
@@ -1423,7 +1416,7 @@ GENERATE_HTMLHELP      = NO
 # written to the html output directory.
 # This tag requires that the tag GENERATE_HTMLHELP is set to YES.
 
-CHM_FILE               =
+CHM_FILE               = Documentation.chm
 
 # The HHC_LOCATION tag can be used to specify the location (absolute path
 # including file name) of the HTML help compiler (hhc.exe). If non-empty,
@@ -1543,7 +1536,7 @@ GENERATE_ECLIPSEHELP   = NO
 # The default value is: org.doxygen.Project.
 # This tag requires that the tag GENERATE_ECLIPSEHELP is set to YES.
 
-ECLIPSE_DOC_ID         = org.doxygen.Project
+ECLIPSE_DOC_ID         = com.veravisions.Nuclide
 
 # If you want full control over the layout of the generated HTML pages it might
 # be necessary to disable the index and replace it with your own. The
@@ -2293,7 +2286,6 @@ INCLUDE_FILE_PATTERNS  =
 PREDEFINED             = SERVER \
                          CLIENT \
                          MENU \
-                         BULLETPENETRATION \
                          DOXYGEN
 
 # If the MACRO_EXPANSION and EXPAND_ONLY_PREDEF tags are set to YES then this

@@ -43,11 +43,11 @@ Overlay that blinds/obscures players vision when triggered.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-env_fade:NSRenderableEntity
+env_fade:ncRenderableEntity
 {
 public:
 	void env_fade(void);
@@ -56,6 +56,7 @@ public:
 	virtual void Save(float);
 	virtual void Restore(string,string);
 	virtual void Trigger(entity, triggermode_t);
+	virtual void Input(entity, string, string);
 	virtual void SpawnKey(string,string);
 
 private:
@@ -127,4 +128,16 @@ env_fade::Trigger(entity eAct, triggermode_t iState)
 		multicast([0,0,0], MULTICAST_ONE_R);
 	else
 		multicast([0,0,0], MULTICAST_ALL);
+}
+
+void
+env_fade::Input(entity theActivator, string inputName, string dataString)
+{
+	switch (inputName) {
+	case "Fade":
+		Trigger(theActivator, TRIG_ON);
+		break;
+	default:
+		super::Input(theActivator, inputName, dataString);
+	}
 }

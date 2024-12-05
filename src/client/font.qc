@@ -94,9 +94,9 @@ Font_Load(string strFile, font_s &fntNew)
 	} else
 		fntNew.iID = (int)loadfont("", strFontPath, ftos((float)fntNew.iScaleY), -1, 0, 0);
 
-#ifdef MENU
+#if 0
 	/* this is the console font, so make sure we use it */
-	if (strFile == "fonts/fontcon.font") {
+	if (strFile == "fonts/console.font") {
 		string r = ftos(fntNew.vecColor[0]);
 		string g = ftos(fntNew.vecColor[1]);
 		string b = ftos(fntNew.vecColor[2]);

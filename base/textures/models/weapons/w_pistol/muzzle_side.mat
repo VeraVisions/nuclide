@@ -1,0 +1,10 @@
+// Vera Visions Material
+{
+	cull none
+	surfaceparm trans
+
+	{
+		clampmap "models/effects/muzzleflash/muzzle_side.ktx"
+		blendfunc add
+	}
+}

@@ -30,7 +30,7 @@ Route_RoundDistance(float flDist)
 
 
 /* returns a botinfo point that's nearest to us */
-NSEntity
+ncEntity
 Route_SelectFarthest(float type, vector org, optional vector lastpoi = [0,0,0]) 
 {
 	entity temp;
@@ -54,7 +54,7 @@ Route_SelectFarthest(float type, vector org, optional vector lastpoi = [0,0,0])
 }
 
 /* returns a botinfo point that's nearest to us */
-NSEntity
+ncEntity
 Route_SelectNearest(float type, vector org, optional vector lastpoi = [0,0,0]) 
 {
 	entity temp;
@@ -78,7 +78,7 @@ Route_SelectNearest(float type, vector org, optional vector lastpoi = [0,0,0])
 }
 
 /* returns a botinfo point belonging to our team */
-NSEntity
+ncEntity
 Route_SelectNearestTeam(float type, vector org, float tt) 
 {
 	entity temp;
@@ -87,7 +87,7 @@ Route_SelectNearestTeam(float type, vector org, float tt)
 	entity dest = __NULL__;
 
 	for (temp = world; (temp = findfloat(temp, ::botinfo, type));) {
-		NSEntity tempEnt = (NSEntity)temp;
+		ncEntity tempEnt = (ncEntity)temp;
 		if (temp.team != tt)
 			continue;
 
@@ -103,7 +103,7 @@ Route_SelectNearestTeam(float type, vector org, float tt)
 }
 
 /* returns a botinfo point belonging to the enemy team */
-NSEntity
+ncEntity
 Route_SelectNearestEnemyTeam(float type, vector org, float tt) 
 {
 	entity temp;
@@ -112,7 +112,7 @@ Route_SelectNearestEnemyTeam(float type, vector org, float tt)
 	entity dest = __NULL__;
 
 	for (temp = world; (temp = findfloat(temp, ::botinfo, type));) {
-		NSEntity tempEnt = (NSEntity)temp;
+		ncEntity tempEnt = (ncEntity)temp;
 		if (temp.team == tt)
 			continue;
 
@@ -133,7 +133,7 @@ Route_SelectNearestEnemyTeam(float type, vector org, float tt)
 Spawn_SelectRandom
 ================
 */
-NSEntity
+ncEntity
 Route_SelectRandom(string sEntname) 
 {
 	static entity eLastSpot;
@@ -146,7 +146,7 @@ Route_SelectRandom(string sEntname)
 Route_SelectRandomSpot
 ================
 */
-NSEntity
+ncEntity
 Route_SelectRandomSpot(void)
 {
 	static entity eLastSpot;
@@ -159,12 +159,12 @@ Route_SelectRandomSpot(void)
 }
 
 vector
-Route_SelectDestination(NSBot target)
+Route_SelectDestination(ncBot target)
 {
-	NSGameRules rules;
-	rules = (NSGameRules)g_grMode;
+	ncGameRules rules;
+	rules = (ncGameRules)g_grMode;
 
-	NSEntity dest = __NULL__;
+	ncEntity dest = __NULL__;
 
 	if (rules.IsTeamplay()) {
 		/* we have the goal item, so capture it */

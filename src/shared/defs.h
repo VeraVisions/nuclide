@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-typedef entity id;
+#include "../common/defs.h"
 
 /* networking helpers */
 #define NETWORKED_INT(x) int x; int x ##_net;
@@ -78,11 +78,9 @@ noref const float   SVC_TEMPENTITY          = 23;
 string __fullspawndata;
 #endif
 
-#include "global.h"
 #include "cloader.h"
 #include "sound.h"
 #include "effects.h"
-#include "math.h"
 
 #ifdef CLIENT
 #include "../gs-entbase/client/defs.h"
@@ -134,18 +132,16 @@ string __fullspawndata;
 
 #include "materials.h"
 #include "damage.h"
-#include "flags.h"
 #include "entities.h"
 #include "hitmesh.h"
-#include "memory.h"
-#include "platform.h"
 #include "propdata.h"
 #include "surfaceproperties.h"
 #include "decalgroups.h"
-#include "colors.h"
+#include "bodyque.h"
 #include "motd.h"
 #include "util.h"
 #include "ammo.h"
+#include "activities.h"
 
 #define BSPVER_PREREL 	28
 #define BSPVER_Q1		29
@@ -346,9 +342,9 @@ memalloc(int size)
 __wrap void
 remove(entity target)
 {
-	/* it's an NSEntity sub-class */
+	/* it's an ncEntity sub-class */
 	if (target.identity) {
-		NSEntity ent = (NSEntity)target;
+		ncEntity ent = (ncEntity)target;
 
 		/* if we're calling remove() on it and not .Destroy()... it's being uncleanly removed! */
 		if (ent.removed == 0) {
@@ -442,9 +438,10 @@ void(string cmd) readcmd = #0:readcmd;
 */
 string Util_FixModel(string mdl)
 {
-	if (!mdl) {
+	if (!STRING_SET(mdl)) {
 		return "";
 	}
+	mdl = strreplace("\\", "/", mdl);
 
 	int c = tokenizebyseparator(mdl, "/", "\\ ", "!");
 	string newpath = "";
@@ -705,18 +702,6 @@ DebugBox(vector absPos, vector minSize, vector maxSize, vector boxColor, float b
  *  Part of the menu progs (`menu.dat`).
  */
 
-/** @defgroup multiprogs Multi-Progs, Plugin APIs
- *  @ingroup server
- *  APIs that are accessible via multiprogs.
- */
-
-/** @defgroup vgui VGUI
- *  @ingroup client
- *  @ingroup menu
- *
- *  Our very own, very _true_ graphical user interface.
- */
-
 /** @defgroup sound Sound System
 Classes and APIs that interact with the sound system.
 
@@ -764,4 +749,10 @@ If not available, most new features will be unavailable.
  *  size and volume, unlike [brush-based entities](@ref brushentity).
  *  Generally used for moving, or non moving objects
  *  that interact with the world.
+ */
+
+/** @defgroup sharedentity Entities that are shared
+ *  @ingroup shared
+ *  @ingroup entities
+ *  Entity classes that run on both client and the server.
  */

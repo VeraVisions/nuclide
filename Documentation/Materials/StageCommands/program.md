@@ -1,6 +1,6 @@
 # Material Command List {#mat_commands}
 
-### program {#mat_program}
+## program {#program}
 
 **program** defines which GLSL/HLSL shader to load for a defined
 material. It also accepts arguments that will recompile a shader with

@@ -26,11 +26,11 @@ Useful for when a singleplayer game ends, as it takes you to the main menu.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup brushentity
 */
 class
-trigger_endsection:NSBrushTrigger
+trigger_endsection:ncBrushTrigger
 {
 public:
 	void trigger_endsection(void);

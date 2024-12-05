@@ -1,0 +1,7 @@
+{
+	qer_editorimage "measure/rtsurface.tga"
+
+	{
+		map $rt:base
+	}
+}

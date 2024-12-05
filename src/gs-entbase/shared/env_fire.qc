@@ -63,17 +63,24 @@ Environmental fire/flame entity. Will apply damage to entities, including other 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
 
-@ingroup shared
+@ingroup sharedentity
 @ingroup pointentity
 */
 class
-env_fire:NSPointTrigger
+env_fire:ncPointTrigger
 {
 public:
 	void env_fire(void);
 
 #ifdef SERVER
-	virtual void SpawnKey(string strKey, string strValue);
+	virtual void Respawn(void);
+	virtual void EvaluateEntity(void);
+	virtual void SpawnKey(string, string);
+	virtual float SendEntity(entity, float);
+#endif
+
+#ifdef CLIENT
+	virtual void ReceiveEntity(float, float);
 #endif
 
 private:
@@ -178,7 +185,9 @@ env_fire::SendEntity(entity ePEnt, float flChanged)
 
 	return (1);
 }
-#else
+#endif
+
+#ifdef CLIENT
 void
 env_fire::ReceiveEntity(float flNew, float flChanged)
 {

@@ -65,7 +65,7 @@ The 'size' key only has to be specified when you use levels with hull-sizes.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup brushentity
 */
 class

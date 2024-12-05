@@ -44,11 +44,11 @@ A temporary shockwave effect is produced when triggered.
 # TRIVIA
 This entity was introduced in Spirit of Half-Life (2000).
 
-@ingroup shared
+@ingroup sharedentity
 @ingroup pointentity
 */
 class
-env_shockwave:NSEntity
+env_shockwave:ncEntity
 {
 public:
 	void env_shockwave(void);
@@ -144,7 +144,7 @@ env_shockwave::Trigger(entity theActivator, triggermode_t triggerState)
 	vector targetPosition = GetOrigin();
 
 	if (m_strTargetEntity) {
-		NSEntity target = (NSEntity)find(world, ::targetname, m_strTargetEntity);
+		ncEntity target = (ncEntity)find(world, ::targetname, m_strTargetEntity);
 
 		if (target) {
 			targetPosition = target.WorldSpaceCenter();

@@ -73,10 +73,10 @@ typedef enum
 #define CHAN_LOOP 5
 
 /*! \brief This entity class represents weapon based items. */
-/*!QUAKED NSWeapon (0 0.8 0.8) (-16 -16 0) (16 16 72)
+/*!QUAKED ncWeapon (0 0.8 0.8) (-16 -16 0) (16 16 72)
 # OVERVIEW
 This entity class represents weapon based items. 
-It is based on NSItem. The only difference is that the attack
+It is based on ncItem. The only difference is that the attack
 related keys get forwarded only to items of this class.
 
 ## FireInfo
@@ -111,6 +111,7 @@ FireInfo. If that does not exist, secondary attacks are not possible.
 ## FireInfo related keys
 - "def_onFire" : Def to spawn when the weapon is fired.
 - "def_onRelease" : Def to spawn when the weapon has been released.
+- "fireUnderwater" : Default is 1, will set if the weapon can be fired underwater.
 
 ### Ammo management related keys
 - "ammoType" : name of the ammo type def entry which the weapon uses
@@ -134,27 +135,26 @@ Overheating of the weapon is done when both keys are set.
 Activities are used to decide which animation gets played and which actions are available for this object. If a model does not define them, you can override them here.
 This system is SUBJECT to change. It may be removed altogether when FTEQW adds a proper
 activity override format for existing models.
-- "actIdle" : Sequences to play when idle.
-- "actIdleEmpty" : Sequences to play when idle and with an empty clip.
-- "actDraw" : Sequences to play when drawing the weapon.
-- "actDrawEmpty" : Sequences to play when drawing the empty weapon.
-- "actHolster" : Sequences to play when holstering the weapon.
-- "actHolsterEmpty" : Sequences to play when holstering the empty weapon.
-- "actFire" : Sequences to play when "def_onFire" fires.
-- "actFireLast" : Sequences to play when firing the last shot in the weapon.
-- "actFireEmpty" : Sequences to play when failing to fire the weapon.
-- "actReload" : Sequences to play when reloading the weapon.
-- "actReloadEmpty" : Sequences to play when reloading the empty weapon.
-- "actReloadStart" : When set will play sequences for the start of a shotgun-style reload.
-- "actReloadEnd" : Like "actReloadStart" but for the end of the shotgun-style reload.
-- "actDelay" : Sequence to play while the weapon is charging (see "chargeTime")
-- "actLoop" : Sequence to play while the weapon is still charging, or in a firing-loop.
-- "actDetonate" : Sequences to play when "detonateOnFire" is triggered.
-- "actMeleeMiss" : Sequences to play when the melee attack fails.
-- "actMeleeHit" : Sequences to play when the melee attack hits.
-- "actFireStart" : Sequences to play at the start of a loop/charge attack.
-- "actFireStop" : Sequences to play at the end of a loop/charge attack.
-- "actRelease" : Sequences to play when "def_onRelease" fires.
+- "act_idle" : Sequences to play when idle.
+- "act_idleEmpty" : Sequences to play when idle and with an empty clip.
+- "act_draw" : Sequences to play when drawing the weapon.
+- "act_drawEmpty" : Sequences to play when drawing the empty weapon.
+- "act_holster" : Sequences to play when holstering the weapon.
+- "act_holsterEmpty" : Sequences to play when holstering the empty weapon.
+- "act_fire" : Sequences to play when "def_onFire" fires.
+- "act_fireLast" : Sequences to play when firing the last shot in the weapon.
+- "act_fireEmpty" : Sequences to play when failing to fire the weapon.
+- "act_reload" : Sequences to play when reloading the weapon.
+- "act_reloadEmpty" : Sequences to play when reloading the empty weapon.
+- "act_reloadStart" : When set will play sequences for the start of a shotgun-style reload.
+- "act_reloadEnd" : Like "actReloadStart" but for the end of the shotgun-style reload.
+- "act_delay" : Sequence to play while the weapon is charging (see "chargeTime")
+- "act_loop" : Sequence to play while the weapon is still charging, or in a firing-loop.
+- "act_detonate" : Sequences to play when "detonateOnFire" is triggered.
+- "act_fireFailed" : Sequences to play when the melee attack fails.
+- "act_fireStart" : Sequences to play at the start of a loop/charge attack.
+- "act_fireStop" : Sequences to play at the end of a loop/charge attack.
+- "act_release" : Sequences to play when "def_onRelease" fires.
 
 ### Misc keys
 - "reloadTime" : Time in seconds between the start/end of a reload.
@@ -166,10 +166,10 @@ activity override format for existing models.
 @ingroup baseclass
 */
 class
-NSWeapon:NSItem
+ncWeapon:ncItem
 {
 public:
-	void NSWeapon(void);
+	void ncWeapon(void);
 
 	virtual void InputFrame(void);
 	virtual void AddedToInventory(void);
@@ -279,9 +279,15 @@ private:
 	virtual void _RemovedCallback(void);
 
 	/** Returns the weapon in the next slot of the owners' inventory. */
-	nonvirtual NSWeapon GetNextWeapon(void);
+	nonvirtual ncWeapon GetNextWeapon(void);
 	/** Returns the weapon in the previous slot of the owners' inventory. */
-	nonvirtual NSWeapon GetPreviousWeapon(void);
+	nonvirtual ncWeapon GetPreviousWeapon(void);
+	/** Plays the weapon empty sound. */
+	nonvirtual void EmptySound(void);
+
+#ifdef CLIENT
+	virtual void HandleAnimEvent(float, int, string);
+#endif
 
 #ifdef SERVER
 	nonvirtual void _ReloadFinished(void);
@@ -333,13 +339,13 @@ private:
 
 	float m_nextWeapon_entnum;
 	float m_prevWeapon_entnum;
-	NSWeapon m_nextWeapon_net;
-	NSWeapon m_prevWeapon_net;
+	ncWeapon m_nextWeapon_net;
+	ncWeapon m_prevWeapon_net;
 
 	/* cached fireInfo */
 	string m_fiDetonateOnFire;
-	float m_fiMeleeRange;
 	vector m_fiPunchAngle;
+	vector m_fiPunchSpring;
 	string m_fiSndFire;
 	string m_fiSndFailed;
 	string m_fiSndFireLast;
@@ -361,9 +367,15 @@ private:
 	string m_fiSndFireStop;
 	string m_fiSndFireLoop;
 	bool m_fiDrawAfterRelease;
+	bool m_fireUnderwater;
 
 	bool m_fiCocks;
 	string m_fiSndCock;
+
+	float m_fiJointMuzzle; /* World Model only */
+	float m_fiJointBarrel; /* View Model only */
+	string m_fiBrassDef;
+	float m_fiBrassDelay;
 
 	/* overheating */
 	float m_fiOverheatLength;
@@ -381,6 +393,6 @@ private:
 	NETWORKED_BOOL(m_flOverheating)
 };
 
-.NSWeapon m_nextWeapon;
-.NSWeapon m_prevWeapon;
+.ncWeapon m_nextWeapon;
+.ncWeapon m_prevWeapon;
 

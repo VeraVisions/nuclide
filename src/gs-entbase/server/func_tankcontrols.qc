@@ -26,11 +26,11 @@ to gain control.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup brushentity
 */
 class
-func_tankcontrols:NSBrushTrigger
+func_tankcontrols:ncBrushTrigger
 {
 public:
 	void func_tankcontrols(void);
@@ -48,7 +48,7 @@ void
 func_tankcontrols:: PlayerUse(void)
 {
 	entity f;
-	NSVehicle tank;
+	ncVehicle tank;
 
 	tank = __NULL__;
 
@@ -59,14 +59,14 @@ func_tankcontrols:: PlayerUse(void)
 	for (f = world; (f = find(f, ::targetname, target));) {
 		/* we found the right entity */
 		if (f.classname == "func_tank" || f.classname == "func_tankmortar") {
-			tank = (NSVehicle)f;
+			tank = (ncVehicle)f;
 		}
 	}
 
 	if (tank) {
 		if (!tank.m_eDriver)
-			tank.PlayerEnter((NSClientPlayer)eActivator);
+			tank.PlayerEnter((ncPlayer)eActivator);
 		else if (tank.m_eDriver == eActivator)
-			tank.PlayerLeave((NSClientPlayer)eActivator);
+			tank.PlayerLeave((ncPlayer)eActivator);
 	}
 }

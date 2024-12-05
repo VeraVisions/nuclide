@@ -63,11 +63,11 @@ Controls fog that affects the entire map.
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
 
-@ingroup shared
+@ingroup sharedentity
 @ingroup pointentity
 */
 class
-env_fog_controller:NSPointTrigger
+env_fog_controller:ncPointTrigger
 {
 public:
 	void env_fog_controller(void);
@@ -96,7 +96,9 @@ private:
 	/* temporary attributes */
 	float m_flNextDraw;
 	float m_flLastDelta;
-#else
+#endif
+
+#ifdef SERVER
 	/* main spawn attributes */
 	int m_iSpawnEnable;
 	int m_iSpawnBlend;
@@ -254,7 +256,9 @@ env_fog_controller::ReceiveEntity(float flNew, float flSendFlags)
 		drawmask = 0;
 	}
 }
-#else
+#endif
+
+#ifdef SERVER
 float
 env_fog_controller::SendEntity(entity ePVEnt, float flSendFlags)
 {

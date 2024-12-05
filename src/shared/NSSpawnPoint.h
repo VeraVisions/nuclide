@@ -18,10 +18,10 @@
 
 @ingroup baseclass
 */
-class NSSpawnPoint:NSPointTrigger
+class ncSpawnPoint:ncPointTrigger
 {
 public:
-	void NSSpawnPoint(void);
+	void ncSpawnPoint(void);
 
 	/* overrides */
 	virtual void Respawn(void);

@@ -20,10 +20,10 @@ This is an abstract control class for various VGUI related widgets.
 @ingroup vgui
 */
 class
-VGUIControl:VGUIWidget
+vguiControl:vguiWidget
 {
 public:
-	virtual void VGUIControl(void);
+	virtual void vguiControl(void);
 
 	/** Set the control tag. Used for identification purposes. */
 	nonvirtual void SetTag(int);
@@ -45,39 +45,39 @@ private:
 };
 
 void
-VGUIControl::VGUIControl(void)
+vguiControl::vguiControl(void)
 {
 	m_iTag = 0i;
 }
 
 void
-VGUIControl::SetTag(int val)
+vguiControl::SetTag(int val)
 {
 	m_iTag = val;
 }
 
 int
-VGUIControl::GetTag(void)
+vguiControl::GetTag(void)
 {
 	return m_iTag;
 }
 
 void
-VGUIControl::OnMouseEntered(void)
+vguiControl::OnMouseEntered(void)
 {
 }
 
 void
-VGUIControl::OnMouseExited(void)
+vguiControl::OnMouseExited(void)
 {
 }
 
 void
-VGUIControl::OnMouseDown(void)
+vguiControl::OnMouseDown(void)
 {
 }
 
 void
-VGUIControl::OnMouseUp(void)
+vguiControl::OnMouseUp(void)
 {
 }

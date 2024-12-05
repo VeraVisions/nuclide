@@ -44,7 +44,7 @@ Vote_Reset(void)
 	serverinfo.SetString("vote_cmd", "");
 
 	for (entity e = world; (e = find(e, ::classname, "player"));) {
-		NSClientPlayer pl = (NSClientPlayer)e;
+		ncPlayer pl = (ncPlayer)e;
 		pl.voted = 0;
 	}
 }
@@ -116,7 +116,7 @@ CSEv_VoteY
 void
 CSEv_VoteY(void)
 {
-	NSClientPlayer pl = (NSClientPlayer)self;
+	ncPlayer pl = (ncPlayer)self;
 
 	/* No vote is in progress */
 	if (g_iVoteState != VOTE_INPROGRESS) {
@@ -161,7 +161,7 @@ CSEv_VoteN
 void
 CSEv_VoteN(void)
 {
-	NSClientPlayer pl = (NSClientPlayer)self;
+	ncPlayer pl = (ncPlayer)self;
 
 	/* No vote is in progress */
 	if (g_iVoteState != VOTE_INPROGRESS) {

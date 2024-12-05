@@ -12,7 +12,7 @@ They effectively merged the Quake texture-prefix based hacks and **Quake II** .w
 
 Starting with **id Tech 4/Doom III** in 2004, the name of **shader** was changed to **material** to avoid confusion with proper GPU oriented vertex and fragment shaders.
 
-**FTEQW** has since coupled the old 'shader' syntax with proper GPU shaders using the [program](Documentation/Materials/commands/program.md) material command.
+**FTEQW** has since coupled the old 'shader' syntax with proper GPU shaders using the [program](@ref program) material command.
 
 ## What is a Material?
 
@@ -63,7 +63,7 @@ We then follow into the territory of defining specific rendering instructions wi
 
 `blendFunc add` will now tell the renderer that this surface is no longer opaque and will be blended with whatever equation will result in an additive blend.
 
-[You can read more about those commands in detail right here.](MatCommands.md)
+[You can read more about those commands in detail right here.](@ref mat_commands)
 
 ## Engine generated materials
 

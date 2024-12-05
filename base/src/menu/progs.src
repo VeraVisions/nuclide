@@ -1,6 +1,6 @@
 #pragma target fte_5768
 //#pragma flag enable assumeint
-#pragma progs_dat  "../../progs.pk3dir/menu.dat"
+#pragma progs_dat  "../../menu.dat"
 #define MENU
 #define GAME_DIR "base"
 

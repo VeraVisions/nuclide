@@ -1,11 +1,11 @@
 # Material Command List {#mat_commands}
 
-### vmap_clonematerial
-#### Syntax
+## vmap_clonematerial
+### Syntax
 
-**vmap_cloneMaterial <material>**
+**vmap_cloneMaterial \<material\>**
 
-#### Overview
+### Overview
 
 A material with this directive will inherit the target material's
 properties and appearance. **Be careful, this can lead to an infinite

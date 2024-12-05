@@ -1,0 +1,9 @@
+{
+	diffusemap dev/light_dynamic.ktx
+	
+	{
+		map $diffuse
+		blendFunc blend
+		rgbGen vertex
+	}
+}

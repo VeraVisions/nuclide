@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED NSInteractiveSurface (1 0 0) (-8 -8 -8) (8 8 8)
+/*QUAKED ncInteractiveSurface (1 0 0) (-8 -8 -8) (8 8 8)
 Fully interactive surface
 
 -------- KEYS --------
@@ -39,10 +39,10 @@ This entity was introduced in Nuclide (2022).
 Place one around a map and you can render any UI class of your choosing.
 */
 class
-NSInteractiveSurface:NSEntity
+ncInteractiveSurface:ncEntity
 {
 private:
-	CUIWidget m_UIChain;
+	vguiWidget m_UIChain;
 	string m_strSurfaceMat;
 	bool m_bInFocus;
 	float m_flSurfaceMat;
@@ -55,7 +55,7 @@ private:
 	float m_flUseDistance;
 
 public:
-	void NSInteractiveSurface(void);
+	void ncInteractiveSurface(void);
 
 	virtual float predraw(void);
 	virtual void postdraw(void);
@@ -73,13 +73,13 @@ public:
 };
 
 bool
-NSInteractiveSurface::CanSpawn(bool clientSide)
+ncInteractiveSurface::CanSpawn(bool clientSide)
 {
 	return true;
 }
 
 bool
-NSInteractiveSurface::FocusCheck(vector vecViewPos, vector vecViewAng)
+ncInteractiveSurface::FocusCheck(vector vecViewPos, vector vecViewAng)
 {
 	vector vecPlayerForward;
 	vector vecNormal, vecTangent, vecBitTangent;
@@ -138,20 +138,20 @@ NSInteractiveSurface::FocusCheck(vector vecViewPos, vector vecViewAng)
 }
 
 void
-NSInteractiveSurface::RendererRestarted(void)
+ncInteractiveSurface::RendererRestarted(void)
 {
 	m_flSurfaceMat = shaderforname(m_strSurfaceMat, sprintf("{\nsurfaceParm nolightmap\n{\nmap $rt:%s\n}\n}", m_strSurfaceMat));
 	m_bCached = true;
 }
 
 void
-NSInteractiveSurface::postdraw(void)
+ncInteractiveSurface::postdraw(void)
 {
 	RenderScene();
 }
 
 float
-NSInteractiveSurface::predraw(void)
+ncInteractiveSurface::predraw(void)
 {
 	vector fsize = m_vecWorldSize / 2;
 
@@ -176,7 +176,7 @@ NSInteractiveSurface::predraw(void)
 
 /* we just forward input events to our UI chain */
 bool
-NSInteractiveSurface::Input(float flEVType, float flKey, float flChar, float flDevID)
+ncInteractiveSurface::Input(float flEVType, float flKey, float flChar, float flDevID)
 {
 	if (m_UIChain)
 		m_UIChain.Input(flEVType, flKey, flChar, flDevID);
@@ -186,7 +186,7 @@ NSInteractiveSurface::Input(float flEVType, float flKey, float flChar, float flD
 
 /* called whenever we are in the proximity of a surface */
 void
-NSInteractiveSurface::RenderScene(void)
+ncInteractiveSurface::RenderScene(void)
 {
 	if (m_bCached == false)
 		return;
@@ -215,7 +215,7 @@ NSInteractiveSurface::RenderScene(void)
 }
 
 void
-NSInteractiveSurface::SpawnKey(string strKey, string strValue)
+ncInteractiveSurface::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "ui_class":
@@ -238,9 +238,9 @@ NSInteractiveSurface::SpawnKey(string strKey, string strValue)
 
 /* once all spawn parms have been initialized */
 void
-NSInteractiveSurface::Spawned(void)
+ncInteractiveSurface::Spawned(void)
 {
-	CUIWidget child;
+	vguiWidget child;
 
 	super::Spawned();
 	m_vecWorldSize = m_vecUIRes * m_flScale;
@@ -248,7 +248,7 @@ NSInteractiveSurface::Spawned(void)
 	RendererRestarted();
 
 	/* initialize UI panel here */
-	m_UIChain = spawn(CUIWidget);
+	m_UIChain = spawn(vguiWidget);
 	m_UIChain.m_iFlags = 1;
 
 	child = UIClass_Spawn(m_strUIClass);
@@ -256,11 +256,11 @@ NSInteractiveSurface::Spawned(void)
 	if (m_UIChain)
 		m_UIChain.Add(child);
 	else
-		error("Unable to allocate NSInteractiveSurface");
+		error("Unable to allocate ncInteractiveSurface");
 }
 
 void
-NSInteractiveSurface::NSInteractiveSurface(void)
+ncInteractiveSurface::ncInteractiveSurface(void)
 {
 	m_UIChain = __NULL__;
 	m_strUIClass = "TestUI";
@@ -274,16 +274,19 @@ NSInteractiveSurface::NSInteractiveSurface(void)
 	isCSQC = true;
 }
 
+#if 1
 /* test interface */
 class
-TestUI:CUIWindow
+TestUI:vguiWindow
 {
-	CUIButton testbutton;
+public:
+	void TestUI(void);
 
-	void(void) TestUI;
+	virtual void TestTrigger(void);
+	virtual void Spawned(void);
 
-	virtual void(void) TestTrigger;
-	virtual void(void) Spawned;
+private:
+	vguiButton testbutton;
 };
 
 void
@@ -297,7 +300,7 @@ TestUI::Spawned(void)
 {
 	super::Spawned();
 	
-	testbutton = spawn(CUIButton);
+	testbutton = spawn(vguiButton);
 	testbutton.SetPos([32,48]);
 	testbutton.SetTitle("Test Button!");
 	testbutton.SetFunc(TestTrigger);
@@ -312,4 +315,18 @@ TestUI::TestUI(void)
 {
 	testbutton = __NULL__;
 }
+#else
+/* test interface */
+class
+TestUI:VGUIConsole
+{
+	void(void) TestUI;
+
+};
+
+void
+TestUI::TestUI(void)
+{
+}
+#endif
 #endif

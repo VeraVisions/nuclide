@@ -22,23 +22,23 @@ enumflags
 
 typedef enumflags
 {
-	VGUIWindowBorderless,
-	VGUIWindowTitled,
-	VGUIWindowClosable,
-	VGUIWindowMiniaturizable,
-	VGUIWindowResizeable,
-	VGUIWindowMovable,
-	VGUIWindowFullscreen
+	vguiWindowBorderless,
+	vguiWindowTitled,
+	vguiWindowClosable,
+	vguiWindowMiniaturizable,
+	vguiWindowResizeable,
+	vguiWindowMovable,
+	vguiWindowFullscreen
 } vguiWindowStyle_t;
 
-#define VGUIWindowStyleDefault VGUIWindowMovable | \
-		VGUIWindowTitled | \
-		VGUIWindowClosable | \
-		VGUIWindowMiniaturizable
+#define vguiWindowStyleDefault vguiWindowMovable | \
+		vguiWindowTitled | \
+		vguiWindowClosable | \
+		vguiWindowMiniaturizable
 
-/* TODO: MOVE THESE INTO VGUIWindow! COMPILER NEEDS TO BE FIXED FIRST HOWEVER. */
-.void(void) tmpVGUIWindow1;
-.void(void) tmpVGUIWindow2;
+/* TODO: MOVE THESE INTO vguiWindow! COMPILER NEEDS TO BE FIXED FIRST HOWEVER. */
+.void(void) tmpvguiWindow1;
+.void(void) tmpvguiWindow2;
 
 /** VGUI: Window
 
@@ -46,10 +46,10 @@ Top-most window class in VGUILib.
 
 @ingroup vgui
 */
-class VGUIWindow:VGUIView
+class vguiWindow:vguiView
 {
 public:
-	void VGUIWindow(void);
+	void vguiWindow(void);
 
 	/** Set the title of the window widget. */
 	nonvirtual void SetTitle(string);
@@ -71,12 +71,14 @@ public:
 
 	/** Will focus the window when called. */
 	nonvirtual bool Focus(void);
+	nonvirtual void ShowContents();
+	nonvirtual void HideContents();
 
-	/** Called when the VGUIWindow got moved successfully. */
+	/** Called when the vguiWindow got moved successfully. */
 	virtual void WindowDidMove(vector, vector);
-	/** Called when the VGUIWindow got resized successfully. */
+	/** Called when the vguiWindow got resized successfully. */
 	virtual void WindowDidResize(vector, vector);
-	/** Called when the VGUIWindow was successfully closed. */
+	/** Called when the vguiWindow was successfully closed. */
 	virtual void WindowDidClose(void);
 
 	/* overrides */
@@ -93,29 +95,43 @@ private:
 	string m_strTitle;
 	string m_strIcon;
 	vguiWindowStyle_t m_styleMask;
+	bool m_contentsVisible;
 
-	VGUIButton m_btnClose;
+	vguiButton m_btnClose;
 };
 
 void
-VGUIWindow::VGUIWindow(void)
+vguiWindow::vguiWindow(void)
 {
 	m_vecColor = UI_MAINCOLOR;
 	m_flAlpha = 1.0f;
-	m_styleMask = VGUIWindowStyleDefault;
+	m_styleMask = vguiWindowStyleDefault;
+	m_contentsVisible = true;
 }
 
 void
-VGUIWindow::NowVisible(void)
+vguiWindow::HideContents(void)
+{
+	m_contentsVisible = false;
+}
+
+void
+vguiWindow::ShowContents(void)
+{
+	m_contentsVisible = true;
+}
+
+void
+vguiWindow::NowVisible(void)
 {
 	Focus();
 }
 
 bool
-VGUIWindow::Focus(void)
+vguiWindow::Focus(void)
 {
-	VGUIWidget wLast = this;
-	VGUIWidget wEdit = m_parent; /* start at parent */
+	vguiWidget wLast = this;
+	vguiWidget wEdit = m_parent; /* start at parent */
 //	error("Focusing!!!\n");
 
 	/* iterate through the main windows, we start at the parent of all windows... */
@@ -144,9 +160,9 @@ VGUIWindow::Focus(void)
 }
 
 void
-VGUIWindow::SetStyleMask(vguiWindowStyle_t val)
+vguiWindow::SetStyleMask(vguiWindowStyle_t val)
 {
-	if (!(val & VGUIWindowClosable)) {
+	if (!(val & vguiWindowClosable)) {
 		m_btnClose.Hide();
 	}
 
@@ -154,27 +170,27 @@ VGUIWindow::SetStyleMask(vguiWindowStyle_t val)
 }
 
 void
-VGUIWindow::CallOnResize(void(void) func)
+vguiWindow::CallOnResize(void(void) func)
 {
-	//#warning "SetFunc in VGUIButton is DEPRECATED. Compiler IS generating JUNK in the old way. Please override VGUIButton and define a OnMouseDown/Up method instead"
+	//#warning "SetFunc in vguiButton is DEPRECATED. Compiler IS generating JUNK in the old way. Please override vguiButton and define a OnMouseDown/Up method instead"
 	//m_vFunc = vFunc;
-	tmpVGUIWindow1 = func;
+	tmpvguiWindow1 = func;
 }
 
 void
-VGUIWindow::CallOnMove(void(void) func)
+vguiWindow::CallOnMove(void(void) func)
 {
-	//#warning "SetFunc in VGUIButton is DEPRECATED. Compiler IS generating JUNK in the old way. Please override VGUIButton and define a OnMouseDown/Up method instead"
+	//#warning "SetFunc in vguiButton is DEPRECATED. Compiler IS generating JUNK in the old way. Please override vguiButton and define a OnMouseDown/Up method instead"
 	//m_vFunc = vFunc;
-	tmpVGUIWindow2 = func;
+	tmpvguiWindow2 = func;
 }
 
 
 void
-VGUIWindow::Spawned(void)
+vguiWindow::Spawned(void)
 {
-	static void VGUIWindowButtonClose(void) {
-		VGUIButton winSelf = (VGUIButton)self;
+	static void vguiWindowButtonClose(void) {
+		vguiButton winSelf = (vguiButton)self;
 		winSelf.m_parent.Hide();
 	}
 
@@ -183,81 +199,83 @@ VGUIWindow::Spawned(void)
 
 	m_strTitle = "Window";
 
-	m_btnClose = spawn(VGUIButton);
+	m_btnClose = spawn(vguiButton);
 	m_btnClose.SetTitle(__NULL__);
 
 	m_btnClose.SetIconColor([1,1,1]);
 	m_btnClose.SetColor(m_vecColor);
-	m_btnClose.SetFunc(VGUIWindowButtonClose);
+	m_btnClose.SetFunc(vguiWindowButtonClose);
 	m_btnClose.SetSize([20,20]);
 	Add(m_btnClose);
 
 	SetSize([320,240]);
 }
 
-void VGUIWindow::SetTitle (string strName)
+void vguiWindow::SetTitle (string strName)
 {
 	m_strTitle = strName;
 }
-string VGUIWindow::GetTitle(void)
+string vguiWindow::GetTitle(void)
 {
 	return m_strTitle;
 }
 
-void VGUIWindow::SetIcon (string strName)
+void vguiWindow::SetIcon (string strName)
 {
 	m_strIcon = strName;
 }
-string VGUIWindow::GetIcon(void)
+string vguiWindow::GetIcon(void)
 {
 	return m_strIcon;
 }
 
-void VGUIWindow::SizeChanged (vector vecOld, vector vecNew)
+void vguiWindow::SizeChanged (vector vecOld, vector vecNew)
 {
 	m_btnClose.SetPos([vecNew[0] - 24, 4]);
 }
 
 void
-VGUIWindow::WindowDidMove(vector oldPosition, vector newPosition)
+vguiWindow::WindowDidMove(vector oldPosition, vector newPosition)
 {
 
 }
 
 void
-VGUIWindow::WindowDidResize(vector oldSize, vector newSize)
+vguiWindow::WindowDidResize(vector oldSize, vector newSize)
 {
 
 }
 
 void
-VGUIWindow::WindowDidClose(void)
+vguiWindow::WindowDidClose(void)
 {
 
 }
 
-void VGUIWindow::Draw(void)
+void vguiWindow::Draw(void)
 {
-	VGUITheme theme = GetTheme();
+	vguiTheme theme = GetTheme();
 
-	if (m_styleMask & VGUIWindowFullscreen)
+	if (m_styleMask & vguiWindowFullscreen)
 		theme.DrawWindowBackground([0, 0], g_vidsize, VGUI_STATE_ACTIVE);
-	else if  (!(m_styleMask & VGUIWindowBorderless))
+	else if  (!(m_styleMask & vguiWindowBorderless))
 		theme.DrawWindow(m_vecOrigin, m_vecSize, VGUI_STATE_ACTIVE);
 	else
 		theme.DrawWindowBackground(m_vecOrigin, m_vecSize, VGUI_STATE_ACTIVE);
 
-	if (m_styleMask & VGUIWindowResizeable) {
+	if (m_styleMask & vguiWindowResizeable) {
 		drawpic(m_vecOrigin + m_vecSize - [16,16], "gfx/icon16/arrow_out", [16,16], m_vecColor, 1.0f, 0);
 	}
 
-	if (m_styleMask & VGUIWindowTitled) {
+	if (m_styleMask & vguiWindowTitled) {
 		theme.DrawWindowTitle(m_vecOrigin, m_vecSize, m_strTitle, m_strIcon, g_fntDefault, VGUI_STATE_ACTIVE);
 	}
 
-	super::Draw();
+	if (m_contentsVisible) {
+		super::Draw();
+	}
 
-	if (m_styleMask & VGUIWindowClosable) {
+	if (m_styleMask & vguiWindowClosable) {
 		drawpic(m_vecOrigin + m_btnClose.m_vecOrigin + [2,2], "gfx/icon16/cross_mono", [16,16], [1,1,1], 1.0f, 0);
 	}
 
@@ -271,16 +289,16 @@ void VGUIWindow::Draw(void)
 #endif
 }
 
-bool VGUIWindow::Input (float flEVType, float flKey, float flChar, float flDevID)
+bool vguiWindow::Input (float flEVType, float flKey, float flChar, float flDevID)
 {
 	bool ret = false;
 
 	if (flEVType == IE_KEYDOWN) {
 		if (flKey == K_MOUSE1) {
-			if (m_styleMask & VGUIWindowResizeable && Util_MouseAbove(g_vecMousePos, m_vecOrigin + (m_vecSize - [16,16]), [16,16])) {
+			if (m_styleMask & vguiWindowResizeable && Util_MouseAbove(g_vecMousePos, m_vecOrigin + (m_vecSize - [16,16]), [16,16])) {
 				m_iFlags |= WINDOW_RESIZING;
 				return Focus();
-			} else if (m_styleMask & VGUIWindowMovable && Util_MouseAbove(g_vecMousePos, m_vecOrigin, [m_vecSize[0] - 32, 16])) {
+			} else if (m_styleMask & vguiWindowMovable && Util_MouseAbove(g_vecMousePos, m_vecOrigin, [m_vecSize[0] - 32, 16])) {
 				m_iFlags |= WINDOW_DRAGGING;
 				m_vecDragOffset = m_vecOrigin - g_vecMousePos;
 				return Focus();
@@ -300,8 +318,8 @@ bool VGUIWindow::Input (float flEVType, float flKey, float flChar, float flDevID
 			SetSize(newSize);
 			WindowDidResize(oldSize, newSize);
 
-			if (tmpVGUIWindow1)
-				tmpVGUIWindow1();
+			if (tmpvguiWindow1)
+				tmpvguiWindow1();
 		}
 		ret = true;
 	} else if (m_iFlags & WINDOW_DRAGGING) {
@@ -311,15 +329,17 @@ bool VGUIWindow::Input (float flEVType, float flKey, float flChar, float flDevID
 			SetPos(newPos);
 			WindowDidMove(oldPos, newPos);
 
-			if (tmpVGUIWindow2)
-				tmpVGUIWindow2();
+			if (tmpvguiWindow2)
+				tmpvguiWindow2();
 		}
 		ret = true;
 	}
 
-	/* if we hadn't had a successful input yet, pass it onto the children */
-	if (ret == false) {
-		ret = super::Input(flEVType, flKey, flChar, flDevID);
+	if (m_contentsVisible) {
+		/* if we hadn't had a successful input yet, pass it onto the children */
+		if (ret == false) {
+			ret = super::Input(flEVType, flKey, flChar, flDevID);
+		}
 	}
 
 	/* don't send clicks to elements behind our window */

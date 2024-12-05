@@ -15,6 +15,5 @@ client/func_smokevolume.qc
 client/prop_static.qc
 client/infodecal.qc
 client/sky_camera.qc
-client/info_notnull.qc
 client/point_message.qc
 #endlist

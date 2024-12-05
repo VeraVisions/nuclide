@@ -22,7 +22,7 @@
 
 ## Overview {#maptweaks_overview}
 
-This is a very customizable system that applies changes to levels/maps depending on a variable amount of parameters. It was invented specifically for Nuclide and designed to work together with [EntityDefs](Documentation/EntityDef.md).
+This is a very customizable system that applies changes to levels/maps depending on a variable amount of parameters. It was invented specifically for Nuclide and designed to work together with [EntityDefs](@ref entitydef).
 
 ## Syntax {#maptweaks_syntax}
 

@@ -32,12 +32,12 @@ in the individual constraints themselves. Set the 'constraintsystem' key to an i
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 @ingroup physics
 */
 class
-phys_constraintsystem:NSPhysicsConstraint
+phys_constraintsystem:ncPhysicsConstraint
 {
 public:
 	void phys_constraintsystem(void);

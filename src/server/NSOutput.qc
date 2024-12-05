@@ -15,11 +15,11 @@
 */
 
 void
-NSOutput::TriggerOutput(void)
+ncOutput::TriggerOutput(void)
 {
 	/* plug into all the inputs. */
 	for (entity f = world; (f = find(f, ::targetname, m_strTarget));) {
-		NSEntity trigger = (NSEntity)f;
+		ncEntity trigger = (ncEntity)f;
 
 		if (trigger.Input != __NULL__) {
 			trigger.Input(m_eActivator, m_strInput, m_strData);
@@ -34,7 +34,7 @@ NSOutput::TriggerOutput(void)
 }
 
 void
-NSOutput::ScheduleOutput(entity activatorEnt)
+ncOutput::ScheduleOutput(entity activatorEnt)
 {
 	m_eActivator = activatorEnt;
 	think = TriggerOutput;
@@ -42,15 +42,15 @@ NSOutput::ScheduleOutput(entity activatorEnt)
 }
 
 void
-NSOutput::Init(void)
+ncOutput::Init(void)
 {
-	/* Init of NSIO will tokenize __fullspawndata which
-	   in turn will break NSIO::CreateOutput's tokenize loop,
-	   as we'll be creating a bunch of NSOutputs in there */
+	/* Init of ncIO will tokenize __fullspawndata which
+	   in turn will break ncIO::CreateOutput's tokenize loop,
+	   as we'll be creating a bunch of ncOutputs in there */
 }
 
 void
-NSOutput::Respawn(void)
+ncOutput::Respawn(void)
 {
 	/* gotta reset our counter */
 	m_iCount = m_iOldCount;
@@ -59,7 +59,7 @@ NSOutput::Respawn(void)
 }
 
 void
-NSOutput::NSOutput(void)
+ncOutput::ncOutput(void)
 {
 	/* Make sure Respawn() will be called between rounds */
 	identity = 1;

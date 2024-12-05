@@ -39,11 +39,22 @@ const string mat_fade_modulate =
 		"}\n" \
 	"}\n";
 
+const string mat_fade_additive =
+	"{\n" \
+		"{\n" \
+			"map $whiteimage\n" \
+			"rgbGen vertex\n" \
+			"blendFunc add\n" \
+			"alphaGen vertex\n" \
+		"}\n" \
+	"}\n";
+
 /* needs to be called on every vid_reload */
 void
 Fade_Reload(void)
 {
 	shaderforname("fade_modulate", mat_fade_modulate);
+	shaderforname("fade_additive", mat_fade_additive);
 }
 
 /* run every frame to update the actively running fade effects */

@@ -15,7 +15,7 @@
 */
 
 void
-NSRadar::NSRadar(void)
+ncRadar::ncRadar(void)
 {
 	m_vecOrigin = g_vec_null;
 	m_flScale = 1.0f;
@@ -28,13 +28,13 @@ NSRadar::NSRadar(void)
 }
 
 void
-NSRadar::SetRadarPitch(float pitchValue)
+ncRadar::SetRadarPitch(float pitchValue)
 {
 	m_flRadarPitch = pitchValue;
 }
 
 void
-NSRadar::SetupView(void)
+ncRadar::SetupView(void)
 {
 	vector playerPos = g_view.GetCameraOrigin();
 
@@ -53,7 +53,7 @@ NSRadar::SetupView(void)
 }
 
 void
-NSRadar::RenderPlayerIcon(entity playerEnt)
+ncRadar::RenderPlayerIcon(entity playerEnt)
 {
 	vector playerColor = [1,1,1];
 	string teamValue = getplayerkeyvalue(playerEnt.entnum-1, "*team");
@@ -78,7 +78,7 @@ NSRadar::RenderPlayerIcon(entity playerEnt)
 }
 
 void
-NSRadar::RenderOverviewPlane(void)
+ncRadar::RenderOverviewPlane(void)
 {
 	R_BeginPolygon( m_strMaterial );
 	if ( m_bRotated == true ) {
@@ -96,7 +96,7 @@ NSRadar::RenderOverviewPlane(void)
 }
 
 void
-NSRadar::RenderWireframePlane(void)
+ncRadar::RenderWireframePlane(void)
 {
 	vector vert1, vert2, vert3, vert4;
 	vector wireColor = [0.0f, 1.0f, 0.0f];
@@ -133,7 +133,7 @@ NSRadar::RenderWireframePlane(void)
 }
 
 void
-NSRadar::RenderView(void)
+ncRadar::RenderView(void)
 {
 	if (m_strMaterial != __NULL__) {
 		RenderOverviewPlane();
@@ -149,34 +149,34 @@ NSRadar::RenderView(void)
 	renderscene();
 }
 
-NSRadar
-NSRadar::InitEmpty(void)
+ncRadar
+ncRadar::InitEmpty(void)
 {
-	NSRadar newRadar = spawn(NSRadar);
+	ncRadar newRadar = spawn(ncRadar);
 	newRadar.m_bDrawEntities = false;
 	newRadar.CalculateVertices();
 	newRadar.m_strMaterial = __NULL__;
 	return newRadar;
 }
 
-NSRadar
-NSRadar::InitWireframe(void)
+ncRadar
+ncRadar::InitWireframe(void)
 {
-	NSRadar newRadar = spawn(NSRadar);
+	ncRadar newRadar = spawn(ncRadar);
 	newRadar.m_bDrawEntities = false;
 	newRadar.CalculateVertices();
 	newRadar.m_strMaterial = "wireframe";
 	return newRadar;
 }
 
-NSRadar
-NSRadar::InitForCurrentMap(void)
+ncRadar
+ncRadar::InitForCurrentMap(void)
 {
 	return InitWithMapname(mapname);
 }
 
-NSRadar
-NSRadar::InitWithMapname(string mapName)
+ncRadar
+ncRadar::InitWithMapname(string mapName)
 {
 	string sourceFile = strcat("resource/overviews/", mapName, ".txt");
 	string hlFile = strcat("overviews/", mapName, ".txt");
@@ -193,7 +193,7 @@ NSRadar::InitWithMapname(string mapName)
 }
 
 void
-NSRadar::CalculateVertices(void)
+ncRadar::CalculateVertices(void)
 {
 	if ( m_bRotated == true ) {
 		m_vecVert1 = m_vecOrigin -( ( 4096/m_flZoom )  * '1 0.75 0' );
@@ -209,7 +209,7 @@ NSRadar::CalculateVertices(void)
 }
 
 void
-NSRadar::CalculateVerticesSource(float width, float height)
+ncRadar::CalculateVerticesSource(float width, float height)
 {
 	m_vecVert2 = m_vecOrigin;
 	m_vecVert1 = m_vecOrigin + [(width), 0.0f];
@@ -222,11 +222,11 @@ NSRadar::CalculateVerticesSource(float width, float height)
 	m_vecVert4 -= [0.0, height];
 }
 
-NSRadar
-NSRadar::InitFromHLTVScript(string fileName)
+ncRadar
+ncRadar::InitFromHLTVScript(string fileName)
 {
 	filestream overviewFile;
-	NSRadar newRadar = spawn(NSRadar);
+	ncRadar newRadar = spawn(ncRadar);
 	string temp;
 	int c;
 
@@ -306,11 +306,11 @@ NSRadar::InitFromHLTVScript(string fileName)
 	return newRadar;
 }
 
-NSRadar
-NSRadar::InitFromSourceHLTVScript(string fileName)
+ncRadar
+ncRadar::InitFromSourceHLTVScript(string fileName)
 {
 	filestream overviewFile;
-	NSRadar newRadar = spawn(NSRadar);
+	ncRadar newRadar = spawn(ncRadar);
 	string temp;
 	int c;
 

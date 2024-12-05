@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+#warning Ammo capacity is able to slow people down in some games/mods.
+
 /** Data holding ammo variant entries. */
 typedef struct
 {

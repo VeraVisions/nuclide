@@ -21,16 +21,16 @@ enumflags
 	RADIO_ACTIVE
 };
 
-.void(void) tmpVGUIRadio1;
+.void(void) tmpvguiRadio1;
 
 /** VGUI Widget: Radio Button
 
 @ingroup vgui
 */
-class VGUIRadio:VGUIWidget
+class vguiRadio:vguiWidget
 {
 public:
-	void VGUIRadio(void);
+	void vguiRadio(void);
 
 	nonvirtual void SetTitle(string);
 	nonvirtual int GetValue(void);
@@ -38,7 +38,7 @@ public:
 	nonvirtual void SetFunc(void(void));
 
 	virtual void Draw(void);
-	virtual bool(float, float, float, float) Input;
+	virtual bool Input(float, float, float, float);
 	virtual void Spawned(void);
 
 private:
@@ -48,24 +48,24 @@ private:
 	string m_strTitle;
 };
 
-void VGUIRadio::VGUIRadio(void)
+void vguiRadio::vguiRadio(void)
 {
 	m_vecColor = UI_MAINCOLOR;
 	m_flAlpha = 1.0f;
 }
 
 void
-VGUIRadio::Spawned(void)
+vguiRadio::Spawned(void)
 {
 	SetSize([96,24]);
 }
 
 
-void VGUIRadio::SetTitle (string strName)
+void vguiRadio::SetTitle (string strName)
 {
 	m_strTitle = strName;
 }
-int VGUIRadio::GetValue(void)
+int vguiRadio::GetValue(void)
 {
 	if (m_iFlags & RADIO_ACTIVE) {
 		return (1);
@@ -73,7 +73,7 @@ int VGUIRadio::GetValue(void)
 		return (0);
 	}
 }
-void VGUIRadio::SetValue (int iValue)
+void vguiRadio::SetValue (int iValue)
 {
 	if (iValue == TRUE) {
 		m_iFlags |= RADIO_ACTIVE;
@@ -81,14 +81,14 @@ void VGUIRadio::SetValue (int iValue)
 		m_iFlags -= (m_iFlags & RADIO_ACTIVE);
 	}
 }
-void VGUIRadio::SetFunc (void(void) vFunc)
+void vguiRadio::SetFunc (void(void) vFunc)
 {
-	tmpVGUIRadio1 = vFunc;
+	tmpvguiRadio1 = vFunc;
 }
 
-void VGUIRadio::Draw(void)
+void vguiRadio::Draw(void)
 {
-	VGUITheme theme = GetTheme();
+	vguiTheme theme = GetTheme();
 
 	theme.DrawControlBackground(m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, VGUI_STATE_ACTIVE);
 	
@@ -106,7 +106,7 @@ void VGUIRadio::Draw(void)
 	}
 }
 
-bool VGUIRadio::Input (float flEVType, float flKey, float flChar, float flDevID)
+bool vguiRadio::Input (float flEVType, float flKey, float flChar, float flDevID)
 {
 	bool ret = false;
 
@@ -120,8 +120,8 @@ bool VGUIRadio::Input (float flEVType, float flKey, float flChar, float flDevID)
 	} else if (flEVType == IE_KEYUP) {
 		if (flKey == K_MOUSE1) {
 			if (m_iFlags & RADIO_DOWN && Util_MouseAbove(g_vecMousePos, m_parent.m_vecOrigin + m_vecOrigin, m_vecSize)) {
-				if (tmpVGUIRadio1) {
-					tmpVGUIRadio1();
+				if (tmpvguiRadio1) {
+					tmpvguiRadio1();
 				}
 				SetValue(TRUE);
 				ret = true;

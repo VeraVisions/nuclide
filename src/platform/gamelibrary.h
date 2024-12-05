@@ -70,7 +70,7 @@ typedef enum
 	GAMEINFO_STARTMAP,		/**< (string) The command for starting a new game. */
 	GAMEINFO_TRAININGMAP,	/**< (string) The command for starting the training. */
 	GAMEINFO_MINVERSION,	/**< (string) The minimum base game version. */
-	GAMEINFO_CHATROOM,		/**< (string) The chatroom for this game. E.g. #action */
+	GAMEINFO_CHATROOM,		/**< (string) The chatroom for this game. E.g. `#action` */
 	GAMEINFO_READMEFILE,	/**< (string) File name of the readme documentation. */
 	GAMEINFO_INTROVIDEO,	/**< (string) File name of the intro video to play. */
 	GAMEINFO_MENUMAP,		/**< (string) Name of the map to be used as a background. */

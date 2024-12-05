@@ -14,16 +14,18 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+#warning Server-browser: Complete me.
+
 int g_iFindServersInitialized;
 
 void UI_FindServers_Show ( void )
 {
-	static CUIWindow winFind;
+	static vguiWindow winFind;
 
 	if ( !g_iFindServersInitialized ) {
 		g_iFindServersInitialized = TRUE;
-		winFind = spawn( CUIWindow );
-		winFind.SetTitle( "Find Servers" );
+		winFind = spawn( vguiWindow );
+		winFind.SetTitle( "Find Servers (NOT IMPLEMENTED)" );
 		winFind.SetSize( '600 400' );
 		winFind.SetIcon( "gfx/icon16/world" );
 

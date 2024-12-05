@@ -60,12 +60,12 @@ This works only with the OpenAL sound backend.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 @ingroup sound
 */
 class
-env_sound:NSSoundScape
+env_sound:ncSoundScape
 {
 public:
 	void env_sound(void);

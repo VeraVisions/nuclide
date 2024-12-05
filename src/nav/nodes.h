@@ -47,4 +47,42 @@ void Nodes_Flush(void);
 void Nodes_Init(void);
 bool Nodes_Available(void);
 
+vector Nodes_PositionOfClosestNode(vector);
+
+/** Returns the position of a spot that'll provide cover from the specified enemy.
+
+@param targetEnemy The enemy to hide from.
+@return Absolute position of a valid cover spot. */
+vector Nodes_FindCoverFromEnemy(ncActor targetEnemy);
+
+/** Returns the position of a spot that'll be behind where you're currently standing
+
+@param targetPosition The position to back away from.
+@param eulerDirection The direction we're looking in, in euler-angles.
+@return Absolute position of a valid cover spot. */
+vector Nodes_FindBackFromPosition(vector targetPosition, vector eulerDirection);
+
+
+/** Returns the position of a spot that'll provide cover from the specified enemy, closest to a specified node.
+
+@param targetEnemy The enemy to hide from.
+@param nodePosition The position we should get closest to.
+@return Absolute position of a valid cover spot. */
+vector Nodes_FindCoverFromEnemyNearNode(ncActor targetEnemy, vector nodePosition);
+
+
+/** Returns the position of a spot that'll provide cover from the specified enemy, furthest from a specified node.
+
+@param targetEnemy The enemy to hide from.
+@param nodePosition The position we should get as far away from as possible from.
+@return Absolute position of a valid cover spot. */
+vector Nodes_FindCoverFromEnemyFarNode(ncActor targetEnemy, vector nodePosition);
+
+
+/** Returns the position of a spot that'll provide cover from the specified enemy.
+
+@param targetOrigin The spot to hide from.
+@return Absolute position of a valid cover spot. */
+vector Nodes_FindCoverFromPosition(vector targetOrigin);
+
 /** @} */ // end of nav

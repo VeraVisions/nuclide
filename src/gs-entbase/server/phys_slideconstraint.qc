@@ -38,12 +38,12 @@ Will slide an entity along a segment.
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 @ingroup physics
 */
 class
-phys_slideconstraint:NSPhysicsConstraint
+phys_slideconstraint:ncPhysicsConstraint
 {
 public:
 	void phys_slideconstraint(void);

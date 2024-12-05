@@ -1,12 +1,12 @@
 # Material Command List {#mat_commands}
 
-### sort {#sort}
+## sort {#sort}
 
-#### Syntax
+### Syntax
 
-**sort <value>**
+**sort \<value\>**
 
-#### Overview
+### Overview
 
 Use this keyword to fine-tune the depth sorting of materials as they are
 compared against other materials in the game world. The basic concept is
@@ -19,7 +19,7 @@ and all other materials in sort "opaque", so you only need to specify
 this when you are trying to work around a sorting problem with multiple
 transparent surfaces in a scene.
 
-#### Values {#values}
+### Values {#values}
 
 The value here can be either a numerical value or one of the keywords in
 the following list (listed in order of mostly ascending priority):
@@ -35,7 +35,7 @@ the following list (listed in order of mostly ascending priority):
     optimization on some cards. This currently has the wrong value for
     this purpose, so it doesn't do much of anything.
 -   **opaque**: This surface is opaque (rarely needed since this is the
-    default with noblendfunc)
+    default with noblendFunc)
 -   **decal**: Blend it like a decal. Ones affected by light, or
     something.
 -   **seethrough**: Not sure what to call this, beyond repeating its
@@ -46,7 +46,7 @@ the following list (listed in order of mostly ascending priority):
 -   **underwater**: Draw behind normal transparent surfaces.
 -   **blend**: Draw like a blendFunc blend transparent surface.
 -   **additive**: normal transparent surface (default for shaders with
-    blendfuncs)
+    blendFuncs)
 -   **nearest**: this shader should always sort closest to the viewer,
     e.g. muzzle flashes and blend blobs
 

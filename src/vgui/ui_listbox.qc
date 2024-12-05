@@ -18,10 +18,10 @@
 
 @ingroup vgui
 */
-class VGUIListBox:VGUIWidget
+class vguiListBox:vguiWidget
 {
 public:
-	void VGUIListBox(void);
+	void vguiListBox(void);
 
 	nonvirtual void SetOffset(int);
 	nonvirtual void AddItem(string);
@@ -42,59 +42,59 @@ private:
 	int m_iDrawOffset;
 };
 
-void VGUIListBox::VGUIListBox(void)
+void vguiListBox::vguiListBox(void)
 {
 	m_iSelected = -1;
 }
 
-void VGUIListBox::Spawned(void)
+void vguiListBox::Spawned(void)
 {
 	SetSize([96,16]);
 }
 
-void VGUIListBox::SetItemCount (int iCount)
+void vguiListBox::SetItemCount (int iCount)
 {
 	if (!m_iItemCount) {
-		NSLog("VGUIListBox: Initialized with a maximum of %i entries", iCount);
+		NSLog("vguiListBox: Initialized with a maximum of %i entries", iCount);
 		m_iItemCount = iCount;
 		m_strItems = memalloc(iCount * sizeof(string));
 	}
 }
-void VGUIListBox::SetOffset (int iOffset)
+void vguiListBox::SetOffset (int iOffset)
 {
 	int iMaxDisplay = bound(0, m_iItemCount, floor(m_vecSize[1] / 20));
 	m_iDrawOffset = bound(0, iOffset, m_iItemCount - iMaxDisplay);
 }
 
-string VGUIListBox::GetItem (int iIndex)
+string vguiListBox::GetItem (int iIndex)
 {
 	return m_strItems[iIndex];
 }
 
-int VGUIListBox::GetSelected(void)
+int vguiListBox::GetSelected(void)
 {
 	return m_iSelected;
 }
 
-void VGUIListBox::AddItem (string strItem)
+void vguiListBox::AddItem (string strItem)
 {
 	if (!m_iItemCount) {
-		dprint("VGUIListBox: Can't add item to empty list!\n");
+		dprint("vguiListBox: Can't add item to empty list!\n");
 		return;
 	}
 	
 	for (int i = 0; i < m_iItemCount; i++) {
 		if (!m_strItems[i]) {
 			m_strItems[i] = strItem;
-			dprint("VGUIListBox: Item added\n");
+			dprint("vguiListBox: Item added\n");
 			break;
 		}
 	}
 }
 
-void VGUIListBox::Draw(void)
+void vguiListBox::Draw(void)
 {
-	VGUITheme theme = GetTheme();
+	vguiTheme theme = GetTheme();
 
 	int iMaxDisplay;
 	if (!m_iItemCount) {
@@ -124,7 +124,7 @@ void VGUIListBox::Draw(void)
 	}
 }
 
-bool VGUIListBox::Input (float flEVType, float flKey, float flChar, float flDevID)
+bool vguiListBox::Input (float flEVType, float flKey, float flChar, float flDevID)
 {
 	bool ret = false;
 	int iMaxDisplay;

@@ -1,0 +1,10 @@
+{
+	qer_editorImage "common/origin.ktx"
+	qer_trans 0.50
+	qer_noCarve
+	surfaceParm nodraw
+	surfaceParm nonsolid
+	surfaceParm origin
+	surfaceParm nolightmap
+	nomipmaps
+}

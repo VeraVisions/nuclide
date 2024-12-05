@@ -16,7 +16,7 @@
 
 vector g_vecSunDir;
 
-/* TODO: Find a better way to figure out what's a NSEntity at heart */
+/* TODO: Find a better way to figure out what's a ncEntity at heart */
 .bool isCSQC;
 
 /* things we don't have in CSQC normally and oughta be global */

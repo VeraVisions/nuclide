@@ -17,7 +17,7 @@
 #define EVS_GLOBAL 1
 
 /*! \brief Server-Entity: Earthquake Maker */
-/*!QUAKED env_shake (1 .5 0) (-8 -8 -8) (8 8 8) EVS_GLOBAL
+/*!QUAKED env_shake (1 .5 0) (-8 -8 -8) (8 8 8) GLOBAL
 # OVERVIEW
 Causes an earthquake/shaking effect when triggered.
 
@@ -31,16 +31,16 @@ Causes an earthquake/shaking effect when triggered.
 - "frequency" : The frequency of the shake.
 
 # SPAWNFLAGS
-- EVS_GLOBAL : Affect all clients, ignoring "radius" entirely.
+- GLOBAL : Affect all clients, ignoring "radius" entirely.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-env_shake:NSPointTrigger
+env_shake:ncPointTrigger
 {
 public:
 	void env_shake(void);
@@ -49,6 +49,7 @@ public:
 	virtual void Restore(string,string);
 	virtual void SpawnKey(string,string);
 	virtual void Trigger(entity, triggermode_t);
+	virtual void Input(entity, string, string);
 
 	virtual void OnRemoveEntity(void);
 
@@ -136,7 +137,7 @@ env_shake::SpawnKey(string strKey, string strValue)
 void
 env_shake::Trigger(entity act, triggermode_t state)
 {
-	if (HasSpawnFlags(1)) {
+	if (HasSpawnFlags(EVS_GLOBAL)) {
 		WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 		WriteByte(MSG_MULTICAST, EV_SHAKE);
 		WriteFloat(MSG_MULTICAST, m_flDuration);
@@ -145,5 +146,17 @@ env_shake::Trigger(entity act, triggermode_t state)
 		multicast([0,0,0], MULTICAST_ALL_R);
 	} else {
 		Client_ShakeOnce(origin, m_flRadius, m_flDuration, m_flFrequency, m_flAmplitude);
+	}
+}
+
+void
+env_shake::Input(entity theActivator, string inputName, string dataString)
+{
+	switch (inputName) {
+	case "StartShake":
+		Trigger(theActivator, TRIG_ON);
+		break;
+	default:
+		super::Input(theActivator, inputName, dataString);
 	}
 }

@@ -14,12 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/* NSTrigger class is responsible for the legacy trigger architecture.
-   In the future, NSEntity can be configured so that legacy
-   triggers can be disabled. That's why this class is separate from NSIO.
+/* ncTrigger class is responsible for the legacy trigger architecture.
+   In the future, ncEntity can be configured so that legacy
+   triggers can be disabled. That's why this class is separate from ncIO.
 
    This is a very low-level class. You're never meant to use this.
-   Use NSEntity as a basis for your classes.
+   Use ncEntity as a basis for your classes.
 */
 
 #define CENVGLOBAL_CVAR "env_global_data"
@@ -64,13 +64,13 @@ enumflags
 };
 
 
-/** NSTrigger handles all the non-input as well as Legacy (Quake, GoldSource) style
+/** ncTrigger handles all the non-input as well as Legacy (Quake, GoldSource) style
 trigger behaviour. It also deals with masters, touches, blocking and so on.
 */
-class NSTrigger:NSIO
+class ncTrigger:ncIO
 {
 public:
-	void NSTrigger(void);
+	void ncTrigger(void);
 
 	/* touch/blocked */
 	/** Called whenever out movement is being blocked by an entity.
@@ -102,7 +102,7 @@ public:
 	virtual void Trigger(entity, triggermode_t);
 
 	/* master feature */
-	/** Returns what we will pass onto other's `NSTrigger::GetMaster()` calls if we're their master. */
+	/** Returns what we will pass onto other's `ncTrigger::GetMaster()` calls if we're their master. */
 	/* multisource overrides this, so keep virtual */
 	virtual int GetValue(entity);
 
@@ -136,12 +136,18 @@ public:
 	/** Retrives the team value of a given entity. */
 	nonvirtual float GetTeam(void);
 #endif
+	/** Returns the last valid point the entity has touched. */
+	nonvirtual vector GetTouchPosition(void);
+	/** Returns the normal of the last valid surface the entity has touched. */
+	nonvirtual vector GetTouchNormal(void);
 
 private:
 	/* not needed to be saved right now */
 	float m_flTouchTime;
 	bool m_beingTouched;
 	entity m_eTouchLast;
+	vector m_touchPosition;
+	vector m_touchNormal;
 
 	nonvirtual void _TouchHandler(void);
 	nonvirtual void _BlockedHandler(void);

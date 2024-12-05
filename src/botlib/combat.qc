@@ -15,11 +15,11 @@
 */
 
 void
-NSBot::Pain(entity inflictor, entity attacker, int damage, vector dir, int location)
+ncBot::Pain(entity inflictor, entity attacker, int damage, vector dir, vector absImpactPos, int hitBody)
 {
-	NSGameRules rules = g_grMode;
+	ncGameRules rules = g_grMode;
 
-	super::Pain(inflictor, attacker, damage, dir, location);
+	super::Pain(inflictor, attacker, damage, dir, absImpactPos, hitBody);
 
 	if (rules.IsTeamplay()) {
 		if (isPlayer(attacker) && attacker.team == team) {
@@ -44,7 +44,7 @@ NSBot::Pain(entity inflictor, entity attacker, int damage, vector dir, int locat
 }
 
 void
-NSBot::SetEnemy(entity en)
+ncBot::SetEnemy(entity en)
 {
 	m_eTarget = en;
 
@@ -56,7 +56,7 @@ NSBot::SetEnemy(entity en)
 }
 
 void
-NSBot::WeaponThink(void)
+ncBot::WeaponThink(void)
 {
 	bool isEmpty = m_activeWeapon.IsEmpty();
 
@@ -74,7 +74,7 @@ NSBot::WeaponThink(void)
 }
 
 void
-NSBot::WeaponAttack(void)
+ncBot::WeaponAttack(void)
 {
 	bool shouldAttack = false;
 
@@ -130,7 +130,7 @@ NSBot::WeaponAttack(void)
 }
 
 void
-NSBot::ForceWeaponAttack(vector attackPos, float attackTime)
+ncBot::ForceWeaponAttack(vector attackPos, float attackTime)
 {
 	m_vecForceWeaponAttackPos = attackPos;
 	m_flForceWeaponAttack = attackTime + time;
@@ -141,14 +141,14 @@ var float g_botalert_timer;
 void
 BotLib_Alert(vector pos, float radius, float t)
 {
-	NSGameRules rules = g_grMode;
+	ncGameRules rules = g_grMode;
 
 	/* sometimes many alert-sounds happen at once... we don't really want
 	 * that */
 	if (g_botalert_timer > time)
 		return;
 
-	for (entity w = world; (w = findfloat(w, ::identity, 1));) {
+	for (entity w = world; (w = find(w, ::classname, "player"));) {
 		if (isBot(w) == false) {
 			continue;
 		}
@@ -157,7 +157,7 @@ BotLib_Alert(vector pos, float radius, float t)
 		if (distance(pos, w.origin) > radius)
 			continue;
 
-		NSBot f = (NSBot) w;
+		ncBot f = (ncBot) w;
 
 		/* they already got a target of some kind */
 		if (f.m_eTarget)

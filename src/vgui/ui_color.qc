@@ -6,10 +6,10 @@
 
 @ingroup vgui
 */
-class VGUIColor
+class vguiColor
 {
 public:
-	void VGUIColor(void);
+	void vguiColor(void);
 
 	nonvirtual void SetColor(vector);
 	nonvirtual void SetColorWithAlpha(vector, float);
@@ -22,33 +22,33 @@ private:
 };
 
 void
-VGUIColor::VGUIColor(void)
+vguiColor::vguiColor(void)
 {
 	m_colorValue = [0.0f, 0.0f, 0.0f];
 	m_alphaValue = 1.0f;
 }
 
 void
-VGUIColor::SetColor(vector value)
+vguiColor::SetColor(vector value)
 {
 	m_colorValue = value;
 }
 
 void
-VGUIColor::SetColorWithAlpha(vector color, float alpha)
+vguiColor::SetColorWithAlpha(vector color, float alpha)
 {
 	m_colorValue = color;
 	m_alphaValue = alpha;
 }
 
 vector
-VGUIColor::GetColor(void)
+vguiColor::GetColor(void)
 {
 	return m_colorValue;
 }
 
 float
-VGUIColor::GetAlpha(void)
+vguiColor::GetAlpha(void)
 {
 	return m_alphaValue;
 }

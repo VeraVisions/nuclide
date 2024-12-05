@@ -1,0 +1,9 @@
+{
+	qer_editorImage "common/terrain.tga"
+	vmap_terrain
+	surfaceParm dust
+	surfaceParm nodraw
+	surfaceParm nomarks
+	surfaceParm nolightmap
+	nomipmaps
+}

@@ -22,7 +22,7 @@ typedef enumflags
 	SPECFL_MODE,
 	SPECFL_FLAGS,
 	SPECFL_TYPE,
-} NSClientSpectatorFlags_t;
+} ncSpectatorFlags_t;
 
 typedef enum
 {
@@ -33,7 +33,7 @@ typedef enum
 	SPECMODE_FIRSTPERSON,
 	SPECMODE_FREEOVERVIEW,
 	SPECMODE_CHASEOVERVIEW
-} NSClientSpectatorMode_t;
+} ncSpectatorMode_t;
 
 #ifdef CLIENT
 string g_specmodes[] = {
@@ -57,18 +57,18 @@ enumflags
 These types of clients are not meant to interfere with the gameplay,
 they are merely observers.
 
-NSClientPlayer is a sub-class which has the ability to interact with games.
+ncPlayer is a sub-class which has the ability to interact with games.
 
 When clients connect via the `spectate` command, they will findthemselves
-of type NSClientSpectator.
+of type ncSpectator.
 
 @ingroup baseclass
 */
 class
-NSClientSpectator:NSClient
+ncSpectator:ncClient
 {
 public:
-	void NSClientSpectator(void);
+	void ncSpectator(void);
 
 	/* overrides */
 	virtual void ProcessInput(void);
@@ -107,13 +107,13 @@ public:
 	virtual float SendEntity(entity,float);
 	virtual void ServerInputFrame(void);
 
-	nonvirtual void SpectatorDeathcam(NSRenderableEntity, NSEntity, float);
+	nonvirtual void SpectatorDeathcam(ncRenderableEntity, ncEntity, float);
 #endif
 
 private:
 	PREDICTED_FLOAT(spec_ent)
 	PREDICTED_FLOAT(spec_flags)
-	NSClientSpectatorMode_t spec_mode; NSClientSpectatorMode_t spec_mode_net;
+	ncSpectatorMode_t spec_mode; ncSpectatorMode_t spec_mode_net;
 	float m_flDeathCam;
 	float m_flLastSpecTargetChange;
 	vector spec_org;

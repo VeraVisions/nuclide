@@ -56,7 +56,7 @@ typedef enum
 	IGNORE_DEFAULT
 } ignorefacing_t;
 
-/* TODO: Make this match NSMonster more */
+/* TODO: Make this match ncMonster more */
 typedef enum
 {
 	AISTATE_IDLE,
@@ -138,11 +138,11 @@ This entity was introduced in Half-Life 2 (2004).
 Some functionality of this entity was meant to be part of `info_node` in the original Half-Life (1998).
 However, that was never completed.
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-info_hint:NSPointTrigger
+info_hint:ncPointTrigger
 {
 public:
 	void info_hint(void);
@@ -151,6 +151,7 @@ public:
 	virtual void Save(float);
 	virtual void Restore(string,string);
 	virtual void SpawnKey(string,string);
+	virtual void Spawned(void);
 
 private:
 	hinttype_t m_hintType;
@@ -248,4 +249,11 @@ info_hint::SpawnKey(string strKey, string strValue)
 	default:
 		super::SpawnKey(strKey, strValue);
 	}
+}
+
+void
+info_hint::Spawned(void)
+{
+	super::Spawned();
+	SetEditorIcon("help");
 }

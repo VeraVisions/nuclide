@@ -14,20 +14,22 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+#warning Integrate ai_relationship, ai_task, ai_schedule
+
 var bool autocvar_ai_enable = true;
 var bool autocvar_ai_debugLogic = false;
 void
-_NSMonster_Log(string className, string functionName, float edictNum, string warnMessage)
+_ncMonster_Log(string className, string functionName, float edictNum, string warnMessage)
 {
 	if (autocvar_g_logTimestamps)
 		printf("^9%f ^5%s (%d) ^7: %s\n", time, functionName, edictNum, warnMessage);
 	else
 		printf("^5%s (%d) ^7: %s\n", functionName, edictNum, warnMessage);
 }
-#define NSMonsterLog(...) if (autocvar_ai_debugLogic == true) _NSMonster_Log(classname, __FUNC__, num_for_edict(this), sprintf(__VA_ARGS__))
+#define ncMonsterLog(...) if (autocvar_ai_debugLogic == true) _ncMonster_Log(classname, __FUNC__, num_for_edict(this), sprintf(__VA_ARGS__))
 
 /**
-Bitfield enumeration for NSMonster its SendFlags field.
+Bitfield enumeration for ncMonster its SendFlags field.
 
 These give hint as to which internal fields get networked to the client.
 */
@@ -70,7 +72,7 @@ typedef enumflags
 	MSF_WAITFORSCRIPT,	/**< AI waits for scripted_sequence to end (128) */
 	MSF_RESERVED3,		/**< Reserved for entityDef (256) */
 	MSF_FADECORPSE,		/**< Corpse fades instead of staying (512) */
-	MSF_MULTIPLAYER,	/**< Will spawn in multiplayer NSGameRules (1024) */
+	MSF_MULTIPLAYER,	/**< Will spawn in multiplayer ncGameRules (1024) */
 	MSF_FALLING,		/**< Is falling (2048) */
 	MSF_HORDE			/**< Part of a horde (4096) */
 } monsterFlag_t;
@@ -154,12 +156,12 @@ typedef enum
 	MTRIG_SEEPLAYER_RELAXED,	/**< 12, we see a player and we're currently attacking anything */
 } triggerCondition_t;
 
-/* FIXME: I'd like to move this into NSMonster, but our current IsFriend()
+/* FIXME: I'd like to move this into ncMonster, but our current IsFriend()
  * check is currently only checking on a .takedamage basis. */
 .int m_iAlliance;
 
 /*! \brief This entity class represents non-player characters. */
-/*!QUAKED NSMonster (0 0.8 0.8) (-16 -16 0) (16 16 72) WAITTILLSEEN GAG MONSTERCLIP x PRISONER x IGNOREPLAYER WAITFORSCRIPT PREDISASTER FADECORPSE MULTIPLAYER FALLING HORDE
+/*!QUAKED ncMonster (0 0.8 0.8) (-16 -16 0) (16 16 72) WAITTILLSEEN GAG MONSTERCLIP x PRISONER x IGNOREPLAYER WAITFORSCRIPT PREDISASTER FADECORPSE MULTIPLAYER FALLING HORDE
 # OVERVIEW
 This entity class represents non-player characters. 
 They have the ability to move around (or stand still) but are all
@@ -239,10 +241,10 @@ capable of fighting if prompted to.
 
 @ingroup baseclass
 */
-class NSMonster:NSActor
+class ncMonster:ncActor
 {
 public:
-	void NSMonster(void);
+	void ncMonster(void);
 
 #ifdef SERVER	
 	/* overrides */
@@ -255,10 +257,10 @@ public:
 	virtual void Spawned(void);
 	virtual void Respawn(void);
 	virtual void Input(entity,string,string);
-	virtual void Pain(entity, entity, int, vector, int);
-	virtual void Death(entity, entity, int, vector, int);
+	virtual void Pain(entity, entity, int, vector, vector, int);
+	virtual void Death(entity, entity, int, vector, vector, int);
 	virtual void Physics(void);
-	virtual void Gib(void);
+	virtual void Gib(int, vector);
 	virtual void Sound(string);
 	virtual void SpawnKey(string,string);
 
@@ -315,6 +317,7 @@ public:
 	virtual int AttackMelee(void);
 	/** Overridable: Called when attempting to attack from a distance. Return 0 if impossible. */
 	virtual int AttackRanged(void);
+	nonvirtual void PerformAttack(string);
 
 	/** Overridable: Returns the distance in qu of what'll be a successfull melee attack. */
 	virtual float MeleeMaxDistance(void);
@@ -342,11 +345,11 @@ public:
 
 	/* callbacks */
 	/** Called when a player is seen by the monster. */
-	virtual void SeenPlayer(NSActor);
+	virtual void SeenPlayer(ncActor);
 	/** Called when an enemy is seen by the monster. */
-	virtual void SeenEnemy(NSActor);
+	virtual void SeenEnemy(ncActor);
 	/** Called when a friend is seen by the monster. */
-	virtual void SeenFriend(NSActor);
+	virtual void SeenFriend(ncActor);
 	
 	/** Returns the type of sequence they're currently in. */
 	nonvirtual int GetSequenceState(void);
@@ -369,11 +372,11 @@ public:
 	nonvirtual void AnimReset(void);
 
 	/* states */
-	/** Called whenever the state of this NSMonster changes. */
+	/** Called whenever the state of this ncMonster changes. */
 	virtual void StateChanged(monsterState_t,monsterState_t);
-	/** Sets the current state of this NSMonster. */
+	/** Sets the current state of this ncMonster. */
 	nonvirtual void SetState(monsterState_t);
-	/** Returns the current state of this NSMonster. */
+	/** Returns the current state of this ncMonster. */
 	nonvirtual monsterState_t GetState(void);
 
 	/* TriggerTarget/Condition */
@@ -384,6 +387,8 @@ public:
 
 	virtual void Trigger(entity, triggermode_t);
 #endif
+
+	nonvirtual vector GetHeadAngles(void);
 
 #ifdef CLIENT
 
@@ -524,6 +529,11 @@ private:
 	float m_flForceSequence;
 	float m_flSkin;
 	bool m_bGagged;
+	float m_flStopTime;
+	float m_flyOffset;
+	bool m_usesNav;
+	bool m_fireFromHead;
+	bool m_pvsSleep;
 
 	nonvirtual void _LerpTurnToEnemy(void);
 	nonvirtual void _LerpTurnToPos(vector);
@@ -539,8 +549,8 @@ string Sentences_ProcessSample(string);
 #endif
 
 #ifdef SERVER
-void NSMonster_AlertEnemyAlliance(vector pos, float radius, int alliance);
-entity NSMonster_FindClosestPlayer(entity);
+void ncMonster_AlertEnemyAlliance(vector pos, float radius, int alliance);
+entity ncMonster_FindClosestPlayer(entity);
 #endif
 
 .float baseframe2;

@@ -61,11 +61,11 @@ Please include an origin brush so that a pivot point will be defined.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup brushentity
 */
 class
-func_rot_button:NSSurfacePropEntity
+func_rot_button:ncSurfacePropEntity
 {
 public:
 	void func_rot_button(void);
@@ -76,7 +76,7 @@ public:
 	virtual void SpawnKey(string,string);
 	virtual void Respawn(void);
 	virtual void Touch(entity);
-	virtual void Death(entity, entity, int, vector, int);
+	virtual void Death(entity, entity, int, vector, vector, int);
 	virtual void OnPlayerUse(void);
 	
 	nonvirtual void ArrivedClosed(void);
@@ -250,7 +250,7 @@ func_rot_button::OnPlayerUse(void)
 void
 func_rot_button::Touch(entity eToucher)
 {
-	eActivator = (NSEntity)eToucher;
+	eActivator = (ncEntity)eToucher;
 
 	if (HasSpawnFlags(FNCROTBUT_TOUCHABLE))
 		TurnToggle();
@@ -275,7 +275,7 @@ func_rot_button::TurnToggle(void)
 }
 
 void
-func_rot_button::Death(entity inflictor, entity attacker, int damage, vector dir, int location)
+func_rot_button::Death(entity inflictor, entity attacker, int damage, vector dir, vector absImpactPos, int hitBody)
 {
 	MakeInvulnerable();
 	TurnToggle();

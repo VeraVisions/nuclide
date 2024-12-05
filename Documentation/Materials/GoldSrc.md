@@ -8,7 +8,7 @@ In the GoldSrc games "Material" definitions handle what footsteps and what impac
 
 So when you walk on dirt, you can hear the difference; or when you shoot wood with a gun it will sound like wood.
 
-**Note:** While Nuclide supports this for legacy BSP files, please define the surface properties inside your [material](Documentation/Materials/MatOverview.md) using the **surfaceprop** command.
+**Note:** While Nuclide supports this for legacy BSP files, please define the surface properties inside your [material](@ref mat_commands) using the [**surfaceprop**](@ref surfdata) command.
 
 ### Details
 
@@ -98,8 +98,8 @@ In Nuclide, this is the currently supported list of material IDs:
 ### Game differences
 
 Different games/mods can ship with different material properties.
-To make your life easier, you can edit **scripts/surfaceproperties.txt** and define
-which Material ID character maps to which [surfaceproperty](Documentation/Surf_data.md) entry.
+To make your life easier, you can edit `scripts/surfaceproperties.txt` and define
+which Material ID character maps to which [surfaceproperty](@ref surfdata) entry.
 This way you can add new materials to existing legacy maps without writing a line of code.
 
 Listed below are definitions for various games and mods. Only the changes and additions are listed since the rest are identical.
@@ -219,7 +219,7 @@ Listed below are definitions for various games and mods. Only the changes and ad
 
 While Source has materials describing a surface with its own **$surfaceprop** command, the GoldSrc way of describing materials with a 1-character symbol is still used to define which **impact effect** to use.
 
-The **Material ID** is used via the `gamematerial` command inside **scripts/surfaceproperties.txt** entries. In Nuclide that's used for compatibility with the GoldSrc system instead.
+The **Material ID** is used via the `gamematerial` command inside `scripts/surfaceproperties.txt` entries. In Nuclide that's used for compatibility with the GoldSrc system instead.
 
 ![Bullet impact on Plaster](source_plaster.jpg)
 ![Bullet impact on Wood](source_wood.jpg)

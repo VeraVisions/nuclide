@@ -37,11 +37,11 @@ to the specified value within.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-game_counter_set:NSPointTrigger
+game_counter_set:ncPointTrigger
 {
 public:
 	void game_counter_set(void);

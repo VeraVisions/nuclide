@@ -41,5 +41,7 @@ CSQC_Parse_Damage_New(vector abs_pos, int take, int flags)
 		pSeat->m_iDamageFlags |= flags;
 	}
 
+	HUD_DamageReceived(abs_pos, take, flags);
+
 	return (1);
 }

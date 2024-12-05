@@ -21,62 +21,62 @@ var float autocvar_bot_sidespeed = 152;
 var float autocvar_bot_backspeed = 133;
 
 botstate_t
-NSBot::GetState(void)
+ncBot::GetState(void)
 {
 	return m_bsState;
 }
 
 void
-NSBot::SetState(botstate_t state)
+ncBot::SetState(botstate_t state)
 {
 	m_bsState = state;
 }
 
 botpersonality_t
-NSBot::GetPersonality(void)
+ncBot::GetPersonality(void)
 {
 	return m_bpPersonality;
 }
 
 float
-NSBot::GetWalkSpeed(void)
+ncBot::GetWalkSpeed(void)
 {
 	return 120;
 }
 
 float
-NSBot::GetRunSpeed(void)
+ncBot::GetRunSpeed(void)
 {
 	return 240;
 }
 
 float
-NSBot::GetForwardSpeed(void)
+ncBot::GetForwardSpeed(void)
 {
 	return (autocvar_bot_forwardspeed);
 }
 
 float
-NSBot::GetSideSpeed(void)
+ncBot::GetSideSpeed(void)
 {
 	return (autocvar_bot_sidespeed);
 }
 
 float
-NSBot::GetBackSpeed(void)
+ncBot::GetBackSpeed(void)
 {
 	return (autocvar_bot_backspeed);
 }
 
 void
-NSBot::RouteClear(void)
+ncBot::RouteClear(void)
 {
 	super::RouteClear();
 	m_flNodeGiveup = 0.0f;
 }
 
 void
-NSBot::BrainThink(int enemyvisible, int enemydistant)
+ncBot::BrainThink(int enemyvisible, int enemydistant)
 {
 	/* we had a target and it's now dead. now what? */
 	if (m_eTarget) {
@@ -91,7 +91,7 @@ NSBot::BrainThink(int enemyvisible, int enemydistant)
 }
 
 void
-NSBot::UseButton(void)
+ncBot::UseButton(void)
 {
 	float bestDist;
 	func_button bestButton = __NULL__;
@@ -120,9 +120,9 @@ NSBot::UseButton(void)
 }
 
 void
-NSBot::SeeThink(void)
+ncBot::SeeThink(void)
 {
-	NSGameRules rules = (NSGameRules)g_grMode;
+	ncGameRules rules = (ncGameRules)g_grMode;
 
 	/*if (m_eTarget)
 		return; */
@@ -185,7 +185,7 @@ NSBot::SeeThink(void)
 }
 
 void
-NSBot::CheckRoute(void)
+ncBot::CheckRoute(void)
 {
 	float flDist;
 	vector vecEndPos;
@@ -280,13 +280,13 @@ NSBot::CheckRoute(void)
 }
 
 void
-NSBot::CreateObjective(void)
+ncBot::CreateObjective(void)
 {
 	RouteToPosition(Route_SelectDestination(this));
 }
 
 void
-NSBot::RunAI(void)
+ncBot::RunAI(void)
 {
 	vector aimDir, aimPos;
 	bool enemyVisible, enemyDistant;
@@ -465,7 +465,7 @@ NSBot::RunAI(void)
 
 		/* Hackish: If there's a func_breakable in the way... */
 		if (trace_ent.classname == "func_breakable") {
-			NSEntity traceEnt = (NSEntity)trace_ent;
+			ncEntity traceEnt = (ncEntity)trace_ent;
 			ForceWeaponAttack(traceEnt.WorldSpaceCenter(), 1.0f);
 		}
 
@@ -505,17 +505,17 @@ NSBot::RunAI(void)
 }
 
 void
-NSBot::PreFrame(void)
+ncBot::BotPreFrame(void)
 {
 }
 
 void
-NSBot::PostFrame(void)
+ncBot::BotPostFrame(void)
 {
 }
 
 void
-NSBot::AddedItemCallback(NSItem newItem)
+ncBot::AddedItemCallback(ncItem newItem)
 {
 	if (isBot(this) == true) {
 		SwitchToBestWeapon(false);
@@ -525,7 +525,7 @@ NSBot::AddedItemCallback(NSItem newItem)
 }
 
 void
-NSBot::SetName(string nickname)
+ncBot::SetName(string nickname)
 {
 	if (autocvar_bot_prefix)
 		SetInfoKey("name", sprintf("%s %s", autocvar_bot_prefix, nickname));
@@ -534,20 +534,20 @@ NSBot::SetName(string nickname)
 }
 
 void
-NSBot::SetInfoKey(string strKey, string strValue)
+ncBot::SetInfoKey(string strKey, string strValue)
 {
 	forceinfokey(this, strKey, strValue);
 }
 
 void
-NSBot::SetInfoKeyFloat(string strKey, float floatValue)
+ncBot::SetInfoKeyFloat(string strKey, float floatValue)
 {
 	forceinfokey(this, strKey, ftos(floatValue));
 }
 #endif
 
 string
-NSBot::GetInfoKey(string strKey)
+ncBot::GetInfoKey(string strKey)
 {
 #ifdef SERVER
 	return infokey(this, strKey);
@@ -560,7 +560,7 @@ NSBot::GetInfoKey(string strKey)
 
 
 float
-NSBot::GetInfoKeyFloat(string strKey)
+ncBot::GetInfoKeyFloat(string strKey)
 {
 #ifdef SERVER
 	return infokeyf(this, strKey);
@@ -573,7 +573,7 @@ NSBot::GetInfoKeyFloat(string strKey)
 
 
 void
-NSBot::NSBot(void)
+ncBot::ncBot(void)
 {
 }
 
@@ -613,9 +613,9 @@ bot_spawner_think(void)
 	}
 
 	/* add remove as necessary */
-	if (clientCount < cvar("bot_minClients")) {
+	if (clientCount < minClientsCvar) {
 		BotProfile_AddRandom();
-	} else if (clientCount > cvar("bot_minClients")) {
+	} else if (clientCount > minClientsCvar) {
 		if (botCount > 0i) {
 			Bot_KickRandom();
 		}

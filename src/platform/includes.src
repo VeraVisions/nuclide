@@ -13,5 +13,6 @@ maplibrary.qc
 activitypub.qc
 saves.qc
 cmd.qc
+fragnet.qc
 init.qc
 #endlist 

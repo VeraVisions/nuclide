@@ -1,0 +1,7 @@
+{
+	program defaultskin
+	diffusemap models/props_gltf/boombox.tga 
+	normalmap models/props_gltf/boombox_local.tga 
+	specularmap models/props_gltf/boombox_mra.tga 
+	fullbrightmap models/props_gltf/boombox_emissive.tga 
+}

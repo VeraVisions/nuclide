@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/** The state the NSMoverEntity is in. */
+/** The state the ncMoverEntity is in. */
 typedef enum
 {
 	MOVER_POS1, /**< At the initial starting position. */
@@ -23,7 +23,7 @@ typedef enum
 	MOVER_2TO1 /**< on its way back to the starting position. */
 } moverState_t;
 
-/** The movement type of the NSMoverEntity. */
+/** The movement type of the ncMoverEntity. */
 typedef enum
 {
 	MOVERTYPE_LINEAR, /**< Moves in a linear fashion. */
@@ -34,7 +34,7 @@ typedef enum
 #define AREAPORTAL_CLOSED 0
 #define AREAPORTAL_OPEN 1
 
-/** NSMoverEntity is responsible for handling movement functions of
+/** ncMoverEntity is responsible for handling movement functions of
 mainly brush-based entities that move and push other entities around
 the game world. Your sub-class will define the type of movement and
 the two positions within the entity will traverse - and then do so
@@ -43,10 +43,10 @@ at your request.
 @ingroup baseclass
 */
 class
-NSMoverEntity:NSSurfacePropEntity
+ncMoverEntity:ncSurfacePropEntity
 {
 public:
-	void NSMoverEntity(void);
+	void ncMoverEntity(void);
 
 	/** Returns a directional position from the current one. */
 	nonvirtual vector GetDirectionalPosition(vector, float);
@@ -94,7 +94,7 @@ public:
 	nonvirtual void MoveToReverse(float);
 	/** Rotates to the reversed state. */
 	nonvirtual void RotateToReverse(float);
-	/** Returns if the NSMoverEntity is currently moving. */
+	/** Returns if the ncMoverEntity is currently moving. */
 	nonvirtual bool IsMoving(void);
 
 	/** Overridable: Called when the mover starts moving from its position to another. */

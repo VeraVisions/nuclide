@@ -44,10 +44,10 @@ Objects such as rockets, grenades, bolts etc. should ideally be this.
 
 @ingroup baseclass
 */
-class NSProjectile:NSAttack
+class ncProjectile:ncAttack
 {
 public:
-	void NSProjectile(void);
+	void ncProjectile(void);
 
 #ifdef CLIENT
 	virtual void ReceiveEntity(float, float);
@@ -66,8 +66,8 @@ public:
 	/** Called upon the projectile touching another object. */
 	virtual void Touch(entity);
 	virtual void Spawned(void);
-	virtual void Pain(entity, entity, int, vector, int);
-	virtual void Death(entity, entity, int, vector, int);
+	virtual void Pain(entity, entity, int, vector, vector, int);
+	virtual void Death(entity, entity, int, vector, vector, int);
 
 	virtual void SpawnKey(string, string);
 	virtual void EvaluateEntity(void);
@@ -88,8 +88,8 @@ public:
 	nonvirtual void SetLightColor(vector);
 	nonvirtual void SetLightRadius(float);
 
-	nonvirtual void SetWeaponOwner(NSWeapon);
-	nonvirtual NSWeapon GetWeaponOwner(void);
+	nonvirtual void SetWeaponOwner(ncWeapon);
+	nonvirtual ncWeapon GetWeaponOwner(void);
 
 	nonvirtual void EnableDetonateOnFuse(bool);
 	nonvirtual void EnableDetonateOnDeath(bool);
@@ -163,11 +163,11 @@ private:
 	vector m_vecSpawnMaxs;
 	float m_flSpawnFrame;
 	vector m_vecSpawnOrigin;
-	NSWeapon m_weaponOwner;
+	ncWeapon m_weaponOwner;
 
 	/* ETQW-additions */
 	bool m_bIsBullet;
-	NSSurfacePropEntity m_eMultiTarget;
+	ncSurfacePropEntity m_eMultiTarget;
 	int m_iMultiValue;
 	int m_iMultiBody;
 	int m_iShots;
@@ -185,8 +185,11 @@ private:
 	bool m_bTrackEnemy;
 	vector m_trackJitter;
 	float m_trackDelay;
+	string m_defPlaneImpact;
 
-	NSTimer m_thrustHandler;
+	ncTimer m_thrustHandler;
+	vector m_hitLocation;
+	bool m_noFX;
 
 	nonvirtual void _AnimateThink(void);
 	nonvirtual void _ThrustThink(void);
@@ -200,7 +203,7 @@ private:
 };
 
 #ifdef SERVER
-NSProjectile NSProjectile_SpawnDef(string entityDef, NSActor theOwner);
-NSProjectile NSProjectile_SpawnDefAtPosition(string entityDef, NSActor theOwner, vector vecOrigin, vector vecAngles);
-NSProjectile NSProjectile_SpawnDefAttachment(string entityDef, NSActor theOwner, int attachmentID);
+ncProjectile ncProjectile_SpawnDef(string entityDef, ncActor theOwner);
+ncProjectile ncProjectile_SpawnDefAtPosition(string entityDef, ncActor theOwner, vector vecOrigin, vector vecAngles);
+ncProjectile ncProjectile_SpawnDefAttachment(string entityDef, ncActor theOwner, int attachmentID);
 #endif

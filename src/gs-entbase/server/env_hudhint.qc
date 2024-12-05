@@ -41,11 +41,11 @@ Will display a hint message to the client who activates it.
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-env_hudhint:NSPointTrigger
+env_hudhint:ncPointTrigger
 {
 public:
 	void env_hudhint(void);

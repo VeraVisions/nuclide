@@ -2,11 +2,13 @@
 
 ## Preface
 
-Networking in FTEQW is an extension of the design decisions made for QuakeWorld. All you have to know is that we use NACK feedback to network the changes from client to server. There are a lot of other great resources that document the QuakeWorld protocol, so we will focus on the additions that matter here.
+Networking in [FTE](https://www.fteqw.org/) is an extension of the design decisions made for QuakeWorld. All you have to know is that we use NACK feedback to network the changes from client to server. There are a lot of other great resources that document the QuakeWorld protocol, so we will focus on the additions in **FTE** that matter here.
+
+@note This document will be mainly relevant to programmers working within QuakeC.
 
 ## Leveraged by FTE QuakeWorld
 
-In Nuclide, we make heavy use of custom entity networking. In FTE, you can set the entity field `.SendEntity` and `.SendFlags` to control network updates for the given entity. You have to implement your own `.SendEntity` function that communicates:
+In **Nuclide**, we make heavy use of custom entity networking. In **FTE**, you can set the server-side entity field `.SendEntity` and `.SendFlags` to control network updates for any given entity. You have to implement your own `.SendEntity` function that communicates:
 
 1. The type of entity (so the client can interpret it once it arrives)
 2. The type of information that has changed (you'll see references to `flChanged` in code a lot)
@@ -34,7 +36,7 @@ Once the frame ends, we will network the differences in the next method.
 
 ### SendEntity
 
-As already mentioned in the FTE section, this is where the actual networking gets done.
+As already mentioned in the **FTE** section, this is where the actual networking gets done.
 
 This is where we have helper macros for dealing with sending and flagging the updates reliably.
 
@@ -47,11 +49,11 @@ This is where we have helper macros for dealing with sending and flagging the up
 - SENDENTITY_ANGLE( field, changedFlag )
 - SENDENTITY_ENTITY( field, changedFlag )
 
-Most of them are self explanatory, but in the case of `SENDENTITY_ANGLE` we actually network a short, since we don't need full floating point precision for most types of angles. Keep that in mind if you're running into precision issues.
+Most of them are self explanatory as the names refer to the size and datatype being sent, but in the case of `SENDENTITY_ANGLE` we actually network a short, since we don't need full floating point precision for most types of angles. Keep that in mind if you're running into precision issues.
 
 ### ReceiveEntity
 
-Method is called on the client-side for each respective entity class we want to handle. 
+The **ReceiveEntity** method is called on the client-side for each respective entity class we want to handle.
 First however, we need to talk about the handler.
 
 We allow any game to implement their own handler for entity updates in the function `ClientGame_EntityUpdate(float type, bool isNew)` which you're encouraged to implement. This is where we check for a handler first, then Nuclide will attempt to handle it instead.
@@ -69,11 +71,11 @@ We usually just read the flags field (which we assume is a float for most entiti
 
 As you can tell, it's the same setup as in `SendEntity` - which is by design. This will make keeping fields in check much easier. A simple find-and-replace of the word **SEND** with **READ** will do the job most of the time.
 
-We'd like to streamline a lot of this further, so this may be subject to change.
+We'd like to streamline a lot of this further in the future, so this may be subject to change.
 
 ## Event updates
 
-The server will use the FTE QuakeWorld supported `SVC_CGAMEPACKET` packet type to network events.
+The server will use the **FTE** supported `SVC_CGAMEPACKET` packet type to network events.
 
 An example of such an event is as follows, it can be called at any time, anywhere on the server:
 
@@ -84,9 +86,27 @@ An example of such an event is as follows, it can be called at any time, anywher
 	multicast([0,0,0], MULTICAST_ALL_R);
 ```
 
-This event will then be sent to **ALL** clients, **reliably** as indicated by the **MULTICAST_ALL_R**. On the client-side, we will handle any event in `Event_Parse(float eventType)` that you are not handling yourself within `ClientGame_EventParse(float eventType)`.
+This event will then be sent to **ALL** clients, *reliably* as indicated by the **MULTICAST_ALL_R**. On the client-side, we will handle any event in `Event_Parse(float eventType)` that you are not handling yourself within `ClientGame_EventParse(float eventType)`.
 
-From there you can use the builtins `readbyte()`, `readshort()` etc. which are also used under-the-hood in the macros for entity updates above. Yes, ideally this should be more consistent and nicer to use in the future - but we left it pretty stock in this case.
+From there you can use the builtins `readbyte()`, `readshort()` etc. like so:
+
+```
+bool
+ClientGame_EventParse(float fHeader)
+{
+	switch (fHeader) {
+	case EV_TEST:
+		float data = readbyte();
+		printf("data should be 123: %d\n", data);
+		break;
+	default:
+		return (false);
+	}
+
+	return (true);
+}
+
+```
 
 ## Client to Server communication
 
@@ -204,13 +224,15 @@ Check if the .classname is **valid** on the server before doing anything fancy o
 
 ### clientcommand
 
-Whenever the client issues a `cmd` based command, say: `cmd say foobar` in console or via the client game in general, the server will forward it to the active NSGameRules based game rule class within the `ClientCommand(NSClient client, string command)` method. This is useful for things you do every once in a while.
+Whenever the client issues a `cmd` based command, say: `cmd say foobar` in console or via the client game in general, the server will forward it to the active ncGameRules based game rule class within the `ClientCommand(ncClient client, string command)` method. This is useful for things you do every once in a while.
 
 ## ServerInfo
 
 ServerInfo keys can be set by server admins, or the game-logic. Those keys are networked to clients inside the game, as well as outside of the game. They can be queried through tools like `qstat` or `GameSpy`.
 
 ### Setting ServerInfo
+
+@note This section applies to all games on **FTE** and does not discuss APIs specific to **Nuclide** but rather **FTE** and **QuakeWorld** itself. We strongly recommend you use [APIs and subsystems](@ref sharedAPI) we designed to handle some of the tasks below, but kept the information below as an informational resource.
 
 #### Console (admins/debugging)
 

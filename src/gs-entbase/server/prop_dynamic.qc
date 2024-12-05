@@ -35,11 +35,11 @@ Client-side decorative model entity.
 This entity was introduced in Half-Life 2 (2004).
 There are two ways of making a prop_dynamic non-solid.
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-prop_dynamic:NSSurfacePropEntity
+prop_dynamic:ncSurfacePropEntity
 {
 public:
 	void prop_dynamic(void);

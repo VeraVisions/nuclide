@@ -5,13 +5,20 @@ var void(void) g_hudDraw;
 var void(void) g_hudDrawSpectator;
 var void(string, string) g_hudSendStat;
 var void(string) g_hudSwitchedWeapon;
+var void(string) g_hudPickedUpItem;
 var float(float) g_hudInputFrame;
 var bool(string) g_hudConsoleCommand;
 var void(void) g_hudRendererRestarted;
+var void(vector, int, int) g_hudDamageReceived;
 
 void
 HUDProgs_Init(void)
 {
+	/* already loaded */
+	if (g_flHUDProgs > 0) {
+		return;
+	}
+
 	g_flHUDProgs = addprogs("hud.dat");
 
 	if (g_flHUDProgs > 0) {
@@ -23,6 +30,8 @@ HUDProgs_Init(void)
 		g_hudInputFrame = externvalue(g_flHUDProgs, "HUD_InputFrame");
 		g_hudConsoleCommand = externvalue(g_flHUDProgs, "HUD_ConsoleCommand");
 		g_hudRendererRestarted = externvalue(g_flHUDProgs, "HUD_RendererRestarted");
+		g_hudPickedUpItem = externvalue(g_flHUDProgs, "HUD_PickedUpItem");
+		g_hudDamageReceived = externvalue(g_flHUDProgs, "HUD_DamageReceived");
 
 		if (g_hudInit) {
 			g_hudInit();
@@ -50,6 +59,8 @@ HUDProgs_Draw(void)
 			externset(g_flHUDProgs, clframetime, "clframetime");
 			g_hudDraw();
 		}
+
+		Textmenu_Draw();
 	}
 }
 
@@ -83,6 +94,16 @@ HUDProgs_SwitchedToWeapon(string weaponName)
 	}
 }
 
+void
+HUDProgs_PickedUpItem(string itemName)
+{
+	if (g_flHUDProgs > 0) {
+		if (g_hudPickedUpItem) {
+			g_hudPickedUpItem(itemName);
+		}
+	}
+}
+
 float
 HUDProgs_ClientInputFrame(float inputFrame)
 {
@@ -105,6 +126,16 @@ HUDProgs_ConsoleCommand(string commandString)
 	}
 
 	return (false);
+}
+
+void
+HUDProgs_DamageReceived(vector damagePos, int damagePoints, int damageFlags)
+{
+	if (g_flHUDProgs > 0) {
+		if (g_hudDamageReceived) {
+			g_hudDamageReceived(damagePos, damagePoints, damageFlags);
+		}
+	}
 }
 
 __weak void
@@ -143,6 +174,12 @@ HUD_SwitchedToWeapon(string weaponName)
 	HUDProgs_SwitchedToWeapon(weaponName);
 }
 
+__weak void
+HUD_PickedUpItem(string itemName)
+{
+	HUDProgs_PickedUpItem(itemName);
+}
+
 __weak float
 HUD_ClientInputFrame(float inputButtons)
 {
@@ -153,4 +190,10 @@ __weak bool
 HUD_ConsoleCommand(string commandString)
 {
 	return HUDProgs_ConsoleCommand(commandString);
+}
+
+__weak void
+HUD_DamageReceived(vector damagePos, int damagePoints, int damageFlags)
+{
+	HUDProgs_DamageReceived(damagePos, damagePoints, damageFlags);
 }

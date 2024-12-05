@@ -43,11 +43,11 @@ by players.
 # TRIVIA
 This entity was introduced in Obsidian Conflict (2006).
 
-@ingroup shared
+@ingroup sharedentity
 @ingroup pointentity
 */
 class
-info_waypoint:NSPointTrigger
+info_waypoint:ncPointTrigger
 {
 public:
 	void info_waypoint(void);

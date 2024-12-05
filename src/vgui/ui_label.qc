@@ -19,10 +19,10 @@
 
 @ingroup vgui
 */
-class VGUILabel:VGUIWidget
+class vguiLabel:vguiWidget
 {
 public:
-	void VGUILabel(void);
+	void vguiLabel(void);
 
 	nonvirtual void SetTitle(string);
 
@@ -39,20 +39,20 @@ private:
 };
 
 void
-VGUILabel::VGUILabel(void)
+vguiLabel::vguiLabel(void)
 {
 	m_strTitle = __NULL__;
 	m_labelFlags = AF_TOP | AF_LEFT;
 }
 
 void
-VGUILabel::Spawned(void)
+vguiLabel::Spawned(void)
 {
 	SetSize([0,0]);
 }
 
 void
-VGUILabel::SetTitle (string strName)
+vguiLabel::SetTitle (string strName)
 {
 	m_strTitle = sprintf("%s%s", Font_RGBtoHex(UI_FGCOLOR), strName);
 	drawfont = g_fntDefault.iID;
@@ -65,13 +65,13 @@ VGUILabel::SetTitle (string strName)
 }
 
 void
-VGUILabel::SetTextSize(int val)
+vguiLabel::SetTextSize(int val)
 {
 	m_textSize = val;
 }
 
 void
-VGUILabel::SetAlignment(float alignment)
+vguiLabel::SetAlignment(float alignment)
 {
 	m_labelFlags &= ~AF_LEFT;
 	m_labelFlags &= ~AF_TOP;
@@ -81,7 +81,7 @@ VGUILabel::SetAlignment(float alignment)
 }
 
 void
-VGUILabel::Draw(void)
+vguiLabel::Draw(void)
 {
 	if (m_strTitle) {
 		vector pos;
@@ -98,7 +98,7 @@ VGUILabel::Draw(void)
 }
 
 bool
-VGUILabel::Input (float flEVType, float flKey, float flChar, float flDevID)
+vguiLabel::Input (float flEVType, float flKey, float flChar, float flDevID)
 {
 	return false;
 }

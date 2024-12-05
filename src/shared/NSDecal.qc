@@ -40,7 +40,7 @@ const string g_decal_shader = \
 
 #ifdef SERVER
 float
-NSDecal::SendEntity(entity ePEnt, float changedflags)
+ncDecal::SendEntity(entity ePEnt, float changedflags)
 {
 	if (clienttype(ePEnt) != CLIENTTYPE_REAL)
 		return (0);
@@ -70,7 +70,7 @@ NSDecal::SendEntity(entity ePEnt, float changedflags)
 }
 #else
 void
-NSDecal::ReceiveEntity(void)
+ncDecal::ReceiveEntity(void)
 {
 	float changedflags = readbyte();
 
@@ -109,14 +109,14 @@ NSDecal::ReceiveEntity(void)
 }
 
 float
-NSDecal::predraw(void)
+ncDecal::predraw(void)
 {
 	vector vecPlayer;
 	int s = (float)getproperty(VF_ACTIVESEAT);
 	pSeat = &g_seats[s];
 	vecPlayer = pSeat->m_vecPredictedOrigin;
 
-	NSDecal dcl = (NSDecal)self;
+	ncDecal dcl = (ncDecal)self;
 	if (!autocvar_r_drawdecals) {
 		return (PREDRAW_NEXT);
 	}
@@ -136,7 +136,7 @@ NSDecal::predraw(void)
 }
 
 void
-NSDecal::BuildShader(void)
+ncDecal::BuildShader(void)
 {
 	/* skip empty decals */
 	if (!m_strTexture || !m_strTexture)
@@ -148,7 +148,7 @@ NSDecal::BuildShader(void)
 
 /* this is like Decal_Parse, but better */
 void
-NSDecal::Place(vector org, string dname)
+ncDecal::PlaceAtScale(vector org, string dname, float sizeScale)
 {
 	if (!dname)
 		return;
@@ -188,7 +188,7 @@ NSDecal::Place(vector org, string dname)
 	pvsflags = PVSF_NOREMOVE | PVSF_IGNOREPVS;
 	SendFlags = 1;
 #else
-	size = drawgetimagesize(m_strTexture);
+	size = drawgetimagesize(m_strTexture) * sizeScale;
 
 	if (serverkeyfloat("*bspversion") == BSPVER_HL) {
 		BuildShader();
@@ -198,7 +198,7 @@ NSDecal::Place(vector org, string dname)
 
 	makevectors(angles);
 	float surf = getsurfacenearpoint(world, origin);
-	vector s_dir = getsurfacepointattribute(world, surf, 0, SPA_S_AXIS);
+// 	vector s_dir = getsurfacepointattribute(world, surf, 0, SPA_S_AXIS);
 	vector t_dir = getsurfacepointattribute(world, surf, 0, SPA_T_AXIS);
 	mins = v_up / size[0];
 	maxs = t_dir / size[1];
@@ -207,7 +207,14 @@ NSDecal::Place(vector org, string dname)
 #endif
 }
 
-NSDecal g_decals;
+/* this is like Decal_Parse, but better */
+void
+ncDecal::Place(vector org, string dname)
+{
+	PlaceAtScale(org, dname, 1.0f);
+}
+
+ncDecal g_decals;
 void Decals_Init(void)
 {
 	int max;
@@ -223,24 +230,24 @@ void Decals_Init(void)
 		max = 5;
 	}
 
-	NSDecal nextdecal = spawn(NSDecal);
+	ncDecal nextdecal = spawn(ncDecal);
 	g_decals = nextdecal;
 	for (int i = 0; i <= max; i++) {
 		nextdecal.classname = "tempdecal";
-		nextdecal.owner = spawn(NSDecal);
+		nextdecal.owner = spawn(ncDecal);
 
 		if (i == max) {
 			nextdecal.owner = g_decals;
 		} else {
-			nextdecal = (NSDecal)nextdecal.owner;
+			nextdecal = (ncDecal)nextdecal.owner;
 		}
 	}
 }
 
-NSDecal Decals_Next(vector pos)
+ncDecal Decals_Next(vector pos)
 {
-	NSDecal ret = g_decals;
-	g_decals = (NSDecal)g_decals.owner;
+	ncDecal ret = g_decals;
+	g_decals = (ncDecal)g_decals.owner;
 
 	/* Check for a tempdecal within a radius of 8 units and overwrite that one
 	 * instead */
@@ -268,7 +275,7 @@ void Decals_Place(vector pos, string dname)
 			return;
 	}
 
-	NSDecal x = Decals_Next(pos);
+	ncDecal x = Decals_Next(pos);
 	x.Place(pos, dname);
 }
 
@@ -287,11 +294,11 @@ void
 Decal_Reload(void)
 {
 	for (entity b = world; (b = find(b, ::classname, "tempdecal"));) {
-		NSDecal d = (NSDecal)b;
+		ncDecal d = (ncDecal)b;
 		d.BuildShader();
 	}
 	for (entity b = world; (b = find(b, ::classname, "decal"));) {
-		NSDecal d = (NSDecal)b;
+		ncDecal d = (ncDecal)b;
 		d.BuildShader();
 	}
 }
@@ -299,11 +306,11 @@ Decal_Reload(void)
 void
 Decal_Parse(void)
 {
-	NSDecal new;
+	ncDecal new;
 
 	/* convert us to an object of type decal */
-	spawnfunc_NSDecal();
-	new = (NSDecal)self;
+	spawnfunc_ncDecal();
+	new = (ncDecal)self;
 	new.ReceiveEntity();
 }
 
@@ -320,7 +327,7 @@ Decal_Shutdown(void)
 #endif
 
 void
-NSDecal::NSDecal(void)
+ncDecal::ncDecal(void)
 {
 	m_strShader = __NULL__;
 	m_strTexture = __NULL__;

@@ -15,29 +15,29 @@
 */
 
 class
-VGUILoadingPanel:VGUIWindow
+vguiLoadingPanel:vguiWindow
 {
-	void VGUILoadingPanel(void);
+	void vguiLoadingPanel(void);
 	virtual void Spawned(void);
 	nonvirtual void UpdateProgress(void);
 
 private:
 
-	VGUILabel m_lblLoading;
-	VGUIButton m_btnCancel;
-	VGUIProgressBar m_progressBar;
+	vguiLabel m_lblLoading;
+	vguiButton m_btnCancel;
+	vguiProgressBar m_progressBar;
 	float timePassed;
 };
 
 void
-VGUILoadingPanel::VGUILoadingPanel(void)
+vguiLoadingPanel::vguiLoadingPanel(void)
 {
 	m_lblLoading = __NULL__;
 	m_btnCancel = __NULL__;
 }
 
 void
-VGUILoadingPanel::UpdateProgress(void)
+vguiLoadingPanel::UpdateProgress(void)
 {
 	timePassed += frametime;
 
@@ -48,24 +48,24 @@ VGUILoadingPanel::UpdateProgress(void)
 }
 
 void
-VGUILoadingPanel::Spawned(void)
+vguiLoadingPanel::Spawned(void)
 {
 	super::Spawned();
 
 	SetSize( [380,112] );
 	SetTitle( "Loading..." );
-	SetStyleMask(VGUIWindowTitled);
+	SetStyleMask(vguiWindowTitled);
 
-	m_progressBar = spawn( VGUIProgressBar );
+	m_progressBar = spawn( vguiProgressBar );
 	m_progressBar.SetSize( [260,24] );
 	m_progressBar.SetPos( [20,64] );
 
-	m_btnCancel = spawn( VGUIButton );
+	m_btnCancel = spawn( vguiButton );
 	m_btnCancel.SetTitle( "Cancel" );
 	m_btnCancel.SetSize( [72,24] );
 	m_btnCancel.SetPos( [288,64] );
 
-	m_lblLoading = spawn( VGUILabel );
+	m_lblLoading = spawn( vguiLabel );
 	m_lblLoading.SetTitle( "Starting local game server" );
 	m_lblLoading.SetSize( [248,16] );
 	m_lblLoading.SetPos( [20,40] );

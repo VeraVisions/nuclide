@@ -131,10 +131,10 @@ bool EntityDef_HasSpawnClass(string className);
 
 #ifdef SERVER
 bool EntityDef_Precache(string);
-NSEntity EntityDef_SwitchClass(NSEntity target, string className);
-NSEntity Entity_CreateClass(string className);
+ncEntity EntityDef_SwitchClass(ncEntity target, string className);
+ncEntity Entity_CreateClass(string className);
 
-NSEntity EntityDef_NewClassname(string className);
+ncEntity EntityDef_NewClassname(string className);
 #endif
 
 /** @} */ // end of entitydef

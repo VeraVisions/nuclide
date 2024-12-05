@@ -20,7 +20,7 @@ var float autocvar_cg_viewZSmoothingMin = 1;
 var float autocvar_cg_viewZSmoothingTime = 0.1;
 
 void
-NSView::NSView(void)
+ncView::ncView(void)
 {
 	m_viewTarget = __NULL__;
 	m_vecPosition = [0,0];
@@ -34,32 +34,50 @@ NSView::NSView(void)
 
 string Sky_GetMaterial(void);
 
+
+int
+ncView_Contents(vector org)
+{
+	int oldhitcontents = self.hitcontentsmaski;
+	self.hitcontentsmaski = -1;
+	traceline(org, org, MOVE_EVERYTHING, self);
+	self.hitcontentsmaski = oldhitcontents;
+	return trace_endcontentsi;
+}
+
 void
-NSView::SetupView(void)
+ncView::SetupView(void)
 {
 	setproperty(VF_DRAWENGINESBAR, (float)0);
 	setproperty(VF_DRAWCROSSHAIR, (float)0);
 
-	if (g_cheats == true)
+	if (g_cheats == true) {
 		setproperty(VF_DRAWWORLD, autocvar_r_skipWorld ? false : true);
-	else
+	} else {
 		setproperty(VF_DRAWWORLD, (float)1);
+	}
 
 	setproperty(VF_ACTIVESEAT, (float)m_iSeat);
 	setproperty(VF_MIN, m_vecPosition);
 	setproperty(VF_SIZE, m_vecSize);
 	setproperty(VF_AFOV, m_flFieldOfView);
 	setsensitivityscaler(m_flSensitivity);
-	
-	//if (autocvar(cg_skySetsCube, 0) == true) {
-	setproperty(VF_ENVMAP, "materials/skybox/sky_wasteland02");
-	//}
 
 	/* if yes, draw everything. */
-	if (m_bDrawLocalPlayer)
+	if (m_bDrawLocalPlayer) {
 		setproperty(VF_VIEWENTITY, 0);
-	else
+	} else {
 		setproperty(VF_VIEWENTITY, m_viewTarget.entnum);
+	}
+
+	/* Nasty and we should implement that VF_UNDERWATER/FORCECONTENTS thing Spoike and I discussed */
+	if (ncView_Contents(origin) & CONTENTBITS_FLUID) {
+		//cvar_set("r_postprocshader", "waterwarp");
+		//setproperty(VF_RT_SOURCECOLOUR, "waterwarp");
+		//setproperty(VF_RT_DESTCOLOUR, "waterwarp", IMGFMT_R8G8B8A8, m_vecSize);
+	} else {
+		//cvar_set("r_postprocshader", "");
+	}
 
 	/* handle camera override */
 	if (pSeat->m_flCameraTime > time || pSeat->m_flCameraTime == -1) {
@@ -85,19 +103,19 @@ NSView::SetupView(void)
 }
 
 void
-NSView::RenderView(void)
+ncView::RenderView(void)
 {
 	renderscene();
 }
 
 void
-NSView::SetDrawLocalPlayer(bool choice)
+ncView::SetDrawLocalPlayer(bool choice)
 {
 	m_bDrawLocalPlayer = choice;
 }
 
 void
-NSView::StairSmooth(void)
+ncView::StairSmooth(void)
 {
 	/* don't run this on anything going up or down... */
 	if (fabs(m_viewTarget.groundentity.velocity[2]))
@@ -129,104 +147,104 @@ NSView::StairSmooth(void)
 }
 
 void
-NSView::SetViewPosition(vector new_pos)
+ncView::SetViewPosition(vector new_pos)
 {
 	m_vecPosition = new_pos;
 }
 
 void
-NSView::SetViewSize(vector new_size)
+ncView::SetViewSize(vector new_size)
 {
 	m_vecSize = new_size;
 }
 
 void
-NSView::SetViewTarget(NSEntity new_target)
+ncView::SetViewTarget(ncEntity new_target)
 {
 	m_viewTarget = new_target;
 }
 
 void
-NSView::SetCameraOrigin(vector new_origin)
+ncView::SetCameraOrigin(vector new_origin)
 {
 	origin = new_origin;
 }
 
 void
-NSView::SetCameraAngle(vector new_angle)
+ncView::SetCameraAngle(vector new_angle)
 {
 	angles = new_angle;
 }
 
 vector
-NSView::GetCameraOrigin(void)
+ncView::GetCameraOrigin(void)
 {
 	return origin;
 }
 
 vector
-NSView::GetCameraAngle(void)
+ncView::GetCameraAngle(void)
 {
 	return angles;
 }
 
 void
-NSView::SetClientAngle(vector new_angle)
+ncView::SetClientAngle(vector new_angle)
 {
 	m_vecClientAngle = new_angle;
 	m_bSetClientAngle = true;
 }
 
 void
-NSView::SetViewMode(viewmode_t new_mode)
+ncView::SetViewMode(viewmode_t new_mode)
 {
 	m_viewmode = new_mode;
 }
 
 viewmode_t
-NSView::GetViewMode(void)
+ncView::GetViewMode(void)
 {
 	return m_viewmode;
 }
 
 void
-NSView::SetSeatID(int new_id)
+ncView::SetSeatID(int new_id)
 {
 	m_iSeat = new_id;
 }
 
 void
-NSView::SetClientOwner(NSClient new_owner)
+ncView::SetClientOwner(ncClient new_owner)
 {
 	m_client = new_owner;
 }
 
 void
-NSView::SetAFOV(float new_fov)
+ncView::SetAFOV(float new_fov)
 {
 	m_flFieldOfView = new_fov;
 }
 
 float
-NSView::GetAFOV(void)
+ncView::GetAFOV(void)
 {
 	return m_flFieldOfView;
 }
 
 void
-NSView::SetSensitivity(float new_fov)
+ncView::SetSensitivity(float new_fov)
 {
 	m_flSensitivity = new_fov;
 }
 
 float
-NSView::GetSensitivity(void)
+ncView::GetSensitivity(void)
 {
 	return m_flSensitivity;
 }
 
 vector
-NSView::GetHUDCanvasPos(void)
+ncView::GetHUDCanvasPos(void)
 {
 	if (autocvar_cg_hudAspect <= 0) {
 		return m_vecPosition;
@@ -236,7 +254,7 @@ NSView::GetHUDCanvasPos(void)
 }
 
 vector
-NSView::GetHUDCanvasSize(void)
+ncView::GetHUDCanvasSize(void)
 {
 	if (autocvar_cg_hudAspect <= 0) {
 		return m_vecSize;
@@ -246,31 +264,31 @@ NSView::GetHUDCanvasSize(void)
 }
 
 float
-NSView::GetViewWidth(void)
+ncView::GetViewWidth(void)
 {
 	return m_vecSize[0];
 }
 
 float
-NSView::GetViewHeight(void)
+ncView::GetViewHeight(void)
 {
 	return m_vecSize[1];
 }
 
 void
-NSView::AddPunchAngle(vector vecAdd)
+ncView::AddPunchAngle(vector vecAdd)
 {
 	angles += vecAdd;
 }
 
 void
-NSView::SetSoundScape(NSSoundScape newSoundScape)
+ncView::SetSoundScape(ncSoundScape newSoundScape)
 {
 	m_soundScape = newSoundScape;
 }
 
-NSSoundScape
-NSView::GetSoundScape(void)
+ncSoundScape
+ncView::GetSoundScape(void)
 {
 	return (m_soundScape);
 }
@@ -280,11 +298,11 @@ void View_PostDraw();
 void View_DrawViewModel();
 
 void
-NSView::UpdateView(void)
+ncView::UpdateView(void)
 {
-	NSClientPlayer pl = (NSClientPlayer)m_viewTarget;
-	NSClient cl = (NSClient)m_viewTarget;
-	NSClientSpectator spec = (NSClientSpectator)m_viewTarget;
+	ncPlayer pl = (ncPlayer)m_viewTarget;
+	ncClient cl = (ncClient)m_viewTarget;
+	ncSpectator spec = (ncSpectator)m_viewTarget;
 	entity c;
 
 	clearscene();
@@ -346,13 +364,14 @@ NSView::UpdateView(void)
 	case VIEWMODE_THIRDPERSON:
 		break;
 	case VIEWMODE_SPECTATING:
-		spec = (NSClientSpectator)m_viewTarget;
+		spec = (ncSpectator)m_viewTarget;
 
 		switch (spec.spec_mode) {
 		case SPECMODE_DEATHCAM:
-			vector deathAngle;
 			vector vecCamEnd;
 			c = findfloat(world, ::entnum, spec.spec_ent);
+#if 0
+			vector deathAngle;
 			vector vecCamStart = c.origin;
 			float progression = time - spec.m_flLastSpecTargetChange;
 
@@ -371,6 +390,16 @@ NSView::UpdateView(void)
 			SetCameraOrigin(trace_endpos + (v_forward * 5));
 			SetCameraAngle(deathAngle);
 			SetClientAngle(deathAngle);
+#else
+			vector vecCamStart = c.origin + [0,0,16];
+			float tag = gettagindex(c, "ValveBiped.Bip01");
+			vecCamStart = gettaginfo(c, tag);
+			vecCamEnd = vecCamStart + (anglesToForward(GetCameraAngle()) * -128);
+			other = world;
+			traceline(vecCamStart, vecCamEnd, MOVE_OTHERONLY, m_viewTarget);
+			SetCameraOrigin(trace_endpos);
+			SetCameraAngle(view_angles);
+#endif
 			break;
 		case SPECMODE_LOCKEDCHASE:
 			view_angles = [0, spec.v_angle[1], 0];
@@ -390,7 +419,7 @@ NSView::UpdateView(void)
 			c = findfloat(world, ::entnum, spec.spec_ent);
 
 			if (c.classname == "player") {
-				NSClientPlayer bp = (NSClientPlayer)c;
+				ncPlayer bp = (ncPlayer)c;
 				removeentity(c);
 				SetCameraOrigin(bp.GetEyePos());
 				SetCameraAngle(bp.v_angle);
@@ -402,7 +431,7 @@ NSView::UpdateView(void)
 
 					/* we found them */
 					if (c && c != spec) {
-						NSClientPlayer ps = (NSClientPlayer)c;
+						ncPlayer ps = (ncPlayer)c;
 						if (ps.health <= 0)
 							pl.UpdateDeathcam();
 						else
@@ -463,7 +492,7 @@ NSView::UpdateView(void)
 
 	/* all 2D operations happen after this point */
 	for (entity b = world; (b = findfloat(b, ::isCSQC, 1));) {
-		NSEntity pf = (NSEntity) b;
+		ncEntity pf = (ncEntity) b;
 
 		if (pf.postdraw)
 			pf.postdraw();
@@ -475,14 +504,14 @@ NSView::UpdateView(void)
 
 		View_PostDraw();
 
-		/* move this into NSClient methods */
+		/* move this into ncClient methods */
 		cl.PostFrame();
 	}
 
 	if (autocvar(r_showView, 0) == false)
 		return;
 
-	Font_DrawText(m_vecPosition + [8,8], "NSView Debug Information", FONT_CON);
+	Font_DrawText(m_vecPosition + [8,8], "ncView Debug Information", FONT_CON);
 	Font_DrawText(m_vecPosition + [8,20], sprintf("Seat: %i", m_iSeat), FONT_CON);
 	Font_DrawText(m_vecPosition + [8,32], sprintf("FOV: %d", m_flFieldOfView), FONT_CON);
 	Font_DrawText(m_vecPosition + [8,44], sprintf("Origin: %v", origin), FONT_CON);

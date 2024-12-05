@@ -15,12 +15,12 @@
 */
 
 void
-NSSpawnPoint::NSSpawnPoint(void)
+ncSpawnPoint::ncSpawnPoint(void)
 {
 }
 
 void
-NSSpawnPoint::Respawn(void)
+ncSpawnPoint::Respawn(void)
 {
 	vector newMins, newMaxs;
 

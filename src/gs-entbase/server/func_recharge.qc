@@ -33,11 +33,11 @@ Known as the "H.E.V. Charger", formerly known as the "Super Charger".
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup brushentity
 */
 class
-func_recharge:NSRenderableEntity
+func_recharge:ncRenderableEntity
 {
 public:
 	void func_recharge(void);
@@ -197,7 +197,7 @@ func_recharge::OnPlayerUse(void)
 		return;
 	}
 
-	NSClientPlayer pl = (NSClientPlayer)eActivator;
+	ncPlayer pl = (ncPlayer)eActivator;
 	if (pl.armor >= 100) {
 		eActivator.RemoveVFlags(VFL_USE_RELEASED);
 		StartSound(m_strSndDone, CHAN_VOICE, 0, true);

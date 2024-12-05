@@ -47,7 +47,7 @@ A trigger volume which works more than once.
 - TF_CLIENTS (1) : Clients can touch it.
 - TF_NPCS (2) : NPCs can touch it.
 - TF_PUSHABLE (4) : Pushables can touch it.
-- TF_PHYSICS (8) : NSPhysicsEntity based classes can touch it.
+- TF_PHYSICS (8) : ncPhysicsEntity based classes can touch it.
 - TF_FRIENDLIES (16) : Friendly NPCs can touch it.
 - TF_CLIENTSINVEHICLES (32) : Clients within vehicles can touch it.
 - TF_EVERYTHING (64) : Everything can touch it.
@@ -69,11 +69,11 @@ If you want an entity like this that can only be used once, see trigger_once.
 # TRIVIA
 This entity was introduced in Quake (1996).
 
-@ingroup server
+@ingroup serverentity
 @ingroup brushentity
 */
 class
-trigger_multiple:NSBrushTrigger
+trigger_multiple:ncBrushTrigger
 {
 public:
 	void trigger_multiple(void);

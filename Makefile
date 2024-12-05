@@ -1,8 +1,8 @@
 #
-# Nuclide Makefile
+# Nuclide GNUMakefile
 #
 # Apr 2024 by Marco Cawthorne <marco@vera-visions.com>
-# Last updated: 2024/10/12
+# Last updated: 2024/11/28
 #
 
 # set `GAME` when issuing make. E.g. `make GAME=wastes`
@@ -38,6 +38,27 @@ BUILD_DIR=$(NUCLIDE_DIR)/build
 EDITOR=radiant
 NATIVE_PLUGINS=`head -n 1 ../../../$(GAME)/PLUGINS`
 
+define CMDSTR
+#
+endef
+
+define ARGSTR
+\$
+endef
+
+RADIANT_GAME="$(NUCLIDE_DIR)/ThirdParty/gtkradiant/install/games/$(GAME).game"
+RADIANT_XLINK="$(NUCLIDE_DIR)/ThirdParty/gtkradiant/install/installs/$(NAME)Pack/game/game.xlink"
+RADIANT_SYNAPSE="$(NUCLIDE_DIR)/ThirdParty/gtkradiant/install/installs/$(NAME)Pack/game/synapse.config"
+RADIANT_PROJECT="$(NUCLIDE_DIR)/ThirdParty/gtkradiant/install/installs/$(NAME)Pack/install/$(GAME)/scripts/default_project.proj"
+RADIANT_TEXTURES="$(NUCLIDE_DIR)/ThirdParty/gtkradiant/install/installs/$(NAME)Pack/install/$(GAME)/textures"
+ENTITY_DEF="$(NUCLIDE_DIR)/ThirdParty/gtkradiant/install/installs/$(NAME)Pack/install/$(GAME)/scripts/entities.def"
+RADIANT_SHADERLIST="$(NUCLIDE_DIR)/ThirdParty/gtkradiant/install/installs/$(NAME)Pack/install/$(GAME)/scripts/shaderlist.txt"
+
+EDITOR_VMAP="$(ARGSTR)TEMPLATEenginepath/vmap"
+EDITOR_ENGINEPATH="$(ARGSTR)TEMPLATEenginepath"
+EDITOR_BASEPATH="$(ARGSTR)TEMPLATEbasedir"
+EDITOR_HOMEPATH="$(ARGSTR)TEMPLATEuserhomepath"
+
 help:
 	@printf "#####################\nNuclide Makefile Help\n#####################\n\nmain targets:\n"
 	@printf "\tgame [GAME=base]\n"
@@ -68,26 +89,101 @@ client: fteqcc
 server: fteqcc
 	cd "$(GAME)/src/server/" && $(MAKE) QCC=$(QCC_DIR)/../../../fteqcc
 
+rules: fteqcc
+	cd "$(GAME)/src/rules/" && $(MAKE) QCC=$(QCC_DIR)/../../../fteqcc
+
 menu: fteqcc
 	cd "$(GAME)/src/menu/" && $(MAKE) QCC=$(QCC_DIR)/../../../fteqcc
 
+mapc: fteqcc
+	cd "$(GAME)/src/maps/" && $(MAKE) QCC=$(QCC_DIR)/../../../fteqcc
+
+# will build a gamepack for gtkradiant
+radiant-game: radiant edef
+	echo "<?xml version=\"1.0\" encoding=\"iso-8859-1\" standalone=\"yes\"?>" > "$(RADIANT_GAME)"
+	echo "<game" >> "$(RADIANT_GAME)"
+	echo "  name=\"$(NAME)\"" >> "$(RADIANT_GAME)"
+	echo "  enginepath_linux=\"$(NUCLIDE_DIR)\"" >> "$(RADIANT_GAME)"
+	echo "  gametools_linux=\"$(NUCLIDE_DIR)/ThirdParty/gtkradiant/install/installs/$(NAME)Pack/game\"" >> "$(RADIANT_GAME)"
+	echo "  prefix=\".$(GAME)\"" >> "$(RADIANT_GAME)"
+	echo "  basegame=\"$(GAME)\"" >> "$(RADIANT_GAME)"
+	echo "/>" >> "$(RADIANT_GAME)"
+	mkdir -p "$(NUCLIDE_DIR)/ThirdParty/gtkradiant/install/installs/$(NAME)Pack/game"
+	echo "<?xml version=\"1.0\" encoding=\"iso-8859-1\" standalone=\"yes\"?>" > "$(RADIANT_XLINK)"
+	echo "<!-- Links for the $(NAME) game pack -->" >> "$(RADIANT_XLINK)"
+	echo "<links>" >> "$(RADIANT_XLINK)"
+	echo "<item name=\"Nuclide Developer Reference\" url=\"http://developer.vera-visions.com/\"/>" >> "$(RADIANT_XLINK)"
+	echo "<item name=\"Vera Visions\" url=\"http://www.vera-visions.com/\"/>" >> "$(RADIANT_XLINK)"
+	echo "</links>" >> "$(RADIANT_XLINK)"
+	echo "<?xml version=\"1.0\" encoding=\"iso-8859-1\" standalone=\"yes\"?><synapseconfig><client name=\"core\"><api name=\"image\">" > "$(RADIANT_SYNAPSE)"
+	echo "png jpg tga" >> "$(RADIANT_SYNAPSE)"
+	echo "</api><api name=\"VFS\">" >> "$(RADIANT_SYNAPSE)"
+	echo "pk3" >> "$(RADIANT_SYNAPSE)"
+	echo "</api><api name=\"shaders\">" >> "$(RADIANT_SYNAPSE)"
+	echo "quake3" >> "$(RADIANT_SYNAPSE)"
+	echo "</api><api name=\"map\">" >> "$(RADIANT_SYNAPSE)"
+	echo "mapq3" >> "$(RADIANT_SYNAPSE)"
+	echo "</api><api name=\"eclass\">" >> "$(RADIANT_SYNAPSE)"
+	echo "def" >> "$(RADIANT_SYNAPSE)"
+	echo "</api><api name=\"surfdialog\">" >> "$(RADIANT_SYNAPSE)"
+	echo "quake3" >> "$(RADIANT_SYNAPSE)"
+	echo "</api></client><client name=\"image\"><api name=\"VFS\">" >> "$(RADIANT_SYNAPSE)"
+	echo "pk3" >> "$(RADIANT_SYNAPSE)"
+	echo "</api></client><client name=\"shaders\"><api name=\"shaders\">" >> "$(RADIANT_SYNAPSE)"
+	echo "quake3" >> "$(RADIANT_SYNAPSE)"
+	echo "</api><api name=\"VFS\">" >> "$(RADIANT_SYNAPSE)"
+	echo "pk3" >> "$(RADIANT_SYNAPSE)"
+	echo "</api></client><client name=\"map\"><api name=\"shaders\">" >> "$(RADIANT_SYNAPSE)"
+	echo "quake3" >> "$(RADIANT_SYNAPSE)"
+	echo "</api></client><client name=\"xmap\"><api name=\"shaders\">" >> "$(RADIANT_SYNAPSE)"
+	echo "quake3" >> "$(RADIANT_SYNAPSE)"
+	echo "</api></client><client name=\"model\"><api name=\"shaders\">" >> "$(RADIANT_SYNAPSE)"
+	echo "quake3" >> "$(RADIANT_SYNAPSE)"
+	echo "</api><api name=\"VFS\">" >> "$(RADIANT_SYNAPSE)"
+	echo "pk3" >> "$(RADIANT_SYNAPSE)"
+	echo "</api></client></synapseconfig>" >> "$(RADIANT_SYNAPSE)"
+	mkdir -p "$(NUCLIDE_DIR)/ThirdParty/gtkradiant/install/installs/$(NAME)Pack/install/$(GAME)/scripts"
+	cp "$(GAME)/scripts/entities.def" "$(ENTITY_DEF)"
+	echo "<?xml version=\"1.0\"?>" > "$(RADIANT_PROJECT)"
+	echo "<!DOCTYPE project SYSTEM \"dtds/project.dtd\">" >> "$(RADIANT_PROJECT)"
+	echo "<project>" >> "$(RADIANT_PROJECT)"
+	echo "<key name=\"version\" value=\"2\"/>" >> "$(RADIANT_PROJECT)"
+	echo "<key name=\"template_version\" value=\"8\"/>" >> "$(RADIANT_PROJECT)"
+	echo "<key name=\"basepath\" value=\"$(EDITOR_ENGINEPATH)$(EDITOR_BASEPATH)/\"/>" >> "$(RADIANT_PROJECT)"
+	echo "<key name=\"rshcmd\" value=\"\"/>" >> "$(RADIANT_PROJECT)"
+	echo "<key name=\"remotebasepath\" value=\"$(EDITOR_ENGINEPATH)$(EDITOR_BASEPATH)/\"/>" >> "$(RADIANT_PROJECT)"
+	echo "<key name=\"entitypath\" value=\"$(ARGSTR)TEMPLATEtoolspath$(EDITOR_BASEPATH)/scripts/entities.def\"/>" >> "$(RADIANT_PROJECT)"
+	echo "<key name=\"texturepath\" value=\"$(EDITOR_ENGINEPATH)$(EDITOR_BASEPATH)/textures/\"/>" >> "$(RADIANT_PROJECT)"
+	echo "<key name=\"autosave\" value=\"$(EDITOR_HOMEPATH)$(EDITOR_BASEPATH)/maps/autosave.map\"/>" >> "$(RADIANT_PROJECT)"
+	echo "<key name=\"mapspath\" value=\"$(EDITOR_HOMEPATH)$(EDITOR_BASEPATH)/maps/\"/>" >> "$(RADIANT_PROJECT)"
+	echo "<key name=\"bsp_VMAP: (Fast Fullbright)\" value=\"! &quot;$(EDITOR_VMAP)&quot; -v $(CMDSTR) -game $(GAME) -fs_basepath &quot;$(EDITOR_ENGINEPATH)&quot; -custinfoparms -threads 4 -samplesize 8 $(ARGSTR) &amp;&amp; ! &quot;$(EDITOR_VMAP)&quot; $(CMDSTR) -game $(GAME) -fs_basepath &quot;$(EDITOR_ENGINEPATH)&quot; -vis -saveprt$(ARGSTR)\" />" >> "$(RADIANT_PROJECT)"
+	echo "<key name=\"bsp_VMAP: (Fast Light)\" value=\"! &quot;$(EDITOR_VMAP)&quot; -v $(CMDSTR) -game $(GAME) -fs_basepath &quot;$(EDITOR_ENGINEPATH)&quot; -custinfoparms -threads 4 -samplesize 8 $(ARGSTR) &amp;&amp; ! &quot;$(EDITOR_VMAP)&quot; $(CMDSTR) -game $(GAME) -fs_basepath &quot;$(EDITOR_ENGINEPATH)&quot; -vis -saveprt $(ARGSTR) &amp;&amp; ! &quot;$(EDITOR_VMAP)&quot; $(CMDSTR) -game $(GAME) -fs_basepath &quot;$(EDITOR_ENGINEPATH)&quot; -light -custinfoparms -v -samplesize 8 -fast -threads 4 -samples 4 -shade -shadeangle 60 -patchshadows $(ARGSTR)\" />" >> "$(RADIANT_PROJECT)"
+	echo "<key name=\"bsp_VMAP: (Full)\" value=\"! &quot;$(EDITOR_VMAP)&quot; -v $(CMDSTR) -game $(GAME) -fs_basepath &quot;$(EDITOR_ENGINEPATH)&quot; -custinfoparms -threads 4 -samplesize 8 $(ARGSTR) &amp;&amp; ! &quot;$(EDITOR_VMAP)&quot; $(CMDSTR) -game $(GAME) -fs_basepath &quot;$(EDITOR_ENGINEPATH)&quot; -vis -saveprt $(ARGSTR) &amp;&amp; ! &quot;$(EDITOR_VMAP)&quot; $(CMDSTR) -game $(GAME) -fs_basepath &quot;$(EDITOR_ENGINEPATH)&quot; -light -custinfoparms -samplesize 8 -fast -threads 4 -samples 4 -shade -shadeangle 60 -patchshadows $(ARGSTR)\" />" >> "$(RADIANT_PROJECT)"
+	echo "</project>" >> "$(RADIANT_PROJECT)"
+	echo "" > "$(RADIANT_SHADERLIST)"
+	mkdir -p "$(RADIANT_TEXTURES)/."
+	rsync -rva "$(NUCLIDE_DIR)/Tools/textures/." "$(RADIANT_TEXTURES)/."
+	mkdir -p "$(HOME)/.$(GAME)/$(GAME)/scripts"
+	rsync -rva "$(NUCLIDE_DIR)/ThirdParty/gtkradiant/install/installs/$(NAME)Pack/install/$(GAME)/." "$(HOME)/.$(GAME)/$(GAME)/."
+	rsync -rva "$(NUCLIDE_DIR)/ThirdParty/gtkradiant/install/installs/$(NAME)Pack/install/$(GAME)/." "./$(GAME)/."
+
 edef:
 	Tools/make_mapdef.sh $(GAME)
-	#-mkdir -p "ThirdParty/gtkradiant/install/gamepacks/$(GAME).game/$(GAME)/"
-	#-cp "$(GAME)/radiant.game" "ThirdParty/gtkradiant/install/games/$(GAME).game"
-	#-cp "$(GAME)/entities.def" "ThirdParty/gtkradiant/install/gamepacks/$(GAME).game/$(GAME)/entities.def"
-	#-cp "$(GAME)/radiant.xml" "ThirdParty/gtkradiant/install/gamepacks/$(GAME).game/default_build_menu.xml"
-	#sed -i 's/enginepath_linux=\"\"/enginepath_linux=\"$(NUCLIDE_DIR)\"/g' "ThirdParty/gtkradiant/install/games/$(GAME).game"
-	#-mkdir -p "ThirdParty/netradiant-custom/install/gamepacks/$(GAME).game/$(GAME)/"
-	#-cp "$(GAME)/radiant.game" "ThirdParty/netradiant-custom/install/gamepacks/games/$(GAME).game"
-	#-cp "$(GAME)/entities.def" "ThirdParty/netradiant-custom/install/gamepacks/$(GAME).game/$(GAME)/entities.def"
-	#-cp "$(GAME)/radiant.xml" "ThirdParty/netradiant-custom/install/gamepacks/$(GAME).game/default_build_menu.xml"
-	#sed -i 's/enginepath_linux=\"\"/enginepath_linux=\"$(NUCLIDE_DIR)\"/g' "ThirdParty/netradiant-custom/install/gamepacks/games/$(GAME).game"
+	
+maps:
+	Tools/make_maps.sh $(GAME)
+	
+textures:
+	Tools/make_textures.sh $(GAME)
+	
+$(GAME)/maps/%.bsp:
+	Tools/make_map.sh $(GAME) "$@"
+	
+models:
+	Tools/make_models.sh $(GAME)
 
 docs:
 	doxygen
-	#printf "# Entity Guide\n\n# Overview\n\n" > ./Documentation/EntityGuide.md
-	#cd ./src/gs-entbase && grep -r "QUAKED" | awk '{ print $2 }' | sort | uniq | awk '{ printf "[%s](@ref %s)\n\n", $1, $1; }'  >> ../../Documentation/EntityGuide.md
 
 # devel
 engine:	$(ENGINE_BINARY)
@@ -189,23 +285,23 @@ update:
 
 # fte specific corner
 fteqw-plugins:
-	cd ThirdParty/fteqw/engine && $(MAKE) plugins-dbg NATIVE_PLUGINS="$(NATIVE_PLUGINS)" FTE_CONFIG=$(GAME)
+	cd ThirdParty/fteqw/engine && $(MAKE) plugins-dbg NATIVE_PLUGINS="$(NATIVE_PLUGINS)"
 	find ThirdParty/fteqw/engine/debug/ -name "fteplug_*.so" -exec mv '{}' ./ \;
 
 fteqw-plugins-win32:
-	cd ThirdParty/fteqw/engine && $(MAKE) plugins-dbg NATIVE_PLUGINS="$(NATIVE_PLUGINS)" FTE_CONFIG=$(GAME) FTE_TARGET=win32
+	cd ThirdParty/fteqw/engine && $(MAKE) plugins-dbg NATIVE_PLUGINS="$(NATIVE_PLUGINS)" FTE_TARGET=win32
 	find ThirdParty/fteqw/engine/debug/ -name "fteplug_*.dll" -exec mv '{}' ./ \;
 
 fteqw-plugins-win64:
-	cd ThirdParty/fteqw/engine && $(MAKE) plugins-dbg NATIVE_PLUGINS="$(NATIVE_PLUGINS)" FTE_CONFIG=$(GAME) FTE_TARGET=win64
+	cd ThirdParty/fteqw/engine && $(MAKE) plugins-dbg NATIVE_PLUGINS="$(NATIVE_PLUGINS)" FTE_TARGET=win64
 	find ThirdParty/fteqw/engine/debug/ -name "fteplug_*.dll" -exec mv '{}' ./ \;
 
 fteqw-plugins-lin32:
-	cd ThirdParty/fteqw/engine && $(MAKE) plugins-dbg NATIVE_PLUGINS="$(NATIVE_PLUGINS)" FTE_CONFIG=$(GAME) FTE_TARGET=linux32
+	cd ThirdParty/fteqw/engine && $(MAKE) plugins-dbg NATIVE_PLUGINS="$(NATIVE_PLUGINS)" FTE_TARGET=linux32
 	find ThirdParty/fteqw/engine/debug/ -name "fteplug_*.dll" -exec mv '{}' ./ \;
 
 fteqw-plugins-lin64:
-	cd ThirdParty/fteqw/engine && $(MAKE) plugins-dbg NATIVE_PLUGINS="$(NATIVE_PLUGINS)" FTE_CONFIG=$(GAME) FTE_TARGET=linux64
+	cd ThirdParty/fteqw/engine && $(MAKE) plugins-dbg NATIVE_PLUGINS="$(NATIVE_PLUGINS)" FTE_TARGET=linux64
 	find ThirdParty/fteqw/engine/debug/ -name "fteplug_*.dll" -exec mv '{}' ./ \;
 
 $(ENGINE_BINARY):

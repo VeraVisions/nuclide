@@ -34,12 +34,12 @@ When a trigger_auto is removed via TA_USEONCE it won't survive match respawns.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 
 class
-trigger_auto:NSPointTrigger
+trigger_auto:ncPointTrigger
 {
 public:
 	void trigger_auto(void);

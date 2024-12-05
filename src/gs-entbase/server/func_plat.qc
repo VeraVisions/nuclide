@@ -20,7 +20,7 @@ enumflags
 };
 
 static class
-func_plat_helper:NSEntity
+func_plat_helper:ncEntity
 {
 public:
 	void func_plat_helper(void);
@@ -54,11 +54,11 @@ to be called up/down.
 # TRIVIA
 This entity was introduced in Quake (1996).
 
-@ingroup server
+@ingroup serverentity
 @ingroup brushentity
 */
 class
-func_plat:NSMoverEntity
+func_plat:ncMoverEntity
 {
 public:
 	void func_plat(void);

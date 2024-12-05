@@ -38,12 +38,12 @@ Creates a fixed connection between two entities.
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 @ingroup physics
 */
 class
-phys_constraint:NSPhysicsConstraint
+phys_constraint:ncPhysicsConstraint
 {
 public:
 	void phys_constraint(void);

@@ -33,10 +33,10 @@ type connection - this class is what you need.
 @ingroup physics
 */
 class
-NSPhysicsConstraint:NSEntity
+ncPhysicsConstraint:ncEntity
 {
 public:
-	void NSPhysicsConstraint(void);
+	void ncPhysicsConstraint(void);
 
 	virtual void SpawnKey(string, string);
 
@@ -71,18 +71,18 @@ public:
 	//nonvirtual void SetBone1(float);
 	//nonvirtual void SetBone2(float);
 
-	/** Sets the velocity on a CONSTRAINT_SLIDER type NSPhysicsConstraint. */
+	/** Sets the velocity on a CONSTRAINT_SLIDER type ncPhysicsConstraint. */
 	nonvirtual void SetSliderVelocity(float);
-	/** Sets the max velocity on a CONSTRAINT_SLIDER type NSPhysicsConstraint. */
+	/** Sets the max velocity on a CONSTRAINT_SLIDER type ncPhysicsConstraint. */
 	nonvirtual void SetSliderMaxVelocity(float);
 	/** Sets the maximum travel distance of the slider. */
 	nonvirtual void SetSliderStop(float);
 	/** Sets the friction of the slider. */
 	nonvirtual void SetSliderFriction(float);
 
-	/** Returns the velocity of a CONSTRAINT_SLIDER type NSPhysicsConstraint. */
+	/** Returns the velocity of a CONSTRAINT_SLIDER type ncPhysicsConstraint. */
 	nonvirtual float GetSliderVelocity(void);
-	/** Returns the max velocity of a CONSTRAINT_SLIDER type NSPhysicsConstraint. */
+	/** Returns the max velocity of a CONSTRAINT_SLIDER type ncPhysicsConstraint. */
 	nonvirtual float GetSliderMaxVelocity(void);
 	/** Returns the maximum travel distance of the slider. */
 	nonvirtual float GetSliderStop(void);
@@ -92,13 +92,13 @@ public:
 	nonvirtual float GetConstraintSystemID(void);
 
 	/** Creates a ballsocket constraint and returns it. */
-	nonvirtual NSPhysicsConstraint Ballsocket(entity, entity, vector, vector, float, bool);
+	nonvirtual ncPhysicsConstraint Ballsocket(entity, entity, vector, vector, float, bool);
 	/** Creates a ballsocket constraint and returns it. */
-	nonvirtual NSPhysicsConstraint Weld(entity, entity, float, float, float, bool, bool);
+	nonvirtual ncPhysicsConstraint Weld(entity, entity, float, float, float, bool, bool);
 	/** Creates a ballsocket constraint and returns it. */
-	nonvirtual NSPhysicsConstraint Rope(entity, entity, vector, vector);
+	nonvirtual ncPhysicsConstraint Rope(entity, entity, vector, vector);
 
-	nonvirtual NSPhysicsConstraint KeepUpright(entity, vector, float);
+	nonvirtual ncPhysicsConstraint KeepUpright(entity, vector, float);
 
 	nonvirtual void ConstraintThink(void);
 

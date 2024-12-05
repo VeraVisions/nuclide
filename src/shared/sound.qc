@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+#warning SoundDef should be stored in ncDict
+
 static void pointsound_proper(vector origin, string sample, float volume, float attenuation, float pitch) = #483;
 
 #ifndef SOUNDSHADER_DYNAMIC
@@ -66,48 +68,83 @@ Sound_Init(void)
 	InitEnd();
 }
 
+var int autocvar_s_nominaldistance = 1000;
+#define SND_NOMINALDISTANCE autocvar_s_nominaldistance
+#define SND_MAXRADIUS_QUAKE 1000
+#define SND_MAXRADIUS_SOURCE 1000
+
+#define ATTN_SOURCE_NONE		0.0f
+#define ATTN_SOURCE_NORM		0.8f
+#define ATTN_SOURCE_IDLE		2.0f
+#define ATTN_SOURCE_STATIC		1.25f
+#define ATTN_SOURCE_RICOCHET	1.5f
+#define ATTN_SOURCE_GUNFIRE		0.27f
+#define ATTN_SOURCE_TALKING		0.7f
+
 static void
-Sound_ParseField(int i, int a, string keyName, string setValue)
+Sound_ParseField(int i, int a, string keyName, string valueCS)
 {
 	bool precacheSound = true;
+	string setValue = strtolower(valueCS);
 
 	switch (keyName) {
+	/* classic Quake attenuation, used also by GoldSrc */
 	case "attenuation":
 		if (a == 2) {
 			switch(setValue) {
 			case "idle":
-				g_sounds[i].dist_max = 1000 / ATTN_IDLE;
+				g_sounds[i].dist_max = SND_MAXRADIUS_QUAKE / ATTN_IDLE;
 				break;
 			case "static":
-				g_sounds[i].dist_max = 1000 / ATTN_STATIC;
+				g_sounds[i].dist_max = SND_MAXRADIUS_QUAKE / ATTN_STATIC;
 				break;
 			case "none":
 				g_sounds[i].dist_max = 0;
 				break;
 			case "normal":
-				g_sounds[i].dist_max = 1000 / ATTN_NORM;
+				g_sounds[i].dist_max = SND_MAXRADIUS_QUAKE / ATTN_NORM;
 			default:
 				break;
 			}
 		}
 		break;
+	/* soundlevels = Source Engine, dB based. needs conversion to our attenuation > range */
 	case "soundlevel":
 		if (a == 2) {
 			switch(setValue) {
-			case "ATTN_IDLE":
-				g_sounds[i].dist_max = 1000 / ATTN_IDLE;
+			case "attn_idle":
+			case "sndlvl_idle":
+				g_sounds[i].dist_max = SND_MAXRADIUS_SOURCE / ATTN_SOURCE_IDLE;
 				break;
-			case "ATTN_RICOCHET":
-			case "ATTN_STATIC":
-				g_sounds[i].dist_max = 1000 / ATTN_STATIC;
+			case "attn_ricochet":
+			case "attn_static":
+			case "sndlvl_static":
+				g_sounds[i].dist_max = SND_MAXRADIUS_SOURCE / ATTN_SOURCE_STATIC;
 				break;
-			case "ATTN_NONE":
-				g_sounds[i].dist_max = 0;
+			case "0":
+			case "attn_none":
+			case "sndlvl_none":
+				g_sounds[i].dist_max = ATTN_SOURCE_NONE;
 				break;
-			case "ATTN_GUNFIRE":
-			case "ATTN_NORM":
-				g_sounds[i].dist_max = 1000 / ATTN_NORM;
+			case "attn_norm":
+			case "sndlvl_norm":
+				g_sounds[i].dist_max = SND_MAXRADIUS_SOURCE / ATTN_SOURCE_NORM;
+				break;
+			case "attn_gunfire":
+			case "sndlvl_gunfire":
+				g_sounds[i].dist_max = SND_MAXRADIUS_SOURCE / ATTN_SOURCE_GUNFIRE;
+				break;
+			case "attn_talking":
+			case "sndlvl_talking":
+				g_sounds[i].dist_max = SND_MAXRADIUS_SOURCE / ATTN_SOURCE_TALKING;
+				break;
 			default:
+				if (substring(setValue, 0, 7) == "sndlvl_") {
+					float dbLevel = stof(substring(setValue, 7, -3));
+					g_sounds[i].dist_max = SND_MAXRADIUS_SOURCE / ((dbLevel > 50.0f) ? (20.0f / (dbLevel - 50.0f)) : 4.0f);
+				} else {
+					NSError("Unknown soundlevel %S", setValue);
+				}
 				break;
 			}
 		}
@@ -373,6 +410,7 @@ Sound_PrecacheFile(string fileName)
 
 	}
 
+	fclose(scriptFile);
 	return true;
 }
 
@@ -409,7 +447,7 @@ Sound_Precache(string shader)
 	g_sounds_count++;
 
 #ifdef SOUNDSHADER_DYNAMIC
-	g_sounds = (snd_t *)memrealloc(g_sounds, sizeof(snd_t), index, g_sounds_count);
+	g_sounds = (snd_t *)memreallocOld(g_sounds, sizeof(snd_t), index, g_sounds_count);
 #else
 	if (g_sounds_count >= SOUNDSHADER_MAX) {
 		NSError("Reached SOUNDSHADER_MAX (%d)", SOUNDSHADER_MAX);
@@ -421,6 +459,7 @@ Sound_Precache(string shader)
 	g_sounds[index].dist_max = 1000;
 	g_sounds[index].pitch_min = g_sounds[index].pitch_max = 100;
 	g_sounds[index].offset = 0;
+	g_sounds[index].flags = SNDFL_FOLLOW;
 
 	sh = search_begin("decls/sound/*.sndshd", TRUE, TRUE);
 
@@ -560,14 +599,15 @@ Sound_DistancePos(vector pos, string shader)
 	}
 #endif
 
-	SndLog("Playing %S", argv(r));
+	SndLog("Playing %S (radius: %f)", argv(r), g_sounds[sample].dist_max );
 	pointsound_proper(pos, argv(r), volume, ATTN_NONE, pitch);
 }
 
 void
 Sound_Stop(entity target, float chan)
 {
-	sound(target, chan, "common/null.wav", 1.0f, ATTN_NORM, 100, SOUNDFLAG_FOLLOW, 0 );
+	SndLog("Stopping sound channel %d on %s (%d)", chan, target.classname, num_for_edict(target));
+	sound(target, chan, "common/null.wav", 0.1f, ATTN_NORM, 100, SOUNDFLAG_FOLLOW, 0 );
 }
 
 void
@@ -640,12 +680,12 @@ Sound_Play(entity target, int chan, string shader)
 		msg_entity = target;
 	}
 	if (g_sounds[sample].flags & SNDFL_ALERTS) {
-		NSMonster_AlertEnemyAlliance(target.origin, g_sounds[sample].dist_max, target.m_iAlliance);
+		ncMonster_AlertEnemyAlliance(target.origin, g_sounds[sample].dist_max, target.m_iAlliance);
 		BotLib_Alert(target.origin, g_sounds[sample].dist_max, target.team);
 	}
 #endif
 
-	SndLog("Playing %S", argv(r));
+	SndLog("Playing %S (radius: %f)", argv(r), g_sounds[sample].dist_max );
 
 #ifdef SERVER
 	if (g_sounds[sample].shakes > 0.0) {
@@ -737,6 +777,8 @@ Sound_PlayAt(vector pos, string shader)
 		flag |= SOUNDFLAG_NOSPACIALISE;
 	}
 #endif
+
+	SndLog("Playing %S (radius: %f)", argv(r), g_sounds[sample].dist_max );
 
 	/* really? this doesn't do any more? */
 	pointsound_proper(pos, argv(r), g_sounds[sample].volume, Sound_GetAttenuation(sample), pitch);

@@ -25,7 +25,7 @@ _NSPhysics_Log(string msg)
 
 
 var float autocvar_phys_pushscale = 1.0f;
-var float autocvar_phys_impactforcescale = 100.0f;
+var float autocvar_phys_impactforcescale = 1.0f;
 
 #ifdef CLIENT
 var bool autocvar_r_showPhysicsInfo = false;
@@ -102,18 +102,20 @@ You will find the API to be mostly compatible of that offered by Garry's Mod.
 @ingroup baseclass
 @ingroup physics
 */
-class NSPhysicsEntity:NSSurfacePropEntity
+class ncPhysicsEntity:ncSurfacePropEntity
 {
 public:
-	void NSPhysicsEntity(void);
+	void ncPhysicsEntity(void);
 
 	/* overrides */
 	virtual void Respawn(void);
 	virtual void SpawnKey(string,string);
+	virtual void SetModel(string);
+
 #ifdef SERVER
 	virtual void Spawned(void);
-	virtual void Pain(entity, entity, int, vector, int);
-	virtual void Death(entity, entity, int, vector, int);
+	virtual void Pain(entity, entity, int, vector, vector, int);
+	virtual void Death(entity, entity, int, vector, vector, int);
 	virtual void EvaluateEntity(void);
 	virtual float SendEntity(entity,float);
 	virtual void Save(float);
@@ -137,7 +139,6 @@ public:
 	nonvirtual float CalculateImpactDamage(int,int);
 
 	/* this merely mirrors the GMod API: https://wiki.facepunch.com/gmod/PhysObj */
-
 	/** Call to align angles of the object to the ones passed. */
 	nonvirtual vector AlignAngles(vector, vector);
 	/** Call to apply a force (absolute velocity vector) to the center of the entity. */
@@ -219,19 +220,23 @@ private:
 	float m_flBuoyancyRatio;
 	bool m_bInvincible;
 	float m_flVolume;
+	float m_lastTouchTime;
 
 	/* performance sanity checks */
 	vector m_vecPrevOrigin;
 	vector m_vecPrevAngles;
 	float m_flCheckTime;
 	PREDICTED_FLOAT(m_flMass)
-
-	virtual void _TouchThink(void);
+	float m_flEnabledTime;
+	float m_spawnPhysTime;
+	bool m_bFeedbackSounds;
 
 #ifdef SERVER
 	PREDICTED_VECTOR(m_vecNetAngles)
 
 	string m_strOnDamaged;
+	bool m_pvsSleep;
+	nonvirtual void PVSCheck(void);
 #endif
 };
 

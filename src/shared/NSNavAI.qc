@@ -14,8 +14,9 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+
 void
-NSActor::NSActor(void)
+ncActor::ncActor(void)
 {
 #ifdef SERVER
 	m_iNodes = 0i;
@@ -24,6 +25,8 @@ NSActor::NSActor(void)
 	m_vecLastNode = [0,0,0];
 	m_vecTurnAngle = [0,0,0];
 	m_flMoveSpeedKey = 0.0f;
+	m_pathTarget = "";
+	m_pathEntity = __NULL__;
 
 	_m_flRouteGiveUp = 0.0f;
 #endif
@@ -35,88 +38,198 @@ NSActor::NSActor(void)
 	}
 }
 
+void
+ncActor::SpawnKey(string keyName, string setValue)
+{
+	switch (keyName) {
+	case "snd_stepladderLeft":
+		m_sndStepLadderLeft = ReadString(setValue);
+		break;
+	case "snd_stepladderRight":
+		m_sndStepLadderRight = ReadString(setValue);
+		break;
+	case "snd_stepladder":
+		m_sndStepLadderLeft =
+		m_sndStepLadderRight = ReadString(setValue);
+		break;
+	case "snd_death":
+		m_sndDeath = ReadString(setValue);
+		break;
+	case "snd_fall":
+		m_sndFall = ReadString(setValue);
+		break;
+	case "snd_painSmall":
+		m_sndPainSmall = ReadString(setValue);
+		break;
+	case "snd_painMedium":
+		m_sndPainMedium = ReadString(setValue);
+		break;
+	case "snd_painLarge":
+		m_sndPainLarge = ReadString(setValue);
+		break;
+	case "snd_painHuge":
+		m_sndPainHuge = ReadString(setValue);
+		break;
+	case "snd_pain":
+		m_sndPainSmall =
+		m_sndPainHuge =
+		m_sndPainLarge =
+		m_sndPainMedium = ReadString(setValue);
+		break;
+	case "snd_landSoft":
+		m_sndLandSoft = ReadString(setValue);
+		break;
+	case "snd_landHard":
+		m_sndLandHard = ReadString(setValue);
+		break;
+	case "snd_land":
+		m_sndLandSoft =
+		m_sndLandHard = ReadString(setValue);
+		break;
+	case "snd_hitArmor":
+		m_sndHitArmor = ReadString(setValue);
+		break;
+	case "snd_hitFlesh":
+		m_sndHitFlesh = ReadString(setValue);
+		break;
+	case "snd_hit":
+		m_sndHitArmor =
+		m_sndHitFlesh = ReadString(setValue);
+		break;
+	case "snd_airGaspHeavy":
+		m_sndAirGaspHeavy = ReadString(setValue);
+		break;
+	case "snd_airGaspLight":
+		m_sndAirGaspLight = ReadString(setValue);
+		break;
+	case "snd_airGasp":
+		m_sndAirGaspHeavy =
+		m_sndAirGaspLight = ReadString(setValue);
+		break;
+	case "snd_noAir":
+		m_sndNoAir = ReadString(setValue);
+		break;
+	case "snd_teleportExit":
+		m_sndTeleportExit = ReadString(setValue);
+		break;
+	case "snd_teleportStart":
+		m_sndTeleportStart = ReadString(setValue);
+		break;
+	case "snd_burn":
+		m_sndBurn = ReadString(setValue);
+		break;
+	case "snd_healthtake":
+		m_sndHealthtake = ReadString(setValue);
+		break;
+	case "snd_waterExit":
+		m_sndWaterExit = ReadString(setValue);
+		break;
+	case "snd_waterEnter":
+		m_sndWaterEnter = ReadString(setValue);
+		break;
+	case "snd_waterSwim":
+		m_sndWaterSwim = ReadString(setValue);
+		break;
+	case "snd_waterWade":
+		m_sndWaterWade = ReadString(setValue);
+		break;
+	case "snd_useDeny":
+		m_sndWaterWade = ReadString(setValue);
+		break;
+	case "snd_useSuccess":
+		m_sndWaterWade = ReadString(setValue);
+		break;
+	case "snd_use":
+		m_sndUseDeny =
+		m_sndUseSuccess = ReadString(setValue);
+		break;
+	default:
+		super::SpawnKey(keyName, setValue);
+	}
+}
+
 float
-NSActor::GetStamina(void)
+ncActor::GetStamina(void)
 {
 	return (m_flStamina / g_pmoveVars.pm_stamina);
 }
 
 bool
-NSActor::IsCrouching(void)
+ncActor::IsCrouching(void)
 {
 	return HasVFlags(VFL_CROUCHING);
 }
 
 bool
-NSActor::IsProne(void)
+ncActor::IsProne(void)
 {
 	return HasVFlags(VFL_PRONE);
 }
 
 bool
-NSActor::IsStanding(void)
+ncActor::IsStanding(void)
 {
 	return !HasVFlags(VFL_PRONE | VFL_CROUCHING | VFL_SPRINTING);
 }
 
 bool
-NSActor::IsSprinting(void)
+ncActor::IsSprinting(void)
 {
 	return HasVFlags(VFL_SPRINTING);
 }
 
 bool
-NSActor::IsLeaning(void)
+ncActor::IsLeaning(void)
 {
 	return (false);
 }
 
 bool
-NSActor::CanSprint(void)
+ncActor::CanSprint(void)
 {
 	return (false);
 }
 
 bool
-NSActor::CanProne(void)
+ncActor::CanProne(void)
 {
 	return (false);
 }
 
 bool
-NSActor::CanLean(void)
+ncActor::CanLean(void)
 {
 	return (false);
 }
 
 bool
-NSActor::CanCrouch(void)
+ncActor::CanCrouch(void)
 {
 	return (false);
 }
 
 /* filled these in with the (default) client side player movement values */
 float
-NSActor::GetForwardSpeed(void)
+ncActor::GetForwardSpeed(void)
 {
 	return (PMOVE_FORWARD_SPEED);
 }
 
 float
-NSActor::GetSideSpeed(void)
+ncActor::GetSideSpeed(void)
 {
 	return (PMOVE_SIDE_SPEED);
 }
 
 float
-NSActor::GetBackSpeed(void)
+ncActor::GetBackSpeed(void)
 {
 	return (PMOVE_BACK_SPEED);
 }
 
 #ifdef SERVER
 void
-NSActor::Save(float handle)
+ncActor::Save(float handle)
 {
 	super::Save(handle);
 	SaveInt(handle, "m_iNodes", m_iNodes);
@@ -127,7 +240,7 @@ NSActor::Save(float handle)
 }
 
 void
-NSActor::Restore(string strKey, string strValue)
+ncActor::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "m_iNodes":
@@ -151,7 +264,7 @@ NSActor::Restore(string strKey, string strValue)
 }
 
 void
-NSActor::Spawned(void)
+ncActor::Spawned(void)
 {
 	super::Spawned();
 	isActor = true;
@@ -179,12 +292,18 @@ NSActor::Spawned(void)
 	string switchTo = "";
 	float weaponCount = 0;
 
-	float desiredTeam = GetSpawnFloat("team");
+	string desiredTeam = GetSpawnString("team");
 
-	if (desiredTeam == 0)
-		SetTeam(TEAM_UNASSIGNED);
-	else
-		SetTeam(desiredTeam);
+	if (STRING_SET(desiredTeam)) {
+		float teamNum = stof(desiredTeam);
+
+		/* not set */
+		if (teamNum == 0) {
+			SetTeam(TEAM_UNASSIGNED);
+		} else {
+			SetTeam(teamNum);
+		}
+	}
 
 	/* append items to the end */
 	if (STRING_SET(itemList)) {
@@ -213,7 +332,7 @@ NSActor::Spawned(void)
 }
 
 void
-NSActor::RestoreComplete(void)
+ncActor::RestoreComplete(void)
 {
 	if (m_iNodes <= 0i) {
 		return;
@@ -224,12 +343,35 @@ NSActor::RestoreComplete(void)
 }
 
 void
-NSActor::Input(entity eAct, string strInput, string strData)
+ncActor::SelectNewSchedule(void)
+{
+
+}
+
+bool
+ncActor::IsPerforming(void)
+{
+	return (m_activeSchedule) ? (true) : (false);
+}
+
+
+void
+ncActor::PerformSchedule(string scheduleDecl)
+{
+	if (m_activeSchedule) {
+		m_activeSchedule.Cancel();
+	}
+
+	ncSchedule::CreateSchedule(this, scheduleDecl);
+}
+
+void
+ncActor::Input(entity eAct, string strInput, string strData)
 {
 	switch (strInput) {
 	case "UseItem":
 		if (HasItem(strData)) {
-			NSItem linkedList;
+			ncItem linkedList;
 
 			linkedList = m_itemList;
 
@@ -239,7 +381,7 @@ NSActor::Input(entity eAct, string strInput, string strData)
 					linkedList.OnUse(eAct);
 					break;
 				}
-				linkedList = (NSItem)linkedList.m_nextItem;
+				linkedList = (ncItem)linkedList.m_nextItem;
 			}
 		}
 		break;
@@ -255,6 +397,28 @@ NSActor::Input(entity eAct, string strInput, string strData)
 			GiveAmmo(ammoNum, ammoCount);
 		}
 		break;
+	/* schedule management */
+	case "PerformSchedule":
+		PerformSchedule(strData);
+		break;
+	/* some tasks. */
+	case "WalkToTarget":
+		RouteToPosition(m_activeSchedule.GetTarget().origin);
+		break;
+	case "RunToTarget":
+		RouteToPosition(m_activeSchedule.GetTarget().origin);
+		break;
+	case "CrouchToTarget":
+		RouteToPosition(m_activeSchedule.GetTarget().origin);
+		break;
+	case "ProneToTarget":
+		RouteToPosition(m_activeSchedule.GetTarget().origin);
+		break;
+	case "TargetNearestPlayer":
+		m_activeSchedule.SetTarget(find(world, ::classname, "player"));
+		m_activeSchedule.Advance();
+// 		NSWarning("Task %S unimplemented", strInput);
+		break;
 	default:
 		super::Input(eAct, strInput, strData);
 	}
@@ -264,13 +428,16 @@ NSActor::Input(entity eAct, string strInput, string strData)
 
 #ifdef SERVER
 void
-NSActor::RouteEnded(void)
+ncActor::RouteEnded(void)
 {
-
+	if (m_activeSchedule) {
+		m_activeSchedule.Advance();
+	}
+	ClearVelocity();
 }
 
 void
-NSActor::CheckRoute_Path(void)
+ncActor::CheckRoute_Path(void)
 {
 	float flDist = distance(m_pathEntity.GetOrigin(), GetOrigin());
 
@@ -279,31 +446,33 @@ NSActor::CheckRoute_Path(void)
 	/* close enough...? */
 	if (flDist < 80) {
 
-		if (targetname) {
-			NSActor_Log("%S reached path node %S", targetname, m_pathTarget);
+		if (STRING_SET(targetname)) {
+			ncActor_Log("%S reached path node %S", targetname, m_pathTarget);
 		} else {
-			NSActor_Log("Reached path node %S", m_pathTarget);
+			ncActor_Log("Reached path node %S", m_pathTarget);
 		}
 
 		m_pathTarget = m_pathEntity.target;
-		m_pathEntity = (NSEntity)m_pathEntity.GetTargetEntity();
+		m_pathEntity = (ncEntity)m_pathEntity.GetTargetEntity();
 		velocity = [0,0,0]; /* clamp friction */
 	}
 }
 
 void
-NSActor::CheckRoute(void)
+ncActor::CheckRoute(void)
 {
 	float flDist;
 	float flNodeRadius;
 	vector evenpos;
 
 	/* if we're targetting ourselves, we act like a turret */
-	if (m_pathTarget == targetname) {
-		return;
+	if (STRING_SET(targetname) && STRING_SET(m_pathTarget)) {
+		if (m_pathTarget == targetname) {
+			return;
+		}
 	}
 
-	if (STRING_SET(m_pathTarget)) {
+	if (STRING_SET(m_pathTarget) && m_pathEntity) {
 		CheckRoute_Path();
 		return;
 	}
@@ -321,10 +490,9 @@ NSActor::CheckRoute(void)
 			/* HACK: for followers */
 			if (m_eFollowing) {
 				RouteToPosition(m_eFollowing.origin);
-				NSActor_Log("Giving up current route to follower, re-calculating");
+				ncActor_Log("Giving up current route to follower, re-calculating");
 			} else {
-				RouteToPosition(m_vecLastNode);
-				NSActor_Log("Giving up current route, re-calculating.");
+				RouteClear();
 			}
 		}
 		_m_flRouteGiveUp = time + 2.0f;
@@ -335,20 +503,20 @@ NSActor::CheckRoute(void)
 	if (m_iCurNode < 0) {
 		evenpos = m_vecLastNode;
 		evenpos[2] = origin[2];
-		flNodeRadius = 8.0f;
+		flNodeRadius = 16.0f;
 	} else {
 		evenpos = m_pRoute[m_iCurNode].dest;
 		evenpos[2] = origin[2];
 		flNodeRadius = m_pRoute[m_iCurNode].radius;
 
 		if (flNodeRadius <= 0.0)
-			flNodeRadius = 8.0f;
+			flNodeRadius = 16.0f;
 	}
 
 	flDist = floor(vlen(evenpos - origin));
 
 	if (flDist < flNodeRadius) {
-		NSActor_Log("%S reached node", targetname);
+		ncActor_Log("%S reached node", targetname);
 		m_iCurNode--;
 		velocity = [0,0,0]; /* clamp friction */
 
@@ -359,7 +527,7 @@ NSActor::CheckRoute(void)
 
 			/* can we walk directly to our target destination? */
 			if (trace_fraction == 1.0) {
-				NSActor_Log("Walking directly to last node at '%v'", m_vecLastNode);
+				ncActor_Log("Walking directly to last node at '%v'", m_vecLastNode);
 				m_iCurNode = -1;
 			}
 		}
@@ -378,7 +546,7 @@ NSActor::CheckRoute(void)
 		if (!trace_startsolid && trace_fraction == 1.0f) {
 			evenpos = vecNextNode;
 			m_iCurNode = iNextNode;
-			NSActor_Log("Skipping to next node %i at '%v'", iNextNode, vecNextNode);
+			ncActor_Log("Skipping to next node %i at '%v'", iNextNode, vecNextNode);
 			return;
 		}
 	}
@@ -388,7 +556,7 @@ NSActor::CheckRoute(void)
 	if (m_iCurNode < -1) {
 		RouteClear();
 		RouteEnded();
-		NSActor_Log("%S reached end", targetname);
+		ncActor_Log("%S reached end", targetname);
 	}
 
 	/* crouch attempt */
@@ -425,64 +593,88 @@ NSActor::CheckRoute(void)
 	m_flLastDist = flDist;
 
 	if (m_flNodeGiveup >= 1.0f) {
-		print(sprintf("NSActor::CheckNode: %s gave up route\n",
+		print(sprintf("ncActor::CheckNode: %s gave up route\n",
 			this.netname));
 		RouteClear();
 	}*/
 }
 
 vector
-NSActor::GetRouteMovevalues(void)
+ncActor::GetRouteMovevalues(void)
 {
 	vector vecDirection;
+	vector facingPos;
 	vector fwdDir, rightDir, upDir;
+	vector outputMovement;
 
 	fwdDir = anglesToForward(input_angles);
 	rightDir = anglesToRight(input_angles);
 	upDir = anglesToUp(input_angles);
 
-	if (m_pathTarget) {
-		vecDirection = vectorNormalize(m_pathEntity.GetOrigin() - GetOrigin());
-	} else {
-		if (!m_iNodes)
-			return m_vecLastNode;
-
+	if (STRING_SET(m_pathTarget)) {
+		facingPos = m_pathEntity.GetOrigin();
+	} else if (m_iNodes) {
 		if (m_iCurNode < 0)
-			vecDirection = vectorNormalize(m_vecLastNode - GetOrigin());
+			facingPos = m_vecLastNode;
 		else
-			vecDirection = vectorNormalize(m_pRoute[m_iCurNode].dest - GetOrigin());
+			facingPos = m_pRoute[m_iCurNode].dest;
+	} else {
+		facingPos = GetOrigin() + (fwdDir * 16.0f);
 	}
 
-	return [fwdDir * vecDirection, rightDir * vecDirection, upDir * vecDirection];
+	if (movetype == MOVETYPE_FLY) {
+		float offset = GetSpawnFloat("fly_offset");
+		facingPos += [0,0, offset];
+	}
+
+	vecDirection = vectorNormalize(facingPos - GetOrigin());
+
+	outputMovement = fwdDir * vecDirection[0];
+	outputMovement += rightDir * vecDirection[1];
+	outputMovement += upDir * vecDirection[2];
+
+	return outputMovement;
 }
 
 vector
-NSActor::GetRouteDirection(void)
+ncActor::GetRouteDirection(void)
 {
-	if (m_pathTarget) {
-		return vectorToAngles(m_pathEntity.GetOrigin() - GetOrigin());
+	vector direction;
+	vector facingPos = g_vec_null;
+
+	/* towards target */
+	if (STRING_SET(m_pathTarget)) {
+		facingPos = m_pathEntity.GetOrigin();
 	} else {
-
-		if (!m_iNodes) {
-			return angles;
-		}
-
-		if (m_iCurNode < 0) {
-			return vectorToAngles(m_vecLastNode - origin);
+		if (m_iNodes <= 0i) {
+			/* keep going */
+			return (angles);
+		}else if (m_iCurNode < 0) {
+			/* aim at the last node */
+			facingPos = m_vecLastNode;
 		} else {
-			return vectorToAngles(m_pRoute[m_iCurNode].dest - origin);
+			/* aim at the next node */
+			facingPos = m_pRoute[m_iCurNode].dest;
 		}
 	}
+
+	if (movetype == MOVETYPE_FLY) {
+		float offset = GetSpawnFloat("fly_offset");
+		facingPos += [0,0, offset];
+	}
+
+	direction = vectorToAngles(facingPos - GetOrigin());
+	return (direction);
 }
 
 void
-NSActor::RouteToPosition(vector destination)
+ncActor::RouteToPosition(vector destination)
 {
 	RouteToPositionDenyFlags(destination, 0i);
 }
 
 void
-NSActor::DebugDraw(void)
+ncActor::DebugDraw(void)
 {
 	vector vecStart = GetOrigin();
 	vector vecEnd;
@@ -506,12 +698,18 @@ NSActor::DebugDraw(void)
 }
 
 void
-NSActor::RouteToPositionDenyFlags(vector destination, int denylinkflags)
+ncActor::RouteToPositionDenyFlags(vector destination, int denylinkflags)
 {
 	/* engine calls this upon successfully creating a route */
 	static void RouteToPosition_RouteCB(entity ent, vector dest, int numnodes, nodeslist_t *nodelist)
 	{
-		NSActor p = (NSActor)ent;
+		ncActor p = (ncActor)ent;
+
+		if (numnodes < 1i) {
+			ncActor_Log("No path available.");
+			return;
+		}
+
 		p.m_iNodes = numnodes;
 		p.m_iCurNode = numnodes - 1;
 		p.m_pRoute = nodelist;
@@ -522,10 +720,10 @@ NSActor::RouteToPositionDenyFlags(vector destination, int denylinkflags)
 
 		/* can we walk directly to our target destination? */
 		if (trace_fraction == 1.0) {
-			NSActor_Log("Walking directly to last node");
+			ncActor_Log("Walking directly to last node");
 			p.m_iCurNode = -1;
 		} else {
-			NSActor_Log("Path obstructed, calculating route");
+			ncActor_Log("Path obstructed, calculating route");
 
 			/* run through all nodes, mark the closest direct path possible */
 			for (int i = 0; i < p.m_iNodes; i++) {
@@ -534,6 +732,7 @@ NSActor::RouteToPositionDenyFlags(vector destination, int denylinkflags)
 				//traceline(p.origin, vecDest, MOVE_NORMAL, this);
 
 				if (trace_fraction == 1.0) {
+					ncActor_Log("Walking to node %i at %v", i, p.m_pRoute[i].dest);
 					p.m_iCurNode = i;
 					break;
 				}
@@ -561,21 +760,21 @@ NSActor::RouteToPositionDenyFlags(vector destination, int denylinkflags)
 }
 
 void
-NSActor::ChasePath(string startPath)
+ncActor::ChasePath(string startPath)
 {
-	if (!startPath || startPath == "") {
+	if (STRING_SET(startPath)) {
 		m_pathTarget = __NULL__;
 		m_pathEntity = __NULL__;
 		return;
 	}
 
 	m_pathTarget = startPath;
-	m_pathEntity = (NSEntity)find(world, ::targetname, m_pathTarget);
-	NSActor_Log("Actor %S chase Path set to %S", netname, m_pathEntity.targetname);
+	m_pathEntity = (ncEntity)find(world, ::targetname, m_pathTarget);
+	ncActor_Log("Actor %S chase Path set to %S", netname, m_pathEntity.targetname);
 }
 
 void
-NSActor::RouteClear(void)
+ncActor::RouteClear(void)
 {
 	if (!m_iNodes)
 		return;
@@ -583,23 +782,23 @@ NSActor::RouteClear(void)
 	m_iCurNode = BOTROUTE_END;
 	m_iNodes = 0;
 	memfree(m_pRoute);
-	NSActor_Log("Actor %S (%s) cleared their route.", netname, classname);
+	ncActor_Log("Actor %S (%s) cleared their route.", netname, classname);
 }
 
 void
-NSActor::SetMoveSpeedScale(float newValue)
+ncActor::SetMoveSpeedScale(float newValue)
 {
 	m_flMoveSpeedKey = newValue;
 }
 
 float
-NSActor::GetMoveSpeedScale(void)
+ncActor::GetMoveSpeedScale(void)
 {
 	return (m_flMoveSpeedKey == 0.0) ? 1.0f : m_flMoveSpeedKey;
 }
 
 void
-NSActor::Physics_Run(void)
+ncActor::Physics_Run(void)
 {
 	input_movevalues *= GetMoveSpeedScale();
 
@@ -614,13 +813,13 @@ NSActor::Physics_Run(void)
 #endif
 
 void
-NSActor::LaunchProjectile(string defName, bool thrown, float timeOfs)
+ncActor::LaunchProjectile(string defName, bool thrown, float timeOfs)
 {
 #ifdef SERVER
 	vector throwDirection;
 	float throwingStrength;
 
-	NSProjectile nade = (NSProjectile)EntityDef_CreateClassname(defName);
+	ncProjectile nade = (ncProjectile)EntityDef_CreateClassname(defName);
 	nade.SetOwner(this);
 
 	throwDirection = v_angle;
@@ -643,7 +842,7 @@ NSActor::LaunchProjectile(string defName, bool thrown, float timeOfs)
 }
 
 bool
-NSActor::PlantCharge(string defName)
+ncActor::PlantCharge(string defName)
 {
 	vector forwardVec;
 	vector destinationVec;
@@ -665,7 +864,7 @@ NSActor::PlantCharge(string defName)
 	destinationVec = trace_endpos;
 
 #ifdef SERVER
-	NSEntity plantedEntity;
+	ncEntity plantedEntity;
 	plantedEntity = spawnClass(defName, destinationVec);
 
 	if (!plantedEntity) {
@@ -684,7 +883,7 @@ NSActor::PlantCharge(string defName)
 }
 
 int
-NSActor::GetReserveAmmo(int ammoType)
+ncActor::GetReserveAmmo(int ammoType)
 {
 	/* bounds check */
 	if (ammoType <= 0i || ammoType >= MAX_AMMO_TYPES)
@@ -694,13 +893,14 @@ NSActor::GetReserveAmmo(int ammoType)
 }
 
 bool
-NSActor::MaxAmmo(int ammoType)
+ncActor::MaxAmmo(int ammoType)
 {
 	int maxAmmo = 0i;
 
 	/* bounds check */
-	if (ammoType <= 0i || ammoType >= MAX_AMMO_TYPES)
+	if (ammoType <= 0i || ammoType >= MAX_AMMO_TYPES) {
 		return (true);
+	}
 
 	/* read max ammo from entityDef decl first */
 	maxAmmo = GetDefInt(sprintf("max_%s", ammoNameForNum(ammoType)));
@@ -711,14 +911,15 @@ NSActor::MaxAmmo(int ammoType)
 	}
 
 	/* already at max-ammo? */
-	if (m_iAmmoTypes[ammoType] >= maxAmmo)
+	if (m_iAmmoTypes[ammoType] >= maxAmmo) {
 		return (true);
+	}
 
 	return (false);
 }
 
 bool
-NSActor::GiveAmmo(int ammoType, int ammoAmount)
+ncActor::GiveAmmo(int ammoType, int ammoAmount)
 {
 	int maxAmmo = 0i;
 
@@ -744,7 +945,7 @@ NSActor::GiveAmmo(int ammoType, int ammoAmount)
 }
 
 bool
-NSActor::UseAmmo(int ammoType, int ammoAmount)
+ncActor::UseAmmo(int ammoType, int ammoAmount)
 {
 	if (autocvar_g_infiniteAmmo == true) {
 		return (true);
@@ -759,7 +960,7 @@ NSActor::UseAmmo(int ammoType, int ammoAmount)
 }
 
 bool
-NSActor::HasAmmo(int ammoType, int ammoAmount)
+ncActor::HasAmmo(int ammoType, int ammoAmount)
 {
 	/* bounds check */
 	if (ammoType < 0i || ammoType >= MAX_AMMO_TYPES)
@@ -773,9 +974,9 @@ NSActor::HasAmmo(int ammoType, int ammoAmount)
 }
 
 bool
-NSActor::HasExactItem(NSItem itemEntity)
+ncActor::HasExactItem(ncItem itemEntity)
 {
-	NSItem linkedList = __NULL__;
+	ncItem linkedList = __NULL__;
 
 	/* sanity check */
 	if (!itemEntity) {
@@ -797,7 +998,7 @@ NSActor::HasExactItem(NSItem itemEntity)
 			return (true);
 		}
 
-		linkedList = (NSItem)linkedList.m_nextItem;
+		linkedList = (ncItem)linkedList.m_nextItem;
 	}
 
 	return (false);
@@ -805,9 +1006,9 @@ NSActor::HasExactItem(NSItem itemEntity)
 
 
 bool
-NSActor::HasItem(string itemName)
+ncActor::HasItem(string itemName)
 {
-	NSItem linkedList = __NULL__;
+	ncItem linkedList = __NULL__;
 
 	/* we do not have an item. */
 	if (!m_itemList) {
@@ -824,36 +1025,36 @@ NSActor::HasItem(string itemName)
 			return (true);
 		}
 
-		linkedList = (NSItem)linkedList.m_nextItem;
+		linkedList = (ncItem)linkedList.m_nextItem;
 	}
 
 	return (false);
 }
 
 void
-NSActor::AddedItemCallback(NSItem itemAdded)
+ncActor::AddedItemCallback(ncItem itemAdded)
 {
 #ifdef SERVER
 	if (!m_activeWeapon) {
 		if (itemAdded.IsWeapon()) {
-			SwitchToExactWeapon((NSWeapon)itemAdded);
+			SwitchToExactWeapon((ncWeapon)itemAdded);
 		}
 	}
 #endif
 }
 
 bool
-NSActor::GiveItem(string itemName)
+ncActor::GiveItem(string itemName)
 {
 #ifdef SERVER
-	NSItem linkedList = __NULL__;
-	NSItem lastItem = __NULL__;
+	ncItem linkedList = __NULL__;
+	ncItem lastItem = __NULL__;
 
 	bool canCarry = stof(EntityDef_GetKeyValue(itemName, "inv_carry")) ? true : false;
 
 	/* we do not have an item yet. */
 	if (!m_itemList) {
-		m_itemList = (NSItem)EntityDef_CreateClassname(itemName);
+		m_itemList = (ncItem)EntityDef_CreateClassname(itemName);
 
 		if (m_itemList == world) {
 			EntError("Unable to give item %S", itemName);
@@ -868,7 +1069,7 @@ NSActor::GiveItem(string itemName)
 	}
 
 	/* since we have something in the inventory, start there */
-	linkedList = (NSWeapon)m_itemList;
+	linkedList = (ncWeapon)m_itemList;
 
 	/* iterate through the inventory, then figure out if we already have it*/
 	while (linkedList) {
@@ -879,12 +1080,12 @@ NSActor::GiveItem(string itemName)
 		}
 
 		lastItem = linkedList;
-		linkedList = (NSItem)linkedList.m_nextItem;
+		linkedList = (ncItem)linkedList.m_nextItem;
 	}
 
 	/* add it to the back of the chain, so it's part of our inventory. */
 	if (lastItem && linkedList == __NULL__) {
-		NSItem newItem = (NSItem)EntityDef_CreateClassname(itemName);
+		ncItem newItem = (ncItem)EntityDef_CreateClassname(itemName);
 
 		if (!newItem) {
 			EntError("Unable to give item %S", itemName);
@@ -913,11 +1114,11 @@ NSActor::GiveItem(string itemName)
 }
 
 void
-NSActor::SwitchToBestWeapon(bool ignoreActive)
+ncActor::SwitchToBestWeapon(bool ignoreActive)
 {
 	string toIgnore = __NULL__;
-	NSItem linkedList = __NULL__;
-	NSItem bestWeapon = __NULL__;
+	ncItem linkedList = __NULL__;
+	ncItem bestWeapon = __NULL__;
 	float bestWeight = 0.0f;
 
 	if (ignoreActive && m_activeWeapon) {
@@ -939,7 +1140,7 @@ NSActor::SwitchToBestWeapon(bool ignoreActive)
 			float weight;
 
 			if (toIgnore == weaponName) {
-				linkedList = (NSItem)linkedList.m_nextItem;
+				linkedList = (ncItem)linkedList.m_nextItem;
 				continue;
 			}
 
@@ -951,24 +1152,24 @@ NSActor::SwitchToBestWeapon(bool ignoreActive)
 			}
 		}
 
-		linkedList = (NSItem)linkedList.m_nextItem;
+		linkedList = (ncItem)linkedList.m_nextItem;
 	}
 
 	if (bestWeapon) {
 		if (bestWeapon != m_activeWeapon) {
-			SwitchToExactWeapon((NSWeapon)bestWeapon);
+			SwitchToExactWeapon((ncWeapon)bestWeapon);
 		}
 	}
 }
 
 bool
-NSActor::RemoveItem(string itemName)
+ncActor::RemoveItem(string itemName)
 {
 #ifdef SERVER
-	NSItem linkedList = __NULL__;
-	NSItem frontItem = __NULL__;
-	NSItem lastItem = __NULL__;
-	NSItem itemToRemove = __NULL__;
+	ncItem linkedList = __NULL__;
+	ncItem frontItem = __NULL__;
+	ncItem lastItem = __NULL__;
+	ncItem itemToRemove = __NULL__;
 	bool removeItem = false;
 
 	/* we posess nothing. auto return false. */
@@ -995,17 +1196,17 @@ NSActor::RemoveItem(string itemName)
 		}
 
 		lastItem = linkedList;
-		linkedList = (NSItem)linkedList.m_nextItem;
+		linkedList = (ncItem)linkedList.m_nextItem;
 	}
 
 	/* successfully remove the last item */
 	if (removeItem == true) {
 		/* we had an item in front, bridge across the removed item. */
 		if (frontItem) {
-			frontItem.m_nextItem = (NSItem)itemToRemove.m_nextItem;
+			frontItem.m_nextItem = (ncItem)itemToRemove.m_nextItem;
 		} else {
 			/* this was the first item. set to chain (can be NULL) */
-			m_itemList = (NSItem)itemToRemove.m_nextItem;
+			m_itemList = (ncItem)itemToRemove.m_nextItem;
 		}
 
 		/* is this our active weapon? */
@@ -1023,9 +1224,9 @@ NSActor::RemoveItem(string itemName)
 }
 
 bool
-NSActor::RemoveAllItems(bool ignoreWeapons)
+ncActor::RemoveAllItems(bool ignoreWeapons)
 {
-	NSItem linkedList = __NULL__;
+	ncItem linkedList = __NULL__;
 
 	/* we posess nothing. auto return false. */
 	if (!m_itemList) {
@@ -1037,7 +1238,7 @@ NSActor::RemoveAllItems(bool ignoreWeapons)
 
 	/* iterate through the inventory, then figure out if we already have it*/
 	while (linkedList) {
-		NSItem nextItem = (NSItem)linkedList.m_nextItem;
+		ncItem nextItem = (ncItem)linkedList.m_nextItem;
 
 		/* respect weapon filter */
 		if (!(ignoreWeapons && linkedList.IsWeapon() == true)) {
@@ -1059,9 +1260,9 @@ NSActor::RemoveAllItems(bool ignoreWeapons)
 }
 
 bool
-NSActor::RemoveAllWeapons(void)
+ncActor::RemoveAllWeapons(void)
 {
-	NSItem linkedList = __NULL__;
+	ncItem linkedList = __NULL__;
 
 	/* we posess nothing. auto return false. */
 	if (!m_itemList) {
@@ -1073,7 +1274,7 @@ NSActor::RemoveAllWeapons(void)
 
 	/* iterate through the inventory, then figure out if we already have it*/
 	while (linkedList) {
-		NSItem nextItem = (NSItem)linkedList.m_nextItem;
+		ncItem nextItem = (ncItem)linkedList.m_nextItem;
 
 		if (linkedList.IsWeapon() == true) {
 			/* is this our active weapon? give it a chance to do work first */
@@ -1093,7 +1294,7 @@ NSActor::RemoveAllWeapons(void)
 }
 
 string
-NSActor::GetCurrentWeapon(void)
+ncActor::GetCurrentWeapon(void)
 {
 	if (m_activeWeapon) {
 		return (m_activeWeapon.classname);
@@ -1103,9 +1304,9 @@ NSActor::GetCurrentWeapon(void)
 }
 
 void
-NSActor::SwitchToWeapon(string weaponName)
+ncActor::SwitchToWeapon(string weaponName)
 {
-	NSItem linkedList = __NULL__;
+	ncItem linkedList = __NULL__;
 
 	/* we do not have an item. */
 	if (!m_itemList) {
@@ -1119,15 +1320,15 @@ NSActor::SwitchToWeapon(string weaponName)
 	while (linkedList) {
 		/* we already have the item. */
 		if (linkedList.classname == weaponName) {
-			SwitchToExactWeapon((NSWeapon)linkedList);
+			SwitchToExactWeapon((ncWeapon)linkedList);
 		}
 
-		linkedList = (NSItem)linkedList.m_nextItem;
+		linkedList = (ncItem)linkedList.m_nextItem;
 	}
 }
 
 void
-NSActor::SwitchToExactWeapon(NSWeapon item)
+ncActor::SwitchToExactWeapon(ncWeapon item)
 {
 	if (item.IsWeapon() == false) {
 		return;
@@ -1139,18 +1340,18 @@ NSActor::SwitchToExactWeapon(NSWeapon item)
 }
 
 bool
-NSActor::AddItem(NSItem theItem)
+ncActor::AddItem(ncItem theItem)
 {
 	return (false);
 }
 
-NSWeapon
-NSActor::SortWeaponChain(void)
+ncWeapon
+ncActor::SortWeaponChain(void)
 {
-	NSWeapon itemChain = (NSWeapon)m_itemList;
+	ncWeapon itemChain = (ncWeapon)m_itemList;
 	int heighestSlot = -1i;
 	int heighestPos = -1i;
-	NSWeapon firstWeapon, lastWeapon;
+	ncWeapon firstWeapon, lastWeapon;
 	int hudSlot, hudPos;
 
 	firstWeapon = lastWeapon = __NULL__;
@@ -1164,7 +1365,7 @@ NSActor::SortWeaponChain(void)
 
 		/* no longer in inventory */
 		if (itemChain.owner != this) {
-			itemChain = (NSWeapon)itemChain.m_nextItem;
+			itemChain = (ncWeapon)itemChain.m_nextItem;
 			continue;
 		}
 
@@ -1182,17 +1383,17 @@ NSActor::SortWeaponChain(void)
 			}
 		}
 
-		itemChain = (NSWeapon)itemChain.m_nextItem;
+		itemChain = (ncWeapon)itemChain.m_nextItem;
 	}
 
 	for (int hS = 0i; hS <= heighestSlot; hS++) {
 		for (int hP = 0i; hP <= heighestPos; hP++) {
-			itemChain = (NSWeapon)m_itemList;
+			itemChain = (ncWeapon)m_itemList;
 
 			while (itemChain) {
 				/* no longer in inventory */
 				if (itemChain.owner != this) {
-					itemChain = (NSWeapon)itemChain.m_nextItem;
+					itemChain = (ncWeapon)itemChain.m_nextItem;
 					continue;
 				}
 
@@ -1214,13 +1415,13 @@ NSActor::SortWeaponChain(void)
 					}
 				}
 
-				itemChain = (NSWeapon)itemChain.m_nextItem;
+				itemChain = (ncWeapon)itemChain.m_nextItem;
 			}
 		}
 	}
 
 	/* test */
-	NSWeapon weaponTest = firstWeapon;
+	ncWeapon weaponTest = firstWeapon;
 	while (weaponTest) {
 		weaponTest = weaponTest.m_nextWeapon;
 	}
@@ -1234,7 +1435,7 @@ NSActor::SortWeaponChain(void)
 }
 
 bool
-NSWeapon_CanSwitch(NSActor pl)
+ncWeapon_CanSwitch(ncActor pl)
 {
 	if (!pl.m_activeWeapon) {
 		return false;
@@ -1243,10 +1444,10 @@ NSWeapon_CanSwitch(NSActor pl)
 	return true;
 }
 
-NSWeapon
-NSActor::GetNextWeapon(void)
+ncWeapon
+ncActor::GetNextWeapon(void)
 {
-	if (NSWeapon_CanSwitch(this) == false) {
+	if (ncWeapon_CanSwitch(this) == false) {
 		return (__NULL__);
 	}
 
@@ -1257,10 +1458,10 @@ NSActor::GetNextWeapon(void)
 	}
 }
 
-NSWeapon
-NSActor::GetPreviousWeapon(void)
+ncWeapon
+ncActor::GetPreviousWeapon(void)
 {
-	if (NSWeapon_CanSwitch(this) == false) {
+	if (ncWeapon_CanSwitch(this) == false) {
 		return (__NULL__);
 	}
 
@@ -1271,25 +1472,25 @@ NSActor::GetPreviousWeapon(void)
 	}
 }
 
-NSWeapon
-NSActor::GetLastWeapon(void)
+ncWeapon
+ncActor::GetLastWeapon(void)
 {
 	/* TODO: Finish this */
 	return (m_activeWeapon);
 }
 
 void
-NSActor_ListInventory(NSActor targetEntity)
+ncActor_ListInventory(ncActor targetEntity)
 {
-	NSItem itemEntry = targetEntity.m_itemList;
-	NSWeapon activeWeapon = targetEntity.m_activeWeapon;
+	ncItem itemEntry = targetEntity.m_itemList;
+	ncWeapon activeWeapon = targetEntity.m_activeWeapon;
 	int i = 0i;
 
 	printf("active weapon: %s (%d)\n", activeWeapon.classname, num_for_edict(activeWeapon));
 
 	while (itemEntry) {
 		printf("%i %s (%d) (owner: %d); next: %d\n", i, itemEntry.classname, num_for_edict(itemEntry), num_for_edict(itemEntry.owner), num_for_edict(itemEntry.m_nextItem));
-		itemEntry = (NSItem)itemEntry.m_nextItem;
+		itemEntry = (ncItem)itemEntry.m_nextItem;
 		i += 1i;
 	}
 }

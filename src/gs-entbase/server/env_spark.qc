@@ -59,11 +59,11 @@ as well.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-env_spark:NSPointTrigger
+env_spark:ncPointTrigger
 {
 public:
 	void env_spark(void);

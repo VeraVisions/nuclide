@@ -115,23 +115,6 @@ Background_Steam(vector vecPos, vector vecSize)
 }
 
 void
-Background_Draw2(vector vecPos, vector vecSize)
-{
-	switch (g_bgMode) {
-	case BACK_VGUI1:
-		Background_Steam(vecPos, vecSize);
-		break;
-	case BACK_WON:
-		Background_WON(vecPos, vecSize);
-		break;
-	case BACK_MATERIAL:
-	default:
-		drawpic(vecPos, BACKGROUND_IMG, vecSize, [ 1, 1, 1 ], 1.0f);
-		break;
-	}
-}
-
-void
 Background_Draw(vector vecPos, vector vecSize)
 {
 	/* when ingame, we'll draw a slight black tint... */
@@ -144,6 +127,17 @@ Background_Draw(vector vecPos, vector vecSize)
 		/* clear screen */
 		drawfill([0,0], g_vidsize, [0,0,0], 1.0f);
 
-		Background_Draw2(vecPos, vecSize);
+		switch (g_bgMode) {
+		case BACK_VGUI1:
+			Background_Steam(vecPos, vecSize);
+			break;
+		case BACK_WON:
+			Background_WON(vecPos, vecSize);
+			break;
+		case BACK_MATERIAL:
+		default:
+			drawpic(vecPos, BACKGROUND_IMG, vecSize, [ 1, 1, 1 ], 1.0f);
+			break;
+		}
 	}
 }

@@ -16,16 +16,16 @@
 
 /*! \brief This entity class represents decals  */
 
-/*!QUAKED NSDecal (1 .5 0) (-8 -8 -8) (8 8 8)
+/*!QUAKED ncDecal (1 .5 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 
 @ingroup baseclass
 */
 class
-NSDecal
+ncDecal
 {
 public:
-	void NSDecal(void);
+	void ncDecal(void);
 
 #ifdef SERVER
 	virtual float SendEntity(entity, float);
@@ -37,6 +37,7 @@ public:
 
 	/** Paint the given decal at the specified position. */
 	virtual void Place(vector, string);
+	virtual void PlaceAtScale(vector, string, float);
 
 private:
 	string m_strShader;
@@ -101,7 +102,7 @@ decal_pickwall(entity dself, vector vpos)
 }
 
 void Decals_Init(void);
-NSDecal Decals_Next(vector pos);
+ncDecal Decals_Next(vector pos);
 
 /** Places a desired decal at the specified position. */
 void Decals_Place(vector pos, string dname);

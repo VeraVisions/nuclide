@@ -1,11 +1,11 @@
 # Material Command List {#mat_commands}
 
-### vmap_lightmapmergable
-#### Syntax
+## vmap_lightmapmergable
+### Syntax
 
 **vmap_lightmapMergable**
 
-#### Overview
+### Overview
 
 When specified, the compiler will attempt to merge all surfaces using
 this material together onto lightmap sheets. This can drastically reduce

@@ -29,6 +29,7 @@
 #include "mapcycle.h"
 #include "maptweaks.h"
 #include "scripts.h"
+#include "ai_schedule.h"
 
 /* helper macros */
 #define EVALUATE_FIELD(fieldname, changedflag) {\
@@ -104,7 +105,7 @@ void Client_ShakeOnce(vector, float, float, float, float);
 
 void Mapcycle_Load(string);
 
-NSEntity eActivator;
+ncEntity eActivator;
 
 /* Generic entity fields */
 .void(void) PlayerUse;
@@ -122,14 +123,6 @@ NSEntity eActivator;
 int trace_surfaceflagsi;
 string startspot;
 string __fullspawndata;
-
-/* damage related tempglobals, like trace_* */
-NSEntity g_dmg_eAttacker;
-NSEntity g_dmg_eTarget;
-int g_dmg_iDamage;
-bodyType_t g_dmg_iHitBody;
-int g_dmg_iFlags;
-vector g_dmg_vecLocation;
 
 var bool g_ents_initialized = FALSE;
 
@@ -151,13 +144,13 @@ void main(void)
 This is useful for entities that are already in the game, and need to transition into a different type of entity.
 
 @param className is the type of class to be changed to. */
-NSEntity EntityDef_SpawnClassname(string className);
+ncEntity EntityDef_SpawnClassname(string className);
 
 
 /** Spawns an entity of a specific class. If class doesn't exist, returns __NULL__.
 
 @param className is the type of class to be instantiated. */
-NSEntity EntityDef_CreateClassname(string className);
+ncEntity EntityDef_CreateClassname(string className);
 
 /** Spawns an entity of a class, guaranteed to be valid.
 
@@ -169,7 +162,7 @@ If a specified class does not exist, it will create an info_notnull type entity,
 The only time when this function returns __NULL__ is if the game is unable to allocate any more entities.
 
 @param className is the type of class to be instantiated. */
-NSEntity Entity_CreateClass(string className);
+ncEntity Entity_CreateClass(string className);
 
 /** Checks if an entity class was defined in an EntityDef.
 
@@ -193,3 +186,9 @@ WriteEntityEvent(float to, entity targetEntity, float eventType)
 	WriteEntity(to, targetEntity);
 	WriteFloat(to, eventType);
 }
+
+/** @defgroup serverentity Entities that are server-side
+ *  @ingroup server
+ *  @ingroup entities
+ *  Entity classes that run entirely on the server.
+ */

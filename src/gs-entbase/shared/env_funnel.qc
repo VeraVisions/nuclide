@@ -53,11 +53,11 @@ the position of this entity.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup shared
+@ingroup sharedentity
 @ingroup pointentity
 */
 class
-env_funnel:NSRenderableEntity
+env_funnel:ncRenderableEntity
 {
 public:
 	void env_funnel(void);
@@ -73,7 +73,9 @@ public:
 	virtual float SendEntity(entity,float);
 	virtual void Trigger(entity, triggermode_t);
 	virtual void Input(entity, string, string);
-#else
+#endif
+
+#ifdef CLIENT
 	virtual float predraw(void);
 	virtual void ReceiveEntity(float,float);
 	virtual void RendererRestarted(void);
@@ -90,7 +92,9 @@ private:
 
 #ifdef SERVER
 	float m_flHeight;
-#else
+#endif
+
+#ifdef CLIENT
 	float m_flProgression;
 #endif
 };
@@ -102,7 +106,9 @@ env_funnel::env_funnel(void)
 	m_strTexture = "sprites/flare6.spr";
 	m_iSpriteID = 0i;
 	m_flHeight = 512.0f;
-#else
+#endif
+
+#ifdef CLIENT
 	m_flProgression = 0.0f;
 #endif
 }
@@ -226,7 +232,9 @@ env_funnel::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_BYTE(m_flRenderAmt, FUNNEL_CHANGED_AMOUNT)
 	return (1);
 }
-#else
+#endif
+
+#ifdef CLIENT
 void
 env_funnel::ReceiveEntity(float flNew, float flChanged)
 {

@@ -38,12 +38,12 @@ Turns a standard entity into a physically simulated one.
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 @ingroup physics
 */
 class
-phys_convert:NSPhysicsConstraint
+phys_convert:ncPhysicsConstraint
 {
 public:
 	void phys_convert(void);
@@ -145,13 +145,13 @@ phys_convert::AfterSpawn(void)
 void
 phys_convert::ConvertTarget(entity activatorEnt)
 {
-	NSEntity targetEnt = (NSEntity)GetEntity1();
+	ncEntity targetEnt = (ncEntity)GetEntity1();
 	string targetModel;
 	vector targetAngle;
 	vector targetPos;
 	vector targetVelocity;
 	string targetName;
-	NSPhysicsEntity new;
+	ncPhysicsEntity new;
 
 	if (!targetEnt) {
 		EntWarning("Cannot find target to convert.");
@@ -164,7 +164,7 @@ phys_convert::ConvertTarget(entity activatorEnt)
 	targetVelocity = targetEnt.GetVelocity();
 	targetName = targetEnt.targetname;
 
-	new = spawn(NSPhysicsEntity);
+	new = spawn(ncPhysicsEntity);
 	new.Respawn();
 
 	/* may have an override */

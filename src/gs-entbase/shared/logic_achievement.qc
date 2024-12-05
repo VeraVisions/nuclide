@@ -40,11 +40,11 @@ Ensure to prefix the value of the `AchievementEvent` key with `ACHIEVEMENT_EVENT
 # TRIVIA
 This entity was introduced in The Orange Box (2007) for Xbox 360.
 
-@ingroup shared
+@ingroup sharedentity
 @ingroup pointentity
 */
 class
-logic_achievement:NSPointTrigger
+logic_achievement:ncPointTrigger
 {
 public:
 	void logic_achievement(void);

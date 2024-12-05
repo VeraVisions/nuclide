@@ -32,11 +32,11 @@ the shape of a soda can.
 # TRIVIA
 This entity was introduced in Call of Duty (2003).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-script_model:NSPointTrigger
+script_model:ncPointTrigger
 {
 public:
 	void script_model(void);

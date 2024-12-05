@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+#warning There's no way we can spawn these from within the particle system. Investigate how we can handle most of this from within the particle system.
+
 #ifdef CLIENT
 /** Data holding DecalGroup entries. */
 typedef struct

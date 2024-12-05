@@ -33,11 +33,11 @@ This entity plays a background sound.
 # TRIVIA
 It was introduced in Quake II (1997).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-target_speaker:NSSound
+target_speaker:ncSound
 {
 public:
 	void target_speaker(void);

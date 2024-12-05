@@ -30,6 +30,8 @@
 #include "maplibrary.h"
 #include "error.h"
 #include "saves.h"
+#include "fragnet.h"
+#include "map.h"
 
 /** Definitions for FTE's internal package manager. We don't want you to talk to this one directly within Nuclide. */
 typedef enum

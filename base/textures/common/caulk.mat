@@ -1,0 +1,8 @@
+{
+	qer_editorImage "common/caulk.ktx"
+	qer_trans 0.50
+	surfaceParm nodraw
+	surfaceParm nomarks
+	surfaceParm nolightmap
+	nomipmaps
+}

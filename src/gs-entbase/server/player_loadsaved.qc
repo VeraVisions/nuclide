@@ -33,11 +33,11 @@ This is commonly used when a mission objective has failed.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-player_loadsaved:NSRenderableEntity /* for the rendercolor values */
+player_loadsaved:ncRenderableEntity /* for the rendercolor values */
 {
 public:
 	void player_loadsaved(void);

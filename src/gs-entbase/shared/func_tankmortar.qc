@@ -62,10 +62,10 @@ some random sprites needs to be treated additive.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup shared
+@ingroup sharedentity
 @ingroup brushentity
 */
-class func_tankmortar:NSVehicle
+class func_tankmortar:ncVehicle
 {
 public:
 	void func_tankmortar(void);
@@ -80,7 +80,9 @@ public:
 	virtual void PredictPostFrame(void);
 	virtual void ReceiveEntity(float,float);
 	virtual void UpdateView(void);
-#else
+#endif
+
+#ifdef SERVER
 	virtual void EvaluateEntity(void);
 	virtual float SendEntity(entity,float);
 	virtual void Respawn(void);
@@ -173,13 +175,15 @@ func_tankmortar::ReceiveEntity(float new, float fChanged)
 	}
 
 	if (fChanged & VEHFL_CHANGED_DRIVER) {
-		m_eDriver = (NSEntity)findfloat(world, ::entnum, readentitynum());
+		m_eDriver = (ncEntity)findfloat(world, ::entnum, readentitynum());
 	}
 
 	if (new)
 		drawmask = MASK_ENGINE;
 }
-#else
+#endif
+
+#ifdef SERVER
 void
 func_tankmortar::EvaluateEntity(void)
 {
@@ -266,7 +270,7 @@ func_tankmortar::SpriteSmoke(vector org)
 	if (!m_strSpriteSmoke)
 		return;
 
-	NSRenderableEntity smoke = spawn(NSRenderableEntity);
+	ncRenderableEntity smoke = spawn(ncRenderableEntity);
 	smoke.SetModel(m_strSpriteSmoke);
 	smoke.SetOrigin(org);
 	smoke.think = Die;
@@ -289,7 +293,7 @@ func_tankmortar::SpriteFlash(vector org)
 	if (!m_strSpriteFlash)
 		return;
 
-	NSRenderableEntity flash = spawn(NSRenderableEntity);
+	ncRenderableEntity flash = spawn(ncRenderableEntity);
 	flash.SetModel(m_strSpriteFlash);
 	flash.SetOrigin(org);
 	flash.think = Die;
@@ -306,8 +310,10 @@ func_tankmortar::PlayerInput(void)
 {
 #ifdef SERVER
 	if (m_eDriver && m_eDriver.health <= 0)
-		PlayerLeave((NSClientPlayer)m_eDriver);
-#else
+		PlayerLeave((ncPlayer)m_eDriver);
+#endif
+
+#ifdef CLIENT
 	//print("foooo\n");
 #endif
 
@@ -374,7 +380,7 @@ func_tankmortar::Respawn(void)
 	SetSolid(SOLID_BSP);
 
 	if (m_eDriver)
-		PlayerLeave((NSClientPlayer)m_eDriver);
+		PlayerLeave((ncPlayer)m_eDriver);
 }
 
 void

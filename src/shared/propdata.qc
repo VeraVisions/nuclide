@@ -14,6 +14,45 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+#warning PropData should be stored in ncDict
+
+#ifdef CLIENT
+ncDebris g_breakEntities;
+
+var int autocvar_phys_maxDebris = 32i;
+
+#define DEBRIS_MAX autocvar_phys_maxDebris
+
+void
+BreakModel_InitBodies(void)
+{
+	ncDebris next = spawn(ncDebris);
+
+	g_breakEntities = next;
+
+	for ( int i = 0; i <= DEBRIS_MAX; i++ ) {
+// 		next.classname = "ncDebris";
+
+		next.owner = spawn(ncDebris);
+
+		if ( i == DEBRIS_MAX ) {
+			next.owner = g_breakEntities;
+		} else {
+			next = (ncDebris)next.owner;
+		}
+	}
+}
+
+static ncDebris
+BreakModel_Next(void)
+{
+	ncDebris r = g_breakEntities;
+	g_breakEntities = (ncDebris)g_breakEntities.owner;
+	return r;
+}
+
+#endif
+
 /*
 #define PROPDATA_DYNAMIC
 
@@ -26,9 +65,20 @@ no real garbage collector to speak of
 
 #ifndef PROPDATA_DYNAMIC
 	#ifndef PROPDATA_MAX
-		#define PROPDATA_MAX 128
+		#define PROPDATA_MAX 512
 	#endif
 #endif
+
+static void
+PropData_PrecacheGib(string modelPath)
+{
+	if (STRING_SET(modelPath)) {
+		return;
+	}
+
+	tokenizebyseparator(modelPath, "#");
+	precache_model(argv(0));
+}
 
 void
 PropData_Shutdown(void)
@@ -49,6 +99,10 @@ PropData_Shutdown(void)
 __variant
 Prop_GetInfo(int i, int type)
 {
+	if (i < 0i) {
+		return (__NULL__);
+	}
+
 	switch (type)
 	{
 	case PROPINFO_HEALTH:
@@ -182,6 +236,45 @@ PropData_ParseField(int i, string keyName, string setValue)
 	}
 }
 
+
+void
+PropData_ParseInteraction(int i, string keyName, string setValue)
+{
+#if 0
+	switch (keyName) {
+	/* physics gun */
+	case "preferred_carryangles":
+		g_propdata[i].preferred_carryangles = stov(setValue);
+		break;
+	case "carry_distance_offset":
+		g_propdata[i].carry_distance_offset = stof(setValue);
+		break;
+	case "onfirstimpact":
+		g_propdata[i].onfirstimpact = setValue;
+		break;
+	case "onworldimpact":
+		g_propdata[i].onworldimpact = setValue;
+		break;
+	case "onlaunch":
+		g_propdata[i].onlaunch = setValue;
+		break;
+	case "onbreak":
+		g_propdata[i].onbreak = setValue;
+		break;
+	/* fire */
+	case "ignite":
+		g_propdata[i].ignite = setValue;
+		break;
+	case "explosive_resist":
+		g_propdata[i].explosive_resist = stof(setValue) ? (true) : (false);
+		break;
+	case "flammable":
+		g_propdata[i].flammable = = stof(setValue) ? (true) : (false);
+		break;
+	}
+#endif
+}
+
 void
 BreakModel_ParseField(int i, int a)
 {
@@ -189,6 +282,7 @@ BreakModel_ParseField(int i, int a)
 		string mdl, fadetime;
 		mdl = argv(0);
 		fadetime = argv(1);
+		PropData_PrecacheGib(mdl);
 		g_breakmodel[i].data = sprintf("%s%S %S\n", g_breakmodel[i].data, mdl, fadetime);
 	}
 };
@@ -279,6 +373,7 @@ PropData_ParsePhyFile(int i, string line, string type)
 				switch (key) {
 				case "model":
 					gibModel = strcat("models/", argv(x+1), ".mdl");
+					PropData_PrecacheGib(gibModel);
 					break;
 				case "fadetime":
 					gibFadeTime = argv(x+1);
@@ -344,7 +439,7 @@ PropData_ForModel(string modelname)
 	g_propdata_count++;
 
 #ifdef PROPDATA_DYNAMIC
-	g_propdata = (propdata_t *)memrealloc(g_propdata, sizeof(propdata_t), index, g_propdata_count);
+	g_propdata = (propdata_t *)memreallocOld(g_propdata, sizeof(propdata_t), index, g_propdata_count);
 
 	if (!g_propdata) {
 		NSError("Memory re-allocation failed.");
@@ -588,7 +683,7 @@ PropData_ParseLine(string line)
 	int c;
 	string key;
 	static string t_name;
-	static int braced = 0;
+	static int braced = 0i;
 	static int inmodel = FALSE;
 	static int i_p = -1;
 	static int i_b = -1;
@@ -604,8 +699,9 @@ PropData_ParseLine(string line)
 		braced--;
 
 		/* move out of BreakableModels */
-		if (inmodel == TRUE && braced == 1)
+		if (inmodel == TRUE && braced == 1i) {
 			inmodel = FALSE;
+		}
 
 		t_name = "";
 
@@ -640,6 +736,50 @@ PropData_ParseLine(string line)
 	return (0);
 }
 
+
+
+static void
+PropData_CountEntries(string filePath)
+{
+	filestream fh;
+	string line;
+
+	fh = fopen(filePath, FILE_READ);
+
+	if (fh < 0) {
+		NSError("failed to parse %S!", filePath);
+		return;
+	}
+
+	/* count surfaceproperty definitions */
+	while ((line = fgets(fh))) {
+		PropData_CountLine(line);
+	}
+
+	fclose(fh);
+}
+
+static void
+PropData_LoadFile(string filePath)
+{
+	filestream fh;
+	string line;
+
+	fh = fopen(filePath, FILE_READ);
+
+	if (fh < 0) {
+		NSError("failed to parse %S!", filePath);
+		return;
+	}
+
+	while ((line = fgets(fh))) {
+		PropData_ParseLine(line);
+	}
+
+	fclose(fh);
+}
+
+
 void
 PropData_Init(void)
 {
@@ -648,6 +788,7 @@ PropData_Init(void)
 	int index;
 	int pdMemSize;
 	int bmMemSize;
+	searchhandle sh;
 
 	InitStart();
 
@@ -673,6 +814,12 @@ PropData_Init(void)
 	/* count content */
 	while ((line = fgets(fh))) {
 		PropData_CountLine(line);
+	}
+
+	/* TODO: ensure that the above paths aren't necessary? */
+	sh = search_begin("scripts/propdata/*.txt", TRUE, TRUE);
+	for (int i = 0; i < search_getsize(sh); i++) {
+		PropData_CountEntries(search_getfilename(sh, i));
 	}
 
 #ifdef PROPDATA_DYNAMIC
@@ -715,6 +862,11 @@ PropData_Init(void)
 
 	fclose(fh);
 
+	/* GMod search paths */
+	for (int i = 0; i < search_getsize(sh); i++) {
+		PropData_LoadFile(search_getfilename(sh, i));
+	}
+
 	/* now let's precache all of our breakmodel units.
 	   first we gotta interate through each cached breakmodel line */
 	for (int i = 0; i < g_breakmodel_count; i++) {
@@ -743,6 +895,12 @@ PropData_Init(void)
 	}
 
 	g_breakmodel_end = g_breakmodel_count;
+
+#ifdef CLIENT
+	BreakModel_InitBodies();
+#endif
+
+	search_end(sh);
 	InitEnd();
 }
 
@@ -785,7 +943,7 @@ BreakModel_SpawnID(vector smins, vector smaxs, vector dir, float speed, int coun
 		string mname;
 		string fullline;
 		float fadetime;
-		NSDebris gib;
+		ncDebris gib;
 		int p;
 		int bodygroup = 0;
 		vector rendercolor = [1,1,1];
@@ -798,11 +956,11 @@ BreakModel_SpawnID(vector smins, vector smaxs, vector dir, float speed, int coun
 		if (modelcount < count) {
 			int r = floor(random(0, modelcount));
 			fullline = mname = argv((r * 2));
-			fadetime = stof(argv((r * 2) + 1));
+			fadetime = 5.0 + stof(argv((r * 2) + 1));
 
 		} else {
 			fullline = mname = argv((i * 2));
-			fadetime = stof(argv((i * 2) + 1));
+			fadetime = 5.0f + stof(argv((i * 2) + 1));
 		}
 
 		p = tokenizebyseparator(mname, "#");
@@ -855,18 +1013,18 @@ BreakModel_SpawnID(vector smins, vector smaxs, vector dir, float speed, int coun
 		endpos[1] = smins[1] + ( random() * ( smaxs[1] - smins[1] ) );
 		endpos[2] = smins[2] + ( random() * ( smaxs[2] - smins[2] ) );
 
-		gib = spawn(NSDebris);
+		gib = BreakModel_Next();
 		gib.SetModel(mname);
 		gib.SetBody(bodygroup);
 		gib.SetRenderColor(rendercolor);
 		gib.SetRenderAmt(renderamt);
 		gib.SetRenderMode(rendermode);
 		gib.SetRenderFX(renderfx);
-		gib.SetSize([-8,-8,-8],[8,8,8]);
 		gib.SetOrigin(endpos);
 		gib.SetScale(1.0f);
 
 		if (usePhysics == false) {
+			gib.SetSize([-8,-8,-8],[8,8,8]);
 			makevectors(dir);
 			gib.velocity = (v_forward * speed) * 0.75;
 			gib.velocity[0] += (random() - 0.5) * (speed * 0.25);
@@ -880,11 +1038,22 @@ BreakModel_SpawnID(vector smins, vector smaxs, vector dir, float speed, int coun
 			gib.SetSolid(SOLID_CORPSE);
 			gib.mass = 1.0f;
 			gib.friction = 1.0f;
-			gib.m_iShape = GEOMTYPE_TRIMESH;
+
+			float sizeLength = length(gib.GetSize());
+
+			//printf("Gib Size: %f\n", sizeLength);
+
+			/* smaller/thinner models benefit from not being an expensive trimesh. */
+			if (sizeLength < 32) {
+				gib.m_iShape = GEOMTYPE_BOX;
+			} else {
+				gib.m_iShape = autocvar_phys_lowspec == false ? GEOMTYPE_TRIMESH : GEOMTYPE_BOX;
+			}
+
 			gib.ApplyForceOffset(dir * speed, endpos);
 		}
 
-		gib.ScheduleThink(NSEntity::Destroy, fadetime);
+		gib.ScheduleThink(ncEntity::Disappear, fadetime);
 		gib.SetImpactDecal(impactDecal);
 		//print(sprintf("%S\n", mname));
 
@@ -969,13 +1138,16 @@ BreakModel_Spawn(vector smins, vector smaxs, vector dir, float speed, int count,
 {
 	int index;
 	vector pvsPosition;
-	index = (int)hash_get(g_hashbreakmodel, type, -1);
+	index = (int)hash_get(g_hashbreakmodel, type, -1i);
 
-	if (index == -1) {
+	if (index == -1i) {
+		NSError("Type %S not defined in BreakableModels.", type);
 		return;
 	}
 
 	pvsPosition = (smins + ( 0.5 * ( smaxs - smins )));
+
+	NSLog("Spawning %i %S gibs @ %v and %d up/s", count, type, pvsPosition, speed);
 
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_BREAKMODEL);
@@ -995,7 +1167,7 @@ BreakModel_Spawn(vector smins, vector smaxs, vector dir, float speed, int count,
 }
 
 void
-BreakModel_Entity(NSSurfacePropEntity target, vector dir, float speed)
+BreakModel_Entity(ncSurfacePropEntity target, vector dir, float speed)
 {
 	string type = Prop_GetInfo(target.m_iPropData, PROPINFO_BREAKMODEL);
 	int count = Prop_GetInfo(target.m_iPropData, PROPINFO_BREAKCOUNT);

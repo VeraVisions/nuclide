@@ -15,7 +15,7 @@
 */
 
 void
-NSTalkMonster::NSTalkMonster(void)
+ncTalkMonster::ncTalkMonster(void)
 {
 #ifdef SERVER
 	m_eFollowing = world;
@@ -65,7 +65,7 @@ NSTalkMonster::NSTalkMonster(void)
 }
 
 void
-NSTalkMonster::HandleAnimEvent(float flTimeStamp, int iCode, string strData)
+ncTalkMonster::HandleAnimEvent(float flTimeStamp, int iCode, string strData)
 {
 	switch(iCode) {
 	case 1005:	/* plays a dialogue sentence. monsters only right now */
@@ -87,7 +87,7 @@ NSTalkMonster::HandleAnimEvent(float flTimeStamp, int iCode, string strData)
 
 #ifdef SERVER
 void
-NSTalkMonster::_Alerted(void)
+ncTalkMonster::_Alerted(void)
 {
 	super::_Alerted();
 
@@ -96,7 +96,7 @@ NSTalkMonster::_Alerted(void)
 }
 
 void
-NSTalkMonster::Save(float handle)
+ncTalkMonster::Save(float handle)
 {
 	super::Save(handle);
 
@@ -139,7 +139,7 @@ NSTalkMonster::Save(float handle)
 }
 
 void
-NSTalkMonster::Restore(string strKey, string strValue)
+ncTalkMonster::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "m_flPitch":
@@ -253,11 +253,11 @@ NSTalkMonster::Restore(string strKey, string strValue)
 }
 
 void
-NSTalkMonster::WarnAllies(void)
+ncTalkMonster::WarnAllies(void)
 {
 	for (entity b = world; (b = find(b, ::classname, classname));) {
 		if (vlen(b.origin - origin) < PLAYER_DETECT_RADIUS) {
-			NSTalkMonster w = (NSTalkMonster)b;
+			ncTalkMonster w = (ncTalkMonster)b;
 			w.m_iFlags |= MONSTER_METPLAYER;
 			w.m_eFollowing = world;
 			w.m_eFollowingChain = world;
@@ -265,11 +265,11 @@ NSTalkMonster::WarnAllies(void)
 	}
 }
 void
-NSTalkMonster::StartleAllies(void)
+ncTalkMonster::StartleAllies(void)
 {
 	for (entity b = world; (b = find(b, ::classname, classname));) {
 		if (vlen(b.origin - origin) < PLAYER_DETECT_RADIUS) {
-			NSTalkMonster w = (NSTalkMonster)b;
+			ncTalkMonster w = (ncTalkMonster)b;
 			w.m_iFlags |= MONSTER_FEAR;
 			w.m_eFollowing = world;
 			w.m_eFollowingChain = world;
@@ -278,7 +278,7 @@ NSTalkMonster::StartleAllies(void)
 }
 
 void
-NSTalkMonster::Sentence(string sentence)
+ncTalkMonster::Sentence(string sentence)
 {
 	if (GetState() == MONSTER_DEAD)
 		return;
@@ -299,7 +299,7 @@ NSTalkMonster::Sentence(string sentence)
 }
 
 void
-NSTalkMonster::Speak(string sentence)
+ncTalkMonster::Speak(string sentence)
 {
 	if (GetState() == MONSTER_DEAD)
 		return;
@@ -314,7 +314,7 @@ NSTalkMonster::Speak(string sentence)
 }
 
 void
-NSTalkMonster::SeenPlayer(NSActor thePlayer)
+ncTalkMonster::SeenPlayer(ncActor thePlayer)
 {
 	if (m_iSequenceState != SEQUENCESTATE_NONE) {
 		return;
@@ -336,7 +336,7 @@ NSTalkMonster::SeenPlayer(NSActor thePlayer)
 }
 
 void
-NSTalkMonster::SeenFriend(NSActor theActor)
+ncTalkMonster::SeenFriend(ncActor theActor)
 {
 	if (m_iSequenceState != SEQUENCESTATE_NONE) {
 		return;
@@ -353,7 +353,7 @@ NSTalkMonster::SeenFriend(NSActor theActor)
 }
 
 void
-NSTalkMonster::TalkPlayerAsk(void)
+ncTalkMonster::TalkPlayerAsk(void)
 {
 	if (m_iSequenceState != SEQUENCESTATE_NONE) {
 		return;
@@ -381,7 +381,7 @@ NSTalkMonster::TalkPlayerAsk(void)
 }
 
 void
-NSTalkMonster::TalkPlayerWounded1(void)
+ncTalkMonster::TalkPlayerWounded1(void)
 {
 	if (m_iSequenceState != SEQUENCESTATE_NONE) {
 		return;
@@ -411,7 +411,7 @@ NSTalkMonster::TalkPlayerWounded1(void)
 	}
 }
 void
-NSTalkMonster::TalkPlayerWounded2(void)
+ncTalkMonster::TalkPlayerWounded2(void)
 {
 	if (m_iSequenceState != SEQUENCESTATE_NONE) {
 		return;
@@ -442,7 +442,7 @@ NSTalkMonster::TalkPlayerWounded2(void)
 }
 
 void
-NSTalkMonster::TalkPlayerWounded3(void)
+ncTalkMonster::TalkPlayerWounded3(void)
 {
 	if (m_iSequenceState != SEQUENCESTATE_NONE) {
 		return;
@@ -470,7 +470,7 @@ NSTalkMonster::TalkPlayerWounded3(void)
 }
 
 void
-NSTalkMonster::TalkPanic(void)
+ncTalkMonster::TalkPanic(void)
 {
 	if (m_iSequenceState != SEQUENCESTATE_NONE) {
 		return;
@@ -485,7 +485,7 @@ NSTalkMonster::TalkPanic(void)
 
 
 void
-NSTalkMonster::TalkUnfollow(void)
+ncTalkMonster::TalkUnfollow(void)
 {
 	if (m_iSequenceState != SEQUENCESTATE_NONE) {
 		return;
@@ -499,7 +499,7 @@ NSTalkMonster::TalkUnfollow(void)
 }
 
 void
-NSTalkMonster::TalkFollow(void)
+ncTalkMonster::TalkFollow(void)
 {
 	if (m_iSequenceState != SEQUENCESTATE_NONE) {
 		return;
@@ -513,7 +513,7 @@ NSTalkMonster::TalkFollow(void)
 }
 
 void
-NSTalkMonster::TalkStopFollow(void)
+ncTalkMonster::TalkStopFollow(void)
 {
 	if (m_iSequenceState != SEQUENCESTATE_NONE) {
 		return;
@@ -527,7 +527,7 @@ NSTalkMonster::TalkStopFollow(void)
 }
 
 void
-NSTalkMonster::TalkDenyFollow(void)
+ncTalkMonster::TalkDenyFollow(void)
 {
 	if (m_iSequenceState != SEQUENCESTATE_NONE) {
 		return;
@@ -541,7 +541,7 @@ NSTalkMonster::TalkDenyFollow(void)
 }
 
 void
-NSTalkMonster::Touch(entity eToucher)
+ncTalkMonster::Touch(entity eToucher)
 {
 	if (eToucher == world)
 		return;
@@ -561,7 +561,7 @@ NSTalkMonster::Touch(entity eToucher)
 }
 
 void
-NSTalkMonster::FollowPlayer(void)
+ncTalkMonster::FollowPlayer(void)
 {
 	float flPlayerDist;
 	input_angles = vectoangles(m_eFollowingChain.origin - origin);
@@ -581,7 +581,7 @@ NSTalkMonster::FollowPlayer(void)
 	/* Give up after 1024 units */
 	if (flPlayerDist > m_flMaxFollowDistance) {
 		m_eFollowing = world;
-		NSMonsterLog("Maximum follow distance reached. Will stop following.");
+		ncMonsterLog("Maximum follow distance reached. Will stop following.");
 	} else if (flPlayerDist >= m_flFollowDistance) {
 		/* we only allow speed changes every second, avoid jitter */
 		if (m_flFollowSpeedChanged < time) {
@@ -608,7 +608,7 @@ NSTalkMonster::FollowPlayer(void)
 			/* the answer is no. */
 			if (trace_fraction < 1.0 || trace_ent != m_eFollowing) {
 				/* go straight to our user */
-				NSEntity zamn = (NSEntity)m_eFollowing;
+				ncEntity zamn = (ncEntity)m_eFollowing;
 				vector endPos = zamn.GetNearbySpot();
 
 				if (endPos != g_vec_null) {
@@ -648,7 +648,7 @@ NSTalkMonster::FollowPlayer(void)
 		 * follow them instead, this makes pathing easier */
 		traceline(origin, /*mins, maxs,*/ m_vecLastUserPos, FALSE, this);
 		if (trace_ent.classname == classname) {
-			NSTalkMonster que = (NSTalkMonster)trace_ent;
+			ncTalkMonster que = (ncTalkMonster)trace_ent;
 			if (que.m_eFollowingChain == m_eFollowing) {
 				if (trace_ent != this) {
 					m_eFollowingChain = trace_ent;
@@ -659,7 +659,7 @@ NSTalkMonster::FollowPlayer(void)
 }
 
 void
-NSTalkMonster::PanicFrame(void)
+ncTalkMonster::PanicFrame(void)
 {
 	float bestYaw = 0.0f;
 	float best_fraction = 0.0f;
@@ -698,7 +698,7 @@ NSTalkMonster::PanicFrame(void)
 }
 
 void
-NSTalkMonster::FollowChain(void)
+ncTalkMonster::FollowChain(void)
 {
 	/* Deal with a hostage being rescued when it's following someone else */
 	if (m_eFollowingChain.classname == classname) {
@@ -713,7 +713,7 @@ NSTalkMonster::FollowChain(void)
 }
 
 void
-NSTalkMonster::RunAI(void)
+ncTalkMonster::RunAI(void)
 {
 	if (GetMovetype() == MOVETYPE_NONE) {
 		return;
@@ -739,7 +739,7 @@ NSTalkMonster::RunAI(void)
 }
 
 void
-NSTalkMonster::Respawn(void)
+ncTalkMonster::Respawn(void)
 {
 	super::Respawn();
 
@@ -754,7 +754,7 @@ NSTalkMonster::Respawn(void)
 }
 
 void
-NSTalkMonster::OnPlayerUse(void)
+ncTalkMonster::OnPlayerUse(void)
 {
 	if (m_iFlags & MONSTER_FEAR)
 		return;
@@ -782,7 +782,7 @@ NSTalkMonster::OnPlayerUse(void)
 }
 
 void
-NSTalkMonster::SpawnKey(string strKey, string strValue)
+ncTalkMonster::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "UnUseSentence":
@@ -876,7 +876,7 @@ NSTalkMonster::SpawnKey(string strKey, string strValue)
 }
 
 float
-NSTalkMonster::SendEntity(entity ePEnt, float flChanged)
+ncTalkMonster::SendEntity(entity ePEnt, float flChanged)
 {
 	if (!modelindex)
 		return (0);
@@ -936,26 +936,26 @@ NSTalkMonster::SendEntity(entity ePEnt, float flChanged)
 
 /*
 ============
-NSTalkMonster::SentenceSample
+ncTalkMonster::SentenceSample
 
 whatever comes out of the 'mouth',
 ============
 */
 void
-NSTalkMonster::SentenceSample(string sample)
+ncTalkMonster::SentenceSample(string sample)
 {
 	sound(this, CHAN_VOICE, sample, 1.0, ATTN_NORM, 100, SOUNDFLAG_FOLLOW);
 }
 
 /*
 ============
-NSTalkMonster::ProcessWordQue
+ncTalkMonster::ProcessWordQue
 
 Handles the sentences word que
 ============
 */
 void
-NSTalkMonster::ProcessWordQue(void)
+ncTalkMonster::ProcessWordQue(void)
 {
 	if (time < 1 || !m_iSentenceCount) {
 		return;
@@ -967,7 +967,7 @@ NSTalkMonster::ProcessWordQue(void)
 
 	SentenceSample(m_pSentenceQue[m_iSentencePos].m_strSnd);
 
-	NSMonsterLog("Speaking sentence sample %S", m_pSentenceQue[m_iSentencePos].m_strSnd);
+	ncMonsterLog("Speaking sentence sample %S", m_pSentenceQue[m_iSentencePos].m_strSnd);
 	m_iSentencePos++;
 
 	if (m_iSentencePos == m_iSentenceCount) {
@@ -982,13 +982,13 @@ NSTalkMonster::ProcessWordQue(void)
 
 /*
 ============
-NSTalkMonster::Sentence
+ncTalkMonster::Sentence
 
 we'll pass it a sentences.txt word (e.g. !BA_TEST) and start queing it
 ============
 */
 void
-NSTalkMonster::Sentence(string msg)
+ncTalkMonster::Sentence(string msg)
 {
 	/* not defined */
 	if (msg == "") {
@@ -1023,12 +1023,12 @@ NSTalkMonster::Sentence(string msg)
 }
 
 float
-NSTalkMonster::predraw(void)
+ncTalkMonster::predraw(void)
 {
 	//float render;
 	//render = super::predraw();
 
-	/* TODO: this is from NSRenderableEntity, shoul make these nonvirtual methods */
+	/* TODO: this is from ncRenderableEntity, shoul make these nonvirtual methods */
 	{
 	RenderFXPass();
 	RenderDebugSkeleton();
@@ -1114,11 +1114,11 @@ NSTalkMonster::predraw(void)
 
 /*
 ============
-NSTalkMonster::ReceiveEntity
+ncTalkMonster::ReceiveEntity
 ============
 */
 void
-NSTalkMonster::ReceiveEntity(float flNew, float flChanged)
+ncTalkMonster::ReceiveEntity(float flNew, float flChanged)
 {
 	READENTITY_COORD(origin[0], MONFL_CHANGED_ORIGIN_X)
 	READENTITY_COORD(origin[1], MONFL_CHANGED_ORIGIN_Y)
@@ -1173,10 +1173,10 @@ NSTalkMonster::ReceiveEntity(float flNew, float flChanged)
 }
 
 void
-NSTalkMonster_ParseSentence(void)
+ncTalkMonster_ParseSentence(void)
 {
 	entity ent;
-	NSTalkMonster targ;
+	ncTalkMonster targ;
 	string sentence;
 	float e;
 
@@ -1187,10 +1187,10 @@ NSTalkMonster_ParseSentence(void)
 	ent = findfloat(world, entnum, e);
 
 	if (ent) {
-		if (ent.classname != "speaker" && ent.classname != "NSTalkMonster" && ent.classname != "ambient_generic") {
-			NSError("Entity %d not a NSTalkMonster!", e);
+		if (ent.classname != "speaker" && ent.classname != "ncTalkMonster" && ent.classname != "ambient_generic") {
+			NSError("Entity %d not a ncTalkMonster!", e);
 		} else {
-			targ = (NSTalkMonster)ent;
+			targ = (ncTalkMonster)ent;
 			targ.Sentence(sentence);
 		}
 	} else {
@@ -1201,11 +1201,11 @@ NSTalkMonster_ParseSentence(void)
 
 #ifdef CLIENT
 void
-NSTalkMonster_ReadEntity(bool new)
+ncTalkMonster_ReadEntity(bool new)
 {
-	NSTalkMonster me = (NSTalkMonster)self;
+	ncTalkMonster me = (ncTalkMonster)self;
 	if (new) {
-		spawnfunc_NSTalkMonster();
+		spawnfunc_ncTalkMonster();
 	}
 	me.ReceiveEntity(new, readfloat());
 }

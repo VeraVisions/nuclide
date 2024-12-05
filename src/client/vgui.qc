@@ -14,13 +14,13 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-CUIWidget g_uiDesktop;
+vguiWidget g_uiDesktop;
 
 void
 VGUI_Init(void)
 {
 	UISystem_Init();
-	g_uiDesktop = spawn(CUIWidget);
+	g_uiDesktop = spawn(vguiWidget);
 	g_uiDesktop.FlagAdd(1);
 }
 
@@ -40,7 +40,7 @@ VGUI_Input(float flEvType, float flScanX, float flCharY, float flDevID)
 void
 VGUI_Reposition(void)
 {
-	CUIWidget wNext = g_uiDesktop;
+	vguiWidget wNext = g_uiDesktop;
 	do {
 		wNext = wNext.m_next;
 		if (wNext && wNext.Reposition) {

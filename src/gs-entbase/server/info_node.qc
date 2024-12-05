@@ -25,11 +25,11 @@ It's a node, helping monsters navigate on the ground.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-info_node:NSPointTrigger
+info_node:ncPointTrigger
 {
 public:
 	void info_node(void);

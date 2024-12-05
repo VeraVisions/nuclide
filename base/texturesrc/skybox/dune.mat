@@ -1,0 +1,37 @@
+{
+	qer_editorImage "skybox/dune.tga"
+	surfaceParm sky
+	surfaceParm noimpact
+	surfaceParm nolightmap
+	surfaceParm nodlight
+	noPicMip
+	nomipmaps
+
+if $programs
+	skyParms - 256 -
+	{
+		program skybox_hdr
+		map $cube:env/dune_hdr/40th/bg
+		map $cube:env/dune_hdr/250th/bg
+		map $cube:env/dune_hdr/1600th/bg
+		map skybox/clouds/dunecloud.tga
+		map skybox/clouds/dunecloud_layer.tga
+	}
+else
+	skyParms env/dune_hdr/250th/bg 256 -
+	{
+		map "skybox/clouds/dunecloud.tga"
+		tcMod scroll 0.001 0.001
+		tcMod scale 5 5
+		blendFunc blend
+		rgbGen identity
+	}
+	{
+		map "skybox/clouds/dunecloud_layer.tga"
+		tcMod scroll 0.002 0.002
+		tcMod scale 5 5
+		blendFunc blend
+		rgbGen identity
+	}
+endif
+}

@@ -34,9 +34,9 @@ typedef enumflags
 } nsportal_changed_t;
 
 class
-NSPortal:NSEntity
+ncPortal:ncEntity
 {
-	void NSPortal(void);
+	void ncPortal(void);
 
 	nonvirtual void _PortalUpdated(void);
 	nonvirtual vector _OriginTransform(vector);
@@ -55,11 +55,11 @@ NSPortal:NSEntity
 	virtual void PortalWasClosed(void);
 	virtual void PortalWasOpened(void);
 
-	/** Sets the NSPortal ID. Only used to link portals together via PortalAutoLink. */
+	/** Sets the ncPortal ID. Only used to link portals together via PortalAutoLink. */
 	nonvirtual void SetPortalID(int);
-	/** Will link this portal to another NSPortal. */
-	nonvirtual bool PortalLinkTo(NSPortal, bool);
-	/** Will link this portal to the youngest other NSPortal. */
+	/** Will link this portal to another ncPortal. */
+	nonvirtual bool PortalLinkTo(ncPortal, bool);
+	/** Will link this portal to the youngest other ncPortal. */
 	nonvirtual void PortalAutoLink(bool);
 	/** Closes the portal, will not remove it from world. */
 	nonvirtual void PortalClose(void);
@@ -72,8 +72,8 @@ NSPortal:NSEntity
 #endif
 
 private:
-	NSPortal m_ePortalTarget;
-	NSPortal m_ePortalTarget_net;
+	ncPortal m_ePortalTarget;
+	ncPortal m_ePortalTarget_net;
 	NETWORKED_VECTOR(m_vecTargetPos)
 	NETWORKED_VECTOR(m_vecTargetAngle)
 	NETWORKED_BOOL(m_bEnabled)
@@ -87,7 +87,7 @@ private:
 	bool m_bWasEnabled;
 
 	/** Will transport an entity from its position to the exit position. */
-	nonvirtual void TransportEntity(NSEntity);
+	nonvirtual void TransportEntity(ncEntity);
 
 	vector m_vecTargetPos;
 	vector m_vecTargetN;
@@ -108,7 +108,7 @@ private:
 #ifdef CLIENT
 #define READENTITY_PORTAL(field, changedflag) {\
 	if (flChanged & changedflag) {\
-		field = (NSPortal)findfloat(world, ::entnum, readentitynum());\
+		field = (ncPortal)findfloat(world, ::entnum, readentitynum());\
 		PRINTFLAG(changedflag); \
 	}\
 }

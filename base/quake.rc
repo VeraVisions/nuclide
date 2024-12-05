@@ -1,0 +1,47 @@
+exec default_cvar.cfg
+
+// Clear all bindings...
+unbindall
+
+// Movement
+bind w "+forward"
+bind a "+moveleft"
+bind s "+back"
+bind d "+moveright"
+bind MOUSE1 "+attack"
+bind SPACE "+jump"
+bind CTRL "+duck"
+bind LSHIFT "+speed"
+bind MWHEELUP "weapprev"
+bind MWHEELDOWN "weapnext"
+
+// Interact button
+bind q "+leanleft"
+bind e "+leanright"
+bind f "+use"
+
+bind shift "+sprint"
+
+set pm_walkspeed "190"
+set pm_runspeed "320"
+set pm_stepheight "18"
+set pm_airstepheight "18"
+set fov "75"
+set r_viewmodel_fov "54"
+
+// Misc interface buttons
+bind t "messagemode"
+bind TAB "+showscores"
+bind ESCAPE "togglemenu"
+bind PAUSE "pause"
+bind v noclip
+
+// Developer console
+bind ~ "toggleconsole"
+set con_stayhidden "0"
+set con_textfont "fonts/IBMPlexMono-Text.otf?col=1,1,1" 
+set con_textsize "14"
+set con_timestamps "0"
+set r_menutint "0.25 0.25 1.0"
+set r_bloom "0.1"
+set g_gametype deathmatch

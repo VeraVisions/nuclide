@@ -39,11 +39,11 @@ waste disk space and memory. Use wisely.
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-prop_static:NSPhysicsEntity
+prop_static:ncPhysicsEntity
 {
 public:
 	void prop_static(void);

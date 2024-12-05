@@ -14,19 +14,70 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/** @defgroup inputoutput I/O System
+    @brief Flexible system to control entities within all areas of the game.
+    @ingroup shared
+
+The I/O System is the primary way in which game objects interact with one another.
+To understand how it works, let's understand first where we came from.
+
+# History
+
+Simple triggers in *Quake (1996)* worked in a straightforward manner.
+Entities identify themselves with a `targetname` key that the level designer assigns, and only then can they be *triggered*
+by another entity - most commonly a trigger_once or a trigger_multiple - which targets them in return using a `target` key with the value being the name of the entity that is to be triggered.
+
+You can still use this very basic way of interacting with objects.
+
+Later, in *Half-Life (1998)* the system was extended with trigger_relay and its
+ability to suggest a desired entity state. One of three can be chosen:
+On, Off, Toggle.
+
+Entities like multi_manager came about in order to handle complex tasks that should have be simpler to pull off,
+such as triggering multiple entities at the same time - making it apparent that a newer system
+would be needed to handle the growing complexities in later games.
+
+The I/O system as it is implemented in Nuclide aims to be compatible with how it was first used in *Half-Life 2 (2004)*.
+
+# Usage
+
+As you did before, your entities and triggers will still want to identify themselves with a `targetname` key.
+However, you will no longer set `target` key, you will specify an **Output** instead.
+
+For example, a func_button would now use a key named `OnPressed` and the value should be a string in the following format:
+
+```
+TargetName,NameOfInput,OptionalDataString,DelayInSeconds,NumUses
+```
+
+Whereas the output value segments are one of the following:
+
+- **TargetName:** The name of the entity which we want to trigger an **Input** of.
+- **NameOfInput:** The name of the **Input** to trigger.
+- **OptionalDataString:** Can be empty, unless **Input** requires arguments (like **SetColor** type inputs, where you'd be asked to specify a value).
+- **DelayInSeconds:** Delay in seconds, which the entity will wait for before triggering this output.
+- **NumUses:** The amount of times this output can be fired. -1 is infinite.
+
+@note Read the entity documentation for the entites you would like to trigger, and read about the **Inputs** they expose.
+
+You can also have duplicate outputs set.
+**Yes**, unlike regular keys, in the special case of **Outputs** you can have multiple keys named `OnPressed` within a single entity definition, however most level editors are not aware of this. Our recommendation is you **patch your level editor software** to never merge any entity keys that start with the case-sensitive characters `On`. All **Outputs** in Source start like this, so it should be deemed a standard.
+
+*/
+
 /** This class is responsible for handling core entity functionality.
 
 It handles entity spawns, respawns,
-save/load as well as key/value pair loading, as well as inputs/outputs
-which is our basic entity model.
+save/load as well as key/value pair loading, as well as [inputs/outputs](@ref inputoutput)
+which is our basic entity interaction model.
 
 This is a very low-level class. You're never meant to use this.
-Use NSEntity as a basis for your classes.
+Use ncEntity as a basis for your classes.
 */
-class NSIO
+class ncIO
 {
 public:
-	void NSIO(void);
+	void ncIO(void);
 
 	/** Called when the entity is fulled initialized.
 		Any spawn key/value info pairs have already been
@@ -40,7 +91,7 @@ public:
 
 	/** This method handles entity key/value pairs on map load.
 		You can easily convert the `strValue` parameter using the ReadFloat etc. methods
-		that are part of NSIO. */
+		that are part of ncIO. */
 	virtual void SpawnKey(string,string);
 
 	/* EntityDef interactions */
@@ -75,14 +126,37 @@ public:
 	/** Handles what happens before the entity gets removed from the client game. */
 	virtual void OnRemoveEntity(void);
 
+	/** Returns an absolute value of when the entity will be think again.
+		Any result should be tested against `GetTime()`. */
+	nonvirtual float GetNextThinkTime(void);
+	/** Returns whether or not we're currently expecting to think any time soon. */
+	nonvirtual bool IsThinking(void);
+	/** When called, will unset anything related to ongoing think operations. */
+	nonvirtual void ReleaseThink(void);
+	/** When called, will make the entity think busy for the specified amount of time. In that time, IsThinking() will return true. */
+	nonvirtual void ThinkBusy(float);
+
+	/** Overrides the Think function of the entity.
+		Only use it when you want to retain a think timer that's already been set for the entity. */
+	nonvirtual void SetThink(void());
+	/** Sets the next think timer of the entity.
+		It has to be a positive value. For example `SetNextThink(1.5f); will trigger the think
+		1.5 seconds from then on.*/
+	nonvirtual void SetNextThink(float);
+	/** Schedules a think timer. You can only have one going at any given time.
+		This is the preferred way of setting think timers.
+		Note that when an entity of movement type `MOVETYPE_PUSH` is not moving,
+		it will never get to think. */
+	nonvirtual void ScheduleThink(void(void),float);
+
 #ifdef SERVER
 	/** Handles saving a copy of this entity to a given filehandle.
-		Within you want to use the NSIO::SaveFloat() etc. methods to write
+		Within you want to use the ncIO::SaveFloat() etc. methods to write
 		the internal member attributes to the specified file handle. */
 	virtual void Save(float);
 
-	/** Similar to `NSIO::SpawnKey` but for save-game fields.
-		Whatever you write into file handles within your `NSIO::Save()` method
+	/** Similar to ncIO::SpawnKey() but for save-game fields.
+		Whatever you write into file handles within your `ncIO::Save()` method
 		needs to be read back in here. */
 	virtual void Restore(string,string);
 
@@ -99,7 +173,7 @@ public:
 	/** Triggers an output field that has been created beforehand */
 	nonvirtual void UseOutput(entity,string);
 	/** Prepares an output field.
-	Commonly used within ::SpawnKey() to prepare output fields.
+	Commonly used within ncIO::SpawnKey() to prepare output fields.
 	For example: m_someOutput = PrepareOutput(m_someOutput, strValue);`
 	This will ensure that when an entity wants to trigger multiple outputs
 	that those can be called with a single `UseOutput` call. */
@@ -234,17 +308,17 @@ _NSEntError(string className, string functionName, float edictNum, string warnMe
 /** Logs an entity class specific log message, with detailed info.
 	 The console variable `entity_developer` has to be `1` for them to be visible.
 
-@param description(...) contains a formatted string containing a description. */
+@param ... contains a formatted string containing a description. */
 #define EntLog(...) if (autocvar_g_logLevel >= LOGLEVEL_DEBUG) _NSEntLog(classname, __FUNC__, num_for_edict(this), sprintf(__VA_ARGS__))
 
 /** Logs an entity class specific warning message, with detailed info.
 	 The console variable `entity_developer` has to be `1` for them to be visible.
 
-@param description(...) contains a formatted string containing a description. */
+@param ... contains a formatted string containing a description. */
 #define EntWarning(...) if (autocvar_g_logLevel >= LOGLEVEL_WARNINGS) _NSEntWarning(classname, __FUNC__, num_for_edict(this), sprintf(__VA_ARGS__))
 
 /** Logs an entity class specific error message, with detailed info.
 	 The console variable `entity_developer` has to be `1` for them to be visible.
 
-@param description(...) contains a formatted string containing a description. */
+@param ... contains a formatted string containing a description. */
 #define EntError(...) if (autocvar_g_logLevel >= LOGLEVEL_ERRORS) _NSEntError(classname, __FUNC__, num_for_edict(this), sprintf(__VA_ARGS__))

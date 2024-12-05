@@ -25,11 +25,11 @@ Ladder volume. Climb up ladders with this one simple brush.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup shared
+@ingroup sharedentity
 @ingroup brushentity
 */
 class
-func_ladder:NSRenderableEntity
+func_ladder:ncRenderableEntity
 {
 public:
 	void func_ladder(void);

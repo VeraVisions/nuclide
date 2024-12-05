@@ -1,12 +1,12 @@
 # Material Command List {#mat_commands}
 
-### deformVertexes {#deformVertexes}
+## deformVertexes {#deformVertexes}
 
-#### Syntax
+### Syntax
 
-**deformVertexes <func>**
+**deformVertexes \<func\>**
 
-#### Overview
+### Overview
 
 This command performs a general deformation on the surface's vertexes,
 changing the actual shape of the surface before drawing the shader
@@ -14,9 +14,9 @@ passes. You can stack multiple deformVertexes commands to modify
 positions in more complex ways, making an object move in two dimensions,
 for instance.
 
-#### Functions
+### Functions
 
-##### wave <siv> <func> <base> <amplitude> <phase> <freq>
+#### wave <siv> <func> <base> <amplitude> <phase> <freq>
 
 Designed for water surfaces, modifying the values differently at each
 point.
@@ -25,10 +25,10 @@ It accepts the standard **wave** functions of the type: **sin**,
 **triangle**, **square**, **sawtooth** or **inversesawtooth**.
 
 The "div" parameter is used to control the wave "spread" - a value equal
-to the [tessSize](vmap_tesssize.md) of the
+to the [tessSize](@ref vmap_tesssize) of the
 surface is a good default value.
 
-##### normal <siv> <func> <base> <amplitude> <frequency>
+#### normal <siv> <func> <base> <amplitude> <frequency>
 
 This deformation affects the normals of a vertex without actually moving
 it, which will effect later material options like lighting and
@@ -40,12 +40,12 @@ in any of their calculations, there will be no visible effect.
 that have been done with it: A small fluttering bat, falling leaves,
 rain, flags.
 
-##### bulge <bulgeWidth> <bulgeHeight> <bulgeSpeed>
+#### bulge <bulgeWidth> <bulgeHeight> <bulgeSpeed>
 
 This forces a bulge to move along the given s and t directions. Designed
 for use on curved pipes.
 
-##### move <x> <y> <z> <func> <base> <amplitude> <phase> <freq>
+#### move <x> <y> <z> <func> <base> <amplitude> <phase> <freq>
 
 This keyword is used to make a brush, curve patch or model appear to
 move together as a unit. The **x** **y** and **z** values are the
@@ -68,7 +68,7 @@ actually change position, it only appears to.
 materials, all must have matching deformVertexes move values or **the
 object will appear to tear itself apart!**
 
-##### autosprite 
+#### autosprite 
 
 This function can be used to make any given triangle quad (pair of
 triangles that form a square rectangle) automatically behave like a
@@ -83,7 +83,7 @@ texture with this material keyword must be square.
 **Design Note**: This is best used on objects that would appear the same
 regardless of viewing angle. An example might be a glowing light flare.
 
-##### autosprite2
+#### autosprite2
 
 Is a slightly modified "sprite" that only rotates around the middle of
 its longest axis.
@@ -91,11 +91,11 @@ its longest axis.
 This allows you to make a pillar of fire that you can walk around, or an
 energy beam stretched across the room.
 
-#### Notes
+### Notes
 
 Specific parameter definitions for deform keywords:
 
-##### <siv>
+#### <siv>
 
 This is roughly defined as the size of the waves that occur. It is
 measured in game units. Smaller values create agreater density of
@@ -103,12 +103,12 @@ smaller wave forms occurring in a given area. Larger values create a
 lesser density of waves, or otherwise put, the appearance of larger
 waves. To look correct this value should closely correspond to the value
 (in pixels) set for
-[tessSize](vmap_tesssize.md) of the texture.
+[tessSize](@ref vmap_tesssize) of the texture.
 A value of 100.0 is a good default value (which means your
-[tessSize](vmap_tesssize.md) should be close
+[tessSize](@ref vmap_tesssize) should be close
 to that for things tolook "wavelike").
 
-##### <func>
+#### <func>
 
 This is the type of wave form being created. **sin** stands for sine
 wave, a regular smoothly flowing wave. **triangle** is a wave with a
@@ -118,20 +118,20 @@ frequency with no in between. The **sawtooth** wave has the ascent of a
 triangle wave, but has the decay cut off sharply like a square wave. An
 **inversesawtooth** wave reverses this.
 
-##### <base>
+#### <base>
 
 This is the distance, in game units that the apparent surface of the
 texture is displaced from the actual surface of the brush as placed in
 the editor. A positive value appears above the brush surface. A negative
 value appears below the brush surface.
 
-##### <amplitude>
+#### <amplitude>
 
 The distance that the deformation moves away from the base value. See
 Wave Forms in the introduction for a description of amplitude. <phase>
 SeeWave Forms in the introduction for a description of phase)
 
-##### <frequency>
+#### <frequency>
 
 See Wave Forms in the introduction for a description of frequency)
 

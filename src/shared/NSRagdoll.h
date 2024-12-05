@@ -18,10 +18,10 @@
 
 @ingroup baseclass
 */
-class NSRagdoll:NSSurfacePropEntity
+class ncRagdoll:ncSurfacePropEntity
 {
 public:
-	void NSRagdoll(void);
+	void ncRagdoll(void);
 
 	nonvirtual void CreateRagdoll(void);
 
@@ -44,5 +44,5 @@ private:
 
 
 #ifdef CLIENT
-void NSRagdoll_Create(string modelFile);
+void ncRagdoll_Create(string modelFile);
 #endif

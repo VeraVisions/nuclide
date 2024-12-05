@@ -18,10 +18,8 @@ var bool autocvar_sv_friendlyFire = false;
 var int autocvar_mp_td_dmgToKick = 300i;
 var int autocvar_mp_td_dmgToWarn = 200i;
 
-#warning NSGameRule progs need to have their functions cached for speed reasons
-
 void
-NSGameRules::NSGameRules(void)
+ncGameRules::ncGameRules(void)
 {
 	forceinfokey(world, "teams", "");
 	forceinfokey(world, "teamplay", "");
@@ -34,6 +32,7 @@ NSGameRules::NSGameRules(void)
 		forceinfokey(world, sprintf("teamcolor_%i", teamID), "");
 		forceinfokey(world, sprintf("teamclosed_%i", teamID), "");
 		forceinfokey(world, sprintf("teamspawn_%i", teamID), "");
+		forceinfokey(world, sprintf("teamclass_%i", teamID), "");
 	}
 
 	forceinfokey(world, sprintf("teamspawn_%d", TEAM_CONNECTING), "");
@@ -43,7 +42,7 @@ NSGameRules::NSGameRules(void)
 }
 
 void
-NSGameRules::Save(float handle)
+ncGameRules::Save(float handle)
 {
 	SaveInt(handle, "m_iIntermission", m_iIntermission);
 	SaveFloat(handle, "m_flIntermissionTime", m_flIntermissionTime);
@@ -51,7 +50,7 @@ NSGameRules::Save(float handle)
 }
 
 void
-NSGameRules::Restore(string strKey, string strValue)
+ncGameRules::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "m_iIntermission":
@@ -67,12 +66,12 @@ NSGameRules::Restore(string strKey, string strValue)
 }
 
 void
-NSGameRules::Input(entity eAct, string strInput, string strData)
+ncGameRules::Input(entity eAct, string strInput, string strData)
 {
 }
 
 void
-NSGameRules::RestoreComplete(void)
+ncGameRules::RestoreComplete(void)
 {
 	/* mark this as our active game-rule upon restore. */
 	g_grMode = this;
@@ -80,144 +79,147 @@ NSGameRules::RestoreComplete(void)
 
 /* init */
 void
-NSGameRules::InitPostEnts(void)
+ncGameRules::InitPostEnts(void)
 {
 }
 
 /* logic */
 void
-NSGameRules::FrameStart(void)
+ncGameRules::FrameStart(void)
 {
 
 }
 bool
-NSGameRules::ConsoleCommand(NSClientPlayer pl, string cmd)
+ncGameRules::ConsoleCommand(ncPlayer pl, string cmd)
 {
 	return (false);
 }
 bool
-NSGameRules::ClientCommand(NSClient pl, string cmd)
+ncGameRules::ClientCommand(ncClient pl, string cmd)
 {
+	return (false);
 }
 
 bool
-NSGameRules::ImpulseCommand(NSClient pl, float num)
+ncGameRules::ImpulseCommand(ncClient pl, float num)
 {
+	return (false);
 }
 
 void
-NSGameRules::PlayerConnect(NSClientPlayer pl)
+ncGameRules::PlayerConnect(ncPlayer pl)
 {
 	if (Plugin_PlayerConnect(pl) == false) {
 		bprint(PRINT_HIGH, sprintf("%s^d connected.\n", pl.netname));
 	}
 }
 void
-NSGameRules::PlayerDisconnect(NSClientPlayer pl)
+ncGameRules::PlayerDisconnect(ncPlayer pl)
 {
 	bprint(PRINT_HIGH, sprintf("%s^d disconnected.\n", pl.netname));
 }
 
 void
-NSGameRules::PlayerKill(NSClientPlayer pl)
+ncGameRules::PlayerKill(ncPlayer pl)
 {
-	NSDict damageDecl = spawn(NSDict);
+	ncDict damageDecl = spawn(ncDict);
 	damageDecl.AddKey("damage", itos(1000));
 	damageDecl.AddKey("noGod", "1");
 	damageDecl.AddKey("noArmor", "1");
 	pl.Damage(pl, pl, damageDecl, 1.0, g_vec_null, pl.GetOrigin());
 	remove(damageDecl);
 }
+
 void
-NSGameRules::NPCDeath(NSActor npc, NSActor attacker, NSActor inflictor)
+ncGameRules::NPCDeath(ncActor npc, ncEntity attacker, ncEntity inflictor)
 {
 }
 
 void
-NSGameRules::PlayerDeath(NSClientPlayer pl, NSActor attacker, NSDict damageDecl)
+ncGameRules::PlayerDeath(ncPlayer deadPlayer, ncEntity inflictor, ncEntity attacker, string weaponDef)
 {
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_OBITUARY);
 	WriteString(MSG_MULTICAST, (attacker.netname) ? attacker.netname : attacker.classname);
-	WriteString(MSG_MULTICAST, pl.netname);
+	WriteString(MSG_MULTICAST, deadPlayer.netname);
 	WriteByte(MSG_MULTICAST, 0);
 	WriteByte(MSG_MULTICAST, 0);
 	msg_entity = world;
 	multicast([0,0,0], MULTICAST_ALL);
 
 	/* death-counter */
-	pl.deaths++;
-	pl.SetInfoKey("*deaths", ftos(pl.deaths));
+	deadPlayer.deaths++;
+	deadPlayer.SetInfoKey("*deaths", ftos(deadPlayer.deaths));
 
 	/* update score-counter */
 	if (isPlayer(attacker)) {
-		if (pl == attacker) {
-			g_dmg_eAttacker.frags--;
+		if (deadPlayer == attacker) {
+			attacker.frags--;
 		} else {
-			g_dmg_eAttacker.frags++;
+			attacker.frags++;
 		}
 	}
 }
 
 void
-NSGameRules::PlayerPain(NSClientPlayer pl, NSActor attacker, NSDict damageDecl)
+ncGameRules::PlayerPain(ncPlayer pl, ncActor attacker, ncDict damageDecl)
 {
 	/* fallback code here, or rest implemented by sub-class */
 }
 
 void
-NSGameRules::PlayerSpawn(NSClientPlayer pl)
+ncGameRules::PlayerSpawn(ncPlayer pl)
 {
 	/* implemented by sub-class */
 }
 void
-NSGameRules::PlayerPreFrame(NSClientPlayer pl)
+ncGameRules::PlayerPreFrame(ncPlayer pl)
 {
 	/* implemented by sub-class */
 }
 void
-NSGameRules::PlayerPostFrame(NSClientPlayer pl)
+ncGameRules::PlayerPostFrame(ncPlayer pl)
 {
 	/* implemented by sub-class */
 }
 
 /* level transitions */
 void
-NSGameRules::LevelNewParms(void)
+ncGameRules::LevelNewParms(void)
 {
 	/* implemented by sub-class */
 }
 void
-NSGameRules::LevelChangeParms(NSClientPlayer pl)
+ncGameRules::LevelChangeParms(ncPlayer pl)
 {
 	//print("LevelChangeParms!\n");
 }
 
 /* spectator */
 /*void
-NSGameRules::SpectatorConnect(NSClientSpectator pl)
+ncGameRules::SpectatorConnect(ncSpectator pl)
 {
 	//print("SpectatorConnect!\n");
 }
 void
-NSGameRules::SpectatorDisconnect(NSClientSpectator pl)
+ncGameRules::SpectatorDisconnect(ncSpectator pl)
 {
 	//print("SpectatorDisconnect!\n");
 }
 void
-NSGameRules::SpectatorThink(NSClientSpectator pl)
+ncGameRules::SpectatorThink(ncSpectator pl)
 {
 	//print("SpectatorThink!\n");
 }*/
 
 int
-NSGameRules::MaxItemPerSlot(int slot)
+ncGameRules::MaxItemPerSlot(int slot)
 {
 	return (-1);
 }
 
 void
-NSGameRules::IntermissionStart(void)
+ncGameRules::IntermissionStart(void)
 {
 	if (m_iIntermission)
 		return;
@@ -232,9 +234,9 @@ NSGameRules::IntermissionStart(void)
 }
 
 void
-NSGameRules::IntermissionCycle(void)
+ncGameRules::IntermissionCycle(void)
 {
-	NSEntity targ;
+	ncEntity targ;
 
 	if (!m_iIntermission)
 		return;
@@ -246,11 +248,11 @@ NSGameRules::IntermissionCycle(void)
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_INTERMISSION);
 
-	m_eIntermissionPoint = (NSEntity)find(m_eIntermissionPoint, ::classname, "info_intermission");
+	m_eIntermissionPoint = (ncEntity)find(m_eIntermissionPoint, ::classname, "info_intermission");
 
 	/* if we have an intermission point, send it to all players. */
 	if (m_eIntermissionPoint) {
-		targ = (NSEntity)find(world, ::targetname, m_eIntermissionPoint.target);
+		targ = (ncEntity)find(world, ::targetname, m_eIntermissionPoint.target);
 
 		if (targ) {
 			vector foo;
@@ -283,7 +285,7 @@ NSGameRules::IntermissionCycle(void)
 }
 
 void
-NSGameRules::IntermissionToPlayer(NSClientPlayer targetPlayer)
+ncGameRules::IntermissionToPlayer(ncPlayer targetPlayer)
 {
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_INTERMISSION);
@@ -306,31 +308,31 @@ NSGameRules::IntermissionToPlayer(NSClientPlayer targetPlayer)
 }
 
 bool
-NSGameRules::InIntermission(void)
+ncGameRules::InIntermission(void)
 {
 	return (m_iIntermission) ? true : false;
 }
 
 bool
-NSGameRules::MonstersSpawn(void)
+ncGameRules::MonstersSpawn(void)
 {
 	return (true);
 }
 
 /* init */
 bool
-NSGameRules::IsTeamplay(void)
+ncGameRules::IsTeamplay(void)
 {
 	return (serverkeyfloat("teams") > 0);
 }
 bool
-NSGameRules::IsMultiplayer(void)
+ncGameRules::IsMultiplayer(void)
 {
 	return (false);
 }
 
 void
-NSGameRules::IntermissionEnd(void)
+ncGameRules::IntermissionEnd(void)
 {
 	if (!m_iIntermission)
 		return;
@@ -348,23 +350,25 @@ NSGameRules::IntermissionEnd(void)
 }
 
 bool
-NSGameRules::PlayerCanAttack(NSClientPlayer bp)
+ncGameRules::PlayerCanAttack(ncPlayer bp)
 {
-	return true;
+	return (true);
 }
 
 bool
-NSGameRules::PlayerRequestRespawn(NSClientPlayer pl)
+ncGameRules::PlayerRequestRespawn(ncPlayer pl)
 {
+	return (true);
 }
 
 bool
-NSGameRules::PlayerRequestTeam(NSClientPlayer pl, int teamNum)
+ncGameRules::PlayerRequestTeam(ncPlayer pl, int teamNum)
 {
+	return (false);
 }
 
 void
-NSGameRules::ChatMessageAll(NSClient cl, string strMessage)
+ncGameRules::ChatMessageAll(ncClient cl, string strMessage)
 {
 	float edictNum = num_for_edict(cl) - 1;
 
@@ -381,7 +385,7 @@ NSGameRules::ChatMessageAll(NSClient cl, string strMessage)
 }
 
 void
-NSGameRules::ChatMessageTeam(NSClient cl, string strMessage)
+ncGameRules::ChatMessageTeam(ncClient cl, string strMessage)
 {
 	float edictNum = num_for_edict(cl) - 1;
 
@@ -412,7 +416,7 @@ NSGameRules::ChatMessageTeam(NSClient cl, string strMessage)
 }
 
 string
-NSGameRules::Title(void)
+ncGameRules::Title(void)
 {
 	string gameType = cvars.GetString("g_gametype");
 
@@ -423,10 +427,10 @@ NSGameRules::Title(void)
 	return "Default";
 }
 
-NSGameRules
-NSGameRules::InitFromProgs(string pathToProgs)
+ncGameRules
+ncGameRules::InitFromProgs(string pathToProgs)
 {
-	NSGameRules newRule;
+	ncGameRules newRule;
 
 	/* No progs .dat, exit out */
 	if (fileExists(pathToProgs) == false) {
@@ -434,37 +438,26 @@ NSGameRules::InitFromProgs(string pathToProgs)
 		return (__NULL__);
 	}
 
-	newRule = spawn(NSGameRules);
-	newRule.m_ruleProgs = addprogs(pathToProgs);
+	newRule = spawn(ncGameRules);
 
-	if (newRule.m_ruleProgs) {
-		void(void) mainFunction;
-		mainFunction = externvalue(newRule.m_ruleProgs, "main");
-
-		if (mainFunction) {
-			externset(newRule.m_ruleProgs, this, "self");
-			thread(mainFunction())
-
-			/* map progs functions to class methods */
-			RULEMAP(newRule, ClientCommand, "CodeCallback_ClientCommand")
-			RULEMAP(newRule, ConsoleCommand, "CodeCallback_ConsoleCommand")
-			RULEMAP(newRule, FrameStart, "CodeCallback_FrameStart")
-			RULEMAP(newRule, ImpulseCommand, "CodeCallback_ImpulseCommand")
-			RULEMAP(newRule, InitPostEnts, "CodeCallback_StartGameType")
-			RULEMAP(newRule, Input, "CodeCallback_Input")
-			RULEMAP(newRule, NPCDeath, "CodeCallback_NPCKilled")
-			RULEMAP(newRule, PlayerCanAttack, "CodeCallback_PlayerCanAttack")
-			RULEMAP(newRule, PlayerConnect, "CodeCallback_PlayerConnect")
-			RULEMAP(newRule, PlayerDeath, "CodeCallback_PlayerKilled")
-			RULEMAP(newRule, PlayerDisconnect, "CodeCallback_PlayerDisconnect")
-			RULEMAP(newRule, PlayerPain, "CodeCallback_PlayerDamage")
-			RULEMAP(newRule, PlayerRequestRespawn, "CodeCallback_PlayerRequestRespawn")
-			RULEMAP(newRule, PlayerRequestTeam, "CodeCallback_CallRequestTeam")
-			RULEMAP(newRule, PlayerSpawn, "CodeCallback_PlayerSpawn")
-			RULEMAP(newRule, Title, "CodeCallback_Title")
-		} else {
-			NSError("%S does not have a main function.", pathToProgs);
-		}
+	if (g_ruleCProgs) {
+		RULEMAP(newRule, ClientCommand, "CodeCallback_ClientCommand")
+		RULEMAP(newRule, ConsoleCommand, "CodeCallback_ConsoleCommand")
+		RULEMAP(newRule, FrameStart, "CodeCallback_FrameStart")
+		RULEMAP(newRule, ImpulseCommand, "CodeCallback_ImpulseCommand")
+		RULEMAP(newRule, InitPostEnts, "CodeCallback_StartGameType")
+		RULEMAP(newRule, Input, "CodeCallback_Input")
+		RULEMAP(newRule, NPCDeath, "CodeCallback_NPCKilled")
+		RULEMAP(newRule, PlayerCanAttack, "CodeCallback_PlayerCanAttack")
+		RULEMAP(newRule, PlayerConnect, "CodeCallback_PlayerConnect")
+		RULEMAP(newRule, PlayerDeath, "CodeCallback_PlayerKilled")
+		RULEMAP(newRule, PlayerDisconnect, "CodeCallback_PlayerDisconnect")
+		RULEMAP(newRule, PlayerPain, "CodeCallback_PlayerDamage")
+		RULEMAP(newRule, PlayerPreFrame, "CodeCallback_PlayerPreFrame")
+		RULEMAP(newRule, PlayerRequestRespawn, "CodeCallback_PlayerRequestRespawn")
+		RULEMAP(newRule, PlayerRequestTeam, "CodeCallback_CallRequestTeam")
+		RULEMAP(newRule, PlayerSpawn, "CodeCallback_PlayerSpawn")
+		RULEMAP(newRule, Title, "CodeCallback_Title")
 	}
 
 	return (newRule);

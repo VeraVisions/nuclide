@@ -15,7 +15,7 @@
 */
 
 void
-NSMoverEntity::NSMoverEntity(void)
+ncMoverEntity::ncMoverEntity(void)
 {
 	m_vecPos1 = g_vec_null;
 	m_vecPos2 = g_vec_null;
@@ -29,7 +29,7 @@ NSMoverEntity::NSMoverEntity(void)
 
 #ifdef SERVER
 void
-NSMoverEntity::SpawnKey(string strKey, string strValue)
+ncMoverEntity::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "movedir":
@@ -42,7 +42,7 @@ NSMoverEntity::SpawnKey(string strKey, string strValue)
 }
 
 void
-NSMoverEntity::Save(float handle)
+ncMoverEntity::Save(float handle)
 {
 	super::Save(handle);
 
@@ -58,7 +58,7 @@ NSMoverEntity::Save(float handle)
 }
 
 void
-NSMoverEntity::Restore(string strKey, string strValue)
+ncMoverEntity::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "m_vecPos1":
@@ -95,7 +95,7 @@ NSMoverEntity::Restore(string strKey, string strValue)
 #endif
 
 vector
-NSMoverEntity::GetDirectionalPosition(vector vecAngle, float flLip)
+ncMoverEntity::GetDirectionalPosition(vector vecAngle, float flLip)
 {
 	vector vecMoveDir = g_vec_null;
 	vector vecPos = g_vec_null;
@@ -121,93 +121,93 @@ NSMoverEntity::GetDirectionalPosition(vector vecAngle, float flLip)
 }
 
 vector
-NSMoverEntity::GetDirectionalRotation(vector normalizedAngle, float travelDistance)
+ncMoverEntity::GetDirectionalRotation(vector normalizedAngle, float travelDistance)
 {
 	vector vecMoveDir = normalizedAngle;
 	return (GetAngles() + vecMoveDir * travelDistance);
 }
 
 void
-NSMoverEntity::SetMoverState(moverState_t val)
+ncMoverEntity::SetMoverState(moverState_t val)
 {
 	m_moverState = val;
 }
 
 moverState_t
-NSMoverEntity::GetMoverState(void)
+ncMoverEntity::GetMoverState(void)
 {
 	return m_moverState;
 }
 
 void
-NSMoverEntity::SetMoverType(moverType_t val)
+ncMoverEntity::SetMoverType(moverType_t val)
 {
 	m_moverType = val;
 }
 
 moverType_t
-NSMoverEntity::GetMoverType(void)
+ncMoverEntity::GetMoverType(void)
 {
 	
 	return m_moverType;
 }
 
 void
-NSMoverEntity::SetMoverPosition1(vector val)
+ncMoverEntity::SetMoverPosition1(vector val)
 {
 	m_vecPos1 = val;
 }
 
 vector
-NSMoverEntity::GetMoverPosition1(void)
+ncMoverEntity::GetMoverPosition1(void)
 {
 	return m_vecPos1;
 }
 
 void
-NSMoverEntity::SetMoverPosition2(vector val)
+ncMoverEntity::SetMoverPosition2(vector val)
 {
 	m_vecPos2 = val;
 }
 
 vector
-NSMoverEntity::GetMoverPosition2(void)
+ncMoverEntity::GetMoverPosition2(void)
 {
 	return m_vecPos2;
 }
 
 void
-NSMoverEntity::SetMoverRotation1(vector val)
+ncMoverEntity::SetMoverRotation1(vector val)
 {
 	m_vecPos3 = val;
 }
 
 vector
-NSMoverEntity::GetMoverRotation1(void)
+ncMoverEntity::GetMoverRotation1(void)
 {
 	return m_vecPos3;
 }
 
 void
-NSMoverEntity::SetMoverRotation2(vector val)
+ncMoverEntity::SetMoverRotation2(vector val)
 {
 	m_vecPos4 = val;
 }
 
 vector
-NSMoverEntity::GetMoverRotation2(void)
+ncMoverEntity::GetMoverRotation2(void)
 {
 	return m_vecPos4;
 }
 
 void
-NSMoverEntity::MoveToPosition(vector vecDest, float flSpeed)
+ncMoverEntity::MoveToPosition(vector vecDest, float flSpeed)
 {
 	MoveAndRotateToPosition(vecDest, GetAngles(), flSpeed);
 }
 
 void
-NSMoverEntity::MoveAndRotateToPosition(vector vecDest, vector vecAngle, float flSpeed)
+ncMoverEntity::MoveAndRotateToPosition(vector vecDest, vector vecAngle, float flSpeed)
 {
 	vector vecDifference;
 	vector vecAngleDifference;
@@ -240,7 +240,7 @@ NSMoverEntity::MoveAndRotateToPosition(vector vecDest, vector vecAngle, float fl
 
 	/* abort if no speed is defined whatsoever */
 	if (!flSpeed) {
-		EntWarning("NSMoverEntity::MoveToPosition: No speed defined!");
+		EntWarning("ncMoverEntity::MoveToPosition: No speed defined!");
 		return;
 	}
 
@@ -280,7 +280,7 @@ NSMoverEntity::MoveAndRotateToPosition(vector vecDest, vector vecAngle, float fl
 }
 
 void
-NSMoverEntity::MoveToReverse(float flSpeed)
+ncMoverEntity::MoveToReverse(float flSpeed)
 {
 	if ((GetMoverState() == MOVER_POS2) || (GetMoverState() == MOVER_1TO2)){
 		MoveToPosition(GetMoverPosition1(), flSpeed);
@@ -290,13 +290,13 @@ NSMoverEntity::MoveToReverse(float flSpeed)
 }
 
 void
-NSMoverEntity::RotateToPosition(vector vecAngle, float flSpeed)
+ncMoverEntity::RotateToPosition(vector vecAngle, float flSpeed)
 {
 	MoveAndRotateToPosition(GetOrigin(), vecAngle, flSpeed);
 }
 
 void
-NSMoverEntity::RotateToReverse(float flSpeed)
+ncMoverEntity::RotateToReverse(float flSpeed)
 {
 	if ((GetMoverState() == MOVER_POS2) || (GetMoverState() == MOVER_1TO2)){
 		RotateToPosition(GetMoverRotation1(), flSpeed);
@@ -306,7 +306,7 @@ NSMoverEntity::RotateToReverse(float flSpeed)
 }
 
 bool
-NSMoverEntity::IsMoving(void)
+ncMoverEntity::IsMoving(void)
 {
 	switch (GetMoverState()) {
 	case MOVER_POS1:
@@ -319,30 +319,56 @@ NSMoverEntity::IsMoving(void)
 }
 
 void
-NSMoverEntity::_PortalOpen(void)
+ncMoverEntity::_PortalOpen(void)
 {
 	if (m_iPortalState == 1)
 		return;
 
+
 	m_iPortalState = 1;
+
+#if 0
 	setorigin(this, origin);
 	openportal(this, AREAPORTAL_OPEN);
+#else
+#ifdef SERVER
+	if (!STRING_SET(targetname)) {
+		return;
+	}
+
+	for (func_areaportal portalChain = __NULL__; (portalChain = (func_areaportal)find(portalChain, ::classname, "func_areaportal"));) {
+		portalChain.Trigger(this, TRIG_ON);
+	}
+#endif
+#endif
 }
 
 void
-NSMoverEntity::_PortalClose(void)
+ncMoverEntity::_PortalClose(void)
 {
 	if (m_iPortalState == 0)
 		return;
 
 	m_iPortalState = 0;
+#if 0
 	setorigin(this, origin);
 	openportal(this, AREAPORTAL_CLOSED);
+#else
+#ifdef SERVER
+	if (!STRING_SET(targetname)) {
+		return;
+	}
+
+	for (func_areaportal portalChain = __NULL__; (portalChain = (func_areaportal)find(portalChain, ::classname, "func_areaportal"));) {
+		portalChain.Trigger(this, TRIG_OFF);
+	}
+#endif
+#endif
 }
 
 
 void
-NSMoverEntity::_ArrivedAtRotPosition1(void)
+ncMoverEntity::_ArrivedAtRotPosition1(void)
 {
 	SetOrigin(m_vecPos1);
 	SetAngles(m_vecPos3);
@@ -354,7 +380,7 @@ NSMoverEntity::_ArrivedAtRotPosition1(void)
 }
 
 void
-NSMoverEntity::_ArrivedAtRotPosition2(void)
+ncMoverEntity::_ArrivedAtRotPosition2(void)
 {
 	SetOrigin(m_vecPos2);
 	SetAngles(m_vecPos4);
@@ -365,17 +391,17 @@ NSMoverEntity::_ArrivedAtRotPosition2(void)
 }
 
 void
-NSMoverEntity::_BeginMoving(void)
+ncMoverEntity::_BeginMoving(void)
 {
 
 }
 
 void
-NSMoverEntity::MoverStartsMoving(void)
+ncMoverEntity::MoverStartsMoving(void)
 {
 }
 
 void
-NSMoverEntity::MoverFinishesMoving(void)
+ncMoverEntity::MoverFinishesMoving(void)
 {
 }

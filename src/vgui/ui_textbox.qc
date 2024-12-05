@@ -21,16 +21,16 @@ enumflags
 	TEXTBOX_FOCUS
 };
 
-.void(void) tmpVGUITextBox1;
+.void(void) tmpvguiTextBox1;
 
 /** VGUI Widget: Text Box
 
 @ingroup vgui
 */
-class VGUITextBox:VGUIWidget
+class vguiTextBox:vguiWidget
 {
 public:
-	void VGUITextBox(void);
+	void vguiTextBox(void);
 
 	/** Set the starting text of the textbox. */
 	nonvirtual void SetText(string);
@@ -41,6 +41,7 @@ public:
 	virtual void Draw(void);
 	virtual bool Input(float, float, float, float);
 	virtual void Spawned(void);
+	virtual void CallOnEnter(void(void));
 
 private:
 	vector m_vecColor;
@@ -49,37 +50,37 @@ private:
 	float m_flTime;
 };
 
-void VGUITextBox::VGUITextBox(void)
+void vguiTextBox::vguiTextBox(void)
 {
 	m_vecColor = UI_MAINCOLOR;
 	m_flAlpha = 1.0f;
 }
 
-void VGUITextBox:: Spawned(void)
+void vguiTextBox:: Spawned(void)
 {
 	SetSize([96,24]);
 }
 
-void VGUITextBox::SetText (string strName)
+void vguiTextBox::SetText (string strName)
 {
 	m_strText = strName;
 }
-string VGUITextBox::GetText(void)
+string vguiTextBox::GetText(void)
 {
 	return m_strText;
 }
 
 void
-VGUITextBox::CallOnEnter(void(void) func)
+vguiTextBox::CallOnEnter(void(void) func)
 {
-	//#warning "SetFunc in VGUIButton is DEPRECATED. Compiler IS generating JUNK in the old way. Please override VGUIButton and define a OnMouseDown/Up method instead"
+	//#warning "SetFunc in vguiButton is DEPRECATED. Compiler IS generating JUNK in the old way. Please override vguiButton and define a OnMouseDown/Up method instead"
 	//m_vFunc = vFunc;
-	tmpVGUITextBox1 = func;
+	tmpvguiTextBox1 = func;
 }
 
-void VGUITextBox::Draw(void)
+void vguiTextBox::Draw(void)
 {
-	VGUITheme theme = GetTheme();
+	vguiTheme theme = GetTheme();
 	vector pos = m_parent.m_vecOrigin + m_vecOrigin;
 	drawsetcliparea(pos[0], pos[1], m_vecSize[0], m_vecSize[1]);
 
@@ -111,7 +112,7 @@ void VGUITextBox::Draw(void)
 	drawresetcliparea();
 }
 
-bool VGUITextBox::Input (float flEVType, float flKey, float flChar, float flDevID)
+bool vguiTextBox::Input (float flEVType, float flKey, float flChar, float flDevID)
 {
 	bool ret = false;
 
@@ -138,8 +139,8 @@ bool VGUITextBox::Input (float flEVType, float flKey, float flChar, float flDevI
 					m_strText = substring(m_strText, 0, strlen(m_strText) - 1);
 		break;
 	case K_ENTER:
-		if (tmpVGUITextBox1) {
-			tmpVGUITextBox1();
+		if (tmpvguiTextBox1) {
+			tmpvguiTextBox1();
 		}
 		break;
 	default:

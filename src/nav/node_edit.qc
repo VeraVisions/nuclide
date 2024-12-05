@@ -31,7 +31,7 @@ NodeEdit_LinkNodes(node_t *wp, node_t *w2)
 	}
 
 	int idx = wp->m_numNeighbours++;
-	wp->m_pNeighbour = (neighbour_s *)memrealloc(wp->m_pNeighbour, sizeof(*wp->m_pNeighbour), idx, wp->m_numNeighbours);
+	wp->m_pNeighbour = (neighbour_s *)memreallocOld(wp->m_pNeighbour, sizeof(*wp->m_pNeighbour), idx, wp->m_numNeighbours);
 	local struct neighbour_s *n = wp->m_pNeighbour+idx;
 	n->m_iNode = w2n;
 	n->m_flCost = vlen(w2->m_vecOrigin - wp->m_vecOrigin);
@@ -138,7 +138,7 @@ NodeEdit_CreateNode(entity ePlayer, int iAutoLink)
 {
 	int iNearest = NodeEdit_FindClosestNode(self.origin);
 	int iID = g_iNodes++;
-	g_pNodes = (node_t *)memrealloc(g_pNodes, sizeof(node_t), iID, g_iNodes);
+	g_pNodes = (node_t *)memreallocOld(g_pNodes, sizeof(node_t), iID, g_iNodes);
 	node_t *n = g_pNodes + iID;
 	n->m_vecOrigin = ePlayer.origin;
 	n->m_pNeighbour = __NULL__;
@@ -316,8 +316,8 @@ NodeEdit_GoToPoint(entity pl)
 
 	for (entity a = world; (a = find(a, classname, "player"));) {
 		if (clienttype(a) != CLIENTTYPE_REAL) {
-			NSBot targ;
-			targ = (NSBot)a;
+			ncBot targ;
+			targ = (ncBot)a;
 			targ.RouteClear();
 			targ.RouteToPosition(pl.origin);
 			print(sprintf("Told bot to go to %v\n", trace_endpos));
@@ -389,7 +389,7 @@ NodeEdit_ReadFile(string strFile, bool flush)
 	} else {
 		int oldSize = g_iNodes;
 		int newSize = g_iNodes + stoi(argv(0));
-		g_pNodes = (node_t *)memrealloc(g_pNodes, sizeof(node_t), oldSize, newSize);
+		g_pNodes = (node_t *)memreallocOld(g_pNodes, sizeof(node_t), oldSize, newSize);
 		g_iNodes = newSize;
 		startId = oldSize;
 		offSet = oldSize;
@@ -738,16 +738,19 @@ NodeEdit_Cmd(void)
 
 /* draws debug graphics of our node tree */
 var bool autocvar_r_renderEntityInfo = false;
+var bool autocvar_nav_visualize = false;
 void
 SV_AddDebugPolygons(void)
 {
-	//NodeEdit_DrawDebugInfo();
+	if (autocvar_nav_visualize) {
+		NodeEdit_DrawDebugInfo();
+	}
 
 	if (autocvar_r_renderEntityInfo) {
 		makevectors(self.v_angle);
 
 		for (entity s = world; (s = findfloat(s, ::identity, 1));) {
-			NSEntity drawMe = (NSEntity)s;
+			ncEntity drawMe = (ncEntity)s;
 			drawMe.DebugDraw();
 		}
 	}

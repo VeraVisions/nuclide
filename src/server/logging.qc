@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+#warning Logging is rather useless here. We need more types of logging.
+
 void
 Logging_Frag(entity a, entity v)
 {

@@ -66,11 +66,11 @@ or env_projectedtexture for toggled or flickering lights.
 # TRIVIA
 This entity was introduced in Quake (1996).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-light:NSPointTrigger
+light:ncPointTrigger
 {
 public:
 	void light(void);
@@ -82,6 +82,7 @@ public:
 	virtual void Spawned(void);
 	virtual void Respawn(void);
 	virtual void RestoreComplete(void);
+	virtual void Input(entity, string, string);
 	virtual void Trigger(entity, triggermode_t);
 	virtual void DebugDraw(void);
 
@@ -196,6 +197,21 @@ light::SpawnKey(string strKey, string strValue)
 }
 
 void
+light::Input(entity theActivator, string inputName, string dataString)
+{
+	switch (inputName) {
+	case "TurnOn":
+		Trigger(theActivator, TRIG_ON);
+		break;
+	case "TurnOff":
+		Trigger(theActivator, TRIG_OFF);
+		break;
+	default:
+		super::Input(theActivator, inputName, dataString);
+	}
+}
+
+void
 light::Spawned(void)
 {
 	super::Spawned();
@@ -298,6 +314,7 @@ light_environment::Spawned(void)
 {
 	super::Spawned();
 	//sunLight.m_vecLightColor = _lightColor;
+	classname = "light_environment";
 }
 
 void

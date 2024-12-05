@@ -15,7 +15,7 @@
 */
 
 void
-NSVehicle::NSVehicle(void)
+ncVehicle::ncVehicle(void)
 {
 	m_iVehicleFlags = 0i;
 	m_iMoveButtons = 0i;
@@ -28,7 +28,7 @@ NSVehicle::NSVehicle(void)
 
 #ifdef SERVER
 void
-NSVehicle::Save(float handle)
+ncVehicle::Save(float handle)
 {
 	super::Save(handle);
 	SaveInt(handle, "m_iVehicleFlags", m_iVehicleFlags);
@@ -41,7 +41,7 @@ NSVehicle::Save(float handle)
 }
 
 void
-NSVehicle::Restore(string strKey, string strValue)
+ncVehicle::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "m_iVehicleFlags":
@@ -54,10 +54,10 @@ NSVehicle::Restore(string strKey, string strValue)
 		m_vecMoveValues = ReadVector(strValue);
 		break;
 	case "m_eDriver":
-		m_eDriver = (NSEntity)ReadEntity(strValue);
+		m_eDriver = (ncEntity)ReadEntity(strValue);
 		break;
 	case "m_eDriverLast":
-		m_eDriverLast = (NSEntity)ReadEntity(strValue);
+		m_eDriverLast = (ncEntity)ReadEntity(strValue);
 		break;
 	case "m_vecPlayerPos":
 		m_vecPlayerPos = ReadVector(strValue);
@@ -72,66 +72,66 @@ NSVehicle::Restore(string strKey, string strValue)
 #endif
 
 bool
-NSVehicle::CanDriverCrouch(void)
+ncVehicle::CanDriverCrouch(void)
 {
 	return (false);
 }
 
 bool
-NSVehicle::PreventPlayerMovement(void)
+ncVehicle::PreventPlayerMovement(void)
 {
 	return (true);
 }
 
 bool
-NSVehicle::PreventPlayerFire(void)
+ncVehicle::PreventPlayerFire(void)
 {
 	return (true);
 }
 
 float
-NSVehicle::DriverAnimation(void)
+ncVehicle::DriverAnimation(void)
 {
 	return (-1);
 }
 
 entity
-NSVehicle::GetDriver(void)
+ncVehicle::GetDriver(void)
 {
 	return (m_eDriver);
 }
 
 #ifdef CLIENT
 bool
-NSVehicle::HideViewWeapon(void)
+ncVehicle::HideViewWeapon(void)
 {
 	return (false);
 }
 bool
-NSVehicle::HideCrosshair(void)
+ncVehicle::HideCrosshair(void)
 {
 	return (true);
 }
 bool
-NSVehicle::HidePlayermodel(void)
+ncVehicle::HidePlayermodel(void)
 {
 	return (true);
 }
 
 void
-NSVehicle::DriverRelink(void)
+ncVehicle::DriverRelink(void)
 {
 	if (!driver_entnum)
 		m_eDriver = __NULL__;
 	else {
-		NSClientPlayer pl;
-		m_eDriver = (NSEntity)findentity(world, ::entnum, driver_entnum);
-		pl = (NSClientPlayer)m_eDriver;
+		ncPlayer pl;
+		m_eDriver = (ncEntity)findentity(world, ::entnum, driver_entnum);
+		pl = (ncPlayer)m_eDriver;
 		pl.vehicle = this;
 	}
 }
 bool
-NSVehicle::IsLocalDriver(void)
+ncVehicle::IsLocalDriver(void)
 {
 	DriverRelink();
 
@@ -142,12 +142,12 @@ NSVehicle::IsLocalDriver(void)
 }
 
 void
-NSVehicle::UpdateView(void)
+ncVehicle::UpdateView(void)
 {
 }
 
 void
-NSVehicle::PredictPreFrame(void)
+ncVehicle::PredictPreFrame(void)
 {
 	SAVE_STATE(angles)
 	SAVE_STATE(origin)
@@ -160,7 +160,7 @@ NSVehicle::PredictPreFrame(void)
 }
 
 void
-NSVehicle::PredictPostFrame(void)
+ncVehicle::PredictPostFrame(void)
 {
 	ROLL_BACK(angles)
 	ROLL_BACK(origin)
@@ -173,7 +173,7 @@ NSVehicle::PredictPostFrame(void)
 }
 
 void
-NSVehicle::ReceiveEntity(float new, float fChanged)
+ncVehicle::ReceiveEntity(float new, float fChanged)
 {
 	if (fChanged & VEHFL_CHANGED_ORIGIN) {
 		origin[0] = readcoord();
@@ -215,7 +215,7 @@ NSVehicle::ReceiveEntity(float new, float fChanged)
 	}
 
 	if (fChanged & VEHFL_CHANGED_DRIVER) {
-		m_eDriver = (NSEntity)findfloat(world, ::entnum, readentitynum());
+		m_eDriver = (ncEntity)findfloat(world, ::entnum, readentitynum());
 	}
 
 	if (new)
@@ -223,7 +223,7 @@ NSVehicle::ReceiveEntity(float new, float fChanged)
 }
 #else
 vector
-NSVehicle::GetExitPos(void)
+ncVehicle::GetExitPos(void)
 {
 	vector vecOut;
 	makevectors(angles);
@@ -294,7 +294,7 @@ NSVehicle::GetExitPos(void)
 }
 
 void
-NSVehicle::EvaluateEntity(void)
+ncVehicle::EvaluateEntity(void)
 {
 	/* while the engine is still handling physics for these, we can't
 	 * predict when origin/angle might change */
@@ -333,7 +333,7 @@ NSVehicle::EvaluateEntity(void)
 }
 
 float
-NSVehicle::SendEntity(entity ePEnt, float fChanged)
+ncVehicle::SendEntity(entity ePEnt, float fChanged)
 {
 	WriteByte(MSG_ENTITY, ENT_VEHICLE);
 	WriteFloat(MSG_ENTITY, fChanged);
@@ -387,13 +387,13 @@ NSVehicle::SendEntity(entity ePEnt, float fChanged)
 #endif
 
 void
-NSVehicle::PlayerInput(void)
+ncVehicle::PlayerInput(void)
 {
 
 }
 
 void
-NSVehicle::PlayerUpdateFlags(void)
+ncVehicle::PlayerUpdateFlags(void)
 {
 	if (m_iVehicleFlags & VHF_FROZEN)
 		m_eDriver.vv_flags |= VFL_FROZEN;
@@ -403,7 +403,7 @@ NSVehicle::PlayerUpdateFlags(void)
 }
 
 void
-NSVehicle::PlayerAlign(void)
+ncVehicle::PlayerAlign(void)
 {
 	vector vecPlayerPos;
 
@@ -421,7 +421,7 @@ NSVehicle::PlayerAlign(void)
 }
 
 void
-NSVehicle::PlayerEnter(NSClientPlayer pl)
+ncVehicle::PlayerEnter(ncPlayer pl)
 {
 	vector offs;
 
@@ -438,7 +438,7 @@ NSVehicle::PlayerEnter(NSClientPlayer pl)
 	m_vecExitPos = m_vecPlayerPos;
 	owner = pl;
 	//pl.movetype = MOVETYPE_NOCLIP;
-	m_eDriver = (NSEntity)pl;
+	m_eDriver = (ncEntity)pl;
 	m_eDriverLast = m_eDriver;
 	pl.vehicle = this;
 	pl.vv_flags |= VFL_INVEHICLE;
@@ -446,7 +446,7 @@ NSVehicle::PlayerEnter(NSClientPlayer pl)
 }
 
 void
-NSVehicle::PlayerLeave(NSClientPlayer pl)
+ncVehicle::PlayerLeave(ncPlayer pl)
 {
 	if (!pl)
 		return;

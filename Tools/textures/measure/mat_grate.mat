@@ -1,0 +1,18 @@
+{
+	surfaceParm grate
+
+if $programs
+	program defaultwall
+	diffusemap textures/measure/mat_grate.tga
+else
+	{
+		map $lightmap
+		rgbGen identity
+	}
+	{
+		map textures/measure/mat_grate.tga
+		rgbGen identity
+		blendFunc GL_DST_COLOR GL_ZERO
+	}
+endif
+}

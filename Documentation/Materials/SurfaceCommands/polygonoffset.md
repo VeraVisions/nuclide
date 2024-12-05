@@ -1,12 +1,12 @@
 # Material Command List {#mat_commands}
 
-### polygonOffset {#polygonOffset}
+## polygonOffset {#polygonOffset}
 
-#### Syntax
+### Syntax
 
-**polygonOffset <value>**
+**polygonOffset \<value\>**
 
-#### Overview
+### Overview
 
 Surfaces rendered with the polygonOffset keyword are rendered slightly
 off the polygon's surface. This is typically used for wall markings and

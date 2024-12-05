@@ -70,10 +70,10 @@ games to tell the entity to start inactive as far as I can tell.
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
 
-@ingroup shared
+@ingroup sharedentity
 @ingroup pointentity
 */
-class light_dynamic:NSPointTrigger
+class light_dynamic:ncPointTrigger
 {
 public:
 	void light_dynamic(void);
@@ -85,7 +85,9 @@ public:
 	virtual float predraw(void);
 	virtual void RendererRestarted(void);
 	virtual void LightChanged(float);
-#else
+#endif
+
+#ifdef SERVER
 	virtual void Trigger(entity, triggermode_t);
 	virtual void Respawn(void);
 	virtual float SendEntity(entity,float);
@@ -230,7 +232,9 @@ light_dynamic::RendererRestarted(void)
 	m_light = dynamiclight_spawnstatic(origin, m_flDistance, m_vecLight);
 	LightChanged(0xFFFFFF);
 }
-#else
+#endif
+
+#ifdef SERVER
 void
 light_dynamic::EvaluateEntity(void)
 {

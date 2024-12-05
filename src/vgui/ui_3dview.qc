@@ -21,17 +21,17 @@ noref .vector maxs;
 noref .string model;
 noref .float frame, frame2, lerpfrac, renderflags, frame1time;
 
-.void(void) tmpVGUI3DView1;
-.float(float,float,float,float) tmpVGUI3DView2;
+.void(void) tmpvgui3DView1;
+.float(float,float,float,float) tmpvgui3DView2;
 
 /** VGUI Widget: 3D View
 
 @ingroup vgui
 */
-class VGUI3DView:VGUIWidget
+class vgui3DView:vguiWidget
 {
 public:
-	void VGUI3DView(void);
+	void vgui3DView(void);
 
 	/** Return the 3D-space position our camera within the 3D view is located at. */
 	nonvirtual vector Get3DPos(void);
@@ -58,58 +58,58 @@ private:
 };
 
 void
-VGUI3DView::VGUI3DView(void)
+vgui3DView::vgui3DView(void)
 {
 	m_flFOV = 90;
 	m_vec3DPos = m_vec3DAngles = [0,0,0];
 }
 
 void
-VGUI3DView::Spawned(void)
+vgui3DView::Spawned(void)
 {
 	SetSize([64,64]);
 }
 
 void
-VGUI3DView::Set3DAngles(vector vecAngles)
+vgui3DView::Set3DAngles(vector vecAngles)
 {
 	m_vec3DAngles = vecAngles;
 }
 
 vector
-VGUI3DView::Get3DAngles(void)
+vgui3DView::Get3DAngles(void)
 {
 	return m_vec3DAngles;
 }
 
 void
-VGUI3DView::Set3DPos(vector vecPos)
+vgui3DView::Set3DPos(vector vecPos)
 {
 	m_vec3DPos = vecPos;
 }
 
 vector
-VGUI3DView::Get3DPos(void)
+vgui3DView::Get3DPos(void)
 {
 	return m_vec3DPos;
 }
 
 void
-VGUI3DView::SetDrawFunc(void(void) vFunc)
+vgui3DView::SetDrawFunc(void(void) vFunc)
 {
-	tmpVGUI3DView1 = vFunc;
+	tmpvgui3DView1 = vFunc;
 }
 
 void
-VGUI3DView::SetInputFunc(float(float, float, float, float) vFunc)
+vgui3DView::SetInputFunc(float(float, float, float, float) vFunc)
 {
-	tmpVGUI3DView2 = vFunc;
+	tmpvgui3DView2 = vFunc;
 }
 
 void
-VGUI3DView::Draw(void)
+vgui3DView::Draw(void)
 {
-	if (!tmpVGUI3DView1) {
+	if (!tmpvgui3DView1) {
 		return;
 	}
 
@@ -121,16 +121,16 @@ VGUI3DView::Draw(void)
 #ifndef MENU
 	setproperty(VF_DRAWWORLD, false);
 #endif
-	tmpVGUI3DView1();
+	tmpvgui3DView1();
 	renderscene();
 }
 
 bool
-VGUI3DView::Input(float flEVType, float flKey, float flChar, float flDevID)
+vgui3DView::Input(float flEVType, float flKey, float flChar, float flDevID)
 {
-	if (!tmpVGUI3DView2) {
+	if (!tmpvgui3DView2) {
 		return false;
 	}
 
-	return tmpVGUI3DView2(flEVType, flKey, flChar, flDevID);
+	return tmpvgui3DView2(flEVType, flKey, flChar, flDevID);
 }

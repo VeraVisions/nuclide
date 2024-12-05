@@ -34,10 +34,10 @@ Useful for when VIS is impossible or not enough.
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
 
-@ingroup shared
+@ingroup sharedentity
 @ingroup brushentity
 */
-class func_lod:NSRenderableEntity
+class func_lod:ncRenderableEntity
 {
 public:
 	void func_lod(void);

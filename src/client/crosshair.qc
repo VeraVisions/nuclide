@@ -32,7 +32,7 @@ Cross_GetPos(vector sizeXY)
 	} else {
 		vector vecSrc;
 		vector vecDst;
-		NSClientPlayer pl = (NSClientPlayer)pSeat->m_ePlayer;
+		ncPlayer pl = (ncPlayer)pSeat->m_ePlayer;
 
 		vecSrc = pSeat->m_vecPredictedOrigin + pSeat->m_ePlayer.view_ofs;
 		makevectors(view_angles);

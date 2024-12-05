@@ -92,11 +92,11 @@ f_fMoveTo values:
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-scripted_sequence:NSPointTrigger
+scripted_sequence:ncPointTrigger
 {
 public:
 	void scripted_sequence(void);
@@ -243,10 +243,10 @@ scripted_sequence::Respawn(void)
 void
 scripted_sequence::RunOnEntity(entity targ)
 {	
-	NSMonster f;
+	ncMonster f;
 	float duration;
 
-	f = (NSMonster)targ;
+	f = (ncMonster)targ;
 
 	if (!m_iEnabled)
 		return;
@@ -359,17 +359,17 @@ scripted_sequence::RunOnEntity(entity targ)
 void
 scripted_sequence::Trigger(entity act, triggermode_t unused)
 {
-	NSMonster f;
+	ncMonster f;
 
 	NSAIScript_Log("^2scripted_sequence::^3Trigger^7: with spawnflags %d", spawnflags);
-	f = (NSMonster)find(world, ::targetname, m_strMonster);
+	f = (ncMonster)find(world, ::targetname, m_strMonster);
 
 	/* target doesn't exist/hasn't spawned */
 	if (!f) {
 		for (entity c = world; (c = find(c, ::classname, m_strMonster));) {
 			/* within radius */
 			if (vlen(origin - c.origin) < m_flSearchRadius) {
-				f = (NSMonster)c;
+				f = (ncMonster)c;
 				break;
 			}
 		}
@@ -386,10 +386,10 @@ scripted_sequence::Trigger(entity act, triggermode_t unused)
 void
 scripted_sequence::InitIdle(void)
 {
-	NSMonster f;
+	ncMonster f;
 
 	NSAIScript_Log("^2scripted_sequence::^3InitIdle^7: with spawnflags %d on %S", spawnflags, m_strMonster);
-	f = (NSMonster)find(world, ::targetname, m_strMonster);
+	f = (ncMonster)find(world, ::targetname, m_strMonster);
 
 	/* target doesn't exist/hasn't spawned */
 	if (!f) {
@@ -397,7 +397,7 @@ scripted_sequence::InitIdle(void)
 		for (entity c = world; (c = find(c, ::classname, m_strMonster));) {
 			/* within radius */
 			if (vlen(origin - c.origin) < m_flSearchRadius) {
-				f = (NSMonster)c;
+				f = (ncMonster)c;
 				break;
 			}
 		}
@@ -427,12 +427,12 @@ scripted_sequence::InitIdle(void)
 void
 scripted_sequence::Touch(entity eToucher)
 {
-	NSMonster f;
+	ncMonster f;
 
 	if (eToucher.classname != m_strMonster)
 		return;
 
-	f = (NSMonster)eToucher;
+	f = (ncMonster)eToucher;
 
 	/* we already ARE on a sequence. */
 	if (f.m_iSequenceState != SEQUENCESTATE_NONE)

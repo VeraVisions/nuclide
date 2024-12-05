@@ -29,13 +29,13 @@ enumflags
 };
 #endif
 
-/*! \brief This class represents NSMonsters that talk. */
-/*!QUAKED NSTalkMonster (0 0.8 0.8) (-16 -16 0) (16 16 72) WAITTILLSEEN GAG MONSTERCLIP x PRISONER x IGNOREPLAYER WAITFORSCRIPT PREDISASTER FADECORPSE MULTIPLAYER FALLING HORDE
+/*! \brief This class represents ncMonsters that talk. */
+/*!QUAKED ncTalkMonster (0 0.8 0.8) (-16 -16 0) (16 16 72) WAITTILLSEEN GAG MONSTERCLIP x PRISONER x IGNOREPLAYER WAITFORSCRIPT PREDISASTER FADECORPSE MULTIPLAYER FALLING HORDE
 # OVERVIEW
-This class represents NSMonsters that talk. They need to network extra
-information and can speak more complicated dialogue using the [Sentences](Sentences.md) system.
+This class represents ncMonsters that talk. They need to network extra
+information and can speak more complicated dialogue using the [Sentences](@ref sentences) system.
 
-They also can communicate with other NSTalkMonster based entities.
+They also can communicate with other ncTalkMonster based entities.
 
 # KEYS
 - "targetname" : Name
@@ -70,16 +70,16 @@ They also can communicate with other NSTalkMonster based entities.
 - "follow_dist" : Distance between the it and the player its following.
 - "follow_maxdist" : Maximum distance between it and the player before giving up following them.
 
-For more keys, see NSMonster.
+For more keys, see ncMonster.
 
 @ingroup baseclass
 */
-class NSTalkMonster:NSSquadMonster
+class ncTalkMonster:ncSquadMonster
 {
 public:
-	void NSTalkMonster(void);
+	void ncTalkMonster(void);
 
-	/** When called, will play a [Sentence](Sentences.md) over the network. */
+	/** When called, will play a [Sentence](@ref sentences) over the network. */
 	virtual void Sentence(string);
 
 #ifdef SERVER
@@ -124,9 +124,9 @@ public:
 	/** Called when they want to ask the player a question. */
 	virtual void TalkPlayerAsk(void);
 	/** Called when they are greeting the player. */
-	virtual void SeenPlayer(NSActor);
+	virtual void SeenPlayer(ncActor);
 	/** Called when they are chit-chatting with the player. */
-	virtual void SeenFriend(NSActor);
+	virtual void SeenFriend(ncActor);
 	/** Called when they tell the player that they're wounded. */
 	virtual void TalkPlayerWounded1(void);
 	/** Called when they tell the player that severely wounded. */
@@ -216,6 +216,6 @@ private:
 };
 
 #ifdef CLIENT
-void NSTalkMonster_ParseSentence(void);
-void NSTalkMonster_ReadEntity(bool);
+void ncTalkMonster_ParseSentence(void);
+void ncTalkMonster_ReadEntity(bool);
 #endif

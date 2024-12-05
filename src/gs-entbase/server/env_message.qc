@@ -41,11 +41,11 @@ Displays a basic message or titles.txt entry.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-env_message:NSPointTrigger
+env_message:ncPointTrigger
 {
 public:
 	void env_message(void);

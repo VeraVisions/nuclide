@@ -254,7 +254,7 @@ cr_message_wrap(string src, string out, bool isSelf)
 		);
 	}
 
-	localcmd(sprintf("_fnchat_msg \"^2[Chat-room] ^7%s^7: %s\"\n", src, out));
+	localcmd(sprintf("addChatLine \"^2[Chat-room] ^7%s^7: %s\"\n", src, out));
 }
 
 /* irc processing functions */

@@ -36,11 +36,11 @@ A force-centered explosion, primarily targetted at physics objects and optionall
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-env_physexplosion:NSPointTrigger
+env_physexplosion:ncPointTrigger
 {
 public:
 	void env_physexplosion(void);
@@ -128,7 +128,7 @@ env_physexplosion::TriggerExplosion(void)
 	float entityDistance = 0.0f;
 	float targetForce = 0.0f;
 	float explosionRadius = m_flRadius;
-	NSPhysicsEntity physEnt;
+	ncPhysicsEntity physEnt;
 
 	if (m_flRadius == 0.0) {
 		explosionRadius = m_flMagnitude * 2.5;
@@ -136,7 +136,7 @@ env_physexplosion::TriggerExplosion(void)
 
 	/* only target them if set */
 	if (m_strTargetEntity) {
-		physEnt = (NSPhysicsEntity)find(world, ::targetname, m_strTargetEntity);
+		physEnt = (ncPhysicsEntity)find(world, ::targetname, m_strTargetEntity);
 
 		if (!physEnt) {
 			EntWarning("Target set, but not found!");
@@ -154,7 +154,7 @@ env_physexplosion::TriggerExplosion(void)
 	}
 
 	for (entity e = world; (e = findfloat(e, ::isPhysics, true));) {
-		physEnt = (NSPhysicsEntity)e;
+		physEnt = (ncPhysicsEntity)e;
 		entityDistance = vlen(GetOrigin() - physEnt.WorldSpaceCenter());
 
 		if (entityDistance <= explosionRadius) {

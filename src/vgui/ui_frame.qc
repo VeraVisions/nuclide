@@ -18,28 +18,28 @@
 
 @ingroup vgui
 */
-class VGUIFrame:VGUIWidget
+class vguiFrame:vguiWidget
 {
 public:
-	void VGUIFrame(void);
+	void vguiFrame(void);
 
 	/* overrides */
 	virtual void Draw(void);
 
 private:
-	VGUIColor m_frameColor;
+	vguiColor m_frameColor;
 };
 
 void
-VGUIFrame::VGUIFrame(void)
+vguiFrame::vguiFrame(void)
 {
-	m_frameColor = spawn(VGUIColor);
+	m_frameColor = spawn(vguiColor);
 	m_frameColor. SetColorWithAlpha(UI_MAINCOLOR, 0.0f);
 }
 
-void VGUIFrame::Draw(void)
+void vguiFrame::Draw(void)
 {
-	VGUITheme ourTheme = GetTheme();
+	vguiTheme ourTheme = GetTheme();
 	ourTheme.DrawBorder(m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, VGUI_BORDER_INSET, m_frameColor);
 }
 

@@ -25,11 +25,11 @@ Strips the activator of all of its weapons.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 
-@ingroup server
+@ingroup serverentity
 @ingroup pointentity
 */
 class
-player_weaponstrip:NSPointTrigger
+player_weaponstrip:ncPointTrigger
 {
 public:
 	void player_weaponstrip(void);
@@ -45,12 +45,12 @@ player_weaponstrip::player_weaponstrip(void)
 void
 player_weaponstrip::Trigger(entity act, triggermode_t unused)
 {
-	NSClientPlayer pl;
+	ncPlayer pl;
 
 	if (!(act.flags & FL_CLIENT)) {
 		return;
 	}
 
-	pl = (NSClientPlayer)act;
+	pl = (ncPlayer)act;
 	pl.RemoveAllWeapons();
 }
