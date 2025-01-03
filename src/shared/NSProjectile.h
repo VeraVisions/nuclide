@@ -79,6 +79,7 @@ public:
 
 	nonvirtual void _FuseEnded(void);
 	nonvirtual void _Explode(entity);
+	virtual void HasExploded(void);
 
 	virtual void _LaunchHitscan(vector, vector, float);
 

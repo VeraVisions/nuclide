@@ -748,6 +748,12 @@ ncProjectile::_FuseEnded(void)
 }
 
 void
+ncProjectile::HasExploded(void)
+{
+
+}
+
+void
 ncProjectile::_Explode(entity explodedOn)
 {
 	vector newAngles, aimFwd, aimRgt, aimUp;
@@ -843,6 +849,7 @@ ncProjectile::_Explode(entity explodedOn)
 #endif
 	}
 
+	HasExploded();
 	StartSoundDef(m_sndExplode, CHAN_VOICE, true);
 	Destroy();
 }
