@@ -59,6 +59,7 @@ private:
 	string m_strModel;
 	string m_strParticle;
 	entity m_eMuzzler; /* lol */
+	bool m_forceAdditive;
 };
 
 void
@@ -70,6 +71,7 @@ env_muzzleflash::env_muzzleflash(void)
 	m_strParticle = __NULL__;
 	m_eMuzzler = __NULL__;
 	scale = 1.0f;
+	m_forceAdditive = false;
 }
 
 #ifdef SERVER
@@ -83,6 +85,7 @@ env_muzzleflash::Save(float handle)
 	SaveString(handle, "m_strModel", m_strModel);
 	SaveString(handle, "m_strParticle", m_strParticle);
 	SaveEntity(handle, "m_eMuzzler", m_eMuzzler);
+	SaveBool(handle, "m_forceAdditive", m_forceAdditive);
 }
 
 void
@@ -107,6 +110,9 @@ env_muzzleflash::Restore(string strKey, string strValue)
 	case "m_eMuzzler":
 		m_eMuzzler = ReadEntity(strValue);
 		break;
+	case "m_forceAdditive":
+		m_forceAdditive = ReadBool(strValue);
+		break;
 	default:
 		super::Restore(strKey, strValue);
 	}
@@ -130,6 +136,9 @@ env_muzzleflash::SpawnKey(string keyName, string setValue)
 		break;
 	case "model":
 		model = ReadString(setValue);
+		break;
+	case "additive":
+		m_forceAdditive = ReadBool(setValue);
 		break;
 	default:
 		super::SpawnKey(keyName, setValue);
@@ -196,7 +205,11 @@ env_muzzleflash::predraw(void)
 	}
 
 	setorigin(this, muzzlePos);
-// 	effects = EF_ADDITIVE;
+
+	if (m_forceAdditive) {
+	 	effects = EF_ADDITIVE;
+	}
+
 	angles = m_eOwner.angles;
 	addentity(this);
 	alpha -= frametime * 16.0f;
@@ -239,6 +252,24 @@ EV_MuzzleFlash_Create(entity muzzleOwner, int attachmentID, float muzzleScale, i
 	tempMuzzle.scale = muzzleScale;
 	tempMuzzle.alpha = 1.0f;
 	tempMuzzle.modelindex = muzzleModel;
+	setmodel(tempMuzzle, modelnameforindex(muzzleModel));
+
+	setorigin(tempMuzzle, tempMuzzle.m_eOwner.origin);
+	setsize(tempMuzzle, [0,0,0], [0,0,0]);
+	tempMuzzle.drawmask = MASK_GLOWS;
+}
+
+void
+EV_MuzzleFlash_CreateAdditive(entity muzzleOwner, int attachmentID, float muzzleScale, int muzzleModel)
+{
+	env_muzzleflash tempMuzzle = spawn(env_muzzleflash);
+
+	tempMuzzle.m_eOwner = (ncRenderableEntity)muzzleOwner;
+	tempMuzzle.m_iAttachment = attachmentID;
+	tempMuzzle.scale = muzzleScale;
+	tempMuzzle.alpha = 1.0f;
+	tempMuzzle.modelindex = muzzleModel;
+	tempMuzzle.m_forceAdditive = true;
 	setmodel(tempMuzzle, modelnameforindex(muzzleModel));
 
 	setorigin(tempMuzzle, tempMuzzle.m_eOwner.origin);
