@@ -28,11 +28,6 @@ ncPointTrigger::Respawn(void)
 void
 ncPointTrigger::InitPointTrigger(void)
 {
-	static void HackFixMe(void) {
-		this.origin = this.tag_entity.origin;
-		this.angles = this.tag_entity.angles + [90, 0, 0];
-	}
-
 	SetOrigin(GetSpawnVector("origin"));
 	SetSize(VEC_HULL_MIN, VEC_HULL_MAX);
 	SetSolid(SOLID_NOT);
@@ -46,10 +41,6 @@ ncPointTrigger::InitPointTrigger(void)
 
 	if (STRING_SET(parentName)) {
 		SetParent(parentName);
-
-		if (GetParent()) {
-			customphysics = HackFixMe;
-		}
 	}
 #endif
 }

@@ -378,6 +378,17 @@ ncEntity::EvaluateEntity(void)
 void
 ncEntity::ParentUpdate(void)
 {
+	if (tag_entity) {
+		makevectors(tag_entity.angles);
+		origin = tag_entity.origin + v_forward * m_parentPosOffs[0];
+		origin += v_right * m_parentPosOffs[1];
+		origin += v_up * m_parentPosOffs[2];
+		angles = v_forward * m_parentPosOffs[0];
+		angles += v_right * m_parentPosOffs[1];
+		angles += v_up * m_parentPosOffs[2];
+		angles = vectoangles(angles);
+	}
+
 	EvaluateEntity();
 
 	if (!(vv_flags & VFL_NOFRAMEADVANCE)) {
@@ -424,7 +435,17 @@ ncEntity::GetParent(void)
 void
 ncEntity::SetParent(string name)
 {
+	vector parentOffset, angleOffset;
 	tag_entity = find(world, ::targetname, name);
+	parentOffset = origin - tag_entity.origin;
+	angleOffset = anglesToForward(angles) - anglesToForward(tag_entity.angles);
+	makevectors(tag_entity.angles);
+	m_parentPosOffs[0] = dotproduct(parentOffset, v_forward);
+	m_parentPosOffs[1] = dotproduct(parentOffset, v_right);
+	m_parentPosOffs[2] = dotproduct(parentOffset, v_up);
+	m_parentAngOffs[0] = dotproduct(angleOffset, v_forward);
+	m_parentAngOffs[1] = dotproduct(angleOffset, v_right);
+	m_parentAngOffs[2] = dotproduct(angleOffset, v_up);
 }
 
 void
@@ -957,11 +978,6 @@ ncEntity::GetModelMaxs(void)
 void
 ncEntity::Respawn(void)
 {
-	static void HackFixMe(void) {
-		this.origin = this.tag_entity.origin;
-		this.angles = this.tag_entity.angles + [90, 0, 0];
-	}
-
 	super::Respawn();
 
 	if (CreatedByMap()) {
@@ -971,14 +987,8 @@ ncEntity::Respawn(void)
 	SetAngles(GetSpawnVector("angles"));
 	SetModel(GetSpawnString("model"));
 
-	string parentName = GetSpawnString("parentname");
-
-	if (STRING_SET(parentName)) {
-		SetParent(parentName);
-
-		if (GetParent()) {
-			customphysics = HackFixMe;
-		}
+	if (STRING_SET(m_parent)) {
+		SetParent(m_parent);
 	}
 }
 
