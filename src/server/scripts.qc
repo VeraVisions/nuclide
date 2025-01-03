@@ -51,7 +51,15 @@ void
 RuleC_Init(void)
 {
 	string gameType = cvars.GetString("g_gametype");
-	string pathToProgs = strcat("progs/", gameType, ".dat");
+	string pathToProgs;
+
+	if (!STRING_SET(gameType)) {
+		bool isCoop = cvars.GetBool("coop");
+		bool isSingle = (cvars.GetInteger("sv_playerslots") <= 1) ? (true) : (false);
+		g_ruleCName = gameType = (isSingle || isCoop) == (true) ? "singleplayer" : "deathmatch";
+	}
+	
+	pathToProgs = strcat("progs/", gameType, ".dat");
 
 	/* No progs .dat, exit out */
 	if (fileExists(pathToProgs) == false) {
@@ -72,8 +80,7 @@ RuleC_Init(void)
 		} else {
 			NSError("%S does not have a main function.", pathToProgs);
 		}
-	}
-
+	}	
 }
 
 void

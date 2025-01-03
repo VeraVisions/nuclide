@@ -418,27 +418,17 @@ ncGameRules::ChatMessageTeam(ncClient cl, string strMessage)
 string
 ncGameRules::Title(void)
 {
-	string gameType = cvars.GetString("g_gametype");
-
-	if (STRING_SET(gameType)) {
-		return gameType;
+	if (STRING_SET(g_ruleCName)) {
+		return g_ruleCName;
 	}
 
 	return "Default";
 }
 
 ncGameRules
-ncGameRules::InitFromProgs(string pathToProgs)
+ncGameRules::CreateRules(void)
 {
-	ncGameRules newRule;
-
-	/* No progs .dat, exit out */
-	if (fileExists(pathToProgs) == false) {
-		NSError("Progs at %S does not exist.", pathToProgs);
-		return (__NULL__);
-	}
-
-	newRule = spawn(ncGameRules);
+	ncGameRules newRule = spawn(ncGameRules);
 
 	if (g_ruleCProgs) {
 		RULEMAP(newRule, ClientCommand, "CodeCallback_ClientCommand")
@@ -460,5 +450,6 @@ ncGameRules::InitFromProgs(string pathToProgs)
 		RULEMAP(newRule, Title, "CodeCallback_Title")
 	}
 
+	serverinfo.SetString("mode", newRule.Title());
 	return (newRule);
 }

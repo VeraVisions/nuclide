@@ -402,10 +402,7 @@ initents(void)
 
 	BodyQue_Init();
 
-	if (!g_grMode) {
-		Game_InitRules();
-		serverinfo.SetString("mode", g_grMode.Title());
-	}
+	g_grMode = ncGameRules::CreateRules();
 
 	Game_Worldspawn();
 	Decals_Init();

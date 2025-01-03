@@ -121,7 +121,7 @@ public:
 	/** Returns the title of the gamemode running. */
 	virtual string Title(void);
 
-	nonvirtual ncGameRules InitFromProgs(string pathToProgs);
+	nonvirtual ncGameRules CreateRules(void);
 	
 	/* spectator */
 	/*
@@ -139,6 +139,7 @@ private:
 /* our currently running mode */
 ncGameRules g_grMode;
 var float g_ruleCProgs;
+var string g_ruleCName;
 
 #define CGameRules ncGameRules
 #define RULEMAP(x, y, z) x.y = externvalue(g_ruleCProgs, z); if (!x.y) { x.y = ncGameRules::y; }
