@@ -28,8 +28,16 @@ StartFrame(void)
 		ent.ParentUpdate();
 	}
 
+	if (g_ruleCProgs) {
+		externset(g_ruleCProgs, frametime, "frametime");
+	}
+
+	if (g_mapCProgs) {
+		externset(g_mapCProgs, frametime, "frametime");
+	}
+
 	if (g_ents_initialized && g_grMode)
-		if (g_grMode.FrameStart && time > 1f)
+		if (g_grMode.FrameStart && time > 1)
 			g_grMode.FrameStart();
 
 	Vote_Frame();
