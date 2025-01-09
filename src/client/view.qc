@@ -218,7 +218,7 @@ View_DrawViewModel(void)
 	Event_Callback(m_eViewModel.frame1time, fBaseTime2);
 
 	entity oldSelf = self;
-	self = pl.m_activeWeapon;
+	self = m_eViewModel;
 	processmodelevents(m_eViewModel.modelindex, m_eViewModel.frame, fBaseTime,
 		m_eViewModel.frame1time, View_HandleAnimEvent);
 	self = oldSelf;

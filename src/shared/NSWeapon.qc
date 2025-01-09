@@ -515,7 +515,6 @@ ncWeapon::HandleAnimEvent(float timeStamp, int eventCode, string dataString)
 			muzzlePos += anglesToUp(pSeat->m_eViewModel.angles) * muzzOfs[2];
 		}
 
-
 		muzzlePos += anglesToForward(pSeat->m_eViewModel.angles) * muzzOffset[0];
 		muzzlePos += anglesToRight(pSeat->m_eViewModel.angles) * muzzOffset[1];
 		muzzlePos += anglesToUp(pSeat->m_eViewModel.angles) * muzzOffset[2];
@@ -870,11 +869,13 @@ ncWeapon::UpdateViewmodel(void)
 			string viewModelPath2 = GetSubDefString(m_primaryFireInfo, "model_view2");
 			string viewModelPath3 = GetSubDefString(m_primaryFireInfo, "model_view3");
 			string viewModelPath4 = GetSubDefString(m_primaryFireInfo, "model_view4");
+			string modelFlash = GetDefString("model_flash");
 
 			viewModel.modelindex = m_viewModel;
 			viewModel.modelindex2 = getmodelindex(viewModelPath2);
 			viewModel.modelindex3 = getmodelindex(viewModelPath3);
 			viewModel.modelindex4 = getmodelindex(viewModelPath4);
+			viewModel2.m_iMuzzleModel = viewModel.m_iMuzzleModel = (int)getmodelindex(modelFlash);
 
 			if (viewModel) {
 				viewModel._UpdateBoneCount();
@@ -1048,6 +1049,14 @@ void
 ncWeapon::ReleasedWeaponAttack(string fireInfo)
 {
 	ncPlayer ourOwner = (ncPlayer)GetOwner();
+
+	/* don't apply to projectiles without fuses */
+	if (m_flPrimedFuse <= 0) {
+#ifdef SERVER
+		ourOwner.nadeCookingTime = time;
+#endif
+	}
+
 	ourOwner.AttackByDef(fireInfo, true);
 
 	/* knockback */
@@ -1133,7 +1142,9 @@ ncWeapon::Attack(string fireInfo)
 			SetWeaponFrame(shotAnim);
 			_SetWeaponState(WEAPONSTATE_CHARGING);
 			return;
-		} if (UseAmmo(fireInfo) == false) {
+		}
+
+		if (UseAmmo(fireInfo) == false) {
 			return;
 		}
 	} else {

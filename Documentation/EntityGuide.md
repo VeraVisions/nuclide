@@ -260,6 +260,8 @@
 
 [multisource](@ref multisource)
 
+[npc_furniture](@ref npc_furniture)
+
 [path_corner](@ref path_corner)
 
 [path_track](@ref path_track)

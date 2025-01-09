@@ -993,22 +993,22 @@ ncRenderableEntity::HandleAnimEvent(float flTimeStamp, int iCode, string strData
 	/* GS events */
 	case 5001: /* muzzle flash on attachment 0 */
 #ifdef CLIENT
-		EV_MuzzleFlash_Create(this, m_iNumBones, m_flMuzzleScale, m_iMuzzleModel);
+		EV_MuzzleFlash_CreateAdditive(this, m_iNumBones, m_flMuzzleScale, m_iMuzzleModel);
 #endif
 		break;
 	case 5011: /* muzzle flash on attachment 1 */
 #ifdef CLIENT
-		EV_MuzzleFlash_Create(this, m_iNumBones + 1, m_flMuzzleScale, m_iMuzzleModel);
+		EV_MuzzleFlash_CreateAdditive(this, m_iNumBones + 1, m_flMuzzleScale, m_iMuzzleModel);
 #endif
 		break;
 	case 5021: /* muzzle flash on attachment 2 */
 #ifdef CLIENT
-		EV_MuzzleFlash_Create(this, m_iNumBones + 2, m_flMuzzleScale, m_iMuzzleModel);
+		EV_MuzzleFlash_CreateAdditive(this, m_iNumBones + 2, m_flMuzzleScale, m_iMuzzleModel);
 #endif
 		break;
 	case 5031: /* muzzle flash on attachment 3 */
 #ifdef CLIENT
-		EV_MuzzleFlash_Create(this, m_iNumBones + 3, m_flMuzzleScale, m_iMuzzleModel);
+		EV_MuzzleFlash_CreateAdditive(this, m_iNumBones + 3, m_flMuzzleScale, m_iMuzzleModel);
 #endif
 		break;
 	case 1003:	/* trigger SSQC entity with specific targetname */
@@ -1277,6 +1277,9 @@ ncRenderableEntity::SpawnKey(string strKey, string strValue)
 		break;
 	case "renderfx":
 		m_iRenderFX = ReadFloat(strValue);
+		break;
+	case "model_flash":
+		m_iMuzzleModel = (int)getmodelindex(strValue);
 		break;
 	default:
 		super::SpawnKey(strKey, strValue);
