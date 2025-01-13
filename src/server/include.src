@@ -1,10 +1,10 @@
 #includelist
-NSOutput.qc
+Output.qc
 plugins.qc
 logging.qc
 skill.qc
 spawn.qc
-NSGameRules.qc
+GameRules.qc
 vote.qc
 lament.qc
 mapcycle.qc
@@ -13,7 +13,7 @@ scripts.qc
 cmd_cl.qc
 cmd_sv.qc
 entry.qc
-ai_schedule.qc
+Schedule.qc
 ../nav/includes.src
 api.qc
 #endlist

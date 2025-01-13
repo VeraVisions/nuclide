@@ -565,19 +565,22 @@ ncMonster::AlertNoise(void)
 		return;
 	}
 
-	StartSoundDef(m_sndSight, CHAN_VOICE, true);
+	MessageSchedule("AlertSound");
 }
 
 bool
 ncMonster::IsFriend(int al)
 {
 	/* neutrals are always friendly */
-	if (m_iAlliance == MAL_NEUTRAL)
+	if (m_iAlliance == MAL_NEUTRAL) {
 		return (true);
-	if (m_iAlliance == MAL_ROGUE)
+	}
+
+	if (m_iAlliance == MAL_ROGUE) {
 		return (false);
-	else if (al == m_iAlliance)
+	} else if (al == m_iAlliance) {
 		return (true);
+	}
 
 	return (false);
 }
@@ -2806,7 +2809,7 @@ ncMonster_AlertEnemyAlliance(vector pos, float radius, int alliance)
 		return;
 	}
 
-#if 0
+#if 1
 	if (autocvar_ai_debugAlerts)
 		NSLog("AI alert from %v with radius %f and alliance %i", pos, radius, alliance);
 
@@ -2849,9 +2852,6 @@ ncMonster_AlertEnemyAlliance(vector pos, float radius, int alliance)
 		}
 
 		/* we've heard a noise. investigate the location */
-		f.RouteClear();
-		f.RouteToPosition(pos);
-		f.m_flSequenceSpeed = f.GetWalkSpeed();
 		f.AlertNoise();
 	}
 #endif

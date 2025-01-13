@@ -23,8 +23,8 @@
 #include "fade.h"
 #include "cmd.h"
 #include "util.h"
-#include "NSView.h"
-#include "NSRadar.h"
+#include "View.h"
+#include "Radar.h"
 #include "crosshair.h"
 #include "hud.h"
 

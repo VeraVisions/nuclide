@@ -1,7 +1,7 @@
 #includelist
-NSInteractiveSurface.qc
-NSView.qc
-NSRadar.qc
+InteractiveSurface.qc
+View.qc
+Radar.qc
 hud.qc
 fog.qc
 font.qc
@@ -15,7 +15,7 @@ text.qc
 predict.qc
 entities.qc
 modelevent.qc
-view.qc
+viewmodel.qc
 damage.qc
 chat.qc
 textmenu.qc

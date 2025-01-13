@@ -17,8 +17,8 @@
 #include "api_func.h"
 #include "../shared/api.h"
 #include "../shared/entityDef.h"
-#include "NSOutput.h"
-#include "NSGameRules.h"
+#include "Output.h"
+#include "GameRules.h"
 #include "skill.h"
 #include "logging.h"
 #include "../nav/defs.h"
@@ -29,7 +29,7 @@
 #include "mapcycle.h"
 #include "maptweaks.h"
 #include "scripts.h"
-#include "ai_schedule.h"
+#include "Schedule.h"
 
 /* helper macros */
 #define EVALUATE_FIELD(fieldname, changedflag) {\
