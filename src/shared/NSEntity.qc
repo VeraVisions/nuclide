@@ -43,7 +43,26 @@ ncEntity::Spawn(void)
 		return;
 	}
 
+	/* only precache at start time... */
+	if (time == 0.0f) {
+		Precache();
+	}
+
 	Respawn();
+}
+
+void
+ncEntity::Precache(void)
+{
+	if (STRING_SET(model)) {
+		precache_model(model);
+	}
+
+#ifdef SERVER
+	if (STRING_SET(m_strOnTrigger)) {
+		m_strOnTrigger = CreateOutput(m_strOnTrigger);
+	}
+#endif
 }
 
 void
@@ -52,14 +71,6 @@ ncEntity::Spawned(void)
 	super::Spawned();
 
 #ifdef SERVER
-	if (model) {
-		precache_model(model);
-	}
-
-	if (m_strOnTrigger != "") {
-		m_strOnTrigger = CreateOutput(m_strOnTrigger);
-	}
-
 	/* used to network our shared ID */
 	entityDefID = EntityDef_NetIDFromName(classname);
 #endif

@@ -212,7 +212,7 @@ vector
 Nodes_FindCoverFromEnemy(ncActor targetEnemy)
 {
 	float bestDistance = COST_INFINITE;
-	int bestNodeID = -1;
+	int bestNodeID = -1i;
 
 	for (int i = 0; i < g_iNodes; i++) {
 		vector nodePosition = g_pNodes[i].m_vecOrigin;
@@ -224,6 +224,10 @@ Nodes_FindCoverFromEnemy(ncActor targetEnemy)
 			bestDistance = nodeDistance;
 			bestNodeID = i;
 		}
+	}
+
+	if (bestNodeID != -1i) {
+		return g_vec_null;
 	}
 
 	return (g_pNodes[bestNodeID].m_vecOrigin);
@@ -294,22 +298,124 @@ Nodes_FindCoverFromEnemyFarNode(ncActor targetEnemy, vector targetNode)
 }
 
 vector
-Nodes_FindCoverFromPosition(vector targetOrigin)
+Nodes_FindCoverFromPosition(entity traceEntity, vector targetOrigin)
 {
-	float bestDistance = 0;
-	int bestNodeID = -1;
+	float bestDistance = COST_INFINITE;
+	int bestNodeID = -1i;
+
+#if 0
+	if (g_iNodes <= 0i) {
+		return Nodes_FindEmptySpotNearPosition(world, targetOrigin, 512.0, 4096.0f);
+	}
+#endif
 
 	for (int i = 0; i < g_iNodes; i++) {
 		vector nodePosition = g_pNodes[i].m_vecOrigin;
-		float nodeDistance = distanceSquared(nodePosition, targetOrigin);
+		float nodeDistance = distanceSquared(nodePosition, traceEntity.origin);
 
-		traceline(targetOrigin, nodePosition, MOVE_WORLDONLY, world);
+		traceline(nodePosition, targetOrigin, MOVE_NORMAL, traceEntity);
 
-		if (trace_fraction < 1.0 && nodeDistance > bestDistance) {
+		if ((trace_ent == world || trace_fraction < 1.0) && nodeDistance < bestDistance) {
 			bestDistance = nodeDistance;
 			bestNodeID = i;
 		}
 	}
 
+	if (bestNodeID) {
+		return (g_vec_null);
+	}
+
+	NSError("%v",  (g_pNodes[bestNodeID].m_vecOrigin));
 	return (g_pNodes[bestNodeID].m_vecOrigin);
 }
+
+vector
+Nodes_FindEmptySpotNearPosition(entity traceEntity, vector position, float minRadius, float maxRadius)
+{
+	float bestYaw = 0.0f;
+	float bestDist = 0.0f;
+	vector testAngle = g_vec_null;
+	vector testPos = g_vec_null;
+
+	for (float yawTest = 0.0f; yawTest < 360.0f; yawTest += 10.0f) {
+		vector testPos;
+		float distSquared;
+		vector testAngle = traceEntity.angles = [0, yawTest, 0];
+		testAngle[0] = testAngle[2] = 0.0f;
+		makevectors(testAngle);
+		testPos = position + (v_forward * 2048.0f);
+		tracebox(position, traceEntity.mins, traceEntity.maxs, testPos, MOVE_NORMAL, traceEntity);
+		distSquared = distance(position, trace_endpos);
+
+		if (distSquared > bestDist) {
+			bestYaw = yawTest;
+			bestDist = distSquared;
+		}
+	}
+
+	/* cancel early */
+	if (bestDist <= minRadius) {
+		return (g_vec_null);
+	}
+
+	for (float dist = minRadius; dist < maxRadius; dist += ((maxRadius - minRadius) / 16.0f)) {
+		vector testAngle = [0, bestYaw, 0];
+		testAngle[0] = testAngle[2] = 0.0f;
+		makevectors(testAngle);
+		vector testPos = position + (v_forward * dist);
+		tracebox(testPos, traceEntity.mins, traceEntity.maxs, testPos, MOVE_NORMAL, traceEntity);
+
+		if (!trace_startsolid) {
+			return (testPos);
+		}
+	}
+	
+
+	return (g_vec_null);
+}
+
+vector
+Nodes_FindEmptySpotAwayFromPosition(entity traceEntity, vector position, float minRadius, float maxRadius)
+{
+	float bestYaw = 0.0f;
+	float bestDist = 0.0f;
+	vector testAngle = g_vec_null;
+	vector testPos = g_vec_null;
+
+	for (float yawTest = 0.0f; yawTest < 360.0f; yawTest += 10.0f) {
+		vector testPos;
+		float distSquared;
+		vector testAngle = traceEntity.angles = [0, yawTest, 0];
+		testAngle[0] = testAngle[2] = 0.0f;
+		makevectors(testAngle);
+		testPos = position + (v_forward * 2048.0f);
+		tracebox(position, traceEntity.mins, traceEntity.maxs, testPos, MOVE_NORMAL, traceEntity);
+		distSquared = distance(position, trace_endpos);
+
+		if (distSquared > bestDist) {
+			bestYaw = yawTest;
+			bestDist = distSquared;
+		}
+	}
+
+	/* cancel early */
+	if (bestDist <= minRadius) {
+		return (g_vec_null);
+	}
+
+	for (float dist = maxRadius; dist > minRadius; dist -= ((maxRadius - minRadius) / 16.0f)) {
+		vector testAngle = [0, bestYaw, 0];
+		testAngle[0] = testAngle[2] = 0.0f;
+		makevectors(testAngle);
+		vector testPos = position + (v_forward * dist);
+		tracebox(testPos, traceEntity.mins, traceEntity.maxs, testPos, MOVE_NORMAL, traceEntity);
+
+		if (!trace_startsolid) {
+			return (testPos);
+		}
+	}
+	
+
+	return (g_vec_null);
+}
+

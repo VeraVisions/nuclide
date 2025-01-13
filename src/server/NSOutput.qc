@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2025 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -17,12 +17,23 @@
 void
 ncOutput::TriggerOutput(void)
 {
-	/* plug into all the inputs. */
-	for (entity f = world; (f = find(f, ::targetname, m_strTarget));) {
-		ncEntity trigger = (ncEntity)f;
+	ncIO ourOwner = (ncIO)owner;
+	ncIO ourActivator = (ncIO)m_eActivator;
 
-		if (trigger.Input != __NULL__) {
-			trigger.Input(m_eActivator, m_strInput, m_strData);
+	/* plug into all the inputs. */
+	if (m_strTarget == "!self") {
+		printf("AAAAAAAAAAAAAAAAA SELF!!!\n");
+		ourOwner.Input(m_eActivator, m_strInput, m_strData);
+	} else if (m_strTarget == "!activator") {
+		ourActivator.Input(m_eActivator, m_strInput, m_strData);
+		printf("AAAAAAAAAAAAAAAAA ACTIVATOR!!!\n");
+	} else {
+		for (entity f = world; (f = find(f, ::targetname, m_strTarget));) {
+			ncEntity trigger = (ncEntity)f;
+
+			if (trigger.Input != __NULL__) {
+				trigger.Input(m_eActivator, m_strInput, m_strData);
+			}
 		}
 	}
 

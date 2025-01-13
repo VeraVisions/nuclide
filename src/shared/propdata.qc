@@ -207,7 +207,7 @@ PropData_ParseField(int i, string keyName, string setValue)
 		g_propdata[i].breakable_particle = setValue;
 		break;
 	case "breakable_model":
-		g_propdata[i].breakable_model = setValue;
+		g_propdata[i].breakable_model = strtolower(setValue);
 		break;
 	case "breakable_count":
 		g_propdata[i].breakable_count = stoi(setValue);

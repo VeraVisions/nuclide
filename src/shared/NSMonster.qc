@@ -92,6 +92,37 @@ ncMonster::ncMonster(void)
 	m_bGagged = false;
 	m_flSkin = 0;
 	m_flyOffset = 0.0f;
+
+	m_outputOnDamaged =
+	m_outputOnDeath =
+	m_outputOnHalfHealth =
+	m_outputOnHearPlayer =
+	m_outputOnGreetPlayer =
+	m_outputOnFoundEnemy =
+	m_outputOnLostEnemy =
+	m_outputOnLostEnemyLOS =
+	m_outputOnFoundPlayer =
+	m_outputOnLostPlayer =
+	m_outputOnLostPlayerLOS =
+	m_outputOnDamagedByPlayer = __NULL__;
+#endif
+}
+
+void
+ncMonster::DebugDraw(void)
+{
+#ifdef SERVER
+
+	super::DebugDraw();
+#if 0
+	if not (autocvar(sv_printStateFromNPC, 0) == num_for_edict(this)) {
+		return;
+	}
+
+	string aiString = sprintf("State: %S\nSchedule: %S\n", m_mindset, m_activeSchedule.classname);
+	
+	print(aiString);
+#endif
 #endif
 }
 
@@ -472,17 +503,17 @@ void
 ncMonster::AnimPlay(float seq)
 {
 	SetFrame(seq);
-	m_flAnimTime = time + frameduration(modelindex, seq);
+	m_flAnimTime = GetTime() + frameduration(modelindex, seq);
 }
 
 void
-ncMonster::AnimReset(void)
+ncMonster::AnimationRewind(void)
 {
 	frame1time = 0.0f;
 }
 
 bool
-ncMonster::InAnimation(void)
+ncMonster::InForcedAnimation(void)
 {
 	return (m_flAnimTime > time) ? true : false;
 }
@@ -496,12 +527,15 @@ ncMonster::Sound(string msg)
 void
 ncMonster::Gib(int damage, vector dir)
 {
+	string breakModel = GetPropData(PROPINFO_BREAKMODEL);
 	vector vecDir = vectorToAngles(GetOrigin() - dir);
 	SetState(MONSTER_DEAD);
 	MakeInvulnerable();
 
-	string breakModel = GetPropData(PROPINFO_BREAKMODEL);
-	BreakModel_Spawn(absmin, absmax, dir, damage * 2.5f, vlen(size) / 10, breakModel);
+	if (STRING_SET(breakModel)) {
+		BreakModel_Spawn(absmin, absmax, dir, damage * 2.5f, vlen(size) / 10, breakModel);
+	}
+
 	Disappear();
 }
 
@@ -601,6 +635,38 @@ ncMonster::AlertNearby(void)
 	}
 }
 
+void
+ncMonster::AlertNearbyToSchedule(string scheduleType)
+{
+
+	/* iterate over all living things. */
+	for (entity w = world; (w = nextent(w));) {
+		if (w.takedamage == DAMAGE_NO)
+			continue;
+
+		if (w.classname != classname)
+			continue;
+
+		if (!IsFriend(w.m_iAlliance))
+			continue;
+
+		/* only bother if within 512 unit radius */
+		if (vlen(origin - w.origin) > 512)
+			continue;
+
+		//ncMonsterLog("Alert! %s get %s", w.classname, m_eEnemy.classname);
+		ncMonster f = (ncMonster)w;
+
+		/* we shouldn't override this when they already got a target */
+		if (f.m_eEnemy != __NULL__)
+			continue;
+
+		f.m_eEnemy = m_eEnemy;
+		f._Alerted();
+		f.m_mindset = scheduleType;
+	}
+}
+
 /* returns TRUE if 'enemy' should be considered a valid target for killing */
 bool
 ncMonster::IsValidEnemy(entity enny)
@@ -683,6 +749,7 @@ ncMonster::SeenFriend(ncActor theActor)
 void
 ncMonster::SeeThink(void)
 {
+	/* Prisoners are not meant to react to things they're seeing. */
 	if (HasSpawnFlags(MSF_PRISONER) == true) {
 		return;
 	}
@@ -721,7 +788,11 @@ ncMonster::SeeThink(void)
 
 	if (m_eEnemy) {
 		/* check if we should invalidate current enemy */
-		if (IsValidEnemy(m_eEnemy)) {
+		if (m_eEnemy.health <= 0) {
+			m_mindset = "";
+			MessageSchedule("DeadEnemy");
+			m_eEnemy = __NULL__;
+		} else if (IsValidEnemy(m_eEnemy)) {
 			/* only update 1/4th of a second */
 			if (m_flSeeTime > time)
 				return;
@@ -735,8 +806,17 @@ ncMonster::SeeThink(void)
 			}
 
 			/* if we haven't gotten a trace in 5 seconds, give up. */
-			if ((m_flTrackingTime + 5.0) > time)
+			if ((m_flTrackingTime + 5.0) > time) {
+				m_mindset = "";
+				if (isPlayer(m_eEnemy)) {
+					UseOutput(m_eEnemy, m_outputOnLostPlayerLOS);
+				} else {
+					UseOutput(m_eEnemy, m_outputOnLostEnemyLOS);
+				}
+
+				MessageSchedule("OccludedEnemy");
 				m_eEnemy = __NULL__;
+			}
 		} else {
 			/* enemy is not valid anymore, reset it, clear route and search for new enemy */
 			RouteClear();
@@ -744,10 +824,17 @@ ncMonster::SeeThink(void)
 			RouteToPosition(m_eEnemy.origin + (anglesToForward(angles) * -64));
 			m_flSequenceSpeed = GetWalkSpeed();
 
+			if (isPlayer(m_eEnemy)) {
+				UseOutput(m_eEnemy, m_outputOnLostPlayer);
+			} else {
+				UseOutput(m_eEnemy, m_outputOnLostEnemy);
+			}
+
 			SetState(MONSTER_ALERT);
 			m_eEnemy = __NULL__;
 			m_eLookAt = __NULL__;
 			m_flSeeTime = 0;
+			MessageSchedule("LostEnemy");
 		}
 	}
 
@@ -770,12 +857,26 @@ ncMonster::SeeThink(void)
 				if (m_eEnemy != w) {
 					SeenEnemy((ncActor)w);
 					m_eEnemy = m_eLookAt = w;
+					MessageSchedule("NewEnemy");
 					m_flTrackingTime = time;
 					_Alerted();
 					AlertNearby();
+
+					if (isPlayer(w)) {
+						UseOutput(m_eEnemy, m_outputOnFoundPlayer);
+					} else {
+						UseOutput(m_eEnemy, m_outputOnFoundEnemy);
+					}
 				}
 			} else if (isPlayer(w)) {
 				SeenPlayer((ncActor)w);
+
+				if (m_bMetPlayer == false) {
+					MessageSchedule("SeenPlayer");
+					UseOutput(w, m_outputOnGreetPlayer);
+				}
+
+				m_bMetPlayer = true;
 			} else if (IsFriend(w.m_iAlliance)) {
 				SeenFriend((ncActor)w);
 			}
@@ -801,6 +902,12 @@ ncMonster::GetRunSpeed(void)
 	return m_flRunSpeed;
 }
 
+bool
+ncMonster::ShouldTurn(void)
+{
+	return (ideal_yaw != angles[1]) ? (true) : (false);
+}
+
 float
 ncMonster::GetYawSpeed(void)
 {
@@ -811,10 +918,10 @@ ncMonster::GetYawSpeed(void)
 }
 
 void
-ncMonster::_LerpTurnToYaw(vector turnYaw)
+ncMonster::_LerpTurnToYaw(float turnYaw)
 {
-#if 1
-	input_angles[1] = v_angle[1] = angles[1] = turnYaw[1];
+#if 0
+	input_angles[1] = v_angle[1] = angles[1] = turnYaw;
 #else
 	vector oldAngle = angles;
 	vector angleDelta;
@@ -822,11 +929,11 @@ ncMonster::_LerpTurnToYaw(vector turnYaw)
 	float yawDiff = 0.0f;
 
 	if (IsThinking()) {
-		input_angles[1] = v_angle[1] = angles[1] = turnYaw[1];
+		input_angles[1] = v_angle[1] = angles[1] = turnYaw;
 	}
 
 	yaw_speed = GetYawSpeed() * (frametime * 5);
-	ideal_yaw = turnYaw[1];
+	ideal_yaw = turnYaw;
 	changeyaw();
 	angleDelta = angleDifference(oldAngle, angles);
 	
@@ -837,7 +944,7 @@ ncMonster::_LerpTurnToYaw(vector turnYaw)
 	if (fabs(angleDelta[1]) > 1.0f) {
 		/* wasn't turning before */
 		if (m_bTurning == false) {
-			AnimReset();
+			AnimationRewind();
 
 			if (yawDiff < 0) {
 				AnimPlay(GetDefAct("turnRight"));
@@ -847,6 +954,9 @@ ncMonster::_LerpTurnToYaw(vector turnYaw)
 		}
 
 		m_bTurning = true;
+		input_movevalues = g_vec_null;
+	} else {
+		m_bTurning = false;
 	}
 #endif
 }
@@ -855,37 +965,13 @@ void
 ncMonster::_LerpTurnToPos(vector turnPos)
 {
 	vector vecWishAngle = vectorToAngles(turnPos - origin);
-	_LerpTurnToYaw(vecWishAngle);
-}
-
-
-void
-ncMonster::_LerpTurnToEnemy(void)
-{
-	vector enemyEyePos;
-	vector dirAim;
-
-	if (!m_eEnemy)
-		return;
-
-	/* only continue if we're in one of the three states. */
-	if (GetState() != MONSTER_AIMING)
-		if (GetState() != MONSTER_CHASING)
-			if (GetState() != MONSTER_FOLLOWING)
-				return;
-
-	_LerpTurnToPos(m_eEnemy.origin);
-
-	enemyEyePos = (m_eEnemy.origin + m_eEnemy.view_ofs);
-
-	dirAim = vectorToAngles(enemyEyePos - GetEyePos());
-	v_angle = dirAim;
+	_LerpTurnToYaw(vecWishAngle[1]);
 }
 
 void
 ncMonster::AttackThink(void)
 {
-	if (InSequence()) {
+	if (InScriptedSequence()) {
 		return;
 	}
 
@@ -903,21 +989,13 @@ ncMonster::AttackThink(void)
 
 	/* something is blocking us */
 	if (trace_fraction < 1.0f) {
-		SetState(MONSTER_ALERT);
-
-		/* FIXME: This is unreliable, but unlikely that a player ever is here */
-		if (m_vecLKPos != [0,0,0]) {
-			RouteClear();
-			RouteToPosition(m_vecLKPos);
-			m_flSequenceSpeed = 140;
-			m_vecLKPos = [0,0,0];
-		}
+		m_bCanAttack = false;
 	} else {
-		SetState(MONSTER_AIMING);
-
+		m_bCanAttack = true;
 		/* make sure we remember the last known position. */
 		m_vecLKPos = m_eEnemy.origin;
-		angles = vectorToAngles(m_vecLKPos - origin);
+		vector wishAngles = vectorToAngles(m_vecLKPos - origin);
+		ideal_yaw = wishAngles[1];
 	}
 
 	/* the state may have switched */
@@ -925,19 +1003,15 @@ ncMonster::AttackThink(void)
 		return;
 	}
 
-	if (GetState() == MONSTER_AIMING) {
-		int m;
-
-		if (MeleeCondition() == TRUE)
-			m = AttackMelee();
-		else {
-			m = AttackRanged();
-
-			/* if we don't have the desired attack mode, walk */
-			if (m == FALSE)
-				SetState(MONSTER_CHASING);
+	if (m_bCanAttack == true) {
+		if (MeleeCondition() == TRUE) {
+			MessageSchedule("CanMeleeAttack1");
+		} else {
+			MessageSchedule("CanRangedAttack1");
 		}
 	}
+
+	m_flAttackThink = time + 0.25f;
 }
 
 int
@@ -947,7 +1021,7 @@ ncMonster::AttackMelee(void)
 	float actMelee1 = GetDefAct("meleeAttack1");
 	float actMelee2 = GetDefAct("meleeAttack2");
 
-	if (!m_defMelee)
+	if (STRING_SET(m_defMelee))
 		return (false);
 
 	_m_flMeleeDelay = GetSubDefFloat(m_defMelee, "delay");
@@ -987,7 +1061,7 @@ ncMonster::AttackMelee(void)
 			ScheduleThink(AttackMelee_AttackFlail, _m_flMeleeDelay + meleeWait);
 	}
 
-	AnimReset();
+	AnimationRewind();
 
 	if (random() < 0.5 || actMelee2 == -1)
 		AnimPlay(actMelee1);
@@ -1114,7 +1188,7 @@ ncMonster::AttackRanged(void)
 			return 1;
 		}
 
-		AnimReset();
+		AnimationRewind();
 		AnimPlay(actRanged);
 
 		/* if we have no spawnclass, it must be a hitscan weapon */
@@ -1147,13 +1221,13 @@ ncMonster::AttackRanged(void)
 		return 1;
 	} else if (throwAnyway == false && inRanged2Range && trace_ent == m_eEnemy) {
 		float actRangedSpecial = GetDefAct("rangeAttack2");
-		AnimReset();
+		AnimationRewind();
 		AnimPlay(actRangedSpecial);
 		ScheduleThink(AttackRanged_RangedSpecial, 0.0f);
 		m_flAttackThink = time + frameduration(modelindex, actRangedSpecial);
 		return 1;
 	} else if (inSpecial1Range) {
-		AnimReset();
+		AnimationRewind();
 		AnimPlay(GetDefAct("specialAttack1"));
 		ScheduleThink(AttackRanged_Throw, m_flProjectileDelay);
 
@@ -1164,7 +1238,7 @@ ncMonster::AttackRanged(void)
 
 		return 1;
 	} else if (inSpecial2Range) {
-		AnimReset();
+		AnimationRewind();
 		AnimPlay(GetDefAct("specialAttack2"));
 		ScheduleThink(AttackRanged_Throw, m_flProjectileDelay);
 
@@ -1207,7 +1281,7 @@ ncMonster::AttackHolster(void)
 }
 
 void
-ncMonster::FreeState(void)
+ncMonster::ScriptedSequenceEnded(void)
 {
 	string to_trigger;
 	m_flSequenceEnd = 0;
@@ -1245,9 +1319,14 @@ ncMonster::FreeState(void)
 	to_trigger = m_strRouteEnded;
 	m_strRouteEnded = __NULL__;
 	m_ssLast = __NULL__;
+	m_flAnimTime = 0.0f;
+	m_flStopTime = 0.0f;
+	RouteClear();
 
 	/* trigger when required */
 	if (STRING_SET(to_trigger)) {
+		ncMonsterLog("Sequence over (hidden: %i, triggering: %S)", m_iSequenceRemove, to_trigger);
+
 		for (entity f = world; (f = find(f, ::targetname, to_trigger));) {
 			ncEntity trigger = (ncEntity)f;
 			if (trigger.Trigger != __NULL__) {
@@ -1259,12 +1338,10 @@ ncMonster::FreeState(void)
 	if (m_iSequenceRemove) {
 		Hide();
 	}
-
-	ncMonsterLog("Sequence over (hidden: %i, triggering: %S)", m_iSequenceRemove, to_trigger);
 }
 
 void
-ncMonster::FreeStateMoved(void)
+ncMonster::ScriptedSequenceEnded_Moved(void)
 {
 	vector new_origin;
 	new_origin = gettaginfo(this, 1);
@@ -1275,11 +1352,11 @@ ncMonster::FreeStateMoved(void)
 		DropToFloor();
 	}
 
-	FreeState();
+	ScriptedSequenceEnded();
 }
 
 void
-ncMonster::FreeStateDead(void)
+ncMonster::ScriptedSequenceEnded_Dead(void)
 {
 	vector new_origin;
 
@@ -1294,12 +1371,16 @@ ncMonster::FreeStateDead(void)
 	RemoveFlags(FL_MONSTER);
 	SetSolid(SOLID_CORPSE);
 	SetState(MONSTER_DEAD);
-	FreeState();
+	ScriptedSequenceEnded();
 }
 
 void
 ncMonster::RouteEnded(void)
 {
+	m_flAnimTime = 0.0f;
+	ClearVelocity();
+	AnimationUpdate();
+
 	super::RouteEnded();
 
 	if (GetSequenceState() != SEQUENCESTATE_ACTIVE)
@@ -1309,13 +1390,13 @@ ncMonster::RouteEnded(void)
 	if (m_flSequenceEnd) {
 		float duration = frameduration(modelindex, m_flSequenceEnd);
 		m_iSequenceState = SEQUENCESTATE_ENDING;
-		think = (m_iSequenceFlags & SSFL_NOSCRIPTMOVE) ? FreeState : FreeStateMoved;
+		think = (m_iSequenceFlags & SSFL_NOSCRIPTMOVE) ? ScriptedSequenceEnded : ScriptedSequenceEnded_Moved;
 		nextthink = time + duration;
 		ncMonsterLog("%s overriding anim for %f seconds (modelindex %d, frame %d)", \
 			this.targetname, duration, modelindex, m_flSequenceEnd);
 	} else {
 		/* we still need to trigger targets */
-		think = (m_iSequenceFlags & SSFL_NOSCRIPTMOVE) ? FreeState : FreeStateMoved;
+		think = (m_iSequenceFlags & SSFL_NOSCRIPTMOVE) ? ScriptedSequenceEnded : ScriptedSequenceEnded_Moved;
 		nextthink = time;
 		ncMonsterLog("%s has no anim, finished sequence", \
 			this.targetname);
@@ -1329,58 +1410,11 @@ ncMonster::WalkRoute(void)
 	float distToEnemy = 0.0f;
 	vector wishAngle = input_angles;
 	bool followRoute = false;
-	bool aimAtEnemy = false;
 	bool followEnemy = false;
 	bool stopMovement = false;
+	input_movevalues = g_vec_null;
 
-	if (m_eEnemy) {
-		zDifference = fabs(m_eEnemy.origin[2] - origin[2]);
-		distToEnemy = distance(m_eEnemy.origin, GetOrigin());
-	}
-
-	/* in range for attacks?... */
-	if (GetState() == MONSTER_AIMING) {
-		bool inSpecial1Range = (distToEnemy < m_flSpecial1Range && m_flSpecial1Range != -1.0) ? true : false;
-		bool inSpecial2Range = (distToEnemy < m_flSpecial2Range && m_flSpecial2Range != -1.0) ? true : false;
-		bool inRanged1Range = (distToEnemy < m_flRanged1Range && m_flRanged1Range != -1.0) ? true : false;
-		bool inRanged2Range = (distToEnemy < m_flRanged2Range && m_flRanged2Range != -1.0) ? true : false;
-
-		if (inSpecial1Range || inSpecial2Range || inRanged1Range || inRanged2Range) {
-			aimAtEnemy = true;
-			stopMovement = true;
-		}
-	}
-
-	/* are we on the same plane as the player? if not, walk-route there. */
-	if (zDifference > 32.0f) {
-		followRoute = true;
-		aimAtEnemy = false;
-	} else if (IsOnRoute()) { /* else, if we're supposed to be following a route, do it. */
-		followRoute = true;
-	} else if (GetState() == MONSTER_CHASING && m_eEnemy) {
-		followEnemy = true;
-		aimAtEnemy = true;
-	} else if (GetState() == MONSTER_AIMING && m_eEnemy) {
-		followEnemy = true;
-		aimAtEnemy = true;
-		stopMovement = true;
-	}
-
-	if (followRoute && m_iNodes < 0) {
-		RouteToPosition(m_eEnemy.origin);
-	}
-
-	if (aimAtEnemy) {
-		wishAngle = vectorToAngles(m_eEnemy.origin - origin);
-		wishAngle[0] = wishAngle[2] = 0;
-	} else if (followRoute) {
-		wishAngle = GetRouteDirection();
-		wishAngle[0] = wishAngle[2] = 0;
-	} else {
-		wishAngle = [0, angles[1], 0];
-	}
-
-	if (m_flStopTime > time) {
+	if (m_flStopTime > GetTime() || m_bTurning) {
 		input_movevalues = g_vec_null;
 
 		if (movetype == MOVETYPE_FLY) {
@@ -1389,69 +1423,62 @@ ncMonster::WalkRoute(void)
 		}
 
 		/* yaw interpolation */
-		_LerpTurnToYaw(wishAngle);
+		_LerpTurnToYaw(ideal_yaw);
 		return;
 	}
 
-	if (stopMovement == false) {
-		if (followEnemy) {
-			input_movevalues = [GetChaseSpeed(), 0, 0];
-		} else if (followRoute) {
-			if (m_flSequenceSpeed <= 0) {
-				if (m_eEnemy)
-					m_flSequenceSpeed = GetChaseSpeed();
-				else
-					m_flSequenceSpeed = GetWalkSpeed();
-			}
+	if (m_iNodes > 0i) {
+		wishAngle = GetRouteDirection();
+		ideal_yaw = wishAngle[1];
 
-			input_movevalues = GetRouteMovevalues() * m_flSequenceSpeed;
+		if (m_flSequenceSpeed <= 0.0f) {
+			if (m_eEnemy)
+				m_flSequenceSpeed = GetChaseSpeed();
+			else
+				m_flSequenceSpeed = GetWalkSpeed();
+		}
 
-			//printf("Move values: %v\n", input_movevalues);
+		input_movevalues = GetRouteMovevalues() * m_flSequenceSpeed;
 
-			/* is something in our way? */
-			tracebox(origin, [-16, -16, -16], [16, 16, 16], origin + anglesToForward(wishAngle) * 256, MOVE_NORMAL, this);
+		//printf("Move values: %v\n", input_movevalues);
 
-			/* indeed it is */
-			if (trace_fraction < 1.0f) {
-				vector testOrg = origin + (anglesToRight(wishAngle) * 32) + anglesToForward(wishAngle) * 128;
+		/* is something in our way? */
+		tracebox(origin, [-16, -16, -16], [16, 16, 16], origin + anglesToForward(wishAngle) * 256, MOVE_NORMAL, this);
+
+		/* indeed it is */
+		if (trace_fraction < 1.0f) {
+			vector testOrg = origin + (anglesToRight(wishAngle) * 32) + anglesToForward(wishAngle) * 128;
+			testOrg[2] += mins[2] + 18.0f; /* test at feet level */
+
+			traceline(origin, testOrg, MOVE_NORMAL, this);
+
+			/* is space free to the right? */
+			if (trace_fraction == 1.0) {
+				input_movevalues[1] = m_flSequenceSpeed * 0.25f;
+			} else {
+
+				testOrg = origin - (anglesToRight(wishAngle) * 32) + anglesToForward(wishAngle) * 128;
 				testOrg[2] += mins[2] + 18.0f; /* test at feet level */
 
 				traceline(origin, testOrg, MOVE_NORMAL, this);
 
-				/* is space free to the right? */
-				if (trace_fraction == 1.0) {
-					input_movevalues[1] = m_flSequenceSpeed * 0.25f;
-				} else {
-
-					testOrg = origin - (anglesToRight(wishAngle) * 32) + anglesToForward(wishAngle) * 128;
-					testOrg[2] += mins[2] + 18.0f; /* test at feet level */
-
-					traceline(origin, testOrg, MOVE_NORMAL, this);
-
-					/* is space free to the left? */
-					if (trace_fraction == 1.0)
-						input_movevalues[1] = -m_flSequenceSpeed * 0.25f;
-				}
+				/* is space free to the left? */
+				if (trace_fraction == 1.0)
+					input_movevalues[1] = -m_flSequenceSpeed * 0.25f;
 			}
-		} else {
-			if (movetype == MOVETYPE_FLY) {
-				input_movevalues[2] = ((m_eEnemy.origin[2] + m_flyOffset) - origin[2]);
-				input_movevalues[2] += sin(time) * 32.0f;
-			}
-			return;
 		}
+
+	} else {
+		if (movetype == MOVETYPE_FLY) {
+			input_movevalues[2] = ((m_eEnemy.origin[2] + m_flyOffset) - origin[2]);
+			input_movevalues[2] += sin(time) * 32.0f;
+		}
+			return;
 	}
 
 	if (movetype == MOVETYPE_FLY) {
 		input_movevalues[2] = ((m_eEnemy.origin[2] + m_flyOffset) - origin[2]);
 		input_movevalues[2] += sin(time) * 32.0f;
-	}
-
-	/* yaw interpolation */
-	if (aimAtEnemy) {
-		_LerpTurnToEnemy();
-	} else {
-		_LerpTurnToYaw(wishAngle);
 	}
 }
 
@@ -1461,63 +1488,76 @@ ncMonster::AnimationUpdate(void)
 	int fr = 0;
 	int act = 0;
 
-	if (GetState() == MONSTER_DEAD)
+	if (GetState() == MONSTER_DEAD) {
 		return;
+	}
 
-	if (GetState() == MONSTER_AIMING)
+	if (GetState() == MONSTER_AIMING) {
 		return;
+	}
 
-	if (m_bTurning)
+	if (m_bTurning) {
 		return;
+	}
 
-	float spvel = vlen(velocity);
+	float spvel = length(velocity);
 	float midspeed = GetWalkSpeed() + ((GetRunSpeed() -  GetWalkSpeed()) * 0.5f);
 
+	if (m_flStopTime > GetTime()) {
+		spvel = 0.0f;
+	}
+
 	if (spvel < 5) {
-		if (m_actIdle == -1)
+		if (m_actIdle == -1) {
 			m_actIdle = AnimIdle();
+		}
 
 		fr = m_actIdle;
 
 		if (m_iMoveState != MOVESTATE_IDLE)
 			m_flAnimTime = 0.0f;
 
-		if (fr == -1)
+		if (fr == -1) {
 			act = GetDefAct("idle");
+		}
 
 
 		m_iMoveState = MOVESTATE_IDLE;
 	} else if (spvel < midspeed) {
 		fr = AnimWalk();
 
-		if (m_iMoveState != MOVESTATE_WALK)
+		if (m_iMoveState != MOVESTATE_WALK) {
 				m_flAnimTime = 0.0f;
+		}
 
-		if (fr == -1)
+		if (fr == -1) {
 			act = GetDefAct("walk");
-		
+		}
 
 		m_iMoveState = MOVESTATE_WALK;
 	} else {
 		fr = AnimRun();
 
-		if (m_iMoveState != MOVESTATE_RUN)
+		if (m_iMoveState != MOVESTATE_RUN) {
 			m_flAnimTime = 0.0f;
+		}
 
-		if (fr == -1)
+		if (fr == -1) {
 			act = GetDefAct("run");
+		}
 
 		m_iMoveState = MOVESTATE_RUN;
 	}
 
-	if (m_flAnimTime > 0.0f) {
+	if (InForcedAnimation() == true) {
 		return;
 	}
 
-	if (fr == -1)
+	if (fr == -1) {
 		AnimPlay(act);
-	else
+	} else {
 		SetFrame(fr);
+	}
 }
 
 /* for an ncMonster, health doesn't matter that much, as we could be a corpse */
@@ -1559,8 +1599,9 @@ ncMonster::StateChanged(monsterState_t oldState, monsterState_t newState)
 void
 ncMonster::SetState(monsterState_t newState)
 {
-	if (newState == m_iMState)
+	if (newState == m_iMState) {
 		return;
+	}
 
 	m_iOldMState = m_iMState;
 	m_iMState = newState;
@@ -1580,7 +1621,7 @@ ncMonster::GetSequenceState(void)
 }
 
 bool
-ncMonster::InSequence(void)
+ncMonster::InScriptedSequence(void)
 {
 	return (GetSequenceState() == SEQUENCESTATE_NONE) ? false : true;
 }
@@ -1588,7 +1629,14 @@ ncMonster::InSequence(void)
 void
 ncMonster::RunAI(void)
 {
-	IdleNoise();
+	if (GetMovetype() == MOVETYPE_NONE) {
+		return;
+	}
+
+	if (InScriptedSequence() == false) {
+		ScheduleThink();
+	}
+
 	SeeThink();
 	AttackThink();
 }
@@ -1604,12 +1652,14 @@ ncMonster::Physics(void)
 	m_bTurning = false;
 
 	if (autocvar_ai_enable == false) {
+		HandleThink();
 		return;
 	}
 
 	/* check if we're supposed to be awake */
 	if (m_pvsSleep == false) {
 		if (SharesPVSWithPlayer() == false) {
+			HandleThink();
 			return;
 		}
 
@@ -1626,14 +1676,15 @@ ncMonster::Physics(void)
 		m_flAnimTime = time + 999.0f;
 		frame = m_flForceSequence;
 		m_iSequenceState = SEQUENCESTATE_IDLE;
+		HandleThink();
 		return;
 	}
 
 	/* HACK!!! */
 	if (!IsAlive()) {
-
 		processmodelevents(modelindex, frame, m_flBaseTime,
 			frame1time, HandleAnimEvent);
+		HandleThink();
 		return;
 	}
 
@@ -1648,35 +1699,28 @@ ncMonster::Physics(void)
 		SetState(MONSTER_IDLE);
 	}
 
+	if (ShouldTurn()) {
+		_LerpTurnToYaw(ideal_yaw);
+	}
 
 	/* we're ending a scripted sequence, so play its animation */
 	if (GetSequenceState() == SEQUENCESTATE_ENDING) {
-		_LerpTurnToYaw(m_vecSequenceAngle);
+		_LerpTurnToYaw(m_vecSequenceAngle[1]);
 
 		if (m_bTurning == false)
 			SetFrame(m_flSequenceEnd);
 	} else {
 		/* if still alive... */
 		if (IsAlive()) {
-			/* only run AI functions when not in a scripted sequence */
-			if (InSequence() == false) {
-				RunAI();
-			}
-
+			RunAI();
 			AnimationUpdate();
 		}
 
-		/* suppress movement when playing an animation outside
+		/* FIXME: suppress movement when playing an animation outside
 		   a scripted sequence */
-		if (InSequence() == true) {
-			input_movevalues = [0,0,0];
-		} else if (m_usesNav) {
-			CheckRoute();
+		if (m_usesNav) {
+			CheckRouteProgression();
 			WalkRoute();
-		} else {
-			if (IsPerforming() == false) {
-				SelectNewSchedule();
-			}
 		}
 
 		hitcontentsmaski = CONTENTBITS_MONSTER;
@@ -1702,14 +1746,7 @@ ncMonster::Physics(void)
 
 	processmodelevents(modelindex, frame, m_flBaseTime,
 		frame1time, HandleAnimEvent);
-
-	/* support for think/nextthink */
-	if (think && nextthink > 0.0f) {
-		if (nextthink < time) {
-			nextthink = 0.0f;
-			think();
-		}
-	}
+	HandleThink();
 }
 
 void
@@ -1728,8 +1765,9 @@ ncMonster::Touch(entity eToucher)
 		}
 	}
 
-	if (movetype != MOVETYPE_WALK)
+	if (movetype != MOVETYPE_WALK) {
 		return;
+	}
 
 	if (autocvar(pm_pushMonsters, 0))
 	if (eToucher.movetype == MOVETYPE_WALK) {
@@ -1766,6 +1804,17 @@ ncMonster::HasBeenHit(void)
 }
 
 void
+ncMonster::RouteClear(void)
+{
+	if (m_activeSchedule && m_activeSchedule.ProgressOnMovement()) {
+		m_activeSchedule.m_bProgressOnMovement = false;
+		m_activeSchedule.Advance();
+	}
+
+	super::RouteClear();
+}
+
+void
 ncMonster::Pain(entity inflictor, entity attacker, int damage, vector dir,  vector absImpactPos, int hitBody)
 {
 	float actSmallFlinch = GetDefAct("smallFlinch");
@@ -1773,16 +1822,38 @@ ncMonster::Pain(entity inflictor, entity attacker, int damage, vector dir,  vect
 	float actTwitch = GetDefAct("twitch");
 	float actPain = -1;
 	float baseHealth = GetSpawnFloat("health");
+	float halfHealth = (baseHealth / 2);
+	float oldHealth = GetHealth() + damage; /* FIXME: unreliable, damage points may have affected armor. */
 
 	/* dead things tell nuthin */
 	if (IsAlive() == false) {
 		return;
 	}
 
-	if (GetHealth() <= (baseHealth / 2)) {
+	if (attacker.classname == "player") {
+		if (STRING_SET(m_outputOnDamagedByPlayer)) {
+			UseOutput(attacker, m_outputOnDamagedByPlayer);
+		}
+	} else {
+		if (STRING_SET(m_outputOnDamaged)) {
+			UseOutput(attacker, m_outputOnDamaged);
+		}
+	}
+
+	MessageSchedule("Damage");
+
+	if (GetHealth() <= halfHealth) {
+		MessageSchedule("HeavyDamage");
+	} else {
+		MessageSchedule("LightDamage");
+	}
+
+	if (GetHealth() <= halfHealth && oldHealth > halfHealth) {
 		if (IsFriend(attacker.m_iAlliance) == true) {
 			m_iAlliance = MAL_ROGUE;
 		}
+
+		UseOutput(attacker, m_outputOnHalfHealth);
 	}
 
 	if (IsFriend(attacker.m_iAlliance) == true) {
@@ -1792,6 +1863,7 @@ ncMonster::Pain(entity inflictor, entity attacker, int damage, vector dir,  vect
 	/* if don't have an enemy, set one; else make it random */
 	if (!m_eEnemy || (random() < 0.5)) {
 		m_eEnemy = m_eLookAt = attacker;
+		MessageSchedule("NewEnemy");
 	}
 
 	/* an alert monster will take a while to calm back down */
@@ -1845,8 +1917,8 @@ ncMonster::Pain(entity inflictor, entity attacker, int damage, vector dir,  vect
 		return;
 	}
 
-	m_flStopTime = time + frameduration(modelindex, actPain);
 	AnimPlay(actPain);
+
 	StartSoundDef(m_sndPain, CHAN_VOICE, true);
 	HasBeenHit();
 }
@@ -1944,6 +2016,7 @@ ncMonster::Death(entity inflictor, entity attacker, int damage, vector dir, vect
 	}
 
 	StartSoundDef(m_sndDeath, CHAN_VOICE, true);
+	UseOutput(attacker, m_outputOnDeath);
 	HasBeenKilled();
 	g_grMode.NPCDeath(this, (ncActor)inflictor, (ncActor)attacker);
 
@@ -1995,6 +2068,19 @@ ncMonster::Spawned(void)
 	}
 
 	flags = FL_MONSTER;
+
+	CREATE_OUTPUT(m_outputOnDamaged)
+	CREATE_OUTPUT(m_outputOnDeath)
+	CREATE_OUTPUT(m_outputOnHalfHealth)
+	CREATE_OUTPUT(m_outputOnHearPlayer)
+	CREATE_OUTPUT(m_outputOnFoundEnemy)
+	CREATE_OUTPUT(m_outputOnLostEnemy)
+	CREATE_OUTPUT(m_outputOnLostEnemyLOS)
+	CREATE_OUTPUT(m_outputOnFoundPlayer)
+	CREATE_OUTPUT(m_outputOnLostPlayer)
+	CREATE_OUTPUT(m_outputOnLostPlayerLOS)
+	CREATE_OUTPUT(m_outputOnDamagedByPlayer)
+	CREATE_OUTPUT(m_outputOnGreetPlayer)
 }
 
 void
@@ -2002,6 +2088,9 @@ ncMonster::Respawn(void)
 {
 	super::Respawn();
 
+	m_bMetPlayer = false;
+	m_activeSchedule = __NULL__;
+	m_mindset = "";
 	RestoreAngles();
 	v_angle = fixAngle(GetAngles());
 	m_vecSequenceAngle = GetAngles();
@@ -2115,22 +2204,148 @@ ncMonster::Input( entity entityActivator, string inputName, string dataField )
 	case "Wait":
 		float waitTime = stof(dataField);
 		m_flStopTime = GetTime() + waitTime;
-		m_activeSchedule.AdvanceLater(waitTime);
+
+		if (m_activeSchedule) {
+			m_activeSchedule.AdvanceLater(waitTime);
+		}
 		break;
 	case "WaitRandom":
-		float waitTime = stof(dataField);
+		float maxRandomTime = stof(dataField);
+		float randomTime;
 
 		/* if not specified... make something up */
 		if (waitTime > 0.0f) {
-			m_flStopTime = GetTime() + random(0.0f, waitTime);
+			randomTime = random(0.0f, maxRandomTime);
 		} else {
-			m_flStopTime = GetTime() + random(0.0f, 1.0f);
+			randomTime = random(0.0f, 1.0f);
 		}
 
-		m_activeSchedule.AdvanceLater(waitTime);
+		m_flStopTime = GetTime() + randomTime;
+
+		if (m_activeSchedule) {
+			m_activeSchedule.AdvanceLater(randomTime);
+		}
 		break;
 	case "WaitIndefinitely":
 		m_flStopTime = (60 * 60) * 24; /* 24 hours is enough... */
+
+		if (m_activeSchedule) {
+			m_activeSchedule.AdvanceLater(m_flStopTime);
+		}
+
+		m_flStopTime += GetTime();
+		break;
+	case "PlayActivity":
+		if (STRING_SET(dataField)) {
+			AnimPlay(GetDefAct(dataField));
+
+			if (m_activeSchedule) {
+				float waitTime = frameduration(modelindex, frame);
+				m_activeSchedule.AdvanceLater(waitTime);
+			}
+		}
+		break;
+	case "PlaySequence":
+		if (STRING_SET(dataField)) {
+			AnimationRewind();
+			ClearVelocity();
+			m_flSequenceSpeed = 0.0f;
+			AnimPlay(frameforname(modelindex, dataField));
+
+			if (m_activeSchedule) {
+				float waitTime = frameduration(modelindex, frame);
+				m_activeSchedule.AdvanceLater(waitTime);
+			}
+
+		} else {
+			NSError("'PlaySequence' without animation sequence, blame %S (%d)", entityActivator, num_for_edict(entityActivator));
+		}
+		break;
+	case "FindCoverFromEnemy":
+		vector coverPos = Nodes_FindCoverFromEnemy(this);
+
+		if (vlen(coverPos) > 0.0f) {
+			RouteToPosition(coverPos);
+		} else {
+			CancelSchedule();
+		}
+		break;
+	case "SetSequenceMovementSpeed":
+		m_flSequenceSpeed = stof(dataField);
+		break;
+	case "SetDesiredSchedule":
+		m_mindset = dataField;
+		break;
+	case "AlertNearbyToSchedule":
+		m_mindset = dataField;
+		AlertNearbyToSchedule(dataField);
+		break;
+	case "WalkToTarget":
+		m_flSequenceSpeed = GetWalkSpeed();
+		RouteToPosition(m_activeSchedule.GetTarget().origin);
+		break;
+	case "RunToTarget":
+		m_flSequenceSpeed = GetRunSpeed();
+		RouteToPosition(m_activeSchedule.GetTarget().origin);
+		break;
+	case "CrouchToTarget":
+		m_flSequenceSpeed = GetDefFloat("speed_crouch");
+		RouteToPosition(m_activeSchedule.GetTarget().origin);
+		break;
+	case "ProneToTarget":
+		m_flSequenceSpeed = GetDefFloat("speed_prone");
+		RouteToPosition(m_activeSchedule.GetTarget().origin);
+		break;
+	case "WaitForMovement":
+		if (m_iNodes > 0i && m_activeSchedule) {
+			m_activeSchedule.m_bProgressOnMovement = true;
+			m_activeSchedule.ReleaseThink();
+		}
+		break;
+	case "SetFailSchedule":
+		if (m_activeSchedule) {
+			m_activeSchedule.SetFailSchedule(dataField);
+		}
+		break;
+	case "Remember":
+		printf("Rembering %S\n", dataField);
+		/* TODO: add it to a decl */
+		break;
+	case "WaitPVS":
+		m_pvsSleep = true;
+		break;
+	case "StopMovement":
+		ClearVelocity();
+		ideal_yaw = angles[1];
+		break;
+	case "TurnLeft":
+		ideal_yaw += stof(dataField);
+		break;
+	case "TurnRight":
+		ideal_yaw -= stof(dataField);
+		break;
+	case "TurnToIdealPosition":
+		ideal_yaw = random(-179,180);
+		break;
+	case "TurnToEnemy":
+		vector turnTo = vectoangles(m_eEnemy.origin - origin);
+		ideal_yaw = turnTo[1];
+		break;
+	case "AttackMelee1":
+		AnimationRewind();
+		AnimPlay(GetDefAct("meleeAttack1"));
+		break;
+	case "AttackMelee2":
+		AnimationRewind();
+		AnimPlay(GetDefAct("meleeAttack2"));
+		break;
+	case "AttackRanged1":
+		AnimationRewind();
+		AnimPlay(GetDefAct("rangeAttack1"));
+		break;
+	case "AttackRanged2":
+		AnimationRewind();
+		AnimPlay(GetDefAct("rangeAttack2"));
 		break;
 	default:
 		super::Input(entityActivator, inputName, dataField);
@@ -2156,6 +2371,42 @@ void
 ncMonster::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
+	case "OnDamaged":
+		m_outputOnDamaged = PrepareOutput(m_outputOnDamaged, strValue);
+		break;
+	case "OnDeath":
+		m_outputOnDeath = PrepareOutput(m_outputOnDeath, strValue);
+		break;
+	case "OnHalfHealth":
+		m_outputOnHalfHealth = PrepareOutput(m_outputOnHalfHealth, strValue);
+		break;
+	case "OnHearPlayer":
+		m_outputOnHearPlayer = PrepareOutput(m_outputOnHearPlayer, strValue);
+		break;
+	case "OnFoundEnemy":
+		m_outputOnFoundEnemy = PrepareOutput(m_outputOnFoundEnemy, strValue);
+		break;
+	case "OnLostEnemy":
+		m_outputOnLostEnemy = PrepareOutput(m_outputOnLostEnemy, strValue);
+		break;
+	case "OnLostEnemyLOS":
+		m_outputOnLostEnemyLOS = PrepareOutput(m_outputOnLostEnemyLOS, strValue);
+		break;
+	case "OnFoundPlayer":
+		m_outputOnFoundPlayer = PrepareOutput(m_outputOnFoundPlayer, strValue);
+		break;
+	case "OnLostPlayer":
+		m_outputOnLostPlayer = PrepareOutput(m_outputOnLostPlayer, strValue);
+		break;
+	case "OnLostPlayerLOS":
+		m_outputOnLostPlayerLOS = PrepareOutput(m_outputOnLostPlayerLOS, strValue);
+		break;
+	case "OnDamagedByPlayer":
+		m_outputOnDamagedByPlayer = PrepareOutput(m_outputOnDamagedByPlayer, strValue);
+		break;
+	case "OnGreetPlayer":
+		m_outputOnGreetPlayer = PrepareOutput(m_outputOnGreetPlayer, strValue);
+		break;
 	/* The legacy GoldSrc trigger condition system */
 	case "TriggerCondition":
 		m_iTriggerCondition = ReadInt(strValue);
@@ -2555,6 +2806,7 @@ ncMonster_AlertEnemyAlliance(vector pos, float radius, int alliance)
 		return;
 	}
 
+#if 0
 	if (autocvar_ai_debugAlerts)
 		NSLog("AI alert from %v with radius %f and alliance %i", pos, radius, alliance);
 
@@ -2602,7 +2854,7 @@ ncMonster_AlertEnemyAlliance(vector pos, float radius, int alliance)
 		f.m_flSequenceSpeed = f.GetWalkSpeed();
 		f.AlertNoise();
 	}
-
+#endif
 	g_monsteralert_timer = time + 0.5f;
 }
 

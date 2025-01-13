@@ -314,6 +314,18 @@ ncTalkMonster::Speak(string sentence)
 }
 
 void
+ncTalkMonster::Input(entity activatorEntity, string inputName, string dataField)
+{
+	switch (inputName) {
+	case "SpeakSentence":
+		Sentence(dataField);
+		break;
+	default:
+		super::Input(activatorEntity, inputName, dataField);
+	}
+}
+
+void
 ncTalkMonster::SeenPlayer(ncActor thePlayer)
 {
 	if (m_iSequenceState != SEQUENCESTATE_NONE) {
@@ -568,7 +580,7 @@ ncTalkMonster::FollowPlayer(void)
 			input_angles[0] = 0;
 			input_angles[1] = fixAngleDelta(input_angles[1]);
 			input_angles[2] = 0;
-	_LerpTurnToYaw(input_angles);
+	_LerpTurnToYaw(input_angles[1]);
 
 	/* for best results, we want to ignore the Z plane
 	   this avoids the problem of a follower spinning 
@@ -635,7 +647,7 @@ ncTalkMonster::FollowPlayer(void)
 				input_angles[0] = 0;
 				input_angles[1] = fixAngleDelta(input_angles[1]);
 				input_angles[2] = 0;
-				_LerpTurnToYaw(input_angles);
+				_LerpTurnToYaw(input_angles[1]);
 			}
 		} else {
 			m_vecLastUserPos = vecParent;
@@ -719,16 +731,17 @@ ncTalkMonster::RunAI(void)
 		return;
 	}
 
+	if (InScriptedSequence() == false) {
+		ScheduleThink();
+	}
+
 	SeeThink();
 	AttackThink();
-	FollowChain();
 
 #if 0
 	if (m_eFollowing != world && m_iNodes <= 0) {
 		m_eLookAt = m_eFollowing;
 		FollowPlayer();
-	} else if (m_iFlags & MONSTER_FEAR) {
-		PanicFrame();
 	} else {
 		if (random() < 0.5) {
 			TalkPlayerAsk();
@@ -1187,7 +1200,7 @@ ncTalkMonster_ParseSentence(void)
 	ent = findfloat(world, entnum, e);
 
 	if (ent) {
-		if (ent.classname != "speaker" && ent.classname != "ncTalkMonster" && ent.classname != "ambient_generic") {
+		if (ent.classname != "speaker" && ent.declclass != "ncTalkMonster" && ent.classname != "ncTalkMonster" && ent.classname != "ambient_generic") {
 			NSError("Entity %d not a ncTalkMonster!", e);
 		} else {
 			targ = (ncTalkMonster)ent;

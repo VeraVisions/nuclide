@@ -177,5 +177,14 @@ Spawn_TeleportToSpawn(entity targetEnt)
 		targetEnt.origin = spawnPoint.origin;
 		targetEnt.angles = spawnPoint.angles;
 		setorigin_safe(targetEnt, targetEnt.origin);
+		return;
+	}
+
+	spawnPoint = Spawn_SelectRandom("info_player_start");
+
+	if (spawnPoint) {
+		targetEnt.origin = spawnPoint.origin;
+		targetEnt.angles = spawnPoint.angles;
+		setorigin_safe(targetEnt, targetEnt.origin);
 	}
 }

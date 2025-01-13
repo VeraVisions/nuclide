@@ -16,6 +16,9 @@
 
 #include "../common/defs.h"
 
+.float w_reload_next;
+.float w_attack_next;
+
 /* networking helpers */
 #define NETWORKED_INT(x) int x; int x ##_net;
 #define NETWORKED_FLOAT(x) float x; float x ##_net;
@@ -381,22 +384,6 @@ traceline(vector v1, vector v2, float flags, entity ent)
 	// TODO
 #endif
 	prior(v1, v2, flags, ent);
-}
-
-void
-setorigin_safe(entity target, vector testorg)
-{
-	for (int i = 0; i < 16; i++) {
-		tracebox(testorg, target.mins, target.maxs, testorg, MOVE_NORMAL, target);
-
-		if (!trace_startsolid) {
-			break;
-		}
-
-		testorg[2] += 1.0;
-	}
-
-	setorigin(target, testorg);
 }
 
 #ifdef SERVER

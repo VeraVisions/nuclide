@@ -81,8 +81,29 @@ vector Nodes_FindCoverFromEnemyFarNode(ncActor targetEnemy, vector nodePosition)
 
 /** Returns the position of a spot that'll provide cover from the specified enemy.
 
+@param traceEntity The entity which will be testing for collisions.
 @param targetOrigin The spot to hide from.
 @return Absolute position of a valid cover spot. */
-vector Nodes_FindCoverFromPosition(vector targetOrigin);
+vector Nodes_FindCoverFromPosition(entity traceEntity, vector targetOrigin);
+
+
+/** Returns the position of a spot that is accessible within a specified position.
+
+@param traceEntity The entity which will be testing for collisions.
+@param targetOrigin The spot to be near.
+@param minRadius The mininum distance / search radius from the targetOrigin.
+@param maxRadius The maximum Radius in which we'll look for a free spot.
+@return Absolute position of a valid cover spot. */
+vector Nodes_FindEmptySpotNearPosition(entity traceEntity, vector position, float minRadius, float maxRadius);
+
+
+/** Returns the position of a spot that is far away within a specified position.
+
+@param traceEntity The entity which will be testing for collisions.
+@param targetOrigin The spot to be near.
+@param minRadius The mininum distance / search radius from the targetOrigin.
+@param maxRadius The maximum Radius in which we'll look for a free spot.
+@return Absolute position of a valid cover spot. */
+vector Nodes_FindEmptySpotAwayFromPosition(entity traceEntity, vector position, float minRadius, float maxRadius);
 
 /** @} */ // end of nav

@@ -248,6 +248,7 @@ public:
 
 #ifdef SERVER	
 	/* overrides */
+	virtual void DebugDraw(void);
 	virtual void Save(float);
 	virtual void Restore(string,string);
 	virtual void EvaluateEntity(void);
@@ -330,14 +331,16 @@ public:
 	nonvirtual bool IsValidEnemy(entity);
 	/** Returns TRUE if the monster is currently on route to a position. */
 	virtual bool IsOnRoute(void);
+	/** Override */
+	virtual void RouteClear(void);
 
 	/* sequences */
 	/** Internal use only. Called when a sequence is done. */
-	virtual void FreeState(void);
+	virtual void ScriptedSequenceEnded(void);
 	/** Internal use only. Called when a sequence is done. */
-	virtual void FreeStateMoved(void);
+	virtual void ScriptedSequenceEnded_Moved(void);
 	/** Internal use only. Called when a sequence is done and we leave a corpse. */
-	virtual void FreeStateDead(void);
+	virtual void ScriptedSequenceEnded_Dead(void);
 	/** Internal use only. Called when a movement route is done. */
 	virtual void RouteEnded(void);
 	/** Internal use only. Called every frame to progress through a route. */
@@ -354,7 +357,7 @@ public:
 	/** Returns the type of sequence they're currently in. */
 	nonvirtual int GetSequenceState(void);
 	/** Returns if they're currently in a scripted sequence. */
-	nonvirtual bool InSequence(void);
+	nonvirtual bool InScriptedSequence(void);
 
 	/* animation cycles */
 	/** DEPRECATED, Overridable: Called when we need to play a fresh idle framegroup. */
@@ -365,11 +368,12 @@ public:
 	virtual int AnimRun(void);
 	/** Call to play a single animation onto it, which cannot be interrupted by movement. */
 	virtual void AnimPlay(float);
-	/** Internal use only. Run every frame to update animation parameters. */
+	/** Internal use only. Run every frame to update movement animation parameters. */
 	virtual void AnimationUpdate(void);
 	/** Returns if we're currently in a forced animation sequence. */
-	nonvirtual bool InAnimation(void);
-	nonvirtual void AnimReset(void);
+	nonvirtual bool InForcedAnimation(void);
+	/** Starts the animation sequence from the beginning */
+	nonvirtual void AnimationRewind(void);
 
 	/* states */
 	/** Called whenever the state of this ncMonster changes. */
@@ -419,6 +423,21 @@ private:
 	vector base_mins;
 	vector base_maxs;
 	float base_health;
+
+	/* I/O */
+	string m_outputOnDamaged;
+	string m_outputOnDeath;
+	string m_outputOnHalfHealth;
+	string m_outputOnHearPlayer;
+	string m_outputOnFoundEnemy;
+	string m_outputOnLostEnemy;
+	string m_outputOnLostEnemyLOS;
+	string m_outputOnFoundPlayer;
+	string m_outputOnLostPlayer;
+	string m_outputOnLostPlayerLOS;
+	string m_outputOnDamagedByPlayer;
+	string m_outputOnGreetPlayer;
+	bool m_bMetPlayer;
 
 	/* sequences */
 	string m_strRouteEnded;
@@ -534,10 +553,10 @@ private:
 	bool m_usesNav;
 	bool m_fireFromHead;
 	bool m_pvsSleep;
+	bool m_bCanAttack;
 
-	nonvirtual void _LerpTurnToEnemy(void);
 	nonvirtual void _LerpTurnToPos(vector);
-	nonvirtual void _LerpTurnToYaw(vector);
+	nonvirtual void _LerpTurnToYaw(float);
 	virtual void _Alerted(void);
 	nonvirtual void _ChaseAfterSpawn(void);
 #endif

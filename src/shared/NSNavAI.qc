@@ -19,6 +19,7 @@ void
 ncActor::ncActor(void)
 {
 #ifdef SERVER
+	m_activeSchedule = __NULL__;
 	m_iNodes = 0i;
 	m_iCurNode = -1i;
 	m_pRoute = __NULL__;
@@ -343,9 +344,28 @@ ncActor::RestoreComplete(void)
 }
 
 void
+ncActor::ScheduleThink(void)
+{
+	if (IsPerforming() == false && m_iNodes <= 0i) {
+		SelectNewSchedule();
+	}
+}
+
+void
 ncActor::SelectNewSchedule(void)
 {
+	string schedule;
+	string currentMindset = "idle";
 
+	if (STRING_SET(m_mindset)) {
+		currentMindset = m_mindset;
+	}
+
+	schedule = GetDefString(strcat("mindset_", currentMindset));
+
+	if (STRING_SET(schedule)) {
+		PerformSchedule(schedule);
+	}
 }
 
 bool
@@ -354,14 +374,37 @@ ncActor::IsPerforming(void)
 	return (m_activeSchedule) ? (true) : (false);
 }
 
+bool
+ncActor::CancelSchedule(void)
+{
+	if (m_activeSchedule) {
+		m_activeSchedule.ReleaseThink();
+		m_activeSchedule.Cancel();
+		return (true);
+	}
+
+	return (false);
+}
+
+void
+ncActor::MessageSchedule(string messageString)
+{
+	if (m_activeSchedule) {
+		m_activeSchedule.Message(messageString);
+	}
+}
+
 
 void
 ncActor::PerformSchedule(string scheduleDecl)
 {
-	if (m_activeSchedule) {
-		m_activeSchedule.Cancel();
+	float scheduleCount = tokenizebyseparator(scheduleDecl, ",");
+
+	if (scheduleCount > 1i) {
+		scheduleDecl = argv(floor(random(0, scheduleCount)));
 	}
 
+	CancelSchedule();
 	ncSchedule::CreateSchedule(this, scheduleDecl);
 }
 
@@ -398,26 +441,76 @@ ncActor::Input(entity eAct, string strInput, string strData)
 		}
 		break;
 	/* schedule management */
+	case "ActorThinks":
+		printf("%S (%d): %s\n", classname, num_for_edict(this), strData);
+		break;
+	case "ChangeMindset":
+		m_mindset = strData;
+		break;
 	case "PerformSchedule":
 		PerformSchedule(strData);
 		break;
 	/* some tasks. */
 	case "WalkToTarget":
 		RouteToPosition(m_activeSchedule.GetTarget().origin);
+		m_activeSchedule.AdvanceLater(100);
 		break;
 	case "RunToTarget":
 		RouteToPosition(m_activeSchedule.GetTarget().origin);
+		m_activeSchedule.AdvanceLater(100);
 		break;
 	case "CrouchToTarget":
 		RouteToPosition(m_activeSchedule.GetTarget().origin);
+		m_activeSchedule.AdvanceLater(100);
 		break;
 	case "ProneToTarget":
 		RouteToPosition(m_activeSchedule.GetTarget().origin);
+		m_activeSchedule.AdvanceLater(100);
 		break;
 	case "TargetNearestPlayer":
-		m_activeSchedule.SetTarget(find(world, ::classname, "player"));
-		m_activeSchedule.Advance();
+		entity firstPlayer = find(world, ::classname, "player");
+
+		if (firstPlayer) {
+			m_activeSchedule.SetTarget(firstPlayer);
+		} else {
+			CancelSchedule();
+		}
 // 		NSWarning("Task %S unimplemented", strInput);
+		break;
+	case "GoToCover":
+		vector coverPos = Nodes_FindCoverFromPosition(this, GetOrigin());
+
+		if (vlen(coverPos) > 0.0f) {
+			RouteToPosition(coverPos);
+		} else {
+			CancelSchedule();
+		}
+		break;
+	case "GoToSpotInRadius":
+		vector t = Nodes_FindEmptySpotNearPosition(this, GetOrigin(), 128.0f, stof(strData));
+
+		if (vlen(t) > 0.0f) {
+			RouteToPosition(t);
+		} else {
+			CancelSchedule();
+		}
+		break;
+	case "AvoidSpotInRadius":
+		vector t = Nodes_FindEmptySpotAwayFromPosition(this, GetOrigin(), 0.0f, stof(strData));
+
+		if (vlen(t) > 0.0f) {
+			RouteToPosition(t);
+		} else {
+			CancelSchedule();
+		}
+		break;
+	case "TurnToRandomYaw":
+		float randomYaw = random(45.0f,180.0f) - 90.0f;
+		angles[1] += randomYaw;
+		v_angle = angles;
+		break;
+	case "GoForward":
+		RouteToPosition(GetOrigin() + (anglesToForward(angles) * 1024.0f));
 		break;
 	default:
 		super::Input(eAct, strInput, strData);
@@ -430,14 +523,11 @@ ncActor::Input(entity eAct, string strInput, string strData)
 void
 ncActor::RouteEnded(void)
 {
-	if (m_activeSchedule) {
-		m_activeSchedule.Advance();
-	}
 	ClearVelocity();
 }
 
 void
-ncActor::CheckRoute_Path(void)
+ncActor::CheckRouteProgression_Path(void)
 {
 	float flDist = distance(m_pathEntity.GetOrigin(), GetOrigin());
 
@@ -459,7 +549,7 @@ ncActor::CheckRoute_Path(void)
 }
 
 void
-ncActor::CheckRoute(void)
+ncActor::CheckRouteProgression(void)
 {
 	float flDist;
 	float flNodeRadius;
@@ -473,7 +563,7 @@ ncActor::CheckRoute(void)
 	}
 
 	if (STRING_SET(m_pathTarget) && m_pathEntity) {
-		CheckRoute_Path();
+		CheckRouteProgression_Path();
 		return;
 	}
 
@@ -503,7 +593,7 @@ ncActor::CheckRoute(void)
 	if (m_iCurNode < 0) {
 		evenpos = m_vecLastNode;
 		evenpos[2] = origin[2];
-		flNodeRadius = 16.0f;
+		flNodeRadius = 8.0f;
 	} else {
 		evenpos = m_pRoute[m_iCurNode].dest;
 		evenpos[2] = origin[2];
@@ -513,10 +603,13 @@ ncActor::CheckRoute(void)
 			flNodeRadius = 16.0f;
 	}
 
+	vector wishAngles = vectoangles(evenpos - origin);
+	ideal_yaw = wishAngles[1];
+
 	flDist = floor(vlen(evenpos - origin));
 
 	if (flDist < flNodeRadius) {
-		ncActor_Log("%S reached node", targetname);
+		//ncActor_Log("%S reached node", targetname);
 		m_iCurNode--;
 		velocity = [0,0,0]; /* clamp friction */
 
@@ -527,7 +620,9 @@ ncActor::CheckRoute(void)
 
 			/* can we walk directly to our target destination? */
 			if (trace_fraction == 1.0) {
+				vector idealAngles = vectoangles(m_vecLastNode - origin);
 				ncActor_Log("Walking directly to last node at '%v'", m_vecLastNode);
+				ideal_yaw = idealAngles[1];
 				m_iCurNode = -1;
 			}
 		}
@@ -544,8 +639,11 @@ ncActor::CheckRoute(void)
 
 		/* it's accessible */
 		if (!trace_startsolid && trace_fraction == 1.0f) {
+			vector idealAngles = vectoangles(vecNextNode - origin);
 			evenpos = vecNextNode;
 			m_iCurNode = iNextNode;
+
+			ideal_yaw = idealAngles[1];
 			ncActor_Log("Skipping to next node %i at '%v'", iNextNode, vecNextNode);
 			return;
 		}
@@ -707,22 +805,25 @@ ncActor::RouteToPositionDenyFlags(vector destination, int denylinkflags)
 
 		if (numnodes < 1i) {
 			ncActor_Log("No path available.");
-			return;
 		}
 
-		p.m_iNodes = numnodes;
-		p.m_iCurNode = numnodes - 1;
-		p.m_pRoute = nodelist;
-		p._m_flRouteGiveUp = time + 4.0f;
+		{
+			p.m_iNodes = numnodes;
+			p.m_iCurNode = numnodes - 1;
+			p.m_pRoute = nodelist;
+			p._m_flRouteGiveUp = time + 4.0f;
+		}
 
 		//traceline(p.origin, dest, MOVE_NORMAL, this);
-		tracebox(p.origin, [-16, -16, -16], [16, 16, 16], dest, MOVE_NORMAL, this);
+		tracebox(p.origin, p.mins, p.maxs, dest, MOVE_NORMAL, p);
 
 		/* can we walk directly to our target destination? */
 		if (trace_fraction == 1.0) {
 			ncActor_Log("Walking directly to last node");
+			p.m_iNodes = 1;
 			p.m_iCurNode = -1;
-		} else {
+			p._m_flRouteGiveUp = time + 5.0f;
+		} else if (numnodes > 0i) {
 			ncActor_Log("Path obstructed, calculating route");
 
 			/* run through all nodes, mark the closest direct path possible */
@@ -752,17 +853,16 @@ ncActor::RouteToPositionDenyFlags(vector destination, int denylinkflags)
 	}
 
 	RouteClear();
-
-	if (!m_iNodes) {
-		route_calculate(this, destination, denylinkflags, RouteToPosition_RouteCB);
-		m_vecLastNode = destination;
-	}
+	this.origin[2] += 16.0f;
+	route_calculate(this, destination, denylinkflags, RouteToPosition_RouteCB);
+	this.origin[2] -= 16.0f;
+	m_vecLastNode = destination;
 }
 
 void
 ncActor::ChasePath(string startPath)
 {
-	if (STRING_SET(startPath)) {
+	if (!STRING_SET(startPath)) {
 		m_pathTarget = __NULL__;
 		m_pathEntity = __NULL__;
 		return;
@@ -776,8 +876,9 @@ ncActor::ChasePath(string startPath)
 void
 ncActor::RouteClear(void)
 {
-	if (!m_iNodes)
+	if (!m_iNodes) {
 		return;
+	}
 
 	m_iCurNode = BOTROUTE_END;
 	m_iNodes = 0;
@@ -836,8 +937,7 @@ ncActor::LaunchProjectile(string defName, bool thrown, float timeOfs)
 
 	nade.SetWeaponOwner(m_activeWeapon);
 	nade.Launch(GetEyePos(), GetViewAngle(), time - timeOfs, 0.0f, 0.0f);
-	makevectors(throwDirection);
-	nade.SetVelocity((v_forward * throwingStrength) + GetVelocity());
+	nade.SetVelocity((anglesToForward(throwDirection) * throwingStrength) + GetVelocity());
 #endif
 }
 
@@ -873,7 +973,7 @@ ncActor::PlantCharge(string defName)
 	plantedEntity.SetOwner(this);
 	plantedEntity.real_owner = this;
 
-	printf("Planted %S at %v\n", plantedEntity.classname, origin);
+	EntLog("Planted %S at %v\n", plantedEntity.classname, origin);
 #endif
 
 	/* push us outta the way! */
@@ -886,8 +986,9 @@ int
 ncActor::GetReserveAmmo(int ammoType)
 {
 	/* bounds check */
-	if (ammoType <= 0i || ammoType >= MAX_AMMO_TYPES)
+	if (ammoType <= 0i || ammoType >= MAX_AMMO_TYPES) {
 		return (0i);
+	}
 
 	return (m_iAmmoTypes[ammoType]);
 }
@@ -938,8 +1039,9 @@ ncActor::GiveAmmo(int ammoType, int ammoAmount)
 
 	m_iAmmoTypes[ammoType] += ammoAmount;
 
-	if (m_iAmmoTypes[ammoType] >= maxAmmo)
+	if (m_iAmmoTypes[ammoType] >= maxAmmo) {
 		m_iAmmoTypes[ammoType] = maxAmmo;
+	}
 
 	return (true);
 }
@@ -952,8 +1054,9 @@ ncActor::UseAmmo(int ammoType, int ammoAmount)
 	}
 
 	/* bounds check */
-	if (HasAmmo(ammoType, ammoAmount) == false)
+	if (HasAmmo(ammoType, ammoAmount) == false) {
 		return (false);
+	}
 
 	m_iAmmoTypes[ammoType] -= ammoAmount;
 	return (true);
@@ -963,12 +1066,14 @@ bool
 ncActor::HasAmmo(int ammoType, int ammoAmount)
 {
 	/* bounds check */
-	if (ammoType < 0i || ammoType >= MAX_AMMO_TYPES)
+	if (ammoType < 0i || ammoType >= MAX_AMMO_TYPES) {
 		return (false);
+	}
 
 	/* will underflow when used. */
-	if ((m_iAmmoTypes[ammoType] - ammoAmount) < 0i)
+	if ((m_iAmmoTypes[ammoType] - ammoAmount) < 0i) {
 		return (false);
+	}
 
 	return (true);
 }

@@ -25,56 +25,138 @@ ncSchedule::ncSchedule(void)
 	m_taskCount = 0i;
 	m_controllingActor = __NULL__;
 	m_scheduleDecl = __NULL__;
+	m_failSchedule = __NULL__;
 }
 
 void
 ncSchedule::AdvanceLater(float timeDelta)
 {
-	EntLog("Advancing schedule in %f seconds.", timeDelta);
+	m_inProgress = true;
+	EntLog("Advancing %S in %f seconds.", m_name, timeDelta);
 	ncTimer newTimer = __NULL__;
 	newTimer = newTimer.TemporaryTimer(this, Advance, timeDelta, false);
 }
 
+bool
+ncSchedule::InProgress(void)
+{
+	return (m_inProgress);
+}
 
 void
 ncSchedule::Advance(void)
 {
 	string taskInput;
 	string taskParms;
+	bool shouldCancel = false;
+
+	if (wasfreed(this)) {
+		return;
+	}
+
+	/* Our actor is dead. Invalidate right away. */
+	if (!m_controllingActor) {
+		shouldCancel = true;
+	} else {
+		if (m_controllingActor.IsAlive() == false) {
+			shouldCancel = true;
+		}
+
+		if (m_controllingActor.m_activeSchedule != this) {
+			shouldCancel = true;
+		}
+	}
+
+	if (shouldCancel == true) {
+		ReleaseThink();
+		Cancel();
+		return;
+	}
 
 	m_onTask++;
 
 	if (m_onTask > m_taskCount) {
+		ReleaseThink();
 		Cancel();
 		return;
 	}
 
 	string taskString = m_scheduleDecl.GetString(sprintf("task_%i", m_onTask));
-	tokenize_console(taskString);
-	taskInput = argv(0);
-	taskParms = argv(1);
 
-	EntLog("Advancing schedule to Task %i of %i.", m_onTask, m_taskCount);
+	if (STRING_SET(taskString)) {
+		tokenize_console(taskString);
+		taskInput = argv(0);
+		taskParms = argv(1);
+	} else {
+		EntError("Task %i not defined! Cancelling schedule.", m_onTask);
+		m_onTask = m_taskCount + 1i;
+		ReleaseThink();
+		Cancel();
+		return;
+	}
+
+	m_inProgress = false;
+
+	EntLog("Advancing %S to Task %i of %i.", m_name, m_onTask, m_taskCount);
 	EntLog("Instructing %S to perform %S with parms %S", m_controllingActor.classname, taskInput, taskParms);
-	m_controllingActor.Input(this, taskInput, taskParms);
+	m_controllingActor.Input(this, taskInput, substring(taskString, strlen(taskInput) + 1, -1));
+
+	/* did we get scheduled for later? no? advance us ourselves */
+	if (m_inProgress == false && m_bProgressOnMovement == false) {
+		AdvanceLater(0.1);
+	}
 }
 
 void
 ncSchedule::Cancel(void)
 {
+	if (wasfreed(this)) {
+		return;
+	}
+
 	EntLog("Schedule for %S (%d) terminated.", m_controllingActor.classname, num_for_edict(m_controllingActor));
 
 	/* TODO: Let NPC know that it's done? */
-	m_controllingActor.m_activeSchedule = __NULL__;
-	m_controllingActor = __NULL__;
+	if (m_controllingActor) {
+		if (m_controllingActor.m_activeSchedule == this) {
+			m_controllingActor.m_activeSchedule = __NULL__;
+
+			if ((m_onTask <= m_taskCount) && STRING_SET(m_failSchedule)) {
+				m_controllingActor.Input(this, "PerformSchedule", m_failSchedule);
+			}
+
+			m_controllingActor = __NULL__;
+		}
+	}
+
 	Destroy();
+}
+
+bool
+ncSchedule::ProgressOnMovement(void)
+{
+	return (m_bProgressOnMovement);
 }
 
 void
 ncSchedule::Think(void)
 {
+	bool shouldCancel = false;
+
 	/* Our actor is dead. Invalidate right away. */
-	if (m_controllingActor.IsAlive() == false) {
+	if (!m_controllingActor) {
+		shouldCancel = true;
+	} else {
+		if (m_controllingActor.IsAlive() == false) {
+			shouldCancel = true;
+		}
+
+		if (m_controllingActor.m_activeSchedule != this) {
+			shouldCancel = true;
+		}
+	}
+
+	if (shouldCancel == true) {
 		ReleaseThink();
 		Cancel();
 		return;
@@ -82,6 +164,36 @@ ncSchedule::Think(void)
 
 	/* continue next tic */
 	ScheduleThink(Think, 0.0f);
+}
+
+void
+ncSchedule::Message(string messageString)
+{
+	bool lookUpValue = m_scheduleDecl.GetBool(sprintf("fail_on%s", messageString));
+	string lookUpString = m_scheduleDecl.GetString(messageString);
+	EntLog("^2%S received %S", m_name, messageString);
+
+	if (STRING_SET(lookUpString)) {
+		string taskInput;
+		string taskParameter;
+		tokenize_console(lookUpString);
+		taskInput = argv(0);
+		taskParameter =  substring(lookUpString, strlen(taskInput) + 1, -1);
+		EntLog("^3triggering Input %S with parameter %S", taskInput, taskParameter);
+		m_controllingActor.Input(this, taskInput, taskParameter);
+	}
+
+	if (lookUpValue) {
+		EntLog("^1schedule killed by message.", taskInput, taskParameter);
+		ReleaseThink();
+		Cancel();
+	}
+}
+
+void
+ncSchedule::SetFailSchedule(string failSchedule)
+{
+	m_failSchedule = failSchedule;
 }
 
 bool
@@ -94,9 +206,7 @@ ncSchedule::AssignActor(ncActor targetActor)
 		return (false);
 	}
 
-	EntLog("Schedule %d created and active.", num_for_edict(this));
-	EntLog("Controlling %S (%d)", m_controllingActor.classname, num_for_edict(m_controllingActor));
-	EntLog("Total tasks: %i", m_taskCount);
+	EntLog("Schedule %S (%d) created and active.\n\t\tControlling %S (%d)\n\t\tTotal tasks: %i", m_name, num_for_edict(this), m_controllingActor.classname, num_for_edict(m_controllingActor), m_taskCount);
 
 	Advance();
 
@@ -123,6 +233,7 @@ ncSchedule::CreateSchedule(ncActor targetActor, string scheduleDecl)
 {
 	ncSchedule newSchedule = spawn(ncSchedule);
 
+	newSchedule.m_name = scheduleDecl;
 	newSchedule.m_scheduleDecl = ncDict::LoadDeclFromFile(scheduleDecl, sprintf("schedules/%s.decl", scheduleDecl));
 
 	if ((newSchedule.m_scheduleDecl.TokenCount() % 2) != 0) {

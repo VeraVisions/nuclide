@@ -52,13 +52,13 @@ void
 ncIO::Spawned(void)
 {
 #ifdef SERVER
-	if (m_strOnUser1)
+	if (STRING_SET(m_strOnUser1))
 		m_strOnUser1 = CreateOutput(m_strOnUser1);
-	if (m_strOnUser2)
+	if (STRING_SET(m_strOnUser2))
 		m_strOnUser2 = CreateOutput(m_strOnUser2);
-	if (m_strOnUser3)
+	if (STRING_SET(m_strOnUser3))
 		m_strOnUser3 = CreateOutput(m_strOnUser3);
-	if (m_strOnUser4)
+	if (STRING_SET(m_strOnUser4))
 		m_strOnUser4 = CreateOutput(m_strOnUser4);
 #endif
 
@@ -74,7 +74,14 @@ ncIO::OnRemoveEntity(void)
 void
 ncIO::Destroy(void)
 {
-	OnRemoveEntity();
+	if (wasfreed(this)) {
+		return;
+	}
+
+	if (OnRemoveEntity) {
+		OnRemoveEntity();
+	}
+
 	customphysics = __NULL__;
 	modelindex = 0;
 	solid = 0;
@@ -271,18 +278,22 @@ ncIO::GetSpawnEntity(string keyName, entity startEntity)
 void
 ncIO::UseOutput(entity act, string outname)
 {
-	if (!outname || outname == "")
+	if (!STRING_SET(outname)) {
 		return;
-
-	if (!act)
-		return;
+	}
 
 	for (entity f = world; (f = find(f, ::targetname, outname));) {
 		ncOutput op = (ncOutput)f;
 
+		NSError("Target: %s", op.m_strTarget);
+		NSError("Input: %s", op.m_strInput);
+		NSError("Data Message: %s", op.m_strData);
+		NSError("Delay: %f", op.m_flDelay);
+		NSError("Uses: %i", op.m_iCount);
+
 		/* no more tries and not -1 (infinite) */
 		if (op.m_iCount == 0) {
-			return;
+			continue;
 		}
 
 		op.ScheduleOutput(act);
@@ -292,37 +303,47 @@ ncIO::UseOutput(entity act, string outname)
 string
 ncIO::CreateOutput(string outmsg)
 {
-	static int outcount = 0;
 	string outname = "";
-	float c;
+	static int outID = 0i;
 
-	if not (outmsg) {
+	if (!STRING_SET(outmsg)) {
 		error("Cannot assign EMPTY contents to CreateOutput!");
 	}
 
-	outname = sprintf("output_%i", outcount);
-	outcount++;
+	/* vanilla trigger and/or reuse */
+	if (tokenizebyseparator(outmsg, ",") <= 5) {
+		return outmsg;
+	}
+
+	outname = sprintf("output_%i", outID);
+	outID += 1i;
 
 	/* to make sure tokenize 'remembers' to tell us about the commonly
 	   empty data string, we prepared the output string beforehand to
 	   at least contain a _ symbol after the comma separator... now
 	   we gotta clip that away using substring(). messy, but that's the
 	   only way to keep them at 5 argv() calls per output */
-	c = tokenizebyseparator(outmsg, ",");
-	for (float i = 1; i < c; i+=5) {
+	for (float i = 1; i < tokenizebyseparator(outmsg, ","); i+=5) {
+		string ourTarget = substring(argv(i), 1,-1);
+		string ourInput = substring(argv(i+1), 1,-1);
+		string ourData = substring(argv(i+2), 1,-1);
+		float ourDelay = stof(substring(argv(i+3), 1,-1));
+		int ourCount = (int)stoi(substring(argv(i+4), 1,-1));
 		ncOutput new_minion = spawn(ncOutput);
 
+		new_minion.owner = this;
 		new_minion.classname = "triggerminion";
 		new_minion.targetname = outname;
-		new_minion.m_strTarget = substring(argv(i), 1,-1);
-		new_minion.m_strInput = substring(argv(i+1), 1,-1);
-		new_minion.m_strData = substring(argv(i+2), 1,-1);
-		new_minion.m_flDelay = stof(substring(argv(i+3), 1,-1));
-		new_minion.m_iCount = stoi(substring(argv(i+4), 1,-1));
-		new_minion.m_iOldCount = new_minion.m_iCount;
+		new_minion.m_strTarget = ourTarget;
+		new_minion.m_strInput = ourInput;
+		new_minion.m_strData = ourData;
+		new_minion.m_flDelay = ourDelay;
+		new_minion.m_iOldCount = new_minion.m_iCount = ourCount;
 
 		/* print final debug output */
 		NSLog("^2%s::CreateOutput report:", classname);
+		NSLog("%d Name: %s", num_for_edict(new_minion), outname);
+		NSLog("Owner: %s (%d)", new_minion.owner.classname, num_for_edict(new_minion.owner));
 		NSLog("Target: %s", new_minion.m_strTarget);
 		NSLog("Input: %s", new_minion.m_strInput);
 		NSLog("Data Message: %s", new_minion.m_strData);

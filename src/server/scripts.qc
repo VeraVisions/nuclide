@@ -46,18 +46,26 @@ MapC_Init(void)
 	}
 }
 
-/* Rule specific Scripting, nicknamed 'RuleC' because MapC exists. */
-void
-RuleC_Init(void)
+__weak string
+Game_DefaultRules(void)
 {
 	string gameType = cvars.GetString("g_gametype");
-	string pathToProgs;
 
 	if (!STRING_SET(gameType)) {
 		bool isCoop = cvars.GetBool("coop");
 		bool isSingle = (cvars.GetInteger("sv_playerslots") <= 1) ? (true) : (false);
-		g_ruleCName = gameType = (isSingle || isCoop) == (true) ? "singleplayer" : "deathmatch";
+		gameType = (isSingle || isCoop) == (true) ? "singleplayer" : "deathmatch";
 	}
+
+	return (gameType);
+}
+
+/* Rule specific Scripting, nicknamed 'RuleC' because MapC exists. */
+void
+RuleC_Init(void)
+{
+	string gameType = g_ruleCName = Game_DefaultRules();
+	string pathToProgs;
 	
 	pathToProgs = strcat("progs/", gameType, ".dat");
 
@@ -78,7 +86,7 @@ RuleC_Init(void)
 			externset(g_ruleCProgs, world, "self");
 			thread(mainFunction())
 		} else {
-			NSError("%S does not have a main function.", pathToProgs);
+			error(sprintf("RuleC %S does not have a main function.", pathToProgs));
 		}
 	}	
 }

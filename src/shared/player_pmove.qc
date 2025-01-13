@@ -75,7 +75,7 @@ ncPlayer::Physics_Fall(float flDownforce)
 		ncDict damageDecl = spawn(ncDict);
 		damageDecl.AddKey("damage", itos((int)finalDamage));
 		damageDecl.AddKey("noArmor", "1");
-		Damage(this, this, damageDecl, 1.0, g_vec_null, GetOrigin() + [0,0, mins[2]]);
+		Damage(this, world, damageDecl, 1.0, g_vec_null, GetOrigin() + [0,0, mins[2]]);
 		remove(damageDecl);
 
 		//Damage_Apply(this, world, fFallDamage, 0, DMG_FALL | DMG_SKIP_ARMOR);
@@ -595,7 +595,6 @@ ncPlayer::Physics_Run(void)
 		RemoveVFlags(VFL_SPRINTING);
 	}
 
-	/* maxspeed changes when crouching, TODO: make this game-specific */
 	maxspeed = Physics_MaxSpeed();
 
 #ifdef SERVER

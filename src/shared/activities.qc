@@ -73,7 +73,7 @@ Activities_GetSequenceForEntity(ncEntity targetEntity, string activityName)
 	if (!STRING_SET(fireValue)) {
 		float actValue = Activities_GetActID(actNameCheck);
 
-		if (actValue == ACTIVITY_NOTFOUND) {
+		if (actValue != ACTIVITY_NOTFOUND) {
 			/* look it up in the model itself now */
 			float frameGroup = frameforaction(targetEntity.modelindex, actValue);
 			return (frameGroup);

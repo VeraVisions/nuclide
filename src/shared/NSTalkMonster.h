@@ -102,6 +102,7 @@ public:
 	virtual void OnPlayerUse(void);
 	//virtual void Hide(void);
 	virtual void Respawn(void);
+	virtual void Input(entity,string,string);
 	virtual void SpawnKey(string,string);
 	virtual float SendEntity(entity,float);
 	virtual void Save(float);

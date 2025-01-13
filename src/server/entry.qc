@@ -681,7 +681,7 @@ CheckSpawn(void() spawnfunc)
 	ncEntity ent = (ncEntity)self;
 	string desiredClass = ent.classname;
 	static string lastClass;
-	bool skipLoad = false;
+	bool skipLoad = false; /* entity data will be loaded elsewhere */
 
 	/* cancel out early */
 	if (ent == world) {
@@ -695,6 +695,16 @@ CheckSpawn(void() spawnfunc)
 	/* no longer needed, immediately discard. */
 	__fullspawndata = "";
 
+	/* we have to diverge here in order to support in-code class entities,
+	   decl entities and overrides of both.
+	   
+	   this switch also controls the priority:
+	   
+	   1. maptweaks, can override anything.
+	   2. entitydef, can even override built-in class names
+	      2.0 entitydef, defined in a map (maps/foobar.def)
+		  2.1 entitydef, defined within decls/def/*.def
+	   3. in-code classes */
 	if (MapTweak_EntitySpawn(ent) == true) {
 		skipLoad = true;
 	} else if (EntityDef_SpawnClassname(desiredClass) != __NULL__) {

@@ -276,6 +276,10 @@ private:
 #endif
 };
 
+#define CREATE_OUTPUT(x) 	if (STRING_SET(x)) { \
+		x = CreateOutput(x); \
+	}
+
 .bool isActor;
 .bool _mapspawned;
 

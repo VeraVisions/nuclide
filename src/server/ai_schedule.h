@@ -97,19 +97,26 @@ public:
 	nonvirtual void SetTarget(ncEntity target);
 	nonvirtual ncEntity GetTarget(void);
 	nonvirtual void Think(void);
+	nonvirtual bool ProgressOnMovement(void);
+	nonvirtual void SetFailSchedule(string);
 
 private:
-
+	string m_name;
 	int m_taskCount;
 	int m_onTask;
 	ncActor m_controllingActor;
 	ncDict m_scheduleDecl;
 	ncEntity m_eTarget;
+	bool m_inProgress;
+	bool m_bProgressOnMovement;
+	string m_failSchedule;
 
 	nonvirtual bool AssignActor(ncActor targetActor);
 	nonvirtual void Advance(void);
 	nonvirtual void AdvanceLater(float timeDelta);
 	nonvirtual void Cancel(void);
+	nonvirtual void Message(string);
+	nonvirtual bool InProgress(void);
 };
 
 /** @} */ // end of npc_schedules

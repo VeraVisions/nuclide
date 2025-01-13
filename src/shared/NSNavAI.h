@@ -165,9 +165,12 @@ public:
 
 	/** Overridable: Called regularily to select a new schedule to perform. */
 	virtual void SelectNewSchedule(void);
+	nonvirtual void ScheduleThink(void);
 
 	/** Forces a named schedule to be performed. */
+	nonvirtual bool CancelSchedule(void);
 	nonvirtual void PerformSchedule(string);
+	nonvirtual void MessageSchedule(string);
 	nonvirtual bool IsPerforming(void);
 
 	/* methods we'd like others to override */
@@ -187,7 +190,7 @@ public:
 	/** When called, will wipe any memory of an ongoing route. */
 	virtual void RouteClear(void);
 	/** Internal use only. Called every frame to see our route progression. */
-	virtual void CheckRoute(void);
+	virtual void CheckRouteProgression(void);
 	/** When called, will plot a route to a given world coordinate and start moving. */
 	virtual void RouteToPosition(vector);
 	/** When called, will plot a route to a given world coordinate and start moving, ignoring any links that contain the given link flags. */
@@ -195,7 +198,7 @@ public:
 	/** When called, will start following a path_corner */
 	virtual void ChasePath(string startPath);
 	/** Internal use only. Called every frame to see our route progression. */
-	virtual void CheckRoute_Path(void);
+	virtual void CheckRouteProgression_Path(void);
 	/** Overridable: Called when the entity is ready to move. When overridden, will no longer move until super function is called, or physics is handled within. */
 	virtual void Physics_Run(void);
 #endif
@@ -215,6 +218,7 @@ private:
 	vector m_vecRouteEntity;
 	entity m_eFollowing;
 	float m_flMoveSpeedKey;
+	string m_mindset;
 #endif
 
 	/* sounds, may even be predicted. */

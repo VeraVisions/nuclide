@@ -75,6 +75,7 @@ public:
 	/* overrides */
 	virtual void SpawnKey(string,string);
 	virtual void Spawned(void);
+	virtual void Precache(void);
 	nonvirtual void Spawn(void);
 
 	/** Tells the engine to make the entity static, effectively making it inaccessible.
