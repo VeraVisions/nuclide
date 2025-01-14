@@ -439,22 +439,40 @@ EntityDef_PrepareEntity(entity target, int id)
 static void
 EntityDef_Precaches(int index)
 {
+	if (time > 2.0f) {
+		return;
+	}
+
 	for (int i = 0; i < tokenize_console(g_entDefTable[index].spawnData); i+= 2) {
 		string strKey = argv(i);
 		string strValue = argv(i+1);
 
 		if (substring(strKey, 0, 4) == "snd_") {
-			Sound_Precache(strValue);
+			precache.Sound(strValue);
 		} else if (substring(strKey, 0, 6) == "smoke_") {
 			particleeffectnum(strValue);
 		} else if (strKey == "model_detonate") {
 			particleeffectnum(strValue);
-		} else if (substring(strKey, 0, 4) == "def_") {
+		} else if (strKey == "model") {
+			precache.Model(strValue);
+		} else if (substring(strKey, 0, 6) == "model_") {
+			precache.Model(strValue);
+		} else if (substring(strKey, 0, 4) == "def_" || (strKey == "item")) {
 			int defID = EntityDef_IDFromName(strValue);
 
 			/* only precache valid def, and avoid recursion */
 			if (defID != -1 && defID != index) {
 				EntityDef_Precaches(defID);
+			}
+		} else if (strKey == "weapon") {
+			for (int w = 0; w < tokenizebyseparator(strValue, ","); w++) {
+				string weaponName = argv(w);
+				int defID = EntityDef_IDFromName(weaponName);
+
+				/* only precache valid def, and avoid recursion */
+				if (defID != -1 && defID != index) {
+					EntityDef_Precaches(defID);
+				}
 			}
 		}
 	}
@@ -506,11 +524,7 @@ EntityDef_NewClassname(string className)
 
 	for (int i = 0i; i < g_entDefCount; i++) {
 		if (className == g_entDefTable[i].entClass) {
-			if (time < 5.0) {
-				EntityDef_Precaches(i);
-			}
-
-			NSLog("Spawning eDef %S", className);
+			EntityDef_Precache(className);
 			return EntityDef_PrepareEntity(self, i);
 		}
 	}
@@ -529,11 +543,7 @@ EntityDef_SpawnClassname(string className)
 
 	for (int i = 0i; i < g_entDefCount; i++) {
 		if (className == g_entDefTable[i].entClass) {
-			if (time < 5.0) {
-				EntityDef_Precaches(i);
-			}
-
-			NSLog("Spawning eDef %S", className);
+			EntityDef_Precache(className);
 			return EntityDef_PrepareEntity(self, i);
 		}
 	}
@@ -549,11 +559,7 @@ EntityDef_SwitchClass(ncEntity target, string className)
 
 	for (int i = 0i; i < g_entDefCount; i++) {
 		if (className == g_entDefTable[i].entClass) {
-			if (time < 5.0) {
-				EntityDef_Precaches(i);
-			}
-
-			NSLog("Spawning eDef %S", className);
+			EntityDef_Precache(className);
 			returnEntity = EntityDef_PrepareEntity(target, i);
 			return (returnEntity);
 		}

@@ -35,6 +35,7 @@ class func_dustcloud:ncEntity
 {
 public:
 	void func_dustcloud(void);
+	virtual void Precache(void);
 	virtual void Spawned(void);
 	virtual float predraw(void);
 	virtual void SpawnKey(string,string);
@@ -157,11 +158,16 @@ func_dustcloud::predraw(void)
 }
 
 void
+func_dustcloud::Precache(void)
+{
+	precache.Model(model);
+}
+
+void
 func_dustcloud::Spawned(void)
 {
 	super::Spawned();
 
-	precache_model(model);
 	setmodel(this, model);
 	setorigin(this, origin);
 	movetype = MOVETYPE_NONE;

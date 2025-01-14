@@ -55,10 +55,10 @@ This entity was introduced in Quake (1996).
 */
 
 #ifdef SERVER
-class NSWorldspawn:ncEntity
+class ncWorldSpawn:ncEntity
 {
 public:
-	void NSWorldspawn(void);
+	void ncWorldSpawn(void);
 
 	virtual void Spawned(void);
 	virtual void Save(float);
@@ -83,7 +83,7 @@ private:
 };
 
 void
-NSWorldspawn::NSWorldspawn(void)
+ncWorldSpawn::ncWorldSpawn(void)
 {
 	/* defaults */
 	m_flHDRIrisMinValue = 0.0;
@@ -128,14 +128,14 @@ NSWorldspawn::NSWorldspawn(void)
 	lightstyle(64, "m");
 	lightstyle(65, "z");
 
-	precache_model("models/error.vvm");
+	precache.Model("models/error.vvm");
 
 	//if (autocvar_sv_levelexec)
 	//	readcmd(sprintf("exec maps/%s.cfg\n", mapname));
 }
 
 void
-NSWorldspawn::Spawned(void)
+ncWorldSpawn::Spawned(void)
 {
 	super::Spawned();
 
@@ -171,7 +171,7 @@ NSWorldspawn::Spawned(void)
 }
 
 void
-NSWorldspawn::SpawnKey(string strKey, string strValue)
+ncWorldSpawn::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "skyname":
@@ -228,7 +228,7 @@ NSWorldspawn::SpawnKey(string strKey, string strValue)
 }
 
 void
-NSWorldspawn::Save(float handle)
+ncWorldSpawn::Save(float handle)
 {
 	super::Save(handle);
 
@@ -248,7 +248,7 @@ NSWorldspawn::Save(float handle)
 }
 
 void
-NSWorldspawn::Restore(string strKey, string strValue)
+ncWorldSpawn::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "m_strSkyName":
@@ -299,7 +299,7 @@ NSWorldspawn::Restore(string strKey, string strValue)
 void
 worldspawn(void)
 {
-	NSWorldspawn ourWorld = spawn(NSWorldspawn);
+	ncWorldSpawn ourWorld = spawn(ncWorldSpawn);
 	ourWorld.pvsflags = PVSF_IGNOREPVS;
 
 	/* fill the delegate with spawndata */

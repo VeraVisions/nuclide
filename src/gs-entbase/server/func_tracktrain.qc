@@ -550,19 +550,14 @@ func_tracktrain::Respawn(void)
 {
 	super::Respawn();
 
-	if (modelindex == 0) {
-		Destroy();
-		return;
-	}
-
 	/* legacy compat */
 	SetSolid(HasSpawnFlags(TRAIN_NONSOLID) ? SOLID_NOT : SOLID_BSP);
 	SetMovetype(MOVETYPE_PUSH);
 
 	m_flCurrentSpeed = m_flStartSpeed;
 
-	ScheduleThink(_AfterSpawn, 0.0f);
-	SetTriggerTarget(GetSpawnString("target"));
+	/* this needs to be a bit later than anything else. */
+	ScheduleThink(_AfterSpawn, 0.1f);
 	PlayerUse = OnPlayerUse;
 
 	if (m_flTrainLength == 0.0f)
@@ -969,6 +964,8 @@ func_tracktrain::_AfterSpawn(void)
 {
 	path_track targetNode;
 	path_track nodeAhead;
+
+	SetTriggerTarget(GetSpawnString("target"));
 
 	/* get the first target */
 	targetNode = (path_track)GetTrackNodeForward();

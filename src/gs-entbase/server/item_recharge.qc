@@ -55,7 +55,7 @@ public:
 	/* overrides */
 	virtual void Save(float);
 	virtual void Restore(string,string);
-	virtual void Spawned(void);
+	virtual void Precache(void);
 	virtual void SpawnKey(string,string);
 	virtual void customphysics(void);
 	virtual void Respawn(void);
@@ -155,13 +155,11 @@ item_recharge::SpawnKey(string strKey, string strValue)
 }
 
 void
-item_recharge::Spawned(void)
+item_recharge::Precache(void)
 {
-	super::Spawned();
-
-	precache_sound(m_strSndFirst);
-	precache_sound(m_strSndCharging);
-	precache_sound(m_strSndDone);
+	precache.Sound(m_strSndFirst);
+	precache.Sound(m_strSndCharging);
+	precache.Sound(m_strSndDone);
 }
 
 

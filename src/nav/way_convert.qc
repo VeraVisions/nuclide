@@ -497,8 +497,8 @@ Way_ReadJumbotFile(string strFile, bool flush)
 		g_pNodes[i].m_flRadius = 32.0f;
 
 		if (i > startId) {
-			NodeEdit_LinkNodes(&g_pNodes[i], &g_pNodes[i-1]);
-			NodeEdit_LinkNodes(&g_pNodes[i-1], &g_pNodes[i]);
+			ncNodeEditor::LinkNodes(&g_pNodes[i], &g_pNodes[i-1]);
+			ncNodeEditor::LinkNodes(&g_pNodes[i-1], &g_pNodes[i]);
 		}
 	}
 

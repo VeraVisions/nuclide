@@ -63,32 +63,3 @@ ncPointTrigger::DebugDraw(void)
 	R_EndPolygon();
 #endif
 }
-
-#ifdef SERVER
-
-void
-ncPointTrigger::SpawnKey(string strKey, string strValue)
-{
-	switch (strKey) {
-	default:
-		super::SpawnKey(strKey, strValue);
-		break;
-	}
-}
-
-void
-ncPointTrigger::Save(float handle)
-{
-	super::Save(handle);
-}
-
-void
-ncPointTrigger::Restore(string strKey, string strValue)
-{
-	switch (strKey) {
-	default:
-		super::Restore(strKey, strValue);
-		break;
-	}
-}
-#endif

@@ -17,6 +17,7 @@
 #include "linkflags.h"
 #include "nodes.h"
 #include "route.h"
-#include "node_edit.h"
+#include "NodeEditor.h"
 #include "way_convert.h"
 #include "NavInfo.h"
+#include "Hint.h"

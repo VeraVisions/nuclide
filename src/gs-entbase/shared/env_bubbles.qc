@@ -68,7 +68,7 @@ public:
 	/* overrides */
 	virtual void SpawnKey(string,string);
 	virtual void Respawn(void);
-	virtual void Spawned(void);
+	virtual void Precache(void);
 
 #ifdef SERVER
 	virtual void Save(float);
@@ -298,14 +298,18 @@ env_bubbles::ReceiveEntity(float is_new, float flChanged)
 		angles[2] = readcoord();
 	}
 	
-	if (flChanged & BUBBLES_DENSITY)
+	if (flChanged & BUBBLES_DENSITY) {
 		m_iDensity = readbyte();
-	if (flChanged & BUBBLES_FREQUENCY)
+	}
+	if (flChanged & BUBBLES_FREQUENCY) {
 		m_flFrequency = readfloat();
-	if (flChanged & BUBBLES_CURRENT)
+	}
+	if (flChanged & BUBBLES_CURRENT) {
 		m_flCurrent = readfloat();
-	if (flChanged & BUBBLES_ENABLED)
+	}
+	if (flChanged & BUBBLES_ENABLED) {
 		m_bEnabled = readbyte();
+	}
 
 	think = EmitBubbles;
 	nextthink = time + m_flFrequency;
@@ -340,16 +344,15 @@ env_bubbles::Respawn(void)
 	m_flFrequency = m_flSpawnFrequency;
 	m_flCurrent = m_flSpawnCurrent;
 
-	if (spawnflags & BUBFL_STARTOFF)
+	if (spawnflags & BUBFL_STARTOFF) {
 		m_bEnabled = false;
-	else
+	} else {
 		m_bEnabled = true;
+	}
 }
 
 void
-env_bubbles::Spawned(void)
+env_bubbles::Precache(void)
 {
-	super::Spawned();
-
-	precache_model("sprites/bubble.spr");
+	precache.Model("sprites/bubble.spr");
 }

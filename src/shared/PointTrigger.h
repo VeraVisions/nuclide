@@ -33,10 +33,4 @@ public:
 
 	/** Sets up a point entity trigger with no size. */
 	nonvirtual void InitPointTrigger(void);
-
-#ifdef SERVER
-	virtual void SpawnKey(string, string);
-	virtual void Save(float);
-	virtual void Restore(string, string);
-#endif
 };

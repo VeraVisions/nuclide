@@ -52,13 +52,6 @@ typedef struct
 	@param spawnPos the position at which it should spawn.
 	@return The created entity. */
 	entity Create(string className, vector spawnPos);
-	/** Precaches a given entity class.
-	Ensuring models, sounds and other assets referenced
-	within are loaded ahead of time.
-
-	@param className to precache
-	@return Success. */
-	bool Precache(string className);
 	/** Transitions an entity from one class to another.
 
 	@param targetEntity is the target entity.
@@ -214,7 +207,6 @@ _server_main(void)
 
 	ents.Create = linkToServerProgs("spawnClass");
 	ents.ChangeToClass = linkToServerProgs("changeClass");
-	ents.Precache = linkToServerProgs("EntityDef_Precache");
 	ents.Input = linkToServerProgs("sendInput");
 	ents.isAI = linkToServerProgs("isAI");
 	ents.isAlive = linkToServerProgs("isAlive");

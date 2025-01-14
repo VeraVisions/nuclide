@@ -46,7 +46,7 @@ public:
 	virtual void Save(float);
 	virtual void Restore(string,string);
 	virtual void SpawnKey(string,string);
-	virtual void Spawned(void);
+	virtual void Precache(void);
 	virtual void Respawn(void);
 	virtual void customphysics(void);
 	
@@ -132,13 +132,11 @@ func_recharge::SpawnKey(string strKey, string strValue)
 }
 
 void
-func_recharge::Spawned(void)
+func_recharge::Precache(void)
 {
-	super::Spawned();
-
-	precache_sound(m_strSndFirst);
-	precache_sound(m_strSndCharging);
-	precache_sound(m_strSndDone);
+	precache.Sound(m_strSndFirst);
+	precache.Sound(m_strSndCharging);
+	precache.Sound(m_strSndDone);
 }
 
 void

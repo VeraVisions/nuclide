@@ -109,6 +109,11 @@ private:
 	float m_flFireTime;
 };
 
+void
+func_tankmortar::func_tankmortar(void)
+{
+	m_iVehicleFlags |= VHF_FROZEN | VHF_NOATTACK;
+}
 
 #ifdef CLIENT
 void
@@ -450,16 +455,7 @@ func_tankmortar::Spawned(void)
 	super::Spawned();
 
 #ifdef SERVER
-	if (m_strSpriteFlash)
-		precache_model(m_strSpriteFlash);
-	if (m_strSpriteSmoke)
-		precache_model(m_strSpriteSmoke);
+	precache.Model(m_strSpriteFlash);
+	precache.Model(m_strSpriteSmoke);
 #endif
-}
-
-void
-func_tankmortar::func_tankmortar(void)
-{
-	m_iVehicleFlags |= VHF_FROZEN | VHF_NOATTACK;
-
 }

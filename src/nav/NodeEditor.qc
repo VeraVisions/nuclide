@@ -19,7 +19,7 @@ var int g_way1 = -1;
 var int g_way2 = -1;
 
 void
-NodeEdit_LinkNodes(node_t *wp, node_t *w2)
+ncNodeEditor::LinkNodes(node_t *wp, node_t *w2)
 {
 	int w2n = w2 - g_pNodes;
 
@@ -39,7 +39,7 @@ NodeEdit_LinkNodes(node_t *wp, node_t *w2)
 }
 
 void
-NodeEdit_UnlinkNodes(node_t *wp, node_t *w2)
+ncNodeEditor::UnlinkNodes(node_t *wp, node_t *w2)
 {
 	int w2n = w2 - g_pNodes;
 	int nilled = 0;
@@ -76,8 +76,8 @@ NodeEdit_UnlinkNodes(node_t *wp, node_t *w2)
 	}
 }
 
-static void
-NodeEdit_AutoLink(int wpidx)
+void
+ncNodeEditor::AutoLink(int wpidx)
 {
 	for (int i = 0i; i < g_iNodes; i++) {
 		//don't link to ourself...
@@ -99,13 +99,13 @@ NodeEdit_AutoLink(int wpidx)
 			continue;
 		}
 
-		NodeEdit_LinkNodes(&g_pNodes[wpidx], &g_pNodes[i]);
-		NodeEdit_LinkNodes(&g_pNodes[i], &g_pNodes[wpidx]);
+		ncNodeEditor::LinkNodes(&g_pNodes[wpidx], &g_pNodes[i]);
+		ncNodeEditor::LinkNodes(&g_pNodes[i], &g_pNodes[wpidx]);
 	}
 }
 
 int
-NodeEdit_FindClosestNode(vector vecOrigin)
+ncNodeEditor::FindClosestNode(vector vecOrigin)
 {
 	
 	/* -1 for no nodes anywhere... */
@@ -133,10 +133,10 @@ NodeEdit_FindClosestNode(vector vecOrigin)
 	return r;
 }
 
-static void
-NodeEdit_CreateNode(entity ePlayer, int iAutoLink)
+void
+ncNodeEditor::CreateNode(entity ePlayer, int iAutoLink)
 {
-	int iNearest = NodeEdit_FindClosestNode(self.origin);
+	int iNearest = ncNodeEditor::FindClosestNode(self.origin);
 	int iID = g_iNodes++;
 	g_pNodes = (node_t *)memreallocOld(g_pNodes, sizeof(node_t), iID, g_iNodes);
 	node_t *n = g_pNodes + iID;
@@ -146,32 +146,32 @@ NodeEdit_CreateNode(entity ePlayer, int iAutoLink)
 	n->m_flRadius = autocvar_nav_radius;
 
 	if (iAutoLink == 1) {
-		NodeEdit_AutoLink(iID);
+		ncNodeEditor::AutoLink(iID);
 	} else {
 		if (iID != 0) {
 			if (iAutoLink == 0) {
-				NodeEdit_LinkNodes(n, &g_pNodes[iID-1]);
-				NodeEdit_LinkNodes(&g_pNodes[iID-1], n);
+				ncNodeEditor::LinkNodes(n, &g_pNodes[iID-1]);
+				ncNodeEditor::LinkNodes(&g_pNodes[iID-1], n);
 			} else if (iAutoLink == -1) {
-				NodeEdit_LinkNodes(&g_pNodes[iID-1], n);
+				ncNodeEditor::LinkNodes(&g_pNodes[iID-1], n);
 			} else if (iAutoLink == -2) {
-				NodeEdit_LinkNodes(n, &g_pNodes[iID-1]);
+				ncNodeEditor::LinkNodes(n, &g_pNodes[iID-1]);
 			} else if (iAutoLink == -4) {
 				if (iNearest == -1i)
 					return;
 
-				NodeEdit_LinkNodes(n, &g_pNodes[iNearest]);
-				NodeEdit_LinkNodes(&g_pNodes[iNearest], n);
+				ncNodeEditor::LinkNodes(n, &g_pNodes[iNearest]);
+				ncNodeEditor::LinkNodes(&g_pNodes[iNearest], n);
 			}
 		}
 	}
 }
 
-static void
-NodeEdit_DeleteNode(int iID)
+void
+ncNodeEditor::DeleteNode(int iID)
 {
 	if (iID < 0i || iID >= g_iNodes) {
-		print("NodeEdit_DeleteNode: invalid waypoint\n");
+		print("ncNodeEditor::DeleteNode: invalid waypoint\n");
 		return;
 	}
 
@@ -196,21 +196,21 @@ NodeEdit_DeleteNode(int iID)
 	}
 }
 
-static void
-NodeEdit_SetRadius(int iID, float flRadValue)
+void
+ncNodeEditor::SetRadius(int iID, float flRadValue)
 {
 	if (iID < 0i || iID >= g_iNodes) {
-		print("NodeEdit_SetRadius: invalid waypoint\n");
+		print("ncNodeEditor::SetRadius: invalid waypoint\n");
 		return;
 	}
 	g_pNodes[iID].m_flRadius = flRadValue;
 }
 
-static void
-NodeEdit_LinkFlag(int linkFlag)
+void
+ncNodeEditor::LinkFlag(int linkFlag)
 {
 	if (g_waylink_status == 0) {
-		g_way1 = NodeEdit_FindClosestNode(self.origin);
+		g_way1 = ncNodeEditor::FindClosestNode(self.origin);
 
 		if (g_way1 == -1i)
 			return;
@@ -218,7 +218,7 @@ NodeEdit_LinkFlag(int linkFlag)
 		g_waylink_status = 1;
 		env_message_single(self, "^2Selected first waypoint!\n");
 	} else if (g_waylink_status == 1) {
-		g_way2 = NodeEdit_FindClosestNode(self.origin);
+		g_way2 = ncNodeEditor::FindClosestNode(self.origin);
 
 		if (g_way2 == -1i)
 			return;
@@ -226,7 +226,7 @@ NodeEdit_LinkFlag(int linkFlag)
 		g_waylink_status = 0;
 
 		if (g_way1 != g_way2) {
-			NodeEdit_LinkNodes(&g_pNodes[g_way1], &g_pNodes[g_way2]);
+			ncNodeEditor::LinkNodes(&g_pNodes[g_way1], &g_pNodes[g_way2]);
 			for (int b = 0i; b < g_pNodes[g_way1].m_numNeighbours; b++) {
 				if (g_pNodes[g_way1].m_pNeighbour[b].m_iNode == g_way2) {
 					g_pNodes[g_way1].m_pNeighbour[b].m_iFlags |= linkFlag;
@@ -240,11 +240,11 @@ NodeEdit_LinkFlag(int linkFlag)
 	}
 }
 
-static void
-NodeEdit_Unlink(void)
+void
+ncNodeEditor::Unlink(void)
 {
 	if (g_waylink_status == 0) {
-		g_way1 = NodeEdit_FindClosestNode(self.origin);
+		g_way1 = ncNodeEditor::FindClosestNode(self.origin);
 
 		if (g_way1 == -1i)
 			return;
@@ -252,7 +252,7 @@ NodeEdit_Unlink(void)
 		g_waylink_status = 1;
 		env_message_single(self, "^2Selected first waypoint!\n");
 	} else if (g_waylink_status == 1) {
-		g_way2 = NodeEdit_FindClosestNode(self.origin);
+		g_way2 = ncNodeEditor::FindClosestNode(self.origin);
 
 		if (g_way2 == -1i)
 			return;
@@ -260,7 +260,7 @@ NodeEdit_Unlink(void)
 		g_waylink_status = 0;
 
 		if (g_way1 != g_way2) {
-			NodeEdit_UnlinkNodes(&g_pNodes[g_way1], &g_pNodes[g_way2]);
+			ncNodeEditor::UnlinkNodes(&g_pNodes[g_way1], &g_pNodes[g_way2]);
 		} else {
 			env_message_single(self, "^1Failed to link, the two points are the same!\n");
 		}
@@ -268,11 +268,11 @@ NodeEdit_Unlink(void)
 	}
 }
 
-static void
-NodeEdit_UnlinkTwo(void)
+void
+ncNodeEditor::UnlinkTwo(void)
 {
 	if (g_waylink_status == 0) {
-		g_way1 = NodeEdit_FindClosestNode(self.origin);
+		g_way1 = ncNodeEditor::FindClosestNode(self.origin);
 
 		if (g_way1 == -1i)
 			return;
@@ -280,7 +280,7 @@ NodeEdit_UnlinkTwo(void)
 		g_waylink_status = 1;
 		env_message_single(self, "^2Selected first waypoint!\n");
 	} else if (g_waylink_status == 1) {
-		g_way2 = NodeEdit_FindClosestNode(self.origin);
+		g_way2 = ncNodeEditor::FindClosestNode(self.origin);
 
 		if (g_way2 == -1i)
 			return;
@@ -288,8 +288,8 @@ NodeEdit_UnlinkTwo(void)
 		g_waylink_status = 0;
 
 		if (g_way1 != g_way2) {
-			NodeEdit_UnlinkNodes(&g_pNodes[g_way1], &g_pNodes[g_way2]);
-			NodeEdit_UnlinkNodes(&g_pNodes[g_way2], &g_pNodes[g_way1]);
+			ncNodeEditor::UnlinkNodes(&g_pNodes[g_way1], &g_pNodes[g_way2]);
+			ncNodeEditor::UnlinkNodes(&g_pNodes[g_way2], &g_pNodes[g_way1]);
 		} else {
 			env_message_single(self, "^1Failed to link, the two points are the same!\n");
 		}
@@ -297,16 +297,16 @@ NodeEdit_UnlinkTwo(void)
 	}
 }
 
-static void
-NodeEdit_HelperSpawns()
+void
+ncNodeEditor::HelperSpawns()
 {
 	for (entity a = world; (a = find(a, ::classname, "info_player_deathmatch"));) {
-		NodeEdit_CreateNode(a, TRUE);
+		ncNodeEditor::CreateNode(a, TRUE);
 	}
 }
 
-static void
-NodeEdit_GoToPoint(entity pl)
+void
+ncNodeEditor::GoToPoint(entity pl)
 {
 	vector vecSrc;
 	makevectors(pl.v_angle);
@@ -314,7 +314,7 @@ NodeEdit_GoToPoint(entity pl)
 	traceline(vecSrc, vecSrc + (v_forward * 4096), FALSE, pl);
 	print(sprintf("Telling all bots to go to %v\n", trace_endpos));
 
-	for (entity a = world; (a = find(a, classname, "player"));) {
+	for (entity a = world; (a = find(a, ::classname, "player"));) {
 		if (clienttype(a) != CLIENTTYPE_REAL) {
 			ncBot targ;
 			targ = (ncBot)a;
@@ -326,7 +326,7 @@ NodeEdit_GoToPoint(entity pl)
 }
 
 bool
-NodeEdit_SaveFile(string filename)
+ncNodeEditor::SaveFile(string filename)
 {
 	filestream file;
 
@@ -357,7 +357,7 @@ NodeEdit_SaveFile(string filename)
 }
 
 void
-NodeEdit_Flush(void)
+ncNodeEditor::Flush(void)
 {
 	for (int i = 0i; i < g_iNodes; i++) {
 		memfree(g_pNodes[i].m_pNeighbour);
@@ -368,14 +368,14 @@ NodeEdit_Flush(void)
 }
 
 bool
-NodeEdit_ReadFile(string strFile, bool flush)
+ncNodeEditor::ReadFile(string strFile, bool flush)
 {
 	int startId = 0i;
 	int offSet = 0i;
 
 	filestream file = fopen(strFile, FILE_READ);
 	if (file < 0) {
-		print("NodeEdit_ReadFile: unable to open ", strFile, "\n");
+		print("ncNodeEditor::ReadFile: unable to open ", strFile, "\n");
 		return (false);
 	}
 
@@ -383,7 +383,7 @@ NodeEdit_ReadFile(string strFile, bool flush)
 	tokenize(fgets(file));
 
 	if (flush) {
-		NodeEdit_Flush();
+		ncNodeEditor::Flush();
 		g_iNodes = (int)stoi(argv(0));
 		g_pNodes = memalloc(sizeof(*g_pNodes) * g_iNodes);
 	} else {
@@ -415,11 +415,11 @@ NodeEdit_ReadFile(string strFile, bool flush)
 	return (true);
 }
 
-static void
-NodeEdit_ConnectOne(void)
+void
+ncNodeEditor::ConnectOne(void)
 {
 	if (g_waylink_status == 0) {
-		g_way1 = NodeEdit_FindClosestNode(self.origin);
+		g_way1 = ncNodeEditor::FindClosestNode(self.origin);
 
 		if (g_way1 == -1i)
 			return;
@@ -427,7 +427,7 @@ NodeEdit_ConnectOne(void)
 		g_waylink_status = 1;
 		env_message_single(self, "^21/2 nodes selected...    \n");
 	} else if (g_waylink_status == 1) {
-		g_way2 = NodeEdit_FindClosestNode(self.origin);
+		g_way2 = ncNodeEditor::FindClosestNode(self.origin);
 
 		if (g_way2 == -1i)
 			return;
@@ -435,37 +435,7 @@ NodeEdit_ConnectOne(void)
 		g_waylink_status = 0;
 
 		if (g_way1 != g_way2) {
-			NodeEdit_LinkNodes(&g_pNodes[g_way1], &g_pNodes[g_way2]);
-			env_message_single(self, "^22/2 nodes selected, done!\n");
-		} else {
-			env_message_single(self, "^1Failed to link, the two points are the same!\n");
-		}
-		g_way1 = g_way2 = -1;
-	}
-}
-
-static void
-NodeEdit_ConnectTwo(void)
-{
-	if (g_waylink_status == 0) {
-		g_way1 = NodeEdit_FindClosestNode(self.origin);
-
-		if (g_way1 == -1i)
-			return;
-
-		g_waylink_status = 1;
-		env_message_single(self, "^21/2 nodes selected...    \n");
-	} else if (g_waylink_status == 1) {
-		g_way2 = NodeEdit_FindClosestNode(self.origin);
-
-		if (g_way2 == -1i)
-			return;
-
-		g_waylink_status = 0;
-
-		if (g_way1 != g_way2) {
-			NodeEdit_LinkNodes(&g_pNodes[g_way1], &g_pNodes[g_way2]);
-			NodeEdit_LinkNodes(&g_pNodes[g_way2], &g_pNodes[g_way1]);
+			ncNodeEditor::LinkNodes(&g_pNodes[g_way1], &g_pNodes[g_way2]);
 			env_message_single(self, "^22/2 nodes selected, done!\n");
 		} else {
 			env_message_single(self, "^1Failed to link, the two points are the same!\n");
@@ -475,13 +445,43 @@ NodeEdit_ConnectTwo(void)
 }
 
 void
-NodeEdit_DrawDebugInfo(void)
+ncNodeEditor::ConnectTwo(void)
+{
+	if (g_waylink_status == 0) {
+		g_way1 = ncNodeEditor::FindClosestNode(self.origin);
+
+		if (g_way1 == -1i)
+			return;
+
+		g_waylink_status = 1;
+		env_message_single(self, "^21/2 nodes selected...    \n");
+	} else if (g_waylink_status == 1) {
+		g_way2 = ncNodeEditor::FindClosestNode(self.origin);
+
+		if (g_way2 == -1i)
+			return;
+
+		g_waylink_status = 0;
+
+		if (g_way1 != g_way2) {
+			ncNodeEditor::LinkNodes(&g_pNodes[g_way1], &g_pNodes[g_way2]);
+			ncNodeEditor::LinkNodes(&g_pNodes[g_way2], &g_pNodes[g_way1]);
+			env_message_single(self, "^22/2 nodes selected, done!\n");
+		} else {
+			env_message_single(self, "^1Failed to link, the two points are the same!\n");
+		}
+		g_way1 = g_way2 = -1;
+	}
+}
+
+void
+ncNodeEditor::DrawDebugInfo(void)
 {
 	if (!g_iNodes) {
 		return;
 	}
 
-	int iNearest = NodeEdit_FindClosestNode(self.origin);
+	int iNearest = ncNodeEditor::FindClosestNode(self.origin);
 		makevectors([-90, 0, 0]);
 	
 	for (int i = 0i; i < g_iNodes; i++) {
@@ -604,14 +604,14 @@ NodeEdit_DrawDebugInfo(void)
 	}
 }
 
-static void
-NodeEdit_LoadCurrentMapNavMesh(void)
+void
+ncNodeEditor::LoadCurrentMapNavMesh(void)
 {
-	NodeEdit_ReadFile(sprintf("%s.way", mapname), true);
+	ncNodeEditor::ReadFile(sprintf("%s.way", mapname), true);
 }
 
 void
-NodeEdit_Cmd(void)
+ncNodeEditor::Cmd(void)
 {
 	if (!self) {
 		return;
@@ -619,46 +619,46 @@ NodeEdit_Cmd(void)
 
 	switch (argv(1)) {
 	case "goto":
-		NodeEdit_GoToPoint(self);
+		ncNodeEditor::GoToPoint(self);
 		break;
 	case "autolink":
-		NodeEdit_AutoLink(NodeEdit_FindClosestNode(self.origin));
+		ncNodeEditor::AutoLink(ncNodeEditor::FindClosestNode(self.origin));
 		break;
 	case "connect1":
-		NodeEdit_ConnectOne();
+		ncNodeEditor::ConnectOne();
 		break;
 	case "connect2":
-		NodeEdit_ConnectTwo();
+		ncNodeEditor::ConnectTwo();
 		break;
 	case "add":
-		NodeEdit_CreateNode(self, 1);
+		ncNodeEditor::CreateNode(self, 1);
 		break;
 	case "addchain":
-		NodeEdit_CreateNode(self, 0);
+		ncNodeEditor::CreateNode(self, 0);
 		break;
 	case "addsingle":
-		NodeEdit_CreateNode(self, -3);
+		ncNodeEditor::CreateNode(self, -3);
 		break;
 	case "addltn":
-		NodeEdit_CreateNode(self, -1);
+		ncNodeEditor::CreateNode(self, -1);
 		break;
 	case "addntl":
-		NodeEdit_CreateNode(self, -2);
+		ncNodeEditor::CreateNode(self, -2);
 		break;
 	case "addnear":
-		NodeEdit_CreateNode(self, -4);
+		ncNodeEditor::CreateNode(self, -4);
 		break;
 	case "addspawns":
-		NodeEdit_HelperSpawns();
+		ncNodeEditor::HelperSpawns();
 		break;
 	case "delete":
-		NodeEdit_DeleteNode(NodeEdit_FindClosestNode(self.origin));
+		ncNodeEditor::DeleteNode(ncNodeEditor::FindClosestNode(self.origin));
 		break;
 	case "purge":
 		Nodes_Flush();
 		break;
 	case "radius":
-		NodeEdit_SetRadius(NodeEdit_FindClosestNode(self.origin), stof(argv(2)));
+		ncNodeEditor::SetRadius(ncNodeEditor::FindClosestNode(self.origin), stof(argv(2)));
 		break;
 	case "radiushack":
 		for (int i = 0i; i < g_iNodes; i++) {
@@ -685,17 +685,17 @@ NodeEdit_Cmd(void)
 		}
 		break;
 	case "flag":
-		NodeEdit_LinkFlag(stoi(argv(2)));
+		ncNodeEditor::LinkFlag(stoi(argv(2)));
 		break;
 	case "unlink1":
-		NodeEdit_Unlink();
+		ncNodeEditor::Unlink();
 		break;
 	case "unlink2":
-		NodeEdit_UnlinkTwo();
+		ncNodeEditor::UnlinkTwo();
 		break;
 	case "move":
 		vector p;
-		int n = NodeEdit_FindClosestNode(self.origin);
+		int n = ncNodeEditor::FindClosestNode(self.origin);
 		if (n >= 0) {
 			p[0] = stof(argv(2));
 			p[1] = stof(argv(3));
@@ -704,19 +704,19 @@ NodeEdit_Cmd(void)
 		}
 		break;
 	case "movetopos":
-		int nearest = NodeEdit_FindClosestNode(self.origin);
+		int nearest = ncNodeEditor::FindClosestNode(self.origin);
 		if (nearest >= 0) {
 			g_pNodes[nearest].m_vecOrigin = self.origin;
 		}
 		break;
 	case "save":
-		NodeEdit_SaveFile(argv(2));
+		ncNodeEditor::SaveFile(argv(2));
 		break;
 	case "load":
-		NodeEdit_ReadFile(argv(2), true);
+		ncNodeEditor::ReadFile(argv(2), true);
 		break;
 	case "merge":
-		NodeEdit_ReadFile(argv(2), false);
+		ncNodeEditor::ReadFile(argv(2), false);
 		break;
 	case "loadpb":
 		Way_ReadPBFile(argv(2), true);
@@ -743,7 +743,7 @@ void
 SV_AddDebugPolygons(void)
 {
 	if (autocvar_nav_visualize) {
-		NodeEdit_DrawDebugInfo();
+		ncNodeEditor::DrawDebugInfo();
 	}
 
 	if (autocvar_r_renderEntityInfo) {
@@ -759,7 +759,7 @@ SV_AddDebugPolygons(void)
 		return;
 
 	if (!g_iNodes) {
-		NodeEdit_LoadCurrentMapNavMesh();
+		ncNodeEditor::LoadCurrentMapNavMesh();
 	}
 
 #if 1

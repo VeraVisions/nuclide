@@ -137,7 +137,7 @@ Nodes_BuildFromEnts(void)
 
 	if (g_iNodes) {
 		NSLog("saving nodes nodes for %s", mapname);
-		NodeEdit_SaveFile(sprintf("%s.way", mapname));
+		ncNodeEditor::SaveFile(sprintf("%s.way", mapname));
 	} else {
 		NSLog("no node data found for %s", mapname);
 	}
@@ -172,7 +172,7 @@ Nodes_Init(void)
 
 	/* skip if present. TODO: check if they're out of date? */
 	if (fileExists(sprintf("data/%s.way", mapname))) {
-		NodeEdit_ReadFile(sprintf("data/%s.way", mapname), true);
+		ncNodeEditor::ReadFile(sprintf("data/%s.way", mapname), true);
 	} else {
 		Nodes_BuildFromEnts();
 	}
@@ -185,5 +185,5 @@ Nodes_Init(void)
 void
 Nodes_Flush(void)
 {
-	NodeEdit_Flush();
+	ncNodeEditor::Flush();
 }

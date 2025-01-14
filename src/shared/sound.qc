@@ -238,10 +238,10 @@ Sound_ParseField(int i, int a, string keyName, string valueCS)
 		g_sounds[i].flags |= SNDFL_STEP;
 		break;
 	case "distshader":
-		g_sounds[i].distshader = setValue;
+		g_sounds[i].distshader = valueCS;
 		break;
 	case "pointparticle":
-		g_sounds[i].pointparticle = particleeffectnum(setValue);
+		g_sounds[i].pointparticle = particleeffectnum(valueCS);
 		break;
 	case "alerts":
 		dprint("\tSound set to alert enemy AI\n");
@@ -422,8 +422,14 @@ Sound_Precache(string shader)
 	string line;
 	int index;
 
-	if (!shader)
-		return -1;
+	if (!STRING_SET(shader)) {
+		return -1i;
+	}
+
+	if (fileExists(strcat("sound/", shader)) == true) {
+		precache_sound(shader);
+		return -1i;
+	}
 
 	index = g_sounds_count;
 

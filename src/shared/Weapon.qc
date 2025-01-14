@@ -251,8 +251,8 @@ ncWeapon::Spawned(void)
 	}
 
 	m_bInvCarry = true;
-	precache_model(m_strWeaponViewModel);
-	precache_model(m_strWeaponPlayerModel);
+	precache.Model(m_strWeaponViewModel);
+	precache.Model(m_strWeaponPlayerModel);
 
 	SetViewModel(m_strWeaponViewModel);
 	SetWorldModel(model);

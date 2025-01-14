@@ -95,7 +95,7 @@ path_corner::Spawned(void)
 {
 	super::Spawned();
 
-	if (m_strOnPass)
+	if (STRING_SET(m_strOnPass))
 		m_strOnPass = CreateOutput(m_strOnPass);
 }
 

@@ -33,6 +33,7 @@ class func_dustmotes:ncEntity
 public:
 	void func_dustmotes(void);
 	
+	virtual void Precache(void);
 	virtual void Spawned(void);
 	virtual float predraw(void);
 	virtual void SpawnKey(string,string);
@@ -43,6 +44,13 @@ private:
 	int m_iPart;
 	float m_flNexTime;
 };
+
+void
+func_dustmotes::func_dustmotes(void)
+{
+	solid = SOLID_NOT;
+	isCSQC = true;
+}
 
 bool
 func_dustmotes::CanSpawn(bool clientSide)
@@ -55,11 +63,13 @@ func_dustmotes::predraw(void)
 {
 	vector vecPlayer = g_view.GetCameraOrigin();
 
-	if (checkpvs(vecPlayer, this) == FALSE)
+	if (checkpvs(vecPlayer, this) == FALSE) {
 		return (PREDRAW_NEXT);
+	}
 
-	if (m_flNexTime > cltime)
+	if (m_flNexTime > cltime) {
 		return (PREDRAW_NEXT);
+	}
 
 	for (int i = 0; i < m_iCount; i++) {
 		vector vecPos;
@@ -76,11 +86,16 @@ func_dustmotes::predraw(void)
 }
 
 void
+func_dustmotes::Precache(void)
+{
+	precache.Model(model);
+}
+
+void
 func_dustmotes::Spawned(void)
 {
 	super::Spawned();
 
-	precache_model(model);
 	setmodel(this, model);
 	setorigin(this, origin);
 	movetype = MOVETYPE_NONE;
@@ -99,11 +114,4 @@ func_dustmotes::SpawnKey(string strField, string strKey)
 	default:
 		super::SpawnKey(strField, strKey);
 	}
-}
-
-void
-func_dustmotes::func_dustmotes(void)
-{
-	solid = SOLID_NOT;
-	isCSQC = true;
 }

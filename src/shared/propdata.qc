@@ -77,7 +77,7 @@ PropData_PrecacheGib(string modelPath)
 	}
 
 	tokenizebyseparator(modelPath, "#");
-	precache_model(argv(0));
+	precache.Model(argv(0));
 }
 
 void
@@ -401,14 +401,17 @@ PropData_ForModel(string modelname)
 	string line;
 	int index;
 
-	if (!g_propdata_count)
+	if (!g_propdata_count) {
 		return -1;
+	}
 
-	if (!modelname)
+	if (!modelname) {
 		return -1;
+	}
 
-	if (substring(modelname, 0, 1) == "*")
+	if (substring(modelname, 0, 1) == "*") {
 		return -1;
+	}
 
 	index = g_propdata_count;
 	modelname = strtolower(modelname);
@@ -460,12 +463,13 @@ PropData_ForModel(string modelname)
 	/* not found. try again? */
 	if (fh < 0) {
 		/* try the Source Engine version */
-		fh = fopen(Util_ChangeExtension(modelname, "phy"), FILE_READ);
+		string binaryFile = Util_ChangeExtension(modelname, "phy");
+		fh = fopen(binaryFile, FILE_READ);
 
 		if (fh < 0) {
 			g_propdata_count--;
 			NSLog("No PropData for model %S", modelname);
-			return -1;
+			return -1i;
 		}
 
 		int fileSize;
@@ -478,7 +482,7 @@ PropData_ForModel(string modelname)
 		filePos = fread(fh, (void*)&fileSize, 4i); /* header size, sanity check */
 
 		if (fileSize != 16i) {
-			NSError("Only .phy files from Source are supported.");
+			NSError("%s: not in Source Engine format", binaryFile);
 			fclose(fh);
 			return -1;
 		}
@@ -494,7 +498,7 @@ PropData_ForModel(string modelname)
 
 		/* HACK: We won't support ragdolls, for now. */
 		if (numSolids > 1) {
-			NSError("Only non-ragdoll models are currently supported.");
+			NSError("%s: ragdoll models not supported", binaryFile);
 			fclose(fh);
 			return -1;
 		}
@@ -608,19 +612,23 @@ PropData_Load(string type)
 {
 	int index;
 
-	if (!type)
-		return -1;
+	if (g_propdata_count <= 0i) {
+		return -1i;
+	}
 
-	if (substring(type, 0, 1) == "*")
-		return -1;
+	if (!type) {
+		return -1i;
+	}
+
+	if (substring(type, 0, 1) == "*") {
+		return -1i;
+	}
 
 	type = strtolower(type);
-
 	index = (int)hash_get(g_hashpropdata, type, -1);
 
-	if (index < 0) {
-		NSLog("PropData type %S is not defined.", type);
-		return -1;
+	if (index < 0i) {
+		return -1i;
 	} else {
 		return index;
 	}
@@ -883,7 +891,7 @@ PropData_Init(void)
 				mname = argv(0);
 			}
 
-			precache_model(mname);
+			precache.Model(mname);
 
 			/* gotta tokenize our inputs again */
 			x = tokenize(g_breakmodel[i].data);
@@ -1025,8 +1033,7 @@ BreakModel_SpawnID(vector smins, vector smaxs, vector dir, float speed, int coun
 
 		if (usePhysics == false) {
 			gib.SetSize([-8,-8,-8],[8,8,8]);
-			makevectors(dir);
-			gib.velocity = (v_forward * speed) * 0.75;
+			gib.velocity = (dir * speed) * 0.75;
 			gib.velocity[0] += (random() - 0.5) * (speed * 0.25);
 			gib.velocity[1] += (random() - 0.5) * (speed * 0.25);
 			gib.velocity[2] += (random() - 0.5) * (speed * 0.25);
@@ -1083,9 +1090,9 @@ BreakModel_Receive(void)
 	smaxs[1] = readcoord();
 	smaxs[2] = readcoord();
 
-	dir[0] = readcoord();
-	dir[1] = readcoord();
-	dir[2] = readcoord();
+	dir[0] = readfloat();
+	dir[1] = readfloat();
+	dir[2] = readfloat();
 
 	speed = readfloat();
 	count = readbyte();
@@ -1158,9 +1165,9 @@ BreakModel_Spawn(vector smins, vector smaxs, vector dir, float speed, int count,
 	WriteCoord(MSG_MULTICAST, smaxs[0]);
 	WriteCoord(MSG_MULTICAST, smaxs[1]);
 	WriteCoord(MSG_MULTICAST, smaxs[2]);
-	WriteCoord(MSG_MULTICAST, dir[0]);
-	WriteCoord(MSG_MULTICAST, dir[1]);
-	WriteCoord(MSG_MULTICAST, dir[2]);
+	WriteFloat(MSG_MULTICAST, dir[0]);
+	WriteFloat(MSG_MULTICAST, dir[1]);
+	WriteFloat(MSG_MULTICAST, dir[2]);
 	WriteFloat(MSG_MULTICAST, speed);
 	WriteByte(MSG_MULTICAST, count);
 	multicast(pvsPosition, MULTICAST_PVS);

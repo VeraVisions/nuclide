@@ -44,7 +44,7 @@ public:
 	/* overrides */
 	virtual void Save(float);
 	virtual void Restore(string,string);
-	virtual void Spawned(void);
+	virtual void Precache(void);
 	virtual void SpawnKey(string,string);
 	virtual void customphysics(void);
 	virtual void Respawn(void);
@@ -130,13 +130,11 @@ func_healthcharger::SpawnKey(string strKey, string strValue)
 }
 
 void
-func_healthcharger::Spawned(void)
+func_healthcharger::Precache(void)
 {
-	super::Spawned();
-
-	precache_sound(m_strSndFirst);
-	precache_sound(m_strSndCharging);
-	precache_sound(m_strSndDone);
+	precache.Sound(m_strSndFirst);
+	precache.Sound(m_strSndCharging);
+	precache.Sound(m_strSndDone);
 }
 
 void

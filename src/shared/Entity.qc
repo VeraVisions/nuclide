@@ -55,7 +55,7 @@ void
 ncEntity::Precache(void)
 {
 	if (STRING_SET(model)) {
-		precache_model(model);
+		precache.Model(model);
 	}
 
 #ifdef SERVER
@@ -1213,6 +1213,7 @@ ncEntity::SpawnKey(string strKey, string strValue)
 	bool tempCheck = false;
 	/* we do re-read a lot of the builtin fields in case we want to set
 	   defaults. just in case anybody is wondering. */
+
 	switch (strKey) {
 	case "spawnflags":
 		spawnflags = ReadFloat(strValue);

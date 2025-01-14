@@ -274,7 +274,7 @@ Cmd_ParseServerCommand(void)
 		break;
 #ifdef BOT_INCLUDED
 	case "way":
-		NodeEdit_Cmd();
+		ncNodeEditor::Cmd();
 		break;
 #endif
 	case "listEntityDef":

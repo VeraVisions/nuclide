@@ -476,6 +476,7 @@ ncSurfacePropEntity::SpawnKey(string keyName, string setValue)
 		else
 			DisableBleeding();
 
+		break;
 	case "health":
 		max_health = health = ReadFloat(setValue);
 		m_oldHealth = health;
@@ -500,7 +501,6 @@ ncSurfacePropEntity::SpawnKey(string keyName, string setValue)
 		break;
 	}
 }
-
 
 void
 ncSurfacePropEntity::Pain(entity inflictor, entity attacker, int damage, vector dir, vector absImpactPos, int hitBody)

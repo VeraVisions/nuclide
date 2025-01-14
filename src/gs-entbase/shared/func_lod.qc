@@ -83,7 +83,6 @@ func_lod::Spawned(void)
 {
 	super::Spawned();
 
-	precache_model(model);
 	setmodel(this, model);
 	setorigin(this, origin);
 	movetype = MOVETYPE_NONE;

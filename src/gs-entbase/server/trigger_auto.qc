@@ -126,9 +126,10 @@ trigger_auto::Respawn(void)
 void
 trigger_auto::Processing(void)
 {
-	if (m_strGlobalState) {
-		if (GetGlobalValue(m_strGlobalState) == 0)
+	if (STRING_SET(m_strGlobalState)) {
+		if (GetGlobalValue(m_strGlobalState) == 0) {
 			return;
+		}
 	}
 
 	UseTargets(this, m_iTriggerState, m_flDelay);

@@ -49,7 +49,7 @@ ncPortal::ncPortal(void)
 	}
 
 	/* default fallback */
-	precache_model("models/b_portal.bsp");
+	precache.Model("models/b_portal.bsp");
 	SetPortalModel("models/b_portal.bsp");
 #endif
 }

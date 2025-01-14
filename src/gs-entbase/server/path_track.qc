@@ -131,6 +131,7 @@ path_track::SpawnKey(string keyName, string setValue)
 void
 path_track::Respawn(void)
 {
+	super::Respawn();
 	m_bTrackEnabled = HasSpawnFlags(PATHTRACK_DISABLED) ? false : true;
 }
 

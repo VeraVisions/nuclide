@@ -26,7 +26,7 @@ MapC_Init(void)
 
 	/* No mapname.dat, exit out */
 	if (fileExists(mapProgs) == false) {
-		NSWarning("No MapC for level %s loaded. (%s)", cvar_string("mapname"), mapProgs);
+		NSLog("No MapC for level %s loaded. (%s)", cvar_string("mapname"), mapProgs);
 		return;
 	}
 

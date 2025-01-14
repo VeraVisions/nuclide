@@ -281,8 +281,10 @@ ncActor::Spawned(void)
 
 		if (defKey != "") {
 			int defValue = GetDefInt(defKey);
-			EntLog("Giving %S some %i units of %S", classname, defValue, defKey);
-			GiveAmmo(i, defValue);
+			if (defValue > 0i) {
+				EntLog("Giving %S some %i units of %S", classname, defValue, defKey);
+				GiveAmmo(i, defValue);
+			}
 		}
 	}
 

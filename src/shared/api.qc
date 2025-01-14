@@ -892,6 +892,17 @@ void
 sendInput(entity target, string inputName, string dataString, entity activator)
 {
 	ncEntity targetEntity = (ncEntity)target;
+
+	if (!target) {
+		NSError("target entity is nil");
+		return;
+	}
+
+	if (!STRING_SET(inputName)) {
+		NSError("No input specified.");
+		return;
+	}
+
 #ifdef SERVER
 	targetEntity.Input(activator, inputName, dataString);
 #endif
@@ -901,6 +912,10 @@ sendInput(entity target, string inputName, string dataString, entity activator)
 bool
 isAI(entity entityToCheck)
 {
+	if (!entityToCheck) {
+		return (false);
+	}
+
 	if (entityToCheck.flags & FL_MONSTER) {
 		return (true);
 	}
@@ -911,6 +926,10 @@ isAI(entity entityToCheck)
 bool
 isAlive(entity entityToCheck)
 {
+	if (!entityToCheck) {
+		return (false);
+	}
+
 #ifdef SERVER
 	if (entityToCheck.takedamage != DAMAGE_NO) {
 		ncSurfacePropEntity livingEnt = (ncSurfacePropEntity)entityToCheck;
@@ -924,6 +943,10 @@ isAlive(entity entityToCheck)
 bool
 isGodMode(entity entityToCheck)
 {
+	if (!entityToCheck) {
+		return (false);
+	}
+
 	if (entityToCheck.flags & FL_GODMODE) {
 		return (true);
 	}
@@ -934,6 +957,10 @@ isGodMode(entity entityToCheck)
 bool
 isClient(entity entityToCheck)
 {
+	if (!entityToCheck) {
+		return (false);
+	}
+
 	return (entityToCheck.flags & FL_CLIENT) ? (true) : (false);
 }
 
@@ -961,18 +988,30 @@ isSentient(entity entityToCheck)
 bool
 isBot(entity entityToCheck)
 {
-	return userinfo.GetBool(self, "*bot");
+	if (!entityToCheck) {
+		return (false);
+	}
+
+	return userinfo.GetBool(entityToCheck, "*bot");
 }
 
 bool
 isWeapon(entity entityToCheck)
 {
+	if (!entityToCheck) {
+		return (false);
+	}
+
 	return (entityToCheck._isWeapon) ? (true) : (false);
 }
 
 bool
 isItem(entity entityToCheck)
 {
+	if (!entityToCheck) {
+		return (false);
+	}
+
 	return (entityToCheck._isItem) ? (true) : (false);
 }
 
@@ -1011,15 +1050,33 @@ SHPF_entityDef_GetVector(string declName, string keyName)
 int
 SHPF_precache_Model(string modelPath)
 {
+	if (!STRING_SET(modelPath)) {
+		return (0i);
+	}
+
 	precache_model(modelPath);
 	PropData_ForModel(modelPath);
 	return (int)getmodelindex(modelPath, false);
 }
 
 int
-SHPF_precache_Sound(string modelPath)
+SHPF_precache_Sound(string soundDecl)
 {
-	return (int)Sound_Precache(modelPath);
+	if (!STRING_SET(soundDecl)) {
+		return (-1i);
+	}
+
+	return (int)Sound_Precache(soundDecl);
+}
+
+int
+SHPF_precache_Particle(string particleName)
+{
+	if (!STRING_SET(particleName)) {
+		return (0i);
+	}
+
+	return (int)particleeffectnum(particleName);
 }
 
 void

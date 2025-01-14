@@ -1,7 +1,8 @@
 #includelist
+Hint.qc
 nodes.qc
 route.qc
-node_edit.qc
+NodeEditor.qc
 way_convert.qc
 NavInfo.qc
 #endlist

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2024 Vera Visions LLC.
+ * Copyright (c) 2016-2025 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -367,8 +367,40 @@ entityDefAPI_t entityDef;
 
 typedef struct
 {
-	float Model(string);
-	float Sound(string);
+	/** Precaches a given model file and additional helper files.
+
+	`precache.Model("models/weapons/v_pistol.vvm");`
+
+	@param pathToModel to precache
+	@return modelindex value. */
+	float Model(string pathToModel);
+
+	/** Precaches a given sound def or sample.
+
+	`precache.Sound("Foo.Bar");`
+	`precache.Sound("foo/bar.wav");`
+
+	@param soundDef to precache
+	@return sound def id. */
+	float Sound(string soundDef);
+
+	/** Precaches a given particle effect.
+
+	The following loads `r_part impactSpark` from `particles/weapon_laser.cfg`.
+
+	`precache.Particle("weapon_laser.impactSpark");
+
+	@param particleEffect to precache
+	@return particle effect num. */
+	float Particle(string particleEffect);
+
+	/** Precaches a given entity class.
+	Ensuring models, sounds and other assets referenced
+	within are loaded ahead of time.
+
+	@param className to precache
+	@return Success. */
+	bool Entity(string className);
 } precacheAPI_t;
 precacheAPI_t precache;
 
@@ -553,6 +585,8 @@ _shared_main(void)
 
 	precache.Model = linkToSharedProgs("SHPF_precache_Model");
 	precache.Sound = linkToSharedProgs("SHPF_precache_Sound");
+	precache.Particle = linkToSharedProgs("SHPF_precache_Particle");
+	precache.Entity = linkToSharedProgs("EntityDef_Precache");
 
 	soundKit.Play = linkToSharedProgs("SHPF_sounds_Play");
 

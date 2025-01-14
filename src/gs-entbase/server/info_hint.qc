@@ -49,13 +49,6 @@ typedef enum
 	HINT_WORLD_ALIEN_BLOOD = 1003,
 } hinttype_t;
 
-typedef enum
-{
-	IGNORE_NO,
-	IGNORE_YES,
-	IGNORE_DEFAULT
-} ignorefacing_t;
-
 /* TODO: Make this match ncMonster more */
 typedef enum
 {
@@ -142,7 +135,7 @@ However, that was never completed.
 @ingroup pointentity
 */
 class
-info_hint:ncPointTrigger
+info_hint:ncHint
 {
 public:
 	void info_hint(void);

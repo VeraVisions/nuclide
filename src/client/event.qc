@@ -283,18 +283,6 @@ Event_Parse(float type)
 	case EV_ENTITYEVENT:
 		EV_EntityEvent();
 		break;
-	case EV_BLOOD:
-		vector vBloodPos = g_vec_null;
-		vector vBloodColor = g_vec_null;
-
-		vBloodPos[0] = readcoord();
-		vBloodPos[1] = readcoord();
-		vBloodPos[2] = readcoord();
-
-		vBloodColor[0] = readbyte() / 255;
-		vBloodColor[1] = readbyte() / 255;
-		vBloodColor[2] = readbyte() / 255;
-		break;
 	case EV_CHAT:
 		float fSender = readbyte();
 		float fTeam = readbyte();

@@ -37,6 +37,7 @@ class func_smokevolume:ncEntity
 public:
 	void func_smokevolume(void);
 
+	virtual void Precache(void);
 	virtual void Spawned(void);
 	virtual float predraw(void);
 	virtual void SpawnKey(string, string);
@@ -181,11 +182,16 @@ func_smokevolume::predraw(void)
 }
 
 void
+func_smokevolume::Precache(void)
+{
+	precache.Model(model);
+}
+
+void
 func_smokevolume::Spawned(void)
 {
 	super::Spawned();
 
-	precache_model(model);
 	setmodel(this, model);
 	setorigin(this, origin);
 	movetype = MOVETYPE_NONE;

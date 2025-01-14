@@ -69,7 +69,8 @@ public:
 	virtual void Save(float);
 	virtual void Restore(string,string);
 	virtual void SpawnKey(string,string);
-	virtual void Spawned(void);
+	virtual void Precache(void);
+	virtual void Respawn(void);
 	virtual void Trigger(entity, triggermode_t);
 
 private:
@@ -129,13 +130,15 @@ env_beverage::SpawnKey(string strKey, string strValue)
 }
 
 void
-env_beverage::Spawned(void)
+env_beverage::Precache(void)
 {
-	super::Spawned();
+	precache.Model("models/can.mdl");
+	precache.Sound("weapons/g_bounce3.wav");
+}
 
-	precache_model("models/can.mdl");
-	precache_sound("weapons/g_bounce3.wav");
-
+void
+env_beverage::Respawn(void)
+{
 	m_bReady = true;
 
 	if (m_sodaSkin == SKIN_RANDOM) {

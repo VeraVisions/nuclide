@@ -51,7 +51,7 @@ env_shooter:ncRenderableEntity
 public:
 	void env_shooter(void);
 
-	virtual void Spawned(void);
+	virtual void Precache(void);
 	virtual void Save(float);
 	virtual void Restore(string,string);
 	virtual void SpawnKey(string,string);
@@ -93,40 +93,38 @@ env_shooter::env_shooter(void)
 }
 
 void
-env_shooter::Spawned(void)
+env_shooter::Precache(void)
 {
-	super::Spawned();
+	if (STRING_SET(m_strShootModel)) {
+		precache.Model(m_strShootModel);
 
-	if (m_strShootModel) {
-		precache_model(m_strShootModel);
+		/* figure out if we're a sprite... */
+		if (Util_ExtensionFromString(m_strShootModel) == "spr") {
+			m_bCanScale = true;
+		}
 	}
 
 	/* There isn't a much more portable to do this, maybe this can be abstracted
 		through separate soundDef entries but I don't know if that'll be less annoying. */
 	switch (m_flShootSounds) {
 	case 0:	/* glass */
-		Sound_Precache("func_breakable.impact_glass");
+		Sound_Precache("sfx_impact.glass");
 		break;
 	case 1:	/* wood */
-		Sound_Precache("func_breakable.impact_wood");
+		Sound_Precache("sfx_impact.wood");
 		break;
 	case 2:	/* metal */
-		Sound_Precache("func_breakable.impact_metal");
+		Sound_Precache("sfx_impact.metal");
 		break;
 	case 3: /* flesh */
-		Sound_Precache("func_breakable.impact_flesh");
+		Sound_Precache("sfx_impact.flesh");
 		break;
 	case 4:	/* concrete */
-		Sound_Precache("func_breakable.impact_concrete");
+		Sound_Precache("sfx_impact.concrete");
 		break;
 	case -1: /* none */
 	default:
 		break;
-	}
-
-	/* figure out if we're a sprite... */
-	if (Util_ExtensionFromString(m_strShootModel) == "spr") {
-		m_bCanScale = true;
 	}
 }
 
@@ -212,7 +210,7 @@ env_shooter::SpawnKey(string strKey, string strValue)
 		m_flGibLife = ReadFloat(strValue);
 		break;
 	case "shootmodel":
-		m_strShootModel = strValue;
+		m_strShootModel = ReadString(strValue);
 		break;
 	case "shootsounds":
 		m_flShootSounds = ReadFloat(strValue);

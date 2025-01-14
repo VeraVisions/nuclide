@@ -76,6 +76,7 @@ public:
 	virtual void Restore(string,string);
 	virtual void SpawnKey(string,string);
 	virtual void Spawned(void);
+	virtual void Precache(void);
 	virtual void Respawn(void);
 	virtual void EvaluateEntity(void);
 	virtual float SendEntity(entity,float);
@@ -225,7 +226,12 @@ ambient_generic::Spawned(void)
 	spawnflags |= MSF_MULTIPLAYER;
 
 	super::Spawned();
-	precache_sound(m_strSpawnPath);
+}
+
+void
+ambient_generic::Precache(void)
+{
+	precache.Sound(m_strSpawnPath);
 }
 
 void

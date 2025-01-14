@@ -882,6 +882,9 @@ ncIO::SpawnKey(string strKey, string strValue)
 	case "maxs":
 		maxs = ReadVector(strValue);
 		break;
+	case "target":
+		target = strValue;
+		break;
 	case "targetname":
 		targetname = strValue;
 		break;
@@ -1005,8 +1008,8 @@ ncIO::SetNextThink(float fl)
 	float flTime = GetTime() + fl;
 
 	/* HACK: to make sure things happen post-spawn */
-	if (flTime == 0.0f) {
-		flTime = 0.001f;
+	if (flTime < 0.1f) {
+		flTime = 0.1f;
 	}
 
 	if (flTime >= 0) {
