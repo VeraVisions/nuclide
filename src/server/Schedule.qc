@@ -147,10 +147,6 @@ ncSchedule::Think(void)
 	if (!m_controllingActor) {
 		shouldCancel = true;
 	} else {
-		if (m_controllingActor.IsAlive() == false) {
-			shouldCancel = true;
-		}
-
 		if (m_controllingActor.m_activeSchedule != this) {
 			shouldCancel = true;
 		}

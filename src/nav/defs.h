@@ -19,3 +19,4 @@
 #include "route.h"
 #include "node_edit.h"
 #include "way_convert.h"
+#include "NavInfo.h"

@@ -1969,6 +1969,7 @@ ncMonster::Death(entity inflictor, entity attacker, int damage, vector dir, vect
 	}
 
 	m_iFlags = 0x0;
+	CancelSchedule();
 
 	switch (hitBody) {
 	case BODY_HEAD:
@@ -2265,7 +2266,7 @@ ncMonster::Input( entity entityActivator, string inputName, string dataField )
 		}
 		break;
 	case "FindCoverFromEnemy":
-		vector coverPos = Nodes_FindCoverFromEnemy(this);
+		vector coverPos = ncNavInfo::FindCoverFromEnemy(this);
 
 		if (vlen(coverPos) > 0.0f) {
 			RouteToPosition(coverPos);

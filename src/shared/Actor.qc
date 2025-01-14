@@ -478,7 +478,7 @@ ncActor::Input(entity eAct, string strInput, string strData)
 // 		NSWarning("Task %S unimplemented", strInput);
 		break;
 	case "GoToCover":
-		vector coverPos = Nodes_FindCoverFromPosition(this, GetOrigin());
+		vector coverPos = ncNavInfo::FindCoverFromPosition(this, GetOrigin());
 
 		if (vlen(coverPos) > 0.0f) {
 			RouteToPosition(coverPos);
@@ -487,7 +487,7 @@ ncActor::Input(entity eAct, string strInput, string strData)
 		}
 		break;
 	case "GoToSpotInRadius":
-		vector t = Nodes_FindEmptySpotNearPosition(this, GetOrigin(), 128.0f, stof(strData));
+		vector t = ncNavInfo::FindEmptySpotNearPosition(this, GetOrigin(), 128.0f, stof(strData));
 
 		if (vlen(t) > 0.0f) {
 			RouteToPosition(t);
@@ -496,7 +496,7 @@ ncActor::Input(entity eAct, string strInput, string strData)
 		}
 		break;
 	case "AvoidSpotInRadius":
-		vector t = Nodes_FindEmptySpotAwayFromPosition(this, GetOrigin(), 0.0f, stof(strData));
+		vector t = ncNavInfo::FindEmptySpotAwayFromPosition(this, GetOrigin(), 0.0f, stof(strData));
 
 		if (vlen(t) > 0.0f) {
 			RouteToPosition(t);

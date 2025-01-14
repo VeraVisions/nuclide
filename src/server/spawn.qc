@@ -167,17 +167,16 @@ Spawn_TeleportToSpawn(entity targetEnt)
 	}
 
 	/* if not set, don't bother teleporting */
-	if (!STRING_SET(desiredSpawn)) {
-		return;
-	}
+	if (STRING_SET(desiredSpawn)) {
 
-	entity spawnPoint = Spawn_SelectRandom(desiredSpawn);
+		entity spawnPoint = Spawn_SelectRandom(desiredSpawn);
 
-	if (spawnPoint) {
-		targetEnt.origin = spawnPoint.origin;
-		targetEnt.angles = spawnPoint.angles;
-		setorigin_safe(targetEnt, targetEnt.origin);
-		return;
+		if (spawnPoint) {
+			targetEnt.origin = spawnPoint.origin;
+			targetEnt.angles = spawnPoint.angles;
+			setorigin_safe(targetEnt, targetEnt.origin);
+			return;
+		}
 	}
 
 	spawnPoint = Spawn_SelectRandom("info_player_start");
