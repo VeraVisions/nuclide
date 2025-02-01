@@ -273,5 +273,3 @@ hsvToRGB(float h, float s, float v)
 	return col;
 }
 /** @} */ // end of math
-
-#include "math_vector.h"

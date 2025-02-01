@@ -1,5 +1,3 @@
  #includelist
 flags.h
-fx_blood.qc
-fx_corpse.qc
 #endlist

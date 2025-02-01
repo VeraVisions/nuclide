@@ -92,7 +92,7 @@ to in-game events without you having to dig into the source code.
 
 #ifndef ENTITYDEF_MAX
 /** Can be redefined in the server its progs.src file. */
-#define ENTITYDEF_MAX 256
+#define ENTITYDEF_MAX 512
 #endif
 
 /** Options for EntityDef checks. */

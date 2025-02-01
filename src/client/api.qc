@@ -387,20 +387,20 @@ Draw_RoundedBox(vector pos, vector size, vector rgb, float a)
 	tileSize[0] = tileSize[1] =  (16 * tileScale);
 
 
-	drawpic(pos, "textures/ui/m_topleft.tga", tileSize, rgb, a, 0);
-	drawpic(pos + [size[0] - tileSize[0], 0], "textures/ui/m_topright.tga", tileSize, rgb, a, 0);
-	drawpic(pos + [0, size[1] - tileSize[1]], "textures/ui/m_bottomleft.tga", tileSize, rgb, a, 0);
-	drawpic(pos + [size[0] - tileSize[0], size[1] - tileSize[1]], "textures/ui/m_bottomright.tga", tileSize, rgb, a, 0);
+	drawpic(pos, "gfx/ui/m_topleft.tga", tileSize, rgb, a, 0);
+	drawpic(pos + [size[0] - tileSize[0], 0], "gfx/ui/m_topright.tga", tileSize, rgb, a, 0);
+	drawpic(pos + [0, size[1] - tileSize[1]], "gfx/ui/m_bottomleft.tga", tileSize, rgb, a, 0);
+	drawpic(pos + [size[0] - tileSize[0], size[1] - tileSize[1]], "gfx/ui/m_bottomright.tga", tileSize, rgb, a, 0);
 
 	if (size_x > 32) {
-		drawpic(pos + [tileSize[0], 0], "textures/ui/m_top.tga", [size[0] - (tileSize[0] * 2), tileSize[1]], rgb, a, 0);
-		drawpic(pos + [tileSize[0], size[1] - tileSize[1]], "textures/ui/m_bottom.tga", [size[0] - (tileSize[0] * 2), tileSize[1]], rgb, a, 0);
+		drawpic(pos + [tileSize[0], 0], "gfx/ui/m_top.tga", [size[0] - (tileSize[0] * 2), tileSize[1]], rgb, a, 0);
+		drawpic(pos + [tileSize[0], size[1] - tileSize[1]], "gfx/ui/m_bottom.tga", [size[0] - (tileSize[0] * 2), tileSize[1]], rgb, a, 0);
 	}
 
 	if (size_y > 32) {
-		drawpic(pos + [0, tileSize[1]], "textures/ui/m_left.tga", [tileSize[0], size[1] - (tileSize[0] * 2)], rgb, a, 0);
-		drawpic(pos + [size[0] - tileSize[0], tileSize[1]], "textures/ui/m_right.tga", [tileSize[0], size[1] - (tileSize[0] * 2)], rgb, a, 0);
-		drawpic(pos + [tileSize[0], tileSize[1]], "textures/ui/m_mid.tga", [size[0] - (tileSize[0] * 2), size[1] - (tileSize[0] * 2)], rgb, a, 0);
+		drawpic(pos + [0, tileSize[1]], "gfx/ui/m_left.tga", [tileSize[0], size[1] - (tileSize[0] * 2)], rgb, a, 0);
+		drawpic(pos + [size[0] - tileSize[0], tileSize[1]], "gfx/ui/m_right.tga", [tileSize[0], size[1] - (tileSize[0] * 2)], rgb, a, 0);
+		drawpic(pos + [tileSize[0], tileSize[1]], "gfx/ui/m_mid.tga", [size[0] - (tileSize[0] * 2), size[1] - (tileSize[0] * 2)], rgb, a, 0);
 	}
 }
 

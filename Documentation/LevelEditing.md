@@ -19,15 +19,19 @@ make radiant
 
 And then run it using the launcher at `./radiant`.
 
+@note NetRadiant-Custom is also available to build with Nuclide integration. Specify `netradiant-custom` as the target.
+
 You will probably want Nuclide's build system to generate a game pack for that installation of **Radiant**.
 This can be achieved by running:
 
 ```
-make radiant-game [GAME=base]
+make defs [GAME=base]
 ```
 
 Where `GAME=base` is used to specify which game to build. That should match the name of your game directory.
 After that, you will be able to select your game from within **Radiant**.
+
+@note If you plan on using a legacy BSP format using WAD texture archives, the target `defs-wad` can be used instead of `defs`.
 
 ![Radiant Launch Setup](radiant-setup.png)
 

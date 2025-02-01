@@ -124,7 +124,7 @@ string __fullspawndata;
 #include "Sound.h"
 #include "Debris.h"
 
-#include "../xr/defs.h"
+#include "xr.h"
 #include "../botlib/Bot.h"
 #include "Client.h"
 #include "Spectator.h"

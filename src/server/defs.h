@@ -21,7 +21,15 @@
 #include "GameRules.h"
 #include "skill.h"
 #include "logging.h"
-#include "../nav/defs.h"
+
+#include "../nav/linkflags.h"
+#include "../nav/nodes.h"
+#include "../nav/route.h"
+#include "../nav/NodeEditor.h"
+#include "../nav/way_convert.h"
+#include "../nav/NavInfo.h"
+#include "../nav/Hint.h"
+
 #include "spawn.h"
 #include "plugins.h"
 #include "lament.h"

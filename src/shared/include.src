@@ -49,6 +49,8 @@ entityDef.qc
 ammo.qc
 activities.qc
 api.qc
-../xr/include.src
+XRSpace.qc
+XRInput.qc
+xr.qc
 ../botlib/Bot.qc
 #endlist

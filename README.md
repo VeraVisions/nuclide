@@ -10,7 +10,7 @@ Ensure you have FTE QuakeWorld, or are comfortable building it yourself.
 You can build a copy of FTEQW using the command `make engine`.
 *If that is a lot to bootstrap, you can use any recent binary version.*
 
-Run the engine in the root of this repository, after having issued `make progs GAME=base`.
+Run the engine in the root of this repository, after having issued `make game GAME=base`.
 
 ## Building Documentation
 

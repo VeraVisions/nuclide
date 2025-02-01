@@ -135,7 +135,7 @@ Nodes_BuildFromEnts(void)
 
 	NSLog("%i possible nodes found in %s", g_iNodes, mapname);
 
-	if (g_iNodes) {
+	if (g_iNodes > 0i) {
 		NSLog("saving nodes nodes for %s", mapname);
 		ncNodeEditor::SaveFile(sprintf("%s.way", mapname));
 	} else {

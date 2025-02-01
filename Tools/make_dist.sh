@@ -31,6 +31,31 @@ then
 	exit 2
 fi
 
+if [ -f "$GAMEROOT/$GAMEDIR/src/files.dat" ]
+then
+	printf "Found files.dat, will build that.\n"
+
+	if [ -f "$GAMEROOT/$GAMEDIR/PAK_NAME" ]
+	then
+		PAKNAME=$(head -n 1 "$GAMEROOT/$GAMEDIR/PAK_NAME")
+	else
+		PAKNAME="pak000.pk4"
+	fi
+
+	cd "$GAMEROOT/$GAMEDIR/"
+	rm -v "$PAKNAME"
+
+	awk '{ print $2; }' "$GAMEROOT/$GAMEDIR/src/files.dat" > /tmp/pakzip
+	zip -0 "$OUTDIR/$PAKNAME" -@ < /tmp/pakzip
+
+	if [ -f "$GAMEROOT/$GAMEDIR/PAK_COPYRIGHT" ]
+	then
+		zip -z "$OUTDIR/$PAKNAME" < "$GAMEROOT/$GAMEDIR/PAK_COPYRIGHT"
+	fi
+fi
+
+cd "$GAMEROOT"
+
 # build the archives from the pk3dir directories
 find "./$GAMEDIR" -name "*.pk3dir" -maxdepth 1 | sort | xargs -I @ sh -c 'echo `basename "@"`' | while read PK3DIR
 do

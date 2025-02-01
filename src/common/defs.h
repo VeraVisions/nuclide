@@ -201,17 +201,14 @@ Util_ExtensionFromString(string inputString)
 	return substring(inputString, modelNameLength - 3, modelNameLength);
 }
 
-
-/* other parts of shared to include */
-
-#include "math.h"
-#include "memory.h"
-#include "platform.h"
-#include "colors.h"
-#include "materials.h"
-#include "teams.h"
-#include "events.h"
-#include "flags.h"
-
-
 /** @} */ // end of common
+
+#include "c_math.h"
+#include "c_math_vector.h"
+#include "c_memory.h"
+#include "c_platform.h"
+#include "c_colors.h"
+#include "c_materials.h"
+#include "c_teams.h"
+#include "c_events.h"
+#include "c_flags.h"

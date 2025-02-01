@@ -9,6 +9,8 @@ We are sharing it with the world in the hopes that it is useful!
 
 ![](book.png) [You can read more in-depth information, such as features here](About.md).
 
+If you're looking for a similar project for vanilla id Tech 2 (Quake, QuakeWorld, HeXen II) then check out [Nuclide-Lite](https://code.idtech.space/vera/nuclide-lite).
+
 ## Learning Resources
 
 ![](hourglass.png) [Getting Started](GettingStarted.md)
