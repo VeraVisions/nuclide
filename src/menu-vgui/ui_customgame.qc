@@ -24,7 +24,7 @@ void UI_CustomGame_Show ( void )
 	static vguiButton btnLoad;
 
 	static void CustomGame_Play ( void ) {
-		GameLibrary_Activate(lsbGames.GetSelected());
+		GameLibrary_Activate(lsbGames.GetSelected() + 1);
 	}
 
 	static void CustomGame_ScrollUpdate ( void ) {
@@ -50,7 +50,7 @@ void UI_CustomGame_Show ( void )
 		lsbGames.SetItemCount( GameLibrary_GetGameCount() );
 		lsbGames.CallOnScroll( CustomGame_ScrollUpdate );
 
-		for ( int i = 0; i < GameLibrary_GetGameCount(); i++ ) {
+		for ( int i = 1; i < GameLibrary_GetGameCount(); i++ ) {
 			lsbGames.AddItem( GameLibrary_GetGameInfo(i, GAMEINFO_NAME) );
 		}
 

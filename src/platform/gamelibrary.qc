@@ -459,31 +459,33 @@ GameLibrary_InitCustom(void)
 	int old_count = gameinfo_count;
 	int packageinfo_count = 0i;
 	int c = 0i;
+	string modPrefix = strcat(GAME_DIR, "-mod");
 
 	gameinfo_count = 0i;
 
 	/* first count let's all manually installed mods */
 	for (targetID = 0; (gamedirname = getgamedirinfo(targetID, 0)); targetID++) {
 		gameinfo_count++;
+		//printf("MANUAL: %S\n", gamedirname);
 	}
 
 	/* count the package installed mods after */
-	if (checkextension("getpackagemanagerinfo"))
 	for (int i = 0; (getpackagemanagerinfo(i, GPMI_NAME)); i++) {
 		string packageName = getpackagemanagerinfo(i, GPMI_NAME);
 		string installStatus = getpackagemanagerinfo(i, GPMI_INSTALLED);
-		string prefix = substring(packageName, 0, 3);
+		string prefix = substring(packageName, 0, strlen(modPrefix));
 
 		/* only care about installed mods (custom games) */
-		if (prefix == "cg_" && installStatus == "enabled") {
-			string gameDir = substring(packageName, 3, -1);
-			tokenizebyseparator(gameDir, "=");
-			gameDir = argv(0);
+		if (prefix == modPrefix && installStatus == "enabled") {
+			tokenizebyseparator(packageName, "-");
+			string gameDir = argv(2);
 
 			/* check if this mod was installed manually already */
 			if (GameLibrary_CheckLocalPresence(gameDir) == true) {
 				continue;
 			}
+
+			//printf("REMOTE: %S %S\n", packageName, prefix);
 
 			packageinfo_count++;
 		}
@@ -521,15 +523,15 @@ GameLibrary_InitCustom(void)
 	}
 
 	/* iterate through all packages again */
-	if (checkextension("getpackagemanagerinfo"))
 	for (int i = 0i; (getpackagemanagerinfo(i, GPMI_NAME)); i++) {
 		string packageName = getpackagemanagerinfo(i, GPMI_NAME);
 		string installStatus = getpackagemanagerinfo(i, GPMI_INSTALLED);
-		string prefix = substring(packageName, 0, 3);
+		string prefix = substring(packageName, 0, strlen(modPrefix));
 
 		/* same check as above in the counter */
-		if (prefix == "cg_" && installStatus == "enabled") {
-			string gameDir = substring(packageName, 3, -1);
+		if (prefix == modPrefix && installStatus == "enabled") {
+			tokenizebyseparator(packageName, "-");
+			string gameDir = argv(2);
 			tokenizebyseparator(gameDir, "=");
 			gameDir = argv(0);
 
@@ -546,13 +548,13 @@ GameLibrary_InitCustom(void)
 			//print(sprintf("Adding packaged game %S\n", gameDir));
 			GameLibrary_SetDefaults(c, gameDir);
 
-			games[c].game = substring(titleString, 5, -1); /* strip 'Mod: '*/
+			games[c].game = titleString;
 			games[c].url_info = websiteString;
 			games[c].version = versionString;
 			games[c].size = (int)stof(sizeString);
 			games[c].type = "Both";
 			games[c].info_type = GAMEINFO_PACKAGE;
-			games[c].pkgname = strcat("cg_", gameDir, ";game_", gameDir, ";");
+			games[c].pkgname = argv(0);
 			c++;
 		}
 	}
