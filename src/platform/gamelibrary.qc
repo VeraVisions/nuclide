@@ -461,12 +461,15 @@ GameLibrary_InitCustom(void)
 	int c = 0i;
 	string modPrefix = strcat(GAME_DIR, "-mod");
 
-	gameinfo_count = 0i;
+	gameinfo_count = 1i; /* do not count the base game (0) */
 
 	/* first count let's all manually installed mods */
 	for (targetID = 0; (gamedirname = getgamedirinfo(targetID, 0)); targetID++) {
+		if (gamedirname == GAME_DIR)
+			continue;
+
 		gameinfo_count++;
-		//printf("MANUAL: %S\n", gamedirname);
+		printf("MANUAL: %S\n", gamedirname);
 	}
 
 	/* count the package installed mods after */
@@ -479,6 +482,8 @@ GameLibrary_InitCustom(void)
 		if (prefix == modPrefix && installStatus == "enabled") {
 			tokenizebyseparator(packageName, "-");
 			string gameDir = argv(2);
+			tokenizebyseparator(gameDir, "=");
+			gameDir = argv(0);
 
 			/* check if this mod was installed manually already */
 			if (GameLibrary_CheckLocalPresence(gameDir) == true) {
@@ -501,9 +506,15 @@ GameLibrary_InitCustom(void)
 		return;
 	}
 
+	c = 1i; /* set in case there's 0 local mods. */
+
 	/* now loop through all the mods we found and load in the metadata */
-	for (targetID = 1; targetID < gameinfo_count; targetID++) {
+	for (targetID = 0; targetID < gameinfo_count; targetID++) {
 		gamedirname = getgamedirinfo(targetID, 0);
+
+		if (gamedirname == GAME_DIR)
+			continue;
+
 		GameLibrary_SetDefaults(targetID, gamedirname);
 
 		if (GameLibrary_CheckManifest(targetID, gamedirname) == true) {

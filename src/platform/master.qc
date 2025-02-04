@@ -117,23 +117,6 @@ Master_RefreshCache(void)
 }
 
 void
-Master_UpdateCache(void)
-{
-	NSLog("Updating host cache...");
-	resethostcachemasks();
-	sethostcachemaskstring(0, gethostcacheindexforkey("gamedir"), cvar_string("game"), SLIST_TEST_EQUAL);
-	sethostcachesort(gethostcacheindexforkey("ping"), FALSE);
-	refreshhostcache(TRUE);
-	resorthostcache();
-	Master_RecountServers();
-	int a = Master_GetLANServers() + Master_GetInternetServers();
-	
-	if (a) {
-		NSLog("Master reports a total of %i servers.", a);
-	}
-}
-
-void
 Master_ResortCache(void)
 {
 	resorthostcache();
@@ -147,6 +130,24 @@ Master_ResortCache(void)
 	srv_fldServerInfo = gethostcacheindexforkey("serverinfo");
 	srv_fldPlayer0 = gethostcacheindexforkey("player");
 }
+
+void
+Master_UpdateCache(void)
+{
+	NSLog("Updating host cache...");
+	resethostcachemasks();
+	sethostcachemaskstring(0, gethostcacheindexforkey("gamedir"), cvar_string("fs_game"), SLIST_TEST_EQUAL);
+	sethostcachesort(gethostcacheindexforkey("ping"), FALSE);
+	refreshhostcache(TRUE);
+	Master_ResortCache();
+	Master_RecountServers();
+	int a = Master_GetLANServers() + Master_GetInternetServers();
+	
+	if (a) {
+		NSLog("Master reports a total of %i servers.", a);
+	}
+}
+
 
 void
 Master_GetInternetList(void)

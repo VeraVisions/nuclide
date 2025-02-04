@@ -14,5 +14,6 @@ activitypub.qc
 saves.qc
 cmd.qc
 fragnet.qc
+servers.qc
 init.qc
 #endlist 

@@ -22,9 +22,13 @@ void UI_CustomGame_Show ( void )
 	static vguiList lsbGames;
 	static vguiScrollBar scrlGames;
 	static vguiButton btnLoad;
+	static vguiButton btnDisable;
 
 	static void CustomGame_Play ( void ) {
 		GameLibrary_Activate(lsbGames.GetSelected() + 1);
+	}
+	static void CustomGame_Disable ( void ) {
+		GameLibrary_Activate( 0 );
 	}
 
 	static void CustomGame_ScrollUpdate ( void ) {
@@ -69,10 +73,23 @@ void UI_CustomGame_Show ( void )
 		btnLoad.SetSize([64,24]);
 		btnLoad.SetFunc( CustomGame_Play );
 
+		btnDisable = spawn( vguiButton );
+		btnDisable.SetTitle( "Disable" );
+		btnDisable.SetIcon( "gfx/icon16/control_stop" );
+		btnDisable.SetPos( [8 + 80,132] );
+		btnDisable.SetSize([64,24]);
+		btnDisable.SetFunc( CustomGame_Disable );
+
+		/* no reason to go back to the already running game */
+		if (cvar_string("fs_game") == GAME_DIR) {
+			btnDisable.Hide();
+		}
+
 		g_uiDesktop.Add( winCustomGame );
 		winCustomGame.Add( lsbGames );
 		winCustomGame.Add( scrlGames );
 		winCustomGame.Add( btnLoad );
+		winCustomGame.Add( btnDisable );
 	}
 
 	winCustomGame.Show();
