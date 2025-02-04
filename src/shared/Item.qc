@@ -360,7 +360,7 @@ ncItem::BecomePickup(void)
 
 	Show();
 
-	if (GetSpawnBool("physics") == true) {
+	if (/*GetSpawnBool("physics") == true*/ 0) {
 		/* be shootable! */
 		Wake();
 		SetMovetype(MOVETYPE_PHYSICS);
@@ -394,6 +394,10 @@ ncItem::SendEntity(entity ePEnt, float flChanged)
 	/* item is in somebody elses inventory. */
 	if (InInventory() == true && ePEnt != GetOwner()) {
 		return (false);
+	}
+
+	if (InInventory() == true) {
+		SetOrigin(owner.origin);
 	}
 
 	WriteByte(MSG_ENTITY, ENT_ITEM);
@@ -482,6 +486,12 @@ ncItem::EvaluateEntity(void)
 	EVALUATE_FIELD(m_flRenderAmt, ITEMFL_CHANGED_RENDERPROPS)
 	EVALUATE_FIELD(m_iRenderMode, ITEMFL_CHANGED_RENDERPROPS)
 	EVALUATE_FIELD(m_iRenderFX, ITEMFL_CHANGED_RENDERPROPS)
+
+	if (owner) {
+		pvsflags = PVSF_IGNOREPVS;
+	} else {
+		pvsflags = 0;
+	}
 }
 #endif
 
@@ -655,6 +665,7 @@ ncItem::_AddedCallback(void)
 #endif
 
 #ifdef SERVER
+	SendFlags |= -1;
 
 	if (m_iGiveHealth > 0i) {
 		if (ourOwner.GetHealth() < 100) {
