@@ -369,8 +369,6 @@ private:
 	bool m_fiCocks;
 	string m_fiSndCock;
 
-	float m_fiJointMuzzle; /* World Model only */
-	float m_fiJointBarrel; /* View Model only */
 	string m_fiBrassDef;
 	float m_fiBrassDelay;
 

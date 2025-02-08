@@ -213,6 +213,13 @@ private:
 #ifdef CLIENT
 	float m_netEffects;
 
+	/* muzzle cache */
+	string m_muzzPartSmoke;
+	vector m_muzzOffset;
+	vector m_muzzRelativeOffset;
+	float m_fiJointMuzzle; /* World Model only */
+	float m_fiJointBarrel; /* View Model only */
+
 	nonvirtual void _UpdateGeomset();
 #endif
 };

@@ -987,6 +987,35 @@ ncRenderableEntity::HandleAnimEvent(float flTimeStamp, int iCode, string strData
 			StartSound(strData, CHAN_VOICE, 0, true);
 #endif
 		break;
+	case 5000: /* view model muzzle special */
+#ifdef CLIENT
+		vector muzzlePos = g_vec_null;
+
+		if (m_fiJointBarrel > 0) {
+			muzzlePos = gettaginfo(pSeat->m_eViewModel, m_fiJointBarrel);
+		} else {
+			vector camPos = pSeat->m_eViewModel.origin;
+
+			muzzlePos = camPos + anglesToForward(pSeat->m_eViewModel.angles) * m_muzzRelativeOffset[0];
+			muzzlePos += anglesToRight(pSeat->m_eViewModel.angles) * m_muzzRelativeOffset[1];
+			muzzlePos += anglesToUp(pSeat->m_eViewModel.angles) * m_muzzRelativeOffset[2];
+		}
+
+		muzzlePos += anglesToForward(pSeat->m_eViewModel.angles) * m_muzzOffset[0];
+		muzzlePos += anglesToRight(pSeat->m_eViewModel.angles) * m_muzzOffset[1];
+		muzzlePos += anglesToUp(pSeat->m_eViewModel.angles) * m_muzzOffset[2];
+
+		ncRenderableEntity viewModel = (ncRenderableEntity)pSeat->m_eViewModel;
+
+		EV_MuzzleFlash_CreateAtPos(pSeat->m_eViewModel, muzzlePos, 1.0, viewModel.m_iMuzzleModel);
+
+		if (STRING_SET(m_muzzPartSmoke)) {
+			setproperty(VF_ANGLES,g_view.GetCameraAngle());
+			setproperty(VF_ORIGIN, g_view.GetCameraOrigin());
+			pointparticles(particleeffectnum(m_muzzPartSmoke), muzzlePos, g_vec_null, 1);
+		}
+#endif
+		break;
 	case 5004: /* view model sound? */
 		StartSound(strData, CHAN_AUTO, 0, true);
 		break;

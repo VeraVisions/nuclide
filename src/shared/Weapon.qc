@@ -128,6 +128,11 @@ ncWeapon::GetWeaponState(void)
 void
 ncWeapon::UpdateFireInfoCache(void)
 {
+#ifdef CLIENT
+	ncRenderableEntity viewModelRight = (ncRenderableEntity)pSeat->m_eViewModel;
+	ncRenderableEntity viewModelLeft = (ncRenderableEntity)pSeat->m_eViewModelL;
+#endif
+
 	string ammoPerShot = GetSubDefString(m_strLastFireInfo, "ammoPerShot");
 	string reloadSpeed = GetSubDefString(m_strLastFireInfo, "reloadTime");
 	m_fiDetonateOnFire = GetSubDefString(m_strLastFireInfo, "detonateOnFire");
@@ -158,9 +163,22 @@ ncWeapon::UpdateFireInfoCache(void)
 	/* firing cosmetics */
 #ifdef CLIENT
 	setmodel(pSeat->m_eViewModel, GetSubDefString(m_strLastFireInfo, "model_view"));
-	pSeat->m_eViewModel.declclass = declclass;
+	viewModelLeft.declclass = viewModelRight.declclass = declclass;
+
 	m_fiJointMuzzle = gettagindex(pSeat->m_eViewModel, GetSubDefString(m_strLastFireInfo, "muzzle"));
+	viewModelLeft.m_fiJointMuzzle = viewModelRight.m_fiJointMuzzle = m_fiJointMuzzle;
+
 	m_fiJointBarrel = gettagindex(pSeat->m_eViewModel, GetSubDefString(m_strLastFireInfo, "barrel"));
+	viewModelLeft.m_fiJointBarrel = viewModelRight.m_fiJointBarrel = m_fiJointBarrel;
+
+	m_muzzPartSmoke = GetSubDefString(m_strLastFireInfo, "smoke_muzzle");
+	viewModelLeft.m_muzzPartSmoke = viewModelRight.m_muzzPartSmoke = m_muzzPartSmoke;
+
+	m_muzzOffset = GetSubDefVector(m_strLastFireInfo, "muzzleOffset");
+	viewModelLeft.m_muzzOffset = viewModelRight.m_muzzOffset = m_muzzOffset;
+
+	m_muzzRelativeOffset = GetSubDefVector(m_strLastFireInfo, "muzzleRelativeOffset");
+	viewModelLeft.m_muzzRelativeOffset = viewModelRight.m_muzzRelativeOffset = m_muzzRelativeOffset;
 
 // 	printf("%S %S %d\n", pSeat->m_eViewModel.model, GetSubDefString(m_strLastFireInfo, "barrel"), m_fiJointBarrel);
 #endif
@@ -518,37 +536,7 @@ void
 ncWeapon::HandleAnimEvent(float timeStamp, int eventCode, string dataString)
 {
 	switch (eventCode) {
-	case 5000:
-		string muzzModel = GetSubDefString(m_strLastFireInfo, "model_flash");
-		string partSmoke = GetSubDefString(m_strLastFireInfo, "smoke_muzzle");
-		vector muzzOffset = GetSubDefVector(m_strLastFireInfo, "muzzleOffset");
-		vector muzzlePos = g_vec_null;
 
-		if (m_fiJointBarrel > 0) {
-			muzzlePos = gettaginfo(pSeat->m_eViewModel, m_fiJointBarrel);
-		} else {
-			vector muzzOfs = GetSubDefVector(m_strLastFireInfo, "muzzleRelativeOffset");
-			vector camPos = pSeat->m_eViewModel.origin;
-
-			muzzlePos = camPos + anglesToForward(pSeat->m_eViewModel.angles) * muzzOfs[0];
-			muzzlePos += anglesToRight(pSeat->m_eViewModel.angles) * muzzOfs[1];
-			muzzlePos += anglesToUp(pSeat->m_eViewModel.angles) * muzzOfs[2];
-		}
-
-		muzzlePos += anglesToForward(pSeat->m_eViewModel.angles) * muzzOffset[0];
-		muzzlePos += anglesToRight(pSeat->m_eViewModel.angles) * muzzOffset[1];
-		muzzlePos += anglesToUp(pSeat->m_eViewModel.angles) * muzzOffset[2];
-
-		if (STRING_SET(muzzModel)) {
-			EV_MuzzleFlash_CreateAtPos(pSeat->m_eViewModel, muzzlePos, 1.0, getmodelindex(muzzModel));
-		}
-
-		if (STRING_SET(partSmoke)) {
-			setproperty(VF_ANGLES,g_view.GetCameraAngle());
-			setproperty(VF_ORIGIN, g_view.GetCameraOrigin());
-			pointparticles(particleeffectnum(partSmoke), muzzlePos, g_vec_null, 1);
-		}
-		break;
 	default:
 		super::HandleAnimEvent(timeStamp, eventCode, dataString);
 	}
