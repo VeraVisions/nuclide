@@ -25,7 +25,6 @@ ncWeapon::ncWeapon(void)
 	m_strAmmoType = __NULL__;
 	m_bAmmoRequired = false;
 	m_strFlashShader = __NULL__;
-	m_strFlashModel = __NULL__;
 	m_vecFlashColor = g_vec_null;
 	m_flFlashRadius = 0.0f;
 	m_strDropItemDef = __NULL__;
@@ -224,15 +223,43 @@ ncWeapon::UpdateFireInfoCache(void)
 	} else {
 		m_fiAmmoPerShot = 1i;
 	}
+
+#ifdef CLIENT
+	if (pSeat != __NULL__) {
+		ncRenderableEntity viewModel = (ncRenderableEntity)pSeat->m_eViewModel;
+		ncRenderableEntity viewModel2 = (ncRenderableEntity)pSeat->m_eViewModelL;
+
+		if (viewModel && viewModel.classname == "vm") {
+			string viewModelPath2 = GetSubDefString(m_primaryFireInfo, "model_view2");
+			string viewModelPath3 = GetSubDefString(m_primaryFireInfo, "model_view3");
+			string viewModelPath4 = GetSubDefString(m_primaryFireInfo, "model_view4");
+
+			viewModel.modelindex = m_viewModel;
+			viewModel.modelindex2 = getmodelindex(viewModelPath2);
+			viewModel.modelindex3 = getmodelindex(viewModelPath3);
+			viewModel.modelindex4 = getmodelindex(viewModelPath4);
+			string modelFlash = GetSubDefString(m_strLastFireInfo, "model_flash");
+			viewModel2.m_iMuzzleModel = viewModel.m_iMuzzleModel = (int)getmodelindex(modelFlash);
+
+			if (viewModel) {
+				viewModel._UpdateBoneCount();
+			}
+
+			if (viewModel2) {
+				viewModel2._UpdateBoneCount();
+			}
+		}
+	}
+#endif
 }
 
 void
 ncWeapon::SwitchFireInfo(string newInfo)
 {
 	/* nothing changed. */
-	if (m_strLastFireInfo == newInfo) {
-		return;
-	}
+	//if (m_strLastFireInfo == newInfo) {
+	//	return;
+	//}
 
 	m_strLastFireInfo = newInfo;
 	UpdateFireInfoCache();
@@ -288,9 +315,6 @@ ncWeapon::SpawnKey(string keyName, string setValue)
 	case "mtr_flashShader":
 		m_strFlashShader = ReadString(setValue);
 		break;
-	case "model_flash":
-		m_strFlashModel = ReadString(setValue);
-		break;
 	case "flashColor":
 		m_vecFlashColor = ReadVector(setValue);
 		break;
@@ -326,7 +350,6 @@ ncWeapon::Save(float handle)
 	SaveInt(handle, "m_iClipStartSize", m_iClipStartSize);
 	SaveInt(handle, "m_iMode", m_iMode);
 	SaveString(handle, "m_strFlashShader", m_strFlashShader);
-	SaveString(handle, "m_strFlashModel", m_strFlashModel);
 	SaveVector(handle, "m_vecFlashColor", m_vecFlashColor);
 	SaveFloat(handle, "m_flFlashRadius", m_flFlashRadius);
 	SaveString(handle, "m_strDropItemDef", m_strDropItemDef);
@@ -361,9 +384,6 @@ ncWeapon::Restore(string strKey, string strValue)
 		break;
 	case "m_strFlashShader":
 		m_strFlashShader = ReadString(strValue);
-		break;
-	case "m_strFlashModel":
-		m_strFlashModel = ReadString(strValue);
 		break;
 	case "m_vecFlashColor":
 		m_vecFlashColor = ReadVector(strValue);
@@ -606,16 +626,16 @@ ncWeapon::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_BYTE(m_bFiring, WEAPONFL_CHANGED_STATE)
 	READENTITY_FLOAT(m_flOverheating, WEAPONFL_CHANGED_STATE)
 
-	/* weapon view model update */
-	ncActor ourOwner = (ncActor)findfloat(world, ::entnum, owner_entnum);
-
-	if (ourOwner.m_activeWeapon == this) {
-		UpdateViewmodel();
-	}
-
+	/* this has to be done first, any code below may query decl */
 	if (flChanged & WEAPONFL_CHANGED_MODELINDEX) {
 		classname = EntityDef_NameFromNetID(entityDefID);
 		declclass = classname;
+	}
+
+	ncActor ourOwner = (ncActor)findfloat(world, ::entnum, owner_entnum);
+	
+	if (ourOwner.m_activeWeapon == this) {
+		SwitchFireInfo(m_primaryFireInfo);
 	}
 
 	if (flChanged & WEAPONFL_CHANGED_BODY)
@@ -736,7 +756,6 @@ void
 ncWeapon::_CacheWeaponDefVariables(void)
 {
 	string firstType, secondType;
-	string muzzleModel;
 	string ammoRequired;
 
 	m_strWeaponTitle = GetDefString("inv_name");
@@ -767,8 +786,6 @@ ncWeapon::_CacheWeaponDefVariables(void)
 	ammoRequired = GetSubDefString(m_primaryFireInfo, "ammoRequired");
 	m_bAmmoRequired = stof(ammoRequired);
 	m_primaryAmmoType = ammoNumForName(firstType);
-	muzzleModel = GetSubDefString(m_primaryFireInfo, "model_flash");
-	m_muzzleModelIndex = getmodelindex(muzzleModel, false);
 	m_flPrimedFuse = GetDefFloat("primed_fuse");
 	m_flZoomFOV = GetDefFloat("zoomFov") / 90;
 	m_bPowerAmmo = GetDefBool("powerAmmo");
@@ -795,14 +812,11 @@ ncWeapon::_CacheWeaponDefVariables(void)
 
 	secondType = GetSubDefString(m_secondaryFireInfo, "ammoType");
 	m_secondaryAmmoType = ammoNumForName(secondType);
-	muzzleModel = GetSubDefString(m_secondaryFireInfo, "model_flash");
-	m_altMuzzleModelIndex = getmodelindex(muzzleModel, false);
 }
 
 void
 ncWeapon::_SwitchedToCallback(void)
 {
-	SwitchFireInfo(m_primaryFireInfo);
 	SetAttackNext(0.0f);
 	SetIdleNext(0.0f);
 	Draw();
@@ -856,45 +870,10 @@ ncWeapon::IsEmpty(void)
 	return (false);
 }
 
-#ifdef CLIENT
-.float vw_index;
-void
-ncWeapon::UpdateViewmodel(void)
-{
-	if (pSeat != __NULL__) {
-		ncRenderableEntity viewModel = (ncRenderableEntity)pSeat->m_eViewModel;
-		ncRenderableEntity viewModel2 = (ncRenderableEntity)pSeat->m_eViewModelL;
-
-		if (viewModel && viewModel.classname == "vm") {
-			string viewModelPath2 = GetSubDefString(m_primaryFireInfo, "model_view2");
-			string viewModelPath3 = GetSubDefString(m_primaryFireInfo, "model_view3");
-			string viewModelPath4 = GetSubDefString(m_primaryFireInfo, "model_view4");
-			string modelFlash = GetDefString("model_flash");
-
-			viewModel.modelindex = m_viewModel;
-			viewModel.modelindex2 = getmodelindex(viewModelPath2);
-			viewModel.modelindex3 = getmodelindex(viewModelPath3);
-			viewModel.modelindex4 = getmodelindex(viewModelPath4);
-			viewModel2.m_iMuzzleModel = viewModel.m_iMuzzleModel = (int)getmodelindex(modelFlash);
-
-			if (viewModel) {
-				viewModel._UpdateBoneCount();
-			}
-
-			if (viewModel2) {
-				viewModel2._UpdateBoneCount();
-			}
-		}
-	}
-}
-#endif
-
 void
 ncWeapon::Draw(void)
 {
-#ifdef CLIENT
-	UpdateViewmodel();
-#endif
+	SwitchFireInfo(m_primaryFireInfo);
 
 	float drawAnimation = -1;
 	float drawTime = 0.0f;

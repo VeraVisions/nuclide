@@ -8,4 +8,4 @@ Level designers create level changes by utilising the trigger_changelevel entity
 
 In addition, it is recommended that they place a trigger_transition with the same name as the info_landmark. Otherwise you risk carrying over too much entity data. Please read the entity documentation for more details.
 
-When a level transition is completed, Nuclide will call the overridable method `NSEntity::TransitionComplete()` on every entity, to give it a chance to re-align itself with the new environment.
+When a level transition is completed, Nuclide will call the overridable method `ncEntity::TransitionComplete()` on every entity, to give it a chance to re-align itself with the new environment.

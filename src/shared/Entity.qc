@@ -482,7 +482,7 @@ ncEntity::RestoreAngles(void)
 	vector spawnAngles = g_vec_null;
 	string spawnAngleString = GetSpawnString("angles");
 
-	if (spawnAngleString == "") {
+	if (!STRING_SET(spawnAngleString)) {
 		spawnAngles[1] = GetSpawnFloat("angle");
 	} else {
 		spawnAngles = stov(spawnAngleString);

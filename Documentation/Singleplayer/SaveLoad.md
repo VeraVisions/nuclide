@@ -4,9 +4,9 @@
 
 ### Nuclide APIs
 
-Every NSEntity class usually comes with a `NSEntity::Save()` and `NSEntity::Restore()` override. These are also used for [level transitions](@ref transitions).
+Every ncEntity class usually comes with a `ncEntity::Save()` and `ncEntity::Restore()` override. These are also used for [level transitions](@ref transitions).
 
-When a save-game has been restored, the overridable method `NSEntity::RestoreComplete()` will be called. At that point AI or some time based triggers get the chance to re-align themselves with the reloaded environment (if necessary).
+When a save-game has been restored, the overridable method `ncEntity::RestoreComplete()` will be called. At that point AI or some time based triggers get the chance to re-align themselves with the reloaded environment (if necessary).
 
 ### LVC Files
 The engine stores cached copies for the current (non-saved) game into the `<gamedir>/saves` directory, in the form of **lvc** files. Each **lvc** file represents a map, containing a copy of its **entity lump**. 

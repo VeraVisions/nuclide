@@ -188,7 +188,6 @@ public:
 	virtual bool TestFireAbility(string);
 
 #ifdef CLIENT
-	virtual void UpdateViewmodel(void);
 	virtual void ClientFX(bool);
 	virtual void PredictPreFrame(void);
 	virtual void PredictPostFrame(void);
@@ -323,8 +322,6 @@ private:
 	string m_secondaryFireInfo;
 	int m_primaryAmmoType;
 	int m_secondaryAmmoType;
-	float m_muzzleModelIndex;
-	float m_altMuzzleModelIndex;
 	float m_flPrimedFuse;
 	float m_flTriggerDelay;
 	float m_flZoomFOV;

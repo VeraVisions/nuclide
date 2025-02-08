@@ -67,7 +67,7 @@ Spawns the specified entity class name at the desired position. If the classname
 
 #### sendInput(targetEntity, inputName, dataString, targetActivator)
 
-Sends an input event to an NSEntity and with a specific activator. While that can be __NULL__, this, or world most of the time - some inputs very much depend on the activator being valid within their respective contexts.
+Sends an input event to an ncEntity and with a specific activator. While that can be __NULL__, this, or world most of the time - some inputs very much depend on the activator being valid within their respective contexts.
 
 ### Map-specific entities
 
