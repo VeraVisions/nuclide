@@ -283,6 +283,8 @@ private:
 	nonvirtual ncWeapon GetPreviousWeapon(void);
 	/** Plays the weapon empty sound. */
 	nonvirtual void EmptySound(void);
+	/** Sets the viewzoom on its owner. */
+	nonvirtual void SetViewZoom(float);
 
 #ifdef CLIENT
 	virtual void HandleAnimEvent(float, int, string);

@@ -147,6 +147,7 @@ ncWeapon::UpdateFireInfoCache(void)
 	m_fiAmmoRequired = GetSubDefBool(m_strLastFireInfo, "ammoRequired");
 	m_fiFireRate = GetSubDefFloat(m_strLastFireInfo, "fireRate");
 	m_fiSemiAuto = GetSubDefBool(m_strLastFireInfo, "semiAuto");
+	m_flZoomFOV = GetSubDefFloat(m_strLastFireInfo, "zoomFov") / 90.0f;
 
 	/* defs to spawn */
 	m_fiOnFire = GetSubDefString(m_strLastFireInfo, "def_onFire");
@@ -226,15 +227,6 @@ ncWeapon::UpdateFireInfoCache(void)
 	NSError("m_flReloadSpeed: %f", m_flReloadSpeed);
 #endif
 
-	ncPlayer ourOwner = (ncPlayer)GetOwner();
-	float zoomFov = GetSubDefFloat(m_strLastFireInfo, "zoomFov");
-
-	if (zoomFov > 0) {
-		ourOwner.viewzoom = zoomFov / cvar("fov");
-	} else {
-		ourOwner.viewzoom = 1.0f;
-	}
-
 	/* validate */
 	if (ammoPerShot != __NULL__) {
 		m_fiAmmoPerShot = (int)stoi(ammoPerShot);
@@ -269,6 +261,17 @@ ncWeapon::UpdateFireInfoCache(void)
 		}
 	}
 #endif
+}
+
+void
+ncWeapon::SetViewZoom(float viewZoom)
+{
+	if (viewZoom == 0.0) {
+		viewZoom = 1.0f;
+	}
+
+	ncPlayer ourOwner = (ncPlayer)GetOwner();
+	ourOwner.viewzoom = viewZoom;
 }
 
 void
@@ -775,7 +778,6 @@ ncWeapon::_CacheWeaponDefVariables(void)
 	m_bAmmoRequired = stof(ammoRequired);
 	m_primaryAmmoType = ammoNumForName(firstType);
 	m_flPrimedFuse = GetDefFloat("primed_fuse");
-	m_flZoomFOV = GetDefFloat("zoomFov") / 90;
 	m_bPowerAmmo = GetDefBool("powerAmmo");
 	m_bRemoveOnEmpty = GetDefBool("removeOnEmpty");
 	m_fxTrail = particleeffectnum(GetDefString("fx_trail"));
@@ -1480,15 +1482,16 @@ ncWeapon::SecondaryAttack(void)
 		if (CanFire() == false) {
 			return;
 		}
-
+	
 		ourOwner = (ncPlayer)GetOwner();
-		ourOwner.viewzoom = (ourOwner.viewzoom == 1.0) ? m_flZoomFOV : 1.0;
 
 #ifdef SERVER
 		if (ourOwner.viewzoom == 1.0) {
 			PlaySound(GetDefString("snd_lowerScope"), CHAN_AUTO, false);
+			SetViewZoom(m_flZoomFOV);
 		} else {
 			PlaySound(GetDefString("snd_raiseScope"), CHAN_AUTO, false);
+			SetViewZoom(1.0f);
 		}
 #endif
 
