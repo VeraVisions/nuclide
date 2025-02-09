@@ -31,6 +31,7 @@ ncItem::ncItem(void)
 	m_strRequires = __NULL__;
 	m_nextItem = __NULL__;
 	owner = __NULL__;
+	m_flRespawn = 0;
 }
 
 #ifdef SERVER
@@ -123,6 +124,9 @@ ncItem::SpawnKey(string strKey, string strValue)
 	case "requires":
 		m_strRequires = ReadString(strValue);
 		break;
+	case "respawn":
+		m_flRespawn = ReadFloat(strValue);
+		break;
 	default:
 		super::SpawnKey(strKey, strValue);
 		break;
@@ -207,6 +211,10 @@ void
 ncItem::Input(entity eAct, string strInput, string strData)
 {
 	switch (strInput) {
+	/* gamemodes can alternatively use this to set the respawn time of items post-init */
+	case "SetRespawnTime":
+		SetRespawnTime(stof(strData));
+		break;
 	default:
 		ncTrigger::Input(eAct, strInput, strData);
 	}
@@ -216,6 +224,12 @@ void
 ncItem::OnUse(entity user)
 {
 
+}
+
+void
+ncItem::SetRespawnTime(float newTime)
+{
+	m_flRespawn = newTime;
 }
 
 bool
@@ -281,13 +295,24 @@ ncItem::Touch(entity eToucher)
 	/* don't remove if AddItem fails */
 	string itemToAdd = (m_strInvWeapon) ? m_strInvWeapon : classname;
 	pl.GiveItem(itemToAdd);
+
+	/* if we have the carry flag set in addition, we'll put in an extra copy of this item */
+	if (STRING_SET(m_strInvWeapon) && m_bInvCarry) {
+		pl.GiveItem(classname);
+	}
+
 	UseTargets(pl, TRIG_TOGGLE, m_flDelay);
 
-	if (real_owner || m_iWasDropped == 1 || cvar("sv_playerslots") == 1) {
+	if (m_flRespawn <= 0) {
 		Destroy();
 	} else {
-		Disappear();
-		ScheduleThink(PickupRespawn, 30.0f);
+		if (m_hiddenSequence) {
+			SetFrame(m_hiddenSequence);
+		} else {
+			Disappear();
+		}
+
+		ScheduleThink(PickupRespawn, m_flRespawn);
 	}
 }
 
@@ -359,6 +384,8 @@ ncItem::BecomePickup(void)
 		modelflags &= ~MF_ROTATE;
 
 	Show();
+	SetFrame(GetSpawnFloat("frame"));
+	m_hiddenSequence = GetSpawnFloat("hidden_frame");
 
 	if (/*GetSpawnBool("physics") == true*/ 0) {
 		/* be shootable! */

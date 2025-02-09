@@ -14,7 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-
 void
 ncActor::ncActor(void)
 {
@@ -268,7 +267,7 @@ void
 ncActor::Spawned(void)
 {
 	super::Spawned();
-	isActor = true;
+	_isActor = true;
 
 	/* let's not waste time and resources */
 	if (wasfreed(this)) {
@@ -346,7 +345,7 @@ ncActor::RestoreComplete(void)
 }
 
 void
-ncActor::ScheduleThink(void)
+ncActor::ThinkSchedules(void)
 {
 	if (IsPerforming() == false && m_iNodes <= 0i) {
 		SelectNewSchedule();
@@ -470,7 +469,7 @@ ncActor::Input(entity eAct, string strInput, string strData)
 		m_activeSchedule.AdvanceLater(100);
 		break;
 	case "TargetNearestPlayer":
-		entity firstPlayer = find(world, ::classname, "player");
+		ncEntity firstPlayer = (ncEntity)find(world, ::classname, "player");
 
 		if (firstPlayer) {
 			m_activeSchedule.SetTarget(firstPlayer);
@@ -489,10 +488,10 @@ ncActor::Input(entity eAct, string strInput, string strData)
 		}
 		break;
 	case "GoToSpotInRadius":
-		vector t = ncNavInfo::FindEmptySpotNearPosition(this, GetOrigin(), 128.0f, stof(strData));
+		vector spot1 = ncNavInfo::FindEmptySpotNearPosition(this, GetOrigin(), 128.0f, stof(strData));
 
-		if (vlen(t) > 0.0f) {
-			RouteToPosition(t);
+		if (vlen(spot1) > 0.0f) {
+			RouteToPosition(spot1);
 		} else {
 			CancelSchedule();
 		}
@@ -641,7 +640,7 @@ ncActor::CheckRouteProgression(void)
 
 		/* it's accessible */
 		if (!trace_startsolid && trace_fraction == 1.0f) {
-			vector idealAngles = vectoangles(vecNextNode - origin);
+			idealAngles = vectoangles(vecNextNode - origin);
 			evenpos = vecNextNode;
 			m_iCurNode = iNextNode;
 

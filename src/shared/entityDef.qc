@@ -439,6 +439,8 @@ EntityDef_PrepareEntity(entity target, int id)
 static void
 EntityDef_Precaches(int index)
 {
+	int defID = 0i;
+
 	if (time > 2.0f) {
 		return;
 	}
@@ -458,7 +460,7 @@ EntityDef_Precaches(int index)
 		} else if (substring(strKey, 0, 6) == "model_") {
 			precache.Model(strValue);
 		} else if (substring(strKey, 0, 4) == "def_" || (strKey == "item")) {
-			int defID = EntityDef_IDFromName(strValue);
+			defID = EntityDef_IDFromName(strValue);
 
 			/* only precache valid def, and avoid recursion */
 			if (defID != -1 && defID != index) {
@@ -467,7 +469,7 @@ EntityDef_Precaches(int index)
 		} else if (strKey == "weapon") {
 			for (int w = 0; w < tokenizebyseparator(strValue, ","); w++) {
 				string weaponName = argv(w);
-				int defID = EntityDef_IDFromName(weaponName);
+				defID = EntityDef_IDFromName(weaponName);
 
 				/* only precache valid def, and avoid recursion */
 				if (defID != -1 && defID != index) {

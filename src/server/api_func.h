@@ -93,6 +93,34 @@ typedef struct
 
 	@param entityToCheck specifies the entity to check.*/
 	bool isBot(entity entityToCheck);
+
+
+	/** Returns the next entity of type 'Item' in the game.
+
+	@param lastItem The previous item, can be `world` or `__NULL__` or `0` to retrieve the first item.
+	@return The next item in the entity pool. Will be `world` or `__NULL__` if none are left. */
+	entity NextItem(entity lastItem);
+
+
+	/** Returns the next entity of type 'Weapon' in the game. 
+
+	@param lastWeapon The previous item, can be `world` or `__NULL__` or `0` to retrieve the first item.
+	@return The next item in the entity pool. Will be `world` or `__NULL__` if none are left. */
+	entity NextWeapon(entity lastWeapon);
+
+
+	/** Returns the next entity of type 'Actor' in the game.
+
+	@param lastActor The previous item, can be `world` or `__NULL__` or `0` to retrieve the first item.
+	@return The next item in the entity pool. Will be `world` or `__NULL__` if none are left. */
+	entity NextActor(entity lastActor);
+
+
+	/** Returns the next entity of type 'Player' in the game.
+
+	@param lastPlayer The previous item, can be `world` or `__NULL__` or `0` to retrieve the first item.
+	@return The next item in the entity pool. Will be `world` or `__NULL__` if none are left. */
+	entity NextPlayer(entity lastPlayer);
 } entsAPI_t;
 var entsAPI_t ents;
 
@@ -213,6 +241,12 @@ _server_main(void)
 	ents.isGodMode = linkToServerProgs("isGodMode");
 	ents.isPlayer = linkToServerProgs("isPlayer");
 	ents.isSentient = linkToServerProgs("isSentient");
+
+	/* helpful finder */
+	ents.NextActor = linkToServerProgs("SVPF_ents_NextActor");
+	ents.NextItem = linkToServerProgs("SVPF_ents_NextItem");
+	ents.NextWeapon = linkToServerProgs("SVPF_ents_NextWeapon");
+	ents.NextPlayer = linkToServerProgs("SVPF_ents_NextPlayer");
 
 	actor.GetInventory = linkToServerProgs("SVPF_actor_GetInventory");
 	actor.GetReserveAmmo = linkToServerProgs("SVPF_actor_GetReserveAmmo");

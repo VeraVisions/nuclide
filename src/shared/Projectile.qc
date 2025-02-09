@@ -560,7 +560,7 @@ ncProjectile::Touch(entity eToucher)
 
 	if (eToucher.takedamage != DAMAGE_NO) {
 		m_hitLocation = m_vecImpactPos;
-		m_eMultiTarget = eToucher;
+		m_eMultiTarget = (ncSurfacePropEntity)eToucher;
 		m_iMultiValue = GetSubDefInt(m_defDamage, "damage");
 		_ApplyDamage();
 	}

@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+float(vector org, float radius, vector lightcolours, optional float style, optional string cubemapname, optional float pflags) dynamiclight_spawnstatic2 = #0:dynamiclight_spawnstatic;
+
 void Commandmenu_Open(void);
 void Commandmenu_Close(void);
 
@@ -24,12 +26,12 @@ CMD_testLight(void)
 	string cubeTexture = argv(1);
 
 	if (STRING_SET(cubeTexture)) {
-		p = dynamiclight_spawnstatic(g_view.GetCameraOrigin(), 512, [1,1,1], 0, cubeTexture);
+		p = dynamiclight_spawnstatic2(g_view.GetCameraOrigin(), 512, [1,1,1], 0, cubeTexture);
 		dynamiclight_set(p, LFIELD_ANGLES, g_view.GetCameraAngle());
 		dynamiclight_set(p, LFIELD_FLAGS, LFLAG_NORMALMODE | LFLAG_REALTIMEMODE | LFLAG_SHADOWMAP);
 		dynamiclight_set(p, LFIELD_STYLE, 64);
 	} else {
-		p = dynamiclight_spawnstatic(g_view.GetCameraOrigin(), 512, [1,1,1], 0);
+		p = dynamiclight_spawnstatic2(g_view.GetCameraOrigin(), 512, [1,1,1], 0);
 		dynamiclight_set(p, LFIELD_STYLE, 2);
 	}
 
@@ -65,7 +67,7 @@ CMD_testSpotLight(void)
 		glow.RendererRestarted();
 		glow.vv_flags |= VFL_VIDREMOVE;
 	} else {
-		p = dynamiclight_spawnstatic(g_view.GetCameraOrigin(), 512, [1,1,1], 0);
+		p = dynamiclight_spawnstatic2(g_view.GetCameraOrigin(), 512, [1,1,1], 0);
 		dynamiclight_set(p, LFIELD_STYLE, 2);
 	}
 
@@ -77,7 +79,7 @@ CMD_testPointLight(void)
 {
 	makevectors(g_view.GetCameraAngle());
 	traceline(g_view.GetCameraOrigin(), g_view.GetCameraOrigin() + (v_forward * 4096.0f), MOVE_NORMAL, pSeat->m_ePlayer);
-	dynamiclight_spawnstatic(trace_endpos + (v_forward * -16.0f), 1024, [1,1,1]);
+	dynamiclight_spawnstatic2(trace_endpos + (v_forward * -16.0f), 1024, [1,1,1]);
 }
 
 static void

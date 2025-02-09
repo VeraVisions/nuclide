@@ -39,7 +39,10 @@ ncIO::ncIO(void)
 	effects |= EF_NOSHADOW;
 #endif
 	m_strEditorIcon = "gfx/icon16/bullet_purple";
-	isActor = false;
+	_isActor = false;
+	_isItem = false;
+	_isPlayer = false;
+	_isWeapon = false;
 }
 
 void

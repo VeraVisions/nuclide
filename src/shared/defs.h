@@ -198,13 +198,6 @@ string Util_TimeToString(float fTime);
 bool Util_IsTeamplay(void);
 bool Util_IsPaused(void);
 
-__wrap void
-dprint(string m)
-{
-	if (cvar("developer") == 1)
-		return prior(m);
-}
-
 void
 crossprint(string m)
 {

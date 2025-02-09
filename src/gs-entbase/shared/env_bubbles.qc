@@ -94,11 +94,13 @@ private:
 	int m_iSpawnDensity;
 	float m_flSpawnFrequency;
 	float m_flSpawnCurrent;
+	string m_bubbleModel;
 };
 
 void
 env_bubbles::env_bubbles(void)
 {
+	m_bubbleModel = "sprites/bubble.spr";
 }
 
 #ifdef SERVER
@@ -253,7 +255,7 @@ env_bubbles::EmitBubbles(void)
 
 		env_sprite eBubble = spawn(env_sprite);
 		setorigin(eBubble, vecPos);
-		setmodel(eBubble, "sprites/bubble.spr");
+		setmodel(eBubble, m_bubbleModel);
 		eBubble.drawmask = MASK_ENGINE;
 		eBubble.SetRenderColor([255,255,255]);
 		eBubble.SetRenderMode(RM_ADDITIVE);
@@ -354,5 +356,5 @@ env_bubbles::Respawn(void)
 void
 env_bubbles::Precache(void)
 {
-	precache.Model("sprites/bubble.spr");
+	precache.Model(m_bubbleModel);
 }

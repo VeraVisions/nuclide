@@ -17,6 +17,7 @@
 void
 ncPlayer::ncPlayer(void)
 {
+	_isPlayer = true;
 	flags |= FL_CLIENT;
 	vehicle = __NULL__;
 }

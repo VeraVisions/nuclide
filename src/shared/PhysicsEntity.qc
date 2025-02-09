@@ -590,16 +590,17 @@ ncPhysicsEntity::Touch(entity eToucher)
 			}
 		}
 
+		ncDict damageDecl;
 		if (eToucher && impactForce >= 1.0 && eToucher.takedamage != DAMAGE_NO) {
 			ncSurfacePropEntity impactingEntity = (ncSurfacePropEntity)eToucher;
-			ncDict damageDecl = spawn(ncDict);
+			damageDecl = spawn(ncDict);
 			damageDecl.AddKey("damage", ftos(impactForce));
 			damageDecl.AddKey("push", "0"); /* avoid physics recursion/amplification */
 			impactingEntity.Damage(this, this, damageDecl, 1.0f, g_vec_null, GetOrigin());
 			remove(damageDecl);
 		} else {
 			if (impactForce > GetHealth()) {
-				ncDict damageDecl = spawn(ncDict);
+				damageDecl = spawn(ncDict);
 				damageDecl.AddKey("damage", ftos(impactForce));
 				damageDecl.AddKey("push", "0"); /* avoid physics recursion/amplification */
 				Damage(eToucher, eToucher, damageDecl, 1.0f, g_vec_null, GetOrigin());

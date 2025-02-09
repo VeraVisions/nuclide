@@ -151,32 +151,26 @@ Sound_ParseField(int i, int a, string keyName, string valueCS)
 		break;
 	case "dist_min":
 		if (a == 2) {
-			dprint("\tMin distance set\n");
 			g_sounds[i].dist_min = stof(setValue);
 		}
 		break;
 	case "dist_max":
 		if (a == 2) {
-			dprint("\tMax distance set\n");
 			g_sounds[i].dist_max = stof(setValue);
 		}
 		break;
 	case "volume":
 		if (a == 2) {
-			dprint("\tVolume set\n");
 			g_sounds[i].volume = stof(setValue);
 		}
 		break;
 	case "shakes":
 		if (a == 2) {
-			dprint("\tShake set\n");
 			g_sounds[i].shakes = stof(setValue);
 		}
 		break;
 	case "pitch":
 		if (a == 2) {
-			dprint("\tPitch set\n");
-
 			int comma = tokenizebyseparator(setValue, ",");
 
 			if (comma == 2) {
@@ -190,48 +184,38 @@ Sound_ParseField(int i, int a, string keyName, string valueCS)
 		break;
 	case "pitch_min":
 		if (a == 2) {
-			dprint("\tMinimum pitch set\n");
 			g_sounds[i].pitch_min = fabs(stof(setValue)) * 100;
 		}
 		break;
 	case "pitch_max":
 		if (a == 2) {
-			dprint("\tMaximum pitch set\n");
 			g_sounds[i].pitch_max = fabs(stof(setValue)) * 100;
 		}
 		break;
 	case "offset":
 		if (a == 2) {
-			dprint("\tOffset set\n");
 			g_sounds[i].offset = stof(setValue);
 		}
 		break;
 	case "looping":
-		dprint("\tSound set to loop\n");
 		g_sounds[i].flags |= SNDFL_LOOPING;
 		break;
 	case "nodups":
-		dprint("\tSound set to not play duplicate samples\n");
 		g_sounds[i].flags |= SNDFL_NODUPS;
 		break;
 	case "global":
-		dprint("\tSound set to play everywhere\n");
 		g_sounds[i].flags |= SNDFL_GLOBAL;
 		break;
 	case "private":
-		dprint("\tSound set to play privately\n");
 		g_sounds[i].flags |= SNDFL_PRIVATE;
 		break;
 	case "no_reverb":
-		dprint("\tSound set to ignore reverb\n");
 		g_sounds[i].flags |= SNDFL_NOREVERB;
 		break;
 	case "omnidirectional":
-		dprint("\tSound set to be omnidirectional\n");
 		g_sounds[i].flags |= SNDFL_OMNI;
 		break;
 	case "follow":
-		dprint("\tSound set to follow\n");
 		g_sounds[i].flags |= SNDFL_FOLLOW;
 		break;
 	case "footstep":
@@ -244,7 +228,6 @@ Sound_ParseField(int i, int a, string keyName, string valueCS)
 		g_sounds[i].pointparticle = particleeffectnum(valueCS);
 		break;
 	case "alerts":
-		dprint("\tSound set to alert enemy AI\n");
 		g_sounds[i].flags |= SNDFL_ALERTS;
 		break;
 	case "wave":
@@ -261,10 +244,6 @@ Sound_ParseField(int i, int a, string keyName, string valueCS)
 
 	case "sample":
 		if (a == 2) {
-			dprint("\tAdded sample ");
-			dprint(setValue);
-			dprint("\n");
-
 			if (precacheSound)
 				precache_sound(setValue);
 
@@ -300,7 +279,6 @@ Sound_Parse(int i, string line, string shader)
 			break;
 		}
 
-		dprint("{\n");
 		braced = TRUE;
 		break;
 	case "}":
@@ -308,7 +286,6 @@ Sound_Parse(int i, string line, string shader)
 		if (braced == FALSE) {
 			break;
 		}
-		dprint("}\n");
 		braced = FALSE;
 		t_name = "";
 		return (1);
@@ -322,9 +299,6 @@ Sound_Parse(int i, string line, string shader)
 			
 			if (t_name == shader) {
 				/* I guess it's what we want */
-				dprint("Found shader ");
-				dprint(shader);
-				dprint(":\n");
 				g_sounds[i].name = shader;
 			} else {
 				/* not what we're looking for */

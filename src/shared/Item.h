@@ -87,6 +87,7 @@ public:
 	nonvirtual void SetSpinning(bool);
 	nonvirtual bool GetSpinning(void);
 	nonvirtual void PickupRespawn(void);
+	nonvirtual void SetRespawnTime(float);
 
 	/* only if the entity is usable in the inventory. */
 	virtual void OnInventoryUse(void);
@@ -130,6 +131,7 @@ private:
 	int m_iInvItem;
 	string m_sndAcquire;
 	string m_sndRespawn;
+	float m_flRespawn;
 	string m_sndHum;
 	int m_bFloating;
 	bool m_bSpins;
@@ -147,6 +149,11 @@ private:
 #ifdef CLIENT
 	NETWORKED_FLOAT(chain_entnum)
 	NETWORKED_FLOAT(owner_entnum)
+#endif
+
+#ifdef SERVER
+	float m_hiddenModelIndex;
+	float m_hiddenSequence;
 #endif
 
 	ncItem m_nextItem;

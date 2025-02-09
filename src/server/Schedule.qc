@@ -46,8 +46,8 @@ ncSchedule::InProgress(void)
 void
 ncSchedule::Advance(void)
 {
-	string taskInput;
-	string taskParms;
+	string taskInput = "";
+	string taskParms = "";
 	bool shouldCancel = false;
 
 	if (wasfreed(this)) {
@@ -180,7 +180,7 @@ ncSchedule::Message(string messageString)
 	}
 
 	if (lookUpValue) {
-		EntLog("^1schedule killed by message.", taskInput, taskParameter);
+		EntLog("^1schedule killed by message.");
 		ReleaseThink();
 		Cancel();
 	}

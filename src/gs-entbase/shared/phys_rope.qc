@@ -46,6 +46,7 @@ public:
 	virtual float predraw(void);
 	virtual void ReceiveEntity(float,float);
 	virtual void DrawSegment(vector, vector, vector);
+	virtual void RendererRestarted(void);
 #endif
 
 #ifdef SERVER
@@ -91,9 +92,6 @@ phys_rope::DrawSegment(vector pos1, vector pos2, vector vecPlayer)
 float
 phys_rope::predraw(void)
 {
-	vector pos1;
-	vector pos2;
-	float segments;
 	vector vecPlayer;
 	ncPlayer pl;
 

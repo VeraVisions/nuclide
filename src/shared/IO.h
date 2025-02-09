@@ -280,7 +280,6 @@ private:
 		x = CreateOutput(x); \
 	}
 
-.bool isActor;
 .bool _mapspawned;
 
 void

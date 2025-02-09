@@ -732,7 +732,7 @@ ncTalkMonster::RunAI(void)
 	}
 
 	if (InScriptedSequence() == false) {
-		ScheduleThink();
+		ThinkSchedules();
 	}
 
 	SeeThink();

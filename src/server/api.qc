@@ -53,6 +53,30 @@ SVPF_game_CleanUpMap(void)
 	multicast([0,0,0], MULTICAST_ALL);
 }
 
+entity
+SVPF_ents_NextItem(entity lastItem)
+{
+	return findfloat(lastItem, ::_isItem, 1);
+}
+
+entity
+SVPF_ents_NextWeapon(entity lastItem)
+{
+	return findfloat(lastItem, ::_isWeapon, 1);
+}
+
+entity
+SVPF_ents_NextActor(entity lastItem)
+{
+	return findfloat(lastItem, ::_isActor, 1);
+}
+
+entity
+SVPF_ents_NextPlayer(entity lastItem)
+{
+	return findfloat(lastItem, ::_isPlayer, 1);
+}
+
 string
 SVPF_game_GetMap(void)
 {

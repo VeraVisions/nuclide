@@ -237,3 +237,5 @@ enumflags
 #ifdef SERVER
 void obituary(string, string, string, string);
 #endif
+
+.bool _isPlayer;

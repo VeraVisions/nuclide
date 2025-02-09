@@ -164,9 +164,8 @@ ncNavInfo::FindEmptySpotNearPosition(entity traceEntity, vector position, float 
 	vector testPos = g_vec_null;
 
 	for (float yawTest = 0.0f; yawTest < 360.0f; yawTest += 10.0f) {
-		vector testPos;
 		float distSquared;
-		vector testAngle = traceEntity.angles = [0, yawTest, 0];
+		testAngle = traceEntity.angles = [0, yawTest, 0];
 		testAngle[0] = testAngle[2] = 0.0f;
 		makevectors(testAngle);
 		testPos = position + (v_forward * 2048.0f);
@@ -185,10 +184,10 @@ ncNavInfo::FindEmptySpotNearPosition(entity traceEntity, vector position, float 
 	}
 
 	for (float dist = minRadius; dist < maxRadius; dist += ((maxRadius - minRadius) / 16.0f)) {
-		vector testAngle = [0, bestYaw, 0];
+		testAngle = [0, bestYaw, 0];
 		testAngle[0] = testAngle[2] = 0.0f;
 		makevectors(testAngle);
-		vector testPos = position + (v_forward * dist);
+		testPos = position + (v_forward * dist);
 		tracebox(testPos, traceEntity.mins, traceEntity.maxs, testPos, MOVE_NORMAL, traceEntity);
 
 		if (!trace_startsolid) {
@@ -209,9 +208,8 @@ ncNavInfo::FindEmptySpotAwayFromPosition(entity traceEntity, vector position, fl
 	vector testPos = g_vec_null;
 
 	for (float yawTest = 0.0f; yawTest < 360.0f; yawTest += 10.0f) {
-		vector testPos;
 		float distSquared;
-		vector testAngle = traceEntity.angles = [0, yawTest, 0];
+		testAngle = traceEntity.angles = [0, yawTest, 0];
 		testAngle[0] = testAngle[2] = 0.0f;
 		makevectors(testAngle);
 		testPos = position + (v_forward * 2048.0f);
@@ -230,10 +228,10 @@ ncNavInfo::FindEmptySpotAwayFromPosition(entity traceEntity, vector position, fl
 	}
 
 	for (float dist = maxRadius; dist > minRadius; dist -= ((maxRadius - minRadius) / 16.0f)) {
-		vector testAngle = [0, bestYaw, 0];
+		testAngle = [0, bestYaw, 0];
 		testAngle[0] = testAngle[2] = 0.0f;
 		makevectors(testAngle);
-		vector testPos = position + (v_forward * dist);
+		testPos = position + (v_forward * dist);
 		tracebox(testPos, traceEntity.mins, traceEntity.maxs, testPos, MOVE_NORMAL, traceEntity);
 
 		if (!trace_startsolid) {

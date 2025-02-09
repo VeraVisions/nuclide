@@ -842,7 +842,7 @@ ncMonster::SeeThink(void)
 	}
 
 	/* iterate through all players, monsters. */
-	for (entity w = world; (w = findfloat(w, ::isActor, 1));) {
+	for (entity w = world; (w = findfloat(w, ::_isActor, 1));) {
 		if (w.takedamage == DAMAGE_NO)
 			continue;
 
@@ -1637,7 +1637,7 @@ ncMonster::RunAI(void)
 	}
 
 	if (InScriptedSequence() == false) {
-		ScheduleThink();
+		ThinkSchedules();
 	}
 
 	SeeThink();
@@ -2244,8 +2244,7 @@ ncMonster::Input( entity entityActivator, string inputName, string dataField )
 			AnimPlay(GetDefAct(dataField));
 
 			if (m_activeSchedule) {
-				float waitTime = frameduration(modelindex, frame);
-				m_activeSchedule.AdvanceLater(waitTime);
+				m_activeSchedule.AdvanceLater(frameduration(modelindex, frame));
 			}
 		}
 		break;
@@ -2257,12 +2256,11 @@ ncMonster::Input( entity entityActivator, string inputName, string dataField )
 			AnimPlay(frameforname(modelindex, dataField));
 
 			if (m_activeSchedule) {
-				float waitTime = frameduration(modelindex, frame);
-				m_activeSchedule.AdvanceLater(waitTime);
+				m_activeSchedule.AdvanceLater(frameduration(modelindex, frame));
 			}
 
 		} else {
-			NSError("'PlaySequence' without animation sequence, blame %S (%d)", entityActivator, num_for_edict(entityActivator));
+			NSError("'PlaySequence' without animation sequence, blame %S (%d)", entityActivator.classname, num_for_edict(entityActivator));
 		}
 		break;
 	case "FindCoverFromEnemy":

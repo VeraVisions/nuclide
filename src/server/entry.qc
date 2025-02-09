@@ -703,7 +703,7 @@ CheckSpawn(void() spawnfunc)
 	   1. maptweaks, can override anything.
 	   2. entitydef, can even override built-in class names
 	      2.0 entitydef, defined in a map (maps/foobar.def)
-		  2.1 entitydef, defined within decls/def/*.def
+		  2.1 entitydef, defined within decls/def/X.def
 	   3. in-code classes */
 	if (MapTweak_EntitySpawn(ent) == true) {
 		skipLoad = true;

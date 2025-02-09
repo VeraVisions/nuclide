@@ -42,9 +42,11 @@ public:
 	virtual void Restore(string,string);
 	nonvirtual void Setup(void);
 	virtual void Touch(entity);
+	virtual void Precaches(void);
 
 private:
 	int m_iIsCan;
+	string m_spawnSound;
 };
 
 void
@@ -52,6 +54,13 @@ item_food::item_food(void)
 {
 	// TODO: differentiate between item_sodacan and item_food
 	m_iIsCan = 1;
+	m_spawnSound = "weapons/g_bounce3.wav";
+}
+
+void
+item_food::Precaches(void)
+{
+	precache.Sound(m_spawnSound);
 }
 
 void
@@ -94,7 +103,7 @@ item_food::Setup(void)
 	SetSize([-16,-16,-16], [16,16,16]);
 
 	//if (m_iIsCan) {
-		sound(this, CHAN_ITEM, "weapons/g_bounce3.wav", 1.0f, ATTN_NORM);
+		sound(this, CHAN_ITEM, m_spawnSound, 1.0f, ATTN_NORM);
 	//}
 }
 

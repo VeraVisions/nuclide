@@ -165,7 +165,7 @@ public:
 
 	/** Overridable: Called regularily to select a new schedule to perform. */
 	virtual void SelectNewSchedule(void);
-	nonvirtual void ScheduleThink(void);
+	nonvirtual void ThinkSchedules(void);
 
 	/** Forces a named schedule to be performed. */
 	nonvirtual bool CancelSchedule(void);
@@ -261,6 +261,7 @@ private:
 .ncItem m_itemList;
 .ncWeapon m_activeWeapon;
 .ncWeapon m_firstWeapon;
+.bool _isActor;
 
 void ncActor_ListInventory(ncActor);
 
