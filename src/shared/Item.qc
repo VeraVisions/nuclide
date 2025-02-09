@@ -607,7 +607,7 @@ ncItem::PredictPreFrame(void)
 		m_nextItem = (ncItem)findentity(world, ::entnum, chain_entnum);
 
 	if (wasfreed(m_nextItem)) {
-		m_nextItem = __NULL__;
+		return;
 	}
 
 	if (owner == __NULL__ && owner_entnum) {
@@ -617,8 +617,8 @@ ncItem::PredictPreFrame(void)
 			_AddedCallback();
 
 			/* we may have been removed in _AddedCallback */
-			if (wasfreed(this)) {
-				owner = __NULL__;
+			if (this && wasfreed(this)) {
+				return;
 			}
 		}
 	}
@@ -656,6 +656,12 @@ ncItem::PredictPostFrame(void)
 	ROLL_BACK(m_nextItem)
 }
 #endif
+
+void
+ncItem::OnRemoveEntity(void)
+{
+	m_nextItem = owner = 0;
+}
 
 void
 ncItem::AddedToInventory(void)

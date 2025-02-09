@@ -118,6 +118,8 @@ public:
 	virtual bool IsWeapon(void);
 	virtual bool InInventory(void);
 
+	virtual void OnRemoveEntity(void);
+
 private:
 	/** Called to signal that the owner added this weapon to their inventory. */
 	virtual void _AddedCallback(void);
