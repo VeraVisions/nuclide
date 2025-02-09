@@ -84,11 +84,25 @@ RuleC_Init(void)
 
 		if (mainFunction) {
 			externset(g_ruleCProgs, world, "self");
-			thread(mainFunction())
+			mainFunction();
 		} else {
 			error(sprintf("RuleC %S does not have a main function.", pathToProgs));
 		}
 	}	
+}
+
+void
+RuleC_Precache(void)
+{
+	void(void) mainFunction;
+	mainFunction = externvalue(g_ruleCProgs, "CodeCallback_Precache");
+
+	if (mainFunction) {
+		externset(g_ruleCProgs, world, "self");
+		mainFunction();
+	} else {
+		NSError("%s does not have a Precache function.", mapname);
+	}
 }
 
 void

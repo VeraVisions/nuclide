@@ -436,6 +436,7 @@ initents(void)
 	 * let's add our own that we can actually trust. */
 	serverinfo.SetInteger("sv_playerslots", cvars.GetInteger("sv_playerslots"));
 
+	RuleC_Precache();
 	MapC_CallMainFunction();
 	Plugin_InitEnts();
 	Mapcycle_Init();
