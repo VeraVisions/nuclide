@@ -441,7 +441,7 @@ EntityDef_Precaches(int index)
 {
 	int defID = 0i;
 
-	if (time > 2.0f) {
+	if (g_ents_initialized == true) {
 		return;
 	}
 

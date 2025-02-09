@@ -132,7 +132,7 @@ int trace_surfaceflagsi;
 string startspot;
 string __fullspawndata;
 
-var bool g_ents_initialized = FALSE;
+var bool g_ents_initialized = false;
 
 /* main is a qcc leftover */
 void main(void)

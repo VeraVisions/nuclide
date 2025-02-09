@@ -443,7 +443,7 @@ initents(void)
 	Vote_Init();
 	ChangeTarget_Activate();
 
-	g_ents_initialized = TRUE;
+	g_ents_initialized = true;
 
 	/* engine hacks for dedicated servers */
 	cvars.SetFloat("s_nominaldistance", 1536);
