@@ -9,10 +9,6 @@ if ! [ -x "$(command -v zip)" ]; then
 	printf "'zip' is not installed.\n" >&2
 	exit 2
 fi
-if ! [ -x "$(command -v tree)" ]; then
-	printf "'tree' is not installed.\n" >&2
-	exit 2
-fi
 
 if [ $# -lt 2 ]; then
 	printf "$0 [gamedir] [output dir]\n" >&2
