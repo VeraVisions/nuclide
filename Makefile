@@ -622,7 +622,7 @@ dist: dist-pak dist-engine
 
 dist-engine: engine-lin32 engine-lin64 engine-win32 engine-win64 dedicated-lin32 dedicated-lin64 dedicated-win32 dedicated-win64
 
-dist-pak:
+dist-pak: fteqcc
 	if [ -d $(GAME)/src ];then $(MAKE) game GAME=$(GAME) NAME="$(NAME)";fi
 	mkdir -p "$(BUILD_DIR)/$(NAME)-content/$(GAME)"
 	./Tools/make_dist.sh "$(GAME)" $(BUILD_DIR)/$(NAME)-content/$(GAME) > $(BUILD_DIR)/$(NAME)-content.log
