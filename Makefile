@@ -776,6 +776,7 @@ imgtool:
 	install -m 0777 ./ThirdParty/fteqw/engine/release/imgtool ./
 
 fteqcc:
+	if [ ! -d ThirdParty ];then mkdir ThirdParty && git clone $(ENGINE_URL) ThirdParty/fteqw;fi
 	cd ThirdParty/fteqw/engine && $(MAKE) qcc-rel
 	install -m 0777 ./ThirdParty/fteqw/engine/release/fteqcc ./
 
