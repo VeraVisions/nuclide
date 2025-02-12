@@ -393,6 +393,8 @@ Before this, we are not able to spawn, touch or allocate any entity slots.
 void
 initents(void)
 {
+	g_ents_initialized = false;
+
 	/* sound shader init */
 	Materials_Init();
 	MOTD_Init();
@@ -684,9 +686,12 @@ CheckSpawn(void() spawnfunc)
 	static string lastClass;
 	bool skipLoad = false; /* entity data will be loaded elsewhere */
 
+	g_ents_initialized = false;
+
 	/* cancel out early */
 	if (ent == world) {
 		worldspawn();
+		g_ents_initialized = true;
 		return;
 	}
 
@@ -731,6 +736,7 @@ CheckSpawn(void() spawnfunc)
 
 		lastClass = desiredClass;
 		remove(ent);
+		g_ents_initialized = true;
 		return;
 	}
 
@@ -749,4 +755,5 @@ CheckSpawn(void() spawnfunc)
 
 	/* count and mark as map spawned */
 	g_ent_spawned++;
+	g_ents_initialized = true;
 }
