@@ -111,6 +111,16 @@ ncRenderableEntity::MakeStatic(void)
 void
 ncRenderableEntity::EvaluateEntity(void)
 {
+	if (m_bIsBrush == true) {
+		frame1time = 0.0f;
+		frame1time_net = 0.0f;
+		m_flBoneControl1 = m_flBoneControl1_net = 0.5f;
+		m_flBoneControl2 = m_flBoneControl2_net = 0.5f;
+		m_flBoneControl3 = m_flBoneControl3_net = 0.5f;
+		m_flBoneControl4 = m_flBoneControl4_net = 0.5f;
+		m_flBoneControl5 = m_flBoneControl5_net = 0.5f;
+	}
+
 	EVALUATE_VECTOR(origin, 0, RDENT_CHANGED_ORIGIN_X)
 	EVALUATE_VECTOR(origin, 1, RDENT_CHANGED_ORIGIN_Y)
 	EVALUATE_VECTOR(origin, 2, RDENT_CHANGED_ORIGIN_Z)
