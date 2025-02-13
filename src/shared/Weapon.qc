@@ -431,9 +431,23 @@ ncWeapon::Restore(string strKey, string strValue)
 float
 ncWeapon::SendEntity(entity ePEnt, float flChanged)
 {
+	bool inInventory = InInventory();
+
 	/* item is in somebody elses inventory. */
-	if (InInventory() == true && ePEnt != GetOwner()) {
+	if (inInventory == true && ePEnt != GetOwner()) {
 		return (false);
+	}
+
+	if (inInventory == true) {
+		flChanged &= ~WEAPONFL_CHANGED_ORIGIN_X;
+		flChanged &= ~WEAPONFL_CHANGED_ORIGIN_Y;
+		flChanged &= ~WEAPONFL_CHANGED_ORIGIN_Z;
+		flChanged &= ~WEAPONFL_CHANGED_ANGLES_X;
+		flChanged &= ~WEAPONFL_CHANGED_ANGLES_Y;
+		flChanged &= ~WEAPONFL_CHANGED_ANGLES_Z;
+		flChanged &= ~WEAPONFL_CHANGED_VELOCITY;
+		flChanged &= ~WEAPONFL_CHANGED_ANGULARVELOCITY;
+		flChanged &= ~WEAPONFL_CHANGED_RENDERPROPS;
 	}
 
 	WriteByte(MSG_ENTITY, ENT_WEAPON);
@@ -483,7 +497,7 @@ ncWeapon::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_BYTE(m_dState, WEAPONFL_CHANGED_STATE)
 	SENDENTITY_BYTE(m_bFiring, WEAPONFL_CHANGED_STATE)
 	SENDENTITY_FLOAT(m_flOverheating, WEAPONFL_CHANGED_STATE)
-	return (1);
+	return (true);
 }
 
 void
@@ -531,6 +545,14 @@ ncWeapon::EvaluateEntity(void)
 	EVALUATE_FIELD(m_dState, WEAPONFL_CHANGED_STATE)
 	EVALUATE_FIELD(m_bFiring, WEAPONFL_CHANGED_STATE)
 	EVALUATE_FIELD(m_flOverheating, WEAPONFL_CHANGED_STATE)
+
+	if (InInventory() == true) {
+		SetOrigin(owner.origin);
+		pvsflags = PVSF_IGNOREPVS;
+		modelindex = 0;
+	} else {
+		pvsflags = 0;
+	}
 }
 #endif
 

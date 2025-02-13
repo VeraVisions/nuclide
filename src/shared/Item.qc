@@ -418,13 +418,23 @@ ncItem::BecomePickup(void)
 float
 ncItem::SendEntity(entity ePEnt, float flChanged)
 {
+	bool inInventory = InInventory();
+
 	/* item is in somebody elses inventory. */
-	if (InInventory() == true && ePEnt != GetOwner()) {
+	if (inInventory == true && ePEnt != GetOwner()) {
 		return (false);
 	}
 
-	if (InInventory() == true) {
-		SetOrigin(owner.origin);
+	if (inInventory == true) {
+		flChanged &= ~ITEMFL_CHANGED_ORIGIN_X;
+		flChanged &= ~ITEMFL_CHANGED_ORIGIN_Y;
+		flChanged &= ~ITEMFL_CHANGED_ORIGIN_Z;
+		flChanged &= ~ITEMFL_CHANGED_ANGLES_X;
+		flChanged &= ~ITEMFL_CHANGED_ANGLES_Y;
+		flChanged &= ~ITEMFL_CHANGED_ANGLES_Z;
+		flChanged &= ~ITEMFL_CHANGED_VELOCITY;
+		flChanged &= ~ITEMFL_CHANGED_ANGULARVELOCITY;
+		flChanged &= ~ITEMFL_CHANGED_RENDERPROPS;
 	}
 
 	WriteByte(MSG_ENTITY, ENT_ITEM);
@@ -470,7 +480,7 @@ ncItem::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_BYTE(m_iRenderMode, ITEMFL_CHANGED_RENDERPROPS)
 	SENDENTITY_BYTE(m_iRenderFX, ITEMFL_CHANGED_RENDERPROPS)
 
-	return (1);
+	return (true);
 }
 
 void
@@ -514,8 +524,10 @@ ncItem::EvaluateEntity(void)
 	EVALUATE_FIELD(m_iRenderMode, ITEMFL_CHANGED_RENDERPROPS)
 	EVALUATE_FIELD(m_iRenderFX, ITEMFL_CHANGED_RENDERPROPS)
 
-	if (owner) {
+	if (InInventory() == true) {
+		SetOrigin(owner.origin);
 		pvsflags = PVSF_IGNOREPVS;
+		modelindex = 0;
 	} else {
 		pvsflags = 0;
 	}
