@@ -57,7 +57,7 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	NSLog("Built: %s %s", __DATE__, __TIME__);
 	NSLog("QCC: %s", __QCCVER__);
 
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0i; i < 4i; i++) {
 		g_viewSeats[i] = spawn(ncView);
 		g_viewSeats[i].SetSeatID(i);
 	}
@@ -91,10 +91,13 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	Activities_Init();
 
 	/* let the menu know we're a multi or a singleplayer game */
-	if (serverkeyfloat("sv_playerslots") == 1)
-		cvar_set("_menu_singleplayer", "1");
-	else
-		cvar_set("_menu_singleplayer", "0");
+	if (serverinfo.GetInteger("sv_playerslots") == 1i) {
+		NSLog("Running a singleplayer game.");
+		cvars.SetBool("_menu_singleplayer", true);
+	} else {
+		NSLog("Running a multiplayer game.");
+		cvars.SetBool("_menu_singleplayer", false);
+	}
 
 	g_cheats = (serverkey("*cheats") == "ON") ? true : false;
 
@@ -103,7 +106,6 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	WorldSpawn_Init();
 
 	g_overview = ncRadar::InitForCurrentMap();
-
 
 	HUD_Init();
 
@@ -159,8 +161,7 @@ CSQC_RendererRestarted(string rstr)
 	Entities_RendererRestarted();
 	DetailTex_Reload();
 
-	//g_shellchrome = spriteframe("sprites/shellchrome.spr", 0, 0.0f);
-	g_shellchromeshader = shaderforname("shellchrome", sprintf("{\ndeformVertexes bulge 1.25 1.25 0\n{\nmap %s\ntcMod scroll -0.1 0.1\ntcGen environment\nrgbGen entity\n}\n}", "textures/sfx/reflection.tga"));
+	g_shellchromeshader = shaderforname("shellchrome", sprintf("{\ndeformVertexes bulge 1.25 1.25 0\n{\nmap %s\ntcMod scroll -0.1 0.1\ntcGen environment\nblendFunc add\nrgbGen entity\n}\n}", "textures/sfx/reflection.tga"));
 	g_shellchromeshader_cull = shaderforname("shellchrome2", sprintf("{\ncull back\ndeformVertexes bulge 1.5 1.5 0\n{\nmap %s\ntcMod scroll -0.1 0.1\ntcGen environment\nrgbGen entity\n}\n}", "textures/sfx/reflection.tga"));
 
 	InitEnd();
@@ -318,9 +319,10 @@ CSQC_UpdateView(float w, float h, float focus)
 			else
 				g_view.SetViewMode(VIEWMODE_FPS);
 
+			/* ugly hack to force-cache dlight shader */
 			if (g_dlight_cached == false) {
 				g_dlight_cached = true;
-				dynamiclight_add(g_view.GetCameraOrigin(), 16, [0.1,0.1,0.1]);
+				dynamiclight_add(g_view.GetCameraOrigin(), 2048.0f, [0.1,0.1,0.1]);
 			}
 
 			g_view.UpdateView();
@@ -364,27 +366,15 @@ CSQC_InputEvent(float fEventType, float fKey, float fCharacter, float fDeviceID)
 	case IE_KEYUP:
 		break;
 	case IE_MOUSEABS:
-		mouse_pos[0] = fKey;
-		mouse_pos[1] = fCharacter;
+		g_vecMousePos[0] = fKey;
+		g_vecMousePos[1] = fCharacter;
 		break;
 	case IE_MOUSEDELTA:
-		mouse_pos[0] += fKey;
-		mouse_pos[1] += fCharacter;
-
-		if (mouse_pos[0] < 0) {
-			mouse_pos[0] = 0;
-		} else if (mouse_pos[0] > g_vidsize[0]) {
-			mouse_pos[0] = g_vidsize[0];
-		}
-
-		if (mouse_pos[1] < 0) {
-			mouse_pos[1] = 0;
-		} else if (mouse_pos[1] > g_vidsize[1]) {
-			mouse_pos[1] = g_vidsize[1];
-		}
+		g_vecMousePos[0] += fKey;
+		g_vecMousePos[1] += fCharacter;
 		break;
 	default:
-		return (1);
+		return (true);
 	}
 
 	pSeat->m_bInterfaceFocused = false;
@@ -400,7 +390,7 @@ CSQC_InputEvent(float fEventType, float fKey, float fCharacter, float fDeviceID)
 		}
 	}
 
-	g_vecMousePos = getmousepos();
+	//g_vecMousePos = getmousepos();
 
 	bool vgui_pressed;
 	vgui_pressed = Commandmenu_Input(fEventType, fKey, fCharacter, fDeviceID);
@@ -427,8 +417,9 @@ CSQC_Input_Frame(void)
 {
 	entity me;
 
-	if (Util_IsPaused())
+	if (Util_IsPaused()) {
 		return;
+	}
 
 	CSQC_UpdateSeat();
 	me = pSeat->m_ePlayer;

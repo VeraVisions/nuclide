@@ -509,7 +509,6 @@ ncRenderableEntity::RenderFXPass(void)
 		break;
 	case RFX_GLOWSHELL:
 		/* make this entity shellchrome */
-		effects = EF_ADDITIVE;
 		fatness = m_flRenderAmt / 25.5;
 		colormod = (m_vecRenderColor / 255);
 		forceshader = g_shellchromeshader;
@@ -640,7 +639,6 @@ ncRenderableEntity::predraw(void)
 
 	RenderFXPass();
 	RenderDebugSkeleton();
-
 
 	if (modelflags & MF_ROTATE) {
 		angles[1] = g_modelSpinAngle;
