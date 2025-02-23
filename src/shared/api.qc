@@ -967,6 +967,8 @@ isClient(entity entityToCheck)
 bool
 isPlayer(entity entityToCheck)
 {
+	if (STRING_SET(entityToCheck.classname))
+
 	if (isClient(entityToCheck)) {
 		ncClient pl = (ncClient)entityToCheck;
 		return pl.IsPlayer();
