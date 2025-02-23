@@ -222,6 +222,6 @@ game_text::Input(entity eAct, string strInput, string strData)
 		Trigger(eAct, TRIG_ON);
 		break;
 	default:
-		Input(eAct, strInput, strData);
+		super::Input(eAct, strInput, strData);
 	}
 }
