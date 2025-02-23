@@ -118,7 +118,7 @@ Fade_Parse(void)
 	pSeat->m_vecFadeColor[0] = readbyte();
 	pSeat->m_vecFadeColor[1] = readbyte();
 	pSeat->m_vecFadeColor[2] = readbyte();
-	pSeat->m_flFadeMaxAlpha = readbyte();
+	pSeat->m_flFadeMaxAlpha = readbyte() / 255;
 	pSeat->m_flFadeDuration = readfloat();
 	pSeat->m_flFadeHold = readfloat();
 	pSeat->m_flFadeStyle = readbyte();
