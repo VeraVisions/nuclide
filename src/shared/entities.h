@@ -81,6 +81,7 @@ typedef enum
 	ENT_CONVEYOR,	/**< of type func_conveyor */
 	ENT_WAYPOINT,	/**< of type info_waypoint */
 	ENT_INSTRUCTOR, /**< of type env_instructor_hint */
+	ENT_HUDCOUNTER,	/**< of type env_hudcounter */
 	ENT_PUSH,		/**< of type trigger_push */
 	ENT_SOUNDSCAPE, /**< of type ncSoundScape */
 	ENT_SEPARATOR,	/**< This is a separator. This separator is used by you to add game-specific networked entities. When declaring your own entity-update types, you want the first value to equal ENT_SEPARATOR at all times to ensure you'll not be overriding existing slots. */

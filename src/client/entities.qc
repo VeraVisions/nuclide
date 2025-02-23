@@ -163,6 +163,9 @@ Entity_EntityUpdate(float type, float new)
 	case ENT_WAYPOINT:
 		NSENTITY_READENTITY(info_waypoint, new)
 		break;
+	case ENT_HUDCOUNTER:
+		NSENTITY_READENTITY(env_hudcounter, new)
+		break;
 	case ENT_INSTRUCTOR:
 		NSENTITY_READENTITY(env_instructor_hint, new)
 		break;

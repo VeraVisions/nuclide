@@ -33,6 +33,7 @@ shared/func_tankmortar.qc
 shared/trigger_camera.qc
 shared/trigger_gravity.qc
 shared/info_particle_system.qc
+shared/env_hudcounter.qc
 shared/info_waypoint.qc
 shared/info_notnull.qc
 shared/env_instructor_hint.qc
