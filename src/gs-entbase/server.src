@@ -103,6 +103,7 @@ server/trigger_autosave.qc
 server/trigger_cdaudio.qc
 server/trigger_counter.qc
 server/trigger_hurt.qc
+server/trigger_endround.qc
 server/trigger_transition.qc
 server/trigger_changelevel.qc
 server/trigger_endsection.qc
