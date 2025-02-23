@@ -304,7 +304,11 @@ ncItem::Touch(entity eToucher)
 	UseTargets(pl, TRIG_TOGGLE, m_flDelay);
 
 	if (m_flRespawn <= 0) {
-		Destroy();
+		if (CreatedByMap()) {
+			Disappear();
+		} else {
+			Destroy();
+		}
 	} else {
 		if (m_hiddenSequence) {
 			SetFrame(m_hiddenSequence);
@@ -437,11 +441,13 @@ ncItem::SendEntity(entity ePEnt, float flChanged)
 		flChanged &= ~ITEMFL_CHANGED_RENDERPROPS;
 	}
 
+
 	WriteByte(MSG_ENTITY, ENT_ITEM);
 
 	/* broadcast how much data is expected to be read */
 	WriteFloat(MSG_ENTITY, flChanged);
 
+	SENDENTITY_INT(entityDefID, ITEMFL_CHANGED_CHAIN)
 	SENDENTITY_ENTITY(m_nextItem, ITEMFL_CHANGED_CHAIN)
 	SENDENTITY_ENTITY(owner, ITEMFL_CHANGED_CHAIN)
 	SENDENTITY_COORD(origin[0], ITEMFL_CHANGED_ORIGIN_X)
@@ -450,7 +456,6 @@ ncItem::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_ANGLE(angles[0], ITEMFL_CHANGED_ANGLES_X)
 	SENDENTITY_ANGLE(angles[1], ITEMFL_CHANGED_ANGLES_Y)
 	SENDENTITY_ANGLE(angles[2], ITEMFL_CHANGED_ANGLES_Z)
-	SENDENTITY_INT(entityDefID, ITEMFL_CHANGED_MODELINDEX)
 	SENDENTITY_SHORT(modelindex, ITEMFL_CHANGED_MODELINDEX)
 	SENDENTITY_BYTE(solid, ITEMFL_CHANGED_SOLID)
 	SENDENTITY_BYTE(movetype, ITEMFL_CHANGED_FLAGS)
@@ -527,6 +532,12 @@ ncItem::EvaluateEntity(void)
 	if (InInventory() == true) {
 		SetOrigin(owner.origin);
 		pvsflags = PVSF_IGNOREPVS;
+
+		/* HACK: force refresh every once in a while */
+		if (time & 4) {
+			SendFlags |= ITEMFL_CHANGED_CHAIN;
+		}
+
 		modelindex = 0;
 	} else {
 		pvsflags = 0;
@@ -538,6 +549,8 @@ ncItem::EvaluateEntity(void)
 void
 ncItem::ReceiveEntity(float flNew, float flChanged)
 {
+	_isItem = true;
+	READENTITY_INT(entityDefID, ITEMFL_CHANGED_CHAIN)
 	READENTITY_ENTNUM(chain_entnum, ITEMFL_CHANGED_CHAIN)
 	READENTITY_ENTNUM(owner_entnum, ITEMFL_CHANGED_CHAIN)
 	READENTITY_COORD(origin[0], ITEMFL_CHANGED_ORIGIN_X)
@@ -546,7 +559,6 @@ ncItem::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_ANGLE(angles[0], ITEMFL_CHANGED_ANGLES_X)
 	READENTITY_ANGLE(angles[1], ITEMFL_CHANGED_ANGLES_Y)
 	READENTITY_ANGLE(angles[2], ITEMFL_CHANGED_ANGLES_Z)
-	READENTITY_INT(entityDefID, ITEMFL_CHANGED_MODELINDEX)
 	READENTITY_SHORT(modelindex, ITEMFL_CHANGED_MODELINDEX)
 	READENTITY_BYTE(solid, ITEMFL_CHANGED_SOLID)
 	READENTITY_BYTE(movetype, ITEMFL_CHANGED_FLAGS)
@@ -618,9 +630,10 @@ ncItem::PredictPreFrame(void)
 	if (m_nextItem == __NULL__ && chain_entnum)
 		m_nextItem = (ncItem)findentity(world, ::entnum, chain_entnum);
 
-	if (wasfreed(m_nextItem)) {
-		return;
-	}
+	#warning What was this meant to do?!
+	//if (wasfreed(m_nextItem)) {
+	//	return;
+	//}
 
 	if (owner == __NULL__ && owner_entnum) {
 		owner = findentity(world, ::entnum, owner_entnum);
