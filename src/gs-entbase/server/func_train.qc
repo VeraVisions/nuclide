@@ -93,7 +93,7 @@ void
 func_train::func_train(void)
 {
 	m_flWait = 0.0f;
-	m_flSpeed = 0.0f; /* FIXME: This is all decided by the first path_corner pretty much */
+	m_flSpeed = 0.0f;
 	m_flDamage = 0.0f;
 	m_strMoveSnd = __NULL__;
 	m_strStopSnd = __NULL__;
@@ -385,6 +385,8 @@ func_train::AfterSpawn(void)
 	} else {
 		m_flCurrentSpeed = m_flSpeed;
 	}
+
+	m_flSpeed = m_flCurrentSpeed;
 
 	/* if we're unable to be triggered by anything, begin moving */
 	if (HasTargetname() == false) {

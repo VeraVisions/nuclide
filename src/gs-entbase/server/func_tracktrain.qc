@@ -170,7 +170,7 @@ func_tracktrain::func_tracktrain(void)
 {
 #ifdef SERVER
 	m_flWait = 0.0f;
-	m_flSpeed = 100; /* FIXME: This is all decided by the first path_track pretty much */
+	m_flSpeed = 100;
 	m_flDamage = 0.0f;
 	m_flHeight = 0.0f;
 	m_flStartSpeed = 0.0f;
@@ -653,6 +653,16 @@ func_tracktrain::PathMoveForward(void)
 	/* the direction we're aiming for */
 	vecDiff = GetOrigin() - (eNode.GetOrigin() + [0, 0, m_flHeight]);
 	vecAngleDest = vectoangles(vecDiff);
+
+	if (autocvar(trackTrain_debug, 0) == num_for_edict(this)) {
+		printf("vecDiff: %v\n", vecDiff);
+	}
+
+	/* If we're moving vertically, do not change the current angle at all. */
+	if (fabs(vecDiff[0]) == 0 && fabs(vecDiff[0]) == 0) {
+		vecAngleDest[1] = angles[1];
+	}
+
 	vecAngleDiff = angleDifference(vecAngleDest, angles);
 	vecAngleDiff[2] = 0;
 
@@ -719,10 +729,10 @@ func_tracktrain::PathMoveBack(void)
 		travelSpeed = m_flCurrentSpeed;
 	}
 
-	vecVelocity = (GetPointBetweenNodes(0.15f) + [0,0,m_flHeight]) - GetTrainPivotPoint(true);
+	vecVelocity = (GetPointBetweenNodes(0.15f) + [0.0f, 0.0f,m_flHeight]) - GetTrainPivotPoint(true);
 	turnTime = (vlen(vecVelocity) / travelSpeed);
 
-	vecVelocity = (eNode.GetOrigin() + [0,0,m_flHeight]) - GetOrigin();
+	vecVelocity = (eNode.GetOrigin() + [0.0f, 0.0f,m_flHeight]) - GetOrigin();
 	flTravelTime = (vlen(vecVelocity) / travelSpeed);
 
 	if (flTravelTime <= 0.0) {
@@ -733,12 +743,22 @@ func_tracktrain::PathMoveBack(void)
 	}
 
 	ncVehicle_Log("Changing velocity from '%v' to '%v'", GetVelocity(), vecVelocity);
-	SetVelocity(vecVelocity * (1 / flTravelTime));
+	SetVelocity(vecVelocity * (1.0f / flTravelTime));
 	_SoundMove();
 
 	/* the direction we're aiming for */
 	vecDiff = (eNode.GetOrigin() + [0, 0, m_flHeight]) - GetOrigin();
 	vecAngleDest = vectorToAngles(vecDiff);
+
+	if (autocvar(trackTrain_debug, 0) == num_for_edict(this)) {
+		printf("vecDiff: %v\n", vecDiff);
+	}
+
+	/* If we're moving vertically, do not change the current angle at all. */
+	if (fabs(vecDiff[0]) == 0 && fabs(vecDiff[0]) == 0) {
+		vecAngleDest[1] = angles[1];
+	}
+
 	vecAngleDiff = angleDifference(vecAngleDest, angles);
 	vecAngleDiff[2] = 0;
 
@@ -801,18 +821,20 @@ func_tracktrain::_PathArrivedForward(void)
 	/* get what's in front of us. */
 	eNode = (path_track)GetTrackNodeForward();
 
+	/* WHAT? This was after the DisabledTrain() check at somepoint. Was moved up here
+	   for OBVIOUS reasons !*/
+	/* we have nothing. */
+	if (!eNode) {
+		PathClear();
+		return;
+	}
+
 	/* we have to check this _after_ moving... */
 	if (eNode.DisablesTrain() == true) {
 		/* first clear velocity, in case our trigger targets our train */
 		PathClear();
 		eNode.PathEndTrigger(this, TRIG_TOGGLE);
 		target = __NULL__;	/* makes the train inaccessible */
-		return;
-	}
-
-	/* we have nothing. */
-	if (!eNode) {
-		PathClear();
 		return;
 	}
 	
@@ -1005,6 +1027,8 @@ func_tracktrain::_AfterSpawn(void)
 	} else {
 		m_flCurrentSpeed = m_flSpeed;
 	}
+
+	m_flSpeed = m_flCurrentSpeed;
 
 	m_flWait = targetNode.m_flWait;
 	target = targetNode.target;
