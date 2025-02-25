@@ -64,6 +64,14 @@ public:
 	virtual void NowVisible(void);
 	virtual void NowHidden(void);
 
+	/** Enable the widget. */
+	nonvirtual void Enable(void);
+	/** Disable the widget. */
+	nonvirtual void Disable(void);
+
+	virtual void NowEnabled(void);
+	virtual void NowDisabled(void);
+
 	/** Called in order to draw the widget. */
 	virtual void Draw(void);
 	/** Called whenever the physical properties of the display change. */
@@ -87,5 +95,6 @@ private:
 	vguiWidget m_children;
 	int m_iFlags;
 	bool m_bVisible;
+	bool m_bEnabled;
 	vguiTheme m_theme;
 };

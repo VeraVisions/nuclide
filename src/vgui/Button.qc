@@ -57,6 +57,8 @@ public:
 	/** Sets the command to execute when the button is pressed. */
 	nonvirtual void SetExec(string);
 
+	nonvirtual bool ButtonDisabled(void);
+
 	/* overrides */
 	virtual void Draw(void);
 	virtual bool Input(float,float,float,float);
@@ -76,6 +78,7 @@ private:
 void
 vguiButton::vguiButton(void)
 {
+	m_strExec = __NULL__;
 	m_vecColor = UI_MAINCOLOR;
 	m_flAlpha = 1.0f;
 	m_vecIconColor = [1,1,1];
@@ -158,13 +161,26 @@ vguiButton::GetKeyEquivalent(void)
 	return keynumtostring(m_keyEquivalent);
 }
 
+bool
+vguiButton::ButtonDisabled(void)
+{
+	if (STRING_SET(m_strExec)) {
+		return (false);
+	}
+
+	if (tmpvguiButton1) {
+		return (false);
+	}
+
+	return (true);
+}
 
 void
 vguiButton::Draw(void)
 {
 	vguiTheme theme = GetTheme();
 
-	if (!tmpvguiButton1) {
+	if (IsEnabled() == false) {
 		theme.DrawButton(m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, VGUI_STATE_DISABLED);
 	} else if (m_iFlags & BUTTON_DOWN) {
 		theme.DrawButton(m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, VGUI_STATE_ACTIVE);
@@ -207,11 +223,9 @@ bool
 vguiButton::Input(float flEVType, float flKey, float flChar, float flDevID)
 {
 	bool ret = false;
-
 	bool mouseHover = false;
 
-
-	if (!tmpvguiButton1) {
+	if (IsEnabled() == false) {
 		return (false);
 	}
 
@@ -254,8 +268,9 @@ vguiButton::Input(float flEVType, float flKey, float flChar, float flDevID)
 				if (tmpvguiButton1)
 					tmpvguiButton1();
 
-				if (m_strExec)
+				if (STRING_SET(m_strExec)) {
 					localcmd(sprintf("%s\n", m_strExec));
+				}
 
 				ret = true;
 			}

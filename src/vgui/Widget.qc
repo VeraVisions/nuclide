@@ -9,6 +9,7 @@ vguiWidget::vguiWidget(void)
 	m_parent = __NULL__;
 	m_iFlags = 0i;
 	m_bVisible = true;
+	m_bEnabled = true;
 	isVGUI = true;
 
 	Spawned();
@@ -18,6 +19,34 @@ void
 vguiWidget::SetTheme(vguiTheme theme)
 {
 	m_theme = theme;
+}
+
+bool
+vguiWidget::IsEnabled(void)
+{
+	return (m_bEnabled);
+}
+
+void
+vguiWidget::Enable(void)
+{
+	m_bEnabled = true;
+}
+
+void
+vguiWidget::Disable(void)
+{
+	m_bEnabled = false;
+}
+
+void
+vguiWidget::NowEnabled(void)
+{
+}
+
+void
+vguiWidget::NowDisabled(void)
+{
 }
 
 vguiTheme
