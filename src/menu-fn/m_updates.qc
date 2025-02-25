@@ -24,9 +24,10 @@ CMainButton up_btnDone;
 CMainButton up_btnApply;
 CMainButton up_btnInstall;
 CMainButton up_btnDelete;
-CUpdateList up_lbUpdates;
 CFrame up_frUpdates;
 CFrame up_frPreview;
+
+CUpdateList up_lbUpdates;
 CScrollbar up_sbUpdates;
 
 var string g_updates_previewpic;
@@ -124,13 +125,13 @@ menu_updates_init(void)
 	up_btnInstall = spawn(CMainButton);
 	up_btnInstall.SetImage(BTN_INSTALL);
 	up_btnInstall.SetExecute(up_btninstall_start);
-	up_btnInstall.SetPos(380,400);
+	up_btnInstall.SetPos(350+171+6+8,160);
 	Widget_Add(fn_updates, up_btnInstall);
 
 	up_btnDelete = spawn(CMainButton);
 	up_btnDelete.SetImage(BTN_DELETE);
 	up_btnDelete.SetExecute(up_btnremove_start);
-	up_btnDelete.SetPos(380,400+30);
+	up_btnDelete.SetPos(350+171+6+8, 160+30);
 	Widget_Add(fn_updates, up_btnDelete);
 
 	up_frUpdates = spawn(CFrame);
@@ -155,7 +156,7 @@ menu_updates_init(void)
 
 	up_frPreview = spawn(CFrame);
 	up_frPreview.SetPos(350,160);
-	up_frPreview.SetSize(256+6,128+6);
+	up_frPreview.SetSize(171+6,128+6);
 	Widget_Add(fn_updates, up_frPreview);
 #endif
 }
@@ -230,8 +231,9 @@ menu_updates_draw(void)
 	WLabel_Static(350, 143, "Preview:", 11, 11, [1,1,1],
 					1.0f, 0, font_arial);
 
-	if (g_updates_previewpic)
-	drawpic([g_menuofs[0]+350+3,g_menuofs[1]+160+3], g_updates_previewpic, [256,128], [1,1,1], 1.0f);
+	if (g_updates_previewpic) {
+		drawpic([g_menuofs[0]+350+3,g_menuofs[1]+160+3], g_updates_previewpic, [171,128], [1,1,1], 1.0f);
+	}
 #endif
 }
 
