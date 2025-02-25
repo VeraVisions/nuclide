@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2025 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -17,12 +17,12 @@
 enumflags {
 	SF_MOV_OPEN,
 	SF_MOV_RESERVED1,
-	SF_MOV_UNLINK, /* TODO: implement this */
+	SF_MOV_RESERVED2, /* was UNLINK in Quake. Removed in HL */
 	SF_MOV_PASSABLE,
-	SF_MOV_RESERVED2,
-	SF_MOV_TOGGLE,
 	SF_MOV_RESERVED3,
+	SF_MOV_TOGGLE,
 	SF_MOV_RESERVED4,
+	SF_MOV_RESERVED5,
 	SF_MOV_USE
 };
 
@@ -50,16 +50,17 @@ axis. It is often used for primitive elevators as well.
 - "forceclosed": Will make sure the door will not bounce back when something is blocking it
 
 # SPAWNFLAGS
-- SF_MOV_OPEN : Swaps the positions between raised and lowered state.
-- SF_MOV_UNLINK : Currently unimplemented.
-- SF_MOV_PASSABLE : Don't test against any collision with this door.
-- SF_MOV_TOGGLE : Door cannot be opened by physical means, only by a trigger.
-- SF_MOV_USE : Players can press the "use" button/key to activate this door.
+- SF_MOV_OPEN (1) : Swaps the positions between raised and lowered state.
+- SF_MOV_PASSABLE (8) : Don't test against any collision with this door.
+- SF_MOV_TOGGLE (32) : Door cannot be opened by physical means, only by a trigger.
+- SF_MOV_USE (256): Players can press the "use" button/key to activate this door.
 
 # NOTES
 The keys "movesnd" and "stopsnd" are obsolete. Their values point towards
 the samples doors/doormoveX.wav and doors/doorstopX.wav respectively, where
 X is the integer value set in "movesnd" and "stopsnd".
+
+Previous documents referred to the SF_MOV_UNLINK (4) flag, which was a left-over from Quake.
 
 # TRIVIA
 This entity was introduced in Quake (1996).
@@ -88,6 +89,11 @@ public:
 	virtual void MoverStartsMoving(void);
 	virtual void MoverFinishesMoving(void);
 
+	nonvirtual void EnableTouchActivation(void);
+	nonvirtual void DisableTouchActivation(void);
+	nonvirtual void Lock(void);
+	nonvirtual void Unlock(void);
+
 private:
 	string targetClose;
 	float m_flSpeed;
@@ -112,7 +118,33 @@ private:
 	int m_waterType;
 
 	string m_strFullyClosed;
+	float m_preventTouch;
 };
+
+
+void
+func_door::EnableTouchActivation(void)
+{
+	m_bCanTouch = true;
+}
+
+void
+func_door::DisableTouchActivation(void)
+{
+	m_bCanTouch = false;
+}
+
+void
+func_door::Lock(void)
+{
+	m_bLocked = true;
+}
+
+void
+func_door::Unlock(void)
+{
+	m_bLocked = false;
+}
 
 void
 func_door::func_door(void)
@@ -345,13 +377,15 @@ func_door::Respawn(void)
 	}
 
 	/* this is a terrible hack */
-	if (m_flWait == 0)
+	if (m_flWait == 0) {
 		m_flWait = 0.01f;
+	}
 
-	if (HasSpawnFlags(SF_MOV_PASSABLE))
+	if (HasSpawnFlags(SF_MOV_PASSABLE)) {
 		SetSolid(SOLID_NOT);
-	else
+	} else {
 		SetSolid(SOLID_BSP);
+	}
 
 	SetMovetype(MOVETYPE_PUSH);
 	AddFlags(FL_FINDABLE_NONSOLID);
@@ -377,16 +411,16 @@ func_door::Respawn(void)
 
 	m_iValue = 0;
 
-	if (spawnflags & SF_MOV_USE)
+	if (HasSpawnFlags(SF_MOV_USE) || HasSpawnFlags(SF_MOV_TOGGLE)) {
 		m_bCanTouch = false;
-	else
+	} else {
 		m_bCanTouch = true;
+	}
 
 	if (HasSpawnFlags(SF_MOV_OPEN)) {
 		SetOrigin(GetMoverPosition2());
 		SetMoverPosition2(GetMoverPosition1());
 		SetMoverPosition1(GetOrigin());
-
 		m_iValue = 1;
 		_PortalOpen();
 	} else {
@@ -396,8 +430,8 @@ func_door::Respawn(void)
 	if (HasTargetname()) {
 		m_bCanTouch = false;
 
-		if (m_strLockedSfx != __NULL__) {
-			m_bLocked = true;
+		if (STRING_SET(m_strLockedSfx)) {
+			Lock();
 		}
 	}
 }
@@ -423,8 +457,9 @@ func_door::Input(entity eAct, string strInput, string strData)
 void
 func_door::PlayerUse(void)
 {
-	if (!HasSpawnFlags(SF_MOV_USE))
+	if (!HasSpawnFlags(SF_MOV_USE)) {
 		return;
+	}
 
 	eActivator.RemoveVFlags(VFL_USE_RELEASED);
 	Trigger(eActivator, TRIG_TOGGLE);
@@ -514,10 +549,6 @@ func_door::Trigger(entity act, triggermode_t triggerstate)
 		return;
 	}
 
-	if (m_flWait == -1 && GetMoverState() == MOVER_POS2) {
-		return;
-	}
-
 	if ((GetMoverState() == MOVER_1TO2) || (GetMoverState() == MOVER_2TO1)) {
 		return;
 	}
@@ -546,6 +577,10 @@ func_door::Trigger(entity act, triggermode_t triggerstate)
 void
 func_door::Touch(entity eToucher)
 {
+	if (m_preventTouch > GetTime()) {
+		return;
+	}
+
 	/* locked sound plays only when touched. still need another check in Trigger()
 	   to see if it's locked in case it gets trigger targeted */
 	if (m_bLocked || !GetMaster(eToucher)) {
@@ -564,14 +599,6 @@ func_door::Touch(entity eToucher)
 		return;
 	}
 
-	if (HasSpawnFlags(SF_MOV_USE) == true) {
-		return;
-	}
-
-	if (HasSpawnFlags(SF_MOV_TOGGLE) == true) {
-		return;
-	}
-
 	if (eToucher.movetype == MOVETYPE_WALK) {
 		/* only trigger if we're not above the door. */
 		if (eToucher.absmin[2] <= maxs[2] - 2) {
@@ -583,19 +610,20 @@ func_door::Touch(entity eToucher)
 void
 func_door::Blocked(entity eBlocker)
 {
-	if (m_iDamage) {
+	if (m_iDamage != 0i) {
 		vector center = WorldSpaceCenter();
 		vector dmgDir = dirFromTarget(center, eBlocker.origin);
 		ncDict damageDecl = spawn(ncDict);
 		damageDecl.AddKey("damage", itos(m_iDamage));
-		m_bCanTouch = false;
 		combat.Damage(eBlocker, this, eBlocker, damageDecl.GetDeclBody(), center, dmgDir, eBlocker.origin);
 		remove(damageDecl);
+		m_preventTouch = GetTime() + 0.5f;
 	}
 
-	if (!m_bForceClosed)
-	if (m_flWait >= 0) {
-		MoveToReverse(m_flSpeed);
+	if (m_bForceClosed == false) {
+		if (m_flWait >= 0) {
+			MoveToReverse(m_flSpeed);
+		}
 	}
 }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2025 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -112,6 +112,8 @@ private:
 	bool m_bLocked;
 	bool m_bCanTouch;
 	vector m_vecTurnDir;
+	float m_flNextTrigger;
+	float m_preventTouch;
 };
 
 void
@@ -248,7 +250,7 @@ func_door_rotating::Respawn(void)
 		m_vecTurnDir = [0,1,0];
 	}
 
-	if (spawnflags & SF_ROT_USE) {
+	if (HasSpawnFlags(SF_ROT_USE) || HasSpawnFlags(SF_ROT_TOGGLE)) {
 		m_bCanTouch = false;
 	} else {
 		m_bCanTouch = true;
@@ -445,13 +447,16 @@ func_door_rotating::Trigger(entity act, triggermode_t state)
 		return;
 	}
 
-	if (m_flWait == -1 && GetMoverState() == MOVER_POS2) {
-		return;
-	}
-
 	if ((GetMoverState() == MOVER_1TO2) || (GetMoverState() == MOVER_2TO1)) {
 		return;
 	}
+
+	if (m_flNextTrigger > time) {
+		if (HasSpawnFlags(SF_ROT_TOGGLE) == false) {
+			return;
+		}
+	}
+	m_flNextTrigger = time + m_flWait;
 
 	eActivator = (ncEntity)act;
 
@@ -499,6 +504,10 @@ func_door_rotating::Use(void)
 void
 func_door_rotating::Touch(entity eToucher)
 {
+	if (m_preventTouch > GetTime()) {
+		return;
+	}
+
 	/* locked sound plays only when touched. still need another check in Trigger()
 	   to see if it's locked in case it gets trigger targeted */
 	if (m_bLocked || !GetMaster(eToucher)) {
@@ -517,10 +526,6 @@ func_door_rotating::Touch(entity eToucher)
 		return;
 	}
 
-	if (HasSpawnFlags(SF_ROT_USE)) {
-		return;
-	}
-
 	if (eToucher.movetype == MOVETYPE_WALK) {
 		Trigger(eToucher, TRIG_TOGGLE);
 	}
@@ -534,7 +539,7 @@ func_door_rotating::Blocked(entity eBlocker)
 		vector dmgDir = dirFromTarget(center, eBlocker.origin);
 		ncDict damageDecl = spawn(ncDict);
 		damageDecl.AddKey("damage", itos(m_iDamage));
-		m_bCanTouch = false;
+		m_preventTouch = GetTime() + 0.5f;
 		combat.Damage(eBlocker, this, eBlocker, damageDecl.GetDeclBody(), center, dmgDir, eBlocker.origin);
 		remove(damageDecl);
 	}
