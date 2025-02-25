@@ -439,15 +439,10 @@ ncWeapon::SendEntity(entity ePEnt, float flChanged)
 	}
 
 	if (inInventory == true) {
-		flChanged &= ~WEAPONFL_CHANGED_ORIGIN_X;
-		flChanged &= ~WEAPONFL_CHANGED_ORIGIN_Y;
-		flChanged &= ~WEAPONFL_CHANGED_ORIGIN_Z;
-		flChanged &= ~WEAPONFL_CHANGED_ANGLES_X;
-		flChanged &= ~WEAPONFL_CHANGED_ANGLES_Y;
-		flChanged &= ~WEAPONFL_CHANGED_ANGLES_Z;
+		flChanged &= ~WEAPONFL_CHANGED_ORIGIN;
+		flChanged &= ~WEAPONFL_CHANGED_ANGLES;
 		flChanged &= ~WEAPONFL_CHANGED_VELOCITY;
 		flChanged &= ~WEAPONFL_CHANGED_ANGULARVELOCITY;
-		flChanged &= ~WEAPONFL_CHANGED_RENDERPROPS;
 	}
 
 	WriteByte(MSG_ENTITY, ENT_WEAPON);
@@ -455,7 +450,7 @@ ncWeapon::SendEntity(entity ePEnt, float flChanged)
 	/* broadcast how much data is expected to be read */
 	WriteFloat(MSG_ENTITY, flChanged);
 
-	SENDENTITY_SHORT(modelindex, WEAPONFL_CHANGED_MODELINDEX)
+	SENDENTITY_INT(entityDefID, WEAPONFL_CHANGED_CHAIN)
 	SENDENTITY_ENTITY(m_nextItem, WEAPONFL_CHANGED_CHAIN)
 	SENDENTITY_ENTITY(owner, WEAPONFL_CHANGED_CHAIN)
 	SENDENTITY_ENTITY(m_nextWeapon, WEAPONFL_CHANGED_NEXTWEAPON)
@@ -466,7 +461,7 @@ ncWeapon::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_ANGLE(angles[0], WEAPONFL_CHANGED_ANGLES)
 	SENDENTITY_ANGLE(angles[1], WEAPONFL_CHANGED_ANGLES)
 	SENDENTITY_ANGLE(angles[2], WEAPONFL_CHANGED_ANGLES)
-	SENDENTITY_INT(entityDefID, WEAPONFL_CHANGED_MODELINDEX)
+	SENDENTITY_SHORT(modelindex, WEAPONFL_CHANGED_MODELINDEX)
 	SENDENTITY_SHORT(m_viewModel, WEAPONFL_CHANGED_MODELINDEX)
 	SENDENTITY_FLOAT(m_flFireRate, WEAPONFL_CHANGED_MODELINDEX)
 	SENDENTITY_BYTE(solid, WEAPONFL_CHANGED_SOLID)
@@ -513,7 +508,7 @@ ncWeapon::EvaluateEntity(void)
 	EVALUATE_VECTOR(angles, 0, WEAPONFL_CHANGED_ANGLES)
 	EVALUATE_VECTOR(angles, 1, WEAPONFL_CHANGED_ANGLES)
 	EVALUATE_VECTOR(angles, 2, WEAPONFL_CHANGED_ANGLES)
-	EVALUATE_FIELD(entityDefID, WEAPONFL_CHANGED_MODELINDEX)
+	EVALUATE_FIELD(entityDefID, WEAPONFL_CHANGED_CHAIN)
 	EVALUATE_FIELD(modelindex, WEAPONFL_CHANGED_MODELINDEX)
 	EVALUATE_FIELD(m_viewModel, WEAPONFL_CHANGED_MODELINDEX)
 	EVALUATE_FIELD(m_flFireRate, WEAPONFL_CHANGED_MODELINDEX)
@@ -547,6 +542,11 @@ ncWeapon::EvaluateEntity(void)
 	EVALUATE_FIELD(m_flOverheating, WEAPONFL_CHANGED_STATE)
 
 	if (InInventory() == true) {
+		/* HACK: force refresh every once in a while */
+		if (time & 2) {
+			SendFlags |= WEAPONFL_CHANGED_CHAIN | WEAPONFL_CHANGED_NEXTWEAPON | WEAPONFL_CHANGED_PREVWEAPON;
+		}
+
 		SetOrigin(owner.origin);
 		pvsflags = PVSF_IGNOREPVS;
 		modelindex = 0;
@@ -595,7 +595,8 @@ ncWeapon::ClientFX(bool isThirdperson)
 void
 ncWeapon::ReceiveEntity(float flNew, float flChanged)
 {
-	READENTITY_SHORT(modelindex, WEAPONFL_CHANGED_MODELINDEX)
+	_isWeapon = true;
+	READENTITY_INT(entityDefID, WEAPONFL_CHANGED_CHAIN)
 	READENTITY_ENTNUM(chain_entnum, WEAPONFL_CHANGED_CHAIN)
 	READENTITY_ENTNUM(owner_entnum, WEAPONFL_CHANGED_CHAIN)
 	READENTITY_ENTNUM(m_nextWeapon_entnum, WEAPONFL_CHANGED_NEXTWEAPON)
@@ -607,7 +608,7 @@ ncWeapon::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_ANGLE(angles[0], WEAPONFL_CHANGED_ANGLES)
 	READENTITY_ANGLE(angles[1], WEAPONFL_CHANGED_ANGLES)
 	READENTITY_ANGLE(angles[2], WEAPONFL_CHANGED_ANGLES)
-	READENTITY_INT(entityDefID, WEAPONFL_CHANGED_MODELINDEX)
+	READENTITY_SHORT(modelindex, WEAPONFL_CHANGED_MODELINDEX)
 	READENTITY_SHORT(m_viewModel, WEAPONFL_CHANGED_MODELINDEX)
 	READENTITY_FLOAT(m_flFireRate, WEAPONFL_CHANGED_MODELINDEX)
 	READENTITY_BYTE(solid, WEAPONFL_CHANGED_SOLID)
@@ -691,6 +692,11 @@ void
 ncWeapon::PredictPreFrame(void)
 {
 	super::PredictPreFrame();
+
+	/* may no longer be valid */
+	if (wasfreed(this)) {
+		return;
+	}
 
 	if (m_nextWeapon == __NULL__ && m_nextWeapon_entnum) {
 		m_nextWeapon = (ncWeapon)findentity(world, ::entnum, m_nextWeapon_entnum);
@@ -1233,6 +1239,10 @@ ncWeapon::Attack(string fireInfo)
 void
 ncWeapon::_PrimaryAttack(void)
 {
+	if (!owner) {
+		return;
+	}
+
 	_WeaponStartedFiring();
 	PrimaryAttack();
 }
@@ -1240,6 +1250,10 @@ ncWeapon::_PrimaryAttack(void)
 void
 ncWeapon::_SecondaryAttack(void)
 {
+	if (!owner) {
+		return;
+	}
+
 	if (GetDefBool("altAlternates") == true) {
 		return;
 	} else {
@@ -1582,6 +1596,11 @@ void
 ncWeapon::Reload(void)
 {
 	ncPlayer ourOwner = (ncPlayer)GetOwner();
+
+	if (!ourOwner) {
+		return;
+	}
+
 	float reloadAnimation = -1;
 	float reloadEndAnimation = -1;
 	float reloadTime;
