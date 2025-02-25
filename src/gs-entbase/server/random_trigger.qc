@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Trigger With Random Intervals */
 /*!QUAKED random_trigger (1 0 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 When triggered, it'll calculate some random interval until it triggers
@@ -30,9 +31,12 @@ its targets, based on some limits given.
 
 # TRIVIA
 It was introduced in Gunman Chronicles (2000).
+
+@ingroup serverentity
+@ingroup pointentity
 */
 class
-random_trigger:NSPointTrigger
+random_trigger:ncPointTrigger
 {
 public:
 	void random_trigger(void);

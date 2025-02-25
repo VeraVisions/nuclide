@@ -1,0 +1,10 @@
+{
+	qer_editorImage "common/hitmesh.ktx"
+	surfaceParm nolightmap
+	surfaceParm nomarks
+	surfaceParm nodraw
+	surfaceParm nonsolid
+	surfaceParm noimpact
+	surfaceParm nodlight
+	nomipmaps
+}

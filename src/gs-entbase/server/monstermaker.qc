@@ -14,6 +14,15 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+enumflags
+{
+	MMF_STARTON,
+	MMF_UNUSED1,
+	MMF_NONTOGGLE,
+	MMF_MONSTERCLIP
+};
+
+/*! \brief Server-Entity: Monster Spawner */
 /*!QUAKED monstermaker (1 0 0) (-8 -8 -8) (8 8 8) MMF_STARTON x MMF_NONTOGGLE MMF_MONSTERCLIP
 # OVERVIEW
 The monster maker is the end-all solution to timed/controlled spawning of
@@ -36,18 +45,12 @@ monster entities.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup serverentity
+@ingroup pointentity
 */
-
-enumflags
-{
-	MMF_STARTON,
-	MMF_UNUSED1,
-	MMF_NONTOGGLE,
-	MMF_MONSTERCLIP
-};
-
 class
-monstermaker:NSPointTrigger
+monstermaker:ncPointTrigger
 {
 public:
 	void monstermaker(void);
@@ -202,7 +205,7 @@ monstermaker::Spawner(void)
 		return;
 	}
 
-	NSEntity unit = Entity_CreateClass(m_strMonster);
+	ncEntity unit = Entity_CreateClass(m_strMonster);
 
 	if (!unit) {
 		EntError("Cannot call spawnfunction for %s", m_strMonster);
@@ -214,9 +217,7 @@ monstermaker::Spawner(void)
 	EntLog("Spawning %s", m_strMonster);
 	unit.SetOrigin(GetOrigin());
 	unit.SetAngles(GetAngles());
-	unit.m_oldOrigin = GetOrigin();
-	unit.m_oldAngle = GetAngles();
-	unit.targetname = m_strChildName;
+	unit.targetname = (m_strChildName);
 	unit.ReleaseThink();
 
 	m_iMonsterSpawned++;

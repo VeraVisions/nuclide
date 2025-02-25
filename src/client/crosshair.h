@@ -14,14 +14,23 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*! @file crosshair.h
+/** @defgroup crosshair Crosshair
     @brief Crosshair helper functions.
+    @ingroup client
 
     Helper functions for dealing with crosshairs in games.
     If you don't want to deal with handling accurate crosshairs in
     a variety of view modes (1st-person, 3rd-person, XR) then simply
     use one of the supplied functions.
+
+    @{
 */
+
+
+/** Returns the end-coordinates for a crosshair of a given size.
+
+@param sizeXY is the size in pixels it is meant to take up on screen. */
+vector Cross_GetPos(vector sizeXY);
 
 /** Draws a crosshair on the screen with the desired material and size.
 
@@ -72,3 +81,5 @@ void Cross_DrawSubRGB(string materialPath, vector sizeXY, vector sourcePosXY, ve
 @param colorRGB is the normalized color values to tint the surface with.
 @param alphaValue is the alpha values to use on the whole surface.*/
 void Cross_DrawSubRGBA(string materialPath, vector sizeXY, vector sourcePosXY, vector sourceSizeXY, vector colorRGB, float alphaValue);
+
+/** @} */ // end of client

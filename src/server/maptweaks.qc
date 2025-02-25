@@ -29,29 +29,23 @@
 	checks fail and don't even cache them.
 */
 
-typedef struct
-{
-	string cvarCheck;
-	string serverinfoCheck;
-	string itemTable;
-} mapTweak_t;
-
-mapTweak_t *g_mapTweakTable;
-var int g_mapTweakCount;
+static mapTweak_t *g_mapTweakTable;
+static int g_mapTweakCount;
+const string g_maptweakFile = "scripts/maptweaks.txt";
 
 void
 MapTweaks_Init(void)
 {
 	filestream tweakFile;
 	string tempString;
-	string newCvar, newInfo, newItem;
+	string newCvar, newInfo, newItem, newName;
 	int atTweak = 0i;
 
 	InitStart();
 
-	tweakFile = fopen("scripts/maptweaks.txt", FILE_READ);
+	tweakFile = fopen(g_maptweakFile, FILE_READ);
 	g_mapTweakCount = 0;
-	newCvar = newInfo = newItem = "";
+	tempString = newCvar = newInfo = newItem = newName = "";
 
 	/* count valid entries. */
 	if (tweakFile >= 0) {
@@ -62,7 +56,7 @@ MapTweaks_Init(void)
 			}
 		}
 	} else {
-		NSError("Missing file scripts/maptweaks.txt");
+		NSWarning("No map tweaks, missing %S", g_maptweakFile);
 		InitEnd();
 		return;
 	}
@@ -74,13 +68,16 @@ MapTweaks_Init(void)
 		int segments = tokenize_console(tempString);
 		if (segments == 1) {
 			if (argv(0) == "}") {
+				g_mapTweakTable[atTweak].name = newName;
 				g_mapTweakTable[atTweak].cvarCheck = newCvar;
 				g_mapTweakTable[atTweak].serverinfoCheck = newInfo;
 				g_mapTweakTable[atTweak].itemTable = newItem;
-				newCvar = newInfo = newItem = "";
+				newName = newCvar = newInfo = newItem = "";
 				atTweak++;
 			} else if (argv(0) == "{") {
 				/* ??? */
+			} else {
+				newName = argv(0);
 			}
 		} else if (segments == 4) {
 			switch (argv(0)) {
@@ -105,9 +102,9 @@ MapTweaks_Init(void)
 }
 
 static bool
-MapTweak_Check(int id)
+MapTweak_Check(int num)
 {
-	int segments = tokenize(g_mapTweakTable[id].cvarCheck);
+	int segments = tokenize(g_mapTweakTable[num].cvarCheck);
 
 	/* cvars first */
 	for (int i = 0; i < segments; i += 3) {
@@ -118,24 +115,24 @@ MapTweak_Check(int id)
 		switch (checkType) {
 		case "equals":
 			if not (cvar(cvarName) == cvarValue)
-				return false;
+				return (false);
 			break;
 		case "less-than":
 			if not (cvar(cvarName) < cvarValue)
-				return false;
+				return (false);
 			break;
 		case "greater-than":
 			if not (cvar(cvarName) > cvarValue)
-				return false;
+				return (false);
 			break;
 		case "is-not":
 			if not (cvar(cvarName) != cvarValue)
-				return false;
+				return (false);
 			break;
 		}
 	}
 
-	segments = tokenize(g_mapTweakTable[id].serverinfoCheck);
+	segments = tokenize(g_mapTweakTable[num].serverinfoCheck);
 
 	/* infokeys second */
 	for (int i = 0; i < segments; i += 3) {
@@ -146,43 +143,35 @@ MapTweak_Check(int id)
 		switch (checkType) {
 		case "equals":
 			if not (serverkeyfloat(infoName) == infoValue)
-				return false;
+				return (false);
 			break;
 		case "less-than":
 			if not (serverkeyfloat(infoName) < infoValue)
-				return false;
+				return (false);
 			break;
 		case "greater-than":
 			if not (serverkeyfloat(infoName) > infoValue)
-				return false;
+				return (false);
 			break;
 		case "is-not":
 			if not (serverkeyfloat(infoName) != infoValue)
-				return false;
+				return (false);
 			break;
 		}
 	}
 
-	return true;
+	return (true);
 }
 
-static void
+static bool
 MapTweak_FinishSpawn(entity targetEntity, string newClassname)
 {
-	entity oldSelf = self;
-	self = targetEntity;
-
-	if (EntityDef_SpawnClassname(newClassname))
-		return;
-
-	if (!isfunction(newClassname)) {
-		self.classname = strcat("spawnfunc_", newClassname);
-	} else {
-		self.classname = newClassname;
+	/* found the edef alternative. */
+	if (EntityDef_SwitchClass((ncEntity)targetEntity, newClassname) != __NULL__) {
+		return (true);
 	}
 
-	callfunction(self.classname);
-	self = oldSelf;
+	return (false);
 }
 
 bool
@@ -190,13 +179,12 @@ MapTweak_EntitySpawn(entity targetEntity)
 {
 	string classCheck = targetEntity.classname;
 
-	if (g_mapTweakCount <= 0)
-		return false;
+	if (g_mapTweakCount <= 0) {
+		return (false);
+	}
 
 	for (int i = 0; i < g_mapTweakCount; i++) {
-		int segments = tokenize(g_mapTweakTable[i].itemTable);
-
-		for (int y = 0; y < segments; y += 2) {
+		for (int y = 0; y < tokenize(g_mapTweakTable[i].itemTable); y += 2) {
 			string newEnt, oldEnt;
 
 			oldEnt = argv(y);
@@ -204,8 +192,7 @@ MapTweak_EntitySpawn(entity targetEntity)
 
 			if (classCheck == oldEnt) {
 				if (MapTweak_Check(i) == true) {
-					MapTweak_FinishSpawn(targetEntity, newEnt);
-					return true;
+					return MapTweak_FinishSpawn(targetEntity, newEnt);
 				} else {
 					break;
 				}
@@ -213,5 +200,24 @@ MapTweak_EntitySpawn(entity targetEntity)
 		}
 	}
 
-	return false;
+	return (false);
+}
+
+void
+MapTweak_ListActive(void)
+{
+	for (int i = 0; i < g_mapTweakCount; i++) {
+		if (MapTweak_Check(i) == true) {
+			printf("%i %S:\n", i, g_mapTweakTable[i].name);
+
+			for (int y = 0; y < tokenize(g_mapTweakTable[i].itemTable); y += 2) {
+				string newEnt, oldEnt;
+
+				oldEnt = argv(y);
+				newEnt = argv(y + 1);
+
+				printf("\t%s > %s\n", oldEnt, newEnt);
+			}
+		}
+	}
 }

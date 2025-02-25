@@ -25,6 +25,7 @@ enumflags
 	FNCTANK_CONTROLLABLE
 };
 
+/*! \brief Shared-Entity: Mountable Mortar Turret */
 /*!QUAKED func_tankmortar (0 .5 .8) ?
 # OVERVIEW
 A mountable tank mortar turret type entity. A player (or NPC) can interact with
@@ -60,8 +61,11 @@ some random sprites needs to be treated additive.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup sharedentity
+@ingroup brushentity
 */
-class func_tankmortar:NSVehicle
+class func_tankmortar:ncVehicle
 {
 public:
 	void func_tankmortar(void);
@@ -76,7 +80,9 @@ public:
 	virtual void PredictPostFrame(void);
 	virtual void ReceiveEntity(float,float);
 	virtual void UpdateView(void);
-#else
+#endif
+
+#ifdef SERVER
 	virtual void EvaluateEntity(void);
 	virtual float SendEntity(entity,float);
 	virtual void Respawn(void);
@@ -103,6 +109,11 @@ private:
 	float m_flFireTime;
 };
 
+void
+func_tankmortar::func_tankmortar(void)
+{
+	m_iVehicleFlags |= VHF_FROZEN | VHF_NOATTACK;
+}
 
 #ifdef CLIENT
 void
@@ -169,13 +180,15 @@ func_tankmortar::ReceiveEntity(float new, float fChanged)
 	}
 
 	if (fChanged & VEHFL_CHANGED_DRIVER) {
-		m_eDriver = findfloat(world, ::entnum, readentitynum());
+		m_eDriver = (ncEntity)findfloat(world, ::entnum, readentitynum());
 	}
 
 	if (new)
 		drawmask = MASK_ENGINE;
 }
-#else
+#endif
+
+#ifdef SERVER
 void
 func_tankmortar::EvaluateEntity(void)
 {
@@ -185,10 +198,7 @@ func_tankmortar::EvaluateEntity(void)
 		SetSendFlags(VEHFL_CHANGED_ORIGIN);
 	}
 	if (ATTR_CHANGED(angles)) {
-		angles[0] = Math_FixDelta(angles[0]);
-		angles[1] = Math_FixDelta(angles[1]);
-		angles[2] = Math_FixDelta(angles[2]);
-
+		angles = fixAngle(angles);
 		SetSendFlags(VEHFL_CHANGED_ANGLES);
 	}
 	if (ATTR_CHANGED(velocity)) {
@@ -265,15 +275,15 @@ func_tankmortar::SpriteSmoke(vector org)
 	if (!m_strSpriteSmoke)
 		return;
 
-	NSRenderableEntity smoke = spawn(NSRenderableEntity);
+	ncRenderableEntity smoke = spawn(ncRenderableEntity);
 	smoke.SetModel(m_strSpriteSmoke);
 	smoke.SetOrigin(org);
 	smoke.think = Die;
 	smoke.nextthink = time + 0.1f;
 	smoke.scale = m_flSpriteScale;
 	smoke.SetRenderMode(RM_ADDITIVE);
-	smoke.SetRenderColor([1,1,1]);
-	smoke.SetRenderAmt(1.0f);
+	smoke.SetRenderColor([255,255,255]);
+	smoke.SetRenderAmt(255);
 #endif
 }
 
@@ -288,15 +298,15 @@ func_tankmortar::SpriteFlash(vector org)
 	if (!m_strSpriteFlash)
 		return;
 
-	NSRenderableEntity flash = spawn(NSRenderableEntity);
+	ncRenderableEntity flash = spawn(ncRenderableEntity);
 	flash.SetModel(m_strSpriteFlash);
 	flash.SetOrigin(org);
 	flash.think = Die;
 	flash.nextthink = time + 0.1f;
 	flash.scale = m_flSpriteScale;
 	flash.SetRenderMode(RM_ADDITIVE);
-	flash.SetRenderColor([1,1,1]);
-	flash.SetRenderAmt(1.0f);
+	flash.SetRenderColor([255,255,255]);
+	flash.SetRenderAmt(255);
 #endif
 }
 
@@ -305,8 +315,10 @@ func_tankmortar::PlayerInput(void)
 {
 #ifdef SERVER
 	if (m_eDriver && m_eDriver.health <= 0)
-		PlayerLeave((NSClientPlayer)m_eDriver);
-#else
+		PlayerLeave((ncPlayer)m_eDriver);
+#endif
+
+#ifdef CLIENT
 	//print("foooo\n");
 #endif
 
@@ -322,10 +334,8 @@ func_tankmortar::PlayerInput(void)
 		wantang = v_forward;
 		makevectors(angles);
 
-		endang[0] = Math_Lerp(v_forward[0], wantang[0], input_timelength);
-		endang[1] = Math_Lerp(v_forward[1], wantang[1], input_timelength);
-		endang[2] = Math_Lerp(v_forward[2], wantang[2], input_timelength);
-		angles = vectoangles(endang);
+		endang = vectorLerp(v_forward, wantang, input_timelength);
+		angles = vectorToAngles(endang);
 		PlayerUpdateFlags();
 	}
 
@@ -334,7 +344,7 @@ func_tankmortar::PlayerInput(void)
 	if (input_buttons & INPUT_BUTTON0) {
 		vector spos;
 		vector dir;
-		float dmg;
+		float damageRange;
 
 		/* barrel tip offset */
 		makevectors(angles);
@@ -348,8 +358,8 @@ func_tankmortar::PlayerInput(void)
 		dir += random(-1,1) * m_vecSpread[1] * v_up;
 		traceline(spos, spos + (dir * 4096), MOVE_NORMAL, this);
 		
-		dmg = (float)m_iDamage;
-		Damage_Radius(trace_endpos, m_eDriver, dmg, dmg * 2.5f, TRUE, 0);
+		damageRange = (float)m_iDamage * 2.5f;
+		combat.RadiusDamage(trace_endpos, damageRange, 0i, m_iDamage, m_eDriver, "");
 
 		/* fx */
 		pointparticles(particleeffectnum("fx_explosion.main"), trace_endpos, [0,0,0], 1);
@@ -369,14 +379,13 @@ func_tankmortar::PlayerInput(void)
 void
 func_tankmortar::Respawn(void)
 {
+	super::Respawn();
+
 	SetMovetype(MOVETYPE_PUSH);
 	SetSolid(SOLID_BSP);
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
-	SetAngles(GetSpawnAngles());
 
 	if (m_eDriver)
-		PlayerLeave((NSClientPlayer)m_eDriver);
+		PlayerLeave((ncPlayer)m_eDriver);
 }
 
 void
@@ -446,16 +455,7 @@ func_tankmortar::Spawned(void)
 	super::Spawned();
 
 #ifdef SERVER
-	if (m_strSpriteFlash)
-		precache_model(m_strSpriteFlash);
-	if (m_strSpriteSmoke)
-		precache_model(m_strSpriteSmoke);
+	precache.Model(m_strSpriteFlash);
+	precache.Model(m_strSpriteSmoke);
 #endif
-}
-
-void
-func_tankmortar::func_tankmortar(void)
-{
-	m_iVehicleFlags |= VHF_FROZEN | VHF_NOATTACK;
-
 }

@@ -1,0 +1,10 @@
+// Vera Visions Material
+{
+	diffusemap pbrtest/concrete028.tga
+	normalmap pbrtest/concrete028_local.tga
+	specularmap pbrtest/concrete028_mra.tga
+	
+	{
+		program defaultwall
+	}
+}

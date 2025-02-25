@@ -36,17 +36,9 @@ enumflags
 	FNCVEHNET_FLAGS
 };
 
-class
+static class
 func_vehicle_wheel
 {
-
-private:
-#ifdef CLIENT
-	vector origin_net;
-	vector velocity_net;
-	vector angles_net;
-#endif
-
 public:
 	void func_vehicle_wheel(void);
 
@@ -54,12 +46,21 @@ public:
 	virtual void PredictPreFrame(void);
 	virtual void PredictPostFrame(void);
 #endif
+
 	virtual void Move(float);
 	virtual void Bounce(vector);
 	virtual void Accel(float,float);
 	virtual void Physics(float,float);
+
+#ifdef CLIENT
+private:
+	vector origin_net;
+	vector velocity_net;
+	vector angles_net;
+#endif
 };
 
+/*! \brief Shared-Entity: Brush Vehicle */
 /*!QUAKED func_vehicle (0 .5 .8) ? FUNCVEH_NOPITCH FUNCVEH_NOUSER x FUNCVEH_PASSABLE FUNCVEH_FWDRIVE FUNCVEH_RWDRIVE
 # OVERVIEW
 Primitive brush-based vehicle entity.
@@ -103,10 +104,41 @@ entities.
 
 # TRIVIA
 This entity was introduced in Counter-Strike (2000).
+
+@ingroup sharedentity
+@ingroup brushentity
 */
 class
-func_vehicle:NSVehicle
+func_vehicle:ncVehicle
 {
+public:
+	void func_vehicle(void);
+
+	virtual void Spawned(void);
+	virtual void Physics(void);
+	virtual void RunVehiclePhysics(void);
+	virtual void PlayerInput(void);
+	virtual void OnRemoveEntity(void);
+
+#ifdef CLIENT
+	virtual void PredictPreFrame(void);
+	virtual void PredictPostFrame(void);
+	virtual void ReceiveEntity(float, float);
+	virtual void UpdateView(void);
+#endif
+
+#ifdef SERVER
+	virtual void Save(float);
+	virtual void Restore(string, string);
+	virtual void SpawnKey(string, string);
+	virtual void Respawn(void);
+	virtual void Realign(void);
+	virtual void OnPlayerUse(void);
+	virtual void EvaluateEntity(void);
+	virtual float SendEntity(entity, float);
+#endif
+
+private:
 	/* map-entity fields */
 	float m_flBounceFactor;
 	float m_flAcceleration;
@@ -131,29 +163,6 @@ func_vehicle:NSVehicle
 	float m_flLength;
 
 	PREDICTED_FLOAT(m_flTurn)
-
-	void(void) func_vehicle;
-	virtual void(void) Spawned;
-	virtual void(void) Physics;
-	virtual void(void) RunVehiclePhysics;
-	virtual void(void) PlayerInput;
-	virtual void(void) OnRemoveEntity;
-
-#ifdef CLIENT
-	virtual void(void) PredictPreFrame;
-	virtual void(void) PredictPostFrame;
-	virtual void(float, float) ReceiveEntity;
-	virtual void(void) UpdateView;
-#else
-	virtual void(float) Save;
-	virtual void(string, string) Restore;
-	virtual void(string, string) SpawnKey;
-	virtual void(void) Respawn;
-	virtual void(void) Realign;
-	virtual void(void) OnPlayerUse;
-	virtual void(void) EvaluateEntity;
-	virtual float(entity, float) SendEntity;
-#endif
 };
 
 void
@@ -444,7 +453,9 @@ func_vehicle::PredictPostFrame(void)
 	m_wlBL.PredictPostFrame();
 	m_wlBR.PredictPostFrame();
 }
-#else
+#endif
+
+#ifdef SERVER
 
 void
 func_vehicle::Save(float handle)
@@ -590,10 +601,9 @@ func_vehicle::SpawnKey(string strKey, string strValue)
 void
 func_vehicle::Respawn(void)
 {
+	super::Respawn();
 	SetMovetype(MOVETYPE_PUSH);
 	SetSolid(SOLID_BSP);
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
 	SetAngles([0,0,0]);
 	ScheduleThink(Realign, 0.0f);
 
@@ -606,7 +616,7 @@ func_vehicle::Respawn(void)
 	PlayerUse = OnPlayerUse;
 
 	if (m_eDriver)
-		PlayerLeave((NSClientPlayer)m_eDriver);
+		PlayerLeave((ncPlayer)m_eDriver);
 }
 
 void
@@ -632,9 +642,9 @@ func_vehicle::OnPlayerUse(void)
 		return;
 
 	if (m_eDriver == eActivator) {
-		PlayerLeave((NSClientPlayer)eActivator);
+		PlayerLeave((ncPlayer)eActivator);
 	} else if (!m_eDriver) {
-		PlayerEnter((NSClientPlayer)eActivator);
+		PlayerEnter((ncPlayer)eActivator);
 	}
 
 	m_flUseTime = time + 2.0f;
@@ -645,7 +655,7 @@ func_vehicle::Realign(void)
 {
 	entity t;
 	entity f;
-	NSEntity first, second;
+	ncEntity first, second;
 	string strFirst, strSecond;
 
 	first = second = __NULL__;
@@ -670,7 +680,7 @@ func_vehicle::Realign(void)
 	for (f = world; (f = find(f, ::targetname, strFirst));) {
 		/* we found the right entity */
 		if (f.classname == "path_track" || f.classname == "path_corner") {
-			first = (NSEntity)f;
+			first = (ncEntity)f;
 		}
 	}
 
@@ -679,20 +689,21 @@ func_vehicle::Realign(void)
 	for (f = world; (f = find(f, ::targetname, strSecond));) {
 		/* we found the right entity */
 		if (f.classname == "path_track" || f.classname == "path_corner") {
-			second = (NSEntity)f;
+			second = (ncEntity)f;
 		}
 	}
 
 	if (first && second) {
+		vector oldOrigin = GetSpawnVector("origin");
 		vector end_pos;
-		first = (NSEntity)first;
-		second = (NSEntity)second;
+		first = (ncEntity)first;
+		second = (ncEntity)second;
 		EntLog("func_vehicle angles were: %v\n", angles);
 		angles = vectoangles(first.origin - second.origin);
 		EntLog("func_vehicle angles is now: %v\n", angles);
 
 		end_pos = first.origin;
-		end_pos[2] = m_oldOrigin[2] + 64;
+		end_pos[2] = oldOrigin[2] + 64;
 		setorigin(this, end_pos);
 		setorigin(m_wlFR, origin + v_right * m_flWidth + v_forward * m_flLength);
 		setorigin(m_wlFL, origin - v_right * m_flWidth + v_forward * m_flLength);
@@ -736,7 +747,9 @@ func_vehicle::Physics(void)
 		m_vecMoveValues = [0,0,0];
 		m_iMoveButtons = 0;
 		RunVehiclePhysics();
-#else
+#endif
+
+#ifdef CLIENT
 		setorigin(this, origin);
 #endif
 	} else {
@@ -781,7 +794,7 @@ func_vehicle::RunVehiclePhysics(void)
 #ifdef SERVER
 	/* eject the dead */
 	if (m_eDriver && m_eDriver.health <= 0) {
-		PlayerLeave((NSClientPlayer)m_eDriver);
+		PlayerLeave((ncPlayer)m_eDriver);
 	}
 #endif
 
@@ -815,9 +828,7 @@ func_vehicle::RunVehiclePhysics(void)
 		m_eDriver.velocity = [0,0,0];
 	}
 
-	angles[0] = Math_FixDelta(angles[0]);
-	angles[1] = Math_FixDelta(angles[1]);
-	angles[2] = Math_FixDelta(angles[2]);
+	angles = fixAngle(angles);
 	angles[0] = bound (-45, angles[0], 45);
 	angles[2] = bound (-15, angles[2], 15);
 
@@ -864,11 +875,7 @@ func_vehicle::RunVehiclePhysics(void)
 	v_forward = (m_wlFL.origin + m_wlFR.origin);
 	v_forward -= (m_wlBL.origin + m_wlBR.origin);
 	v_up = -crossproduct(v_forward, v_right);
-	angles = vectoangles(v_forward, v_up);
-
-	angles[0] = Math_FixDelta(angles[0]);
-	angles[1] = Math_FixDelta(angles[1]);
-	angles[2] = Math_FixDelta(angles[2]);
+	angles = vectorToAnglesRoll(v_forward, v_up);
 
 	/* figure out the new chassis position */
 	vector new_origin;
@@ -957,7 +964,9 @@ func_vehicle::ReceiveEntity(float flNew, float flChanged)
 
 	PredictPreFrame();
 }
-#else
+#endif
+
+#ifdef SERVER
 void
 func_vehicle::EvaluateEntity(void)
 {
@@ -1019,4 +1028,4 @@ func_vehicle::SendEntity(entity ePEnt, float flChanged)
 
 	return (true);
 }
-#endif
+#endif

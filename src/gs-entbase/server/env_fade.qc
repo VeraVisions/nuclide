@@ -21,6 +21,7 @@ enumflags
 	EVF_ONLYUSER
 };
 
+/*! \brief Server-Entity: Fade In/Out Controller */
 /*!QUAKED env_fade (1 .5 0) (-8 -8 -8) (8 8 8) EVF_FADEDROM EVF_MODULATE EVF_ONLYUSER
 # OVERVIEW
 Overlay that blinds/obscures players vision when triggered.
@@ -41,9 +42,12 @@ Overlay that blinds/obscures players vision when triggered.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup serverentity
+@ingroup pointentity
 */
 class
-env_fade:NSRenderableEntity
+env_fade:ncRenderableEntity
 {
 public:
 	void env_fade(void);
@@ -52,6 +56,7 @@ public:
 	virtual void Save(float);
 	virtual void Restore(string,string);
 	virtual void Trigger(entity, triggermode_t);
+	virtual void Input(entity, string, string);
 	virtual void SpawnKey(string,string);
 
 private:
@@ -110,10 +115,10 @@ env_fade::Trigger(entity eAct, triggermode_t iState)
 	/* Half-Life ignores states entirely for env_fade's being triggered */
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_FADE);
-	WriteFloat(MSG_MULTICAST, m_vecRenderColor[0]);
-	WriteFloat(MSG_MULTICAST, m_vecRenderColor[1]);
-	WriteFloat(MSG_MULTICAST, m_vecRenderColor[2]);
-	WriteFloat(MSG_MULTICAST, m_flRenderAmt);
+	WriteByte(MSG_MULTICAST, m_vecRenderColor[0]);
+	WriteByte(MSG_MULTICAST, m_vecRenderColor[1]);
+	WriteByte(MSG_MULTICAST, m_vecRenderColor[2]);
+	WriteByte(MSG_MULTICAST, m_flRenderAmt);
 	WriteFloat(MSG_MULTICAST, m_flFadeDuration);
 	WriteFloat(MSG_MULTICAST, m_flFadeHold);
 	WriteByte(MSG_MULTICAST, spawnflags);
@@ -123,4 +128,16 @@ env_fade::Trigger(entity eAct, triggermode_t iState)
 		multicast([0,0,0], MULTICAST_ONE_R);
 	else
 		multicast([0,0,0], MULTICAST_ALL);
+}
+
+void
+env_fade::Input(entity theActivator, string inputName, string dataString)
+{
+	switch (inputName) {
+	case "Fade":
+		Trigger(theActivator, TRIG_ON);
+		break;
+	default:
+		super::Input(theActivator, inputName, dataString);
+	}
 }

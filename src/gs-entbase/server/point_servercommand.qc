@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Executes Console Commands */
 /*!QUAKED point_servercommand (1 .5 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Issues console commands on server when triggered.
@@ -26,9 +27,12 @@ Issues console commands on server when triggered.
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
+
+@ingroup serverentity
+@ingroup pointentity
 */
 class
-point_servercommand:NSPointTrigger
+point_servercommand:ncPointTrigger
 {
 public:
 	void point_servercommand(void);

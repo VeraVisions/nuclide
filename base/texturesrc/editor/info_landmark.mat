@@ -1,0 +1,8 @@
+{
+	diffusemap editor/info_landmark.tga
+	
+	{
+		map $diffuse
+		alphaFunc GE128
+	}
+}

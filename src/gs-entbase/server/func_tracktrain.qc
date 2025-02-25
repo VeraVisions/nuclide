@@ -37,6 +37,7 @@ enumflags
 	FNCTKTRNET_FLAGS
 };
 
+/*! \brief Server-Entity: Interactive Moving Train */
 /*!QUAKED func_tracktrain (0 .5 .8) ? NOPITCH NOUSER NOTSOLID
 # OVERVIEW
 An interactive train that moves along a series of path_track entities.
@@ -71,9 +72,12 @@ entity. You can also set the NOUSER (2) spawnflag to disable it entirely.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup serverentity
+@ingroup brushentity
 */
 class
-func_tracktrain:NSVehicle
+func_tracktrain:ncVehicle
 {
 public:
 	void func_tracktrain(void);
@@ -122,8 +126,10 @@ public:
 	virtual void Spawned(void);
 	virtual void Respawn(void);
 	virtual void Trigger(entity, triggermode_t);
+	virtual void Input(entity, string, string);
 	virtual void EvaluateEntity(void);
-	virtual float SendEntity(entity, float);
+	virtual float SendEntity(entity, float)
+;
 #endif
 
 	virtual void PlayerInput(void);
@@ -146,7 +152,7 @@ private:
 	int m_iOldInputDirection;
 	int m_iInputLevel;
 	int m_iOldInputLevel;
-	NSTimer m_timerAngled;
+	ncTimer m_timerAngled;
 	float m_flTrainLength;
 	bool _m_bDriving;
 
@@ -164,7 +170,7 @@ func_tracktrain::func_tracktrain(void)
 {
 #ifdef SERVER
 	m_flWait = 0.0f;
-	m_flSpeed = 100; /* FIXME: This is all decided by the first path_track pretty much */
+	m_flSpeed = 100;
 	m_flDamage = 0.0f;
 	m_flHeight = 0.0f;
 	m_flStartSpeed = 0.0f;
@@ -191,9 +197,7 @@ func_tracktrain::GetPointBetweenNodes(float percentageValue)
 	vector newPos = g_vec_null;
 	path_track nextNode = GetTrackNodeForward();
 	path_track prevNode = GetTrackNodeBack();
-	newPos[0] = Math_Lerp(prevNode.origin[0], nextNode.origin[0], percentageValue);
-	newPos[1] = Math_Lerp(prevNode.origin[1], nextNode.origin[1], percentageValue);
-	newPos[2] = Math_Lerp(prevNode.origin[2], nextNode.origin[2], percentageValue);
+	newPos = vectorLerp(prevNode.origin, nextNode.origin, percentageValue);
 	return newPos;
 }
 
@@ -237,7 +241,7 @@ func_tracktrain::GetTrainPivotPoint(bool drivingBackwards)
 path_track
 func_tracktrain::GetTrackNodeForward(void)
 {
-	if (!target) {
+	if (!HasTriggerTarget()) {
 		return __NULL__;
 	}
 
@@ -397,7 +401,7 @@ func_tracktrain::Save(float handle)
 	SaveBool(handle, "_m_bDriving", _m_bDriving);
 
 	/* if we are on a track, take the difference in offset so we can smoothly transition */
-	if (target) {
+	if (HasTriggerTarget()) {
 		path_track targetEnt = GetTrackNodeForward();
 		m_vecRelationTarget = targetEnt.GetOrigin() - GetOrigin();
 	} else {
@@ -451,7 +455,7 @@ func_tracktrain::Restore(string strKey, string strValue)
 		m_iInputLevel = ReadInt(strValue);
 		break;
 	case "m_timerAngled":
-		m_timerAngled = (NSTimer)ReadEntity(strValue);
+		m_timerAngled = (ncTimer)ReadEntity(strValue);
 		break;
 	case "m_flTrainLength":
 		m_flTrainLength = ReadFloat(strValue);
@@ -471,7 +475,7 @@ void
 func_tracktrain::TransitionComplete(void)
 {
 	/* don't mess with this entity if it wasn't carrying over from someplace */
-	if (!m_strGlobalName) {
+	if (!STRING_SET(m_strGlobalName)) {
 		return;
 	}
 
@@ -533,9 +537,9 @@ func_tracktrain::Spawned(void)
 {
 	super::Spawned();
 
-	if (m_strMoveSnd)
+	if (STRING_SET(m_strMoveSnd))
 		Sound_Precache(m_strMoveSnd);
-	if (m_strStopSnd)
+	if (STRING_SET(m_strStopSnd))
 		Sound_Precache(m_strStopSnd);
 
 	Sound_Precache("func_tracktrain.stop_1");
@@ -544,16 +548,16 @@ func_tracktrain::Spawned(void)
 void
 func_tracktrain::Respawn(void)
 {
+	super::Respawn();
+
 	/* legacy compat */
 	SetSolid(HasSpawnFlags(TRAIN_NONSOLID) ? SOLID_NOT : SOLID_BSP);
 	SetMovetype(MOVETYPE_PUSH);
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
 
 	m_flCurrentSpeed = m_flStartSpeed;
 
-	ScheduleThink(_AfterSpawn, 0.0f);
-	SetTriggerTarget(m_oldstrTarget);
+	/* this needs to be a bit later than anything else. */
+	ScheduleThink(_AfterSpawn, 0.1f);
 	PlayerUse = OnPlayerUse;
 
 	if (m_flTrainLength == 0.0f)
@@ -571,23 +575,14 @@ func_tracktrain::Blocked(entity eBlocker)
 		return;
 	}
 
-	/* HACK: Make corpses gib instantly */
-	if (eBlocker.solid == SOLID_CORPSE) {
-		Damage_Apply(eBlocker, this, 500, 0, DMG_EXPLODE);
-		return;
-	}
-
-	if (eBlocker.takedamage != DAMAGE_NO) {
-		Damage_Apply(eBlocker, this, m_flDamage, 0, DMG_CRUSH);
-	} else {
-		remove(eBlocker);
-	}
+	/* evil, since we're not based on it (yet) */
+	func_train::Blocked(eBlocker);
 }
 
 void
 func_tracktrain::_SoundMove(void)
 {
-	if (m_strMoveSnd) {
+	if (STRING_SET(m_strMoveSnd)) {
 		StartSoundDef(m_strMoveSnd, CHAN_VOICE, true);
 	}
 }
@@ -595,12 +590,12 @@ func_tracktrain::_SoundMove(void)
 void
 func_tracktrain::_SoundStop(void)
 {
-	if (m_strStopSnd) {
+	if (STRING_SET(m_strStopSnd)) {
 		StartSoundDef(m_strStopSnd, CHAN_BODY, true);
 	}
 
-	if (m_strMoveSnd) {
-		if (!m_strStopSnd) {
+	if (STRING_SET(m_strMoveSnd)) {
+		if (!STRING_SET(m_strStopSnd)) {
 			StartSoundDef("func_tracktrain.stop_1", CHAN_BODY, true);
 		}
 		StopSound(CHAN_VOICE, true);
@@ -624,7 +619,7 @@ func_tracktrain::PathMoveForward(void)
 	previousNode = GetTrackNodeBack();
 
 	if (!eNode) {
-		NSVehicle_Log("No node.");
+		ncVehicle_Log("No node.");
 		return;
 	}
 
@@ -642,13 +637,13 @@ func_tracktrain::PathMoveForward(void)
 	flTravelTime = (vlen(vecVelocity) / travelSpeed);
 
 	if (flTravelTime <= 0.0) {
-		NSVehicle_Log("^1func_tracktrain::^3PathMoveForward^7: Distance short, going next");
+		ncVehicle_Log("^1func_tracktrain::^3PathMoveForward^7: Distance short, going next");
 		SetVelocity([1,1,1]);
 		ScheduleThink(_PathArrivedForward, 0.1f);
 		return;
 	}
 
-	NSVehicle_Log("^1func_tracktrain::^3PathMoveForward^7: Changing velocity from '%v' to '%v'", GetVelocity(), vecVelocity);
+	ncVehicle_Log("^1func_tracktrain::^3PathMoveForward^7: Changing velocity from '%v' to '%v'", GetVelocity(), vecVelocity);
 	SetVelocity(vecVelocity * (1 / flTravelTime));
 
 	if (_m_bDriving == false) {
@@ -658,7 +653,17 @@ func_tracktrain::PathMoveForward(void)
 	/* the direction we're aiming for */
 	vecDiff = GetOrigin() - (eNode.GetOrigin() + [0, 0, m_flHeight]);
 	vecAngleDest = vectoangles(vecDiff);
-	vecAngleDiff = Math_AngleDiff(vecAngleDest, angles);
+
+	if (autocvar(trackTrain_debug, 0) == num_for_edict(this)) {
+		printf("vecDiff: %v\n", vecDiff);
+	}
+
+	/* If we're moving vertically, do not change the current angle at all. */
+	if (fabs(vecDiff[0]) == 0 && fabs(vecDiff[0]) == 0) {
+		vecAngleDest[1] = angles[1];
+	}
+
+	vecAngleDiff = angleDifference(vecAngleDest, angles);
 	vecAngleDiff[2] = 0;
 
 	if (vecAngleDiff[0] > 180)
@@ -675,7 +680,7 @@ func_tracktrain::PathMoveForward(void)
 		vecAngleDest[0] = 0;
 	} 
 
-	NSVehicle_Log("^1func_tracktrain::^3PathMoveBack^7: angleDelta: '%v'", vecAngleDiff);
+	ncVehicle_Log("^1func_tracktrain::^3PathMoveBack^7: angleDelta: '%v'", vecAngleDiff);
 
 	if (vecAngleDiff[1] == 0)
 		SetAngles(vecAngleDest);
@@ -713,7 +718,7 @@ func_tracktrain::PathMoveBack(void)
 
 	/* None, abort */
 	if (!eNode) {
-		NSVehicle_Log("No node.\n");
+		ncVehicle_Log("No node.\n");
 		return;
 	}
 
@@ -724,27 +729,37 @@ func_tracktrain::PathMoveBack(void)
 		travelSpeed = m_flCurrentSpeed;
 	}
 
-	vecVelocity = (GetPointBetweenNodes(0.15f) + [0,0,m_flHeight]) - GetTrainPivotPoint(true);
+	vecVelocity = (GetPointBetweenNodes(0.15f) + [0.0f, 0.0f,m_flHeight]) - GetTrainPivotPoint(true);
 	turnTime = (vlen(vecVelocity) / travelSpeed);
 
-	vecVelocity = (eNode.GetOrigin() + [0,0,m_flHeight]) - GetOrigin();
+	vecVelocity = (eNode.GetOrigin() + [0.0f, 0.0f,m_flHeight]) - GetOrigin();
 	flTravelTime = (vlen(vecVelocity) / travelSpeed);
 
 	if (flTravelTime <= 0.0) {
-		NSVehicle_Log("^Distance short, teleporting next.");
+		ncVehicle_Log("^Distance short, teleporting next.");
 		ScheduleThink(_PathArrivedBack, 0.0f);
 		SetVelocity([1,1,1]);
 		return;
 	}
 
-	NSVehicle_Log("Changing velocity from '%v' to '%v'", GetVelocity(), vecVelocity);
-	SetVelocity(vecVelocity * (1 / flTravelTime));
+	ncVehicle_Log("Changing velocity from '%v' to '%v'", GetVelocity(), vecVelocity);
+	SetVelocity(vecVelocity * (1.0f / flTravelTime));
 	_SoundMove();
 
 	/* the direction we're aiming for */
 	vecDiff = (eNode.GetOrigin() + [0, 0, m_flHeight]) - GetOrigin();
-	vecAngleDest = vectoangles(vecDiff);
-	vecAngleDiff = Math_AngleDiff(vecAngleDest, angles);
+	vecAngleDest = vectorToAngles(vecDiff);
+
+	if (autocvar(trackTrain_debug, 0) == num_for_edict(this)) {
+		printf("vecDiff: %v\n", vecDiff);
+	}
+
+	/* If we're moving vertically, do not change the current angle at all. */
+	if (fabs(vecDiff[0]) == 0 && fabs(vecDiff[0]) == 0) {
+		vecAngleDest[1] = angles[1];
+	}
+
+	vecAngleDiff = angleDifference(vecAngleDest, angles);
 	vecAngleDiff[2] = 0;
 
 	if (vecAngleDiff[0] > 180)
@@ -761,7 +776,7 @@ func_tracktrain::PathMoveBack(void)
 		vecAngleDest[0] = 0;
 	} 
 
-	NSVehicle_Log("^1func_tracktrain::^3PathMoveBack^7: angleDelta: %v", vecAngleDiff);
+	ncVehicle_Log("^1func_tracktrain::^3PathMoveBack^7: angleDelta: %v", vecAngleDiff);
 
 	if (vecAngleDiff[1] == 0)
 		SetAngles(vecAngleDest);
@@ -787,7 +802,7 @@ func_tracktrain::PathDone(void)
 		return;
 	}
 
-	NSVehicle_Log("func_tracktrain (%s): Touched base with path_track %S", targetname, target);
+	ncVehicle_Log("func_tracktrain (%s): Touched base with path_track %S", targetname, target);
 
 	/* fire the path_tracks' target */
 	eNode.PathPassTrigger(this, TRIG_TOGGLE);
@@ -806,6 +821,14 @@ func_tracktrain::_PathArrivedForward(void)
 	/* get what's in front of us. */
 	eNode = (path_track)GetTrackNodeForward();
 
+	/* WHAT? This was after the DisabledTrain() check at somepoint. Was moved up here
+	   for OBVIOUS reasons !*/
+	/* we have nothing. */
+	if (!eNode) {
+		PathClear();
+		return;
+	}
+
 	/* we have to check this _after_ moving... */
 	if (eNode.DisablesTrain() == true) {
 		/* first clear velocity, in case our trigger targets our train */
@@ -814,14 +837,8 @@ func_tracktrain::_PathArrivedForward(void)
 		target = __NULL__;	/* makes the train inaccessible */
 		return;
 	}
-
-	/* we have nothing. */
-	if (!eNode) {
-		PathClear();
-		return;
-	}
 	
-	NSVehicle_Log("^1func_tracktrain::^3_PathArrivedForward^7: Going to target %S (%s)", target, eNode.classname);
+	ncVehicle_Log("^1func_tracktrain::^3_PathArrivedForward^7: Going to target %S (%s)", target, eNode.classname);
 	SetOrigin((eNode.GetOrigin()) + [0,0,m_flHeight]);
 	PathDone();
 
@@ -836,11 +853,11 @@ func_tracktrain::_PathArrivedForward(void)
 
 	m_flWait = eNode.m_flWait;
 
-	NSVehicle_Log("^1func_tracktrain::^3_PathArrivedForward^7: Target changed from %S to %S", target, eNode.GetPathTarget());
+	ncVehicle_Log("^1func_tracktrain::^3_PathArrivedForward^7: Target changed from %S to %S", target, eNode.GetPathTarget());
 
 	target = eNode.GetPathTarget();
 
-	if (!target || target == eNode.targetname) {
+	if (!HasTriggerTarget() || target == eNode.targetname) {
 		/* first clear velocity, in case our trigger targets our train */
 		PathClear();
 		eNode.PathEndTrigger(this, TRIG_TOGGLE);
@@ -880,7 +897,7 @@ func_tracktrain::_PathArrivedBack(void)
 		return;
 	}
 
-	NSVehicle_Log("^1func_tracktrain::^3_PathArrivedBack^7: Going to target %S (%s)", target, eNode.classname);
+	ncVehicle_Log("^1func_tracktrain::^3_PathArrivedBack^7: Going to target %S (%s)", target, eNode.classname);
 	SetOrigin((eNode.GetOrigin()) + [0,0,m_flHeight]);
 	PathDone();
 
@@ -893,7 +910,7 @@ func_tracktrain::_PathArrivedBack(void)
 	}
 
 	m_flWait = eNode.m_flWait;
-	NSVehicle_Log("^1func_tracktrain::^3_PathArrivedBack^7: Target changed from %S to %S", target, eNode.targetname);
+	ncVehicle_Log("^1func_tracktrain::^3_PathArrivedBack^7: Target changed from %S to %S", target, eNode.targetname);
 	target = eNode.targetname;
 
 	/* warp */
@@ -918,7 +935,7 @@ func_tracktrain::_PathArrivedBack(void)
 void
 func_tracktrain::PathClear(void)
 {
-	if (vlen(velocity) >= 1.0f) {
+	if (length(velocity) >= 1.0f) {
 		_SoundStop();
 	}
 
@@ -948,22 +965,40 @@ func_tracktrain::Trigger(entity act, triggermode_t state)
 	}
 }
 
+/* TODO: Handle state? */
+void
+func_tracktrain::Input(entity act, string inputName, string dataString)
+{
+	switch (inputName) {
+	case "StartForward":
+		PathMoveForward();
+		break;
+	case "Stop":
+		PathClear();
+		break;
+	default:
+		super::Input(act, inputName, dataString);
+	}
+}
+
 void
 func_tracktrain::_AfterSpawn(void)
 {
 	path_track targetNode;
 	path_track nodeAhead;
 
+	SetTriggerTarget(GetSpawnString("target"));
+
 	/* get the first target */
 	targetNode = (path_track)GetTrackNodeForward();
 
 	/* unpossible */
 	if (!targetNode || HasTriggerTarget() == false) {
-		NSVehicle_Log("^1func_tracktrain::^3_AfterSpawn^7: %d has no valid target (%S).", num_for_edict(this), GetTriggerTarget());
+		ncVehicle_Log("^1func_tracktrain::^3_AfterSpawn^7: %d has no valid target (%S).", num_for_edict(this), GetTriggerTarget());
 		return;
 	}
 
-	NSVehicle_Log("^1func_tracktrain::^3_AfterSpawn^7: Start at target %S (%s)", target, targetNode.classname);
+	ncVehicle_Log("^1func_tracktrain::^3_AfterSpawn^7: Start at target %S (%s)", target, targetNode.classname);
 
 	/* teleport to the first target for starters. */
 	SetOrigin((targetNode.GetOrigin()) + [0,0,m_flHeight]);
@@ -980,7 +1015,7 @@ func_tracktrain::_AfterSpawn(void)
 		if (IgnoresPitch() == true) {
 			newAngle[0] = 0;
 		} else {
-			newAngle[0] = -Math_FixDelta(newAngle[0]);
+			newAngle[0] = -fixAngleDelta(newAngle[0]);
 		}
 
 		SetAngles(newAngle);
@@ -992,6 +1027,8 @@ func_tracktrain::_AfterSpawn(void)
 	} else {
 		m_flCurrentSpeed = m_flSpeed;
 	}
+
+	m_flSpeed = m_flCurrentSpeed;
 
 	m_flWait = targetNode.m_flWait;
 	target = targetNode.target;
@@ -1053,19 +1090,20 @@ void
 func_tracktrain::OnPlayerUse(void)
 {
 	/* it's not been a second */
-	if (m_flUseTime > time) {
+	if (m_flUseTime > time)
+ {
 		return;
 	}
 
 	/* we're already the driver, so leave */
 	if (m_eDriver == eActivator) {
-		PlayerLeave((NSClientPlayer)eActivator);
+		PlayerLeave((ncPlayer)eActivator);
 	} else if (!m_eDriver) {
 		/* check if they're allowed to control it */
 		if (ControlCheck(eActivator) == false) {
 			return;
 		}
-		PlayerEnter((NSClientPlayer)eActivator);
+		PlayerEnter((ncPlayer)eActivator);
 	}
 
 	m_flUseTime = time + 1.0f;
@@ -1074,9 +1112,7 @@ func_tracktrain::OnPlayerUse(void)
 void
 func_tracktrain::EvaluateEntity(void)
 {
-	angles[0] = Math_FixDelta(angles[0]);
-	angles[1] = Math_FixDelta(angles[1]);
-	angles[2] = Math_FixDelta(angles[2]);
+	angles = fixAngle(angles);
 	PlayerAlign();
 
 	EVALUATE_FIELD(modelindex, FNCTKTRNET_MODELINDEX)
@@ -1248,7 +1284,8 @@ func_tracktrain::PlayerInput(void)
 
 	/* exit vehicle */
 	if (input_buttons & INPUT_BUTTON5) {
-		if (m_flUseTime > time) {
+		if (m_flUseTime > time)
+ {
 			return;
 		}
 
@@ -1257,4 +1294,4 @@ func_tracktrain::PlayerInput(void)
 		input_buttons &= ~INPUT_BUTTON5;
 	}
 #endif
-}
+}

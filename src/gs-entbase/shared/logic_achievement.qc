@@ -15,6 +15,7 @@
 */
 
 #ifdef SERVER
+/*! \brief Shared-Entity: Achievement Manager */
 /*!QUAKED logic_achievement (0.3 0.1 0.6) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Unlocks achievements or aids in the progression of them.
@@ -38,9 +39,12 @@ Ensure to prefix the value of the `AchievementEvent` key with `ACHIEVEMENT_EVENT
 
 # TRIVIA
 This entity was introduced in The Orange Box (2007) for Xbox 360.
+
+@ingroup sharedentity
+@ingroup pointentity
 */
 class
-logic_achievement:NSPointTrigger
+logic_achievement:ncPointTrigger
 {
 public:
 	void logic_achievement(void);

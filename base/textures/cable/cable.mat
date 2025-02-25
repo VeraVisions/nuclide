@@ -1,0 +1,8 @@
+{
+	diffusemap cable/cable.ktx
+	
+	{
+		map $diffuse
+		rgbGen vertex
+	}
+}

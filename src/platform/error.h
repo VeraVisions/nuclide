@@ -16,6 +16,15 @@
 
 var string g_lastDisconnectReason = "";
 
+
+/**
+@defgroup servererror Server Error Message Query
+@brief Retrieve server error messages, reasons etc.
+@ingroup menu
+
+@{
+*/
+
 /** Query if we've been disconnected from the server.
 The function is designed to be run every frame. It will return `true` only once per server session, so check it in one place and cache the result if necessary. This is meant for menu developers. If you are adding onto an existing menu framework, calling it more than once and out of order may break core menu functionality in your module.
 
@@ -46,3 +55,5 @@ Error_GetDisconnectReason(void)
 {
 	return g_lastDisconnectReason;
 }
+
+/** @} */ // end of servererror

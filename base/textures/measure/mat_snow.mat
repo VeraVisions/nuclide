@@ -1,0 +1,18 @@
+{
+	surfaceParm snow
+
+if $programs
+	program defaultwall
+	diffusemap measure/mat_snow.ktx
+else
+	{
+		map $lightmap
+		rgbGen identity
+	}
+	{
+		map measure/mat_snow.ktx
+		rgbGen identity
+		blendFunc GL_DST_COLOR GL_ZERO
+	}
+endif
+}

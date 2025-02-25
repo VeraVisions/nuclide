@@ -1,0 +1,18 @@
+{
+	surfaceParm wood
+
+if $programs
+	program defaultwall
+	diffusemap measure/mat_wood.tga
+else
+	{
+		map $lightmap
+		rgbGen identity
+	}
+	{
+		map measure/mat_wood.tga
+		rgbGen identity
+		blendFunc GL_DST_COLOR GL_ZERO
+	}
+endif
+}

@@ -33,6 +33,7 @@ enumflags
 	ENVS_PLAYONCE
 };
 
+/*! \brief Shared-Entity: Animated Sprite */
 /*!QUAKED env_sprite (1 .5 0) (-8 -8 -8) (8 8 8) ENVS_STARTON ENVS_PLAYONCE
 # OVERVIEW
 A sprite entity manager with fancy overrides.
@@ -55,26 +56,33 @@ A sprite entity manager with fancy overrides.
 - ENVS_PLAYONCE (2) : Play once from start to finish, then make invisible.
 
 # NOTES
-Only used with an external sprite format, like SPR, SPRHL and SPR32.
+Only used with an external sprite format, like SPR, SPRHL and SPR32, unless the material key is specified.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup sharedentity
+@ingroup pointentity
 */
-class env_sprite:NSRenderableEntity
+class env_sprite:ncRenderableEntity
 {
 public:
 	void env_sprite(void);
 
-	virtual void(bool) SetFramerate;
+	virtual void SetFramerate(bool);
 
 #ifdef SERVER
 	virtual void Spawned(void);
 	virtual void Trigger(entity, triggermode_t);
+	virtual void Input(entity, string, string);
 	virtual void EvaluateEntity(void);
 	virtual float SendEntity(entity,float);
 	virtual void SpawnKey(string,string);
 	virtual void NetworkOnce(void);
-#else
+	virtual void Respawn(void);
+#endif
+
+#ifdef CLIENT
 	virtual float predraw(void);
 	virtual void think(void);
 	virtual void ReceiveEntity(float,float);
@@ -138,7 +146,7 @@ env_sprite::SendEntity(entity ePEnt, float flChanged)
 		return (0);
 
 	/* strings are expensive. */
-	if (!m_strMaterial)
+	if (!STRING_SET(m_strMaterial))
 		flChanged &= ~SPRITE_CHANGED_MATERIAL;
 
 	WriteByte(MSG_ENTITY, ENT_SPRITE);
@@ -152,10 +160,10 @@ env_sprite::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_FLOAT(scale, SPRITE_CHANGED_SCALE)
 	SENDENTITY_BYTE(m_iRenderMode, SPRITE_CHANGED_RENDERMODE)
 	SENDENTITY_BYTE(m_iRenderFX, SPRITE_CHANGED_RENDERFX)
-	SENDENTITY_COLOR(m_vecRenderColor[0], SPRITE_CHANGED_RENDERCOLOR)
-	SENDENTITY_COLOR(m_vecRenderColor[1], SPRITE_CHANGED_RENDERCOLOR)
-	SENDENTITY_COLOR(m_vecRenderColor[2], SPRITE_CHANGED_RENDERCOLOR)
-	SENDENTITY_COLOR(m_flRenderAmt, SPRITE_CHANGED_RENDERAMT)
+	SENDENTITY_BYTE(m_vecRenderColor[0], SPRITE_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_vecRenderColor[1], SPRITE_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_vecRenderColor[2], SPRITE_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_flRenderAmt, SPRITE_CHANGED_RENDERAMT)
 	SENDENTITY_STRING(m_strMaterial, SPRITE_CHANGED_MATERIAL)
 
 	return (1);
@@ -169,15 +177,20 @@ env_sprite::NetworkOnce(void)
 	WriteCoord(MSG_MULTICAST, origin[0]);
 	WriteCoord(MSG_MULTICAST, origin[1]);
 	WriteCoord(MSG_MULTICAST, origin[2]);
-	WriteFloat(MSG_MULTICAST, modelindex);
+
+	if (STRING_SET(m_strMaterial))
+		WriteFloat(MSG_MULTICAST, 0);
+	else
+		WriteFloat(MSG_MULTICAST, modelindex);
+
 	WriteFloat(MSG_MULTICAST, m_flFramerate);
 	WriteFloat(MSG_MULTICAST, scale);
 	WriteByte(MSG_MULTICAST, m_iRenderMode);
 	WriteByte(MSG_MULTICAST, m_iRenderFX);
-	WriteFloat(MSG_MULTICAST, m_vecRenderColor[0]);
-	WriteFloat(MSG_MULTICAST, m_vecRenderColor[1]);
-	WriteFloat(MSG_MULTICAST, m_vecRenderColor[2]);
-	WriteFloat(MSG_MULTICAST, m_flRenderAmt);
+	WriteByte(MSG_MULTICAST, m_vecRenderColor[0]);
+	WriteByte(MSG_MULTICAST, m_vecRenderColor[1]);
+	WriteByte(MSG_MULTICAST, m_vecRenderColor[2]);
+	WriteByte(MSG_MULTICAST, m_flRenderAmt);
 	WriteString(MSG_MULTICAST, m_strMaterial);
 
 	msg_entity = this;
@@ -191,8 +204,34 @@ env_sprite::Trigger(entity act, triggermode_t state)
 	if (HasSpawnFlags(ENVS_PLAYONCE)) {
 		NetworkOnce();
 	} else {
-		m_iToggled = 1 - m_iToggled;
+		switch (state) {
+		case TRIG_ON:
+			m_iToggled = 1;
+			break;
+		case TRIG_OFF:
+			m_iToggled = 0;
+			break;
+		case TRIG_TOGGLE:
+		default:
+			m_iToggled = 1 - m_iToggled;
+		}
+
 		SendFlags = 1;
+	}
+}
+
+void
+env_sprite::Input(entity theActivator, string inputName, string dataString)
+{
+	switch (inputName) {
+	case "ShowSprite":
+		Trigger(theActivator, TRIG_ON);
+		break;
+	case "HideSprite":
+		Trigger(theActivator, TRIG_OFF);
+		break;
+	default:
+		super::Input(theActivator, inputName, dataString);
 	}
 }
 
@@ -223,7 +262,29 @@ env_sprite::Spawned(void)
 	if (!targetname)
 		m_iToggled = TRUE;
 }
-#else
+
+void
+env_sprite::Respawn(void)
+{
+	super::Respawn();
+
+	string modelTest = GetSpawnString("model");
+
+	/* HACK: Source Engine support. Yes, they re-used 'model' for this. */
+	if (exists.InVFS(modelTest) == false) {
+
+		string sourceVMT = strcat("materials/", Util_ChangeExtension(modelTest, "vmt"));
+
+		if (exists.InVFS(sourceVMT)) {
+			m_strMaterial = sourceVMT;
+			model = __NULL__;
+			modelindex = 0;
+		}
+	}
+}
+#endif
+
+#ifdef CLIENT
 float
 env_sprite::predraw(void)
 {
@@ -231,6 +292,7 @@ env_sprite::predraw(void)
 		return super::predraw();
 	}
 
+	vector color = m_vecRenderColor / 255;
 	int s = (float)getproperty(VF_ACTIVESEAT);
 	pSeat = &g_seats[s];
 	vector vecPlayer = pSeat->m_vecPredictedOrigin;
@@ -241,18 +303,20 @@ env_sprite::predraw(void)
 
 	traceline(origin, vecPlayer, MOVE_WORLDONLY, this);
 
+	trace_fraction = 1.0f;
+
 	if (trace_fraction < 1.0)
 		return (PREDRAW_NEXT);
 
 	R_BeginPolygon(m_strMaterial, 1, 0);
 	R_PolygonVertex(forg + v_right * fsize[0] - v_up * fsize[1],
-		[1,1], m_vecRenderColor, 1.0);
+		[1,1], color, 1.0);
 	R_PolygonVertex(forg - v_right * fsize[0] - v_up * fsize[1],
-		[0,1], m_vecRenderColor, 1.0);
+		[0,1], color, 1.0);
 	R_PolygonVertex(forg - v_right * fsize[0] + v_up * fsize[1],
-		[0,0], m_vecRenderColor, 1.0);
+		[0,0], color, 1.0);
 	R_PolygonVertex(forg + v_right * fsize[0] + v_up * fsize[1],
-		[1,0], m_vecRenderColor, 1.0);
+		[1,0], color, 1.0);
 	R_EndPolygon();
 
 	addentity(this);
@@ -288,12 +352,13 @@ env_sprite::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_FLOAT(scale, SPRITE_CHANGED_SCALE)
 	READENTITY_BYTE(m_iRenderMode, SPRITE_CHANGED_RENDERMODE)
 	READENTITY_BYTE(m_iRenderFX, SPRITE_CHANGED_RENDERFX)
-	READENTITY_COLOR(m_vecRenderColor[0], SPRITE_CHANGED_RENDERCOLOR)
-	READENTITY_COLOR(m_vecRenderColor[1], SPRITE_CHANGED_RENDERCOLOR)
-	READENTITY_COLOR(m_vecRenderColor[2], SPRITE_CHANGED_RENDERCOLOR)
-	READENTITY_COLOR(m_flRenderAmt, SPRITE_CHANGED_RENDERAMT)
+	READENTITY_BYTE(m_vecRenderColor[0], SPRITE_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_vecRenderColor[1], SPRITE_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_vecRenderColor[2], SPRITE_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_flRenderAmt, SPRITE_CHANGED_RENDERAMT)
 	READENTITY_STRING(m_strMaterial, SPRITE_CHANGED_MATERIAL)
 
+	effects = EF_NODEPTHTEST;
 	drawmask = MASK_ENGINE;
 	nextthink = time + (1 / m_flFramerate);
 	m_iMaxFrame = modelframecount(modelindex);
@@ -334,10 +399,10 @@ EnvSprite_ParseEvent(void)
 	spr.scale = readfloat();
 	spr.m_iRenderMode = readbyte();
 	spr.m_iRenderFX = readbyte();
-	spr.m_vecRenderColor[0] = readfloat();
-	spr.m_vecRenderColor[1] = readfloat();
-	spr.m_vecRenderColor[2] = readfloat();
-	spr.m_flRenderAmt = readfloat();
+	spr.m_vecRenderColor[0] = readbyte();
+	spr.m_vecRenderColor[1] = readbyte();
+	spr.m_vecRenderColor[2] = readbyte();
+	spr.m_flRenderAmt = readbyte();
 	spr.m_strMaterial = readstring();
 
 	spr.drawmask = MASK_ENGINE;

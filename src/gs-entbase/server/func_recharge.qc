@@ -14,9 +14,13 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Armor Recharging Station */
 /*!QUAKED func_recharge (0 .5 .8) ?
 # OVERVIEW
 Brush that fills up your armor when used, to a maximum of 100 points.
+Known as the "H.E.V. Charger", formerly known as the "Super Charger".
+
+![A working func_recharge, mounted against a wall](@ref func_recharge.jpg)
 
 # KEYS
 - "targetname" : Name
@@ -28,9 +32,12 @@ Brush that fills up your armor when used, to a maximum of 100 points.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup serverentity
+@ingroup brushentity
 */
 class
-func_recharge:NSRenderableEntity
+func_recharge:ncRenderableEntity
 {
 public:
 	void func_recharge(void);
@@ -39,7 +46,7 @@ public:
 	virtual void Save(float);
 	virtual void Restore(string,string);
 	virtual void SpawnKey(string,string);
-	virtual void Spawned(void);
+	virtual void Precache(void);
 	virtual void Respawn(void);
 	virtual void customphysics(void);
 	
@@ -125,22 +132,19 @@ func_recharge::SpawnKey(string strKey, string strValue)
 }
 
 void
-func_recharge::Spawned(void)
+func_recharge::Precache(void)
 {
-	super::Spawned();
-
-	precache_sound(m_strSndFirst);
-	precache_sound(m_strSndCharging);
-	precache_sound(m_strSndDone);
+	precache.Sound(m_strSndFirst);
+	precache.Sound(m_strSndCharging);
+	precache.Sound(m_strSndDone);
 }
 
 void
 func_recharge::Respawn(void)
 {
+	super::Respawn();
 	SetSolid(SOLID_BSP);
 	SetMovetype(MOVETYPE_NONE);
-	SetOrigin(GetSpawnOrigin());
-	SetModel(GetSpawnModel());
 	PlayerUse = OnPlayerUse;
 	ResetHealth();
 }
@@ -168,7 +172,7 @@ func_recharge::OnPlayerUse(void)
 		return;
 	}
 
-	eActivator.flags |= FL_USE_RELEASED;
+	eActivator.AddVFlags(VFL_USE_RELEASED);
 
 	/* First come first serve */ 
 	if (m_eUser && eActivator != m_eUser) {
@@ -185,15 +189,15 @@ func_recharge::OnPlayerUse(void)
 	}
 
 	if (health <= 0) {
-		eActivator.flags &= ~FL_USE_RELEASED;
+		eActivator.RemoveVFlags(VFL_USE_RELEASED);
 		StartSound(m_strSndDone, CHAN_VOICE, 0, true);
 		m_eUser = world;
 		return;
 	}
 
-	NSClientPlayer pl = (NSClientPlayer)eActivator;
+	ncPlayer pl = (ncPlayer)eActivator;
 	if (pl.armor >= 100) {
-		eActivator.flags &= ~FL_USE_RELEASED;
+		eActivator.RemoveVFlags(VFL_USE_RELEASED);
 		StartSound(m_strSndDone, CHAN_VOICE, 0, true);
 	} else {
 		if (m_eUser == world) {
@@ -213,7 +217,7 @@ func_recharge::OnPlayerUse(void)
 			StopSound(CHAN_ITEM, true);
 			StartSound(m_strSndDone, CHAN_VOICE, 0, true);
 			SetFrame(1);
-			eActivator.flags &= ~FL_USE_RELEASED;
+			eActivator.RemoveVFlags(VFL_USE_RELEASED);
 			m_eUser = world;
 			return;
 		}

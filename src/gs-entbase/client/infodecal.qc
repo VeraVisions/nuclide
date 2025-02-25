@@ -15,17 +15,17 @@
 */
 
 class
-infodecal:NSEntity
+infodecal:ncEntity
 {
 public:
 	void infodecal(void);
 	virtual void SpawnKey(string, string);
 	virtual float predraw(void);
 	virtual bool CanSpawn(bool);
-	virtual void Respawn(void);
+	virtual void Spawned(void);
 
 private:
-	decal m_decChild;
+	ncDecal m_decChild;
 	string m_strTexture;
 };
 
@@ -35,14 +35,15 @@ infodecal::infodecal(void)
 	drawmask = MASK_ENGINE;
 	m_decChild = __NULL__;
 	m_strTexture = __NULL__;
+	scale = 1.0f;
 }
 
 float
 infodecal::predraw(void)
 {
 	if (!m_decChild) {
-		m_decChild = spawn(decal);
-		m_decChild.Place(origin, m_strTexture);
+		m_decChild = spawn(ncDecal);
+		m_decChild.PlaceAtScale(origin, m_strTexture, scale);
 		Destroy();
 	}
 
@@ -72,10 +73,34 @@ infodecal::SpawnKey(string strField, string strKey)
 }
 
 void
-infodecal::Respawn(void)
+infodecal::Spawned(void)
 {
+	super::Spawned();
+
 	/* if it has a targetname, it can't be made client-side only */
-	if (targetname) {
+	if (STRING_SET(targetname)) {
 		Destroy();
+	}
+
+	/* yup, we have to get this bit from the material. */
+	string vmtFile = strcat("materials/", m_strTexture, ".vmt");
+
+	if (fileExists(vmtFile) == true) {
+		string lineFeed;
+		filestream vmtHandle = fopen(vmtFile, FILE_READ);
+
+		if (vmtHandle < 0) {
+			return;
+		}
+
+		while ((lineFeed = fgets(vmtHandle))) {
+			int c = (int)tokenize_console(lineFeed);
+
+			if (argv(0) == "$decalscale") {
+				scale = ReadFloat(argv(1));
+			}
+		}
+
+		fclose(vmtHandle);
 	}
 }

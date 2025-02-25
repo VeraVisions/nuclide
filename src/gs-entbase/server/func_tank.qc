@@ -25,6 +25,7 @@ enumflags
 	FNCTANK_CONTROLLABLE
 };
 
+/*! \brief Server-Entity: Mountable Gun Turret */
 /*!QUAKED func_tank (0 .5 .8) ? FNCTANK_ACTIVE x x x FNCTANK_DIRECTONLY FNCTANK_CONTROLLABLE
 # OVERVIEW
 A mountable tank gun turret type entity. A player (or NPC) can interact with
@@ -65,14 +66,17 @@ some random sprites needs to be treated additive.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup serverentity
+@ingroup brushentity
 */
 class
-func_tank:NSVehicle
+func_tank:ncVehicle
 {
 public:
 	void func_tank(void);
 	
-	virtual void Spawned(void);
+	virtual void Precache(void);
 	virtual void Save(float);
 	virtual void Restore(string,string);
 	virtual void customphysics(void);
@@ -205,55 +209,55 @@ func_tank::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "yawrate":
-		m_flYawRate = stof(strValue);
+		m_flYawRate = ReadFloat(strValue);
 		break;
 	case "yawrange":
-		m_flYawRange = stof(strValue);
+		m_flYawRange = ReadFloat(strValue);
 		break;
 	case "pitchrate":
-		m_flPitchRate = stof(strValue);
+		m_flPitchRate = ReadFloat(strValue);
 		break;
 	case "pitchrange":
-		m_flPitchRange = stof(strValue);
+		m_flPitchRange = ReadFloat(strValue);
 		break;
 	case "barrel":
-		m_vecTipPos[0] = stof(strValue);
+		m_vecTipPos[0] = ReadFloat(strValue);
 		break;
 	case "barrely":
-		m_vecTipPos[1] = stof(strValue);
+		m_vecTipPos[1] = ReadFloat(strValue);
 		break;
 	case "barrelz":
-		m_vecTipPos[2] = stof(strValue);
+		m_vecTipPos[2] = ReadFloat(strValue);
 		break;
 	case "firerate":
-		m_flFireRate = 1.0f / stof(strValue);
+		m_flFireRate = 1.0f / ReadFloat(strValue);
 		break;
 	case "bullet_damage":
-		m_iDamage = stoi(strValue);
+		m_iDamage = ReadInt(strValue);
 		break;
 	case "firespread":
-		m_vecSpread = [0.25, 0.25, 0] * stof(strValue);
+		m_vecSpread = [0.1, 0.1, 0] * ReadFloat(strValue);
 		break;
 	case "persistance":
-		m_flPersistance = stof(strValue);
+		m_flPersistance = ReadFloat(strValue);
 		break;
 	case "minRange":
-		m_flMinRange = stof(strValue);
+		m_flMinRange = ReadFloat(strValue);
 		break;
 	case "maxRange":
-		m_flMaxRange = stof(strValue);
+		m_flMaxRange = ReadFloat(strValue);
 		break;
 	case "spritesmoke":
-		m_strSpriteSmoke = strValue;
+		m_strSpriteSmoke = ReadString(strValue);
 		break;
 	case "spriteflash":
-		m_strSpriteFlash = strValue;
+		m_strSpriteFlash = ReadString(strValue);
 		break;
 	case "spritescale":
-		m_flSpriteScale = stof(strValue);
+		m_flSpriteScale = ReadFloat(strValue);
 		break;
 	case "rotatesound":
-		m_strSndRotate = strValue;
+		m_strSndRotate = ReadString(strValue);
 		break;
 	default:
 		super::SpawnKey(strKey, strValue);
@@ -261,27 +265,23 @@ func_tank::SpawnKey(string strKey, string strValue)
 }
 
 void
-func_tank::Spawned(void)
+func_tank::Precache(void)
 {
-	super::Spawned();
-
-	if (m_strSpriteFlash)
-		precache_model(m_strSpriteFlash);
-	if (m_strSpriteSmoke)
-		precache_model(m_strSpriteSmoke);
+	precache.Model(m_strSpriteFlash);
+	precache.Model(m_strSpriteSmoke);
 }
 
 void
 func_tank::Respawn(void)
 {
+	super::Respawn();
+
 	SetMovetype(MOVETYPE_PUSH);
 	SetSolid(SOLID_BSP);
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
-	SetAngles(GetSpawnAngles());
 
-	if (m_eDriver)
-		PlayerLeave((NSClientPlayer)m_eDriver);
+	if (m_eDriver) {
+		PlayerLeave((ncPlayer)m_eDriver);
+	}
 }
 
 void
@@ -291,18 +291,19 @@ func_tank::SpriteSmoke(vector org)
 		remove(self);
 	}
 
-	if (!m_strSpriteSmoke)
+	if (!STRING_SET(m_strSpriteSmoke)) {
 		return;
+	}
 
-	NSRenderableEntity smoke = spawn(NSRenderableEntity);
+	ncRenderableEntity smoke = spawn(ncRenderableEntity);
 	smoke.SetModel(m_strSpriteSmoke);
 	smoke.SetOrigin(org);
 	smoke.think = Die;
 	smoke.nextthink = time + 0.1f;
 	smoke.scale = m_flSpriteScale;
 	smoke.SetRenderMode(RM_ADDITIVE);
-	smoke.SetRenderColor([1,1,1]);
-	smoke.SetRenderAmt(1.0f);
+	smoke.SetRenderColor([255,255,255]);
+	smoke.SetRenderAmt(255);
 }
 
 void
@@ -312,35 +313,37 @@ func_tank::SpriteFlash(vector org)
 		remove(self);
 	}
 
-	if (!m_strSpriteFlash)
+	if (!STRING_SET(m_strSpriteFlash)) {
 		return;
+	}
 
-	NSRenderableEntity flash = spawn(NSRenderableEntity);
+	ncRenderableEntity flash = spawn(ncRenderableEntity);
 	flash.SetModel(m_strSpriteFlash);
 	flash.SetOrigin(org);
 	flash.think = Die;
 	flash.nextthink = time + 0.1f;
 	flash.scale = m_flSpriteScale;
 	flash.SetRenderMode(RM_ADDITIVE);
-	flash.SetRenderColor([1,1,1]);
-	flash.SetRenderAmt(1.0f);
+	flash.SetRenderColor([255,255,255]);
+	flash.SetRenderAmt(255);
 }
 
 void
 func_tank::customphysics(void)
 {
-	if (m_eDriver && m_eDriver.health <= 0)
-		PlayerLeave((NSClientPlayer)m_eDriver);
+	if (m_eDriver && m_eDriver.health <= 0) {
+		PlayerLeave((ncPlayer)m_eDriver);
+	}
 
 	if (m_eDriver) {
 		vector endorg;
-		makevectors(m_eDriver.v_angle);
-		endorg = v_forward * 4086;
-		angles = vectoangles(endorg - origin);
+		endorg = anglesToForward(m_eDriver.v_angle) * 4096.0f;
+		angles = vectorToAngles(endorg - origin);
 		PlayerUpdateFlags();
 
-		if (vlen(m_eDriver.origin - origin) > 128)
-			PlayerLeave((NSClientPlayer)m_eDriver);
+		if (distance(m_eDriver.origin, origin) > 128) {
+			PlayerLeave((ncPlayer)m_eDriver);
+		}
 	}
 }
 
@@ -349,7 +352,7 @@ func_tank_shootsingle(entity shooter, vector org, vector spread, int damg)
 {
 	entity oldself = self;
 	self = shooter;
-	TraceAttack_FireBullets(1, org, damg, spread, 0);
+	//TraceAttack_FireBullets(1, org, damg, spread, 0);
 	self = oldself;
 }
 

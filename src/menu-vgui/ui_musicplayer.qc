@@ -18,22 +18,22 @@ int g_iMusicPlayerInitialized;
 
 void UI_MusicPlayer_Show ( void )
 {
-	static CUIWindow winMusicPlayer;
-	static CUIList lsbSongs;
-	static CUIScrollbar scrlSong;
-	static CUIButton btnPlay;
-	static CUIButton btnStop;
+	static vguiWindow winMusicPlayer;
+	static vguiList lsbSongs;
+	static vguiScrollBar scrlSong;
+	static vguiButton btnPlay;
+	static vguiButton btnStop;
 
 	static void MusicPlayer_Play ( void ) {
 		string strSong;
 		strSong = lsbSongs.GetItem( lsbSongs.GetSelected() );
-		localcmd( sprintf( "music %s\n", substring( strSong, 11, strlen( strSong ) - 15 ) ) );
+		localcmd( sprintf( "play %S\n", strSong ) );
 	}
 	static void MusicPlayer_Stop ( void ) {
-		localcmd( "stopmusic\n" );
+		localcmd( "stopsound\n" );
 	}
 	static void MusicPlayer_ScrollUpdate ( void ) {
-		scrlSong.SetValue( lsbSongs.GetOffset(), FALSE );
+		scrlSong.SetValue( lsbSongs.GetOffset() );
 	}
 	static void MusicPlayer_ListUpdate ( void ) {
 		lsbSongs.SetOffset( scrlSong.GetValue(), FALSE );
@@ -41,15 +41,15 @@ void UI_MusicPlayer_Show ( void )
 
 	if ( !g_iMusicPlayerInitialized ) {
 		g_iMusicPlayerInitialized = TRUE;
-		winMusicPlayer = spawn( CUIWindow );
+		winMusicPlayer = spawn( vguiWindow );
 		winMusicPlayer.SetTitle( "Music Player" );
-		winMusicPlayer.SetSize( '256 180' );
-		winMusicPlayer.SetIcon( "textures/ui/icons/cd" );
+		winMusicPlayer.SetSize( [256,180] );
+		winMusicPlayer.SetIcon( "gfx/icon16/ipod" );
 
-		searchhandle shSongs = search_begin( "music/*.ogg", SEARCH_NAMESORT, TRUE );
-		lsbSongs = spawn( CUIList );
-		lsbSongs.SetSize( '192 96' );
-		lsbSongs.SetPos( '8 32 ' );
+		searchhandle shSongs = search_begin( "music/*.flac:music/*.wav:music/*.ogg:media/*.mp3:sound/music/*.mp3", SEARCH_NAMESORT | SEARCH_MULTISEARCH, TRUE );
+		lsbSongs = spawn( vguiList );
+		lsbSongs.SetSize( [192, 96] );
+		lsbSongs.SetPos( [8, 32] );
 		lsbSongs.SetItemCount( search_getsize( shSongs ) );
 		lsbSongs.CallOnScroll( MusicPlayer_ScrollUpdate );
 
@@ -57,22 +57,26 @@ void UI_MusicPlayer_Show ( void )
 			lsbSongs.AddItem( search_getfilename( shSongs, i ) );
 		}
 
-		scrlSong = spawn( CUIScrollbar );
+		scrlSong = spawn( vguiScrollBar );
 		scrlSong.SetLength( 96 );
-		scrlSong.SetPos( '201 32' );
+		scrlSong.SetPos( [201,32] );
 		scrlSong.SetMin( 0 );
 		scrlSong.SetStep( 1 );
 		scrlSong.SetMax( lsbSongs.GetMaxVisibleItems() );
 		scrlSong.CallOnChange( MusicPlayer_ListUpdate );
 
-		btnPlay = spawn( CUIButton );
+		btnPlay = spawn( vguiButton );
 		btnPlay.SetTitle( "Play" );
-		btnPlay.SetPos( '8 132' );
+		btnPlay.SetIcon( "gfx/icon16/control_play" );
+		btnPlay.SetPos( [8,132] );
+		btnPlay.SetSize([64,24]);
 		btnPlay.SetFunc( MusicPlayer_Play );
 
-		btnStop = spawn( CUIButton );
+		btnStop = spawn( vguiButton );
 		btnStop.SetTitle( "Stop" );
-		btnStop.SetPos( '96 132' );
+		btnStop.SetIcon( "gfx/icon16/control_stop" );
+		btnStop.SetPos( [96,132] );
+		btnStop.SetSize([64,24]);
 		btnStop.SetFunc( MusicPlayer_Stop );
 
 		g_uiDesktop.Add( winMusicPlayer );
@@ -84,5 +88,5 @@ void UI_MusicPlayer_Show ( void )
 	}
 
 	winMusicPlayer.Show();
-	winMusicPlayer.SetPos( ( video_res / 2 ) - ( winMusicPlayer.GetSize() / 2 ) );
+	winMusicPlayer.SetPos( ( g_vidsize / 2 ) - ( winMusicPlayer.GetSize() / 2 ) );
 }

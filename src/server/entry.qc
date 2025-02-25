@@ -21,17 +21,24 @@ static int g_ent_spawned;
 void
 StartFrame(void)
 {
-	PMove_StartFrame();
-
 	/* For entity parenting to work, we need to go through and run on every
-	 * this method on every NSEntity class */
+	 * this method on every ncEntity class */
 	for (entity a = world; (a = findfloat(a, ::identity, 1));) {
-		NSEntity ent = (NSEntity)a;
+		ncEntity ent = (ncEntity)a;
 		ent.ParentUpdate();
 	}
 
-	if (g_ents_initialized)
-		g_grMode.FrameStart();
+	if (g_ruleCProgs) {
+		externset(g_ruleCProgs, frametime, "frametime");
+	}
+
+	if (g_mapCProgs) {
+		externset(g_mapCProgs, frametime, "frametime");
+	}
+
+	if (g_ents_initialized && g_grMode)
+		if (g_grMode.FrameStart && time > 1)
+			g_grMode.FrameStart();
 
 	Vote_Frame();
 }
@@ -45,30 +52,17 @@ The `self` global is the connecting client in question.
 void
 ClientConnect(void)
 {
-	int playercount = 0;
+	EntityDef_SpawnClassname("player");
 	self.gotData = false;
 
 	/* don't carry over team settings from a previous session */
-	forceinfokey(self, "*team", "0");
+	self.team = TEAM_CONNECTING;
+	self.flags |= FL_CLIENT;
+	userinfo.SetString(self, "*team", "0");
 
-	/* bot needs special init */
-#ifdef BOT_INCLUDED
-	if (clienttype(self) == CLIENTTYPE_BOT) {
-		/* from now on we're of type NSBot */
-		EntityDef_SpawnClassname("bot");
-	} else
-#endif
-
-	/* make sure you never change the classname. ever. */
-	if (self.classname != "player") {
-		spawnfunc_player();
+	if (g_ents_initialized) {
+		g_grMode.PlayerConnect((ncPlayer)self);
 	}
-
-	if (g_ents_initialized)
-		g_grMode.PlayerConnect((NSClientPlayer)self);
-
-	for (entity a = world; (a = find(a, ::classname, "player"));)
-		playercount++;
 }
 
 /** Called when a player leaves the server. At the end of the function the
@@ -78,16 +72,17 @@ This means the fields will still be accessible inside of this function.
 void
 ClientDisconnect(void)
 {
-	if (g_ents_initialized)
-		g_grMode.PlayerDisconnect((NSClientPlayer)self);
+	if (g_ents_initialized) {
+		g_grMode.PlayerDisconnect((ncPlayer)self);
+	}
 
 	/* this will hide/remove the player from other clients */
-	player pl = (player)self;
+	ncPlayer pl = (ncPlayer)self;
 	pl.SetSolid(SOLID_NOT);
 	pl.SetMovetype(MOVETYPE_NONE);
 	pl.SetModelindex(0);
 	pl.SetHealth(0);
-	pl.SetTakedamage(DAMAGE_NO);
+	pl.MakeInvulnerable();
 	pl.SetTeam(0);
 	pl.Disappear();
 	pl.classname = "";
@@ -103,8 +98,9 @@ The `self` global is the client issuing the command.
 void
 ClientKill(void)
 {
-	if (g_ents_initialized)
-		g_grMode.PlayerKill((NSClientPlayer)self);
+	if (g_ents_initialized) {
+		g_grMode.PlayerKill((ncPlayer)self);
+	}
 }
 
 /** This is run every frame on every spectator.
@@ -114,24 +110,24 @@ void
 SpectatorThink(void)
 {
 	if (self.classname == "spectator") {
-		NSClientSpectator spec = (NSClientSpectator)self;
+		ncSpectator spec = (ncSpectator)self;
 		spec.PreFrame();
 		spec.PostFrame();
 		return;
 	}
 }
 
-/** Called when a NSClientSpectator joins the server.
-The `self` global is the connecting NSClientSpectator in question.
+/** Called when a ncSpectator joins the server.
+The `self` global is the connecting ncSpectator in question.
 */
 void
 SpectatorConnect(void)
 {
-	spawnfunc_NSClientSpectator();
+	ents.ChangeToClass(self, "spectator");
 }
 
-/** Called when a NSClientSpectator leaves the server.
-The `self` global is the leaving NSClientSpectator in question.
+/** Called when a ncSpectator leaves the server.
+The `self` global is the leaving ncSpectator in question.
 Attributes cleared when this function is done executing.
 */
 void
@@ -148,21 +144,24 @@ past levels for the player in question.
 void
 PutClientInServer(void)
 {
-	if (g_ents_initialized)
-		g_grMode.PlayerSpawn((NSClientPlayer)self);
+	/* we're officially in-game now. */
+	self.team = TEAM_UNASSIGNED;
+
+	if (g_ents_initialized) {
+		g_grMode.PlayerSpawn((ncPlayer)self);
+	}
 
 	/* handle transitions */
-	if (FileExists("data/trans.dat")) {
-		
+	if (fileExists("data/trans.dat")) {
 		for (entity a = world; (a = findfloat(a, ::identity, 1));) {
-			NSEntity levelEnt = (NSEntity)a;
+			ncEntity levelEnt = (ncEntity)a;
 			levelEnt.TransitionComplete();
 		}
 
 		trigger_transition::LoadTransition();
 	}
 
-	Plugin_PlayerEntered((NSClientPlayer)self);
+	Plugin_PlayerEntered((ncPlayer)self);
 
 	if (g_grMode.IsMultiplayer() == true && self.deaths <= 0) {
 		bprint(PRINT_HIGH, sprintf("%s^d entered the game.\n", self.netname));
@@ -170,17 +169,19 @@ PutClientInServer(void)
 
 	/* activate all game_playerspawn entities */
 	for (entity a = world; (a = find(a, ::targetname, "game_playerspawn"));) {
-		NSEntity t = (NSEntity)a;
+		ncEntity t = (ncEntity)a;
 
-		if (t.Trigger)
+		if (t.Trigger) {
 			t.Trigger(self, TRIG_TOGGLE);
+		}
 	}
 
 	/* the game and its triggers start when the player is ready to see it */
 	trigger_auto_trigger();
 
 	if (g_grMode.InIntermission() == true) {
-		g_grMode.IntermissionToPlayer((NSClientPlayer)self);
+		ncPlayer pl = (ncPlayer)self;
+		g_grMode.IntermissionToPlayer(pl);
 	}
 }
 
@@ -192,7 +193,7 @@ void
 PlayerPreThink(void)
 {
 	if (self.classname == "spectator") {
-		//NSClientSpectator spec = (NSClientSpectator)self;
+		//ncSpectator spec = (ncSpectator)self;
 		//spec.PreFrame();
 		return;
 	}
@@ -201,14 +202,14 @@ PlayerPreThink(void)
 		return;
 	}
 
-#ifdef BOT_INCLUDED
-	if (clienttype(self) == CLIENTTYPE_BOT) {
-		((NSBot)self).PreFrame();
+	if (isBot(self)) {
+		((ncBot)self).BotPreFrame();
 	}
-#endif
 
-	if (g_ents_initialized)
-		g_grMode.PlayerPreFrame((NSClientPlayer)self);
+
+	if (g_ents_initialized) {
+		g_grMode.PlayerPreFrame((ncPlayer)self);
+	}
 }
 
 /** Run after game physics have taken place.
@@ -227,17 +228,15 @@ PlayerPostThink(void)
 		return;
 	}
 
-#ifdef BOT_INCLUDED
-	if (clienttype(self) == CLIENTTYPE_BOT) {
-		((NSBot)self).PostFrame();
+	if (isBot(self)) {
+		((ncBot)self).BotPostFrame();
 	}
-#endif
 
 	if (g_ents_initialized) {
-		player pl = (player)self;
-		g_grMode.PlayerPostFrame((NSClientPlayer)self);
+		ncPlayer pl = (ncPlayer)self;
+		g_grMode.PlayerPostFrame((ncPlayer)self);
 		pl.EvaluateEntity();
-		forceinfokey(pl, "*score", ftos(pl.score));
+		userinfo.SetString(pl, "*score", ftos(pl.score));
 	}
 }
 
@@ -267,7 +266,7 @@ SetChangeParms(void)
 	InitPrint("Setting Level-Change Parameters");
 
 	if (g_ents_initialized)
-		g_grMode.LevelChangeParms((NSClientPlayer)self);
+		g_grMode.LevelChangeParms((ncPlayer)self);
 }
 
 /** Run whenever an input packet by a client has been received.
@@ -278,12 +277,12 @@ with the input_X globals being set to the appropriate data.
 void
 SV_RunClientCommand(void)
 {
-	NSClient cl = (NSClient)self;
+	ncClient cl = (ncClient)self;
 
 	if (self.classname != "player" && self.classname != "spectator")
 		return;
 
-	CheatersLament((NSClientPlayer)cl, input_angles, input_buttons, input_timelength);
+	CheatersLament((ncPlayer)cl, input_angles, input_buttons, input_timelength);
 	self.v_angle = input_angles;
 
 	if (!Plugin_RunClientCommand()) {
@@ -302,6 +301,8 @@ SV_RunClientCommand(void)
 		BreakModel_SendClientData(self);
 		self.gotData = true;
 	}
+
+	self.impulse = 0;
 }
 
 /** Any 'cmd' from the client get sent here and handled.
@@ -318,54 +319,12 @@ SV_ParseClientCommand(string cmd)
 
 	/* give the game-mode a chance to override us */
 	if (g_ents_initialized)
-		if (g_grMode.ClientCommand((NSClient)self, cmd) == true)
+		if (g_grMode.ClientCommand((ncClient)self, cmd) == true)
 			return;
 
-	argc = tokenize(cmd);
+	argc = (int)tokenize(cmd);
 
-	switch (argv(0)) {
-	case "say":
-		if (argc == 2)
-			g_grMode.ChatMessageAll((NSClient)self, argv(1));
-		else
-			g_grMode.ChatMessageAll((NSClient)self, substring(cmd, 5, -2));
-		break;
-	case "say_team":
-		if (argc == 2)
-			g_grMode.ChatMessageTeam((NSClient)self, argv(1));
-		else
-			g_grMode.ChatMessageTeam((NSClient)self, substring(cmd, 10, -2));
-		break;
-	case "spectate":
-		if (self.classname != "player")
-			break;
-
-		player pl = (player)self;
-		pl.MakeSpectator();
-		break;
-	case "play":
-		if (self.classname != "spectator")
-			break;
-		spawnfunc_player();
-		PutClientInServer();
-		break;
-	case "setpos":
-		if (cvar("sv_cheats") == 1) {
-			setorigin(self, stov(argv(1)));
-		}
-		break;
-	case "timeleft":
-		string msg;
-		string timestring;
-		float timeleft;
-		timeleft = cvar("timelimit") - (time / 60);
-		timestring = Util_TimeToString(timeleft);
-		msg = sprintf("we have %s minutes remaining", timestring);
-		bprint(PRINT_CHAT, msg);
-		break;
-	default:
-		clientcommand(self, cmd);
-	}
+	Cmd_ParseClientCommand((ncClient)self, cmd, argc);
 }
 
 /** Called when the QC module gets loaded.
@@ -378,16 +337,28 @@ init(float prevprogs)
 	NSLog("Built: %s %s", __DATE__, __TIME__);
 	NSLog("QCC: %s", __QCCVER__);
 
-	Plugin_Init();
+	_server_main();
+	_shared_main();
 
+	Skill_Init();
 	Constants_Init();
+	EntityDef_Init();
+	Ammo_Init();
+	MapTweaks_Init();
+	MapC_Init();
+	RuleC_Init();
+
+	Plugin_Init();
 	Sound_Init();
 	PropData_Init();
 	SurfData_Init();
 	DecalGroups_Init();
 
 	/* DO NOT EVER CHANGE THESE. */
-	cvar_set("r_meshpitch", "1");
+	cvars.SetString("r_meshpitch", "1");
+
+	/* ENGINE, PLS FIX */
+	input_cursor_entitynumber = 0;
 }
 
 /** Called inside initents() to make sure the entities have their Respawn()
@@ -396,22 +367,21 @@ method called at the beginning of them having spawned.
 void
 init_respawn(void)
 {
-	int endspawn = 0;
+	int spawnCounter = 0i;
 
-	if (g_ents_initialized)
+	if (g_ents_initialized) {
 		g_grMode.InitPostEnts();
+	}
 
 	/* of all the map entities that we wanted to spawn, how many are left? */
 	for (entity a = world; (a = findfloat(a, ::_mapspawned, true));) {
-		endspawn++;
+		ncEntity ent = (ncEntity)a;
+		ent.Respawn();
+		spawnCounter++;
 	}
 
-	NSLog("...%i entities spawned (%i inhibited)", g_ent_spawned, g_ent_spawned - endspawn);
-
-	InitEnd();
-
+	NSLog("...%i entities spawned (%i inhibited)", g_ent_spawned, g_ent_spawned - spawnCounter);
 	Nodes_Init();
-
 	remove(self);
 }
 
@@ -423,74 +393,67 @@ Before this, we are not able to spawn, touch or allocate any entity slots.
 void
 initents(void)
 {
+	g_ents_initialized = false;
+
 	/* sound shader init */
 	Materials_Init();
 	MOTD_Init();
 	PMove_Init();
 
-	/** compat... */
-
-	Sound_Precache("Player.GaspLight");
-	Sound_Precache("Player.GaspHeavy");
-	Sound_Precache("Player.WaterEnter");
-	Sound_Precache("Player.WaterExit");
+#warning Move these into player decl
 	Sound_Precache("Player.Death");
 	Sound_Precache("Player.Pain");
-	Sound_Precache("Player.Wade");
-	Sound_Precache("Player.Swim");
-	Sound_Precache("Player.DenyWeaponSelection");
-	Sound_Precache("Player.WeaponSelected");
-	Sound_Precache("Player.FallDamage");
-	Sound_Precache("Player.LightFall");
-
-	Sound_Precache("damage_bullet.hit");
 	Sound_Precache("SprayCan.Paint");
+
+#warning These sound defs need renaming.
+	Sound_Precache("damage_bullet.hit");
 	Sound_Precache("step_ladder.left");
 	Sound_Precache("step_ladder.right");
 
-	if (!g_grMode) {
-		Game_InitRules();
-		forceinfokey(world, "mode", g_grMode.Title());
-	}
+	BodyQue_Init();
+
+	g_grMode = ncGameRules::CreateRules();
 
 	Game_Worldspawn();
 	Decals_Init();
 	Sentences_Init();
+	Activities_Init();
 
 	/* TODO: Make sure every entity calls Respawn inside the constructor, then
 	 * remove this */
 	g_respawntimer = spawn();
 	g_respawntimer.think = init_respawn;
-	g_respawntimer.nextthink = time + 0.1f;
+	g_respawntimer.nextthink = time + 0.25f;
 
 	/* menu background lock */
-	if (cvar("sv_background") == 1) {
-		forceinfokey(world, "background", "1");
+	if (cvars.GetBool("sv_background") == true) {
+		/* trade them in. */
+		serverinfo.SetBool("background", true);
 		localcmd("sv_background 0\n");
 	} else {
-		forceinfokey(world, "background", "0");
+		serverinfo.SetBool("background", false);
 	}
 
 	/* the maxclients serverinfo key? yeah, that one lies to the client. so
 	 * let's add our own that we can actually trust. */
-	forceinfokey(world, "sv_playerslots", cvar_string("sv_playerslots"));
+	serverinfo.SetInteger("sv_playerslots", cvars.GetInteger("sv_playerslots"));
 
+	RuleC_Precache();
+	MapC_CallMainFunction();
 	Plugin_InitEnts();
 	Mapcycle_Init();
 	Vote_Init();
 	ChangeTarget_Activate();
 
-	g_ents_initialized = TRUE;
+	g_ents_initialized = true;
 
 	/* engine hacks for dedicated servers */
-	cvar_set("s_nominaldistance", "1536");
+	cvars.SetFloat("s_nominaldistance", 1536);
 
 	/* other engine hacks */
-	cvar_set("sv_nqplayerphysics", "0");
+	cvars.SetBool("sv_nqplayerphysics", false);
 
-#ifdef BOT_INCLUDED
 	BotLib_Init();
-#endif
 }
 
 /** Any command executed on the server (either tty, rcon or `sv`) gets
@@ -505,151 +468,32 @@ The client-side equivalent is `CSQC_ConsoleCommand` (src/client/entry.qc)
 float
 ConsoleCmd(string cmd)
 {
-	player pl;
+	ncPlayer pl;
 
 	/* some sv commands can only be executed by a player in-world */
-	if ( !self ) {
-		for ( other = world; ( other = find( other, classname, "player" ) ); ) {
-			if ( clienttype( other ) == CLIENTTYPE_REAL ) {
-				self = other;
-				break;
-			}
-		}
-	}
-
 	if (!self) {
-		for ( other = world; ( other = find( other, classname, "spectator" ) ); ) {
-			if ( clienttype( other ) == CLIENTTYPE_REAL ) {
+		other = world;
+
+		while ((other = nextent(other))) {
+			if (clienttype(other) == CLIENTTYPE_REAL) {
 				self = other;
 				break;
 			}
 		}
 	}
 
-	pl = (player)self;
+	pl = (ncPlayer)self;
 
 	/* give the game-mode a chance to override us */
-	if (g_ents_initialized)
-		if (g_grMode.ConsoleCommand(pl, cmd) == TRUE)
+	if (g_ents_initialized) {
+		if (g_grMode.ConsoleCommand(pl, cmd) == TRUE) {
 			return (1);
+		}
+	}
 
 	/* time to handle commands that apply to all games */
 	tokenize(cmd);
-	switch (argv(0)) {
-	case "addBot":
-		string botProfile = strtolower(argv(1));
-		float teamValue = stof(argv(2));
-		float spawnDelay = stof(argv(3));
-		string newName = argv(4);
-		Bot_AddBot_f(botProfile, teamValue, spawnDelay, newName);
-		break;
-	case "killAllBots":
-		Bot_KillAllBots();
-		break;
-	case "resetAllBotsGoals":
-		Bot_ResetAllBotsGoals();
-		break;
-	case "listBotProfiles":
-		Bot_ListBotProfiles_f();
-		break;
-	case "killClass":
-		string targetClass;
-		targetClass = argv(1);
-
-		if (targetClass)
-		for (entity a = world; (a = find(a, ::classname, targetClass));) {
-			NSEntity t = (NSEntity)a;
-			t.Destroy();
-		}
-		break;
-	case "killMovables":
-		for (entity a = world; (a = findfloat(a, ::movetype, MOVETYPE_PHYSICS));) {
-			NSEntity t = (NSEntity)a;
-			t.Destroy();
-		}
-		break;
-	case "trigger":
-		string targ;
-		targ = argv(1);
-
-		if (targ)
-		for (entity a = world; (a = find(a, ::targetname, targ));) {
-			NSEntity t = (NSEntity)a;
-
-			if (t.Trigger)
-				t.Trigger(self, TRIG_TOGGLE);
-		}
-		break;
-	case "input":
-		float entNum = stof(argv(1));
-		string inputName = argv(2);
-		string inputData = argv(3);
-		NSEntity inputTarget = (NSEntity)edict_num(entNum);
-
-		if (inputTarget) {
-			inputTarget.Input(self, inputName, inputData);
-			print(sprintf("Sending input to %d, %S: %S\n", entNum, inputName, inputData));
-		}
-		break;
-	case "listTargets":
-		for (entity a = world; (a = findfloat(a, ::identity, 1));) {
-			if (a.targetname) {
-				print(sprintf("%d: %s (%s)\n", num_for_edict(a), a.targetname, a.classname));
-			}
-		}
-		break;
-	case "teleport":
-		static entity targetFinder;
-		targetFinder = find(targetFinder, ::targetname, argv(1));
-
-		/* try at least one more time to skip world */
-		if (!targetFinder)
-			targetFinder = find(targetFinder, ::targetname, argv(1));
-
-		if (targetFinder)
-			setorigin(pl, targetFinder.origin);
-		break;
-	case "teleportToClass":
-		static entity finder;
-		finder = find(finder, ::classname, argv(1));
-
-		/* try at least one more time to skip world */
-		if (!finder)
-			finder = find(finder, ::classname, argv(1));
-
-		if (finder)
-			setorigin(pl, finder.origin);
-		break;
-	case "renetworkEntities":
-		for (entity a = world; (a = findfloat(a, ::identity, 1));) {
-			NSEntity ent = (NSEntity)a;
-			ent.SendFlags = -1;
-		}
-		break;
-	case "respawnEntities":
-		for (entity a = world; (a = findfloat(a, ::identity, 1));) {
-			NSEntity ent = (NSEntity)a;
-			ent.Respawn();
-		}
-		break;
-	case "spawn":
-		NSEntity unit = EntityDef_CreateClassname(argv(1));
-		makevectors(pl.v_angle);
-		traceline(pl.origin, pl.origin + (v_forward * 1024), MOVE_NORMAL, pl);
-		setorigin(unit, trace_endpos);
-		break;
-#ifdef BOT_INCLUDED
-	case "way":
-		Way_Cmd();
-		break;
-#endif
-	case "listSoundDef":
-		Sound_DebugList();
-		break;
-	default:
-		return (0);
-	}
-	return (1);
+	return Cmd_ParseServerCommand();
 }
 
 /** Returns TRUE if the server can pause the server when the 'pause' command
@@ -658,16 +502,19 @@ is being executed.
 float
 SV_ShouldPause(float newstatus)
 {
-	if (serverkeyfloat("background") == 1)
+	if (serverinfo.GetFloat("background") == 1) {
 		return (0);
+	}
 
-	if (cvar("pausable") == 1)
+	if (cvars.GetFloat("pausable") == 1) {
 		return (1);
+	}
 
-	if (cvar("sv_playerslots") > 1)
+	if (cvars.GetFloat("sv_playerslots") > 1) {
 		return (0);
+	}
 
-	return newstatus;
+	return (newstatus);
 }
 
 //#define REEDICT 1
@@ -684,7 +531,7 @@ SV_PerformLoad(float fh, float entcount, float playerslots)
 	entity eold;
 	string l;
 	float n = 0;
-	NSEntity loadent = __NULL__;
+	ncEntity loadent = __NULL__;
 	int num_loaded = 0i;
 
 	InitPrint("Loading Existing Save");
@@ -706,7 +553,7 @@ SV_PerformLoad(float fh, float entcount, float playerslots)
 	while ((e=nextent(e))) {
 		if (edict_num(1) != e)
 			if (e.identity) {
-				NSEntity toRemove = (NSEntity)e;
+				ncEntity toRemove = (ncEntity)e;
 				toRemove.Destroy();
 			} else {
 				remove(e);
@@ -743,19 +590,19 @@ SV_PerformLoad(float fh, float entcount, float playerslots)
 			/* check for entityDef first */
 			if (EntityDef_SpawnClassname(cname)) {
 				e.classname = cname;
-				loadent = (NSEntity)e;
+				loadent = (ncEntity)e;
 				self = eold;
 			} else if (isfunction(strcat("spawnfunc_", cname))) {
 				/* call the constructor if one is present, init the default fields */
 				e.classname = cname;
 				callfunction(strcat("spawnfunc_", cname));
 				e.classname = cname;
-				loadent = (NSEntity)e;
+				loadent = (ncEntity)e;
 				self = eold;
 			} else {
 				NSError("Could not spawn %s", cname);
 				if (e.identity) {
-					NSEntity toRemove = (NSEntity)e;
+					ncEntity toRemove = (ncEntity)e;
 					toRemove.Destroy();
 				} else {
 					remove(e);
@@ -799,9 +646,10 @@ SV_PerformSave(float fh, float entcount, float playerslots)
 	entity e;
 
 	InitPrint("Performing Save");
+#warning Save the inventory proper
 
 	for (i = 0; i < entcount; i++) {
-		NSEntity willsave;
+		ncEntity willsave;
 		e = edict_num(i);
 
 		if (e==world && i)
@@ -813,7 +661,7 @@ SV_PerformSave(float fh, float entcount, float playerslots)
 		if (e.identity == 0)
 			continue;
 
-		willsave = (NSEntity)e;
+		willsave = (ncEntity)e;
 		fputs(fh, sprintf("ENTITY \"%d\" %S\n", i, willsave.classname));
 		fputs(fh, "{\n");
 		willsave.Save(fh);
@@ -821,6 +669,7 @@ SV_PerformSave(float fh, float entcount, float playerslots)
 		num_saved++;
 	}
 	fclose(fh);
+
 	NSLog("saved %i entities", num_saved);
 }
 
@@ -832,30 +681,79 @@ to remove in case we won't initialize it.
 void
 CheckSpawn(void() spawnfunc)
 {
-	string desiredClass = self.classname;
+	ncEntity ent = (ncEntity)self;
+	string desiredClass = ent.classname;
+	static string lastClass;
+	bool skipLoad = false; /* entity data will be loaded elsewhere */
 
-	if (MapTweak_EntitySpawn(self)) {
-		self._mapspawned = true;
-		self.classname = desiredClass;
-	} else if (EntityDef_SpawnClassname(desiredClass)) {
-		self._mapspawned = true;
+	g_ents_initialized = false;
+
+	/* cancel out early */
+	if (ent == world) {
+		worldspawn();
+		g_ents_initialized = true;
+		return;
+	}
+
+	/* give it a copy of its spawndata. */
+	ent.m_strSpawnData = __fullspawndata;
+
+	/* no longer needed, immediately discard. */
+	__fullspawndata = "";
+
+	/* we have to diverge here in order to support in-code class entities,
+	   decl entities and overrides of both.
+	   
+	   this switch also controls the priority:
+	   
+	   1. maptweaks, can override anything.
+	   2. entitydef, can even override built-in class names
+	      2.0 entitydef, defined in a map (maps/foobar.def)
+		  2.1 entitydef, defined within decls/def/X.def
+	   3. in-code classes */
+	if (MapTweak_EntitySpawn(ent) == true) {
+		skipLoad = true;
+	} else if (EntityDef_SpawnClassname(desiredClass) != __NULL__) {
+		skipLoad = true;
 	} else if (spawnfunc) {
 		spawnfunc();
-		self.classname = desiredClass;
-		self._mapspawned = true;
-		g_ent_spawned++;
+		ent.classname = desiredClass;
 	} else {
-		NSError("Unable to spawn %s", desiredClass);
-		remove(self);
+		ent.identity = 0;
 	}
 
 	/* check if this entity was meant to spawn on the client-side only */
-	if (self.identity) {
-		NSEntity ent = (NSEntity)self;
-
+	if (ent.identity) {
 		if (ent.CanSpawn(false) == false) {
 			ent.Destroy();
 			g_ent_spawned--;
 		}
+	} else {
+		/* don't need to spam repetitive messages */
+		if (lastClass != desiredClass) {
+			NSError("Unable to spawn %s", desiredClass);
+		}
+
+		lastClass = desiredClass;
+		remove(ent);
+		g_ents_initialized = true;
+		return;
 	}
+
+	ent._mapspawned = true;
+
+	if (skipLoad == false) {
+		/* this entity is good, attempt to spawn it. */
+		if (ent.m_strSpawnData) {
+			for (int i = 1; i < (tokenize(ent.m_strSpawnData) - 1); i += 2) {
+				ent.SpawnKey(argv(i), argv(i+1));
+			}
+		}
+
+		ent.Spawn();
+	}
+
+	/* count and mark as map spawned */
+	g_ent_spawned++;
+	g_ents_initialized = true;
 }

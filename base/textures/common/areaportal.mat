@@ -1,0 +1,10 @@
+{
+	qer_editorImage "common/areaportal.ktx"
+	surfaceParm nodraw
+	surfaceParm nonsolid
+	surfaceParm structural
+	surfaceParm trans
+	surfaceParm nomarks
+	surfaceParm areaportal
+	surfaceParm nolightmap
+}

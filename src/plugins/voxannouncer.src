@@ -1,9 +1,0 @@
-#pragma target fte_5768
-//#pragma flag enable assumeint
-#pragma PROGS_DAT  "../../platform/plugins/voxannouncer.dat"
-#define QWSSQC
-
-#includelist
-../shared/fteextensions.qc
-voxannouncer.qc
-#endlist

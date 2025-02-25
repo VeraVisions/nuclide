@@ -1,0 +1,8 @@
+{
+	diffusemap editor/game_counter.ktx
+	
+	{
+		map $diffuse
+		alphaFunc GE128
+	}
+}

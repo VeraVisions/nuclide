@@ -1,7 +1,0 @@
-// Uncomment the ones you'd like to use
-//banner.dat
-//chatfilter.dat
-//chatsounds.dat
-//connectsounds.dat
-//ircbridge.dat
-//voxannouncer.dat

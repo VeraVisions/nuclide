@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+var string autocvar_sentences_File = "sound/sentences.txt";
+
 #ifdef CLIENT
 /* enable this if you want to use memalloc */
 #define DYNAMIC_SENTENCES
@@ -49,7 +51,7 @@ Sentences_Shutdown(void)
 void
 Sentences_Init(void)
 {
-	filestream fs_sentences;
+	filestream fs_sentences = -1;
 	string temp;
 	int c, i;
 
@@ -57,10 +59,12 @@ Sentences_Init(void)
 
 	Sentences_Shutdown();
 
-	fs_sentences = fopen("sound/sentences.txt", FILE_READ);
+	if (STRING_SET(autocvar_sentences_File)) {
+		fs_sentences = fopen(autocvar_sentences_File, FILE_READ);
+	}
 
 	if (fs_sentences < 0) {
-		NSError("Missing file sound/sentences.txt");
+		NSWarning("No Sentences, missing %S", autocvar_sentences_File);
 		InitEnd();
 		return;
 	}
@@ -86,7 +90,7 @@ Sentences_Init(void)
 		/* allocate memory and increase count */
 #ifdef DYNAMIC_SENTENCES
 		g_sentences_count++;
-		g_sentences = (sentences_t *)memrealloc(g_sentences,
+		g_sentences = (sentences_t *)memreallocOld(g_sentences,
 				sizeof(sentences_t),
 				x,
 				g_sentences_count);
@@ -159,9 +163,9 @@ Sentences_GetSamples(string msg)
 }
 
 string
-Sentences_GetString(int id)
+Sentences_GetString(int idx)
 {
-	return g_sentences[id].m_strID;
+	return g_sentences[idx].m_strID;
 }
 #endif
 
@@ -169,7 +173,7 @@ Sentences_GetString(int id)
 void
 Sentences_Init(void)
 {
-	filestream fs_sentences;
+	filestream fs_sentences = -1;
 	string temp;
 	int c;
 
@@ -184,10 +188,12 @@ Sentences_Init(void)
 #endif
 	}
 
-	fs_sentences = fopen("sound/sentences.txt", FILE_READ);
+	if (STRING_SET(autocvar_sentences_File)) {
+		fs_sentences = fopen(autocvar_sentences_File, FILE_READ);
+	}
 
 	if (fs_sentences < 0) {
-		NSError("Missing file sound/sentences.txt");
+		NSWarning("No Sentences, missing %S", autocvar_sentences_File);
 		InitEnd();
 		return;
 	}
@@ -213,7 +219,7 @@ Sentences_Init(void)
 		/* allocate memory and increase count */
 #ifdef DYNAMIC_SENTENCES
 		g_sentences_count++;
-		g_sentences = (string *)memrealloc(g_sentences,
+		g_sentences = (string *)memreallocOld(g_sentences,
 				sizeof(string),
 				x,
 				g_sentences_count);

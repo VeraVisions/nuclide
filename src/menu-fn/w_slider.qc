@@ -78,14 +78,14 @@ CSlider::Input(float type, float x, float y, float devid)
 	}
 
 	if (m_hold) {
-		if (g_mousepos[0] != g_lastmousepos[0] || g_mousepos[1] != g_lastmousepos[1]) {
+		if (g_vecMousePos[0] != g_lastmousepos[0] || g_vecMousePos[1] != g_lastmousepos[1]) {
 			int mdelta;
 			/* The - 10 is putting the slider in the middle of the cursor */
-			mdelta = (g_mousepos[0] - 10) - (g_menuofs[0]+m_x);
+			mdelta = (g_vecMousePos[0] - 10) - (g_menuofs[0]+m_x);
 			m_value = ((float)mdelta / (float)m_tlength);
 			m_value = bound(0.0f, m_value, 1.0f);
-			g_lastmousepos[0] = g_mousepos[0];
-			g_lastmousepos[1] = g_mousepos[1];
+			g_lastmousepos[0] = g_vecMousePos[0];
+			g_lastmousepos[1] = g_vecMousePos[1];
 			
 			if (m_changed) {
 				m_changed(m_value);

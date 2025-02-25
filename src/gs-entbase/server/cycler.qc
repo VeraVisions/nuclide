@@ -14,9 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Debug Model Animation Cycler */
 /*!QUAKED cycler (1 0 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
-Animation cycler entity. For development purposes mainly.
+Model animation cycler entity. For development purposes mainly.
 
 # KEYS
 - "targetname" : Name
@@ -32,15 +33,18 @@ sequences. This is really for test-maps and showroom entities.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup serverentity
+@ingroup pointentity
 */
 class
-cycler:NSSurfacePropEntity
+cycler:ncSurfacePropEntity
 {
 public:
 	void cycler(void);
 	
 	virtual void Respawn(void);
-	virtual void Pain(void);
+	virtual void Pain(entity, entity, int, vector, vector, int);
 };
 
 void
@@ -54,13 +58,21 @@ cycler::Respawn(void)
 	super::Respawn();
 
 	SetSolid(SOLID_BBOX);
-	SetTakedamage(DAMAGE_YES);
+	MakeVulnerable();
+	EnableAimAssist();
+	EnableBleeding();
+	SetBloodColor([0.5, 0.5, 0.5]);
 	SetHealth(9999);
-	SetSize(VEC_HULL_MIN, VEC_HULL_MAX);
+
+	if (serverkeyfloat("*bspversion") == BSPVER_HL) {
+		SetSize(VEC_HULL_MIN + [0,0,36], VEC_HULL_MAX + [0,0,36]);
+	} else {
+		SetSize(GetModelMins(), GetModelMaxs());
+	}
 }
 
 void
-cycler::Pain(void)
+cycler::Pain(entity inflictor, entity attacker, int damage, vector dir, vector absImpactPos, int hitBody)
 {
 	if (frame >= modelframecount(modelindex)) {
 		SetFrame(0);

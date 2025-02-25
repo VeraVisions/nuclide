@@ -20,6 +20,7 @@ enumflags
 	EMF_ALLPLAYERS
 };
 
+/*! \brief Server-Entity: Displays Titles.txt Messages */
 /*!QUAKED env_message (1 .5 0) (-8 -8 -8) (8 8 8) EMF_ONCE EMF_ALLPLAYERS
 # OVERVIEW
 Displays a basic message or titles.txt entry.
@@ -39,9 +40,12 @@ Displays a basic message or titles.txt entry.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup serverentity
+@ingroup pointentity
 */
 class
-env_message:NSPointTrigger
+env_message:ncPointTrigger
 {
 public:
 	void env_message(void);

@@ -22,7 +22,7 @@ Find a spawnpoint for spectators and set origin and angle of the 'pl' target.
 =================
 */
 void
-Spawn_ObserverCam(NSClientPlayer pl)
+Spawn_ObserverCam(ncPlayer pl)
 {
 	entity eTarget;
 	entity eCamera = find(world, ::classname, "trigger_camera");
@@ -65,6 +65,16 @@ float Spawn_PlayerRange(entity spot) {
 	bestdist = 9999999;
 
 	for (pl = world; (pl = find(pl, classname, "player"));) {
+		if (pl->health <= 0) {
+			continue;
+		}
+		dist = vlen(spot.origin - pl.origin);
+		if (dist < bestdist) {
+			bestdist = dist;
+		}
+	}
+
+	for (pl = world; (pl = findfloat(pl, takedamage, DAMAGE_AIM));) {
 		if (pl->health <= 0) {
 			continue;
 		}
@@ -141,4 +151,39 @@ entity Spawn_SelectRandom(string cname)
 
 	lastspot = spot;
 	return spot;
+}
+
+
+void
+Spawn_TeleportToSpawn(entity targetEnt)
+{
+	string desiredSpawn = teams.SpawnPoint((int)targetEnt.team);
+
+	/* singleplayer */
+	if (STRING_SET(startspot)) {
+		targetEnt.origin = Landmark_GetSpot();
+		setorigin_safe(targetEnt, targetEnt.origin);
+		return;
+	}
+
+	/* if not set, don't bother teleporting */
+	if (STRING_SET(desiredSpawn)) {
+
+		entity spawnPoint = Spawn_SelectRandom(desiredSpawn);
+
+		if (spawnPoint) {
+			targetEnt.origin = spawnPoint.origin;
+			targetEnt.angles = spawnPoint.angles;
+			setorigin_safe(targetEnt, targetEnt.origin);
+			return;
+		}
+	}
+
+	spawnPoint = Spawn_SelectRandom("info_player_start");
+
+	if (spawnPoint) {
+		targetEnt.origin = spawnPoint.origin;
+		targetEnt.angles = spawnPoint.angles;
+		setorigin_safe(targetEnt, targetEnt.origin);
+	}
 }

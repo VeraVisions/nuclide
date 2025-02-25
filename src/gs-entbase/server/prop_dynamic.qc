@@ -16,6 +16,7 @@
 
 #define PRPDYN_NONSOLID 256
 
+/*! \brief Server-Entity: Dynamic, Scriptable Prop Model */
 /*!QUAKED prop_dynamic (1 0 0) (-8 -8 -8) (8 8 8) x x x x x x x x PRPDYN_NONSOLID
 # OVERVIEW
 Client-side decorative model entity.
@@ -33,9 +34,12 @@ Client-side decorative model entity.
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
 There are two ways of making a prop_dynamic non-solid.
+
+@ingroup serverentity
+@ingroup pointentity
 */
 class
-prop_dynamic:NSSurfacePropEntity
+prop_dynamic:ncSurfacePropEntity
 {
 public:
 	void prop_dynamic(void);
@@ -81,10 +85,10 @@ void
 prop_dynamic::Respawn(void)
 {
 	super::Respawn();
-	SetModel(GetSpawnModel());
 
-	if (HasSpawnFlags(PRPDYN_NONSOLID))
+	if (HasSpawnFlags(PRPDYN_NONSOLID)) {
 		SetSolid(SOLID_NOT);
+	}
 }
 
 CLASSEXPORT(prop_dynamic_override, prop_dynamic)

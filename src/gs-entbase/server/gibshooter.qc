@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Bouncy Gib/Model Shooter */
 /*!QUAKED gibshooter (1 0 0) (-8 -8 -8) (8 8 8) GIBS_REPEATABLE
 # OVERVIEW
 Shoots model bouncy entities from its location.
@@ -37,18 +38,36 @@ Shoots model bouncy entities from its location.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup serverentity
+@ingroup pointentity
 */
 class
 gibshooter:env_shooter
 {
 public:
 	void gibshooter(void);
+
+	virtual void Spawned(void);
+	virtual void Precache(void);
 };
 
 void
 gibshooter::gibshooter(void)
 {
+}
+
+void
+gibshooter::Spawned(void)
+{
 	m_strShootModel = "models/hgibs.mdl";
 	m_flShootSounds = 3;
-	precache_model(m_strShootModel);
+
+	super::Spawned();
+}
+
+void
+gibshooter::Precache(void)
+{
+	precache.Model(m_strShootModel);
 }

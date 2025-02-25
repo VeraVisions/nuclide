@@ -14,6 +14,14 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/** @defgroup font Fonts
+    @brief Typeface format loader/handler for rendering bitmap/vector based text and icons.
+    @ingroup client
+
+    @{
+
+ */
+
 /** Flags for 2D drawing operations. */
 typedef enum
 {
@@ -32,6 +40,8 @@ typedef enumflags
 	AF_RIGHT,
 	AF_BOTTOM
 } alignflags_t;
+#define AF_NONE 0
+#define AF_DEFAULT (AF_TOP | AF_LEFT)
 
 /** Representation of a font. */
 typedef struct
@@ -42,6 +52,7 @@ typedef struct
 	vector vecColor; /**< Suggested default color of the font. */
 	float flAlpha; /**< Suggested default alpha of the font. */
 	int iFlags;	/**< Rendering flags that the font posesses. @sa drawflag_t */
+	string hexColor;
 } font_s;
 
 /** Load a desired .font definition into memory.
@@ -153,3 +164,5 @@ porting old code.
 @param fnt is the font to be queried.
 @return the internal 'drawfont' id of the specified font. */
 float Font_GetID(font_s fnt);
+
+/** @} */ // end of client

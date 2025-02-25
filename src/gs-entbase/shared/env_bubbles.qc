@@ -26,6 +26,7 @@ enumflags
 
 #define BUBFL_STARTOFF 1
 
+/*! \brief Shared-Entity: Bubble Emitter */
 /*!QUAKED env_bubbles (1 .5 0) ? BUBFL_STARTOFF
 # OVERVIEW
 Brush volume that emits rising bubbles.
@@ -54,9 +55,12 @@ and rise up in varying speeds. This means you can only place vertical bubble emi
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup sharedentity
+@ingroup brushentity
 */
 class
-env_bubbles:NSPointTrigger
+env_bubbles:ncPointTrigger
 {
 public:
 	void env_bubbles(void);
@@ -64,7 +68,7 @@ public:
 	/* overrides */
 	virtual void SpawnKey(string,string);
 	virtual void Respawn(void);
-	virtual void Spawned(void);
+	virtual void Precache(void);
 
 #ifdef SERVER
 	virtual void Save(float);
@@ -73,7 +77,9 @@ public:
 	virtual float SendEntity(entity,float);
 	virtual void Trigger(entity, triggermode_t);
 	virtual void Input(entity,string,string);
-#else
+#endif
+
+#ifdef CLIENT
 	virtual void EmitBubbles(void);
 	virtual void ReceiveEntity(float,float);
 #endif
@@ -88,11 +94,13 @@ private:
 	int m_iSpawnDensity;
 	float m_flSpawnFrequency;
 	float m_flSpawnCurrent;
+	string m_bubbleModel;
 };
 
 void
 env_bubbles::env_bubbles(void)
 {
+	m_bubbleModel = "sprites/bubble.spr";
 }
 
 #ifdef SERVER
@@ -230,7 +238,9 @@ env_bubbles::SendEntity(entity ePVSent, float flChanged)
 
 	return (1);
 }
-#else
+#endif
+
+#ifdef CLIENT
 void
 env_bubbles::EmitBubbles(void)
 {
@@ -245,12 +255,12 @@ env_bubbles::EmitBubbles(void)
 
 		env_sprite eBubble = spawn(env_sprite);
 		setorigin(eBubble, vecPos);
-		setmodel(eBubble, "sprites/bubble.spr");
+		setmodel(eBubble, m_bubbleModel);
 		eBubble.drawmask = MASK_ENGINE;
-		eBubble.m_vecRenderColor = [1,1,1];
-		eBubble.m_iRenderMode = RM_ADDITIVE;
-		eBubble.m_flRenderAmt = 1.0f;
-		eBubble.movetype = MOVETYPE_FLY;
+		eBubble.SetRenderColor([255,255,255]);
+		eBubble.SetRenderMode(RM_ADDITIVE);
+		eBubble.SetRenderAmt(255);
+		eBubble.SetMovetype(MOVETYPE_FLY);
 		eBubble.velocity[2] = 100 + random(0, 50);
 
 		/* apply current */
@@ -290,14 +300,18 @@ env_bubbles::ReceiveEntity(float is_new, float flChanged)
 		angles[2] = readcoord();
 	}
 	
-	if (flChanged & BUBBLES_DENSITY)
+	if (flChanged & BUBBLES_DENSITY) {
 		m_iDensity = readbyte();
-	if (flChanged & BUBBLES_FREQUENCY)
+	}
+	if (flChanged & BUBBLES_FREQUENCY) {
 		m_flFrequency = readfloat();
-	if (flChanged & BUBBLES_CURRENT)
+	}
+	if (flChanged & BUBBLES_CURRENT) {
 		m_flCurrent = readfloat();
-	if (flChanged & BUBBLES_ENABLED)
+	}
+	if (flChanged & BUBBLES_ENABLED) {
 		m_bEnabled = readbyte();
+	}
 
 	think = EmitBubbles;
 	nextthink = time + m_flFrequency;
@@ -325,24 +339,22 @@ env_bubbles::SpawnKey(string strKey, string strValue)
 void
 env_bubbles::Respawn(void)
 {
-	SetModel(GetSpawnModel());
+	super::Respawn();
+
 	SetSolid(SOLID_NOT);
-	SetOrigin(GetSpawnOrigin());
-	SetAngles(GetSpawnAngles());
 	m_iDensity = m_iSpawnDensity;
 	m_flFrequency = m_flSpawnFrequency;
 	m_flCurrent = m_flSpawnCurrent;
 
-	if (spawnflags & BUBFL_STARTOFF)
+	if (spawnflags & BUBFL_STARTOFF) {
 		m_bEnabled = false;
-	else
+	} else {
 		m_bEnabled = true;
+	}
 }
 
 void
-env_bubbles::Spawned(void)
+env_bubbles::Precache(void)
 {
-	super::Spawned();
-
-	precache_model("sprites/bubble.spr");
+	precache.Model(m_bubbleModel);
 }

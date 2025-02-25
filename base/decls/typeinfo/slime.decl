@@ -1,0 +1,6 @@
+// dictionary containing various settings for slime volumes
+typeInfo slime
+{
+	"damage"	"10"
+	"dmgtime"	"1.0"
+}

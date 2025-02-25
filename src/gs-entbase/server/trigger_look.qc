@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Eye/Vision Based Trigger */
 /*!QUAKED trigger_look (.5 .5 .5) ?
 # OVERVIEW
 Triggers itself when a player is inside its volume and is looking at a
@@ -34,9 +35,12 @@ at lights and stuff? No...? Well... ever played Splinter Cell?... Nevermind.
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
+
+@ingroup serverentity
+@ingroup brushentity
 */
 class
-trigger_look:NSBrushTrigger
+trigger_look:ncBrushTrigger
 {
 public:
 	void trigger_look(void);

@@ -1,9 +1,6 @@
 #includelist
 ../shared/fteextensions.qc
-../shared/math.h
-../shared/math.qc
-../shared/global.h
-../shared/platform.h
+../common/defs.h
 ../platform/defs.h
 
 defs.h
@@ -69,7 +66,6 @@ m_updates.qc
 m_intro.qc
 m_main.qc
 menu.qc
-background.qc
 
 ../platform/includes.src
 

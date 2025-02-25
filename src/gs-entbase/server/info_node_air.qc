@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Nodegraph Air Node */
 /*!QUAKED info_node_air (0 0 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 It's a node, helping monsters navigate in the air as well as underwater.
@@ -23,9 +24,12 @@ It's a node, helping monsters navigate in the air as well as underwater.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup serverentity
+@ingroup pointentity
 */
 class
-info_node_air:NSPointTrigger
+info_node_air:ncPointTrigger
 {
 public:
 	void info_node_air(void);
@@ -51,5 +55,5 @@ info_node_air::Respawn(void)
 
 	/* air nodes just stay where they are
 	   see https://twhl.info/wiki/page/Tutorial%3A_All_about_info_nodes */
-	SetOrigin(GetSpawnOrigin());
+	SetOrigin(GetSpawnVector("origin"));
 }

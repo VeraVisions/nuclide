@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: func_vehicle Controller */
 /*!QUAKED func_vehiclecontrols (0 .5 .8) ?
 # OVERVIEW
 Brush that marks the usable region of a func_vehicle, in order
@@ -29,6 +30,9 @@ func_vehicle instead of func_tracktrain.
 
 # TRIVIA
 This entity was introduced in Counter-Strike (2000).
+
+@ingroup serverentity
+@ingroup brushentity
 */
 class
 func_vehiclecontrols:func_traincontrols

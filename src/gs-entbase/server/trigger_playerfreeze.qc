@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Player Movement Inhibitor */
 /*!QUAKED trigger_playerfreeze (.5 .5 .5) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Trigger that freezes all clients, until it is triggered again.
@@ -29,9 +30,12 @@ and so on.
 
 # TRIVIA
 This entity was introduced in Opposing Force (1999).
+
+@ingroup serverentity
+@ingroup pointentity
 */
 class
-trigger_playerfreeze:NSBrushTrigger
+trigger_playerfreeze:ncBrushTrigger
 {
 public:
 	void trigger_playerfreeze(void);
@@ -66,7 +70,7 @@ trigger_playerfreeze::Trigger(entity act, triggermode_t state)
 
 		/* force unfreeze */
 		for (entity f = world; (f = find(f, ::classname, "player"));) {
-			f.flags &= ~FL_FROZEN;
+			f.vv_flags &= ~VFL_FROZEN;
 		}
 	} else {
 		dprint("^2trigger_playerfreeze::^3Trigger^7: " \
@@ -82,6 +86,6 @@ trigger_playerfreeze::customphysics(void)
 
 	/* some games might unset this flag every single frame */
 	for (entity f = world; (f = find(f, ::classname, "player"));) {
-		f.flags |= FL_FROZEN;
+		f.vv_flags |= VFL_FROZEN;
 	}
 }

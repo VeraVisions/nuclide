@@ -22,6 +22,7 @@ float g_dCubeSize;
 void CMap_Check(void);
 void CMap_Shoot(void);
 
+/*! \brief Client-Entity: Cubemap Reflection Marker */
 /*!QUAKED env_cubemap (1 .5 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Specifies a location for which a cubemap will be generated when the 
@@ -32,9 +33,12 @@ buildcubemaps console command is executed.
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
+
+@ingroup cliententity
+@ingroup pointentity
 */
 class
-env_cubemap:NSEntity
+env_cubemap:ncEntity
 {
 public:
 	void env_cubemap(void);
@@ -92,6 +96,7 @@ void
 CMap_Shoot(void)
 {
 	string strReflectcube;
+
 	if (self.owner) {
 		env_cubemap tmp = (env_cubemap) self.owner;
 		NSLog("Generating cubemap '%v' (%dx%d)", g_vecCubePos, g_dCubeSize, g_dCubeSize);
@@ -107,10 +112,12 @@ CMap_Shoot(void)
 					g_vecCubePos[0],
 					g_vecCubePos[1],
 					g_vecCubePos[2]);
+
 		localcmd(sprintf(
 			"screenshot_cubemap %S %i\n",
 			strReflectcube,
 			tmp.m_iSize));
+
 		self.think = CMap_Check;
 		self.nextthink = time + 0.25f;
 	} else {
@@ -152,15 +159,15 @@ CMap_Build(void)
 	        return;
 	}
 
-	localcmd("r_speeds 0\n");
-	localcmd("show_fps 0\n");
-	localcmd("r_showfields 0\n");
-	localcmd("r_showshaders 0\n");
-	localcmd("r_showbboxes 0\n");
-	localcmd("r_wireframe 0\n");
-	localcmd("r_hdr_irisadaptation 0\n");
-	localcmd("r_postprocshader \"\"0\n");
-	localcmd("r_skipEnvmap 1\n");
+	cvar_set("r_speeds", "0");
+	cvar_set("show_fps", "0");
+	cvar_set("r_showfields", "0");
+	cvar_set("r_showshaders", "0");
+	cvar_set("r_showbboxes", "0");
+	cvar_set("r_wireframe", "0");
+	cvar_set("r_hdr_irisadaptation", "0");
+	cvar_set("r_postprocshader", "\"\"0");
+	cvar_set("r_skipEnvmap", "1");
 
 	NSLog("Building cubemaps...\n");
 	g_eCubeCycle = spawn();

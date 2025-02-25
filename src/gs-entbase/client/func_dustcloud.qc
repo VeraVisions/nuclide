@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Client-Entity: Dust Cloud Volume */
 /*!QUAKED func_dustcloud (0 .5 .8) ?
 # OVERVIEW
 Dust cloud emitting brush volume.
@@ -26,11 +27,15 @@ Dust cloud emitting brush volume.
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
+
+@ingroup cliententity
+@ingroup brushentity
 */
-class func_dustcloud:NSEntity
+class func_dustcloud:ncEntity
 {
 public:
 	void func_dustcloud(void);
+	virtual void Precache(void);
 	virtual void Spawned(void);
 	virtual float predraw(void);
 	virtual void SpawnKey(string,string);
@@ -50,7 +55,8 @@ private:
 };
 
 #if 1
-class func_dustcloud_cloud
+static class
+func_dustcloud_cloud
 {
 public:
 	void func_dustcloud_cloud(void);
@@ -127,7 +133,7 @@ func_dustcloud::predraw(void)
 	if (checkpvs(vecPlayer, this) == FALSE)
 		return (PREDRAW_NEXT);
 
-	if (m_flNexTime > cltime)
+	if (m_flNexTime > time)
 		return (PREDRAW_NEXT);
 
 	for (int i = 0; i < m_iCount; i++) {
@@ -145,10 +151,16 @@ func_dustcloud::predraw(void)
 		cloud.m_flLifeTime = random(m_flLifetimeMin, m_flLifetimeMax);
 	}
 
-	m_flNexTime = cltime + 1.0f;
+	m_flNexTime = time + 1.0f;
 
 	addentity(self);
 	return (PREDRAW_NEXT);
+}
+
+void
+func_dustcloud::Precache(void)
+{
+	precache.Model(model);
 }
 
 void
@@ -156,7 +168,6 @@ func_dustcloud::Spawned(void)
 {
 	super::Spawned();
 
-	precache_model(model);
 	setmodel(this, model);
 	setorigin(this, origin);
 	movetype = MOVETYPE_NONE;
@@ -199,13 +210,14 @@ func_dustcloud::SpawnKey(string strField, string strKey)
 void
 func_dustcloud::func_dustcloud(void)
 {
-/*
-	m_iCount = vlen(size) / 100;
-	m_flSizeMin = 200;
-	m_flSizeMax = 250;
-	m_flAlpha = 1.0f;
+	m_iCount = 40i;
+	m_flSizeMin = 100.0f;
+	m_flSizeMax = 200.0f;
+	m_flAlpha = 30 / 255;
 	m_vecColor = [1,1,1];
-*/
+	m_flLifetimeMin = 3.0f;
+	m_flLifetimeMax = 5.0f;
+	
 	solid = SOLID_NOT;
 	isCSQC = true;
 }

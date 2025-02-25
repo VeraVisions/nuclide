@@ -1,0 +1,16 @@
+{
+if $programs
+	program defaultwall
+	diffusemap measure/healthcharge.tga
+else
+	{
+		map $lightmap
+		rgbGen identity
+	}
+	{
+		map measure/healthcharge.tga
+		rgbGen identity
+		blendFunc GL_DST_COLOR GL_ZERO
+	}
+endif
+}

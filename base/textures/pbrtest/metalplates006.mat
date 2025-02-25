@@ -1,0 +1,11 @@
+// Vera Visions Material
+{
+	surfaceprop metal
+	diffusemap pbrtest/metalplates006.ktx
+	normalmap pbrtest/metalplates006_local.ktx
+	specularmap pbrtest/metalplates006_mra.ktx
+	
+	{
+		program defaultwall
+	}
+}

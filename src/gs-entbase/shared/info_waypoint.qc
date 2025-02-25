@@ -24,6 +24,7 @@ enumflags
 	INFWAY_CHANGED_STATE
 };
 
+/*! \brief Shared-Entity: Objective/Waypoint Hint */
 /*!QUAKED info_waypoint (0 1 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 When active, will display an icon and text at its position that can be seen
@@ -41,9 +42,12 @@ by players.
 
 # TRIVIA
 This entity was introduced in Obsidian Conflict (2006).
+
+@ingroup sharedentity
+@ingroup pointentity
 */
 class
-info_waypoint:NSPointTrigger
+info_waypoint:ncPointTrigger
 {
 public:
 	void info_waypoint(void);

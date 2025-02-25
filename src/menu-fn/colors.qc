@@ -14,8 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-#include "../shared/colors.h"
-
 vector col_help;
 vector col_prompt_bg;
 vector col_prompt_text;

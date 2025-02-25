@@ -1,72 +1,48 @@
 # Filesystem
 
-## Launching
+## Virtual Filesystem
 
-The `nuclide` shell script is the launcher.
+The engine binary attempts to initialize a virtual filesystem within a **game directory**. That is a directory in which your entire game lives in. In *id Software* their game **Quake** that directory was named **id1/**, in *Valve* their game **Half-Life** it was **valve/**.
 
-It sets **$PATH** to include the directory `bin/` which contains the engine that
-you've built with `build_engine.sh`.
+You will be tasked with naming your own game directory, if you were to build your own game.
 
-When nuclide is run and executes the engine, it'll first read `default.fmf` which
-is a manifest file the engine reads. It is updated occasionally.
-
-It defines which directories to mount in the virtual filesystem of the engine
-and has a document entirely dedicated to itself. For that please read:
-
-```
-	src/engine/specs/fte_manifests.txt
-```
-
-## Loading Games
-
-On its own, Nuclide launches the game directory `base/`, unless you tell it otherwise:
-
-```
-./nuclide -game mygame
-```
-
-Will load `mygame/` instead of `base/`.
-
-You can also load multiple additional directories in a specific order by specifying
-multiple `-game` command-line arguments.
-
-It will still load the other `BASEGAME` entries listed in the default.fmf.
-You can even load your own manifest file over default.fmf, by passing
-
-```
-	./nuclide -manifest mymanifest.fmf
-```
-
-## Virtual-Filesystem
+The example **Nuclide** game, called **Test Game** is stored in **base/**, and is thus often referred to as 'base'.
 
 When a game is mounted, we're either looking for **loose files** (loaded last), or
 **archives** the engine supports.
 
-The Quake .pak archive format, or zip archives with the pk3 and pk4 extensions are supported.
-Upon initializing the filesystem they are enumerated alphabetically and then loaded in order.
+@note You can switch games using the `game` console command.
 
-Directories with the .pk3dir extensions are treated as if they were .pk3 archives.
-The editor also supports .pk3dir directories.
+## Archives {#archives}
 
-Once the game has loaded a game directory, it'll load the persistent menu.dat into our QuakeC
+![](compress.png) The Quake [pak archive](https://quakewiki.org/wiki/.pak) format, or [zip archives](https://en.wikipedia.org/wiki/ZIP_%28file_format%29) with the **pk3** and **pk4** extensions are supported.
+Upon initializing the filesystem they are enumerated alphabetically and then loaded in order, thus the filename affects the load order of archives.
+
+Directories with the .pk3dir extensions are emulated, acting as if they were .pk3 archives. **We recommend you use them to organize your development files.**
+
+### Protected archives
+
+Protected archives always start have the prefix **pak**[...] and **cannot** be downloaded by connecting
+to a server game that has them.
+**We suggest you use this for any copyrighted data.**
+
+
+## Game-logic behaviour
+
+When you spawn a map, you create a server (running `progs.dat`) which will distribute its own client-side game-logic (`csprogs.dat`).
+
+But before this, when the client (not the server) has loaded a game directory, it'll load the persistent `menu.dat` into its own QuakeC
 virtual machine.
 
-It' always running, you can make your own by modifying `src/menu-fn/`, `src/menu-vgui/`
-or writing your own module.
+It's always running, unlike `progs.dat` and `csprogs.dat` code which gets reloaded between map changes.
+You can use this to your advantage by restarting levels in order to reload game logic, or to reload entity definitions.
 
-## Archives
+In order to restart the menu, you manually issue `menu_restart` via the **engine console** (SHIFT+ESC).
 
-Protected archives always start have the prefix **pak**[...] and cannot be downloaded by connecting
-to a server that has them.
-**Use this for any copyrighted data.**
+## Restarting the file-system during the game
 
-When you spawn a map, you create a server which will distribute its own client-side game-logic.
+You can initiate a refresh of the virtual filesystem by issuing `fs_restart` in the **engine console**.
 
-It's advised that you do not pack **csprogs.dat** and **progs.dat** into a protected archive.
+## Reloading assets
 
-
-## Nuclide specific formats
-
-Nuclide contains many custom definition files that are not engine specific.
-`.efx`, `.font`, `.sndshd` and `.way` to name a few.
-The game-logic mostly handles them and can thus be, in theory, extended by you.
+You can reload image and/or model assets by issuing `vid_reload` in the **engine console**. While the map geometry may reload, for entity changes you will have to issue a full `map_restart` in the **engine console** to see them reload.

@@ -29,6 +29,7 @@ enumflags
 	PRTEXFL_CHANGED_PATTERN
 };
 
+/*! \brief Shared-Entity: Light Texture Projector */
 /*!QUAKED env_projectedtexture (1 .5 0) (-8 -8 -8) (8 8 8) PRTEXSF_STARTON
 # OVERVIEW
 Textured light projected. This is the type of lighting that's used for
@@ -60,8 +61,11 @@ flashlights, lamp spotlights and so on.
 
 # TRIVIA
 This entity was introduced in Half-Life 2: Episode One (2006).
+
+@ingroup sharedentity
+@ingroup pointentity
 */
-class env_projectedtexture:NSPointTrigger
+class env_projectedtexture:ncPointTrigger
 {
 public:
 	void env_projectedtexture(void);
@@ -69,7 +73,9 @@ public:
 #ifdef CLIENT
 	virtual void ReceiveEntity(float,float);
 	virtual float predraw(void);
-#else
+#endif
+
+#ifdef SERVER
 	virtual void Trigger(entity, triggermode_t);
 	virtual void Respawn(void);
 	virtual float SendEntity(entity,float);
@@ -153,7 +159,9 @@ env_projectedtexture::ReceiveEntity(float flNew, float flFlags)
 	classname = "env_projectedtexture";
 	drawmask = MASK_ENGINE;
 }
-#else
+#endif
+
+#ifdef SERVER
 void
 env_projectedtexture::EvaluateEntity(void)
 {
@@ -161,10 +169,7 @@ env_projectedtexture::EvaluateEntity(void)
 		SetSendFlags(PRTEXFL_CHANGED_ORIGIN);
 	}
 	if (ATTR_CHANGED(angles)) {
-		angles[0] = Math_FixDelta(angles[0]);
-		angles[1] = Math_FixDelta(angles[1]);
-		angles[2] = Math_FixDelta(angles[2]);
-
+		angles = fixAngle(angles);
 		SetSendFlags(PRTEXFL_CHANGED_ANGLES);
 	}
 	SAVE_STATE(origin)
@@ -314,10 +319,10 @@ env_projectedtexture::SpawnKey(string strKey, string strValue)
 void
 env_projectedtexture::Respawn(void)
 {
+	super::Respawn();
+
 	SetSolid(SOLID_NOT);
 	SetSize([-16,-16,-16], [16,16,16]);
-	SetOrigin(GetSpawnOrigin());
-	SetAngles(GetSpawnAngles());
 
 	m_iState = HasSpawnFlags(1) ? 1 : 0;
 }
@@ -332,7 +337,7 @@ env_projectedtexture::env_projectedtexture(void)
 	m_flIntensity = 512;
 	m_flFarZ = 512;
 	m_flNearZ = 0;
-	m_strTextureName = "textures/flashlight";
+	m_strTextureName = "lights/flashlight";
 	m_flFOV = 90;
 
 	if (m_flStyle > 0 && m_flStyle < 12)

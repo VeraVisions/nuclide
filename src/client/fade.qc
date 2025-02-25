@@ -39,11 +39,22 @@ const string mat_fade_modulate =
 		"}\n" \
 	"}\n";
 
+const string mat_fade_additive =
+	"{\n" \
+		"{\n" \
+			"map $whiteimage\n" \
+			"rgbGen vertex\n" \
+			"blendFunc add\n" \
+			"alphaGen vertex\n" \
+		"}\n" \
+	"}\n";
+
 /* needs to be called on every vid_reload */
 void
 Fade_Reload(void)
 {
 	shaderforname("fade_modulate", mat_fade_modulate);
+	shaderforname("fade_additive", mat_fade_additive);
 }
 
 /* run every frame to update the actively running fade effects */
@@ -104,10 +115,10 @@ Fade_StartDark(void)
 void
 Fade_Parse(void)
 {
-	pSeat->m_vecFadeColor[0] = readfloat();
-	pSeat->m_vecFadeColor[1] = readfloat();
-	pSeat->m_vecFadeColor[2] = readfloat();
-	pSeat->m_flFadeMaxAlpha = readfloat();
+	pSeat->m_vecFadeColor[0] = readbyte();
+	pSeat->m_vecFadeColor[1] = readbyte();
+	pSeat->m_vecFadeColor[2] = readbyte();
+	pSeat->m_flFadeMaxAlpha = readbyte() / 255;
 	pSeat->m_flFadeDuration = readfloat();
 	pSeat->m_flFadeHold = readfloat();
 	pSeat->m_flFadeStyle = readbyte();

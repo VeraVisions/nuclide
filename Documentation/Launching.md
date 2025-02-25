@@ -1,68 +1,27 @@
-# Launching
+# Launching {#launching}
 
-## For development...
+If you [built a custom branded version of the engine](@ref build-engine), you can run that as is.
 
-For development, use the `nuclide` launch script inside the root directory.
-
-```
-$ ./nuclide
-```
-
-Running it on its own will mount only the directory `platform/`. As that's the default defined inside the file `./default.fmf`.
-
-You can mount an additional mod over it like so:
+Using a generic [FTE](https://www.fteqw.org/) binary however, you need to specify the game directory.
+You run `./fteqw` with a parameter specifying the game directory:
 
 ```
-$ ./nuclide -game some_other_mod
+$ ./fteqw +game base
 ```
 
-If you wanted to mount multiple game dirs, you could in theory do it like so:
+You can dispatch [console](@ref console) commands to be executed once the client is running by appending them to the command-line as launch parameters, prefixed with the `+` character, as seen above.
 
 ```
-$ ./nuclide -game first_mod -game second_mod -game third_mod
+./TestGame_x64 +set g_gametype some_mode +devmap some_level
 ```
-
-And it'll load those directories in order.
-
-However, if you'd like to be very specific in how a game is run/branded/launched
-you should really use **FTE Manifest** files.
-
-Simply plop one into your game directory with the name `manifest.fmf`, then launch
-nuclide like so:
-
-```
-$ ./nuclide first_mod
-```
-
-and it will load `first_mod/manifest.fmf`. You can supply arguments to it by putting them into the second parameter with quotes like so:
-
-```
-$ ./nuclide first_mod "-window +set sv_cheats 1"
-```
-
-However, we advise you only do this for development. If you want proper multiplayer compatibility (slightly different filesystem mount setups can confuse client-server negotation) please use the built-in **Custom game** menu to ensure maximum compatibility to other clients.
-
-If you are running a dedicated server and have issues with multiple game directories, check the value of the cvar `sv_gamedir` on the server. It is meant to be a semicolon separated list of game directories, if multiple ones are supposed to be mounted.
-
-## For release...
-
-You'll want to compile a custom build of the engine with your branding.
-Inside `src/engine/engine/common/` you can find a config file named `config_wastes.h`,
-which is a good example of how you can customize your engine binaries and filesystem mount-points.
-
-That way you **avoid** shipping a default.fmf file.
-
-**How to compile a custom config build**: You pass `FTE_CONFIG=wastes` to the make environment when building an engine binary - if you wanted to build with the `config_wastes.h` file. [For more information check out the building section](Building.md)
 
 ## Mod/Game Setup
 
-For mods to show up in the "Custom Game" menu, we have to either find a manifest
-file, or a liblist.gam, or a gameinfo.txt inside the respective mod directory.
+For mods to show up in the "Custom Game" menu, Nuclide has to either find a `liblist.gam` file, a [FTE-specific](https://www.fteqw.org/) manifest
+file, or , or a [Source Engine](https://web.archive.org/web/20110724220714/http://source.valvesoftware.com/) styled `GameInfo.txt` inside the respective mod directory.
 
-It'll scan .pk3 and .pk4 archives, as well as loose files in the mod directory,
-however it will not search inside any sub-directories.
-It is trying to look inside the dlcache/ folder, but the engine is currently
-restricting that.
+It'll scan [resource archives](@ref archives), as well as loose files in the mod directory,
+however it will *not search inside any sub-directories*.
 
 A liblist.gam file can look something like this:
 
@@ -73,29 +32,7 @@ A liblist.gam file can look something like this:
   trainingmap "traininglevel"
 ```
 
-But more definitions are available.
-Check src/menu-fn/m_customgame.qc's customgame_liblist_parse() function to stay
-up to date regarding all the supported liblist variables that can be set.
+You can find the types of key/value pairs a game can use to identify itself in GameLibrary_LibListParse()
+under `src/platform/gamelibrary.qc`.
 
-GameInfo.txt files are supported too. They originate from the Source Engine
-filesystem, however there's no concept of Tools and Game AppIDs as Nuclide does
-not link against Steamworks.
-Support for such definitions is complementary and I'd advise not to expect it
-to be feature complete. It has a concept of inheriting multiple paths as defined
-by the specification.
-
-If you need more control, you can use manifest files. Similar to the default.fmf
-that's in the root Nuclide source tree. You can set liblist entries like this
-inside of them:
-
-```
-  -set gameinfo_game "My Cool Mod"
-  -set gameinfo_version "1.0"
-  -set gameinfo_startmap "e1m1"
-  -set gameinfo_trainingmap "traininglevel"
-```
-
-Please name the manifest the same as the mod/game dir. For example if your game
-its directory is named "foobar" name your manifest "foobar.fmf".
-
-That's all there is to know about mod-detection in Nuclide its menu progs.
+Those settings alone can alter quite a bit of the menu options and branding/presentation of your game.

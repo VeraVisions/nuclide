@@ -1,5 +1,8 @@
-# Models: VVM Tutorial
-## Introduction {#introduction}
+# Model Importing {#models}
+
+## Tutorial: SMD to VVM {#vvmtut}
+
+### Introduction {#vvmtut_intro}
 
 As you already know, the VVM exporter (vvmtool) takes inspiration from
 Valve's **studiomdl** in terms of usage. There are *slight* syntax
@@ -9,7 +12,7 @@ differ **drastically**.
 For example, **model events** can be stacked and applied to many
 animation sequences at once. *There is no way to do so with studiomdl.*
 
-## Input files {#input_files}
+### Input files {#vvmtut_input}
 
 Any .vvm consists of multiple input files. These can come in the
 following formats:
@@ -23,7 +26,7 @@ following formats:
 Make sure that when you use animated files, that the bone naming and
 bone order is consistent among them.
 
-## Control File {#control_file}
+### Control File {#vvmtut_qc}
 
 This file is the head of the format. It specifies how the input files
 are loaded in, with additional useful commands on how to manipulate the
@@ -117,7 +120,7 @@ upon importing.
 `scene` Tells it to load one input file, which is a reference. If it was
 an animation it'd specify a framerate via the 'fps X' parameter.
 
-## Compiling {#compiling}
+### Compiling {#vvmtut_compiling}
 
 You grab your copy of **vvmtool** and you either drag
 and drop your control file onto it, or run it via command-line:
@@ -126,11 +129,11 @@ and drop your control file onto it, or run it via command-line:
 
 It should be as simple as that!
 
-## Notes {#notes}
+### Notes {#vvmtut_notes}
 
 Some helpful tips for your content creation journey.
 
-### vid_reload {#vid_reload}
+#### vid_reload {#vvmtut_reload}
 
 I recommend getting a single reference, plus the animations into your
 game first, then adding events and other necessary commands on top.
@@ -139,7 +142,7 @@ You can use the console command `vid_reload` to force the engine to
 flush the model/texture cache and to reload an updated model from disk.
 Really useful when iterating over model exports.
 
-### Blender users {#blender_users}
+#### Blender users {#vvmtut_blender}
 
 If you're using the Blender Source Model tools, as of 2021, it still
 doesn't down-mix certain animation features into the .smd format.

@@ -14,10 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-#ifdef GS_DEVELOPER
-var int autocvar_dev_rotspeed = 0;
-#endif
-
 enumflags
 {
 	FR_STARTON,
@@ -33,6 +29,7 @@ enumflags
 	FR_TOGGLEDIR
 };
 
+/*! \brief Server-Entity: Rotating Brush/Fan */
 /*!QUAKED func_rotating (0 .5 .8) ? FR_STARTON FR_REVERSE FR_ZAXIS FR_XAXIS FR_ACCDCC FR_FANPAIN FR_NOTSOLID FR_SMALLRADIUS FR_MRADIUS FR_LRADIUS FR_TOGGLEDIR
 # OVERVIEW
 Rotating brush object. Useful for fans, etc.
@@ -62,9 +59,12 @@ Please include an origin brush so that a pivot point will be defined.
 
 # TRIVIA
 This entity was introduced in Quake II (1997).
+
+@ingroup serverentity
+@ingroup brushentity
 */
 class
-func_rotating:NSRenderableEntity
+func_rotating:ncRenderableEntity
 {
 public:
 	void func_rotating(void);
@@ -146,18 +146,12 @@ func_rotating::SpawnKey(string strKey, string strValue)
 void
 func_rotating::Respawn(void)
 {
-#ifdef GS_DEVELOPER
-	if (autocvar_dev_rotspeed != 0) {
-		m_flSpeed = autocvar_dev_rotspeed;
-	}
-#endif
+	super::Respawn();
 
 	m_flDir = 0; /* Reset */
 
-	SetModel(GetSpawnModel());
 	SetMovetype(MOVETYPE_PUSH);
 	SetSolid(HasSpawnFlags(FR_NOTSOLID) ? SOLID_NOT : SOLID_BSP);
-	SetOrigin(GetSpawnOrigin());
 
 	RestoreAngles();
 	SetMovementDirection();
@@ -210,8 +204,14 @@ func_rotating::Blocked(entity eBlocker)
 	if (eBlocker.takedamage != DAMAGE_NO) {
 		/* this is to work around a Q1 BSP bug. don't attempt to damage our
 		 * target unless we're absolutely sure he's within the bounds of the entity */
-		if (WithinBounds(eBlocker))
-			Damage_Apply(eBlocker, this, m_flDamage, 0, DMG_CRUSH);
+		if (WithinBounds(eBlocker)) {
+			vector center = WorldSpaceCenter();
+			vector dmgDir = dirFromTarget(center, eBlocker.origin);
+			ncDict damageDecl = spawn(ncDict);
+			damageDecl.AddKey("damage", ftos(m_flDamage));
+			combat.Damage(eBlocker, this, eBlocker, damageDecl.GetDeclBody(), center, dmgDir, eBlocker.origin);
+			remove(damageDecl);
+		}
 	}
 }
 

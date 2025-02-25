@@ -37,21 +37,6 @@ ModServer_IDForPackageName(string packageName)
 	return (-1i);
 }
 
-void*
-memrealloc(__variant *oldptr, int elementsize, int old_num, int new_num)
-{
-	void *n = memalloc(elementsize * new_num);
-
-	if (!n) {
-		print("^1memrealloc^7: Out of memory\n");
-		return (0);
-	}
-
-	memcpy(n, oldptr, elementsize * old_num);
-	memfree(oldptr);
-	return n;
-}
-
 void
 ModServer_Refresh(void)
 {
@@ -101,13 +86,13 @@ ModServer_ParseList(string data)
 void
 ModServer_ParseItem(string data)
 {
-	int id;
+	int gameID;
 	int c = tokenize(data);
 
 	/* new id */
-	id = gameinfo_count;
+	gameID = gameinfo_count;
 	gameinfo_count++;
-	games = (gameinfo_t *)memrealloc(games, sizeof(gameinfo_t), id, gameinfo_count);
+	games = (gameEntry_t *)memreallocOld(games, sizeof(gameEntry_t), gameID, gameinfo_count);
 
 	if (!games) {
 		print("No more memory. Bye bye.\n");
@@ -115,75 +100,75 @@ ModServer_ParseItem(string data)
 	}
 
 	/* set up defaults */
-	games[id].url_info = "";
-	games[id].url_dl = "";
-	games[id].version = "1.0";
-	games[id].size = 0;
-	games[id].type = "";
-	games[id].nomodels = 0;
-	games[id].mpentity = "info_player_deathmatch";
-	games[id].gamedll = "progs.dat";
-	games[id].startmap = "c0a0";
-	games[id].trainingmap = "t0a0";
-	games[id].cldll = 1;
-	games[id].minversion = "1110";
-	games[id].svonly = 0;
-	games[id].installed = 0;
-	games[id].pkgid = -1;
+	games[gameID].url_info = "";
+	games[gameID].url_dl = "";
+	games[gameID].version = "1.0";
+	games[gameID].size = 0;
+	games[gameID].type = "";
+	games[gameID].nomodels = 0;
+	games[gameID].mpentity = "info_player_deathmatch";
+	games[gameID].gamedll = "progs.dat";
+	games[gameID].startmap = "c0a0";
+	games[gameID].trainingmap = "t0a0";
+	games[gameID].cldll = 1;
+	games[gameID].minversion = "1110";
+	games[gameID].svonly = 0;
+	games[gameID].installed = 0;
+	games[gameID].pkgid = -1;
 
 	for (int i = 0; i < c; i++) {
 		switch(argv(i)) {
 		case "gameinfo_game":
-			games[id].game = argv(i+1);
+			games[gameID].game = argv(i+1);
 			break;
 		case "gameinfo_gamedir":
-			games[id].gamedir = argv(i+1);
+			games[gameID].gamedir = argv(i+1);
 			break;
 		case "gameinfo_fallback_dir":
-			games[id].fallback_dir = argv(i+1);
+			games[gameID].fallback_dir = argv(i+1);
 			break;
 		case "gameinfo_url_info":
-			games[id].url_info = argv(i+1);
+			games[gameID].url_info = argv(i+1);
 			break;
 		case "gameinfo_url_dl":
-			games[id].url_dl = argv(i+1);
+			games[gameID].url_dl = argv(i+1);
 			break;
 		case "gameinfo_version":
-			games[id].version = argv(i+1);
+			games[gameID].version = argv(i+1);
 			break;
 		case "gameinfo_size":
-			games[id].size = stof(argv(i+1));
+			games[gameID].size = stof(argv(i+1));
 			break;
 		case "gameinfo_svonly":
-			games[id].svonly = stof(argv(i+1));
+			games[gameID].svonly = stof(argv(i+1));
 			break;
 		case "gameinfo_cldll":
-			games[id].cldll = stof(argv(i+1));
+			games[gameID].cldll = stof(argv(i+1));
 			break;
 		case "gameinfo_type":
-			games[id].type = argv(i+1);
+			games[gameID].type = argv(i+1);
 			break;
 		case "gameinfo_minversion":
-			games[id].minversion = argv(i+1);
+			games[gameID].minversion = argv(i+1);
 			break;
 		case "gameinfo_nomodels":
-			games[id].nomodels = stof(argv(i+1));
+			games[gameID].nomodels = stof(argv(i+1));
 			break;
 		case "gameinfo_mpentity":
-			games[id].mpentity = argv(i+1);
+			games[gameID].mpentity = argv(i+1);
 			break;
 		case "gameinfo_gamedll":
-			games[id].gamedll = argv(i+1);
+			games[gameID].gamedll = argv(i+1);
 			break;
 		case "gameinfo_startmap":
-			games[id].startmap = argv(i+1);
+			games[gameID].startmap = argv(i+1);
 			break;
 		case "gameinfo_trainingmap":
-			games[id].trainingmap = argv(i+1);
+			games[gameID].trainingmap = argv(i+1);
 			break;
 		case "gameinfo_pkgname":
-			games[id].pkgname = argv(i+1);
-			games[id].pkgid = ModServer_IDForPackageName(games[id].pkgname);
+			games[gameID].pkgname = argv(i+1);
+			games[gameID].pkgid = ModServer_IDForPackageName(games[gameID].pkgname);
 			break;
 		default:
 			break;
@@ -191,14 +176,14 @@ ModServer_ParseItem(string data)
 	}
 }
 
-void Updater_URI_Callback(float id, float code, string data, int resourcebytes);
+void Updater_URI_Callback(float gameID, float code, string data, int resourcebytes);
 
 /* Called as an eventual result of the uri_get builtin. */
 void
-ModServer_URI_Callback(float id, float code, string data, int resourcebytes)
+ModServer_URI_Callback(float uriID, float code, string data, int resourcebytes)
 {
 	/* count our requests down */
-	if (id == MODSERVER_REQ_ITEM) {
+	if (uriID == MODSERVER_REQ_ITEM) {
 		g_iModServerReqCount--;
 
 		/* free the loading screen */
@@ -208,17 +193,17 @@ ModServer_URI_Callback(float id, float code, string data, int resourcebytes)
 	}
 
 	/* unvailable */
-	if (code && id == MODSERVER_REQ_LIST) {
+	if (code && uriID == MODSERVER_REQ_LIST) {
 		print("^1ModServer_URI_Callback^7: Unable to retrieve list.\n");
 		g_iModServerLoading = FALSE;
 		return;
 	}
-	if (code && id == MODSERVER_REQ_ITEM) {
+	if (code && uriID == MODSERVER_REQ_ITEM) {
 		print("^1ModServer_URI_Callback^7: Unable to retrieve mod entry.\n");
 		return;
 	}
 
-	switch (id) {
+	switch (uriID) {
 	case MODSERVER_REQ_LIST:
 		ModServer_ParseList(data);
 		break;
@@ -226,10 +211,13 @@ ModServer_URI_Callback(float id, float code, string data, int resourcebytes)
 		ModServer_ParseItem(data);
 		break;
 	case MODSERVER_REQ_PKGNAMES:
-		Updater_URI_Callback(id, code, data, resourcebytes);
+		Updater_URI_Callback(uriID, code, data, resourcebytes);
+		break;
+	case ACTIVITYPUB_ACCOUNTS:
+		ActivityPub_UpdatePlayerInfo(data);
 		break;
 	default:
-		print(sprintf("^1ModServer_URI_Callback^7: Unknown request id %d with code %d\n", id, code));
+		print(sprintf("^1ModServer_URI_Callback^7: Unknown request id %d with code %d\n", uriID, code));
 	}
 }
 #endif

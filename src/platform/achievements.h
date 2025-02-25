@@ -14,13 +14,17 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*! @file achievements.h
-    @brief Achievement APIs
+/**
+@defgroup achievements Achievements
+@brief Achievements, unlockables API reference.
+@ingroup menu
 
-    The Achievements API manages the retrieval, storage and networking
-	 of game achievements.
+The Achievements API manages the retrieval, storage and networking
+of game achievements.
 
-	 This is a work in progress.
+This is a work in progress.
+
+@{
 */
 
 /** Data for an achievement definition. */
@@ -72,5 +76,8 @@ void Achievement_IndicateProgress(string strName, int iCurrent, int iMax);
 /** Updates the achievement_t pointer with what's been achieved and what's not been achieved from a remote location.
 
 @param ptr Pointer to an achievement_t array.
+@param count Local version of the achivement stat count.
 @return Will return false upon failure. */
 bool Achievement_RequestStats(achievement_t *ptr, int count);
+
+/** @} */ // end of achievements

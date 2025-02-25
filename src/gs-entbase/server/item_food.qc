@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Food Pickup */
 /*!QUAKED item_food (1 0 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 This is a food item that will give the user 1 health when touched.
@@ -26,9 +27,12 @@ This is a food item that will give the user 1 health when touched.
 # TRIVIA
 This entity was introduced in Half-Life (1998).
 It's also known as item_sodacan.
+
+@ingroup serverentity
+@ingroup pointentity
 */
 class
-item_food:NSRenderableEntity
+item_food:ncRenderableEntity
 {
 public:
 	void item_food(void);
@@ -38,9 +42,11 @@ public:
 	virtual void Restore(string,string);
 	nonvirtual void Setup(void);
 	virtual void Touch(entity);
+	virtual void Precaches(void);
 
 private:
 	int m_iIsCan;
+	string m_spawnSound;
 };
 
 void
@@ -48,6 +54,13 @@ item_food::item_food(void)
 {
 	// TODO: differentiate between item_sodacan and item_food
 	m_iIsCan = 1;
+	m_spawnSound = "weapons/g_bounce3.wav";
+}
+
+void
+item_food::Precaches(void)
+{
+	precache.Sound(m_spawnSound);
 }
 
 void
@@ -90,7 +103,7 @@ item_food::Setup(void)
 	SetSize([-16,-16,-16], [16,16,16]);
 
 	//if (m_iIsCan) {
-		sound(this, CHAN_ITEM, "weapons/g_bounce3.wav", 1.0f, ATTN_NORM);
+		sound(this, CHAN_ITEM, m_spawnSound, 1.0f, ATTN_NORM);
 	//}
 }
 
@@ -105,8 +118,8 @@ item_food::Touch(entity eToucher)
 		env_beverage bevOwner = (env_beverage)owner;
 		bevOwner.m_bReady = true;
 	}
-	
-	Damage_Apply(eToucher, this, -1, 0, DMG_GENERIC);
+
+	eToucher.health = bound(0, eToucher.health + 1, eToucher.max_health);
 	SetSolid(SOLID_NOT);
 	Destroy();
 }

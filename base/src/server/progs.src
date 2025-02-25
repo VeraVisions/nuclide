@@ -1,6 +1,7 @@
 #pragma target fte_5768
 //#pragma flag enable assumeint
 #pragma progs_dat  "../../progs.dat"
+#pragma forcecrc 54730
 
 #define QWSSQC
 #define SERVER
@@ -10,24 +11,15 @@
 ../../../src/shared/fteextensions.qc
 ../../../src/shared/defs.h
 ../../../src/server/defs.h
-../../../src/botlib/botinfo.h
 ../../../src/gs-entbase/server.src
 ../../../src/gs-entbase/shared.src
-
-/* mod specific header */
-defs.h
-
 ../shared/include.src
 
 /* include the botlib if desired (optional) */
 ../../../src/botlib/include.src
 
 /* mod specific functions */
-gamerules.qc
-gamerules_singleplayer.qc
-gamerules_multiplayer.qc
-modelevent.qc
-items.qc
+main.qc
 
 /* global server/shared code */
 ../../../src/server/include.src

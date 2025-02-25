@@ -1,0 +1,31 @@
+entityDef demo_laser
+{
+	"spawnclass" "env_laser"
+	"angles" "90 0 0"
+	"texture" "textures/sprites/laser"
+	"rendercolor" "255 0 0"
+	"NoiseAmplitude" "4"
+	"damage" "5"
+} 
+
+entityDef demo_lamplight
+{
+	"spawnclass" "point_spotlight"
+	"spawnflags" "1"
+	"angles" "90 0 0"
+	"spotlightlength" "512"
+	"spotlightwidth" "80"
+	"rendercolor" "225 230 175"
+}
+
+entityDef demo_rope
+{
+	"spawnclass" "move_rope"
+	"RopeMaterial" "cable/cable"
+	"PositionInterpolator" "2"
+	"TextureScale" "1"
+	"Width" "1"
+	"Subdiv" "2"
+	"Slack" "100"
+	"MoveSpeed" "64"
+}

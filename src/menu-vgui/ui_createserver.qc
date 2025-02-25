@@ -18,27 +18,24 @@ int g_iCreateServerInitialized;
 
 void UI_CreateServer_Show ( void )
 {
-	static CUIScrollbar scrlMaps;
-	static CUIWindow winCreate;
-	static CUIButton btnCancel;
-	static CUIButton btnStart;
-	static CUIList lsbMaps;
-	static CUILabel lblHostname;
-	static CUITextBox txbHostname;
-	static CUILabel lblMaxplayers;
-	static CUITextBox txbMaxplayers;
-	static CUILabel lblPassword;
-	static CUITextBox txbPassword;
+	static vguiScrollBar scrlMaps;
+	static vguiWindow winCreate;
+	static vguiButton btnCancel;
+	static vguiButton btnStart;
+	static vguiList lsbMaps;
+	static vguiLabel lblHostname;
+	static vguiTextBox txbHostname;
+	static vguiLabel lblMaxplayers;
+	static vguiTextBox txbMaxplayers;
+	static vguiLabel lblPassword;
+	static vguiTextBox txbPassword;
 
 	static void CreateServer_Start ( void ) {
 		int iEndMap = lsbMaps.GetSelected();
 		if ( lsbMaps.GetSelected() == 0 ) {
 			iEndMap = (int)( rint( random( 1, lsbMaps.GetItemCount() ) ) );
 		}
-		localcmd( sprintf( "hostname %s\n", txbHostname.GetText() ) );
-		localcmd( sprintf( "maxplayers %s\n", txbMaxplayers.GetText() ) );
-		localcmd( sprintf( "sv_password %s\n", txbPassword.GetText() ) );
-		localcmd( sprintf( "map %s\n", lsbMaps.GetItem( iEndMap ) ) );
+		Map_SpawnServer(txbHostname.GetText(), lsbMaps.GetItem( iEndMap ), stof(txbMaxplayers.GetText()), "", txbPassword.GetText());
 		winCreate.Hide();
 	}
 	static void CreateServer_Cancel ( void ) {
@@ -48,32 +45,31 @@ void UI_CreateServer_Show ( void )
 		lsbMaps.SetOffset( scrlMaps.GetValue(), FALSE );
 	}
 	static void CreateServer_Scrolled ( void ) {
-		scrlMaps.SetValue( lsbMaps.GetOffset(), FALSE );
+		scrlMaps.SetValue( lsbMaps.GetOffset() );
 	}
 
 	if ( !g_iCreateServerInitialized ) {
 		g_iCreateServerInitialized = TRUE;
-		winCreate = spawn( CUIWindow );
+		winCreate = spawn( vguiWindow );
 		winCreate.SetTitle( "Create Server" );
 		winCreate.SetSize( '338 385' );
-		winCreate.SetIcon( "textures/ui/icons/server-new" );
+		winCreate.SetIcon( "gfx/icon16/server_add" );
 
-		searchhandle shMaps = search_begin( "maps/*.bsp", SEARCH_NAMESORT, TRUE );
-		lsbMaps = spawn( CUIList );
+		lsbMaps = spawn( vguiList );
 		lsbMaps.SetSize( '128 306' );
 		lsbMaps.SetPos( '175 32 ' );
-		lsbMaps.SetItemCount( search_getsize( shMaps ) );
+		lsbMaps.SetItemCount( MapLibrary_GetMapCount() );
 		lsbMaps.CallOnScroll( CreateServer_Scrolled );
 		lsbMaps.SetSelected( 0 );
 
 		lsbMaps.AddItem( "< Random Map >" );
-		for ( int i = 0; i < search_getsize( shMaps ); i++ ) {
-			string strMap = search_getfilename( shMaps, i );
-			lsbMaps.AddItem( substring( strMap, 5, strlen( strMap ) - 9 ) );
+		for ( int i = 0; i < MapLibrary_GetMapCount(); i++ ) {
+			string strMap = MapLibrary_GetInfo(i, MAPINFO_NAME);
+			lsbMaps.AddItem( strMap );
 			//lsbMaps.AddItem( search_getfilename( shMaps, i ) );
 		}
 
-		scrlMaps = spawn( CUIScrollbar );
+		scrlMaps = spawn( vguiScrollBar );
 		scrlMaps.SetLength( 306 );
 		scrlMaps.SetPos( '303 32' );
 		scrlMaps.SetMin( 0 );
@@ -81,41 +77,41 @@ void UI_CreateServer_Show ( void )
 		scrlMaps.SetMax( lsbMaps.GetMaxVisibleItems() );
 		scrlMaps.CallOnChange( CreateServer_ListUpdate );
 
-		btnStart = spawn( CUIButton );
+		btnStart = spawn( vguiButton );
 		btnStart.SetTitle( "Start" );
 		btnStart.SetSize( '64 24' );
 		btnStart.SetPos( winCreate.GetSize() - '152 32' );
 		btnStart.SetFunc( CreateServer_Start );
 
-		btnCancel = spawn( CUIButton );
+		btnCancel = spawn( vguiButton );
 		btnCancel.SetTitle( "Cancel" );
 		btnCancel.SetSize( '64 24' );
 		btnCancel.SetPos( winCreate.GetSize() - '80 32' );
 		btnCancel.SetFunc( CreateServer_Cancel );
 
-		lblHostname = spawn( CUILabel );
+		lblHostname = spawn( vguiLabel );
 		lblHostname.SetPos( '20 32' );
 		lblHostname.SetTitle( "Server name" );
 
-		txbHostname = spawn( CUITextBox );
+		txbHostname = spawn( vguiTextBox );
 		txbHostname.SetPos( [ 20, 50 ] );
 		txbHostname.SetSize( [ 124, 24 ] );
 		txbHostname.SetText( cvar_string( "hostname" ) );
 
-		lblMaxplayers = spawn( CUILabel );
+		lblMaxplayers = spawn( vguiLabel );
 		lblMaxplayers.SetPos( '20 84' );
 		lblMaxplayers.SetTitle( "Max players" );
 
-		txbMaxplayers = spawn( CUITextBox );
+		txbMaxplayers = spawn( vguiTextBox );
 		txbMaxplayers.SetPos( [ 20, 102 ] );
 		txbMaxplayers.SetSize( [ 124, 24 ] );
-		txbMaxplayers.SetText( cvar_string( "sv_playerslots" ) );
+		txbMaxplayers.SetText( cvar_string( "sv_playerslots" ) != "1" ? cvar_string( "sv_playerslots" ) : "8" );
 
-		lblPassword = spawn( CUILabel );
+		lblPassword = spawn( vguiLabel );
 		lblPassword.SetPos( '20 136' );
 		lblPassword.SetTitle( "Password" );
 
-		txbPassword = spawn( CUITextBox );
+		txbPassword = spawn( vguiTextBox );
 		txbPassword.SetPos( [ 20, 154 ] );
 		txbPassword.SetSize( [ 124, 24 ] );
 		txbPassword.SetText( cvar_string( "sv_password" ) );
@@ -131,9 +127,8 @@ void UI_CreateServer_Show ( void )
 		winCreate.Add( txbMaxplayers );
 		winCreate.Add( lblPassword );
 		winCreate.Add( txbPassword );
-		search_end( shMaps );
 	}
 
 	winCreate.Show();
-	winCreate.SetPos( ( video_res / 2 ) - ( winCreate.GetSize() / 2 ) );
+	winCreate.SetPos( ( g_vidsize / 2 ) - ( winCreate.GetSize() / 2 ) );
 }

@@ -38,6 +38,7 @@ typedef enum
 
 #define FNCPUSHABLE_BREAKABLE 128
 
+/*! \brief Server-Entity: Pushable Brush */
 /*!QUAKED func_pushable (0 .5 .8) ? SF_TRIGGER SF_TOUCH SF_PRESSURE x x x x BREAKABLE
 # OVERVIEW
 This is essentially the same entity as a func_breakable, but
@@ -63,6 +64,9 @@ The 'size' key only has to be specified when you use levels with hull-sizes.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup serverentity
+@ingroup brushentity
 */
 class
 func_pushable:func_breakable
@@ -167,14 +171,13 @@ func_pushable::Respawn(void)
 {
 	super::Respawn();
 	SetSolid(SOLID_BSP);
-	SetOrigin(GetSpawnOrigin());
 	SetMovetype(MOVETYPE_STEP);
 	PlayerUse = OnPlayerUse;
 
 	if (HasSpawnFlags(FNCPUSHABLE_BREAKABLE) == true) {
-		SetTakedamage(DAMAGE_YES);
+		MakeVulnerable();
 	} else {
-		SetTakedamage(DAMAGE_NO);
+		MakeInvulnerable();
 	}
 
 	if (!m_eCollBox) {

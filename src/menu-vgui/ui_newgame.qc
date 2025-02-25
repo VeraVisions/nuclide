@@ -18,16 +18,20 @@ int g_iNewGameInitialized;
 
 void UI_NewGame_Show ( void )
 {
-	static CUIWindow winNewGame;
-	static CUIButton btnPlay;
-	static CUIButton btnCancel;
-	static CUIRadio radTraining;
-	static CUIRadio radEasy;
-	static CUIRadio radMedium;
-	static CUIRadio radHard;
+	static vguiWindow winNewGame;
+	static vguiButton btnPlay;
+	static vguiButton btnCancel;
+	static vguiRadio radTraining;
+	static vguiRadio radEasy;
+	static vguiRadio radMedium;
+	static vguiRadio radHard;
 
 	static void NewGame_Play ( void ) {
-		localcmd( "maxplayers 1\nmap measure\n" );
+		if (radTraining.GetValue())
+			Map_Training();
+		else
+			Map_NewGame(cvar("skill"));
+
 		winNewGame.Hide();
 	}
 	static void NewGame_Cancel ( void ) {
@@ -42,41 +46,41 @@ void UI_NewGame_Show ( void )
 
 	if ( !g_iNewGameInitialized ) {
 		g_iNewGameInitialized = TRUE;
-		winNewGame = spawn( CUIWindow );
+		winNewGame = spawn( vguiWindow );
 		winNewGame.SetTitle( "New Game" );
 		winNewGame.SetSize( '192 168' );
-		winNewGame.SetIcon( "textures/ui/icons/desktop" );
+		winNewGame.SetIcon( "gfx/icon16/new" );
 		g_uiDesktop.Add( winNewGame );
 
-		btnPlay = spawn( CUIButton );
+		btnPlay = spawn( vguiButton );
 		btnPlay.SetTitle( "Play" );
 		btnPlay.SetSize( '64 24' );
 		btnPlay.SetPos( winNewGame.GetSize() - '152 32' );
 		btnPlay.SetFunc( NewGame_Play );
 
-		btnCancel = spawn( CUIButton );
+		btnCancel = spawn( vguiButton );
 		btnCancel.SetTitle( "Cancel" );
 		btnCancel.SetSize( '64 24' );
 		btnCancel.SetPos( winNewGame.GetSize() - '80 32' );
 		btnCancel.SetFunc( NewGame_Cancel );
 
-		radTraining = spawn( CUIRadio );
+		radTraining = spawn( vguiRadio );
 		radTraining.SetTitle( "Training" );
 		radTraining.SetSize( '96 16' );
 		radTraining.SetPos( '32 32' );
 
-		radEasy = spawn( CUIRadio );
+		radEasy = spawn( vguiRadio );
 		radEasy.SetTitle( "Easy" );
 		radEasy.SetSize( '96 16' );
 		radEasy.SetPos( '32 56' );
 
-		radMedium = spawn( CUIRadio );
+		radMedium = spawn( vguiRadio );
 		radMedium.SetTitle( "Medium" );
 		radMedium.SetSize( '96 16' );
 		radMedium.SetPos( '32 80' );
 		radMedium.SetValue( TRUE );
 
-		radHard = spawn( CUIRadio );
+		radHard = spawn( vguiRadio );
 		radHard.SetTitle( "Hard" );
 		radHard.SetSize( '96 16' );
 		radHard.SetPos( '32 104' );
@@ -95,5 +99,5 @@ void UI_NewGame_Show ( void )
 	}
 
 	winNewGame.Show();
-	winNewGame.SetPos( ( video_res / 2 ) - ( winNewGame.GetSize() / 2 ) );
+	winNewGame.SetPos( ( g_vidsize / 2 ) - ( winNewGame.GetSize() / 2 ) );
 }

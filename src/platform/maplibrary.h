@@ -14,8 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*! @file maplibrary.h
-    @brief Map library parsing and querying of metadata.
+/**
+@defgroup maplibrary Map Library
+@brief Locally installed maps/levels control functions
+@ingroup menu
 
 Menus need to be aware of what levels aka maps are available for modes like
 multiplayer. The MapLibrary is by configured to only parse levels from the
@@ -27,8 +29,11 @@ The menu needs to call MapLibrary_Init() at least once, after which you can
 query the total amount of maps that are available via MapLibrary_GetMapCount().
 
 You can then iterate over the individual entries with MapLibrary_GetInfo().
+
+@{
 */
 
+/** Options querying Map Library entries using `MapLibrary_GetInfo()`. */
 typedef enum
 {
 	MAPINFO_NAME,		/**< (string) Name of the map. E.g. e1m1 */
@@ -38,6 +43,16 @@ typedef enum
 	MAPINFO_PREVIEW		/**< (string) URL to a preview of the map. __NULL__ if not available. Will look for level previews inside levelshots/ and maps/ with any file extensions supported by the engine and whitelisted within the cvar 'r_imageextensions'.*/
 } mapType_t;
 
+/** Data holding Map Library entries. */
+typedef struct
+{
+	string name;
+	string title;
+	string author;
+	string type;
+	string preview;
+} mapLibrary_t;
+
 /** Initialize the map library, MapLibrary_GetMapCount() will return the amount of maps available. */
 void MapLibrary_Init(void);
 
@@ -46,3 +61,5 @@ int MapLibrary_GetMapCount(void);
 
 /** Retrieve information about a given mapID. See mapType_t for which fields you can query. */
 __variant MapLibrary_GetInfo(int, mapType_t);
+
+/** @} */ // end of maplibrary

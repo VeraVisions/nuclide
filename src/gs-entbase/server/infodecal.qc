@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Decal */
 /*!QUAKED infodecal (1 0 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Projects a decals.wad texture onto the nearest surface.
@@ -35,9 +36,12 @@ which is probably overkill). No angle has to be supplied.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup serverentity
+@ingroup pointentity
 */
 class
-infodecal:NSPointTrigger
+infodecal:ncPointTrigger
 {
 public:
 	void infodecal(void);
@@ -50,7 +54,7 @@ public:
 	virtual void Trigger(entity, triggermode_t);
 
 private:
-	decal m_decChild;
+	ncDecal m_decChild;
 	string m_strTexture;
 };
 
@@ -123,7 +127,7 @@ infodecal::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "m_decChild":
-		m_decChild = (decal)ReadEntity(strValue);
+		m_decChild = (ncDecal)ReadEntity(strValue);
 		break;
 	case "m_strTexture":
 		m_strTexture = ReadString(strValue);
@@ -145,7 +149,7 @@ infodecal::Trigger(entity act, triggermode_t state)
 		break;
 	case TRIG_ON:
 		if (!m_decChild) {
-			m_decChild = spawn(decal);
+			m_decChild = spawn(ncDecal);
 			m_decChild.Place(origin, m_strTexture);
 		}
 		break;

@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Nodegraph Ground Node */
 /*!QUAKED info_node (0 0 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 It's a node, helping monsters navigate on the ground.
@@ -23,9 +24,12 @@ It's a node, helping monsters navigate on the ground.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup serverentity
+@ingroup pointentity
 */
 class
-info_node:NSPointTrigger
+info_node:ncPointTrigger
 {
 public:
 	void info_node(void);
@@ -51,7 +55,7 @@ info_node::Respawn(void)
 
 	/* drop to floor, then 32-units above ground
 	   see https://twhl.info/wiki/page/Tutorial%3A_All_about_info_nodes */
-	SetOrigin(GetSpawnOrigin());
+	SetOrigin(GetSpawnVector("origin"));
 	DropToFloor();
 	SetOrigin(GetOrigin() + [0,0,32]);
 }

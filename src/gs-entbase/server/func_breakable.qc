@@ -78,6 +78,37 @@ const string funcbreakable_surftable[] = {
 "gs_material_rocks"
 };
 
+
+
+const string funcbreakable_proptable[] = {
+"",
+"Wooden.Tiny",
+"Wooden.Small",
+"Wooden.Medium",
+"Wooden.Large",
+"Wooden.Huge",
+"Metal.Small",
+"Metal.Medium",
+"Metal.Large",
+"Cardboard.Small",
+"Cardboard.Medium",
+"Cardboard.Large",
+"Stone.Small",
+"Stone.Medium",
+"Stone.Large",
+"Stone.Huge",
+"Glass.Small",
+"Plastic.Small",
+"Plastic.Medium",
+"Plastic.Large",
+"Pottery.Small",
+"Pottery.Medium",
+"Pottery.Large",
+"Pottery.Huge",
+"Glass.Window",
+};
+
+/*! \brief Server-Entity: Breakable Brush Model */
 /*!QUAKED func_breakable (0 .5 .8) ? SF_TRIGGER SF_TOUCH SF_PRESSURE
 # OVERVIEW
 Brush volume that can break into lots of little pieces.
@@ -114,9 +145,12 @@ Material-list:
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup serverentity
+@ingroup brushentity
 */
 class
-func_breakable:NSSurfacePropEntity
+func_breakable:ncSurfacePropEntity
 {
 public:
 	void func_breakable(void);
@@ -127,8 +161,8 @@ public:
 	virtual void SpawnKey(string,string);
 	virtual void Spawned(void);
 	virtual void Respawn(void);
-	virtual void Pain(void);
-	virtual void Death(void);
+	virtual void Pain(entity, entity, int, vector, vector, int);
+	virtual void Death(entity, entity, int, vector, vector, int);
 	virtual void Trigger(entity, triggermode_t);
 	
 	virtual void Explode(void);
@@ -143,6 +177,7 @@ private:
 	string m_strBreakSpawn;
 	bool m_bCanTouch;
 	int _m_iExplosionParticle;
+	vector m_explodeDir;
 
 	/*entity m_pressAttacker;
 	int m_pressType;
@@ -210,6 +245,13 @@ void
 func_breakable::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
+	case "propdata":
+		int propDataID = ReadInt(strValue);
+
+		if (propDataID > 0i) {
+			m_strPropData = funcbreakable_proptable[propDataID];
+		}
+		break;
 	case "material":
 		material = ReadFloat(strValue);
 		break;
@@ -239,29 +281,32 @@ func_breakable::SpawnKey(string strKey, string strValue)
 void
 func_breakable::Spawned(void)
 {
-	/* needs to be called before super function */
-	SetSurfaceData(funcbreakable_surftable[material]);
-	SetPropData(funcbreakable_surftable[material]);
 	_m_iExplosionParticle = particleeffectnum("fx_explosion.main");
 	super::Spawned();
+
+	/* needs to be called before super function */
+	if (HasSurfaceData() == false)
+		SetSurfaceData(funcbreakable_surftable[material]);
+
+	if (HasPropData() == false)
+		SetPropData(funcbreakable_surftable[material]);
 }
 
 void
 func_breakable::Respawn(void)
 {
+	super::Respawn();
+
 	SetMovetype(MOVETYPE_NONE);
 	SetSolid(SOLID_BSP);
-
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
 	ClearAngles();
 	ReleaseThink();
 	m_bCanTouch = true;
 
 	if (HasSpawnFlags(SF_TRIGGER)) {
-		SetTakedamage(DAMAGE_NO);
+		MakeInvulnerable();
 	} else {
-		SetTakedamage(DAMAGE_YES);
+		MakeVulnerable();
 	}
 
 	/* initially set the health to that of the ent-data */
@@ -282,7 +327,7 @@ func_breakable::Respawn(void)
 }
 
 void
-func_breakable::Pain(void)
+func_breakable::Pain(entity inflictor, entity attacker, int damage, vector dir, vector absImpactPos, int hitBody)
 {
 	string painSound;
 
@@ -302,30 +347,23 @@ void
 func_breakable::Explode(void)
 {
 	vector rp = WorldSpaceCenter();
-	vector vecDir = vectoangles(rp - g_dmg_vecLocation);
 	string breakModel = GetPropData(PROPINFO_BREAKMODEL);
 
-	BreakModel_Spawn(absmin, absmax, [0,0,0], m_flExplodeMag, vlen(size) / 10, breakModel);
+	BreakModel_Spawn(absmin, absmax, m_explodeDir, m_flExplodeMag, vlen(size) / 10, breakModel);
 	pointparticles(_m_iExplosionParticle, rp, [0,0,0], 1);
-	Damage_Radius(rp, this, m_flExplodeMag, m_flExplodeRad, TRUE, 0);
+	combat.RadiusDamage(GetOrigin(), m_flExplodeMag, 0i, m_flExplodeRad, this, "");
 	UseTargets(this, TRIG_TOGGLE, 0.0f); /* delay... ignored. */
-	SetTakedamage(DAMAGE_NO);
+	MakeInvulnerable();
 	Disappear();
 }
 
 void
-func_breakable::Death(void)
+func_breakable::Death(entity inflictor, entity attacker, int damage, vector dir, vector absImpactPos, int hitBody)
 {
 	static void break_spawnobject(void) {
-		/* these might get overwritten by the entity spawnfunction */
-		vector neworg = self.origin;
-
 		/* become the classname assigned */
-		NSEntity t = (NSEntity)self;
+		ncEntity t = (ncEntity)self;
 		callfunction(self.classname);
-
-		/* apply the saved values back */
-		t.origin = t.GetSpawnOrigin() = neworg;
 
 		/* spawn anew */
 		if (t.Respawn)
@@ -336,7 +374,8 @@ func_breakable::Death(void)
 		return;
 	}
 
-	eActivator = g_dmg_eAttacker;
+	eActivator = (ncEntity)attacker;
+	m_explodeDir = dir;
 
 	if (m_strBreakSpawn != "" && isfunction(m_strBreakSpawn)) {
 		entity unit = spawn();
@@ -356,23 +395,50 @@ func_breakable::Death(void)
 	if (m_flExplodeMag) {
 		ScheduleThink(Explode, random(0.0f, 0.5f));
 	} else {
-		vector vecDir = vectoangles(WorldSpaceCenter() - g_dmg_vecLocation);
 		string sndBreak = GetSurfaceData(SURFDATA_SND_BREAK);
-		string breakModel = GetPropData(PROPINFO_BREAKMODEL);
+		string breakModel = __NULL__;
 		int gibCount = (int)bound(5, vlen(size) / 10, 32);
 
-		if (breakModel != "")
-			BreakModel_Spawn(absmin, absmax, vecDir, g_dmg_iDamage * 2.5, gibCount, breakModel);
-		else
-			EntLog("func_breakable (%s) does not have a propdata break model", funcbreakable_surftable[material]);
+// 		if (HasPropData()) {
+// 			breakModel = GetPropData(PROPINFO_BREAKMODEL);
+// 		}
+
+		if (!STRING_SET(breakModel)) {
+			switch (material) {
+			case 0:
+				breakModel = "glasschunks";
+				break;
+			case 1:
+				breakModel = "woodchunks";
+				break;
+			case 2:
+				breakModel = "metalchunks";
+				break;
+			case 4:
+				breakModel = "concretechunks";
+				break;
+			case 6:
+				breakModel = "metalchunks";
+				break;
+			case 8:
+				breakModel = "concretechunks";
+				break;
+			}
+		}
+
+		if (STRING_SET(breakModel)) {
+			BreakModel_Spawn(absmin, absmax, dir, damage * 2.5, gibCount, breakModel);
+		} else {
+			EntError("No BreakModel set for \"material\" \"%d\"", material);
+		}
 
 		if (sndBreak != "")
 			StartSoundDef(sndBreak, CHAN_BODY, true);
 		else
-			EntLog("func_breakable (%s) does not have a surfaceproperty for break", funcbreakable_surftable[material]);
+			EntError("No SurfData set for \"material\" \"%d\"", material);
 
 		Disappear();
-		SetTakedamage(DAMAGE_NO);
+		MakeInvulnerable();
 		UseTargets(eActivator, TRIG_TOGGLE, 0.0f);
 	}
 }
@@ -381,7 +447,7 @@ void
 func_breakable::Trigger(entity act, triggermode_t state)
 {
 	if (GetHealth() > 0)
-		Death();
+		Death(act, act, 0i, g_vec_null, origin, 0i);
 }
 
 void
@@ -405,16 +471,22 @@ func_breakable::Touch(entity eToucher)
 		}
 	}
 
+	/* break on touch */
 	if (HasSpawnFlags(SF_TOUCH)) {
-		int fDamage = (float)(vlen(eToucher.velocity) * 0.01f);
+		int dmgAmount = (float)(vlen(eToucher.velocity) * 0.01f);
 
-		if (fDamage >= health) {
+		if (dmgAmount >= health) {
+			vector dmgDir = dirFromTarget(eToucher.origin, WorldSpaceCenter());
+			ncDict damageDecl = spawn(ncDict);
+			damageDecl.AddKey("damage", itos(dmgAmount));
+			damageDecl.AddKey("location", vtos(eToucher.origin));
 			m_bCanTouch = false;
-			Damage_Apply(this, eToucher, fDamage, 0, DMG_CRUSH);
+			Damage(eToucher, eToucher, damageDecl, 1.0f, dmgDir, eToucher.origin);
 
 			if ((GetSurfaceData(SURFDATA_MATERIAL) == GSMATERIAL_GLASS) || (GetSurfaceData(SURFDATA_MATERIAL) == GSMATERIAL_COMPUTER)) {
-				Damage_Apply(eToucher, this, fDamage / 4, 0, DMG_CRUSH);
+				Damage(eToucher, eToucher, damageDecl, 0.25f, dmgDir, eToucher.origin);
 			}
+			remove(damageDecl);
 		}
 	}
 

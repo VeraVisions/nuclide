@@ -19,7 +19,8 @@ enumflags
 	TRLY_ONCE,
 };
 
-/*!QUAKED trigger_relay (.5 .5 .5) ? TRLY_ONCE
+/*! \brief Server-Entity: Relay With State Override */
+/*!QUAKED trigger_relay (.5 .5 .5) (-8 -8 -8) (8 8 8) TRLY_ONCE
 # OVERVIEW
 This is an in-between trigger that forces a desired output state
 instead of toggling e.g. a door open.
@@ -44,9 +45,12 @@ Where 'off' will close entities like func_door, and 'on' will open them.
 
 # TRIVIA
 This entity was introduced in Quake (1996).
+
+@ingroup serverentity
+@ingroup pointentity
 */
 class
-trigger_relay:NSPointTrigger
+trigger_relay:ncPointTrigger
 {
 public:
 	void trigger_relay(void);

@@ -1,0 +1,8 @@
+{
+	diffusemap editor/info_player_deathmatch.ktx
+	
+	{
+		map $diffuse
+		alphaFunc GE128
+	}
+}

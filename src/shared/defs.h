@@ -14,6 +14,11 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+#include "../common/defs.h"
+
+.float w_reload_next;
+.float w_attack_next;
+
 /* networking helpers */
 #define NETWORKED_INT(x) int x; int x ##_net;
 #define NETWORKED_FLOAT(x) float x; float x ##_net;
@@ -21,6 +26,7 @@
 #define NETWORKED_ENT(x) entity x; entity x ##_net;
 #define NETWORKED_STRING(x) string x; string x ##_net;
 #define NETWORKED_BOOL(x) bool x; bool x ##_net;
+#define NETWORKED_MODELINDEX(x) float x; float x ##_net;
 
 #define NETWORKED_INT_N(x) int x ##_net;
 #define NETWORKED_FLOAT_N(x) float x ##_net;
@@ -43,12 +49,15 @@
 #define NSENTITY_READENTITY(x, y) \
 	{ \
 		local x x ##_e = ( x )self;\
+		local float x ##receivedFlags;\
 		if (y == true) { \
 			self.classname = strcat("spawnfunc_", #x); \
 			callfunction(self.classname); \
 		} \
-		x ##_e.ReceiveEntity( y, readfloat() );\
+		x ##receivedFlags = readfloat();\
+		x ##_e.ReceiveEntity( y, x ##receivedFlags );\
 		x ##_e.Relink();\
+		x ##_e._ReceiveComplete( y, x ##receivedFlags );\
 	}
 #else
 
@@ -62,15 +71,19 @@
 #define ATTR_CHANGED(x) (x ##_net != x)
 #define VEC_CHANGED(x,y) (x ##_net[y] != x[y])
 
+#ifndef MAX_AMMO_TYPES
+#define MAX_AMMO_TYPES 16i
+#endif
+
 noref const float   SVC_TEMPENTITY          = 23;
 
 #ifdef CLIENT
 string __fullspawndata;
 #endif
 
-#include "global.h"
 #include "cloader.h"
 #include "sound.h"
+#include "effects.h"
 
 #ifdef CLIENT
 #include "../gs-entbase/client/defs.h"
@@ -78,57 +91,60 @@ string __fullspawndata;
 #include "../gs-entbase/server/defs.h"
 #endif
 
+#include "Decal.h"
+
 #include "../botlib/botinfo.h"
 #include "sentences.h"
 
-#include "NSIO.h"
-#include "NSTrigger.h"
-#include "NSEntity.h"
-#include "NSTimer.h"
-#include "NSRenderableEntity.h"
-#include "NSSurfacePropEntity.h"
-#include "NSMoverEntity.h"
-#include "NSPhysicsConstraint.h"
-#include "NSPhysicsEntity.h"
-#include "NSBrushTrigger.h"
-#include "NSPointTrigger.h"
-#include "NSNavAI.h"
-#include "NSMonster.h"
-#include "NSSquadMonster.h"
-#include "NSTalkMonster.h"
-#include "NSSpawnPoint.h"
-#include "NSProjectile.h"
-#include "NSItem.h"
-#include "NSSpraylogo.h"
-#include "NSPortal.h"
-#include "NSDebris.h"
+#include "IO.h"
+#include "Dict.h"
+#include "Trigger.h"
+#include "Entity.h"
+#include "Timer.h"
+#include "RenderableEntity.h"
+#include "SurfacePropEntity.h"
+#include "Ragdoll.h"
+#include "Mover.h"
+#include "PhysicsConstraint.h"
+#include "PhysicsEntity.h"
+#include "BrushTrigger.h"
+#include "PointTrigger.h"
+#include "Item.h"
+#include "Weapon.h"
+#include "Actor.h"
+#include "Monster.h"
+#include "SquadMonster.h"
+#include "TalkMonster.h"
+#include "SpawnPoint.h"
+#include "SoundScape.h"
+#include "Attack.h"
+#include "Projectile.h"
+#include "Spraylogo.h"
+#include "Portal.h"
+#include "Sound.h"
+#include "Debris.h"
 
-#include "../xr/defs.h"
-#include "NSClient.h"
-#include "NSClientSpectator.h"
-#include "NSClientPlayer.h"
+#include "xr.h"
+#include "../botlib/Bot.h"
+#include "Client.h"
+#include "Spectator.h"
+#include "pmove.h"
+#include "Player.h"
 
-#include "NSVehicle.h"
+#include "Vehicle.h"
 
 #include "materials.h"
 #include "damage.h"
-#include "flags.h"
-#include "effects.h"
 #include "entities.h"
-#include "events.h"
-#include "flags.h"
 #include "hitmesh.h"
-#include "math.h"
-#include "pmove.h"
-#include "memory.h"
-#include "platform.h"
 #include "propdata.h"
 #include "surfaceproperties.h"
 #include "decalgroups.h"
-#include "colors.h"
-#include "weapons.h"
+#include "bodyque.h"
 #include "motd.h"
 #include "util.h"
+#include "ammo.h"
+#include "activities.h"
 
 #define BSPVER_PREREL 	28
 #define BSPVER_Q1		29
@@ -146,15 +162,7 @@ const vector VEC_HULL_MAX = [16,16,36];
 const vector VEC_CHULL_MIN = [-16,-16,-18];
 const vector VEC_CHULL_MAX = [16,16,18];
 
-// Actually used by input_button etc.
-#define INPUT_BUTTON0 0x00000001	/* attack 1*/
-#define INPUT_BUTTON2 0x00000002	/* jumping */
-#define INPUT_BUTTON3 0x00000004	/* attack 2 */
-#define INPUT_BUTTON4 0x00000008	/* reload */
-#define INPUT_BUTTON5 0x00000010	/* use button */
-#define INPUT_BUTTON6 0x00000020	/* reserved */
-#define INPUT_BUTTON7 0x00000040	/* reserved */
-#define INPUT_BUTTON8 0x00000080	/* crouching */
+#include "input.h"
 
 /* sendflags */
 #define UPDATE_ALL				16777215
@@ -175,6 +183,9 @@ enumflags
 .float teleport_time;
 .vector basevelocity;
 .float gflags;
+.float identity;
+.bool _isWeapon;
+.bool _isItem;
 
 void
 Empty(void)
@@ -186,13 +197,6 @@ void Util_Destroy(void);
 string Util_TimeToString(float fTime);
 bool Util_IsTeamplay(void);
 bool Util_IsPaused(void);
-
-__wrap void
-dprint(string m)
-{
-	if (cvar("developer") == 1)
-		return prior(m);
-}
 
 void
 crossprint(string m)
@@ -249,6 +253,64 @@ pseudorandom()
 	return bound(0.01, (seed) / 100.0f, 0.99f);
 }
 
+#if 0
+__wrap void
+WriteByte(float to, float val)
+{
+	breakpoint();
+	prior(to, val);
+}
+
+__wrap void
+WriteChar(float to, float val)
+{
+	breakpoint();
+	prior(to, val);
+}
+
+__wrap void
+WriteShort(float to, float val)
+{
+	breakpoint();
+	prior(to, val);
+}
+
+__wrap void
+WriteLong(float to, float val)
+{
+	breakpoint();
+	prior(to, val);
+}
+
+__wrap void
+WriteCoord(float to, float val)
+{
+	breakpoint();
+	prior(to, val);
+}
+
+__wrap void
+WriteAngle(float to, float val)
+{
+	breakpoint();
+	prior(to, val);
+}
+
+__wrap void
+WriteString(float to, string val)
+{
+	breakpoint();
+	prior(to, val);
+}
+
+__wrap void
+WriteEntity(float to, entity val)
+{
+	breakpoint();
+	prior(to, val);
+}
+#endif
+
 __wrap void
 setmodel(entity ent, string mname)
 {
@@ -272,14 +334,13 @@ memalloc(int size)
 	return prior(size);
 }
 
-.float identity;
 .float removed;
 __wrap void
 remove(entity target)
 {
-	/* it's an NSEntity sub-class */
+	/* it's an ncEntity sub-class */
 	if (target.identity) {
-		NSEntity ent = (NSEntity)target;
+		ncEntity ent = (ncEntity)target;
 
 		/* if we're calling remove() on it and not .Destroy()... it's being uncleanly removed! */
 		if (ent.removed == 0) {
@@ -318,20 +379,25 @@ traceline(vector v1, vector v2, float flags, entity ent)
 	prior(v1, v2, flags, ent);
 }
 
-void
-setorigin_safe(entity target, vector testorg)
+#ifdef SERVER
+string Skill_GetStringValue(string, string);
+#endif
+
+string
+unpackStringCommand(string commandString)
 {
-	for (int i = 0; i < 16; i++) {
-		tracebox(testorg, target.mins, target.maxs, testorg, MOVE_NORMAL, target);
-
-		if (!trace_startsolid) {
-			break;
-		}
-
-		testorg[2] += 1.0;
+#ifdef SERVER
+	/* is this supposed to be read from a skill cvar? */
+	if (substring(commandString, 0, 6) == "skill:") {
+		return Skill_GetStringValue(substring(commandString, 6, -1), "");
 	}
+	/* is this supposed to be read from a skill cvar? */
+	if (substring(commandString, 0, 5) == "cvar:") {
+		return cvar_string(substring(commandString, 5, -1));
+	}
+#endif
 
-	setorigin(target, testorg);
+	return Constants_LookUp(commandString, commandString);
 }
 
 #ifdef NO_LEGACY
@@ -352,9 +418,10 @@ void(string cmd) readcmd = #0:readcmd;
 */
 string Util_FixModel(string mdl)
 {
-	if (!mdl) {
+	if (!STRING_SET(mdl)) {
 		return "";
 	}
+	mdl = strreplace("\\", "/", mdl);
 
 	int c = tokenizebyseparator(mdl, "/", "\\ ", "!");
 	string newpath = "";
@@ -382,7 +449,8 @@ string Util_FixModel(string mdl)
 }
 
 /** Returns a string (usually filename) with only the file extension
-    at the end replaced with a given, new extension. */
+    at the end replaced with a given, new extension.
+    If the base string does not contain a file extension, it'll be appended to the end result. */
 string
 Util_ChangeExtension(string baseString, string newExtension)
 {
@@ -399,6 +467,11 @@ Util_ChangeExtension(string baseString, string newExtension)
 			break;
 
 		stringOffset++;
+	}
+
+	/* no extension found? append to the end then. */
+	if (foundOffset == 0) {
+		return strcat(baseString, ".", newExtension);
 	}
 
 	return strcat(substring(baseString, 0, foundOffset), ".", newExtension);
@@ -509,12 +582,157 @@ Route_GetJumpVelocity(vector vecFrom, vector vecTo, float flGravMod)
 	return vecJump;
 }
 
-bool
-FileExists(string filePath)
+void
+DebugBox(vector absPos, vector minSize, vector maxSize, vector boxColor, float boxAlpha)
 {
-	if (filePath != "") /* not empty */
-		if not(whichpack(filePath)) /* not present on disk */
-			return false;
+	vector a, b, c, d;
+	vector w, x, y, z;
 
-	return true;
+	a[0] = absPos[0] + minSize[0];
+	a[1] = absPos[1] + maxSize[1];
+
+	b[0] = absPos[0] + maxSize[0];
+	b[1] = absPos[1] + maxSize[1];
+
+	c[0] = absPos[0] + maxSize[0];
+	c[1] = absPos[1] + minSize[1];
+
+	d[0] = absPos[0] + minSize[0];
+	d[1] = absPos[1] + minSize[1];
+
+	a[2] = absPos[2] + maxSize[2];
+	c[2] = absPos[2] + maxSize[2];
+	d[2] = absPos[2] + maxSize[2];
+	b[2] = absPos[2] + maxSize[2];
+
+	w = a;
+	x = b;
+	y = c;
+	z = d;
+
+	w[2] = absPos[2] + minSize[2];
+	x[2] = absPos[2] + minSize[2];
+	y[2] = absPos[2] + minSize[2];
+	z[2] = absPos[2] + minSize[2];
+	
+	/* top */
+	R_BeginPolygon("", 0, 0);
+	R_PolygonVertex(a, [1,1], boxColor, boxAlpha);
+	R_PolygonVertex(b, [0,1], boxColor, boxAlpha);
+	R_PolygonVertex(c, [0,0], boxColor, boxAlpha);
+	R_PolygonVertex(d, [1,0], boxColor, boxAlpha);
+	R_EndPolygon();
+
+	/* front */
+	R_BeginPolygon("", 0, 0);
+	R_PolygonVertex(d, [1,1], boxColor * 0.9f, boxAlpha);
+	R_PolygonVertex(c, [0,1], boxColor * 0.9f, boxAlpha);
+	R_PolygonVertex(y, [0,0], boxColor * 0.9f, boxAlpha);
+	R_PolygonVertex(z, [1,0], boxColor * 0.9f, boxAlpha);
+	R_EndPolygon();
+
+	/* back */
+	R_BeginPolygon("", 0, 0);
+	R_PolygonVertex(w, [1,1], boxColor * 0.9f, boxAlpha);
+	R_PolygonVertex(x, [0,1], boxColor * 0.9f, boxAlpha);
+	R_PolygonVertex(b, [0,0], boxColor * 0.9f, boxAlpha);
+	R_PolygonVertex(a, [1,0], boxColor * 0.9f, boxAlpha);
+	R_EndPolygon();
+
+	/* left */
+	R_BeginPolygon("", 0, 0);
+	R_PolygonVertex(a, [1,1], boxColor * 0.8f, boxAlpha);
+	R_PolygonVertex(d, [0,1], boxColor * 0.8f, boxAlpha);
+	R_PolygonVertex(z, [0,0], boxColor * 0.8f, boxAlpha);
+	R_PolygonVertex(w, [1,0], boxColor * 0.8f, boxAlpha);
+	R_EndPolygon();
+
+	/* right */
+	R_BeginPolygon("", 0, 0);
+	R_PolygonVertex(c, [1,1], boxColor * 0.8f, boxAlpha);
+	R_PolygonVertex(b, [0,1], boxColor * 0.8f, boxAlpha);
+	R_PolygonVertex(x, [0,0], boxColor * 0.8f, boxAlpha);
+	R_PolygonVertex(y, [1,0], boxColor * 0.8f, boxAlpha);
+	R_EndPolygon();
+
+	/* bottom */
+	R_BeginPolygon("", 0, 0);
+	R_PolygonVertex(z, [1,1], boxColor, boxAlpha);
+	R_PolygonVertex(y, [0,1], boxColor, boxAlpha);
+	R_PolygonVertex(x, [0,0], boxColor, boxAlpha);
+	R_PolygonVertex(w, [1,0], boxColor, boxAlpha);
+	R_EndPolygon();
 }
+
+/* doxygen definitions */
+
+/** @defgroup client Client Game
+ *  Part of the client-side progs (`csprogs.dat`).
+ */
+
+/** @defgroup server Server Game
+ *  Part of the server-side progs (`progs.dat`).
+ */
+
+/** @defgroup shared Shared Game
+ *  Part of both client and server-side progs.
+ */
+
+/** @defgroup menu Menu Game
+ *  Part of the menu progs (`menu.dat`).
+ */
+
+/** @defgroup sound Sound System
+Classes and APIs that interact with the sound system.
+
+By default we assume the engine is talking to **OpenAL**,
+either **OpenAL-Soft** or a driver talking to [Creative](http://www.creative.com/)
+hardware with native support for Environmental Extensions.
+
+If not available, most new features will be unavailable.
+*/
+
+/** @defgroup nav Navigation System
+ *  @ingroup server
+ *  APIs to interact with the navigation system powering AI entities.
+ */
+
+/** @defgroup baseclass Base Classes
+ *  @ingroup entities
+ *  Base Classes powering all sorts of [entities](@ref entities).
+ */
+
+/** @defgroup brushentity Brush Entities
+ *  @ingroup entities
+ *  Entity class that expects to be used with brush models.
+ *
+ *  Brush models are commonly sub-models within a level file,
+ *  however they can also be loaded from a separate external file.
+ *
+ *  If an entity its model starts with and asterisk (*) and ends
+ *  with a numer right after, it usually refers to a sub-model
+ *  within the current world level.
+ *
+ *  Due to their simple visual complexity they are mostly
+ *  used for primitive geometry, triggers, volumes.
+ *
+ *  Mainly used for MOVETYPE_PUSH entities of variable
+ *  size and volume - even within a single class.
+ */
+
+/** @defgroup pointentity Point Entities
+ *  @ingroup entities
+ *  Point entities are the most common types of entities.
+ *
+ *  They exist at a single point in 3D-space.
+ *  Generally every class of point-entity is of equal
+ *  size and volume, unlike [brush-based entities](@ref brushentity).
+ *  Generally used for moving, or non moving objects
+ *  that interact with the world.
+ */
+
+/** @defgroup sharedentity Entities that are shared
+ *  @ingroup shared
+ *  @ingroup entities
+ *  Entity classes that run on both client and the server.
+ */

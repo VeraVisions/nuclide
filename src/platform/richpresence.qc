@@ -26,6 +26,7 @@ typedef enum
 
 string g_richpres[RICHPRESENCE_KEYS];
 var bool g_richpresence_set = false;
+void FragNet_UpdateStatus(string foo, string bar);
 
 void
 RichPresence_Set(string strKey, string strValue)
@@ -44,6 +45,7 @@ RichPresence_Set(string strKey, string strValue)
 	}
 
 	g_richpresence_set = true;
+	FragNet_UpdateStatus(g_richpres[RICHPRES_STATUS], g_richpres[RICHPRES_CONNECT]);
 };
 
 void

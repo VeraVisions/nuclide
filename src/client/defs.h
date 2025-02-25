@@ -14,19 +14,34 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+#include "api_func.h"
+#include "../shared/api.h"
+#include "../shared/entityDef.h"
 #include "text.h"
 #include "textmenu.h"
-#include "efx.h"
 #include "font.h"
 #include "fade.h"
 #include "cmd.h"
 #include "util.h"
-#include "NSView.h"
-#include "NSRadar.h"
+#include "View.h"
+#include "Radar.h"
 #include "crosshair.h"
+#include "hud.h"
 
 var bool g_net_debug = false;
 var bool g_cheats = false;
+
+var float g_modelSpinAngle;
+var float g_modelSpinPitch;
+var float g_modelSpinRoll;
+var float g_modelBobHeight;
+var float autocvar_cg_modelSpinSpeed = 120.0f;
+var float autocvar_cg_modelSpinRoll = 0.0f;
+var float autocvar_cg_modelSpinRollSpeed = 0.0f;
+var float autocvar_cg_modelSpinPitch = 0.0f;
+var float autocvar_cg_modelSpinPitchSpeed = 0.0f;
+var float autocvar_cg_modelBobHeight = 0.0f;
+var float autocvar_cg_modelBobHeightSpeed = 0.0f;
 
 #define PRINTFLAG(x) if (cvar("net_showUpdates") || g_net_debug) \
 	print(sprintf("%f %s read update %s\n", time, classname, #x));
@@ -82,7 +97,7 @@ var bool g_cheats = false;
 
 #define READENTITY_ENTITY(field, changedflag) {\
 	if (flChanged & changedflag) {\
-		field = findfloat(world, ::entnum, readentitynum());\
+		field = findentity(world, ::entnum, readentitynum());\
 		PRINTFLAG(changedflag); \
 	}\
 }
@@ -101,6 +116,13 @@ var bool g_cheats = false;
 	}\
 }
 
+#define READENTITY_MODELINDEX(field, changedflag) {\
+	if (flChanged & changedflag) {\
+		field = readshort();\
+		PRINTFLAG(changedflag); \
+	}\
+}
+
 /* undocumented printcall types */
 #define PRINT_LOW		0
 #define PRINT_MEDIUM	1
@@ -114,13 +136,11 @@ const float MASK_GLOWS = 16;
 var bool g_focus;
 bool Util_IsFocused(void);
 
-var int g_numplayerslots;
-int Util_GetMaxPlayers(void);
-
 /* fonts */
 font_s FONT_16;
 font_s FONT_20;
 font_s FONT_CON;
+font_s FONT_CENTERPRINT;
 
 //var string g_shellchrome;
 var float g_shellchromeshader;
@@ -146,7 +166,7 @@ var float PART_BURNING;
 
 /* misc globals */
 vector video_mins;
-vector video_res;
+vector g_vidsize;
 vector mouse_pos;
 int g_iIntermission;
 
@@ -190,9 +210,8 @@ void drawrect(vector pos, vector sz, float thickness, vector rgb, float al, opti
 	drawfill(pos + [sz[0] - thickness, thickness], [thickness, sz[1] - (thickness * 2)], rgb, al, dfl);
 }
 
-
 /** Like drawpic, but instead of screen coords, it will take world coords.
-Will project the 2D image relative to the active NSView that we're currently
+Will project the 2D image relative to the active ncView that we're currently
 rendering in (g_view). So it may only be called within certain contexts. */
 void
 drawpic3d(vector worldpos, string mat, vector sz, vector rgb, float alpha)
@@ -280,6 +299,13 @@ precache_cubemap(string path)
 	precache_pic(strcat(path, "_up"));
 }
 
+typedef enum
+{
+	STANCE_DEFAULT = 0,
+	STANCE_CROUCH = 1,
+	STANCE_PRONE = 2,
+} movementStance_t;
+
 struct
 {
 	/* viewmodel stuff */
@@ -294,7 +320,7 @@ struct
 	float m_flEventTime;
 	float m_flEventFrame;
 	float m_flEventMdl;
-	int m_iEventWeapon;
+	entity m_iEventEntity;
 
 	int m_iLastWeapon;
 	int m_iOldWeapon;
@@ -340,12 +366,14 @@ struct
 	int m_iPrintLines;
 
 	bool m_iInputAttack;
-	int m_iInputAttack2;
-	int m_iInputReload;
-	int m_iInputUse;
-	int m_iInputDuck;
-	int m_iInputExtra1;
-	int m_iInputExtra2;
+	bool m_iInputAttack2;
+	bool m_iInputReload;
+	bool m_iInputUse;
+	bool m_iInputDuck;
+	bool m_iInputSprint;
+	bool m_iInputProne;
+	bool m_iInputJump;
+	movementStance_t m_dForceStance;
 	float m_flInputBlockTime;
 	
 	/* fading */
@@ -355,6 +383,7 @@ struct
 	float m_flFadeStyle;
 	float m_flFadeAlpha;
 	float m_flFadeTime;
+	float m_flSprintLerp;
 	vector m_vecFadeColor;
 	int m_iFadeActive;
 
@@ -375,10 +404,27 @@ struct
 
 	bool m_bInterfaceFocused;
 	bool m_bSpecInput;
+
+	int m_iLeanDir;
+	float m_flLeaning;
+	int m_iSprinting;
+
+	int m_iSelectedWeapon;
+	bool m_bCommandMenu;
 } g_seats[4], *pSeat;
+
+.float modelindex2;
+.float modelindex3;
+.float modelindex4;
 
 var vector g_vecMousePos;
 var vector g_hudmins;
 var vector g_hudres;
 
-var NSRadar g_overview;
+var ncRadar g_overview;
+
+/** @defgroup cliententity Entities that are client-side
+ *  @ingroup client
+ *  @ingroup entities
+ *  Entity classes that run entirely on the client.
+ */

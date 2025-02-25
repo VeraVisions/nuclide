@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Radius-Based CD Track Changer */
 /*!QUAKED target_cdaudio (1 0 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 A radius based trigger_cdaudio.
@@ -30,9 +31,12 @@ act the same in practice.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup serverentity
+@ingroup pointentity
 */
 class
-target_cdaudio:NSPointTrigger
+target_cdaudio:ncPointTrigger
 {
 public:
 	void target_cdaudio(void);

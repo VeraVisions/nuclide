@@ -14,6 +14,14 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/** @defgroup fade Fade Overlay
+    @brief Screen overlay, fade in/out control functions.
+    @ingroup client
+
+    @{
+
+ */
+
 /** Called upon every vid_reload to cache the material definitions required for fade effects. */
 void Fade_Reload(void);
 /** Called every frame to update the actively running fade effects. */
@@ -22,3 +30,5 @@ void Fade_Update(int x, int y, int w, int h);
 void Fade_StartDark(void);
 /** Called whenever the client receives a EV_FADE from the server. */
 void Fade_Parse(void);
+
+/** @} */ // end of fade

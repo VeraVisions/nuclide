@@ -17,10 +17,30 @@
 var string g_textmenu = "";
 var float g_textmenucheck = 0.0f; 
 
+/** @defgroup textmenu Text Menu
+    @brief Displays text-based menus, for use with a keyboard.
+    @ingroup client
+
+    @{
+
+*/
+
+/** Forcefully displays a given text menu. */
 void Textmenu_Call(string);
+
+/** Toggle the text menu, replacing it with the one specified if inactive. */
 void Textmenu_Toggle(string);
+
+/** Returns `true` or `false` depending on if a text menu is currently active. */
 int Textmenu_IsActive(void);
+
+/** Force the active text menu to be hidden. */
 void Textmenu_Hide(void);
+
+/** Called by Nuclide to pass numeric input values to the text menu. */
 void Textmenu_Input(int);
+
+/** Called by Nuclide to draw text menus. */
 void Textmenu_Draw(void);
-string Titles_GetTextBody(string);
+
+/** @} */ // end of client

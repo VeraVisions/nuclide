@@ -24,22 +24,23 @@ vector g_vecRenderTargetAngles;
 void
 RenderTarget_Monitor_Update(void)
 {
-	if (!g_iRenderTargetActive) {
+	if (g_iRenderTargetActive == false) {
 		return;
 	}
 
 	clearscene();
-	setviewprop(VF_RT_DESTCOLOUR, "base", (float)1, g_iRenderTargetSize);
-	setviewprop(VF_SIZE, g_iRenderTargetSize);
-	setviewprop(VF_DRAWENGINESBAR, (float)0);
-	setviewprop(VF_ORIGIN, g_vecRenderTargetPos);
-	setviewprop(VF_ANGLES, g_vecRenderTargetAngles);
-	setviewprop(VF_AFOV, g_flRenderTargetFOV);
 
 	/* TODO: This is ideally where fog parms should be set... :/ */
 	addentities(MASK_ENGINE);
+
+	setproperty(VF_RT_DESTCOLOUR, "base", (float)1, g_iRenderTargetSize);
+	setproperty(VF_SIZE, g_iRenderTargetSize);
+	setproperty(VF_DRAWENGINESBAR, (float)0);
+	setproperty(VF_ORIGIN, g_vecRenderTargetPos);
+	setproperty(VF_ANGLES, g_vecRenderTargetAngles);
+	setproperty(VF_AFOV, g_flRenderTargetFOV);
 	renderscene();
-	setviewprop(VF_RT_DESTCOLOUR, "");
+	setproperty(VF_RT_DESTCOLOUR, "");
 }
 #endif
 
@@ -56,6 +57,7 @@ enumflags
 	MONITORFL_CHANGED_STATUS
 };
 
+/*! \brief Shared-Entity: Rendertarget Surface */
 /*!QUAKED func_monitor (0 .5 .8) ?
 # OVERVIEW
 A monitor that renders the view of a linked point_camera entity.
@@ -71,8 +73,11 @@ A monitor that renders the view of a linked point_camera entity.
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
+
+@ingroup sharedentity
+@ingroup brushentity
 */
-class func_monitor:NSRenderableEntity
+class func_monitor:ncRenderableEntity
 {
 public:
 	void func_monitor(void);
@@ -80,7 +85,9 @@ public:
 #ifdef CLIENT
 	virtual void ReceiveEntity(float,float);
 
-#else
+#endif
+
+#ifdef SERVER
 	virtual void Respawn(void);
 	virtual void EvaluateEntity(void);
 	virtual float SendEntity(entity,float);
@@ -144,7 +151,9 @@ func_monitor::ReceiveEntity(float flNew, float flChanged)
 	g_vecRenderTargetPos = m_vecCamOrigin;
 	g_vecRenderTargetAngles = m_vecCamAngles;
 }
-#else
+#endif
+
+#ifdef SERVER
 float
 func_monitor::SendEntity(entity ePEnt, float flChanged)
 {
@@ -179,32 +188,40 @@ func_monitor::SendEntity(entity ePEnt, float flChanged)
 void
 func_monitor::EvaluateEntity(void)
 {
-	if (ATTR_CHANGED(origin)) {
-		SetSendFlags(MONITORFL_CHANGED_BASE);
-	}
-	SAVE_STATE(origin)
+	point_camera viewPoint;
 
 	/* this monitor is disabled */
-	if (!m_bState)
+	if (!m_bState) {
 		return;
+	}
 
-	point_camera viewer;
-	viewer = (point_camera)find(world, ::targetname, target);
-		
-	if (!viewer)
+	/* no target set. yet. */
+	if (!STRING_SET(target)) {
+		m_bState = false;
 		return;
+	}
 
-	m_vecCamOrigin = viewer.origin;
-	m_vecCamAngles = viewer.angles;
-	m_flFOV = viewer.m_flFOV;
-	m_iUseSAR = viewer.m_iUseSAR;
-	m_vecFogColor = viewer.m_vecFogColor;
-	m_flFogStart = viewer.m_flFogStart;
-	m_bState = viewer.m_iValue ? true : false;
+	viewPoint = (point_camera)find(world, ::targetname, target);
+
+	/* target set, but invalid. */
+	if (!viewPoint) {
+		EntError("No valid target %S in map.", target);
+		Destroy();
+		return;
+	}
+
+	m_vecCamOrigin = viewPoint.origin;
+	m_vecCamAngles = viewPoint.angles;
+	m_flFOV = viewPoint.m_flFOV;
+	m_iUseSAR = viewPoint.m_iUseSAR;
+	m_vecFogColor = viewPoint.m_vecFogColor;
+	m_flFogStart = viewPoint.m_flFogStart;
+	m_bState = viewPoint.m_iValue ? true : false;
 
 	/* camera is disabled */
-	if (!viewer.m_iValue)
+	if (!viewPoint.m_iValue) {
 		return;
+	}
 
 	EVALUATE_FIELD(modelindex, MONITORFL_CHANGED_BASE)
 	EVALUATE_VECTOR(origin, 0, MONITORFL_CHANGED_BASE)
@@ -273,11 +290,9 @@ func_monitor::SpawnKey(string strKey, string strValue)
 void
 func_monitor::Respawn(void)
 {
+	super::Respawn();
 	SetSolid(SOLID_BSP);
 	SetMovetype(MOVETYPE_NONE);
-	SetOrigin(GetSpawnOrigin());
-	SetAngles(GetSpawnAngles());
-	SetModel(GetSpawnModel());
 	m_bState = true;
 }
 #endif

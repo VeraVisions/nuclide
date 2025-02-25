@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Shared-Entity: Ladder Volume */
 /*!QUAKED func_ladder (0 .5 .8) ?
 # OVERVIEW
 Ladder volume. Climb up ladders with this one simple brush.
@@ -23,9 +24,12 @@ Ladder volume. Climb up ladders with this one simple brush.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup sharedentity
+@ingroup brushentity
 */
 class
-func_ladder:NSRenderableEntity
+func_ladder:ncRenderableEntity
 {
 public:
 	void func_ladder(void);
@@ -36,7 +40,15 @@ public:
 	virtual void Trigger(entity, triggermode_t);
 #endif
 
+private:
+	entity m_collisionEntity;
 };
+
+void
+func_ladder::func_ladder(void)
+{
+	m_collisionEntity = __NULL__;
+}
 
 #ifdef SERVER
 void
@@ -58,17 +70,20 @@ func_ladder::Trigger(entity act, triggermode_t state)
 void
 func_ladder::Respawn(void)
 {
-	/* func_ladder specifics */
+	super::Respawn();
+
+	/* func_ladder volumes are solid. CONTENT_LADDER volumes usually aren't. */
+	if (!m_collisionEntity && STRING_SET(model)) {
+		m_collisionEntity = spawn();
+		m_collisionEntity.solid = SOLID_BSP;
+		setmodel(m_collisionEntity, model);
+		setorigin(m_collisionEntity, origin);
+		m_collisionEntity.effects = EF_NODRAW;
+	}
+
 	SetMovetype(MOVETYPE_NONE);
-	SetSolid(SOLID_BSP);
-	SetSkin(CONTENT_LADDER);
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
 	SetFrame(0);
 	Hide();
-}
-
-void
-func_ladder::func_ladder(void)
-{
+	SetSolid(SOLID_BSP);
+	SetSkin(CONTENT_LADDER);
 }

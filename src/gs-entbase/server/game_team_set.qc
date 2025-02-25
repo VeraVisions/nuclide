@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: game_team_master Controller */
 /*!QUAKED game_team_set (1 .5 0) (-8 -8 -8) (8 8 8) REMOVE
 # OVERVIEW
 When triggered, will set the target game_team_master's team-index value to the team of the activating player.
@@ -28,9 +29,12 @@ When triggered, will set the target game_team_master's team-index value to the t
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup serverentity
+@ingroup pointentity
 */
 class
-game_team_set:NSPointTrigger
+game_team_set:ncPointTrigger
 {
 public:
 	void game_team_set(void);

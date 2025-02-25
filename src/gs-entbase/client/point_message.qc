@@ -14,6 +14,9 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+static int g_pointMessages;
+
+/*! \brief Client-Entity: In-world Debug Text */
 /*!QUAKED point_message (0.2 1 0.2) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Client-side overlay/message that is projected in relation to its position
@@ -28,8 +31,11 @@ Used for zoo and test maps in which less interactive overlays are desired.
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
+
+@ingroup cliententity
+@ingroup pointentity
 */
-class point_message:NSEntity
+class point_message:ncEntity
 {
 public:
 	void point_message(void);
@@ -63,6 +69,7 @@ point_message::SpawnKey(string strField, string strKey)
 void
 point_message::point_message(void)
 {
+	g_pointMessages += 1i;
 	m_flRadius = 512;
 	m_strMessage = "No message";
 	isCSQC = true;
@@ -74,11 +81,15 @@ point_message::CanSpawn(bool clientSide)
 	return true;
 }
 
-int
+bool
 PointMessage_Visible(vector p1, vector p2, vector ang)
 {
 	vector delta;
 	float fov;
+
+	if (distance2D(p1, p2) > 512) {
+		return (false);
+	}
 
 	makevectors(ang);
 	delta = normalize (p1 - p2);
@@ -87,16 +98,20 @@ PointMessage_Visible(vector p1, vector p2, vector ang)
 	if (fov > 0.3) {
 		traceline(p2, p1, MOVE_WORLDONLY, self);
 		if (trace_fraction == 1.0) {
-			return (1);
+			return (true);
 		}
 	}
-	return (0);
+	return (false);
 }
 
 void
 PointMessage_Draw(void)
 {
 	vector vecPlayer;
+
+	if (g_pointMessages <= 0i) {
+		return;
+	}
 
 	int s = (float)getproperty(VF_ACTIVESEAT);
 	pSeat = &g_seats[s];
@@ -113,7 +128,7 @@ PointMessage_Draw(void)
 			continue;
 		}
 
-		if (PointMessage_Visible(m.origin, vecPlayer, getproperty(VF_ANGLES)) == TRUE) {
+		if (PointMessage_Visible(m.origin, vecPlayer, getproperty(VF_ANGLES)) == true) {
 			vector vTemp = project(m.origin) - [(stringwidth(msg, FALSE,[12,12]) / 2), 0];
 			Font_DrawText(vTemp, msg, FONT_CON);
 		}
@@ -130,5 +145,21 @@ PointMessage_StringAtPos(vector org, string message)
 	vecPlayer = pSeat->m_vecPredictedOrigin;
 
 	vector vTemp = project(org) - [(stringwidth(message, FALSE,[12,12]) / 2), 0];
+	Font_DrawText_RGB(vTemp + [1,1], message, [0,0,0], FONT_CON);
 	Font_DrawText(vTemp, message, FONT_CON);
+}
+
+
+void
+PointMessage_FieldAtPos(vector org, string message, float width)
+{
+	vector vecPlayer;
+
+	int s = (float)getproperty(VF_ACTIVESEAT);
+	pSeat = &g_seats[s];
+	vecPlayer = pSeat->m_vecPredictedOrigin;
+
+	vector vTemp = project(org) - [(width / 2), 0];
+	Font_DrawField(vTemp + [1,1], [width, g_hudres[1]],strcat("^x000", message), FONT_CON, AF_DEFAULT);
+	Font_DrawField(vTemp, [width, g_hudres[1]], message, FONT_CON, AF_DEFAULT);
 }

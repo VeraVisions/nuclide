@@ -21,6 +21,7 @@ enumflags
 	TRIGTELE_PUSHABLES
 };
 
+/*! \brief Server-Entity: Teleportation Volume */
 /*!QUAKED trigger_teleport (.5 .5 .5) ? CLIENTS NPCS PUSHABLES PHYSICS FRIENDLIES CLIENTSINVEHICLES EVERYTHING x x CLIENTSNOTINVEHICLES DEBRIS NPCSINVEHICLES NOBOTS
 # OVERVIEW
 Teleportation volume. Teleports anything it touches to the position of
@@ -43,7 +44,7 @@ any entity set as the "target".
 - TF_CLIENTS (1) : Clients can touch it.
 - TF_NPCS (2) : NPCs can touch it.
 - TF_PUSHABLE (4) : Pushables can touch it.
-- TF_PHYSICS (8) : NSPhysicsEntity based classes can touch it.
+- TF_PHYSICS (8) : ncPhysicsEntity based classes can touch it.
 - TF_FRIENDLIES (16) : Friendly NPCs can touch it.
 - TF_CLIENTSINVEHICLES (32) : Clients within vehicles can touch it.
 - TF_EVERYTHING (64) : Everything can touch it.
@@ -64,9 +65,12 @@ Works best with info_teleport_destination, but you can in theory use any other p
 
 # TRIVIA
 This entity was introduced in Quake (1996).
+
+@ingroup serverentity
+@ingroup brushentity
 */
 class
-trigger_teleport:NSBrushTrigger
+trigger_teleport:ncBrushTrigger
 {
 public:
 	void trigger_teleport(void);
@@ -79,7 +83,7 @@ public:
 	virtual void Save(float);
 	virtual void Restore(string,string);
 
-	nonvirtual bool CanPass(NSEntity);
+	nonvirtual bool CanPass(ncEntity);
 
 private:
 	bool m_bEnabled;
@@ -157,7 +161,7 @@ trigger_teleport::Restore(string strKey, string strValue)
 }
 
 bool
-trigger_teleport::CanPass(NSEntity target)
+trigger_teleport::CanPass(ncEntity target)
 {
 	/* legacy entity check */
 	if (m_bIsModern == false) {
@@ -203,59 +207,60 @@ trigger_teleport::Touch(entity eToucher)
 		return;
 	if (m_bEnabled == false)
 		return;
-	if (CanPass((NSEntity)eToucher) == false)
+	if (CanPass((ncEntity)eToucher) == false)
 		return;
 
 	if (eToucher.movetype != MOVETYPE_NONE) {
-		eActivator = eToucher;
+		eActivator = (ncEntity)eToucher;
 		entity eTarget = find(world, ::targetname, target);
 
 		if (eTarget) {
 			vector endpos = eTarget.origin;
-			float flSpeed = vlen(eToucher.velocity);
+			float flSpeed = vlen(eActivator.velocity);
 			makevectors(eTarget.angles);
-			eToucher.velocity = (v_forward * flSpeed);
-			eToucher.angles = eTarget.angles;
+			eActivator.velocity = (v_forward * flSpeed);
+			eActivator.angles = eTarget.angles;
 
-			if (eToucher.flags & FL_CLIENT) {
-				Client_FixAngle(eToucher, eToucher.angles);
+			if (eActivator.flags & FL_CLIENT) {
+				Client_FixAngle(eActivator, eActivator.angles);
 
 				/* level designers place destinations where the feet
 				   are going to be, because monsters are mainly set up
 				   to be that way (0 0 0 being ground). players however 
 				   have their it at the center of mass, so nudge it a little. */
-				endpos[2] -= eToucher.mins[2]; 
+				endpos[2] -= eActivator.mins[2]; 
 			}
 
 			/* test if something is in the way. */
-			tracebox(endpos, eToucher.mins, eToucher.maxs, endpos, MOVE_NORMAL, eToucher);
+			tracebox(endpos, eActivator.mins, eActivator.maxs, endpos, MOVE_NORMAL, eActivator);
 
 			/* indeed something is in the way... */
 			if (trace_ent && trace_startsolid == true) {
-				/* it can be killed */
+				/* it can be killed, telefrag */
 				if (trace_ent.takedamage != DAMAGE_NO) {
-					/* telefrag */
-					Damage_Apply(trace_ent, eToucher, trace_ent.health * 2.0, 0, DMG_SKIP_ARMOR);
+					ncSurfacePropEntity killThis = (ncSurfacePropEntity)trace_ent;
+					killThis.SetHealth(-100);
+					killThis.Death(this, eActivator, 1000, g_vec_null, trace_endpos, 0i);
 				}
 			}
 
-			setorigin_safe(eToucher, endpos);
+			eActivator.SetOriginUnstick(endpos);
 
 			if (m_sndTeleport) {
-				Sound_Play(eToucher, CHAN_VOICE, m_sndTeleport);
+				StartSoundDef(m_sndTeleport, CHAN_VOICE, true);
 			}
 
 			if (m_sndTeleportEnter) {
-				Sound_Play(this, CHAN_VOICE, m_sndTeleportEnter);
+				StartSoundDef(m_sndTeleportEnter, CHAN_VOICE, true);
 			}
 
 			if (m_sndTeleportExit) {
-				Sound_Play(eTarget, CHAN_VOICE, m_sndTeleportExit);
+				StartSoundDef(m_sndTeleportExit, CHAN_VOICE, true);
 			}
 
-			EntLog("Teleported %S to %v", eToucher.netname, endpos);
+			EntLog("Teleported %S to %v", eActivator.netname, endpos);
 		} else {
-			EntWarning("Failed to teleport %S", eToucher.netname);
+			EntWarning("Failed to teleport %S", eActivator.netname);
 		}
 	}
 }

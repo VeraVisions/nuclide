@@ -14,8 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*! @file gamelibrary.h
-    @brief Game library parsing and querying of metadata.
+/**
+@defgroup gamelibrary Game Library
+@ingroup menu
+@brief Locally-installed games, modification control functions
 
 The GameLibrary concerns itself with everything around what a game is,
 how to install, activate and deactivate it. Mods are included in this,
@@ -46,24 +48,29 @@ to do so with GameLibrary_InitCustom() afterwards.
 Because indexing mods can take a very long time depending on the amount
 that is stored on disk, you may want to call GameLibrary_InitCustom() at
 a later time.
+
+@{
 */
 
+/** Options for querying Game Library entry information using `GameLibrary_GetInfo()` */
 typedef enum
 {
-	GAMEINFO_TITLE,			/**< (string) The title of the game. E.g. "Action Game" */
+	GAMEINFO_NAME,			/**< (string) The name of the game. E.g. "Action Game" */
 	GAMEINFO_GAMEDIR,		/**< (string) The game directory name. E.g. "data" */
 	GAMEINFO_FALLBACKDIR,	/**< (string) The directory to be loaded before the game directory. */
 	GAMEINFO_BASEDIR,		/**< (string) The first game directory to be loaded. */
 	GAMEINFO_WEBSITE,		/**< (string) The game its official website. */
 	GAMEINFO_VERSION,		/**< (string) Version number string. */
 	GAMEINFO_SIZE,			/**< (int) The size of the game, in bytes. */
+	GAMEINFO_TITLE,			/**< (string) The title of the game in the main menu. */
+	GAMEINFO_SUBTITLE,			/**< (string) The sub-title of the game in the main menu. */
 	GAMEINFO_TYPE,			/**< (string) The game type. E.g. "Singleplayer" */
 	GAMEINFO_NOPLAYERMODELS,/**< (bool) If the game allows player model selection. */
 	GAMEINFO_NOSPRAYS,		/**< (bool) If the game allows custom spray logos. */
 	GAMEINFO_STARTMAP,		/**< (string) The command for starting a new game. */
 	GAMEINFO_TRAININGMAP,	/**< (string) The command for starting the training. */
 	GAMEINFO_MINVERSION,	/**< (string) The minimum base game version. */
-	GAMEINFO_CHATROOM,		/**< (string) The chatroom for this game. E.g. #action */
+	GAMEINFO_CHATROOM,		/**< (string) The chatroom for this game. E.g. `#action` */
 	GAMEINFO_READMEFILE,	/**< (string) File name of the readme documentation. */
 	GAMEINFO_INTROVIDEO,	/**< (string) File name of the intro video to play. */
 	GAMEINFO_MENUMAP,		/**< (string) Name of the map to be used as a background. */
@@ -111,10 +118,12 @@ typedef enum
 	GAMEINFO_PACKAGE,
 } gi_type;
 
-#ifndef DOXYGEN
+/** Data holding Game Library entries. */
 typedef struct
 {
 	string game;
+	string title;
+	string subtitle;
 	string gamedir;
 	string base_dir;
 	string url_info;
@@ -141,9 +150,11 @@ typedef struct
 	string menumap;
 	string introvideo;
 	gi_type info_type;
-} gameinfo_t;
+} gameEntry_t;
 
+#ifndef DOXYGEN
 int gameinfo_count;
-gameinfo_t *games;
-
+gameEntry_t *games;
 #endif
+
+/** @} */ // end of gamelibrary

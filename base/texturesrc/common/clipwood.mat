@@ -1,0 +1,9 @@
+{
+	qer_editorImage "common/clipwood.tga"
+	qer_trans 0.50
+	surfaceParm nodraw
+	surfaceParm trans
+	surfaceParm wood
+	surfaceParm nolightmap
+	nomipmaps
+}

@@ -1,0 +1,9 @@
+{
+	qer_editorImage "common/skyportal.tga"
+	surfaceParm noimpact
+	surfaceParm nolightmap
+	surfaceParm sky
+	surfaceParm nodlight
+	nomipmaps
+	skyParms - 512 -
+}

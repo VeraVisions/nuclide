@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-var int autocvar_r_autoscale = TRUE;
+var int autocvar_r_autoscale = false;
 
 void
 Menu_AutoScale(void)
@@ -22,6 +22,7 @@ Menu_AutoScale(void)
 	if (autocvar_r_autoscale) {
 		/* override for vid_conautoscales */
 		vector psize = getproperty(VF_SCREENPSIZE);
+
 		if (psize[1] >= (480 * 4)) {
 			cvar_set("vid_conautoscale", "4");
 		} else if (psize[1] >= (480 * 3)) {
@@ -37,10 +38,13 @@ Menu_AutoScale(void)
 void
 m_init(void)
 {
+	Platform_Init();
 	UISystem_Init();
-	Background_Init();
 	Desktop_Init();
-	
+
+	registercommand("packageList");
+	registercommand("friendsList");
+	registercommand("console");
 	registercommand("menu_quit");
 	registercommand("menu_music");
 	registercommand("map_background");
@@ -50,77 +54,90 @@ m_init(void)
 void
 Menu_RendererRestarted(string renderer)
 {
-	localcmd("menu_restart\n");
+	Platform_RendererRestarted();
 	Menu_AutoScale();
 }
 
 void
 m_shutdown(void)
 {
-	
+	Platform_Shutdown();
 }
 
 void
-m_draw(vector vecScreensize)
+m_draw(vector screensize)
 {
-	if (vecScreensize != video_res) {
-		Menu_AutoScale();
+	/* set new scale whenever the resolution changes */
+	if (Platform_DimensionsChanged(screensize) == true) {
+		Platform_CalculateRenderingScale(screensize);
+		Desktop_CanvasChanged();
 	}
 
-	g_background = cvar("_background");
-
-	/* make sure input carries over when a map background is active */
-	if (g_background) {
-		if (getkeydest() != KEY_MENU) {
-			setkeydest(KEY_MENU);
-			setmousetarget(TARGET_MENU);
-			setcursormode(TRUE, "gfx/cursor");
-		}
-	}
-
-	if (!g_iMenuActive && !g_background) {
-		/* make sure we're redirecting input when the background's gone */
-		if (getkeydest() != KEY_GAME) {
-			setkeydest(KEY_GAME);
-			setmousetarget(TARGET_CLIENT);
-			setcursormode(FALSE);
-		}
-		return;
-	}
 
 	frametime = time - lasttime;
 	lasttime = time;
 
-	video_res = vecScreensize;
-	Background_Draw(vecScreensize);
+	if (Platform_Draw(screensize) == false) {
+		return;
+	}
+
+	Background_Draw([0,0], g_vidsize);
 	Desktop_Draw();
+}
+
+void
+m_drawloading(vector screensize, float opaque)
+{
+	vector pos;
+
+	/* set new scale whenever the resolution changes */
+	if (Platform_DimensionsChanged(screensize) == true) {
+		Platform_CalculateRenderingScale(screensize);
+		Desktop_CanvasChanged();
+	}
+
+	pos = (screensize / 2) - [32,32];
+
+	if (opaque || (clientstate() != 2)) {
+		Background_Draw([0,0], screensize);
+	}
+
+	Loading_Draw(screensize);
 }
 
 float
 Menu_InputEvent (float evtype, float scanx, float chary, float devid)
 {
 	switch (evtype) {
-		case IE_KEYDOWN:
-			if (chary == K_ESCAPE) {
-				if (clientstate() == 2 && !g_background) {
-					m_toggle(0);
-				}
+	case IE_KEYDOWN:
+		if (chary == K_ESCAPE) {
+			if (clientstate() == 2 && !g_background) {
+				m_toggle(0);
 			}
-			break;
+		}
+		break;
+	case IE_MOUSEABS:
+		g_vecMousePos[0] = scanx;
+		g_vecMousePos[1] = chary;
+		break;
+	case IE_MOUSEDELTA:
+		g_vecMousePos[0] += scanx;
+		g_vecMousePos[1] += chary;
+		break;
 	}
 
 	g_vecMousePos = getmousepos();
 	g_uiDesktop.Input(evtype, scanx, chary, devid);
-	return (float)g_iMenuActive;
+	return (float)g_active;
 }
 
 void
 m_display(void)
 {
-	g_iMenuActive = TRUE;
+	g_active = TRUE;
 	setkeydest(KEY_MENU);
 	setmousetarget(TARGET_MENU);
-	setcursormode(TRUE, "gfx/cursor");
+	setcursormode(TRUE, "gfx/icon16/cursor");
 }
 
 /*
@@ -131,7 +148,7 @@ m_hide
 void
 m_hide(void)
 {
-	g_iMenuActive = FALSE;
+	g_active = FALSE;
 	setkeydest(KEY_GAME);
 	setmousetarget(TARGET_CLIENT);
 	setcursormode(FALSE);
@@ -151,27 +168,34 @@ m_toggle(float fMode)
 		m_display();
 }
 
-float m_consolecommand(string strCommand)
+float
+m_consolecommand(string cmd)
 {
-	dprint(sprintf("[MENU] m_consolecommand: %s\n", strCommand));
-	tokenize(strCommand);
+	int c = (int)tokenize(cmd);
 
 	switch (argv(0)) {
+	case "console":
+		static VGUIConsole consoleWindow;
+
+		if (!consoleWindow)
+			consoleWindow = spawn(VGUIConsole);
+
+		g_uiDesktop.Add( consoleWindow );
+		break;
 	case "menu_quit":
 		UI_QuitGame_Show();
 		break;
 	case "menu_music":
 		UI_MusicPlayer_Show();
 		break;
-	case "showconsole":
-		UI_Console_Show();
+	case "friendsList":
+		UI_Friends_Show();
 		break;
-	case "map_background":
-		localcmd(sprintf("maxplayers 2\nset coop 1\nset sv_background 1\nmap %s\n",
-			argv(1)));
+	case "packageList":
+		UI_Packages_Show();
 		break;
 	default:
-		return (0);
+		return Platform_ConsoleCommand(cmd, c);
 	}
 
 	return (1);

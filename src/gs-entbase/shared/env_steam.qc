@@ -37,7 +37,8 @@ enumflags
 };
 
 #ifdef CLIENT
-class env_steam_particle
+static class
+env_steam_particle
 {
 public:
 	void env_steam_particle(void);
@@ -61,31 +62,36 @@ float
 env_steam_particle::predraw(void)
 {
 	float partSize;
-	float lerp = (lifetime / m_flLifeTime);
-	float alpha = m_flAlpha * lerp;
+	float lerpPos = (lifetime / m_flLifeTime);
+	float alpha = m_flAlpha * lerpPos;
 	vector color;
+	vector spriteRight;
+	vector spriteUp;
 
 	if (m_bEmissive)
 		color = m_vecColor;
 	else
 		color = (getlight(origin) / 255);
 
-	partSize = Math_Lerp(m_flStartSize, m_flEndSize, lerp);
+	partSize = lerp(m_flStartSize, m_flEndSize, lerpPos);
 
-	makevectors(g_view.GetCameraAngle());
+	/* we really don't want to do this here, but people
+	   will mostly pass image samples and thus won't do orientation on the GPU. */
+	spriteRight = anglesToRight(g_view.GetCameraAngle());
+	spriteUp = anglesToUp(g_view.GetCameraAngle());
 
 	if (m_bType)
-		R_BeginPolygon("textures/sfx/heatsteam", 0, 0);
+		R_BeginPolygon("materials/sprites/heatwave", 0, 0);
 	else
 		R_BeginPolygon("textures/sfx/steam", 0, 0);
 
-	R_PolygonVertex(origin + v_right * partSize - v_up * partSize, [1,1], m_vecColor, alpha);
-	R_PolygonVertex(origin - v_right * partSize - v_up * partSize, [0,1], m_vecColor, alpha);
-	R_PolygonVertex(origin - v_right * partSize + v_up * partSize, [0,0], m_vecColor, alpha);
-	R_PolygonVertex(origin + v_right * partSize + v_up * partSize, [1,0], m_vecColor, alpha);
+	R_PolygonVertex(origin + spriteRight * partSize - spriteUp * partSize, [1,1], m_vecColor, alpha);
+	R_PolygonVertex(origin - spriteRight * partSize - spriteUp * partSize, [0,1], m_vecColor, alpha);
+	R_PolygonVertex(origin - spriteRight * partSize + spriteUp * partSize, [0,0], m_vecColor, alpha);
+	R_PolygonVertex(origin + spriteRight * partSize + spriteUp * partSize, [1,0], m_vecColor, alpha);
 	R_EndPolygon();
 
-	if (lerp >= 1.0f) {
+	if (lerpPos >= 1.0f) {
 		remove(this);
 	}
 
@@ -103,6 +109,7 @@ env_steam_particle::env_steam_particle(void)
 }
 #endif
 
+/*! \brief Shared-Entity: Steam Emitter */
 /*!QUAKED env_steam (1 .5 0) (-8 -8 -8) (8 8 8) EMISSIVE
 # OVERVIEW
 Environmental steam jet entity.
@@ -135,13 +142,18 @@ Environmental steam jet entity.
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
+
+@ingroup sharedentity
+@ingroup pointentity
 */
 class
-env_steam:NSPointTrigger
+env_steam:ncPointTrigger
 {
 #ifdef SERVER
 	bool m_bInitialState;
-#else
+#endif
+
+#ifdef CLIENT
 	float m_flNexTime;
 #endif
 
@@ -169,7 +181,9 @@ env_steam:NSPointTrigger
 	virtual void Trigger(entity, triggermode_t);
 	virtual void EvaluateEntity(void);
 	virtual float SendEntity(entity,float);
-#else
+#endif
+
+#ifdef CLIENT
 	virtual void ReceiveEntity(float,float);
 	virtual float predraw(void);
 #endif
@@ -353,8 +367,9 @@ env_steam::Trigger(entity act, triggermode_t state)
 void
 env_steam::Respawn(void)
 {
+	super::Respawn();
+
 	SetSize([0,0,0], [0,0,0]);
-	SetOrigin(GetSpawnOrigin());
 
 	if (m_bInitialState)
 		m_bState = true;
@@ -418,7 +433,9 @@ env_steam::SendEntity(entity ePEnt, float flChanged)
 
 	return (1);
 }
-#else
+#endif
+
+#ifdef CLIENT
 void
 env_steam::ReceiveEntity(float flNew, float flChanged)
 {

@@ -1,4 +1,0 @@
-entityDef bot
-{
-	spawnclass NSBot
-}

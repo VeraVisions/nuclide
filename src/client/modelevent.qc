@@ -39,10 +39,7 @@ Event_Callback(float mtime, __inout float btime)
 		return;
 
 	/* weapon changed */
-	NSClientPlayer pl = (NSClientPlayer)(pSeat->m_ePlayer);
-
-	if (pSeat->m_iEventWeapon != pl.activeweapon)
-		return;
+	ncPlayer pl = (ncPlayer)(pSeat->m_ePlayer);
 
 	/* only play once */
 	if (mtime == btime)
@@ -50,10 +47,13 @@ Event_Callback(float mtime, __inout float btime)
 
 	/* call when we've passed the keyframe the first time */
 	if (btime <= pSeat->m_flEventTime && (mtime > pSeat->m_flEventTime)) {
+		entity oldSelf = self;
+		self = pSeat->m_iEventEntity;
 		pSeat->m_pEventCall();
 		pSeat->m_pEventCall = __NULL__;
 		pSeat->m_flEventMdl = 0;
 		pSeat->m_flEventFrame = -1;
+		self = oldSelf;
 	}
 
 	btime = mtime;

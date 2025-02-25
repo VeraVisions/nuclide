@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Player Team Controller */
 /*!QUAKED game_player_team (1 .5 0) (-8 -8 -8) (8 8 8) REMOVE KILL GIB
 # OVERVIEW
 Allows the player to change teams.
@@ -30,9 +31,12 @@ Allows the player to change teams.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup serverentity
+@ingroup pointentity
 */
 class
-game_player_team:NSPointTrigger
+game_player_team:ncPointTrigger
 {
 public:
 	void game_player_team(void);
@@ -48,8 +52,9 @@ game_player_team::game_player_team(void)
 void
 game_player_team::Trigger(entity entityActivator, triggermode_t state)
 {
-	NSClientPlayer targetPlayer = __NULL__;
+	ncPlayer targetPlayer = __NULL__;
 	game_team_master toRead = __NULL__;
+	ncDict damageDecl;
 
 	if (GetMaster(entityActivator) == FALSE) {
 		return;
@@ -62,13 +67,21 @@ game_player_team::Trigger(entity entityActivator, triggermode_t state)
 		return;
 	}
 
-	targetPlayer = (NSClientPlayer)entityActivator;
+	targetPlayer = (ncPlayer)entityActivator;
 	targetPlayer.SetTeam((float)toRead.GetTeamIndex());
 
 	if (HasSpawnFlags(4) == true) {
-		Damage_Apply(targetPlayer, targetPlayer, targetPlayer.health + 100i, 0, DMG_SKIP_ARMOR);
+		damageDecl = spawn(ncDict);
+		damageDecl.AddKey("damage", ftos(targetPlayer.health + 100));
+		damageDecl.AddKey("skip_armor", "1");
+		combat.Damage(targetPlayer, this, targetPlayer, damageDecl.GetDeclBody(), GetOrigin(), g_vec_null, targetPlayer.origin);
+		remove(damageDecl);
 	} else if (HasSpawnFlags(2) == true) {
-		Damage_Apply(targetPlayer, targetPlayer, targetPlayer.health, 0, DMG_SKIP_ARMOR);
+		damageDecl = spawn(ncDict);
+		damageDecl.AddKey("damage", ftos(targetPlayer.health));
+		damageDecl.AddKey("skip_armor", "1");
+		combat.Damage(targetPlayer, this, targetPlayer, damageDecl.GetDeclBody(), GetOrigin(), g_vec_null, targetPlayer.origin);
+		remove(damageDecl);
 	}
 
 	if (HasSpawnFlags(1)) {

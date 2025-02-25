@@ -22,6 +22,7 @@ enumflags
 	TRAIN_NOTSOLID
 };
 
+/*! \brief Server-Entity: Linear Moving Brush */
 /*!QUAKED func_train (0 .5 .8) ? WAIT x x NOT_SOLID
 # OVERVIEW
 Moving platform following along path_corner entities, aka nodes.
@@ -53,9 +54,12 @@ when lasers are following this train as a sort of guide.
 
 # TRIVIA
 This entity was introduced in Quake (1996).
+
+@ingroup serverentity
+@ingroup brushentity
 */
 class
-func_train:NSRenderableEntity
+func_train:ncRenderableEntity
 {
 	float m_flWait;
 	float m_flSpeed;
@@ -89,7 +93,7 @@ void
 func_train::func_train(void)
 {
 	m_flWait = 0.0f;
-	m_flSpeed = 0.0f; /* FIXME: This is all decided by the first path_corner pretty much */
+	m_flSpeed = 0.0f;
 	m_flDamage = 0.0f;
 	m_strMoveSnd = __NULL__;
 	m_strStopSnd = __NULL__;
@@ -176,30 +180,44 @@ func_train::Spawned(void)
 void
 func_train::Respawn(void)
 {
+	super::Respawn();
+
 	SetSolid(HasSpawnFlags(TRAIN_NOTSOLID) ? SOLID_NOT : SOLID_BSP);
 	SetMovetype(MOVETYPE_PUSH);
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
 
 	/* let's wait 1/4 a second to give the path_corner entities a chance to
 	 * spawn in case they're after us in the ent lump */
-	SetTriggerTarget(m_oldstrTarget);
+	SetTriggerTarget(GetSpawnString("target"));
 	ScheduleThink(AfterSpawn, 0.25f);
 }
 
 void
 func_train::Blocked(entity eBlocker)
 {
+	vector center;
+	vector dmgDir;
+	ncDict damageDecl;
+
 	/* HACK: Make corpses gib instantly */
-	if (other.solid == SOLID_CORPSE) {
-		Damage_Apply(eBlocker, this, 500, 0, DMG_EXPLODE);
+	if (eBlocker.solid == SOLID_CORPSE) {
+		center = WorldSpaceCenter();
+		dmgDir = dirFromTarget(center, eBlocker.origin);
+		damageDecl = spawn(ncDict);
+		damageDecl.AddKey("damage", "500");
+		combat.Damage(eBlocker, this, eBlocker, damageDecl.GetDeclBody(), center, dmgDir, eBlocker.origin);
+		remove(damageDecl);
 		return;
 	}
 
-	if (other.takedamage != DAMAGE_NO) {
-		Damage_Apply(eBlocker, this, m_flDamage, 0, DMG_CRUSH);
+	if (eBlocker.takedamage != DAMAGE_NO) {
+		center = WorldSpaceCenter();
+		dmgDir = dirFromTarget(center, eBlocker.origin);
+		damageDecl = spawn(ncDict);
+		damageDecl.AddKey("damage", ftos(m_flDamage));
+		combat.Damage(eBlocker, this, eBlocker, damageDecl.GetDeclBody(), center, dmgDir, eBlocker.origin);
+		remove(damageDecl);
 	} else {
-		remove(eBlocker);
+		/* remove(eBlocker); */
 	}
 }
 
@@ -367,6 +385,8 @@ func_train::AfterSpawn(void)
 	} else {
 		m_flCurrentSpeed = m_flSpeed;
 	}
+
+	m_flSpeed = m_flCurrentSpeed;
 
 	/* if we're unable to be triggered by anything, begin moving */
 	if (HasTargetname() == false) {

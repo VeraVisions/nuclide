@@ -14,15 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-typedef struct
-{
-	string name;
-	string title;
-	string author;
-	string type;
-	string preview;
-} mapLibrary_t;
-
 mapLibrary_t *g_mapLibrary;
 var int g_mapLibrary_count = 0i;
 var int map_blacklist_count = 0i;
@@ -33,9 +24,15 @@ MapLibrary_GetMapGamedir(void)
 {
 	string gdir = cvar_string("fs_game");
 
-	/* HACK: work around FTEQW's path choice */
+	/* HACK: work around FTEQW's path choices */
 	if (gdir == "ftehl")
 		gdir = "valve";
+
+	if (gdir == "fteq2")
+		gdir = "baseq2";
+
+	if (gdir == "fteq3")
+		gdir = "baseq3";
 
 	return gdir;
 }
@@ -44,6 +41,12 @@ static bool
 MapLibrary_MapInGameDir(string fileName, string gameDir)
 {
 	bool list = true;
+
+	if (autocvar(fs_mapFilter, 1) == 0) {
+		return (true);
+	}
+
+	//printf("Checking %S %S...\n", fileName, gameDir);
 
 	/* only look for maps in the current gamedir, requires SEARCH_FULLPACKAGE */
 	if (gameDir != MapLibrary_GetMapGamedir()) {
@@ -131,7 +134,7 @@ MapLibrary_Init(void)
 	}
 
 	/* search for all maps in the current PATH */
-	mapsearch = search_begin("maps/*.bsp", SEARCH_NAMESORT | SEARCH_FULLPACKAGE, TRUE);
+	mapsearch = search_begin("maps/*.bsp:maps/*/*.bsp", SEARCH_NAMESORT | SEARCH_FULLPACKAGE | SEARCH_MULTISEARCH, TRUE);
 	mapCount = search_getsize(mapsearch);
 
 	/* we now iterate over the search entries to filter results out */
@@ -151,7 +154,7 @@ MapLibrary_Init(void)
 	g_mapLibrary = (mapLibrary_t *)memalloc(sizeof(mapLibrary_t) * g_mapLibrary_count);
 
 	/* let's do it again, but this time we'll sort the data into our array */
-	mapsearch = search_begin("maps/*.bsp", SEARCH_NAMESORT | SEARCH_FULLPACKAGE, TRUE);
+	mapsearch = search_begin("maps/*.bsp:maps/*/*.bsp", SEARCH_NAMESORT | SEARCH_FULLPACKAGE | SEARCH_MULTISEARCH, TRUE);
 	mapCount = search_getsize(mapsearch);
 
 	for (i = 0i; i < mapCount; i++) {

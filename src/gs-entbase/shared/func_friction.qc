@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Shared-Entity: Ground Friction Override Volume */
 /*!QUAKED func_friction (0 .5 .8) ?
 # OVERVIEW
 Volume that permanently adds a modifier that affects an entities' friction.
@@ -29,8 +30,11 @@ around the primary volume in case that's the effect that you desire.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup sharedentity
+@ingroup brushentity
 */
-class func_friction:NSEntity
+class func_friction:ncEntity
 {
 public:
 	void func_friction(void);

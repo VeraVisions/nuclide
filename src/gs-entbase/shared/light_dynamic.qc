@@ -31,6 +31,7 @@ enumflags
 	DLIGHTFL_CHANGED_PATTERN
 };
 
+/*! \brief Shared-Entity: Dynamic Light */
 /*!QUAKED light_dynamic (0 1 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Dynamic light entity. Can be parented to things, it even has some inputs that
@@ -68,8 +69,11 @@ games to tell the entity to start inactive as far as I can tell.
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
+
+@ingroup sharedentity
+@ingroup pointentity
 */
-class light_dynamic:NSPointTrigger
+class light_dynamic:ncPointTrigger
 {
 public:
 	void light_dynamic(void);
@@ -81,7 +85,9 @@ public:
 	virtual float predraw(void);
 	virtual void RendererRestarted(void);
 	virtual void LightChanged(float);
-#else
+#endif
+
+#ifdef SERVER
 	virtual void Trigger(entity, triggermode_t);
 	virtual void Respawn(void);
 	virtual float SendEntity(entity,float);
@@ -226,7 +232,9 @@ light_dynamic::RendererRestarted(void)
 	m_light = dynamiclight_spawnstatic(origin, m_flDistance, m_vecLight);
 	LightChanged(0xFFFFFF);
 }
-#else
+#endif
+
+#ifdef SERVER
 void
 light_dynamic::EvaluateEntity(void)
 {
@@ -358,10 +366,9 @@ light_dynamic::Input(entity eAct, string strInput, string strData)
 void
 light_dynamic::Respawn(void)
 {
+	super::Respawn();
 	SetSolid(SOLID_NOT);
 	SetSize([-0,-0,-0], [0,0,0]);
-	SetOrigin(GetSpawnOrigin());
-	SetAngles(GetSpawnAngles());
 	m_iState = (m_iStartActive == 1) ? 1 : 0;
 }
 #endif
@@ -417,4 +424,5 @@ light_dynamic::light_dynamic(void)
 }
 
 /* compatibility for q3map users, stay safe out there */
+/*! \brief Shared-Entity: Dynamic Light (alias for light_dynamic) */
 class dynamic_light:light_dynamic { };

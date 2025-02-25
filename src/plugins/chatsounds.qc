@@ -14,6 +14,14 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+#pragma target fte_5768
+//#pragma flag enable assumeint
+#pragma PROGS_DAT  "../../base/plug_chatsounds.dat"
+#define QWSSQC
+
+#include "../shared/fteextensions.qc"
+#include "../shared/memory.h"
+
 /* our sound boogeyman */
 static entity emitter;
 static int g_sounds;
@@ -79,7 +87,7 @@ ChatLoadFile(string filename)
 	}
 	fseek(chatfile, 0);
 
-	g_table = (chatsentence_t *)memrealloc(g_table, sizeof(chatsentence_t), i, g_sounds);
+	g_table = (chatsentence_t *)memreallocOld(g_table, sizeof(chatsentence_t), i, g_sounds);
 
 	while ((temp = fgets(chatfile))) {
 		c = tokenize_console(temp);
@@ -100,19 +108,19 @@ ChatLoadFile(string filename)
 
 /* plugin hook */
 string
-FMX_ParseClientCommand(string cmd)
+Plug_ClientCommand(entity clientEntity, string commandString)
 {
-	tokenize(cmd);
+	tokenize(commandString);
 	switch (argv(0)) {
 	case "say":
 		return ChatLookUp(strtolower(argv(1)));
 		break;
 	}
-	return (cmd);
+	return (commandString);
 }
 
-void
-FMX_Init(void)
+bool
+Plug_Load(void)
 {
 	int i = 0;
 	searchhandle list;
@@ -123,10 +131,12 @@ FMX_Init(void)
 		ChatLoadFile(search_getfilename(list, i));
 	}
 	search_end(list);
+
+	return true;
 }
 
 void
-FMX_InitEnts(void)
+Plug_ServerActivate(void)
 {
 	if (!emitter && g_sounds > 0) {
 		emitter = spawn();

@@ -1,0 +1,16 @@
+{
+if $programs
+	program defaultwall
+	diffusemap textures/measure/wall128b.tga
+else
+	{
+		map $lightmap
+		rgbGen identity
+	}
+	{
+		map textures/measure/wall128b.tga
+		rgbGen identity
+		blendFunc GL_DST_COLOR GL_ZERO
+	}
+endif
+}

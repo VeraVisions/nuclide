@@ -14,6 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+#pragma target fte_5768
+//#pragma flag enable assumeint
+#pragma PROGS_DAT  "../../base/plug_ircbridge.dat"
+#define QWSSQC
+
+#include "../shared/fteextensions.qc"
 #include "../platform/tcp.h"
 #include "../platform/tcp.qc"
 
@@ -115,25 +121,25 @@ IRCBridge_ServerConnect(void)
 }
 
 void
-FMX_PlayerObituary(entity attk, entity targ, int weapon, int body, int dmg)
+Plug_ClientObituary(entity attk, entity targ, int weapon, int body, int dmg)
 {
 	irc_send(sprintf("PRIVMSG %s :%s whooped %s\n", g_irc_channeltarget, attk.netname, targ.netname));
 }
 
 string
-FMX_ParseClientCommand(string cmd)
+Plug_ClientCommand(entity clientEntity, string commandString)
 {
-	tokenize(cmd);
+	tokenize(commandString);
 	switch (argv(0)) {
 	case "say":
-		irc_send(sprintf("PRIVMSG %s :<%s> %s\n", g_irc_channeltarget, self.netname, argv(1)));
+		irc_send(sprintf("PRIVMSG %s :<%s> %s\n", g_irc_channeltarget, clientEntity.netname, argv(1)));
 		break;
 	}
-	return (cmd);
+	return (commandString);
 }
 
 void
-FMX_InitEnts(void)
+Plug_ServerActivate(void)
 {
 	g_ircbridge = spawn();
 	g_ircbridge.think = IRCBridge_ServerConnect;

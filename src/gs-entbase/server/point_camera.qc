@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Rendertarget Camera Viewpoint */
 /*!QUAKED point_camera (1 0 0) (-8 -8 -8) (8 8 8) PCAMFL_STARTOFF
 # OVERVIEW
 A virtual camera of which its output can be displayed on a rendertarget.
@@ -39,9 +40,12 @@ This plays well with the func_monitor entity.
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
+
+@ingroup serverentity
+@ingroup pointentity
 */
 class
-point_camera:NSPointTrigger
+point_camera:ncPointTrigger
 {
 public:
 	void point_camera(void);
@@ -50,8 +54,8 @@ public:
 	virtual void Save(float);
 	virtual void Restore(string,string);
 	virtual void SpawnKey(string,string);
-	virtual void Respawn(void);
 	virtual void Input(entity,string,string);
+	virtual void Respawn(void);
 
 private:
 	int m_iUseSAR;
@@ -142,14 +146,11 @@ point_camera::SpawnKey(string strKey, string strValue)
 void
 point_camera::Respawn(void)
 {
-	InitPointTrigger();
-
-	SetModelindex(0);
-	SetSolid(SOLID_NOT);
-	SetSize([-16,-16,-16], [16,16,16]);
-	SetOrigin(GetSpawnOrigin());
-	SetAngles(GetSpawnAngles());
-	m_iValue = TRUE;
+	if (HasSpawnFlags(1)) {
+		m_iValue = false;
+	} else {
+		m_iValue = true;
+	}
 }
 
 void

@@ -48,31 +48,34 @@ void AngleVectors ( vector angles )
 	v_up[2] = cr*cp;
 }
 
+string(float modidx, float framenum) frametoname = #0;
+.float modelindex;
+
 void UI_ModelViewer_Show ( void )
 {
 	static entity eModel;
 	static vector vecDistance = [ 90, 0, 0 ];
-	static CUIWindow winViewer;
-	static CUI3DView viewModel;
-	static CUIPic picBackground;
-	static CUIButton btnTabRenderer;
-	static CUIButton btnTabSequence;
-	static CUIButton btnTabBody;
-	static CUIButton btnTabTexture;
-	static CUIList lstModels;
-	static CUIScrollbar scrlModels;
-	static CUIButton btnLoadModel;
+	static vguiWindow winViewer;
+	static vgui3DView viewModel;
+	static vguiRect picBackground;
+	static vguiButton btnTabRenderer;
+	static vguiButton btnTabSequence;
+	static vguiButton btnTabBody;
+	static vguiButton btnTabTexture;
+	static vguiList lstModels;
+	static vguiScrollBar scrlModels;
+	static vguiButton btnLoadModel;
 	
 	// Renderer
-	static CUICheckbox chkBackground;
-	static CUICheckbox chkGround;
-	static CUICheckbox chkMirror;
-	static CUIButton btnFirstperson;
+	static vguiCheckbox chkBackground;
+	static vguiCheckbox chkGround;
+	static vguiCheckbox chkMirror;
+	static vguiButton btnFirstperson;
 	
 	// Sequences
-	static CUILabel lblSeqFrame;
-	static CUIButton btnSeqNext;
-	static CUIButton btnSeqPrev;
+	static vguiLabel lblSeqFrame;
+	static vguiButton btnSeqNext;
+	static vguiButton btnSeqPrev;
 	
 	static void UI_ModelViewer_Firstperson( void ) {
 		vecDistance = [ 0, 0, 0 ];
@@ -80,17 +83,21 @@ void UI_ModelViewer_Show ( void )
 		viewModel.Set3DPos( [0,0,0] );
 	}
 	static void UI_ModelViewer_SetFrame( int iFrame ) {
+		float maxFrame = modelframecount(eModel.modelindex) - 1;
 		eModel.frame = (float)iFrame;
-		lblSeqFrame.SetTitle( sprintf( "Frame: %i", iFrame ) );
+
+		if (eModel.frame < 0) {
+			eModel.frame = 0;
+		}
+
+		lblSeqFrame.SetTitle( sprintf( "Frame %d: %s", eModel.frame, frametoname(eModel.modelindex, eModel.frame) ) );
 		eModel.frame1time = 0;
 	}
 	static void UI_ModelViewer_SetFrameP( void ) {
-		UI_ModelViewer_SetFrame( ++eModel.frame );
+		UI_ModelViewer_SetFrame( eModel.frame + 1 );
 	}
 	static void UI_ModelViewer_SetFrameM( void ) {
-		if ( eModel.frame ) {
-			UI_ModelViewer_SetFrame( --eModel.frame );
-		}
+		UI_ModelViewer_SetFrame( eModel.frame - 1 );
 	}
 	static void UI_ModelViewer_SetModel( string strModel ) {
 		setmodel( eModel, strModel );
@@ -111,10 +118,10 @@ void UI_ModelViewer_Show ( void )
 		
 		if ( chkGround.GetValue() == TRUE ) {
 			R_BeginPolygon( "", 0, FALSE );
-			R_PolygonVertex( [ 64, -64, 0 ], '1 0', [1,1,1], 1.0f ); // Top Right
-			R_PolygonVertex( [ -64, -64, 0 ], '0 0', [1,1,1], 1.0f ); // Top left
-			R_PolygonVertex( [ -64, 64, 0 ], '0 1', [1,1,1], 1.0f ); // Bottom left
-			R_PolygonVertex( [ 64, 64, 0 ], '1 1', [1,1,1], 1.0f ); // Bottom right
+			R_PolygonVertex( [ 64, -64, 0 ], [1,0], [1,1,1], 1.0f ); // Top Right
+			R_PolygonVertex( [ -64, -64, 0 ], [0,0], [1,1,1], 1.0f ); // Top left
+			R_PolygonVertex( [ -64, 64, 0 ], [0,1], [1,1,1], 1.0f ); // Bottom left
+			R_PolygonVertex( [ 64, 64, 0 ], [1,1], [1,1,1], 1.0f ); // Bottom right
 			R_EndPolygon();
 		}
 	
@@ -185,9 +192,9 @@ void UI_ModelViewer_Show ( void )
 		viewModel.SetSize( picBackground.GetSize() );
 
 		btnTabRenderer.SetPos( [ 6, vWinSize[1] - 92 ] );
-		btnTabSequence.SetPos( btnTabRenderer.GetPos() + [ btnTabRenderer.GetSizeWidth() + 1, 0 ] );
-		btnTabBody.SetPos( btnTabSequence.GetPos() + [ btnTabSequence.GetSizeWidth() + 1, 0 ] );
-		btnTabTexture.SetPos( btnTabBody.GetPos() + [ btnTabBody.GetSizeWidth() + 1, 0 ] );
+		btnTabSequence.SetPos( btnTabRenderer.GetPos() + [ btnTabRenderer.GetWidth() + 1, 0 ] );
+		btnTabBody.SetPos( btnTabSequence.GetPos() + [ btnTabSequence.GetWidth() + 1, 0 ] );
+		btnTabTexture.SetPos( btnTabBody.GetPos() + [ btnTabBody.GetWidth() + 1, 0 ] );
 		
 		chkBackground.SetPos( btnTabRenderer.GetPos() + [ 0, 30 ] );
 		chkGround.SetPos( btnTabRenderer.GetPos() + [ 0, 50 ] );
@@ -234,7 +241,7 @@ void UI_ModelViewer_Show ( void )
 	}
 	
 	static void ModelViewer_ScrollUpdate ( void ) {
-		scrlModels.SetValue( lstModels.GetOffset(), FALSE );
+		scrlModels.SetValue( lstModels.GetOffset() );
 	}
 	static void ModelViewer_ListUpdate ( void ) {
 		lstModels.SetOffset( scrlModels.GetValue(), FALSE );
@@ -242,70 +249,72 @@ void UI_ModelViewer_Show ( void )
 
 	if ( !g_iModelViewerInitialized ) {
 		g_iModelViewerInitialized = TRUE;
-		winViewer = spawn( CUIWindow );
+		winViewer = spawn( vguiWindow );
 		winViewer.SetTitle( "Model Viewer" );
 		winViewer.SetSize( [ 550, 390 ] );
 		winViewer.SetMinSize( [ 430, 256 ] );
 		winViewer.SetMaxSize( [ 9999, 9999 ] );
-		winViewer.SetStyleMask( VGUIWindowStyleDefault | VGUIWindowResizeable );
+		winViewer.SetStyleMask( vguiWindowStyleDefault | vguiWindowResizeable );
 		winViewer.SetPos( [ 172, 64 ] );
-		winViewer.SetIcon( "textures/ui/icons/hdd" );
+		winViewer.SetIcon( "gfx/icon16/images" );
 		winViewer.CallOnResize( UI_ModelViewer_Resize );
 
-		picBackground = spawn( CUIPic );
-		picBackground.SetImage( "textures/dev/black" );
+		picBackground = spawn( vguiRect );
 		picBackground.SetPos( [ 6, 32 ] );
 
-		viewModel = spawn( CUI3DView );
+		viewModel = spawn( vgui3DView );
 		viewModel.SetDrawFunc( UI_ModelViewer_Draw );
 		viewModel.SetInputFunc( UI_ModelViewer_Input );
 		viewModel.SetPos( [ 6, 32 ] );
 
-		btnTabRenderer = spawn( CUIButton );
+		btnTabRenderer = spawn( vguiButton );
 		btnTabRenderer.SetTitle( "Renderer" );
 		btnTabRenderer.SetFunc( UI_ModelViewer_ShowRenderer );
-		btnTabSequence = spawn( CUIButton );
+		btnTabSequence = spawn( vguiButton );
 		btnTabSequence.SetTitle( "Sequence" );
 		btnTabSequence.SetFunc( UI_ModelViewer_ShowSequence );
-		btnTabBody = spawn( CUIButton );
+		btnTabBody = spawn( vguiButton );
 		btnTabBody.SetTitle( "Body" );
 		btnTabBody.SetFunc( UI_ModelViewer_ShowBody );
-		btnTabTexture = spawn( CUIButton );
+		btnTabTexture = spawn( vguiButton );
 		btnTabTexture.SetTitle( "Texture" );
 		btnTabTexture.SetFunc( UI_ModelViewer_ShowTexture );
 		
-		chkBackground = spawn( CUICheckbox );
+		chkBackground = spawn( vguiCheckbox );
 		chkBackground.SetTitle( "Background" );
 		chkBackground.SetValue( TRUE );
-		chkGround = spawn( CUICheckbox );
+		chkGround = spawn( vguiCheckbox );
 		chkGround.SetTitle( "Ground" );
-		chkMirror = spawn( CUICheckbox );
+		chkMirror = spawn( vguiCheckbox );
 		chkMirror.SetTitle( "Mirror on Ground" );
-		btnFirstperson = spawn( CUIButton );
+		btnFirstperson = spawn( vguiButton );
 		btnFirstperson.SetTitle( "FPS-CAM" );
 		btnFirstperson.SetFunc( UI_ModelViewer_Firstperson );
 		
-		lblSeqFrame = spawn( CUILabel );
+		lblSeqFrame = spawn( vguiLabel );
 		lblSeqFrame.SetTitle( "Frame: 0" );
-		btnSeqNext = spawn( CUIButton );
+		lblSeqFrame.SetSize([550,16]);
+		btnSeqNext = spawn( vguiButton );
 		btnSeqNext.SetTitle( ">>" );
+		btnSeqNext.SetSize([48,24]);
 		btnSeqNext.SetFunc( UI_ModelViewer_SetFrameP );
-		btnSeqPrev = spawn( CUIButton );
+		btnSeqPrev = spawn( vguiButton );
 		btnSeqPrev.SetTitle( "<<" );
+		btnSeqPrev.SetSize([48,24]);
 		btnSeqPrev.SetFunc( UI_ModelViewer_SetFrameM );
 		
-		searchhandle shModels = search_begin( "models/*.mdl:models/*.vvm:models/*/*.mdl:models/*/*.vvm:models/*/*/*.mdl:models/*/*/*.vvm:models/*/*/*/*.mdl:models/*/*/*/*.vvm", SEARCH_NAMESORT | SEARCH_MULTISEARCH, TRUE );
-		lstModels = spawn( CUIList );
+		searchhandle shModels = search_begin( "models/*.mdl:models/*.md2:models/*.vvm:models/*/*.mdl:models/*/*.md2:models/*/*.vvm:models/*/*/*.mdl:models/*/*/*.md2:models/*/*/*.vvm:models/*/*/*/*.mdl:models/*/*/*/*.md2:models/*/*/*/*.vvm", SEARCH_NAMESORT | SEARCH_MULTISEARCH, TRUE );
+		lstModels = spawn( vguiList );
 		lstModels.SetItemCount( search_getsize( shModels ) );
 		lstModels.CallOnScroll( ModelViewer_ScrollUpdate );
 
 		for ( int i = 0; i < search_getsize( shModels ); i++ ) {
 			string strAdd = search_getfilename( shModels, i );
-			lstModels.AddItem( substring( strAdd , 6, strlen( strAdd ) - 6 ) );
+			lstModels.AddItem( substring( strAdd , 7, -1 ) );
 		}
 		search_end( shModels );
 		
-		scrlModels = spawn( CUIScrollbar );
+		scrlModels = spawn( vguiScrollBar );
 		scrlModels.SetMin( 0 );
 		scrlModels.SetStep( 1 );
 		scrlModels.CallOnChange( ModelViewer_ListUpdate );
@@ -313,10 +322,10 @@ void UI_ModelViewer_Show ( void )
 		static void UI_ModelViewer_LoadSelected ( void ) {
 			UI_ModelViewer_SetModel( sprintf( "models/%s", lstModels.GetItem( lstModels.GetSelected() ) ) );
 		}
-		btnLoadModel = spawn( CUIButton );
+		btnLoadModel = spawn( vguiButton );
 		btnLoadModel.SetTitle( "Load Selected" );
 		btnLoadModel.SetFunc( UI_ModelViewer_LoadSelected );
-		btnLoadModel.SetSize( '192 24' );
+		btnLoadModel.SetSize( [192,24] );
 
 		UI_ModelViewer_Resize();
 		UI_ModelViewer_ShowRenderer();
@@ -326,8 +335,8 @@ void UI_ModelViewer_Show ( void )
 		winViewer.Add( viewModel );
 		winViewer.Add( btnTabRenderer );
 		winViewer.Add( btnTabSequence );
-		winViewer.Add( btnTabBody );
-		winViewer.Add( btnTabTexture );
+		//winViewer.Add( btnTabBody );
+		//winViewer.Add( btnTabTexture );
 		winViewer.Add( chkBackground );
 		winViewer.Add( chkGround );
 		winViewer.Add( chkMirror );

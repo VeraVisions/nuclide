@@ -1,5 +1,7 @@
 #pragma target fte_5768
 #pragma progs_dat  "../../csprogs.dat"
+//#pragma flag enable assumeint
+#pragma forcecrc 54730
 
 #define CSQC
 #define CLIENT
@@ -12,7 +14,6 @@
 
 /* mod specific header */
 defs.h
-
 /* for VGUI elements, we want to include this (optional) */
 ../../../src/vgui/include.src
 
@@ -23,16 +24,7 @@ defs.h
 /* mod specific functions */
 ../shared/include.src
 
-draw.qc
-init.qc
-entities.qc
-camera.qc
-cmds.qc
-game_event.qc
-viewmodel.qc
-hud.qc
-hud_weaponselect.qc
-scoreboard.qc
+main.qc
 
 /* global client/shared code */
 ../../../src/client/include.src

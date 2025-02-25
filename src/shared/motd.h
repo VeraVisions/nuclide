@@ -18,6 +18,24 @@
 var string autocvar_motdfile = "motd.txt";
 #define MOTD_FILE autocvar_motdfile
 
+/** @defgroup motd Message of the Day
+@brief Server set message of the day, display to clients.
+@ingroup shared
+
+# Message of the Day (MOTD) System {#motd}
+
+Any multiplayer game has the capability of setting a **Message of the Day**, **MotD** for short.
+
+Those are usually bits of information about the game server, how to contact the administrator or more.
+
+A ncGameRules based class can usually call `MOTD_LoadDefault()` on the server to load the message from the default file location located under `gamedir/motd.txt`. The default location can be changed by adjusting the console variable `motdfile`.
+
+The client game then receives the **MotD** using `MOTD_GetTextBody()`, in addition to `MOTD_GetLineCount()` for figuring out how many lines of text the message takes up.
+
+@{
+
+*/
+
 /** Hard-limit to how many lines are allowed within a message of the day. */
 #define MOTD_LINES 32
 
@@ -25,7 +43,7 @@ var string autocvar_motdfile = "motd.txt";
 void MOTD_LoadDefault(void);
 
 /** Called on the server to load a specific 'message of the day' file. */
-void MOT_LoadFromFile(string);
+void MOTD_LoadFromFile(string);
 #endif
 
 /** Called by CSQC_Init() on the client game and by initents() on the server game to
@@ -38,3 +56,5 @@ string MOTD_GetTextBody(void);
 /** Returns how many individual lines are present in the message of the day. */
 int MOTD_GetLineCount(void);
 #endif
+
+/** @} */ // end of motd

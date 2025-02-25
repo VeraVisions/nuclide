@@ -14,7 +14,22 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-var int autocvar_logging_enabled = FALSE;
+/** @defgroup logging Logging
+    @brief Server-side logging functions.
+    @ingroup server
 
+Various helper functions, mainly used internally by Nuclide, to aid in logging common game activity.
+
+@{
+
+*/
+
+var bool autocvar_logging_enabled = false;
+
+/** Informs the logging system that a player got fragged (killed, knocked down). */
 void Logging_Frag(entity, entity);
+
+/** Informs the logging system that an item got picked up by a player. */
 void Logging_Pickup(entity, entity, string);
+
+/** @} */ // end of logging

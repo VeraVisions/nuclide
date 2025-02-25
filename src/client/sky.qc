@@ -15,6 +15,7 @@
 */
 
 var string g_strSkyName;
+var string g_strSkyPath;
 
 void
 Sky_Update(int force)
@@ -29,8 +30,10 @@ Sky_Update(int force)
 		//print(sprintf("SKY PREFIX: %S\n", skyPrefix));
 
 		/* is it a Source Engine material? */
-		if (skyPrefix == "sky_") {
+		if (fileExists(strcat("materials/skybox/", g_strSkyName, "bk.vmt")) == true) {
 			skyPath = strcat("materials/skybox/", g_strSkyName);
+		} else if (fileExists(strcat("env/", g_strSkyName, ".mat")) == true) {
+			skyPath = strcat("env/", g_strSkyName);
 		} else {
 			skyPath = g_strSkyName;
 		}
@@ -39,6 +42,13 @@ Sky_Update(int force)
 			return;
 
 		localcmd(sprintf("sky \"%s\"\n", skyPath));
+		g_strSkyPath = skyPath;
 		NSLog("sky update applying %s.", skyPath);
 	}
+}
+
+string
+Sky_GetMaterial(void)
+{
+	return (g_strSkyPath);
 }

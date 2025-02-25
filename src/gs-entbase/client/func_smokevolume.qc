@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Client-Entity: Smoke Cloud Volume */
 /*!QUAKED func_smokevolume (0 .5 .8) ? FULLBRIGHT
 # OVERVIEW
 Smoke cloud emitting brush volume.
@@ -27,12 +28,16 @@ Smoke cloud emitting brush volume.
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
+
+@ingroup cliententity
+@ingroup brushentity
 */
-class func_smokevolume:NSEntity
+class func_smokevolume:ncEntity
 {
 public:
 	void func_smokevolume(void);
 
+	virtual void Precache(void);
 	virtual void Spawned(void);
 	virtual float predraw(void);
 	virtual void SpawnKey(string, string);
@@ -55,7 +60,8 @@ private:
 };
 
 #if 1
-class func_smokevolume_cloud
+static class
+func_smokevolume_cloud
 {
 public:
 	void func_smokevolume_cloud(void);
@@ -77,6 +83,7 @@ float
 func_smokevolume_cloud::predraw(void)
 {
 	float alpha;
+	vector color = m_vecColor;
 	vector vecPlayer = g_view.GetCameraOrigin();
 	
 	if (checkpvs(vecPlayer, this) == FALSE) {
@@ -94,17 +101,17 @@ func_smokevolume_cloud::predraw(void)
 	alpha *= m_flMaxAlpha;
 
 	if (!(spawnflags & 1)) {
-		m_vecColor *= (getlight(origin) / 255);
-		m_vecColor[0] = bound(0.0, m_vecColor[0], 1.0);
-		m_vecColor[1] = bound(0.0, m_vecColor[1], 1.0);
-		m_vecColor[2] = bound(0.0, m_vecColor[2], 1.0);
+		color *= (getlight(origin) / 255);
+		color[0] = bound(0.0, color[0], 1.0);
+		color[1] = bound(0.0, color[1], 1.0);
+		color[2] = bound(0.0, color[2], 1.0);
 	}
 
 	R_BeginPolygon(m_strMaterial, 0, 0);
-	R_PolygonVertex(origin + v_right * cloudsize[0] - v_up * cloudsize[1], [1,1], m_vecColor, alpha);
-	R_PolygonVertex(origin - v_right * cloudsize[0] - v_up * cloudsize[1], [0,1], m_vecColor, alpha);
-	R_PolygonVertex(origin - v_right * cloudsize[0] + v_up * cloudsize[1], [0,0], m_vecColor, alpha);
-	R_PolygonVertex(origin + v_right * cloudsize[0] + v_up * cloudsize[1], [1,0], m_vecColor, alpha);
+	R_PolygonVertex(origin + v_right * cloudsize[0] - v_up * cloudsize[1], [1,1], color, alpha);
+	R_PolygonVertex(origin - v_right * cloudsize[0] - v_up * cloudsize[1], [0,1], color, alpha);
+	R_PolygonVertex(origin - v_right * cloudsize[0] + v_up * cloudsize[1], [0,0], color, alpha);
+	R_PolygonVertex(origin + v_right * cloudsize[0] + v_up * cloudsize[1], [1,0], color, alpha);
 	R_EndPolygon();
 
 	if (lifetime >= 10.0f) {
@@ -130,15 +137,17 @@ float
 func_smokevolume::predraw(void)
 {
 	vector vecPlayer = g_view.GetCameraOrigin();
-	float playerDist = vlen(vecPlayer - origin);
-	float fracDist = 1.0 - bound(0.0, playerDist / 512, 1.0);
 
 	if (checkpvs(vecPlayer, this) == FALSE)
 		return (PREDRAW_NEXT);
 
+	float playerDist = distance(vecPlayer, WorldSpaceCenter());
+
 	if (m_flMaxDrawDistance > 0.0)
 		if (playerDist > m_flMaxDrawDistance)
 			return (PREDRAW_NEXT);
+
+	float fracDist = 1.0f - bound(0.0f, playerDist / m_flMaxDrawDistance, 1.0f);
 
 	if (m_flNexTime > cltime)
 		return (PREDRAW_NEXT);
@@ -152,10 +161,13 @@ func_smokevolume::predraw(void)
 		func_smokevolume_cloud cloud = spawn(func_smokevolume_cloud);
 		setorigin(cloud, vecPos);
 		float r = random();
-		cloud.m_vecColor[0] = Math_Lerp(m_vecColor1[0], m_vecColor2[0], r);
-		cloud.m_vecColor[1] = Math_Lerp(m_vecColor1[1], m_vecColor2[1], r);
-		cloud.m_vecColor[2] = Math_Lerp(m_vecColor1[2], m_vecColor2[2], r);
-		cloud.m_flMaxAlpha = m_flAlpha * fracDist;
+		cloud.m_vecColor = vectorLerp(m_vecColor1, m_vecColor2, r);
+
+		if (m_flMaxDrawDistance > 0.0f)
+			cloud.m_flMaxAlpha = m_flAlpha * fracDist;
+		else
+			cloud.m_flMaxAlpha = m_flAlpha;
+
 		cloud.cloudsize[0] = random(m_flSizeMin, m_flSizeMax);
 		cloud.cloudsize[1] = random(m_flSizeMin, m_flSizeMax);
 		cloud.m_flLifeTime = random(m_flLifetimeMin, m_flLifetimeMax);
@@ -170,11 +182,16 @@ func_smokevolume::predraw(void)
 }
 
 void
+func_smokevolume::Precache(void)
+{
+	precache.Model(model);
+}
+
+void
 func_smokevolume::Spawned(void)
 {
 	super::Spawned();
 
-	precache_model(model);
 	setmodel(this, model);
 	setorigin(this, origin);
 	movetype = MOVETYPE_NONE;
@@ -226,8 +243,9 @@ func_smokevolume::func_smokevolume(void)
 	m_flSizeMax = 250;
 	m_flLifetimeMin = 3;
 	m_flLifetimeMax = 5;
-	m_flAlpha = 1.0f;
+	m_flAlpha =  0.1f; /* making this up, I have no idea */
 	m_vecColor1 = m_vecColor2 = [0,0,0];
+	m_flMaxDrawDistance = 0.0f;
 
 	solid = SOLID_NOT;
 	isCSQC = true;

@@ -1,0 +1,10 @@
+// Vera Visions Material
+{
+	diffusemap pbrtest/tiles052.ktx
+	normalmap pbrtest/tiles052_local.ktx
+	specularmap pbrtest/tiles052_mra.ktx
+	
+	{
+		program defaultwall
+	}
+}

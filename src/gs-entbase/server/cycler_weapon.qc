@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief TODO: Server-Entity: Weapon Viewmodel Tester */
 /*!QUAKED cycler_weapon (1 .5 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 A development entity. When picked up, will display the viewmodel on the activating player.
@@ -24,9 +25,12 @@ A development entity. When picked up, will display the viewmodel on the activati
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup serverentity
+@ingroup pointentity
 */
 class
-cycler_weapon:NSPointTrigger
+cycler_weapon:ncPointTrigger
 {
 
 };

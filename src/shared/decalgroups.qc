@@ -14,7 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+#warning There's no way we can spawn these from within the particle system. Investigate how we can handle most of this from within the particle system.
+
 #ifdef CLIENT
+/** Data holding DecalGroup entries. */
 typedef struct
 {
 	string materials;
@@ -108,6 +111,9 @@ DecalGroups_Parse(string line)
 	}
 }
 
+
+const string g_decalGroupFile = "scripts/decals.txt";
+
 void
 DecalGroups_Init(void)
 {
@@ -122,21 +128,32 @@ DecalGroups_Init(void)
 		g_hashdecalgroup = hash_createtab(2, EV_STRING | HASH_REPLACE);
 	}
 
-	fh = fopen("scripts/decals.txt", FILE_READ);
+	fh = fopen(g_decalGroupFile, FILE_READ);
+
 	if (fh < 0) {
-		NSError("Missing file scripts/decals.txt");
+		NSWarning("No groups, no %S", g_decalGroupFile);
 		InitEnd();
 		return;
 	}
 
 #ifdef CLIENT
+	int dgMemSize;
+
 	/* count content */
 	while ((line = fgets(fh))) {
 		DecalGroups_CountLine(line);
 	}
 
 	/* alocate our stuff */
-	g_decalgroup = (decalGroup_t *)memalloc(sizeof(decalGroup_t) * g_decalgroup_count);
+	dgMemSize = sizeof(decalGroup_t) * g_decalgroup_count;
+	g_decalgroup = (decalGroup_t *)memalloc(dgMemSize);
+
+	if (!g_decalgroup) {
+		NSError("Memory allocation failed for %i bytes.", dgMemSize);
+		g_decalgroup_count = 0;
+		InitEnd();
+		return;
+	}
 
 	/* Defaults */
 	for (int i = 0; i < g_decalgroup_count; i++) {
@@ -154,14 +171,6 @@ DecalGroups_Init(void)
 	}
 
 	fclose(fh);
-
-#if 0
-#ifdef CLIENT
-	for (int i = 0; i < g_decalgroup_count; i++) {
-		print(sprintf("%i (members: %i) %s\n", i, g_decalgroup[i].members, g_decalgroup[i].materials));
-	}
-#endif
-#endif
 
 	NSLog("...decal groups initialized with %i entries.", g_decalgroup_count);
 	InitEnd();

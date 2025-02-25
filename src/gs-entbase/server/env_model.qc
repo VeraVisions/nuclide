@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Decorative Model With Animation Features */
 /*!QUAKED env_model (1 .5 0) (-8 -8 -8) (8 8 8) START_OFF DROPTOFLOOR SOLID
 # OVERVIEW
 Model that can switch framegroups when triggered.
@@ -32,10 +33,13 @@ Model that can switch framegroups when triggered.
 - SOLID (4) : Enable collision.
 
 # TRIVIA
-This entity was introduced in Spirit of Half-Life (2000)
+This entity was introduced in Spirit of Half-Life (2000).
+
+@ingroup serverentity
+@ingroup pointentity
 */
 class
-env_model:NSRenderableEntity
+env_model:ncRenderableEntity
 {
 public:
 	void env_model(void);
@@ -83,20 +87,14 @@ env_model::SpawnKey(string keyName, string setValue)
 void
 env_model::Respawn(void)
 {
+	super::Respawn();
+
 	/* solid */
 	if (HasSpawnFlags(4)) {
 		SetSolid(SOLID_BBOX);
 	} else {
 		SetSolid(SOLID_NOT);
 	}
-
-	SetOrigin(GetSpawnOrigin());
-	RestoreAngles();
-	SetModel(GetSpawnModel());
-	SetRenderFX(GetSpawnRenderFX());
-	SetRenderMode(GetSpawnRenderMode());
-	SetRenderAmt(GetSpawnRenderAmt());
-	SetRenderColor(GetSpawnRenderColor());
 
 	/* droptofloor */
 	if (HasSpawnFlags(2)) {

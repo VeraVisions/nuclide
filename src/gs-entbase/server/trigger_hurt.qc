@@ -44,6 +44,7 @@
 #define SF_HURT_FIREONPLAYER	16 // Only call UseTarget functions when it's a player
 #define SF_HURT_TOUCHPLAYER		32 // Only hurt players
 
+/*! \brief Server-Entity: Damages/Hurts Characters */
 /*!QUAKED trigger_hurt (.5 .5 .5) ? SF_HURT_ONCE SF_HURT_OFF x SF_HURT_NOPLAYERS SF_HURT_FIREONPLAYER SF_HURT_TOUCHPLAYER
 # OVERVIEW
 Trigger volume that damages everything it touches.
@@ -64,9 +65,12 @@ Trigger volume that damages everything it touches.
 
 # TRIVIA
 This entity was introduced in Quake (1996).
+
+@ingroup serverentity
+@ingroup brushentity
 */
 class
-trigger_hurt:NSBrushTrigger
+trigger_hurt:ncBrushTrigger
 {
 public:
 	void trigger_hurt(void);
@@ -233,11 +237,11 @@ trigger_hurt::Touch(entity eToucher)
 	} else {
 		if (HasSpawnFlags(SF_HURT_FIREONPLAYER)) {
 			if (eToucher.flags & FL_CLIENT) {
-				eActivator = eToucher;
+				eActivator = (ncEntity)eToucher;
 				UseTargets(eToucher, TRIG_TOGGLE, m_flDelay);
 			}
 		} else {
-			eActivator = eToucher;
+			eActivator = (ncEntity)eToucher;
 			UseTargets(eToucher, TRIG_TOGGLE, m_flDelay);
 		}
 	}
@@ -267,7 +271,14 @@ trigger_hurt::Touch(entity eToucher)
 	}
 
 	EntLog("Hurting %S (%d) with %i.", eToucher.classname, num_for_edict(eToucher), m_iDamage);
-	Damage_Apply(eToucher, this, m_iDamage, 0, type);
+
+	/* this is kinda ugly, but worth the price */
+	ncDict damageDecl = spawn(ncDict);
+	ncSurfacePropEntity toAttack = (ncSurfacePropEntity)eToucher;
+	damageDecl.AddKey("damage", itos(m_iDamage));
+	damageDecl.AddKey("flags", itos(type));
+	toAttack.Damage(this, this, damageDecl, 1.0f, anglesToForward(angles), toAttack.GetOrigin());
+	remove(damageDecl);
 
 	/* shut it down if used once */
 	if (HasSpawnFlags(SF_HURT_ONCE)) {

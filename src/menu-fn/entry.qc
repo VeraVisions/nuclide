@@ -19,67 +19,6 @@ var bool g_input_received = false;
 
 #define FN_UPDATE_PKGLIST "http://www.frag-net.com/dl/%s_packages"
 
-/* r_autoscale forces vid_conautoscale to be one of 4 integer values.
- * this is due to vid_conautoscale 0 scaling with in floating point... which
- * in turns results in skipped rows/columns and shimmering. */
-var int autocvar_r_autoscale = TRUE;
-var int autocvar_r_pixelscale = FALSE;
-void
-Menu_AutoScale(void)
-{
-	if (autocvar_r_autoscale) {
-		vector psize = getproperty(VF_SCREENPSIZE);
-		if (psize[1] >= (480 * 4)) {
-			cvar_set("vid_conautoscale", "4");
-		} else if (psize[1] >= (480 * 3)) {
-			cvar_set("vid_conautoscale", "3");
-		} else if (psize[1] >= (480 * 2)) {
-			cvar_set("vid_conautoscale", "2");
-		} else {
-			cvar_set("vid_conautoscale", "1");
-		}
-
-		if (autocvar_r_pixelscale) {
-			float scale = bound(0.0, 480 / psize[1], 1.0);
-			cvar_set("r_renderscale", sprintf("-%f", scale));
-		}
-	}
-}
-
-/* old Half-Life configs that have a completely different gamma model would
- * mess up visibility on initial launch - so we catch that and and force
- * our default to fix it */
-void
-Menu_GammaHack(void)
-{
-	if (cvar("brightness") != cvar("vid_brightness")) {
-		localcmd("seta brightness 0\n");
-		NSLog("Old config brightness. Applying brightness hack.");
-	}
-
-	if (cvar("gamma") != cvar("vid_gamma")) {
-		localcmd("seta gamma 1\n");
-		NSLog("Old config gamma. Applying gamma hack.");
-	}
-}
-
-bool
-Menu_HasStartupVideos(void)
-{
-	if (Platform_FileInCurrentGamedir("media/valve.avi"))
-		return true;
-
-	return false;
-}
-
-void
-Menu_PlayStartupVideos(void)
-{
-	NSLog("Playing startup videos.\n");
-	//localcmd("playvideo av:media/sierra.avi av:media/valve.avi\n");
-}
-
-
 CDialog main_dgDisconnect;
 CMainButton main_btnRefOK;
 var bool serverDisconnect = false;
@@ -92,90 +31,37 @@ m_init(void)
 		serverDisconnect = false;
 	}
 
-	string menuMap;
-
 	NSLog("--------- Initializing Menu ----------");
 	NSLog("Built: %s %s", __DATE__, __TIME__);
 	NSLog("QCC: %s", __QCCVER__);
 
-	/* things that should really be default. platform_default.cfg is supposed to set
-	 * them the first time - however FTE doesn't do that when switching manifests
-	 * for unknown reasons. It'll be fixed */
-	cvar_set("r_ignoreentpvs", "0");
-	cvar_set("_pext_infoblobs", "1");
-	cvar_set("_pext_vrinputs", "0");
-	cvar_set("_q3bsp_bihtraces", "1");
-	cvar_set("sv_gameplayfix_setmodelsize_qw", "1");
-	cvar_set("sv_gameplayfix_setmodelrealbox", "1");
-	cvar_set("cl_bob", "0");
-	cvar_set("maxpitch", "89");
-	cvar_set("minpitch", "-89");
-	cvar_set("r_meshpitch", "1");
-	cvar_set("v_contentblend", "0");
-	cvar_set("gl_mindist", "4");
-	cvar_set("con_textsize", "12");
-	cvar_set("scr_conalpha", "1");
-	cvar_set("con_notifylines", "0");
-	cvar_set("cfg_save_auto", "1");
-	cvar_set("r_imageextensions", "tga bmp pcx png jpg");
-	cvar_set("cl_cursor_scale", "1");
+	localcmd("plug_load ffmpeg\n");
 
-	/* the HL configs make the rate this low by default. */
-	if (cvar("rate") <= 2500) {
-		cvar_set("rate", "30000");
-	}
+	Platform_Init();
 
-	registercommand("menu_updates");
-	registercommand("menu_customgame");
-	registercommand("map_background");
-	registercommand("menu_musicstart");
-	registercommand("richpresence_dump");
-	registercommand("listGameLibrary");
-
-	Font_Load("fonts/fontcon.font", font_console);
 	Font_Load("fonts/menu_label.font", font_label);
 	Font_Load("fonts/menu_main.font", font_arial);
 	Font_Load("fonts/menu_label_bold.font", font_label_b);
 	Font_Load("fonts/menu_header.font", font_label_p);
-
-	localcmd("plug_load ffmpeg\n");
+	Font_Load("fonts/console.font", font_console);
 
 	/* don't precache btns_main.bmp directly any more. */
 	CMainButton_InitSheets();
-
-	GameLibrary_Init();
 	Strings_Init();
-	MapLibrary_Init();
 	main_init();
-
 	Colors_Init();
+
+	/* prepare spray logo keys */
+	spray_setinfokeys();
 
 	if (GameLibrary_GetInfo(GAMEINFO_GAMEDIR) != "valve") {
 		m_intro_skip();
 		Music_MenuStart();
 	}
 
-	Menu_AutoScale();
-	Menu_GammaHack();
-
-	if (g_intro_stage == 0) {
-		string videofile = GameLibrary_GetInfo(GAMEINFO_INTROVIDEO);
-		
-		if (videofile) {
-			localcmd(strcat("playvideo ", videofile, "\n"));
-		}
+	if (Platform_HasStartupVideos() == true) {
+		Platform_PlayStartupVideos();
 	}
-
-	menuMap = GameLibrary_GetInfo(GAMEINFO_MENUMAP);
-	if (menuMap != "") {
-		localcmd(strcat("map_background ", menuMap, "\n"));
-	}
-
-	/* prepare spray logo keys */
-	spray_setinfokeys();
-
-	if (Menu_HasStartupVideos() == true)
-		Menu_PlayStartupVideos();
 
 	/* init the disconnect dialog */
 	main_dgDisconnect = spawn(CDialog);
@@ -193,9 +79,8 @@ m_init(void)
 void
 Menu_RendererRestarted(string rendererdesc)
 {
+	Platform_RendererRestarted();
 	CMainButton_InitSheets();
-	Menu_AutoScale();
-	Menu_GammaHack();
 }
 
 /* called, in theory, whenever the menu gets killed */
@@ -237,73 +122,14 @@ m_draw(vector screensize)
 		return;
 	}
 
-	/* set new scale whenever the resolution changes */
-	if ((screensize[0] != g_vidsize[0]) || (screensize[1] != g_vidsize[1])) {
-		g_vidsize[0] = screensize[0];
-		g_vidsize[1] = screensize[1];
-		g_menuofs[0] = (g_vidsize[0] / 2) - 320;
-		g_menuofs[1] = (g_vidsize[1] / 2) - 240;
-		Menu_AutoScale();
-	}
-
-	g_background = cvar("_background");
-
-	/* make sure input carries over when a map background is active */
-	if (g_background) {
-		if (getkeydest() != KEY_MENU) {
-			setkeydest(KEY_MENU);
-			setmousetarget(TARGET_MENU);
-			setcursormode(TRUE, "gfx/cursor");
-		}
-	}
-
 	/* to prevent TCP timeouts */
 	menu_chatrooms_keepalive();
 
-	/* clear rich presence whenever the state suddenly changes */
-	if (g_gamestate != clientstate()) {
-		g_gamestate = clientstate();
-
-		if (g_gamestate == 1)
-			RichPresence_Clear();
-	}
-
-	/* rich presence sanity check */
-	if (RichPresence_WasSet() == false) {
-		if (clientstate() == 2)
-			RichPresence_Set("status", "In-game (Unknown)");
-		else
-			RichPresence_Set("status", "Main Menu");
-	}
-
-	/* if the menu is not visible and we're no background map... */
-	if (!g_active && !g_background) {
-		/* make sure we're redirecting input when the background's gone */
-		if (getkeydest() != KEY_GAME) {
-			setkeydest(KEY_GAME);
-			setmousetarget(TARGET_CLIENT);
-			setcursormode(FALSE);
-		}
-
-		/* don't draw the menu below */
+	if (Platform_Draw(screensize) == false) {
 		return;
 	}
 
-	/* when ingame, we'll draw a slight black tint... */
-	if (clientstate() == 2) {
-		/* ...unless we're in background map mode. */
-		if (!g_background)
-			drawpic([0,0], "menutint", screensize, [1,1,1], 1.0f);
-	} else {
-		/* clear screen */
-		drawfill([0,0], screensize, [0,0,0], 1.0f);
-
-		/* draw either WON or Steam background */
-		if (autocvar_menu_steambg == false)
-				Background_WON();
-		else
-				Background_Steam();
-	}
+	Background_Draw((g_vidsize / 2) - [320,240], [640,480]);
 
 	/* water mark for version info */
 	const string ver = "Nuclide (build " __DATE__ ")";
@@ -364,12 +190,12 @@ Menu_InputEvent(float evtype, float scanx, float chary, float devid)
 		}
 		break;
 	case IE_MOUSEABS:
-		g_mousepos[0] = scanx;
-		g_mousepos[1] = chary;
+		g_vecMousePos[0] = scanx;
+		g_vecMousePos[1] = chary;
 		break;
 	case IE_MOUSEDELTA:
-		g_mousepos[0] += scanx;
-		g_mousepos[1] += chary;
+		g_vecMousePos[0] += scanx;
+		g_vecMousePos[1] += chary;
 		break;
 	}
 
@@ -387,7 +213,7 @@ m_display(void)
 	g_active = TRUE;
 	setkeydest(KEY_MENU);
 	setmousetarget(TARGET_MENU);
-	setcursormode(TRUE, "gfx/cursor");
+	setcursormode(TRUE, "gfx/icon16/cursor");
 }
 
 /*
@@ -422,20 +248,8 @@ m_toggle(float fMode)
 float
 m_consolecommand(string cmd)
 {
-	tokenize(cmd);
+	int c = (int)tokenize(cmd);
 	switch (argv(0)) {
-	case "richpresence_dump":
-		RichPresence_DumpInfo();
-		break;
-	case "menu_musicstart":
-		Music_MenuStart();
-		break;
-	case "menu_musictrack":
-		Music_ParseTrack(argv(1));
-		break;
-	case "menu_musicloop":
-		Music_ParseLoop(argv(1));
-		break;
 	case "menu_updates":
 		g_menupage = PAGE_UPDATES;
 		m_intro_skip();
@@ -444,18 +258,8 @@ m_consolecommand(string cmd)
 		g_menupage = PAGE_CUSTOMGAME;
 		m_intro_skip();
 		break;
-	case "togglemenu":
-		m_display();
-		break;
-	case "map_background":
-		localcmd(sprintf("maxplayers 2\nset coop 1\nset sv_background 1\nmap %s\n",
-			argv(1)));
-		break;
-	case "listGameLibrary":
-		GameLibrary_DebugList();
-		break;
 	default:
-		return (0);
+		return Platform_ConsoleCommand(cmd, c);
 	}
 	return (1);
 }

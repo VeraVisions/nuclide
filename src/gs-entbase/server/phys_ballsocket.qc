@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Ballsocket Physics Constraint */
 /*!QUAKED phys_ballsocket (.5 .3 0) (-8 -8 -8) (8 8 8) BREAKCOLL x INACTIVE MASS NOCONNECT
 # OVERVIEW
 Creates a connection between two entities in the form of a 'ballsocket'.
@@ -36,9 +37,13 @@ Creates a connection between two entities in the form of a 'ballsocket'.
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
+
+@ingroup serverentity
+@ingroup pointentity
+@ingroup physics
 */
 class
-phys_ballsocket:NSPhysicsConstraint
+phys_ballsocket:ncPhysicsConstraint
 {
 public:
 	void phys_ballsocket(void);
@@ -64,7 +69,7 @@ phys_ballsocket::AfterSpawn(void)
 {
 	vector centerPos;
 	SetConstraintType(CONSTRAINT_POINT);
-	SetOrigin(GetSpawnOrigin());
+	SetOrigin(GetSpawnVector("origin"));
 
 	SetEntity1(find(world, ::targetname, m_strEnt1));
 

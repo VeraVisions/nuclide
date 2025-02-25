@@ -1,4 +1,4 @@
-CC=fteqcc
+QCC=fteqcc
 
 all:
-	$(CC) progs.src
+	$(QCC) $(CFLAGS) -I../../../src/platform/ progs.src 

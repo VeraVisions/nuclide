@@ -14,6 +14,24 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+
+void EFX_UpdateListener(ncView);
+
+void
+init(float prevprogs)
+{
+	_client_main();
+	_shared_main();
+}
+
+string CSQC_GenerateMaterial(string shadername)
+{
+	Materials_OnLoad(shadername);
+	return (__NULL__);
+// 	return (shadername);
+// 	NSError("%S", shadername);
+}
+
 /** Updates our seat pointers. 
 Call this when you need to verify we're
 getting the current player's info and not someone elses on the same
@@ -39,8 +57,8 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	NSLog("Built: %s %s", __DATE__, __TIME__);
 	NSLog("QCC: %s", __QCCVER__);
 
-	for (int i = 0; i < 4; i++) {
-		g_viewSeats[i] = spawn(NSView);
+	for (int i = 0i; i < 4i; i++) {
+		g_viewSeats[i] = spawn(ncView);
 		g_viewSeats[i].SetSeatID(i);
 	}
 
@@ -55,7 +73,7 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	Constants_Init();
 	Sound_Init();
 	SurfData_Init();
-	PropData_Init();	
+	PropData_Init();
 	DecalGroups_Init();
 
 	/* VGUI */
@@ -63,37 +81,42 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 
 	/* Game specific inits */
 	ClientGame_Init(apilevel, enginename, engineversion);
-	EFX_Init();
 	Titles_Init();
 	Sentences_Init();
 	Decals_Init();
 	Way_Init();
 	Materials_Init();
 	MOTD_Init();
+	Commandmenu_Init();
+	Activities_Init();
 
 	/* let the menu know we're a multi or a singleplayer game */
-	if (serverkeyfloat("sv_playerslots") == 1)
-		cvar_set("_menu_singleplayer", "1");
-	else
-		cvar_set("_menu_singleplayer", "0");
+	if (serverinfo.GetInteger("sv_playerslots") == 1i) {
+		NSLog("Running a singleplayer game.");
+		cvars.SetBool("_menu_singleplayer", true);
+	} else {
+		NSLog("Running a multiplayer game.");
+		cvars.SetBool("_menu_singleplayer", false);
+	}
 
 	g_cheats = (serverkey("*cheats") == "ON") ? true : false;
 
+	EntityDef_Init();
+	Ammo_Init();
 	WorldSpawn_Init();
 
-	g_overview = NSRadar::InitForCurrentMap();
+	g_overview = ncRadar::InitForCurrentMap();
 
-	Sound_Precache("Player.DenyWeaponSelection");
-	Sound_Precache("Player.WeaponSelected");
-	Sound_Precache("Player.WeaponSelectionMoveSlot");
-	Sound_Precache("Player.WeaponSelectionOpen");
-	Sound_Precache("Player.WeaponSelectionClose");
+	HUD_Init();
 
 	/* end msg */
 	NSLog("Client game initialized.");
 
 	/* because the engine will do really bad hacks to our models otherwise. e.g. R6284 */
 	cvar_set("r_fullbrightSkins", "0");
+
+	/* ENGINE, PLS FIX */
+	input_cursor_entitynumber = 0;
 }
 
 /** Called by the engine whenever video resources need to be reloaded.
@@ -113,7 +136,8 @@ CSQC_RendererRestarted(string rstr)
 	/* Fonts */
 	Font_Load("fonts/font16.font", FONT_16);
 	Font_Load("fonts/font20.font", FONT_20);
-	Font_Load("fonts/fontcon.font", FONT_CON);
+	Font_Load("fonts/console.font", FONT_CON);
+	Font_Load("fonts/centerprint.font", FONT_CENTERPRINT);
 
 	/* Particles */
 	PART_DUSTMOTE = particleeffectnum("volume.dustmote");
@@ -125,15 +149,10 @@ CSQC_RendererRestarted(string rstr)
 
 	/* View */
 	Chat_Reload();
-
-#ifndef NEW_INVENTORY
-	Weapons_Init();
-#endif
-
 	Scores_Init();
 	View_Init();
 	ClientGame_RendererRestart(rstr);
-	HUD_Init();
+	HUD_RendererRestarted();
 
 	/* GS-Entbase */
 	Fade_Reload();
@@ -142,8 +161,7 @@ CSQC_RendererRestarted(string rstr)
 	Entities_RendererRestarted();
 	DetailTex_Reload();
 
-	//g_shellchrome = spriteframe("sprites/shellchrome.spr", 0, 0.0f);
-	g_shellchromeshader = shaderforname("shellchrome", sprintf("{\ndeformVertexes bulge 1.25 1.25 0\n{\nmap %s\ntcMod scroll -0.1 0.1\ntcGen environment\nrgbGen entity\n}\n}", "textures/sfx/reflection.tga"));
+	g_shellchromeshader = shaderforname("shellchrome", sprintf("{\ndeformVertexes bulge 1.25 1.25 0\n{\nmap %s\ntcMod scroll -0.1 0.1\ntcGen environment\nblendFunc add\nrgbGen entity\n}\n}", "textures/sfx/reflection.tga"));
 	g_shellchromeshader_cull = shaderforname("shellchrome2", sprintf("{\ncull back\ndeformVertexes bulge 1.5 1.5 0\n{\nmap %s\ntcMod scroll -0.1 0.1\ntcGen environment\nrgbGen entity\n}\n}", "textures/sfx/reflection.tga"));
 
 	InitEnd();
@@ -170,7 +188,7 @@ distinction from 3D world elements and overlays.
 void
 CSQC_Update2D(float w, float h, bool focus)
 {
-	NSClientPlayer cl = (NSClientPlayer)pSeat->m_ePlayer;
+	ncPlayer cl = (ncPlayer)pSeat->m_ePlayer;
 	self = cl;
 
 	if (Util_GetMaxPlayers() > 1 && !VGUI_Active() && (Client_InIntermission() || (!cl.IsFakeSpectator() && cl.IsDead()))) {
@@ -210,7 +228,7 @@ in here.
 void
 CSQC_UpdateView(float w, float h, float focus)
 {
-	NSClient cl = __NULL__;
+	ncPlayer cl = __NULL__;
 	int s;
 	vector vecViewAngles = view_angles;
 
@@ -222,24 +240,25 @@ CSQC_UpdateView(float w, float h, float focus)
 		/* First time we can effectively call VGUI
 		*  because until now we don't know the video res.
 		*/
-		if (!video_res[0] && !video_res[1]) {
-			video_res[0] = w;
-			video_res[1] = h;
+		if (!g_vidsize[0] && !g_vidsize[1]) {
+			g_vidsize[0] = w;
+			g_vidsize[1] = h;
 			ClientGame_InitDone();
+			Sky_Update(true);
 		}
 	}
 
 	/* While the init above may have already happened,
 	   people are able to resize windows dynamically too. */
-	if (w != video_res[0] || h != video_res[1]) {
-		video_res[0] = w;
-		video_res[1] = h;
+	if (w != g_vidsize[0] || h != g_vidsize[1]) {
+		g_vidsize[0] = w;
+		g_vidsize[1] = h;
 		VGUI_Reposition();
 	}
 
 	/* these have to be checked every frame */
 	Fog_Update();
-	Sky_Update(FALSE);
+	Sky_Update(false);
 	cvar_set("_background", serverkey("background"));
 
 	/* ensure background maps do not get paused */
@@ -286,29 +305,31 @@ CSQC_UpdateView(float w, float h, float focus)
             if (pSeat->m_ePlayer == world)
                 continue;
 
-			cl = (NSClient)pSeat->m_ePlayer;
+			cl = (ncPlayer)pSeat->m_ePlayer;
 			setproperty(VF_ACTIVESEAT, (float)s);
 
 			/* set up our single/split viewport */
 			View_CalcViewport(s, w, h);
 
 			/* our view target ourselves, if we're alive... */
-			g_view.SetViewTarget((NSEntity)pSeat->m_ePlayer);
+			g_view.SetViewTarget((ncEntity)pSeat->m_ePlayer);
 
 			if (Client_IsSpectator(cl))
 				g_view.SetViewMode(VIEWMODE_SPECTATING);
 			else
 				g_view.SetViewMode(VIEWMODE_FPS);
 
+			/* ugly hack to force-cache dlight shader */
 			if (g_dlight_cached == false) {
 				g_dlight_cached = true;
-				dynamiclight_add(g_view.GetCameraOrigin(), 16, [0.1,0.1,0.1]);
+				dynamiclight_add(g_view.GetCameraOrigin(), 2048.0f, [0.1,0.1,0.1]);
 			}
 
 			g_view.UpdateView();
 
 			/* 2D calls happen here, after rendering is done */
 			CSQC_Update2D(w, h, focus);
+			Commandmenu_Draw();
 
 			EFX_UpdateListener(g_view);
 			DSP_UpdateSoundscape(g_view);
@@ -317,13 +338,17 @@ CSQC_UpdateView(float w, float h, float focus)
 		}
 	}
 
-	/* draw AL debug info (no regard for seating */
-	if (autocvar_s_al_debug)
-		EFX_DebugInfo();
-
 	/* make sure we're not running these on invalid seats post frame */
 	pSeat = __NULL__;
 	pSeatLocal = __NULL__;
+	
+	g_modelSpinAngle = time * autocvar_cg_modelSpinSpeed;
+	g_modelSpinRoll = sin(time * autocvar_cg_modelSpinRollSpeed);
+	g_modelSpinPitch = sin(time * autocvar_cg_modelSpinPitchSpeed);
+	g_modelSpinRoll *= autocvar_cg_modelSpinRoll;
+	g_modelSpinPitch *= autocvar_cg_modelSpinPitch;
+	g_modelBobHeight = sin(time * autocvar_cg_modelBobHeightSpeed);
+	g_modelBobHeight *= autocvar_cg_modelBobHeight;
 }
 
 /** Called every time an input event (keys pressed, mouse moved etc.) happens.
@@ -341,34 +366,22 @@ CSQC_InputEvent(float fEventType, float fKey, float fCharacter, float fDeviceID)
 	case IE_KEYUP:
 		break;
 	case IE_MOUSEABS:
-		mouse_pos[0] = fKey;
-		mouse_pos[1] = fCharacter;
+		g_vecMousePos[0] = fKey;
+		g_vecMousePos[1] = fCharacter;
 		break;
 	case IE_MOUSEDELTA:
-		mouse_pos[0] += fKey;
-		mouse_pos[1] += fCharacter;
-
-		if (mouse_pos[0] < 0) {
-			mouse_pos[0] = 0;
-		} else if (mouse_pos[0] > video_res[0]) {
-			mouse_pos[0] = video_res[0];
-		}
-
-		if (mouse_pos[1] < 0) {
-			mouse_pos[1] = 0;
-		} else if (mouse_pos[1] > video_res[1]) {
-			mouse_pos[1] = video_res[1];
-		}
+		g_vecMousePos[0] += fKey;
+		g_vecMousePos[1] += fCharacter;
 		break;
 	default:
-		return (1);
+		return (true);
 	}
 
 	pSeat->m_bInterfaceFocused = false;
 
-	for (entity e = world; (e = find(e, ::classname, "NSInteractiveSurface"));) {
+	for (entity e = world; (e = find(e, ::classname, "ncInteractiveSurface"));) {
 		vector vecPos = pSeat->m_ePlayer.origin + pSeat->m_ePlayer.view_ofs;
-		NSInteractiveSurface surf = (NSInteractiveSurface) e;
+		ncInteractiveSurface surf = (ncInteractiveSurface) e;
 		
 		if (surf.FocusCheck(vecPos, view_angles)) {
 			pSeat->m_bInterfaceFocused = true;
@@ -377,9 +390,14 @@ CSQC_InputEvent(float fEventType, float fKey, float fCharacter, float fDeviceID)
 		}
 	}
 
-	g_vecMousePos = getmousepos();
+	//g_vecMousePos = getmousepos();
 
-	bool vgui_pressed = VGUI_Input(fEventType, fKey, fCharacter, fDeviceID);
+	bool vgui_pressed;
+	vgui_pressed = Commandmenu_Input(fEventType, fKey, fCharacter, fDeviceID);
+
+	if (!vgui_pressed) {
+		vgui_pressed = VGUI_Input(fEventType, fKey, fCharacter, fDeviceID);
+	}
 
 	if (g_vguiWidgetCount) {
 		setcursormode(TRUE, "gfx/cursor", [0,0,0], 1.0f);
@@ -399,16 +417,30 @@ CSQC_Input_Frame(void)
 {
 	entity me;
 
-	if (Util_IsPaused())
+	if (Util_IsPaused()) {
 		return;
+	}
 
 	CSQC_UpdateSeat();
 	me = pSeat->m_ePlayer;
 
 	if (me.classname == "player" || me.classname == "spectator") {
-		NSClient pl = (NSClient)me;
+		ncClient pl = (ncClient)me;
 		pl.SharedInputFrame();
+		float delayInputs = HUD_ClientInputFrame(input_buttons);
+
+		if (delayInputs > 0.0f) {
+			pSeat->m_flInputBlockTime = time + delayInputs;
+		}
+
 		pl.ClientInputFrame();
+
+		if (pSeat->m_flInputBlockTime > time) {
+			input_buttons &= ~INPUT_PRIMARY;
+			input_buttons &= ~INPUT_SECONDARY;
+			pSeat->m_iInputAttack2 = false;
+			return;
+		}
 	}
 }
 
@@ -447,13 +479,7 @@ CSQC_ConsoleCommand(string sCMD)
 	tokenize(sCMD);
 
 	/* give us a chance to override commands */
-	int ret = ClientGame_ConsoleCommand();
-
-	/* successful override */
-	if (ret == (1))
-		return (1);
-
-	return Cmd_Parse(sCMD);
+	return (ClientGame_ConsoleCommand()) ? true : Cmd_Parse(sCMD);
 }
 
 
@@ -551,13 +577,7 @@ CSQC_WorldLoaded(void)
 
 	//DetailTex_Init();
 
-	/* Primarily for the flashlight */
-	if (serverkeyfloat("*bspversion") != BSPVER_HL) {
-		localcmd("r_shadow_realtime_dlight 1\n");
-	} else {
-		localcmd("r_shadow_realtime_dlight 0\n");
-	}
-
+#if 1
 	string strTokenized;
 	getentitytoken(0);
 
@@ -575,11 +595,7 @@ CSQC_WorldLoaded(void)
 			break;
 		}
 	}
-
-	for (entity a = world; (a = findfloat(a, ::isCSQC, TRUE));) {
-		NSEntity ent = (NSEntity)a;
-		ent.Respawn();
-	}
+#endif
 
 	g_client_world_loaded = true;
 
@@ -599,7 +615,7 @@ void
 CSQC_Ent_Remove(void)
 {
 	if (self.identity) {
-		NSEntity me = (NSEntity)self;
+		ncEntity me = (ncEntity)self;
 		me.removed = 1; /* mark this as cleanly removed */
 
 		/* we don't want to call Destroy, as that's delayed by a frame...
@@ -632,6 +648,8 @@ CSQC_Shutdown(void)
 	Titles_Shutdown();
 	Sound_Shutdown();
 	PropData_Shutdown();
-	EFX_Shutdown();
 	NSLog("Client game shutdown.");
+
+	/* ENGINE, PLS FIX */
+	input_cursor_entitynumber = 0;
 }

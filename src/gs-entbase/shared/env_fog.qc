@@ -23,7 +23,10 @@ enumflags
 	ENVFOG_CHANGED_COLOR
 };
 
-/*!QUAKED env_fog (1 .5 0) (-8 -8 -8) (8 8 8)
+#define ENVFOG_STARTACTIVE 1
+
+/*! \brief Shared-Entity: Simple Fog Controller */
+/*!QUAKED env_fog (1 .5 0) (-8 -8 -8) (8 8 8) STARTACTIVE
 # OVERVIEW
 Covers the map in fog.
 
@@ -36,11 +39,22 @@ Covers the map in fog.
 - "density" : Strength of the fog.
 - "rendercolor" : Color of the fog.
 
+# KEYS (DMC/SPIRIT)
+- "fadein" : Fade in time (ignored)
+- "fadeout" : Fade out time (ignored)
+- "holdtime" : Hold time, 0 is permanent.
+
+# SPAWNFLAGS
+- STARTACTIVE (1) : Start active on map load.
+
 # TRIVIA
 This entity was introduced in Counter-Strike (1998).
+
+@ingroup sharedentity
+@ingroup pointentity
 */
 class
-env_fog:NSPointTrigger
+env_fog:ncPointTrigger
 {
 public:
 	void env_fog(void);
@@ -59,6 +73,8 @@ public:
 	virtual void Spawned(void);
 	virtual void Respawn(void);
 	virtual void Trigger(entity, triggermode_t);
+	nonvirtual void EnableFog(void);
+	nonvirtual void DisableFog(void);
 #endif
 
 private:
@@ -67,6 +83,13 @@ private:
 	PREDICTED_FLOAT(m_flDensity)
 	PREDICTED_VECTOR(m_vecColor)
 	PREDICTED_BOOL(m_bEnabled)
+
+#ifdef SERVER
+	float m_holdTime;
+#endif
+#ifdef CLIENT
+	bool m_wasActive;
+#endif
 };
 
 void
@@ -77,22 +100,36 @@ env_fog::env_fog(void)
 	m_flDensity = 1.0f;
 	m_vecColor = [255, 255, 255];
 	m_bEnabled = true;
+#ifdef SERVER
+	m_holdTime = 0.0f;
+#endif
+#ifdef CLIENT
+	m_wasActive = false;
+#endif
+
 }
 
 #ifdef CLIENT
 void
 env_fog::FogUpdate(void)
 {
-	if (!m_bEnabled)
+	if (!m_bEnabled) {
+		if (m_wasActive) {
+			localcmd("fog 0\n");
+			m_wasActive = false;
+		}
 		return;
+	}
 
-	localcmd(sprintf("fog %f %f %f %f %f %f\n", \
-		m_flDensity * 100, /* winging this */
+	m_wasActive = true;
+
+	localcmd(sprintf("r_fog_linear 1; fog %f %f %f %f %f %f\n", \
+		m_flEndDist, /* winging this */
 		m_vecColor[0] / 255,
 		m_vecColor[1] / 255,
 		m_vecColor[2] / 255,
 		1.0f,
-		m_flStartDist / 10)); /* rough conversion from units */
+		m_flStartDist)); /* rough conversion from units */
 }
 
 void
@@ -173,16 +210,19 @@ env_fog::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "startdist":
-		m_flStartDist = stof(strValue);
+		m_flStartDist = ReadFloat(strValue);
 		break;
 	case "enddist":
-		m_flEndDist = stof(strValue);
+		m_flEndDist = ReadFloat(strValue);
 		break;
 	case "density":
-		m_flDensity = stof(strValue);
+		m_flDensity = ReadFloat(strValue);
 		break;
 	case "rendercolor":
-		m_vecColor = stov(strValue);
+		m_vecColor = ReadVector(strValue);
+		break;
+	case "holdtime":
+		m_holdTime = ReadFloat(strValue);
 		break;
 	default:
 		super::SpawnKey(strKey, strValue);
@@ -199,6 +239,24 @@ void
 env_fog::Respawn(void)
 {
 	pvsflags = PVSF_IGNOREPVS;
+
+	if (HasSpawnFlags(ENVFOG_STARTACTIVE) == false && HasTargetname() == true) {
+		DisableFog();
+	} else {
+		EnableFog();
+	}
+}
+
+void
+env_fog::EnableFog(void)
+{
+	m_bEnabled = true;
+}
+
+void
+env_fog::DisableFog(void)
+{
+	m_bEnabled = false;
 }
 
 void
@@ -206,13 +264,17 @@ env_fog::Trigger(entity act, triggermode_t state)
 {
 	switch (state) {
 	case TRIG_OFF:
-		m_bEnabled = false;
+		DisableFog();
 		break;
 	case TRIG_ON:
-		m_bEnabled = true;
+		EnableFog();
+
+		if (m_holdTime > 0.0) {
+			ScheduleThink(DisableFog, m_holdTime);
+		}
 		break;
 	default:
-		m_bEnabled = (m_bEnabled) ? false : true;
+		Trigger(act, m_bEnabled ? TRIG_OFF : TRIG_ON);
 	}
 }
 #endif

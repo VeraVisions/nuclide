@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Triggers Auto-Save */
 /*!QUAKED trigger_autosave (.5 .5 .5) ?
 # OVERVIEW
 Volume that'll save the current game when a client enters its bounds.
@@ -24,9 +25,12 @@ This entity does not work in multiplayer.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup serverentity
+@ingroup brushentity
 */
 class
-trigger_autosave:NSBrushTrigger
+trigger_autosave:ncBrushTrigger
 {
 public:
 	void trigger_autosave(void);

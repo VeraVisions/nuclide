@@ -14,23 +14,25 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*! @file updates.h
-    @brief Game and content update handler functions.
+/**
+@defgroup updates Update Manager
+@ingroup menu
+@brief Game and content update handler functions.
 
 The updater is an abstraction of the engine its own package manager.
 Not all packages the engine offers are related to the game you're currently
 running. Therefore we offer our own API within Nuclide to deal with game updates.
 
-You want to call Updates_Init() once, after which Updates_GetUpdaterStatus() should be queried to determine when the Updater is ready. That is not necessary, but it might be helpful to throw up a loading screen while that is returning UPDATER_PENDING.
-
-Once Updates_GetUpdaterStatus() reports UPDATER_INITIALIZED, you can expect the loading to be fully done.
+You want to call Updates_Init() once, which is done once you include the platform header.
 
 The function Updates_GetPackageCount() will report the total amount of update packages available for the game. These are not 'new' updates, they contain every package associated with the game that can and should be installed and kept updated.
 
 Use Updates_GetInfo() to retrieve metadata about individual packages.
+
+@{
 */
 
-/** Different types you can pass to `Updates_GetInfo(...)` to learn details about a given Update entry. */
+/** Different options you can pass to Updates_GetInfo() to retrieve details about a given Update entry. */
 typedef enum
 {
 	UPDATE_NAME,			/**< (string) name of the package, for use with the pkg command. */
@@ -76,11 +78,31 @@ That way you can put up a loading screen for when the updater is still initiliaz
 or be notified of when an updater is not available at all. */
 typedef enum
 {
-	UPDATER_NONE,			/**< Nuclide's updater has not been initialized. You need to call Update_Init(). */
+	UPDATER_NONE,			/**< Nuclide's updater has not been initialized. You need to call Updates_Init(). */
 	UPDATER_UNAVAILABLE,	/**< Nuclide's updater is unavailable. This may be due to the update server being offline. */
 	UPDATER_PENDING,		/**< Nuclide's updater is pending. May change to UNAVAILABLE or INITIALIZED. */
-	UPDATER_INITIALIZED		/**< Nuclide's updater is initialized and may have entries. Use Updates_GetUpdateCount() to query how many. */
+	UPDATER_INITIALIZED		/**< Nuclide's updater is initialized and may have entries. Use Updates_GetPackageCount() to query how many. */
 } updaterStatus_t;
+
+/** Data holding Updater Package entries. */
+typedef struct
+{
+	string name;
+	string category;
+	string title;
+	string version;
+	string description;
+	string license;
+	string author;
+	string website;
+	string installed;
+	updateState_t state;
+	updateAction_t pending_action;
+	int size;
+	int uid;
+	string preview_image;
+	float dlpercentage;
+} updaterPackage_t;
 
 /** Call this in order to contact the update server and fill the list of updates. */
 void Updates_Init(void);
@@ -88,7 +110,7 @@ void Updates_Init(void);
 updaterStatus_t Updates_GetUpdaterStatus(void);
 /** Returns the total amount of updates available for the currently running game. */
 int Updates_GetPackageCount(void);
-/** Query a package (by ID) for its various info fields. See updateType_t for available fields. */
+/** Query a package (by ID) for its various info fields. See updateType_t for available options. */
 __variant Updates_GetInfo(int, updateType_t);
 /** Returns if our current game has updates available for any installed packages. */
 bool Updates_Available(void);
@@ -102,3 +124,5 @@ bool Updates_Remove(int);
 bool Updates_Destroy(int);
 /** Apply all pending changes to packages. May return true/false if it succeeded in doing so. */
 bool Updates_ApplyPendingChanges(void);
+
+/** @} */ // end of updates

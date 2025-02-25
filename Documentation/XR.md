@@ -4,7 +4,7 @@ To support XR (which is the support for Virtual, Augmented or Mixed Reality outp
 
 ## Classes related to XR
 
-We have 3 NSXRInput class instances per NSClient class, which itself belongs to a NSXRSpace.
+We have 3 NSXRInput class instances per ncClient class, which itself belongs to a NSXRSpace.
 
 ### Head
 

@@ -27,6 +27,7 @@ enumflags
 	ENVFOGCTRL_CHANGED_DIR
 };
 
+/*! \brief Shared-Entity: Fog Controller */
 /*!QUAKED env_fog_controller (1 .5 0) (-8 -8 -8) (8 8 8) EVFOGCTL_MASTER
 # OVERVIEW
 Controls fog that affects the entire map.
@@ -61,9 +62,12 @@ Controls fog that affects the entire map.
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
+
+@ingroup sharedentity
+@ingroup pointentity
 */
 class
-env_fog_controller:NSPointTrigger
+env_fog_controller:ncPointTrigger
 {
 public:
 	void env_fog_controller(void);
@@ -92,7 +96,9 @@ private:
 	/* temporary attributes */
 	float m_flNextDraw;
 	float m_flLastDelta;
-#else
+#endif
+
+#ifdef SERVER
 	/* main spawn attributes */
 	int m_iSpawnEnable;
 	int m_iSpawnBlend;
@@ -117,6 +123,15 @@ private:
 	PREDICTED_VECTOR(m_vecFogColor2)
 	PREDICTED_VECTOR(m_vecFogDir)
 };
+
+void
+env_fog_controller::env_fog_controller(void)
+{
+#ifdef SERVER
+	m_vecSpawnColor = [1.0, 1.0, 1.0];
+	m_flSpawnMaxDensity = 1.0f;
+#endif
+}
 
 #ifdef CLIENT
 float
@@ -168,11 +183,9 @@ env_fog_controller::FogRender(void)
 	m_flNextDraw = cltime + 1.0f;
 
 	/* apply the fog. wish there was a builtin for this instead... */
-	localcmd(sprintf("set r_fog_linear 1; fog %f %f %f %f %f %f\n", \
+	localcmd(sprintf("set r_fog_linear 1; fog %f %v %f %f\n", \
 		m_flFogEnd,
-		Math_Lerp(m_vecFogColor[0], m_vecFogColor2[0], delta),
-		Math_Lerp(m_vecFogColor[1], m_vecFogColor2[1], delta),
-		Math_Lerp(m_vecFogColor[2], m_vecFogColor2[2], delta),
+		vectorLerp(m_vecFogColor, m_vecFogColor2, delta),
 		m_flFogMaxDensity,
 		m_flFogStart));
 
@@ -243,7 +256,9 @@ env_fog_controller::ReceiveEntity(float flNew, float flSendFlags)
 		drawmask = 0;
 	}
 }
-#else
+#endif
+
+#ifdef SERVER
 float
 env_fog_controller::SendEntity(entity ePVEnt, float flSendFlags)
 {
@@ -332,10 +347,10 @@ env_fog_controller::Trigger(entity eAct, triggermode_t iState)
 void
 env_fog_controller::Respawn(void)
 {
+	super::Respawn();
+
 	SetSolid(SOLID_NOT);
 	SetMovetype(MOVETYPE_PUSH);
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
 	pvsflags = PVSF_IGNOREPVS;
 
 	m_iFogActive = m_iSpawnEnable;
@@ -348,7 +363,7 @@ env_fog_controller::Respawn(void)
 	m_vecFogColor2 = m_vecSpawnColor2;
 
 	if (m_iUseAngles)
-		m_vecFogDir = GetSpawnAngles();
+		m_vecFogDir = GetAngles();
 	else
 		m_vecFogDir = m_vecSpawnDir;
 }
@@ -520,12 +535,3 @@ env_fog_controller::SpawnKey(string strKey, string strValue)
 	}
 }
 #endif
-
-void
-env_fog_controller::env_fog_controller(void)
-{
-#ifdef SERVER
-	m_vecSpawnColor = [1.0, 1.0, 1.0];
-	m_flSpawnMaxDensity = 1.0f;
-#endif
-}

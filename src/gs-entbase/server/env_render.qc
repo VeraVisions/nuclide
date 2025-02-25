@@ -22,6 +22,7 @@ enumflags
 	SF_NORENDERCOLOR
 };
 
+/*! \brief Server-Entity: Controls Entity Rendering Modes */
 /*!QUAKED env_render (1 .5 0) (-8 -8 -8) (8 8 8) SF_NORENDERFX SF_NORENDERAMT SF_NORENDERMODE SF_NORENDERCOLOR
 # OVERVIEW
 Changes the visual appearance of a target.
@@ -74,9 +75,12 @@ Supported Render-FX ("renderfx") values:
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup serverentity
+@ingroup pointentity
 */
 class
-env_render:NSRenderableEntity
+env_render:ncRenderableEntity
 {
 public:
 	void env_render(void);
@@ -95,7 +99,7 @@ env_render::Trigger(entity act, triggermode_t state)
 {
 	for (entity e = world;
 		(e = find(e, ::targetname, target));) {
-		NSRenderableEntity trigger = (NSRenderableEntity)e;
+		ncRenderableEntity trigger = (ncRenderableEntity)e;
 
 		EntLog("Triggering with spawnflags %d", spawnflags);
 			EntLog("\tTarget: %s", target);

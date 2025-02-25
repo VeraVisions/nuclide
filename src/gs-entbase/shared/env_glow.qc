@@ -17,6 +17,7 @@
 var int autocvar_r_skipGlows = 0;
 var int autocvar_r_skipLensFlares = 0;
 
+/*! \brief Shared-Entity: Glowing Orbs/Flares */
 /*!QUAKED env_glow (1 .5 0) (-8 -8 -8) (8 8 8) EVGLOW_ORIENT
 # OVERVIEW
 Glare/glow orb effect like the flares in 1997's Unreal.
@@ -36,8 +37,11 @@ Glare/glow orb effect like the flares in 1997's Unreal.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup sharedentity
+@ingroup pointentity
 */
-class env_glow:NSRenderableEntity
+class env_glow:ncRenderableEntity
 {
 public:
 	void env_glow(void);
@@ -47,7 +51,9 @@ public:
 	virtual void SpawnKey(string,string);
 	virtual void EvaluateEntity(void);
 	virtual float SendEntity(entity,float);
-#else
+#endif
+
+#ifdef CLIENT
 	float m_flMaxAlpha;
 	vector m_vecSize;
 	vector m_vecRotate;
@@ -97,23 +103,9 @@ env_glow::Respawn(void)
 		return;
 	}
 
-	SetModel(GetSpawnModel());
+	super::Respawn();
 	SetSize([0,0,0], [0,0,0]);
-	SetOrigin(GetSpawnOrigin());
 	AddEffects(EF_NOSHADOW);
-
-	SetRenderFX(GetSpawnRenderFX());
-	SetRenderMode(GetSpawnRenderMode());
-	SetRenderAmt(GetSpawnRenderAmt());
-	SetRenderColor(GetSpawnRenderColor());
-
-/*
-	if (HasSpawnFlags(1)) {
-		hitcontentsmaski = CONTENTBIT_SOLID;
-		decal_pickwall(this, origin);
-		angles = vectoangles(g_tracedDecal.normal * -1);
-	}
-*/
 }
 void
 env_glow::EvaluateEntity(void)
@@ -152,15 +144,17 @@ env_glow::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_FLOAT(scale, SPRITE_CHANGED_SCALE)
 	SENDENTITY_BYTE(m_iRenderMode, SPRITE_CHANGED_RENDERMODE)
 	SENDENTITY_BYTE(m_iRenderFX, SPRITE_CHANGED_RENDERFX)
-	SENDENTITY_COLOR(m_vecRenderColor[0], SPRITE_CHANGED_RENDERCOLOR)
-	SENDENTITY_COLOR(m_vecRenderColor[1], SPRITE_CHANGED_RENDERCOLOR)
-	SENDENTITY_COLOR(m_vecRenderColor[2], SPRITE_CHANGED_RENDERCOLOR)
-	SENDENTITY_COLOR(m_flRenderAmt, SPRITE_CHANGED_RENDERAMT)
+	SENDENTITY_BYTE(m_vecRenderColor[0], SPRITE_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_vecRenderColor[1], SPRITE_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_vecRenderColor[2], SPRITE_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_flRenderAmt, SPRITE_CHANGED_RENDERAMT)
 	SENDENTITY_STRING(m_strMaterial, SPRITE_CHANGED_MATERIAL)
 
 	return (1);
 }
-#else
+#endif
+
+#ifdef CLIENT
 bool
 env_glow::IsVisible(vector vecPlayer)
 {
@@ -190,19 +184,19 @@ env_glow::IsVisible(vector vecPlayer)
 	return (true);
 }
 
-void env_sun_lensflare(vector, float, vector);
+void env_sun_lensflare(vector, float, vector, bool);
 void
 env_glow::postdraw(void)
 {
 	if (GetRenderMode() == RM_GLOW)
 		if (!autocvar_r_skipLensFlares)
-			env_sun_lensflare(origin, m_flMaxAlpha, m_vecRenderColor);
+			env_sun_lensflare(origin, m_flMaxAlpha, m_vecRenderColor / 255, true);
 }
 
 void
 env_glow::RendererRestarted(void)
 {
-	if (!modelindex && m_strMaterial) {
+	if (!modelindex && STRING_SET(m_strMaterial)) {
 		precache_pic(m_strMaterial);
 		m_vecSize = drawgetimagesize(m_strMaterial) / 2;
 	} else {
@@ -216,8 +210,8 @@ env_glow::RendererRestarted(void)
 void
 env_glow::RenderGlow(vector forg, vector fsize)
 {
-	float alphaTint = GetRenderAmt();
-	vector renderColor = m_vecRenderColor;
+	float alphaTint = GetRenderAmt() / 255;
+	vector renderColor = m_vecRenderColor / 255;
 
 #ifndef FTE_QUADFIX
 	R_BeginPolygon(m_strMaterial, 1, 0);
@@ -253,8 +247,8 @@ env_glow::RenderGlow(vector forg, vector fsize)
 void
 env_glow::RenderNormal(vector forg, vector fsize)
 {
-	float alphaTint = GetRenderAmt();
-	vector renderColor = GetRenderColor();
+	float alphaTint = GetRenderAmt() / 255;
+	vector renderColor = m_vecRenderColor / 255;
 
 #ifndef FTE_QUADFIX
 	R_BeginPolygon(m_strMaterial, 0, 0);
@@ -347,15 +341,16 @@ env_glow::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_FLOAT(scale, SPRITE_CHANGED_SCALE)
 	READENTITY_BYTE(m_iRenderMode, SPRITE_CHANGED_RENDERMODE)
 	READENTITY_BYTE(m_iRenderFX, SPRITE_CHANGED_RENDERFX)
-	READENTITY_COLOR(m_vecRenderColor[0], SPRITE_CHANGED_RENDERCOLOR)
-	READENTITY_COLOR(m_vecRenderColor[1], SPRITE_CHANGED_RENDERCOLOR)
-	READENTITY_COLOR(m_vecRenderColor[2], SPRITE_CHANGED_RENDERCOLOR)
-	READENTITY_COLOR(m_flRenderAmt, SPRITE_CHANGED_RENDERAMT)
+	READENTITY_BYTE(m_vecRenderColor[0], SPRITE_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_vecRenderColor[1], SPRITE_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_vecRenderColor[2], SPRITE_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_flRenderAmt, SPRITE_CHANGED_RENDERAMT)
 	READENTITY_STRING(m_strMaterial, SPRITE_CHANGED_MATERIAL)
 
 	if (flNew)
 		RendererRestarted();
 
+	effects = EF_NODEPTHTEST;
 	drawmask = MASK_GLOWS;
 	setsize(this, g_vec_null, g_vec_null);
 	setorigin(this, origin);

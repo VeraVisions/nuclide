@@ -14,4 +14,4 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-CUIWidget g_uiDesktop; 
+vguiWidget g_uiDesktop;

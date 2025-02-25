@@ -14,6 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+#pragma target fte_5768
+//#pragma flag enable assumeint
+#pragma PROGS_DAT  "../../base/plug_banner.dat"
+#define QWSSQC
+
+#include "../shared/fteextensions.qc"
 #include "../shared/events.h"
 
 void BannerPlugin_MapInfo(void);
@@ -75,7 +81,7 @@ BannerPlugin_Hostname(void)
 }
 
 void
-FMX_InitEnts(void)
+Plug_ServerActivate(void)
 {
 	entity banner;
 	banner = spawn();

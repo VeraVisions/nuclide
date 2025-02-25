@@ -14,31 +14,21 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*! @file master.h
-    @brief Master Server related functions.
+/*!
+@defgroup masterserver Master Server
+@ingroup menu
+@brief Master Server related functions.
 
-    Various functions to help communicate with the master
-    server(s).
+Various functions to help communicate with the master
+server(s).
+
+@{
 */
 
 /** The default master server address. */
 #define MASTER_DNS "master.frag-net.com"
 /** The default port used to talk to the master server. */
 #define MASTER_PORT 27950
-
-float srv_fldAdress;
-float srv_fldName;
-float srv_fldPing;
-float srv_fldPlayers;
-float srv_fldMaxplayers;
-float srv_fldMap;
-float srv_fldGame;
-float srv_fldServerInfo;
-float srv_fldPlayer0;
-
-/* We cache these, because the engine may purge our cache anyway */
-int g_masterInternetServers;
-int g_masterLANServers;
 
 /** Returns IP of master server. */
 string Master_Resolve(void);
@@ -66,3 +56,15 @@ void Master_GetInternetList(void);
 
 /** Grab a NEW LAN list. Will flush any other lists. */
 void Master_GetLANList(void);
+
+/** @} */ // end of masterserver
+
+var float srv_fldAdress;
+var float srv_fldName;
+var float srv_fldPing;
+var float srv_fldPlayers;
+var float srv_fldMaxplayers;
+var float srv_fldMap;
+var float srv_fldGame;
+var float srv_fldServerInfo;
+var float srv_fldPlayer0;

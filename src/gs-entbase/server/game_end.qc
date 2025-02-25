@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Intermission Controller */
 /*!QUAKED game_end (1 .5 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Upon being triggered, the intermission secret will commence in multiplayer games.
@@ -24,9 +25,12 @@ Upon being triggered, the intermission secret will commence in multiplayer games
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup serverentity
+@ingroup pointentity
 */
 class
-game_end:NSEntity
+game_end:ncPointTrigger
 {
 public:
 	void game_end(void);

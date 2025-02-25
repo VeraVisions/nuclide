@@ -7,7 +7,7 @@
 # front of the TAG it is preceding.
 #
 # All text after a single hash (#) is considered a comment and will be ignored.
-# The format is:
+# The format is:E
 # TAG = value [value, ...]
 # For lists, items can also be appended using:
 # TAG += value [value, ...]
@@ -44,14 +44,14 @@ PROJECT_NUMBER         =
 # for a project that appears at the top of each page and should give viewer a
 # quick idea about the purpose of the project. Keep the description short.
 
-PROJECT_BRIEF          = "Software Development Kit for id Tech"
+PROJECT_BRIEF          = "Software Development Kit for id Technology (BETA)"
 
 # With the PROJECT_LOGO tag one can specify a logo or an icon that is included
 # in the documentation. The maximum height of the logo should not exceed 55
 # pixels and the maximum width should not exceed 200 pixels. Doxygen will copy
 # the logo to the output directory.
 
-PROJECT_LOGO           =
+PROJECT_LOGO           = Documentation/Images/Nuclide.png
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) path
 # into which the generated documentation will be written. If a relative path is
@@ -244,7 +244,7 @@ SEPARATE_MEMBER_PAGES  = NO
 # uses this value to replace tabs by spaces in code fragments.
 # Minimum value: 1, maximum value: 16, default value: 4.
 
-TAB_SIZE               = 8
+TAB_SIZE               = 4
 
 # This tag can be used to specify a number of aliases that act as commands in
 # the documentation. An alias has the form:
@@ -741,7 +741,7 @@ SHOW_USED_FILES        = YES
 # (if specified).
 # The default value is: YES.
 
-SHOW_FILES             = YES
+SHOW_FILES             = NO
 
 # Set the SHOW_NAMESPACES tag to NO to disable the generation of the Namespaces
 # page. This will remove the Namespaces entry from the Quick Index and from the
@@ -772,7 +772,7 @@ FILE_VERSION_FILTER    =
 # DoxygenLayout.xml, doxygen will parse it automatically even if the LAYOUT_FILE
 # tag is left empty.
 
-LAYOUT_FILE            =
+LAYOUT_FILE            = Documentation/DoxygenLayout.xml
 
 # The CITE_BIB_FILES tag can be used to specify one or more bib files containing
 # the reference definitions. This must be a list of .bib files. The .bib
@@ -875,30 +875,28 @@ WARN_LOGFILE           =
 # Note: If this tag is empty the current directory is searched.
 
 INPUT                  = src/ \
-                         Documentation/Main.md \
+                         Documentation/ReadMe.md \
+                         Documentation/About.md \
+                         Documentation/GettingStarted.md \
                          Documentation/Building.md \
+                         Documentation/Dependencies.md \
                          Documentation/Launching.md \
                          Documentation/DedicatedServer.md \
+                         Documentation/LevelEditing.md \
                          Documentation/Filesystem.md \
                          Documentation/Networking.md \
-                         Documentation/Bots/BotOverview.md \
-                         Documentation/EntityGuide.md \
+                         Documentation/Bots.md \
+                         Documentation/Bots/ \
+                         Documentation/Progs.md \
                          Documentation/Classes.md \
-                         Documentation/Materials/MatOverview.md \
-                         Documentation/Materials/MatCommands.md \
-                         Documentation/Materials/MatVMap.md \
-                         Documentation/Materials/commands/ \
-                         Documentation/Materials/MatShaders.md \
-                         Documentation/Materials/MatGoldSrc.md \
-                         Documentation/Shaders/ \
-                         Documentation/Constants.md \
-                         Documentation/EntityDef.md \
-                         Documentation/Surf_data.md \
-                         Documentation/Prop_data.md \
-                         Documentation/MapTweaks.md \
-                         Documentation/Sound/ \
+                         Documentation/Materials.md \
+                         Documentation/Materials/ \
+                         Documentation/Shaders.md \
+                         Documentation/Models.md \
                          Documentation/Models/ \
-                         Documentation/History.md \
+                         Documentation/Particles.md \
+                         Documentation/VMap/ \
+                         Documentation/Icons.md \
                          Documentation/Contributing.md \
                          Documentation/Support.md
 
@@ -948,10 +946,12 @@ RECURSIVE              = YES
 
 EXCLUDE                = src/engine \
                          src/worldspawn \
+                         src/netradiant-custom \
                          src/vvmtool \
                          src/menu-vgui \
                          src/menu-fn \
-                         src/plugins
+                         src/plugins \
+                         src/shared/fteextensions.qc
 
 # The EXCLUDE_SYMLINKS tag can be used to select whether or not files or
 # directories that are symbolic links (a Unix file system feature) are excluded
@@ -1010,7 +1010,8 @@ EXAMPLE_RECURSIVE      = NO
 # \image command).
 
 IMAGE_PATH	=	Documentation/Materials/ \
-		Documentation/Sound/ \
+				Documentation/Images/ \
+				base/resources.pk3dir/gfx/icon16/
 
 # The INPUT_FILTER tag can be used to specify a program that doxygen should
 # invoke to filter for each input file. Doxygen will invoke the filter program
@@ -1066,7 +1067,7 @@ FILTER_SOURCE_PATTERNS =
 # (index.html). This can be useful if you have a project on for instance GitHub
 # and want to reuse the introduction page also for the doxygen output.
 
-USE_MDFILE_AS_MAINPAGE = Main.md
+USE_MDFILE_AS_MAINPAGE = ReadMe.md
 
 #---------------------------------------------------------------------------
 # Configuration options related to source browsing
@@ -1225,7 +1226,7 @@ HTML_HEADER            =
 # that doxygen normally uses.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_FOOTER            =
+HTML_FOOTER            = Documentation/footer.html
 
 # The HTML_STYLESHEET tag can be used to specify a user-defined cascading style
 # sheet that is used by each HTML page. It can be used to fine-tune the look of
@@ -1250,7 +1251,7 @@ HTML_STYLESHEET        =
 # list). For an example see the documentation.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_EXTRA_STYLESHEET  =
+HTML_EXTRA_STYLESHEET  = Documentation/Theme/doxygen-awesome.css Documentation/Theme/custom.css
 
 # The HTML_EXTRA_FILES tag can be used to specify one or more extra images or
 # other source files which should be copied to the HTML output directory. Note
@@ -1262,7 +1263,8 @@ HTML_EXTRA_STYLESHEET  =
 
 HTML_EXTRA_FILES       =
 
-HTML_COLORSTYLE = DARK
+# To prevent newer doxygen from messing with colors
+HTML_COLORSTYLE = LIGHT
 
 # The HTML_COLORSTYLE_HUE tag controls the color of the HTML output. Doxygen
 # will adjust the colors in the style sheet and background images according to
@@ -1371,7 +1373,7 @@ DOCSET_FEEDURL         =
 # The default value is: org.doxygen.Project.
 # This tag requires that the tag GENERATE_DOCSET is set to YES.
 
-DOCSET_BUNDLE_ID       = org.doxygen.Project
+DOCSET_BUNDLE_ID       = com.veravisions.Nuclide
 
 # The DOCSET_PUBLISHER_ID tag specifies a string that should uniquely identify
 # the documentation publisher. This should be a reverse domain-name style
@@ -1379,13 +1381,13 @@ DOCSET_BUNDLE_ID       = org.doxygen.Project
 # The default value is: org.doxygen.Publisher.
 # This tag requires that the tag GENERATE_DOCSET is set to YES.
 
-DOCSET_PUBLISHER_ID    = org.doxygen.Publisher
+DOCSET_PUBLISHER_ID    = com.veravisions.Nuclide.Docs
 
 # The DOCSET_PUBLISHER_NAME tag identifies the documentation publisher.
 # The default value is: Publisher.
 # This tag requires that the tag GENERATE_DOCSET is set to YES.
 
-DOCSET_PUBLISHER_NAME  = Publisher
+DOCSET_PUBLISHER_NAME  = Docs
 
 # If the GENERATE_HTMLHELP tag is set to YES then doxygen generates three
 # additional HTML index files: index.hhp, index.hhc, and index.hhk. The
@@ -1414,7 +1416,7 @@ GENERATE_HTMLHELP      = NO
 # written to the html output directory.
 # This tag requires that the tag GENERATE_HTMLHELP is set to YES.
 
-CHM_FILE               =
+CHM_FILE               = Documentation.chm
 
 # The HHC_LOCATION tag can be used to specify the location (absolute path
 # including file name) of the HTML help compiler (hhc.exe). If non-empty,
@@ -1534,7 +1536,7 @@ GENERATE_ECLIPSEHELP   = NO
 # The default value is: org.doxygen.Project.
 # This tag requires that the tag GENERATE_ECLIPSEHELP is set to YES.
 
-ECLIPSE_DOC_ID         = org.doxygen.Project
+ECLIPSE_DOC_ID         = com.veravisions.Nuclide
 
 # If you want full control over the layout of the generated HTML pages it might
 # be necessary to disable the index and replace it with your own. The
@@ -1574,7 +1576,7 @@ GENERATE_TREEVIEW      = YES
 # The default value is: NO.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-FULL_SIDEBAR           = YES
+FULL_SIDEBAR           = NO
 
 # The ENUM_VALUES_PER_LINE tag can be used to set the number of enum values that
 # doxygen will group on one line in the generated HTML documentation.
@@ -2284,7 +2286,6 @@ INCLUDE_FILE_PATTERNS  =
 PREDEFINED             = SERVER \
                          CLIENT \
                          MENU \
-                         BULLETPENETRATION \
                          DOXYGEN
 
 # If the MACRO_EXPANSION and EXPAND_ONLY_PREDEF tags are set to YES then this

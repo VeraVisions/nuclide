@@ -3,21 +3,17 @@
 #endif
 
 #includelist
-decals.h
 client/defs.h
 client/env_cubemap.qc
 client/env_sun.qc
-client/env_sound.qc
 client/env_soundscape.qc
 client/env_particle.qc
-client/func_lod.qc
 client/func_dustmotes.qc
 client/func_dustcloud.qc
-client/func_smokevolume.qc
 client/light_environment.qc
+client/func_smokevolume.qc
 client/prop_static.qc
 client/infodecal.qc
 client/sky_camera.qc
-client/info_notnull.qc
 client/point_message.qc
 #endlist

@@ -14,6 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-void Spawn_ObserverCam(NSClientPlayer);
+void Spawn_ObserverCam(ncPlayer);
 float Spawn_PlayerRange(entity);
 entity Spawn_SelectRandom(string);

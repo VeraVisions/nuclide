@@ -4,7 +4,6 @@
 
 #includelist
 shared/ambient_generic.qc
-shared/decals.qc
 shared/func_friction.qc
 shared/env_beam.qc
 shared/env_sprite.qc
@@ -18,13 +17,14 @@ shared/env_fog_controller.qc
 shared/env_cascade_light.qc
 shared/env_smoker.qc
 shared/env_muzzleflash.qc
-//shared/env_fire.qc
 shared/env_steam.qc
 shared/env_shockwave.qc
 shared/light_dynamic.qc
 shared/logic_achievement.qc
 shared/func_monitor.qc
+shared/func_lod.qc
 shared/func_illusionary.qc
+shared/func_useableladder.qc
 shared/func_ladder.qc
 shared/func_wall.qc
 shared/func_vehicle.qc
@@ -33,11 +33,14 @@ shared/func_tankmortar.qc
 shared/trigger_camera.qc
 shared/trigger_gravity.qc
 shared/info_particle_system.qc
+shared/env_hudcounter.qc
 shared/info_waypoint.qc
+shared/info_notnull.qc
 shared/env_instructor_hint.qc
 shared/prop_physics_multiplayer.qc
 shared/prop_vehicle_driveable.qc
 shared/point_spotlight.qc
+shared/point_viewcontrol.qc
 shared/trigger_push.qc
 shared/func_conveyor.qc
 shared/prop_rope.qc

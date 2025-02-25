@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: func_tankmortar Controller */
 /*!QUAKED func_tankcontrols (0 .5 .8) ?
 # OVERVIEW
 Brush that marks the usable region of a func_tankmortar, in order
@@ -24,15 +25,17 @@ to gain control.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup serverentity
+@ingroup brushentity
 */
 class
-func_tankcontrols:NSBrushTrigger
+func_tankcontrols:ncBrushTrigger
 {
 public:
 	void func_tankcontrols(void);
 	
-	virtual void OnPlayerUse(void);
-	virtual void Respawn(void);
+	virtual void PlayerUse(void);
 
 };
 
@@ -42,19 +45,10 @@ func_tankcontrols::func_tankcontrols(void)
 }
 
 void
-func_tankcontrols::Respawn(void)
-{
-	InitBrushTrigger();
-	solid = SOLID_BBOX;
-	SetOrigin(GetSpawnOrigin());
-	PlayerUse = OnPlayerUse;
-}
-
-void
-func_tankcontrols::OnPlayerUse(void)
+func_tankcontrols:: PlayerUse(void)
 {
 	entity f;
-	NSVehicle tank;
+	ncVehicle tank;
 
 	tank = __NULL__;
 
@@ -65,14 +59,14 @@ func_tankcontrols::OnPlayerUse(void)
 	for (f = world; (f = find(f, ::targetname, target));) {
 		/* we found the right entity */
 		if (f.classname == "func_tank" || f.classname == "func_tankmortar") {
-			tank = (NSVehicle)f;
+			tank = (ncVehicle)f;
 		}
 	}
 
 	if (tank) {
 		if (!tank.m_eDriver)
-			tank.PlayerEnter((NSClientPlayer)eActivator);
+			tank.PlayerEnter((ncPlayer)eActivator);
 		else if (tank.m_eDriver == eActivator)
-			tank.PlayerLeave((NSClientPlayer)eActivator);
+			tank.PlayerLeave((ncPlayer)eActivator);
 	}
 }

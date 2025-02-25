@@ -156,6 +156,8 @@
 
 [func_traincontrols](@ref func_traincontrols)
 
+[func_useableladder](@ref func_useableladder)
+
 [func_vehicle](@ref func_vehicle)
 
 [func_vehiclecontrols](@ref func_vehiclecontrols)
@@ -192,6 +194,8 @@
 
 [info_intermission](@ref info_intermission)
 
+[info_landmark](@ref info_landmark)
+
 [info_node](@ref info_node)
 
 [info_node_air](@ref info_node_air)
@@ -214,7 +218,15 @@
 
 [infodecal](@ref infodecal)
 
+[item_eyescanner](@ref item_eyescanner)
+
 [item_food](@ref item_food)
+
+[item_generic](@ref item_generic)
+
+[item_healthcharger](@ref item_healthcharger)
+
+[item_recharge](@ref item_recharge)
 
 [light](@ref light)
 
@@ -247,6 +259,8 @@
 [multi_manager](@ref multi_manager)
 
 [multisource](@ref multisource)
+
+[npc_furniture](@ref npc_furniture)
 
 [path_corner](@ref path_corner)
 
@@ -282,6 +296,8 @@
 
 [point_trigger](@ref point_trigger)
 
+[point_viewcontrol](@ref point_viewcontrol)
+
 [prop_dynamic](@ref prop_dynamic)
 
 [prop_physics](@ref prop_physics)
@@ -296,6 +312,18 @@
 
 [random_trigger](@ref random_trigger)
 
+[reserved_spot](@ref reserved_spot)
+
+[script_brushmodel](@ref script_brushmodel)
+
+[script_model](@ref script_model)
+
+[script_origin](@ref script_origin)
+
+[script_struct](@ref script_struct)
+
+[script_vehicle](@ref script_vehicle)
+
 [scripted_sentence](@ref scripted_sentence)
 
 [scripted_sequence](@ref scripted_sequence)
@@ -307,6 +335,8 @@
 [targ_speaker](@ref targ_speaker)
 
 [target_cdaudio](@ref target_cdaudio)
+
+[target_speaker](@ref target_speaker)
 
 [trigger_auto](@ref trigger_auto)
 

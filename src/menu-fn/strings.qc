@@ -19,7 +19,7 @@ Strings_Init(void)
 {
 	filestream stringslst;
 	string lstline;
-	string gameTitle = GameLibrary_GetInfo(GAMEINFO_TITLE);
+	string gameTitle = GameLibrary_GetInfo(GAMEINFO_NAME);
 
 	m_reslbl[IDS_LANGUAGE] = _("IDS_LANGUAGE");
 	m_reslbl[IDS_BORDERLESS_REGFAIL] = _("IDS_BORDERLESS_REGFAIL");

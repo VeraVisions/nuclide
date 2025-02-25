@@ -38,7 +38,7 @@ Bot_AddBot_f(string botName, float teamValue, float spawnDelay, string newName)
 	int extraCount = 0i;
 	int foundID = -1i;
 	entity oldSelf;
-	NSBot newBot;
+	ncPlayer newBot;
 	int i = 0i;
 
 	if (!botName) {
@@ -46,7 +46,7 @@ Bot_AddBot_f(string botName, float teamValue, float spawnDelay, string newName)
 		return (false);
 	}
 
-	if (!g_nodes_present) {
+	if (Nodes_Available() == false) {
 		NSError("Can't add bot. No nodes.");
 		return (false);
 	}
@@ -73,7 +73,7 @@ Bot_AddBot_f(string botName, float teamValue, float spawnDelay, string newName)
 		return (false);
 	}
 
-	newBot = (NSBot)self;
+	newBot = (ncPlayer)self;
 	newBot.SetInfoKey("name", g_bots[foundID].m_strNetName);
 
 	extraCount = tokenize(g_bots[foundID].m_strExtra);
@@ -82,9 +82,10 @@ Bot_AddBot_f(string botName, float teamValue, float spawnDelay, string newName)
 		newBot.SetInfoKey(argv(i), argv(i+1));
 	}
 
+	newBot.SetInfoKey("*bot", "1");
 	ClientConnect();
 	PutClientInServer();
-
+	self.classname = "player";
 	self = oldSelf;
 	return (true);
 }
@@ -139,7 +140,8 @@ BotProfile_Init(void)
 
 	g_botScriptCount = 0i;
 
-	if (autocvar(bot_enable, 1) == 0) {
+	if (autocvar_bot_enable == false) {
+		InitEnd();
 		return;
 	}
 
@@ -147,6 +149,7 @@ BotProfile_Init(void)
 
 	if (botScript < 0) {
 		NSError("Missing file scripts/bots.txt");
+		InitEnd();
 		return;
 	}
 

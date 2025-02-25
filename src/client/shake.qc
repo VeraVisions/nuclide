@@ -22,7 +22,7 @@
 #define SHAKE_ROLL_HERTZ 5.0f
 
 void
-Shake_Update(NSClientPlayer pl)
+Shake_Update(ncPlayer pl)
 {
 	if (pSeat->m_flShakeDuration > 0.0) {
 		float shakeMultiplier = (pSeat->m_flShakeDuration / pSeat->m_flShakeTime);

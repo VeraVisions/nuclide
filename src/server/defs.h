@@ -14,19 +14,30 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "NSOutput.h"
-#include "NSGameRules.h"
+#include "api_func.h"
+#include "../shared/api.h"
+#include "../shared/entityDef.h"
+#include "Output.h"
+#include "GameRules.h"
 #include "skill.h"
 #include "logging.h"
-#include "nodes.h"
-#include "spawn.h"
-#include "weapons.h"
-#include "plugins.h"
-#include "NSTraceAttack.h"
 
-#include "route.h"
-#include "way.h"
+#include "../nav/linkflags.h"
+#include "../nav/nodes.h"
+#include "../nav/route.h"
+#include "../nav/NodeEditor.h"
+#include "../nav/way_convert.h"
+#include "../nav/NavInfo.h"
+#include "../nav/Hint.h"
+
+#include "spawn.h"
+#include "plugins.h"
 #include "lament.h"
+#include "vote.h"
+#include "mapcycle.h"
+#include "maptweaks.h"
+#include "scripts.h"
+#include "Schedule.h"
 
 /* helper macros */
 #define EVALUATE_FIELD(fieldname, changedflag) {\
@@ -36,11 +47,11 @@
 	SAVE_STATE(fieldname);\
 }
 
-#define EVALUATE_VECTOR(fieldname, id, changedflag) {\
-	if (VEC_CHANGED(fieldname, id)) {\
+#define EVALUATE_VECTOR(fieldname, idx, changedflag) {\
+	if (VEC_CHANGED(fieldname, idx)) {\
 		SetSendFlags(changedflag);\
 	}\
-	SAVE_STATE_FIELD(fieldname, id);\
+	SAVE_STATE_FIELD(fieldname, idx);\
 }
 
 #define SENDENTITY_BYTE(field, changedflag) {\
@@ -88,28 +99,21 @@
 		WriteByte(MSG_ENTITY, field * 255.0);\
 }
 
+#define SENDENTITY_MODELINDEX(field, changedflag) {\
+	if (flChanged & changedflag)\
+		WriteShort(MSG_ENTITY, field);\
+}
+
 var bool g_isloading = false;
 
 var bool autocvar_mp_flashlight = true;
 
-
-void TraceAttack_FireBullets(int, vector, int, vector, int);
-#ifdef BULLETPENETRATION
-void TraceAttack_SetPenetrationPower(int);
-void TraceAttack_SetRangeModifier(float);
-#endif
-
-void Damage_Radius(vector, entity, float, float, int, int);
-void Damage_Apply(entity, entity, float, int, damageType_t);
 void Client_FixAngle(entity, vector);
 void Client_ShakeOnce(vector, float, float, float, float);
 
-void Game_ServerModelEvent(float, int, string);
-void Event_ServerModelEvent(float, int, string);
-
 void Mapcycle_Load(string);
 
-entity eActivator;
+ncEntity eActivator;
 
 /* Generic entity fields */
 .void(void) PlayerUse;
@@ -128,17 +132,7 @@ int trace_surfaceflagsi;
 string startspot;
 string __fullspawndata;
 
-/* damage related tempglobals, like trace_* */
-entity g_dmg_eAttacker;
-entity g_dmg_eTarget;
-int g_dmg_iDamage;
-int g_dmg_iRealDamage;
-bodyType_t g_dmg_iHitBody;
-int g_dmg_iFlags;
-int g_dmg_iWeapon;
-vector g_dmg_vecLocation;
-
-var bool g_ents_initialized = FALSE;
+var bool g_ents_initialized = false;
 
 /* main is a qcc leftover */
 void main(void)
@@ -152,6 +146,57 @@ void main(void)
 #define SAVE_STRING(x,y,z) fputs(x, sprintf("%S \"%s\" ", y, z))
 #define SAVE_HEX(x,y,z) fputs(x, sprintf("%S \"%x\" ", y, z))
 
-NSEntity EntityDef_SpawnClassname(string className);
-NSEntity EntityDef_CreateClassname(string className);
-NSEntity Entity_CreateClass(string className);
+
+/** When called will turn the entity 'self' into the specified classname.
+
+This is useful for entities that are already in the game, and need to transition into a different type of entity.
+
+@param className is the type of class to be changed to. */
+ncEntity EntityDef_SpawnClassname(string className);
+
+
+/** Spawns an entity of a specific class. If class doesn't exist, returns __NULL__.
+
+@param className is the type of class to be instantiated. */
+ncEntity EntityDef_CreateClassname(string className);
+
+/** Spawns an entity of a class, guaranteed to be valid.
+
+This is the primary, encouraged method of spawning entities.
+If you don't spawn an entity class using this, it will not respond to sendInput().
+
+If a specified class does not exist, it will create an info_notnull type entity, but with the new, desired classname.
+
+The only time when this function returns __NULL__ is if the game is unable to allocate any more entities.
+
+@param className is the type of class to be instantiated. */
+ncEntity Entity_CreateClass(string className);
+
+/** Checks if an entity class was defined in an EntityDef.
+
+You can then use EntityDef_GetKeyValue() to get various key values from said EntityDef.
+
+@param className specifies which class definition to look for. */
+bool EntityDef_HasSpawnClass(string className);
+
+
+/** Retrieves the value of a specific key defined within an EntityDef.
+
+@param className specifies which class definition to look in.
+@param keyName specifies the 'key' we want to know its value of. */
+string EntityDef_GetKeyValue(string className, string keyName);
+
+void
+WriteEntityEvent(float to, entity targetEntity, float eventType)
+{
+	WriteByte(to, SVC_CGAMEPACKET);
+	WriteByte(to, EV_ENTITYEVENT);
+	WriteEntity(to, targetEntity);
+	WriteFloat(to, eventType);
+}
+
+/** @defgroup serverentity Entities that are server-side
+ *  @ingroup server
+ *  @ingroup entities
+ *  Entity classes that run entirely on the server.
+ */

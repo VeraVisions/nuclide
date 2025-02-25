@@ -3,11 +3,7 @@
 #includelist
 defs.h
 profiles.qc
-NSBot.qc
-bot_chat.qc
-bot_combat.qc
-route.qc
-way.qc
-way_convert.qc
+chat.qc
+combat.qc
 cmd.qc
 #endlist

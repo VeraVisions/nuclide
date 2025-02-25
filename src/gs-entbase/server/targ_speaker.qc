@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Redundant Sound Emitter #2 */
 /*!QUAKED targ_speaker (1 0 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 This entity plays a sample upon triggering at a specified volume.
@@ -32,9 +33,12 @@ It's not any more useful than an ambient_generic.
 I suspect it's a carry-over from when Gunman was a Quake II mod, as
 Quake/Quake II did not have an entity that allowed custom sound samples
 to be played.
+
+@ingroup serverentity
+@ingroup pointentity
 */
 class
-targ_speaker:NSPointTrigger
+targ_speaker:ncPointTrigger
 {
 public:
 	void targ_speaker(void);
@@ -84,6 +88,7 @@ void
 targ_speaker::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
+	case "noise":
 	case "tsnoise":
 		m_strSample = strValue;
 		break;

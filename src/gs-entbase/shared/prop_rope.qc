@@ -33,6 +33,7 @@ var float autocvar_rope_swing = 2.0;
 var bool autocvar_rope_fast = TRUE;
 var int autocvar_rope_maxsegments = -1;
 
+/*! \brief Shared-Entity: Faux Physics Rope */
 /*!QUAKED prop_rope (1 0 0) (-8 -8 -8) (8 8 8) ROPE_VERTICAL
 # OVERVIEW
 Client-side decorative rope entity. 
@@ -50,8 +51,11 @@ Connect the entity to a named info_notnull and watch it swing around.
 
 # TRIVIA
 This entity was introduced in The Wastes (2018).
+
+@ingroup sharedentity
+@ingroup pointentity
 */
-class prop_rope:NSEntity
+class prop_rope:ncEntity
 {
 public:
 	void prop_rope(void);
@@ -60,7 +64,9 @@ public:
 	virtual float predraw(void);
 	virtual void ReceiveEntity(float,float);
 	virtual void DrawSegment(vector, vector, vector);
-#else
+#endif
+
+#ifdef SERVER
 	virtual void SpawnKey(string,string);
 	virtual void Respawn(void);
 	virtual void Save(float);
@@ -108,11 +114,11 @@ prop_rope::predraw(void)
 	vector pos2;
 	float segments;
 	vector vecPlayer;
-	NSClientPlayer pl;
+	ncPlayer pl;
 
 	int s = (float)getproperty(VF_ACTIVESEAT);
 	pSeat = &g_seats[s];
-	pl = (NSClientPlayer)pSeat->m_ePlayer;
+	pl = (ncPlayer)pSeat->m_ePlayer;
 	vecPlayer = pl.GetEyePos();
 
 	/* draw the start/end without segments */
@@ -154,9 +160,7 @@ prop_rope::predraw(void)
 		}
 
 		/* travel further and sag */
-		pos2[0] = Math_Lerp(origin[0], m_vecTarget[0], progress);
-		pos2[1] = Math_Lerp(origin[1], m_vecTarget[1], progress);
-		pos2[2] = Math_Lerp(origin[2], m_vecTarget[2], progress);
+		pos2 = vectorLerp(origin, m_vecTarget, progress);
 		pos2 += (v_up * -sag) * autocvar_rope_sag;
 
 		if (!autocvar_rope_fast)
@@ -195,14 +199,17 @@ prop_rope::ReceiveEntity(float new, float flSendFlags)
 	if (flSendFlags & PROPROPE_CHANGED_FLAGS)
 		flags = readfloat();
 }
-#else
+#endif
+
+#ifdef SERVER
 void
 prop_rope::Respawn(void)
 {
+	super::Respawn();
+
 	if (HasSpawnFlags(1)) {
 		flags = 1;
 	}
-	SetOrigin(GetSpawnOrigin());
 	SetSize([0,0,0], [0,0,0]);
 }
 void
@@ -286,6 +293,7 @@ prop_rope::SpawnKey(string strKey, string strValue)
 	case "segments":
 		m_iSegments = stoi(strValue);
 		break;
+	case "RopeMaterial":
 	case "shader":
 		m_strShader = strValue;
 		break;
@@ -342,7 +350,9 @@ prop_rope::prop_rope(void)
 	m_flSag = 15.0f;
 	m_iSegments = 16;
 	m_strShader = "textures/props/wire_default";
-#else
+#endif
+
+#ifdef CLIENT
 	/* this is empty for a good reason */
 	drawmask = MASK_ENGINE;
 #endif

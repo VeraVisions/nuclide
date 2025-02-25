@@ -36,6 +36,7 @@ enumflags
 	FUNNEL_REPEATABLE
 };
 
+/*! \brief Shared-Entity: Funneling Sprite Controller */
 /*!QUAKED env_funnel (1 .5 0) (-8 -8 -8) (8 8 8) REVERSE REPEATABLE
 # OVERVIEW
 An effect that when triggered, will create lots of glowing orbs that funnel into
@@ -51,9 +52,12 @@ the position of this entity.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup sharedentity
+@ingroup pointentity
 */
 class
-env_funnel:NSRenderableEntity
+env_funnel:ncRenderableEntity
 {
 public:
 	void env_funnel(void);
@@ -69,7 +73,9 @@ public:
 	virtual float SendEntity(entity,float);
 	virtual void Trigger(entity, triggermode_t);
 	virtual void Input(entity, string, string);
-#else
+#endif
+
+#ifdef CLIENT
 	virtual float predraw(void);
 	virtual void ReceiveEntity(float,float);
 	virtual void RendererRestarted(void);
@@ -86,7 +92,9 @@ private:
 
 #ifdef SERVER
 	float m_flHeight;
-#else
+#endif
+
+#ifdef CLIENT
 	float m_flProgression;
 #endif
 };
@@ -98,7 +106,9 @@ env_funnel::env_funnel(void)
 	m_strTexture = "sprites/flare6.spr";
 	m_iSpriteID = 0i;
 	m_flHeight = 512.0f;
-#else
+#endif
+
+#ifdef CLIENT
 	m_flProgression = 0.0f;
 #endif
 }
@@ -107,14 +117,14 @@ env_funnel::env_funnel(void)
 void
 env_funnel::Respawn(void)
 {
+	super::Respawn();
 	SetSize([0,0,0], [0,0,0]);
-	SetOrigin(GetSpawnOrigin());
 	m_vecStartPos = GetOrigin();
 	m_vecEndPos = GetOrigin() + [0.0f, 0.0f, m_flHeight];
 	m_iSpriteID = getmodelindex(m_strTexture, false);
 	pvsflags = PVSF_IGNOREPVS;
-	m_vecRenderColor = [1,1,1];
-	m_flRenderAmt = 1.0f;
+	SetRenderColor([255,255,255]);
+	SetRenderAmt(255);
 }
 
 void
@@ -222,7 +232,9 @@ env_funnel::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_BYTE(m_flRenderAmt, FUNNEL_CHANGED_AMOUNT)
 	return (1);
 }
-#else
+#endif
+
+#ifdef CLIENT
 void
 env_funnel::ReceiveEntity(float flNew, float flChanged)
 {
@@ -264,8 +276,8 @@ env_funnel::RendererRestarted(void)
 void
 env_funnel::RenderGlow(vector forg, vector fsize, float amount)
 {
-	float alphaTint = m_flRenderAmt * (1.0 - amount);
-	vector renderColor = m_vecRenderColor;
+	float alphaTint = (m_flRenderAmt / 255) * (1.0 - amount);
+	vector renderColor = m_vecRenderColor / 255;
 
 	R_BeginPolygon(m_strTexture, 1, 0);
 	R_PolygonVertex(forg + v_right * fsize[0] - v_up * fsize[1],
@@ -393,10 +405,7 @@ env_funnel::predraw(void)
 
 		endPos[2] += rand3 * 512.0f;
 
-		finalPos[0] = Math_Lerp(startPos[0], endPos[0], progress);
-		finalPos[1] = Math_Lerp(startPos[1], endPos[1], progress);
-		finalPos[2] = Math_Lerp(startPos[2], endPos[2], progress);
-
+		finalPos = vectorLerp(startPos, endPos, progress);
 		RenderGlow(finalPos, [64, 64], m_flProgression);
 	}
 

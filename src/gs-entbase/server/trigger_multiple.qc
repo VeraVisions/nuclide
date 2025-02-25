@@ -21,6 +21,7 @@ enumflags
 	TM_PUSHABLES
 };
 
+/*! \brief Server-Entity: Multi Use Trigger Volume */
 /*!QUAKED trigger_multiple (.5 .5 .5) ? CLIENTS NPCS PUSHABLES PHYSICS FRIENDLIES CLIENTSINVEHICLES EVERYTHING x x CLIENTSNOTINVEHICLES DEBRIS NPCSINVEHICLES NOBOTS
 # OVERVIEW
 A trigger volume which works more than once. 
@@ -46,7 +47,7 @@ A trigger volume which works more than once.
 - TF_CLIENTS (1) : Clients can touch it.
 - TF_NPCS (2) : NPCs can touch it.
 - TF_PUSHABLE (4) : Pushables can touch it.
-- TF_PHYSICS (8) : NSPhysicsEntity based classes can touch it.
+- TF_PHYSICS (8) : ncPhysicsEntity based classes can touch it.
 - TF_FRIENDLIES (16) : Friendly NPCs can touch it.
 - TF_CLIENTSINVEHICLES (32) : Clients within vehicles can touch it.
 - TF_EVERYTHING (64) : Everything can touch it.
@@ -67,9 +68,12 @@ If you want an entity like this that can only be used once, see trigger_once.
 
 # TRIVIA
 This entity was introduced in Quake (1996).
+
+@ingroup serverentity
+@ingroup brushentity
 */
 class
-trigger_multiple:NSBrushTrigger
+trigger_multiple:ncBrushTrigger
 {
 public:
 	void trigger_multiple(void);
@@ -78,7 +82,6 @@ public:
 	virtual void Save(float);
 	virtual void Restore(string,string);
 	virtual void Touch(entity);
-	virtual void Respawn(void);
 	virtual void SpawnKey(string,string);
 	virtual void Input(entity,string,string);
 	virtual void EndTouch(entity);
@@ -139,7 +142,7 @@ trigger_multiple::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "wait":
-		m_flWait = stof(strValue);
+		m_flWait = ReadFloat(strValue);
 		break;
 	case "StartDisabled":
 		m_bStartDisabled = ReadBool(strValue);
@@ -174,12 +177,6 @@ trigger_multiple::Spawned(void)
 }
 
 void
-trigger_multiple::Respawn(void)
-{
-	InitBrushTrigger();
-}
-
-void
 trigger_multiple::Input(entity entityActivator, string inputName, string dataField)
 {
 	switch (inputName) {
@@ -201,7 +198,10 @@ trigger_multiple::Input(entity entityActivator, string inputName, string dataFie
 void
 trigger_multiple::Touch(entity eToucher)
 {
-	if (GetMaster(eToucher) == FALSE)
+	if (IsThinking() == true)
+		return;
+
+	if (GetMaster(eToucher) == false)
 		return;
 
 	if (m_bEnabled == false)

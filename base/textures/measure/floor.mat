@@ -1,0 +1,16 @@
+{
+if $programs
+	program defaultwall
+	diffusemap measure/floor.ktx
+else
+	{
+		map $lightmap
+		rgbGen identity
+	}
+	{
+		map measure/floor.ktx
+		rgbGen identity
+		blendFunc GL_DST_COLOR GL_ZERO
+	}
+endif
+}

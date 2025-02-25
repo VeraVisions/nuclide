@@ -20,6 +20,7 @@ enumflags
 	LOGICRELAY_FAST
 };
 
+/*! \brief Server-Entity: Relay Trigger */
 /*!QUAKED logic_relay (1 0 0) (-8 -8 -8) (8 8 8) ONCE FAST
 # OVERVIEW
 Triggers outputs within an I/O system chain, which can be enabled/disabled at will.
@@ -49,9 +50,12 @@ When a logic_relay is removed via spawnflag ONCE it won't survive match respawns
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
+
+@ingroup serverentity
+@ingroup pointentity
 */
 class
-logic_relay:NSPointTrigger
+logic_relay:ncPointTrigger
 {
 public:
 	void logic_relay(void);

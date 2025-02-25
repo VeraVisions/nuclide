@@ -16,6 +16,7 @@
 
 vector g_landmarkpos;
 
+/*! \brief Server-Entity: Shared Point Between Levels */
 /*!QUAKED info_landmark (1 0 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Defines a shared point between two levels. Used for level transitions, such
@@ -26,9 +27,12 @@ as the ones produced by a trigger_changelevel.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup serverentity
+@ingroup pointentity
 */
 class
-info_landmark:NSPointTrigger
+info_landmark:ncPointTrigger
 {
 	
 };
@@ -43,7 +47,7 @@ void
 ChangeTarget_Activate(void)
 {
 	string ctarg = cvar_string("_bsp_changetarget");
-	NSTimer foo = __NULL__;
+	ncTimer foo = __NULL__;
 
 	static void Finalize(void) {
 		string ctarg = cvar_string("_bsp_changetarget");
@@ -55,7 +59,7 @@ ChangeTarget_Activate(void)
 			return;
 
 		for (entity a = world; (a = find(a, ::targetname, ctarg));) {
-			NSEntity t = (NSEntity)a;
+			ncEntity t = (ncEntity)a;
 
 			if (t.Trigger)
 				t.Trigger(self, TRIG_TOGGLE);
@@ -71,6 +75,7 @@ ChangeTarget_Activate(void)
 	foo.TemporaryTimer(self, Finalize, cvar("_bsp_changedelay"), false);
 }
 
+/*! \brief Server-Entity: Triggers Level Changes */
 /*!QUAKED trigger_changelevel (.5 .5 .5) ? NO_INTERMISSION TRIGGER_ONLY
 # OVERVIEW
 A trigger volume that initiates a level change, from one map to the next.
@@ -108,7 +113,7 @@ The PVS-culling method can prove difficult to work with. Developers have been sp
 This entity was introduced in Quake (1996).
 */
 class
-trigger_changelevel:NSBrushTrigger
+trigger_changelevel:ncBrushTrigger
 {
 public:
 	void trigger_changelevel(void);
@@ -223,8 +228,9 @@ trigger_changelevel::Spawned(void)
 {
 	super::Spawned();
 
-	if (m_strOnLevelChange)
+	if (m_strOnLevelChange) {
 		m_strOnLevelChange = CreateOutput(m_strOnLevelChange);
+	}
 }
 
 void
@@ -241,8 +247,10 @@ trigger_changelevel::IsInside(entity ePlayer, entity eVolume)
 		 ePlayer.absmin[2] > eVolume.absmax[2] ||
 		 ePlayer.absmax[0] < eVolume.absmin[0] ||
 		 ePlayer.absmax[1] < eVolume.absmin[1] ||
-		 ePlayer.absmax[2] < eVolume.absmin[2])
+		 ePlayer.absmax[2] < eVolume.absmin[2]) {
 		 return (0);
+	}
+
 	return (1);
 }
 
@@ -308,8 +316,9 @@ trigger_changelevel::Change(void)
 void
 trigger_changelevel::Trigger(entity act, triggermode_t unused)
 {
-	if (GetMaster(act) == false)
+	if (GetMaster(act) == false) {
 		return;
+	}
 
 	/* disable meself */
 	SetSolid(SOLID_NOT);
@@ -326,14 +335,17 @@ trigger_changelevel::Trigger(entity act, triggermode_t unused)
 void
 trigger_changelevel::Touch(entity eToucher)
 {
-	if (HasSpawnFlags(LC_USEONLY))
+	if (HasSpawnFlags(LC_USEONLY)) {
 		return;
+	}
 
-	if (!(eToucher.flags & FL_CLIENT))
+	if (isPlayer(eToucher) == false) {
 		return;
+	}
 
-	if (time < 2.0f)
+	if (time < 2.0f) {
 		return;
+	}
 
 	Trigger(eToucher, TRIG_TOGGLE);
 }

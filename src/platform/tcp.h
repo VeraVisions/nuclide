@@ -14,19 +14,23 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*! @file tcp.h
-    @brief TCP/IP Networking API
+/**
+@defgroup tcp TCP/IP
+@ingroup menu
+@brief TCP/IP Networking API
 
-    The TCP API manages the sending/receiving of data over TCP sockets.
+The TCP API manages the sending/receiving of data over TCP sockets.
 
-    First, establish a connection with TCP_Connect(), which will return
-	 a file descriptior.
-	 If TCP_Connect returns a value below 0, no connection is possible.
-    You can send data through TCP_Send() once TCP_GetState returns
-    STATE_CONNECTED.
+First, establish a connection with TCP_Connect(), which will return
+a file descriptior.
+If TCP_Connect returns a value below 0, no connection is possible.
+You can send data through TCP_Send() once TCP_GetState returns
+STATE_CONNECTED.
 
-    You need to run TCP_Frame() on your tcpinfo_t struct every frame
-    in order to listen to network activity.
+You need to run TCP_Frame() on your tcpinfo_t struct every frame
+in order to listen to network activity.
+
+@{
 */
 
 #define TCP_BUFFER_LENGTH 32
@@ -56,7 +60,7 @@ int TCP_Connect(tcpinfo_t *in, string path);
 
 /** Closes a TCP socket connection.
 
-@parm in Pointer to a tcpinfo_t that is to be closed. */
+@param in Pointer to a tcpinfo_t that is to be closed. */
 void TCP_Disconnect(tcpinfo_t *in);
 
 /** Send a string buffer to a specified TCP connection.
@@ -79,3 +83,5 @@ void TCP_Frame(tcpinfo_t *in);
 
 @param in Pointer to an active TCP connection.*/
 tcpstate_t TCP_GetState(tcpinfo_t *in);
+
+/** @} */ // end of tcp

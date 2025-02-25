@@ -1,0 +1,9 @@
+{
+	qer_editorImage "common/clip.tga"
+	qer_trans 0.50
+	surfaceParm nodraw
+	surfaceParm trans
+	surfaceParm snow
+	surfaceParm nolightmap
+	nomipmaps
+}

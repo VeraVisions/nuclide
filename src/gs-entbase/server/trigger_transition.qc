@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Level Transition Volume */
 /*!QUAKED trigger_transition (.5 .5 .5) ?
 # OVERVIEW
 Defines level transition regions.
@@ -27,9 +28,12 @@ In order for this entity to work, one has to assign a working info_landmark enti
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup serverentity
+@ingroup brushentity
 */
 class
-trigger_transition:NSBrushTrigger
+trigger_transition:ncBrushTrigger
 {
 public:
 	void trigger_transition(void);
@@ -38,7 +42,7 @@ public:
 	virtual void Respawn(void);
 
 	nonvirtual void SaveTransition(entity, bool);
-	nonvirtual NSEntity FindCarrierEntity(string);
+	nonvirtual ncEntity FindCarrierEntity(string);
 	nonvirtual void LoadTransition(void);
 };
 
@@ -65,7 +69,7 @@ trigger_transition::SaveTransition(entity pvsTest, bool usePVS)
 	}
 
 	/* loop through all entities */
-	for (NSEntity a = __NULL__; (a = (NSEntity)findfloat(a, ::identity, 1));) {
+	for (ncEntity a = __NULL__; (a = (ncEntity)findfloat(a, ::identity, 1));) {
 		bool replicateEntity = false;
 		bool continueInNextMap = false;
 
@@ -133,10 +137,10 @@ trigger_transition::SaveTransition(entity pvsTest, bool usePVS)
 	fclose(transFile);
 }
 
-NSEntity
+ncEntity
 trigger_transition::FindCarrierEntity(string globalName)
 {
-	for (NSEntity a = __NULL__; (a = (NSEntity)findfloat(a, ::identity, 1));) {
+	for (ncEntity a = __NULL__; (a = (ncEntity)findfloat(a, ::identity, 1));) {
 		if (a.m_strGlobalName == globalName) {
 			return a;
 		}
@@ -154,7 +158,7 @@ trigger_transition::LoadTransition(void)
 {
 	string lineFeed;
 	bool isNew = false;
-	NSEntity carrierEntity = __NULL__;
+	ncEntity carrierEntity = __NULL__;
 
 	filestream transFile = fopen("trans.dat", FILE_READ);
 

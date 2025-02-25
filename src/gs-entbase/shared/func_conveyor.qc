@@ -39,6 +39,7 @@ typedef enumflags
 #define SF_CONVEYOR_VISUAL	1
 #define SF_CONVEYOR_NOTSOLID	2
 
+/*! \brief Shared-Entity: Conveyor Belt */
 /*!QUAKED func_conveyor (0 .5 .8) ? SF_CONVEYOR_VISUAL SF_CONVEYOR_NOTSOLID
 # OVERVIEW
 A conveyor belt entity. Texture will move along in the direction and speed of the conveyor.
@@ -54,12 +55,15 @@ A conveyor belt entity. Texture will move along in the direction and speed of th
 
 # TRIVIA
 This entity was introduced in Quake II (1997).
+
+@ingroup sharedentity
+@ingroup brushentity
 */
 class
-func_conveyor:NSRenderableEntity
+func_conveyor:ncRenderableEntity
 {
 public:
-	void(void) func_conveyor;
+	void func_conveyor(void);
 
 	virtual void Touch(entity);
 
@@ -132,6 +136,8 @@ func_conveyor::SpawnKey(string strKey, string strValue)
 void
 func_conveyor::Respawn(void)
 {
+	super::Respawn();
+
 	if (!m_flSpeed)
 		m_flSpeed = 100;
 
@@ -141,7 +147,6 @@ func_conveyor::Respawn(void)
 
 	SetMovetype(MOVETYPE_NONE);
 	SetSolid(SOLID_BSP);
-	SetModel(GetSpawnModel());
 
 	Trigger(this, TRIG_ON);
 
@@ -299,14 +304,14 @@ func_conveyor::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_COORD(avelocity[2], CONVEYOR_CHANGED_ANGULARVELOCITY)
 	SENDENTITY_BYTE(m_iRenderMode, CONVEYOR_CHANGED_RENDERMODE)
 	SENDENTITY_BYTE(m_iRenderFX, CONVEYOR_CHANGED_RENDERMODE)
-	SENDENTITY_ANGLE(m_vecRenderColor[0], CONVEYOR_CHANGED_RENDERCOLOR)
-	SENDENTITY_ANGLE(m_vecRenderColor[1], CONVEYOR_CHANGED_RENDERCOLOR)
-	SENDENTITY_ANGLE(m_vecRenderColor[2], CONVEYOR_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_vecRenderColor[0], CONVEYOR_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_vecRenderColor[1], CONVEYOR_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_vecRenderColor[2], CONVEYOR_CHANGED_RENDERCOLOR)
 	/* these need more precision for shader hacks... */
 	SENDENTITY_FLOAT(glowmod[0], CONVEYOR_CHANGED_RENDERCOLOR)
 	SENDENTITY_FLOAT(glowmod[1], CONVEYOR_CHANGED_RENDERCOLOR)
 	SENDENTITY_FLOAT(glowmod[2], CONVEYOR_CHANGED_RENDERCOLOR)
-	SENDENTITY_FLOAT(m_flRenderAmt, CONVEYOR_CHANGED_RENDERAMT)
+	SENDENTITY_BYTE(m_flRenderAmt, CONVEYOR_CHANGED_RENDERAMT)
 	SENDENTITY_FLOAT(m_flSpeed, CONVEYOR_CHANGED_SPEED)
 	SENDENTITY_FLOAT(m_vecMoveDir[0], CONVEYOR_CHANGED_MOVEDIR)
 	SENDENTITY_FLOAT(m_vecMoveDir[1], CONVEYOR_CHANGED_MOVEDIR)
@@ -346,14 +351,14 @@ func_conveyor::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_COORD(avelocity[2], CONVEYOR_CHANGED_ANGULARVELOCITY)
 	READENTITY_BYTE(m_iRenderMode, CONVEYOR_CHANGED_RENDERMODE)
 	READENTITY_BYTE(m_iRenderFX, CONVEYOR_CHANGED_RENDERMODE)
-	READENTITY_ANGLE(m_vecRenderColor[0], CONVEYOR_CHANGED_RENDERCOLOR)
-	READENTITY_ANGLE(m_vecRenderColor[1], CONVEYOR_CHANGED_RENDERCOLOR)
-	READENTITY_ANGLE(m_vecRenderColor[2], CONVEYOR_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_vecRenderColor[0], CONVEYOR_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_vecRenderColor[1], CONVEYOR_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_vecRenderColor[2], CONVEYOR_CHANGED_RENDERCOLOR)
 	/* these need more precision for shader hacks... */
 	READENTITY_FLOAT(glowmod[0], CONVEYOR_CHANGED_RENDERCOLOR)
 	READENTITY_FLOAT(glowmod[1], CONVEYOR_CHANGED_RENDERCOLOR)
 	READENTITY_FLOAT(glowmod[2], CONVEYOR_CHANGED_RENDERCOLOR)
-	READENTITY_FLOAT(m_flRenderAmt, CONVEYOR_CHANGED_RENDERAMT)
+	READENTITY_BYTE(m_flRenderAmt, CONVEYOR_CHANGED_RENDERAMT)
 	READENTITY_FLOAT(m_flSpeed, CONVEYOR_CHANGED_SPEED)
 	READENTITY_FLOAT(m_vecMoveDir[0], CONVEYOR_CHANGED_MOVEDIR)
 	READENTITY_FLOAT(m_vecMoveDir[1], CONVEYOR_CHANGED_MOVEDIR)
@@ -371,6 +376,10 @@ func_conveyor::Touch(entity eToucher)
 {
 	if (HasSpawnFlags(SF_CONVEYOR_VISUAL))
 		return;
+
+	if (isSentient(eToucher) == false) {
+		return;
+	}
 
 	eToucher.basevelocity = m_vecMoveDir * (m_flSpeed);
 }

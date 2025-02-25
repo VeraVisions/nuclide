@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Momentary Sliding Door */
 /*!QUAKED momentary_door (0 .5 .8) ?
 # OVERVIEW
 Dynamic door that will move back down if it's not being used.
@@ -23,10 +24,12 @@ Dynamic door that will move back down if it's not being used.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
-*/
 
+@ingroup serverentity
+@ingroup brushentity
+*/
 class
-momentary_door:NSMomentary
+momentary_door:ncMomentary
 {
 public:
 	void momentary_door(void);
@@ -66,6 +69,7 @@ momentary_door::SpawnKey(string strKey, string strValue)
 void
 momentary_door::Respawn(void)
 {
+	super::Respawn();
 	RestoreAngles();
 	SetMovementDirection();
 	ClearAngles();
@@ -73,10 +77,8 @@ momentary_door::Respawn(void)
 
 	SetMovetype(MOVETYPE_PUSH);
 	SetSolid(SOLID_BSP);
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
 
-	m_vecPos1 = GetSpawnOrigin();
+	m_vecPos1 = GetOrigin();
 	m_vecPos2 = (m_vecPos1 + m_vecMoveDir * (fabs(m_vecMoveDir * size) - m_flDistance));
 }
 
@@ -133,12 +135,12 @@ momentary_door::MovementStateChanged(void)
 void
 momentary_door::SetMovementDirection(void)
 {
-	if (GetSpawnAngles() == [0,-1,0]) {
+	if (GetAngles() == [0,-1,0]) {
 		m_vecMoveDir = [0,0,1];
-	} else if (GetSpawnAngles() == [0,-2,0]) {
+	} else if (GetAngles() == [0,-2,0]) {
 		m_vecMoveDir = [0,0,-1];
 	} else {
-		makevectors(GetSpawnAngles());
+		makevectors(GetAngles());
 		m_vecMoveDir = v_forward;
 	}
 }

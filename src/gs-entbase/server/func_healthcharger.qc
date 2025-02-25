@@ -14,9 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Health Charging Station */
 /*!QUAKED func_healthcharger (0 .5 .8) ?
 # OVERVIEW
 Brush that fills up your health when used, to a maximum of 100 HP.
+
+![A working func_healthcharger, mounted against a wall](@ref func_healthcharger.jpg)
 
 # KEYS
 - "targetname" : Name
@@ -28,9 +31,12 @@ Brush that fills up your health when used, to a maximum of 100 HP.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup serverentity
+@ingroup brushentity
 */
 class
-func_healthcharger:NSRenderableEntity
+func_healthcharger:ncRenderableEntity
 {
 public:
 	void func_healthcharger(void);
@@ -38,7 +44,7 @@ public:
 	/* overrides */
 	virtual void Save(float);
 	virtual void Restore(string,string);
-	virtual void Spawned(void);
+	virtual void Precache(void);
 	virtual void SpawnKey(string,string);
 	virtual void customphysics(void);
 	virtual void Respawn(void);
@@ -47,7 +53,7 @@ public:
 	nonvirtual void ResetHealth(void);
 
 private:
-	entity m_eUser;
+	ncEntity m_eUser;
 	float m_flDelay;
 	float m_flCheck;
 
@@ -83,7 +89,7 @@ func_healthcharger::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "user":
-		m_eUser = ReadEntity(strValue);
+		m_eUser = (ncEntity)ReadEntity(strValue);
 		break;
 	case "delay":
 		m_flDelay = ReadFloat(strValue);
@@ -124,22 +130,19 @@ func_healthcharger::SpawnKey(string strKey, string strValue)
 }
 
 void
-func_healthcharger::Spawned(void)
+func_healthcharger::Precache(void)
 {
-	super::Spawned();
-
-	precache_sound(m_strSndFirst);
-	precache_sound(m_strSndCharging);
-	precache_sound(m_strSndDone);
+	precache.Sound(m_strSndFirst);
+	precache.Sound(m_strSndCharging);
+	precache.Sound(m_strSndDone);
 }
 
 void
 func_healthcharger::Respawn(void)
 {
+	super::Respawn();
 	SetSolid(SOLID_BSP);
 	SetMovetype(MOVETYPE_NONE);
-	SetOrigin(GetSpawnOrigin());
-	SetModel(GetSpawnModel());
 	PlayerUse = OnPlayerUse;
 	ResetHealth();
 }
@@ -162,14 +165,14 @@ func_healthcharger::OnPlayerUse(void)
 	if (eActivator.health <= 0)
 		return;
 
-	eActivator.flags |= FL_USE_RELEASED;
+	eActivator.AddVFlags(VFL_USE_RELEASED);
 
 	/* First come first serve */ 
 	if (m_eUser && eActivator != m_eUser)
 		return;
 
 	/* First time */
-	if (m_eUser == world) {
+	if (m_eUser == __NULL__) {
 		StartSound(m_strSndFirst, CHAN_VOICE, 0, true);
 	}
 
@@ -177,17 +180,17 @@ func_healthcharger::OnPlayerUse(void)
 		return;
 
 	if (health <= 0) {
-		eActivator.flags &= ~FL_USE_RELEASED;
+		eActivator.RemoveVFlags(VFL_USE_RELEASED);
 		StartSound(m_strSndDone, CHAN_VOICE, 0, true);
-		m_eUser = world;
+		m_eUser = __NULL__;
 		return;
 	}
 
 	if (eActivator.health >= 100) {
-		eActivator.flags &= ~FL_USE_RELEASED;
+		eActivator.RemoveVFlags(VFL_USE_RELEASED);
 		StartSound(m_strSndDone, CHAN_VOICE, 0, true);
 	} else {
-		if (m_eUser == world) {
+		if (m_eUser == __NULL__) {
 			StartSound(m_strSndCharging, CHAN_ITEM, 0, true);
 		}
 
@@ -204,8 +207,8 @@ func_healthcharger::OnPlayerUse(void)
 			StopSound(CHAN_ITEM, true);
 			StartSound(m_strSndDone, CHAN_VOICE, 0, true);
 			SetFrame(1);
-			eActivator.flags &= ~FL_USE_RELEASED;
-			m_eUser = world;
+			eActivator.RemoveVFlags(VFL_USE_RELEASED);
+			m_eUser = __NULL__;
 			return;
 		}
 	}
@@ -223,7 +226,7 @@ func_healthcharger::customphysics(void)
 
 	if (m_eUser) {
 		StopSound(CHAN_ITEM, true);
-		m_eUser = world;
+		m_eUser = __NULL__;
 	}
 
 	HandleThink();

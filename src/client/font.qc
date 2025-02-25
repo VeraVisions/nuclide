@@ -29,8 +29,9 @@ Font_Load(string strFile, font_s &fntNew)
 
 	filestream fileFont = fopen(strFile, FILE_READ);
 	fntNew.iID = 0;
-	fntNew.iScaleX = fntNew.iScaleY = -1;
+	fntNew.iScaleX = fntNew.iScaleY = 12;
 	fntNew.vecColor = [1,1,1];
+	fntNew.hexColor = "^xFFF";
 	fntNew.flAlpha = 1.0f;
 	fntNew.iFlags = 0;
 
@@ -44,6 +45,7 @@ Font_Load(string strFile, font_s &fntNew)
 			switch (argv(0)) {
 			case "color":
 				fntNew.vecColor = stov(argv(1)) / 255;
+				fntNew.hexColor = Font_RGBtoHex(fntNew.vecColor);
 				break;
 			case "alpha":
 				fntNew.flAlpha = stof(argv(1)) / 255;
@@ -81,6 +83,8 @@ Font_Load(string strFile, font_s &fntNew)
 
 	if (!fntNew.iScaleX || !fntNew.iScaleY) {
 		NSError("Invalid size defined for %s", strFile);
+		fntNew.iScaleX = 12i;
+		fntNew.iScaleY = 12i;
 	}
 
 	NSLog("Loaded font definition for %s", strFile);
@@ -90,15 +94,21 @@ Font_Load(string strFile, font_s &fntNew)
 	} else
 		fntNew.iID = (int)loadfont("", strFontPath, ftos((float)fntNew.iScaleY), -1, 0, 0);
 
+#if 0
 	/* this is the console font, so make sure we use it */
-	if (strFile == "fonts/fontcon.font") {
+	if (strFile == "fonts/console.font") {
 		string r = ftos(fntNew.vecColor[0]);
-		string g = ftos(fntNew.vecColor[0]);
-		string b = ftos(fntNew.vecColor[0]);
-		string size = ftos((float)fntNew.iScaleY);
+		string g = ftos(fntNew.vecColor[1]);
+		string b = ftos(fntNew.vecColor[2]);
 		cvar_set("con_textfont", strcat(strFontPath, "?col=", r, ",", g, ",", b));
-		cvar_set("con_textsize", strcat("-", size));
+
+		/* just to be extra sure */
+		if (fntNew.iScaleY > 0i) {
+			string size = ftos((float)fntNew.iScaleY);
+			cvar_set("con_textsize", strcat("-", size));
+		}
 	}
+#endif
 }
 
 void
@@ -167,7 +177,7 @@ Font_DrawField(vector vecOrigin, vector vecSize, string strText, font_s fnt, ali
 	drawfont = (float)fnt.iID;
 	drawfontscale[0] = (float)fnt.iScaleX / 8;
 	drawfontscale[1] = (float)fnt.iScaleY / 8;
-	drawtextfield(vecOrigin, vecSize, (float)iAlignFlags, strText);
+	drawtextfield(vecOrigin, vecSize, (float)iAlignFlags, strcat(fnt.hexColor, strText));
 	drawfont = 0;
 	drawfontscale = [1,1,0];
 }
@@ -178,7 +188,7 @@ Font_DrawFieldAtHeight(vector vecOrigin, vector vecSize, int iTextHeight, string
 	drawfont = (float)fnt.iID;
 	drawfontscale[0] = (float)iTextHeight / 8;
 	drawfontscale[1] = (float)iTextHeight / 8;
-	drawtextfield(vecOrigin, vecSize, (float)iAlignFlags, strText);
+	drawtextfield(vecOrigin, vecSize, (float)iAlignFlags, strcat(fnt.hexColor, strText));
 	drawfont = 0;
 	drawfontscale = [1,1,0];
 }

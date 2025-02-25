@@ -1,4 +1,4 @@
-CC=fteqcc
+QCC=fteqcc
 
 all:
-	$(CC) progs.src
+	$(QCC) $(CFLAGS) -I../shared progs.src

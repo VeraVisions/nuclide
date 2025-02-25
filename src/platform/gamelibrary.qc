@@ -33,6 +33,10 @@ GameLibrary_IDForPackageName(string packageName)
 {
 	string f;
 
+	if (!checkbuiltin(getpackagemanagerinfo)) {
+		return (-1i);
+	}
+
 	for (int i = 0; (getpackagemanagerinfo(i, GPMI_NAME)); i++) {
 		string name;
 		name = getpackagemanagerinfo(i, GPMI_NAME);
@@ -129,48 +133,48 @@ GameLibrary_FindInGameDir(string filename, string gamedirname)
 #ifndef WEBMENU
 /** Parses a key/value pair from liblist.gam files */
 static void
-GameLibrary_LibListParse(int id, string strKey, string strValue)
+GameLibrary_LibListParse(int targetID, string strKey, string strValue)
 {
-	//if (id == 0)
-		//print(sprintf("%i %S %S\n", id, strKey, strValue));
+	//if (targetID == 0)
+		//print(sprintf("%i %S %S\n", targetID, strKey, strValue));
 
 	switch(strKey) {
 	case "game":
-		games[id].game = strValue;
+		games[targetID].game = strValue;
 		break;
 	case "gamedir":
-		games[id].gamedir = strValue;
+		games[targetID].gamedir = strValue;
 		break;
 	case "fallback_dir":
-		games[id].fallback_dir = strValue;
+		games[targetID].fallback_dir = strValue;
 		break;
 	case "url_info":
-		games[id].url_info = strValue;
+		games[targetID].url_info = strValue;
 		break;
 	case "url_dl":
-		games[id].url_dl = strValue;
+		games[targetID].url_dl = strValue;
 		break;
 	case "version":
-		games[id].version = strValue;
+		games[targetID].version = strValue;
 		break;
 	case "size":
-		games[id].size = (int)stof(strValue);
+		games[targetID].size = (int)stof(strValue);
 		break;
 	case "svonly":
-		games[id].svonly = (int)stof(strValue);
+		games[targetID].svonly = (int)stof(strValue);
 		break;
 	case "cldll":
-		games[id].cldll = (int)stof(strValue);
+		games[targetID].cldll = (int)stof(strValue);
 		break;
 	case "type":
 		switch (strtolower(strValue)) {
 		case "multiplayer_only":
 		case "multiplayer only":
-			games[id].type = "Multiplayer";
+			games[targetID].type = "Multiplayer";
 			break;
 		case "singleplayer_only":
 		case "singleplayer only":
-			games[id].type = "Singleplayer";
+			games[targetID].type = "Singleplayer";
 			break;
 		/* this... kind of sucks, but some games (gearbox) never updated
 		 * their liblist to reflect that they do multiplayer */
@@ -181,54 +185,60 @@ GameLibrary_LibListParse(int id, string strKey, string strValue)
 		case "multi":
 		case "multiplayer":
 		default:
-			games[id].type = "Both";
+			games[targetID].type = "Both";
 		}
 		break;
 	case "minversion":
 	case "minversion":
-		games[id].minversion = strValue;
+		games[targetID].minversion = strValue;
 		break;
 	case "nomodels":
-		games[id].nomodels = (int)stof(strValue);
+		games[targetID].nomodels = (int)stof(strValue);
 		break;
 	case "nosprays":
-		games[id].nosprays = (int)stof(strValue);
+		games[targetID].nosprays = (int)stof(strValue);
 		break;
 	case "mpentity":
-		games[id].mpentity = strValue;
+		games[targetID].mpentity = strValue;
 		break;
 	case "gamedll":
-		games[id].gamedll = strValue;
+		games[targetID].gamedll = strValue;
 		break;
 	case "startmap":
-		games[id].startmap = strcat("map ", strValue, "\n");
+		games[targetID].startmap = strcat("map ", strValue, "\n");
 		break;
 	case "trainmap":
 	case "trainingmap":
-		games[id].trainingmap = strcat("map ", strValue, "\n");
+		games[targetID].trainingmap = strcat("map ", strValue, "\n");
 		break;
 	/* newly added with Nuclide */
 	case "pkgname":
-		games[id].pkgname = strValue;
-		games[id].pkgid = GameLibrary_IDForPackageName(games[id].pkgname);
+		games[targetID].pkgname = strValue;
+		games[targetID].pkgid = GameLibrary_IDForPackageName(games[targetID].pkgname);
 		break;
 	case "pkgfile":
-		games[id].pkgfile = strValue;
+		games[targetID].pkgfile = strValue;
 		break;
 	case "chatroom":
-		games[id].chatroom = strValue;
+		games[targetID].chatroom = strValue;
 		break;
 	case "readme":
-		games[id].readme = strValue;
+		games[targetID].readme = strValue;
 		break;
 	case "menumap":
-		games[id].menumap = strValue;
+		games[targetID].menumap = strValue;
 		break;
 	case "introvideo":
-		games[id].introvideo = strValue;
+		games[targetID].introvideo = strValue;
 		break;
 	case "base_dir":
-		games[id].base_dir = strValue;
+		games[targetID].base_dir = strValue;
+		break;
+	case "title":
+		games[targetID].title = strValue;
+		break;
+	case "subtitle":
+		games[targetID].subtitle = strValue;
 		break;
 	default:
 		break;
@@ -237,7 +247,7 @@ GameLibrary_LibListParse(int id, string strKey, string strValue)
 
 /** Check if a gameinfo.txt for the gamedir contains gameinfo, parse it if present. Returns true on success. */
 static bool
-GameLibrary_CheckGameInfo(int id, string gamedirname)
+GameLibrary_CheckGameInfo(int targetID, string gamedirname)
 {
 	string temp;
 	filestream fh;
@@ -271,10 +281,22 @@ GameLibrary_CheckGameInfo(int id, string gamedirname)
 				/* GameInfo */
 				switch (token) {
 				case "game":
-					games[id].game = argv(1);
+					games[targetID].game = argv(1);
 					break;
 				case "type":
-					games[id].type = argv(1);
+					GameLibrary_LibListParse(targetID, token, argv(1));
+					break;
+				case "title":
+					games[targetID].title = argv(1);
+					break;
+				case "title2":
+					games[targetID].subtitle = argv(1);
+					break;
+				case "nomodels":
+					games[targetID].nomodels = (int)stof(argv(1));
+					break;
+				case "developer_url":
+					games[targetID].url_info = argv(1);
 					break;
 				}
 			} else if (braced == 2) {
@@ -290,7 +312,7 @@ GameLibrary_CheckGameInfo(int id, string gamedirname)
 				switch (token) {
 				case "game":
 					if (argv(1) == "|gameinfo_path|.")
-						gamedirchain = strcat(gamedirchain, games[id].gamedir, " ");
+						gamedirchain = strcat(gamedirchain, games[targetID].gamedir, " ");
 					else
 						gamedirchain = strcat(gamedirchain, argv(1), " ");
 					break;
@@ -300,7 +322,7 @@ GameLibrary_CheckGameInfo(int id, string gamedirname)
 
 		/* in gameinfo.txt files, we list game load-order in reverse */
 		if (gamedirchain) {
-			string maindir = games[id].gamedir;
+			string maindir = games[targetID].gamedir;
 			float c = tokenize(gamedirchain);
 
 			for (float i = c-1; i >= 0; i--) {
@@ -308,9 +330,9 @@ GameLibrary_CheckGameInfo(int id, string gamedirname)
 					continue;
 
 				if (i == 0)
-					games[id].gamedir = strcat(games[id].gamedir, argv(i));
+					games[targetID].gamedir = strcat(games[targetID].gamedir, argv(i));
 				else
-					games[id].gamedir = strcat(games[id].gamedir, argv(i), ";");
+					games[targetID].gamedir = strcat(games[targetID].gamedir, argv(i), ";");
 			}
 		}
 
@@ -323,12 +345,12 @@ GameLibrary_CheckGameInfo(int id, string gamedirname)
 
 /** Check if a manifest for the gamedir contains gameinfo, parse it if present. Returns true on success. */
 static bool
-GameLibrary_CheckManifest(int id, string gamedirname)
+GameLibrary_CheckManifest(int targetID, string gamedirname)
 {
 	int ret = 0;
 	float count;
 
-	string gamedescription = getgamedirinfo(id, 2);
+	string gamedescription = getgamedirinfo(targetID, 2);
 
 	/* no manifest, or no cvar strings inside */
 	if (gamedescription == "") {
@@ -346,7 +368,7 @@ GameLibrary_CheckManifest(int id, string gamedirname)
 		 * contains any gameinfo entries a different file
 		 * should probably be parsed later */
 		if (first == "gameinfo_") {
-			GameLibrary_LibListParse(id, second, argv(i+1));
+			GameLibrary_LibListParse(targetID, second, argv(i+1));
 			ret = 1;
 		}
 	}
@@ -356,7 +378,7 @@ GameLibrary_CheckManifest(int id, string gamedirname)
 
 /** Check if a liblist exists, and parse it if present. Returns true on success. */
 static bool
-GameLibrary_CheckLibList(int id, string gamedirname)
+GameLibrary_CheckLibList(int targetID, string gamedirname)
 {
 	string temp;
 	filestream fh;
@@ -369,7 +391,7 @@ GameLibrary_CheckLibList(int id, string gamedirname)
 	if (fh >= 0) {
 		while ((temp = fgets(fh))) {
 			tokenize(temp);
-			GameLibrary_LibListParse(id, argv(0), argv(1));
+			GameLibrary_LibListParse(targetID, argv(0), argv(1));
 		}
 		fclose(fh);
 		ret = 1;
@@ -380,33 +402,35 @@ GameLibrary_CheckLibList(int id, string gamedirname)
 
 /** Set some sane game defaults into a game id slot based on gamedir name. */
 static void
-GameLibrary_SetDefaults(int id, string gamedirname)
+GameLibrary_SetDefaults(int targetID, string gamedirname)
 {
 	/* Fill in the defaults */
-	games[id].game = gamedirname;
-	games[id].gamedir = gamedirname;
-	games[id].base_dir = GAME_DIR;
-	games[id].url_info = "";
-	games[id].url_dl = "";
-	games[id].version = "1.0";
-	games[id].size = 0;
-	games[id].type = "Both";
-	games[id].nomodels = 0;
-	games[id].nosprays = 0;
-	games[id].mpentity = "info_player_deathmatch";
-	games[id].gamedll = "progs.dat";
-	games[id].startmap = "map c0a0\n";
-	games[id].trainingmap = "map t0a0\n";
-	games[id].cldll = 1;
-	games[id].minversion = "1000";
-	games[id].svonly = 0;
-	games[id].installed = 1;
-	games[id].chatroom = gamedirname;
-	games[id].readme = "readme.txt";
-	games[id].pkgid = -1;
+	games[targetID].game = gamedirname;
+	games[targetID].gamedir = gamedirname;
+	games[targetID].base_dir = GAME_DIR;
+	games[targetID].url_info = "";
+	games[targetID].url_dl = "";
+	games[targetID].version = "1.0";
+	games[targetID].size = 0;
+	games[targetID].type = "Both";
+	games[targetID].nomodels = 0;
+	games[targetID].nosprays = 0;
+	games[targetID].mpentity = "info_player_deathmatch";
+	games[targetID].gamedll = "progs.dat";
+	games[targetID].startmap = "map c0a0\n";
+	games[targetID].trainingmap = "map t0a0\n";
+	games[targetID].cldll = 1;
+	games[targetID].minversion = "1000";
+	games[targetID].svonly = 0;
+	games[targetID].installed = 1;
+	games[targetID].chatroom = gamedirname;
+	games[targetID].readme = "readme.txt";
+	games[targetID].title = "";
+	games[targetID].subtitle = "";
+	games[targetID].pkgid = -1;
 
-	if (games[id].gamedir == "valve") {
-		games[id].chatroom = "halflife";
+	if (games[targetID].gamedir == "valve") {
+		games[targetID].chatroom = "halflife";
 	}
 }
 
@@ -429,29 +453,35 @@ GameLibrary_CheckLocalPresence(string gameDir)
 void
 GameLibrary_InitCustom(void)
 {
-	int id;
+	int targetID;
 	int foundself = 0;
 	string gamedirname = __NULL__;
 	int old_count = gameinfo_count;
 	int packageinfo_count = 0i;
 	int c = 0i;
+	string modPrefix = strcat(GAME_DIR, "-mod");
 
-	gameinfo_count = 0i;
+	gameinfo_count = 1i; /* do not count the base game (0) */
 
 	/* first count let's all manually installed mods */
-	for (id = 0; (gamedirname = getgamedirinfo(id, 0)); id++) {
+	for (targetID = 0; (gamedirname = getgamedirinfo(targetID, 0)); targetID++) {
+		if (gamedirname == GAME_DIR)
+			continue;
+
 		gameinfo_count++;
+		printf("MANUAL: %S\n", gamedirname);
 	}
 
 	/* count the package installed mods after */
 	for (int i = 0; (getpackagemanagerinfo(i, GPMI_NAME)); i++) {
 		string packageName = getpackagemanagerinfo(i, GPMI_NAME);
 		string installStatus = getpackagemanagerinfo(i, GPMI_INSTALLED);
-		string prefix = substring(packageName, 0, 3);
+		string prefix = substring(packageName, 0, strlen(modPrefix));
 
 		/* only care about installed mods (custom games) */
-		if (prefix == "cg_" && installStatus == "enabled") {
-			string gameDir = substring(packageName, 3, -1);
+		if (prefix == modPrefix && installStatus == "enabled") {
+			tokenizebyseparator(packageName, "-");
+			string gameDir = argv(2);
 			tokenizebyseparator(gameDir, "=");
 			gameDir = argv(0);
 
@@ -460,12 +490,14 @@ GameLibrary_InitCustom(void)
 				continue;
 			}
 
+			//printf("REMOTE: %S %S\n", packageName, prefix);
+
 			packageinfo_count++;
 		}
 	}
 
 	/* re-allocate the game list */
-	games = (gameinfo_t *)memrealloc(games, sizeof(gameinfo_t), old_count, (gameinfo_count + packageinfo_count));
+	games = (gameEntry_t *)memreallocOld(games, sizeof(gameEntry_t), old_count, (gameinfo_count + packageinfo_count));
 
 	/* The things we do for frequent flyer mileage. */
 	if (!games) {
@@ -474,36 +506,43 @@ GameLibrary_InitCustom(void)
 		return;
 	}
 
-	/* now loop through all the mods we found and load in the metadata */
-	for (id = 1; id < gameinfo_count; id++) {
-		gamedirname = getgamedirinfo(id, 0);
-		GameLibrary_SetDefaults(id, gamedirname);
+	c = 1i; /* set in case there's 0 local mods. */
 
-		if (GameLibrary_CheckManifest(id, gamedirname) == true) {
+	/* now loop through all the mods we found and load in the metadata */
+	for (targetID = 0; targetID < gameinfo_count; targetID++) {
+		gamedirname = getgamedirinfo(targetID, 0);
+
+		if (gamedirname == GAME_DIR)
+			continue;
+
+		GameLibrary_SetDefaults(targetID, gamedirname);
+
+		if (GameLibrary_CheckManifest(targetID, gamedirname) == true) {
 			NSLog("[MENU] Found manifest for %s", gamedirname);
-			games[id].info_type = GAMEINFO_MANIFEST;
-		} else if (GameLibrary_CheckGameInfo(id, gamedirname) == true) {
+			games[targetID].info_type = GAMEINFO_MANIFEST;
+		} else if (GameLibrary_CheckGameInfo(targetID, gamedirname) == true) {
 			NSLog("[MENU] Found gameinfo for %s", gamedirname);
-			games[id].info_type = GAMEINFO_GITXT;
-		} else if (GameLibrary_CheckLibList(id, gamedirname) == true) {
+			games[targetID].info_type = GAMEINFO_GITXT;
+		} else if (GameLibrary_CheckLibList(targetID, gamedirname) == true) {
 			NSLog("[MENU] Found liblist for %s", gamedirname);
-			games[id].info_type = GAMEINFO_LIBLIST;
+			games[targetID].info_type = GAMEINFO_LIBLIST;
 		} else {
 			NSLog("[MENU] Found nothing for %s", gamedirname);
-			games[id].info_type = GAMEINFO_NONE;
+			games[targetID].info_type = GAMEINFO_NONE;
 		}
-		c = id + 1;
+		c = targetID + 1;
 	}
 
 	/* iterate through all packages again */
 	for (int i = 0i; (getpackagemanagerinfo(i, GPMI_NAME)); i++) {
 		string packageName = getpackagemanagerinfo(i, GPMI_NAME);
 		string installStatus = getpackagemanagerinfo(i, GPMI_INSTALLED);
-		string prefix = substring(packageName, 0, 3);
+		string prefix = substring(packageName, 0, strlen(modPrefix));
 
 		/* same check as above in the counter */
-		if (prefix == "cg_" && installStatus == "enabled") {
-			string gameDir = substring(packageName, 3, -1);
+		if (prefix == modPrefix && installStatus == "enabled") {
+			tokenizebyseparator(packageName, "-");
+			string gameDir = argv(2);
 			tokenizebyseparator(gameDir, "=");
 			gameDir = argv(0);
 
@@ -520,13 +559,13 @@ GameLibrary_InitCustom(void)
 			//print(sprintf("Adding packaged game %S\n", gameDir));
 			GameLibrary_SetDefaults(c, gameDir);
 
-			games[c].game = substring(titleString, 5, -1); /* strip 'Mod: '*/
+			games[c].game = titleString;
 			games[c].url_info = websiteString;
 			games[c].version = versionString;
 			games[c].size = (int)stof(sizeString);
 			games[c].type = "Both";
 			games[c].info_type = GAMEINFO_PACKAGE;
-			games[c].pkgname = strcat("cg_", gameDir, ";game_", gameDir, ";");
+			games[c].pkgname = argv(0);
 			c++;
 		}
 	}
@@ -548,38 +587,38 @@ GameLibrary_InitCustom(void)
 void
 GameLibrary_Init(void)
 {
-	int id = 0i;
+	int targetID = 0i;
 	string gamedirname = cvar_string("game");
 
 	g_iModInstallCache = -1;
 	g_strModInstallCache = __NULL__;
 	gameinfo_count = 1; /* we start at 1 game, ours */
-	games = memalloc(sizeof(gameinfo_t) * gameinfo_count);
+	games = memalloc(sizeof(gameEntry_t) * gameinfo_count);
 
 	/* set the default packages for a given game */
-	GameLibrary_SetDefaults(id, gamedirname);
+	GameLibrary_SetDefaults(targetID, gamedirname);
 
 	gameinfo_current = 0i;
 
 	/* only run this when not in web-client mode */
 #ifndef WEBMENU
-	if (GameLibrary_CheckManifest(id, gamedirname) == 1) {
+	if (GameLibrary_CheckManifest(targetID, gamedirname) == 1) {
 		NSLog("[MENU] Found manifest for %s", gamedirname);
-		games[id].info_type = GAMEINFO_MANIFEST;
-	} else if (GameLibrary_CheckGameInfo(id, gamedirname) == 1) {
+		games[targetID].info_type = GAMEINFO_MANIFEST;
+	} else if (GameLibrary_CheckGameInfo(targetID, gamedirname) == 1) {
 		NSLog("[MENU] Found gameinfo for %s", gamedirname);
-		games[id].info_type = GAMEINFO_GITXT;
-	} else if (GameLibrary_CheckLibList(id, gamedirname) == 1) {
+		games[targetID].info_type = GAMEINFO_GITXT;
+	} else if (GameLibrary_CheckLibList(targetID, gamedirname) == 1) {
 		NSLog("[MENU] Found liblist for %s", gamedirname);
-		games[id].info_type = GAMEINFO_LIBLIST;
+		games[targetID].info_type = GAMEINFO_LIBLIST;
 	} else {
 		NSLog("[MENU] Found nothing for %s", gamedirname);
-		games[id].info_type = GAMEINFO_NONE;
+		games[targetID].info_type = GAMEINFO_NONE;
 	}
 #endif
 
 	/* set the current game to be us */
-	GameLibrary_Set(id);
+	GameLibrary_Set(targetID);
 }
 
 static void
@@ -606,7 +645,7 @@ GameLibrary_IsInstalling(void)
 float
 GameLibrary_InstallProgress(void)
 {
-	int id;
+	int targetID;
 	float perc;
 	float c;
 	bool loading = false;
@@ -616,8 +655,8 @@ GameLibrary_InstallProgress(void)
 	loading = FALSE;
 
 	/* a game can have multiple packages associated */
-	id = g_iModInstallCache;
-	c = tokenize(games[id].pkgname);
+	targetID = g_iModInstallCache;
+	c = tokenize(games[targetID].pkgname);
 
 	/* go through all invididual packages */
 	for (float i = 0; i < c; i++) {
@@ -761,8 +800,14 @@ GameLibrary_GetGameInfo(int gameID, gameInfo_t infoType)
 	}
 
 	switch (infoType) {
-	case GAMEINFO_TITLE:
+	case GAMEINFO_NAME:
 		return (string)games[gameID].game;
+		break;
+	case GAMEINFO_TITLE:
+		return (string)games[gameID].title;
+		break;
+	case GAMEINFO_SUBTITLE:
+		return (string)games[gameID].subtitle;
 		break;
 	case GAMEINFO_GAMEDIR:
 		return (string)games[gameID].gamedir;
@@ -832,8 +877,8 @@ void
 GameLibrary_DebugList(void)
 {
 	for (int i = 0; i < gameinfo_count; i++) {
-		print(sprintf("%i %s (%s)\n", i, games[i].game, games[i].gamedir));
+		printf("%i %s (%s)\n", i, games[i].game, games[i].gamedir);
 	}
 
-	print(sprintf("\t%i game(s) loaded.", gameinfo_count));
+	printf("\t%i game(s) loaded.\n", gameinfo_count);
 }

@@ -19,6 +19,7 @@ enumflags
 	LOGICTIMER_OSCILLATOR
 };
 
+/*! \brief Server-Entity: Timer Trigger */
 /*!QUAKED logic_timer (1 0 0) (-8 -8 -8) (8 8 8) OSCILLATOR
 # OVERVIEW
 Will trigger its outputs at fixed/random intervals, much like the entity random_trigger.
@@ -53,9 +54,12 @@ Will trigger its outputs at fixed/random intervals, much like the entity random_
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
+
+@ingroup serverentity
+@ingroup pointentity
 */
 class
-logic_timer:NSPointTrigger
+logic_timer:ncPointTrigger
 {
 public:
 	void logic_timer(void);

@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Map Start Trigger */
 /*!QUAKED trigger_auto (.5 .5 .5) (-8 -8 -8) (8 8 8) TA_USEONCE
 # OVERVIEW
 Will automatically trigger its target when the level has spawned.
@@ -32,10 +33,13 @@ When a trigger_auto is removed via TA_USEONCE it won't survive match respawns.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup serverentity
+@ingroup pointentity
 */
 
 class
-trigger_auto:NSPointTrigger
+trigger_auto:ncPointTrigger
 {
 public:
 	void trigger_auto(void);
@@ -122,9 +126,10 @@ trigger_auto::Respawn(void)
 void
 trigger_auto::Processing(void)
 {
-	if (m_strGlobalState) {
-		if (GetGlobalValue(m_strGlobalState) == 0)
+	if (STRING_SET(m_strGlobalState)) {
+		if (GetGlobalValue(m_strGlobalState) == 0) {
 			return;
+		}
 	}
 
 	UseTargets(this, m_iTriggerState, m_flDelay);

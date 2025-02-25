@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Monster Clip */
 /*!QUAKED func_monsterclip (0 .5 .8) ?
 # OVERVIEW
 A clip isolated to monster entities, as long as they have a MONSTERCLIP
@@ -24,9 +25,12 @@ spawnflag set.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup serverentity
+@ingroup brushentity
 */
 class
-func_monsterclip:NSEntity
+func_monsterclip:ncEntity
 {
 public:
 	void func_monsterclip(void);
@@ -43,9 +47,8 @@ func_monsterclip::func_monsterclip(void)
 void
 func_monsterclip::Respawn(void)
 {
+	super::Respawn();
 	ClearAngles();
-	SetOrigin(GetSpawnOrigin());
-	SetModel(GetSpawnModel());
 	SetSolid(SOLID_BSP);
 	SetMovetype(MOVETYPE_NONE);
 	SetSkin(-17); /* undocumented MONSTERCLIP */

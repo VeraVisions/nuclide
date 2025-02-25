@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Brush Model That Changes Texture */
 /*!QUAKED func_wall (0 .5 .8) ?
 # OVERVIEW
 Brush that lets light to pass through it.
@@ -26,11 +27,14 @@ On idTech 2 BSPs, it will change texture variants when triggered.
 
 # TRIVIA
 This entity was introduced in Quake (1996).
+
+@ingroup server
+@ingroup brushentity
 */
 
 #ifdef SERVER
 class
-func_wall:NSRenderableEntity
+func_wall:ncRenderableEntity
 {
 public:
 	void func_wall(void);
@@ -69,8 +73,6 @@ func_wall::Respawn(void)
 	/* func_wall specifics */
 	SetMovetype(MOVETYPE_PUSH);
 	SetSolid(SOLID_BSP);
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
 	SetFrame(0);
 	ClearAngles();
 }

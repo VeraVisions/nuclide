@@ -15,8 +15,11 @@
 */
 
 bool
-Client_IsSpectator(NSClient cl)
+Client_IsSpectator(ncPlayer cl)
 {
+	if (cl.spec_mode == SPECMODE_DEATHCAM)
+		return (true);
+
 	if (cl.IsRealSpectator() || cl.IsFakeSpectator())
 		return true;
 
@@ -24,25 +27,25 @@ Client_IsSpectator(NSClient cl)
 }
 
 bool
-Client_IsRealSpectator(NSClient cl)
+Client_IsRealSpectator(ncClient cl)
 {
 	return cl.IsRealSpectator();
 }
 
 bool
-Client_IsFakeSpectator(NSClient cl)
+Client_IsFakeSpectator(ncClient cl)
 {
 	return cl.IsFakeSpectator();
 }
 
 bool
-Client_IsDead(NSClient cl)
+Client_IsDead(ncClient cl)
 {
 	return cl.IsDead();
 }
 
 bool
-Client_IsPlayer(NSClient cl)
+Client_IsPlayer(ncClient cl)
 {
 	return cl.IsPlayer();
 }
@@ -50,7 +53,7 @@ Client_IsPlayer(NSClient cl)
 bool
 Client_InVehicle(void)
 {
-	player pl = (player)pSeat->m_ePlayer;
+	ncPlayer pl = (ncPlayer)pSeat->m_ePlayer;
 	return (pl.vehicle != world) ? true : false;
 }
 
@@ -83,53 +86,4 @@ bool
 Util_IsFocused(void)
 {
 	return g_focus;
-}
-
-int
-Util_GetMaxPlayers(void)
-{
-	return g_numplayerslots;
-}
-
-string
-Util_GetTime( void )
-{
-	static int iS, iM, iT, iMS;
-	float timeLimit = stof( serverkey( "timelimit" ) ) * 60;
-
-	/* display a count-down timer if we've got a time limit */
-	if (timeLimit <= 0)
-		iMS = (int)time;
-	else
-		iMS = timeLimit - time;
-
-	if ( iMS < 0 ) {
-		iMS = 0;
-	}
-	
-	iS = iMS;
-	iM = iS / 60;
-	iS -= iM * 60;
-	iT = iS / 10;
-	iS -= iT * 10;
-	
-	return sprintf( "%i:%i%i", iM, iT, iS );
-}
-
-float
-Util_GetTimeLeft(void)
-{
-	float timeLimit = stof( serverkey( "timelimit" ) ) * 60;
-	return timeLimit - time;
-}
-
-string
-Util_GetAddress(void)
-{
-	string host = serverkey("ip");
-
-	if (host == "QLoopBack:0")
-		return "localhost";
-	else
-		return host;
 }

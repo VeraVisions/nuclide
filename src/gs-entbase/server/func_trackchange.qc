@@ -25,6 +25,7 @@ enumflags
 	FNCTRACKCHANGE_YAXIS,
 };
 
+/*! \brief Server-Entity: func_tracktrain Track Controller */
 /*!QUAKED func_trackchange (0 .5 .8) ? x x x BOTTOM NOMOVE x X_AXIS Y_AXIS
 # OVERVIEW
 A rotating, moving platform that will transport func_tracktrain entities between two path_track entities.
@@ -50,6 +51,9 @@ with automated (trigger controlled) func_tracktrain entities, use func_trackauto
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup serverentity
+@ingroup brushentity
 */
 class
 func_trackchange:func_platrot
@@ -134,7 +138,7 @@ func_trackchange::Restore(string keyName, string setValue)
 void
 func_trackchange::MoverStartsMoving(void)
 {
-	NSEntity ourTrain = (NSEntity)find(world, ::targetname, m_strTrainName);
+	ncEntity ourTrain = (ncEntity)find(world, ::targetname, m_strTrainName);
 	super::MoverStartsMoving();
 
 	if (ourTrain) {
@@ -152,7 +156,7 @@ func_trackchange::MoverStartsMoving(void)
 void
 func_trackchange::MoverFinishesMoving(void)
 {
-	NSEntity ourTrain = (NSEntity)find(world, ::targetname, m_strTrainName);
+	ncEntity ourTrain = (ncEntity)find(world, ::targetname, m_strTrainName);
 	super::MoverFinishesMoving();
 
 	if (ourTrain) {

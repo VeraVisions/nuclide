@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Sound Emitter With Random Intervals */
 /*!QUAKED random_speaker (1 0 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 This entity plays a .wav file at random intervals.
@@ -37,9 +38,12 @@ a random interval between 10 and 15 seconds in total.
 
 # TRIVIA
 It was introduced in Gunman Chronicles (2000).
+
+@ingroup serverentity
+@ingroup pointentity
 */
 class
-random_speaker:NSPointTrigger
+random_speaker:ncPointTrigger
 {
 public:
 	void random_speaker(void);

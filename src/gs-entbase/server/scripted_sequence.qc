@@ -57,6 +57,7 @@ enum
     SS_TURNTOFACE /* Turn to the scripted_sequence's angle before performing the animation. */
 };
 
+/*! \brief Server-Entity: Scripted Sequence Controller */
 /*!QUAKED scripted_sequence (1 0 0) (-8 -8 -8) (8 8 8) x x SSFL_REPEATABLE SSFL_LEAVECORPSE x SSFL_NOINTERRUPT SSFL_OVERRIDEAI SSFL_NOSCRIPTMOVE
 # OVERVIEW
 Allow an actor to be selected and given an action to perform.
@@ -90,9 +91,12 @@ f_fMoveTo values:
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup serverentity
+@ingroup pointentity
 */
 class
-scripted_sequence:NSPointTrigger
+scripted_sequence:ncPointTrigger
 {
 public:
 	void scripted_sequence(void);
@@ -217,10 +221,10 @@ scripted_sequence::SpawnKey(string strKey, string strValue)
 void
 scripted_sequence::Respawn(void)
 {
-	InitPointTrigger();
+	super::Respawn();
 
 	m_iEnabled = TRUE;
-	target = m_oldstrTarget;
+	target = GetSpawnString("target");
 
 	if (m_flSearchRadius) {
 		SetSolid(SOLID_TRIGGER);
@@ -239,10 +243,10 @@ scripted_sequence::Respawn(void)
 void
 scripted_sequence::RunOnEntity(entity targ)
 {	
-	NSMonster f;
+	ncMonster f;
 	float duration;
 
-	f = (NSMonster)targ;
+	f = (ncMonster)targ;
 
 	if (!m_iEnabled)
 		return;
@@ -251,12 +255,16 @@ scripted_sequence::RunOnEntity(entity targ)
 	if (!HasSpawnFlags(SSFL_REPEATABLE))
 		m_iEnabled = FALSE;
 
+	if (f.IsPerforming()) {
+		f.CancelSchedule();
+	}
+
 	NSAIScript_Log("\tName: %s", targetname);
 	NSAIScript_Log("\tTarget: %s", m_strMonster);
 	NSAIScript_Log("\tStarted: %f", time);
 
 	/* if we're told an anim, we better have it... or else. */
-	if (m_strActionAnim) {
+	if (STRING_SET(m_strActionAnim)) {
 		f.m_flSequenceEnd = frameforname(f.modelindex, m_strActionAnim);
 		if (f.m_flSequenceEnd == -1) {
 			print(sprintf("^1ERROR: Framegroup %s not found!\n", m_strActionAnim));
@@ -265,7 +273,7 @@ scripted_sequence::RunOnEntity(entity targ)
 	}
 
 	/* entity to trigger after sequence ends */
-	if (target) {
+	if (STRING_SET(target)) {
 		NSAIScript_Log("\tTrigger when finished: %s", target);
 		f.m_strRouteEnded = target;
 		f.m_ssLast = this;
@@ -286,8 +294,8 @@ scripted_sequence::RunOnEntity(entity targ)
 	f.m_iSequenceFlags = spawnflags;
 	f.m_strSequenceKillTarget = m_strKillTarget;
 
-	if (m_strKillTarget) {
-		readcmd(sprintf("watchpoint_ssqc %d.nextthink\n", num_for_edict(f)));
+	if (STRING_SET(m_strKillTarget)) {
+		//readcmd(sprintf("watchpoint_ssqc %d.nextthink\n", num_for_edict(f)));
 		NSAIScript_Log("\tKillTarget when finished: %S", m_strKillTarget);
 	}
 
@@ -297,12 +305,12 @@ scripted_sequence::RunOnEntity(entity targ)
 	} else if (m_iMove == SS_WALK) {
 		f.RouteToPosition(GetOrigin());
 		f.m_flSequenceSpeed = f.GetWalkSpeed();
-		NSAIScript_Log("\tType: SS_WALK (%i)", m_iMove);
+		NSAIScript_Log("\tType: SS_WALK (%i) at %d up/s", m_iMove, f.m_flSequenceSpeed);
 		return;
 	} else if (m_iMove == SS_RUN) {
 		f.RouteToPosition(GetOrigin());
 		f.m_flSequenceSpeed = f.GetRunSpeed();
-		NSAIScript_Log("\tType: SS_RUN (%i)", m_iMove);
+		NSAIScript_Log("\tType: SS_RUN (%i) at %d up/s", m_iMove, f.m_flSequenceSpeed);
 		return;
 	} else if (m_iMove == SS_INSTANTANEOUS) {
 		f.SetOrigin(GetOrigin());
@@ -312,7 +320,7 @@ scripted_sequence::RunOnEntity(entity targ)
 	}
 
 	/* all the non-moving targets will do this at least */
-	if (m_strActionAnim) {
+	if (STRING_SET(m_strActionAnim)) {
 		if (m_iMove == SS_NO) {
 			//f.SetAngles(GetAngles());
 			//f.SetOrigin(GetOrigin());
@@ -338,14 +346,18 @@ scripted_sequence::RunOnEntity(entity targ)
 
 	f.m_iSequenceState = SEQUENCESTATE_ENDING;
 
-	if (HasSpawnFlags(SSFL_LEAVECORPSE))
-		f.ScheduleThink(f.FreeStateDead, duration);
-	else if (HasSpawnFlags(SSFL_NOSCRIPTMOVE) || m_iMove == SS_NO)
-		f.ScheduleThink(f.FreeState, duration);
-	else
-		f.ScheduleThink(f.FreeStateMoved, duration);
+	if (HasSpawnFlags(SSFL_LEAVECORPSE)) {
+		f.think = ncMonster::ScriptedSequenceEnded_Dead;
+		f.nextthink = GetTime() + duration;
+	} else if (HasSpawnFlags(SSFL_NOSCRIPTMOVE) || m_iMove == SS_NO) {
+		f.think = ncMonster::ScriptedSequenceEnded;
+		f.nextthink = GetTime() + duration;
+	} else {
+		f.think = ncMonster::ScriptedSequenceEnded_Moved;
+		f.nextthink = GetTime() + duration;
+	}
 
-	NSAIScript_Log("\tEnding: %f", f.GetNextThinkTime());
+	NSAIScript_Log("\tEnding: %f", f.nextthink);
 
 	/* make sure we're forgetting about enemies and attack states in sequence */
 	f.m_eEnemy = __NULL__;
@@ -355,17 +367,17 @@ scripted_sequence::RunOnEntity(entity targ)
 void
 scripted_sequence::Trigger(entity act, triggermode_t unused)
 {
-	NSMonster f;
+	ncMonster f;
 
 	NSAIScript_Log("^2scripted_sequence::^3Trigger^7: with spawnflags %d", spawnflags);
-	f = (NSMonster)find(world, ::targetname, m_strMonster);
+	f = (ncMonster)find(world, ::targetname, m_strMonster);
 
 	/* target doesn't exist/hasn't spawned */
 	if (!f) {
 		for (entity c = world; (c = find(c, ::classname, m_strMonster));) {
 			/* within radius */
 			if (vlen(origin - c.origin) < m_flSearchRadius) {
-				f = (NSMonster)c;
+				f = (ncMonster)c;
 				break;
 			}
 		}
@@ -382,10 +394,10 @@ scripted_sequence::Trigger(entity act, triggermode_t unused)
 void
 scripted_sequence::InitIdle(void)
 {
-	NSMonster f;
+	ncMonster f;
 
 	NSAIScript_Log("^2scripted_sequence::^3InitIdle^7: with spawnflags %d on %S", spawnflags, m_strMonster);
-	f = (NSMonster)find(world, ::targetname, m_strMonster);
+	f = (ncMonster)find(world, ::targetname, m_strMonster);
 
 	/* target doesn't exist/hasn't spawned */
 	if (!f) {
@@ -393,7 +405,7 @@ scripted_sequence::InitIdle(void)
 		for (entity c = world; (c = find(c, ::classname, m_strMonster));) {
 			/* within radius */
 			if (vlen(origin - c.origin) < m_flSearchRadius) {
-				f = (NSMonster)c;
+				f = (ncMonster)c;
 				break;
 			}
 		}
@@ -423,12 +435,12 @@ scripted_sequence::InitIdle(void)
 void
 scripted_sequence::Touch(entity eToucher)
 {
-	NSMonster f;
+	ncMonster f;
 
 	if (eToucher.classname != m_strMonster)
 		return;
 
-	f = (NSMonster)eToucher;
+	f = (ncMonster)eToucher;
 
 	/* we already ARE on a sequence. */
 	if (f.m_iSequenceState != SEQUENCESTATE_NONE)

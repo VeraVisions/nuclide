@@ -26,6 +26,7 @@ enumflags
 	ENVINSTRUCTOR_CHANGED_STATE
 };
 
+/*! \brief Shared-Entity: Hints/Instructions With Key Bindings */
 /*!QUAKED env_instructor_hint (0 1 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Used to display hints throughout the environment.
@@ -58,9 +59,12 @@ Used to display hints throughout the environment.
 
 # TRIVIA
 This entity was introduced in Left 4 Dead 2 (2009).
+
+@ingroup sharedentity
+@ingroup pointentity
 */
 class
-env_instructor_hint:NSPointTrigger
+env_instructor_hint:ncPointTrigger
 {
 public:
 	void env_instructor_hint(void);
@@ -348,8 +352,8 @@ env_instructor_hint::postdraw(void)
 	hintPos = project(origin + [0, m_flOffset]) - [(textLength * 0.5f), 0];
 
 	if (inView == false) {
-		hintPos[0] = Math_Lerp(32.0f, video_res[0] - sideOffset, positionValues[1]);
-		hintPos[1] = Math_Lerp(32.0f, video_res[1] - 32.0f, positionValues[2]);
+		hintPos[0] = lerp(32.0f, g_vidsize[0] - sideOffset, positionValues[1]);
+		hintPos[1] = lerp(32.0f, g_vidsize[1] - 32.0f, positionValues[2]);
 	}
 
 	/* draw the thing */

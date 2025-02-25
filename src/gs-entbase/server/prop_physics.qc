@@ -14,8 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-#ifndef PHYSICS_STATIC
-
 enumflags
 {
 	PHYSPROPSFL_ASLEEP,
@@ -29,6 +27,7 @@ enumflags
 	PHYSPROPSFL_USEOUT,
 };
 
+/*! \brief Server-Entity: Physics Prop Model */
 /*!QUAKED prop_physics (1 0 0) (-16 -16 -16) (16 16 16) ASLEEP NOPHYSDMG DEBRIS NOMOTION x x PHYSDEVICE NOROTOR USEOUT
 # OVERVIEW
 Physics model
@@ -47,20 +46,46 @@ Physics model
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
+
+@ingroup serverentity
+@ingroup pointentity
+@ingroup physics
 */
 class
-prop_physics:NSPhysicsEntity
+prop_physics:ncPhysicsEntity
 {
 public:
 	void prop_physics(void);
 	
 	virtual void SpawnKey(string,string);
 	virtual void Respawn(void);
+	virtual void OnPlayerUse(void);
 };
 
 void
 prop_physics::prop_physics(void)
 {
+}
+
+void
+prop_physics::OnPlayerUse(void)
+{
+	ncPlayer thePlayer = (ncPlayer)eActivator;
+
+	if (HeldByPlayer() == true) {
+		return;
+	}
+
+	/* disallow +use */
+	if (HasSpawnFlags(PHYSPROPSFL_PHYSDEVICE)) {
+		return;
+	}
+
+	if (thePlayer.CanPickupEntity(this, 35, 128) == true) {
+		Wake();
+		EntLog("Picked up by %S", thePlayer.netname);
+		thePlayer.PickupEntity(this);
+	}
 }
 
 void
@@ -75,42 +100,40 @@ prop_physics::SpawnKey(string strKey, string strValue)
 void
 prop_physics::Respawn(void)
 {
+	bool startAwake = false;
+
 	super::Respawn();
 
-	if (HasSpawnFlags(PHYSPROPSFL_ASLEEP))
-		Sleep();
-	else
+	/* the least priority one of them all */
+	if (HasSpawnFlags(PHYSPROPSFL_ASLEEP)) {
+		startAwake = false;
+	} else {
+		startAwake = true;
+	}
+
+	if (HasSpawnFlags(PHYSPROPSFL_NOMOTION)) {
+		startAwake = false;
+	}
+
+	if (HasSpawnFlags(PHYSPROPSFL_PHYSDEVICE)) {
+		startAwake = false;
+	}
+
+
+	if (startAwake == true) {
+		setorigin_safe(this, origin);
 		Wake();
-
-	if (HasSpawnFlags(PHYSPROPSFL_NOMOTION))
+	} else {
 		Sleep();
+	}
 
-	if (HasSpawnFlags(PHYSPROPSFL_PHYSDEVICE))
-		Sleep();
+	if (HasSpawnFlags(PHYSPROPSFL_DEBRIS)) {
+		SetSolid(SOLID_NOT);
+	}
 
-	Sleep();
+	PlayerUse = OnPlayerUse;
 }
-#else
-class
-prop_physics:NSRenderableEntity
-{
-	void(void) prop_physics;
-
-	virtual void(void) Respawn;
-};
-
-void
-prop_physics::prop_physics(void)
-{
-}
-
-void
-prop_physics::Respawn(void)
-{
-	super::Respawn();
-	SetSolid(SOLID_BBOX);
-}
-#endif
 
 CLASSEXPORT(prop_physics_override, prop_physics)
 CLASSEXPORT(prop_physics_respawnable, prop_physics)
+CLASSEXPORT(prop_physics_multiplayer, prop_physics)

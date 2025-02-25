@@ -33,6 +33,7 @@ enum
 	FRAME_ON
 };
 
+/*! \brief Server-Entity: Moving Button */
 /*!QUAKED func_button (0 .5 .8) ? SF_BTT_NOMOVE x x x x SF_BTT_TOGGLE SF_BTT_SPARKS x SF_BTT_TOUCH_ONLY
 # OVERVIEW
 A brush entity which can be used either by touching, interaction (via a games'
@@ -69,9 +70,12 @@ original position.
 
 # TRIVIA
 This entity was introduced in Quake (1996).
+
+@ingroup serverentity
+@ingroup brushentity
 */
 class
-func_button:NSMoverEntity
+func_button:ncMoverEntity
 {
 public:
 	void func_button(void);
@@ -84,7 +88,7 @@ public:
 	virtual void Touch(entity);
 	virtual void Blocked(entity);
 	virtual void Trigger(entity, triggermode_t);
-	nonvirtual void DeathTrigger(void);
+	nonvirtual void DeathTrigger(entity, entity, int, vector, vector, int);
 	virtual void PlayerUse(void);
 
 	virtual void MoverStartsMoving(void);
@@ -99,7 +103,6 @@ private:
 	float m_flDelay;
 	string m_strSndPressed;
 	string m_strSndUnpressed;
-
 	bool m_bCanTouch;
 
 	/* input/output */
@@ -267,22 +270,22 @@ func_button::Spawned(void)
 void
 func_button::Respawn(void)
 {
+	super::Respawn();
+
 	SetSolid(SOLID_BSP);
 	SetMovetype(MOVETYPE_PUSH);
-	SetOrigin(GetSpawnOrigin());
-	SetModel(GetSpawnModel());
 
 	ClearVelocity();
 	ReleaseThink();
 	SetHealth(GetSpawnHealth());
 
 	RestoreAngles();
-	SetMoverPosition1(GetSpawnOrigin());
-	SetMoverPosition2(GetDirectionalPosition(GetSpawnAngles(), m_flLip));
+	SetMoverPosition1(GetOrigin());
+	SetMoverPosition2(GetDirectionalPosition(GetAngles(), m_flLip));
 	ClearAngles();
 
-	if (health > 0) {
-		takedamage = DAMAGE_YES;
+	if (GetHealth() > 0) {
+		MakeVulnerable();
 		Death = DeathTrigger;
 	}
 
@@ -298,6 +301,12 @@ func_button::Respawn(void)
 		SetMoverPosition2(GetMoverPosition1());
 	}
 
+	if (HasSpawnFlags(SF_BTT_TOUCH_ONLY) == true) {
+		m_bCanTouch = true;
+	} else {
+		m_bCanTouch = false;
+	}
+
 	m_iValue = 0;
 }
 
@@ -311,8 +320,9 @@ func_button::MoverFinishesMoving(void)
 	/* let's reset our button's health and mark it as shootable */
 	SetHealth(GetSpawnHealth());
 
-	if (GetHealth() > 0)
-		SetTakedamage(DAMAGE_YES);
+	if (GetHealth() > 0) {
+		MakeVulnerable();
+	}
 
 	if (GetMoverState() == MOVER_POS1) {
 		UseOutput(this, m_strOnOut);
@@ -324,7 +334,6 @@ func_button::MoverFinishesMoving(void)
 
 	m_bCanTouch = true;
 }
-
 
 void
 func_button::MoverStartsMoving(void)
@@ -338,7 +347,7 @@ func_button::MoverStartsMoving(void)
 		m_iValue = 0;
 
 		if (m_strSndUnpressed) {
-			Sound_Play(this, CHAN_VOICE, m_strSndUnpressed);
+			StartSoundDef(m_strSndUnpressed, CHAN_VOICE, true);
 		}
 	}
 }
@@ -347,10 +356,10 @@ func_button::MoverStartsMoving(void)
 void
 func_button::Trigger(entity act, triggermode_t state)
 {
-	if (GetMaster(act) == FALSE)
+	if (GetMaster(act) == false) {
+		UseOutput(act, m_strOnUseLocked);
 		return;
-
-	UseOutput(act, m_strOnUseLocked);
+	}
 
 	if (m_flNextTrigger > time) {
 		return;
@@ -365,37 +374,36 @@ func_button::Trigger(entity act, triggermode_t state)
 		return;
 	}
 
-	if (m_strSndPressed)
-		Sound_Play(this, CHAN_VOICE, m_strSndPressed);
+	if (m_strSndPressed) {
+		StartSoundDef(m_strSndPressed, CHAN_VOICE, true);
+	}
 
 	MoveToPosition(GetMoverPosition2(), m_flSpeed);
 	UseOutput(act, m_strOnPressed);
 	UseTargets(act, TRIG_TOGGLE, m_flDelay);
 
-	if (message)
+	if (message) {
 		env_message_single(act, message);
+	}
 
 	SetHealth(GetSpawnHealth());
 }
 
 void
-func_button::DeathTrigger(void)
+func_button::DeathTrigger(entity inflictor, entity attacker, int damage, vector dir, vector absImpactPos, int hitBody)
 {
-	SetTakedamage(DAMAGE_NO);
-	Trigger(g_dmg_eAttacker, TRIG_TOGGLE);
+	MakeInvulnerable();
+	Trigger(attacker, TRIG_TOGGLE);
 }
 
 void
 func_button::Touch(entity eToucher)
 {
-	if (HasSpawnFlags(SF_BTT_TOUCH_ONLY) == false) {
+	if (m_bCanTouch == false) {
 		return;
 	}
 
-	if (m_bCanTouch == false)
-		return;
-
-	if (eToucher.movetype == MOVETYPE_WALK) {
+	if (eToucher.classname == "player") {
 		Trigger(eToucher, TRIG_TOGGLE);
 	}
 }
@@ -406,6 +414,7 @@ func_button::PlayerUse(void)
 	if (HasSpawnFlags(SF_BTT_TOUCH_ONLY)) {
 		return;
 	}
+
 	Trigger(eActivator, TRIG_TOGGLE);
 }
 

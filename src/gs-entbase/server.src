@@ -3,9 +3,7 @@
 #endif
 
 #includelist
-decals.h
 server/info_null.qc
-server/info_notnull.qc
 server/info_intermission.qc
 server/info_node.qc
 server/info_node_air.qc
@@ -24,6 +22,7 @@ server/env_render.qc
 server/env_shake.qc
 server/env_message.qc
 server/env_model.qc
+server/env_sound.qc
 server/game_text.qc
 server/game_counter.qc
 server/game_counter_set.qc
@@ -40,13 +39,15 @@ server/path_corner.qc
 server/path_track.qc
 server/func_areaportal.qc
 server/func_recharge.qc
+server/item_recharge.qc
 server/func_healthcharger.qc
+server/item_healthcharger.qc
+server/item_eyescanner.qc
 server/func_breakable.qc
 server/func_button.qc
 server/func_brush.qc
 server/func_door.qc
 server/func_door_rotating.qc
-server/func_lod.qc
 server/func_train.qc
 server/func_guntarget.qc
 server/func_traincontrols.qc
@@ -76,6 +77,7 @@ server/player_weaponstrip.qc
 server/player_loadsaved.qc
 server/prop_dynamic.qc
 server/prop_physics.qc
+server/prop_portal.qc
 server/phys_ballsocket.qc
 server/phys_convert.qc
 server/phys_constraint.qc
@@ -88,13 +90,20 @@ server/point_camera.qc
 server/point_servercommand.qc
 server/point_trigger.qc
 server/targ_speaker.qc
+server/target_speaker.qc
 server/target_cdaudio.qc
 server/env_global.qc
+server/script_model.qc
+server/script_brushmodel.qc
+server/script_origin.qc
+server/script_struct.qc
+server/script_vehicle.qc
 server/trigger_auto.qc
 server/trigger_autosave.qc
 server/trigger_cdaudio.qc
 server/trigger_counter.qc
 server/trigger_hurt.qc
+server/trigger_endround.qc
 server/trigger_transition.qc
 server/trigger_changelevel.qc
 server/trigger_endsection.qc

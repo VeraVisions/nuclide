@@ -28,6 +28,7 @@ typedef enum
 	SKIN_RANDOM
 } sodaskin_t;
 
+/*! \brief Server-Entity: Health Refuelling Beverage */
 /*!QUAKED env_beverage (1 .5 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Upon being triggered, the entity will spawn item_food in its place in
@@ -55,9 +56,12 @@ Beverage-list:
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup serverentity
+@ingroup pointentity
 */
 class
-env_beverage:NSRenderableEntity
+env_beverage:ncRenderableEntity
 {
 public:
 	void env_beverage(void);
@@ -65,7 +69,8 @@ public:
 	virtual void Save(float);
 	virtual void Restore(string,string);
 	virtual void SpawnKey(string,string);
-	virtual void Spawned(void);
+	virtual void Precache(void);
+	virtual void Respawn(void);
 	virtual void Trigger(entity, triggermode_t);
 
 private:
@@ -125,13 +130,15 @@ env_beverage::SpawnKey(string strKey, string strValue)
 }
 
 void
-env_beverage::Spawned(void)
+env_beverage::Precache(void)
 {
-	super::Spawned();
+	precache.Model("models/can.mdl");
+	precache.Sound("weapons/g_bounce3.wav");
+}
 
-	precache_model("models/can.mdl");
-	precache_sound("weapons/g_bounce3.wav");
-
+void
+env_beverage::Respawn(void)
+{
 	m_bReady = true;
 
 	if (m_sodaSkin == SKIN_RANDOM) {
@@ -146,7 +153,7 @@ env_beverage::Trigger(entity act, triggermode_t unused)
 		return;
 	}
 
-	NSEntity eCan = spawn(NSEntity);
+	ncEntity eCan = spawn(ncEntity);
 	eCan.Respawn();
 	eCan.SetOrigin(GetOrigin());
 	eCan.SetAngles(GetAngles());

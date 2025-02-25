@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Voice Acted Sequence Controller */
 /*!QUAKED scripted_sentence (1 0 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Triggers a sound event on the client side associated with an entity in the
@@ -41,9 +42,12 @@ world. It'll enable mouth flapping and all sorts of other cool effects.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup serverentity
+@ingroup pointentity
 */
 class
-scripted_sentence:NSPointTrigger
+scripted_sentence:ncPointTrigger
 {
 public:
 	void scripted_sentence(void);
@@ -223,11 +227,11 @@ scripted_sentence::AllowRefire(void)
 void
 scripted_sentence::SentenceEnded(void)
 {
-	NSTalkMonster targetMonster = __NULL__;
+	ncTalkMonster targetMonster = __NULL__;
 
 	EntLog("%S finished speaking.", m_strSpeaker);
 
-	targetMonster = (NSTalkMonster)find(world, ::targetname, m_strSpeaker);
+	targetMonster = (ncTalkMonster)find(world, ::targetname, m_strSpeaker);
 
 	/* it might not exist anymore... */
 	if (targetMonster) {
@@ -281,7 +285,7 @@ scripted_sentence::Trigger(entity act, triggermode_t unused)
 	   this entity will already be inaccessible. fixes ba_tram2. */
 	m_iValue = 1;
 
-	NSTalkMonster npc = (NSTalkMonster)spe;
+	ncTalkMonster npc = (ncTalkMonster)spe;
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_SENTENCE);
 	WriteEntity(MSG_MULTICAST, npc);

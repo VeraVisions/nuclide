@@ -1,0 +1,10 @@
+{
+	qer_editorImage "common/alpha_25.tga"
+	vmap_alphaMod volume
+	vmap_alphaMod set 0.25
+	surfaceParm nodraw
+	surfaceParm nonsolid
+	surfaceParm trans
+	surfaceParm nolightmap
+	nomipmaps
+}

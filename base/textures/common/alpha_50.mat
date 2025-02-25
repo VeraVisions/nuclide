@@ -1,0 +1,10 @@
+{
+	qer_editorImage "common/alpha_50.ktx"
+	vmap_alphaMod volume
+	vmap_alphaMod set 0.5
+	surfaceParm nodraw
+	surfaceParm nonsolid
+	surfaceParm trans
+	surfaceParm nolightmap
+	nomipmaps
+}

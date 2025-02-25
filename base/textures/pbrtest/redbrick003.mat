@@ -1,0 +1,10 @@
+// Vera Visions Material
+{
+	diffusemap pbrtest/redbrick003.ktx
+	normalmap pbrtest/redbrick003_local.ktx
+	specularmap pbrtest/redbrick003_mra.ktx
+	
+	{
+		program defaultwall
+	}
+}

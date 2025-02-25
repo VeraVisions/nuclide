@@ -1,0 +1,10 @@
+{
+	qer_editorImage "common/nodraw.tga"
+	qer_trans 0.50
+	surfaceParm nodraw
+	surfaceParm nonsolid
+	surfaceParm trans
+	surfaceParm nomarks
+	surfaceParm nolightmap
+	nomipmaps
+}

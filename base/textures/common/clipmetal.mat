@@ -1,0 +1,10 @@
+{
+	qer_editorImage "common/clipmetal.ktx"
+	qer_trans 0.50
+	surfaceParm nodraw
+	surfaceParm trans
+	surfaceParm metal
+	surfaceParm penetrate
+	surfaceParm nolightmap
+	nomipmaps
+}

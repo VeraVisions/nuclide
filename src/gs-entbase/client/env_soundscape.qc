@@ -18,6 +18,7 @@ var int autocvar_dsp_soundscapes = TRUE;
 
 int g_scapes;
 
+/*! \brief Client-Entity: Ambient Soundscape Controller*/
 /*!QUAKED env_soundscape (1 .5 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Client-side environmental soundscape modifier.
@@ -28,8 +29,11 @@ Client-side environmental soundscape modifier.
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
+
+@ingroup cliententity
+@ingroup pointentity
 */
-class env_soundscape:NSEntity
+class env_soundscape:ncEntity
 {
 public:
 	void env_soundscape(void);
@@ -78,14 +82,14 @@ env_soundscape::SpawnKey(string strField, string strKey)
 void
 env_soundscape::Respawn(void)
 {
+	super::Respawn();
 	SetSize([0,0,0], [0,0,0]);
-	SetOrigin(GetSpawnOrigin());
 }
 
 void
 env_soundscape::env_soundscape(void)
 {
-	g_scapes+=1;
+	g_scapes+=1i;
 	m_iID = g_scapes;
 	m_iRadius = 1024;
 	isCSQC = true;
@@ -98,11 +102,16 @@ DSP_ResetSoundscape(void)
 }
 
 void
-DSP_UpdateSoundscape(NSView playerView)
+DSP_UpdateSoundscape(ncView playerView)
 {
 	vector vecPlayer;
 
 	if (autocvar_dsp_soundscapes == FALSE) {
+		return;
+	}
+
+	/* don't bother with no valid soundscapes. */
+	if (g_scapes <= 0i) {
 		return;
 	}
 
@@ -122,7 +131,7 @@ DSP_UpdateSoundscape(NSView playerView)
 			continue;
 		}
 
-		float dist = vlen(e.origin - vecPlayer);
+		float dist = distanceSquared(e.origin, vecPlayer);
 		if (dist > scape.m_iRadius) {
 			continue;
 		}

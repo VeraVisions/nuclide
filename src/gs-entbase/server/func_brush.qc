@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Dynamic Brush Model */
 /*!QUAKED func_brush (0 .5 .8) ?
 # OVERVIEW
 Combination of func_illusionary, func_wall, func_wall_toggle.
@@ -37,9 +38,12 @@ By default it's visible and has collision.
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
+
+@ingroup serverentity
+@ingroup brushentity
 */
 class
-func_brush:NSRenderableEntity
+func_brush:ncRenderableEntity
 {
 public:
 	void func_brush(void);
@@ -110,9 +114,9 @@ func_brush::SpawnKey(string strKey, string strValue)
 void
 func_brush::Respawn(void)
 {
+	super::Respawn();
+
 	SetMovetype(MOVETYPE_PUSH);
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
 
 	/* make sure solid and so on are set */
 	if (m_iStartOff) {
@@ -152,12 +156,12 @@ func_brush::Trigger(entity act, triggermode_t state)
 		SetModelindex(0);
 		break;
 	case TRIG_ON:
-		SetModel(GetSpawnModel());
+		SetModel(GetSpawnString("model"));
 		break;
 	default:
 		if (modelindex != 0)
 			SetModelindex(0);
 		else
-			SetModel(GetSpawnModel());
+			SetModel(GetSpawnString("model"));
 	}
 }

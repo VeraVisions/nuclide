@@ -26,11 +26,12 @@ enumflags
 	ENVCASLIGHT_CHANGED_DISTANCE,
 };
 
+/*! \brief Shared-Entity: Outdoor Shadow & Lighting Controller */
 /*!QUAKED env_cascade_light (1 .5 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Shadowmapped outdoor lighting entity.
 
-![Shadows cast by an env_cascade_light](@ref Documentation/Entities/env_cascade_light.png)
+![Shadows cast by an env_cascade_light](@ref env_cascade_light.png)
 
 # KEYS
 - "targetname" : Name
@@ -48,9 +49,12 @@ Shadowmapped outdoor lighting entity.
 
 # TRIVIA
 This entity was introduced in Counter-Strike: Global Offensive (2012).
+
+@ingroup sharedentity
+@ingroup pointentity
 */
 class
-env_cascade_light:NSPointTrigger
+env_cascade_light:ncPointTrigger
 {
 public:
 	void env_cascade_light(void);
@@ -80,8 +84,11 @@ private:
 
 #ifdef CLIENT
 	float m_lightHandle;
-#else
+#endif
+
+#ifdef SERVER
 	bool m_bUseEnvAngles;
+	bool m_bUseEnvColors;
 #endif
 };
 
@@ -91,6 +98,8 @@ env_cascade_light::env_cascade_light(void)
 #ifdef SERVER
 	m_vecLightColor = [1.0, 1.0, 1.0];
 	m_bLightActive = true;
+	m_bUseEnvColors = false;
+	m_bUseEnvAngles = false;
 	m_flShadowDistance = 512.0f;
 #endif
 }
@@ -101,13 +110,16 @@ env_cascade_light::SpawnKey(string keyName, string setValue)
 {
 	switch (keyName) {
 	case "color":
-		m_vecLightColor = ReadVector(setValue) / 255;
+		m_vecLightColor = ReadVector(setValue);
 		break;
 	case "maxshadowdistance":
 		m_flShadowDistance = ReadFloat(setValue);
 		break;
 	case "uselightenvangles":
 		m_bUseEnvAngles = ReadBool(setValue);
+		break;
+	case "uselightenvcolor":
+		m_bUseEnvColors = ReadBool(setValue);
 		break;
 	case "StartDisabled":
 		m_bLightActive = ReadBool(setValue) == true ? false : true;
@@ -172,7 +184,7 @@ env_cascade_light::Input(entity activatingEntity, string keyName, string setValu
 		angles = stov(setValue);
 		break;
 	case "LightColor":
-		m_vecLightColor = stov(setValue) / 255;
+		m_vecLightColor = stov(setValue);
 		break;
 	default:
 		super::Input(activatingEntity, keyName, setValue);
@@ -200,13 +212,20 @@ env_cascade_light::EvaluateEntity(void)
 	if (m_bUseEnvAngles == true) {
 		light envLight = (light)find(world, ::classname, "light_environment");
 
+		/* this isn't going to do what we want. remove it altogether. */
 		if (!envLight) {
-			error("env_cascade_light unable to find light_environment.\n");
+			NSError("env_cascade_light unable to find light_environment.\n");
+			Destroy();
 			return;
 		}
 
+		if (m_bUseEnvColors) {
+			m_vecLightColor = envLight._lightColor;
+		}
+
 		makevectors(envLight.GetAngles());
-		angles = vectoangles(v_forward * -1);
+		angles = vectoangles(v_forward);
+		angles[0] *= -1;
 	}
 
 	//angles[0] = sin(time) * 180.0f;
@@ -235,16 +254,17 @@ env_cascade_light::SendEntity(entity ePVEnt, float flChanged)
 	SENDENTITY_COORD(angles[0], ENVCASLIGHT_CHANGED_ANGLE_X)
 	SENDENTITY_COORD(angles[1], ENVCASLIGHT_CHANGED_ANGLE_Y)
 	SENDENTITY_COORD(angles[2], ENVCASLIGHT_CHANGED_ANGLE_Z)
-	SENDENTITY_COLOR(m_vecLightColor[0], ENVCASLIGHT_CHANGED_COLOR_X)
-	SENDENTITY_COLOR(m_vecLightColor[1], ENVCASLIGHT_CHANGED_COLOR_Y)
-	SENDENTITY_COLOR(m_vecLightColor[2], ENVCASLIGHT_CHANGED_COLOR_Z)
+	SENDENTITY_BYTE(m_vecLightColor[0], ENVCASLIGHT_CHANGED_COLOR_X)
+	SENDENTITY_BYTE(m_vecLightColor[1], ENVCASLIGHT_CHANGED_COLOR_Y)
+	SENDENTITY_BYTE(m_vecLightColor[2], ENVCASLIGHT_CHANGED_COLOR_Z)
 	SENDENTITY_FLOAT(m_flShadowDistance, ENVCASLIGHT_CHANGED_DISTANCE)
 
 	return (1);
 }
 
-#else
+#endif
 
+#ifdef CLIENT
 void
 env_cascade_light::OnRemoveEntity(void)
 {
@@ -271,7 +291,7 @@ env_cascade_light::LightChanged(float flFlags)
 		dynamiclight_set(m_lightHandle, LFIELD_ANGLES, angles);
 	}
 	if (updateColor) {
-		dynamiclight_set(m_lightHandle, LFIELD_COLOUR, m_vecLightColor);
+		dynamiclight_set(m_lightHandle, LFIELD_COLOUR, m_vecLightColor / 255);
 	}
 }
 
@@ -282,11 +302,11 @@ env_cascade_light::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_COORD(angles[0], ENVCASLIGHT_CHANGED_ANGLE_X)
 	READENTITY_COORD(angles[1], ENVCASLIGHT_CHANGED_ANGLE_Y)
 	READENTITY_COORD(angles[2], ENVCASLIGHT_CHANGED_ANGLE_Z)
-	READENTITY_COLOR(m_vecLightColor[0], ENVCASLIGHT_CHANGED_COLOR_X)
-	READENTITY_COLOR(m_vecLightColor[1], ENVCASLIGHT_CHANGED_COLOR_Y)
-	READENTITY_COLOR(m_vecLightColor[2], ENVCASLIGHT_CHANGED_COLOR_Z)
+	READENTITY_BYTE(m_vecLightColor[0], ENVCASLIGHT_CHANGED_COLOR_X)
+	READENTITY_BYTE(m_vecLightColor[1], ENVCASLIGHT_CHANGED_COLOR_Y)
+	READENTITY_BYTE(m_vecLightColor[2], ENVCASLIGHT_CHANGED_COLOR_Z)
 	READENTITY_FLOAT(m_flShadowDistance, ENVCASLIGHT_CHANGED_DISTANCE)
-
+	
 	if (flNew) {
 		RendererRestarted();
 	} else {
@@ -298,7 +318,7 @@ void
 env_cascade_light::RendererRestarted(void)
 {
 	OnRemoveEntity();
-	m_lightHandle = dynamiclight_spawnstatic(origin, m_flShadowDistance, m_vecLightColor);
+	m_lightHandle = dynamiclight_spawnstatic(origin, m_flShadowDistance, m_vecLightColor / 255);
 	dynamiclight_set(m_lightHandle, LFIELD_FLAGS, LFLAG_ORTHOSUN | LFLAG_SHADOWMAP | LFLAG_REALTIMEMODE);
 	LightChanged(0xFFFFFF);
 }

@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Editor-Entity: Group */
 /*!QUAKED func_group (0 0 0) ?
 # OVERVIEW
 A "fake" entity for level editors, used to group together patches and
@@ -26,6 +27,8 @@ worldspawn upon compile.
 
 # TRIVIA
 This entity was introduced in Quake II (1997).
+
+@ingroup editor
 */
 class
 func_group:info_null

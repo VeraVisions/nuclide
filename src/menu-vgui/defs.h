@@ -14,13 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-int g_iMenuActive;
-vector video_res;
-var int g_background = FALSE;
-
-var float frametime;
-var float lasttime;
-
 #define UI_DEVELOPER
 
 #define KEY_UNKNOWN 		-1
@@ -31,4 +24,3 @@ var float lasttime;
 #define TARGET_MENU 	1
 #define TARGET_CLIENT 	2
 
-var vector g_vecMousePos;

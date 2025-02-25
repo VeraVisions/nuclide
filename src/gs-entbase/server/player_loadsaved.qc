@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Loads Last Auto-Save */
 /*!QUAKED player_loadsaved (1 0 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 This trigger reloads the last autosaved game with a custom message.
@@ -31,9 +32,12 @@ This is commonly used when a mission objective has failed.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup serverentity
+@ingroup pointentity
 */
 class
-player_loadsaved:NSRenderableEntity /* for the rendercolor values */
+player_loadsaved:ncRenderableEntity /* for the rendercolor values */
 {
 public:
 	void player_loadsaved(void);
@@ -125,10 +129,10 @@ player_loadsaved::Trigger(entity act, triggermode_t unused)
 {
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_FADE);
-	WriteFloat(MSG_MULTICAST, m_vecRenderColor[0]);
-	WriteFloat(MSG_MULTICAST, m_vecRenderColor[1]);
-	WriteFloat(MSG_MULTICAST, m_vecRenderColor[2]);
-	WriteFloat(MSG_MULTICAST, m_flRenderAmt);
+	WriteByte(MSG_MULTICAST, m_vecRenderColor[0]);
+	WriteByte(MSG_MULTICAST, m_vecRenderColor[1]);
+	WriteByte(MSG_MULTICAST, m_vecRenderColor[2]);
+	WriteByte(MSG_MULTICAST, m_flRenderAmt);
 	WriteFloat(MSG_MULTICAST, m_flFadeDuration);
 	WriteFloat(MSG_MULTICAST, m_flFadeHold);
 	WriteByte(MSG_MULTICAST, 0);

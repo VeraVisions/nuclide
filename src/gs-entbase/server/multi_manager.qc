@@ -16,24 +16,8 @@
 
 #define MM_MULTITHREADED 1
 
-/*!QUAKED multi_manager (1 0 0) (-8 -8 -8) (8 8 8) MM_MULTITHREADED
-# OVERVIEW
-Triggers a maximum of 16 user defined entities with additonal timers.
-Add a target's name as an entity key, with the value set to the time in seconds
-that'll pass before the entity will be triggered.
-
-# KEYS
-- "targetname" : Name
-
-# SPAWNFLAGS
-- MM_MULTITHREADED (1) : Allow the multi_manager to be triggered again before it has
-finished triggering it's previous list of entities.
-
-# TRIVIA
-This entity was introduced in Half-Life (1998).
-*/
-class
-multi_manager_sub:NSPointTrigger
+static class
+multi_manager_sub:ncPointTrigger
 {
 public:
 	void multi_manager_sub(void);
@@ -91,8 +75,28 @@ multi_manager_sub::ActivateSub(void)
 	UseTargets(m_eActivator, TRIG_TOGGLE, 0.0f);
 }
 
+/*! \brief Server-Entity: Triggers Up To 16 Different Targets */
+/*!QUAKED multi_manager (1 0 0) (-8 -8 -8) (8 8 8) MM_MULTITHREADED
+# OVERVIEW
+Triggers a maximum of 16 user defined entities with additonal timers.
+Add a target's name as an entity key, with the value set to the time in seconds
+that'll pass before the entity will be triggered.
+
+# KEYS
+- "targetname" : Name
+
+# SPAWNFLAGS
+- MM_MULTITHREADED (1) : Allow the multi_manager to be triggered again before it has
+finished triggering it's previous list of entities.
+
+# TRIVIA
+This entity was introduced in Half-Life (1998).
+
+@ingroup serverentity
+@ingroup pointentity
+*/
 class
-multi_manager:NSPointTrigger
+multi_manager:ncPointTrigger
 {
 private:
 	multi_manager_sub m_eTriggers[16];
@@ -277,7 +281,7 @@ multi_manager::Spawned(void)
 			continue;
 
 		m_eTriggers[b].SetTriggerTarget(argv(i));
-		m_eTriggers[b].m_oldstrTarget = argv(i);
+		m_eTriggers[b].target = argv(i);
 		m_eTriggers[b].m_flUntilTriggered = stof(argv(i+1));
 		b++;
 	}

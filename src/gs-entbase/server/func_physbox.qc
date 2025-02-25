@@ -17,6 +17,7 @@
 #ifndef PHYSICS_STATIC
 #define FNCPHYBX_ASLEEP 4096
 
+/*! \brief Server-Entity: Physically Simulated Box */
 /*!QUAKED func_physbox (0 .5 .8) ? x x x x x x x x x x x x FNCPHYBX_ASLEEP
 # OVERVIEW
 Physics brush.
@@ -26,9 +27,13 @@ Physics brush.
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
+
+@ingroup serverentity
+@ingroup brushentity
+@ingroup physics
 */
 class
-func_physbox:NSPhysicsEntity
+func_physbox:ncPhysicsEntity
 {
 public:
 	void func_physbox(void);
@@ -46,7 +51,7 @@ func_physbox::func_physbox(void)
 void
 func_physbox::Respawn(void)
 {
-	NSPhysicsEntity::Respawn();
+	ncPhysicsEntity::Respawn();
 
 	if (HasSpawnFlags(FNCPHYBX_ASLEEP))
 		Sleep();
@@ -59,11 +64,11 @@ func_physbox::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
 	default:
-		NSPhysicsEntity::SpawnKey(strKey, strValue);
+		ncPhysicsEntity::SpawnKey(strKey, strValue);
 	}
 }
 #else
-class func_physbox:NSSurfacePropEntity
+class func_physbox:ncSurfacePropEntity
 {
 	void(void) func_physbox;
 
@@ -86,8 +91,8 @@ void
 func_physbox::Respawn(void)
 {
 	super::Respawn();
-	health = GetSpawnHealth();
-	SetTakedamage(DAMAGE_YES);
+	SetHealth(GetSpawnFloat("health"));
+	MakeVulnerable();
 	SetSolid(SOLID_BBOX);
 }
 #endif

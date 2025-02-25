@@ -36,6 +36,7 @@ string g_speaker_hlpresets[] = {
 };
 #endif
 
+/*! \brief Shared-Entity: Announcement Speaker System */
 /*!QUAKED speaker (1 0 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Creates a public announcement system that randomly plays announcements from
@@ -65,9 +66,12 @@ Valid values for 'preset":
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup sharedentity
+@ingroup pointentity
 */
 class
-speaker:NSTalkMonster
+speaker:ncTalkMonster
 {
 public:
 	void speaker(void);
@@ -166,10 +170,16 @@ speaker::Spawned(void)
 void
 speaker::Respawn(void)
 {
-	SetOrigin(GetSpawnOrigin());
+	super::Respawn();
 
-	if (HasSpawnFlags(SPEAKFL_SILENT) == false)
+	if (HasSpawnFlags(SPEAKFL_SILENT) == false) {
 		ScheduleThink(Announce, 10.0f);
+	}
+
+	SetSize([0,0,0], [0,0,0]);
+	SetSolid(SOLID_NOT);
+	SetMovetype(MOVETYPE_NONE);
+	customphysics = __NULL__;
 }
 
 void

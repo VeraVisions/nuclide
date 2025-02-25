@@ -1,0 +1,12 @@
+// Vera Visions Material
+{
+if $programs
+	program defaultskin
+	diffusemap "modelsrc/weapons/v_shotgun/mossbergskin_b.ktx"
+else
+	{
+		map "modelsrc/weapons/v_shotgun/mossbergskin_b.ktx"
+		rgbGen lightingDiffuse
+	}
+endif
+}

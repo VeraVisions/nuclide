@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Tool/Server-Entity: Light Source */
 /*!QUAKED light (0 1 0) (-8 -8 -8) (8 8 8) LFL_LINEAR x LFL_DARK LFL_NOGRID x x
 # OVERVIEW
 Infinitely small point of light illuminating the scene.
@@ -64,9 +65,12 @@ or env_projectedtexture for toggled or flickering lights.
 
 # TRIVIA
 This entity was introduced in Quake (1996).
+
+@ingroup serverentity
+@ingroup pointentity
 */
 class
-light:NSPointTrigger
+light:ncPointTrigger
 {
 public:
 	void light(void);
@@ -78,6 +82,7 @@ public:
 	virtual void Spawned(void);
 	virtual void Respawn(void);
 	virtual void RestoreComplete(void);
+	virtual void Input(entity, string, string);
 	virtual void Trigger(entity, triggermode_t);
 	virtual void DebugDraw(void);
 
@@ -192,6 +197,21 @@ light::SpawnKey(string strKey, string strValue)
 }
 
 void
+light::Input(entity theActivator, string inputName, string dataString)
+{
+	switch (inputName) {
+	case "TurnOn":
+		Trigger(theActivator, TRIG_ON);
+		break;
+	case "TurnOff":
+		Trigger(theActivator, TRIG_OFF);
+		break;
+	default:
+		super::Input(theActivator, inputName, dataString);
+	}
+}
+
+void
 light::Spawned(void)
 {
 	super::Spawned();
@@ -256,11 +276,17 @@ void
 light::DebugDraw(void)
 {
 #ifdef SERVER
-	R_BeginPolygon(m_strDebugTexture, 0, 0);
-		R_PolygonVertex(GetOrigin() + v_right * 16 - v_up * 16, [1,1], _lightColor, 1.0f);
-		R_PolygonVertex(GetOrigin() - v_right * 16 - v_up * 16, [0,1], _lightColor, 1.0f);
-		R_PolygonVertex(GetOrigin() - v_right * 16 + v_up * 16, [0,0], _lightColor, 1.0f);
-		R_PolygonVertex(GetOrigin() + v_right * 16 + v_up * 16, [1,0], _lightColor, 1.0f);
+	if (m_iEnabled) {
+		m_strEditorIcon = "gfx/icon16/lightbulb";
+	} else {
+		m_strEditorIcon = "gfx/icon16/lightbulb_off";
+	}
+
+	R_BeginPolygon(m_strEditorIcon, 0, 0);
+		R_PolygonVertex(GetOrigin() + v_right * 8 - v_up * 8, [1,1], _lightColor, 1.0f);
+		R_PolygonVertex(GetOrigin() - v_right * 8 - v_up * 8, [0,1], _lightColor, 1.0f);
+		R_PolygonVertex(GetOrigin() - v_right * 8 + v_up * 8, [0,0], _lightColor, 1.0f);
+		R_PolygonVertex(GetOrigin() + v_right * 8 + v_up * 8, [1,0], _lightColor, 1.0f);
 	R_EndPolygon();
 #endif
 }
@@ -272,6 +298,9 @@ light_environment:light
 {
 public:
 	void light_environment(void);
+
+	virtual void SpawnKey(string, string);
+	virtual void Spawned(void);
 };
 
 void
@@ -280,6 +309,31 @@ light_environment::light_environment(void)
 
 }
 
+void
+light_environment::Spawned(void)
+{
+	super::Spawned();
+	//sunLight.m_vecLightColor = _lightColor;
+	classname = "light_environment";
+}
+
+void
+light_environment::SpawnKey(string strField, string strKey)
+{
+	switch (strField) {
+	case "pitch":
+		angles[0] = stof(strKey);
+		break;
+	case "angle":
+	case "sunangle":
+		angles[1] = stof(strKey);
+		break;
+	default:
+		super::SpawnKey(strField, strKey);
+	}
+}
+
+/*! \brief Tool/Server-Entity: Light Emitting Materials */
 /*!QUAKED light_surface (0 1 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Material property modifier related to lighting.

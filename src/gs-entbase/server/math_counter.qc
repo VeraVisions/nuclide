@@ -1,5 +1,5 @@
 class
-math_counter:NSPointTrigger
+math_counter:ncPointTrigger
 {
 	void math_counter(void);
 };

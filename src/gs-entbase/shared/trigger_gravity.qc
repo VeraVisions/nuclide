@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Shared-Entity: Gravity Controller Volume */
 /*!QUAKED trigger_gravity (.5 .5 .5) ?
 # OVERVIEW
 Volume that will, when an entity enters it, permanently alters how it
@@ -31,8 +32,11 @@ Other than that gravity will naturally reset when the entity respawns.
 
 # TRIVIA
 This entity was introduced in Quake II (1997).
+
+@ingroup sharedentity
+@ingroup brushentity
 */
-class trigger_gravity:NSBrushTrigger
+class trigger_gravity:ncBrushTrigger
 {
 public:
 	void trigger_gravity(void);
@@ -41,8 +45,8 @@ public:
 	virtual void Save(float);
 	virtual void Restore(string,string);
 #endif
+
 	virtual void SpawnKey(string,string);
-	virtual void Spawned(void);
 	virtual void Respawn(void);
 	virtual void Touch(entity);
 
@@ -90,27 +94,10 @@ trigger_gravity::SpawnKey(string strField, string strKey)
 }
 
 void
-trigger_gravity::Spawned(void)
-{
-	super::Spawned();
-
-#ifdef CLIENT
-	Respawn();
-#endif
-}
-
-void
 trigger_gravity::Respawn(void)
 {
-#ifdef CLIENT
-	setmodel(this, model);
-	movetype = MOVETYPE_NONE;
-	solid = SOLID_BSPTRIGGER;
-#else
-	InitBrushTrigger();
-	SetModel(GetSpawnModel());
+	super::Respawn();
 	SetSolid(SOLID_BSPTRIGGER);
-#endif
 }
 
 void

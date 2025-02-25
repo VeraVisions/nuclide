@@ -34,7 +34,7 @@ enum
 	PLATSTATE_DOWN
 };
 
-
+/*! \brief Server-Entity: Rotating Vertical Platform */
 /*!QUAKED func_platrot (0 .5 .8) ? TOGGLE x x x x x AXIS_X AXIS_Y
 # OVERVIEW
 A vertically moving platform that rotates.
@@ -57,6 +57,9 @@ Spins.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup serverentity
+@ingroup brushentity
 */
 class
 func_platrot:func_plat
@@ -118,7 +121,7 @@ func_platrot::Respawn(void)
 {
 	super::Respawn();
 
-	SetMoverRotation2(GetSpawnAngles());
+	SetMoverRotation2(GetAngles());
 	SetMoverRotation1([0, m_flRotation, 0]);
 
 	if (HasTargetname() == false) {

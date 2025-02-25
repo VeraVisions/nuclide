@@ -20,6 +20,7 @@ void MapTweaks_Init(void);
 var int autocvar_sv_levelexec = 1;
 #endif
 
+/*! \brief Shared-Entity: Game World */
 /*!QUAKED worldspawn (0 0 0) ?
 # OVERVIEW
 Only used for the world.
@@ -39,6 +40,7 @@ Only used for the world.
 - "hdr_iris_multiplier" : HDR effect multiplier. Default is "1.0".
 - "hdr_iris_fade_up" : HDR iris fade up speed. Default is "0.1".
 - "hdr_iris_fade_down" : HDR iris fade down speed. Default is "0.5".
+- "_litwater" : Set to 1 for a HL BSP to have lightmapped water surfaces.
 
 # NOTES
 A map must only have one worldspawn entity.
@@ -47,15 +49,20 @@ It's also not affected by "killtarget".
 
 # TRIVIA
 This entity was introduced in Quake (1996).
+
+@ingroup sharedentity
+@ingroup brushentity
 */
 
 #ifdef SERVER
-class worldspawn:NSEntity
+class ncWorldSpawn:ncEntity
 {
 public:
-	void worldspawn(void);
+	void ncWorldSpawn(void);
 
 	virtual void Spawned(void);
+	virtual void Save(float);
+	virtual void Restore(string, string);
 	virtual void SpawnKey(string, string);
 
 private:
@@ -72,23 +79,28 @@ private:
 	float m_flHDRIrisFadeUp;
 	float m_flHDRIrisFadeDown;
 	bool m_bHDREnabled;
+	bool m_bLitWater;
 };
 
 void
-worldspawn::worldspawn(void)
+ncWorldSpawn::ncWorldSpawn(void)
 {
 	/* defaults */
 	m_flHDRIrisMinValue = 0.0;
 	m_flHDRIrisMaxValue = 1.25;
-	m_flHDRIrisMultiplier = 1.25;
 	m_flHDRIrisFadeUp = 0.1;
 	m_flHDRIrisFadeDown = 0.2;
 	m_bHDREnabled = false;
+	m_bLitWater = false;
 
 	if (serverkeyfloat("*bspversion") == BSPVER_HL) {
 		m_strSkyName = "desert";
+		m_flHDRIrisMultiplier = 1.5;
+		m_flHDRIrisMaxValue = 1.5;
 	} else {
 		m_strSkyName = "";
+		m_flHDRIrisMultiplier = 0.75;
+		m_flHDRIrisMaxValue = 1.5;
 	}
 
 	m_bStartDark = false;
@@ -98,7 +110,6 @@ worldspawn::worldspawn(void)
 
 	InitPrint("Map Initialization");
 	NSLog("Map: %s", mapname);
-	InitPrint("Game Map Init");
 
 	lightstyle(0, "m");
 	lightstyle(1, "mmnmmommommnonmmonqnmmo");
@@ -114,42 +125,53 @@ worldspawn::worldspawn(void)
 	lightstyle(11, "abcdefghijklmnopqrrqponmlkjihgfedcba");
 	lightstyle(12, "mmnnmmnnnmmnn");
 	lightstyle(63, "a");
+	lightstyle(64, "m");
+	lightstyle(65, "z");
 
-	Skill_Init();
-	EntityDef_Init();
-	MapTweaks_Init();
+	precache.Model("models/error.vvm");
 
-	precache_model("models/error.vvm");
-
-	if (autocvar_sv_levelexec)
-		readcmd(sprintf("exec maps/%s.cfg\n", mapname));
-
-	InitStart();
+	//if (autocvar_sv_levelexec)
+	//	readcmd(sprintf("exec maps/%s.cfg\n", mapname));
 }
 
 void
-worldspawn::Spawned(void)
+ncWorldSpawn::Spawned(void)
 {
 	super::Spawned();
+
 	touch = __NULL__;
 	blocked = __NULL__;
 
-	forceinfokey(world, "skyname", m_strSkyName);
-	forceinfokey(world, "startdark", ftos(m_bStartDark));
-	forceinfokey(world, "chaptertitle", m_strChapterTitle);
-	forceinfokey(world, "ambientsound", m_strAmbientSound);
-	forceinfokey(world, "bgm", m_strBGMTrack);
-	forceinfokey(world, "gametitle", ftos(m_bGameTitle));
-	forceinfokey(world, "hdr_iris_minvalue", ftos(m_flHDRIrisMinValue));
-	forceinfokey(world, "hdr_iris_maxvalue", ftos(m_flHDRIrisMaxValue));
-	forceinfokey(world, "hdr_iris_multiplier", ftos(m_flHDRIrisMultiplier));
-	forceinfokey(world, "hdr_iris_fade_up", ftos(m_flHDRIrisFadeUp));
-	forceinfokey(world, "hdr_iris_fade_down", ftos(m_flHDRIrisFadeDown));
-	forceinfokey(world, "hdr", ftos(m_bHDREnabled));
+	serverinfo.SetString("skyname", m_strSkyName);
+	serverinfo.SetString("chaptertitle", m_strChapterTitle);
+	serverinfo.SetString("ambientsound", m_strAmbientSound);
+	serverinfo.SetString("bgm", m_strBGMTrack);
+
+	/* these set cvars so we kinda always want to set them to ~something~ */
+	serverinfo.SetFloat("hdr_iris_minvalue", m_flHDRIrisMinValue);
+	serverinfo.SetFloat("hdr_iris_maxvalue", m_flHDRIrisMaxValue);
+	serverinfo.SetFloat("hdr_iris_multiplier", m_flHDRIrisMultiplier);
+	serverinfo.SetFloat("hdr_iris_fade_up", m_flHDRIrisFadeUp);
+	serverinfo.SetFloat("hdr_iris_fade_down", m_flHDRIrisFadeDown);
+	serverinfo.SetBool("hdr", m_bHDREnabled);
+
+	serverinfo.SetBool("gametitle", m_bGameTitle);
+	serverinfo.SetBool("startdark", m_bStartDark);
+	serverinfo.SetBool("litwater", m_bLitWater);
+
+
+#if 0
+	env_cascade_light sunLight = spawn(env_cascade_light);
+	sunLight.Respawn();
+	sunLight.SetOrigin(GetOrigin());
+	sunLight.m_bUseEnvAngles = true;
+	sunLight.m_bUseEnvColors = true;
+	sunLight.m_flShadowDistance = 1024;
+#endif
 }
 
 void
-worldspawn::SpawnKey(string strKey, string strValue)
+ncWorldSpawn::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "skyname":
@@ -196,11 +218,100 @@ worldspawn::SpawnKey(string strKey, string strValue)
 	case "MaxRange":
 	case "sounds":
 		break;
+	case "_litwater":
+		m_bLitWater = ReadBool(strValue);
+		break;
 	default:
 		super::SpawnKey(strKey, strValue);
 		break;
 	}
 }
+
+void
+ncWorldSpawn::Save(float handle)
+{
+	super::Save(handle);
+
+	SaveString(handle, "m_strSkyName", m_strSkyName);
+	SaveBool(handle, "m_bStartDark", m_bStartDark);
+	SaveBool(handle, "m_bGameTitle", m_bGameTitle);
+	SaveString(handle, "m_strChapterTitle", m_strChapterTitle);
+	SaveString(handle, "m_strAmbientSound", m_strAmbientSound);
+	SaveString(handle, "m_strBGMTrack", m_strBGMTrack);
+	SaveFloat(handle, "m_flHDRIrisMinValue", m_flHDRIrisMinValue);
+	SaveFloat(handle, "m_flHDRIrisMaxValue", m_flHDRIrisMaxValue);
+	SaveFloat(handle, "m_flHDRIrisMultiplier", m_flHDRIrisMultiplier);
+	SaveFloat(handle, "m_flHDRIrisFadeUp", m_flHDRIrisFadeUp);
+	SaveFloat(handle, "m_flHDRIrisFadeDown", m_flHDRIrisFadeDown);
+	SaveBool(handle, "m_bHDREnabled", m_bHDREnabled);
+	SaveBool(handle, "m_bLitWater", m_bLitWater);
+}
+
+void
+ncWorldSpawn::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "m_strSkyName":
+		m_strSkyName = ReadString(strValue);
+		break;
+	case "m_bStartDark":
+		m_bStartDark = ReadBool(strValue);
+		break;
+	case "m_bGameTitle":
+		m_bGameTitle = ReadBool(strValue);
+		break;
+	case "m_strChapterTitle":
+		m_strChapterTitle = ReadString(strValue);
+		break;
+	case "m_strAmbientSound":
+		m_strAmbientSound = ReadString(strValue);
+		break;
+	case "m_strBGMTrack":
+		m_strBGMTrack = ReadString(strValue);
+		break;
+	case "m_flHDRIrisMinValue":
+		m_flHDRIrisMinValue = ReadFloat(strValue);
+		break;
+	case "m_flHDRIrisMaxValue":
+		m_flHDRIrisMaxValue = ReadFloat(strValue);
+		break;
+	case "m_flHDRIrisMultiplier":
+		m_flHDRIrisMultiplier = ReadFloat(strValue);
+		break;
+	case "m_flHDRIrisFadeUp":
+		m_flHDRIrisFadeUp = ReadFloat(strValue);
+		break;
+	case "m_flHDRIrisFadeDown":
+		m_flHDRIrisFadeDown = ReadFloat(strValue);
+		break;
+	case "m_bHDREnabled":
+		m_bHDREnabled = ReadBool(strValue);
+		break;
+	case "m_bLitWater":
+		m_bLitWater = ReadBool(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+		break;
+	}
+}
+
+void
+worldspawn(void)
+{
+	ncWorldSpawn ourWorld = spawn(ncWorldSpawn);
+	ourWorld.pvsflags = PVSF_IGNOREPVS;
+
+	/* fill the delegate with spawndata */
+	if (__fullspawndata) {
+		for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
+			ourWorld.SpawnKey(argv(i), argv(i+1));
+		}
+	}
+
+	ourWorld.Spawned();
+}
+
 #endif
 
 #ifdef CLIENT

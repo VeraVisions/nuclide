@@ -22,6 +22,7 @@ enumflags
 	OCAMFL_CHANGED_VIEWER
 };
 
+/*! \brief Shared-Entity: Camera System Trigger */
 /*!QUAKED trigger_camera (.5 .5 .5) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Forces a camera change when triggered.
@@ -41,19 +42,25 @@ be respected.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup sharedentity
+@ingroup pointentity
 */
-class trigger_camera:NSPointTrigger
+class trigger_camera:ncPointTrigger
 {
 public:
 	void trigger_camera(void);
 
 #ifdef CLIENT
 	virtual void ReceiveEntity(float,float);
-#else
+#endif
+
+#ifdef SERVER
 	virtual void Save(float);
 	virtual void Restore(string, string);
 	virtual void NextPath(void);
 	virtual void GoToTarget(void);
+	virtual void Input(entity, string, string);
 	virtual void Trigger(entity, triggermode_t);
 	virtual void Respawn(void);
 	virtual void SpawnKey(string,string);
@@ -65,6 +72,7 @@ public:
 private:
 	NETWORKED_FLOAT(m_flWait)
 	entity m_eLooker;
+
 #ifdef SERVER
 	string m_strAimAt;
 	string m_strMoveTo;
@@ -142,7 +150,9 @@ trigger_camera::ReceiveEntity(float flNew, float flFlags)
 
 	classname = "trigger_camera";
 }
-#else
+#endif
+
+#ifdef SERVER
 void
 trigger_camera::SpawnKey(string strKey, string strValue)
 {
@@ -167,11 +177,8 @@ trigger_camera::SpawnKey(string strKey, string strValue)
 void
 trigger_camera::Respawn(void)
 {
-	SetSize([0,0,0], [0,0,0]);
-	SetSolid(SOLID_NOT);
-	SetMovetype(MOVETYPE_PUSH);
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
+	super::Respawn();
+
 	m_eLooker = world;
 }
 
@@ -243,17 +250,17 @@ trigger_camera::SendEntity(entity ePEnt, float flFlags)
 void
 trigger_camera::EvaluateEntity(void)
 {
-	NSEntity aimingAt;
+	ncEntity aimingAt;
 
 	if (!m_eLooker)
 		return;
 
-	aimingAt = (NSEntity)find(world, ::targetname, m_strAimAt);
+	aimingAt = (ncEntity)find(world, ::targetname, m_strAimAt);
 
 	if (aimingAt) {
 		TurnToPos(aimingAt.GetOrigin());
 	} else {
-		//NSEntity targetNode = (NSEntity)find(world, ::targetname, target);
+		//ncEntity targetNode = (ncEntity)find(world, ::targetname, target);
 		//TurnToPos(targetNode.GetOrigin());
 	}
 
@@ -308,8 +315,8 @@ trigger_camera::GoToTarget(void)
 
 	if (!m_strAimAt) {
 		vector vecAngleDiff = targetNode.GetOrigin() - GetOrigin();
-		vector vecAngleDest = vectoangles(vecAngleDiff);
-		vecAngleDiff = Math_AngleDiff(vecAngleDest, angles);
+		vector vecAngleDest = vectorToAngles(vecAngleDiff);
+		vecAngleDiff = angleDifference(vecAngleDest, angles);
 		SetAngularVelocity(vecAngleDiff * (1 / travelTime));
 	}
 
@@ -400,7 +407,7 @@ trigger_camera::Trigger(entity act, triggermode_t state)
 	/* Reset to the spawn values */
 	SetMovetype(MOVETYPE_PUSH);
 	SetSolid(SOLID_NOT);
-	SetOrigin(GetSpawnOrigin());
+	SetOrigin(GetSpawnVector("origin"));
 	SetTriggerTarget(m_strMoveTo);
 	NextPath();
 	GoToTarget();
@@ -416,5 +423,28 @@ trigger_camera::DeactivateCamera(void)
 	m_eLooker.view2 = __NULL__;
 	m_eLooker = __NULL__;
 	SetSendFlags(-1);
+}
+
+void
+trigger_camera::Input(entity eAct, string strInput, string strData)
+{
+	switch (strInput) {
+		break;
+	case "Enable":
+		DeactivateCamera();
+		Trigger(eAct, TRIG_TOGGLE);
+		break;
+	case "Disable":
+		DeactivateCamera();
+		break;
+	case "Toggle":
+		m_bEnabled = (m_bEnabled) ? false : true;
+		break;
+	case "SetTeam":
+		SetTeam(stof(strData));
+		break;
+	default:
+		super:: Input(eAct, strInput, strData);
+	}
 }
 #endif

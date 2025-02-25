@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Sliding Physics Constraint */
 /*!QUAKED phys_slideconstraint (.5 .3 0) (-8 -8 -8) (8 8 8) BREAKCOLL LIMITENDS
 # OVERVIEW
 Will slide an entity along a segment.
@@ -36,9 +37,13 @@ Will slide an entity along a segment.
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
+
+@ingroup serverentity
+@ingroup pointentity
+@ingroup physics
 */
 class
-phys_slideconstraint:NSPhysicsConstraint
+phys_slideconstraint:ncPhysicsConstraint
 {
 public:
 	void phys_slideconstraint(void);
@@ -111,7 +116,7 @@ void
 phys_slideconstraint::AfterSpawn(void)
 {
 	SetConstraintType(CONSTRAINT_SLIDER);
-	SetOrigin(GetSpawnOrigin());
+	SetOrigin(GetSpawnVector("origin"));
 
 	SetEntity1(find(world, ::targetname, m_strEnt1));
 

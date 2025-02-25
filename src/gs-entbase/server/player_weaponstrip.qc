@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*! \brief Server-Entity: Strips Player Weapons */
 /*!QUAKED player_weaponstrip (1 0 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
 Strips the activator of all of its weapons.
@@ -23,9 +24,12 @@ Strips the activator of all of its weapons.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup serverentity
+@ingroup pointentity
 */
 class
-player_weaponstrip:NSPointTrigger
+player_weaponstrip:ncPointTrigger
 {
 public:
 	void player_weaponstrip(void);
@@ -41,16 +45,12 @@ player_weaponstrip::player_weaponstrip(void)
 void
 player_weaponstrip::Trigger(entity act, triggermode_t unused)
 {
-	NSClientPlayer pl;
+	ncPlayer pl;
 
 	if (!(act.flags & FL_CLIENT)) {
 		return;
 	}
 
-	pl = (NSClientPlayer)act;
-
-	for (int i = 1; i < Weapon_GetCount(); i++) {
-		pl.g_items &= ~Weapon_GetBitID(i);
-		pl.activeweapon = 0;
-	}
+	pl = (ncPlayer)act;
+	pl.RemoveAllWeapons();
 }

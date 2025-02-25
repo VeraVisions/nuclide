@@ -1,0 +1,1603 @@
+/*
+ * Copyright (c) 2016-2024 Vera Visions LLC.
+ *
+ * Permission to use, copy, modify, and distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF MIND, USE, DATA OR PROFITS, WHETHER
+ * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
+ * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+*/
+
+static bool
+droptofloorwrapper(entity foo)
+{
+	bool result;
+	entity old_self = self;
+	self = foo;
+	result = droptofloor();
+	self = old_self;
+	return result;
+}
+
+void
+ncEntity::ncEntity(void)
+{
+	identity = 1;
+	m_flSpawnTime = time;
+	m_vecEditorColor = [1,1,1];
+	m_holdingPlayer = __NULL__;
+}
+
+void
+ncEntity::Spawn(void)
+{
+	Spawned();
+
+	if (wasfreed(this)) {
+		return;
+	}
+
+	/* only precache at start time... */
+	if (time == 0.0f) {
+		Precache();
+	}
+
+	Respawn();
+}
+
+void
+ncEntity::Precache(void)
+{
+	if (STRING_SET(model)) {
+		precache.Model(model);
+	}
+
+#ifdef SERVER
+	if (STRING_SET(m_strOnTrigger)) {
+		m_strOnTrigger = CreateOutput(m_strOnTrigger);
+	}
+#endif
+}
+
+void
+ncEntity::Spawned(void)
+{
+	super::Spawned();
+
+#ifdef SERVER
+	/* used to network our shared ID */
+	entityDefID = EntityDef_NetIDFromName(classname);
+#endif
+}
+
+bool
+ncEntity::HasModel(void)
+{
+	return (modelindex == 0) ? (false) : (true);
+}
+
+float
+ncEntity::EntIndex(void)
+{
+	return (num_for_edict(this));
+}
+
+bool
+ncEntity::DropToFloor(void)
+{
+	return droptofloorwrapper(this);
+}
+
+vector
+ncEntity::GetForward(void)
+{
+	return anglesToForward(angles);
+}
+
+vector
+ncEntity::GetRight(void)
+{
+	return anglesToRight(angles);
+}
+
+vector
+ncEntity::GetUp(void)
+{
+	return anglesToUp(angles);
+}
+
+vector
+ncEntity::WorldSpaceCenter(void)
+{
+	return (absmin + (0.5 * (absmax - absmin)));
+}
+
+float
+ncEntity::WaterLevel(void)
+{
+	return (waterlevel);
+}
+
+bool
+ncEntity::VisibleVec(vector org)
+{
+	vector flDelta;
+	float flFoV;
+
+	flDelta = vectorNormalize(org - origin);
+	flFoV = flDelta * GetForward();
+
+	if (flFoV > 0.3f) {
+		traceline(origin, org, TRUE, this);
+
+		if (trace_fraction == 1.0f) {
+			return (true);
+		}
+	}
+
+	return (false);
+}
+
+bool
+ncEntity::Visible(entity ent)
+{
+	/* is it in our field of view? */
+	if (DistanceFromYaw(ent.origin) > 0.3f) {
+		traceline(origin, ent.origin, MOVE_NORMAL, this);
+
+		if (trace_fraction == 1.0f || trace_ent == ent) {
+			/*print(sprintf("%s can see %s\n", classname, ent.classname));*/
+			return (true);
+		}
+	}
+
+	/*print(sprintf("%s can not see %s\n", classname, ent.classname));*/
+	return (false);
+}
+
+float
+ncEntity::DistanceFromYaw(vector targetPos)
+{
+	return vectorNormalize(targetPos - origin) * GetForward();
+}
+
+bool
+ncEntity::HasSpawnFlags(float sf)
+{
+	return (spawnflags & sf) ? (true) : (false);
+}
+
+bool
+ncEntity::IsOnGround(void)
+{
+	return (flags & FL_ONGROUND) ? (true) : (false);
+}
+
+bool
+ncEntity::IsSolid(void)
+{
+	return (solid != SOLID_NOT) ? (true) : (false);
+}
+
+entity
+ncEntity::GetGroundEntity(void)
+{
+	return (groundentity);
+}
+
+bool
+ncEntity::CreatedByMap(void)
+{
+	return (_mapspawned);
+}
+
+bool
+ncEntity::HeldByPlayer(void)
+{
+	return (m_holdingPlayer) ? (true) : (false);
+}
+
+#ifdef CLIENT
+void
+ncEntity::RendererRestarted(void)
+{
+
+}
+
+float
+ncEntity::predraw(void)
+{
+	if (GetModelindex() == 0 || IsHidden()) {
+		return (PREDRAW_NEXT);
+	}
+
+	addentity(this);
+	return (PREDRAW_NEXT);
+}
+
+void
+ncEntity::ReceiveEntity(float flNew, float flChanged)
+{
+	READENTITY_COORD(origin[0], BASEFL_CHANGED_ORIGIN_X)
+	READENTITY_COORD(origin[1], BASEFL_CHANGED_ORIGIN_Y)
+	READENTITY_COORD(origin[2], BASEFL_CHANGED_ORIGIN_Z)
+	READENTITY_ANGLE(angles[0], BASEFL_CHANGED_ANGLES_X)
+	READENTITY_ANGLE(angles[1], BASEFL_CHANGED_ANGLES_Y)
+	READENTITY_ANGLE(angles[2], BASEFL_CHANGED_ANGLES_Z)
+	READENTITY_SHORT(modelindex, BASEFL_CHANGED_MODELINDEX)
+	READENTITY_BYTE(solid, BASEFL_CHANGED_SOLID)
+	READENTITY_BYTE(movetype, BASEFL_CHANGED_FLAGS)
+	READENTITY_INT(flags, BASEFL_CHANGED_FLAGS)
+	READENTITY_INT(vv_flags, BASEFL_CHANGED_FLAGS)
+	READENTITY_COORD(mins[0], BASEFL_CHANGED_SIZE)
+	READENTITY_COORD(mins[1], BASEFL_CHANGED_SIZE)
+	READENTITY_COORD(mins[2], BASEFL_CHANGED_SIZE)
+	READENTITY_COORD(maxs[0], BASEFL_CHANGED_SIZE)
+	READENTITY_COORD(maxs[1], BASEFL_CHANGED_SIZE)
+	READENTITY_COORD(maxs[2], BASEFL_CHANGED_SIZE)
+	READENTITY_BYTE(frame, BASEFL_CHANGED_FRAME)
+	READENTITY_FLOAT(skin, BASEFL_CHANGED_SKIN)
+	READENTITY_INT(effects, BASEFL_CHANGED_EFFECTS)
+	READENTITY_FLOAT(scale, BASEFL_CHANGED_SCALE)
+	READENTITY_COORD(velocity[0], BASEFL_CHANGED_VELOCITY_X)
+	READENTITY_COORD(velocity[1], BASEFL_CHANGED_VELOCITY_Y)
+	READENTITY_COORD(velocity[2], BASEFL_CHANGED_VELOCITY_Z)
+	READENTITY_COORD(avelocity[0], BASEFL_CHANGED_ANGULARVELOCITY)
+	READENTITY_COORD(avelocity[1], BASEFL_CHANGED_ANGULARVELOCITY)
+	READENTITY_COORD(avelocity[2], BASEFL_CHANGED_ANGULARVELOCITY)
+
+	drawmask = (modelindex != 0) ? MASK_ENGINE : 0;
+
+	if (scale == 0.0f) {
+		scale = 1.0f;
+	}
+
+	if (flChanged & BASEFL_CHANGED_SIZE) {
+		setsize(this, mins, maxs);
+	}
+}
+
+void
+ncEntity::_ReceiveComplete(float flNew, float flChanged)
+{
+
+}
+
+void
+ncEntity::ReceiveEvent(float eventType)
+{
+	switch (eventType) {
+	default:
+		EntError("Unknown event %d", eventType);
+	}
+}
+
+void
+ncEntity::postdraw(void)
+{
+}
+
+
+#else
+void
+ncEntity::DebugDraw(void)
+{
+	DebugBox(GetOrigin(), GetMins(), GetMaxs(), m_vecEditorColor, 0.75f);
+}
+
+float
+ncEntity::SendEntity(entity ePEnt, float flChanged)
+{
+	if (!modelindex) {
+		return (0);
+	}
+
+	if (clienttype(ePEnt) != CLIENTTYPE_REAL) {
+		return (0);
+	}
+
+	WriteByte(MSG_ENTITY, ENT_ENTITY);
+
+	/* optimisation */
+	{
+		/* we'll never network these if we aren't moving. */
+		if (movetype == MOVETYPE_NONE) {
+			flChanged &= ~BASEFL_CHANGED_VELOCITY_X;
+			flChanged &= ~BASEFL_CHANGED_VELOCITY_Y;
+			flChanged &= ~BASEFL_CHANGED_VELOCITY_Z;
+			flChanged &= ~BASEFL_CHANGED_ANGULARVELOCITY;
+		}
+
+		if (m_bIsBrush == true) {
+			flChanged &= ~BASEFL_CHANGED_FLAGS;
+			flChanged &= ~BASEFL_CHANGED_SCALE;
+		}
+	}
+
+	/* broadcast how much data is expected to be read */
+	WriteFloat(MSG_ENTITY, flChanged);
+
+	SENDENTITY_COORD(origin[0], BASEFL_CHANGED_ORIGIN_X)
+	SENDENTITY_COORD(origin[1], BASEFL_CHANGED_ORIGIN_Y)
+	SENDENTITY_COORD(origin[2], BASEFL_CHANGED_ORIGIN_Z)
+	SENDENTITY_ANGLE(angles[0], BASEFL_CHANGED_ANGLES_X)
+	SENDENTITY_ANGLE(angles[1], BASEFL_CHANGED_ANGLES_Y)
+	SENDENTITY_ANGLE(angles[2], BASEFL_CHANGED_ANGLES_Z)
+	SENDENTITY_SHORT(modelindex, BASEFL_CHANGED_MODELINDEX)
+	SENDENTITY_BYTE(solid, BASEFL_CHANGED_SOLID)
+	SENDENTITY_BYTE(movetype, BASEFL_CHANGED_FLAGS)
+	SENDENTITY_INT(flags, BASEFL_CHANGED_FLAGS)
+	SENDENTITY_INT(vv_flags, BASEFL_CHANGED_FLAGS)
+	SENDENTITY_COORD(mins[0], BASEFL_CHANGED_SIZE)
+	SENDENTITY_COORD(mins[1], BASEFL_CHANGED_SIZE)
+	SENDENTITY_COORD(mins[2], BASEFL_CHANGED_SIZE)
+	SENDENTITY_COORD(maxs[0], BASEFL_CHANGED_SIZE)
+	SENDENTITY_COORD(maxs[1], BASEFL_CHANGED_SIZE)
+	SENDENTITY_COORD(maxs[2], BASEFL_CHANGED_SIZE)
+	SENDENTITY_BYTE(frame, BASEFL_CHANGED_FRAME)
+	SENDENTITY_FLOAT(skin, BASEFL_CHANGED_SKIN)
+	SENDENTITY_INT(effects, BASEFL_CHANGED_EFFECTS)
+	SENDENTITY_FLOAT(scale, BASEFL_CHANGED_SCALE)
+	SENDENTITY_COORD(velocity[0], BASEFL_CHANGED_VELOCITY_X)
+	SENDENTITY_COORD(velocity[1], BASEFL_CHANGED_VELOCITY_Y)
+	SENDENTITY_COORD(velocity[2], BASEFL_CHANGED_VELOCITY_Z)
+	SENDENTITY_COORD(avelocity[0], BASEFL_CHANGED_ANGULARVELOCITY)
+	SENDENTITY_COORD(avelocity[1], BASEFL_CHANGED_ANGULARVELOCITY)
+	SENDENTITY_COORD(avelocity[2], BASEFL_CHANGED_ANGULARVELOCITY)
+	return (1);
+}
+
+void
+ncEntity::EvaluateEntity(void)
+{
+	EVALUATE_VECTOR(origin, 0, BASEFL_CHANGED_ORIGIN_X)
+	EVALUATE_VECTOR(origin, 1, BASEFL_CHANGED_ORIGIN_Y)
+	EVALUATE_VECTOR(origin, 2, BASEFL_CHANGED_ORIGIN_Z)
+	EVALUATE_VECTOR(angles, 0, BASEFL_CHANGED_ANGLES_X)
+	EVALUATE_VECTOR(angles, 1, BASEFL_CHANGED_ANGLES_Y)
+	EVALUATE_VECTOR(angles, 2, BASEFL_CHANGED_ANGLES_Z)
+	EVALUATE_FIELD(modelindex, BASEFL_CHANGED_MODELINDEX)
+	EVALUATE_FIELD(solid, BASEFL_CHANGED_SOLID)
+	EVALUATE_FIELD(movetype, BASEFL_CHANGED_FLAGS)
+	EVALUATE_FIELD(flags, BASEFL_CHANGED_FLAGS)
+	EVALUATE_FIELD(vv_flags, BASEFL_CHANGED_FLAGS)
+	EVALUATE_VECTOR(mins, 0, BASEFL_CHANGED_SIZE)
+	EVALUATE_VECTOR(mins, 1, BASEFL_CHANGED_SIZE)
+	EVALUATE_VECTOR(mins, 2, BASEFL_CHANGED_SIZE)
+	EVALUATE_VECTOR(maxs, 0, BASEFL_CHANGED_SIZE)
+	EVALUATE_VECTOR(maxs, 1, BASEFL_CHANGED_SIZE)
+	EVALUATE_VECTOR(maxs, 2, BASEFL_CHANGED_SIZE)
+	EVALUATE_FIELD(frame, BASEFL_CHANGED_FRAME)
+	EVALUATE_FIELD(skin, BASEFL_CHANGED_SKIN)
+	EVALUATE_FIELD(effects, BASEFL_CHANGED_EFFECTS)
+	EVALUATE_FIELD(scale, BASEFL_CHANGED_SCALE)
+	EVALUATE_VECTOR(velocity, 0, BASEFL_CHANGED_VELOCITY_X)
+	EVALUATE_VECTOR(velocity, 1, BASEFL_CHANGED_VELOCITY_Y)
+	EVALUATE_VECTOR(velocity, 2, BASEFL_CHANGED_VELOCITY_Z)
+	EVALUATE_VECTOR(avelocity, 0, BASEFL_CHANGED_ANGULARVELOCITY)
+	EVALUATE_VECTOR(avelocity, 1, BASEFL_CHANGED_ANGULARVELOCITY)
+	EVALUATE_VECTOR(avelocity, 2, BASEFL_CHANGED_ANGULARVELOCITY)
+}
+
+/* Make sure StartFrame calls this */
+void
+ncEntity::ParentUpdate(void)
+{
+	if (tag_entity) {
+		makevectors(tag_entity.angles);
+		origin = tag_entity.origin + v_forward * m_parentPosOffs[0];
+		origin += v_right * m_parentPosOffs[1];
+		origin += v_up * m_parentPosOffs[2];
+		angles = v_forward * m_parentPosOffs[0];
+		angles += v_right * m_parentPosOffs[1];
+		angles += v_up * m_parentPosOffs[2];
+		angles = vectoangles(angles);
+	}
+
+	EvaluateEntity();
+
+	if (!(vv_flags & VFL_NOFRAMEADVANCE)) {
+		frame1time += frametime;
+	}
+
+	/* handle end-touch */
+	if (m_beingTouched == true) {
+		if (m_flTouchTime < GetTime()) {
+			EndTouch(m_eTouchLast);
+			m_beingTouched = false;
+			m_eTouchLast = __NULL__;
+		}
+	}
+}
+
+bool
+ncEntity::SharesPVSWithPlayer(void)
+{
+	entity entLoop = world;
+
+	for (entLoop = world; ((entLoop = find(entLoop, ::classname, "player")));) {
+		ncActor testPlayer = (ncActor)entLoop;
+
+		/* players are first N entity slots after world, so exit when they're done */
+		if (entLoop.classname != "player") {
+			return (false);
+		}
+
+		if (checkpvs(testPlayer.GetEyePos(), this) == true) {
+			return (true);
+		}
+	}
+
+	return (false);
+}
+
+entity
+ncEntity::GetParent(void)
+{
+	return tag_entity;
+}
+
+void
+ncEntity::SetParent(string name)
+{
+	vector parentOffset, angleOffset;
+	tag_entity = find(world, ::targetname, name);
+	parentOffset = origin - tag_entity.origin;
+	angleOffset = anglesToForward(angles) - anglesToForward(tag_entity.angles);
+	makevectors(tag_entity.angles);
+	m_parentPosOffs[0] = dotproduct(parentOffset, v_forward);
+	m_parentPosOffs[1] = dotproduct(parentOffset, v_right);
+	m_parentPosOffs[2] = dotproduct(parentOffset, v_up);
+	m_parentAngOffs[0] = dotproduct(angleOffset, v_forward);
+	m_parentAngOffs[1] = dotproduct(angleOffset, v_right);
+	m_parentAngOffs[2] = dotproduct(angleOffset, v_up);
+}
+
+void
+ncEntity::SetParentAttachment(string name)
+{
+	if (name != "origin") {
+		tag_index = gettagindex(tag_entity, name);
+	} else {
+		tag_index = 0;
+	}
+}
+
+void
+ncEntity::ClearParent(void)
+{
+	tag_entity = world;
+	tag_index = 0;
+}
+
+void
+ncEntity::RestoreAngles(void)
+{
+	vector spawnAngles = g_vec_null;
+	string spawnAngleString = GetSpawnString("angles");
+
+	if (!STRING_SET(spawnAngleString)) {
+		spawnAngles[1] = GetSpawnFloat("angle");
+	} else {
+		spawnAngles = stov(spawnAngleString);
+	}
+
+	SetAngles(spawnAngles);
+}
+
+void
+ncEntity::ClearAngles(void)
+{
+	SetAngles(g_vec_null);
+}
+
+void
+ncEntity::ForceNetworkUpdate(void)
+{
+	SendFlags = -1;
+}
+
+void
+ncEntity::UseBy(entity ourActivator)
+{
+	if (PlayerUse) {
+		eActivator = (ncEntity)ourActivator;
+		PlayerUse();
+	}
+}
+#endif
+
+void
+ncEntity::SetEffects(__int32 newEffects)
+{
+	effects = newEffects;
+}
+
+void
+ncEntity::SetFrame(float newFrame)
+{
+	if (newFrame == frame) {
+		return;
+	}
+
+	frame = newFrame;
+	frame1time = 0.0f;
+
+
+#ifdef SERVER
+	/* check if an event callback exists */
+	{
+		int eDefEvents;
+		string ourName;
+
+		if (modelframecount(modelindex) > 0) {
+			ourName = frametoname(modelindex, frame);
+		} else {
+			return;
+		}
+
+		eDefEvents = tokenize(m_strModelEventCB);
+
+		for (int i = 0; i < eDefEvents; i+=3) {
+			string testName = argv(i+0);
+			string testInput = argv(i+1);
+			string testData = argv(i+2);
+
+			if (ourName == testName) {
+				if (testData != "") {
+					Input(this, testInput, testData);
+				} else {
+					Input(this, testInput, ""); /* no parms passed. */
+				}
+
+				tokenize(m_strModelEventCB); /* ensure argv() is 'rewound'... */
+			}
+		}
+	}
+#endif
+}
+
+void
+ncEntity::SetSkin(float newSkin)
+{
+	skin = newSkin;
+}
+
+void
+ncEntity::SetOwner(entity newOwner)
+{
+	owner = newOwner;
+}
+
+void
+ncEntity::SetVelocity(vector vecNew)
+{
+	velocity = vecNew;
+}
+
+void
+ncEntity::SetTouch(void ()newTouch)
+{
+	touch = newTouch;
+}
+
+void
+ncEntity::SetSendFlags(float flSendFlags)
+{
+#ifdef SERVER
+	SendFlags |= flSendFlags;
+#endif
+}
+
+void
+ncEntity::SetMovetype(float newMovetype)
+{
+	movetype = newMovetype;
+}
+
+void
+ncEntity::SetGravity(float newGrav)
+{
+	gravity = newGrav;
+}
+
+void
+ncEntity::SetSolid(float newSolid)
+{
+	solid = newSolid;
+}
+
+void
+ncEntity::SetScale(float newScale)
+{
+	if (newScale == scale) {
+		return;
+	}
+
+	scale = newScale;
+	setsize(this, m_vecMins * scale, m_vecMaxs * scale);
+}
+
+vector
+ncEntity::GetViewAngle(void)
+{
+	if (isSentient(this)) {
+		return (v_angle);
+	} else {
+		return (angles);
+	}
+}
+
+void
+ncEntity::SetEyePos(vector value)
+{
+	view_ofs = value;
+}
+
+vector
+ncEntity::GetEyePos(void)
+{
+	if (HasVFlags(VFL_FAKESPEC)) {
+		return (origin);
+	}
+
+	return (origin + view_ofs);
+}
+
+void
+ncEntity::UpdateBounds(void)
+{
+	vector newMins, newMaxs;
+	float flScale = 1.0f;
+
+	newMins = m_vecMins;
+	newMaxs = m_vecMaxs;
+
+	/* avoid useless computation */
+	if (angles != [0, 0, 0]) {
+		/* adjust bbox according to rotation */
+		vector vecCorner[8];
+
+		newMins = newMaxs =[0, 0, 0];
+		for (int i = 0; i < 8; i++) {
+			vecCorner[i][0] = (i & 1) ? m_vecMins[0] : m_vecMaxs[0];
+			vecCorner[i][1] = (i & 2) ? m_vecMins[1] : m_vecMaxs[1];
+			vecCorner[i][2] = (i & 4) ? m_vecMins[2] : m_vecMaxs[2];
+			vecCorner[i] += origin;
+			vecCorner[i] = rotateAroundPoint(vecCorner[i], origin, angles[1]);
+			vecCorner[i] -= origin;
+
+			if (!(vecCorner[i][0] <= newMaxs[0]))
+				newMaxs[0] = vecCorner[i][0];
+			if (!(vecCorner[i][1] <= newMaxs[1]))
+				newMaxs[1] = vecCorner[i][1];
+			if (!(vecCorner[i][2] <= newMaxs[2]))
+				newMaxs[2] = vecCorner[i][2];
+
+			if (!(vecCorner[i][0] >= newMins[0]))
+				newMins[0] = vecCorner[i][0];
+			if (!(vecCorner[i][1] >= newMins[1]))
+				newMins[1] = vecCorner[i][1];
+			if (!(vecCorner[i][2] >= newMins[2]))
+				newMins[2] = vecCorner[i][2];
+		}
+	}
+
+	/* 0.0 is never valid, if you want it to disappear do something else */
+	if (scale != 0.0) {
+		flScale = scale;
+	}
+
+	setsize(this, newMins * flScale, newMaxs * flScale);
+}
+
+void
+ncEntity::SetAngles(vector newAngles)
+{
+	angles = newAngles;
+}
+
+void
+ncEntity::SetAngularVelocity(vector newAvel)
+{
+	avelocity = newAvel;
+}
+
+void
+ncEntity::SetSize(vector newMins, vector newMaxs)
+{
+	float flScale = 1.0f;
+
+	m_vecMins = newMins;
+	m_vecMaxs = newMaxs;
+
+	/* 0.0 is never valid, if you want it to disappear do something else */
+	if (scale != 0.0f) {
+		flScale = scale;
+	}
+
+	setsize(this, newMins * flScale, newMaxs * flScale);
+}
+
+void
+ncEntity::SetOrigin(vector newOrigin)
+{
+	setorigin(this, newOrigin);
+}
+
+void
+ncEntity::SetOriginUnstick(vector newOrigin)
+{
+	setorigin_safe(this, newOrigin);
+}
+
+bool
+ncEntity::IsBrush(void)
+{
+	return (m_bIsBrush);
+}
+
+void
+ncEntity::SetModel(string newModel)
+{
+	m_bIsBrush = substring(newModel, 0, 1) == "*" ? true : false;
+	model = Util_FixModel(newModel);
+	setmodel(this, model);
+
+#ifdef SERVER
+	m_vecModelMins = mins;
+	m_vecModelMaxs = maxs;
+#endif
+
+	/* mins/maxs have been updated by setmodel */
+	SetSize(mins, maxs);
+}
+
+void
+ncEntity::SetModelindex(float newModelIndex)
+{
+	if (newModelIndex == modelindex) {
+		return;
+	}
+
+	modelindex = newModelIndex;
+	SetSize(mins, maxs);
+}
+
+void
+ncEntity::AddAngularVelocity(vector addVel)
+{
+	avelocity += addVel;
+}
+
+void
+ncEntity::AddVelocity(vector addVel)
+{
+	velocity += addVel;
+}
+
+void
+ncEntity::AddEffects(__int32 fl) {
+	effects |= fl;
+}
+
+void
+ncEntity::RemoveEffects(__int32 fl) {
+	effects &= ~fl;
+}
+
+
+void
+ncEntity::AddFlags(float fl) {
+	flags |= fl;
+}
+
+void
+ncEntity::RemoveFlags(float fl) {
+	flags &= ~fl;
+}
+
+
+void
+ncEntity::AddVFlags(float fl) {
+	vv_flags |= fl;
+}
+
+void
+ncEntity::RemoveVFlags(float fl) {
+	vv_flags &= ~fl;
+}
+
+void
+ncEntity::TurnTo(float targetAngle) {
+	angles[1] = targetAngle;
+}
+
+void
+ncEntity::TurnToPos(vector targetPos) {
+	angles = vectorToAngles(targetPos - WorldSpaceCenter());
+}
+
+__int32
+ncEntity::GetEffects(void) {
+	return (effects);
+}
+
+float
+ncEntity::GetFrame(void) {
+	return (frame);
+}
+
+float
+ncEntity::GetSkin(void) {
+	return (skin);
+}
+
+float
+ncEntity::GetScale(void) {
+	return (scale);
+}
+
+entity
+ncEntity::GetOwner(void) {
+	return (owner);
+}
+
+vector
+ncEntity::GetVelocity(void) {
+	return (velocity);
+}
+
+float
+ncEntity::GetSolid(void) {
+	return (solid);
+}
+
+string
+ncEntity::GetModel(void)
+{
+	return (model);
+}
+
+float
+ncEntity::GetModelindex(void)
+{
+	return (modelindex);
+}
+
+float
+ncEntity::GetMovetype(void)
+{
+	return (movetype);
+}
+
+float
+ncEntity::GetGravity(void)
+{
+	return (gravity);
+}
+
+vector
+ncEntity::GetAngles(void)
+{
+	return (angles);
+}
+
+vector
+ncEntity::GetAngularVelocity(void)
+{
+	return (avelocity);
+}
+
+vector
+ncEntity::GetOrigin(void)
+{
+	return (origin);
+}
+
+vector
+ncEntity::GetSize(void)
+{
+	return (size);
+}
+
+vector
+ncEntity::GetMins(void)
+{
+	return (mins);
+}
+
+vector
+ncEntity::GetMaxs(void)
+{
+	return (maxs);
+}
+
+vector
+ncEntity::GetRealMins(void)
+{
+	return (m_vecMins);
+}
+
+vector
+ncEntity::GetRealMaxs(void)
+{
+	return (m_vecMaxs);
+}
+
+vector
+ncEntity::GetAbsoluteMins(void)
+{
+	return (absmin);
+}
+
+vector
+ncEntity::GetAbsoluteMaxs(void)
+{
+	return (absmax);
+}
+
+float
+ncEntity::GetFlags(void)
+{
+	return (flags);
+}
+
+float
+ncEntity::GetVFlags(void)
+{
+	return (vv_flags);
+}
+
+bool
+ncEntity::HasFlags(float bits)
+{
+	return (flags & bits) ? (true) : (false);
+}
+
+bool
+ncEntity::HasVFlags(float bits)
+{
+	return (vv_flags & bits) ? (true) : (false);
+}
+
+void
+ncEntity::ClearVelocity(void)
+{
+	velocity = avelocity = [0.0f, 0.0f, 0.0f];
+}
+
+#ifdef SERVER
+vector
+ncEntity::GetModelMins(void)
+{
+	return (m_vecModelMins);
+}
+
+vector
+ncEntity::GetModelMaxs(void)
+{
+	return (m_vecModelMaxs);
+}
+
+void
+ncEntity::Respawn(void)
+{
+	super::Respawn();
+
+	if (CreatedByMap()) {
+		SetOrigin(GetSpawnVector("origin"));
+	}
+
+	SetAngles(GetSpawnVector("angles"));
+	SetModel(GetSpawnString("model"));
+
+	if (STRING_SET(m_parent)) {
+		SetParent(m_parent);
+	}
+}
+
+void
+ncEntity::Save(float handle)
+{
+	super::Save(handle);
+	SaveEntity(handle, "tag_entity", tag_entity);
+	SaveFloat(handle, "tag_index", tag_index);
+	SaveFloat(handle, "pvsflags", pvsflags);
+	SaveBool(handle, "_mapspawned", _mapspawned);
+	SaveFloat(handle, "scale", scale);
+	SaveFloat(handle, "vv_flags", vv_flags);
+	SaveFloat(handle, "friction", friction);
+	SaveVector(handle, "m_vecMins", m_vecMins);
+	SaveVector(handle, "m_vecMaxs", m_vecMaxs);
+	SaveFloat(handle, "m_flTouchTime", m_flTouchTime);
+	SaveBool(handle, "m_beingTouched", m_beingTouched);
+	SaveEntity(handle, "m_eTouchLast", m_eTouchLast);
+	SaveVector(handle, "m_vecEditorColor", m_vecEditorColor);
+}
+
+void
+ncEntity::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "tag_entity":
+		tag_entity = ReadEntity(strValue);
+		break;
+	case "tag_index":
+		tag_index = ReadFloat(strValue);
+		break;
+	case "pvsflags":
+		pvsflags = ReadFloat(strValue);
+		break;
+	case "_mapspawned":
+		_mapspawned = ReadBool(strValue);
+		break;
+	case "scale":
+		scale = ReadFloat(strValue);
+		break;
+	case "vv_flags":
+		vv_flags = ReadFloat(strValue);
+		break;
+	case "friction":
+		friction = ReadFloat(strValue);
+		break;
+	case "m_vecMins":
+		m_vecMins = ReadVector(strValue);
+		break;
+	case "m_vecMaxs":
+		m_vecMaxs = ReadVector(strValue);
+		break;
+	case "m_flTouchTime":
+		m_flTouchTime = ReadFloat(strValue);
+		break;
+	case "m_beingTouched":
+		m_beingTouched = ReadBool(strValue);
+		break;
+	case "m_eTouchLast":
+		m_eTouchLast = ReadEntity(strValue);
+		break;
+	case "m_vecEditorColor":
+		m_vecEditorColor = ReadVector(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+		break;
+	}
+}
+
+void
+ncEntity::Event_SpawnDefRelative(string classDef, float xOfs, float yOfs, float zOfs)
+{
+	vector posOffset;
+	posOffset = anglesToForward(GetAngles()) * xOfs;
+	posOffset += anglesToRight(GetAngles()) * yOfs;
+	posOffset += anglesToUp(GetAngles()) * zOfs;
+	ncEntity rocket = EntityDef_NewClassname(classDef);
+	rocket.SetOrigin(GetOrigin() + posOffset);
+	rocket.SetAngles(GetAngles());
+	rocket.owner = this;
+	rocket.Spawn();
+	EntLog("Spawned decl %S at relative offset %v (%v)", classDef, posOffset, rocket.origin);
+}
+
+void
+ncEntity::Input(entity eAct, string strInput, string strData)
+{
+	switch (strInput) {
+	case "Kill":
+		Destroy();
+		break;
+	case "KillHierarchy":
+		/* this works because ents are basically just entnums */
+		for (entity e = world; (e = findfloat(e, ::owner, this));) {
+			ncEntity ent = (ncEntity) e;
+
+			ent.Destroy();
+		}
+		Destroy();
+		break;
+	case "SetParent":
+		SetParent(strData);
+		break;
+	case "SetParentAttachment":
+		SetParentAttachment(strData);
+		break;
+	case "ClearParent":
+		ClearParent();
+		break;
+	case "Use":
+		eActivator = (ncEntity)eAct;
+
+		if (PlayerUse)
+			PlayerUse();
+		break;
+	case "ShootGib":
+		tokenize_console(strData);
+		string breakModel = argv(0);
+		float breakSpeed = stof(argv(1));
+		int breakCount = stoi(argv(2));
+		BreakModel_Spawn(origin, origin, v_angle, breakSpeed, breakCount, breakModel);
+		break;
+	case "SpawnDef":
+		break;
+	case "SpawnDefOffset":
+#ifdef SERVER
+		tokenize_console(strData);
+		Event_SpawnDefRelative(argv(0), stof(argv(1)), stof(argv(2)), stof(argv(3)));
+#endif
+		break;
+	case "KillChildClass":
+		for (entity e = world; (e = findfloat(e, ::owner, this));) {
+			if (strData == e.classname) {
+				ncEntity ent = (ncEntity) e;
+				ent.Destroy();
+			}
+		}
+		break;
+	case "SpawnProjectileOffset":
+		vector launchOffset;
+		tokenize_console(strData);
+		string defName = argv(0);
+		launchOffset[0]= stof(argv(1));
+		launchOffset[1]= stof(argv(2));
+		launchOffset[2]= stof(argv(3));
+
+		if (EntityDef_HasSpawnClass(defName)) {
+			ncProjectile_SpawnDefAtPosition(defName, (ncActor)this, GetOrigin() + launchOffset, GetViewAngle());
+		}
+		break;
+	case "SpawnProjectileDef":
+		if (EntityDef_HasSpawnClass(strData)) {
+			ncProjectile_SpawnDefAttachment(strData, (ncActor)this, 0);
+		}
+		break;
+	case "StartSoundDef":
+		StartSoundDef(strData, CHAN_VOICE, true);
+		break;
+	case "AddVelocity":
+		vector velAdd = stov(strData);
+		velocity += GetForward() * velAdd[0];
+		velocity += GetRight() * velAdd[1];
+		velocity += GetUp() * velAdd[2];
+		break;
+	case "Shockwave":
+		int c = tokenize(strData);
+		
+		WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+		WriteByte(MSG_MULTICAST, EV_BEAMCYLINDER);
+		WriteCoord(MSG_MULTICAST, origin[0]);
+		WriteCoord(MSG_MULTICAST, origin[1]);
+		WriteCoord(MSG_MULTICAST, origin[2]);
+		WriteCoord(MSG_MULTICAST, angles[0]);
+		WriteCoord(MSG_MULTICAST, stof(argv(1)));
+		WriteCoord(MSG_MULTICAST, angles[2]);
+		WriteShort(MSG_MULTICAST, getmodelindex(argv(0)));
+		WriteByte(MSG_MULTICAST, stof(argv(2)));
+		WriteByte(MSG_MULTICAST, stof(argv(3)));
+		WriteByte(MSG_MULTICAST, stof(argv(4)));
+		WriteByte(MSG_MULTICAST, stof(argv(5)));
+		WriteByte(MSG_MULTICAST, stof(argv(6)));
+		WriteByte(MSG_MULTICAST, stof(argv(7)));
+		WriteByte(MSG_MULTICAST, stof(argv(8)));
+		WriteByte(MSG_MULTICAST, stof(argv(9)));
+		WriteByte(MSG_MULTICAST, stof(argv(10)));
+		WriteByte(MSG_MULTICAST, stof(argv(11)));
+
+		msg_entity = this;
+		multicast(origin, MULTICAST_PVS);
+		break;
+	case "SetOrigin":
+		SetOrigin(stov(strData));
+		break;
+	case "SetEditorColor":
+		m_vecEditorColor = ReadVector(strData);
+		break;
+	case "Respawn":
+		Respawn();
+		break;
+	default:
+		ncTrigger::Input(eAct, strInput, strData);
+	}
+}
+#endif
+
+void
+ncEntity::SpawnKey(string strKey, string strValue)
+{
+	bool tempCheck = false;
+	/* we do re-read a lot of the builtin fields in case we want to set
+	   defaults. just in case anybody is wondering. */
+
+	switch (strKey) {
+	case "spawnflags":
+		spawnflags = ReadFloat(strValue);
+		break;
+	case "origin":
+		origin = ReadVector(strValue);
+		break;
+	case "model":
+		model = ReadString(strValue);
+		break;
+	case "angles":
+		angles = ReadVector(strValue);
+		break;
+	case "angle":
+		angles[1] = ReadFloat(strValue);
+		break;
+	case "solid":
+		solid = ReadFloat(strValue);
+		break;
+	case "friction":
+		friction = ReadFloat(strValue);
+		break;
+	case "editor_color":
+		m_vecEditorColor = ReadVector(strValue);
+		break;
+#ifdef SERVER
+	case "health":
+		health = ReadFloat(strValue);
+		break;
+	case "movewith":
+	case "parentname":
+		m_parent = ReadString(strValue);
+		break;
+	case "ignorepvs":
+		tempCheck = ReadBool(strValue);
+
+		if (tempCheck == true)
+			pvsflags = PVSF_IGNOREPVS;
+		else
+			pvsflags &= ~PVSF_IGNOREPVS;
+
+		break;
+#endif
+	case "editor_mins":
+	case "editor_maxs":
+	case "editor_usage":
+	case "editor_model":
+	case "editor_rotatable":
+	case "editor_description":
+	case "_minlight":
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
+		break;
+	}
+}
+
+void
+ncEntity::Show(void)
+{
+	effects &= ~EF_NODRAW;
+}
+
+void
+ncEntity::Hide(void)
+{
+	effects |= EF_NODRAW;
+}
+
+bool
+ncEntity::IsHidden(void)
+{
+	return (effects & EF_NODRAW) ? true : false;
+}
+
+void
+ncEntity::Disappear(void)
+{
+	modelindex = (0);
+	SetSolid(SOLID_NOT);
+}
+
+void
+ncEntity::MakeStatic(void)
+{
+	makestatic(this);
+}
+
+bool
+ncEntity::CanSpawn(bool clientSide)
+{
+	return !(clientSide);
+}
+
+bool
+ncEntity::WithinBounds(entity check)
+{
+	if not (check.absmin[0] >= absmin[0] && check.absmax[0] <= absmax[0])
+			return (false);
+	if not (check.absmin[1] >= absmin[1] && check.absmax[1] <= absmax[1])
+			return (false);
+	if not (check.absmin[2] >= absmin[2] && check.absmax[2] <= absmax[2])
+			return (false);
+
+	return (true);
+}
+
+bool
+ncEntity::IntersectsWith(entity check)
+{
+	if not (check.origin[0] >= absmin[0] && check.origin[0] <= absmax[0])
+			return (false);
+	if not (check.origin[1] >= absmin[1] && check.origin[1] <= absmax[1])
+			return (false);
+	if not (check.origin[2] >= absmin[2] && check.origin[2] <= absmax[2])
+			return (false);
+
+	return (true);
+}
+
+bool
+ncEntity::StartSound(string strSample, float channel, float flags, bool broadcast)
+{
+	if not (whichpack(strcat("sound/", strSample))) 
+		return (false);
+
+	if (broadcast) {
+		sound(this, channel, strSample, 1.0f, ATTN_NORM, 0, SOUNDFLAG_FOLLOW);
+	} else {
+#ifdef SERVER
+		msg_entity = this;
+		sound(this, channel, strSample, 1.0f, ATTN_NORM, 0, SOUNDFLAG_UNICAST | SOUNDFLAG_FOLLOW);
+		msg_entity = __NULL__;
+#else
+		sound(this, channel, strSample, 1.0f, ATTN_NORM, 0, SOUNDFLAG_FOLLOW);
+#endif
+	}
+
+	SndEntLog("%s (chan: %d bcast: %d) (%v)", strSample, channel, broadcast, origin);
+
+	return (true);
+}
+
+bool
+ncEntity::StartSoundDef(string strSample, float channel, bool broadcast)
+{
+	SndEntLog("%s (chan: %d bcast: %d)", strSample, channel, broadcast);
+	Sound_Play(this, channel, strSample);
+	return (true);
+}
+
+void
+ncEntity::StopSound(float channel, bool broadcast)
+{
+	if (broadcast) {
+		Sound_Stop(this, channel);
+	} else {
+#ifdef SERVER
+		msg_entity = this;
+		sound(this, channel, "common/null.wav", 0.1f, ATTN_NORM, 100, SOUNDFLAG_UNICAST  | SOUNDFLAG_FOLLOW, 0 );
+		msg_entity = __NULL__;
+#else
+		Sound_Stop(this, channel);
+#endif
+	}
+}
+
+vector
+ncEntity::NearestWallPointForRadius(float radius)
+{
+	vector vecRadius = [radius, radius, radius];
+	tracebox(origin, -vecRadius, vecRadius, origin, MOVE_EVERYTHING, this);
+	return (trace_fraction <= 1.0) ? (trace_endpos) : (origin);
+}
+
+void
+ncEntity::HandleThink(void)
+{
+	/* support for think/nextthink */
+	if (think && nextthink > 0.0f) {
+		if (nextthink < time) {
+			nextthink = 0.0f;
+			think();
+		}
+	}
+}
+
+bool
+ncEntity::IsFacing(entity target)
+{
+	vector vecDiff = vectorNormalize(target.origin - origin);
+	return ((vecDiff * GetForward()) > 0) ? true : false;
+}
+
+bool
+ncEntity::IsFacingPosition(vector targetPos)
+{
+	vector vecDiff = vectorNormalize(targetPos - origin);
+	return ((vecDiff * GetForward()) > 0) ? true : false;
+}
+
+float
+ncEntity::GetSpawnAge(void)
+{
+	return (time - m_flSpawnTime);
+}
+
+float
+ncEntity::GetSpawnTime(void)
+{
+	return (m_flSpawnTime);
+}
+
+void
+ncEntity::Transport(vector new_pos, vector new_ang)
+{
+	float flSpeed = length(this.GetVelocity());
+	SetVelocity(anglesToForward(new_ang) * flSpeed);
+
+	SetOrigin(new_pos);
+	SetAngles(new_ang);
+
+#ifdef SERVER
+	if (isClient(this)) {
+		Client_FixAngle(this, new_ang);
+	}
+#endif
+}
+
+void
+ncEntity::Relink(void)
+{
+	setorigin(this, origin);
+}
+
+vector
+ncEntity::GetNearbySpot(void)
+{
+	vector testPos;
+	float minDist = maxs[0];
+	vector fwdDir, rightDir, upDir;
+
+	fwdDir = anglesToForward([0,0,0]);
+	rightDir = anglesToRight([0,0,0]);
+	upDir = anglesToUp([0,0,0]);
+
+	/* space in front? */
+	testPos = GetOrigin() + fwdDir * minDist;
+	tracebox(testPos, mins, maxs, testPos, MOVE_NORMAL, this);
+
+	if (trace_fraction == 1.0f) {
+		return (testPos);
+	}
+
+	/* behind? */
+	testPos = GetOrigin() - fwdDir * minDist;
+	tracebox(testPos, mins, maxs, testPos, MOVE_NORMAL, this);
+
+	if (trace_fraction == 1.0f) {
+		return (testPos);
+	}
+
+	/* left? */
+	testPos = GetOrigin() - rightDir * minDist;
+	tracebox(testPos, mins, maxs, testPos, MOVE_NORMAL, this);
+
+	if (trace_fraction == 1.0f) {
+		return (testPos);
+	}
+
+	/* right? */
+	testPos = GetOrigin() + rightDir * minDist;
+	tracebox(testPos, mins, maxs, testPos, MOVE_NORMAL, this);
+
+	if (trace_fraction == 1.0f) {
+		return (testPos);
+	}
+
+	/* front left? */
+	testPos = GetOrigin() + fwdDir * minDist - rightDir * minDist;
+	tracebox(testPos, mins, maxs, testPos, MOVE_NORMAL, this);
+
+	if (trace_fraction == 1.0f) {
+		return (testPos);
+	}
+
+	/* front right? */
+	testPos = GetOrigin() + fwdDir * minDist + rightDir * minDist;
+	tracebox(testPos, mins, maxs, testPos, MOVE_NORMAL, this);
+
+	if (trace_fraction == 1.0f) {
+		return (testPos);
+	}
+
+	/* back left? */
+	testPos = GetOrigin() - fwdDir * minDist - rightDir * minDist;
+	tracebox(testPos, mins, maxs, testPos, MOVE_NORMAL, this);
+
+	if (trace_fraction == 1.0f) {
+		return (testPos);
+	}
+
+	/* back right? */
+	testPos = GetOrigin() - fwdDir * minDist + rightDir * minDist;
+	tracebox(testPos, mins, maxs, testPos, MOVE_NORMAL, this);
+
+	if (trace_fraction == 1.0f) {
+		return (testPos);
+	}
+
+	return (g_vec_null);
+}
+
+bool
+ncEntity::_ProjectileAttack(string defName, bool wasReleased)
+{
+#ifdef SERVER
+	string attackDef;
+	int numProjectiles = GetSubDefInt(defName, "numProjectiles");
+	float sX = GetSubDefFloat(defName, "spread_x");
+	float sY = GetSubDefFloat(defName, "spread_y");
+
+	/* always fire at least 1 */
+	if (numProjectiles <= 0i) {
+		numProjectiles = 1i;
+	}
+
+	if (wasReleased == true) {
+		attackDef = GetSubDefString(defName, "def_onRelease");
+	} else {
+		attackDef = GetSubDefString(defName, "def_onFire");
+	}
+
+	for (int i = 0i; i < numProjectiles; i++) {
+		EntLog("Launching %S at %v towards %v", attackDef, GetEyePos(), GetViewAngle());
+		ncAttack_SpawnDefAtPosition(attackDef, (ncActor)this, GetEyePos(), GetViewAngle());
+	}
+#endif
+
+	return (true);
+}
+
+bool
+ncEntity::AttackByDef(string defName, bool wasReleased)
+{
+	if (!defName) {
+		return (false);
+	}
+
+#ifdef SERVER
+	_ProjectileAttack(defName, wasReleased);
+#endif
+
+	return (true);
+}
+
+void
+ncEntity::SetBotTag(botInfo_t newTag)
+{
+#ifdef SERVER
+	botinfo = newTag;
+#endif
+}
+
+int
+ncEntity::GetSharedID(void)
+{
+#ifdef CLIENT
+	return (int)(entnum);
+#else
+	return (int)num_for_edict(this);
+#endif
+}
+
+void
+ncEntity::EnablePlayerCollision(void)
+{
+	dimension_solid = 255;
+	dimension_hit = 255;
+}
+
+void
+ncEntity::DisablePlayerCollision(void)
+{
+	dimension_solid = 1;
+	dimension_hit = 1;
+}

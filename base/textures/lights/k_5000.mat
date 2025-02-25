@@ -1,0 +1,13 @@
+{
+	program unlit
+	diffusemap "lights/k_5000.ktx"
+
+	nomipmaps
+	surfaceParm nodraw2
+	surfaceParm nonsolid
+	surfaceParm nomarks 
+	surfaceParm nolightmap
+	vmap_surfaceLight 5000
+	vmap_lightImage "lights/k_5000.ktx"
+}
+ 

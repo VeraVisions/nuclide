@@ -21,6 +21,7 @@ enumflags
 	TO_PUSHABLES
 };
 
+/*! \brief Server-Entity: One-Time Use Trigger Volume */
 /*!QUAKED trigger_once (.5 .5 .5) ? CLIENTS NPCS PUSHABLES PHYSICS FRIENDLIES CLIENTSINVEHICLES EVERYTHING x x CLIENTSNOTINVEHICLES DEBRIS NPCSINVEHICLES NOBOTS
 # OVERVIEW
 A trigger volume which works only once.
@@ -41,7 +42,7 @@ A trigger volume which works only once.
 - TF_CLIENTS (1) : Clients can touch it.
 - TF_NPCS (2) : NPCs can touch it.
 - TF_PUSHABLE (4) : Pushables can touch it.
-- TF_PHYSICS (8) : NSPhysicsEntity based classes can touch it.
+- TF_PHYSICS (8) : ncPhysicsEntity based classes can touch it.
 - TF_FRIENDLIES (16) : Friendly NPCs can touch it.
 - TF_CLIENTSINVEHICLES (32) : Clients within vehicles can touch it.
 - TF_EVERYTHING (64) : Everything can touch it.
@@ -62,8 +63,11 @@ If you want an entity like this that can be used more than once, see trigger_mul
 
 # TRIVIA
 This entity was introduced in Quake (1996).
+
+@ingroup serverentity
+@ingroup brushentity
 */
-class trigger_once:NSBrushTrigger
+class trigger_once:ncBrushTrigger
 {
 public:
 	void trigger_once(void);
@@ -104,7 +108,7 @@ trigger_once::Spawned(void)
 void
 trigger_once::Respawn(void)
 {
-	InitBrushTrigger();
+	super::Respawn();
 	m_iValue = 0;
 }
 

@@ -16,6 +16,7 @@
 
 #define MGF_NONSOLID 4
 
+/*! \brief Server-Entity: Generic, Bleeding Character Actor */
 /*!QUAKED monster_generic (1 0 0) (-8 -8 -8) (8 8 8) x x MGF_NONSOLID
 # OVERVIEW
 A 'monster' that is able to bleed, speak and follow scripted sequences.
@@ -30,9 +31,12 @@ A 'monster' that is able to bleed, speak and follow scripted sequences.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
+
+@ingroup serverentity
+@ingroup pointentity
 */
 class
-monster_generic:NSTalkMonster
+monster_generic:ncTalkMonster
 {
 public:
 	void monster_generic(void);
@@ -44,14 +48,19 @@ public:
 void
 monster_generic::monster_generic(void)
 {
-	/* hackhackhackhackack */
-	if (model == "models/player.mdl" || model == "models/holo.mdl") {
-		base_mins = VEC_HULL_MIN;
-		base_maxs = VEC_HULL_MAX;
+	if (serverkeyfloat("*bspversion") == BSPVER_HL) {
+		/* hackhackhackhackack */
+		if (model == "models/player.mdl" || model == "models/holo.mdl") {
+			base_mins = VEC_HULL_MIN;
+			base_maxs = VEC_HULL_MAX;
+		} else {
+			base_mins = [-16,-16,0];
+			base_maxs = [16,16,72];
+		}
 	} else {
-		base_mins = [-16,-16,0];
-		base_maxs = [16,16,72];
+		SetSize(GetModelMins(), GetModelMaxs());
 	}
+
 	base_health = 100;
 	m_iAlliance = MAL_NEUTRAL;
 
@@ -65,8 +74,8 @@ monster_generic::Respawn(void)
 	SetSize(base_mins, base_maxs);
 
 	if (HasSpawnFlags(MGF_NONSOLID)) {
-		takedamage = DAMAGE_NO;
+		MakeInvulnerable();
+		DisableBleeding();
 		SetSolid(SOLID_NOT);
-		SetCanBleed(false);
 	}
 }

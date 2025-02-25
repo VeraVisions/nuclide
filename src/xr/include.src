@@ -1,5 +1,0 @@
-#includelist
-../xr/NSXRSpace.qc
-../xr/NSXRInput.qc
-../xr/xr.qc
-#endlist

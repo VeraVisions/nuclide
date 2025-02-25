@@ -14,14 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-typedef struct
-{
-	string m_strPath;
-	float m_flProgsID;
-} plugin_t;
-
-plugin_t *g_plugindb;
-var int g_plugincount;
+static plugin_t *g_plugindb;
+static var int g_plugincount;
 
 void
 Plugin_Init(void)
@@ -30,20 +24,21 @@ Plugin_Init(void)
 	string tmp;
 	int i;
 
-	if (autocvar_sv_plugins) {
-		g_plugins_enabled = 1;
+	if (autocvar_sv_plugins == false) {
+		g_plugins_enabled = true;
 	} else {
-		g_plugins_enabled = 0;
+		g_plugins_enabled = false;
 		return;
 	}
 
 	InitStart();
 
+#warning Read active plugins from cvar instead of a text file, so server admins can change them on the fly
 	pdb = fopen("plugins.txt", FILE_READ);
 
 	if (pdb < 0) {
 		NSWarning("No plugins.txt found. Plugins disabled.\n");
-		g_plugins_enabled = 0;
+		g_plugins_enabled = false;
 		InitEnd();
 		return;
 	}
@@ -71,7 +66,7 @@ Plugin_Init(void)
 		if (a <= 0)
 			continue;
 
-		g_plugindb[i].m_strPath = strcat("plugins/", argv(0));
+		g_plugindb[i].m_strPath = strcat("plug_", argv(0), ".dat");
 		g_plugindb[i].m_flProgsID = addprogs(g_plugindb[i].m_strPath);
 		i++;
 	}
@@ -80,7 +75,7 @@ Plugin_Init(void)
 
 	void(void) vFunc;
 	for (i = 0; i < g_plugincount; i++) {
-		 vFunc = externvalue(g_plugindb[i].m_flProgsID, "FMX_Init");
+		 vFunc = externvalue(g_plugindb[i].m_flProgsID, "Plug_Load");
 
 		if (vFunc) {
 			vFunc();
@@ -107,7 +102,7 @@ Plugin_Shutdown(void)
 		return;
 
 	for (int i = 0; i < g_plugincount; i++) {
-		 vFunc = externvalue(g_plugindb[i].m_flProgsID, "FMX_Shutdown");
+		 vFunc = externvalue(g_plugindb[i].m_flProgsID, "Plug_LevelShutdown");
 
 		if (vFunc) {
 			vFunc();
@@ -130,11 +125,11 @@ Plugin_InitEnts(void)
 {
 	void(void) vFunc;
 
-	if (g_plugins_enabled == 0)
+	if (g_plugins_enabled == false)
 		return (0);
 
 	for (int i = 0; i < g_plugincount; i++) {
-		 vFunc = externvalue(g_plugindb[i].m_flProgsID, "FMX_InitEnts");
+		 vFunc = externvalue(g_plugindb[i].m_flProgsID, "Plug_ServerActivate");
 
 		if (vFunc) {
 			vFunc();
@@ -156,7 +151,7 @@ Plugin_RunClientCommand(void)
 	int tval;
 	int(void) vFunc;
 
-	if (g_plugins_enabled == 0)
+	if (g_plugins_enabled == false)
 		return (0);
 
 	/* rval = final return value, tval = temporary return value.
@@ -190,11 +185,11 @@ Plugin_ParseClientCommand(string msg)
 {
 	string(string msg) vFunc;
 
-	if (g_plugins_enabled == 0)
+	if (g_plugins_enabled == false)
 		return (0);
 
 	for (int i = 0; i < g_plugincount; i++) {
-		 vFunc = externvalue(g_plugindb[i].m_flProgsID, "FMX_ParseClientCommand");
+		 vFunc = externvalue(g_plugindb[i].m_flProgsID, "Plug_ClientCommand");
 
 		if (vFunc) {
 			string new;
@@ -217,13 +212,13 @@ Called whenever a new client connect to the game
 =================
 */
 int
-Plugin_PlayerConnect(NSClientPlayer cl)
+Plugin_PlayerConnect(ncPlayer cl)
 {
 	int rval;
 	int tval;
 	int(entity) vFunc;
 
-	if (g_plugins_enabled == 0)
+	if (g_plugins_enabled == false)
 		return (0);
 
 	/* rval = final return value, tval = temporary return value.
@@ -233,7 +228,7 @@ Plugin_PlayerConnect(NSClientPlayer cl)
 	tval = FALSE;
 
 	for (int i = 0; i < g_plugincount; i++) {
-		 vFunc = externvalue(g_plugindb[i].m_flProgsID, "FMX_PlayerConnect");
+		 vFunc = externvalue(g_plugindb[i].m_flProgsID, "Plug_ClientConnect");
 
 		if (vFunc) {
 			tval = vFunc(cl);
@@ -252,13 +247,13 @@ Called whenever a client leaves the game
 =================
 */
 int
-Plugin_PlayerDisconnect(NSClientPlayer cl)
+Plugin_PlayerDisconnect(ncPlayer cl)
 {
 	int rval;
 	int tval;
 	int(entity) vFunc;
 
-	if (g_plugins_enabled == 0)
+	if (g_plugins_enabled == false)
 		return (0);
 
 	/* rval = final return value, tval = temporary return value.
@@ -268,7 +263,7 @@ Plugin_PlayerDisconnect(NSClientPlayer cl)
 	tval = FALSE;
 
 	for (int i = 0; i < g_plugincount; i++) {
-		 vFunc = externvalue(g_plugindb[i].m_flProgsID, "FMX_PlayerDisconnect");
+		 vFunc = externvalue(g_plugindb[i].m_flProgsID, "Plug_ClientDisconnect");
 
 		if (vFunc) {
 			tval = vFunc(cl);
@@ -287,13 +282,13 @@ Called when a player has fully connected and entered the server
 =================
 */
 int
-Plugin_PlayerEntered(NSClientPlayer cl)
+Plugin_PlayerEntered(ncPlayer cl)
 {
 	int rval;
 	int tval;
 	int(entity) vFunc;
 
-	if (g_plugins_enabled == 0)
+	if (g_plugins_enabled == false)
 		return (0);
 
 	/* rval = final return value, tval = temporary return value.
@@ -303,7 +298,7 @@ Plugin_PlayerEntered(NSClientPlayer cl)
 	tval = FALSE;
 
 	for (int i = 0; i < g_plugincount; i++) {
-		 vFunc = externvalue(g_plugindb[i].m_flProgsID, "FMX_PlayerEntered");
+		 vFunc = externvalue(g_plugindb[i].m_flProgsID, "Plug_ClientPutInServer");
 
 		if (vFunc) {
 			tval = vFunc(cl);
@@ -326,11 +321,11 @@ Plugin_PlayerObituary(entity attk, entity targ, int weapon, bodyType_t body, int
 {
 	void(entity,entity,int,int,int) vFunc;
 
-	if (g_plugins_enabled == 0)
+	if (g_plugins_enabled == false)
 		return (0);
 
 	for (int i = 0; i < g_plugincount; i++) {
-		 vFunc = externvalue(g_plugindb[i].m_flProgsID, "FMX_PlayerObituary");
+		 vFunc = externvalue(g_plugindb[i].m_flProgsID, "Plug_ClientbObituary");
 
 		if (vFunc) {
 			vFunc(attk, targ, weapon, body, dmg);

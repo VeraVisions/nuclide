@@ -15,7 +15,7 @@
 */
 
 
-#define VEH_SKIDDING FL_USE_RELEASED
+#define VEH_SKIDDING VFL_USE_RELEASED
 
 #define VEHSF_NOFLIP 2048
 
@@ -30,7 +30,8 @@ enumflags
 	VEHFL_FLAGS
 };
 
-class prop_vehicle_driveable_wheel
+static class
+prop_vehicle_driveable_wheel:ncIO
 {
 public:
 	void prop_vehicle_driveable_wheel(void);
@@ -57,6 +58,7 @@ private:
 #endif
 };
 
+/*! \brief Shared-Entity: Model Based Vehicle */
 /*!QUAKED prop_vehicle_driveable (1 0 0) (-50 -50 0) (50 50 70)
 # OVERVIEW
 Point entity defining a 4-wheel vehicle that you can drive.
@@ -65,15 +67,20 @@ Point entity defining a 4-wheel vehicle that you can drive.
 - "targetname" : Name
 
 # SPAWNFLAGS
-None currently.
+
+None currently.
 
 # NOTES
-None currently.
+
+None currently.
 
 # TRIVIA
 This entity was introduced in Half-Life 2 (2004).
+
+@ingroup sharedentity
+@ingroup pointentity
 */
-class prop_vehicle_driveable:NSVehicle
+class prop_vehicle_driveable:ncVehicle
 {
 private:
 	/* map-entity fields */
@@ -89,8 +96,8 @@ private:
 	vector m_vecSeatOffest;
 
 	/* collision boxes */
-	NSEntity m_eCollBox1;
-	NSEntity m_eCollBox2;
+	ncEntity m_eCollBox1;
+	ncEntity m_eCollBox2;
 
 	prop_vehicle_driveable_wheel m_wlFL;
 	prop_vehicle_driveable_wheel m_wlFR;
@@ -117,13 +124,17 @@ public:
 	virtual void PlayerInput(void);
 	virtual void OnRemoveEntity(void);
 
+	nonvirtual void SpawnWheels();
+
 #ifdef CLIENT
 	virtual bool HideViewWeapon(void);
 	virtual void PredictPreFrame(void);
 	virtual void PredictPostFrame(void);
 	virtual void ReceiveEntity(float,float);
 	virtual void UpdateView(void);
-#else
+#endif
+
+#ifdef SERVER
 	virtual void Respawn(void);
 	virtual void OnPlayerUse(void);
 	virtual void EvaluateEntity(void);
@@ -144,35 +155,14 @@ prop_vehicle_driveable::prop_vehicle_driveable(void)
 	m_flStraightenFactor = 1.0f;
 	m_vecGravityDir = [0,0,-1];
 	m_iVehicleFlags |= VHF_FROZEN;
-	hitcontentsmaski = CONTENTBIT_BODY | CONTENTBITS_POINTSOLID | CONTENTBIT_VEHICLECLIP;
 
-	if (!m_eCollBox1)
-		m_eCollBox1 = spawn(NSEntity);
-	if (!m_eCollBox2)
-		m_eCollBox2 = spawn(NSEntity);
+	m_eCollBox1 = __NULL__;
+	m_eCollBox2 = __NULL__;
 
-	{
-		m_eCollBox1.SetSize([-32,-32,0], [32,32,32]);
-		m_eCollBox2.SetSize([-32,-32,0], [32,32,32]);
-	}
-
-	m_eCollBox1.hitcontentsmaski = hitcontentsmaski;	
-	m_eCollBox2.hitcontentsmaski = hitcontentsmaski;	
-
-	if (!m_wlFL)
-		m_wlFL = spawn(prop_vehicle_driveable_wheel);
-	if (!m_wlFR)
-		m_wlFR = spawn(prop_vehicle_driveable_wheel);
-	if (!m_wlBL)
-		m_wlBL = spawn(prop_vehicle_driveable_wheel);
-	if (!m_wlBR)
-		m_wlBR = spawn(prop_vehicle_driveable_wheel);
-
-	m_eCollBox1.owner = m_eCollBox2.owner = \
-		m_wlFL.owner = m_wlFR.owner = \
-		m_wlBL.owner = m_wlBR.owner = this;
-
-	customphysics = Physics;
+	m_wlFL = __NULL__;
+	m_wlFR = __NULL__;
+	m_wlBL = __NULL__;
+	m_wlBR = __NULL__;
 }
 
 #ifdef CLIENT
@@ -198,7 +188,9 @@ prop_vehicle_driveable::Physics(void)
 		m_vecMoveValues = [0,0,0];
 		m_iMoveButtons = 0;
 		RunVehiclePhysics();
-#else
+#endif
+
+#ifdef CLIENT
 		setorigin(this, origin);
 #endif
 	} else {
@@ -211,12 +203,18 @@ prop_vehicle_driveable::Physics(void)
 void
 prop_vehicle_driveable::OnRemoveEntity(void)
 {
-	remove(m_wlFL);
-	remove(m_wlFR);
-	remove(m_wlBL);
-	remove(m_wlBR);
-	remove(m_eCollBox1);
-	remove(m_eCollBox2);
+	if (m_wlFL)
+		m_wlFL.Destroy();
+	if (m_wlFR)
+		m_wlFR.Destroy();
+	if (m_wlBL)
+		m_wlBL.Destroy();
+	if (m_wlBR)
+		m_wlBR.Destroy();
+	if (m_eCollBox1)
+		m_eCollBox1.Destroy();
+	if (m_eCollBox2)
+		m_eCollBox2.Destroy();
 }
 
 #ifdef CLIENT
@@ -405,7 +403,7 @@ prop_vehicle_driveable_wheel::Accel(float flMoveTime, float m_flTurn)
 		/* test if this car is skidding */
 		float skid = (velocity * v_right);
 		if ( fabs(skid) > vehParent.m_flSkidSpeed ) {
-			vehParent.flags |= VEH_SKIDDING;
+			vehParent.vv_flags |= VEH_SKIDDING;
 		}
 
 		/* nuke sideways velocity. if a wheel is off the ground this probably
@@ -455,8 +453,12 @@ prop_vehicle_driveable_wheel::Accel(float flMoveTime, float m_flTurn)
 			velocity *= 0.25f;
 #ifdef SERVER
 			if (trace_ent.takedamage) {
-				NSSurfacePropEntity foo = (NSSurfacePropEntity)trace_ent;
-				Damage_Apply(foo, vehParent.m_eDriver, iImpactDamage, 0, DMG_VEHICLE);
+				ncSurfacePropEntity foo = (ncSurfacePropEntity)trace_ent;
+				vector dmgDir = dirFromTarget(trace_endpos, foo.origin);
+				ncDict damageDecl = spawn(ncDict);
+				damageDecl.AddKey("damage", itos(iImpactDamage));
+				combat.Damage(foo, this, vehParent.m_eDriver, damageDecl.GetDeclBody(), trace_endpos, dmgDir, foo.origin);
+				remove(damageDecl);
 				//print(sprintf("Delivering %i impact damage\n", iImpactDamage));
 			}
 #endif
@@ -596,7 +598,7 @@ prop_vehicle_driveable::RunVehiclePhysics(void)
 #if SERVER
 	/* eject the dead */
 	if (m_eDriver && m_eDriver.health <= 0) {
-		PlayerLeave((NSClientPlayer)m_eDriver);
+		PlayerLeave((ncPlayer)m_eDriver);
 	}
 #endif
 
@@ -632,11 +634,9 @@ prop_vehicle_driveable::RunVehiclePhysics(void)
 		angles[2] = bound (-45, angles[2], 45);
 	}
 
-	flags &= ~VEH_SKIDDING;
+	vv_flags &= ~VEH_SKIDDING;
 
-	angles[0] = Math_FixDelta(angles[0]);
-	angles[1] = Math_FixDelta(angles[1]);
-	angles[2] = Math_FixDelta(angles[2]);
+	angles = fixAngle(angles);
 
 	velocity[0] = bound(-1000, velocity[0], 1000);
 	velocity[1] = bound(-1000, velocity[1], 1000);
@@ -698,10 +698,10 @@ prop_vehicle_driveable::OnPlayerUse(void)
 		return;
 
 	if (m_eDriver == eActivator) {
-		PlayerLeave((NSClientPlayer)eActivator);
+		PlayerLeave((ncPlayer)eActivator);
 		setorigin(eActivator, GetExitPos());
 	} else if (!m_eDriver) {
-		PlayerEnter((NSClientPlayer)eActivator);
+		PlayerEnter((ncPlayer)eActivator);
 		m_vecPlayerPos = [0,0,0];
 	}
 	m_flUseTime = time + 2.0f;
@@ -712,14 +712,14 @@ prop_vehicle_driveable::Respawn(void)
 {
 	SetMovetype(MOVETYPE_NONE);
 	SetSolid(SOLID_BBOX);
-	SetOrigin(GetSpawnOrigin() + [0,0,32]);
-	SetAngles(GetSpawnAngles());
-	SetModel(GetSpawnModel());
+	SetOrigin(GetSpawnVector("origin") + [0,0,32]);
+	SetAngles(GetSpawnVector("angles"));
+	SetModel(GetSpawnString("model"));
 
-	m_flBRWheelAxel = gettagindex( this, "RRWheelAxel" );
-	m_flBLWheelAxel = gettagindex( this, "RLWheelAxel" );
-	m_flFLWheelAxel = gettagindex( this, "FLWheelAxel" );
-	m_flFRWheelAxel = gettagindex( this, "FRWheelAxel" );
+	m_flBRWheelAxel = gettagindex( this, "Rig_Buggy_Axel_RR" );
+	m_flBLWheelAxel = gettagindex( this, "Rig_Buggy_Axel_RL" );
+	m_flFLWheelAxel = gettagindex( this, "Rig_Buggy_Axel_FL" );
+	m_flFRWheelAxel = gettagindex( this, "Rig_Buggy_Axel_FR" );
 
 	m_wlFL.velocity =
 	m_wlFR.velocity =
@@ -730,11 +730,41 @@ prop_vehicle_driveable::Respawn(void)
 	setsize( this, [-50,-50,0], [50,50,64]);
 
 	if (m_eDriver)
-		PlayerLeave((NSClientPlayer)m_eDriver);
+		PlayerLeave((ncPlayer)m_eDriver);
 
 	SendFlags = -1;
 }
 #endif
+
+void
+prop_vehicle_driveable::SpawnWheels(void)
+{
+	if (!m_eCollBox1)
+		m_eCollBox1 = spawn(ncEntity);
+	if (!m_eCollBox2)
+		m_eCollBox2 = spawn(ncEntity);
+
+	{
+		m_eCollBox1.SetSize([-32,-32,0], [32,32,32]);
+		m_eCollBox2.SetSize([-32,-32,0], [32,32,32]);
+	}
+
+	m_eCollBox1.hitcontentsmaski = hitcontentsmaski;
+	m_eCollBox2.hitcontentsmaski = hitcontentsmaski;
+
+	if (!m_wlFL)
+		m_wlFL = spawn(prop_vehicle_driveable_wheel);
+	if (!m_wlFR)
+		m_wlFR = spawn(prop_vehicle_driveable_wheel);
+	if (!m_wlBL)
+		m_wlBL = spawn(prop_vehicle_driveable_wheel);
+	if (!m_wlBR)
+		m_wlBR = spawn(prop_vehicle_driveable_wheel);
+
+	m_eCollBox1.owner = m_eCollBox2.owner = \
+		m_wlFL.owner = m_wlFR.owner = \
+		m_wlBL.owner = m_wlBR.owner = this;
+}
 
 #ifdef CLIENT
 void
@@ -751,6 +781,10 @@ prop_vehicle_driveable::ReceiveEntity(float flNew, float flSendFlags)
 		m_vecSeatOffest[1] = readfloat();
 		m_vecSeatOffest[2] = readfloat();
 		setsize( this, [-50,-50,0], [50,50,64]);
+	}
+
+	if (flNew) {
+		SpawnWheels();
 	}
 
 	if (flSendFlags & VEHFL_ORIGIN) {
@@ -795,10 +829,10 @@ prop_vehicle_driveable::ReceiveEntity(float flNew, float flSendFlags)
 		SetMovetype(MOVETYPE_NONE);
 		SetSolid(SOLID_BBOX);
 
-		m_flBRWheelAxel = gettagindex( this, "RRWheelAxel" );
-		m_flBLWheelAxel = gettagindex( this, "RLWheelAxel" );
-		m_flFLWheelAxel = gettagindex( this, "FLWheelAxel" );
-		m_flFRWheelAxel = gettagindex( this, "FRWheelAxel" );
+		m_flBRWheelAxel = gettagindex( this, "Rig_Buggy_Axel_RR" );
+		m_flBLWheelAxel = gettagindex( this, "Rig_Buggy_Axel_RL" );
+		m_flFLWheelAxel = gettagindex( this, "Rig_Buggy_Axel_FL" );
+		m_flFRWheelAxel = gettagindex( this, "Rig_Buggy_Axel_FR" );
 
 		m_wlFL.velocity =
 		m_wlFR.velocity =
@@ -811,7 +845,9 @@ prop_vehicle_driveable::ReceiveEntity(float flNew, float flSendFlags)
 
 	PredictPreFrame();
 }
-#else
+#endif
+
+#ifdef SERVER
 void
 prop_vehicle_driveable::EvaluateEntity(void)
 {
@@ -821,10 +857,7 @@ prop_vehicle_driveable::EvaluateEntity(void)
 		SetSendFlags(VEHFL_ORIGIN);
 
 	if (ATTR_CHANGED(angles)) {
-		angles[0] = Math_FixDelta(angles[0]);
-		angles[1] = Math_FixDelta(angles[1]);
-		angles[2] = Math_FixDelta(angles[2]);
-
+		angles = fixAngle(angles);
 		SetSendFlags(VEHFL_ANGLES);
 	}
 	if (ATTR_CHANGED(modelindex))
@@ -900,7 +933,14 @@ prop_vehicle_driveable::Spawned(void)
 {
 	super::Spawned();
 
+	m_iVehicleFlags |= VHF_FROZEN;
+	hitcontentsmaski = CONTENTBIT_BODY | CONTENTBITS_POINTSOLID | CONTENTBIT_VEHICLECLIP;
+
+	SpawnWheels();
+
+	customphysics = Physics;
+
 #ifdef SERVER
 	Sound_Precache("prop_vehicle_driveable.bounce");
 #endif
-}
+}

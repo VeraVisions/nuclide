@@ -14,26 +14,29 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-#include "NSBot.h"
+#include "cvars.h"
+#include "profiles.h"
 
-vector Route_SelectDestination( NSBot target );
+/** @defgroup bot Bot
+@brief Multiplayer game opponents, allies.
+@ingroup ai
 
-var int autocvar_bot_aimless = FALSE;
+![](computer.png) Computer controlled opponents are called "Bots". If a game supports them, they will be added with either `bot_minClients #` in the server console, or with the `addBot` command.
+
+## See also
+
+- @ref bot_profile
+- @ref bot_cvars
+- @ref bot_info
+- @ref ncBot
+
+@{
+*/
+
+vector Route_SelectDestination( ncBot target );
 
 var int autocvar_nav_linksize = 256;
 var int autocvar_nav_radius = 8;
-
-var bool autocvar_bot_crouch = false;
-var bool autocvar_bot_walk = false;
-var bool autocvar_bot_stop = false;
-var bool autocvar_bot_dont_shoot = false;
-
-var bool autocvar_bot_join_after_player = false;
-var float autocvar_bot_join_delay = 0.0f;
-var int autocvar_bot_quota = 0i;
-var string autocvar_bot_quota_mode = "normal";
-var string autocvar_bot_chatter = "normal";
-var bool autocvar_bot_developer = false;
 
 void
 _BotLog(string functionName, string msg)
@@ -44,7 +47,7 @@ _BotLog(string functionName, string msg)
 /** Logs an bot system specific log message.
 	 The console variable `bot_developer` has to be `1` for them to be visible.
 
-@param description(...) contains a formatted string containing a description. */
+@param ... contains a formatted string containing a description. */
 #define BotLog(...) if (autocvar_bot_developer) _BotLog(__FUNC__, sprintf(__VA_ARGS__))
 
 void
@@ -56,43 +59,9 @@ _BotEntLog(string className, string functionName, float edictNum, string warnMes
 /** Logs an bot specific entity class log message.
 	 The console variable `bot_developer` has to be `1` for them to be visible.
 
-@param description(...) contains a formatted string containing a description. */
+@param ... contains a formatted string containing a description. */
 #define BotEntLog(...) if (autocvar_bot_developer) _BotEntLog(classname, __FUNC__, num_for_edict(this), sprintf(__VA_ARGS__))
-
-typedef enum
-{
-	BOTSKILL_EASY = 1,
-	BOTSKILL_MEDIUM,
-	BOTSKILL_HARD
-} botskill_t;
-
-var botskill_t autocvar_bot_skill = BOTSKILL_MEDIUM;
 
 var string autocvar_bot_prefix = "";
 
-/* BotScript
-	script/bots.txt
-
-	Listing of various bot profiles
-	where infokeys can be set and interpreted
-	by the game-logic at will.
-
-	The `name` keys has to _always_ be present.
-	The `funname` key is optional.
-
-	Name acts as both an identifier as well
-	as a nickname when `funname` is not present.
-
-	Anything else is considered to be extra.
-*/
-
-typedef struct
-{
-	string m_strName;
-	string m_strNetName;
-	string m_strExtra;
-} botScript_t;
-
-#define BOTSCRIPT_MAX 32
-botScript_t g_bots[BOTSCRIPT_MAX];
-var int g_botScriptCount;
+/** @} */ // end of bot

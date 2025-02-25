@@ -14,6 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+enumflags
+{
+	GMCNTS_REMOVE,
+};
+
+/*! \brief Server-Entity: game_counter Controller */
 /*!QUAKED game_counter_set (0 .5 .8) (-8 -8 -8) (8 8 8) GMCNTS_REMOVE
 # OVERVIEW
 When triggered, it'll change the internal counter of its target (a game_counter)
@@ -30,14 +36,12 @@ to the specified value within.
 
 # TRIVIA
 This entity was introduced in Half-Life (1998).
-*/
-enumflags
-{
-	GMCNTS_REMOVE,
-};
 
+@ingroup serverentity
+@ingroup pointentity
+*/
 class
-game_counter_set:NSPointTrigger
+game_counter_set:ncPointTrigger
 {
 public:
 	void game_counter_set(void);

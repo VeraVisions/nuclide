@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+var bool autocvar_cg_damageShake = false;
+
 void
 EV_Damage(void)
 {
@@ -26,6 +28,13 @@ EV_Damage(void)
 	iDmgTake = readint();
 	iDmgFlags = readint();
 	CSQC_Parse_Damage_New(vecDmgPos, iDmgTake, iDmgFlags);
+
+	if (autocvar_cg_damageShake) {
+		pSeat->m_flShakeDuration += 1.25f;
+		pSeat->m_flShakeAmp += iDmgTake / 16;
+		pSeat->m_flShakeFreq += 0.1;
+		pSeat->m_flShakeTime += pSeat->m_flShakeDuration;
+	}
 }
 
 void
@@ -173,9 +182,30 @@ EV_Achievement(void)
 }
 
 void
+EV_EntityEvent(void)
+{
+	ncEntity targetEntity = (ncEntity)findfloat(world, ::entnum, readentitynum());
+	float eventType = readfloat();
+
+	if (targetEntity) 
+		targetEntity.ReceiveEvent(eventType);
+}
+
+void
+EV_Pickup(void)
+{
+	int entityDefID = readint();
+	string itemClass = EntityDef_NameFromNetID(entityDefID);
+	NSLog("Player picked up item %S", itemClass);
+}
+
+void
 Event_Parse(float type)
 {
 	switch (type) {
+	case EV_PICKUP:
+		EV_Pickup();
+		break;
 	case EV_DAMAGE:
 		EV_Damage();
 		break;
@@ -194,7 +224,7 @@ Event_Parse(float type)
 		EV_Speak();
 		break;
 	case EV_SENTENCE:
-		NSTalkMonster_ParseSentence();
+		ncTalkMonster_ParseSentence();
 		break;
 	case EV_HUDHINT:
 		EV_HUDHint();
@@ -249,6 +279,23 @@ Event_Parse(float type)
 		break;
 	case EV_ACHIEVEMENT:
 		EV_Achievement();
+		break;
+	case EV_ENTITYEVENT:
+		EV_EntityEvent();
+		break;
+	case EV_CHAT:
+		float fSender = readbyte();
+		float fTeam = readbyte();
+		string sMessage = readstring();
+
+		CSQC_Parse_Print(Util_ChatFormat(fSender, 0, sMessage), PRINT_CHAT);
+		break;
+	case EV_CHAT_TEAM:
+		float fSender2 = readbyte();
+		float fTeam2 = readbyte();
+		string sMessage2 = readstring();
+
+		CSQC_Parse_Print(Util_ChatFormat(fSender2, fTeam2, sMessage2), PRINT_CHAT);
 		break;
 	default:
 		error(sprintf("event id %d not recognized. abort immediately.\n", type));

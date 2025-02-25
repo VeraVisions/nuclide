@@ -72,7 +72,7 @@ CModList::Draw(void)
 	for (int i = m_scroll; i <= (visible + m_scroll); i++) {
 		vector colo;
 		gameType = GameLibrary_GetGameInfo(i, GAMEINFO_TYPE);
-		gameTitle = GameLibrary_GetGameInfo(i, GAMEINFO_TITLE);
+		gameTitle = GameLibrary_GetGameInfo(i, GAMEINFO_NAME);
 		gameURL = GameLibrary_GetGameInfo(i, GAMEINFO_WEBSITE);
 		gameSize = GameLibrary_GetGameInfo(i, GAMEINFO_SIZE);
 		gameVersion = GameLibrary_GetGameInfo(i, GAMEINFO_VERSION);
