@@ -94,19 +94,19 @@ game: fteqcc
 	cd "$(GAME)/src/" && $(MAKE) QCC=$(QCC_DIR)/../../fteqcc CFLAGS="-I$(QCC_DIR)/../../src/common/"
 
 client: fteqcc
-	cd "$(GAME)/src/client/" && $(MAKE) QCC=$(QCC_DIR)/../../../fteqcc CFLAGS="-I$(QCC_DIR)/../../src/common/"
+	cd "$(GAME)/src/client/" && $(MAKE) QCC=$(QCC_DIR)/../../../fteqcc CFLAGS="-I$(QCC_DIR)/../../../src/common/"
 
 server: fteqcc
-	cd "$(GAME)/src/server/" && $(MAKE) QCC=$(QCC_DIR)/../../../fteqcc CFLAGS="-I$(QCC_DIR)/../../src/common/"
+	cd "$(GAME)/src/server/" && $(MAKE) QCC=$(QCC_DIR)/../../../fteqcc CFLAGS="-I$(QCC_DIR)/../../../src/common/"
 
 rules: fteqcc
-	cd "$(GAME)/src/rules/" && $(MAKE) QCC=$(QCC_DIR)/../../../fteqcc CFLAGS="-I$(QCC_DIR)/../../src/common/"
+	cd "$(GAME)/src/rules/" && $(MAKE) QCC=$(QCC_DIR)/../../../fteqcc CFLAGS="-I$(QCC_DIR)/../../../src/common/"
 
 menu: fteqcc
-	cd "$(GAME)/src/menu/" && $(MAKE) QCC=$(QCC_DIR)/../../../fteqcc CFLAGS="-I$(QCC_DIR)/../../src/common/"
+	cd "$(GAME)/src/menu/" && $(MAKE) QCC=$(QCC_DIR)/../../../fteqcc CFLAGS="-I$(QCC_DIR)/../../../src/common/"
 
 mapc: fteqcc
-	cd "$(GAME)/src/maps/" && $(MAKE) QCC=$(QCC_DIR)/../../../fteqcc CFLAGS="-I$(QCC_DIR)/../../src/common/"
+	cd "$(GAME)/src/maps/" && $(MAKE) QCC=$(QCC_DIR)/../../../fteqcc CFLAGS="-I$(QCC_DIR)/../../../src/common/"
 
 # will build a gamepack for gtkradiant
 defs-nrc-q3: netradiant-custom $(GAME)/scripts/entities.def
