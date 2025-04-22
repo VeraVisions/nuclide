@@ -90,15 +90,15 @@ logic_relay::Input(entity activatorEntity, string inputName, string dataField)
 {
 	switch (inputName) {
 	case "Trigger":
-		if (m_bEnabled == true) {
+		if (TriggerEnabled() == true) {
 			/* if we don't allow fast retrigger... */
 			if (HasSpawnFlags(LOGICRELAY_FAST) == false) {
-				if (CheckOutput(m_strOnTrigger) == false) {
+				if (CheckOutput(m_outputOnTrigger) == false) {
 					return;
 				}
 			}
 
-			UseOutput(activatorEntity, m_strOnTrigger);
+			UseOutput(activatorEntity, m_outputOnTrigger);
 
 			/* remove forever! */
 			if (HasSpawnFlags(LOGICRELAY_ONCE)) {

@@ -120,13 +120,13 @@ Way_ReadFBFile(string strFile, bool flush)
 
 	if (flush) {
 		Nodes_Flush();
-		g_iNodes = fbHeader.numNodes;
-		g_pNodes = memalloc(sizeof(*g_pNodes) * g_iNodes);
+		g_nodeCount = fbHeader.numNodes;
+		g_nodeGraph = memalloc(sizeof(*g_nodeGraph) * g_nodeCount);
 	} else {
-		int oldSize = g_iNodes;
-		int newSize = g_iNodes + fbHeader.numNodes;
-		g_pNodes = (node_t *)memreallocOld(g_pNodes, sizeof(node_t), oldSize, newSize);
-		g_iNodes = newSize;
+		int oldSize = g_nodeCount;
+		int newSize = g_nodeCount + fbHeader.numNodes;
+		g_nodeGraph = (graphNode_t *)memreallocOld(g_nodeGraph, sizeof(graphNode_t), oldSize, newSize);
+		g_nodeCount = newSize;
 		startId = oldSize;
 		offSet = oldSize;
 	}
@@ -136,7 +136,7 @@ Way_ReadFBFile(string strFile, bool flush)
 	nodeFlags = (int *)memalloc(sizeof(int) * fbHeader.numNodes);
 
 	/* create the nodes */
-	for (int i = startId; i < g_iNodes; i++) {
+	for (int i = startId; i < g_nodeCount; i++) {
 		int iData = 0i;
 		float flData = 0.0f;
 
@@ -144,27 +144,27 @@ Way_ReadFBFile(string strFile, bool flush)
 		fread(file, (void*)&iData, 4); /* script flags, should be 1 byte but it's padded. */
 
 		fread(file, (void*)&flData, 4); /* origin x */
-		g_pNodes[i].m_vecOrigin[0] = flData;
+		g_nodeGraph[i].m_origin[0] = flData;
 		fread(file, (void*)&flData, 4); /* origin y */
-		g_pNodes[i].m_vecOrigin[1] = flData;
+		g_nodeGraph[i].m_origin[1] = flData;
 		fread(file, (void*)&flData, 4); /* origin z */
-		g_pNodes[i].m_vecOrigin[2] = flData;
+		g_nodeGraph[i].m_origin[2] = flData;
 	}
 
 	/* create the links */
-	for (int i = startId; i < g_iNodes; i++) {
+	for (int i = startId; i < g_nodeCount; i++) {
 		int iData = 0i;
 		fread(file, (void*)&iData, 2); /* neighbour count */
 		//print(sprintf("%i neighbours\n", iData));
 
-		g_pNodes[i].m_numNeighbours = iData;
-		g_pNodes[i].m_pNeighbour = memalloc(sizeof(*g_pNodes[i].m_pNeighbour) * g_pNodes[i].m_numNeighbours);
+		g_nodeGraph[i].m_neighborCount = iData;
+		g_nodeGraph[i].m_neighborList = memalloc(sizeof(*g_nodeGraph[i].m_neighborList) * g_nodeGraph[i].m_neighborCount);
 		
-		for (int j = 0i; j < g_pNodes[i].m_numNeighbours; j++) {
+		for (int j = 0i; j < g_nodeGraph[i].m_neighborCount; j++) {
 			fread(file, (void*)&iData, 2); /* neighbour index */
-			g_pNodes[i].m_pNeighbour[j].m_iNode = offSet + iData;
-			g_pNodes[i].m_pNeighbour[j].m_flCost = -1;
-			g_pNodes[i].m_pNeighbour[j].m_iFlags = Way_FBFlagsToNC(nodeFlags[offSet + iData]);
+			g_nodeGraph[i].m_neighborList[j].m_nodeID = offSet + iData;
+			g_nodeGraph[i].m_neighborList[j].m_travelCost = -1;
+			g_nodeGraph[i].m_neighborList[j].m_travelFlags = Way_FBFlagsToNC(nodeFlags[offSet + iData]);
 		}
 	}
 
@@ -248,20 +248,20 @@ Way_ReadPBFile(string strFile, bool flush)
 
 	if (flush) {
 		Nodes_Flush();
-		g_iNodes = pbHeader.numNodes;
-		g_pNodes = memalloc(sizeof(*g_pNodes) * g_iNodes);
+		g_nodeCount = pbHeader.numNodes;
+		g_nodeGraph = memalloc(sizeof(*g_nodeGraph) * g_nodeCount);
 	} else {
-		int oldSize = g_iNodes;
-		int newSize = g_iNodes + pbHeader.numNodes;
-		g_pNodes = (node_t *)memreallocOld(g_pNodes, sizeof(node_t), oldSize, newSize);
-		g_iNodes = newSize;
+		int oldSize = g_nodeCount;
+		int newSize = g_nodeCount + pbHeader.numNodes;
+		g_nodeGraph = (graphNode_t *)memreallocOld(g_nodeGraph, sizeof(graphNode_t), oldSize, newSize);
+		g_nodeCount = newSize;
 		startId = oldSize;
 		offSet = oldSize;
 	}
 
 	print(sprintf("PB Waypoints Version %i, %i nodes\n", pbHeader.versionNumber, pbHeader.numNodes));
 
-	for (int i = startId; i < g_iNodes; i++) {
+	for (int i = startId; i < g_nodeCount; i++) {
 		int neighbours = 0i;
 		int index[8];
 		float cost[8];
@@ -278,13 +278,13 @@ Way_ReadPBFile(string strFile, bool flush)
 			fread(file, (void*)&iData, 4); /* number */
 			fread(file, (void*)&iData, 4); /* flags */
 			fread(file, (void*)&flData, 4); /* origin x */
-			g_pNodes[i].m_vecOrigin[0] = flData;
+			g_nodeGraph[i].m_origin[0] = flData;
 			fread(file, (void*)&flData, 4); /* origin y */
-			g_pNodes[i].m_vecOrigin[1] = flData;
+			g_nodeGraph[i].m_origin[1] = flData;
 			fread(file, (void*)&flData, 4); /* origin z */
-			g_pNodes[i].m_vecOrigin[2] = flData;
+			g_nodeGraph[i].m_origin[2] = flData;
 			fread(file, (void*)&flData, 4); /* radius */
-			g_pNodes[i].m_flRadius = flData;
+			g_nodeGraph[i].m_nodeRadius = flData;
 			fread(file, (void*)&flData, 4); /* camp start x */
 			fread(file, (void*)&flData, 4); /* camp start y */
 			fread(file, (void*)&flData, 4); /* camp end x */
@@ -350,13 +350,13 @@ Way_ReadPBFile(string strFile, bool flush)
 			fread(file, (void*)&iData, 4); /* number */
 			fread(file, (void*)&iData, 4); /* flags */
 			fread(file, (void*)&flData, 4); /* origin x */
-			g_pNodes[i].m_vecOrigin[0] = flData;
+			g_nodeGraph[i].m_origin[0] = flData;
 			fread(file, (void*)&flData, 4); /* origin y */
-			g_pNodes[i].m_vecOrigin[1] = flData;
+			g_nodeGraph[i].m_origin[1] = flData;
 			fread(file, (void*)&flData, 4); /* origin z */
-			g_pNodes[i].m_vecOrigin[2] = flData;
+			g_nodeGraph[i].m_origin[2] = flData;
 			fread(file, (void*)&flData, 4); /* radius */
-			g_pNodes[i].m_flRadius = flData;
+			g_nodeGraph[i].m_nodeRadius = flData;
 			fread(file, (void*)&flData, 4); /* camp start x */
 			fread(file, (void*)&flData, 4); /* camp start y */
 			fread(file, (void*)&flData, 4); /* camp end x */
@@ -390,13 +390,13 @@ Way_ReadPBFile(string strFile, bool flush)
 			fread(file, (void*)&iData, 4); /* number */
 			fread(file, (void*)&iData, 4); /* flags */
 			fread(file, (void*)&flData, 4); /* origin x */
-			g_pNodes[i].m_vecOrigin[0] = flData;
+			g_nodeGraph[i].m_origin[0] = flData;
 			fread(file, (void*)&flData, 4); /* origin y */
-			g_pNodes[i].m_vecOrigin[1] = flData;
+			g_nodeGraph[i].m_origin[1] = flData;
 			fread(file, (void*)&flData, 4); /* origin z */
-			g_pNodes[i].m_vecOrigin[2] = flData;
+			g_nodeGraph[i].m_origin[2] = flData;
 			fread(file, (void*)&flData, 4); /* radius */
-			g_pNodes[i].m_flRadius = flData;
+			g_nodeGraph[i].m_nodeRadius = flData;
 			fread(file, (void*)&flData, 4); /* camp start x */
 			fread(file, (void*)&flData, 4); /* camp start y */
 			fread(file, (void*)&flData, 4); /* camp end x */
@@ -422,13 +422,13 @@ Way_ReadPBFile(string strFile, bool flush)
 				neighbours++;
 		}
 
-		g_pNodes[i].m_numNeighbours = neighbours;
-		g_pNodes[i].m_pNeighbour = memalloc(sizeof(*g_pNodes[i].m_pNeighbour) * g_pNodes[i].m_numNeighbours);
+		g_nodeGraph[i].m_neighborCount = neighbours;
+		g_nodeGraph[i].m_neighborList = memalloc(sizeof(*g_nodeGraph[i].m_neighborList) * g_nodeGraph[i].m_neighborCount);
 		
-		for (int j = 0i; j < g_pNodes[i].m_numNeighbours; j++) {
-			g_pNodes[i].m_pNeighbour[j].m_iNode = offSet + index[j];
-			g_pNodes[i].m_pNeighbour[j].m_flCost = cost[j];
-			g_pNodes[i].m_pNeighbour[j].m_iFlags = Way_PBFlagsToNC(nFlags[j]);
+		for (int j = 0i; j < g_nodeGraph[i].m_neighborCount; j++) {
+			g_nodeGraph[i].m_neighborList[j].m_nodeID = offSet + index[j];
+			g_nodeGraph[i].m_neighborList[j].m_travelCost = cost[j];
+			g_nodeGraph[i].m_neighborList[j].m_travelFlags = Way_PBFlagsToNC(nFlags[j]);
 		}
 	}
 	fclose(file);
@@ -476,29 +476,29 @@ Way_ReadJumbotFile(string strFile, bool flush)
 
 	if (flush) {
 		Nodes_Flush();
-		g_iNodes = nodeCount;
-		g_pNodes = memalloc(sizeof(*g_pNodes) * g_iNodes);
+		g_nodeCount = nodeCount;
+		g_nodeGraph = memalloc(sizeof(*g_nodeGraph) * g_nodeCount);
 	} else {
-		int oldSize = g_iNodes;
-		int newSize = g_iNodes + nodeCount;
-		g_pNodes = (node_t *)memreallocOld(g_pNodes, sizeof(node_t), oldSize, newSize);
-		g_iNodes = newSize;
+		int oldSize = g_nodeCount;
+		int newSize = g_nodeCount + nodeCount;
+		g_nodeGraph = (graphNode_t *)memreallocOld(g_nodeGraph, sizeof(graphNode_t), oldSize, newSize);
+		g_nodeCount = newSize;
 		startId = oldSize;
 		offSet = oldSize;
 	}
 
-	for (int i = startId; i < g_iNodes; i++) {
+	for (int i = startId; i < g_nodeCount; i++) {
 		float length = strlen(argv(5));
 		line = fgets(file);
 		tokenize(line);
-		g_pNodes[i].m_vecOrigin[0] = stof(argv(3));
-		g_pNodes[i].m_vecOrigin[1] = stof(argv(4));
-		g_pNodes[i].m_vecOrigin[2] = stof(argv(5));
-		g_pNodes[i].m_flRadius = 32.0f;
+		g_nodeGraph[i].m_origin[0] = stof(argv(3));
+		g_nodeGraph[i].m_origin[1] = stof(argv(4));
+		g_nodeGraph[i].m_origin[2] = stof(argv(5));
+		g_nodeGraph[i].m_nodeRadius = 32.0f;
 
 		if (i > startId) {
-			ncNodeEditor::LinkNodes(&g_pNodes[i], &g_pNodes[i-1]);
-			ncNodeEditor::LinkNodes(&g_pNodes[i-1], &g_pNodes[i]);
+			ncNodeEditor::LinkNodes(&g_nodeGraph[i], &g_nodeGraph[i-1]);
+			ncNodeEditor::LinkNodes(&g_nodeGraph[i-1], &g_nodeGraph[i]);
 		}
 	}
 

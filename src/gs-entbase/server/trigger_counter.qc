@@ -74,29 +74,29 @@ trigger_counter::Save(float handle)
 }
 
 void
-trigger_counter::Restore(string strKey, string strValue)
+trigger_counter::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_iCounted":
-		m_iCounted = ReadInt(strValue);
+		m_iCounted = ReadInt(setValue);
 		break;
 	case "m_iMaxCount":
-		m_iMaxCount = ReadInt(strValue);
+		m_iMaxCount = ReadInt(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-trigger_counter::SpawnKey(string strKey, string strValue)
+trigger_counter::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "count":
-		m_iMaxCount = stoi(strValue);
+		m_iMaxCount = stoi(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
@@ -104,7 +104,7 @@ void
 trigger_counter::Respawn(void)
 {
 	InitBrushTrigger();
-	m_iValue = 0;
+	SetValue(0i);
 	m_iCounted = 0;
 }
 
@@ -126,9 +126,9 @@ trigger_counter::Trigger(entity act, triggermode_t state)
 		return;
 
 	SetSolid(SOLID_NOT); /* make inactive */
-	m_iValue = 1;
+	SetValue(1i);
 
-	UseTargets(act, TRIG_TOGGLE, m_flDelay);
+	UseTargets(act, TRIG_TOGGLE, GetTriggerDelay());
 }
 
 void

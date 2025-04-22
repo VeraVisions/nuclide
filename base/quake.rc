@@ -47,4 +47,6 @@ set r_bloom "0.1"
 set g_gametype deathmatch
 set sv_mintic "0.0166666666667" // 60 fps physics
 
+exec fte.cfg
+
 plug_load ode

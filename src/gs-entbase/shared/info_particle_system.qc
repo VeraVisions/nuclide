@@ -15,6 +15,7 @@
 */
 
 #define PSFL_STARTACTIVE 1
+#warning needs Save/Restore
 
 enumflags
 {
@@ -69,13 +70,15 @@ public:
 #endif
 
 private:
+
 #ifdef CLIENT
-	int m_iValue;
-	int m_iEffectID;
+	int m_emitterFXID;
 #endif
-	string m_strEffectName;
-	float m_flInterval;
-	int m_iSpawnCount;
+
+	int m_emitterState;
+	string m_emitterFXName;
+	float m_emitterInterval;
+	int m_emitterCount;
 };
 
 #ifdef CLIENT
@@ -84,13 +87,13 @@ info_particle_system::Emit(void)
 {
 	makevectors(angles);
 
-	if (m_iValue)
-	if (m_iSpawnCount)
-		pointparticles((float)m_iEffectID, origin, v_forward, m_iSpawnCount);
+	if (m_emitterState)
+	if (m_emitterCount)
+		pointparticles((float)m_emitterFXID, origin, v_forward, m_emitterCount);
 	else
-		pointparticles((float)m_iEffectID, origin, v_forward, 1);
+		pointparticles((float)m_emitterFXID, origin, v_forward, 1);
 
-	nextthink = time + m_flInterval;
+	nextthink = time + m_emitterInterval;
 }
 
 void
@@ -109,21 +112,21 @@ info_particle_system::ReceiveEntity(float flNew, float flFlags)
 	}
 
 	if (flFlags & PARTSYSFL_CHANGED_EFFECT) {
-		m_strEffectName = readstring();
-		m_iEffectID = particleeffectnum(m_strEffectName);
+		m_emitterFXName = readstring();
+		m_emitterFXID = particleeffectnum(m_emitterFXName);
 	}
 
 	if (flFlags & PARTSYSFL_CHANGED_STATUS) {
-		m_iValue = readbyte();
+		m_emitterState = readbyte();
 	}
 
 	if (flFlags & PARTSYSFL_CHANGED_INTERVAL) {
-		m_flInterval = readfloat();
-		nextthink = time + m_flInterval;
+		m_emitterInterval = readfloat();
+		nextthink = time + m_emitterInterval;
 	}
 
 	if (flFlags & PARTSYSFL_CHANGED_COUNT)
-		m_iSpawnCount = readbyte();
+		m_emitterCount = readbyte();
 
 	classname = "info_particle_system";
 
@@ -155,16 +158,16 @@ info_particle_system::SendEntity(entity ePEnt, float flFlags)
 	}
 
 	if (flFlags & PARTSYSFL_CHANGED_EFFECT)
-		WriteString(MSG_ENTITY, m_strEffectName);
+		WriteString(MSG_ENTITY, m_emitterFXName);
 
 	if (flFlags & PARTSYSFL_CHANGED_STATUS)
-		WriteByte(MSG_ENTITY, m_iValue);
+		WriteByte(MSG_ENTITY, m_emitterState);
 
 	if (flFlags & PARTSYSFL_CHANGED_INTERVAL)
-		WriteFloat(MSG_ENTITY, m_flInterval);
+		WriteFloat(MSG_ENTITY, m_emitterInterval);
 
 	if (flFlags & PARTSYSFL_CHANGED_COUNT)
-		WriteByte(MSG_ENTITY, m_iSpawnCount);
+		WriteByte(MSG_ENTITY, m_emitterCount);
 
 	return (1);
 }
@@ -189,13 +192,13 @@ info_particle_system::Trigger(entity act, triggermode_t state)
 {
 	switch (state) {
 	case TRIG_OFF:
-		m_iValue = 0;
+		m_emitterState = 0;
 		break;
 	case TRIG_ON:
-		m_iValue = 1;
+		m_emitterState = 1;
 		break;
 	default:
-		m_iValue = 1 - m_iValue;
+		m_emitterState = 1 - m_emitterState;
 	}
 
 	SendFlags |= PARTSYSFL_CHANGED_STATUS;
@@ -221,24 +224,24 @@ info_particle_system::Input(entity eAct, string strInput, string strData)
 }
 
 void
-info_particle_system::SpawnKey(string strKey, string strValue)
+info_particle_system::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "effect_name":
-		m_strEffectName = strValue;
+		m_emitterFXName = setValue;
 		break;
 	case "start_active":
-		spawnflags |= stoi(strValue);
+		spawnflags |= stoi(setValue);
 		break;
 	/* out of spec */
 	case "interval":
-		m_flInterval = stof(strValue);
+		m_emitterInterval = stof(setValue);
 		break;
 	case "spawncount":
-		m_iSpawnCount = stoi(strValue);
+		m_emitterCount = stoi(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 

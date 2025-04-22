@@ -33,35 +33,36 @@ Infinitely small point of light illuminating the scene.
 - "samples" : Number of light samples. This also needs to be set > 0.0 for deviance to work.
 - "filter" : Setting to blur the light/shadows resulting from this light.
 - "start_active" : Set to either 0 or 1 to tell the light in what mode to start in.
-- "style" : Light style ID. 0-11 are defined, 12-32 are reserved for switched
-          lights. List of pre-defined styles:
-                    0 = Normal
-                    1 = Flicker A
-                    2 = Slow strong pulse
-                    3 = Candle A
-                    4 = Fast strobe
-                    5 = Gentle pulse
-                    6 = Flicker B
-                    7 = Candle B
-                    8 = Candle C
-                    9 = Slow strobe
-                    10 = Fluorescent flicker
+- "style" : Light style ID. 0-11 are defined, 12-32 are reserved for switched  
+          lights. List of pre-defined styles:  
+                    0 = Normal  
+                    1 = Flicker A  
+                    2 = Slow strong pulse  
+                    3 = Candle A  
+                    4 = Fast strobe  
+                    5 = Gentle pulse  
+                    6 = Flicker B  
+                    7 = Candle B  
+                    8 = Candle C  
+                    9 = Slow strobe  
+                    10 = Fluorescent flicker  
                     11 = Slow pulse, no black
-"pattern" : Custom light style pattern. Needs unique light style ID.
-            Patterns are defined with letters of the alphabet.
-            'a' being dark. 'z' being fully lit. Can be a string of characters
-            that'll interpolate between at 10 FPS ingame.
+- "pattern" : Custom light style pattern. Needs unique light style ID set in the "style" field (numbers above 32).
+            Patterns are defined with letters of the alphabet.  
+            'a' being dark. 'z' being fully lit. Its string of characters  
+            get interpreted as brightness values and are interpolated between at 10 frames-per-second in the game.
 
 # SPAWNFLAGS
-- LFL_LINEAR (1) : Use linear falloff instead of inverse-square falloff.
-- LFL_DARK (4) : Darken, instead of lighting the lightmap.
+- LFL_LINEAR (1) : Use linear distance falloff instead of inverse-square falloff.
+- LFL_DARK (4) : Darken, instead of illuminating the lightmap.
 - LFL_NOGRID (8) : This light does not affect the lightgrid.
 
 # NOTES
-In idTech 2/GoldSrc etc. spawnflag 1 means a light starts off.
-This doesn't exist in idTech3 because lightstyles were not a thing.
-To avoid huge amounts of lightmap abuse, please consider using light_dynamic
-or env_projectedtexture for toggled or flickering lights.
+In idTech 2/GoldSrc etc. `"spawnflag" "1"` in the light entity data means it starts off, disabled, dark.  
+This uses the lightstyle feature from Quake, where an area of a level can be handled by up to 4 overlapping
+lightmap sheets from lights with different "style" values.
+
+This doesn't exist in idTech3 because lightstyles were not a thing originally. While there are Q3 BSP compilers that try to address this, it's a significant source of of lightmap abuse. As a general piece of advice, please consider using light_dynamic or env_projectedtexture for toggled or flickering lights.
 
 # TRIVIA
 This entity was introduced in Quake (1996).
@@ -119,26 +120,26 @@ light::Save(float handle)
 }
 
 void
-light::Restore(string strKey, string strValue)
+light::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_iEnabled":
-		m_iEnabled = ReadInt(strValue);
+		m_iEnabled = ReadInt(setValue);
 		break;
 	case "m_iStartActive":
-		m_iStartActive = ReadInt(strValue);
+		m_iStartActive = ReadInt(setValue);
 		break;
 	case "m_flStyle":
-		m_flStyle = ReadFloat(strValue);
+		m_flStyle = ReadFloat(setValue);
 		break;
 	case "m_flSwitchStyle":
-		m_flSwitchStyle = ReadFloat(strValue);
+		m_flSwitchStyle = ReadFloat(setValue);
 		break;
 	case "m_strPattern":
-		m_strPattern = ReadString(strValue);
+		m_strPattern = ReadString(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
@@ -157,21 +158,21 @@ light::RestoreComplete(void)
 }
 
 void
-light::SpawnKey(string strKey, string strValue)
+light::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "pattern":
-		m_strPattern = strValue;
+		m_strPattern = setValue;
 		break;
 	case "switch_style":
-		m_flSwitchStyle = stof(strValue);
+		m_flSwitchStyle = stof(setValue);
 		break;
 	case "style":
-		m_flStyle = stof(strValue);
+		m_flStyle = stof(setValue);
 		style = __NULL__;
 		break;
 	case "start_active":
-		m_iStartActive = stoi(strValue);
+		m_iStartActive = stoi(setValue);
 		break;
 	/* level-compiler keys we don't really use right now */
 	case "_cone":
@@ -179,20 +180,20 @@ light::SpawnKey(string strKey, string strValue)
 	case "_sky":
 	/* mostly for light_environment */
 	case "pitch":
-		angles[0] = ReadFloat(strValue);
+		angles[0] = ReadFloat(setValue);
 		break;
 	case "sunangle":
-		angles[1] = ReadFloat(strValue);
+		angles[1] = ReadFloat(setValue);
 		break;
 	case "color":
-		_lightColor = ReadVector(strValue);
+		_lightColor = ReadVector(setValue);
 		break;
 	case "_light":
 	case "color255":
-		_lightColor = ReadVector(strValue) / 255;
+		_lightColor = ReadVector(setValue) / 255;
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
@@ -276,13 +277,15 @@ void
 light::DebugDraw(void)
 {
 #ifdef SERVER
+	string debugIcon;
+
 	if (m_iEnabled) {
-		m_strEditorIcon = "gfx/icon16/lightbulb";
+		debugIcon = "gfx/icon16/lightbulb";
 	} else {
-		m_strEditorIcon = "gfx/icon16/lightbulb_off";
+		debugIcon = "gfx/icon16/lightbulb_off";
 	}
 
-	R_BeginPolygon(m_strEditorIcon, 0, 0);
+	R_BeginPolygon(debugIcon, 0, 0);
 		R_PolygonVertex(GetOrigin() + v_right * 8 - v_up * 8, [1,1], _lightColor, 1.0f);
 		R_PolygonVertex(GetOrigin() - v_right * 8 - v_up * 8, [0,1], _lightColor, 1.0f);
 		R_PolygonVertex(GetOrigin() - v_right * 8 + v_up * 8, [0,0], _lightColor, 1.0f);
@@ -291,7 +294,18 @@ light::DebugDraw(void)
 #endif
 }
 
-CLASSEXPORT(light_spot, light)
+
+class
+light_spot:light
+{
+	void light_spot(void);
+};
+
+void
+light_spot::light_spot(void)
+{
+
+}
 
 class
 light_environment:light
@@ -336,7 +350,7 @@ light_environment::SpawnKey(string strField, string strKey)
 /*! \brief Tool/Server-Entity: Light Emitting Materials */
 /*!QUAKED light_surface (0 1 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
-Material property modifier related to lighting.
+Material property modifier related to lighting. Available in our vmap compiler.
 
 # KEYS
 - "targetname" : Name

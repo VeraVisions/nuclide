@@ -63,49 +63,49 @@ public:
 	virtual void Restore(string,string);
 
 private:
-	triggermode_t m_iTriggerState;
-	int m_iEnabled;
+	triggermode_t m_relayTargetState;
+	int m_relayActive;
 };
 
 void
 trigger_relay::trigger_relay(void)
 {
-	m_iTriggerState = 0;
-	m_iEnabled = 0;
+	m_relayTargetState = 0;
+	m_relayActive = 0;
 }
 
 void
 trigger_relay::Save(float handle)
 {
 	super::Save(handle);
-	SaveFloat(handle, "m_iTriggerState", m_iTriggerState);
-	SaveInt(handle, "m_iEnabled", m_iEnabled);
+	SaveFloat(handle, "relayTargetState", m_relayTargetState);
+	SaveInt(handle, "relayActive", m_relayActive);
 }
 
 void
-trigger_relay::Restore(string strKey, string strValue)
+trigger_relay::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
-	case "m_iTriggerState":
-		m_iTriggerState = ReadFloat(strValue);
+	case "relayTargetState":
+		m_relayTargetState = ReadFloat(setValue);
 		break;
-	case "m_iEnabled":
-		m_iEnabled = ReadInt(strValue);
+	case "relayActive":
+		m_relayActive = ReadInt(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-trigger_relay::SpawnKey(string strKey, string strValue)
+trigger_relay::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "triggerstate":
-		m_iTriggerState = ReadInt(strValue);
+		m_relayTargetState = ReadInt(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
@@ -113,23 +113,23 @@ void
 trigger_relay::Respawn(void)
 {
 	InitPointTrigger();
-	m_iEnabled = TRUE;
-	m_iValue = FALSE;
+	m_relayActive = TRUE;
+	SetValue(0i);
 }
 
 void
 trigger_relay::Trigger(entity act, triggermode_t state)
 {
-	if (m_iEnabled == FALSE) {
+	if (m_relayActive == FALSE) {
 		EntLog("trigger_relay %S has already been triggered", targetname);
 		return;
 	}
 
 	if (HasSpawnFlags(TRLY_ONCE) == true) {
-		m_iEnabled = FALSE;
+		m_relayActive = FALSE;
 	}
 
-	m_iValue = TRUE;
-	EntLog("trigger_relay %S will trigger %S with state %d", targetname, target, m_iTriggerState);
-	UseTargets(act, m_iTriggerState, m_flDelay);
+	SetValue(1i);
+	EntLog("trigger_relay %S will trigger %S with state %d", targetname, target, m_relayTargetState);
+	UseTargets(act, m_relayTargetState, GetTriggerDelay());
 }

@@ -199,7 +199,7 @@ UISystem_Init(void)
 		}
 		fclose(fileUI);
 	} else {
-		NSError(sprintf("[MENU] Cannot load UI file %s!", strUIFile));
+		ncError(sprintf("[MENU] Cannot load UI file %s!", strUIFile));
 	}
 
 	Font_Load("fonts/ui.font", g_fntDefault);

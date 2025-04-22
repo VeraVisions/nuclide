@@ -69,7 +69,7 @@ ncRadar::RenderPlayerIcon(entity playerEnt)
 
 	vector basePos = playerEnt.origin + [0.0, 0.0, 16.0f];
 	makevectors([0, playerEnt.v_angle[1], 0]);
-	R_PolygonVertex( basePos + (v_forward * psize) - (v_right * psize), '0 0', playerColor, 1.0f ); 
+	R_PolygonVertex( basePos + (v_forward * psize) - (v_right * psize), '0 0', playerColor, 1.0f );
 	R_PolygonVertex( basePos + (v_forward * psize) + (v_right * psize), '1 0', playerColor, 1.0f );
 	R_PolygonVertex( basePos - (v_forward * psize) + (v_right * psize), '1 1', playerColor, 1.0f );
 	R_PolygonVertex( basePos - (v_forward * psize) - (v_right * psize), '0 1', playerColor, 1.0f );
@@ -142,10 +142,10 @@ ncRadar::RenderView(void)
 	}
 
 	if (m_bShowPlayers)
-	for ( entity eFind = world; ( eFind = find( eFind, ::classname, "player" ) ); ) {
+	for ( entity eFind = world; ( eFind = next.Player(eFind)); ) {
 		RenderPlayerIcon(eFind);
 	}
-	
+
 	renderscene();
 }
 
@@ -199,7 +199,7 @@ ncRadar::CalculateVertices(void)
 		m_vecVert1 = m_vecOrigin -( ( 4096/m_flZoom )  * '1 0.75 0' );
 		m_vecVert4 = m_vecOrigin + ( 4096/m_flZoom )  * '1 0.75 0';
 		m_vecVert2 = [ m_vecVert1[0], m_vecVert4[1] ] ;
-		m_vecVert3 = [ m_vecVert4[0], m_vecVert1[1] ] ; 
+		m_vecVert3 = [ m_vecVert4[0], m_vecVert1[1] ] ;
 	} else {
 		m_vecVert1 = m_vecOrigin -( ( 4096/m_flZoom )  * '0.75 1 0' );
 		m_vecVert4 = m_vecOrigin + ( 4096/m_flZoom )  * '0.75 1 0';
@@ -302,7 +302,7 @@ ncRadar::InitFromHLTVScript(string fileName)
 	r_uploadimage("overview", width, height, (void *)imgData);
 	memfree(imgData);
 	newRadar.m_strMaterial = "overview";
-	NSLog("Map overview available.");
+	ncLog("Map overview available.");
 	return newRadar;
 }
 
@@ -368,6 +368,6 @@ ncRadar::InitFromSourceHLTVScript(string fileName)
 	vector imageSize = drawgetimagesize(newRadar.m_strMaterial);
 	imageSize *= newRadar.m_flScale;
 	newRadar.CalculateVerticesSource(imageSize[0], imageSize[1]);
-	NSLog("Map overview available.");
+	ncLog("Map overview available.");
 	return newRadar;
 }

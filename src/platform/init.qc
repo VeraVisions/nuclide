@@ -10,6 +10,7 @@ Platform_Init(void)
 	}
 
 	Platform_RegisterCommands();
+	Locale_Init();
 	GameLibrary_Init();
 	MapLibrary_Init();
 	Saves_Init();
@@ -37,6 +38,7 @@ void
 Platform_RendererRestarted(void)
 {
 	Background_RendererRestarted();
+	Locale_Reload();
 }
 
 bool
@@ -147,6 +149,6 @@ Platform_HasStartupVideos(void)
 void
 Platform_PlayStartupVideos(void)
 {
-	NSLog("Playing startup videos.\n");
+	ncLog("Playing startup videos.\n");
 	//localcmd("playvideo av:media/sierra.avi av:media/valve.avi\n");
 }

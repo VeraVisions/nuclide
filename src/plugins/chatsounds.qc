@@ -16,11 +16,10 @@
 
 #pragma target fte_5768
 //#pragma flag enable assumeint
-#pragma PROGS_DAT  "../../base/plug_chatsounds.dat"
-#define QWSSQC
+#pragma PROGS_DAT  "../../base/plugins/chatsounds.dat"
+#define SERVER
 
-#include "../shared/fteextensions.qc"
-#include "../shared/memory.h"
+#include "../server/api.h"
 
 /* our sound boogeyman */
 static entity emitter;

@@ -76,17 +76,17 @@ phys_slideconstraint::Save(float handle)
 }
 
 void
-phys_slideconstraint::Restore(string strKey, string strValue)
+phys_slideconstraint::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_vecSliderAxis":
-		m_vecSliderAxis = ReadVector(strValue);
+		m_vecSliderAxis = ReadVector(setValue);
 		break;
 	case "m_flSliderFriction":
-		m_flSliderFriction = ReadFloat(strValue);
+		m_flSliderFriction = ReadFloat(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 

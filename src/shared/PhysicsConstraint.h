@@ -109,6 +109,6 @@ private:
 	string m_strEnt1;
 	string m_strEnt2;
 	string m_strBreakSound;
-	string m_strOnBreak;
+	string m_outputOnBreak;
 	string m_strConstraintSystem;
 };

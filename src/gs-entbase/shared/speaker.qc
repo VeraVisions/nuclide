@@ -122,39 +122,39 @@ speaker::Save(float handle)
 }
 
 void
-speaker::Restore(string strKey, string strValue)
+speaker::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_strSentence":
-		m_strSentence = ReadString(strValue);
+		m_strSentence = ReadString(setValue);
 		break;
 	case "m_flVolume":
-		m_flVolume = ReadFloat(strValue);
+		m_flVolume = ReadFloat(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-speaker::SpawnKey(string strKey, string strValue)
+speaker::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "preset":
-		int p = stoi(strValue);
+		int p = stoi(setValue);
 
 		/* fit in a valid preset string */
 		if (p > 0 && p < g_speaker_hlpresets.length)
 			m_strSentence = g_speaker_hlpresets[p-1];
 		break;
 	case "message":
-		m_strSentence = strValue;
+		m_strSentence = setValue;
 		break;
 	case "health":
-		m_flVolume = stof(strValue);
+		m_flVolume = stof(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 

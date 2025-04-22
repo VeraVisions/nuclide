@@ -16,9 +16,6 @@
 
 #include "../common/defs.h"
 
-.float w_reload_next;
-.float w_attack_next;
-
 /* networking helpers */
 #define NETWORKED_INT(x) int x; int x ##_net;
 #define NETWORKED_FLOAT(x) float x; float x ##_net;
@@ -82,7 +79,7 @@ string __fullspawndata;
 #endif
 
 #include "cloader.h"
-#include "sound.h"
+#include "soundDef.h"
 #include "effects.h"
 
 #ifdef CLIENT
@@ -179,9 +176,7 @@ enumflags
 	SEARCH_NAMESORT
 };
 
-.float jumptime;
-.float teleport_time;
-.vector basevelocity;
+.vector m_pmoveBaseVelocity;
 .float gflags;
 .float identity;
 .bool _isWeapon;
@@ -190,7 +185,7 @@ enumflags
 void
 Empty(void)
 {
-	
+
 }
 
 void Util_Destroy(void);
@@ -231,7 +226,7 @@ precache_sound(string sample)
 {
 	if (sample != "") /* not empty */
 		if not(whichpack(strcat("sound/", sample))) { /* not present on disk */
-			NSError("SFX sample %S does not exist.", sample);
+			ncError("SFX sample %S does not exist.", sample);
 			return "misc/missing.wav";
 		}
 
@@ -423,6 +418,9 @@ string Util_FixModel(string mdl)
 	}
 	mdl = strreplace("\\", "/", mdl);
 
+	/* don't allow empty directories, some Source maps have them. */
+	mdl = strreplace("//", "/", mdl);
+
 	int c = tokenizebyseparator(mdl, "/", "\\ ", "!");
 	string newpath = "";
 
@@ -445,6 +443,8 @@ string Util_FixModel(string mdl)
 	if (substring(mdl, 0, 1) == "/")
 		mdl = substring(mdl, 1, -1);
 
+	mdl = strreplace("/ ", "/", mdl);
+	
 	return mdl;
 }
 
@@ -457,7 +457,7 @@ Util_ChangeExtension(string baseString, string newExtension)
 	float stringOffset = 0;
 	string tempString = "";
 	float foundOffset = 0;
-	
+
 	while ((tempString = substring(baseString, stringOffset, 1))) {
 		if (tempString == ".")
 			foundOffset = stringOffset;
@@ -614,7 +614,7 @@ DebugBox(vector absPos, vector minSize, vector maxSize, vector boxColor, float b
 	x[2] = absPos[2] + minSize[2];
 	y[2] = absPos[2] + minSize[2];
 	z[2] = absPos[2] + minSize[2];
-	
+
 	/* top */
 	R_BeginPolygon("", 0, 0);
 	R_PolygonVertex(a, [1,1], boxColor, boxAlpha);

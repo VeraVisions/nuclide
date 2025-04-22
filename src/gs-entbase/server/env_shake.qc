@@ -93,44 +93,44 @@ env_shake::Save(float handle)
 }
 
 void
-env_shake::Restore(string strKey, string strValue)
+env_shake::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_flRadius":
-		m_flRadius = ReadFloat(strValue);
+		m_flRadius = ReadFloat(setValue);
 		break;
 	case "m_flAmplitude":
-		m_flAmplitude = ReadFloat(strValue);
+		m_flAmplitude = ReadFloat(setValue);
 		break;
 	case "m_flDuration":
-		m_flDuration = ReadFloat(strValue);
+		m_flDuration = ReadFloat(setValue);
 		break;
 	case "m_flFrequency":
-		m_flFrequency = ReadFloat(strValue);
+		m_flFrequency = ReadFloat(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-env_shake::SpawnKey(string strKey, string strValue)
+env_shake::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "radius":
-		m_flRadius = stof(strValue);
+		m_flRadius = stof(setValue);
 		break;
 	case "amplitude":
-		m_flAmplitude = stof(strValue);
+		m_flAmplitude = stof(setValue);
 		break;
 	case "duration":
-		m_flDuration = stof(strValue);
+		m_flDuration = stof(setValue);
 		break;
 	case "frequency":
-		m_flFrequency = stof(strValue);
+		m_flFrequency = stof(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 

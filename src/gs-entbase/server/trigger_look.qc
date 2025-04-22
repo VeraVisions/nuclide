@@ -53,87 +53,81 @@ public:
 	virtual void Touch(entity);
 
 private:
-	float m_flFOV;
-	float m_flLookTime;
-	float m_flDelay;
-	float m_flLooked;
-	string m_strLookTarget;
+	float m_targetViewCone;
+	float m_minimumLookTime;
+	float m_timeSpentLooking;
+	string m_lookTarget;
 
 	/* Input/Output */
-	string m_strOnTrigger;
+	string m_outputOnTrigger;
 };
 
 void
 trigger_look::trigger_look(void)
 {
-	m_flFOV = 0.9f;
-	m_flLookTime = 0.5f;
-	m_flDelay = 0.0f;
-	m_flLooked = 0.0f;
-	m_strLookTarget = __NULL__;
-	m_strOnTrigger = __NULL__;
+	m_targetViewCone = 0.9f;
+	m_minimumLookTime = 0.5f;
+	m_timeSpentLooking = 0.0f;
+	m_lookTarget = __NULL__;
+	m_outputOnTrigger = __NULL__;
 }
 
 void
 trigger_look::Save(float handle)
 {
 	super::Save(handle);
-	SaveFloat(handle, "m_flFOV", m_flFOV);
-	SaveFloat(handle, "m_flLookTime", m_flLookTime);
-	SaveFloat(handle, "m_flDelay", m_flDelay);
-	SaveFloat(handle, "m_flLooked", m_flLooked);
-	SaveString(handle, "m_strLookTarget", m_strLookTarget);
-	SaveString(handle, "m_strOnTrigger", m_strOnTrigger);
+	SaveFloat(handle, "targetViewCone", m_targetViewCone);
+	SaveFloat(handle, "minimumLookTime", m_minimumLookTime);
+	SaveFloat(handle, "timeSpentLooking", m_timeSpentLooking);
+	SaveString(handle, "lookTarget", m_lookTarget);
+	SaveString(handle, "outputOnTrigger", m_outputOnTrigger);
 }
 
 void
-trigger_look::Restore(string strKey, string strValue)
+trigger_look::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
-	case "m_flFOV":
-		m_flFOV = ReadFloat(strValue);
+	case "targetViewCone":
+		m_targetViewCone = ReadFloat(setValue);
 		break;
-	case "m_flLookTime":
-		m_flLookTime = ReadFloat(strValue);
+	case "minimumLookTime":
+		m_minimumLookTime = ReadFloat(setValue);
 		break;
-	case "m_flDelay":
-		m_flDelay = ReadFloat(strValue);
+	case "timeSpentLooking":
+		m_timeSpentLooking = ReadFloat(setValue);
 		break;
-	case "m_flLooked":
-		m_flLooked = ReadFloat(strValue);
+	case "lookTarget":
+		m_lookTarget = ReadString(setValue);
 		break;
-	case "m_strLookTarget":
-		m_strLookTarget = ReadString(strValue);
-		break;
-	case "m_strOnTrigger":
-		m_strOnTrigger = ReadString(strValue);
+	case "outputOnTrigger":
+		m_outputOnTrigger = ReadString(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-trigger_look::SpawnKey(string strKey, string strValue)
+trigger_look::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "looktarget":
 	case "target_destination":
-		m_strLookTarget = strValue;
+		m_lookTarget = setValue;
 		break;
 	case "fov":
 	case "FieldOfView":
-		m_flFOV = stof(strValue);
+		m_targetViewCone = stof(setValue);
 		break;
 	case "looktime":
 	case "LookTime":
-		m_flLookTime = stof(strValue);
+		m_minimumLookTime = stof(setValue);
 		break;
 	case "OnTrigger":
-		m_strOnTrigger = PrepareOutput(m_strOnTrigger, strValue);
+		m_outputOnTrigger = PrepareOutput(m_outputOnTrigger, setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 		break;
 	}
 }
@@ -143,8 +137,8 @@ trigger_look::Spawned(void)
 {
 	super::Spawned();
 
-	if (m_strOnTrigger)
-		m_strOnTrigger = CreateOutput(m_strOnTrigger);
+	if (m_outputOnTrigger)
+		m_outputOnTrigger = CreateOutput(m_outputOnTrigger);
 }
 
 void
@@ -152,7 +146,7 @@ trigger_look::Respawn(void)
 {
 	/* reset */
 	InitBrushTrigger();
-	m_flLooked = 0.0f;
+	m_timeSpentLooking = 0.0f;
 }
 
 void
@@ -164,16 +158,16 @@ trigger_look::Touch(entity eToucher)
 	if (GetMaster(eToucher) == FALSE)
 		return;
 
-	if (!(eToucher.flags & FL_CLIENT)) {
+	if (is.Player(eToucher) == false) {
 		/* FIXME: could this conflict with other entities? probably. */
-		m_flLooked = 0.0f;
+		m_timeSpentLooking = 0.0f;
 		return;
 	}
 
 	/* find the looktarget */
-	lt = find(world, ::targetname, m_strLookTarget);
+	lt = find(world, ::targetname, m_lookTarget);
 	if (!lt) {
-		EntLog("^1trigger_look:Touch^7: Invalid m_strLookTarget %s!", m_strLookTarget);
+		EntLog("^1trigger_look:Touch^7: Invalid m_lookTarget %s!", m_lookTarget);
 		Destroy();
 		return;
 	}
@@ -184,14 +178,14 @@ trigger_look::Touch(entity eToucher)
 	dot = v * v_forward;
 
 	/* field of view check */
-	if (dot < m_flFOV) {
-		m_flLooked = 0.0f;
+	if (dot < m_targetViewCone) {
+		m_timeSpentLooking = 0.0f;
 		return;
 	}
 
 	/* increment the 'looked-time' a little bit one frame after another */
-	if (m_flLooked < m_flLookTime) {
-		m_flLooked += frametime;
+	if (m_timeSpentLooking < m_minimumLookTime) {
+		m_timeSpentLooking += frametime;
 		return;
 	}
 
@@ -199,7 +193,7 @@ trigger_look::Touch(entity eToucher)
 	SetSolid(SOLID_NOT);
 
 	if (!target)
-		UseOutput(eToucher, m_strOnTrigger);
+		UseOutput(eToucher, m_outputOnTrigger);
 	else
-		UseTargets(eToucher, TRIG_TOGGLE, m_flDelay);
+		UseTargets(eToucher, TRIG_TOGGLE, GetTriggerDelay());
 }

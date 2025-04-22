@@ -56,7 +56,7 @@ MapTweaks_Init(void)
 			}
 		}
 	} else {
-		NSWarning("No map tweaks, missing %S", g_maptweakFile);
+		ncWarning("No map tweaks, missing %S", g_maptweakFile);
 		InitEnd();
 		return;
 	}

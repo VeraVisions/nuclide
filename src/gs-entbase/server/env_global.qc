@@ -50,9 +50,7 @@ public:
 	virtual void SpawnKey(string, string);
 	virtual void Spawned(void);
 	virtual void Trigger(entity, triggermode_t);
-	
-	nonvirtual int GlobalPresent(string);
-	nonvirtual void AddNewGlobal(string, globalstate_t);
+
 	nonvirtual void SetGlobal(string, globalstate_t);
 
 private:
@@ -63,7 +61,7 @@ private:
 void
 env_global::env_global(void)
 {
-	m_strGlobalState = __NULL__;
+	m_globalState = __NULL__;
 	m_iTriggerMode = 0;
 	m_iInitialState = 0;
 }
@@ -77,32 +75,32 @@ env_global::Save(float handle)
 }
 
 void
-env_global::Restore(string strKey, string strValue)
+env_global::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_iTriggerMode":
-		m_iTriggerMode = ReadInt(strValue);
+		m_iTriggerMode = ReadInt(setValue);
 		break;
 	case "m_iInitialState":
-		m_iInitialState = ReadInt(strValue);
+		m_iInitialState = ReadInt(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-env_global::SpawnKey(string strKey, string strValue)
+env_global::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "triggermode":
-		m_iTriggerMode = stoi(strValue);
+		m_iTriggerMode = stoi(setValue);
 		break;
 	case "initialstate":
-		m_iInitialState = stoi(strValue);
+		m_iInitialState = stoi(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
@@ -111,21 +109,19 @@ env_global::Spawned(void)
 {
 	super::Spawned();
 
-	if (!m_strGlobalState) {
+	if (!m_globalState) {
 		objerror("env_global: No globalstate name given! Aborting\n");
 	}
 
 	if (HasSpawnFlags(GLOBAL_SETSPAWN)) {
-		if (!GlobalPresent(m_strGlobalState)) {
-			AddNewGlobal(m_strGlobalState, m_iInitialState);
-		}
+		SetGlobal(m_globalState, m_iInitialState);
 	}
 }
 
 void
 env_global::Trigger(entity act, triggermode_t state)
 {
-	globalstate_t iOldValue = GetGlobalValue(m_strGlobalState);
+	globalstate_t iOldValue = GetGlobalValue(m_globalState);
 	globalstate_t newValue = 0;
 	
 	switch(m_iTriggerMode) {
@@ -148,40 +144,21 @@ env_global::Trigger(entity act, triggermode_t state)
 		}
 	}
 
-	if (GlobalPresent(m_strGlobalState)) {
-		SetGlobal(m_strGlobalState, newValue);
-	} else {
-		AddNewGlobal(m_strGlobalState, newValue);
-	}
-}
-
-int
-env_global::GlobalPresent(string strName)
-{
-	for (int i = 0; i < (tokenize(cvar_string(CENVGLOBAL_CVAR))); i += 2) {
-		if (argv(i) == strName) {
-			return (1);
-		}
-	}
-	return (0);
-}
-
-void
-env_global::AddNewGlobal(string strName, globalstate_t newValue)
-{
-	print("AddNewGLobal\n");
-	localcmd(sprintf("set %s \"%s %s %d\"\n", CENVGLOBAL_CVAR, cvar_string(CENVGLOBAL_CVAR), strName, newValue));
+	SetGlobal(m_globalState, newValue);
 }
 
 void
 env_global::SetGlobal(string strName, globalstate_t newValue)
 {
-	string strNewData = "";
-	print("SetGlobal\n");
-	for (int i = 0; i < (tokenize(cvar_string(CENVGLOBAL_CVAR))); i += 2) {
-		if (argv(i) != strName) {
-			strNewData = sprintf("%s %s %s", strNewData, argv(i), argv(i+1));
-		}
+	switch (newValue) {
+	case GLOBAL_ON:
+		ncSessionManager::SetGlobal(strName, "1");
+		break;
+	case GLOBAL_OFF:
+		ncSessionManager::SetGlobal(strName, "0");
+		break;
+	case GLOBAL_DEAD:
+	default:
+		ncSessionManager::SetGlobal(strName, "");
 	}
-	localcmd(sprintf("set %s \"%s %s %d\"\n", CENVGLOBAL_CVAR, strNewData, strName, newValue));
 }

@@ -19,101 +19,101 @@ var int g_way1 = -1;
 var int g_way2 = -1;
 
 void
-ncNodeEditor::LinkNodes(node_t *wp, node_t *w2)
+ncNodeEditor::LinkNodes(graphNode_t *wp, graphNode_t *w2)
 {
-	int w2n = w2 - g_pNodes;
+	int w2n = w2 - g_nodeGraph;
 
 	/* don't bother if we're already linked */
-	for (int i = 0i; i < wp->m_numNeighbours; i++) {
-		if (wp->m_pNeighbour[i].m_iNode == w2n) {
+	for (int i = 0i; i < wp->m_neighborCount; i++) {
+		if (wp->m_neighborList[i].m_nodeID == w2n) {
 			return;
 		}
 	}
 
-	int idx = wp->m_numNeighbours++;
-	wp->m_pNeighbour = (neighbour_s *)memreallocOld(wp->m_pNeighbour, sizeof(*wp->m_pNeighbour), idx, wp->m_numNeighbours);
-	local struct neighbour_s *n = wp->m_pNeighbour+idx;
-	n->m_iNode = w2n;
-	n->m_flCost = vlen(w2->m_vecOrigin - wp->m_vecOrigin);
-	n->m_iFlags = 0;
+	int idx = wp->m_neighborCount++;
+	wp->m_neighborList = (neighbour_s *)memreallocOld(wp->m_neighborList, sizeof(*wp->m_neighborList), idx, wp->m_neighborCount);
+	local struct neighbour_s *n = wp->m_neighborList+idx;
+	n->m_nodeID = w2n;
+	n->m_travelCost = vlen(w2->m_origin - wp->m_origin);
+	n->m_travelFlags = 0;
 }
 
 void
-ncNodeEditor::UnlinkNodes(node_t *wp, node_t *w2)
+ncNodeEditor::UnlinkNodes(graphNode_t *wp, graphNode_t *w2)
 {
-	int w2n = w2 - g_pNodes;
+	int w2n = w2 - g_nodeGraph;
 	int nilled = 0;
 
-	for (int i = 0i; i < wp->m_numNeighbours; i++) {
-		if (wp->m_pNeighbour[i].m_iNode == w2n) {
-			wp->m_pNeighbour[i].m_iNode = -1;
-			wp->m_pNeighbour[i].m_flCost = 0;
-			wp->m_pNeighbour[i].m_iFlags = 0;
+	for (int i = 0i; i < wp->m_neighborCount; i++) {
+		if (wp->m_neighborList[i].m_nodeID == w2n) {
+			wp->m_neighborList[i].m_nodeID = -1;
+			wp->m_neighborList[i].m_travelCost = 0;
+			wp->m_neighborList[i].m_travelFlags = 0;
 			nilled = 1;
-		}	
+		}
 	}
 
 	/* we nilled an entry, so let's recreate the neighbour list */
 	if (nilled) {
-		int new_neighbours = wp->m_numNeighbours - 1; /* one less. */
-		neighbour_s *new = (neighbour_s *)memalloc(sizeof(*wp->m_pNeighbour) * new_neighbours);
+		int new_neighbours = wp->m_neighborCount - 1; /* one less. */
+		neighbour_s *new = (neighbour_s *)memalloc(sizeof(*wp->m_neighborList) * new_neighbours);
 		int b = 0;
 
 		/* loop through all of our neighbours... */
-		for (int i = 0i; i < wp->m_numNeighbours; i++) {
-			if (wp->m_pNeighbour[i].m_iNode != -1) {
-				new[b].m_iNode = wp->m_pNeighbour[i].m_iNode;
-				new[b].m_flCost = wp->m_pNeighbour[i].m_flCost;
-				new[b].m_iFlags = wp->m_pNeighbour[i].m_iFlags;
+		for (int i = 0i; i < wp->m_neighborCount; i++) {
+			if (wp->m_neighborList[i].m_nodeID != -1) {
+				new[b].m_nodeID = wp->m_neighborList[i].m_nodeID;
+				new[b].m_travelCost = wp->m_neighborList[i].m_travelCost;
+				new[b].m_travelFlags = wp->m_neighborList[i].m_travelFlags;
 				b++;
 			}
 		}
 
 		/* assign our new neighbour list to the old one, which will be freed. */
-		wp->m_numNeighbours = new_neighbours;
-		memfree(wp->m_pNeighbour);
-		wp->m_pNeighbour = new;
+		wp->m_neighborCount = new_neighbours;
+		memfree(wp->m_neighborList);
+		wp->m_neighborList = new;
 	}
 }
 
 void
 ncNodeEditor::AutoLink(int wpidx)
 {
-	for (int i = 0i; i < g_iNodes; i++) {
+	for (int i = 0i; i < g_nodeCount; i++) {
 		//don't link to ourself...
 		if (i == wpidx) {
 			continue;
 		}
 
 		//autolink distance cutoff.
-		if (vlen(g_pNodes[wpidx].m_vecOrigin - g_pNodes[i].m_vecOrigin) > autocvar_nav_linksize) {
+		if (vlen(g_nodeGraph[wpidx].m_origin - g_nodeGraph[i].m_origin) > autocvar_nav_linksize) {
 			continue;
 		}
 
 		//not going to use the full player size because that makes steps really messy.
 		//however, we do need a little size, for sanity's sake
-		tracebox(g_pNodes[wpidx].m_vecOrigin, '-16 -16 0', '16 16 32', g_pNodes[i].m_vecOrigin, TRUE, world);
+		tracebox(g_nodeGraph[wpidx].m_origin, '-16 -16 0', '16 16 32', g_nodeGraph[i].m_origin, TRUE, world);
 
 		//light of sight blocked, don't try autolinking.
 		if (trace_fraction < 1) {
 			continue;
 		}
 
-		ncNodeEditor::LinkNodes(&g_pNodes[wpidx], &g_pNodes[i]);
-		ncNodeEditor::LinkNodes(&g_pNodes[i], &g_pNodes[wpidx]);
+		ncNodeEditor::LinkNodes(&g_nodeGraph[wpidx], &g_nodeGraph[i]);
+		ncNodeEditor::LinkNodes(&g_nodeGraph[i], &g_nodeGraph[wpidx]);
 	}
 }
 
 int
 ncNodeEditor::FindClosestNode(vector vecOrigin)
 {
-	
+
 	/* -1 for no nodes anywhere... */
 	int r = -1i;
-	float flBestDist = COST_INFINITE;
+	float flBestDist = MAX_DISTANCE;
 
-	for (int i = 0i; i < g_iNodes; i++) {
-		float fDist = vlen(g_pNodes[i].m_vecOrigin - vecOrigin) - g_pNodes[i].m_flRadius;
+	for (int i = 0i; i < g_nodeCount; i++) {
+		float fDist = vlen(g_nodeGraph[i].m_origin - vecOrigin) - g_nodeGraph[i].m_nodeRadius;
 		if (fDist < flBestDist) {
 			/* within the waypoint's radius */
 			if (fDist < 0) {
@@ -121,7 +121,7 @@ ncNodeEditor::FindClosestNode(vector vecOrigin)
 				r = i;
 			} else {
 				/* outside the waypoint, make sure its valid. */
-				traceline(vecOrigin, g_pNodes[i].m_vecOrigin, TRUE, world);
+				traceline(vecOrigin, g_nodeGraph[i].m_origin, TRUE, world);
 				if (trace_fraction == 1) {
 					/* FIXME: sort them frst, to avoid traces? */
 					flBestDist = fDist;
@@ -136,32 +136,32 @@ ncNodeEditor::FindClosestNode(vector vecOrigin)
 void
 ncNodeEditor::CreateNode(entity ePlayer, int iAutoLink)
 {
-	int iNearest = ncNodeEditor::FindClosestNode(self.origin);
-	int iID = g_iNodes++;
-	g_pNodes = (node_t *)memreallocOld(g_pNodes, sizeof(node_t), iID, g_iNodes);
-	node_t *n = g_pNodes + iID;
-	n->m_vecOrigin = ePlayer.origin;
-	n->m_pNeighbour = __NULL__;
-	n->m_numNeighbours = 0;
-	n->m_flRadius = autocvar_nav_radius;
+	int iNearest = ncNodeEditor::FindClosestNode(ePlayer.origin);
+	int iID = g_nodeCount++;
+	g_nodeGraph = (graphNode_t *)memreallocOld(g_nodeGraph, sizeof(graphNode_t), iID, g_nodeCount);
+	graphNode_t *n = g_nodeGraph + iID;
+	n->m_origin = ePlayer.origin;
+	n->m_neighborList = __NULL__;
+	n->m_neighborCount = 0;
+	n->m_nodeRadius = autocvar_nav_radius;
 
 	if (iAutoLink == 1) {
 		ncNodeEditor::AutoLink(iID);
 	} else {
 		if (iID != 0) {
 			if (iAutoLink == 0) {
-				ncNodeEditor::LinkNodes(n, &g_pNodes[iID-1]);
-				ncNodeEditor::LinkNodes(&g_pNodes[iID-1], n);
+				ncNodeEditor::LinkNodes(n, &g_nodeGraph[iID-1]);
+				ncNodeEditor::LinkNodes(&g_nodeGraph[iID-1], n);
 			} else if (iAutoLink == -1) {
-				ncNodeEditor::LinkNodes(&g_pNodes[iID-1], n);
+				ncNodeEditor::LinkNodes(&g_nodeGraph[iID-1], n);
 			} else if (iAutoLink == -2) {
-				ncNodeEditor::LinkNodes(n, &g_pNodes[iID-1]);
+				ncNodeEditor::LinkNodes(n, &g_nodeGraph[iID-1]);
 			} else if (iAutoLink == -4) {
 				if (iNearest == -1i)
 					return;
 
-				ncNodeEditor::LinkNodes(n, &g_pNodes[iNearest]);
-				ncNodeEditor::LinkNodes(&g_pNodes[iNearest], n);
+				ncNodeEditor::LinkNodes(n, &g_nodeGraph[iNearest]);
+				ncNodeEditor::LinkNodes(&g_nodeGraph[iNearest], n);
 			}
 		}
 	}
@@ -170,26 +170,26 @@ ncNodeEditor::CreateNode(entity ePlayer, int iAutoLink)
 void
 ncNodeEditor::DeleteNode(int iID)
 {
-	if (iID < 0i || iID >= g_iNodes) {
+	if (iID < 0i || iID >= g_nodeCount) {
 		print("ncNodeEditor::DeleteNode: invalid waypoint\n");
 		return;
 	}
 
 	//wipe the waypoint
-	memfree(g_pNodes[iID].m_pNeighbour);
-	memcpy(g_pNodes + iID, g_pNodes + iID + 1, (g_iNodes - (iID + 1)) * sizeof(*g_pNodes));
-	g_iNodes--;
+	memfree(g_nodeGraph[iID].m_neighborList);
+	memcpy(g_nodeGraph + iID, g_nodeGraph + iID + 1, (g_nodeCount - (iID + 1)) * sizeof(*g_nodeGraph));
+	g_nodeCount--;
 
 	//clean up any links to it.
-	for (int i = 0; i < g_iNodes; i++) {
-		for (int j = 0; j < g_pNodes[i].m_numNeighbours;) {
-			int l = g_pNodes[i].m_pNeighbour[j].m_iNode;
+	for (int i = 0; i < g_nodeCount; i++) {
+		for (int j = 0; j < g_nodeGraph[i].m_neighborCount;) {
+			int l = g_nodeGraph[i].m_neighborList[j].m_nodeID;
 			if (l == iID) {
-				memcpy(g_pNodes[i].m_pNeighbour+j, g_pNodes[i].m_pNeighbour+j+1, (g_pNodes[i].m_numNeighbours-(j+1))*sizeof(*g_pNodes[i].m_pNeighbour));
-				g_pNodes[i].m_numNeighbours--;
+				memcpy(g_nodeGraph[i].m_neighborList+j, g_nodeGraph[i].m_neighborList+j+1, (g_nodeGraph[i].m_neighborCount-(j+1))*sizeof(*g_nodeGraph[i].m_neighborList));
+				g_nodeGraph[i].m_neighborCount--;
 				continue;
 			} else if (l > iID) {
-				g_pNodes[i].m_pNeighbour[j].m_iNode = l-1;
+				g_nodeGraph[i].m_neighborList[j].m_nodeID = l-1;
 			}
 			j++;
 		}
@@ -199,11 +199,11 @@ ncNodeEditor::DeleteNode(int iID)
 void
 ncNodeEditor::SetRadius(int iID, float flRadValue)
 {
-	if (iID < 0i || iID >= g_iNodes) {
+	if (iID < 0i || iID >= g_nodeCount) {
 		print("ncNodeEditor::SetRadius: invalid waypoint\n");
 		return;
 	}
-	g_pNodes[iID].m_flRadius = flRadValue;
+	g_nodeGraph[iID].m_nodeRadius = flRadValue;
 }
 
 void
@@ -226,10 +226,10 @@ ncNodeEditor::LinkFlag(int linkFlag)
 		g_waylink_status = 0;
 
 		if (g_way1 != g_way2) {
-			ncNodeEditor::LinkNodes(&g_pNodes[g_way1], &g_pNodes[g_way2]);
-			for (int b = 0i; b < g_pNodes[g_way1].m_numNeighbours; b++) {
-				if (g_pNodes[g_way1].m_pNeighbour[b].m_iNode == g_way2) {
-					g_pNodes[g_way1].m_pNeighbour[b].m_iFlags |= linkFlag;
+			ncNodeEditor::LinkNodes(&g_nodeGraph[g_way1], &g_nodeGraph[g_way2]);
+			for (int b = 0i; b < g_nodeGraph[g_way1].m_neighborCount; b++) {
+				if (g_nodeGraph[g_way1].m_neighborList[b].m_nodeID == g_way2) {
+					g_nodeGraph[g_way1].m_neighborList[b].m_travelFlags |= linkFlag;
 					env_message_single(self, "^2Crouch-linked the two points!\n");
 				}
 			}
@@ -260,7 +260,7 @@ ncNodeEditor::Unlink(void)
 		g_waylink_status = 0;
 
 		if (g_way1 != g_way2) {
-			ncNodeEditor::UnlinkNodes(&g_pNodes[g_way1], &g_pNodes[g_way2]);
+			ncNodeEditor::UnlinkNodes(&g_nodeGraph[g_way1], &g_nodeGraph[g_way2]);
 		} else {
 			env_message_single(self, "^1Failed to link, the two points are the same!\n");
 		}
@@ -288,8 +288,8 @@ ncNodeEditor::UnlinkTwo(void)
 		g_waylink_status = 0;
 
 		if (g_way1 != g_way2) {
-			ncNodeEditor::UnlinkNodes(&g_pNodes[g_way1], &g_pNodes[g_way2]);
-			ncNodeEditor::UnlinkNodes(&g_pNodes[g_way2], &g_pNodes[g_way1]);
+			ncNodeEditor::UnlinkNodes(&g_nodeGraph[g_way1], &g_nodeGraph[g_way2]);
+			ncNodeEditor::UnlinkNodes(&g_nodeGraph[g_way2], &g_nodeGraph[g_way1]);
 		} else {
 			env_message_single(self, "^1Failed to link, the two points are the same!\n");
 		}
@@ -314,7 +314,7 @@ ncNodeEditor::GoToPoint(entity pl)
 	traceline(vecSrc, vecSrc + (v_forward * 4096), FALSE, pl);
 	print(sprintf("Telling all bots to go to %v\n", trace_endpos));
 
-	for (entity a = world; (a = find(a, ::classname, "player"));) {
+	for (entity a = world; (a = next.Player(a));) {
 		if (clienttype(a) != CLIENTTYPE_REAL) {
 			ncBot targ;
 			targ = (ncBot)a;
@@ -330,25 +330,25 @@ ncNodeEditor::SaveFile(string filename)
 {
 	filestream file;
 
-	if (!g_iNodes) {
-		NSError("No nodes in map. Unable to say node graph.");
+	if (!g_nodeCount) {
+		ncError("No nodes in map. Unable to say node graph.");
 		return (false);
 	}
 
 	file = fopen(filename, FILE_WRITE);
 
 	if (file < 0) {
-		NSError("Unable to open %S for writing.", filename);
+		ncError("Unable to open %S for writing.", filename);
 		return (false);
 	}
 
-	fputs(file, sprintf("%i\n", g_iNodes));
+	fputs(file, sprintf("%i\n", g_nodeCount));
 
-	for (int i = 0i; i < g_iNodes; i++) {
-		fputs(file, sprintf("%v %f %i\n", g_pNodes[i].m_vecOrigin, g_pNodes[i].m_flRadius, g_pNodes[i].m_numNeighbours));
-		
-		for(int j = 0i; j < g_pNodes[i].m_numNeighbours; j++) {
-			fputs(file, sprintf(" %i %f %i\n", g_pNodes[i].m_pNeighbour[j].m_iNode, g_pNodes[i].m_pNeighbour[j].m_flCost, g_pNodes[i].m_pNeighbour[j].m_iFlags));
+	for (int i = 0i; i < g_nodeCount; i++) {
+		fputs(file, sprintf("%v %f %i\n", g_nodeGraph[i].m_origin, g_nodeGraph[i].m_nodeRadius, g_nodeGraph[i].m_neighborCount));
+
+		for(int j = 0i; j < g_nodeGraph[i].m_neighborCount; j++) {
+			fputs(file, sprintf(" %i %f %i\n", g_nodeGraph[i].m_neighborList[j].m_nodeID, g_nodeGraph[i].m_neighborList[j].m_travelCost, g_nodeGraph[i].m_neighborList[j].m_travelFlags));
 		}
 	}
 
@@ -359,12 +359,12 @@ ncNodeEditor::SaveFile(string filename)
 void
 ncNodeEditor::Flush(void)
 {
-	for (int i = 0i; i < g_iNodes; i++) {
-		memfree(g_pNodes[i].m_pNeighbour);
+	for (int i = 0i; i < g_nodeCount; i++) {
+		memfree(g_nodeGraph[i].m_neighborList);
 	}
 
-	memfree(g_pNodes);
-	g_iNodes = 0i;
+	memfree(g_nodeGraph);
+	g_nodeCount = 0i;
 }
 
 bool
@@ -384,31 +384,31 @@ ncNodeEditor::ReadFile(string strFile, bool flush)
 
 	if (flush) {
 		ncNodeEditor::Flush();
-		g_iNodes = (int)stoi(argv(0));
-		g_pNodes = memalloc(sizeof(*g_pNodes) * g_iNodes);
+		g_nodeCount = (int)stoi(argv(0));
+		g_nodeGraph = memalloc(sizeof(*g_nodeGraph) * g_nodeCount);
 	} else {
-		int oldSize = g_iNodes;
-		int newSize = g_iNodes + stoi(argv(0));
-		g_pNodes = (node_t *)memreallocOld(g_pNodes, sizeof(node_t), oldSize, newSize);
-		g_iNodes = newSize;
+		int oldSize = g_nodeCount;
+		int newSize = g_nodeCount + stoi(argv(0));
+		g_nodeGraph = (graphNode_t *)memreallocOld(g_nodeGraph, sizeof(graphNode_t), oldSize, newSize);
+		g_nodeCount = newSize;
 		startId = oldSize;
 		offSet = oldSize;
 	}
 
-	for (int i = startId; i < g_iNodes; i++) {
+	for (int i = startId; i < g_nodeCount; i++) {
 		tokenize(fgets(file));
-		g_pNodes[i].m_vecOrigin[0] = stof(argv(0));
-		g_pNodes[i].m_vecOrigin[1] = stof(argv(1));
-		g_pNodes[i].m_vecOrigin[2] = stof(argv(2));
-		g_pNodes[i].m_flRadius = stof(argv(3));
-		g_pNodes[i].m_numNeighbours = stoi(argv(4));
-		g_pNodes[i].m_pNeighbour = memalloc(sizeof(*g_pNodes[i].m_pNeighbour) * g_pNodes[i]. m_numNeighbours);
-		
-		for (int j = 0i; j < g_pNodes[i].m_numNeighbours; j++) {
+		g_nodeGraph[i].m_origin[0] = stof(argv(0));
+		g_nodeGraph[i].m_origin[1] = stof(argv(1));
+		g_nodeGraph[i].m_origin[2] = stof(argv(2));
+		g_nodeGraph[i].m_nodeRadius = stof(argv(3));
+		g_nodeGraph[i].m_neighborCount = stoi(argv(4));
+		g_nodeGraph[i].m_neighborList = memalloc(sizeof(*g_nodeGraph[i].m_neighborList) * g_nodeGraph[i]. m_neighborCount);
+
+		for (int j = 0i; j < g_nodeGraph[i].m_neighborCount; j++) {
 			tokenize(fgets(file));
-			g_pNodes[i].m_pNeighbour[j].m_iNode = offSet + stoi(argv(0));
-			g_pNodes[i].m_pNeighbour[j].m_flCost = stof(argv(1));
-			g_pNodes[i].m_pNeighbour[j].m_iFlags = stoi(argv(2));
+			g_nodeGraph[i].m_neighborList[j].m_nodeID = offSet + stoi(argv(0));
+			g_nodeGraph[i].m_neighborList[j].m_travelCost = stof(argv(1));
+			g_nodeGraph[i].m_neighborList[j].m_travelFlags = stoi(argv(2));
 		}
 	}
 	fclose(file);
@@ -435,7 +435,7 @@ ncNodeEditor::ConnectOne(void)
 		g_waylink_status = 0;
 
 		if (g_way1 != g_way2) {
-			ncNodeEditor::LinkNodes(&g_pNodes[g_way1], &g_pNodes[g_way2]);
+			ncNodeEditor::LinkNodes(&g_nodeGraph[g_way1], &g_nodeGraph[g_way2]);
 			env_message_single(self, "^22/2 nodes selected, done!\n");
 		} else {
 			env_message_single(self, "^1Failed to link, the two points are the same!\n");
@@ -464,8 +464,8 @@ ncNodeEditor::ConnectTwo(void)
 		g_waylink_status = 0;
 
 		if (g_way1 != g_way2) {
-			ncNodeEditor::LinkNodes(&g_pNodes[g_way1], &g_pNodes[g_way2]);
-			ncNodeEditor::LinkNodes(&g_pNodes[g_way2], &g_pNodes[g_way1]);
+			ncNodeEditor::LinkNodes(&g_nodeGraph[g_way1], &g_nodeGraph[g_way2]);
+			ncNodeEditor::LinkNodes(&g_nodeGraph[g_way2], &g_nodeGraph[g_way1]);
 			env_message_single(self, "^22/2 nodes selected, done!\n");
 		} else {
 			env_message_single(self, "^1Failed to link, the two points are the same!\n");
@@ -477,16 +477,16 @@ ncNodeEditor::ConnectTwo(void)
 void
 ncNodeEditor::DrawDebugInfo(void)
 {
-	if (!g_iNodes) {
+	if (!g_nodeCount) {
 		return;
 	}
 
 	int iNearest = ncNodeEditor::FindClosestNode(self.origin);
 		makevectors([-90, 0, 0]);
-	
-	for (int i = 0i; i < g_iNodes; i++) {
-		node_t *w = g_pNodes + i;
-		vector org = w->m_vecOrigin;
+
+	for (int i = 0i; i < g_nodeCount; i++) {
+		graphNode_t *w = g_nodeGraph + i;
+		vector org = w->m_origin;
 		vector rgb = [1,1,1];
 
 		if (iNearest == i) {
@@ -515,58 +515,58 @@ ncNodeEditor::DrawDebugInfo(void)
 	}
 
 	R_BeginPolygon("", 1, 0);
-	for (int i = 0i; i < g_iNodes; i++) {
-		node_t *w = g_pNodes+i;
-		vector org = w->m_vecOrigin;
+	for (int i = 0i; i < g_nodeCount; i++) {
+		graphNode_t *w = g_nodeGraph+i;
+		vector org = w->m_origin;
 		vector rgb = [1,1,1];
 
-		for (int j = 0i; j < w->m_numNeighbours; j++) {
-			int k = w->m_pNeighbour[j].m_iNode;
-			int fl = w->m_pNeighbour[j].m_iFlags;
+		for (int j = 0i; j < w->m_neighborCount; j++) {
+			int k = w->m_neighborList[j].m_nodeID;
+			int fl = w->m_neighborList[j].m_travelFlags;
 
-			if (k < 0i || k >= g_iNodes) {
+			if (k < 0i || k >= g_nodeCount) {
 				break;
 			}
 
-			node_t *w2 = &g_pNodes[k];
+			graphNode_t *w2 = &g_nodeGraph[k];
 
 			if (fl & LF_JUMP) {
 				vector middle;
-				middle = (w2->m_vecOrigin + org) / 2;
+				middle = (w2->m_origin + org) / 2;
 				R_PolygonVertex(org + [0,0,1], [0,1], [1,1,0], 1);
 				R_PolygonVertex(middle + [0,0,32], [0,1], [0.5,0.5,0], 1);
 				R_EndPolygon();
 				R_PolygonVertex(middle + [0,0,32], [0,1], [0.5,0.5,0], 1);
-				R_PolygonVertex(w2->m_vecOrigin + [0,0,1], [1,1], [0,0,0], 1);
+				R_PolygonVertex(w2->m_origin + [0,0,1], [1,1], [0,0,0], 1);
 				R_EndPolygon();
 			}
 
 			if (fl & LF_CROUCH) {
 				R_PolygonVertex(org + [0,0,-2], [0,1], [0,1,0], 1);
-				R_PolygonVertex(w2->m_vecOrigin + [0,0,-2], [1,1], [0,0,0], 1);
+				R_PolygonVertex(w2->m_origin + [0,0,-2], [1,1], [0,0,0], 1);
 				R_EndPolygon();
 			}
 
 			if (fl & LF_WALK) {
 				R_PolygonVertex(org + [0,0,-1], [0,1], [1,0,0], 1);
-				R_PolygonVertex(w2->m_vecOrigin + [0,0,-1], [1,1], [0,0,0], 1);
+				R_PolygonVertex(w2->m_origin + [0,0,-1], [1,1], [0,0,0], 1);
 				R_EndPolygon();
 			}
 
 			if (fl & LF_AIM) {
 				R_PolygonVertex(org + [0,0,4], [0,1], [0.25,0.25,1], 1);
-				R_PolygonVertex(w2->m_vecOrigin + [0,0,4], [1,1], [0,0,0], 1);
+				R_PolygonVertex(w2->m_origin + [0,0,4], [1,1], [0,0,0], 1);
 				R_EndPolygon();
 			}
 
 			R_PolygonVertex(org, [0,1], [1,0,1], 1);
-			R_PolygonVertex(w2->m_vecOrigin, [1,1], [0,1,0], 1);
+			R_PolygonVertex(w2->m_origin, [1,1], [0,1,0], 1);
 			R_EndPolygon();
 		}
 	}
 
 	if (g_way1 >= 0) {
-		R_PolygonVertex(g_pNodes[g_way1]->m_vecOrigin, [0,1], [0,1,0], 1);
+		R_PolygonVertex(g_nodeGraph[g_way1]->m_origin, [0,1], [0,1,0], 1);
 		R_PolygonVertex(self.origin, [1,1], [0,1,0], 1);
 		R_EndPolygon();
 	}
@@ -575,10 +575,10 @@ ncNodeEditor::DrawDebugInfo(void)
 	makevectors(self.v_angle);
 
 	R_BeginPolygon("", 0, 0);
-	for (int i = 0i; i < g_iNodes; i++) {
+	for (int i = 0i; i < g_nodeCount; i++) {
 		vector rgb;
-		node_t *w = g_pNodes + i;
-		vector org = w->m_vecOrigin;
+		graphNode_t *w = g_nodeGraph + i;
+		vector org = w->m_origin;
 
 		if (iNearest == i) {
 			rgb = [0,1,0];
@@ -586,17 +586,17 @@ ncNodeEditor::DrawDebugInfo(void)
 			rgb = [0.5,0,1.0];
 		}
 
-		if (w->m_flRadius) {
+		if (w->m_nodeRadius) {
 			for(int j = 0; j < 16; j++) {
 				float theta = 2.0f * M_PI * j / 16;
 				vector p = (v_right * sin(theta)) + (v_up * cos(theta));
-				R_PolygonVertex(org + (p * w->m_flRadius), [1,1], rgb, 0.1f);
+				R_PolygonVertex(org + (p * w->m_nodeRadius), [1,1], rgb, 0.1f);
 
 			}
 			R_EndPolygon();
 			for(int j = 0; j < 16; j++) {
 				float theta = 2.0f * M_PI * j / 16;
-				R_PolygonVertex(org + [sin(theta), cos(theta)] * w->m_flRadius, [1,1], rgb, 0.2f);
+				R_PolygonVertex(org + [sin(theta), cos(theta)] * w->m_nodeRadius, [1,1], rgb, 0.2f);
 
 			}
 			R_EndPolygon();
@@ -661,27 +661,27 @@ ncNodeEditor::Cmd(void)
 		ncNodeEditor::SetRadius(ncNodeEditor::FindClosestNode(self.origin), stof(argv(2)));
 		break;
 	case "radiushack":
-		for (int i = 0i; i < g_iNodes; i++) {
-			g_pNodes[i].m_flRadius = autocvar_nav_radius;
+		for (int i = 0i; i < g_nodeCount; i++) {
+			g_nodeGraph[i].m_nodeRadius = autocvar_nav_radius;
 		}
 		break;
 	case "offset":
-		for (int i = 0i; i < g_iNodes; i++) {
-			g_pNodes[i].m_vecOrigin += stov(argv(2));
+		for (int i = 0i; i < g_nodeCount; i++) {
+			g_nodeGraph[i].m_origin += stov(argv(2));
 		}
 		break;
 	case "flipx":
-		for (int i = 0i; i < g_iNodes; i++) {
-			g_pNodes[i].m_vecOrigin[0] *= -1;
+		for (int i = 0i; i < g_nodeCount; i++) {
+			g_nodeGraph[i].m_origin[0] *= -1;
 		}
 	case "flipy":
-		for (int i = 0i; i < g_iNodes; i++) {
-			g_pNodes[i].m_vecOrigin[1] *= -1;
+		for (int i = 0i; i < g_nodeCount; i++) {
+			g_nodeGraph[i].m_origin[1] *= -1;
 		}
 		break;
 	case "flipz":
-		for (int i = 0i; i < g_iNodes; i++) {
-			g_pNodes[i].m_vecOrigin[2] *= -1;
+		for (int i = 0i; i < g_nodeCount; i++) {
+			g_nodeGraph[i].m_origin[2] *= -1;
 		}
 		break;
 	case "flag":
@@ -700,13 +700,13 @@ ncNodeEditor::Cmd(void)
 			p[0] = stof(argv(2));
 			p[1] = stof(argv(3));
 			p[2] = stof(argv(4));
-			g_pNodes[n].m_vecOrigin += p;
+			g_nodeGraph[n].m_origin += p;
 		}
 		break;
 	case "movetopos":
 		int nearest = ncNodeEditor::FindClosestNode(self.origin);
 		if (nearest >= 0) {
-			g_pNodes[nearest].m_vecOrigin = self.origin;
+			g_nodeGraph[nearest].m_origin = self.origin;
 		}
 		break;
 	case "save":
@@ -758,7 +758,7 @@ SV_AddDebugPolygons(void)
 	if (cvar("developer") != 1)
 		return;
 
-	if (!g_iNodes) {
+	if (!g_nodeCount) {
 		ncNodeEditor::LoadCurrentMapNavMesh();
 	}
 

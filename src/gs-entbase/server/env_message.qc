@@ -81,38 +81,38 @@ env_message::Save(float handle)
 }
 
 void
-env_message::Restore(string strKey, string strValue)
+env_message::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_strSound":
-		m_strSound = ReadString(strValue);
+		m_strSound = ReadString(setValue);
 		break;
 	case "m_flVolume":
-		m_flVolume = ReadFloat(strValue);
+		m_flVolume = ReadFloat(setValue);
 		break;
 	case "m_iAttenuation":
-		m_iAttenuation = ReadInt(strValue);
+		m_iAttenuation = ReadInt(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-env_message::SpawnKey(string strKey, string strValue)
+env_message::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "messagesound":
-		m_strSound = strValue;
+		m_strSound = setValue;
 		break;
 	case "messagevolume":
-		m_flVolume = stof(strValue);
+		m_flVolume = stof(setValue);
 		break;
 	case "messageattenuation":
-		m_iAttenuation = stoi(strValue);
+		m_iAttenuation = stoi(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
@@ -129,7 +129,7 @@ env_message::Play(entity act, triggermode_t state)
 {
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_MESSAGE);
-	WriteString(MSG_MULTICAST, m_strMessage);
+	WriteString(MSG_MULTICAST, GetTriggerMessage());
 	WriteString(MSG_MULTICAST, m_strSound);
 	WriteFloat(MSG_MULTICAST, m_flVolume);
 	WriteByte(MSG_MULTICAST, m_iAttenuation);

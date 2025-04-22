@@ -70,26 +70,26 @@ game_counter_set::Save(float handle)
 }
 
 void
-game_counter_set::Restore(string strKey, string strValue)
+game_counter_set::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_iCount":
-		m_iCount = ReadInt(strValue);
+		m_iCount = ReadInt(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-game_counter_set::SpawnKey(string strKey, string strValue)
+game_counter_set::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "frags":
-		m_iCount = ReadInt(strValue);
+		m_iCount = ReadInt(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 

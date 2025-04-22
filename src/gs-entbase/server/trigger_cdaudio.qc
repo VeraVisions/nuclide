@@ -61,26 +61,26 @@ trigger_cdaudio::Save(float handle)
 }
 
 void
-trigger_cdaudio::Restore(string strKey, string strValue)
+trigger_cdaudio::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_iCDTrack":
-		m_iCDTrack = ReadInt(strValue);
+		m_iCDTrack = ReadInt(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-trigger_cdaudio::SpawnKey(string strKey, string strValue)
+trigger_cdaudio::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "health":
-		m_iCDTrack = stoi(strValue);
+		m_iCDTrack = stoi(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 		break;
 	}
 }

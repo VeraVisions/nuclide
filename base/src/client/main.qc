@@ -336,8 +336,8 @@ Viewmodel_CalcBob(void)
 	float var_bob;
 	float var_cycle;
 	float var_up;
-	bool isSprinting = pSeat->m_ePlayer.vv_flags & VFL_SPRINTING;
-	bool isCrouching = pSeat->m_ePlayer.vv_flags & VFL_CROUCHING;
+	bool isSprinting = pSeat->m_ePlayer.m_nuclideFlags & VFL_SPRINTING;
+	bool isCrouching = pSeat->m_ePlayer.m_nuclideFlags & VFL_CROUCHING;
 
 //	if (pSeatLocal->m_iSprinting && vlen(pSeat->m_vecPredictedVelocity) > 240)
 	//	isSprinting = true;
@@ -432,7 +432,7 @@ Viewmodel_ApplyBob(entity gun)
 	strength *= 0.01f;
 
 	float sprint;
-	if (pSeat->m_ePlayer.vv_flags & VFL_SPRINTING) {
+	if (pSeat->m_ePlayer.m_nuclideFlags & VFL_SPRINTING) {
 		pSeat->m_flSprintLerp = bound(0.0f, pSeat->m_flSprintLerp + clframetime, 1.0f);
 	} else {
 		pSeat->m_flSprintLerp = bound(0.0f, pSeat->m_flSprintLerp - clframetime, 1.0f);

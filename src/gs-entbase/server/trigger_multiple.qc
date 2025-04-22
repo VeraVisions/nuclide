@@ -87,79 +87,75 @@ public:
 	virtual void EndTouch(entity);
 
 private:
-	float m_flWait;
+	float m_delayBetween;
 
 	/* Input/Output */
-	string m_strOnStartTouch;
-	string m_strOnEndTouchAll;
-	string m_strOnTrigger;
+	string m_outputOnStartTouch;
+	string m_outputOnEndTouchAll;
+	string m_outputOnTrigger;
 };
 
 void
 trigger_multiple::trigger_multiple(void)
 {
-	m_flWait = 0.0f;
+	m_delayBetween = 0.0f;
 
 	/* Input/Output */
-	m_strOnStartTouch =
-	m_strOnEndTouchAll =
-	m_strOnTrigger =  __NULL__;
+	m_outputOnStartTouch =
+	m_outputOnEndTouchAll =
+	m_outputOnTrigger =  __NULL__;
 }
 
 void
 trigger_multiple::Save(float handle)
 {
 	super::Save(handle);
-	SaveFloat(handle, "m_flWait", m_flWait);
-	SaveString(handle, "m_strOnStartTouch", m_strOnStartTouch);
-	SaveString(handle, "m_strOnEndTouchAll", m_strOnEndTouchAll);
-	SaveString(handle, "m_strOnTrigger", m_strOnTrigger);
+	SaveFloat(handle, "delayBetween", m_delayBetween);
+	SaveString(handle, "outputOnStartTouch", m_outputOnStartTouch);
+	SaveString(handle, "outputOnEndTouchAll", m_outputOnEndTouchAll);
+	SaveString(handle, "outputOnTrigger", m_outputOnTrigger);
 }
 
 void
-trigger_multiple::Restore(string strKey, string strValue)
+trigger_multiple::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
-	case "m_flWait":
-		m_flWait = ReadFloat(strValue);
+	case "delayBetween":
+		m_delayBetween = ReadFloat(setValue);
 		break;
-	case "m_strOnStartTouch":
-		m_strOnStartTouch = ReadString(strValue);
+	case "outputOnStartTouch":
+		m_outputOnStartTouch = ReadString(setValue);
 		break;
-	case "m_strOnEndTouchAll":
-		m_strOnEndTouchAll = ReadString(strValue);
+	case "outputOnEndTouchAll":
+		m_outputOnEndTouchAll = ReadString(setValue);
 		break;
-	case "m_strOnTrigger":
-		m_strOnTrigger = ReadString(strValue);
+	case "outputOnTrigger":
+		m_outputOnTrigger = ReadString(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-trigger_multiple::SpawnKey(string strKey, string strValue)
+trigger_multiple::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "wait":
-		m_flWait = ReadFloat(strValue);
-		break;
-	case "StartDisabled":
-		m_bStartDisabled = ReadBool(strValue);
-		m_bIsModern = true;
+		m_delayBetween = ReadFloat(setValue);
 		break;
 	case "OnStartTouch":
 	case "OnStartTouchAll":
-		m_strOnStartTouch = PrepareOutput(m_strOnStartTouch, strValue);
+		m_outputOnStartTouch = PrepareOutput(m_outputOnStartTouch, setValue);
 		break;
 	case "OnEndTouchAll":
-		m_strOnEndTouchAll = PrepareOutput(m_strOnEndTouchAll, strValue);
+		m_outputOnEndTouchAll = PrepareOutput(m_outputOnEndTouchAll, setValue);
 		break;
 	case "OnTrigger":
-		m_strOnTrigger = PrepareOutput(m_strOnTrigger, strValue);
+		m_outputOnTrigger = PrepareOutput(m_outputOnTrigger, setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
@@ -168,12 +164,12 @@ trigger_multiple::Spawned(void)
 {
 	super::Spawned();
 
-	if (m_strOnTrigger)
-		m_strOnTrigger = CreateOutput(m_strOnTrigger);
-	if (m_strOnStartTouch)
-		m_strOnStartTouch = CreateOutput(m_strOnStartTouch);
-	if (m_strOnEndTouchAll)
-		m_strOnEndTouchAll = CreateOutput(m_strOnEndTouchAll);
+	if (m_outputOnTrigger)
+		m_outputOnTrigger = CreateOutput(m_outputOnTrigger);
+	if (m_outputOnStartTouch)
+		m_outputOnStartTouch = CreateOutput(m_outputOnStartTouch);
+	if (m_outputOnEndTouchAll)
+		m_outputOnEndTouchAll = CreateOutput(m_outputOnEndTouchAll);
 }
 
 void
@@ -204,11 +200,11 @@ trigger_multiple::Touch(entity eToucher)
 	if (GetMaster(eToucher) == false)
 		return;
 
-	if (m_bEnabled == false)
+	if (TriggerEnabled() == false)
 		return;
 
 	/* legacy entity check */
-	if (m_bIsModern == false) {
+	if (m_triggerSpawnflagFilter == false) {
 		if (HasSpawnFlags(TM_NOCLIENTS) && eToucher.flags & FL_CLIENT)
 			return;
 		if (!HasSpawnFlags(TM_MONSTERS) && eToucher.flags & FL_MONSTER)
@@ -223,13 +219,13 @@ trigger_multiple::Touch(entity eToucher)
 
 	/* if the target key isn't used, assume we're using the new I/O system */
 	if (HasTriggerTarget() == false)
-		UseOutput(eToucher, m_strOnStartTouch);
+		UseOutput(eToucher, m_outputOnStartTouch);
 	else
-		UseTargets(eToucher, TRIG_TOGGLE, m_flDelay);
+		UseTargets(eToucher, TRIG_TOGGLE, GetTriggerDelay());
 
 	/* This is effectively a trigger_once...*/
-	if (m_flWait != -1) {
-		ScheduleThink(Respawn, m_flWait);
+	if (m_delayBetween != -1) {
+		ScheduleThink(Respawn, m_delayBetween);
 	}
 
 	SetSolid(SOLID_NOT);
@@ -238,6 +234,6 @@ trigger_multiple::Touch(entity eToucher)
 void
 trigger_multiple::EndTouch(entity eToucher)
 {
-	if (m_strOnEndTouchAll)
-		UseOutput(eToucher, m_strOnEndTouchAll);
+	if (m_outputOnEndTouchAll)
+		UseOutput(eToucher, m_outputOnEndTouchAll);
 }

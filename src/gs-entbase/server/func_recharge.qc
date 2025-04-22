@@ -87,47 +87,47 @@ func_recharge::Save(float handle)
 }
 
 void
-func_recharge::Restore(string strKey, string strValue)
+func_recharge::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_eUser":
-		m_eUser = ReadEntity(strValue);
+		m_eUser = ReadEntity(setValue);
 		break;
 	case "m_flDelay":
-		m_flDelay = ReadFloat(strValue);
+		m_flDelay = ReadFloat(setValue);
 		break;
 	case "m_flCheck":
-		m_flCheck = ReadFloat(strValue);
+		m_flCheck = ReadFloat(setValue);
 		break;
 	case "m_strSndFirst":
-		m_strSndFirst = ReadString(strValue);
+		m_strSndFirst = ReadString(setValue);
 		break;
 	case "m_strSndCharging":
-		m_strSndCharging = ReadString(strValue);
+		m_strSndCharging = ReadString(setValue);
 		break;
 	case "m_strSndDone":
-		m_strSndDone = ReadString(strValue);
+		m_strSndDone = ReadString(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-func_recharge::SpawnKey(string strKey, string strValue)
+func_recharge::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "snd_first":
-		m_strSndFirst = strValue;
+		m_strSndFirst = setValue;
 		break;
 	case "snd_charging":
-		m_strSndCharging = strValue;
+		m_strSndCharging = setValue;
 		break;
 	case "snd_done":
-		m_strSndDone = strValue;
+		m_strSndDone = setValue;
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 

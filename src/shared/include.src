@@ -31,7 +31,7 @@ Client.qc
 Spectator.qc
 pmove_custom.qc
 cloader.qc
-sound.qc
+soundDef.qc
 Ragdoll.qc
 Player.qc
 player_pmove.qc

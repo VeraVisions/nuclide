@@ -72,23 +72,23 @@ game_zone_player::Save(float handle)
 }
 
 void
-game_zone_player::Restore(string strKey, string strValue)
+game_zone_player::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_strInTarget":
-		m_strInTarget = ReadString(strValue);
+		m_strInTarget = ReadString(setValue);
 		break;
 	case "m_strOutTarget":
-		m_strOutTarget = ReadString(strValue);
+		m_strOutTarget = ReadString(setValue);
 		break;
 	case "m_strInCount":
-		m_strInCount = ReadString(strValue);
+		m_strInCount = ReadString(setValue);
 		break;
 	case "m_strOutCount":
-		m_strOutCount = ReadString(strValue);
+		m_strOutCount = ReadString(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
@@ -127,7 +127,7 @@ game_zone_player::Trigger(entity entityActivator, triggermode_t state)
 	ncEntity inTarget = (ncEntity)find(world, ::targetname, m_strInTarget);
 	ncEntity outTarget = (ncEntity)find(world, ::targetname, m_strOutTarget);
 
-	for (other = world; (other = find(other, ::classname, "player"));) {
+	for (other = world; (other = next.Player(other));) {
 		if (IntersectsWith(other)) {
 			if (inTarget) {
 				inTarget.Trigger(other, state);

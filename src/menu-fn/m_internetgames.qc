@@ -47,11 +47,11 @@ inet_btnjoin(void)
 	string addr = inet_lbServers_Addresses.GetSelectedItem();
 	string mapName = inet_lbServers_Map.GetSelectedItem();
 	string hostName = strdecolorize(inet_lbServers_Name.GetSelectedItem());
-	
+
 	if (addr) {
 		localcmd("stopmusic\n");
 		localcmd(sprintf("connect %s\n", addr));
-		
+
 		cr_input_enter(sprintf("ACTION is connecting to '%s' on the map %s\n", hostName, mapName));
 
 		RichPresence_Clear();
@@ -188,10 +188,10 @@ inet_refreshframe(void)
 		inet_lbServers_Players.AddEntry(players);
 		inet_lbServers_Addresses.AddEntry(address);
 		inet_lbServers_CacheIndex.AddEntry(sprintf("%i", i));
-		NSLog("Adding %s to the Internet server list", address);
+		ncLog("Adding %s to the Internet server list", address);
 		added++;
 	}
-	NSLog("Added %i Internet servers.", added);
+	ncLog("Added %i Internet servers.", added);
 	inet_sbServers.SetMax(added);
 }
 
@@ -257,19 +257,19 @@ menu_internetgames_init(void)
 	inet_btnUpdate.SetExecute(Master_GetInternetList);
 	inet_btnUpdate.SetPos(30,268);
 	Widget_Add(fn_inet, inet_btnUpdate);
-	
+
 	inet_btnFilter = spawn(CMainButton);
 	inet_btnFilter.SetImage(BTN_FILTER1);
 	//inet_btnFilter.SetExecute(btn_console);
 	inet_btnFilter.SetPos(30,300);
 	Widget_Add(fn_inet, inet_btnFilter);
-	
+
 	inet_btnAddServer = spawn(CMainButton);
 	inet_btnAddServer.SetImage(BTN_ADDSERVER);
 	//inet_btnAddServer.SetExecute(btn_console);
 	inet_btnAddServer.SetPos(30,332);
 	Widget_Add(fn_inet, inet_btnAddServer);
-	
+
 	inet_btnChatRooms = spawn(CMainButton);
 	inet_btnChatRooms.SetImage(BTN_CHATROOMS);
 	inet_btnChatRooms.SetExecute(inet_btnchatrooms_start);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2023 Vera Visions LLC.
+ * Copyright (c) 2016-2025 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -74,45 +74,45 @@ public:
 	virtual void SpawnKey(string,string);
 	virtual void PlatformReturn(void);
 
-
 private:
-	float m_flRotation;
+	float m_platRotation;
 };
 
 void
 func_platrot::func_platrot(void)
 {
-	m_flRotation = 0.0f;
+	m_platRotation = 0.0f;
 }
 
 void
 func_platrot::Save(float handle)
 {
 	super::Save(handle);
-	SaveFloat(handle, "m_flRotation", m_flRotation);
+
+	SaveFloat(handle, "platRotation", m_platRotation);
 }
 
 void
-func_platrot::Restore(string strKey, string strValue)
+func_platrot::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
-	case "m_flRotation":
-		m_flRotation = ReadFloat(strValue);
+	case "platRotation":
+		m_platRotation = ReadFloat(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-func_platrot::SpawnKey(string strKey, string strValue)
+func_platrot::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "rotation":
-		m_flRotation = stof(strValue);
+		m_platRotation = ReadFloat(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
@@ -122,7 +122,7 @@ func_platrot::Respawn(void)
 	super::Respawn();
 
 	SetMoverRotation2(GetAngles());
-	SetMoverRotation1([0, m_flRotation, 0]);
+	SetMoverRotation1([0, m_platRotation, 0]);
 
 	if (HasTargetname() == false) {
 		SetAngles(GetMoverRotation2());
@@ -134,7 +134,7 @@ func_platrot::Respawn(void)
 void
 func_platrot::PlatformReturn(void)
 {
-	MoveAndRotateToPosition(GetMoverPosition2(), GetMoverRotation2(), m_flSpeed);
+	MoveAndRotateToPosition(GetMoverPosition2(), GetMoverRotation2(), GetPlatformSpeed());
 }
 
 void
@@ -142,16 +142,16 @@ func_platrot::Trigger(entity act, triggermode_t state)
 {
 	switch (state) {
 	case TRIG_OFF:
-		MoveAndRotateToPosition(GetMoverPosition1(), GetMoverRotation1(), m_flSpeed);
+		MoveAndRotateToPosition(GetMoverPosition1(), GetMoverRotation1(), GetPlatformSpeed());
 		break;
 	case TRIG_ON:
-		MoveAndRotateToPosition(GetMoverPosition2(), GetMoverRotation2(), m_flSpeed);
+		MoveAndRotateToPosition(GetMoverPosition2(), GetMoverRotation2(), GetPlatformSpeed());
 		break;
 	default:
 		if ((GetMoverState() == MOVER_POS2) || (GetMoverState() == MOVER_1TO2)){
-			MoveAndRotateToPosition(GetMoverPosition1(), GetMoverRotation1(), m_flSpeed);
+			MoveAndRotateToPosition(GetMoverPosition1(), GetMoverRotation1(), GetPlatformSpeed());
 		} else {
-			MoveAndRotateToPosition(GetMoverPosition2(), GetMoverRotation2(), m_flSpeed);
+			MoveAndRotateToPosition(GetMoverPosition2(), GetMoverRotation2(), GetPlatformSpeed());
 		}
 	}
 }

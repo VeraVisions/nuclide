@@ -18,11 +18,11 @@
 vector
 ncNavInfo::PositionOfClosestNode(vector pointOrigin)
 {
-	float bestDistance = COST_INFINITE;
+	float bestDistance = MAX_DISTANCE;
 	int bestNodeID = -1;
 
-	for (int i = 0; i < g_iNodes; i++) {
-		vector nodePosition = g_pNodes[i].m_vecOrigin;
+	for (int i = 0; i < g_nodeCount; i++) {
+		vector nodePosition = g_nodeGraph[i].m_origin;
 		float nodeDistance = distanceSquared(nodePosition, pointOrigin);
 
 		if (nodeDistance < bestDistance) {
@@ -31,18 +31,18 @@ ncNavInfo::PositionOfClosestNode(vector pointOrigin)
 		}
 	}
 
-	return (g_pNodes[bestNodeID].m_vecOrigin);
+	return (g_nodeGraph[bestNodeID].m_origin);
 }
 
 vector
 ncNavInfo::FindCoverFromEnemy(ncActor targetEnemy)
 {
-	float bestDistance = COST_INFINITE;
+	float bestDistance = MAX_DISTANCE;
 	int bestNodeID = -1i;
 
-	for (int i = 0; i < g_iNodes; i++) {
-		vector nodePosition = g_pNodes[i].m_vecOrigin;
-		float nodeRadius = g_pNodes[i].m_flRadius;
+	for (int i = 0; i < g_nodeCount; i++) {
+		vector nodePosition = g_nodeGraph[i].m_origin;
+		float nodeRadius = g_nodeGraph[i].m_nodeRadius;
 		float nodeDistance = distanceSquared(nodePosition, targetEnemy.origin);
 		traceline(targetEnemy.origin, nodePosition, MOVE_NORMAL, targetEnemy);
 
@@ -56,19 +56,19 @@ ncNavInfo::FindCoverFromEnemy(ncActor targetEnemy)
 		return g_vec_null;
 	}
 
-	return (g_pNodes[bestNodeID].m_vecOrigin);
+	return (g_nodeGraph[bestNodeID].m_origin);
 }
 
 vector
 ncNavInfo::FindBackFromPosition(vector targetPosition, vector eulerDirection)
 {
-	float bestDistance = COST_INFINITE;
+	float bestDistance = MAX_DISTANCE;
 	int bestNodeID = -1;
 	vector forwardDir = anglesToForward(eulerDirection);
 
-	for (int i = 0; i < g_iNodes; i++) {
-		vector nodePosition = g_pNodes[i].m_vecOrigin;
-		float nodeRadius = g_pNodes[i].m_flRadius;
+	for (int i = 0; i < g_nodeCount; i++) {
+		vector nodePosition = g_nodeGraph[i].m_origin;
+		float nodeRadius = g_nodeGraph[i].m_nodeRadius;
 		float nodeDistance = distanceSquared(nodePosition, targetPosition);
 		traceline(targetPosition, nodePosition, MOVE_NORMAL, world);
 
@@ -78,17 +78,17 @@ ncNavInfo::FindBackFromPosition(vector targetPosition, vector eulerDirection)
 		}
 	}
 
-	return (g_pNodes[bestNodeID].m_vecOrigin);
+	return (g_nodeGraph[bestNodeID].m_origin);
 }
 
 vector
 ncNavInfo::FindCoverFromEnemyNearNode(ncActor targetEnemy, vector targetNode)
 {
-	float bestDistance = COST_INFINITE;
+	float bestDistance = MAX_DISTANCE;
 	int bestNodeID = -1;
 
-	for (int i = 0; i < g_iNodes; i++) {
-		vector nodePosition = g_pNodes[i].m_vecOrigin;
+	for (int i = 0; i < g_nodeCount; i++) {
+		vector nodePosition = g_nodeGraph[i].m_origin;
 		float nodeDistance = distanceSquared(nodePosition, targetNode);
 
 		traceline(targetEnemy.origin, nodePosition, MOVE_NORMAL, targetEnemy);
@@ -99,7 +99,7 @@ ncNavInfo::FindCoverFromEnemyNearNode(ncActor targetEnemy, vector targetNode)
 		}
 	}
 
-	return (g_pNodes[bestNodeID].m_vecOrigin);
+	return (g_nodeGraph[bestNodeID].m_origin);
 }
 
 vector
@@ -108,8 +108,8 @@ ncNavInfo::FindCoverFromEnemyFarNode(ncActor targetEnemy, vector targetNode)
 	float bestDistance = 0;
 	int bestNodeID = -1;
 
-	for (int i = 0; i < g_iNodes; i++) {
-		vector nodePosition = g_pNodes[i].m_vecOrigin;
+	for (int i = 0; i < g_nodeCount; i++) {
+		vector nodePosition = g_nodeGraph[i].m_origin;
 		float nodeDistance = distanceSquared(nodePosition, targetNode);
 
 		traceline(targetEnemy.origin, nodePosition, MOVE_NORMAL, targetEnemy);
@@ -120,23 +120,23 @@ ncNavInfo::FindCoverFromEnemyFarNode(ncActor targetEnemy, vector targetNode)
 		}
 	}
 
-	return (g_pNodes[bestNodeID].m_vecOrigin);
+	return (g_nodeGraph[bestNodeID].m_origin);
 }
 
 vector
 ncNavInfo::FindCoverFromPosition(entity traceEntity, vector targetOrigin)
 {
-	float bestDistance = COST_INFINITE;
+	float bestDistance = MAX_DISTANCE;
 	int bestNodeID = -1i;
 
 #if 0
-	if (g_iNodes <= 0i) {
+	if (g_nodeCount <= 0i) {
 		return ncNavInfo::FindEmptySpotNearPosition(world, targetOrigin, 512.0, 4096.0f);
 	}
 #endif
 
-	for (int i = 0; i < g_iNodes; i++) {
-		vector nodePosition = g_pNodes[i].m_vecOrigin;
+	for (int i = 0; i < g_nodeCount; i++) {
+		vector nodePosition = g_nodeGraph[i].m_origin;
 		float nodeDistance = distanceSquared(nodePosition, traceEntity.origin);
 
 		traceline(nodePosition, targetOrigin, MOVE_NORMAL, traceEntity);
@@ -151,8 +151,8 @@ ncNavInfo::FindCoverFromPosition(entity traceEntity, vector targetOrigin)
 		return (g_vec_null);
 	}
 
-	NSError("%v",  (g_pNodes[bestNodeID].m_vecOrigin));
-	return (g_pNodes[bestNodeID].m_vecOrigin);
+	ncError("%v",  (g_nodeGraph[bestNodeID].m_origin));
+	return (g_nodeGraph[bestNodeID].m_origin);
 }
 
 vector
@@ -194,7 +194,6 @@ ncNavInfo::FindEmptySpotNearPosition(entity traceEntity, vector position, float 
 			return (testPos);
 		}
 	}
-	
 
 	return (g_vec_null);
 }
@@ -238,7 +237,7 @@ ncNavInfo::FindEmptySpotAwayFromPosition(entity traceEntity, vector position, fl
 			return (testPos);
 		}
 	}
-	
+
 
 	return (g_vec_null);
 }

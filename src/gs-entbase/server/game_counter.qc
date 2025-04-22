@@ -84,42 +84,42 @@ game_counter::Save(float handle)
 }
 
 void
-game_counter::Restore(string strKey, string strValue)
+game_counter::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_iCounted":
-		m_iCounted = ReadInt(strValue);
+		m_iCounted = ReadInt(setValue);
 		break;
 	case "m_iMaxCount":
-		m_iMaxCount = ReadInt(strValue);
+		m_iMaxCount = ReadInt(setValue);
 		break;
 	case "m_iStartCount":
-		m_iStartCount = ReadInt(strValue);
+		m_iStartCount = ReadInt(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-game_counter::SpawnKey(string strKey, string strValue)
+game_counter::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "health":
-		m_iMaxCount = stoi(strValue);
+		m_iMaxCount = stoi(setValue);
 		break;
 	case "frags":
-		m_iStartCount = stoi(strValue);
+		m_iStartCount = stoi(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
 void
 game_counter::Respawn(void)
 {
-	m_iValue = 0;
+	SetValue(0i);
 	m_iCounted = m_iStartCount;
 	InitPointTrigger();
 }
@@ -152,13 +152,13 @@ game_counter::Trigger(entity act, triggermode_t state)
 	EntLog("%s's triggering %s", targetname, target);
 	//print(sprintf("%s %s %i %i\n", classname, targetname, m_iCounted, m_iMaxCount ));
 	//error(sprintf("%s %i %i\n", act.classname, m_iCounted, m_iMaxCount ));
-	UseTargets(act, TRIG_TOGGLE, m_flDelay);
+	UseTargets(act, TRIG_TOGGLE, GetTriggerDelay());
 
 	if (HasSpawnFlags(GMCNT_REMOVE))
 		Destroy();
 	else if (HasSpawnFlags(GMCNT_RESET))
 		Respawn();
 	else
-		m_iValue = 1;
+		SetValue(1i);
 
 }

@@ -216,10 +216,10 @@ func_monitor::EvaluateEntity(void)
 	m_iUseSAR = viewPoint.m_iUseSAR;
 	m_vecFogColor = viewPoint.m_vecFogColor;
 	m_flFogStart = viewPoint.m_flFogStart;
-	m_bState = viewPoint.m_iValue ? true : false;
+	m_bState = viewPoint.GetValue(this) ? true : false;
 
 	/* camera is disabled */
-	if (!viewPoint.m_iValue) {
+	if (!viewPoint.GetValue(this)) {
 		return;
 	}
 
@@ -279,11 +279,11 @@ func_monitor::Input(entity eAct, string strInput, string strData)
 }
 
 void
-func_monitor::SpawnKey(string strKey, string strValue)
+func_monitor::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 

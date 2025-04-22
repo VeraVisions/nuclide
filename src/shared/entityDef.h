@@ -125,6 +125,7 @@ void EntityDef_DebugList(void);
 string EntityDef_GetKeyValue(string, string);
 int EntityDef_NetIDFromName(string);
 string EntityDef_NameFromNetID(int);
+void EntityDef_SetFromEntNum(ncItem targetItem, int defNum);
 int EntityDef_IDFromName(string);
 string EntityDef_GetSpawnData(int);
 bool EntityDef_HasSpawnClass(string className);

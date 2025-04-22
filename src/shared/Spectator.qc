@@ -18,7 +18,7 @@ void
 ncSpectator::ncSpectator(void)
 {
 	flags |= FL_CLIENT;
-	spec_mode = SPECMODE_FREE;
+	m_spectatingMode = SPECMODE_FREE;
 }
 
 #ifdef SERVER
@@ -29,11 +29,11 @@ ncSpectator::Save(float handle)
 }
 
 void
-ncSpectator::Restore(string strKey, string strValue)
+ncSpectator::Restore(string keyName, string setValue)
 {
-	switch (strKey) {
+	switch (keyName) {
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(keyName, setValue);
 	}
 }
 #endif
@@ -73,7 +73,7 @@ ncSpectator::ProcessInput(void)
 	} else if (input_buttons & INPUT_JUMP) {
 		InputMode();
 	} else {
-		spec_flags &= ~SPECFLAG_BUTTON_RELEASED;
+		m_spectatingFlags &= ~SPECFLAG_BUTTON_RELEASED;
 	}
 #endif
 }
@@ -81,7 +81,7 @@ ncSpectator::ProcessInput(void)
 void
 ncSpectator::WarpToTarget(void)
 {
-	entity b = edict_num(spec_ent);
+	entity b = edict_num(m_spectatingEntity);
 	setorigin(this, b.origin);
 }
 
@@ -90,8 +90,8 @@ ncSpectator::SharedInputFrame(void)
 {
 	SetSize(g_vec_null, g_vec_null);
 
-	if (spec_mode == SPECMODE_FREE || spec_mode == SPECMODE_FREEOVERVIEW) {
-		if (spec_mode == SPECMODE_FREEOVERVIEW) {
+	if (m_spectatingMode == SPECMODE_FREE || m_spectatingMode == SPECMODE_FREEOVERVIEW) {
+		if (m_spectatingMode == SPECMODE_FREEOVERVIEW) {
 			input_angles[0] = 0.0f;
 		}
 
@@ -126,9 +126,9 @@ ncSpectator::SendEntity(entity ePVSent, float flChanged)
 	SENDENTITY_FLOAT(velocity[1], SPECFL_VELOCITY)
 	SENDENTITY_FLOAT(velocity[2], SPECFL_VELOCITY)
 
-	SENDENTITY_BYTE(spec_ent, SPECFL_TARGET)
-	SENDENTITY_BYTE(spec_mode, SPECFL_MODE)
-	SENDENTITY_BYTE(spec_flags, SPECFL_FLAGS)
+	SENDENTITY_BYTE(m_spectatingEntity, SPECFL_TARGET)
+	SENDENTITY_BYTE(m_spectatingMode, SPECFL_MODE)
+	SENDENTITY_BYTE(m_spectatingFlags, SPECFL_FLAGS)
 	SENDENTITY_BYTE(movetype, SPECFL_TYPE)
 	SENDENTITY_BYTE(solid, SPECFL_TYPE)
 
@@ -140,7 +140,7 @@ ncSpectator::ServerInputFrame(void)
 {
 	movetype = MOVETYPE_NOCLIP;
 
-	if (spec_mode == SPECMODE_FREE) {
+	if (m_spectatingMode == SPECMODE_FREE) {
 		runstandardplayerphysics(this);
 	} else {
 		WarpToTarget();
@@ -183,7 +183,7 @@ ncSpectator::ClientInputFrame(void)
 void
 ncSpectator::ReceiveEntity(float new, float flChanged)
 {
-	if (spec_mode == SPECMODE_FREE || spec_mode == SPECMODE_FREEOVERVIEW)
+	if (m_spectatingMode == SPECMODE_FREE || m_spectatingMode == SPECMODE_FREEOVERVIEW)
 	if (new == FALSE) {
 		/* Go through all the physics code between the last received frame
 		 * and the newest frame and keep the changes this time around instead
@@ -220,9 +220,9 @@ ncSpectator::ReceiveEntity(float new, float flChanged)
 	READENTITY_FLOAT(velocity[1], SPECFL_VELOCITY)
 	READENTITY_FLOAT(velocity[2], SPECFL_VELOCITY)
 
-	READENTITY_BYTE(spec_ent, SPECFL_TARGET)
-	READENTITY_BYTE(spec_mode, SPECFL_MODE)
-	READENTITY_BYTE(spec_flags, SPECFL_FLAGS)
+	READENTITY_BYTE(m_spectatingEntity, SPECFL_TARGET)
+	READENTITY_BYTE(m_spectatingMode, SPECFL_MODE)
+	READENTITY_BYTE(m_spectatingFlags, SPECFL_FLAGS)
 	READENTITY_BYTE(movetype, SPECFL_TYPE)
 	READENTITY_BYTE(solid, SPECFL_TYPE)
 
@@ -245,36 +245,36 @@ ncSpectator::InputNext(void)
 	if (m_flDeathCam > time)
 		return;
 
-	if (spec_flags & SPECFLAG_BUTTON_RELEASED) {
+	if (m_spectatingFlags & SPECFLAG_BUTTON_RELEASED) {
 		return;
 	}
 
-	if (spec_mode == SPECMODE_DEATHCAM && m_flDeathCam < time) {
-		spec_mode = SPECMODE_THIRDPERSON;
+	if (m_spectatingMode == SPECMODE_DEATHCAM && m_flDeathCam < time) {
+		m_spectatingMode = SPECMODE_THIRDPERSON;
 		InputNext();
 		return;
-	} else if (spec_mode == SPECMODE_FREE) {
-		spec_mode = SPECMODE_THIRDPERSON;
-	} else if (spec_mode == SPECMODE_FREEOVERVIEW) {
-		spec_mode = SPECMODE_CHASEOVERVIEW;
+	} else if (m_spectatingMode == SPECMODE_FREE) {
+		m_spectatingMode = SPECMODE_THIRDPERSON;
+	} else if (m_spectatingMode == SPECMODE_FREEOVERVIEW) {
+		m_spectatingMode = SPECMODE_CHASEOVERVIEW;
 	}
 
-	spec_flags |= SPECFLAG_BUTTON_RELEASED;
+	m_spectatingFlags |= SPECFLAG_BUTTON_RELEASED;
 
 #if 0
 	float max_edict;
 
 	max_edict = serverkeyfloat("sv_playerslots");
 
-	spec_ent++;
+	m_spectatingEntity++;
 
-	if (spec_ent > max_edict)
-		spec_ent = 1;
+	if (m_spectatingEntity > max_edict)
+		m_spectatingEntity = 1;
 
-	print(sprintf("edict: %d\n", spec_ent));
+	print(sprintf("edict: %d\n", m_spectatingEntity));
 #else
 	float max_edict;
-	float sep = spec_ent;
+	float sep = m_spectatingEntity;
 	float best = 0;
 	ncClient cl;
 
@@ -285,7 +285,7 @@ ncSpectator::InputNext(void)
 
 		if (i <= sep && best == 0) {
 			f = edict_num(i);
-			if (f && f.classname == "player" && f != this) {
+			if (f && f._isPlayer && f != this) {
 				cl = (ncClient)f;
 				if (!cl.IsFakeSpectator())
 					best = i;
@@ -294,7 +294,7 @@ ncSpectator::InputNext(void)
 
 		if (i > sep) {
 			f = edict_num(i);
-			if (f && f.classname == "player" && f != this) {
+			if (f && f._isPlayer && f != this) {
 				cl = (ncClient)f;
 				if (!cl.IsFakeSpectator()) {
 					best = i;
@@ -307,13 +307,13 @@ ncSpectator::InputNext(void)
 	if (best == 0)
 		return;
 
-	spec_ent = best;
+	m_spectatingEntity = best;
 #endif
 
 	WarpToTarget();
 
-	if (spec_mode == SPECMODE_CHASEOVERVIEW)
-		spec_mode = SPECMODE_CHASEOVERVIEW;
+	if (m_spectatingMode == SPECMODE_CHASEOVERVIEW)
+		m_spectatingMode = SPECMODE_CHASEOVERVIEW;
 }
 
 void
@@ -322,34 +322,34 @@ ncSpectator::InputPrevious(void)
 	if (m_flDeathCam > time)
 		return;
 
-	if (spec_flags & SPECFLAG_BUTTON_RELEASED) {
+	if (m_spectatingFlags & SPECFLAG_BUTTON_RELEASED) {
 		return;
 	}
 
-	if (spec_mode == SPECMODE_DEATHCAM && m_flDeathCam < time) {
-		spec_mode = SPECMODE_THIRDPERSON;
+	if (m_spectatingMode == SPECMODE_DEATHCAM && m_flDeathCam < time) {
+		m_spectatingMode = SPECMODE_THIRDPERSON;
 		InputNext();
 		return;
-	} else if (spec_mode == SPECMODE_FREE) {
-		spec_mode = SPECMODE_THIRDPERSON;
-	} else if (spec_mode == SPECMODE_FREEOVERVIEW) {
-		spec_mode = SPECMODE_CHASEOVERVIEW;
+	} else if (m_spectatingMode == SPECMODE_FREE) {
+		m_spectatingMode = SPECMODE_THIRDPERSON;
+	} else if (m_spectatingMode == SPECMODE_FREEOVERVIEW) {
+		m_spectatingMode = SPECMODE_CHASEOVERVIEW;
 	}
 
-	spec_flags |= SPECFLAG_BUTTON_RELEASED;
+	m_spectatingFlags |= SPECFLAG_BUTTON_RELEASED;
 
 #if 0
 	float max_edict;
 
 	max_edict = serverkeyfloat("sv_playerslots");
 
-	spec_ent--;
+	m_spectatingEntity--;
 
-	if (spec_ent < 1)
-		spec_ent = max_edict;
+	if (m_spectatingEntity < 1)
+		m_spectatingEntity = max_edict;
 #else
 	float max_edict;
-	float sep = spec_ent;
+	float sep = m_spectatingEntity;
 	float best = 0;
 	ncClient cl;
 
@@ -362,7 +362,7 @@ ncSpectator::InputPrevious(void)
 		if (i >= sep && best == 0) {
 			f = edict_num(i);
 
-			if (f && f.classname == "player") {
+			if (f && f._isPlayer) {
 				cl = (ncClient)f;
 
 				if (!cl.IsFakeSpectator())
@@ -373,7 +373,7 @@ ncSpectator::InputPrevious(void)
 		/* find the first good one and take it */
 		if (i < sep) {
 			f = edict_num(i);
-			if (f && f.classname == "player") {
+			if (f && f._isPlayer) {
 				cl = (ncClient)f;
 				if (!cl.IsFakeSpectator()) {
 					best = i;
@@ -386,48 +386,48 @@ ncSpectator::InputPrevious(void)
 	if (best == 0)
 		return;
 
-	spec_ent = best;
+	m_spectatingEntity = best;
 #endif
 
 
 	WarpToTarget();
 
-	if (spec_mode == SPECMODE_LOCKEDCHASE)
-		spec_mode = SPECMODE_CHASEOVERVIEW;
+	if (m_spectatingMode == SPECMODE_LOCKEDCHASE)
+		m_spectatingMode = SPECMODE_CHASEOVERVIEW;
 }
 
 void
 ncSpectator::InputMode(void)
 {
-	if (spec_mode == SPECMODE_DEATHCAM && m_flDeathCam < time) {
-		spec_mode = SPECMODE_THIRDPERSON;
+	if (m_spectatingMode == SPECMODE_DEATHCAM && m_flDeathCam < time) {
+		m_spectatingMode = SPECMODE_THIRDPERSON;
 		InputNext();
 		return;
 	}
 
-	if (spec_flags & SPECFLAG_BUTTON_RELEASED) {
+	if (m_spectatingFlags & SPECFLAG_BUTTON_RELEASED) {
 		return;
 	}
 
-	spec_flags |= SPECFLAG_BUTTON_RELEASED;
+	m_spectatingFlags |= SPECFLAG_BUTTON_RELEASED;
 
 	ncClient f;
 #ifdef CLIENT
-	f = (ncClient)findfloat(world, ::entnum, spec_ent);
+	f = (ncClient)findfloat(world, ::entnum, m_spectatingEntity);
 #else
-	f = (ncClient)edict_num(spec_ent);
+	f = (ncClient)edict_num(m_spectatingEntity);
 #endif
 
-	if (f == this || f.classname != "player") {
-		if (spec_mode != SPECMODE_FREE)
-			spec_mode = SPECMODE_FREE;
+	if (f == this || !(f._isPlayer)) {
+		if (m_spectatingMode != SPECMODE_FREE)
+			m_spectatingMode = SPECMODE_FREE;
 		else
-			spec_mode = SPECMODE_FREEOVERVIEW;
+			m_spectatingMode = SPECMODE_FREEOVERVIEW;
 	} else {
-		spec_mode++;
+		m_spectatingMode++;
 
-		if (spec_mode > SPECMODE_CHASEOVERVIEW)
-			spec_mode = SPECMODE_LOCKEDCHASE;
+		if (m_spectatingMode > SPECMODE_CHASEOVERVIEW)
+			m_spectatingMode = SPECMODE_LOCKEDCHASE;
 	}
 }
 
@@ -438,9 +438,9 @@ ncSpectator::PreFrame(void)
 	/* base player attributes/fields we're going to roll back */
 	SAVE_STATE(origin)
 	SAVE_STATE(velocity)
-	SAVE_STATE(spec_ent)
-	SAVE_STATE(spec_mode)
-	SAVE_STATE(spec_flags)
+	SAVE_STATE(m_spectatingEntity)
+	SAVE_STATE(m_spectatingMode)
+	SAVE_STATE(m_spectatingFlags)
 
 	/* run physics code for all the input frames which we've not heard back
 	 * from yet. This continues on in Player_ReceiveEntity! */
@@ -474,23 +474,23 @@ ncSpectator::PreFrame(void)
 void
 ncSpectator::SpectatorTrackPlayer(void)
 {
-	if (spec_mode == SPECMODE_DEATHCAM
-		|| spec_mode == SPECMODE_THIRDPERSON 
-		|| spec_mode == SPECMODE_FIRSTPERSON
-		|| spec_mode == SPECMODE_CHASEOVERVIEW
-		|| spec_mode == SPECMODE_LOCKEDCHASE ) {
+	if (m_spectatingMode == SPECMODE_DEATHCAM
+		|| m_spectatingMode == SPECMODE_THIRDPERSON 
+		|| m_spectatingMode == SPECMODE_FIRSTPERSON
+		|| m_spectatingMode == SPECMODE_CHASEOVERVIEW
+		|| m_spectatingMode == SPECMODE_LOCKEDCHASE ) {
 		ncClient b;
 
 	#ifdef CLIENT
-		b = (ncClient)findfloat(world, ::entnum, spec_ent);
+		b = (ncClient)findfloat(world, ::entnum, m_spectatingEntity);
 	#else
-		b = (ncClient)edict_num(spec_ent);
+		b = (ncClient)edict_num(m_spectatingEntity);
 	#endif
 
-		if (b && b.classname == "player")
+		if (b && is.Player(b))
 		if (b.IsFakeSpectator()) {
 			b = 0;
-			spec_mode = SPECMODE_FREE;
+			m_spectatingMode = SPECMODE_FREE;
 			InputNext();
 		}
 
@@ -513,9 +513,9 @@ ncSpectator::EvaluateEntity(void)
 	   and announce to network said changes */
 	EVALUATE_FIELD(origin, SPECFL_ORIGIN)
 	EVALUATE_FIELD(velocity, SPECFL_VELOCITY)
-	EVALUATE_FIELD(spec_ent, SPECFL_TARGET)
-	EVALUATE_FIELD(spec_mode, SPECFL_MODE)
-	EVALUATE_FIELD(spec_flags, SPECFL_FLAGS)
+	EVALUATE_FIELD(m_spectatingEntity, SPECFL_TARGET)
+	EVALUATE_FIELD(m_spectatingMode, SPECFL_MODE)
+	EVALUATE_FIELD(m_spectatingFlags, SPECFL_FLAGS)
 	EVALUATE_FIELD(movetype, SPECFL_TYPE)
 	EVALUATE_FIELD(solid, SPECFL_TYPE)
 }
@@ -523,8 +523,8 @@ ncSpectator::EvaluateEntity(void)
 void
 ncSpectator::SpectatorDeathcam(ncRenderableEntity ourCorpse, ncEntity trackEntity, float waitTime)
 {
-	spec_ent = num_for_edict(ourCorpse);
-	spec_mode = SPECMODE_DEATHCAM;
+	m_spectatingEntity = num_for_edict(ourCorpse);
+	m_spectatingMode = SPECMODE_DEATHCAM;
 	m_flDeathCam = time + waitTime;
 }
 #endif
@@ -535,9 +535,9 @@ ncSpectator::PostFrame(void)
 #ifdef CLIENT
 	ROLL_BACK(origin)
 	ROLL_BACK(velocity)
-	ROLL_BACK(spec_ent)
-	ROLL_BACK(spec_mode)
-	ROLL_BACK(spec_flags)
+	ROLL_BACK(m_spectatingEntity)
+	ROLL_BACK(m_spectatingMode)
+	ROLL_BACK(m_spectatingFlags)
 #endif
 }
 

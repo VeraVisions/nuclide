@@ -67,7 +67,7 @@ public:
 	
 	virtual bool FocusCheck(vector,vector);
 	
-	virtual void RendererRestarted(void);
+	virtual void ReloadVideoResources(void);
 	virtual bool CanSpawn(bool);
 
 };
@@ -138,7 +138,7 @@ ncInteractiveSurface::FocusCheck(vector vecViewPos, vector vecViewAng)
 }
 
 void
-ncInteractiveSurface::RendererRestarted(void)
+ncInteractiveSurface::ReloadVideoResources(void)
 {
 	m_flSurfaceMat = shaderforname(m_strSurfaceMat, sprintf("{\nsurfaceParm nolightmap\n{\nmap $rt:%s\n}\n}", m_strSurfaceMat));
 	m_bCached = true;
@@ -245,7 +245,7 @@ ncInteractiveSurface::Spawned(void)
 	super::Spawned();
 	m_vecWorldSize = m_vecUIRes * m_flScale;
 
-	RendererRestarted();
+	ReloadVideoResources();
 
 	/* initialize UI panel here */
 	m_UIChain = spawn(vguiWidget);

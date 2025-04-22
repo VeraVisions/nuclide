@@ -75,29 +75,29 @@ func_brush::Save(float handle)
 }
 
 void
-func_brush::Restore(string strKey, string strValue)
+func_brush::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_iSolidity":
-		m_iSolidity = ReadInt(strValue);
+		m_iSolidity = ReadInt(setValue);
 		break;
 	case "m_iStartOff":
-		m_iStartOff = ReadInt(strValue);
+		m_iStartOff = ReadInt(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-func_brush::SpawnKey(string strKey, string strValue)
+func_brush::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "Solidity":
-		m_iSolidity = stoi(strValue);
+		m_iSolidity = stoi(setValue);
 		break;
 	case "StartDisabled":
-		m_iStartOff = stoi(strValue);
+		m_iStartOff = stoi(setValue);
 		break;
 	/* TODO: implement these */
 	case "solidbsp":
@@ -107,7 +107,7 @@ func_brush::SpawnKey(string strKey, string strValue)
 	case "invert_exclusion":
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 

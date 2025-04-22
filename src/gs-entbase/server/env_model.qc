@@ -48,6 +48,7 @@ public:
 	virtual void Trigger(entity, triggermode_t);
 
 private:
+	bool m_modelState;
 	int m_iOnSequence;
 	int m_iOffSequence;
 	int m_iOnAction;
@@ -57,6 +58,7 @@ private:
 void
 env_model::env_model(void)
 {
+	m_modelState = true;
 	m_iOnSequence = 0i;
 	m_iOffSequence = 0i;
 	m_iOnAction = 0i;
@@ -105,7 +107,7 @@ env_model::Respawn(void)
 	if (HasSpawnFlags(1)) {
 		Trigger(this, TRIG_OFF);
 	} else {
-		Trigger(this, TRIG_OFF);
+		Trigger(this, TRIG_ON);
 	}
 }
 
@@ -114,15 +116,15 @@ env_model::Trigger(entity act, triggermode_t state)
 {
 	switch (state) {
 	case TRIG_OFF:
-		m_iValue = 0;
+		m_modelState = false;
 		break;
 	case TRIG_ON:
-		m_iValue = 1;
+		m_modelState = true;
 		break;
 	default:
-		m_iValue = 1 - m_iValue;
+		m_modelState = true - m_modelState;
 		break;
 	}
 
-	SetFrame(m_iValue == 1 ? m_iOnSequence : m_iOffSequence);
+	SetFrame(m_modelState == true ? m_iOnSequence : m_iOffSequence);
 }

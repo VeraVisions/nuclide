@@ -55,6 +55,8 @@ public:
 	nonvirtual ncSquadMonster GetNearestSquadMember(void);
 	/** Returns the farthest available member of its squad. */
 	nonvirtual ncSquadMonster GetFarthestSquadMember(void);
+	/** Informs out squad of our new mindset. */
+	nonvirtual void AlertSquadWithMindset(string scheduleType);
 #endif
 
 #ifdef SERVER

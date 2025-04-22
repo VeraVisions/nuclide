@@ -33,6 +33,8 @@
 #define MATH_PI 3.1415926
 noref const vector g_vec_null = [0.0f, 0.0f, 0.0f];
 
+#define MAX_DISTANCE 99999
+
 #ifdef MENU
 
 vector vectoangles2(vector fwd, optional vector up) = #11;

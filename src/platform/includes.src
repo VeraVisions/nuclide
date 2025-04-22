@@ -15,5 +15,6 @@ saves.qc
 cmd.qc
 fragnet.qc
 servers.qc
+localize.qc
 init.qc
 #endlist 

@@ -60,7 +60,7 @@ public:
 private:
 	string m_strSwapModel;
 	float m_flMassOverride;
-	string m_strOnConvert;
+	string m_outputOnConvert;
 };
 
 void
@@ -68,7 +68,7 @@ phys_convert::phys_convert(void)
 {
 	m_strSwapModel = __NULL__;
 	m_flMassOverride = 0.0f;
-	m_strOnConvert = __NULL__;
+	m_outputOnConvert = __NULL__;
 }
 
 void
@@ -77,24 +77,24 @@ phys_convert::Save(float handle)
 	super::Save(handle);
 	SaveString(handle, "m_strSwapModel", m_strSwapModel);
 	SaveFloat(handle, "m_flMassOverride", m_flMassOverride);
-	SaveString(handle, "m_strOnConvert", m_strOnConvert);
+	SaveString(handle, "m_outputOnConvert", m_outputOnConvert);
 }
 
 void
-phys_convert::Restore(string strKey, string strValue)
+phys_convert::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_strSwapModel":
-		m_strSwapModel = ReadString(strValue);
+		m_strSwapModel = ReadString(setValue);
 		break;
 	case "m_flMassOverride":
-		m_flMassOverride = ReadFloat(strValue);
+		m_flMassOverride = ReadFloat(setValue);
 		break;
-	case "m_strOnConvert":
-		m_strOnConvert = ReadString(strValue);
+	case "m_outputOnConvert":
+		m_outputOnConvert = ReadString(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
@@ -112,7 +112,7 @@ phys_convert::SpawnKey(string keyName, string setValue)
 		m_flMassOverride = ReadFloat(setValue);
 		break;
 	case "OnConvert":
-		m_strOnConvert = PrepareOutput(m_strOnConvert, setValue);
+		m_outputOnConvert = PrepareOutput(m_outputOnConvert, setValue);
 		break;
 	default:
 		super::SpawnKey(keyName, setValue);
@@ -125,8 +125,8 @@ phys_convert::Spawned(void)
 {
 	super::Spawned();
 
-	if (m_strOnConvert)
-		m_strOnConvert = CreateOutput(m_strOnConvert);
+	if (m_outputOnConvert)
+		m_outputOnConvert = CreateOutput(m_outputOnConvert);
 }
 
 void
@@ -165,7 +165,7 @@ phys_convert::ConvertTarget(entity activatorEnt)
 	targetName = targetEnt.targetname;
 
 	new = spawn(ncPhysicsEntity);
-	new.Respawn();
+	new.Spawn();
 
 	/* may have an override */
 	if (m_strSwapModel) {
@@ -196,8 +196,8 @@ phys_convert::ConvertTarget(entity activatorEnt)
 
 	targetEnt.Destroy();
 
-	if (m_strOnConvert)
-		UseOutput(activatorEnt, m_strOnConvert);
+	if (m_outputOnConvert)
+		UseOutput(activatorEnt, m_outputOnConvert);
 }
 
 void

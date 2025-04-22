@@ -16,10 +16,10 @@
 
 #pragma target fte_5768
 //#pragma flag enable assumeint
-#pragma PROGS_DAT  "../../base/plug_chatfilter.dat"
-#define QWSSQC
+#pragma PROGS_DAT  "../../base/plugins/chatfilter.dat"
+#define SERVER
 
-#include "../shared/fteextensions.qc"
+#include "../server/api.h"
 
 var int autocvar_chatplug_filter = 1;
 

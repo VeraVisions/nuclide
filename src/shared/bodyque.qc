@@ -16,41 +16,35 @@
 
 #ifdef SERVER
 entity g_bodies;
-
-var bool autocvar_bodyque_ragdolls = true;
-var int autocvar_bodyque_maxBodies = 4i;
-
-#define CORPSES_MAX autocvar_bodyque_maxBodies
+entity g_bodiesRagdoll;
 
 void
 BodyQue_Init(void)
 {
 	entity next;
 
-	if (autocvar_bodyque_ragdolls)
-		next = spawn(ncRagdoll);
-	else
-		next = spawn(ncRenderableEntity);
+	g_bodies = next = spawn(ncRenderableEntity);
 
-	g_bodies = next;
-
-	for ( int i = 0; i <= CORPSES_MAX; i++ ) {
-		next.classname = "corpse";
-
-		if (autocvar_bodyque_ragdolls)
-			next.owner = spawn(ncRagdoll);
-		else
-			next.owner = spawn(ncRenderableEntity);
-		
-		if ( i == CORPSES_MAX ) {
+	for (int i = 0i; i <= CORPSES_MAX; i++) {
+		if (i == CORPSES_MAX) {
 			next.owner = g_bodies;
 		} else {
-			next = next.owner;
+			next = next.owner = spawn(ncRenderableEntity);
+		}
+	}
+
+	g_bodiesRagdoll = next = spawn(ncRagdoll);
+
+	for (int i = 0i; i <= RAGDOLLS_MAX; i++) {
+		if (i == RAGDOLLS_MAX) {
+			next.owner = g_bodiesRagdoll;
+		} else {
+			next = next.owner = spawn(ncRagdoll);
 		}
 	}
 }
 
-static entity
+static ncRenderableEntity
 BodyQue_Next(void)
 {
 	entity r = g_bodies;
@@ -58,48 +52,81 @@ BodyQue_Next(void)
 	return r;
 }
 
+static ncRagdoll
+BodyQue_NextRagdoll(void)
+{
+	entity r = g_bodiesRagdoll;
+	g_bodiesRagdoll = g_bodiesRagdoll.owner;
+	return r;
+}
+
 static void
 BodyQue_Update(void)
 {
 	ncEntity meSelf = (ncEntity)self;
+
 	meSelf.frame1time += frametime;
+	meSelf.AddVelocity([0,0,128] * lerp(1.0f, 0.0f, meSelf.GetSpawnAge() * 0.1f));
 
 	if (meSelf.frame1time < 10.0) {
 		meSelf.ScheduleThink(BodyQue_Update, 0.0f);
 	}
 }
 
-entity
+ncRenderableEntity
 BodyQue_Spawn(ncActor pl, float anim)
 {
-	ncRagdoll body_next = (ncRagdoll)BodyQue_Next();
+	ncRenderableEntity nextBody = BodyQue_Next();
 
-	if (autocvar_bodyque_ragdolls) {
-		/* don't run physics on server side */
-		body_next.SetMovetype(MOVETYPE_NONE);
-		body_next.SetSolid(SOLID_NOT);
-	} else {
-		body_next.SetMovetype(MOVETYPE_BOUNCE);
-		body_next.SetSolid(SOLID_CORPSE);
-	}
-
-	body_next.SetModelindex(pl.GetModelindex());
+	nextBody.Spawn();
+	nextBody.SetMovetype(MOVETYPE_BOUNCE);
+	nextBody.SetSolid(SOLID_CORPSE);
+	nextBody.SetModelindex(pl.GetModelindex());
 
 	if (pl.IsCrouching()) {
-		body_next.SetOrigin(pl.GetOrigin() + [0,0,32]);
+		nextBody.SetOrigin(pl.GetOrigin() + [0,0,32]);
 	} else {
-		body_next.SetOrigin(pl.GetOrigin());
+		nextBody.SetOrigin(pl.GetOrigin());
 	}
 
-	body_next.SetSize(pl.GetMins(), pl.GetMaxs());
-	body_next.SetAngles(pl.GetAngles());
-	body_next.SetVelocity(pl.GetVelocity() + [0,0,120]);
-	body_next.SetFrame(anim);
-	body_next.m_iBody = pl.m_iBody;
-	body_next.ScheduleThink(BodyQue_Update, 0.0f);
-	body_next.colormap = pl.colormap;
-	body_next.frame1time = 0.0f;
+	nextBody.SetSize(pl.GetMins(), pl.GetMaxs());
+	nextBody.SetAngles(pl.GetAngles());
+	nextBody.SetVelocity(pl.GetVelocity() + [0,0,120]);
+	nextBody.SetFrame(anim);
+	nextBody.m_geomsetField = pl.m_geomsetField;
+	nextBody.ScheduleThink(BodyQue_Update, 0.0f);
+	nextBody.colormap = pl.colormap;
+	nextBody.frame1time = 0.0f;
 
-	return (entity)body_next;
+	return (nextBody);
+}
+
+ncRagdoll
+BodyQue_SpawnRagdoll(ncActor pl, float anim)
+{
+	ncRagdoll nextRagdoll = (ncRagdoll)BodyQue_NextRagdoll();
+
+	nextRagdoll.Spawn();
+	/* don't run physics on server side */
+	nextRagdoll.SetMovetype(MOVETYPE_NONE);
+	nextRagdoll.SetSolid(SOLID_NOT);
+	nextRagdoll.SetModelindex(pl.GetModelindex());
+
+	if (pl.IsCrouching()) {
+		nextRagdoll.SetOrigin(pl.GetOrigin() + [0,0,32]);
+	} else {
+		nextRagdoll.SetOrigin(pl.GetOrigin());
+	}
+
+	nextRagdoll.SetSize(pl.GetMins(), pl.GetMaxs());
+	nextRagdoll.SetAngles(pl.GetAngles());
+	nextRagdoll.SetVelocity(pl.GetVelocity() + [0,0,120]);
+	nextRagdoll.SetFrame(anim);
+	nextRagdoll.m_geomsetField = pl.m_geomsetField;
+	nextRagdoll.ScheduleThink(BodyQue_Update, 0.0f);
+	nextRagdoll.colormap = pl.colormap;
+	nextRagdoll.frame1time = 0.0f;
+
+	return (nextRagdoll);
 }
 #endif

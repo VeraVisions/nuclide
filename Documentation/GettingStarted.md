@@ -72,13 +72,13 @@ Will set the 1st player's health to `42`. If you do not assign a value it'll ins
 You can list the entity data, specific to the level you are on, like so:
 
 ```
-listSpawnData 248
+listEntitySpawnData 248
 ```
 
 And the output will look a lot like:
 
 ```
-]/listSpawnData 248
+]/listEntitySpawnData 248
 Spawn data for func_breakable (248):
 {
         "model"         "*13"

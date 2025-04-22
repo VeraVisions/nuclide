@@ -51,7 +51,7 @@ DetailTex_Parse(string maptex, string detailtex, float xscale, float yscale)
 	xscale *= autocvar(r_detailtextures_xscale, 1.0, "X scale multiplier for detail tex");
 	yscale *= autocvar(r_detailtextures_yscale, 1.0, "Y scale multiplier for detail tex");
 
-	NSLog("DETAIL: %s %s %f %f", maptex, detailtex, xscale, yscale);
+	ncLog("DETAIL: %s %s %f %f", maptex, detailtex, xscale, yscale);
 
 #if 1
 	shaderforname(strcat(maptex, "_detail"), sprintf(g_detail_shader, detailtex, xscale, yscale));
@@ -77,7 +77,7 @@ DetailTex_Reload(void)
 	fh = fopen(strcat("maps/", mapname, "_detail.txt"), FILE_READ);
 
 	if (fh < 0) {
-		NSError("DeailTex definition missing for %s.", mapname);
+		ncError("DeailTex definition missing for %s.", mapname);
 		return;
 	}
 
@@ -91,7 +91,7 @@ DetailTex_Reload(void)
 		n++;
 	}
 
-	NSLog("DeailTex initialized with %i entries.", n);
+	ncLog("DeailTex initialized with %i entries.", n);
 	fclose(fh);
 	g_detail_initialized = 1;
 }

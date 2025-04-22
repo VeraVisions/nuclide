@@ -69,14 +69,14 @@ trigger_gravity::Save(float handle)
 }
 
 void
-trigger_gravity::Restore(string strKey, string strValue)
+trigger_gravity::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_flGravity":
-		m_flGravity = ReadFloat(strValue);
+		m_flGravity = ReadFloat(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 #endif

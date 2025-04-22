@@ -35,13 +35,8 @@ ncPointTrigger::InitPointTrigger(void)
 
 #ifdef SERVER
 	RestoreAngles();
-	m_bEnabled = (m_bStartDisabled) ? false : true;
-
-	string parentName = GetSpawnString("parentname");
-
-	if (STRING_SET(parentName)) {
-		SetParent(parentName);
-	}
+	m_triggerEnabled = (m_triggerStartsDisabled) ? false : true;
+	_RelinkToSpawnParent();
 #endif
 }
 
@@ -49,17 +44,6 @@ void
 ncPointTrigger::DebugDraw(void)
 {
 #ifdef SERVER
-	if (!STRING_SET(m_strEditorIcon)) {
-		return;
-	}
-
-	vector centerPos = WorldSpaceCenter();
 	super::DebugDraw();
-	R_BeginPolygon(m_strEditorIcon, 0, 0);
-		R_PolygonVertex(centerPos + v_right * 8 - v_up * 8, [1,1], [1,1,1], 1.0f);
-		R_PolygonVertex(centerPos - v_right * 8 - v_up * 8, [0,1], [1,1,1], 1.0f);
-		R_PolygonVertex(centerPos - v_right * 8 + v_up * 8, [0,0], [1,1,1], 1.0f);
-		R_PolygonVertex(centerPos + v_right * 8 + v_up * 8, [1,0], [1,1,1], 1.0f);
-	R_EndPolygon();
 #endif
 }

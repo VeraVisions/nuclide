@@ -75,17 +75,17 @@ trigger_auto::Save(float handle)
 }
 
 void
-trigger_auto::Restore(string strKey, string strValue)
+trigger_auto::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_iTriggerState":
-		m_iTriggerState = ReadFloat(strValue);
+		m_iTriggerState = ReadFloat(setValue);
 		break;
 	case "m_flDelay":
-		m_flDelay = ReadFloat(strValue);
+		m_flDelay = ReadFloat(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
@@ -96,17 +96,17 @@ trigger_auto::RestoreComplete(void)
 }
 
 void
-trigger_auto::SpawnKey(string strKey, string strValue)
+trigger_auto::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "triggerstate":
-		m_iTriggerState = stof(strValue);
+		m_iTriggerState = stof(setValue);
 		break;
 	case "delay":
-		m_flDelay = stof(strValue);
+		m_flDelay = stof(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
@@ -126,8 +126,8 @@ trigger_auto::Respawn(void)
 void
 trigger_auto::Processing(void)
 {
-	if (STRING_SET(m_strGlobalState)) {
-		if (GetGlobalValue(m_strGlobalState) == 0) {
+	if (STRING_SET(m_globalState)) {
+		if (GetGlobalValue(m_globalState) == 0) {
 			return;
 		}
 	}

@@ -77,44 +77,44 @@ player_loadsaved::Save(float handle)
 }
 
 void
-player_loadsaved::Restore(string strKey, string strValue)
+player_loadsaved::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_strMessage":
-		m_strMessage = ReadString(strValue);
+		m_strMessage = ReadString(setValue);
 		break;
 	case "m_flLoadTime":
-		m_flLoadTime = ReadFloat(strValue);
+		m_flLoadTime = ReadFloat(setValue);
 		break;
 	case "m_flFadeDuration":
-		m_flFadeDuration = ReadFloat(strValue);
+		m_flFadeDuration = ReadFloat(setValue);
 		break;
 	case "m_flFadeHold":
-		m_flFadeHold = ReadFloat(strValue);
+		m_flFadeHold = ReadFloat(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-player_loadsaved::SpawnKey(string strKey, string strValue)
+player_loadsaved::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "duration":
-		m_flFadeDuration = stof(strValue);
+		m_flFadeDuration = stof(setValue);
 		break;
 	case "holdtime":
-		m_flFadeHold = stof(strValue);
+		m_flFadeHold = stof(setValue);
 		break;
 	case "message":
-		m_strMessage = strValue;
+		m_strMessage = setValue;
 		break;
 	case "loadtime":
-		m_flLoadTime = stof(strValue);
+		m_flLoadTime = stof(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
@@ -129,10 +129,10 @@ player_loadsaved::Trigger(entity act, triggermode_t unused)
 {
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_FADE);
-	WriteByte(MSG_MULTICAST, m_vecRenderColor[0]);
-	WriteByte(MSG_MULTICAST, m_vecRenderColor[1]);
-	WriteByte(MSG_MULTICAST, m_vecRenderColor[2]);
-	WriteByte(MSG_MULTICAST, m_flRenderAmt);
+	WriteByte(MSG_MULTICAST, m_renderColor[0]);
+	WriteByte(MSG_MULTICAST, m_renderColor[1]);
+	WriteByte(MSG_MULTICAST, m_renderColor[2]);
+	WriteByte(MSG_MULTICAST, m_renderAmount);
 	WriteFloat(MSG_MULTICAST, m_flFadeDuration);
 	WriteFloat(MSG_MULTICAST, m_flFadeHold);
 	WriteByte(MSG_MULTICAST, 0);

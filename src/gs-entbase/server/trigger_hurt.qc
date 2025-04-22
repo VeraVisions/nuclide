@@ -90,8 +90,9 @@ private:
 	float m_flNextTrigger;
 	float m_flNextDmg;
 	float m_flDelay;
-	string m_strOnHurt;
-	string m_strOnHurtPlayer;
+	string m_outputOnHurt;
+	string m_outputOnHurtPlayer;
+	ncSound m_ambientSound;
 };
 
 void
@@ -102,8 +103,9 @@ trigger_hurt::trigger_hurt(void)
 	m_flNextTrigger = 0.0f;
 	m_flNextDmg = 0.5f;
 	m_flDelay = 0.0f;
-	m_strOnHurt = __NULL__;
-	m_strOnHurtPlayer = __NULL__;
+	m_outputOnHurt = __NULL__;
+	m_outputOnHurtPlayer = __NULL__;
+	m_ambientSound = __NULL__;
 }
 
 void
@@ -115,61 +117,65 @@ trigger_hurt::Save(float handle)
 	SaveFloat(handle, "m_flNextTrigger", m_flNextTrigger);
 	SaveFloat(handle, "m_flNextDmg", m_flNextDmg);
 	SaveFloat(handle, "m_flDelay", m_flDelay);
-	SaveString(handle, "m_strOnHurt", m_strOnHurt);
-	SaveString(handle, "m_strOnHurtPlayer", m_strOnHurtPlayer);
+	SaveString(handle, "m_outputOnHurt", m_outputOnHurt);
+	SaveString(handle, "m_outputOnHurtPlayer", m_outputOnHurtPlayer);
+	SaveEntity(handle, "m_ambientSound", m_ambientSound);
 }
 
 void
-trigger_hurt::Restore(string strKey, string strValue)
+trigger_hurt::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_iDamage":
-		m_iDamage = ReadInt(strValue);
+		m_iDamage = ReadInt(setValue);
 		break;
 	case "m_iDamageType":
-		m_iDamageType = ReadInt(strValue);
+		m_iDamageType = ReadInt(setValue);
 		break;
 	case "m_flNextTrigger":
-		m_flNextTrigger = ReadFloat(strValue);
+		m_flNextTrigger = ReadFloat(setValue);
 		break;
 	case "m_flNextDmg":
-		m_flNextDmg = ReadFloat(strValue);
+		m_flNextDmg = ReadFloat(setValue);
 		break;
 	case "m_flDelay":
-		m_flDelay = ReadFloat(strValue);
+		m_flDelay = ReadFloat(setValue);
 		break;
-	case "m_strOnHurt":
-		m_strOnHurt = ReadString(strValue);
+	case "m_outputOnHurt":
+		m_outputOnHurt = ReadString(setValue);
 		break;
-	case "m_strOnHurtPlayer":
-		m_strOnHurtPlayer = ReadString(strValue);
+	case "m_outputOnHurtPlayer":
+		m_outputOnHurtPlayer = ReadString(setValue);
+		break;
+	case "m_ambientSound":
+		m_ambientSound = (ncSound)ReadEntity(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-trigger_hurt::SpawnKey(string strKey, string strValue)
+trigger_hurt::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "dmg":
-		m_iDamage = stoi(strValue);
+		m_iDamage = stoi(setValue);
 		break;
 	case "damagetype":
-		m_iDamageType = (int)stoi(strValue);
+		m_iDamageType = (int)stoi(setValue);
 		break;
 	case "wait":
-		m_flNextDmg = stof(strValue);
+		m_flNextDmg = stof(setValue);
 		break;
 	case "OnHurt":
-		m_strOnHurt = PrepareOutput(m_strOnHurt, strValue);
+		m_outputOnHurt = PrepareOutput(m_outputOnHurt, setValue);
 		break;
 	case "OnHurtPlayer":
-		m_strOnHurtPlayer = PrepareOutput(m_strOnHurtPlayer, strValue);
+		m_outputOnHurtPlayer = PrepareOutput(m_outputOnHurtPlayer, setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
@@ -178,11 +184,15 @@ trigger_hurt::Spawned(void)
 {
 	super::Spawned();
 
-	if (m_strOnHurt)
-		m_strOnHurt = CreateOutput(m_strOnHurt);
+	if (m_outputOnHurt)
+		m_outputOnHurt = CreateOutput(m_outputOnHurt);
 
-	if (m_strOnHurtPlayer)
-		m_strOnHurtPlayer = CreateOutput(m_strOnHurtPlayer);
+	if (m_outputOnHurtPlayer)
+		m_outputOnHurtPlayer = CreateOutput(m_outputOnHurtPlayer);
+
+	if (!m_ambientSound) {
+		//m_ambientSound = m_ambientSound.CreateAmbientSound(WorldSpaceCenter(), "player/geiger1.wav", float maxRadius, optional float minRadius = 0);
+	}
 }
 
 void
@@ -231,9 +241,9 @@ trigger_hurt::Touch(entity eToucher)
 
 	if (!target) {
 		if (eToucher.flags & FL_CLIENT)
-			UseOutput(eToucher, m_strOnHurtPlayer);
+			UseOutput(eToucher, m_outputOnHurtPlayer);
 		else
-			UseOutput(eToucher, m_strOnHurt);
+			UseOutput(eToucher, m_outputOnHurt);
 	} else {
 		if (HasSpawnFlags(SF_HURT_FIREONPLAYER)) {
 			if (eToucher.flags & FL_CLIENT) {
@@ -271,11 +281,12 @@ trigger_hurt::Touch(entity eToucher)
 	}
 
 	EntLog("Hurting %S (%d) with %i.", eToucher.classname, num_for_edict(eToucher), m_iDamage);
+	float damagePerSecond = ((float)m_iDamage * m_flNextDmg);
 
 	/* this is kinda ugly, but worth the price */
 	ncDict damageDecl = spawn(ncDict);
 	ncSurfacePropEntity toAttack = (ncSurfacePropEntity)eToucher;
-	damageDecl.AddKey("damage", itos(m_iDamage));
+	damageDecl.AddKey("damage", ftos(damagePerSecond));
 	damageDecl.AddKey("flags", itos(type));
 	toAttack.Damage(this, this, damageDecl, 1.0f, anglesToForward(angles), toAttack.GetOrigin());
 	remove(damageDecl);

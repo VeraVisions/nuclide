@@ -482,107 +482,107 @@ func_vehicle::Save(float handle)
 }
 
 void
-func_vehicle::Restore(string strKey, string strValue)
+func_vehicle::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_flBounceFactor":
-		m_flBounceFactor = ReadFloat(strValue);
+		m_flBounceFactor = ReadFloat(setValue);
 		break;
 	case "m_flAcceleration":
-		m_flAcceleration = ReadFloat(strValue);
+		m_flAcceleration = ReadFloat(setValue);
 		break;
 	case "m_flSkidSpeed":
-		m_flSkidSpeed = ReadFloat(strValue);
+		m_flSkidSpeed = ReadFloat(setValue);
 		break;
 	case "m_flTraction":
-		m_flTraction = ReadFloat(strValue);
+		m_flTraction = ReadFloat(setValue);
 		break;
 	case "m_flBreakFactor":
-		m_flBreakFactor = ReadFloat(strValue);
+		m_flBreakFactor = ReadFloat(setValue);
 		break;
 	case "m_flSteerFactor":
-		m_flSteerFactor = ReadFloat(strValue);
+		m_flSteerFactor = ReadFloat(setValue);
 		break;
 	case "m_flStraightenFactor":
-		m_flStraightenFactor = ReadFloat(strValue);
+		m_flStraightenFactor = ReadFloat(setValue);
 		break;
 	case "m_vecGravityDir":
-		m_vecGravityDir = ReadVector(strValue);
+		m_vecGravityDir = ReadVector(setValue);
 		break;
 	case "m_wlFL":
-		m_wlFL = (func_vehicle_wheel)ReadEntity(strValue);
+		m_wlFL = (func_vehicle_wheel)ReadEntity(setValue);
 		break;
 	case "m_wlFR":
-		m_wlFR = (func_vehicle_wheel)ReadEntity(strValue);
+		m_wlFR = (func_vehicle_wheel)ReadEntity(setValue);
 		break;
 	case "m_wlBL":
-		m_wlBL = (func_vehicle_wheel)ReadEntity(strValue);
+		m_wlBL = (func_vehicle_wheel)ReadEntity(setValue);
 		break;
 	case "m_wlBR":
-		m_wlBR = (func_vehicle_wheel)ReadEntity(strValue);
+		m_wlBR = (func_vehicle_wheel)ReadEntity(setValue);
 		break;
 	case "m_vecControlMins":
-		m_vecControlMins = ReadVector(strValue);
+		m_vecControlMins = ReadVector(setValue);
 		break;
 	case "m_vecControlMaxs":
-		m_vecControlMaxs = ReadVector(strValue);
+		m_vecControlMaxs = ReadVector(setValue);
 		break;
 	case "m_flHeight":
-		m_flHeight = ReadFloat(strValue);
+		m_flHeight = ReadFloat(setValue);
 		break;
 	case "m_flWidth":
-		m_flWidth = ReadFloat(strValue);
+		m_flWidth = ReadFloat(setValue);
 		break;
 	case "m_flLength":
-		m_flLength = ReadFloat(strValue);
+		m_flLength = ReadFloat(setValue);
 		break;
 	case "m_flTurn":
-		m_flTurn = ReadFloat(strValue);
+		m_flTurn = ReadFloat(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-func_vehicle::SpawnKey(string strKey, string strValue)
+func_vehicle::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "acceleration":
 		// TODO
 		break;
 	case "speed":
-		m_flAcceleration = stof(strValue);
+		m_flAcceleration = stof(setValue);
 		break;
 	case "height":
-		m_flHeight = stof(strValue);
+		m_flHeight = stof(setValue);
 		break;
 	case "width":
-		m_flWidth = stof(strValue) / 2;
+		m_flWidth = stof(setValue) / 2;
 		break;
 	case "length":
-		m_flLength = stof(strValue) / 2;
+		m_flLength = stof(setValue) / 2;
 		break;
 	case "bouncefactor":
-		m_flBounceFactor = stof(strValue);
+		m_flBounceFactor = stof(setValue);
 		break;
 	case "skidspeed":
-		m_flSkidSpeed = stof(strValue);
+		m_flSkidSpeed = stof(setValue);
 		break;
 	case "traction":
-		m_flTraction = stof(strValue);
+		m_flTraction = stof(setValue);
 		break;
 	case "breakfactor":
-		m_flBreakFactor = stof(strValue);
+		m_flBreakFactor = stof(setValue);
 		break;
 	case "steerfactor":
-		m_flSteerFactor = stof(strValue);
+		m_flSteerFactor = stof(setValue);
 		break;
 	case "straightenfactor":
-		m_flStraightenFactor = stof(strValue);
+		m_flStraightenFactor = stof(setValue);
 		break;
 	case "gravitydir":
-		m_vecGravityDir = stov(strValue);
+		m_vecGravityDir = stov(setValue);
 		break;
 	case "sounds":
 		// TODO
@@ -594,7 +594,7 @@ func_vehicle::SpawnKey(string strKey, string strValue)
 		// TODO
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 

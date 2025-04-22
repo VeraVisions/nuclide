@@ -80,32 +80,32 @@ env_fade::Save(float handle)
 }
 
 void
-env_fade::Restore(string strKey, string strValue)
+env_fade::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_flFadeDuration":
-		m_flFadeDuration = ReadFloat(strValue);
+		m_flFadeDuration = ReadFloat(setValue);
 		break;
 	case "m_flFadeHold":
-		m_flFadeHold = ReadFloat(strValue);
+		m_flFadeHold = ReadFloat(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-env_fade::SpawnKey(string strKey, string strValue)
+env_fade::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "duration":
-		m_flFadeDuration = stof(strValue);
+		m_flFadeDuration = stof(setValue);
 		break;
 	case "holdtime":
-		m_flFadeHold = stof(strValue);
+		m_flFadeHold = stof(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
@@ -115,10 +115,10 @@ env_fade::Trigger(entity eAct, triggermode_t iState)
 	/* Half-Life ignores states entirely for env_fade's being triggered */
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_FADE);
-	WriteByte(MSG_MULTICAST, m_vecRenderColor[0]);
-	WriteByte(MSG_MULTICAST, m_vecRenderColor[1]);
-	WriteByte(MSG_MULTICAST, m_vecRenderColor[2]);
-	WriteByte(MSG_MULTICAST, m_flRenderAmt);
+	WriteByte(MSG_MULTICAST, m_renderColor[0]);
+	WriteByte(MSG_MULTICAST, m_renderColor[1]);
+	WriteByte(MSG_MULTICAST, m_renderColor[2]);
+	WriteByte(MSG_MULTICAST, m_renderAmount);
 	WriteFloat(MSG_MULTICAST, m_flFadeDuration);
 	WriteFloat(MSG_MULTICAST, m_flFadeHold);
 	WriteByte(MSG_MULTICAST, spawnflags);

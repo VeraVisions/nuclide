@@ -51,7 +51,7 @@ scripted_sentence:ncPointTrigger
 {
 public:
 	void scripted_sentence(void);
-	
+
 	/* overrides */
 	virtual void Spawned(void);
 	virtual void Save(float);
@@ -72,8 +72,8 @@ private:
 	float m_flPitch;
 	float m_flDuration;
 	string m_strListener;
-	string m_strOnBeginSentence;
-	string m_strOnEndSentence;
+	string m_outputOnBeginSentence;
+	string m_outputOnEndSentence;
 	float m_flRefire;
 };
 
@@ -87,8 +87,8 @@ scripted_sentence::scripted_sentence(void)
 	m_flPitch = 0.0f;
 	m_flDuration = 0.0f;
 	m_strListener = __NULL__;
-	m_strOnBeginSentence = __NULL__;
-	m_strOnEndSentence = __NULL__;
+	m_outputOnBeginSentence = __NULL__;
+	m_outputOnEndSentence = __NULL__;
 	m_iSentenceID = 0i;
 	m_flRefire = 0.0f;
 }
@@ -100,10 +100,10 @@ scripted_sentence::Spawned(void)
 
 	m_iSentenceID = Sentences_GetID(m_strSentence);
 
-	if (m_strOnBeginSentence)
-		m_strOnBeginSentence = CreateOutput(m_strOnBeginSentence);
-	if (m_strOnEndSentence)
-		m_strOnEndSentence = CreateOutput(m_strOnEndSentence);
+	if (m_outputOnBeginSentence)
+		m_outputOnBeginSentence = CreateOutput(m_outputOnBeginSentence);
+	if (m_outputOnEndSentence)
+		m_outputOnEndSentence = CreateOutput(m_outputOnEndSentence);
 }
 
 void
@@ -117,51 +117,51 @@ scripted_sentence::Save(float handle)
 	SaveFloat(handle, "m_flPitch", m_flPitch);
 	SaveFloat(handle, "m_flDuration", m_flDuration);
 	SaveString(handle, "m_strListener", m_strListener);
-	SaveString(handle, "m_strOnBeginSentence", m_strOnBeginSentence);
-	SaveString(handle, "m_strOnEndSentence", m_strOnEndSentence);
+	SaveString(handle, "m_outputOnBeginSentence", m_outputOnBeginSentence);
+	SaveString(handle, "m_outputOnEndSentence", m_outputOnEndSentence);
 	SaveInt(handle, "m_iSentenceID", m_iSentenceID);
 	SaveFloat(handle, "m_flRefire", m_flRefire);
 }
 
 void
-scripted_sentence::Restore(string strKey, string strValue)
+scripted_sentence::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_strSpeaker":
-		m_strSpeaker = ReadString(strValue);
+		m_strSpeaker = ReadString(setValue);
 		break;
 	case "m_strSentence":
-		m_strSentence = ReadString(strValue);
+		m_strSentence = ReadString(setValue);
 		break;
 	case "m_flDelay":
-		m_flDelay = ReadFloat(strValue);
+		m_flDelay = ReadFloat(setValue);
 		break;
 	case "m_flWait":
-		m_flWait = ReadFloat(strValue);
+		m_flWait = ReadFloat(setValue);
 		break;
 	case "m_flPitch":
-		m_flPitch = ReadFloat(strValue);
+		m_flPitch = ReadFloat(setValue);
 		break;
 	case "m_flDuration":
-		m_flDuration = ReadFloat(strValue);
+		m_flDuration = ReadFloat(setValue);
 		break;
 	case "m_strListener":
-		m_strListener = ReadString(strValue);
+		m_strListener = ReadString(setValue);
 		break;
-	case "m_strOnBeginSentence":
-		m_strOnBeginSentence = ReadString(strValue);
+	case "m_outputOnBeginSentence":
+		m_outputOnBeginSentence = ReadString(setValue);
 		break;
-	case "m_strOnEndSentence":
-		m_strOnEndSentence = ReadString(strValue);
+	case "m_outputOnEndSentence":
+		m_outputOnEndSentence = ReadString(setValue);
 		break;
 	case "m_iSentenceID":
-		m_iSentenceID = ReadInt(strValue);
+		m_iSentenceID = ReadInt(setValue);
 		break;
 	case "m_flRefire":
-		m_flRefire = ReadFloat(strValue);
+		m_flRefire = ReadFloat(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
@@ -194,10 +194,10 @@ scripted_sentence::SpawnKey(string keyName, string setValue)
 		m_flRefire = ReadFloat(setValue);
 		break;
 	case "OnBeginSentence":
-		m_strOnBeginSentence = ReadString(setValue);
+		m_outputOnBeginSentence = ReadString(setValue);
 		break;
 	case "OnEndSentence":
-		m_strOnEndSentence = ReadString(setValue);
+		m_outputOnEndSentence = ReadString(setValue);
 		break;
 	default:
 		super::SpawnKey(keyName, setValue);
@@ -220,7 +220,7 @@ void
 scripted_sentence::AllowRefire(void)
 {
 	EntLog("%S can now be refired.", targetname);
-	m_iValue = 0;
+	SetValue(0i);
 }
 
 
@@ -238,7 +238,7 @@ scripted_sentence::SentenceEnded(void)
 		targetMonster.StopSound(CHAN_VOICE, true);
 	}
 
-	UseOutput(this, m_strOnEndSentence);
+	UseOutput(this, m_outputOnEndSentence);
 
 	if (m_flRefire > 0.0f) {
 		ScheduleThink(AllowRefire, m_flRefire);
@@ -252,7 +252,7 @@ scripted_sentence::Trigger(entity act, triggermode_t unused)
 {
 	entity spe;
 
-	if (m_iValue == 1) {
+	if (GetValue(this) == 1) {
 		return;
 	}
 
@@ -275,15 +275,15 @@ scripted_sentence::Trigger(entity act, triggermode_t unused)
 	}
 
 	if (!spe) {
-		NSError("Couldn't find %s!\n", m_strSpeaker);
+		EntError("Named speaker %S missing in map.", m_strSpeaker);
 		return;
 	}
 
-	EntLog("%s on %s", m_strSentence, m_strSpeaker);
+	EntLog("%S on %S", m_strSentence, m_strSpeaker);
 
 	/* ensure this is set here, so when UseTargets() gets called
 	   this entity will already be inaccessible. fixes ba_tram2. */
-	m_iValue = 1;
+	SetValue(1i);
 
 	ncTalkMonster npc = (ncTalkMonster)spe;
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
@@ -292,17 +292,17 @@ scripted_sentence::Trigger(entity act, triggermode_t unused)
 	WriteInt(MSG_MULTICAST, m_iSentenceID);
 	msg_entity = npc;
 	multicast(npc.origin, MULTICAST_PVS);
-	npc.m_flNextSentence = time + m_flDuration;
+	npc.m_sentenceNext = time + m_flDuration;
 	UseTargets(act, TRIG_TOGGLE, m_flDelay);
 
 	/* I/O */
 	/* Uncertain: Are we triggering the output on behalf of someone maybe? */
-	UseOutput(this, m_strOnBeginSentence);
+	UseOutput(this, m_outputOnBeginSentence);
 	ScheduleThink(SentenceEnded, m_flDuration);
 
 	if (m_strListener) {
 		if (m_strListener == "player") {
-			npc.m_eLookAt = find(world, ::classname, "player");
+			npc.m_eLookAt = next.Player(world);
 		} else {
 			npc.m_eLookAt = find(world, ::targetname, m_strListener);
 		}

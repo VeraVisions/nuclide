@@ -85,7 +85,7 @@ public:
 #ifdef CLIENT
 	virtual float predraw(void);
 	virtual void ReceiveEntity(float,float);
-	virtual void RendererRestarted(void);
+	virtual void ReloadVideoResources(void);
 #endif
 
 private:
@@ -134,7 +134,7 @@ env_laser::Respawn(void)
 	super::Respawn();
 
 	SetSize([0,0,0], [0,0,0]);
-	m_iValue = 0;
+	SetValue(0i);
 
 	/* force us to precache the sprite model... and get a modelindex back */
 	m_iSpriteID = getmodelindex(m_strTexture, false);
@@ -147,26 +147,26 @@ env_laser::Respawn(void)
 }
 
 void
-env_laser::SpawnKey(string strKey, string strValue)
+env_laser::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "LaserTarget":
-		m_strEndEnt = ReadString(strValue);
+		m_strEndEnt = ReadString(setValue);
 		break;
 	case "damage":
-		m_iDamage = ReadInt(strValue);
+		m_iDamage = ReadInt(setValue);
 		break;
 	case "texture":
-		m_strTexture = ReadString(strValue);
+		m_strTexture = ReadString(setValue);
 		break;
 	case "BoltWidth":
-		m_flBeamWidth = ReadFloat(strValue);
+		m_flBeamWidth = ReadFloat(setValue);
 		break;
 	case "NoiseAmplitude":
-		m_flAmplitude = ReadFloat(strValue);
+		m_flAmplitude = ReadFloat(setValue);
 		break;
 	default:
-		super::SpawnKey(strValue, strKey);
+		super::SpawnKey(setValue, strKey);
 	}
 }
 
@@ -199,16 +199,16 @@ env_laser::Trigger(entity act, triggermode_t state)
 {
 	switch (state) {
 	case TRIG_OFF:
-		m_iValue = 0;
+		SetValue(0i);
 		break;
 	case TRIG_ON:
-		m_iValue = 1;
+		SetValue(1i);
 		break;
 	default:
-		m_iValue = 1 - m_iValue;
+		SetValue(1i - GetValue(this));
 	}
 
-	m_iActive = m_iValue;
+	m_iActive = GetValue(this);
 }
 
 void
@@ -248,9 +248,9 @@ env_laser::EvaluateEntity(void)
 	EVALUATE_VECTOR(m_vecEndPos, 2, LASER_CHANGED_ENDPOS_Z)
 	EVALUATE_FIELD(m_iActive, LASER_CHANGED_ACTIVE)
 	EVALUATE_FIELD(m_iBeamFlags, LASER_CHANGED_FLAGS)
-	EVALUATE_VECTOR(m_vecRenderColor, 0, LASER_CHANGED_COLOR)
-	EVALUATE_VECTOR(m_vecRenderColor, 1, LASER_CHANGED_COLOR)
-	EVALUATE_VECTOR(m_vecRenderColor, 2, LASER_CHANGED_COLOR)
+	EVALUATE_VECTOR(m_renderColor, 0, LASER_CHANGED_COLOR)
+	EVALUATE_VECTOR(m_renderColor, 1, LASER_CHANGED_COLOR)
+	EVALUATE_VECTOR(m_renderColor, 2, LASER_CHANGED_COLOR)
 	EVALUATE_FIELD(m_flBeamWidth, LASER_CHANGED_WIDTH)
 	EVALUATE_FIELD(m_flAmplitude, LASER_CHANGED_AMPLITUDE)
 }
@@ -270,9 +270,9 @@ env_laser::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_COORD(m_vecEndPos[2], LASER_CHANGED_ENDPOS_Z)
 	SENDENTITY_BYTE(m_iActive, LASER_CHANGED_ACTIVE)
 	SENDENTITY_BYTE(m_iBeamFlags, LASER_CHANGED_FLAGS)
-	SENDENTITY_BYTE(m_vecRenderColor[0], LASER_CHANGED_COLOR)
-	SENDENTITY_BYTE(m_vecRenderColor[1], LASER_CHANGED_COLOR)
-	SENDENTITY_BYTE(m_vecRenderColor[2], LASER_CHANGED_COLOR)
+	SENDENTITY_BYTE(m_renderColor[0], LASER_CHANGED_COLOR)
+	SENDENTITY_BYTE(m_renderColor[1], LASER_CHANGED_COLOR)
+	SENDENTITY_BYTE(m_renderColor[2], LASER_CHANGED_COLOR)
 	SENDENTITY_BYTE(m_flBeamWidth, LASER_CHANGED_WIDTH)
 	SENDENTITY_BYTE(m_flAmplitude, LASER_CHANGED_AMPLITUDE)
 
@@ -295,9 +295,9 @@ env_laser::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_COORD(m_vecEndPos[2], LASER_CHANGED_ENDPOS_Z)
 	READENTITY_BYTE(m_iActive, LASER_CHANGED_ACTIVE)
 	READENTITY_BYTE(m_iBeamFlags, LASER_CHANGED_FLAGS)
-	READENTITY_BYTE(m_vecRenderColor[0], LASER_CHANGED_COLOR)
-	READENTITY_BYTE(m_vecRenderColor[1], LASER_CHANGED_COLOR)
-	READENTITY_BYTE(m_vecRenderColor[2], LASER_CHANGED_COLOR)
+	READENTITY_BYTE(m_renderColor[0], LASER_CHANGED_COLOR)
+	READENTITY_BYTE(m_renderColor[1], LASER_CHANGED_COLOR)
+	READENTITY_BYTE(m_renderColor[2], LASER_CHANGED_COLOR)
 	READENTITY_BYTE(m_flBeamWidth, LASER_CHANGED_WIDTH)
 	READENTITY_BYTE(m_flAmplitude, LASER_CHANGED_AMPLITUDE)
 
@@ -309,12 +309,12 @@ env_laser::ReceiveEntity(float flNew, float flChanged)
 
 	/* the sprite has changed, we need to query a new texture */
 	if (flChanged & LASER_CHANGED_SPRITE) {
-		RendererRestarted();
+		ReloadVideoResources();
 	}
 }
 
 void
-env_laser::RendererRestarted(void)
+env_laser::ReloadVideoResources(void)
 {
 	if (m_iSpriteID) {
 		m_strTexture = spriteframe(modelnameforindex(m_iSpriteID), 0, 0.0f);
@@ -406,10 +406,10 @@ env_laser::predraw(void)
 			/* apply jitter */
 			point += jitter;
 
-			R_PolygonVertex(point, [1, 0], m_vecRenderColor / 255, a);
+			R_PolygonVertex(point, [1, 0], m_renderColor / 255, a);
 
 			if (autocvar(cl_showoff, 0)) {
-				float p = dynamiclight_add(point, 64, m_vecRenderColor/255);
+				float p = dynamiclight_add(point, 64, m_renderColor/255);
 				dynamiclight_set(p, LFIELD_STYLE, 64);
 			}
 

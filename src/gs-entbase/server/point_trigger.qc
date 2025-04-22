@@ -86,8 +86,8 @@ public:
 private:
 	bool m_bTriggerOnce;
 	float m_flTriggerRadius;
-	string m_strOnStartTouch;
-	string m_strOnEndTouchAll;
+	string m_outputOnStartTouch;
+	string m_outputOnEndTouchAll;
 	bool m_bEnabled;
 };
 
@@ -98,8 +98,8 @@ point_trigger::point_trigger(void)
 	m_bTriggerOnce = false;
 
 	/* Input/Output */
-	m_strOnStartTouch =
-	m_strOnEndTouchAll =  __NULL__;
+	m_outputOnStartTouch =
+	m_outputOnEndTouchAll =  __NULL__;
 }
 
 void
@@ -111,57 +111,57 @@ point_trigger::Save(float handle)
 	SaveBool(handle, "m_bEnabled", m_bEnabled);
 
 	/* Input/Output */
-	SaveString(handle, "m_strOnStartTouch", m_strOnStartTouch);
-	SaveString(handle, "m_strOnEndTouchAll", m_strOnEndTouchAll);
+	SaveString(handle, "m_outputOnStartTouch", m_outputOnStartTouch);
+	SaveString(handle, "m_outputOnEndTouchAll", m_outputOnEndTouchAll);
 }
 
 void
-point_trigger::Restore(string strKey, string strValue)
+point_trigger::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_flTriggerRadius":
-		m_flTriggerRadius = ReadFloat(strValue);
+		m_flTriggerRadius = ReadFloat(setValue);
 		break;
 	case "m_bTriggerOnce":
-		m_bTriggerOnce = ReadBool(strValue);
+		m_bTriggerOnce = ReadBool(setValue);
 		break;
 	case "m_bEnabled":
-		m_bEnabled = ReadBool(strValue);
+		m_bEnabled = ReadBool(setValue);
 		break;
 
 	/* Input/Output */
-	case "m_strOnStartTouch":
-		m_strOnStartTouch = ReadString(strValue);
+	case "m_outputOnStartTouch":
+		m_outputOnStartTouch = ReadString(setValue);
 		break;
-	case "m_strOnEndTouchAll":
-		m_strOnEndTouchAll = ReadString(strValue);
+	case "m_outputOnEndTouchAll":
+		m_outputOnEndTouchAll = ReadString(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-point_trigger::SpawnKey(string strKey, string strValue)
+point_trigger::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "TriggerOnce":
-		m_bTriggerOnce = stof(strValue);
+		m_bTriggerOnce = stof(setValue);
 		break;
 	case "TriggerRadius":
-		m_flTriggerRadius = stof(strValue);
+		m_flTriggerRadius = stof(setValue);
 		break;
 
 	/* Input/Output */
 	case "OnStartTouch":
 	case "OnStartTouchAll":
-		m_strOnStartTouch = PrepareOutput(m_strOnStartTouch, strValue);
+		m_outputOnStartTouch = PrepareOutput(m_outputOnStartTouch, setValue);
 		break;
 	case "OnEndTouchAll":
-		m_strOnEndTouchAll = PrepareOutput(m_strOnEndTouchAll, strValue);
+		m_outputOnEndTouchAll = PrepareOutput(m_outputOnEndTouchAll, setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
@@ -171,10 +171,10 @@ point_trigger::Spawned(void)
 	super::Spawned();
 
 	/* Input/Output */
-	if (m_strOnStartTouch)
-		m_strOnStartTouch = CreateOutput(m_strOnStartTouch);
-	if (m_strOnEndTouchAll)
-		m_strOnEndTouchAll = CreateOutput(m_strOnEndTouchAll);
+	if (m_outputOnStartTouch)
+		m_outputOnStartTouch = CreateOutput(m_outputOnStartTouch);
+	if (m_outputOnEndTouchAll)
+		m_outputOnEndTouchAll = CreateOutput(m_outputOnEndTouchAll);
 }
 
 void
@@ -234,9 +234,9 @@ point_trigger::Touch(entity eToucher)
 
 	/* if the target key isn't used, assume we're using the new I/O system */
 	if (HasTriggerTarget() == false)
-		UseOutput(eToucher, m_strOnStartTouch);
+		UseOutput(eToucher, m_outputOnStartTouch);
 	else
-		UseTargets(eToucher, TRIG_TOGGLE, m_flDelay);
+		UseTargets(eToucher, TRIG_TOGGLE, GetTriggerDelay());
 
 	/* FIXME: Does Source do this? Perhaps in Source it won't re-enable at all... */
 	/* Will need to be triggered to be enabled again. */
@@ -247,8 +247,8 @@ point_trigger::Touch(entity eToucher)
 void
 point_trigger::EndTouch(entity eToucher)
 {
-	if (m_strOnEndTouchAll)
-		UseOutput(eToucher, m_strOnEndTouchAll);
+	if (m_outputOnEndTouchAll)
+		UseOutput(eToucher, m_outputOnEndTouchAll);
 }
 
 bool
@@ -266,9 +266,9 @@ point_trigger::WillThisTrigger(entity eAct)
 		return true;
 	if (HasSpawnFlags(PTRIG_ALLIES) && eAct.flags & FL_MONSTER && eAct.m_iAlliance == MAL_FRIEND)
 		return true;
-	if (HasSpawnFlags(PTRIG_VEHPLAYER) && eAct.flags & FL_CLIENT && eAct.vv_flags & VFL_INVEHICLE)
+	if (HasSpawnFlags(PTRIG_VEHPLAYER) && eAct.flags & FL_CLIENT && eAct.m_nuclideFlags & VFL_INVEHICLE)
 		return true;
-	if (HasSpawnFlags(PTRIG_NOVEHCL) && eAct.flags & FL_CLIENT && !(eAct.vv_flags & VFL_INVEHICLE))
+	if (HasSpawnFlags(PTRIG_NOVEHCL) && eAct.flags & FL_CLIENT && !(eAct.m_nuclideFlags & VFL_INVEHICLE))
 		return true;
 
 	return false;

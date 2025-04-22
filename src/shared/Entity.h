@@ -48,6 +48,27 @@ It's responsible for handling practically every entity in Nuclide.
 Try to avoid using the built-in 'entity' type unless you know exactly
 what you are doing. Otherwise, you will deal with loss of savegames and much more.
 
+# INPUTS
+
+- "Kill" : Removes the entity from the game.
+- "KillHierarchy" : Removes the entity and anything owned by the entity.
+- "KillChildClass" : Removes anything owned by the entity.
+- "SetParent" : Parents the entity to a named one.
+- "SetParentAttachment" : Sets the attachment that it'll be parented to. You still have to SetParent.
+- "ClearParent" : Removes any parenting info.
+- "Use" : Simulates a player 'using' it.
+- "ShootGib" : Shoots gibs. Three arguments: "model" "speed" "count"
+- "SpawnDef" : Reserved. Use SpawnDefOffset instead.
+- "SpawnDefOffset" : Spawns an entityDef relative to us, plus an offset vector. "classname" "forward" "right" "up"
+- "SpawnProjectileOffset" : Launches a projectile relative to us, plus an offset vector. "classname" "forward" "right" "up"
+- "SpawnProjectileDef" : Launches a projectile relative to us, on the first attachment position (defined in the model).
+- "StartSoundDef" : Plays a sound on the VOICE channel.
+- "AddVelocity" : Applies linear velocity to the entity, relative to the view angle. "forward" "right" "up"
+- "Shockwave" : Casts a shockwave effect. 
+- "SetOrigin" : Sets the absolute position in-world.
+- "SetEditorColor" : Reserved.
+- "Respawn" : Requests the item to respawn, which resets it to its initial state.
+
 @ingroup baseclass
 */
 class ncEntity:ncTrigger
@@ -69,7 +90,7 @@ public:
 	virtual void postdraw(void);
 
 	/** Client: Called when video resources need to be allocated or reloaded for the entity. */
-	virtual void RendererRestarted(void);
+	virtual void ReloadVideoResources(void);
 #endif
 
 	/* overrides */
@@ -161,8 +182,6 @@ public:
 	/** Overrides the touch function of a the entity to the specified function.
 		As a result Start/EndTouch will be unreliable. */
 	nonvirtual void SetTouch(void());
-	/** Overrides the field that's used to determine which information should be networked. */
-	nonvirtual void SetSendFlags(float);
 	/** Sets the collision type of the entity. Check the solid_t enum for available types. */
 	nonvirtual void SetSolid(float);
 	/** Sets the 3D model representation of the entity from a file path and name. */
@@ -321,6 +340,8 @@ public:
 	nonvirtual entity GetGroundEntity(void);
 	/** Returns if the entity was spawned by the map we're on. */
 	nonvirtual bool CreatedByMap(void);
+	/** Returns if the entity is still being loaded from the map data. */
+	nonvirtual bool Loading(void);
 	/** Returns whether or not we are fully within the bounds of a given entity. */
 	nonvirtual bool WithinBounds(entity);
 	/** Returns whether or not the given entity insersects with us. Like a more lenient WithinBounds(). */
@@ -359,9 +380,6 @@ public:
 	/** Move the entity to a new position, with updated angles. */
 	nonvirtual void Transport(vector, vector);
 
-	/** Relink the entity against the world. Updates PVS info etc. */
-	nonvirtual void Relink(void);
-
 	/** Finds a free spot of an entity near itself of same size. Extra padding as argument. */
 	nonvirtual vector GetNearbySpot(void);
 
@@ -384,15 +402,17 @@ public:
 	nonvirtual bool IsBrush(void);
 
 private:
-	float m_flSpawnTime;
-	bool m_bHidden; /**< decides whether the entity is visible or not, without affecting collision */
-	vector m_vecMins; /**< REAL min bounding box value, without .scale affecting it */
-	vector m_vecMaxs; /**< REAL max bounding box value, without .scale affecting it */
+	/** Will read from the named def to perform a projectile attack. */
+	nonvirtual bool _ProjectileAttack(string, bool);
 
-	bool m_bIsBrush;
-	vector m_vecEditorColor;
+#ifdef SERVER
+	nonvirtual vector GetModelMins(void);
+	nonvirtual vector GetModelMaxs(void);
+	nonvirtual void _RelinkToSpawnParent(void);
+#endif
 
 	NETWORKED_INT(entityDefID)
+
 	NETWORKED_VECTOR_N(origin)
 	NETWORKED_VECTOR_N(angles)
 	NETWORKED_FLOAT_N(modelindex)
@@ -403,36 +423,31 @@ private:
 	NETWORKED_FLOAT_N(movetype)
 	NETWORKED_FLOAT_N(scale)
 	NETWORKED_FLOAT_N(flags)
-	NETWORKED_FLOAT_N(vv_flags)
+	NETWORKED_FLOAT_N(m_nuclideFlags)
 	NETWORKED_VECTOR_N(velocity)
 	NETWORKED_VECTOR_N(avelocity)
-
-#ifdef CLIENT
-	/** Called once ReceiveEntity has done its job. */
-	virtual void _ReceiveComplete(float, float);
-#endif
+	NETWORKED_FLOAT_N(frame)
+	NETWORKED_FLOAT_N(skin)
+	__int32 effects_net;
 
 	entity m_holdingPlayer;
 	float m_lastHeldTime;
+	float m_spawnTime;
+	vector m_internalMins; /**< REAL min bounding box value, without .scale affecting it */
+	vector m_internalMaxs; /**< REAL max bounding box value, without .scale affecting it */
+	bool m_modelBrushBased;
+	vector m_editorColor;
+	vector m_modelMins;
+	vector m_modelMaxs;
+	bool _loading;
 
 #ifdef SERVER
 	string m_parent;
 	string m_parent_old;
 	string m_parent_attachment;
-
 	vector m_parentPosOffs;
 	vector m_parentAngOffs;
-
-	NETWORKED_FLOAT_N(frame)
-	NETWORKED_FLOAT_N(skin)
-	__int32 effects_net;
-	vector m_vecModelMins;
-	vector m_vecModelMaxs;
-	nonvirtual vector GetModelMins(void);
-	nonvirtual vector GetModelMaxs(void);
 #endif
-	/** Will read from the named def to perform a projectile attack. */
-	nonvirtual bool _ProjectileAttack(string, bool);
 };
 
 /** Returns a new entity. Guaranteed to be something. Never __NULL__
@@ -444,21 +459,3 @@ bool changeClass(entity target, string className)
 #endif
 
 void sendInput(entity target, string inputName, string dataString, entity activator);
-
-bool isAI(entity entityToCheck);
-
-bool isAlive(entity entityToCheck);
-
-bool isGodMode(entity entityToCheck);
-
-bool isClient(entity entityToCheck);
-
-bool isPlayer(entity entityToCheck);
-
-bool isSentient(entity entityToCheck);
-
-bool isBot(entity entityToCheck);
-
-bool isItem(entity entityToCheck);
-
-bool isWeapon(entity entityToCheck);

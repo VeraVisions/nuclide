@@ -55,6 +55,8 @@ public:
 	virtual void ReceiveEntity(float,float);
 #endif
 
+	nonvirtual ncSound CreateAmbientSound(vector worldPosition, string sampleFX, float maxRadius, optional float minRadius = 0);
+
 private:
 	NETWORKED_FLOAT(m_radius)
 	NETWORKED_FLOAT(m_volume)

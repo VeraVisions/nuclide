@@ -86,9 +86,9 @@ ncSchedule::Advance(void)
 	if (STRING_SET(taskString)) {
 		tokenize_console(taskString);
 		taskInput = argv(0);
-		taskParms = argv(1);
+		taskParms = substring(taskString, strlen(taskInput) + 1, -1);
 	} else {
-		EntError("Task %i not defined! Cancelling schedule.", m_onTask);
+		EntError("Task %i not defined in %S! Cancelling schedule.", m_onTask, m_scheduleDecl.Name());
 		m_onTask = m_taskCount + 1i;
 		ReleaseThink();
 		Cancel();
@@ -99,7 +99,7 @@ ncSchedule::Advance(void)
 
 	EntLog("Advancing %S to Task %i of %i.", m_name, m_onTask, m_taskCount);
 	EntLog("Instructing %S to perform %S with parms %S", m_controllingActor.classname, taskInput, taskParms);
-	m_controllingActor.Input(this, taskInput, substring(taskString, strlen(taskInput) + 1, -1));
+	m_controllingActor.Input(this, taskInput, taskParms);
 
 	/* did we get scheduled for later? no? advance us ourselves */
 	if (m_inProgress == false && m_bProgressOnMovement == false) {
@@ -234,7 +234,7 @@ ncSchedule::CreateSchedule(ncActor targetActor, string scheduleDecl)
 
 	if ((newSchedule.m_scheduleDecl.TokenCount() % 2) != 0) {
 		newSchedule.Destroy();
-		NSError("Schedule %S has keys set with no specified value!", scheduleDecl);
+		ncError("Schedule %S has keys set with no specified value!", scheduleDecl);
 		return (__NULL__);
 	}
 

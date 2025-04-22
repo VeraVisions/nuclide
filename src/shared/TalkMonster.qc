@@ -18,16 +18,16 @@ void
 ncTalkMonster::ncTalkMonster(void)
 {
 #ifdef SERVER
-	m_eFollowing = world;
-	m_flPitch = 1.0f;
-	m_flNextSentence = 0.0f;
+	m_followingEntity = world;
+	m_sentencePitch = 1.0f;
+	m_sentenceNext = 0.0f;
 	m_iFlags = 0i;
-	m_eFollowingChain = __NULL__;
-	m_vecLastUserPos = g_vec_null;
-	m_flChangePath = 0.0f;
-	m_flTraceTime = 0.0f;
-	m_flFollowSpeedChanged = 0.0f;
-	m_flFollowSpeed = 0.0f;
+	m_useFollowChain = __NULL__;
+	m_useLastAtPosition = g_vec_null;
+	m_useFollowChangePathTime = 0.0f;
+	m_useFollowTraceTime = 0.0f;
+	m_useFollowSpeedChanged = 0.0f;
+	m_useFollowSpeed = 0.0f;
 	m_talkAnswer = __NULL__;
 	m_talkAsk = __NULL__;
 	m_talkAllyShot = __NULL__;
@@ -100,16 +100,16 @@ ncTalkMonster::Save(float handle)
 {
 	super::Save(handle);
 
-	SaveFloat(handle, "m_flPitch", m_flPitch);
-	SaveFloat(handle, "m_flNextSentence", m_flNextSentence);
+	SaveFloat(handle, "m_sentencePitch", m_sentencePitch);
+	SaveFloat(handle, "m_sentenceNext", m_sentenceNext);
 	SaveInt(handle, "m_iFlags", m_iFlags);
-	SaveEntity(handle, "m_eFollowing", m_eFollowing);
-	SaveEntity(handle, "m_eFollowingChain", m_eFollowingChain);
-	SaveVector(handle, "m_vecLastUserPos", m_vecLastUserPos);
-	SaveFloat(handle, "m_flChangePath", m_flChangePath);
-	SaveFloat(handle, "m_flTraceTime", m_flTraceTime);
-	SaveFloat(handle, "m_flFollowSpeedChanged", m_flFollowSpeedChanged);
-	SaveFloat(handle, "m_flFollowSpeed", m_flFollowSpeed);
+	SaveEntity(handle, "m_followingEntity", m_followingEntity);
+	SaveEntity(handle, "m_useFollowChain", m_useFollowChain);
+	SaveVector(handle, "m_useLastAtPosition", m_useLastAtPosition);
+	SaveFloat(handle, "m_useFollowChangePathTime", m_useFollowChangePathTime);
+	SaveFloat(handle, "m_useFollowTraceTime", m_useFollowTraceTime);
+	SaveFloat(handle, "m_useFollowSpeedChanged", m_useFollowSpeedChanged);
+	SaveFloat(handle, "m_useFollowSpeed", m_useFollowSpeed);
 	SaveBool(handle, "m_bFollowOnUse", m_bFollowOnUse);
 	SaveFloat(handle, "m_flFollowDistance", m_flFollowDistance);
 	SaveFloat(handle, "m_flMaxFollowDistance", m_flMaxFollowDistance);
@@ -139,117 +139,123 @@ ncTalkMonster::Save(float handle)
 }
 
 void
-ncTalkMonster::Restore(string strKey, string strValue)
+ncTalkMonster::Restore(string keyName, string setValue)
 {
-	switch (strKey) {
-	case "m_flPitch":
-		m_flPitch = ReadFloat(strValue);
+	switch (keyName) {
+	case "m_sentencePitch":
+		m_sentencePitch = ReadFloat(setValue);
 		break;
-	case "m_flNextSentence":
-		m_flNextSentence = ReadFloat(strValue);
+	case "m_sentenceNext":
+		m_sentenceNext = ReadFloat(setValue);
 		break;
 	case "m_iFlags":
-		m_iFlags = ReadInt(strValue);
+		m_iFlags = ReadInt(setValue);
 		break;
-	case "m_eFollowing":
-		m_eFollowing = ReadEntity(strValue);
+	case "m_followingEntity":
+		m_followingEntity = ReadEntity(setValue);
 		break;
-	case "m_eFollowingChain":
-		m_eFollowingChain = ReadEntity(strValue);
+	case "m_useFollowChain":
+		m_useFollowChain = ReadEntity(setValue);
 		break;
-	case "m_vecLastUserPos":
-		m_vecLastUserPos = ReadVector(strValue);
+	case "m_useLastAtPosition":
+		m_useLastAtPosition = ReadVector(setValue);
 		break;
-	case "m_flChangePath":
-		m_flChangePath = ReadFloat(strValue);
+	case "m_useFollowChangePathTime":
+		m_useFollowChangePathTime = ReadFloat(setValue);
 		break;
-	case "m_flTraceTime":
-		m_flTraceTime = ReadFloat(strValue);
+	case "m_useFollowTraceTime":
+		m_useFollowTraceTime = ReadFloat(setValue);
 		break;
-	case "m_flFollowSpeedChanged":
-		m_flFollowSpeedChanged = ReadFloat(strValue);
+	case "m_useFollowSpeedChanged":
+		m_useFollowSpeedChanged = ReadFloat(setValue);
 		break;
-	case "m_flFollowSpeed":
-		m_flFollowSpeed = ReadFloat(strValue);
+	case "m_useFollowSpeed":
+		m_useFollowSpeed = ReadFloat(setValue);
 		break;
 	case "m_bFollowOnUse":
-		m_bFollowOnUse = ReadBool(strValue);
+		m_bFollowOnUse = ReadBool(setValue);
 		break;
 	case "m_flFollowDistance":
-		m_flFollowDistance = ReadFloat(strValue);
+		m_flFollowDistance = ReadFloat(setValue);
 		break;
 	case "m_flMaxFollowDistance":
-		m_flMaxFollowDistance = ReadFloat(strValue);
+		m_flMaxFollowDistance = ReadFloat(setValue);
 		break;
 	case "m_talkAnswer":
-		m_talkAnswer = ReadString(strValue);
+		m_talkAnswer = ReadString(setValue);
 		break;
 	case "m_talkAsk":
-		m_talkAsk = ReadString(strValue);
+		m_talkAsk = ReadString(setValue);
 		break;
 	case "m_talkAllyShot":
-		m_talkAllyShot = ReadString(strValue);
+		m_talkAllyShot = ReadString(setValue);
 		break;
 	case "m_talkGreet":
-		m_talkGreet = ReadString(strValue);
+		m_talkGreet = ReadString(setValue);
 		break;
 	case "m_talkIdle":
-		m_talkIdle = ReadString(strValue);
+		m_talkIdle = ReadString(setValue);
 		break;
 	case "m_talkPanic":
-		m_talkPanic = ReadString(strValue);
+		m_talkPanic = ReadString(setValue);
 		break;
 	case "m_talkHearing":
-		m_talkHearing = ReadString(strValue);
+		m_talkHearing = ReadString(setValue);
 		break;
 	case "m_talkSmelling":
-		m_talkSmelling = ReadString(strValue);
+		m_talkSmelling = ReadString(setValue);
 		break;
 	case "m_talkStare":
-		m_talkStare = ReadString(strValue);
+		m_talkStare = ReadString(setValue);
 		break;
 	case "m_talkSurvived":
-		m_talkSurvived = ReadString(strValue);
+		m_talkSurvived = ReadString(setValue);
 		break;
 	case "m_talkWounded":
-		m_talkWounded = ReadString(strValue);
+		m_talkWounded = ReadString(setValue);
 		break;
 	case "m_talkAlert":
-		m_talkAlert = ReadString(strValue);
+		m_talkAlert = ReadString(setValue);
 		break;
 	case "m_talkPlayerAsk":
-		m_talkPlayerAsk = ReadString(strValue);
+		m_talkPlayerAsk = ReadString(setValue);
 		break;
 	case "m_talkPlayerGreet":
-		m_talkPlayerGreet = ReadString(strValue);
+		m_talkPlayerGreet = ReadString(setValue);
 		break;
 	case "m_talkPlayerIdle":
-		m_talkPlayerIdle = ReadString(strValue);
+		m_talkPlayerIdle = ReadString(setValue);
 		break;
 	case "m_talkPlayerWounded1":
-		m_talkPlayerWounded1 = ReadString(strValue);
+		m_talkPlayerWounded1 = ReadString(setValue);
 		break;
 	case "m_talkPlayerWounded2":
-		m_talkPlayerWounded2 = ReadString(strValue);
+		m_talkPlayerWounded2 = ReadString(setValue);
 		break;
 	case "m_talkPlayerWounded3":
-		m_talkPlayerWounded3 = ReadString(strValue);
+		m_talkPlayerWounded3 = ReadString(setValue);
 		break;
 	case "m_talkUnfollow":
-		m_talkUnfollow = ReadString(strValue);
+		m_talkUnfollow = ReadString(setValue);
 		break;
 	case "m_talkFollow":
-		m_talkFollow = ReadString(strValue);
+		m_talkFollow = ReadString(setValue);
 		break;
 	case "m_talkStopFollow":
-		m_talkStopFollow = ReadString(strValue);
+		m_talkStopFollow = ReadString(setValue);
 		break;
 	case "m_talkDenyFollow":
-		m_talkDenyFollow = ReadString(strValue);
+		m_talkDenyFollow = ReadString(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(keyName, setValue);
 	}
+}
+
+void
+ncTalkMonster::SetSentencePitch(float sentencePitch)
+{
+	m_sentencePitch = sentencePitch;
 }
 
 void
@@ -259,8 +265,8 @@ ncTalkMonster::WarnAllies(void)
 		if (vlen(b.origin - origin) < PLAYER_DETECT_RADIUS) {
 			ncTalkMonster w = (ncTalkMonster)b;
 			w.m_iFlags |= MONSTER_METPLAYER;
-			w.m_eFollowing = world;
-			w.m_eFollowingChain = world;
+			w.m_followingEntity = world;
+			w.m_useFollowChain = world;
 		}
 	}
 }
@@ -271,8 +277,8 @@ ncTalkMonster::StartleAllies(void)
 		if (vlen(b.origin - origin) < PLAYER_DETECT_RADIUS) {
 			ncTalkMonster w = (ncTalkMonster)b;
 			w.m_iFlags |= MONSTER_FEAR;
-			w.m_eFollowing = world;
-			w.m_eFollowingChain = world;
+			w.m_followingEntity = world;
+			w.m_useFollowChain = world;
 		}
 	}
 }
@@ -308,7 +314,7 @@ ncTalkMonster::Speak(string sentence)
 	WriteByte(MSG_MULTICAST, EV_SPEAK);
 	WriteEntity(MSG_MULTICAST, this);
 	WriteString(MSG_MULTICAST, sentence);
-	WriteFloat(MSG_MULTICAST, m_flPitch);
+	WriteFloat(MSG_MULTICAST, m_sentencePitch);
 	msg_entity = this;
 	multicast(origin, MULTICAST_PVS);
 }
@@ -331,7 +337,7 @@ ncTalkMonster::SeenPlayer(ncActor thePlayer)
 	if (m_iSequenceState != SEQUENCESTATE_NONE) {
 		return;
 	}
-	if (m_flNextSentence > time) {
+	if (m_sentenceNext > time) {
 		return;
 	}
 	if (m_bGagged) {
@@ -342,7 +348,7 @@ ncTalkMonster::SeenPlayer(ncActor thePlayer)
 	}
 
 	Sentence(m_talkPlayerGreet);
-	m_flNextSentence = time + 10.0;
+	m_sentenceNext = time + 10.0;
 	m_iFlags |= MONSTER_METPLAYER;
 	m_eLookAt = thePlayer;
 }
@@ -353,7 +359,7 @@ ncTalkMonster::SeenFriend(ncActor theActor)
 	if (m_iSequenceState != SEQUENCESTATE_NONE) {
 		return;
 	}
-	if (m_flNextSentence > time) {
+	if (m_sentenceNext > time) {
 		return;
 	}
 	if (m_bGagged) {
@@ -361,7 +367,7 @@ ncTalkMonster::SeenFriend(ncActor theActor)
 	}
 
 	Sentence(m_talkPlayerIdle);
-	m_flNextSentence = time + 10.0;
+	m_sentenceNext = time + 10.0;
 }
 
 void
@@ -370,14 +376,14 @@ ncTalkMonster::TalkPlayerAsk(void)
 	if (m_iSequenceState != SEQUENCESTATE_NONE) {
 		return;
 	}
-	if (m_flNextSentence > time) {
+	if (m_sentenceNext > time) {
 		return;
 	}
 	if (m_bGagged) {
 		return;
 	}
 
-	for (entity p = world; (p = find(p, ::classname, "player"));) {
+	for (entity p = world; (p = next.Player(p));) {
 		/* Find players in a specific radius */
 		if (vlen(p.origin - origin) < PLAYER_DETECT_RADIUS) {
 			/* If we can't physically see him, don't do anything */
@@ -386,7 +392,7 @@ ncTalkMonster::TalkPlayerAsk(void)
 				continue;
 			}
 			Sentence(m_talkPlayerAsk);
-			m_flNextSentence = time + 10.0;
+			m_sentenceNext = time + 10.0;
 			break;
 		}
 	}
@@ -398,7 +404,7 @@ ncTalkMonster::TalkPlayerWounded1(void)
 	if (m_iSequenceState != SEQUENCESTATE_NONE) {
 		return;
 	}
-	if (m_flNextSentence > time) {
+	if (m_sentenceNext > time) {
 		return;
 	}
 	if (m_bGagged) {
@@ -408,7 +414,7 @@ ncTalkMonster::TalkPlayerWounded1(void)
 	if (base_health < health)
 		return;
 
-	for (entity p = world; (p = find(p, ::classname, "player"));) {
+	for (entity p = world; (p = next.Player(p));) {
 		/* Find players in a specific radius */
 		if (vlen(p.origin - origin) < PLAYER_DETECT_RADIUS) {
 			/* If we can't physically see him, don't do anything */
@@ -417,7 +423,7 @@ ncTalkMonster::TalkPlayerWounded1(void)
 				continue;
 			}
 			Sentence(m_talkPlayerWounded3);
-			m_flNextSentence = time + 10.0;
+			m_sentenceNext = time + 10.0;
 			break;
 		}
 	}
@@ -428,7 +434,7 @@ ncTalkMonster::TalkPlayerWounded2(void)
 	if (m_iSequenceState != SEQUENCESTATE_NONE) {
 		return;
 	}
-	if (m_flNextSentence > time) {
+	if (m_sentenceNext > time) {
 		return;
 	}
 	if (m_bGagged) {
@@ -438,7 +444,7 @@ ncTalkMonster::TalkPlayerWounded2(void)
 	if ((base_health / 2) < health)
 		return;
 
-	for (entity p = world; (p = find(p, ::classname, "player"));) {
+	for (entity p = world; (p = next.Player(p));) {
 		/* Find players in a specific radius */
 		if (vlen(p.origin - origin) < PLAYER_DETECT_RADIUS) {
 			/* If we can't physically see him, don't do anything */
@@ -447,7 +453,7 @@ ncTalkMonster::TalkPlayerWounded2(void)
 				continue;
 			}
 			Sentence(m_talkPlayerWounded3);
-			m_flNextSentence = time + 10.0;
+			m_sentenceNext = time + 10.0;
 			break;
 		}
 	}
@@ -459,14 +465,14 @@ ncTalkMonster::TalkPlayerWounded3(void)
 	if (m_iSequenceState != SEQUENCESTATE_NONE) {
 		return;
 	}
-	if (m_flNextSentence > time) {
+	if (m_sentenceNext > time) {
 		return;
 	}
 	if (m_bGagged) {
 		return;
 	}
 
-	for (entity p = world; (p = find(p, ::classname, "player"));) {
+	for (entity p = world; (p = next.Player(p));) {
 		/* Find players in a specific radius */
 		if (vlen(p.origin - origin) < PLAYER_DETECT_RADIUS) {
 			/* If we can't physically see him, don't do anything */
@@ -475,7 +481,7 @@ ncTalkMonster::TalkPlayerWounded3(void)
 				continue;
 			}
 			Sentence(m_talkPlayerWounded3);
-			m_flNextSentence = time + 10.0;
+			m_sentenceNext = time + 10.0;
 			break;
 		}
 	}
@@ -492,7 +498,7 @@ ncTalkMonster::TalkPanic(void)
 	}
 
 	Sentence(m_talkPanic);
-	m_flNextSentence = time + 2.5;
+	m_sentenceNext = time + 2.5;
 }
 
 
@@ -507,7 +513,7 @@ ncTalkMonster::TalkUnfollow(void)
 	}
 
 	Sentence(m_talkUnfollow);
-	m_flNextSentence = time + 10.0;
+	m_sentenceNext = time + 10.0;
 }
 
 void
@@ -521,7 +527,7 @@ ncTalkMonster::TalkFollow(void)
 	}
 
 	Sentence(m_talkFollow);
-	m_flNextSentence = time + 10.0;
+	m_sentenceNext = time + 10.0;
 }
 
 void
@@ -535,7 +541,7 @@ ncTalkMonster::TalkStopFollow(void)
 	}
 
 	Sentence(m_talkStopFollow);
-	m_flNextSentence = time + 10.0;
+	m_sentenceNext = time + 10.0;
 }
 
 void
@@ -549,7 +555,7 @@ ncTalkMonster::TalkDenyFollow(void)
 	}
 
 	Sentence(m_talkDenyFollow);
-	m_flNextSentence = time + 10.0;
+	m_sentenceNext = time + 10.0;
 }
 
 void
@@ -558,7 +564,7 @@ ncTalkMonster::Touch(entity eToucher)
 	if (eToucher == world)
 		return;
 
-	if (eToucher == m_eFollowing) {
+	if (eToucher == m_followingEntity) {
 		makevectors(eToucher.angles);
 		velocity = v_forward * 250.0f;
 		return;
@@ -576,27 +582,27 @@ void
 ncTalkMonster::FollowPlayer(void)
 {
 	float flPlayerDist;
-	input_angles = vectoangles(m_eFollowingChain.origin - origin);
+	input_angles = vectoangles(m_useFollowChain.origin - origin);
 			input_angles[0] = 0;
 			input_angles[1] = fixAngleDelta(input_angles[1]);
 			input_angles[2] = 0;
 	_LerpTurnToYaw(input_angles[1]);
 
 	/* for best results, we want to ignore the Z plane
-	   this avoids the problem of a follower spinning 
+	   this avoids the problem of a follower spinning
 	    around when above/below you on a platform */
-	vector vecParent = m_eFollowingChain.origin;
+	vector vecParent = m_useFollowChain.origin;
 	vecParent[2] = origin[2];
 
 	flPlayerDist = distance(vecParent, origin);
 
 	/* Give up after 1024 units */
 	if (flPlayerDist > m_flMaxFollowDistance) {
-		m_eFollowing = world;
+		m_followingEntity = world;
 		ncMonsterLog("Maximum follow distance reached. Will stop following.");
 	} else if (flPlayerDist >= m_flFollowDistance) {
 		/* we only allow speed changes every second, avoid jitter */
-		if (m_flFollowSpeedChanged < time) {
+		if (m_useFollowSpeedChanged < time) {
 			float flNextSpeed = GetChaseSpeed();
 
 			/* if we're close enough, we ought to walk */
@@ -604,23 +610,23 @@ ncTalkMonster::FollowPlayer(void)
 				flNextSpeed = GetWalkSpeed();
 
 			/* only update the timer when speed changed */
-			if (flNextSpeed != m_flFollowSpeed) {
-				m_flFollowSpeed = flNextSpeed;
-				m_flFollowSpeedChanged = time + 1.0f;
+			if (flNextSpeed != m_useFollowSpeed) {
+				m_useFollowSpeed = flNextSpeed;
+				m_useFollowSpeedChanged = time + 1.0f;
 			}
 		}
 
 		if (DistanceFromYaw(vecParent) > 0.9f)
-			input_movevalues[0] = m_flFollowSpeed;
+			input_movevalues[0] = m_useFollowSpeed;
 
 		/* when we're in a chain... can we see the user any more? */
-		if (m_eFollowingChain != m_eFollowing) {
-			traceline(GetOrigin(), m_eFollowing.origin, MOVE_NORMAL, this);
+		if (m_useFollowChain != m_followingEntity) {
+			traceline(GetOrigin(), m_followingEntity.origin, MOVE_NORMAL, this);
 
 			/* the answer is no. */
-			if (trace_fraction < 1.0 || trace_ent != m_eFollowing) {
+			if (trace_fraction < 1.0 || trace_ent != m_followingEntity) {
 				/* go straight to our user */
-				ncEntity zamn = (ncEntity)m_eFollowing;
+				ncEntity zamn = (ncEntity)m_followingEntity;
 				vector endPos = zamn.GetNearbySpot();
 
 				if (endPos != g_vec_null) {
@@ -631,26 +637,26 @@ ncTalkMonster::FollowPlayer(void)
 			}
 		}
 
-		traceline(origin, m_eFollowingChain.origin, MOVE_NORMAL, this);
+		traceline(origin, m_useFollowChain.origin, MOVE_NORMAL, this);
 
 		/* Tracing failed, there's world geometry in the way */
-		if (trace_fraction < 1.0f && trace_ent != m_eFollowingChain) {
+		if (trace_fraction < 1.0f && trace_ent != m_useFollowChain) {
 			/* are they still generally accessible? */
-			traceline(m_vecLastUserPos, vecParent, MOVE_NORMAL, this);
+			traceline(m_useLastAtPosition, vecParent, MOVE_NORMAL, this);
 
-			if (trace_fraction < 1.0f && trace_ent != m_eFollowing) {
-				RouteToPosition(m_eFollowing.origin); /* go directly to the source */
+			if (trace_fraction < 1.0f && trace_ent != m_followingEntity) {
+				RouteToPosition(m_followingEntity.origin); /* go directly to the source */
 				m_flSequenceSpeed = GetChaseSpeed();
 				return;
 			} else {
-				input_angles = vectoangles(m_vecLastUserPos - origin);
+				input_angles = vectoangles(m_useLastAtPosition - origin);
 				input_angles[0] = 0;
 				input_angles[1] = fixAngleDelta(input_angles[1]);
 				input_angles[2] = 0;
 				_LerpTurnToYaw(input_angles[1]);
 			}
 		} else {
-			m_vecLastUserPos = vecParent;
+			m_useLastAtPosition = vecParent;
 		}
 
 		if (m_bFollowGrouping == false)
@@ -658,12 +664,12 @@ ncTalkMonster::FollowPlayer(void)
 
 		/* Trace again to see if another hostage is in our path and if so
 		 * follow them instead, this makes pathing easier */
-		traceline(origin, /*mins, maxs,*/ m_vecLastUserPos, FALSE, this);
+		traceline(origin, /*mins, maxs,*/ m_useLastAtPosition, FALSE, this);
 		if (trace_ent.classname == classname) {
 			ncTalkMonster que = (ncTalkMonster)trace_ent;
-			if (que.m_eFollowingChain == m_eFollowing) {
+			if (que.m_useFollowChain == m_followingEntity) {
 				if (trace_ent != this) {
-					m_eFollowingChain = trace_ent;
+					m_useFollowChain = trace_ent;
 				}
 			}
 		}
@@ -680,7 +686,7 @@ ncTalkMonster::PanicFrame(void)
 	m_iFlags |= MONSTER_METPLAYER;
 	input_movevalues = [240, 0, 0];
 
-	if (m_flTraceTime < time) {
+	if (m_useFollowTraceTime < time) {
 		for (float yaw = -180.0f; yaw < 180.0f; yaw += 1.0f) {
 			makevectors([0, yaw, 0]);
 			tracebox(origin, mins, maxs, origin + (v_forward * 1024), FALSE, this);
@@ -699,11 +705,11 @@ ncTalkMonster::PanicFrame(void)
 		angles[1] = fixAngleDelta(bestYaw + random(-25, 25));
 		input_angles[1] = angles[1];
 		v_angle[1] = angles[1];
-		m_flTraceTime = time + 0.5f + random();
+		m_useFollowTraceTime = time + 0.5f + random();
 	}
 
 
-	if (m_flNextSentence > time)
+	if (m_sentenceNext > time)
 		return;
 
 	TalkPanic();
@@ -713,14 +719,14 @@ void
 ncTalkMonster::FollowChain(void)
 {
 	/* Deal with a hostage being rescued when it's following someone else */
-	if (m_eFollowingChain.classname == classname) {
-		if (m_eFollowingChain.solid == SOLID_NOT) {
-			m_eFollowingChain = m_eFollowing;
+	if (m_useFollowChain.classname == classname) {
+		if (m_useFollowChain.solid == SOLID_NOT) {
+			m_useFollowChain = m_followingEntity;
 		}
 	}
 	/* Deal with the hostage losing its rescuer (death) */
-	if (m_eFollowing.health <= 0) {
-		m_eFollowing = world;
+	if (m_followingEntity.health <= 0) {
+		m_followingEntity = world;
 	}
 }
 
@@ -739,8 +745,8 @@ ncTalkMonster::RunAI(void)
 	AttackThink();
 
 #if 0
-	if (m_eFollowing != world && m_iNodes <= 0) {
-		m_eLookAt = m_eFollowing;
+	if (m_followingEntity != world && m_iNodes <= 0) {
+		m_eLookAt = m_followingEntity;
 		FollowPlayer();
 	} else {
 		if (random() < 0.5) {
@@ -757,8 +763,8 @@ ncTalkMonster::Respawn(void)
 	super::Respawn();
 
 	RouteClear();
-	m_eFollowing = world;
-	m_eFollowingChain = world;
+	m_followingEntity = world;
+	m_useFollowChain = world;
 	PlayerUse = OnPlayerUse;
 
 	if (m_bFollowOnUse) {
@@ -778,112 +784,112 @@ ncTalkMonster::OnPlayerUse(void)
 		return;
 	}
 
-	if ((m_eFollowing == world)) {
+	if ((m_followingEntity == world)) {
 		if (!(m_iFlags & MONSTER_USED)) {
 			m_iFlags |= MONSTER_USED;
 		}
 
 		TalkFollow();
-		m_eFollowing = eActivator;
-		m_eFollowingChain = m_eFollowing;
-		m_vecLastUserPos = m_eFollowing.origin;
+		m_followingEntity = eActivator;
+		m_useFollowChain = m_followingEntity;
+		m_useLastAtPosition = m_followingEntity.origin;
 	} else {
 		TalkUnfollow();
-		m_eFollowing = world;
+		m_followingEntity = world;
 		RouteClear();
 	}
 }
 
 void
-ncTalkMonster::SpawnKey(string strKey, string strValue)
+ncTalkMonster::SpawnKey(string keyName, string setValue)
 {
-	switch (strKey) {
+	switch (keyName) {
 	case "UnUseSentence":
-		m_talkUnfollow = strcat("!", ReadString(strValue));
+		m_talkUnfollow = strcat("!", ReadString(setValue));
 		break;
 	case "UseSentence":
-		m_talkFollow = strcat("!", ReadString(strValue));
+		m_talkFollow = strcat("!", ReadString(setValue));
 		break;
 
 	/* entityDef */
 	case "talk_answer":
-		m_talkAnswer = ReadString(strValue);
+		m_talkAnswer = ReadString(setValue);
 		break;
 	case "talk_ask":
-		m_talkAsk = ReadString(strValue);
+		m_talkAsk = ReadString(setValue);
 		break;
 	case "talk_ally_shot":
-		m_talkAllyShot = ReadString(strValue);
+		m_talkAllyShot = ReadString(setValue);
 		break;
 	case "talk_greet":
-		m_talkGreet = ReadString(strValue);
+		m_talkGreet = ReadString(setValue);
 		break;
 	case "talk_idle":
-		m_talkIdle = ReadString(strValue);
+		m_talkIdle = ReadString(setValue);
 		break;
 	case "talk_panic":
-		m_talkPanic = ReadString(strValue);
+		m_talkPanic = ReadString(setValue);
 		break;
 	case "talk_hearing":
-		m_talkHearing = ReadString(strValue);
+		m_talkHearing = ReadString(setValue);
 		break;
 	case "talk_smelling":
-		m_talkSmelling = ReadString(strValue);
+		m_talkSmelling = ReadString(setValue);
 		break;
 	case "talk_stare":
-		m_talkStare = ReadString(strValue);
+		m_talkStare = ReadString(setValue);
 		break;
 	case "talk_survived":
-		m_talkSurvived = ReadString(strValue);
+		m_talkSurvived = ReadString(setValue);
 		break;
 	case "talk_wounded":
-		m_talkWounded = ReadString(strValue);
+		m_talkWounded = ReadString(setValue);
 		break;
 	case "talk_alert":
-		m_talkAlert = ReadString(strValue);
+		m_talkAlert = ReadString(setValue);
 		break;
 	case "talk_player_ask":
-		m_talkPlayerAsk = ReadString(strValue);
+		m_talkPlayerAsk = ReadString(setValue);
 		break;
 	case "talk_player_greet":
-		m_talkPlayerGreet = ReadString(strValue);
+		m_talkPlayerGreet = ReadString(setValue);
 		break;
 	case "talk_player_idle":
-		m_talkPlayerIdle = ReadString(strValue);
+		m_talkPlayerIdle = ReadString(setValue);
 		break;
 	case "talk_player_wounded1":
-		m_talkPlayerWounded1 = ReadString(strValue);
+		m_talkPlayerWounded1 = ReadString(setValue);
 		break;
 	case "talk_player_wounded2":
-		m_talkPlayerWounded2 = ReadString(strValue);
+		m_talkPlayerWounded2 = ReadString(setValue);
 		break;
 	case "talk_player_wounded3":
-		m_talkPlayerWounded3 = ReadString(strValue);
+		m_talkPlayerWounded3 = ReadString(setValue);
 		break;
 	case "talk_unfollow":
-		m_talkUnfollow = ReadString(strValue);
+		m_talkUnfollow = ReadString(setValue);
 		break;
 	case "talk_follow":
-		m_talkFollow = ReadString(strValue);
+		m_talkFollow = ReadString(setValue);
 		break;
 	case "talk_stop_follow":
-		m_talkStopFollow = ReadString(strValue);
+		m_talkStopFollow = ReadString(setValue);
 		break;
 	case "talk_deny_follow":
-		m_talkDenyFollow = ReadString(strValue);
+		m_talkDenyFollow = ReadString(setValue);
 		break;
 	case "follow_on_use":
-		m_bFollowOnUse = ReadBool(strValue);
+		m_bFollowOnUse = ReadBool(setValue);
 		break;
 
 	case "follow_dist":
-		m_flFollowDistance = ReadFloat(strValue);
+		m_flFollowDistance = ReadFloat(setValue);
 		break;
 	case "follow_maxdist":
-		m_flMaxFollowDistance = ReadFloat(strValue);
+		m_flMaxFollowDistance = ReadFloat(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(keyName, setValue);
 		break;
 	}
 }
@@ -924,20 +930,20 @@ ncTalkMonster::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_FLOAT(skin, MONFL_CHANGED_SKINHEALTH)
 	SENDENTITY_FLOAT(health, MONFL_CHANGED_SKINHEALTH)
 	SENDENTITY_FLOAT(effects, MONFL_CHANGED_EFFECTS)
-	SENDENTITY_SHORT(m_iBody, MONFL_CHANGED_BODY)
+	SENDENTITY_SHORT(m_geomsetField, MONFL_CHANGED_BODY)
 	SENDENTITY_FLOAT(scale, MONFL_CHANGED_SCALE)
-	SENDENTITY_FLOAT(m_vecAxialScale[0], MONFL_CHANGED_SCALE)
-	SENDENTITY_FLOAT(m_vecAxialScale[1], MONFL_CHANGED_SCALE)
-	SENDENTITY_FLOAT(m_vecAxialScale[2], MONFL_CHANGED_SCALE)
+	SENDENTITY_FLOAT(m_axialScale[0], MONFL_CHANGED_SCALE)
+	SENDENTITY_FLOAT(m_axialScale[1], MONFL_CHANGED_SCALE)
+	SENDENTITY_FLOAT(m_axialScale[2], MONFL_CHANGED_SCALE)
 	SENDENTITY_COORD(velocity[0], MONFL_CHANGED_VELOCITY)
 	SENDENTITY_COORD(velocity[1], MONFL_CHANGED_VELOCITY)
 	SENDENTITY_COORD(velocity[2], MONFL_CHANGED_VELOCITY)
-	SENDENTITY_BYTE(m_iRenderMode, MONFL_CHANGED_RENDERMODE)
-	SENDENTITY_BYTE(m_iRenderFX, MONFL_CHANGED_RENDERMODE)
-	SENDENTITY_BYTE(m_vecRenderColor[0], MONFL_CHANGED_RENDERCOLOR)
-	SENDENTITY_BYTE(m_vecRenderColor[1], MONFL_CHANGED_RENDERCOLOR)
-	SENDENTITY_BYTE(m_vecRenderColor[2], MONFL_CHANGED_RENDERCOLOR)
-	SENDENTITY_BYTE(m_flRenderAmt, MONFL_CHANGED_RENDERAMT)
+	SENDENTITY_BYTE(m_renderMode, MONFL_CHANGED_RENDERMODE)
+	SENDENTITY_BYTE(m_renderFX, MONFL_CHANGED_RENDERMODE)
+	SENDENTITY_BYTE(m_renderColor[0], MONFL_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_renderColor[1], MONFL_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_renderColor[2], MONFL_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_renderAmount, MONFL_CHANGED_RENDERAMT)
 	SENDENTITY_FLOAT(bonecontrol1, MONFL_CHANGED_HEADYAW)
 	SENDENTITY_FLOAT(subblendfrac, MONFL_CHANGED_HEADYAW)
 	SENDENTITY_FLOAT(frame1time, MONFL_CHANGED_HEADYAW)
@@ -1046,14 +1052,14 @@ ncTalkMonster::predraw(void)
 	RenderFXPass();
 	RenderDebugSkeleton();
 
-	processmodelevents(modelindex, frame, m_flBaseTime,
+	processmodelevents(modelindex, frame, m_modelEventTime,
 		frame1time, HandleAnimEvent);
 	} /* TODO end */
 
 	/* mouth flapping action */
 	bonecontrol5 = getchannellevel(this, CHAN_VOICE) * 20;
 
-	m_flBaseTime = frame1time;
+	m_modelEventTime = frame1time;
 	ProcessWordQue();
 
 	/* pause/unpause CHAN_VOICE */
@@ -1073,14 +1079,33 @@ ncTalkMonster::predraw(void)
 		m_bWasPaused = true;
 	}
 
-	bonecontrol2 = autocvar(bonecontrol2, 0);
-	bonecontrol3 = autocvar(bonecontrol3, 0);
-	bonecontrol4 = autocvar(bonecontrol4, 0);
+	/* subblendfrac == -1 == up, 0.99 is down */
+	subblendfrac = bound(-0.99, v_angle[0] / 45, 0.99);
 
-	//print(sprintf("yaw: %f %f\n", subblendfrac, v_angle[0]));
-	subblend2frac = autocvar(subblend2frac, 0);
-	basesubblendfrac = autocvar(basesubblendfrac, 0);
-	basesubblend2frac = autocvar(basesubblend2frac, 0);
+#if 0
+	if (autocvar_boney1 != 0.0f)
+		bonecontrol1 = autocvar_boney1;
+	if (autocvar_boney2 != 0.0f)
+		bonecontrol2 = autocvar_boney2;
+	if (autocvar_boney3 != 0.0f)
+		bonecontrol3 = autocvar_boney3;
+	if (autocvar_boney4 != 0.0f)
+		bonecontrol4 = autocvar_boney4;
+	if (autocvar_boney5 != 0.0f)
+		bonecontrol5 = autocvar_boney5;
+
+	if (autocvar_subblendfrac != 0.0f)
+		subblendfrac = autocvar_subblendfrac;
+	if (autocvar_subblend2frac != 0.0f)
+		subblend2frac = autocvar_subblend2frac;
+
+	if (autocvar_basesubblendfrac != 0.0f)
+		basesubblendfrac = autocvar_basesubblendfrac;
+	if (autocvar_basesubblend2frac != 0.0f)
+		basesubblend2frac = autocvar_basesubblend2frac;
+	if (autocvar_baseframe != 0.0f)
+		frame = autocvar_baseframe;
+#endif
 
 	RenderAxialScale();
 
@@ -1155,20 +1180,20 @@ ncTalkMonster::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_FLOAT(skin, MONFL_CHANGED_SKINHEALTH)
 	READENTITY_FLOAT(health, MONFL_CHANGED_SKINHEALTH)
 	READENTITY_FLOAT(effects, MONFL_CHANGED_EFFECTS)
-	READENTITY_SHORT(m_iBody, MONFL_CHANGED_BODY)
+	READENTITY_SHORT(m_geomsetField, MONFL_CHANGED_BODY)
 	READENTITY_FLOAT(scale, MONFL_CHANGED_SCALE)
-	READENTITY_FLOAT(m_vecAxialScale[0], MONFL_CHANGED_SCALE)
-	READENTITY_FLOAT(m_vecAxialScale[1], MONFL_CHANGED_SCALE)
-	READENTITY_FLOAT(m_vecAxialScale[2], MONFL_CHANGED_SCALE)
+	READENTITY_FLOAT(m_axialScale[0], MONFL_CHANGED_SCALE)
+	READENTITY_FLOAT(m_axialScale[1], MONFL_CHANGED_SCALE)
+	READENTITY_FLOAT(m_axialScale[2], MONFL_CHANGED_SCALE)
 	READENTITY_COORD(velocity[0], MONFL_CHANGED_VELOCITY)
 	READENTITY_COORD(velocity[1], MONFL_CHANGED_VELOCITY)
 	READENTITY_COORD(velocity[2], MONFL_CHANGED_VELOCITY)
-	READENTITY_BYTE(m_iRenderMode, MONFL_CHANGED_RENDERMODE)
-	READENTITY_BYTE(m_iRenderFX, MONFL_CHANGED_RENDERMODE)
-	READENTITY_BYTE(m_vecRenderColor[0], MONFL_CHANGED_RENDERCOLOR)
-	READENTITY_BYTE(m_vecRenderColor[1], MONFL_CHANGED_RENDERCOLOR)
-	READENTITY_BYTE(m_vecRenderColor[2], MONFL_CHANGED_RENDERCOLOR)
-	READENTITY_BYTE(m_flRenderAmt, MONFL_CHANGED_RENDERAMT)
+	READENTITY_BYTE(m_renderMode, MONFL_CHANGED_RENDERMODE)
+	READENTITY_BYTE(m_renderFX, MONFL_CHANGED_RENDERMODE)
+	READENTITY_BYTE(m_renderColor[0], MONFL_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_renderColor[1], MONFL_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_renderColor[2], MONFL_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_renderAmount, MONFL_CHANGED_RENDERAMT)
 	READENTITY_FLOAT(bonecontrol1, MONFL_CHANGED_HEADYAW)
 	READENTITY_FLOAT(subblendfrac, MONFL_CHANGED_HEADYAW)
 	READENTITY_FLOAT(frame1time, MONFL_CHANGED_HEADYAW)
@@ -1201,13 +1226,13 @@ ncTalkMonster_ParseSentence(void)
 
 	if (ent) {
 		if (ent.classname != "speaker" && ent.declclass != "ncTalkMonster" && ent.classname != "ncTalkMonster" && ent.classname != "ambient_generic") {
-			NSError("Entity %d not a ncTalkMonster!", e);
+			ncError("Entity %d not a ncTalkMonster!", e);
 		} else {
 			targ = (ncTalkMonster)ent;
 			targ.Sentence(sentence);
 		}
 	} else {
-		NSError("Entity %d not in PVS", e);
+		ncError("Entity %d not in PVS", e);
 	}
 }
 #endif

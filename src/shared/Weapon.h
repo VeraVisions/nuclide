@@ -67,17 +67,21 @@ string nsweapon_state_s[] =
 typedef enum
 {
 	WEPEVENT_FIRED,
+	WEPEVENT_RELEASED,
 	WEPEVENT_RELOADED
 } nsweapon_event_t;
 
 #define CHAN_LOOP 5
 
 /*! \brief This entity class represents weapon based items. */
-/*!QUAKED ncWeapon (0 0.8 0.8) (-16 -16 0) (16 16 72)
+/*!QUAKED ncWeapon (0 0.8 0.8) (-16 -16 0) (16 16 32)
 # OVERVIEW
 This entity class represents weapon based items. 
 It is based on ncItem. The only difference is that the attack
 related keys get forwarded only to items of this class.
+
+This is not a class that you can instantiate using level entity data due to its complexity,
+you will almost exclusively enter the data using [entityDef](@ref entitydef) instead.
 
 ## FireInfo
 Weapon firing events are split into optional decl titled 'FireInfo'
@@ -92,12 +96,9 @@ The "def_altFireInfo" key points to the decl containing the secondary-attack
 FireInfo. If that does not exist, secondary attacks are not possible.
 
 # KEYS
-- "targetname" : Name
-
-- "weapon_scriptobject" : mapC progs with the weapon code within.
-- "clipSize" : maximum clip size
-- "mtr_flashShader" : muzzleflash material to Use.
-- "model_flash" : muzzleflash model/sprite to use.
+- "model" : Item/pickup model in world.
+- "model_view" : First-person view model.
+- "model_flash" : muzzleflash model/sprite to use. 
 - "flashColor" : muzzleflash dlight color
 - "flashRadius" : muzzleflash dlight radius
 - "def_dropItem" : when this item is dropped from someones inventory, will spawn this entityDef item instead.
@@ -106,7 +107,8 @@ FireInfo. If that does not exist, secondary attacks are not possible.
 - "snd_hum" : idle shader
 - "smoke_muzzle" : smoke particle effect name
 - "continuousSmoke" : whether the particle effect is continous
-- "clipSizeDefault" : CUSTOM: Default clip size on pickup.
+- "clipSize" : maximum clip size
+- "clipSizeDefault" : Initial clip size on pickup.
 
 ## FireInfo related keys
 - "def_onFire" : Def to spawn when the weapon is fired.
@@ -163,6 +165,133 @@ activity override format for existing models.
 - "fireRate" : Firing rate between shots.
 - "semiAuto" : If not set to "1", the weapon will be fully automatic.
 
+# EXAMPLES
+
+Here's some examples of weapons that you can declare via [entityDef](@ref entityDef)
+
+A baseball bat:
+
+```
+// Baseball Bat
+entityDef weapon_bat
+{
+	"spawnclass"		"ncWeapon"					// any weapon has to be at least this class, or a child-class
+	"model_view"		"models/weapons/v_bat.vvm"	// the first-person view model
+	"model"				"models/weapons/w_bat.vvm"	// the world/pickup/item model
+	"inv_name"			"Baseball Bat" 				// the name for the inventory/log display
+	"ammoRequired"		"0"							// Will never charge or check for ammo
+
+	"def_onFire"		"damage_bat"				// Spawn this projectile upon successful fire
+	"testDistance"		"-32"						// Fire can only be successful if we collide with something within 32 units. The value being positive would mean the opposite (success only when there's nothing in the way)
+
+	"meleeRateMiss"		"0.6"						// The firing rate if "testDistance" fails
+	"meleeRateHit"		"0.75"						// The firing rate if "testDistance" succeeds
+
+	"act_idle"			"0,2"						// a set of idle sequences to play, when idle
+	"act_draw"			"4"							// the animation sequence to play when deploying the weapon
+	"act_holster"		"6"							// the animation sequence to play when putting the weapon away.
+	"act_fireFailed"	"9,11,13"					// the animation sequences to pick from for when "testDistance" fails
+	"act_fire"			"8,10,12"					// the animation sequences to pick from for when "testDistance" succeeds
+}
+
+entityDef damage_bat
+{
+	"spawnclass"		"ncProjectile"				// attacks can be either this, or ncAttack
+	"is_bullet"			"1"							// make it hitscan based
+	"damage"			"15"						// we make 15 damage with a hit
+	"push"				"300"						// apply this much push force to the target
+}
+```
+
+You will notice how the above example has no mention of fireInfo whatsoever. That's because anything that
+can be defined within a fireInfo entry, can also be inherited from the main weapon decl.
+
+FireInfo exists mainly so that multiple modes of operation can be defined, like for example a distinct secondary firing mode.
+
+Here's an example for a gun that fires both bullets and grenades:
+
+```
+entityDef weapon_rifle
+{
+	"editor_color"			".3 .3 1"
+	"editor_mins"			"-16 -16 -16"
+	"editor_maxs"			"16 16 16"
+	"editor_usage"			"Rifle with Grenade Launcher Attachment"
+	"editor_rotatable"		"1"
+
+	"spawnclass"			"ncWeapon"
+	"model"					"models/weapons/w_rifle.vvm"
+	"model_view"			"models/weapons/v_rifle.vvm"
+
+	// ncWeapon specific
+	"def_fireInfo"			"fireInfo_rifleBullets"
+	"def_altFireInfo"		"fireInfo_rifleGrenade"
+	"inv_name"				"Cool Rifle"
+	"clipSize"				"50"
+	"clipSizeDefault"		"45"
+
+	"act_fire"				"5,6,7"
+	"act_holster"			"4"
+	"act_reload"			"3"
+	"act_draw"				"4"
+	"act_idle"				"0,1"
+	"weight"				"15"
+}
+
+entityDef projectile_rifleBullets
+{
+	"spawnclass"			"ncProjectile"
+	"is_bullet"				"1"
+	"damage"				"15"
+}
+
+entityDef fireInfo_rifleBullets
+{
+	"def_onFire"			"projectile_rifleBullets"
+	"ammoType"				"ammo_bullets"
+	"ammoRequired"			"1"
+	"ammoPerShot"			"1"
+	"fireRate"				"0.1"
+	"punchAngle"			"-4 0 0"
+}
+
+entityDef fireInfo_rifleGrenade
+{
+	"def_onFire"			"projectile_grenade"
+	"ammoType"				"ammo_grenade"
+	"ammoRequired"			"1"
+	"ammoPerShot"			"1"
+	"fireRate"				"1"
+	"punchAngle"			"-15 0 0"
+	"act_fire"				"2"
+}
+
+entityDef projectile_grenade
+{
+	"spawnclass"			"ncProjectile"
+	"model"					"models/projectiles/grenade.vvm"
+	"offset"				"16 0 0"
+	"velocity"				"1000 0 0"
+	"angular_velocity"		"-300 0 0"
+	"gravity"				"0.5"
+	"bounce"				"1"
+	"mins"					"0 0 0"
+	"maxs"					"0 0 0"
+	"detonate_on_fuse"		"0"
+	"detonate_on_death"		"1"
+	"detonate_on_world"		"1"
+	"detonate_on_actor"		"1"
+	"damage"				"150"
+	"splash_damage"			"80"
+}
+```
+
+In the above example, defining **def_fireInfo** in **weapon_rifle** will isolate definitions
+affecting the primary attack mode of the weapon into the fireInfo decl **fireInfo_rifleBullets**, whereas
+the secondary attack is defined within **fireInfo_rifleGrenade**.
+
+As you can see given the previous baseball-bat example, you don't have to define these at all, unless you desire said extra functionality.
+
 @ingroup baseclass
 */
 class
@@ -183,6 +312,7 @@ public:
 	virtual void Restore(string, string);
 	virtual void EvaluateEntity(void);
 	virtual float SendEntity(entity,float);
+	virtual void RestoreComplete(void);
 #endif
 
 	virtual bool TestFireAbility(string);
@@ -259,6 +389,16 @@ public:
 	nonvirtual void SwitchFireInfo(string);
 	nonvirtual bool DetonateDef(string);
 	nonvirtual void Attack(string);
+	
+	nonvirtual int GetClip(void);
+	nonvirtual int GetClipSize(void);
+	nonvirtual bool RequiresAmmo(void);
+	nonvirtual int FireInfoSelected(void);
+	nonvirtual float OverheatingProgress(void);
+	nonvirtual float PlayerSpeedMod(void);
+
+	/** Called to cache some entityDef values. */
+	virtual void ReloadCachedAttributes(void);
 
 private:
 	/** Internal use Sets/overrides the weapon state. Subclasses track your own state! */
@@ -267,8 +407,6 @@ private:
 	nonvirtual void _SwitchedToCallback(void);
 	/** Called to signal that the owner switched from this weapon. */
 	nonvirtual void _SwitchedFromCallback(void);
-	/** Called to cache some entityDef values. */
-	nonvirtual void _CacheWeaponDefVariables(void);
 	nonvirtual void _WeaponStartedFiring(void);
 	nonvirtual void _WeaponStoppedFiring(void);
 	nonvirtual void _PrimaryAttack(void);
@@ -295,99 +433,97 @@ private:
 #endif
 
 	/* weapon related spawn keys */
-	string m_strWeaponTitle;
-	int m_iHudSlot;
-	int m_iHudSlotPos;
-	string m_icon;
-	string m_iconSel;
+	string m_weaponTitle;
+	int m_weaponHUDSlot;
+	int m_weaponHUDSlotPos;
+	string m_weaponHUDIcon;
+	string m_weaponHUDIconSel;
+	string m_weaponViewModelPath;
+	string m_weaponPlayerModelPath;
+	string m_weaponScript;
+	string m_weaponAmmoType;
+	bool m_weaponRequiresAmmo;
+	int m_weaponClipStartSize;
+	string m_weaponDropsItem;
 
-	string m_strWeaponViewModel;
-	string m_strWeaponPlayerModel;
-	string m_strWeaponScript;
-	string m_strAmmoType;
-	bool m_bAmmoRequired;
-	int m_iClipStartSize;
-	string m_strFlashShader;
-	string m_strFlashModel;
-	vector m_vecFlashColor;
-	float m_flFlashRadius;
-	string m_strDropItemDef;
-	string m_strSmokeParticle;
-	bool m_bSmokeContinous;
-	float m_fxTrail;
-
-	/* extra networking */
-	bool m_bFiring;
+	NETWORKED_INT(m_weaponClip)
+	NETWORKED_INT(m_weaponClipSize)
+	NETWORKED_FLOAT(m_weaponFireInfoValue)
+	NETWORKED_MODELINDEX(m_viewModel)
+	NETWORKED_MODELINDEX(m_worldModel)
+	NETWORKED_MODELINDEX(m_playerModel)
+	NETWORKED_FLOAT(m_weaponFireRate)
+	NETWORKED_FLOAT(m_weaponState)
+	NETWORKED_BOOL(m_weaponIsFiring)
+	NETWORKED_BOOL(m_weaponOverheating)
 
 	/* cached variables. don't save - recalculate! */
+	string m_weaponLastFireInfo;
 	string m_primaryFireInfo;
 	string m_secondaryFireInfo;
 	int m_primaryAmmoType;
 	int m_secondaryAmmoType;
-	float m_flPrimedFuse;
-	float m_flTriggerDelay;
-	float m_flZoomFOV;
-	bool m_bPowerAmmo;
-	bool m_bRemoveOnEmpty;
-	string m_strLastFireInfo;
 	float m_jointTrailWorld;
 	float m_jointTrailView;
-	float m_flSpeedMod;
-	bool m_bAltModeSwitch;
-	bool m_bBuggyIdleAnim;
+	float m_weaponAmmoRegenTime;
+	float m_weaponAmmoDepleteTime;
 
+	/* extra networking */
 	float m_nextWeapon_entnum;
 	float m_prevWeapon_entnum;
 	ncWeapon m_nextWeapon_net;
 	ncWeapon m_prevWeapon_net;
 
 	/* cached fireInfo */
-	string m_fiDetonateOnFire;
-	vector m_fiPunchAngle;
-	vector m_fiPunchSpring;
-	string m_fiSndFire;
-	string m_fiSndFailed;
-	string m_fiSndFireLast;
-	string m_fiSndRelease;
-	string m_fiSndEmpty;
-	int m_fiAmmoType;
-	int m_fiAmmoPerShot;
+	string m_fiMuzzleFlashMaterial;
+	string m_fiMuzzleFlashModelPath;
+	vector m_fiMuzzleFlashColor;
+	float m_fiMuzzleFlashRadius;
+	string m_fiFXSmokeParticle;
+	bool m_fiFXSmokeContinous;
+	float m_fiFXTrail;
 	bool m_fiAmmoRequired;
-	float m_fiFireRate;
-	string m_fiOnFire;
-	string m_fiOnRelease;
-	bool m_fiWillRelease;
-	bool m_fiSemiAuto;
-	string m_fiSndFireLoop;
-	float m_flReloadSpeed;
-	float m_fiChargeTime;
-	bool m_bHasLoop;
-	string m_fiSndFireStart;
-	string m_fiSndFireStop;
-	string m_fiSndFireLoop;
-	bool m_fiDrawAfterRelease;
-	bool m_fireUnderwater;
-
 	bool m_fiCocks;
-	string m_fiSndCock;
-
-	string m_fiBrassDef;
+	bool m_fiDrawAfterRelease;
+	bool m_fiFireUnderwater;
+	bool m_fiLoopingFire;
+	bool m_fiSemiAuto;
+	bool m_fiWillRelease;
 	float m_fiBrassDelay;
-
-	/* overheating */
+	float m_fiChargeTime;
+	float m_fiFireRate;
 	float m_fiOverheatLength;
 	float m_fiOverheatPoints;
-
-	NETWORKED_INT(m_iClip)
-	NETWORKED_INT(m_iClipSize)
-	NETWORKED_FLOAT(m_iMode)
-	NETWORKED_MODELINDEX(m_viewModel)
-	NETWORKED_MODELINDEX(m_worldModel)
-	NETWORKED_MODELINDEX(m_playerModel)
-	NETWORKED_FLOAT(m_flFireRate)
-	NETWORKED_FLOAT(m_dState)
-	NETWORKED_BOOL(m_bFiring)
-	NETWORKED_BOOL(m_flOverheating)
+	float m_fiReloadTime;
+	int m_fiAmmoPerShot;
+	int m_fiAmmoType;
+	float m_fiPrimedFuse;
+	float m_fiZoomFOV;
+	bool m_fiPowerAmmo;
+	bool m_fiRemoveOnEmpty;
+	string m_fiBrassDef;
+	string m_fiDetonateOnFire;
+	string m_fiOnFire;
+	string m_fiOnRelease;
+	string m_fiSndCock;
+	string m_fiSndEmpty;
+	string m_fiSndFailed;
+	string m_fiSndFire;
+	string m_fiSndFireLast;
+	string m_fiSndFireLoop;
+	string m_fiSndFireLoop;
+	string m_fiSndFireStart;
+	string m_fiSndFireStop;
+	string m_fiSndRelease;
+	vector m_fiPunchAngle;
+	vector m_fiPunchSpring;
+	float m_fiSpeedMod;
+	bool m_fiAltModeSwitch;
+	bool m_fiBuggyIdleAnim;
+	int m_fiRegenAmmo;
+	float m_fiRegenRate;
+	int m_fiDepleteAmmo;
+	float m_fiDepleteRate;
 };
 
 .ncWeapon m_nextWeapon;

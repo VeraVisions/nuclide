@@ -117,6 +117,12 @@ ncDict::InitWithSpawnData(string spawnData)
 	return (newDict);
 }
 
+string
+ncDict::Name(void)
+{
+	return (m_declPath);
+}
+
 ncDict
 ncDict::LoadDeclFromFile(string declName, string fileName)
 {
@@ -130,11 +136,12 @@ ncDict::LoadDeclFromFile(string declName, string fileName)
 	fh = fopen(strcat("decls/", fileName), FILE_READ);
 
 	if (fh < 0) {
-		NSError("Can't read %S", fileName);
+		ncError("Can't read %S", fileName);
 		return __NULL__;
 	}
 
 	newDict = spawn(ncDict);
+	newDict.m_declPath = declName;
 
 	while ((tempString = fgets(fh))) {
 		int lineSegments = tokenize_console(tempString);

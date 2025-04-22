@@ -18,9 +18,9 @@ void
 ncHint::ncHint(void)
 {
 	m_hintType = __NULL__;
-	m_strHintActivity = __NULL__;
-	m_flNodeFOV = 360;
-	m_strHintGroup = __NULL__;
+	m_hintActivity = __NULL__;
+	m_nodeFieldOfView = 360;
+	m_hintGroup = __NULL__;
 	m_ignoreFacing = IGNORE_DEFAULT;
 	m_mindsetFilter = __NULL__;
 };
@@ -28,35 +28,35 @@ ncHint::ncHint(void)
 void
 ncHint::Save(float handle)
 {
-	super::Save(handle);
-	SaveString(handle, "m_hintType", m_hintType);
-	SaveString(handle, "m_strHintActivity", m_strHintActivity);
-	SaveFloat(handle, "m_flNodeFOV", m_flNodeFOV);
-	SaveString(handle, "m_strHintGroup", m_strHintGroup);
-	SaveFloat(handle, "m_ignoreFacing", m_ignoreFacing);
-	SaveString(handle, "m_mindsetFilter", m_mindsetFilter);
+	ncIO::Save(handle);
+	SaveString(handle, "hintType", m_hintType);
+	SaveString(handle, "hintActivity", m_hintActivity);
+	SaveFloat(handle, "nodeFieldOfView", m_nodeFieldOfView);
+	SaveString(handle, "hintGroup", m_hintGroup);
+	SaveFloat(handle, "ignoreFacing", m_ignoreFacing);
+	SaveString(handle, "mindsetFilter", m_mindsetFilter);
 }
 
 void
 ncHint::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "m_hintType":
+	case "hintType":
 		m_hintType = ReadString(strValue);
 		break;
-	case "m_strHintActivity":
-		m_strHintActivity = ReadString(strValue);
+	case "hintActivity":
+		m_hintActivity = ReadString(strValue);
 		break;
-	case "m_flNodeFOV":
-		m_flNodeFOV = ReadFloat(strValue);
+	case "nodeFieldOfView":
+		m_nodeFieldOfView = ReadFloat(strValue);
 		break;
-	case "m_strHintGroup":
-		m_strHintGroup = ReadString(strValue);
+	case "hintGroup":
+		m_hintGroup = ReadString(strValue);
 		break;
-	case "m_ignoreFacing":
+	case "ignoreFacing":
 		m_ignoreFacing = ReadFloat(strValue);
 		break;
-	case "m_mindsetFilter":
+	case "mindsetFilter":
 		m_mindsetFilter = ReadString(strValue);
 		break;
 	default:
@@ -72,16 +72,13 @@ ncHint::SpawnKey(string strKey, string strValue)
 		m_hintType = ReadString(strValue);
 		break;
 	case "hintactivity":
-		m_strHintActivity = ReadString(strValue);
+		m_hintActivity = ReadString(strValue);
 		break;
 	case "nodeFOV":
-		m_flNodeFOV = ReadFloat(strValue);
-		break;
-	case "StartDisabled":
-		m_bStartDisabled = ReadFloat(strValue) == 1 ? true : false;
+		m_nodeFieldOfView = ReadFloat(strValue);
 		break;
 	case "Group":
-		m_strHintGroup = ReadString(strValue);
+		m_hintGroup = ReadString(strValue);
 		break;
 	case "IgnoreFacing":
 		m_ignoreFacing = ReadFloat(strValue);
@@ -98,5 +95,4 @@ void
 ncHint::Spawned(void)
 {
 	super::Spawned();
-	SetEditorIcon("help");
 }

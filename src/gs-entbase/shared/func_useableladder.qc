@@ -78,8 +78,8 @@ func_useableladder::Trigger(entity act, triggermode_t state)
 		SetSolid(SOLID_BBOX);
 		break;
 	default:
-		m_bEnabled = 1 - m_bEnabled;
-		SetSolid((m_bEnabled) ? SOLID_BBOX : SOLID_NOT);
+		ToggleTrigger();
+		SetSolid(TriggerEnabled() ? SOLID_BBOX : SOLID_NOT);
 	}
 }
 #endif

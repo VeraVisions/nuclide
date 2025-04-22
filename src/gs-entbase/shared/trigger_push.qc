@@ -111,32 +111,32 @@ trigger_push::Save(float handle)
 }
 
 void
-trigger_push::Restore(string strKey, string strValue)
+trigger_push::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_vecMoveDir":
-		m_vecMoveDir = ReadVector(strValue);
+		m_vecMoveDir = ReadVector(setValue);
 		break;
 	case "m_flSpeed":
-		m_flSpeed = ReadFloat(strValue);
+		m_flSpeed = ReadFloat(setValue);
 		break;
 	case "m_bHasTarget":
-		m_bHasTarget = ReadFloat(strValue);
+		m_bHasTarget = ReadFloat(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-trigger_push::SpawnKey(string strKey, string strValue)
+trigger_push::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "speed":
-		m_flSpeed = stof(strValue);
+		m_flSpeed = stof(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
@@ -146,8 +146,8 @@ trigger_push::Respawn(void)
 	static void JumpDestCheck(void) {
 		/* this ent has a destination target */
 		m_bHasTarget = false;
-		if (target) {
-			entity targetPos = find(world, ::targetname, target);
+		if (HasTriggerTarget()) {
+			entity targetPos = find(world, ::targetname, GetTriggerTarget());
 
 			if (targetPos) {
 				m_bHasTarget = true;
@@ -155,8 +155,8 @@ trigger_push::Respawn(void)
 			}
 		}
 	}
-	InitBrushTrigger();
 
+	InitBrushTrigger();
 	RestoreAngles();
 	SetMovementDirection();
 	ClearAngles();
@@ -165,8 +165,9 @@ trigger_push::Respawn(void)
 		SetSolid(SOLID_NOT);
 	}
 
-	if (target)
+	if (HasTriggerTarget()) {
 		ScheduleThink(JumpDestCheck, 0.5f);
+	}
 }
 
 void
@@ -340,11 +341,13 @@ trigger_push_ReadEntity(bool new)
 void
 trigger_push::Touch(entity eToucher)
 {
+	ncPlayer ourPlayer = (ncPlayer)eToucher;
+
 #ifdef SERVER
 	eActivator = (ncEntity)eToucher;
 #endif
 
-	switch(eToucher.movetype) {
+	switch(ourPlayer.movetype) {
 	case MOVETYPE_NONE:
 	case MOVETYPE_PUSH:
 	case MOVETYPE_NOCLIP:
@@ -353,30 +356,30 @@ trigger_push::Touch(entity eToucher)
 	}
 
 	if (m_bHasTarget) {
-		if (eToucher.flags & FL_ONGROUND)
-		eToucher.velocity = Route_GetJumpVelocity(WorldSpaceCenter(), m_vecMoveDir, 1.0);
+		if (ourPlayer.flags & FL_ONGROUND)
+		ourPlayer.velocity = Route_GetJumpVelocity(WorldSpaceCenter(), m_vecMoveDir, 1.0);
 		return;
 	}
 
 	/* trigger_push is not supposed to work underwater */
-	if (eToucher.waterlevel > 1)
+	if (ourPlayer.waterlevel > 1)
 		return;
 
-	if (eToucher.solid != SOLID_NOT && eToucher.solid != SOLID_BSP) {
+	if (ourPlayer.solid != SOLID_NOT && ourPlayer.solid != SOLID_BSP) {
 		vector vecPush;
 		vecPush = (m_flSpeed * m_vecMoveDir);
 
 		if (HasSpawnFlags(TP_ONCE)) {
-			//crossprint(sprintf("one push %v (%v)\n", eToucher.basevelocity, eToucher.velocity));
-			eToucher.velocity += vecPush;
-			if (eToucher.velocity[2] > 0) {
-				eToucher.flags &= ~FL_ONGROUND;
+			//crossprint(sprintf("one push %v (%v)\n", ourPlayer.basevelocity, ourPlayer.velocity));
+			ourPlayer.velocity += vecPush;
+			if (ourPlayer.velocity[2] > 0) {
+				ourPlayer.flags &= ~FL_ONGROUND;
 			}
 			SetSolid(SOLID_NOT);
 		} else {
-			if (eToucher.flags & FL_ONGROUND) {
-				eToucher.basevelocity = vecPush * 0.25;
-				//crossprint(sprintf("basevel push %v (%v)\n", eToucher.basevelocity, eToucher.velocity));
+			if (ourPlayer.flags & FL_ONGROUND) {
+				ourPlayer.m_pmoveBaseVelocity = vecPush * 0.25;
+				//crossprint(sprintf("basevel push %v (%v)\n", ourPlayer.basevelocity, ourPlayer.velocity));
 			}
 		}
 	}

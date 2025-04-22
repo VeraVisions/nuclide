@@ -47,6 +47,7 @@ ncBrushTrigger::InitBrushTrigger(void)
 	Hide();
 
 #ifdef SERVER
-	m_bEnabled = (m_bStartDisabled) ? false : true;
+	_RelinkToSpawnParent();
+	m_triggerEnabled = (m_triggerStartsDisabled) ? false : true;
 #endif
 }

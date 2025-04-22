@@ -131,7 +131,7 @@ DecalGroups_Init(void)
 	fh = fopen(g_decalGroupFile, FILE_READ);
 
 	if (fh < 0) {
-		NSWarning("No groups, no %S", g_decalGroupFile);
+		ncWarning("No groups, no %S", g_decalGroupFile);
 		InitEnd();
 		return;
 	}
@@ -149,7 +149,7 @@ DecalGroups_Init(void)
 	g_decalgroup = (decalGroup_t *)memalloc(dgMemSize);
 
 	if (!g_decalgroup) {
-		NSError("Memory allocation failed for %i bytes.", dgMemSize);
+		ncError("Memory allocation failed for %i bytes.", dgMemSize);
 		g_decalgroup_count = 0;
 		InitEnd();
 		return;
@@ -172,7 +172,7 @@ DecalGroups_Init(void)
 
 	fclose(fh);
 
-	NSLog("...decal groups initialized with %i entries.", g_decalgroup_count);
+	ncLog("...decal groups initialized with %i entries.", g_decalgroup_count);
 	InitEnd();
 }
 
@@ -189,7 +189,7 @@ DecalGroups_Precache(void)
 		for (int x = 0; x < c; x++) {
 			Decal_Precache(argv(x));
 		}
-		
+
 	}
 }
 

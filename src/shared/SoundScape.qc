@@ -846,7 +846,7 @@ EFX_UpdateSoundScape(ncSoundScape scape)
 
 	scape.SetupEFXReverb(&reverbInfo);
 	setup_reverb(12, &reverbInfo, sizeof(reverbinfo_t));
-	//NSError("Updated sound scape (expensive) %f", reverbInfo.flDensity);
+	//ncError("Updated sound scape (expensive) %f", reverbInfo.flDensity);
 }
 
 void
@@ -906,7 +906,7 @@ EFX_UpdateListener(ncView playerView)
 		return;
 	}
 
-	//NSError("Soundscape changed to %v", bestScape.GetOrigin());
+	//ncError("Soundscape changed to %v", bestScape.GetOrigin());
 	playerView.SetSoundScape(bestScape);
 	EFX_UpdateSoundScape(bestScape);
 	lastScape = bestScape;

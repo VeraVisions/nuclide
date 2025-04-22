@@ -93,7 +93,7 @@ button_target::Trigger(entity act, triggermode_t status)
 	float new_frame = (GetFrame() >= 1) ? 0 : 1;
 	SetFrame(new_frame);
 
-	UseTargets(act, status, m_flDelay);
+	UseTargets(act, status, GetTriggerDelay());
 }
 
 void

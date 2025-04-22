@@ -17,21 +17,24 @@
 void
 ncSurfacePropEntity::ncSurfacePropEntity(void)
 {
-	m_flBurnNext = 0.0f;
+	m_timeUntilNextBurnDamage = 0.0f;
+
 #ifdef SERVER
 	max_health = 100;
 	max_armor = 100;
-	m_iPropData = -1i;
-	m_iMaterial = -1i;
-	m_strOnBreak = __NULL__;
-	m_eBurner= __NULL__;
-	m_iBurnWeapon = 0i;
-	m_flBurnTime = 0.0f;
-	m_flBurnDmgTime = 0.0f;
-	m_oldHealth = 0;
-	m_strSurfData = __NULL__;
-	m_strPropData = __NULL__;
-	m_vecBloodColor = [0.5f, 0.0f, 0.0f];
+	m_propdataID = -1i;
+	m_surfdataID = -1i;
+	m_outputOnHalfHealth = __NULL__;
+	m_outputOnDamaged = __NULL__;
+	m_outputOnDamagedByPlayer = __NULL__;
+	m_outputOnDeath = __NULL__;
+	m_outputOnBreak = __NULL__;
+	m_burningAttacker= __NULL__;
+	m_burningWeapon = 0i;
+	m_timeUntilBurningStops = 0.0f;
+	m_timeUntilNextBurnDamage = 0.0f;
+	m_surfData = __NULL__;
+	m_propData = __NULL__;
 #endif
 }
 
@@ -46,8 +49,16 @@ ncSurfacePropEntity::Spawned(void)
 	_PropDataFinish();
 
 	/* Input/Output system */
-	if (m_strOnBreak)
-		m_strOnBreak = CreateOutput(m_strOnBreak);
+	if (STRING_SET(m_outputOnHalfHealth))
+		m_outputOnHalfHealth = CreateOutput(m_outputOnHalfHealth);
+	if (STRING_SET(m_outputOnDamaged))
+		m_outputOnDamaged = CreateOutput(m_outputOnDamaged);
+	if (STRING_SET(m_outputOnDamagedByPlayer))
+		m_outputOnDamagedByPlayer = CreateOutput(m_outputOnDamagedByPlayer);
+	if (STRING_SET(m_outputOnDeath))
+		m_outputOnDeath = CreateOutput(m_outputOnDeath);
+	if (STRING_SET(m_outputOnBreak))
+		m_outputOnBreak = CreateOutput(m_outputOnBreak);
 #endif
 }
 
@@ -59,18 +70,6 @@ ncSurfacePropEntity::IsOnFire(void)
 
 /* networking */
 #ifdef SERVER
-void
-ncSurfacePropEntity::SetBloodColor(vector newColor)
-{
-	m_vecBloodColor = newColor;
-}
-
-vector
-ncSurfacePropEntity::GetBloodColor(void)
-{
-	return (m_vecBloodColor);
-}
-
 bool
 ncSurfacePropEntity::IsAlive(void)
 {
@@ -80,56 +79,44 @@ ncSurfacePropEntity::IsAlive(void)
 bool
 ncSurfacePropEntity::IsVulnerable(void)
 {
-	return (m_bTakesDamage);
-}
-
-void
-ncSurfacePropEntity::EnableBleeding(void)
-{
-	iBleeds = true;
-}
-
-void
-ncSurfacePropEntity::DisableBleeding(void)
-{
-	iBleeds = false;
+	return (m_vulnerable);
 }
 
 void
 ncSurfacePropEntity::EnableAimAssist(void)
 {
-	m_bAutoAim = true;
+	m_autoAim = true;
 	_UpdateTakedamage();
 }
 
 void
 ncSurfacePropEntity::DisableAimAssist(void)
 {
-	m_bAutoAim = false;
+	m_autoAim = false;
 	_UpdateTakedamage();
 }
 
 void
 ncSurfacePropEntity::MakeVulnerable(void)
 {
-	m_bTakesDamage = true;
+	m_vulnerable = true;
 	_UpdateTakedamage();
 }
 
 void
 ncSurfacePropEntity::MakeInvulnerable(void)
 {
-	m_bTakesDamage = false;
+	m_vulnerable = false;
 	_UpdateTakedamage();
 }
 
 void
 ncSurfacePropEntity::_UpdateTakedamage(void)
 {
-	if (!m_bTakesDamage) {
+	if (!m_vulnerable) {
 		takedamage = DAMAGE_NO;
 	} else {
-		if (m_bAutoAim) {
+		if (m_autoAim) {
 			takedamage = DAMAGE_AIM;
 		} else {
 			takedamage = DAMAGE_YES;
@@ -137,19 +124,19 @@ ncSurfacePropEntity::_UpdateTakedamage(void)
 	}
 }
 
-bool
-ncSurfacePropEntity::CanBleed(void)
-{
-	return (iBleeds);
-}
-
 void
 ncSurfacePropEntity::SetHealth(float new_health)
 {
-	if (max_health > 0)
-		health = min(new_health, max_health);
-	else
+	if (m_bonusHealth && new_health < health) {
+		float delta = health - new_health;
+		m_bonusHealth = bound(0, m_bonusHealth - delta, 100);
+	}
+
+	if (max_health > 0) {
+		health = min(new_health, GetMaxHealth());
+	} else {
 		health = new_health;
+	}
 }
 
 void
@@ -175,25 +162,28 @@ ncSurfacePropEntity::GetHealth(void)
 float
 ncSurfacePropEntity::GetMaxHealth(void)
 {
-	return (max_health);
+	return (max_health + m_bonusHealth);
 }
 
 float
 ncSurfacePropEntity::GetMaxArmor(void)
 {
-	return (max_armor);
-}
-
-float
-ncSurfacePropEntity::GetSpawnHealth(void)
-{
-	return (m_oldHealth);
+	return (max_armor + m_bonusArmor);
 }
 
 void
 ncSurfacePropEntity::SetArmor(float new_armor)
 {
-	armor = new_armor;
+	if (m_bonusArmor && new_armor < armor) {
+		float delta = armor - new_armor;
+		m_bonusArmor = bound(0, m_bonusArmor - delta, 100);
+	}
+
+	if (max_armor > 0) {
+		armor = min(new_armor, GetMaxArmor());
+	} else {
+		armor = new_armor;
+	}
 }
 
 float
@@ -203,25 +193,109 @@ ncSurfacePropEntity::GetArmor(void)
 }
 
 void
+ncSurfacePropEntity::AddBonusHealth(float bonusHealth)
+{
+	float bonusHealth = (float)bonusHealth;
+	/* poke max_health directly here, else we'll include the bonus health = recursion */
+	float pointsTilMax = bound(0, max_health - GetHealth(), 100);
+
+	/*EntWarning("pointsTilMax: %d (%d - %d)", pointsTilMax, max_health, GetHealth());*/
+
+	/* sufficient bonus points to go above max_health. */
+	if (bonusHealth > pointsTilMax) {
+		float newBonusHealth = bonusHealth - pointsTilMax;
+		/*EntWarning("newBonusHealth: %d (%d - %d)", newBonusHealth, bonusHealth, pointsTilMax);*/
+		m_bonusHealth = bound(0, m_bonusHealth + newBonusHealth, 100);
+		m_timeUntilBonusHealthDecreases = GetTime() + 1.0f;
+		SetHealth(bound(0, max_health + m_bonusHealth, max_health + m_bonusHealth));
+	} else {
+		SetHealth(GetHealth() + bonusHealth);
+	}
+}
+
+void
+ncSurfacePropEntity::AddBonusArmor(float bonusArmor)
+{
+	float bonusArmor = (float)bonusArmor;
+	/* poke max_armor directly here, else we'll include the bonus armor = recursion */
+	float pointsTilMax = bound(0, max_armor - GetArmor(), 100);
+
+	/*EntWarning("pointsTilMax: %d (%d - %d)", pointsTilMax, max_armor, GetArmor());*/
+
+	/* sufficient bonus points to go above max_armor. */
+	if (bonusArmor > pointsTilMax) {
+		float newBonusArmor = bonusArmor - pointsTilMax;
+		/*EntWarning("newBonusArmor: %d (%d - %d)", newBonusArmor, bonusArmor, pointsTilMax);*/
+		m_bonusArmor = bound(0, m_bonusArmor + newBonusArmor, 100);
+		m_timeUntilBonusArmorDecreases = GetTime() + 1.0f;
+		SetArmor(bound(0, max_armor + m_bonusArmor, max_armor + m_bonusArmor));
+	} else {
+		SetArmor(GetArmor() + bonusArmor);
+	}
+}
+
+float
+ncSurfacePropEntity::GetBonusArmor(void)
+{
+	return (m_bonusArmor);
+}
+
+float
+ncSurfacePropEntity::GetBonusHealth(void)
+{
+	return (m_bonusHealth);
+}
+
+void
 ncSurfacePropEntity::ParentUpdate(void)
 {
 	/* TODO: Move out */
 	if (IsOnFire()) {
-		if (m_flBurnNext < GetTime()) {
-			if (GetTime() > m_flBurnTime) {
+		if (m_timeUntilNextBurnDamage < GetTime()) {
+			if (GetTime() > m_timeUntilBurningStops) {
 				Extinguish();
 			}
 
-			health -= 5;
+			SetHealth(GetHealth() - 5);
 
-			if (health <= 0) {
-				Death(m_eBurner, m_eBurner, 5i, g_vec_null, origin, 0i);
+			if (GetHealth() <= 0) {
+				Death(m_burningAttacker, m_burningAttacker, 5i, g_vec_null, origin, 0i);
 			} else {
-				Pain(m_eBurner, m_eBurner, 5i, g_vec_null, origin, 0i);
+				Pain(m_burningAttacker, m_burningAttacker, 5i, g_vec_null, origin, 0i);
 			}
 
-			m_flBurnNext = GetTime() + 0.5f;
+			m_timeUntilNextBurnDamage = GetTime() + 0.5f;
 		}
+	}
+
+	/* only possible if bonusHealth is amping it up */
+	if (GetHealth() > max_health) {
+		if (m_timeUntilBonusHealthDecreases < GetTime()) {
+			m_bonusHealth = bound(0, m_bonusHealth - 1, 100);
+			m_timeUntilBonusHealthDecreases = GetTime() + 1.0f;
+
+			/* clamp our final health value to the newest max health */
+			health = (bound(0, GetHealth(), GetMaxHealth()));
+		}
+	} else {
+		m_bonusHealth = 0;
+		m_timeUntilBonusHealthDecreases = 0.0f;
+		SetHealth(bound(0, GetHealth(), GetMaxHealth()));
+	}
+
+	/* only possible if bonusArmor is amping it up */
+	if (GetArmor() > max_armor) {
+		if (m_timeUntilBonusArmorDecreases < GetTime()) {
+			m_bonusArmor = bound(0, m_bonusArmor - 1, 100);
+			m_timeUntilBonusArmorDecreases = GetTime() + 1.0f;
+
+			/* clamp our final armor value to the newest max armor */
+			armor = (bound(0, GetArmor(), GetMaxArmor()));
+		}
+	} else {
+		m_bonusArmor = 0;
+		m_timeUntilBonusArmorDecreases = 0.0f;
+		SetArmor(bound(0, GetArmor(), GetMaxArmor()));
 	}
 
 	super::ParentUpdate();
@@ -230,24 +304,26 @@ ncSurfacePropEntity::ParentUpdate(void)
 void
 ncSurfacePropEntity::Damage(entity inflictor, entity attacker, ncDict damageDecl, float damageScale, vector dmgDir, vector hitLocation)
 {
+	ncSurfacePropEntity ourAttacker;
+	float damagePoints = 0.0f;
+	float randomDamage = 0.0f;
+	float baseDamage = 0.0f;
+	float oldHealth = GetHealth();
+	float halfHealth = max_health / 2.0f;
+
 	if (IsVulnerable() == false) {
 		return;
 	}
 
-	string damageString = ReadString(damageDecl.GetString("damage"));
-
-#if 0
-	float randomDamage = GetSubDefFloat(m_defDamage, "damage_random");
-	damageVal = (baseDamage + randomDamage);
-#endif
-
-	float damagePoints = (float)rint(stof(damageString) * damageScale);
-	ncSurfacePropEntity ourAttacker = (ncSurfacePropEntity)attacker;
+	ourAttacker = (ncSurfacePropEntity)attacker;
+	baseDamage = ReadFloat(damageDecl.GetString("damage"));
+	randomDamage = ReadFloat(damageDecl.GetString("damage_random"));
+	damagePoints = (float)rint((baseDamage + randomDamage) * damageScale);
 
 	EntLog("applying %d damage by %s", damagePoints, attacker.classname);
 
 	/* notify them */
-	if (isSentient(attacker)) {
+	if (is.Sentient(attacker)) {
 		ourAttacker.DamageFeedback(this, inflictor, damagePoints);
 	}
 
@@ -261,11 +337,22 @@ ncSurfacePropEntity::Damage(entity inflictor, entity attacker, ncDict damageDecl
 	}
 
 	if (damagePoints != 0) {
-		health = rint(health - damagePoints);
+		SetHealth(rint(GetHealth() - damagePoints));
 
-		if (health <= 0) {
+		if (GetHealth() < halfHealth && oldHealth > halfHealth) {
+			UseOutput(attacker, m_outputOnHalfHealth);
+		}
+
+		if (is.Player(attacker)) {
+			UseOutput(attacker, m_outputOnDamagedByPlayer);
+		}
+
+		UseOutput(attacker, m_outputOnDamaged);
+
+		if (GetHealth() <= 0) {
 			/* apply knockback, but only on death */
 			float knockBack = damageDecl.GetFloat("knockback");
+
 			if (knockBack >= 0) {
 				AddVelocity(dmgDir * knockBack);
 			}
@@ -279,21 +366,22 @@ ncSurfacePropEntity::Damage(entity inflictor, entity attacker, ncDict damageDecl
 
 /* Burning, fire, flames, etc. */
 void
-ncSurfacePropEntity::Ignite(entity attacker, float flLifetime, int iWeapon)
+ncSurfacePropEntity::Ignite(entity attacker, float burnTime, string weaponDef)
 {
-	effects |= EF_ONFIRE;
-	m_eBurner = attacker;
-	m_iBurnWeapon = iWeapon;
-	m_flBurnTime = GetTime() + flLifetime;
+	AddEffects(EF_ONFIRE);
+	m_burningAttacker = attacker;
+	m_burningWeapon = weaponDef;
+	m_timeUntilBurningStops = GetTime() + burnTime;
 
-	if (m_flBurnDmgTime < time) {
+	if (m_timeUntilNextBurnDamage < time) {
 		ncDict damageDecl = spawn(ncDict);
 		damageDecl.AddKey("damage", "5");
 		damageDecl.AddKey("noArmor", "1");
 		damageDecl.AddKey("type", "burn");
-		Damage(m_eBurner, m_eBurner, damageDecl, 1.0f, g_vec_null, origin);
+		damageDecl.AddKey("weapon", "weaponDef");
+		Damage(m_burningAttacker, m_burningAttacker, damageDecl, 1.0f, g_vec_null, origin);
 		remove(damageDecl);
-		m_flBurnDmgTime = time + 0.25f;
+		m_timeUntilNextBurnDamage = time + 0.25f;
 	}
 }
 
@@ -338,10 +426,10 @@ ncSurfacePropEntity::CanBeDamaged(vector damageOrigin, vector hitLocation)
 void
 ncSurfacePropEntity::Extinguish(void)
 {
-	effects &= ~EF_ONFIRE;
-	m_eBurner = __NULL__;
-	m_iBurnWeapon =
-	m_flBurnTime = 0;
+	RemoveEffects(EF_ONFIRE);
+	m_burningAttacker = __NULL__;
+	m_burningWeapon =
+	m_timeUntilBurningStops = 0;
 }
 
 void
@@ -375,63 +463,77 @@ void
 ncSurfacePropEntity::Save(float handle)
 {
 	super::Save(handle);
-	SaveFloat(handle, "m_flBurnNext", m_flBurnNext);
-	SaveFloat(handle, "armor", armor);
-	SaveFloat(handle, "health", health);
-	SaveFloat(handle, "m_eBurner", num_for_edict(m_eBurner));
-	SaveInt(handle, "m_iBurnWeapon", m_iBurnWeapon);
-	SaveFloat(handle,"m_flBurnTime", m_flBurnTime);
-	SaveFloat(handle, "m_flBurnDmgTime", m_flBurnDmgTime);
-	SaveString(handle, "m_strOnBreak", m_strOnBreak);
-	SaveFloat(handle, "m_oldHealth", m_oldHealth);
-	SaveVector(handle, "m_vecBloodColor", m_vecBloodColor);
-	SaveInt(handle, "m_iMaterial", m_iMaterial);
-	SaveInt(handle, "m_iPropData", m_iPropData);
-	SaveFloat(handle, "m_flDeathTime", m_flDeathTime);
+	SaveFloat(handle, "timeUntilNextBurnDamage", m_timeUntilNextBurnDamage);
+	SaveFloat(handle, "burningAttacker", num_for_edict(m_burningAttacker));
+	SaveInt(handle, "burningWeapon", m_burningWeapon);
+	SaveFloat(handle,"timeUntilBurningStops", m_timeUntilBurningStops);
+	SaveFloat(handle, "timeUntilNextBurnDamage", m_timeUntilNextBurnDamage);
+	
+	SaveString(handle, "outputOnDamaged", m_outputOnDamaged);
+	SaveString(handle, "outputOnDamagedByPlayer", m_outputOnDamagedByPlayer);
+	SaveString(handle, "outputOnHalfHealth", m_outputOnHalfHealth);
+	SaveString(handle, "outputOnDeath", m_outputOnDeath);
+	SaveString(handle, "outputOnBreak", m_outputOnBreak);
+
+	SaveInt(handle, "surfdataID", m_surfdataID);
+	SaveInt(handle, "propdataID", m_propdataID);
+	SaveFloat(handle, "timeOfDeath", m_timeOfDeath);
+	SaveFloat(handle, "max_armor", max_armor);
+	SaveFloat(handle, "vulnerable", m_vulnerable);
+	SaveFloat(handle, "autoAim", m_autoAim);
 }
 
 void
 ncSurfacePropEntity::Restore(string keyName, string savedValue)
 {
 	switch (keyName) {
-	case "m_flBurnNext":
-		m_flBurnNext = ReadFloat(savedValue);
+	case "timeUntilNextBurnDamage":
+		m_timeUntilNextBurnDamage = ReadFloat(savedValue);
 		break;
-	case "armor":
-		armor = ReadFloat(savedValue);
+	case "burningAttacker":
+		m_burningAttacker = edict_num(ReadFloat(savedValue));
 		break;
-	case "health":
-		health = ReadFloat(savedValue);
+	case "burningWeapon":
+		m_burningWeapon = ReadInt(savedValue);
 		break;
-	case "m_eBurner":
-		m_eBurner = edict_num(ReadFloat(savedValue));
+	case "timeUntilBurningStops":
+		m_timeUntilBurningStops = ReadFloat(savedValue);
 		break;
-	case "m_iBurnWeapon":
-		m_iBurnWeapon = ReadInt(savedValue);
+	case "timeUntilNextBurnDamage":
+		m_timeUntilNextBurnDamage = ReadFloat(savedValue);
 		break;
-	case "m_flBurnTime":
-		m_flBurnTime = ReadFloat(savedValue);
+	case "outputOnDamaged":
+		m_outputOnDamaged = ReadString(savedValue);
 		break;
-	case "m_flBurnDmgTime":
-		m_flBurnDmgTime = ReadFloat(savedValue);
+	case "outputOnDamagedByPlayer":
+		m_outputOnDamagedByPlayer = ReadString(savedValue);
 		break;
-	case "m_strOnBreak":
-		m_strOnBreak = ReadString(savedValue);
+	case "outputOnHalfHealth":
+		m_outputOnHalfHealth = ReadString(savedValue);
 		break;
-	case "m_oldHealth":
-		m_oldHealth = ReadFloat(savedValue);
+	case "outputOnDeath":
+		m_outputOnDeath = ReadString(savedValue);
 		break;
-	case "m_vecBloodColor":
-		m_vecBloodColor = ReadVector(savedValue);
+	case "outputOnBreak":
+		m_outputOnBreak = ReadString(savedValue);
 		break;
-	case "m_iMaterial":
-		m_iMaterial = ReadInt(savedValue);
+	case "surfData":
+		m_surfData = ReadString(savedValue);
 		break;
-	case "m_iPropData":
-		m_iPropData = ReadInt(savedValue);
+	case "propData":
+		m_propData = ReadString(savedValue);
 		break;
-	case "m_flDeathTime":
-		m_flDeathTime = ReadFloat(savedValue);
+	case "timeOfDeath":
+		m_timeOfDeath = ReadFloat(savedValue);
+		break;
+	case "max_armor":
+		max_armor = ReadFloat(savedValue);
+		break;
+	case "vulnerable":
+		m_vulnerable = ReadBool(savedValue);
+		break;
+	case "autoAim":
+		m_autoAim = ReadBool(savedValue);
 		break;
 	default:
 		super::Restore(keyName, savedValue);
@@ -439,15 +541,41 @@ ncSurfacePropEntity::Restore(string keyName, string savedValue)
 }
 
 void
+ncSurfacePropEntity::RestoreComplete(void)
+{
+	/* tokenization complete, now we can load propdata */
+	_SurfaceDataFinish();
+	_PropDataFinish();
+}
+
+void
 ncSurfacePropEntity::Input(entity entityActivator, string inputName, string dataField)
 {
 	switch (inputName) {
+	case "SetHealth":
+		SetHealth(ReadFloat(dataField));
+		break;
+	case "SetMaxHealth":
+		SetMaxHealth(ReadFloat(dataField));
+		break;
+	case "SetArmor":
+		SetArmor(ReadFloat(dataField));
+		break;
+	case "SetMaxArmor":
+		SetMaxArmor(ReadFloat(dataField));
+		break;
+	case "AddBonusHealth":
+		AddBonusHealth(ReadFloat(dataField));
+		break;
+	case "AddBonusArmor":
+		AddBonusArmor(ReadFloat(dataField));
+		break;
 	case "Ignite":
-		Ignite(entityActivator, 5000, 0);
+		Ignite(entityActivator, 5000, "");
 		break;
 	case "IgniteLifetime":
 		float lifeTime = stof(dataField);
-		Ignite(entityActivator, lifeTime, 0);
+		Ignite(entityActivator, lifeTime, "");
 		break;
 	case "Extinguish":
 		Extinguish();
@@ -468,33 +596,39 @@ void
 ncSurfacePropEntity::SpawnKey(string keyName, string setValue)
 {
 	switch (keyName) {
-	case "bleed":
-		bool query = ReadBool(setValue);
-
-		if (query)
-			EnableBleeding();
-		else
-			DisableBleeding();
-
+	case "max_health":
+		max_health = ReadFloat(setValue);
 		break;
 	case "health":
-		max_health = health = ReadFloat(setValue);
-		m_oldHealth = health;
+		health = ReadFloat(setValue);
+
+		/* just in case it never gets set elsewhere. */
+		if (max_health == 0 && health > 0) {
+			max_health = health;
+		}
 		break;
 	case "propdata":
-		m_strPropData = ReadString(setValue);
+		m_propData = ReadString(setValue);
 		break;
 	case "surfdata":
 	case "materialdata":
-		m_strSurfData = ReadString(setValue);
-		break;
-	/* entityDef */
-	case "blood_color":
-		m_vecBloodColor = ReadVector(setValue);
+		m_surfData = ReadString(setValue);
 		break;
 	/* Input/Output system */
+	case "OnDamaged":
+		m_outputOnDamaged = PrepareOutput(m_outputOnDamaged, ReadString(setValue));
+		break;
+	case "OnDamagedByPlayer":
+		m_outputOnDamagedByPlayer = PrepareOutput(m_outputOnDamagedByPlayer, ReadString(setValue));
+		break;
+	case "OnHalfHealth":
+		m_outputOnHalfHealth = PrepareOutput(m_outputOnHalfHealth, ReadString(setValue));
+		break;
+	case "OnDeath":
+		m_outputOnDeath = PrepareOutput(m_outputOnDeath, ReadString(setValue));
+		break;
 	case "OnBreak":
-		m_strOnBreak = PrepareOutput(m_strOnBreak, ReadString(setValue));
+		m_outputOnBreak = PrepareOutput(m_outputOnBreak, ReadString(setValue));
 		break;
 	default:
 		super::SpawnKey(keyName, setValue);
@@ -515,9 +649,8 @@ ncSurfacePropEntity::Death(entity inflictor, entity attacker, int damage, vector
 		return;
 	}
 
-	/* FIXME: reliably call this with the right attacker inside BreakModel? */
-	UseOutput(attacker, m_strOnBreak);
 	BreakModel(damage, dir, hitBody);
+	UseOutput(attacker, m_outputOnDeath);
 }
 
 void
@@ -529,51 +662,58 @@ ncSurfacePropEntity::DamageFeedback(entity theVictim, entity theInflictor, int d
 void
 ncSurfacePropEntity::BreakModel(int damage, vector dir, int location)
 {
-	m_flDeathTime = time;
+	float explosionMagnitude, explosionRadius;
+	string gibeffect;
+	int breakcount;
+	float speedValue;
 
+	m_timeOfDeath = time;
+
+	/* the first thing we do is mark this as invulnerable, to avoid
+	   any possible recursion in regards to damage later. */
 	MakeInvulnerable();
 
 	if (HasPropData() == false) {
+		Disappear();
 		return;
 	}
 
 	if (GetPropData(PROPINFO_SKIN) != 0) {
 		SetSkin(GetPropData(PROPINFO_SKIN));
 	} else if (GetPropData(PROPINFO_BREAKMODEL) != __NULL__) {
-		string gibeffect = GetPropData(PROPINFO_BREAKMODEL);
-		int breakcount = GetPropData(PROPINFO_BREAKCOUNT);
-		float speedValue = length(GetVelocity());
+		gibeffect = GetPropData(PROPINFO_BREAKMODEL);
+		breakcount = GetPropData(PROPINFO_BREAKCOUNT);
+		speedValue = length(GetVelocity());
 
 		/* if we have enough momentum of our own, use that instead. */
-		if (speedValue > damage)
+		if (speedValue > damage) {
 			BreakModel_Entity(this, normalize(GetVelocity()), speedValue * 0.5f); /* absorb some power */
-		else
+		} else {
 			BreakModel_Entity(this, dir, damage);
+		}
 		
-		string sndBreak = GetSurfaceData(SURFDATA_SND_BREAK);
-		Sound_PlayAt(GetOrigin(), sndBreak);
+		SoundDef_PlayAt(GetOrigin(), GetSurfaceData(SURFDATA_SND_BREAK));
 		Disappear();
 	} else {
 		Disappear();
 	}
 
-	SetSolid(SOLID_NOT);
-	SetMovetype(MOVETYPE_NONE);
-
 	/* handle explosions */
-	float flExplodeMag, flExplodeRad;
-	flExplodeMag = GetPropData(PROPINFO_EXPLOSIVE_DMG);
-	flExplodeRad = GetPropData(PROPINFO_EXPLOSIVE_RADIUS);
+	explosionMagnitude = GetPropData(PROPINFO_EXPLOSIVE_DMG);
+	explosionRadius = GetPropData(PROPINFO_EXPLOSIVE_RADIUS);
 
-	if (flExplodeMag) {
-		if (!flExplodeRad) {
-			flExplodeRad = flExplodeMag * 2.5f;
+	if (explosionMagnitude) {
+		if (explosionRadius <= 0) {
+			explosionRadius = explosionMagnitude * 2.5f;
 		}
 
-		pointparticles(particleeffectnum("fx_explosion.main"), origin, angles, 1);
-		combat.RadiusDamage(origin, flExplodeRad, 0i, (int)flExplodeMag, this, "");
+		pointparticles(particleeffectnum("fx_explosion.main"), GetOrigin(), GetAngles(), 1);
+		combat.RadiusDamage(GetOrigin(), explosionRadius, 0i, (int)explosionMagnitude, this, "");
 	}
+
+	UseOutput(this, m_outputOnBreak);
 }
+
 float
 ncSurfacePropEntity::TimeSinceDeath(void)
 {
@@ -581,7 +721,7 @@ ncSurfacePropEntity::TimeSinceDeath(void)
 		return (-1.0f);
 	}
 
-	return (time - m_flDeathTime);
+	return (time - m_timeOfDeath);
 }
 
 void
@@ -606,39 +746,41 @@ ncSurfacePropEntity::EvaluateEntity(void)
 	EVALUATE_FIELD(frame, SRFENT_CHANGED_FRAME)
 	EVALUATE_FIELD(skin, SRFENT_CHANGED_SKIN)
 	EVALUATE_FIELD(effects, SRFENT_CHANGED_EFFECTS)
-	EVALUATE_FIELD(m_iBody, SRFENT_CHANGED_BODY)
+	EVALUATE_FIELD(m_geomsetField, SRFENT_CHANGED_BODY)
 	EVALUATE_FIELD(scale, SRFENT_CHANGED_SCALE)
-	EVALUATE_VECTOR(m_vecAxialScale, 0, SRFENT_CHANGED_SCALE)
-	EVALUATE_VECTOR(m_vecAxialScale, 1, SRFENT_CHANGED_SCALE)
-	EVALUATE_VECTOR(m_vecAxialScale, 2, SRFENT_CHANGED_SCALE)
+	EVALUATE_VECTOR(m_axialScale, 0, SRFENT_CHANGED_SCALE)
+	EVALUATE_VECTOR(m_axialScale, 1, SRFENT_CHANGED_SCALE)
+	EVALUATE_VECTOR(m_axialScale, 2, SRFENT_CHANGED_SCALE)
 	EVALUATE_VECTOR(velocity, 0, SRFENT_CHANGED_VELOCITY)
 	EVALUATE_VECTOR(velocity, 1, SRFENT_CHANGED_VELOCITY)
 	EVALUATE_VECTOR(velocity, 2, SRFENT_CHANGED_VELOCITY)
 	EVALUATE_VECTOR(avelocity, 0, SRFENT_CHANGED_ANGULARVELOCITY)
 	EVALUATE_VECTOR(avelocity, 1, SRFENT_CHANGED_ANGULARVELOCITY)
 	EVALUATE_VECTOR(avelocity, 2, SRFENT_CHANGED_ANGULARVELOCITY)
-	EVALUATE_FIELD(m_iRenderMode, SRFENT_CHANGED_RENDERMODE)
-	EVALUATE_FIELD(m_iRenderFX, SRFENT_CHANGED_RENDERMODE)
-	EVALUATE_VECTOR(m_vecRenderColor, 0, SRFENT_CHANGED_RENDERCOLOR)
-	EVALUATE_VECTOR(m_vecRenderColor, 1, SRFENT_CHANGED_RENDERCOLOR)
-	EVALUATE_VECTOR(m_vecRenderColor, 2, SRFENT_CHANGED_RENDERCOLOR)
-	EVALUATE_FIELD(m_flRenderAmt, SRFENT_CHANGED_RENDERAMT)
-	EVALUATE_FIELD(m_flBoneControl1, SRFENT_CHANGED_CONTROLLER)
-	EVALUATE_FIELD(m_flBoneControl2, SRFENT_CHANGED_CONTROLLER)
-	EVALUATE_FIELD(m_flBoneControl3, SRFENT_CHANGED_CONTROLLER)
-	EVALUATE_FIELD(m_flBoneControl4, SRFENT_CHANGED_CONTROLLER)
-	EVALUATE_FIELD(m_flBoneControl5, SRFENT_CHANGED_CONTROLLER)
+	EVALUATE_FIELD(m_renderMode, SRFENT_CHANGED_RENDERMODE)
+	EVALUATE_FIELD(m_renderFX, SRFENT_CHANGED_RENDERMODE)
+	EVALUATE_VECTOR(m_renderColor, 0, SRFENT_CHANGED_RENDERCOLOR)
+	EVALUATE_VECTOR(m_renderColor, 1, SRFENT_CHANGED_RENDERCOLOR)
+	EVALUATE_VECTOR(m_renderColor, 2, SRFENT_CHANGED_RENDERCOLOR)
+	EVALUATE_FIELD(m_renderAmount, SRFENT_CHANGED_RENDERAMT)
+	EVALUATE_FIELD(m_studioBoneController1, SRFENT_CHANGED_CONTROLLER)
+	EVALUATE_FIELD(m_studioBoneController2, SRFENT_CHANGED_CONTROLLER)
+	EVALUATE_FIELD(m_studioBoneController3, SRFENT_CHANGED_CONTROLLER)
+	EVALUATE_FIELD(m_studioBoneController4, SRFENT_CHANGED_CONTROLLER)
+	EVALUATE_FIELD(m_studioBoneController5, SRFENT_CHANGED_CONTROLLER)
 }
 
 /* Make sure StartFrame calls this */
 float
 ncSurfacePropEntity::SendEntity(entity ePEnt, float flChanged)
 {
-	if (!modelindex)
+	if (!modelindex) {
 		return (0);
+	}
 
-	if (clienttype(ePEnt) != CLIENTTYPE_REAL)
+	if (clienttype(ePEnt) != CLIENTTYPE_REAL) {
 		return (0);
+	}
 
 	WriteByte(MSG_ENTITY, ENT_SURFPROP);
 
@@ -663,28 +805,28 @@ ncSurfacePropEntity::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_BYTE(frame, SRFENT_CHANGED_FRAME)
 	SENDENTITY_FLOAT(skin, SRFENT_CHANGED_SKIN)
 	SENDENTITY_FLOAT(effects, SRFENT_CHANGED_EFFECTS)
-	SENDENTITY_SHORT(m_iBody, SRFENT_CHANGED_BODY)
+	SENDENTITY_SHORT(m_geomsetField, SRFENT_CHANGED_BODY)
 	SENDENTITY_FLOAT(scale, SRFENT_CHANGED_SCALE)
-	SENDENTITY_FLOAT(m_vecAxialScale[0], SRFENT_CHANGED_SCALE)
-	SENDENTITY_FLOAT(m_vecAxialScale[1], SRFENT_CHANGED_SCALE)
-	SENDENTITY_FLOAT(m_vecAxialScale[2], SRFENT_CHANGED_SCALE)
+	SENDENTITY_FLOAT(m_axialScale[0], SRFENT_CHANGED_SCALE)
+	SENDENTITY_FLOAT(m_axialScale[1], SRFENT_CHANGED_SCALE)
+	SENDENTITY_FLOAT(m_axialScale[2], SRFENT_CHANGED_SCALE)
 	SENDENTITY_COORD(velocity[0], SRFENT_CHANGED_VELOCITY)
 	SENDENTITY_COORD(velocity[1], SRFENT_CHANGED_VELOCITY)
 	SENDENTITY_COORD(velocity[2], SRFENT_CHANGED_VELOCITY)
 	SENDENTITY_COORD(avelocity[0], SRFENT_CHANGED_ANGULARVELOCITY)
 	SENDENTITY_COORD(avelocity[1], SRFENT_CHANGED_ANGULARVELOCITY)
 	SENDENTITY_COORD(avelocity[2], SRFENT_CHANGED_ANGULARVELOCITY)
-	SENDENTITY_BYTE(m_iRenderMode, SRFENT_CHANGED_RENDERMODE)
-	SENDENTITY_BYTE(m_iRenderFX, SRFENT_CHANGED_RENDERMODE)
-	SENDENTITY_BYTE(m_vecRenderColor[0], SRFENT_CHANGED_RENDERCOLOR)
-	SENDENTITY_BYTE(m_vecRenderColor[1], SRFENT_CHANGED_RENDERCOLOR)
-	SENDENTITY_BYTE(m_vecRenderColor[2], SRFENT_CHANGED_RENDERCOLOR)
-	SENDENTITY_BYTE(m_flRenderAmt, SRFENT_CHANGED_RENDERAMT)
-	SENDENTITY_ANGLE(m_flBoneControl1, SRFENT_CHANGED_CONTROLLER)
-	SENDENTITY_ANGLE(m_flBoneControl2, SRFENT_CHANGED_CONTROLLER)
-	SENDENTITY_ANGLE(m_flBoneControl3, SRFENT_CHANGED_CONTROLLER)
-	SENDENTITY_ANGLE(m_flBoneControl4, SRFENT_CHANGED_CONTROLLER)
-	SENDENTITY_ANGLE(m_flBoneControl5, SRFENT_CHANGED_CONTROLLER)
+	SENDENTITY_BYTE(m_renderMode, SRFENT_CHANGED_RENDERMODE)
+	SENDENTITY_BYTE(m_renderFX, SRFENT_CHANGED_RENDERMODE)
+	SENDENTITY_BYTE(m_renderColor[0], SRFENT_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_renderColor[1], SRFENT_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_renderColor[2], SRFENT_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_renderAmount, SRFENT_CHANGED_RENDERAMT)
+	SENDENTITY_ANGLE(m_studioBoneController1, SRFENT_CHANGED_CONTROLLER)
+	SENDENTITY_ANGLE(m_studioBoneController2, SRFENT_CHANGED_CONTROLLER)
+	SENDENTITY_ANGLE(m_studioBoneController3, SRFENT_CHANGED_CONTROLLER)
+	SENDENTITY_ANGLE(m_studioBoneController4, SRFENT_CHANGED_CONTROLLER)
+	SENDENTITY_ANGLE(m_studioBoneController5, SRFENT_CHANGED_CONTROLLER)
 
 	return (1);
 }
@@ -717,28 +859,28 @@ ncSurfacePropEntity::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_BYTE(frame, SRFENT_CHANGED_FRAME)
 	READENTITY_FLOAT(skin, SRFENT_CHANGED_SKIN)
 	READENTITY_FLOAT(effects, SRFENT_CHANGED_EFFECTS)
-	READENTITY_SHORT(m_iBody, SRFENT_CHANGED_BODY)
+	READENTITY_SHORT(m_geomsetField, SRFENT_CHANGED_BODY)
 	READENTITY_FLOAT(scale, SRFENT_CHANGED_SCALE)
-	READENTITY_FLOAT(m_vecAxialScale[0], SRFENT_CHANGED_SCALE)
-	READENTITY_FLOAT(m_vecAxialScale[1], SRFENT_CHANGED_SCALE)
-	READENTITY_FLOAT(m_vecAxialScale[2], SRFENT_CHANGED_SCALE)
+	READENTITY_FLOAT(m_axialScale[0], SRFENT_CHANGED_SCALE)
+	READENTITY_FLOAT(m_axialScale[1], SRFENT_CHANGED_SCALE)
+	READENTITY_FLOAT(m_axialScale[2], SRFENT_CHANGED_SCALE)
 	READENTITY_COORD(velocity[0], SRFENT_CHANGED_VELOCITY)
 	READENTITY_COORD(velocity[1], SRFENT_CHANGED_VELOCITY)
 	READENTITY_COORD(velocity[2], SRFENT_CHANGED_VELOCITY)
 	READENTITY_COORD(avelocity[0], SRFENT_CHANGED_ANGULARVELOCITY)
 	READENTITY_COORD(avelocity[1], SRFENT_CHANGED_ANGULARVELOCITY)
 	READENTITY_COORD(avelocity[2], SRFENT_CHANGED_ANGULARVELOCITY)
-	READENTITY_BYTE(m_iRenderMode, SRFENT_CHANGED_RENDERMODE)
-	READENTITY_BYTE(m_iRenderFX, SRFENT_CHANGED_RENDERMODE)
-	READENTITY_BYTE(m_vecRenderColor[0], SRFENT_CHANGED_RENDERCOLOR)
-	READENTITY_BYTE(m_vecRenderColor[1], SRFENT_CHANGED_RENDERCOLOR)
-	READENTITY_BYTE(m_vecRenderColor[2], SRFENT_CHANGED_RENDERCOLOR)
-	READENTITY_BYTE(m_flRenderAmt, SRFENT_CHANGED_RENDERAMT)
-	READENTITY_ANGLE(m_flBoneControl1, SRFENT_CHANGED_CONTROLLER)
-	READENTITY_ANGLE(m_flBoneControl2, SRFENT_CHANGED_CONTROLLER)
-	READENTITY_ANGLE(m_flBoneControl3, SRFENT_CHANGED_CONTROLLER)
-	READENTITY_ANGLE(m_flBoneControl4, SRFENT_CHANGED_CONTROLLER)
-	READENTITY_ANGLE(m_flBoneControl5, SRFENT_CHANGED_CONTROLLER)
+	READENTITY_BYTE(m_renderMode, SRFENT_CHANGED_RENDERMODE)
+	READENTITY_BYTE(m_renderFX, SRFENT_CHANGED_RENDERMODE)
+	READENTITY_BYTE(m_renderColor[0], SRFENT_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_renderColor[1], SRFENT_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_renderColor[2], SRFENT_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_renderAmount, SRFENT_CHANGED_RENDERAMT)
+	READENTITY_ANGLE(m_studioBoneController1, SRFENT_CHANGED_CONTROLLER)
+	READENTITY_ANGLE(m_studioBoneController2, SRFENT_CHANGED_CONTROLLER)
+	READENTITY_ANGLE(m_studioBoneController3, SRFENT_CHANGED_CONTROLLER)
+	READENTITY_ANGLE(m_studioBoneController4, SRFENT_CHANGED_CONTROLLER)
+	READENTITY_ANGLE(m_studioBoneController5, SRFENT_CHANGED_CONTROLLER)
 
 	/* this shall never be valid. use Hide() */
 	if (scale == 0.0f) {
@@ -751,23 +893,24 @@ ncSurfacePropEntity::ReceiveEntity(float flNew, float flChanged)
 	}
 
 	if (flChanged & SRFENT_CHANGED_BODY) {
-		setcustomskin(this, "", sprintf("geomset 0 %i\ngeomset 1 %i\n", m_iBody, m_iBody));
+		setcustomskin(this, "", sprintf("geomset 0 %i\ngeomset 1 %i\n", m_geomsetField, m_geomsetField));
 	}
 }
 
 void
 ncSurfacePropEntity::RenderFire(void)
 {
-	if (IsOnFire() == true) {
+	if (IsOnFire() == false) {
+		return;
+	}
+	
+	if (m_timeUntilNextBurnDamage < time) {
 		vector randomOrg;
-
-		if (m_flBurnNext < time) {
-			randomOrg[0] = absmin[0] + ( random() * ( absmax[0] - absmin[0] ) );
-			randomOrg[1] = absmin[1] + ( random() * ( absmax[1] - absmin[1] ) );
-			randomOrg[2] = absmin[2] + ( random() * ( absmax[2] - absmin[2] ) );
-			pointparticles(PART_BURNING, randomOrg, g_vec_null, 1);
-			m_flBurnNext = time + 0.1f;
-		}
+		randomOrg[0] = absmin[0] + ( random() * ( absmax[0] - absmin[0] ) );
+		randomOrg[1] = absmin[1] + ( random() * ( absmax[1] - absmin[1] ) );
+		randomOrg[2] = absmin[2] + ( random() * ( absmax[2] - absmin[2] ) );
+		pointparticles(PART_BURNING, randomOrg, g_vec_null, 1);
+		m_timeUntilNextBurnDamage = time + 0.1f;
 	}
 }
 
@@ -804,66 +947,72 @@ ncSurfacePropEntity_ReadEntity(bool isNew)
 void
 ncSurfacePropEntity::SetSurfaceData(string type)
 {
-	m_strSurfData = type;
-	_SurfaceDataFinish();
+	m_surfData = type;
+
+	if (Loading() == false) {
+		_SurfaceDataFinish();
+	}
 }
 
 void
 ncSurfacePropEntity::SetPropData(string type)
 {
-	m_strPropData = type;
-	_PropDataFinish();
+	m_propData = type;
+
+	if (Loading() == false) {
+		_PropDataFinish();
+	}
 }
 
 bool
 ncSurfacePropEntity::HasPropData(void)
 {
-	return (m_iPropData != -1) ? true : false;
+	return (m_propdataID != -1) ? true : false;
 }
 
 __variant
 ncSurfacePropEntity::GetPropData(int type)
 {
-	return Prop_GetInfo(m_iPropData, type);
+	return Prop_GetInfo(m_propdataID, type);
 }
 
 bool
 ncSurfacePropEntity::HasSurfaceData(void)
 {
-	return (m_iMaterial != -1) ? true : false;
+	return (m_surfdataID != -1) ? true : false;
 }
 
 __variant
 ncSurfacePropEntity::GetSurfaceData(int type)
 {
-	return SurfData_GetInfo(m_iMaterial, type);
+	return SurfData_GetInfo(m_surfdataID, type);
 }
 
 void
 ncSurfacePropEntity::_SurfaceDataFinish(void)
 {
-	SurfData_SetStage(m_strSurfData);
+	SurfData_SetStage(m_surfData);
 
-	if (STRING_SET(m_strSurfData)) {
-		m_iMaterial = SurfData_Finish();
+	if (STRING_SET(m_surfData)) {
+		m_surfdataID = SurfData_Finish();
 	} else {
-		m_iMaterial = -1i;
+		m_surfdataID = -1i;
 	}
 }
 
 void
 ncSurfacePropEntity::_PropDataFinish(void)
 {
-	PropData_SetStage(m_strPropData);
+	PropData_SetStage(m_propData);
 
-	if (STRING_SET(m_strPropData)) {
-		m_iPropData = PropData_Finish();
+	if (STRING_SET(m_propData)) {
+		m_propdataID = PropData_Finish();
 	} else {
-		m_iPropData = -1i;
+		m_propdataID = -1i;
 	}
 
 	/* no surfdata? maybe the propdata has got one set. */
-	if (m_iMaterial == -1i && m_iPropData != -1i) {
+	if (m_surfdataID == -1i && m_propdataID != -1i) {
 		string propDataSurf = GetPropData(PROPINFO_SURFACEPROP);
 
 		if (STRING_SET(propDataSurf)) {
@@ -875,12 +1024,15 @@ ncSurfacePropEntity::_PropDataFinish(void)
 void
 ncSurfacePropEntity::SetModel(string newModel)
 {
-	ncRenderableEntity::SetModel(newModel);
+	super::SetModel(newModel);
 
-	if (IsBrush() == false)
+	if (IsBrush() == true) {
+		return;
+	}
+
 	if (STRING_SET(model) && HasPropData() == false) {
-		m_iPropData = PropData_ForModel(model);
-		m_strPropData = model;
+		m_propdataID = PropData_ForModel(model);
+		m_propData = model;
 		_PropDataFinish();
 	}
 }

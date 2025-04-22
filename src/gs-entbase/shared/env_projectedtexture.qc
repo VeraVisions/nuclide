@@ -283,36 +283,36 @@ env_projectedtexture::Input(entity eAct, string strInput, string strData)
 }
 
 void
-env_projectedtexture::SpawnKey(string strKey, string strValue)
+env_projectedtexture::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "lightcolor":
-		tokenize(strValue);
+		tokenize(setValue);
 		m_vecLight[0] = stof(argv(0));
 		m_vecLight[1] = stof(argv(1));
 		m_vecLight[2] = stof(argv(2));
 		m_flIntensity = stof(argv(3));
 		break;
 	case "style":
-		m_flStyle = stof(strValue);
+		m_flStyle = stof(setValue);
 		break;
 	case "texturename":
-		m_strTextureName = strValue;
+		m_strTextureName = setValue;
 		break;
 	case "lightfov":
-		m_flFOV = stof(strValue);
+		m_flFOV = stof(setValue);
 		break;
 	case "farz":
-		m_flFarZ = stof(strValue);
+		m_flFarZ = stof(setValue);
 		break;
 	case "nearz":
-		m_flNearZ = stof(strValue);
+		m_flNearZ = stof(setValue);
 		break;
 	case "pattern":
-		m_strPattern = strValue;
+		m_strPattern = setValue;
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 

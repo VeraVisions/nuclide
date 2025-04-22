@@ -55,8 +55,7 @@ void
 multisource::Respawn(void)
 {
 	InitPointTrigger();
-
-	m_iValue = FALSE;
+	SetValue(0i);
 }
 
 void
@@ -64,13 +63,13 @@ multisource::Trigger(entity act, triggermode_t unused)
 {
 	if (QueryTargets() == FALSE) {
 		EntLog("[^1MULTISOURCE^7] %s is inactive.", targetname);
-		m_iValue = FALSE;
+		SetValue(0i);
 		return;
 	}
 
 	EntLog("[^1MULTISOURCE^7] %s is now active.", targetname);
-	m_iValue = TRUE;
-	UseTargets(act, TRIG_TOGGLE, m_flDelay);
+	SetValue(1i);
+	UseTargets(act, TRIG_TOGGLE, GetTriggerDelay());
 }
 
 int
@@ -86,8 +85,8 @@ multisource::QueryTargets(void)
 	int out = TRUE;
 
 	/* ENV_GLOBAL QUERY */
-	if (m_strGlobalState)
-		if (GetGlobalValue(m_strGlobalState) == 0)
+	if (STRING_SET(m_globalState))
+		if (GetGlobalValue(m_globalState) == 0)
 			return FALSE;
 		else
 			return TRUE;

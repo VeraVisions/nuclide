@@ -179,7 +179,7 @@ Weapon_GetTitle(entity weaponEntity)
 	ncWeapon weapon = (ncWeapon)weaponEntity;
 
 	if (weapon) {
-		return (weapon.m_strWeaponTitle);
+		return (weapon.m_weaponTitle);
 	}
 
 	return "Unknown";
@@ -191,7 +191,7 @@ Weapon_GetIcon(entity weaponEntity)
 	ncWeapon weapon = (ncWeapon)weaponEntity;
 
 	if (weapon) {
-		return (weapon.m_icon);
+		return (weapon.m_weaponHUDIcon);
 	}
 
 	return "Unknown";
@@ -203,7 +203,7 @@ Weapon_GetSelectedIcon(entity weaponEntity)
 	ncWeapon weapon = (ncWeapon)weaponEntity;
 
 	if (weapon) {
-		return (weapon.m_iconSel);
+		return (weapon.m_weaponHUDIconSel);
 	}
 
 	return "Unknown";
@@ -215,7 +215,7 @@ Weapon_GetSlot(entity weaponEntity)
 	ncWeapon weapon = (ncWeapon)weaponEntity;
 
 	if (weapon) {
-		return (weapon.m_iHudSlot);
+		return (weapon.m_weaponHUDSlot);
 	}
 
 	return -1i;
@@ -227,7 +227,7 @@ Weapon_GetSlotPos(entity weaponEntity)
 	ncWeapon weapon = (ncWeapon)weaponEntity;
 
 	if (weapon) {
-		return (weapon.m_iHudSlotPos);
+		return (weapon.m_weaponHUDSlotPos);
 	}
 
 	return -1i;
@@ -240,7 +240,7 @@ Weapon_GetClip(void)
 	ncWeapon weapon = owner.m_activeWeapon;
 
 	if (weapon) {
-		return (weapon.m_iClip);
+		return (weapon.m_weaponClip);
 	}
 
 	return 0;
@@ -253,7 +253,7 @@ Weapon_GetClipSize(void)
 	ncWeapon weapon = owner.m_activeWeapon;
 
 	if (weapon) {
-		return (weapon.m_iClipSize);
+		return (weapon.m_weaponClipSize);
 	}
 
 	return 0;
@@ -411,7 +411,7 @@ Draw_Line(float thickness, vector pos1, vector pos2, vector rgb, float a)
 }
 
 void
-Draw_Pic(vector pos, string material, vector size, vector rgb, float a)
+Draw_Pic(vector pos, string material, vector size, vector rgb, float a, float imageFlags)
 {
-	drawpic(pos, material, size, rgb, a);
+	drawpic(pos, material, size, rgb, a, imageFlags);
 }

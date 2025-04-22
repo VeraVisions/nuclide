@@ -75,14 +75,14 @@ game_player_hurt::Save(float handle)
 }
 
 void
-game_player_hurt::Restore(string strKey, string strValue)
+game_player_hurt::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_iDamage":
-		m_iDamage = ReadInt(strValue);
+		m_iDamage = ReadInt(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
@@ -96,9 +96,10 @@ game_player_hurt::Trigger(entity activatingEntity, triggermode_t triggerMode)
 		return;
 	}
 
+	ncSurfacePropEntity toAttack = (ncSurfacePropEntity)activatingEntity;
 	ncDict damageDecl = spawn(ncDict);
 	damageDecl.AddKey("damage", itos(m_iDamage));
-	combat.Damage(activatingEntity, this, activatingEntity, damageDecl.GetDeclBody(), GetOrigin(), g_vec_null, activatingEntity.origin);
+	toAttack.Damage(this, activatingEntity, damageDecl, 1.0f, GetOrigin(), g_vec_null, activatingEntity.origin);
 	remove(damageDecl);
 
 	if (HasSpawnFlags(1)) {

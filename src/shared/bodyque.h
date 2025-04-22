@@ -26,11 +26,22 @@ bodies/corpses in an active game.
 */
 
 #ifdef SERVER
+var bool autocvar_bodyque_forceRagdolls = false;
+var int autocvar_bodyque_maxBodies = 4i;
+var int autocvar_bodyque_maxRagdolls = 4i;
+
+#define CORPSES_MAX autocvar_bodyque_maxBodies
+#define RAGDOLLS_MAX autocvar_bodyque_maxRagdolls
+#define FORCE_RAGDOLLS autocvar_bodyque_forceRagdolls
+
 /** Initializes the BodyQue. Called in server's initents() */
 void BodyQue_Init(void);
 
 /** Dispatches a copy of the target actor into the BodyQue. */
-entity BodyQue_Spawn(ncActor pl, float anim);
+ncRenderableEntity BodyQue_Spawn(ncActor pl, float anim);
+
+/** Dispatches a copy of the target actor into the BodyQue. */
+ncRagdoll BodyQue_SpawnRagdoll(ncActor pl, float anim);
 #endif
 
 /** @} */ // end of bodyque

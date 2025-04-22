@@ -93,38 +93,38 @@ func_pendulum::Save(float handle)
 }
 
 void
-func_pendulum::Restore(string strKey, string strValue)
+func_pendulum::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_iActive":
-		m_iActive = ReadInt(strValue);
+		m_iActive = ReadInt(setValue);
 		break;
 	case "m_flProgress":
-		m_flProgress = ReadFloat(strValue);
+		m_flProgress = ReadFloat(setValue);
 		break;
 	case "m_flDampening":
-		m_flDampening = ReadFloat(strValue);
+		m_flDampening = ReadFloat(setValue);
 		break;
 	case "m_flDistance":
-		m_flDistance = ReadFloat(strValue);
+		m_flDistance = ReadFloat(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-func_pendulum::SpawnKey(string strKey, string strValue)
+func_pendulum::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "damp":
-		m_flDampening = stof(strValue);
+		m_flDampening = stof(setValue);
 		break;
 	case "distance":
-		m_flDistance = stof(strValue);
+		m_flDistance = stof(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 

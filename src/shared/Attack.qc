@@ -18,75 +18,11 @@ void
 ncAttack::ncAttack(void)
 {
 #ifdef SERVER
-	m_iShots = 1i;
-	m_vecSpread = [0.0, 0.0, 0.0];
 	m_weaponOwner = __NULL__;
-	m_flFuse = -1.0f;
 #endif
 }
 
 #ifdef SERVER
-void
-ncAttack::SpawnKey(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "fuse": /* fuse time in seconds */
-		m_flFuse = ReadFloat(strValue);
-		break;
-	case "spread":
-		m_vecSpread = ReadVector(strValue);
-		break;
-	case "spread_x":
-		m_vecSpread[0] = ReadFloat(strValue);
-		break;
-	case "spread_y":
-		m_vecSpread[1] = ReadFloat(strValue);
-		break;
-	default:
-		super::SpawnKey(strKey, strValue);
-		break;
-	}
-}
-
-void
-ncAttack::Save(float handle)
-{
-	super::Save(handle);
-
-	SaveInt(handle, "m_iShots", m_iShots);
-	SaveVector(handle, "m_vecSpread", m_vecSpread);
-	SaveFloat(handle, "m_flFuse", m_flFuse);
-	SaveEntity(handle, "m_weaponOwner", m_weaponOwner);
-}
-
-void
-ncAttack::Restore(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "m_iShots":
-		m_iShots = ReadInt(strValue);
-		break;
-	case "m_flFuse":
-		m_flFuse = ReadFloat(strValue);
-		break;
-	case "m_vecSpread":
-		m_vecSpread = ReadVector(strValue);
-		break;
-	case "m_weaponOwner":
-		m_weaponOwner = (ncWeapon)ReadEntity(strValue);
-		break;
-	default:
-		super::Restore(strKey, strValue);
-		break;
-	}
-}
-
-void
-ncAttack::Spawned(void)
-{
-	super::Spawned();
-}
-
 void
 ncAttack::SetWeaponOwner(ncWeapon weaponOwner)
 {
@@ -100,11 +36,43 @@ ncAttack::GetWeaponOwner(void)
 }
 
 void
+Grapple_Touch(void)
+{
+
+	ncPlayer pl = (ncPlayer)self.owner;
+
+#ifdef GEARBOX
+	string tex = getsurfacetexture(trace_ent, getsurfacenearpoint(trace_ent, trace_endpos));
+
+	/* only if name "XENO_GRAPPLE_" according to TWHL */
+	if (substring(tex, 0, 13) == "xeno_grapple_") {
+#else
+	if (1) {
+#endif
+		pl.m_hook.movetype = MOVETYPE_NONE;
+		pl.m_hook.touch = __NULL__;
+		pl.m_hook.velocity = g_vec_null;
+		pl.m_hook.solid = SOLID_NOT;
+		pl.m_pmoveHookVelocity = (pl.m_hook.origin);
+	}  else {
+		pl.m_hook.skin = 0; /* ungrappled */
+		remove(pl.m_hook);
+		pl.m_hook = __NULL__;
+		pl.m_pmoveHookVelocity = g_vec_null;
+	}
+}
+
+
+void
 ncAttack::Launch(vector startPos, vector launchDir, float fuseOffset, float powerMultiplier, float dmgMultiplier)
 {
 	ncEntity plantedEntity;
+	ncPlayer ourOwner = (ncPlayer)m_weaponOwner.owner;
+
 	bool willPlant = GetSpawnBool("plant");
 	bool willDrop = GetSpawnBool("drop");
+	bool grappleHook = GetSpawnBool("grappleHook");
+	bool grappleUnhook = GetSpawnBool("grappleUnhook");
 
 	if (willPlant) {
 		string classToPlant = GetSpawnString("def_plant");
@@ -123,6 +91,48 @@ ncAttack::Launch(vector startPos, vector launchDir, float fuseOffset, float powe
 		plantedEntity = spawnClass(classToDrop, startPos + (anglesToForward(launchDir) * dropDistance));
 		plantedEntity.SetAngles([0, launchDir[1], 0]);
 		plantedEntity.Spawn();
+	}
+
+	if (grappleHook) {
+		if (ourOwner.m_hook != __NULL__) {
+			/* play the looping reel anim once */
+			/*if (ourOwner.a_ammo1 == 1) {
+				ourOwner.a_ammo1 = 2;
+				//Weapons_ViewAnimation(pl, BARN_FIRETRAVEL);
+			} else if (ourOwner.a_ammo1 == 2) {
+				ourOwner.m_hook.skin = 1;
+			}*/
+
+			vector forwardDir = anglesToForward(ourOwner.v_angle);
+			vector src = ourOwner.GetEyePos();
+			traceline(src, src + (forwardDir * 32), MOVE_NORMAL, ourOwner);
+
+			//if (trace_ent.takedamage == DAMAGE_YES && trace_ent.iBleeds) {
+			//	Damage_Apply(trace_ent, pl, 25, WEAPON_GRAPPLE, DMG_GENERIC);
+			//}
+			//ourOwner.m_timeUntilNextAttack = 0.5f;
+			return;
+		}
+
+		vector forwardDir = anglesToForward(ourOwner.v_angle);
+		ourOwner.m_hook = spawn();
+		setorigin(ourOwner.m_hook, ourOwner.GetEyePos() + (forwardDir * 16));
+		ourOwner.m_hook.owner = ourOwner;
+		ourOwner.m_hook.velocity = forwardDir * 1500.0f;
+		ourOwner.m_hook.movetype = MOVETYPE_FLYMISSILE;
+		ourOwner.m_hook.solid = SOLID_BBOX;
+		ourOwner.m_hook.angles = vectoangles(ourOwner.m_hook.velocity);
+		ourOwner.m_hook.touch = Grapple_Touch;
+		setsize(ourOwner.m_hook, [0,0,0], [0,0,0]);
+		setmodel(ourOwner.m_hook, GetSpawnString("model"));
+	} else if (grappleUnhook) {
+		if (ourOwner.m_hook != __NULL__) {
+			//ourOwner.a_ammo1 = 0; /* cache */
+			ourOwner.m_hook.skin = 0; /* ungrappled */
+			remove(ourOwner.m_hook);
+			ourOwner.m_hook = __NULL__;
+			ourOwner.m_pmoveHookVelocity = g_vec_null;
+		}
 	}
 
 	/* free up the entity slot */
@@ -144,7 +154,7 @@ ncAttack_SpawnDef(string entityDef, ncActor theOwner)
 	EntityDef_SpawnClassname(entityDef);
 	self = oldself;
 	rocket.SetWeaponOwner(theOwner.m_activeWeapon);
-	rocket.Launch(theOwner.GetEyePos(), theOwner.GetViewAngle(), (time - theOwner.nadeCookingTime), 0.0f, 0.0f);
+	rocket.Launch(theOwner.GetEyePos(), theOwner.GetViewAngle(), (time - theOwner.m_weaponCookingTime), 0.0f, 0.0f);
 	return rocket;
 }
 
@@ -158,8 +168,8 @@ ncAttack_SpawnDefAtPosition(string entityDef, ncActor theOwner, vector vecOrigin
 	EntityDef_SpawnClassname(entityDef);
 	self = oldself;
 	rocket.SetWeaponOwner(theOwner.m_activeWeapon);
-	rocket.Launch(vecOrigin, vecAngles, (time - theOwner.nadeCookingTime), 0.0f, 0.0f);
-	NSLog("%S %v, %v", entityDef, vecOrigin, vecAngles);
+	rocket.Launch(vecOrigin, vecAngles, (time - theOwner.m_weaponCookingTime), 0.0f, 0.0f);
+	ncLog("%S %v, %v", entityDef, vecOrigin, vecAngles);
 	return rocket;
 }
 
@@ -176,7 +186,7 @@ ncAttack_SpawnDefAttachment(string entityDef, ncActor theOwner, int attachmentID
 	EntityDef_SpawnClassname(entityDef);
 	self = oldself;
 	rocket.SetWeaponOwner(theOwner.m_activeWeapon);
-	rocket.Launch(attachmentPos, theOwner.GetViewAngle(), (time - theOwner.nadeCookingTime), 0.0f, 0.0f);
+	rocket.Launch(attachmentPos, theOwner.GetViewAngle(), (time - theOwner.m_weaponCookingTime), 0.0f, 0.0f);
 	return rocket;
 }
 #endif

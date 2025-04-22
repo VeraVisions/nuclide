@@ -87,7 +87,7 @@ Layout_FromFile_Create(CPageTab target, string cvar, string descr, string type, 
 		//new = spawn(CTextBox);
 		//break;
 	default:
-		NSWarning("Unknown widget type %S for cvar %S, ignoring.", type, cvar);
+		ncWarning("Unknown widget type %S for cvar %S, ignoring.", type, cvar);
 	}
 
 	if (!new)

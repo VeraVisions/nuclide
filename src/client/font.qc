@@ -60,7 +60,14 @@ Font_Load(string strFile, font_s &fntNew)
 				fntNew.iScaleY = fntNew.iScaleX = (int)stof(argv(1));
 				break;
 			case "path":
-				strFontPath = argv(1);
+				if (autocvar(font_ttfOnly, 0) == 0) {
+					strFontPath = argv(1);
+				}
+				break;
+			case "path_ttf":
+				if (autocvar(font_ttfOnly, 0) == 1) {
+					strFontPath = argv(1);
+				}
 				break;
 			case "rendersize":
 				strRenderSize = argv(1);
@@ -78,16 +85,16 @@ Font_Load(string strFile, font_s &fntNew)
 		}
 		fclose(fileFont);
 	} else {
-		NSError("Missing file %s", strFile);
+		ncError("Missing file %s", strFile);
 	}
 
 	if (!fntNew.iScaleX || !fntNew.iScaleY) {
-		NSError("Invalid size defined for %s", strFile);
+		ncError("Invalid size defined for %s", strFile);
 		fntNew.iScaleX = 12i;
 		fntNew.iScaleY = 12i;
 	}
 
-	NSLog("Loaded font definition for %s", strFile);
+	ncLog("Loaded font definition for %s", strFile);
 
 	if (strRenderSize != "") {
 		fntNew.iID = (int)loadfont("", strFontPath, strRenderSize, -1, 0, 0);
@@ -204,7 +211,7 @@ Font_RGBtoHex(vector vecColor)
 			x -= 10;
 			return sprintf("%c", 'A' + x);
 		}
-		
+
 	}
 
 	return sprintf("^x%s%s%s", numtohex(vecColor[0]), numtohex(vecColor[1]), numtohex(vecColor[2]));

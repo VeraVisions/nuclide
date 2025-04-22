@@ -185,47 +185,47 @@ env_fog::Save(float handle)
 }
 
 void
-env_fog::Restore(string strKey, string strValue)
+env_fog::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_flStartDist":
-		m_flStartDist = ReadFloat(strValue);
+		m_flStartDist = ReadFloat(setValue);
 		break;
 	case "m_flEndDist":
-		m_flEndDist = ReadFloat(strValue);
+		m_flEndDist = ReadFloat(setValue);
 		break;
 	case "m_flDensity":
-		m_flDensity = ReadFloat(strValue);
+		m_flDensity = ReadFloat(setValue);
 		break;
 	case "m_vecColor":
-		m_vecColor = ReadVector(strValue);
+		m_vecColor = ReadVector(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-env_fog::SpawnKey(string strKey, string strValue)
+env_fog::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "startdist":
-		m_flStartDist = ReadFloat(strValue);
+		m_flStartDist = ReadFloat(setValue);
 		break;
 	case "enddist":
-		m_flEndDist = ReadFloat(strValue);
+		m_flEndDist = ReadFloat(setValue);
 		break;
 	case "density":
-		m_flDensity = ReadFloat(strValue);
+		m_flDensity = ReadFloat(setValue);
 		break;
 	case "rendercolor":
-		m_vecColor = ReadVector(strValue);
+		m_vecColor = ReadVector(setValue);
 		break;
 	case "holdtime":
-		m_holdTime = ReadFloat(strValue);
+		m_holdTime = ReadFloat(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 

@@ -107,24 +107,24 @@ private:
 	string m_strCase15;
 	string m_strCase16;
 
-	string m_strOnCase01;
-	string m_strOnCase02;
-	string m_strOnCase03;
-	string m_strOnCase04;
-	string m_strOnCase05;
-	string m_strOnCase06;
-	string m_strOnCase07;
-	string m_strOnCase08;
-	string m_strOnCase09;
-	string m_strOnCase10;
-	string m_strOnCase11;
-	string m_strOnCase12;
-	string m_strOnCase13;
-	string m_strOnCase14;
-	string m_strOnCase15;
-	string m_strOnCase16;
+	string m_outputOnCase01;
+	string m_outputOnCase02;
+	string m_outputOnCase03;
+	string m_outputOnCase04;
+	string m_outputOnCase05;
+	string m_outputOnCase06;
+	string m_outputOnCase07;
+	string m_outputOnCase08;
+	string m_outputOnCase09;
+	string m_outputOnCase10;
+	string m_outputOnCase11;
+	string m_outputOnCase12;
+	string m_outputOnCase13;
+	string m_outputOnCase14;
+	string m_outputOnCase15;
+	string m_outputOnCase16;
 
-	string m_strOnDefault;
+	string m_outputOnDefault;
 };
 
 void
@@ -147,24 +147,24 @@ logic_case::logic_case(void)
 	m_strCase15 = 
 	m_strCase16 = __NULL__;
 
-	m_strOnCase01 = 
-	m_strOnCase02 = 
-	m_strOnCase03 = 
-	m_strOnCase04 = 
-	m_strOnCase05 = 
-	m_strOnCase06 = 
-	m_strOnCase07 = 
-	m_strOnCase08 = 
-	m_strOnCase09 = 
-	m_strOnCase10 = 
-	m_strOnCase11 = 
-	m_strOnCase12 = 
-	m_strOnCase13 = 
-	m_strOnCase14 = 
-	m_strOnCase15 = 
-	m_strOnCase16 = __NULL__;
+	m_outputOnCase01 = 
+	m_outputOnCase02 = 
+	m_outputOnCase03 = 
+	m_outputOnCase04 = 
+	m_outputOnCase05 = 
+	m_outputOnCase06 = 
+	m_outputOnCase07 = 
+	m_outputOnCase08 = 
+	m_outputOnCase09 = 
+	m_outputOnCase10 = 
+	m_outputOnCase11 = 
+	m_outputOnCase12 = 
+	m_outputOnCase13 = 
+	m_outputOnCase14 = 
+	m_outputOnCase15 = 
+	m_outputOnCase16 = __NULL__;
 
-	m_strOnDefault = __NULL__;
+	m_outputOnDefault = __NULL__;
 }
 
 void
@@ -222,55 +222,55 @@ logic_case::SpawnKey(string keyName, string setValue)
 		break;
 
 	case "OnCase01":
-		m_strOnCase01 = PrepareOutput(m_strOnCase01, setValue);
+		m_outputOnCase01 = PrepareOutput(m_outputOnCase01, setValue);
 		break;
 	case "OnCase02":
-		m_strOnCase02 = PrepareOutput(m_strOnCase02, setValue);
+		m_outputOnCase02 = PrepareOutput(m_outputOnCase02, setValue);
 		break;
 	case "OnCase03":
-		m_strOnCase03 = PrepareOutput(m_strOnCase03, setValue);
+		m_outputOnCase03 = PrepareOutput(m_outputOnCase03, setValue);
 		break;
 	case "OnCase04":
-		m_strOnCase04 = PrepareOutput(m_strOnCase04, setValue);
+		m_outputOnCase04 = PrepareOutput(m_outputOnCase04, setValue);
 		break;
 	case "OnCase05":
-		m_strOnCase05 = PrepareOutput(m_strOnCase05, setValue);
+		m_outputOnCase05 = PrepareOutput(m_outputOnCase05, setValue);
 		break;
 	case "OnCase06":
-		m_strOnCase06 = PrepareOutput(m_strOnCase06, setValue);
+		m_outputOnCase06 = PrepareOutput(m_outputOnCase06, setValue);
 		break;
 	case "OnCase07":
-		m_strOnCase07 = PrepareOutput(m_strOnCase07, setValue);
+		m_outputOnCase07 = PrepareOutput(m_outputOnCase07, setValue);
 		break;
 	case "OnCase08":
-		m_strOnCase08 = PrepareOutput(m_strOnCase08, setValue);
+		m_outputOnCase08 = PrepareOutput(m_outputOnCase08, setValue);
 		break;
 	case "OnCase09":
-		m_strOnCase09 = PrepareOutput(m_strOnCase09, setValue);
+		m_outputOnCase09 = PrepareOutput(m_outputOnCase09, setValue);
 		break;
 	case "OnCase10":
-		m_strOnCase10 = PrepareOutput(m_strOnCase10, setValue);
+		m_outputOnCase10 = PrepareOutput(m_outputOnCase10, setValue);
 		break;
 	case "OnCase11":
-		m_strOnCase11 = PrepareOutput(m_strOnCase11, setValue);
+		m_outputOnCase11 = PrepareOutput(m_outputOnCase11, setValue);
 		break;
 	case "OnCase12":
-		m_strOnCase12 = PrepareOutput(m_strOnCase12, setValue);
+		m_outputOnCase12 = PrepareOutput(m_outputOnCase12, setValue);
 		break;
 	case "OnCase13":
-		m_strOnCase13 = PrepareOutput(m_strOnCase13, setValue);
+		m_outputOnCase13 = PrepareOutput(m_outputOnCase13, setValue);
 		break;
 	case "OnCase14":
-		m_strOnCase14 = PrepareOutput(m_strOnCase14, setValue);
+		m_outputOnCase14 = PrepareOutput(m_outputOnCase14, setValue);
 		break;
 	case "OnCase15":
-		m_strOnCase15 = PrepareOutput(m_strOnCase15, setValue);
+		m_outputOnCase15 = PrepareOutput(m_outputOnCase15, setValue);
 		break;
 	case "OnCase16":
-		m_strOnCase16 = PrepareOutput(m_strOnCase16, setValue);
+		m_outputOnCase16 = PrepareOutput(m_outputOnCase16, setValue);
 		break;
 	case "OnDefault":
-		m_strOnDefault = PrepareOutput(m_strOnDefault, setValue);
+		m_outputOnDefault = PrepareOutput(m_outputOnDefault, setValue);
 		break;
 	default:
 		super::SpawnKey(keyName, setValue);
@@ -282,40 +282,40 @@ logic_case::Spawned(void)
 {
 	super::Spawned();
 
-	if (m_strOnCase01)
-		m_strOnCase01 = CreateOutput(m_strOnCase01);
-	if (m_strOnCase02)
-		m_strOnCase02 = CreateOutput(m_strOnCase02);
-	if (m_strOnCase03)
-		m_strOnCase03 = CreateOutput(m_strOnCase03);
-	if (m_strOnCase04)
-		m_strOnCase04 = CreateOutput(m_strOnCase04);
-	if (m_strOnCase05)
-		m_strOnCase05 = CreateOutput(m_strOnCase05);
-	if (m_strOnCase06)
-		m_strOnCase06 = CreateOutput(m_strOnCase06);
-	if (m_strOnCase07)
-		m_strOnCase07 = CreateOutput(m_strOnCase07);
-	if (m_strOnCase08)
-		m_strOnCase08 = CreateOutput(m_strOnCase08);
-	if (m_strOnCase09)
-		m_strOnCase09 = CreateOutput(m_strOnCase09);
-	if (m_strOnCase10)
-		m_strOnCase10 = CreateOutput(m_strOnCase10);
-	if (m_strOnCase11)
-		m_strOnCase11 = CreateOutput(m_strOnCase11);
-	if (m_strOnCase12)
-		m_strOnCase12 = CreateOutput(m_strOnCase12);
-	if (m_strOnCase13)
-		m_strOnCase13 = CreateOutput(m_strOnCase13);
-	if (m_strOnCase14)
-		m_strOnCase14 = CreateOutput(m_strOnCase14);
-	if (m_strOnCase15)
-		m_strOnCase15 = CreateOutput(m_strOnCase15);
-	if (m_strOnCase16)
-		m_strOnCase16 = CreateOutput(m_strOnCase16);
-	if (m_strOnDefault)
-		m_strOnDefault = CreateOutput(m_strOnDefault);
+	if (m_outputOnCase01)
+		m_outputOnCase01 = CreateOutput(m_outputOnCase01);
+	if (m_outputOnCase02)
+		m_outputOnCase02 = CreateOutput(m_outputOnCase02);
+	if (m_outputOnCase03)
+		m_outputOnCase03 = CreateOutput(m_outputOnCase03);
+	if (m_outputOnCase04)
+		m_outputOnCase04 = CreateOutput(m_outputOnCase04);
+	if (m_outputOnCase05)
+		m_outputOnCase05 = CreateOutput(m_outputOnCase05);
+	if (m_outputOnCase06)
+		m_outputOnCase06 = CreateOutput(m_outputOnCase06);
+	if (m_outputOnCase07)
+		m_outputOnCase07 = CreateOutput(m_outputOnCase07);
+	if (m_outputOnCase08)
+		m_outputOnCase08 = CreateOutput(m_outputOnCase08);
+	if (m_outputOnCase09)
+		m_outputOnCase09 = CreateOutput(m_outputOnCase09);
+	if (m_outputOnCase10)
+		m_outputOnCase10 = CreateOutput(m_outputOnCase10);
+	if (m_outputOnCase11)
+		m_outputOnCase11 = CreateOutput(m_outputOnCase11);
+	if (m_outputOnCase12)
+		m_outputOnCase12 = CreateOutput(m_outputOnCase12);
+	if (m_outputOnCase13)
+		m_outputOnCase13 = CreateOutput(m_outputOnCase13);
+	if (m_outputOnCase14)
+		m_outputOnCase14 = CreateOutput(m_outputOnCase14);
+	if (m_outputOnCase15)
+		m_outputOnCase15 = CreateOutput(m_outputOnCase15);
+	if (m_outputOnCase16)
+		m_outputOnCase16 = CreateOutput(m_outputOnCase16);
+	if (m_outputOnDefault)
+		m_outputOnDefault = CreateOutput(m_outputOnDefault);
 }
 
 void
@@ -346,23 +346,23 @@ logic_case::Save(float handle)
 	SaveString(handle, "m_strCase15", m_strCase15);
 	SaveString(handle, "m_strCase16", m_strCase16);
 
-	SaveString(handle, "m_strOnCase01", m_strOnCase01);
-	SaveString(handle, "m_strOnCase02", m_strOnCase02);
-	SaveString(handle, "m_strOnCase03", m_strOnCase03);
-	SaveString(handle, "m_strOnCase04", m_strOnCase04);
-	SaveString(handle, "m_strOnCase05", m_strOnCase05);
-	SaveString(handle, "m_strOnCase06", m_strOnCase06);
-	SaveString(handle, "m_strOnCase07", m_strOnCase07);
-	SaveString(handle, "m_strOnCase08", m_strOnCase08);
-	SaveString(handle, "m_strOnCase09", m_strOnCase09);
-	SaveString(handle, "m_strOnCase10", m_strOnCase10);
-	SaveString(handle, "m_strOnCase11", m_strOnCase11);
-	SaveString(handle, "m_strOnCase12", m_strOnCase12);
-	SaveString(handle, "m_strOnCase13", m_strOnCase13);
-	SaveString(handle, "m_strOnCase14", m_strOnCase14);
-	SaveString(handle, "m_strOnCase15", m_strOnCase15);
-	SaveString(handle, "m_strOnCase16", m_strOnCase16);
-	SaveString(handle, "m_strOnDefault", m_strOnDefault);
+	SaveString(handle, "m_outputOnCase01", m_outputOnCase01);
+	SaveString(handle, "m_outputOnCase02", m_outputOnCase02);
+	SaveString(handle, "m_outputOnCase03", m_outputOnCase03);
+	SaveString(handle, "m_outputOnCase04", m_outputOnCase04);
+	SaveString(handle, "m_outputOnCase05", m_outputOnCase05);
+	SaveString(handle, "m_outputOnCase06", m_outputOnCase06);
+	SaveString(handle, "m_outputOnCase07", m_outputOnCase07);
+	SaveString(handle, "m_outputOnCase08", m_outputOnCase08);
+	SaveString(handle, "m_outputOnCase09", m_outputOnCase09);
+	SaveString(handle, "m_outputOnCase10", m_outputOnCase10);
+	SaveString(handle, "m_outputOnCase11", m_outputOnCase11);
+	SaveString(handle, "m_outputOnCase12", m_outputOnCase12);
+	SaveString(handle, "m_outputOnCase13", m_outputOnCase13);
+	SaveString(handle, "m_outputOnCase14", m_outputOnCase14);
+	SaveString(handle, "m_outputOnCase15", m_outputOnCase15);
+	SaveString(handle, "m_outputOnCase16", m_outputOnCase16);
+	SaveString(handle, "m_outputOnDefault", m_outputOnDefault);
 }
 
 void
@@ -418,56 +418,56 @@ logic_case::Restore(string keyName, string setValue)
 		m_strCase16 = ReadString(setValue);
 		break;
 
-	case "m_strOnCase01":
-		m_strOnCase01 = ReadString(setValue);
+	case "m_outputOnCase01":
+		m_outputOnCase01 = ReadString(setValue);
 		break;
-	case "m_strOnCase02":
-		m_strOnCase02 = ReadString(setValue);
+	case "m_outputOnCase02":
+		m_outputOnCase02 = ReadString(setValue);
 		break;
-	case "m_strOnCase03":
-		m_strOnCase03 = ReadString(setValue);
+	case "m_outputOnCase03":
+		m_outputOnCase03 = ReadString(setValue);
 		break;
-	case "m_strOnCase04":
-		m_strOnCase04 = ReadString(setValue);
+	case "m_outputOnCase04":
+		m_outputOnCase04 = ReadString(setValue);
 		break;
-	case "m_strOnCase05":
-		m_strOnCase05 = ReadString(setValue);
+	case "m_outputOnCase05":
+		m_outputOnCase05 = ReadString(setValue);
 		break;
-	case "m_strOnCase06":
-		m_strOnCase06 = ReadString(setValue);
+	case "m_outputOnCase06":
+		m_outputOnCase06 = ReadString(setValue);
 		break;
-	case "m_strOnCase07":
-		m_strOnCase07 = ReadString(setValue);
+	case "m_outputOnCase07":
+		m_outputOnCase07 = ReadString(setValue);
 		break;
-	case "m_strOnCase08":
-		m_strOnCase08 = ReadString(setValue);
+	case "m_outputOnCase08":
+		m_outputOnCase08 = ReadString(setValue);
 		break;
-	case "m_strOnCase09":
-		m_strOnCase09 = ReadString(setValue);
+	case "m_outputOnCase09":
+		m_outputOnCase09 = ReadString(setValue);
 		break;
-	case "m_strOnCase10":
-		m_strOnCase10 = ReadString(setValue);
+	case "m_outputOnCase10":
+		m_outputOnCase10 = ReadString(setValue);
 		break;
-	case "m_strOnCase11":
-		m_strOnCase11 = ReadString(setValue);
+	case "m_outputOnCase11":
+		m_outputOnCase11 = ReadString(setValue);
 		break;
-	case "m_strOnCase12":
-		m_strOnCase12 = ReadString(setValue);
+	case "m_outputOnCase12":
+		m_outputOnCase12 = ReadString(setValue);
 		break;
-	case "m_strOnCase13":
-		m_strOnCase13 = ReadString(setValue);
+	case "m_outputOnCase13":
+		m_outputOnCase13 = ReadString(setValue);
 		break;
-	case "m_strOnCase14":
-		m_strOnCase14 = ReadString(setValue);
+	case "m_outputOnCase14":
+		m_outputOnCase14 = ReadString(setValue);
 		break;
-	case "m_strOnCase15":
-		m_strOnCase15 = ReadString(setValue);
+	case "m_outputOnCase15":
+		m_outputOnCase15 = ReadString(setValue);
 		break;
-	case "m_strOnCase16":
-		m_strOnCase16 = ReadString(setValue);
+	case "m_outputOnCase16":
+		m_outputOnCase16 = ReadString(setValue);
 		break;
-	case "m_strOnDefault":
-		m_strOnDefault = ReadString(setValue);
+	case "m_outputOnDefault":
+		m_outputOnDefault = ReadString(setValue);
 		break;
 	default:
 		super::Restore(keyName, setValue);
@@ -509,54 +509,54 @@ logic_case::CompareCase(entity activatorEntity, string inputValue)
 {
 	switch (inputValue) {
 	case m_strCase01:
-		UseOutput(activatorEntity, m_strOnCase01);
+		UseOutput(activatorEntity, m_outputOnCase01);
 		break;
 	case m_strCase02:
-		UseOutput(activatorEntity, m_strOnCase02);
+		UseOutput(activatorEntity, m_outputOnCase02);
 		break;
 	case m_strCase03:
-		UseOutput(activatorEntity, m_strOnCase03);
+		UseOutput(activatorEntity, m_outputOnCase03);
 		break;
 	case m_strCase04:
-		UseOutput(activatorEntity, m_strOnCase04);
+		UseOutput(activatorEntity, m_outputOnCase04);
 		break;
 	case m_strCase05:
-		UseOutput(activatorEntity, m_strOnCase05);
+		UseOutput(activatorEntity, m_outputOnCase05);
 		break;
 	case m_strCase06:
-		UseOutput(activatorEntity, m_strOnCase06);
+		UseOutput(activatorEntity, m_outputOnCase06);
 		break;
 	case m_strCase07:
-		UseOutput(activatorEntity, m_strOnCase07);
+		UseOutput(activatorEntity, m_outputOnCase07);
 		break;
 	case m_strCase08:
-		UseOutput(activatorEntity, m_strOnCase08);
+		UseOutput(activatorEntity, m_outputOnCase08);
 		break;
 	case m_strCase09:
-		UseOutput(activatorEntity, m_strOnCase09);
+		UseOutput(activatorEntity, m_outputOnCase09);
 		break;
 	case m_strCase10:
-		UseOutput(activatorEntity, m_strOnCase10);
+		UseOutput(activatorEntity, m_outputOnCase10);
 		break;
 	case m_strCase11:
-		UseOutput(activatorEntity, m_strOnCase11);
+		UseOutput(activatorEntity, m_outputOnCase11);
 		break;
 	case m_strCase12:
-		UseOutput(activatorEntity, m_strOnCase12);
+		UseOutput(activatorEntity, m_outputOnCase12);
 		break;
 	case m_strCase13:
-		UseOutput(activatorEntity, m_strOnCase13);
+		UseOutput(activatorEntity, m_outputOnCase13);
 		break;
 	case m_strCase14:
-		UseOutput(activatorEntity, m_strOnCase14);
+		UseOutput(activatorEntity, m_outputOnCase14);
 		break;
 	case m_strCase15:
-		UseOutput(activatorEntity, m_strOnCase15);
+		UseOutput(activatorEntity, m_outputOnCase15);
 		break;
 	case m_strCase16:
-		UseOutput(activatorEntity, m_strOnCase16);
+		UseOutput(activatorEntity, m_outputOnCase16);
 		break;
 	default:
-		UseOutput(activatorEntity, m_strOnDefault);
+		UseOutput(activatorEntity, m_outputOnDefault);
 	}
 }

@@ -213,28 +213,25 @@ public:
 
 private:
 	int m_iEnabled;
-	int m_iShape;
-	int m_iMaterial;
-	int m_iFlags;
-	float m_flInertiaScale;
-	float m_flBuoyancyRatio;
-	bool m_bInvincible;
-	float m_flVolume;
+	int m_desiredGeomtype;
+	int m_surfdataID;
+	int m_physicsFlags;
+	float m_inertiaScale;
+	float m_buoyancyRatio;
+	bool m_physicsGod;
+	float m_overrideVolume;
 	float m_lastTouchTime;
 
 	/* performance sanity checks */
 	vector m_vecPrevOrigin;
 	vector m_vecPrevAngles;
-	float m_flCheckTime;
-	PREDICTED_FLOAT(m_flMass)
-	float m_flEnabledTime;
+	float m_timeSincePhysicsCheck;
+	PREDICTED_FLOAT(m_overrideMass)
 	float m_spawnPhysTime;
-	bool m_bFeedbackSounds;
+	bool m_playingFeedbackSound;
 
 #ifdef SERVER
-	PREDICTED_VECTOR(m_vecNetAngles)
-
-	string m_strOnDamaged;
+	string m_outputOnDamaged;
 	bool m_pvsSleep;
 	nonvirtual void PVSCheck(void);
 #endif

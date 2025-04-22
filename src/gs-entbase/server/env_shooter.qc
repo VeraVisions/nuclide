@@ -108,19 +108,19 @@ env_shooter::Precache(void)
 		through separate soundDef entries but I don't know if that'll be less annoying. */
 	switch (m_flShootSounds) {
 	case 0:	/* glass */
-		Sound_Precache("sfx_impact.glass");
+		precache.Sound("sfx_impact.glass");
 		break;
 	case 1:	/* wood */
-		Sound_Precache("sfx_impact.wood");
+		precache.Sound("sfx_impact.wood");
 		break;
 	case 2:	/* metal */
-		Sound_Precache("sfx_impact.metal");
+		precache.Sound("sfx_impact.metal");
 		break;
 	case 3: /* flesh */
-		Sound_Precache("sfx_impact.flesh");
+		precache.Sound("sfx_impact.flesh");
 		break;
 	case 4:	/* concrete */
-		Sound_Precache("sfx_impact.concrete");
+		precache.Sound("sfx_impact.concrete");
 		break;
 	case -1: /* none */
 	default:
@@ -146,83 +146,83 @@ env_shooter::Save(float handle)
 }
 
 void
-env_shooter::Restore(string strKey, string strValue)
+env_shooter::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_flVariance":
-		m_flVariance = ReadFloat(strValue);
+		m_flVariance = ReadFloat(setValue);
 		break;
 	case "m_flDelay":
-		m_flDelay = ReadFloat(strValue);
+		m_flDelay = ReadFloat(setValue);
 		break;
 	case "m_iGibs":
-		m_iGibs = ReadInt(strValue);
+		m_iGibs = ReadInt(setValue);
 		break;
 	case "m_iGibsLeft":
-		m_iGibsLeft = ReadInt(strValue);
+		m_iGibsLeft = ReadInt(setValue);
 		break;
 	case "m_flVelocity":
-		m_flVelocity = ReadFloat(strValue);
+		m_flVelocity = ReadFloat(setValue);
 		break;
 	case "m_flGibLife":
-		m_flGibLife = ReadFloat(strValue);
+		m_flGibLife = ReadFloat(setValue);
 		break;
 	case "m_strShootModel":
-		m_strShootModel = ReadString(strValue);
+		m_strShootModel = ReadString(setValue);
 		break;
 	case "m_flShootSounds":
-		m_flShootSounds = ReadFloat(strValue);
+		m_flShootSounds = ReadFloat(setValue);
 		break;
 	case "m_flScale":
-		m_flScale = ReadFloat(strValue);
+		m_flScale = ReadFloat(setValue);
 		break;
 	case "m_flSkin":
-		m_flSkin = ReadFloat(strValue);
+		m_flSkin = ReadFloat(setValue);
 		break;
 	case "m_bCanScale":
-		m_bCanScale = ReadBool(strValue);
+		m_bCanScale = ReadBool(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-env_shooter::SpawnKey(string strKey, string strValue)
+env_shooter::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "angle":
-		angles = [ReadFloat(strValue) * 90, 0, 0];
+		angles = [ReadFloat(setValue) * 90, 0, 0];
 		break;
 	case "m_iGibs":
-		m_iGibs = ReadInt(strValue);
+		m_iGibs = ReadInt(setValue);
 		break;
 	case "delay":
-		m_flDelay = ReadFloat(strValue);
+		m_flDelay = ReadFloat(setValue);
 		break;
 	case "m_flVelocity":
-		m_flVelocity = ReadFloat(strValue);
+		m_flVelocity = ReadFloat(setValue);
 		break;
 	case "m_flVariance":
-		m_flVariance = ReadFloat(strValue);
+		m_flVariance = ReadFloat(setValue);
 		break;
 	case "m_flGibLife":
-		m_flGibLife = ReadFloat(strValue);
+		m_flGibLife = ReadFloat(setValue);
 		break;
 	case "shootmodel":
-		m_strShootModel = ReadString(strValue);
+		m_strShootModel = ReadString(setValue);
 		break;
 	case "shootsounds":
-		m_flShootSounds = ReadFloat(strValue);
+		m_flShootSounds = ReadFloat(setValue);
 		break;
 	case "scale":
-		m_flScale = ReadFloat(strValue);
+		m_flScale = ReadFloat(setValue);
 		break;
 	case "skin":
-		m_flSkin = ReadFloat(strValue);
+		m_flSkin = ReadFloat(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
@@ -245,6 +245,7 @@ env_shooter::ShootGib(void)
 	vector vecThrowVel = [0.0f, 0.0f, 0.0f];
 
 	ncRenderableEntity eGib = spawn(ncRenderableEntity);
+	eGib.Spawn();
 	eGib.SetMovetype(MOVETYPE_BOUNCE);
 	eGib.SetModel(m_strShootModel);
 	eGib.SetSize([-8,-8,-8],[8,8,8]);

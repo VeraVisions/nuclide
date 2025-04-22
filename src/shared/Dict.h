@@ -43,6 +43,7 @@ ncDict
 public:
 	void ncDict(void);
 
+	nonvirtual string Name(void);
 	nonvirtual int GetInteger(string);
 	nonvirtual float GetFloat(string);
 	nonvirtual string GetString(string);
@@ -63,6 +64,7 @@ public:
 private:
 	nonvirtual void _AddRemoveKey(string, string, bool);
 	string m_strBody;
+	string m_declPath;
 };
 
 /** @} */ // end of decl

@@ -154,23 +154,23 @@ trigger_camera::ReceiveEntity(float flNew, float flFlags)
 
 #ifdef SERVER
 void
-trigger_camera::SpawnKey(string strKey, string strValue)
+trigger_camera::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "target":
-		m_strAimAt = ReadString(strValue);
+		m_strAimAt = ReadString(setValue);
 		break;
 	case "moveto":
-		m_strMoveTo = ReadString(strValue);
+		m_strMoveTo = ReadString(setValue);
 		break;
 	case "wait":
-		m_flWait = ReadFloat(strValue);
+		m_flWait = ReadFloat(setValue);
 		break;
 	case "speed":
-		m_flSpeed = ReadFloat(strValue);
+		m_flSpeed = ReadFloat(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
@@ -195,26 +195,26 @@ trigger_camera::Save(float handle)
 }
 
 void
-trigger_camera::Restore(string strKey, string strValue)
+trigger_camera::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_flWait":
-		m_flWait = ReadFloat(strValue);
+		m_flWait = ReadFloat(setValue);
 		break;
 	case "m_eLooker":
-		m_eLooker = ReadEntity(strValue);
+		m_eLooker = ReadEntity(setValue);
 		break;
 	case "m_strAimAt":
-		m_strAimAt = ReadString(strValue);
+		m_strAimAt = ReadString(setValue);
 		break;
 	case "m_strMoveTo":
-		m_strMoveTo = ReadString(strValue);
+		m_strMoveTo = ReadString(setValue);
 		break;
 	case "m_flSpeed":
-		m_flInitialSpeed = ReadFloat(strValue);
+		m_flInitialSpeed = ReadFloat(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
@@ -299,8 +299,8 @@ trigger_camera::GoToTarget(void)
 
 	camVelocity = (targetNode.GetOrigin() - GetOrigin());
 
-	if (targetNode.m_flSpeed) {
-		m_flSpeed = targetNode.m_flSpeed;
+	if (targetNode.DesiredTrainSpeed()) {
+		m_flSpeed = targetNode.DesiredTrainSpeed();
 	}
 
 	travelTime = (vlen(camVelocity) / m_flSpeed);
@@ -336,7 +336,7 @@ trigger_camera::NextPath(void)
 	nextNode = (path_corner)find(world, ::targetname, target);
 
 	if (!nextNode) {
-		NSError("Node %S suddenly missing from map!", target);
+		ncError("Node %S suddenly missing from map!", target);
 		return;
 	}
 
@@ -365,8 +365,8 @@ trigger_camera::NextPath(void)
 		return;
 	}
 
-	if (nextNode.m_flWait > 0) {
-		ScheduleThink(GoToTarget, nextNode.m_flWait);
+	if (nextNode.DesiredWaitTime() > 0) {
+		ScheduleThink(GoToTarget, nextNode.DesiredWaitTime());
 	} else {
 		GoToTarget();
 	}
@@ -378,7 +378,7 @@ trigger_camera::Trigger(entity act, triggermode_t state)
 {
 	/* HACK: if we don't have a valid activator... pick the first player we can find */
 	if (!(act.flags & FL_CLIENT)) {
-		act = find(world, ::classname, "player");
+		act = next.Player(world);
 	}
 
 	EntLog("Controlling camera of %S", act.netname);
@@ -438,7 +438,7 @@ trigger_camera::Input(entity eAct, string strInput, string strData)
 		DeactivateCamera();
 		break;
 	case "Toggle":
-		m_bEnabled = (m_bEnabled) ? false : true;
+		#warning Toggle doesn't work
 		break;
 	case "SetTeam":
 		SetTeam(stof(strData));

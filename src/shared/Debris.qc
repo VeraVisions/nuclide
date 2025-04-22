@@ -16,28 +16,40 @@
 
 #ifdef CLIENT
 void
+ncDebris::KeepMoving(void)
+{
+	think = KeepMoving;
+	nextthink = time;
+}
+
+void
 ncDebris::ncDebris(void)
 {
-	m_strImpactDecal = __NULL__;
-	m_flPlaceTime = 0.0f;
+	m_decalImpact = __NULL__;
+	m_timeUntilNextDecalPlacement = 0.0f;
+	touch = _TouchHandler;
+	think = KeepMoving;
+	nextthink = time;
+	dimension_hit = 1;
+	dimension_solid = 255;
 }
 
 void
 ncDebris::Touch(entity touchingEnt)
 {
-	if (m_flPlaceTime > time) {
+	if (m_timeUntilNextDecalPlacement > time) {
 		return;
 	}
 
-	if (STRING_SET(m_strImpactDecal)) {
-		DecalGroups_Place(m_strImpactDecal, origin);
-		m_flPlaceTime = time + 1.0f;
+	if (STRING_SET(m_decalImpact)) {
+		DecalGroups_Place(m_decalImpact, origin);
+		m_timeUntilNextDecalPlacement = time + 1.0f;
 	}
 }
 
 void
 ncDebris::SetImpactDecal(string impactDecal)
 {
-	m_strImpactDecal = impactDecal;
+	m_decalImpact = impactDecal;
 }
 #endif

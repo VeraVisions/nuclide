@@ -73,7 +73,7 @@ public:
 #ifdef CLIENT
 	virtual void OnRemoveEntity(void);
 	virtual void ReceiveEntity(float,float);
-	virtual void RendererRestarted(void);
+	virtual void ReloadVideoResources(void);
 	nonvirtual void LightChanged(float);
 #endif
 
@@ -214,7 +214,7 @@ env_cascade_light::EvaluateEntity(void)
 
 		/* this isn't going to do what we want. remove it altogether. */
 		if (!envLight) {
-			NSError("env_cascade_light unable to find light_environment.\n");
+			ncError("env_cascade_light unable to find light_environment.\n");
 			Destroy();
 			return;
 		}
@@ -306,16 +306,16 @@ env_cascade_light::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_BYTE(m_vecLightColor[1], ENVCASLIGHT_CHANGED_COLOR_Y)
 	READENTITY_BYTE(m_vecLightColor[2], ENVCASLIGHT_CHANGED_COLOR_Z)
 	READENTITY_FLOAT(m_flShadowDistance, ENVCASLIGHT_CHANGED_DISTANCE)
-	
+
 	if (flNew) {
-		RendererRestarted();
+		ReloadVideoResources();
 	} else {
 		LightChanged(flChanged);
 	}
 }
 
 void
-env_cascade_light::RendererRestarted(void)
+env_cascade_light::ReloadVideoResources(void)
 {
 	OnRemoveEntity();
 	m_lightHandle = dynamiclight_spawnstatic(origin, m_flShadowDistance, m_vecLightColor / 255);

@@ -69,7 +69,7 @@ Ammo_Init(void)
 	string ammoTypeData;
 
 	if (ammoTypeID == -1) {
-		NSWarning("Decl `ammo_types` not defined in `def/`. Ammo unavailable.");
+		ncWarning("Decl `ammo_types` not defined in `def/`. Ammo unavailable.");
 		return;
 	}
 

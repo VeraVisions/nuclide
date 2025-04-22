@@ -73,44 +73,42 @@ public:
 	nonvirtual int GetExplosionDamage(void);
 
 private:
-	int m_iMagnitude;
-	int m_flRadiusOverride;
-	bool m_bEnabled;
-	string m_strExplosionParticle;
-	string m_strExplosionSound;
-	int m_iExplosionParticle;
+	int m_explosionMagnitude;
+	int m_explosionRadiusOverride;
+	string m_explosionParticleFX;
+	string m_sndExplosion;
+	int m_explosionParticleID;
 };
 
 void
 env_explosion::env_explosion(void)
 {
-	m_iMagnitude = 0i;
-	m_flRadiusOverride = -1;
-	m_bEnabled = true;
+	m_explosionMagnitude = 0i;
+	m_explosionRadiusOverride = -1;
 
-	m_strExplosionParticle = "fx_explosion.main";
-	m_strExplosionSound = "fx.explosion";
-	m_iExplosionParticle = 0i;
+	m_explosionParticleFX = "fx_explosion.main";
+	m_sndExplosion = "fx.explosion";
+	m_explosionParticleID = 0i;
 }
 
 void
-env_explosion::SpawnKey(string strKey, string strValue)
+env_explosion::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "iMagnitude":
-		m_iMagnitude = ReadInt(strValue);
+		m_explosionMagnitude = ReadInt(setValue);
 		break;
 	case "iRadiusOverride":
-		m_flRadiusOverride = ReadFloat(strValue);
+		m_explosionRadiusOverride = ReadFloat(setValue);
 		break;
 	case "explosion_custom_effect":
-		m_strExplosionParticle = ReadString(strValue);
+		m_explosionParticleFX = ReadString(setValue);
 		break;
 	case "explosion_custom_sound":
-		m_strExplosionSound = ReadString(strValue);
+		m_sndExplosion = ReadString(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
@@ -119,53 +117,49 @@ env_explosion::Spawned(void)
 {
 	super::Spawned();
 
-	m_iExplosionParticle = particleeffectnum(m_strExplosionParticle);
-	Sound_Precache(m_strExplosionSound);
+	m_explosionParticleID = particleeffectnum(m_explosionParticleFX);
+	precache.Sound(m_sndExplosion);
 }
 
 void
 env_explosion::Respawn(void)
 {
 	InitPointTrigger();
-	m_bEnabled = true;
+	SetValue(1i);
 }
 
 void
 env_explosion::Save(float handle)
 {
 	super::Save(handle);
-	SaveInt(handle, "m_iMagnitude", m_iMagnitude);
-	SaveBool(handle, "m_bEnabled", m_bEnabled);
-	SaveFloat(handle, "m_flRadiusOverride", m_flRadiusOverride);
-	SaveString(handle, "m_strExplosionParticle", m_strExplosionParticle);
-	SaveString(handle, "m_strExplosionSound", m_strExplosionSound);
-	SaveInt(handle, "m_iExplosionParticle", m_iExplosionParticle);
+	SaveInt(handle, "m_explosionMagnitude", m_explosionMagnitude);
+	SaveFloat(handle, "m_explosionRadiusOverride", m_explosionRadiusOverride);
+	SaveString(handle, "m_explosionParticleFX", m_explosionParticleFX);
+	SaveString(handle, "m_sndExplosion", m_sndExplosion);
+	SaveInt(handle, "m_explosionParticleID", m_explosionParticleID);
 }
 
 void
-env_explosion::Restore(string strKey, string strValue)
+env_explosion::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
-	case "m_iMagnitude":
-		m_iMagnitude = ReadInt(strValue);
+	case "m_explosionMagnitude":
+		m_explosionMagnitude = ReadInt(setValue);
 		break;
-	case "m_bEnabled":
-		m_bEnabled = ReadBool(strValue);
+	case "m_explosionRadiusOverride":
+		m_explosionRadiusOverride = ReadFloat(setValue);
 		break;
-	case "m_flRadiusOverride":
-		m_flRadiusOverride = ReadFloat(strValue);
+	case "m_explosionParticleFX":
+		m_explosionParticleFX = ReadString(setValue);
 		break;
-	case "m_strExplosionParticle":
-		m_strExplosionParticle = ReadString(strValue);
+	case "m_sndExplosion":
+		m_sndExplosion = ReadString(setValue);
 		break;
-	case "m_strExplosionSound":
-		m_strExplosionSound = ReadString(strValue);
-		break;
-	case "m_iExplosionParticle":
-		m_iExplosionParticle = ReadInt(strValue);
+	case "m_explosionParticleID":
+		m_explosionParticleID = ReadInt(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
@@ -174,7 +168,7 @@ env_explosion::Trigger(entity act, triggermode_t state)
 {
 	bool shouldDamage = true;
 
-	if (m_bEnabled == false) {
+	if (GetValue(this) == false) {
 		return;
 	}
 
@@ -185,10 +179,10 @@ env_explosion::Trigger(entity act, triggermode_t state)
 	}
 
 	/* TODO: Should be pass the nearest surface normal? Just an idea. */
-	pointparticles(m_iExplosionParticle, GetOrigin(), [0,0,0], 1);
+	pointparticles(m_explosionParticleID, GetOrigin(), [0,0,0], 1);
 
 	if (HasSpawnFlags(ENVEXPLO_NOSOUND) == false) {
-		StartSoundDef(m_strExplosionSound, CHAN_BODY, true);
+		StartSoundDef(m_sndExplosion, CHAN_BODY, true);
 	}
 
 	if (shouldDamage == true) {
@@ -202,7 +196,7 @@ env_explosion::Trigger(entity act, triggermode_t state)
 	}
 
 	if (HasSpawnFlags(ENVEXPLO_REPEATABLE) == false) {
-		m_bEnabled = false;
+		SetValue(0i);
 	}
 }
 
@@ -221,11 +215,11 @@ env_explosion::Input(entity entityActivator, string inputName, string dataField)
 float
 env_explosion::GetExplosionRadius(void)
 {
-	return (m_flRadiusOverride == -1) ? (float)m_iMagnitude * 2.5f : m_flRadiusOverride;
+	return (m_explosionRadiusOverride == -1) ? (float)m_explosionMagnitude * 2.5f : m_explosionRadiusOverride;
 }
 
 int
 env_explosion::GetExplosionDamage(void)
 {
-	return (m_iMagnitude);
+	return (m_explosionMagnitude);
 }

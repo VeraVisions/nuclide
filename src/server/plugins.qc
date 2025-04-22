@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2025 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,321 +14,78 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-static plugin_t *g_plugindb;
-static var int g_plugincount;
-
 void
-Plugin_Init(void)
+AddonManager_LoadNamedAddon(string addonName)
 {
-	filestream pdb;
-	string tmp;
-	int i;
+	string addonPath = "";
+	ncAddonDelegate addonEnum = __NULL__;
 
-	if (autocvar_sv_plugins == false) {
-		g_plugins_enabled = true;
-	} else {
-		g_plugins_enabled = false;
+	/* Step 1: Check if our Addon is already in-game */
+	while(addonEnum = AddonManager_NextAddon(addonEnum)) {
+		if (addonEnum.Name() == addonName) {
+			ncError("Addon %S already loaded.", addonName);
+			return;
+		}
+	}
+
+	/* Step 2: Load a new addon module */
+	addonPath = strcat("plugins/", addonName, ".dat");
+	addonEnum = addonEnum.CreateFromProgs(addonName, addprogs(addonPath));
+
+	if (addonEnum == __NULL__) {
+		ncError("Failed to load named addon %S", addonName);
 		return;
 	}
 
-	InitStart();
-
-#warning Read active plugins from cvar instead of a text file, so server admins can change them on the fly
-	pdb = fopen("plugins.txt", FILE_READ);
-
-	if (pdb < 0) {
-		NSWarning("No plugins.txt found. Plugins disabled.\n");
-		g_plugins_enabled = false;
-		InitEnd();
-		return;
-	}
-
-	/* count valid progs */
-	g_plugincount = 0;
-	while ((tmp = fgets(pdb))) {
-		int argc = tokenize_console(tmp);
-
-		/* check for valid entries/comments */
-		if (argc <= 0)
-			continue;
-
-		g_plugincount++;
-	}
-
-	g_plugindb = memalloc(sizeof(plugin_t) * g_plugincount);
-	fseek(pdb, 0);
-	i = 0;
-
-	while ((tmp = fgets(pdb))) {
-		int a = tokenize_console(tmp);
-
-		/* check for valid entries/comments */
-		if (a <= 0)
-			continue;
-
-		g_plugindb[i].m_strPath = strcat("plug_", argv(0), ".dat");
-		g_plugindb[i].m_flProgsID = addprogs(g_plugindb[i].m_strPath);
-		i++;
-	}
-
-	fclose(pdb);
-
-	void(void) vFunc;
-	for (i = 0; i < g_plugincount; i++) {
-		 vFunc = externvalue(g_plugindb[i].m_flProgsID, "Plug_Load");
-
-		if (vFunc) {
-			vFunc();
-		}
-	}
-
-	NSLog("...initialized %i plugins.", g_plugincount);
-	InitEnd();
+	addonEnum.Load();
 }
 
-/*
-=================
-Plugin_Shutdown
+ncAddonDelegate
+AddonManager_NextAddon(ncAddonDelegate addon)
+{
+	return (ncAddonDelegate)find(addon, ::classname, "ncAddonDelegate");
+}
 
-Allows every plugin to properly free and unallocate whatever it is they've done
-=================
-*/
 void
-Plugin_Shutdown(void)
+AddonManager_CloseNamedAddon(string addonName)
 {
-	void(void) vFunc;
+	string addonPath = "";
+	ncAddonDelegate addonEnum = __NULL__;
 
-	if (g_plugincount <= 0)
-		return;
-
-	for (int i = 0; i < g_plugincount; i++) {
-		 vFunc = externvalue(g_plugindb[i].m_flProgsID, "Plug_LevelShutdown");
-
-		if (vFunc) {
-			vFunc();
+	while(addonEnum = AddonManager_NextAddon(addonEnum)) {
+		if (addonEnum.Name() == addonName) {
+			addonEnum.Close();
+			return;
 		}
 	}
 
-	memfree(g_plugindb);
-	g_plugincount = 0;
+	ncError("Addon named %S is not loaded.", addonName);
 }
 
-/*
-=================
-Plugin_InitEnts
-
-Called once entity slots are available for use.
-=================
-*/
 void
-Plugin_InitEnts(void)
+CMD_Addon_f(void)
 {
-	void(void) vFunc;
+	switch (argv(1)) {
+	case "load":
+		AddonManager_LoadNamedAddon(argv(2));
+		break;
+	case "close":
+		AddonManager_CloseNamedAddon(argv(2));
+		break;
+	case "list":
+		ncAddonDelegate addonEnum = __NULL__;
+		int addonCounter = 0i;
 
-	if (g_plugins_enabled == false)
-		return (0);
+		printf("Active addons:\n");
 
-	for (int i = 0; i < g_plugincount; i++) {
-		 vFunc = externvalue(g_plugindb[i].m_flProgsID, "Plug_ServerActivate");
-
-		if (vFunc) {
-			vFunc();
+		while(addonEnum = AddonManager_NextAddon(addonEnum)) {
+			printf("\t%s\n", addonEnum.Name());
+			addonCounter++;
 		}
-	}
-}
 
-/*
-=================
-Plugin_RunClientCommand
-
-Funtion that can interrupt client commands before physics are run
-=================
-*/
-int
-Plugin_RunClientCommand(void)
-{
-	int rval;
-	int tval;
-	int(void) vFunc;
-
-	if (g_plugins_enabled == false)
-		return (0);
-
-	/* rval = final return value, tval = temporary return value.
-	   if at least one of the plugins returns TRUE, then RunClientCommand
-	   will not be called by the engine, as it should be */
-	rval = FALSE;
-	tval = FALSE;
-
-	for (int i = 0; i < g_plugincount; i++) {
-		 vFunc = externvalue(g_plugindb[i].m_flProgsID, "FMX_RunClientCommand");
-
-		if (vFunc) {
-			tval = vFunc();
-			rval |= tval;
-		}
-	}
-
-	return rval;
-}
-
-/*
-=================
-Plugin_ParseClientCommand
-
-Intercepts 'cmd' calls. We use it to intercept
-chat messages and handle distribution ourselves.
-=================
-*/
-string
-Plugin_ParseClientCommand(string msg)
-{
-	string(string msg) vFunc;
-
-	if (g_plugins_enabled == false)
-		return (0);
-
-	for (int i = 0; i < g_plugincount; i++) {
-		 vFunc = externvalue(g_plugindb[i].m_flProgsID, "Plug_ClientCommand");
-
-		if (vFunc) {
-			string new;
-			new = vFunc(msg);
-
-			/* pass valid overrides forward */
-			if (new != __NULL__)
-				msg = new;
-		}
-	}
-
-	return msg;
-}
-
-/*
-=================
-Plugin_PlayerConnect
-
-Called whenever a new client connect to the game
-=================
-*/
-int
-Plugin_PlayerConnect(ncPlayer cl)
-{
-	int rval;
-	int tval;
-	int(entity) vFunc;
-
-	if (g_plugins_enabled == false)
-		return (0);
-
-	/* rval = final return value, tval = temporary return value.
-	   if at least one of the plugins returns TRUE, then RunClientCommand
-	   will not be called by the engine, as it should be */
-	rval = FALSE;
-	tval = FALSE;
-
-	for (int i = 0; i < g_plugincount; i++) {
-		 vFunc = externvalue(g_plugindb[i].m_flProgsID, "Plug_ClientConnect");
-
-		if (vFunc) {
-			tval = vFunc(cl);
-			rval |= tval;
-		}
-	}
-
-	return rval;
-}
-
-/*
-=================
-Plugin_PlayerDisconnect
-
-Called whenever a client leaves the game
-=================
-*/
-int
-Plugin_PlayerDisconnect(ncPlayer cl)
-{
-	int rval;
-	int tval;
-	int(entity) vFunc;
-
-	if (g_plugins_enabled == false)
-		return (0);
-
-	/* rval = final return value, tval = temporary return value.
-	   if at least one of the plugins returns TRUE, then RunClientCommand
-	   will not be called by the engine, as it should be */
-	rval = FALSE;
-	tval = FALSE;
-
-	for (int i = 0; i < g_plugincount; i++) {
-		 vFunc = externvalue(g_plugindb[i].m_flProgsID, "Plug_ClientDisconnect");
-
-		if (vFunc) {
-			tval = vFunc(cl);
-			rval |= tval;
-		}
-	}
-
-	return rval;
-}
-
-/*
-=================
-Plugin_PlayerEntered
-
-Called when a player has fully connected and entered the server
-=================
-*/
-int
-Plugin_PlayerEntered(ncPlayer cl)
-{
-	int rval;
-	int tval;
-	int(entity) vFunc;
-
-	if (g_plugins_enabled == false)
-		return (0);
-
-	/* rval = final return value, tval = temporary return value.
-	   if at least one of the plugins returns TRUE, then RunClientCommand
-	   will not be called by the engine, as it should be */
-	rval = FALSE;
-	tval = FALSE;
-
-	for (int i = 0; i < g_plugincount; i++) {
-		 vFunc = externvalue(g_plugindb[i].m_flProgsID, "Plug_ClientPutInServer");
-
-		if (vFunc) {
-			tval = vFunc(cl);
-			rval |= tval;
-		}
-	}
-
-	return rval;
-}
-
-/*
-=================
-Plugin_PlayerObituary
-
-Deathmessage hook
-=================
-*/
-void
-Plugin_PlayerObituary(entity attk, entity targ, int weapon, bodyType_t body, int dmg)
-{
-	void(entity,entity,int,int,int) vFunc;
-
-	if (g_plugins_enabled == false)
-		return (0);
-
-	for (int i = 0; i < g_plugincount; i++) {
-		 vFunc = externvalue(g_plugindb[i].m_flProgsID, "Plug_ClientbObituary");
-
-		if (vFunc) {
-			vFunc(attk, targ, weapon, body, dmg);
-		}
+		printf("%i addon(s) loaded\n", addonCounter);
+		break;
+	default:
+		printf("Available addon commands: load, close, list\n");
 	}
 }

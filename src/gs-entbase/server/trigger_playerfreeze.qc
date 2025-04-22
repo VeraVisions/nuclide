@@ -53,39 +53,43 @@ trigger_playerfreeze::trigger_playerfreeze(void)
 void
 trigger_playerfreeze::Respawn(void)
 {
-	m_iValue = 0;
+	SetValue(0i);
 }
 
 void
 trigger_playerfreeze::Trigger(entity act, triggermode_t state)
 {
-	if (GetMaster(act) == FALSE)
+	int value = GetValue(this);
+
+	if (GetMaster(act) == false) {
 		return;
+	}
 
-	m_iValue = 1 - m_iValue;
+	value = 1 - value;
 
-	if (m_iValue == 0) {
-		dprint("^2trigger_playerfreeze::^3Trigger^7: " \
-		       "Unfreezing clients\n");
+	if (value == 0) {
+		SetValue(0i);
+		EntLog("Unfreezing players.");
 
 		/* force unfreeze */
-		for (entity f = world; (f = find(f, ::classname, "player"));) {
-			f.vv_flags &= ~VFL_FROZEN;
+		for (entity f = world; (f = next.Player(f));) {
+			f.m_nuclideFlags &= ~VFL_FROZEN;
 		}
 	} else {
-		dprint("^2trigger_playerfreeze::^3Trigger^7: " \
-		       "Freezing clients\n");
+		SetValue(1i);
+		EntLog("Freezing players.");
 	}
 }
 
 void
 trigger_playerfreeze::customphysics(void)
 {
-	if (m_iValue == 0)
+	if (GetValue(this) == 0) {
 		return;
+	}
 
 	/* some games might unset this flag every single frame */
-	for (entity f = world; (f = find(f, ::classname, "player"));) {
-		f.vv_flags |= VFL_FROZEN;
+	for (entity f = world; (f = next.Player(f));) {
+		f.m_nuclideFlags |= VFL_FROZEN;
 	}
 }

@@ -284,24 +284,24 @@ prop_rope::SendEntity(entity ePVEnt, float flSendFlags)
 }
 
 void
-prop_rope::SpawnKey(string strKey, string strValue)
+prop_rope::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "sag":
-		m_flSag = stof(strValue);
+		m_flSag = stof(setValue);
 		break;
 	case "segments":
-		m_iSegments = stoi(strValue);
+		m_iSegments = stoi(setValue);
 		break;
 	case "RopeMaterial":
 	case "shader":
-		m_strShader = strValue;
+		m_strShader = setValue;
 		break;
 	case "swingfactor":
-		m_flSwingFactor = stof(strValue);
+		m_flSwingFactor = stof(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
@@ -318,26 +318,26 @@ prop_rope::Save(float handle)
 }
 
 void
-prop_rope::Restore(string strKey, string strValue)
+prop_rope::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_strShader":
-		m_strShader = ReadString(strValue);
+		m_strShader = ReadString(setValue);
 		break;
 	case "m_flSag":
-		m_flSag = ReadFloat(strValue);
+		m_flSag = ReadFloat(setValue);
 		break;
 	case "m_flSwingFactor":
-		m_flSwingFactor = ReadFloat(strValue);
+		m_flSwingFactor = ReadFloat(setValue);
 		break;
 	case "m_iSegments":
-		m_iSegments = ReadInt(strValue);
+		m_iSegments = ReadInt(setValue);
 		break;
 	case "m_vecTarget":
-		m_vecTarget = ReadVector(strValue);
+		m_vecTarget = ReadVector(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 #endif

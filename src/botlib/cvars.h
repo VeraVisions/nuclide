@@ -18,15 +18,6 @@
     @brief Console variable relating to multiplayer AI.
     @ingroup bot
 
-    The console command `ap_userID` can be used
-    to set certain infokeys of the local user to mimic
-    that of a certain ActivityPub id. An example format
-    would look like: `/ap_userID @johndoe@example.com`
-
-    Currently we're not broadcasting the identity
-    because there's no real way of verifying who
-    you are without a central authority.
-
    @{
 */
 

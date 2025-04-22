@@ -72,31 +72,56 @@ public:
 
 	virtual void PathPassTrigger(entity, triggermode_t);
 
+	nonvirtual float DesiredTrainSpeed(void);
+	nonvirtual float DesiredTrainYawSpeed(void);
+	nonvirtual float DesiredWaitTime(void);
+
 private:
-	int m_iFired;
-	float m_flSpeed;
-	float m_flYawSpeed;
-	float m_flWait;
-	string m_strOnPass;
+	bool m_pathTriggeredTargets;
+	float m_trainSpeed;
+	float m_trainYawSpeed;
+	float m_waitUntilNodeChange;
+	string m_outputOnPass;
+	string m_triggerWhenPassed;
 };
 
 void
 path_corner::path_corner(void)
 {
-	m_iFired = 0i;
-	m_flSpeed = 0.0f;
-	m_flYawSpeed = 0.0f;
-	m_flWait = 0.0f;
-	m_strOnPass = __NULL__;
+	m_pathTriggeredTargets = false;
+	m_trainSpeed = 0.0f;
+	m_trainYawSpeed = 0.0f;
+	m_waitUntilNodeChange = 0.0f;
+	m_outputOnPass = __NULL__;
 }
+
+float
+path_corner::DesiredTrainSpeed(void)
+{
+	return (m_trainSpeed);
+}
+
+float
+path_corner::DesiredTrainYawSpeed(void)
+{
+	return (m_trainYawSpeed);
+}
+
+
+float
+path_corner::DesiredWaitTime(void)
+{
+	return (m_waitUntilNodeChange);
+}
+
 
 void
 path_corner::Spawned(void)
 {
 	super::Spawned();
 
-	if (STRING_SET(m_strOnPass))
-		m_strOnPass = CreateOutput(m_strOnPass);
+	if (STRING_SET(m_outputOnPass))
+		m_outputOnPass = CreateOutput(m_outputOnPass);
 }
 
 string
@@ -153,59 +178,63 @@ void
 path_corner::Save(float handle)
 {
 	super::Save(handle);
-	SaveInt(handle, "m_iFired", m_iFired);
-	SaveFloat(handle, "m_flSpeed", m_flSpeed);
-	SaveFloat(handle, "m_flYawSpeed", m_flYawSpeed);
-	SaveFloat(handle, "m_flWait", m_flWait);
-	SaveString(handle, "m_strOnPass", m_strOnPass);
+	SaveBool(handle, "m_pathTriggeredTargets", m_pathTriggeredTargets);
+	SaveFloat(handle, "m_trainSpeed", m_trainSpeed);
+	SaveFloat(handle, "m_trainYawSpeed", m_trainYawSpeed);
+	SaveFloat(handle, "m_waitUntilNodeChange", m_waitUntilNodeChange);
+	SaveString(handle, "m_outputOnPass", m_outputOnPass);
+	SaveString(handle, "m_triggerWhenPassed", m_triggerWhenPassed);
 }
 
 void
-path_corner::Restore(string strKey, string strValue)
+path_corner::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
-	case "m_iFired":
-		m_iFired = ReadInt(strValue);
+	case "m_pathTriggeredTargets":
+		m_pathTriggeredTargets = ReadBool(setValue);
 		break;
-	case "m_flSpeed":
-		m_flSpeed = ReadFloat(strValue);
+	case "m_trainSpeed":
+		m_trainSpeed = ReadFloat(setValue);
 		break;
-	case "m_flYawSpeed":
-		m_flYawSpeed = ReadFloat(strValue);
+	case "m_trainYawSpeed":
+		m_trainYawSpeed = ReadFloat(setValue);
 		break;
-	case "m_flWait":
-		m_flWait = ReadFloat(strValue);
+	case "m_waitUntilNodeChange":
+		m_waitUntilNodeChange = ReadFloat(setValue);
 		break;
-	case "m_strOnPass":
-		m_strOnPass = ReadString(strValue);
+	case "m_outputOnPass":
+		m_outputOnPass = ReadString(setValue);
+		break;
+	case "m_triggerWhenPassed":
+		m_triggerWhenPassed = ReadString(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-path_corner::SpawnKey(string strKey, string strValue)
+path_corner::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "speed":
-		m_flSpeed = ReadFloat(strValue);
+		m_trainSpeed = ReadFloat(setValue);
 		break;
 	case "yaw_speed":
-		m_flYawSpeed = ReadFloat(strValue);
+		m_trainYawSpeed = ReadFloat(setValue);
 		break;
 	case "wait":
-		m_flWait = ReadFloat(strValue);
+		m_waitUntilNodeChange = ReadFloat(setValue);
 		break;
 	case "message":
-		m_strMessage = ReadString(strValue);
+		m_triggerWhenPassed = ReadString(setValue);
 		break;
 	/* I/O system */
 	case "OnPass":
-		m_strOnPass = PrepareOutput(m_strOnPass, strValue);
+		m_outputOnPass = PrepareOutput(m_outputOnPass, setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
@@ -216,11 +245,11 @@ path_corner::Respawn(void)
 
 #ifdef DEVELOPER
 	if (autocvar_dev_cornerspeed != 0) {
-		m_flSpeed = autocvar_dev_cornerspeed;
+		m_trainSpeed = autocvar_dev_cornerspeed;
 	}
 #endif
 
-	m_iFired = FALSE;
+	m_pathTriggeredTargets = false;
 }
 
 void
@@ -232,7 +261,7 @@ path_corner::Trigger(entity act, triggermode_t state)
 void
 path_corner::PathPassTrigger(entity activatingEntity, triggermode_t triggerMode)
 {
-	if (HasSpawnFlags(PC_FIREONCE) && m_iFired) {
+	if (HasSpawnFlags(PC_FIREONCE) && m_pathTriggeredTargets) {
 		EntLog("tried to fire more than once");
 		return;
 	}
@@ -240,13 +269,15 @@ path_corner::PathPassTrigger(entity activatingEntity, triggermode_t triggerMode)
 	EntLog("%S (%d) has passed us.", \
 		activatingEntity.classname, num_for_edict(activatingEntity));
 
-	UseOutput(this, m_strOnPass);
+	UseOutput(this, m_outputOnPass);
+	m_pathTriggeredTargets = true;
 
 	/* never trigger "" */
-	if (!m_strMessage || m_strMessage == "")
+	if (!STRING_SET(m_triggerWhenPassed)) {
 		return;
+	}
 
-	for (entity f = world; (f = find(f, ::targetname, m_strMessage));) {
+	for (entity f = world; (f = find(f, ::targetname, m_triggerWhenPassed));) {
 		ncTrigger trigger = (ncTrigger)f;
 
 		EntLog("Triggering %s `%s` from %s", f.classname, \

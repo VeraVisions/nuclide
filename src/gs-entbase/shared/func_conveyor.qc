@@ -106,29 +106,29 @@ func_conveyor::Save(float handle)
 }
 
 void
-func_conveyor::Restore(string strKey, string strValue)
+func_conveyor::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_flSpeed":
-		m_flSpeed = ReadFloat(strValue);
+		m_flSpeed = ReadFloat(setValue);
 		break;
 	case "m_vecMoveDir":
-		m_vecMoveDir = ReadVector(strValue);
+		m_vecMoveDir = ReadVector(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-func_conveyor::SpawnKey(string strKey, string strValue)
+func_conveyor::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "speed":
-		m_flSpeed = stof(strValue);
+		m_flSpeed = stof(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 		break;
 	}
 }
@@ -233,15 +233,15 @@ func_conveyor::EvaluateEntity(void)
 	EVALUATE_VECTOR(avelocity, 0, CONVEYOR_CHANGED_ANGULARVELOCITY)
 	EVALUATE_VECTOR(avelocity, 1, CONVEYOR_CHANGED_ANGULARVELOCITY)
 	EVALUATE_VECTOR(avelocity, 2, CONVEYOR_CHANGED_ANGULARVELOCITY)
-	EVALUATE_FIELD(m_iRenderMode, CONVEYOR_CHANGED_RENDERMODE)
-	EVALUATE_FIELD(m_iRenderFX, CONVEYOR_CHANGED_RENDERMODE)
-	EVALUATE_VECTOR(m_vecRenderColor, 0, CONVEYOR_CHANGED_RENDERCOLOR)
-	EVALUATE_VECTOR(m_vecRenderColor, 1, CONVEYOR_CHANGED_RENDERCOLOR)
-	EVALUATE_VECTOR(m_vecRenderColor, 2, CONVEYOR_CHANGED_RENDERCOLOR)
+	EVALUATE_FIELD(m_renderMode, CONVEYOR_CHANGED_RENDERMODE)
+	EVALUATE_FIELD(m_renderFX, CONVEYOR_CHANGED_RENDERMODE)
+	EVALUATE_VECTOR(m_renderColor, 0, CONVEYOR_CHANGED_RENDERCOLOR)
+	EVALUATE_VECTOR(m_renderColor, 1, CONVEYOR_CHANGED_RENDERCOLOR)
+	EVALUATE_VECTOR(m_renderColor, 2, CONVEYOR_CHANGED_RENDERCOLOR)
 	EVALUATE_VECTOR(glowmod, 0, CONVEYOR_CHANGED_RENDERCOLOR)
 	EVALUATE_VECTOR(glowmod, 1, CONVEYOR_CHANGED_RENDERCOLOR)
 	EVALUATE_VECTOR(glowmod, 2, CONVEYOR_CHANGED_RENDERCOLOR)
-	EVALUATE_FIELD(m_flRenderAmt, CONVEYOR_CHANGED_RENDERAMT)
+	EVALUATE_FIELD(m_renderAmount, CONVEYOR_CHANGED_RENDERAMT)
 	EVALUATE_FIELD(m_flSpeed, CONVEYOR_CHANGED_SPEED)
 	EVALUATE_VECTOR(m_vecMoveDir, 0, CONVEYOR_CHANGED_MOVEDIR)
 	EVALUATE_VECTOR(m_vecMoveDir, 1, CONVEYOR_CHANGED_MOVEDIR)
@@ -268,7 +268,7 @@ func_conveyor::SendEntity(entity ePEnt, float flChanged)
 		}
 
 		/* no rendermode means no extra fields */
-		if (m_iRenderMode == RM_NORMAL && m_iRenderFX == RFX_NORMAL) {
+		if (m_renderMode == RM_NORMAL && m_renderFX == RFX_NORMAL) {
 			flChanged &= ~CONVEYOR_CHANGED_RENDERMODE;
 			//flChanged &= ~CONVEYOR_CHANGED_RENDERCOLOR; /* glowmod needs this */
 			flChanged &= ~CONVEYOR_CHANGED_RENDERAMT;
@@ -302,16 +302,16 @@ func_conveyor::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_COORD(avelocity[0], CONVEYOR_CHANGED_ANGULARVELOCITY)
 	SENDENTITY_COORD(avelocity[1], CONVEYOR_CHANGED_ANGULARVELOCITY)
 	SENDENTITY_COORD(avelocity[2], CONVEYOR_CHANGED_ANGULARVELOCITY)
-	SENDENTITY_BYTE(m_iRenderMode, CONVEYOR_CHANGED_RENDERMODE)
-	SENDENTITY_BYTE(m_iRenderFX, CONVEYOR_CHANGED_RENDERMODE)
-	SENDENTITY_BYTE(m_vecRenderColor[0], CONVEYOR_CHANGED_RENDERCOLOR)
-	SENDENTITY_BYTE(m_vecRenderColor[1], CONVEYOR_CHANGED_RENDERCOLOR)
-	SENDENTITY_BYTE(m_vecRenderColor[2], CONVEYOR_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_renderMode, CONVEYOR_CHANGED_RENDERMODE)
+	SENDENTITY_BYTE(m_renderFX, CONVEYOR_CHANGED_RENDERMODE)
+	SENDENTITY_BYTE(m_renderColor[0], CONVEYOR_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_renderColor[1], CONVEYOR_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_renderColor[2], CONVEYOR_CHANGED_RENDERCOLOR)
 	/* these need more precision for shader hacks... */
 	SENDENTITY_FLOAT(glowmod[0], CONVEYOR_CHANGED_RENDERCOLOR)
 	SENDENTITY_FLOAT(glowmod[1], CONVEYOR_CHANGED_RENDERCOLOR)
 	SENDENTITY_FLOAT(glowmod[2], CONVEYOR_CHANGED_RENDERCOLOR)
-	SENDENTITY_BYTE(m_flRenderAmt, CONVEYOR_CHANGED_RENDERAMT)
+	SENDENTITY_BYTE(m_renderAmount, CONVEYOR_CHANGED_RENDERAMT)
 	SENDENTITY_FLOAT(m_flSpeed, CONVEYOR_CHANGED_SPEED)
 	SENDENTITY_FLOAT(m_vecMoveDir[0], CONVEYOR_CHANGED_MOVEDIR)
 	SENDENTITY_FLOAT(m_vecMoveDir[1], CONVEYOR_CHANGED_MOVEDIR)
@@ -349,23 +349,24 @@ func_conveyor::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_COORD(avelocity[0], CONVEYOR_CHANGED_ANGULARVELOCITY)
 	READENTITY_COORD(avelocity[1], CONVEYOR_CHANGED_ANGULARVELOCITY)
 	READENTITY_COORD(avelocity[2], CONVEYOR_CHANGED_ANGULARVELOCITY)
-	READENTITY_BYTE(m_iRenderMode, CONVEYOR_CHANGED_RENDERMODE)
-	READENTITY_BYTE(m_iRenderFX, CONVEYOR_CHANGED_RENDERMODE)
-	READENTITY_BYTE(m_vecRenderColor[0], CONVEYOR_CHANGED_RENDERCOLOR)
-	READENTITY_BYTE(m_vecRenderColor[1], CONVEYOR_CHANGED_RENDERCOLOR)
-	READENTITY_BYTE(m_vecRenderColor[2], CONVEYOR_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_renderMode, CONVEYOR_CHANGED_RENDERMODE)
+	READENTITY_BYTE(m_renderFX, CONVEYOR_CHANGED_RENDERMODE)
+	READENTITY_BYTE(m_renderColor[0], CONVEYOR_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_renderColor[1], CONVEYOR_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_renderColor[2], CONVEYOR_CHANGED_RENDERCOLOR)
 	/* these need more precision for shader hacks... */
 	READENTITY_FLOAT(glowmod[0], CONVEYOR_CHANGED_RENDERCOLOR)
 	READENTITY_FLOAT(glowmod[1], CONVEYOR_CHANGED_RENDERCOLOR)
 	READENTITY_FLOAT(glowmod[2], CONVEYOR_CHANGED_RENDERCOLOR)
-	READENTITY_BYTE(m_flRenderAmt, CONVEYOR_CHANGED_RENDERAMT)
+	READENTITY_BYTE(m_renderAmount, CONVEYOR_CHANGED_RENDERAMT)
 	READENTITY_FLOAT(m_flSpeed, CONVEYOR_CHANGED_SPEED)
 	READENTITY_FLOAT(m_vecMoveDir[0], CONVEYOR_CHANGED_MOVEDIR)
 	READENTITY_FLOAT(m_vecMoveDir[1], CONVEYOR_CHANGED_MOVEDIR)
 	READENTITY_FLOAT(m_vecMoveDir[2], CONVEYOR_CHANGED_MOVEDIR)
 
-	if (flChanged & CONVEYOR_CHANGED_SIZE)
+	if (flChanged & CONVEYOR_CHANGED_SIZE) {
 		setsize(this, mins, maxs);
+	}
 
 	setorigin(this, origin);
 }
@@ -374,12 +375,15 @@ func_conveyor::ReceiveEntity(float flNew, float flChanged)
 void
 func_conveyor::Touch(entity eToucher)
 {
-	if (HasSpawnFlags(SF_CONVEYOR_VISUAL))
-		return;
+	ncPlayer ourPlayer = (ncPlayer)eToucher;
 
-	if (isSentient(eToucher) == false) {
+	if (HasSpawnFlags(SF_CONVEYOR_VISUAL)) {
 		return;
 	}
 
-	eToucher.basevelocity = m_vecMoveDir * (m_flSpeed);
+	if (is.Sentient(eToucher) == false) {
+		return;
+	}
+
+	ourPlayer.m_pmoveBaseVelocity = m_vecMoveDir * (m_flSpeed);
 }

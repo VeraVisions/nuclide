@@ -67,7 +67,7 @@ Bot_KillAllBots(void)
 {
 	entity oldSelf = self;
 
-	for ( other = world; ( other = find( other, classname, "player" ) ); ) {
+	for ( other = world; ( other = next.Player(other) ); ) {
 		if ( clienttype( other ) == CLIENTTYPE_BOT ) {
 			self = other;
 			ClientKill();
@@ -80,7 +80,7 @@ Bot_KillAllBots(void)
 void
 Bot_ResetAllBotsGoals(void)
 {
-	for ( other = world; ( other = find( other, classname, "player" ) ); ) {
+	for ( other = world; ( other = next.Player(other) ); ) {
 		if ( clienttype( other ) == CLIENTTYPE_BOT ) {
 			ncBot theBot = (ncBot)other;
 			theBot.SetEnemy(__NULL__);

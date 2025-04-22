@@ -65,7 +65,7 @@ PMoveCustom_Categorize(void)
 			self.groundentity = trace_ent;
 
 			//if (self.groundentity) {
-			//	self.basevelocity += self.groundentity.velocity;
+			//	self.m_pmoveBaseVelocity += self.groundentity.velocity;
 			//}
 		} else {
 			self.flags &= ~FL_ONGROUND;
@@ -77,7 +77,7 @@ PMoveCustom_Categorize(void)
 
 	self.flags &= ~FL_WATERJUMP;
 
-	/*if (self.basevelocity[2] > 0)
+	/*if (self.m_pmoveBaseVelocity[2] > 0)
 		self.flags &= ~FL_ONGROUND;*/
 
 	/* ladder content testing */
@@ -110,9 +110,9 @@ PMoveCustom_Categorize(void)
 #else
 	if (trace_endcontentsi & CONTENTBIT_FTELADDER) {
 #endif
-		self.vv_flags |= VFL_ONLADDER;
+		self.m_nuclideFlags |= VFL_ONLADDER;
 	} else {
-		self.vv_flags &= ~VFL_ONLADDER;
+		self.m_nuclideFlags &= ~VFL_ONLADDER;
 	}
 
 	testPos = self.origin + [0, 0, self.mins[2] + 4];
@@ -129,7 +129,7 @@ PMoveCustom_Categorize(void)
 	}
 
 	/* how far underwater are we? */
-	if (contents < CONTENT_SOLID && !(self.vv_flags & VFL_ONLADDER)) {
+	if (contents < CONTENT_SOLID && !(self.m_nuclideFlags & VFL_ONLADDER)) {
 		self.watertype = contents;
 
 		if (PMoveCustom_Contents(self.origin + (self.mins + self.maxs) * 0.5) 
@@ -374,9 +374,10 @@ PMoveCustom_Acceleration(float move_time, float premove)
 	vector vecWishVel;
 	vector wish_dir;
 	float wish_speed;
+	ncPlayer pl = (ncPlayer)self;
 
-	self.jumptime -= move_time;
-	self.teleport_time -= move_time;
+	pl.m_timeSinceJump -= move_time;
+	pl.m_timeSinceTeleport -= move_time;
 
 	makevectors(input_angles);
 
@@ -384,13 +385,13 @@ PMoveCustom_Acceleration(float move_time, float premove)
 	PMoveCustom_Categorize();
 
 	/* everything but MOVETYPE_NOCLIP has acceleration */
-	if (self.movetype != MOVETYPE_NOCLIP) {
-		if (self.movetype == MOVETYPE_TOSS) {
+	if (pl.movetype != MOVETYPE_NOCLIP) {
+		if (pl.movetype == MOVETYPE_TOSS) {
 			PMoveCustom_AccelToss(move_time, premove);
 			return;
 		}
 
-		if (self.waterlevel >= 2) {
+		if (pl.waterlevel >= 2) {
 			PMoveCustom_AccelWater(move_time, premove);
 			return;
 		}
@@ -404,17 +405,17 @@ PMoveCustom_Acceleration(float move_time, float premove)
 		return;
 	}
 
-	/*if (self.teleport_time > 0 && input_movevalues[0] < 0) {
+	/*if (pl.m_timeSinceTeleport > 0 && input_movevalues[0] < 0) {
 		vecWishVel = v_right * input_movevalues[1];
 	} else */ {
 		/* on the ground, only yaw matters in terms of direction */
-		if (self.flags & FL_ONGROUND) {
+		if (pl.flags & FL_ONGROUND) {
 			makevectors(input_angles[1] * [0,1,0]);
 		}
 		vecWishVel = v_forward * input_movevalues[0] + v_right * input_movevalues[1];
 	}
 
-	if (self.movetype != MOVETYPE_WALK) {
+	if (pl.movetype != MOVETYPE_WALK) {
 		vecWishVel[2] += input_movevalues[2];
 	} else {
 		vecWishVel[2] = 0;
@@ -423,13 +424,13 @@ PMoveCustom_Acceleration(float move_time, float premove)
 	wish_dir = normalize(vecWishVel);
 	wish_speed = vlen(vecWishVel);
 
-	if (g_pmoveVars.pm_nospeedcap == 0 && wish_speed > self.maxspeed) {
-		wish_speed = self.maxspeed;
+	if (g_pmoveVars.pm_nospeedcap == 0 && wish_speed > pl.maxspeed) {
+		wish_speed = pl.maxspeed;
 	}
 
-	if (self.vv_flags & VFL_ONLADDER) {
+	if (pl.m_nuclideFlags & VFL_ONLADDER) {
 		PMoveCustom_AccelLadder(move_time, premove, wish_dir, wish_speed);
-	} else if (self.flags & FL_ONGROUND) {
+	} else if (pl.flags & FL_ONGROUND) {
 		PMoveCustom_AccelFriction(move_time, premove, wish_dir, wish_speed);
 	} else {
 		PMoveCustom_AccelGravity(move_time, premove, wish_dir, wish_speed);
@@ -547,14 +548,13 @@ PMoveCustom_Move(void)
 	 * so we need at 2 attempts */
 	for (i = 3, move_time = input_timelength; move_time > 0 && i; i--) {
 		dest = self.origin + (self.velocity * move_time);
-		dest += (self.basevelocity * move_time);
-		//print(sprintf("basevel: %v\n", self.basevelocity));
+		dest += (self.m_pmoveBaseVelocity * move_time);
+		//print(sprintf("basevel: %v\n", self.m_pmoveBaseVelocity));
 
 		tracebox(self.origin, self.mins, self.maxs, dest, MOVE_NORMAL, self);
 
 		if (trace_startsolid) {
 			if (!PMoveCustom_Fix_Origin()) {
-				dprint(sprintf("%s PHYSICS ERROR: We are stuck!\n", self.classname));
 				return;
 			}
 			continue;
@@ -590,11 +590,11 @@ PMoveCustom_Move(void)
 			vector roof_plane_normal = trace_plane_normal;
 
 			dest = trace_endpos + (self.velocity * move_time);
-			dest += (self.basevelocity * move_time);
+			dest += (self.m_pmoveBaseVelocity * move_time);
 			dest[2] = trace_endpos[2]; /*only horizontally*/
 	
 			/* clear base-velocity */
-			self.basevelocity = [0,0,0];
+			self.m_pmoveBaseVelocity = [0,0,0];
 
 			/* move forwards */
 			tracebox(trace_endpos, self.mins, self.maxs, dest, MOVE_NORMAL, self);
@@ -635,7 +635,7 @@ PMoveCustom_Move(void)
 
 		/* stepping failed, just bounce off */
 		PMoveCustom_Rebound(saved_plane);
-		PMoveCustom_DoTouch(trace_ent);	/* this is where basevelocity might get set */
+		PMoveCustom_DoTouch(trace_ent);	/* this is where m_pmoveBaseVelocity might get set */
 	}
 
 	/* touch whatever is below */
@@ -721,20 +721,20 @@ PMoveCustom_RunCrouchPhysics(entity target)
 #if 0
 	int iFixCrouch = FALSE;
 	if (input_buttons & INPUT_CROUCH) {
-		target.vv_flags |= VFL_CROUCHING;
+		target.m_nuclideFlags |= VFL_CROUCHING;
 	} else {	
 		// If we aren't holding down duck anymore and 'attempt' to stand up, prevent it
-		if (target.vv_flags & VFL_CROUCHING) {
+		if (target.m_nuclideFlags & VFL_CROUCHING) {
 			if (PMove_IsStuck(target, [0,0,36], g_pmoveVars.GetStandingMins(),  g_pmoveVars.GetStandingMaxs()) == false) {
-				target.vv_flags &= ~VFL_CROUCHING;
+				target.m_nuclideFlags &= ~VFL_CROUCHING;
 				iFixCrouch = TRUE;
 			}
 		} else {
-			target.vv_flags &= ~VFL_CROUCHING;
+			target.m_nuclideFlags &= ~VFL_CROUCHING;
 		}
 	}
 
-	if (target.vv_flags & VFL_CROUCHING) {
+	if (target.m_nuclideFlags & VFL_CROUCHING) {
 		setsize(target, PHY_HULL_CROUCHED_MIN, PHY_HULL_CROUCHED_MAX);
 		target.view_ofs = PHY_VIEWPOS_CROUCHED;
 	} else {

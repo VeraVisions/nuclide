@@ -1,5 +1,6 @@
 
 var float g_flHUDProgs;
+var void(void) g_hudMain;
 var void(void) g_hudInit;
 var void(void) g_hudDraw;
 var void(void) g_hudDrawSpectator;
@@ -8,8 +9,10 @@ var void(string) g_hudSwitchedWeapon;
 var void(string) g_hudPickedUpItem;
 var float(float) g_hudInputFrame;
 var bool(string) g_hudConsoleCommand;
-var void(void) g_hudRendererRestarted;
+var void(string, string, string, string) g_hudObituary;
+var void(void) g_hudReloadVideoResources;
 var void(vector, int, int) g_hudDamageReceived;
+var void(int, int, int) g_hudAmmoChanged;
 
 void
 HUDProgs_Init(void)
@@ -22,31 +25,39 @@ HUDProgs_Init(void)
 	g_flHUDProgs = addprogs("hud.dat");
 
 	if (g_flHUDProgs > 0) {
-		g_hudInit = externvalue(g_flHUDProgs, "main");
+		g_hudMain = externvalue(g_flHUDProgs, "main");
+		g_hudInit = externvalue(g_flHUDProgs, "HUD_Init");
 		g_hudDraw = externvalue(g_flHUDProgs, "HUD_Draw");
 		g_hudDrawSpectator = externvalue(g_flHUDProgs, "HUD_DrawSpectator");
 		g_hudSendStat = externvalue(g_flHUDProgs, "HUD_SendStat");
 		g_hudSwitchedWeapon = externvalue(g_flHUDProgs, "HUD_WeaponSwitched");
 		g_hudInputFrame = externvalue(g_flHUDProgs, "HUD_InputFrame");
 		g_hudConsoleCommand = externvalue(g_flHUDProgs, "HUD_ConsoleCommand");
-		g_hudRendererRestarted = externvalue(g_flHUDProgs, "HUD_RendererRestarted");
+		g_hudReloadVideoResources = externvalue(g_flHUDProgs, "HUD_ReloadVideoResources");
 		g_hudPickedUpItem = externvalue(g_flHUDProgs, "HUD_PickedUpItem");
 		g_hudDamageReceived = externvalue(g_flHUDProgs, "HUD_DamageReceived");
+		g_hudAmmoChanged = externvalue(g_flHUDProgs, "HUD_AmmoChanged");
+		g_hudObituary = externvalue(g_flHUDProgs, "HUD_Obituary");
+
+		if (g_hudMain) {
+			g_hudMain();
+		} else {
+			ncError("HUD progs does not have a main function.");
+			return;
+		}
 
 		if (g_hudInit) {
 			g_hudInit();
-		} else {
-			NSError("HUD progs does not have a main function.");
 		}
 	}
 }
 
 void
-HUDProgs_RendererRestarted(void)
+HUDProgs_ReloadVideoResources(void)
 {
 	if (g_flHUDProgs > 0) {
-		if (g_hudRendererRestarted) {
-			g_hudRendererRestarted();
+		if (g_hudReloadVideoResources) {
+			g_hudReloadVideoResources();
 		}
 	}
 }
@@ -139,15 +150,35 @@ HUDProgs_DamageReceived(vector damagePos, int damagePoints, int damageFlags)
 }
 
 __weak void
+HUDProgs_Obituary(string targetName, string attackerName, string weaponDef, string meansOfDeath)
+{
+	if (g_flHUDProgs > 0) {
+		if (g_hudObituary) {
+			g_hudObituary(targetName, attackerName, weaponDef, meansOfDeath);
+		}
+	}
+}
+
+void
+HUDProgs_AmmoChanged(int ammoType, int absoluteValue, int deltaValue)
+{
+	if (g_flHUDProgs > 0) {
+		if (g_hudAmmoChanged) {
+			g_hudAmmoChanged(ammoType, absoluteValue, deltaValue);
+		}
+	}
+}
+
+__weak void
 HUD_Init(void)
 {
 	HUDProgs_Init();
 }
 
 __weak void
-HUD_RendererRestarted(void)
+HUD_ReloadVideoResources(void)
 {
-	HUDProgs_RendererRestarted();
+	HUDProgs_ReloadVideoResources();
 }
 
 __weak void
@@ -180,6 +211,12 @@ HUD_PickedUpItem(string itemName)
 	HUDProgs_PickedUpItem(itemName);
 }
 
+__weak void
+HUD_AmmoChanged(int ammoType, int absoluteValue, int deltaValue)
+{
+	HUDProgs_AmmoChanged(ammoType, absoluteValue, deltaValue);
+}
+
 __weak float
 HUD_ClientInputFrame(float inputButtons)
 {
@@ -196,4 +233,10 @@ __weak void
 HUD_DamageReceived(vector damagePos, int damagePoints, int damageFlags)
 {
 	HUDProgs_DamageReceived(damagePos, damagePoints, damageFlags);
+}
+
+__weak void
+HUD_Obituary(string targetName, string attackerName, string weaponDef, string meansOfDeath)
+{
+	HUDProgs_Obituary(targetName, attackerName, weaponDef, meansOfDeath);
 }

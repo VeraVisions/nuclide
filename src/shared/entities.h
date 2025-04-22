@@ -60,6 +60,7 @@ typedef enum
 	ENT_SPOTLIGHT, /**< of type point_spotlight */
 	ENT_FOG,			/**< of type env_fog */
 	ENT_STEAM,	/**< of type env_steam */
+	ENT_RAIN,	/**< of type env_rain */
 	ENT_FOGCONTROLLER, /**< of type env_fog_controller */
 	ENT_CASCADELIGHT, /**< of type env_cascade_light */
 	ENT_LASER,	/**< of type env_laser */
@@ -127,7 +128,7 @@ Entity_SelectRandom(string className)
 
 	/* immediately exit out if we've got none */
 	if (max < 1i) {
-		NSError("%S is not present on this map.", className);
+		ncError("%S is not present on this map.", className);
 		return __NULL__;
 	}
 

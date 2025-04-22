@@ -27,7 +27,7 @@ __variant
 Saves_GetInfo(int saveID, saveInfo_t saveInfo)
 {
 	if (saveID >= g_savegame_count || saveID < 0i) {
-		NSError("Invalid save id %i", saveID);
+		ncError("Invalid save id %i", saveID);
 		return __NULL__;
 	}
 

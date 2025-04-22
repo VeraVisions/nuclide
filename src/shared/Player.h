@@ -21,6 +21,42 @@ noref .vector v_angle;
 When clients connect via the connect command, they will findthemselves
 of type ncPlayer.
 
+# KEYS
+- "armorProtection" : Amount of damage the armor absorbs.
+- "armorBonus" : Armor point cost per health point.
+- "pm_accelerate" : Movement speed acceleration.
+- "pm_airaccelerate" : Movement speed acceleration when in air.
+- "pm_airstepsize" : In-air stepping size. You will be able to climb stair-steps this high.
+- "pm_boxcenter" : When 1, will indicate that the [0,0,0] coordinate is at the center of the bounding box.
+- "pm_boxwidth" : Width of the bounding box, in in-game units.
+- "pm_crouchheight" : Physical height when crouched.
+- "pm_crouchspeed" : Movement speed when crouched.
+- "pm_crouchviewheight" : Eye height from local [0,0,0] player coordinate when crouched.
+- "pm_edgefriction" : Friction value to use when near edges, helps to prevent falling off ledges.
+- "pm_friction" : Friction value for when walking on ground.
+- "pm_gravity" : Gravity for this player.
+- "pm_jumpheight" : Jump height (vertical upwards velocity, units per second) the player can perform.
+- "pm_maxviewpitch" : Maximum camera pitch.
+- "pm_minviewpitch" : Minimum camera pitch.
+- "pm_noclipaccelerate" : Movement speed acceleration when noclip/spectating.
+- "pm_noclipspeed" : Movement speed when noclip/spectating.
+- "pm_normalheight" : Physical height when standing.
+- "pm_normalviewheight" : Eye height from local [0,0,0] player coordinate when standing.
+- "pm_nospeedcap" : When 1, will enable limit-less bunnyhopping exploits.
+- "pm_proneheight" : Physical height when prone.
+- "pm_pronespeed" : Movement speed when prone.
+- "pm_proneviewheight" : Eye height from local [0,0,0] player coordinate when prone.
+- "pm_runspeed" : Movement speed when running.
+- "pm_runfiring" : When 1, will enable firing weapons while running.
+- "pm_stamina" : Stamina, the number of seconds you're able to run.
+- "pm_staminarate" : The rate at which stamina replenishes.
+- "pm_staminathreshold" : The stamina-value at which speed will be reduced.
+- "pm_stepsize" : Stepping size. You will be able to climb stair-steps this high.
+- "pm_stopspeed" : The speed at which the player stops moving.
+- "pm_walkspeed" : Movement speed when walking (regular movement).
+- "pm_wateraccelerate" : Movement speed acceleration, when underwater.
+- "pm_waterjumpheight" : Jump height when underwater.
+
 @ingroup baseclass
 */
 class
@@ -124,20 +160,20 @@ public:
 
 #endif
 
+	nonvirtual float WeaponAnimTime(void);
+
 	virtual void Footsteps_Update(void);
 
+private:
 	nonvirtual void _UpdatePMoveVars(void);
 
-private:
-
 #ifdef CLIENT
-	NETWORKED_INT(weaponframe)
+	NETWORKED_INT(m_weaponAnimSequence)
 	NETWORKED_FLOAT(vehicle_entnum)
 #endif
 
 #ifdef SERVER
-	NETWORKED_INT_N(weaponframe)
-	float nadeCookingTime;
+	float m_weaponCookingTime;
 #endif
 
 	NETWORKED_FLOAT(health)
@@ -146,38 +182,32 @@ private:
 	NETWORKED_FLOAT_N(gflags)
 	NETWORKED_FLOAT(viewzoom)
 	NETWORKED_VECTOR_N(view_ofs)
-	NETWORKED_VECTOR_N(basevelocity)
+	NETWORKED_VECTOR_N(m_pmoveBaseVelocity)
 	NETWORKED_VECTOR_N(v_angle)
 	NETWORKED_FLOAT_N(gravity)
 	NETWORKED_FLOAT_N(friction)
 
-	NETWORKED_FLOAT(w_attack_next)
-	NETWORKED_FLOAT(w_idle_next)
-	NETWORKED_FLOAT(w_reload_next)
-	NETWORKED_FLOAT(jump_time)
-	NETWORKED_FLOAT(teleport_time)
-	NETWORKED_FLOAT(weapontime)
-	NETWORKED_VECTOR(punchangle)
-	NETWORKED_VECTOR(punchvelocity)
+	NETWORKED_FLOAT(m_timeUntilNextAttack)
+	NETWORKED_FLOAT(m_timeUntilNextIdle)
+	NETWORKED_FLOAT(m_timeUntilReloaded)
+	NETWORKED_FLOAT(m_timeSinceJump)
+	NETWORKED_FLOAT(m_timeSinceTeleport)
+	NETWORKED_VECTOR(m_punchAngle)
+	NETWORKED_VECTOR(m_punchVelocity)
+
+	NETWORKED_INT(m_weaponAnimSequence)
+	NETWORKED_FLOAT(m_weaponAnimTime)
 
 	/* We can't use the default .items field, because FTE will assume
 	 * effects of some bits. Such as invisibility, quad, etc. 
 	 * also, modders probably want 32 bits for items. */
-	NETWORKED_INT(g_items)
 	NETWORKED_FLOAT_N(activeweapon)
 	ncItem m_itemList_net;
-	int m_iAmmoTypes_net[MAX_AMMO_TYPES];
-
+	int m_ammoTypes_net[MAX_AMMO_TYPES];
 
 	/* vehicle info */
 	NETWORKED_ENT(vehicle)
-
-	/* these are NOT networked */
-	int a_ammo1;
-	int a_ammo2;
-	int a_ammo3;
-
-	NETWORKED_VECTOR(grapvelocity)
+	NETWORKED_VECTOR(m_pmoveHookVelocity)
 
 #ifdef CLIENT
 	int sequence;
@@ -193,11 +223,11 @@ private:
 #ifdef SERVER
 	int voted;
 	int step;
-	float step_time;
+	float m_timeUntilNextFootstep;
 
-	int m_iUnderwaterDamage;
-	float m_flUnderwaterTime;
-	float m_flPainTime;
+	int m_underwaterDamageDealt;
+	float m_timeUnderwater;
+	float m_timeUntilNextPainSFX;
 
 	entity last_used;
 
@@ -205,7 +235,7 @@ private:
 	float pb_player_delta;
 	vector pb_last_angles;
 
-	int m_iFriendlyDMG;
+	int m_friendlyFireDamageDealt;
 #endif
 
 	entity m_holdingEntity;
@@ -233,9 +263,5 @@ enumflags
 	PLAYER_WEAPONFRAME,
 	PLAYER_CUSTOMFIELDSTART,
 };
-
-#ifdef SERVER
-void obituary(string, string, string, string);
-#endif
 
 .bool _isPlayer;

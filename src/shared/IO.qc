@@ -17,6 +17,7 @@
 void
 ncIO::ncIO(void)
 {
+	identity = 1;
 #ifdef SERVER
 	/* Not in Deathmatch */
 	if (spawnflags & 2048) {
@@ -27,18 +28,20 @@ ncIO::ncIO(void)
 	}
 
 	/* null all of them */
-	m_strOnTrigger =
-	m_strOnUser1 =
-	m_strOnUser2 =
-	m_strOnUser3 =
-	m_strOnUser4 = __NULL__;
+	m_outputOnSpawn =
+	m_outputOnKilled =
+	m_outputOnTrigger =
+	m_outputOnUser1 =
+	m_outputOnUser2 =
+	m_outputOnUser3 =
+	m_outputOnUser4 = __NULL__;
 #else
 	owner = __NULL__;
 	chain = __NULL__;
 	isCSQC = TRUE;
 	effects |= EF_NOSHADOW;
 #endif
-	m_strEditorIcon = "gfx/icon16/bullet_purple";
+
 	_isActor = false;
 	_isItem = false;
 	_isPlayer = false;
@@ -52,21 +55,34 @@ ncIO::Respawn(void)
 }
 
 void
+ncIO::ReloadCachedAttributes(void)
+{
+}
+
+void
 ncIO::Spawned(void)
 {
 #ifdef SERVER
-	if (STRING_SET(m_strOnUser1))
-		m_strOnUser1 = CreateOutput(m_strOnUser1);
-	if (STRING_SET(m_strOnUser2))
-		m_strOnUser2 = CreateOutput(m_strOnUser2);
-	if (STRING_SET(m_strOnUser3))
-		m_strOnUser3 = CreateOutput(m_strOnUser3);
-	if (STRING_SET(m_strOnUser4))
-		m_strOnUser4 = CreateOutput(m_strOnUser4);
+	if (STRING_SET(m_outputOnSpawn))
+		m_outputOnSpawn = CreateOutput(m_outputOnSpawn);
+	if (STRING_SET(m_outputOnKilled))
+		m_outputOnKilled = CreateOutput(m_outputOnKilled);
+	if (STRING_SET(m_outputOnUser1))
+		m_outputOnUser1 = CreateOutput(m_outputOnUser1);
+	if (STRING_SET(m_outputOnUser2))
+		m_outputOnUser2 = CreateOutput(m_outputOnUser2);
+	if (STRING_SET(m_outputOnUser3))
+		m_outputOnUser3 = CreateOutput(m_outputOnUser3);
+	if (STRING_SET(m_outputOnUser4))
+		m_outputOnUser4 = CreateOutput(m_outputOnUser4);
 #endif
 
 	_isWeapon = false;
 	_isItem = false;
+
+#ifdef SERVER
+	UseOutput(this, m_outputOnSpawn);
+#endif
 }
 
 void
@@ -85,17 +101,27 @@ ncIO::Destroy(void)
 		OnRemoveEntity();
 	}
 
-	customphysics = __NULL__;
+#ifdef SERVER
+	UseOutput(this, m_outputOnKilled);
+#endif
+
+	_isActor = false;
+	_isItem = false;
+	_isPlayer = false;
+	_isWeapon = false;
+	chain =
+	owner = __NULL__;
+	spawnclass =
+	classname =
+	declclass = __NULL__;
+	identity = 0;
 	modelindex = 0;
-	solid = 0;
 	movetype = 0;
-	classname = 0;
+	solid = 0;
+	removed = true;
+	customphysics =
 	think = __NULL__;
 	nextthink = 0.0f;
-	identity = 1;
-	_isWeapon = false;
-	_isItem = false;
-	removed = true;
 	remove(this);
 }
 
@@ -209,7 +235,7 @@ ncIO::ReadString(string inputString)
 		return unpackStringCommand(inputString);
 	}
 
-	return "";
+	return __NULL__;
 }
 vector
 ncIO::ReadVector(string inputString)
@@ -251,7 +277,7 @@ ncIO::GetSpawnInt(string keyName)
 string
 ncIO::GetSpawnString(string keyName)
 {
-	for (int i = 1; i < (tokenize(m_strSpawnData) - 1); i += 2) {
+	for (int i = 1; i < (tokenize(m_rawSpawnData) - 1); i += 2) {
 		string key = argv(i);
 		string value = argv(i+1);
 
@@ -288,11 +314,11 @@ ncIO::UseOutput(entity act, string outname)
 	for (entity f = world; (f = find(f, ::targetname, outname));) {
 		ncOutput op = (ncOutput)f;
 
-		NSError("Target: %s", op.m_strTarget);
-		NSError("Input: %s", op.m_strInput);
-		NSError("Data Message: %s", op.m_strData);
-		NSError("Delay: %f", op.m_flDelay);
-		NSError("Uses: %i", op.m_iCount);
+		ncLog("Target: %s", op.m_strTarget);
+		ncLog("Input: %s", op.m_strInput);
+		ncLog("Data Message: %s", op.m_strData);
+		ncLog("Delay: %f", op.m_flDelay);
+		ncLog("Uses: %i", op.m_iCount);
 
 		/* no more tries and not -1 (infinite) */
 		if (op.m_iCount == 0) {
@@ -344,14 +370,14 @@ ncIO::CreateOutput(string outmsg)
 		new_minion.m_iOldCount = new_minion.m_iCount = ourCount;
 
 		/* print final debug output */
-		NSLog("^2%s::CreateOutput report:", classname);
-		NSLog("%d Name: %s", num_for_edict(new_minion), outname);
-		NSLog("Owner: %s (%d)", new_minion.owner.classname, num_for_edict(new_minion.owner));
-		NSLog("Target: %s", new_minion.m_strTarget);
-		NSLog("Input: %s", new_minion.m_strInput);
-		NSLog("Data Message: %s", new_minion.m_strData);
-		NSLog("Delay: %f", new_minion.m_flDelay);
-		NSLog("Uses: %i", new_minion.m_iCount);
+		ncLog("^2%s::CreateOutput report:", classname);
+		ncLog("%d Name: %s", num_for_edict(new_minion), outname);
+		ncLog("Owner: %s (%d)", new_minion.owner.classname, num_for_edict(new_minion.owner));
+		ncLog("Target: %s", new_minion.m_strTarget);
+		ncLog("Input: %s", new_minion.m_strInput);
+		ncLog("Data Message: %s", new_minion.m_strData);
+		ncLog("Delay: %f", new_minion.m_flDelay);
+		ncLog("Uses: %i", new_minion.m_iCount);
 	}
 
 	/* return the name that'll act as the trigger for all outputs */
@@ -372,10 +398,10 @@ ncIO::CheckOutput(string strOut)
 }
 
 string
-ncIO::PrepareOutput(string strOut, string strValue)
+ncIO::PrepareOutput(string strOut, string setValue)
 {
-	strValue = strreplace(",", ",_", strValue);
-	strOut = strcat(strOut, ",_", strValue);
+	setValue = strreplace(",", ",_", setValue);
+	strOut = strcat(strOut, ",_", setValue);
 	return strOut;
 }
 
@@ -386,24 +412,34 @@ ncIO::Input(entity eAct, string strInput, string strData)
 {
 	switch (strInput) {
 	case "FireUser1":
-		UseOutput(eAct, m_strOnUser1);
+		UseOutput(eAct, m_outputOnUser1);
 		break;
 	case "FireUser2":
-		UseOutput(eAct, m_strOnUser2);
+		UseOutput(eAct, m_outputOnUser2);
 		break;
 	case "FireUser3":
-		UseOutput(eAct, m_strOnUser3);
+		UseOutput(eAct, m_outputOnUser3);
 		break;
 	case "FireUser4":
-		UseOutput(eAct, m_strOnUser4);
+		UseOutput(eAct, m_outputOnUser4);
 		break;
 	default:
 		if (strData != "") {
-			EntWarning("%S receives unknown input %S from %s (%d) with data %S", 
+			if (STRING_SET(targetname)) {
+			EntWarning("%s %S unhandled input %S from %s (%d) with data %S",
+				classname, targetname, strInput, eAct.classname, num_for_edict(eAct), strData);
+			} else {
+			EntWarning("%s unhandled input %S from %s (%d) with data %S",
 				classname, strInput, eAct.classname, num_for_edict(eAct), strData);
+			}
 		} else {
-			EntWarning("%S receives unknown input %S from %s (%d)", 
+			if (STRING_SET(targetname)) {
+			EntWarning("%s %S unhandled input %S from %s (%d)",
+				classname, targetname, strInput, eAct.classname, num_for_edict(eAct));
+			} else {
+			EntWarning("%s unhandled input %S from %s (%d)",
 				classname, strInput, eAct.classname, num_for_edict(eAct));
+			}
 		}
 	}
 }
@@ -450,404 +486,45 @@ ncIO::SaveEntity(float handle, string key, entity targ)
 void
 ncIO::Save(float handle)
 {
-	/* all the stock Quake fields the engine is aware of */
-	SaveFloat(handle, "modelindex", modelindex);
-	SaveVector(handle, "absmin", absmin);
-	SaveVector(handle, "absmax", absmax);
-	SaveFloat(handle, "ltime", ltime);
-	SaveFloat(handle, "movetype", movetype);
-	SaveFloat(handle, "solid", solid);
-	SaveVector(handle, "origin", origin);
-	SaveVector(handle, "oldorigin", oldorigin);
-	SaveVector(handle, "velocity", velocity);
-	SaveVector(handle, "angles", angles);
-	SaveVector(handle, "avelocity", avelocity);
-	SaveVector(handle, "punchangle", punchangle);
-	//SaveString(handle, "classname", classname);
-	SaveString(handle, "model", model);
-	SaveFloat(handle, "frame", frame);
-	SaveFloat(handle, "skin", skin);
-	SaveFloat(handle, "effects", effects);
-	SaveVector(handle, "mins", mins);
-	SaveVector(handle, "maxs", maxs);
-	SaveVector(handle, "size", size);
-	SaveString(handle, "touch", getentityfieldstring(findentityfield("touch"), this));
-	SaveString(handle, "use", getentityfieldstring(findentityfield("use"), this));
-	SaveString(handle, "think", getentityfieldstring(findentityfield("think"), this));
-	SaveString(handle, "blocked", getentityfieldstring(findentityfield("blocked"), this));
-	SaveFloat(handle, "nextthink", nextthink);
-	SaveEntity(handle, "groundentity", groundentity);
-	SaveFloat(handle, "health", health);
-	SaveFloat(handle, "frags", frags);
-	SaveFloat(handle, "weapon", weapon);
-	SaveString(handle, "weaponmodel", weaponmodel);
-	SaveFloat(handle, "weaponframe", weaponframe);
-	SaveFloat(handle, "currentammo", currentammo);
-	SaveFloat(handle, "items", items);
-	SaveFloat(handle, "takedamage", takedamage);
-	SaveEntity(handle, "chain", chain);
-	SaveFloat(handle, "deadflag", deadflag);
-	SaveVector(handle, "view_ofs", view_ofs);
-	SaveFloat(handle, "button0", button0);
-	SaveFloat(handle, "button1", button1);
-	SaveFloat(handle, "button2", button2);
-	SaveFloat(handle, "impulse", impulse);
-	SaveFloat(handle, "fixangle", fixangle);
-	SaveVector(handle, "v_angle", v_angle);
-	SaveFloat(handle, "idealpitch", idealpitch);
-	SaveString(handle, "netname", netname);
-	SaveEntity(handle, "enemy", enemy);
-	SaveFloat(handle, "flags", flags);
-	SaveFloat(handle, "colormap", colormap);
-	SaveFloat(handle, "team", team);
-	SaveFloat(handle, "max_health", max_health);
-	SaveFloat(handle, "teleport_time", teleport_time);
-	SaveFloat(handle, "armortype", armortype);
-	SaveFloat(handle, "armorvalue", armorvalue);
-	SaveFloat(handle, "waterlevel", waterlevel);
-	SaveFloat(handle, "watertype", watertype);
-	SaveFloat(handle, "ideal_yaw", ideal_yaw);
-	SaveFloat(handle, "yaw_speed", yaw_speed);
-	SaveEntity(handle, "aiment", aiment);
-	SaveEntity(handle, "goalentity", goalentity);
+	/* spawn info */
 	SaveFloat(handle, "spawnflags", spawnflags);
-	SaveString(handle, "target", target);
-	SaveString(handle, "targetname", targetname);
-	SaveFloat(handle, "dmg_take", dmg_take);
-	SaveFloat(handle, "dmg_save", dmg_save);
-	SaveEntity(handle, "dmg_inflictor", dmg_inflictor);
-	SaveEntity(handle, "owner", owner);
-	SaveVector(handle, "movedir", movedir);
-	SaveString(handle, "message", message);
-	SaveFloat(handle, "sounds", sounds);
-	SaveString(handle, "noise", noise);
-	SaveString(handle, "noise1", noise1);
-	SaveString(handle, "noise2", noise2);
-	SaveString(handle, "noise3", noise3);
-
-	/* FTEQW relevant fields */
-	SaveFloat(handle, "dimension_solid", dimension_solid);
-	SaveFloat(handle, "dimension_hit", dimension_hit);
-	SaveFloat(handle, "frame1time", frame1time);
-	SaveFloat(handle, "basebone", basebone);
-	SaveFloat(handle, "baseframe", baseframe);
-	SaveFloat(handle, "drawflags", drawflags);
-	SaveString(handle, "customphysics", getentityfieldstring(findentityfield("customphysics"), this));
-	SaveString(handle, "SendEntity", getentityfieldstring(findentityfield("SendEntity"), this));
-	SaveFloat(handle, "viewzoom", viewzoom);
-	SaveFloat(handle, "uniquespawnid", uniquespawnid);
-
-	/* Nuclide global fields */
-	SaveFloat(handle, "jumptime", jumptime);
+	SaveBool(handle, "_mapspawned", _mapspawned);
 	SaveFloat(handle, "identity", identity);
-	SaveFloat(handle, "iBleeds", iBleeds);
+	SaveFloat(handle, "ltime", ltime);
 
-	SaveString(handle, "m_strOnTrigger", m_strOnTrigger);
-	SaveString(handle, "m_strOnUser1", m_strOnUser1);
-	SaveString(handle, "m_strOnUser2", m_strOnUser2);
-	SaveString(handle, "m_strOnUser3", m_strOnUser3);
-	SaveString(handle, "m_strOnUser4", m_strOnUser4);
-	SaveString(handle, "m_strModelEventCB", m_strModelEventCB);
-	SaveString(handle, "m_strSpawnData", m_strSpawnData);
-	SaveString(handle, "m_strEditorIcon", m_strEditorIcon);
+	/* pvs info */
+	SaveVector(handle, "origin", origin);
+	SaveFloat(handle, "pvsflags", pvsflags);
 }
+
 void
-ncIO::Restore(string strKey, string strValue)
+ncIO::Restore(string keyName, string setValue)
 {
-	switch (strKey) {
-	/* START: all the stock Quake fields the engine is aware of */
-	case "modelindex":
-		modelindex = ReadFloat(strValue);
-		break;
-	case "absmin":
-		absmin = ReadVector(strValue);
-		break;
-	case "absmax":
-		absmax = ReadVector(strValue);
-		break;
-	case "ltime":
-		ltime = ReadFloat(strValue);
-		break;
-	case "movetype":
-		movetype = ReadFloat(strValue);
-		break;
-	case "solid":
-		solid = ReadFloat(strValue);
-		break;
-	case "origin":
-		origin = ReadVector(strValue);
-		setorigin(this, origin);
-		break;
-	case "oldorigin":
-		oldorigin = ReadVector(strValue);
-		break;
-	case "velocity":
-		velocity = ReadVector(strValue);
-		break;
-	case "angles":
-		angles = ReadVector(strValue);
-		break;
-	case "avelocity":
-		avelocity = ReadVector(strValue);
-		break;
-	case "punchangle":
-		punchangle = ReadVector(strValue);
-		break;
-	/*case "classname":
-		classname = ReadString(strValue);
-		break; */
-	case "model":
-		model = ReadString(strValue);
-		setmodel(this, model);
-		break;
-	case "frame":
-		frame = ReadFloat(strValue);
-		break;
-	case "skin":
-		skin = ReadFloat(strValue);
-		break;
-	case "effects":
-		effects = ReadFloat(strValue);
-		break;
-	case "mins":
-		mins = ReadVector(strValue);
-		setsize(this, mins, maxs);
-		break;
-	case "maxs":
-		maxs = ReadVector(strValue);
-		setsize(this, mins, maxs);
-		break;
-	case "size":
-		size = ReadVector(strValue);
-		break;
-	case "touch":
-		touch = externvalue(-1, strValue);
-		break;
-	case "use":
-		use = externvalue(-1, strValue);
-		break;
-	case "think":
-		think = externvalue(-1, strValue);
-		break;
-	case "blocked":
-		blocked = externvalue(-1, strValue);
-		break;
-	case "nextthink":
-		nextthink = ReadFloat(strValue);
-		break;
-	case "groundentity":
-		groundentity = ReadEntity(strValue);
-		break;
-	case "health":
-		health = ReadFloat(strValue);
-		break;
-	case "frags":
-		frags = ReadFloat(strValue);
-		break;
-	case "weapon":
-		weapon = ReadFloat(strValue);
-		break;
-	case "weaponmodel":
-		weaponmodel = ReadString(strValue);
-		break;
-	case "weaponframe":
-		weaponframe = ReadFloat(strValue);
-		break;
-	case "currentammo":
-		currentammo = ReadFloat(strValue);
-		break;
-	case "items":
-		items = ReadFloat(strValue);
-		break;
-	case "takedamage":
-		takedamage = ReadFloat(strValue);
-		break;
-	case "chain":
-		chain = ReadEntity(strValue);
-		break;
-	case "deadflag":
-		deadflag = ReadFloat(strValue);
-		break;
-	case "view_ofs":
-		view_ofs = ReadVector(strValue);
-		break;
-	case "button0":
-		button0 = ReadFloat(strValue);
-		break;
-	case "button1":
-		button1 = ReadFloat(strValue);
-		break;
-	case "button2":
-		button2 = ReadFloat(strValue);
-		break;
-	case "impulse":
-		impulse = ReadFloat(strValue);
-		break;
-	case "fixangle":
-		fixangle = ReadFloat(strValue);
-		break;
-	case "v_angle":
-		v_angle = ReadVector(strValue);
-		break;
-	case "idealpitch":
-		idealpitch = ReadFloat(strValue);
-		break;
-	case "netname":
-		netname = ReadString(strValue);
-		break;
-	case "enemy":
-		enemy = ReadEntity(strValue);
-		break;
-	case "flags":
-		flags = ReadFloat(strValue);
-		break;
-	case "colormap":
-		colormap = ReadFloat(strValue);
-		break;
-	case "team":
-		team = ReadFloat(strValue);
-		break;
-	case "max_health":
-		max_health = ReadFloat(strValue);
-		break;
-	case "teleport_time":
-		teleport_time = ReadFloat(strValue);
-		break;
-	case "armortype":
-		armortype = ReadFloat(strValue);
-		break;
-	case "armorvalue":
-		armorvalue = ReadFloat(strValue);
-		break;
-	case "waterlevel":
-		waterlevel = ReadFloat(strValue);
-		break;
-	case "watertype":
-		watertype = ReadFloat(strValue);
-		break;
-	case "ideal_yaw":
-		ideal_yaw = ReadFloat(strValue);
-		break;
-	case "yaw_speed":
-		yaw_speed = ReadFloat(strValue);
-		break;
-	case "aiment":
-		aiment = ReadEntity(strValue);
-		break;
-	case "goalentity":
-		goalentity = ReadEntity(strValue);
-		break;
+	switch (keyName) {
 	case "spawnflags":
-		spawnflags = ReadFloat(strValue);
+		spawnflags = ReadFloat(setValue);
 		break;
-	case "target":
-		target = ReadString(strValue);
-		break;
-	case "targetname":
-		targetname = ReadString(strValue);
-		break;
-	case "dmg_take":
-		dmg_take = ReadFloat(strValue);
-		break;
-	case "dmg_save":
-		dmg_save = ReadFloat(strValue);
-		break;
-	case "dmg_inflictor":
-		dmg_inflictor = ReadEntity(strValue);
-		break;
-	case "owner":
-		owner = ReadEntity(strValue);
-		break;
-	case "movedir":
-		movedir = ReadVector(strValue);
-		break;
-	case "message":
-		message = ReadString(strValue);
-		break;
-	case "sounds":
-		sounds = ReadFloat(strValue);
-		break;
-	case "noise":
-		noise = ReadString(strValue);
-		break;
-	case "noise1":
-		noise1 = ReadString(strValue);
-		break;
-	case "noise2":
-		noise2 = ReadString(strValue);
-		break;
-	case "noise3":
-		noise3 = ReadString(strValue);
-		break;
-
-	/* FTEQW relevant fields */
-	case "dimension_solid":
-		dimension_solid = ReadFloat(strValue);
-		break;
-	case "dimension_hit":
-		dimension_hit = ReadFloat(strValue);
-		break;
-	case "frame1time":
-		frame1time = ReadFloat(strValue);
-		break;
-	case "basebone":
-		basebone = ReadFloat(strValue);
-		break;
-	case "baseframe":
-		baseframe = ReadFloat(strValue);
-		break;
-	case "drawflags":
-		drawflags = ReadFloat(strValue);
-		break;
-	case "customphysics":
-		customphysics = externvalue(-1, strValue);
-		break;
-	case "SendEntity":
-		SendEntity = externvalue(-1, strValue);
-		break;
-	case "viewzoom":
-		viewzoom = ReadFloat(strValue);
-		break;
-	case "uniquespawnid":
-		uniquespawnid = ReadFloat(strValue);
-		break;
-
-	/* Nuclide global fields */
-	case "jumptime":
-		jumptime = ReadFloat(strValue);
+	case "_mapspawned":
+		_mapspawned = ReadBool(setValue);
 		break;
 	case "identity":
-		identity = ReadFloat(strValue);
+		identity = ReadFloat(setValue);
 		break;
-	case "iBleeds":
-		iBleeds = ReadFloat(strValue);
+	case "pvsflags":
+		pvsflags = ReadFloat(setValue);
 		break;
-
-	/* END: all the stock Quake fields the engine is aware of */
-	case "m_strOnTrigger":
-		m_strOnTrigger = ReadString(strValue);
+	case "ltime":
+		ltime = ReadFloat(setValue);
 		break;
-	case "m_strOnUser1":
-		m_strOnUser1 = ReadString(strValue);
+	case "origin":
+		origin = ReadVector(setValue);
+		setorigin(this, origin);
 		break;
-	case "m_strOnUser2":
-		m_strOnUser2 = ReadString(strValue);
+	case "pvsflags":
+		pvsflags = ReadFloat(setValue);
 		break;
-	case "m_strOnUser3":
-		m_strOnUser3 = ReadString(strValue);
-		break;
-	case "m_strOnUser4":
-		m_strOnUser4 = ReadString(strValue);
-		break;
-	case "m_strModelEventCB":
-		m_strModelEventCB = ReadString(strValue);
-		break;
-	case "m_strSpawnData":
-		m_strSpawnData = ReadString(strValue);
-		break;
-	case "m_strEditorIcon":
-		m_strEditorIcon = ReadString(strValue);
-		break;
+	default:
+		EntWarning("Can't restore field %S with value %s", keyName, setValue);
 	}
 }
 
@@ -866,56 +543,84 @@ ncIO::ParentUpdate(void)
 {
 
 }
-#endif
 
 void
-ncIO::SpawnKey(string strKey, string strValue)
+ncIO::SetSendFlags(float flSendFlags)
+{
+#ifdef SERVER
+	SendFlags |= flSendFlags;
+#endif
+}
+
+#endif
+
+#ifdef CLIENT
+void
+ncIO::_ReceiveComplete(float flNew, float flChanged)
+{
+
+}
+#endif
+
+
+void
+ncIO::Relink(void)
+{
+	setorigin(this, origin);
+}
+
+
+void
+ncIO::SpawnKey(string keyName, string setValue)
 {
 	/* we do re-read a lot of the builtin fields in case we want to set
 	   defaults. just in case anybody is wondering. */
-	switch (strKey) {
+	switch (keyName) {
 	case "classname":
 		break;
 	case "spawnflags":
-		spawnflags = ReadFloat(strValue);
+		spawnflags = ReadFloat(setValue);
 		break;
 	case "mins":
-		mins = ReadVector(strValue);
+		mins = ReadVector(setValue);
 		break;
 	case "maxs":
-		maxs = ReadVector(strValue);
+		maxs = ReadVector(setValue);
 		break;
 	case "target":
-		target = strValue;
+		target = setValue;
 		break;
 	case "targetname":
-		targetname = strValue;
-		break;
-	case "editor_icon":
-		m_strEditorIcon = ReadString(strValue);
+		targetname = setValue;
 		break;
 #ifdef SERVER
 	/* Input/Output system */
+	case "OnSpawn":
+		m_outputOnSpawn = PrepareOutput(m_outputOnSpawn, setValue);
+		break;
+	case "OnKilled":
+		m_outputOnKilled = PrepareOutput(m_outputOnKilled, setValue);
+		break;
 	case "OnTrigger":
-		m_strOnTrigger = PrepareOutput(m_strOnTrigger, strValue);
+		m_outputOnTrigger = PrepareOutput(m_outputOnTrigger, setValue);
 		break;
 	case "OnUser1":
-		m_strOnUser1 = PrepareOutput(m_strOnUser1, strValue);
+		m_outputOnUser1 = PrepareOutput(m_outputOnUser1, setValue);
 		break;
 	case "OnUser2":
-		m_strOnUser2 = PrepareOutput(m_strOnUser2, strValue);
+		m_outputOnUser2 = PrepareOutput(m_outputOnUser2, setValue);
 		break;
 	case "OnUser3":
-		m_strOnUser3 = PrepareOutput(m_strOnUser3, strValue);
+		m_outputOnUser3 = PrepareOutput(m_outputOnUser3, setValue);
 		break;
 	case "OnUser4":
-		m_strOnUser4 = PrepareOutput(m_strOnUser4, strValue);
+		m_outputOnUser4 = PrepareOutput(m_outputOnUser4, setValue);
 		break;
 #endif
 	default:
 #ifdef SERVER
 		EntLog("%s has unknown key %S with value %S",
-		      classname, strKey, strValue);
+		      classname, keyName, setValue);
 #endif
 		break;
 	}
@@ -965,12 +670,6 @@ ncIO::DebugEntity(string key, entity targ)
 	float value = num_for_edict(targ);
 	EntLog("%S \"%f\"", key, value);
 }
-void
-ncIO::SetEditorIcon(string newIcon)
-{
-	m_strEditorIcon = strcat("gfx/icon16/", newIcon);
-}
-
 float
 ncIO::GetNextThinkTime(void)
 {

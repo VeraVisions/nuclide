@@ -17,19 +17,19 @@
 void
 ncRenderableEntity::ncRenderableEntity(void)
 {
-	m_iRenderMode = RM_NORMAL;
-	m_iRenderFX = RFX_NORMAL;
-	m_vecRenderColor[0] = 255;
-	m_vecRenderColor[1] = 255;
-	m_vecRenderColor[2] = 255;
-	m_flRenderAmt = 0;
-	m_flBoneControl1 = 0.5f;
-	m_flBoneControl2 = 0.5f;
-	m_flBoneControl3 = 0.5f;
-	m_flBoneControl4 = 0.5f;
-	m_flBoneControl5 = 0.5f;
-	m_iBody = 0i;
-	m_vecAxialScale = [1,1,1];
+	m_renderMode = RM_NORMAL;
+	m_renderFX = RFX_NORMAL;
+	m_renderColor[0] = 255;
+	m_renderColor[1] = 255;
+	m_renderColor[2] = 255;
+	m_renderAmount = 0;
+	m_studioBoneController1 = 0.5f;
+	m_studioBoneController2 = 0.5f;
+	m_studioBoneController3 = 0.5f;
+	m_studioBoneController4 = 0.5f;
+	m_studioBoneController5 = 0.5f;
+	m_geomsetField = 0i;
+	m_axialScale = [1,1,1];
 
 	effects |= EF_NOSHADOW;
 
@@ -42,19 +42,19 @@ ncRenderableEntity::ncRenderableEntity(void)
 }
 
 #ifdef CLIENT
-void ncRenderableEntity::RendererRestarted( void ) {
+void ncRenderableEntity::ReloadVideoResources( void ) {
 	_UpdateGeomset();
 }
 
 void ncRenderableEntity::_UpdateGeomset(void)
 {
 	/* unpack our half bytes */
-	int firstBody = (m_iBody & 0x0F);
-	int secondBody = ((m_iBody >> 4) & 0x0F);
-	int thirdBody = ((m_iBody >> 8) & 0x0F);
-	int fourthBody = ((m_iBody >> 12) & 0x0F);
+	int firstBody = (m_geomsetField & 0x0F);
+	int secondBody = ((m_geomsetField >> 4) & 0x0F);
+	int thirdBody = ((m_geomsetField >> 8) & 0x0F);
+	int fourthBody = ((m_geomsetField >> 12) & 0x0F);
 
-	//print(sprintf("%i body 0: %i body 1: %i body 2: %i body 3: %i\n", m_iBody , firstBody, secondBody, thirdBody, fourthBody));
+	//print(sprintf("%i body 0: %i body 1: %i body 2: %i body 3: %i\n", m_geomsetField , firstBody, secondBody, thirdBody, fourthBody));
 
 	setcustomskin(this, "",
 		sprintf("geomset 0 %i\ngeomset 1 %i\ngeomset 2 %i\ngeomset 3 %i\n", firstBody, secondBody, thirdBody, fourthBody)
@@ -93,7 +93,7 @@ ncRenderableEntity::MakeStatic(void)
 #ifdef CLIENT
 	/* give renderFX the opportunity to write into renderable
 	 * fields at least once before forever pulling it out the cgame */
-	if (m_iRenderMode > RM_FULLBRIGHT)
+	if (m_renderMode > RM_FULLBRIGHT)
 		return;
 
 	RenderFXPass();
@@ -111,14 +111,14 @@ ncRenderableEntity::MakeStatic(void)
 void
 ncRenderableEntity::EvaluateEntity(void)
 {
-	if (m_bIsBrush == true) {
+	if (m_modelBrushBased == true) {
 		frame1time = 0.0f;
 		frame1time_net = 0.0f;
-		m_flBoneControl1 = m_flBoneControl1_net = 0.5f;
-		m_flBoneControl2 = m_flBoneControl2_net = 0.5f;
-		m_flBoneControl3 = m_flBoneControl3_net = 0.5f;
-		m_flBoneControl4 = m_flBoneControl4_net = 0.5f;
-		m_flBoneControl5 = m_flBoneControl5_net = 0.5f;
+		m_studioBoneController1 = m_studioBoneController1_net = 0.5f;
+		m_studioBoneController2 = m_studioBoneController2_net = 0.5f;
+		m_studioBoneController3 = m_studioBoneController3_net = 0.5f;
+		m_studioBoneController4 = m_studioBoneController4_net = 0.5f;
+		m_studioBoneController5 = m_studioBoneController5_net = 0.5f;
 	}
 
 	EVALUATE_VECTOR(origin, 0, RDENT_CHANGED_ORIGIN_X)
@@ -143,31 +143,31 @@ ncRenderableEntity::EvaluateEntity(void)
 	EVALUATE_FIELD(frame1time, RDENT_CHANGED_FRAME)
 	EVALUATE_FIELD(skin, RDENT_CHANGED_SKIN)
 	EVALUATE_FIELD(effects, RDENT_CHANGED_EFFECTS)
-	EVALUATE_FIELD(m_iBody, RDENT_CHANGED_BODY)
+	EVALUATE_FIELD(m_geomsetField, RDENT_CHANGED_BODY)
 	EVALUATE_FIELD(scale, RDENT_CHANGED_SCALE)
-	EVALUATE_VECTOR(m_vecAxialScale, 0, RDENT_CHANGED_SCALE)
-	EVALUATE_VECTOR(m_vecAxialScale, 1, RDENT_CHANGED_SCALE)
-	EVALUATE_VECTOR(m_vecAxialScale, 2, RDENT_CHANGED_SCALE)
+	EVALUATE_VECTOR(m_axialScale, 0, RDENT_CHANGED_SCALE)
+	EVALUATE_VECTOR(m_axialScale, 1, RDENT_CHANGED_SCALE)
+	EVALUATE_VECTOR(m_axialScale, 2, RDENT_CHANGED_SCALE)
 	EVALUATE_VECTOR(velocity, 0, RDENT_CHANGED_VELOCITY)
 	EVALUATE_VECTOR(velocity, 1, RDENT_CHANGED_VELOCITY)
 	EVALUATE_VECTOR(velocity, 2, RDENT_CHANGED_VELOCITY)
 	EVALUATE_VECTOR(avelocity, 0, RDENT_CHANGED_ANGULARVELOCITY)
 	EVALUATE_VECTOR(avelocity, 1, RDENT_CHANGED_ANGULARVELOCITY)
 	EVALUATE_VECTOR(avelocity, 2, RDENT_CHANGED_ANGULARVELOCITY)
-	EVALUATE_FIELD(m_iRenderMode, RDENT_CHANGED_RENDERMODE)
-	EVALUATE_FIELD(m_iRenderFX, RDENT_CHANGED_RENDERMODE)
-	EVALUATE_VECTOR(m_vecRenderColor, 0, RDENT_CHANGED_RENDERCOLOR)
-	EVALUATE_VECTOR(m_vecRenderColor, 1, RDENT_CHANGED_RENDERCOLOR)
-	EVALUATE_VECTOR(m_vecRenderColor, 2, RDENT_CHANGED_RENDERCOLOR)
+	EVALUATE_FIELD(m_renderMode, RDENT_CHANGED_RENDERMODE)
+	EVALUATE_FIELD(m_renderFX, RDENT_CHANGED_RENDERMODE)
+	EVALUATE_VECTOR(m_renderColor, 0, RDENT_CHANGED_RENDERCOLOR)
+	EVALUATE_VECTOR(m_renderColor, 1, RDENT_CHANGED_RENDERCOLOR)
+	EVALUATE_VECTOR(m_renderColor, 2, RDENT_CHANGED_RENDERCOLOR)
 	EVALUATE_VECTOR(glowmod, 0, RDENT_CHANGED_RENDERCOLOR)
 	EVALUATE_VECTOR(glowmod, 1, RDENT_CHANGED_RENDERCOLOR)
 	EVALUATE_VECTOR(glowmod, 2, RDENT_CHANGED_RENDERCOLOR)
-	EVALUATE_FIELD(m_flRenderAmt, RDENT_CHANGED_RENDERAMT)
-	EVALUATE_FIELD(m_flBoneControl1, RDENT_CHANGED_CONTROLLER)
-	EVALUATE_FIELD(m_flBoneControl2, RDENT_CHANGED_CONTROLLER)
-	EVALUATE_FIELD(m_flBoneControl3, RDENT_CHANGED_CONTROLLER)
-	EVALUATE_FIELD(m_flBoneControl4, RDENT_CHANGED_CONTROLLER)
-	EVALUATE_FIELD(m_flBoneControl5, RDENT_CHANGED_CONTROLLER)
+	EVALUATE_FIELD(m_renderAmount, RDENT_CHANGED_RENDERAMT)
+	EVALUATE_FIELD(m_studioBoneController1, RDENT_CHANGED_CONTROLLER)
+	EVALUATE_FIELD(m_studioBoneController2, RDENT_CHANGED_CONTROLLER)
+	EVALUATE_FIELD(m_studioBoneController3, RDENT_CHANGED_CONTROLLER)
+	EVALUATE_FIELD(m_studioBoneController4, RDENT_CHANGED_CONTROLLER)
+	EVALUATE_FIELD(m_studioBoneController5, RDENT_CHANGED_CONTROLLER)
 }
 
 /* Make sure StartFrame calls this */
@@ -188,13 +188,13 @@ ncRenderableEntity::SendEntity(entity ePEnt, float flChanged)
 		}
 
 		/* no rendermode means no extra fields */
-		if (m_iRenderMode == RM_NORMAL && m_iRenderFX == RFX_NORMAL) {
+		if (m_renderMode == RM_NORMAL && m_renderFX == RFX_NORMAL) {
 			flChanged &= ~RDENT_CHANGED_RENDERMODE;
 			//flChanged &= ~RDENT_CHANGED_RENDERCOLOR; /* glowmod needs this */
 			flChanged &= ~RDENT_CHANGED_RENDERAMT;
 		}
 
-		if (m_bIsBrush == true) {
+		if (m_modelBrushBased == true) {
 			flChanged &= ~RDENT_CHANGED_FLAGS;
 			flChanged &= ~RDENT_CHANGED_BODY;
 			flChanged &= ~RDENT_CHANGED_SCALE;
@@ -227,32 +227,32 @@ ncRenderableEntity::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_FLOAT(frame1time, RDENT_CHANGED_FRAME)
 	SENDENTITY_FLOAT(skin, RDENT_CHANGED_SKIN)
 	SENDENTITY_FLOAT(effects, RDENT_CHANGED_EFFECTS)
-	SENDENTITY_SHORT(m_iBody, RDENT_CHANGED_BODY)
+	SENDENTITY_SHORT(m_geomsetField, RDENT_CHANGED_BODY)
 	SENDENTITY_FLOAT(scale, RDENT_CHANGED_SCALE)
-	SENDENTITY_FLOAT(m_vecAxialScale[0], RDENT_CHANGED_SCALE)
-	SENDENTITY_FLOAT(m_vecAxialScale[1], RDENT_CHANGED_SCALE)
-	SENDENTITY_FLOAT(m_vecAxialScale[2], RDENT_CHANGED_SCALE)
+	SENDENTITY_FLOAT(m_axialScale[0], RDENT_CHANGED_SCALE)
+	SENDENTITY_FLOAT(m_axialScale[1], RDENT_CHANGED_SCALE)
+	SENDENTITY_FLOAT(m_axialScale[2], RDENT_CHANGED_SCALE)
 	SENDENTITY_COORD(velocity[0], RDENT_CHANGED_VELOCITY)
 	SENDENTITY_COORD(velocity[1], RDENT_CHANGED_VELOCITY)
 	SENDENTITY_COORD(velocity[2], RDENT_CHANGED_VELOCITY)
 	SENDENTITY_COORD(avelocity[0], RDENT_CHANGED_ANGULARVELOCITY)
 	SENDENTITY_COORD(avelocity[1], RDENT_CHANGED_ANGULARVELOCITY)
 	SENDENTITY_COORD(avelocity[2], RDENT_CHANGED_ANGULARVELOCITY)
-	SENDENTITY_BYTE(m_iRenderMode, RDENT_CHANGED_RENDERMODE)
-	SENDENTITY_BYTE(m_iRenderFX, RDENT_CHANGED_RENDERMODE)
-	SENDENTITY_BYTE(m_vecRenderColor[0], RDENT_CHANGED_RENDERCOLOR)
-	SENDENTITY_BYTE(m_vecRenderColor[1], RDENT_CHANGED_RENDERCOLOR)
-	SENDENTITY_BYTE(m_vecRenderColor[2], RDENT_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_renderMode, RDENT_CHANGED_RENDERMODE)
+	SENDENTITY_BYTE(m_renderFX, RDENT_CHANGED_RENDERMODE)
+	SENDENTITY_BYTE(m_renderColor[0], RDENT_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_renderColor[1], RDENT_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_renderColor[2], RDENT_CHANGED_RENDERCOLOR)
 	/* these need more precision for shader hacks... */
 	SENDENTITY_FLOAT(glowmod[0], RDENT_CHANGED_RENDERCOLOR)
 	SENDENTITY_FLOAT(glowmod[1], RDENT_CHANGED_RENDERCOLOR)
 	SENDENTITY_FLOAT(glowmod[2], RDENT_CHANGED_RENDERCOLOR)
-	SENDENTITY_BYTE(m_flRenderAmt, RDENT_CHANGED_RENDERAMT)
-	SENDENTITY_ANGLE(m_flBoneControl1, RDENT_CHANGED_CONTROLLER)
-	SENDENTITY_ANGLE(m_flBoneControl2, RDENT_CHANGED_CONTROLLER)
-	SENDENTITY_ANGLE(m_flBoneControl3, RDENT_CHANGED_CONTROLLER)
-	SENDENTITY_ANGLE(m_flBoneControl4, RDENT_CHANGED_CONTROLLER)
-	SENDENTITY_ANGLE(m_flBoneControl5, RDENT_CHANGED_CONTROLLER)
+	SENDENTITY_BYTE(m_renderAmount, RDENT_CHANGED_RENDERAMT)
+	SENDENTITY_ANGLE(m_studioBoneController1, RDENT_CHANGED_CONTROLLER)
+	SENDENTITY_ANGLE(m_studioBoneController2, RDENT_CHANGED_CONTROLLER)
+	SENDENTITY_ANGLE(m_studioBoneController3, RDENT_CHANGED_CONTROLLER)
+	SENDENTITY_ANGLE(m_studioBoneController4, RDENT_CHANGED_CONTROLLER)
+	SENDENTITY_ANGLE(m_studioBoneController5, RDENT_CHANGED_CONTROLLER)
 
 	return (1);
 }
@@ -287,32 +287,32 @@ ncRenderableEntity::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_FLOAT(frame1time, RDENT_CHANGED_FRAME)
 	READENTITY_FLOAT(skin, RDENT_CHANGED_SKIN)
 	READENTITY_FLOAT(m_netEffects, RDENT_CHANGED_EFFECTS)
-	READENTITY_SHORT(m_iBody, RDENT_CHANGED_BODY)
+	READENTITY_SHORT(m_geomsetField, RDENT_CHANGED_BODY)
 	READENTITY_FLOAT(scale, RDENT_CHANGED_SCALE)
-	READENTITY_FLOAT(m_vecAxialScale[0], RDENT_CHANGED_SCALE)
-	READENTITY_FLOAT(m_vecAxialScale[1], RDENT_CHANGED_SCALE)
-	READENTITY_FLOAT(m_vecAxialScale[2], RDENT_CHANGED_SCALE)
+	READENTITY_FLOAT(m_axialScale[0], RDENT_CHANGED_SCALE)
+	READENTITY_FLOAT(m_axialScale[1], RDENT_CHANGED_SCALE)
+	READENTITY_FLOAT(m_axialScale[2], RDENT_CHANGED_SCALE)
 	READENTITY_COORD(velocity[0], RDENT_CHANGED_VELOCITY)
 	READENTITY_COORD(velocity[1], RDENT_CHANGED_VELOCITY)
 	READENTITY_COORD(velocity[2], RDENT_CHANGED_VELOCITY)
 	READENTITY_COORD(avelocity[0], RDENT_CHANGED_ANGULARVELOCITY)
 	READENTITY_COORD(avelocity[1], RDENT_CHANGED_ANGULARVELOCITY)
 	READENTITY_COORD(avelocity[2], RDENT_CHANGED_ANGULARVELOCITY)
-	READENTITY_BYTE(m_iRenderMode, RDENT_CHANGED_RENDERMODE)
-	READENTITY_BYTE(m_iRenderFX, RDENT_CHANGED_RENDERMODE)
-	READENTITY_BYTE(m_vecRenderColor[0], RDENT_CHANGED_RENDERCOLOR)
-	READENTITY_BYTE(m_vecRenderColor[1], RDENT_CHANGED_RENDERCOLOR)
-	READENTITY_BYTE(m_vecRenderColor[2], RDENT_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_renderMode, RDENT_CHANGED_RENDERMODE)
+	READENTITY_BYTE(m_renderFX, RDENT_CHANGED_RENDERMODE)
+	READENTITY_BYTE(m_renderColor[0], RDENT_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_renderColor[1], RDENT_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_renderColor[2], RDENT_CHANGED_RENDERCOLOR)
 	/* these need more precision for shader hacks... */
 	READENTITY_FLOAT(glowmod[0], RDENT_CHANGED_RENDERCOLOR)
 	READENTITY_FLOAT(glowmod[1], RDENT_CHANGED_RENDERCOLOR)
 	READENTITY_FLOAT(glowmod[2], RDENT_CHANGED_RENDERCOLOR)
-	READENTITY_BYTE(m_flRenderAmt, RDENT_CHANGED_RENDERAMT)
-	READENTITY_ANGLE(m_flBoneControl1, RDENT_CHANGED_CONTROLLER)
-	READENTITY_ANGLE(m_flBoneControl2, RDENT_CHANGED_CONTROLLER)
-	READENTITY_ANGLE(m_flBoneControl3, RDENT_CHANGED_CONTROLLER)
-	READENTITY_ANGLE(m_flBoneControl4, RDENT_CHANGED_CONTROLLER)
-	READENTITY_ANGLE(m_flBoneControl5, RDENT_CHANGED_CONTROLLER)
+	READENTITY_BYTE(m_renderAmount, RDENT_CHANGED_RENDERAMT)
+	READENTITY_ANGLE(m_studioBoneController1, RDENT_CHANGED_CONTROLLER)
+	READENTITY_ANGLE(m_studioBoneController2, RDENT_CHANGED_CONTROLLER)
+	READENTITY_ANGLE(m_studioBoneController3, RDENT_CHANGED_CONTROLLER)
+	READENTITY_ANGLE(m_studioBoneController4, RDENT_CHANGED_CONTROLLER)
+	READENTITY_ANGLE(m_studioBoneController5, RDENT_CHANGED_CONTROLLER)
 
 	if (scale == 0.0)
 		scale = 1.0f;
@@ -340,8 +340,8 @@ ncRenderableEntity::RenderFXPass(void)
 
 	/* HACK: this tells our GLSL to render this masked */
 	//glowmod = [1.0,0.0,1.0];
-	colormod = m_vecRenderColor / 255;
-	alpha = m_flRenderAmt / 255;
+	colormod = m_renderColor / 255;
+	alpha = m_renderAmount / 255;
 
 	/* these should be reset! */
 	renderflags = 0;
@@ -349,7 +349,7 @@ ncRenderableEntity::RenderFXPass(void)
 	drawflags = 0;
 	abslight = 0;
 
-	switch (m_iRenderMode) {
+	switch (m_renderMode) {
 	case RM_NORMAL:
 		colormod = [1,1,1];
 		alpha = 1.0f;
@@ -367,8 +367,8 @@ ncRenderableEntity::RenderFXPass(void)
 
 		break;
 	case RM_GLOW:
-		colormod = m_vecRenderColor / 255;
-		alpha = (m_flRenderAmt == 0) ? 0.0f : 1.0f;
+		colormod = m_renderColor / 255;
+		alpha = (m_renderAmount == 0) ? 0.0f : 1.0f;
 	case RM_WORLDGLOW: /* TODO: Figure out what this does differently */
 		if (checkpvs(vecPlayer, this) == FALSE)
 			alpha -= clframetime;
@@ -383,7 +383,7 @@ ncRenderableEntity::RenderFXPass(void)
 			alpha += clframetime;
 
 		/* max alpha will be applied here to the color instead */
-		colormod *= (m_flRenderAmt / 255);
+		colormod *= (m_renderAmount / 255);
 		alpha = bound(0.0f, alpha, 1.0f);
 		effects |= EF_ADDITIVE | EF_FULLBRIGHT;
 
@@ -393,11 +393,11 @@ ncRenderableEntity::RenderFXPass(void)
 		break;
 	case RM_SOLID:
 		colormod = [1,1,1];
-		alpha = (m_flRenderAmt == 0) ? 0.0f : 1.0f;
+		alpha = (m_renderAmount == 0) ? 0.0f : 1.0f;
 		glowmod[0] = 0.5f;
 		break;
 	case RM_ADDITIVE:
-		if (m_vecRenderColor == g_vec_null)
+		if (m_renderColor == g_vec_null)
 			colormod = [1,1,1];
 
 		effects = EF_ADDITIVE;
@@ -421,7 +421,7 @@ ncRenderableEntity::RenderFXPass(void)
 		break;
 	}
 
-	switch (m_iRenderFX) {
+	switch (m_renderFX) {
 	case RFX_SLOWPULSE:
 		alpha = sin(cltime * 0.5) + (M_PI * 0.5);
 		break;
@@ -483,7 +483,7 @@ ncRenderableEntity::RenderFXPass(void)
 			float distalpha = dist / 256;
 			alpha = 1.0 - distalpha;
 			alpha -= r;
-			alpha *= (m_flRenderAmt / 255);
+			alpha *= (m_renderAmount / 255);
 		} else {
 			alpha = 0.00001f;
 		}
@@ -495,8 +495,8 @@ ncRenderableEntity::RenderFXPass(void)
 	case RFX_GLOWSHELL2:
 		/* make this entity shellchrome */
 		effects |= EF_ADDITIVE;
-		fatness = m_flRenderAmt / 25.5;
-		colormod = (m_vecRenderColor / 255);
+		fatness = m_renderAmount / 25.5;
+		colormod = (m_renderColor / 255);
 		forceshader = g_shellchromeshader_cull;
 		alpha = 1.0f;
 		/* copy entity into rendering queue */
@@ -509,8 +509,8 @@ ncRenderableEntity::RenderFXPass(void)
 		break;
 	case RFX_GLOWSHELL:
 		/* make this entity shellchrome */
-		fatness = m_flRenderAmt / 25.5;
-		colormod = (m_vecRenderColor / 255);
+		fatness = m_renderAmount / 25.5;
+		colormod = (m_renderColor / 255);
 		forceshader = g_shellchromeshader;
 		alpha = 1.0f;
 		/* copy entity into rendering queue */
@@ -562,11 +562,11 @@ void
 ncRenderableEntity::RenderAxialScale(void)
 {
 	/* only bother if we're non-standard */
-	if (m_vecAxialScale != [1,1,1]) {
+	if (m_axialScale != [1,1,1]) {
 		makevectors(angles);
-		v_forward *= m_vecAxialScale[0];
-		v_right *= m_vecAxialScale[1];
-		v_up *= m_vecAxialScale[2];
+		v_forward *= m_axialScale[0];
+		v_right *= m_axialScale[1];
+		v_up *= m_axialScale[2];
 		renderflags |= RF_USEAXIS;
 	}
 }
@@ -582,7 +582,7 @@ ncRenderableEntity::RenderGLQuakeShadow(void)
 	if (m_netEffects & EF_NOSHADOW)
 		return;
 
-	if (m_bIsBrush == true)
+	if (m_modelBrushBased == true)
 		return;
 
 	traceline(origin + [0, 0, 1], origin + [0, 0, -1024], MOVE_NORMAL, this);
@@ -611,6 +611,13 @@ var float autocvar_boney2 = 0.0f;
 var float autocvar_boney3 = 0.0f;
 var float autocvar_boney4 = 0.0f;
 var float autocvar_boney5 = 0.0f;
+
+var float autocvar_subblendfrac = 0.0f;
+var float autocvar_subblend2frac = 0.0f;
+var float autocvar_basesubblendfrac = 0.0f;
+var float autocvar_basesubblend2frac = 0.0f;
+var float autocvar_baseframe = 0.0f;
+
 float
 ncRenderableEntity::predraw(void)
 {
@@ -618,11 +625,11 @@ ncRenderableEntity::predraw(void)
 		return (PREDRAW_NEXT);
 	}
 
-	bonecontrol1 = m_flBoneControl1;
-	bonecontrol2 = m_flBoneControl2;
-	bonecontrol3 = m_flBoneControl3;
-	bonecontrol4 = m_flBoneControl4;
-	bonecontrol5 = m_flBoneControl5;
+	bonecontrol1 = m_studioBoneController1;
+	bonecontrol2 = m_studioBoneController2;
+	bonecontrol3 = m_studioBoneController3;
+	bonecontrol4 = m_studioBoneController4;
+	bonecontrol5 = m_studioBoneController5;
 
 #if 1
 	if (autocvar_boney1 != 0.0f)
@@ -635,6 +642,16 @@ ncRenderableEntity::predraw(void)
 		bonecontrol4 = autocvar_boney4;
 	if (autocvar_boney5 != 0.0f)
 		bonecontrol5 = autocvar_boney5;
+
+	if (autocvar_subblendfrac != 0.0f)
+		subblendfrac = autocvar_subblendfrac;
+	if (autocvar_subblend2frac != 0.0f)
+		subblend2frac = autocvar_subblend2frac;
+
+	if (autocvar_basesubblendfrac != 0.0f)
+		basesubblendfrac = autocvar_basesubblendfrac;
+	if (autocvar_basesubblend2frac != 0.0f)
+		basesubblend2frac = autocvar_basesubblend2frac;
 #endif
 
 	RenderFXPass();
@@ -646,7 +663,7 @@ ncRenderableEntity::predraw(void)
 		angles[0] = g_modelSpinPitch;
 	}
 
-	processmodelevents(modelindex, frame, m_flBaseTime,
+	processmodelevents(modelindex, frame, m_modelEventTime,
 		frame1time, HandleAnimEvent);
 
 	RenderAxialScale();
@@ -660,11 +677,11 @@ ncRenderableEntity::predraw(void)
 
 	if (alpha > 0.0) {
 		/* TODO: Move this somewhere more sane */
-		if (m_iRenderFX == RFX_Q2PULSE) {
+		if (m_renderFX == RFX_Q2PULSE) {
 			float dim = ((sin(time * autocvar(rfx_q2pulse_speed, 4)) + (M_PI/2)) * autocvar(rfx_q2pulse_intensity, 1.0));
 			dim += 1.0f;
 			addentity_lighting(this, [0,0,0], [dim, dim, dim], [0,0,0], 0, 0);
-		} else if (m_iRenderMode != RM_DONTRENDER) {
+		} else if (m_renderMode != RM_DONTRENDER) {
 			addentity(this);
 		}
 	}
@@ -791,7 +808,7 @@ ncRenderableEntity::postdraw(void)
 		break;
 	}
 	string renderString = sprintf("RC: %v\nRA: %f\nRM: %s\nRFX: %s",
-		m_vecRenderColor, m_flRenderAmt, renderMode, renderFX);
+		m_renderColor, m_renderAmount, renderMode, renderFX);
 
 	PointMessage_FieldAtPos(WorldSpaceCenter(), renderString, 128);
 }
@@ -822,7 +839,7 @@ ncRenderableEntity::Respawn(void)
 void
 ncRenderableEntity::SetBody(int newBody)
 {
-	m_iBody = newBody;
+	m_geomsetField = newBody;
 
 #ifdef CLIENT
 	_UpdateGeomset();
@@ -833,27 +850,27 @@ void
 ncRenderableEntity::SetBodyInGroup(int groupID, int bodyValue)
 {
 	/* pack our half bytes */
-	m_iBody |= (bodyValue << (4 * groupID));
-	m_iBody_net = 0;
-	//print(sprintf("NEW BODY: %i %i %i\n", m_iBody, groupID, bodyValue));
+	m_geomsetField |= (bodyValue << (4 * groupID));
+	m_geomsetField_net = 0;
+	//print(sprintf("NEW BODY: %i %i %i\n", m_geomsetField, groupID, bodyValue));
 }
 
 void
 ncRenderableEntity::SetRenderFX(float newFX)
 {
-	m_iRenderFX = newFX;
+	m_renderFX = newFX;
 }
 
 void
 ncRenderableEntity::SetRenderMode(float newMode)
 {
-	m_iRenderMode = newMode;
+	m_renderMode = newMode;
 }
 
 void
 ncRenderableEntity::SetRenderAmt(float newAmt)
 {
-	m_flRenderAmt = newAmt;
+	m_renderAmount = newAmt;
 }
 
 void
@@ -861,118 +878,118 @@ ncRenderableEntity::SetRenderColor(vector newColor)
 {
 	/* rendercolor can NEVER be pitch black. */
 	if (newColor == g_vec_null) {
-		m_vecRenderColor = [255, 255, 255];
+		m_renderColor = [255, 255, 255];
 	}
 
-	m_vecRenderColor = newColor;
+	m_renderColor = newColor;
 }
 
 void
-ncRenderableEntity::SetBoneControl1(float val)
+ncRenderableEntity::SetBoneController1(float val)
 {
-	m_flBoneControl1 = val;
+	m_studioBoneController1 = val;
 }
 
 void
-ncRenderableEntity::SetBoneControl2(float val)
+ncRenderableEntity::SetBoneController2(float val)
 {
-	m_flBoneControl2 = val;
+	m_studioBoneController2 = val;
 }
 
 void
-ncRenderableEntity::SetBoneControl3(float val)
+ncRenderableEntity::SetBoneController3(float val)
 {
-	m_flBoneControl3 = val;
+	m_studioBoneController3 = val;
 }
 
 void
-ncRenderableEntity::SetBoneControl4(float val)
+ncRenderableEntity::SetBoneController4(float val)
 {
-	m_flBoneControl4 = val;
+	m_studioBoneController4 = val;
 }
 
 void
-ncRenderableEntity::SetBoneControl5(float val)
+ncRenderableEntity::SetBoneController5(float val)
 {
-	m_flBoneControl5 = val;
+	m_studioBoneController5 = val;
 }
 
 void
 ncRenderableEntity::SetAxialScale(vector scaleVec)
 {
-	m_vecAxialScale = scaleVec;
+	m_axialScale = scaleVec;
 }
 
 int
 ncRenderableEntity::GetBody(void)
 {
-	return m_iBody;
+	return m_geomsetField;
 }
 
 int
 ncRenderableEntity::GetBodyInGroup(int bodyGroup)
 {
-	return m_iBody;
+	return m_geomsetField;
 }
 
 float
 ncRenderableEntity::GetRenderMode(void)
 {
-	return m_iRenderMode;
+	return m_renderMode;
 }
 
 float
 ncRenderableEntity::GetRenderFX(void)
 {
-	return m_iRenderFX;
+	return m_renderFX;
 }
 
 float
 ncRenderableEntity::GetRenderAmt(void)
 {
-	return m_flRenderAmt;
+	return m_renderAmount;
 }
 
 vector
 ncRenderableEntity::GetRenderColor(void)
 {
-	return m_vecRenderColor;
+	return m_renderColor;
 }
 
 float
-ncRenderableEntity::GetBoneControl1(void)
+ncRenderableEntity::GetBoneController1(void)
 {
-	return m_flBoneControl1;
+	return m_studioBoneController1;
 }
 
 float
-ncRenderableEntity::GetBoneControl2(void)
+ncRenderableEntity::GetBoneController2(void)
 {
-	return m_flBoneControl2;
+	return m_studioBoneController2;
 }
 
 float
-ncRenderableEntity::GetBoneControl3(void)
+ncRenderableEntity::GetBoneController3(void)
 {
-	return m_flBoneControl3;
+	return m_studioBoneController3;
 }
 
 float
-ncRenderableEntity::GetBoneControl4(void)
+ncRenderableEntity::GetBoneController4(void)
 {
-	return m_flBoneControl4;
+	return m_studioBoneController4;
 }
 
 float
-ncRenderableEntity::GetBoneControl5(void)
+ncRenderableEntity::GetBoneController5(void)
 {
-	return m_flBoneControl5;
+	return m_studioBoneController5;
 }
 
 vector
 ncRenderableEntity::GetAxialScale(void)
 {
-	return m_vecAxialScale;
+	return m_axialScale;
 }
 
 void
@@ -1065,7 +1082,7 @@ ncRenderableEntity::HandleAnimEvent(float flTimeStamp, int iCode, string strData
 		bool success = false;
 
 		//print(sprintf("%i\n", eDefEvents));
-		for (int i = 0; i < tokenize(m_strModelEventCB); i+=3) {
+		for (int i = 0; i < tokenize(m_modelEventCallbacks); i+=3) {
 			int testCode = stoi(argv(i+0));
 			string testInput = argv(i+1);
 			string testData = argv(i+2);
@@ -1078,7 +1095,7 @@ ncRenderableEntity::HandleAnimEvent(float flTimeStamp, int iCode, string strData
 				else
 					Input(this, testInput, strData); /* no parms passed. */
 
-				tokenize(m_strModelEventCB); /* ensure argv() is 'rewound'... */
+				tokenize(m_modelEventCallbacks); /* ensure argv() is 'rewound'... */
 				success = true;
 			}
 		}
@@ -1086,12 +1103,9 @@ ncRenderableEntity::HandleAnimEvent(float flTimeStamp, int iCode, string strData
 		if (success == true) {
 			return;
 		}
-
 		//print(sprintf("Received: %f %i %S\n", flTimeStamp, iCode, strData));
-		EntWarning("Unknown server model event: %f %i %S", flTimeStamp, iCode, strData);
-#else
-		EntWarning("Unknown client model event: %f %i %S", flTimeStamp, iCode, strData);
 #endif
+		EntWarning("? event %i in %S from %S\n\tTime: %f; Data: %S", iCode, frametoname(modelindex, frame), modelnameforindex(modelindex), flTimeStamp, strData);
 	}
 }
 
@@ -1100,74 +1114,62 @@ void
 ncRenderableEntity::Save(float handle)
 {
 	super::Save(handle);
-	SaveFloat(handle, "m_flBoneControl1", m_flBoneControl1);
-	SaveFloat(handle, "m_flBoneControl2", m_flBoneControl2);
-	SaveFloat(handle, "m_flBoneControl3", m_flBoneControl3);
-	SaveFloat(handle, "m_flBoneControl4", m_flBoneControl4);
-	SaveFloat(handle, "m_flBoneControl5", m_flBoneControl5);
-	SaveFloat(handle, "modelflags", modelflags);
-	SaveInt(handle, "m_iBody", m_iBody);
-	SaveFloat(handle, "colormap", colormap);
-	SaveVector(handle, "glowmod", glowmod);
-	SaveFloat(handle, "m_flRenderAmt", m_flRenderAmt);
-	SaveVector(handle, "m_vecRenderColor", m_vecRenderColor);
-	SaveFloat(handle, "m_iRenderMode", m_iRenderMode);
-	SaveFloat(handle, "m_iRenderFX", m_iRenderFX);
-	SaveVector(handle, "m_vecAxialScale", m_vecAxialScale);
-	SaveFloat(handle, "m_flBaseTime", m_flBaseTime);
+	SaveFloat(handle, "studioBoneController1", m_studioBoneController1);
+	SaveFloat(handle, "studioBoneController2", m_studioBoneController2);
+	SaveFloat(handle, "studioBoneController3", m_studioBoneController3);
+	SaveFloat(handle, "studioBoneController4", m_studioBoneController4);
+	SaveFloat(handle, "studioBoneController5", m_studioBoneController5);
+	SaveInt(handle, "geomsetField", m_geomsetField);
+	SaveFloat(handle, "renderAmount", m_renderAmount);
+	SaveVector(handle, "renderColor", m_renderColor);
+	SaveFloat(handle, "renderMode", m_renderMode);
+	SaveFloat(handle, "renderFX", m_renderFX);
+	SaveVector(handle, "axialScale", m_axialScale);
+	SaveFloat(handle, "modelEventTime", m_modelEventTime);
 }
 
 void
-ncRenderableEntity::Restore(string strKey, string strValue)
+ncRenderableEntity::Restore(string keyName, string setValue)
 {
-	switch (strKey) {
-	case "m_flBoneControl1":
-		m_flBoneControl1 = ReadFloat(strValue);
+	switch (keyName) {
+	case "studioBoneController1":
+		m_studioBoneController1 = ReadFloat(setValue);
 		break;
-	case "m_flBoneControl2":
-		m_flBoneControl2 = ReadFloat(strValue);
+	case "studioBoneController2":
+		m_studioBoneController2 = ReadFloat(setValue);
 		break;
-	case "m_flBoneControl3":
-		m_flBoneControl3 = ReadFloat(strValue);
+	case "studioBoneController3":
+		m_studioBoneController3 = ReadFloat(setValue);
 		break;
-	case "m_flBoneControl4":
-		m_flBoneControl4 = ReadFloat(strValue);
+	case "studioBoneController4":
+		m_studioBoneController4 = ReadFloat(setValue);
 		break;
-	case "m_flBoneControl5":
-		m_flBoneControl5 = ReadFloat(strValue);
+	case "studioBoneController5":
+		m_studioBoneController5 = ReadFloat(setValue);
 		break;
-	case "modelflags":
-		modelflags = ReadFloat(strValue);
+	case "geomsetField":
+		m_geomsetField = ReadInt(setValue);
 		break;
-	case "m_iBody":
-		m_iBody = ReadInt(strValue);
+	case "renderAmount":
+		m_renderAmount = ReadFloat(setValue);
 		break;
-	case "colormap":
-		colormap = ReadFloat(strValue);
+	case "renderColor":
+		m_renderColor = ReadVector(setValue);
 		break;
-	case "glowmod":
-		glowmod = ReadVector(strValue);
+	case "renderMode":
+		m_renderMode = ReadFloat(setValue);
 		break;
-	case "m_flRenderAmt":
-		m_flRenderAmt = ReadFloat(strValue);
+	case "renderFX":
+		m_renderFX = ReadFloat(setValue);
 		break;
-	case "m_vecRenderColor":
-		m_vecRenderColor = ReadVector(strValue);
+	case "axialScale":
+		m_axialScale = ReadVector(setValue);
 		break;
-	case "m_iRenderMode":
-		m_iRenderMode = ReadFloat(strValue);
-		break;
-	case "m_iRenderFX":
-		m_iRenderFX = ReadFloat(strValue);
-		break;
-	case "m_vecAxialScale":
-		m_vecAxialScale = ReadVector(strValue);
-		break;
-	case "m_flBaseTime":
-		m_flBaseTime = ReadFloat(strValue);
+	case "modelEventTime":
+		m_modelEventTime = ReadFloat(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(keyName, setValue);
 	}
 }
 
@@ -1239,6 +1241,9 @@ ncRenderableEntity::Input(entity eAct, string strInput, string strData)
 		SetFrame(animFrame);
 		//print(sprintf("SetAnimation: %S (%d) on %S\n",strData, animFrame, model));
 		break;
+	case "SetBody":
+		SetBody(stoi(strData));
+		break;
 	case "SetBodyInGroup":
 		int argC = tokenize(strData);
 
@@ -1246,7 +1251,7 @@ ncRenderableEntity::Input(entity eAct, string strInput, string strData)
 			int bodyGroup = stoi(argv(0));
 			int bodyModel = stoi(argv(1));
 			SetBodyInGroup(bodyGroup, bodyModel);
-			//print(sprintf("SetBodyInGroup %i to %i\n", bodyGroup, bodyModel));
+			EntLog("changed body family %i to %i", bodyGroup, bodyModel);
 		}
 		break;
 	default:
@@ -1256,70 +1261,72 @@ ncRenderableEntity::Input(entity eAct, string strInput, string strData)
 #endif
 
 void
-ncRenderableEntity::SpawnKey(string strKey, string strValue)
+ncRenderableEntity::SpawnKey(string keyName, string setValue)
 {
-	switch (strKey) {
+	switch (keyName) {
 	case "body":
-		m_iBody = ReadInt(strValue);
+		m_geomsetField = ReadInt(setValue);
 		break;
 	case "body0":
-		SetBodyInGroup(0, ReadInt(strValue));
+		SetBodyInGroup(0, ReadInt(setValue));
 		break;
 	case "body1":
-		SetBodyInGroup(1, ReadInt(strValue));
+		SetBodyInGroup(1, ReadInt(setValue));
 		break;
 	case "body2":
-		SetBodyInGroup(2, ReadInt(strValue));
+		SetBodyInGroup(2, ReadInt(setValue));
 		break;
 	case "body3":
-		SetBodyInGroup(3, ReadInt(strValue));
+		SetBodyInGroup(3, ReadInt(setValue));
 		break;
 	case "modelscale":
 	case "scale":
-		scale = ReadFloat(strValue);
+		scale = ReadFloat(setValue);
 		break;
 	case "modelscale_vec":
 	case "modelstretch":
 	case "axialscale":
-		m_vecAxialScale = ReadVector(strValue);
+		m_axialScale = ReadVector(setValue);
 		break;
 	case "lightingPrecalc":
-		m_vecRenderColor = ReadVector(strValue) * 255;
-		m_flRenderAmt = 255;
+		m_renderColor = ReadVector(setValue) * 255;
+		m_renderAmount = 255;
 		break;
 	case "skin":
-		skin = ReadFloat(strValue);
+		skin = ReadFloat(setValue);
 		break;
 	case "shadows":
-		if (stof(strValue) == 1) {
+		if (stof(setValue) == 1) {
 			effects &= ~EF_NOSHADOW;
+		} else {
+			effects |= EF_NOSHADOW;
 		}
 		break;
 	/* Source */
 	case "disableshadows":
-		if (stof(strValue) == 1) {
+		if (stof(setValue) == 1) {
 			effects |= EF_NOSHADOW;
 		} else {
 			effects &= ~EF_NOSHADOW;
 		}
 		break;
 	case "renderamt":
-		m_flRenderAmt = ReadFloat(strValue);
+		m_renderAmount = ReadFloat(setValue);
 		break;
 	case "rendercolor":
-		m_vecRenderColor = ReadVector(strValue);
+		m_renderColor = ReadVector(setValue);
 		break;
 	case "rendermode":
-		m_iRenderMode = ReadFloat(strValue);
+		m_renderMode = ReadFloat(setValue);
 		break;
 	case "renderfx":
-		m_iRenderFX = ReadFloat(strValue);
+		m_renderFX = ReadFloat(setValue);
 		break;
 	case "model_flash":
-		m_iMuzzleModel = (int)getmodelindex(strValue);
+		m_iMuzzleModel = (int)getmodelindex(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(keyName, setValue);
 		break;
 	}
 }

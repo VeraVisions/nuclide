@@ -84,35 +84,35 @@ ncMomentary::Save(float handle)
 }
 
 void
-ncMomentary::Restore(string strKey, string strValue)
+ncMomentary::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_eUser":
-		m_eUser = ReadEntity(strValue);
+		m_eUser = ReadEntity(setValue);
 		break;
 	case "m_vecMoveDir":
-		m_vecMoveDir = ReadVector(strValue);
+		m_vecMoveDir = ReadVector(setValue);
 		break;
 	case "m_vecPos1":
-		m_vecPos1 = ReadVector(strValue);
+		m_vecPos1 = ReadVector(setValue);
 		break;
 	case "m_vecPos2":
-		m_vecPos2 = ReadVector(strValue);
+		m_vecPos2 = ReadVector(setValue);
 		break;
 	case "m_flDistance":
-		m_flDistance = ReadFloat(strValue);
+		m_flDistance = ReadFloat(setValue);
 		break;
 	case "m_flSpeed":
-		m_flSpeed = ReadFloat(strValue);
+		m_flSpeed = ReadFloat(setValue);
 		break;
 	case "m_flReturnspeed":
-		m_flReturnspeed = ReadFloat(strValue);
+		m_flReturnspeed = ReadFloat(setValue);
 		break;
 	case "m_iMoveState":
-		m_iMoveState = ReadInt(strValue);
+		m_iMoveState = ReadInt(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 

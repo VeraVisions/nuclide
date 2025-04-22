@@ -146,23 +146,23 @@ path_track::Save(float handle)
 }
 
 void
-path_track::Restore(string strKey, string strValue)
+path_track::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_bAltPath":
-		m_bAltPath = ReadBool(strValue);
+		m_bAltPath = ReadBool(setValue);
 		break;
 	case "m_bTrackEnabled":
-		m_bTrackEnabled = ReadBool(strValue);
+		m_bTrackEnabled = ReadBool(setValue);
 		break;
 	case "m_strAltPath":
-		m_strAltPath = ReadString(strValue);
+		m_strAltPath = ReadString(setValue);
 		break;
 	case "m_strEndTrigger":
-		m_strEndTrigger = ReadString(strValue);
+		m_strEndTrigger = ReadString(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 

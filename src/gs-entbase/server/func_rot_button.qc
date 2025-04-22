@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2025 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -86,136 +86,139 @@ public:
 	nonvirtual void TurnToggle(void);
 
 private:
-	vector m_vecMoveAngle;
-	int m_iState;
-	float m_flSpeed;
-	float m_flDistance;
-	float m_flReturnTime;
+	vector m_rotatingButtonDestination;
+	int m_rotatingButtonState;
+	float m_rotatingButtonSpeed;
+	float m_rotatingButtonDistance;
+	float m_timeUntilReturn;
 };
 
 void
 func_rot_button::func_rot_button(void)
 {
-	m_vecMoveAngle = [0.0f, 0.0f, 0.0f];
-	m_iState = 0i;
-	m_flSpeed = 0.0f;
-	m_flDistance = 0.0f;
-	m_flReturnTime = 0.0f;
+	m_rotatingButtonDestination = [0.0f, 0.0f, 0.0f];
+	m_rotatingButtonState = 0i;
+	m_rotatingButtonSpeed = 0.0f;
+	m_rotatingButtonDistance = 0.0f;
+	m_timeUntilReturn = 0.0f;
 }
 
 void
 func_rot_button::Save(float handle)
 {
 	super::Save(handle);
-	SaveVector(handle, "m_vecMoveAngle", m_vecMoveAngle);
-	SaveInt(handle, "m_iState", m_iState);
-	SaveFloat(handle, "m_flSpeed", m_flSpeed);
-	SaveFloat(handle, "m_flDistance", m_flDistance);
-	SaveFloat(handle, "m_flReturnTime", m_flReturnTime);
+
+	SaveVector(handle, "rotatingButtonDestination", m_rotatingButtonDestination);
+	SaveInt(handle, "rotatingButtonState", m_rotatingButtonState);
+	SaveFloat(handle, "rotatingButtonSpeed", m_rotatingButtonSpeed);
+	SaveFloat(handle, "rotatingButtonDistance", m_rotatingButtonDistance);
+	SaveFloat(handle, "timeUntilReturn", m_timeUntilReturn);
 }
 
 void
-func_rot_button::Restore(string strKey, string strValue)
+func_rot_button::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
-	case "m_vecMoveAngle":
-		m_vecMoveAngle = ReadVector(strValue);
+	case "rotatingButtonDestination":
+		m_rotatingButtonDestination = ReadVector(setValue);
 		break;
-	case "m_iState":
-		m_iState = ReadInt(strValue);
+	case "rotatingButtonState":
+		m_rotatingButtonState = ReadInt(setValue);
 		break;
-	case "m_flSpeed":
-		m_flSpeed = ReadFloat(strValue);
+	case "rotatingButtonSpeed":
+		m_rotatingButtonSpeed = ReadFloat(setValue);
 		break;
-	case "m_flDistance":
-		m_flDistance = ReadFloat(strValue);
+	case "rotatingButtonDistance":
+		m_rotatingButtonDistance = ReadFloat(setValue);
 		break;
-	case "m_flReturnTime":
-		m_flReturnTime = ReadFloat(strValue);
+	case "timeUntilReturn":
+		m_timeUntilReturn = ReadFloat(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-func_rot_button::SpawnKey(string strKey, string strValue)
+func_rot_button::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "distance":
-		m_flDistance = stof(strValue);
+		m_rotatingButtonDistance = stof(setValue);
 		break;
 	case "speed":
-		m_flSpeed = stof(strValue);
+		m_rotatingButtonSpeed = stof(setValue);
 		break;
 	case "wait":
-		m_flReturnTime = stof(strValue);
+		m_timeUntilReturn = stof(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
 void
 func_rot_button::Respawn(void)
 {
+	vector movementDir;
+
 	super::Respawn();
 
 	SetMovetype(MOVETYPE_PUSH);
-
-	if (HasSpawnFlags(FNCROTBUT_NONSOLID))
-		SetSolid(SOLID_NOT);
-	else
-		SetSolid(SOLID_BSP);
-
+	SetSolid(SOLID_BSP);
 	AddFlags(FL_FINDABLE_NONSOLID);
+	MakeInvulnerable();
 	PlayerUse = OnPlayerUse;
-
-	m_iState = ROTBTNSTATE_OPENED;
 	ReleaseThink();
 
-	if (GetSpawnHealth() > 0) {
-		MakeVulnerable();
-		SetHealth(GetSpawnHealth());
+	m_rotatingButtonState = ROTBTNSTATE_OPENED;
+
+	if (HasSpawnFlags(FNCROTBUT_NONSOLID)) {
+		SetSolid(SOLID_NOT);
+	} else {
+		SetHealth(GetSpawnFloat("health"));
+
+		if (GetHealth() > 0) {
+			MakeVulnerable();
+		}
 	}
 
-	vector vecMoveDir;
 	if (HasSpawnFlags(FNCROTBUT_XAXIS)) {
-		vecMoveDir = [0,0,1];
+		movementDir = [0,0,1];
 	} else if (HasSpawnFlags(FNCROTBUT_YAXIS)) {
-		vecMoveDir = [0,1,0];
+		movementDir = [0,1,0];
 	} else {
-		vecMoveDir = [1,0,0];
+		movementDir = [1,0,0];
 	}
 
 	if (HasSpawnFlags(FNCROTBUT_REVERSE)) {
-		vecMoveDir *= -1;
+		movementDir *= -1;
 	}
 
-	m_vecMoveAngle = vecMoveDir * m_flDistance;
+	m_rotatingButtonDestination = movementDir * m_rotatingButtonDistance;
 }
 
 void
 func_rot_button::TriggerTargets(void)
 {
-	UseTargets(this, TRIG_TOGGLE, m_flDelay);
+	UseTargets(this, TRIG_TOGGLE, GetTriggerDelay());
 }
 
 void
 func_rot_button::ArrivedClosed(void)
 {
+	m_rotatingButtonState = ROTBTNSTATE_CLOSED;
+
 	ClearVelocity();
 	ReleaseThink();
-
-	m_iState = ROTBTNSTATE_CLOSED;
 	TriggerTargets();
 
 	if (HasSpawnFlags(FNCROTBUT_NOAUTORETURN) == true) {
 		return;
 	}
 
-	if (m_flReturnTime > 0.0f) {
-		ScheduleThink(TurnToggle, m_flReturnTime);
+	if (m_timeUntilReturn > 0.0f) {
+		ScheduleThink(TurnToggle, m_timeUntilReturn);
 	}
 }
 
@@ -224,7 +227,7 @@ func_rot_button::ArrivedOpened(void)
 {
 	ClearVelocity();
 	ReleaseThink();
-	m_iState = ROTBTNSTATE_OPENED;
+	m_rotatingButtonState = ROTBTNSTATE_OPENED;
 }
 
 void
@@ -235,7 +238,7 @@ func_rot_button::Rotate(vector vecDest, void(void) vFunc)
 
 	vecAngleDifference = (vecDest - angles);
 	flTravelLength = vlen(vecAngleDifference);
-	flTravelTime = (flTravelLength / m_flSpeed);
+	flTravelTime = (flTravelLength / m_rotatingButtonSpeed);
 
 	SetAngularVelocity(vecAngleDifference * (1 / flTravelTime));
 	ScheduleThink(vFunc, flTravelTime);
@@ -252,25 +255,27 @@ func_rot_button::Touch(entity eToucher)
 {
 	eActivator = (ncEntity)eToucher;
 
-	if (HasSpawnFlags(FNCROTBUT_TOUCHABLE))
+	if (HasSpawnFlags(FNCROTBUT_TOUCHABLE)) {
 		TurnToggle();
+	}
 }
 
 void
 func_rot_button::TurnToggle(void)
 {
-	if (m_iState == ROTBTNSTATE_OPENED) {
-		Rotate(m_vecMoveAngle, ArrivedClosed);
-	} else if (m_iState == ROTBTNSTATE_CLOSED) {
-		if (m_flReturnTime == -1) {
+	if (m_rotatingButtonState == ROTBTNSTATE_OPENED) {
+		Rotate(m_rotatingButtonDestination, ArrivedClosed);
+	} else if (m_rotatingButtonState == ROTBTNSTATE_CLOSED) {
+		if (m_timeUntilReturn == -1) {
 			return;
 		}
 
 		Rotate(GetSpawnVector("angles"), ArrivedOpened);
 
 		/* in toggle mode, we trigger our targets every turn */
-		if (HasSpawnFlags(FNCROTBUT_NOAUTORETURN))
+		if (HasSpawnFlags(FNCROTBUT_NOAUTORETURN)) {
 			TriggerTargets();
+		}
 	}
 }
 

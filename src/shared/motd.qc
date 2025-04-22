@@ -24,19 +24,20 @@ MOTD_Init(void)
 {
 	InitStart();
 #ifdef SERVER
-
 	/* wipe the slate clean */
 	for (int i = 0; i < MOTD_LINES; i++) {
-		localcmd(sprintf("serverinfo motdline%i \"\"\n", i));
+		serverinfo.SetString(sprintf("motdline%i", i), "");
 	}
-	localcmd("serverinfo motdlines \"\"\n");
+	serverinfo.SetString("motdlines", "");
 #endif
+
 #ifdef CLIENT
 	int motdLines = stoi(serverkey("motdlines"));
 	g_motd_body = "";
 
 	for (int i = 0; i < motdLines; i++) {
 		string line = serverkey(sprintf("motdline%i", i));
+
 		if (line != "/") {
 			g_motd_body = strcat(g_motd_body, line, "\n");
 		} else {
@@ -45,7 +46,9 @@ MOTD_Init(void)
 	}
 
 	g_motd_lines = motdLines;
+	ncLog("parsed %i lines from server motd.", motdLines);
 #endif
+
 	InitEnd();
 }
 
@@ -69,20 +72,23 @@ MOTD_LoadFromFile(string fileName)
 	if (fileMotd != -1) {
 		for (int i = 0; i < MOTD_LINES; i++) {
 			tempString = fgets(fileMotd);
+
 			if not (tempString) {
 				break;
 			} else if (tempString == __NULL__) {
-				localcmd(sprintf("serverinfo motdline%i /\n", motdLines));
+				serverinfo.SetString(sprintf("motdline%i", motdLines), "/");
 			} else {
-				localcmd(sprintf("serverinfo motdline%i %S\n", motdLines, tempString));
+				serverinfo.SetString(sprintf("motdline%i", motdLines), tempString);
 			}
 
 			motdLines++;
 		}
-		localcmd(sprintf("serverinfo motdlines \"%i\"\n", motdLines));
+		serverinfo.SetInteger("motdlines", motdLines);
 		fclose(fileMotd);
+
+		ncLog("parsed %i lines from file %S", motdLines, fileName);
 	} else {
-		NSLog("Failed to parse motd from %S", MOTD_FILE);
+		ncLog("Failed to parse motd from %S", MOTD_FILE);
 	}
 }
 #endif
@@ -91,15 +97,16 @@ MOTD_LoadFromFile(string fileName)
 string
 MOTD_GetTextBody(void)
 {
-	if (g_motd_lines > 0i)
+	if (g_motd_lines > 0i) {
 		return g_motd_body;
-	else
+	} else {
 		return "Server advertises no message of the day.";
+	}
 }
 
 int
 MOTD_GetLineCount(void)
 {
-	return g_motd_lines;
+	return (g_motd_lines);
 }
 #endif

@@ -30,4 +30,5 @@ entry.qc
 crosshair.qc
 util.qc
 api.qc
+../platform/localize.qc
 #endlist

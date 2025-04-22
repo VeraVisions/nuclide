@@ -73,7 +73,7 @@ public:
 	nonvirtual void SetGlowMaterial(string);
 	nonvirtual void SetRenderColor(vector);
 	nonvirtual void SetLightStyle(float);
-	virtual void RendererRestarted(void);
+	virtual void ReloadVideoResources(void);
 #endif
 
 #ifdef SERVER
@@ -150,7 +150,7 @@ point_spotlight::SetLightStyle(float newStyle)
 
 #ifdef CLIENT
 void
-point_spotlight::RendererRestarted(void)
+point_spotlight::ReloadVideoResources(void)
 {
 	precache_pic(m_coneMaterial);
 	precache_pic(m_flareMaterial);
@@ -296,7 +296,7 @@ point_spotlight::ReceiveEntity(float flNew, float flChanged)
 	
 	/* the sprite has changed, we need to query a new texture */
 	if (flNew) {
-		RendererRestarted();
+		ReloadVideoResources();
 	}
 
 	setorigin(this, origin);
@@ -389,23 +389,23 @@ point_spotlight::Input(entity eAct, string strInput, string strData)
 }
 
 void
-point_spotlight::SpawnKey(string strKey, string strValue)
+point_spotlight::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "rendercolor":
-		m_vecColor = ReadVector(strValue);
+		m_vecColor = ReadVector(setValue);
 		break;
 	case "spotlightlength":
-		m_flBeamLength = ReadFloat(strValue);
+		m_flBeamLength = ReadFloat(setValue);
 		break;
 	case "spotlightwidth":
-		m_flBeamWidth = ReadFloat(strValue);
+		m_flBeamWidth = ReadFloat(setValue);
 		break;
 	case "style":
-		style = ReadFloat(strValue);
+		style = ReadFloat(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 

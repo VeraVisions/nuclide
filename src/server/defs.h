@@ -31,13 +31,18 @@
 #include "../nav/Hint.h"
 
 #include "spawn.h"
+#include "AddonDelegate.h"
+#include "MapDelegate.h"
 #include "plugins.h"
 #include "lament.h"
 #include "vote.h"
 #include "mapcycle.h"
 #include "maptweaks.h"
-#include "scripts.h"
 #include "Schedule.h"
+#include "SessionManager.h"
+
+#include "CapturePoint.h"
+#include "CaptureItem.h"
 
 /* helper macros */
 #define EVALUATE_FIELD(fieldname, changedflag) {\

@@ -41,32 +41,32 @@ ncVehicle::Save(float handle)
 }
 
 void
-ncVehicle::Restore(string strKey, string strValue)
+ncVehicle::Restore(string keyName, string setValue)
 {
-	switch (strKey) {
+	switch (keyName) {
 	case "m_iVehicleFlags":
-		m_iVehicleFlags = ReadInt(strValue);
+		m_iVehicleFlags = ReadInt(setValue);
 		break;
 	case "m_iMoveButtons":
-		m_iMoveButtons = ReadInt(strValue);
+		m_iMoveButtons = ReadInt(setValue);
 		break;
 	case "m_vecMoveValues":
-		m_vecMoveValues = ReadVector(strValue);
+		m_vecMoveValues = ReadVector(setValue);
 		break;
 	case "m_eDriver":
-		m_eDriver = (ncEntity)ReadEntity(strValue);
+		m_eDriver = (ncEntity)ReadEntity(setValue);
 		break;
 	case "m_eDriverLast":
-		m_eDriverLast = (ncEntity)ReadEntity(strValue);
+		m_eDriverLast = (ncEntity)ReadEntity(setValue);
 		break;
 	case "m_vecPlayerPos":
-		m_vecPlayerPos = ReadVector(strValue);
+		m_vecPlayerPos = ReadVector(setValue);
 		break;
 	case "m_vecExitPos":
-		m_vecExitPos = ReadVector(strValue);
+		m_vecExitPos = ReadVector(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(keyName, setValue);
 	}
 }
 #endif
@@ -396,7 +396,7 @@ void
 ncVehicle::PlayerUpdateFlags(void)
 {
 	if (m_iVehicleFlags & VHF_FROZEN)
-		m_eDriver.vv_flags |= VFL_FROZEN;
+		m_eDriver.m_nuclideFlags |= VFL_FROZEN;
 
 	/*if (m_iVehicleFlags & VHF_NOATTACK)
 		m_eDriver.flags |= FL_NOATTACK;*/
@@ -441,7 +441,7 @@ ncVehicle::PlayerEnter(ncPlayer pl)
 	m_eDriver = (ncEntity)pl;
 	m_eDriverLast = m_eDriver;
 	pl.vehicle = this;
-	pl.vv_flags |= VFL_INVEHICLE;
+	pl.m_nuclideFlags |= VFL_INVEHICLE;
 	EntLog("Player %S entered this vehicle.", pl.GetInfoKey("name"));
 }
 
@@ -454,12 +454,12 @@ ncVehicle::PlayerLeave(ncPlayer pl)
 	EntLog("Player %S exits this vehicle.", pl.GetInfoKey("name"));
 
 	owner = __NULL__;
-	pl.vv_flags &= ~VFL_INVEHICLE;
+	pl.m_nuclideFlags &= ~VFL_INVEHICLE;
 	pl.ClearVelocity();
 	pl.SetOriginUnstick(pl.GetOrigin());
 
 	if (m_iVehicleFlags & VHF_FROZEN)
-		pl.vv_flags &= ~VFL_FROZEN;
+		pl.m_nuclideFlags &= ~VFL_FROZEN;
 
 	/*if (m_iVehicleFlags & VHF_NOATTACK)
 		pl.flags &= ~FL_NOATTACK;*/

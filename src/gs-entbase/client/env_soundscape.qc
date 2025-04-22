@@ -64,7 +64,7 @@ env_soundscape::SpawnKey(string strField, string strKey)
 {
 	switch (strField) {
 	case "shader":
-		m_iShader = Sound_Precache(strKey);
+		m_iShader = SoundDef_Precache(strKey);
 		
 		if (m_iShader == -1) {
 			Destroy();
@@ -171,7 +171,7 @@ DSP_UpdateSoundscape(ncView playerView)
 
 		if (newvol != t.m_flVolume) {
 			t.m_flVolume = newvol;
-			Sound_Update(world, 10 + t.m_iID, t.m_iShader, t.m_flVolume);
+			SoundDef_Update(world, 10 + t.m_iID, t.m_iShader, t.m_flVolume);
 		}
 	}
 
@@ -190,6 +190,6 @@ DSP_UpdateSoundscape(ncView playerView)
 	/* only call sound update when the volume changes. this works around a bug in the engine */
 	if (newvol != g_ambientsound.m_flVolume) {
 		g_ambientsound.m_flVolume = newvol;
-		Sound_Update(world, 10, g_ambientsound.m_iShader, g_ambientsound.m_flVolume);
+		SoundDef_Update(world, 10, g_ambientsound.m_iShader, g_ambientsound.m_flVolume);
 	}
 }

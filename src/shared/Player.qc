@@ -18,7 +18,6 @@ void
 ncPlayer::ncPlayer(void)
 {
 	_isPlayer = true;
-	flags |= FL_CLIENT;
 	vehicle = __NULL__;
 }
 
@@ -280,12 +279,12 @@ ncPlayer::ProcessInput(void)
 	}
 
 #ifdef SERVER
-	CGameRules rules = (CGameRules)g_grMode;
+	ncRuleDelegate rules = (ncRuleDelegate)ncRuleDelegate::ActiveInstance();
 
 	if (rules.m_iIntermission) {
 		rules.IntermissionEnd();
 		return;
-	} else if (IsAlive() == false) {
+	} else if (is.Alive(this) == false) {
 		/* don't go when left click was held... */
 		if (input_buttons & INPUT_PRIMARY && !(gflags & GF_SEMI_TOGGLED)) {
 			if (TimeSinceDeath() > 1.0f) {
@@ -307,12 +306,12 @@ ncPlayer::ProcessInput(void)
 	impulse = 0;
 #endif
 
-	if (vv_flags & VFL_HOLDING) {
+	if (m_nuclideFlags & VFL_HOLDING) {
 		canfire = false;
 	}
 
 	/* throw it if we're holding something */
-	if (vv_flags & VFL_HOLDING && input_buttons & INPUT_PRIMARY) {
+	if (m_nuclideFlags & VFL_HOLDING && input_buttons & INPUT_PRIMARY) {
 #ifdef SERVER
 		ncEntity heldProp = (ncEntity)m_holdingEntity;
 		m_holdingEntity = false;
@@ -322,7 +321,7 @@ ncPlayer::ProcessInput(void)
 		heldProp.m_lastHeldTime = time;
 		heldProp.SetVelocity(anglesToForward(GetViewAngle()) * 1024.0f);
 #endif
-		vv_flags &= ~VFL_HOLDING;
+		m_nuclideFlags &= ~VFL_HOLDING;
 	}
 
 	/* can't fire in some vehicles */
@@ -399,7 +398,7 @@ ncPlayer::predraw(void)
 	/* figure out if this is the local player. it's either us or us spectating */
 	if (Client_IsSpectator(cl)) {
 		ncSpectator spec = (ncSpectator)pSeat->m_ePlayer;
-		if (entnum == spec.spec_ent && spec.spec_mode == SPECMODE_FIRSTPERSON) {
+		if (entnum == spec.m_spectatingEntity && spec.m_spectatingMode == SPECMODE_FIRSTPERSON) {
 			localplayer = true;
 		}
 	} else {
@@ -530,10 +529,10 @@ ncPlayer::VehicleRelink(void)
 	else
 		m_activeWeapon = (ncWeapon)findentity(world, ::entnum, activeweapon);
 
-	if (!m_flFirstInventoryItem)
+	if (!m_itemStart)
 		m_itemList = __NULL__;
 	else {
-		m_itemList = (ncItem)findentity(world, ::entnum, m_flFirstInventoryItem);
+		m_itemList = (ncItem)findentity(world, ::entnum, m_itemStart);
 	}
 
 	/* that state has only just changed. */
@@ -631,7 +630,7 @@ ncPlayer::UpdateAliveCam(void)
 	}
 
 	Shake_Update(this);
-	g_view.AddPunchAngle(punchangle);
+	g_view.AddPunchAngle(m_punchAngle);
 }
 
 var float autocvar_cl_forwardspeed = 190;
@@ -758,23 +757,19 @@ ncPlayer::ReceiveEntity(float new, float flChanged)
 		gravity = 1.0f;
 	}
 
-	if (new) {
-		classname = "player";
-	}
-
 	READENTITY_INT(entityDefID, PLAYER_MODELINDEX)
 	READENTITY_INT(modelindex, PLAYER_MODELINDEX)
 	READENTITY_BYTE(colormap, PLAYER_MODELINDEX)
 
 	/* crap the render mode updates in here */
-	READENTITY_BYTE(m_iRenderMode, PLAYER_MODELINDEX)
-	READENTITY_BYTE(m_iRenderFX, PLAYER_MODELINDEX)
-	READENTITY_BYTE(m_vecRenderColor[0], PLAYER_MODELINDEX)
-	READENTITY_BYTE(m_vecRenderColor[1], PLAYER_MODELINDEX)
-	READENTITY_BYTE(m_vecRenderColor[2], PLAYER_MODELINDEX)
-	READENTITY_BYTE(m_flRenderAmt, PLAYER_MODELINDEX)
+	READENTITY_BYTE(m_renderMode, PLAYER_MODELINDEX)
+	READENTITY_BYTE(m_renderFX, PLAYER_MODELINDEX)
+	READENTITY_BYTE(m_renderColor[0], PLAYER_MODELINDEX)
+	READENTITY_BYTE(m_renderColor[1], PLAYER_MODELINDEX)
+	READENTITY_BYTE(m_renderColor[2], PLAYER_MODELINDEX)
+	READENTITY_BYTE(m_renderAmount, PLAYER_MODELINDEX)
 
-	READENTITY_ENTNUM(m_flFirstInventoryItem, PLAYER_ITEMS)
+	READENTITY_ENTNUM(m_itemStart, PLAYER_ITEMS)
 	READENTITY_ENTNUM(activeweapon, PLAYER_WEAPON)
 
 	READENTITY_COORD(origin[0], PLAYER_ORIGIN)
@@ -789,20 +784,20 @@ ncPlayer::ReceiveEntity(float new, float flChanged)
 	READENTITY_COORD(velocity[0], PLAYER_VELOCITY)
 	READENTITY_COORD(velocity[1], PLAYER_VELOCITY)
 	READENTITY_COORD(velocity[2], PLAYER_VELOCITY)
-	READENTITY_COORD(basevelocity[0], PLAYER_VELOCITY)
-	READENTITY_COORD(basevelocity[1], PLAYER_VELOCITY)
-	READENTITY_COORD(basevelocity[2], PLAYER_VELOCITY)
-	READENTITY_COORD(grapvelocity[0], PLAYER_VELOCITY)
-	READENTITY_COORD(grapvelocity[1], PLAYER_VELOCITY)
-	READENTITY_COORD(grapvelocity[2], PLAYER_VELOCITY)
+	READENTITY_COORD(m_pmoveBaseVelocity[0], PLAYER_VELOCITY)
+	READENTITY_COORD(m_pmoveBaseVelocity[1], PLAYER_VELOCITY)
+	READENTITY_COORD(m_pmoveBaseVelocity[2], PLAYER_VELOCITY)
+	READENTITY_COORD(m_pmoveHookVelocity[0], PLAYER_VELOCITY)
+	READENTITY_COORD(m_pmoveHookVelocity[1], PLAYER_VELOCITY)
+	READENTITY_COORD(m_pmoveHookVelocity[2], PLAYER_VELOCITY)
 	READENTITY_INT(flags, PLAYER_FLAGS)
-	READENTITY_INT(vv_flags, PLAYER_FLAGS)
+	READENTITY_INT(m_nuclideFlags, PLAYER_FLAGS)
 	READENTITY_INT(gflags, PLAYER_FLAGS)
 	READENTITY_FLOAT(gravity, PLAYER_FLAGS)
 	READENTITY_FLOAT(friction, PLAYER_FLAGS)
-	READENTITY_FLOAT(jump_time, PLAYER_FLAGS)
-	READENTITY_FLOAT(teleport_time, PLAYER_FLAGS)
-	READENTITY_BYTE(weaponframe, PLAYER_WEAPONFRAME)
+	READENTITY_FLOAT(m_timeSinceJump, PLAYER_FLAGS)
+	READENTITY_FLOAT(m_timeSinceTeleport, PLAYER_FLAGS)
+	READENTITY_BYTE(m_weaponAnimSequence, PLAYER_WEAPONFRAME)
 	READENTITY_BYTE(health, PLAYER_HEALTH)
 	READENTITY_BYTE(armor, PLAYER_HEALTH)
 	READENTITY_COORD(mins[0], PLAYER_SIZE)
@@ -814,26 +809,30 @@ ncPlayer::ReceiveEntity(float new, float flChanged)
 	READENTITY_BYTE(view_ofs[2], PLAYER_SIZE)
 	READENTITY_BYTE(movetype, PLAYER_MOVETYPE)
 	READENTITY_BYTE(solid, PLAYER_MOVETYPE)
-	READENTITY_FLOAT(punchangle[0], PLAYER_PUNCHANGLE)
-	READENTITY_FLOAT(punchangle[1], PLAYER_PUNCHANGLE)
-	READENTITY_FLOAT(punchangle[2], PLAYER_PUNCHANGLE)
-	READENTITY_FLOAT(punchvelocity[0], PLAYER_PUNCHANGLE)
-	READENTITY_FLOAT(punchvelocity[1], PLAYER_PUNCHANGLE)
-	READENTITY_FLOAT(punchvelocity[2], PLAYER_PUNCHANGLE)
+	READENTITY_FLOAT(m_punchAngle[0], PLAYER_PUNCHANGLE)
+	READENTITY_FLOAT(m_punchAngle[1], PLAYER_PUNCHANGLE)
+	READENTITY_FLOAT(m_punchAngle[2], PLAYER_PUNCHANGLE)
+	READENTITY_FLOAT(m_punchVelocity[0], PLAYER_PUNCHANGLE)
+	READENTITY_FLOAT(m_punchVelocity[1], PLAYER_PUNCHANGLE)
+	READENTITY_FLOAT(m_punchVelocity[2], PLAYER_PUNCHANGLE)
 	READENTITY_FLOAT(viewzoom, PLAYER_VIEWZOOM)
-	READENTITY_FLOAT(teleport_time, PLAYER_TIMINGS)
-	READENTITY_FLOAT(m_flStamina, PLAYER_TIMINGS)
-	READENTITY_FLOAT(weapontime, PLAYER_TIMINGS)
-	READENTITY_FLOAT(w_attack_next, PLAYER_TIMINGS)
-	READENTITY_FLOAT(w_idle_next, PLAYER_TIMINGS)
-	READENTITY_FLOAT(w_reload_next, PLAYER_TIMINGS)
+	READENTITY_FLOAT(m_timeSinceTeleport, PLAYER_TIMINGS)
+	READENTITY_FLOAT(m_currentStamina, PLAYER_TIMINGS)
+	READENTITY_FLOAT(m_weaponAnimTime, PLAYER_TIMINGS)
+	READENTITY_FLOAT(m_timeUntilNextAttack, PLAYER_TIMINGS)
+	READENTITY_FLOAT(m_timeUntilNextIdle, PLAYER_TIMINGS)
+	READENTITY_FLOAT(m_timeUntilReloaded, PLAYER_TIMINGS)
 	READENTITY_ENTNUM(vehicle_entnum, PLAYER_VEHICLE)
-	READENTITY_BYTE(spec_ent, PLAYER_SPECTATE)
-	READENTITY_BYTE(spec_mode, PLAYER_SPECTATE)
-	READENTITY_BYTE(spec_flags, PLAYER_SPECTATE)
+	READENTITY_BYTE(m_spectatingEntity, PLAYER_SPECTATE)
+	READENTITY_BYTE(m_spectatingMode, PLAYER_SPECTATE)
+	READENTITY_BYTE(m_spectatingFlags, PLAYER_SPECTATE)
 
 	for (int i = 0i; i < MAX_AMMO_TYPES; i++) {
-		READENTITY_INT(m_iAmmoTypes[i], PLAYER_AMMOTYPES)
+		READENTITY_INT(m_ammoTypes[i], PLAYER_AMMOTYPES)
+
+		if (m_ammoTypes[i] != m_ammoTypes_net[i]) {
+			HUD_AmmoChanged(i, m_ammoTypes[i], m_ammoTypes[i] - m_ammoTypes_net[i]);
+		}
 	}
 
 	/* we only really care about the declclass for decl lookups. */
@@ -860,12 +859,6 @@ ncPlayer::ReceiveEntity(float new, float flChanged)
 		Physics_SetViewParms();
 	}
 
-#ifdef VALVE
-	if (flChanged & PLAYER_AMMOTYPES) {
-		HUD_AmmoNotify_Check(this);
-	}
-#endif
-
 	VehicleRelink();
 	PredictPreFrame();
 	Relink();
@@ -888,10 +881,10 @@ ncPlayer::PredictPreFrame(void)
 	else
 		m_activeWeapon = (ncWeapon)findentity(world, ::entnum, activeweapon);
 
-	if (!m_flFirstInventoryItem)
+	if (!m_itemStart)
 		m_itemList = __NULL__;
 	else {
-		m_itemList = (ncItem)findentity(world, ::entnum, m_flFirstInventoryItem);
+		m_itemList = (ncItem)findentity(world, ::entnum, m_itemStart);
 	}
 
 	if (m_activeWeapon)
@@ -905,26 +898,26 @@ ncPlayer::PredictPreFrame(void)
 
 	SAVE_STATE(modelindex)
 	SAVE_STATE(colormap)
-	SAVE_STATE(m_iRenderMode)
-	SAVE_STATE(m_iRenderFX)
-	SAVE_STATE(m_vecRenderColor)
-	SAVE_STATE(m_flRenderAmt)
+	SAVE_STATE(m_renderMode)
+	SAVE_STATE(m_renderFX)
+	SAVE_STATE(m_renderColor)
+	SAVE_STATE(m_renderAmount)
 	SAVE_STATE(origin)
 	SAVE_STATE(v_angle)
 	SAVE_STATE(angles)
 	SAVE_STATE(velocity)
-	SAVE_STATE(basevelocity)
-	SAVE_STATE(grapvelocity)
+	SAVE_STATE(m_pmoveBaseVelocity)
+	SAVE_STATE(m_pmoveHookVelocity)
 	SAVE_STATE(flags)
-	SAVE_STATE(vv_flags)
+	SAVE_STATE(m_nuclideFlags)
 	SAVE_STATE(gflags)
 	SAVE_STATE(gravity)
 	SAVE_STATE(friction)
-	SAVE_STATE(jump_time)
-	SAVE_STATE(teleport_time)
+	SAVE_STATE(m_timeSinceJump)
+	SAVE_STATE(m_timeSinceTeleport)
 	SAVE_STATE(m_itemList)
 	SAVE_STATE(activeweapon)
-	SAVE_STATE(weaponframe)
+	SAVE_STATE(m_weaponAnimSequence)
 	SAVE_STATE(health)
 	SAVE_STATE(armor)
 	SAVE_STATE(mins)
@@ -932,25 +925,25 @@ ncPlayer::PredictPreFrame(void)
 	SAVE_STATE(view_ofs)
 	SAVE_STATE(movetype)
 	SAVE_STATE(solid)
-	SAVE_STATE(punchangle)
-	SAVE_STATE(punchvelocity)
+	SAVE_STATE(m_punchAngle)
+	SAVE_STATE(m_punchVelocity)
 	SAVE_STATE(viewzoom)
-	SAVE_STATE(teleport_time)
-	SAVE_STATE(m_flStamina)
-	SAVE_STATE(weapontime)
-	SAVE_STATE(w_attack_next)
-	SAVE_STATE(w_idle_next)
-	SAVE_STATE(w_reload_next)
+	SAVE_STATE(m_timeSinceTeleport)
+	SAVE_STATE(m_currentStamina)
+	SAVE_STATE(m_weaponAnimTime)
+	SAVE_STATE(m_timeUntilNextAttack)
+	SAVE_STATE(m_timeUntilNextIdle)
+	SAVE_STATE(m_timeUntilReloaded)
 	SAVE_STATE(vehicle_entnum)
-	SAVE_STATE(spec_ent)
-	SAVE_STATE(spec_mode)
-	SAVE_STATE(spec_flags)
+	SAVE_STATE(m_spectatingEntity)
+	SAVE_STATE(m_spectatingMode)
+	SAVE_STATE(m_spectatingFlags)
 
 	SAVE_STATE(m_itemList)
 	SAVE_STATE(m_activeWeapon)
 
 	for (int i = 0i; i < MAX_AMMO_TYPES; i++) {
-		m_iAmmoTypes_net[i] = m_iAmmoTypes[i];
+		m_ammoTypes_net[i] = m_ammoTypes[i];
 	}
 }
 
@@ -959,26 +952,26 @@ ncPlayer::PredictPostFrame(void)
 {
 	ROLL_BACK(modelindex)
 	ROLL_BACK(colormap)
-	ROLL_BACK(m_iRenderMode)
-	ROLL_BACK(m_iRenderFX)
-	ROLL_BACK(m_vecRenderColor)
-	ROLL_BACK(m_flRenderAmt)
+	ROLL_BACK(m_renderMode)
+	ROLL_BACK(m_renderFX)
+	ROLL_BACK(m_renderColor)
+	ROLL_BACK(m_renderAmount)
 	ROLL_BACK(origin)
 	ROLL_BACK(v_angle)
 	ROLL_BACK(angles)
 	ROLL_BACK(velocity)
-	ROLL_BACK(basevelocity)
-	ROLL_BACK(grapvelocity)
+	ROLL_BACK(m_pmoveBaseVelocity)
+	ROLL_BACK(m_pmoveHookVelocity)
 	ROLL_BACK(flags)
-	ROLL_BACK(vv_flags)
+	ROLL_BACK(m_nuclideFlags)
 	ROLL_BACK(gflags)
 	ROLL_BACK(gravity)
 	ROLL_BACK(friction)
-	ROLL_BACK(jump_time)
-	ROLL_BACK(teleport_time)
+	ROLL_BACK(m_timeSinceJump)
+	ROLL_BACK(m_timeSinceTeleport)
 	ROLL_BACK(m_itemList)
 	ROLL_BACK(activeweapon)
-	ROLL_BACK(weaponframe)
+	ROLL_BACK(m_weaponAnimSequence)
 	ROLL_BACK(health)
 	ROLL_BACK(armor)
 	ROLL_BACK(mins)
@@ -986,19 +979,19 @@ ncPlayer::PredictPostFrame(void)
 	ROLL_BACK(view_ofs)
 	ROLL_BACK(movetype)
 	ROLL_BACK(solid)
-	ROLL_BACK(punchangle)
-	ROLL_BACK(punchvelocity)
+	ROLL_BACK(m_punchAngle)
+	ROLL_BACK(m_punchVelocity)
 	ROLL_BACK(viewzoom)
-	ROLL_BACK(teleport_time)
-	ROLL_BACK(m_flStamina)
-	ROLL_BACK(weapontime)
-	ROLL_BACK(w_attack_next)
-	ROLL_BACK(w_idle_next)
-	ROLL_BACK(w_reload_next)
+	ROLL_BACK(m_timeSinceTeleport)
+	ROLL_BACK(m_currentStamina)
+	ROLL_BACK(m_weaponAnimTime)
+	ROLL_BACK(m_timeUntilNextAttack)
+	ROLL_BACK(m_timeUntilNextIdle)
+	ROLL_BACK(m_timeUntilReloaded)
 	ROLL_BACK(vehicle_entnum)
-	ROLL_BACK(spec_ent)
-	ROLL_BACK(spec_mode)
-	ROLL_BACK(spec_flags)
+	ROLL_BACK(m_spectatingEntity)
+	ROLL_BACK(m_spectatingMode)
+	ROLL_BACK(m_spectatingFlags)
 
 	ROLL_BACK(m_itemList)
 	ROLL_BACK(m_activeWeapon)
@@ -1006,7 +999,7 @@ ncPlayer::PredictPostFrame(void)
 	VehicleRelink();
 
 	for (int i = 0i; i < MAX_AMMO_TYPES; i++) {
-		m_iAmmoTypes[i] = m_iAmmoTypes_net[i];
+		m_ammoTypes[i] = m_ammoTypes_net[i];
 	}
 
 	if (m_activeWeapon) {
@@ -1025,7 +1018,7 @@ void
 ncPlayer::ServerInputFrame(void)
 {
 	/* wait a few seconds, as we may not have been spawned yet */
-	if (isBot(this)) {
+	if (is.Bot(this)) {
 		((ncBot)this).RunAI();
 	}
 
@@ -1036,127 +1029,159 @@ void
 ncPlayer::Save(float handle)
 {
 	super::Save(handle);
-	SaveFloat(handle, "max_health", max_health);
-	SaveFloat(handle, "health", health);
-	SaveFloat(handle, "armor", armor);
-	SaveFloat(handle, "modelindex", modelindex);
-	SaveVector(handle, "origin", origin);
-	SaveVector(handle, "velocity", velocity);
-	SaveVector(handle, "angles", angles);
-	SaveFloat(handle, "colormap", colormap);
-	SaveFloat(handle, "flags", flags);
-	SaveFloat(handle, "vv_flags", vv_flags);
-	SaveFloat(handle, "gflags", gflags);
-	SaveFloat(handle, "viewzoom", viewzoom);
-	SaveVector(handle, "view_ofs", view_ofs);
-	SaveVector(handle, "v_angle", v_angle);
-	SaveVector(handle, "punchangle", punchangle);
-	SaveVector(handle, "punchvelocity", punchvelocity);
-	SaveFloat(handle, "movetype", movetype);
-	SaveFloat(handle, "solid", solid);
-	SaveFloat(handle, "w_attack_next", w_attack_next);
-	SaveFloat(handle, "w_idle_next", w_idle_next);
-	SaveFloat(handle, "w_reload_next", w_reload_next);
-	SaveFloat(handle, "teleport_time", teleport_time);
-	SaveFloat(handle, "m_flStamina", m_flStamina);
-	SaveInt(handle, "weaponframe", weaponframe);
-	SaveFloat(handle, "weapontime", weapontime);
-	SaveInt(handle, "g_items", g_items);
-	SaveEntity(handle, "m_itemList", m_itemList);
-	SaveEntity(handle, "m_activeWeapon", m_activeWeapon);
+
+	SaveBool(handle, "_isPlayer", _isPlayer);
+	SaveEntity(handle, "last_used", last_used);
+	SaveEntity(handle, "m_holdingEntity", m_holdingEntity);
+	SaveEntity(handle, "m_pmoveVars", m_pmoveVars);
 	SaveEntity(handle, "vehicle", vehicle);
+	SaveFloat(handle, "activeweapon", activeweapon);
+	SaveFloat(handle, "colormap", colormap);
+	SaveFloat(handle, "friction", friction);
+	SaveFloat(handle, "gflags", gflags);
+	SaveFloat(handle, "gravity", gravity);
+	SaveFloat(handle, "health", health);
+	SaveFloat(handle, "m_timeSinceJump", m_timeSinceJump);
+	SaveFloat(handle, "m_timeUntilNextPainSFX", m_timeUntilNextPainSFX);
+	SaveFloat(handle, "m_timeUnderwater", m_timeUnderwater);
+	SaveFloat(handle, "m_weaponCookingTime", m_weaponCookingTime);
+	SaveFloat(handle, "pb_angle_delta", pb_angle_delta);
+	SaveFloat(handle, "pb_player_delta", pb_player_delta);
+	SaveFloat(handle, "m_timeUntilNextFootstep", m_timeUntilNextFootstep);
+	SaveFloat(handle, "m_timeSinceTeleport", m_timeSinceTeleport);
+	SaveFloat(handle, "viewzoom", viewzoom);
+	SaveFloat(handle, "m_timeUntilNextAttack", m_timeUntilNextAttack);
+	SaveFloat(handle, "m_timeUntilNextIdle", m_timeUntilNextIdle);
+	SaveFloat(handle, "m_timeUntilReloaded", m_timeUntilReloaded);
+	SaveFloat(handle, "m_weaponAnimTime", m_weaponAnimTime);
+	SaveInt(handle, "m_friendlyFireDamageDealt", m_friendlyFireDamageDealt);
+	SaveInt(handle, "m_underwaterDamageDealt", m_underwaterDamageDealt);
+	SaveInt(handle, "step", step);
+	SaveInt(handle, "voted", voted);
+	SaveInt(handle, "m_weaponAnimSequence", m_weaponAnimSequence);
+	SaveVector(handle, "m_pmoveBaseVelocity", m_pmoveBaseVelocity);
+	SaveVector(handle, "m_pmoveHookVelocity", m_pmoveHookVelocity);
+	SaveVector(handle, "pb_last_angles", pb_last_angles);
+	SaveVector(handle, "m_punchAngle", m_punchAngle);
+	SaveVector(handle, "m_punchVelocity", m_punchVelocity);
+	SaveVector(handle, "v_angle", v_angle);
+	SaveVector(handle, "view_ofs", view_ofs);
 }
 
 void
-ncPlayer::Restore(string strKey, string strValue)
+ncPlayer::Restore(string keyName, string setValue)
 {
-	switch (strKey) {
-	case "max_health":
-		max_health = ReadFloat(strValue);
+	switch (keyName) {
+	case "_isPlayer":
+		_isPlayer = ReadBool(setValue);
 		break;
-	case "health":
-		health = ReadFloat(strValue);
+	case "last_used":
+		last_used = ReadEntity(setValue);
 		break;
-	case "armor":
-		armor = ReadFloat(strValue);
+	case "m_holdingEntity":
+		m_holdingEntity = ReadEntity(setValue);
 		break;
-	case "modelindex":
-		modelindex = ReadFloat(strValue);
-		break;
-	case "origin":
-		origin = ReadVector(strValue);
-		break;
-	case "velocity":
-		velocity = ReadVector(strValue);
-		break;
-	case "angles":
-		angles = ReadVector(strValue);
-		break;
-	case "colormap":
-		colormap = ReadFloat(strValue);
-		break;
-	case "flags":
-		flags = ReadFloat(strValue);
-		break;
-	case "vv_flags":
-		vv_flags = ReadFloat(strValue);
-		break;
-	case "gflags":
-		gflags = ReadFloat(strValue);
-		break;
-	case "view_ofs":
-		view_ofs = ReadVector(strValue);
-		break;
-	case "v_angle":
-		v_angle = ReadVector(strValue);
-		break;
-	case "punchangle":
-		punchangle = ReadVector(strValue);
-		break;
-	case "punchvelocity":
-		punchvelocity = ReadVector(strValue);
-		break;
-	case "solid":
-		solid = ReadFloat(strValue);
-		break;
-	case "movetype":
-		movetype = ReadFloat(strValue);
-		break;
-	case "w_attack_next":
-		w_attack_next = ReadFloat(strValue);
-		break;
-	case "w_idle_next":
-		w_idle_next = ReadFloat(strValue);
-		break;
-	case "w_reload_next":
-		w_reload_next = ReadFloat(strValue);
-		break;
-	case "teleport_time":
-		teleport_time = ReadFloat(strValue);
-		break;
-	case "m_flStamina":
-		m_flStamina = ReadFloat(strValue);
-		break;
-	case "weaponframe":
-		weaponframe = ReadInt(strValue);
-		break;
-	case "weapontime":
-		weapontime = ReadFloat(strValue);
-		break;
-	case "g_items":
-		g_items = ReadInt(strValue);
-		break;
-	case "m_itemList":
-		m_itemList = (ncItem)ReadEntity(strValue);
-		break;
-	case "m_activeWeapon":
-		m_activeWeapon = (ncWeapon)ReadEntity(strValue);
+	case "m_pmoveVars":
+		m_pmoveVars = ReadEntity(setValue);
 		break;
 	case "vehicle":
-		vehicle = ReadEntity(strValue);
+		vehicle = ReadEntity(setValue);
+		break;
+	case "activeweapon":
+		activeweapon = ReadFloat(setValue);
+		break;
+	case "colormap":
+		colormap = ReadFloat(setValue);
+		break;
+	case "friction":
+		friction = ReadFloat(setValue);
+		break;
+	case "gflags":
+		gflags = ReadFloat(setValue);
+		break;
+	case "gravity":
+		gravity = ReadFloat(setValue);
+		break;
+	case "health":
+		health = ReadFloat(setValue);
+		break;
+	case "m_timeSinceJump":
+		m_timeSinceJump = ReadFloat(setValue);
+		break;
+	case "m_timeUntilNextPainSFX":
+		m_timeUntilNextPainSFX = ReadFloat(setValue);
+		break;
+	case "m_timeUnderwater":
+		m_timeUnderwater = ReadFloat(setValue);
+		break;
+	case "m_weaponCookingTime":
+		m_weaponCookingTime = ReadFloat(setValue);
+		break;
+	case "pb_angle_delta":
+		pb_angle_delta = ReadFloat(setValue);
+		break;
+	case "pb_player_delta":
+		pb_player_delta = ReadFloat(setValue);
+		break;
+	case "m_timeUntilNextFootstep":
+		m_timeUntilNextFootstep = ReadFloat(setValue);
+		break;
+	case "m_timeSinceTeleport":
+		m_timeSinceTeleport = ReadFloat(setValue);
+		break;
+	case "viewzoom":
+		viewzoom = ReadFloat(setValue);
+		break;
+	case "m_timeUntilNextAttack":
+		m_timeUntilNextAttack = ReadFloat(setValue);
+		break;
+	case "m_timeUntilNextIdle":
+		m_timeUntilNextIdle = ReadFloat(setValue);
+		break;
+	case "m_timeUntilReloaded":
+		m_timeUntilReloaded = ReadFloat(setValue);
+		break;
+	case "m_weaponAnimTime":
+		m_weaponAnimTime = ReadFloat(setValue);
+		break;
+	case "m_friendlyFireDamageDealt":
+		m_friendlyFireDamageDealt = ReadInt(setValue);
+		break;
+	case "m_underwaterDamageDealt":
+		m_underwaterDamageDealt = ReadInt(setValue);
+		break;
+	case "step":
+		step = ReadInt(setValue);
+		break;
+	case "voted":
+		voted = ReadInt(setValue);
+		break;
+	case "m_weaponAnimSequence":
+		m_weaponAnimSequence = ReadInt(setValue);
+		break;
+	case "m_pmoveBaseVelocity":
+		m_pmoveBaseVelocity = ReadVector(setValue);
+		break;
+	case "m_pmoveHookVelocity":
+		m_pmoveHookVelocity = ReadVector(setValue);
+		break;
+	case "pb_last_angles":
+		pb_last_angles = ReadVector(setValue);
+		break;
+	case "m_punchAngle":
+		m_punchAngle = ReadVector(setValue);
+		break;
+	case "m_punchVelocity":
+		m_punchVelocity = ReadVector(setValue);
+		break;
+	case "v_angle":
+		v_angle = ReadVector(setValue);
+		break;
+	case "view_ofs":
+		view_ofs = ReadVector(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(keyName, setValue);
 	}
 }
 
@@ -1199,7 +1224,6 @@ for the first time before selecting a loadout or something.
 void
 ncPlayer::MakeTempSpectator(void)
 {
-	classname = "player";
 	flags = FL_CLIENT;
 	SetModelindex(0);
 	SetSolid(SOLID_NOT);
@@ -1208,7 +1232,6 @@ ncPlayer::MakeTempSpectator(void)
 	AddVFlags(VFL_FAKESPEC);
 	max_health = health = 0;
 	armor = 0;
-	g_items = 0;
 
 	if (m_activeWeapon) {
 		m_activeWeapon.Destroy();
@@ -1223,18 +1246,16 @@ ncPlayer::MakeTempSpectator(void)
 	effects = 0;
 	alpha = 0.0f;
 	scale = 1.0f;
-	forceinfokey(this, "*spectator", "0"); /* not a real spectator */
-	forceinfokey(this, "*dead", "0");
+	SetInfoKey("*spectator", "0"); /* not a real spectator */
+	SetInfoKey("*dead", "0");
 }
 
 void
 ncPlayer::Death(entity inflictor, entity attacker, int damage, vector dir, vector absImpactPos, int hitBody)
 {
 	RemoveAllItems(false);
-	classname = "player";
 	health = max_health = 0;
 	armor = 0;
-	g_items = 0;
 	effects = 0;
 	alpha = 1.0f;
 	SetModelindex(0);
@@ -1247,18 +1268,19 @@ ncPlayer::Death(entity inflictor, entity attacker, int damage, vector dir, vecto
 	SetVelocity([0,0,0]);
 	SetGravity(1.0f);
 	customphysics = Empty;
-	DisableBleeding();
 	setsize(this, [0,0,0], [0,0,0]);
-	forceinfokey(this, "*deaths", ftos(deaths));
-	forceinfokey(this, "*dead", "1");
-	forceinfokey(this, "*spectator", "0");
-	m_flDeathTime = time;
+	SetInfoKey("*deaths", ftos(deaths));
+	SetInfoKey("*dead", "1");
+	SetInfoKey("*spectator", "0");
+	m_timeOfDeath = time;
 }
 
 void
 ncPlayer::Spawned(void)
 {
 	super::Spawned();
+	_isPlayer = true;
+	vehicle = __NULL__;
 
 	/* we really need to check if whether we're a real client yet. */
 	if (clienttype(this) == CLIENTTYPE_REAL || clienttype(this) == CLIENTTYPE_BOT) {
@@ -1273,7 +1295,6 @@ ncPlayer::Spawned(void)
 void
 ncPlayer::MakePlayer(void)
 {
-	classname = "player";
 	AddFlags(FL_CLIENT);
 	RemoveVFlags(VFL_FAKESPEC);
 
@@ -1294,14 +1315,13 @@ ncPlayer::MakePlayer(void)
 	SetGravity(1.0f);
 	SendFlags = UPDATE_ALL;
 	customphysics = Empty;
-	EnableBleeding();
 	SetScale(1.0f);
 	Physics_SetViewParms();
 	SetSize(m_pmoveVars.GetStandingMins(), m_pmoveVars.GetStandingMaxs());
-	forceinfokey(this, "*spectator", "0");
-	forceinfokey(this, "*deaths", ftos(deaths));
-	forceinfokey(this, "*dead", "0");
-	forceinfokey(this, "*spec", "0");
+	SetInfoKeyFloat("*spectator", false);
+	SetInfoKeyFloat("*deaths", deaths);
+	SetInfoKeyFloat("*dead", 0);
+	SetInfoKeyFloat("*spec", 0);
 }
 
 void
@@ -1309,8 +1329,8 @@ ncPlayer::MakeSpectator(void)
 {
 	ClientKill();
 	MakeTempSpectator();
-	team = TEAM_SPECTATOR;
-	forceinfokey(this, "*team", ftos(team));
+	SetTeam(TEAM_SPECTATOR);
+	SetInfoKeyFloat("*team", team);
 }
 
 void
@@ -1321,12 +1341,12 @@ ncPlayer::EvaluateEntity(void)
 	EVALUATE_FIELD(entityDefID, PLAYER_MODELINDEX)
 	EVALUATE_FIELD(modelindex, PLAYER_MODELINDEX)
 	EVALUATE_FIELD(colormap, PLAYER_MODELINDEX)
-	EVALUATE_FIELD(m_iRenderMode, PLAYER_MODELINDEX)
-	EVALUATE_FIELD(m_iRenderFX, PLAYER_MODELINDEX)
-	EVALUATE_VECTOR(m_vecRenderColor, 0, PLAYER_MODELINDEX)
-	EVALUATE_VECTOR(m_vecRenderColor, 1, PLAYER_MODELINDEX)
-	EVALUATE_VECTOR(m_vecRenderColor, 2, PLAYER_MODELINDEX)
-	EVALUATE_FIELD(m_flRenderAmt, PLAYER_MODELINDEX)
+	EVALUATE_FIELD(m_renderMode, PLAYER_MODELINDEX)
+	EVALUATE_FIELD(m_renderFX, PLAYER_MODELINDEX)
+	EVALUATE_VECTOR(m_renderColor, 0, PLAYER_MODELINDEX)
+	EVALUATE_VECTOR(m_renderColor, 1, PLAYER_MODELINDEX)
+	EVALUATE_VECTOR(m_renderColor, 2, PLAYER_MODELINDEX)
+	EVALUATE_FIELD(m_renderAmount, PLAYER_MODELINDEX)
 	EVALUATE_VECTOR(origin, 0, PLAYER_ORIGIN)
 	EVALUATE_VECTOR(origin, 1, PLAYER_ORIGIN)
 	EVALUATE_VECTOR(origin, 2, PLAYER_ORIGIN)
@@ -1339,22 +1359,22 @@ ncPlayer::EvaluateEntity(void)
 	EVALUATE_VECTOR(velocity, 0, PLAYER_VELOCITY)
 	EVALUATE_VECTOR(velocity, 1, PLAYER_VELOCITY)
 	EVALUATE_VECTOR(velocity, 2, PLAYER_VELOCITY)
-	EVALUATE_VECTOR(basevelocity, 0, PLAYER_VELOCITY)
-	EVALUATE_VECTOR(basevelocity, 1, PLAYER_VELOCITY)
-	EVALUATE_VECTOR(basevelocity, 2, PLAYER_VELOCITY)
-	EVALUATE_VECTOR(grapvelocity, 0, PLAYER_VELOCITY)
-	EVALUATE_VECTOR(grapvelocity, 1, PLAYER_VELOCITY)
-	EVALUATE_VECTOR(grapvelocity, 2, PLAYER_VELOCITY)
+	EVALUATE_VECTOR(m_pmoveBaseVelocity, 0, PLAYER_VELOCITY)
+	EVALUATE_VECTOR(m_pmoveBaseVelocity, 1, PLAYER_VELOCITY)
+	EVALUATE_VECTOR(m_pmoveBaseVelocity, 2, PLAYER_VELOCITY)
+	EVALUATE_VECTOR(m_pmoveHookVelocity, 0, PLAYER_VELOCITY)
+	EVALUATE_VECTOR(m_pmoveHookVelocity, 1, PLAYER_VELOCITY)
+	EVALUATE_VECTOR(m_pmoveHookVelocity, 2, PLAYER_VELOCITY)
 	EVALUATE_FIELD(flags, PLAYER_FLAGS)
-	EVALUATE_FIELD(vv_flags, PLAYER_FLAGS)
+	EVALUATE_FIELD(m_nuclideFlags, PLAYER_FLAGS)
 	EVALUATE_FIELD(gflags, PLAYER_FLAGS)
 	EVALUATE_FIELD(gravity, PLAYER_FLAGS)
 	EVALUATE_FIELD(friction, PLAYER_FLAGS)
-	EVALUATE_FIELD(jump_time, PLAYER_FLAGS)
-	EVALUATE_FIELD(teleport_time, PLAYER_FLAGS)
+	EVALUATE_FIELD(m_timeSinceJump, PLAYER_FLAGS)
+	EVALUATE_FIELD(m_timeSinceTeleport, PLAYER_FLAGS)
 	EVALUATE_FIELD(m_itemList, PLAYER_ITEMS)
 	EVALUATE_FIELD(m_activeWeapon, PLAYER_WEAPON)
-	EVALUATE_FIELD(weaponframe, PLAYER_WEAPONFRAME)
+	EVALUATE_FIELD(m_weaponAnimSequence, PLAYER_WEAPONFRAME)
 	EVALUATE_FIELD(health, PLAYER_HEALTH)
 	EVALUATE_FIELD(armor, PLAYER_HEALTH)
 	EVALUATE_VECTOR(mins, 0, PLAYER_SIZE)
@@ -1366,26 +1386,26 @@ ncPlayer::EvaluateEntity(void)
 	EVALUATE_VECTOR(view_ofs, 2, PLAYER_SIZE)
 	EVALUATE_FIELD(movetype, PLAYER_MOVETYPE)
 	EVALUATE_FIELD(solid, PLAYER_MOVETYPE)
-	EVALUATE_VECTOR(punchangle, 0, PLAYER_PUNCHANGLE)
-	EVALUATE_VECTOR(punchangle, 1, PLAYER_PUNCHANGLE)
-	EVALUATE_VECTOR(punchangle, 2, PLAYER_PUNCHANGLE)
-	EVALUATE_VECTOR(punchvelocity, 0, PLAYER_PUNCHANGLE)
-	EVALUATE_VECTOR(punchvelocity, 1, PLAYER_PUNCHANGLE)
-	EVALUATE_VECTOR(punchvelocity, 2, PLAYER_PUNCHANGLE)
+	EVALUATE_VECTOR(m_punchAngle, 0, PLAYER_PUNCHANGLE)
+	EVALUATE_VECTOR(m_punchAngle, 1, PLAYER_PUNCHANGLE)
+	EVALUATE_VECTOR(m_punchAngle, 2, PLAYER_PUNCHANGLE)
+	EVALUATE_VECTOR(m_punchVelocity, 0, PLAYER_PUNCHANGLE)
+	EVALUATE_VECTOR(m_punchVelocity, 1, PLAYER_PUNCHANGLE)
+	EVALUATE_VECTOR(m_punchVelocity, 2, PLAYER_PUNCHANGLE)
 	EVALUATE_FIELD(viewzoom, PLAYER_VIEWZOOM)
-	EVALUATE_FIELD(teleport_time, PLAYER_TIMINGS)
-	EVALUATE_FIELD(m_flStamina, PLAYER_TIMINGS)
-	EVALUATE_FIELD(weapontime, PLAYER_TIMINGS)
-	EVALUATE_FIELD(w_attack_next, PLAYER_TIMINGS)
-	EVALUATE_FIELD(w_idle_next, PLAYER_TIMINGS)
-	EVALUATE_FIELD(w_reload_next, PLAYER_TIMINGS)
+	EVALUATE_FIELD(m_timeSinceTeleport, PLAYER_TIMINGS)
+	EVALUATE_FIELD(m_currentStamina, PLAYER_TIMINGS)
+	EVALUATE_FIELD(m_weaponAnimTime, PLAYER_TIMINGS)
+	EVALUATE_FIELD(m_timeUntilNextAttack, PLAYER_TIMINGS)
+	EVALUATE_FIELD(m_timeUntilNextIdle, PLAYER_TIMINGS)
+	EVALUATE_FIELD(m_timeUntilReloaded, PLAYER_TIMINGS)
 	EVALUATE_FIELD(vehicle, PLAYER_VEHICLE)
-	EVALUATE_FIELD(spec_ent, PLAYER_SPECTATE)
-	EVALUATE_FIELD(spec_mode, PLAYER_SPECTATE)
-	EVALUATE_FIELD(spec_flags, PLAYER_SPECTATE)
+	EVALUATE_FIELD(m_spectatingEntity, PLAYER_SPECTATE)
+	EVALUATE_FIELD(m_spectatingMode, PLAYER_SPECTATE)
+	EVALUATE_FIELD(m_spectatingFlags, PLAYER_SPECTATE)
 
 	for (int i = 0i; i < MAX_AMMO_TYPES; i++) {
-		EVALUATE_VECTOR(m_iAmmoTypes, i, PLAYER_AMMOTYPES)
+		EVALUATE_VECTOR(m_ammoTypes, i, PLAYER_AMMOTYPES)
 	}
 }
 
@@ -1393,10 +1413,12 @@ float
 ncPlayer::SendEntity(entity ePEnt, float flChanged)
 {
 	/* don't broadcast invisible players */
-	if (IsFakeSpectator() && ePEnt != this)
+	if (IsFakeSpectator() && ePEnt != this) {
 		return (0);
-	if (!GetModelindex() && ePEnt != this)
+	}
+	if (!GetModelindex() && ePEnt != this) {
 		return (0);
+	}
 
 	flChanged = OptimiseChangedFlags(ePEnt, flChanged);
 
@@ -1408,12 +1430,12 @@ ncPlayer::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_BYTE(colormap, PLAYER_MODELINDEX)
 
 	/* crap the render mode updates in here */
-	SENDENTITY_BYTE(m_iRenderMode, PLAYER_MODELINDEX)
-	SENDENTITY_BYTE(m_iRenderFX, PLAYER_MODELINDEX)
-	SENDENTITY_BYTE(m_vecRenderColor[0], PLAYER_MODELINDEX)
-	SENDENTITY_BYTE(m_vecRenderColor[1], PLAYER_MODELINDEX)
-	SENDENTITY_BYTE(m_vecRenderColor[2], PLAYER_MODELINDEX)
-	SENDENTITY_BYTE(m_flRenderAmt, PLAYER_MODELINDEX)
+	SENDENTITY_BYTE(m_renderMode, PLAYER_MODELINDEX)
+	SENDENTITY_BYTE(m_renderFX, PLAYER_MODELINDEX)
+	SENDENTITY_BYTE(m_renderColor[0], PLAYER_MODELINDEX)
+	SENDENTITY_BYTE(m_renderColor[1], PLAYER_MODELINDEX)
+	SENDENTITY_BYTE(m_renderColor[2], PLAYER_MODELINDEX)
+	SENDENTITY_BYTE(m_renderAmount, PLAYER_MODELINDEX)
 
 	SENDENTITY_ENTITY(m_itemList, PLAYER_ITEMS)
 	SENDENTITY_ENTITY(m_activeWeapon, PLAYER_WEAPON)
@@ -1430,20 +1452,20 @@ ncPlayer::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_COORD(velocity[0], PLAYER_VELOCITY)
 	SENDENTITY_COORD(velocity[1], PLAYER_VELOCITY)
 	SENDENTITY_COORD(velocity[2], PLAYER_VELOCITY)
-	SENDENTITY_COORD(basevelocity[0], PLAYER_VELOCITY)
-	SENDENTITY_COORD(basevelocity[1], PLAYER_VELOCITY)
-	SENDENTITY_COORD(basevelocity[2], PLAYER_VELOCITY)
-	SENDENTITY_COORD(grapvelocity[0], PLAYER_VELOCITY)
-	SENDENTITY_COORD(grapvelocity[1], PLAYER_VELOCITY)
-	SENDENTITY_COORD(grapvelocity[2], PLAYER_VELOCITY)
+	SENDENTITY_COORD(m_pmoveBaseVelocity[0], PLAYER_VELOCITY)
+	SENDENTITY_COORD(m_pmoveBaseVelocity[1], PLAYER_VELOCITY)
+	SENDENTITY_COORD(m_pmoveBaseVelocity[2], PLAYER_VELOCITY)
+	SENDENTITY_COORD(m_pmoveHookVelocity[0], PLAYER_VELOCITY)
+	SENDENTITY_COORD(m_pmoveHookVelocity[1], PLAYER_VELOCITY)
+	SENDENTITY_COORD(m_pmoveHookVelocity[2], PLAYER_VELOCITY)
 	SENDENTITY_INT(flags, PLAYER_FLAGS)
-	SENDENTITY_INT(vv_flags, PLAYER_FLAGS)
+	SENDENTITY_INT(m_nuclideFlags, PLAYER_FLAGS)
 	SENDENTITY_INT(gflags, PLAYER_FLAGS)
 	SENDENTITY_FLOAT(gravity, PLAYER_FLAGS)
 	SENDENTITY_FLOAT(friction, PLAYER_FLAGS)
-	SENDENTITY_FLOAT(jump_time, PLAYER_FLAGS)
-	SENDENTITY_FLOAT(teleport_time, PLAYER_FLAGS)
-	SENDENTITY_BYTE(weaponframe, PLAYER_WEAPONFRAME)
+	SENDENTITY_FLOAT(m_timeSinceJump, PLAYER_FLAGS)
+	SENDENTITY_FLOAT(m_timeSinceTeleport, PLAYER_FLAGS)
+	SENDENTITY_BYTE(m_weaponAnimSequence, PLAYER_WEAPONFRAME)
 	SENDENTITY_BYTE(health, PLAYER_HEALTH)
 	SENDENTITY_BYTE(armor, PLAYER_HEALTH)
 	SENDENTITY_COORD(mins[0], PLAYER_SIZE)
@@ -1455,26 +1477,26 @@ ncPlayer::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_BYTE(view_ofs[2], PLAYER_SIZE)
 	SENDENTITY_BYTE(movetype, PLAYER_MOVETYPE)
 	SENDENTITY_BYTE(solid, PLAYER_MOVETYPE)
-	SENDENTITY_FLOAT(punchangle[0], PLAYER_PUNCHANGLE)
-	SENDENTITY_FLOAT(punchangle[1], PLAYER_PUNCHANGLE)
-	SENDENTITY_FLOAT(punchangle[2], PLAYER_PUNCHANGLE)
-	SENDENTITY_FLOAT(punchvelocity[0], PLAYER_PUNCHANGLE)
-	SENDENTITY_FLOAT(punchvelocity[1], PLAYER_PUNCHANGLE)
-	SENDENTITY_FLOAT(punchvelocity[2], PLAYER_PUNCHANGLE)
+	SENDENTITY_FLOAT(m_punchAngle[0], PLAYER_PUNCHANGLE)
+	SENDENTITY_FLOAT(m_punchAngle[1], PLAYER_PUNCHANGLE)
+	SENDENTITY_FLOAT(m_punchAngle[2], PLAYER_PUNCHANGLE)
+	SENDENTITY_FLOAT(m_punchVelocity[0], PLAYER_PUNCHANGLE)
+	SENDENTITY_FLOAT(m_punchVelocity[1], PLAYER_PUNCHANGLE)
+	SENDENTITY_FLOAT(m_punchVelocity[2], PLAYER_PUNCHANGLE)
 	SENDENTITY_FLOAT(viewzoom, PLAYER_VIEWZOOM)
-	SENDENTITY_FLOAT(teleport_time, PLAYER_TIMINGS)
-	SENDENTITY_FLOAT(m_flStamina, PLAYER_TIMINGS)
-	SENDENTITY_FLOAT(weapontime, PLAYER_TIMINGS)
-	SENDENTITY_FLOAT(w_attack_next, PLAYER_TIMINGS)
-	SENDENTITY_FLOAT(w_idle_next, PLAYER_TIMINGS)
-	SENDENTITY_FLOAT(w_reload_next, PLAYER_TIMINGS)
+	SENDENTITY_FLOAT(m_timeSinceTeleport, PLAYER_TIMINGS)
+	SENDENTITY_FLOAT(m_currentStamina, PLAYER_TIMINGS)
+	SENDENTITY_FLOAT(m_weaponAnimTime, PLAYER_TIMINGS)
+	SENDENTITY_FLOAT(m_timeUntilNextAttack, PLAYER_TIMINGS)
+	SENDENTITY_FLOAT(m_timeUntilNextIdle, PLAYER_TIMINGS)
+	SENDENTITY_FLOAT(m_timeUntilReloaded, PLAYER_TIMINGS)
 	SENDENTITY_ENTITY(vehicle, PLAYER_VEHICLE)
-	SENDENTITY_BYTE(spec_ent, PLAYER_SPECTATE)
-	SENDENTITY_BYTE(spec_mode, PLAYER_SPECTATE)
-	SENDENTITY_BYTE(spec_flags, PLAYER_SPECTATE)
+	SENDENTITY_BYTE(m_spectatingEntity, PLAYER_SPECTATE)
+	SENDENTITY_BYTE(m_spectatingMode, PLAYER_SPECTATE)
+	SENDENTITY_BYTE(m_spectatingFlags, PLAYER_SPECTATE)
 
 	for (int i = 0i; i < MAX_AMMO_TYPES; i++) {
-		SENDENTITY_INT(m_iAmmoTypes[i], PLAYER_AMMOTYPES)
+		SENDENTITY_INT(m_ammoTypes[i], PLAYER_AMMOTYPES)
 	}
 
 	return (1);
@@ -1490,7 +1512,7 @@ ncPlayer::OptimiseChangedFlags(entity ePEnt, float flChanged)
 	if (ePEnt.flags & FL_CLIENT && ePEnt != this) {
 		ncSpectator sp = (ncSpectator)ePEnt;
 		is_spec = (sp.IsFakeSpectator() || sp.IsRealSpectator());
-		spectarget = (is_spec == true && edict_num(sp.spec_ent) == this);
+		spectarget = (is_spec == true && edict_num(sp.m_spectatingEntity) == this);
 	}
 
 	/* if we're a spectator of any type and spectate this player */
@@ -1546,9 +1568,9 @@ Holding_UpdatePos(void)
 		meSelf.think = __NULL__;
 		meSelf.nextthink = 0.0f;
 		meSelf.m_lastHeldTime = time;
-		ourOwner.vv_flags &= ~VFL_HOLDING;
+		ourOwner.m_nuclideFlags &= ~VFL_HOLDING;
 #ifdef SERVER
-		NSLog("%s stopped holding onto %s", ourOwner.netname, meSelf.classname);
+		ncLog("%s stopped holding onto %s", ourOwner.netname, meSelf.classname);
 #endif
 		return;
 	}
@@ -1573,7 +1595,7 @@ ncPlayer::PickupEntity(ncEntity toPickUp)
 		return;
 	}
 
-	vv_flags |= VFL_HOLDING;
+	m_nuclideFlags |= VFL_HOLDING;
 	m_holdingEntity = toPickUp;
 	toPickUp.m_holdingPlayer = this;
 	toPickUp.ScheduleThink(Holding_UpdatePos, 0.0f);
@@ -1585,18 +1607,18 @@ ncPlayer::InputUse_Down(void)
 {
 	if (IsDead()) {
 		return;
-	} else if (!(vv_flags & VFL_USE_RELEASED)) {
+	} else if (!(m_nuclideFlags & VFL_USE_RELEASED)) {
 		return;
 	}
 
-	if (vv_flags & VFL_HOLDING) {
+	if (m_nuclideFlags & VFL_HOLDING) {
 		ncEntity heldProp = (ncEntity)m_holdingEntity;
 		m_holdingEntity = false;
 		heldProp.m_holdingPlayer = __NULL__;
 		heldProp.think = __NULL__;
 		heldProp.nextthink = 0.0f;
 		heldProp.m_lastHeldTime = time;
-		vv_flags &= ~VFL_HOLDING;
+		m_nuclideFlags &= ~VFL_HOLDING;
 		return;
 	}
 
@@ -1659,6 +1681,12 @@ ncPlayer::InputUse_Up(void)
 }
 #endif
 
+float
+ncPlayer::WeaponAnimTime(void)
+{
+	return (m_weaponAnimTime);
+}
+
 void
 ncPlayer::Footsteps_Update(void)
 {
@@ -1668,38 +1696,41 @@ ncPlayer::Footsteps_Update(void)
 	string sound = "";
 
 	/* mp_footsteps is only available in MP matches */
-	if (Util_IsSingleplayer() == false)
-		if (autocvar(mp_footsteps, 1) == 0)
+	if (Util_IsSingleplayer() == false) {
+		if (autocvar(mp_footsteps, 1) == 0) {
 			return;
+		}
+	}
 
-	if (movetype != MOVETYPE_WALK)
+	if (GetMovetype() != MOVETYPE_WALK) {
 		return;
+	}
 
-	if ((velocity[0] == 0 && velocity[1] == 0) || step_time > time)
+	if ((velocity[0] == 0 && velocity[1] == 0) || m_timeUntilNextFootstep > time)
 		return;
 
 	if (waterlevel == 1) {
 		StartSoundDef(m_sndWaterWade, CHAN_BODY, true);
-		step_time = time + 2.0f;
+		m_timeUntilNextFootstep = time + 2.0f;
 		return;
 	} else if (waterlevel == 2) {
 		StartSoundDef(m_sndWaterWade, CHAN_BODY, true);
-		step_time = time + 2.0f;
+		m_timeUntilNextFootstep = time + 2.0f;
 		return;
 	} else if (waterlevel == 3) {
 		StartSoundDef(m_sndWaterSwim, CHAN_BODY, true);
-		step_time = time + 2.0f;
+		m_timeUntilNextFootstep = time + 2.0f;
 		return;
 	} else {
 		/* make it so we step once we land */
 		if (HasFlags(FL_ONGROUND) == false && HasVFlags(VFL_ONLADDER) == false) {
-			step_time = 0.0f;
+			m_timeUntilNextFootstep = 0.0f;
 			return;
 		}
 	}
 
 	/* the footsteps call might overwrite this later */
-	step_time = time + 0.35;
+	m_timeUntilNextFootstep = time + 0.35;
 
 	//tracebox(origin, PHY_HULL_MIN, PHY_HULL_MAX, origin + [0,0,-48], MOVE_NORMAL, target);
 	traceline(origin + view_ofs, origin + [0,0,-48], MOVE_NORMAL, this);
@@ -1747,16 +1778,17 @@ ncPlayer::Damage(entity inflictor, entity attacker, ncDict damageDecl, float dam
 	string damageString = ReadString(damageDecl.GetString("damage"));
 	float damagePoints = (float)rint(stof(damageString) * damageScale);
 	ncSurfacePropEntity ourAttacker = (ncSurfacePropEntity)attacker;
+	ncRuleDelegate rules = (ncRuleDelegate)ncRuleDelegate::ActiveInstance();
 
 	/* sanity check */
-	if (isAlive(this) == false) {
+	if (is.Alive(this) == false) {
 		return;
 	}
 
 	/* friendly fire check */
-	if (this != attacker) {
-		if (g_grMode.IsTeamplay()) {
-			if (flags & FL_CLIENT && attacker.flags & FL_CLIENT) {
+	if (this != attacker && attacker != world) {
+		if (rules.IsTeamplay()) {
+			if (is.Player(this) && is.Player(attacker)) {
 				if (team == attacker.team) {
 					if (autocvar_sv_friendlyFire == false) {
 						return;
@@ -1774,18 +1806,18 @@ ncPlayer::Damage(entity inflictor, entity attacker, ncDict damageDecl, float dam
 	}
 
 	/* player god mode */
-	if (damageDecl.GetBool("noGod") == false && isGodMode(this)) {
+	if (damageDecl.GetBool("noGod") == false && is.GodMode(this)) {
 		return;
 	}
 
 	/* don't allow any damage */
-	if (g_grMode.PlayerCanAttack(this) == false) {
+	if (rules.PlayerCanAttack(this) == false) {
 		return;
 	}
 
 	/* skip armor */
 	if (damageDecl.GetBool("noArmor") == false) {
-		if (armor && damagePoints > 0) {
+		if (GetArmor() >= 1.0f && damagePoints >= 1.0f) {
 			float postArmorDamage = 0;
 			float armorRatio = GetDefFloat("armorProtection");
 			float armorBonus = GetDefFloat("armorBonus");
@@ -1807,13 +1839,13 @@ ncPlayer::Damage(entity inflictor, entity attacker, ncDict damageDecl, float dam
 			armorDamage = (damagePoints - postArmorDamage) * armorBonus;
 
 			/* to-deduct value exceeds armor value */
-			if (armorDamage > armor) {
+			if (armorDamage > GetArmor()) {
 				/* armor points left will cushion whatever damage they can */
-				armorDamage = armor * (1.0 / armorBonus);
-				armor = 0;
+				armorDamage = GetArmor() * (1.0 / armorBonus);
+				SetArmor(0);
 				postArmorDamage = (damagePoints - armorDamage);
 			} else {
-				armor -= armorDamage;
+				SetArmor(GetArmor() - armorDamage);
 			}
 
 			damagePoints = postArmorDamage;
@@ -1827,14 +1859,14 @@ ncPlayer::Damage(entity inflictor, entity attacker, ncDict damageDecl, float dam
 	if (isFriendlyFire) {
 		int lastDmg = 0i;
 		ncPlayer plC = (ncPlayer)attacker;
-		lastDmg = plC.m_iFriendlyDMG;
-		plC.m_iFriendlyDMG += damagePoints;
+		lastDmg = plC.m_friendlyFireDamageDealt;
+		plC.m_friendlyFireDamageDealt += damagePoints;
 
 		/* kick the client. */
-		if (plC.m_iFriendlyDMG >= autocvar_mp_td_dmgToKick) {
-			NSLog("Kicking %S due to team damage rules.", plC.netname);
+		if (plC.m_friendlyFireDamageDealt >= autocvar_mp_td_dmgToKick) {
+			ncLog("Kicking %S due to team damage rules.", plC.netname);
 			dropclient(plC);
-		} else if (plC.m_iFriendlyDMG >= autocvar_mp_td_dmgToWarn) {
+		} else if (plC.m_friendlyFireDamageDealt >= autocvar_mp_td_dmgToWarn) {
 			if (lastDmg < autocvar_mp_td_dmgToKick) {
 				// warn player here
 				sprint(plC, PRINT_CHAT, "Keep attacking teammates and you will be kicked!\n");
@@ -1858,7 +1890,7 @@ ncPlayer::Damage(entity inflictor, entity attacker, ncDict damageDecl, float dam
 		WriteCoord(MSG_MULTICAST, dmg_origin[1]);
 		WriteCoord(MSG_MULTICAST, dmg_origin[2]);
 		WriteInt(MSG_MULTICAST, damagePoints);
-		WriteInt(MSG_MULTICAST, 0);
+		WriteInt(MSG_MULTICAST, damageDecl.GetInteger("flags"));
 		msg_entity = this;
 		multicast([0,0,0], MULTICAST_ONE_R);
 	}
@@ -1882,20 +1914,13 @@ ncPlayer::Damage(entity inflictor, entity attacker, ncDict damageDecl, float dam
 
 	/* they died */
 	if (GetHealth() <= 0) {
-		g_grMode.PlayerDeath(this, (ncActor)inflictor, (ncActor)attacker, damageDecl.GetString("weapon"));
+		rules.PlayerDeath(this, (ncActor)inflictor, (ncActor)attacker, damageDecl.GetString("weapon"));
 		Death(inflictor, attacker, (int)damagePoints, dmgDir, hitLocation, 0i);
 	} else {
-		g_grMode.PlayerPain(this, (ncActor)attacker, damageDecl);
+		rules.PlayerPain(this, (ncActor)attacker, damageDecl);
 		Pain(inflictor, attacker, (int)damagePoints, dmgDir, hitLocation, 0i);
 	}
 
 #endif
 }
 
-#ifdef SERVER
-void
-obituary(string targetName, string attackerName, string weaponDef, string meansOfDeath)
-{
-
-}
-#endif

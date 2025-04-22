@@ -25,7 +25,7 @@ void CMap_Shoot(void);
 /*! \brief Client-Entity: Cubemap Reflection Marker */
 /*!QUAKED env_cubemap (1 .5 0) (-8 -8 -8) (8 8 8)
 # OVERVIEW
-Specifies a location for which a cubemap will be generated when the 
+Specifies a location for which a cubemap will be generated when the
 buildcubemaps console command is executed.
 
 # KEYS
@@ -99,7 +99,7 @@ CMap_Shoot(void)
 
 	if (self.owner) {
 		env_cubemap tmp = (env_cubemap) self.owner;
-		NSLog("Generating cubemap '%v' (%dx%d)", g_vecCubePos, g_dCubeSize, g_dCubeSize);
+		ncLog("Generating cubemap '%v' (%dx%d)", g_vecCubePos, g_dCubeSize, g_dCubeSize);
 		g_vecCubePos = tmp.origin;
 		g_dCubeSize = (float)tmp.m_iSize;
 
@@ -121,7 +121,7 @@ CMap_Shoot(void)
 		self.think = CMap_Check;
 		self.nextthink = time + 0.25f;
 	} else {
-		NSLog("Generating level cubemaps done.");
+		ncLog("Generating level cubemaps done.");
 		localcmd("r_skipEnvmap 0\n");
 		localcmd("vid_reload\n");
 		g_iCubeProcess = FALSE;
@@ -169,7 +169,7 @@ CMap_Build(void)
 	cvar_set("r_postprocshader", "\"\"0");
 	cvar_set("r_skipEnvmap", "1");
 
-	NSLog("Building cubemaps...\n");
+	ncLog("Building cubemaps...\n");
 	g_eCubeCycle = spawn();
 	g_eCubeCycle.owner = find(world, classname, "env_cubemap");
 

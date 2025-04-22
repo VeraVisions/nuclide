@@ -173,7 +173,7 @@ MapLibrary_Init(void)
 	}
 	search_end(mapsearch);
 
-	NSLog("...MapLibrary initialized (%i entries).", g_mapLibrary_count);
+	ncLog("...MapLibrary initialized (%i entries).", g_mapLibrary_count);
 }
 
 int
@@ -186,7 +186,7 @@ __variant
 MapLibrary_GetInfo(int mapID, mapType_t infoType)
 {
 	if (mapID >= g_mapLibrary_count || mapID < 0i) {
-		NSError("Invalid map id %i", mapID);
+		ncError("Invalid map id %i", mapID);
 		return __NULL__;
 	}
 

@@ -76,7 +76,7 @@ public:
 	virtual float StartToBias(void);
 	virtual float FogRender(void);
 	virtual void FogUpdate(void);
-	virtual void RendererRestarted(void);
+	virtual void ReloadVideoResources(void);
 	virtual void ReceiveEntity(float,float);
 #endif
 
@@ -210,7 +210,7 @@ env_fog_controller::FogUpdate(void)
 }
 
 void
-env_fog_controller::RendererRestarted(void)
+env_fog_controller::ReloadVideoResources(void)
 {
 	think = FogUpdate;
 	nextthink = time + 0.1f;
@@ -394,73 +394,73 @@ env_fog_controller::Save(float handle)
 }
 
 void
-env_fog_controller::Restore(string strKey, string strValue)
+env_fog_controller::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_iFogActive":
-		m_iFogActive = stoi(strValue);
+		m_iFogActive = stoi(setValue);
 		break;
 	case "m_iFogBlend":
-		m_iFogBlend = stoi(strValue);
+		m_iFogBlend = stoi(setValue);
 		break;
 	case "m_flFogStart":
-		m_flFogStart = stof(strValue);
+		m_flFogStart = stof(setValue);
 		break;
 	case "m_flFogEnd":
-		m_flFogEnd = stof(strValue);
+		m_flFogEnd = stof(setValue);
 		break;
 	case "m_flFogMaxDensity":
-		m_flFogMaxDensity = stof(strValue);
+		m_flFogMaxDensity = stof(setValue);
 		break;
 	case "m_flFogFarZ":
-		m_flFogFarZ = stof(strValue);
+		m_flFogFarZ = stof(setValue);
 		break;
 	case "m_vecFogColor":
-		m_vecFogColor = stov(strValue);
+		m_vecFogColor = stov(setValue);
 		break;
 	case "m_vecFogColor2":
-		m_vecFogColor2 = stov(strValue);
+		m_vecFogColor2 = stov(setValue);
 		break;
 	case "m_vecFogDir":
-		m_vecFogDir = stov(strValue);
+		m_vecFogDir = stov(setValue);
 		break;
 	case "m_iSpawnEnable":
-		m_iSpawnEnable = stoi(strValue);
+		m_iSpawnEnable = stoi(setValue);
 		break;
 	case "m_iSpawnBlend":
-		m_iSpawnBlend = stoi(strValue);
+		m_iSpawnBlend = stoi(setValue);
 		break;
 	case "m_flSpawnStart":
-		m_flSpawnStart = stof(strValue);
+		m_flSpawnStart = stof(setValue);
 		break;
 	case "m_flSpawnEnd":
-		m_flSpawnEnd = stof(strValue);
+		m_flSpawnEnd = stof(setValue);
 		break;
 	case "m_flSpawnMaxDensity":
-		m_flSpawnMaxDensity = stof(strValue);
+		m_flSpawnMaxDensity = stof(setValue);
 		break;
 	case "m_flSpawnFarZ":
-		m_flSpawnFarZ = stof(strValue);
+		m_flSpawnFarZ = stof(setValue);
 		break;
 	case "m_vecSpawnColor":
-		m_vecSpawnColor = stov(strValue);
+		m_vecSpawnColor = stov(setValue);
 		break;
 	case "m_vecSpawnColor2":
-		m_vecSpawnColor2 = stov(strValue);
+		m_vecSpawnColor2 = stov(setValue);
 		break;
 	case "m_vecSpawnDir":
-		m_vecSpawnDir = stov(strValue);
+		m_vecSpawnDir = stov(setValue);
 		break;
 	case "m_iUseAngles":
-		m_iUseAngles = stoi(strValue);
+		m_iUseAngles = stoi(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-env_fog_controller::Input(entity eAct, string strKey, string strValue)
+env_fog_controller::Input(entity eAct, string strKey, string setValue)
 {
 	switch (strKey) {
 	case "TurnOn":
@@ -473,65 +473,65 @@ env_fog_controller::Input(entity eAct, string strKey, string strValue)
 		m_iFogActive = (1-m_iFogActive);
 		break;
 	case "SetStartDist":
-		m_flFogStart = stof(strValue);
+		m_flFogStart = stof(setValue);
 		break;
 	case "SetEndDist":
-		m_flFogEnd = stof(strValue);
+		m_flFogEnd = stof(setValue);
 		break;
 	case "SetMaxDensity":
-		m_flFogMaxDensity = stof(strValue);
+		m_flFogMaxDensity = stof(setValue);
 		break;
 	case "SetFarZ":
-		m_flFogFarZ = stof(strValue);
+		m_flFogFarZ = stof(setValue);
 		break;
 	case "SetColor":
-		m_vecFogColor = stov(strValue);
+		m_vecFogColor = stov(setValue);
 		break;
 	case "SetColorSecondary":
-		m_vecFogColor2 = stov(strValue);
+		m_vecFogColor2 = stov(setValue);
 		break;
 	default:
-		super::Input(eAct, strKey, strValue);
+		super::Input(eAct, strKey, setValue);
 	}
 }
 
 void
-env_fog_controller::SpawnKey(string strKey, string strValue)
+env_fog_controller::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "fogenable":
-		m_iSpawnEnable = stoi(strValue);
+		m_iSpawnEnable = stoi(setValue);
 		break;
 	case "fogstart":
-		m_flSpawnStart = stof(strValue);
+		m_flSpawnStart = stof(setValue);
 		break;
 	case "fogend":
-		m_flSpawnEnd = stof(strValue);
+		m_flSpawnEnd = stof(setValue);
 		break;
 	case "fogblend":
-		m_iSpawnBlend = stoi(strValue);
+		m_iSpawnBlend = stoi(setValue);
 		break;
 	case "fogmaxdensity":
-		m_flSpawnMaxDensity = stof(strValue);
+		m_flSpawnMaxDensity = stof(setValue);
 		break;
 	case "farz":
-		m_flSpawnFarZ = stof(strValue);
+		m_flSpawnFarZ = stof(setValue);
 		break;
 	case "fogcolor":
-		m_vecSpawnColor = stov(strValue) / 255;
+		m_vecSpawnColor = stov(setValue) / 255;
 		break;
 	case "fogcolor2":
-		m_vecSpawnColor2 = stov(strValue) / 255;
+		m_vecSpawnColor2 = stov(setValue) / 255;
 		break;
 	case "fogdir":
-		m_vecSpawnDir = stov(strValue);
+		m_vecSpawnDir = stov(setValue);
 		break;
 	/* because these entities aren't complicated enough */
 	case "use_angles":
-		m_iUseAngles = stoi(strValue);
+		m_iUseAngles = stoi(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 #endif

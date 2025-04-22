@@ -25,7 +25,7 @@ public:
 	void ncSpraylogo(void);
 
 	virtual float predraw(void);
-	virtual void RendererRestarted(void);
+	virtual void ReloadVideoResources(void);
 
 private:
 	vector m_vecColor;

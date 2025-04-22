@@ -215,52 +215,52 @@ func_breakable::Save(float handle)
 }
 
 void
-func_breakable::Restore(string strKey, string strValue)
+func_breakable::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_flDelay":
-		m_flDelay = ReadFloat(strValue);
+		m_flDelay = ReadFloat(setValue);
 		break;
 	case "m_flExplodeMag":
-		m_flExplodeMag = ReadFloat(strValue);
+		m_flExplodeMag = ReadFloat(setValue);
 		break;
 	case "m_flExplodeRad":
-		m_flExplodeRad = ReadFloat(strValue);
+		m_flExplodeRad = ReadFloat(setValue);
 		break;
 	case "m_strBreakSpawn":
-		m_strBreakSpawn = ReadString(strValue);
+		m_strBreakSpawn = ReadString(setValue);
 		break;
 	case "m_bCanTouch":
-		m_bCanTouch = ReadBool(strValue);
+		m_bCanTouch = ReadBool(setValue);
 		break;
 	case "material":
-		material = ReadFloat(strValue);
+		material = ReadFloat(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-func_breakable::SpawnKey(string strKey, string strValue)
+func_breakable::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "propdata":
-		int propDataID = ReadInt(strValue);
+		int propDataID = ReadInt(setValue);
 
 		if (propDataID > 0i) {
-			m_strPropData = funcbreakable_proptable[propDataID];
+			SetPropData(funcbreakable_proptable[propDataID]);
 		}
 		break;
 	case "material":
-		material = ReadFloat(strValue);
+		material = ReadFloat(setValue);
 		break;
 	case "explodemagnitude":
-		m_flExplodeMag = stof(strValue);
+		m_flExplodeMag = ReadFloat(setValue);
 		m_flExplodeRad = m_flExplodeMag * 2.5f;
 		break;
 	case "spawnobject":
-		int oid = stoi(strValue);
+		int oid = ReadInt(setValue);
 
 		if (oid >= funcbreakable_objtable.length) {
 			m_strBreakSpawn = "";
@@ -270,10 +270,10 @@ func_breakable::SpawnKey(string strKey, string strValue)
 		}
 		break;
 	case "spawnonbreak":
-		m_strBreakSpawn = strValue;
+		m_strBreakSpawn = ReadString(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 		break;
 	}
 }
@@ -285,11 +285,13 @@ func_breakable::Spawned(void)
 	super::Spawned();
 
 	/* needs to be called before super function */
-	if (HasSurfaceData() == false)
+	if (HasSurfaceData() == false) {
 		SetSurfaceData(funcbreakable_surftable[material]);
+	}
 
-	if (HasPropData() == false)
+	if (HasPropData() == false) {
 		SetPropData(funcbreakable_surftable[material]);
+	}
 }
 
 void
@@ -310,7 +312,7 @@ func_breakable::Respawn(void)
 	}
 
 	/* initially set the health to that of the ent-data */
-	float spawnhealth = GetSpawnHealth();
+	float spawnhealth = GetSpawnFloat("health");
 
 	if (HasPropData() == true && spawnhealth <= 0) {
 		/* assign propdata health */
@@ -366,8 +368,8 @@ func_breakable::Death(entity inflictor, entity attacker, int damage, vector dir,
 		callfunction(self.classname);
 
 		/* spawn anew */
-		if (t.Respawn)
-			t.Respawn();
+		if (t.Spawn)
+			t.Spawn();
 	}
 
 	if (material == BREAKMT_GLASS_UNBREAKABLE) {
@@ -377,13 +379,15 @@ func_breakable::Death(entity inflictor, entity attacker, int damage, vector dir,
 	eActivator = (ncEntity)attacker;
 	m_explodeDir = dir;
 
-	if (m_strBreakSpawn != "" && isfunction(m_strBreakSpawn)) {
-		entity unit = spawn();
-		unit.classname = m_strBreakSpawn;
-		unit.think = break_spawnobject;
-		unit.nextthink = time;
-		unit.real_owner = this;
-		setorigin(unit, WorldSpaceCenter());
+	if (STRING_SET(m_strBreakSpawn)) {
+		if (isfunction(m_strBreakSpawn)) {
+			entity unit = spawn();
+			unit.classname = m_strBreakSpawn;
+			unit.think = break_spawnobject;
+			unit.nextthink = time;
+			unit.real_owner = this;
+			setorigin(unit, WorldSpaceCenter());
+		}
 	}
 
 	/* This may seem totally absurd. That's because it is. It's very
@@ -432,10 +436,7 @@ func_breakable::Death(entity inflictor, entity attacker, int damage, vector dir,
 			EntError("No BreakModel set for \"material\" \"%d\"", material);
 		}
 
-		if (sndBreak != "")
-			StartSoundDef(sndBreak, CHAN_BODY, true);
-		else
-			EntError("No SurfData set for \"material\" \"%d\"", material);
+		StartSoundDef(sndBreak, CHAN_BODY, true);
 
 		Disappear();
 		MakeInvulnerable();
@@ -446,8 +447,9 @@ func_breakable::Death(entity inflictor, entity attacker, int damage, vector dir,
 void
 func_breakable::Trigger(entity act, triggermode_t state)
 {
-	if (GetHealth() > 0)
+	if (GetHealth() > 0) {
 		Death(act, act, 0i, g_vec_null, origin, 0i);
+	}
 }
 
 void
@@ -458,15 +460,17 @@ func_breakable::Touch(entity eToucher)
 		Trigger(this, TRIG_TOGGLE);
 	}
 
-	if (m_bCanTouch == false)
+	if (m_bCanTouch == false) {
 		return;
+	}
 
 	if (eToucher.classname == classname) {
 		return;
 	}
 
+	/* grenades need to be able to break stuff */
 	if (eToucher.solid == SOLID_CORPSE) {
-		if (vlen(eToucher.velocity) > 100) {
+		if (length(eToucher.velocity) > 100) {
 			Trigger(this, TRIG_ON);
 		}
 	}
@@ -475,7 +479,7 @@ func_breakable::Touch(entity eToucher)
 	if (HasSpawnFlags(SF_TOUCH)) {
 		int dmgAmount = (float)(vlen(eToucher.velocity) * 0.01f);
 
-		if (dmgAmount >= health) {
+		if (dmgAmount >= GetHealth()) {
 			vector dmgDir = dirFromTarget(eToucher.origin, WorldSpaceCenter());
 			ncDict damageDecl = spawn(ncDict);
 			damageDecl.AddKey("damage", itos(dmgAmount));

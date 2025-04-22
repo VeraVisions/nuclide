@@ -106,11 +106,11 @@ private:
 	bool m_bCanTouch;
 
 	/* input/output */
-	string m_strOnPressed;
-	string m_strOnDamaged;
-	string m_strOnUseLocked;
-	string m_strOnIn;
-	string m_strOnOut;
+	string m_outputOnPressed;
+	string m_outputOnDamaged;
+	string m_outputOnUseLocked;
+	string m_outputOnIn;
+	string m_outputOnOut;
 };
 
 void
@@ -124,11 +124,11 @@ func_button::func_button(void)
 	m_strSndPressed = __NULL__;
 	m_strSndUnpressed = __NULL__;
 	m_bCanTouch = true;
-	m_strOnPressed = __NULL__;
-	m_strOnDamaged = __NULL__;
-	m_strOnUseLocked = __NULL__;
-	m_strOnIn = __NULL__;
-	m_strOnOut = __NULL__;
+	m_outputOnPressed = __NULL__;
+	m_outputOnDamaged = __NULL__;
+	m_outputOnUseLocked = __NULL__;
+	m_outputOnIn = __NULL__;
+	m_outputOnOut = __NULL__;
 }
 
 void
@@ -142,106 +142,106 @@ func_button::Save(float handle)
 	SaveFloat(handle, "m_flDelay", m_flDelay);
 	SaveString(handle, "m_strSndPressed", m_strSndPressed);
 	SaveString(handle, "m_strSndUnpressed", m_strSndUnpressed);
-	SaveString(handle, "m_strOnPressed", m_strOnPressed);
-	SaveString(handle, "m_strOnDamaged", m_strOnDamaged);
-	SaveString(handle, "m_strOnUseLocked", m_strOnUseLocked);
-	SaveString(handle, "m_strOnIn", m_strOnIn);
-	SaveString(handle, "m_strOnOut", m_strOnOut);
+	SaveString(handle, "m_outputOnPressed", m_outputOnPressed);
+	SaveString(handle, "m_outputOnDamaged", m_outputOnDamaged);
+	SaveString(handle, "m_outputOnUseLocked", m_outputOnUseLocked);
+	SaveString(handle, "m_outputOnIn", m_outputOnIn);
+	SaveString(handle, "m_outputOnOut", m_outputOnOut);
 	SaveBool(handle, "m_bCanTouch", m_bCanTouch);
 }
 
 void
-func_button::Restore(string strKey, string strValue)
+func_button::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_flSpeed":
-		m_flSpeed = ReadFloat(strValue);
+		m_flSpeed = ReadFloat(setValue);
 		break;
 	case "m_flLip":
-		m_flLip = ReadFloat(strValue);
+		m_flLip = ReadFloat(setValue);
 		break;
 	case "m_flNextTrigger":
-		m_flNextTrigger = ReadFloat(strValue);
+		m_flNextTrigger = ReadFloat(setValue);
 		break;
 	case "m_flWait":
-		m_flWait = ReadFloat(strValue);
+		m_flWait = ReadFloat(setValue);
 		break;
 	case "m_flDelay":
-		m_flDelay = ReadFloat(strValue);
+		m_flDelay = ReadFloat(setValue);
 		break;
 	case "m_strSndPressed":
-		m_strSndPressed = ReadString(strValue);
+		m_strSndPressed = ReadString(setValue);
 		break;
 	case "m_strSndUnpressed":
-		m_strSndUnpressed = ReadString(strValue);
+		m_strSndUnpressed = ReadString(setValue);
 		break;
-	case "m_strOnPressed":
-		m_strOnPressed = ReadString(strValue);
+	case "m_outputOnPressed":
+		m_outputOnPressed = ReadString(setValue);
 		break;
-	case "m_strOnDamaged":
-		m_strOnDamaged = ReadString(strValue);
+	case "m_outputOnDamaged":
+		m_outputOnDamaged = ReadString(setValue);
 		break;
-	case "m_strOnUseLocked":
-		m_strOnUseLocked = ReadString(strValue);
+	case "m_outputOnUseLocked":
+		m_outputOnUseLocked = ReadString(setValue);
 		break;
-	case "m_strOnIn":
-		m_strOnIn = ReadString(strValue);
+	case "m_outputOnIn":
+		m_outputOnIn = ReadString(setValue);
 		break;
-	case "m_strOnOut":
-		m_strOnOut = ReadString(strValue);
+	case "m_outputOnOut":
+		m_outputOnOut = ReadString(setValue);
 		break;
 	case "m_bCanTouch":
-		m_bCanTouch = ReadBool(strValue);
+		m_bCanTouch = ReadBool(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-func_button::SpawnKey(string strKey, string strValue)
+func_button::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "message":
-		message = strValue;
+		message = setValue;
 		break;
 	case "speed":
-		m_flSpeed = stof(strValue);
+		m_flSpeed = stof(setValue);
 		break;
 	case "lip":
-		m_flLip = stof(strValue);
+		m_flLip = stof(setValue);
 		break;
 	case "snd_pressed":
-		m_strSndPressed = strValue;
+		m_strSndPressed = setValue;
 		break;
 	case "snd_unpressed":
-		m_strSndUnpressed = strValue;
+		m_strSndUnpressed = setValue;
 		break;
 	case "wait":
-		m_flWait = stof(strValue);
+		m_flWait = stof(setValue);
 		break;
 	/* input/output */
 	case "OnPressed":
-		m_strOnPressed = PrepareOutput(m_strOnPressed, strValue);
+		m_outputOnPressed = PrepareOutput(m_outputOnPressed, setValue);
 		break;
 	case "OnDamaged":
-		m_strOnDamaged = PrepareOutput(m_strOnDamaged, strValue);
+		m_outputOnDamaged = PrepareOutput(m_outputOnDamaged, setValue);
 		break;
 	case "OnUseLocked":
-		m_strOnUseLocked = PrepareOutput(m_strOnUseLocked, strValue);
+		m_outputOnUseLocked = PrepareOutput(m_outputOnUseLocked, setValue);
 		break;
 	case "OnIn":
-		m_strOnIn = PrepareOutput(m_strOnIn, strValue);
+		m_outputOnIn = PrepareOutput(m_outputOnIn, setValue);
 		break;
 	case "OnOut":
-		m_strOnOut = PrepareOutput(m_strOnOut, strValue);
+		m_outputOnOut = PrepareOutput(m_outputOnOut, setValue);
 		break;
 	/* compatibility */
 	case "sounds":
-		m_strSndPressed = sprintf("func_button.hlsfx_%i", stoi(strValue) + 1i);
+		m_strSndPressed = sprintf("func_button.hlsfx_%i", stoi(setValue) + 1i);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
@@ -251,20 +251,20 @@ func_button::Spawned(void)
 	super::Spawned();
 
 	/* sounds */
-	Sound_Precache(m_strSndPressed);
-	Sound_Precache(m_strSndUnpressed);
+	precache.Sound(m_strSndPressed);
+	precache.Sound(m_strSndUnpressed);
 
 	/* input/output */
-	if (m_strOnPressed)
-		m_strOnPressed = CreateOutput(m_strOnPressed);
-	if (m_strOnDamaged)
-		m_strOnDamaged = CreateOutput(m_strOnDamaged);
-	if (m_strOnUseLocked)
-		m_strOnUseLocked = CreateOutput(m_strOnUseLocked);
-	if (m_strOnIn)
-		m_strOnIn = CreateOutput(m_strOnIn);
-	if (m_strOnOut)
-		m_strOnOut = CreateOutput(m_strOnOut);
+	if (m_outputOnPressed)
+		m_outputOnPressed = CreateOutput(m_outputOnPressed);
+	if (m_outputOnDamaged)
+		m_outputOnDamaged = CreateOutput(m_outputOnDamaged);
+	if (m_outputOnUseLocked)
+		m_outputOnUseLocked = CreateOutput(m_outputOnUseLocked);
+	if (m_outputOnIn)
+		m_outputOnIn = CreateOutput(m_outputOnIn);
+	if (m_outputOnOut)
+		m_outputOnOut = CreateOutput(m_outputOnOut);
 }
 
 void
@@ -277,7 +277,7 @@ func_button::Respawn(void)
 
 	ClearVelocity();
 	ReleaseThink();
-	SetHealth(GetSpawnHealth());
+	SetHealth(GetSpawnFloat("health"));
 
 	RestoreAngles();
 	SetMoverPosition1(GetOrigin());
@@ -307,7 +307,7 @@ func_button::Respawn(void)
 		m_bCanTouch = false;
 	}
 
-	m_iValue = 0;
+	SetValue(0i);
 }
 
 void
@@ -318,17 +318,17 @@ func_button::MoverFinishesMoving(void)
 	}
 
 	/* let's reset our button's health and mark it as shootable */
-	SetHealth(GetSpawnHealth());
+	SetHealth(GetSpawnFloat("health"));
 
 	if (GetHealth() > 0) {
 		MakeVulnerable();
 	}
 
 	if (GetMoverState() == MOVER_POS1) {
-		UseOutput(this, m_strOnOut);
+		UseOutput(this, m_outputOnOut);
 		SetFrame(FRAME_OFF);
 	} else if (GetMoverState() == MOVER_POS2) {
-		UseOutput(this, m_strOnIn);
+		UseOutput(this, m_outputOnIn);
 		ScheduleThink(MoveBack, m_flWait);
 	}
 
@@ -341,10 +341,10 @@ func_button::MoverStartsMoving(void)
 	m_bCanTouch = false;
 
 	if (GetMoverState() == MOVER_1TO2) {
-		m_iValue = 1;
+		SetValue(1i);
 		SetFrame(FRAME_ON);
 	} else if (GetMoverState() == MOVER_2TO1) {
-		m_iValue = 0;
+		SetValue(0i);
 
 		if (m_strSndUnpressed) {
 			StartSoundDef(m_strSndUnpressed, CHAN_VOICE, true);
@@ -357,7 +357,7 @@ void
 func_button::Trigger(entity act, triggermode_t state)
 {
 	if (GetMaster(act) == false) {
-		UseOutput(act, m_strOnUseLocked);
+		UseOutput(act, m_outputOnUseLocked);
 		return;
 	}
 
@@ -379,14 +379,14 @@ func_button::Trigger(entity act, triggermode_t state)
 	}
 
 	MoveToPosition(GetMoverPosition2(), m_flSpeed);
-	UseOutput(act, m_strOnPressed);
+	UseOutput(act, m_outputOnPressed);
 	UseTargets(act, TRIG_TOGGLE, m_flDelay);
 
 	if (message) {
 		env_message_single(act, message);
 	}
 
-	SetHealth(GetSpawnHealth());
+	SetHealth(GetSpawnFloat("health"));
 }
 
 void
@@ -403,7 +403,7 @@ func_button::Touch(entity eToucher)
 		return;
 	}
 
-	if (eToucher.classname == "player") {
+	if (is.Player(eToucher)) {
 		Trigger(eToucher, TRIG_TOGGLE);
 	}
 }

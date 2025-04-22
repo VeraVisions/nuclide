@@ -65,38 +65,38 @@ prop_door_rotating::Save(float handle)
 }
 
 void
-prop_door_rotating::Restore(string strKey, string strValue)
+prop_door_rotating::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_vecDest1":
-		m_vecDest1 = ReadVector(strValue);
+		m_vecDest1 = ReadVector(setValue);
 		break;
 	case "m_vecDest2":
-		m_vecDest2 = ReadVector(strValue);
+		m_vecDest2 = ReadVector(setValue);
 		break;
 	case "m_flDistance":
-		m_flDistance = ReadFloat(strValue);
+		m_flDistance = ReadFloat(setValue);
 		break;
 	case "m_flSpeed":
-		m_flSpeed = ReadFloat(strValue);
+		m_flSpeed = ReadFloat(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-prop_door_rotating::SpawnKey(string strKey, string strValue)
+prop_door_rotating::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "distance":
-		m_flDistance = stof(strValue);
+		m_flDistance = stof(setValue);
 		break;
 	case "speed":
-		m_flSpeed = stof(strValue);
+		m_flSpeed = stof(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
@@ -159,12 +159,11 @@ prop_door_rotating::Interact(void)
 		Turn(m_vecDest1, Closed);
 	}
 
-	m_iValue = 1 - m_iValue;
-
 	SetFrame(1);
+	SetValue(1i - GetValue(this));
 	SetSendFlags(BASEFL_CHANGED_FRAME);
 
-	if (m_iValue)
+	if (GetValue(this))
 		ScheduleThink(TurnAway, 0.25f);
 	else
 		ScheduleThink(TurnBack, 0.25f);

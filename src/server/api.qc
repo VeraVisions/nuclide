@@ -33,8 +33,10 @@ SVPF_game_CleanUpMap(void)
 	/* respawn all entities. */
 	for (entity a = world; (a = findfloat(a, ::identity, 1));) {
 		ncEntity caw = (ncEntity)a;
-		if (caw.classname != "player")
+
+		if (!(is.Player(caw))) {
 			caw.Respawn();
+		}
 	}
 
 	/* clear the corpses/items, you name it*/
@@ -51,30 +53,6 @@ SVPF_game_CleanUpMap(void)
 	WriteByte(MSG_MULTICAST, EV_CLEARDECALS);
 	msg_entity = world;
 	multicast([0,0,0], MULTICAST_ALL);
-}
-
-entity
-SVPF_ents_NextItem(entity lastItem)
-{
-	return findfloat(lastItem, ::_isItem, 1);
-}
-
-entity
-SVPF_ents_NextWeapon(entity lastItem)
-{
-	return findfloat(lastItem, ::_isWeapon, 1);
-}
-
-entity
-SVPF_ents_NextActor(entity lastItem)
-{
-	return findfloat(lastItem, ::_isActor, 1);
-}
-
-entity
-SVPF_ents_NextPlayer(entity lastItem)
-{
-	return findfloat(lastItem, ::_isPlayer, 1);
 }
 
 string
@@ -216,7 +194,7 @@ SVPF_combat_Damage(entity targetEnt, entity inflictingEnt, entity attackingEnt, 
 		return;
 	}
 
-	if (isGodMode(targetEnt) == true) {
+	if (is.GodMode(targetEnt) == true) {
 		return;
 	}
 
@@ -234,7 +212,7 @@ SVPF_combat_Damage(entity targetEnt, entity inflictingEnt, entity attackingEnt, 
 		return;
 	}
 
-	NSError("Cannot find decl %S for damage info.", damageDef);
+	ncError("Cannot find decl %S for damage info.", damageDef);
 }
 
 void
@@ -296,5 +274,30 @@ SVPF_combat_RadiusDamage(vector damageCenter, float damageRange, int damageMin, 
 void
 SVPF_combat_Obituary(string targetName, string attackerName, string weaponDef, string meansOfDeath)
 {
-	obituary(targetName, attackerName, weaponDef, meansOfDeath);
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_OBITUARY);
+	WriteString(MSG_MULTICAST, targetName);
+	WriteString(MSG_MULTICAST, attackerName);
+	WriteString(MSG_MULTICAST, weaponDef);
+	WriteString(MSG_MULTICAST, meansOfDeath);
+	msg_entity = world;
+	multicast([0,0,0], MULTICAST_ALL_R);
+}
+
+entity
+SVPF_ents_Create(string className, vector worldPosition)
+{
+	return spawnClass(className, worldPosition);
+}
+
+float
+SVPF_ents_ChangeToClass(entity targetEntity, string className)
+{
+	return changeClass(targetEntity, className);
+}
+
+void
+SVPF_ents_Input(entity target, string inputName, string dataString, entity activator)
+{
+	sendInput(target, inputName, dataString, activator);
 }

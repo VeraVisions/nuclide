@@ -32,17 +32,46 @@ ncSquadMonster::ncSquadMonster(void)
 
 #ifdef SERVER
 void
-ncSquadMonster::SpawnKey(string strKey, string strValue)
+ncSquadMonster::AlertSquadWithMindset(string scheduleType)
 {
-	switch (strKey) {
-	case "squad_leader":
-		m_bStartAsLeader = ReadBool(strValue);
-		break;
-	case "squad_leader_body":
-		m_strSquadLeaderBody = ReadString(strValue);
+	ncSquadMonster startMember = GetSquadLeader();
+
+	/* change their mindset silently */
+	for (int i = 0; i < NSSQUADMONSTER_MAXMEMBERS; i++) {
+		if (startMember.m_eSquadMembers[i] != __NULL__) {
+			ncSquadMonster f = startMember.m_eSquadMembers[i];
+			f.m_eEnemy = m_eEnemy;
+			f.m_mindset = scheduleType;
+		}
+	}
+}
+
+void
+ncSquadMonster::Input(entity entityActivator, string inputName, string dataField)
+{
+	switch (inputName) {
+	case "AlertSquadWithMindset":
+		CancelSchedule();
+		m_mindset = dataField;
+		AlertSquadWithMindset(dataField);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::Input(entityActivator, inputName, dataField);
+	}
+}
+
+void
+ncSquadMonster::SpawnKey(string keyName, string setValue)
+{
+	switch (keyName) {
+	case "squad_leader":
+		m_bStartAsLeader = ReadBool(setValue);
+		break;
+	case "squad_leader_body":
+		m_strSquadLeaderBody = ReadString(setValue);
+		break;
+	default:
+		super::SpawnKey(keyName, setValue);
 	}
 }
 
@@ -63,38 +92,38 @@ ncSquadMonster::Save(float handle)
 }
 
 void
-ncSquadMonster::Restore(string strKey, string strValue)
+ncSquadMonster::Restore(string keyName, string setValue)
 {
-	switch (strKey) {
+	switch (keyName) {
 	case "m_strSquadLeaderBody":
-		m_strSquadLeaderBody = ReadString(strValue);
+		m_strSquadLeaderBody = ReadString(setValue);
 		break;
 	case "m_bStartAsLeader":
-		m_bStartAsLeader = ReadBool(strValue);
+		m_bStartAsLeader = ReadBool(setValue);
 		break;
 	case "m_inSquad":
-		m_inSquad = ReadBool(strValue);
+		m_inSquad = ReadBool(setValue);
 		break;
 	case "m_eSquadLeader":
-		m_eSquadLeader = (ncSquadMonster)ReadEntity(strValue);
+		m_eSquadLeader = (ncSquadMonster)ReadEntity(setValue);
 		break;
 	case "m_eSquadMembers0":
-		m_eSquadMembers[0] = (ncSquadMonster)ReadEntity(strValue);
+		m_eSquadMembers[0] = (ncSquadMonster)ReadEntity(setValue);
 		break;
 	case "m_eSquadMembers1":
-		m_eSquadMembers[1] = (ncSquadMonster)ReadEntity(strValue);
+		m_eSquadMembers[1] = (ncSquadMonster)ReadEntity(setValue);
 		break;
 	case "m_eSquadMembers2":
-		m_eSquadMembers[2] = (ncSquadMonster)ReadEntity(strValue);
+		m_eSquadMembers[2] = (ncSquadMonster)ReadEntity(setValue);
 		break;
 	case "m_eSquadMembers3":
-		m_eSquadMembers[3] = (ncSquadMonster)ReadEntity(strValue);
+		m_eSquadMembers[3] = (ncSquadMonster)ReadEntity(setValue);
 		break;
 	case "m_eSquadMembers4":
-		m_eSquadMembers[4] = (ncSquadMonster)ReadEntity(strValue);
+		m_eSquadMembers[4] = (ncSquadMonster)ReadEntity(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(keyName, setValue);
 		break;
 	}
 }

@@ -44,64 +44,137 @@ var logLevel_t autocvar_g_logLevel = LOGLEVEL_DEFAULT;
 #define enumflags enum
 #endif
 
-void
-_NSLog(string msg)
+#define ICN_SIZE 8
+
+string
+imageToConsole(string imageName, int imgSize, string toolTip)
 {
+	return sprintf("^[\\img\\%s\\s\\%i\\tip\\%s^]", imageName, imgSize, toolTip);
+}
+
+#define CG_LOG			imageToConsole("gfx/icon16/monitor", ICN_SIZE, "Client Game Log")
+#define CG_WARNING		imageToConsole("gfx/icon16/error", ICN_SIZE, "Client Game Warning")
+#define CG_ERROR		imageToConsole("gfx/icon16/exclamation", ICN_SIZE, "Client Game Error")
+
+#define SV_LOG			imageToConsole("gfx/icon16/server", ICN_SIZE, "Server Game Log")
+#define SV_WARNING		imageToConsole("gfx/icon16/error", ICN_SIZE, "Server Game Warning")
+#define SV_ERROR		imageToConsole("gfx/icon16/exclamation", ICN_SIZE, "Server Game Error")
+
+#define UI_LOG			imageToConsole("gfx/icon16/picture", ICN_SIZE, "Menu Game Log")
+#define UI_WARNING		imageToConsole("gfx/icon16/error", ICN_SIZE, "Menu Game Warning")
+#define UI_ERROR		imageToConsole("gfx/icon16/exclamation", ICN_SIZE, "Menu Game Error")
+
+void
+_ncLog(string msg)
+{
+#ifdef CLIENT
 	if (autocvar_g_logTimestamps)
-		print(sprintf("^9%f ^7%s\n", time, msg));
+		print(sprintf("%s ^9%f ^7%s\n", CG_LOG, time, msg));
 	else
-		print(sprintf("^7%s\n", msg));
+		print(sprintf("%s ^7%s\n", CG_LOG, msg));
+#endif
+#ifdef SERVER
+	if (autocvar_g_logTimestamps)
+		print(sprintf("%s ^9%f ^7%s\n", SV_LOG, time, msg));
+	else
+		print(sprintf("%s ^7%s\n", SV_LOG, msg));
+#endif
+#ifdef MENU
+	if (autocvar_g_logTimestamps)
+		print(sprintf("%s ^9%f ^7%s\n", UI_LOG, time, msg));
+	else
+		print(sprintf("%s ^7%s\n", UI_LOG, msg));
+#endif
 }
 
 void
-_NSError(string functionName, string msg)
+_ncError(string functionName, string msg)
 {
+#ifdef CLIENT
 	if (autocvar_g_logTimestamps)
-		print(sprintf("^9%f ^1%s^7: %s\n", time, functionName, msg));
+		print(sprintf("%s ^9%f ^1%s^7: %s\n", CG_ERROR, time, functionName, msg));
 	else
-		print(sprintf("^1%s^7: %s\n", functionName, msg));
+		print(sprintf("%s ^1%s^7: %s\n", CG_ERROR, functionName, msg));
+#endif
+#ifdef SERVER
+	if (autocvar_g_logTimestamps)
+		print(sprintf("%s ^9%f ^1%s^7: %s\n", SV_ERROR, time, functionName, msg));
+	else
+		print(sprintf("%s ^1%s^7: %s\n", SV_ERROR, functionName, msg));
+#endif
+#ifdef MENU
+	if (autocvar_g_logTimestamps)
+		print(sprintf("%s ^9%f ^1%s^7: %s\n", UI_ERROR, time, functionName, msg));
+	else
+		print(sprintf("%s ^1%s^7: %s\n", UI_ERROR, functionName, msg));
+#endif
 }
 
 void
-_NSWarning(string functionName, string msg)
+_ncWarning(string functionName, string msg)
 {
+#ifdef CLIENT
 	if (autocvar_g_logTimestamps)
-		print(sprintf("^9%f ^3%s^7: %s\n", time, functionName, msg));
+		print(sprintf("%s ^9%f ^3%s^7: %s\n", CG_WARNING, time, functionName, msg));
 	else
-		print(sprintf("^3%s^7: %s\n", functionName, msg));
+		print(sprintf("%s ^3%s^7: %s\n", CG_WARNING, functionName, msg));
+#endif
+#ifdef SERVER
+	if (autocvar_g_logTimestamps)
+		print(sprintf("%s ^9%f ^3%s^7: %s\n", SV_WARNING, time, functionName, msg));
+	else
+		print(sprintf("%s ^3%s^7: %s\n", SV_WARNING, functionName, msg));
+#endif
+#ifdef MENU
+	if (autocvar_g_logTimestamps)
+		print(sprintf("%s ^9%f ^3%s^7: %s\n", UI_WARNING, time, functionName, msg));
+	else
+		print(sprintf("%s ^3%s^7: %s\n", UI_WARNING, functionName, msg));
+#endif
 }
 
 void
 _NSAssert(bool condition, string function, string descr)
 {
+#ifdef CLIENT
 	if (!condition) {
-		print(strcat("^1Assertion failed in ", function, ", reason: ", descr, "\n"));
-#ifndef MENU
+		print(strcat(CG_ERROR, " ^1Assertion failed in ", function, ", reason: ", descr, "\n"));
 		breakpoint();
-#endif
 	}
+#endif
+#ifdef SERVER
+	if (!condition) {
+		print(strcat(SV_ERROR, " ^1Assertion failed in ", function, ", reason: ", descr, "\n"));
+		breakpoint();
+	}
+#endif
+#ifdef MENU
+	if (!condition) {
+		print(strcat(UI_ERROR, " ^1Assertion failed in ", function, ", reason: ", descr, "\n"));
+	}
+#endif
 }
 
 /** Logs an message, with timestamp.
-	 The console variable `g_developer` has to be `1` for them to be visible.
+	 The console variable `g_logLevel` has to be `3` or higher for them to be visible.
 
 @param description(...) contains a formatted string containing a description. */
-#define NSLog(...) if (autocvar_g_logLevel >= LOGLEVEL_DEBUG) _NSLog(sprintf(__VA_ARGS__))
+#define ncLog(...) if (autocvar_g_logLevel >= LOGLEVEL_DEBUG) _ncLog(sprintf(__VA_ARGS__))
 
 /** Logs an error message, with timestamp.
-	 The console variable `g_developer` has to be `1` for them to be visible.
+	 The console variable `g_logLevel` has to be `1` or higher for them to be visible.
 
 @param description(...) contains a formatted string containing a description. */
-#define NSError(...) if (autocvar_g_logLevel >= LOGLEVEL_ERRORS) _NSError(__FUNC__, sprintf(__VA_ARGS__))
+#define ncError(...) if (autocvar_g_logLevel >= LOGLEVEL_ERRORS) _ncError(__FUNC__, sprintf(__VA_ARGS__))
 
 /** Logs a warning message, with timestamp.
-	 The console variable `g_developer` has to be `1` for them to be visible.
+	 The console variable `g_logLevel` has to be `2` or higher for them to be visible.
 
 @param description(...) contains a formatted string containing a description. */
-#define NSWarning(...) if (autocvar_g_logLevel >= LOGLEVEL_WARNINGS) _NSWarning(__FUNC__, sprintf(__VA_ARGS__))
+#define ncWarning(...) if (autocvar_g_logLevel >= LOGLEVEL_WARNINGS) _ncWarning(__FUNC__, sprintf(__VA_ARGS__))
 
 /** Generates an assertion, if a given condition is false.
-	 The console variable `g_developer` has to be `1` for them to be visible.
+	 The console variable `g_logLevel` has to be `1` or higher for them to be visible.
 
 @param condition is the expression to be evaluated.
 @param description(...) contains a formatted string containing an error description. */
@@ -133,7 +206,7 @@ InitPrint(string functionName)
 	string sideRight = "";
 
 	if (functionName == __NULL__) {
-		NSLog("---------------------------------------------------");
+		ncLog("---------------------------------------------------");
 		return;
 	}
 
@@ -149,7 +222,7 @@ InitPrint(string functionName)
 		sideRight = strcat(sideRight,"-");
 	}
 
-	NSLog( "%s %s %s", sideLeft, functionName, sideRight);
+	ncLog( "%s %s %s", sideLeft, functionName, sideRight);
 }
 
 var string g_lastInitFunc;
@@ -170,8 +243,8 @@ void
 _InitEnd(void)
 {
 	float endTime = gettime(1);
-	NSLog("loaded in %.1f seconds", (endTime - g_initTime));
-	NSLog("---------------------------------------------------");
+	ncLog("loaded in %.1f seconds", (endTime - g_initTime));
+	ncLog("---------------------------------------------------");
 	g_initTime = 0;
 }
 
@@ -200,6 +273,18 @@ Util_ExtensionFromString(string inputString)
 	int modelNameLength = strlen(inputString);
 	return substring(inputString, modelNameLength - 3, modelNameLength);
 }
+
+void
+CallSpawnfuncByName(entity target, string className)
+{
+	entity oldSelf = self;
+	string spawnClass = strcat("spawnfunc_", className);
+	self = target;
+	callfunction(spawnClass);
+	self = oldSelf;
+}
+
+.string spawnclass;
 
 /** @} */ // end of common
 

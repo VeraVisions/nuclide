@@ -121,29 +121,29 @@ env_instructor_hint::Respawn(void)
 }
 
 void
-env_instructor_hint::SpawnKey(string strKey, string strValue)
+env_instructor_hint::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "hint_icon_onscreen":
-		m_strIcon = strValue;
+		m_strIcon = setValue;
 		break;
 	case "hint_icon_offscreen":
-		m_strIconOff = strValue;
+		m_strIconOff = setValue;
 		break;
 	case "hint_caption":
-		m_strText = strValue;
+		m_strText = setValue;
 		break;
 	case "hint_color":
-		m_vecTextColor = ReadVector(strValue) / 255;
+		m_vecTextColor = ReadVector(setValue) / 255;
 		break;
 	case "hint_timeout":
-		m_flTimeOut = ReadFloat(strValue);
+		m_flTimeOut = ReadFloat(setValue);
 		break;
 	case "hint_icon_offset":
-		m_flOffset = ReadFloat(strValue);
+		m_flOffset = ReadFloat(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
@@ -160,29 +160,29 @@ env_instructor_hint::Save(float handle)
 }
 
 void
-env_instructor_hint::Restore(string strKey, string strValue)
+env_instructor_hint::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_strIcon":
-		m_strIcon = ReadString(strValue);
+		m_strIcon = ReadString(setValue);
 		break;
 	case "m_strIconOff":
-		m_strIconOff = ReadString(strValue);
+		m_strIconOff = ReadString(setValue);
 		break;
 	case "m_strText":
-		m_strText = ReadString(strValue);
+		m_strText = ReadString(setValue);
 		break;
 	case "m_vecTextColor":
-		m_vecTextColor = ReadVector(strValue);
+		m_vecTextColor = ReadVector(setValue);
 		break;
 	case "m_flTimeOut":
-		m_flTimeOut = ReadFloat(strValue);
+		m_flTimeOut = ReadFloat(setValue);
 		break;
 	case "m_flOffset":
-		m_flOffset = ReadFloat(strValue);
+		m_flOffset = ReadFloat(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 

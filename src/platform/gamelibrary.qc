@@ -501,7 +501,7 @@ GameLibrary_InitCustom(void)
 
 	/* The things we do for frequent flyer mileage. */
 	if (!games) {
-		NSError("Attempting to allocate mod data for %i entries failed.", gameinfo_count);
+		ncError("Attempting to allocate mod data for %i entries failed.", gameinfo_count);
 		crash();
 		return;
 	}
@@ -518,16 +518,16 @@ GameLibrary_InitCustom(void)
 		GameLibrary_SetDefaults(targetID, gamedirname);
 
 		if (GameLibrary_CheckManifest(targetID, gamedirname) == true) {
-			NSLog("[MENU] Found manifest for %s", gamedirname);
+			ncLog("[MENU] Found manifest for %s", gamedirname);
 			games[targetID].info_type = GAMEINFO_MANIFEST;
 		} else if (GameLibrary_CheckGameInfo(targetID, gamedirname) == true) {
-			NSLog("[MENU] Found gameinfo for %s", gamedirname);
+			ncLog("[MENU] Found gameinfo for %s", gamedirname);
 			games[targetID].info_type = GAMEINFO_GITXT;
 		} else if (GameLibrary_CheckLibList(targetID, gamedirname) == true) {
-			NSLog("[MENU] Found liblist for %s", gamedirname);
+			ncLog("[MENU] Found liblist for %s", gamedirname);
 			games[targetID].info_type = GAMEINFO_LIBLIST;
 		} else {
-			NSLog("[MENU] Found nothing for %s", gamedirname);
+			ncLog("[MENU] Found nothing for %s", gamedirname);
 			games[targetID].info_type = GAMEINFO_NONE;
 		}
 		c = targetID + 1;
@@ -575,12 +575,12 @@ GameLibrary_InitCustom(void)
 
 	/* we may have some mods, but we're not running any of them. Fatal */
 	if (gameinfo_current == -1) {
-		NSError("No definition for current game found. Fatal.");
+		ncError("No definition for current game found. Fatal.");
 		crash();
 		return;
 	}
 
-	NSLog("...GameLibrary initialized (%i entries).", gameinfo_count);
+	ncLog("...GameLibrary initialized (%i entries).", gameinfo_count);
 }
 #endif
 
@@ -603,16 +603,16 @@ GameLibrary_Init(void)
 	/* only run this when not in web-client mode */
 #ifndef WEBMENU
 	if (GameLibrary_CheckManifest(targetID, gamedirname) == 1) {
-		NSLog("[MENU] Found manifest for %s", gamedirname);
+		ncLog("[MENU] Found manifest for %s", gamedirname);
 		games[targetID].info_type = GAMEINFO_MANIFEST;
 	} else if (GameLibrary_CheckGameInfo(targetID, gamedirname) == 1) {
-		NSLog("[MENU] Found gameinfo for %s", gamedirname);
+		ncLog("[MENU] Found gameinfo for %s", gamedirname);
 		games[targetID].info_type = GAMEINFO_GITXT;
 	} else if (GameLibrary_CheckLibList(targetID, gamedirname) == 1) {
-		NSLog("[MENU] Found liblist for %s", gamedirname);
+		ncLog("[MENU] Found liblist for %s", gamedirname);
 		games[targetID].info_type = GAMEINFO_LIBLIST;
 	} else {
-		NSLog("[MENU] Found nothing for %s", gamedirname);
+		ncLog("[MENU] Found nothing for %s", gamedirname);
 		games[targetID].info_type = GAMEINFO_NONE;
 	}
 #endif
@@ -625,7 +625,7 @@ static void
 GameLibrary_EndInstall(void)
 {
 	int gid = g_iModInstallCache;
-	NSLog("Installation ended for %S.", g_strModInstallCache);
+	ncLog("Installation ended for %S.", g_strModInstallCache);
 	localcmd(sprintf("game %s\n", g_strModInstallCache));
 
 	localcmd("stopmusic\nsnd_restart\nwait\nvid_reload\n");
@@ -704,13 +704,13 @@ GameLibrary_InstallStart(int gameid)
 	for (int i = 0; i < count; i++) {
 		int pkgid = GameLibrary_IDForPackageName(argv(i));
 		localcmd(sprintf("pkg add %s\n", argv(i)));
-		NSLog("Marking package %s for install.", argv(i));
+		ncLog("Marking package %s for install.", argv(i));
 	}
 
 	g_iModInstallCache = gameid;
 	g_strModInstallCache = games[gameid].gamedir;
 	localcmd("pkg apply\n");
-	NSLog("Starting installation of custom game packages.");
+	ncLog("Starting installation of custom game packages.");
 }
 
 void
@@ -719,7 +719,7 @@ GameLibrary_Install(int gameID)
 	string st;
 
 	if (gameID >= gameinfo_count || gameID < 0i) {
-		NSError("Invalid game id %i!\n", gameID);
+		ncError("Invalid game id %i!\n", gameID);
 		return;
 	}
 
@@ -739,7 +739,7 @@ void
 GameLibrary_Activate(int gameID)
 {
 	if (gameID >= gameinfo_count || gameID < 0i) {
-		NSError("Invalid game id %i.", gameID);
+		ncError("Invalid game id %i.", gameID);
 		return;
 	}
 
@@ -795,7 +795,7 @@ __variant
 GameLibrary_GetGameInfo(int gameID, gameInfo_t infoType)
 {
 	if (gameID >= gameinfo_count || gameID < 0i) {
-		NSError("Invalid game id %i.", gameID);
+		ncError("Invalid game id %i.", gameID);
 		return __NULL__;
 	}
 

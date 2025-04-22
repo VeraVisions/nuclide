@@ -68,32 +68,32 @@ target_cdaudio::Save(float handle)
 }
 
 void
-target_cdaudio::Restore(string strKey, string strValue)
+target_cdaudio::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_flRadius":
-		m_flRadius = ReadFloat(strValue);
+		m_flRadius = ReadFloat(setValue);
 		break;
 	case "m_iCDTrack":
-		m_iCDTrack = ReadInt(strValue);
+		m_iCDTrack = ReadInt(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-target_cdaudio::SpawnKey(string strKey, string strValue)
+target_cdaudio::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "health":
-		m_iCDTrack = stoi(strValue);
+		m_iCDTrack = stoi(setValue);
 		break;
 	case "radius":
-		m_flRadius = stof(strValue) / 2;
+		m_flRadius = stof(setValue) / 2;
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 

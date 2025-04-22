@@ -46,7 +46,7 @@ public:
 	virtual float predraw(void);
 	virtual void ReceiveEntity(float,float);
 	virtual void DrawSegment(vector, vector, vector);
-	virtual void RendererRestarted(void);
+	virtual void ReloadVideoResources(void);
 #endif
 
 #ifdef SERVER
@@ -71,7 +71,7 @@ private:
 #ifdef CLIENT
 
 void
-phys_rope::RendererRestarted(void)
+phys_rope::ReloadVideoResources(void)
 {
 	precache_material(m_strShader);
 }
@@ -117,7 +117,7 @@ phys_rope::ReceiveEntity(float new, float flSendFlags)
 {
 	if (flSendFlags & PHYSROPE_CHANGED_MAT) {
 		m_strShader = readstring();
-		RendererRestarted();
+		ReloadVideoResources();
 	}
 
 	if (flSendFlags & PHYSROPE_CHANGED_ORIGIN) {
@@ -215,21 +215,21 @@ phys_rope::SendEntity(entity ePVEnt, float flSendFlags)
 }
 
 void
-phys_rope::SpawnKey(string strKey, string strValue)
+phys_rope::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "RopeMaterial":
 	case "shader":
-		m_strShader = ReadString(strValue);
+		m_strShader = ReadString(setValue);
 		break;
 	case "NextKey":
-		target = ReadString(strValue);
+		target = ReadString(setValue);
 		break;
 	case "Width":
-		m_flWidth = ReadFloat(strValue);
+		m_flWidth = ReadFloat(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
@@ -244,20 +244,20 @@ phys_rope::Save(float handle)
 }
 
 void
-phys_rope::Restore(string strKey, string strValue)
+phys_rope::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_strShader":
-		m_strShader = ReadString(strValue);
+		m_strShader = ReadString(setValue);
 		break;
 	case "m_vecTarget":
-		m_vecTarget = ReadVector(strValue);
+		m_vecTarget = ReadVector(setValue);
 		break;
 	case "m_flWidth":
-		m_flWidth = ReadFloat(strValue);
+		m_flWidth = ReadFloat(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 #endif

@@ -71,7 +71,7 @@ func_train:ncRenderableEntity
 
 public:
 	void func_train(void);
-	
+
 	/* overrides */
 	virtual void Save(float);
 	virtual void Restore(string,string);
@@ -79,7 +79,7 @@ public:
 	virtual void Spawned(void);
 	virtual void Respawn(void);
 	virtual void Trigger(entity, triggermode_t);
-	
+
 	nonvirtual void SoundMove(void);
 	nonvirtual void SoundStop(void);
 	nonvirtual void AfterSpawn(void);
@@ -112,57 +112,57 @@ func_train::Save(float handle)
 }
 
 void
-func_train::Restore(string strKey, string strValue)
+func_train::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_flWait":
-		m_flWait = ReadFloat(strValue);
+		m_flWait = ReadFloat(setValue);
 		break;
 	case "m_flSpeed":
-		m_flSpeed = ReadFloat(strValue);
+		m_flSpeed = ReadFloat(setValue);
 		break;
 	case "m_flDamage":
-		m_flDamage = ReadFloat(strValue);
+		m_flDamage = ReadFloat(setValue);
 		break;
 	case "m_flCurrentSpeed":
-		m_flCurrentSpeed = ReadFloat(strValue);
+		m_flCurrentSpeed = ReadFloat(setValue);
 		break;
 	case "m_strMoveSnd":
-		m_strMoveSnd = ReadString(strValue);
+		m_strMoveSnd = ReadString(setValue);
 		break;
 	case "m_strStopSnd":
-		m_strStopSnd = ReadString(strValue);
+		m_strStopSnd = ReadString(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-func_train::SpawnKey(string strKey, string strValue)
+func_train::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "dmg":
-		m_flDamage = stof(strValue);
+		m_flDamage = stof(setValue);
 		break;
 	case "snd_move":
-		m_strMoveSnd = strValue;
+		m_strMoveSnd = setValue;
 		break;
 	case "snd_stop":
-		m_strStopSnd = strValue;
+		m_strStopSnd = setValue;
 		break;
 	case "speed":
-		m_flSpeed = ReadFloat(strValue);
+		m_flSpeed = ReadFloat(setValue);
 		break;
 	/* compatibility */
 	case "movesnd":
-		m_strMoveSnd = sprintf("func_train.move_%i", stoi(strValue) + 1i);
+		m_strMoveSnd = sprintf("func_train.move_%i", stoi(setValue) + 1i);
 		break;
 	case "stopsnd":
-		m_strStopSnd = sprintf("func_train.stop_%i", stoi(strValue) + 1i);
+		m_strStopSnd = sprintf("func_train.stop_%i", stoi(setValue) + 1i);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
@@ -171,10 +171,8 @@ func_train::Spawned(void)
 {
 	super::Spawned();
 
-	if (m_strMoveSnd)
-		Sound_Precache(m_strMoveSnd);
-	if (m_strStopSnd)
-		Sound_Precache(m_strStopSnd);
+	precache.Sound(m_strMoveSnd);
+	precache.Sound(m_strStopSnd);
 }
 
 void
@@ -197,14 +195,15 @@ func_train::Blocked(entity eBlocker)
 	vector center;
 	vector dmgDir;
 	ncDict damageDecl;
+	ncSurfacePropEntity toAttack = (ncSurfacePropEntity)eBlocker;
 
 	/* HACK: Make corpses gib instantly */
-	if (eBlocker.solid == SOLID_CORPSE) {
+	if (is.Sentient(eBlocker) && eBlocker.solid == SOLID_CORPSE) {
 		center = WorldSpaceCenter();
 		dmgDir = dirFromTarget(center, eBlocker.origin);
 		damageDecl = spawn(ncDict);
 		damageDecl.AddKey("damage", "500");
-		combat.Damage(eBlocker, this, eBlocker, damageDecl.GetDeclBody(), center, dmgDir, eBlocker.origin);
+		toAttack.Damage(this, eBlocker, damageDecl, 1.0f, center, dmgDir, eBlocker.origin);
 		remove(damageDecl);
 		return;
 	}
@@ -214,7 +213,7 @@ func_train::Blocked(entity eBlocker)
 		dmgDir = dirFromTarget(center, eBlocker.origin);
 		damageDecl = spawn(ncDict);
 		damageDecl.AddKey("damage", ftos(m_flDamage));
-		combat.Damage(eBlocker, this, eBlocker, damageDecl.GetDeclBody(), center, dmgDir, eBlocker.origin);
+		toAttack.Damage(this, eBlocker, damageDecl, 1.0f, center, dmgDir, eBlocker.origin);
 		remove(damageDecl);
 	} else {
 		/* remove(eBlocker); */
@@ -312,18 +311,18 @@ func_train::PathNext(void)
 
 	/* a little more serious, but we don't want to break the map. */
 	if (eNode == __NULL__) {
-		NSError("func_tracktrain (id %d) target %S does not exist.", num_for_edict(this), target);
+		ncError("func_tracktrain (id %d) target %S does not exist.", num_for_edict(this), target);
 		return;
 	}
 
 	SetOrigin(eNode.origin - (mins + maxs) * 0.5);
 	PathDone();
-	m_flWait = eNode.m_flWait;
+	m_flWait = eNode.DesiredWaitTime();
 	SetTriggerTarget(eNode.target);
 	ClearVelocity();
 
-	if (eNode.m_flSpeed > 0.0f) {
-		m_flCurrentSpeed = eNode.m_flSpeed;
+	if (eNode.DesiredTrainSpeed() > 0.0f) {
+		m_flCurrentSpeed = eNode.DesiredTrainSpeed();
 	} else {
 		m_flCurrentSpeed = m_flSpeed;
 	}
@@ -380,8 +379,8 @@ func_train::AfterSpawn(void)
 	PathDone();
 
 	/* FIXME: Is this authentic? */
-	if (eNode.m_flSpeed > 0.0f) {
-		m_flCurrentSpeed = eNode.m_flSpeed;
+	if (eNode.DesiredTrainSpeed() > 0.0f) {
+		m_flCurrentSpeed = eNode.DesiredTrainSpeed();
 	} else {
 		m_flCurrentSpeed = m_flSpeed;
 	}

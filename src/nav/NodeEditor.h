@@ -23,9 +23,9 @@ class
 ncNodeEditor
 {
 	/** Links node wp towards w2. */
-	nonvirtual void LinkNodes(node_t *, node_t *);
+	nonvirtual void LinkNodes(graphNode_t *, graphNode_t *);
 	/** Unlinks node wp from going towards w2. */
-	nonvirtual void UnlinkNodes(node_t *, node_t *);
+	nonvirtual void UnlinkNodes(graphNode_t *, graphNode_t *);
 	/** Returns the id of the closest node in a node graph. */
 	nonvirtual int FindClosestNode(vector);
 	/** Saves the specified nodegraph to disk with the specified filename. */

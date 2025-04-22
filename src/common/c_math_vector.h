@@ -29,11 +29,39 @@ var vector g_vectorCacheForward;
 var vector g_vectorCacheRight;
 var vector g_vectorCacheUp;
 
-static void
-anglesMake(vector angle)
+void AngleVectors ( vector angles )
 {
-	makevectors(angle);
-	g_vectorCacheLast = angle;
+	float angle;
+	float sr, sp, sy, cr, cp, cy;
+	
+	angle = angles[1] * (M_PI*2 / 360);
+	sy = sin(angle);
+	cy = cos(angle);
+	angle = angles[0] * (M_PI*2 / 360);
+	sp = sin(angle);
+	cp = cos(angle);
+	angle = angles[2] * (M_PI*2 / 360);
+	sr = sin(angle);
+	cr = cos(angle);
+
+	v_forward[0] = cp*cy;
+	v_forward[1] = cp*sy;
+	v_forward[2] = -sp;
+
+	v_right[0] = (-1*sr*sp*cy+-1*cr*-sy);
+	v_right[1] = (-1*sr*sp*sy+-1*cr*cy);
+	v_right[2] = -1*sr*cp;
+
+	v_up[0] = (cr*sp*cy+-sr*-sy);
+	v_up[1] = (cr*sp*sy+-sr*cy);
+	v_up[2] = cr*cp;
+}
+
+static void
+anglesMake(vector targetAngle)
+{
+	AngleVectors(targetAngle);
+	g_vectorCacheLast = targetAngle;
 	g_vectorCacheForward = v_forward;
 	g_vectorCacheRight = v_right;
 	g_vectorCacheUp = v_up;
@@ -45,14 +73,13 @@ Will use a cached result to speed up queries.
 @param angle is an of euler-angle.
 @return Directional vector pointing what the input angle is facing. */
 vector
-anglesToForward(vector angle)
+anglesToForward(vector targetAngle)
 {
-	if (angle == g_vectorCacheLast) {
-		return g_vectorCacheForward;
+	if (targetAngle != g_vectorCacheLast) {
+		anglesMake(targetAngle);
 	}
 
-	anglesMake(angle);
-	return g_vectorCacheForward;
+	return (g_vectorCacheForward);
 }
 
 /** Calculates the right vector of a set of euler-angles.
@@ -61,14 +88,13 @@ Will use a cached result to speed up queries.
 @param angle is an of euler-angle.
 @return Directional vector pointing right of where the input angle is facing. */
 vector
-anglesToRight(vector angle)
+anglesToRight(vector targetAngle)
 {
-	if (angle == g_vectorCacheLast) {
-		return g_vectorCacheRight;
+	if (targetAngle != g_vectorCacheLast) {
+		anglesMake(targetAngle);
 	}
 
-	anglesMake(angle);
-	return g_vectorCacheRight;
+	return (g_vectorCacheRight);
 }
 
 /** Calculates the up vector of a set of euler-angles.
@@ -77,14 +103,13 @@ Will use a cached result to speed up queries.
 @param angle is an of euler-angle.
 @return Directional vector pointing up of where the input angle is facing. */
 vector
-anglesToUp(vector angle)
+anglesToUp(vector targetAngle)
 {
-	if (angle == g_vectorCacheLast) {
-		return g_vectorCacheUp;
+	if (targetAngle != g_vectorCacheLast) {
+		anglesMake(targetAngle);
 	}
 
-	anglesMake(angle);
-	return g_vectorCacheUp;
+	return (g_vectorCacheUp);
 }
 
 /** Calculates the squared distance between two points. This is a lot faster than distance() calls, but does not reflect in-game units. Use it for any distance check you need to be fast.

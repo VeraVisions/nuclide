@@ -152,15 +152,19 @@ View_DrawViewModel(void)
 	ncRenderableEntity m_eViewModel = (ncRenderableEntity)pSeat->m_eViewModel;
 	ncRenderableEntity m_eViewModelL = (ncRenderableEntity)pSeat->m_eViewModelL;
 
+	if (!m_eViewModel) {
+		return;
+	}
+
 	ncPlayer pl = __NULL__;
 	ncPlayer cl = (ncPlayer)pSeat->m_ePlayer;
 
 	/* it's either us or us spectating */
 	if (Client_IsSpectator(cl)) {
 		ncSpectator spec = (ncSpectator)pSeat->m_ePlayer;
-		pl = (ncPlayer)findfloat(world, ::entnum, spec.spec_ent);
+		pl = (ncPlayer)findfloat(world, ::entnum, spec.m_spectatingEntity);
 
-		if (spec.spec_mode != SPECMODE_FIRSTPERSON) {
+		if (spec.m_spectatingMode != SPECMODE_FIRSTPERSON) {
 			return;
 		}
 	} else {
@@ -210,11 +214,11 @@ View_DrawViewModel(void)
 
 	float fBaseTime2 = m_eViewModel.frame1time;
 	float fBaseTime = m_eViewModel.frame1time;
-	m_eViewModelL.frame = m_eViewModel.frame = pl.weaponframe;
+	m_eViewModelL.frame = m_eViewModel.frame = pl.m_weaponAnimSequence;
 	m_eViewModelL.frame1time =
 	m_eViewModelL.frame2time =
 	m_eViewModel.frame2time =
-	m_eViewModel.frame1time = pl.weapontime;
+	m_eViewModel.frame1time = pl.WeaponAnimTime();
 	Event_Callback(m_eViewModel.frame1time, fBaseTime2);
 
 	entity oldSelf = self;

@@ -26,23 +26,26 @@ Mapcycle_Load(string filename)
 	fs_mapcycle = fopen(filename, FILE_READ);
 
 	if (fs_mapcycle < 0) {
-		NSError("Missing file %s", filename);
+		ncError("Missing file %s", filename);
 		return;
 	}
 
 	/* read the lines in, see if the map exists and define an enumerated alias */
 	while ((temp = fgets(fs_mapcycle))) {
-		if (fileExists(strcat("maps/", temp, ".bsp")) == false) {
+		tokenize_console(temp);
+		string mapName = argv(0);
+
+		if (fileExists(strcat("maps/", mapName, ".bsp")) == false) {
 			continue;
 		}
 
-		localcmd(sprintf("alias m%i \"map %s;alias nextmap m%i\"\n", mapCount, temp, mapCount + 1i));
+		localcmd(sprintf("alias m%i \"map %s;alias nextmap m%i\"\n", mapCount, mapName, mapCount + 1i));
 
 		if (mapname == lastMap) {
 			nextMapID = mapCount;
 		}
 
-		lastMap = temp;
+		lastMap = mapName;
 		mapCount++;
 	}
 
@@ -58,7 +61,7 @@ Mapcycle_Load(string filename)
 	/* the current map in the list will decide the nextmap */
 	localcmd(sprintf("alias nextmap m%i\n", nextMapID));
 
-	NSLog("...MapCycle initialized with %i entries.", mapCount);
+	ncLog("...MapCycle initialized with %i entries.", mapCount);
 }
 
 void
@@ -67,7 +70,7 @@ Mapcycle_Init(void)
 	string cycleFile = autocvar(g_mapCycle, "mapcycle.txt");
 
 	/* by default, this will be multiplayer only */
-	if (g_grMode.IsMultiplayer() == false) {
+	if (cvars.GetInteger("sv_playerslots") <= 1i) {
 		return;
 	}
 
@@ -75,7 +78,7 @@ Mapcycle_Init(void)
 
 	/* in case some server admin wants a map to continously loop */
 	if (!STRING_SET(cycleFile)) {
-		NSLog("MapCycle disabled via cvar. Skipping.");
+		ncLog("MapCycle disabled via cvar. Skipping.");
 		localcmd("alias nextmap map_restart 0\n");
 		return;
 	}

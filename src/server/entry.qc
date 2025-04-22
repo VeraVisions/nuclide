@@ -62,6 +62,11 @@ ClientConnect(void)
 
 	if (g_ents_initialized) {
 		g_grMode.PlayerConnect((ncPlayer)self);
+
+		ncAddonDelegate addonEnum = __NULL__;
+		while(addonEnum = AddonManager_NextAddon(addonEnum)) {
+			addonEnum.PlayerConnect((ncPlayer)self);
+		}
 	}
 }
 
@@ -74,6 +79,11 @@ ClientDisconnect(void)
 {
 	if (g_ents_initialized) {
 		g_grMode.PlayerDisconnect((ncPlayer)self);
+	}
+
+	ncAddonDelegate addonEnum = __NULL__;
+	while(addonEnum = AddonManager_NextAddon(addonEnum)) {
+		addonEnum.PlayerDisconnect((ncPlayer)self);
 	}
 
 	/* this will hide/remove the player from other clients */
@@ -144,27 +154,26 @@ past levels for the player in question.
 void
 PutClientInServer(void)
 {
+	ncPlayer ourPlayer = (ncPlayer)self;
+
 	/* we're officially in-game now. */
-	self.team = TEAM_UNASSIGNED;
+	ourPlayer.team = TEAM_UNASSIGNED;
 
 	if (g_ents_initialized) {
-		g_grMode.PlayerSpawn((ncPlayer)self);
+		g_grMode.PlayerSpawn(ourPlayer);
 	}
 
 	/* handle transitions */
-	if (fileExists("data/trans.dat")) {
-		for (entity a = world; (a = findfloat(a, ::identity, 1));) {
-			ncEntity levelEnt = (ncEntity)a;
-			levelEnt.TransitionComplete();
-		}
+	ncSessionManager::HandleLevelTransition();
 
-		trigger_transition::LoadTransition();
+	/* handle plugins */
+	ncAddonDelegate addonEnum = __NULL__;
+	while(addonEnum = AddonManager_NextAddon(addonEnum)) {
+		addonEnum.PlayerSpawn(ourPlayer);
 	}
 
-	Plugin_PlayerEntered((ncPlayer)self);
-
-	if (g_grMode.IsMultiplayer() == true && self.deaths <= 0) {
-		bprint(PRINT_HIGH, sprintf("%s^d entered the game.\n", self.netname));
+	if (g_grMode.IsMultiplayer() == true && ourPlayer.deaths <= 0) {
+		bprint(PRINT_HIGH, sprintf("%s^d entered the game.\n", ourPlayer.netname));
 	}
 
 	/* activate all game_playerspawn entities */
@@ -172,7 +181,7 @@ PutClientInServer(void)
 		ncEntity t = (ncEntity)a;
 
 		if (t.Trigger) {
-			t.Trigger(self, TRIG_TOGGLE);
+			t.Trigger(ourPlayer, TRIG_TOGGLE);
 		}
 	}
 
@@ -180,8 +189,7 @@ PutClientInServer(void)
 	trigger_auto_trigger();
 
 	if (g_grMode.InIntermission() == true) {
-		ncPlayer pl = (ncPlayer)self;
-		g_grMode.IntermissionToPlayer(pl);
+		g_grMode.IntermissionToPlayer(ourPlayer);
 	}
 }
 
@@ -192,23 +200,25 @@ times the amount of players in a given game.
 void
 PlayerPreThink(void)
 {
-	if (self.classname == "spectator") {
+	ncPlayer ourPlayer = (ncPlayer)self;
+
+	if (ourPlayer.classname == "spectator") {
 		//ncSpectator spec = (ncSpectator)self;
 		//spec.PreFrame();
 		return;
 	}
 
-	if (self.classname != "player") {
+	if (is.Player(ourPlayer)) {
 		return;
 	}
 
-	if (isBot(self)) {
-		((ncBot)self).BotPreFrame();
+	if (is.Bot(ourPlayer)) {
+		((ncBot) ourPlayer).BotPreFrame();
 	}
 
 
 	if (g_ents_initialized) {
-		g_grMode.PlayerPreFrame((ncPlayer)self);
+		g_grMode.PlayerPreFrame((ncPlayer) ourPlayer);
 	}
 }
 
@@ -219,24 +229,25 @@ times the amount of players in a given game.
 void
 PlayerPostThink(void)
 {
-	if (self.classname == "spectator") {
+	ncPlayer ourPlayer = (ncPlayer)self;
+
+	if (ourPlayer.classname == "spectator") {
 		SpectatorThink();
 		return;
 	}
 
-	if (self.classname != "player") {
+	if (is.Player(ourPlayer)) {
 		return;
 	}
 
-	if (isBot(self)) {
-		((ncBot)self).BotPostFrame();
+	if (is.Bot(ourPlayer)) {
+		((ncBot)ourPlayer).BotPostFrame();
 	}
 
 	if (g_ents_initialized) {
-		ncPlayer pl = (ncPlayer)self;
-		g_grMode.PlayerPostFrame((ncPlayer)self);
-		pl.EvaluateEntity();
-		userinfo.SetString(pl, "*score", ftos(pl.score));
+		g_grMode.PlayerPostFrame(ourPlayer);
+		ourPlayer.EvaluateEntity();
+		userinfo.SetString(ourPlayer, "*score", ftos(ourPlayer.score));
 	}
 }
 
@@ -263,10 +274,12 @@ allocated for every client.
 void
 SetChangeParms(void)
 {
+	ncPlayer ourPlayer = (ncPlayer)self;
+
 	InitPrint("Setting Level-Change Parameters");
 
 	if (g_ents_initialized)
-		g_grMode.LevelChangeParms((ncPlayer)self);
+		g_grMode.LevelChangeParms(ourPlayer);
 }
 
 /** Run whenever an input packet by a client has been received.
@@ -279,15 +292,16 @@ SV_RunClientCommand(void)
 {
 	ncClient cl = (ncClient)self;
 
-	if (self.classname != "player" && self.classname != "spectator")
+	if (g_ents_initialized == false) {
 		return;
+	}
+
+	if (!is.Player(cl)) {
+		return;
+	}
 
 	CheatersLament((ncPlayer)cl, input_angles, input_buttons, input_timelength);
-	self.v_angle = input_angles;
-
-	if (!Plugin_RunClientCommand()) {
-		/* TODO */
-	}
+	cl.v_angle = input_angles;
 
 	/* FIXME: before a splitscreen player disconnects, it often sends
 	   one last SV_RunClientCommand which causes an error if we don't
@@ -297,12 +311,12 @@ SV_RunClientCommand(void)
 	if (cl.ServerInputFrame)
 		cl.ServerInputFrame();
 
-	if (self.gotData == false) {
-		BreakModel_SendClientData(self);
-		self.gotData = true;
+	if (cl.gotData == false) {
+		BreakModel_SendClientData(cl);
+		cl.gotData = true;
 	}
 
-	self.impulse = 0;
+	cl.impulse = 0;
 }
 
 /** Any 'cmd' from the client get sent here and handled.
@@ -314,17 +328,24 @@ Notable examples of client cmd's involve the chat system.
 void
 SV_ParseClientCommand(string cmd)
 {
-	string newcmd = Plugin_ParseClientCommand(cmd);
 	int argc;
+	ncClient theClient = self;
+
+	ncAddonDelegate addonEnum = __NULL__;
+	while(addonEnum = AddonManager_NextAddon(addonEnum)) {
+		addonEnum.ClientCommand(theClient, cmd);
+	}
 
 	/* give the game-mode a chance to override us */
-	if (g_ents_initialized)
-		if (g_grMode.ClientCommand((ncClient)self, cmd) == true)
+	if (g_ents_initialized == true) {
+		if (g_grMode.ClientCommand(theClient, cmd) == true) {
 			return;
+		}
+	}
 
 	argc = (int)tokenize(cmd);
 
-	Cmd_ParseClientCommand((ncClient)self, cmd, argc);
+	Cmd_ParseClientCommand(theClient, cmd, argc);
 }
 
 /** Called when the QC module gets loaded.
@@ -334,8 +355,8 @@ void
 init(float prevprogs)
 {
 	InitPrint("Initializing Server Game");
-	NSLog("Built: %s %s", __DATE__, __TIME__);
-	NSLog("QCC: %s", __QCCVER__);
+	ncLog("Built: %s %s", __DATE__, __TIME__);
+	ncLog("QCC: %s", __QCCVER__);
 
 	_server_main();
 	_shared_main();
@@ -348,8 +369,7 @@ init(float prevprogs)
 	MapC_Init();
 	RuleC_Init();
 
-	Plugin_Init();
-	Sound_Init();
+	SoundDef_Init();
 	PropData_Init();
 	SurfData_Init();
 	DecalGroups_Init();
@@ -380,7 +400,7 @@ init_respawn(void)
 		spawnCounter++;
 	}
 
-	NSLog("...%i entities spawned (%i inhibited)", g_ent_spawned, g_ent_spawned - spawnCounter);
+	ncLog("...%i entities spawned (%i inhibited)", g_ent_spawned, g_ent_spawned - spawnCounter);
 	Nodes_Init();
 	remove(self);
 }
@@ -393,6 +413,9 @@ Before this, we are not able to spawn, touch or allocate any entity slots.
 void
 initents(void)
 {
+	ncRuleDelegate currentRule;
+	ncMapDelegate currentMap;
+
 	g_ents_initialized = false;
 
 	/* sound shader init */
@@ -401,18 +424,19 @@ initents(void)
 	PMove_Init();
 
 #warning Move these into player decl
-	Sound_Precache("Player.Death");
-	Sound_Precache("Player.Pain");
-	Sound_Precache("SprayCan.Paint");
+	precache.Sound("Player.Death");
+	precache.Sound("Player.Pain");
+	precache.Sound("SprayCan.Paint");
 
 #warning These sound defs need renaming.
-	Sound_Precache("damage_bullet.hit");
-	Sound_Precache("step_ladder.left");
-	Sound_Precache("step_ladder.right");
+	precache.Sound("damage_bullet.hit");
+	precache.Sound("step_ladder.left");
+	precache.Sound("step_ladder.right");
 
 	BodyQue_Init();
 
-	g_grMode = ncGameRules::CreateRules();
+	ncRuleDelegate::LinkProgs();
+	ncMapDelegate::LinkProgs();
 
 	Game_Worldspawn();
 	Decals_Init();
@@ -438,22 +462,24 @@ initents(void)
 	 * let's add our own that we can actually trust. */
 	serverinfo.SetInteger("sv_playerslots", cvars.GetInteger("sv_playerslots"));
 
-	RuleC_Precache();
-	MapC_CallMainFunction();
-	Plugin_InitEnts();
+	currentRule = ncRuleDelegate::ActiveInstance();
+	currentMap = ncMapDelegate::ActiveInstance();
+	currentRule.Precache();
+	currentMap.Precache();
+
 	Mapcycle_Init();
 	Vote_Init();
 	ChangeTarget_Activate();
 
 	g_ents_initialized = true;
 
+	BotLib_Init();
+
 	/* engine hacks for dedicated servers */
-	cvars.SetFloat("s_nominaldistance", 1536);
+	cvars.SetFloat("s_nominaldistance", 1536.0f);
 
 	/* other engine hacks */
 	cvars.SetBool("sv_nqplayerphysics", false);
-
-	BotLib_Init();
 }
 
 /** Any command executed on the server (either tty, rcon or `sv`) gets
@@ -517,8 +543,6 @@ SV_ShouldPause(float newstatus)
 	return (newstatus);
 }
 
-//#define REEDICT 1
-
 /** Called by the engine when we're loading a savegame file.
 
 This deals with the de and re-allocation of all map entities from
@@ -527,111 +551,7 @@ the passed file handle.
 void
 SV_PerformLoad(float fh, float entcount, float playerslots)
 {
-	entity e = world;
-	entity eold;
-	string l;
-	float n = 0;
-	ncEntity loadent = __NULL__;
-	int num_loaded = 0i;
-
-	InitPrint("Loading Existing Save");
-	g_isloading = true;
-
-#if 0
-	/* mark anything else for deletion */
-	while ((e=nextent(e))) {
-		if (edict_num(1) != e) {
-			if (e.identity != 0) {
-				e.think = Util_Destroy;
-				e.nextthink = time + 0.05f;
-			}
-		}
-	}
-#endif
-
-#ifdef REEDICT
-	while ((e=nextent(e))) {
-		if (edict_num(1) != e)
-			if (e.identity) {
-				ncEntity toRemove = (ncEntity)e;
-				toRemove.Destroy();
-			} else {
-				remove(e);
-			}
-	}
-#else
-	e = world;
-#endif
-
-	/* read line per line of our file handle */
-	while ((l=fgets(fh))) {
-		float args = tokenize_console(l);
-
-		if (!args)
-			break;
-
-		if (argv(0) == "ENTITY") {
-			string cname;
-			cname = argv(2);
-#ifndef REEDICT
-			n = stof(argv(1));
-			e = edict_num(n);
-			NSLog("Creating %s (edict %d)", cname, n);
-#else
-			entity e = spawn();
-#endif
-			loadent = __NULL__;
-
-			__fullspawndata = fgets(fh);
-
-			eold = self;
-			self = e;
-
-			/* check for entityDef first */
-			if (EntityDef_SpawnClassname(cname)) {
-				e.classname = cname;
-				loadent = (ncEntity)e;
-				self = eold;
-			} else if (isfunction(strcat("spawnfunc_", cname))) {
-				/* call the constructor if one is present, init the default fields */
-				e.classname = cname;
-				callfunction(strcat("spawnfunc_", cname));
-				e.classname = cname;
-				loadent = (ncEntity)e;
-				self = eold;
-			} else {
-				NSError("Could not spawn %s", cname);
-				if (e.identity) {
-					ncEntity toRemove = (ncEntity)e;
-					toRemove.Destroy();
-				} else {
-					remove(e);
-				}
-				self = eold;
-				continue;
-			}
-		} else if (argv(0) == "{") {
-		} else if (argv(0) == "}") {
-			if (loadent) {
-				loadent.RestoreComplete();
-				num_loaded++;
-				NSLog("completed %s (edict %d)", loadent.classname, n);
-				loadent = __NULL__;
-			}
-		} else {
-			if (loadent) {
-				int c = tokenize(l);
-
-				if (c == 2) {
-					loadent.Restore(argv(0), argv(1));
-					//print(sprintf("%s %s\n", argv(0), argv(1)));
-				}
-			}
-		}
-	}
-
-	NSLog("...loaded %i entities", num_loaded);
-	g_isloading = false;
+	ncSessionManager::RestoreStateFromHandle(fh, entcount, playerslots);
 }
 
 /** Called when we are saving our game. We only get passed a file handle
@@ -641,36 +561,7 @@ into it.
 void
 SV_PerformSave(float fh, float entcount, float playerslots)
 {
-	float i = 0;
-	int num_saved = 0i;
-	entity e;
-
-	InitPrint("Performing Save");
-#warning Save the inventory proper
-
-	for (i = 0; i < entcount; i++) {
-		ncEntity willsave;
-		e = edict_num(i);
-
-		if (e==world && i)
-			continue;
-
-		if (wasfreed(e))
-			continue;
-
-		if (e.identity == 0)
-			continue;
-
-		willsave = (ncEntity)e;
-		fputs(fh, sprintf("ENTITY \"%d\" %S\n", i, willsave.classname));
-		fputs(fh, "{\n");
-		willsave.Save(fh);
-		fputs(fh, "}\n");
-		num_saved++;
-	}
-	fclose(fh);
-
-	NSLog("saved %i entities", num_saved);
+	ncSessionManager::SaveStateToHandle(fh, entcount, playerslots);
 }
 
 /** Called by the engine to check with us if a spawn function exists.
@@ -696,16 +587,17 @@ CheckSpawn(void() spawnfunc)
 	}
 
 	/* give it a copy of its spawndata. */
-	ent.m_strSpawnData = __fullspawndata;
+	ent.m_rawSpawnData = __fullspawndata;
+	ent.spawnclass = desiredClass; /* ENtityDef_ will override this later, needed for saves */
 
 	/* no longer needed, immediately discard. */
 	__fullspawndata = "";
 
 	/* we have to diverge here in order to support in-code class entities,
 	   decl entities and overrides of both.
-	   
+
 	   this switch also controls the priority:
-	   
+
 	   1. maptweaks, can override anything.
 	   2. entitydef, can even override built-in class names
 	      2.0 entitydef, defined in a map (maps/foobar.def)
@@ -731,7 +623,7 @@ CheckSpawn(void() spawnfunc)
 	} else {
 		/* don't need to spam repetitive messages */
 		if (lastClass != desiredClass) {
-			NSError("Unable to spawn %s", desiredClass);
+			ncError("Unimplemented entity class %S.", desiredClass);
 		}
 
 		lastClass = desiredClass;
@@ -741,15 +633,17 @@ CheckSpawn(void() spawnfunc)
 	}
 
 	ent._mapspawned = true;
+	ent._loading = true;
 
 	if (skipLoad == false) {
 		/* this entity is good, attempt to spawn it. */
-		if (ent.m_strSpawnData) {
-			for (int i = 1; i < (tokenize(ent.m_strSpawnData) - 1); i += 2) {
+		if (STRING_SET(ent.m_rawSpawnData)) {
+			for (int i = 1; i < (tokenize(ent.m_rawSpawnData) - 1); i += 2) {
 				ent.SpawnKey(argv(i), argv(i+1));
 			}
 		}
 
+		ent._loading = false;
 		ent.Spawn();
 	}
 

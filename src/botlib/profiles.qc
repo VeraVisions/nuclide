@@ -19,7 +19,7 @@ Bot_ExistsInServer(string botName)
 {
 	string noColor1 = strdecolorize(botName);
 
-	for (entity e = world;(e = find(e, ::classname, "player"));) {
+	for (entity e = world;(e = next.Player(e));) {
 		if (clienttype(e) == CLIENTTYPE_BOT) {
 			string noColor2 = strdecolorize(e.netname);
 
@@ -47,7 +47,7 @@ Bot_AddBot_f(string botName, float teamValue, float spawnDelay, string newName)
 	}
 
 	if (Nodes_Available() == false) {
-		NSError("Can't add bot. No nodes.");
+		ncError("Can't add bot. No nodes.");
 		return (false);
 	}
 
@@ -60,7 +60,7 @@ Bot_AddBot_f(string botName, float teamValue, float spawnDelay, string newName)
 	}
 
 	if (foundID == -1i) {
-		NSError("Named profile %S not found.", botName);
+		ncError("Named profile %S not found.", botName);
 		return (false);
 	}
 
@@ -68,7 +68,7 @@ Bot_AddBot_f(string botName, float teamValue, float spawnDelay, string newName)
 	self = spawnclient();
 
 	if (!self) {
-		NSError("Unable to add bot. Server is full.");
+		ncError("Unable to add bot. Server is full.");
 		self = oldSelf;
 		return (false);
 	}
@@ -85,7 +85,6 @@ Bot_AddBot_f(string botName, float teamValue, float spawnDelay, string newName)
 	newBot.SetInfoKey("*bot", "1");
 	ClientConnect();
 	PutClientInServer();
-	self.classname = "player";
 	self = oldSelf;
 	return (true);
 }
@@ -116,7 +115,7 @@ BotProfile_AddRandom(void)
 
 	/* every bot exists already */
 	if (spawnBot == -1i) {
-		NSError("Not enough profiles available.");
+		ncError("Not enough profiles available.");
 		return (false);
 	}
 
@@ -148,7 +147,7 @@ BotProfile_Init(void)
 	botScript = fopen("scripts/bots.txt", FILE_READ);
 
 	if (botScript < 0) {
-		NSError("Missing file scripts/bots.txt");
+		ncError("Missing file scripts/bots.txt");
 		InitEnd();
 		return;
 	}
@@ -207,7 +206,7 @@ BotProfile_Init(void)
 	}
 
 	fclose(botScript);
-	NSLog("...%i bots parsed.", g_botScriptCount);
+	ncLog("...%i bots parsed.", g_botScriptCount);
 	InitEnd();
 }
 
@@ -215,7 +214,7 @@ void
 Bot_ListBotProfiles_f(void)
 {
 	if (!g_botScriptCount) {
-		NSError("No bot profiles available.");
+		ncError("No bot profiles available.");
 		return;
 	}
 

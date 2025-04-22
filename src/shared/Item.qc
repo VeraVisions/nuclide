@@ -17,21 +17,21 @@
 void
 ncItem::ncItem(void)
 {
-	m_iClip = -1;
-	m_iWasDropped = 0i;
-	m_iInvItem = 0i;
+	m_itemWasDropped = 0i;
 	m_sndAcquire = __NULL__;
 	m_sndRespawn = __NULL__;
-	m_bFloating = false;
-	m_bSpins = false;
-	m_iGiveHealth = 0i;
-	m_iGiveArmor = 0i;
-	m_bNoTouch = false;
-	m_bInvCarry = false;
-	m_strRequires = __NULL__;
+	m_itemPickupFloats = false;
+	m_itemPickupSpins = false;
+	m_itemGivesHealth = 0i;
+	m_itemGivesArmor = 0i;
+	m_itemGivesBonusHealth = 0i;
+	m_itemGivesBonusArmor = 0i;
+	m_itemNoTouch = false;
+	m_itemCarries = false;
+	m_itemRequiresItem = __NULL__;
 	m_nextItem = __NULL__;
 	owner = __NULL__;
-	m_flRespawn = 0;
+	m_itemRespawn = 0;
 }
 
 #ifdef SERVER
@@ -40,8 +40,8 @@ ncItem::Spawned(void)
 {
 	super::Spawned();
 
-	Sound_Precache(m_sndAcquire);
-	Sound_Precache(m_sndRespawn);
+	precache.Sound(m_sndAcquire);
+	precache.Sound(m_sndRespawn);
 	pvsflags = PVSF_IGNOREPVS;
 	_isItem = true;
 }
@@ -57,78 +57,84 @@ ncItem::Respawn(void)
 
 	if (CreatedByMap() == true) {
 		RestoreAngles();
-		SetOriginUnstick(GetSpawnVector("origin"));
+		SetOrigin(GetSpawnVector("origin") + GetSpawnVector("origin_add"));
 
-		if (!m_bFloating) {
+		if (!m_itemPickupFloats) {
 			DropToFloor();
 		}
 	}
 }
 
 void
-ncItem::SpawnKey(string strKey, string strValue)
+ncItem::SpawnKey(string keyName, string setValue)
 {
 	/* special case for ammo type parsing... */
-	if (substring(strKey, 0, 8) == "inv_ammo") {
-		string ammoType = substring(strKey, 4, -1);
+	if (substring(keyName, 0, 8) == "inv_ammo") {
+		string ammoType = substring(keyName, 4, -1);
 		int ammoID = ammoNumForName(ammoType);
 
 		if (ammoID != -1) {
-			m_GiveAmmo[ammoID] = stoi(unpackStringCommand(strValue));
+			m_itemGivesAmmo[ammoID] = stoi(unpackStringCommand(setValue));
 		} else {
-			NSError("Item %S tries to give invalid ammo type %S", declclass, ammoType);
+			ncError("Item %S tries to give invalid ammo type %S", declclass, ammoType);
 		}
 		return;
 	}
 
-	switch (strKey) {
+	switch (keyName) {
 	case "inv_weapon":
-		m_strInvWeapon = ReadString(strValue);
-		break;
-	case "inv_item":
-		m_iInvItem = ReadInt(strValue);
+		m_itemWeapon = ReadString(setValue);
 		break;
 	case "snd_acquire":
-		m_sndAcquire = ReadString(strValue);
+		m_sndAcquire = ReadString(setValue);
 		break;
 	case "snd_respawn":
-		m_sndRespawn = ReadString(strValue);
+		m_sndRespawn = ReadString(setValue);
 		break;
 	case "modelflags":
-		modelflags = ReadFloat(strValue);
+		modelflags = ReadFloat(setValue);
 		break;
 	case "spin":
-		m_bSpins = ReadBool(strValue);
+		m_itemPickupSpins = ReadBool(setValue);
 		break;
 	case "floating":
-		m_bFloating = ReadBool(strValue);
+		m_itemPickupFloats = ReadBool(setValue);
 		break;
 	case "frame":
-		frame = ReadFloat(strValue);
+		frame = ReadFloat(setValue);
 		break;
 	case "body":
-		m_iBody = ReadInt(strValue);
+		m_geomsetField = ReadInt(setValue);
 		break;
 	case "inv_health":
-		m_iGiveHealth = ReadFloat(strValue);
+		m_itemGivesHealth = ReadFloat(setValue);
+		break;
+	case "inv_bonushealth":
+		m_itemGivesBonusHealth = ReadInt(setValue);
+		break;
+	case "inv_bonusarmor":
+		m_itemGivesBonusArmor = ReadInt(setValue);
 		break;
 	case "inv_armor":
-		m_iGiveArmor = ReadFloat(strValue);
+		m_itemGivesArmor = ReadFloat(setValue);
 		break;
 	case "no_touch":
-		m_bNoTouch = ReadBool(strValue);
+		m_itemNoTouch = ReadBool(setValue);
 		break;
 	case "inv_carry":
-		m_bInvCarry = ReadBool(strValue);
+		m_itemCarries = ReadBool(setValue);
 		break;
 	case "requires":
-		m_strRequires = ReadString(strValue);
+		m_itemRequiresItem = ReadString(setValue);
 		break;
 	case "respawn":
-		m_flRespawn = ReadFloat(strValue);
+		m_itemRespawn = ReadFloat(setValue);
+		break;
+	case "droptofloor":
+		m_itemPickupFloats = !ReadBool(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(keyName, setValue);
 		break;
 	}
 }
@@ -138,71 +144,96 @@ ncItem::Save(float handle)
 {
 	super::Save(handle);
 
-	SaveInt(handle, "m_iClip", m_iClip);
-	SaveInt(handle, "m_iWasDropped", m_iWasDropped);
-	SaveInt(handle, "m_iInvItem", m_iInvItem);
-	SaveString(handle, "m_sndAcquire", m_sndAcquire);
-	SaveString(handle, "m_sndRespawn", m_sndRespawn);
-	SaveString(handle, "m_sndHum", m_sndHum);
-	SaveBool(handle, "m_bFloating", m_bFloating);
-	SaveBool(handle, "m_bSpins", m_bSpins);
-	SaveString(handle, "m_strInvWeapon", m_strInvWeapon);
-	SaveInt(handle, "m_iGiveHealth", m_iGiveHealth);
-	SaveInt(handle, "m_iGiveArmor", m_iGiveArmor);
-	SaveBool(handle, "m_bNoTouch", m_bNoTouch);
-	SaveBool(handle, "m_bInvCarry", m_bInvCarry);
-	SaveString(handle, "m_strRequires", m_strRequires);
+	SaveInt(handle, "itemWasDropped", m_itemWasDropped);
+	SaveString(handle, "sndAcquire", m_sndAcquire);
+	SaveString(handle, "sndRespawn", m_sndRespawn);
+	SaveFloat(handle,  "itemRespawn", m_itemRespawn);
+	SaveString(handle, "sndHum", m_sndHum);
+	SaveInt(handle, "itemPickupFloats", m_itemPickupFloats);
+	SaveBool(handle, "itemPickupSpins", m_itemPickupSpins);
+	SaveString(handle, "itemName", m_itemName);
+	SaveString(handle, "itemWeapon", m_itemWeapon);
+	SaveInt(handle, "itemGivesHealth", m_itemGivesHealth);
+	SaveInt(handle, "itemGivesBonusHealth", m_itemGivesBonusHealth);
+	SaveInt(handle, "itemGivesBonusArmor", m_itemGivesBonusArmor);
+	SaveInt(handle, "itemGivesArmor", m_itemGivesArmor);
+	SaveBool(handle, "itemNoTouch", m_itemNoTouch);
+	SaveBool(handle, "itemCarries", m_itemCarries);
+	SaveString(handle, "itemRequiresItem", m_itemRequiresItem);
+
+	for (int i = 0i; i < MAX_AMMO_TYPES; i++) {
+		SaveInt(handle, sprintf("itemGivesAmmo_%i", i), m_itemGivesAmmo[i]);
+	}
+
+	SaveFloat(handle,  "hiddenModelIndex", m_hiddenModelIndex);
+	SaveFloat(handle, "hiddenSequence", m_hiddenSequence);
+	SaveEntity(handle, "nextItem", m_nextItem);
+	SaveBool(handle, "_isItem", _isItem);
 }
 
 void
-ncItem::Restore(string strKey, string strValue)
+ncItem::Restore(string keyName, string setValue)
 {
-	switch (strKey) {
-	case "m_iClip":
-		m_iClip = ReadInt(strValue);
+	switch (keyName) {
+	case "_isItem":
+		_isItem = ReadBool(setValue);
 		break;
-	case "m_iWasDropped":
-		m_iWasDropped = ReadInt(strValue);
+	case "itemWasDropped":
+		m_itemWasDropped = ReadInt(setValue);
 		break;
-	case "m_iInvItem":
-		m_iInvItem = ReadInt(strValue);
+	case "sndAcquire":
+		m_sndAcquire = ReadString(setValue);
 		break;
-	case "m_sndAcquire":
-		m_sndAcquire = ReadString(strValue);
+	case "sndRespawn":
+		m_sndRespawn = ReadString(setValue);
 		break;
-	case "m_sndRespawn":
-		m_sndRespawn = ReadString(strValue);
+	case "sndHum":
+		m_sndHum = ReadString(setValue);
 		break;
-	case "m_sndHum":
-		m_sndHum = ReadString(strValue);
+	case "itemPickupFloats":
+		m_itemPickupFloats = ReadBool(setValue);
 		break;
-	case "m_bFloating":
-		m_bFloating = ReadBool(strValue);
+	case "itemPickupSpins":
+		m_itemPickupSpins = ReadBool(setValue);
 		break;
-	case "m_bSpins":
-		m_bSpins = ReadBool(strValue);
+	case "itemName":
+		m_itemName = ReadString(setValue);
 		break;
-	case "m_strInvWeapon":
-		m_strInvWeapon = ReadString(strValue);
+	case "itemWeapon":
+		m_itemWeapon = ReadString(setValue);
 		break;
-
-	case "m_iGiveHealth":
-		m_iGiveHealth = ReadInt(strValue);
+	case "itemGivesHealth":
+		m_itemGivesHealth = ReadInt(setValue);
 		break;
-	case "m_iGiveArmor":
-		m_iGiveArmor = ReadInt(strValue);
+	case "itemGivesBonusHealth":
+		m_itemGivesBonusHealth = ReadInt(setValue);
 		break;
-	case "m_bNoTouch":
-		m_bNoTouch = ReadBool(strValue);
+	case "itemGivesBonusArmor":
+		m_itemGivesBonusHealth = ReadInt(setValue);
 		break;
-	case "m_bInvCarry":
-		m_bInvCarry = ReadBool(strValue);
+	case "itemGivesArmor":
+		m_itemGivesArmor = ReadInt(setValue);
 		break;
-	case "m_strRequires":
-		m_strRequires = ReadString(strValue);
+	case "itemNoTouch":
+		m_itemNoTouch = ReadBool(setValue);
+		break;
+	case "itemCarries":
+		m_itemCarries = ReadBool(setValue);
+		break;
+	case "itemRequiresItem":
+		m_itemRequiresItem = ReadString(setValue);
+		break;
+	case "hiddenModelIndex":
+		m_hiddenModelIndex = ReadFloat(setValue);
+		break;
+	case "hiddenSequence":
+		m_hiddenSequence = ReadFloat(setValue);
+		break;
+	case "nextItem":
+		m_nextItem = ReadEntity(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(keyName, setValue);
 		break;
 	}
 }
@@ -229,7 +260,43 @@ ncItem::OnUse(entity user)
 void
 ncItem::SetRespawnTime(float newTime)
 {
-	m_flRespawn = newTime;
+	m_itemRespawn = newTime;
+}
+
+bool
+ncItem::ItemBonusCheck(entity pickerUpper)
+{
+	ncActor pl = (ncActor)pickerUpper;
+
+	if (m_itemGivesHealth > 0i) {
+		if (pl.GetHealth() < pl.GetMaxHealth()) {
+			return (true);
+		}
+	}
+
+	if (m_itemGivesBonusHealth >= 1i && pl.GetHealth() < 200) {
+		return (true);
+	}
+
+	if (m_itemGivesBonusArmor >= 1i && pl.GetArmor() < 200) {
+		return (true);
+	}
+
+	if (m_itemGivesArmor > 0i) {
+		if (pl.armor < pl.GetMaxArmor()) {
+			return (true);
+		}
+	}
+
+	for (int i = 0; i < MAX_AMMO_TYPES; i++) {
+		if (m_itemGivesAmmo[i] > 0i) {
+			if (pl.MaxAmmo(i) == false) {
+				return (true);
+			}
+		}
+	}
+
+	return (false);
 }
 
 bool
@@ -238,31 +305,11 @@ ncItem::ItemPickupCheck(entity pickerUpper)
 	ncActor pl = (ncActor)pickerUpper;
 
 	/* do we already have the item? */
-	if (STRING_SET(m_strInvWeapon) || m_bInvCarry) {
-		string itemToAdd = (m_strInvWeapon != "") ? m_strInvWeapon : classname;
+	if (STRING_SET(m_itemWeapon) || m_itemCarries) {
+		string itemToAdd = (m_itemWeapon != "") ? m_itemWeapon : declclass;
 
 		if (STRING_SET(itemToAdd)) {
 			if (pl.HasItem(itemToAdd) == false) {
-				return (true);
-			}
-		}
-	}
-
-	if (m_iGiveHealth > 0i) {
-		if (pl.GetHealth() < pl.GetMaxHealth()) {
-			return (true);
-		}
-	}
-
-	if (m_iGiveArmor > 0i) {
-		if (pl.armor < pl.GetMaxArmor()) {
-			return (true);
-		}
-	}
-
-	for (int i = 0; i < MAX_AMMO_TYPES; i++) {
-		if (m_GiveAmmo[i] > 0i) {
-			if (pl.MaxAmmo(i) == false) {
 				return (true);
 			}
 		}
@@ -275,35 +322,57 @@ void
 ncItem::Touch(entity eToucher)
 {
 	ncPlayer pl;
+	bool removeFromMap = false;
 
-	if (isPlayer(eToucher) == false) {
+	if (is.Player(eToucher) == false) {
+		return;
+	}
+
+	if (m_itemNoTouch) {
 		return;
 	}
 
 	pl = (ncPlayer)eToucher;
 
-	if (STRING_SET(m_strRequires)) {
-		if (pl.HasItem(m_strRequires) == false) {
+	/* 'requires' affects main item and bonus items */
+	if (STRING_SET(m_itemRequiresItem)) {
+		if (pl.HasItem(m_itemRequiresItem) == false) {
 			return;
 		}
 	}
 
-	if (ItemPickupCheck(pl) == false) {
+	if (ItemBonusCheck(pl) == true) {
+		GiveBonusItems(pl);
+		removeFromMap = true;
+	}
+
+	if (ItemPickupCheck(pl) == true) {
+		/* don't remove if AddItem fails */
+		string itemToAdd = STRING_SET(m_itemWeapon) ? m_itemWeapon : declclass;
+
+		if (CreatedByMap()) {
+			ncItem copy = spawn(ncItem);
+			copyentity(this, copy);
+			pl.GiveExactItem(copy);
+		} else {
+			pl.GiveExactItem(this);
+		}
+
+		/* if we have the carry flag set in addition, we'll put in an extra copy of this item */
+		if (STRING_SET(m_itemWeapon) && m_itemCarries) {
+			pl.GiveItem(itemToAdd);
+		}
+
+		removeFromMap = true;
+	}
+
+	if (removeFromMap == false) {
 		return;
 	}
 
-	/* don't remove if AddItem fails */
-	string itemToAdd = (m_strInvWeapon) ? m_strInvWeapon : classname;
-	pl.GiveItem(itemToAdd);
+	UseTargets(pl, TRIG_TOGGLE, GetTriggerDelay());
 
-	/* if we have the carry flag set in addition, we'll put in an extra copy of this item */
-	if (STRING_SET(m_strInvWeapon) && m_bInvCarry) {
-		pl.GiveItem(classname);
-	}
-
-	UseTargets(pl, TRIG_TOGGLE, m_flDelay);
-
-	if (m_flRespawn <= 0) {
+	if (m_itemRespawn <= 0) {
 		if (CreatedByMap()) {
 			Disappear();
 		} else {
@@ -316,31 +385,31 @@ ncItem::Touch(entity eToucher)
 			Disappear();
 		}
 
-		ScheduleThink(PickupRespawn, m_flRespawn);
+		ScheduleThink(PickupRespawn, m_itemRespawn);
 	}
 }
 
 void ncItem::SetFloating(int i)
 {
-	m_bFloating = i ? true : false;
+	m_itemPickupFloats = i ? (true) : (false);
 }
 
 bool
 ncItem::GetFloating(void)
 {
-	return m_bFloating;
+	return m_itemPickupFloats;
 }
 
 void
 ncItem::SetSpinning(bool value)
 {
-	m_bSpins = value;
+	m_itemPickupSpins = value;
 }
 
 bool
 ncItem::GetSpinning(void)
 {
-	return m_bSpins;
+	return m_itemPickupSpins;
 }
 
 
@@ -365,15 +434,13 @@ ncItem::OnInventoryUse(void)
 void
 ncItem::PrintDebugInfo(void)
 {
-	DebugInt("m_iClip", m_iClip);
-	DebugInt("m_iWasDropped", m_iWasDropped);
-	DebugInt("m_iInvItem", m_iInvItem);
+	DebugInt("m_itemWasDropped", m_itemWasDropped);
 	DebugString("m_sndAcquire", m_sndAcquire);
 	DebugString("m_sndRespawn", m_sndRespawn);
 	DebugString("m_sndHum", m_sndHum);
-	DebugBool("m_bFloating", m_bFloating);
-	DebugBool("m_bSpins", m_bSpins);
-	DebugString("m_strInvWeapon", m_strInvWeapon);
+	DebugBool("m_itemPickupFloats", m_itemPickupFloats);
+	DebugBool("m_itemPickupSpins", m_itemPickupSpins);
+	DebugString("m_itemWeapon", m_itemWeapon);
 }
 
 void
@@ -382,7 +449,7 @@ ncItem::BecomePickup(void)
 	SetBotTag(BOTINFO_WEAPON);
 	SetModel(GetSpawnString("model"));
 
-	if (m_bSpins)
+	if (m_itemPickupSpins)
 		modelflags = MF_ROTATE;
 	else
 		modelflags &= ~MF_ROTATE;
@@ -403,20 +470,19 @@ ncItem::BecomePickup(void)
 		SetMovetype(MOVETYPE_NONE);
 		SetSolid(SOLID_TRIGGER);
 		MakeInvulnerable();
-		
+
 		if (desiredMins != g_vec_null) {
 			mins = desiredMins;
 		}
-		
+
 		if (desiredMaxs != g_vec_null) {
 			maxs = desiredMaxs;
 		}
-	
+
 		SetSize(mins, maxs);
 	}
 
 	Relink();
-
 }
 
 float
@@ -447,7 +513,7 @@ ncItem::SendEntity(entity ePEnt, float flChanged)
 	/* broadcast how much data is expected to be read */
 	WriteFloat(MSG_ENTITY, flChanged);
 
-	SENDENTITY_INT(entityDefID, ITEMFL_CHANGED_CHAIN)
+	SENDENTITY_INT(entityDefID, ITEMFL_CHANGED_MODELINDEX)
 	SENDENTITY_ENTITY(m_nextItem, ITEMFL_CHANGED_CHAIN)
 	SENDENTITY_ENTITY(owner, ITEMFL_CHANGED_CHAIN)
 	SENDENTITY_COORD(origin[0], ITEMFL_CHANGED_ORIGIN_X)
@@ -461,7 +527,7 @@ ncItem::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_BYTE(movetype, ITEMFL_CHANGED_FLAGS)
 	SENDENTITY_INT(flags, ITEMFL_CHANGED_FLAGS)
 	SENDENTITY_INT(modelflags, ITEMFL_CHANGED_FLAGS)
-	SENDENTITY_INT(vv_flags, ITEMFL_CHANGED_FLAGS)
+	SENDENTITY_INT(m_nuclideFlags, ITEMFL_CHANGED_FLAGS)
 	SENDENTITY_COORD(mins[0], ITEMFL_CHANGED_SIZE)
 	SENDENTITY_COORD(mins[1], ITEMFL_CHANGED_SIZE)
 	SENDENTITY_COORD(mins[2], ITEMFL_CHANGED_SIZE)
@@ -478,12 +544,12 @@ ncItem::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_COORD(avelocity[0], ITEMFL_CHANGED_ANGULARVELOCITY)
 	SENDENTITY_COORD(avelocity[1], ITEMFL_CHANGED_ANGULARVELOCITY)
 	SENDENTITY_COORD(avelocity[2], ITEMFL_CHANGED_ANGULARVELOCITY)
-	SENDENTITY_BYTE(m_vecRenderColor[0], ITEMFL_CHANGED_RENDERPROPS)
-	SENDENTITY_BYTE(m_vecRenderColor[1], ITEMFL_CHANGED_RENDERPROPS)
-	SENDENTITY_BYTE(m_vecRenderColor[2], ITEMFL_CHANGED_RENDERPROPS)
-	SENDENTITY_BYTE(m_flRenderAmt, ITEMFL_CHANGED_RENDERPROPS)
-	SENDENTITY_BYTE(m_iRenderMode, ITEMFL_CHANGED_RENDERPROPS)
-	SENDENTITY_BYTE(m_iRenderFX, ITEMFL_CHANGED_RENDERPROPS)
+	SENDENTITY_BYTE(m_renderColor[0], ITEMFL_CHANGED_RENDERPROPS)
+	SENDENTITY_BYTE(m_renderColor[1], ITEMFL_CHANGED_RENDERPROPS)
+	SENDENTITY_BYTE(m_renderColor[2], ITEMFL_CHANGED_RENDERPROPS)
+	SENDENTITY_BYTE(m_renderAmount, ITEMFL_CHANGED_RENDERPROPS)
+	SENDENTITY_BYTE(m_renderMode, ITEMFL_CHANGED_RENDERPROPS)
+	SENDENTITY_BYTE(m_renderFX, ITEMFL_CHANGED_RENDERPROPS)
 
 	return (true);
 }
@@ -505,7 +571,7 @@ ncItem::EvaluateEntity(void)
 	EVALUATE_FIELD(movetype, ITEMFL_CHANGED_FLAGS)
 	EVALUATE_FIELD(flags, ITEMFL_CHANGED_FLAGS)
 	EVALUATE_FIELD(modelflags, ITEMFL_CHANGED_FLAGS)
-	EVALUATE_FIELD(vv_flags, ITEMFL_CHANGED_FLAGS)
+	EVALUATE_FIELD(m_nuclideFlags, ITEMFL_CHANGED_FLAGS)
 	EVALUATE_VECTOR(mins, 0, ITEMFL_CHANGED_SIZE)
 	EVALUATE_VECTOR(mins, 1, ITEMFL_CHANGED_SIZE)
 	EVALUATE_VECTOR(mins, 2, ITEMFL_CHANGED_SIZE)
@@ -522,22 +588,16 @@ ncItem::EvaluateEntity(void)
 	EVALUATE_VECTOR(avelocity, 0, ITEMFL_CHANGED_ANGULARVELOCITY)
 	EVALUATE_VECTOR(avelocity, 1, ITEMFL_CHANGED_ANGULARVELOCITY)
 	EVALUATE_VECTOR(avelocity, 2, ITEMFL_CHANGED_ANGULARVELOCITY)
-	EVALUATE_VECTOR(m_vecRenderColor, 0, ITEMFL_CHANGED_RENDERPROPS)
-	EVALUATE_VECTOR(m_vecRenderColor, 1, ITEMFL_CHANGED_RENDERPROPS)
-	EVALUATE_VECTOR(m_vecRenderColor, 2, ITEMFL_CHANGED_RENDERPROPS)
-	EVALUATE_FIELD(m_flRenderAmt, ITEMFL_CHANGED_RENDERPROPS)
-	EVALUATE_FIELD(m_iRenderMode, ITEMFL_CHANGED_RENDERPROPS)
-	EVALUATE_FIELD(m_iRenderFX, ITEMFL_CHANGED_RENDERPROPS)
+	EVALUATE_VECTOR(m_renderColor, 0, ITEMFL_CHANGED_RENDERPROPS)
+	EVALUATE_VECTOR(m_renderColor, 1, ITEMFL_CHANGED_RENDERPROPS)
+	EVALUATE_VECTOR(m_renderColor, 2, ITEMFL_CHANGED_RENDERPROPS)
+	EVALUATE_FIELD(m_renderAmount, ITEMFL_CHANGED_RENDERPROPS)
+	EVALUATE_FIELD(m_renderMode, ITEMFL_CHANGED_RENDERPROPS)
+	EVALUATE_FIELD(m_renderFX, ITEMFL_CHANGED_RENDERPROPS)
 
 	if (InInventory() == true) {
 		SetOrigin(owner.origin);
 		pvsflags = PVSF_IGNOREPVS;
-
-		/* HACK: force refresh every once in a while */
-		if (time & 4) {
-			SendFlags |= ITEMFL_CHANGED_CHAIN;
-		}
-
 		modelindex = 0;
 	} else {
 		pvsflags = 0;
@@ -550,7 +610,7 @@ void
 ncItem::ReceiveEntity(float flNew, float flChanged)
 {
 	_isItem = true;
-	READENTITY_INT(entityDefID, ITEMFL_CHANGED_CHAIN)
+	READENTITY_INT(entityDefID, ITEMFL_CHANGED_MODELINDEX)
 	READENTITY_ENTNUM(chain_entnum, ITEMFL_CHANGED_CHAIN)
 	READENTITY_ENTNUM(owner_entnum, ITEMFL_CHANGED_CHAIN)
 	READENTITY_COORD(origin[0], ITEMFL_CHANGED_ORIGIN_X)
@@ -564,7 +624,7 @@ ncItem::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_BYTE(movetype, ITEMFL_CHANGED_FLAGS)
 	READENTITY_INT(flags, ITEMFL_CHANGED_FLAGS)
 	READENTITY_INT(modelflags, ITEMFL_CHANGED_FLAGS)
-	READENTITY_INT(vv_flags, ITEMFL_CHANGED_FLAGS)
+	READENTITY_INT(m_nuclideFlags, ITEMFL_CHANGED_FLAGS)
 	READENTITY_COORD(mins[0], ITEMFL_CHANGED_SIZE)
 	READENTITY_COORD(mins[1], ITEMFL_CHANGED_SIZE)
 	READENTITY_COORD(mins[2], ITEMFL_CHANGED_SIZE)
@@ -581,16 +641,16 @@ ncItem::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_COORD(avelocity[0], ITEMFL_CHANGED_ANGULARVELOCITY)
 	READENTITY_COORD(avelocity[1], ITEMFL_CHANGED_ANGULARVELOCITY)
 	READENTITY_COORD(avelocity[2], ITEMFL_CHANGED_ANGULARVELOCITY)
-	READENTITY_BYTE(m_vecRenderColor[0], ITEMFL_CHANGED_RENDERPROPS)
-	READENTITY_BYTE(m_vecRenderColor[1], ITEMFL_CHANGED_RENDERPROPS)
-	READENTITY_BYTE(m_vecRenderColor[2], ITEMFL_CHANGED_RENDERPROPS)
-	READENTITY_BYTE(m_flRenderAmt, ITEMFL_CHANGED_RENDERPROPS)
-	READENTITY_BYTE(m_iRenderMode, ITEMFL_CHANGED_RENDERPROPS)
-	READENTITY_BYTE(m_iRenderFX, ITEMFL_CHANGED_RENDERPROPS)
+	READENTITY_BYTE(m_renderColor[0], ITEMFL_CHANGED_RENDERPROPS)
+	READENTITY_BYTE(m_renderColor[1], ITEMFL_CHANGED_RENDERPROPS)
+	READENTITY_BYTE(m_renderColor[2], ITEMFL_CHANGED_RENDERPROPS)
+	READENTITY_BYTE(m_renderAmount, ITEMFL_CHANGED_RENDERPROPS)
+	READENTITY_BYTE(m_renderMode, ITEMFL_CHANGED_RENDERPROPS)
+	READENTITY_BYTE(m_renderFX, ITEMFL_CHANGED_RENDERPROPS)
 
+	/* expensive & this has to be done first, any code below may query decl */
 	if (flChanged & ITEMFL_CHANGED_MODELINDEX) {
-		classname = EntityDef_NameFromNetID(entityDefID);
-		declclass = classname;
+		EntityDef_SetFromEntNum(this, entityDefID);
 	}
 
 	/* HACK: PHYSICS should not run client-side, act as if it's 'none' */
@@ -627,13 +687,9 @@ ncItem::PredictPreFrame(void)
 	}
 
 	/* relink, if still valid */
-	if (m_nextItem == __NULL__ && chain_entnum)
+	if (m_nextItem == __NULL__ && chain_entnum) {
 		m_nextItem = (ncItem)findentity(world, ::entnum, chain_entnum);
-
-	#warning What was this meant to do?!
-	//if (wasfreed(m_nextItem)) {
-	//	return;
-	//}
+	}
 
 	if (owner == __NULL__ && owner_entnum) {
 		owner = findentity(world, ::entnum, owner_entnum);
@@ -642,7 +698,7 @@ ncItem::PredictPreFrame(void)
 			_AddedCallback();
 
 			/* we may have been removed in _AddedCallback */
-			if (this && wasfreed(this)) {
+			if (wasfreed(this)) {
 				return;
 			}
 		}
@@ -653,7 +709,7 @@ ncItem::PredictPreFrame(void)
 	SAVE_STATE(solid)
 	SAVE_STATE(movetype)
 	SAVE_STATE(flags)
-	SAVE_STATE(vv_flags)
+	SAVE_STATE(m_nuclideFlags)
 	SAVE_STATE(mins)
 	SAVE_STATE(maxs)
 	SAVE_STATE(scale)
@@ -671,7 +727,7 @@ ncItem::PredictPostFrame(void)
 	ROLL_BACK(solid)
 	ROLL_BACK(movetype)
 	ROLL_BACK(flags)
-	ROLL_BACK(vv_flags)
+	ROLL_BACK(m_nuclideFlags)
 	ROLL_BACK(mins)
 	ROLL_BACK(maxs)
 	ROLL_BACK(scale)
@@ -710,30 +766,38 @@ ncItem::IsWeapon(void)
 	return (false);
 }
 
-
-void
-ncItem::_AddedCallback(void)
-{
-	ncActor ourOwner = (ncActor)owner;
-
-#if 0
-	if (pSeat->m_ePlayer == owner) {
-		localcmd("bf\n");
-	}
-#endif
-
 #ifdef SERVER
-	SendFlags |= -1;
+void
+ncItem::GiveBonusItems(entity theOwner)
+{
+	ncActor ourOwner = (ncActor)theOwner;
 
-	if (m_iGiveHealth > 0i) {
+	/* let the client-game know, reliably - both us and our spectators perhaps. */
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_PICKUP);
+	WriteInt(MSG_MULTICAST, entityDefID);
+	msg_entity = theOwner;
+	multicast([0,0,0], MULTICAST_ONE_R);
+
+	if (m_itemGivesHealth > 0i) {
 		if (ourOwner.GetHealth() < 100) {
-			ourOwner.health = bound(0, ourOwner.health + m_iGiveHealth, ourOwner.max_health);
+			ourOwner.SetHealth(bound(0, ourOwner.GetHealth() + m_itemGivesHealth, ourOwner.GetMaxHealth()));
 		}
 	}
 
-	if (m_iGiveArmor > 0i) {
+	//EntWarning("m_itemGivesBonusHealth: %i", m_itemGivesBonusHealth);
+
+	if (m_itemGivesBonusHealth > 0i && ourOwner.GetHealth() < 200) {
+		ourOwner.AddBonusHealth((float)m_itemGivesBonusHealth);
+	}
+
+	if (m_itemGivesBonusArmor > 0i && ourOwner.GetArmor() < 200) {
+		ourOwner.AddBonusArmor((float)m_itemGivesBonusArmor);
+	}
+
+	if (m_itemGivesArmor > 0i) {
 		if (ourOwner.armor < 100) {
-			ourOwner.armor += (float)m_iGiveArmor;
+			ourOwner.armor += (float)m_itemGivesArmor;
 
 			if (ourOwner.armor > 100) {
 				ourOwner.armor = 100;
@@ -742,26 +806,37 @@ ncItem::_AddedCallback(void)
 	}
 
 	for (int i = 0i; i < MAX_AMMO_TYPES; i++) {
-		ourOwner.GiveAmmo(i, m_GiveAmmo[i]);
+		ourOwner.GiveAmmo(i, m_itemGivesAmmo[i]);
 	}
+}
+#endif
 
-	/* let the client-game know, reliably - both us and our spectators perhaps. */
-	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
-	WriteByte(MSG_MULTICAST, EV_PICKUP);
-	WriteInt(MSG_MULTICAST, entityDefID);
-	msg_entity = ourOwner;
-	multicast([0,0,0], MULTICAST_ONE_R);
+void
+ncItem::_AddedCallback(void)
+{
+	ncActor ourOwner = (ncActor)owner;
+
+#ifdef SERVER
+	SendFlags |= -1;
+
+	GiveBonusItems(ourOwner);
 
 	Logging_Pickup(ourOwner, this, __NULL__);
 	ourOwner.StartSoundDef(m_sndAcquire, CHAN_ITEM, true);
 	OnPickup();
 	MakeInvulnerable();
 #endif
-
 	Disappear();
+
 	ourOwner.AddedItemCallback(this);
 	AddedToInventory();
 	SetMovetype(MOVETYPE_NONE);
+
+#ifdef SERVER
+	if (m_itemCarries == false) {
+		Destroy();
+	}
+#endif
 }
 
 void

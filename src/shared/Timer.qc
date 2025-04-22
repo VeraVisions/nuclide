@@ -153,30 +153,30 @@ void
 ncTimer::Save(float handle)
 {
 	super::Save(handle);
-	SaveEntity(handle, "m_eReceiver", m_eReceiver);
-	SaveString(handle, "_m_ncTimerFunc", getentityfieldstring(findentityfield("_m_ncTimerFunc"), this));
-	SaveFloat(handle, "m_flTime", m_flTime);
-	SaveBool(handle, "m_bRepeats", m_bRepeats);
+	SaveEntity(handle, "eReceiver", m_eReceiver);
+	SaveString(handle, "ncTimerFunc", getentityfieldstring(findentityfield("_m_ncTimerFunc"), this));
+	SaveFloat(handle, "flTime", m_flTime);
+	SaveBool(handle, "bRepeats", m_bRepeats);
 }
 
 void
-ncTimer::Restore(string strKey, string strValue)
+ncTimer::Restore(string keyName, string setValue)
 {
-	switch (strKey) {
-	case "m_eReceiver":
-		m_eReceiver = ReadEntity(strValue);
+	switch (keyName) {
+	case "eReceiver":
+		m_eReceiver = ReadEntity(setValue);
 		break;
-	case "_m_ncTimerFunc":
-		_m_ncTimerFunc = externvalue(-1, strValue);
+	case "ncTimerFunc":
+		_m_ncTimerFunc = externvalue(-1, setValue);
 		break;
-	case "m_flTime":
-		m_flTime = ReadFloat(strValue);
+	case "flTime":
+		m_flTime = ReadFloat(setValue);
 		break;
-	case "m_bRepeats":
-		m_bRepeats = ReadBool(strValue);
+	case "bRepeats":
+		m_bRepeats = ReadBool(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(keyName, setValue);
 		break;
 	}
 }

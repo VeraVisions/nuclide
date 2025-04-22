@@ -74,44 +74,44 @@ random_trigger::Save(float handle)
 }
 
 void
-random_trigger::Restore(string strKey, string strValue)
+random_trigger::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_flMinTime":
-		m_flMinTime = ReadFloat(strValue);
+		m_flMinTime = ReadFloat(setValue);
 		break;
 	case "m_flRandMin":
-		m_flRandMin = ReadFloat(strValue);
+		m_flRandMin = ReadFloat(setValue);
 		break;
 	case "m_flRandMax":
-		m_flRandMax = ReadFloat(strValue);
+		m_flRandMax = ReadFloat(setValue);
 		break;
 	case "m_iStartState":
-		m_iStartState = ReadInt(strValue);
+		m_iStartState = ReadInt(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-random_trigger::SpawnKey(string strKey, string strValue)
+random_trigger::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "start_state":
-		m_iStartState = stoi(strValue);
+		m_iStartState = stoi(setValue);
 		break;
 	case "wait":
-		m_flMinTime = stof(strValue);
+		m_flMinTime = stof(setValue);
 		break;
 	case "random_min":
-		m_flRandMin = stof(strValue);
+		m_flRandMin = stof(setValue);
 		break;
 	case "random_max":
-		m_flRandMax = stof(strValue);
+		m_flRandMax = stof(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 

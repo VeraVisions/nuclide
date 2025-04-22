@@ -32,7 +32,7 @@ SpawnMenu_Init(void)
 	commandFile = fopen("commandmenu.txt", FILE_READ);
 
 	if (commandFile < 0) {
-		NSLog("Ignoring missing commandmenu.txt");
+		ncLog("Ignoring missing commandmenu.txt");
 		return;
 	}
 
@@ -43,7 +43,7 @@ SpawnMenu_Init(void)
 
 		if (argv(0) == "{") {
 			if (!newButton) {
-				NSError("Cannot add sub-menu to non-existant button.");
+				ncError("Cannot add sub-menu to non-existant button.");
 				fclose(commandFile);
 				return;
 			}

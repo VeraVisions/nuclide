@@ -103,29 +103,29 @@ env_spark::Save(float handle)
 }
 
 void
-env_spark::Restore(string strKey, string strValue)
+env_spark::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_flMaxDelay":
-		m_flMaxDelay = ReadFloat(strValue);
+		m_flMaxDelay = ReadFloat(setValue);
 		break;
 	case "_m_iSparkParticle":
-		_m_iSparkParticle = ReadInt(strValue);
+		_m_iSparkParticle = ReadInt(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-env_spark::SpawnKey(string strKey, string strValue)
+env_spark::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "MaxDelay":
-		m_flMaxDelay = stof(strValue);
+		m_flMaxDelay = stof(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
@@ -134,7 +134,7 @@ env_spark::Spawned(void)
 {
 	super::Spawned();
 
-	Sound_Precache("DoSpark");
+	precache.Sound("DoSpark");
 	_m_iSparkParticle = particleeffectnum("fx_spark.main");
 }
 

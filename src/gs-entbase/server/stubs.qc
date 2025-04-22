@@ -86,13 +86,3 @@ This entity was introduced in Quake (1996).
 @ingroup pointentity
 */
 
-CLASSEXPORT(info_target, info_notnull)
-CLASSEXPORT(env_sound, info_null)
-CLASSEXPORT(env_sun, info_null)
-CLASSEXPORT(info_intermission, info_notnull)
-
-CLASSEXPORT(prop_static, info_null)
-CLASSEXPORT(func_dustmotes, info_null)
-CLASSEXPORT(env_soundscape, info_null)
-CLASSEXPORT(env_cubemap, info_null)
-CLASSEXPORT(sky_camera, info_null)

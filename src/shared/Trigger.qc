@@ -17,50 +17,60 @@
 void
 ncTrigger::ncTrigger(void)
 {
-	blocked = _BlockedHandler;
-	touch = _TouchHandler;
-
 #ifdef SERVER
-	m_strGlobalState = __NULL__;
-	m_strKillTarget = "";
-	m_strMessage = __NULL__;
-	m_strMaster = __NULL__;
-	m_iUseType = 0i;
-	m_iValue = 0i;
-	m_flDelay = 0.0f;
-	m_bStartDisabled = false;
-	m_bEnabled = true;
-	m_bIsModern = false;
+	m_globalState = __NULL__;
+	m_triggerKillTarget = "";
+	m_triggerMessage = __NULL__;
+	m_masterName = __NULL__;
+	m_triggerValue = 0i;
+	m_triggerDelay = 0.0f;
+	m_triggerStartsDisabled = false;
+	m_triggerEnabled = true;
+	m_triggerSpawnflagFilter = false;
 #endif
 }
 
 #ifdef SERVER
 void
-ncTrigger::Respawn(void)
+ncTrigger::Spawned(void)
 {
-	super::Respawn();
+	super::Spawned();
+	blocked = _BlockedHandler;
+	touch = _TouchHandler;
 }
 
 bool
 ncTrigger::CanBeTriggeredBy(entity testEnt)
 {
 	/* easy way out */
-	if (spawnflags & TOUCHFILTER_EVERYTHING)
+	if (spawnflags & TOUCHFILTER_EVERYTHING) {
 		return true;
+	}
 
 	/* filters */
-	if (!(spawnflags & TOUCHFILTER_CLIENTS) && (testEnt.flags & FL_CLIENT))
+	if (!(spawnflags & TOUCHFILTER_CLIENTS) && (testEnt.flags & FL_CLIENT)) {
 		return false;
-	if (!(spawnflags & TOUCHFILTER_NPCS) && (testEnt.flags & FL_MONSTER))
+	}
+
+	if (!(spawnflags & TOUCHFILTER_NPCS) && (testEnt.flags & FL_MONSTER)) {
 		return false;
-	if (!(spawnflags & TOUCHFILTER_PUSHABLE) && (testEnt.classname == "func_pushable"))
+	}
+
+	if (!(spawnflags & TOUCHFILTER_PUSHABLE) && (testEnt.classname == "func_pushable")) {
 		return false;
-	if (!(spawnflags & TOUCHFILTER_PHYSICS) && (testEnt.isPhysics == true))
+	}
+
+	if (!(spawnflags & TOUCHFILTER_PHYSICS) && (testEnt.isPhysics == true)) {
 		return false;
-	if (!(spawnflags & TOUCHFILTER_FRIENDLIES) && (testEnt.flags & FL_MONSTER) && (testEnt.m_iAlliance == 0))
+	}
+
+	if (!(spawnflags & TOUCHFILTER_FRIENDLIES) && (testEnt.flags & FL_MONSTER) && (testEnt.m_iAlliance == 0)) {
 		return false;
-	if (!(spawnflags & TOUCHFILTER_CLIENTSINVEHICLES) && (testEnt.flags & FL_CLIENT) && (testEnt.vv_flags & VFL_INVEHICLE))
+	}
+
+	if (!(spawnflags & TOUCHFILTER_CLIENTSINVEHICLES) && (testEnt.flags & FL_CLIENT) && (testEnt.m_nuclideFlags & VFL_INVEHICLE)) {
 		return false;
+	}
 
 /*
 
@@ -89,11 +99,12 @@ ncTrigger::UseTargets(entity act, int state, float triggerDelay)
 {
 	static void Entities_UseTargets_Think(void) {
 		ncTrigger::UseTargets(self.owner, self.health, 0.0f);
-		remove(self);
+		ncTrigger::Destroy();
 	}
 
-	if (!m_strKillTarget && !target)
+	if (!STRING_SET(m_triggerKillTarget) && !STRING_SET(target)) {
 		return;
+	}
 
 	if (triggerDelay > 0.0f) {
 		EntLog("Scheduling trigger of %S in %f seconds.", target, triggerDelay);
@@ -105,17 +116,17 @@ ncTrigger::UseTargets(entity act, int state, float triggerDelay)
 		eTimer.nextthink = time + triggerDelay;
 		eTimer.health = state;  /* ugly */
 
-		if (m_strKillTarget != "") {
-			EntLog("Will kill %S before that happens.", m_strKillTarget);
+		if (STRING_SET(m_triggerKillTarget)) {
+			EntLog("Will kill %S before that happens.", m_triggerKillTarget);
 		}
-		eTimer.m_strKillTarget = m_strKillTarget;
-		eTimer.m_strMessage = m_strMessage;
+		eTimer.m_triggerKillTarget = m_triggerKillTarget;
+		eTimer.m_triggerMessage = m_triggerMessage;
 	} else {
-		if (m_strMessage) {
-			env_message_single(act, m_strMessage);
+		if (STRING_SET(m_triggerMessage)) {
+			env_message_single(act, m_triggerMessage);
 		}
 
-		if (target && target != "" && target != targetname)
+		if (STRING_SET(target) && target != targetname)
 		for (entity f = world; (f = find(f, ::targetname, target));) {
 			ncTrigger trigger = (ncTrigger)f;
 
@@ -128,9 +139,9 @@ ncTrigger::UseTargets(entity act, int state, float triggerDelay)
 			}
 		}
 
-		if (m_strKillTarget != "") {
-			ncEntity eKill = (ncEntity)find(world, ::targetname, m_strKillTarget);
-			EntLog("Killtargeting %S", m_strKillTarget);
+		if (STRING_SET(m_triggerKillTarget)) {
+			ncEntity eKill = (ncEntity)find(world, ::targetname, m_triggerKillTarget);
+			EntLog("Killtargeting %S", m_triggerKillTarget);
 
 			if (eKill) {
 				eKill.Destroy();
@@ -145,21 +156,37 @@ ncTrigger::SetTriggerTarget(string name)
 	target = name;
 }
 
+void
+ncTrigger::SetValue(int newValue)
+{
+	m_triggerValue = newValue;
+}
+
 int
 ncTrigger::GetValue(entity queryingEntity)
 {
-	return m_iValue;
+	return m_triggerValue;
 }
 
 globalstate_t
 ncTrigger::GetGlobalValue(string strName)
 {
-	for (int i = 0; i < (tokenize(cvar_string(CENVGLOBAL_CVAR))); i += 2) {
-		if (argv(i) == strName) {
-			return stof(argv(i+1));
-		}
+	string globalString = ncSessionManager::GetGlobal(strName);
+
+	switch (globalString) {
+	case "false":
+	case "0":
+		return (GLOBAL_OFF);
+		break;
+	case "dead":
+	case "":
+		return (GLOBAL_DEAD);
+		break;
+	case "1":
+	case "true":
+	default:
+		return (GLOBAL_ON);
 	}
-	return (0);
 }
 
 int
@@ -168,28 +195,28 @@ ncTrigger::GetMaster(entity queryingEntity)
 	ncTrigger t;
 
 	/* default to success */
-	if (!m_strMaster) {
-		/*NSLog("^2%s::^3GetMaster^7: No master, return success", 
+	if (!STRING_SET(m_masterName)) {
+		/*ncLog("^2%s::^3GetMaster^7: No master, return success",
 		classname));*/
 		return (1);
 	}
 
-	t = (ncTrigger)find(world, ::targetname, m_strMaster);
+	t = (ncTrigger)find(world, ::targetname, m_masterName);
 
 	/* we couldn't find it, so let's not even bother going further */
 	if (!t) {
-		/*NSLog("^2%s::^3GetMaster^7: Invalid master (%s), return success", 
-			classname, m_strMaster);*/
+		/*ncLog("^2%s::^3GetMaster^7: Invalid master (%s), return success",
+			classname, m_masterName);*/
 		return (1);
 	}
 
 /*
 	if (t.GetValue(queryingEntity) == 1)
-		NSLog("^2%s::^3GetMaster^7: %s learns %s ^2POSITIVE", 
-			classname, targetname, m_strMaster);
+		ncLog("^2%s::^3GetMaster^7: %s learns %s ^2POSITIVE",
+			classname, targetname, m_masterName);
 	else
-		NSLog("^2%s::^3GetMaster^7: %s learns %s ^1NEGATIVE", 
-			classname, targetname, m_strMaster);
+		ncLog("^2%s::^3GetMaster^7: %s learns %s ^1NEGATIVE",
+			classname, targetname, m_masterName);
 */
 
 	return t.GetValue(queryingEntity);
@@ -198,7 +225,25 @@ ncTrigger::GetMaster(entity queryingEntity)
 string
 ncTrigger::GetTriggerTarget(void)
 {
-	return target;
+	return (target);
+}
+
+float
+ncTrigger::GetTriggerDelay(void)
+{
+	return (m_triggerDelay);
+}
+
+string
+ncTrigger:: GetTriggerMessage(void)
+{
+	return (m_triggerMessage);
+}
+
+string
+ncTrigger::GetTriggerKillTarget(void)
+{
+	return (m_triggerKillTarget);
 }
 
 entity
@@ -226,80 +271,96 @@ ncTrigger::HasTargetname(void)
 }
 
 void
+ncTrigger::EnableTrigger(void)
+{
+	m_triggerEnabled = true;
+}
+
+void
+ncTrigger::DisableTrigger(void)
+{
+	m_triggerEnabled = false;
+}
+
+void
+ncTrigger::ToggleTrigger(void)
+{
+	m_triggerEnabled = true - m_triggerEnabled;
+}
+
+bool
+ncTrigger::TriggerEnabled(void)
+{
+	return (m_triggerEnabled);
+}
+
+void
 ncTrigger::Save(float handle)
 {
 	super::Save(handle);
-	SaveString(handle, "m_strGlobalState", m_strGlobalState);
-	SaveString(handle, "m_strKillTarget", m_strKillTarget);
-	SaveString(handle, "m_strMessage", m_strMessage);
-	SaveString(handle, "m_strMaster", m_strMaster);
-	SaveInt(handle, "m_iUseType", m_iUseType);
-	SaveFloat(handle, "team", team);
-	SaveInt(handle, "m_iValue", m_iValue);
-	SaveFloat(handle, "m_flDelay", m_flDelay);
-	SaveString(handle, "m_strGlobalName", m_strGlobalName);
-	SaveBool(handle, "m_bStartDisabled", m_bStartDisabled);
-	SaveBool(handle, "m_bEnabled", m_bEnabled);
-	SaveBool(handle, "m_bIsModern", m_bIsModern);
-	SaveFloat(handle, "m_flTouchTime", m_flTouchTime);
-	SaveBool(handle, "m_beingTouched", m_beingTouched);
-	SaveEntity(handle, "m_eTouchLast", m_eTouchLast);
-	SaveFloat(handle, "team_no", team_no);
+	SaveString(handle, "globalState", m_globalState);
+	SaveString(handle, "triggerKillTarget", m_triggerKillTarget);
+	SaveString(handle, "triggerMessage", m_triggerMessage);
+	SaveString(handle, "masterName", m_masterName);
+	SaveInt(handle, "triggerValue", m_triggerValue);
+	SaveFloat(handle, "triggerDelay", m_triggerDelay);
+	SaveString(handle, "globalName", m_globalName);
+	SaveBool(handle, "triggerStartsDisabled", m_triggerStartsDisabled);
+	SaveBool(handle, "triggerEnabled", m_triggerEnabled);
+	SaveBool(handle, "triggerSpawnflagFilter", m_triggerSpawnflagFilter);
+	SaveFloat(handle, "timeSinceLastTouch", m_timeSinceLastTouch);
+	SaveBool(handle, "beingTouched", m_beingTouched);
+	SaveEntity(handle, "touchingEntity", m_touchingEntity);
+	SaveFloat(handle, "touchingOnlyTeam", m_touchingOnlyTeam);
 }
 void
-ncTrigger::Restore(string strKey, string strValue)
+ncTrigger::Restore(string keyName, string setValue)
 {
-	switch (strKey) {
-	case "m_strGlobalState":
-		m_strGlobalState = ReadString(strValue);
+	switch (keyName) {
+	case "globalState":
+		m_globalState = ReadString(setValue);
 		break;
-	case "m_strKillTarget":
-		m_strKillTarget = ReadString(strValue);
+	case "triggerKillTarget":
+		m_triggerKillTarget = ReadString(setValue);
 		break;
-	case "m_strMessage":
-		m_strMessage = ReadString(strValue);
+	case "triggerMessage":
+		m_triggerMessage = ReadString(setValue);
 		break;
-	case "m_strMaster":
-		m_strMaster = ReadString(strValue);
+	case "masterName":
+		m_masterName = ReadString(setValue);
 		break;
-	case "m_iUseType":
-		m_iUseType = ReadInt(strValue);
+	case "triggerValue":
+		m_triggerValue = ReadInt(setValue);
 		break;
-	case "team":
-		team = ReadFloat(strValue);
+	case "triggerDelay":
+		m_triggerDelay = ReadFloat(setValue);
 		break;
-	case "m_iValue":
-		m_iValue = ReadInt(strValue);
+	case "globalName":
+		m_globalName = ReadString(setValue);
 		break;
-	case "m_flDelay":
-		m_flDelay = ReadFloat(strValue);
+	case "triggerStartsDisabled":
+		m_triggerStartsDisabled = ReadBool(setValue);
 		break;
-	case "m_strGlobalName":
-		m_strGlobalName = ReadString(strValue);
+	case "triggerEnabled":
+		m_triggerEnabled = ReadBool(setValue);
 		break;
-	case "m_bStartDisabled":
-		m_bStartDisabled = ReadBool(strValue);
+	case "triggerSpawnflagFilter":
+		m_triggerSpawnflagFilter = ReadBool(setValue);
 		break;
-	case "m_bEnabled":
-		m_bEnabled = ReadBool(strValue);
+	case "timeSinceLastTouch":
+		m_timeSinceLastTouch = ReadFloat(setValue);
 		break;
-	case "m_bIsModern":
-		m_bIsModern = ReadBool(strValue);
+	case "beingTouched":
+		m_beingTouched = ReadBool(setValue);
 		break;
-	case "m_flTouchTime":
-		m_flTouchTime = ReadFloat(strValue);
+	case "touchingEntity":
+		m_touchingEntity = ReadEntity(setValue);
 		break;
-	case "m_beingTouched":
-		m_beingTouched = ReadBool(strValue);
-		break;
-	case "m_eTouchLast":
-		m_eTouchLast = ReadEntity(strValue);
-		break;
-	case "team_no":
-		team_no = ReadFloat(strValue);
+	case "touchingOnlyTeam":
+		m_touchingOnlyTeam = ReadFloat(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(keyName, setValue);
 	}
 }
 
@@ -314,13 +375,13 @@ ncTrigger::Input(entity eAct, string strInput, string strData)
 		Trigger(eAct, TRIG_TOGGLE);
 		break;
 	case "Enable":
-		m_bEnabled = true;
+		m_triggerEnabled = true;
 		break;
 	case "Disable":
-		m_bEnabled = false;
+		m_triggerEnabled = false;
 		break;
 	case "Toggle":
-		m_bEnabled = (m_bEnabled) ? false : true;
+		m_triggerEnabled = (m_triggerEnabled) ? false : true;
 		break;
 	case "SetTeam":
 		SetTeam(stof(strData));
@@ -336,7 +397,7 @@ ncTrigger::SetTeam(float new_team)
 	team = new_team;
 
 	/* update the InfoKey too if it's a client entity */
-	if (isClient(this)) {
+	if (is.Client(this)) {
 		ncClient client = (ncClient)this;
 		client.SetInfoKey("*team", sprintf("%d", new_team));
 	}
@@ -350,38 +411,38 @@ ncTrigger::GetTeam(void)
 #endif
 
 void
-ncTrigger::SpawnKey(string strKey, string strValue)
+ncTrigger::SpawnKey(string keyName, string setValue)
 {
-	switch (strKey) {
+	switch (keyName) {
 #ifdef SERVER
 	case "killtarget":
-		m_strKillTarget = ReadString(strValue);
+		m_triggerKillTarget = ReadString(setValue);
 		break;
 	case "message":
-		m_strMessage = ReadString(strValue);
+		m_triggerMessage = ReadString(setValue);
 		break;
 	case "master":
-		m_strMaster = ReadString(strValue);
+		m_masterName = ReadString(setValue);
 		break;
-	case "team_no":
-		team_no = ReadFloat(strValue);
+	case "m_touchingOnlyTeam":
+		m_touchingOnlyTeam = ReadFloat(setValue);
 		break;
 	case "delay":
-		m_flDelay = ReadFloat(strValue);
+		m_triggerDelay = ReadFloat(setValue);
 		break;
 	case "globalstate":
-		m_strGlobalState = ReadString(strValue);
+		m_globalState = ReadString(setValue);
 		break;
 	case "globalname":
-		m_strGlobalName = ReadString(strValue);
+		m_globalName = ReadString(setValue);
 		break;
 	case "StartDisabled":
-		m_bStartDisabled = ReadBool(strValue);
-		m_bIsModern = true;
+		m_triggerStartsDisabled = ReadBool(setValue);
+		m_triggerSpawnflagFilter = true;
 		break;
 #endif
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(keyName, setValue);
 		break;
 	}
 }
@@ -433,22 +494,25 @@ ncTrigger::_TouchHandler(void)
 {
 	m_touchPosition = trace_endpos;
 	m_touchNormal = trace_plane_normal;
-	m_eTouchLast = other;
+	m_touchingEntity = other;
 
 #ifdef SERVER
-	if (g_grMode.IsTeamplay())
-	if (team_no > 0i)
-	if (m_eTouchLast.team != team_no) {
-		return;
+	if (g_grMode) {
+		if (g_grMode.IsTeamplay())
+		if (m_touchingOnlyTeam > 0i)
+		if (m_touchingEntity.team != m_touchingOnlyTeam) {
+			return;
+		}
 	}
 #endif
 
 	/* start touch in case we haven't */
-	if (m_beingTouched != true)
-		StartTouch(m_eTouchLast);
+	if (m_beingTouched != true) {
+		StartTouch(m_touchingEntity);
+	}
 
-	Touch(m_eTouchLast);
+	Touch(m_touchingEntity);
 
-	m_flTouchTime = GetTime();
+	m_timeSinceLastTouch = GetTime();
 	m_beingTouched = true;
 }

@@ -16,36 +16,36 @@
 
 /* link two nodes together */
 static void
-Node_Link(node_t *n1, node_t *n2)
+Node_Link(graphNode_t *n1, graphNode_t *n2)
 {
 	local struct neighbour_s *n;
-	int w2n = n2 - g_pNodes;
+	int w2n = n2 - g_nodeGraph;
 
-	for (int i = 0; i < n1->m_numNeighbours; i++) {
-		if (n1->m_pNeighbour[i].m_iNode == w2n) {
+	for (int i = 0; i < n1->m_neighborCount; i++) {
+		if (n1->m_neighborList[i].m_nodeID == w2n) {
 			return;
 		}
 	}
 
-	int idx = n1->m_numNeighbours ++;
-	n1->m_pNeighbour = (neighbour_s *)memreallocOld(n1->m_pNeighbour, \
-											sizeof(*n1->m_pNeighbour), \
-											idx, n1->m_numNeighbours);
+	int idx = n1->m_neighborCount ++;
+	n1->m_neighborList = (neighbour_s *)memreallocOld(n1->m_neighborList, \
+											sizeof(*n1->m_neighborList), \
+											idx, n1->m_neighborCount);
 
-	n = n1->m_pNeighbour +idx;
-	n->m_iNode = w2n;
-	n->m_flCost = vlen(n2->m_vecOrigin - n1->m_vecOrigin);
-	n->m_iFlags = 0i;
+	n = n1->m_neighborList +idx;
+	n->m_nodeID = w2n;
+	n->m_travelCost = vlen(n2->m_origin - n1->m_origin);
+	n->m_travelFlags = 0i;
 }
 
 
 /* loop through already existing nodes, test against them and link */
 static void
-Node_AutoLink(node_t *new, entity nodeEntity)
+Node_AutoLink(graphNode_t *new, entity nodeEntity)
 {
-	int x = new - g_pNodes;
+	int x = new - g_nodeGraph;
 
-	for (int i = 0; i < g_iNodes; i++) {
+	for (int i = 0; i < g_nodeCount; i++) {
 		/* don't link to ourselves... */
 		if (i == x) {
 			continue;
@@ -53,10 +53,10 @@ Node_AutoLink(node_t *new, entity nodeEntity)
 
 		/* can't use full player size, because steps = messy */
 		tracebox(
-			new->m_vecOrigin,
+			new->m_origin,
 			[-16, -16, -16],
 			[16, 16, 16],
-			g_pNodes[i].m_vecOrigin,
+			g_nodeGraph[i].m_origin,
 			MOVE_NORMAL,
 			nodeEntity
 		);
@@ -64,10 +64,10 @@ Node_AutoLink(node_t *new, entity nodeEntity)
 		/* HACK!: work around c0a0e where info_nodes are blocked by the train */
 		if (trace_ent.movetype == MOVETYPE_PUSH) {
 			tracebox(
-				new->m_vecOrigin,
+				new->m_origin,
 				[-16, -16, -16],
 				[16, 16, 16],
-				g_pNodes[i].m_vecOrigin,
+				g_nodeGraph[i].m_origin,
 				MOVE_NORMAL,
 				trace_ent
 			);
@@ -78,8 +78,8 @@ Node_AutoLink(node_t *new, entity nodeEntity)
 			continue;
 		}
 
-		Node_Link(new, &g_pNodes[i]);
-		Node_Link(&g_pNodes[i], new);
+		Node_Link(new, &g_nodeGraph[i]);
+		Node_Link(&g_nodeGraph[i], new);
 	}
 }
 
@@ -87,19 +87,19 @@ static void
 Nodes_InsertNodeForClassname(string classn)
 {
 	for (entity a = world; (a = find(a, ::classname, classn));) {
-		int iID = g_iNodes++;
-		g_pNodes = (node_t *)memreallocOld(g_pNodes, sizeof(node_t), iID, g_iNodes);
-		node_t *n = g_pNodes + iID;
+		int iID = g_nodeCount++;
+		g_nodeGraph = (graphNode_t *)memreallocOld(g_nodeGraph, sizeof(graphNode_t), iID, g_nodeCount);
+		graphNode_t *n = g_nodeGraph + iID;
 
 		a.solid = SOLID_BBOX;
 		a.movetype = MOVETYPE_WALK;
 		setsize(a, [-16,-16,-16], [16,16,16]);
 		setorigin_safe(a, a.origin);
 
-		n->m_vecOrigin = a.origin;
-		n->m_pNeighbour = __NULL__;
-		n->m_numNeighbours = 0;
-		n->m_flRadius = 32;
+		n->m_origin = a.origin;
+		n->m_neighborList = __NULL__;
+		n->m_neighborCount = 0;
+		n->m_nodeRadius = 32;
 		Node_AutoLink(n, a);
 
 		/* reset it to stupid attributes. */
@@ -112,13 +112,13 @@ Nodes_InsertNodeForClassname(string classn)
 bool
 Nodes_Available(void)
 {
-	return (g_iNodes) > 0i ? true : false;
+	return (g_nodeCount) > 0i ? true : false;
 }
 
 static void
 Nodes_BuildFromEnts(void)
 {
-	NSLog("Rebuilding node tree...");
+	ncLog("Rebuilding node tree...");
 
 	/* run through the ents and rebuild the tree */
 	Nodes_InsertNodeForClassname("info_node");
@@ -128,18 +128,18 @@ Nodes_BuildFromEnts(void)
 #endif
 
 	/* last resort */
-	if (g_iNodes == 0)
+	if (g_nodeCount == 0)
 		Nodes_InsertNodeForClassname("info_player_start");
-	if (g_iNodes == 0)
+	if (g_nodeCount == 0)
 		Nodes_InsertNodeForClassname("info_player_deathmatch");
 
-	NSLog("%i possible nodes found in %s", g_iNodes, mapname);
+	ncLog("%i possible nodes found in %s", g_nodeCount, mapname);
 
-	if (g_iNodes > 0i) {
-		NSLog("saving nodes nodes for %s", mapname);
+	if (g_nodeCount > 0i) {
+		ncLog("saving nodes nodes for %s", mapname);
 		ncNodeEditor::SaveFile(sprintf("%s.way", mapname));
 	} else {
-		NSLog("no node data found for %s", mapname);
+		ncLog("no node data found for %s", mapname);
 	}
 }
 
@@ -148,18 +148,18 @@ NodeHints_Init(void)
 {
 	info_hint pinchPoint;
 
-	for (int i = 0; i < g_iNodes; i++) {
+	for (int i = 0; i < g_nodeCount; i++) {
 		/* is this a pinch point? */
-		if (g_pNodes[i].m_numNeighbours == 2) {
+		if (g_nodeGraph[i].m_neighborCount == 2) {
 			pinchPoint = spawn(info_hint);
 			pinchPoint.Spawn();
-			pinchPoint.m_hintType = HINT_TACTICAL_PINCH;
-			setorigin(pinchPoint, g_pNodes[i].m_vecOrigin);
-		} else if (g_pNodes[i].m_numNeighbours > 4) {
+			pinchPoint.m_hintType = "pinchPoint";
+			setorigin(pinchPoint, g_nodeGraph[i].m_origin);
+		} else if (g_nodeGraph[i].m_neighborCount > 4) {
 			pinchPoint = spawn(info_hint);
 			pinchPoint.Spawn();
-			pinchPoint.m_hintType = HINT_TACTICAL_ENEMY_DISADVANTAGED;
-			setorigin(pinchPoint, g_pNodes[i].m_vecOrigin);
+			pinchPoint.m_hintType = "disadvantaged";
+			setorigin(pinchPoint, g_nodeGraph[i].m_origin);
 		}
 	}
 }

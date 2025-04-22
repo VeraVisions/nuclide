@@ -14,8 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-#define WAYPOINT_METER 52.49344f
-
 enumflags
 {
 	HUDCOUNTER_CHANGED_ORIGIN,
@@ -24,6 +22,7 @@ enumflags
 	HUDCOUNTER_CHANGED_TEXT,
 	HUDCOUNTER_CHANGED_STATE,
 	HUDCOUNTER_CHANGED_COUNTER,
+	HUDCOUNTER_CHANGED_POSITION,
 };
 
 /*! \brief Shared-Entity: HUD Counter */
@@ -81,6 +80,7 @@ private:
 	PREDICTED_STRING(m_strText)
 	PREDICTED_BOOL(m_bEnabled)
 	PREDICTED_BOOL(m_bAdditive)
+	PREDICTED_VECTOR(m_vecPosXY)
 };
 
 void
@@ -90,24 +90,31 @@ env_hudcounter::env_hudcounter(void)
 	m_strText = __NULL__;
 	m_bEnabled = true;
 	m_bAdditive = false;
+	m_vecPosXY = [0.0f, 0.0f, 0.0f];
 }
 
 #ifdef SERVER
 void
-env_hudcounter::SpawnKey(string strKey, string strValue)
+env_hudcounter::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "image":
-		m_strIcon = ReadString(strValue);
+		m_strIcon = ReadString(setValue);
 		break;
 	case "text":
-		m_strText = ReadString(strValue);
+		m_strText = ReadString(setValue);
 		break;
 	case "additive":
-		m_bAdditive = ReadBool(strValue);
+		m_bAdditive = ReadBool(setValue);
+		break;
+	case "x":
+		m_vecPosXY[0] = ReadFloat(setValue);
+		break;
+	case "y":
+		m_vecPosXY[1] = ReadFloat(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
@@ -120,29 +127,33 @@ env_hudcounter::Save(float handle)
 	SaveBool(handle, "m_bEnabled", m_bEnabled);
 	SaveBool(handle, "m_bAdditive", m_bAdditive);
 	SaveInt(handle, "m_counterValue", m_counterValue);
+	SaveVector(handle, "m_vecPosXY", m_vecPosXY);
 }
 
 void
-env_hudcounter::Restore(string strKey, string strValue)
+env_hudcounter::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_strIcon":
-		m_strIcon = ReadString(strValue);
+		m_strIcon = ReadString(setValue);
 		break;
 	case "m_strText":
-		m_strText = ReadString(strValue);
+		m_strText = ReadString(setValue);
 		break;
 	case "m_bAdditive":
-		m_bAdditive = ReadBool(strValue);
+		m_bAdditive = ReadBool(setValue);
 		break;
 	case "m_bEnabled":
-		m_bEnabled = ReadBool(strValue);
+		m_bEnabled = ReadBool(setValue);
 		break;
 	case "m_counterValue":
-		m_counterValue = ReadInt(strValue);
+		m_counterValue = ReadInt(setValue);
+		break;
+	case "m_vecPosXY":
+		m_vecPosXY = ReadVector(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
@@ -201,6 +212,7 @@ env_hudcounter::EvaluateEntity(void)
 	EVALUATE_FIELD(m_strText, HUDCOUNTER_CHANGED_TEXT)
 	EVALUATE_FIELD(m_bEnabled, HUDCOUNTER_CHANGED_STATE)
 	EVALUATE_FIELD(m_counterValue, HUDCOUNTER_CHANGED_COUNTER)
+	EVALUATE_FIELD(m_vecPosXY, HUDCOUNTER_CHANGED_POSITION)
 
 	pvsflags = PVSF_IGNOREPVS;
 }
@@ -219,6 +231,8 @@ env_hudcounter::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_STRING(m_strText, HUDCOUNTER_CHANGED_TEXT)
 	SENDENTITY_BYTE(m_bEnabled, HUDCOUNTER_CHANGED_STATE)
 	SENDENTITY_INT(m_counterValue, HUDCOUNTER_CHANGED_COUNTER)
+	SENDENTITY_FLOAT(m_vecPosXY[0], HUDCOUNTER_CHANGED_POSITION)
+	SENDENTITY_FLOAT(m_vecPosXY[1], HUDCOUNTER_CHANGED_POSITION)
 	return true;
 }
 #endif
@@ -236,6 +250,8 @@ env_hudcounter::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_STRING(m_strText, HUDCOUNTER_CHANGED_TEXT)
 	READENTITY_BYTE(m_bEnabled, HUDCOUNTER_CHANGED_STATE)
 	READENTITY_INT(m_counterValue, HUDCOUNTER_CHANGED_COUNTER)
+	READENTITY_FLOAT(m_vecPosXY[0], HUDCOUNTER_CHANGED_POSITION)
+	READENTITY_FLOAT(m_vecPosXY[1], HUDCOUNTER_CHANGED_POSITION)
 	setorigin(this, origin);
 
 	if (modelindex) {
@@ -250,12 +266,22 @@ env_hudcounter::postdraw(void)
 		return;
 
 	float textLength = Font_StringWidth(m_strText, true, FONT_CON);
-	vector vecProj = [64,64] - [32, 32];
-	vector projectedPos = [64,64] + [-(textLength/2), 48];
+	vector vecProj = g_vec_null;
+	vector projectedPos = g_vec_null;
 	float a = 1.0f;
-	float dist = vlen(origin - g_view.GetCameraOrigin()) / WAYPOINT_METER;
 	string distText = sprintf("%i", m_counterValue);
 
+	if (m_vecPosXY[0] == -1) {
+		vecProj[0] = g_hudmins[0] + (g_hudres[0] / 2) - 32;
+	} else {
+		vecProj[0] = g_hudmins[0] + ((g_hudres[0] - 64) * m_vecPosXY[0]);
+	}
+
+	if (m_vecPosXY[1] == -1) {
+		vecProj[1] = g_hudmins[1] + (g_hudres[1] / 2) - 32;
+	} else {
+		vecProj[1] = g_hudmins[1] + ((g_hudres[1] - 64) * m_vecPosXY[1]);
+	}
 
 	if (!m_bAdditive) {
 		drawpic(vecProj, m_strIcon, [64, 64], [1,1,1], a);
@@ -263,9 +289,13 @@ env_hudcounter::postdraw(void)
 		drawpic(vecProj, m_strIcon, [64, 64], [1,1,1], a, DRAWFLAG_ADDITIVE);
 	}
 
+
+	/* counter */
+	projectedPos = vecProj + [64, 32];
 	Font_DrawText_RGBA(projectedPos + [1,1], distText, [0,0,0], a, FONT_CON);
 	Font_DrawText_RGBA(projectedPos, distText, [1,1,1], a, FONT_CON);
 
+	projectedPos = vecProj + [-(textLength/2), 48];
 	projectedPos[1] += Font_GetHeight(FONT_CON);
 
 	Font_DrawText_RGBA(projectedPos + [1,1], m_strText, [0,0,0], a, FONT_CON);

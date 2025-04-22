@@ -31,9 +31,8 @@ Predict_EntityUpdate(ncPlayer pl, float new)
 		return;
 
 	/* this is a new client entity, let's set it up right */
-	if (new || pl.classname != "player") {
+	if (new || !is.Player(pl)) {
 		Util_ChangeClass(pl, "player");
-		pl.classname = "player";
 
 		/* is this **us** ? */
 		if (pl.entnum == player_localentnum) {

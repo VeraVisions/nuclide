@@ -49,20 +49,20 @@ momentary_door::momentary_door(void)
 }
 
 void
-momentary_door::SpawnKey(string strKey, string strValue)
+momentary_door::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "lip":
-		m_flDistance = stof(strValue);
+		m_flDistance = stof(setValue);
 		break;
 	case "speed":
-		m_flSpeed = stof(strValue);
+		m_flSpeed = stof(setValue);
 		break;
 	case "returnspeed":
-		m_flReturnspeed = stof(strValue);
+		m_flReturnspeed = stof(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 

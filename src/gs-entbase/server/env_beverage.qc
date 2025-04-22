@@ -68,22 +68,19 @@ public:
 	
 	virtual void Save(float);
 	virtual void Restore(string,string);
-	virtual void SpawnKey(string,string);
 	virtual void Precache(void);
 	virtual void Respawn(void);
 	virtual void Trigger(entity, triggermode_t);
 
 private:
-	int m_iUses;
-	bool m_bReady;
+	int m_usesLeft;
 	sodaskin_t m_sodaSkin;
 };
 
 void
 env_beverage::env_beverage(void)
 {
-	m_iUses = 15;
-	m_bReady = false;
+	m_usesLeft = 15;
 	m_sodaSkin = 0;
 }
 
@@ -91,41 +88,22 @@ void
 env_beverage::Save(float handle)
 {
 	super::Save(handle);
-	SaveInt(handle, "m_iUses", m_iUses);
-	SaveBool(handle, "m_bReady", m_bReady);
+	SaveInt(handle, "m_usesLeft", m_usesLeft);
 	SaveFloat(handle, "m_sodaSkin", m_sodaSkin);
 }
 
 void
-env_beverage::Restore(string strKey, string strValue)
+env_beverage::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
-	case "m_iUses":
-		m_iUses = ReadInt(strValue);
-		break;
-	case "m_bReady":
-		m_bReady = ReadBool(strValue);
+	case "m_usesLeft":
+		m_usesLeft = ReadInt(setValue);
 		break;
 	case "m_sodaSkin":
-		m_sodaSkin = ReadInt(strValue);
+		m_sodaSkin = ReadInt(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
-	}
-}
-
-void
-env_beverage::SpawnKey(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "health":
-		m_iUses = stoi(strValue);
-		break;
-	case "skin":
-		m_sodaSkin = stof(strValue);
-		break;
-	default:
-		super::SpawnKey(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
@@ -139,7 +117,9 @@ env_beverage::Precache(void)
 void
 env_beverage::Respawn(void)
 {
-	m_bReady = true;
+	SetValue(1i);
+	m_usesLeft = GetSpawnInt("health");
+	m_sodaSkin = GetSpawnInt("skin");
 
 	if (m_sodaSkin == SKIN_RANDOM) {
 		m_sodaSkin = rint(random(SKIN_COCACOLA, SKIN_MOXIE));
@@ -149,18 +129,18 @@ env_beverage::Respawn(void)
 void
 env_beverage::Trigger(entity act, triggermode_t unused)
 {
-	if (m_bReady == false || m_iUses <= 0) {
+	if (GetValue(this) == false || m_usesLeft <= 0) {
 		return;
 	}
 
 	ncEntity eCan = spawn(ncEntity);
-	eCan.Respawn();
+	eCan.Spawn();
 	eCan.SetOrigin(GetOrigin());
 	eCan.SetAngles(GetAngles());
 	eCan.SetOwner(this);
 	eCan.ScheduleThink(item_sodacan, 0.0f);
 	eCan.SetSkin((float)m_sodaSkin);
 
-	m_iUses--;
-	m_bReady = false;
+	m_usesLeft--;
+	SetValue(0i);
 }

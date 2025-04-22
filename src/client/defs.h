@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+#include "../platform/localize.h"
 #include "api_func.h"
 #include "../shared/api.h"
 #include "../shared/entityDef.h"
@@ -43,7 +44,9 @@ var float autocvar_cg_modelSpinPitchSpeed = 0.0f;
 var float autocvar_cg_modelBobHeight = 0.0f;
 var float autocvar_cg_modelBobHeightSpeed = 0.0f;
 
-#define PRINTFLAG(x) if (cvar("net_showUpdates") || g_net_debug) \
+var bool autocvar_net_showUpdates = false;
+
+#define PRINTFLAG(x) if (autocvar_net_showUpdates || g_net_debug) \
 	print(sprintf("%f %s read update %s\n", time, classname, #x));
 
 #define READENTITY_BYTE(field, changedflag) {\

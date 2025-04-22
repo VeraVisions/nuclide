@@ -89,11 +89,11 @@ prop_physics::OnPlayerUse(void)
 }
 
 void
-prop_physics::SpawnKey(string strKey, string strValue)
+prop_physics::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 

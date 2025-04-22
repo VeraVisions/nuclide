@@ -107,29 +107,29 @@ env_fire::env_fire(void)
 
 #ifdef SERVER
 void
-env_fire::SpawnKey(string strKey, string strValue)
+env_fire::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "health":
-		m_flDuration = stof(strValue);
+		m_flDuration = stof(setValue);
 		break;
 	case "firesize":
-		m_flSize = stof(strValue);
+		m_flSize = stof(setValue);
 		break;
 	case "fireattack":
-		m_flGrowTime = stof(strValue);
+		m_flGrowTime = stof(setValue);
 		break;
 	case "firetype":
-		m_bType = stof(strValue);
+		m_bType = stof(setValue);
 		break;
 	case "ignitionpoint":
-		m_flIgnitionPoint = stof(strValue);
+		m_flIgnitionPoint = stof(setValue);
 		break;
 	case "damagescale":
-		m_flDamageScale = stof(strValue);
+		m_flDamageScale = stof(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 

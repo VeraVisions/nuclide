@@ -175,7 +175,7 @@ env_steam:ncPointTrigger
 #ifdef SERVER
 	virtual void Save(float);
 	virtual void Restore(string,string);
-	virtual void SpawnKey(string strKey, string strValue);
+	virtual void SpawnKey(string strKey, string setValue);
 	virtual void Respawn(void);
 	virtual void Input(entity, string, string);
 	virtual void Trigger(entity, triggermode_t);
@@ -230,92 +230,92 @@ env_steam::Save(float handle)
 }
 
 void
-env_steam::Restore(string strKey, string strValue)
+env_steam::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_bEmissive":
-		m_bEmissive = ReadBool(strValue);
+		m_bEmissive = ReadBool(setValue);
 		break;
 	case "m_bInitialState":
-		m_bInitialState = ReadBool(strValue);
+		m_bInitialState = ReadBool(setValue);
 		break;
 	case "m_bState":
-		 m_bState = ReadBool(strValue);
+		 m_bState = ReadBool(setValue);
 		break;
 	case "m_bType":
-		 m_bType = ReadBool(strValue);
+		 m_bType = ReadBool(setValue);
 		break;
 	case "m_flSpread":
-		 m_flSpread = ReadFloat(strValue);
+		 m_flSpread = ReadFloat(setValue);
 		break;
 	case "m_flSpeed":
-		 m_flSpeed = ReadFloat(strValue);
+		 m_flSpeed = ReadFloat(setValue);
 		break;
 	case "m_flStartSize":
-		 m_flStartSize = ReadFloat(strValue);
+		 m_flStartSize = ReadFloat(setValue);
 		break;
 	case "m_flEndSize":
-		 m_flEndSize = ReadFloat(strValue);
+		 m_flEndSize = ReadFloat(setValue);
 		break;
 	case "m_flRate":
-		 m_flRate = ReadFloat(strValue);
+		 m_flRate = ReadFloat(setValue);
 		break;
 	case "m_vecColor":
-		 m_vecColor = ReadVector(strValue);
+		 m_vecColor = ReadVector(setValue);
 		break;
 	case "m_flLength":
-		 m_flLength = ReadFloat(strValue);
+		 m_flLength = ReadFloat(setValue);
 		break;
 	case "m_flAlpha":
-		 m_flAlpha = ReadFloat(strValue);
+		 m_flAlpha = ReadFloat(setValue);
 		break;
 	case "m_flRollSpeed":
-		 m_flRollSpeed = ReadFloat(strValue);
+		 m_flRollSpeed = ReadFloat(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-env_steam::SpawnKey(string strKey, string strValue)
+env_steam::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "InitialState":
-		m_bInitialState = stof(strValue);
+		m_bInitialState = stof(setValue);
 		break;
 	case "type":
-		m_bType = stof(strValue);
+		m_bType = stof(setValue);
 		break;
 	case "SpreadSpeed":
-		m_flSpread = stof(strValue);
+		m_flSpread = stof(setValue);
 		break;
 	case "Speed":
-		m_flSpeed = stof(strValue);
+		m_flSpeed = stof(setValue);
 		break;
 	case "StartSize":
-		m_flStartSize = stof(strValue);
+		m_flStartSize = stof(setValue);
 		break;
 	case "EndSize":
-		m_flEndSize = stof(strValue);
+		m_flEndSize = stof(setValue);
 		break;
 	case "Rate":
-		m_flRate = stof(strValue);
+		m_flRate = stof(setValue);
 		break;
 	case "rendercolor":
-		m_vecColor = stov(strValue) / 255;
+		m_vecColor = stov(setValue) / 255;
 		break;
 	case "JetLength":
-		m_flLength = stof(strValue);
+		m_flLength = stof(setValue);
 		break;
 	case "renderamt":
-		m_flAlpha = stof(strValue) / 255;
+		m_flAlpha = stof(setValue) / 255;
 		break;
 	case "rollspeed":
-		m_flRollSpeed = stof(strValue);
+		m_flRollSpeed = stof(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 

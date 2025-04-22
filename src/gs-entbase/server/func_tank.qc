@@ -151,116 +151,116 @@ func_tank::Save(float handle)
 }
 
 void
-func_tank::Restore(string strKey, string strValue)
+func_tank::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_iDamage":
-		m_iDamage = ReadInt(strValue);
+		m_iDamage = ReadInt(setValue);
 		break;
 	case "m_flYawRate":
-		m_flYawRate = ReadFloat(strValue);
+		m_flYawRate = ReadFloat(setValue);
 		break;
 	case "m_flYawRange":
-		m_flYawRange = ReadFloat(strValue);
+		m_flYawRange = ReadFloat(setValue);
 		break;
 	case "m_flPitchRate":
-		m_flPitchRate = ReadFloat(strValue);
+		m_flPitchRate = ReadFloat(setValue);
 		break;
 	case "m_flPitchRange":
-		m_flPitchRange = ReadFloat(strValue);
+		m_flPitchRange = ReadFloat(setValue);
 		break;
 	case "m_flFireRate":
-		m_flFireRate = ReadFloat(strValue);
+		m_flFireRate = ReadFloat(setValue);
 		break;
 	case "m_flSpriteScale":
-		m_flSpriteScale = ReadFloat(strValue);
+		m_flSpriteScale = ReadFloat(setValue);
 		break;
 	case "m_flPersistance":
-		m_flPersistance = ReadFloat(strValue);
+		m_flPersistance = ReadFloat(setValue);
 		break;
 	case "m_flMinRange":
-		m_flMinRange = ReadFloat(strValue);
+		m_flMinRange = ReadFloat(setValue);
 		break;
 	case "m_flMaxRange":
-		m_flMaxRange = ReadFloat(strValue);
+		m_flMaxRange = ReadFloat(setValue);
 		break;
 	case "m_strSpriteSmoke":
-		m_strSpriteSmoke = ReadString(strValue);
+		m_strSpriteSmoke = ReadString(setValue);
 		break;
 	case "m_strSpriteFlash":
-		m_strSpriteFlash = ReadString(strValue);
+		m_strSpriteFlash = ReadString(setValue);
 		break;
 	case "m_strSndRotate":
-		m_strSndRotate = ReadString(strValue);
+		m_strSndRotate = ReadString(setValue);
 		break;
 	case "m_vecTipPos":
-		m_vecTipPos = ReadVector(strValue);
+		m_vecTipPos = ReadVector(setValue);
 		break;
 	case "m_vecSpread":
-		m_vecSpread = ReadVector(strValue);
+		m_vecSpread = ReadVector(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-func_tank::SpawnKey(string strKey, string strValue)
+func_tank::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "yawrate":
-		m_flYawRate = ReadFloat(strValue);
+		m_flYawRate = ReadFloat(setValue);
 		break;
 	case "yawrange":
-		m_flYawRange = ReadFloat(strValue);
+		m_flYawRange = ReadFloat(setValue);
 		break;
 	case "pitchrate":
-		m_flPitchRate = ReadFloat(strValue);
+		m_flPitchRate = ReadFloat(setValue);
 		break;
 	case "pitchrange":
-		m_flPitchRange = ReadFloat(strValue);
+		m_flPitchRange = ReadFloat(setValue);
 		break;
 	case "barrel":
-		m_vecTipPos[0] = ReadFloat(strValue);
+		m_vecTipPos[0] = ReadFloat(setValue);
 		break;
 	case "barrely":
-		m_vecTipPos[1] = ReadFloat(strValue);
+		m_vecTipPos[1] = ReadFloat(setValue);
 		break;
 	case "barrelz":
-		m_vecTipPos[2] = ReadFloat(strValue);
+		m_vecTipPos[2] = ReadFloat(setValue);
 		break;
 	case "firerate":
-		m_flFireRate = 1.0f / ReadFloat(strValue);
+		m_flFireRate = 1.0f / ReadFloat(setValue);
 		break;
 	case "bullet_damage":
-		m_iDamage = ReadInt(strValue);
+		m_iDamage = ReadInt(setValue);
 		break;
 	case "firespread":
-		m_vecSpread = [0.1, 0.1, 0] * ReadFloat(strValue);
+		m_vecSpread = [0.1, 0.1, 0] * ReadFloat(setValue);
 		break;
 	case "persistance":
-		m_flPersistance = ReadFloat(strValue);
+		m_flPersistance = ReadFloat(setValue);
 		break;
 	case "minRange":
-		m_flMinRange = ReadFloat(strValue);
+		m_flMinRange = ReadFloat(setValue);
 		break;
 	case "maxRange":
-		m_flMaxRange = ReadFloat(strValue);
+		m_flMaxRange = ReadFloat(setValue);
 		break;
 	case "spritesmoke":
-		m_strSpriteSmoke = ReadString(strValue);
+		m_strSpriteSmoke = ReadString(setValue);
 		break;
 	case "spriteflash":
-		m_strSpriteFlash = ReadString(strValue);
+		m_strSpriteFlash = ReadString(setValue);
 		break;
 	case "spritescale":
-		m_flSpriteScale = ReadFloat(strValue);
+		m_flSpriteScale = ReadFloat(setValue);
 		break;
 	case "rotatesound":
-		m_strSndRotate = ReadString(strValue);
+		m_strSndRotate = ReadString(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
@@ -296,6 +296,7 @@ func_tank::SpriteSmoke(vector org)
 	}
 
 	ncRenderableEntity smoke = spawn(ncRenderableEntity);
+	smoke.Spawn();
 	smoke.SetModel(m_strSpriteSmoke);
 	smoke.SetOrigin(org);
 	smoke.think = Die;
@@ -318,6 +319,7 @@ func_tank::SpriteFlash(vector org)
 	}
 
 	ncRenderableEntity flash = spawn(ncRenderableEntity);
+	flash.Spawn();
 	flash.SetModel(m_strSpriteFlash);
 	flash.SetOrigin(org);
 	flash.think = Die;
@@ -369,7 +371,7 @@ func_tank::PlayerInput(void)
 		spos += v_right * m_vecTipPos[1];
 		spos += v_up * m_vecTipPos[2];
 
-		UseTargets(this, TRIG_ON, m_flDelay);
+		UseTargets(this, TRIG_ON, GetTriggerDelay());
 		func_tank_shootsingle(m_eDriver, spos, m_vecSpread, m_iDamage);
 		m_flFireTime = time + m_flFireRate;
 

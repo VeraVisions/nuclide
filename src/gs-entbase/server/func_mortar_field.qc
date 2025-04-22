@@ -94,50 +94,50 @@ func_mortar_field::Save(float handle)
 }
 
 void
-func_mortar_field::Restore(string strKey, string strValue)
+func_mortar_field::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_iType":
-		m_iType = ReadInt(strValue);
+		m_iType = ReadInt(setValue);
 		break;
 	case "m_iCount":
-		m_iCount = ReadInt(strValue);
+		m_iCount = ReadInt(setValue);
 		break;
 	case "m_flSpread":
-		m_flSpread = ReadFloat(strValue);
+		m_flSpread = ReadFloat(setValue);
 		break;
 	case "m_strXController":
-		m_strXController = ReadString(strValue);
+		m_strXController = ReadString(setValue);
 		break;
 	case "m_strYController":
-		m_strYController = ReadString(strValue);
+		m_strYController = ReadString(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-func_mortar_field::SpawnKey(string strKey, string strValue)
+func_mortar_field::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_iszXController":
-		m_strXController = strValue;
+		m_strXController = setValue;
 		break;
 	case "m_iszYController":
-		m_strYController = strValue;
+		m_strYController = setValue;
 		break;
 	case "m_fControl":
-		m_iType = stoi(strValue);
+		m_iType = stoi(setValue);
 		break;
 	case "m_flCount":
-		m_iCount = stoi(strValue);
+		m_iCount = stoi(setValue);
 		break;
 	case "m_flSpread":
-		m_flSpread = stof(strValue) / 2;
+		m_flSpread = stof(setValue) / 2;
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 

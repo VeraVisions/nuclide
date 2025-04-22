@@ -28,16 +28,14 @@ public:
 	nonvirtual void ActivateSub(void);
 
 private:
-	entity m_eActivator;
-	int m_iValue;
+	entity m_lastActivator;
 	float m_flUntilTriggered;
 };
 
 void
 multi_manager_sub::multi_manager_sub(void)
 {
-	m_eActivator = __NULL__;
-	m_iValue = 0i;
+	m_lastActivator = __NULL__;
 	m_flUntilTriggered = 0.0f;
 }
 
@@ -45,34 +43,30 @@ void
 multi_manager_sub::Save(float handle)
 {
 	super::Save(handle);
-	SaveInt(handle, "m_iValue", m_iValue);
-	SaveEntity(handle, "m_eActivator", m_eActivator);
+	SaveEntity(handle, "m_lastActivator", m_lastActivator);
 	SaveFloat(handle, "m_flUntilTriggered", m_flUntilTriggered);
 }
 
 void
-multi_manager_sub::Restore(string strKey, string strValue)
+multi_manager_sub::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
-	case "m_iValue":
-		m_iValue = ReadInt(strValue);
-		break;
-	case "m_eActivator":
-		m_eActivator = ReadEntity(strValue);
+	case "m_lastActivator":
+		m_lastActivator = ReadEntity(setValue);
 		break;
 	case "m_flUntilTriggered":
-		m_flUntilTriggered = ReadFloat(strValue);
+		m_flUntilTriggered = ReadFloat(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
 multi_manager_sub::ActivateSub(void)
 {
-	m_iValue = TRUE;
-	UseTargets(m_eActivator, TRIG_TOGGLE, 0.0f);
+	SetValue(1i);
+	UseTargets(m_lastActivator, TRIG_TOGGLE, 0.0f);
 }
 
 /*! \brief Server-Entity: Triggers Up To 16 Different Targets */
@@ -99,10 +93,8 @@ class
 multi_manager:ncPointTrigger
 {
 private:
-	multi_manager_sub m_eTriggers[16];
-	string m_strBuffer;
-	int m_iBusy;
-	int m_iValue;
+	multi_manager_sub m_subTriggers[16];
+	string m_triggerBuffer;
 
 public:
 	void multi_manager(void);
@@ -120,106 +112,96 @@ void
 multi_manager::multi_manager(void)
 {
 	for (int i = 0; i < 16; i++)
-		m_eTriggers[i] = __NULL__;
+		m_subTriggers[i] = __NULL__;
 
-	m_strBuffer = __NULL__;
-	m_iBusy =
-	m_iValue = 0i;
+	m_triggerBuffer = __NULL__;
 }
 
 void
 multi_manager::Save(float handle)
 {
 	super::Save(handle);
-	SaveString(handle, "m_strBuffer", m_strBuffer);
-	SaveInt(handle, "m_iBusy", m_iBusy);
-	SaveInt(handle, "m_iValue", m_iValue);
-	SaveEntity(handle, "m_eTriggers_0", m_eTriggers[0]);
-	SaveEntity(handle, "m_eTriggers_1", m_eTriggers[1]);
-	SaveEntity(handle, "m_eTriggers_2", m_eTriggers[2]);
-	SaveEntity(handle, "m_eTriggers_3", m_eTriggers[3]);
-	SaveEntity(handle, "m_eTriggers_4", m_eTriggers[4]);
-	SaveEntity(handle, "m_eTriggers_5", m_eTriggers[5]);
-	SaveEntity(handle, "m_eTriggers_6", m_eTriggers[6]);
-	SaveEntity(handle, "m_eTriggers_7", m_eTriggers[7]);
-	SaveEntity(handle, "m_eTriggers_8", m_eTriggers[8]);
-	SaveEntity(handle, "m_eTriggers_9", m_eTriggers[9]);
-	SaveEntity(handle, "m_eTriggers_10", m_eTriggers[10]);
-	SaveEntity(handle, "m_eTriggers_11", m_eTriggers[11]);
-	SaveEntity(handle, "m_eTriggers_12", m_eTriggers[12]);
-	SaveEntity(handle, "m_eTriggers_13", m_eTriggers[13]);
-	SaveEntity(handle, "m_eTriggers_14", m_eTriggers[14]);
-	SaveEntity(handle, "m_eTriggers_15", m_eTriggers[15]);
+	SaveString(handle, "m_triggerBuffer", m_triggerBuffer);
+	SaveEntity(handle, "m_subTriggers_0", m_subTriggers[0]);
+	SaveEntity(handle, "m_subTriggers_1", m_subTriggers[1]);
+	SaveEntity(handle, "m_subTriggers_2", m_subTriggers[2]);
+	SaveEntity(handle, "m_subTriggers_3", m_subTriggers[3]);
+	SaveEntity(handle, "m_subTriggers_4", m_subTriggers[4]);
+	SaveEntity(handle, "m_subTriggers_5", m_subTriggers[5]);
+	SaveEntity(handle, "m_subTriggers_6", m_subTriggers[6]);
+	SaveEntity(handle, "m_subTriggers_7", m_subTriggers[7]);
+	SaveEntity(handle, "m_subTriggers_8", m_subTriggers[8]);
+	SaveEntity(handle, "m_subTriggers_9", m_subTriggers[9]);
+	SaveEntity(handle, "m_subTriggers_10", m_subTriggers[10]);
+	SaveEntity(handle, "m_subTriggers_11", m_subTriggers[11]);
+	SaveEntity(handle, "m_subTriggers_12", m_subTriggers[12]);
+	SaveEntity(handle, "m_subTriggers_13", m_subTriggers[13]);
+	SaveEntity(handle, "m_subTriggers_14", m_subTriggers[14]);
+	SaveEntity(handle, "m_subTriggers_15", m_subTriggers[15]);
 }
 
 void
-multi_manager::Restore(string strKey, string strValue)
+multi_manager::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
-	case "m_strBuffer":
-		m_strBuffer = ReadString(strValue);
+	case "m_triggerBuffer":
+		m_triggerBuffer = ReadString(setValue);
 		break;
-	case "m_iBusy":
-		m_iBusy = ReadInt(strValue);
+	case "m_subTriggers_0":
+		m_subTriggers[0] = (multi_manager_sub)ReadEntity(setValue);
 		break;
-	case "m_iValue":
-		m_iValue = ReadInt(strValue);
+	case "m_subTriggers_1":
+		m_subTriggers[1] = (multi_manager_sub)ReadEntity(setValue);
 		break;
-	case "m_eTriggers_0":
-		m_eTriggers[0] = (multi_manager_sub)ReadEntity(strValue);
+	case "m_subTriggers_2":
+		m_subTriggers[2] = (multi_manager_sub)ReadEntity(setValue);
 		break;
-	case "m_eTriggers_1":
-		m_eTriggers[1] = (multi_manager_sub)ReadEntity(strValue);
+	case "m_subTriggers_3":
+		m_subTriggers[3] = (multi_manager_sub)ReadEntity(setValue);
 		break;
-	case "m_eTriggers_2":
-		m_eTriggers[2] = (multi_manager_sub)ReadEntity(strValue);
+	case "m_subTriggers_4":
+		m_subTriggers[4] = (multi_manager_sub)ReadEntity(setValue);
 		break;
-	case "m_eTriggers_3":
-		m_eTriggers[3] = (multi_manager_sub)ReadEntity(strValue);
+	case "m_subTriggers_5":
+		m_subTriggers[5] = (multi_manager_sub)ReadEntity(setValue);
 		break;
-	case "m_eTriggers_4":
-		m_eTriggers[4] = (multi_manager_sub)ReadEntity(strValue);
+	case "m_subTriggers_6":
+		m_subTriggers[6] = (multi_manager_sub)ReadEntity(setValue);
 		break;
-	case "m_eTriggers_5":
-		m_eTriggers[5] = (multi_manager_sub)ReadEntity(strValue);
+	case "m_subTriggers_7":
+		m_subTriggers[7] = (multi_manager_sub)ReadEntity(setValue);
 		break;
-	case "m_eTriggers_6":
-		m_eTriggers[6] = (multi_manager_sub)ReadEntity(strValue);
+	case "m_subTriggers_8":
+		m_subTriggers[8] = (multi_manager_sub)ReadEntity(setValue);
 		break;
-	case "m_eTriggers_7":
-		m_eTriggers[7] = (multi_manager_sub)ReadEntity(strValue);
+	case "m_subTriggers_9":
+		m_subTriggers[9] = (multi_manager_sub)ReadEntity(setValue);
 		break;
-	case "m_eTriggers_8":
-		m_eTriggers[8] = (multi_manager_sub)ReadEntity(strValue);
+	case "m_subTriggers_10":
+		m_subTriggers[10] = (multi_manager_sub)ReadEntity(setValue);
 		break;
-	case "m_eTriggers_9":
-		m_eTriggers[9] = (multi_manager_sub)ReadEntity(strValue);
+	case "m_subTriggers_11":
+		m_subTriggers[11] = (multi_manager_sub)ReadEntity(setValue);
 		break;
-	case "m_eTriggers_10":
-		m_eTriggers[10] = (multi_manager_sub)ReadEntity(strValue);
+	case "m_subTriggers_12":
+		m_subTriggers[12] = (multi_manager_sub)ReadEntity(setValue);
 		break;
-	case "m_eTriggers_11":
-		m_eTriggers[11] = (multi_manager_sub)ReadEntity(strValue);
+	case "m_subTriggers_13":
+		m_subTriggers[13] = (multi_manager_sub)ReadEntity(setValue);
 		break;
-	case "m_eTriggers_12":
-		m_eTriggers[12] = (multi_manager_sub)ReadEntity(strValue);
+	case "m_subTriggers_14":
+		m_subTriggers[14] = (multi_manager_sub)ReadEntity(setValue);
 		break;
-	case "m_eTriggers_13":
-		m_eTriggers[13] = (multi_manager_sub)ReadEntity(strValue);
-		break;
-	case "m_eTriggers_14":
-		m_eTriggers[14] = (multi_manager_sub)ReadEntity(strValue);
-		break;
-	case "m_eTriggers_15":
-		m_eTriggers[15] = (multi_manager_sub)ReadEntity(strValue);
+	case "m_subTriggers_15":
+		m_subTriggers[15] = (multi_manager_sub)ReadEntity(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-multi_manager::SpawnKey(string strKey, string strValue)
+multi_manager::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "{":
@@ -232,23 +214,23 @@ multi_manager::SpawnKey(string strKey, string strValue)
 	case "angles":
 	case "target":
 	case "spawnflags":
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 		break;
 	default:
 		if (substring(strKey, strlen(strKey) - 3,  1) == "#") {
-			m_strBuffer = sprintf("%s%s %s ",
-							m_strBuffer,
+			m_triggerBuffer = sprintf("%s%s %s ",
+							m_triggerBuffer,
 							substring(strKey,
 							0, strlen(strKey) - 3),
-							strValue);
+							setValue);
 		} else if (substring(strKey, strlen(strKey) - 2,  1) == "#") {
-			m_strBuffer = sprintf("%s%s %s ",
-							m_strBuffer,
+			m_triggerBuffer = sprintf("%s%s %s ",
+							m_triggerBuffer,
 							substring(strKey,
 							0, strlen(strKey) - 2),
-							strValue);
+							setValue);
 		} else {
-			m_strBuffer = sprintf("%s%s %s ", m_strBuffer, strKey, strValue);
+			m_triggerBuffer = sprintf("%s%s %s ", m_triggerBuffer, strKey, setValue);
 		}
 	}
 }
@@ -262,12 +244,13 @@ multi_manager::Spawned(void)
 	super::Spawned();
 
 	for (b = 0; b < 16; b++) {
-		m_eTriggers[b] = spawn(multi_manager_sub);
+		m_subTriggers[b] = spawn(multi_manager_sub);
+		m_subTriggers[b].Spawn();
 	}
 
 	/* set up our triggers */
 	b = 0;
-	iFields = tokenizebyseparator(m_strBuffer, " ");
+	iFields = tokenizebyseparator(m_triggerBuffer, " ");
 	for (int i = 0; i < iFields; i+=2) {
 		if (b >= 16) {
 			break;
@@ -280,9 +263,9 @@ multi_manager::Spawned(void)
 		if ((!HasSpawnFlags(MM_MULTITHREADED) && targetname == argv(i)))
 			continue;
 
-		m_eTriggers[b].SetTriggerTarget(argv(i));
-		m_eTriggers[b].target = argv(i);
-		m_eTriggers[b].m_flUntilTriggered = stof(argv(i+1));
+		m_subTriggers[b].SetTriggerTarget(argv(i));
+		m_subTriggers[b].target = argv(i);
+		m_subTriggers[b].m_flUntilTriggered = stof(argv(i+1));
 		b++;
 	}
 }
@@ -292,11 +275,11 @@ multi_manager::Respawn(void)
 {
 	InitPointTrigger();
 
-	m_iValue = FALSE;
+	SetValue(0i);
 
 	/* Mark them inactive */
 	for (int b = 0; b < 16; b++) {
-		m_eTriggers[b].m_iValue = FALSE;
+		m_subTriggers[b].SetValue(0i);
 	}
 }
 
@@ -306,12 +289,12 @@ multi_manager::Trigger(entity act, triggermode_t state)
 	if (GetMaster(act) == FALSE)
 		return;
 
-	m_iValue = TRUE;
+	SetValue(1i);
 
 	/* If not multi-threaded, we have to watch out 'til all triggers are done. */
 	if (!HasSpawnFlags(MM_MULTITHREADED)) {
 		for (int i = 0; i < 16; i++) {
-			if (m_eTriggers[i].IsThinking() == true) {
+			if (m_subTriggers[i].IsThinking() == true) {
 				return;
 			}
 		}
@@ -319,11 +302,11 @@ multi_manager::Trigger(entity act, triggermode_t state)
 
 	/* time to trigger our sub triggers */
 	for (int i = 0; i < 16; i++) {
-		if (m_eTriggers[i].HasTriggerTarget() == false)
+		if (m_subTriggers[i].HasTriggerTarget() == false)
 			continue;
 
-		m_eTriggers[i].m_iValue = FALSE;
-		m_eTriggers[i].m_eActivator = act;
-		m_eTriggers[i].ScheduleThink(multi_manager_sub::ActivateSub, m_eTriggers[i].m_flUntilTriggered);
+		m_subTriggers[i].SetValue(0i);
+		m_subTriggers[i].m_lastActivator = act;
+		m_subTriggers[i].ScheduleThink(multi_manager_sub::ActivateSub, m_subTriggers[i].m_flUntilTriggered);
 	}
 }

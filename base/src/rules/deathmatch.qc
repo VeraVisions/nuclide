@@ -19,6 +19,12 @@
 #include "../../../src/server/api.h"
 
 void
+CodeCallback_Precaches(void)
+{
+	precache.Entity("player_mp");
+}
+
+void
 CodeCallback_StartGameType(void)
 {
 	motd.LoadDefault();
@@ -59,7 +65,7 @@ CodeCallback_PlayerKilled(entity playerTarget, entity inflictor, entity attacker
 	playerTarget.deaths++;
 
 	/* update score-counter */
-	if (ents.isPlayer(attacker)) {
+	if (is.Player(attacker)) {
 		if (playerTarget == attacker) {
 			attacker.frags--;
 		} else {

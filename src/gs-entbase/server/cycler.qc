@@ -60,8 +60,6 @@ cycler::Respawn(void)
 	SetSolid(SOLID_BBOX);
 	MakeVulnerable();
 	EnableAimAssist();
-	EnableBleeding();
-	SetBloodColor([0.5, 0.5, 0.5]);
 	SetHealth(9999);
 
 	if (serverkeyfloat("*bspversion") == BSPVER_HL) {

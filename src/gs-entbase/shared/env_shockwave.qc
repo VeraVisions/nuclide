@@ -54,6 +54,7 @@ public:
 	void env_shockwave(void);
 
 #ifdef SERVER
+	virtual void Spawned(void);
 	virtual void SpawnKey(string, string);
 	virtual void Trigger(entity, triggermode_t);
 #endif
@@ -89,9 +90,22 @@ env_shockwave::env_shockwave(void)
 	m_flLifeTime = 1.0f;
 	m_flHeight = 32.0f;
 	m_flNoiseAmp = 0.0f;
-	m_vecColor = [1,1,1];
-	m_flBrightness = 1.0f;
+	m_vecColor = [255,255,255];
+	m_flBrightness = 255.0f;
 	m_flScrollSpeed = 0.0f;
+}
+
+void
+env_shockwave::Spawned(void)
+{
+	super::Spawned();
+
+#ifdef SERVER
+	if (GetSpawnBool("triggerOnSpawn")) {
+		SetOrigin(GetOrigin());
+		Trigger(this, TRIG_TOGGLE);
+	}
+#endif
 }
 
 #ifdef SERVER
@@ -143,7 +157,7 @@ env_shockwave::Trigger(entity theActivator, triggermode_t triggerState)
 {
 	vector targetPosition = GetOrigin();
 
-	if (m_strTargetEntity) {
+	if (STRING_SET(m_strTargetEntity)) {
 		ncEntity target = (ncEntity)find(world, ::targetname, m_strTargetEntity);
 
 		if (target) {

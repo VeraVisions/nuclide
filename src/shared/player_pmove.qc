@@ -47,15 +47,15 @@ ncPlayer::Physics_Fall(float flDownforce)
 	if (punchAngleScale > 0.0f) {
 		/* apply some predicted punch to the player */
 		if (flDownforce >= minFallDistance)
-			punchangle += [punchAngleScale,0,(input_sequence & 1) ? punchAngleScale : -punchAngleScale];
+			m_punchAngle += [punchAngleScale,0,(input_sequence & 1) ? punchAngleScale : -punchAngleScale];
 		else if (flDownforce >= minLandDistance)
-			punchangle += [punchAngleScale,0,0];
+			m_punchAngle += [punchAngleScale,0,0];
 	} else if (punchSpringScale > 0.0f) {
 		/* apply some predicted punch to the player */
 		if (flDownforce >= minFallDistance)
-			punchvelocity += [punchSpringScale,0,(input_sequence & 1) ? punchSpringScale : -punchSpringScale];
+			m_punchVelocity += [punchSpringScale,0,(input_sequence & 1) ? punchSpringScale : -punchSpringScale];
 		else if (flDownforce >= minLandDistance)
-			punchvelocity += [punchSpringScale,0,0];
+			m_punchVelocity += [punchSpringScale,0,0];
 	}
 
 
@@ -328,14 +328,13 @@ ncPlayer::Physics_WaterJump(void)
 	vecStart[2] += 8;
 
 	/* look 24 qu ahead for a surface */
-	makevectors(v_angle);
-	traceline(vecStart, vecStart + (v_forward * 24), MOVE_NORMAL, this);
+	traceline(vecStart, vecStart + (anglesToForward(v_angle) * 24), MOVE_NORMAL, this);
 
 	/* we've hit a surface */
 	if (trace_fraction < 1.0) {
 		/* let's check if we can potentially climb up */
 		vecStart[2] += maxs[2];
-		traceline(vecStart, vecStart + (v_forward * 24), MOVE_NORMAL, this);
+		traceline(vecStart, vecStart + (anglesToForward(v_angle) * 24), MOVE_NORMAL, this);
 
 		/* there's nothing preventing us from putting our hands up here */
 		if (trace_fraction == 1.0) {
@@ -361,34 +360,34 @@ ncPlayer::Physics_WaterMove(void)
 	}
 
 	if (WaterLevel() > 0) {
-	if (watertype == CONTENT_LAVA) {
-		if (m_flPainTime < time) {
-			Damage(world, world, g_lavaDamageDecl, 1.0f, g_vec_null, GetOrigin());
-			m_flPainTime = time + g_lavaDecl.GetFloat("dmgtime");
+		if (watertype == CONTENT_LAVA) {
+			if (m_timeUntilNextPainSFX < time) {
+				Damage(world, world, g_lavaDamageDecl, 1.0f, g_vec_null, GetOrigin());
+				m_timeUntilNextPainSFX = time + g_lavaDecl.GetFloat("dmgtime");
+			}
+		} else if (watertype == CONTENT_SLIME) {
+			if (m_timeUntilNextPainSFX < time) {
+				Damage(world, world, g_slimeDamageDecl, 1.0f, g_vec_null, GetOrigin());
+				m_timeUntilNextPainSFX = time + g_slimeDecl.GetFloat("dmgtime");
+			}
 		}
-	} else if (watertype == CONTENT_SLIME) {
-		if (m_flPainTime < time) {
-			Damage(world, world, g_slimeDamageDecl, 1.0f, g_vec_null, GetOrigin());
-			m_flPainTime = time + g_slimeDecl.GetFloat("dmgtime");
-		}
-	}
 	}
 
 	/* we've just exited water */
 	if (WaterLevel() != 3) {
-		if (m_flUnderwaterTime < time) {
+		if (m_timeUnderwater < time) {
 #warning Read sound from player decl
 			StartSoundDef(m_sndAirGaspHeavy, CHAN_BODY, true);
-		} else if (m_flUnderwaterTime < time + 9) {
+		} else if (m_timeUnderwater < time + 9) {
 			StartSoundDef(m_sndAirGaspLight, CHAN_BODY, true);
 		}
 #warning Read lung capacity for water from typeInfo water
-		m_flUnderwaterTime = time + 12;
-	} else if (m_flUnderwaterTime < time) {
+		m_timeUnderwater = time + 12;
+	} else if (m_timeUnderwater < time) {
 		/* we've been underwater... for too long. */
-		if (m_flPainTime < time) {
+		if (m_timeUntilNextPainSFX < time) {
 			Damage(world, world, g_waterDamageDecl, 1.0f, g_vec_null, GetOrigin());
-			m_flPainTime = time + g_waterDecl.GetFloat("dmgtime");
+			m_timeUntilNextPainSFX = time + g_waterDecl.GetFloat("dmgtime");
 		}
 	}
 #endif
@@ -408,7 +407,7 @@ ncPlayer::Physics_WaterMove(void)
 	if (!(GetFlags() & FL_INWATER)) {
 #ifdef SERVER
 		StartSoundDef(m_sndWaterEnter, CHAN_BODY, true);
-		m_flPainTime = 0;
+		m_timeUntilNextPainSFX = 0;
 #endif
 		AddFlags(FL_INWATER);
 	}
@@ -431,21 +430,21 @@ ncPlayer::Physics_MaxSpeed(void)
 	float speedMod = 1.0f;
 
 	if (m_activeWeapon) {
-		speedMod = m_activeWeapon.m_flSpeedMod;
+		speedMod = m_activeWeapon.PlayerSpeedMod();
 	}
 
 	if (CanSprint() && IsSprinting()) {
-		if (m_flStamina < maxStamina) {
+		if (m_currentStamina < maxStamina) {
 			float slowDownThresh = m_pmoveVars.pm_staminathreshold;
 
-			if ((m_flStamina + slowDownThresh) > maxStamina) {
-				float delta = (m_flStamina + slowDownThresh) - maxStamina;
+			if ((m_currentStamina + slowDownThresh) > maxStamina) {
+				float delta = (m_currentStamina + slowDownThresh) - maxStamina;
 				/* change maxValue to something between 1.0 and 1.5 */
 				runSpeed = lerp(runSpeed, walkSpeed, delta/slowDownThresh);
 			}
 		}
 
-		wishSpeed = (m_flStamina >= maxStamina) ? walkSpeed : runSpeed;
+		wishSpeed = (m_currentStamina >= maxStamina) ? walkSpeed : runSpeed;
 	} else if (IsCrouching()) {
 		wishSpeed = crouchSpeed;
 	} else if (IsProne()) {
@@ -470,7 +469,7 @@ ncPlayer::Physics_InputPreMove(void)
 			canMove = false;
 	}
 
-	if (vv_flags & VFL_FROZEN || movetype == MOVETYPE_NONE) {
+	if (m_nuclideFlags & VFL_FROZEN || movetype == MOVETYPE_NONE) {
 		canMove = false;
 	}
 
@@ -481,14 +480,14 @@ ncPlayer::Physics_InputPreMove(void)
 	}
 
 	/* freeze in place */
-	if (vv_flags & VFL_NOATTACK) {
+	if (m_nuclideFlags & VFL_NOATTACK) {
 		input_buttons &= ~INPUT_PRIMARY;
 		input_buttons &= ~INPUT_RELOAD;
 	}
 
 	/* when pressing the 'use' button, we also walk slower for precision */
 	if (input_buttons & INPUT_USE) {
-		input_movevalues *= 0.5;
+		input_movevalues *= 0.5f;
 	}
 
 	/* clamp movement values to max speed */
@@ -516,22 +515,23 @@ void
 ncPlayer::Physics_InputPostMove(void)
 {
 	float punch;
+
 	/* timers, these are predicted and shared across client and server */
-	w_attack_next = max(0, w_attack_next - input_timelength);
-	w_reload_next = max(0, w_reload_next - input_timelength);
-	w_idle_next = max(0, w_idle_next - input_timelength);
-	weapontime += input_timelength;
+	m_timeUntilNextAttack = max(0, m_timeUntilNextAttack - input_timelength);
+	m_timeUntilReloaded = max(0, m_timeUntilReloaded - input_timelength);
+	m_timeUntilNextIdle = max(0, m_timeUntilNextIdle - input_timelength);
+	m_weaponAnimTime += input_timelength;
 
 	if (input_buttons & INPUT_SPRINT) {
-		m_flStamina += input_timelength;
+		m_currentStamina += input_timelength;
 	} else {
 		float toSubtract = input_timelength;
 		toSubtract *= m_pmoveVars.pm_staminarate;
-		m_flStamina = max(0, m_flStamina - toSubtract);
+		m_currentStamina = max(0, m_currentStamina - toSubtract);
 	}
 
-	if (m_flStamina > m_pmoveVars.pm_stamina) {
-		m_flStamina = m_pmoveVars.pm_stamina;
+	if (m_currentStamina > m_pmoveVars.pm_stamina) {
+		m_currentStamina = m_pmoveVars.pm_stamina;
 	}
 
 	if (m_pmoveVars.pm_runfiring == 0 && input_buttons & INPUT_SPRINT) {
@@ -540,14 +540,12 @@ ncPlayer::Physics_InputPostMove(void)
 		input_buttons &= ~INPUT_RELOAD;
 	}
 
-	//printf("stamina: %f\n", m_flStamina);
+	//printf("stamina: %f\n", m_currentStamina);
 
-#if 0
-#else
 	float flDamp;
 	float flForce;
-	if ( vlen( punchvelocity ) > 0.001 ) {
-		punchangle += punchvelocity * input_timelength;
+	if ( vlen( m_punchVelocity ) > 0.001 ) {
+		m_punchAngle += m_punchVelocity * input_timelength;
 
 		flForce = bound( 0, input_timelength * 65, 2 );
 		flDamp = 1 - ( input_timelength * 9 );
@@ -555,20 +553,19 @@ ncPlayer::Physics_InputPostMove(void)
 		if ( flDamp < 0 ) {
 			flDamp = 0;
 		}
-		punchvelocity *= flDamp;
-		punchvelocity -= punchangle * flForce;
+		m_punchVelocity *= flDamp;
+		m_punchVelocity -= m_punchAngle * flForce;
 
-		punchangle[0] = bound( -89, punchangle[0], 89 );
-		punchangle[1] = bound( -179, punchangle[1], 179 );
-		punchangle[2] = bound( -89, punchangle[2], 89 );
-	} else if (vlen( punchangle ) > 0.001) {
+		m_punchAngle[0] = bound( -89, m_punchAngle[0], 89 );
+		m_punchAngle[1] = bound( -179, m_punchAngle[1], 179 );
+		m_punchAngle[2] = bound( -89, m_punchAngle[2], 89 );
+	} else if (vlen( m_punchAngle ) > 0.001) {
 
 		punch = max(0, 1.0f - (input_timelength * 4));
-		punchangle[0] *= punch;
-		punchangle[1] *= punch;
-		punchangle[2] *= punch;
+		m_punchAngle[0] *= punch;
+		m_punchAngle[1] *= punch;
+		m_punchAngle[2] *= punch;
 	}
-#endif
 
 	/* player animation code */
 	UpdatePlayerAnimation(input_timelength);
@@ -580,7 +577,7 @@ void
 ncPlayer::Physics_Run(void)
 {
 	float flFallVel = (flags & FL_ONGROUND) ? 0 : -velocity[2];
-	float flBaseVel =  basevelocity[2];
+	float flBaseVel =  m_pmoveBaseVelocity[2];
 	bool wasOnGround = (flags & FL_ONGROUND) ? true : false;
 	bool sprintFail = false;
 
@@ -613,8 +610,8 @@ ncPlayer::Physics_Run(void)
 	Physics_WaterMove();
 
 	/* grappling hook stuff, TODO: variable speeds */
-	if (grapvelocity != g_vec_null) {
-		velocity = (grapvelocity - origin);
+	if (m_pmoveHookVelocity != g_vec_null) {
+		velocity = (m_pmoveHookVelocity - origin);
 		velocity = (velocity * (1 / (vlen(velocity) / 750)));
 	}
 

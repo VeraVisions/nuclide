@@ -16,27 +16,25 @@
 
 /*! @file nodes.h
     @brief Nodegraph loading/saving.
+	
+	Parse info_node type entities and convert them to FTE compatible routing data.
 */
-
-/* parse info_node entities and convert them to FTE compatible routing data */
-#define NODE_DEBUG
-#define COST_INFINITE 99999
 
 /** Data holding Node entries. */
 typedef struct {
-	vector m_vecOrigin;
-	float m_flRadius;	 /* used for picking the closest waypoint. aka proximity weight. also relaxes routes inside the area. */
+	vector m_origin;
+	float m_nodeRadius;	 /* used for picking the closest waypoint. aka proximity weight. also relaxes routes inside the area. */
 	struct neighbour_s
 	{
-		int m_iNode;
-		float m_flCost;
-		int m_iFlags;
-	} *m_pNeighbour;
-	int m_numNeighbours;
-} node_t;
+		int m_nodeID;
+		float m_travelCost;
+		int m_travelFlags;
+	} *m_neighborList;
+	int m_neighborCount;
+} graphNode_t;
 
-node_t *g_pNodes;
-int g_iNodes;
+graphNode_t *g_nodeGraph;
+int g_nodeCount;
 
 /** @ingroup nav
  *

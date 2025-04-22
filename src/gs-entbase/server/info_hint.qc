@@ -147,100 +147,65 @@ public:
 	virtual void Spawned(void);
 
 private:
-	hinttype_t m_hintType;
-	string m_strHintActivity;
-	float m_flNodeFOV;
-	string m_strHintGroup;
-	ignorefacing_t m_ignoreFacing;
-	aistate_t m_minState;
-	aistate_t m_maxState;
+	hinttype_t m_hintTypeID;
+	aistate_t m_stateIDMin;
+	aistate_t m_stateIDMax;
 };
 
 void
 info_hint::info_hint(void)
 {
-	m_hintType = HINT_NONE;
-	m_strHintActivity = __NULL__;
-	m_flNodeFOV = 360;
-	m_strHintGroup = __NULL__;
-	m_ignoreFacing = IGNORE_DEFAULT;
-	m_minState = AISTATE_IDLE;
-	m_maxState = AISTATE_COMBAT;
+	m_hintTypeID = HINT_NONE;
+	m_stateIDMin = AISTATE_IDLE;
+	m_stateIDMax = AISTATE_COMBAT;
 };
 
 void
 info_hint::Save(float handle)
 {
 	super::Save(handle);
-	SaveFloat(handle, "m_hintType", m_hintType);
-	SaveString(handle, "m_strHintActivity", m_strHintActivity);
-	SaveFloat(handle, "m_flNodeFOV", m_flNodeFOV);
-	SaveString(handle, "m_strHintGroup", m_strHintGroup);
-	SaveFloat(handle, "m_ignoreFacing", m_ignoreFacing);
-	SaveFloat(handle, "m_minState", m_minState);
-	SaveFloat(handle, "m_maxState", m_maxState);
+	SaveFloat(handle, "m_hintTypeID", m_hintTypeID);
+	SaveFloat(handle, "m_stateIDMin", m_stateIDMin);
+	SaveFloat(handle, "m_stateIDMax", m_stateIDMax);
 }
 
 void
-info_hint::Restore(string strKey, string strValue)
+info_hint::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
-	case "m_hintType":
-		m_hintType = ReadFloat(strValue);
+	case "m_hintTypeID":
+		m_hintTypeID = ReadFloat(setValue);
 		break;
-	case "m_strHintActivity":
-		m_strHintActivity = ReadString(strValue);
+	case "m_stateIDMin":
+		m_stateIDMin = ReadFloat(setValue);
 		break;
-	case "m_flNodeFOV":
-		m_flNodeFOV = ReadFloat(strValue);
-		break;
-	case "m_strHintGroup":
-		m_strHintGroup = ReadString(strValue);
-		break;
-	case "m_ignoreFacing":
-		m_ignoreFacing = ReadFloat(strValue);
-		break;
-	case "m_minState":
-		m_minState = ReadFloat(strValue);
-		break;
-	case "m_maxState":
-		m_maxState = ReadFloat(strValue);
+	case "m_stateIDMax":
+		m_stateIDMax = ReadFloat(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-info_hint::SpawnKey(string strKey, string strValue)
+info_hint::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "hinttype":
-		m_hintType = stof(strValue);
+		m_hintTypeID = stof(setValue);
 		break;
-	case "hintactivity":
-		m_strHintActivity = strValue;
-		break;
-	case "nodeFOV":
-		m_flNodeFOV = stof(strValue);
-		break;
-	case "StartHintDisabled":
-		m_bStartDisabled = stof(strValue) == 1 ? true : false;
-		break;
-	case "Group":
-		m_strHintGroup = strValue;
-		break;
-	case "IgnoreFacing":
-		m_ignoreFacing = stof(strValue);
+	case "State":
+		m_stateIDMin = 
+		m_stateIDMax = stof(setValue);
 		break;
 	case "MinimumState":
-		m_minState = stof(strValue);
+		m_stateIDMin = stof(setValue);
 		break;
 	case "MaximumState":
-		m_maxState = stof(strValue);
+		m_stateIDMax = stof(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
@@ -248,5 +213,4 @@ void
 info_hint::Spawned(void)
 {
 	super::Spawned();
-	SetEditorIcon("help");
 }

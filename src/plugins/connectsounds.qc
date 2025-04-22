@@ -16,10 +16,10 @@
 
 #pragma target fte_5768
 //#pragma flag enable assumeint
-#pragma PROGS_DAT  "../../base/plug_connectsounds.dat"
-#define QWSSQC
+#pragma PROGS_DAT  "../../base/plugins/connectsounds.dat"
+#define SERVER
 
-#include "../shared/fteextensions.qc"
+#include "../server/api.h"
 
 entity g_cnspk;
 

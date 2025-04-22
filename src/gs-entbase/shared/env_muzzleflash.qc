@@ -89,32 +89,32 @@ env_muzzleflash::Save(float handle)
 }
 
 void
-env_muzzleflash::Restore(string strKey, string strValue)
+env_muzzleflash::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_strAttachmentName":
-		m_strAttachmentName = ReadString(strValue);
+		m_strAttachmentName = ReadString(setValue);
 		break;
 	case "m_iAttachment":
-		m_iAttachment = ReadInt(strValue);
+		m_iAttachment = ReadInt(setValue);
 		break;
 	case "m_eOwner":
-		m_eOwner = (ncRenderableEntity)ReadEntity(strValue);
+		m_eOwner = (ncRenderableEntity)ReadEntity(setValue);
 		break;
 	case "m_strModel":
-		m_strModel = ReadString(strValue);
+		m_strModel = ReadString(setValue);
 		break;
 	case "m_strParticle":
-		m_strParticle = ReadString(strValue);
+		m_strParticle = ReadString(setValue);
 		break;
 	case "m_eMuzzler":
-		m_eMuzzler = ReadEntity(strValue);
+		m_eMuzzler = ReadEntity(setValue);
 		break;
 	case "m_forceAdditive":
-		m_forceAdditive = ReadBool(strValue);
+		m_forceAdditive = ReadBool(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
@@ -147,14 +147,14 @@ env_muzzleflash::SpawnKey(string keyName, string setValue)
 }
 
 void
-env_muzzleflash::Input(entity eAct, string strKey, string strValue)
+env_muzzleflash::Input(entity eAct, string strKey, string setValue)
 {
 	switch (strKey) {
 	case "Fire":
 		Trigger(eAct, TRIG_TOGGLE);
 		break;
 	default:
-		super::Input(eAct, strKey, strValue);
+		super::Input(eAct, strKey, setValue);
 	}
 }
 

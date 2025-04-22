@@ -17,12 +17,12 @@
 void
 ncBot::Pain(entity inflictor, entity attacker, int damage, vector dir, vector absImpactPos, int hitBody)
 {
-	ncGameRules rules = g_grMode;
+	ncRuleDelegate rules = g_grMode;
 
 	super::Pain(inflictor, attacker, damage, dir, absImpactPos, hitBody);
 
-	if (rules.IsTeamplay()) {
-		if (isPlayer(attacker) && attacker.team == team) {
+	if (attacker != this && attacker != world && rules.IsTeamplay()) {
+		if (is.Player(attacker) && attacker.team == team) {
 			ChatSayTeam("Stop shooting me!");
 			return;
 		}
@@ -141,15 +141,15 @@ var float g_botalert_timer;
 void
 BotLib_Alert(vector pos, float radius, float t)
 {
-	ncGameRules rules = g_grMode;
+	ncRuleDelegate rules = g_grMode;
 
 	/* sometimes many alert-sounds happen at once... we don't really want
 	 * that */
 	if (g_botalert_timer > time)
 		return;
 
-	for (entity w = world; (w = find(w, ::classname, "player"));) {
-		if (isBot(w) == false) {
+	for (entity w = world; (w = next.Player(w));) {
+		if (is.Bot(w) == false) {
 			continue;
 		}
 

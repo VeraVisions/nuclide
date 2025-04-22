@@ -73,26 +73,26 @@ env_hudhint::Save(float handle)
 }
 
 void
-env_hudhint::Restore(string strKey, string strValue)
+env_hudhint::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_strMessage":
-		m_strMessage = ReadString(strValue);
+		m_strMessage = ReadString(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-env_hudhint::SpawnKey(string strKey, string strValue)
+env_hudhint::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "message":
-		m_strMessage = strValue;
+		m_strMessage = setValue;
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 

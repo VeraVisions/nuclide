@@ -78,7 +78,7 @@ public:
 #ifdef CLIENT
 	virtual float predraw(void);
 	virtual void ReceiveEntity(float,float);
-	virtual void RendererRestarted(void);
+	virtual void ReloadVideoResources(void);
 	nonvirtual void RenderGlow(vector, vector, float);
 #endif
 
@@ -128,18 +128,18 @@ env_funnel::Respawn(void)
 }
 
 void
-env_funnel::SpawnKey(string strKey, string strValue)
+env_funnel::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "sprite": /* Sven */
 	case "netname": /* Spirit */
-		m_strTexture = ReadString(strValue);
+		m_strTexture = ReadString(setValue);
 		break;
 	case "height":
-		m_flHeight = ReadFloat(strValue);
+		m_flHeight = ReadFloat(setValue);
 		break;
 	default:
-		super::SpawnKey(strValue, strKey);
+		super::SpawnKey(setValue, strKey);
 	}
 }
 
@@ -152,17 +152,17 @@ env_funnel::Save(float handle)
 }
 
 void
-env_funnel::Restore(string strKey, string strValue)
+env_funnel::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_strTexture":
-		m_strTexture = ReadString(strValue);
+		m_strTexture = ReadString(setValue);
 		break;
 	case "m_flHeight":
-		m_flHeight = ReadFloat(strValue);
+		m_flHeight = ReadFloat(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
@@ -205,10 +205,10 @@ env_funnel::EvaluateEntity(void)
 	EVALUATE_VECTOR(m_vecEndPos, 2, FUNNEL_CHANGED_ENDPOS_Z)
 	EVALUATE_FIELD(m_bActive, FUNNEL_CHANGED_ACTIVE)
 	EVALUATE_FIELD(spawnflags, FUNNEL_CHANGED_FLAGS)
-	EVALUATE_VECTOR(m_vecRenderColor, 0, FUNNEL_CHANGED_COLOR)
-	EVALUATE_VECTOR(m_vecRenderColor, 1, FUNNEL_CHANGED_COLOR)
-	EVALUATE_VECTOR(m_vecRenderColor, 2, FUNNEL_CHANGED_COLOR)
-	EVALUATE_FIELD(m_flRenderAmt, FUNNEL_CHANGED_AMOUNT)
+	EVALUATE_VECTOR(m_renderColor, 0, FUNNEL_CHANGED_COLOR)
+	EVALUATE_VECTOR(m_renderColor, 1, FUNNEL_CHANGED_COLOR)
+	EVALUATE_VECTOR(m_renderColor, 2, FUNNEL_CHANGED_COLOR)
+	EVALUATE_FIELD(m_renderAmount, FUNNEL_CHANGED_AMOUNT)
 }
 
 float
@@ -226,10 +226,10 @@ env_funnel::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_COORD(m_vecEndPos[2], FUNNEL_CHANGED_ENDPOS_Z)
 	SENDENTITY_BYTE(m_bActive, FUNNEL_CHANGED_ACTIVE)
 	SENDENTITY_BYTE(spawnflags, FUNNEL_CHANGED_FLAGS)
-	SENDENTITY_BYTE(m_vecRenderColor[0], FUNNEL_CHANGED_COLOR)
-	SENDENTITY_BYTE(m_vecRenderColor[1], FUNNEL_CHANGED_COLOR)
-	SENDENTITY_BYTE(m_vecRenderColor[2], FUNNEL_CHANGED_COLOR)
-	SENDENTITY_BYTE(m_flRenderAmt, FUNNEL_CHANGED_AMOUNT)
+	SENDENTITY_BYTE(m_renderColor[0], FUNNEL_CHANGED_COLOR)
+	SENDENTITY_BYTE(m_renderColor[1], FUNNEL_CHANGED_COLOR)
+	SENDENTITY_BYTE(m_renderColor[2], FUNNEL_CHANGED_COLOR)
+	SENDENTITY_BYTE(m_renderAmount, FUNNEL_CHANGED_AMOUNT)
 	return (1);
 }
 #endif
@@ -247,17 +247,17 @@ env_funnel::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_COORD(m_vecEndPos[2], FUNNEL_CHANGED_ENDPOS_Z)
 	READENTITY_BYTE(m_bActive, FUNNEL_CHANGED_ACTIVE)
 	READENTITY_BYTE(spawnflags, FUNNEL_CHANGED_FLAGS)
-	READENTITY_BYTE(m_vecRenderColor[0], FUNNEL_CHANGED_COLOR)
-	READENTITY_BYTE(m_vecRenderColor[1], FUNNEL_CHANGED_COLOR)
-	READENTITY_BYTE(m_vecRenderColor[2], FUNNEL_CHANGED_COLOR)
-	READENTITY_BYTE(m_flRenderAmt, FUNNEL_CHANGED_AMOUNT)
+	READENTITY_BYTE(m_renderColor[0], FUNNEL_CHANGED_COLOR)
+	READENTITY_BYTE(m_renderColor[1], FUNNEL_CHANGED_COLOR)
+	READENTITY_BYTE(m_renderColor[2], FUNNEL_CHANGED_COLOR)
+	READENTITY_BYTE(m_renderAmount, FUNNEL_CHANGED_AMOUNT)
 
 	drawmask = MASK_ENGINE;
 	setsize(this, [0,0,0], [0,0,0]);
 	origin = m_vecStartPos;
 
 	if (flChanged & FUNNEL_CHANGED_SPRITE) {
-		RendererRestarted();
+		ReloadVideoResources();
 	}
 
 	if (flChanged & FUNNEL_CHANGED_ACTIVE) {
@@ -268,7 +268,7 @@ env_funnel::ReceiveEntity(float flNew, float flChanged)
 }
 
 void
-env_funnel::RendererRestarted(void)
+env_funnel::ReloadVideoResources(void)
 {
 	m_strTexture = spriteframe(modelnameforindex(m_iSpriteID), 0, 0.0f);
 }
@@ -276,8 +276,8 @@ env_funnel::RendererRestarted(void)
 void
 env_funnel::RenderGlow(vector forg, vector fsize, float amount)
 {
-	float alphaTint = (m_flRenderAmt / 255) * (1.0 - amount);
-	vector renderColor = m_vecRenderColor / 255;
+	float alphaTint = (m_renderAmount / 255) * (1.0 - amount);
+	vector renderColor = m_renderColor / 255;
 
 	R_BeginPolygon(m_strTexture, 1, 0);
 	R_PolygonVertex(forg + v_right * fsize[0] - v_up * fsize[1],

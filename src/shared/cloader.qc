@@ -41,7 +41,7 @@ Constants_Init(void)
 	constFile = fopen(g_constantsFile, FILE_READ);
 
 	if (constFile < 0) {
-		NSWarning("No constants, missing %S", g_constantsFile);
+		ncWarning("No constants, missing %S", g_constantsFile);
 		InitEnd();
 		return;
 	}
@@ -70,7 +70,7 @@ Constants_Add(string constantName, string constantValue)
 {
 	/* sanity bounds check */
 	if (g_constCount == MAX_CONSTANTS_ID) {
-		NSError("Hit maximum number of %d constants.", MAX_CONSTANTS_ID);
+		ncError("Hit maximum number of %d constants.", MAX_CONSTANTS_ID);
 		return (false);
 	}
 

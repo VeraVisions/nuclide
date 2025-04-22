@@ -79,17 +79,17 @@ phys_hinge::Save(float handle)
 }
 
 void
-phys_hinge::Restore(string strKey, string strValue)
+phys_hinge::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_flHingeFriction":
-		m_flHingeFriction = ReadFloat(strValue);
+		m_flHingeFriction = ReadFloat(setValue);
 		break;
 	case "m_vecHingeAxis":
-		m_vecHingeAxis = ReadVector(strValue);
+		m_vecHingeAxis = ReadVector(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 

@@ -158,56 +158,56 @@ func_door_rotating::Save(float handle)
 }
 
 void
-func_door_rotating::Restore(string strKey, string strValue)
+func_door_rotating::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "targetClose":
-		targetClose = ReadString(strValue);
+		targetClose = ReadString(setValue);
 		break;
 	case "m_strSndStop":
-		m_strSndStop = ReadString(strValue);
+		m_strSndStop = ReadString(setValue);
 		break;
 	case "m_strSndOpen":
-		m_strSndOpen = ReadString(strValue);
+		m_strSndOpen = ReadString(setValue);
 		break;
 	case "m_strSndClose":
-		m_strSndClose = ReadString(strValue);
+		m_strSndClose = ReadString(setValue);
 		break;
 	case "m_strLockedSfx":
-		m_strLockedSfx = ReadString(strValue);
+		m_strLockedSfx = ReadString(setValue);
 		break;
 	case "m_flSoundWait":
-		m_flSoundWait = ReadFloat(strValue);
+		m_flSoundWait = ReadFloat(setValue);
 		break;
 	case "m_flDistance":
-		m_flDistance = ReadFloat(strValue);
+		m_flDistance = ReadFloat(setValue);
 		break;
 	case "m_flSpeed":
-		m_flSpeed = ReadFloat(strValue);
+		m_flSpeed = ReadFloat(setValue);
 		break;
 	case "m_flNextAction":
-		m_flNextAction = ReadFloat(strValue);
+		m_flNextAction = ReadFloat(setValue);
 		break;
 	case "m_flWait":
-		m_flWait = ReadFloat(strValue);
+		m_flWait = ReadFloat(setValue);
 		break;
 	case "m_flDelay":
-		m_flDelay = ReadFloat(strValue);
+		m_flDelay = ReadFloat(setValue);
 		break;
 	case "m_iDamage":
-		m_iDamage = ReadInt(strValue);
+		m_iDamage = ReadInt(setValue);
 		break;
 	case "m_bLocked":
-		m_bLocked = ReadBool(strValue);
+		m_bLocked = ReadBool(setValue);
 		break;
 	case "m_bCanTouch":
-		m_bCanTouch = ReadBool(strValue);
+		m_bCanTouch = ReadBool(setValue);
 		break;
 	case "m_vecTurnDir":
-		m_vecTurnDir = ReadVector(strValue);
+		m_vecTurnDir = ReadVector(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
@@ -216,14 +216,10 @@ func_door_rotating::Spawned(void)
 {
 	super::Spawned();
 
-	if (m_strSndOpen)
-		Sound_Precache(m_strSndOpen);
-	if (m_strSndClose)
-		Sound_Precache(m_strSndClose);
-	if (m_strSndStop)
-		Sound_Precache(m_strSndStop);
-	if (m_strLockedSfx)
-		Sound_Precache(m_strLockedSfx);
+	precache.Sound(m_strSndOpen);
+	precache.Sound(m_strSndClose);
+	precache.Sound(m_strSndStop);
+	precache.Sound(m_strLockedSfx);
 }
 
 void
@@ -242,14 +238,6 @@ func_door_rotating::Respawn(void)
 	ClearVelocity();
 	ReleaseThink();
 
-	if (HasSpawnFlags(SF_ROT_ZAXIS)) {
-		m_vecTurnDir = [0,0,1];
-	} else if (HasSpawnFlags(SF_ROT_XAXIS)) {
-		m_vecTurnDir = [1,0,0];
-	} else {
-		m_vecTurnDir = [0,1,0];
-	}
-
 	if (HasSpawnFlags(SF_ROT_USE) || HasSpawnFlags(SF_ROT_TOGGLE)) {
 		m_bCanTouch = false;
 	} else {
@@ -267,14 +255,22 @@ func_door_rotating::Respawn(void)
 		PlayerUse = __NULL__;
 	}
 
-	SetMoverRotation1(GetAngles());
-
-	RestoreAngles();
-	if (HasSpawnFlags(SF_ROT_BACKWARDS)) {
-		SetMoverRotation2(GetDirectionalRotation(m_vecTurnDir, -m_flDistance));
+	if (HasSpawnFlags(SF_ROT_ZAXIS)) {
+		m_vecTurnDir = [0,0,-1];
+	} else if (HasSpawnFlags(SF_ROT_XAXIS)) {
+		m_vecTurnDir = [-1,0,0];
 	} else {
-		SetMoverRotation2(GetDirectionalRotation(m_vecTurnDir, m_flDistance));
+		m_vecTurnDir = [0,1,0];
 	}
+
+	float distanceFloat = GetSpawnFloat("distance");
+
+	if (HasSpawnFlags(2)) {
+		m_vecTurnDir[0] *= -1.0f;
+	} 
+
+	SetMoverRotation1(GetSpawnVector("angles"));
+	SetMoverRotation2(GetDirectionalRotation(m_vecTurnDir, distanceFloat));
 	ClearAngles();
 
 	if (HasSpawnFlags(SF_ROT_OPEN)) {
@@ -299,49 +295,49 @@ func_door_rotating::Respawn(void)
 }
 
 void
-func_door_rotating::SpawnKey(string strKey, string strValue)
+func_door_rotating::SpawnKey(string strKey, string setValue)
 {
 	int x = 0;
 	switch (strKey) {
 	case "speed":
-		m_flSpeed = stof(strValue);
+		m_flSpeed = stof(setValue);
 		break;
 	case "snd_open":
-		m_strSndOpen = strValue;
+		m_strSndOpen = setValue;
 		break;
 	case "snd_close":
-		m_strSndClose = strValue;
+		m_strSndClose = setValue;
 		break;
 	case "noise1":
-		m_strSndOpen = m_strSndClose = strValue;
+		m_strSndOpen = m_strSndClose = setValue;
 		break;
 	case "snd_stop":
 	case "noise2":
-		m_strSndStop = strValue;
+		m_strSndStop = setValue;
 		break;
 	/* GoldSrc compat */
 	case "movesnd":
-		x = stoi(strValue); /* sanitize */
+		x = stoi(setValue); /* sanitize */
 		m_strSndOpen = m_strSndClose = sprintf("func_door_rotating.move_%i", x);
 		break;
 	case "stopsnd":
-		x = stoi(strValue); /* sanitize */
+		x = stoi(setValue); /* sanitize */
 		m_strSndStop = sprintf("func_door_rotating.stop_%i", x);
 		break;
 	case "distance":
-		m_flDistance = stof(strValue);
+		m_flDistance = stof(setValue);
 		break;
 	case "dmg":
-		m_iDamage = stoi(strValue);
+		m_iDamage = stoi(setValue);
 		break;
 	case "wait":
-		m_flWait = stof(strValue);
+		m_flWait = stof(setValue);
 		break;
 	case "netname":
-		targetClose = strValue;
+		targetClose = setValue;
 		break;
 	case "locked_sound":
-		x = stoi(strValue);  /* sanitize */
+		x = stoi(setValue);  /* sanitize */
 
 		if (x == 0i)
 			break;
@@ -349,7 +345,7 @@ func_door_rotating::SpawnKey(string strKey, string strValue)
 		m_strLockedSfx = sprintf("func_button.hlsfx_%i", x+1i);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
@@ -535,12 +531,13 @@ void
 func_door_rotating::Blocked(entity eBlocker)
 {
 	if (m_iDamage) {
+		ncSurfacePropEntity toAttack = (ncSurfacePropEntity) eBlocker;
 		vector center = WorldSpaceCenter();
 		vector dmgDir = dirFromTarget(center, eBlocker.origin);
 		ncDict damageDecl = spawn(ncDict);
 		damageDecl.AddKey("damage", itos(m_iDamage));
 		m_preventTouch = GetTime() + 0.5f;
-		combat.Damage(eBlocker, this, eBlocker, damageDecl.GetDeclBody(), center, dmgDir, eBlocker.origin);
+		toAttack.Damage(this, eBlocker, damageDecl, 1.0f, dmgDir, eBlocker.origin);
 		remove(damageDecl);
 	}
 

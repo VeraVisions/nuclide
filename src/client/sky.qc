@@ -43,7 +43,7 @@ Sky_Update(int force)
 
 		localcmd(sprintf("sky \"%s\"\n", skyPath));
 		g_strSkyPath = skyPath;
-		NSLog("sky update applying %s.", skyPath);
+		ncLog("Skybox of map changed to %S.", skyPath);
 	}
 }
 

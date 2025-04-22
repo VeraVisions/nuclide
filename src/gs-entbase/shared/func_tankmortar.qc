@@ -366,7 +366,7 @@ func_tankmortar::PlayerInput(void)
 		SpriteSmoke(spos);
 		SpriteFlash(spos);
 
-		UseTargets(this, TRIG_ON, m_flDelay);
+		UseTargets(this, TRIG_ON, GetTriggerDelay());
 
 		m_flFireTime = time + m_flFireRate;
 	}
@@ -389,62 +389,62 @@ func_tankmortar::Respawn(void)
 }
 
 void
-func_tankmortar::SpawnKey(string strKey, string strValue)
+func_tankmortar::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "yawrate":
-		m_flYawRate = stof(strValue) * 0.01f;
+		m_flYawRate = stof(setValue) * 0.01f;
 		break;
 	case "yawrange":
-		m_flYawRange = stof(strValue);
+		m_flYawRange = stof(setValue);
 		break;
 	case "pitchrate":
-		m_flPitchRate = stof(strValue) * 0.01f;
+		m_flPitchRate = stof(setValue) * 0.01f;
 		break;
 	case "pitchrange":
-		m_flPitchRange = stof(strValue);
+		m_flPitchRange = stof(setValue);
 		break;
 	case "barrel":
-		m_vecTipPos[0] = stof(strValue);
+		m_vecTipPos[0] = stof(setValue);
 		break;
 	case "barrely":
-		m_vecTipPos[1] = stof(strValue);
+		m_vecTipPos[1] = stof(setValue);
 		break;
 	case "barrelz":
-		m_vecTipPos[2] = stof(strValue);
+		m_vecTipPos[2] = stof(setValue);
 		break;
 	case "firerate":
-		m_flFireRate = 1.0f / stof(strValue);
+		m_flFireRate = 1.0f / stof(setValue);
 		break;
 	case "iMagnitude":
-		m_iDamage = stoi(strValue);
+		m_iDamage = stoi(setValue);
 		break;
 	case "firespread":
-		m_vecSpread = [0.10, 0.10, 0] * stof(strValue);
+		m_vecSpread = [0.10, 0.10, 0] * stof(setValue);
 		break;
 	case "persistance":
-		m_flPersistance = stof(strValue);
+		m_flPersistance = stof(setValue);
 		break;
 	case "minRange":
-		m_flMinRange = stof(strValue);
+		m_flMinRange = stof(setValue);
 		break;
 	case "maxRange":
-		m_flMaxRange = stof(strValue);
+		m_flMaxRange = stof(setValue);
 		break;
 	case "spritesmoke":
-		m_strSpriteSmoke = strValue;
+		m_strSpriteSmoke = setValue;
 		break;
 	case "spriteflash":
-		m_strSpriteFlash = strValue;
+		m_strSpriteFlash = setValue;
 		break;
 	case "spritescale":
-		m_flSpriteScale = stof(strValue);
+		m_flSpriteScale = stof(setValue);
 		break;
 	case "rotatesound":
-		m_strSndRotate = strValue;
+		m_strSndRotate = setValue;
 		break;
 	default:
-		super::SpawnKey(strValue, strKey);
+		super::SpawnKey(setValue, strKey);
 	}
 }
 #endif

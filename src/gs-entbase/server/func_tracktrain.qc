@@ -412,62 +412,62 @@ func_tracktrain::Save(float handle)
 }
 
 void
-func_tracktrain::Restore(string strKey, string strValue)
+func_tracktrain::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_flWait":
-		m_flWait = ReadFloat(strValue);
+		m_flWait = ReadFloat(setValue);
 		break;
 	case "m_flSpeed":
-		m_flSpeed = ReadFloat(strValue);
+		m_flSpeed = ReadFloat(setValue);
 		break;
 	case "m_flDamage":
-		m_flDamage = ReadFloat(strValue);
+		m_flDamage = ReadFloat(setValue);
 		break;
 	case "m_flHeight":
-		m_flHeight = ReadFloat(strValue);
+		m_flHeight = ReadFloat(setValue);
 		break;
 	case "m_flStartSpeed":
-		m_flStartSpeed = ReadFloat(strValue);
+		m_flStartSpeed = ReadFloat(setValue);
 		break;
 	case "m_flCurrentSpeed":
-		m_flCurrentSpeed = ReadFloat(strValue);
+		m_flCurrentSpeed = ReadFloat(setValue);
 		break;
 	case "m_flBank":
-		m_flBank = ReadFloat(strValue);
+		m_flBank = ReadFloat(setValue);
 		break;
 	case "m_strMoveSnd":
-		m_strMoveSnd = ReadString(strValue);
+		m_strMoveSnd = ReadString(setValue);
 		break;
 	case "m_strStopSnd":
-		m_strStopSnd = ReadString(strValue);
+		m_strStopSnd = ReadString(setValue);
 		break;
 	case "m_flUseTime":
-		m_flUseTime = ReadFloat(strValue);
+		m_flUseTime = ReadFloat(setValue);
 		break;
 	case "m_iInputDirection":
-		m_iInputDirection = ReadInt(strValue);
+		m_iInputDirection = ReadInt(setValue);
 		break;
 	case "m_iOldInputDirection":
-		m_iOldInputDirection = ReadInt(strValue);
+		m_iOldInputDirection = ReadInt(setValue);
 		break;
 	case "m_iInputLevel":
-		m_iInputLevel = ReadInt(strValue);
+		m_iInputLevel = ReadInt(setValue);
 		break;
 	case "m_timerAngled":
-		m_timerAngled = (ncTimer)ReadEntity(strValue);
+		m_timerAngled = (ncTimer)ReadEntity(setValue);
 		break;
 	case "m_flTrainLength":
-		m_flTrainLength = ReadFloat(strValue);
+		m_flTrainLength = ReadFloat(setValue);
 		break;
 	case "_m_bDriving":
-		_m_bDriving = ReadBool(strValue);
+		_m_bDriving = ReadBool(setValue);
 		break;
 	case "m_vecRelationTarget":
-		m_vecRelationTarget = ReadVector(strValue);
+		m_vecRelationTarget = ReadVector(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
@@ -475,7 +475,7 @@ void
 func_tracktrain::TransitionComplete(void)
 {
 	/* don't mess with this entity if it wasn't carrying over from someplace */
-	if (!STRING_SET(m_strGlobalName)) {
+	if (!STRING_SET(m_globalName)) {
 		return;
 	}
 
@@ -493,42 +493,42 @@ func_tracktrain::TransitionComplete(void)
 }
 
 void
-func_tracktrain::SpawnKey(string strKey, string strValue)
+func_tracktrain::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "speed":
-		m_flSpeed = ReadFloat(strValue);
+		m_flSpeed = ReadFloat(setValue);
 		break;
 	case "startspeed":
-		m_flStartSpeed = stof(strValue);
+		m_flStartSpeed = stof(setValue);
 		break;
 	case "height":
-		m_flHeight = stof(strValue);
+		m_flHeight = stof(setValue);
 		break;
 	case "dmg":
-		m_flDamage = stof(strValue);
+		m_flDamage = stof(setValue);
 		break;
 	case "snd_move":
 	case "MoveSound":
-		m_strMoveSnd = strValue;
+		m_strMoveSnd = setValue;
 		break;
 	case "snd_stop":
 	case "StopSound":
-		m_strStopSnd = strValue;
+		m_strStopSnd = setValue;
 		break;
 	case "wheels":
-		m_flTrainLength = 0; //ReadFloat(strValue);
+		m_flTrainLength = 0; //ReadFloat(setValue);
 		break;
 	/* compatibility */
 	case "sounds":
 	case "movesnd":
-		m_strMoveSnd = sprintf("func_tracktrain.move_%i", stoi(strValue) + 1i);
+		m_strMoveSnd = sprintf("func_tracktrain.move_%i", stoi(setValue) + 1i);
 		break;
 	case "stopsnd":
-		m_strStopSnd = sprintf("func_tracktrain.stop_%i", stoi(strValue) + 1i);
+		m_strStopSnd = sprintf("func_tracktrain.stop_%i", stoi(setValue) + 1i);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
@@ -537,12 +537,9 @@ func_tracktrain::Spawned(void)
 {
 	super::Spawned();
 
-	if (STRING_SET(m_strMoveSnd))
-		Sound_Precache(m_strMoveSnd);
-	if (STRING_SET(m_strStopSnd))
-		Sound_Precache(m_strStopSnd);
-
-	Sound_Precache("func_tracktrain.stop_1");
+	precache.Sound(m_strMoveSnd);
+	precache.Sound(m_strStopSnd);
+	precache.Sound("func_tracktrain.stop_1");
 }
 
 void
@@ -574,9 +571,32 @@ func_tracktrain::Blocked(entity eBlocker)
 	if (eBlocker == m_eDriver) {
 		return;
 	}
+	vector center;
+	vector dmgDir;
+	ncDict damageDecl;
+	ncSurfacePropEntity toAttack = (ncSurfacePropEntity)eBlocker;
 
-	/* evil, since we're not based on it (yet) */
-	func_train::Blocked(eBlocker);
+	/* HACK: Make corpses gib instantly */
+	if (is.Sentient(eBlocker) && eBlocker.solid == SOLID_CORPSE) {
+		center = WorldSpaceCenter();
+		dmgDir = dirFromTarget(center, eBlocker.origin);
+		damageDecl = spawn(ncDict);
+		damageDecl.AddKey("damage", "500");
+		toAttack.Damage(this, eBlocker, damageDecl, 1.0f, center, dmgDir, eBlocker.origin);
+		remove(damageDecl);
+		return;
+	}
+
+	if (eBlocker.takedamage != DAMAGE_NO) {
+		center = WorldSpaceCenter();
+		dmgDir = dirFromTarget(center, eBlocker.origin);
+		damageDecl = spawn(ncDict);
+		damageDecl.AddKey("damage", ftos(m_flDamage));
+		toAttack.Damage(this, eBlocker, damageDecl, 1.0f, center, dmgDir, eBlocker.origin);
+		remove(damageDecl);
+	} else {
+		/* remove(eBlocker); */
+	}
 }
 
 void
@@ -844,14 +864,14 @@ func_tracktrain::_PathArrivedForward(void)
 
 	if (m_iInputLevel == 0) {
 		/* if speed is 0, retain current speed */
-		if (eNode.m_flSpeed > 0) {
-			m_flCurrentSpeed = eNode.m_flSpeed;
+		if (eNode.DesiredTrainSpeed() > 0) {
+			m_flCurrentSpeed = eNode.DesiredTrainSpeed();
 		} else {
 			m_flCurrentSpeed = m_flSpeed;
 		}
 	}
 
-	m_flWait = eNode.m_flWait;
+	m_flWait = eNode.DesiredWaitTime();
 
 	ncVehicle_Log("^1func_tracktrain::^3_PathArrivedForward^7: Target changed from %S to %S", target, eNode.GetPathTarget());
 
@@ -903,13 +923,13 @@ func_tracktrain::_PathArrivedBack(void)
 
 	/* if speed is 0, retain current speed */
 	if (m_iInputLevel == 0) {
-		if (eNode.m_flSpeed > 0)
-			m_flCurrentSpeed = eNode.m_flSpeed;
+		if (eNode.DesiredTrainSpeed() > 0)
+			m_flCurrentSpeed = eNode.DesiredTrainSpeed();
 		else
 			m_flCurrentSpeed = m_flSpeed;
 	}
 
-	m_flWait = eNode.m_flWait;
+	m_flWait = eNode.DesiredWaitTime();
 	ncVehicle_Log("^1func_tracktrain::^3_PathArrivedBack^7: Target changed from %S to %S", target, eNode.targetname);
 	target = eNode.targetname;
 
@@ -1022,15 +1042,15 @@ func_tracktrain::_AfterSpawn(void)
 	}
 
 	/* if speed is 0, retain current speed */
-	if (targetNode.m_flSpeed > 0) {
-		m_flCurrentSpeed = targetNode.m_flSpeed;
+	if (targetNode.DesiredTrainSpeed() > 0) {
+		m_flCurrentSpeed = targetNode.DesiredTrainSpeed();
 	} else {
 		m_flCurrentSpeed = m_flSpeed;
 	}
 
 	m_flSpeed = m_flCurrentSpeed;
 
-	m_flWait = targetNode.m_flWait;
+	m_flWait = targetNode.DesiredWaitTime();
 	target = targetNode.target;
 
 	/* warp */

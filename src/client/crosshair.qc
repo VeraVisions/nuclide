@@ -19,7 +19,7 @@ Cross_GetPos(vector sizeXY)
 {
 	vector crossPos;
 
-	if (cvar("pm_thirdPerson") < 1) {
+	if (autocvar_pm_thirdPerson == false) {
 		crossPos = g_hudmins + (g_hudres / 2) + [-(sizeXY[0]/2),-(sizeXY[1]/2)];
 		crossPos[0] = rint(crossPos[0]);
 		crossPos[1] = rint(crossPos[1]);
@@ -81,7 +81,7 @@ Cross_DrawSubRGBA(string materialPath, vector sizeXY, vector sourcePosXY, vector
 {
 	vector crossPos = Cross_GetPos(sizeXY);
 
-	if (cvar("pm_thirdPerson") < 1) {
+	if (autocvar_pm_thirdPerson == false) {
 		drawsubpic(crossPos, sizeXY, materialPath, sourcePosXY, sourceSizeXY, colorRGB, alphaValue, DRAWFLAG_NORMAL);
 	} else {
 		drawsubpic(crossPos, sizeXY, materialPath, sourcePosXY, sourceSizeXY, colorRGB, alphaValue, DRAWFLAG_NORMAL);

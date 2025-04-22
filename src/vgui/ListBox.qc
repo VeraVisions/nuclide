@@ -55,7 +55,7 @@ void vguiListBox::Spawned(void)
 void vguiListBox::SetItemCount (int iCount)
 {
 	if (!m_iItemCount) {
-		NSLog("vguiListBox: Initialized with a maximum of %i entries", iCount);
+		ncLog("vguiListBox: Initialized with a maximum of %i entries", iCount);
 		m_iItemCount = iCount;
 		m_strItems = memalloc(iCount * sizeof(string));
 	}
@@ -82,7 +82,7 @@ void vguiListBox::AddItem (string strItem)
 		dprint("vguiListBox: Can't add item to empty list!\n");
 		return;
 	}
-	
+
 	for (int i = 0; i < m_iItemCount; i++) {
 		if (!m_strItems[i]) {
 			m_strItems[i] = strItem;
@@ -100,7 +100,7 @@ void vguiListBox::Draw(void)
 	if (!m_iItemCount) {
 		return;
 	}
-	
+
 	drawfill(m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, [0,0,0], 0.5f);
 	drawfill(m_parent.m_vecOrigin + m_vecOrigin, [m_vecSize[0], 1], [0,0,0], 0.5f);
 	drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, m_vecSize[1] - 1], [m_vecSize[0], 1], [1,1,1], 0.5f);
@@ -108,17 +108,17 @@ void vguiListBox::Draw(void)
 	drawfill(m_parent.m_vecOrigin + m_vecOrigin + [m_vecSize[0] - 1, 1], [1, m_vecSize[1] - 2], [1,1,1], 0.5f);
 
 	vector vecOffset = [8,8];
-	
+
 	iMaxDisplay = bound(0, m_iItemCount, floor(m_vecSize[1] / 20));
 	for (int i = m_iDrawOffset; i < iMaxDisplay + m_iDrawOffset; i++) {
 		if (!m_strItems[i]) {
 			break;
 		}
-		
+
 		if (m_iSelected == i) {
 			drawfill(m_parent.m_vecOrigin + m_vecOrigin + vecOffset + [-7,-3], [m_vecSize[0] - 2, 18], [1,1,1], 0.5f);
 		}
-		
+
 		theme.DrawText(m_parent.m_vecOrigin + m_vecOrigin + vecOffset, m_strItems[i], m_vecSize, g_fntDefault);
 		vecOffset[1] += 20;
 	}
@@ -129,7 +129,7 @@ bool vguiListBox::Input (float flEVType, float flKey, float flChar, float flDevI
 	bool ret = false;
 	int iMaxDisplay;
 	iMaxDisplay = bound(0, m_iItemCount, floor(m_vecSize[1] / 20));
-	
+
 	vector vecOffset = [8,8];
 	if (flEVType == IE_KEYDOWN) {
 		if (flKey == K_MOUSE1) {

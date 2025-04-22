@@ -60,26 +60,26 @@ trigger_changetarget::Save(float handle)
 }
 
 void
-trigger_changetarget::Restore(string strKey, string strValue)
+trigger_changetarget::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_strNewTarget":
-		m_strNewTarget = ReadString(strValue);
+		m_strNewTarget = ReadString(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-trigger_changetarget::SpawnKey(string strKey, string strValue)
+trigger_changetarget::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_iszNewTarget":
-		m_strNewTarget = strValue;
+		m_strNewTarget = setValue;
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 

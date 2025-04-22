@@ -76,17 +76,17 @@ item_eyescanner::item_eyescanner(void)
 }
 
 void
-item_eyescanner::SpawnKey(string strKey, string strValue)
+item_eyescanner::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "locked_target":
-		m_strLockedTarget = strValue;
+		m_strLockedTarget = setValue;
 		break;
 	case "unlocked_target":
-		m_strUnlockedTarget = strValue;
+		m_strUnlockedTarget = setValue;
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
@@ -98,7 +98,7 @@ item_eyescanner::AccessDenied(void)
 
 	if (m_strLockedTarget) {
 		target = m_strLockedTarget;
-		UseTargets(eActivator, TRIG_TOGGLE, m_flDelay);
+		UseTargets(eActivator, TRIG_TOGGLE, GetTriggerDelay());
 	}
 }
 
@@ -110,7 +110,7 @@ item_eyescanner::AccessGranted(void)
 
 	if (m_strUnlockedTarget) {
 		target = m_strUnlockedTarget;
-		UseTargets(eActivator, TRIG_TOGGLE, m_flDelay);
+		UseTargets(eActivator, TRIG_TOGGLE, GetTriggerDelay());
 	}
 }
 

@@ -83,7 +83,7 @@ public:
 	virtual void OnRemoveEntity(void);
 	virtual void ReceiveEntity(float,float);
 	virtual float predraw(void);
-	virtual void RendererRestarted(void);
+	virtual void ReloadVideoResources(void);
 	virtual void LightChanged(float);
 #endif
 
@@ -217,7 +217,7 @@ light_dynamic::ReceiveEntity(float flNew, float flFlags)
 		m_strPattern = readstring();
 
 	if (flNew) {
-		RendererRestarted();
+		ReloadVideoResources();
 	} else {
 		LightChanged(flFlags);
 	}
@@ -226,7 +226,7 @@ light_dynamic::ReceiveEntity(float flNew, float flFlags)
 }
 
 void
-light_dynamic::RendererRestarted(void)
+light_dynamic::ReloadVideoResources(void)
 {
 	OnRemoveEntity();
 	m_light = dynamiclight_spawnstatic(origin, m_flDistance, m_vecLight);
@@ -374,40 +374,40 @@ light_dynamic::Respawn(void)
 #endif
 
 void
-light_dynamic::SpawnKey(string strKey, string strValue)
+light_dynamic::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "_light":
-		m_vecLight = stov(strValue);
+		m_vecLight = stov(setValue);
 		break;
 	case "light":
 	case "brightness":
-		m_flIntensity = stof(strValue);
+		m_flIntensity = stof(setValue);
 		break;
 	case "_inner_cone":
-		m_flInnerCone = stof(strValue);
+		m_flInnerCone = stof(setValue);
 		break;
 	case "_cone":
-		m_flCone = stof(strValue);
+		m_flCone = stof(setValue);
 		break;
 	case "distance":
-		m_flDistance = stof(strValue);
+		m_flDistance = stof(setValue);
 		break;
 	case "spotlight_radius":
-		m_flRadius = stof(strValue);
+		m_flRadius = stof(setValue);
 		break;
 	case "style":
-		m_flStyle = stof(strValue);
+		m_flStyle = stof(setValue);
 		break;
 	/* out-of-spec */
 	case "start_active":
-		m_iStartActive = stoi(strValue);
+		m_iStartActive = stoi(setValue);
 		break;
 	case "pattern":
-		m_strPattern = strValue;
+		m_strPattern = setValue;
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 

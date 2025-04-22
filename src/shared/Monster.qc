@@ -23,7 +23,7 @@ ncMonster::ncMonster(void)
 #ifdef SERVER
 	m_ssLast = __NULL__;
 	oldnet_velocity = g_vec_null;
-	m_flPitch = 1.0f;
+	m_sentencePitch = 1.0f;
 	m_iFlags = 0i;
 	m_strRouteEnded = __NULL__;
 	m_iSequenceRemove = 0i;
@@ -36,7 +36,7 @@ ncMonster::ncMonster(void)
 	m_iMoveState = 0i;
 	m_iTriggerCondition = 0i;
 	m_strTriggerTarget = __NULL__;
-	m_flBaseTime = 0.0f;
+	m_modelEventTime = 0.0f;
 	m_eEnemy = __NULL__;
 	m_flAttackThink = 0.0f;
 	m_iMState = 0i;
@@ -120,7 +120,7 @@ ncMonster::DebugDraw(void)
 	}
 
 	string aiString = sprintf("State: %S\nSchedule: %S\n", m_mindset, m_activeSchedule.classname);
-	
+
 	print(aiString);
 #endif
 #endif
@@ -162,7 +162,7 @@ ncMonster::Save(float handle)
 	SaveFloat(handle, "bonecontrol1", bonecontrol1);
 	SaveEntity(handle, "m_eLookAt", m_eLookAt);
 	SaveEntity(handle, "m_ssLast", m_ssLast);
-	SaveFloat(handle, "m_flPitch", m_flPitch);
+	SaveFloat(handle, "m_sentencePitch", m_sentencePitch);
 	SaveInt(handle, "m_iFlags", m_iFlags);
 	SaveString(handle, "m_strRouteEnded", m_strRouteEnded);
 	SaveInt(handle, "m_iSequenceRemove", m_iSequenceRemove);
@@ -175,7 +175,7 @@ ncMonster::Save(float handle)
 	SaveFloat(handle, "m_iMoveState", m_iMoveState);
 	SaveInt(handle, "m_iTriggerCondition", m_iTriggerCondition);
 	SaveString(handle, "m_strTriggerTarget", m_strTriggerTarget);
-	SaveFloat(handle, "m_flBaseTime", m_flBaseTime);
+	SaveFloat(handle, "m_modelEventTime", m_modelEventTime);
 	SaveEntity(handle, "m_eEnemy", m_eEnemy);
 	SaveFloat(handle, "m_flAttackThink", m_flAttackThink);
 	SaveFloat(handle, "m_iMState", m_iMState);
@@ -237,245 +237,245 @@ ncMonster::Save(float handle)
 }
 
 void
-ncMonster::Restore(string strKey, string strValue)
+ncMonster::Restore(string keyName, string setValue)
 {
-	switch (strKey) {
+	switch (keyName) {
 	case "m_flHeadYaw":
-		m_flHeadYaw = ReadFloat(strValue);
+		m_flHeadYaw = ReadFloat(setValue);
 		break;
 	case "frame1time":
-		frame1time = ReadFloat(strValue);
+		frame1time = ReadFloat(setValue);
 		break;
 	case "subblendfrac":
-		subblendfrac = ReadFloat(strValue);
+		subblendfrac = ReadFloat(setValue);
 		break;
 	case "bonecontrol1":
-		bonecontrol1 = ReadFloat(strValue);
+		bonecontrol1 = ReadFloat(setValue);
 		break;
 	case "m_eLookAt":
-		m_eLookAt = ReadEntity(strValue);
+		m_eLookAt = ReadEntity(setValue);
 		break;
 	case "m_ssLast":
-		m_ssLast = ReadEntity(strValue);
+		m_ssLast = ReadEntity(setValue);
 		break;
-	case "m_flPitch":
-		m_flPitch = ReadFloat(strValue);
+	case "m_sentencePitch":
+		m_sentencePitch = ReadFloat(setValue);
 		break;
 	case "m_iFlags":
-		m_iFlags = ReadInt(strValue);
+		m_iFlags = ReadInt(setValue);
 		break;
 	case "m_strRouteEnded":
-		m_strRouteEnded = ReadString(strValue);
+		m_strRouteEnded = ReadString(setValue);
 		break;
 	case "m_iSequenceRemove":
-		m_iSequenceRemove = ReadInt(strValue);
+		m_iSequenceRemove = ReadInt(setValue);
 		break;
 	case "m_iSequenceState":
-		m_iSequenceState = ReadInt(strValue);
+		m_iSequenceState = ReadInt(setValue);
 		break;
 	case "m_flSequenceEnd":
-		m_flSequenceEnd = ReadFloat(strValue);
+		m_flSequenceEnd = ReadFloat(setValue);
 		break;
 	case "m_flSequenceSpeed":
-		m_flSequenceSpeed = ReadFloat(strValue);
+		m_flSequenceSpeed = ReadFloat(setValue);
 		break;
 	case "m_vecSequenceAngle":
-		m_vecSequenceAngle = ReadVector(strValue);
+		m_vecSequenceAngle = ReadVector(setValue);
 		break;
 	case "m_iSequenceFlags":
-		m_iSequenceFlags = ReadInt(strValue);
+		m_iSequenceFlags = ReadInt(setValue);
 		break;
 	case "m_strSequenceKillTarget":
-		m_strSequenceKillTarget = ReadString(strValue);
+		m_strSequenceKillTarget = ReadString(setValue);
 		break;
 	case "m_iMoveState":
-		m_iMoveState = ReadFloat(strValue);
+		m_iMoveState = ReadFloat(setValue);
 		break;
 	case "m_iTriggerCondition":
-		m_iTriggerCondition = ReadInt(strValue);
+		m_iTriggerCondition = ReadInt(setValue);
 		break;
 	case "m_strTriggerTarget":
-		m_strTriggerTarget = ReadString(strValue);
+		m_strTriggerTarget = ReadString(setValue);
 		break;
-	case "m_flBaseTime":
-		m_flBaseTime = ReadFloat(strValue);
+	case "m_modelEventTime":
+		m_modelEventTime = ReadFloat(setValue);
 		break;
 	case "m_eEnemy":
-		m_eEnemy = ReadEntity(strValue);
+		m_eEnemy = ReadEntity(setValue);
 		break;
 	case "m_flAttackThink":
-		m_flAttackThink = ReadFloat(strValue);
+		m_flAttackThink = ReadFloat(setValue);
 		break;
 	case "m_iMState":
-		m_iMState = ReadFloat(strValue);
+		m_iMState = ReadFloat(setValue);
 		break;
 	case "m_iOldMState":
-		m_iOldMState = ReadFloat(strValue);
+		m_iOldMState = ReadFloat(setValue);
 		break;
 	case "m_vecLKPos":
-		m_vecLKPos = ReadVector(strValue);
+		m_vecLKPos = ReadVector(setValue);
 		break;
 	case "m_flSeeTime":
-		m_flSeeTime = ReadFloat(strValue);
+		m_flSeeTime = ReadFloat(setValue);
 		break;
 	case "m_flAnimTime":
-		m_flAnimTime = ReadFloat(strValue);
+		m_flAnimTime = ReadFloat(setValue);
 		break;
 	case "m_flTrackingTime":
-		m_flTrackingTime = ReadFloat(strValue);
+		m_flTrackingTime = ReadFloat(setValue);
 		break;
 	case "view_ofs":
-		view_ofs = ReadVector(strValue);
+		view_ofs = ReadVector(setValue);
 		break;
 	case "m_actIdle":
-		m_actIdle = ReadFloat(strValue);
+		m_actIdle = ReadFloat(setValue);
 		break;
 	case "m_bTurning":
-		m_bTurning = ReadBool(strValue);
+		m_bTurning = ReadBool(setValue);
 		break;
 	case "m_flIdleNext":
-		m_flIdleNext = ReadFloat(strValue);
+		m_flIdleNext = ReadFloat(setValue);
 		break;
 	case "_m_flMeleeAttempts":
-		_m_flMeleeAttempts = ReadFloat(strValue);
+		_m_flMeleeAttempts = ReadFloat(setValue);
 		break;
 	case "_m_flMeleeDelay":
-		_m_flMeleeDelay = ReadFloat(strValue);
+		_m_flMeleeDelay = ReadFloat(setValue);
 		break;
 	case "_m_flBurstCount":
-		_m_flBurstCount = ReadFloat(strValue);
+		_m_flBurstCount = ReadFloat(setValue);
 		break;
 	case "_m_bShouldThrow":
-		_m_bShouldThrow = ReadBool(strValue);
+		_m_bShouldThrow = ReadBool(setValue);
 		break;
 	case "_m_flReloadTracker":
-		_m_flReloadTracker = ReadFloat(strValue);
+		_m_flReloadTracker = ReadFloat(setValue);
 		break;
 	case "m_bWeaponDrawn":
-		m_bWeaponDrawn = ReadBool(strValue);
+		m_bWeaponDrawn = ReadBool(setValue);
 		break;
 	case "m_flEyeHeight":
-		m_flEyeHeight = ReadFloat(strValue);
+		m_flEyeHeight = ReadFloat(setValue);
 		break;
 	case "m_sndSight":
-		m_sndSight = ReadString(strValue);
+		m_sndSight = ReadString(setValue);
 		break;
 	case "m_sndIdle":
-		m_sndIdle = ReadString(strValue);
+		m_sndIdle = ReadString(setValue);
 		break;
 	case "m_flIdleMin":
-		m_flIdleMin = ReadFloat(strValue);
+		m_flIdleMin = ReadFloat(setValue);
 		break;
 	case "m_flIdleMax":
-		m_flIdleMax = ReadFloat(strValue);
+		m_flIdleMax = ReadFloat(setValue);
 		break;
 	case "m_sndFootstep":
-		m_sndFootstep = ReadString(strValue);
+		m_sndFootstep = ReadString(setValue);
 		break;
 	case "m_sndChatter":
-		m_sndChatter = ReadString(strValue);
+		m_sndChatter = ReadString(setValue);
 		break;
 	case "m_sndChatterCombat":
-		m_sndChatterCombat = ReadString(strValue);
+		m_sndChatterCombat = ReadString(setValue);
 		break;
 	case "m_sndPain":
-		m_sndPain = ReadString(strValue);
+		m_sndPain = ReadString(setValue);
 		break;
 	case "m_sndMeleeAttack":
-		m_sndMeleeAttack = ReadString(strValue);
+		m_sndMeleeAttack = ReadString(setValue);
 		break;
 	case "m_sndMeleeAttackHit":
-		m_sndMeleeAttackHit = ReadString(strValue);
+		m_sndMeleeAttackHit = ReadString(setValue);
 		break;
 	case "m_sndMeleeAttackMiss":
-		m_sndMeleeAttackMiss = ReadString(strValue);
+		m_sndMeleeAttackMiss = ReadString(setValue);
 		break;
 	case "m_sndDeath":
-		m_sndDeath = ReadString(strValue);
+		m_sndDeath = ReadString(setValue);
 		break;
 	case "m_defSpecial1":
-		m_defSpecial1 = ReadString(strValue);
+		m_defSpecial1 = ReadString(setValue);
 		break;
 	case "m_flSpecial1Range":
-		m_flSpecial1Range = ReadFloat(strValue);
+		m_flSpecial1Range = ReadFloat(setValue);
 		break;
 	case "m_defSpecial2":
-		m_defSpecial2 = ReadString(strValue);
+		m_defSpecial2 = ReadString(setValue);
 		break;
 	case "m_flSpecial2Range":
-		m_flSpecial2Range = ReadFloat(strValue);
+		m_flSpecial2Range = ReadFloat(setValue);
 		break;
 	case "m_defRanged1":
-		m_defRanged1 = ReadString(strValue);
+		m_defRanged1 = ReadString(setValue);
 		break;
 	case "m_flRanged1Range":
-		m_flRanged1Range = ReadFloat(strValue);
+		m_flRanged1Range = ReadFloat(setValue);
 		break;
 	case "m_defRanged2":
-		m_defRanged2 = ReadString(strValue);
+		m_defRanged2 = ReadString(setValue);
 		break;
 	case "m_flRanged2Range":
-		m_flRanged2Range = ReadFloat(strValue);
+		m_flRanged2Range = ReadFloat(setValue);
 		break;
 	case "m_iNumProjectiles":
-		m_iNumProjectiles = ReadInt(strValue);
+		m_iNumProjectiles = ReadInt(setValue);
 		break;
 	case "m_flProjectileDelay":
-		m_flProjectileDelay = ReadFloat(strValue);
+		m_flProjectileDelay = ReadFloat(setValue);
 		break;
 	case "m_flProjectileSpread":
-		m_flProjectileSpread = ReadFloat(strValue);
+		m_flProjectileSpread = ReadFloat(setValue);
 		break;
 	case "m_flAttackCone":
-		m_flAttackCone = ReadFloat(strValue);
+		m_flAttackCone = ReadFloat(setValue);
 		break;
 	case "m_flAttackAccuracy":
-		m_flAttackAccuracy = ReadFloat(strValue);
+		m_flAttackAccuracy = ReadFloat(setValue);
 		break;
 	case "m_defMelee":
-		m_defMelee = ReadString(strValue);
+		m_defMelee = ReadString(setValue);
 		break;
 	case "m_flMeleeRange":
-		m_flMeleeRange = ReadFloat(strValue);
+		m_flMeleeRange = ReadFloat(setValue);
 		break;
 	case "m_sndRangedAttack":
-		m_sndRangedAttack = ReadString(strValue);
+		m_sndRangedAttack = ReadString(setValue);
 		break;
 	case "m_flReloadCount":
-		m_flReloadCount = ReadFloat(strValue);
+		m_flReloadCount = ReadFloat(setValue);
 		break;
 	case "m_flReloadDelay":
-		m_flReloadDelay = ReadFloat(strValue);
+		m_flReloadDelay = ReadFloat(setValue);
 		break;
 	case "m_sndReload":
-		m_sndReload = ReadString(strValue);
+		m_sndReload = ReadString(setValue);
 		break;
 	case "m_flReserveAmmo":
-		m_flReserveAmmo = ReadFloat(strValue);
+		m_flReserveAmmo = ReadFloat(setValue);
 		break;
 	case "m_sndRangedAttack2":
-		m_sndRangedAttack2 = ReadString(strValue);
+		m_sndRangedAttack2 = ReadString(setValue);
 		break;
 	case "m_bWeaponStartsDrawn":
-		m_bWeaponStartsDrawn = ReadBool(strValue);
+		m_bWeaponStartsDrawn = ReadBool(setValue);
 		break;
 	case "m_strBodyOnDraw":
-		m_strBodyOnDraw = ReadString(strValue);
+		m_strBodyOnDraw = ReadString(setValue);
 		break;
 	case "m_flWalkSpeed":
-		m_flWalkSpeed = ReadFloat(strValue);
+		m_flWalkSpeed = ReadFloat(setValue);
 		break;
 	case "m_flRunSpeed":
-		m_flRunSpeed = ReadFloat(strValue);
+		m_flRunSpeed = ReadFloat(setValue);
 		break;
 	case "m_flLeapDamage":
-		m_flLeapDamage = ReadFloat(strValue);
+		m_flLeapDamage = ReadFloat(setValue);
 		break;
 	case "m_bLeapAttacked":
-		m_bLeapAttacked = ReadBool(strValue);
+		m_bLeapAttacked = ReadBool(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(keyName, setValue);
 		break;
 	}
 }
@@ -670,6 +670,33 @@ ncMonster::AlertNearbyToSchedule(string scheduleType)
 	}
 }
 
+void
+ncMonster::AlertNearbyClassWithMindset(string scheduleType)
+{
+
+	/* iterate over all living things. */
+	for (entity w = world; (w = nextent(w));) {
+		if (w.takedamage == DAMAGE_NO)
+			continue;
+
+		if (w.classname != classname)
+			continue;
+
+		//ncMonsterLog("Alert! %s get %s", w.classname, m_eEnemy.classname);
+		ncMonster f = (ncMonster)w;
+
+		/* we shouldn't override this when they already got a target */
+		if (f.m_eEnemy != __NULL__) {
+			continue;
+		}
+
+		f.m_eEnemy = m_eEnemy;
+		f.m_mindset = scheduleType;
+		f.RouteClear();
+		f.CancelSchedule();
+	}
+}
+
 /* returns TRUE if 'enemy' should be considered a valid target for killing */
 bool
 ncMonster::IsValidEnemy(entity enny)
@@ -718,20 +745,46 @@ ncMonster::IsValidEnemy(entity enny)
 bool
 ncMonster::IsOnRoute(void)
 {
-	return (m_iNodes || m_pathTarget) && (GetState() == MONSTER_IDLE || GetState() == MONSTER_ALERT) ? true : false;
+	return (PathNodeCount() || m_pathTarget) && (GetState() == MONSTER_IDLE || GetState() == MONSTER_ALERT) ? true : false;
 }
 
 static bool
-ncMonster_TraceAgainsTarget(ncMonster monster, ncEntity target)
+ncMonster_TraceAgainsTarget(ncMonster monster, ncEntity targetEntity)
 {
-	traceline(monster.GetEyePos(), target.GetOrigin(), MOVE_NORMAL, monster);
+	vector hitLocation = monster.GetOrigin();
+	vector testCenter = targetEntity.GetOrigin();
 
-	/* we have line of sight with the player */
-	if (trace_fraction == 1.0f || trace_ent == target) {
-		return true;
+	traceline(hitLocation, testCenter, MOVE_NORMAL, monster);
+
+	if (trace_fraction == 1.0f || trace_ent == targetEntity) {
+		return (true);
 	}
 
-	return false;
+	traceline(hitLocation, testCenter + [15.0f, 15.0f, 0.0f], MOVE_NORMAL, monster);
+
+	if (trace_fraction == 1.0f || trace_ent == targetEntity) {
+		return (true);
+	}
+
+	traceline(hitLocation, testCenter + [-15.0f, -15.0f, 0.0f], MOVE_NORMAL, monster);
+
+	if (trace_fraction == 1.0f || trace_ent == targetEntity) {
+		return (true);
+	}
+
+	traceline(hitLocation, testCenter + [-15.0f, 15.0f, 0.0f], MOVE_NORMAL, monster);
+
+	if (trace_fraction == 1.0f || trace_ent == targetEntity) {
+		return (true);
+	}
+
+	traceline(hitLocation, testCenter + [15.0f, -15.0f, 0.0f], MOVE_NORMAL, monster);
+
+	if (trace_fraction == 1.0f || trace_ent == targetEntity) {
+		return (true);
+	}
+
+	return (false);
 }
 
 void
@@ -768,7 +821,7 @@ ncMonster::SeeThink(void)
 			vector tmp = vectorToAngles(anglesToForward(v_angle));
 			subblendfrac = tmp[0] / 90;
 			bonecontrol1 = lerp(bonecontrol1, m_flHeadYaw, frametime * 15.0f);	/* head turning */
-		}	
+		}
 	}
 
 	if (m_flSeeTime > time)
@@ -778,7 +831,7 @@ ncMonster::SeeThink(void)
 
 	/* a horde type monster always knows where the nearest player is */
 	if (m_iFlags & MSF_HORDE) {
-		if (!m_eEnemy || m_iNodes < 1i) {
+		if (!m_eEnemy || PathNodeCount() < 1i) {
 			m_eEnemy = ncMonster_FindClosestPlayer(this);
 
 			if (m_eEnemy) {
@@ -789,36 +842,37 @@ ncMonster::SeeThink(void)
 		return;
 	}
 
+	v_angle[0] = 0;
+
 	if (m_eEnemy) {
+		vector startPos = m_eEnemy.origin + m_eEnemy.view_ofs;
+		vector endPos = origin + view_ofs;
+		vector dirToEnemy = vectoangles(endPos - startPos);
+		v_angle[0] = dirToEnemy[0] * -1;
+
 		/* check if we should invalidate current enemy */
 		if (m_eEnemy.health <= 0) {
 			m_mindset = "";
 			MessageSchedule("DeadEnemy");
 			m_eEnemy = __NULL__;
 		} else if (IsValidEnemy(m_eEnemy)) {
-			/* only update 1/4th of a second */
-			if (m_flSeeTime > time)
-				return;
-
-			m_flSeeTime = time + 0.25f;
 			m_eLookAt = m_eEnemy;
 
 			/* see if we can trace our target, if yes, update our timestamp */
 			if (ncMonster_TraceAgainsTarget(this, (ncEntity) m_eEnemy) == true) {
-				m_flTrackingTime = time;
+				m_flTrackingTime = time + 5.0f;
 			}
 
 			/* if we haven't gotten a trace in 5 seconds, give up. */
-			if ((m_flTrackingTime + 5.0) > time) {
-				m_mindset = "";
-				if (isPlayer(m_eEnemy)) {
+			if (m_flTrackingTime < time) {
+				if (is.Player(m_eEnemy)) {
 					UseOutput(m_eEnemy, m_outputOnLostPlayerLOS);
 				} else {
 					UseOutput(m_eEnemy, m_outputOnLostEnemyLOS);
 				}
 
+				m_eLookAt = __NULL__;
 				MessageSchedule("OccludedEnemy");
-				m_eEnemy = __NULL__;
 			}
 		} else {
 			/* enemy is not valid anymore, reset it, clear route and search for new enemy */
@@ -827,7 +881,7 @@ ncMonster::SeeThink(void)
 			RouteToPosition(m_eEnemy.origin + (anglesToForward(angles) * -64));
 			m_flSequenceSpeed = GetWalkSpeed();
 
-			if (isPlayer(m_eEnemy)) {
+			if (is.Player(m_eEnemy)) {
 				UseOutput(m_eEnemy, m_outputOnLostPlayer);
 			} else {
 				UseOutput(m_eEnemy, m_outputOnLostEnemy);
@@ -839,6 +893,9 @@ ncMonster::SeeThink(void)
 			m_flSeeTime = 0;
 			MessageSchedule("LostEnemy");
 		}
+
+		/* prevent us from looking further this frame. */
+		return;
 	}
 
 	/* iterate through all players, monsters. */
@@ -857,21 +914,28 @@ ncMonster::SeeThink(void)
 		if (ncMonster_TraceAgainsTarget(this, (ncEntity)w) == true) {
 			/* check if 'w' could be a valid enemy */
 			if (IsValidEnemy(w) == true) {
-				if (m_eEnemy != w) {
+				if (m_eEnemy != m_eLookAt || !m_eLookAt) {
 					SeenEnemy((ncActor)w);
+
+					if (m_eEnemy) {
+						MessageSchedule("NewEnemy");
+					} else {
+						MessageSchedule("FoundEnemy");
+					}
+
 					m_eEnemy = m_eLookAt = w;
-					MessageSchedule("NewEnemy");
+
 					m_flTrackingTime = time;
 					_Alerted();
 					AlertNearby();
 
-					if (isPlayer(w)) {
+					if (is.Player(w)) {
 						UseOutput(m_eEnemy, m_outputOnFoundPlayer);
 					} else {
 						UseOutput(m_eEnemy, m_outputOnFoundEnemy);
 					}
 				}
-			} else if (isPlayer(w)) {
+			} else if (is.Player(w)) {
 				SeenPlayer((ncActor)w);
 
 				if (m_bMetPlayer == false) {
@@ -923,7 +987,7 @@ ncMonster::GetYawSpeed(void)
 void
 ncMonster::_LerpTurnToYaw(float turnYaw)
 {
-#if 0
+#if 1
 	input_angles[1] = v_angle[1] = angles[1] = turnYaw;
 #else
 	vector oldAngle = angles;
@@ -939,12 +1003,12 @@ ncMonster::_LerpTurnToYaw(float turnYaw)
 	ideal_yaw = turnYaw;
 	changeyaw();
 	angleDelta = angleDifference(oldAngle, angles);
-	
+
 	input_angles[1] = v_angle[1] = angles[1];
 
 	///printf("yawDiff: %f\n", angleDelta[1]);
 
-	if (fabs(angleDelta[1]) > 1.0f) {
+	if (fabs(angleDelta[1]) > 15.0f) {
 		/* wasn't turning before */
 		if (m_bTurning == false) {
 			AnimationRewind();
@@ -1036,7 +1100,7 @@ ncMonster::AttackMelee(void)
 	AttackMelee_AttackFlail(void)
 	{
 		ncActor targetEnt;
-	
+
 		if (distance(origin, m_eEnemy.origin) > m_flMeleeRange) {
 			return (false);
 		}
@@ -1076,7 +1140,7 @@ ncMonster::AttackMelee(void)
 
 	/* functional */
 	ScheduleThink(AttackMelee_AttackFlail, _m_flMeleeDelay);
-#endif 
+#endif
 	return (true);
 }
 
@@ -1095,7 +1159,7 @@ ncMonster::AttackRanged(void)
 {
 	static void AttackRanged_Throw(void)
 	{
-		self.nadeCookingTime = time;
+		self.m_weaponCookingTime = time;
 
 		for (int i = 0; i < m_iNumProjectiles; i++) {
 
@@ -1103,7 +1167,7 @@ ncMonster::AttackRanged(void)
 	}
 	static void AttackRanged_RangedSpecial(void)
 	{
-		self.nadeCookingTime = time;
+		self.m_weaponCookingTime = time;
 		ncMonsterLog("AttackRanged_RangedSpecial: %S", m_defRanged2);
 		PerformAttack(m_defRanged2);
 	}
@@ -1296,7 +1360,7 @@ ncMonster::ScriptedSequenceEnded(void)
 	   Because a monster may call a scripted_sequence here
 	   which THEN sets its killtarget to be monster that triggers
 	   the scripted_sequence.
-	   If that happens, the monster will then killtarget itself right after. */ 
+	   If that happens, the monster will then killtarget itself right after. */
 	if (STRING_SET(m_strSequenceKillTarget)) {
 		ncEntity findKT = (ncEntity)find(world, ::targetname, m_strSequenceKillTarget);
 
@@ -1313,7 +1377,7 @@ ncMonster::ScriptedSequenceEnded(void)
 
 	if (m_ssLast) {
 		scripted_sequence seq = (scripted_sequence)m_ssLast;
-		seq.m_iValue = TRUE;
+		seq.m_triggerValue = TRUE;
 	}
 
 	/* we're clearing m_strRouteEnded early, because m_strRouteEnded
@@ -1430,7 +1494,7 @@ ncMonster::WalkRoute(void)
 		return;
 	}
 
-	if (m_iNodes > 0i) {
+	if (PathNodeCount() > 0i) {
 		wishAngle = GetRouteDirection();
 		ideal_yaw = wishAngle[1];
 
@@ -1685,7 +1749,7 @@ ncMonster::Physics(void)
 
 	/* HACK!!! */
 	if (!IsAlive()) {
-		processmodelevents(modelindex, frame, m_flBaseTime,
+		processmodelevents(modelindex, frame, m_modelEventTime,
 			frame1time, HandleAnimEvent);
 		HandleThink();
 		return;
@@ -1747,7 +1811,7 @@ ncMonster::Physics(void)
 		m_iFlags &= ~MSF_FALLING;
 	}
 
-	processmodelevents(modelindex, frame, m_flBaseTime,
+	processmodelevents(modelindex, frame, m_modelEventTime,
 		frame1time, HandleAnimEvent);
 	HandleThink();
 }
@@ -1833,7 +1897,7 @@ ncMonster::Pain(entity inflictor, entity attacker, int damage, vector dir,  vect
 		return;
 	}
 
-	if (attacker.classname == "player") {
+	if (is.Player(attacker)) {
 		if (STRING_SET(m_outputOnDamagedByPlayer)) {
 			UseOutput(attacker, m_outputOnDamagedByPlayer);
 		}
@@ -1960,7 +2024,6 @@ ncMonster::Death(entity inflictor, entity attacker, int damage, vector dir, vect
 	float actBackshot = GetDefAct("dieBackshot");
 	float actDeath = -1;
 
-
 	/* we were already dead before, so gib */
 	if (GetState() == MONSTER_DEAD) {
 		HasBeenGibbed();
@@ -2001,8 +2064,8 @@ ncMonster::Death(entity inflictor, entity attacker, int damage, vector dir, vect
 
 	AnimPlay(actDeath);
 
-	if (autocvar(g_forceRagdolls, 0) || GetDefBool("ragdoll") == true) {
-		BodyQue_Spawn((ncActor)this, frame);
+	if (FORCE_RAGDOLLS || GetDefBool("ragdoll") == true) {
+		BodyQue_SpawnRagdoll((ncActor)this, frame);
 		Disappear();
 		SetState(MONSTER_DEAD);
 	} else {
@@ -2106,7 +2169,6 @@ ncMonster::Respawn(void)
 	m_iFlags = 0x0;
 	m_flyOffset = GetSpawnFloat("fly_offset");
 	m_flAnimTime = 0.0f;
-	EnableBleeding();
 	SetSize(GetSpawnVector("mins"), GetSpawnVector("maxs"));
 	SetSkin(GetSpawnFloat("skin"));
 	customphysics = Physics;
@@ -2260,7 +2322,7 @@ ncMonster::Input( entity entityActivator, string inputName, string dataField )
 			}
 
 		} else {
-			NSError("'PlaySequence' without animation sequence, blame %S (%d)", entityActivator.classname, num_for_edict(entityActivator));
+			ncError("'PlaySequence' without animation sequence, blame %S (%d)", entityActivator.classname, num_for_edict(entityActivator));
 		}
 		break;
 	case "FindCoverFromEnemy":
@@ -2278,17 +2340,32 @@ ncMonster::Input( entity entityActivator, string inputName, string dataField )
 	case "SetDesiredSchedule":
 		m_mindset = dataField;
 		break;
+	case "AlertNearbyClassWithMindset":
+		m_mindset = dataField;
+		AlertNearbyClassWithMindset(dataField);
+		break;
 	case "AlertNearbyToSchedule":
 		m_mindset = dataField;
 		AlertNearbyToSchedule(dataField);
 		break;
 	case "WalkToTarget":
 		m_flSequenceSpeed = GetWalkSpeed();
-		RouteToPosition(m_activeSchedule.GetTarget().origin);
+		vector walkToPos = ncNavInfo::FindEmptySpotNearPosition(this, m_activeSchedule.GetTarget().origin, stof(dataField), 128.0f);
+		RouteToPosition(walkToPos);
 		break;
 	case "RunToTarget":
 		m_flSequenceSpeed = GetRunSpeed();
-		RouteToPosition(m_activeSchedule.GetTarget().origin);
+		vector runToPos = ncNavInfo::FindEmptySpotNearPosition(this, m_activeSchedule.GetTarget().origin, stof(dataField), 128.0f);
+		RouteToPosition(runToPos);
+		break;
+	case "RunToEnemyWithinRadius":
+		vector coverPos = ncNavInfo::FindEmptySpotNearPosition(this, m_eEnemy.origin, stof(dataField), 2024.0f);
+
+		if (vlen(coverPos) > 0.0f) {
+			RouteToPosition(coverPos);
+		} else {
+			CancelSchedule();
+		}
 		break;
 	case "CrouchToTarget":
 		m_flSequenceSpeed = GetDefFloat("speed_crouch");
@@ -2299,7 +2376,7 @@ ncMonster::Input( entity entityActivator, string inputName, string dataField )
 		RouteToPosition(m_activeSchedule.GetTarget().origin);
 		break;
 	case "WaitForMovement":
-		if (m_iNodes > 0i && m_activeSchedule) {
+		if (PathNodeCount() > 0i && m_activeSchedule) {
 			m_activeSchedule.m_bProgressOnMovement = true;
 			m_activeSchedule.ReleaseThink();
 		}
@@ -2332,6 +2409,10 @@ ncMonster::Input( entity entityActivator, string inputName, string dataField )
 	case "TurnToEnemy":
 		vector turnTo = vectoangles(m_eEnemy.origin - origin);
 		ideal_yaw = turnTo[1];
+		break;
+	case "TurnToRandomYaw":
+		float randomYaw = random(45.0f,180.0f) - 90.0f;
+		ideal_yaw += randomYaw;
 		break;
 	case "AttackMelee1":
 		AnimationRewind();
@@ -2370,207 +2451,207 @@ ncMonster::_ChaseAfterSpawn(void)
 }
 
 void
-ncMonster::SpawnKey(string strKey, string strValue)
+ncMonster::SpawnKey(string keyName, string setValue)
 {
-	switch (strKey) {
+	switch (keyName) {
 	case "OnDamaged":
-		m_outputOnDamaged = PrepareOutput(m_outputOnDamaged, strValue);
+		m_outputOnDamaged = PrepareOutput(m_outputOnDamaged, setValue);
 		break;
 	case "OnDeath":
-		m_outputOnDeath = PrepareOutput(m_outputOnDeath, strValue);
+		m_outputOnDeath = PrepareOutput(m_outputOnDeath, setValue);
 		break;
 	case "OnHalfHealth":
-		m_outputOnHalfHealth = PrepareOutput(m_outputOnHalfHealth, strValue);
+		m_outputOnHalfHealth = PrepareOutput(m_outputOnHalfHealth, setValue);
 		break;
 	case "OnHearPlayer":
-		m_outputOnHearPlayer = PrepareOutput(m_outputOnHearPlayer, strValue);
+		m_outputOnHearPlayer = PrepareOutput(m_outputOnHearPlayer, setValue);
 		break;
 	case "OnFoundEnemy":
-		m_outputOnFoundEnemy = PrepareOutput(m_outputOnFoundEnemy, strValue);
+		m_outputOnFoundEnemy = PrepareOutput(m_outputOnFoundEnemy, setValue);
 		break;
 	case "OnLostEnemy":
-		m_outputOnLostEnemy = PrepareOutput(m_outputOnLostEnemy, strValue);
+		m_outputOnLostEnemy = PrepareOutput(m_outputOnLostEnemy, setValue);
 		break;
 	case "OnLostEnemyLOS":
-		m_outputOnLostEnemyLOS = PrepareOutput(m_outputOnLostEnemyLOS, strValue);
+		m_outputOnLostEnemyLOS = PrepareOutput(m_outputOnLostEnemyLOS, setValue);
 		break;
 	case "OnFoundPlayer":
-		m_outputOnFoundPlayer = PrepareOutput(m_outputOnFoundPlayer, strValue);
+		m_outputOnFoundPlayer = PrepareOutput(m_outputOnFoundPlayer, setValue);
 		break;
 	case "OnLostPlayer":
-		m_outputOnLostPlayer = PrepareOutput(m_outputOnLostPlayer, strValue);
+		m_outputOnLostPlayer = PrepareOutput(m_outputOnLostPlayer, setValue);
 		break;
 	case "OnLostPlayerLOS":
-		m_outputOnLostPlayerLOS = PrepareOutput(m_outputOnLostPlayerLOS, strValue);
+		m_outputOnLostPlayerLOS = PrepareOutput(m_outputOnLostPlayerLOS, setValue);
 		break;
 	case "OnDamagedByPlayer":
-		m_outputOnDamagedByPlayer = PrepareOutput(m_outputOnDamagedByPlayer, strValue);
+		m_outputOnDamagedByPlayer = PrepareOutput(m_outputOnDamagedByPlayer, setValue);
 		break;
 	case "OnGreetPlayer":
-		m_outputOnGreetPlayer = PrepareOutput(m_outputOnGreetPlayer, strValue);
+		m_outputOnGreetPlayer = PrepareOutput(m_outputOnGreetPlayer, setValue);
 		break;
 	/* The legacy GoldSrc trigger condition system */
 	case "TriggerCondition":
-		m_iTriggerCondition = ReadInt(strValue);
+		m_iTriggerCondition = ReadInt(setValue);
 		break;
 	case "TriggerTarget":
-		m_strTriggerTarget = ReadString(strValue);
+		m_strTriggerTarget = ReadString(setValue);
 		break;
 	/* entityDef related */
 	case "netname":	/* used for obituaries and debug info */
-		netname = ReadString(strValue);
+		netname = ReadString(setValue);
 		break;
 	case "eye_height":
-		m_flEyeHeight = ReadFloat(strValue);
+		m_flEyeHeight = ReadFloat(setValue);
 		break;
 	case "snd_sight":
-		m_sndSight = ReadString(strValue);
+		m_sndSight = ReadString(setValue);
 		break;
 	case "snd_idle":
-		m_sndIdle = ReadString(strValue);
+		m_sndIdle = ReadString(setValue);
 		break;
 	case "idle_min": /* used for idle sound timer */
-		m_flIdleMin = ReadFloat(strValue);
+		m_flIdleMin = ReadFloat(setValue);
 		break;
 	case "idle_max": /* ditto */
-		m_flIdleMax = ReadFloat(strValue);
+		m_flIdleMax = ReadFloat(setValue);
 		break;
 	case "snd_footstep":
-		m_sndFootstep = ReadString(strValue);
+		m_sndFootstep = ReadString(setValue);
 		break;
 	case "snd_chatter":
-		m_sndChatter = ReadString(strValue);
+		m_sndChatter = ReadString(setValue);
 		break;
 	case "snd_chatter_combat":
-		m_sndChatterCombat = ReadString(strValue);
+		m_sndChatterCombat = ReadString(setValue);
 		break;
 	case "snd_pain":
-		m_sndPain = ReadString(strValue);
+		m_sndPain = ReadString(setValue);
 		break;
 	case "snd_death":
-		m_sndDeath = ReadString(strValue);
+		m_sndDeath = ReadString(setValue);
 		break;
 	case "def_melee":	/* melee attack information */
 	case "def_attack_melee":
-		m_defMelee = ReadString(strValue);
+		m_defMelee = ReadString(setValue);
 		break;
 	case "attack_melee_range":
 	case "melee_range":  /* Doom 3 compat */
-		m_flMeleeRange = ReadFloat(strValue);
+		m_flMeleeRange = ReadFloat(setValue);
 		break;
 	case "snd_melee_attack":
-		m_sndMeleeAttack = ReadString(strValue);
+		m_sndMeleeAttack = ReadString(setValue);
 		break;
 	case "snd_melee_attack_hit":
-		m_sndMeleeAttackHit = ReadString(strValue);
+		m_sndMeleeAttackHit = ReadString(setValue);
 		break;
 	case "snd_melee_attack_miss":
-		m_sndMeleeAttackMiss = ReadString(strValue);
+		m_sndMeleeAttackMiss = ReadString(setValue);
 		break;
 	case "def_attack_ranged": /* primary ranged attack */
 	case "def_attack_ranged_1":
-		m_defRanged1 = ReadString(strValue);
+		m_defRanged1 = ReadString(setValue);
 		break;
 	case "attack_ranged1_range":
 	case "attack_ranged_range":
 	case "ranged_range":
-		m_flRanged1Range = ReadFloat(strValue);
+		m_flRanged1Range = ReadFloat(setValue);
 		break;
 	case "def_attack_ranged_2": /* special ranged attack */
-		m_defRanged2 = ReadString(strValue);
+		m_defRanged2 = ReadString(setValue);
 		break;
 	case "attack_ranged2_range":
 	case "ranged2_range":
-		m_flRanged2Range = ReadFloat(strValue);
+		m_flRanged2Range = ReadFloat(setValue);
 		break;
 	case "snd_ranged_attack":
-		m_sndRangedAttack = ReadString(strValue);
+		m_sndRangedAttack = ReadString(setValue);
 		break;
 	case "reload_count": /* how many ranged attacks until reload */
-		m_flReloadCount = ReadFloat(strValue);
+		m_flReloadCount = ReadFloat(setValue);
 		break;
 	case "reload_delay": /* time between reloads */
-		m_flReloadDelay = ReadFloat(strValue);
+		m_flReloadDelay = ReadFloat(setValue);
 		break;
 	case "snd_reload":
-		m_sndReload = ReadString(strValue);
+		m_sndReload = ReadString(setValue);
 		break;
 	case "reserve_ammo":
-		m_flReserveAmmo = ReadFloat(strValue);
+		m_flReserveAmmo = ReadFloat(setValue);
 		break;
 	case "def_attack_special":
 	case "def_attack_special_1":
-		m_defSpecial1 = ReadString(strValue);
+		m_defSpecial1 = ReadString(setValue);
 		break;
 	case "attack_special1_range":
 	case "attack_special_range":
 	case "special1_range":
-		m_flSpecial1Range = ReadFloat(strValue);
+		m_flSpecial1Range = ReadFloat(setValue);
 		break;
 	case "def_attack_special_2": /* projectile */
-		m_defSpecial2 = ReadString(strValue);
+		m_defSpecial2 = ReadString(setValue);
 		break;
 	case "attack_special2_range":
 	case "special2_range":
-		m_flSpecial2Range = ReadFloat(strValue);
+		m_flSpecial2Range = ReadFloat(setValue);
 		break;
 	case "num_projectiles":
-		m_iNumProjectiles = ReadInt(strValue);
+		m_iNumProjectiles = ReadInt(setValue);
 		break;
 	case "projectile_spread":
-		m_flProjectileSpread = ReadFloat(strValue);
+		m_flProjectileSpread = ReadFloat(setValue);
 		break;
 	case "projectile_delay":
-		m_flProjectileDelay = ReadFloat(strValue);
+		m_flProjectileDelay = ReadFloat(setValue);
 		break;
 	case "attack_cone":
-		m_flAttackCone = ReadFloat(strValue);
+		m_flAttackCone = ReadFloat(setValue);
 		break;
 	case "attack_accuracy": /* affects ranged accuracy */
-		m_flAttackAccuracy = ReadFloat(strValue);
+		m_flAttackAccuracy = ReadFloat(setValue);
 		break;
 	case "weapon_drawn":
-		m_bWeaponStartsDrawn = ReadBool(strValue);
+		m_bWeaponStartsDrawn = ReadBool(setValue);
 		break;
 	case "body_on_draw":
-		m_strBodyOnDraw = ReadString(strValue);
+		m_strBodyOnDraw = ReadString(setValue);
 		break;
 	case "speed_walk":
-		m_flWalkSpeed = ReadFloat(strValue);
+		m_flWalkSpeed = ReadFloat(setValue);
 		break;
 	case "speed_run":
-		m_flRunSpeed = ReadFloat(strValue);
+		m_flRunSpeed = ReadFloat(setValue);
 		break;
 	case "team":
-		m_iAlliance = ReadInt(strValue);
+		m_iAlliance = ReadInt(setValue);
 		break;
 	case "leap_damage":
-		m_flLeapDamage = ReadFloat(strValue);
+		m_flLeapDamage = ReadFloat(setValue);
 		break;
 	/* simple tweaks */
 	case "dead":
-		_m_bStartDead = ReadBool(strValue);
+		_m_bStartDead = ReadBool(setValue);
 		break;
 	case "frame":
-		_m_flFrame = ReadFloat(strValue);
+		_m_flFrame = ReadFloat(setValue);
 		break;
 	case "skin":
-		m_flSkin = ReadFloat(strValue);
+		m_flSkin = ReadFloat(setValue);
 		break;
 	case "sequence":
-		m_flForceSequence = ReadFloat(strValue);
+		m_flForceSequence = ReadFloat(setValue);
 		break;
 	case "fly_offset":
-		m_flyOffset = ReadFloat(strValue);
+		m_flyOffset = ReadFloat(setValue);
 		break;
 	case "use_nav":
-		m_usesNav = ReadBool(strValue);
+		m_usesNav = ReadBool(setValue);
 		break;
 	case "fireFromHead":
-		m_fireFromHead = ReadBool(strValue);
+		m_fireFromHead = ReadBool(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(keyName, setValue);
 		break;
 	}
 }
@@ -2600,20 +2681,20 @@ ncMonster::EvaluateEntity(void)
 	EVALUATE_FIELD(skin, MONFL_CHANGED_SKINHEALTH)
 	EVALUATE_FIELD(health, MONFL_CHANGED_SKINHEALTH)
 	EVALUATE_FIELD(effects, MONFL_CHANGED_EFFECTS)
-	EVALUATE_FIELD(m_iBody, MONFL_CHANGED_BODY)
+	EVALUATE_FIELD(m_geomsetField, MONFL_CHANGED_BODY)
 	EVALUATE_FIELD(scale, MONFL_CHANGED_SCALE)
-	EVALUATE_VECTOR(m_vecAxialScale, 0, MONFL_CHANGED_SCALE)
-	EVALUATE_VECTOR(m_vecAxialScale, 1, MONFL_CHANGED_SCALE)
-	EVALUATE_VECTOR(m_vecAxialScale, 2, MONFL_CHANGED_SCALE)
+	EVALUATE_VECTOR(m_axialScale, 0, MONFL_CHANGED_SCALE)
+	EVALUATE_VECTOR(m_axialScale, 1, MONFL_CHANGED_SCALE)
+	EVALUATE_VECTOR(m_axialScale, 2, MONFL_CHANGED_SCALE)
 	EVALUATE_VECTOR(velocity, 0, MONFL_CHANGED_VELOCITY)
 	EVALUATE_VECTOR(velocity, 1, MONFL_CHANGED_VELOCITY)
 	EVALUATE_VECTOR(velocity, 2, MONFL_CHANGED_VELOCITY)
-	EVALUATE_FIELD(m_iRenderMode, MONFL_CHANGED_RENDERMODE)
-	EVALUATE_FIELD(m_iRenderFX, MONFL_CHANGED_RENDERMODE)
-	EVALUATE_VECTOR(m_vecRenderColor, 0, MONFL_CHANGED_RENDERCOLOR)
-	EVALUATE_VECTOR(m_vecRenderColor, 1, MONFL_CHANGED_RENDERCOLOR)
-	EVALUATE_VECTOR(m_vecRenderColor, 2, MONFL_CHANGED_RENDERCOLOR)
-	EVALUATE_FIELD(m_flRenderAmt, MONFL_CHANGED_RENDERAMT)
+	EVALUATE_FIELD(m_renderMode, MONFL_CHANGED_RENDERMODE)
+	EVALUATE_FIELD(m_renderFX, MONFL_CHANGED_RENDERMODE)
+	EVALUATE_VECTOR(m_renderColor, 0, MONFL_CHANGED_RENDERCOLOR)
+	EVALUATE_VECTOR(m_renderColor, 1, MONFL_CHANGED_RENDERCOLOR)
+	EVALUATE_VECTOR(m_renderColor, 2, MONFL_CHANGED_RENDERCOLOR)
+	EVALUATE_FIELD(m_renderAmount, MONFL_CHANGED_RENDERAMT)
 	EVALUATE_FIELD(bonecontrol1, MONFL_CHANGED_HEADYAW)
 	EVALUATE_FIELD(subblendfrac, MONFL_CHANGED_HEADYAW)
 	EVALUATE_FIELD(frame1time, MONFL_CHANGED_HEADYAW)
@@ -2658,20 +2739,20 @@ ncMonster::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_FLOAT(skin, MONFL_CHANGED_SKINHEALTH)
 	SENDENTITY_FLOAT(health, MONFL_CHANGED_SKINHEALTH)
 	SENDENTITY_FLOAT(effects, MONFL_CHANGED_EFFECTS)
-	SENDENTITY_SHORT(m_iBody, MONFL_CHANGED_BODY)
+	SENDENTITY_SHORT(m_geomsetField, MONFL_CHANGED_BODY)
 	SENDENTITY_FLOAT(scale, MONFL_CHANGED_SCALE)
-	SENDENTITY_FLOAT(m_vecAxialScale[0], MONFL_CHANGED_SCALE)
-	SENDENTITY_FLOAT(m_vecAxialScale[1], MONFL_CHANGED_SCALE)
-	SENDENTITY_FLOAT(m_vecAxialScale[2], MONFL_CHANGED_SCALE)
+	SENDENTITY_FLOAT(m_axialScale[0], MONFL_CHANGED_SCALE)
+	SENDENTITY_FLOAT(m_axialScale[1], MONFL_CHANGED_SCALE)
+	SENDENTITY_FLOAT(m_axialScale[2], MONFL_CHANGED_SCALE)
 	SENDENTITY_COORD(velocity[0], MONFL_CHANGED_VELOCITY)
 	SENDENTITY_COORD(velocity[1], MONFL_CHANGED_VELOCITY)
 	SENDENTITY_COORD(velocity[2], MONFL_CHANGED_VELOCITY)
-	SENDENTITY_BYTE(m_iRenderMode, MONFL_CHANGED_RENDERMODE)
-	SENDENTITY_BYTE(m_iRenderFX, MONFL_CHANGED_RENDERMODE)
-	SENDENTITY_BYTE(m_vecRenderColor[0], MONFL_CHANGED_RENDERCOLOR)
-	SENDENTITY_BYTE(m_vecRenderColor[1], MONFL_CHANGED_RENDERCOLOR)
-	SENDENTITY_BYTE(m_vecRenderColor[2], MONFL_CHANGED_RENDERCOLOR)
-	SENDENTITY_BYTE(m_flRenderAmt, MONFL_CHANGED_RENDERAMT)
+	SENDENTITY_BYTE(m_renderMode, MONFL_CHANGED_RENDERMODE)
+	SENDENTITY_BYTE(m_renderFX, MONFL_CHANGED_RENDERMODE)
+	SENDENTITY_BYTE(m_renderColor[0], MONFL_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_renderColor[1], MONFL_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_renderColor[2], MONFL_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_renderAmount, MONFL_CHANGED_RENDERAMT)
 	SENDENTITY_FLOAT(bonecontrol1, MONFL_CHANGED_HEADYAW)
 	SENDENTITY_FLOAT(subblendfrac, MONFL_CHANGED_HEADYAW)
 	SENDENTITY_FLOAT(frame1time, MONFL_CHANGED_HEADYAW)
@@ -2725,20 +2806,20 @@ ncMonster::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_FLOAT(skin, MONFL_CHANGED_SKINHEALTH)
 	READENTITY_FLOAT(health, MONFL_CHANGED_SKINHEALTH)
 	READENTITY_FLOAT(effects, MONFL_CHANGED_EFFECTS)
-	READENTITY_SHORT(m_iBody, MONFL_CHANGED_BODY)
+	READENTITY_SHORT(m_geomsetField, MONFL_CHANGED_BODY)
 	READENTITY_FLOAT(scale, MONFL_CHANGED_SCALE)
-	READENTITY_FLOAT(m_vecAxialScale[0], MONFL_CHANGED_SCALE)
-	READENTITY_FLOAT(m_vecAxialScale[1], MONFL_CHANGED_SCALE)
-	READENTITY_FLOAT(m_vecAxialScale[2], MONFL_CHANGED_SCALE)
+	READENTITY_FLOAT(m_axialScale[0], MONFL_CHANGED_SCALE)
+	READENTITY_FLOAT(m_axialScale[1], MONFL_CHANGED_SCALE)
+	READENTITY_FLOAT(m_axialScale[2], MONFL_CHANGED_SCALE)
 	READENTITY_COORD(velocity[0], MONFL_CHANGED_VELOCITY)
 	READENTITY_COORD(velocity[1], MONFL_CHANGED_VELOCITY)
 	READENTITY_COORD(velocity[2], MONFL_CHANGED_VELOCITY)
-	READENTITY_BYTE(m_iRenderMode, MONFL_CHANGED_RENDERMODE)
-	READENTITY_BYTE(m_iRenderFX, MONFL_CHANGED_RENDERMODE)
-	READENTITY_BYTE(m_vecRenderColor[0], MONFL_CHANGED_RENDERCOLOR)
-	READENTITY_BYTE(m_vecRenderColor[1], MONFL_CHANGED_RENDERCOLOR)
-	READENTITY_BYTE(m_vecRenderColor[2], MONFL_CHANGED_RENDERCOLOR)
-	READENTITY_BYTE(m_flRenderAmt, MONFL_CHANGED_RENDERAMT)
+	READENTITY_BYTE(m_renderMode, MONFL_CHANGED_RENDERMODE)
+	READENTITY_BYTE(m_renderFX, MONFL_CHANGED_RENDERMODE)
+	READENTITY_BYTE(m_renderColor[0], MONFL_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_renderColor[1], MONFL_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_renderColor[2], MONFL_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_renderAmount, MONFL_CHANGED_RENDERAMT)
 	READENTITY_FLOAT(bonecontrol1, MONFL_CHANGED_HEADYAW)
 	READENTITY_FLOAT(subblendfrac, MONFL_CHANGED_HEADYAW)
 	READENTITY_FLOAT(frame1time, MONFL_CHANGED_HEADYAW)
@@ -2810,11 +2891,11 @@ ncMonster_AlertEnemyAlliance(vector pos, float radius, int alliance)
 
 #if 1
 	if (autocvar_ai_debugAlerts)
-		NSLog("AI alert from %v with radius %f and alliance %i", pos, radius, alliance);
+		ncLog("AI alert from %v with radius %f and alliance %i", pos, radius, alliance);
 
 	/* always check for the fastest-to-check attributes first here */
 	for (entity w = world; (w = nextent(w));) {
-		if (isAI(w) == false) {
+		if (is.AI(w) == false) {
 			continue;
 		}
 
@@ -2823,21 +2904,21 @@ ncMonster_AlertEnemyAlliance(vector pos, float radius, int alliance)
 		/* they already got a target of some kind */
 		if (f.m_eEnemy) {
 			if (autocvar_ai_debugAlerts)
-				NSLog("\t%S already has a target", w.classname);
+				ncLog("\t%S already has a target", w.classname);
 			continue;
 		}
 
 		/* if they're our friend... ignore*/
 		if (f.IsFriend(alliance)) {
 			if (autocvar_ai_debugAlerts)
-				NSLog("\t%S is friend of alliance %i", w.classname, alliance);
+				ncLog("\t%S is friend of alliance %i", w.classname, alliance);
 			continue;
 		}
 
 		/* if the monster is dead... ignore */
 		if (f.IsAlive() == false) {
 			if (autocvar_ai_debugAlerts)
-				NSLog("\t%S is dead, cannot be alerted", w.classname);
+				ncLog("\t%S is dead, cannot be alerted", w.classname);
 			continue;
 		}
 
@@ -2847,7 +2928,7 @@ ncMonster_AlertEnemyAlliance(vector pos, float radius, int alliance)
 		}
 
 		if (autocvar_ai_debugAlerts) {
-			NSLog("\twe're alerting %S to go to %v", w.classname, pos);
+			ncLog("\twe're alerting %S to go to %v", w.classname, pos);
 		}
 
 		/* we've heard a noise. investigate the location */
@@ -2867,7 +2948,7 @@ ncMonster_FindClosestPlayer(entity target)
 
 	bestdist = 9999999;
 
-	for (entity e = world; (e = find(e, classname, "player"));) {
+	for (entity e = world; (e = next.Player(e));) {
 		/* hack: don't ever return dead players. they're invisible. */
 		if (t.IsValidEnemy(e) == false) {
 			continue;

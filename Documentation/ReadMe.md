@@ -21,7 +21,11 @@ If you're looking for a similar project for vanilla id Tech 2 (Quake, QuakeWorld
 
 ![](table_edit.png) [Creating Items](@ref ncItem)
 
-![](page_code.png) [Writing Game Rules](@ref ncGameRules)
+![](map_edit.png) [Creating Levels](@ref radiant)
+
+![](page_code.png) [Writing Game Rules](@ref ncRuleDelegate)
+
+![](plugin_go.png) [Writing Addons](@ref ncAddonDelegate)
 
 
 ## Contributing

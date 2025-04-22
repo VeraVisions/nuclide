@@ -264,7 +264,7 @@ prop_vehicle_driveable_wheel::Bounce(vector normal)
 	float flStregth = vlen((velocity * normal) * normal);
 
 	if (flStregth > 96) {
-		Sound_Play(vehParent, CHAN_VOICE, "prop_vehicle_driveable.bounce");
+		SoundDef_Play(vehParent, CHAN_VOICE, "prop_vehicle_driveable.bounce");
 	}
 #endif
 }
@@ -403,7 +403,7 @@ prop_vehicle_driveable_wheel::Accel(float flMoveTime, float m_flTurn)
 		/* test if this car is skidding */
 		float skid = (velocity * v_right);
 		if ( fabs(skid) > vehParent.m_flSkidSpeed ) {
-			vehParent.vv_flags |= VEH_SKIDDING;
+			vehParent.m_nuclideFlags |= VEH_SKIDDING;
 		}
 
 		/* nuke sideways velocity. if a wheel is off the ground this probably
@@ -634,7 +634,7 @@ prop_vehicle_driveable::RunVehiclePhysics(void)
 		angles[2] = bound (-45, angles[2], 45);
 	}
 
-	vv_flags &= ~VEH_SKIDDING;
+	m_nuclideFlags &= ~VEH_SKIDDING;
 
 	angles = fixAngle(angles);
 
@@ -941,6 +941,6 @@ prop_vehicle_driveable::Spawned(void)
 	customphysics = Physics;
 
 #ifdef SERVER
-	Sound_Precache("prop_vehicle_driveable.bounce");
+	precache.Sound("prop_vehicle_driveable.bounce");
 #endif
 }

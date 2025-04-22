@@ -55,20 +55,20 @@ trigger_endround::Save(float handle)
 }
 
 void
-trigger_endround::Restore(string strKey, string strValue)
+trigger_endround::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-trigger_endround::SpawnKey(string strKey, string strValue)
+trigger_endround::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 		break;
 	}
 }

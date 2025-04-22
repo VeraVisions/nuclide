@@ -40,7 +40,7 @@ Music_ParseTrack(string parm)
 
 	track = stof(parm);
 	path = Music_GetPath(track);
-	NSLog("^2Music_ParseTrack:^7 Single track %i from %s", track, path);
+	ncLog("^2Music_ParseTrack:^7 Single track %i from %s", track, path);
 	localcmd(sprintf("music %s -\n", path));
 }
 
@@ -53,7 +53,7 @@ Music_ParseLoop(string parm)
 
 	track = stof(parm);
 	path = Music_GetPath(track);
-	NSLog("^2Music_ParseLoop:^7 Looping track %i from %s", track, path);
+	ncLog("^2Music_ParseLoop:^7 Looping track %i from %s", track, path);
 	localcmd(sprintf("music %s\n", path));
 }
 

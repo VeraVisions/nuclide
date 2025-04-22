@@ -83,17 +83,17 @@ info_waypoint::info_waypoint(void)
 
 #ifdef SERVER
 void
-info_waypoint::SpawnKey(string strKey, string strValue)
+info_waypoint::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "image":
-		m_strIcon = strValue;
+		m_strIcon = setValue;
 		break;
 	case "text":
-		m_strText = strValue;
+		m_strText = setValue;
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
@@ -106,17 +106,17 @@ info_waypoint::Save(float handle)
 }
 
 void
-info_waypoint::Restore(string strKey, string strValue)
+info_waypoint::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_strIcon":
-		m_strIcon = ReadString(strValue);
+		m_strIcon = ReadString(setValue);
 		break;
 	case "m_strText":
-		m_strText = ReadString(strValue);
+		m_strText = ReadString(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 

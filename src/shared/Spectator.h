@@ -111,9 +111,9 @@ public:
 #endif
 
 private:
-	PREDICTED_FLOAT(spec_ent)
-	PREDICTED_FLOAT(spec_flags)
-	ncSpectatorMode_t spec_mode; ncSpectatorMode_t spec_mode_net;
+	PREDICTED_FLOAT(m_spectatingEntity)
+	PREDICTED_FLOAT(m_spectatingFlags)
+	ncSpectatorMode_t m_spectatingMode; ncSpectatorMode_t m_spectatingMode_net;
 	float m_flDeathCam;
 	float m_flLastSpecTargetChange;
 	vector spec_org;

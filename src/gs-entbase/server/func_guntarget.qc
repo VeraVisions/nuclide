@@ -58,16 +58,16 @@ public:
 
 private:
 	float m_flSpeed;
-	string m_strOnDeath;
-	string m_strOnDeathLegacy;
+	string m_outputOnDeath;
+	string m_outputOnDeathLegacy;
 };
 
 void
 func_guntarget::func_guntarget(void)
 {
 	m_flSpeed = 100;
-	m_strOnDeath = __NULL__;
-	m_strOnDeathLegacy = __NULL__;
+	m_outputOnDeath = __NULL__;
+	m_outputOnDeathLegacy = __NULL__;
 }
 
 void
@@ -75,43 +75,43 @@ func_guntarget::Save(float handle)
 {
 	super::Save(handle);
 	SaveFloat(handle, "m_flSpeed", m_flSpeed);
-	SaveString(handle, "m_strOnDeath", m_strOnDeath);
-	SaveString(handle, "m_strOnDeathLegacy", m_strOnDeathLegacy);
+	SaveString(handle, "m_outputOnDeath", m_outputOnDeath);
+	SaveString(handle, "m_outputOnDeathLegacy", m_outputOnDeathLegacy);
 }
 
 void
-func_guntarget::Restore(string strKey, string strValue)
+func_guntarget::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_flSpeed":
-		m_flSpeed =  ReadFloat(strValue);
+		m_flSpeed =  ReadFloat(setValue);
 		break;
-	case "m_strOnDeath":
-		m_strOnDeath = ReadString(strValue);
+	case "m_outputOnDeath":
+		m_outputOnDeath = ReadString(setValue);
 		break;
-	case "m_strOnDeathLegacy":
-		m_strOnDeathLegacy = ReadString(strValue);
+	case "m_outputOnDeathLegacy":
+		m_outputOnDeathLegacy = ReadString(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-func_guntarget::SpawnKey(string strKey, string strValue)
+func_guntarget::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "speed":
-		m_flSpeed = stof(strValue);
+		m_flSpeed = stof(setValue);
 		break;
 	case "message":
-		m_strOnDeathLegacy = strValue;
+		m_outputOnDeathLegacy = setValue;
 		break;
 	case "OnDeath":
-		m_strOnDeath = PrepareOutput(m_strOnDeath, strValue);
+		m_outputOnDeath = PrepareOutput(m_outputOnDeath, setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
@@ -120,8 +120,8 @@ func_guntarget::Spawned(void)
 {
 	super::Spawned();
 
-	if (m_strOnDeath)
-		m_strOnDeath = CreateOutput(m_strOnDeath);
+	if (m_outputOnDeath)
+		m_outputOnDeath = CreateOutput(m_outputOnDeath);
 }
 
 void
@@ -197,15 +197,15 @@ func_guntarget::Death(entity inflictor, entity attacker, int damage, vector dir,
 {
 	Stop();
 
-	if (!m_strOnDeath && !m_strOnDeathLegacy) {
+	if (!m_outputOnDeath && !m_outputOnDeathLegacy) {
 		return;
 	}
 
-	if (!m_strOnDeathLegacy) {
-		UseOutput(attacker, m_strOnDeath);
+	if (!m_outputOnDeathLegacy) {
+		UseOutput(attacker, m_outputOnDeath);
 	} else {
 		entity a;
-		for (a = world; (a = find(a, ::targetname, m_strOnDeathLegacy));) {
+		for (a = world; (a = find(a, ::targetname, m_outputOnDeathLegacy));) {
 			ncEntity trigger = (ncEntity)a;
 			trigger.Trigger(attacker, TRIG_TOGGLE);
 		}
@@ -217,7 +217,7 @@ func_guntarget::Start(void)
 {
 	MakeVulnerable();
 	NextPath();
-	m_iValue = 0;
+	SetValue(0i);
 }
 
 void
@@ -226,7 +226,7 @@ func_guntarget::Stop(void)
 	MakeInvulnerable();
 	ClearVelocity();
 	ReleaseThink();
-	m_iValue = 1;
+	SetValue(1i);
 }
 
 void
@@ -234,16 +234,16 @@ func_guntarget::Trigger(entity act, triggermode_t state)
 {
 	switch (state) {
 	case TRIG_OFF:
-		m_iValue = 0;
+		SetValue(0i);
 		break;
 	case TRIG_ON:
-		m_iValue = 1;
+		SetValue(1i);
 		break;
 	default:
-		m_iValue = 1 - m_iValue;
+		SetValue(1i - GetValue(this));
 	}
 
-	if (m_iValue) {
+	if (GetValue(this)) {
 		Start();
 	} else {
 		Stop();

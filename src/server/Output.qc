@@ -22,11 +22,9 @@ ncOutput::TriggerOutput(void)
 
 	/* plug into all the inputs. */
 	if (m_strTarget == "!self") {
-		printf("AAAAAAAAAAAAAAAAA SELF!!!\n");
-		ourOwner.Input(m_eActivator, m_strInput, m_strData);
+		ourOwner.Input(ourOwner, m_strInput, m_strData);
 	} else if (m_strTarget == "!activator") {
-		ourActivator.Input(m_eActivator, m_strInput, m_strData);
-		printf("AAAAAAAAAAAAAAAAA ACTIVATOR!!!\n");
+		ourActivator.Input(ourActivator, m_strInput, m_strData);
 	} else {
 		for (entity f = world; (f = find(f, ::targetname, m_strTarget));) {
 			ncEntity trigger = (ncEntity)f;
@@ -48,8 +46,15 @@ void
 ncOutput::ScheduleOutput(entity activatorEnt)
 {
 	m_eActivator = activatorEnt;
-	think = TriggerOutput;
-	nextthink = time + m_flDelay;
+
+	if (m_flDelay > 0.0f || GetSpawnAge() == 0.0f) {
+		think = TriggerOutput;
+		nextthink = time + m_flDelay;
+	} else {
+		nextthink = 0.0f;
+		think = __NULL__;
+		TriggerOutput();
+	}
 }
 
 void
@@ -74,4 +79,11 @@ ncOutput::ncOutput(void)
 {
 	/* Make sure Respawn() will be called between rounds */
 	identity = 1;
+	m_eActivator = __NULL__;
+	m_strTarget =
+	m_strInput =
+	m_strData = __NULL__;
+	m_flDelay = 0.0f;
+	m_iCount = 0i;
+	m_iOldCount = 0i;
 }

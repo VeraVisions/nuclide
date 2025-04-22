@@ -71,13 +71,13 @@ public:
 
 private:
 	/* outputs */
-	string m_strOnMapSpawn;
-	string m_strOnNewGame;
-	string m_strOnLoadGame;
-	string m_strOnMapTransition;
-	string m_strOnBackgroundMap;
-	string m_strOnMultiNewMap;
-	string m_strOnMultiNewRound;
+	string m_outputOnMapSpawn;
+	string m_outputOnNewGame;
+	string m_outputOnLoadGame;
+	string m_outputOnMapTransition;
+	string m_outputOnBackgroundMap;
+	string m_outputOnMultiNewMap;
+	string m_outputOnMultiNewRound;
 
 	/* temporary */
 	int m_iFromSaveGame;
@@ -87,57 +87,57 @@ void
 logic_auto::logic_auto(void)
 {
 	m_iFromSaveGame = 0i;
-	m_strOnMapSpawn = __NULL__;
-	m_strOnNewGame = __NULL__;
-	m_strOnLoadGame = __NULL__;
-	m_strOnMapTransition = __NULL__;
-	m_strOnBackgroundMap = __NULL__;
-	m_strOnMultiNewMap = __NULL__;
-	m_strOnMultiNewRound = __NULL__;
+	m_outputOnMapSpawn = __NULL__;
+	m_outputOnNewGame = __NULL__;
+	m_outputOnLoadGame = __NULL__;
+	m_outputOnMapTransition = __NULL__;
+	m_outputOnBackgroundMap = __NULL__;
+	m_outputOnMultiNewMap = __NULL__;
+	m_outputOnMultiNewRound = __NULL__;
 }
 
 void
 logic_auto::Save(float handle)
 {
 	super::Save(handle);
-	SaveString(handle, "m_strOnMapSpawn", m_strOnMapSpawn);
-	SaveString(handle, "m_strOnNewGame", m_strOnNewGame);
-	SaveString(handle, "m_strOnLoadGame", m_strOnLoadGame);
-	SaveString(handle, "m_strOnMapTransition", m_strOnMapTransition);
-	SaveString(handle, "m_strOnBackgroundMap", m_strOnBackgroundMap);
-	SaveString(handle, "m_strOnMultiNewMap", m_strOnMultiNewMap);
-	SaveString(handle, "m_strOnMultiNewRound", m_strOnMultiNewRound);
+	SaveString(handle, "m_outputOnMapSpawn", m_outputOnMapSpawn);
+	SaveString(handle, "m_outputOnNewGame", m_outputOnNewGame);
+	SaveString(handle, "m_outputOnLoadGame", m_outputOnLoadGame);
+	SaveString(handle, "m_outputOnMapTransition", m_outputOnMapTransition);
+	SaveString(handle, "m_outputOnBackgroundMap", m_outputOnBackgroundMap);
+	SaveString(handle, "m_outputOnMultiNewMap", m_outputOnMultiNewMap);
+	SaveString(handle, "m_outputOnMultiNewRound", m_outputOnMultiNewRound);
 }
 
 void
-logic_auto::Restore(string strKey, string strValue)
+logic_auto::Restore(string strKey, string setValue)
 {
 	m_iFromSaveGame = 1i;
 
 	switch (strKey) {
-	case "m_strOnMapSpawn":
-		m_strOnMapSpawn = ReadString(strValue);
+	case "m_outputOnMapSpawn":
+		m_outputOnMapSpawn = ReadString(setValue);
 		break;
-	case "m_strOnNewGame":
-		m_strOnNewGame = ReadString(strValue);
+	case "m_outputOnNewGame":
+		m_outputOnNewGame = ReadString(setValue);
 		break;
-	case "m_strOnLoadGame":
-		m_strOnLoadGame = ReadString(strValue);
+	case "m_outputOnLoadGame":
+		m_outputOnLoadGame = ReadString(setValue);
 		break;
-	case "m_strOnMapTransition":
-		m_strOnMapTransition = ReadString(strValue);
+	case "m_outputOnMapTransition":
+		m_outputOnMapTransition = ReadString(setValue);
 		break;
-	case "m_strOnBackgroundMap":
-		m_strOnBackgroundMap = ReadString(strValue);
+	case "m_outputOnBackgroundMap":
+		m_outputOnBackgroundMap = ReadString(setValue);
 		break;
-	case "m_strOnMultiNewMap":
-		m_strOnMultiNewMap = ReadString(strValue);
+	case "m_outputOnMultiNewMap":
+		m_outputOnMultiNewMap = ReadString(setValue);
 		break;
-	case "m_strOnMultiNewRound":
-		m_strOnMultiNewRound = ReadString(strValue);
+	case "m_outputOnMultiNewRound":
+		m_outputOnMultiNewRound = ReadString(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
@@ -148,33 +148,33 @@ logic_auto::RestoreComplete(void)
 }
 
 void
-logic_auto::SpawnKey(string strKey, string strValue)
+logic_auto::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	/* outputs */
 	case "OnMapSpawn":
-		m_strOnMapSpawn = PrepareOutput(m_strOnMapSpawn, strValue);
+		m_outputOnMapSpawn = PrepareOutput(m_outputOnMapSpawn, setValue);
 		break;
 	case "OnNewGame":
-		m_strOnNewGame = PrepareOutput(m_strOnNewGame, strValue);
+		m_outputOnNewGame = PrepareOutput(m_outputOnNewGame, setValue);
 		break;
 	case "OnLoadGame":
-		m_strOnLoadGame = PrepareOutput(m_strOnLoadGame, strValue);
+		m_outputOnLoadGame = PrepareOutput(m_outputOnLoadGame, setValue);
 		break;
 	case "OnMapTransition":
-		m_strOnMapTransition = PrepareOutput(m_strOnMapTransition, strValue);
+		m_outputOnMapTransition = PrepareOutput(m_outputOnMapTransition, setValue);
 		break;
 	case "OnBackgroundMap":
-		m_strOnBackgroundMap = PrepareOutput(m_strOnBackgroundMap, strValue);
+		m_outputOnBackgroundMap = PrepareOutput(m_outputOnBackgroundMap, setValue);
 		break;
 	case "OnMultiNewMap":
-		m_strOnMultiNewMap = PrepareOutput(m_strOnMultiNewMap, strValue);
+		m_outputOnMultiNewMap = PrepareOutput(m_outputOnMultiNewMap, setValue);
 		break;
 	case "OnMultiNewRound":
-		m_strOnMultiNewRound = PrepareOutput(m_strOnMultiNewRound, strValue);
+		m_outputOnMultiNewRound = PrepareOutput(m_outputOnMultiNewRound, setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
@@ -183,20 +183,20 @@ logic_auto::Spawned(void)
 {
 	super::Spawned();
 
-	if (m_strOnMapSpawn)
-		m_strOnMapSpawn = CreateOutput(m_strOnMapSpawn);
-	if (m_strOnNewGame)
-		m_strOnNewGame = CreateOutput(m_strOnNewGame);
-	if (m_strOnLoadGame)
-		m_strOnLoadGame = CreateOutput(m_strOnLoadGame);
-	if (m_strOnMapTransition)
-		m_strOnMapTransition = CreateOutput(m_strOnMapTransition);
-	if (m_strOnBackgroundMap)
-		m_strOnBackgroundMap = CreateOutput(m_strOnBackgroundMap);
-	if (m_strOnMultiNewMap)
-		m_strOnMultiNewMap = CreateOutput(m_strOnMultiNewMap);
-	if (m_strOnMultiNewRound)
-		m_strOnMultiNewRound = CreateOutput(m_strOnMultiNewRound);
+	if (m_outputOnMapSpawn)
+		m_outputOnMapSpawn = CreateOutput(m_outputOnMapSpawn);
+	if (m_outputOnNewGame)
+		m_outputOnNewGame = CreateOutput(m_outputOnNewGame);
+	if (m_outputOnLoadGame)
+		m_outputOnLoadGame = CreateOutput(m_outputOnLoadGame);
+	if (m_outputOnMapTransition)
+		m_outputOnMapTransition = CreateOutput(m_outputOnMapTransition);
+	if (m_outputOnBackgroundMap)
+		m_outputOnBackgroundMap = CreateOutput(m_outputOnBackgroundMap);
+	if (m_outputOnMultiNewMap)
+		m_outputOnMultiNewMap = CreateOutput(m_outputOnMultiNewMap);
+	if (m_outputOnMultiNewRound)
+		m_outputOnMultiNewRound = CreateOutput(m_outputOnMultiNewRound);
 }
 
 void
@@ -209,34 +209,34 @@ logic_auto::Respawn(void)
 void
 logic_auto::Processing(void)
 {
-	if (m_strGlobalState)
-		if (GetGlobalValue(m_strGlobalState) == 0)
+	if (STRING_SET(m_globalState))
+		if (GetGlobalValue(m_globalState) == 0)
 			return;
 
-	UseOutput(this, m_strOnMapSpawn);
+	UseOutput(this, m_outputOnMapSpawn);
 
 	if (cvar("sv_playerslots") == 1) {
 		if (m_iFromSaveGame) {
 			/* set by trigger_changelevel, however not by the changelevel cmd */
 			if (cvar("_bsp_change_auto") == 1) {
-				UseOutput(this, m_strOnMapTransition);
+				UseOutput(this, m_outputOnMapTransition);
 				cvar_set("_bsp_change_auto", "");
 			} else
-				UseOutput(this, m_strOnLoadGame);
+				UseOutput(this, m_outputOnLoadGame);
 		} else {
-			UseOutput(this, m_strOnNewGame);
+			UseOutput(this, m_outputOnNewGame);
 		}
 	} else {
 		/* TODO: more reliable way of figuring out round restarts */
 		if (time > 5)
-			UseOutput(this, m_strOnMultiNewRound);
+			UseOutput(this, m_outputOnMultiNewRound);
 
 		/* yes, this is also called during entity respawns :X */
-		UseOutput(this, m_strOnMultiNewMap);
+		UseOutput(this, m_outputOnMultiNewMap);
 	}
 
 	if (serverkeyfloat("background") == 1)
-		UseOutput(this, m_strOnBackgroundMap);
+		UseOutput(this, m_outputOnBackgroundMap);
 
 	if (HasSpawnFlags(LOGICAUTO_USEONCE)) {
 		EntLog("%S triggerer removed self",  target);

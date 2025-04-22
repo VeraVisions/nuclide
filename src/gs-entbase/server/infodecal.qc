@@ -66,17 +66,17 @@ infodecal::infodecal(void)
 }
 
 void
-infodecal::SpawnKey(string strKey, string strValue)
+infodecal::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "material":
-		m_strTexture = strValue;
+		m_strTexture = setValue;
 		break;
 	case "texture":
-		m_strTexture = strtolower(strValue);
+		m_strTexture = strtolower(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
@@ -118,22 +118,22 @@ void
 infodecal::Save(float handle)
 {
 	super::Save(handle);
-	SaveEntity(handle, "m_decChild", m_decChild);
-	SaveString(handle, "m_strTexture", m_strTexture);
+	SaveEntity(handle, "decChild", m_decChild);
+	SaveString(handle, "strTexture", m_strTexture);
 }
 
 void
-infodecal::Restore(string strKey, string strValue)
+infodecal::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
-	case "m_decChild":
-		m_decChild = (ncDecal)ReadEntity(strValue);
+	case "decChild":
+		m_decChild = (ncDecal)ReadEntity(setValue);
 		break;
-	case "m_strTexture":
-		m_strTexture = ReadString(strValue);
+	case "strTexture":
+		m_strTexture = ReadString(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 

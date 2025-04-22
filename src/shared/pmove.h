@@ -19,7 +19,7 @@
 .float maxspeed;
 .vector view_ofs;
 int trace_endcontentsi;
-.vector basevelocity;
+.vector m_pmoveBaseVelocity;
 .entity groundentity;
 
 
@@ -100,6 +100,9 @@ public:
 	nonvirtual vector GetProneViewOffset(void);
 
 #ifdef SERVER
+	virtual void Save(float);
+	virtual void Restore(string,string);
+	virtual void RestoreComplete(void);
 	virtual void EvaluateEntity(void);
 	virtual bool SendEntity(entity, float);
 #endif

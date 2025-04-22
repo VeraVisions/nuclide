@@ -17,33 +17,33 @@
 void
 ncWeapon::ncWeapon(void)
 {
-	m_iClipStartSize = 0i;
-	m_bRemoveOnEmpty = false;
-	m_strWeaponViewModel = __NULL__;
-	m_strWeaponPlayerModel = __NULL__;
-	m_strWeaponScript = __NULL__;
-	m_strAmmoType = __NULL__;
-	m_bAmmoRequired = false;
-	m_strFlashShader = __NULL__;
-	m_vecFlashColor = g_vec_null;
-	m_flFlashRadius = 0.0f;
-	m_strDropItemDef = __NULL__;
-	m_strSmokeParticle = __NULL__;
-	m_bSmokeContinous = false;
-	m_iClip = 0i;
-	m_iClipSize = 0i;
-	m_iMode = 0;
+	m_weaponClipStartSize = 0i;
+	m_fiRemoveOnEmpty = false;
+	m_weaponViewModelPath = __NULL__;
+	m_weaponPlayerModelPath = __NULL__;
+	m_weaponScript = __NULL__;
+	m_weaponAmmoType = __NULL__;
+	m_weaponRequiresAmmo = false;
+	m_fiMuzzleFlashMaterial = __NULL__;
+	m_fiMuzzleFlashColor = g_vec_null;
+	m_fiMuzzleFlashRadius = 0.0f;
+	m_weaponDropsItem = __NULL__;
+	m_fiFXSmokeParticle = __NULL__;
+	m_fiFXSmokeContinous = false;
+	m_weaponClip = 0i;
+	m_weaponClipSize = 0i;
+	m_weaponFireInfoValue = 0;
 	m_viewModel = 0;
 	m_worldModel = 0;
 	m_playerModel = 0.0f;
-	m_flFireRate = 1.0f;
-	m_dState = 0;
-	m_strLastFireInfo = __NULL__;
-	m_flSpeedMod = 1.0f;
-	m_flReloadSpeed = -1.0f;
+	m_weaponFireRate = 1.0f;
+	m_weaponState = 0;
+	m_weaponLastFireInfo = __NULL__;
+	m_fiSpeedMod = 1.0f;
+	m_fiReloadTime = -1.0f;
 	m_nextWeapon = __NULL__;
 	m_prevWeapon = __NULL__;
-	m_fireUnderwater = true;
+	m_fiFireUnderwater = true;
 }
 
 void
@@ -55,8 +55,6 @@ ncWeapon::_AddedCallback(void)
 	if (!owner) {
 		return;
 	}
-
-	_CacheWeaponDefVariables();
 
 	/* after being stored in someones inventory,
 	   re-sort our inventory according to their logic */
@@ -108,11 +106,11 @@ ncWeapon::SwitchedFromWeapon(void)
 void
 ncWeapon::_SetWeaponState(nsweapon_state_t newState)
 {
-	if (m_dState == newState) {
+	if (m_weaponState == newState) {
 		return;
 	}
 
-	m_dState = newState;
+	m_weaponState = newState;
 
 #ifdef SERVER
 	//printf("State changed to %s\n", nsweapon_state_s[newState]);
@@ -122,7 +120,7 @@ ncWeapon::_SetWeaponState(nsweapon_state_t newState)
 nsweapon_state_t
 ncWeapon::GetWeaponState(void)
 {
-	return (m_dState);
+	return (m_weaponState);
 }
 
 void
@@ -133,80 +131,90 @@ ncWeapon::UpdateFireInfoCache(void)
 	ncRenderableEntity viewModelLeft = (ncRenderableEntity)pSeat->m_eViewModelL;
 #endif
 
-	string ammoPerShot = GetSubDefString(m_strLastFireInfo, "ammoPerShot");
-	string reloadSpeed = GetSubDefString(m_strLastFireInfo, "reloadTime");
-	m_fiDetonateOnFire = GetSubDefString(m_strLastFireInfo, "detonateOnFire");
-	m_fiPunchAngle = GetSubDefVector(m_strLastFireInfo, "punchAngle");
-	m_fiPunchSpring = GetSubDefVector(m_strLastFireInfo, "punchSpring");
-	m_fiSndFire = GetSubDefString(m_strLastFireInfo, "snd_fire");
-	m_fiSndFailed = GetSubDefString(m_strLastFireInfo, "snd_fireFailed");
-	m_fiSndFireLast = GetSubDefString(m_strLastFireInfo, "snd_fireLast");
-	m_fiSndRelease = GetSubDefString(m_strLastFireInfo, "snd_release");
-	m_fiSndEmpty = GetSubDefString(m_strLastFireInfo, "snd_empty");
-	m_fiAmmoType = ammoNumForName(GetSubDefString(m_strLastFireInfo, "ammoType"));
-	m_fiAmmoRequired = GetSubDefBool(m_strLastFireInfo, "ammoRequired");
-	m_fiFireRate = GetSubDefFloat(m_strLastFireInfo, "fireRate");
-	m_fiSemiAuto = GetSubDefBool(m_strLastFireInfo, "semiAuto");
-	m_flZoomFOV = GetSubDefFloat(m_strLastFireInfo, "zoomFov") / 90.0f;
+	string ammoPerShot = GetSubDefString(m_weaponLastFireInfo, "ammoPerShot");
+	string reloadSpeed = GetSubDefString(m_weaponLastFireInfo, "reloadTime");
+	m_fiDetonateOnFire = GetSubDefString(m_weaponLastFireInfo, "detonateOnFire");
+	m_fiPunchAngle = GetSubDefVector(m_weaponLastFireInfo, "punchAngle");
+	m_fiPunchSpring = GetSubDefVector(m_weaponLastFireInfo, "punchSpring");
+	m_fiSndFire = GetSubDefString(m_weaponLastFireInfo, "snd_fire");
+	m_fiSndFailed = GetSubDefString(m_weaponLastFireInfo, "snd_fireFailed");
+	m_fiSndFireLast = GetSubDefString(m_weaponLastFireInfo, "snd_fireLast");
+	m_fiSndRelease = GetSubDefString(m_weaponLastFireInfo, "snd_release");
+	m_fiSndEmpty = GetSubDefString(m_weaponLastFireInfo, "snd_empty");
+	m_fiAmmoType = ammoNumForName(GetSubDefString(m_weaponLastFireInfo, "ammoType"));
+	m_fiAmmoRequired = GetSubDefBool(m_weaponLastFireInfo, "ammoRequired");
+	m_fiFireRate = GetSubDefFloat(m_weaponLastFireInfo, "fireRate");
+	m_fiSemiAuto = GetSubDefBool(m_weaponLastFireInfo, "semiAuto");
+	m_fiZoomFOV = GetSubDefFloat(m_weaponLastFireInfo, "zoomFov") / 90.0f;
 
 	/* defs to spawn */
-	m_fiOnFire = GetSubDefString(m_strLastFireInfo, "def_onFire");
-	m_fiOnRelease = GetSubDefString(m_strLastFireInfo, "def_onRelease");
-	m_fiChargeTime = GetSubDefFloat(m_strLastFireInfo, "chargeTime");
+	m_fiOnFire = GetSubDefString(m_weaponLastFireInfo, "def_onFire");
+	m_fiOnRelease = GetSubDefString(m_weaponLastFireInfo, "def_onRelease");
+	m_fiChargeTime = GetSubDefFloat(m_weaponLastFireInfo, "chargeTime");
 
-	m_fiOverheatPoints = GetSubDefFloat(m_strLastFireInfo, "overheatPerShot");
+	m_fiOverheatPoints = GetSubDefFloat(m_weaponLastFireInfo, "overheatPerShot");
 
-	m_fiSndFireStart = GetSubDefString(m_strLastFireInfo, "snd_fireStart");
-	m_fiSndFireStop = GetSubDefString(m_strLastFireInfo, "snd_fireStop");
-	m_fiSndFireLoop = GetSubDefString(m_strLastFireInfo, "snd_fireLoop");
-	m_fireUnderwater = GetSubDefBool(m_strLastFireInfo, "fireUnderwater");
+	m_fiSndFireStart = GetSubDefString(m_weaponLastFireInfo, "snd_fireStart");
+	m_fiSndFireStop = GetSubDefString(m_weaponLastFireInfo, "snd_fireStop");
+	m_fiSndFireLoop = GetSubDefString(m_weaponLastFireInfo, "snd_fireLoop");
+	m_fiFireUnderwater = GetSubDefBool(m_weaponLastFireInfo, "fireUnderwater");
 
 	/* firing cosmetics */
 #ifdef CLIENT
-	setmodel(pSeat->m_eViewModel, GetSubDefString(m_strLastFireInfo, "model_view"));
+	setmodel(pSeat->m_eViewModel, GetSubDefString(m_weaponLastFireInfo, "model_view"));
 	viewModelLeft.declclass = viewModelRight.declclass = declclass;
 
-	m_fiJointMuzzle = gettagindex(pSeat->m_eViewModel, GetSubDefString(m_strLastFireInfo, "muzzle"));
+	m_fiJointMuzzle = gettagindex(pSeat->m_eViewModel, GetSubDefString(m_weaponLastFireInfo, "muzzle"));
 	viewModelLeft.m_fiJointMuzzle = viewModelRight.m_fiJointMuzzle = m_fiJointMuzzle;
 
-	m_fiJointBarrel = gettagindex(pSeat->m_eViewModel, GetSubDefString(m_strLastFireInfo, "barrel"));
+	m_fiJointBarrel = gettagindex(pSeat->m_eViewModel, GetSubDefString(m_weaponLastFireInfo, "barrel"));
 	viewModelLeft.m_fiJointBarrel = viewModelRight.m_fiJointBarrel = m_fiJointBarrel;
 
-	m_muzzPartSmoke = GetSubDefString(m_strLastFireInfo, "smoke_muzzle");
+	m_muzzPartSmoke = GetSubDefString(m_weaponLastFireInfo, "smoke_muzzle");
 	viewModelLeft.m_muzzPartSmoke = viewModelRight.m_muzzPartSmoke = m_muzzPartSmoke;
 
-	m_muzzOffset = GetSubDefVector(m_strLastFireInfo, "muzzleOffset");
+	m_muzzOffset = GetSubDefVector(m_weaponLastFireInfo, "muzzleOffset");
 	viewModelLeft.m_muzzOffset = viewModelRight.m_muzzOffset = m_muzzOffset;
 
-	m_muzzRelativeOffset = GetSubDefVector(m_strLastFireInfo, "muzzleRelativeOffset");
+	m_muzzRelativeOffset = GetSubDefVector(m_weaponLastFireInfo, "muzzleRelativeOffset");
 	viewModelLeft.m_muzzRelativeOffset = viewModelRight.m_muzzRelativeOffset = m_muzzRelativeOffset;
 
-// 	printf("%S %S %d\n", pSeat->m_eViewModel.model, GetSubDefString(m_strLastFireInfo, "barrel"), m_fiJointBarrel);
+// 	printf("%S %S %d\n", pSeat->m_eViewModel.model, GetSubDefString(m_weaponLastFireInfo, "barrel"), m_fiJointBarrel);
+
+
+	setsize(viewModelLeft, [0,0,0], [0,0,0]);
+	setsize(viewModelRight, [0,0,0], [0,0,0]);
 #endif
 
-	m_fiBrassDef = GetSubDefString(m_strLastFireInfo, "def_ejectBrass");
-	m_fiBrassDelay = GetSubDefFloat(m_strLastFireInfo, "ejectBrassDelay");
+	m_fiBrassDef = GetSubDefString(m_weaponLastFireInfo, "def_ejectBrass");
+	m_fiBrassDelay = GetSubDefFloat(m_weaponLastFireInfo, "ejectBrassDelay");
 
 	/* only check if it's present. */
-	m_bHasLoop = GetSubDefBool(m_strLastFireInfo, "act_loop");
-	m_fiCocks = GetSubDefBool(m_strLastFireInfo, "cocks");
-	m_fiDrawAfterRelease = GetSubDefBool(m_strLastFireInfo, "drawAfterRelease");
+	m_fiLoopingFire = GetSubDefBool(m_weaponLastFireInfo, "act_loop");
+	m_fiCocks = GetSubDefBool(m_weaponLastFireInfo, "cocks");
+	m_fiDrawAfterRelease = GetSubDefBool(m_weaponLastFireInfo, "drawAfterRelease");
+
+	m_fiRegenAmmo = GetSubDefInt(m_weaponLastFireInfo, "regenAmmo");
+	m_fiRegenRate = GetSubDefFloat(m_weaponLastFireInfo, "regenRate");
+
+	m_fiDepleteAmmo = GetSubDefInt(m_weaponLastFireInfo, "depleteAmmo");
+	m_fiDepleteRate = GetSubDefFloat(m_weaponLastFireInfo, "depleteRate");
 
 	/* keep the last valid value (don't 0.0f it) to prevent overlay dropouts. */
 	if (m_fiOverheatPoints) {
-		m_fiOverheatLength = GetSubDefFloat(m_strLastFireInfo, "overheatLength");
+		m_fiOverheatLength = GetSubDefFloat(m_weaponLastFireInfo, "overheatLength");
 	}
 
 	/* when -1.0 we'll pull it from the animation. */
 	if (reloadSpeed != "") {
-		m_flReloadSpeed = stof(reloadSpeed);
+		m_fiReloadTime = stof(reloadSpeed);
 	} else {
-		m_flReloadSpeed = -1.0f;
+		m_fiReloadTime = -1.0f;
 	}
 
 #ifdef CLIENT
 	if (pSeat != __NULL__) {
-		string viewGeomset = GetSubDefString(m_strLastFireInfo, "view_geomset");
+		string viewGeomset = GetSubDefString(m_weaponLastFireInfo, "view_geomset");
 		if (pSeat->m_eViewModel) {
 			if (viewGeomset) {
 				setcustomskin(pSeat->m_eViewModel, "", viewGeomset);
@@ -220,11 +228,11 @@ ncWeapon::UpdateFireInfoCache(void)
 #endif
 
 #if 0
-	NSError("Switched FireInfo to %S", m_strLastFireInfo);
-	NSError("m_fiAmmoType: %i", m_fiAmmoRequired);
-	NSError("m_fiAmmoRequired: %d", m_fiAmmoRequired);
-	NSError("m_fiFireRate: %f", m_fiAmmoRequired);
-	NSError("m_flReloadSpeed: %f", m_flReloadSpeed);
+	ncError("Switched FireInfo to %S", m_weaponLastFireInfo);
+	ncError("m_fiAmmoType: %i", m_fiAmmoRequired);
+	ncError("m_fiAmmoRequired: %d", m_fiAmmoRequired);
+	ncError("m_fiFireRate: %f", m_fiAmmoRequired);
+	ncError("m_fiReloadTime: %f", m_fiReloadTime);
 #endif
 
 	/* validate */
@@ -248,7 +256,7 @@ ncWeapon::UpdateFireInfoCache(void)
 			viewModel.modelindex2 = getmodelindex(viewModelPath2);
 			viewModel.modelindex3 = getmodelindex(viewModelPath3);
 			viewModel.modelindex4 = getmodelindex(viewModelPath4);
-			string modelFlash = GetSubDefString(m_strLastFireInfo, "model_flash");
+			string modelFlash = GetSubDefString(m_weaponLastFireInfo, "model_flash");
 			viewModel2.m_iMuzzleModel = viewModel.m_iMuzzleModel = (int)getmodelindex(modelFlash);
 
 			if (viewModel) {
@@ -278,11 +286,11 @@ void
 ncWeapon::SwitchFireInfo(string newInfo)
 {
 	/* nothing changed. */
-	//if (m_strLastFireInfo == newInfo) {
+	//if (m_weaponLastFireInfo == newInfo) {
 	//	return;
 	//}
 
-	m_strLastFireInfo = newInfo;
+	m_weaponLastFireInfo = newInfo;
 	UpdateFireInfoCache();
 }
 
@@ -292,20 +300,32 @@ ncWeapon::Spawned(void)
 {
 	super::Spawned();
 
-	if (m_iClipStartSize > 0i) {
-		m_iClip = m_iClipStartSize;
+	if (m_weaponClipStartSize > 0i) {
+		m_weaponClip = m_weaponClipStartSize;
 	} else {
-		m_iClip = m_iClipSize;
+		m_weaponClip = m_weaponClipSize;
 	}
 
-	m_bInvCarry = true;
-	precache.Model(m_strWeaponViewModel);
-	precache.Model(m_strWeaponPlayerModel);
+	m_itemCarries = true;
+	precache.Model(m_weaponViewModelPath);
+	precache.Model(m_weaponPlayerModelPath);
 
-	SetViewModel(m_strWeaponViewModel);
+	SetViewModel(m_weaponViewModelPath);
 	SetWorldModel(model);
-	SetPlayerModel(m_strWeaponPlayerModel);
+	SetPlayerModel(m_weaponPlayerModelPath);
 	_isWeapon = true;
+}
+
+void
+ncWeapon::RestoreComplete(void)
+{
+	UpdateFireInfoCache();
+
+	if (owner) {
+		ncActor ourOwner = (ncActor)owner;
+		ourOwner.SortWeaponChain();
+		SendFlags = -1;
+	}
 }
 
 void
@@ -313,43 +333,43 @@ ncWeapon::SpawnKey(string keyName, string setValue)
 {
 	switch (keyName) {
 	case "model_view":
-		m_strWeaponViewModel = ReadString(setValue);
+		m_weaponViewModelPath = ReadString(setValue);
 		break;
 	case "model_world":
 		model = ReadString(setValue);
 		break;
 	case "model_player":
-		m_strWeaponPlayerModel = ReadString(setValue);
+		m_weaponPlayerModelPath = ReadString(setValue);
 		break;
 	case "weapon_scriptobject":
-		m_strWeaponScript = ReadString(setValue);
+		m_weaponScript = ReadString(setValue);
 		break;
 	case "ammoType":
-		m_strAmmoType = ReadString(setValue);
+		m_weaponAmmoType = ReadString(setValue);
 		break;
 	case "clipSize":
-		m_iClipSize = ReadInt(setValue);
+		m_weaponClipSize = ReadInt(setValue);
 		break;
 	case "clipSizeDefault":
-		m_iClipStartSize = ReadInt(setValue);
+		m_weaponClipStartSize = ReadInt(setValue);
 		break;
 	case "mtr_flashShader":
-		m_strFlashShader = ReadString(setValue);
+		m_fiMuzzleFlashMaterial = ReadString(setValue);
 		break;
 	case "flashColor":
-		m_vecFlashColor = ReadVector(setValue);
+		m_fiMuzzleFlashColor = ReadVector(setValue);
 		break;
 	case "flashRadius":
-		m_flFlashRadius = ReadFloat(setValue);
+		m_fiMuzzleFlashRadius = ReadFloat(setValue);
 		break;
 	case "def_dropItem":
-		m_strDropItemDef = ReadString(setValue);
+		m_weaponDropsItem = ReadString(setValue);
 		break;
 	case "snd_hum":
 		m_sndHum = ReadString(setValue);
 		break;
 	case "continuousSmoke":
-		m_bSmokeContinous = ReadBool(setValue);
+		m_fiFXSmokeContinous = ReadBool(setValue);
 		break;
 	default:
 		super::SpawnKey(keyName, setValue);
@@ -362,67 +382,122 @@ ncWeapon::Save(float handle)
 {
 	super::Save(handle);
 
-	/* weapon */
-	SaveString(handle, "m_strWeaponViewModel", m_strWeaponViewModel);
-	SaveString(handle, "m_strWeaponPlayerModel", m_strWeaponPlayerModel);
-	SaveString(handle, "m_strWeaponScript", m_strWeaponScript);
-	SaveString(handle, "m_strAmmoType", m_strAmmoType);
-	SaveInt(handle, "m_iClipSize", m_iClipSize);
-	SaveInt(handle, "m_iClipStartSize", m_iClipStartSize);
-	SaveInt(handle, "m_iMode", m_iMode);
-	SaveString(handle, "m_strFlashShader", m_strFlashShader);
-	SaveVector(handle, "m_vecFlashColor", m_vecFlashColor);
-	SaveFloat(handle, "m_flFlashRadius", m_flFlashRadius);
-	SaveString(handle, "m_strDropItemDef", m_strDropItemDef);
-	SaveString(handle, "m_strSmokeParticle", m_strSmokeParticle);
-	SaveBool(handle, "m_bSmokeContinous", m_bSmokeContinous);
+	SaveString(handle, "weaponTitle", m_weaponTitle);
+	SaveInt(handle, "weaponHUDSlot", m_weaponHUDSlot);
+	SaveInt(handle, "weaponHUDSlotPos", m_weaponHUDSlotPos);
+	SaveString(handle, "weaponHUDIcon", m_weaponHUDIcon);
+	SaveString(handle, "weaponHUDIconSel", m_weaponHUDIconSel);
+	SaveString(handle, "weaponViewModelPath", m_weaponViewModelPath);
+	SaveString(handle, "weaponPlayerModelPath", m_weaponPlayerModelPath);
+	SaveString(handle, "weaponScript", m_weaponScript);
+	SaveString(handle, "weaponAmmoType", m_weaponAmmoType);
+	SaveBool(handle, "weaponRequiresAmmo", m_weaponRequiresAmmo);
+	SaveInt(handle, "weaponClipStartSize", m_weaponClipStartSize);
+	SaveString(handle, "weaponDropsItem", m_weaponDropsItem);
+	SaveBool(handle, "weaponIsFiring", m_weaponIsFiring);
+	SaveInt(handle, "weaponClip", m_weaponClip);
+	SaveInt(handle, "weaponClipSize", m_weaponClipSize);
+	SaveFloat(handle, "weaponFireInfoValue", m_weaponFireInfoValue);
+	SaveFloat(handle, "viewModel", m_viewModel);
+	SaveFloat(handle, "worldModel", m_worldModel);
+	SaveFloat(handle, "playerModel", m_playerModel);
+	SaveFloat(handle, "weaponFireRate", m_weaponFireRate);
+	SaveFloat(handle, "weaponState", m_weaponState);
+	SaveBool(handle, "weaponIsFiring", m_weaponIsFiring);
+	SaveBool(handle, "weaponOverheating", m_weaponOverheating);
+	SaveEntity(handle, "nextWeapon", m_nextWeapon);
+	SaveEntity(handle, "prevWeapon", m_prevWeapon);
+	SaveString(handle, "weaponLastFireInfo", m_weaponLastFireInfo);
+	SaveBool(handle, "_isWeapon", _isWeapon);
 }
 
 void
-ncWeapon::Restore(string strKey, string strValue)
+ncWeapon::Restore(string keyName, string setValue)
 {
-	switch (strKey) {
-	case "m_strWeaponViewModel":
-		m_strWeaponViewModel = ReadString(strValue);
+	switch (keyName) {
+	case "weaponTitle":
+		m_weaponTitle = ReadString(setValue);
 		break;
-	case "m_strWeaponPlayerModel":
-		m_strWeaponPlayerModel = ReadString(strValue);
+	case "weaponHUDSlot":
+		m_weaponHUDSlot = ReadInt(setValue);
 		break;
-	case "m_strWeaponScript":
-		m_strWeaponScript = ReadString(strValue);
+	case "weaponHUDSlotPos":
+		m_weaponHUDSlotPos = ReadInt(setValue);
 		break;
-	case "m_strAmmoType":
-		m_strAmmoType = ReadString(strValue);
+	case "weaponHUDIcon":
+		m_weaponHUDIcon = ReadString(setValue);
 		break;
-	case "m_iClipSize":
-		m_iClipSize = ReadInt(strValue);
+	case "weaponHUDIconSel":
+		m_weaponHUDIconSel = ReadString(setValue);
 		break;
-	case "m_iClipStartSize":
-		m_iClipStartSize = ReadInt(strValue);
+	case "weaponViewModelPath":
+		m_weaponViewModelPath = ReadString(setValue);
 		break;
-	case "m_iMode":
-		m_iMode = ReadFloat(strValue);
+	case "weaponPlayerModelPath":
+		m_weaponPlayerModelPath = ReadString(setValue);
 		break;
-	case "m_strFlashShader":
-		m_strFlashShader = ReadString(strValue);
+	case "weaponScript":
+		m_weaponScript = ReadString(setValue);
 		break;
-	case "m_vecFlashColor":
-		m_vecFlashColor = ReadVector(strValue);
+	case "weaponAmmoType":
+		m_weaponAmmoType = ReadString(setValue);
 		break;
-	case "m_flFlashRadius":
-		m_flFlashRadius = ReadFloat(strValue);
+	case "weaponRequiresAmmo":
+		m_weaponRequiresAmmo = ReadBool(setValue);
 		break;
-	case "m_strDropItemDef":
-		m_strDropItemDef = ReadString(strValue);
+	case "weaponClipStartSize":
+		m_weaponClipStartSize = ReadInt(setValue);
 		break;
-	case "m_strSmokeParticle":
-		m_strSmokeParticle = ReadString(strValue);
+	case "weaponDropsItem":
+		m_weaponDropsItem = ReadString(setValue);
 		break;
-	case "m_bSmokeContinous":
-		m_bSmokeContinous = ReadBool(strValue);
+	case "weaponIsFiring":
+		m_weaponIsFiring = ReadBool(setValue);
+		break;
+	case "weaponClip":
+		m_weaponClip = ReadInt(setValue);
+		break;
+	case "weaponClipSize":
+		m_weaponClipSize = ReadInt(setValue);
+		break;
+	case "weaponFireInfoValue":
+		m_weaponFireInfoValue = ReadFloat(setValue);
+		break;
+	case "viewModel":
+		m_viewModel = ReadFloat(setValue);
+		break;
+	case "worldModel":
+		m_worldModel = ReadFloat(setValue);
+		break;
+	case "playerModel":
+		m_playerModel = ReadFloat(setValue);
+		break;
+	case "weaponFireRate":
+		m_weaponFireRate = ReadFloat(setValue);
+		break;
+	case "weaponState":
+		m_weaponState = ReadFloat(setValue);
+		break;
+	case "weaponIsFiring":
+		m_weaponIsFiring = ReadBool(setValue);
+		break;
+	case "weaponOverheating":
+		m_weaponOverheating = ReadBool(setValue);
+		break;
+	case "nextWeapon":
+		m_nextWeapon = ReadEntity(setValue);
+		break;
+	case "prevWeapon":
+		m_prevWeapon = ReadEntity(setValue);
+		break;
+	case "weaponLastFireInfo":
+		m_weaponLastFireInfo = ReadString(setValue);
+		break;
+	case "_isWeapon":
+		_isWeapon = ReadBool(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(keyName, setValue);
 		break;
 	}
 }
@@ -450,7 +525,7 @@ ncWeapon::SendEntity(entity ePEnt, float flChanged)
 	/* broadcast how much data is expected to be read */
 	WriteFloat(MSG_ENTITY, flChanged);
 
-	SENDENTITY_INT(entityDefID, WEAPONFL_CHANGED_CHAIN)
+	SENDENTITY_INT(entityDefID, WEAPONFL_CHANGED_MODELINDEX)
 	SENDENTITY_ENTITY(m_nextItem, WEAPONFL_CHANGED_CHAIN)
 	SENDENTITY_ENTITY(owner, WEAPONFL_CHANGED_CHAIN)
 	SENDENTITY_ENTITY(m_nextWeapon, WEAPONFL_CHANGED_NEXTWEAPON)
@@ -463,12 +538,12 @@ ncWeapon::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_ANGLE(angles[2], WEAPONFL_CHANGED_ANGLES)
 	SENDENTITY_SHORT(modelindex, WEAPONFL_CHANGED_MODELINDEX)
 	SENDENTITY_SHORT(m_viewModel, WEAPONFL_CHANGED_MODELINDEX)
-	SENDENTITY_FLOAT(m_flFireRate, WEAPONFL_CHANGED_MODELINDEX)
+	SENDENTITY_FLOAT(m_weaponFireRate, WEAPONFL_CHANGED_MODELINDEX)
 	SENDENTITY_BYTE(solid, WEAPONFL_CHANGED_SOLID)
 	SENDENTITY_BYTE(movetype, WEAPONFL_CHANGED_FLAGS)
 	SENDENTITY_INT(flags, WEAPONFL_CHANGED_FLAGS)
 	SENDENTITY_INT(modelflags, WEAPONFL_CHANGED_FLAGS)
-	SENDENTITY_INT(vv_flags, WEAPONFL_CHANGED_FLAGS)
+	SENDENTITY_INT(m_nuclideFlags, WEAPONFL_CHANGED_FLAGS)
 	SENDENTITY_COORD(mins[0], WEAPONFL_CHANGED_SIZE)
 	SENDENTITY_COORD(mins[1], WEAPONFL_CHANGED_SIZE)
 	SENDENTITY_COORD(mins[2], WEAPONFL_CHANGED_SIZE)
@@ -478,7 +553,7 @@ ncWeapon::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_BYTE(frame, WEAPONFL_CHANGED_FRAME)
 	SENDENTITY_FLOAT(skin, WEAPONFL_CHANGED_SKIN)
 	SENDENTITY_FLOAT(effects, WEAPONFL_CHANGED_EFFECTS)
-	SENDENTITY_SHORT(m_iBody, WEAPONFL_CHANGED_BODY)
+	SENDENTITY_SHORT(m_geomsetField, WEAPONFL_CHANGED_BODY)
 	SENDENTITY_FLOAT(scale, WEAPONFL_CHANGED_SCALE)
 	SENDENTITY_COORD(velocity[0], WEAPONFL_CHANGED_VELOCITY)
 	SENDENTITY_COORD(velocity[1], WEAPONFL_CHANGED_VELOCITY)
@@ -486,12 +561,12 @@ ncWeapon::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_COORD(avelocity[0], WEAPONFL_CHANGED_ANGULARVELOCITY)
 	SENDENTITY_COORD(avelocity[1], WEAPONFL_CHANGED_ANGULARVELOCITY)
 	SENDENTITY_COORD(avelocity[2], WEAPONFL_CHANGED_ANGULARVELOCITY)
-	SENDENTITY_BYTE(m_iClip, WEAPONFL_CHANGED_CLIP)
-	SENDENTITY_BYTE(m_iClipSize, WEAPONFL_CHANGED_CLIP)
-	SENDENTITY_BYTE(m_iMode, WEAPONFL_CHANGED_CLIP)
-	SENDENTITY_BYTE(m_dState, WEAPONFL_CHANGED_STATE)
-	SENDENTITY_BYTE(m_bFiring, WEAPONFL_CHANGED_STATE)
-	SENDENTITY_FLOAT(m_flOverheating, WEAPONFL_CHANGED_STATE)
+	SENDENTITY_BYTE(m_weaponClip, WEAPONFL_CHANGED_CLIP)
+	SENDENTITY_BYTE(m_weaponClipSize, WEAPONFL_CHANGED_CLIP)
+	SENDENTITY_BYTE(m_weaponFireInfoValue, WEAPONFL_CHANGED_CLIP)
+	SENDENTITY_BYTE(m_weaponState, WEAPONFL_CHANGED_STATE)
+	SENDENTITY_BYTE(m_weaponIsFiring, WEAPONFL_CHANGED_STATE)
+	SENDENTITY_FLOAT(m_weaponOverheating, WEAPONFL_CHANGED_STATE)
 	return (true);
 }
 
@@ -508,15 +583,15 @@ ncWeapon::EvaluateEntity(void)
 	EVALUATE_VECTOR(angles, 0, WEAPONFL_CHANGED_ANGLES)
 	EVALUATE_VECTOR(angles, 1, WEAPONFL_CHANGED_ANGLES)
 	EVALUATE_VECTOR(angles, 2, WEAPONFL_CHANGED_ANGLES)
-	EVALUATE_FIELD(entityDefID, WEAPONFL_CHANGED_CHAIN)
+	EVALUATE_FIELD(entityDefID, WEAPONFL_CHANGED_MODELINDEX)
 	EVALUATE_FIELD(modelindex, WEAPONFL_CHANGED_MODELINDEX)
 	EVALUATE_FIELD(m_viewModel, WEAPONFL_CHANGED_MODELINDEX)
-	EVALUATE_FIELD(m_flFireRate, WEAPONFL_CHANGED_MODELINDEX)
+	EVALUATE_FIELD(m_weaponFireRate, WEAPONFL_CHANGED_MODELINDEX)
 	EVALUATE_FIELD(solid, WEAPONFL_CHANGED_SOLID)
 	EVALUATE_FIELD(movetype, WEAPONFL_CHANGED_FLAGS)
 	EVALUATE_FIELD(flags, WEAPONFL_CHANGED_FLAGS)
 	EVALUATE_FIELD(modelflags, WEAPONFL_CHANGED_FLAGS)
-	EVALUATE_FIELD(vv_flags, WEAPONFL_CHANGED_FLAGS)
+	EVALUATE_FIELD(m_nuclideFlags, WEAPONFL_CHANGED_FLAGS)
 	EVALUATE_VECTOR(mins, 0, WEAPONFL_CHANGED_SIZE)
 	EVALUATE_VECTOR(mins, 1, WEAPONFL_CHANGED_SIZE)
 	EVALUATE_VECTOR(mins, 2, WEAPONFL_CHANGED_SIZE)
@@ -526,7 +601,7 @@ ncWeapon::EvaluateEntity(void)
 	EVALUATE_FIELD(frame, WEAPONFL_CHANGED_FRAME)
 	EVALUATE_FIELD(skin, WEAPONFL_CHANGED_SKIN)
 	EVALUATE_FIELD(effects, WEAPONFL_CHANGED_EFFECTS)
-	EVALUATE_FIELD(m_iBody, WEAPONFL_CHANGED_BODY)
+	EVALUATE_FIELD(m_geomsetField, WEAPONFL_CHANGED_BODY)
 	EVALUATE_FIELD(scale, WEAPONFL_CHANGED_SCALE)
 	EVALUATE_VECTOR(velocity, 0, WEAPONFL_CHANGED_VELOCITY)
 	EVALUATE_VECTOR(velocity, 1, WEAPONFL_CHANGED_VELOCITY)
@@ -534,19 +609,14 @@ ncWeapon::EvaluateEntity(void)
 	EVALUATE_VECTOR(avelocity, 0, WEAPONFL_CHANGED_ANGULARVELOCITY)
 	EVALUATE_VECTOR(avelocity, 1, WEAPONFL_CHANGED_ANGULARVELOCITY)
 	EVALUATE_VECTOR(avelocity, 2, WEAPONFL_CHANGED_ANGULARVELOCITY)
-	EVALUATE_FIELD(m_iClip, WEAPONFL_CHANGED_CLIP)
-	EVALUATE_FIELD(m_iClipSize, WEAPONFL_CHANGED_CLIP)
-	EVALUATE_FIELD(m_iMode, WEAPONFL_CHANGED_CLIP)
-	EVALUATE_FIELD(m_dState, WEAPONFL_CHANGED_STATE)
-	EVALUATE_FIELD(m_bFiring, WEAPONFL_CHANGED_STATE)
-	EVALUATE_FIELD(m_flOverheating, WEAPONFL_CHANGED_STATE)
+	EVALUATE_FIELD(m_weaponClip, WEAPONFL_CHANGED_CLIP)
+	EVALUATE_FIELD(m_weaponClipSize, WEAPONFL_CHANGED_CLIP)
+	EVALUATE_FIELD(m_weaponFireInfoValue, WEAPONFL_CHANGED_CLIP)
+	EVALUATE_FIELD(m_weaponState, WEAPONFL_CHANGED_STATE)
+	EVALUATE_FIELD(m_weaponIsFiring, WEAPONFL_CHANGED_STATE)
+	EVALUATE_FIELD(m_weaponOverheating, WEAPONFL_CHANGED_STATE)
 
 	if (InInventory() == true) {
-		/* HACK: force refresh every once in a while */
-		if (time & 2) {
-			SendFlags |= WEAPONFL_CHANGED_CHAIN | WEAPONFL_CHANGED_NEXTWEAPON | WEAPONFL_CHANGED_PREVWEAPON;
-		}
-
 		SetOrigin(owner.origin);
 		pvsflags = PVSF_IGNOREPVS;
 		modelindex = 0;
@@ -570,7 +640,7 @@ ncWeapon::HandleAnimEvent(float timeStamp, int eventCode, string dataString)
 void
 ncWeapon::ClientFX(bool isThirdperson)
 {
-	if (m_bFiring == false) {
+	if (m_weaponIsFiring == false) {
 		return;
 	}
 
@@ -582,13 +652,13 @@ ncWeapon::ClientFX(bool isThirdperson)
 		src = pl.GetEyePos();
 		endpos = src + (anglesToForward(pl.GetViewAngle()) * 1024.0f);
 		traceline(src, endpos, MOVE_NORMAL, pl);
-		trailparticles(m_fxTrail, pl, gettaginfo(this, m_jointTrailWorld), trace_endpos);
+		trailparticles(m_fiFXTrail, pl, gettaginfo(this, m_jointTrailWorld), trace_endpos);
 	} else {
 		vector gunpos = gettaginfo(pSeat->m_eViewModel, m_jointTrailView);
 		src = g_view.GetCameraOrigin();
 		endpos = src + (anglesToForward(g_view.GetCameraAngle()) * 1024.0f);
 		traceline(src, endpos, MOVE_NORMAL, pl);
-		trailparticles(m_fxTrail, pl, gunpos, trace_endpos);
+		trailparticles(m_fiFXTrail, pl, gunpos, trace_endpos);
 	}
 }
 
@@ -596,12 +666,12 @@ void
 ncWeapon::ReceiveEntity(float flNew, float flChanged)
 {
 	_isWeapon = true;
-	READENTITY_INT(entityDefID, WEAPONFL_CHANGED_CHAIN)
+	READENTITY_INT(entityDefID, WEAPONFL_CHANGED_MODELINDEX)
 	READENTITY_ENTNUM(chain_entnum, WEAPONFL_CHANGED_CHAIN)
 	READENTITY_ENTNUM(owner_entnum, WEAPONFL_CHANGED_CHAIN)
 	READENTITY_ENTNUM(m_nextWeapon_entnum, WEAPONFL_CHANGED_NEXTWEAPON)
 	READENTITY_ENTNUM(m_prevWeapon_entnum, WEAPONFL_CHANGED_PREVWEAPON)
-	
+
 	READENTITY_COORD(origin[0], WEAPONFL_CHANGED_ORIGIN)
 	READENTITY_COORD(origin[1], WEAPONFL_CHANGED_ORIGIN)
 	READENTITY_COORD(origin[2], WEAPONFL_CHANGED_ORIGIN)
@@ -610,12 +680,12 @@ ncWeapon::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_ANGLE(angles[2], WEAPONFL_CHANGED_ANGLES)
 	READENTITY_SHORT(modelindex, WEAPONFL_CHANGED_MODELINDEX)
 	READENTITY_SHORT(m_viewModel, WEAPONFL_CHANGED_MODELINDEX)
-	READENTITY_FLOAT(m_flFireRate, WEAPONFL_CHANGED_MODELINDEX)
+	READENTITY_FLOAT(m_weaponFireRate, WEAPONFL_CHANGED_MODELINDEX)
 	READENTITY_BYTE(solid, WEAPONFL_CHANGED_SOLID)
 	READENTITY_BYTE(movetype, WEAPONFL_CHANGED_FLAGS)
 	READENTITY_INT(flags, WEAPONFL_CHANGED_FLAGS)
 	READENTITY_INT(modelflags, WEAPONFL_CHANGED_FLAGS)
-	READENTITY_INT(vv_flags, WEAPONFL_CHANGED_FLAGS)
+	READENTITY_INT(m_nuclideFlags, WEAPONFL_CHANGED_FLAGS)
 	READENTITY_COORD(mins[0], WEAPONFL_CHANGED_SIZE)
 	READENTITY_COORD(mins[1], WEAPONFL_CHANGED_SIZE)
 	READENTITY_COORD(mins[2], WEAPONFL_CHANGED_SIZE)
@@ -625,7 +695,7 @@ ncWeapon::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_BYTE(frame, WEAPONFL_CHANGED_FRAME)
 	READENTITY_FLOAT(skin, WEAPONFL_CHANGED_SKIN)
 	READENTITY_FLOAT(effects, WEAPONFL_CHANGED_EFFECTS)
-	READENTITY_SHORT(m_iBody, WEAPONFL_CHANGED_BODY)
+	READENTITY_SHORT(m_geomsetField, WEAPONFL_CHANGED_BODY)
 	READENTITY_FLOAT(scale, WEAPONFL_CHANGED_SCALE)
 	READENTITY_COORD(velocity[0], WEAPONFL_CHANGED_VELOCITY)
 	READENTITY_COORD(velocity[1], WEAPONFL_CHANGED_VELOCITY)
@@ -633,21 +703,20 @@ ncWeapon::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_COORD(avelocity[0], WEAPONFL_CHANGED_ANGULARVELOCITY)
 	READENTITY_COORD(avelocity[1], WEAPONFL_CHANGED_ANGULARVELOCITY)
 	READENTITY_COORD(avelocity[2], WEAPONFL_CHANGED_ANGULARVELOCITY)
-	READENTITY_BYTE(m_iClip, WEAPONFL_CHANGED_CLIP)
-	READENTITY_BYTE(m_iClipSize, WEAPONFL_CHANGED_CLIP)
-	READENTITY_BYTE(m_iMode, WEAPONFL_CHANGED_CLIP)
-	READENTITY_BYTE(m_dState, WEAPONFL_CHANGED_STATE)
-	READENTITY_BYTE(m_bFiring, WEAPONFL_CHANGED_STATE)
-	READENTITY_FLOAT(m_flOverheating, WEAPONFL_CHANGED_STATE)
+	READENTITY_BYTE(m_weaponClip, WEAPONFL_CHANGED_CLIP)
+	READENTITY_BYTE(m_weaponClipSize, WEAPONFL_CHANGED_CLIP)
+	READENTITY_BYTE(m_weaponFireInfoValue, WEAPONFL_CHANGED_CLIP)
+	READENTITY_BYTE(m_weaponState, WEAPONFL_CHANGED_STATE)
+	READENTITY_BYTE(m_weaponIsFiring, WEAPONFL_CHANGED_STATE)
+	READENTITY_FLOAT(m_weaponOverheating, WEAPONFL_CHANGED_STATE)
 
-	/* this has to be done first, any code below may query decl */
+	/* expensive & this has to be done first, any code below may query decl */
 	if (flChanged & WEAPONFL_CHANGED_MODELINDEX) {
-		classname = EntityDef_NameFromNetID(entityDefID);
-		declclass = classname;
+		EntityDef_SetFromEntNum(this, entityDefID);
 	}
 
 	ncActor ourOwner = (ncActor)findfloat(world, ::entnum, owner_entnum);
-	
+
 	if (ourOwner.m_activeWeapon == this) {
 		SwitchFireInfo(m_primaryFireInfo);
 	}
@@ -713,26 +782,26 @@ ncWeapon::PredictPreFrame(void)
 	SAVE_STATE(angles)
 	SAVE_STATE(entityDefID)
 	SAVE_STATE(m_viewModel)
-	SAVE_STATE(m_flFireRate)
+	SAVE_STATE(m_weaponFireRate)
 	SAVE_STATE(solid)
 	SAVE_STATE(movetype)
 	SAVE_STATE(flags)
-	SAVE_STATE(vv_flags)
+	SAVE_STATE(m_nuclideFlags)
 	SAVE_STATE(mins)
 	SAVE_STATE(maxs)
 //	SAVE_STATE(frame)
 //	SAVE_STATE(skin)
 //	SAVE_STATE(effects)
-	SAVE_STATE(m_iBody)
+	SAVE_STATE(m_geomsetField)
 	SAVE_STATE(scale)
 	SAVE_STATE(velocity)
 	SAVE_STATE(avelocity)
-	SAVE_STATE(m_iClip)
-	SAVE_STATE(m_iClipSize)
-	SAVE_STATE(m_iMode)
-	SAVE_STATE(m_dState)
-	SAVE_STATE(m_bFiring)
-	SAVE_STATE(m_flOverheating)
+	SAVE_STATE(m_weaponClip)
+	SAVE_STATE(m_weaponClipSize)
+	SAVE_STATE(m_weaponFireInfoValue)
+	SAVE_STATE(m_weaponState)
+	SAVE_STATE(m_weaponIsFiring)
+	SAVE_STATE(m_weaponOverheating)
 }
 
 void
@@ -747,46 +816,51 @@ ncWeapon::PredictPostFrame(void)
 	ROLL_BACK(angles)
 	ROLL_BACK(entityDefID)
 	ROLL_BACK(m_viewModel)
-	ROLL_BACK(m_flFireRate)
+	ROLL_BACK(m_weaponFireRate)
 	ROLL_BACK(solid)
 	ROLL_BACK(movetype)
 	ROLL_BACK(flags)
-	ROLL_BACK(vv_flags)
+	ROLL_BACK(m_nuclideFlags)
 	ROLL_BACK(mins)
 	ROLL_BACK(maxs)
 //	ROLL_BACK(frame)
 //	ROLL_BACK(skin)
 //	ROLL_BACK(effects)
-	ROLL_BACK(m_iBody)
+	ROLL_BACK(m_geomsetField)
 	ROLL_BACK(scale)
 	ROLL_BACK(velocity)
 	ROLL_BACK(avelocity)
-	ROLL_BACK(m_iClip)
-	ROLL_BACK(m_iClipSize)
-	ROLL_BACK(m_iMode)
-	ROLL_BACK(m_dState)
-	ROLL_BACK(m_bFiring)
-	ROLL_BACK(m_flOverheating)
+	ROLL_BACK(m_weaponClip)
+	ROLL_BACK(m_weaponClipSize)
+	ROLL_BACK(m_weaponFireInfoValue)
+	ROLL_BACK(m_weaponState)
+	ROLL_BACK(m_weaponIsFiring)
+	ROLL_BACK(m_weaponOverheating)
 }
 
 #endif
 
 void
-ncWeapon::_CacheWeaponDefVariables(void)
+ncWeapon::ReloadCachedAttributes(void)
 {
 	string firstType, secondType;
 	string ammoRequired;
 
-	m_strWeaponTitle = GetDefString("inv_name");
-	m_iHudSlot = GetDefInt("hudSlot");
-	m_iHudSlotPos = GetDefInt("hudSlotPos");
+	m_weaponTitle = GetDefString("inv_name");
+
+#ifdef CLIENT
+	m_weaponTitle = localize(m_weaponTitle);
+#endif
+
+	m_weaponHUDSlot = GetDefInt("hudSlot");
+	m_weaponHUDSlotPos = GetDefInt("hudSlotPos");
 
 	/* movement vars */
-	m_flSpeedMod = GetDefFloat("speed_mod");
-	m_bBuggyIdleAnim = GetDefBool("buggyIdleAnim");
+	m_fiSpeedMod = GetDefFloat("speed_mod");
+	m_fiBuggyIdleAnim = GetDefBool("buggyIdleAnim");
 
-	if (m_flSpeedMod <= 0.0) {
-		m_flSpeedMod = 1.0f;
+	if (m_fiSpeedMod <= 0.0) {
+		m_fiSpeedMod = 1.0f;
 	}
 
 	/* string lookups can be expensive if done too often
@@ -803,15 +877,15 @@ ncWeapon::_CacheWeaponDefVariables(void)
 
 	/* may be defined in either fireInfo or weaponDef */
 	ammoRequired = GetSubDefString(m_primaryFireInfo, "ammoRequired");
-	m_bAmmoRequired = stof(ammoRequired);
+	m_weaponRequiresAmmo = stof(ammoRequired);
 	m_primaryAmmoType = ammoNumForName(firstType);
-	m_flPrimedFuse = GetDefFloat("primed_fuse");
-	m_bPowerAmmo = GetDefBool("powerAmmo");
-	m_bRemoveOnEmpty = GetDefBool("removeOnEmpty");
-	m_fxTrail = particleeffectnum(GetDefString("fx_trail"));
+	m_fiPrimedFuse = GetDefFloat("primed_fuse");
+	m_fiPowerAmmo = GetDefBool("powerAmmo");
+	m_fiRemoveOnEmpty = GetDefBool("removeOnEmpty");
+	m_fiFXTrail = particleeffectnum(GetDefString("fx_trail"));
 	m_viewModel = getmodelindex(GetDefString("model_view"));
 	m_worldModel = getmodelindex(GetDefString("model"));
-	m_bAltModeSwitch = GetDefBool("altMode");
+	m_fiAltModeSwitch = GetDefBool("altMode");
 
 	/* gettagindex takes the silliest of parameters to determine which model to query */
 	string jointTrailWorld = GetDefString("joint_world_trail");
@@ -870,9 +944,9 @@ ncWeapon::IsEmpty(void)
 
 	if (m_fiAmmoRequired) {
 		/* this weapon uses a clip/magazine */
-		if (m_iClipSize && m_fiAmmoType == m_primaryAmmoType) {
+		if (m_weaponClipSize && m_fiAmmoType == m_primaryAmmoType) {
 			/* no more ammo in clip? */
-			if (m_iClip <= 0i || (m_iClip - m_fiAmmoPerShot) < 0i) {
+			if (m_weaponClip <= 0i || (m_weaponClip - m_fiAmmoPerShot) < 0i) {
 				/* possible to reload? */
 				if (ourOwner.HasAmmo(m_fiAmmoType, 1) == true) {
 					return (false);
@@ -896,7 +970,7 @@ ncWeapon::Draw(void)
 	float drawAnimation = -1;
 	float drawTime = 0.0f;
 
-	if (m_iClipSize > 0 && m_iClip == 0) {
+	if (m_weaponClipSize > 0 && m_weaponClip == 0) {
 		drawAnimation = GetSubDefAct(m_primaryFireInfo, "drawEmpty");
 	}
 
@@ -917,7 +991,7 @@ ncWeapon::Draw(void)
 
 	SetAttackNext(drawTime);
 	SetIdleNext(drawTime);
-	
+
 	ncPlayer ourOwner = (ncPlayer)GetOwner();
 	ourOwner.viewzoom = 1.0f;
 }
@@ -949,33 +1023,33 @@ ncWeapon::UseAmmo(string fireInfo)
 
 	if (m_fiAmmoRequired) {
 		/* this weapon uses a clip/magazine */
-		if (m_iClipSize && m_fiAmmoType == m_primaryAmmoType) {
+		if (m_weaponClipSize && m_fiAmmoType == m_primaryAmmoType) {
 			/* no more ammo in clip? */
-			if (m_iClip <= 0i || (m_iClip - m_fiAmmoPerShot) < 0i) {
+			if (m_weaponClip <= 0i || (m_weaponClip - m_fiAmmoPerShot) < 0i) {
 				/* possible to reload? */
 				if (ourOwner.HasAmmo(m_fiAmmoType, 1) == true) {
 					Reload();
 					return (false);
 				} else { /* no, play empty sound */
 					EmptySound();
-					m_bFiring = false;
+					m_weaponIsFiring = false;
 				}
 				return (false);
 			}
 
-			m_iClip -= m_fiAmmoPerShot;
+			m_weaponClip -= m_fiAmmoPerShot;
 		} else if (ourOwner.UseAmmo(m_fiAmmoType, m_fiAmmoPerShot) == false) {
 			EmptySound();
-			m_bFiring = false;
+			m_weaponIsFiring = false;
 			return (false);
 		}
 	}
-	
+
 	if (TestFireAbility(fireInfo) == false) {
 		float failAnim = GetSubDefAct(fireInfo, "fireFailed");
 		float failRate = GetSubDefFloat(fireInfo, "failRate");
 		float failDuration = frameduration(m_viewModel, failAnim);
-		
+
 		if (!failRate) {
 			failRate = failDuration;
 		}
@@ -1031,7 +1105,7 @@ ncWeapon::FiredWeaponAttack(string fireInfo)
 	}
 
 	/* prevent release from firing it again */
-	if (m_bPowerAmmo) {
+	if (m_fiPowerAmmo) {
 		m_fiWillRelease = false;
 	}
 }
@@ -1048,9 +1122,9 @@ ncWeapon::ReleasedWeaponAttack(string fireInfo)
 	ncPlayer ourOwner = (ncPlayer)GetOwner();
 
 	/* don't apply to projectiles without fuses */
-	if (m_flPrimedFuse <= 0) {
+	if (m_fiPrimedFuse <= 0) {
 #ifdef SERVER
-		ourOwner.nadeCookingTime = time;
+		ourOwner.m_weaponCookingTime = time;
 #endif
 	}
 
@@ -1071,7 +1145,7 @@ ncWeapon::Attack(string fireInfo)
 	ncPlayer ourOwner = (ncPlayer)GetOwner();
 	float shotAnim = -1;
 	float fireRate = 1.0f;
-	
+
 	if (GetWeaponState() == WEAPONSTATE_RELOAD) {
 		_SetWeaponState(WEAPONSTATE_RELOAD_END);
 		SetIdleNext(0.0f);
@@ -1085,12 +1159,11 @@ ncWeapon::Attack(string fireInfo)
 		ourOwner.gflags |= GF_SEMI_TOGGLED;
 	}
 
-
 	/* no real attack, detonate named satchels, pipe bombs, etc. */
 	if (STRING_SET(m_fiDetonateOnFire)) {
 		if (DetonateDef(m_fiDetonateOnFire) == true) {
 			float detonateAct = GetSubDefAct(fireInfo, "detonate");
-			
+
 			if (detonateAct >= 0) {
 				SetWeaponFrame(GetSubDefAct(fireInfo, "detonate"));
 			}
@@ -1100,19 +1173,19 @@ ncWeapon::Attack(string fireInfo)
 	}
 
 	/* Remove when empty */
-	if (m_bRemoveOnEmpty == true && HasReserveAmmo() == false && m_iClipSize <= 0i) {
+	if (m_fiRemoveOnEmpty == true && HasReserveAmmo() == false && m_weaponClipSize <= 0i) {
 		ourOwner.RemoveItem(classname);
 		return;
 	}
 
 	/* will release projectile upon release. */
-	if (!(ourOwner.vv_flags & VFL_PRIMEDFUSE) && STRING_SET(m_fiOnRelease)) {
+	if (!(ourOwner.m_nuclideFlags & VFL_PRIMEDFUSE) && STRING_SET(m_fiOnRelease)) {
 		_SetWeaponState(WEAPONSTATE_RELEASED);
-		ourOwner.vv_flags |= VFL_PRIMEDFUSE;
+		ourOwner.m_nuclideFlags |= VFL_PRIMEDFUSE;
 	}
 
 	/* "fireUnderwater" check */
-	if (m_fireUnderwater == false && owner.waterlevel >= WATERLEVEL_SUBMERGED) {
+	if (m_fiFireUnderwater == false && owner.waterlevel >= WATERLEVEL_SUBMERGED) {
 		EmptySound();
 		return;
 	}
@@ -1130,7 +1203,7 @@ ncWeapon::Attack(string fireInfo)
 			SetAttackNext(m_fiChargeTime);
 
 #ifdef SERVER
-			ourOwner.nadeCookingTime = time;
+			ourOwner.m_weaponCookingTime = time;
 			PlaySound(GetSubDefString(fireInfo, "snd_delay"), CHAN_WEAPON, false);
 #endif
 
@@ -1150,18 +1223,18 @@ ncWeapon::Attack(string fireInfo)
 		}
 
 #ifdef SERVER
-		ourOwner.nadeCookingTime = time;
+		ourOwner.m_weaponCookingTime = time;
 #endif
 	}
 
-	ourOwner.punchangle += m_fiPunchAngle;
-	ourOwner.punchvelocity += m_fiPunchSpring * 20.0f;
+	ourOwner.m_punchAngle += m_fiPunchAngle;
+	ourOwner.m_punchVelocity += m_fiPunchSpring * 20.0f;
 
 #ifdef SERVER
 	string fireSound = m_fiSndFire;
 	v_angle = input_angles;
 
-	if (m_iClipSize > 0 && m_iClip == 0) {
+	if (m_weaponClipSize > 0 && m_weaponClip == 0) {
 		if (m_fiSndFireLast != "") {
 			fireSound = m_fiSndFireLast;
 		}
@@ -1178,8 +1251,8 @@ ncWeapon::Attack(string fireInfo)
 		return;
 	}
 
-	if (m_bHasLoop == false) {
-		if (m_iClipSize > 0 && m_iClip == 0) {
+	if (m_fiLoopingFire == false) {
+		if (m_weaponClipSize > 0 && m_weaponClip == 0) {
 			shotAnim = GetSubDefAct(fireInfo, "fireLast");
 		}
 
@@ -1196,13 +1269,13 @@ ncWeapon::Attack(string fireInfo)
 
 	/* build up heat */
 	if (m_fiOverheatLength > 0.0f && m_fiOverheatPoints > 0.0f) {
-		m_flOverheating += m_fiOverheatPoints;
+		m_weaponOverheating += m_fiOverheatPoints;
 
 #ifdef SERVER
-		//printf("%f (%f)\n", m_flOverheating, (m_flOverheating / m_fiOverheatLength));
+		//printf("%f (%f)\n", m_weaponOverheating, (m_weaponOverheating / m_fiOverheatLength));
 #endif
 
-		if (m_flOverheating >= m_fiOverheatLength) {
+		if (m_weaponOverheating >= m_fiOverheatLength) {
 			_SetWeaponState(WEAPONSTATE_OVERHEATED);
 		}
 	} else if (m_fiCocks) {
@@ -1233,7 +1306,7 @@ ncWeapon::Attack(string fireInfo)
 #endif
 #endif
 
-	m_bFiring = true;
+	m_weaponIsFiring = true;
 }
 
 void
@@ -1267,12 +1340,12 @@ ncWeapon::_SwitchedWeaponMode(void)
 {
 	float animMode = -1;
 
-	if (m_iMode) {
-		animMode = GetSubDefAct(m_strLastFireInfo, "modeOn");
+	if (m_weaponFireInfoValue) {
+		animMode = GetSubDefAct(m_weaponLastFireInfo, "modeOn");
 		SwitchFireInfo(m_secondaryFireInfo);
 	} else {
 		SwitchFireInfo(m_primaryFireInfo);
-		animMode = GetSubDefAct(m_strLastFireInfo, "modeOff");
+		animMode = GetSubDefAct(m_weaponLastFireInfo, "modeOff");
 	}
 
 	if (animMode >= 0) {
@@ -1287,13 +1360,13 @@ ncWeapon::PlaySound(string soundDef, float soundChannel, bool clientOnly)
 {
 #ifdef CLIENT
 	if (clientOnly) {
-		Sound_Play(owner, soundChannel, soundDef);
+		SoundDef_Play(owner, soundChannel, soundDef);
 	}
 #endif
 
 #ifdef SERVER
 	if (!clientOnly) {
-		Sound_Play(owner, soundChannel, soundDef);
+		SoundDef_Play(owner, soundChannel, soundDef);
 	}
 #endif
 }
@@ -1310,7 +1383,7 @@ ncWeapon::TestFireAbility(string fireInfo)
 		vector eyeAngles = ourOwner.v_angle;
 		int oldhitcontents = ourOwner.hitcontentsmaski;
 		vector traceStart = ourOwner.GetEyePos();
-		
+
 		if (invertCheck) {
 			fiTestDistance = fabs(fiTestDistance);
 		}
@@ -1336,15 +1409,24 @@ ncWeapon::Idle(void)
 	ncPlayer ourOwner = (ncPlayer)GetOwner();
 	float idleAnim = -1;
 
-	m_flOverheating = max(0.0f, m_flOverheating - input_timelength);
+	m_weaponOverheating = max(0.0f, m_weaponOverheating - input_timelength);
+
+	if (m_fiDepleteAmmo > 0) {
+		if (CanFire() == true) {
+			if (m_weaponAmmoDepleteTime < time) {
+				ourOwner.UseAmmo(m_primaryAmmoType, m_fiDepleteAmmo);
+				m_weaponAmmoDepleteTime = (time + m_fiDepleteRate);
+			}
+		}
+	}
 
 	if (CanIdle() == false) {
 		return;
 	}
 
 	if (m_fiWillRelease) {
-		idleAnim = GetSubDefAct(m_strLastFireInfo, "cooking");
-		
+		idleAnim = GetSubDefAct(m_weaponLastFireInfo, "cooking");
+
 		if (idleAnim >= 0) {
 			SetWeaponFrame(idleAnim);
 			SetIdleNext(frameduration(m_viewModel, idleAnim));
@@ -1353,9 +1435,9 @@ ncWeapon::Idle(void)
 	}
 
 	/* handle shotgun style reloads */
-	switch (m_dState) {
+	switch (m_weaponState) {
 	case WEAPONSTATE_RELOAD_START:
-		idleAnim = GetSubDefAct(m_strLastFireInfo, "reloadStart");
+		idleAnim = GetSubDefAct(m_weaponLastFireInfo, "reloadStart");
 		_SetWeaponState(WEAPONSTATE_RELOAD);
 #ifdef SERVER
 		PlaySound(GetDefString("snd_reloadStart"), CHAN_AUTO, false);
@@ -1364,18 +1446,18 @@ ncWeapon::Idle(void)
 		break;
 	case WEAPONSTATE_RELOAD:
 		float reloadTime;
-		idleAnim = GetSubDefAct(m_strLastFireInfo, "reload");
-		m_iClip++;
+		idleAnim = GetSubDefAct(m_weaponLastFireInfo, "reload");
+		m_weaponClip++;
 		ourOwner.UseAmmo(m_primaryAmmoType, 1);
 
-		if (HasReserveAmmo() == false || m_iClip >= m_iClipSize) {
+		if (HasReserveAmmo() == false || m_weaponClip >= m_weaponClipSize) {
 			_SetWeaponState(WEAPONSTATE_RELOAD_END);
 		}
 
-		if (m_flReloadSpeed == -1.0f) {
+		if (m_fiReloadTime == -1.0f) {
 			reloadTime = frameduration(m_viewModel, idleAnim);
 		} else {
-			reloadTime = m_flReloadSpeed;
+			reloadTime = m_fiReloadTime;
 		}
 #ifdef SERVER
 		PlaySound(GetDefString("snd_reload"), CHAN_AUTO, false);
@@ -1386,7 +1468,7 @@ ncWeapon::Idle(void)
 		return;
 		break;
 	case WEAPONSTATE_RELOAD_END:
-		idleAnim = GetSubDefAct(m_strLastFireInfo, "reloadEnd");
+		idleAnim = GetSubDefAct(m_weaponLastFireInfo, "reloadEnd");
 		_SetWeaponState(WEAPONSTATE_IDLE);
 #ifdef SERVER
 		PlaySound(GetDefString("snd_reloadEnd"), CHAN_AUTO, false);
@@ -1394,14 +1476,14 @@ ncWeapon::Idle(void)
 		SetAttackNext(frameduration(m_viewModel, idleAnim));
 		break;
 	case WEAPONSTATE_FIRELOOP:
-		idleAnim = GetSubDefAct(m_strLastFireInfo, "loop");
+		idleAnim = GetSubDefAct(m_weaponLastFireInfo, "loop");
 		break;
 	case WEAPONSTATE_CHARGING:
-		idleAnim = GetSubDefAct(m_strLastFireInfo, "loop");
+		idleAnim = GetSubDefAct(m_weaponLastFireInfo, "loop");
 		break;
 	case WEAPONSTATE_COCK:
 		//breakpoint();
-		idleAnim = GetSubDefAct(m_strLastFireInfo, "cock");
+		idleAnim = GetSubDefAct(m_weaponLastFireInfo, "cock");
 #ifdef SERVER
 		PlaySound(GetDefString("snd_cock"), CHAN_AUTO, false);
 #endif
@@ -1416,12 +1498,12 @@ ncWeapon::Idle(void)
 		}
 
 		if (STRING_SET(m_fiOnRelease)) {
-			UseAmmo(m_strLastFireInfo);
+			UseAmmo(m_weaponLastFireInfo);
 		}
 
-		ReleasedWeaponAttack(m_strLastFireInfo);
-		ourOwner.vv_flags &= ~VFL_PRIMEDFUSE;
-		idleAnim = GetSubDefAct(m_strLastFireInfo, "release");
+		ReleasedWeaponAttack(m_weaponLastFireInfo);
+		ourOwner.m_nuclideFlags &= ~VFL_PRIMEDFUSE;
+		idleAnim = GetSubDefAct(m_weaponLastFireInfo, "release");
 		SetAttackNext(frameduration(m_viewModel, idleAnim));
 
 		if (m_fiDrawAfterRelease == true) {
@@ -1443,8 +1525,8 @@ ncWeapon::Idle(void)
 		return;
 	case WEAPONSTATE_IDLE:
 	default:
-		if (m_iClipSize > 0 && m_iClip == 0) {
-			idleAnim = GetSubDefAct(m_strLastFireInfo, "idleEmpty");
+		if (m_weaponClipSize > 0 && m_weaponClip == 0) {
+			idleAnim = GetSubDefAct(m_weaponLastFireInfo, "idleEmpty");
 
 			/* TODO: may want this? hard to say. */
 			/*if (idleAnim < 0) {
@@ -1454,7 +1536,7 @@ ncWeapon::Idle(void)
 		}
 
 		if (idleAnim < 0) {
-			idleAnim = GetSubDefAct(m_strLastFireInfo, "idle");
+			idleAnim = GetSubDefAct(m_weaponLastFireInfo, "idle");
 		}
 	}
 
@@ -1465,7 +1547,15 @@ ncWeapon::Idle(void)
 	}
 
 	SetWeaponFrame(idleAnim);
-	SetIdleNext(frameduration(m_viewModel, idleAnim));
+
+	float nextIdle = frameduration(m_viewModel, idleAnim);
+
+	/* not a valid idle length to begin with. pad it */
+	if (nextIdle <= 0.0f) {
+		SetIdleNext(10.0f);
+	} else {
+		SetIdleNext(frameduration(m_viewModel, idleAnim));
+	}
 }
 
 void
@@ -1479,7 +1569,7 @@ ncWeapon::PrimaryAttack(void)
 			return;
 		}
 
-		if (m_bHasLoop) {
+		if (m_fiLoopingFire) {
 			Release();
 		} else {
 			Idle();
@@ -1488,17 +1578,17 @@ ncWeapon::PrimaryAttack(void)
 		return;
 	}
 
-	if (m_bAltModeSwitch == true) {
+	if (m_fiAltModeSwitch == true) {
 		if (CanFire() == false) {
 			return;
 		}
 	}
 
 	if (GetDefBool("altAlternates") == true) {
-		m_iMode = 1 - m_iMode;
+		m_weaponFireInfoValue = 1 - m_weaponFireInfoValue;
 	}
 
-	if (m_iMode) {
+	if (m_weaponFireInfoValue) {
 		Attack(m_secondaryFireInfo);
 		return;
 	}
@@ -1514,17 +1604,17 @@ ncWeapon::SecondaryAttack(void)
 	float fireRate = 0.0f;
 
 	/* zoom takes priority */
-	if (m_flZoomFOV > 0.0f) {
+	if (m_fiZoomFOV > 0.0f) {
 		if (CanFire() == false) {
 			return;
 		}
-	
+
 		ourOwner = (ncPlayer)GetOwner();
 
 #ifdef SERVER
 		if (ourOwner.viewzoom == 1.0) {
 			PlaySound(GetDefString("snd_lowerScope"), CHAN_AUTO, false);
-			SetViewZoom(m_flZoomFOV);
+			SetViewZoom(m_fiZoomFOV);
 		} else {
 			PlaySound(GetDefString("snd_raiseScope"), CHAN_AUTO, false);
 			SetViewZoom(1.0f);
@@ -1533,16 +1623,16 @@ ncWeapon::SecondaryAttack(void)
 
 		ourOwner.gflags |= GF_SEMI_TOGGLED;
 		return;
-	} else if (m_bAltModeSwitch == true) {
+	} else if (m_fiAltModeSwitch == true) {
 		if (CanFire() == false) {
 			Idle();
 			return;
 		}
 
-		m_iMode = 1 - m_iMode;
+		m_weaponFireInfoValue = 1 - m_weaponFireInfoValue;
 
 #ifdef SERVER
-		if (m_iMode) {
+		if (m_weaponFireInfoValue) {
 			PlaySound(GetDefString("snd_modeOn"), CHAN_AUTO, false);
 		} else {
 			PlaySound(GetDefString("snd_modeOff"), CHAN_AUTO, false);
@@ -1557,7 +1647,7 @@ ncWeapon::SecondaryAttack(void)
 
 
 	/* no fire info? don't even bother then */
-	if (m_secondaryFireInfo == "") {
+	if (!STRING_SET(m_secondaryFireInfo)) {
 		Release();
 		return;
 	}
@@ -1578,14 +1668,14 @@ ncWeapon::_ReloadFinished(void)
 	ncPlayer ourOwner = (ncPlayer)GetOwner();
 	int ammoToDeduct;
 
-	ammoToDeduct = m_iClipSize - m_iClip;
+	ammoToDeduct = m_weaponClipSize - m_weaponClip;
 
 	/* not enough ammo. assign whatever is left. */
 	if (ourOwner.HasAmmo(m_primaryAmmoType, ammoToDeduct) == false) {
-		ammoToDeduct = ourOwner.m_iAmmoTypes[m_primaryAmmoType];
-		m_iClip += ammoToDeduct;
+		ammoToDeduct = ourOwner.m_ammoTypes[m_primaryAmmoType];
+		m_weaponClip += ammoToDeduct;
 	} else {
-		m_iClip = m_iClipSize;
+		m_weaponClip = m_weaponClipSize;
 	}
 
 	ourOwner.UseAmmo(m_primaryAmmoType, ammoToDeduct);
@@ -1609,13 +1699,13 @@ ncWeapon::Reload(void)
 	float reloadStartAct = -1;
 
 	/* already in a reload? */
-	if (m_dState >= WEAPONSTATE_RELOAD_START && m_dState <= WEAPONSTATE_RELOAD_END) {
+	if (m_weaponState >= WEAPONSTATE_RELOAD_START && m_weaponState <= WEAPONSTATE_RELOAD_END) {
 		return;
 	}
-	reloadStartAct = GetSubDefAct(m_strLastFireInfo, "reloadStart");
+	reloadStartAct = GetSubDefAct(m_weaponLastFireInfo, "reloadStart");
 
 	/* we cannot reload this weapon by principle. */
-	if (!m_iClipSize) {
+	if (!m_weaponClipSize) {
 		return;
 	}
 
@@ -1628,7 +1718,7 @@ ncWeapon::Reload(void)
 	ammoType = GetSubDefString(m_primaryFireInfo, "ammoType");
 	ammoTypeID = ammoNumForName(ammoType);
 
-	if (m_iClip == m_iClipSize) {
+	if (m_weaponClip == m_weaponClipSize) {
 		Idle();
 		return;
 	}
@@ -1646,30 +1736,29 @@ ncWeapon::Reload(void)
 		return;
 	}
 
-	if (m_iClipSize > 0 && m_iClip == 0) {
-		reloadAnimation = GetSubDefAct(m_strLastFireInfo, "reloadEmpty");
+	if (m_weaponClipSize > 0 && m_weaponClip == 0) {
+		reloadAnimation = GetSubDefAct(m_weaponLastFireInfo, "reloadEmpty");
 	}
 
 	if (reloadAnimation < 0) {
-		reloadAnimation = GetSubDefAct(m_strLastFireInfo, "reload");
-		
+		reloadAnimation = GetSubDefAct(m_weaponLastFireInfo, "reload");
+
 		/* check if we should schedule a reload-end */
-		if (GetSubDefAct(m_strLastFireInfo, "reloadEnd") >= 0) {
+		if (GetSubDefAct(m_weaponLastFireInfo, "reloadEnd") >= 0) {
 			_SetWeaponState(WEAPONSTATE_RELOAD_END);
 		}
 	}
 
-	if (m_flReloadSpeed == -1.0f) {
+	if (m_fiReloadTime == -1.0f) {
 		reloadTime = frameduration(m_viewModel, reloadAnimation);
 	} else {
-		reloadTime = m_flReloadSpeed;
+		reloadTime = m_fiReloadTime;
 	}
 
 #ifdef SERVER
-
 	string reloadSound = GetDefString("snd_reload");
 
-	if (m_iClipSize > 0 && m_iClip == 0) {
+	if (m_weaponClipSize > 0 && m_weaponClip == 0) {
 		string emptyReload = GetDefString("snd_reloadEmpty");
 
 		if (emptyReload != "") {
@@ -1715,11 +1804,11 @@ ncWeapon::_WeaponStartedFiring(void)
 	}
 
 	/* hasn't been fired yet. */
-	if (!(owner.vv_flags & VFL_FIRING)) {
-		float actFireStart = GetSubDefAct(m_strLastFireInfo, "fireStart");
+	if (!(owner.m_nuclideFlags & VFL_FIRING)) {
+		float actFireStart = GetSubDefAct(m_weaponLastFireInfo, "fireStart");
 
 		/* we may be supposed to be looping */
-		if (m_bHasLoop) {
+		if (m_fiLoopingFire) {
 			_SetWeaponState(WEAPONSTATE_FIRELOOP);
 			SetIdleNext(0.0); /* to be potentially overriden by actFireStart! */
 		}
@@ -1743,19 +1832,19 @@ ncWeapon::_WeaponStartedFiring(void)
 			ourOwner.StartSoundDef(m_fiSndFireLoop, CHAN_LOOP, true);
 		}
 
-		//printf("actFireStart %d %S\n", actFireStart, m_strLastFireInfo);
+		//printf("actFireStart %d %S\n", actFireStart, m_weaponLastFireInfo);
 #endif
 
 		WeaponStartedFiring();
 	}
 
-	owner.vv_flags |= VFL_FIRING;
+	owner.m_nuclideFlags |= VFL_FIRING;
 }
 
 void
 ncWeapon::_WeaponStoppedFiring(void)
 {
-	if (m_bHasLoop == false) {
+	if (m_fiLoopingFire == false) {
 		if (CanFire() == false) {
 			return;
 		}
@@ -1764,7 +1853,7 @@ ncWeapon::_WeaponStoppedFiring(void)
 	/* was still registed as firing */
 	if (WeaponIsFiring() == true) {
 		ncPlayer ourOwner = (ncPlayer)GetOwner();
-		float actFireStop = GetSubDefAct(m_strLastFireInfo, "fireStop");
+		float actFireStop = GetSubDefAct(m_weaponLastFireInfo, "fireStop");
 
 		if (actFireStop >= 0) {
 			SetWeaponFrame(actFireStop);
@@ -1773,26 +1862,26 @@ ncWeapon::_WeaponStoppedFiring(void)
 		}
 
 		/* only go through the 'released' arc if we were either looping or got something to release? */
-		if (m_bHasLoop || actFireStop >= 0) {
+		if (m_fiLoopingFire || actFireStop >= 0) {
 			_SetWeaponState(WEAPONSTATE_RELEASED);
 		}
 
 		WeaponStoppedFiring();
 
 		/* Remove when empty, but not when we're supposed to be detonating on fire */
-		if (!STRING_SET(m_fiDetonateOnFire) && m_bRemoveOnEmpty && HasReserveAmmo() == false && m_iClipSize <= 0i) {
+		if (!STRING_SET(m_fiDetonateOnFire) && m_fiRemoveOnEmpty && HasReserveAmmo() == false && m_weaponClipSize <= 0i) {
 			ourOwner.RemoveItem(classname);
 			return;
 		}
 	}
 
-	owner.vv_flags &= ~VFL_FIRING;
+	owner.m_nuclideFlags &= ~VFL_FIRING;
 }
 
 bool
 ncWeapon::WeaponIsFiring(void)
 {
-	return (owner.vv_flags & VFL_FIRING) ? (true) : (false);
+	return (owner.m_nuclideFlags & VFL_FIRING) ? (true) : (false);
 }
 
 void
@@ -1805,6 +1894,42 @@ ncWeapon::WeaponStoppedFiring(void)
 {
 }
 
+float
+ncWeapon::PlayerSpeedMod(void)
+{
+	return (m_fiSpeedMod);
+}
+
+float
+ncWeapon::OverheatingProgress(void)
+{
+	return (m_weaponOverheating);
+}
+
+int
+ncWeapon::GetClip(void)
+{
+	return (m_weaponClip);
+}
+
+int
+ncWeapon::GetClipSize(void)
+{
+	return (m_weaponClipSize);
+}
+
+bool
+ncWeapon::RequiresAmmo(void)
+{
+	return (m_weaponRequiresAmmo);
+}
+
+int
+ncWeapon::FireInfoSelected(void)
+{
+	return (m_weaponFireInfoValue);
+}
+
 void
 ncWeapon::Release(void)
 {
@@ -1812,8 +1937,15 @@ ncWeapon::Release(void)
 	ncPlayer ourOwner = (ncPlayer)GetOwner();
 	ourOwner.gflags &= ~GF_SEMI_TOGGLED;
 
+	if (m_fiRegenAmmo > 0) {
+		if (m_weaponAmmoRegenTime < time) {
+			ourOwner.GiveAmmo(m_primaryAmmoType, m_fiRegenAmmo);
+			m_weaponAmmoRegenTime = (time + m_fiRegenRate);
+		}
+	}
+
 	/* we're allowed to release any time. allow it! */
-	if (ourOwner.vv_flags & VFL_PRIMEDFUSE) {
+	if (ourOwner.m_nuclideFlags & VFL_PRIMEDFUSE) {
 		_SetWeaponState(WEAPONSTATE_RELEASED);
 		SetIdleNext(0.0f);
 	}
@@ -1823,7 +1955,7 @@ ncWeapon::Release(void)
 			/* hack to get around the ammo usage when charging */
 			float oldChargeTime = m_fiChargeTime;
 			m_fiChargeTime = 0.0f;
-			Attack(m_strLastFireInfo);
+			Attack(m_weaponLastFireInfo);
 			m_fiChargeTime = oldChargeTime;
 			return;
 		}
@@ -1831,7 +1963,7 @@ ncWeapon::Release(void)
 
 #if 0
 	/* already in a reload? */
-	if (!(m_dState >= WEAPONSTATE_RELOAD_START && m_dState <= WEAPONSTATE_RELOAD_END)) {
+	if (!(m_weaponState >= WEAPONSTATE_RELOAD_START && m_weaponState <= WEAPONSTATE_RELOAD_END)) {
 		_SetWeaponState(WEAPONSTATE_IDLE);
 	}
 #endif
@@ -1847,7 +1979,7 @@ ncWeapon::Release(void)
 	}
 #endif
 
-	m_bFiring = false;
+	m_weaponIsFiring = false;
 
 	Idle();
 }
@@ -1860,7 +1992,7 @@ ncWeapon::UpdateGUI(void)
 	static float baseIconSize = 32.0f;
 	static float baseIconPadding = 16.0f;
 
-	if (m_bAmmoRequired == false) {
+	if (RequiresAmmo() == false) {
 		return;
 	}
 
@@ -1872,15 +2004,13 @@ ncWeapon::UpdateGUI(void)
 	iconPos[1] = (hudSize[1] - baseIconSize) - baseIconPadding;
 	drawpic(iconPos, "gfx/hud/armor", [baseIconSize, baseIconSize], [1,1,1], 1.0f);
 
-	ourOwner.a_ammo2 = ourOwner.GetReserveAmmo(m_primaryAmmoType);
 	iconPos[0] -= baseIconSize + baseIconPadding;
-	Font_DrawRText(iconPos, itos(ourOwner.a_ammo2), FONT_16);
+	Font_DrawRText(iconPos, itos(ourOwner.GetReserveAmmo(m_primaryAmmoType)), FONT_16);
 
 	iconPos[0] -= baseIconSize + baseIconPadding;
 
-	if (m_iClipSize > 0i) {
-		ourOwner.a_ammo1 = m_iClip;
-		Font_DrawRText(iconPos, itos(ourOwner.a_ammo1), FONT_16);
+	if (m_weaponClipSize > 0i) {
+		Font_DrawRText(iconPos, itos(m_weaponClip), FONT_16);
 	}
 #endif
 }
@@ -1933,8 +2063,8 @@ ncWeapon::SetWeaponFrame(float newSequence)
 	ncPlayer ourOwner = (ncPlayer)GetOwner();
 
 	if (ourOwner) {
-		ourOwner.weaponframe = newSequence;
-		ourOwner.weapontime = 0.0f;
+		ourOwner.m_weaponAnimSequence = newSequence;
+		ourOwner.m_weaponAnimTime = 0.0f;
 	}
 }
 
@@ -1947,7 +2077,7 @@ ncWeapon::SetAttackNext(float newDelay)
 		return;
 	}
 
-	ourOwner.w_attack_next = newDelay;
+	ourOwner.m_timeUntilNextAttack = newDelay;
 	SetReloadNext(newDelay);
 }
 
@@ -1960,7 +2090,7 @@ ncWeapon::SetReloadNext(float newDelay)
 		return;
 	}
 
-	ourOwner.w_reload_next = newDelay;
+	ourOwner.m_timeUntilReloaded = newDelay;
 }
 
 void
@@ -1973,10 +2103,10 @@ ncWeapon::SetIdleNext(float newDelay)
 	}
 
 	/* HACK: RT2 requires this as their anims have junk at the end :/ */
-	if (m_bBuggyIdleAnim == true)
-		ourOwner.w_idle_next = bound(0.0, newDelay - 0.05f, newDelay);
+	if (m_fiBuggyIdleAnim == true)
+		ourOwner.m_timeUntilNextIdle = bound(0.0, newDelay - 0.05f, newDelay);
 	else
-		ourOwner.w_idle_next = newDelay;
+		ourOwner.m_timeUntilNextIdle = newDelay;
 }
 
 bool
@@ -1984,7 +2114,7 @@ ncWeapon::CanIdle(void)
 {
 	ncPlayer ourOwner = (ncPlayer)GetOwner();
 
-	if (ourOwner.w_idle_next > 0.0f) {
+	if (ourOwner.m_timeUntilNextIdle > 0.0f) {
 		return (false);
 	}
 
@@ -1996,7 +2126,7 @@ ncWeapon::CanFire(void)
 {
 	ncPlayer ourOwner = (ncPlayer)GetOwner();
 
-	if (ourOwner.w_attack_next > 0.0f) {
+	if (ourOwner.m_timeUntilNextAttack > 0.0f) {
 		return (false);
 	}
 
@@ -2017,7 +2147,7 @@ ncWeapon::CanReload(void)
 {
 	ncPlayer ourOwner = (ncPlayer)GetOwner();
 
-	if (ourOwner.w_reload_next > 0.0f) {
+	if (ourOwner.m_timeUntilReloaded > 0.0f) {
 		return (false);
 	}
 
@@ -2041,4 +2171,3 @@ ncWeapon::UsesSecondaryAmmo(void)
 {
 	return (m_secondaryAmmoType && m_primaryAmmoType != m_secondaryAmmoType) ? (true) : (false);
 }
-

@@ -19,22 +19,94 @@ ncActor::ncActor(void)
 {
 #ifdef SERVER
 	m_activeSchedule = __NULL__;
-	m_iNodes = 0i;
-	m_iCurNode = -1i;
-	m_pRoute = __NULL__;
-	m_vecLastNode = [0,0,0];
-	m_vecTurnAngle = [0,0,0];
-	m_flMoveSpeedKey = 0.0f;
+	m_pathfindingNodeCount = 0i;
+	m_pathfindingCurrentNode = -1i;
+	m_pathfindingGraph = __NULL__;
+	m_pathfindingDestination = [0,0,0];
+	m_moveSpeedKey = 0.0f;
 	m_pathTarget = "";
 	m_pathEntity = __NULL__;
-
-	_m_flRouteGiveUp = 0.0f;
+	m_timeUntilDroppingRoute = 0.0f;
 #endif
 
 	m_itemList = __NULL__;
 
 	for (int i = 0i; i < MAX_AMMO_TYPES; i++) {
-		m_iAmmoTypes[i] = 0i;
+		m_ammoTypes[i] = 0i;
+	}
+}
+
+void
+ncActor::ReloadCachedAttributes(void)
+{
+	m_sndStepLadderLeft = GetSpawnString("snd_stepladderLeft");
+
+	if (STRING_SET(m_sndStepLadderLeft)) {
+		m_sndStepLadderRight = GetSpawnString("snd_stepladderRight");
+	} else {
+		m_sndStepLadderLeft =
+		m_sndStepLadderRight = GetSpawnString("snd_stepladder");
+	}
+
+	m_sndDeath = GetSpawnString("snd_death");
+	m_sndFall = GetSpawnString("snd_fall");
+	m_sndPainSmall = GetSpawnString("snd_painSmall");
+
+	if (STRING_SET(m_sndPainSmall)) {
+		m_sndPainMedium = GetSpawnString("snd_painMedium");
+		m_sndPainLarge = GetSpawnString("snd_painLarge");
+		m_sndPainHuge = GetSpawnString("snd_painHuge");
+	} else {
+		m_sndPainSmall =
+		m_sndStepLadderRight =
+		m_sndPainMedium =
+		m_sndPainLarge =
+		m_sndPainHuge = GetSpawnString("snd_pain");
+	}
+
+	m_sndLandSoft = GetSpawnString("snd_landSoft");
+
+	if (STRING_SET(m_sndLandSoft)) {
+		m_sndLandHard = GetSpawnString("snd_landHard");
+	} else {
+		m_sndLandSoft =
+		m_sndLandHard = GetSpawnString("snd_land");
+	}
+
+	m_sndHitArmor = GetSpawnString("snd_hitArmor");
+
+	if (STRING_SET(m_sndHitArmor)) {
+		m_sndHitFlesh = GetSpawnString("snd_hitFlesh");
+	} else {
+		m_sndHitArmor =
+		m_sndHitFlesh = GetSpawnString("snd_hit");
+	}
+
+	m_sndAirGaspHeavy = GetSpawnString("snd_airGaspHeavy");
+
+	if (STRING_SET(m_sndAirGaspHeavy)) {
+		m_sndAirGaspLight = GetSpawnString("snd_airGaspLight");
+	} else {
+		m_sndAirGaspHeavy =
+		m_sndAirGaspLight = GetSpawnString("snd_airGasp");
+	}
+
+	m_sndNoAir = GetSpawnString("snd_noAir");
+	m_sndTeleportExit = GetSpawnString("snd_teleportExit");
+	m_sndTeleportStart = GetSpawnString("snd_teleportStart");
+	m_sndWaterExit = GetSpawnString("snd_waterExit");
+	m_sndWaterEnter = GetSpawnString("snd_waterStart");
+	m_sndWaterWade = GetSpawnString("snd_waterWade");
+	m_sndWaterSwim = GetSpawnString("snd_waterSwim");
+	m_sndBurn = GetSpawnString("snd_stepladderLeft");
+	m_sndHealthtake = GetSpawnString("snd_stepladderLeft");
+	m_sndUseDeny = GetSpawnString("snd_useDeny");
+
+	if (STRING_SET(m_sndUseDeny)) {
+		m_sndUseSuccess = GetSpawnString("snd_useSuccess");
+	} else {
+		m_sndUseDeny =
+		m_sndUseSuccess = GetSpawnString("snd_use");
 	}
 }
 
@@ -42,107 +114,6 @@ void
 ncActor::SpawnKey(string keyName, string setValue)
 {
 	switch (keyName) {
-	case "snd_stepladderLeft":
-		m_sndStepLadderLeft = ReadString(setValue);
-		break;
-	case "snd_stepladderRight":
-		m_sndStepLadderRight = ReadString(setValue);
-		break;
-	case "snd_stepladder":
-		m_sndStepLadderLeft =
-		m_sndStepLadderRight = ReadString(setValue);
-		break;
-	case "snd_death":
-		m_sndDeath = ReadString(setValue);
-		break;
-	case "snd_fall":
-		m_sndFall = ReadString(setValue);
-		break;
-	case "snd_painSmall":
-		m_sndPainSmall = ReadString(setValue);
-		break;
-	case "snd_painMedium":
-		m_sndPainMedium = ReadString(setValue);
-		break;
-	case "snd_painLarge":
-		m_sndPainLarge = ReadString(setValue);
-		break;
-	case "snd_painHuge":
-		m_sndPainHuge = ReadString(setValue);
-		break;
-	case "snd_pain":
-		m_sndPainSmall =
-		m_sndPainHuge =
-		m_sndPainLarge =
-		m_sndPainMedium = ReadString(setValue);
-		break;
-	case "snd_landSoft":
-		m_sndLandSoft = ReadString(setValue);
-		break;
-	case "snd_landHard":
-		m_sndLandHard = ReadString(setValue);
-		break;
-	case "snd_land":
-		m_sndLandSoft =
-		m_sndLandHard = ReadString(setValue);
-		break;
-	case "snd_hitArmor":
-		m_sndHitArmor = ReadString(setValue);
-		break;
-	case "snd_hitFlesh":
-		m_sndHitFlesh = ReadString(setValue);
-		break;
-	case "snd_hit":
-		m_sndHitArmor =
-		m_sndHitFlesh = ReadString(setValue);
-		break;
-	case "snd_airGaspHeavy":
-		m_sndAirGaspHeavy = ReadString(setValue);
-		break;
-	case "snd_airGaspLight":
-		m_sndAirGaspLight = ReadString(setValue);
-		break;
-	case "snd_airGasp":
-		m_sndAirGaspHeavy =
-		m_sndAirGaspLight = ReadString(setValue);
-		break;
-	case "snd_noAir":
-		m_sndNoAir = ReadString(setValue);
-		break;
-	case "snd_teleportExit":
-		m_sndTeleportExit = ReadString(setValue);
-		break;
-	case "snd_teleportStart":
-		m_sndTeleportStart = ReadString(setValue);
-		break;
-	case "snd_burn":
-		m_sndBurn = ReadString(setValue);
-		break;
-	case "snd_healthtake":
-		m_sndHealthtake = ReadString(setValue);
-		break;
-	case "snd_waterExit":
-		m_sndWaterExit = ReadString(setValue);
-		break;
-	case "snd_waterEnter":
-		m_sndWaterEnter = ReadString(setValue);
-		break;
-	case "snd_waterSwim":
-		m_sndWaterSwim = ReadString(setValue);
-		break;
-	case "snd_waterWade":
-		m_sndWaterWade = ReadString(setValue);
-		break;
-	case "snd_useDeny":
-		m_sndWaterWade = ReadString(setValue);
-		break;
-	case "snd_useSuccess":
-		m_sndWaterWade = ReadString(setValue);
-		break;
-	case "snd_use":
-		m_sndUseDeny =
-		m_sndUseSuccess = ReadString(setValue);
-		break;
 	default:
 		super::SpawnKey(keyName, setValue);
 	}
@@ -151,7 +122,7 @@ ncActor::SpawnKey(string keyName, string setValue)
 float
 ncActor::GetStamina(void)
 {
-	return (m_flStamina / g_pmoveVars.pm_stamina);
+	return (m_currentStamina / g_pmoveVars.pm_stamina);
 }
 
 bool
@@ -232,34 +203,113 @@ void
 ncActor::Save(float handle)
 {
 	super::Save(handle);
-	SaveInt(handle, "m_iNodes", m_iNodes);
-	SaveInt(handle, "m_iCurNode", m_iCurNode);
-	SaveVector(handle, "m_vecLastNode", m_vecLastNode);
-	SaveVector(handle, "m_vecTurnAngle", m_vecTurnAngle);
-	SaveFloat(handle, "m_flMoveSpeedKey", m_flMoveSpeedKey);
+
+	SaveFloat(handle, "bonusHealth", m_bonusHealth);
+	SaveFloat(handle, "timeUntilBonusHealthDecreases", m_timeUntilBonusHealthDecreases);
+	SaveFloat(handle, "maxspeed", maxspeed);
+	SaveVector(handle, "pmoveBaseVelocity", m_pmoveBaseVelocity);
+	SaveEntity(handle, "groundentity", groundentity);
+
+	SaveInt(handle, "pathfindingNodeCount", m_pathfindingNodeCount);
+	SaveInt(handle, "pathfindingCurrentNode", m_pathfindingCurrentNode);
+	SaveVector(handle, "pathfindingDestination", m_pathfindingDestination);
+	SaveFloat(handle, "moveSpeedKey", m_moveSpeedKey);
+
+	SaveString(handle, "pathTarget", m_pathTarget);
+	SaveEntity(handle, "pathEntity", m_pathEntity);
+	SaveFloat(handle, "timeUntilDroppingRoute", m_timeUntilDroppingRoute);
+	SaveVector(handle, "pathfindingLastPos", m_pathfindingLastPos);
+	SaveEntity(handle, "followingEntity", m_followingEntity);
+	SaveString(handle, "mindset", m_mindset);
+	SaveFloat(handle, "weaponCookingTime", m_weaponCookingTime);
+	SaveFloat(handle, "activeweapon", activeweapon);
+	SaveFloat(handle, "itemStart", m_itemStart);
+	SaveFloat(handle, "currentStamina", m_currentStamina);
+	SaveEntity(handle, "itemList", m_itemList);
+	SaveEntity(handle, "activeWeapon", m_activeWeapon);
+	SaveEntity(handle, "firstWeapon", m_firstWeapon);
+	SaveBool(handle, "_isActor", _isActor);
+
+	for (int i = 0i; i < MAX_AMMO_TYPES; i++) {
+		SaveInt(handle, sprintf("ammoTypes_%i", i), m_ammoTypes[i]);
+	}
 }
 
 void
-ncActor::Restore(string strKey, string strValue)
+ncActor::Restore(string keyName, string setValue)
 {
-	switch (strKey) {
-	case "m_iNodes":
-		m_iNodes = ReadInt(strValue);
+	switch (keyName) {
+	case "bonusHealth":
+		m_bonusHealth = ReadFloat(setValue);
 		break;
-	case "m_iCurNode":
-		m_iCurNode = ReadInt(strValue);
+	case "timeUntilBonusHealthDecreases":
+		m_timeUntilBonusHealthDecreases = ReadFloat(setValue);
 		break;
-	case "m_vecLastNode":
-		m_vecLastNode = ReadVector(strValue);
+	case "maxspeed":
+		maxspeed = ReadFloat(setValue);
 		break;
-	case "m_vecTurnAngle":
-		m_vecTurnAngle = ReadVector(strValue);
+	case "pmoveBaseVelocity":
+		m_pmoveBaseVelocity = ReadVector(setValue);
 		break;
-	case "m_flMoveSpeedKey":
-		m_flMoveSpeedKey = ReadFloat(strValue);
+	case "groundentity":
+		groundentity = ReadEntity(setValue);
+		break;
+	case "pathfindingNodeCount":
+		m_pathfindingNodeCount = ReadInt(setValue);
+		break;
+	case "pathfindingCurrentNode":
+		m_pathfindingCurrentNode = ReadInt(setValue);
+		break;
+	case "pathfindingDestination":
+		m_pathfindingDestination = ReadVector(setValue);
+		break;
+	case "moveSpeedKey":
+		m_moveSpeedKey = ReadFloat(setValue);
+		break;
+	case "_isActor":
+		_isActor = ReadBool(setValue);
+		break;
+	case "activeWeapon":
+		m_activeWeapon = ReadEntity(setValue);
+		break;
+	case "followingEntity":
+		m_followingEntity = ReadEntity(setValue);
+		break;
+	case "firstWeapon":
+		m_firstWeapon = ReadEntity(setValue);
+		break;
+	case "itemList":
+		m_itemList = ReadEntity(setValue);
+		break;
+	case "pathEntity":
+		m_pathEntity = ReadEntity(setValue);
+		break;
+	case "timeUntilDroppingRoute":
+		m_timeUntilDroppingRoute = ReadFloat(setValue);
+		break;
+	case "activeweapon":
+		activeweapon = ReadFloat(setValue);
+		break;
+	case "itemStart":
+		m_itemStart = ReadFloat(setValue);
+		break;
+	case "currentStamina":
+		m_currentStamina = ReadFloat(setValue);
+		break;
+	case"weaponCookingTime":
+		m_weaponCookingTime = ReadFloat(setValue);
+		break;
+	case "mindset":
+		m_mindset = ReadString(setValue);
+		break;
+	case "pathTarget":
+		m_pathTarget = ReadString(setValue);
+		break;
+	case "pathfindingLastPos":
+		m_pathfindingLastPos = ReadVector(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(keyName, setValue);
 	}
 }
 
@@ -329,25 +379,27 @@ ncActor::Spawned(void)
 	string spawnModel = GetSpawnString("model");
 
 	if (STRING_SET(spawnModel)) {
-		SetModel(GetSpawnString("model"));
+		SetModel(spawnModel);
 	}
 }
 
 void
 ncActor::RestoreComplete(void)
 {
-	if (m_iNodes <= 0i) {
+	SendFlags = -1;
+
+	if (m_pathfindingNodeCount <= 0i) {
 		return;
 	}
 
 	/* re-plot our route */
-	RouteToPosition(m_vecLastNode);
+	RouteToPosition(m_pathfindingDestination);
 }
 
 void
 ncActor::ThinkSchedules(void)
 {
-	if (IsPerforming() == false && m_iNodes <= 0i) {
+	if (IsPerforming() == false && m_pathfindingNodeCount <= 0i) {
 		SelectNewSchedule();
 	}
 }
@@ -409,6 +461,46 @@ ncActor::PerformSchedule(string scheduleDecl)
 	ncSchedule::CreateSchedule(this, scheduleDecl);
 }
 
+int
+ncActor::PathNodeCount(void)
+{
+	return (m_pathfindingNodeCount);
+}
+
+int
+ncActor::PathCurrentNode(void)
+{
+	return (m_pathfindingCurrentNode);
+}
+
+vector
+ncActor::PathDestination(void)
+{
+	return (m_pathfindingDestination);
+}
+
+void
+ncActor::MakeCorpse(float deathSequence)
+{
+	bool makeRagdoll = GetSpawnBool("ragdoll");
+	ncEntity newCorpse;
+
+	if (FORCE_RAGDOLLS) {
+		makeRagdoll = true;
+	}
+
+	if (makeRagdoll) {
+		 newCorpse = (ncEntity)BodyQue_SpawnRagdoll(this, deathSequence);
+	} else {
+		 newCorpse = (ncEntity)BodyQue_Spawn(this, deathSequence);
+
+		/* if we were crouching, adjust the bbox (thx 2 lack of crouch death animation) */
+		if (IsCrouching()) {
+			newCorpse.SetSize(VEC_HULL_MIN, [16, 16, -16]);
+		}
+	}
+}
+
 void
 ncActor::Input(entity eAct, string strInput, string strData)
 {
@@ -420,8 +512,13 @@ ncActor::Input(entity eAct, string strInput, string strData)
 			linkedList = m_itemList;
 
 			while (linkedList) {
+				if (!STRING_SET(linkedList.declclass)) {
+					linkedList = __NULL__;
+					break;
+				}
+
 				/* inventory item may not be a weapon */
-				if (linkedList.classname == strData) {
+				if (linkedList.declclass == strData) {
 					linkedList.OnUse(eAct);
 					break;
 				}
@@ -451,6 +548,9 @@ ncActor::Input(entity eAct, string strInput, string strData)
 	case "PerformSchedule":
 		PerformSchedule(strData);
 		break;
+	case "SelectNewSchedule":
+		SelectNewSchedule();
+		break;
 	/* some tasks. */
 	case "WalkToTarget":
 		RouteToPosition(m_activeSchedule.GetTarget().origin);
@@ -469,14 +569,14 @@ ncActor::Input(entity eAct, string strInput, string strData)
 		m_activeSchedule.AdvanceLater(100);
 		break;
 	case "TargetNearestPlayer":
-		ncEntity firstPlayer = (ncEntity)find(world, ::classname, "player");
+		ncEntity firstPlayer = (ncEntity)next.Player(world);
 
 		if (firstPlayer) {
 			m_activeSchedule.SetTarget(firstPlayer);
 		} else {
 			CancelSchedule();
 		}
-// 		NSWarning("Task %S unimplemented", strInput);
+// 		ncWarning("Task %S unimplemented", strInput);
 		break;
 	case "GoToCover":
 		vector coverPos = ncNavInfo::FindCoverFromPosition(this, GetOrigin());
@@ -568,37 +668,37 @@ ncActor::CheckRouteProgression(void)
 		return;
 	}
 
-	if (!m_iNodes) {
+	if (!m_pathfindingNodeCount) {
 		return;
 	}
 
-	if (_m_flRouteGiveUp < time) {
-		float distanceToLastFrame = distanceSquared(_m_vecRoutePrev, origin);
+	if (m_timeUntilDroppingRoute < time) {
+		float distanceToLastFrame = distanceSquared(m_pathfindingLastPos, origin);
 		//printf("distanceToLastFrame: %f\n", distanceToLastFrame);
 
 		/* 50 units in 2 seconds is not good. */
 		if (distanceToLastFrame < 50.0f) {
 			/* HACK: for followers */
-			if (m_eFollowing) {
-				RouteToPosition(m_eFollowing.origin);
+			if (m_followingEntity) {
+				RouteToPosition(m_followingEntity.origin);
 				ncActor_Log("Giving up current route to follower, re-calculating");
 			} else {
 				RouteClear();
 			}
 		}
-		_m_flRouteGiveUp = time + 2.0f;
-		_m_vecRoutePrev = origin;
+		m_timeUntilDroppingRoute = time + 2.0f;
+		m_pathfindingLastPos = origin;
 	}
 
 	/* level out position/node stuff */
-	if (m_iCurNode < 0) {
-		evenpos = m_vecLastNode;
+	if (m_pathfindingCurrentNode < 0) {
+		evenpos = m_pathfindingDestination;
 		evenpos[2] = origin[2];
 		flNodeRadius = 8.0f;
 	} else {
-		evenpos = m_pRoute[m_iCurNode].dest;
+		evenpos = m_pathfindingGraph[m_pathfindingCurrentNode].dest;
 		evenpos[2] = origin[2];
-		flNodeRadius = m_pRoute[m_iCurNode].radius;
+		flNodeRadius = m_pathfindingGraph[m_pathfindingCurrentNode].radius;
 
 		if (flNodeRadius <= 0.0)
 			flNodeRadius = 16.0f;
@@ -611,29 +711,29 @@ ncActor::CheckRouteProgression(void)
 
 	if (flDist < flNodeRadius) {
 		//ncActor_Log("%S reached node", targetname);
-		m_iCurNode--;
+		m_pathfindingCurrentNode--;
 		velocity = [0,0,0]; /* clamp friction */
 
 		/* we've still traveling and from this node we may be able to walk
 		 * directly to our end-destination */
-		if (m_iCurNode > -1) {
-			tracebox(origin, mins, maxs, m_vecLastNode, MOVE_NORMAL, this);
+		if (m_pathfindingCurrentNode > -1) {
+			tracebox(origin, mins, maxs, m_pathfindingDestination, MOVE_NORMAL, this);
 
 			/* can we walk directly to our target destination? */
 			if (trace_fraction == 1.0) {
-				vector idealAngles = vectoangles(m_vecLastNode - origin);
-				ncActor_Log("Walking directly to last node at '%v'", m_vecLastNode);
+				vector idealAngles = vectoangles(m_pathfindingDestination - origin);
+				ncActor_Log("Walking directly to last node at '%v'", m_pathfindingDestination);
 				ideal_yaw = idealAngles[1];
-				m_iCurNode = -1;
+				m_pathfindingCurrentNode = -1;
 			}
 		}
 	}
 
 #if 1
 	/* check if we can reach the node after the current one */
-	if (m_iCurNode > 0 && m_iNodes > 3) { /* HACK: only bother when we have more than 3 nodes in the path... this works around an issue in c1a0d I'm unsure about */
-		int iNextNode = (m_iCurNode - 1);
-		vector vecNextNode = m_pRoute[iNextNode].dest;
+	if (m_pathfindingCurrentNode > 0 && m_pathfindingNodeCount > 3) { /* HACK: only bother when we have more than 3 nodes in the path... this works around an issue in c1a0d I'm unsure about */
+		int iNextNode = (m_pathfindingCurrentNode - 1);
+		vector vecNextNode = m_pathfindingGraph[iNextNode].dest;
 
 		other = world;
 		tracebox(origin, mins, maxs, vecNextNode, MOVE_OTHERONLY, this);
@@ -642,7 +742,7 @@ ncActor::CheckRouteProgression(void)
 		if (!trace_startsolid && trace_fraction == 1.0f) {
 			idealAngles = vectoangles(vecNextNode - origin);
 			evenpos = vecNextNode;
-			m_iCurNode = iNextNode;
+			m_pathfindingCurrentNode = iNextNode;
 
 			ideal_yaw = idealAngles[1];
 			ncActor_Log("Skipping to next node %i at '%v'", iNextNode, vecNextNode);
@@ -652,7 +752,7 @@ ncActor::CheckRouteProgression(void)
 #endif
 
 	/* reached the end of the line */
-	if (m_iCurNode < -1) {
+	if (m_pathfindingCurrentNode < -1) {
 		RouteClear();
 		RouteEnded();
 		ncActor_Log("%S reached end", targetname);
@@ -679,7 +779,7 @@ ncActor::CheckRouteProgression(void)
 		}
 
 		/* entire way-link needs to be crouched. that's the law of the land */
-		if (shouldcrouch || Route_GetNodeFlags(&m_pRoute[m_iCurNode]) & LF_CROUCH)
+		if (shouldcrouch || Route_GetNodeFlags(&m_pathfindingGraph[m_pathfindingCurrentNode]) & LF_CROUCH)
 			input_buttons |= INPUT_CROUCH;
 	}
 
@@ -712,11 +812,11 @@ ncActor::GetRouteMovevalues(void)
 
 	if (STRING_SET(m_pathTarget)) {
 		facingPos = m_pathEntity.GetOrigin();
-	} else if (m_iNodes) {
-		if (m_iCurNode < 0)
-			facingPos = m_vecLastNode;
+	} else if (m_pathfindingNodeCount) {
+		if (m_pathfindingCurrentNode < 0)
+			facingPos = m_pathfindingDestination;
 		else
-			facingPos = m_pRoute[m_iCurNode].dest;
+			facingPos = m_pathfindingGraph[m_pathfindingCurrentNode].dest;
 	} else {
 		facingPos = GetOrigin() + (fwdDir * 16.0f);
 	}
@@ -745,15 +845,15 @@ ncActor::GetRouteDirection(void)
 	if (STRING_SET(m_pathTarget)) {
 		facingPos = m_pathEntity.GetOrigin();
 	} else {
-		if (m_iNodes <= 0i) {
+		if (m_pathfindingNodeCount <= 0i) {
 			/* keep going */
 			return (angles);
-		}else if (m_iCurNode < 0) {
+		}else if (m_pathfindingCurrentNode < 0) {
 			/* aim at the last node */
-			facingPos = m_vecLastNode;
+			facingPos = m_pathfindingDestination;
 		} else {
 			/* aim at the next node */
-			facingPos = m_pRoute[m_iCurNode].dest;
+			facingPos = m_pathfindingGraph[m_pathfindingCurrentNode].dest;
 		}
 	}
 
@@ -778,13 +878,13 @@ ncActor::DebugDraw(void)
 	vector vecStart = GetOrigin();
 	vector vecEnd;
 	vector beamColor = [1,1,1];
-	float frac = 1.0 / m_iNodes;
+	float frac = 1.0 / m_pathfindingNodeCount;
 
-	for (int i = m_iCurNode; i < m_iNodes; i++) {
-		if (m_iCurNode < 0)
+	for (int i = m_pathfindingCurrentNode; i < m_pathfindingNodeCount; i++) {
+		if (m_pathfindingCurrentNode < 0)
 			continue;
 
-		vecEnd = m_pRoute[i].dest;
+		vecEnd = m_pathfindingGraph[i].dest;
 		R_BeginPolygon("", 0, 0);
 		R_PolygonVertex(vecStart, [1,1], beamColor, 1);
 		R_PolygonVertex(vecEnd, [0,1], beamColor, 1);
@@ -809,10 +909,10 @@ ncActor::RouteToPositionDenyFlags(vector destination, int denylinkflags)
 		}
 
 		{
-			p.m_iNodes = numnodes;
-			p.m_iCurNode = numnodes - 1;
-			p.m_pRoute = nodelist;
-			p._m_flRouteGiveUp = time + 4.0f;
+			p.m_pathfindingNodeCount = numnodes;
+			p.m_pathfindingCurrentNode = numnodes - 1;
+			p.m_pathfindingGraph = nodelist;
+			p.m_timeUntilDroppingRoute = time + 4.0f;
 		}
 
 		//traceline(p.origin, dest, MOVE_NORMAL, this);
@@ -821,21 +921,21 @@ ncActor::RouteToPositionDenyFlags(vector destination, int denylinkflags)
 		/* can we walk directly to our target destination? */
 		if (trace_fraction == 1.0) {
 			ncActor_Log("Walking directly to last node");
-			p.m_iNodes = 1;
-			p.m_iCurNode = -1;
-			p._m_flRouteGiveUp = time + 5.0f;
+			p.m_pathfindingNodeCount = 1;
+			p.m_pathfindingCurrentNode = -1;
+			p.m_timeUntilDroppingRoute = time + 5.0f;
 		} else if (numnodes > 0i) {
 			ncActor_Log("Path obstructed, calculating route");
 
 			/* run through all nodes, mark the closest direct path possible */
-			for (int i = 0; i < p.m_iNodes; i++) {
-				vector vecDest = p.m_pRoute[i].dest;
+			for (int i = 0; i < p.m_pathfindingNodeCount; i++) {
+				vector vecDest = p.m_pathfindingGraph[i].dest;
 				tracebox(p.origin, p.mins, p.maxs, vecDest, TRUE, p);
 				//traceline(p.origin, vecDest, MOVE_NORMAL, this);
 
 				if (trace_fraction == 1.0) {
-					ncActor_Log("Walking to node %i at %v", i, p.m_pRoute[i].dest);
-					p.m_iCurNode = i;
+					ncActor_Log("Walking to node %i at %v", i, p.m_pathfindingGraph[i].dest);
+					p.m_pathfindingCurrentNode = i;
 					break;
 				}
 			}
@@ -857,7 +957,7 @@ ncActor::RouteToPositionDenyFlags(vector destination, int denylinkflags)
 	this.origin[2] += 16.0f;
 	route_calculate(this, destination, denylinkflags, RouteToPosition_RouteCB);
 	this.origin[2] -= 16.0f;
-	m_vecLastNode = destination;
+	m_pathfindingDestination = destination;
 }
 
 void
@@ -877,26 +977,26 @@ ncActor::ChasePath(string startPath)
 void
 ncActor::RouteClear(void)
 {
-	if (!m_iNodes) {
+	if (!m_pathfindingNodeCount) {
 		return;
 	}
 
-	m_iCurNode = BOTROUTE_END;
-	m_iNodes = 0;
-	memfree(m_pRoute);
+	m_pathfindingCurrentNode = BOTROUTE_END;
+	m_pathfindingNodeCount = 0;
+	memfree(m_pathfindingGraph);
 	ncActor_Log("Actor %S (%s) cleared their route.", netname, classname);
 }
 
 void
 ncActor::SetMoveSpeedScale(float newValue)
 {
-	m_flMoveSpeedKey = newValue;
+	m_moveSpeedKey = newValue;
 }
 
 float
 ncActor::GetMoveSpeedScale(void)
 {
-	return (m_flMoveSpeedKey == 0.0) ? 1.0f : m_flMoveSpeedKey;
+	return (m_moveSpeedKey == 0.0) ? 1.0f : m_moveSpeedKey;
 }
 
 void
@@ -904,10 +1004,11 @@ ncActor::Physics_Run(void)
 {
 	input_movevalues *= GetMoveSpeedScale();
 
-	if (CanCrouch())
+	if (CanCrouch()) {
 		PMoveCustom_RunCrouchPhysics(this);
-	else
+	} else {
 		PMoveCustom_RunPlayerPhysics(this);
+	}
 
 	SetOrigin(origin);
 }
@@ -974,7 +1075,7 @@ ncActor::PlantCharge(string defName)
 	plantedEntity.SetOwner(this);
 	plantedEntity.real_owner = this;
 
-	EntLog("Planted %S at %v\n", plantedEntity.classname, origin);
+	EntLog("Planted %S at %v\n", plantedEntity.declclass, origin);
 #endif
 
 	/* push us outta the way! */
@@ -991,7 +1092,7 @@ ncActor::GetReserveAmmo(int ammoType)
 		return (0i);
 	}
 
-	return (m_iAmmoTypes[ammoType]);
+	return (m_ammoTypes[ammoType]);
 }
 
 bool
@@ -1013,7 +1114,7 @@ ncActor::MaxAmmo(int ammoType)
 	}
 
 	/* already at max-ammo? */
-	if (m_iAmmoTypes[ammoType] >= maxAmmo) {
+	if (m_ammoTypes[ammoType] >= maxAmmo) {
 		return (true);
 	}
 
@@ -1038,10 +1139,10 @@ ncActor::GiveAmmo(int ammoType, int ammoAmount)
 		maxAmmo = ammoMaxForNum(ammoType);
 	}
 
-	m_iAmmoTypes[ammoType] += ammoAmount;
+	m_ammoTypes[ammoType] += ammoAmount;
 
-	if (m_iAmmoTypes[ammoType] >= maxAmmo) {
-		m_iAmmoTypes[ammoType] = maxAmmo;
+	if (m_ammoTypes[ammoType] >= maxAmmo) {
+		m_ammoTypes[ammoType] = maxAmmo;
 	}
 
 	return (true);
@@ -1059,7 +1160,7 @@ ncActor::UseAmmo(int ammoType, int ammoAmount)
 		return (false);
 	}
 
-	m_iAmmoTypes[ammoType] -= ammoAmount;
+	m_ammoTypes[ammoType] -= ammoAmount;
 	return (true);
 }
 
@@ -1072,7 +1173,7 @@ ncActor::HasAmmo(int ammoType, int ammoAmount)
 	}
 
 	/* will underflow when used. */
-	if ((m_iAmmoTypes[ammoType] - ammoAmount) < 0i) {
+	if ((m_ammoTypes[ammoType] - ammoAmount) < 0i) {
 		return (false);
 	}
 
@@ -1099,6 +1200,11 @@ ncActor::HasExactItem(ncItem itemEntity)
 
 	/* iterate through the inventory, then figure out if we already have it*/
 	while (linkedList) {
+		if (!STRING_SET(linkedList.declclass)) {
+			linkedList = __NULL__;
+			break;
+		}
+
 		/* we already have the item. */
 		if (linkedList == itemEntity) {
 			return (true);
@@ -1110,15 +1216,14 @@ ncActor::HasExactItem(ncItem itemEntity)
 	return (false);
 }
 
-
-bool
-ncActor::HasItem(string itemName)
+ncItem
+ncActor::GetItem(string itemName)
 {
 	ncItem linkedList = __NULL__;
 
 	/* we do not have an item. */
 	if (!m_itemList) {
-		return (false);
+		return (__NULL__);
 	}
 
 	/* since we have something in the inventory, start there */
@@ -1126,15 +1231,26 @@ ncActor::HasItem(string itemName)
 
 	/* iterate through the inventory, then figure out if we already have it*/
 	while (linkedList) {
+		if (!STRING_SET(linkedList.declclass)) {
+			linkedList = __NULL__;
+			break;
+		}
+
 		/* we already have the item. */
-		if (linkedList.classname == itemName) {
-			return (true);
+		if (linkedList.declclass == itemName) {
+			return (linkedList);
 		}
 
 		linkedList = (ncItem)linkedList.m_nextItem;
 	}
 
-	return (false);
+	return (__NULL__);
+}
+
+bool
+ncActor::HasItem(string itemName)
+{
+	return (GetItem(itemName) == __NULL__) ? (false) : (true);
 }
 
 void
@@ -1146,6 +1262,81 @@ ncActor::AddedItemCallback(ncItem itemAdded)
 			SwitchToExactWeapon((ncWeapon)itemAdded);
 		}
 	}
+#endif
+}
+
+bool
+ncActor::GiveExactItem(ncItem theItem)
+{
+#ifdef SERVER
+	ncItem linkedList = __NULL__;
+	ncItem lastItem = __NULL__;
+
+	bool canCarry = stof(EntityDef_GetKeyValue(theItem.declclass, "inv_carry")) ? true : false;
+
+	/* we do not have an item yet. */
+	if (!m_itemList) {
+		m_itemList = theItem;
+
+		if (m_itemList == world) {
+			EntError("Unable to give item %S", theItem.declclass);
+			return (false);
+		}
+
+		m_itemList.SetOwner(this);
+		m_itemList._AddedCallback();
+		//ncLog("First Item %S", m_itemList.declclass);
+
+		return (true);
+	}
+
+	/* since we have something in the inventory, start there */
+	linkedList = (ncWeapon)m_itemList;
+
+	/* iterate through the inventory, then figure out if we already have it*/
+	while (linkedList) {
+		if (!STRING_SET(linkedList.declclass)) {
+			linkedList = __NULL__;
+			break;
+		}
+
+		/* we already have the item. */
+		if (linkedList.declclass == theItem.declclass) {
+			//ncLog("we already have", linkedList.declclass);
+			return (false);
+		}
+
+		lastItem = linkedList;
+		linkedList = (ncItem)linkedList.m_nextItem;
+	}
+
+	/* add it to the back of the chain, so it's part of our inventory. */
+	if (lastItem && linkedList == __NULL__) {
+		ncItem newItem = theItem;
+
+		if (!newItem) {
+			EntError("Unable to give item %S", theItem.declclass);
+			return (false);
+		}
+
+		newItem.SetOwner(this);
+		lastItem.m_nextItem = newItem;
+		linkedList = newItem;
+		newItem._AddedCallback();
+	}
+
+	if (!m_activeWeapon) {
+		SwitchToBestWeapon(false);
+	}
+
+	/* items (not weapons) may not be added permanently by default */
+	if (canCarry == false && linkedList.IsWeapon() == false) {
+		RemoveItem(theItem.declclass);
+	}
+
+	return (true);
+#else
+	return (false);
 #endif
 }
 
@@ -1169,7 +1360,7 @@ ncActor::GiveItem(string itemName)
 
 		m_itemList.SetOwner(this);
 		m_itemList._AddedCallback();
-		//NSLog("First Item %S", m_itemList.classname);
+		//ncLog("First Item %S", m_itemList.declclass);
 
 		return (true);
 	}
@@ -1179,9 +1370,14 @@ ncActor::GiveItem(string itemName)
 
 	/* iterate through the inventory, then figure out if we already have it*/
 	while (linkedList) {
+		if (!STRING_SET(linkedList.declclass)) {
+			linkedList = __NULL__;
+			break;
+		}
+
 		/* we already have the item. */
-		if (linkedList.classname == itemName) {
-			//NSLog("we already have", linkedList.classname);
+		if (linkedList.declclass == itemName) {
+			//ncLog("we already have", linkedList.declclass);
 			return (false);
 		}
 
@@ -1228,7 +1424,7 @@ ncActor::SwitchToBestWeapon(bool ignoreActive)
 	float bestWeight = 0.0f;
 
 	if (ignoreActive && m_activeWeapon) {
-		toIgnore = m_activeWeapon.classname;
+		toIgnore = m_activeWeapon.declclass;
 	}
 
 	/* we posess nothing. auto return false. */
@@ -1240,9 +1436,14 @@ ncActor::SwitchToBestWeapon(bool ignoreActive)
 	linkedList = m_itemList;
 
 	while (linkedList) {
+		if (!STRING_SET(linkedList.declclass)) {
+			linkedList = __NULL__;
+			break;
+		}
+
 		/* inventory item may not be a weapon */
 		if (linkedList.IsWeapon()) {
-			string weaponName = linkedList.classname;
+			string weaponName = linkedList.declclass;
 			float weight;
 
 			if (toIgnore == weaponName) {
@@ -1294,10 +1495,13 @@ ncActor::RemoveItem(string itemName)
 	/* iterate through the inventory, then figure out if we already have it*/
 	while (linkedList) {
 		/* found the item, mark as needing to be removed */
-		if (linkedList.classname == itemName) {
+		if (linkedList.declclass == itemName) {
 			removeItem = true;
 			frontItem = lastItem; /* the one before the current one */
 			itemToRemove = linkedList; /* the item to destroy */
+			break;
+		} else if (!STRING_SET(linkedList.declclass)) {
+			linkedList = __NULL__;
 			break;
 		}
 
@@ -1346,6 +1550,11 @@ ncActor::RemoveAllItems(bool ignoreWeapons)
 	while (linkedList) {
 		ncItem nextItem = (ncItem)linkedList.m_nextItem;
 
+		if (!STRING_SET(linkedList.declclass)) {
+			linkedList = __NULL__;
+			break;
+		}
+
 		/* respect weapon filter */
 		if (!(ignoreWeapons && linkedList.IsWeapon() == true)) {
 			/* is this our active weapon? give it a chance to do work first */
@@ -1354,7 +1563,7 @@ ncActor::RemoveAllItems(bool ignoreWeapons)
 				m_activeWeapon = __NULL__;
 			}
 
-			RemoveItem(linkedList.classname);
+			RemoveItem(linkedList.declclass);
 			linkedList = nextItem;
 			continue;
 		}
@@ -1382,6 +1591,11 @@ ncActor::RemoveAllWeapons(void)
 	while (linkedList) {
 		ncItem nextItem = (ncItem)linkedList.m_nextItem;
 
+		if (!STRING_SET(linkedList.declclass)) {
+			linkedList = __NULL__;
+			break;
+		}
+
 		if (linkedList.IsWeapon() == true) {
 			/* is this our active weapon? give it a chance to do work first */
 			if (m_activeWeapon == linkedList) {
@@ -1403,7 +1617,7 @@ string
 ncActor::GetCurrentWeapon(void)
 {
 	if (m_activeWeapon) {
-		return (m_activeWeapon.classname);
+		return (m_activeWeapon.declclass);
 	} else {
 		return "";
 	}
@@ -1424,8 +1638,13 @@ ncActor::SwitchToWeapon(string weaponName)
 
 	/* iterate through the inventory, then figure out if we already have it*/
 	while (linkedList) {
+		if (!STRING_SET(linkedList.declclass)) {
+			linkedList = __NULL__;
+			break;
+		}
+
 		/* we already have the item. */
-		if (linkedList.classname == weaponName) {
+		if (linkedList.declclass == weaponName) {
 			SwitchToExactWeapon((ncWeapon)linkedList);
 		}
 
@@ -1592,10 +1811,10 @@ ncActor_ListInventory(ncActor targetEntity)
 	ncWeapon activeWeapon = targetEntity.m_activeWeapon;
 	int i = 0i;
 
-	printf("active weapon: %s (%d)\n", activeWeapon.classname, num_for_edict(activeWeapon));
+	printf("active weapon: %s (%d)\n", activeWeapon.declclass, num_for_edict(activeWeapon));
 
 	while (itemEntry) {
-		printf("%i %s (%d) (owner: %d); next: %d\n", i, itemEntry.classname, num_for_edict(itemEntry), num_for_edict(itemEntry.owner), num_for_edict(itemEntry.m_nextItem));
+		printf("%i %s (%d) (owner: %d); next: %d\n", i, itemEntry.declclass, num_for_edict(itemEntry), num_for_edict(itemEntry.owner), num_for_edict(itemEntry.m_nextItem));
 		itemEntry = (ncItem)itemEntry.m_nextItem;
 		i += 1i;
 	}

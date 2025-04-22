@@ -16,6 +16,20 @@
 
 /** This entity class represents an attack. Usually spawned by a decl's fireInfo properties.
 
+# OVERVIEW
+
+ncAttack is currently the main spot for various miscallanous attack types that don't fit into ncProjectile.
+
+# KEYS
+- "plant" : When 1, will plant the entityDef defined in "def_plant" against surfaces.
+- "drop" : When 1, will drop the entityDef defined in "def_drop" near us.
+- "def_plant" : Name of the entityDef to plant.
+- "def_drop" : Name of the entityDef to drop.
+- "plantOnGround" : Only allow planting on ground. Think C4 in CS.
+- "plantDistance" : Distance at which we're testing for surfaces.
+- "plantOffset" : Offset the planted entityDef this many units from the surface it's attached to.
+- "dropDistance" : Drop the entityDef this many units away from us.
+
 @ingroup baseclass
 */
 class ncAttack:ncSurfacePropEntity
@@ -24,11 +38,6 @@ public:
 	void ncAttack(void);
 
 #ifdef SERVER
-	virtual void Spawned(void);
-	virtual void SpawnKey(string, string);
-	virtual void Save(float);
-	virtual void Restore(string, string);
-
 	/* launch the attack into the world */
 	virtual void Launch(vector, vector, float, float, float);
 
@@ -38,10 +47,7 @@ public:
 
 #ifdef SERVER
 private:
-	float m_flFuse;
 	ncWeapon m_weaponOwner;
-	int m_iShots;
-	vector m_vecSpread;
 #endif
 };
 

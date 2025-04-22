@@ -43,7 +43,7 @@ Vote_Reset(void)
 	serverinfo.SetFloat("votes_n", 0);
 	serverinfo.SetString("vote_cmd", "");
 
-	for (entity e = world; (e = find(e, ::classname, "player"));) {
+	for (entity e = world; (e = next.Player(e));) {
 		ncPlayer pl = (ncPlayer)e;
 		pl.voted = 0;
 	}
@@ -123,7 +123,7 @@ CSEv_VoteY(void)
 		return;
 	}
 
-	if (self.classname != "player") {
+	if (is.Player(self)) {
 		return;
 	}
 
@@ -136,7 +136,7 @@ CSEv_VoteY(void)
 
 	/* HACK: Is there a better way to do this? */
 	float playernums = 0;
-	for (entity eFind = world; (eFind = find(eFind, ::classname, "player"));) {
+	for (entity eFind = world; (eFind = next.Player(eFind));) {
 		playernums++;
 	}
 
@@ -168,7 +168,7 @@ CSEv_VoteN(void)
 		return;
 	}
 
-	if (self.classname != "player") {
+	if (is.Player(self)) {
 		return;
 	}
 
@@ -181,7 +181,7 @@ CSEv_VoteN(void)
 
 	/* HACK: Is there a better way to do this? */
 	float playernums = 0;
-	for (entity eFind = world; (eFind = find(eFind, ::classname, "player"));) {
+	for (entity eFind = world; (eFind = next.Player(eFind));) {
 		playernums++;
 	}
 
@@ -212,7 +212,7 @@ Vote_InitiateVote(string votemsg)
 		return;
 	}
 
-	if (self.classname != "player") {
+	if (is.Player(self)) {
 		return;
 	}
 

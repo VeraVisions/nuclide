@@ -9,11 +9,15 @@ vote.qc
 lament.qc
 mapcycle.qc
 maptweaks.qc
-scripts.qc
 cmd_cl.qc
 cmd_sv.qc
 entry.qc
 Schedule.qc
+AddonDelegate.qc
+MapDelegate.qc
+SessionManager.qc
+CaptureItem.qc
+CapturePoint.qc
 ../nav/includes.src
 api.qc
 #endlist

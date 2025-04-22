@@ -99,53 +99,53 @@ monstermaker::Save(float handle)
 }
 
 void
-monstermaker::Restore(string strKey, string strValue)
+monstermaker::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_strMonster":
-		m_strMonster = ReadString(strValue);
+		m_strMonster = ReadString(setValue);
 		break;
 	case "m_strChildName":
-		m_strChildName = ReadString(strValue);
+		m_strChildName = ReadString(setValue);
 		break;
 	case "m_iMonsterSpawned":
-		m_iMonsterSpawned = ReadInt(strValue);
+		m_iMonsterSpawned = ReadInt(setValue);
 		break;
 	case "m_iTotalMonsters":
-		m_iTotalMonsters = ReadInt(strValue);
+		m_iTotalMonsters = ReadInt(setValue);
 		break;
 	case "m_iMaxChildren":
-		m_iMaxChildren = ReadInt(strValue);
+		m_iMaxChildren = ReadInt(setValue);
 		break;
 	case "m_flDelay":
-		m_flDelay = ReadFloat(strValue);
+		m_flDelay = ReadFloat(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-monstermaker::SpawnKey(string strKey, string strValue)
+monstermaker::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "monstertype":
-		m_strMonster = strValue;
+		m_strMonster = setValue;
 		break;
 	case "monstercount":
-		m_iTotalMonsters = stoi(strValue);
+		m_iTotalMonsters = stoi(setValue);
 		break;
 	case "child_alivemax":
 	case "m_imaxlivechildren":
-		m_iMaxChildren = stoi(strValue);
+		m_iMaxChildren = stoi(setValue);
 		break;
 	case "child_name":
 	case "netname":
-		m_strChildName = strValue;
+		m_strChildName = setValue;
 		netname = __NULL__;
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
@@ -167,14 +167,14 @@ void
 monstermaker::TurnOff(void)
 {
 	ReleaseThink();
-	m_iValue = 0;
+	SetValue(0i);
 }
 
 void
 monstermaker::TurnOn(void)
 {
 	ScheduleThink(Spawner, 0.0f);
-	m_iValue = 1;
+	SetValue(1i);
 }
 
 void
@@ -256,7 +256,7 @@ monstermaker::Trigger(entity act, triggermode_t state)
 		TurnOn();
 		break;
 	default:
-		if (m_iValue)
+		if (GetValue(this))
 			TurnOff();
 		else
 			TurnOn();

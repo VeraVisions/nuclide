@@ -86,11 +86,11 @@ public:
 	nonvirtual bool CanPass(ncEntity);
 
 private:
-	bool m_bEnabled;
+	bool m_teleporterActive;
 	string m_sndTeleport;
 	string m_sndTeleportEnter;
 	string m_sndTeleportExit;
-	bool m_bIsModern;
+	bool m_sourceVersion;
 };
 
 void
@@ -99,29 +99,29 @@ trigger_teleport::trigger_teleport(void)
 	m_sndTeleport = __NULL__;
 	m_sndTeleportEnter = __NULL__;
 	m_sndTeleportExit = __NULL__;
-	m_bEnabled = true;
-	m_bIsModern = false;
+	m_teleporterActive = true;
+	m_sourceVersion = false;
 }
 
 void
-trigger_teleport::SpawnKey(string strKey, string strValue)
+trigger_teleport::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "snd_teleport":
-		m_sndTeleport = strValue;
+		m_sndTeleport = setValue;
 		break;
 	case "snd_teleport_enter":
-		m_sndTeleportEnter = strValue;
+		m_sndTeleportEnter = setValue;
 		break;
 	case "snd_teleport_exit":
-		m_sndTeleportExit = strValue;
+		m_sndTeleportExit = setValue;
 		break;
 	case "StartDisabled":
-		m_bEnabled = ReadBool(strValue);
-		m_bIsModern = true;
+		m_teleporterActive = ReadBool(setValue);
+		m_sourceVersion = true;
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
@@ -129,34 +129,34 @@ void
 trigger_teleport::Save(float handle)
 {
 	super::Save(handle);
-	SaveBool(handle, "m_bEnabled", m_bEnabled);
-	SaveString(handle, "m_sndTeleport", m_sndTeleport);
-	SaveString(handle, "m_sndTeleportEnter", m_sndTeleportEnter);
-	SaveString(handle, "m_sndTeleportExit", m_sndTeleportExit);
-	SaveBool(handle, "m_bIsModern", m_bIsModern);
+	SaveBool(handle, "teleporterActive", m_teleporterActive);
+	SaveString(handle, "sndTeleport", m_sndTeleport);
+	SaveString(handle, "sndTeleportEnter", m_sndTeleportEnter);
+	SaveString(handle, "sndTeleportExit", m_sndTeleportExit);
+	SaveBool(handle, "sourceVersion", m_sourceVersion);
 }
 
 void
-trigger_teleport::Restore(string strKey, string strValue)
+trigger_teleport::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
-	case "m_bEnabled":
-		m_bEnabled = ReadBool(strValue);
+	case "teleporterActive":
+		m_teleporterActive = ReadBool(setValue);
 		break;
-	case "m_sndTeleport":
-		m_sndTeleport = ReadString(strValue);
+	case "sndTeleport":
+		m_sndTeleport = ReadString(setValue);
 		break;
-	case "m_sndTeleportEnter":
-		m_sndTeleportEnter = ReadString(strValue);
+	case "sndTeleportEnter":
+		m_sndTeleportEnter = ReadString(setValue);
 		break;
-	case "m_sndTeleportExit":
-		m_sndTeleportExit = ReadString(strValue);
+	case "sndTeleportExit":
+		m_sndTeleportExit = ReadString(setValue);
 		break;
-	case "m_bIsModern":
-		m_bIsModern = ReadBool(strValue);
+	case "sourceVersion":
+		m_sourceVersion = ReadBool(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
@@ -164,7 +164,7 @@ bool
 trigger_teleport::CanPass(ncEntity target)
 {
 	/* legacy entity check */
-	if (m_bIsModern == false) {
+	if (m_sourceVersion == false) {
 		if (HasSpawnFlags(TRIGTELE_NOCLIENTS) && target.flags & FL_CLIENT)
 			return false;
 		if (!HasSpawnFlags(TRIGTELE_MONSTERS) && target.flags & FL_MONSTER)
@@ -184,14 +184,9 @@ trigger_teleport::Spawned(void)
 {
 	super::Spawned();
 
-	if (m_sndTeleport)
-		Sound_Precache(m_sndTeleport);
-
-	if (m_sndTeleportEnter)
-		Sound_Precache(m_sndTeleportEnter);
-
-	if (m_sndTeleportExit)
-		Sound_Precache(m_sndTeleportExit);
+	precache.Sound(m_sndTeleport);
+	precache.Sound(m_sndTeleportEnter);
+	precache.Sound(m_sndTeleportExit);
 }
 
 void
@@ -203,76 +198,69 @@ trigger_teleport::Respawn(void)
 void
 trigger_teleport::Touch(entity eToucher)
 {
-	if (GetMaster(eToucher) == FALSE)
+	if (GetMaster(eToucher) == FALSE) {
 		return;
-	if (m_bEnabled == false)
+	}
+	if (m_teleporterActive == false) {
 		return;
-	if (CanPass((ncEntity)eToucher) == false)
+	}
+	if (CanPass((ncEntity)eToucher) == false) {
 		return;
+	}
+	if (is.Sentient(eToucher) == false) {
+		return;
+	}
 
-	if (eToucher.movetype != MOVETYPE_NONE) {
-		eActivator = (ncEntity)eToucher;
-		entity eTarget = find(world, ::targetname, target);
+	eActivator = (ncEntity)eToucher;
+	ncEntity eTarget = (ncEntity)find(world, ::targetname, target);
 
-		if (eTarget) {
-			vector endpos = eTarget.origin;
-			float flSpeed = vlen(eActivator.velocity);
-			makevectors(eTarget.angles);
-			eActivator.velocity = (v_forward * flSpeed);
-			eActivator.angles = eTarget.angles;
+	if (!eTarget) {
+		EntWarning("Failed to teleport %S to %S", eActivator.netname, target);
+		return;
+	}
 
-			if (eActivator.flags & FL_CLIENT) {
-				Client_FixAngle(eActivator, eActivator.angles);
+	vector endpos = eTarget.origin;
+	float flSpeed = vlen(eActivator.velocity);
+	makevectors(eTarget.angles);
+	eActivator.velocity = (v_forward * flSpeed);
+	eActivator.angles = eTarget.angles;
 
-				/* level designers place destinations where the feet
-				   are going to be, because monsters are mainly set up
-				   to be that way (0 0 0 being ground). players however 
-				   have their it at the center of mass, so nudge it a little. */
-				endpos[2] -= eActivator.mins[2]; 
-			}
+	if (is.Player(eActivator)) {
+		Client_FixAngle(eActivator, eActivator.angles);
 
-			/* test if something is in the way. */
-			tracebox(endpos, eActivator.mins, eActivator.maxs, endpos, MOVE_NORMAL, eActivator);
+		/* level designers place destinations where the feet
+		   are going to be, because monsters are mainly set up
+		   to be that way (0 0 0 being ground). players however 
+		   have their it at the center of mass, so nudge it a little. */
+		endpos[2] -= eActivator.mins[2]; 
+	}
 
-			/* indeed something is in the way... */
-			if (trace_ent && trace_startsolid == true) {
-				/* it can be killed, telefrag */
-				if (trace_ent.takedamage != DAMAGE_NO) {
-					ncSurfacePropEntity killThis = (ncSurfacePropEntity)trace_ent;
-					killThis.SetHealth(-100);
-					killThis.Death(this, eActivator, 1000, g_vec_null, trace_endpos, 0i);
-				}
-			}
+	/* test if something is in the way. */
+	tracebox(endpos, eActivator.mins, eActivator.maxs, endpos, MOVE_NORMAL, eActivator);
 
-			eActivator.SetOriginUnstick(endpos);
-
-			if (m_sndTeleport) {
-				StartSoundDef(m_sndTeleport, CHAN_VOICE, true);
-			}
-
-			if (m_sndTeleportEnter) {
-				StartSoundDef(m_sndTeleportEnter, CHAN_VOICE, true);
-			}
-
-			if (m_sndTeleportExit) {
-				StartSoundDef(m_sndTeleportExit, CHAN_VOICE, true);
-			}
-
-			EntLog("Teleported %S to %v", eActivator.netname, endpos);
-		} else {
-			EntWarning("Failed to teleport %S", eActivator.netname);
+	/* indeed something is in the way... */
+	if (trace_ent && trace_startsolid == true) {
+		/* it can be killed, telefrag */
+		if (trace_ent.takedamage != DAMAGE_NO) {
+			ncSurfacePropEntity killThis = (ncSurfacePropEntity)trace_ent;
+			killThis.SetHealth(-100);
+			killThis.Death(this, eActivator, 1000, g_vec_null, trace_endpos, 0i);
 		}
 	}
+
+	eActivator.SetOriginUnstick(endpos);
+
+	if (m_sndTeleport) {
+		StartSoundDef(m_sndTeleport, CHAN_VOICE, true);
+	}
+
+	if (m_sndTeleportEnter) {
+		StartSoundDef(m_sndTeleportEnter, CHAN_VOICE, true);
+	}
+
+	if (m_sndTeleportExit) {
+		eTarget.StartSoundDef(m_sndTeleportExit, CHAN_VOICE, true);
+	}
+
+	EntLog("Teleported %S to %v", eActivator.netname, endpos);
 }
-
-/*!QUAKED info_teleport_destination (1 0 0) (-8 -8 -8) (8 8 8)
-# OVERVIEW
-Entity designed to designate a destination for a trigger_teleport.
-
-# KEYS
-"targetname"    Name
-
-# TRIVIA
-This entity was introduced in Quake (1996).
-*/
-CLASSEXPORT(info_teleport_destination, info_notnull)

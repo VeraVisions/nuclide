@@ -64,7 +64,7 @@ float Spawn_PlayerRange(entity spot) {
 
 	bestdist = 9999999;
 
-	for (pl = world; (pl = find(pl, classname, "player"));) {
+	for (pl = world; (pl = next.Player(pl));) {
 		if (pl->health <= 0) {
 			continue;
 		}

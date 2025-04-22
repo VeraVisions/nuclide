@@ -34,7 +34,7 @@ This entity was introduced in Half-Life (1998).
 class
 info_landmark:ncPointTrigger
 {
-	
+
 };
 
 enumflags
@@ -121,13 +121,12 @@ public:
 	/* overrides */
 	virtual void Save(float);
 	virtual void Restore(string,string);
-	virtual void RestoreComplete(void);
 	virtual void SpawnKey(string,string);
 	virtual void Spawned(void);
 	virtual void Respawn(void);
 	virtual void Trigger(entity, triggermode_t);
 	virtual void Input(entity,string,string);
-	
+
 	virtual void Change(void);
 	virtual void Touch(entity);
 	virtual int IsInside(entity,entity);
@@ -137,7 +136,7 @@ private:
 	string m_strChangeTarget;
 	string m_strMap;
 	string m_strLandmark;
-	string m_strOnLevelChange;
+	string m_outputOnLevelChange;
 	entity m_activator;
 };
 
@@ -148,7 +147,7 @@ trigger_changelevel::trigger_changelevel(void)
 	m_strChangeTarget = __NULL__;
 	m_strMap = __NULL__;
 	m_strLandmark = __NULL__;
-	m_strOnLevelChange = __NULL__;
+	m_outputOnLevelChange = __NULL__;
 	m_activator = __NULL__;
 }
 
@@ -156,70 +155,64 @@ void
 trigger_changelevel::Save(float handle)
 {
 	super::Save(handle);
+
 	SaveFloat(handle, "m_flChangeDelay", m_flChangeDelay);
 	SaveString(handle, "m_strChangeTarget", m_strChangeTarget);
 	SaveString(handle, "m_strMap", m_strMap);
 	SaveString(handle, "m_strLandmark", m_strLandmark);
-	SaveString(handle, "m_strOnLevelChange", m_strOnLevelChange);
+	SaveString(handle, "m_outputOnLevelChange", m_outputOnLevelChange);
 	SaveEntity(handle, "m_activator", m_activator);
 }
 
 void
-trigger_changelevel::Restore(string strKey, string strValue)
+trigger_changelevel::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_flChangeDelay":
-		m_flChangeDelay = ReadFloat(strValue);
+		m_flChangeDelay = ReadFloat(setValue);
 		break;
 	case "m_strChangeTarget":
-		m_strChangeTarget = ReadString(strValue);
+		m_strChangeTarget = ReadString(setValue);
 		break;
 	case "m_strMap":
-		m_strMap = ReadString(strValue);
+		m_strMap = ReadString(setValue);
 		break;
 	case "m_strLandmark":
-		m_strLandmark = ReadString(strValue);
+		m_strLandmark = ReadString(setValue);
 		break;
-	case "m_strOnLevelChange":
-		m_strOnLevelChange = ReadString(strValue);
+	case "m_outputOnLevelChange":
+		m_outputOnLevelChange = ReadString(setValue);
 		break;
 	case "m_activator":
-		m_activator = ReadEntity(strValue);
+		m_activator = ReadEntity(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-trigger_changelevel::RestoreComplete(void)
-{
-	super::RestoreComplete();
-	SetSolid(SOLID_TRIGGER);
-}
-
-void
-trigger_changelevel::SpawnKey(string strKey, string strValue)
+trigger_changelevel::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "changetarget":
-		m_strChangeTarget = strValue;
+		m_strChangeTarget = setValue;
 		break;
 	case "map":
-		m_strMap = strValue;
+		m_strMap = setValue;
 		break;
 	case "landmark":
-		m_strLandmark = strValue;
+		m_strLandmark = setValue;
 		break;
 	case "changedelay":
-		m_flChangeDelay = stof(strValue);
+		m_flChangeDelay = stof(setValue);
 		break;
 	case "OnLevelChange":
 	case "OnChangeLevel":
-		m_strOnLevelChange = PrepareOutput(m_strOnLevelChange, strValue);
+		m_outputOnLevelChange = PrepareOutput(m_outputOnLevelChange, setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
@@ -228,8 +221,8 @@ trigger_changelevel::Spawned(void)
 {
 	super::Spawned();
 
-	if (m_strOnLevelChange) {
-		m_strOnLevelChange = CreateOutput(m_strOnLevelChange);
+	if (m_outputOnLevelChange) {
+		m_outputOnLevelChange = CreateOutput(m_outputOnLevelChange);
 	}
 }
 
@@ -271,15 +264,15 @@ trigger_changelevel::Change(void)
 	}
 
 	if (!target) {
-		UseOutput(m_activator, m_strOnLevelChange);
+		UseOutput(m_activator, m_outputOnLevelChange);
 	} else {
-		UseTargets(m_activator, TRIG_TOGGLE, m_flDelay);
+		UseTargets(m_activator, TRIG_TOGGLE, GetTriggerDelay());
 	}
 
 	/* if some other entity triggered us... just find the next player. */
 	if (!(m_activator.flags & FL_CLIENT)) {
 		/* we need a player if we want to use landmarks at all */
-		m_activator = find(world, ::classname, "player");
+		m_activator = next.Player(world);
 	}
 
 	if (m_strLandmark) {
@@ -295,16 +288,16 @@ trigger_changelevel::Change(void)
 
 	/* a trigger_transition may share the same targetname, thus we do this */
 	for (entity e = world; (e = find(e, ::classname, "info_landmark"));) {
-		info_landmark lm = (info_landmark)e;
+		info_landmark landMarkPVS = (info_landmark)e;
 		/* found it */
-		if (lm.targetname == m_strLandmark) {
+		if (landMarkPVS.targetname == m_strLandmark) {
 			EntLog("Found landmark for %S", m_strLandmark);
-			g_landmarkpos = m_activator.origin - lm.origin;
+			g_landmarkpos = m_activator.origin - landMarkPVS.origin;
 
 			if (transitionHelper) {
-				transitionHelper.SaveTransition(__NULL__, false);
+				ncSessionManager::TransitionFromVolume(transitionHelper);
 			} else {
-				trigger_transition_pvsfallback(lm);
+				ncSessionManager::TransitionFromPVS(landMarkPVS);
 			}
 
 			changelevel(m_strMap, m_strLandmark);
@@ -339,7 +332,7 @@ trigger_changelevel::Touch(entity eToucher)
 		return;
 	}
 
-	if (isPlayer(eToucher) == false) {
+	if (is.Player(eToucher) == false) {
 		return;
 	}
 
@@ -370,14 +363,14 @@ Landmark_GetSpot(void)
 		info_landmark lm = (info_landmark)e;
 		/* found it */
 		if (lm.targetname == startspot) {
-			NSLog("^3Landmark_GetSpot^7: Found landmark for %s", startspot);
+			ncLog("^3Landmark_GetSpot^7: Found landmark for %s", startspot);
 			return lm.origin + g_landmarkpos;
 		}
 	}
 
 	/* return something useful at least */
 	entity ips = find(world, ::classname, "info_player_start");
-	NSError("Cannot find startspot %S!\n", startspot);
+	ncError("Cannot find startspot %S!\n", startspot);
 	return ips.origin;
 }
 

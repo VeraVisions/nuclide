@@ -62,21 +62,21 @@ public:
 
 private:
 	string m_strAchievementEvent;
-	string m_strOnFired;
+	string m_outputOnFired;
 };
 
 void
 logic_achievement::logic_achievement(void)
 {
 	m_strAchievementEvent = __NULL__;
-	m_strOnFired = __NULL__;
+	m_outputOnFired = __NULL__;
 }
 
 void
 logic_achievement::Save(float handle)
 {
 	SaveString(handle, "m_strAchievementEvent", m_strAchievementEvent);
-	SaveString(handle, "m_strOnFired", m_strOnFired);
+	SaveString(handle, "m_outputOnFired", m_outputOnFired);
 }
 
 void
@@ -86,8 +86,8 @@ logic_achievement::Restore(string keyName, string setValue)
 	case "m_strAchievementEvent":
 		m_strAchievementEvent = ReadString(setValue);
 		break;
-	case "m_strOnFired":
-		m_strOnFired = ReadString(setValue);
+	case "m_outputOnFired":
+		m_outputOnFired = ReadString(setValue);
 		break;
 	default:
 		super::Restore(keyName, setValue);
@@ -102,7 +102,7 @@ logic_achievement::SpawnKey(string keyName, string setValue)
 		m_strAchievementEvent = ReadString(setValue);
 		break;
 	case "OnFired":
-		m_strOnFired = PrepareOutput(m_strOnFired, setValue);
+		m_outputOnFired = PrepareOutput(m_outputOnFired, setValue);
 		break;
 	default:
 		super::SpawnKey(keyName, setValue);
@@ -114,8 +114,8 @@ logic_achievement::Spawned(void)
 {
 	super::Spawned();
 
-	if (m_strOnFired)
-		m_strOnFired = CreateOutput(m_strOnFired);
+	if (m_outputOnFired)
+		m_outputOnFired = CreateOutput(m_outputOnFired);
 }
 
 void
@@ -145,11 +145,11 @@ logic_achievement::Trigger(entity activatorEntity, triggermode_t state)
 void
 logic_achievement::CallEvent(entity targetPlayer)
 {
-	if (m_bEnabled == false) {
+	if (TriggerEnabled() == false) {
 		return;
 	}
 
-	UseOutput(targetPlayer, m_strOnFired);
+	UseOutput(targetPlayer, m_outputOnFired);
 
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_ACHIEVEMENT);

@@ -64,7 +64,7 @@ Sentences_Init(void)
 	}
 
 	if (fs_sentences < 0) {
-		NSWarning("No Sentences, missing %S", autocvar_sentences_File);
+		ncWarning("No Sentences, missing %S", autocvar_sentences_File);
 		InitEnd();
 		return;
 	}
@@ -96,7 +96,7 @@ Sentences_Init(void)
 				g_sentences_count);
 #else
 		if (g_sentences_count + 1 >= SENTENCES_LIMIT) {
-			NSError("Reached limit of %d SentenceDefs.", SENTENCES_LIMIT);
+			ncError("Reached limit of %d SentenceDefs.", SENTENCES_LIMIT);
 			return;
 		}
 
@@ -116,14 +116,14 @@ Sentences_Init(void)
 					g_sentences[x].m_strSamples = sprintf("%s %s", g_sentences[x].m_strSamples, argv(i));
 				}
 
-				g_sentences[x].m_strSamples = 
+				g_sentences[x].m_strSamples =
 					strreplace(",", " vox/comma.wav", g_sentences[x].m_strSamples);
 			}
 		}
 	}
-	
+
 	fclose(fs_sentences);
-	NSLog("...SentencesDef initialized with %i entries.", g_sentences_count);
+	ncLog("...SentencesDef initialized with %i entries.", g_sentences_count);
 	InitEnd();
 }
 
@@ -157,7 +157,7 @@ Sentences_GetSamples(string msg)
 	if (i != -1i)
 		return g_sentences[i].m_strSamples;
 	else {
-		NSError("Can't find sentence %S", msg);
+		ncError("Can't find sentence %S", msg);
 		return "";
 	}
 }
@@ -193,7 +193,7 @@ Sentences_Init(void)
 	}
 
 	if (fs_sentences < 0) {
-		NSWarning("No Sentences, missing %S", autocvar_sentences_File);
+		ncWarning("No Sentences, missing %S", autocvar_sentences_File);
 		InitEnd();
 		return;
 	}
@@ -225,7 +225,7 @@ Sentences_Init(void)
 				g_sentences_count);
 #else
 		if (g_sentences_count + 1 >= SENTENCES_LIMIT) {
-			NSError("Reached limit of max sentences!");
+			ncError("Reached limit of max sentences!");
 			InitEnd();
 			return;
 		}
@@ -238,7 +238,7 @@ Sentences_Init(void)
 	}
 
 	fclose(fs_sentences);
-	NSLog("SentencesDef initialized with %i entries.", g_sentences_count);
+	ncLog("SentencesDef initialized with %i entries.", g_sentences_count);
 	InitEnd();
 }
 
@@ -280,7 +280,7 @@ Sentences_GetSamples(string word)
 	}
 
 	/* we've somehow messed up catastrophically */
-	NSError("Invalid sentence keyword %s", word);
+	ncError("Invalid sentence keyword %s", word);
 	return ("");
 }
 
@@ -293,7 +293,7 @@ Sentences_GetID(string sentence)
 		SndLog("Found sentence %S", sentence);
 		return i;
 	} else {
-		NSError("Can't find sentence %S", sentence);
+		ncError("Can't find sentence %S", sentence);
 		return 0;
 	}
 }

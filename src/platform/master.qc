@@ -22,7 +22,7 @@ static bool
 Server_IsLan(string address)
 {
 	tokenizebyseparator(address, ".");
-	
+
 	if (argv(0) == "192" && argv(1) == "168") {
 		return (1);
 	} else {
@@ -41,7 +41,7 @@ Master_Resolve(void)
 	dprint("...\n");
 
 	if (!out) {
-		NSError("Failed to resolve master server address.");
+		ncError("Failed to resolve master server address.");
 		return __NULL__;
 	}
 
@@ -52,9 +52,9 @@ int
 Master_GetTotalServers(void)
 {
 	int a = gethostcachevalue(SLIST_HOSTCACHETOTALCOUNT);
-	
+
 	if (a) {
-		NSLog("Master reports a total of %i servers.", a);
+		ncLog("Master reports a total of %i servers.", a);
 	}
 
 	return gethostcachevalue(SLIST_HOSTCACHETOTALCOUNT);
@@ -101,7 +101,7 @@ Master_RecountServers(void)
 void
 Master_RefreshCache(void)
 {
-	NSLog("Refreshing host cache...");
+	ncLog("Refreshing host cache...");
 
 	resethostcachemasks();
 	sethostcachemaskstring(0, gethostcacheindexforkey("gamedir"), cvar_string("game"), SLIST_TEST_EQUAL);
@@ -110,9 +110,9 @@ Master_RefreshCache(void)
 	resorthostcache();
 	Master_RecountServers();
 	int a = Master_GetLANServers() + Master_GetInternetServers();
-	
+
 	if (a) {
-		NSLog("Master reports a total of %i servers.", a);
+		ncLog("Master reports a total of %i servers.", a);
 	}
 }
 
@@ -134,7 +134,7 @@ Master_ResortCache(void)
 void
 Master_UpdateCache(void)
 {
-	NSLog("Updating host cache...");
+	ncLog("Updating host cache...");
 	resethostcachemasks();
 	sethostcachemaskstring(0, gethostcacheindexforkey("gamedir"), cvar_string("fs_game"), SLIST_TEST_EQUAL);
 	sethostcachesort(gethostcacheindexforkey("ping"), FALSE);
@@ -142,9 +142,9 @@ Master_UpdateCache(void)
 	Master_ResortCache();
 	Master_RecountServers();
 	int a = Master_GetLANServers() + Master_GetInternetServers();
-	
+
 	if (a) {
-		NSLog("Master reports a total of %i servers.", a);
+		ncLog("Master reports a total of %i servers.", a);
 	}
 }
 

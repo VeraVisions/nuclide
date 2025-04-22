@@ -40,7 +40,163 @@ typedef enumflags
 .float traileffectnum;
 
 /** This entity class represents an interactive projectile.
-Objects such as rockets, grenades, bolts etc. should ideally be this.
+
+# OVERVIEW
+
+Objects such as rockets, grenades, bolts etc. should ideally be this class.
+Weapons are the primary source of firing this projectile, but any actor and other
+entity can launch these as well.
+
+ncEntity can use its inputs `SpawnProjectileDef` and `SpawnProjectileOffset` anywhere
+in the game to spawn a projectile. Refer to ncEntity its own documentation for details.
+
+
+# KEYS
+- "model" : Model of the projectile.
+- "mins" : Mins of the projectile bounding box.
+- "maxs" : Maxs of the projectile bounding box.
+- "def_damage" : direct damage, upon touch 
+- "def_splash_damage" : splash damage damage def 
+- "velocity" : Start velocity. Main speed control when thrust isn't on. Relative to view (forward, right, up).
+- "health" : amount of dmg the projectile can take 
+- "angular_velocity" : Specifies the angular velocity. Pitch/yaw/roll per second.
+- "thrust" : Rate of acceeleration.
+- "thrust_start" : When to begin accel, in seconds.
+- "thrust_end" : When to stop accel, in seconds.
+- "linear_friction" : Air friction.
+- "bounce" : Bounce to speed multiplier.
+- "gravity" : 0 means no gravity.
+- "fuse" : Fuse time in seconds.
+- "detonate_on_fuse" : When 1, will detonate when fuse runs out. 
+- "detonate_on_death" : When 1, makes it it detonate when it gets damaged enough.
+- "detonate_on_world" : When 1, detonates when touching world.
+- "detonate_on_actor" : When 1 touching a monster/player will detonate it. 
+- "decal_detonate" : Name of the decal group to place.
+- "smoke_fly" : Particle effect to use when flying.
+- "fx_path" : Particle trail to use when flying.
+- "model_detonate" : Particle effect to play when the projectile explodes.
+- "smoke_bounce" : Smoke effect to play when bouncing around.
+- "smoke_fuse" : Particle effect to play when the fuse timer runs out.
+- "projectile_debris" : Another projectile to spawn when this one detonates.
+- "debris_count" : Number of projectiles to spawn upon detonation.
+- "debris_stick" : When 1, projectiles will stick to walls.
+- "debris_offset" : Offset at which debris is spawned from the impact position, aiming away from the impact normal. In units, forward/right/up vector.
+- "detonate_offset" : Offset at which the particles and lights occur during explosion.
+- "damage_offset" : The offset at which explosion damage will be calculated from. In units, forward/right/up vector.
+- "light_color" : Flying dynamic light color.
+- "light_radius" : Flying dynamic light radius.
+- "light_offset" : Flying dynamic light offset.
+- "explode_light_color" : Explosion dynamic light color.
+- "explode_light_radius" : Explosion dynamic light radius.
+- "explode_light_fadetime" : Explosion dynamic light fade time.
+- "snd_fly" : Sound to play when flying.
+- "snd_explode" : Sound to play when exploding.
+- "snd_bounce" : Sound to play when bouncing around, not exploding.
+- "decal_impact" : Decal group to spawn upon impact.
+- "stick_to_world" : When 1, will stick to world.
+- "stick_to_actor" : When 1, will stick to actors.
+- "thrust_homing" : When 1, will change the thrust to act as a homing missile.
+- "frame" : Animation sequence to use when flying.
+- "inherit_velocity" : When 1, will inherit the velocity from the owner.
+- "offset" : Offset position from the owner. In units from face. Vector axis are [forward] [right] [up].
+- "damage" : Damage upon direct impact, respected when "def_damage" is not set.
+- "thrown" : Will not fly like a rocket, but be thrown like a grenade. Hold-time will be passed as a fuse.
+- "reflects" : When 1, will reflect off surfaces.
+- "trackEnemy" : When 1, will track the nearest enemy.
+- "trackJitter" : Will jitter movement when tracking by this many units per second.
+- "trackDelay" : Delay between tracking position updates.
+- "def_planeImpact" : When set, will spawn an entity at the position of impact aligned towards the impact surface's normal.
+- "noFX" : Disable impact effects.
+
+# UNUSED
+- "mass" : Reserved.
+- "impact_damage_effect" : Reserved. May affect blood splats? 
+- "impact_gib" : impact gibs? Reserved.
+- "decal_size" : Reserved.
+- "smoke_detonate" : Reserved.
+
+# HITSCAN KEYS
+- "is_bullet": When 1, will act as a traceline/hitscan bullet instead of a projectile.
+- "hitscans": Number of hitscans cast when "is_bullet" is 1.
+- "spread": Spread of the projectile flying direction (e.g. "0.1 0.1")
+- "range": Hitscan maximum range.
+
+# SPRITE KEYS
+- "animStartFrame" : Animation start frame.
+- "animEndFrame" : Animation end frame.
+- "animFrameRate" : Animation frame rate.
+- "animEndRemoves" : Removes projectile once animation finishes when "1".
+
+# EXAMPLES
+
+A projectile for a shotgun may look like this:
+
+```
+entityDef projectile_shotgun
+{
+	"spawnclass"			"ncProjectile"
+	"is_bullet"				"1"
+	"detonate_on_world" 	"1"
+	"damage"				"10"
+	"hitscans"				"6"
+	"spread"				"0.1 0.1"
+}
+```
+
+Here's one for a rocket, fired from a rocket launcher. The `//` comments indicate where you'd have to define the extra effects:
+
+```
+entityDef damage_rocketDirect
+{
+	"damage"		"80"
+	"damage_random"	"25" // adds up to 25 units of damage on top
+}
+
+entityDef damage_rocketSplash
+{
+	"damage"	"200"
+	"radius"	"250"
+	"push"		"10000"
+}
+
+entityDef projectile_rocket
+{
+	"spawnclass"				"ncProjectile"
+	"model"						"models/rocket.vvm"
+
+	"def_damage"				"damage_rocketDirect"
+	"def_splash_damage"			"damage_rocketSplash"
+
+	"velocity"					"250"
+	"angular_velocity"			"0 0 200"
+	"fuse"						"10"
+	"detonate_on_fuse"			"0"
+	"detonate_on_death"			"1"
+	"detonate_on_world"			"1"
+	"detonate_on_actor"			"1"
+	"impact_damage_effect"		"1"
+	"impact_gib"				"1"
+
+	"thrust"					"2000"
+	"thrust_start"				"0.1"
+	"thrust_end"				"2"
+
+	"smoke_fly"					"weapon_rocketlauncher.smoke_trail" // define `smoke_trail` in particles/weapon_rocketlauncher.cfg
+	"model_detonate"			"weapon_rocketlauncher.explosion" // define `explosion` in particles/weapon_rocketlauncher.cfg
+	"decal_detonate"			"ExplosionDecal" // define `ExplosionDecal` in scripts/decals.txt
+	"light_color"				"1 1 1"
+	"light_radius"				"160"
+	"light_offset"				"0 0 0"
+	"detonate_offset"			"24"
+
+	"explode_light_color"		"2 1.6 0.8"
+	"explode_light_radius"		"320"
+	"explode_light_fadetime"	"0.5"
+
+	"snd_explode"				"Weapon_RocketLauncher.Explosion" // define it in decls/sound/weapons.sndshd
+	"offset"					"0 7 -3"
+}
+```
 
 @ingroup baseclass
 */
@@ -108,6 +264,9 @@ private:
 	NETWORKED_FLOAT(m_flLightRadius)
 
 #ifdef SERVER
+	/* I/O system */
+	string m_outputOnDetonate;
+
 	/* sprite animation gubbins */
 	int m_iProjectileAnimEnd;
 	int m_iProjectileAnimStart;
@@ -191,6 +350,7 @@ private:
 	ncTimer m_thrustHandler;
 	vector m_hitLocation;
 	bool m_noFX;
+	vector m_lastPlaneNormal;
 
 	nonvirtual void _AnimateThink(void);
 	nonvirtual void _ThrustThink(void);

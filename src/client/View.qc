@@ -366,10 +366,10 @@ ncView::UpdateView(void)
 	case VIEWMODE_SPECTATING:
 		spec = (ncSpectator)m_viewTarget;
 
-		switch (spec.spec_mode) {
+		switch (spec.m_spectatingMode) {
 		case SPECMODE_DEATHCAM:
 			vector vecCamEnd;
-			c = findfloat(world, ::entnum, spec.spec_ent);
+			c = findfloat(world, ::entnum, spec.m_spectatingEntity);
 #if 0
 			vector deathAngle;
 			vector vecCamStart = c.origin;
@@ -416,9 +416,9 @@ ncView::UpdateView(void)
 			SetCameraAngle(view_angles);
 			break;
 		case SPECMODE_FIRSTPERSON:
-			c = findfloat(world, ::entnum, spec.spec_ent);
+			c = findfloat(world, ::entnum, spec.m_spectatingEntity);
 
-			if (c.classname == "player") {
+			if (is.Player(c)) {
 				ncPlayer bp = (ncPlayer)c;
 				removeentity(c);
 				SetCameraOrigin(bp.GetEyePos());
@@ -426,8 +426,8 @@ ncView::UpdateView(void)
 				SetAFOV(cvar("fov") * bp.viewzoom);
 
 				/* 0 means world */
-				if (spec.spec_ent) {
-					c = findfloat(world, ::entnum, spec.spec_ent);
+				if (spec.m_spectatingEntity) {
+					c = findfloat(world, ::entnum, spec.m_spectatingEntity);
 
 					/* we found them */
 					if (c && c != spec) {
@@ -441,8 +441,8 @@ ncView::UpdateView(void)
 			}
 			break;
 		case SPECMODE_CHASEOVERVIEW:
-			c = findfloat(world, ::entnum, spec.spec_ent);
-			if (c.classname == "player") {
+			c = findfloat(world, ::entnum, spec.m_spectatingEntity);
+			if (is.Player(c)) {
 				SetCameraOrigin(c.origin);
 			}
 			

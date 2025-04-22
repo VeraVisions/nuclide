@@ -27,7 +27,7 @@ ncPortal::ncPortal(void)
 	m_vecPortalS = g_vec_null;
 	m_vecPortalT = g_vec_null;
 	m_brushNum = -1;
-	m_bEnabled = false;
+	m_portalEnabled = false;
 	isPortal = true;
 	m_vecTargetPos = g_vec_null;
 	m_vecTargetN = g_vec_null;
@@ -70,35 +70,35 @@ ncPortal::Save(float handle)
 }
 
 void
-ncPortal::Restore(string strKey, string strValue)
+ncPortal::Restore(string keyName, string setValue)
 {
-	switch (strKey) {
+	switch (keyName) {
 	case "m_ePortalTarget":
-		m_ePortalTarget = (ncPortal)ReadEntity(strValue);
+		m_ePortalTarget = (ncPortal)ReadEntity(setValue);
 		break;
 	case "m_vecTargetPos":
-		m_vecTargetPos = ReadVector(strValue);
+		m_vecTargetPos = ReadVector(setValue);
 		break;
 	case "m_vecTargetAngle":
-		m_vecTargetAngle = ReadVector(strValue);
+		m_vecTargetAngle = ReadVector(setValue);
 		break;
 	case "m_vecPortalPos":
-		m_vecPortalPos = ReadVector(strValue);
+		m_vecPortalPos = ReadVector(setValue);
 		break;
 	case "m_vecPortalN":
-		m_vecPortalN = ReadVector(strValue);
+		m_vecPortalN = ReadVector(setValue);
 		break;
 	case "m_vecPortalS":
-		m_vecPortalS = ReadVector(strValue);
+		m_vecPortalS = ReadVector(setValue);
 		break;
 	case "m_vecPortalT":
-		m_vecPortalT = ReadVector(strValue);
+		m_vecPortalT = ReadVector(setValue);
 		break;
 	case "m_iPortalValue":
-		m_iPortalValue = ReadInt(strValue);
+		m_iPortalValue = ReadInt(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(keyName, setValue);
 		break;
 	}
 }
@@ -144,14 +144,14 @@ ncPortal::PortalClose(void)
 	/* invalidate the other portal's reference to this one, only
 	   if we're still actively linked. */
 	if (m_ePortalTarget && m_ePortalTarget.m_ePortalTarget == this) {
-		m_ePortalTarget.m_bEnabled = false;
+		m_ePortalTarget.m_portalEnabled = false;
 		m_ePortalTarget.m_ePortalTarget = __NULL__;
 		m_ePortalTarget._PortalUpdated();
 	}
 
 	/* now kill our own reference */
 	m_ePortalTarget = __NULL__;
-	m_bEnabled = false;
+	m_portalEnabled = false;
 	_PortalUpdated();
 }
 
@@ -160,7 +160,7 @@ ncPortal::PortalLinkTo(ncPortal target, bool openPortal)
 {
 	m_ePortalTarget = target;
 
-	m_bEnabled = openPortal;
+	m_portalEnabled = openPortal;
 
 	SendFlags = -1;
 	_PortalUpdated();
@@ -168,7 +168,7 @@ ncPortal::PortalLinkTo(ncPortal target, bool openPortal)
 	if (m_ePortalTarget)
  {
 		m_ePortalTarget.m_ePortalTarget = this;
-		m_ePortalTarget.m_bEnabled = openPortal;
+		m_ePortalTarget.m_portalEnabled = openPortal;
 		m_ePortalTarget.SendFlags = -1;
 		m_ePortalTarget._PortalUpdated();
 	}
@@ -185,7 +185,7 @@ ncPortal::SetPortalID(int value)
 void
 ncPortal::SetPortalModel(string modelPath)
 {
-	m_flPortalModel = getmodelindex(modelPath);
+	m_portalModelIndex = getmodelindex(modelPath);
 }
 
 void
@@ -218,11 +218,11 @@ ncPortal::_PortalUpdated(void)
  */
 	movetype = MOVETYPE_NONE;
 
-	if (m_bEnabled == true) {
+	if (m_portalEnabled == true) {
 		solid = SOLID_PORTAL;
-		setmodel(this, modelnameforindex(m_flPortalModel));
-		if (m_bWasEnabled == false) {
-			m_bWasEnabled = true;
+		setmodel(this, modelnameforindex(m_portalModelIndex));
+		if (m_portalWasEnabled == false) {
+			m_portalWasEnabled = true;
 #ifdef SERVER
 			PortalWasOpened();
 #endif
@@ -231,8 +231,8 @@ ncPortal::_PortalUpdated(void)
 #endif
 		}
 	} else {
-		if (m_bWasEnabled == true) {
-			m_bWasEnabled = false;
+		if (m_portalWasEnabled == true) {
+			m_portalWasEnabled = false;
 #ifdef SERVER
 			PortalWasClosed();
 #endif
@@ -427,8 +427,8 @@ ncPortal::EvaluateEntity(void)
 	EVALUATE_VECTOR(m_vecTargetAngle, 0, PORTALFL_CHANGED_TARG_ANGLES_X)
 	EVALUATE_VECTOR(m_vecTargetAngle, 1, PORTALFL_CHANGED_TARG_ANGLES_Y)
 	EVALUATE_VECTOR(m_vecTargetAngle, 2, PORTALFL_CHANGED_TARG_ANGLES_Z)
-	EVALUATE_FIELD(m_bEnabled, PORTALFL_CHANGED_ENABLED)
-	EVALUATE_FIELD(m_flPortalModel, PORTALFL_CHANGED_MODELINDEX)
+	EVALUATE_FIELD(m_portalEnabled, PORTALFL_CHANGED_ENABLED)
+	EVALUATE_FIELD(m_portalModelIndex, PORTALFL_CHANGED_MODELINDEX)
 }
 
 float
@@ -454,8 +454,8 @@ ncPortal::SendEntity(entity ePEnt, float flChanged)
 		SENDENTITY_FLOAT(m_vecTargetAngle[2], PORTALFL_CHANGED_TARG_ANGLES_Z)
 	}
 
-	SENDENTITY_BYTE(m_bEnabled, PORTALFL_CHANGED_ENABLED)
-	SENDENTITY_FLOAT(m_flPortalModel, PORTALFL_CHANGED_MODELINDEX)
+	SENDENTITY_BYTE(m_portalEnabled, PORTALFL_CHANGED_ENABLED)
+	SENDENTITY_FLOAT(m_portalModelIndex, PORTALFL_CHANGED_MODELINDEX)
 
 	return (true);
 }
@@ -485,8 +485,8 @@ ncPortal::ReceiveEntity(float flNew, float flChanged)
 		READENTITY_FLOAT(m_vecTargetAngle[1], PORTALFL_CHANGED_TARG_ANGLES_Y)
 		READENTITY_FLOAT(m_vecTargetAngle[2], PORTALFL_CHANGED_TARG_ANGLES_Z)
 
-	READENTITY_BYTE(m_bEnabled, PORTALFL_CHANGED_ENABLED)
-	READENTITY_FLOAT(m_flPortalModel, PORTALFL_CHANGED_MODELINDEX)
+	READENTITY_BYTE(m_portalEnabled, PORTALFL_CHANGED_ENABLED)
+	READENTITY_FLOAT(m_portalModelIndex, PORTALFL_CHANGED_MODELINDEX)
 
 	if (m_ePortalTarget) {
 		if (m_ePortalTarget.m_ePortalTarget)

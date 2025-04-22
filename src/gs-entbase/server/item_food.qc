@@ -71,14 +71,14 @@ item_food::Save(float handle)
 }
 
 void
-item_food::Restore(string strKey, string strValue)
+item_food::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_iIsCan":
-		m_iIsCan = ReadInt(strValue);
+		m_iIsCan = ReadInt(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
@@ -110,13 +110,13 @@ item_food::Setup(void)
 void
 item_food::Touch(entity eToucher)
 {
-	if (eToucher.classname != "player") {
+	if (is.Player(eToucher)) {
 		return;
 	}
 	
 	if (owner != __NULL__) {
 		env_beverage bevOwner = (env_beverage)owner;
-		bevOwner.m_bReady = true;
+		bevOwner.SetValue(1i);
 	}
 
 	eToucher.health = bound(0, eToucher.health + 1, eToucher.max_health);

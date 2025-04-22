@@ -15,6 +15,7 @@
 */
 
 #include "init.h"
+#include "localize.h"
 #include "cmd.h"
 #include "background.h"
 #include "util.h"

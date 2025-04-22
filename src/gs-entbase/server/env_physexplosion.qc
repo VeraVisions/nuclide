@@ -80,23 +80,23 @@ env_physexplosion::Save(float handle)
 }
 
 void
-env_physexplosion::Restore(string strKey, string strValue)
+env_physexplosion::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_flMagnitude":
-		m_flMagnitude = ReadFloat(strValue);
+		m_flMagnitude = ReadFloat(setValue);
 		break;
 	case "m_flRadius":
-		m_flRadius = ReadFloat(strValue);
+		m_flRadius = ReadFloat(setValue);
 		break;
 	case "m_strTargetEntity":
-		m_strTargetEntity = ReadString(strValue);
+		m_strTargetEntity = ReadString(setValue);
 		break;
 	case "m_flInnerRadius":
-		m_flInnerRadius = ReadFloat(strValue);
+		m_flInnerRadius = ReadFloat(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 

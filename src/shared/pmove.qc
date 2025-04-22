@@ -651,6 +651,168 @@ ncPMoveVars::GetProneViewOffset(void)
 	return (m_vecProneViewOffset);
 }
 
+#ifdef SERVER
+void
+ncPMoveVars::Save(float handle)
+{
+	//super::Save(handle);
+
+	SaveFloat(handle, "g_gravity", g_gravity);
+	SaveFloat(handle, "pm_accelerate", pm_accelerate);
+	SaveFloat(handle, "pm_airaccelerate", pm_airaccelerate);
+	SaveFloat(handle, "pm_airstepsize", pm_airstepsize);
+	SaveFloat(handle, "pm_boxcenter", pm_boxcenter);
+	SaveFloat(handle, "pm_boxwidth", pm_boxwidth);
+	SaveFloat(handle, "pm_crouchheight", pm_crouchheight);
+	SaveFloat(handle, "pm_crouchspeed", pm_crouchspeed);
+	SaveFloat(handle, "pm_crouchviewheight", pm_crouchviewheight);
+	SaveFloat(handle, "pm_edgefriction", pm_edgefriction);
+	SaveFloat(handle, "pm_friction", pm_friction);
+	SaveFloat(handle, "pm_gravity", pm_gravity);
+	SaveFloat(handle, "pm_jumpheight", pm_jumpheight);
+	SaveFloat(handle, "pm_maxviewpitch", pm_maxviewpitch);
+	SaveFloat(handle, "pm_minviewpitch", pm_minviewpitch);
+	SaveFloat(handle, "pm_noclipaccelerate", pm_noclipaccelerate);
+	SaveFloat(handle, "pm_noclipspeed", pm_noclipspeed);
+	SaveFloat(handle, "pm_normalheight", pm_normalheight);
+	SaveFloat(handle, "pm_normalviewheight", pm_normalviewheight);
+	SaveFloat(handle, "pm_nospeedcap", pm_nospeedcap);
+	SaveFloat(handle, "pm_proneheight", pm_proneheight);
+	SaveFloat(handle, "pm_pronespeed", pm_pronespeed);
+	SaveFloat(handle, "pm_proneviewheight", pm_proneviewheight);
+	SaveFloat(handle, "pm_runspeed", pm_runspeed);
+	SaveFloat(handle, "pm_runfiring", pm_runfiring);
+	SaveFloat(handle, "pm_stamina", pm_stamina);
+	SaveFloat(handle, "pm_staminarate", pm_staminarate);
+	SaveFloat(handle, "pm_staminathreshold", pm_staminathreshold);
+	SaveFloat(handle, "pm_stepsize", pm_stepsize);
+	SaveFloat(handle, "pm_stopspeed", pm_stopspeed);
+	SaveFloat(handle, "pm_walkspeed", pm_walkspeed);
+	SaveFloat(handle, "pm_wateraccelerate", pm_wateraccelerate);
+	SaveFloat(handle, "pm_waterjumpheight", pm_waterjumpheight);
+}
+
+void
+ncPMoveVars::Restore(string keyName, string setValue)
+{
+	switch (keyName) {
+	case "g_gravity":
+		g_gravity = ReadFloat(setValue);
+		break;
+	case "pm_accelerate":
+		pm_accelerate = ReadFloat(setValue);
+		break;
+	case "pm_airaccelerate":
+		pm_airaccelerate = ReadFloat(setValue);
+		break;
+	case "pm_airstepsize":
+		pm_airstepsize = ReadFloat(setValue);
+		break;
+	case "pm_boxcenter":
+		pm_boxcenter = ReadFloat(setValue);
+		break;
+	case "pm_boxwidth":
+		pm_boxwidth = ReadFloat(setValue);
+		break;
+	case "pm_crouchheight":
+		pm_crouchheight = ReadFloat(setValue);
+		break;
+	case "pm_crouchspeed":
+		pm_crouchspeed = ReadFloat(setValue);
+		break;
+	case "pm_crouchviewheight":
+		pm_crouchviewheight = ReadFloat(setValue);
+		break;
+	case "pm_edgefriction":
+		pm_edgefriction = ReadFloat(setValue);
+		break;
+	case "pm_friction":
+		pm_friction = ReadFloat(setValue);
+		break;
+	case "pm_gravity":
+		pm_gravity = ReadFloat(setValue);
+		break;
+	case "pm_jumpheight":
+		pm_jumpheight = ReadFloat(setValue);
+		break;
+	case "pm_maxviewpitch":
+		pm_maxviewpitch = ReadFloat(setValue);
+		break;
+	case "pm_minviewpitch":
+		pm_minviewpitch = ReadFloat(setValue);
+		break;
+	case "pm_noclipaccelerate":
+		pm_noclipaccelerate = ReadFloat(setValue);
+		break;
+	case "pm_noclipspeed":
+		pm_noclipspeed = ReadFloat(setValue);
+		break;
+	case "pm_normalheight":
+		pm_normalheight = ReadFloat(setValue);
+		break;
+	case "pm_normalviewheight":
+		pm_normalviewheight = ReadFloat(setValue);
+		break;
+	case "pm_nospeedcap":
+		pm_nospeedcap = ReadFloat(setValue);
+		break;
+	case "pm_proneheight":
+		pm_proneheight = ReadFloat(setValue);
+		break;
+	case "pm_pronespeed":
+		pm_pronespeed = ReadFloat(setValue);
+		break;
+	case "pm_proneviewheight":
+		pm_proneviewheight = ReadFloat(setValue);
+		break;
+	case "pm_runspeed":
+		pm_runspeed = ReadFloat(setValue);
+		break;
+	case "pm_runfiring":
+		pm_runfiring = ReadFloat(setValue);
+		break;
+	case "pm_stamina":
+		pm_stamina = ReadFloat(setValue);
+		break;
+	case "pm_staminarate":
+		pm_staminarate = ReadFloat(setValue);
+		break;
+	case "pm_staminathreshold":
+		pm_staminathreshold = ReadFloat(setValue);
+		break;
+	case "pm_stepsize":
+		pm_stepsize = ReadFloat(setValue);
+		break;
+	case "pm_stopspeed":
+		pm_stopspeed = ReadFloat(setValue);
+		break;
+	case "pm_walkspeed":
+		pm_walkspeed = ReadFloat(setValue);
+		break;
+	case "pm_wateraccelerate":
+		pm_wateraccelerate = ReadFloat(setValue);
+		break;
+	case "pm_waterjumpheight":
+		pm_waterjumpheight = ReadFloat(setValue);
+		break;
+	default:
+		super::Restore(keyName, setValue);
+		break;
+	}
+}
+
+void
+ncPMoveVars::RestoreComplete(void)
+{
+	UpdateBoundingBoxes();
+
+	/* HACK: potentially unreliable. mark our global one in the save... */
+	if (!g_pmoveVars) {
+		g_pmoveVars = this;
+	}
+}
+#endif
+
 void
 PMove_Init(void)
 {

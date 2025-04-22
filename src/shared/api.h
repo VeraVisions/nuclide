@@ -25,25 +25,45 @@
 
 APIs used by both client and server progs.
 
+You can use these functions in any [progs or multi-progs](@ref progs).
+
+Certain functions may do nothing on the client-side.
+If that is the case, a note is made in function documentation.
+
 @{
 */
 
+/** Ammo library */
 typedef struct
 {
-	/** Returns the name of the specified ammo type. Returns __NULL__ when invalid. */
-	string NameForNum(int);
-	/** Returns the ammo id of a given name of ammo. Return -1 when invalid. */
-	int NumForName(string);
-	/** Returns the max ammo given name of ammo. Returns 0 when invalid. */
-	int MaxForName(string);
-	/** Returns the max ammo given name of ammo. Returns 0 when invalid. */
-	int MaxForNum(int);
+	/** Find out the internal name of an ammo ID. These match the names provided in the ammo decl.
+	@param ammoID is the unique identifier for an ammo type.
+	@return string containing the name of the specified ammo type. Returns `__NULL__` when invalid. */
+	string NameForNum(int ammoID);
+	/** Get the internal ID of an ammo type. 
+	@param ammoName is the name of the ammo type, such as `"ammo_shells"`.
+	@return the ammo id of a given name of ammo. Return `-1i` when invalid. */
+	int NumForName(string ammoName);
+	/** Find out the maximum ammo of a named ammo type. 
+	@param ammoName is the name of the ammo type, such as `"ammo_bullets"`.
+	@return the max ammo given name of ammo. Returns `0i` when invalid. */
+	int MaxForName(string ammoName);
+	/** Find out the maximum ammo of a ammo type given the ID. 
+	@param ammoID is the unique identifier for an ammo type.
+	@return integer value containing the max ammo count. Returns `0i` when invalid. */
+	int MaxForNum(int ammoID);
 } ammoAPI_t;
 
-ammoAPI_t ammo;
+ammoAPI_t ammo; /**< Access ammoAPI_t functions using this variable. */
 
 
-/* CVar library */
+/** CVar library.
+
+Depending on if you're on the **client** or **server** side, it will only ever affect its respective side. 
+
+You can not change cvars of other players when called on the server.
+
+Likewise you are unable to alter server-side cvars from a client. */
 typedef struct
 {
 	/** Returns the string value of a console variable.
@@ -98,9 +118,9 @@ typedef struct
 	void SetVector(string cvarName, vector setValue);
 } cvarAPI_t;
 
-cvarAPI_t cvars;
+cvarAPI_t cvars; /**< Access cvarAPI_t functions using this variable. */
 
-/* ServerInfo library */
+/** ServerInfo library */
 typedef struct
 {
 	/** Returns the string value of a server info-key.
@@ -128,36 +148,36 @@ typedef struct
 	@param serverKey specifies the server info-key to query.
 	@return The value in vector form. */
 	vector GetVector(string serverKey);
-	/** Sets the specified server info-key to a set string value.
+	/** Server only. Sets the specified server info-key to a set string value.
 
 	@param serverKey specifies the server info-key to set.
 	@param setValue specifies the value of said key. */
 	void SetString(string serverKey, string setValue);
-	/** Sets the specified server info-key to a set integer value.
+	/** Server only. Sets the specified server info-key to a set integer value.
 
 	@param serverKey specifies the server info-key to set.
 	@param setValue specifies the value of said key. */
 	void SetInteger(string serverKey, int setValue);
-	/** Sets the specified server info-key to a set boolean value.
+	/** Server only. Sets the specified server info-key to a set boolean value.
 
 	@param serverKey specifies the server info-key to set.
 	@param setValue specifies the value of said key. */
 	void SetBool(string serverKey, bool setValue);
-	/** Sets the specified server info-key to a set floating-point value.
+	/** Server only. Sets the specified server info-key to a set floating-point value.
 
 	@param serverKey specifies the server info-key to set.
 	@param setValue specifies the value of said key. */
 	void SetFloat(string serverKey, float setValue);
-	/** Sets the specified server info-key to a set vector.
+	/** Server only. Sets the specified server info-key to a set vector.
 
 	@param serverKey specifies the server info-key to set.
 	@param setValue specifies the value of said key. */
 	void SetVector(string serverKey, vector setValue);
 } serverinfoAPI_t;
 
-serverinfoAPI_t serverinfo;
+serverinfoAPI_t serverinfo; /**< Access serverinfoAPI_t functions using this variable. */
 
-/* UserInfo library */
+/** UserInfo library */
 typedef struct
 {
 	/** Returns the string value of a user info-key.
@@ -190,13 +210,13 @@ typedef struct
 	@param userKey specifies the user info-key to query.
 	@return The value in vector form. */
 	vector GetVector(entity clientEnt, string userKey);
-	/** Sets the specified user info-key to a set string value.
+	/** Server only. Sets the specified user info-key to a set string value.
 
 	@param clientEnt specifies which user to query.
 	@param userKey specifies the user info-key to set.
 	@param setValue specifies the value of said key. */
 	void SetString(entity clientEnt, string userKey, string setValue);
-	/** Sets the specified user info-key to a set integer value.
+	/** Server only. Sets the specified user info-key to a set integer value.
 
 	@param clientEnt specifies which user to query.
 	@param userKey specifies the user info-key to set.
@@ -208,13 +228,13 @@ typedef struct
 	@param userKey specifies the user info-key to set.
 	@param setValue specifies the value of said key. */
 	void SetBool(entity clientEnt, string userKey, bool setValue);
-	/** Sets the specified user info-key to a set floating-point value.
+	/** Server only. Sets the specified user info-key to a set floating-point value.
 
 	@param clientEnt specifies which user to query.
 	@param userKey specifies the user info-key to set.
 	@param setValue specifies the value of said key. */
 	void SetFloat(entity clientEnt, string userKey, float setValue);
-	/** Sets the specified user info-key to a set vector.
+	/** Server only. Sets the specified user info-key to a set vector.
 
 	@param clientEnt specifies which user to query.
 	@param userKey specifies the user info-key to set.
@@ -222,70 +242,122 @@ typedef struct
 	void SetVector(entity clientEnt, string userKey, vector setValue);
 } userinfoAPI_t;
 
-userinfoAPI_t userinfo;
+userinfoAPI_t userinfo; /**< Access userinfoAPI_t functions using this variable. */
 
+/** Weapon library */
 typedef struct
 {
-	/** @return the "attack" type of the weapon.
+	/** Get the "attack" type of the weapon.
 	@param weaponDef the name of the entityDef that defines the weapon.
 	@return Attack type of the weapon. */
 	string Type(string weaponDef);
-	/** @return The amount of ammo the specified weapon is meant to start with, when first given to the player. This can be distributed to both clip and reserve ammo types.
+	/** The amount of ammo the specified weapon is meant to start with, when first given to the player. This can be distributed to both clip and reserve ammo types.
+	@return integer value containing the start ammo of the weapon.
 	@param weaponDef the name of the entityDef that defines the weapon. */
 	int StartAmmo(string weaponDef);
-	/** @return The amount of ammo the weapon can hold in total when it comes to reserve ammo. So this is really returning the max ammo of a given ammo type.
+	/** Find the amount of ammo a weapon can hold in total when it comes to reserve ammo. So this is really returning the max ammo of a given ammo type.
+	@return integer value containing the max reserve ammo that weapon can have.
 	@param weaponDef the name of the entityDef that defines the weapon. */
 	int MaxAmmo(string weaponDef);
-	/** @return Whether the weapon is semi automatic.
+	/** Find out whether the weapon is semi-automatic. If yes, you can not hold down fire, you have to press the fire key for each individual shot.
+	@return a value that when `true` means the weapon is semi-automatic.
 	@param weaponDef the name of the entityDef that defines the weapon. */
 	bool IsSemiAuto(string weaponDef);
 
-	/** @return How this weapon is stored. Usually "item", unless it's temporary.
+	/** Find out how this weapon is stored.
+	@return a string description of how it's stored. Usually "item", unless it's temporary.
 	@param weaponDef the name of the entityDef that defines the weapon. */
 	string InventoryType(string weaponDef);
-	/** @return The delay (in seconds) betwen shots of the specified weapon.
+	/** Find out the minimum delay between shots of a weapon, in seconds.
+	@return floating point value containing the delay in seconds.
 	@param weaponDef the name of the entityDef that defines the weapon. */
 	float FireTime(string weaponDef);
-	/**
-	@return The delay (in seconds) betwen shots of the specified weapon.
+	/** Find out what the clip size of a weapon is.
+	@return integer value containing the size of the clip.
 	@param weaponDef the name of the entityDef that defines the weapon. */
 	int ClipSize(string weaponDef);
-	/**
-	@return The 'class' of weapon. Not spawnclass.
+	/** Find the 'class' of a weapon. Not spawnclass, but rather type.
+	@return string containing the type of weapon.  Such as `"melee"`. Otherwise, `"unknown"`.
 	@param weaponDef the name of the entityDef that defines the weapon.*/
 	string Class(string weaponDef);
-	/**
+	/** Find out if a weapon takes its ammo only through its clip.
 	@return true/false whether the weapon takes its ammo only through its clip.
 	@param weaponDef the name of the entityDef that defines the weapon.*/
 	bool IsClipOnly(string weaponDef);
-	/**
+	/** Find out whether a weapon has anything to do with a timed detonation.
 	@return true/false whether or not the weapon creates a timed, fused detonating charge of sorts.
 	@param weaponDef the name of the entityDef that defines the weapon.*/
 	bool IsDetonationTimed(string weaponDef);
 } weaponInfo_t;
 
-weaponInfo_t weaponInfo;
+weaponInfo_t weaponInfo; /**< Access weaponInfo_t functions using this variable. */
 
-/* Team library */
+/** Team library */
 typedef struct
 {
-	 int BestAutoJoinTeam(void);
-	 int TeamCount(void);
-	 int OpenTeamCount(void);
-	 vector Color(int);
-	 string Name(int);
-	 int Score(int);
-	 string SpawnPoint(int);
-	 int NumPlayers(int);
-	 int NumAlivePlayers(int);
-	 int NumDeadPlayers(int);
-	 int TotalDeaths(int);
-	 int TotalFrags(int);
-	 bool Valid(int);
+	/** Find out what the best choice of team it is to join.
+	@return the team ID that needs an additional team member the most. */
+	int BestAutoJoinTeam(void);
+	/** Find out how many teams are registered in the current game.
+	@return the amount of teams set up in the game. */
+	int TeamCount(void);
+	/** Find out how many teams are open to new players.
+	@return the amount of teams open to join. */
+	int OpenTeamCount(void);
+	/** Find out which color represents a team.
+	@return a normalized RGB color of a team.
+	@param teamID specifies the team to query. */
+	vector Color(int teamID);
+	/** Find the name of a team, that you can use in prints and written text.
+	@return the name of a team. 
+	@param teamID specifies the team to query. */
+	string Name(int teamID);
+	/** Find the current score of a team. Usually tested against the [cvar](@ref cvars) `scorelimit`.
+	@return the score of a team. 
+	@param teamID specifies the team to query. */
+	int Score(int teamID);
+	/** Find the entity class name representing individual team spawn points.
+	@return the default spawn point class of a team. 
+	@param teamID specifies the team to query. */
+	string SpawnPoint(int teamID);
+	/** Find out how many players are in an active team.
+	@return the number of players that are part of a team. 
+	@param teamID specifies the team to query. */
+	int NumPlayers(int teamID);
+	/** Find out how many team players are active/alive in a match.
+	@return the number of 'surviving' players that are part of a team. 
+	@param teamID specifies the team to query. */
+	int NumAlivePlayers(int teamID);
+	/** Find out how many team players are currently inactive/dead in a match.
+	@return the number of 'dead' players that are part of a team.
+	@param teamID specifies the team to query. */
+	int NumDeadPlayers(int teamID);
+	/** Find out how many times all the players in a given team have 'died' in the game.
+	@return the number of deaths in a given team.
+	@param teamID specifies the team to query. */
+	int TotalDeaths(int teamID);
+	/** Find out how many times all the players in a given team have scored 'frags'.
+	A frag can be a 'kill' or just an alternative way of saying scorepoints, specific to players.
+	@return the number of frags in a given team.
+	@param teamID specifies the team to query. */
+	int TotalFrags(int teamID);
+	/** Find out if a given team exists, or valid. Invalid teams should not be joined, and aren't offered on the client.
+	@return whether a team ID is valid, set up. 
+	@param teamID specifies the team to query. */
+	bool Valid(int teamID);
 
-	 void AddScore(int, int);
-	 void SetScore(int, int);
-	 entity RandomPlayer(int);
+	/** Increases the score of a specified team. 
+	@param teamID specifies the team to query. 
+	@param addedScore is the amount of points to add to the existing score. */
+	void AddScore(int teamID, int addedScore);
+	/** Overridess the score of a specified team. 
+	@param teamID specifies the team to query.
+	@param scoreValue is the value which the score should be set to. */
+	void SetScore(int teamID, int scoreValue);
+	/** Find a random player belonging to a given team.
+	@return a single random entity reference to a player of a given team. Will return `__NULL__` if one does not exist.
+	@param teamID specifies the team to query. */
+	entity RandomPlayer(int teamID);
 
 
 	/** Sets up a team for the current session. Will flush the team specific scores.
@@ -305,13 +377,13 @@ typedef struct
 	void AddClass(int teamID, string classType);
 
 
-	/** Returns the maximum number of classes this team can select.
-
+	/** Find out how many classes are registered within a team.
+	@return the maximum number of classes this team can select.
 	@param teamID specifies which team slot to query for class types. */
 	int TotalClasses(int teamID);
 
-	/** Returns the class type of a given team + index.
-
+	/** Find out the name of a team class given an index.
+	@return the class type of a given team + index.
 	@param teamID specifies which team slot to query for class types.
 	@param classIndex specifies the index of the class to query. Use teams.TotalClasses() for the range. */
 	string ClassForIndex(int teamID, int classIndex);
@@ -325,11 +397,9 @@ typedef struct
 	void SetSpawnPoint(int teamID, string spawnPointEntityClassname);
 } teamAPI_t;
 
-teamAPI_t teams;
+teamAPI_t teams; /**< Access teamAPI_t functions using this variable. */
 
-
-
-/* ServerInfo library */
+/** EntityDef library */
 typedef struct
 {
 	/** Returns the string value of a EntityDef key.
@@ -363,8 +433,9 @@ typedef struct
 	@return The value in vector form. */
 	vector GetVector(string defName, string keyName);
 } entityDefAPI_t;
-entityDefAPI_t entityDef;
+entityDefAPI_t entityDef; /**< Access entityDefAPI_t functions using this variable. */
 
+/** Precaching library */
 typedef struct
 {
 	/** Precaches a given model file and additional helper files.
@@ -402,19 +473,82 @@ typedef struct
 	@return Success. */
 	bool Entity(string className);
 } precacheAPI_t;
-precacheAPI_t precache;
+precacheAPI_t precache; /**< Access precacheAPI_t functions using this variable. */
 
-
+/** Sound library */
+typedef struct
+{
+	void Play(string soundDef, float level = 75, float pitch = 100, float volume = 100, float channel = CHAN_AUTO);
+} soundAPI_t;
+soundAPI_t soundKit; /**< Access soundAPI_t functions using this variable. */
 
 typedef struct
 {
-	float Play(string soundDef, float level = 75, float pitch = 100, float volume = 100, float channel = CHAN_AUTO);
-} soundAPI_t;
-soundAPI_t soundKit;
+	/** Returns true/false depending on if the entity is an AI character.
+
+	@param entityToCheck specifies the entity to check.*/
+	bool AI(entity entityToCheck);
+	/** Returns true/false depending on if the entity is alive.
+
+	@param entityToCheck specifies the entity to check.*/
+	bool Alive(entity entityToCheck);
+	/** Returns true/false depending on if the entity is in "god" mode.
+
+	@param entityToCheck specifies the entity to check.*/
+	bool GodMode(entity entityToCheck);
+	/** Returns true/false depending on if the entity is a client.
+
+	@param entityToCheck specifies the entity to check.*/
+	bool Client(entity entityToCheck);
+	/** Returns true/false depending on if the entity is a player.
+
+	@param entityToCheck specifies the entity to check.*/
+	bool Player(entity entityToCheck);
+	/** Returns true/false depending on if the entity is either a player, or AI character.
+
+	@param entityToCheck specifies the entity to check.*/
+	bool Sentient(entity entityToCheck);
+	/** Returns true/false depending on if the entity is a bot.
+
+	@param entityToCheck specifies the entity to check.*/
+	bool Bot(entity entityToCheck);
+} isAPI_t;
+isAPI_t is; /**< Access nextAPI_t functions using this variable. */
+
+typedef struct
+{
+	/** Returns the next entity of type 'Item' in the game.
+
+	@param lastItem The previous item, can be `world` or `__NULL__` or `0` to retrieve the first item.
+	@return The next item in the entity pool. Will be `world` or `__NULL__` if none are left. */
+	entity Item(entity lastItem);
 
 
-typedef string decl;
+	/** Returns the next entity of type 'Weapon' in the game. 
 
+	@param lastWeapon The previous item, can be `world` or `__NULL__` or `0` to retrieve the first item.
+	@return The next item in the entity pool. Will be `world` or `__NULL__` if none are left. */
+	entity Weapon(entity lastWeapon);
+
+
+	/** Returns the next entity of type 'Actor' in the game.
+
+	@param lastActor The previous item, can be `world` or `__NULL__` or `0` to retrieve the first item.
+	@return The next item in the entity pool. Will be `world` or `__NULL__` if none are left. */
+	entity Actor(entity lastActor);
+
+
+	/** Returns the next entity of type 'Player' in the game.
+
+	@param lastPlayer The previous item, can be `world` or `__NULL__` or `0` to retrieve the first item.
+	@return The next item in the entity pool. Will be `world` or `__NULL__` if none are left. */
+	entity Player(entity lastPlayer);
+} nextAPI_t;
+nextAPI_t next; /**< Access nextAPI_t functions using this variable. */
+
+typedef string decl; /**< storage type of a [decl](@ref decl) reference. */
+
+/** Decl library */
 typedef struct
 {
 	/** Returns the name of a new decl in which you can store
@@ -472,7 +606,7 @@ typedef struct
 	void Delete(decl declHandle);
 } declAPI_t;
 
-declAPI_t declManager;
+declAPI_t declManager; /**< Access declAPI_t functions using this variable. */
 /** @} */ // end of shared
 
 void
@@ -573,20 +707,20 @@ _shared_main(void)
 	teams.TotalFrags = linkToSharedProgs("SHPF_teams_TotalFrags");
 	teams.Valid = linkToSharedProgs("SHPF_teams_Valid");
 	teams.RandomPlayer = linkToSharedProgs("SHPF_teams_RandomPlayer");
+	teams.TotalClasses = linkToSharedProgs("SHPF_teams_TotalClasses");
+	teams.ClassForIndex = linkToSharedProgs("SHPF_teams_ClassForIndex");
 
 	/* server */
 	teams.AddScore = linkToSharedProgs("SHPF_teams_AddScore");
 	teams.SetScore = linkToSharedProgs("SHPF_teams_SetScore");
 	teams.SetUp = linkToSharedProgs("SHPF_teams_SetUp");
 	teams.AddClass = linkToSharedProgs("SHPF_teams_AddClass");
-	teams.TotalClasses = linkToSharedProgs("SHPF_teams_TotalClasses");
-	teams.ClassForIndex = linkToSharedProgs("SHPF_teams_ClassForIndex");
 	teams.SetSpawnPoint = linkToSharedProgs("SHPF_teams_SetSpawnPoint");
 
 	precache.Model = linkToSharedProgs("SHPF_precache_Model");
 	precache.Sound = linkToSharedProgs("SHPF_precache_Sound");
 	precache.Particle = linkToSharedProgs("SHPF_precache_Particle");
-	precache.Entity = linkToSharedProgs("EntityDef_Precache");
+	precache.Entity = linkToSharedProgs("SHPF_precache_Entity");
 
 	soundKit.Play = linkToSharedProgs("SHPF_sounds_Play");
 
@@ -606,4 +740,18 @@ _shared_main(void)
 	entityDef.GetBool = linkToSharedProgs("SHPF_entityDef_GetBool");
 	entityDef.GetFloat = linkToSharedProgs("SHPF_entityDef_GetFloat");
 	entityDef.GetVector = linkToSharedProgs("SHPF_entityDef_GetVector");
+
+	is.AI = linkToSharedProgs("SHPF_is_AI");
+	is.Bot = linkToSharedProgs("SHPF_is_Bot");
+	is.Alive = linkToSharedProgs("SHPF_is_Alive");
+	is.GodMode = linkToSharedProgs("SHPF_is_GodMode");
+	is.Client = linkToSharedProgs("SHPF_is_Client");
+	is.Player = linkToSharedProgs("SHPF_is_Player");
+	is.Sentient = linkToSharedProgs("SHPF_is_Sentient");
+
+	/* helpful finder */
+	next.Actor = linkToSharedProgs("SHPF_next_Actor");
+	next.Item = linkToSharedProgs("SHPF_next_Item");
+	next.Weapon = linkToSharedProgs("SHPF_next_Weapon");
+	next.Player = linkToSharedProgs("SHPF_next_Player");
 }

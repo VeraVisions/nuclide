@@ -178,7 +178,7 @@ void
 EV_Achievement(void)
 {
 	string eventName = readstring();
-	NSLog("EV_Achievement: %S",  eventName);
+	ncLog("EV_Achievement: %S",  eventName);
 }
 
 void
@@ -187,7 +187,7 @@ EV_EntityEvent(void)
 	ncEntity targetEntity = (ncEntity)findfloat(world, ::entnum, readentitynum());
 	float eventType = readfloat();
 
-	if (targetEntity) 
+	if (targetEntity)
 		targetEntity.ReceiveEvent(eventType);
 }
 
@@ -196,13 +196,40 @@ EV_Pickup(void)
 {
 	int entityDefID = readint();
 	string itemClass = EntityDef_NameFromNetID(entityDefID);
-	NSLog("Player picked up item %S", itemClass);
+	ncLog("Player picked up item %S", itemClass);
+
+	if (EntityDef_GetKeyValue(itemClass, "pickupFlash") == "1") {
+		localcmd("bf\n");
+	}
+
+	HUD_PickedUpItem(itemClass);
+}
+
+void
+EV_Obituary(void)
+{
+	string targetName = readstring();
+	string attackerName = readstring();
+	string weaponDef = readstring();
+	string meansOfDeath = readstring();
+
+	ncLog("Obituary:");
+	ncLog("\ttargetName: %S", targetName);
+	ncLog("\tattackerName: %S", attackerName);
+	ncLog("\tweaponDef: %S", weaponDef);
+	ncLog("\tmeansOfDeath: %S", meansOfDeath);
+	ncLog("End");
+
+	HUD_Obituary(targetName, attackerName, weaponDef, meansOfDeath);
 }
 
 void
 Event_Parse(float type)
 {
 	switch (type) {
+	case EV_OBITUARY:
+		EV_Obituary();
+		break;
 	case EV_PICKUP:
 		EV_Pickup();
 		break;

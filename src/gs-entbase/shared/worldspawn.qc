@@ -109,7 +109,7 @@ ncWorldSpawn::ncWorldSpawn(void)
 	m_strBGMTrack = "";
 
 	InitPrint("Map Initialization");
-	NSLog("Map: %s", mapname);
+	ncLog("Map: %s", mapname);
 
 	lightstyle(0, "m");
 	lightstyle(1, "mmnmmommommnonmmonqnmmo");
@@ -171,46 +171,46 @@ ncWorldSpawn::Spawned(void)
 }
 
 void
-ncWorldSpawn::SpawnKey(string strKey, string strValue)
+ncWorldSpawn::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "skyname":
-		m_strSkyName = ReadString(strValue);
+		m_strSkyName = ReadString(setValue);
 		break;
 	case "startdark":
-		m_bStartDark = ReadBool(strValue);
+		m_bStartDark = ReadBool(setValue);
 		break;
 	case "chaptertitle":
-		m_strChapterTitle = ReadString(strValue);
+		m_strChapterTitle = ReadString(setValue);
 		break;
 	case "ambientsound":
-		m_strAmbientSound = ReadString(strValue);
+		m_strAmbientSound = ReadString(setValue);
 		break;
 	case "gametitle":
-		m_bGameTitle = ReadBool(strValue);
+		m_bGameTitle = ReadBool(setValue);
 		break;
 	/* Household Death */
 	case "_bgm":
-		m_strBGMTrack = ReadString(strValue);
+		m_strBGMTrack = ReadString(setValue);
 		break;
 	case "hdr_iris_minvalue":
-		m_flHDRIrisMinValue = ReadFloat(strValue);
+		m_flHDRIrisMinValue = ReadFloat(setValue);
 		m_bHDREnabled = true;
 		break;
 	case "hdr_iris_maxvalue":
-		m_flHDRIrisMaxValue = ReadFloat(strValue);
+		m_flHDRIrisMaxValue = ReadFloat(setValue);
 		m_bHDREnabled = true;
 		break;
 	case "hdr_iris_multiplier":
-		m_flHDRIrisMultiplier = ReadFloat(strValue);
+		m_flHDRIrisMultiplier = ReadFloat(setValue);
 		m_bHDREnabled = true;
 		break;
 	case "hdr_iris_fade_up":
-		m_flHDRIrisFadeUp = ReadFloat(strValue);
+		m_flHDRIrisFadeUp = ReadFloat(setValue);
 		m_bHDREnabled = true;
 		break;
 	case "hdr_iris_fade_down":
-		m_flHDRIrisFadeDown = ReadFloat(strValue);
+		m_flHDRIrisFadeDown = ReadFloat(setValue);
 		m_bHDREnabled = true;
 		break;
 	/* empty, ignore */
@@ -219,10 +219,10 @@ ncWorldSpawn::SpawnKey(string strKey, string strValue)
 	case "sounds":
 		break;
 	case "_litwater":
-		m_bLitWater = ReadBool(strValue);
+		m_bLitWater = ReadBool(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 		break;
 	}
 }
@@ -248,50 +248,50 @@ ncWorldSpawn::Save(float handle)
 }
 
 void
-ncWorldSpawn::Restore(string strKey, string strValue)
+ncWorldSpawn::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_strSkyName":
-		m_strSkyName = ReadString(strValue);
+		m_strSkyName = ReadString(setValue);
 		break;
 	case "m_bStartDark":
-		m_bStartDark = ReadBool(strValue);
+		m_bStartDark = ReadBool(setValue);
 		break;
 	case "m_bGameTitle":
-		m_bGameTitle = ReadBool(strValue);
+		m_bGameTitle = ReadBool(setValue);
 		break;
 	case "m_strChapterTitle":
-		m_strChapterTitle = ReadString(strValue);
+		m_strChapterTitle = ReadString(setValue);
 		break;
 	case "m_strAmbientSound":
-		m_strAmbientSound = ReadString(strValue);
+		m_strAmbientSound = ReadString(setValue);
 		break;
 	case "m_strBGMTrack":
-		m_strBGMTrack = ReadString(strValue);
+		m_strBGMTrack = ReadString(setValue);
 		break;
 	case "m_flHDRIrisMinValue":
-		m_flHDRIrisMinValue = ReadFloat(strValue);
+		m_flHDRIrisMinValue = ReadFloat(setValue);
 		break;
 	case "m_flHDRIrisMaxValue":
-		m_flHDRIrisMaxValue = ReadFloat(strValue);
+		m_flHDRIrisMaxValue = ReadFloat(setValue);
 		break;
 	case "m_flHDRIrisMultiplier":
-		m_flHDRIrisMultiplier = ReadFloat(strValue);
+		m_flHDRIrisMultiplier = ReadFloat(setValue);
 		break;
 	case "m_flHDRIrisFadeUp":
-		m_flHDRIrisFadeUp = ReadFloat(strValue);
+		m_flHDRIrisFadeUp = ReadFloat(setValue);
 		break;
 	case "m_flHDRIrisFadeDown":
-		m_flHDRIrisFadeDown = ReadFloat(strValue);
+		m_flHDRIrisFadeDown = ReadFloat(setValue);
 		break;
 	case "m_bHDREnabled":
-		m_bHDREnabled = ReadBool(strValue);
+		m_bHDREnabled = ReadBool(setValue);
 		break;
 	case "m_bLitWater":
-		m_bLitWater = ReadBool(strValue);
+		m_bLitWater = ReadBool(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 		break;
 	}
 }
@@ -334,6 +334,7 @@ WorldSpawn_Init(void)
 	float hdrFadeUp = serverkeyfloat("hdr_iris_fade_up");
 	float hdrFadeDown = serverkeyfloat("hdr_iris_fade_down");
 	bool hdrEnabled = serverkeyfloat("hdr");
+	bool litWater = serverkeyfloat("litwater");
 
 	if (startDark == true) {
 		Fade_StartDark();
@@ -355,9 +356,15 @@ WorldSpawn_Init(void)
 		cvar_set("r_hdr_irisadaptation", "0");
 	}
 
+	if (litWater) {
+		cvar_set("r_waterLit", "1");
+	} else {
+		cvar_set("r_waterLit", "0");
+	}
+
 	if (!g_ambientsound) {
 		g_ambientsound = spawn(env_soundscape);
-		g_ambientsound.m_iShader = Sound_Precache(ambientSound);
+		g_ambientsound.m_iShader = SoundDef_Precache(ambientSound);
 	}
 
 	if (bgmTrack) {

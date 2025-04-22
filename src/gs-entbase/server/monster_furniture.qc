@@ -62,11 +62,11 @@ monster_furniture::monster_furniture(void)
 }
 
 void
-monster_furniture::SpawnKey(string strKey, string strValue)
+monster_furniture::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "solid":
-		float s = ReadFloat(strValue);
+		float s = ReadFloat(setValue);
 
 		switch (s) {
 		case 2:
@@ -80,7 +80,7 @@ monster_furniture::SpawnKey(string strKey, string strValue)
 		}
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 		break;
 	}
 }

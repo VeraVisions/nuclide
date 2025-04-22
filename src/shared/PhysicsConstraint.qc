@@ -25,7 +25,7 @@ ncPhysicsConstraint::ncPhysicsConstraint(void)
 	m_strEnt1 = __NULL__;
 	m_strEnt2 = __NULL__;
 	m_strBreakSound = __NULL__;
-	m_strOnBreak = __NULL__;
+	m_outputOnBreak = __NULL__;
 	m_strConstraintSystem = __NULL__;
 }
 
@@ -75,37 +75,37 @@ ncPhysicsConstraint::Save(float handle)
 	SaveString(handle, "m_strEnt1", m_strEnt1);
 	SaveString(handle, "m_strEnt2", m_strEnt2);
 	SaveString(handle, "m_strBreakSound", m_strBreakSound);
-	SaveString(handle, "m_strOnBreak", m_strOnBreak);
+	SaveString(handle, "m_outputOnBreak", m_outputOnBreak);
 	SaveString(handle, "m_strConstraintSystem", m_strConstraintSystem);
 }
 
 void
-ncPhysicsConstraint::Restore(string strKey, string strValue)
+ncPhysicsConstraint::Restore(string keyName, string setValue)
 {
-	switch (strKey) {
+	switch (keyName) {
 	case "m_flTorqueLimit":
-		m_flTorqueLimit = ReadFloat(strValue);
+		m_flTorqueLimit = ReadFloat(setValue);
 		break;
 	case "m_flForceLimit":
-		m_flForceLimit = ReadFloat(strValue);
+		m_flForceLimit = ReadFloat(setValue);
 		break;
 	case "m_strEnt1":
-		m_strEnt1 = ReadString(strValue);
+		m_strEnt1 = ReadString(setValue);
 		break;
 	case "m_strEnt2":
-		m_strEnt2 = ReadString(strValue);
+		m_strEnt2 = ReadString(setValue);
 		break;
 	case "m_strBreakSound":
-		m_strBreakSound = ReadString(strValue);
+		m_strBreakSound = ReadString(setValue);
 		break;
-	case "m_strOnBreak":
-		m_strOnBreak = ReadString(strValue);
+	case "m_outputOnBreak":
+		m_outputOnBreak = ReadString(setValue);
 		break;
 	case "m_strConstraintSystem":
-		m_strConstraintSystem = ReadString(strValue);
+		m_strConstraintSystem = ReadString(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(keyName, setValue);
 	}
 }
 #endif
@@ -136,7 +136,7 @@ ncPhysicsConstraint::SpawnKey(string keyName, string setValue)
 		break;
 #ifdef SERVER
 	case "OnBreak":
-		m_strOnBreak = PrepareOutput(m_strOnBreak, setValue);
+		m_outputOnBreak = PrepareOutput(m_outputOnBreak, setValue);
 		break;
 #endif
 	default:
@@ -170,8 +170,8 @@ ncPhysicsConstraint::Spawned(void)
 	super::Spawned();
 
 #ifdef SERVER
-	if (m_strOnBreak)
-		m_strOnBreak = CreateOutput(m_strOnBreak);
+	if (m_outputOnBreak)
+		m_outputOnBreak = CreateOutput(m_outputOnBreak);
 #endif
 }
 
@@ -198,8 +198,8 @@ void
 ncPhysicsConstraint::Break(entity activatingEnt)
 {
 #ifdef SERVER
-	if (m_strOnBreak)
-		UseOutput(activatingEnt, m_strOnBreak);
+	if (m_outputOnBreak)
+		UseOutput(activatingEnt, m_outputOnBreak);
 #endif
 
 	if (m_strBreakSound)

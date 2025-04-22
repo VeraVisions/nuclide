@@ -1011,7 +1011,7 @@ EXAMPLE_RECURSIVE      = NO
 
 IMAGE_PATH	=	Documentation/Materials/ \
 				Documentation/Images/ \
-				base/resources.pk3dir/gfx/icon16/
+				base/gfx/icon16/
 
 # The INPUT_FILTER tag can be used to specify a program that doxygen should
 # invoke to filter for each input file. Doxygen will invoke the filter program

@@ -59,7 +59,7 @@ public:
 	vector m_vecRotate;
 	virtual float predraw(void);
 	virtual void postdraw(void);
-	virtual void RendererRestarted(void);
+	virtual void ReloadVideoResources(void);
 	nonvirtual bool IsVisible(vector);
 	nonvirtual void RenderGlow(vector, vector);
 	nonvirtual void RenderNormal(vector, vector);
@@ -115,12 +115,12 @@ env_glow::EvaluateEntity(void)
 	EVALUATE_VECTOR(origin, 2, SPRITE_CHANGED_ORIGIN)
 	EVALUATE_FIELD(modelindex, SPRITE_CHANGED_MODELINDEX)
 	EVALUATE_FIELD(scale, SPRITE_CHANGED_SCALE)
-	EVALUATE_FIELD(m_iRenderMode, SPRITE_CHANGED_RENDERMODE)
-	EVALUATE_FIELD(m_iRenderFX, SPRITE_CHANGED_RENDERFX)
-	EVALUATE_VECTOR(m_vecRenderColor, 0, SPRITE_CHANGED_RENDERCOLOR)
-	EVALUATE_VECTOR(m_vecRenderColor, 1, SPRITE_CHANGED_RENDERCOLOR)
-	EVALUATE_VECTOR(m_vecRenderColor, 2, SPRITE_CHANGED_RENDERCOLOR)
-	EVALUATE_FIELD(m_flRenderAmt, SPRITE_CHANGED_RENDERAMT)
+	EVALUATE_FIELD(m_renderMode, SPRITE_CHANGED_RENDERMODE)
+	EVALUATE_FIELD(m_renderFX, SPRITE_CHANGED_RENDERFX)
+	EVALUATE_VECTOR(m_renderColor, 0, SPRITE_CHANGED_RENDERCOLOR)
+	EVALUATE_VECTOR(m_renderColor, 1, SPRITE_CHANGED_RENDERCOLOR)
+	EVALUATE_VECTOR(m_renderColor, 2, SPRITE_CHANGED_RENDERCOLOR)
+	EVALUATE_FIELD(m_renderAmount, SPRITE_CHANGED_RENDERAMT)
 	EVALUATE_FIELD(m_strMaterial, SPRITE_CHANGED_MATERIAL)
 }
 
@@ -142,12 +142,12 @@ env_glow::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_COORD(origin[2], SPRITE_CHANGED_ORIGIN)
 	SENDENTITY_FLOAT(modelindex, SPRITE_CHANGED_MODELINDEX)
 	SENDENTITY_FLOAT(scale, SPRITE_CHANGED_SCALE)
-	SENDENTITY_BYTE(m_iRenderMode, SPRITE_CHANGED_RENDERMODE)
-	SENDENTITY_BYTE(m_iRenderFX, SPRITE_CHANGED_RENDERFX)
-	SENDENTITY_BYTE(m_vecRenderColor[0], SPRITE_CHANGED_RENDERCOLOR)
-	SENDENTITY_BYTE(m_vecRenderColor[1], SPRITE_CHANGED_RENDERCOLOR)
-	SENDENTITY_BYTE(m_vecRenderColor[2], SPRITE_CHANGED_RENDERCOLOR)
-	SENDENTITY_BYTE(m_flRenderAmt, SPRITE_CHANGED_RENDERAMT)
+	SENDENTITY_BYTE(m_renderMode, SPRITE_CHANGED_RENDERMODE)
+	SENDENTITY_BYTE(m_renderFX, SPRITE_CHANGED_RENDERFX)
+	SENDENTITY_BYTE(m_renderColor[0], SPRITE_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_renderColor[1], SPRITE_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_renderColor[2], SPRITE_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_renderAmount, SPRITE_CHANGED_RENDERAMT)
 	SENDENTITY_STRING(m_strMaterial, SPRITE_CHANGED_MATERIAL)
 
 	return (1);
@@ -190,11 +190,11 @@ env_glow::postdraw(void)
 {
 	if (GetRenderMode() == RM_GLOW)
 		if (!autocvar_r_skipLensFlares)
-			env_sun_lensflare(origin, m_flMaxAlpha, m_vecRenderColor / 255, true);
+			env_sun_lensflare(origin, m_flMaxAlpha, m_renderColor / 255, true);
 }
 
 void
-env_glow::RendererRestarted(void)
+env_glow::ReloadVideoResources(void)
 {
 	if (!modelindex && STRING_SET(m_strMaterial)) {
 		precache_pic(m_strMaterial);
@@ -211,7 +211,7 @@ void
 env_glow::RenderGlow(vector forg, vector fsize)
 {
 	float alphaTint = GetRenderAmt() / 255;
-	vector renderColor = m_vecRenderColor / 255;
+	vector renderColor = m_renderColor / 255;
 
 #ifndef FTE_QUADFIX
 	R_BeginPolygon(m_strMaterial, 1, 0);
@@ -248,7 +248,7 @@ void
 env_glow::RenderNormal(vector forg, vector fsize)
 {
 	float alphaTint = GetRenderAmt() / 255;
-	vector renderColor = m_vecRenderColor / 255;
+	vector renderColor = m_renderColor / 255;
 
 #ifndef FTE_QUADFIX
 	R_BeginPolygon(m_strMaterial, 0, 0);
@@ -339,16 +339,16 @@ env_glow::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_COORD(origin[2], SPRITE_CHANGED_ORIGIN)
 	READENTITY_FLOAT(modelindex, SPRITE_CHANGED_MODELINDEX)
 	READENTITY_FLOAT(scale, SPRITE_CHANGED_SCALE)
-	READENTITY_BYTE(m_iRenderMode, SPRITE_CHANGED_RENDERMODE)
-	READENTITY_BYTE(m_iRenderFX, SPRITE_CHANGED_RENDERFX)
-	READENTITY_BYTE(m_vecRenderColor[0], SPRITE_CHANGED_RENDERCOLOR)
-	READENTITY_BYTE(m_vecRenderColor[1], SPRITE_CHANGED_RENDERCOLOR)
-	READENTITY_BYTE(m_vecRenderColor[2], SPRITE_CHANGED_RENDERCOLOR)
-	READENTITY_BYTE(m_flRenderAmt, SPRITE_CHANGED_RENDERAMT)
+	READENTITY_BYTE(m_renderMode, SPRITE_CHANGED_RENDERMODE)
+	READENTITY_BYTE(m_renderFX, SPRITE_CHANGED_RENDERFX)
+	READENTITY_BYTE(m_renderColor[0], SPRITE_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_renderColor[1], SPRITE_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_renderColor[2], SPRITE_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_renderAmount, SPRITE_CHANGED_RENDERAMT)
 	READENTITY_STRING(m_strMaterial, SPRITE_CHANGED_MATERIAL)
 
 	if (flNew)
-		RendererRestarted();
+		ReloadVideoResources();
 
 	effects = EF_NODEPTHTEST;
 	drawmask = MASK_GLOWS;

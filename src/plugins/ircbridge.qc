@@ -16,10 +16,10 @@
 
 #pragma target fte_5768
 //#pragma flag enable assumeint
-#pragma PROGS_DAT  "../../base/plug_ircbridge.dat"
-#define QWSSQC
+#pragma PROGS_DAT  "../../base/plugins/ircbridge.dat"
+#define SERVER
 
-#include "../shared/fteextensions.qc"
+#include "../server/api.h"
 #include "../platform/tcp.h"
 #include "../platform/tcp.qc"
 

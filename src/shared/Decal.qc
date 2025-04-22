@@ -157,7 +157,7 @@ ncDecal::PlaceAtScale(vector org, string dname, float sizeScale)
 
 	/* we never hit any wall. */
 	if (g_tracedDecal.fraction == 1.0f) {
-		NSWarning("Placing of decal %S failed at %v", dname, org);
+		ncWarning("Placing of decal %S failed at %v", dname, org);
 
 		if (classname != "tempdecal")
 			remove(this);

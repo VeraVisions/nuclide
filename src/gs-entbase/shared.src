@@ -18,6 +18,7 @@ shared/env_cascade_light.qc
 shared/env_smoker.qc
 shared/env_muzzleflash.qc
 shared/env_steam.qc
+shared/env_rain.qc
 shared/env_shockwave.qc
 shared/light_dynamic.qc
 shared/logic_achievement.qc

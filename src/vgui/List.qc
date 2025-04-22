@@ -81,7 +81,7 @@ void vguiList::Draw(void)
 	if (!m_iItemCount) {
 		return;
 	}
-	
+
 	drawfill(m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, [0,0,0], 0.25f);
 	drawfill(m_parent.m_vecOrigin + m_vecOrigin, [m_vecSize[0], 1], [0,0,0], 0.5f);
 	drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, m_vecSize[1] - 1], [m_vecSize[0], 1], [1,1,1], 0.5f);
@@ -89,7 +89,7 @@ void vguiList::Draw(void)
 	drawfill(m_parent.m_vecOrigin + m_vecOrigin + [m_vecSize[0] - 1, 1], [1, m_vecSize[1] - 2], [1,1,1], 0.5f);
 
 	vector vecOffset = [8,8];
-	
+
 	iMaxDisplay = bound(0, m_iItemCount, floor(m_vecSize[1] / 20));
 
 	drawsetcliparea(m_parent.m_vecOrigin[0] + m_vecOrigin[0],m_parent.m_vecOrigin[1] + m_vecOrigin[1], m_vecSize[0] - 1, m_vecSize[1]);
@@ -97,13 +97,13 @@ void vguiList::Draw(void)
 		if (!m_strItems[i]) {
 			break;
 		}
-		
+
 		if (m_iSelected == i) {
 			drawfill(m_parent.m_vecOrigin + m_vecOrigin + vecOffset + [-7,-3], [m_vecSize[0] - 2, 18], [1,1,1], 0.5f);
 		} else if (i & 1) {
 			drawfill(m_parent.m_vecOrigin + m_vecOrigin + vecOffset + [-7,-3], [m_vecSize[0] - 2, 18], [1,1,1], 0.1f);
 		}
-		
+
 		theme.DrawText(m_parent.m_vecOrigin + m_vecOrigin + vecOffset, m_strItems[i], m_vecSize, g_fntDefault);
 		vecOffset[1] += 20;
 	}
@@ -166,7 +166,7 @@ void vguiList::SetOffset (int iOffset, int iCallBack)
 {
 	int iMaxDisplay = bound(0, m_iItemCount, floor(m_vecSize[1] / 20));
 	m_iDrawOffset = bound(0, iOffset, m_iItemCount - iMaxDisplay);
-	
+
 	if (tmpvguiList1 && iCallBack) {
 		tmpvguiList1();
 	}
@@ -179,7 +179,7 @@ int vguiList::GetOffset(void)
 void vguiList::SetItemCount (int iCount)
 {
 	if (!m_iItemCount) {
-		NSLog("vguiList: Initialized with a maximum of %i entries", iCount);
+		ncLog("vguiList: Initialized with a maximum of %i entries", iCount);
 		m_iItemCount = iCount;
 		m_strItems = memalloc(iCount * sizeof(string));
 	}
@@ -192,7 +192,7 @@ int vguiList::GetItemCount(void)
 string vguiList::GetItem (int iIndex)
 {
 	if (iIndex < 0i || m_iItemCount <= 0i) {
-		NSError("vguiList: GetItem on empty/unselected list! %i/%i\n", iIndex, m_iItemCount);
+		ncError("vguiList: GetItem on empty/unselected list! %i/%i\n", iIndex, m_iItemCount);
 		return "ERROR";
 	}
 	return m_strItems[iIndex];
@@ -213,7 +213,7 @@ void vguiList::AddItem (string strItem)
 		dprint("vguiList: Can't add item to empty list!\n");
 		return;
 	}
-	
+
 	for (int i = 0; i < m_iItemCount; i++) {
 		if (!m_strItems[i]) {
 			m_strItems[i] = strItem;

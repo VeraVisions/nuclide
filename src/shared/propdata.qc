@@ -317,7 +317,7 @@ PropData_Parse(int i, string line, string type)
 		} else if (braced == 1 && key != "BreakableModels") {
 			/* name/identifer of our message */
 			t_name = strtolower(key);
-			
+
 			if (t_name == "prop_data") {
 				/* I guess it's what we want */
 				g_propdata[i].name = type;
@@ -414,7 +414,7 @@ PropData_ForModel(string modelname)
 	}
 
 	index = g_propdata_count;
-	modelname = strtolower(modelname);
+	modelname = Util_FixModel(strtolower(modelname));
 
 	//print("[PROPDATA] Loading model propdata ");
 	//print(modelname);
@@ -429,7 +429,7 @@ PropData_ForModel(string modelname)
 	{
 		int cache;
 		cache = (int)hash_get(g_hashpropdata, modelname, -1);
-		
+
 		if (cache >= 0)
 			return cache;
 	}
@@ -445,30 +445,41 @@ PropData_ForModel(string modelname)
 	g_propdata = (propdata_t *)memreallocOld(g_propdata, sizeof(propdata_t), index, g_propdata_count);
 
 	if (!g_propdata) {
-		NSError("Memory re-allocation failed.");
+		ncError("Memory re-allocation failed.");
 		g_propdata_count = 0;
 		return -1i;
 	}
 
 #else
 	if (g_propdata_count >= PROPDATA_MAX) {
-		NSError("PropData_ForModel: Reached PROPDATA_MAX (%d)", PROPDATA_MAX);
+		ncError("PropData_ForModel: Reached PROPDATA_MAX (%d)", PROPDATA_MAX);
 		return -1i;
 	}
 #endif
 
 	/* Defaults go here */
-	fh = fopen(strcat(modelname, ".propdata"), FILE_READ);
+	string propDataFile = strcat(modelname, ".propdata");
+	if (fileExists(propDataFile)) {
+		fh = fopen(propDataFile, FILE_READ);
+	} else {
+		fh = -1;
+	}
+
 
 	/* not found. try again? */
 	if (fh < 0) {
 		/* try the Source Engine version */
 		string binaryFile = Util_ChangeExtension(modelname, "phy");
-		fh = fopen(binaryFile, FILE_READ);
+
+		if (fileExists(binaryFile)) {
+			fh = fopen(binaryFile, FILE_READ);
+		} else {
+			fh = -1;
+		}
 
 		if (fh < 0) {
 			g_propdata_count--;
-			NSLog("No PropData for model %S", modelname);
+			ncLog("No PropData for model %S", modelname);
 			return -1i;
 		}
 
@@ -482,7 +493,7 @@ PropData_ForModel(string modelname)
 		filePos = fread(fh, (void*)&fileSize, 4i); /* header size, sanity check */
 
 		if (fileSize != 16i) {
-			NSError("%s: not in Source Engine format", binaryFile);
+			ncError("%s: not in Source Engine format", binaryFile);
 			fclose(fh);
 			return -1;
 		}
@@ -498,7 +509,7 @@ PropData_ForModel(string modelname)
 
 		/* HACK: We won't support ragdolls, for now. */
 		if (numSolids > 1) {
-			NSError("%s: ragdoll models not supported", binaryFile);
+			ncError("%s: ragdoll models not supported", binaryFile);
 			fclose(fh);
 			return -1;
 		}
@@ -531,7 +542,7 @@ PropData_ForModel(string modelname)
 				}
 			}
 		}
-		
+
 		fclose(fh);
 
 		/* now, we read the Source .mdl file to get the extra prop_data keys that couldn't make it */
@@ -558,7 +569,7 @@ PropData_ForModel(string modelname)
 			for (int keys = 0i; keys < keyValueCount; keys++) {
 				string keyValueLine = fgets(fh);
 				int ab = tokenize(keyValueLine);
-				
+
 				if (keyValueLine == "prop_data {") {
 					readData = true;
 					continue;
@@ -603,7 +614,7 @@ PropData_ForModel(string modelname)
 	}
 	fclose(fh);
 
-	NSLog("No type found for %s", modelname);
+	ncLog("No type found for %s", modelname);
 	return -1;
 }
 
@@ -668,9 +679,9 @@ PropData_CountLine(string line)
 		if (key == "") {
 			break;
 		} else if (braced == 2 && t_name != "" && inmodel == FALSE) {
-			
+
 		} else if (braced == 3 && t_name != "" && inmodel == TRUE) {
-			
+
 		} else if (braced == 1) {
 			/* BreakableModels get parsed differently */
 			if (key == "BreakableModels") {
@@ -755,7 +766,7 @@ PropData_CountEntries(string filePath)
 	fh = fopen(filePath, FILE_READ);
 
 	if (fh < 0) {
-		NSError("failed to parse %S!", filePath);
+		ncError("failed to parse %S!", filePath);
 		return;
 	}
 
@@ -776,7 +787,7 @@ PropData_LoadFile(string filePath)
 	fh = fopen(filePath, FILE_READ);
 
 	if (fh < 0) {
-		NSError("failed to parse %S!", filePath);
+		ncError("failed to parse %S!", filePath);
 		return;
 	}
 
@@ -814,7 +825,7 @@ PropData_Init(void)
 	/* Defaults go here */
 	fh = fopen("scripts/propdata.txt", FILE_READ);
 	if (fh < 0) {
-		NSWarning("Missing file scripts/propdata.txt");
+		ncWarning("Missing file scripts/propdata.txt");
 		InitEnd();
 		return;
 	}
@@ -839,7 +850,7 @@ PropData_Init(void)
 	g_propdata = (propdata_t *)memalloc(pdMemSize);
 
 	if (!g_propdata) {
-		NSError("Memory allocation failed for %i bytes.", pdMemSize);
+		ncError("Memory allocation failed for %i bytes.", pdMemSize);
 		InitEnd();
 		return;
 	}
@@ -853,13 +864,13 @@ PropData_Init(void)
 	g_breakmodel = (breakModel_t *)memalloc(bmMemSize);
 
 	if (!g_breakmodel) {
-		NSError("Memory allocation failed for %i bytes.", bmMemSize);
+		ncError("Memory allocation failed for %i bytes.", bmMemSize);
 		InitEnd();
 		return;
 	}
 
-	NSLog("...allocated %i bytes for prop data.", pdMemSize);
-	NSLog("...allocated %i bytes for breakmodels.", bmMemSize);
+	ncLog("...allocated %i bytes for prop data.", pdMemSize);
+	ncLog("...allocated %i bytes for breakmodels.", bmMemSize);
 
 	fseek(fh, 0);
 
@@ -1007,7 +1018,7 @@ BreakModel_SpawnID(vector smins, vector smaxs, vector dir, float speed, int coun
 						impactDecal = value;
 						break;
 					default:
-						NSError("Unrecognized model attribute %S with value %S",
+						ncError("Unrecognized model attribute %S with value %S",
 							key, value);
 					}
 				}
@@ -1052,9 +1063,9 @@ BreakModel_SpawnID(vector smins, vector smaxs, vector dir, float speed, int coun
 
 			/* smaller/thinner models benefit from not being an expensive trimesh. */
 			if (sizeLength < 32) {
-				gib.m_iShape = GEOMTYPE_BOX;
+				gib.m_desiredGeomtype = GEOMTYPE_BOX;
 			} else {
-				gib.m_iShape = autocvar_phys_lowspec == false ? GEOMTYPE_TRIMESH : GEOMTYPE_BOX;
+				gib.m_desiredGeomtype = autocvar_phys_lowspec == false ? GEOMTYPE_TRIMESH : GEOMTYPE_BOX;
 			}
 
 			gib.ApplyForceOffset(dir * speed, endpos);
@@ -1099,11 +1110,11 @@ BreakModel_Receive(void)
 
 	/* sanity check */
 	if (index >= g_breakmodel_count) {
-		NSError("Unable to spawn breakmodel of id %i. Not cached on client. (Client knows of %i)", index, g_breakmodel_count);
+		ncError("Unable to spawn breakmodel of id %i. Not cached on client. (Client knows of %i)", index, g_breakmodel_count);
 		return;
 	}
 
-	NSLog("BreakModel: i: %i max: %i name: %S", index, g_breakmodel_count, g_breakmodel[index].name);
+	ncLog("BreakModel: i: %i max: %i name: %S", index, g_breakmodel_count, g_breakmodel[index].name);
 
 	BreakModel_SpawnID(smins, smaxs, dir, speed, count, index);
 }
@@ -1148,13 +1159,13 @@ BreakModel_Spawn(vector smins, vector smaxs, vector dir, float speed, int count,
 	index = (int)hash_get(g_hashbreakmodel, type, -1i);
 
 	if (index == -1i) {
-		NSError("Type %S not defined in BreakableModels.", type);
+		ncError("Type %S not defined in BreakableModels.", type);
 		return;
 	}
 
 	pvsPosition = (smins + ( 0.5 * ( smaxs - smins )));
 
-	NSLog("Spawning %i %S gibs @ %v and %d up/s", count, type, pvsPosition, speed);
+	ncLog("Spawning %i %S gibs @ %v and %d up/s", count, type, pvsPosition, speed);
 
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_BREAKMODEL);
@@ -1176,8 +1187,8 @@ BreakModel_Spawn(vector smins, vector smaxs, vector dir, float speed, int count,
 void
 BreakModel_Entity(ncSurfacePropEntity target, vector dir, float speed)
 {
-	string type = Prop_GetInfo(target.m_iPropData, PROPINFO_BREAKMODEL);
-	int count = Prop_GetInfo(target.m_iPropData, PROPINFO_BREAKCOUNT);
+	string type = Prop_GetInfo(target.m_propdataID, PROPINFO_BREAKMODEL);
+	int count = Prop_GetInfo(target.m_propdataID, PROPINFO_BREAKCOUNT);
 	int index = (int)hash_get(g_hashbreakmodel, type, -1);
 	vector pos = target.GetOrigin();
 

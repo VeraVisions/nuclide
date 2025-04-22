@@ -33,6 +33,7 @@ typedef enumflags
 	PORTALFL_CHANGED_MODELINDEX
 } nsportal_changed_t;
 
+#warning Needs documentation
 class
 ncPortal:ncEntity
 {
@@ -76,15 +77,15 @@ private:
 	ncPortal m_ePortalTarget_net;
 	NETWORKED_VECTOR(m_vecTargetPos)
 	NETWORKED_VECTOR(m_vecTargetAngle)
-	NETWORKED_BOOL(m_bEnabled)
-	NETWORKED_FLOAT(m_flPortalModel)
+	NETWORKED_BOOL(m_portalEnabled)
+	NETWORKED_FLOAT(m_portalModelIndex)
 
 	vector m_vecPortalPos;
 	vector m_vecPortalN;
 	vector m_vecPortalS;
 	vector m_vecPortalT;
 
-	bool m_bWasEnabled;
+	bool m_portalWasEnabled;
 
 	/** Will transport an entity from its position to the exit position. */
 	nonvirtual void TransportEntity(ncEntity);

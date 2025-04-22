@@ -66,6 +66,12 @@ enumflags
 
 /** ncTrigger handles all the non-input as well as Legacy (Quake, GoldSource) style
 trigger behaviour. It also deals with masters, touches, blocking and so on.
+
+# Master
+
+When an entity sets a 'master', it will only activate (which often includes firing its targets) when their specified 'master' itself returns a positive state.
+
+The state can be set with SetValue() and is queried with GetValue().
 */
 class ncTrigger:ncIO
 {
@@ -92,8 +98,11 @@ public:
 	/* overrides */
 	virtual void Save(float);
 	virtual void Restore(string,string);
-	virtual void Respawn(void);
+	virtual void Spawned(void);
 	virtual void Input(entity,string,string);
+
+	/** Sets the internal value of the entity as queried by GetValue(). This is used to to communicate whether or not the entity will permit triggers to fire that have this entity set as their 'master'. See the section regarding 'masters' for details. */
+	nonvirtual void SetValue(int newValue);
 
 	/* Called to check if the target entity can touch trigger itself. */
 	virtual bool CanBeTriggeredBy(entity);
@@ -115,11 +124,27 @@ public:
 	/** Returns whether our master allows us to be triggered. The argument specifies who's requesting the info for the master. Required for game_team_master to verify against players. */
 	nonvirtual int GetMaster(entity);
 
+	/** Returns whether the trigger functionality of this entity is enabled. */
+	nonvirtual bool TriggerEnabled(void);
+
+	nonvirtual void EnableTrigger(void);
+	nonvirtual void DisableTrigger(void);
+	nonvirtual void ToggleTrigger(void);
+
 	/** Returns the value of a given env_global property */
 	nonvirtual globalstate_t GetGlobalValue(string);
 
+	/** Returns the message which will be displayed upon trigger. */
+	nonvirtual string GetTriggerMessage(void);
+
+	/** Returns the name of the entity group it will remove from the game upon trigger. */
+	nonvirtual string GetTriggerKillTarget(void);
+
 	/** Returns the name of the entity group it can trigger (legacy style). */
 	nonvirtual string GetTriggerTarget(void);
+
+	/** Returns the time until this triggers is scheduled to fire its targets, relative time in seconds. */
+	nonvirtual float GetTriggerDelay(void);
 
 	/** Returns the first entity named after the target field. */
 	nonvirtual entity GetTargetEntity(void);
@@ -143,9 +168,9 @@ public:
 
 private:
 	/* not needed to be saved right now */
-	float m_flTouchTime;
+	float m_timeSinceLastTouch;
 	bool m_beingTouched;
-	entity m_eTouchLast;
+	entity m_touchingEntity;
 	vector m_touchPosition;
 	vector m_touchNormal;
 
@@ -153,22 +178,21 @@ private:
 	nonvirtual void _BlockedHandler(void);
 
 #ifdef SERVER
-	string m_strGlobalName;
-	string m_strGlobalState;
-	string m_strKillTarget;
-	string m_strMessage;
-	string m_strMaster;
-	int m_iUseType;
-	int m_iValue;
+	string m_globalName;
+	string m_globalState;
+	string m_triggerKillTarget;
+	string m_triggerMessage;
+	string m_masterName;
+	int m_triggerValue;
 
-	bool m_bEnabled;
-	bool m_bStartDisabled;
-	bool m_bIsModern;
+	bool m_triggerEnabled;
+	bool m_triggerStartsDisabled;
+	bool m_triggerSpawnflagFilter;
 
-	float team_no;
+	float m_touchingOnlyTeam;
 
 	/* legacy trigger architecture */
-	float m_flDelay;
+	float m_triggerDelay;
 #endif
 
 #ifdef CLIENT

@@ -36,7 +36,7 @@ Shake_Update(ncPlayer pl)
 		vecShake[0] += sineWave1;
 		vecShake[1] += sineWave2;
 		vecShake[2] += sineWave3;
-		pl.punchangle += (vecShake * pSeat->m_flShakeAmp) * shakeMultiplier;
+		pl.m_punchAngle += (vecShake * pSeat->m_flShakeAmp) * shakeMultiplier;
 		pSeat->m_flShakeDuration -= clframetime;
 	}
 }

@@ -43,14 +43,14 @@ EntityDef_ReadFile(string filePath)
 
 	/* bounds check */
 	if (g_entDefCount >= ENTITYDEF_MAX) {
-		NSError("Reached limit of %d defs.", ENTITYDEF_MAX);
+		ncError("Reached limit of %d defs.", ENTITYDEF_MAX);
 		error("Crash.");
 	}
 
 	/* open file */
 	defFile = fopen(filePath, FILE_READ);
 	if (defFile < 0) {
-		NSError("Unable to read %S\n", filePath);
+		ncError("Unable to read %S\n", filePath);
 		error("Crash.");
 	}
 
@@ -85,7 +85,7 @@ EntityDef_ReadFile(string filePath)
 							g_entDefCount++;
 
 						if (g_entDefCount >= ENTITYDEF_MAX) {
-							NSError("Reached limit of %d defs.", ENTITYDEF_MAX);
+							ncError("Reached limit of %d defs.", ENTITYDEF_MAX);
 							return;
 						}
 					}
@@ -141,7 +141,7 @@ EntityDef_ReadFile(string filePath)
 						case "contains":
 							currentDef.tweakDefs = strcat(currentDef.tweakDefs, argv(i+1), " 4 ", argv(i+3), ";");
 							break;
-						
+
 						}
 						inEvent = false;
 						i+=3;
@@ -202,12 +202,12 @@ EntityDef_Init(void)
 				int baseID = g_entDefTable[i].inheritID;
 
 				if (baseID == -1i) {
-					NSError("def %S inherits keys from non-existent def %S", 
+					ncError("def %S inherits keys from non-existent def %S",
 						g_entDefTable[i].entClass,
 						g_entDefTable[i].inheritKeys );
+				} else {
+					g_entDefTable[i].spawnClass = g_entDefTable[baseID].spawnClass;
 				}
-
-				g_entDefTable[i].spawnClass = g_entDefTable[baseID].spawnClass;
 			}
 		}
 	}
@@ -223,7 +223,7 @@ EntityDef_CheckCondition(ncEntity target, int id, string keyWord, float tweakCon
 
 	//print(sprintf("%i %S %d %S\n", id, keyWord, tweakCondition, keyValue));
 
-	for (int i = 1; i < (tokenize_console(target.m_strSpawnData) - 1); i+= 2) {
+	for (int i = 1; i < (tokenize_console(target.m_rawSpawnData) - 1); i+= 2) {
 		key = argv(i);
 		value = argv(i+1);
 
@@ -270,6 +270,7 @@ EntityDef_CheckCondition(ncEntity target, int id, string keyWord, float tweakCon
 }
 
 
+var bool autocvar_entityDef_profile = false;
 
 string
 EntityDef_GetKeyValue(string className, string keyName)
@@ -277,11 +278,20 @@ EntityDef_GetKeyValue(string className, string keyName)
 	float spawnWords = 0;
 	string inheritKeys = __NULL__;
 
-	//breakpoint();
+	static string lastClass, lastKey, lastResult;
+
+	if (className == lastClass && keyName == lastKey) {
+		return (lastResult);
+	}
 
 	/* not a valid classname. */
-	if (!className)
+	if (!STRING_SET(className)) {
 		return "";
+	}
+
+	if (autocvar_entityDef_profile) {
+		breakpoint();
+	}
 
 	/* loop through all defs */
 	for (int i = 0i; i < g_entDefCount; i++) {
@@ -298,7 +308,10 @@ EntityDef_GetKeyValue(string className, string keyName)
 				/* iterate over our own spawnkeys first */
 				for (int c = 0i; c < spawnWords; c+= 2i) {
 					if (argv(c) == keyName) {
-						return argv(c+1);
+						lastClass = className;
+						lastKey = keyName;
+						lastResult = argv(c+1);
+						return (lastResult);
 					}
 				}
 
@@ -350,14 +363,17 @@ EntityDef_PrepareEntity(entity target, int id)
 		}
 
 		if (!isfunction(spawnClass)) {
-			NSError("Unable to find entityDef spawnclass %S", spawnClass);
+			ncError("Unable to find entityDef spawnclass %S", spawnClass);
 			remove(targetEnt);
 			return (__NULL__);
 		}
 
 		/* init */
+		oldSelf = self;
 		self = target;
 		callfunction(spawnClass);
+		targetEnt.classname = g_entDefTable[id].entClass;
+		targetEnt.spawnclass = g_entDefTable[id].spawnClass;
 		self = oldSelf;
 
 		/* first load all keys we inherit from the 'inherited' class */
@@ -370,6 +386,12 @@ EntityDef_PrepareEntity(entity target, int id)
 				}
 			}
 		}
+	}
+
+	if (STRING_SET(targetEnt.declclass)) {
+		/* used to network our shared ID */
+		targetEnt.entityDefID = EntityDef_NetIDFromName(targetEnt.declclass);
+		targetEnt.ReloadCachedAttributes();
 	}
 
 	/* now we load the field overrides from the entDef */
@@ -406,13 +428,17 @@ EntityDef_PrepareEntity(entity target, int id)
 
 			/* iterate through the ; key groups */
 			for (int x = 0; x < tokenizebyseparator(g_entDefTable[id].tweakKeys, ";"); x++) {
+				string currentTweak = argv(x);
+
 				/* ignore any other key group */
 				if (x == i) {
 					/* iterate through key/value pairs within the ; key groups */
-					for (int y = 0; y < tokenize_console(argv(x)); y+= 2) {
+					for (int y = 0; y < tokenize_console(currentTweak); y+= 2) {
+						string keyName = argv(y);
+						string setValue = argv(y+1);
 						//print(sprintf("applying %S and %S\n", argv(y), argv(y+1)));
-						targetEnt.SpawnKey(argv(y), argv(y+1));
-						targetEnt.m_strSpawnData = sprintf("%s TWEAK %S %S }", targetEnt.m_strSpawnData, argv(y), argv(y+1));
+						targetEnt.SpawnKey(keyName, setValue);
+						targetEnt.m_rawSpawnData = sprintf("%s \"TWEAK\" %S %S }", targetEnt.m_rawSpawnData, keyName, setValue);
 					}
 				}
 			}
@@ -421,7 +447,7 @@ EntityDef_PrepareEntity(entity target, int id)
 
 	/* now that that all methods have been called, we're ready to decide whether to continue this spawn */
 	if (wasfreed(targetEnt) == false) {
-		targetEnt.m_strModelEventCB = g_entDefTable[id].eventList; /* pass over the event listing */
+		targetEnt.m_modelEventCallbacks = g_entDefTable[id].eventList; /* pass over the event listing */
 
 		/* now we rename the classname for better visibility,
 		   but also because some classes need to know. */
@@ -446,28 +472,28 @@ EntityDef_Precaches(int index)
 	}
 
 	for (int i = 0; i < tokenize_console(g_entDefTable[index].spawnData); i+= 2) {
-		string strKey = argv(i);
-		string strValue = argv(i+1);
+		string keyName = argv(i);
+		string setValue = argv(i+1);
 
-		if (substring(strKey, 0, 4) == "snd_") {
-			precache.Sound(strValue);
-		} else if (substring(strKey, 0, 6) == "smoke_") {
-			particleeffectnum(strValue);
-		} else if (strKey == "model_detonate") {
-			particleeffectnum(strValue);
-		} else if (strKey == "model") {
-			precache.Model(strValue);
-		} else if (substring(strKey, 0, 6) == "model_") {
-			precache.Model(strValue);
-		} else if (substring(strKey, 0, 4) == "def_" || (strKey == "item")) {
-			defID = EntityDef_IDFromName(strValue);
+		if (substring(keyName, 0, 4) == "snd_") {
+			precache.Sound(setValue);
+		} else if (substring(keyName, 0, 6) == "smoke_") {
+			particleeffectnum(setValue);
+		} else if (keyName == "model_detonate") {
+			particleeffectnum(setValue);
+		} else if (keyName == "model") {
+			precache.Model(setValue);
+		} else if (substring(keyName, 0, 6) == "model_") {
+			precache.Model(setValue);
+		} else if (substring(keyName, 0, 4) == "def_" || (keyName == "item")) {
+			defID = EntityDef_IDFromName(setValue);
 
 			/* only precache valid def, and avoid recursion */
 			if (defID != -1 && defID != index) {
 				EntityDef_Precaches(defID);
 			}
-		} else if (strKey == "weapon") {
-			for (int w = 0; w < tokenizebyseparator(strValue, ","); w++) {
+		} else if (keyName == "weapon") {
+			for (int w = 0; w < tokenizebyseparator(setValue, ","); w++) {
 				string weaponName = argv(w);
 				defID = EntityDef_IDFromName(weaponName);
 
@@ -484,9 +510,9 @@ EntityDef_Precaches(int index)
 		int testCode = stoi(argv(i+0));
 		string testInput = argv(i+1);
 		string testData = argv(i+2);
-		
+
 		if (testInput == "StartSoundDef") {
-			Sound_Precache(testData);
+			precache.Sound(testData);
 			tokenize(g_entDefTable[index].eventList);
 		}
 	}
@@ -499,7 +525,7 @@ EntityDef_Precache(string defName)
 	int inheritID;
 
 	if (baseID == -1i) {
-		NSError("Can't precache %S. Not found.", defName);
+		ncError("Can't precache %S. Not found.", defName);
 		return (false);
 	}
 
@@ -557,7 +583,7 @@ ncEntity
 EntityDef_SwitchClass(ncEntity target, string className)
 {
 	ncEntity returnEntity = __NULL__;
-	g_lastSpawnData = target.m_strSpawnData;
+	g_lastSpawnData = target.m_rawSpawnData;
 
 	for (int i = 0i; i < g_entDefCount; i++) {
 		if (className == g_entDefTable[i].entClass) {
@@ -578,7 +604,6 @@ EntityDef_CreateClassname(string className)
 	ncEntity test;
 	self = new;
 	test = EntityDef_SpawnClassname(className);
-	self = oldSelf;
 
 	/* Failure */
 	if (test == __NULL__) {
@@ -586,17 +611,8 @@ EntityDef_CreateClassname(string className)
 		return (__NULL__);
 	}
 
-	return (new);
-}
-
-static void
-CallSpawnfuncByName(entity target, string className)
-{
-	entity oldSelf = self;
-	string spawnClass = strcat("spawnfunc_", className);
-	self = target;
-	callfunction(spawnClass);
 	self = oldSelf;
+	return (new);
 }
 
 /** Always returns a valid entity. Even if the entity def does not exist. */
@@ -638,7 +654,7 @@ EntityDef_DebugList(void)
 		print(sprintf("\ttweakKeys %S\n", g_entDefTable[i].tweakKeys));
 		print(sprintf("\teventList %S\n", g_entDefTable[i].eventList));
 		print("\tspawnData:\n");
-		
+
 		for (int c = 0; c < numKeys; c+=2) {
 			print(sprintf("\t\t%S %S\n", argv(c), argv(c+1)));
 		}
@@ -696,6 +712,32 @@ EntityDef_NameFromNetID(int defNum)
 	}
 
 	return "";
+}
+
+void
+EntityDef_SetFromEntNum(ncItem targetItem, int defNum)
+{
+	int endID = -1i;
+
+	if (!targetItem) {
+		return;
+	}
+
+	for (int i = 0i; i < g_entDefCount; i++) {
+		int checkSum = ourCRC(g_entDefTable[i].entClass);
+
+		if (checkSum == defNum) {
+			endID = i;
+		}
+	}
+
+	if (endID == -1i) {
+		return;
+	}
+
+	targetItem.declclass = g_entDefTable[endID].entClass;
+	targetItem.classname = g_entDefTable[endID].spawnClass;
+	targetItem.ReloadCachedAttributes();
 }
 
 string

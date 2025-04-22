@@ -723,7 +723,7 @@ void(string printmsg, float printlvl) CSQC_Parse_Print;	/* Gives the CSQC a chan
 void() CSQC_Parse_Event;	/* Called when the client receives an SVC_CGAMEPACKET. The csqc should read the data or call the error builtin if it does not recognise the message. */
 float(float evtype, float scanx, float chary, float devid) CSQC_InputEvent;	/* Called whenever a key is pressed, the mouse is moved, etc. evtype will be one of the IE_* constants. The other arguments vary depending on the evtype. Key presses are not guarenteed to have both scan and unichar values set at the same time. */
 void() CSQC_Input_Frame;	/* Called just before each time clientcommandframe is updated. You can edit the input_* globals in order to apply your own player inputs within csqc, which may allow you a convienient way to pass certain info to ssqc. */
-void(string rendererdescription) CSQC_RendererRestarted;	/* Called by the engine after the video was restarted. This serves to notify the CSQC that any render targets that it may have cached were purged, and will need to be regenerated. */
+void(string rendererdescription) CSQC_ReloadVideoResources;	/* Called by the engine after the video was restarted. This serves to notify the CSQC that any render targets that it may have cached were purged, and will need to be regenerated. */
 string(string shadername) CSQC_GenerateMaterial;	/* Returns the material text to use for the named material, for automatically importing foreign materials. */
 float(string cmd) CSQC_ConsoleCommand;	/* Called if the user uses any console command registed via registercommand. */
 float(string text, string info) CSQC_ConsoleLink;	/* Called if the user clicks a ^[text\infokey\infovalue^] link. Use infoget to read/check each supported key. Return true if you wish the engine to not attempt to handle the link itself.
@@ -754,7 +754,7 @@ void() m_init;
 void() m_shutdown;
 void(vector screensize) m_draw;	/* Provides the menuqc with a chance to draw. Will be called even if the menu does not have focus, so be sure to avoid that. COMPAT: screensize is not provided in DP. */
 void(vector screensize, float opaque) m_drawloading;	/* Additional drawing function to draw loading screens. If opaque is set, then this function must ensure that the entire screen is overdrawn (even if just by a black drawfill). */
-void(string rendererdescription) Menu_RendererRestarted;	/* Called by the engine after the video was restarted. This serves to notify the MenuQC that any render targets that it may have cached were purged, and will need to be regenerated. */
+void(string rendererdescription) Menu_ReloadVideoResources;	/* Called by the engine after the video was restarted. This serves to notify the MenuQC that any render targets that it may have cached were purged, and will need to be regenerated. */
 float(float evtype, float scanx, float chary, float devid) Menu_InputEvent;	/* If present, this is called instead of m_keydown and m_keyup
 Called whenever a key is pressed, the mouse is moved, etc. evtype will be one of the IE_* constants. The other arguments vary depending on the evtype. Key presses are not guarenteed to have both scan and unichar values set at the same time. */
 __deprecated("Use Menu_InputEvent") void(float scan, float chr) m_keydown;
@@ -2357,7 +2357,7 @@ float(string shadername, optional string defaultshader, ...) shaderforname = #23
 #endif
 #ifdef CSQC
 void(string shadername, string replacement, float timeoffset) remapshader = #0:remapshader; /*
-		All surfaces drawn with the specified shader will instead be drawn using the specified replacement shader. Shaders can be remapped to something else later by using the same source shadername. This is mostly useful for worldmodel surfaces (eg showing which team is currently winning). Entities should generally use setcustomskin or forceshader instead. Remaps will be forgotten on vid_reload, but can be reapplied via CSQC_RendererRestarted. */
+		All surfaces drawn with the specified shader will instead be drawn using the specified replacement shader. Shaders can be remapped to something else later by using the same source shadername. This is mostly useful for worldmodel surfaces (eg showing which team is currently winning). Entities should generally use setcustomskin or forceshader instead. Remaps will be forgotten on vid_reload, but can be reapplied via CSQC_ReloadVideoResources. */
 
 #endif
 #if defined(CSQC) || defined(SSQC)

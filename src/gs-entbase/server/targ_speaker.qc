@@ -70,30 +70,30 @@ targ_speaker::Save(float handle)
 }
 
 void
-targ_speaker::Restore(string strKey, string strValue)
+targ_speaker::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_strSample":
-		m_strSample = ReadString(strValue);
+		m_strSample = ReadString(setValue);
 		break;
 	case "m_flVolume":
-		m_flVolume = ReadFloat(strValue);
+		m_flVolume = ReadFloat(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-targ_speaker::SpawnKey(string strKey, string strValue)
+targ_speaker::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "noise":
 	case "tsnoise":
-		m_strSample = strValue;
+		m_strSample = setValue;
 		break;
 	case "volume":
-		m_flVolume = stof(strValue);
+		m_flVolume = stof(setValue);
 		break;
 	default:
 		break;

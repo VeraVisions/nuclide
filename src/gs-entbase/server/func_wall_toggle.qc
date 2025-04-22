@@ -69,17 +69,17 @@ func_wall_toggle::Save(float handle)
 }
 
 void
-func_wall_toggle::Restore(string strKey, string strValue)
+func_wall_toggle::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_oldmodelindex":
-		m_oldmodelindex = ReadInt(strValue);
+		m_oldmodelindex = ReadInt(setValue);
 		break;
 	case "m_iVisible":
-		m_iVisible = ReadInt(strValue);
+		m_iVisible = ReadInt(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 

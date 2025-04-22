@@ -28,9 +28,9 @@ droptofloorwrapper(entity foo)
 void
 ncEntity::ncEntity(void)
 {
-	identity = 1;
-	m_flSpawnTime = time;
-	m_vecEditorColor = [1,1,1];
+	_loading = false;
+	m_spawnTime = time;
+	m_editorColor = [1,1,1];
 	m_holdingPlayer = __NULL__;
 }
 
@@ -59,8 +59,8 @@ ncEntity::Precache(void)
 	}
 
 #ifdef SERVER
-	if (STRING_SET(m_strOnTrigger)) {
-		m_strOnTrigger = CreateOutput(m_strOnTrigger);
+	if (STRING_SET(m_outputOnTrigger)) {
+		m_outputOnTrigger = CreateOutput(m_outputOnTrigger);
 	}
 #endif
 }
@@ -70,10 +70,6 @@ ncEntity::Spawned(void)
 {
 	super::Spawned();
 
-#ifdef SERVER
-	/* used to network our shared ID */
-	entityDefID = EntityDef_NetIDFromName(classname);
-#endif
 }
 
 bool
@@ -198,6 +194,12 @@ ncEntity::CreatedByMap(void)
 }
 
 bool
+ncEntity::Loading(void)
+{
+	return (_loading);
+}
+
+bool
 ncEntity::HeldByPlayer(void)
 {
 	return (m_holdingPlayer) ? (true) : (false);
@@ -205,7 +207,7 @@ ncEntity::HeldByPlayer(void)
 
 #ifdef CLIENT
 void
-ncEntity::RendererRestarted(void)
+ncEntity::ReloadVideoResources(void)
 {
 
 }
@@ -234,7 +236,7 @@ ncEntity::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_BYTE(solid, BASEFL_CHANGED_SOLID)
 	READENTITY_BYTE(movetype, BASEFL_CHANGED_FLAGS)
 	READENTITY_INT(flags, BASEFL_CHANGED_FLAGS)
-	READENTITY_INT(vv_flags, BASEFL_CHANGED_FLAGS)
+	READENTITY_INT(m_nuclideFlags, BASEFL_CHANGED_FLAGS)
 	READENTITY_COORD(mins[0], BASEFL_CHANGED_SIZE)
 	READENTITY_COORD(mins[1], BASEFL_CHANGED_SIZE)
 	READENTITY_COORD(mins[2], BASEFL_CHANGED_SIZE)
@@ -264,12 +266,6 @@ ncEntity::ReceiveEntity(float flNew, float flChanged)
 }
 
 void
-ncEntity::_ReceiveComplete(float flNew, float flChanged)
-{
-
-}
-
-void
 ncEntity::ReceiveEvent(float eventType)
 {
 	switch (eventType) {
@@ -288,7 +284,7 @@ ncEntity::postdraw(void)
 void
 ncEntity::DebugDraw(void)
 {
-	DebugBox(GetOrigin(), GetMins(), GetMaxs(), m_vecEditorColor, 0.75f);
+	DebugBox(GetOrigin(), GetMins(), GetMaxs(), m_editorColor, 0.75f);
 }
 
 float
@@ -314,7 +310,7 @@ ncEntity::SendEntity(entity ePEnt, float flChanged)
 			flChanged &= ~BASEFL_CHANGED_ANGULARVELOCITY;
 		}
 
-		if (m_bIsBrush == true) {
+		if (m_modelBrushBased == true) {
 			flChanged &= ~BASEFL_CHANGED_FLAGS;
 			flChanged &= ~BASEFL_CHANGED_SCALE;
 		}
@@ -333,7 +329,7 @@ ncEntity::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_BYTE(solid, BASEFL_CHANGED_SOLID)
 	SENDENTITY_BYTE(movetype, BASEFL_CHANGED_FLAGS)
 	SENDENTITY_INT(flags, BASEFL_CHANGED_FLAGS)
-	SENDENTITY_INT(vv_flags, BASEFL_CHANGED_FLAGS)
+	SENDENTITY_INT(m_nuclideFlags, BASEFL_CHANGED_FLAGS)
 	SENDENTITY_COORD(mins[0], BASEFL_CHANGED_SIZE)
 	SENDENTITY_COORD(mins[1], BASEFL_CHANGED_SIZE)
 	SENDENTITY_COORD(mins[2], BASEFL_CHANGED_SIZE)
@@ -366,7 +362,7 @@ ncEntity::EvaluateEntity(void)
 	EVALUATE_FIELD(solid, BASEFL_CHANGED_SOLID)
 	EVALUATE_FIELD(movetype, BASEFL_CHANGED_FLAGS)
 	EVALUATE_FIELD(flags, BASEFL_CHANGED_FLAGS)
-	EVALUATE_FIELD(vv_flags, BASEFL_CHANGED_FLAGS)
+	EVALUATE_FIELD(m_nuclideFlags, BASEFL_CHANGED_FLAGS)
 	EVALUATE_VECTOR(mins, 0, BASEFL_CHANGED_SIZE)
 	EVALUATE_VECTOR(mins, 1, BASEFL_CHANGED_SIZE)
 	EVALUATE_VECTOR(mins, 2, BASEFL_CHANGED_SIZE)
@@ -402,16 +398,16 @@ ncEntity::ParentUpdate(void)
 
 	EvaluateEntity();
 
-	if (!(vv_flags & VFL_NOFRAMEADVANCE)) {
+	if (!(m_nuclideFlags & VFL_NOFRAMEADVANCE)) {
 		frame1time += frametime;
 	}
 
 	/* handle end-touch */
 	if (m_beingTouched == true) {
-		if (m_flTouchTime < GetTime()) {
-			EndTouch(m_eTouchLast);
+		if (m_timeSinceLastTouch < GetTime()) {
+			EndTouch(m_touchingEntity);
 			m_beingTouched = false;
-			m_eTouchLast = __NULL__;
+			m_touchingEntity = __NULL__;
 		}
 	}
 }
@@ -421,13 +417,8 @@ ncEntity::SharesPVSWithPlayer(void)
 {
 	entity entLoop = world;
 
-	for (entLoop = world; ((entLoop = find(entLoop, ::classname, "player")));) {
+	for (entLoop = world; ((entLoop = next.Player(entLoop)));) {
 		ncActor testPlayer = (ncActor)entLoop;
-
-		/* players are first N entity slots after world, so exit when they're done */
-		if (entLoop.classname != "player") {
-			return (false);
-		}
 
 		if (checkpvs(testPlayer.GetEyePos(), this) == true) {
 			return (true);
@@ -542,7 +533,7 @@ ncEntity::SetFrame(float newFrame)
 			return;
 		}
 
-		eDefEvents = tokenize(m_strModelEventCB);
+		eDefEvents = tokenize(m_modelEventCallbacks);
 
 		for (int i = 0; i < eDefEvents; i+=3) {
 			string testName = argv(i+0);
@@ -556,7 +547,7 @@ ncEntity::SetFrame(float newFrame)
 					Input(this, testInput, ""); /* no parms passed. */
 				}
 
-				tokenize(m_strModelEventCB); /* ensure argv() is 'rewound'... */
+				tokenize(m_modelEventCallbacks); /* ensure argv() is 'rewound'... */
 			}
 		}
 	}
@@ -588,14 +579,6 @@ ncEntity::SetTouch(void ()newTouch)
 }
 
 void
-ncEntity::SetSendFlags(float flSendFlags)
-{
-#ifdef SERVER
-	SendFlags |= flSendFlags;
-#endif
-}
-
-void
 ncEntity::SetMovetype(float newMovetype)
 {
 	movetype = newMovetype;
@@ -621,13 +604,13 @@ ncEntity::SetScale(float newScale)
 	}
 
 	scale = newScale;
-	setsize(this, m_vecMins * scale, m_vecMaxs * scale);
+	setsize(this, m_internalMins * scale, m_internalMaxs * scale);
 }
 
 vector
 ncEntity::GetViewAngle(void)
 {
-	if (isSentient(this)) {
+	if (is.Sentient(this)) {
 		return (v_angle);
 	} else {
 		return (angles);
@@ -656,8 +639,8 @@ ncEntity::UpdateBounds(void)
 	vector newMins, newMaxs;
 	float flScale = 1.0f;
 
-	newMins = m_vecMins;
-	newMaxs = m_vecMaxs;
+	newMins = m_internalMins;
+	newMaxs = m_internalMaxs;
 
 	/* avoid useless computation */
 	if (angles != [0, 0, 0]) {
@@ -666,9 +649,9 @@ ncEntity::UpdateBounds(void)
 
 		newMins = newMaxs =[0, 0, 0];
 		for (int i = 0; i < 8; i++) {
-			vecCorner[i][0] = (i & 1) ? m_vecMins[0] : m_vecMaxs[0];
-			vecCorner[i][1] = (i & 2) ? m_vecMins[1] : m_vecMaxs[1];
-			vecCorner[i][2] = (i & 4) ? m_vecMins[2] : m_vecMaxs[2];
+			vecCorner[i][0] = (i & 1) ? m_internalMins[0] : m_internalMaxs[0];
+			vecCorner[i][1] = (i & 2) ? m_internalMins[1] : m_internalMaxs[1];
+			vecCorner[i][2] = (i & 4) ? m_internalMins[2] : m_internalMaxs[2];
 			vecCorner[i] += origin;
 			vecCorner[i] = rotateAroundPoint(vecCorner[i], origin, angles[1]);
 			vecCorner[i] -= origin;
@@ -714,8 +697,8 @@ ncEntity::SetSize(vector newMins, vector newMaxs)
 {
 	float flScale = 1.0f;
 
-	m_vecMins = newMins;
-	m_vecMaxs = newMaxs;
+	m_internalMins = newMins;
+	m_internalMaxs = newMaxs;
 
 	/* 0.0 is never valid, if you want it to disappear do something else */
 	if (scale != 0.0f) {
@@ -740,20 +723,17 @@ ncEntity::SetOriginUnstick(vector newOrigin)
 bool
 ncEntity::IsBrush(void)
 {
-	return (m_bIsBrush);
+	return (m_modelBrushBased);
 }
 
 void
 ncEntity::SetModel(string newModel)
 {
-	m_bIsBrush = substring(newModel, 0, 1) == "*" ? true : false;
+	m_modelBrushBased = substring(newModel, 0, 1) == "*" ? true : false;
 	model = Util_FixModel(newModel);
 	setmodel(this, model);
-
-#ifdef SERVER
-	m_vecModelMins = mins;
-	m_vecModelMaxs = maxs;
-#endif
+	m_modelMins = mins;
+	m_modelMaxs = maxs;
 
 	/* mins/maxs have been updated by setmodel */
 	SetSize(mins, maxs);
@@ -806,12 +786,12 @@ ncEntity::RemoveFlags(float fl) {
 
 void
 ncEntity::AddVFlags(float fl) {
-	vv_flags |= fl;
+	m_nuclideFlags |= fl;
 }
 
 void
 ncEntity::RemoveVFlags(float fl) {
-	vv_flags &= ~fl;
+	m_nuclideFlags &= ~fl;
 }
 
 void
@@ -922,13 +902,13 @@ ncEntity::GetMaxs(void)
 vector
 ncEntity::GetRealMins(void)
 {
-	return (m_vecMins);
+	return (m_internalMins);
 }
 
 vector
 ncEntity::GetRealMaxs(void)
 {
-	return (m_vecMaxs);
+	return (m_internalMaxs);
 }
 
 vector
@@ -952,7 +932,7 @@ ncEntity::GetFlags(void)
 float
 ncEntity::GetVFlags(void)
 {
-	return (vv_flags);
+	return (m_nuclideFlags);
 }
 
 bool
@@ -964,7 +944,7 @@ ncEntity::HasFlags(float bits)
 bool
 ncEntity::HasVFlags(float bits)
 {
-	return (vv_flags & bits) ? (true) : (false);
+	return (m_nuclideFlags & bits) ? (true) : (false);
 }
 
 void
@@ -977,13 +957,31 @@ ncEntity::ClearVelocity(void)
 vector
 ncEntity::GetModelMins(void)
 {
-	return (m_vecModelMins);
+	return (m_modelMins);
 }
 
 vector
 ncEntity::GetModelMaxs(void)
 {
-	return (m_vecModelMaxs);
+	return (m_modelMaxs);
+}
+
+void
+ncEntity::_RelinkToSpawnParent(void)
+{
+	/* Source Engine key */
+	string parentName1 = GetSpawnString("parentname");
+
+	if (STRING_SET(parentName1)) {
+		SetParent(parentName1);
+	} else {
+		/* Spirit of HL compat */
+		string parentName2 = GetSpawnString("movewith");
+
+		if (STRING_SET(parentName2)) {
+			SetParent(parentName2);
+		}
+	}
 }
 
 void
@@ -998,75 +996,459 @@ ncEntity::Respawn(void)
 	SetAngles(GetSpawnVector("angles"));
 	SetModel(GetSpawnString("model"));
 
-	if (STRING_SET(m_parent)) {
-		SetParent(m_parent);
-	}
+	_RelinkToSpawnParent();
 }
 
 void
 ncEntity::Save(float handle)
 {
-	super::Save(handle);
+	/* all the stock Quake fields the engine is aware of */
+	SaveFloat(handle, "modelindex", modelindex);
+	SaveVector(handle, "absmin", absmin);
+	SaveVector(handle, "absmax", absmax);
+	SaveFloat(handle, "movetype", movetype);
+	SaveFloat(handle, "solid", solid);
+	SaveVector(handle, "oldorigin", oldorigin);
+	SaveVector(handle, "velocity", velocity);
+	SaveVector(handle, "angles", angles);
+	SaveVector(handle, "avelocity", avelocity);
+	//SaveString(handle, "classname", classname);
+	SaveString(handle, "model", model);
+	SaveFloat(handle, "frame", frame);
+	SaveFloat(handle, "skin", skin);
+	SaveFloat(handle, "effects", effects);
+	SaveVector(handle, "mins", mins);
+	SaveVector(handle, "maxs", maxs);
+	SaveVector(handle, "size", size);
+	SaveString(handle, "touch", getentityfieldstring(findentityfield("touch"), this));
+	SaveString(handle, "use", getentityfieldstring(findentityfield("use"), this));
+	SaveString(handle, "think", getentityfieldstring(findentityfield("think"), this));
+	SaveString(handle, "blocked", getentityfieldstring(findentityfield("blocked"), this));
+	SaveFloat(handle, "nextthink", nextthink);
+	SaveEntity(handle, "groundentity", groundentity);
+	SaveFloat(handle, "health", health);
+	SaveFloat(handle, "frags", frags);
+	SaveFloat(handle, "weapon", weapon);
+	SaveString(handle, "weaponmodel", weaponmodel);
+	SaveFloat(handle, "weaponframe", weaponframe);
+	SaveFloat(handle, "currentammo", currentammo);
+	SaveFloat(handle, "items", items);
+	SaveFloat(handle, "takedamage", takedamage);
+	SaveEntity(handle, "chain", chain);
+	SaveFloat(handle, "deadflag", deadflag);
+	SaveVector(handle, "view_ofs", view_ofs);
+	SaveFloat(handle, "button0", button0);
+	SaveFloat(handle, "button1", button1);
+	SaveFloat(handle, "button2", button2);
+	SaveFloat(handle, "impulse", impulse);
+	SaveFloat(handle, "fixangle", fixangle);
+	SaveVector(handle, "v_angle", v_angle);
+	SaveFloat(handle, "idealpitch", idealpitch);
+	SaveString(handle, "netname", netname);
+	SaveEntity(handle, "enemy", enemy);
+	SaveFloat(handle, "flags", flags);
+	SaveFloat(handle, "colormap", colormap);
+	SaveVector(handle, "glowmod", glowmod);
+	SaveFloat(handle, "modelflags", modelflags);
+	SaveFloat(handle, "team", team);
+	SaveFloat(handle, "max_health", max_health);
+	SaveFloat(handle, "teleport_time", teleport_time);
+	SaveFloat(handle, "armortype", armortype);
+	SaveFloat(handle, "armorvalue", armorvalue);
+	SaveFloat(handle, "waterlevel", waterlevel);
+	SaveFloat(handle, "watertype", watertype);
+	SaveFloat(handle, "ideal_yaw", ideal_yaw);
+	SaveFloat(handle, "yaw_speed", yaw_speed);
+	SaveEntity(handle, "aiment", aiment);
+	SaveEntity(handle, "goalentity", goalentity);
+	SaveString(handle, "target", target);
+	SaveString(handle, "targetname", targetname);
+	SaveFloat(handle, "dmg_take", dmg_take);
+	SaveFloat(handle, "dmg_save", dmg_save);
+	SaveEntity(handle, "dmg_inflictor", dmg_inflictor);
+	SaveEntity(handle, "owner", owner);
+	SaveVector(handle, "movedir", movedir);
+	SaveString(handle, "message", message);
+	SaveFloat(handle, "sounds", sounds);
+	SaveString(handle, "noise", noise);
+	SaveString(handle, "noise1", noise1);
+	SaveString(handle, "noise2", noise2);
+	SaveString(handle, "noise3", noise3);
+
+	/* FTEQW relevant fields */
+	SaveFloat(handle, "dimension_solid", dimension_solid);
+	SaveFloat(handle, "dimension_hit", dimension_hit);
+	SaveFloat(handle, "frame1time", frame1time);
+	SaveFloat(handle, "basebone", basebone);
+	SaveFloat(handle, "baseframe", baseframe);
+	SaveFloat(handle, "drawflags", drawflags);
+	SaveString(handle, "customphysics", getentityfieldstring(findentityfield("customphysics"), this));
+	SaveString(handle, "SendEntity", getentityfieldstring(findentityfield("SendEntity"), this));
+	SaveFloat(handle, "viewzoom", viewzoom);
+	SaveFloat(handle, "uniquespawnid", uniquespawnid);
+
+	/* Nuclide global fields */
+	SaveString(handle, "outputOnTrigger", m_outputOnTrigger);
+	SaveString(handle, "outputOnUser1", m_outputOnUser1);
+	SaveString(handle, "outputOnUser2", m_outputOnUser2);
+	SaveString(handle, "outputOnUser3", m_outputOnUser3);
+	SaveString(handle, "outputOnUser4", m_outputOnUser4);
+	SaveString(handle, "modelEventCallbacks", m_modelEventCallbacks);
+	SaveString(handle, "rawSpawnData", m_rawSpawnData);
+
 	SaveEntity(handle, "tag_entity", tag_entity);
 	SaveFloat(handle, "tag_index", tag_index);
-	SaveFloat(handle, "pvsflags", pvsflags);
-	SaveBool(handle, "_mapspawned", _mapspawned);
 	SaveFloat(handle, "scale", scale);
-	SaveFloat(handle, "vv_flags", vv_flags);
+	SaveFloat(handle, "nuclideFlags", m_nuclideFlags);
 	SaveFloat(handle, "friction", friction);
-	SaveVector(handle, "m_vecMins", m_vecMins);
-	SaveVector(handle, "m_vecMaxs", m_vecMaxs);
-	SaveFloat(handle, "m_flTouchTime", m_flTouchTime);
-	SaveBool(handle, "m_beingTouched", m_beingTouched);
-	SaveEntity(handle, "m_eTouchLast", m_eTouchLast);
-	SaveVector(handle, "m_vecEditorColor", m_vecEditorColor);
+	SaveVector(handle, "internalMins", m_internalMins);
+	SaveVector(handle, "internalMaxs", m_internalMaxs);
+	SaveVector(handle, "modelMins", m_modelMins);
+	SaveVector(handle, "modelMaxs", m_modelMaxs);
+	SaveVector(handle, "parentPosOffs", m_parentPosOffs);
+	SaveVector(handle, "parentAngOffs", m_parentAngOffs);
+	SaveString(handle, "parent", m_parent);
+	SaveString(handle, "parent_old", m_parent_old);
+	SaveString(handle, "parent_attachment", m_parent_attachment);
+	SaveVector(handle, "editorColor", m_editorColor);
+	SaveFloat(handle, "spawnTime", m_spawnTime);
+	SaveEntity(handle, "holdingPlayer", m_holdingPlayer);
+	SaveFloat(handle, "lastHeldTime", m_lastHeldTime);
+
+	super::Save(handle);
 }
 
 void
-ncEntity::Restore(string strKey, string strValue)
+ncEntity::Restore(string keyName, string setValue)
 {
-	switch (strKey) {
+	switch (keyName) {
+	/* START: all the stock Quake fields the engine is aware of */
+	case "modelindex":
+		modelindex = ReadFloat(setValue);
+		break;
+	case "absmin":
+		absmin = ReadVector(setValue);
+		break;
+	case "absmax":
+		absmax = ReadVector(setValue);
+		break;
+	case "movetype":
+		movetype = ReadFloat(setValue);
+		break;
+	case "solid":
+		solid = ReadFloat(setValue);
+		break;
+	case "colormap":
+		colormap = ReadFloat(setValue);
+		break;
+	case "glowmod":
+		glowmod = ReadVector(setValue);
+		break;
+	case "modelflags":
+		modelflags = ReadFloat(setValue);
+		break;
+	case "oldorigin":
+		oldorigin = ReadVector(setValue);
+		break;
+	case "velocity":
+		velocity = ReadVector(setValue);
+		break;
+	case "angles":
+		angles = ReadVector(setValue);
+		break;
+	case "avelocity":
+		avelocity = ReadVector(setValue);
+		break;
+	/*case "classname":
+		classname = ReadString(setValue);
+		break; */
+	case "model":
+		model = ReadString(setValue);
+		setmodel(this, model);
+		break;
+	case "frame":
+		frame = ReadFloat(setValue);
+		break;
+	case "skin":
+		skin = ReadFloat(setValue);
+		break;
+	case "effects":
+		effects = ReadFloat(setValue);
+		break;
+	case "mins":
+		mins = ReadVector(setValue);
+		setsize(this, mins, maxs);
+		break;
+	case "maxs":
+		maxs = ReadVector(setValue);
+		setsize(this, mins, maxs);
+		break;
+	case "size":
+		size = ReadVector(setValue);
+		break;
+	case "touch":
+		touch = externvalue(-1, setValue);
+		break;
+	case "use":
+		use = externvalue(-1, setValue);
+		break;
+	case "think":
+		think = externvalue(-1, setValue);
+		break;
+	case "blocked":
+		blocked = externvalue(-1, setValue);
+		break;
+	case "nextthink":
+		nextthink = ReadFloat(setValue);
+		break;
+	case "groundentity":
+		groundentity = ReadEntity(setValue);
+		break;
+	case "health":
+		health = ReadFloat(setValue);
+		break;
+	case "frags":
+		frags = ReadFloat(setValue);
+		break;
+	case "weapon":
+		weapon = ReadFloat(setValue);
+		break;
+	case "weaponmodel":
+		weaponmodel = ReadString(setValue);
+		break;
+	case "weaponframe":
+		weaponframe = ReadFloat(setValue);
+		break;
+	case "currentammo":
+		currentammo = ReadFloat(setValue);
+		break;
+	case "items":
+		items = ReadFloat(setValue);
+		break;
+	case "takedamage":
+		takedamage = ReadFloat(setValue);
+		break;
+	case "chain":
+		chain = ReadEntity(setValue);
+		break;
+	case "deadflag":
+		deadflag = ReadFloat(setValue);
+		break;
+	case "view_ofs":
+		view_ofs = ReadVector(setValue);
+		break;
+	case "button0":
+		button0 = ReadFloat(setValue);
+		break;
+	case "button1":
+		button1 = ReadFloat(setValue);
+		break;
+	case "button2":
+		button2 = ReadFloat(setValue);
+		break;
+	case "impulse":
+		impulse = ReadFloat(setValue);
+		break;
+	case "fixangle":
+		fixangle = ReadFloat(setValue);
+		break;
+	case "v_angle":
+		v_angle = ReadVector(setValue);
+		break;
+	case "idealpitch":
+		idealpitch = ReadFloat(setValue);
+		break;
+	case "netname":
+		netname = ReadString(setValue);
+		break;
+	case "enemy":
+		enemy = ReadEntity(setValue);
+		break;
+	case "flags":
+		flags = ReadFloat(setValue);
+		break;
+	case "team":
+		team = ReadFloat(setValue);
+		break;
+	case "max_health":
+		max_health = ReadFloat(setValue);
+		break;
+	case "teleport_time":
+		teleport_time = ReadFloat(setValue);
+		break;
+	case "armortype":
+		armortype = ReadFloat(setValue);
+		break;
+	case "armorvalue":
+		armorvalue = ReadFloat(setValue);
+		break;
+	case "waterlevel":
+		waterlevel = ReadFloat(setValue);
+		break;
+	case "watertype":
+		watertype = ReadFloat(setValue);
+		break;
+	case "ideal_yaw":
+		ideal_yaw = ReadFloat(setValue);
+		break;
+	case "yaw_speed":
+		yaw_speed = ReadFloat(setValue);
+		break;
+	case "aiment":
+		aiment = ReadEntity(setValue);
+		break;
+	case "goalentity":
+		goalentity = ReadEntity(setValue);
+		break;
+	case "target":
+		target = ReadString(setValue);
+		break;
+	case "targetname":
+		targetname = ReadString(setValue);
+		break;
+	case "dmg_take":
+		dmg_take = ReadFloat(setValue);
+		break;
+	case "dmg_save":
+		dmg_save = ReadFloat(setValue);
+		break;
+	case "dmg_inflictor":
+		dmg_inflictor = ReadEntity(setValue);
+		break;
+	case "owner":
+		owner = ReadEntity(setValue);
+		break;
+	case "movedir":
+		movedir = ReadVector(setValue);
+		break;
+	case "message":
+		message = ReadString(setValue);
+		break;
+	case "sounds":
+		sounds = ReadFloat(setValue);
+		break;
+	case "noise":
+		noise = ReadString(setValue);
+		break;
+	case "noise1":
+		noise1 = ReadString(setValue);
+		break;
+	case "noise2":
+		noise2 = ReadString(setValue);
+		break;
+	case "noise3":
+		noise3 = ReadString(setValue);
+		break;
+	/* FTEQW relevant fields */
+	case "dimension_solid":
+		dimension_solid = ReadFloat(setValue);
+		break;
+	case "dimension_hit":
+		dimension_hit = ReadFloat(setValue);
+		break;
+	case "frame1time":
+		frame1time = ReadFloat(setValue);
+		break;
+	case "basebone":
+		basebone = ReadFloat(setValue);
+		break;
+	case "baseframe":
+		baseframe = ReadFloat(setValue);
+		break;
+	case "drawflags":
+		drawflags = ReadFloat(setValue);
+		break;
+	case "customphysics":
+		customphysics = externvalue(-1, setValue);
+		break;
+	case "SendEntity":
+		SendEntity = externvalue(-1, setValue);
+		break;
+	case "viewzoom":
+		viewzoom = ReadFloat(setValue);
+		break;
+	case "uniquespawnid":
+		uniquespawnid = ReadFloat(setValue);
+		break;
+	/* END: all the stock Quake fields the engine is aware of */
+	/* Nuclide global fields */
+	case "outputOnTrigger":
+		m_outputOnTrigger = ReadString(setValue);
+		break;
+	case "outputOnUser1":
+		m_outputOnUser1 = ReadString(setValue);
+		break;
+	case "outputOnUser2":
+		m_outputOnUser2 = ReadString(setValue);
+		break;
+	case "outputOnUser3":
+		m_outputOnUser3 = ReadString(setValue);
+		break;
+	case "outputOnUser4":
+		m_outputOnUser4 = ReadString(setValue);
+		break;
+	case "modelEventCallbacks":
+		m_modelEventCallbacks = ReadString(setValue);
+		break;
+	case "rawSpawnData":
+		m_rawSpawnData = ReadString(setValue);
+		break;
 	case "tag_entity":
-		tag_entity = ReadEntity(strValue);
+		tag_entity = ReadEntity(setValue);
 		break;
 	case "tag_index":
-		tag_index = ReadFloat(strValue);
-		break;
-	case "pvsflags":
-		pvsflags = ReadFloat(strValue);
-		break;
-	case "_mapspawned":
-		_mapspawned = ReadBool(strValue);
+		tag_index = ReadFloat(setValue);
 		break;
 	case "scale":
-		scale = ReadFloat(strValue);
+		scale = ReadFloat(setValue);
 		break;
-	case "vv_flags":
-		vv_flags = ReadFloat(strValue);
+	case "nuclideFlags":
+		m_nuclideFlags = ReadFloat(setValue);
 		break;
 	case "friction":
-		friction = ReadFloat(strValue);
+		friction = ReadFloat(setValue);
 		break;
-	case "m_vecMins":
-		m_vecMins = ReadVector(strValue);
+	case "internalMins":
+		m_internalMins = ReadVector(setValue);
 		break;
-	case "m_vecMaxs":
-		m_vecMaxs = ReadVector(strValue);
+	case "internalMaxs":
+		m_internalMaxs = ReadVector(setValue);
 		break;
-	case "m_flTouchTime":
-		m_flTouchTime = ReadFloat(strValue);
+	case "modelMins":
+		m_modelMins = ReadVector(setValue);
 		break;
-	case "m_beingTouched":
-		m_beingTouched = ReadBool(strValue);
+	case "modelMaxs":
+		m_modelMaxs = ReadVector(setValue);
 		break;
-	case "m_eTouchLast":
-		m_eTouchLast = ReadEntity(strValue);
+	case "parentPosOffs":
+		m_parentPosOffs = ReadVector(setValue);
 		break;
-	case "m_vecEditorColor":
-		m_vecEditorColor = ReadVector(strValue);
+	case "parentAngOffs":
+		m_parentAngOffs = ReadVector(setValue);
+		break;
+	case "parent":
+		m_parent = ReadString(setValue);
+		break;
+	case "parent_old":
+		m_parent_old = ReadString(setValue);
+		break;
+	case "parent_attachment":
+		m_parent_attachment = ReadString(setValue);
+		break;
+	case "spawnTime":
+		m_spawnTime = ReadFloat(setValue);
+		break;
+	case "editorColor":
+		m_editorColor = ReadVector(setValue);
+		break;
+	case "holdingPlayer":
+		m_holdingPlayer = ReadEntity(setValue);
+		break;
+	case "lastHeldTime":
+		m_lastHeldTime = ReadFloat(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(keyName, setValue);
 		break;
 	}
 }
@@ -1196,10 +1578,13 @@ ncEntity::Input(entity eAct, string strInput, string strData)
 		SetOrigin(stov(strData));
 		break;
 	case "SetEditorColor":
-		m_vecEditorColor = ReadVector(strData);
+		m_editorColor = ReadVector(strData);
 		break;
 	case "Respawn":
 		Respawn();
+		break;
+	case "DropToFloor":
+		DropToFloor();
 		break;
 	default:
 		ncTrigger::Input(eAct, strInput, strData);
@@ -1208,53 +1593,51 @@ ncEntity::Input(entity eAct, string strInput, string strData)
 #endif
 
 void
-ncEntity::SpawnKey(string strKey, string strValue)
+ncEntity::SpawnKey(string keyName, string setValue)
 {
-	bool tempCheck = false;
 	/* we do re-read a lot of the builtin fields in case we want to set
 	   defaults. just in case anybody is wondering. */
-
-	switch (strKey) {
+	switch (keyName) {
 	case "spawnflags":
-		spawnflags = ReadFloat(strValue);
+		spawnflags = ReadFloat(setValue);
 		break;
 	case "origin":
-		origin = ReadVector(strValue);
+		origin = ReadVector(setValue);
 		break;
 	case "model":
-		model = ReadString(strValue);
+		model = ReadString(setValue);
 		break;
 	case "angles":
-		angles = ReadVector(strValue);
+		angles = ReadVector(setValue);
 		break;
 	case "angle":
-		angles[1] = ReadFloat(strValue);
+		angles[1] = ReadFloat(setValue);
 		break;
 	case "solid":
-		solid = ReadFloat(strValue);
+		solid = ReadFloat(setValue);
 		break;
 	case "friction":
-		friction = ReadFloat(strValue);
+		friction = ReadFloat(setValue);
 		break;
 	case "editor_color":
-		m_vecEditorColor = ReadVector(strValue);
+		m_editorColor = ReadVector(setValue);
 		break;
 #ifdef SERVER
 	case "health":
-		health = ReadFloat(strValue);
+		health = ReadFloat(setValue);
 		break;
-	case "movewith":
-	case "parentname":
-		m_parent = ReadString(strValue);
+	case "movewith": /* SoHL */
+		break;
+	case "parentname": /* Source Engine */
+	case "parent": /* also SoHL? */
+		m_parent = ReadString(setValue);
 		break;
 	case "ignorepvs":
-		tempCheck = ReadBool(strValue);
-
-		if (tempCheck == true)
+		if (ReadBool(setValue) == true) {
 			pvsflags = PVSF_IGNOREPVS;
-		else
+		} else {
 			pvsflags &= ~PVSF_IGNOREPVS;
-
+		}
 		break;
 #endif
 	case "editor_mins":
@@ -1266,7 +1649,7 @@ ncEntity::SpawnKey(string strKey, string strValue)
 	case "_minlight":
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(keyName, setValue);
 		break;
 	}
 }
@@ -1361,7 +1744,7 @@ bool
 ncEntity::StartSoundDef(string strSample, float channel, bool broadcast)
 {
 	SndEntLog("%s (chan: %d bcast: %d)", strSample, channel, broadcast);
-	Sound_Play(this, channel, strSample);
+	SoundDef_Play(this, channel, strSample);
 	return (true);
 }
 
@@ -1369,14 +1752,14 @@ void
 ncEntity::StopSound(float channel, bool broadcast)
 {
 	if (broadcast) {
-		Sound_Stop(this, channel);
+		SoundDef_Stop(this, channel);
 	} else {
 #ifdef SERVER
 		msg_entity = this;
 		sound(this, channel, "common/null.wav", 0.1f, ATTN_NORM, 100, SOUNDFLAG_UNICAST  | SOUNDFLAG_FOLLOW, 0 );
 		msg_entity = __NULL__;
 #else
-		Sound_Stop(this, channel);
+		SoundDef_Stop(this, channel);
 #endif
 	}
 }
@@ -1418,13 +1801,13 @@ ncEntity::IsFacingPosition(vector targetPos)
 float
 ncEntity::GetSpawnAge(void)
 {
-	return (time - m_flSpawnTime);
+	return (time - m_spawnTime);
 }
 
 float
 ncEntity::GetSpawnTime(void)
 {
-	return (m_flSpawnTime);
+	return (m_spawnTime);
 }
 
 void
@@ -1437,16 +1820,10 @@ ncEntity::Transport(vector new_pos, vector new_ang)
 	SetAngles(new_ang);
 
 #ifdef SERVER
-	if (isClient(this)) {
+	if (is.Client(this)) {
 		Client_FixAngle(this, new_ang);
 	}
 #endif
-}
-
-void
-ncEntity::Relink(void)
-{
-	setorigin(this, origin);
 }
 
 vector

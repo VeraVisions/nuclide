@@ -87,114 +87,117 @@ ncProjectile::ncProjectile(void)
 
 #ifdef SERVER
 void
-ncProjectile::SpawnKey(string strKey, string strValue)
+ncProjectile::SpawnKey(string keyName, string setValue)
 {
-	switch (strKey) {
+	switch (keyName) {
+	case "OnDetonate":
+		m_outputOnDetonate = PrepareOutput(m_outputOnDetonate, setValue);
+		break;
 	case "def_damage": /* direct damage, upon touch */
-		m_defDamage = ReadString(strValue);
+		m_defDamage = ReadString(setValue);
 		break;
 	case "def_splash_damage": /* direct damage, upon touch */
-		m_defSplashDamage = ReadString(strValue);
+		m_defSplashDamage = ReadString(setValue);
 		break;
 	case "velocity":
-		m_vecLaunchVelocity = ReadVector(strValue);
+		m_vecLaunchVelocity = ReadVector(setValue);
 		break;
 	case "health": /* amount of dmg the projectile can take */
-		health = ReadFloat(strValue);
+		health = ReadFloat(setValue);
 		break;
 	case "model":
-		model = ReadString(strValue);
+		model = ReadString(setValue);
 		break;
 	case "velocity":
-		velocity = ReadVector(strValue);
+		velocity = ReadVector(setValue);
 		break;
 	case "angular_velocity": /* sets avelocity */
-		avelocity = ReadVector(strValue);
+		avelocity = ReadVector(setValue);
 		break;
 	case "thrust": /* rate of acceeleration */
-		m_flThrust = ReadFloat(strValue);
+		m_flThrust = ReadFloat(setValue);
 		break;
 	case "thrust_start": /* when to begin accel */
-		m_flThrustStart = ReadFloat(strValue);
+		m_flThrustStart = ReadFloat(setValue);
 		break;
 	case "thrust_end": /* when to stop accel */
-		m_flThrustEnd = ReadFloat(strValue);
+		m_flThrustEnd = ReadFloat(setValue);
 		break;
 	case "linear_friction": /* air friction */
-		m_flFrictionLinear = ReadFloat(strValue);
+		m_flFrictionLinear = ReadFloat(setValue);
 		break;
 	case "bounce": /* bounce multiplier */
-		m_flBounce = ReadFloat(strValue);
+		m_flBounce = ReadFloat(setValue);
 		break;
 	case "mass":
-		m_flMass = ReadFloat(strValue);
+		m_flMass = ReadFloat(setValue);
 		break;
 	case "gravity": /* 0 means no gravity */
-		m_flGravity = ReadFloat(strValue);
+		m_flGravity = ReadFloat(setValue);
 		break;
 	case "fuse": /* fuse time in seconds */
-		m_flFuse = ReadFloat(strValue);
+		m_flFuse = ReadFloat(setValue);
 		break;
 	case "detonate_on_fuse": /* should it detonate when fuse runs out? */
-		m_bDetonateOnFuse = ReadBool(strValue);
+		m_bDetonateOnFuse = ReadBool(setValue);
 		break;
 	case "detonate_on_death": /* should it detonate when it gets damaged enough? */
-		m_bDetonateOnDeath = ReadBool(strValue);
+		m_bDetonateOnDeath = ReadBool(setValue);
 		break;
 	case "detonate_on_world": /* should it detonate when touching world? */
-		m_bDetonateOnWorld = ReadBool(strValue);
+		m_bDetonateOnWorld = ReadBool(setValue);
 		break;
 	case "detonate_on_actor": /* should it detonate when touching a monster/player */
-		m_bDetonateOnActor = ReadBool(strValue);
+		m_bDetonateOnActor = ReadBool(setValue);
 		break;
 	case "impact_damage_effect": /* blood splats? */
-		m_bImpactEffect = ReadBool(strValue);
+		m_bImpactEffect = ReadBool(setValue);
 		break;
 	case "impact_gib": /* gibs */
-		m_bImpactGib = ReadBool(strValue);
+		m_bImpactGib = ReadBool(setValue);
 		break;
 	case "decal_detonate":
 	case "mtr_detonate":
-		m_matDetonate = ReadString(strValue);
+		m_matDetonate = ReadString(setValue);
 		break;
 	case "decal_size":
-		m_flDecalSize = ReadFloat(strValue);
+		m_flDecalSize = ReadFloat(setValue);
 		break;
 	case "smoke_fly":
-		m_partSmokeFly = ReadString(strValue);
+		m_partSmokeFly = ReadString(setValue);
 		break;
 	case "fx_path":
-		m_partFXPath = ReadString(strValue);
+		m_partFXPath = ReadString(setValue);
 		break;
 	case "model_detonate":
-		m_partModelDetonate = ReadString(strValue);
+		m_partModelDetonate = ReadString(setValue);
 		break;
 	case "smoke_detonate":
-		m_partSmokeDetonate = ReadString(strValue);
+		m_partSmokeDetonate = ReadString(setValue);
 		break;
 	case "smoke_bounce":
-		m_partSmokeBounce = ReadString(strValue);
+		m_partSmokeBounce = ReadString(setValue);
 		break;
 	case "smoke_fuse":
-		m_partSmokeFuse = ReadString(strValue);
+		m_partSmokeFuse = ReadString(setValue);
 		break;
 	case "debris_count":
-		m_iDebrisCount = ReadInt(strValue);
+		m_iDebrisCount = ReadInt(setValue);
 		break;
 	case "debris_stick":
-		m_bDebrisStick = ReadBool(strValue);
+		m_bDebrisStick = ReadBool(setValue);
 		break;
 	case "debris_offset":
-		m_vecDebrisOffset = ReadVector(strValue);
+		m_vecDebrisOffset = ReadVector(setValue);
 		break;
 	case "detonate_offset":
-		m_vecDetonateOffset = ReadVector(strValue);
+		m_vecDetonateOffset = ReadVector(setValue);
 		break;
 	case "damage_offset":
-		m_vecDamageOffset = ReadVector(strValue);
+		m_vecDamageOffset = ReadVector(setValue);
 		break;
 	case "projectile_debris":
-		m_defProjectileDebris = ReadString(strValue);
+		m_defProjectileDebris = ReadString(setValue);
 		break;
 	/*case "def_debris":
 		break;
@@ -203,107 +206,107 @@ ncProjectile::SpawnKey(string strKey, string strValue)
 	case "mtr_light_shader":
 		break;*/
 	case "light_color":
-		m_vecLightColor = ReadVector(strValue);
+		m_vecLightColor = ReadVector(setValue);
 		break;
 	case "light_radius":
-		m_flLightRadius = ReadFloat(strValue);
+		m_flLightRadius = ReadFloat(setValue);
 		break;
 	case "light_offset":
-		m_flLightOffset = ReadFloat(strValue);
+		m_flLightOffset = ReadFloat(setValue);
 		break;
 	/*case "mtr_explode_light_shader":
 		break;*/
 	case "explode_light_color":
-		m_vecExplodeLightColor = ReadVector(strValue);
+		m_vecExplodeLightColor = ReadVector(setValue);
 		break;
 	case "explode_light_radius":
-		m_fExplodelLightRadius = ReadFloat(strValue);
+		m_fExplodelLightRadius = ReadFloat(setValue);
 		break;
 	case "explode_light_fadetime":
-		m_fExplodelLightFadetime = ReadFloat(strValue);
+		m_fExplodelLightFadetime = ReadFloat(setValue);
 		break;
 	case "snd_fly":
-		m_sndFly = ReadString(strValue);
+		m_sndFly = ReadString(setValue);
 		break;
 	case "snd_explode":
-		m_sndExplode = ReadString(strValue);
+		m_sndExplode = ReadString(setValue);
 		break;
 	case "snd_bounce":
-		m_sndBounce = ReadString(strValue);
+		m_sndBounce = ReadString(setValue);
 		break;
 	/* ETQW-additions */
 	case "is_bullet":
-		m_bIsBullet = ReadBool(strValue);
+		m_bIsBullet = ReadBool(setValue);
 		break;
 	case "hitscans":
-		m_iShots = ReadInt(strValue);
+		m_iShots = ReadInt(setValue);
 		break;
 	case "spread":
-		m_vecSpread = ReadVector(strValue);
+		m_vecSpread = ReadVector(setValue);
 		break;
 	case "spread_x":
-		m_vecSpread[0] = ReadFloat(strValue);
+		m_vecSpread[0] = ReadFloat(setValue);
 		break;
 	case "spread_y":
-		m_vecSpread[1] = ReadFloat(strValue);
+		m_vecSpread[1] = ReadFloat(setValue);
 		break;
 	case "decal_impact":
-		m_strDecalGroup = ReadString(strValue);
+		m_strDecalGroup = ReadString(setValue);
 		break;
 	case "range":
-		m_flRange = ReadFloat(strValue);
+		m_flRange = ReadFloat(setValue);
 		break;
 	/* Nuclide additions */
 	case "stick_to_world":
-		m_bStickToWorld = ReadBool(strValue);
+		m_bStickToWorld = ReadBool(setValue);
 		break;
 	case "stick_to_actor":
-		m_bStickToActor = ReadBool(strValue);
+		m_bStickToActor = ReadBool(setValue);
 		break;
 	case "mins":
-		m_vecSpawnMins = ReadVector(strValue);
+		m_vecSpawnMins = ReadVector(setValue);
 		break;
 	case "maxs":
-		m_vecSpawnMaxs = ReadVector(strValue);
+		m_vecSpawnMaxs = ReadVector(setValue);
 		break;
 	case "thrust_homing":
-		m_bThrustHoming = ReadBool(strValue);
+		m_bThrustHoming = ReadBool(setValue);
 		break;
 	case "frame":
-		m_flSpawnFrame = ReadFloat(strValue);
+		m_flSpawnFrame = ReadFloat(setValue);
 		break;
 	case "inherit_velocity":
-		m_bInheritVelocity = ReadBool(strValue);
+		m_bInheritVelocity = ReadBool(setValue);
 		break;
 	case "offset":
-		m_vecSpawnOrigin = ReadVector(strValue);
+		m_vecSpawnOrigin = ReadVector(setValue);
 		break;
 	case "damage":
-		m_flDamage = ReadFloat(strValue);
+		m_flDamage = ReadFloat(setValue);
 		break;
 	case "thrown":
-		m_bThrown = ReadBool(strValue);
+		m_bThrown = ReadBool(setValue);
 		break;
 	case "reflects":
-		m_bReflect = ReadBool(strValue);
+		m_bReflect = ReadBool(setValue);
 		break;
 	case "trackEnemy":
-		m_bTrackEnemy = ReadBool(strValue);
+		m_bTrackEnemy = ReadBool(setValue);
 		break;
 	case "trackJitter":
-		m_trackJitter = ReadVector(strValue);
+		m_trackJitter = ReadVector(setValue);
 		break;
 	case "trackDelay":
-		m_trackDelay = ReadFloat(strValue);
+		m_trackDelay = ReadFloat(setValue);
 		break;
 	case "def_planeImpact":
-		m_defPlaneImpact = ReadString(strValue);
+		m_defPlaneImpact = ReadString(setValue);
 		break;
 	case "noFX":
-		m_noFX = ReadBool(strValue);
+		m_noFX = ReadBool(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(keyName, setValue);
 		break;
 	}
 }
@@ -366,161 +369,161 @@ ncProjectile::Save(float handle)
 }
 
 void
-ncProjectile::Restore(string strKey, string strValue)
+ncProjectile::Restore(string keyName, string setValue)
 {
-	switch (strKey) {
+	switch (keyName) {
 	case "m_iProjectileAnimEnd":
-		m_iProjectileAnimEnd = ReadInt(strValue);
+		m_iProjectileAnimEnd = ReadInt(setValue);
 		break;
 	case "m_iProjectileAnimStart":
-		m_iProjectileAnimStart = ReadInt(strValue);
+		m_iProjectileAnimStart = ReadInt(setValue);
 		break;
 	case "m_flProjectileFramerate":
-		m_flProjectileFramerate = ReadFloat(strValue);
+		m_flProjectileFramerate = ReadFloat(setValue);
 		break;
 	case "m_flDmgMultiplier":
-		m_flDmgMultiplier = ReadFloat(strValue);
+		m_flDmgMultiplier = ReadFloat(setValue);
 		break;
 	case "m_defDamage":
-		m_defDamage = ReadString(strValue);
+		m_defDamage = ReadString(setValue);
 		break;
 	case "m_defSplashDamage":
-		m_defSplashDamage = ReadString(strValue);
+		m_defSplashDamage = ReadString(setValue);
 		break;
 	case "m_vecLaunchVelocity":
-		m_vecLaunchVelocity = ReadVector(strValue);
+		m_vecLaunchVelocity = ReadVector(setValue);
 		break;
 	case "m_flThrust":
-		m_flThrust = ReadFloat(strValue);
+		m_flThrust = ReadFloat(setValue);
 		break;
 	case "m_flThrustStart":
-		m_flThrustStart = ReadFloat(strValue);
+		m_flThrustStart = ReadFloat(setValue);
 		break;
 	case "m_flThrustEnd":
-		m_flThrustEnd = ReadFloat(strValue);
+		m_flThrustEnd = ReadFloat(setValue);
 		break;
 	case "m_flFrictionLinear":
-		m_flFrictionLinear = ReadFloat(strValue);
+		m_flFrictionLinear = ReadFloat(setValue);
 		break;
 	case "m_flBounce":
-		m_flBounce = ReadFloat(strValue);
+		m_flBounce = ReadFloat(setValue);
 		break;
 	case "m_flMass":
-		m_flMass = ReadFloat(strValue);
+		m_flMass = ReadFloat(setValue);
 		break;
 	case "m_flGravity":
-		m_flGravity = ReadFloat(strValue);
+		m_flGravity = ReadFloat(setValue);
 		break;
 	case "m_flFuse":
-		m_flFuse = ReadFloat(strValue);
+		m_flFuse = ReadFloat(setValue);
 		break;
 	case "m_bDetonateOnFuse":
-		m_bDetonateOnFuse = ReadBool(strValue);
+		m_bDetonateOnFuse = ReadBool(setValue);
 		break;
 	case "m_bDetonateOnDeath":
-		m_bDetonateOnDeath = ReadBool(strValue);
+		m_bDetonateOnDeath = ReadBool(setValue);
 		break;
 	case "m_bDetonateOnWorld":
-		m_bDetonateOnWorld = ReadBool(strValue);
+		m_bDetonateOnWorld = ReadBool(setValue);
 		break;
 	case "m_bDetonateOnActor":
-		m_bDetonateOnActor = ReadBool(strValue);
+		m_bDetonateOnActor = ReadBool(setValue);
 		break;
 	case "m_bImpactEffect":
-		m_bImpactEffect = ReadBool(strValue);
+		m_bImpactEffect = ReadBool(setValue);
 		break;
 	case "m_bImpactGib":
-		m_bImpactGib = ReadBool(strValue);
+		m_bImpactGib = ReadBool(setValue);
 		break;
 	case "m_matDetonate":
-		m_matDetonate = ReadString(strValue);
+		m_matDetonate = ReadString(setValue);
 		break;
 	case "m_flDecalSize":
-		m_flDecalSize = ReadFloat(strValue);
+		m_flDecalSize = ReadFloat(setValue);
 		break;
 	case "m_partSmokeFly":
-		m_partSmokeFly = ReadString(strValue);
+		m_partSmokeFly = ReadString(setValue);
 		break;
 	case "m_partFXPath":
-		m_partFXPath = ReadString(strValue);
+		m_partFXPath = ReadString(setValue);
 		break;
 	case "m_partModelDetonate":
-		m_partModelDetonate = ReadString(strValue);
+		m_partModelDetonate = ReadString(setValue);
 		break;
 	case "m_partSmokeDetonate":
-		m_partSmokeDetonate = ReadString(strValue);
+		m_partSmokeDetonate = ReadString(setValue);
 		break;
 	case "m_partSmokeBounce":
-		m_partSmokeBounce = ReadString(strValue);
+		m_partSmokeBounce = ReadString(setValue);
 		break; 
 	case "m_partSmokeFuse":
-		m_partSmokeFuse = ReadString(strValue);
+		m_partSmokeFuse = ReadString(setValue);
 		break;
 	case "m_defProjectileDebris":
-		m_defProjectileDebris = ReadString(strValue);
+		m_defProjectileDebris = ReadString(setValue);
 		break;
 	case "m_iDebrisCount":
-		m_iDebrisCount = ReadInt(strValue);
+		m_iDebrisCount = ReadInt(setValue);
 		break;
 	case "m_vecLightColor":
-		m_vecLightColor = ReadVector(strValue);
+		m_vecLightColor = ReadVector(setValue);
 		break;
 	case "m_flLightRadius":
-		m_flLightRadius = ReadFloat(strValue);
+		m_flLightRadius = ReadFloat(setValue);
 		break;
 	case "m_flLightOffset":
-		m_flLightOffset = ReadFloat(strValue);
+		m_flLightOffset = ReadFloat(setValue);
 		break;
 	case "m_vecExplodeLightColor":
-		m_vecExplodeLightColor = ReadVector(strValue);
+		m_vecExplodeLightColor = ReadVector(setValue);
 		break;
 	case "m_fExplodelLightRadius":
-		m_fExplodelLightRadius = ReadFloat(strValue);
+		m_fExplodelLightRadius = ReadFloat(setValue);
 		break;
 	case "m_fExplodelLightFadetime":
-		m_fExplodelLightFadetime = ReadFloat(strValue);
+		m_fExplodelLightFadetime = ReadFloat(setValue);
 		break;
 	case "m_sndFly":
-		m_sndFly = ReadString(strValue);
+		m_sndFly = ReadString(setValue);
 		break;
 	case "m_sndExplode":
-		m_sndExplode = ReadString(strValue);
+		m_sndExplode = ReadString(setValue);
 		break;
 	case "m_sndBounce":
-		m_sndBounce = ReadString(strValue);
+		m_sndBounce = ReadString(setValue);
 		break;
 	case "m_bIsBullet":
-		m_bIsBullet = ReadBool(strValue);
+		m_bIsBullet = ReadBool(setValue);
 		break;
 	case "m_bStickToWorld":
-		m_bStickToWorld = ReadBool(strValue);
+		m_bStickToWorld = ReadBool(setValue);
 		break;
 	case "m_bStickToActor":
-		m_bStickToActor = ReadBool(strValue);
+		m_bStickToActor = ReadBool(setValue);
 		break;
 	case "m_vecSpawnMins":
-		m_vecSpawnMins = ReadVector(strValue);
+		m_vecSpawnMins = ReadVector(setValue);
 		break;
 	case "m_vecSpawnMaxs":
-		m_vecSpawnMaxs = ReadVector(strValue);
+		m_vecSpawnMaxs = ReadVector(setValue);
 		break;
 	case "m_bThrustHoming":
-		m_bThrustHoming = ReadBool(strValue);
+		m_bThrustHoming = ReadBool(setValue);
 		break;
 	case "m_thrustHandler":
-		m_thrustHandler = (ncTimer)ReadEntity(strValue);
+		m_thrustHandler = (ncTimer)ReadEntity(setValue);
 		break;
 	case "m_flSpawnFrame":
-		m_flSpawnFrame = ReadFloat(strValue);
+		m_flSpawnFrame = ReadFloat(setValue);
 		break;
 	case "m_bInheritVelocity":
-		m_bInheritVelocity = ReadBool(strValue);
+		m_bInheritVelocity = ReadBool(setValue);
 		break;
 	case "m_bThrown":
-		m_bThrown = ReadBool(strValue);
+		m_bThrown = ReadBool(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(keyName, setValue);
 		break;
 	}
 }
@@ -536,6 +539,10 @@ ncProjectile::Spawned(void)
 {
 	super::Spawned();
 
+	if (STRING_SET(m_outputOnDetonate)) {
+		m_outputOnDetonate = CreateOutput(m_outputOnDetonate);
+	}
+		
 	SetMovetype(MOVETYPE_FLYMISSILE);
 	SetSolid(SOLID_BBOX);
 	SetSize(m_vecSpawnMins, m_vecSpawnMaxs);
@@ -545,13 +552,14 @@ void
 ncProjectile::Touch(entity eToucher)
 {
 	m_vecImpactPos = trace_endpos;
+	m_lastPlaneNormal = trace_plane_normal;
 
 	if (eToucher == world && m_bReflect) {
 		vector currentAngle = GetAngles();
 		currentAngle[0] *= -1;
 		vector currentVelocity = anglesToForward(currentAngle);
 		SetMovetype(MOVETYPE_FLYMISSILE);
-		SetVelocity(reflect(currentVelocity, trace_plane_normal) * m_vecLaunchVelocity[0]);
+		SetVelocity(reflect(currentVelocity, m_lastPlaneNormal) * m_vecLaunchVelocity[0]);
 		SetAngles(vectoangles(GetVelocity()));
 		SetOrigin(GetOrigin() + (anglesToForward(GetAngles() * 2.0f)));
 		StartSoundDef(m_sndBounce, CHAN_BODY, true);
@@ -765,10 +773,10 @@ ncProjectile::_Explode(entity explodedOn)
 	vector damageOffset = g_vec_null;
 	vector debrisAngle = GetAngles();
 
-	if (length(trace_plane_normal) == 0) {
+	if (length(m_lastPlaneNormal) == 0) {
 		newAngles = vectorToAngles(GetVelocity());
 	} else {
-		newAngles = vectorToAngles(trace_plane_normal);
+		newAngles = vectorToAngles(m_lastPlaneNormal);
 	}
 
 	aimFwd = anglesToForward(newAngles);
@@ -791,6 +799,20 @@ ncProjectile::_Explode(entity explodedOn)
 	detonatePos = m_vecImpactPos + detonateOffset;
 	damagePos = m_vecImpactPos + damageOffset;
 
+	traceline(origin, debrisPos, MOVE_NORMAL, this);
+	debrisPos = trace_endpos;
+	traceline(origin, detonatePos, MOVE_NORMAL, this);
+	detonatePos = trace_endpos;
+	traceline(origin, damagePos, MOVE_NORMAL, this);
+	damagePos = trace_endpos;
+
+	{
+		vector oldOrigin = GetOrigin();
+		SetOrigin(detonatePos);
+		UseOutput(this, m_outputOnDetonate);
+		SetOrigin(oldOrigin);
+	}
+
 	if (m_fExplodelLightRadius > 0.0f) {
 		te_customflash(detonatePos, m_fExplodelLightRadius, m_fExplodelLightFadetime, m_vecExplodeLightColor);
 	}
@@ -800,7 +822,7 @@ ncProjectile::_Explode(entity explodedOn)
 	}
 
 	if (STRING_SET(m_partModelDetonate)) {
-		pointparticles(particleeffectnum(m_partModelDetonate), detonatePos, trace_plane_normal, 1);
+		pointparticles(particleeffectnum(m_partModelDetonate), detonatePos, m_lastPlaneNormal, 1);
 	}
 
 	if (STRING_SET(m_defSplashDamage)) {
@@ -830,15 +852,15 @@ ncProjectile::_Explode(entity explodedOn)
 		vector portalAngle;
 		vector coPlanar;
 		makevectors(GetAngles());
-		coPlanar = v_forward -(v_forward * trace_plane_normal) * trace_plane_normal;
+		coPlanar = v_forward -(v_forward * m_lastPlaneNormal) * m_lastPlaneNormal;
 
 		/* quick fix */
-		if (trace_plane_normal[2] == 0) {
+		if (m_lastPlaneNormal[2] == 0) {
 			coPlanar = '0 0 1';
 		}
 
-		portalAngle = vectoangles(trace_plane_normal, coPlanar);
-#if 1
+		portalAngle = vectoangles(m_lastPlaneNormal, coPlanar);
+#if 0
 		prop_portal_spawn(trace_endpos, portalAngle, owner, m_defPlaneImpact == "portal_red" ? true : false);
 #else
 		ncEntity rocket = EntityDef_NewClassname(m_defPlaneImpact);
@@ -884,18 +906,16 @@ ncProjectile::_LaunchHitscan(vector startPos, vector launchDir, float dmgMultipl
 void
 ncProjectile::_ApplyDamage(void)
 {
+	ncSurfacePropEntity targetEnt = (ncSurfacePropEntity)m_eMultiTarget;
+
 	/* may not be defined yet */
 	if (m_eMultiTarget == __NULL__) {
 		return;
 	}
 
 	/* the location _could_ be more accurate... */
-	if (m_eMultiTarget.CanBleed() == true) {
-		ncSurfacePropEntity targetEnt = (ncSurfacePropEntity)m_eMultiTarget;
-
-		if (targetEnt.HasSurfaceData()) {
-			SurfData_ImpactOfType(targetEnt.m_iMaterial, m_hitLocation, trace_plane_normal);
-		}
+	if (targetEnt.HasSurfaceData()) {
+		SurfData_ImpactOfType(targetEnt.m_surfdataID, m_hitLocation, m_lastPlaneNormal);
 	}
 
 	trace_surface_id = m_iMultiBody;
@@ -941,8 +961,8 @@ void
 ncProjectile::_FireSingle(vector vecPos, vector vecAngles, float flDamage, float flRange)
 {
 	vector range;
-	vector planeNormal;
 	bool skipFX = m_noFX;
+	ncSurfacePropEntity impactTarget;
 
 	if (flRange <= 0) {
 		return;
@@ -962,10 +982,10 @@ ncProjectile::_FireSingle(vector vecPos, vector vecAngles, float flDamage, float
 	int oldhitcontents = owner.hitcontentsmaski;
 	owner.hitcontentsmaski = CONTENTBITS_POINTSOLID | CONTENTBIT_CORPSE | CONTENTBIT_WATER | CONTENTBIT_SLIME | CONTENTBIT_LAVA | CONTENTBIT_PROJECTILE;
 	traceline(vecPos, vecPos + range, MOVE_LAGGED | MOVE_HITMODEL, owner);
+	impactTarget = trace_ent;
 	owner.hitcontentsmaski = oldhitcontents;
-	planeNormal = trace_plane_normal;
+	m_lastPlaneNormal = trace_plane_normal;
 	m_hitLocation = trace_endpos;
-
 	flRange -= distance(vecPos, m_hitLocation);
 
 	owner.dimension_solid = 254;
@@ -983,25 +1003,26 @@ ncProjectile::_FireSingle(vector vecPos, vector vecAngles, float flDamage, float
 
 	/* water impact */
 	if (trace_endcontentsi & CONTENTBIT_WATER) {
-		SurfData_ImpactOfNamedType("water", m_hitLocation, planeNormal);
+		SurfData_ImpactOfNamedType("water", m_hitLocation, m_lastPlaneNormal);
 		_FireSingle(m_hitLocation + ((vecAngles) * 2), vecAngles, flDamage / 2, flRange);
 		skipFX = true;
 	} else if (trace_endcontentsi & CONTENTBIT_SLIME) {
-		SurfData_ImpactOfNamedType("slime", m_hitLocation, planeNormal);
+		SurfData_ImpactOfNamedType("slime", m_hitLocation, m_lastPlaneNormal);
 		_FireSingle(m_hitLocation + ((vecAngles) * 2), vecAngles, flDamage / 2, flRange);
 		skipFX = true;
 	} else if (trace_endcontentsi & CONTENTBIT_LAVA) {
-		SurfData_ImpactOfNamedType("lava", m_hitLocation, planeNormal);
+		SurfData_ImpactOfNamedType("lava", m_hitLocation, m_lastPlaneNormal);
 		_FireSingle(m_hitLocation + ((vecAngles) * 2), vecAngles, flDamage / 2, flRange);
 		skipFX = true;
 	}
 
-	if (trace_ent.takedamage != DAMAGE_NO && trace_ent.iBleeds) {
-		Sound_Play(trace_ent, CHAN_BODY, "damage_bullet.hit");
+	if (impactTarget.IsVulnerable()) {
+		SoundDef_Play(impactTarget, CHAN_BODY, "damage_bullet.hit");
 
 		/* only headshots count in HL */
-		if (trace_surface_id == BODY_HEAD)
+		if (trace_surface_id == BODY_HEAD) {
 			flDamage *= 3;
+		}
 	}
 
 #ifdef WASTES
@@ -1012,21 +1033,33 @@ ncProjectile::_FireSingle(vector vecPos, vector vecAngles, float flDamage, float
 #endif
 
 	/* impact per bullet */
-	if (m_bDetonateOnWorld == true && trace_ent.iBleeds == 0 && skipFX == false) {
+	if (m_bDetonateOnWorld == true && impactTarget.iBleeds == 0 && skipFX == false) {
 		StartSoundDef(m_sndExplode, CHAN_VOICE, true);
 	
-		if (m_strDecalGroup)
+		if (STRING_SET(m_strDecalGroup))
 			DecalGroups_Place(m_strDecalGroup, m_hitLocation + (vecAngles * -2));
 
-		SurfData_Impact(trace_ent, m_hitLocation, planeNormal);
+		SurfData_Impact(impactTarget, m_hitLocation, m_lastPlaneNormal);
+	}
+
+	if (STRING_SET(m_matDetonate)) {
+		DecalGroups_Place(m_matDetonate, m_hitLocation + (vecAngles * -2));
+	}
+
+	if (m_fExplodelLightRadius > 0.0f) {
+		te_customflash(m_hitLocation + (vecAngles * -2), m_fExplodelLightRadius, m_fExplodelLightFadetime, m_vecExplodeLightColor);
+	}
+
+	if (STRING_SET(m_partModelDetonate)) {
+		pointparticles(particleeffectnum(m_partModelDetonate), m_hitLocation + (vecAngles * -2), m_lastPlaneNormal, 1);
 	}
 
 	/* combine them into one single Damage_Apply call later */
-	if (trace_ent.takedamage != DAMAGE_NO) {
-		if (trace_ent != m_eMultiTarget) {
+	if (impactTarget.IsVulnerable()) {
+		if (impactTarget != m_eMultiTarget) {
 			angles = vecAngles;
 			_ApplyDamage();
-			m_eMultiTarget = (ncSurfacePropEntity)trace_ent;
+			m_eMultiTarget = impactTarget;
 			m_iMultiValue = flDamage;
 		} else {
 			m_iMultiValue += flDamage;
@@ -1214,6 +1247,7 @@ ncProjectile::Launch(vector startPos, vector launchDir, float fuseOffset, float 
 		SetFrame(m_flSpawnFrame);
 	}
 
+	SetScale(GetSpawnFloat("modelscale"));
 	SetGravity(m_flGravity);
 	StartSoundDef(m_sndFly, CHAN_BODY, true);
 	SendFlags = (-1);
@@ -1232,12 +1266,14 @@ ncProjectile::EvaluateEntity(void)
 	EVALUATE_FIELD(modelindex, PROJ_CHANGED_MODELINDEX)
 	EVALUATE_FIELD(frame, PROJ_CHANGED_MODELINDEX)
 	EVALUATE_FIELD(traileffectnum, PROJ_CHANGED_MODELINDEX)
-	EVALUATE_FIELD(m_iRenderMode, PROJ_CHANGED_RENDERMODE)
-	EVALUATE_FIELD(m_iRenderFX, PROJ_CHANGED_RENDERMODE)
-	EVALUATE_VECTOR(m_vecRenderColor, 0, PROJ_CHANGED_RENDERCOLOR)
-	EVALUATE_VECTOR(m_vecRenderColor, 1, PROJ_CHANGED_RENDERCOLOR)
-	EVALUATE_VECTOR(m_vecRenderColor, 2, PROJ_CHANGED_RENDERCOLOR)
-	EVALUATE_FIELD(m_flRenderAmt, PROJ_CHANGED_RENDERAMT)
+	EVALUATE_FIELD(m_renderMode, PROJ_CHANGED_RENDERMODE)
+	EVALUATE_FIELD(m_renderFX, PROJ_CHANGED_RENDERMODE)
+	EVALUATE_FIELD(scale, PROJ_CHANGED_RENDERMODE)
+	EVALUATE_FIELD(effects, PROJ_CHANGED_RENDERMODE)
+	EVALUATE_VECTOR(m_renderColor, 0, PROJ_CHANGED_RENDERCOLOR)
+	EVALUATE_VECTOR(m_renderColor, 1, PROJ_CHANGED_RENDERCOLOR)
+	EVALUATE_VECTOR(m_renderColor, 2, PROJ_CHANGED_RENDERCOLOR)
+	EVALUATE_FIELD(m_renderAmount, PROJ_CHANGED_RENDERAMT)
 	EVALUATE_VECTOR(m_vecLightColor, 0, PROJ_CHANGED_RENDERCOLOR)
 	EVALUATE_VECTOR(m_vecLightColor, 1, PROJ_CHANGED_RENDERCOLOR)
 	EVALUATE_VECTOR(m_vecLightColor, 2, PROJ_CHANGED_RENDERCOLOR)
@@ -1270,12 +1306,14 @@ ncProjectile::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_SHORT(modelindex, PROJ_CHANGED_MODELINDEX)
 	SENDENTITY_BYTE(frame, PROJ_CHANGED_MODELINDEX)
 	SENDENTITY_FLOAT(traileffectnum, PROJ_CHANGED_MODELINDEX)
-	SENDENTITY_BYTE(m_iRenderMode, PROJ_CHANGED_RENDERMODE)
-	SENDENTITY_BYTE(m_iRenderFX, PROJ_CHANGED_RENDERMODE)
-	SENDENTITY_BYTE(m_vecRenderColor[0], PROJ_CHANGED_RENDERCOLOR)
-	SENDENTITY_BYTE(m_vecRenderColor[1], PROJ_CHANGED_RENDERCOLOR)
-	SENDENTITY_BYTE(m_vecRenderColor[2], PROJ_CHANGED_RENDERCOLOR)
-	SENDENTITY_BYTE(m_flRenderAmt, PROJ_CHANGED_RENDERAMT)
+	SENDENTITY_BYTE(m_renderMode, PROJ_CHANGED_RENDERMODE)
+	SENDENTITY_BYTE(m_renderFX, PROJ_CHANGED_RENDERMODE)
+	SENDENTITY_FLOAT(scale, PROJ_CHANGED_RENDERMODE)
+	SENDENTITY_FLOAT(effects, PROJ_CHANGED_RENDERMODE)
+	SENDENTITY_BYTE(m_renderColor[0], PROJ_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_renderColor[1], PROJ_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_renderColor[2], PROJ_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_renderAmount, PROJ_CHANGED_RENDERAMT)
 	SENDENTITY_COLOR(m_vecLightColor[0], PROJ_CHANGED_RENDERCOLOR)
 	SENDENTITY_COLOR(m_vecLightColor[1], PROJ_CHANGED_RENDERCOLOR)
 	SENDENTITY_COLOR(m_vecLightColor[2], PROJ_CHANGED_RENDERCOLOR)
@@ -1299,12 +1337,14 @@ ncProjectile::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_SHORT(modelindex, PROJ_CHANGED_MODELINDEX)
 	READENTITY_BYTE(frame, PROJ_CHANGED_MODELINDEX)
 	READENTITY_FLOAT(traileffectnum, PROJ_CHANGED_MODELINDEX)
-	READENTITY_BYTE(m_iRenderMode, PROJ_CHANGED_RENDERMODE)
-	READENTITY_BYTE(m_iRenderFX, PROJ_CHANGED_RENDERMODE)
-	READENTITY_BYTE(m_vecRenderColor[0], PROJ_CHANGED_RENDERCOLOR)
-	READENTITY_BYTE(m_vecRenderColor[1], PROJ_CHANGED_RENDERCOLOR)
-	READENTITY_BYTE(m_vecRenderColor[2], PROJ_CHANGED_RENDERCOLOR)
-	READENTITY_BYTE(m_flRenderAmt, PROJ_CHANGED_RENDERAMT)
+	READENTITY_BYTE(m_renderMode, PROJ_CHANGED_RENDERMODE)
+	READENTITY_BYTE(m_renderFX, PROJ_CHANGED_RENDERMODE)
+	READENTITY_FLOAT(scale, PROJ_CHANGED_RENDERMODE)
+	READENTITY_FLOAT(m_netEffects, PROJ_CHANGED_RENDERMODE)
+	READENTITY_BYTE(m_renderColor[0], PROJ_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_renderColor[1], PROJ_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_renderColor[2], PROJ_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_renderAmount, PROJ_CHANGED_RENDERAMT)
 	READENTITY_COLOR(m_vecLightColor[0], PROJ_CHANGED_RENDERCOLOR)
 	READENTITY_COLOR(m_vecLightColor[1], PROJ_CHANGED_RENDERCOLOR)
 	READENTITY_COLOR(m_vecLightColor[2], PROJ_CHANGED_RENDERCOLOR)
@@ -1350,9 +1390,9 @@ ncProjectile_SpawnDef(string entityDef, ncActor theOwner)
 	rocket.owner = theOwner;
 	self = rocket;
 	EntityDef_SpawnClassname(entityDef);
-	self = oldself;
 	rocket.SetWeaponOwner(theOwner.m_activeWeapon);
 	rocket.Launch(theOwner.GetEyePos(), theOwner.GetViewAngle(), 0.0f, 0.0f, 0.0f);
+	self = oldself;
 	return rocket;
 }
 
@@ -1364,9 +1404,9 @@ ncProjectile_SpawnDefAtPosition(string entityDef, ncActor theOwner, vector vecOr
 	rocket.owner = theOwner;
 	self = rocket;
 	EntityDef_SpawnClassname(entityDef);
-	self = oldself;
 	rocket.SetWeaponOwner(theOwner.m_activeWeapon);
 	rocket.Launch(vecOrigin, vecAngles, 0.0f, 0.0f, 0.0f);
+	self = oldself;
 	return rocket;
 }
 
@@ -1382,9 +1422,9 @@ ncProjectile_SpawnDefAttachment(string entityDef, ncActor theOwner, int attachme
 	rocket.owner = theOwner;
 	self = rocket;
 	EntityDef_SpawnClassname(entityDef);
-	self = oldself;
 	rocket.SetWeaponOwner(theOwner.m_activeWeapon);
 	rocket.Launch(attachmentPos, theOwner.GetViewAngle(), 0.0f, 0.0f, 0.0f);
+	self = oldself;
 	return rocket;
 }
 #endif

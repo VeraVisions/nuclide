@@ -119,32 +119,32 @@ env_bubbles::Save(float handle)
 }
 
 void
-env_bubbles::Restore(string strKey, string strValue)
+env_bubbles::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_iDensity":
-		m_iDensity = ReadInt(strValue);
+		m_iDensity = ReadInt(setValue);
 		break;
 	case "m_flFrequency":
-		m_flFrequency = ReadFloat(strValue);
+		m_flFrequency = ReadFloat(setValue);
 		break;
 	case "m_flCurrent":
-		m_flCurrent = ReadFloat(strValue);
+		m_flCurrent = ReadFloat(setValue);
 		break;
 	case "m_bEnabled":
-		m_bEnabled = ReadBool(strValue);
+		m_bEnabled = ReadBool(setValue);
 		break;
 	case "m_iSpawnDensity":
-		m_iSpawnDensity = ReadInt(strValue);
+		m_iSpawnDensity = ReadInt(setValue);
 		break;
 	case "m_flSpawnFrequency":
-		m_flSpawnFrequency = ReadFloat(strValue);
+		m_flSpawnFrequency = ReadFloat(setValue);
 		break;
 	case "m_flSpawnCurrent":
-		m_flSpawnCurrent = ReadFloat(strValue);
+		m_flSpawnCurrent = ReadFloat(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
@@ -319,20 +319,20 @@ env_bubbles::ReceiveEntity(float is_new, float flChanged)
 #endif
 
 void
-env_bubbles::SpawnKey(string strKey, string strValue)
+env_bubbles::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "density":
-		m_iSpawnDensity = stoi(strValue);
+		m_iSpawnDensity = stoi(setValue);
 		break;
 	case "frequency":
-		m_flSpawnFrequency = stof(strValue);
+		m_flSpawnFrequency = stof(setValue);
 		break;
 	case "current":
-		m_flSpawnCurrent = stof(strValue);
+		m_flSpawnCurrent = stof(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 

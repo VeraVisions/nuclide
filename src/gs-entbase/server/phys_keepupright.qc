@@ -69,14 +69,14 @@ phys_keepupright::Save(float handle)
 }
 
 void
-phys_keepupright::Restore(string strKey, string strValue)
+phys_keepupright::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_flAngularLimit":
-		m_flAngularLimit = ReadFloat(strValue);
+		m_flAngularLimit = ReadFloat(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 

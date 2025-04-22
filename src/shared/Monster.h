@@ -72,7 +72,7 @@ typedef enumflags
 	MSF_WAITFORSCRIPT,	/**< AI waits for scripted_sequence to end (128) */
 	MSF_RESERVED3,		/**< Reserved for entityDef (256) */
 	MSF_FADECORPSE,		/**< Corpse fades instead of staying (512) */
-	MSF_MULTIPLAYER,	/**< Will spawn in multiplayer ncGameRules (1024) */
+	MSF_MULTIPLAYER,	/**< Will spawn in multiplayer ncRuleDelegate (1024) */
 	MSF_FALLING,		/**< Is falling (2048) */
 	MSF_HORDE			/**< Part of a horde (4096) */
 } monsterFlag_t;
@@ -238,6 +238,37 @@ capable of fighting if prompted to.
 - MULTIPLAYER (1024) - Available in multiplayer.
 - FALLING (2048) - Will not drop to the floor upon level spawn - but fall when in-game.
 - HORDE (4096) - Never used.
+
+# INPUTS
+
+- "Sleep" : Puts the AI routines to sleep.
+- "Wake" : Wakes the actor up from induced sleep.
+- "StartScripting" : Forces the monster into a scripted sequence state.
+- "GagEnable" : Supress dialogue.
+- "GagDisable" : Enable dialogue.
+- "Wait" : Idle for this many seconds.
+- "WaitRandom" : Idle for up to this many seconds. Random value.
+- "WaitIndefinitely" : Wait forever. 
+- "PlayActivity" : Plays a named activity. E.g. "idle" or "run".
+- "PlaySequence" : Plays a named sequence, must be exact. E.g. "shoot_mp5_alt"
+- "FindCoverFromEnemy" : Plots a route to a cover position away from its current enemy.
+- "SetSequenceMovementSpeed" : Sets the movement speed in units-per-second for any route plotting.
+- "AlertNearbyToSchedule" : Alerts friendlies nearby and informs them of our named 'mindset'.
+- "WaitForMovement" : Wait until the current movement operation is complete.
+- "SetFailSchedule" : Overrides which schedule to play when the currently active schedule fails to finish.
+- "Remember" : Remember something. Reserved.
+- "WaitPVS" : Wait until a player enters our PVS. Stops all expensive operations.
+- "StopMovement" : Stops any movement on this actor.
+- "TurnLeft" : Request the monster to turn left by a specified angle.
+- "TurnRight" : Request the monster to turn right by a specified angle.
+- "TurnToIdealPosition" : Request the monster to turn to the most ideal position.
+- "TurnToEnemy" : Request the monster to turn towards the enemy.
+- "AttackMelee1" : Request to perform the first variant of the melee attack.
+- "AttackMelee2" : Request to perform the second variant of the melee attack.
+- "AttackRanged1" : Request to perform the first variant of the ranged attack.
+- "AttackRanged2" : Request to perform the second variant of the ranged attack.
+- "HordeOn" : Enables horde mode on the monster. It will always know where you are.
+- "HordeOff" : Disabled the horde mode on the monster.
 
 @ingroup baseclass
 */
@@ -422,7 +453,7 @@ private:
 	entity m_eLookAt;
 	entity m_ssLast;
 	vector oldnet_velocity;
-	float m_flPitch;
+	float m_sentencePitch;
 	int m_iFlags;
 	vector base_mins;
 	vector base_maxs;
@@ -458,7 +489,7 @@ private:
 	string m_strTriggerTarget;
 
 	/* model events */
-	float m_flBaseTime;
+	float m_modelEventTime;
 
 	/* attack/alliance system */
 	entity m_eEnemy;

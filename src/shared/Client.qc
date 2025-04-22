@@ -35,26 +35,26 @@ ncClient::Save(float handle)
 }
 
 void
-ncClient::Restore(string strKey, string strValue)
+ncClient::Restore(string keyName, string setValue)
 {
-	switch (strKey) {
+	switch (keyName) {
 	/*case "m_xrSpace":
-		m_xrSpace = (NSXRSpace)ReadEntity(strValue);
+		m_xrSpace = (NSXRSpace)ReadEntity(setValue);
 		break;
 	case "m_xrInputHead":
-		m_xrInputHead = (NSXRInput)ReadEntity(strValue);
+		m_xrInputHead = (NSXRInput)ReadEntity(setValue);
 		break;
 	case "m_xrInputLeft":
-		m_xrInputLeft = (NSXRInput)ReadEntity(strValue);
+		m_xrInputLeft = (NSXRInput)ReadEntity(setValue);
 		break;
 	case "m_xrInputRight":
-		m_xrInputRight = (NSXRInput)ReadEntity(strValue);
+		m_xrInputRight = (NSXRInput)ReadEntity(setValue);
 		break;*/
 	case "score":
-		score = ReadFloat(strValue);
+		score = ReadFloat(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(keyName, setValue);
 	}
 }
 
@@ -214,7 +214,7 @@ players within a specified radius by the desired parameters.
 void
 Client_ShakeOnce(vector pos, float radius, float duration, float frequency, float amplitude)
 {
-	for (entity pl = world; (pl = find(pl, ::classname, "player"));) {
+	for (entity pl = world; (pl = next.Player(pl));) {
 		float amp;
 		float distanceCheck = distance(pos, pl.origin);
 

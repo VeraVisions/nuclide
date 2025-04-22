@@ -20,7 +20,7 @@ TCP_Connect(tcpinfo_t *in, string path)
 	in.m_fSocket = fopen(path, -1);
 
 	if (in.m_fSocket < 0) {
-		NSError("Unable to access %s", path);
+		ncError("Unable to access %s", path);
 	} else {
 		/* we got at least this far */
 		in.m_iState = STATE_CONNECTING;
@@ -95,7 +95,7 @@ TCP_Frame(tcpinfo_t *in)
 		return;
 	}
 
-	NSLog("Sent %s", in.m_strBuffer[0]);
+	ncLog("Sent %s", in.m_strBuffer[0]);
 
 	/* at least one successful write went through */
 	in.m_iState = STATE_CONNECTED;

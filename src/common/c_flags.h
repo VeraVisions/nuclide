@@ -32,7 +32,7 @@
 #define FLQW_LAGGEDMOVE			(1<<16) /**< Entity will move with lag compenstation. */
 
 /* nuclide */
-.float vv_flags;
+.float m_nuclideFlags;
 #define VFL_PRONE				(1<<0) /**< Entity is prone. */
 #define VFL_ONLADDER			(1<<1) /**< Entity is attached to a ladder. */
 #define VFL_CROUCHING			(1<<2) /**< Entity is crouching. */

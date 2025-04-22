@@ -44,29 +44,29 @@ public:
 	virtual void SpawnKey(string,string);
 
 private:
-	float m_flSpeed;
-	float m_flHeight;
+	float m_jumpSpeed;
+	float m_jumpHeight;
 };
 
 void
 trigger_monsterjump::trigger_monsterjump(void)
 {
-	m_flSpeed = 0.0f;
-	m_flHeight = 0.0f;
+	m_jumpSpeed = 0.0f;
+	m_jumpHeight = 0.0f;
 }
 
 void
-trigger_monsterjump::SpawnKey(string strKey, string strValue)
+trigger_monsterjump::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "speed":
-		m_flSpeed = ReadFloat(strValue);
+		m_jumpSpeed = ReadFloat(setValue);
 		break;
 	case "height":
-		m_flHeight = ReadFloat(strValue);
+		m_jumpHeight = ReadFloat(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
@@ -74,22 +74,22 @@ void
 trigger_monsterjump::Save(float handle)
 {
 	super::Save(handle);
-	SaveFloat(handle, "m_flSpeed", m_flSpeed);
-	SaveFloat(handle, "m_flHeight", m_flHeight);
+	SaveFloat(handle, "jumpSpeed", m_jumpSpeed);
+	SaveFloat(handle, "jumpHeight", m_jumpHeight);
 }
 
 void
-trigger_monsterjump::Restore(string strKey, string strValue)
+trigger_monsterjump::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
-	case "m_flSpeed":
-		m_flSpeed = ReadFloat(strValue);
+	case "jumpSpeed":
+		m_jumpSpeed = ReadFloat(setValue);
 		break;
-	case "m_flHeight":
-		m_flHeight = ReadFloat(strValue);
+	case "jumpHeight":
+		m_jumpHeight = ReadFloat(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
@@ -113,7 +113,7 @@ trigger_monsterjump::Touch(entity touchingEntity)
 	}
 
 	ncMonster theMonster = (ncMonster)touchingEntity;
-	targetVelocity = theMonster.GetForward() * m_flSpeed;
-	targetVelocity[2] += m_flHeight;
+	targetVelocity = theMonster.GetForward() * m_jumpSpeed;
+	targetVelocity[2] += m_jumpHeight;
 	theMonster.SetVelocity(targetVelocity);
 }

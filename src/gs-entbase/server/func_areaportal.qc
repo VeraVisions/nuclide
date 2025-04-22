@@ -105,23 +105,23 @@ func_areaportal::Save(float handle)
 }
 
 void
-func_areaportal::Restore(string strKey, string strValue)
+func_areaportal::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_bPortalState":
-		m_bPortalState = ReadBool(strValue);
+		m_bPortalState = ReadBool(setValue);
 		break;
 	case "m_bStartOpen":
-		m_bStartOpen = ReadBool(strValue);
+		m_bStartOpen = ReadBool(setValue);
 		break;
 	case "m_iPortalNumber":
-		m_iPortalNumber = ReadInt(strValue);
+		m_iPortalNumber = ReadInt(setValue);
 		break;
 	case "m_bSourcePortal":
-		m_bSourcePortal = ReadBool(strValue);
+		m_bSourcePortal = ReadBool(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
@@ -145,17 +145,17 @@ func_areaportal::Spawned(void)
 }
 
 void
-func_areaportal::SpawnKey(string strKey, string strValue)
+func_areaportal::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "StartOpen":
-		m_bStartOpen = ReadBool(strValue);
+		m_bStartOpen = ReadBool(setValue);
 		break;
 	case "portalnumber":
-		m_iPortalNumber = ReadInt(strValue);
+		m_iPortalNumber = ReadInt(setValue);
 		m_bSourcePortal = true;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 

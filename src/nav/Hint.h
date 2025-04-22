@@ -57,9 +57,9 @@ public:
 
 private:
 	string m_hintType;
-	string m_strHintActivity;
-	float m_flNodeFOV;
-	string m_strHintGroup;
+	string m_hintActivity;
+	float m_nodeFieldOfView;
+	string m_hintGroup;
 	ignorefacing_t m_ignoreFacing;
 	string m_mindsetFilter;
 };

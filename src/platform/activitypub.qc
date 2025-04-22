@@ -39,7 +39,7 @@ ActivityPub_UpdatePlayerInfo(string jsonData)
 	jsonnode acctNode = json_parse(jsonData);
 
 	if (!acctNode) {
-		NSError("Unable to parse ActivityPub info.");
+		ncError("Unable to parse ActivityPub info.");
 		return;
 	}
 
@@ -47,13 +47,13 @@ ActivityPub_UpdatePlayerInfo(string jsonData)
 	string stringAvatar = acctNode["avatar_static"].s;
 
 	if (!stringName) {
-		NSError("ActivityPub display name invalid.");
+		ncError("ActivityPub display name invalid.");
 	} else {
 		cvar_set("name", stringName);
 	}
 
 	if (!stringAvatar) {
-		NSError("ActivityPub avatar invalid.");
+		ncError("ActivityPub avatar invalid.");
 	} else {
 		localcmd(sprintf("setinfo avatar %S\n", stringAvatar));
 	}

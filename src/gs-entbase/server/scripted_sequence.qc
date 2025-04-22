@@ -165,56 +165,56 @@ scripted_sequence::Save(float handle)
 }
 
 void
-scripted_sequence::Restore(string strKey, string strValue)
+scripted_sequence::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_iEnabled":
-		m_iEnabled = ReadInt(strValue);
+		m_iEnabled = ReadInt(setValue);
 		break;
 	case "m_strMonster":
-		m_strMonster = ReadString(strValue);
+		m_strMonster = ReadString(setValue);
 		break;
 	case "m_strActionAnim":
-		m_strActionAnim = ReadString(strValue);
+		m_strActionAnim = ReadString(setValue);
 		break;
 	case "m_strIdleAnim":
-		m_strIdleAnim = ReadString(strValue);
+		m_strIdleAnim = ReadString(setValue);
 		break;
 	case "m_flSearchRadius":
-		m_flSearchRadius = ReadFloat(strValue);
+		m_flSearchRadius = ReadFloat(setValue);
 		break;
 	case "m_iMove":
-		m_iMove = ReadInt(strValue);
+		m_iMove = ReadInt(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-scripted_sequence::SpawnKey(string strKey, string strValue)
+scripted_sequence::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_iszEntity":
-		m_strMonster = strValue;
+		m_strMonster = setValue;
 		break;
 	case "m_iszPlay":
-		m_strActionAnim = strValue;
+		m_strActionAnim = setValue;
 		break;
 	case "m_iszIdle":
-		m_strIdleAnim = strValue;
+		m_strIdleAnim = setValue;
 		break;
 	case "m_flRadius":
-		m_flSearchRadius = stof(strValue);
+		m_flSearchRadius = stof(setValue);
 		break;
 	case "m_flRepeat":
 		/* TODO: */
 		break;
 	case "m_fMoveTo":
-		m_iMove = stoi(strValue);
+		m_iMove = stoi(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
@@ -277,13 +277,12 @@ scripted_sequence::RunOnEntity(entity targ)
 		NSAIScript_Log("\tTrigger when finished: %s", target);
 		f.m_strRouteEnded = target;
 		f.m_ssLast = this;
-		m_iValue = FALSE; /* will be marked as used once triggered */
+		SetValue(0i); /* will be marked as used once triggered */
 	} else {
 		/* make sure we're not about to trigger _anything_ */
 		f.m_strRouteEnded = __NULL__;
 		f.m_ssLast = __NULL__;
-		/* mark us as having been used, for multisources. */
-		m_iValue = TRUE;
+		SetValue(1i); /* mark us as having been used, for multisources. */
 	}
 
 	/* mark the state */
@@ -292,11 +291,11 @@ scripted_sequence::RunOnEntity(entity targ)
 	/* seems to be active at all times? contrary to SS_TURNTOFACE existing? */
 	f.m_vecSequenceAngle = GetAngles();
 	f.m_iSequenceFlags = spawnflags;
-	f.m_strSequenceKillTarget = m_strKillTarget;
+	f.m_strSequenceKillTarget = GetTriggerKillTarget();
 
-	if (STRING_SET(m_strKillTarget)) {
+	if (STRING_SET(f.m_strSequenceKillTarget)) {
 		//readcmd(sprintf("watchpoint_ssqc %d.nextthink\n", num_for_edict(f)));
-		NSAIScript_Log("\tKillTarget when finished: %S", m_strKillTarget);
+		NSAIScript_Log("\tKillTarget when finished: %S", GetTriggerKillTarget());
 	}
 
 	if (m_iMove == SS_NO) {

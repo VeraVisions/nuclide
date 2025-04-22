@@ -16,7 +16,7 @@
 
 #ifdef CLIENT
 void
-ncSpraylogo::RendererRestarted(void)
+ncSpraylogo::ReloadVideoResources(void)
 {
 	m_bInitialized = false;
 }
@@ -170,6 +170,6 @@ CSEv_Spraylogo(void)
 	spray.SendEntity = Spray_SendEntity;
 	spray.SendFlags = 1;
 
-	Sound_Play(self, CHAN_VOICE, "SprayCan.Paint");
+	SoundDef_Play(self, CHAN_VOICE, "SprayCan.Paint");
 }
 #endif

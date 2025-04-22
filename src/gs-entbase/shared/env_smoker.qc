@@ -156,20 +156,20 @@ env_smoker::Respawn(void)
 }
 
 void
-env_smoker::SpawnKey(string strKey, string strValue)
+env_smoker::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "health":
-		m_flDuration = ReadFloat(strValue);
+		m_flDuration = ReadFloat(setValue);
 		break;
 	case "scale": 
-		m_flScale = ReadFloat(strValue);
+		m_flScale = ReadFloat(setValue);
 		break;
 	case "dmg":
-		m_flDispersion = ReadFloat(strValue);
+		m_flDispersion = ReadFloat(setValue);
 		break;
 	default:
-		super::SpawnKey(strValue, strKey);
+		super::SpawnKey(setValue, strKey);
 	}
 }
 
@@ -184,23 +184,23 @@ env_smoker::Save(float handle)
 }
 
 void
-env_smoker::Restore(string strKey, string strValue)
+env_smoker::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_bActive":
-		m_bActive = ReadBool(strValue);
+		m_bActive = ReadBool(setValue);
 		break;
 	case "m_flScale":
-		m_flScale = ReadFloat(strValue);
+		m_flScale = ReadFloat(setValue);
 		break;
 	case "m_flDispersion":
-		m_flDispersion = ReadFloat(strValue);
+		m_flDispersion = ReadFloat(setValue);
 		break;
 	case "m_flDuration":
-		m_flDuration = ReadFloat(strValue);
+		m_flDuration = ReadFloat(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 

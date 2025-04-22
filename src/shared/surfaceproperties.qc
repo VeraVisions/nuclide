@@ -176,7 +176,7 @@ SurfData_Load(string type)
 	index = (int)hash_get(g_hashsurfdata, type, -1);
 
 	if (index < 0) {
-		NSError("SurfData %S is not defined.", type);
+		ncError("SurfData %S is not defined.", type);
 		return -1;
 	} else {
 		return index;
@@ -237,7 +237,7 @@ __variant
 SurfData_GetInfo(int i, int type)
 {
 	if (g_surfdata_count <= 0i) {
-		return (__NULL__);	
+		return (__NULL__);
 	}
 
 	if (i < 0) {
@@ -299,9 +299,9 @@ SurfData_CountEntries(string filePath)
 	string line;
 
 	fh = fopen(filePath, FILE_READ);
-	
+
 	if (fh < 0) {
-		NSError("failed to parse %S!", filePath);
+		ncError("failed to parse %S!", filePath);
 		return;
 	}
 
@@ -320,9 +320,9 @@ SurfData_LoadFile(string filePath)
 	string line;
 
 	fh = fopen(filePath, FILE_READ);
-	
+
 	if (fh < 0) {
-		NSError("failed to parse %S!", filePath);
+		ncError("failed to parse %S!", filePath);
 		return;
 	}
 
@@ -372,7 +372,7 @@ SurfData_Init(void)
 
 	/* it's OK for one to not exist... */
 	if (fh < 0) {
-		NSWarning("missing scripts/surfaceproperties_manifest.txt!");
+		ncWarning("missing scripts/surfaceproperties_manifest.txt!");
 		fromManifest = false;
 
 		/* older games may only have one file */
@@ -380,7 +380,7 @@ SurfData_Init(void)
 
 		/* now we're out of options. sorry */
 		if (fh < 0) {
-			NSError("missing scripts/surfaceproperties.txt");
+			ncError("missing scripts/surfaceproperties.txt");
 			InitEnd();
 			return;
 		}
@@ -411,7 +411,7 @@ SurfData_Init(void)
 	g_surfdata = (surfaceData_t *)memalloc(spMemSize);
 
 	if (!g_surfdata) {
-		NSError("Memory allocation failed for %i bytes.", spMemSize);
+		ncError("Memory allocation failed for %i bytes.", spMemSize);
 		g_surfdata_count = 0;
 		InitEnd();
 		return;
@@ -520,17 +520,17 @@ SurfData_Init(void)
 #endif
 
 	for (int i = 0i; i < g_surfdata_count; i++) {
-		Sound_Precache(g_surfdata[i].m_sndStepLeft);
-		Sound_Precache(g_surfdata[i].m_sndStepRight);
-		Sound_Precache(g_surfdata[i].m_sndBulletImpact);
-		Sound_Precache(g_surfdata[i].m_sndScrapeRough);
-		Sound_Precache(g_surfdata[i].m_sndScrapeSoft);
-		Sound_Precache(g_surfdata[i].m_sndImpactHard);
-		Sound_Precache(g_surfdata[i].m_sndImpactSoft);
-		Sound_Precache(g_surfdata[i].m_sndShake);
-		Sound_Precache(g_surfdata[i].m_sndStrain);
-		Sound_Precache(g_surfdata[i].m_sndRoll);
-		Sound_Precache(g_surfdata[i].m_sndBreak);
+		precache.Sound(g_surfdata[i].m_sndStepLeft);
+		precache.Sound(g_surfdata[i].m_sndStepRight);
+		precache.Sound(g_surfdata[i].m_sndBulletImpact);
+		precache.Sound(g_surfdata[i].m_sndScrapeRough);
+		precache.Sound(g_surfdata[i].m_sndScrapeSoft);
+		precache.Sound(g_surfdata[i].m_sndImpactHard);
+		precache.Sound(g_surfdata[i].m_sndImpactSoft);
+		precache.Sound(g_surfdata[i].m_sndShake);
+		precache.Sound(g_surfdata[i].m_sndStrain);
+		precache.Sound(g_surfdata[i].m_sndRoll);
+		precache.Sound(g_surfdata[i].m_sndBreak);
 #if 1
 		/* HACK: HL2 hard-codes these! */
 		if (!STRING_SET(g_surfdata[i].m_fxBulletImpact) && g_surfdata[i].m_flMaterial != -1) {
@@ -575,7 +575,7 @@ SurfData_Init(void)
 	}
 
 	search_end(sh);
-	NSLog("...SurfData initialized with %i entries.", g_surfdata_count);
+	ncLog("...SurfData initialized with %i entries.", g_surfdata_count);
 	InitEnd();
 }
 
@@ -658,7 +658,7 @@ SurfData_Impact_Parse(void)
 	string impactfx = SurfData_GetInfo(matid, SURFDATA_FX_BULLETIMPACT);
 	float impactid = SurfData_GetInfo(matid, SURFDATA_FX_BULLETIMPACTID);
 
-	Sound_PlayAt(impactorg, impactsfx);
+	SoundDef_PlayAt(impactorg, impactsfx);
 
 #if 0
 	impactid = particleeffectnum("impact.concrete");
@@ -686,11 +686,7 @@ SurfData_ImpactID_Parse(void)
 
 	string impactsfx = SurfData_GetInfo(matid, SURFDATA_SND_BULLETIMPACT);
 	float impactid = SurfData_GetInfo(matid, SURFDATA_FX_BULLETIMPACTID);
-	Sound_PlayAt(impactorg, impactsfx);
-
-#if 0
-	impactid = particleeffectnum("impact.concrete");
-#endif
+	SoundDef_PlayAt(impactorg, impactsfx);
 
 	pointparticles( impactid, impactorg, normalize(impactang), 1 );
 }
@@ -717,8 +713,8 @@ SurfData_Impact(entity e, vector org, vector ang)
 		ncSurfacePropEntity foo = (ncSurfacePropEntity)e;
 
 		if (foo.HasSurfaceData()) {
-			SurfData_ImpactOfType(foo.m_iMaterial, org, ang);
-			//printf("Prop Impact Send %i\n", foo.m_iMaterial);
+			SurfData_ImpactOfType(foo.m_surfdataID, org, ang);
+			//printf("Prop Impact Send %i\n", foo.m_surfdataID);
 		} else {
 			SurfData_Impact_SurfaceParm(e, org, ang);
 		}

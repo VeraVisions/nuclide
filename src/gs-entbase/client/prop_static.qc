@@ -30,24 +30,24 @@ private:
 };
 
 void
-prop_static::SpawnKey(string strKey, string strValue)
+prop_static::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "frame":
 	case "sequence":
-		frame = stof(strValue);
+		frame = stof(setValue);
 		break;
 	case "modelscale":
-		scale = stof(strValue);
+		scale = stof(setValue);
 		break;
 	case "skin":
-		skin = stof(strValue);
+		skin = stof(setValue);
 		break;
 	case "body":
-		m_iBody = stoi(strValue);
+		m_iBody = stoi(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 

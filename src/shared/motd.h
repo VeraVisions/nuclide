@@ -28,7 +28,7 @@ Any multiplayer game has the capability of setting a **Message of the Day**, **M
 
 Those are usually bits of information about the game server, how to contact the administrator or more.
 
-A ncGameRules based class can usually call `MOTD_LoadDefault()` on the server to load the message from the default file location located under `gamedir/motd.txt`. The default location can be changed by adjusting the console variable `motdfile`.
+A ncRuleDelegate based class can usually call `MOTD_LoadDefault()` on the server to load the message from the default file location located under `gamedir/motd.txt`. The default location can be changed by adjusting the console variable `motdfile`.
 
 The client game then receives the **MotD** using `MOTD_GetTextBody()`, in addition to `MOTD_GetLineCount()` for figuring out how many lines of text the message takes up.
 

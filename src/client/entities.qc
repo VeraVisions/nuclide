@@ -139,6 +139,9 @@ Entity_EntityUpdate(float type, float new)
 	case ENT_STEAM:
 		NSENTITY_READENTITY(env_steam, new)
 		break;
+	case ENT_RAIN:
+		NSENTITY_READENTITY(env_rain, new)
+		break;
 	case ENT_FOGCONTROLLER:
 		NSENTITY_READENTITY(env_fog_controller, new)
 		break;
@@ -223,11 +226,11 @@ Entities_ParseLump(void)
 					eEnt.Destroy();
 				}
 
-				eEnt.m_strSpawnData = __fullspawndata;
+				eEnt.m_rawSpawnData = __fullspawndata;
 
 				/* this entity is good, attempt to spawn it. */
-				if (eEnt.m_strSpawnData) {
-					for (int i = 0; i < (tokenize(eEnt.m_strSpawnData) - 1); i += 2) {
+				if (eEnt.m_rawSpawnData) {
+					for (int i = 0; i < (tokenize(eEnt.m_rawSpawnData) - 1); i += 2) {
 						eEnt.SpawnKey(argv(i), argv(i+1));
 					}
 				}
@@ -273,7 +276,7 @@ Entities_ParseLump(void)
 }
 
 void
-Entities_RendererRestarted(void)
+Entities_ReloadVideoResources(void)
 {
 	int c = 0i;
 	int f = 0i;
@@ -281,14 +284,14 @@ Entities_RendererRestarted(void)
 	for (entity b = world; (b = findfloat(b, ::isCSQC, TRUE));) {
 		ncEntity pf = (ncEntity) b;
 
-		if (pf.vv_flags & VFL_VIDREMOVE) {
+		if (pf.m_nuclideFlags & VFL_VIDREMOVE) {
 			pf.Destroy();
 			f++;
 		} else {
-			pf.RendererRestarted();
+			pf.ReloadVideoResources();
 			c++;
 		}
 	}
 
-	NSLog("...resource reload called on %i entities, flushed %i", c, f);
+	ncLog("...resource reload called on %i entities, flushed %i", c, f);
 }

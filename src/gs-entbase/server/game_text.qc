@@ -107,80 +107,80 @@ game_text::Save(float handle)
 }
 
 void
-game_text::Restore(string strKey, string strValue)
+game_text::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_vecColor1":
-		m_vecColor1 = ReadVector(strValue);
+		m_vecColor1 = ReadVector(setValue);
 		break;
 	case "m_vecColor2":
-		m_vecColor2 = ReadVector(strValue);
+		m_vecColor2 = ReadVector(setValue);
 		break;
 	case "m_flPosX":
-		m_flPosX = ReadFloat(strValue);
+		m_flPosX = ReadFloat(setValue);
 		break;
 	case "m_flPosY":
-		m_flPosY = ReadFloat(strValue);
+		m_flPosY = ReadFloat(setValue);
 		break;
 	case "m_flFadeIn":
-		m_flFadeIn = ReadFloat(strValue);
+		m_flFadeIn = ReadFloat(setValue);
 		break;
 	case "m_flFadeOut":
-		m_flFadeOut = ReadFloat(strValue);
+		m_flFadeOut = ReadFloat(setValue);
 		break;
 	case "m_flHoldTime":
-		m_flHoldTime = ReadFloat(strValue);
+		m_flHoldTime = ReadFloat(setValue);
 		break;
 	case "m_flFXTime":
-		m_flFXTime = ReadFloat(strValue);
+		m_flFXTime = ReadFloat(setValue);
 		break;
 	case "m_iChannel":
-		m_iChannel = ReadInt(strValue);
+		m_iChannel = ReadInt(setValue);
 		break;
 	case "m_iEffect":
-		m_iEffect = ReadInt(strValue);
+		m_iEffect = ReadInt(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-game_text::SpawnKey(string strKey, string strValue)
+game_text::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "x":
-		m_flPosX = stof(strValue);
+		m_flPosX = stof(setValue);
 		break;
 	case "y":
-		m_flPosY = stof(strValue);
+		m_flPosY = stof(setValue);
 		break;
 	case "effect":
-		m_iEffect = stoi(strValue);
+		m_iEffect = stoi(setValue);
 		break;
 	case "color":
-		m_vecColor1 = stov(strValue);
+		m_vecColor1 = stov(setValue);
 		break;
 	case "color2":
-		m_vecColor2 = stov(strValue);
+		m_vecColor2 = stov(setValue);
 		break;
 	case "fadein":
-		m_flFadeIn = stof(strValue);
+		m_flFadeIn = stof(setValue);
 		break;
 	case "fadeout":
-		m_flFadeOut = stof(strValue);
+		m_flFadeOut = stof(setValue);
 		break;
 	case "holdtime":
-		m_flHoldTime = stof(strValue);
+		m_flHoldTime = stof(setValue);
 		break;
 	case "fxtime":
-		m_flFXTime = stof(strValue);
+		m_flFXTime = stof(setValue);
 		break;
 	case "channel":
-		m_iChannel = stoi(strValue);
+		m_iChannel = stoi(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
@@ -190,7 +190,7 @@ game_text::Trigger(entity act, triggermode_t state)
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_TEXT_STRING);
 	WriteByte(MSG_MULTICAST, m_iChannel);
-	WriteString(MSG_MULTICAST, m_strMessage);
+	WriteString(MSG_MULTICAST, GetTriggerMessage());
 	WriteFloat(MSG_MULTICAST, m_flPosX);
 	WriteFloat(MSG_MULTICAST, m_flPosY);
 	WriteByte(MSG_MULTICAST, m_iEffect);

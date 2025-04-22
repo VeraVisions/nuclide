@@ -43,6 +43,24 @@ typedef enumflags
 	SRFENT_CHANGED_CONTROLLER
 } nssurfacepropentity_changed_t;
 
+
+
+/** @defgroup damage Damage
+@brief Combat interactions between entities.
+@ingroup server
+
+# KEYS
+- "damage" : Damage points to apply.
+- "damage_random" : Random damage points to add on top of the points provided in "damage".
+- "noArmor" : Ignore armor entirely.
+- "knockback" : Applies said linear velocity to the target.
+- "push" : Applies said push force to only physics objects.
+- "type" : Identifier for special damage types.
+- "flags" : Integer field of flags, networked and game specific to the client.
+- "hitbody" : Which body will have been hit. Usually set internally.
+
+*/
+
 /** This entity represents an ncRenderableEntity with interactive surface properties.
 It can take damage and can handle variously different types of impact. 
 
@@ -60,6 +78,7 @@ public:
 #ifdef SERVER
 	virtual void Save(float);
 	virtual void Restore(string,string);
+	virtual void RestoreComplete(void);
 	virtual void Respawn(void);
 	virtual void Input(entity,string,string);
 	virtual void SpawnKey(string,string);
@@ -92,20 +111,14 @@ public:
 	virtual bool IsAlive(void);
 
 	/** Sets the entity on fire. */
-	nonvirtual void Ignite(entity, float, int);
+	nonvirtual void Ignite(entity, float, string);
 	/** If the entity is on fire, it'll have it extinguished */
 	nonvirtual void Extinguish(void);
 
-	/** Returns whether the entity can bleed. */
-	nonvirtual bool CanBleed(void);
 	/** Returns whether the entity can be damaged. */
 	nonvirtual bool IsVulnerable(void);
 
 	/* Generic Damage */
-	/** Marks the entity as capable of bleeding. */
-	nonvirtual void EnableBleeding(void);
-	/** Marks the entity as incapable of bleeding. */
-	nonvirtual void DisableBleeding(void);
 	/** Makes the entity visible to other entity their aim-assists. */
 	nonvirtual void EnableAimAssist(void);
 	/** Makes the entity invisible to other entity their aim-assists. */
@@ -122,6 +135,14 @@ public:
 	nonvirtual float GetHealth(void);
 	/** Returns the maximum health the entity can have. */
 	nonvirtual float GetMaxHealth(void);
+	/** Adds bonus health to the entity. That's the amount of health it's allowed to go over max_health. It'll decrease over time by itself and affect max_health in the meantime. Maximum is 100. */
+	nonvirtual void AddBonusHealth(float);
+	/** Returns the bonus health of the entity. That is the amount of health above max_health. */
+	nonvirtual float GetBonusHealth(void);
+	/** Adds bonus armor to the entity. That's the amount of armor it's allowed to go over max_armor. It'll decrease over time by itself and affect max_armor in the meantime. Maximum is 100. */
+	nonvirtual void AddBonusArmor(float);
+	/** Returns the bonus armor of the entity. That is the amount of armor above max_armor. */
+	nonvirtual float GetBonusArmor(void);
 
 	/** Sets the current armor of the entity. */
 	nonvirtual void SetArmor(float);
@@ -133,20 +154,12 @@ public:
 	/** Returns the maximum armor value the entity can have. */
 	nonvirtual float GetMaxArmor(void);
 
-	/** Returns the health the entity spawned with at map load */
-	nonvirtual float GetSpawnHealth(void);
 	/** Returns how many seconds have passed since we died. Will return -1 if not applicable. */
 	nonvirtual float TimeSinceDeath(void);
 
 	/** Returns whether this entity reacts to damage being inflicted. */
 	nonvirtual bool CanBeDamaged(vector,vector);
-
-	/** Sets the colour of the blood of this entity. */
-	nonvirtual void SetBloodColor(vector);
-	/** Returns the blood color of this entity. */
-	nonvirtual vector GetBloodColor(void);
 #endif
-
 
 	/** Assigns the surface data of a given description onto this entity. */
 	nonvirtual void SetSurfaceData(string);
@@ -167,40 +180,45 @@ public:
 #endif
 
 private:
-	float m_flBurnNext;
+	nonvirtual void _SurfaceDataFinish(void);
+	nonvirtual void _PropDataFinish(void);
+	
+	float m_timeUntilNextBurnDamage;
 
 	PREDICTED_FLOAT(armor)
 	PREDICTED_FLOAT_N(health)
 
 	/* Surface/PropKit */
-	int m_iMaterial;
-	string m_strSurfData;
-	int m_iPropData;
-	string m_strPropData;
-	nonvirtual void _SurfaceDataFinish(void);
-	nonvirtual void _PropDataFinish(void);
+	int m_surfdataID;
+	string m_surfData;
+	int m_propdataID;
+	string m_propData;
 
 #ifdef SERVER
+	nonvirtual void _UpdateTakedamage(void);
+
+	float m_bonusHealth;
+	float m_timeUntilBonusHealthDecreases;
+	float m_bonusArmor;
+	float m_timeUntilBonusArmorDecreases;
 	float max_armor;
+	float m_timeOfDeath;
+	bool m_autoAim;
+	bool m_vulnerable;
 
 	/* fire/burning */
-	entity m_eBurner;
-	int m_iBurnWeapon;
-	float m_flBurnTime;
-	float m_flBurnDmgTime; /* for whenever they touch a hot flame */
+	entity m_burningAttacker;
+	string m_burningWeapon;
+	float m_timeUntilBurningStops;
+	float m_timeUntilNextBurnDamage; /* for whenever they touch a hot flame */
 
 	/* I/O */
-	string m_strOnBreak;
+	string m_outputOnDamaged;
+	string m_outputOnDamagedByPlayer;
+	string m_outputOnHalfHealth;
+	string m_outputOnDeath;
+	string m_outputOnBreak;
 
-	/* life, death */
-	float m_oldHealth;
-	vector m_vecBloodColor;
-
-	float m_flDeathTime;
-	bool m_bAutoAim;
-	bool m_bTakesDamage;
-
-	nonvirtual void _UpdateTakedamage(void);
 #endif
 };
 

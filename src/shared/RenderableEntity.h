@@ -114,7 +114,7 @@ public:
 	virtual void ReceiveEntity(float,float);
 	virtual float predraw(void);
 	virtual void postdraw(void);
-	virtual void RendererRestarted();
+	virtual void ReloadVideoResources();
 #endif
 
 	virtual void MakeStatic(void);
@@ -137,15 +137,15 @@ public:
 	/** Sets the render color of the entity. */
 	nonvirtual void SetRenderColor(vector);
 	/** Sets the value of the bone controller #1. */
-	nonvirtual void SetBoneControl1(float);
+	nonvirtual void SetBoneController1(float);
 	/** Sets the value of the bone controller #2. */
-	nonvirtual void SetBoneControl2(float);
+	nonvirtual void SetBoneController2(float);
 	/** Sets the value of the bone controller #3. */
-	nonvirtual void SetBoneControl3(float);
+	nonvirtual void SetBoneController3(float);
 	/** Sets the value of the bone controller #4. */
-	nonvirtual void SetBoneControl4(float);
+	nonvirtual void SetBoneController4(float);
 	/** Sets the value of the bone controller #5. */
-	nonvirtual void SetBoneControl5(float);
+	nonvirtual void SetBoneController5(float);
 	/** Sets the axial, anisotropic scale of an entity, affecting the individual axis (forward, right, up). */
 	nonvirtual void SetAxialScale(vector);
 
@@ -162,15 +162,15 @@ public:
 	/** Returns the render color of the entity. */
 	nonvirtual vector GetRenderColor(void);
 	/** Returns the value of the entity's bone controller #1. */
-	nonvirtual float GetBoneControl1(void);
+	nonvirtual float GetBoneController1(void);
 	/** Returns the value of the entity's bone controller #2. */
-	nonvirtual float GetBoneControl2(void);
+	nonvirtual float GetBoneController2(void);
 	/** Returns the value of the entity's bone controller #3. */
-	nonvirtual float GetBoneControl3(void);
+	nonvirtual float GetBoneController3(void);
 	/** Returns the value of the entity's bone controller #4. */
-	nonvirtual float GetBoneControl4(void);
+	nonvirtual float GetBoneController4(void);
 	/** Returns the value of the entity's bone controller #5. */
-	nonvirtual float GetBoneControl5(void);
+	nonvirtual float GetBoneController5(void);
 	/** Returns the axial/anisotropic scale of the entity, same as input format (forward, right, up) */
 	nonvirtual vector GetAxialScale(void);
 
@@ -183,22 +183,22 @@ public:
 
 private:
 	/* new */
-	PREDICTED_FLOAT(m_flBoneControl1)
-	PREDICTED_FLOAT(m_flBoneControl2)
-	PREDICTED_FLOAT(m_flBoneControl3)
-	PREDICTED_FLOAT(m_flBoneControl4)
-	PREDICTED_FLOAT(m_flBoneControl5)
+	PREDICTED_FLOAT(m_studioBoneController1)
+	PREDICTED_FLOAT(m_studioBoneController2)
+	PREDICTED_FLOAT(m_studioBoneController3)
+	PREDICTED_FLOAT(m_studioBoneController4)
+	PREDICTED_FLOAT(m_studioBoneController5)
 	PREDICTED_FLOAT_N(modelflags)
-	PREDICTED_INT(m_iBody)
+	PREDICTED_INT(m_geomsetField)
 	PREDICTED_FLOAT_N(colormap)
 	PREDICTED_VECTOR_N(glowmod)
 	PREDICTED_FLOAT_N(frame1time)
 
-	PREDICTED_FLOAT(m_iRenderFX)
-	PREDICTED_FLOAT(m_iRenderMode)
-	PREDICTED_FLOAT(m_flRenderAmt)
-	PREDICTED_VECTOR(m_vecRenderColor)
-	PREDICTED_VECTOR(m_vecAxialScale)
+	PREDICTED_FLOAT(m_renderFX)
+	PREDICTED_FLOAT(m_renderMode)
+	PREDICTED_FLOAT(m_renderAmount)
+	PREDICTED_VECTOR(m_renderColor)
+	PREDICTED_VECTOR(m_axialScale)
 
 	/* either a sprite model or a particle */
 	PREDICTED_INT(m_iMuzzleModel)
@@ -206,7 +206,7 @@ private:
 	PREDICTED_FLOAT(m_flMuzzleScale)
 
 	/* model events */
-	float m_flBaseTime;
+	float m_modelEventTime;
 	float m_iNumBones;
 	nonvirtual void _UpdateBoneCount();
 

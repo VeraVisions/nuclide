@@ -123,12 +123,12 @@ env_sprite::EvaluateEntity(void)
 	EVALUATE_FIELD(modelindex, SPRITE_CHANGED_MODELINDEX)
 	EVALUATE_FIELD(m_flFramerate, SPRITE_CHANGED_FRAMERATE)
 	EVALUATE_FIELD(scale, SPRITE_CHANGED_SCALE)
-	EVALUATE_FIELD(m_iRenderMode, SPRITE_CHANGED_RENDERMODE)
-	EVALUATE_FIELD(m_iRenderFX, SPRITE_CHANGED_RENDERFX)
-	EVALUATE_VECTOR(m_vecRenderColor, 0, SPRITE_CHANGED_RENDERCOLOR)
-	EVALUATE_VECTOR(m_vecRenderColor, 1, SPRITE_CHANGED_RENDERCOLOR)
-	EVALUATE_VECTOR(m_vecRenderColor, 2, SPRITE_CHANGED_RENDERCOLOR)
-	EVALUATE_FIELD(m_flRenderAmt, SPRITE_CHANGED_RENDERAMT)
+	EVALUATE_FIELD(m_renderMode, SPRITE_CHANGED_RENDERMODE)
+	EVALUATE_FIELD(m_renderFX, SPRITE_CHANGED_RENDERFX)
+	EVALUATE_VECTOR(m_renderColor, 0, SPRITE_CHANGED_RENDERCOLOR)
+	EVALUATE_VECTOR(m_renderColor, 1, SPRITE_CHANGED_RENDERCOLOR)
+	EVALUATE_VECTOR(m_renderColor, 2, SPRITE_CHANGED_RENDERCOLOR)
+	EVALUATE_FIELD(m_renderAmount, SPRITE_CHANGED_RENDERAMT)
 	EVALUATE_FIELD(m_strMaterial, SPRITE_CHANGED_MATERIAL)
 }
 
@@ -158,12 +158,12 @@ env_sprite::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_FLOAT(modelindex, SPRITE_CHANGED_MODELINDEX)
 	SENDENTITY_FLOAT(m_flFramerate, SPRITE_CHANGED_FRAMERATE)
 	SENDENTITY_FLOAT(scale, SPRITE_CHANGED_SCALE)
-	SENDENTITY_BYTE(m_iRenderMode, SPRITE_CHANGED_RENDERMODE)
-	SENDENTITY_BYTE(m_iRenderFX, SPRITE_CHANGED_RENDERFX)
-	SENDENTITY_BYTE(m_vecRenderColor[0], SPRITE_CHANGED_RENDERCOLOR)
-	SENDENTITY_BYTE(m_vecRenderColor[1], SPRITE_CHANGED_RENDERCOLOR)
-	SENDENTITY_BYTE(m_vecRenderColor[2], SPRITE_CHANGED_RENDERCOLOR)
-	SENDENTITY_BYTE(m_flRenderAmt, SPRITE_CHANGED_RENDERAMT)
+	SENDENTITY_BYTE(m_renderMode, SPRITE_CHANGED_RENDERMODE)
+	SENDENTITY_BYTE(m_renderFX, SPRITE_CHANGED_RENDERFX)
+	SENDENTITY_BYTE(m_renderColor[0], SPRITE_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_renderColor[1], SPRITE_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_renderColor[2], SPRITE_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_renderAmount, SPRITE_CHANGED_RENDERAMT)
 	SENDENTITY_STRING(m_strMaterial, SPRITE_CHANGED_MATERIAL)
 
 	return (1);
@@ -185,12 +185,12 @@ env_sprite::NetworkOnce(void)
 
 	WriteFloat(MSG_MULTICAST, m_flFramerate);
 	WriteFloat(MSG_MULTICAST, scale);
-	WriteByte(MSG_MULTICAST, m_iRenderMode);
-	WriteByte(MSG_MULTICAST, m_iRenderFX);
-	WriteByte(MSG_MULTICAST, m_vecRenderColor[0]);
-	WriteByte(MSG_MULTICAST, m_vecRenderColor[1]);
-	WriteByte(MSG_MULTICAST, m_vecRenderColor[2]);
-	WriteByte(MSG_MULTICAST, m_flRenderAmt);
+	WriteByte(MSG_MULTICAST, m_renderMode);
+	WriteByte(MSG_MULTICAST, m_renderFX);
+	WriteByte(MSG_MULTICAST, m_renderColor[0]);
+	WriteByte(MSG_MULTICAST, m_renderColor[1]);
+	WriteByte(MSG_MULTICAST, m_renderColor[2]);
+	WriteByte(MSG_MULTICAST, m_renderAmount);
 	WriteString(MSG_MULTICAST, m_strMaterial);
 
 	msg_entity = this;
@@ -236,18 +236,18 @@ env_sprite::Input(entity theActivator, string inputName, string dataString)
 }
 
 void
-env_sprite::SpawnKey(string strKey, string strValue)
+env_sprite::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "shader":
 	case "material":
-		m_strMaterial = strValue;
+		m_strMaterial = setValue;
 		break;
 	case "framerate":
-		m_flFramerate = stof(strValue);
+		m_flFramerate = stof(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
@@ -292,7 +292,7 @@ env_sprite::predraw(void)
 		return super::predraw();
 	}
 
-	vector color = m_vecRenderColor / 255;
+	vector color = m_renderColor / 255;
 	int s = (float)getproperty(VF_ACTIVESEAT);
 	pSeat = &g_seats[s];
 	vector vecPlayer = pSeat->m_vecPredictedOrigin;
@@ -350,12 +350,12 @@ env_sprite::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_FLOAT(modelindex, SPRITE_CHANGED_MODELINDEX)
 	READENTITY_FLOAT(m_flFramerate, SPRITE_CHANGED_FRAMERATE)
 	READENTITY_FLOAT(scale, SPRITE_CHANGED_SCALE)
-	READENTITY_BYTE(m_iRenderMode, SPRITE_CHANGED_RENDERMODE)
-	READENTITY_BYTE(m_iRenderFX, SPRITE_CHANGED_RENDERFX)
-	READENTITY_BYTE(m_vecRenderColor[0], SPRITE_CHANGED_RENDERCOLOR)
-	READENTITY_BYTE(m_vecRenderColor[1], SPRITE_CHANGED_RENDERCOLOR)
-	READENTITY_BYTE(m_vecRenderColor[2], SPRITE_CHANGED_RENDERCOLOR)
-	READENTITY_BYTE(m_flRenderAmt, SPRITE_CHANGED_RENDERAMT)
+	READENTITY_BYTE(m_renderMode, SPRITE_CHANGED_RENDERMODE)
+	READENTITY_BYTE(m_renderFX, SPRITE_CHANGED_RENDERFX)
+	READENTITY_BYTE(m_renderColor[0], SPRITE_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_renderColor[1], SPRITE_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_renderColor[2], SPRITE_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_renderAmount, SPRITE_CHANGED_RENDERAMT)
 	READENTITY_STRING(m_strMaterial, SPRITE_CHANGED_MATERIAL)
 
 	effects = EF_NODEPTHTEST;
@@ -397,12 +397,12 @@ EnvSprite_ParseEvent(void)
 	spr.modelindex = readfloat();
 	spr.m_flFramerate = readfloat();
 	spr.scale = readfloat();
-	spr.m_iRenderMode = readbyte();
-	spr.m_iRenderFX = readbyte();
-	spr.m_vecRenderColor[0] = readbyte();
-	spr.m_vecRenderColor[1] = readbyte();
-	spr.m_vecRenderColor[2] = readbyte();
-	spr.m_flRenderAmt = readbyte();
+	spr.m_renderMode = readbyte();
+	spr.m_renderFX = readbyte();
+	spr.m_renderColor[0] = readbyte();
+	spr.m_renderColor[1] = readbyte();
+	spr.m_renderColor[2] = readbyte();
+	spr.m_renderAmount = readbyte();
 	spr.m_strMaterial = readstring();
 
 	spr.drawmask = MASK_ENGINE;

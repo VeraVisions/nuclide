@@ -29,10 +29,10 @@ string CSQC_GenerateMaterial(string shadername)
 	Materials_OnLoad(shadername);
 	return (__NULL__);
 // 	return (shadername);
-// 	NSError("%S", shadername);
+// 	ncError("%S", shadername);
 }
 
-/** Updates our seat pointers. 
+/** Updates our seat pointers.
 Call this when you need to verify we're
 getting the current player's info and not someone elses on the same
 machine (splitscreen).
@@ -54,8 +54,8 @@ void
 CSQC_Init(float apilevel, string enginename, float engineversion)
 {
 	InitPrint("Initializing Client Game");
-	NSLog("Built: %s %s", __DATE__, __TIME__);
-	NSLog("QCC: %s", __QCCVER__);
+	ncLog("Built: %s %s", __DATE__, __TIME__);
+	ncLog("QCC: %s", __QCCVER__);
 
 	for (int i = 0i; i < 4i; i++) {
 		g_viewSeats[i] = spawn(ncView);
@@ -71,12 +71,13 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	Cmd_Init();
 
 	Constants_Init();
-	Sound_Init();
+	SoundDef_Init();
 	SurfData_Init();
 	PropData_Init();
 	DecalGroups_Init();
 
 	/* VGUI */
+	Locale_Init();
 	VGUI_Init();
 
 	/* Game specific inits */
@@ -92,10 +93,10 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 
 	/* let the menu know we're a multi or a singleplayer game */
 	if (serverinfo.GetInteger("sv_playerslots") == 1i) {
-		NSLog("Running a singleplayer game.");
+		ncLog("Running a singleplayer game.");
 		cvars.SetBool("_menu_singleplayer", true);
 	} else {
-		NSLog("Running a multiplayer game.");
+		ncLog("Running a multiplayer game.");
 		cvars.SetBool("_menu_singleplayer", false);
 	}
 
@@ -110,7 +111,7 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	HUD_Init();
 
 	/* end msg */
-	NSLog("Client game initialized.");
+	ncLog("Client game initialized.");
 
 	/* because the engine will do really bad hacks to our models otherwise. e.g. R6284 */
 	cvar_set("r_fullbrightSkins", "0");
@@ -152,13 +153,14 @@ CSQC_RendererRestarted(string rstr)
 	Scores_Init();
 	View_Init();
 	ClientGame_RendererRestart(rstr);
-	HUD_RendererRestarted();
+	HUD_ReloadVideoResources();
+	Locale_Reload();
 
 	/* GS-Entbase */
 	Fade_Reload();
 	Decal_Reload();
 	Sky_Update(TRUE);
-	Entities_RendererRestarted();
+	Entities_ReloadVideoResources();
 	DetailTex_Reload();
 
 	g_shellchromeshader = shaderforname("shellchrome", sprintf("{\ndeformVertexes bulge 1.25 1.25 0\n{\nmap %s\ntcMod scroll -0.1 0.1\ntcGen environment\nblendFunc add\nrgbGen entity\n}\n}", "textures/sfx/reflection.tga"));
@@ -182,7 +184,7 @@ CSQC_RenderScene(void)
 
 /** Called on top of every 3D rendered view. This just again ensures we box
 and seperate 2D plane operations from 3D ones. This is where the HUD, Chat etc.
-will be drawn. They don't necessarily have to be 2D but this is just a clear 
+will be drawn. They don't necessarily have to be 2D but this is just a clear
 distinction from 3D world elements and overlays.
 */
 void
@@ -262,7 +264,7 @@ CSQC_UpdateView(float w, float h, float focus)
 	cvar_set("_background", serverkey("background"));
 
 	/* ensure background maps do not get paused */
-	if (serverkeyfloat("background") == 1) 
+	if (serverkeyfloat("background") == 1)
 		setpause(FALSE);
 
 
@@ -341,7 +343,7 @@ CSQC_UpdateView(float w, float h, float focus)
 	/* make sure we're not running these on invalid seats post frame */
 	pSeat = __NULL__;
 	pSeatLocal = __NULL__;
-	
+
 	g_modelSpinAngle = time * autocvar_cg_modelSpinSpeed;
 	g_modelSpinRoll = sin(time * autocvar_cg_modelSpinRollSpeed);
 	g_modelSpinPitch = sin(time * autocvar_cg_modelSpinPitchSpeed);
@@ -382,7 +384,7 @@ CSQC_InputEvent(float fEventType, float fKey, float fCharacter, float fDeviceID)
 	for (entity e = world; (e = find(e, ::classname, "ncInteractiveSurface"));) {
 		vector vecPos = pSeat->m_ePlayer.origin + pSeat->m_ePlayer.view_ofs;
 		ncInteractiveSurface surf = (ncInteractiveSurface) e;
-		
+
 		if (surf.FocusCheck(vecPos, view_angles)) {
 			pSeat->m_bInterfaceFocused = true;
 			surf.Input(fEventType, fKey, fCharacter, fDeviceID);
@@ -424,7 +426,7 @@ CSQC_Input_Frame(void)
 	CSQC_UpdateSeat();
 	me = pSeat->m_ePlayer;
 
-	if (me.classname == "player" || me.classname == "spectator") {
+	if (is.Player(me)) {
 		ncClient pl = (ncClient)me;
 		pl.SharedInputFrame();
 		float delayInputs = HUD_ClientInputFrame(input_buttons);
@@ -587,11 +589,11 @@ CSQC_WorldLoaded(void)
 			break;
 		}
 		if (strTokenized != "{") {
-			NSWarning("Bad entity data");
+			ncWarning("Bad entity data");
 			break;
 		}
 		if (!Entities_ParseLump()) {
-			NSWarning("Bad entity data");
+			ncWarning("Bad entity data");
 			break;
 		}
 	}
@@ -646,9 +648,9 @@ CSQC_Shutdown(void)
 	Decal_Shutdown();
 	Sentences_Shutdown();
 	Titles_Shutdown();
-	Sound_Shutdown();
+	SoundDef_Shutdown();
 	PropData_Shutdown();
-	NSLog("Client game shutdown.");
+	ncLog("Client game shutdown.");
 
 	/* ENGINE, PLS FIX */
 	input_cursor_entitynumber = 0;

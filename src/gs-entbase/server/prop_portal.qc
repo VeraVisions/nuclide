@@ -94,28 +94,28 @@ prop_portal::DiscoverPortal(void)
 }
 
 void
-prop_portal::SpawnKey(string strKey, string strValue)
+prop_portal::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "Activated":
-		m_bStartActive = ReadBool(strValue);
+		m_bStartActive = ReadBool(setValue);
 		break;
 	case "PortalTwo":
-		m_bPortalTwo = ReadBool(strValue);
+		m_bPortalTwo = ReadBool(setValue);
 		break;
 #ifdef PORTAL2
 	case "HalfWidth":
-		m_flHalfWidth = ReadFloat(strValue);
+		m_flHalfWidth = ReadFloat(setValue);
 		break;
 	case "HalfHeight":
-		m_flHalfHeight = ReadFloat(strValue);
+		m_flHalfHeight = ReadFloat(setValue);
 		break;
 #endif
 	case "LinkageGroupID":
-		m_iPortalID = ReadInt(strValue);
+		m_iPortalID = ReadInt(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
@@ -127,7 +127,7 @@ prop_portal::Input(entity activatorEnt, string strInput, string strData)
 		targetname = strData;
 		break;
 	case "SetActivatedState":
-		m_bEnabled = ReadBool(strData);
+		m_portalEnabled = ReadBool(strData);
 		_PortalUpdated();
 
 		if (m_ePortalTarget)
@@ -136,7 +136,7 @@ prop_portal::Input(entity activatorEnt, string strInput, string strData)
 		}
 		break;
 	case "Fizzle":
-		m_bEnabled = false;
+		m_portalEnabled = false;
 		_PortalUpdated();
 
 		if (m_ePortalTarget)
@@ -213,6 +213,7 @@ prop_portal_spawn(vector endPos, vector vecAngle, entity portalOwner, bool altPo
 	}
 
 	prop_portal new_portal = spawn(prop_portal);
+	new_portal.Spawn();
 	new_portal.SetOrigin(endPos);
 	new_portal.SetAngles(vecAngle);
 	new_portal.SetPortalID(0i);

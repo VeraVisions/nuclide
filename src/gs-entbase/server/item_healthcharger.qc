@@ -110,47 +110,47 @@ item_healthcharger::Save(float handle)
 }
 
 void
-item_healthcharger::Restore(string strKey, string strValue)
+item_healthcharger::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "user":
-		m_eUser = (ncEntity)ReadEntity(strValue);
+		m_eUser = (ncEntity)ReadEntity(setValue);
 		break;
 	case "delay":
-		m_flDelay = ReadFloat(strValue);
+		m_flDelay = ReadFloat(setValue);
 		break;
 	case "check":
-		m_flCheck = ReadFloat(strValue);
+		m_flCheck = ReadFloat(setValue);
 		break;
 	case "snd_first":
-		m_strSndFirst = ReadString(strValue);
+		m_strSndFirst = ReadString(setValue);
 		break;
 	case "snd_charging":
-		m_strSndCharging = ReadString(strValue);
+		m_strSndCharging = ReadString(setValue);
 		break;
 	case "snd_done":
-		m_strSndDone = ReadString(strValue);
+		m_strSndDone = ReadString(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-item_healthcharger::SpawnKey(string strKey, string strValue)
+item_healthcharger::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "snd_first":
-		m_strSndFirst = strValue;
+		m_strSndFirst = setValue;
 		break;
 	case "snd_charging":
-		m_strSndCharging = strValue;
+		m_strSndCharging = setValue;
 		break;
 	case "snd_done":
-		m_strSndDone = strValue;
+		m_strSndDone = setValue;
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
@@ -216,7 +216,7 @@ item_healthcharger::RetractShot(void)
 void
 item_healthcharger::UpdateProgress(void)
 {
-	m_eProgressMeter.m_flBoneControl1 = -10 * (1.0 - (health/max_health));
+	m_eProgressMeter.SetBoneController1(-10 * (1.0 - (health/max_health)));
 }
 
 void
@@ -268,6 +268,7 @@ item_healthcharger::Respawn(void)
 
 	if (!m_eProgressMeter) {
 		m_eProgressMeter = spawn(ncRenderableEntity);
+		m_eProgressMeter.Spawn();
 		m_eProgressMeter.SetOrigin(GetOrigin());
 		m_eProgressMeter.SetAngles(GetAngles());
 		m_eProgressMeter.SetMovetype(MOVETYPE_NONE);
@@ -361,8 +362,8 @@ item_healthcharger::customphysics(void)
 		m_flSwingArm = 0.0f;
 	}
 
-	SetBoneControl1(lerp(GetBoneControl1(), m_flSwingArm, frametime * 20.0f));
-	SetBoneControl2(GetBoneControl1());
+	SetBoneController1(lerp(GetBoneController1(), m_flSwingArm, frametime * 20.0f));
+	SetBoneController2(GetBoneController1());
 
 	if (m_flCheck > GetTime())
 		return;

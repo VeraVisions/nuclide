@@ -40,6 +40,8 @@
 
 [env_glow](@ref env_glow)
 
+[env_hudcounter](@ref env_hudcounter)
+
 [env_hudhint](@ref env_hudhint)
 
 [env_instructor_hint](@ref env_instructor_hint)
@@ -351,6 +353,8 @@
 [trigger_changetarget](@ref trigger_changetarget)
 
 [trigger_counter](@ref trigger_counter)
+
+[trigger_endround](@ref trigger_endround)
 
 [trigger_endsection](@ref trigger_endsection)
 

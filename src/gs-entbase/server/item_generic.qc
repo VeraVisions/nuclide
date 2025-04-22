@@ -62,26 +62,26 @@ item_generic::Save(float handle)
 }
 
 void
-item_generic::Restore(string strKey, string strValue)
+item_generic::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_strSequenceName":
-		m_strSequenceName = ReadString(strValue);
+		m_strSequenceName = ReadString(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-item_generic::SpawnKey(string strKey, string strValue)
+item_generic::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "sequencename":
-		m_strSequenceName = strValue;
+		m_strSequenceName = setValue;
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 

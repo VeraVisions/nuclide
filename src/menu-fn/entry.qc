@@ -31,9 +31,9 @@ m_init(void)
 		serverDisconnect = false;
 	}
 
-	NSLog("--------- Initializing Menu ----------");
-	NSLog("Built: %s %s", __DATE__, __TIME__);
-	NSLog("QCC: %s", __QCCVER__);
+	ncLog("--------- Initializing Menu ----------");
+	ncLog("Built: %s %s", __DATE__, __TIME__);
+	ncLog("QCC: %s", __QCCVER__);
 
 	localcmd("plug_load ffmpeg\n");
 
@@ -137,7 +137,7 @@ m_draw(vector screensize)
 
 	WLabel_Static(640 - 8 - stringwidth(ver, TRUE, [12,12]),
 				  466,
-				  ver, 
+				  ver,
 				  12, 12,
 				  [1.0f,1.0f,1.0f],
 				  0.5f, 0, font_console);

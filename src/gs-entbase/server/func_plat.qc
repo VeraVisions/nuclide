@@ -19,7 +19,7 @@ enumflags
 	FNCPLAT_TRIGGER,
 };
 
-static class
+class
 func_plat_helper:ncEntity
 {
 public:
@@ -75,23 +75,37 @@ public:
 	virtual void MoverFinishesMoving(void);
 	virtual void PlatformReturn(void);
 
-private:
-	float m_flSpeed;
-	float m_flHeight;
-	string m_strSndMove;
-	string m_strSndStop;
+	nonvirtual float GetPlatformHeight(void);
+	nonvirtual float GetPlatformSpeed(void);
 
+private:
+	float m_platSpeed;
+	float m_platHeight;
+	string m_sndMove;
+	string m_sndStop;
 	func_plat_helper m_handler;
 };
 
 void
 func_plat::func_plat(void)
 {
-	m_flSpeed = 100.0f;
-	m_flHeight = 0.0f;
+	m_platSpeed = 100.0f;
+	m_platHeight = 0.0f;
 	m_handler = __NULL__;
-	m_strSndMove =
-	m_strSndStop = __NULL__;
+	m_sndMove =
+	m_sndStop = __NULL__;
+}
+
+float
+func_plat::GetPlatformHeight(void)
+{
+	return (m_platHeight);
+}
+
+float
+func_plat::GetPlatformSpeed(void)
+{
+	return (m_platSpeed);
 }
 
 void
@@ -99,70 +113,69 @@ func_plat::Spawned(void)
 {
 	super::Spawned();
 
-	if (m_strSndStop)
-		Sound_Precache(m_strSndStop);
-	if (m_strSndMove)
-		Sound_Precache(m_strSndMove);
+	precache.Sound(m_sndStop);
+	precache.Sound(m_sndMove);
 }
 
 void
 func_plat::Save(float handle)
 {
 	super::Save(handle);
-	SaveFloat(handle, "m_flSpeed", m_flSpeed);
-	SaveFloat(handle, "m_flHeight", m_flHeight);
-	SaveString(handle, "m_strSndMove", m_strSndMove);
-	SaveString(handle, "m_strSndStop", m_strSndStop);
-	SaveEntity(handle, "m_handler", m_handler);
+
+	SaveFloat(handle, "platSpeed", m_platSpeed);
+	SaveFloat(handle, "platHeight", m_platHeight);
+	SaveString(handle, "sndMove", m_sndMove);
+	SaveString(handle, "sndStop", m_sndStop);
+	SaveEntity(handle, "handler", m_handler);
 }
 
 void
-func_plat::Restore(string strKey, string strValue)
+func_plat::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
-	case "m_flSpeed":
-		m_flSpeed = ReadFloat(strValue);
+	case "platSpeed":
+		m_platSpeed = ReadFloat(setValue);
 		break;
-	case "m_flHeight":
-		m_flHeight = ReadFloat(strValue);
+	case "platHeight":
+		m_platHeight = ReadFloat(setValue);
 		break;
-	case "m_strSndMove":
-		m_strSndMove = ReadString(strValue);
+	case "sndMove":
+		m_sndMove = ReadString(setValue);
 		break;
-	case "m_strSndStop":
-		m_strSndStop = ReadString(strValue);
+	case "sndStop":
+		m_sndStop = ReadString(setValue);
 		break;
-	case "m_handler":
-		m_handler = (func_plat_helper)ReadEntity(strValue);
+	case "handler":
+		m_handler = (func_plat_helper)ReadEntity(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-func_plat::SpawnKey(string strKey, string strValue)
+func_plat::SpawnKey(string strKey, string setValue)
 {
 	int x = 0i;
 
 	switch (strKey) {
 	case "height":
-		m_flHeight = stof(strValue);
+		m_platHeight = ReadFloat(setValue);
 		break;
 	case "speed":
-		m_flSpeed = stof(strValue);
+		m_platSpeed = ReadFloat(setValue);
 		break;
 	/* GoldSrc compat */
 	case "movesnd":
-		x = stoi(strValue);
-		m_strSndMove = sprintf("func_plat.move_%i", x);
+		x = ReadInt(setValue);
+		m_sndMove = sprintf("func_plat.move_%i", x);
 		break;
 	case "stopsnd":
-		x = stoi(strValue);
-		m_strSndStop = sprintf("func_plat.stop_%i", x);
+		x = ReadInt(setValue);
+		m_sndStop = sprintf("func_plat.stop_%i", x);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
@@ -170,32 +183,26 @@ void
 func_plat::MoverStartsMoving(void)
 {
 	if (GetMoverState() == MOVER_1TO2) {
-		m_iValue = 1;
+		SetValue(1i);
 	} else if (GetMoverState() == MOVER_2TO1) {
-		m_iValue = 0;
+		SetValue(0i);
 	}
 
-	if (m_strSndMove)
-		StartSoundDef(m_strSndMove, CHAN_VOICE, true);
+	StartSoundDef(m_sndMove, CHAN_VOICE, true);
 }
 
 void
 func_plat::PlatformReturn(void)
 {
-	MoveToPosition(GetMoverPosition2(), m_flSpeed);
+	MoveToPosition(GetMoverPosition2(), m_platSpeed);
 }
 
 void
 func_plat::MoverFinishesMoving(void)
 {
 	/* cancel out any moving sfx */
-	if (m_strSndMove) {
-		StopSound(CHAN_VOICE, true);
-	}
-
-	if (m_strSndStop) {
-		StartSoundDef(m_strSndStop, CHAN_VOICE, true);
-	}
+	StopSound(CHAN_VOICE, true);
+	StartSoundDef(m_sndStop, CHAN_VOICE, true);
 
 	if (HasTargetname() == false) {
 		if (GetMoverState() == MOVER_POS1) {
@@ -212,20 +219,22 @@ func_plat::Respawn(void)
 	SetMovetype(MOVETYPE_PUSH);
 	SetSolid(SOLID_BSP);
 
-	if (!m_flHeight) {
-		m_flHeight = size[2] - 8;
+	if (!m_platHeight) {
+		m_platHeight = size[2] - 8;
 	}
 
 	SetMoverPosition1(GetOrigin());
-	SetMoverPosition2(GetOrigin() - [0, 0, m_flHeight]);
+	SetMoverPosition2(GetOrigin() - [0, 0, m_platHeight]);
 
 	ClearAngles();
 	ReleaseThink();
 
 	/* only spawn the helper if it's not set to be triggered */
 	if (!HasSpawnFlags(FNCPLAT_TRIGGER)) {
-		if (!m_handler)
+		if (!m_handler) {
 			m_handler = spawn(func_plat_helper);
+			m_handler.Spawn();
+		}
 
 		m_handler.SetTargetPlatform(this);
 	}
@@ -244,10 +253,10 @@ func_plat::Input(entity entityActivator, string inputName, string dataField)
 {
 	switch (inputName) {
 	case "GoUp":
-		MoveToPosition(GetMoverPosition1(), m_flSpeed);
+		MoveToPosition(GetMoverPosition1(), m_platSpeed);
 		break;
 	case "GoDown":
-		MoveToPosition(GetMoverPosition2(), m_flSpeed);
+		MoveToPosition(GetMoverPosition2(), m_platSpeed);
 		break;
 	default:
 		super::Input(entityActivator, inputName, dataField);
@@ -259,13 +268,13 @@ func_plat::Trigger(entity act, triggermode_t state)
 {
 	switch (state) {
 	case TRIG_OFF:
-		MoveToPosition(GetMoverPosition1(), m_flSpeed);
+		MoveToPosition(GetMoverPosition1(), m_platSpeed);
 		break;
 	case TRIG_ON:
-		MoveToPosition(GetMoverPosition2(), m_flSpeed);
+		MoveToPosition(GetMoverPosition2(), m_platSpeed);
 		break;
 	default:
-		MoveToReverse(m_flSpeed);
+		MoveToReverse(m_platSpeed);
 	}
 }
 
@@ -278,20 +287,19 @@ func_plat_helper::func_plat_helper(void)
 void
 func_plat_helper::Save(float handle)
 {
-
 	super::Save(handle);
-	SaveEntity(handle, "m_eTargetPlat", m_eTargetPlat);
+	SaveEntity(handle, "eTargetPlat", m_eTargetPlat);
 }
 
 void
-func_plat_helper::Restore(string strKey, string strValue)
+func_plat_helper::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
-	case "m_eTargetPlat":
-		m_eTargetPlat = ReadEntity(strValue);
+	case "eTargetPlat":
+		m_eTargetPlat = ReadEntity(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
@@ -314,6 +322,7 @@ func_plat_helper::SetTargetPlatform(entity targ)
 	SetMovetype(MOVETYPE_NONE);
 	SetOrigin(targetPlat.origin);
 	SetSize(vecMins, vecMaxs);
+	Relink();
 }
 
 void
@@ -321,17 +330,20 @@ func_plat_helper::Touch(entity eToucher)
 {
 	func_plat targetPlat;
 
-	if (eToucher.movetype != MOVETYPE_WALK) {
+	if (is.Sentient(eToucher) == false) {
 		return;
 	}
 
 	targetPlat = (func_plat)m_eTargetPlat;
 
-	if (targetPlat.IsMoving())
+	if (targetPlat.IsMoving() == true) {
 		return;
+	}
 
-	if (targetPlat.GetMoverState() == MOVER_POS2)
+	if (targetPlat.GetMoverState() == MOVER_POS2) {
 		targetPlat.Trigger(eToucher, TRIG_OFF);
-	else
+	} else {
 		targetPlat.SetNextThink(1.0);
+	}
 }
+

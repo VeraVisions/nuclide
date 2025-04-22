@@ -90,56 +90,56 @@ point_camera::Save(float handle)
 }
 
 void
-point_camera::Restore(string strKey, string strValue)
+point_camera::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_iUseSAR":
-		m_iUseSAR = ReadInt(strValue);
+		m_iUseSAR = ReadInt(setValue);
 		break;
 	case "m_iUseFog":
-		m_iUseFog = ReadInt(strValue);
+		m_iUseFog = ReadInt(setValue);
 		break;
 	case "m_vecFogColor":
-		m_vecFogColor = ReadVector(strValue);
+		m_vecFogColor = ReadVector(setValue);
 		break;
 	case "m_flFogStart":
-		m_flFogStart = ReadFloat(strValue);
+		m_flFogStart = ReadFloat(setValue);
 		break;
 	case "m_flFogEnd":
-		m_flFogEnd = ReadFloat(strValue);
+		m_flFogEnd = ReadFloat(setValue);
 		break;
 	case "m_flFOV":
-		m_flFOV = ReadFloat(strValue);
+		m_flFOV = ReadFloat(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-point_camera::SpawnKey(string strKey, string strValue)
+point_camera::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "FOV":
-		m_flFOV = stof(strValue);
+		m_flFOV = stof(setValue);
 		break;
 	case "UseScreenAspectRatio":
-		m_iUseSAR = stoi(strValue);
+		m_iUseSAR = stoi(setValue);
 		break;
 	case "fogEnable":
-		m_iUseFog = stoi(strValue);
+		m_iUseFog = stoi(setValue);
 		break;
 	case "fogColor":
-		m_vecFogColor = stov(strValue);
+		m_vecFogColor = stov(setValue);
 		break;
 	case "fogStart":
-		m_flFogStart = stof(strValue);
+		m_flFogStart = stof(setValue);
 		break;
 	case "fogEnd":
-		m_flFogEnd = stof(strValue);
+		m_flFogEnd = stof(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
@@ -147,9 +147,9 @@ void
 point_camera::Respawn(void)
 {
 	if (HasSpawnFlags(1)) {
-		m_iValue = false;
+		SetValue(0i);
 	} else {
-		m_iValue = true;
+		SetValue(1i);
 	}
 }
 
@@ -163,16 +163,16 @@ point_camera::Input(entity eAct, string strInput, string strData)
 	case "SetOnAndTurnOthersOff":
 		for (entity e = world; (e = find(e, ::classname, "point_camera"));) {
 			point_camera p = (point_camera)e;
-			p.m_iValue = FALSE;
+			p.SetValue(0i);
 		}
 
-		m_iValue = TRUE;
+		SetValue(1i);
 		break;
 	case "SetOn":
-		m_iValue = TRUE;
+		SetValue(1i);
 		break;
 	case "SetOff":
-		m_iValue = FALSE;
+		SetValue(0i);
 		break;
 	default:
 		super::Input(eAct, strInput, strData);

@@ -85,6 +85,8 @@ public:
 	void env_beam(void);
 
 #ifdef SERVER
+	virtual void Save(float);
+	virtual void Restore(string, string);
 	virtual void Respawn(void);
 	virtual void SpawnKey(string,string);
 	virtual void EvaluateEntity(void);
@@ -101,7 +103,7 @@ public:
 #ifdef CLIENT
 	virtual float predraw(void);
 	virtual void ReceiveEntity(float,float);
-	virtual void RendererRestarted(void);
+	virtual void ReloadVideoResources(void);
 #endif
 
 private:
@@ -149,13 +151,56 @@ env_beam::env_beam(void)
 }
 
 #ifdef SERVER
+
+void
+env_beam::SpawnKey(string strKey, string setValue)
+{
+	switch (strKey) {
+	case "LightningStart":
+		m_strStartEnt = ReadString(setValue);
+		break;
+	case "LightningEnd":
+		m_strEndEnt = ReadString(setValue);
+		break;
+	case "Radius":
+		m_flRadius = ReadFloat(setValue);
+		break;
+	case "RadiusScale":
+		m_radiusScale = ReadVector(setValue);
+		break;
+	case "life":
+		m_flLifeTime = ReadFloat(setValue);
+		break;
+	case "StrikeTime":
+		m_flStrikeTime = ReadFloat(setValue);
+		break;
+	case "damage":
+		m_iDamage = ReadInt(setValue);
+		break;
+	case "texture":
+		m_strTexture = ReadString(setValue);
+		break;
+	case "BoltWidth":
+		m_flBeamWidth = ReadFloat(setValue);
+		break;
+	case "NoiseAmplitude":
+		m_flAmplitude = ReadFloat(setValue);
+		break;
+	case "BeamDir":
+		m_vecBeamDir = ReadVector(setValue);
+		break;
+	default:
+		super::SpawnKey(strKey, setValue);
+	}
+}
+
 void
 env_beam::Respawn(void)
 {
 	super::Respawn();
 
 	SetSize([0,0,0], [0,0,0]);
-	m_iValue = 0;
+	SetValue(0i);
 
 	/* force us to precache the sprite model... and get a modelindex back */
 	m_iSpriteID = getmodelindex(m_strTexture, false);
@@ -171,44 +216,88 @@ env_beam::Respawn(void)
 }
 
 void
-env_beam::SpawnKey(string strKey, string strValue)
+env_beam::Save(float handle)
+{
+	super::Save(handle);
+
+	SaveVector(handle, "m_vecStartPos", m_vecStartPos);
+	SaveVector(handle, "m_vecEndPos", m_vecEndPos);
+	SaveInt(handle, "m_iActive", m_iActive);
+	SaveInt(handle, "m_iBeamFlags", m_iBeamFlags);
+	SaveFloat(handle, "m_flBeamWidth", m_flBeamWidth);
+	SaveFloat(handle, "m_flAmplitude", m_flAmplitude);
+	SaveString(handle, "m_strTexture", m_strTexture);
+
+	SaveInt(handle, "m_iSpriteID", m_iSpriteID);
+	SaveString(handle, "m_strStartEnt", m_strStartEnt);
+	SaveString(handle, "m_strEndEnt", m_strEndEnt);
+	SaveFloat(handle, "m_flRadius", m_flRadius);
+	SaveFloat(handle, "m_flLifeTime", m_flLifeTime);
+	SaveFloat(handle, "m_flStrikeTime", m_flStrikeTime);
+	SaveFloat(handle, "m_iDamage", m_iDamage);
+	SaveVector(handle, "m_vecBeamDir", m_vecBeamDir);
+	SaveVector(handle, "m_radiusScale", m_radiusScale);
+	SaveVector(handle, "m_chosenDest", m_chosenDest);
+
+}
+
+void
+env_beam::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
-	case "LightningStart":
-		m_strStartEnt = ReadString(strValue);
+	case "m_vecStartPos":
+		m_vecStartPos = ReadVector(setValue);
 		break;
-	case "LightningEnd":
-		m_strEndEnt = ReadString(strValue);
+	case "m_vecEndPos":
+		m_vecEndPos = ReadVector(setValue);
 		break;
-	case "Radius":
-		m_flRadius = ReadFloat(strValue);
+	case "m_iActive":
+		m_iActive = ReadInt(setValue);
 		break;
-	case "RadiusScale":
-		m_radiusScale = ReadVector(strValue);
+	case "m_iBeamFlags":
+		m_iBeamFlags = ReadInt(setValue);
 		break;
-	case "life":
-		m_flLifeTime = ReadFloat(strValue);
+	case "m_flBeamWidth":
+		m_flBeamWidth = ReadFloat(setValue);
 		break;
-	case "StrikeTime":
-		m_flStrikeTime = ReadFloat(strValue);
+	case "m_flAmplitude":
+		m_flAmplitude = ReadFloat(setValue);
 		break;
-	case "damage":
-		m_iDamage = ReadInt(strValue);
+	case "m_strTexture":
+		m_strTexture = ReadString(setValue);
 		break;
-	case "texture":
-		m_strTexture = ReadString(strValue);
+	case "m_iSpriteID":
+		m_iSpriteID = ReadInt(setValue);
 		break;
-	case "BoltWidth":
-		m_flBeamWidth = ReadFloat(strValue);
+	case "m_strStartEnt":
+		m_strStartEnt = ReadString(setValue);
 		break;
-	case "NoiseAmplitude":
-		m_flAmplitude = ReadFloat(strValue);
+	case "m_strEndEnt":
+		m_strEndEnt = ReadString(setValue);
 		break;
-	case "BeamDir":
-		m_vecBeamDir = ReadVector(strValue);
+	case "m_flRadius":
+		m_flRadius = ReadFloat(setValue);
+		break;
+	case "m_flLifeTime":
+		m_flLifeTime = ReadFloat(setValue);
+		break;
+	case "m_flStrikeTime":
+		m_flStrikeTime = ReadFloat(setValue);
+		break;
+	case "m_iDamage":
+		m_iDamage = ReadFloat(setValue);
+		break;
+	case "m_vecBeamDir":
+		m_vecBeamDir = ReadVector(setValue);
+		break;
+	case "m_radiusScale":
+		m_radiusScale = ReadVector(setValue);
+		break;
+	case "m_chosenDest":
+		m_chosenDest = ReadVector(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
@@ -329,22 +418,22 @@ env_beam::Trigger(entity act, triggermode_t state)
 {
 	/* if toggle isn't enabled, it can only ever get activated */
 	if (m_flLifeTime > 0 && HasSpawnFlags(BEAM_TOGGLE) == false) {
-		m_iValue = 1;
+		SetValue(1i);
 	} else {
 		switch (state) {
 		case TRIG_OFF:
-			m_iValue = 0;
+			SetValue(0i);
 			break;
 		case TRIG_ON:
-			m_iValue = 1;
+			SetValue(1i);
 			break;
 		default:
-			m_iValue = 1 - m_iValue;
+			SetValue(1i - GetValue(this));
 		}
 	}
 
 	/* either launch a whole new beam, or kill it entirely */
-	if (m_iValue)
+	if (GetValue(this))
 		LaunchBeam();
 	else
 		StopBeam();
@@ -411,9 +500,9 @@ env_beam::EvaluateEntity(void)
 	EVALUATE_VECTOR(m_vecEndPos, 2, BEAM_CHANGED_ENDPOS_Z)
 	EVALUATE_FIELD(m_iActive, BEAM_CHANGED_ACTIVE)
 	EVALUATE_FIELD(m_iBeamFlags, BEAM_CHANGED_FLAGS)
-	EVALUATE_VECTOR(m_vecRenderColor, 0, BEAM_CHANGED_COLOR)
-	EVALUATE_VECTOR(m_vecRenderColor, 1, BEAM_CHANGED_COLOR)
-	EVALUATE_VECTOR(m_vecRenderColor, 2, BEAM_CHANGED_COLOR)
+	EVALUATE_VECTOR(m_renderColor, 0, BEAM_CHANGED_COLOR)
+	EVALUATE_VECTOR(m_renderColor, 1, BEAM_CHANGED_COLOR)
+	EVALUATE_VECTOR(m_renderColor, 2, BEAM_CHANGED_COLOR)
 	EVALUATE_FIELD(m_flBeamWidth, BEAM_CHANGED_WIDTH)
 	EVALUATE_FIELD(m_flAmplitude, BEAM_CHANGED_AMPLITUDE)
 }
@@ -421,7 +510,8 @@ env_beam::EvaluateEntity(void)
 float
 env_beam::SendEntity(entity ePEnt, float flChanged)
 {
-	float scaler = m_flRenderAmt / 255;
+	vector renderColor = GetRenderColor();
+	float scaler = m_renderAmount / 255;
 	WriteByte(MSG_ENTITY, ENT_BEAM);
 	WriteFloat(MSG_ENTITY, flChanged);
 
@@ -434,9 +524,9 @@ env_beam::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_COORD(m_vecEndPos[2], BEAM_CHANGED_ENDPOS_Z)
 	SENDENTITY_BYTE(m_iActive, BEAM_CHANGED_ACTIVE)
 	SENDENTITY_BYTE(m_iBeamFlags, BEAM_CHANGED_FLAGS)
-	SENDENTITY_BYTE(m_vecRenderColor[0] * scaler, BEAM_CHANGED_COLOR)
-	SENDENTITY_BYTE(m_vecRenderColor[1] * scaler, BEAM_CHANGED_COLOR)
-	SENDENTITY_BYTE(m_vecRenderColor[2] * scaler, BEAM_CHANGED_COLOR)
+	SENDENTITY_BYTE(renderColor[0] * scaler, BEAM_CHANGED_COLOR)
+	SENDENTITY_BYTE(renderColor[1] * scaler, BEAM_CHANGED_COLOR)
+	SENDENTITY_BYTE(renderColor[2] * scaler, BEAM_CHANGED_COLOR)
 	SENDENTITY_BYTE(m_flBeamWidth, BEAM_CHANGED_WIDTH)
 	SENDENTITY_BYTE(m_flAmplitude, BEAM_CHANGED_AMPLITUDE)
 
@@ -450,6 +540,8 @@ env_beam::SendEntity(entity ePEnt, float flChanged)
 void
 env_beam::ReceiveEntity(float flNew, float flChanged)
 {
+	vector renderColor;
+
 	READENTITY_INT(m_iSpriteID, BEAM_CHANGED_SPRITE)
 	READENTITY_COORD(m_vecStartPos[0], BEAM_CHANGED_STARTPOS_X)
 	READENTITY_COORD(m_vecStartPos[1], BEAM_CHANGED_STARTPOS_Y)
@@ -459,9 +551,9 @@ env_beam::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_COORD(m_vecEndPos[2], BEAM_CHANGED_ENDPOS_Z)
 	READENTITY_BYTE(m_iActive, BEAM_CHANGED_ACTIVE)
 	READENTITY_BYTE(m_iBeamFlags, BEAM_CHANGED_FLAGS)
-	READENTITY_BYTE(m_vecRenderColor[0], BEAM_CHANGED_COLOR)
-	READENTITY_BYTE(m_vecRenderColor[1], BEAM_CHANGED_COLOR)
-	READENTITY_BYTE(m_vecRenderColor[2], BEAM_CHANGED_COLOR)
+	READENTITY_BYTE(renderColor[0], BEAM_CHANGED_COLOR)
+	READENTITY_BYTE(renderColor[1], BEAM_CHANGED_COLOR)
+	READENTITY_BYTE(renderColor[2], BEAM_CHANGED_COLOR)
 	READENTITY_BYTE(m_flBeamWidth, BEAM_CHANGED_WIDTH)
 	READENTITY_BYTE(m_flAmplitude, BEAM_CHANGED_AMPLITUDE)
 
@@ -472,13 +564,18 @@ env_beam::ReceiveEntity(float flNew, float flChanged)
 	origin = m_vecStartPos;
 
 	/* the sprite has changed, we need to query a new texture */
+	if (flChanged & BEAM_CHANGED_COLOR) {
+		SetRenderColor(renderColor);
+	}
+
+	/* the sprite has changed, we need to query a new texture */
 	if (flChanged & BEAM_CHANGED_SPRITE) {
-		RendererRestarted();
+		ReloadVideoResources();
 	}
 }
 
 void
-env_beam::RendererRestarted(void)
+env_beam::ReloadVideoResources(void)
 {
 	m_strTexture = spriteframe(modelnameforindex(m_iSpriteID), 0, 0.0f);
 }
@@ -584,10 +681,10 @@ env_beam::predraw(void)
 				(i == BEAM_COUNT && m_iBeamFlags & BEAM_SHADEEND))
 				a = 0.0f;
 
-			R_PolygonVertex(point, [1, 0], m_vecRenderColor / 255, a);
+			R_PolygonVertex(point, [1, 0], m_renderColor / 255, a);
 
 			if (autocvar(cl_showoff, 0)) {
-				float dli = dynamiclight_add(point, 150, m_vecRenderColor/255);
+				float dli = dynamiclight_add(point, 150, m_renderColor/255);
 				dynamiclight_set(dli, LFIELD_STYLE, 64);
 			}
 

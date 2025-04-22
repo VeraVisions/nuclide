@@ -146,55 +146,55 @@ ambient_generic::Save(float handle)
 }
 
 void
-ambient_generic::Restore(string strKey, string strValue)
+ambient_generic::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_bLoops":
-		m_bLoops = ReadInt(strValue);
+		m_bLoops = ReadInt(setValue);
 		break;
 	case "m_bToggle":
-		m_bToggle = ReadInt(strValue);
+		m_bToggle = ReadInt(setValue);
 		break;
 	case "m_flPitch":
-		m_flPitch = ReadFloat(strValue);
+		m_flPitch = ReadFloat(setValue);
 		break;
 	case "m_flRadius":
-		m_flRadius = ReadFloat(strValue);
+		m_flRadius = ReadFloat(setValue);
 		break;
 	case "m_flVolume":
-		m_flVolume = ReadFloat(strValue);
+		m_flVolume = ReadFloat(setValue);
 		break;
 	case "m_strSpawnPath":
-		m_strSpawnPath = ReadString(strValue);
+		m_strSpawnPath = ReadString(setValue);
 		break;
 	case "m_strActivePath":
-		m_strActivePath = ReadString(strValue);
+		m_strActivePath = ReadString(setValue);
 		break;
 	case "m_bIsModern":
-		m_bIsModern = ReadBool(strValue);
+		m_bIsModern = ReadBool(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-ambient_generic::SpawnKey(string strKey, string strValue)
+ambient_generic::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "message":
-		m_strSpawnPath = strValue;
+		m_strSpawnPath = setValue;
 		message = __NULL__;
 		break;
 	case "volume":
-		m_flSpawnVolume = stof(strValue);
+		m_flSpawnVolume = stof(setValue);
 		break;
 	case "pitch":
-		m_flSpawnPitch = stof(strValue);
+		m_flSpawnPitch = stof(setValue);
 		break;
 	/* backwards compat with GoldSrc/Source */
 	case "health":
-		m_flSpawnVolume = stof(strValue) * 0.1f;
+		m_flSpawnVolume = stof(setValue) * 0.1f;
 		break;
 	/* TODO: currently unimplemented */
 	case "preset":
@@ -214,7 +214,7 @@ ambient_generic::SpawnKey(string strKey, string strValue)
 		m_bIsModern = true;
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 		break;
 	}
 }
@@ -320,7 +320,7 @@ ambient_generic::UseNormal(entity act, triggermode_t state)
 	} else {
 		/* if the file doesn't exist, assume it's a SoundDef */
 		if (fileExists(strcat("sound/", m_strActivePath)) == false) {
-			Sound_Play(this, CHAN_BODY, m_strActivePath);
+			SoundDef_Play(this, CHAN_BODY, m_strActivePath);
 		} else {
 			sound(this, CHAN_BODY, m_strActivePath, m_flVolume, m_flRadius, m_flPitch);
 		}
@@ -342,11 +342,11 @@ ambient_generic::UseLoop(entity act, triggermode_t state)
 }
 
 void
-ambient_generic::Input(entity eAct, string strKey, string strValue)
+ambient_generic::Input(entity eAct, string strKey, string setValue)
 {
 	switch (strKey) {
 	case "Pitch":
-		m_flPitch = stof(strValue);
+		m_flPitch = stof(setValue);
 		break;
 	case "PlaySound":
 		m_bToggle = false;
@@ -361,10 +361,10 @@ ambient_generic::Input(entity eAct, string strKey, string strValue)
 		Trigger(eAct, TRIG_TOGGLE);
 		break;
 	case "Volume":
-		m_flVolume = stof(strValue) / 10;
+		m_flVolume = stof(setValue) / 10;
 		break;
 	default:
-		super::Input(eAct, strKey, strValue);
+		super::Input(eAct, strKey, setValue);
 	}
 }
 
@@ -455,7 +455,7 @@ ambient_generic::ReceiveEntity(float isnew, float flChanged)
 
 	if (m_bLoops == true) {
 		if (flChanged & AMBIENT_MODERN) {
-			Sound_Update(this, CHAN_BODY, Sound_GetID(m_strActivePath), m_flVolume);
+			SoundDef_Update(this, CHAN_BODY, SoundDef_GetID(m_strActivePath), m_flVolume);
 		} else {
 			soundupdate(this, CHAN_BODY, 
 				m_strActivePath, m_flVolume, m_flRadius, m_flPitch, 0, 0);

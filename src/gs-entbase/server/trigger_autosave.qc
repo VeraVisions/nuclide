@@ -59,14 +59,14 @@ trigger_autosave::Save(float handle)
 }
 
 void
-trigger_autosave::Restore(string strKey, string strValue)
+trigger_autosave::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_flDelay":
-		m_flDelay = ReadFloat(strValue);
+		m_flDelay = ReadFloat(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 

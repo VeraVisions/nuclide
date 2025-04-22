@@ -55,7 +55,7 @@ CMD_testSpotLight(void)
 		spot.SetGlowMaterial("textures/sfx/spot_flare");
 		spot.SetBeamMaterial("textures/sfx/spot_cone");
 		spot.drawmask = MASK_ENGINE;
-		spot.vv_flags |= VFL_VIDREMOVE;
+		spot.m_nuclideFlags |= VFL_VIDREMOVE;
 		spot.SetLightStyle(64);
 
 		env_glow glow = spawn(env_glow);
@@ -64,8 +64,8 @@ CMD_testSpotLight(void)
 		glow.m_strMaterial = "textures/sfx/flare1";
 		glow.drawmask = MASK_ENGINE;
 		glow.SetRenderMode(RM_GLOW);
-		glow.RendererRestarted();
-		glow.vv_flags |= VFL_VIDREMOVE;
+		glow.ReloadVideoResources();
+		glow.m_nuclideFlags |= VFL_VIDREMOVE;
 	} else {
 		p = dynamiclight_spawnstatic2(g_view.GetCameraOrigin(), 512, [1,1,1], 0);
 		dynamiclight_set(p, LFIELD_STYLE, 2);
@@ -354,7 +354,7 @@ Cmd_Parse(string sCMD)
 		CMD_ListParticles();
 		break;
 	case "listClientSoundDef":
-		Sound_DebugList();
+		SoundDef_DebugList();
 		break;
 	case "listServerSoundDef":
 		localcmd("sv listSoundDef\n");
@@ -554,7 +554,10 @@ Cmd_Parse(string sCMD)
 	case "nodeOffset":
 	case "nodeUnlink":
 	case "traceMaterial":
-	case "listSpawnData":
+	case "listEntitySpawnData":
+	case "listEntitiesByClass":
+	case "listEntityData":
+	case "addon":
 		localcmd(sprintf("sv %s\n", sCMD));
 		break;
 	/* client aliases for client commands */
@@ -571,6 +574,7 @@ Cmd_Parse(string sCMD)
 	case "listClientEntityDef":
 		EntityDef_DebugList();
 		break;
+	case "listEntityDef":
 	case "listServerEntityDef":
 		localcmd("sv listEntityDef\n");
 		break;
@@ -601,35 +605,40 @@ Cmd_Init(void)
 	InitStart();
 
 	/* developer/debug commands */
-	registercommand("listFramegroups");
-	registercommand("listModels");
-	registercommand("listSounds");
-	registercommand("listParticles");
-	registercommand("listTitles");
-	registercommand("listClientSoundDef");
-	registercommand("listServerSoundDef");
-	registercommand("traceMaterial");
-	registercommand("listClientEntityDef");
-	registercommand("listServerEntityDef");
-	registercommand("listInventory");
+	registercommand("killAllBots");
+	registercommand("killClass");
+	registercommand("killMovables");
 	registercommand("listAmmo");
+	registercommand("listBotProfiles");
+	registercommand("listClientEntityDef");
+	registercommand("listClientSoundDef");
+	registercommand("listEntityData");
+	registercommand("listEntityDef");
+	registercommand("listEntitiesByClass");
+	registercommand("listEntitySpawnData");
+	registercommand("listFramegroups");
+	registercommand("listInventory");
+	registercommand("listMapTweaks");
+	registercommand("listModels");
+	registercommand("listParticles");
+	registercommand("listServerEntityDef");
+	registercommand("listServerSoundDef");
+	registercommand("listSounds");
+	registercommand("listTargets");
+	registercommand("listTitles");
 	registercommand("ragdollCreate");
+	registercommand("traceMaterial");
 
 	/* server commands */
 	registercommand("addBot");
-	registercommand("killAllBots");
-	registercommand("resetAllBotsGoals");
-	registercommand("killClass");
-	registercommand("killMovables");
-	registercommand("trigger");
+	registercommand("addon");
 	registercommand("input");
-	registercommand("listTargets");
-	registercommand("teleport");
-	registercommand("teleportToClass");
+	registercommand("resetAllBotsGoals");
 	registercommand("respawnEntities");
 	registercommand("spawnDef");
-	registercommand("listBotProfiles");
-	registercommand("listMapTweaks");
+	registercommand("teleport");
+	registercommand("teleportToClass");
+	registercommand("trigger");
 
 	/* nav editing */
 	registercommand("nodeAdd");

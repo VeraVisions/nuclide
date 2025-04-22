@@ -33,7 +33,7 @@ Cmd_ParseClientCommand(ncClient sender, string cmd, int commandArguments)
 		}
 		break;
 	case "spectate":
-		if (sender.classname != "player") {
+		if (is.Player(sender)) {
 			break;
 		}
 
@@ -71,7 +71,7 @@ Cmd_ParseClientCommand(ncClient sender, string cmd, int commandArguments)
 		bprint(PRINT_CHAT, sprintf("we have %s minutes remaining", timestring));
 		break;
 	case "listInventory":
-		ncActor_ListInventory((ncActor)self);
+		ncActor_ListInventory(sender);
 		break;
 	case "giveInventoryItem":
 		(ncActor)sender.GiveItem(argv(1));

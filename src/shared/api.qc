@@ -88,7 +88,7 @@ SHPF_declManager_New(void)
 		return (newDict.declclass);
 	}
 
-	NSError("Unable to create decl");
+	ncError("Unable to create decl");
 	return (__NULL__);
 }
 
@@ -101,7 +101,7 @@ SHPF_declManager_GetString(string defName, string keyName)
 		return (findDecl.GetString(keyName));
 	}
 
-	NSError("Decl %S is not loaded.", defName);
+	ncError("Decl %S is not loaded.", defName);
 	return (__NULL__);
 }
 
@@ -114,7 +114,7 @@ SHPF_declManager_GetInteger(string defName, string keyName)
 		return (findDecl.GetInteger(keyName));
 	}
 
-	NSError("Decl %S is not loaded.", defName);
+	ncError("Decl %S is not loaded.", defName);
 	return (__NULL__);
 }
 
@@ -127,7 +127,7 @@ SHPF_declManager_GetFloat(string defName, string keyName)
 		return (findDecl.GetFloat(keyName));
 	}
 
-	NSError("Decl %S is not loaded.", defName);
+	ncError("Decl %S is not loaded.", defName);
 	return (__NULL__);
 }
 
@@ -140,7 +140,7 @@ SHPF_declManager_GetBool(string defName, string keyName)
 		return (findDecl.GetBool(keyName));
 	}
 
-	NSError("Decl %S is not loaded.", defName);
+	ncError("Decl %S is not loaded.", defName);
 	return (__NULL__);
 }
 
@@ -153,7 +153,7 @@ SHPF_declManager_GetVector(string defName, string keyName)
 		return (findDecl.GetVector(keyName));
 	}
 
-	NSError("Decl %S is not loaded.", defName);
+	ncError("Decl %S is not loaded.", defName);
 	return (__NULL__);
 }
 
@@ -167,7 +167,7 @@ SHPF_declManager_AddKey(string defName, string keyName, string setValue)
 		return;
 	}
 
-	NSError("Decl %S is not loaded.", defName);
+	ncError("Decl %S is not loaded.", defName);
 }
 
 void
@@ -180,7 +180,7 @@ SHPF_declManager_RemoveKey(string defName, string keyName)
 		return;
 	}
 
-	NSError("Decl %S is not loaded.", defName);
+	ncError("Decl %S is not loaded.", defName);
 }
 
 void
@@ -193,7 +193,7 @@ SHPF_declManager_Delete(string defName, string keyName)
 		return;
 	}
 
-	NSError("Decl %S is not loaded.", defName);
+	ncError("Decl %S is not loaded.", defName);
 }
 
 /* ammo library */
@@ -385,11 +385,11 @@ SHPF_teams_Valid(int teamID)
 	}
 
 	if (teamID <= 0i) {
-		NSError("Team ID cannot be 0 or negative.");
+		ncError("Team ID cannot be 0 or negative.");
 	}
 
 	if (teamID > 1000i) {
-		NSError("Team ID cannot be over 1000. Reserved.");
+		ncError("Team ID cannot be over 1000. Reserved.");
 	}
 
 	return (true);
@@ -449,7 +449,7 @@ SHPF_teams_NumPlayers(int teamID)
 		}
 	}
 #else
-	for (entity teamPlayer = world; (teamPlayer = find(teamPlayer, ::classname, "player"));) { 
+	for (entity teamPlayer = world; (teamPlayer = next.Player(teamPlayer));) {
 		if (teamPlayer.team == (float)teamID) {
 			countedPlayers++;
 		}
@@ -474,7 +474,7 @@ SHPF_teams_NumAlivePlayers(int teamID)
 		}
 	}
 #else
-	for (entity teamPlayer = world; (teamPlayer = find(teamPlayer, ::classname, "player"));) { 
+	for (entity teamPlayer = world; (teamPlayer = next.Player(teamPlayer));) {
 		if (teamPlayer.team == (float)teamID && teamPlayer.health > 0) {
 			countedPlayers++;
 		}
@@ -491,7 +491,7 @@ SHPF_teams_RandomPlayer(int teamID)
 	int randomCounter = floor(random(1, (float)SHPF_teams_NumAlivePlayers(teamID)));
 	int countVal = 0i;
 
-	for (entity teamPlayer = world; (teamPlayer = find(teamPlayer, ::classname, "player"));) { 
+	for (entity teamPlayer = world; (teamPlayer = next.Player(teamPlayer));) {
 		if (teamPlayer.team == teamID) {
 			countVal++;
 
@@ -521,7 +521,7 @@ SHPF_teams_NumDeadPlayers(int teamID)
 	}
 #else
 	for (entity a = world; (a = findfloat(a, ::identity, 1));) {
-		if (isPlayer(a)) {
+		if (is.Player(a)) {
 			ncPlayer pl = (ncPlayer)a;
 			if (pl.GetTeam() == (float)teamID && pl.IsAlive() == false) {
 				countedPlayers++;
@@ -548,7 +548,7 @@ SHPF_teams_TotalDeaths(int teamID)
 	}
 #else
 	for (entity a = world; (a = findfloat(a, ::identity, 1));) {
-		if (isPlayer(a)) {
+		if (is.Player(a)) {
 			ncPlayer pl = (ncPlayer)a;
 			if (pl.GetTeam() == (float)teamID) {
 				deathCounter += pl.deaths;
@@ -574,7 +574,7 @@ SHPF_teams_TotalFrags(int teamID)
 	}
 #else
 	for (entity a = world; (a = findfloat(a, ::identity, 1));) {
-		if (isPlayer(a)) {
+		if (is.Player(a)) {
 			ncPlayer pl = (ncPlayer)a;
 			if (pl.GetTeam() == (float)teamID) {
 				fragCounter += pl.frags;
@@ -620,6 +620,15 @@ SHPF_teams_SetScore(int teamID, int setValue)
 
 #ifdef SERVER
 	SHPF_serverinfo_SetInteger(sprintf("teamscore_%i", teamID), setValue);
+
+	int scoreLimit = cvars.GetInteger("scorelimit");
+
+	if (scoreLimit >= 1i) {
+		if (setValue >= scoreLimit) {
+			ncRuleDelegate activeRules = ncRuleDelegate::ActiveInstance();
+			activeRules.IntermissionStart();
+		}
+	}
 #else
 #endif
 }
@@ -644,15 +653,15 @@ SHPF_teams_SetUp(int teamID, string teamTitle, vector teamColor, bool openTeam)
 	int teamCount = 0i;
 
 	if (!STRING_SET(teamTitle)) {
-		NSError("Team title cannot be empty.");
+		ncError("Team title cannot be empty.");
 	}
 
 	if (teamID <= 0i) {
-		NSError("Team ID cannot be 0 or negative.");
+		ncError("Team ID cannot be 0 or negative.");
 	}
 
 	if (teamID > 1000i) {
-		NSError("Team ID cannot be over 1000. Reserved.");
+		ncError("Team ID cannot be over 1000. Reserved.");
 	}
 
 	SHPF_serverinfo_SetString(sprintf("team_%i", teamID), teamTitle);
@@ -693,7 +702,7 @@ SHPF_teams_AddClass(int teamID, string classType)
 	string currentClasses = __NULL__;
 
 	if (!STRING_SET(classType)) {
-		NSError("Class type cannot be empty.");
+		ncError("Class type cannot be empty.");
 	}
 
 	teamInfo = sprintf("teamclass_%i", teamID);
@@ -842,7 +851,6 @@ SHPF_weaponInfo_IsDetonationTimed(string weaponDef)
 	return (isFused);
 }
 
-
 ncEntity
 spawnClass(string className, vector desiredPos)
 {
@@ -894,12 +902,12 @@ sendInput(entity target, string inputName, string dataString, entity activator)
 	ncEntity targetEntity = (ncEntity)target;
 
 	if (!target) {
-		NSError("target entity is nil");
+		ncError("target entity is nil");
 		return;
 	}
 
 	if (!STRING_SET(inputName)) {
-		NSError("No input specified.");
+		ncError("No input specified.");
 		return;
 	}
 
@@ -910,7 +918,7 @@ sendInput(entity target, string inputName, string dataString, entity activator)
 
 /* helper functions */
 bool
-isAI(entity entityToCheck)
+SHPF_is_AI(entity entityToCheck)
 {
 	if (!entityToCheck) {
 		return (false);
@@ -924,7 +932,7 @@ isAI(entity entityToCheck)
 }
 
 bool
-isAlive(entity entityToCheck)
+SHPF_is_Alive(entity entityToCheck)
 {
 	if (!entityToCheck) {
 		return (false);
@@ -941,7 +949,7 @@ isAlive(entity entityToCheck)
 }
 
 bool
-isGodMode(entity entityToCheck)
+SHPF_is_GodMode(entity entityToCheck)
 {
 	if (!entityToCheck) {
 		return (false);
@@ -955,7 +963,7 @@ isGodMode(entity entityToCheck)
 }
 
 bool
-isClient(entity entityToCheck)
+SHPF_is_Client(entity entityToCheck)
 {
 	if (!entityToCheck) {
 		return (false);
@@ -965,11 +973,11 @@ isClient(entity entityToCheck)
 }
 
 bool
-isPlayer(entity entityToCheck)
+SHPF_is_Player(entity entityToCheck)
 {
 	if (STRING_SET(entityToCheck.classname))
 
-	if (isClient(entityToCheck)) {
+	if (SHPF_is_Client(entityToCheck)) {
 		ncClient pl = (ncClient)entityToCheck;
 		return pl.IsPlayer();
 	}
@@ -978,9 +986,9 @@ isPlayer(entity entityToCheck)
 }
 
 bool
-isSentient(entity entityToCheck)
+SHPF_is_Sentient(entity entityToCheck)
 {
-	if (isAI(entityToCheck) || isPlayer(entityToCheck)) {
+	if (SHPF_is_AI(entityToCheck) || SHPF_is_Player(entityToCheck)) {
 		return (true);
 	}
 
@@ -988,17 +996,21 @@ isSentient(entity entityToCheck)
 }
 
 bool
-isBot(entity entityToCheck)
+SHPF_is_Bot(entity entityToCheck)
 {
 	if (!entityToCheck) {
 		return (false);
 	}
 
+#ifdef SERVER
+	return (clienttype(entityToCheck) == CLIENTTYPE_BOT) ? (true) : (false);
+#else
 	return userinfo.GetBool(entityToCheck, "*bot");
+#endif
 }
 
 bool
-isWeapon(entity entityToCheck)
+SHPF_is_Weapon(entity entityToCheck)
 {
 	if (!entityToCheck) {
 		return (false);
@@ -1008,13 +1020,37 @@ isWeapon(entity entityToCheck)
 }
 
 bool
-isItem(entity entityToCheck)
+SHPF_is_Item(entity entityToCheck)
 {
 	if (!entityToCheck) {
 		return (false);
 	}
 
 	return (entityToCheck._isItem) ? (true) : (false);
+}
+
+entity
+SHPF_next_Item(entity lastItem)
+{
+	return findfloat(lastItem, ::_isItem, 1);
+}
+
+entity
+SHPF_next_Weapon(entity lastItem)
+{
+	return findfloat(lastItem, ::_isWeapon, 1);
+}
+
+entity
+SHPF_next_Actor(entity lastItem)
+{
+	return findfloat(lastItem, ::_isActor, 1);
+}
+
+entity
+SHPF_next_Player(entity lastItem)
+{
+	return findfloat(lastItem, ::_isPlayer, 1);
 }
 
 string
@@ -1056,6 +1092,7 @@ SHPF_precache_Model(string modelPath)
 		return (0i);
 	}
 
+	modelPath = Util_FixModel(modelPath);
 	precache_model(modelPath);
 	PropData_ForModel(modelPath);
 	return (int)getmodelindex(modelPath, false);
@@ -1068,7 +1105,7 @@ SHPF_precache_Sound(string soundDecl)
 		return (-1i);
 	}
 
-	return (int)Sound_Precache(soundDecl);
+	return (int)SoundDef_Precache(soundDecl);
 }
 
 int
@@ -1079,6 +1116,21 @@ SHPF_precache_Particle(string particleName)
 	}
 
 	return (int)particleeffectnum(particleName);
+}
+
+
+bool
+SHPF_precache_Entity(string defName)
+{
+	if (!STRING_SET(defName)) {
+		return (false);
+	}
+
+#ifdef SERVER
+	return EntityDef_Precache(defName);
+#else
+	return (false);
+#endif
 }
 
 void

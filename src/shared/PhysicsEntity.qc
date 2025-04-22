@@ -59,16 +59,15 @@ ncPhysicsEntity::ncPhysicsEntity(void)
 {
 	mass = 1.0f;
 	isPhysics = true;
-	m_flInertiaScale = 1.0f;
-	m_iEnabled = 0i;
-	m_iShape = autocvar_phys_lowspec == false ? GEOMTYPE_TRIMESH : GEOMTYPE_BOX;
-	m_iMaterial = 0i;
-	m_iFlags = 0i;
-	m_flMass = 1.0f;
+	m_inertiaScale = 1.0f;
+	m_desiredGeomtype = autocvar_phys_lowspec == false ? GEOMTYPE_TRIMESH : GEOMTYPE_BOX;
+	m_surfdataID = 0i;
+	m_physicsFlags = 0i;
+	m_overrideMass = 1.0f;
 	max_angular = 6500.0f;
 
 #ifdef SERVER
-	m_strOnDamaged = __NULL__;
+	m_outputOnDamaged = __NULL__;
 #endif
 
 	m_lastTouchTime = 0.0f;
@@ -85,9 +84,9 @@ ncPhysicsEntity::SetModel(string modelPath)
 
 	/* smaller/thinner models benefit from not being an expensive trimesh. */
 	if (sizeLength < 32) {
-		m_iShape = GEOMTYPE_BOX;
+		m_desiredGeomtype = GEOMTYPE_BOX;
 	} else {
-		m_iShape = autocvar_phys_lowspec == false ? GEOMTYPE_TRIMESH : GEOMTYPE_BOX;
+		m_desiredGeomtype = autocvar_phys_lowspec == false ? GEOMTYPE_TRIMESH : GEOMTYPE_BOX;
 	}
 }
 
@@ -98,46 +97,42 @@ ncPhysicsEntity::Spawned(void)
 	super::Spawned();
 
 	/* I/O */
-	if (STRING_SET(m_strOnDamaged))
-		m_strOnDamaged = CreateOutput(m_strOnDamaged);
+	if (STRING_SET(m_outputOnDamaged))
+		m_outputOnDamaged = CreateOutput(m_outputOnDamaged);
 }
 
 void
 ncPhysicsEntity::Save(float handle)
 {
 	super::Save(handle);
-	SaveInt(handle, "m_iEnabled", m_iEnabled);
-	SaveInt(handle, "m_iShape", m_iShape);
-	SaveInt(handle, "m_iMaterial", m_iMaterial);
-	SaveInt(handle, "m_iFlags", m_iFlags);
-	SaveFloat(handle, "m_flInertiaScale", m_flInertiaScale);
-	SaveString(handle, "m_strOnDamaged", m_strOnDamaged);
+	SaveInt(handle, "desiredGeomtype", m_desiredGeomtype);
+	SaveInt(handle, "surfdataID", m_surfdataID);
+	SaveInt(handle, "physicsFlags", m_physicsFlags);
+	SaveFloat(handle, "inertiaScale", m_inertiaScale);
+	SaveString(handle, "outputOnDamaged", m_outputOnDamaged);
 }
 
 void
-ncPhysicsEntity::Restore(string strKey, string strValue)
+ncPhysicsEntity::Restore(string keyName, string setValue)
 {
-	switch (strKey) {
-	case "m_iEnabled":
-		m_iEnabled = ReadInt(strValue);
+	switch (keyName) {
+	case "desiredGeomtype":
+		m_desiredGeomtype = ReadInt(setValue);
 		break;
-	case "m_iShape":
-		m_iShape = ReadInt(strValue);
+	case "surfdataID":
+		m_surfdataID = ReadInt(setValue);
 		break;
-	case "m_iMaterial":
-		m_iMaterial = ReadInt(strValue);
+	case "physicsFlags":
+		m_physicsFlags = ReadInt(setValue);
 		break;
-	case "m_iFlags":
-		m_iFlags = ReadInt(strValue);
+	case "inertiaScale":
+		m_inertiaScale = ReadFloat(setValue);
 		break;
-	case "m_flInertiaScale":
-		m_flInertiaScale = ReadFloat(strValue);
-		break;
-	case "m_strOnDamaged":
-		m_strOnDamaged = ReadString(strValue);
+	case "outputOnDamaged":
+		m_outputOnDamaged = ReadString(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(keyName, setValue);
 	}
 }
 #endif
@@ -193,32 +188,32 @@ ncPhysicsEntity::EvaluateEntity(void)
 	EVALUATE_FIELD(frame, RDENT_CHANGED_FRAME)
 	EVALUATE_FIELD(skin, RDENT_CHANGED_SKIN)
 	EVALUATE_FIELD(effects, RDENT_CHANGED_EFFECTS)
-	EVALUATE_FIELD(m_iBody, RDENT_CHANGED_BODY)
+	EVALUATE_FIELD(m_geomsetField, RDENT_CHANGED_BODY)
 	EVALUATE_FIELD(scale, RDENT_CHANGED_SCALE)
-	EVALUATE_VECTOR(m_vecAxialScale, 0, RDENT_CHANGED_SCALE)
-	EVALUATE_VECTOR(m_vecAxialScale, 1, RDENT_CHANGED_SCALE)
-	EVALUATE_VECTOR(m_vecAxialScale, 2, RDENT_CHANGED_SCALE)
+	EVALUATE_VECTOR(m_axialScale, 0, RDENT_CHANGED_SCALE)
+	EVALUATE_VECTOR(m_axialScale, 1, RDENT_CHANGED_SCALE)
+	EVALUATE_VECTOR(m_axialScale, 2, RDENT_CHANGED_SCALE)
 	EVALUATE_VECTOR(velocity, 0, RDENT_CHANGED_VELOCITY)
 	EVALUATE_VECTOR(velocity, 1, RDENT_CHANGED_VELOCITY)
 	EVALUATE_VECTOR(velocity, 2, RDENT_CHANGED_VELOCITY)
 	EVALUATE_VECTOR(avelocity, 0, RDENT_CHANGED_ANGULARVELOCITY)
 	EVALUATE_VECTOR(avelocity, 1, RDENT_CHANGED_ANGULARVELOCITY)
 	EVALUATE_VECTOR(avelocity, 2, RDENT_CHANGED_ANGULARVELOCITY)
-	EVALUATE_FIELD(m_iRenderMode, RDENT_CHANGED_RENDERMODE)
-	EVALUATE_FIELD(m_iRenderFX, RDENT_CHANGED_RENDERMODE)
-	EVALUATE_VECTOR(m_vecRenderColor, 0, RDENT_CHANGED_RENDERCOLOR)
-	EVALUATE_VECTOR(m_vecRenderColor, 1, RDENT_CHANGED_RENDERCOLOR)
-	EVALUATE_VECTOR(m_vecRenderColor, 2, RDENT_CHANGED_RENDERCOLOR)
+	EVALUATE_FIELD(m_renderMode, RDENT_CHANGED_RENDERMODE)
+	EVALUATE_FIELD(m_renderFX, RDENT_CHANGED_RENDERMODE)
+	EVALUATE_VECTOR(m_renderColor, 0, RDENT_CHANGED_RENDERCOLOR)
+	EVALUATE_VECTOR(m_renderColor, 1, RDENT_CHANGED_RENDERCOLOR)
+	EVALUATE_VECTOR(m_renderColor, 2, RDENT_CHANGED_RENDERCOLOR)
 	EVALUATE_VECTOR(glowmod, 0, RDENT_CHANGED_RENDERCOLOR)
 	EVALUATE_VECTOR(glowmod, 1, RDENT_CHANGED_RENDERCOLOR)
 	EVALUATE_VECTOR(glowmod, 2, RDENT_CHANGED_RENDERCOLOR)
-	EVALUATE_FIELD(m_flRenderAmt, RDENT_CHANGED_RENDERAMT)
-	EVALUATE_FIELD(m_flBoneControl1, RDENT_CHANGED_CONTROLLER)
-	EVALUATE_FIELD(m_flBoneControl2, RDENT_CHANGED_CONTROLLER)
-	EVALUATE_FIELD(m_flBoneControl3, RDENT_CHANGED_CONTROLLER)
-	EVALUATE_FIELD(m_flBoneControl4, RDENT_CHANGED_CONTROLLER)
-	EVALUATE_FIELD(m_flBoneControl5, RDENT_CHANGED_CONTROLLER)
-	EVALUATE_FIELD(m_flMass, RDENT_CHANGED_SOLIDMOVETYPE)
+	EVALUATE_FIELD(m_renderAmount, RDENT_CHANGED_RENDERAMT)
+	EVALUATE_FIELD(m_studioBoneController1, RDENT_CHANGED_CONTROLLER)
+	EVALUATE_FIELD(m_studioBoneController2, RDENT_CHANGED_CONTROLLER)
+	EVALUATE_FIELD(m_studioBoneController3, RDENT_CHANGED_CONTROLLER)
+	EVALUATE_FIELD(m_studioBoneController4, RDENT_CHANGED_CONTROLLER)
+	EVALUATE_FIELD(m_studioBoneController5, RDENT_CHANGED_CONTROLLER)
+	EVALUATE_FIELD(m_overrideMass, RDENT_CHANGED_SOLIDMOVETYPE)
 }
 
 float
@@ -241,13 +236,13 @@ ncPhysicsEntity::SendEntity(entity ePEnt, float flChanged)
 		}
 
 		/* no rendermode means no extra fields */
-		if (m_iRenderMode == RM_NORMAL && m_iRenderFX == RFX_NORMAL) {
+		if (m_renderMode == RM_NORMAL && m_renderFX == RFX_NORMAL) {
 			flChanged &= ~RDENT_CHANGED_RENDERMODE;
 			//flChanged &= ~RDENT_CHANGED_RENDERCOLOR; /* glowmod needs this */
 			flChanged &= ~RDENT_CHANGED_RENDERAMT;
 		}
 
-		if (m_bIsBrush == true) {
+		if (m_modelBrushBased == true) {
 			flChanged &= ~RDENT_CHANGED_FLAGS;
 			flChanged &= ~RDENT_CHANGED_BODY;
 			flChanged &= ~RDENT_CHANGED_SCALE;
@@ -279,35 +274,35 @@ ncPhysicsEntity::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_BYTE(frame, RDENT_CHANGED_FRAME)
 	SENDENTITY_FLOAT(skin, RDENT_CHANGED_SKIN)
 	SENDENTITY_FLOAT(effects, RDENT_CHANGED_EFFECTS)
-	SENDENTITY_SHORT(m_iBody, RDENT_CHANGED_BODY)
+	SENDENTITY_SHORT(m_geomsetField, RDENT_CHANGED_BODY)
 	SENDENTITY_FLOAT(scale, RDENT_CHANGED_SCALE)
-	SENDENTITY_FLOAT(m_vecAxialScale[0], RDENT_CHANGED_SCALE)
-	SENDENTITY_FLOAT(m_vecAxialScale[1], RDENT_CHANGED_SCALE)
-	SENDENTITY_FLOAT(m_vecAxialScale[2], RDENT_CHANGED_SCALE)
+	SENDENTITY_FLOAT(m_axialScale[0], RDENT_CHANGED_SCALE)
+	SENDENTITY_FLOAT(m_axialScale[1], RDENT_CHANGED_SCALE)
+	SENDENTITY_FLOAT(m_axialScale[2], RDENT_CHANGED_SCALE)
 	SENDENTITY_COORD(velocity[0], RDENT_CHANGED_VELOCITY)
 	SENDENTITY_COORD(velocity[1], RDENT_CHANGED_VELOCITY)
 	SENDENTITY_COORD(velocity[2], RDENT_CHANGED_VELOCITY)
 	SENDENTITY_COORD(avelocity[0], RDENT_CHANGED_ANGULARVELOCITY)
 	SENDENTITY_COORD(avelocity[1], RDENT_CHANGED_ANGULARVELOCITY)
 	SENDENTITY_COORD(avelocity[2], RDENT_CHANGED_ANGULARVELOCITY)
-	SENDENTITY_BYTE(m_iRenderMode, RDENT_CHANGED_RENDERMODE)
-	SENDENTITY_BYTE(m_iRenderFX, RDENT_CHANGED_RENDERMODE)
-	SENDENTITY_BYTE(m_vecRenderColor[0], RDENT_CHANGED_RENDERCOLOR)
-	SENDENTITY_BYTE(m_vecRenderColor[1], RDENT_CHANGED_RENDERCOLOR)
-	SENDENTITY_BYTE(m_vecRenderColor[2], RDENT_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_renderMode, RDENT_CHANGED_RENDERMODE)
+	SENDENTITY_BYTE(m_renderFX, RDENT_CHANGED_RENDERMODE)
+	SENDENTITY_BYTE(m_renderColor[0], RDENT_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_renderColor[1], RDENT_CHANGED_RENDERCOLOR)
+	SENDENTITY_BYTE(m_renderColor[2], RDENT_CHANGED_RENDERCOLOR)
 	/* these need more precision for shader hacks... */
 	SENDENTITY_FLOAT(glowmod[0], RDENT_CHANGED_RENDERCOLOR)
 	SENDENTITY_FLOAT(glowmod[1], RDENT_CHANGED_RENDERCOLOR)
 	SENDENTITY_FLOAT(glowmod[2], RDENT_CHANGED_RENDERCOLOR)
-	SENDENTITY_BYTE(m_flRenderAmt, RDENT_CHANGED_RENDERAMT)
-	SENDENTITY_ANGLE(m_flBoneControl1, RDENT_CHANGED_CONTROLLER)
-	SENDENTITY_ANGLE(m_flBoneControl2, RDENT_CHANGED_CONTROLLER)
-	SENDENTITY_ANGLE(m_flBoneControl3, RDENT_CHANGED_CONTROLLER)
-	SENDENTITY_ANGLE(m_flBoneControl4, RDENT_CHANGED_CONTROLLER)
-	SENDENTITY_ANGLE(m_flBoneControl5, RDENT_CHANGED_CONTROLLER)
+	SENDENTITY_BYTE(m_renderAmount, RDENT_CHANGED_RENDERAMT)
+	SENDENTITY_ANGLE(m_studioBoneController1, RDENT_CHANGED_CONTROLLER)
+	SENDENTITY_ANGLE(m_studioBoneController2, RDENT_CHANGED_CONTROLLER)
+	SENDENTITY_ANGLE(m_studioBoneController3, RDENT_CHANGED_CONTROLLER)
+	SENDENTITY_ANGLE(m_studioBoneController4, RDENT_CHANGED_CONTROLLER)
+	SENDENTITY_ANGLE(m_studioBoneController5, RDENT_CHANGED_CONTROLLER)
 
 	/* physics specific flags */
-	SENDENTITY_FLOAT(m_flMass, RDENT_CHANGED_SOLIDMOVETYPE)
+	SENDENTITY_FLOAT(m_overrideMass, RDENT_CHANGED_SOLIDMOVETYPE)
 
 	return (1);
 }
@@ -342,35 +337,35 @@ ncPhysicsEntity::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_BYTE(frame, RDENT_CHANGED_FRAME)
 	READENTITY_FLOAT(skin, RDENT_CHANGED_SKIN)
 	READENTITY_FLOAT(effects, RDENT_CHANGED_EFFECTS)
-	READENTITY_SHORT(m_iBody, RDENT_CHANGED_BODY)
+	READENTITY_SHORT(m_geomsetField, RDENT_CHANGED_BODY)
 	READENTITY_FLOAT(scale, RDENT_CHANGED_SCALE)
-	READENTITY_FLOAT(m_vecAxialScale[0], RDENT_CHANGED_SCALE)
-	READENTITY_FLOAT(m_vecAxialScale[1], RDENT_CHANGED_SCALE)
-	READENTITY_FLOAT(m_vecAxialScale[2], RDENT_CHANGED_SCALE)
+	READENTITY_FLOAT(m_axialScale[0], RDENT_CHANGED_SCALE)
+	READENTITY_FLOAT(m_axialScale[1], RDENT_CHANGED_SCALE)
+	READENTITY_FLOAT(m_axialScale[2], RDENT_CHANGED_SCALE)
 	READENTITY_COORD(velocity[0], RDENT_CHANGED_VELOCITY)
 	READENTITY_COORD(velocity[1], RDENT_CHANGED_VELOCITY)
 	READENTITY_COORD(velocity[2], RDENT_CHANGED_VELOCITY)
 	READENTITY_COORD(avelocity[0], RDENT_CHANGED_ANGULARVELOCITY)
 	READENTITY_COORD(avelocity[1], RDENT_CHANGED_ANGULARVELOCITY)
 	READENTITY_COORD(avelocity[2], RDENT_CHANGED_ANGULARVELOCITY)
-	READENTITY_BYTE(m_iRenderMode, RDENT_CHANGED_RENDERMODE)
-	READENTITY_BYTE(m_iRenderFX, RDENT_CHANGED_RENDERMODE)
-	READENTITY_BYTE(m_vecRenderColor[0], RDENT_CHANGED_RENDERCOLOR)
-	READENTITY_BYTE(m_vecRenderColor[1], RDENT_CHANGED_RENDERCOLOR)
-	READENTITY_BYTE(m_vecRenderColor[2], RDENT_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_renderMode, RDENT_CHANGED_RENDERMODE)
+	READENTITY_BYTE(m_renderFX, RDENT_CHANGED_RENDERMODE)
+	READENTITY_BYTE(m_renderColor[0], RDENT_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_renderColor[1], RDENT_CHANGED_RENDERCOLOR)
+	READENTITY_BYTE(m_renderColor[2], RDENT_CHANGED_RENDERCOLOR)
 	/* these need more precision for shader hacks... */
 	READENTITY_FLOAT(glowmod[0], RDENT_CHANGED_RENDERCOLOR)
 	READENTITY_FLOAT(glowmod[1], RDENT_CHANGED_RENDERCOLOR)
 	READENTITY_FLOAT(glowmod[2], RDENT_CHANGED_RENDERCOLOR)
-	READENTITY_BYTE(m_flRenderAmt, RDENT_CHANGED_RENDERAMT)
-	READENTITY_ANGLE(m_flBoneControl1, RDENT_CHANGED_CONTROLLER)
-	READENTITY_ANGLE(m_flBoneControl2, RDENT_CHANGED_CONTROLLER)
-	READENTITY_ANGLE(m_flBoneControl3, RDENT_CHANGED_CONTROLLER)
-	READENTITY_ANGLE(m_flBoneControl4, RDENT_CHANGED_CONTROLLER)
-	READENTITY_ANGLE(m_flBoneControl5, RDENT_CHANGED_CONTROLLER)
+	READENTITY_BYTE(m_renderAmount, RDENT_CHANGED_RENDERAMT)
+	READENTITY_ANGLE(m_studioBoneController1, RDENT_CHANGED_CONTROLLER)
+	READENTITY_ANGLE(m_studioBoneController2, RDENT_CHANGED_CONTROLLER)
+	READENTITY_ANGLE(m_studioBoneController3, RDENT_CHANGED_CONTROLLER)
+	READENTITY_ANGLE(m_studioBoneController4, RDENT_CHANGED_CONTROLLER)
+	READENTITY_ANGLE(m_studioBoneController5, RDENT_CHANGED_CONTROLLER)
 
 	/* physics specific flags */
-	READENTITY_FLOAT(m_flMass, RDENT_CHANGED_SOLIDMOVETYPE)
+	READENTITY_FLOAT(m_overrideMass, RDENT_CHANGED_SOLIDMOVETYPE)
 
 	if (scale == 0.0)
 		scale = 1.0f;
@@ -481,7 +476,7 @@ ncPhysicsEntity::Touch(entity eToucher)
 				#warning TODO: differentiate between rough & smooth
 				StartSoundDef(GetSurfaceData(SURFDATA_SND_SCRAPEROUGH), CHAN_BODY, true);
 			}
-			m_bFeedbackSounds = true;
+			m_playingFeedbackSound = true;
 		} else if (impactForce > MinimumImpactForce) {
 			string newFXImpact = "";
 			float materialID = GetSurfaceData(SURFDATA_MATERIAL);
@@ -523,9 +518,9 @@ ncPhysicsEntity::Touch(entity eToucher)
 
 			#warning TODO: differentiate between rough & smooth
 			StartSoundDef(GetSurfaceData(SURFDATA_SND_IMPACTHARD), CHAN_VOICE, true);
-		} else if (m_bFeedbackSounds == true) {
+		} else if (m_playingFeedbackSound == true) {
 			StopSound(CHAN_BODY, true);
-			m_bFeedbackSounds = false;
+			m_playingFeedbackSound = false;
 		}
 	}
 
@@ -660,7 +655,7 @@ ncPhysicsEntity::_TouchThink(void)
 	}
 
 #if 1
-	if (m_flCheckTime < time) {
+	if (m_timeSincePhysicsCheck < time) {
 		if (lengthSquared(m_vecPrevAngles - angles) < 4) {
 			avelocity = g_vec_null;
 		}
@@ -668,14 +663,15 @@ ncPhysicsEntity::_TouchThink(void)
 			velocity = g_vec_null;
 		}
 
-		m_flCheckTime = time + 1.0f;
+		m_timeSincePhysicsCheck = time + 1.0f;
 		m_vecPrevOrigin = origin;
 		m_vecPrevAngles = angles;
 	}
 
 	/* If we barely move, disable the physics simulator */
+	#ifdef SERVER
 	if (velocity == g_vec_null && avelocity == g_vec_null) {
-		if (m_iEnabled) {
+		if (GetValue(this)) {
 			NSPhysics_Log("%s is now sleeping.", classname);
 			Sleep();
 			velocity = [0,0,0];
@@ -692,12 +688,13 @@ ncPhysicsEntity::_TouchThink(void)
 			angles = vectorToAngles(newangle);
 		}
 	}
+	#endif
 #endif
 
 #if 1
-	if (m_flBuoyancyRatio > 0.0)
+	if (m_buoyancyRatio > 0.0)
 	if (ncPhysicsEntity_Contents(this, origin) & CONTENTBIT_WATER) {
-		velocity[2] += m_flBuoyancyRatio * frametime;
+		velocity[2] += m_buoyancyRatio * frametime;
 	}
 #endif
 
@@ -715,18 +712,18 @@ ncPhysicsEntity::Pain(entity inflictor, entity attacker, int damage, vector dir,
 		return;
 	}
 
-	if (m_strOnDamaged) {
-		UseOutput(this, m_strOnDamaged);
+	if (m_outputOnDamaged) {
+		UseOutput(this, m_outputOnDamaged);
 	}
 
-	if (m_iFlags & BPHY_NODMGPUSH) {
+	if (m_physicsFlags & BPHY_NODMGPUSH) {
 		return;
 	}
 
 	Wake();
 
 	/* HACK: */
-	if (m_bInvincible) {
+	if (m_physicsGod) {
 		health = 10000;
 	}
 }
@@ -738,7 +735,7 @@ ncPhysicsEntity::Death(entity inflictor, entity attacker, int damage, vector dir
 		return;
 	}
 
-	if (m_bInvincible) {
+	if (m_physicsGod) {
 		health = 10000;
 		return;
 	}
@@ -779,7 +776,7 @@ ncPhysicsEntity::Respawn(void)
 	geomtype = GEOMTYPE_BOX;
 	friction = 1.0f;
 
-	m_flBuoyancyRatio = 1.0f;
+	m_buoyancyRatio = 1.0f;
 
 	SetDamping(0.0f, 0.0f);
 	EnableGravity(true);
@@ -809,12 +806,12 @@ ncPhysicsEntity::Respawn(void)
 	if (health == 0) {
 		/* it has no breakmodels set, therefore it cannot break. */
 		if (GetPropData(PROPINFO_BREAKMODEL) == __NULL__) {
-			m_bInvincible = true;
+			m_physicsGod = true;
 			health = 10000;
 		} else {
 			/* something like glass bottles, maybe. */
 			health = 5;
-			m_bInvincible = false;
+			m_physicsGod = false;
 		}
 	}
 
@@ -842,46 +839,46 @@ ncPhysicsEntity::PVSCheck(void)
 #endif
 
 void
-ncPhysicsEntity::SpawnKey(string strKey, string strValue)
+ncPhysicsEntity::SpawnKey(string keyName, string setValue)
 {
 	bool tempCheck = false;
 
-	switch (strKey) {
+	switch (keyName) {
 	case "physmodel":
-		m_iShape = ReadInt(strValue);
-		if (m_iShape > GEOMTYPE_CYLINDER)
-			m_iShape = 0;
+		m_desiredGeomtype = ReadInt(setValue);
+		if (m_desiredGeomtype > GEOMTYPE_CYLINDER)
+			m_desiredGeomtype = 0;
 		break;
 	case "massscale":
-		mass = ReadFloat(strValue);
+		mass = ReadFloat(setValue);
 		break;
 	case "inertiascale":
-		m_flInertiaScale = ReadFloat(strValue);
+		m_inertiaScale = ReadFloat(setValue);
 		break;
 	case "physdamagescale":
 		break;
 	case "material":
-		m_iMaterial = ReadFloat(strValue);
+		m_surfdataID = ReadFloat(setValue);
 		break;
 	case "nodamageforces":
-		tempCheck = ReadBool(strValue);
+		tempCheck = ReadBool(setValue);
 
 		if (tempCheck == true)
-			m_iFlags |= BPHY_NODMGPUSH;
+			m_physicsFlags |= BPHY_NODMGPUSH;
 		break;
 	case "Damagetype":
-		tempCheck = ReadBool(strValue);
+		tempCheck = ReadBool(setValue);
 
 		if (tempCheck == true)
-			m_iFlags |= BPHY_SHARP;
+			m_physicsFlags |= BPHY_SHARP;
 		break;
 #ifdef SERVER
 	case "OnDamaged":
-		m_strOnDamaged = PrepareOutput(m_strOnDamaged, strValue);
+		m_outputOnDamaged = PrepareOutput(m_outputOnDamaged, setValue);
 		break;
 #endif
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(keyName, setValue);
 		break;
 	}
 }
@@ -939,11 +936,11 @@ ncPhysicsEntity::ApplyTorqueCenter(vector vecTorque)
 	Wake();
 
 	if (physics_supported() == TRUE) {
-		vector finalTorque = vecTorque * m_flInertiaScale;
+		vector finalTorque = vecTorque * m_inertiaScale;
 		physics_addtorque(this, finalTorque);
 
 		NSPhysics_Log("%s::ApplyTorqueCenter: %v (val: %v, scale: %f)",
-			classname, finalTorque, vecTorque, m_flInertiaScale);
+			classname, finalTorque, vecTorque, m_inertiaScale);
 	} else {
 		avelocity = vecTorque;
 		velocity = vecTorque;
@@ -1005,13 +1002,13 @@ ncPhysicsEntity::GetEnergy(void)
 float
 ncPhysicsEntity::GetInertia(void)
 {
-	return m_flInertiaScale;
+	return m_inertiaScale;
 }
 
 float
 ncPhysicsEntity::GetInvInertia(void)
 {
-	return 1.0f / m_flInertiaScale;
+	return 1.0f / m_inertiaScale;
 }
 
 float
@@ -1023,7 +1020,7 @@ ncPhysicsEntity::GetInvMass(void)
 float
 ncPhysicsEntity::GetMass(void)
 {
-	return m_flMass;
+	return m_overrideMass;
 }
 
 vector
@@ -1059,7 +1056,7 @@ ncPhysicsEntity::GetVolume(void)
 bool
 ncPhysicsEntity::IsAsleep(void)
 {
-	return (m_iEnabled) ? (false) : (true);
+	return (GetMovetype() != MOVETYPE_NONE) ? (false) : (true);
 }
 
 bool
@@ -1107,7 +1104,7 @@ ncPhysicsEntity::SetAngleDragCoefficient(float setValue)
 void
 ncPhysicsEntity::SetBuoyancyRatio(float setValue)
 {
-	m_flBuoyancyRatio = setValue;
+	m_buoyancyRatio = setValue;
 }
 
 void
@@ -1126,7 +1123,7 @@ ncPhysicsEntity::SetDragCoefficient(float dragValue)
 void
 ncPhysicsEntity::SetInertia(float val)
 {
-	m_flInertiaScale = val;
+	m_inertiaScale = val;
 }
 
 void
@@ -1137,22 +1134,22 @@ ncPhysicsEntity::_UpdateMass(void)
 	massVolume *= InchesToMeters; /* from inches to meters */
 
 	mass = 1.0f;
-	//mass = m_flMass / massVolume; /* really ODE's thing is density */
+	//mass = m_overrideMass / massVolume; /* really ODE's thing is density */
 }
 
 void
 ncPhysicsEntity::_UpdateBuoyancy(void)
 {
 #if 0
-	if ( m_flVolume != 0.0f )
+	if ( m_overrideVolume != 0.0f )
 	{
-		float flVolume = max( m_flVolume, 5.0f ) * MeterstoInches * MeterstoInches * MeterstoInches;
-		float flDensity = m_flMass / flVolume;
-		m_flBuoyancyRatio = flDensity / m_flMaterialDensity;
+		float flVolume = max( m_overrideVolume, 5.0f ) * MeterstoInches * MeterstoInches * MeterstoInches;
+		float flDensity = m_overrideMass / flVolume;
+		m_buoyancyRatio = flDensity / m_flMaterialDensity;
 	}
 	else
 	{
-		m_flBuoyancyRatio = 1.0f;
+		m_buoyancyRatio = 1.0f;
 	}
 #endif
 }
@@ -1160,7 +1157,7 @@ ncPhysicsEntity::_UpdateBuoyancy(void)
 void
 ncPhysicsEntity::SetMass(float val)
 {
-	m_flMass = val;
+	m_overrideMass = val;
 	_UpdateMass();
 }
 
@@ -1180,7 +1177,7 @@ ncPhysicsEntity::Wake(void)
 			friction = 10000.0f;
 			//SetDamping(1.0f, 1.0f);
 		} else {
-			geomtype = m_iShape;
+			geomtype = m_desiredGeomtype;
 			friction = 1.0f;
 			//SetDamping(0.0f, 0.0f);
 		}
@@ -1190,7 +1187,9 @@ ncPhysicsEntity::Wake(void)
 		SetMovetype(MOVETYPE_BOUNCE);
 	}
 
-	m_iEnabled = TRUE;
+#ifdef SERVER
+	SetValue(1i);
+#endif
 }
 
 void
@@ -1208,5 +1207,8 @@ ncPhysicsEntity::Sleep(void)
 	}
 
 	Relink();
-	m_iEnabled = FALSE;
+
+#ifdef SERVER
+	SetValue(0i);
+#endif
 }

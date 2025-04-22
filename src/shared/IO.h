@@ -23,7 +23,7 @@ To understand how it works, let's understand first where we came from.
 
 # History
 
-Simple triggers in *Quake (1996)* worked in a straightforward manner.
+Triggers in *Quake (1996)* worked in a straightforward manner.
 Entities identify themselves with a `targetname` key that the level designer assigns, and only then can they be *triggered*
 by another entity - most commonly a trigger_once or a trigger_multiple - which targets them in return using a `target` key with the value being the name of the entity that is to be triggered.
 
@@ -89,6 +89,9 @@ public:
 		return to its original spawn state. */
 	virtual void Respawn(void);
 
+	/** Shared: Called on launch/reload to read variables from defaults. Data that doesn't get saved. */
+	virtual void ReloadCachedAttributes(void);
+
 	/** This method handles entity key/value pairs on map load.
 		You can easily convert the `strValue` parameter using the ReadFloat etc. methods
 		that are part of ncIO. */
@@ -125,6 +128,9 @@ public:
 	nonvirtual void Destroy(void);
 	/** Handles what happens before the entity gets removed from the client game. */
 	virtual void OnRemoveEntity(void);
+
+	/** Relink the entity against the world. Updates PVS info etc. */
+	nonvirtual void Relink(void);
 
 	/** Returns an absolute value of when the entity will be think again.
 		Any result should be tested against `GetTime()`. */
@@ -206,7 +212,13 @@ public:
 	nonvirtual void SaveBool(float,string,bool);
 	/** Saves an entity id key/value pair to a filehandle. */
 	nonvirtual void SaveEntity(float,string,entity);
+	/** Overrides the field that's used to determine which information should be networked. */
+	nonvirtual void SetSendFlags(float);
+#endif
 
+#ifdef CLIENT
+	/** Called once ReceiveEntity has done its job. */
+	virtual void _ReceiveComplete(float, float);
 #endif
 
 	/** Returns the floating-point value of a named key in the entity's spawn data. */
@@ -258,21 +270,20 @@ public:
 	nonvirtual void DebugBool(string,bool);
 	/** Debug print for a given entity. */
 	nonvirtual void DebugEntity(string,entity);
-	/** Sets the editor icon. Must be 16x16 px and located in `gfx/icon16/`. */
-	nonvirtual void SetEditorIcon(string);
 
 private:
-	string m_strEditorIcon;
-	string m_strSpawnData;
+	string m_rawSpawnData;
 #ifdef SERVER
-	string m_strOnTrigger;
-	string m_strOnUser1;
-	string m_strOnUser2;
-	string m_strOnUser3;
-	string m_strOnUser4;
+	string m_outputOnSpawn;
+	string m_outputOnKilled;
+	string m_outputOnTrigger;
+	string m_outputOnUser1;
+	string m_outputOnUser2;
+	string m_outputOnUser3;
+	string m_outputOnUser4;
 
 	/* entityDef powered modelevent callbacks */
-	string m_strModelEventCB;
+	string m_modelEventCallbacks;
 #endif
 };
 
@@ -282,32 +293,65 @@ private:
 
 .bool _mapspawned;
 
+#define CGENT_LOG			imageToConsole("gfx/icon16/brick", ICN_SIZE, "Client Entity Log")
+#define CGENT_WARNING		imageToConsole("gfx/icon16/brick_error", ICN_SIZE, "Client Entity Warning")
+#define CGENT_ERROR			imageToConsole("gfx/icon16/brick_delete", ICN_SIZE, "Client Entity Error")
+
+#define SVENT_LOG			imageToConsole("gfx/icon16/brick", ICN_SIZE, "Server Entity Log")
+#define SVENT_WARNING		imageToConsole("gfx/icon16/brick_error", ICN_SIZE, "Server Entity Warning")
+#define SVENT_ERROR			imageToConsole("gfx/icon16/brick_delete", ICN_SIZE, "Server Entity Error")
+
 void
 _NSEntLog(string className, string functionName, float edictNum, string warnMessage)
 {
+#ifdef SERVER
 	if (autocvar_g_logTimestamps)
-		print(sprintf("^9%f ^7%s (%d)^7: %s\n", time, className, edictNum, warnMessage));
+		print(sprintf("%s ^9%f ^7%s (%d)^7: %s\n", SVENT_LOG, time, className, edictNum, warnMessage));
 	else
-		print(sprintf("^7%s (%d)^7: %s\n", className, edictNum, warnMessage));
+		print(sprintf("%s ^7%s (%d)^7: %s\n", SVENT_LOG, className, edictNum, warnMessage));
+#endif
+#ifdef CLIENT
+	if (autocvar_g_logTimestamps)
+		print(sprintf("%s ^9%f ^7%s (%d)^7: %s\n", CGENT_LOG, time, className, edictNum, warnMessage));
+	else
+		print(sprintf("%s ^7%s (%d)^7: %s\n", CGENT_LOG, className, edictNum, warnMessage));
+#endif
 }
 
 void
 _NSEntWarning(string className, string functionName, float edictNum, string warnMessage)
 {
+#ifdef SERVER
 	if (autocvar_g_logTimestamps)
-		print(sprintf("^9%f ^3%s (%d)^7: %s\n", time, functionName, edictNum, warnMessage));
+		print(sprintf("%s ^9%f ^3%s (%d)^7: %s\n", SVENT_WARNING, time, functionName, edictNum, warnMessage));
 	else
-		print(sprintf("^3%s (%d)^7: %s\n", functionName, edictNum, warnMessage));
+		print(sprintf("%s ^3%s (%d)^7: %s\n", SVENT_WARNING, functionName, edictNum, warnMessage));
+#endif
+#ifdef CLIENT
+	if (autocvar_g_logTimestamps)
+		print(sprintf("%s ^9%f ^3%s (%d)^7: %s\n", CGENT_WARNING, time, functionName, edictNum, warnMessage));
+	else
+		print(sprintf("%s ^3%s (%d)^7: %s\n", CGENT_WARNING, functionName, edictNum, warnMessage));
+#endif
 }
 
 void
 _NSEntError(string className, string functionName, float edictNum, string warnMessage)
 {
+#ifdef SERVER
 	if (autocvar_g_logTimestamps)
-		print(sprintf("^9%f ^1%s (id: %d)^7: %s\n", time, functionName, edictNum, warnMessage));
+		print(sprintf("%s ^9%f ^1%s (id: %d)^7: %s\n", SVENT_ERROR, time, functionName, edictNum, warnMessage));
 	else
-		print(sprintf("^1%s (id: %d)^7: %s\n", functionName, edictNum, warnMessage));
+		print(sprintf("%s ^1%s (id: %d)^7: %s\n", SVENT_ERROR, functionName, edictNum, warnMessage));
+#endif
+#ifdef CLIENT
+	if (autocvar_g_logTimestamps)
+		print(sprintf("%s ^9%f ^1%s (id: %d)^7: %s\n", CGENT_ERROR, time, functionName, edictNum, warnMessage));
+	else
+		print(sprintf("%s ^1%s (id: %d)^7: %s\n", CGENT_ERROR, functionName, edictNum, warnMessage));
+#endif
 }
+
 /** Logs an entity class specific log message, with detailed info.
 	 The console variable `entity_developer` has to be `1` for them to be visible.
 

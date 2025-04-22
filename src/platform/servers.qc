@@ -1,9 +1,9 @@
- 
+
 __variant
 Servers_GetInfo(int serverID, serverGame_t infoType)
 {
 	if (serverID >= Master_GetTotalServers() || serverID < 0i) {
-		NSError("Invalid server id %i.", serverID);
+		ncError("Invalid server id %i.", serverID);
 		return __NULL__;
 	}
 

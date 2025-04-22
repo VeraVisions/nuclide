@@ -138,30 +138,3 @@ CUI3DView::Input(float flEVType, float flKey, float flChar, float flDevID)
 noref vector v_forward;
 noref vector v_up;
 noref vector v_right;
-void AngleVectors ( vector angles )
-{
-	float angle;
-	float sr, sp, sy, cr, cp, cy;
-	
-	angle = angles[1] * (M_PI*2 / 360);
-	sy = sin(angle);
-	cy = cos(angle);
-	angle = angles[0] * (M_PI*2 / 360);
-	sp = sin(angle);
-	cp = cos(angle);
-	angle = angles[2] * (M_PI*2 / 360);
-	sr = sin(angle);
-	cr = cos(angle);
-
-	v_forward[0] = cp*cy;
-	v_forward[1] = cp*sy;
-	v_forward[2] = -sp;
-
-	v_right[0] = (-1*sr*sp*cy+-1*cr*-sy);
-	v_right[1] = (-1*sr*sp*sy+-1*cr*cy);
-	v_right[2] = -1*sr*cp;
-
-	v_up[0] = (cr*sp*cy+-sr*-sy);
-	v_up[1] = (cr*sp*sy+-sr*cy);
-	v_up[2] = cr*cp;
-}

@@ -90,7 +90,7 @@ Skill_ParseConfig(string fileName)
 	filestream configFile = fopen(fileName, FILE_READ);
 
 	if (configFile < 0) {
-		NSWarning("Unable to exec %S for parsing.", fileName);
+		ncWarning("Unable to exec %S for parsing.", fileName);
 		return (false);
 	}
 

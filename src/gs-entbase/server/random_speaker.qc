@@ -86,44 +86,44 @@ random_speaker::Save(float handle)
 }
 
 void
-random_speaker::Restore(string strKey, string strValue)
+random_speaker::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_strSample":
-		m_strSample = ReadString(strValue);
+		m_strSample = ReadString(setValue);
 		break;
 	case "m_flVolume":
-		m_flVolume = ReadFloat(strValue);
+		m_flVolume = ReadFloat(setValue);
 		break;
 	case "m_flMinPos":
-		m_flMinPos = ReadFloat(strValue);
+		m_flMinPos = ReadFloat(setValue);
 		break;
 	case "m_flRandPercent":
-		m_flRandPercent = ReadFloat(strValue);
+		m_flRandPercent = ReadFloat(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-random_speaker::SpawnKey(string strKey, string strValue)
+random_speaker::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "rsnoise":
-		m_strSample = strValue;
+		m_strSample = setValue;
 		break;
 	case "volume":
-		m_flVolume = stof(strValue);
+		m_flVolume = stof(setValue);
 		break;
 	case "wait":
-		m_flMinPos = stof(strValue);
+		m_flMinPos = stof(setValue);
 		break;
 	case "random":
-		m_flRandPercent = stof(strValue);
+		m_flRandPercent = stof(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
@@ -148,7 +148,7 @@ random_speaker::Trigger(entity act, triggermode_t state)
 		Enable();
 		break;
 	default:
-		if (m_iValue)
+		if (GetValue(this))
 			Trigger(act, TRIG_OFF);
 		else
 			Trigger(act, TRIG_ON);
@@ -169,7 +169,7 @@ random_speaker::Enable(void)
 {
 	float r;
 
-	m_iValue = 1;
+	SetValue(1i);
 
 	/* at least wait this amount */
 	r = m_flMinPos;
@@ -185,6 +185,6 @@ void
 random_speaker::Disable(void)
 {
 	EntLog("Disabled %s playing %s\n", targetname, m_strSample);
-	m_iValue = 0;
+	SetValue(0i);
 	ReleaseThink();
 }

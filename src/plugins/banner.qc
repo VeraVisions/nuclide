@@ -16,11 +16,10 @@
 
 #pragma target fte_5768
 //#pragma flag enable assumeint
-#pragma PROGS_DAT  "../../base/plug_banner.dat"
-#define QWSSQC
+#pragma PROGS_DAT  "../../base/plugins/banner.dat"
+#define SERVER
 
-#include "../shared/fteextensions.qc"
-#include "../shared/events.h"
+#include "../server/api.h"
 
 void BannerPlugin_MapInfo(void);
 void BannerPlugin_Hostname(void);
@@ -80,11 +79,21 @@ BannerPlugin_Hostname(void)
 	self.nextthink = time + 5.0f;
 }
 
+entity banner;
+
 void
-Plug_ServerActivate(void)
+Plug_Load(void)
 {
-	entity banner;
-	banner = spawn();
+	if (!banner) {
+		banner = spawn();
+	}
+
 	banner.think = BannerPlugin_Hostname;
 	banner.nextthink = time + 30.0f;
+}
+
+void
+Plug_Shutdown(void)
+{
+	banner.nextthink = 0.0f;
 }

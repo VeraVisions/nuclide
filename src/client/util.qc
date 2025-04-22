@@ -17,7 +17,7 @@
 bool
 Client_IsSpectator(ncPlayer cl)
 {
-	if (cl.spec_mode == SPECMODE_DEATHCAM)
+	if (cl.m_spectatingMode == SPECMODE_DEATHCAM)
 		return (true);
 
 	if (cl.IsRealSpectator() || cl.IsFakeSpectator())

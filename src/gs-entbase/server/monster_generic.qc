@@ -75,7 +75,6 @@ monster_generic::Respawn(void)
 
 	if (HasSpawnFlags(MGF_NONSOLID)) {
 		MakeInvulnerable();
-		DisableBleeding();
 		SetSolid(SOLID_NOT);
 	}
 }

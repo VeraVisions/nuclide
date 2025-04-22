@@ -142,6 +142,8 @@ public:
 	virtual void TalkStopFollow(void);
 	/** Called when they tell the player they won't follow you. */
 	virtual void TalkDenyFollow(void);
+
+	nonvirtual void SetSentencePitch(float);
 #endif
 
 #ifdef CLIENT
@@ -160,16 +162,16 @@ public:
 private:
 #ifdef SERVER
 	/* our NPCs can have a unique pitch to their voice */
-	float m_flPitch;
-	float m_flNextSentence;
+	float m_sentencePitch;
+	float m_sentenceNext;
 	int m_iFlags;
 
-	entity m_eFollowingChain;
-	vector m_vecLastUserPos;
-	float m_flChangePath;
-	float m_flTraceTime;
-	float m_flFollowSpeedChanged;
-	float m_flFollowSpeed;
+	entity m_useFollowChain;
+	vector m_useLastAtPosition;
+	float m_useFollowChangePathTime;
+	float m_useFollowTraceTime;
+	float m_useFollowSpeedChanged;
+	float m_useFollowSpeed;
 	bool m_bFollowOnUse;
 
 	float m_flFollowDistance;

@@ -25,7 +25,7 @@ public:
 	nonvirtual void SetImpactDecal(string);
 
 private:
-	string m_strImpactDecal;
-	float m_flPlaceTime;
+	string m_decalImpact;
+	float m_timeUntilNextDecalPlacement;
 };
 #endif

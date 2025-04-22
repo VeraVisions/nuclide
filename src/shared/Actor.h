@@ -65,6 +65,24 @@ types of pathfinding in the future.
 - "snd_waterEnter" : Sound to play when entering water.
 - "snd_waterExit" : Sound to play when exiting water.
 
+# INPUTS
+
+- "UseItem" : Uses a named item in the actor their inventory.
+- "GiveItem" : Gives a named item to the actor.
+- "GiveAmmo" : Gives a named ammo type with a specific amount. Two arguments: "ammoTypeName" "count"
+- "ChangeMindset" : Tells the actor to choose a different type of schedule.
+- "PerformSchedule" : Performs a named schedule, defined in `<gamedir>/decls/schedules/`.
+- "WalkToTarget" : Instruct the actor to walk to the last set target.
+- "RunToTarget" : Instruct the actor to run to the last set target.
+- "CrouchToTarget" : Instruct the actor to crouch to the last set target.
+- "ProneToTarget" : Instruct the actor to prone to the last set target.
+- "TargetNearestPlayer" : Target the nearest player from the actor's current position.
+- "GoToCover" : Plot a route to promptly take cover.
+- "GoToSpotInRadius" : Plot a route to an empty spot within a certain radius of the current position.
+- "AvoidSpotInRadius" : Plot a route to a spot outside of a specified radius from the current position.
+- "TurnToRandomYaw" : Turns the actor to a random direction.
+- "GoForward" : Instruct to keep going forward.
+
 @ingroup baseclass
 */
 class
@@ -119,10 +137,13 @@ public:
 	/* inventory handling */
 	/** Adds a named ncItem to the inventory. Returns `false` when impossible. */
 	nonvirtual bool GiveItem(string);
+	nonvirtual bool GiveExactItem(ncItem);
 	/** Removes a named ncItem from the inventory Returns `false` when impossible. */
 	nonvirtual bool RemoveItem(string);
 	/** Adds the specified ncItem to the inventory. Returns `false` when impossible. */
 	nonvirtual bool AddItem(ncItem);
+	/** Returns `true` or `false` depending on if the entity has the named item. */
+	nonvirtual ncItem GetItem(string);
 	/** Returns `true` or `false` depending on if the entity has the named item. */
 	nonvirtual bool HasItem(string);
 	/** Returns `true` or `false` depending on if the entity has the exact item. */
@@ -146,7 +167,7 @@ public:
 	virtual ncWeapon SortWeaponChain(void);
 	/** Retrieve the 'next' weapon in the inventory, sorted by SortWeaponChain(). */
 	nonvirtual ncWeapon GetNextWeapon(void);
-	/** Retrieve the 'next' weapon in the inventory, sorted by SortWeaponChain(). */
+	/** Retrieve the 'previous' weapon in the inventory, sorted by SortWeaponChain(). */
 	nonvirtual ncWeapon GetPreviousWeapon(void);
 	/** Retrieve the 'last' weapon they had chosen. If not valid, returns the next best. */
 	nonvirtual ncWeapon GetLastWeapon(void);
@@ -172,6 +193,13 @@ public:
 	nonvirtual void PerformSchedule(string);
 	nonvirtual void MessageSchedule(string);
 	nonvirtual bool IsPerforming(void);
+	
+	nonvirtual int PathNodeCount(void);
+	nonvirtual int PathCurrentNode(void);
+	nonvirtual vector PathDestination(void);
+
+	/** Call to make a corpse of this actor. */
+	nonvirtual void MakeCorpse(float deathSequence);
 
 	/* methods we'd like others to override */
 	/** Returns if this class is capable of crouching. */
@@ -204,24 +232,34 @@ public:
 #endif
 
 private:
+
 #ifdef SERVER
 	/* pathfinding */
-	int m_iNodes;
-	int m_iCurNode;
-	nodeslist_t *m_pRoute;
-	vector m_vecLastNode;
-	vector m_vecTurnAngle;
+	int m_pathfindingNodeCount;
+	int m_pathfindingCurrentNode;
+	nodeslist_t *m_pathfindingGraph;
+	vector m_pathfindingDestination;
 	string m_pathTarget;
 	ncEntity m_pathEntity;
-	float _m_flRouteGiveUp;
-	vector _m_vecRoutePrev;
-	vector m_vecRouteEntity;
-	entity m_eFollowing;
-	float m_flMoveSpeedKey;
+	float m_timeUntilDroppingRoute;
+	vector m_pathfindingLastPos;
+	entity m_followingEntity;
+	float m_moveSpeedKey;
 	string m_mindset;
+	entity m_hook;
 #endif
 
-	/* sounds, may even be predicted. */
+	/* These are defined in side defs\*.def, ammo_types and ammo_names */
+	int m_ammoTypes[MAX_AMMO_TYPES];
+	float activeweapon;
+	NETWORKED_FLOAT(m_itemStart)
+	NETWORKED_FLOAT(m_currentStamina)
+	float m_weaponCookingTime;
+
+	/* networking/prediction */
+	ncWeapon m_activeWeapon_net;
+
+	/* non-state heavy cached values, reloaded frequently. */
 	string m_sndStepLadderLeft;
 	string m_sndStepLadderRight;
 	string m_sndDeath;
@@ -247,14 +285,6 @@ private:
 	string m_sndHealthtake;
 	string m_sndUseDeny;
 	string m_sndUseSuccess;
-
-	float nadeCookingTime;
-	/* These are defined in side defs\*.def, ammo_types and ammo_names */
-	int m_iAmmoTypes[MAX_AMMO_TYPES];
-	ncWeapon m_activeWeapon_net;
-	float activeweapon;
-	NETWORKED_FLOAT(m_flFirstInventoryItem)
-	NETWORKED_FLOAT(m_flStamina)
 };
 
 /* for now here to make debugging easier */
@@ -264,4 +294,3 @@ private:
 .bool _isActor;
 
 void ncActor_ListInventory(ncActor);
-

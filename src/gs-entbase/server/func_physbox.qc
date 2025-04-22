@@ -60,11 +60,11 @@ func_physbox::Respawn(void)
 }
 
 void
-func_physbox::SpawnKey(string strKey, string strValue)
+func_physbox::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	default:
-		ncPhysicsEntity::SpawnKey(strKey, strValue);
+		ncPhysicsEntity::SpawnKey(strKey, setValue);
 	}
 }
 #else

@@ -104,20 +104,20 @@ env_render::Trigger(entity act, triggermode_t state)
 		EntLog("Triggering with spawnflags %d", spawnflags);
 			EntLog("\tTarget: %s", target);
 		if (!HasSpawnFlags(SF_NORENDERMODE)) {
-			EntLog("\tMode change from %d to %d", trigger.m_iRenderMode, m_iRenderMode);
-			trigger.SetRenderMode(m_iRenderMode);
+			EntLog("\tMode change from %d to %d", trigger.m_renderMode, m_renderMode);
+			trigger.SetRenderMode(m_renderMode);
 		}
 		if (!HasSpawnFlags(SF_NORENDERCOLOR)) {
-			EntLog("\tColor change from %v to %v", trigger.m_vecRenderColor, m_vecRenderColor);
-			trigger.SetRenderColor(m_vecRenderColor);
+			EntLog("\tColor change from %v to %v", trigger.m_renderColor, m_renderColor);
+			trigger.SetRenderColor(m_renderColor);
 		}
 		if (!HasSpawnFlags(SF_NORENDERAMT)) {
-			EntLog("\tAmt change from %d to %d", trigger.m_flRenderAmt, m_flRenderAmt);
-			trigger.SetRenderAmt(m_flRenderAmt);
+			EntLog("\tAmt change from %d to %d", trigger.m_renderAmount, m_renderAmount);
+			trigger.SetRenderAmt(m_renderAmount);
 		}
 		if (!HasSpawnFlags(SF_NORENDERFX)) {
-			EntLog("\tFX change from %d to %d", trigger.m_iRenderFX, m_iRenderFX);
-			trigger.SetRenderFX(m_iRenderFX);
+			EntLog("\tFX change from %d to %d", trigger.m_renderFX, m_renderFX);
+			trigger.SetRenderFX(m_renderFX);
 		}
 	}
 }

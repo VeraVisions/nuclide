@@ -185,7 +185,7 @@ Materials_FixName(string old_name)
 	/* limit to 12 chars! */
 	tex_name = substring(tex_name, 0, 12);
 
-	//NSLog("%s > %s", old_name, tex_name);
+	//ncLog("%s > %s", old_name, tex_name);
 
 	return tex_name;
 }
@@ -235,7 +235,7 @@ Materials_LoadFromText(string filename)
 
 		fclose(fileMaterial);
 	} else {
-		NSError("Missing file %s", filename);
+		ncError("Missing file %s", filename);
 	}
 #endif
 }
@@ -291,7 +291,7 @@ Materials_Mapper_Init(void)
 	g_hlmlut = memalloc(lutSize);
 
 	if (!g_hlmlut) {
-		NSError("Memory allocation failed for %i bytes.", lutSize);
+		ncError("Memory allocation failed for %i bytes.", lutSize);
 		g_hlmlut_count = 0;
 		remove(matDecl);
 		return;
@@ -352,7 +352,7 @@ Materials_LoadFromLegacyText(string filename)
 		}
 		fclose(fileMaterial);
 	} else {
-		NSError("Missing file %s", filename);
+		ncError("Missing file %s", filename);
 	}
 }
 
@@ -412,7 +412,7 @@ Materials_Init(void)
 
 		/* no longer needed! */
 		Materials_Mapper_Shutdown();
-		NSLog("material data initialized with %i entries.", g_mat_total);
+		ncLog("material data initialized with %i entries.", g_mat_total);
 	}
 
 	InitEnd();
@@ -426,6 +426,6 @@ Materials_OnLoad(string engineMaterial)
 	}
 
 	Materials_LoadFromMat(strcat(engineMaterial, ".mat"));
-	// lazy attempt 
+	// lazy attempt
 	Materials_LoadFromMat(strcat("materials/", engineMaterial, ".vmt"));
 }

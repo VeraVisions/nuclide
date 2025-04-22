@@ -37,7 +37,7 @@ CheatersLament(ncPlayer playerEntity, vector absAngles, float buttons, float tim
 		float deltaDegrees;
 
 		makevectors( absAngles );
-		for (entity e = world; (e = find(e, ::classname, "player"));) {
+		for (entity e = world; (e = next.Player(e));) {
 			deltaPosition = normalize( e.origin - playerEntity.origin );
 			deltaDegrees = deltaPosition * v_forward;
 

@@ -131,7 +131,7 @@ Titles_Init(void)
 		fs_titles = fopen("scripts/titles.txt", FILE_READ);
 
 		if (fs_titles < 0) {
-			NSWarning("No titles, missing [scripts/]titles.txt");
+			ncWarning("No titles, missing [scripts/]titles.txt");
 			InitEnd();
 			return;
 		}
@@ -170,7 +170,7 @@ Titles_Init(void)
 		}
 	}
 
-	NSLog("read %i titleDefs (%i bytes).", g_titles_count, sizeof(titles_t) * g_titles_count);
+	ncLog("read %i titleDefs (%i bytes).", g_titles_count, sizeof(titles_t) * g_titles_count);
 	g_titles = memalloc(sizeof(titles_t) * g_titles_count);
 	fseek(fs_titles, 0);
 
@@ -179,7 +179,7 @@ Titles_Init(void)
 		/* tons of comments/garbage in those files,
 		 * so tokenize appropriately */
 		c = tokenize_console(temp);
-		
+
 		switch(argv(0)) {
 		case "$position":
 			t_position[0] = stof(argv(1));

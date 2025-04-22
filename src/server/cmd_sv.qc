@@ -211,10 +211,21 @@ CMD_ListSpawnData(void)
 	float entNum = stof(entString);
 	ncEntity foundEnt = (ncEntity)edict_num(entNum);
 
+	if (!STRING_SET(entString)) {
+		makevectors(self.v_angle);
+		traceline(self.origin + self.view_ofs, self.origin + self.view_ofs + (v_forward * 4096.0f), MOVE_NORMAL, self);
+
+		if (trace_ent) {
+			foundEnt = trace_ent;
+		} else {
+			printf("Entity neither specified nor in-front.\n");
+		}
+	}
+
 	if (foundEnt) {
 		printf("Spawn data for %s (%d):\n{\n", foundEnt.classname, entNum);
 
-		for (int i = 1; i < (tokenize(foundEnt.m_strSpawnData) - 1); i += 2) {
+		for (int i = 1; i < (tokenize(foundEnt.m_rawSpawnData) - 1); i += 2) {
 			printf("\t%S\t\t%S\n", argv(i), argv(i+1));
 		}
 
@@ -223,10 +234,55 @@ CMD_ListSpawnData(void)
 		printf("Unable to find entity with ID %S\n", entString);
 }
 
+static void
+CMD_ListEntityData(void)
+{
+	string entString = argv(1);
+	float entNum = stof(entString);
+	ncEntity foundEnt = (ncEntity)edict_num(entNum);
+
+	if (!STRING_SET(entString)) {
+		makevectors(self.v_angle);
+		traceline(self.origin + self.view_ofs, self.origin + self.view_ofs + (v_forward * 4096.0f), MOVE_NORMAL, self);
+
+		if (trace_ent) {
+			foundEnt = trace_ent;
+		} else {
+			printf("Entity neither specified nor in-front.\n");
+		}
+	}
+
+	if (foundEnt) {
+		printf("Entity data for %s (%d):\n{\n", foundEnt.classname, entNum);
+		eprint(foundEnt);
+	} else
+		printf("Unable to find entity with ID %S\n", entString);
+}
+
+
+
+static void
+CMD_ListEntitiesByClass(void)
+{
+	string entString = argv(1);
+	float entNum = stof(entString);
+
+	if (!STRING_SET(entString)) {
+		printf("Specify a classname. E.g. func_wall\n");
+	}
+
+	for (entity e = world; (e = find(e, ::classname, entString));) {
+		printf("\t(%d) %v (mins: %v; maxs: %v)\n", num_for_edict(e), e.origin, e.mins, e.maxs);
+	}
+}
+
 bool
 Cmd_ParseServerCommand(void)
 {
 	switch (argv(0)) {
+	case "addon":
+		CMD_Addon_f();
+		break;
 	case "addBot":
 		CMD_AddBot();
 		break;
@@ -281,7 +337,7 @@ Cmd_ParseServerCommand(void)
 		EntityDef_DebugList();
 		break;
 	case "listSoundDef":
-		Sound_DebugList();
+		SoundDef_DebugList();
 		break;
 	case "listMapTweaks":
 		MapTweak_ListActive();
@@ -292,8 +348,20 @@ Cmd_ParseServerCommand(void)
 	case "setLightStyle":
 		CMD_SetLightStyle();
 		break;
-	case "listSpawnData":
+	case "listEntitySpawnData":
 		CMD_ListSpawnData();
+		break;
+	case "listEntityData":
+		CMD_ListEntityData();
+		break;
+	case "listEntitiesByClass":
+		CMD_ListEntitiesByClass();
+		break;
+	case "setGlobal":
+		ncSessionManager::SetGlobal(argv(1), argv(2));
+		break;
+	case "listGlobals":
+		ncSessionManager::ListGlobals();
 		break;
 	default:
 		return (false);

@@ -89,32 +89,32 @@ momentary_rot_button::Save(float handle)
 }
 
 void
-momentary_rot_button::Restore(string strKey, string strValue)
+momentary_rot_button::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_iTurnDir":
-		m_iTurnDir = ReadInt(strValue);
+		m_iTurnDir = ReadInt(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-momentary_rot_button::SpawnKey(string strKey, string strValue)
+momentary_rot_button::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "distance":
-		m_flDistance = stof(strValue);
+		m_flDistance = stof(setValue);
 		break;
 	case "speed":
-		m_flSpeed = stof(strValue);
+		m_flSpeed = stof(setValue);
 		break;
 	case "returnspeed":
-		m_flReturnspeed = stof(strValue);
+		m_flReturnspeed = stof(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 

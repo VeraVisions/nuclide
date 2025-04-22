@@ -58,7 +58,7 @@ ncEntity
 Route_SelectNearest(float type, vector org, optional vector lastpoi = [0,0,0]) 
 {
 	entity temp;
-	int bestrange = COST_INFINITE;
+	int bestrange = MAX_DISTANCE;
 	int range;
 	entity dest = __NULL__;
 
@@ -82,7 +82,7 @@ ncEntity
 Route_SelectNearestTeam(float type, vector org, float tt) 
 {
 	entity temp;
-	int bestrange = COST_INFINITE;
+	int bestrange = MAX_DISTANCE;
 	int range;
 	entity dest = __NULL__;
 
@@ -107,7 +107,7 @@ ncEntity
 Route_SelectNearestEnemyTeam(float type, vector org, float tt) 
 {
 	entity temp;
-	int bestrange = COST_INFINITE;
+	int bestrange = MAX_DISTANCE;
 	int range;
 	entity dest = __NULL__;
 
@@ -161,14 +161,14 @@ Route_SelectRandomSpot(void)
 vector
 Route_SelectDestination(ncBot target)
 {
-	ncGameRules rules;
-	rules = (ncGameRules)g_grMode;
+	ncRuleDelegate rules;
+	rules = (ncRuleDelegate)g_grMode;
 
 	ncEntity dest = __NULL__;
 
 	if (rules.IsTeamplay()) {
 		/* we have the goal item, so capture it */
-		if (target.vv_flags & VFL_GOALITEM) {
+		if (target.m_nuclideFlags & VFL_GOALITEM) {
 			BotLog("%s going for capture", target.netname);
 			dest = Route_SelectNearestTeam(BOTINFO_TEAM_GOALCAPTURE, target.origin, target.team);
 			

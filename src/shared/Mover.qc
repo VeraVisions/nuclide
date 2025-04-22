@@ -29,15 +29,15 @@ ncMoverEntity::ncMoverEntity(void)
 
 #ifdef SERVER
 void
-ncMoverEntity::SpawnKey(string strKey, string strValue)
+ncMoverEntity::SpawnKey(string keyName, string setValue)
 {
-	switch (strKey) {
+	switch (keyName) {
 	case "movedir":
-		m_vecMoveDir = ReadVector(strValue);
+		m_vecMoveDir = ReadVector(setValue);
 		m_bUseMoveDir = true;
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(keyName, setValue);
 	}
 }
 
@@ -58,38 +58,38 @@ ncMoverEntity::Save(float handle)
 }
 
 void
-ncMoverEntity::Restore(string strKey, string strValue)
+ncMoverEntity::Restore(string keyName, string setValue)
 {
-	switch (strKey) {
+	switch (keyName) {
 	case "m_vecPos1":
-		m_vecPos1 = ReadVector(strValue);
+		m_vecPos1 = ReadVector(setValue);
 		break;
 	case "m_vecPos2":
-		m_vecPos2 = ReadVector(strValue);
+		m_vecPos2 = ReadVector(setValue);
 		break;
 	case "m_vecPos3":
-		m_vecPos3 = ReadVector(strValue);
+		m_vecPos3 = ReadVector(setValue);
 		break;
 	case "m_vecPos4":
-		m_vecPos4 = ReadVector(strValue);
+		m_vecPos4 = ReadVector(setValue);
 		break;
 	case "m_moverState":
-		m_moverState = ReadFloat(strValue);
+		m_moverState = ReadFloat(setValue);
 		break;
 	case "m_moverType":
-		m_moverType = ReadFloat(strValue);
+		m_moverType = ReadFloat(setValue);
 		break;
 	case "m_iPortalState":
-		m_iPortalState = ReadInt(strValue);
+		m_iPortalState = ReadInt(setValue);
 		break;
 	case "m_vecMoveDir":
-		m_vecMoveDir = ReadVector(strValue);
+		m_vecMoveDir = ReadVector(setValue);
 		break;
 	case "m_bUseMoveDir":
-		m_bUseMoveDir = ReadBool(strValue);
+		m_bUseMoveDir = ReadBool(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(keyName, setValue);
 	}
 }
 #endif
@@ -116,7 +116,7 @@ ncMoverEntity::GetDirectionalPosition(vector vecAngle, float flLip)
 		}
 	}
 
-	vecPos = (GetOrigin() + vecMoveDir * (fabs(vecMoveDir * size) - flLip));
+	vecPos = (GetSpawnVector("origin") + vecMoveDir * (fabs(vecMoveDir * size) - flLip));
 	return vecPos;
 }
 
@@ -124,7 +124,15 @@ vector
 ncMoverEntity::GetDirectionalRotation(vector normalizedAngle, float travelDistance)
 {
 	vector vecMoveDir = normalizedAngle;
-	return (GetAngles() + vecMoveDir * travelDistance);
+	vector outputVector;
+
+	if (m_bUseMoveDir == true) {
+		makevectors(m_vecMoveDir);
+		vecMoveDir = v_forward;
+	} 
+
+	outputVector = (GetSpawnVector("angles") + (vecMoveDir * travelDistance));
+	return (outputVector);
 }
 
 void

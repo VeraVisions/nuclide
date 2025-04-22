@@ -54,15 +54,15 @@ prop_dynamic::prop_dynamic(void)
 }
 
 void
-prop_dynamic::SpawnKey(string strKey, string strValue)
+prop_dynamic::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "frame":
 	case "sequence":
-		frame = stof(strValue);
+		frame = stof(setValue);
 		break;
 	case "solid":
-		float s = stof(strValue);
+		float s = stof(setValue);
 
 		switch (s) {
 		case 2:
@@ -76,7 +76,7 @@ prop_dynamic::SpawnKey(string strKey, string strValue)
 		}
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 		break;
 	}
 }

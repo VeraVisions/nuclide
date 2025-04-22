@@ -16,11 +16,10 @@
 
 #pragma target fte_5768
 //#pragma flag enable assumeint
-#pragma PROGS_DAT  "../../base/plug_voxannouncer.dat"
-#define QWSSQC
+#pragma PROGS_DAT  "../../base/plugins/voxannouncer.dat"
+#define SERVER
 
-#include "../shared/fteextensions.qc"
-#include "../shared/events.h"
+#include "../server/api.h"
 
 void
 VoxFunc(string strMessage)
@@ -33,7 +32,7 @@ VoxFunc(string strMessage)
 }
 
 void
-Plug_ClientObituary(entity attk, entity targ, int weapon, int body, int dmg)
+Plug_PlayerDeath(entity attk, entity targ, int weapon, int body, int dmg)
 {
 	/* silly announcer */
 	if (attk != world && attk != targ) {

@@ -61,7 +61,7 @@ public:
 	virtual void postdraw(void);
 	virtual float predraw(void);
 	virtual void SpawnKey(string,string);
-	virtual void RendererRestarted(void);
+	virtual void ReloadVideoResources(void);
 	virtual bool CanSpawn(bool);
 
 private:
@@ -89,7 +89,7 @@ env_sun::env_sun(void)
 }
 
 void
-env_sun::RendererRestarted(void)
+env_sun::ReloadVideoResources(void)
 {
 	m_mtrFlare1 = precache_material(m_mtrFlare1);
 	m_mtrFlare2 = precache_material(m_mtrFlare2);

@@ -122,7 +122,7 @@ ncBot::UseButton(void)
 void
 ncBot::SeeThink(void)
 {
-	ncGameRules rules = (ncGameRules)g_grMode;
+	ncRuleDelegate rules = (ncRuleDelegate)g_grMode;
 
 	/*if (m_eTarget)
 		return; */
@@ -191,17 +191,17 @@ ncBot::CheckRoute(void)
 	vector vecEndPos;
 	float flRadius;
 
-	if (!m_iNodes) {
+	if (PathNodeCount() <= 0i) {
 		return;
 	}
 
 	/* level out position/node stuff */
-	if (m_iCurNode < 0) {
-		vecEndPos = m_vecLastNode;
+	if (m_pathfindingCurrentNode < 0) {
+		vecEndPos = PathDestination();
 		flRadius = 128; /* destination is not a node, therefore has a virtual radius */
 	} else {
-		vecEndPos = m_pRoute[m_iCurNode].dest;
-		flRadius = m_pRoute[m_iCurNode].radius;
+		vecEndPos = m_pathfindingGraph[m_pathfindingCurrentNode].dest;
+		flRadius = m_pathfindingGraph[m_pathfindingCurrentNode].radius;
 	}
 
 	/* we need to have a sensible radius */
@@ -216,31 +216,31 @@ ncBot::CheckRoute(void)
 	/* we're inside the radius */
 	if (flDist <= flRadius) {
 		BotEntLog("%s reached node", this.netname);
-		m_iCurNode--;
+		m_pathfindingCurrentNode--;
 
 		/* if we're inside an actual node (not a virtual one */
-		if (m_iCurNode >= 0) {
+		if (m_pathfindingCurrentNode >= 0) {
 			/* if a node is flagged as jumpy, jump! */
-			if (Route_GetNodeFlags(&m_pRoute[m_iCurNode]) & LF_JUMP) {
+			if (Route_GetNodeFlags(&m_pathfindingGraph[m_pathfindingCurrentNode]) & LF_JUMP) {
 				//input_buttons |= INPUT_JUMP;
-				velocity = Route_GetJumpVelocity(origin, m_pRoute[m_iCurNode].dest, gravity);
+				velocity = Route_GetJumpVelocity(origin, m_pathfindingGraph[m_pathfindingCurrentNode].dest, gravity);
 			}
 
 			/* find the nearest usable item (func_button) and use them */
-			if (Route_GetNodeFlags(&m_pRoute[m_iCurNode]) & LF_USER)
+			if (Route_GetNodeFlags(&m_pathfindingGraph[m_pathfindingCurrentNode]) & LF_USER)
 				UseButton();
 		}
 
 #if 0
 		/* we've still traveling and from this node we may be able to walk
 		 * directly to our end-destination */
-		if (m_iCurNode > -1) {
+		if (m_pathfindingCurrentNode > -1) {
 			tracebox(origin, mins, maxs, vecEndPos, MOVE_NORMAL, this);
 
 			/* can we walk directly to our target destination? */
 			if (trace_fraction == 1.0) {
 				BotEntLog("Walking directly to last node.");
-				m_iCurNode = -1;
+				m_pathfindingCurrentNode = -1;
 			}
 		}
 #endif
@@ -264,7 +264,7 @@ ncBot::CheckRoute(void)
 	m_flLastDist = flDist;
 
 	/* after one second, also give up the route */
-	if (m_flNodeGiveup >= 1.0f || m_iCurNode <= BOTROUTE_END) {
+	if (m_flNodeGiveup >= 1.0f || m_pathfindingCurrentNode <= BOTROUTE_END) {
 		BotEntLog("Taking too long! Giving up!");
 		RouteClear();
 	} else if (m_flNodeGiveup >= 0.5f) { /* attempt a jump after half a second */
@@ -274,7 +274,7 @@ ncBot::CheckRoute(void)
 		}
 	} else {
 		/* entire way-link needs to be crouched. that's the law of the land */
-		if (Route_GetNodeFlags(&m_pRoute[m_iCurNode]) & LF_CROUCH || autocvar_bot_crouch)
+		if (Route_GetNodeFlags(&m_pathfindingGraph[m_pathfindingCurrentNode]) & LF_CROUCH || autocvar_bot_crouch)
 			input_buttons |= INPUT_CROUCH;
 	}
 }
@@ -310,14 +310,14 @@ ncBot::RunAI(void)
 		return;
 
 	/* create our first route */
-	if (!m_iNodes && autocvar_bot_aimless == 0) {
+	if (PathNodeCount() <= 0i && autocvar_bot_aimless == 0) {
 		CreateObjective();
 
 		BotEntLog("%S is calculating first bot route",
 			this.netname);
 
 		/* our route probably has not been processed yet */
-		if (!m_iNodes) {
+		if (PathNodeCount() <= 0i) {
 			return;
 		}
 	}
@@ -363,7 +363,7 @@ ncBot::RunAI(void)
 	aimPos = [0,0,0];
 
 	/* if we've got a path (we always should) move the bot */
-	if (m_iNodes) {
+	if (PathNodeCount() >= 1i) {
 		bool goRoute = false;
 		vector vecNewAngles = g_vec_null;
 		vector vecDirection = g_vec_null;
@@ -371,13 +371,13 @@ ncBot::RunAI(void)
 		/* no enemy, or it isn't visible... then stare at nodes! */
 		if (!m_eTarget || enemyVisible == false) {
 			/* aim at the next node */
-			if (m_iCurNode == BOTROUTE_DESTINATION)
-				aimPos = m_vecLastNode;
+			if (m_pathfindingCurrentNode == BOTROUTE_DESTINATION)
+				aimPos = PathDestination();
 			else {
-				if (m_iCurNode > 0 && !(Route_GetNodeFlags(&m_pRoute[m_iCurNode]) & LF_AIM))
-					aimPos = m_pRoute[m_iCurNode - 1].dest;
+				if (m_pathfindingCurrentNode > 0 && !(Route_GetNodeFlags(&m_pathfindingGraph[m_pathfindingCurrentNode]) & LF_AIM))
+					aimPos = m_pathfindingGraph[m_pathfindingCurrentNode - 1].dest;
 				else
-					aimPos = m_pRoute[m_iCurNode].dest;
+					aimPos = m_pathfindingGraph[m_pathfindingCurrentNode].dest;
 			}
 		} else {
 			/* aim towards the enemy */
@@ -451,17 +451,17 @@ ncBot::RunAI(void)
 		}
 
 		if (goRoute) {
-			if (m_iCurNode <= BOTROUTE_DESTINATION) {
-				aimPos = m_vecLastNode;
+			if (m_pathfindingCurrentNode <= BOTROUTE_DESTINATION) {
+				aimPos = PathDestination();
 			} else {
-				aimPos = m_pRoute[m_iCurNode].dest;
+				aimPos = m_pathfindingGraph[m_pathfindingCurrentNode].dest;
 			}
 		} else {
 			RouteClear();
 		}
 
 		/* if there's a breakable in the way... */
-		traceline(origin, aimPos, MOVE_NORMAL, this);
+		traceline(GetEyePos(), aimPos, MOVE_NORMAL, this);
 
 		/* Hackish: If there's a func_breakable in the way... */
 		if (trace_ent.classname == "func_breakable") {
@@ -470,7 +470,7 @@ ncBot::RunAI(void)
 		}
 
 		/* make them walk when they need to. */
-		if ((m_iCurNode >= 0 && Route_GetNodeFlags(&m_pRoute[m_iCurNode]) & LF_WALK) || shouldWalk)
+		if ((m_pathfindingCurrentNode >= 0 && Route_GetNodeFlags(&m_pathfindingGraph[m_pathfindingCurrentNode]) & LF_WALK) || shouldWalk)
 			SetMoveSpeedScale(0.5f);
 		else
 			SetMoveSpeedScale(1.0f);
@@ -517,7 +517,7 @@ ncBot::BotPostFrame(void)
 void
 ncBot::AddedItemCallback(ncItem newItem)
 {
-	if (isBot(this) == true) {
+	if (is.Bot(this) == true) {
 		SwitchToBestWeapon(false);
 	} else {
 		super::AddedItemCallback(newItem);
@@ -527,10 +527,18 @@ ncBot::AddedItemCallback(ncItem newItem)
 void
 ncBot::SetName(string nickname)
 {
-	if (autocvar_bot_prefix)
-		SetInfoKey("name", sprintf("%s %s", autocvar_bot_prefix, nickname));
-	else
-		SetInfoKey("name", nickname);
+	if (is.Bot(this)) {
+		SetInfoKey("*bot", "1");
+
+		if (STRING_SET(autocvar_bot_prefix)) {
+			SetInfoKey("name", sprintf("%s %s", autocvar_bot_prefix, nickname));
+			return;
+		}
+	} else {
+		SetInfoKey("*bot", "");
+	}
+
+	SetInfoKey("name", nickname);
 }
 
 void
@@ -581,7 +589,7 @@ ncBot::ncBot(void)
 void
 Bot_KickRandom(void)
 {
-	for (entity e = world;(e = find(e, ::classname, "player"));) {
+	for (entity e = world;(e = next.Player(e));) {
 		if (clienttype(e) == CLIENTTYPE_BOT) {
 			dropclient(e);
 			return;
@@ -603,11 +611,11 @@ bot_spawner_think(void)
 	}
 
 	/* count total clients + bots */
-	for (entity e = world;(e = find(e, ::classname, "player"));) {
-		if (clienttype(e) == CLIENTTYPE_BOT) {
+	for (ncEntity e = world;(e = next.Player(e));) {
+		if (is.Bot(e)) {
 			clientCount++;
 			botCount++;
-		}else if (clienttype(e) == CLIENTTYPE_REAL) {
+		} else {
 			clientCount++;
 		}
 	}

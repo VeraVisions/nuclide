@@ -89,19 +89,19 @@ game_player_equip::Save(float handle)
 }
 
 void
-game_player_equip::Restore(string strKey, string strValue)
+game_player_equip::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_strBuffer":
-		m_strBuffer = ReadString(strValue);
+		m_strBuffer = ReadString(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-game_player_equip::SpawnKey(string strKey, string strValue)
+game_player_equip::SpawnKey(string strKey, string setValue)
 {
 	/* like multi_manager, we save non-field infos in the spawndata */
 	switch (strKey) {
@@ -115,7 +115,7 @@ game_player_equip::SpawnKey(string strKey, string strValue)
 	case "angles":
 		break;
 	default:
-		m_strBuffer = sprintf("%s%s %s ", m_strBuffer, strKey, strValue);
+		m_strBuffer = sprintf("%s%s %s ", m_strBuffer, strKey, setValue);
 	}
 }
 
@@ -134,7 +134,7 @@ game_player_equip::SpawnUnit(string cname, vector org)
 		t.origin = t.GetSpawnVector("origin") = neworg;
 
 		/* spawn anew */
-		t.Respawn();
+		t.Spawn();
 	}
 
 	entity unit = spawn();

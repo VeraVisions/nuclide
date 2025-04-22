@@ -108,38 +108,38 @@ func_rotating::Save(float handle)
 }
 
 void
-func_rotating::Restore(string strKey, string strValue)
+func_rotating::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "m_vecMoveDir":
-		m_vecMoveDir = ReadVector(strValue);
+		m_vecMoveDir = ReadVector(setValue);
 		break;
 	case "m_flSpeed":
-		m_flSpeed = ReadFloat(strValue);
+		m_flSpeed = ReadFloat(setValue);
 		break;
 	case "m_flDamage":
-		m_flDamage = ReadFloat(strValue);
+		m_flDamage = ReadFloat(setValue);
 		break;
 	case "m_flDir":
-		m_flDir = ReadFloat(strValue);
+		m_flDir = ReadFloat(setValue);
 		break;
 	default:
-		super::Restore(strKey, strValue);
+		super::Restore(strKey, setValue);
 	}
 }
 
 void
-func_rotating::SpawnKey(string strKey, string strValue)
+func_rotating::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "speed":
-		m_flSpeed = stof(strValue);
+		m_flSpeed = stof(setValue);
 		break;
 	case "dmg":
-		m_flDamage = stof(strValue);
+		m_flDamage = stof(setValue);
 		break;
 	default:
-		super::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, setValue);
 	}
 }
 
