@@ -982,7 +982,7 @@ ncProjectile::_FireSingle(vector vecPos, vector vecAngles, float flDamage, float
 	int oldhitcontents = owner.hitcontentsmaski;
 	owner.hitcontentsmaski = CONTENTBITS_POINTSOLID | CONTENTBIT_CORPSE | CONTENTBIT_WATER | CONTENTBIT_SLIME | CONTENTBIT_LAVA | CONTENTBIT_PROJECTILE;
 	traceline(vecPos, vecPos + range, MOVE_LAGGED | MOVE_HITMODEL, owner);
-	impactTarget = trace_ent;
+	impactTarget = (ncSurfacePropEntity)trace_ent;
 	owner.hitcontentsmaski = oldhitcontents;
 	m_lastPlaneNormal = trace_plane_normal;
 	m_hitLocation = trace_endpos;

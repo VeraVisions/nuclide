@@ -99,7 +99,7 @@ game_player_hurt::Trigger(entity activatingEntity, triggermode_t triggerMode)
 	ncSurfacePropEntity toAttack = (ncSurfacePropEntity)activatingEntity;
 	ncDict damageDecl = spawn(ncDict);
 	damageDecl.AddKey("damage", itos(m_iDamage));
-	toAttack.Damage(this, activatingEntity, damageDecl, 1.0f, GetOrigin(), g_vec_null, activatingEntity.origin);
+	toAttack.Damage(this, activatingEntity, damageDecl, 1.0f, g_vec_null, activatingEntity.origin);
 	remove(damageDecl);
 
 	if (HasSpawnFlags(1)) {

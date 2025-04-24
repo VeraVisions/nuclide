@@ -68,6 +68,7 @@ ncAttack::Launch(vector startPos, vector launchDir, float fuseOffset, float powe
 {
 	ncEntity plantedEntity;
 	ncPlayer ourOwner = (ncPlayer)m_weaponOwner.owner;
+	vector forwardDir = g_vec_null;
 
 	bool willPlant = GetSpawnBool("plant");
 	bool willDrop = GetSpawnBool("drop");
@@ -103,7 +104,7 @@ ncAttack::Launch(vector startPos, vector launchDir, float fuseOffset, float powe
 				ourOwner.m_hook.skin = 1;
 			}*/
 
-			vector forwardDir = anglesToForward(ourOwner.v_angle);
+			forwardDir = anglesToForward(ourOwner.v_angle);
 			vector src = ourOwner.GetEyePos();
 			traceline(src, src + (forwardDir * 32), MOVE_NORMAL, ourOwner);
 
@@ -114,7 +115,7 @@ ncAttack::Launch(vector startPos, vector launchDir, float fuseOffset, float powe
 			return;
 		}
 
-		vector forwardDir = anglesToForward(ourOwner.v_angle);
+		forwardDir = anglesToForward(ourOwner.v_angle);
 		ourOwner.m_hook = spawn();
 		setorigin(ourOwner.m_hook, ourOwner.GetEyePos() + (forwardDir * 16));
 		ourOwner.m_hook.owner = ourOwner;

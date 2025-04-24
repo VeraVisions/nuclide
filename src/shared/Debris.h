@@ -23,6 +23,7 @@ public:
 
 	virtual void Touch(entity);
 	nonvirtual void SetImpactDecal(string);
+	nonvirtual void KeepMoving(void);
 
 private:
 	string m_decalImpact;

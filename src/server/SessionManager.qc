@@ -195,8 +195,7 @@ ncSessionManager::TransitionFromVolume(ncEntity volumeEnt)
 void
 ncSessionManager::RestoreStateFromHandle(float fh, float entcount, float playerslots)
 {
-	entity e = world;
-	entity eold;
+	entity e = __NULL__;
 	string l;
 	float n = 0;
 	ncEntity loadent = __NULL__;
@@ -346,7 +345,7 @@ ncSessionManager::SetGlobal(string globalName, string setValue)
 		EntLog("Set global %s to %S", globalName, setValue);
 	} else if (STRING_SET(globalName)) {
 		g_globalDictionary.RemoveKey(globalName);
-		EntLog("Removed global %s", globalName, setValue);
+		EntLog("Removed global %s", globalName);
 	}
 }
 

@@ -230,7 +230,7 @@ ncItem::Restore(string keyName, string setValue)
 		m_hiddenSequence = ReadFloat(setValue);
 		break;
 	case "nextItem":
-		m_nextItem = ReadEntity(setValue);
+		m_nextItem = (ncItem)ReadEntity(setValue);
 		break;
 	default:
 		super::Restore(keyName, setValue);
@@ -741,7 +741,8 @@ ncItem::PredictPostFrame(void)
 void
 ncItem::OnRemoveEntity(void)
 {
-	m_nextItem = owner = 0;
+	m_nextItem = 0;
+	owner = 0;
 }
 
 void

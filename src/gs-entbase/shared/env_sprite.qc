@@ -358,7 +358,7 @@ env_sprite::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_BYTE(m_renderAmount, SPRITE_CHANGED_RENDERAMT)
 	READENTITY_STRING(m_strMaterial, SPRITE_CHANGED_MATERIAL)
 
-	effects = EF_NODEPTHTEST;
+	m_netEffects = effects = EF_NOSHADOW;
 	drawmask = MASK_ENGINE;
 	nextthink = time + (1 / m_flFramerate);
 	m_iMaxFrame = modelframecount(modelindex);

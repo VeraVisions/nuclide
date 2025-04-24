@@ -540,7 +540,7 @@ env_beam::SendEntity(entity ePEnt, float flChanged)
 void
 env_beam::ReceiveEntity(float flNew, float flChanged)
 {
-	vector renderColor;
+	vector renderColor = g_vec_null;
 
 	READENTITY_INT(m_iSpriteID, BEAM_CHANGED_SPRITE)
 	READENTITY_COORD(m_vecStartPos[0], BEAM_CHANGED_STARTPOS_X)

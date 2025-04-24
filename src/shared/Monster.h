@@ -422,6 +422,7 @@ public:
 
 	virtual void Trigger(entity, triggermode_t);
 	nonvirtual void AlertNearbyToSchedule(string scheduleType);
+	nonvirtual void AlertNearbyClassWithMindset(string scheduleType);
 	nonvirtual bool ShouldTurn(void);
 #endif
 

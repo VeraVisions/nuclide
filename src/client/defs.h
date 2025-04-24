@@ -170,7 +170,6 @@ var float PART_BURNING;
 /* misc globals */
 vector video_mins;
 vector g_vidsize;
-vector mouse_pos;
 int g_iIntermission;
 
 /* this actually belongs in builtins.h since its an undocumented global */

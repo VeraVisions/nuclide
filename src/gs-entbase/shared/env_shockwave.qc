@@ -95,18 +95,18 @@ env_shockwave::env_shockwave(void)
 	m_flScrollSpeed = 0.0f;
 }
 
+#ifdef SERVER
 void
 env_shockwave::Spawned(void)
 {
 	super::Spawned();
 
-#ifdef SERVER
 	if (GetSpawnBool("triggerOnSpawn")) {
 		SetOrigin(GetOrigin());
 		Trigger(this, TRIG_TOGGLE);
 	}
-#endif
 }
+#endif
 
 #ifdef SERVER
 void

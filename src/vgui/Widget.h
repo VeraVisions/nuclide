@@ -14,6 +14,8 @@ public:
 	nonvirtual void FlagRemove(int);
 	/** Check if the vguiWidget has a flag attached. */
 	nonvirtual bool HasFlag(int);
+	/** Returns if the widget is active. */
+	nonvirtual bool IsEnabled(void);
 
 	/** Set the position within its context. */
 	nonvirtual void SetPos(vector);

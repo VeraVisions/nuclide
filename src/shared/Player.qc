@@ -1082,7 +1082,7 @@ ncPlayer::Restore(string keyName, string setValue)
 		m_holdingEntity = ReadEntity(setValue);
 		break;
 	case "m_pmoveVars":
-		m_pmoveVars = ReadEntity(setValue);
+		m_pmoveVars = (ncPMoveVars)ReadEntity(setValue);
 		break;
 	case "vehicle":
 		vehicle = ReadEntity(setValue);

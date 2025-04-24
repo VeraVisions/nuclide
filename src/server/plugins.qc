@@ -21,7 +21,7 @@ AddonManager_LoadNamedAddon(string addonName)
 	ncAddonDelegate addonEnum = __NULL__;
 
 	/* Step 1: Check if our Addon is already in-game */
-	while(addonEnum = AddonManager_NextAddon(addonEnum)) {
+	while((addonEnum = AddonManager_NextAddon(addonEnum))) {
 		if (addonEnum.Name() == addonName) {
 			ncError("Addon %S already loaded.", addonName);
 			return;
@@ -52,7 +52,7 @@ AddonManager_CloseNamedAddon(string addonName)
 	string addonPath = "";
 	ncAddonDelegate addonEnum = __NULL__;
 
-	while(addonEnum = AddonManager_NextAddon(addonEnum)) {
+	while((addonEnum = AddonManager_NextAddon(addonEnum))) {
 		if (addonEnum.Name() == addonName) {
 			addonEnum.Close();
 			return;
@@ -78,7 +78,7 @@ CMD_Addon_f(void)
 
 		printf("Active addons:\n");
 
-		while(addonEnum = AddonManager_NextAddon(addonEnum)) {
+		while ((addonEnum = AddonManager_NextAddon(addonEnum))) {
 			printf("\t%s\n", addonEnum.Name());
 			addonCounter++;
 		}

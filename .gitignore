@@ -31,7 +31,6 @@ ssqccore.txt
 
 # Development and Data files
 
-*~
 *.dat
 *.fsv
 *.ico
@@ -62,6 +61,8 @@ base_pbr/
 baseq2/
 baseq3/
 bshift/
+duke3d/
+coterminus/
 cod/
 cod4/
 css/

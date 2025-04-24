@@ -195,7 +195,6 @@ ncSurfacePropEntity::GetArmor(void)
 void
 ncSurfacePropEntity::AddBonusHealth(float bonusHealth)
 {
-	float bonusHealth = (float)bonusHealth;
 	/* poke max_health directly here, else we'll include the bonus health = recursion */
 	float pointsTilMax = bound(0, max_health - GetHealth(), 100);
 
@@ -216,7 +215,6 @@ ncSurfacePropEntity::AddBonusHealth(float bonusHealth)
 void
 ncSurfacePropEntity::AddBonusArmor(float bonusArmor)
 {
-	float bonusArmor = (float)bonusArmor;
 	/* poke max_armor directly here, else we'll include the bonus armor = recursion */
 	float pointsTilMax = bound(0, max_armor - GetArmor(), 100);
 
@@ -465,7 +463,7 @@ ncSurfacePropEntity::Save(float handle)
 	super::Save(handle);
 	SaveFloat(handle, "timeUntilNextBurnDamage", m_timeUntilNextBurnDamage);
 	SaveFloat(handle, "burningAttacker", num_for_edict(m_burningAttacker));
-	SaveInt(handle, "burningWeapon", m_burningWeapon);
+	SaveString(handle, "burningWeapon", m_burningWeapon);
 	SaveFloat(handle,"timeUntilBurningStops", m_timeUntilBurningStops);
 	SaveFloat(handle, "timeUntilNextBurnDamage", m_timeUntilNextBurnDamage);
 	
@@ -494,7 +492,7 @@ ncSurfacePropEntity::Restore(string keyName, string savedValue)
 		m_burningAttacker = edict_num(ReadFloat(savedValue));
 		break;
 	case "burningWeapon":
-		m_burningWeapon = ReadInt(savedValue);
+		m_burningWeapon = ReadString(savedValue);
 		break;
 	case "timeUntilBurningStops":
 		m_timeUntilBurningStops = ReadFloat(savedValue);

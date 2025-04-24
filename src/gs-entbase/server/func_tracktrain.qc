@@ -128,8 +128,7 @@ public:
 	virtual void Trigger(entity, triggermode_t);
 	virtual void Input(entity, string, string);
 	virtual void EvaluateEntity(void);
-	virtual float SendEntity(entity, float)
-;
+	virtual float SendEntity(entity, float);
 #endif
 
 	virtual void PlayerInput(void);
@@ -582,7 +581,7 @@ func_tracktrain::Blocked(entity eBlocker)
 		dmgDir = dirFromTarget(center, eBlocker.origin);
 		damageDecl = spawn(ncDict);
 		damageDecl.AddKey("damage", "500");
-		toAttack.Damage(this, eBlocker, damageDecl, 1.0f, center, dmgDir, eBlocker.origin);
+		toAttack.Damage(this, eBlocker, damageDecl, 1.0f, dmgDir, eBlocker.origin);
 		remove(damageDecl);
 		return;
 	}
@@ -592,7 +591,7 @@ func_tracktrain::Blocked(entity eBlocker)
 		dmgDir = dirFromTarget(center, eBlocker.origin);
 		damageDecl = spawn(ncDict);
 		damageDecl.AddKey("damage", ftos(m_flDamage));
-		toAttack.Damage(this, eBlocker, damageDecl, 1.0f, center, dmgDir, eBlocker.origin);
+		toAttack.Damage(this, eBlocker, damageDecl, 1.0f, dmgDir, eBlocker.origin);
 		remove(damageDecl);
 	} else {
 		/* remove(eBlocker); */

@@ -216,7 +216,7 @@ CMD_ListSpawnData(void)
 		traceline(self.origin + self.view_ofs, self.origin + self.view_ofs + (v_forward * 4096.0f), MOVE_NORMAL, self);
 
 		if (trace_ent) {
-			foundEnt = trace_ent;
+			foundEnt = (ncEntity)trace_ent;
 		} else {
 			printf("Entity neither specified nor in-front.\n");
 		}
@@ -246,7 +246,7 @@ CMD_ListEntityData(void)
 		traceline(self.origin + self.view_ofs, self.origin + self.view_ofs + (v_forward * 4096.0f), MOVE_NORMAL, self);
 
 		if (trace_ent) {
-			foundEnt = trace_ent;
+			foundEnt = (ncEntity)trace_ent;
 		} else {
 			printf("Entity neither specified nor in-front.\n");
 		}

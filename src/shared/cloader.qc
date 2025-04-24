@@ -15,7 +15,7 @@
 */
 
 #ifndef MAX_CONSTANTS_ID
-#define MAX_CONSTANTS_ID 128
+#define MAX_CONSTANTS_ID 1024
 #endif
 
 string g_constIndex[MAX_CONSTANTS_ID];

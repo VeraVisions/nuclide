@@ -17,7 +17,9 @@ public:
 	virtual void Precache(void);
 	virtual void Respawn(void);
 	virtual void Touch(entity);
+	virtual void SpawnKey(string, string);
 	nonvirtual void Captured(float teamNumber);
+	nonvirtual void WatchPlayer(void);
 
 private:
 	string m_desiredItem;

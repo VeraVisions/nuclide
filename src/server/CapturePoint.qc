@@ -7,7 +7,7 @@ ncCapturePoint::ncCapturePoint(void)
 void
 ncCapturePoint::Captured(string classTarget, float teamNum)
 {
-	for (ncCaptureItem e = world; ((e = (ncCaptureItem)find(e, ::classname, classTarget)));) {
+	for (ncCaptureItem e = __NULL__; ((e = (ncCaptureItem)find(e, ::classname, classTarget)));) {
 		if (e.m_goalNo == teamNum) {
 			e.Respawn();
 			e.Show();

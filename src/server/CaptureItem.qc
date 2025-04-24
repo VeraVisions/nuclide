@@ -53,7 +53,7 @@ ncCaptureItem::Respawn(void)
 void
 ncCaptureItem::Captured(float teamNum)
 {
-	for (ncCaptureItem e = world; ((e = (ncCaptureItem)find(e, ::classname, classname)));) {
+	for (ncCaptureItem e = __NULL__; ((e = (ncCaptureItem)find(e, ::classname, classname)));) {
 		if (e.m_goalNo != teamNum) {
 			e.Respawn();
 			e.Show();
@@ -65,7 +65,7 @@ void
 ncCaptureItem::WatchPlayer(void)
 {
 	if (m_watchPlayer.health <= 0) {
-		ncItem dropFlag = spawnClass(m_goalItem, m_watchPlayer.GetOrigin());
+		ncItem dropFlag = (ncItem)spawnClass(m_goalItem, m_watchPlayer.GetOrigin());
 		m_watchPlayer = __NULL__;
 		dropFlag.ScheduleThink(Destroy, 30.0f);
 		dropFlag.SetMovetype(MOVETYPE_TOSS);
@@ -85,6 +85,7 @@ void
 ncCaptureItem::Touch(entity touchingEntity)
 {
 	ncActor ourToucher = (ncActor)touchingEntity;
+	ncItem theItem = __NULL__;
 
 	if (is.Player(touchingEntity) == false) {
 		return;
@@ -92,16 +93,16 @@ ncCaptureItem::Touch(entity touchingEntity)
 
 	if (ourToucher.team != m_goalNo) {
 		ourToucher.GiveItem(m_goalItem);
-		ncItem theItem = ourToucher.GetItem(m_goalItem);
+		theItem = ourToucher.GetItem(m_goalItem);
 		theItem.team = m_goalNo;
 		theItem.target = classname;
 		Disappear();
 		UseOutput(touchingEntity, m_outputOnTake);
 
-		m_watchPlayer = ourToucher;
+		m_watchPlayer = (ncPlayer)ourToucher;
 		ScheduleThink(WatchPlayer, 0.0f);
 	} else if (STRING_SET(m_desiredItem)) {
-		ncItem theItem = ourToucher.GetItem(m_desiredItem);
+		theItem = ourToucher.GetItem(m_desiredItem);
 
 		if (theItem) {
 			if (m_teamScore >= 1i) {

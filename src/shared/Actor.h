@@ -174,6 +174,7 @@ public:
 
 	virtual void AddedItemCallback(ncItem);
 	virtual void SpawnKey(string,string);
+	virtual void ReloadCachedAttributes(void);
 
 #ifdef SERVER
 	/* overrides */

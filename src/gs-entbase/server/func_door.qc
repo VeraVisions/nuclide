@@ -238,28 +238,28 @@ func_door::Restore(string strKey, string setValue)
 		m_waterType = ReadInt(setValue);
 		break;
 	case "m_strFullyClosed":
-		m_strFullyClosed = ReadInt(setValue);
+		m_strFullyClosed = ReadString(setValue);
 		break;
 	case "m_strLockedSfx":
-		m_strLockedSfx = ReadInt(setValue);
+		m_strLockedSfx = ReadString(setValue);
 		break;
 	case "m_strSndClose":
-		m_strSndClose = ReadInt(setValue);
+		m_strSndClose = ReadString(setValue);
 		break;
 	case "m_strSndMove":
-		m_strSndMove = ReadInt(setValue);
+		m_strSndMove = ReadString(setValue);
 		break;
 	case "m_strSndOpen":
-		m_strSndOpen = ReadInt(setValue);
+		m_strSndOpen = ReadString(setValue);
 		break;
 	case "m_strSndStop":
-		m_strSndStop = ReadInt(setValue);
+		m_strSndStop = ReadString(setValue);
 		break;
 	case "m_strUnlockedSfx":
-		m_strUnlockedSfx = ReadInt(setValue);
+		m_strUnlockedSfx = ReadString(setValue);
 		break;
 	case "targetClose":
-		targetClose = ReadInt(setValue);
+		targetClose = ReadString(setValue);
 		break;
 	default:
 		super::Restore(strKey, setValue);

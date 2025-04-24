@@ -29,6 +29,7 @@ public:
 	/* overrides */
 	virtual void Spawned(void);
 	virtual void SpawnKey(string, string);
+	virtual void Input(entity, string, string);
 	virtual void Save(float);
 	virtual void Restore(string, string);
 

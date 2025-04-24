@@ -611,7 +611,7 @@ bot_spawner_think(void)
 	}
 
 	/* count total clients + bots */
-	for (ncEntity e = world;(e = next.Player(e));) {
+	for (ncEntity e = __NULL__;(e = (ncEntity)next.Player(e));) {
 		if (is.Bot(e)) {
 			clientCount++;
 			botCount++;

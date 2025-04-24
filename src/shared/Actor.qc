@@ -270,19 +270,19 @@ ncActor::Restore(string keyName, string setValue)
 		_isActor = ReadBool(setValue);
 		break;
 	case "activeWeapon":
-		m_activeWeapon = ReadEntity(setValue);
+		m_activeWeapon = (ncWeapon)ReadEntity(setValue);
 		break;
 	case "followingEntity":
 		m_followingEntity = ReadEntity(setValue);
 		break;
 	case "firstWeapon":
-		m_firstWeapon = ReadEntity(setValue);
+		m_firstWeapon = (ncWeapon)ReadEntity(setValue);
 		break;
 	case "itemList":
-		m_itemList = ReadEntity(setValue);
+		m_itemList = (ncItem)ReadEntity(setValue);
 		break;
 	case "pathEntity":
-		m_pathEntity = ReadEntity(setValue);
+		m_pathEntity = (ncEntity)ReadEntity(setValue);
 		break;
 	case "timeUntilDroppingRoute":
 		m_timeUntilDroppingRoute = ReadFloat(setValue);

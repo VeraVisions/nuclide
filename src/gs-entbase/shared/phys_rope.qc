@@ -102,8 +102,8 @@ phys_rope::predraw(void)
 
 #if 1
 	R_BeginPolygon("", 0, 0);
-	R_PolygonVertex(origin, [0,1], [0,1,0], 1.0f);
-	R_PolygonVertex(m_vecTarget, [1,1], [0,1,0], 1.0f);
+	R_PolygonVertex(origin, [0,1], [0,0,0], 1.0f);
+	R_PolygonVertex(m_vecTarget, [1,1], [0,0,0], 1.0f);
 	R_EndPolygon();
 #else
 	DrawSegment(origin, m_vecTarget, vecPlayer);

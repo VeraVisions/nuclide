@@ -64,7 +64,7 @@ ClientConnect(void)
 		g_grMode.PlayerConnect((ncPlayer)self);
 
 		ncAddonDelegate addonEnum = __NULL__;
-		while(addonEnum = AddonManager_NextAddon(addonEnum)) {
+		while ((addonEnum = AddonManager_NextAddon(addonEnum))) {
 			addonEnum.PlayerConnect((ncPlayer)self);
 		}
 	}
@@ -82,7 +82,7 @@ ClientDisconnect(void)
 	}
 
 	ncAddonDelegate addonEnum = __NULL__;
-	while(addonEnum = AddonManager_NextAddon(addonEnum)) {
+	while ((addonEnum = AddonManager_NextAddon(addonEnum))) {
 		addonEnum.PlayerDisconnect((ncPlayer)self);
 	}
 
@@ -168,7 +168,7 @@ PutClientInServer(void)
 
 	/* handle plugins */
 	ncAddonDelegate addonEnum = __NULL__;
-	while(addonEnum = AddonManager_NextAddon(addonEnum)) {
+	while ((addonEnum = AddonManager_NextAddon(addonEnum))) {
 		addonEnum.PlayerSpawn(ourPlayer);
 	}
 
@@ -329,10 +329,10 @@ void
 SV_ParseClientCommand(string cmd)
 {
 	int argc;
-	ncClient theClient = self;
+	ncClient theClient = (ncClient)self;
 
 	ncAddonDelegate addonEnum = __NULL__;
-	while(addonEnum = AddonManager_NextAddon(addonEnum)) {
+	while ((addonEnum = AddonManager_NextAddon(addonEnum))) {
 		addonEnum.ClientCommand(theClient, cmd);
 	}
 

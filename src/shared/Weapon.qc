@@ -485,10 +485,10 @@ ncWeapon::Restore(string keyName, string setValue)
 		m_weaponOverheating = ReadBool(setValue);
 		break;
 	case "nextWeapon":
-		m_nextWeapon = ReadEntity(setValue);
+		m_nextWeapon = (ncWeapon)ReadEntity(setValue);
 		break;
 	case "prevWeapon":
-		m_prevWeapon = ReadEntity(setValue);
+		m_prevWeapon = (ncWeapon)ReadEntity(setValue);
 		break;
 	case "weaponLastFireInfo":
 		m_weaponLastFireInfo = ReadString(setValue);
