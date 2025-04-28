@@ -1395,7 +1395,12 @@ ncActor::GiveItem(string itemName)
 		}
 
 		newItem.SetOwner(this);
-		lastItem.m_nextItem = newItem;
+		canCarry = newItem.m_itemCarries;
+
+		if (canCarry) {
+			lastItem.m_nextItem = newItem;
+		}
+
 		linkedList = newItem;
 		newItem._AddedCallback();
 	}
