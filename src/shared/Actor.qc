@@ -36,6 +36,132 @@ ncActor::ncActor(void)
 	}
 }
 
+float
+ncActor::__ActForPrefix(string actName, string animPrefix, string emotionString)
+{
+	float returnValue = Activities_GetSequenceForEntity(this, sprintf("%s_%s_%s", actName, animPrefix, emotionString));
+
+	if (returnValue != ACTIVITY_NOTFOUND) {
+		return (returnValue);
+	}
+
+	returnValue = Activities_GetSequenceForEntity(this, sprintf("%s_%s", actName, animPrefix));
+
+	if (returnValue != ACTIVITY_NOTFOUND) {
+		return (returnValue);
+	}
+
+	returnValue = Activities_GetSequenceForEntity(this, actName);
+
+	return (returnValue);
+}
+
+void
+ncActor::SetAnimationPrefix(string animPrefix)
+{
+	string stanceString = "";
+	string emotionString = "stimulated"; /* Future plans: angry, relaxed, stimulated, agitated, USER DEFINED! */
+
+	/* bottom/body */
+	m_actIdle = __ActForPrefix("idle", animPrefix, emotionString);
+	m_actIdleCrouch = __ActForPrefix("idle_crouch", animPrefix, emotionString);
+	m_actIdleProne = __ActForPrefix("idle_prone", animPrefix, emotionString);
+	m_actWalk = __ActForPrefix("walk", animPrefix, emotionString);
+	m_actWalkCrouch = __ActForPrefix("walk_crouch", animPrefix, emotionString);
+	m_actWalkProne = __ActForPrefix("walk_prone", animPrefix, emotionString);
+	m_actRun = __ActForPrefix("run", animPrefix, emotionString);
+	m_actJump = __ActForPrefix("jump", animPrefix, emotionString);
+
+	/* top 'gestures' */
+	m_actAim = __ActForPrefix("aim", animPrefix, emotionString);
+	m_actDraw = __ActForPrefix("draw", animPrefix, emotionString);
+	m_actAttack = __ActForPrefix("attack", animPrefix, emotionString);
+	m_actReload = __ActForPrefix("reload", animPrefix, emotionString);
+
+	m_boneSpine = gettagindex(this, GetDefString("spine"));
+	m_torsoFirst = gettagindex(this, GetDefString("torsoStart"));
+	m_torsoLast = gettagindex(this, GetDefString("torsoEnd"));
+
+	EntLog("Activity Set for prefix %S:", animPrefix);
+	EntLog("\tm_boneSpine: %d", m_boneSpine);
+	EntLog("\tm_actIdle: %d", m_actIdle);
+	EntLog("\tm_actIdleCrouch: %d", m_actIdleCrouch);
+	EntLog("\tm_actIdleProne: %d", m_actIdleProne);
+	EntLog("\tm_actWalk: %d", m_actWalk);
+	EntLog("\tm_actWalkCrouch: %d", m_actWalkCrouch);
+	EntLog("\tm_actWalkProne: %d", m_actWalkProne);
+	EntLog("\tm_actRun: %d", m_actRun);
+	EntLog("\tm_actAim: %d", m_actAim);
+	EntLog("\tm_actDraw: %d", m_actDraw);
+	EntLog("\tm_actAttack: %d", m_actAttack);
+	EntLog("\tm_actReload: %d", m_actReload);
+}
+
+void
+ncActor::FiredWeapon(string weaponDef, string fireInfo)
+{
+	EntLog("Fired %S (fireInfo: %S)", weaponDef, fireInfo);
+}
+
+
+void
+ncActor::Event_DrawWeapon(void)
+{
+	
+}
+
+void
+ncActor::Event_FireWeapon(void)
+{
+}
+
+void
+ncActor::Event_ReloadWeaponStart(void)
+{
+}
+
+void
+ncActor::Event_ReloadWeapon(void)
+{
+}
+
+void
+ncActor::Event_ReloadWeaponEnd(void)
+{
+}
+
+void
+ncActor::Event_HolsterWeapon(void)
+{
+}
+
+#define ACTOREV_FIRED 1
+
+#ifdef CLIENT
+void
+ncActor::ReceiveEvent(float eventID)
+{
+	switch (eventID) {
+	case ACTOREV_FIRED:
+		FiredWeapon("", "");
+		break;
+	}
+}
+#endif
+
+void
+ncActor::__FiredWeapon(string weaponDef, string fireInfo)
+{
+#warning Predict once we can map fireInfo numerically over the network
+#ifdef SERVER
+	WriteEntityEvent(MSG_MULTICAST, this, ACTOREV_FIRED);
+	msg_entity = world;
+	multicast(GetOrigin(), MULTICAST_PVS_R);
+
+	FiredWeapon(weaponDef, fireInfo);
+#endif
+}
+
 void
 ncActor::ReloadCachedAttributes(void)
 {

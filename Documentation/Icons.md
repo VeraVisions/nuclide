@@ -7,7 +7,7 @@ Throughout this documentation, you will come across a variety of topics represen
 - ![](bug.png) [Debugging help/options](@ref debugging), or bug related comments.
 - ![](color_swatch.png) [Materials](@ref materials)
 - ![](compress.png) @ref archives
-- ![](computer.png) [AI opponents](@ref ncMonster), including [bots](@ref ncBot).
+- ![](eye.png) [AI opponents](@ref ncMonster), including [bots](@ref ncBot).
 - ![](controller.png) Controller input, usually handled by [SDL](https://www.libsdl.org)
 - ![](film_save.png) Demo recording. A universal replay file.
 - ![](images.png) Textures, usually inputs to [Materials](@ref materials)

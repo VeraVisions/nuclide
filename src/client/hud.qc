@@ -70,8 +70,6 @@ HUDProgs_Draw(void)
 			externset(g_flHUDProgs, clframetime, "clframetime");
 			g_hudDraw();
 		}
-
-		Textmenu_Draw();
 	}
 }
 

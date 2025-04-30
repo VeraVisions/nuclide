@@ -751,7 +751,6 @@ ncWeapon::ReceiveEvent(float eventID)
 {
 	switch (eventID) {
 	case WEPEVENT_FIRED:
-		EntLog("Someones weapon was fired.");
 		break;
 	}
 }
@@ -858,6 +857,7 @@ ncWeapon::ReloadCachedAttributes(void)
 	/* movement vars */
 	m_fiSpeedMod = GetDefFloat("speed_mod");
 	m_fiBuggyIdleAnim = GetDefBool("buggyIdleAnim");
+	m_animPrefix = GetDefString("animPrefix");
 
 	if (m_fiSpeedMod <= 0.0) {
 		m_fiSpeedMod = 1.0f;
@@ -909,8 +909,17 @@ ncWeapon::ReloadCachedAttributes(void)
 void
 ncWeapon::_SwitchedToCallback(void)
 {
+	string animPrefix = GetSubDefString("", "ammoType");
+	ncActor ourOwner = (ncActor)GetOwner();
 	SetAttackNext(0.0f);
 	SetIdleNext(0.0f);
+
+	if (STRING_SET(m_animPrefix)) {
+		ourOwner.SetAnimationPrefix(m_animPrefix);
+	} else {
+		ourOwner.SetAnimationPrefix("");
+	}
+
 	Draw();
 
 #ifdef CLIENT
@@ -994,12 +1003,15 @@ ncWeapon::Draw(void)
 
 	ncPlayer ourOwner = (ncPlayer)GetOwner();
 	ourOwner.viewzoom = 1.0f;
+	ourOwner.Event_DrawWeapon();
 }
 
 void
 ncWeapon::Holster(void)
 {
+	ncPlayer ourOwner = (ncPlayer)GetOwner();
 	EntLog("Holstering Weapon!");
+	ourOwner.Event_HolsterWeapon();
 }
 
 void
@@ -1246,6 +1258,7 @@ ncWeapon::Attack(string fireInfo)
 #endif
 
 	FiredWeaponAttack(fireInfo);
+	ourOwner.Event_FireWeapon();
 
 	if (wasfreed(this)) {
 		return;
@@ -1443,12 +1456,14 @@ ncWeapon::Idle(void)
 		PlaySound(GetDefString("snd_reloadStart"), CHAN_AUTO, false);
 #endif
 		SetAttackNext(frameduration(m_viewModel, idleAnim));
+		ourOwner.Event_ReloadWeaponStart();
 		break;
 	case WEAPONSTATE_RELOAD:
 		float reloadTime;
 		idleAnim = GetSubDefAct(m_weaponLastFireInfo, "reload");
 		m_weaponClip++;
 		ourOwner.UseAmmo(m_primaryAmmoType, 1);
+		ourOwner.Event_ReloadWeapon();
 
 		if (HasReserveAmmo() == false || m_weaponClip >= m_weaponClipSize) {
 			_SetWeaponState(WEAPONSTATE_RELOAD_END);
@@ -1474,6 +1489,7 @@ ncWeapon::Idle(void)
 		PlaySound(GetDefString("snd_reloadEnd"), CHAN_AUTO, false);
 #endif
 		SetAttackNext(frameduration(m_viewModel, idleAnim));
+		ourOwner.Event_ReloadWeaponEnd();
 		break;
 	case WEAPONSTATE_FIRELOOP:
 		idleAnim = GetSubDefAct(m_weaponLastFireInfo, "loop");
@@ -1748,6 +1764,7 @@ ncWeapon::Reload(void)
 			_SetWeaponState(WEAPONSTATE_RELOAD_END);
 		}
 	}
+	ourOwner.Event_ReloadWeapon();
 
 	if (m_fiReloadTime == -1.0f) {
 		reloadTime = frameduration(m_viewModel, reloadAnimation);

@@ -14,17 +14,20 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+
+#define ACTOR_LOG imageToConsole("gfx/icon16/eye", ICN_SIZE, "Actor Log")
+
 /* TODO: serverinfo based checks for prediction reasons */
 var bool autocvar_g_infiniteAmmo = false;
-
 var bool autocvar_ai_debugNav = false;
+
 void
 _ncActor_Log(string className, string functionName, float edictNum, string warnMessage)
 {
 	if (autocvar_g_logTimestamps)
-		printf("^9%f ^5%s (%d) ^7: %s\n", time, functionName, edictNum, warnMessage);
+		printf("%s ^9%f ^5%s (%d) ^7: %s\n", ACTOR_LOG, time, functionName, edictNum, warnMessage);
 	else
-		printf("^5%s (%d) ^7: %s\n", functionName, edictNum, warnMessage);
+		printf("%s ^5%s (%d) ^7: %s\n", ACTOR_LOG, functionName, edictNum, warnMessage);
 }
 #define ncActor_Log(...) if (autocvar_g_logLevel >= LOGLEVEL_DEBUG) _ncActor_Log(classname, __FUNC__, num_for_edict(this), sprintf(__VA_ARGS__))
 
@@ -176,6 +179,10 @@ public:
 	virtual void SpawnKey(string,string);
 	virtual void ReloadCachedAttributes(void);
 
+#ifdef CLIENT
+	virtual void ReceiveEvent(float eventID);
+#endif
+
 #ifdef SERVER
 	/* overrides */
 	virtual void Save(float);
@@ -232,6 +239,16 @@ public:
 	virtual void Physics_Run(void);
 #endif
 
+	virtual void FiredWeapon(string, string);
+	nonvirtual void __FiredWeapon(string, string);
+
+	virtual void Event_DrawWeapon(void);
+	virtual void Event_FireWeapon(void);
+	virtual void Event_ReloadWeaponStart(void);
+	virtual void Event_ReloadWeapon(void);
+	virtual void Event_ReloadWeaponEnd(void);
+	virtual void Event_HolsterWeapon(void);
+
 private:
 
 #ifdef SERVER
@@ -286,6 +303,26 @@ private:
 	string m_sndHealthtake;
 	string m_sndUseDeny;
 	string m_sndUseSuccess;
+
+	/* recalculate these */
+	float m_actIdle;
+	float m_actIdleCrouch;
+	float m_actIdleProne;
+	float m_actWalk;
+	float m_actWalkCrouch;
+	float m_actWalkProne;
+	float m_actRun;
+	float m_actJump;
+	float m_actAim;
+	float m_actDraw;
+	float m_actAttack;
+	float m_actReloadStart;
+	float m_actReload;
+	float m_actReloadEnd;
+	float m_actHolster;
+	int m_boneSpine;
+	int m_torsoFirst;
+	int m_torsoLast;
 };
 
 /* for now here to make debugging easier */

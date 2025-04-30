@@ -467,6 +467,7 @@ private:
 	float m_jointTrailView;
 	float m_weaponAmmoRegenTime;
 	float m_weaponAmmoDepleteTime;
+	string m_animPrefix;
 
 	/* extra networking */
 	float m_nextWeapon_entnum;

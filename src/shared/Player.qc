@@ -19,6 +19,11 @@ ncPlayer::ncPlayer(void)
 {
 	_isPlayer = true;
 	vehicle = __NULL__;
+	anim_top = 0;
+	anim_top_time = 0;
+	anim_top_delay = 0;
+	anim_bottom = 0;
+	anim_bottom_time = 0;
 }
 
 ncWeapon
@@ -373,7 +378,166 @@ ncPlayer::ProcessInput(void)
 void
 ncPlayer::UpdatePlayerAnimation(float timelength)
 {
+	if (!skeletonindex) {
+		skeletonindex = skel_create(modelindex);
+	}
 
+	if (anim_top_delay <= 0.0f) {
+		anim_top = m_actAim;
+	}
+
+	if (vlen(velocity) < 1) {
+		if (IsCrouching()) {
+			anim_bottom = m_actIdleCrouch;
+		} else if (IsProne()) {
+			anim_bottom = m_actIdleProne;
+		} else {
+			anim_bottom = m_actIdle;
+		}
+	} else if (vlen(velocity) < 150) {
+		if (IsCrouching()) {
+			anim_bottom = m_actWalkCrouch;
+		} else if (IsProne()) {
+			anim_bottom = m_actWalkProne;
+		} else {
+			anim_bottom = m_actWalk;
+		}
+	} else if (vlen(velocity) > 200) {
+		if (IsCrouching()) {
+			anim_bottom = m_actWalkCrouch;
+		} else if (IsProne()) {
+			anim_bottom = m_actWalkProne;
+		} else {
+			anim_bottom = m_actRun;
+		}
+	}
+
+	if (anim_top == ACTIVITY_NOTFOUND) {
+		if (m_actAim == ACTIVITY_NOTFOUND) {
+			anim_top = anim_bottom;
+		}
+	}
+
+	/* hack, we can't play the animations in reverse the normal way */
+	if (frame1time < 0.0f) {
+		frame1time = 10.0f;
+	}
+
+	angles[0] = 0.0f;
+	angles[1] = v_angle[1];
+	angles[2] = 0.0f;
+
+	makevectors([0, v_angle[1], 0]);
+	float fCorrect = dotproduct(velocity, v_right) * 0.25f;
+
+	/* Correct the legs */
+	angles[1] -= fCorrect;
+
+	if (HasVFlags(VFL_INVEHICLE)) {
+		float rq = -1;
+		ncVehicle veh = (ncVehicle)vehicle;
+
+		if (veh) {
+			rq = veh.DriverAnimation();
+		}
+
+		if (rq == -1) {
+			//anim_top = ANIMATION_CAR_SIT_IDLE;
+			//anim_bottom = ANIMATION_CAR_SIT_IDLE;
+			angles = vehicle.angles;
+		} else {
+			anim_top = rq;
+			anim_bottom = rq;
+			angles = vehicle.angles;
+		}
+	}
+
+	/* TODO: Needs interpolation */
+	/* lower body */
+	frame = anim_bottom;
+	frame1time = anim_bottom_time;
+	skel_build(skeletonindex, this, modelindex, 0, 0, 0, 1);
+
+	// Build the top body
+	frame = anim_top;
+	frame1time = anim_top_time;
+//  	lerpfrac = 1.0f;
+	skel_build(skeletonindex, this, modelindex, 0.001, m_torsoFirst, m_torsoLast ); // The 0.0001 comes from a stupid bug?
+
+	makevectors( [ 0, -fCorrect, 0 ] );
+	skel_postmul_bone( skeletonindex, autocvar(skel_bone, 5), [0,0,0], v_forward );
+
+	/* counter act our crouching spine animation */
+	if (IsCrouching())
+		makevectors( [ 0, -25, fCorrect ] );
+	else
+		makevectors( [ 0, v_angle[0] * 0.5f, fCorrect ] );
+
+	skel_postmul_bone( skeletonindex, m_boneSpine, [0,0,0], v_forward );
+
+	/* timer update last */
+	/* top animation is always just being incremented */
+	anim_top_time += timelength;
+	anim_top_delay -= timelength;
+
+	/* we may be walking backwards, thus decrement bottom */
+	if (dotproduct(velocity, v_forward) < 0) {
+		anim_bottom_time -= timelength;
+	} else {
+		anim_bottom_time += timelength;
+	}
+}
+
+void
+ncPlayer::Event_DrawWeapon(void)
+{
+	PlayGesture(m_actDraw, -1);
+}
+
+void
+ncPlayer::Event_FireWeapon(void)
+{
+	PlayGesture(m_actAttack, -1);
+}
+
+void
+ncPlayer::Event_ReloadWeaponStart(void)
+{
+	PlayGesture(m_actReloadStart, -1);
+}
+
+void
+ncPlayer::Event_ReloadWeapon(void)
+{
+	PlayGesture(m_actReload, -1);
+}
+
+void
+ncPlayer::Event_ReloadWeaponEnd(void)
+{
+	PlayGesture(m_actReloadEnd, -1);
+}
+
+void
+ncPlayer::Event_HolsterWeapon(void)
+{
+	PlayGesture(m_actHolster, -1);
+}
+
+void
+ncPlayer::PlayGesture(float gestureAnim, float overrideTime)
+{
+	if (gestureAnim == ACTIVITY_NOTFOUND) {
+		return;
+	}
+
+	if (overrideTime == -1) {
+		overrideTime = frameduration(modelindex, gestureAnim);
+	}
+
+	anim_top = gestureAnim;
+	anim_top_time = 0.0f;
+	anim_top_delay = overrideTime;
 }
 
 #ifdef CLIENT
@@ -622,8 +786,8 @@ ncPlayer::UpdateAliveCam(void)
 	} else if (health) {
 		if (autocvar_pm_thirdPerson == TRUE) {
 			makevectors(view_angles);
-			vector vStart = [pSeat->m_vecPredictedOrigin[0], pSeat->m_vecPredictedOrigin[1], pSeat->m_vecPredictedOrigin[2] + 16] + (v_right * 4);
-			vector vEnd = vStart + (v_forward * -48) + [0,0,16] + (v_right * 4);
+			vector vStart = [pSeat->m_vecPredictedOrigin[0], pSeat->m_vecPredictedOrigin[1], pSeat->m_vecPredictedOrigin[2] + maxs[2]] + (v_right * 4);
+			vector vEnd = vStart + (v_forward * -48) + (v_right * 4);
 			traceline(vStart, vEnd, FALSE, this);
 			g_view.SetCameraOrigin(trace_endpos + (v_forward * 5));
 		}
@@ -827,6 +991,12 @@ ncPlayer::ReceiveEntity(float new, float flChanged)
 	READENTITY_BYTE(m_spectatingMode, PLAYER_SPECTATE)
 	READENTITY_BYTE(m_spectatingFlags, PLAYER_SPECTATE)
 
+	READENTITY_BYTE(anim_top, PLAYER_TOPFRAME)
+	READENTITY_FLOAT(anim_top_time, PLAYER_TOPFRAME)
+	READENTITY_FLOAT(anim_top_delay, PLAYER_TOPFRAME)
+	READENTITY_BYTE(anim_bottom, PLAYER_BOTTOMFRAME)
+	READENTITY_FLOAT(anim_bottom_time, PLAYER_BOTTOMFRAME)
+
 	for (int i = 0i; i < MAX_AMMO_TYPES; i++) {
 		READENTITY_INT(m_ammoTypes[i], PLAYER_AMMOTYPES)
 
@@ -942,6 +1112,12 @@ ncPlayer::PredictPreFrame(void)
 	SAVE_STATE(m_itemList)
 	SAVE_STATE(m_activeWeapon)
 
+	SAVE_STATE(anim_top)
+	SAVE_STATE(anim_top_delay)
+	SAVE_STATE(anim_top_time)
+	SAVE_STATE(anim_bottom)
+	SAVE_STATE(anim_bottom_time)
+
 	for (int i = 0i; i < MAX_AMMO_TYPES; i++) {
 		m_ammoTypes_net[i] = m_ammoTypes[i];
 	}
@@ -995,6 +1171,12 @@ ncPlayer::PredictPostFrame(void)
 
 	ROLL_BACK(m_itemList)
 	ROLL_BACK(m_activeWeapon)
+
+	ROLL_BACK(anim_top)
+	ROLL_BACK(anim_top_delay)
+	ROLL_BACK(anim_top_time)
+	ROLL_BACK(anim_bottom)
+	ROLL_BACK(anim_bottom_time)
 
 	VehicleRelink();
 
@@ -1404,6 +1586,12 @@ ncPlayer::EvaluateEntity(void)
 	EVALUATE_FIELD(m_spectatingMode, PLAYER_SPECTATE)
 	EVALUATE_FIELD(m_spectatingFlags, PLAYER_SPECTATE)
 
+	EVALUATE_FIELD(anim_top, PLAYER_TOPFRAME)
+	EVALUATE_FIELD(anim_top_time, PLAYER_TOPFRAME)
+	EVALUATE_FIELD(anim_top_delay, PLAYER_TOPFRAME)
+	EVALUATE_FIELD(anim_bottom, PLAYER_BOTTOMFRAME)
+	EVALUATE_FIELD(anim_bottom_time, PLAYER_BOTTOMFRAME)
+
 	for (int i = 0i; i < MAX_AMMO_TYPES; i++) {
 		EVALUATE_VECTOR(m_ammoTypes, i, PLAYER_AMMOTYPES)
 	}
@@ -1494,6 +1682,12 @@ ncPlayer::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_BYTE(m_spectatingEntity, PLAYER_SPECTATE)
 	SENDENTITY_BYTE(m_spectatingMode, PLAYER_SPECTATE)
 	SENDENTITY_BYTE(m_spectatingFlags, PLAYER_SPECTATE)
+
+	SENDENTITY_BYTE(anim_top, PLAYER_TOPFRAME)
+	SENDENTITY_FLOAT(anim_top_time, PLAYER_TOPFRAME)
+	SENDENTITY_FLOAT(anim_top_delay, PLAYER_TOPFRAME)
+	SENDENTITY_BYTE(anim_bottom, PLAYER_BOTTOMFRAME)
+	SENDENTITY_FLOAT(anim_bottom_time, PLAYER_BOTTOMFRAME)
 
 	for (int i = 0i; i < MAX_AMMO_TYPES; i++) {
 		SENDENTITY_INT(m_ammoTypes[i], PLAYER_AMMOTYPES)

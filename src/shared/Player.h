@@ -64,6 +64,8 @@ ncPlayer:ncSpectator
 {
 public:
 	void ncPlayer(void);
+
+	virtual void PlayGesture(float gestureAnim, float overrideTime);
 	
 	virtual void ProcessInput(void);
 	virtual void PreFrame(void);
@@ -178,6 +180,13 @@ private:
 
 	NETWORKED_FLOAT(health)
 
+	/* animation */
+	PREDICTED_FLOAT(anim_top)
+	PREDICTED_FLOAT(anim_top_time)
+	PREDICTED_FLOAT(anim_top_delay)
+	PREDICTED_FLOAT(anim_bottom)
+	PREDICTED_FLOAT(anim_bottom_time)
+
 	NETWORKED_FLOAT_N(colormap)
 	NETWORKED_FLOAT_N(gflags)
 	NETWORKED_FLOAT(viewzoom)
@@ -239,6 +248,15 @@ private:
 #endif
 
 	entity m_holdingEntity;
+
+
+
+	virtual void Event_DrawWeapon(void);
+	virtual void Event_FireWeapon(void);
+	virtual void Event_ReloadWeaponStart(void);
+	virtual void Event_ReloadWeapon(void);
+	virtual void Event_ReloadWeaponEnd(void);
+	virtual void Event_HolsterWeapon(void);
 };
 
 /* all potential SendFlags bits we can possibly send */
@@ -261,6 +279,8 @@ enumflags
 	PLAYER_SPECTATE,
 	PLAYER_AMMOTYPES,
 	PLAYER_WEAPONFRAME,
+	PLAYER_TOPFRAME,
+	PLAYER_BOTTOMFRAME,
 	PLAYER_CUSTOMFIELDSTART,
 };
 
