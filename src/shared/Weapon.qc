@@ -17,6 +17,7 @@
 void
 ncWeapon::ncWeapon(void)
 {
+	m_burstCount = 0;
 	m_weaponClipStartSize = 0i;
 	m_fiRemoveOnEmpty = false;
 	m_weaponViewModelPath = __NULL__;
@@ -158,6 +159,9 @@ ncWeapon::UpdateFireInfoCache(void)
 	m_fiSndFireStop = GetSubDefString(m_weaponLastFireInfo, "snd_fireStop");
 	m_fiSndFireLoop = GetSubDefString(m_weaponLastFireInfo, "snd_fireLoop");
 	m_fiFireUnderwater = GetSubDefBool(m_weaponLastFireInfo, "fireUnderwater");
+
+	m_fiMaxBurst = GetSubDefFloat(m_weaponLastFireInfo, "burstCount");
+	m_fiBurstTime = GetSubDefFloat(m_weaponLastFireInfo, "burstTime");
 
 	/* firing cosmetics */
 #ifdef CLIENT
@@ -567,6 +571,7 @@ ncWeapon::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_BYTE(m_weaponState, WEAPONFL_CHANGED_STATE)
 	SENDENTITY_BYTE(m_weaponIsFiring, WEAPONFL_CHANGED_STATE)
 	SENDENTITY_FLOAT(m_weaponOverheating, WEAPONFL_CHANGED_STATE)
+	SENDENTITY_BYTE(m_burstCount, WEAPONFL_CHANGED_STATE)
 	return (true);
 }
 
@@ -615,6 +620,7 @@ ncWeapon::EvaluateEntity(void)
 	EVALUATE_FIELD(m_weaponState, WEAPONFL_CHANGED_STATE)
 	EVALUATE_FIELD(m_weaponIsFiring, WEAPONFL_CHANGED_STATE)
 	EVALUATE_FIELD(m_weaponOverheating, WEAPONFL_CHANGED_STATE)
+	EVALUATE_FIELD(m_burstCount, WEAPONFL_CHANGED_STATE)
 
 	if (InInventory() == true) {
 		SetOrigin(owner.origin);
@@ -709,6 +715,7 @@ ncWeapon::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_BYTE(m_weaponState, WEAPONFL_CHANGED_STATE)
 	READENTITY_BYTE(m_weaponIsFiring, WEAPONFL_CHANGED_STATE)
 	READENTITY_FLOAT(m_weaponOverheating, WEAPONFL_CHANGED_STATE)
+	READENTITY_BYTE(m_burstCount, WEAPONFL_CHANGED_STATE)
 
 	/* expensive & this has to be done first, any code below may query decl */
 	if (flChanged & WEAPONFL_CHANGED_MODELINDEX) {
@@ -801,6 +808,7 @@ ncWeapon::PredictPreFrame(void)
 	SAVE_STATE(m_weaponState)
 	SAVE_STATE(m_weaponIsFiring)
 	SAVE_STATE(m_weaponOverheating)
+	SAVE_STATE(m_burstCount)
 }
 
 void
@@ -835,6 +843,7 @@ ncWeapon::PredictPostFrame(void)
 	ROLL_BACK(m_weaponState)
 	ROLL_BACK(m_weaponIsFiring)
 	ROLL_BACK(m_weaponOverheating)
+	ROLL_BACK(m_burstCount)
 }
 
 #endif
@@ -1157,6 +1166,7 @@ ncWeapon::Attack(string fireInfo)
 	ncPlayer ourOwner = (ncPlayer)GetOwner();
 	float shotAnim = -1;
 	float fireRate = 1.0f;
+	float burstDelay = 0.0f;
 
 	if (GetWeaponState() == WEAPONSTATE_RELOAD) {
 		_SetWeaponState(WEAPONSTATE_RELOAD_END);
@@ -1295,13 +1305,34 @@ ncWeapon::Attack(string fireInfo)
 		_SetWeaponState(WEAPONSTATE_COCK);
 	}
 
+	/* if this is a burst-fire weapon, we need to flag it as such forcing to fire */
+	if (m_fiMaxBurst > 1i) {
+
+		/* we are new to the burst fire */
+		_SetWeaponState(WEAPONSTATE_BURSTFIRING);
+
+		/* account for our first shot */
+		if (GetWeaponState() == WEAPONSTATE_BURSTFIRING) {
+
+			/* !!! set this before SetAttackNext() gets applied */
+			if ((m_burstCount + 1) >= m_fiMaxBurst) {
+				m_burstCount = 0;
+				burstDelay = m_fiBurstTime;
+				_SetWeaponState(WEAPONSTATE_IDLE);
+			} else {
+				m_burstCount += 1;
+			}
+		}
+	}
+
 	float animTime = frameduration(m_viewModel, shotAnim);
 
 	if (m_fiFireRate) {
-		SetAttackNext(m_fiFireRate);
+		SetAttackNext(m_fiFireRate + burstDelay);
 	} else {
-		SetAttackNext(animTime);
+		SetAttackNext(animTime + burstDelay);
 	}
+
 	SetIdleNext(animTime);
 
 #if 0
@@ -1433,8 +1464,32 @@ ncWeapon::Idle(void)
 		}
 	}
 
+	/* handle burst fire */
+	if (GetWeaponState() == WEAPONSTATE_BURSTFIRING) {
+		if (m_weaponClip <= 0) {
+			m_burstCount = 0;
+			_SetWeaponState(WEAPONSTATE_IDLE);
+		}
+
+		if (CanFire() == true) {
+			if (m_burstCount < m_fiMaxBurst) {
+				/* repeat the last fireInfo attack */
+				Attack(m_weaponLastFireInfo);
+				return;
+			}
+		}
+	}
+
 	if (CanIdle() == false) {
 		return;
+	}
+
+	/* auto-reload weapon when empty */
+	if (m_weaponState == WEAPONSTATE_IDLE && m_weaponClip == 0) {
+		if (CanReload() == true) {
+			Reload();
+			return;
+		}
 	}
 
 	if (m_fiWillRelease) {
@@ -1787,6 +1842,7 @@ ncWeapon::Reload(void)
 	ScheduleThink(_ReloadFinished, reloadTime - 0.1f);
 #endif
 
+	m_burstCount = 0;
 	SetWeaponFrame(reloadAnimation);
 	SetAttackNext(reloadTime - 0.01);
 	SetIdleNext(reloadTime);

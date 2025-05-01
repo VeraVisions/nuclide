@@ -60,6 +60,8 @@
 
 [env_projectedtexture](@ref env_projectedtexture)
 
+[env_rain](@ref env_rain)
+
 [env_render](@ref env_render)
 
 [env_shake](@ref env_shake)

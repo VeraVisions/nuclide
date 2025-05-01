@@ -46,6 +46,8 @@ will skip performing an action altogether.
 Generally, if an activity does not exist for an entity/model,
 said activity never takes place. Neither visually nor functionally.
 
+There are exceptions, like in the weapon animation system - a weapon might fire successfully but an animation for said event may not exist in the thing that fired it - since it's not directly relative to the weapon (we're passing an event off to our owner) it doesn't affect weapon functionality.
+
 This system powers NPCs, but also weapons. So some weapon functionality
 is only available when certain activities exist.
 
@@ -55,12 +57,25 @@ The primary way of assigning activities to sequences within models
 is to do so when compiling it. Formats such as **Half-Life MDL**
 support activities, others do not.
 
-There is currently no way to assign them to a model per external means.
+In a Half-Life model's **qc** file, you will find them defined like so:
+
+```
+$sequence "idle1" "idle1" fps 20 loop ACT_IDLE 15 
+$sequence "idle2" "idle2" fps 20 ACT_IDLE 1 
+$sequence "idle3" "idle3" fps 20 ACT_IDLE 1 
+$sequence "walk" "walk" LX fps 30 loop ACT_WALK 1 
+$sequence "run" "run" LX fps 30 loop ACT_RUN 1 
+```
+
+Internally, the model compiler will convert `ACT_IDLE` to the value `1`. Models don't store names for activities - only IDs. Because of this, in order to define custom activities in the Half-Life engine you would need a modified model compiler and modified game code that are aware of your new activities, whereas we [define it externally in Nuclide](@ref activities_new).
+
+There is currently no way to assign them to a model per external means in FTE, but there are plans to do so.
+
+There are also plans of adding extensions to VVM (as implemented by IQM-FTE) models to handle activity support.
 
 # Defining Activities in EntityDef
 
-An entityDef can override activities or define new activities for an
-entity on a non-model basis.
+In addition to defining activities within a model file, an entityDef can override activities or define new activities for an entity on a non-model basis. You might want to leverage this during development anyway so you don't rebuild your models all the time, or if your artists don't want to define them in the model.
 
 For this, you will simply define activities in your entityDef decl
 as you would in @ref activities_new, but instead of the **value**

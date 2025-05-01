@@ -24,6 +24,8 @@ of type ncPlayer.
 # KEYS
 - "armorProtection" : Amount of damage the armor absorbs.
 - "armorBonus" : Armor point cost per health point.
+
+## PHYSICS KEYS
 - "pm_accelerate" : Movement speed acceleration.
 - "pm_airaccelerate" : Movement speed acceleration when in air.
 - "pm_airstepsize" : In-air stepping size. You will be able to climb stair-steps this high.
@@ -56,6 +58,82 @@ of type ncPlayer.
 - "pm_walkspeed" : Movement speed when walking (regular movement).
 - "pm_wateraccelerate" : Movement speed acceleration, when underwater.
 - "pm_waterjumpheight" : Jump height when underwater.
+
+## ANIMATION KEYS
+
+- "act_idle" : Animation to play when standing still.
+- "act_idle_crouch"  : Animation to play when standing still, while crouched.
+- "act_idle_prone" : Animation to play when standing still, while prone.
+- "act_walk" : Animation to play when walking.
+- "act_walk_crouch" : Animation to play when moving while crouched.
+- "act_walk_prone" : Animation to play when moving while prone.
+- "act_run" : Animation to play when running.
+- "act_jump" : Animation to play when jumping in the air.
+- "act_swim" : Animation to play when swimming underwater.
+- "act_treadwater" : Animation to play when treading through water.
+- "act_aim" : Torso animation to play when standing still, aiming your gun.
+- "act_draw" : Torso animation to play when drawing a weapon.
+- "act_attack" : Torso animation to play when attacking with a weapon.
+- "act_reload" : Torso animation to play when reloading a weapon.
+
+@note Much like the rest of Nuclide, we abstracted animations through [Activities](@ref activities). [Read up on Activities before proceeding](@ref activities).
+
+The player animation system that is built-into Nuclide allows for players to strafe,
+look up/down and flap character their mouths when they're talking on voice chat.
+
+- "spine" : The bone to be treated as a spine bone. This one will be twisted according to the pitch of the first-person camera.
+- "torsoStart" : First bone in the skeleton that belongs to the upper body/torso.
+- "torsoStart" Last bone in the skeleton that belongs to the upper body/torso.
+
+If your model format doesn't let you define activities, you can always force them in the decl.
+
+### Making Weapons Use Different Animation Sets
+
+When a weapon sets an "animPrefix", it will switch to an alternative set of activities, but only if it is present. T
+
+For example, if you're firing a weapon with the "animPrefix" set to `foobar` while crouching, then we will first look if `act_attack_crouch_foobar` is set, and if that doesn't exist it will check for `act_attack_crouch`, and as a last resort possibly even `act_attack`. The weapon and stance are optional, as you will see. This will also allow you to set up a fallback for any unknown stances.
+
+A more colorful example, from Rad-Therapy, highlighting the fields relevant to player animation:
+
+`valve/decls/def/player.def`:
+```
+entityDef player
+{
+...
+	"model"				"models/player.mdl"
+	"spine"				"Bip01 Spine"
+	"torsoStart"		"Bip01 Spine"
+	"torsoEnd"			"Bip01 R Finger12"
+	"act_idle"			"0"
+	"act_jump"			"8"
+	"act_walk_crouch"	"6"
+	"act_idle_crouch"	"7"
+	"act_run"			"12"
+	"act_walk"			"13"
+
+	"act_aim"			"16,14"
+	"act_attack"		"17,15"
+
+	"act_aim_crowbar"				"25"
+	"act_attack_crowbar"			"26"
+	"act_aim_crouch_crowbar"		"27"
+	"act_attack_crouch_crowbar"		"28"
+...
+}
+```
+
+`valve/decls/def/weapons/crowbar.def`:
+```
+entityDef weapon_crowbar
+{
+...
+	"model_player"		"models/p_crowbar.mdl"
+	"animPrefix"		"crowbar"
+...
+}
+```
+
+With the above definitions, the crowbar will select the activities for `act_aim_crowbar` instead of `act_aim`, same with `act_attack` - in both regular and crouched stance.
 
 @ingroup baseclass
 */

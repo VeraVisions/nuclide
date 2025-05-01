@@ -49,7 +49,8 @@ typedef enum
 	WEAPONSTATE_DRAW,
 	WEAPONSTATE_RELOAD_START,
 	WEAPONSTATE_RELOAD,
-	WEAPONSTATE_RELOAD_END
+	WEAPONSTATE_RELOAD_END,
+	WEAPONSTATE_BURSTFIRING
 } nsweapon_state_t;
 
 string nsweapon_state_s[] =
@@ -109,6 +110,7 @@ FireInfo. If that does not exist, secondary attacks are not possible.
 - "continuousSmoke" : whether the particle effect is continous
 - "clipSize" : maximum clip size
 - "clipSizeDefault" : Initial clip size on pickup.
+- "animPrefix" : Alternative set of animations to use by the weapon. See the ncPlayer documentation for details about the set of activities that will be picked from.
 
 ## FireInfo related keys
 - "def_onFire" : Def to spawn when the weapon is fired.
@@ -132,6 +134,10 @@ Overheating of the weapon is done when both keys are set.
 
 ### Mode switching
 - "altMode" : When 1, then secondary-attack will toggle between "def_fireInfo" and "def_altFireInfo" on primary-attack.
+
+### Burst Fire
+- "burstCount" : Number of bursts to fire. Default is "0".
+- "burstTime" : Once we've fired "burstCount" number of times, we'll add this delay after.
 
 ### Act overrides
 Activities are used to decide which animation gets played and which actions are available for this object. If a model does not define them, you can override them here.
@@ -456,6 +462,7 @@ private:
 	NETWORKED_FLOAT(m_weaponState)
 	NETWORKED_BOOL(m_weaponIsFiring)
 	NETWORKED_BOOL(m_weaponOverheating)
+	NETWORKED_FLOAT(m_burstCount)
 
 	/* cached variables. don't save - recalculate! */
 	string m_weaponLastFireInfo;
@@ -525,6 +532,8 @@ private:
 	float m_fiRegenRate;
 	int m_fiDepleteAmmo;
 	float m_fiDepleteRate;
+	float m_fiMaxBurst;
+	float m_fiBurstTime;
 };
 
 .ncWeapon m_nextWeapon;
