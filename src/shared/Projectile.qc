@@ -931,8 +931,10 @@ ncProjectile::_ApplyDamage(void)
 	if (STRING_SET(m_defDamage)) {
 		int declID = EntityDef_IDFromName(m_defDamage);
 		damageDecl = ncDict::InitWithSpawnData(EntityDef_GetSpawnData(declID));
+		EntLog("damage from dict: %S", m_defDamage);
 	} else {
 		damageDecl = spawn(ncDict);
+		EntLog("damage dict created internally");
 	}
 
 	string weaponName = GetWeaponOwner().classname;
@@ -944,7 +946,7 @@ ncProjectile::_ApplyDamage(void)
 		damageDecl.AddKey("weapon", GetWeaponOwner().classname);
 	}
 
-	string pushString = GetSubDefString(m_defDamage, "push");
+	string pushString = damageDecl.GetString("push");
 	float pushForce = 0.0f;
 
 	if (STRING_SET(pushString)) {

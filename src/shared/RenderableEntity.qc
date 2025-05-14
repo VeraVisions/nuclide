@@ -321,8 +321,10 @@ ncRenderableEntity::ReceiveEntity(float flNew, float flChanged)
 		setsize(this, mins * scale, maxs * scale);
 	if (flChanged & RDENT_CHANGED_BODY)
 		_UpdateGeomset();
-	if (flChanged & RDENT_CHANGED_MODELINDEX)
+	if (flChanged & RDENT_CHANGED_MODELINDEX) {
+		_ModelChanged();
 		_UpdateBoneCount();
+	}
 }
 
 /*
@@ -622,7 +624,7 @@ ncRenderableEntity::RenderGLQuakeShadow(void)
 	if (m_netEffects & EF_NOSHADOW)
 		return;
 
-	if (m_modelBrushBased == true)
+	if (IsBrush())
 		return;
 
 	traceline(origin + [0, 0, 1], origin + [0, 0, -1024], MOVE_NORMAL, this);

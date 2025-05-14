@@ -2026,6 +2026,7 @@ ncMonster::Death(entity inflictor, entity attacker, int damage, vector dir, vect
 
 	/* we were already dead before, so gib */
 	if (GetState() == MONSTER_DEAD) {
+		Extinguish();
 		HasBeenGibbed();
 		Gib(damage, dir);
 		return;
@@ -2068,11 +2069,13 @@ ncMonster::Death(entity inflictor, entity attacker, int damage, vector dir, vect
 		BodyQue_SpawnRagdoll((ncActor)this, frame);
 		Disappear();
 		SetState(MONSTER_DEAD);
+		Extinguish();
 	} else {
 		/* if we make more than 50 damage, gib immediately */
 		if (GetHealth() < -50) {
 			HasBeenGibbed();
 			Gib(damage, dir);
+			Extinguish();
 			return;
 		}
 
@@ -2837,6 +2840,7 @@ ncMonster::ReceiveEntity(float flNew, float flChanged)
 	}
 
 	if (flChanged & MONFL_CHANGED_MODELINDEX) {
+		_ModelChanged();
 		_UpdateBoneCount();
 	}
 }

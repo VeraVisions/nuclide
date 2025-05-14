@@ -263,6 +263,9 @@ ncEntity::ReceiveEntity(float flNew, float flChanged)
 	if (flChanged & BASEFL_CHANGED_SIZE) {
 		setsize(this, mins, maxs);
 	}
+	if (flChanged & BASEFL_CHANGED_MODELINDEX) {
+		_ModelChanged();
+	}
 }
 
 void
@@ -1977,4 +1980,11 @@ ncEntity::DisablePlayerCollision(void)
 {
 	dimension_solid = 1;
 	dimension_hit = 1;
+}
+
+void
+ncEntity::_ModelChanged(void)
+{
+	model = modelnameforindex(modelindex);
+	m_modelBrushBased = substring(model, 0, 1) == "*" ? true : false;
 }

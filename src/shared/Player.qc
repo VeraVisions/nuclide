@@ -939,6 +939,13 @@ ncPlayer::ClientInputFrame(void)
 	input_movevalues[0] = floor(input_movevalues[0]);
 	input_movevalues[1] = floor(input_movevalues[1]);
 	input_movevalues[2] = floor(input_movevalues[2]);
+
+	/* recognize the weapon has been switched */
+	if (m_activeWeapon && !STRING_SET(m_activeWeapon.m_weaponLastFireInfo)) {
+		m_activeWeapon._SwitchedToCallback();
+		m_activeWeapon.SwitchFireInfo(m_activeWeapon.m_primaryFireInfo);
+		g_clientInitialized = true;
+	}
 }
 
 void

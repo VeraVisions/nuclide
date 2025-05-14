@@ -726,10 +726,6 @@ ncWeapon::ReceiveEntity(float flNew, float flChanged)
 
 	ncActor ourOwner = (ncActor)findfloat(world, ::entnum, owner_entnum);
 
-	if (ourOwner.m_activeWeapon == this) {
-		SwitchFireInfo(m_primaryFireInfo);
-	}
-
 	if (flChanged & WEAPONFL_CHANGED_BODY)
 		_UpdateGeomset();
 

@@ -308,6 +308,7 @@ ncSurfacePropEntity::Damage(entity inflictor, entity attacker, ncDict damageDecl
 	float baseDamage = 0.0f;
 	float oldHealth = GetHealth();
 	float halfHealth = max_health / 2.0f;
+	float igniteTime = 0.0f;
 
 	if (IsVulnerable() == false) {
 		return;
@@ -315,8 +316,14 @@ ncSurfacePropEntity::Damage(entity inflictor, entity attacker, ncDict damageDecl
 
 	ourAttacker = (ncSurfacePropEntity)attacker;
 	baseDamage = ReadFloat(damageDecl.GetString("damage"));
-	randomDamage = ReadFloat(damageDecl.GetString("damage_random"));
+	randomDamage = random(0, ReadFloat(damageDecl.GetString("damage_random")));
 	damagePoints = (float)rint((baseDamage + randomDamage) * damageScale);
+	igniteTime = ReadFloat(damageDecl.GetString("ignite"));
+
+	if (igniteTime > 0.0f) {
+		Ignite(attacker, igniteTime, damageDecl.GetString("weapon"));
+		EntLog("damage causes entity to burn for %f seconds", igniteTime);
+	}
 
 	EntLog("applying %d damage by %s", damagePoints, attacker.classname);
 
@@ -649,6 +656,7 @@ ncSurfacePropEntity::Death(entity inflictor, entity attacker, int damage, vector
 
 	BreakModel(damage, dir, hitBody);
 	UseOutput(attacker, m_outputOnDeath);
+	Extinguish();
 }
 
 void
@@ -892,6 +900,11 @@ ncSurfacePropEntity::ReceiveEntity(float flNew, float flChanged)
 
 	if (flChanged & SRFENT_CHANGED_BODY) {
 		setcustomskin(this, "", sprintf("geomset 0 %i\ngeomset 1 %i\n", m_geomsetField, m_geomsetField));
+	}
+
+	if (flChanged & SRFENT_CHANGED_MODELINDEX) {
+		_ModelChanged();
+		_UpdateBoneCount();
 	}
 }
 

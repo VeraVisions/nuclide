@@ -410,6 +410,7 @@ private:
 	nonvirtual vector GetModelMaxs(void);
 	nonvirtual void _RelinkToSpawnParent(void);
 #endif
+	nonvirtual void _ModelChanged(void);
 
 	NETWORKED_INT(entityDefID)
 
