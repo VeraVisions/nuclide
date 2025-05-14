@@ -118,6 +118,31 @@ Player_IsProne(string itemName)
 }
 
 bool
+Player_IsFalling(string itemName)
+{
+	return (((ncPlayer)pSeat->m_ePlayer).flags & FL_ONGROUND) ? false : true;
+}
+
+bool
+Player_IsMoving(string itemName)
+{
+	if (pSeat->m_ePlayer.velocity[0] > 1.0f)
+		return (true);
+	if (pSeat->m_ePlayer.velocity[1] > 1.0f)
+		return (true);
+	if (pSeat->m_ePlayer.velocity[2] > 1.0f)
+		return (true);
+	if (pSeat->m_ePlayer.velocity[0] < -1.0f)
+		return (true);
+	if (pSeat->m_ePlayer.velocity[1] < -1.0f)
+		return (true);
+	if (pSeat->m_ePlayer.velocity[2] < -1.0f)
+		return (true);
+
+	return (false);
+}
+
+bool
 Player_IsStanding(string itemName)
 {
 	return ((ncPlayer)pSeat->m_ePlayer).IsStanding();
@@ -241,6 +266,21 @@ Weapon_GetClip(void)
 
 	if (weapon) {
 		return (weapon.m_weaponClip);
+	}
+
+	return 0;
+}
+
+int
+Weapon_MaxAmmo(void)
+{
+	ncActor owner = (ncActor)pSeat->m_ePlayer;
+	ncWeapon weapon = owner.m_activeWeapon;
+
+	if (weapon) {
+		if (weapon.m_primaryAmmoType >= 0) {
+			return ammoMaxForNum(weapon.m_primaryAmmoType);
+		}
 	}
 
 	return 0;
@@ -414,4 +454,10 @@ void
 Draw_Pic(vector pos, string material, vector size, vector rgb, float a, float imageFlags)
 {
 	drawpic(pos, material, size, rgb, a, imageFlags);
+}
+
+void
+Draw_SubPic(vector pos, vector displaySize, string material, vector sourcePos, vector sourceSize, vector rgb, float a, float imageFlags)
+{
+	drawsubpic(pos, displaySize, material, sourcePos, sourceSize, rgb, a, imageFlags);
 }

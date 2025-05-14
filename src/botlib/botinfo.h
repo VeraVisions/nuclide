@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/** @defgroup bot_info Info Tags
+/** @defgroup bot_tags Info Tags
     @brief Info tags for bots used to identify objects.
     @ingroup bot
 
@@ -40,4 +40,4 @@ typedef enum
 
 .float botinfo;
 
-/** @} */ // end of bot_info
+/** @} */ // end of bot_tags

@@ -326,6 +326,13 @@ View_DrawViewModel(void)
 		m_eViewModelL.renderflags = RF_DEPTHHACK | RF_FIRSTPERSON;
 		m_eViewModel.renderflags = RF_DEPTHHACK | RF_FIRSTPERSON;
 
+
+		m_eViewModel.bonecontrol1 = m_eViewModel.m_studioBoneController1;
+		m_eViewModel.bonecontrol2 = m_eViewModel.m_studioBoneController2;
+		m_eViewModel.bonecontrol3 = m_eViewModel.m_studioBoneController3;
+		m_eViewModel.bonecontrol4 = m_eViewModel.m_studioBoneController4;
+		m_eViewModel.bonecontrol5 = m_eViewModel.m_studioBoneController5;
+
 		if (m_eViewModel.GetRenderMode() != RM_DONTRENDER || pl.viewzoom < 1.0f) {
 			addentity(m_eViewModel);
 

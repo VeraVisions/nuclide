@@ -76,9 +76,7 @@ Bot_AddBot_f(string botName, float teamValue, float spawnDelay, string newName)
 	newBot = (ncPlayer)self;
 	newBot.SetInfoKey("name", g_bots[foundID].m_strNetName);
 
-	extraCount = tokenize(g_bots[foundID].m_strExtra);
-
-	for (i = 0i; i < extraCount; i+=2) {
+	for (i = 0i; i < tokenize(g_bots[foundID].m_strExtra); i+=2) {
 		newBot.SetInfoKey(argv(i), argv(i+1));
 	}
 

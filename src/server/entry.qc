@@ -443,6 +443,12 @@ initents(void)
 	Sentences_Init();
 	Activities_Init();
 
+	/* append entities from external .add file */
+	string appendEntitiesFile = strcat("maps/", mapname, ".add");
+	if (fileExists(appendEntitiesFile)) {
+		loadfromfile(appendEntitiesFile);
+	}
+
 	/* TODO: Make sure every entity calls Respawn inside the constructor, then
 	 * remove this */
 	g_respawntimer = spawn();

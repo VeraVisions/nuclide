@@ -65,6 +65,10 @@ HUDProgs_ReloadVideoResources(void)
 void
 HUDProgs_Draw(void)
 {
+	if (g_clientInitialized == false) {
+		return;
+	}
+
 	if (g_flHUDProgs > 0) {
 		if (g_hudDraw) {
 			externset(g_flHUDProgs, clframetime, "clframetime");

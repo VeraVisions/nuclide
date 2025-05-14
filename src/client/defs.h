@@ -46,6 +46,8 @@ var float autocvar_cg_modelBobHeightSpeed = 0.0f;
 
 var bool autocvar_net_showUpdates = false;
 
+var bool g_clientInitialized = false;
+
 #define PRINTFLAG(x) if (autocvar_net_showUpdates || g_net_debug) \
 	print(sprintf("%f %s read update %s\n", time, classname, #x));
 

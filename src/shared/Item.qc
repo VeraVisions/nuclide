@@ -780,6 +780,9 @@ ncItem::GiveBonusItems(entity theOwner)
 	msg_entity = theOwner;
 	multicast([0,0,0], MULTICAST_ONE_R);
 
+	ourOwner.StartSoundDef(m_sndAcquire, CHAN_ITEM, true);
+	Logging_Pickup(ourOwner, this, __NULL__);
+
 	if (m_itemGivesHealth > 0i) {
 		if (ourOwner.GetHealth() < 100) {
 			ourOwner.SetHealth(bound(0, ourOwner.GetHealth() + m_itemGivesHealth, ourOwner.GetMaxHealth()));
@@ -822,8 +825,6 @@ ncItem::_AddedCallback(void)
 
 	GiveBonusItems(ourOwner);
 
-	Logging_Pickup(ourOwner, this, __NULL__);
-	ourOwner.StartSoundDef(m_sndAcquire, CHAN_ITEM, true);
 	OnPickup();
 	MakeInvulnerable();
 #endif

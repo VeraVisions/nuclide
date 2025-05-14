@@ -250,6 +250,8 @@ private:
 #ifdef CLIENT
 	NETWORKED_INT(m_weaponAnimSequence)
 	NETWORKED_FLOAT(vehicle_entnum)
+
+	float clsndindex_idle;
 #endif
 
 #ifdef SERVER
@@ -257,6 +259,7 @@ private:
 #endif
 
 	NETWORKED_FLOAT(health)
+	NETWORKED_FLOAT(sndindex_idle)
 
 	/* animation */
 	PREDICTED_FLOAT(anim_top)
@@ -269,6 +272,7 @@ private:
 	NETWORKED_FLOAT_N(gflags)
 	NETWORKED_FLOAT(viewzoom)
 	NETWORKED_VECTOR_N(view_ofs)
+	NETWORKED_FLOAT_N(vw_index)
 	NETWORKED_VECTOR_N(m_pmoveBaseVelocity)
 	NETWORKED_VECTOR_N(v_angle)
 	NETWORKED_FLOAT_N(gravity)

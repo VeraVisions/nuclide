@@ -243,6 +243,16 @@ typedef struct
 @param imageColor  is the color/tint of the pic, in normalized RGB values. E.g. `[0.5f, 0.5f, 0.5f]` for gray/grey.
 @param imageAlpha is the alpha channel of the rectangle. 0.0 is invisible, 1.0 is fully visible. */
 	void Pic(vector imagePos, string imageName, vector imageSize, vector imageColor, float imageAlpha, float imageFlags);
+/** Draws part of an image from either the virtual file-system, or the materials.
+
+@param imagePosis the position at which the pic will be drawn.
+@param imageName is the path/name of the image. Can be a material as well. E.g. "gfx/foo.png" or "conback".
+@param displaySize  is the size at which we draw the pic, in pixels.
+@param sourcePos  is the position at which we start cropping from (top-left corner), in normalized values
+@param sourceSize  is the normalized 
+@param imageColor  is the color/tint of the pic, in normalized RGB values. E.g. `[0.5f, 0.5f, 0.5f]` for gray/grey.
+@param imageAlpha is the alpha channel of the rectangle. 0.0 is invisible, 1.0 is fully visible. */
+	void SubPic(vector imagePos, vector displaySize, string imageName, vector sourcePos, vector sourceSize, vector imageColor, float imageAlpha, float imageFlags);
 /** Draw text on the screen at the desired position with a desired font.
 
 @param vecOrigin is the absolute starting position.
@@ -353,6 +363,14 @@ They may still be walking or running.
 
 @return whether the current player is prone. */
 	bool IsProne(void);
+/** Check if the current player is actively moving.
+
+@return whether the current player is moving. */
+	bool IsMoving(void);
+/** Check if the current player is not on ground.
+
+@return whether the current player is falling. */
+	bool IsFalling(void);
 /** Check if the current player has a particular item.
 
 @param itemClassName the classname of the item. E.g. "item_suit"
@@ -411,6 +429,10 @@ typedef struct
 
 @return integer value of the maximum clip/magazine size.*/
 	int GetClipSize(void);
+/** Returns if the maximum reserve ammo.
+
+@return integer value of the maximum ammo size.*/
+	int MaxAmmo(void);
 /** Returns if the current/active weapon item in the player's inventory makes use of a secondary ammo type.
 
 @return **true** when it supports a second ammo type.*/
@@ -502,8 +524,10 @@ _client_main(void)
 	player.IsStanding = linkToClientProgs("Player_IsStanding");
 	player.IsLeaning = linkToClientProgs("Player_IsLeaning");
 	player.IsSprinting = linkToClientProgs("Player_IsSprinting");
-	player.IsCrouched = linkToClientProgs("Player_IsCrouched");
+	player.IsCrouched = linkToClientProgs("Player_IsCrouching");
 	player.IsProne = linkToClientProgs("Player_IsProne");
+	player.IsMoving = linkToClientProgs("Player_IsMoving");
+	player.IsFalling = linkToClientProgs("Player_IsFalling");
 
 	weapon.IsValid = linkToClientProgs("Weapon_IsValid");
 	weapon.GetTitle = linkToClientProgs("Weapon_GetTitle");
@@ -515,6 +539,7 @@ _client_main(void)
 	weapon.GetAmmo2 = linkToClientProgs("Weapon_GetAmmo2");
 	weapon.GetClip = linkToClientProgs("Weapon_GetClip");
 	weapon.GetClipSize = linkToClientProgs("Weapon_GetClipSize");
+	weapon.MaxAmmo = linkToClientProgs("Weapon_MaxAmmo");
 	weapon.UsesSecondaryAmmo = linkToClientProgs("Weapon_UsesSecondaryAmmo");
 	weapon.AmmoRequired = linkToClientProgs("Weapon_AmmoRequired");
 	weapon.GetActiveWeapon = linkToClientProgs("Weapon_GetActiveWeapon");
@@ -529,6 +554,7 @@ _client_main(void)
 	draw.RoundedBox = linkToClientProgs("Draw_RoundedBox");
 	draw.Line = linkToClientProgs("Draw_Line");
 	draw.Pic = linkToClientProgs("Draw_Pic");
+	draw.SubPic = linkToClientProgs("Draw_SubPic");
 	draw.TextField = linkToClientProgs("Font_DrawField");
 	draw.TextFieldAtHeight = linkToClientProgs("Font_DrawFieldAtHeight");
 	draw.RText = linkToClientProgs("Font_DrawRText");
