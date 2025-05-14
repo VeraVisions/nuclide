@@ -30,3 +30,11 @@ private:
 	float m_timeUntilNextDecalPlacement;
 };
 #endif
+
+#ifdef SERVER
+
+class
+ncDebris:ncRenderableEntity
+{
+};
+#endif

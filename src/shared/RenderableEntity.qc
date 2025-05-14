@@ -1077,6 +1077,22 @@ ncRenderableEntity::HandleAnimEvent(float flTimeStamp, int iCode, string strData
 		}
 #endif
 		break;
+
+	case 6001:
+		//EntWarning("Eject brass 1 '%s'", strData);
+		break;
+	case 6002:
+		//EntWarning("Eject brass 2 '%s'", strData);
+		break;
+	case 6003:
+		//EntWarning("Eject brass 3 '%s'", strData);
+		break;
+	case 6004:
+		//EntWarning("Eject brass 4 '%s'", strData);
+		break;
+	case 6005:
+		//EntWarning("Eject brass 5 '%s'", strData);
+		break;
 	default:
 #ifdef SERVER
 		bool success = false;

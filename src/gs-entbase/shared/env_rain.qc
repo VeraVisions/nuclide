@@ -112,6 +112,7 @@ env_rain::env_rain(void)
 #ifdef SERVER
 	m_rainEnabled = false;
 	m_rainMaxEmitDelay = 0.5f;
+	m_rainSpeed = 40.0f;
 #endif
 }
 
@@ -216,6 +217,7 @@ env_rain::Respawn(void)
 	SetSolid(SOLID_TRIGGER);
 	SetModel(GetSpawnString("model"));
 	SetOrigin(GetSpawnVector("origin"));	
+	SetAngles(GetSpawnVector("angles"));
 	m_rainEnabled = true;
 	particleeffectnum("fx_rain.main");
 }
@@ -381,7 +383,7 @@ env_rain::predraw(void)
 		vecPos[1] = mins[1] + (random() * (maxs[1] - mins[1]));
 		vecPos[2] = maxs[2] - 8;
 		//printf("(%d) Emit rain at %v\n", num_for_edict(this), vecPos);
-		pointparticles(particleeffectnum("fx_rain.main"), vecPos, anglesToForward(angles) * m_rainSpeed, 1);
+		pointparticles(particleeffectnum("fx_rain.main"), vecPos, anglesToForward(angles) * (m_rainSpeed * 10.0f), 1);
 	}
 #endif
 

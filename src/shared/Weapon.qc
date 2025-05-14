@@ -637,7 +637,6 @@ void
 ncWeapon::HandleAnimEvent(float timeStamp, int eventCode, string dataString)
 {
 	switch (eventCode) {
-
 	default:
 		super::HandleAnimEvent(timeStamp, eventCode, dataString);
 	}
@@ -1112,6 +1111,32 @@ ncWeapon::DetonateDef(string defName)
 	return (success);
 }
 
+#ifdef SERVER
+void
+ncWeapon::EjectBrass(void)
+{
+	if (STRING_SET(m_fiBrassDef)) {
+		ncPlayer ourOwner = (ncPlayer)GetOwner();
+		vector viewAngle = ourOwner.GetViewAngle();
+		vector brassSpawnVelocity = entityDef.GetVector(m_fiBrassDef, "velocity");
+		vector brassVelocity = anglesToForward(viewAngle) * brassSpawnVelocity[0];
+		brassVelocity += anglesToRight(viewAngle) * brassSpawnVelocity[1];
+		brassVelocity += anglesToUp(viewAngle) * brassSpawnVelocity[2];
+		vector brassSpawnOffset = GetSpawnVector("ejectBrassOffset");
+		vector brassOffset = anglesToForward(viewAngle) * brassSpawnOffset[0];
+		brassOffset += anglesToRight(viewAngle) * brassSpawnOffset[1];
+		brassOffset += anglesToUp(viewAngle) * brassSpawnOffset[2];
+		
+		ncEntity brass = ents.Create(m_fiBrassDef, ourOwner.GetEyePos() + brassOffset);
+		brass.SetAngles(viewAngle);
+		brass.SetVelocity(ourOwner.GetVelocity() + brassVelocity);
+		brass.SetMovetype(MOVETYPE_BOUNCE);
+		brass.SetSolid(SOLID_NOT);
+		brass.ScheduleThink(Destroy, 4.0f);
+	}
+}
+#endif
+
 void
 ncWeapon::FiredWeaponAttack(string fireInfo)
 {
@@ -1129,6 +1154,10 @@ ncWeapon::FiredWeaponAttack(string fireInfo)
 	if (m_fiPowerAmmo) {
 		m_fiWillRelease = false;
 	}
+
+#ifdef SERVER
+	ScheduleThink(EjectBrass, m_fiBrassDelay * 0.01f);
+#endif
 }
 
 void
@@ -1200,10 +1229,12 @@ ncWeapon::Attack(string fireInfo)
 		return;
 	}
 
-	/* will release projectile upon release. */
-	if (!(ourOwner.m_nuclideFlags & VFL_PRIMEDFUSE) && STRING_SET(m_fiOnRelease)) {
-		_SetWeaponState(WEAPONSTATE_RELEASED);
-		ourOwner.m_nuclideFlags |= VFL_PRIMEDFUSE;
+	/* will release projectile upon release later. */
+	if (GetWeaponState() != WEAPONSTATE_RELEASED) {
+		if (m_fiChargeTime <= 0.0 && !(ourOwner.m_nuclideFlags & VFL_PRIMEDFUSE) && STRING_SET(m_fiOnRelease)) {
+			_SetWeaponState(WEAPONSTATE_RELEASED);
+			ourOwner.m_nuclideFlags |= VFL_PRIMEDFUSE;
+		}
 	}
 
 	/* "fireUnderwater" check */
@@ -1220,7 +1251,7 @@ ncWeapon::Attack(string fireInfo)
 	/* this weapon has a delay before something shoots out. */
 	if (m_fiChargeTime > 0.0f) {
 		/* we haven't yet tried firing while charging */
-		if (GetWeaponState() != WEAPONSTATE_CHARGING) {
+		if ((GetWeaponState() != WEAPONSTATE_RELEASED) && (GetWeaponState() != WEAPONSTATE_CHARGING)) {
 			shotAnim = GetSubDefAct(fireInfo, "delay");
 			SetAttackNext(m_fiChargeTime);
 
@@ -1233,6 +1264,13 @@ ncWeapon::Attack(string fireInfo)
 			SetIdleNext(frameduration(m_viewModel, shotAnim));
 			SetWeaponFrame(shotAnim);
 			_SetWeaponState(WEAPONSTATE_CHARGING);
+
+			/* if when holding down nothing fires, mark as needing release */
+			if (!STRING_SET(m_fiOnFire)) {
+				ourOwner.gflags |= GF_SEMI_TOGGLED;
+				SetAttackNext(frameduration(m_viewModel, shotAnim));
+			}
+
 			return;
 		}
 
@@ -1334,22 +1372,6 @@ ncWeapon::Attack(string fireInfo)
 	}
 
 	SetIdleNext(animTime);
-
-#if 0
-#ifdef CLIENT
-	/* dispatch brass */
-	if (STRING_SET(m_fiBrassDef)) {
-	//	View_AddEvent(_EjectBrass, m_fiBrassDelay);
-	}
-
-	/* dispatch muzzle */
-	if (m_fiJointBarrel) {
-		View_AddEvent(_EjectMuzzleFlash, 0.0f);
-		pSeat->m_iEventEntity = this;
-	}
-#endif
-#endif
-
 	m_weaponIsFiring = true;
 }
 
@@ -1485,7 +1507,7 @@ ncWeapon::Idle(void)
 	}
 
 	/* auto-reload weapon when empty */
-	if (m_weaponState == WEAPONSTATE_IDLE && m_weaponClip == 0) {
+	if (m_weaponClipSize > 0 && m_weaponState == WEAPONSTATE_IDLE && m_weaponClip == 0) {
 		if (CanReload() == true) {
 			Reload();
 			return;
@@ -1569,7 +1591,9 @@ ncWeapon::Idle(void)
 		}
 
 		if (STRING_SET(m_fiOnRelease)) {
-			UseAmmo(m_weaponLastFireInfo);
+			if (UseAmmo(m_weaponLastFireInfo) == false) {
+				break;
+			}
 		}
 
 		ReleasedWeaponAttack(m_weaponLastFireInfo);
@@ -2024,13 +2048,8 @@ ncWeapon::Release(void)
 	}
 
 	if (GetWeaponState() == WEAPONSTATE_CHARGING) {
-		if (CanFire() == true) {
-			/* hack to get around the ammo usage when charging */
-			float oldChargeTime = m_fiChargeTime;
-			m_fiChargeTime = 0.0f;
-			Attack(m_weaponLastFireInfo);
-			m_fiChargeTime = oldChargeTime;
-			return;
+		if (CanFire() == true && STRING_SET(m_fiOnRelease)) {
+			_SetWeaponState(WEAPONSTATE_RELEASED);
 		}
 	}
 
@@ -2053,7 +2072,6 @@ ncWeapon::Release(void)
 #endif
 
 	m_weaponIsFiring = false;
-
 	Idle();
 }
 
