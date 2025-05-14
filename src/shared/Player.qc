@@ -105,8 +105,13 @@ ncPlayer::SharedInputFrame(void)
 
 		if (nextWeapon != m_activeWeapon) {
 			if (nextWeapon && HasExactItem(nextWeapon)) {
+				ncWeapon oldWeapon = m_activeWeapon;
 				m_activeWeapon = nextWeapon;
 				m_activeWeapon._SwitchedToCallback();
+				
+				if (oldWeapon) {
+					oldWeapon._SwitchedFromCallback();
+				}
 			}
 		}
 	}
@@ -378,6 +383,10 @@ ncPlayer::ProcessInput(void)
 void
 ncPlayer::UpdatePlayerAnimation(float timelength)
 {
+	float maxTopTime;
+	float maxBottomTime;
+	vector forwardDir;
+
 	if (!skeletonindex) {
 		skeletonindex = skel_create(modelindex);
 	}
@@ -428,6 +437,7 @@ ncPlayer::UpdatePlayerAnimation(float timelength)
 	angles[2] = 0.0f;
 
 	makevectors([0, v_angle[1], 0]);
+	forwardDir = v_forward;
 	float fCorrect = dotproduct(velocity, v_right) * 0.25f;
 
 	/* Correct the legs */
@@ -450,6 +460,21 @@ ncPlayer::UpdatePlayerAnimation(float timelength)
 			anim_bottom = rq;
 			angles = vehicle.angles;
 		}
+	}
+
+	maxTopTime = frameduration(modelindex, anim_top);
+	maxBottomTime = frameduration(modelindex, anim_bottom);
+
+	if (anim_bottom_time > maxBottomTime) {
+		anim_bottom_time = (anim_bottom_time - maxBottomTime);
+	} else if (anim_bottom_time < 0.0f) {
+		anim_bottom_time = (maxBottomTime - anim_bottom_time);
+	}
+
+	if (anim_top_time > maxTopTime) {
+		anim_top_time = (anim_top_time - maxTopTime);
+	} else if (anim_bottom_time < 0.0f) {
+		anim_top_time = (maxTopTime - anim_top_time);
 	}
 
 	/* TODO: Needs interpolation */
@@ -481,7 +506,7 @@ ncPlayer::UpdatePlayerAnimation(float timelength)
 	anim_top_delay -= timelength;
 
 	/* we may be walking backwards, thus decrement bottom */
-	if (dotproduct(velocity, v_forward) < 0) {
+	if (dotproduct(velocity, forwardDir) < 0) {
 		anim_bottom_time -= timelength;
 	} else {
 		anim_bottom_time += timelength;
@@ -597,6 +622,21 @@ ncPlayer::predraw(void)
 			/* advance animation, usually done in physics */
 			UpdatePlayerAnimation(clframetime);
 		}
+	}
+
+	/* looping idle noise */
+	if (sndindex_idle != 0) {
+		string sndSample = soundnameforindex(sndindex_idle);
+		SoundDef_Precache(sndSample);
+		SoundDef_Update(this, CHAN_VOICE, SoundDef_GetID(sndSample), 1.0);
+	}
+
+	if (sndindex_idle != clsndindex_idle) {
+		if (sndindex_idle == 0) {
+			SoundDef_Stop(this, CHAN_VOICE);
+		}
+
+		clsndindex_idle = sndindex_idle;
 	}
 
 	/* mouth flapping */
@@ -923,6 +963,7 @@ ncPlayer::ReceiveEntity(float new, float flChanged)
 
 	READENTITY_INT(entityDefID, PLAYER_MODELINDEX)
 	READENTITY_INT(modelindex, PLAYER_MODELINDEX)
+	READENTITY_INT(vw_index, PLAYER_MODELINDEX)
 	READENTITY_BYTE(colormap, PLAYER_MODELINDEX)
 
 	/* crap the render mode updates in here */
@@ -980,6 +1021,7 @@ ncPlayer::ReceiveEntity(float new, float flChanged)
 	READENTITY_FLOAT(m_punchVelocity[1], PLAYER_PUNCHANGLE)
 	READENTITY_FLOAT(m_punchVelocity[2], PLAYER_PUNCHANGLE)
 	READENTITY_FLOAT(viewzoom, PLAYER_VIEWZOOM)
+	READENTITY_FLOAT(sndindex_idle, PLAYER_VIEWZOOM)
 	READENTITY_FLOAT(m_timeSinceTeleport, PLAYER_TIMINGS)
 	READENTITY_FLOAT(m_currentStamina, PLAYER_TIMINGS)
 	READENTITY_FLOAT(m_weaponAnimTime, PLAYER_TIMINGS)
@@ -1017,6 +1059,10 @@ ncPlayer::ReceiveEntity(float new, float flChanged)
 	/* our decl class has changed. refresh movement values. */
 	if (flChanged & PLAYER_MODELINDEX && STRING_SET(declclass)) {
 		_UpdatePMoveVars();
+	}
+
+	if (flChanged & PLAYER_MODELINDEX) {
+		SetAnimationPrefix(m_activeWeapon.classname);
 	}
 
 	if (pSeat->m_ePlayer != this) {
@@ -1117,6 +1163,7 @@ ncPlayer::PredictPreFrame(void)
 	SAVE_STATE(anim_top_time)
 	SAVE_STATE(anim_bottom)
 	SAVE_STATE(anim_bottom_time)
+	SAVE_STATE(sndindex_idle)
 
 	for (int i = 0i; i < MAX_AMMO_TYPES; i++) {
 		m_ammoTypes_net[i] = m_ammoTypes[i];
@@ -1177,6 +1224,7 @@ ncPlayer::PredictPostFrame(void)
 	ROLL_BACK(anim_top_time)
 	ROLL_BACK(anim_bottom)
 	ROLL_BACK(anim_bottom_time)
+	ROLL_BACK(sndindex_idle)
 
 	VehicleRelink();
 
@@ -1232,6 +1280,7 @@ ncPlayer::Save(float handle)
 	SaveFloat(handle, "m_timeUntilNextFootstep", m_timeUntilNextFootstep);
 	SaveFloat(handle, "m_timeSinceTeleport", m_timeSinceTeleport);
 	SaveFloat(handle, "viewzoom", viewzoom);
+	SaveFloat(handle, "sndindex_idle", sndindex_idle);
 	SaveFloat(handle, "m_timeUntilNextAttack", m_timeUntilNextAttack);
 	SaveFloat(handle, "m_timeUntilNextIdle", m_timeUntilNextIdle);
 	SaveFloat(handle, "m_timeUntilReloaded", m_timeUntilReloaded);
@@ -1313,6 +1362,9 @@ ncPlayer::Restore(string keyName, string setValue)
 		break;
 	case "viewzoom":
 		viewzoom = ReadFloat(setValue);
+		break;
+	case "sndindex_idle":
+		sndindex_idle = ReadFloat(setValue);
 		break;
 	case "m_timeUntilNextAttack":
 		m_timeUntilNextAttack = ReadFloat(setValue);
@@ -1445,6 +1497,7 @@ ncPlayer::Death(entity inflictor, entity attacker, int damage, vector dir, vecto
 	SetSolid(SOLID_NOT);
 	MakeInvulnerable();
 	viewzoom = 1.0;
+	sndindex_idle = 0;
 	view_ofs = [0,0,0];
 	vehicle = __NULL__;
 	SetVelocity([0,0,0]);
@@ -1493,6 +1546,7 @@ ncPlayer::MakePlayer(void)
 	SetSize(VEC_HULL_MIN, VEC_HULL_MAX);
 	ClearVelocity();
 	viewzoom = 1.0;
+	sndindex_idle = 0;
 	vehicle = __NULL__;
 	SetGravity(1.0f);
 	SendFlags = UPDATE_ALL;
@@ -1522,6 +1576,7 @@ ncPlayer::EvaluateEntity(void)
 
 	EVALUATE_FIELD(entityDefID, PLAYER_MODELINDEX)
 	EVALUATE_FIELD(modelindex, PLAYER_MODELINDEX)
+	EVALUATE_FIELD(vw_index, PLAYER_MODELINDEX)
 	EVALUATE_FIELD(colormap, PLAYER_MODELINDEX)
 	EVALUATE_FIELD(m_renderMode, PLAYER_MODELINDEX)
 	EVALUATE_FIELD(m_renderFX, PLAYER_MODELINDEX)
@@ -1575,6 +1630,7 @@ ncPlayer::EvaluateEntity(void)
 	EVALUATE_VECTOR(m_punchVelocity, 1, PLAYER_PUNCHANGLE)
 	EVALUATE_VECTOR(m_punchVelocity, 2, PLAYER_PUNCHANGLE)
 	EVALUATE_FIELD(viewzoom, PLAYER_VIEWZOOM)
+	EVALUATE_FIELD(sndindex_idle, PLAYER_VIEWZOOM)
 	EVALUATE_FIELD(m_timeSinceTeleport, PLAYER_TIMINGS)
 	EVALUATE_FIELD(m_currentStamina, PLAYER_TIMINGS)
 	EVALUATE_FIELD(m_weaponAnimTime, PLAYER_TIMINGS)
@@ -1615,6 +1671,7 @@ ncPlayer::SendEntity(entity ePEnt, float flChanged)
 
 	SENDENTITY_INT(entityDefID, PLAYER_MODELINDEX)
 	SENDENTITY_INT(modelindex, PLAYER_MODELINDEX)
+	SENDENTITY_INT(vw_index, PLAYER_MODELINDEX)
 	SENDENTITY_BYTE(colormap, PLAYER_MODELINDEX)
 
 	/* crap the render mode updates in here */
@@ -1672,6 +1729,7 @@ ncPlayer::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_FLOAT(m_punchVelocity[1], PLAYER_PUNCHANGLE)
 	SENDENTITY_FLOAT(m_punchVelocity[2], PLAYER_PUNCHANGLE)
 	SENDENTITY_FLOAT(viewzoom, PLAYER_VIEWZOOM)
+	SENDENTITY_FLOAT(sndindex_idle, PLAYER_VIEWZOOM)
 	SENDENTITY_FLOAT(m_timeSinceTeleport, PLAYER_TIMINGS)
 	SENDENTITY_FLOAT(m_currentStamina, PLAYER_TIMINGS)
 	SENDENTITY_FLOAT(m_weaponAnimTime, PLAYER_TIMINGS)

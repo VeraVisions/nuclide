@@ -346,6 +346,8 @@ private:
 	vector m_trackJitter;
 	float m_trackDelay;
 	string m_defPlaneImpact;
+	string m_sndHitActor;
+	string m_sndHitWorld;
 
 	ncTimer m_thrustHandler;
 	vector m_hitLocation;

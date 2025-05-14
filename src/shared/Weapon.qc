@@ -65,9 +65,6 @@ ncWeapon::_AddedCallback(void)
 	if (!ourOwner.m_activeWeapon) {
 		ourOwner.SwitchToExactWeapon(this);
 	}
-
-	/* Become the visible attachment */
-	SetModelindex(m_playerModel);
 }
 
 void
@@ -287,6 +284,11 @@ ncWeapon::SetViewZoom(float viewZoom)
 }
 
 void
+ncWeapon::FireInfoChanged(void)
+{
+}
+
+void
 ncWeapon::SwitchFireInfo(string newInfo)
 {
 	/* nothing changed. */
@@ -296,6 +298,7 @@ ncWeapon::SwitchFireInfo(string newInfo)
 
 	m_weaponLastFireInfo = newInfo;
 	UpdateFireInfoCache();
+	FireInfoChanged();
 }
 
 #ifdef SERVER
@@ -928,12 +931,16 @@ ncWeapon::_SwitchedToCallback(void)
 		ourOwner.SetAnimationPrefix("");
 	}
 
+#ifdef SERVER
+	ourOwner.vw_index = getmodelindex(GetSpawnString("model_player"), true);
+#endif
+
 	Draw();
 
 #ifdef CLIENT
 	pSeat->m_iHUDWeaponSelected = GetSharedID();
 	PredictPreFrame();
-	HUD_SwitchedToWeapon(classname);
+	HUD_SwitchedToWeapon(declclass);
 #endif
 }
 
@@ -942,6 +949,7 @@ ncWeapon::_SwitchedFromCallback(void)
 {
 	//printf("Switched from %S\n", classname);
 	Holster();
+	SwitchedFromWeapon();
 }
 
 bool
@@ -1133,6 +1141,8 @@ ncWeapon::EjectBrass(void)
 		brass.SetMovetype(MOVETYPE_BOUNCE);
 		brass.SetSolid(SOLID_NOT);
 		brass.ScheduleThink(Destroy, 4.0f);
+
+		PlaySound(GetSubDefString(m_weaponLastFireInfo, "snd_ejectBrass"), CHAN_AUTO, false);
 	}
 }
 #endif
@@ -1205,6 +1215,7 @@ ncWeapon::Attack(string fireInfo)
 	}
 
 	SwitchFireInfo(fireInfo);
+	ourOwner.sndindex_idle = 0;
 
 	if (m_fiSemiAuto == true) {
 		ourOwner.gflags |= GF_SEMI_TOGGLED;
@@ -1477,13 +1488,26 @@ ncWeapon::Idle(void)
 
 	m_weaponOverheating = max(0.0f, m_weaponOverheating - input_timelength);
 
-	if (m_fiDepleteAmmo > 0) {
+	if (m_fiDepleteAmmo > 0i) {
 		if (CanFire() == true) {
 			if (m_weaponAmmoDepleteTime < time) {
 				ourOwner.UseAmmo(m_primaryAmmoType, m_fiDepleteAmmo);
 				m_weaponAmmoDepleteTime = (time + m_fiDepleteRate);
 			}
 		}
+	}
+
+	/* we're in an alternate mode that requires ammo, but we have none. switch */
+	if (m_fiAltModeSwitch && m_fiAmmoRequired == 1) {
+	if (ourOwner.HasAmmo(m_secondaryAmmoType, 1) == false && FireInfoSelected() != 0) {
+		m_weaponFireInfoValue = 0;
+		SetAttackNext(0.0);
+		SetIdleNext(0.0f);
+		_SwitchedWeaponMode();
+		SetAttackNext(1.0);
+		SetIdleNext(1.0f);
+		return;
+	}
 	}
 
 	/* handle burst fire */
@@ -1633,6 +1657,8 @@ ncWeapon::Idle(void)
 		if (idleAnim < 0) {
 			idleAnim = GetSubDefAct(m_weaponLastFireInfo, "idle");
 		}
+
+		ourOwner.sndindex_idle = getsoundindex(GetSubDefString(m_weaponLastFireInfo, "snd_idle"));
 	}
 
 	/* no anim, so delay it by a bit more so we don't constantly query decl */
@@ -1724,6 +1750,16 @@ ncWeapon::SecondaryAttack(void)
 			return;
 		}
 
+		ourOwner = (ncPlayer)GetOwner();
+
+		/* alt-mode should not work when it causes ammo depletion and we're empty */
+		int depleteAmmo = GetSubDefInt(m_secondaryFireInfo, "depleteAmmo");
+		if (depleteAmmo > 0i) {
+			if (ourOwner.HasAmmo(m_secondaryAmmoType, depleteAmmo) == false) {
+				Idle();
+				return;
+			}
+		}
 		m_weaponFireInfoValue = 1 - m_weaponFireInfoValue;
 
 #ifdef SERVER
@@ -1866,6 +1902,7 @@ ncWeapon::Reload(void)
 	ScheduleThink(_ReloadFinished, reloadTime - 0.1f);
 #endif
 
+	ourOwner.sndindex_idle = 0;
 	m_burstCount = 0;
 	SetWeaponFrame(reloadAnimation);
 	SetAttackNext(reloadTime - 0.01);

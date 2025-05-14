@@ -178,6 +178,7 @@ enumflags
 
 .vector m_pmoveBaseVelocity;
 .float gflags;
+.float vw_index;
 .float identity;
 .bool _isWeapon;
 .bool _isItem;

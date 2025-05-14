@@ -211,6 +211,11 @@ private:
 	nonvirtual void _UpdateBoneCount();
 
 #ifdef CLIENT
+	float m_studioBoneController1Spin;
+	float m_studioBoneController2Spin;
+	float m_studioBoneController3Spin;
+	float m_studioBoneController4Spin;
+	float m_studioBoneController5Spin;
 	float m_netEffects;
 
 	/* muzzle cache */

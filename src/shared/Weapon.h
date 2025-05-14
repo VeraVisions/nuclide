@@ -388,8 +388,10 @@ public:
 	/** Overridable: Called when we've switched from this weapon successfully. */
 	virtual void SwitchedFromWeapon(void);
 
-	/** Overridable: Called when the fireInfo changed. Cache values here. */
+	/** Overridable: Called when requesting to cache values from decl to attributes. */
 	virtual void UpdateFireInfoCache(void);
+	/** Overridable: Called when the active fireInfo changed. */
+	virtual void FireInfoChanged(void);
 
 	/** Set the active fire Info of the weapon to this one. */
 	nonvirtual void SwitchFireInfo(string);

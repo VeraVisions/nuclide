@@ -37,6 +37,7 @@ QCC_DIR=$(NUCLIDE_DIR)
 BUILD_DIR=$(NUCLIDE_DIR)/build
 EDITOR=radiant
 NATIVE_PLUGINS=`head -n 1 ../../../$(GAME)/PLUGINS`
+DEPENDS=`head -n 1 $(GAME)/DEPENDS`
 
 define CMDSTR
 #
@@ -91,6 +92,7 @@ all: game engine dedicated plugins
 
 game: fteqcc
 	-cp src/cvar_defaults.cfg "$(GAME)/default_cvar.cfg"
+	if [ -f "$(NUCLIDE_DIR)/$(GAME)/DEPENDS" ];then $(MAKE) game GAME=$(DEPENDS);fi
 	cd "$(GAME)/src/" && $(MAKE) QCC=$(QCC_DIR)/../../fteqcc CFLAGS="-I$(QCC_DIR)/../../src/common/"
 
 client: fteqcc
@@ -772,7 +774,7 @@ iqmtool:
 	install -m 0777 ./ThirdParty/fteqw/engine/release/iqmtool ./
 
 imgtool:
-	cd ThirdParty/fteqw/engine && $(MAKE) imgtool
+	cd ThirdParty/fteqw/engine && $(MAKE) imgtool CFLAGS="-g -DFTE_SDL -I/usr/include/SDL2" LDFLAGS="-lSDL2"
 	install -m 0777 ./ThirdParty/fteqw/engine/release/imgtool ./
 
 fteqcc:

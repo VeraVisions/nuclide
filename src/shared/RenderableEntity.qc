@@ -349,6 +349,46 @@ ncRenderableEntity::RenderFXPass(void)
 	drawflags = 0;
 	abslight = 0;
 
+	{
+		if (m_studioBoneController1Spin != 0.0) {
+			m_studioBoneController1 += frametime * m_studioBoneController1Spin;
+		}
+		if (m_studioBoneController2Spin != 0.0) {
+			m_studioBoneController2 += frametime * m_studioBoneController2Spin;
+		}
+		if (m_studioBoneController3Spin != 0.0) {
+			m_studioBoneController3 += frametime * m_studioBoneController3Spin;
+		}
+		if (m_studioBoneController4Spin != 0.0) {
+			m_studioBoneController4 += frametime * m_studioBoneController4Spin;
+		}
+		if (m_studioBoneController5Spin != 0.0) {
+			m_studioBoneController5 += frametime * m_studioBoneController5Spin;
+		}
+
+		if (m_studioBoneController1Spin > 0.0f)
+			m_studioBoneController1Spin = max(0.0, m_studioBoneController1Spin - (frametime * 10.0f));
+		if (m_studioBoneController2Spin > 0.0f)
+			m_studioBoneController2Spin = max(0.0, m_studioBoneController2Spin - (frametime * 10.0f));
+		if (m_studioBoneController3Spin > 0.0f)
+			m_studioBoneController3Spin = max(0.0, m_studioBoneController3Spin - (frametime * 10.0f));
+		if (m_studioBoneController4Spin > 0.0f)
+			m_studioBoneController4Spin = max(0.0, m_studioBoneController4Spin - (frametime * 10.0f));
+		if (m_studioBoneController5Spin > 0.0f)
+			m_studioBoneController5Spin = max(0.0, m_studioBoneController5Spin - (frametime * 10.0f));
+
+		if (m_studioBoneController1Spin < 0.0f)
+			m_studioBoneController1Spin = bound(m_studioBoneController1Spin, m_studioBoneController1Spin + (frametime * 10.0f), 0.0);
+		if (m_studioBoneController2Spin < 0.0f)
+			m_studioBoneController2Spin = bound(m_studioBoneController2Spin, m_studioBoneController2Spin + (frametime * 10.0f), 0.0);
+		if (m_studioBoneController3Spin < 0.0f)
+			m_studioBoneController3Spin = bound(m_studioBoneController3Spin, m_studioBoneController3Spin + (frametime * 10.0f), 0.0);
+		if (m_studioBoneController4Spin < 0.0f)
+			m_studioBoneController4Spin = bound(m_studioBoneController4Spin, m_studioBoneController4Spin + (frametime * 10.0f), 0.0);
+		if (m_studioBoneController5Spin < 0.0f)
+			m_studioBoneController5Spin = bound(m_studioBoneController5Spin, m_studioBoneController5Spin + (frametime * 10.0f), 0.0);
+	}
+
 	switch (m_renderMode) {
 	case RM_NORMAL:
 		colormod = [1,1,1];
@@ -625,13 +665,7 @@ ncRenderableEntity::predraw(void)
 		return (PREDRAW_NEXT);
 	}
 
-	bonecontrol1 = m_studioBoneController1;
-	bonecontrol2 = m_studioBoneController2;
-	bonecontrol3 = m_studioBoneController3;
-	bonecontrol4 = m_studioBoneController4;
-	bonecontrol5 = m_studioBoneController5;
-
-#if 1
+#if 0
 	if (autocvar_boney1 != 0.0f)
 		bonecontrol1 = autocvar_boney1;
 	if (autocvar_boney2 != 0.0f)
@@ -656,6 +690,12 @@ ncRenderableEntity::predraw(void)
 
 	RenderFXPass();
 	RenderDebugSkeleton();
+
+	bonecontrol1 = m_studioBoneController1;
+	bonecontrol2 = m_studioBoneController2;
+	bonecontrol3 = m_studioBoneController3;
+	bonecontrol4 = m_studioBoneController4;
+	bonecontrol5 = m_studioBoneController5;
 
 	if (modelflags & MF_ROTATE) {
 		angles[1] = g_modelSpinAngle;
@@ -1093,6 +1133,56 @@ ncRenderableEntity::HandleAnimEvent(float flTimeStamp, int iCode, string strData
 	case 6005:
 		//EntWarning("Eject brass 5 '%s'", strData);
 		break;
+	case 9001:
+#ifdef CLIENT
+		m_studioBoneController1Spin += ReadFloat(strData);
+#endif
+		break;
+	case 9002:
+#ifdef CLIENT
+		m_studioBoneController1Spin = ReadFloat(strData);
+#endif
+		break;
+	case 9011:
+#ifdef CLIENT
+		m_studioBoneController2Spin += ReadFloat(strData);
+#endif
+		break;
+	case 9012:
+#ifdef CLIENT
+		m_studioBoneController2Spin = ReadFloat(strData);
+#endif
+		break;
+	case 9021:
+#ifdef CLIENT
+		m_studioBoneController3Spin += ReadFloat(strData);
+#endif
+		break;
+	case 9022:
+#ifdef CLIENT
+		m_studioBoneController3Spin = ReadFloat(strData);
+#endif
+		break;
+	case 9031:
+#ifdef CLIENT
+		m_studioBoneController4Spin += ReadFloat(strData);
+#endif
+		break;
+	case 9032:
+#ifdef CLIENT
+		m_studioBoneController4Spin = ReadFloat(strData);
+#endif
+		break;
+	case 9041:
+#ifdef CLIENT
+		m_studioBoneController5Spin += ReadFloat(strData);
+#endif
+		break;
+	case 9042:
+#ifdef CLIENT
+		m_studioBoneController5Spin = ReadFloat(strData);
+#endif
+		break;
 	default:
 #ifdef SERVER
 		bool success = false;
@@ -1111,7 +1201,6 @@ ncRenderableEntity::HandleAnimEvent(float flTimeStamp, int iCode, string strData
 				else
 					Input(this, testInput, strData); /* no parms passed. */
 
-				tokenize(m_modelEventCallbacks); /* ensure argv() is 'rewound'... */
 				success = true;
 			}
 		}

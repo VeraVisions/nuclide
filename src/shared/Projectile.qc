@@ -305,6 +305,13 @@ ncProjectile::SpawnKey(string keyName, string setValue)
 	case "noFX":
 		m_noFX = ReadBool(setValue);
 		break;
+	case "snd_hitBody":
+	case "snd_hitActor":
+		m_sndHitActor = ReadString(setValue);
+		break;
+	case "snd_hitWorld":
+		m_sndHitWorld = ReadString(setValue);
+		break;
 	default:
 		super::SpawnKey(keyName, setValue);
 		break;
@@ -1017,7 +1024,12 @@ ncProjectile::_FireSingle(vector vecPos, vector vecAngles, float flDamage, float
 	}
 
 	if (impactTarget.IsVulnerable()) {
-		SoundDef_Play(impactTarget, CHAN_BODY, "damage_bullet.hit");
+		//SoundDef_Play(impactTarget, CHAN_BODY, "damage_bullet.hit");
+
+		if (STRING_SET(m_sndHitActor)) {
+		//	SoundDef_PlayAt(m_hitLocation, m_sndHitActor);
+			SoundDef_Play(impactTarget, CHAN_BODY, m_sndHitActor);
+		}
 
 		/* only headshots count in HL */
 		if (trace_surface_id == BODY_HEAD) {
@@ -1040,6 +1052,11 @@ ncProjectile::_FireSingle(vector vecPos, vector vecAngles, float flDamage, float
 			DecalGroups_Place(m_strDecalGroup, m_hitLocation + (vecAngles * -2));
 
 		SurfData_Impact(impactTarget, m_hitLocation, m_lastPlaneNormal);
+
+		if (STRING_SET(m_sndHitWorld)) {
+			//SoundDef_PlayAt(m_hitLocation, m_sndHitWorld);
+			StartSoundDef(m_sndHitWorld, CHAN_BODY, true);
+		}
 	}
 
 	if (STRING_SET(m_matDetonate)) {
@@ -1356,11 +1373,13 @@ ncProjectile::ReceiveEntity(float flNew, float flChanged)
 void
 ncProjectile::postdraw(void)
 {
-#if 1
+	if (autocvar(cg_projectileLightFlare, 0) == 0) {
+		return;
+	}
+
 	if (m_flLightRadius > 0.0) {
 		env_sun_lensflare(origin, 1.0f, m_vecLightColor, false);
 	}
-#endif
 }
 
 float

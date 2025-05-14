@@ -14,7 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-
 void EFX_UpdateListener(ncView);
 
 void
@@ -193,6 +192,10 @@ CSQC_Update2D(float w, float h, bool focus)
 	ncPlayer cl = (ncPlayer)pSeat->m_ePlayer;
 	self = cl;
 
+	if (cltime > 5.0f) {
+		g_clientInitialized = true;
+	}
+
 	if (Util_GetMaxPlayers() > 1 && !VGUI_Active() && (Client_InIntermission() || (!cl.IsFakeSpectator() && cl.IsDead()))) {
 		HUD_Draw();
 		Textmenu_Draw();
@@ -204,6 +207,8 @@ CSQC_Update2D(float w, float h, bool focus)
 		PointMessage_Draw();
 
 		if (Client_IsSpectator(cl) == false) {
+			if (cl.m_activeWeapon)
+				cl.m_activeWeapon.UpdateGUI();
 			HUD_Draw();
 		} else {
 			HUD_DrawSpectator();
