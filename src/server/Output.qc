@@ -22,9 +22,16 @@ ncOutput::TriggerOutput(void)
 
 	/* plug into all the inputs. */
 	if (m_strTarget == "!self") {
-		ourOwner.Input(ourOwner, m_strInput, m_strData);
+		if (ourOwner)
+			ourOwner.Input(ourOwner, m_strInput, m_strData);
 	} else if (m_strTarget == "!activator") {
-		ourActivator.Input(ourActivator, m_strInput, m_strData);
+		if (ourActivator)
+			ourActivator.Input(ourActivator, m_strInput, m_strData);
+	} else if (m_strTarget == "!target") {
+		ncEntity ourTarget = (ncEntity)find(world, ::targetname, ourOwner.target);
+
+		if (ourTarget)
+			ourTarget.Input(ourActivator, m_strInput, m_strData);
 	} else {
 		for (entity f = world; (f = find(f, ::targetname, m_strTarget));) {
 			ncEntity trigger = (ncEntity)f;
