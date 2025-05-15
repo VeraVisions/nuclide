@@ -374,6 +374,12 @@ ncPhysicsEntity::ReceiveEntity(float flNew, float flChanged)
 		setsize(this, mins * scale, maxs * scale);
 	if (flChanged & RDENT_CHANGED_BODY)
 		_UpdateGeomset();
+	if (flChanged & RDENT_CHANGED_FRAME) {
+		frame1time = 0.0f;
+	}
+	if (flChanged & RDENT_CHANGED_MODELINDEX) {
+		_ModelChanged();
+	}
 
 	movetype = MOVETYPE_NONE;
 	_UpdateMass();
