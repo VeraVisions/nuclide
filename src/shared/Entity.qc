@@ -1457,13 +1457,30 @@ ncEntity::Restore(string keyName, string setValue)
 }
 
 void
+ncEntity::Event_SpawnDefCenter(string classDef)
+{
+	ncEntity rocket = EntityDef_CreateClassname(classDef);
+
+	if (!rocket) {
+		EntError("Can't spawn %S", classDef);
+		return;
+	}
+
+	rocket.SetOrigin(WorldSpaceCenter());
+	rocket.SetAngles(GetAngles());
+	rocket.owner = this;
+	rocket.Spawn();
+	EntLog("Spawned decl %S at %v", classDef, rocket.origin);
+}
+
+void
 ncEntity::Event_SpawnDefRelative(string classDef, float xOfs, float yOfs, float zOfs)
 {
 	vector posOffset;
 	posOffset = anglesToForward(GetAngles()) * xOfs;
 	posOffset += anglesToRight(GetAngles()) * yOfs;
 	posOffset += anglesToUp(GetAngles()) * zOfs;
-	ncEntity rocket = EntityDef_NewClassname(classDef);
+	ncEntity rocket = EntityDef_CreateClassname(classDef);
 	rocket.SetOrigin(GetOrigin() + posOffset);
 	rocket.SetAngles(GetAngles());
 	rocket.owner = this;
@@ -1511,6 +1528,12 @@ ncEntity::Input(entity eAct, string strInput, string strData)
 		break;
 	case "SpawnDef":
 		break;
+	case "SpawnDefCenter":
+#ifdef SERVER
+		tokenize_console(strData);
+		Event_SpawnDefCenter(argv(0));
+#endif
+		break;
 	case "SpawnDefOffset":
 #ifdef SERVER
 		tokenize_console(strData);
@@ -1541,6 +1564,18 @@ ncEntity::Input(entity eAct, string strInput, string strData)
 		if (EntityDef_HasSpawnClass(strData)) {
 			ncProjectile_SpawnDefAttachment(strData, (ncActor)this, 0);
 		}
+		break;
+	case "Flash":
+		tokenize_console(strData);
+		string flashRadius = argv(0);
+		string flashTime = argv(1);
+		string flashColorR = argv(2);
+		string flashColorG = argv(3);
+		string flashColorB = argv(4);
+		te_customflash(WorldSpaceCenter(), stof(flashRadius), stof(flashTime), stov(strcat(flashColorR, " ", flashColorG, " ", flashColorB)));
+		break;
+	case "StartSound":
+		StartSound(strData, CHAN_VOICE, 0, true);
 		break;
 	case "StartSoundDef":
 		StartSoundDef(strData, CHAN_VOICE, true);

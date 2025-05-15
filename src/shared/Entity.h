@@ -118,6 +118,7 @@ public:
 	virtual void Restore(string,string);
 	virtual void ParentUpdate(void);
 
+	nonvirtual void Event_SpawnDefCenter(string);
 	nonvirtual void Event_SpawnDefRelative(string, float, float, float);
 
 	nonvirtual bool SharesPVSWithPlayer(void);
