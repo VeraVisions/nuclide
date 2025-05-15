@@ -67,6 +67,8 @@ ncIO::Spawned(void)
 		m_outputOnSpawn = CreateOutput(m_outputOnSpawn);
 	if (STRING_SET(m_outputOnKilled))
 		m_outputOnKilled = CreateOutput(m_outputOnKilled);
+	if (STRING_SET(m_outputOnTrigger))
+		m_outputOnKilled = CreateOutput(m_outputOnTrigger);
 	if (STRING_SET(m_outputOnUser1))
 		m_outputOnUser1 = CreateOutput(m_outputOnUser1);
 	if (STRING_SET(m_outputOnUser2))
