@@ -165,7 +165,6 @@ env_sprite::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_BYTE(m_renderColor[2], SPRITE_CHANGED_RENDERCOLOR)
 	SENDENTITY_BYTE(m_renderAmount, SPRITE_CHANGED_RENDERAMT)
 	SENDENTITY_STRING(m_strMaterial, SPRITE_CHANGED_MATERIAL)
-
 	return (1);
 }
 
@@ -259,7 +258,7 @@ env_sprite::Spawned(void)
 	m_iToggled = (HasSpawnFlags(ENVS_STARTON) > 0) ? TRUE : FALSE;
 
 	/* how pointless this would be otherwise. */
-	if (!targetname)
+	if (!STRING_SET(targetname))
 		m_iToggled = TRUE;
 }
 
