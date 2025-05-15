@@ -178,6 +178,8 @@ private:
 	nonvirtual void _BlockedHandler(void);
 
 #ifdef SERVER
+	nonvirtual void _TouchEnded(void);
+
 	string m_globalName;
 	string m_globalState;
 	string m_triggerKillTarget;
@@ -190,6 +192,9 @@ private:
 	bool m_triggerSpawnflagFilter;
 
 	float m_touchingOnlyTeam;
+
+	string m_outputOnStartTouch;
+	string m_outputOnEndTouch;
 
 	/* legacy trigger architecture */
 	float m_triggerDelay;

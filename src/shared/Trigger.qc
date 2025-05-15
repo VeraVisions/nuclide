@@ -14,10 +14,17 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+#ifdef SERVER
+.ncTimer m_touchTimer;
+#endif
+
 void
 ncTrigger::ncTrigger(void)
 {
 #ifdef SERVER
+	m_touchTimer = __NULL__;
+	m_outputOnStartTouch =
+	m_outputOnEndTouch = __NULL__;
 	m_globalState = __NULL__;
 	m_triggerKillTarget = "";
 	m_triggerMessage = __NULL__;
@@ -37,6 +44,11 @@ ncTrigger::Spawned(void)
 	super::Spawned();
 	blocked = _BlockedHandler;
 	touch = _TouchHandler;
+
+	if (STRING_SET(m_outputOnStartTouch))
+		m_outputOnStartTouch = CreateOutput(m_outputOnStartTouch);
+	if (STRING_SET(m_outputOnEndTouch))
+		m_outputOnEndTouch = CreateOutput(m_outputOnEndTouch);
 }
 
 bool
@@ -440,6 +452,13 @@ ncTrigger::SpawnKey(string keyName, string setValue)
 		m_triggerStartsDisabled = ReadBool(setValue);
 		m_triggerSpawnflagFilter = true;
 		break;
+
+	case "OnStartTouch":
+		m_outputOnStartTouch = PrepareOutput(m_outputOnStartTouch, setValue);
+		break;
+	case "OnEndTouch":
+		m_outputOnEndTouch = PrepareOutput(m_outputOnEndTouch, setValue);
+		break;
 #endif
 	default:
 		super::SpawnKey(keyName, setValue);
@@ -489,6 +508,23 @@ ncTrigger::GetTouchNormal(void)
 	return (m_touchNormal);
 }
 
+#ifdef SERVER
+
+void
+ncTrigger::_TouchEnded(void)
+{
+	EndTouch(m_touchingEntity);
+	UseOutput(m_touchingEntity, m_outputOnEndTouch);
+	m_touchingEntity = __NULL__;
+	m_beingTouched = false;
+
+	if (m_touchTimer) {
+		m_touchTimer.Destroy();
+		m_touchTimer = 0;
+	}
+}
+#endif
+
 void
 ncTrigger::_TouchHandler(void)
 {
@@ -504,15 +540,17 @@ ncTrigger::_TouchHandler(void)
 			return;
 		}
 	}
-#endif
 
 	/* start touch in case we haven't */
-	if (m_beingTouched != true) {
+	if (!m_touchTimer) {
 		StartTouch(m_touchingEntity);
+		UseOutput(m_touchingEntity, m_outputOnStartTouch);
+		m_touchTimer = m_touchTimer.SetupTimer(this, _TouchEnded, 0.1f, false);
 	}
 
-	Touch(m_touchingEntity);
+	m_touchTimer.RunTimer();
+#endif
 
+	Touch(m_touchingEntity);
 	m_timeSinceLastTouch = GetTime();
-	m_beingTouched = true;
 }
