@@ -247,7 +247,7 @@ ncItem::Input(entity eAct, string strInput, string strData)
 		SetRespawnTime(stof(strData));
 		break;
 	default:
-		ncTrigger::Input(eAct, strInput, strData);
+		super::Input(eAct, strInput, strData);
 	}
 }
 
@@ -662,6 +662,10 @@ ncItem::ReceiveEntity(float flNew, float flChanged)
 
 	if (flChanged & ITEMFL_CHANGED_CHAIN) {
 		m_nextItem = __NULL__;
+	}
+
+	if (flChanged & ITEMFL_CHANGED_FRAME) {
+		frame1time = 0.0f;
 	}
 
 	if (scale == 0.0f) {
