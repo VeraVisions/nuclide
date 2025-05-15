@@ -107,6 +107,7 @@ string __fullspawndata;
 #include "BrushTrigger.h"
 #include "PointTrigger.h"
 #include "Item.h"
+#include "Dispenser.h"
 #include "Weapon.h"
 #include "Actor.h"
 #include "Monster.h"

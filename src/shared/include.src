@@ -23,6 +23,7 @@ Projectile.qc
 SpawnPoint.qc
 SoundScape.qc
 Item.qc
+Dispenser.qc
 Weapon.qc
 Portal.qc
 Debris.qc
