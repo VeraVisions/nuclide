@@ -91,11 +91,15 @@ private:
 	string m_sndTeleportEnter;
 	string m_sndTeleportExit;
 	bool m_sourceVersion;
+	string m_outputOnTeleportingEntity;
+	string m_outputOnTeleFrag;
 };
 
 void
 trigger_teleport::trigger_teleport(void)
 {
+	m_outputOnTeleportingEntity = __NULL__;
+	m_outputOnTeleFrag = __NULL__;
 	m_sndTeleport = __NULL__;
 	m_sndTeleportEnter = __NULL__;
 	m_sndTeleportExit = __NULL__;
@@ -119,6 +123,12 @@ trigger_teleport::SpawnKey(string strKey, string setValue)
 	case "StartDisabled":
 		m_teleporterActive = ReadBool(setValue);
 		m_sourceVersion = true;
+		break;
+	case "OnTeleportingEntity":
+		m_outputOnTeleportingEntity = PrepareOutput(m_outputOnTeleportingEntity, setValue);
+		break;
+	case "OnTeleFrag":
+		m_outputOnTeleFrag = PrepareOutput(m_outputOnTeleFrag, setValue);
 		break;
 	default:
 		super::SpawnKey(strKey, setValue);
@@ -187,6 +197,11 @@ trigger_teleport::Spawned(void)
 	precache.Sound(m_sndTeleport);
 	precache.Sound(m_sndTeleportEnter);
 	precache.Sound(m_sndTeleportExit);
+
+	if (STRING_SET(m_outputOnTeleportingEntity))
+		m_outputOnTeleportingEntity = CreateOutput(m_outputOnTeleportingEntity);
+	if (STRING_SET(m_outputOnTeleFrag))
+		m_outputOnTeleFrag = CreateOutput(m_outputOnTeleFrag);
 }
 
 void
@@ -244,11 +259,13 @@ trigger_teleport::Touch(entity eToucher)
 		if (trace_ent.takedamage != DAMAGE_NO) {
 			ncSurfacePropEntity killThis = (ncSurfacePropEntity)trace_ent;
 			killThis.SetHealth(-100);
+			UseOutput(eActivator, m_outputOnTeleFrag);
 			killThis.Death(this, eActivator, 1000, g_vec_null, trace_endpos, 0i);
 		}
 	}
 
 	eActivator.SetOriginUnstick(endpos);
+	UseOutput(eActivator, m_outputOnTeleportingEntity);
 
 	if (m_sndTeleport) {
 		StartSoundDef(m_sndTeleport, CHAN_VOICE, true);
