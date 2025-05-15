@@ -1133,6 +1133,16 @@ SHPF_precache_Entity(string defName)
 #endif
 }
 
+string
+SHPF_precache_SpriteFrame(string spritePath, float frameNum, float timeIntoFrame)
+{
+#ifdef CLIENT
+	return spriteframe(spritePath, frameNum, timeIntoFrame);
+#else
+	return "";
+#endif
+}
+
 void
 SHPF_sounds_Play(string soundDef, float level = 75, float pitch = 100, float volume = 100, float channel = CHAN_AUTO)
 {

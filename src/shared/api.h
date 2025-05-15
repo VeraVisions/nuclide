@@ -472,6 +472,14 @@ typedef struct
 	@param className to precache
 	@return Success. */
 	bool Entity(string className);
+
+	/** Precaches a given sprite frame to a material. An image from a .spr type sprite file.
+
+	@param spritePath is the path to a sprite, e.g. "sprites/rain.spr"
+	@param frameNum specifies the framegroup/sequence of which we pick from
+	@param timeIntoFrame specifies the time into the sequence we'll pretend to be at
+	@return name of a material containing the desired sprite frame */
+	string SpriteFrame(string spritePath, float frameNum, float timeIntoFrame);
 } precacheAPI_t;
 precacheAPI_t precache; /**< Access precacheAPI_t functions using this variable. */
 
@@ -721,6 +729,7 @@ _shared_main(void)
 	precache.Sound = linkToSharedProgs("SHPF_precache_Sound");
 	precache.Particle = linkToSharedProgs("SHPF_precache_Particle");
 	precache.Entity = linkToSharedProgs("SHPF_precache_Entity");
+	precache.SpriteFrame = linkToSharedProgs("SHPF_precache_SpriteFrame");
 
 	soundKit.Play = linkToSharedProgs("SHPF_sounds_Play");
 
