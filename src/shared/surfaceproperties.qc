@@ -537,6 +537,12 @@ SurfData_Init(void)
 			string newFXImpact = "";
 
 			switch (g_surfdata[i].m_flMaterial) {
+			case 'Y':
+				newFXImpact = "impact.glass";
+				break;
+			case 'S':
+				newFXImpact = "impact.water";
+				break;
 			case 'C':
 			case 'T':
 				newFXImpact = "impact.concrete";
@@ -554,6 +560,7 @@ SurfData_Init(void)
 				newFXImpact = "impact.alien";
 				break;
 			case 'M':
+			case 'G':
 			case 'V':
 				newFXImpact = "impact.metal";
 				break;
