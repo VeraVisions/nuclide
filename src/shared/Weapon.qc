@@ -1494,7 +1494,7 @@ ncWeapon::Idle(void)
 	}
 
 	/* we're in an alternate mode that requires ammo, but we have none. switch */
-	if (m_fiAltModeSwitch && m_fiAmmoRequired == 1) {
+	if (m_fiAltModeSwitch && m_fiAmmoRequired == 1 && m_secondaryAmmoType != m_primaryAmmoType) {
 	if (ourOwner.HasAmmo(m_secondaryAmmoType, 1) == false && FireInfoSelected() != 0) {
 		m_weaponFireInfoValue = 0;
 		SetAttackNext(0.0);
