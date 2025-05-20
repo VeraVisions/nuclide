@@ -93,7 +93,11 @@ CMD_Trigger(void)
 	string targ;
 	targ = argv(1);
 
-	if (targ)
+	if (!STRING_SET(targ)) {
+		printf("No target to 'trigger' specified. Try names listed in ^3]listTargets^7\n");
+		return;
+	}
+
 	for (entity a = world; (a = find(a, ::targetname, targ));) {
 		ncEntity t = (ncEntity)a;
 
