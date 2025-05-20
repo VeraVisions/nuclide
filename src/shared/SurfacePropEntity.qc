@@ -258,6 +258,7 @@ ncSurfacePropEntity::ParentUpdate(void)
 
 			if (GetHealth() <= 0) {
 				Death(m_burningAttacker, m_burningAttacker, 5i, g_vec_null, origin, 0i);
+				Extinguish();
 			} else {
 				Pain(m_burningAttacker, m_burningAttacker, 5i, g_vec_null, origin, 0i);
 			}

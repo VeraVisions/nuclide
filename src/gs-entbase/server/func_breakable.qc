@@ -348,15 +348,13 @@ func_breakable::Pain(entity inflictor, entity attacker, int damage, vector dir, 
 void
 func_breakable::Explode(void)
 {
-	vector rp = WorldSpaceCenter();
-	string breakModel = GetPropData(PROPINFO_BREAKMODEL);
+	if (IsHidden() == true) {
+		return;
+	}
 
-	BreakModel_Spawn(absmin, absmax, m_explodeDir, m_flExplodeMag, vlen(size) / 10, breakModel);
+	vector rp = WorldSpaceCenter();
 	pointparticles(_m_iExplosionParticle, rp, [0,0,0], 1);
-	combat.RadiusDamage(GetOrigin(), m_flExplodeMag, 0i, m_flExplodeRad, this, "");
-	UseTargets(this, TRIG_TOGGLE, 0.0f); /* delay... ignored. */
-	MakeInvulnerable();
-	Disappear();
+	combat.RadiusDamage(rp, m_flExplodeMag, 0i, m_flExplodeRad, this, "");
 }
 
 void
@@ -390,57 +388,56 @@ func_breakable::Death(entity inflictor, entity attacker, int damage, vector dir,
 		}
 	}
 
+	string sndBreak = GetSurfaceData(SURFDATA_SND_BREAK);
+	string breakModel = __NULL__;
+	int gibCount = (int)bound(5, vlen(size) / 10, 32);
+		
+// 	if (HasPropData()) {
+// 		breakModel = GetPropData(PROPINFO_BREAKMODEL);
+// 	}
+
+	if (!STRING_SET(breakModel)) {
+		switch (material) {
+		case 0:
+			breakModel = "glasschunks";
+			break;
+		case 1:
+			breakModel = "woodchunks";
+			break;
+		case 2:
+			breakModel = "metalchunks";
+			break;
+		case 4:
+			breakModel = "concretechunks";
+			break;
+		case 6:
+			breakModel = "metalchunks";
+			break;
+		case 8:
+			breakModel = "concretechunks";
+			break;
+		}
+	}
+
+	if (STRING_SET(breakModel)) {
+		BreakModel_Spawn(absmin, absmax, dir, damage * 2.5, gibCount, breakModel);
+	} else {
+		EntError("No BreakModel set for \"material\" \"%d\"", material);
+	}
+
+	StartSoundDef(sndBreak, CHAN_BODY, true);
+	Disappear();
+	MakeInvulnerable();
+	UseTargets(eActivator, TRIG_TOGGLE, 0.0f);
+
 	/* This may seem totally absurd. That's because it is. It's very
 	 * unreliable but exploding breakables in close proximity it WILL cause
 	 * an OVERFLOW because we'll be busy running through thousands
 	 * of entities in total when one breakable damages another in a frame. 
 	 * The only way around this is to set a hard-coded limit of loops per
 	 * frame and that would break functionality. */
-	if (m_flExplodeMag) {
-		ScheduleThink(Explode, random(0.0f, 0.5f));
-	} else {
-		string sndBreak = GetSurfaceData(SURFDATA_SND_BREAK);
-		string breakModel = __NULL__;
-		int gibCount = (int)bound(5, vlen(size) / 10, 32);
-
-// 		if (HasPropData()) {
-// 			breakModel = GetPropData(PROPINFO_BREAKMODEL);
-// 		}
-
-		if (!STRING_SET(breakModel)) {
-			switch (material) {
-			case 0:
-				breakModel = "glasschunks";
-				break;
-			case 1:
-				breakModel = "woodchunks";
-				break;
-			case 2:
-				breakModel = "metalchunks";
-				break;
-			case 4:
-				breakModel = "concretechunks";
-				break;
-			case 6:
-				breakModel = "metalchunks";
-				break;
-			case 8:
-				breakModel = "concretechunks";
-				break;
-			}
-		}
-
-		if (STRING_SET(breakModel)) {
-			BreakModel_Spawn(absmin, absmax, dir, damage * 2.5, gibCount, breakModel);
-		} else {
-			EntError("No BreakModel set for \"material\" \"%d\"", material);
-		}
-
-		StartSoundDef(sndBreak, CHAN_BODY, true);
-
-		Disappear();
-		MakeInvulnerable();
-		UseTargets(eActivator, TRIG_TOGGLE, 0.0f);
+	if (m_flExplodeMag > 0.0f) {
+		ScheduleThink(Explode, random(0.1f, 0.25f));
 	}
 }
 
