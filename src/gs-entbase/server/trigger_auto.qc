@@ -48,6 +48,7 @@ public:
 	virtual void Save(float);
 	virtual void Restore(string,string);
 	virtual void SpawnKey(string,string);
+	virtual void Spawned(void);
 	virtual void Respawn(void);
 	virtual void RestoreComplete(void);
 	
@@ -111,9 +112,23 @@ trigger_auto::SpawnKey(string strKey, string setValue)
 }
 
 void
+trigger_auto::Spawned(void)
+{
+	super::Spawned();
+
+	/* needs to be set here, as game invoked respawns
+	   generally should not affect trigger_auto */
+	SetValue(1);
+}
+
+void
 trigger_auto::Respawn(void)
 {
 	InitPointTrigger();
+
+	if (GetValue(this) == 1) {
+		return;
+	}
 
 	/* deliberately add a bit more time in case we're first in the ent-lump
 		also we'll only do this in multiplayer games. SP games will call
@@ -137,7 +152,7 @@ trigger_auto::Processing(void)
 
 	if (HasSpawnFlags(1)) {
 		EntLog("Trigger instructed to destroy itself.");
-		Destroy();
+		SetValue(0);
 	}
 }
 

@@ -170,6 +170,12 @@ CMD_RenetworkEntities(void)
 static void
 CMD_RespawnEntities(void)
 {
+	/* ensure all trigger_autos get reset entirely */
+	for (entity a = world; (a = findfloat(a, ::classname, "trigger_auto"));) {
+		ncEntity ent = (ncEntity)a;
+		ent.SetValue(1);
+	}
+
 	for (entity a = world; (a = findfloat(a, ::_mapspawned, true));) {
 		ncEntity ent = (ncEntity)a;
 		ent.Respawn();
@@ -234,8 +240,9 @@ CMD_ListSpawnData(void)
 		}
 
 		printf("}\n");
-	} else
+	} else {
 		printf("Unable to find entity with ID %S\n", entString);
+	}
 }
 
 static void
@@ -256,11 +263,13 @@ CMD_ListEntityData(void)
 		}
 	}
 
-	if (foundEnt) {
-		printf("Entity data for %s (%d):\n{\n", foundEnt.classname, entNum);
-		eprint(foundEnt);
-	} else
+	if (!foundEnt) {
 		printf("Unable to find entity with ID %S\n", entString);
+		return;
+	}
+
+	printf("Entity data for %s (%d):\n{\n", foundEnt.classname, entNum);
+	eprint(foundEnt);
 }
 
 
@@ -273,9 +282,25 @@ CMD_ListEntitiesByClass(void)
 
 	if (!STRING_SET(entString)) {
 		printf("Specify a classname. E.g. func_wall\n");
+		return;
 	}
 
 	for (entity e = world; (e = find(e, ::classname, entString));) {
+		printf("\t(%d) %v (mins: %v; maxs: %v)\n", num_for_edict(e), e.origin, e.mins, e.maxs);
+	}
+}
+
+static void
+CMD_ListEntitiesByTarget(void)
+{
+	string targetString = argv(1);
+
+	if (!STRING_SET(targetString)) {
+		printf("Specify a target name to get a list of entities targeting it.\n");
+		return;
+	}
+
+	for (entity e = world; (e = find(e, ::target, targetString));) {
 		printf("\t(%d) %v (mins: %v; maxs: %v)\n", num_for_edict(e), e.origin, e.mins, e.maxs);
 	}
 }
@@ -351,6 +376,9 @@ Cmd_ParseServerCommand(void)
 		break;
 	case "setLightStyle":
 		CMD_SetLightStyle();
+		break;
+	case "listEntitiesByTarget":
+		CMD_ListEntitiesByTarget();
 		break;
 	case "listEntitySpawnData":
 		CMD_ListSpawnData();

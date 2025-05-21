@@ -557,6 +557,7 @@ Cmd_Parse(string sCMD)
 	case "listEntitySpawnData":
 	case "listEntitiesByClass":
 	case "listEntityData":
+	case "listEntitiesByTarget":
 	case "addon":
 		localcmd(sprintf("sv %s\n", sCMD));
 		break;
@@ -623,6 +624,7 @@ Cmd_Init(void)
 	registercommand("listParticles");
 	registercommand("listServerEntityDef");
 	registercommand("listServerSoundDef");
+	registercommand("listEntitiesByTarget");
 	registercommand("listSounds");
 	registercommand("listTargets");
 	registercommand("listTitles");
