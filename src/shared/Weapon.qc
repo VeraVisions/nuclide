@@ -160,6 +160,10 @@ ncWeapon::UpdateFireInfoCache(void)
 	m_fiMaxBurst = GetSubDefFloat(m_weaponLastFireInfo, "burstCount");
 	m_fiBurstTime = GetSubDefFloat(m_weaponLastFireInfo, "burstTime");
 
+	m_fiKnockBack = GetSubDefFloat(m_weaponLastFireInfo, "knockback");
+	m_fiKnockBackRelease = GetSubDefFloat(m_weaponLastFireInfo, "knockbackRelease");
+	m_fiTestDistance = GetSubDefFloat(m_weaponLastFireInfo, "testDistance");
+
 	/* firing cosmetics */
 #ifdef CLIENT
 	setmodel(pSeat->m_eViewModel, GetSubDefString(m_weaponLastFireInfo, "model_view"));
@@ -189,6 +193,8 @@ ncWeapon::UpdateFireInfoCache(void)
 
 	m_fiBrassDef = GetSubDefString(m_weaponLastFireInfo, "def_ejectBrass");
 	m_fiBrassDelay = GetSubDefFloat(m_weaponLastFireInfo, "ejectBrassDelay");
+	m_fiCartridgeDef = GetSubDefString(m_weaponLastFireInfo, "def_ejectCartridge");
+	m_fiCartridgeDelay = GetSubDefFloat(m_weaponLastFireInfo, "ejectCartridgeDelay");
 
 	/* only check if it's present. */
 	m_fiLoopingFire = GetSubDefBool(m_weaponLastFireInfo, "act_loop");
@@ -853,6 +859,7 @@ ncWeapon::ReloadCachedAttributes(void)
 	string ammoRequired;
 
 	m_weaponTitle = GetDefString("inv_name");
+	m_altAlternates = GetDefBool("altAlternates");
 
 #ifdef CLIENT
 	m_weaponTitle = localize(m_weaponTitle);
@@ -1141,6 +1148,31 @@ ncWeapon::EjectBrass(void)
 		PlaySound(GetSubDefString(m_weaponLastFireInfo, "snd_ejectBrass"), CHAN_AUTO, false);
 	}
 }
+void
+ncWeapon::EjectCartridge(void)
+{
+	if (STRING_SET(m_fiCartridgeDef)) {
+		ncPlayer ourOwner = (ncPlayer)GetOwner();
+		vector viewAngle = ourOwner.GetViewAngle();
+		vector brassSpawnVelocity = entityDef.GetVector(m_fiCartridgeDef, "velocity");
+		vector brassVelocity = anglesToForward(viewAngle) * brassSpawnVelocity[0];
+		brassVelocity += anglesToRight(viewAngle) * brassSpawnVelocity[1];
+		brassVelocity += anglesToUp(viewAngle) * brassSpawnVelocity[2];
+		vector brassSpawnOffset = GetSpawnVector("ejectCartridgeOffset");
+		vector brassOffset = anglesToForward(viewAngle) * brassSpawnOffset[0];
+		brassOffset += anglesToRight(viewAngle) * brassSpawnOffset[1];
+		brassOffset += anglesToUp(viewAngle) * brassSpawnOffset[2];
+		
+		ncEntity brass = ents.Create(m_fiCartridgeDef, ourOwner.GetEyePos() + brassOffset);
+		brass.SetAngles(viewAngle);
+		brass.SetVelocity(ourOwner.GetVelocity() + brassVelocity);
+		brass.SetMovetype(MOVETYPE_BOUNCE);
+		brass.SetSolid(SOLID_NOT);
+		brass.ScheduleThink(Destroy, 4.0f);
+
+		PlaySound(GetSubDefString(m_weaponLastFireInfo, "snd_ejectCartridge"), CHAN_AUTO, false);
+	}
+}
 #endif
 
 void
@@ -1152,7 +1184,7 @@ ncWeapon::FiredWeaponAttack(string fireInfo)
 
 	/* knockback */
 	{
-		float weaponKnockBack = GetSubDefFloat(fireInfo, "knockback");
+		float weaponKnockBack = m_fiKnockBack;
 		ourOwner.AddVelocity(anglesToForward(ourOwner.v_angle) * -weaponKnockBack);
 	}
 
@@ -1188,7 +1220,7 @@ ncWeapon::ReleasedWeaponAttack(string fireInfo)
 
 	/* knockback */
 	{
-		float weaponKnockBack = GetSubDefFloat(fireInfo, "knockbackRelease");
+		float weaponKnockBack = m_fiKnockBackRelease;
 		ourOwner.AddVelocity(anglesToForward(ourOwner.v_angle) * -weaponKnockBack);
 	}
 
@@ -1400,7 +1432,7 @@ ncWeapon::_SecondaryAttack(void)
 		return;
 	}
 
-	if (GetDefBool("altAlternates") == true) {
+	if (m_altAlternates == true) {
 		return;
 	} else {
 		_WeaponStartedFiring();
@@ -1448,7 +1480,7 @@ bool
 ncWeapon::TestFireAbility(string fireInfo)
 {
 	ncPlayer ourOwner = (ncPlayer)GetOwner();
-	float fiTestDistance = GetSubDefFloat(fireInfo, "testDistance");
+	float fiTestDistance = m_fiTestDistance;
 
 	if (fiTestDistance != 0.0f) {
 		bool invertCheck = (fiTestDistance < 0.0) ? true : false;
@@ -1701,7 +1733,7 @@ ncWeapon::PrimaryAttack(void)
 		}
 	}
 
-	if (GetDefBool("altAlternates") == true) {
+	if (m_altAlternates == true) {
 		m_weaponFireInfoValue = 1 - m_weaponFireInfoValue;
 	}
 
@@ -1842,8 +1874,7 @@ ncWeapon::Reload(void)
 	}
 
 	/* NOTE: this affects our clip, so primary fireInfo only */
-	ammoType = GetSubDefString(m_primaryFireInfo, "ammoType");
-	ammoTypeID = ammoNumForName(ammoType);
+	ammoTypeID = m_primaryAmmoType;
 
 	if (m_weaponClip == m_weaponClipSize) {
 		Idle();
@@ -1898,6 +1929,10 @@ ncWeapon::Reload(void)
 	ScheduleThink(_ReloadFinished, reloadTime - 0.1f);
 #endif
 
+#ifdef SERVER
+	ncTimer foo = foo.TemporaryTimer(this, EjectCartridge, m_fiCartridgeDelay * 0.01f, false);
+#endif
+
 	ourOwner.sndindex_idle = 0;
 	m_burstCount = 0;
 	SetWeaponFrame(reloadAnimation);
@@ -1909,17 +1944,13 @@ bool
 ncWeapon::HasReserveAmmo(void)
 {
 	ncPlayer ourOwner = (ncPlayer)GetOwner();
-	string ammoType1 = GetSubDefString(m_primaryFireInfo, "ammoType");
-	int ammoTypeID1 = ammoNumForName(ammoType1);
+	int ammoTypeID1 = m_primaryAmmoType;
 
-	if (ourOwner.HasAmmo(ammoTypeID1, 1)) {
+	if (ourOwner.HasAmmo(m_primaryAmmoType, 1)) {
 		return (true);
 	}
 
-	string ammoType2 = GetSubDefString(m_secondaryFireInfo, "ammoType");
-	int ammoTypeID2 = ammoNumForName(ammoType2);
-
-	if (ourOwner.HasAmmo(ammoTypeID2, 1)) {
+	if (ourOwner.HasAmmo(m_secondaryAmmoType, 1)) {
 		return (true);
 	}
 

@@ -477,6 +477,7 @@ private:
 	float m_weaponAmmoRegenTime;
 	float m_weaponAmmoDepleteTime;
 	string m_animPrefix;
+	bool m_altAlternates;
 
 	/* extra networking */
 	float m_nextWeapon_entnum;
@@ -500,6 +501,7 @@ private:
 	bool m_fiSemiAuto;
 	bool m_fiWillRelease;
 	float m_fiBrassDelay;
+	float m_fiCartridgeDelay;
 	float m_fiChargeTime;
 	float m_fiFireRate;
 	float m_fiOverheatLength;
@@ -512,6 +514,7 @@ private:
 	bool m_fiPowerAmmo;
 	bool m_fiRemoveOnEmpty;
 	string m_fiBrassDef;
+	string m_fiCartridgeDef;
 	string m_fiDetonateOnFire;
 	string m_fiOnFire;
 	string m_fiOnRelease;
@@ -536,6 +539,9 @@ private:
 	float m_fiDepleteRate;
 	float m_fiMaxBurst;
 	float m_fiBurstTime;
+	float m_fiKnockBack;
+	float m_fiKnockBackRelease;
+	float m_fiTestDistance;
 };
 
 .ncWeapon m_nextWeapon;
