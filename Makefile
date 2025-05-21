@@ -693,7 +693,7 @@ $(ENGINE_BINARY):
 	cd ThirdParty/fteqw/engine && $(MAKE) makelibs ARCH=x86_64
 	cp $(GAME)/engine.h ./ThirdParty/fteqw/engine/common/config_$(GAME).h
 	-cp $(GAME)/icon.ico ./ThirdParty/fteqw/engine/common/$(GAME).ico
-	cd ThirdParty/fteqw/engine && $(MAKE) $(ENGINE_CLBUILD) FTE_CONFIG=$(GAME) ARCH=x86_64
+	cd ThirdParty/fteqw/engine && $(MAKE) $(ENGINE_CLBUILD) PKGCONFIG=pkg-config FTE_CONFIG=$(GAME) ARCH=x86_64
 	install -m 0777 $(ENGINE_BINARY) ./$(GAME_BINARY)
 
 $(ENGINE_BINARY_WIN32): 
@@ -794,7 +794,7 @@ makevulkanblob:
 # stock FTE engine
 fteqw:
 	cd ThirdParty/fteqw/engine && $(MAKE) makelibs ARCH=x86_64
-	cd ThirdParty/fteqw/engine && $(MAKE) $(ENGINE_CLBUILD) ARCH=x86_64
+	cd ThirdParty/fteqw/engine && $(MAKE) $(ENGINE_CLBUILD) PKGCONFIG=pkg-config ARCH=x86_64
 	install -m 0777 ./ThirdParty/fteqw/engine/debug/fteqw ./
 
 fteqwglqw64.exe:
