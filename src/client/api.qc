@@ -23,108 +23,108 @@ There's no header because the main code is not supposed to use this.
 
 /* view functions */
 float
-Surface_ScreenWidth(void)
+CLPF_surface_ScreenWidth(void)
 {
 	return (g_vidsize[0]);
 }
 
 float
-Surface_ScreenHeight(void)
+CLPF_surface_ScreenHeight(void)
 {
 	return (g_vidsize[1]);
 }
 
 vector
-Surface_ScreenMins(void)
+CLPF_surface_ScreenMins(void)
 {
 	return (video_mins);
 }
 
 vector
-Surface_ScreenSize(void)
+CLPF_surface_ScreenSize(void)
 {
 	return (g_vidsize);
 }
 
 vector
-Surface_HUDMins(void)
+CLPF_surface_HUDMins(void)
 {
 	return (g_hudmins);
 }
 
 vector
-Surface_HUDSize(void)
+CLPF_surface_HUDSize(void)
 {
 	return (g_hudres);
 }
 
 /* player functions */
 vector
-Player_GetCameraPosition(void)
+CLPF_player_GetCameraPosition(void)
 {
 	return (g_view.GetCameraOrigin());
 }
 vector
-Player_GetCameraAngles(void)
+CLPF_player_GetCameraAngles(void)
 {
 	return (g_view.GetCameraAngle());
 }
 float
-Player_GetHealth(void)
+CLPF_player_GetHealth(void)
 {
 	return (pSeat->m_ePlayer.health);
 }
 
 float
-Player_GetArmor(void)
+CLPF_player_GetArmor(void)
 {
 	return (((ncPlayer)pSeat->m_ePlayer).armor);
 }
 
 float
-Player_GetStamina(void)
+CLPF_player_GetStamina(void)
 {
 	return (((ncPlayer)pSeat->m_ePlayer).GetStamina());
 }
 
 int
-Player_GetTeam(void)
+CLPF_player_GetTeam(void)
 {
 	return (int)getplayerkeyfloat(pSeat->m_ePlayer.entnum-1, "*team");
 }
 
 bool
-Player_HasItem(string itemName)
+CLPF_player_HasItem(string itemName)
 {
 	return (((ncPlayer)pSeat->m_ePlayer).HasItem(itemName));
 }
 
 bool
-Player_IsSprinting(string itemName)
+CLPF_player_IsSprinting(string itemName)
 {
 	return ((ncPlayer)pSeat->m_ePlayer).IsSprinting();
 }
 
 bool
-Player_IsCrouching(string itemName)
+CLPF_player_IsCrouching(string itemName)
 {
 	return ((ncPlayer)pSeat->m_ePlayer).IsCrouching();
 }
 
 bool
-Player_IsProne(string itemName)
+CLPF_player_IsProne(string itemName)
 {
 	return ((ncPlayer)pSeat->m_ePlayer).IsProne();
 }
 
 bool
-Player_IsFalling(string itemName)
+CLPF_player_IsFalling(string itemName)
 {
 	return (((ncPlayer)pSeat->m_ePlayer).flags & FL_ONGROUND) ? false : true;
 }
 
 bool
-Player_IsMoving(string itemName)
+CLPF_player_IsMoving(string itemName)
 {
 	if (pSeat->m_ePlayer.velocity[0] > 1.0f)
 		return (true);
@@ -143,13 +143,13 @@ Player_IsMoving(string itemName)
 }
 
 bool
-Player_IsStanding(string itemName)
+CLPF_player_IsStanding(string itemName)
 {
 	return ((ncPlayer)pSeat->m_ePlayer).IsStanding();
 }
 
 bool
-Player_IsLeaning(string itemName)
+CLPF_player_IsLeaning(string itemName)
 {
 	return ((ncPlayer)pSeat->m_ePlayer).IsLeaning();
 }
@@ -157,49 +157,49 @@ Player_IsLeaning(string itemName)
 
 /* teamplay functions */
 string
-Team_GetName(int teamNumber)
+CLPF_team_GetName(int teamNumber)
 {
 	return serverkey(sprintf("team_%i", teamNumber));
 }
 
 vector
-Team_GetColor(int teamNumber)
+CLPF_team_GetColor(int teamNumber)
 {
 	return g_vec_null;
 }
 
 int
-Team_GetScore(int teamNumber)
+CLPF_team_GetScore(int teamNumber)
 {
 	return (int)serverkeyfloat(sprintf("teamscore_%i", teamNumber));
 }
 
 int
-Team_GetPlayers(int teamNumber)
+CLPF_team_GetPlayers(int teamNumber)
 {
 	return 0i;
 }
 
 int
-Team_GetCount(void)
+CLPF_team_GetCount(void)
 {
 	return (int)serverkeyfloat("teams");
 }
 
 bool
-Weapon_IsValid(entity weaponEntity)
+CLPF_weapon_IsValid(entity weaponEntity)
 {
 	ncWeapon weapon = (ncWeapon)weaponEntity;
 
-	if (weapon) {
-		return (weapon.IsWeapon());
+	if (weapon && weapon._isItem == true && weapon._isWeapon == true) {
+		return (true);
 	}
 
 	return (false);
 }
 
 string
-Weapon_GetTitle(entity weaponEntity)
+CLPF_weapon_GetTitle(entity weaponEntity)
 {
 	ncWeapon weapon = (ncWeapon)weaponEntity;
 
@@ -211,7 +211,7 @@ Weapon_GetTitle(entity weaponEntity)
 }
 
 string
-Weapon_GetIcon(entity weaponEntity)
+CLPF_weapon_GetIcon(entity weaponEntity)
 {
 	ncWeapon weapon = (ncWeapon)weaponEntity;
 
@@ -223,7 +223,7 @@ Weapon_GetIcon(entity weaponEntity)
 }
 
 string
-Weapon_GetSelectedIcon(entity weaponEntity)
+CLPF_weapon_GetSelectedIcon(entity weaponEntity)
 {
 	ncWeapon weapon = (ncWeapon)weaponEntity;
 
@@ -235,7 +235,7 @@ Weapon_GetSelectedIcon(entity weaponEntity)
 }
 
 int
-Weapon_GetSlot(entity weaponEntity)
+CLPF_weapon_GetSlot(entity weaponEntity)
 {
 	ncWeapon weapon = (ncWeapon)weaponEntity;
 
@@ -247,7 +247,7 @@ Weapon_GetSlot(entity weaponEntity)
 }
 
 int
-Weapon_GetSlotPos(entity weaponEntity)
+CLPF_CLPF_weapon_GetSlotPos(entity weaponEntity)
 {
 	ncWeapon weapon = (ncWeapon)weaponEntity;
 
@@ -259,7 +259,7 @@ Weapon_GetSlotPos(entity weaponEntity)
 }
 
 int
-Weapon_GetClip(void)
+CLPF_weapon_GetClip(void)
 {
 	ncActor owner = (ncActor)pSeat->m_ePlayer;
 	ncWeapon weapon = owner.m_activeWeapon;
@@ -272,7 +272,7 @@ Weapon_GetClip(void)
 }
 
 int
-Weapon_MaxAmmo(void)
+CLPF_weapon_MaxAmmo(void)
 {
 	ncActor owner = (ncActor)pSeat->m_ePlayer;
 	ncWeapon weapon = owner.m_activeWeapon;
@@ -287,7 +287,7 @@ Weapon_MaxAmmo(void)
 }
 
 int
-Weapon_GetClipSize(void)
+CLPF_CLPF_weapon_GetClipSize(void)
 {
 	ncActor owner = (ncActor)pSeat->m_ePlayer;
 	ncWeapon weapon = owner.m_activeWeapon;
@@ -300,7 +300,7 @@ Weapon_GetClipSize(void)
 }
 
 bool
-Weapon_UsesSecondaryAmmo(void)
+CLPF_weapon_UsesSecondaryAmmo(void)
 {
 	ncActor owner = (ncActor)pSeat->m_ePlayer;
 	ncWeapon weapon = owner.m_activeWeapon;
@@ -313,7 +313,7 @@ Weapon_UsesSecondaryAmmo(void)
 }
 
 int
-Weapon_GetAmmo1(void)
+CLPF_weapon_GetAmmo1(void)
 {
 	ncActor owner = (ncActor)pSeat->m_ePlayer;
 	ncWeapon weapon = owner.m_activeWeapon;
@@ -326,7 +326,7 @@ Weapon_GetAmmo1(void)
 }
 
 int
-Weapon_GetAmmo2(void)
+CLPF_weapon_GetAmmo2(void)
 {
 	ncActor owner = (ncActor)pSeat->m_ePlayer;
 	ncWeapon weapon = owner.m_activeWeapon;
@@ -339,7 +339,7 @@ Weapon_GetAmmo2(void)
 }
 
 bool
-Weapon_AmmoRequired(void)
+CLPF_weapon_AmmoRequired(void)
 {
 	ncActor owner = (ncActor)pSeat->m_ePlayer;
 	ncWeapon weapon = owner.m_activeWeapon;
@@ -352,13 +352,13 @@ Weapon_AmmoRequired(void)
 }
 
 entity
-Weapon_GetActiveWeapon(void)
+CLPF_weapon_GetActiveWeapon(void)
 {
 	return ((ncActor)pSeat->m_ePlayer).m_activeWeapon;
 }
 
 entity
-Weapon_GetFirstWeaponInInventory(void)
+CLPF_weapon_GetFirstWeaponInInventory(void)
 {
 #if 0
 	return ((ncActor)pSeat->m_ePlayer).m_firstWeapon;
@@ -368,13 +368,13 @@ Weapon_GetFirstWeaponInInventory(void)
 }
 
 entity
-Weapon_GetLastWeaponInInventory(void)
+CLPF_weapon_GetLastWeaponInInventory(void)
 {
 	return ((ncActor)pSeat->m_ePlayer).m_firstWeapon.m_prevWeapon;
 }
 
 entity
-Weapon_GetNextWeaponRelativeTo(entity weaponCheck)
+CLPF_weapon_GetNextWeaponRelativeTo(entity weaponCheck)
 {
 	if (weaponCheck)
 		return ((ncWeapon)weaponCheck).m_nextWeapon;
@@ -383,7 +383,7 @@ Weapon_GetNextWeaponRelativeTo(entity weaponCheck)
 }
 
 entity
-Weapon_GetPreviousWeaponRelativeTo(entity weaponCheck)
+CLPF_weapon_GetPreviousWeaponRelativeTo(entity weaponCheck)
 {
 	if (weaponCheck)
 		return ((ncWeapon)weaponCheck).m_prevWeapon;
@@ -392,7 +392,7 @@ Weapon_GetPreviousWeaponRelativeTo(entity weaponCheck)
 }
 
 bool
-Weapon_SelectWeapon(entity weaponCheck)
+CLPF_weapon_SelectWeapon(entity weaponCheck)
 {
 	if (weaponCheck) {
 		ncWeapon_SelectWeapon((ncWeapon)weaponCheck);
@@ -403,19 +403,19 @@ Weapon_SelectWeapon(entity weaponCheck)
 }
 
 void
-Draw_Rect(vector pos, vector size, vector rgb, float a)
+CLPF_draw_Rect(vector pos, vector size, vector rgb, float a)
 {
 	drawfill(pos, size, rgb, a);
 }
 
 void
-Draw_RectOutline(vector pos, vector size, float thickness, vector rgb, float a)
+CLPF_CLPF_draw_RectOutline(vector pos, vector size, float thickness, vector rgb, float a)
 {
 	drawrect(pos, size, thickness, rgb, a);
 }
 
 void
-Draw_RoundedBox(vector pos, vector size, vector rgb, float a)
+CLPF_draw_RoundedBox(vector pos, vector size, vector rgb, float a)
 {
 	float tileScale = 1.0f;
 
@@ -445,19 +445,19 @@ Draw_RoundedBox(vector pos, vector size, vector rgb, float a)
 }
 
 void
-Draw_Line(float thickness, vector pos1, vector pos2, vector rgb, float a)
+CLPF_draw_Line(float thickness, vector pos1, vector pos2, vector rgb, float a)
 {
 	drawline(thickness, pos1, pos2, rgb, a);
 }
 
 void
-Draw_Pic(vector pos, string material, vector size, vector rgb, float a, float imageFlags)
+CLPF_draw_Pic(vector pos, string material, vector size, vector rgb, float a, float imageFlags)
 {
 	drawpic(pos, material, size, rgb, a, imageFlags);
 }
 
 void
-Draw_SubPic(vector pos, vector displaySize, string material, vector sourcePos, vector sourceSize, vector rgb, float a, float imageFlags)
+CLPF_draw_SubPic(vector pos, vector displaySize, string material, vector sourcePos, vector sourceSize, vector rgb, float a, float imageFlags)
 {
 	drawsubpic(pos, displaySize, material, sourcePos, sourceSize, rgb, a, imageFlags);
 }
