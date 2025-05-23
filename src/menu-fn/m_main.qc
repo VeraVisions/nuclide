@@ -352,6 +352,8 @@ menu_main_init(void)
 	Widget_Add(fn_main2, main_btn2Quit);
 }
 
+var vector autocvar_menu_logoOffset = [0,0];
+
 /* Drawing */
 void
 menu_main_draw(void)
@@ -376,13 +378,28 @@ menu_main_draw(void)
 						col_help,1.0f, 0, font_label);
 		WLabel_Static(235, 440, m_reslbl[IDS_MAIN_QUITHELP], HELPTXT_SIZE, HELPTXT_SIZE,
 						col_help,1.0f, 0, font_label);
+
+		/* Don't even attempt to display the logo.avi otherwise */
+		if (autocvar_menu_steambg == false) {
+			drawpic([g_menuofs[0],g_menuofs[1] + 70] + autocvar_menu_logoOffset, g_bmp[LOGO_AVI_INGAME],
+					g_logosize, [1,1,1], 1.0f);
+			g_logosize = gecko_get_texture_extent(g_bmp[LOGO_AVI_INGAME]);
+			
+			if (g_logosize == g_vec_null) {
+				g_logosize = drawgetimagesize(g_bmp[LOGO_AVI_INGAME]);
+			}
+		}
 	} else {
 #ifndef WEBMENU
 		/* Don't even attempt to display the logo.avi otherwise */
-		if (autocvar_menu_steambg == false && checkcommand("ffmpeg_videobitrate")) {
-			drawpic([g_menuofs[0],g_menuofs[1] + 70], g_bmp[LOGO_AVI],
+		if (autocvar_menu_steambg == false) {
+			drawpic([g_menuofs[0],g_menuofs[1] + 70] + autocvar_menu_logoOffset, g_bmp[LOGO_AVI],
 					g_logosize, [1,1,1], 1.0f);
 			g_logosize = gecko_get_texture_extent(g_bmp[LOGO_AVI]);
+			
+			if (g_logosize == g_vec_null) {
+				g_logosize = drawgetimagesize(g_bmp[LOGO_AVI]);
+			}
 		}
 
 		{

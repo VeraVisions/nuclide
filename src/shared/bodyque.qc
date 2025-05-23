@@ -66,7 +66,7 @@ BodyQue_Update(void)
 	ncEntity meSelf = (ncEntity)self;
 
 	meSelf.frame1time += frametime;
-	meSelf.AddVelocity([0,0,128] * lerp(1.0f, 0.0f, meSelf.GetSpawnAge() * 0.1f));
+	//meSelf.AddVelocity([0,0,128] * lerp(1.0f, 0.0f, meSelf.GetSpawnAge() * 0.1f));
 
 	if (meSelf.frame1time < 10.0) {
 		meSelf.ScheduleThink(BodyQue_Update, 0.0f);

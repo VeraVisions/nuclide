@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-string g_bmp[78] = {
+string g_bmp[79] = {
 	"gfx/shell/btns_main",
 	"gfx/shell/cb_checked",
 	"gfx/shell/cb_disabled",
@@ -92,6 +92,7 @@ string g_bmp[78] = {
 	"gfx/shell/windows",
 	"gfx/shell/fragnet",
 	"gfx/shell/logo_avi",
+	"gfx/shell/logo_avi_ingame",
 	"gfx/shell/logo_static"
 };
 
@@ -174,5 +175,6 @@ enum
 	WINDOWS,
 	FN_LOGO,
 	LOGO_AVI,
+	LOGO_AVI_INGAME,
 	LOGO_STATIC
 };

@@ -101,6 +101,7 @@ void
 func_rotating::Save(float handle)
 {
 	super::Save(handle);
+
 	SaveVector(handle, "m_vecMoveDir", m_vecMoveDir);
 	SaveFloat(handle, "m_flSpeed", m_flSpeed);
 	SaveFloat(handle, "m_flDamage", m_flDamage);
@@ -163,28 +164,40 @@ func_rotating::Respawn(void)
 	}
 }
 
-/* TODO: Handle state */
 void
-func_rotating::Trigger(entity act, triggermode_t state)
+func_rotating::Trigger(entity act, triggermode_t newState)
 {
-	if (vlen(avelocity) > 0) {
+	float desiredSpeed = m_flSpeed;
+	bool isMoving = (lengthSquared(GetAngularVelocity()) > 0) ? (true) : (false);
+	bool shouldReverse = HasSpawnFlags(FR_TOGGLEDIR);
+	triggermode_t nextState = newState;
+
+	if (newState == TRIG_TOGGLE) {
+		/* no toggle on reverse set */
+		if (shouldReverse == false && isMoving == true) {
+			nextState = TRIG_OFF;
+		}
+	}
+
+	if (nextState == TRIG_OFF) {
+		desiredSpeed = 0.0f;
+	}
+
+	if (shouldReverse == true && m_flDir) {
+		desiredSpeed *= -1;
+		m_flDir = 1 - m_flDir;
+	}
+
+	if (desiredSpeed == 0.0f) {
 		ClearVelocity();
 		ReleaseThink();
-	} else {
-		float flSpeed;
-
-		if (HasSpawnFlags(FR_TOGGLEDIR) && m_flDir) {
-			flSpeed = m_flSpeed * -1;
-		} else {
-			flSpeed = m_flSpeed;
-		}
-
-		SetAngularVelocity(m_vecMoveDir * flSpeed);
-		m_flDir = 1 - m_flDir;
-
-		/* HACK HACK HACK! This is terrible, but the only way PUSH movetypes rotate */
-		ScheduleThink(Rotate, 99999.0f);
+		return;
 	}
+
+	SetAngularVelocity(m_vecMoveDir * desiredSpeed);
+
+	/* HACK: The only way PUSH movetypes rotate */
+	ScheduleThink(Rotate, 99999.0f);
 }
 
 void
@@ -196,23 +209,27 @@ func_rotating::Rotate(void)
 void
 func_rotating::Blocked(entity eBlocker)
 {
-	if (vlen(avelocity) <= 0) {
+	if (lengthSquared(GetAngularVelocity()) <= 0) {
 		return;
 	}
 
-	/* this can be crushed */
-	if (eBlocker.takedamage != DAMAGE_NO) {
-		/* this is to work around a Q1 BSP bug. don't attempt to damage our
-		 * target unless we're absolutely sure he's within the bounds of the entity */
-		if (WithinBounds(eBlocker)) {
-			vector center = WorldSpaceCenter();
-			vector dmgDir = dirFromTarget(center, eBlocker.origin);
-			ncDict damageDecl = spawn(ncDict);
-			damageDecl.AddKey("damage", ftos(m_flDamage));
-			combat.Damage(eBlocker, this, eBlocker, damageDecl.GetDeclBody(), center, dmgDir, eBlocker.origin);
-			remove(damageDecl);
-		}
+	/* can this be crushed? */
+	if (is.Sentient(eBlocker)) {
+		return;
 	}
+
+	/* this is to work around a rare Q1/HL BSP bug. don't attempt to damage our
+	 * target unless we're absolutely sure he's within the bounds of the entity */
+	if (WithinBounds(eBlocker) == false) {
+		return;
+	}
+
+	vector center = WorldSpaceCenter();
+	vector dmgDir = dirFromTarget(center, eBlocker.origin);
+	ncDict damageDecl = spawn(ncDict);
+	damageDecl.AddKey("damage", ftos(m_flDamage));
+	combat.Damage(eBlocker, this, eBlocker, damageDecl.GetDeclBody(), center, dmgDir, eBlocker.origin);
+	remove(damageDecl);
 }
 
 void

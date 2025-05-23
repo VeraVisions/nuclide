@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2024 Vera Visions LLC.
+ * Copyright (c) 2016-2025 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -77,8 +77,8 @@ PMoveCustom_Categorize(void)
 
 	self.flags &= ~FL_WATERJUMP;
 
-	/*if (self.m_pmoveBaseVelocity[2] > 0)
-		self.flags &= ~FL_ONGROUND;*/
+	if (self.m_pmoveBaseVelocity[2] > 0)
+		self.flags &= ~FL_ONGROUND;
 
 	/* ladder content testing */
 	makevectors(self.v_angle);
@@ -590,8 +590,8 @@ PMoveCustom_Move(void)
 			vector roof_plane_normal = trace_plane_normal;
 
 			dest = trace_endpos + (self.velocity * move_time);
-			dest += (self.m_pmoveBaseVelocity * move_time);
 			dest[2] = trace_endpos[2]; /*only horizontally*/
+			dest += (self.m_pmoveBaseVelocity * move_time);
 	
 			/* clear base-velocity */
 			self.m_pmoveBaseVelocity = [0,0,0];

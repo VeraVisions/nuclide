@@ -32,6 +32,11 @@ ncEntity::ncEntity(void)
 	m_spawnTime = time;
 	m_editorColor = [1,1,1];
 	m_holdingPlayer = __NULL__;
+	tag_entity = 0;
+
+#ifdef SERVER
+	m_gameModeFilter = __NULL__;
+#endif
 }
 
 void
@@ -39,6 +44,7 @@ ncEntity::Spawn(void)
 {
 	Spawned();
 
+#ifdef SERVER
 	if (wasfreed(this)) {
 		return;
 	}
@@ -49,16 +55,17 @@ ncEntity::Spawn(void)
 	}
 
 	Respawn();
+#endif
 }
 
 void
 ncEntity::Precache(void)
 {
+#ifdef SERVER
 	if (STRING_SET(model)) {
 		precache.Model(model);
 	}
 
-#ifdef SERVER
 	if (STRING_SET(m_outputOnTrigger)) {
 		m_outputOnTrigger = CreateOutput(m_outputOnTrigger);
 	}
@@ -69,7 +76,6 @@ void
 ncEntity::Spawned(void)
 {
 	super::Spawned();
-
 }
 
 bool
@@ -1624,6 +1630,15 @@ ncEntity::Input(entity eAct, string strInput, string strData)
 	case "DropToFloor":
 		DropToFloor();
 		break;
+	case "Show":
+		Show();
+		break;
+	case "Hide":
+		Hide();
+		break;
+	case "Disappear":
+		Disappear();
+		break;
 	default:
 		ncTrigger::Input(eAct, strInput, strData);
 	}
@@ -1665,7 +1680,6 @@ ncEntity::SpawnKey(string keyName, string setValue)
 		health = ReadFloat(setValue);
 		break;
 	case "movewith": /* SoHL */
-		break;
 	case "parentname": /* Source Engine */
 	case "parent": /* also SoHL? */
 		m_parent = ReadString(setValue);

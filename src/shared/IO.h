@@ -284,6 +284,7 @@ private:
 
 	/* entityDef powered modelevent callbacks */
 	string m_modelEventCallbacks;
+	string m_gameModeFilter;
 #endif
 };
 

@@ -202,6 +202,11 @@ CSQC_Update2D(float w, float h, bool focus)
 		GameText_Draw();
 		PointMessage_Draw();
 
+		/* bleurgh */
+		if (cl.activeweapon == 0 || wasfreed(cl.m_activeWeapon) || cl.m_activeWeapon._isWeapon == false) {
+			cl.m_activeWeapon = 0;
+		}
+
 		if (Client_IsSpectator(cl) == false) {
 			if (cl.m_activeWeapon)
 				cl.m_activeWeapon.UpdateGUI();
@@ -312,6 +317,11 @@ CSQC_UpdateView(float w, float h, float focus)
 
 			cl = (ncPlayer)pSeat->m_ePlayer;
 			setproperty(VF_ACTIVESEAT, (float)s);
+
+			/* bleurgh */
+			if (cl.activeweapon == 0 || wasfreed(cl.m_activeWeapon) || cl.m_activeWeapon._isWeapon == false) {
+				cl.m_activeWeapon = 0;
+			}
 
 			/* set up our single/split viewport */
 			View_CalcViewport(s, w, h);
@@ -430,7 +440,47 @@ CSQC_Input_Frame(void)
 	me = pSeat->m_ePlayer;
 
 	if (is.Player(me)) {
-		ncClient pl = (ncClient)me;
+		ncPlayer pl = (ncClient)me;
+		bool inventoryChanged = false;
+
+			ncLog("Relinking inventory for local player %d", pl.entnum);
+
+			/* redo the references. */
+			for (ncItem itemChain = world; (itemChain = next.Item(itemChain));) {
+				entity oldOwner = itemChain.owner;
+				itemChain.owner = findentity(world, ::entnum, itemChain.owner_entnum);
+				itemChain.m_nextItem = (ncItem)findentity(world, ::entnum, itemChain.chain_entnum);
+
+				/* the owner has changed. */
+				if (itemChain.owner == pl && itemChain.owner && oldOwner != itemChain.owner) {
+					itemChain._AddedCallback();
+					inventoryChanged = true;
+				}
+			}
+
+		ncWeapon oldWeapon = pl.m_activeWeapon;
+		pl.m_activeWeapon = findentity(world, ::entnum, pl.activeweapon);
+
+		if (pl.activeweapon) { /* has a weapon selected */
+			if (pl.m_activeWeapon && oldWeapon != pl.m_activeWeapon) { /* got a valid entity ref, and its a different one from last input frame. */
+				if (oldWeapon) {
+					oldWeapon._SwitchedFromCallback();
+				}
+				if (pl.m_activeWeapon && pl.m_activeWeapon.declclass != oldWeapon.declclass) {
+					pl.m_activeWeapon.owner = pl;
+					pl.m_activeWeapon._SwitchedToCallback();
+				}
+				inventoryChanged = true;
+			}
+		}
+
+		if (inventoryChanged == true) {
+			pl.SortWeaponChain();
+		}
+
+		pl.vehicle = findentity(world, ::entnum, pl.vehicle_entnum);
+		pl.m_itemList = findentity(world, ::entnum, pl.m_itemStart);
+
 		pl.SharedInputFrame();
 		float delayInputs = HUD_ClientInputFrame(input_buttons);
 
@@ -438,6 +488,7 @@ CSQC_Input_Frame(void)
 			pSeat->m_flInputBlockTime = time + delayInputs;
 		}
 
+		g_clientInitialized = true;
 		pl.ClientInputFrame();
 
 		if (pSeat->m_flInputBlockTime > time) {

@@ -184,7 +184,6 @@ public:
 	virtual bool CanPickupEntity(ncEntity toPickUp, float massLimit, float sizeLimit);
 
 #ifdef CLIENT
-	virtual void VehicleRelink(void);
 	virtual void OnRemoveEntity(void);
 	virtual void ReceiveEntity(float,float);
 	virtual void _ReceiveComplete(float, float);
@@ -206,11 +205,12 @@ public:
 
 #endif
 
+	virtual void Spawned(void);
+
 #ifdef SERVER
 	/* overrides */
 	virtual void Save(float);
 	virtual void Restore(string,string);
-	virtual void Spawned(void);
 	virtual void Respawn(void);
 	virtual void EvaluateEntity(void);
 	virtual float SendEntity(entity,float);

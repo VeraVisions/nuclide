@@ -87,56 +87,70 @@ public:
 	virtual void Trigger(entity, triggermode_t);
 	virtual void DebugDraw(void);
 
-private:
-	int m_iEnabled;
-	int m_iStartActive;
-	float m_flStyle;
-	float m_flSwitchStyle;
-	string m_strPattern;
+	nonvirtual void TurnLightOn(void);
+	nonvirtual void TurnLightOff(void);
+	nonvirtual void ToggleLight(void);
+	nonvirtual vector GetLightColor(void);
 
-	vector _lightColor;
+private:
+	bool m_lightIsOn;
+	bool m_lightStartsOn;
+	float m_lightStyle;
+	float m_lightStyleSwitch;
+	string m_lightPattern;
+
+	vector m_lightColor;
+	vector m_lightStyleColor;
+	bool m_lightLastState;
 };
 
 void
 light::light(void)
 {
-	m_iEnabled = 0;
-	m_iStartActive = TRUE;
-	m_strPattern = "m";
-	m_flStyle = 0;
-	m_flSwitchStyle = 0;
-	_lightColor = [1,1,1];
+	m_lightIsOn = true;
+	m_lightStartsOn = true;
+	m_lightPattern = "m";
+	m_lightStyle = 0;
+	m_lightStyleSwitch = 0;
+	m_lightColor = [1,1,1];
+	m_lightStyleColor = [1,1,1];
+}
+
+vector
+light::GetLightColor(void)
+{
+	return (m_lightColor);
 }
 
 void
 light::Save(float handle)
 {
 	super::Save(handle);
-	SaveInt(handle, "m_iEnabled", m_iEnabled);
-	SaveInt(handle, "m_iStartActive", m_iStartActive);
-	SaveFloat(handle, "m_flStyle", m_flStyle);
-	SaveFloat(handle, "m_flSwitchStyle", m_flSwitchStyle);
-	SaveString(handle, "m_strPattern", m_strPattern);
+	SaveBool(handle, "m_lightIsOn", m_lightIsOn);
+	SaveBool(handle, "m_lightStartsOn", m_lightStartsOn);
+	SaveFloat(handle, "m_lightStyle", m_lightStyle);
+	SaveFloat(handle, "m_lightStyleSwitch", m_lightStyleSwitch);
+	SaveString(handle, "m_lightPattern", m_lightPattern);
 }
 
 void
 light::Restore(string strKey, string setValue)
 {
 	switch (strKey) {
-	case "m_iEnabled":
-		m_iEnabled = ReadInt(setValue);
+	case "m_lightIsOn":
+		m_lightIsOn = ReadBool(setValue);
 		break;
-	case "m_iStartActive":
-		m_iStartActive = ReadInt(setValue);
+	case "m_lightStartsOn":
+		m_lightStartsOn = ReadBool(setValue);
 		break;
-	case "m_flStyle":
-		m_flStyle = ReadFloat(setValue);
+	case "m_lightStyle":
+		m_lightStyle = ReadFloat(setValue);
 		break;
-	case "m_flSwitchStyle":
-		m_flSwitchStyle = ReadFloat(setValue);
+	case "m_lightStyleSwitch":
+		m_lightStyleSwitch = ReadFloat(setValue);
 		break;
-	case "m_strPattern":
-		m_strPattern = ReadString(setValue);
+	case "m_lightPattern":
+		m_lightPattern = ReadString(setValue);
 		break;
 	default:
 		super::Restore(strKey, setValue);
@@ -146,33 +160,44 @@ light::Restore(string strKey, string setValue)
 void
 light::RestoreComplete(void)
 {
-	/* not switchable */
-	if (m_flStyle < 12)
-		return;
+	if (m_lightLastState != m_lightIsOn) {
+		m_lightLastState = m_lightIsOn;
 
-	if (m_iEnabled == 0) {
-		lightstyle(m_flStyle, "a");
+		if (m_lightIsOn) {
+			EntLog("Light now on.");
+		} else {
+			EntLog("Light now off.");
+		}
+	}
+
+	/* not switchable */
+	if (m_lightStyle < 12) {
+		return;
+	}
+
+	if (m_lightIsOn == false) {
+		lightstyle(m_lightStyle, "a", m_lightStyleColor);
 	} else {
-		lightstyle(m_flStyle, m_strPattern);
+		lightstyle(m_lightStyle, m_lightPattern, m_lightStyleColor);
 	}
 }
 
 void
-light::SpawnKey(string strKey, string setValue)
+light::SpawnKey(string keyName, string setValue)
 {
-	switch (strKey) {
+	switch (keyName) {
 	case "pattern":
-		m_strPattern = setValue;
+		m_lightPattern = ReadString(setValue);
 		break;
 	case "switch_style":
-		m_flSwitchStyle = stof(setValue);
+		m_lightStyleSwitch = ReadFloat(setValue);
 		break;
 	case "style":
-		m_flStyle = stof(setValue);
+		m_lightStyle = ReadFloat(setValue);
 		style = __NULL__;
 		break;
 	case "start_active":
-		m_iStartActive = stoi(setValue);
+		m_lightStartsOn = ReadBool(setValue);
 		break;
 	/* level-compiler keys we don't really use right now */
 	case "_cone":
@@ -186,14 +211,14 @@ light::SpawnKey(string strKey, string setValue)
 		angles[1] = ReadFloat(setValue);
 		break;
 	case "color":
-		_lightColor = ReadVector(setValue);
+		m_lightColor = ReadVector(setValue);
 		break;
 	case "_light":
 	case "color255":
-		_lightColor = ReadVector(setValue) / 255;
+		m_lightColor = ReadVector(setValue) / 255;
 		break;
 	default:
-		super::SpawnKey(strKey, setValue);
+		super::SpawnKey(keyName, setValue);
 	}
 }
 
@@ -207,10 +232,16 @@ light::Input(entity theActivator, string inputName, string dataString)
 	case "TurnOff":
 		Trigger(theActivator, TRIG_OFF);
 		break;
+	case "Color":
+		m_lightStyleColor = ReadVector(dataString) / 255;
+		EntLog("Changed lightStyle %d color to %s", m_lightStyle, dataString);
+		RestoreComplete();
+		break;
 	default:
 		super::Input(theActivator, inputName, dataString);
 	}
 }
+
 
 void
 light::Spawned(void)
@@ -218,8 +249,8 @@ light::Spawned(void)
 	super::Spawned();
 
 	/* switch styles before 12 are builtins from Quake. */
-	if (m_flSwitchStyle > 0 && m_flSwitchStyle <= 11) {
-		m_strPattern = getlightstyle(m_flSwitchStyle);
+	if (m_lightStyleSwitch > 0 && m_lightStyleSwitch <= 11) {
+		m_lightPattern = getlightstyle(m_lightStyleSwitch);
 	}
 }
 
@@ -234,25 +265,47 @@ light::Respawn(void)
 	case BSPVER_HL:
 	case BSPVER_Q2:
 	case BSPVER_Q2W:
-		if (HasSpawnFlags(1) && targetname) {
-			m_iEnabled = 0;
+		if (HasSpawnFlags(1) && HasTargetname()) {
+			m_lightIsOn = false;
 		} else {
-			m_iEnabled = 1;
+			m_lightIsOn = true;
 		}
 		break;
 	case BSPVER_Q3:
 	case BSPVER_RTCW:
 	case BSPVER_RBSP:
-		if (!m_iStartActive && targetname) {
-			m_iEnabled = 0;
+		if (!m_lightStartsOn && HasTargetname()) {
+			m_lightIsOn = false;
 		} else {
-			m_iEnabled = 1;
+			m_lightIsOn = true;
 		}
 		break;
 	default:
-		m_iEnabled = 1;
+		m_lightIsOn = true;
 	}
 
+	m_lightLastState = !m_lightIsOn;
+	RestoreComplete();
+}
+
+void
+light::TurnLightOn(void)
+{
+	m_lightIsOn = true;
+	RestoreComplete();
+}
+
+void
+light::TurnLightOff(void)
+{
+	m_lightIsOn = false;
+	RestoreComplete();
+}
+
+void
+light::ToggleLight(void)
+{
+	m_lightIsOn = true - m_lightIsOn;
 	RestoreComplete();
 }
 
@@ -261,16 +314,14 @@ light::Trigger(entity act, triggermode_t state)
 {
 	switch (state) {
 	case TRIG_OFF:
-		m_iEnabled = 0;
+		TurnLightOff();
 		break;
 	case TRIG_ON:
-		m_iEnabled = 1;
+		TurnLightOn();
 		break;
 	default:
-		m_iEnabled = 1 - m_iEnabled;
+		ToggleLight();
 	}
-
-	RestoreComplete();
 }
 
 void
@@ -279,17 +330,17 @@ light::DebugDraw(void)
 #ifdef SERVER
 	string debugIcon;
 
-	if (m_iEnabled) {
+	if (m_lightIsOn) {
 		debugIcon = "gfx/icon16/lightbulb";
 	} else {
 		debugIcon = "gfx/icon16/lightbulb_off";
 	}
 
 	R_BeginPolygon(debugIcon, 0, 0);
-		R_PolygonVertex(GetOrigin() + v_right * 8 - v_up * 8, [1,1], _lightColor, 1.0f);
-		R_PolygonVertex(GetOrigin() - v_right * 8 - v_up * 8, [0,1], _lightColor, 1.0f);
-		R_PolygonVertex(GetOrigin() - v_right * 8 + v_up * 8, [0,0], _lightColor, 1.0f);
-		R_PolygonVertex(GetOrigin() + v_right * 8 + v_up * 8, [1,0], _lightColor, 1.0f);
+		R_PolygonVertex(GetOrigin() + v_right * 8 - v_up * 8, [1,1], m_lightColor, 1.0f);
+		R_PolygonVertex(GetOrigin() - v_right * 8 - v_up * 8, [0,1], m_lightColor, 1.0f);
+		R_PolygonVertex(GetOrigin() - v_right * 8 + v_up * 8, [0,0], m_lightColor, 1.0f);
+		R_PolygonVertex(GetOrigin() + v_right * 8 + v_up * 8, [1,0], m_lightColor, 1.0f);
 	R_EndPolygon();
 #endif
 }
@@ -327,7 +378,7 @@ void
 light_environment::Spawned(void)
 {
 	super::Spawned();
-	//sunLight.m_vecLightColor = _lightColor;
+	//sunLight.m_vecLightColor = m_lightColor;
 	classname = "light_environment";
 }
 

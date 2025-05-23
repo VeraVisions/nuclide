@@ -360,11 +360,7 @@ CLPF_weapon_GetActiveWeapon(void)
 entity
 CLPF_weapon_GetFirstWeaponInInventory(void)
 {
-#if 0
 	return ((ncActor)pSeat->m_ePlayer).m_firstWeapon;
-#else
-	return ((ncActor)pSeat->m_ePlayer).SortWeaponChain();
-#endif
 }
 
 entity

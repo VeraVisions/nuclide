@@ -202,6 +202,10 @@ EV_Pickup(void)
 		localcmd("bf\n");
 	}
 
+	if (pSeat->m_ePlayer && ((ncActor)pSeat->m_ePlayer).m_activeWeapon) {
+		((ncActor)pSeat->m_ePlayer).SortWeaponChain();
+	}
+
 	HUD_PickedUpItem(itemClass);
 }
 

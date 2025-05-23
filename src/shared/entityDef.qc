@@ -339,20 +339,19 @@ EntityDef_PrepareEntity(entity target, int id)
 	entity oldSelf = self;
 	bool isEntDefBased = false;
 
+	/* check if the spawnclass is an entityDef */
+	for (int i = 0i; i < g_entDefCount; i++) {
+		if (g_entDefTable[id].spawnClass == g_entDefTable[i].entClass) {
+			isEntDefBased = true;
+			return EntityDef_PrepareEntity(target, i);
+		}
+	}
+
 	if (!targetEnt) {
 		targetEnt = spawn(ncEntity);
 	}
 
 	targetEnt.declclass = g_entDefTable[id].entClass;
-
-	/* check if the spawnclass is an entityDef */
-	for (int i = 0i; i < g_entDefCount; i++) {
-		if (g_entDefTable[id].spawnClass == g_entDefTable[i].entClass) {
-			EntityDef_PrepareEntity(target, i);
-			isEntDefBased = true;
-			break;
-		}
-	}
 
 	if (isEntDefBased == false) {
 		/* first we spawn it as the base spawnclass */
@@ -365,6 +364,7 @@ EntityDef_PrepareEntity(entity target, int id)
 		if (!isfunction(spawnClass)) {
 			ncError("Unable to find entityDef spawnclass %S", spawnClass);
 			remove(targetEnt);
+			g_lastSpawnData = "";
 			return (__NULL__);
 		}
 
@@ -447,6 +447,15 @@ EntityDef_PrepareEntity(entity target, int id)
 
 	/* now that that all methods have been called, we're ready to decide whether to continue this spawn */
 	if (wasfreed(targetEnt) == false) {
+		if (STRING_SET(targetEnt.m_gameModeFilter)) {
+			if (targetEnt.m_gameModeFilter != g_ruleCName) {
+				targetEnt.Destroy();
+				targetEnt = __NULL__;
+				g_lastSpawnData = "";
+				return (targetEnt);
+			}
+		}
+
 		targetEnt.m_modelEventCallbacks = g_entDefTable[id].eventList; /* pass over the event listing */
 
 		/* now we rename the classname for better visibility,

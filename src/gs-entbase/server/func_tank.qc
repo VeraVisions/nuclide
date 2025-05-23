@@ -349,6 +349,7 @@ func_tank::customphysics(void)
 	}
 }
 
+#warning Unbreak
 void
 func_tank_shootsingle(entity shooter, vector org, vector spread, int damg)
 {

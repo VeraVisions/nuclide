@@ -35,15 +35,15 @@ HUD_Draw(void)
 	}
 
 	if (g_ammoPic != "") {
-		draw.Pic([hudSize[0] - baseIconPadding - baseIconSize, iconPos[1]], g_ammoPic, [baseIconSize, baseIconSize], [1,1,1], 1.0f);
+		draw.Pic([hudSize[0] - baseIconPadding - baseIconSize, iconPos[1]], g_ammoPic, [baseIconSize, baseIconSize], [1,1,1], 1.0f, DRAWFLAG_NORMAL);
 	}
 
 	/* health, armor icons */
 	draw.RText(iconPos + [-((baseIconSize/2) + (baseIconPadding/2)) - baseIconPadding, 0], healthValue, FONT_HUD);
-	draw.Pic(iconPos + [-((baseIconSize/2) + (baseIconPadding/2)), 0], "gfx/hud/health", [baseIconSize, baseIconSize], [1,1,1], 1.0f);
+	draw.Pic(iconPos + [-((baseIconSize/2) + (baseIconPadding/2)), 0], "gfx/hud/health", [baseIconSize, baseIconSize], [1,1,1], 1.0f, DRAWFLAG_NORMAL);
 
 	draw.Text(iconPos + [(baseIconSize/2) + (baseIconPadding/2) + baseIconSize + baseIconPadding, 0], armorValue, FONT_HUD);
-	draw.Pic(iconPos + [(baseIconSize/2) + (baseIconPadding/2), 0], "gfx/hud/armor", [baseIconSize, baseIconSize], [1,1,1], 1.0f);
+	draw.Pic(iconPos + [(baseIconSize/2) + (baseIconPadding/2), 0], "gfx/hud/armor", [baseIconSize, baseIconSize], [1,1,1], 1.0f, DRAWFLAG_NORMAL);
 }
 
 void

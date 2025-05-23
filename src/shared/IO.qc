@@ -316,11 +316,11 @@ ncIO::UseOutput(entity act, string outname)
 	for (entity f = world; (f = find(f, ::targetname, outname));) {
 		ncOutput op = (ncOutput)f;
 
-		ncLog("Target: %s", op.m_strTarget);
-		ncLog("Input: %s", op.m_strInput);
-		ncLog("Data Message: %s", op.m_strData);
-		ncLog("Delay: %f", op.m_flDelay);
-		ncLog("Uses: %i", op.m_iCount);
+		EntLog("Sent Output Message:\n\tTarget: %s\n"\
+			"\tInput: %s\n"\
+			"\tData Message: %s\n"\
+			"\tDelay: %f\n"\
+			"\tUses: %i", op.m_strTarget, op.m_strInput, op.m_strData, op.m_flDelay, op.m_iCount);
 
 		/* no more tries and not -1 (infinite) */
 		if (op.m_iCount == 0) {
@@ -596,6 +596,9 @@ ncIO::SpawnKey(string keyName, string setValue)
 		targetname = setValue;
 		break;
 #ifdef SERVER
+	case "script_gametype":
+		m_gameModeFilter = ReadString(setValue);
+		break;
 	/* Input/Output system */
 	case "OnSpawn":
 		m_outputOnSpawn = PrepareOutput(m_outputOnSpawn, setValue);
@@ -621,8 +624,8 @@ ncIO::SpawnKey(string keyName, string setValue)
 #endif
 	default:
 #ifdef SERVER
-		EntLog("%s has unknown key %S with value %S",
-		      classname, keyName, setValue);
+		/*EntLog("%s has unknown key %S with value %S",
+		      classname, keyName, setValue);*/
 #endif
 		break;
 	}

@@ -149,4 +149,6 @@ server/trigger_random.qc
 server/trigger_relay.qc
 server/trigger_teleport.qc
 server/trigger_use.qc
+server/trigger_capture_area.qc
+server/team_control_point.qc
 #endlist

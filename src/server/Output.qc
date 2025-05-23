@@ -33,6 +33,11 @@ ncOutput::TriggerOutput(void)
 		if (ourTarget)
 			ourTarget.Input(ourActivator, m_strInput, m_strData);
 	} else {
+		if (!STRING_SET(m_strTarget)) {
+			EntError("target invalid.");
+			return;
+		}
+
 		for (entity f = world; (f = find(f, ::targetname, m_strTarget));) {
 			ncEntity trigger = (ncEntity)f;
 

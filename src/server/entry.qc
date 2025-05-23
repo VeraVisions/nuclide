@@ -63,8 +63,7 @@ ClientConnect(void)
 	if (g_ents_initialized) {
 		g_grMode.PlayerConnect((ncPlayer)self);
 
-		ncAddonDelegate addonEnum = __NULL__;
-		while ((addonEnum = AddonManager_NextAddon(addonEnum))) {
+		for (ncAddonDelegate addonEnum = __NULL__; (addonEnum = AddonManager_NextAddon(addonEnum));) {
 			addonEnum.PlayerConnect((ncPlayer)self);
 		}
 	}
@@ -81,8 +80,7 @@ ClientDisconnect(void)
 		g_grMode.PlayerDisconnect((ncPlayer)self);
 	}
 
-	ncAddonDelegate addonEnum = __NULL__;
-	while ((addonEnum = AddonManager_NextAddon(addonEnum))) {
+	for (ncAddonDelegate addonEnum = __NULL__; (addonEnum = AddonManager_NextAddon(addonEnum));) {
 		addonEnum.PlayerDisconnect((ncPlayer)self);
 	}
 
@@ -167,8 +165,7 @@ PutClientInServer(void)
 	ncSessionManager::HandleLevelTransition();
 
 	/* handle plugins */
-	ncAddonDelegate addonEnum = __NULL__;
-	while ((addonEnum = AddonManager_NextAddon(addonEnum))) {
+	for (ncAddonDelegate addonEnum = __NULL__; (addonEnum = AddonManager_NextAddon(addonEnum));) {
 		addonEnum.PlayerSpawn(ourPlayer);
 	}
 
@@ -331,8 +328,7 @@ SV_ParseClientCommand(string cmd)
 	int argc;
 	ncClient theClient = (ncClient)self;
 
-	ncAddonDelegate addonEnum = __NULL__;
-	while ((addonEnum = AddonManager_NextAddon(addonEnum))) {
+	for (ncAddonDelegate addonEnum = __NULL__; (addonEnum = AddonManager_NextAddon(addonEnum));) {
 		addonEnum.ClientCommand(theClient, cmd);
 	}
 
@@ -611,7 +607,7 @@ CheckSpawn(void() spawnfunc)
 	   3. in-code classes */
 	if (MapTweak_EntitySpawn(ent) == true) {
 		skipLoad = true;
-	} else if (EntityDef_SpawnClassname(desiredClass) != __NULL__) {
+	} else if (EntityDef_SwitchClass(ent, desiredClass) != __NULL__) {
 		skipLoad = true;
 	} else if (spawnfunc) {
 		spawnfunc();
@@ -646,6 +642,17 @@ CheckSpawn(void() spawnfunc)
 		if (STRING_SET(ent.m_rawSpawnData)) {
 			for (int i = 1; i < (tokenize(ent.m_rawSpawnData) - 1); i += 2) {
 				ent.SpawnKey(argv(i), argv(i+1));
+			}
+		}
+		
+		
+ 
+		if (STRING_SET(ent.m_gameModeFilter)) {
+			if (ent.m_gameModeFilter != g_ruleCName) {
+				remove(ent);
+				ent = __NULL__;
+				g_ents_initialized = true;
+				return;
 			}
 		}
 

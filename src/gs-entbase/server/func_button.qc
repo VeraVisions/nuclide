@@ -255,15 +255,15 @@ func_button::Spawned(void)
 	precache.Sound(m_strSndUnpressed);
 
 	/* input/output */
-	if (m_outputOnPressed)
+	if (STRING_SET(m_outputOnPressed))
 		m_outputOnPressed = CreateOutput(m_outputOnPressed);
-	if (m_outputOnDamaged)
+	if (STRING_SET(m_outputOnDamaged))
 		m_outputOnDamaged = CreateOutput(m_outputOnDamaged);
-	if (m_outputOnUseLocked)
+	if (STRING_SET(m_outputOnUseLocked))
 		m_outputOnUseLocked = CreateOutput(m_outputOnUseLocked);
-	if (m_outputOnIn)
+	if (STRING_SET(m_outputOnIn))
 		m_outputOnIn = CreateOutput(m_outputOnIn);
-	if (m_outputOnOut)
+	if (STRING_SET(m_outputOnOut))
 		m_outputOnOut = CreateOutput(m_outputOnOut);
 }
 

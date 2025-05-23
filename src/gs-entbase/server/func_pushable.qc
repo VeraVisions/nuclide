@@ -139,6 +139,7 @@ void
 func_pushable::Save(float saveHandle)
 {
 	super::Save(saveHandle);
+
 	SaveEntity(saveHandle, "m_pPuller", m_pPuller);
 	SaveEntity(saveHandle, "m_eCollBox", m_eCollBox);
 	SaveFloat(saveHandle, "m_dHullSize", m_dHullSize);
@@ -213,14 +214,16 @@ func_pushable::Respawn(void)
 void
 func_pushable::OnRemoveEntity(void)
 {
-	if (m_eCollBox)
+	if (m_eCollBox) {
 		remove(m_eCollBox);
+	}
 }
 
 void
 func_pushable::customphysics(void)
 {
 	bool wasMoving;
+
 	input_movevalues = [0,0,0];
 	input_impulse = 0;
 	input_buttons = 0;
@@ -237,7 +240,7 @@ func_pushable::customphysics(void)
 
 	wasMoving = m_bIsMoving;
 
-	if (vlen(velocity) <= 0.0) {
+	if (lengthSquared(velocity) <= 0.0) {
 		m_bIsMoving = false;
 	} else {
 		m_bIsMoving = true;
@@ -260,23 +263,26 @@ func_pushable::customphysics(void)
 	vector position = WorldSpaceCenter();
 
 	/* if we're too far away from our box, split */
-	if ((vlen(m_pPuller.origin - position) - vlen(size)) > 64)
+	if ((length(m_pPuller.origin - position) - length(size)) > 64)
 		m_pPuller = world;
 
 	tracebox(position, m_eCollBox.mins, m_eCollBox.maxs, \
 		position + (velocity * input_timelength), MOVE_NORMAL, this);
 
-	if (trace_fraction < 1.0f)
+	if (trace_fraction < 1.0f) {
 		return;
+	}
 
 	/* run the physics, then fix our helper bbox! */
 	friction = m_flPushFriction;
 
-	if (vlen(velocity))
+	if (lengthSquared(GetVelocity()) > 0) {
 		runstandardplayerphysics(this);
+	}
 
-	if (m_eCollBox)
+	if (m_eCollBox) {
 		setorigin(m_eCollBox, position);
+	}
 }
 
 void
@@ -284,6 +290,7 @@ func_pushable::Touch(entity eToucher)
 {
 	vector pusherPosition = eToucher.origin;
 	vector pushableOrigin;
+	vector pushDirection;
 
 	/* don't cause bounces */
 	if (eToucher.movetype == MOVETYPE_NONE) {
@@ -302,12 +309,10 @@ func_pushable::Touch(entity eToucher)
 
 	pushableOrigin = WorldSpaceCenter();
 	pusherPosition[2] = pushableOrigin[2];
-
-	/* get the direction of the pushing player towards the pushable, then get a matrix */
-	makevectors(vectoangles(pusherPosition - pushableOrigin));
+	pushDirection = anglesToForward(vectorToAngles(pusherPosition - pushableOrigin));
 
 	/* add forward direction times speed */
-	velocity = v_forward * -64;
+	SetVelocity(pushDirection * -64);
 }
 
 void

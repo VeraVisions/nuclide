@@ -693,12 +693,15 @@ $(ENGINE_BINARY):
 	cd ThirdParty/fteqw/engine && $(MAKE) makelibs ARCH=x86_64
 	cp $(GAME)/engine.h ./ThirdParty/fteqw/engine/common/config_$(GAME).h
 	-cp $(GAME)/icon.ico ./ThirdParty/fteqw/engine/common/$(GAME).ico
+	-cp $(GAME)/$(GAME).ico ./ThirdParty/fteqw/engine/common/$(GAME).ico
 	cd ThirdParty/fteqw/engine && $(MAKE) $(ENGINE_CLBUILD) PKGCONFIG=pkg-config FTE_CONFIG=$(GAME) ARCH=x86_64
 	install -m 0777 $(ENGINE_BINARY) ./$(GAME_BINARY)
 
 $(ENGINE_BINARY_WIN32): 
 	cd ThirdParty/fteqw/engine && $(MAKE) makelibs FTE_TARGET=win32
 	cp $(GAME)/engine.h ./ThirdParty/fteqw/engine/common/config_$(GAME).h
+	-cp $(GAME)/icon.ico ./ThirdParty/fteqw/engine/common/$(GAME).ico
+	-cp $(GAME)/$(GAME).ico ./ThirdParty/fteqw/engine/common/$(GAME).ico
 	cd ThirdParty/fteqw/engine && $(MAKE) m-rel FTE_TARGET=win32 FTE_CONFIG=$(GAME)
 	mkdir -p "$(BUILD_DIR)/$(NAME)-win"
 	install -m 0777 $(ENGINE_BINARY_WIN32) $(BUILD_DIR)/$(NAME)-win/$(NAME)_x86.exe
@@ -708,6 +711,8 @@ $(ENGINE_BINARY_WIN32):
 $(ENGINE_BINARY_WIN64):
 	cd ThirdParty/fteqw/engine && $(MAKE) makelibs FTE_TARGET=win64
 	cp $(GAME)/engine.h ./ThirdParty/fteqw/engine/common/config_$(GAME).h
+	-cp $(GAME)/icon.ico ./ThirdParty/fteqw/engine/common/$(GAME).ico
+	-cp $(GAME)/$(GAME).ico ./ThirdParty/fteqw/engine/common/$(GAME).ico
 	cd ThirdParty/fteqw/engine && $(MAKE) m-rel FTE_TARGET=win64 FTE_CONFIG=$(GAME)
 	mkdir -p "$(BUILD_DIR)/$(NAME)-win"
 	install -m 0777 $(ENGINE_BINARY_WIN64) $(BUILD_DIR)/$(NAME)-win/$(NAME)_x64.exe
@@ -717,6 +722,8 @@ $(ENGINE_BINARY_WIN64):
 $(ENGINE_BINARY_LIN32):
 	cd ThirdParty/fteqw/engine && $(MAKE) makelibs ARCH=i686 FTE_TARGET=linux32
 	cp $(GAME)/engine.h ./ThirdParty/fteqw/engine/common/config_$(GAME).h
+	-cp $(GAME)/icon.ico ./ThirdParty/fteqw/engine/common/$(GAME).ico
+	-cp $(GAME)/$(GAME).ico ./ThirdParty/fteqw/engine/common/$(GAME).ico
 	cd ThirdParty/fteqw/engine && $(MAKE) m-rel ARCH=i686 FTE_TARGET=linux32 FTE_CONFIG=$(GAME)
 	mkdir -p "$(BUILD_DIR)/$(NAME)-linux"
 	cd ThirdParty/fteqw/engine && $(MAKE) plugins-rel NATIVE_PLUGINS="$(NATIVE_PLUGINS)" FTE_CONFIG=$(GAME) FTE_TARGET=linux32
@@ -726,6 +733,8 @@ $(ENGINE_BINARY_LIN32):
 $(ENGINE_BINARY_LIN64):
 	cd ThirdParty/fteqw/engine && $(MAKE) makelibs ARCH=x86_64 FTE_TARGET=linux64
 	cp $(GAME)/engine.h ./ThirdParty/fteqw/engine/common/config_$(GAME).h
+	-cp $(GAME)/icon.ico ./ThirdParty/fteqw/engine/common/$(GAME).ico
+	-cp $(GAME)/$(GAME).ico ./ThirdParty/fteqw/engine/common/$(GAME).ico
 	cd ThirdParty/fteqw/engine && $(MAKE) m-rel ARCH=x86_64 FTE_TARGET=linux64 FTE_CONFIG=$(GAME)
 	mkdir -p "$(BUILD_DIR)/$(NAME)-linux"
 	install -m 0777 $(ENGINE_BINARY_LIN64) $(BUILD_DIR)/$(NAME)-linux/$(NAME)_x64

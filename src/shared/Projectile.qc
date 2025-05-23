@@ -891,10 +891,6 @@ ncProjectile::_LaunchHitscan(vector startPos, vector launchDir, float dmgMultipl
 	m_eMultiTarget = __NULL__;
 	m_iMultiValue = 0;
 
-	if (STRING_SET(m_defDamage)) {
-		m_flDamage = GetSubDefFloat(m_defDamage, "damage");
-	}
-
 	while (m_iShots > 0) {
 		vecDir = anglesToForward(launchDir);
 		vecDir += random(-1,1) * m_vecSpread[0] * anglesToRight(launchDir);
@@ -1178,6 +1174,7 @@ ncProjectile::Launch(vector startPos, vector launchDir, float fuseOffset, float 
 	SetOrigin(startPos);
 
 	if (m_bIsBullet) {
+		m_flDamage = GetSubDefFloat(m_defDamage, "damage");
 		_LaunchHitscan(startPos, launchDir, dmgMultiplier);
 		return;
 	}

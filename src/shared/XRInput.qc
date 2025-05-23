@@ -25,6 +25,9 @@ NSXRInput::NSXRInput(void)
 	m_iStatus = 0i;
 	m_iWeapon = 0i;
 	m_inputType = XR_INPUT_UNKNOWN;
+	solid = 0;
+	touch = 0;
+	blocked = 0;
 }
 
 vector

@@ -41,18 +41,24 @@ XR_Init(entity ePlayer)
 		pl.m_xrInputHead = spawn(NSXRInput);
 		pl.m_xrInputHead.SetType(XR_INPUT_HEAD);
 		pl.m_xrInputHead.SetParentSpace(pl.m_xrSpace);
+		pl.m_xrInputHead.solid = SOLID_NOT;
+		pl.m_xrInputHead.touch = 0;
 	}
 
 	if (!pl.m_xrInputLeft) {
 		pl.m_xrInputLeft = spawn(NSXRInput);
 		pl.m_xrInputLeft.SetType(XR_INPUT_LEFT);
 		pl.m_xrInputLeft.SetParentSpace(pl.m_xrSpace);
+		pl.m_xrInputLeft.solid = SOLID_NOT;
+		pl.m_xrInputLeft.touch = 0;
 	}
 
 	if (!pl.m_xrInputRight) {
 		pl.m_xrInputRight = spawn(NSXRInput);
 		pl.m_xrInputRight.SetType(XR_INPUT_RIGHT);
 		pl.m_xrInputRight.SetParentSpace(pl.m_xrSpace);
+		pl.m_xrInputRight.solid = SOLID_NOT;
+		pl.m_xrInputRight.touch = 0;
 	}
 }
 

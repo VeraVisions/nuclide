@@ -459,9 +459,22 @@ ncPlayer::Physics_MaxSpeed(void)
 void
 ncPlayer::Physics_InputPreMove(void)
 {
-	ncVehicle currentVehicle = (ncVehicle)vehicle;
 	bool canMove = true;
 	bool canFire = true;
+
+#ifdef CLIENT
+	if (vehicle_entnum == 0) {
+		vehicle = __NULL__;
+	}
+	if (activeweapon == 0) {
+		m_activeWeapon = __NULL__;
+	}
+	if (m_itemStart == 0) {
+		m_itemList = __NULL__;
+	}
+#endif
+
+	ncVehicle currentVehicle = (ncVehicle)vehicle;
 
 	/* find all the valid ways to freeze a player... */
 	if (currentVehicle) {

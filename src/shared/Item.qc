@@ -610,6 +610,7 @@ void
 ncItem::ReceiveEntity(float flNew, float flChanged)
 {
 	_isItem = true;
+	_isWeapon = false;
 	READENTITY_INT(entityDefID, ITEMFL_CHANGED_MODELINDEX)
 	READENTITY_ENTNUM(chain_entnum, ITEMFL_CHANGED_CHAIN)
 	READENTITY_ENTNUM(owner_entnum, ITEMFL_CHANGED_CHAIN)
@@ -660,8 +661,10 @@ ncItem::ReceiveEntity(float flNew, float flChanged)
 
 	drawmask = (modelindex != 0) ? MASK_ENGINE : 0;
 
-	if (flChanged & ITEMFL_CHANGED_CHAIN) {
+	if (flChanged & ITEMFL_CHANGED_CHAIN || (chain_entnum && !m_nextItem) || (owner_entnum && !owner)) {
 		m_nextItem = __NULL__;
+		owner = __NULL__;
+		pSeat->m_inventoryRelink = true;
 	}
 
 	if (flChanged & ITEMFL_CHANGED_FRAME) {
@@ -688,24 +691,6 @@ ncItem::PredictPreFrame(void)
 	/* may no longer be valid */
 	if (wasfreed(this)) {
 		return;
-	}
-
-	/* relink, if still valid */
-	if (m_nextItem == __NULL__ && chain_entnum) {
-		m_nextItem = (ncItem)findentity(world, ::entnum, chain_entnum);
-	}
-
-	if (owner == __NULL__ && owner_entnum) {
-		owner = findentity(world, ::entnum, owner_entnum);
-
-		if (owner && owner == pSeat->m_ePlayer) {
-			_AddedCallback();
-
-			/* we may have been removed in _AddedCallback */
-			if (wasfreed(this)) {
-				return;
-			}
-		}
 	}
 
 	SAVE_STATE(origin)

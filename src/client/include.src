@@ -3,6 +3,7 @@ InteractiveSurface.qc
 View.qc
 Radar.qc
 hud.qc
+InterfaceSpriteSheet.qc
 fog.qc
 font.qc
 sky.qc

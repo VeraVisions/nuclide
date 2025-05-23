@@ -61,14 +61,6 @@ This entity was introduced in Quake (1996).
 class
 func_train:ncRenderableEntity
 {
-	float m_flWait;
-	float m_flSpeed;
-	float m_flDamage;
-	float m_flCurrentSpeed;
-
-	string m_strMoveSnd;
-	string m_strStopSnd;
-
 public:
 	void func_train(void);
 
@@ -87,6 +79,15 @@ public:
 	nonvirtual void PathMove(void);
 	nonvirtual void PathDone(void);
 	virtual void Blocked(entity);
+
+private:
+	float m_flWait;
+	float m_flSpeed;
+	float m_flDamage;
+	float m_flCurrentSpeed;
+
+	string m_strMoveSnd;
+	string m_strStopSnd;
 };
 
 void
@@ -95,6 +96,7 @@ func_train::func_train(void)
 	m_flWait = 0.0f;
 	m_flSpeed = 0.0f;
 	m_flDamage = 0.0f;
+	m_flCurrentSpeed = 0.0f;
 	m_strMoveSnd = __NULL__;
 	m_strStopSnd = __NULL__;
 }
@@ -182,6 +184,7 @@ func_train::Respawn(void)
 
 	SetSolid(HasSpawnFlags(TRAIN_NOTSOLID) ? SOLID_NOT : SOLID_BSP);
 	SetMovetype(MOVETYPE_PUSH);
+	m_flWait = 0.0f;
 
 	/* let's wait 1/4 a second to give the path_corner entities a chance to
 	 * spawn in case they're after us in the ent lump */
@@ -236,7 +239,7 @@ func_train::SoundStop(void)
 	}
 
 	if (m_strMoveSnd) {
-		sound(this, CHAN_VOICE, "common/null.wav", 1.0, ATTN_NORM);
+		StopSound(CHAN_VOICE, true);
 	}
 }
 
@@ -248,12 +251,17 @@ func_train::PathMove(void)
 	vector vecVelocity;
 	vector vecWorldPos;
 
-	if (!target)
+	if (!HasTriggerTarget()) {
+		EntLog("No target. Won't move.");
+		ClearVelocity();
 		return;
+	}
 
 	eNode = (path_corner)find(world, ::targetname, target);
 
 	if (!eNode) {
+		EntError("Target %S does not exist.", target);
+		ClearVelocity();
 		return;
 	}
 
@@ -262,14 +270,14 @@ func_train::PathMove(void)
 	flTravelTime = (vlen(vecVelocity) / m_flCurrentSpeed);
 
 	if (!flTravelTime) {
-		print("^1func_train::^3PathMove^7: Distance short, going next\n");
+		EntLog("Distance is 0, advancing to next node.");
 		ClearVelocity();
 		ScheduleThink(PathNext, 0.0f);
 		return;
 	}
 
 	SoundMove();
-	EntLog("Travelling at %f up/s", m_flSpeed);
+	EntLog("Travelling at %f up/s", m_flCurrentSpeed);
 
 	SetVelocity(vecVelocity * (1 / flTravelTime));
 	ScheduleThink(PathNext, flTravelTime);
@@ -287,9 +295,9 @@ func_train::PathDone(void)
 	}
 
 	if (HasTargetname()) {
-		EntLog("func_train (id %d, name %S): Touched base with path_corner %S", num_for_edict(this), targetname, target);
+		EntLog("Touched base with path_corner %S", target);
 	} else {
-		EntLog("func_train (id %d): Touched base with path_corner %S", num_for_edict(this), target);
+		EntLog("Touched base with path_corner %S", target);
 	}
 
 	/* fire the path_corners' target */
@@ -311,7 +319,8 @@ func_train::PathNext(void)
 
 	/* a little more serious, but we don't want to break the map. */
 	if (eNode == __NULL__) {
-		ncError("func_tracktrain (id %d) target %S does not exist.", num_for_edict(this), target);
+		EntError("Target %S does not exist.", target);
+		ClearVelocity();
 		return;
 	}
 
@@ -359,16 +368,14 @@ func_train::AfterSpawn(void)
 	path_corner eNode = __NULL__;
 
 	if (HasTriggerTarget() == false) {
-		print(sprintf("func_tracktrain (id %d) has no target.\n", num_for_edict(this)));
-		Destroy();
+		EntError("No 'target' set. Won't move.", num_for_edict(this));
 		return;
 	}
 
-	eNode = (path_corner)find(world, ::targetname, target);
+	eNode = (path_corner)find(world, ::targetname, GetTriggerTarget());
 
 	if (eNode == __NULL__) {
-		print(sprintf("func_tracktrain (id %d) target %S does not exist.\n", num_for_edict(this), target));
-		Destroy();
+		EntError("Target %S does not exist. Won't move.", target);
 		return;
 	}
 
@@ -384,8 +391,6 @@ func_train::AfterSpawn(void)
 	} else {
 		m_flCurrentSpeed = m_flSpeed;
 	}
-
-	m_flSpeed = m_flCurrentSpeed;
 
 	/* if we're unable to be triggered by anything, begin moving */
 	if (HasTargetname() == false) {

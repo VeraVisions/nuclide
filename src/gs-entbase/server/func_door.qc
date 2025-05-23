@@ -471,38 +471,44 @@ func_door::MoverFinishesMoving(void)
 
 	/* we arrived at our starting position within the map */
 	if (GetMoverState() == MOVER_POS1) {
-		if (STRING_SET(targetClose))
-		for (entity f = world; (f = find(f, ::targetname, targetClose));) {
-			ncEntity trigger = (ncEntity)f;
-			if (trigger.Trigger != __NULL__) {
-				trigger.Trigger(this, TRIG_TOGGLE);
+		if (STRING_SET(targetClose)) {
+			for (entity f = world; (f = find(f, ::targetname, targetClose));) {
+				ncEntity trigger = (ncEntity)f;
+
+				if (trigger.Trigger != __NULL__) {
+					trigger.Trigger(this, TRIG_TOGGLE);
+				}
 			}
 		}
 
 		if (STRING_SET(m_strSndStop)) {
 			StartSoundDef(m_strSndStop, CHAN_VOICE, true);
 		} else {
-			StartSound("common/null.wav", CHAN_VOICE, 0, true);
+			StopSound(CHAN_VOICE, true);
 		}
 
-		if (STRING_SET(m_strSndMove))
-			StartSound("common/null.wav", CHAN_WEAPON, 0, true);
+		if (STRING_SET(m_strSndMove)) {
+			StopSound(CHAN_WEAPON, true);
+		}
 
-		if (STRING_SET(m_strFullyClosed))
+		if (STRING_SET(m_strFullyClosed)) {
 			UseOutput(this, m_strFullyClosed);
+		}
 
 	} else if (GetMoverState() == MOVER_POS2) {
 		if (STRING_SET(m_strSndStop)) {
 			StartSoundDef(m_strSndStop, CHAN_VOICE, true);
 		} else {
-			StartSound("common/null.wav", CHAN_VOICE, 0, true);
+			StopSound(CHAN_VOICE, true);
 		}
 
-		if (STRING_SET(m_strSndMove))
-			StartSound("common/null.wav", CHAN_WEAPON, 0, true);
+		if (STRING_SET(m_strSndMove)) {
+			StopSound(CHAN_WEAPON, true);
+		}
 
-		if ((m_flWait < 0.0f) || HasSpawnFlags(SF_MOV_TOGGLE) == true)
+		if ((m_flWait < 0.0f) || HasSpawnFlags(SF_MOV_TOGGLE) == true) {
 			return;
+		}
 
 		ScheduleThink(MoveBack, m_flWait);
 	}
@@ -518,20 +524,21 @@ func_door::MoverStartsMoving(void)
 			StartSound("common/null.wav", CHAN_VOICE, 0, true);
 		}
 
-		if (STRING_SET(m_strSndMove))
+		if (STRING_SET(m_strSndMove)) {
 			StartSoundDef(m_strSndMove, CHAN_WEAPON, true);
+		}
 
 		SetValue(1i);
 	} else if (GetMoverState() == MOVER_2TO1) {
-
 		if (STRING_SET(m_strSndClose)) {
 			StartSoundDef(m_strSndClose, CHAN_VOICE, true);
 		} else {
 			StartSound("common/null.wav", CHAN_VOICE, 0, true);
 		}
 
-		if (STRING_SET(m_strSndMove))
+		if (STRING_SET(m_strSndMove)) {
 			StartSoundDef(m_strSndMove, CHAN_WEAPON, true);
+		}
 
 		SetValue(0i);
 	}
@@ -555,6 +562,7 @@ func_door::Trigger(entity act, triggermode_t triggerstate)
 			return;
 		}
 	}
+
 	m_flNextTrigger = time + m_flWait;
 
 	/* only trigger stuff once we are done moving */
@@ -589,6 +597,7 @@ func_door::Touch(entity eToucher)
 
 			m_flSoundWait = time + 0.3f;
 		}
+
 		return;
 	}
 

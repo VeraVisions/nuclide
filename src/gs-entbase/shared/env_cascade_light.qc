@@ -220,7 +220,7 @@ env_cascade_light::EvaluateEntity(void)
 		}
 
 		if (m_bUseEnvColors) {
-			m_vecLightColor = envLight._lightColor;
+			m_vecLightColor = envLight.GetLightColor();
 		}
 
 		makevectors(envLight.GetAngles());

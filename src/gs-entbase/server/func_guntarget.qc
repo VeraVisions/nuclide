@@ -120,8 +120,9 @@ func_guntarget::Spawned(void)
 {
 	super::Spawned();
 
-	if (m_outputOnDeath)
+	if (STRING_SET(m_outputOnDeath)) {
 		m_outputOnDeath = CreateOutput(m_outputOnDeath);
+	}
 }
 
 void
@@ -179,9 +180,9 @@ func_guntarget::NextPath(void)
 	node = (path_corner)find(world, ::targetname, target);
 
 	if (!node) {
-		dprint("^1FAILED.\n");
+		EntLog("^1FAILED.\n");
 	} else {
-		dprint("^2SUCCESS.\n");
+		EntLog("^2SUCCESS.\n");
 	}
 
 	target = node.target;
@@ -197,7 +198,7 @@ func_guntarget::Death(entity inflictor, entity attacker, int damage, vector dir,
 {
 	Stop();
 
-	if (!m_outputOnDeath && !m_outputOnDeathLegacy) {
+	if (!STRING_SET(m_outputOnDeath) && !STRING_SET(m_outputOnDeathLegacy)) {
 		return;
 	}
 

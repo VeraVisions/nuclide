@@ -135,13 +135,17 @@ func_areaportal::Spawned(void)
 	Hide();
 	SetSolid(SOLID_NOT);
 
-	if (m_bSourcePortal)
+	if (m_bSourcePortal) {
 		style = (float)m_iPortalNumber;
+	} else {
+		style = 0;
+	}
 
-	if (m_bStartOpen == false)
+	if (m_bStartOpen == false) {
 		PortalClose();
-	else
+	} else {
 		PortalOpen();
+	}
 }
 
 void
@@ -167,10 +171,11 @@ func_areaportal::Trigger(entity act, triggermode_t state)
 	} else if (state == TRIG_ON) {
 		PortalOpen();
 	} else {
-		if (m_bPortalState == true)
+		if (m_bPortalState == true) {
 			PortalClose();
-		else
+		} else {
 			PortalOpen();
+		}
 	}
 }
 
@@ -200,6 +205,12 @@ func_areaportal::PortalOpen(void)
 	m_bPortalState = true;
 	setorigin(this, origin);
 	openportal(this, AREAPORTAL_OPEN);
+
+	if (m_bSourcePortal) {
+		EntLog("Opening areaportal %d at %v", style, WorldSpaceCenter());
+	} else {
+		EntLog("Opening areaportal at %v", WorldSpaceCenter());
+	}
 }
 
 void
@@ -208,4 +219,10 @@ func_areaportal::PortalClose(void)
 	m_bPortalState = false;
 	setorigin(this, origin);
 	openportal(this, AREAPORTAL_CLOSED);
+
+	if (m_bSourcePortal) {
+		EntLog("Closing areaportal %d at %v", style, WorldSpaceCenter());
+	} else {
+		EntLog("Closing areaportal at %v", WorldSpaceCenter());
+	}
 }

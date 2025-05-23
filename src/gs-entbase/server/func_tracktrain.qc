@@ -638,7 +638,7 @@ func_tracktrain::PathMoveForward(void)
 	previousNode = GetTrackNodeBack();
 
 	if (!eNode) {
-		ncVehicle_Log("No node.");
+		EntError("No node.");
 		return;
 	}
 
@@ -656,13 +656,13 @@ func_tracktrain::PathMoveForward(void)
 	flTravelTime = (vlen(vecVelocity) / travelSpeed);
 
 	if (flTravelTime <= 0.0) {
-		ncVehicle_Log("^1func_tracktrain::^3PathMoveForward^7: Distance short, going next");
+		EntLog("Distance short, going next");
 		SetVelocity([1,1,1]);
 		ScheduleThink(_PathArrivedForward, 0.1f);
 		return;
 	}
 
-	ncVehicle_Log("^1func_tracktrain::^3PathMoveForward^7: Changing velocity from '%v' to '%v'", GetVelocity(), vecVelocity);
+	EntLog("Changing velocity from '%v' to '%v'", GetVelocity(), vecVelocity);
 	SetVelocity(vecVelocity * (1 / flTravelTime));
 
 	if (_m_bDriving == false) {
@@ -699,7 +699,9 @@ func_tracktrain::PathMoveForward(void)
 		vecAngleDest[0] = 0;
 	} 
 
-	ncVehicle_Log("^1func_tracktrain::^3PathMoveBack^7: angleDelta: '%v'", vecAngleDiff);
+	if (autocvar(trackTrain_debug, 0) == num_for_edict(this)) {
+		printf("vecAngleDiff: %v", vecAngleDiff);
+	}
 
 	if (vecAngleDiff[1] == 0)
 		SetAngles(vecAngleDest);
@@ -737,7 +739,7 @@ func_tracktrain::PathMoveBack(void)
 
 	/* None, abort */
 	if (!eNode) {
-		ncVehicle_Log("No node.\n");
+		EntError("No node. Won't move.");
 		return;
 	}
 
@@ -755,7 +757,7 @@ func_tracktrain::PathMoveBack(void)
 	flTravelTime = (vlen(vecVelocity) / travelSpeed);
 
 	if (flTravelTime <= 0.0) {
-		ncVehicle_Log("^Distance short, teleporting next.");
+		EntLog("Distance short, teleporting next.");
 		ScheduleThink(_PathArrivedBack, 0.0f);
 		SetVelocity([1,1,1]);
 		return;
@@ -795,7 +797,9 @@ func_tracktrain::PathMoveBack(void)
 		vecAngleDest[0] = 0;
 	} 
 
-	ncVehicle_Log("^1func_tracktrain::^3PathMoveBack^7: angleDelta: %v", vecAngleDiff);
+	if (autocvar(trackTrain_debug, 0) == num_for_edict(this)) {
+		printf("vecAngleDiff: %v", vecAngleDiff);
+	}
 
 	if (vecAngleDiff[1] == 0)
 		SetAngles(vecAngleDest);
@@ -817,11 +821,11 @@ func_tracktrain::PathDone(void)
 	eNode = (path_track)find(world, ::targetname, target);
 
 	if (!eNode) {
-		error("Node we were targetting no longer exists.");
+		EntError("Node we were targetting no longer exists.");
 		return;
 	}
 
-	ncVehicle_Log("func_tracktrain (%s): Touched base with path_track %S", targetname, target);
+	EntLog("Touched base with path_track %S", target);
 
 	/* fire the path_tracks' target */
 	eNode.PathPassTrigger(this, TRIG_TOGGLE);
@@ -857,7 +861,7 @@ func_tracktrain::_PathArrivedForward(void)
 		return;
 	}
 	
-	ncVehicle_Log("^1func_tracktrain::^3_PathArrivedForward^7: Going to target %S (%s)", target, eNode.classname);
+	EntLog("Going to target %S (%s)", target, eNode.classname);
 	SetOrigin((eNode.GetOrigin()) + [0,0,m_flHeight]);
 	PathDone();
 
@@ -872,7 +876,7 @@ func_tracktrain::_PathArrivedForward(void)
 
 	m_flWait = eNode.DesiredWaitTime();
 
-	ncVehicle_Log("^1func_tracktrain::^3_PathArrivedForward^7: Target changed from %S to %S", target, eNode.GetPathTarget());
+	EntLog("Target changed from %S to %S", target, eNode.GetPathTarget());
 
 	target = eNode.GetPathTarget();
 
@@ -916,7 +920,7 @@ func_tracktrain::_PathArrivedBack(void)
 		return;
 	}
 
-	ncVehicle_Log("^1func_tracktrain::^3_PathArrivedBack^7: Going to target %S (%s)", target, eNode.classname);
+	EntLog("Going to target %S (%s)", target, eNode.classname);
 	SetOrigin((eNode.GetOrigin()) + [0,0,m_flHeight]);
 	PathDone();
 
@@ -929,7 +933,7 @@ func_tracktrain::_PathArrivedBack(void)
 	}
 
 	m_flWait = eNode.DesiredWaitTime();
-	ncVehicle_Log("^1func_tracktrain::^3_PathArrivedBack^7: Target changed from %S to %S", target, eNode.targetname);
+	EntLog("Target changed from %S to %S", target, eNode.targetname);
 	target = eNode.targetname;
 
 	/* warp */
@@ -1013,11 +1017,11 @@ func_tracktrain::_AfterSpawn(void)
 
 	/* unpossible */
 	if (!targetNode || HasTriggerTarget() == false) {
-		ncVehicle_Log("^1func_tracktrain::^3_AfterSpawn^7: %d has no valid target (%S).", num_for_edict(this), GetTriggerTarget());
+		EntError("No valid target %S", GetTriggerTarget());
 		return;
 	}
 
-	ncVehicle_Log("^1func_tracktrain::^3_AfterSpawn^7: Start at target %S (%s)", target, targetNode.classname);
+	EntLog("Start at target %S (%s)", target, targetNode.classname);
 
 	/* teleport to the first target for starters. */
 	SetOrigin((targetNode.GetOrigin()) + [0,0,m_flHeight]);
@@ -1303,8 +1307,7 @@ func_tracktrain::PlayerInput(void)
 
 	/* exit vehicle */
 	if (input_buttons & INPUT_BUTTON5) {
-		if (m_flUseTime > time)
- {
+		if (m_flUseTime > time) {
 			return;
 		}
 

@@ -51,6 +51,8 @@ public:
 	
 	virtual void OnPlayerUse(void);
 	nonvirtual void ResetHealth(void);
+	nonvirtual void SetChargerCapacity(float);
+	nonvirtual float GetChargerCapacity(void);
 
 private:
 	ncEntity m_eUser;
@@ -72,6 +74,7 @@ func_healthcharger::func_healthcharger(void)
 	m_strSndCharging = "items/medcharge4.wav";
 	m_strSndDone = "items/medshotno1.wav";
 }
+
 void
 func_healthcharger::Save(float handle)
 {
@@ -141,6 +144,7 @@ void
 func_healthcharger::Respawn(void)
 {
 	super::Respawn();
+	
 	SetSolid(SOLID_BSP);
 	SetMovetype(MOVETYPE_NONE);
 	PlayerUse = OnPlayerUse;
@@ -148,38 +152,55 @@ func_healthcharger::Respawn(void)
 }
 
 void
+func_healthcharger::SetChargerCapacity(float newCapacity)
+{
+	health = newCapacity;
+}
+
+float
+func_healthcharger::GetChargerCapacity(void)
+{
+	return (health);
+}
+
+void
 func_healthcharger::ResetHealth(void)
 {
-	if (health <= 0) {
+	float startHealth = Skill_GetValue("healthcharger", 50);
+
+	if (GetChargerCapacity() <= 0) {
 		StartSound(m_strSndFirst, CHAN_VOICE, 0, true);
 	}
 
 	SetFrame(0);
-	health = max_health = Skill_GetValue("healthcharger", 50);
+	SetChargerCapacity(startHealth);
 }
 
 void
 func_healthcharger::OnPlayerUse(void)
 {
 	/* let's not let this become too funny... */
-	if (eActivator.health <= 0)
+	if (eActivator.health <= 0) {
 		return;
+	}
 
 	eActivator.AddVFlags(VFL_USE_RELEASED);
 
 	/* First come first serve */ 
-	if (m_eUser && eActivator != m_eUser)
+	if (m_eUser && eActivator != m_eUser) {
 		return;
+	}
 
 	/* First time */
 	if (m_eUser == __NULL__) {
 		StartSound(m_strSndFirst, CHAN_VOICE, 0, true);
 	}
 
-	if (m_flDelay > GetTime())
+	if (m_flDelay > GetTime()) {
 		return;
+	}
 
-	if (health <= 0) {
+	if (GetChargerCapacity() <= 0) {
 		eActivator.RemoveVFlags(VFL_USE_RELEASED);
 		StartSound(m_strSndDone, CHAN_VOICE, 0, true);
 		m_eUser = __NULL__;
@@ -194,16 +215,16 @@ func_healthcharger::OnPlayerUse(void)
 			StartSound(m_strSndCharging, CHAN_ITEM, 0, true);
 		}
 
-		eActivator.health = bound(0, eActivator.health += 1, 100);
+		eActivator.health = (bound(0, eActivator.health += 1, 100));
 
 		/* Reset 30 seconds after first being used successfully */
 		//if (health == max_health) {
 			ScheduleThink(ResetHealth, 60.0f);
 		//}
-		health -= 1;
+		SetChargerCapacity(GetChargerCapacity() - 1);
 
 		/* Disable when empty */
-		if (health <= 0) {
+		if (GetChargerCapacity() <= 0) {
 			StopSound(CHAN_ITEM, true);
 			StartSound(m_strSndDone, CHAN_VOICE, 0, true);
 			SetFrame(1);
@@ -221,8 +242,9 @@ func_healthcharger::OnPlayerUse(void)
 void
 func_healthcharger::customphysics(void)
 {
-	if (m_flCheck > GetTime())
+	if (m_flCheck > GetTime()) {
 		return;
+	}
 
 	if (m_eUser) {
 		StopSound(CHAN_ITEM, true);

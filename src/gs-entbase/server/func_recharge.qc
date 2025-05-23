@@ -52,6 +52,8 @@ public:
 	
 	virtual void OnPlayerUse(void);
 	nonvirtual void ResetHealth(void);
+	nonvirtual void SetChargerCapacity(float);
+	nonvirtual float GetChargerCapacity(void);
 
 private:
 	entity m_eUser;
@@ -78,6 +80,7 @@ void
 func_recharge::Save(float handle)
 {
 	super::Save(handle);
+
 	SaveEntity(handle, "m_eUser", m_eUser);
 	SaveFloat(handle, "m_flDelay", m_flDelay);
 	SaveFloat(handle, "m_flCheck", m_flCheck);
@@ -150,18 +153,31 @@ func_recharge::Respawn(void)
 }
 
 void
+func_recharge::SetChargerCapacity(float newCapacity)
+{
+	health = newCapacity;
+}
+
+float
+func_recharge::GetChargerCapacity(void)
+{
+	return (health);
+}
+
+void
 func_recharge::ResetHealth(void)
 {
-	if (health <= 0) {
+	if (GetChargerCapacity() <= 0) {
 		StartSound(m_strSndFirst, CHAN_VOICE, 0, true);
 	}
 
 	SetFrame(0);
 
-	if (g_grMode.IsMultiplayer() == true)
+	if (g_grMode.IsMultiplayer() == true) {
 		health = max_health = 30.0f;
-	else
+	} else {
 		health = max_health = Skill_GetValue("suitcharger", 75);
+	}
 }
 
 void
@@ -210,10 +226,10 @@ func_recharge::OnPlayerUse(void)
 		//if (health == max_health) {
 			ScheduleThink(ResetHealth, 30.0f);
 		//}
-		health -= 1;
+		SetChargerCapacity(GetChargerCapacity() - 1);
 
 		/* Disable when empty */
-		if (health <= 0) {
+		if (GetChargerCapacity() <= 0) {
 			StopSound(CHAN_ITEM, true);
 			StartSound(m_strSndDone, CHAN_VOICE, 0, true);
 			SetFrame(1);
@@ -236,7 +252,7 @@ func_recharge::customphysics(void)
 	}
 
 	if (m_eUser) {
-		sound(this, CHAN_ITEM, "common/null.wav", 1.0, ATTN_NORM);
+		StopSound(CHAN_ITEM, true);
 		m_eUser = world;
 	}
 

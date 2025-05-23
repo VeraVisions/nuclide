@@ -51,20 +51,23 @@ void
 ncWeapon::_AddedCallback(void)
 {
 	ncActor ourOwner = (ncActor)owner;
-	super::_AddedCallback();
 
 	if (!owner) {
 		return;
 	}
 
+	super::_AddedCallback();
+
 	/* after being stored in someones inventory,
-	   re-sort our inventory according to their logic */
+	   re-sort our weapons according to their logic */
 	ourOwner.SortWeaponChain();
 
+#ifdef SERVER
 	/* we have no active weapon, and this is our pick */
 	if (!ourOwner.m_activeWeapon) {
 		ourOwner.SwitchToExactWeapon(this);
 	}
+#endif
 }
 
 void
@@ -526,13 +529,6 @@ ncWeapon::SendEntity(entity ePEnt, float flChanged)
 		return (false);
 	}
 
-	if (inInventory == true) {
-		flChanged &= ~WEAPONFL_CHANGED_ORIGIN;
-		flChanged &= ~WEAPONFL_CHANGED_ANGLES;
-		flChanged &= ~WEAPONFL_CHANGED_VELOCITY;
-		flChanged &= ~WEAPONFL_CHANGED_ANGULARVELOCITY;
-	}
-
 	WriteByte(MSG_ENTITY, ENT_WEAPON);
 
 	/* broadcast how much data is expected to be read */
@@ -557,14 +553,8 @@ ncWeapon::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_INT(flags, WEAPONFL_CHANGED_FLAGS)
 	SENDENTITY_INT(modelflags, WEAPONFL_CHANGED_FLAGS)
 	SENDENTITY_INT(m_nuclideFlags, WEAPONFL_CHANGED_FLAGS)
-	SENDENTITY_COORD(mins[0], WEAPONFL_CHANGED_SIZE)
-	SENDENTITY_COORD(mins[1], WEAPONFL_CHANGED_SIZE)
-	SENDENTITY_COORD(mins[2], WEAPONFL_CHANGED_SIZE)
-	SENDENTITY_COORD(maxs[0], WEAPONFL_CHANGED_SIZE)
-	SENDENTITY_COORD(maxs[1], WEAPONFL_CHANGED_SIZE)
-	SENDENTITY_COORD(maxs[2], WEAPONFL_CHANGED_SIZE)
 	SENDENTITY_BYTE(frame, WEAPONFL_CHANGED_FRAME)
-	SENDENTITY_FLOAT(skin, WEAPONFL_CHANGED_SKIN)
+	SENDENTITY_BYTE(skin, WEAPONFL_CHANGED_SKIN)
 	SENDENTITY_FLOAT(effects, WEAPONFL_CHANGED_EFFECTS)
 	SENDENTITY_SHORT(m_geomsetField, WEAPONFL_CHANGED_BODY)
 	SENDENTITY_FLOAT(scale, WEAPONFL_CHANGED_SCALE)
@@ -679,6 +669,7 @@ ncWeapon::ClientFX(bool isThirdperson)
 void
 ncWeapon::ReceiveEntity(float flNew, float flChanged)
 {
+	_isItem = true;
 	_isWeapon = true;
 	READENTITY_INT(entityDefID, WEAPONFL_CHANGED_MODELINDEX)
 	READENTITY_ENTNUM(chain_entnum, WEAPONFL_CHANGED_CHAIN)
@@ -700,14 +691,8 @@ ncWeapon::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_INT(flags, WEAPONFL_CHANGED_FLAGS)
 	READENTITY_INT(modelflags, WEAPONFL_CHANGED_FLAGS)
 	READENTITY_INT(m_nuclideFlags, WEAPONFL_CHANGED_FLAGS)
-	READENTITY_COORD(mins[0], WEAPONFL_CHANGED_SIZE)
-	READENTITY_COORD(mins[1], WEAPONFL_CHANGED_SIZE)
-	READENTITY_COORD(mins[2], WEAPONFL_CHANGED_SIZE)
-	READENTITY_COORD(maxs[0], WEAPONFL_CHANGED_SIZE)
-	READENTITY_COORD(maxs[1], WEAPONFL_CHANGED_SIZE)
-	READENTITY_COORD(maxs[2], WEAPONFL_CHANGED_SIZE)
 	READENTITY_BYTE(frame, WEAPONFL_CHANGED_FRAME)
-	READENTITY_FLOAT(skin, WEAPONFL_CHANGED_SKIN)
+	READENTITY_BYTE(skin, WEAPONFL_CHANGED_SKIN)
 	READENTITY_FLOAT(effects, WEAPONFL_CHANGED_EFFECTS)
 	READENTITY_SHORT(m_geomsetField, WEAPONFL_CHANGED_BODY)
 	READENTITY_FLOAT(scale, WEAPONFL_CHANGED_SCALE)
@@ -725,37 +710,37 @@ ncWeapon::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_FLOAT(m_weaponOverheating, WEAPONFL_CHANGED_STATE)
 	READENTITY_BYTE(m_burstCount, WEAPONFL_CHANGED_STATE)
 
+	if (flChanged & WEAPONFL_CHANGED_BODY) {
+		_UpdateGeomset();
+	}
+
+	if (scale == 0.0f) {
+		scale = 1.0f;
+	}
+
+	if (flChanged & WEAPONFL_CHANGED_ORIGIN || flChanged & WEAPONFL_CHANGED_SIZE) {
+		Relink();
+	}
+
 	/* expensive & this has to be done first, any code below may query decl */
 	if (flChanged & WEAPONFL_CHANGED_MODELINDEX) {
 		EntityDef_SetFromEntNum(this, entityDefID);
 	}
 
-	ncActor ourOwner = (ncActor)findfloat(world, ::entnum, owner_entnum);
-
-	if (flChanged & WEAPONFL_CHANGED_BODY)
-		_UpdateGeomset();
-
 	drawmask = (modelindex != 0) ? MASK_ENGINE : 0;
 
 	if (flChanged & WEAPONFL_CHANGED_CHAIN) {
-		m_nextItem = __NULL__;
+		pSeat->m_inventoryRelink = true;
 	}
 
 	if (flChanged & WEAPONFL_CHANGED_NEXTWEAPON) {
-		m_nextWeapon = __NULL__;
+		pSeat->m_inventoryRelink = true;
 	}
 
 	if (flChanged & WEAPONFL_CHANGED_PREVWEAPON) {
-		m_prevWeapon = __NULL__;
+		pSeat->m_inventoryRelink = true;
 	}
-
-	if (scale == 0.0f)
-		scale = 1.0f;
-
-	if (flChanged & WEAPONFL_CHANGED_SIZE)
-		setsize(this, mins, maxs);
 }
-
 
 void
 ncWeapon::ReceiveEvent(float eventID)
@@ -1126,52 +1111,58 @@ ncWeapon::DetonateDef(string defName)
 void
 ncWeapon::EjectBrass(void)
 {
-	if (STRING_SET(m_fiBrassDef)) {
-		ncPlayer ourOwner = (ncPlayer)GetOwner();
-		vector viewAngle = ourOwner.GetViewAngle();
-		vector brassSpawnVelocity = entityDef.GetVector(m_fiBrassDef, "velocity");
-		vector brassVelocity = anglesToForward(viewAngle) * brassSpawnVelocity[0];
-		brassVelocity += anglesToRight(viewAngle) * brassSpawnVelocity[1];
-		brassVelocity += anglesToUp(viewAngle) * brassSpawnVelocity[2];
-		vector brassSpawnOffset = GetSpawnVector("ejectBrassOffset");
-		vector brassOffset = anglesToForward(viewAngle) * brassSpawnOffset[0];
-		brassOffset += anglesToRight(viewAngle) * brassSpawnOffset[1];
-		brassOffset += anglesToUp(viewAngle) * brassSpawnOffset[2];
-		
-		ncEntity brass = ents.Create(m_fiBrassDef, ourOwner.GetEyePos() + brassOffset);
-		brass.SetAngles(viewAngle);
-		brass.SetVelocity(ourOwner.GetVelocity() + brassVelocity);
-		brass.SetMovetype(MOVETYPE_BOUNCE);
-		brass.SetSolid(SOLID_NOT);
-		brass.ScheduleThink(Destroy, 4.0f);
-
-		PlaySound(GetSubDefString(m_weaponLastFireInfo, "snd_ejectBrass"), CHAN_AUTO, false);
+	if (!STRING_SET(m_fiBrassDef)) {
+		return;
 	}
+
+	ncPlayer ourOwner = (ncPlayer)GetOwner();
+	vector viewAngle = ourOwner.GetViewAngle();
+	vector brassSpawnVelocity = entityDef.GetVector(m_fiBrassDef, "velocity");
+	vector brassVelocity = anglesToForward(viewAngle) * brassSpawnVelocity[0];
+	brassVelocity += anglesToRight(viewAngle) * brassSpawnVelocity[1];
+	brassVelocity += anglesToUp(viewAngle) * brassSpawnVelocity[2];
+	vector brassSpawnOffset = GetSpawnVector("ejectBrassOffset");
+	vector brassOffset = anglesToForward(viewAngle) * brassSpawnOffset[0];
+	brassOffset += anglesToRight(viewAngle) * brassSpawnOffset[1];
+	brassOffset += anglesToUp(viewAngle) * brassSpawnOffset[2];
+		
+	ncEntity brass = ents.Create(m_fiBrassDef, ourOwner.GetEyePos() + brassOffset);
+	brass.SetAngles(viewAngle);
+	brass.SetVelocity(ourOwner.GetVelocity() + brassVelocity);
+	brass.SetMovetype(MOVETYPE_BOUNCE);
+	brass.SetSolid(SOLID_NOT);
+	brass.ScheduleThink(Destroy, 4.0f);
+
+	PlaySound(GetSubDefString(m_weaponLastFireInfo, "snd_ejectBrass"), CHAN_AUTO, false);
 }
+
 void
 ncWeapon::EjectCartridge(void)
 {
-	if (STRING_SET(m_fiCartridgeDef)) {
-		ncPlayer ourOwner = (ncPlayer)GetOwner();
-		vector viewAngle = ourOwner.GetViewAngle();
-		vector brassSpawnVelocity = entityDef.GetVector(m_fiCartridgeDef, "velocity");
-		vector brassVelocity = anglesToForward(viewAngle) * brassSpawnVelocity[0];
-		brassVelocity += anglesToRight(viewAngle) * brassSpawnVelocity[1];
-		brassVelocity += anglesToUp(viewAngle) * brassSpawnVelocity[2];
-		vector brassSpawnOffset = GetSpawnVector("ejectCartridgeOffset");
-		vector brassOffset = anglesToForward(viewAngle) * brassSpawnOffset[0];
-		brassOffset += anglesToRight(viewAngle) * brassSpawnOffset[1];
-		brassOffset += anglesToUp(viewAngle) * brassSpawnOffset[2];
-		
-		ncEntity brass = ents.Create(m_fiCartridgeDef, ourOwner.GetEyePos() + brassOffset);
-		brass.SetAngles(viewAngle);
-		brass.SetVelocity(ourOwner.GetVelocity() + brassVelocity);
-		brass.SetMovetype(MOVETYPE_BOUNCE);
-		brass.SetSolid(SOLID_NOT);
-		brass.ScheduleThink(Destroy, 4.0f);
-
-		PlaySound(GetSubDefString(m_weaponLastFireInfo, "snd_ejectCartridge"), CHAN_AUTO, false);
+	if (!STRING_SET(m_fiCartridgeDef)) {
+		return;
 	}
+
+	ncPlayer ourOwner = (ncPlayer)GetOwner();
+	vector viewAngle = ourOwner.GetViewAngle();
+	vector brassSpawnVelocity = entityDef.GetVector(m_fiCartridgeDef, "velocity");
+	vector brassVelocity = anglesToForward(viewAngle) * brassSpawnVelocity[0];
+	brassVelocity += anglesToRight(viewAngle) * brassSpawnVelocity[1];
+	brassVelocity += anglesToUp(viewAngle) * brassSpawnVelocity[2];
+	vector brassSpawnOffset = GetSpawnVector("ejectCartridgeOffset");
+	vector brassOffset = anglesToForward(viewAngle) * brassSpawnOffset[0];
+	brassOffset += anglesToRight(viewAngle) * brassSpawnOffset[1];
+	brassOffset += anglesToUp(viewAngle) * brassSpawnOffset[2];
+
+	ncEntity brass = ents.Create(m_fiCartridgeDef, ourOwner.GetEyePos() + brassOffset);
+	brass.SetAngles(viewAngle);
+	brass.SetVelocity(ourOwner.GetVelocity() + brassVelocity);
+	brass.SetMovetype(MOVETYPE_BOUNCE);
+	brass.SetSolid(SOLID_NOT);
+	brass.ScheduleThink(Destroy, 4.0f);
+
+	PlaySound(GetSubDefString(m_weaponLastFireInfo, "snd_ejectCartridge"), CHAN_AUTO, false);
+	
 }
 #endif
 
@@ -1182,10 +1173,8 @@ ncWeapon::FiredWeaponAttack(string fireInfo)
 	ourOwner.AttackByDef(fireInfo, false);
 	_SetWeaponState(WEAPONSTATE_IDLE);
 
-	/* knockback */
-	{
-		float weaponKnockBack = m_fiKnockBack;
-		ourOwner.AddVelocity(anglesToForward(ourOwner.v_angle) * -weaponKnockBack);
+	if (m_fiKnockBack) {
+		ourOwner.AddVelocity(anglesToForward(ourOwner.v_angle) * -m_fiKnockBack);
 	}
 
 	/* prevent release from firing it again */
@@ -1217,14 +1206,12 @@ ncWeapon::ReleasedWeaponAttack(string fireInfo)
 	}
 
 	ourOwner.AttackByDef(fireInfo, true);
+	_SetWeaponState(WEAPONSTATE_RELEASED);
 
 	/* knockback */
-	{
-		float weaponKnockBack = m_fiKnockBackRelease;
-		ourOwner.AddVelocity(anglesToForward(ourOwner.v_angle) * -weaponKnockBack);
+	if (m_fiKnockBackRelease) {
+		ourOwner.AddVelocity(anglesToForward(ourOwner.v_angle) * -m_fiKnockBackRelease);
 	}
-
-	_SetWeaponState(WEAPONSTATE_RELEASED);
 }
 
 void

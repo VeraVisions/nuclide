@@ -1822,6 +1822,11 @@ ncActor::SortWeaponChain(void)
 		/* no longer in inventory */
 		if (itemChain.owner != this) {
 			itemChain = (ncWeapon)itemChain.m_nextItem;
+
+			/* link last weapon to the next */
+			if (lastWeapon) {
+				lastWeapon.m_nextItem = itemChain;
+			}
 			continue;
 		}
 
@@ -1839,8 +1844,11 @@ ncActor::SortWeaponChain(void)
 			}
 		}
 
+		lastWeapon = itemChain;
 		itemChain = (ncWeapon)itemChain.m_nextItem;
 	}
+
+	lastWeapon = __NULL__;
 
 	for (int hS = 0i; hS <= heighestSlot; hS++) {
 		for (int hP = 0i; hP <= heighestPos; hP++) {

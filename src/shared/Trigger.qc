@@ -399,7 +399,7 @@ ncTrigger::Input(entity eAct, string strInput, string strData)
 		SetTeam(stof(strData));
 		break;
 	default:
-		super:: Input(eAct, strInput, strData);
+		super::Input(eAct, strInput, strData);
 	}
 }
 
@@ -436,7 +436,7 @@ ncTrigger::SpawnKey(string keyName, string setValue)
 	case "master":
 		m_masterName = ReadString(setValue);
 		break;
-	case "m_touchingOnlyTeam":
+	case "team_no":
 		m_touchingOnlyTeam = ReadFloat(setValue);
 		break;
 	case "delay":
@@ -532,10 +532,19 @@ ncTrigger::_TouchHandler(void)
 	m_touchNormal = trace_plane_normal;
 	m_touchingEntity = other;
 
+	/* let's not waste anything... */
+	if (solid == SOLID_NOT) {
+#ifdef SERVER
+		if (m_touchTimer) {
+			m_touchTimer.Destroy();
+		}
+#endif
+		return;
+	}
+
 #ifdef SERVER
 	if (g_grMode) {
-		if (g_grMode.IsTeamplay())
-		if (m_touchingOnlyTeam > 0i)
+		if (m_touchingOnlyTeam > 0)
 		if (m_touchingEntity.team != m_touchingOnlyTeam) {
 			return;
 		}
@@ -548,7 +557,9 @@ ncTrigger::_TouchHandler(void)
 		m_touchTimer = m_touchTimer.SetupTimer(this, _TouchEnded, 0.1f, false);
 	}
 
-	m_touchTimer.RunTimer();
+	if (m_touchTimer) {
+		m_touchTimer.RunTimer();
+	}
 #endif
 
 	Touch(m_touchingEntity);

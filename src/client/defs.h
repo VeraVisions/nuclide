@@ -28,6 +28,7 @@
 #include "Radar.h"
 #include "crosshair.h"
 #include "hud.h"
+#include "InterfaceSpriteSheet.h"
 
 var bool g_net_debug = false;
 var bool g_cheats = false;
@@ -415,6 +416,10 @@ struct
 
 	int m_iSelectedWeapon;
 	bool m_bCommandMenu;
+	bool m_inventoryRelink;
+	bool m_weaponChanged;
+	bool m_vehicleRelink;
+	bool m_itemRelink;
 } g_seats[4], *pSeat;
 
 .float modelindex2;

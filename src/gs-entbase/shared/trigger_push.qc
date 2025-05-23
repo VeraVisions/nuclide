@@ -89,6 +89,7 @@ public:
 private:
 	PREDICTED_FLOAT(m_flSpeed)
 	PREDICTED_VECTOR(m_vecMoveDir)
+	PREDICTED_VECTOR(m_pushAngle)
 	PREDICTED_BOOL(m_bHasTarget)
 };
 
@@ -158,6 +159,7 @@ trigger_push::Respawn(void)
 
 	InitBrushTrigger();
 	RestoreAngles();
+	m_pushAngle = GetAngles();
 	SetMovementDirection();
 	ClearAngles();
 
@@ -227,6 +229,9 @@ trigger_push::EvaluateEntity(void)
 	EVALUATE_VECTOR(m_vecMoveDir, 0, PUSH_CHANGED_MOVEDIR)
 	EVALUATE_VECTOR(m_vecMoveDir, 1, PUSH_CHANGED_MOVEDIR)
 	EVALUATE_VECTOR(m_vecMoveDir, 2, PUSH_CHANGED_MOVEDIR)
+	EVALUATE_VECTOR(m_pushAngle, 0, PUSH_CHANGED_MOVEDIR)
+	EVALUATE_VECTOR(m_pushAngle, 1, PUSH_CHANGED_MOVEDIR)
+	EVALUATE_VECTOR(m_pushAngle, 2, PUSH_CHANGED_MOVEDIR)
 	EVALUATE_FIELD(m_bHasTarget, PUSH_CHANGED_MOVEDIR)
 }
 
@@ -279,6 +284,9 @@ trigger_push::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_FLOAT(m_vecMoveDir[0], PUSH_CHANGED_MOVEDIR)
 	SENDENTITY_FLOAT(m_vecMoveDir[1], PUSH_CHANGED_MOVEDIR)
 	SENDENTITY_FLOAT(m_vecMoveDir[2], PUSH_CHANGED_MOVEDIR)
+	SENDENTITY_FLOAT(m_pushAngle[0], PUSH_CHANGED_MOVEDIR)
+	SENDENTITY_FLOAT(m_pushAngle[1], PUSH_CHANGED_MOVEDIR)
+	SENDENTITY_FLOAT(m_pushAngle[2], PUSH_CHANGED_MOVEDIR)
 	SENDENTITY_BYTE(m_bHasTarget, PUSH_CHANGED_MOVEDIR)
 
 	return true;
@@ -315,6 +323,9 @@ trigger_push::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_FLOAT(m_vecMoveDir[0], PUSH_CHANGED_MOVEDIR)
 	READENTITY_FLOAT(m_vecMoveDir[1], PUSH_CHANGED_MOVEDIR)
 	READENTITY_FLOAT(m_vecMoveDir[2], PUSH_CHANGED_MOVEDIR)
+	READENTITY_FLOAT(m_pushAngle[0], PUSH_CHANGED_MOVEDIR)
+	READENTITY_FLOAT(m_pushAngle[1], PUSH_CHANGED_MOVEDIR)
+	READENTITY_FLOAT(m_pushAngle[2], PUSH_CHANGED_MOVEDIR)
 	READENTITY_BYTE(m_bHasTarget, PUSH_CHANGED_MOVEDIR)
 
 	if (flChanged & PUSH_CHANGED_SIZE)
@@ -362,8 +373,14 @@ trigger_push::Touch(entity eToucher)
 	}
 
 	/* trigger_push is not supposed to work underwater */
-	if (ourPlayer.waterlevel > 1)
+	if (ourPlayer.WaterLevel() > 1) {
 		return;
+	}
+
+	/* only on straight up/down will we leave standing things alone */
+	if (ourPlayer.flags & FL_ONGROUND && (m_pushAngle[0] == 90 || m_pushAngle[0] == -90) && m_pushAngle[1] == 0 && m_pushAngle[2] == 0 ) {
+		return;
+	}
 
 	if (ourPlayer.solid != SOLID_NOT && ourPlayer.solid != SOLID_BSP) {
 		vector vecPush;
@@ -371,16 +388,14 @@ trigger_push::Touch(entity eToucher)
 
 		if (HasSpawnFlags(TP_ONCE)) {
 			//crossprint(sprintf("one push %v (%v)\n", ourPlayer.basevelocity, ourPlayer.velocity));
-			ourPlayer.velocity += vecPush;
+			ourPlayer.velocity += vecPush * 10.0f;
 			if (ourPlayer.velocity[2] > 0) {
 				ourPlayer.flags &= ~FL_ONGROUND;
 			}
 			SetSolid(SOLID_NOT);
 		} else {
-			if (ourPlayer.flags & FL_ONGROUND) {
-				ourPlayer.m_pmoveBaseVelocity = vecPush * 0.25;
-				//crossprint(sprintf("basevel push %v (%v)\n", ourPlayer.basevelocity, ourPlayer.velocity));
-			}
+			ourPlayer.m_pmoveBaseVelocity = vecPush * 0.5;
+			//crossprint(sprintf("basevel push %v (%v)\n", ourPlayer.basevelocity, ourPlayer.velocity));
 		}
 	}
 }

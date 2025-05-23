@@ -18,12 +18,56 @@ void
 ncPlayer::ncPlayer(void)
 {
 	_isPlayer = true;
-	vehicle = __NULL__;
-	anim_top = 0;
-	anim_top_time = 0;
-	anim_top_delay = 0;
-	anim_bottom = 0;
-	anim_bottom_time = 0;
+
+#ifdef CLIENT
+	sequence = 0i;
+	p_model = 0;
+	p_hand_bone = 0i;
+	p_model_bone = 0i;
+	lastweapon = 0.0f;
+	m_weaponAnimSequence = 0;
+	vehicle_entnum = 0;
+	clsndindex_idle = 0;
+#endif
+
+#ifdef SERVER
+	voted = 0i;
+	m_weaponCookingTime = 0;
+	step = 0i;
+	m_timeUntilNextFootstep = 0.0f;
+	m_underwaterDamageDealt = 0i;
+	m_timeUnderwater = 0.0f;
+	m_timeUntilNextPainSFX = 0.0f;
+	last_used = 0;
+	pb_angle_delta = 0.0f;
+	pb_player_delta = 0.0f;
+	pb_last_angles = g_vec_null;
+	m_friendlyFireDamageDealt = 0i;
+#endif
+
+	health = 0;
+	sndindex_idle = 0;
+	anim_top = 0.0f;
+	anim_top_time = 0.0f;
+	anim_top_delay = 0.0f;
+	anim_bottom = 0.0f;
+	anim_bottom_time = 0.0f;
+	viewzoom = 0;
+	m_timeUntilNextAttack = 0.0f;
+	m_timeUntilNextIdle = 0.0f;
+	m_timeUntilReloaded = 0.0f;
+	m_timeSinceJump = 0.0f;
+	m_timeSinceTeleport = 0.0f;
+	m_punchAngle = g_vec_null;
+	m_punchVelocity = g_vec_null;
+	m_weaponAnimSequence = 0i;
+	m_weaponAnimTime = 0.0f;
+	activeweapon = 0;
+	m_itemList_net = 0;
+	vehicle = 0;
+	m_pmoveHookVelocity = g_vec_null;
+	m_pmoveVars = 0;
+	m_holdingEntity = 0;
 }
 
 ncWeapon
@@ -719,42 +763,6 @@ ncPlayer::postdraw(void)
 }
 
 void
-ncPlayer::VehicleRelink(void)
-{
-	ncWeapon oldWeapon = m_activeWeapon;
-
-	if (!vehicle_entnum)
-		vehicle = __NULL__;
-	else
-		vehicle = findentity(world, ::entnum, vehicle_entnum);
-
-	if (!activeweapon)
-		m_activeWeapon = __NULL__;
-	else
-		m_activeWeapon = (ncWeapon)findentity(world, ::entnum, activeweapon);
-
-	if (!m_itemStart)
-		m_itemList = __NULL__;
-	else {
-		m_itemList = (ncItem)findentity(world, ::entnum, m_itemStart);
-	}
-
-	/* that state has only just changed. */
-	if (oldWeapon != __NULL__ && m_activeWeapon == __NULL__) {
-		oldWeapon._SwitchedFromCallback();
-	}
-
-	/* complete new weapon */
-	if (m_activeWeapon != __NULL__ && oldWeapon == __NULL__) {
-		m_activeWeapon.SetOwner(this);
-		m_activeWeapon._AddedCallback();
-		m_activeWeapon._SwitchedToCallback();
-	} else if (m_activeWeapon != __NULL__ && oldWeapon != m_activeWeapon) {
-		m_activeWeapon._SwitchedToCallback();
-	}
-}
-
-void
 ncPlayer::OnRemoveEntity(void)
 {
 	if (p_model)
@@ -939,13 +947,6 @@ ncPlayer::ClientInputFrame(void)
 	input_movevalues[0] = floor(input_movevalues[0]);
 	input_movevalues[1] = floor(input_movevalues[1]);
 	input_movevalues[2] = floor(input_movevalues[2]);
-
-	/* recognize the weapon has been switched */
-	if (m_activeWeapon && !STRING_SET(m_activeWeapon.m_weaponLastFireInfo)) {
-		m_activeWeapon._SwitchedToCallback();
-		m_activeWeapon.SwitchFireInfo(m_activeWeapon.m_primaryFireInfo);
-		g_clientInitialized = true;
-	}
 }
 
 void
@@ -1066,6 +1067,10 @@ ncPlayer::ReceiveEntity(float new, float flChanged)
 	/* our decl class has changed. refresh movement values. */
 	if (flChanged & PLAYER_MODELINDEX && STRING_SET(declclass)) {
 		_UpdatePMoveVars();
+		mins = m_pmoveVars.GetStandingMins();
+		maxs = m_pmoveVars.GetStandingMaxs();
+		SetSize(mins, maxs);
+		Physics_SetViewParms();
 	}
 
 	if (flChanged & PLAYER_MODELINDEX) {
@@ -1076,13 +1081,6 @@ ncPlayer::ReceiveEntity(float new, float flChanged)
 		return;
 	}
 
-	if (new) {
-		mins = m_pmoveVars.GetStandingMins();
-		maxs = m_pmoveVars.GetStandingMaxs();
-		Physics_SetViewParms();
-	}
-
-	VehicleRelink();
 	PredictPreFrame();
 	Relink();
 
@@ -1094,20 +1092,14 @@ ncPlayer::ReceiveEntity(float new, float flChanged)
 void
 ncPlayer::PredictPreFrame(void)
 {
-	if (!vehicle_entnum)
+	if (vehicle_entnum == 0) {
 		vehicle = __NULL__;
-	else
-		vehicle = findentity(world, ::entnum, vehicle_entnum);
-
-	if (!activeweapon)
+	}
+	if (activeweapon == 0) {
 		m_activeWeapon = __NULL__;
-	else
-		m_activeWeapon = (ncWeapon)findentity(world, ::entnum, activeweapon);
-
-	if (!m_itemStart)
+	}
+	if (m_itemStart == 0) {
 		m_itemList = __NULL__;
-	else {
-		m_itemList = (ncItem)findentity(world, ::entnum, m_itemStart);
 	}
 
 	if (m_activeWeapon)
@@ -1139,7 +1131,6 @@ ncPlayer::PredictPreFrame(void)
 	SAVE_STATE(m_timeSinceJump)
 	SAVE_STATE(m_timeSinceTeleport)
 	SAVE_STATE(m_itemList)
-	SAVE_STATE(activeweapon)
 	SAVE_STATE(m_weaponAnimSequence)
 	SAVE_STATE(health)
 	SAVE_STATE(armor)
@@ -1161,10 +1152,8 @@ ncPlayer::PredictPreFrame(void)
 	SAVE_STATE(m_spectatingEntity)
 	SAVE_STATE(m_spectatingMode)
 	SAVE_STATE(m_spectatingFlags)
-
 	SAVE_STATE(m_itemList)
 	SAVE_STATE(m_activeWeapon)
-
 	SAVE_STATE(anim_top)
 	SAVE_STATE(anim_top_delay)
 	SAVE_STATE(anim_top_time)
@@ -1200,7 +1189,6 @@ ncPlayer::PredictPostFrame(void)
 	ROLL_BACK(m_timeSinceJump)
 	ROLL_BACK(m_timeSinceTeleport)
 	ROLL_BACK(m_itemList)
-	ROLL_BACK(activeweapon)
 	ROLL_BACK(m_weaponAnimSequence)
 	ROLL_BACK(health)
 	ROLL_BACK(armor)
@@ -1232,8 +1220,6 @@ ncPlayer::PredictPostFrame(void)
 	ROLL_BACK(anim_bottom)
 	ROLL_BACK(anim_bottom_time)
 	ROLL_BACK(sndindex_idle)
-
-	VehicleRelink();
 
 	for (int i = 0i; i < MAX_AMMO_TYPES; i++) {
 		m_ammoTypes[i] = m_ammoTypes_net[i];
@@ -1515,23 +1501,6 @@ ncPlayer::Death(entity inflictor, entity attacker, int damage, vector dir, vecto
 	SetInfoKey("*dead", "1");
 	SetInfoKey("*spectator", "0");
 	m_timeOfDeath = time;
-}
-
-void
-ncPlayer::Spawned(void)
-{
-	super::Spawned();
-	_isPlayer = true;
-	vehicle = __NULL__;
-
-	/* we really need to check if whether we're a real client yet. */
-	if (clienttype(this) == CLIENTTYPE_REAL || clienttype(this) == CLIENTTYPE_BOT) {
-		MakePlayer();
-	} else {
-		Disappear(); /* hide us for now */
-	}
-
-	_UpdatePMoveVars();
 }
 
 void
@@ -1939,6 +1908,30 @@ ncPlayer::InputUse_Up(void)
 	}
 }
 #endif
+
+void
+ncPlayer::Spawned(void)
+{
+	super::Spawned();
+
+	_isPlayer = true;
+	vehicle = __NULL__;
+
+#ifdef CLIENT
+	vehicle_entnum = 0;
+#endif
+
+#ifdef SERVER
+	/* we really need to check if whether we're a real client yet. */
+	if (clienttype(this) == CLIENTTYPE_REAL || clienttype(this) == CLIENTTYPE_BOT) {
+		MakePlayer();
+	} else {
+		Disappear(); /* hide us for now */
+	}
+#endif
+
+	_UpdatePMoveVars();
+}
 
 float
 ncPlayer::WeaponAnimTime(void)
