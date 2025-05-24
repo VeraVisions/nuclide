@@ -372,13 +372,15 @@ trigger_push::Touch(entity eToucher)
 		return;
 	}
 
-	/* trigger_push is not supposed to work underwater */
-	if (ourPlayer.WaterLevel() > 1) {
+	/* only on straight up/down will we leave standing things alone */
+	if (ourPlayer.flags & FL_ONGROUND && (m_pushAngle[0] == 90 || m_pushAngle[0] == -90) && m_pushAngle[1] == 0 && m_pushAngle[2] == 0 ) {
+
+		ourPlayer.gravity = 0.75f;
 		return;
 	}
 
-	/* only on straight up/down will we leave standing things alone */
-	if (ourPlayer.flags & FL_ONGROUND && (m_pushAngle[0] == 90 || m_pushAngle[0] == -90) && m_pushAngle[1] == 0 && m_pushAngle[2] == 0 ) {
+	/* trigger_push is not supposed to work underwater */
+	if (ourPlayer.WaterLevel() > 1) {
 		return;
 	}
 

@@ -240,10 +240,17 @@ ncPlayer::PreFrame(void)
 	ncItem itemEntry = m_itemList;
 
 	while (itemEntry) {
-		if (itemEntry.PredictPreFrame) {
+		if (itemEntry && !wasfreed(itemEntry))
+		if (itemEntry._isItem == true && itemEntry.PredictPreFrame) {
 			itemEntry.PredictPreFrame();
 		}
-		itemEntry = (ncItem)itemEntry.m_nextItem;
+
+		/* sanity checks */
+		if (itemEntry == itemEntry.m_nextItem || itemEntry.m_nextItem == m_itemList) {
+			itemEntry = __NULL__;
+		} else {
+			itemEntry = (ncItem)itemEntry.m_nextItem;
+		}
 	}
 
 	if (vehicle) {
@@ -1062,15 +1069,12 @@ ncPlayer::ReceiveEntity(float new, float flChanged)
 
 	if (flChanged & PLAYER_SIZE) {
 		setsize(this, mins, maxs);
+		Physics_SetViewParms();
 	}
 
 	/* our decl class has changed. refresh movement values. */
-	if (flChanged & PLAYER_MODELINDEX && STRING_SET(declclass)) {
+	if (new || (flChanged & PLAYER_MODELINDEX && STRING_SET(declclass))) {
 		_UpdatePMoveVars();
-		mins = m_pmoveVars.GetStandingMins();
-		maxs = m_pmoveVars.GetStandingMaxs();
-		SetSize(mins, maxs);
-		Physics_SetViewParms();
 	}
 
 	if (flChanged & PLAYER_MODELINDEX) {
@@ -1931,6 +1935,9 @@ ncPlayer::Spawned(void)
 #endif
 
 	_UpdatePMoveVars();
+	Physics_SetViewParms();
+	mins = m_pmoveVars.GetStandingMins();
+	maxs = m_pmoveVars.GetStandingMaxs();
 }
 
 float

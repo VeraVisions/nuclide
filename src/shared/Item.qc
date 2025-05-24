@@ -609,6 +609,11 @@ ncItem::EvaluateEntity(void)
 void
 ncItem::ReceiveEntity(float flNew, float flChanged)
 {
+	if (flNew) {
+		owner = __NULL__;
+		m_nextItem = __NULL__;
+	}
+
 	_isItem = true;
 	_isWeapon = false;
 	READENTITY_INT(entityDefID, ITEMFL_CHANGED_MODELINDEX)
@@ -661,6 +666,7 @@ ncItem::ReceiveEntity(float flNew, float flChanged)
 
 	drawmask = (modelindex != 0) ? MASK_ENGINE : 0;
 
+	if (owner_entnum)
 	if (flChanged & ITEMFL_CHANGED_CHAIN || (chain_entnum && !m_nextItem) || (owner_entnum && !owner)) {
 		m_nextItem = __NULL__;
 		owner = __NULL__;

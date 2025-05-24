@@ -461,6 +461,8 @@ SoundDef_Precache(string shader)
 					SoundDef_Precache(g_sounds[index].distshader);
 				}
 
+				/* REGISTER IT so the client knows. */
+				precache_model(strcat("*S:", shader));
 				return index;
 			}
 		}

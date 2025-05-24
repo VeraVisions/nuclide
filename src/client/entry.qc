@@ -117,6 +117,15 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 
 	/* ENGINE, PLS FIX */
 	input_cursor_entitynumber = 0;
+
+	/* soundDef caches */
+	for (int i = -4096; i < 4096; i++) {
+		string tmp = modelnameforindex(i);
+
+		if (substring(tmp, 0, 3) == "*S:") {
+			SoundDef_Precache(substring(tmp, 3, -1));
+		}
+	}
 }
 
 /** Called by the engine whenever video resources need to be reloaded.
@@ -443,7 +452,7 @@ CSQC_Input_Frame(void)
 		ncPlayer pl = (ncClient)me;
 		bool inventoryChanged = false;
 
-			ncLog("Relinking inventory for local player %d", pl.entnum);
+			//ncLog("Relinking inventory for local player %d", pl.entnum);
 
 			/* redo the references. */
 			for (ncItem itemChain = world; (itemChain = next.Item(itemChain));) {

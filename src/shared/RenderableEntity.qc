@@ -1084,6 +1084,13 @@ ncRenderableEntity::HandleAnimEvent(float flTimeStamp, int iCode, string strData
 #endif
 		break;
 	case 5004: /* view model sound? */
+		/* if the file doesn't exist, assume it's a SoundDef */
+		if (fileExists(strcat("sound/", strData)) == false) {
+			SoundDef_Play(this, CHAN_BODY, strData);
+		} else {
+			StartSound(strData, CHAN_AUTO, 0, true);
+		}
+		
 		StartSound(strData, CHAN_AUTO, 0, true);
 		break;
 	/* GS events */

@@ -194,5 +194,6 @@ trigger_once::Touch(entity eToucher)
 
 	EntLog("%S is triggering %S", eToucher.classname, target);
 	UseOutput(eToucher, m_outputOnStartTouch);
+	UseOutput(eToucher, m_outputOnTrigger);
 	UseTargets(eToucher, TRIG_TOGGLE, GetTriggerDelay());
 }

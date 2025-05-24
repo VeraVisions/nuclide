@@ -437,6 +437,12 @@ void
 func_door::Input(entity eAct, string strInput, string strData)
 {
 	switch (strInput) {
+	case "Lock":
+		Lock();
+		break;
+	case "Unlock":
+		Unlock();
+		break;
 	case "Open":
 		Trigger(eAct, TRIG_ON);
 		break;
