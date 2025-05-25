@@ -416,10 +416,7 @@ struct
 
 	int m_iSelectedWeapon;
 	bool m_bCommandMenu;
-	bool m_inventoryRelink;
-	bool m_weaponChanged;
-	bool m_vehicleRelink;
-	bool m_itemRelink;
+	ncWeapon m_weaponRef;
 } g_seats[4], *pSeat;
 
 .float modelindex2;

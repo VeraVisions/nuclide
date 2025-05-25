@@ -988,6 +988,10 @@ ncPlayer::ReceiveEntity(float isNew, float flChanged)
 		/* we respawned */
 		gravity = 1.0f;
 		activeweapon = 0;
+
+		if (m_activeWeapon) {
+			m_activeWeapon.owner = __NULL__;
+		}
 	}
 
 	READENTITY_INT(entityDefID, PLAYER_MODELINDEX)
@@ -1068,6 +1072,12 @@ ncPlayer::ReceiveEntity(float isNew, float flChanged)
 		declclass = EntityDef_NameFromNetID(entityDefID);
 	}
 
+	if (isNew || flChanged & PLAYER_MODELINDEX || flChanged == UPDATE_ALL) {
+		_UpdatePMoveVars();
+		setsize(this, mins, maxs);
+		oldWeapon = 0;
+	}
+
 	for (int i = 0i; i < MAX_AMMO_TYPES; i++) {
 		READENTITY_INT(m_ammoTypes[i], PLAYER_AMMOTYPES)
 
@@ -1137,27 +1147,13 @@ ncPlayer::ReceiveEntity(float isNew, float flChanged)
 		}
 	}
 
-	if (oldWeapon != activeweapon) {
-		if (m_activeWeapon) {
-			m_activeWeapon.owner = this;
-			m_activeWeapon._SwitchedToCallback();
-			sortWeapons = true;
-		}
-	}
-
 	if (sortWeapons || PLAYER_WEAPON) {
 		SortWeaponChain();
 	}
 	}
 
-	/* our decl class has changed. refresh movement values. */
-	if (isNew || (flChanged & PLAYER_MODELINDEX && STRING_SET(declclass))) {
-		_UpdatePMoveVars();
-	}
-
 	if (flChanged & PLAYER_SIZE) {
 		setsize(this, mins, maxs);
-		Physics_SetViewParms();
 	}
 
 	if (flChanged & PLAYER_WEAPON || flChanged & PLAYER_MODELINDEX) {
@@ -1230,14 +1226,13 @@ ncPlayer::PredictPreFrame(void)
 	SAVE_STATE(m_spectatingEntity)
 	SAVE_STATE(m_spectatingMode)
 	SAVE_STATE(m_spectatingFlags)
-	SAVE_STATE(m_itemList)
-	SAVE_STATE(m_activeWeapon)
 	SAVE_STATE(anim_top)
 	SAVE_STATE(anim_top_delay)
 	SAVE_STATE(anim_top_time)
 	SAVE_STATE(anim_bottom)
 	SAVE_STATE(anim_bottom_time)
 	SAVE_STATE(sndindex_idle)
+	SAVE_STATE(activeweapon)
 
 	for (int i = 0i; i < MAX_AMMO_TYPES; i++) {
 		m_ammoTypes_net[i] = m_ammoTypes[i];
@@ -1288,10 +1283,7 @@ ncPlayer::PredictPostFrame(void)
 	ROLL_BACK(m_spectatingEntity)
 	ROLL_BACK(m_spectatingMode)
 	ROLL_BACK(m_spectatingFlags)
-
-	ROLL_BACK(m_itemList)
-	ROLL_BACK(m_activeWeapon)
-
+	ROLL_BACK(activeweapon)
 	ROLL_BACK(anim_top)
 	ROLL_BACK(anim_top_delay)
 	ROLL_BACK(anim_top_time)
@@ -1502,6 +1494,7 @@ ncPlayer::Respawn(void)
 {
 	/* make sure nothing happens here */
 	SendFlags |= UPDATE_ALL;
+	ReloadCachedAttributes();
 }
 
 void

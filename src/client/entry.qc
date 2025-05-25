@@ -448,6 +448,15 @@ CSQC_Input_Frame(void)
 			pSeat->m_flInputBlockTime = time + delayInputs;
 		}
 
+		if (pSeat->m_weaponRef != pl.m_activeWeapon) {
+			pSeat->m_weaponRef = pl.m_activeWeapon;
+
+			if (pl.m_activeWeapon) {
+				pl.m_activeWeapon.owner = pl;
+				pl.m_activeWeapon._SwitchedToCallback();
+			}
+		}
+
 		g_clientInitialized = true;
 		pl.ClientInputFrame();
 
