@@ -21,23 +21,6 @@ var int autocvar_mp_td_dmgToWarn = 200i;
 void
 ncRuleDelegate::ncRuleDelegate(void)
 {
-	forceinfokey(world, "teams", "");
-	forceinfokey(world, "teamplay", "");
-	forceinfokey(world, "coop", "");
-
-	/* clean up... */
-	for (int teamID = 1; teamID < 1000; teamID++) {
-		forceinfokey(world, sprintf("team_%i", teamID), "");
-		forceinfokey(world, sprintf("teamscore_%i", teamID), "");
-		forceinfokey(world, sprintf("teamcolor_%i", teamID), "");
-		forceinfokey(world, sprintf("teamclosed_%i", teamID), "");
-		forceinfokey(world, sprintf("teamspawn_%i", teamID), "");
-		forceinfokey(world, sprintf("teamclass_%i", teamID), "");
-	}
-
-	forceinfokey(world, sprintf("teamspawn_%d", TEAM_CONNECTING), "");
-	forceinfokey(world, sprintf("teamspawn_%d", TEAM_UNASSIGNED), "info_player_start");
-	forceinfokey(world, sprintf("teamspawn_%d", TEAM_SPECTATOR), "info_spectator_start");
 	identity = 2;
 }
 

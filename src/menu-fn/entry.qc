@@ -132,6 +132,7 @@ m_draw(vector screensize)
 
 	Background_Draw((g_vidsize / 2) - [320,240], [640,480]);
 
+	#if 0
 	/* water mark for version info */
 	const string ver = "Nuclide (build " __DATE__ ")";
 	drawfont = Font_GetID(font_console);
@@ -142,6 +143,7 @@ m_draw(vector screensize)
 				  12, 12,
 				  [1.0f,1.0f,1.0f],
 				  0.5f, 0, font_console);
+	#endif
 
 	/* draw the actual widgets */
 	main_draw();

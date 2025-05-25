@@ -799,11 +799,12 @@ ncWeapon::ReloadCachedAttributes(void)
 	string firstType, secondType;
 	string ammoRequired;
 
-	m_weaponTitle = GetDefString("inv_name");
 	m_altAlternates = GetDefBool("altAlternates");
 
 #ifdef CLIENT
-	m_weaponTitle = localize(m_weaponTitle);
+	m_weaponTitle = Titles_GetTextBody(substring(GetDefString("inv_name"), 1, -1));
+#else
+	m_weaponTitle = GetDefString("inv_name");
 #endif
 
 	m_weaponHUDSlot = GetDefInt("hudSlot");

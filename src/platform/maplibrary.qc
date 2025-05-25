@@ -15,7 +15,9 @@
 */
 
 mapLibrary_t *g_mapLibrary;
+modeLibrary_t *g_modeLibrary;
 var int g_mapLibrary_count = 0i;
+var int g_modeLibrary_count = 0i;
 var int map_blacklist_count = 0i;
 string *map_blacklist;
 
@@ -181,7 +183,6 @@ MapLibrary_GetMapCount(void)
 {
 	return g_mapLibrary_count;
 }
-
 __variant
 MapLibrary_GetInfo(int mapID, mapType_t infoType)
 {
@@ -209,4 +210,110 @@ MapLibrary_GetInfo(int mapID, mapType_t infoType)
 	default:
 		return __NULL__;
 	}
+}
+
+
+void
+ModeLibrary_Init(void)
+{
+	int i = 0i;
+	int c = 0i;
+	int mapCount = 0i;
+	string mapFile, mapDir;
+	searchhandle mapsearch;
+	string gameDir;
+
+	/* already initialized */
+	if (g_modeLibrary_count != 0i)
+		return;
+
+	g_modeLibrary_count = 0i;
+	gameDir = MapLibrary_GetMapGamedir();
+
+	/* map blacklist code */
+	filestream fs_blacklist;
+	fs_blacklist = fopen("scripts/map_blacklist", FILE_READ);
+
+	if (fs_blacklist >= 0) {
+		string temp;
+
+		while ((temp = fgets(fs_blacklist))) {
+			map_blacklist_count++;
+		}
+
+		map_blacklist = memalloc(sizeof(string) * map_blacklist_count);
+		fseek(fs_blacklist, 0);
+
+		while ((temp = fgets(fs_blacklist))) {
+			map_blacklist[i] = temp;
+			i++;
+		}
+
+		fclose(fs_blacklist);
+	}
+
+	/* search for all maps in the current PATH */
+	mapsearch = search_begin("maps/*.bsp:maps/*/*.bsp", SEARCH_NAMESORT | SEARCH_FULLPACKAGE | SEARCH_MULTISEARCH, TRUE);
+	mapCount = search_getsize(mapsearch);
+
+	/* we now iterate over the search entries to filter results out */
+	for (i = 0i; i < mapCount; i++) {
+		mapFile = substring(search_getfilename(mapsearch, i), 5, -1);
+
+		/* the strlen(gameDir) is technically wrong, but it'll work anyway because
+		   we only care about maps in the current game directory */
+		mapDir = substring(search_getpackagename(mapsearch, i), 0, strlen(gameDir));
+
+		if (MapLibrary_MapInGameDir(mapFile, mapDir) == true) {
+			g_modeLibrary_count++;
+		}
+	}
+	search_end(mapsearch);
+
+	g_modeLibrary = (mapLibrary_t *)memalloc(sizeof(mapLibrary_t) * g_modeLibrary_count);
+
+	/* let's do it again, but this time we'll sort the data into our array */
+	mapsearch = search_begin("progs/*.dat", SEARCH_NAMESORT | SEARCH_FULLPACKAGE | SEARCH_MULTISEARCH, TRUE);
+	mapCount = search_getsize(mapsearch);
+
+	for (i = 0i; i < mapCount; i++) {
+		mapFile = substring(search_getfilename(mapsearch, i), 6, -1);
+		mapDir = substring(search_getpackagename(mapsearch, i), 0, strlen(gameDir));
+
+		if (MapLibrary_MapInGameDir(mapFile, mapDir) == true) {
+			g_modeLibrary[c].name = mapFile;
+			g_modeLibrary[c].title = mapFile;
+			c++;
+		}
+	}
+	search_end(mapsearch);
+
+	ncLog("...ModeLibrary initialized (%i entries).", g_modeLibrary_count);
+}
+
+__variant
+ModeLibrary_GetInfo(int mapID, modeType_t infoType)
+{
+	if (mapID >= g_modeLibrary_count || mapID < 0i) {
+		ncError("Invalid map id %i", mapID);
+		return __NULL__;
+	}
+
+	switch (infoType) {
+	case MAPINFO_NAME:
+		return g_modeLibrary[mapID].name;
+		break;
+	case MAPINFO_TITLE:
+		return g_modeLibrary[mapID].title;
+		break;
+	default:
+		return __NULL__;
+	}
+}
+
+
+int
+ModeLibrary_GetModeCount(void)
+{
+	return g_modeLibrary_count;
 }

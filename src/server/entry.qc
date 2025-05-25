@@ -15,6 +15,7 @@
 */
 
 static int g_ent_spawned;
+var bool g_gamemode_done = false;
 .bool gotData;
 
 /** Called once every single tic on the server. */
@@ -198,10 +199,14 @@ void
 PlayerPreThink(void)
 {
 	ncPlayer ourPlayer = (ncPlayer)self;
+	bool isBot = is.Bot(ourPlayer);
 
-	if (ourPlayer.classname == "spectator") {
-		//ncSpectator spec = (ncSpectator)self;
-		//spec.PreFrame();
+	if (g_gamemode_done) {
+		return;
+	}
+
+	if (!STRING_SET(ourPlayer.classname) && isBot) {
+		Bot_InsertIntoGame(ourPlayer);
 		return;
 	}
 
@@ -209,8 +214,14 @@ PlayerPreThink(void)
 		return;
 	}
 
+	if (ourPlayer.classname == "spectator") {
+		//ncSpectator spec = (ncSpectator)self;
+		//spec.PreFrame();
+		return;
+	}
+
 	if (is.Bot(ourPlayer)) {
-		((ncBot) ourPlayer).BotPreFrame();
+		((ncBot)ourPlayer).BotPreFrame();
 	}
 
 
@@ -227,13 +238,23 @@ void
 PlayerPostThink(void)
 {
 	ncPlayer ourPlayer = (ncPlayer)self;
+	bool isBot = is.Bot(ourPlayer);
+
+	if (g_gamemode_done) {
+		return;
+	}
+
+	if (!STRING_SET(ourPlayer.classname) && isBot) {
+		Bot_InsertIntoGame(ourPlayer);
+		return;
+	}
 
 	if (ourPlayer.classname == "spectator") {
 		SpectatorThink();
 		return;
 	}
 
-	if (is.Player(ourPlayer)) {
+	if (!is.Player(ourPlayer)) {
 		return;
 	}
 
@@ -375,6 +396,7 @@ init(float prevprogs)
 
 	/* ENGINE, PLS FIX */
 	input_cursor_entitynumber = 0;
+	g_gamemode_done = false;
 }
 
 /** Called inside initents() to make sure the entities have their Respawn()
@@ -384,6 +406,24 @@ void
 init_respawn(void)
 {
 	int spawnCounter = 0i;
+
+	forceinfokey(world, "teams", "");
+	forceinfokey(world, "teamplay", "");
+	forceinfokey(world, "coop", "");
+
+	/* clean up... */
+	for (int teamID = 1; teamID < 1000; teamID++) {
+		forceinfokey(world, sprintf("team_%i", teamID), "");
+		forceinfokey(world, sprintf("teamscore_%i", teamID), "");
+		forceinfokey(world, sprintf("teamcolor_%i", teamID), "");
+		forceinfokey(world, sprintf("teamclosed_%i", teamID), "");
+		forceinfokey(world, sprintf("teamspawn_%i", teamID), "");
+		forceinfokey(world, sprintf("teamclass_%i", teamID), "");
+	}
+
+	forceinfokey(world, sprintf("teamspawn_%d", TEAM_CONNECTING), "");
+	forceinfokey(world, sprintf("teamspawn_%d", TEAM_UNASSIGNED), "info_player_start");
+	forceinfokey(world, sprintf("teamspawn_%d", TEAM_SPECTATOR), "info_spectator_start");
 
 	if (g_ents_initialized) {
 		g_grMode.InitPostEnts();
@@ -396,6 +436,7 @@ init_respawn(void)
 		spawnCounter++;
 	}
 
+	g_gamemode_done = true;
 	ncLog("...%i entities spawned (%i inhibited)", g_ent_spawned, g_ent_spawned - spawnCounter);
 	Nodes_Init();
 	remove(self);
@@ -413,6 +454,7 @@ initents(void)
 	ncMapDelegate currentMap;
 
 	g_ents_initialized = false;
+	g_gamemode_done = false;
 
 	/* sound shader init */
 	Materials_Init();
@@ -649,7 +691,11 @@ CheckSpawn(void() spawnfunc)
  
 		if (STRING_SET(ent.m_gameModeFilter)) {
 			if (ent.m_gameModeFilter != g_ruleCName) {
-				remove(ent);
+				if (ent.identity) {
+					ent.Destroy();
+				} else {
+					remove(ent);
+				}
 				ent = __NULL__;
 				g_ents_initialized = true;
 				return;

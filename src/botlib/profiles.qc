@@ -32,6 +32,37 @@ Bot_ExistsInServer(string botName)
 	return (false);
 }
 
+void
+Bot_InsertIntoGame(entity targetBot)
+{
+	entity oldSelf = self;
+	ncPlayer newBot = (ncPlayer)targetBot;
+
+	if (!newBot) {
+		return;
+	}
+
+	newBot.SetInfoKey("*bot", "1");
+
+	self = targetBot;
+	ClientConnect();
+	PutClientInServer();
+	self = oldSelf;
+
+	if (teams.TeamCount() > 1) {
+		int wishTeam = teams.BestAutoJoinTeam();
+		int totalClasses = teams.TotalClasses(wishTeam);
+
+		ncRuleDelegate activeRules = ncRuleDelegate::ActiveInstance();
+		activeRules.PlayerRequestTeam(newBot, wishTeam);
+
+		if (totalClasses > 0i) {
+			string playerClass = teams.ClassForIndex(wishTeam, rint(random(0, totalClasses)));
+			activeRules.ClientCommand(newBot, strcat("join ", playerClass));
+		}
+	}
+}
+
 bool
 Bot_AddBot_f(string botName, float teamValue, float spawnDelay, string newName)
 {
@@ -80,9 +111,8 @@ Bot_AddBot_f(string botName, float teamValue, float spawnDelay, string newName)
 		newBot.SetInfoKey(argv(i), argv(i+1));
 	}
 
-	newBot.SetInfoKey("*bot", "1");
-	ClientConnect();
-	PutClientInServer();
+	Bot_InsertIntoGame(newBot);
+
 	self = oldSelf;
 	return (true);
 }

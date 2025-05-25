@@ -623,14 +623,16 @@ void
 func_door::Blocked(entity eBlocker)
 {
 	if (m_iDamage != 0i) {
-		ncSurfacePropEntity toAttack = (ncSurfacePropEntity) eBlocker;
-		vector center = WorldSpaceCenter();
-		vector dmgDir = dirFromTarget(center, eBlocker.origin);
-		ncDict damageDecl = spawn(ncDict);
-		damageDecl.AddKey("damage", itos(m_iDamage));
-		toAttack.Damage(this, eBlocker, damageDecl, 1.0f, dmgDir, eBlocker.origin);
-		remove(damageDecl);
-		m_preventTouch = GetTime() + 0.5f;
+		if (eBlocker && is.Sentient(eBlocker)) {
+			ncSurfacePropEntity toAttack = (ncSurfacePropEntity) eBlocker;
+			vector center = WorldSpaceCenter();
+			vector dmgDir = dirFromTarget(center, eBlocker.origin);
+			ncDict damageDecl = spawn(ncDict);
+			damageDecl.AddKey("damage", itos(m_iDamage));
+			toAttack.Damage(this, eBlocker, damageDecl, 1.0f, dmgDir, eBlocker.origin);
+			remove(damageDecl);
+			m_preventTouch = GetTime() + 0.5f;
+		}
 	}
 
 	if (m_bForceClosed == false) {

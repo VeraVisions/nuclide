@@ -23,12 +23,21 @@ void
 createinet_btnok_start(void)
 {
 	static string startmap;
+	static string gameType;
 	static void createinet_btnok_end(void) {
 		int r = random(1000,9999);
 		localcmd(sprintf("stopmusic\nset sv_public /%i\n", r));
-		localcmd(sprintf("hostname %s\n", create_tbHostname.m_text));
-		localcmd(sprintf("sv_playerslots %s\n", create_tbMaxplayers.m_text));
-		localcmd(sprintf("password %s\n", create_tbPassword.m_text));
+		localcmd(sprintf("set hostname %s\n", create_tbHostname.m_text));
+		localcmd(sprintf("set sv_playerslots %S\n", create_tbMaxplayers.m_text));
+		localcmd(sprintf("set password %S\n", create_tbPassword.m_text));
+		localcmd(sprintf("set g_gametype %S\n", gameType));
+
+		if (cvar("ui_filLServer") > 0) {
+			localcmd(sprintf("set bot_minClients %S\n", create_tbMaxplayers.m_text));
+		} else {
+			localcmd(sprintf("set bot_minClients %S\n", create_tbMaxplayers.m_text));
+		}
+	
 		localcmd(sprintf("map %s\n", startmap));
 		g_menupage = PAGE_MULTIPLAYER;
 		cr_input_enter(sprintf("ACTION is now hosting '%s' on the map %s\n", create_tbHostname.m_text, startmap));
@@ -40,6 +49,7 @@ createinet_btnok_start(void)
 
 	/* Strip .bsp extension before submitting */
 	startmap = substring(create_lbMaps.GetSelectedItem(), 0, -5);
+	gameType = substring(create_lbModes.GetSelectedItem(), 0, -5);
 
 	if (startmap == __NULL__) {
 		return;
@@ -106,6 +116,9 @@ menu_creategameinet_draw(void)
 					1.0f, 0, font_arial);
 	WLabel_Static(381, 143, m_reslbl[IDS_CREATESERVER_MAP], 14, 14, [1,1,1],
 					1.0f, 0, font_arial);
+
+	WField_Static(52 + 26, 234, "Bots", 115, 64, [0.75, 0.75, 0.75],
+					1.0f, 3, font_label_b);
 
 	Widget_Draw(fn_createinet);
 	Widget_Draw(fn_createshared);

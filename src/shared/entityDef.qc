@@ -448,8 +448,19 @@ EntityDef_PrepareEntity(entity target, int id)
 
 	/* now that that all methods have been called, we're ready to decide whether to continue this spawn */
 	if (wasfreed(targetEnt) == false) {
+		/* we have a gametype filter set */
 		if (STRING_SET(targetEnt.m_gameModeFilter)) {
-			if (targetEnt.m_gameModeFilter != g_ruleCName) {
+			bool foundMode = false;
+
+			for (int y = 0; y < tokenize_console(targetEnt.m_gameModeFilter); y++) {
+				string mode = argv(y);
+
+				if (mode == g_ruleCName) {
+					foundMode = true;
+				}
+			}
+
+			if (foundMode == false) {
 				targetEnt.Destroy();
 				targetEnt = __NULL__;
 				g_lastSpawnData = "";

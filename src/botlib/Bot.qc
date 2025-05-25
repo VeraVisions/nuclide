@@ -163,7 +163,7 @@ ncBot::SeeThink(void)
 			continue;
 
 		/* ain't go hurt our brothers and sisters */
-		if (rules.IsTeamplay() == true)
+		if (teams.TeamCount() > 1)
 			if (team == w.team)
 				continue;
 
@@ -224,6 +224,11 @@ ncBot::CheckRoute(void)
 			if (Route_GetNodeFlags(&m_pathfindingGraph[m_pathfindingCurrentNode]) & LF_JUMP) {
 				//input_buttons |= INPUT_JUMP;
 				velocity = Route_GetJumpVelocity(origin, m_pathfindingGraph[m_pathfindingCurrentNode].dest, gravity);
+			}
+
+			if (velocity != velocity) {
+				input_buttons |= INPUT_JUMP;
+				velocity = g_vec_null;
 			}
 
 			/* find the nearest usable item (func_button) and use them */
@@ -635,6 +640,14 @@ bot_spawner_think(void)
 void
 BotLib_Init(void)
 {
+	/* kill all old bots */
+	for (ncPlayer botChain = __NULL__;(botChain = (ncPlayer)nextent(botChain));) {
+		if (is.Bot(botChain)) {
+			botChain.SetInfoKey("*bot", "0");
+			dropclient(botChain);
+		}
+	}
+
 	BotProfile_Init();
 
 	/* this spawner manages the active bots */

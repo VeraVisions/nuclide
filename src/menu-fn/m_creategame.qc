@@ -30,15 +30,29 @@ CFrame create_frMaps;
 CListBox create_lbMaps;
 CScrollbar create_sbMaps;
 
+CFrame create_frModes;
+CListBox create_lbModes;
+CScrollbar create_sbModes;
+CCheckBox create_cxFillBots;
+
 void
 create_btnok_start(void)
 {
 	static string startmap;
+	static string gameType;
 	static void create_btnok_end(void) {
 		localcmd("stopmusic\nset sv_public 0\n");
-		localcmd(sprintf("hostname %s\n", create_tbHostname.m_text));
-		localcmd(sprintf("sv_playerslots %s\n", create_tbMaxplayers.m_text));
-		localcmd(sprintf("password %s\n", create_tbPassword.m_text));
+		localcmd(sprintf("set hostname %s\n", create_tbHostname.m_text));
+		localcmd(sprintf("set sv_playerslots %S\n", create_tbMaxplayers.m_text));
+		localcmd(sprintf("set password %S\n", create_tbPassword.m_text));
+		localcmd(sprintf("set g_gametype %S\n", gameType));
+
+		if (cvar("ui_filLServer") > 0) {
+			localcmd(sprintf("set bot_minClients %S\n", create_tbMaxplayers.m_text));
+		} else {
+			localcmd(sprintf("set bot_minClients %S\n", create_tbMaxplayers.m_text));
+		}
+	
 		localcmd(sprintf("map %s\n", startmap));
 		g_menupage = PAGE_MULTIPLAYER;
 		RichPresence_Clear();
@@ -46,6 +60,7 @@ create_btnok_start(void)
 	}
 	/* Strip .bsp extension before submitting */
 	startmap = substring(create_lbMaps.GetSelectedItem(), 0, -5);
+	gameType = substring(create_lbModes.GetSelectedItem(), 0, -5);
 
 	if (startmap == __NULL__) {
 		return;
@@ -97,9 +112,22 @@ create_sbmaps_changed(int val)
 }
 
 void
+create_sbModes_changed(int val)
+{
+	create_lbModes.SetScroll(val);
+}
+
+void
+cz_cxFillBotsChanged(float val)
+{
+	localcmd(sprintf("seta ui_filLServer %f\n", val));
+}
+
+void
 menu_creategame_init(void)
 {
 	int mapCount = 0i;
+	int modeCount = 0i;
 
 	fn_create = spawn(CWidget);
 	create_btnAdv = spawn(CMainButton);
@@ -168,6 +196,39 @@ menu_creategame_init(void)
 	}
 
 	create_sbMaps.SetMax(mapCount);
+
+	/* game modes */
+	create_frModes = spawn(CFrame);
+	create_frModes.SetPos(216,332);
+	create_frModes.SetSize(108,96+6);
+	Widget_Add(fn_createshared, create_frModes);
+
+	create_lbModes = spawn(CListBox);
+	create_lbModes.SetPos(218,335);
+	create_lbModes.SetSize(102-16,96);
+	Widget_Add(fn_createshared, create_lbModes);
+	
+	create_sbModes = spawn(CScrollbar);
+	create_sbModes.SetPos(371,175);
+	create_sbModes.SetHeight(96);
+	create_sbModes.SetCallback(create_sbModes_changed);
+	//Widget_Add(fn_createshared, create_sbModes);
+
+	/* fill in our list box */
+	modeCount = ModeLibrary_GetModeCount();
+
+	for (int i = 0i; i < modeCount; i++) {
+		string modeName = ModeLibrary_GetInfo(i, MODEINFO_NAME);
+		create_lbModes.AddEntry(modeName);
+	}
+
+	create_sbModes.SetMax(modeCount);
+
+	create_cxFillBots = spawn(CCheckBox);
+	create_cxFillBots.SetPos(52,232);
+	create_cxFillBots.SetValue(cvar("ui_filLServer"));
+	create_cxFillBots.SetCallback(cz_cxFillBotsChanged);
+	Widget_Add(fn_createshared, create_cxFillBots);
 }
 
 void
@@ -184,6 +245,8 @@ menu_creategame_draw(void)
 	WLabel_Static(381, 143, m_reslbl[IDS_CREATESERVER_MAP], 14, 14, [1,1,1],
 					1.0f, 0, font_arial);
 
+	WField_Static(52 + 26, 234, "Bots", 115, 64, [0.75, 0.75, 0.75],
+					1.0f, 3, font_label_b);
 	Widget_Draw(fn_create);
 	Widget_Draw(fn_createshared);
 }

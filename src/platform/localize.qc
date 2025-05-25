@@ -130,8 +130,11 @@ Locale_Init(void)
 	string gameDir = cvar_string("fs_game");
 
 	g_localeFiles = "";
+
+#if 0
 	Locale_AddFile("gameui");
 	Locale_AddFile(gameDir);
+#endif
 }
 
 void

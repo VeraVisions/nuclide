@@ -116,6 +116,7 @@ Titles_Init(void)
 	string t_name = "";
 	string t_message = "";
 	filestream fs_titles;
+	filestream fs_titlesGame; /* appended */
 	string temp;
 	int c;
 	int braced;
@@ -169,6 +170,32 @@ Titles_Init(void)
 			break;
 		}
 	}
+
+	fs_titlesGame = fopen(strcat("titles_", cvar_string("fs_game"), ".txt"), FILE_READ);
+
+	/* doesn't matter. optional. */
+	if (fs_titlesGame >= 0) {
+		while ((temp = fgets(fs_titlesGame))) {
+			c = tokenize_console(temp);
+
+			switch(argv(0)) {
+			case "{":
+				braced = TRUE;
+				break;
+			case "}":
+				/* skip broken syntax */
+				if (braced == FALSE) {
+					break;
+				}
+				g_titles_count++;
+				braced = FALSE;
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
 
 	ncLog("read %i titleDefs (%i bytes).", g_titles_count, sizeof(titles_t) * g_titles_count);
 	g_titles = memalloc(sizeof(titles_t) * g_titles_count);
@@ -261,6 +288,100 @@ Titles_Init(void)
 		}
 	}
 	fclose(fs_titles);
+
+	/* optional */
+	if (fs_titlesGame >= 0) {
+	fseek(fs_titlesGame, 0);
+
+	/* insert info into the tree */
+	while ((temp = fgets(fs_titlesGame))) {
+		/* tons of comments/garbage in those files,
+		 * so tokenize appropriately */
+		c = tokenize_console(temp);
+
+		switch(argv(0)) {
+		case "$position":
+			t_position[0] = stof(argv(1));
+			t_position[1] = stof(argv(2));
+			break;
+		case "$effect":
+			t_effect = stoi(argv(1));
+			break;
+		case "$color":
+			if (c == 4) {
+				t_color[0] = stof(argv(1)) / 255;
+				t_color[1] = stof(argv(2)) / 255;
+				t_color[2] = stof(argv(3)) / 255;
+			} else {
+				t_color = stov(argv(1)) / 255;
+			}
+			break;
+		case "$color2":
+			if (c == 4) {
+				t_color2[0] = stof(argv(1)) / 255;
+				t_color2[1] = stof(argv(2)) / 255;
+				t_color2[2] = stof(argv(3)) / 255;
+			} else {
+				t_color2 = stov(argv(1)) / 255;
+			}
+			break;
+		case "$fxtime":
+			t_fxtime = stof(argv(1));
+			break;
+		case "$holdtime":
+			t_holdtime = stof(argv(1));
+			break;
+		case "$fadein":
+			t_fadein = stof(argv(1));
+			break;
+		case "$fadeout":
+			t_fadeout = stof(argv(1));
+			break;
+		case "{":
+			braced = TRUE;
+			/*print(sprintf("[^1TITLES^7] Found ^2%s\n",
+				t_name));
+			print(sprintf("%s\n",
+					temp));*/
+			break;
+		case "}":
+			/* skip broken syntax */
+			if (braced == FALSE) {
+				break;
+			}
+			/*print(sprintf("%s\n",
+					temp));*/
+			/* time to dump the info */
+			g_titles[titleID].m_strName = t_name;
+			g_titles[titleID].m_strMessage = t_message;
+			g_titles[titleID].m_flPosX = t_position[0];
+			g_titles[titleID].m_flPosY = t_position[1];
+			g_titles[titleID].m_iEffect = t_effect;
+			g_titles[titleID].m_vecColor1 = t_color;
+			g_titles[titleID].m_vecColor2 = t_color2;
+			g_titles[titleID].m_flFadeIn = t_fadein;
+			g_titles[titleID].m_flFadeOut = t_fadeout;
+			g_titles[titleID].m_flHoldTime = t_holdtime;
+			g_titles[titleID].m_flFXTime = t_fxtime;
+			t_message = "";
+			t_name = "";
+			braced = FALSE;
+			titleID++;
+			break;
+		default:
+			if (braced == TRUE) {
+				/* append string entry after another */
+				temp = Titles_ParseFunString(temp);
+				t_message = sprintf("%s%s\n", t_message, temp);
+			} else {
+				/* name/identifer of our message */
+				t_name = strtoupper(temp);
+			}
+		}
+	}
+	fclose(fs_titlesGame);
+	}
+
 
 	InitEnd();
 }

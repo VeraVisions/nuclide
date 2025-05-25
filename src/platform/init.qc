@@ -13,6 +13,7 @@ Platform_Init(void)
 	Locale_Init();
 	GameLibrary_Init();
 	MapLibrary_Init();
+	ModeLibrary_Init();
 	Saves_Init();
 	Platform_RendererRestarted();
 

@@ -19,7 +19,7 @@
 int
 Textmenu_IsActive(void)
 {
-    return (g_textmenu != "") ? TRUE : FALSE;
+    return STRING_SET(g_textmenu);
 }
 
 void
@@ -53,7 +53,7 @@ Textmenu_Draw(void)
 		return;
 	}
 
-	if (g_textmenu) {
+	if (STRING_SET(g_textmenu)) {
 		GameMessage_Setup(g_textmenu, 5);
 		g_textchannels[5].m_flTime = 0.0f;
 		g_textchannels[5].m_flPosX = 0.1;

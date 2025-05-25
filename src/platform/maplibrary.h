@@ -43,6 +43,13 @@ typedef enum
 	MAPINFO_PREVIEW		/**< (string) URL to a preview of the map. __NULL__ if not available. Will look for level previews inside levelshots/ and maps/ with any file extensions supported by the engine and whitelisted within the cvar 'r_imageextensions'.*/
 } mapType_t;
 
+/** Options querying Mode Library entries using `ModeLibrary_GetInfo()`. */
+typedef enum
+{
+	MODEINFO_NAME,		/**< (string) Name of the mode. E.g. deathmatch */
+	MODEINFO_TITLE,		/**< (string) Title of the map. E.g. "Deathmatch" */
+} modeType_t;
+
 /** Data holding Map Library entries. */
 typedef struct
 {
@@ -53,13 +60,25 @@ typedef struct
 	string preview;
 } mapLibrary_t;
 
+/** Data holding Mode Library entries. */
+typedef struct
+{
+	string name;
+	string title;
+} modeLibrary_t;
+
 /** Initialize the map library, MapLibrary_GetMapCount() will return the amount of maps available. */
 void MapLibrary_Init(void);
 
+/** Initialize the map library, MapLibrary_GetMapCount() will return the amount of maps available. */
+void ModeLibrary_Init(void);
+
 /** Returns the total amount of maps available. */
 int MapLibrary_GetMapCount(void);
+int ModeLibrary_GetModeCount(void);
 
 /** Retrieve information about a given mapID. See mapType_t for which fields you can query. */
 __variant MapLibrary_GetInfo(int, mapType_t);
+__variant ModeLibrary_GetInfo(int, mapType_t);
 
 /** @} */ // end of maplibrary
