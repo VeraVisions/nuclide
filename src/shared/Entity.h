@@ -194,11 +194,11 @@ public:
 	/** Sets the gravitational modifier of the entity. The default is 1.0. */
 	nonvirtual void SetGravity(float);
 	/** Sets the direction the entity is facing in eueler angles. */
-	nonvirtual void SetAngles(vector);
+	virtual void SetAngles(vector);
 	/** Sets the angular velocity of the entity in degrees per second on each axis. */
 	nonvirtual void SetAngularVelocity(vector);
 	/** Sets the absolute 3D world position of the entity. */
-	nonvirtual void SetOrigin(vector);
+	virtual void SetOrigin(vector);
 	/** Same as SetOrigin(), but will push the entity out the ground if needed. */
 	nonvirtual void SetOriginUnstick(vector);
 	/** Sets the bounding box size of the entity.
@@ -230,7 +230,7 @@ public:
 	/** Returns the owner of the entity. */
 	nonvirtual entity GetOwner(void);
 	/** Returns the movement velocity of the entity. */
-	nonvirtual vector GetVelocity(void);
+	virtual vector GetVelocity(void);
 	/** Returns the collision type of the entity. */
 	nonvirtual float GetSolid(void);
 	/** Returns the name of the 3D model representation of the entity. */
@@ -242,11 +242,11 @@ public:
 	/** Returns the gravity modifier of the entity. */
 	nonvirtual float GetGravity(void);
 	/** Returns the direction the entity is facing in euler angles. */
-	nonvirtual vector GetAngles(void);
+	virtual vector GetAngles(void);
 	/** Returns the direction the entity is spinning in degrees per second for each axis. */
-	nonvirtual vector GetAngularVelocity(void);
+	virtual vector GetAngularVelocity(void);
 	/** Returns the absolute world position of the entity. */
-	nonvirtual vector GetOrigin(void);
+	virtual vector GetOrigin(void);
 	/** Returns the virtual size of the entity. */
 	nonvirtual vector GetSize(void);
 	/** Returns the bounding box mins of the entity. */
@@ -307,11 +307,11 @@ public:
 	/** When called, will drop the entity down onto the surface it's hovering over. Will return `false` if the entity fell through the floor, or something else that's undesirable. */
 	nonvirtual bool DropToFloor(void);
 	/** Returns a normalized forward vector of the entity to more easily test which way it's facing. */
-	nonvirtual vector GetForward(void);
+	virtual vector GetForward(void);
 	/** Returns a normalized right vector of the entity to more easily test what's right next to it. */
-	nonvirtual vector GetRight(void);
+	virtual vector GetRight(void);
 	/** Returns a normalized up vector of the entity to more easily test what may be above it. */
-	nonvirtual vector GetUp(void);
+	virtual vector GetUp(void);
 	/** Returns absolute world coordinates of the center of the entity according to its pivot point. */
 	nonvirtual vector WorldSpaceCenter(void);
 	/** Returns the water level the entity is in.

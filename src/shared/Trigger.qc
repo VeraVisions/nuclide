@@ -537,6 +537,7 @@ ncTrigger::_TouchHandler(void)
 #ifdef SERVER
 		if (m_touchTimer) {
 			m_touchTimer.Destroy();
+			m_touchTimer = 0;
 		}
 #endif
 		return;
@@ -564,4 +565,15 @@ ncTrigger::_TouchHandler(void)
 
 	Touch(m_touchingEntity);
 	m_timeSinceLastTouch = GetTime();
+}
+
+void
+ncTrigger::OnRemoveEntity(void)
+{
+#ifdef SERVER
+		if (m_touchTimer) {
+			m_touchTimer.Destroy();
+			m_touchTimer = 0;
+		}
+#endif
 }

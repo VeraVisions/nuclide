@@ -1833,8 +1833,8 @@ ncActor::SortWeaponChain(void)
 		}
 
 		if (itemChain.IsWeapon() == true) {
-			hudSlot = itemChain.GetDefInt("hudSlot");
-			hudPos = itemChain.GetDefInt("hudSlotPos");
+			hudSlot = itemChain.m_weaponHUDSlot;
+			hudPos = itemChain.m_weaponHUDSlotPos;
 			itemChain.m_nextWeapon = __NULL__;
 			itemChain.m_prevWeapon = __NULL__;
 
@@ -1864,8 +1864,8 @@ ncActor::SortWeaponChain(void)
 				}
 
 				if (itemChain.IsWeapon() == true) {
-					hudSlot = itemChain.GetDefInt("hudSlot");
-					hudPos = itemChain.GetDefInt("hudSlotPos");
+					hudSlot = itemChain.m_weaponHUDSlot;
+					hudPos = itemChain.m_weaponHUDSlotPos;
 
 					if (hudSlot == hS && hudPos == hP) {
 

@@ -123,11 +123,6 @@ ncWeapon::GetWeaponState(void)
 void
 ncWeapon::UpdateFireInfoCache(void)
 {
-#ifdef CLIENT
-	ncRenderableEntity viewModelRight = (ncRenderableEntity)pSeat->m_eViewModel;
-	ncRenderableEntity viewModelLeft = (ncRenderableEntity)pSeat->m_eViewModelL;
-#endif
-
 	string ammoPerShot = GetSubDefString(m_weaponLastFireInfo, "ammoPerShot");
 	string reloadSpeed = GetSubDefString(m_weaponLastFireInfo, "reloadTime");
 	m_fiDetonateOnFire = GetSubDefString(m_weaponLastFireInfo, "detonateOnFire");
@@ -162,33 +157,8 @@ ncWeapon::UpdateFireInfoCache(void)
 	m_fiKnockBack = GetSubDefFloat(m_weaponLastFireInfo, "knockback");
 	m_fiKnockBackRelease = GetSubDefFloat(m_weaponLastFireInfo, "knockbackRelease");
 	m_fiTestDistance = GetSubDefFloat(m_weaponLastFireInfo, "testDistance");
-
-	/* firing cosmetics */
-#ifdef CLIENT
-	setmodel(pSeat->m_eViewModel, GetSubDefString(m_weaponLastFireInfo, "model_view"));
-	viewModelLeft.declclass = viewModelRight.declclass = declclass;
-
-	m_fiJointMuzzle = gettagindex(pSeat->m_eViewModel, GetSubDefString(m_weaponLastFireInfo, "muzzle"));
-	viewModelLeft.m_fiJointMuzzle = viewModelRight.m_fiJointMuzzle = m_fiJointMuzzle;
-
-	m_fiJointBarrel = gettagindex(pSeat->m_eViewModel, GetSubDefString(m_weaponLastFireInfo, "barrel"));
-	viewModelLeft.m_fiJointBarrel = viewModelRight.m_fiJointBarrel = m_fiJointBarrel;
-
-	m_muzzPartSmoke = GetSubDefString(m_weaponLastFireInfo, "smoke_muzzle");
-	viewModelLeft.m_muzzPartSmoke = viewModelRight.m_muzzPartSmoke = m_muzzPartSmoke;
-
-	m_muzzOffset = GetSubDefVector(m_weaponLastFireInfo, "muzzleOffset");
-	viewModelLeft.m_muzzOffset = viewModelRight.m_muzzOffset = m_muzzOffset;
-
-	m_muzzRelativeOffset = GetSubDefVector(m_weaponLastFireInfo, "muzzleRelativeOffset");
-	viewModelLeft.m_muzzRelativeOffset = viewModelRight.m_muzzRelativeOffset = m_muzzRelativeOffset;
-
-// 	printf("%S %S %d\n", pSeat->m_eViewModel.model, GetSubDefString(m_weaponLastFireInfo, "barrel"), m_fiJointBarrel);
-
-
-	setsize(viewModelLeft, [0,0,0], [0,0,0]);
-	setsize(viewModelRight, [0,0,0], [0,0,0]);
-#endif
+	m_viewModel = getmodelindex(GetDefString("model_view"));
+	m_worldModel = getmodelindex(GetDefString("model"));
 
 	m_fiBrassDef = GetSubDefString(m_weaponLastFireInfo, "def_ejectBrass");
 	m_fiBrassDelay = GetSubDefFloat(m_weaponLastFireInfo, "ejectBrassDelay");
@@ -868,8 +838,6 @@ ncWeapon::ReloadCachedAttributes(void)
 	m_fiPowerAmmo = GetDefBool("powerAmmo");
 	m_fiRemoveOnEmpty = GetDefBool("removeOnEmpty");
 	m_fiFXTrail = particleeffectnum(GetDefString("fx_trail"));
-	m_viewModel = getmodelindex(GetDefString("model_view"));
-	m_worldModel = getmodelindex(GetDefString("model"));
 	m_fiAltModeSwitch = GetDefBool("altMode");
 
 	/* gettagindex takes the silliest of parameters to determine which model to query */

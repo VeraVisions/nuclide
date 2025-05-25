@@ -28,6 +28,7 @@ NSXRInput::NSXRInput(void)
 	solid = 0;
 	touch = 0;
 	blocked = 0;
+	touch = 0;
 }
 
 vector

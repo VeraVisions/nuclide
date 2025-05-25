@@ -94,6 +94,8 @@ public:
 	/* overrides */
 	virtual void SpawnKey(string,string);
 
+	virtual void OnRemoveEntity(void);
+
 #ifdef SERVER
 	/* overrides */
 	virtual void Save(float);

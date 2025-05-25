@@ -185,17 +185,21 @@ View_DrawViewModel(void)
 	/* used to be View_UpdateWeapon */
 	/* only bother upon change */
 	/* TODO: MOVE THIS INTO NSWEAPON OR SOMETING */
-	if (pSeat->m_iLastWeapon != pl.activeweapon) {
+	if (pSeat->m_iLastWeapon != pSeat->m_weaponModel) {
 		pSeat->m_iOldWeapon = pSeat->m_iLastWeapon;
-		pSeat->m_iLastWeapon = pl.activeweapon;
+		pSeat->m_iLastWeapon = pSeat->m_weaponModel;
 
-		if (pl.activeweapon) {
-			/* hack, we changed the wep, move this into Game_Input/PMove */
-			//Weapons_Draw((ncPlayer)pl);
-		} else {
-			pSeat->m_eViewModel.modelindex =
-			pSeat->m_eViewModelL.modelindex = 0;
-		}
+		m_eViewModel.modelindex = pSeat->m_weaponModel;
+		m_eViewModelL.declclass = m_eViewModel.declclass = pSeat->m_weaponClass;
+
+		m_eViewModelL.m_fiJointMuzzle = m_eViewModel.m_fiJointMuzzle = gettagindex(m_eViewModel, m_eViewModel.GetSubDefString(pSeat->m_weaponFireInfo, "muzzle"));
+		m_eViewModelL.m_fiJointBarrel = m_eViewModel.m_fiJointBarrel = gettagindex(m_eViewModel, m_eViewModel.GetSubDefString(pSeat->m_weaponFireInfo, "barrel"));
+		m_eViewModelL.m_muzzPartSmoke = m_eViewModel.m_muzzPartSmoke = m_eViewModel.GetSubDefString(pSeat->m_weaponFireInfo, "smoke_muzzle");
+		m_eViewModelL.m_muzzOffset = m_eViewModel.m_muzzOffset = m_eViewModel.GetSubDefVector(pl.m_activeWeapon.m_weaponLastFireInfo, "muzzleOffset");
+		m_eViewModelL.m_muzzRelativeOffset = m_eViewModel.m_muzzRelativeOffset = m_eViewModel.GetSubDefVector(pSeat->m_weaponFireInfo, "muzzleRelativeOffset");
+
+		setsize(m_eViewModelL, [0,0,0], [0,0,0]);
+		setsize(m_eViewModel, [0,0,0], [0,0,0]);
 
 		ncRenderableEntity viewModel = (ncRenderableEntity)pSeat->m_eViewModelL;
 		viewModel._UpdateBoneCount();

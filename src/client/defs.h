@@ -417,6 +417,12 @@ struct
 	int m_iSelectedWeapon;
 	bool m_bCommandMenu;
 	ncWeapon m_weaponRef;
+
+	float m_weaponAnimSequence;
+	float m_weaponAnimTime;
+	float m_weaponModel;
+	string m_weaponClass;
+	string m_weaponFireInfo;
 } g_seats[4], *pSeat;
 
 .float modelindex2;

@@ -124,7 +124,6 @@ ncPlayer::SharedInputFrame(void)
 		return;
 	}
 
-#ifdef SERVER
 	/* here is where we check if the clients' desired weapon object exists,
 	   is valid and is assigned to us. clients may send outdated or straight
 	   up bogus values to mess with the server game. any checks go here
@@ -159,7 +158,6 @@ ncPlayer::SharedInputFrame(void)
 			}
 		}
 	}
-#endif
 }
 
 bool
@@ -975,9 +973,6 @@ ncPlayer::_ReceiveComplete(float flNew, float flChanged)
 void
 ncPlayer::ReceiveEntity(float isNew, float flChanged)
 {
-	float oldWeapon = activeweapon;
-	bool sortWeapons;
-
 	/* store which input sequence we're on, this helps us
 	 * later when we run prediction again between last/latest
 	 * servercommandframe */
@@ -987,11 +982,6 @@ ncPlayer::ReceiveEntity(float isNew, float flChanged)
 	if (flChanged == UPDATE_ALL) {
 		/* we respawned */
 		gravity = 1.0f;
-		activeweapon = 0;
-
-		if (m_activeWeapon) {
-			m_activeWeapon.owner = __NULL__;
-		}
 	}
 
 	READENTITY_INT(entityDefID, PLAYER_MODELINDEX)
@@ -1018,19 +1008,19 @@ ncPlayer::ReceiveEntity(float isNew, float flChanged)
 	READENTITY_COORD(velocity[0], PLAYER_VELOCITY)
 	READENTITY_COORD(velocity[1], PLAYER_VELOCITY)
 	READENTITY_COORD(velocity[2], PLAYER_VELOCITY)
-	READENTITY_COORD(m_pmoveBaseVelocity[0], PLAYER_VELOCITY)
-	READENTITY_COORD(m_pmoveBaseVelocity[1], PLAYER_VELOCITY)
-	READENTITY_COORD(m_pmoveBaseVelocity[2], PLAYER_VELOCITY)
-	READENTITY_COORD(m_pmoveHookVelocity[0], PLAYER_VELOCITY)
-	READENTITY_COORD(m_pmoveHookVelocity[1], PLAYER_VELOCITY)
-	READENTITY_COORD(m_pmoveHookVelocity[2], PLAYER_VELOCITY)
+	READENTITY_COORD(m_pmoveBaseVelocity[0], PLAYER_PUNCHANGLE)
+	READENTITY_COORD(m_pmoveBaseVelocity[1], PLAYER_PUNCHANGLE)
+	READENTITY_COORD(m_pmoveBaseVelocity[2], PLAYER_PUNCHANGLE)
+	READENTITY_COORD(m_pmoveHookVelocity[0], PLAYER_PUNCHANGLE)
+	READENTITY_COORD(m_pmoveHookVelocity[1], PLAYER_PUNCHANGLE)
+	READENTITY_COORD(m_pmoveHookVelocity[2], PLAYER_PUNCHANGLE)
 	READENTITY_INT(flags, PLAYER_FLAGS)
 	READENTITY_INT(m_nuclideFlags, PLAYER_FLAGS)
 	READENTITY_INT(gflags, PLAYER_FLAGS)
 	READENTITY_FLOAT(gravity, PLAYER_FLAGS)
 	READENTITY_FLOAT(friction, PLAYER_FLAGS)
-	READENTITY_FLOAT(m_timeSinceJump, PLAYER_FLAGS)
-	READENTITY_FLOAT(m_timeSinceTeleport, PLAYER_FLAGS)
+	READENTITY_BYTE(m_timeSinceJump, PLAYER_TIMINGS)
+	READENTITY_BYTE(m_timeSinceTeleport, PLAYER_TIMINGS)
 	READENTITY_BYTE(m_weaponAnimSequence, PLAYER_WEAPONFRAME)
 	READENTITY_BYTE(health, PLAYER_HEALTH)
 	READENTITY_BYTE(armor, PLAYER_HEALTH)
@@ -1075,11 +1065,10 @@ ncPlayer::ReceiveEntity(float isNew, float flChanged)
 	if (isNew || flChanged & PLAYER_MODELINDEX || flChanged == UPDATE_ALL) {
 		_UpdatePMoveVars();
 		setsize(this, mins, maxs);
-		oldWeapon = 0;
 	}
 
 	for (int i = 0i; i < MAX_AMMO_TYPES; i++) {
-		READENTITY_INT(m_ammoTypes[i], PLAYER_AMMOTYPES)
+		READENTITY_BYTE(m_ammoTypes[i], PLAYER_AMMOTYPES)
 
 		if (m_ammoTypes[i] != m_ammoTypes_net[i]) {
 			HUD_AmmoChanged(i, m_ammoTypes[i], m_ammoTypes[i] - m_ammoTypes_net[i]);
@@ -1087,7 +1076,6 @@ ncPlayer::ReceiveEntity(float isNew, float flChanged)
 	}
 
 	if (pSeat->m_ePlayer == this) {
-
 		if (activeweapon != 0) {
 			m_activeWeapon = findentity(world, ::entnum, activeweapon);
 		} else {
@@ -1118,7 +1106,6 @@ ncPlayer::ReceiveEntity(float isNew, float flChanged)
 
 			if (items.owner != oldOwner && items.owner == this) {
 				items._AddedCallback();
-				sortWeapons = true;
 			}
 
 			if (items.chain_entnum != 0) {
@@ -1147,9 +1134,7 @@ ncPlayer::ReceiveEntity(float isNew, float flChanged)
 			}
 		}
 
-		if (sortWeapons || flChanged & PLAYER_WEAPON) {
-			SortWeaponChain();
-		}
+		SortWeaponChain();
 	}
 
 	if (flChanged & PLAYER_SIZE) {
@@ -1646,19 +1631,19 @@ ncPlayer::EvaluateEntity(void)
 	EVALUATE_VECTOR(velocity, 0, PLAYER_VELOCITY)
 	EVALUATE_VECTOR(velocity, 1, PLAYER_VELOCITY)
 	EVALUATE_VECTOR(velocity, 2, PLAYER_VELOCITY)
-	EVALUATE_VECTOR(m_pmoveBaseVelocity, 0, PLAYER_VELOCITY)
-	EVALUATE_VECTOR(m_pmoveBaseVelocity, 1, PLAYER_VELOCITY)
-	EVALUATE_VECTOR(m_pmoveBaseVelocity, 2, PLAYER_VELOCITY)
-	EVALUATE_VECTOR(m_pmoveHookVelocity, 0, PLAYER_VELOCITY)
-	EVALUATE_VECTOR(m_pmoveHookVelocity, 1, PLAYER_VELOCITY)
-	EVALUATE_VECTOR(m_pmoveHookVelocity, 2, PLAYER_VELOCITY)
+	EVALUATE_VECTOR(m_pmoveBaseVelocity, 0, PLAYER_PUNCHANGLE)
+	EVALUATE_VECTOR(m_pmoveBaseVelocity, 1, PLAYER_PUNCHANGLE)
+	EVALUATE_VECTOR(m_pmoveBaseVelocity, 2, PLAYER_PUNCHANGLE)
+	EVALUATE_VECTOR(m_pmoveHookVelocity, 0, PLAYER_PUNCHANGLE)
+	EVALUATE_VECTOR(m_pmoveHookVelocity, 1, PLAYER_PUNCHANGLE)
+	EVALUATE_VECTOR(m_pmoveHookVelocity, 2, PLAYER_PUNCHANGLE)
 	EVALUATE_FIELD(flags, PLAYER_FLAGS)
 	EVALUATE_FIELD(m_nuclideFlags, PLAYER_FLAGS)
 	EVALUATE_FIELD(gflags, PLAYER_FLAGS)
 	EVALUATE_FIELD(gravity, PLAYER_FLAGS)
 	EVALUATE_FIELD(friction, PLAYER_FLAGS)
-	EVALUATE_FIELD(m_timeSinceJump, PLAYER_FLAGS)
-	EVALUATE_FIELD(m_timeSinceTeleport, PLAYER_FLAGS)
+	EVALUATE_FIELD(m_timeSinceJump, PLAYER_TIMINGS)
+	EVALUATE_FIELD(m_timeSinceTeleport, PLAYER_TIMINGS)
 	EVALUATE_FIELD(m_weaponAnimSequence, PLAYER_WEAPONFRAME)
 	EVALUATE_FIELD(health, PLAYER_HEALTH)
 	EVALUATE_FIELD(armor, PLAYER_HEALTH)
@@ -1713,6 +1698,15 @@ ncPlayer::SendEntity(entity ePEnt, float flChanged)
 
 	flChanged = OptimiseChangedFlags(ePEnt, flChanged);
 
+	if (ePEnt != this) {
+		flChanged &= ~PLAYER_ITEMS;
+		flChanged &= ~PLAYER_WEAPON;
+		flChanged &= ~PLAYER_PUNCHANGLE;
+		flChanged &= ~PLAYER_WEAPONFRAME;
+		flChanged &= ~PLAYER_SPECTATE;
+		flChanged &= ~PLAYER_AMMOTYPES;
+	}
+
 	WriteByte(MSG_ENTITY, ENT_PLAYER);
 	WriteFloat(MSG_ENTITY, flChanged);
 
@@ -1744,19 +1738,19 @@ ncPlayer::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_COORD(velocity[0], PLAYER_VELOCITY)
 	SENDENTITY_COORD(velocity[1], PLAYER_VELOCITY)
 	SENDENTITY_COORD(velocity[2], PLAYER_VELOCITY)
-	SENDENTITY_COORD(m_pmoveBaseVelocity[0], PLAYER_VELOCITY)
-	SENDENTITY_COORD(m_pmoveBaseVelocity[1], PLAYER_VELOCITY)
-	SENDENTITY_COORD(m_pmoveBaseVelocity[2], PLAYER_VELOCITY)
-	SENDENTITY_COORD(m_pmoveHookVelocity[0], PLAYER_VELOCITY)
-	SENDENTITY_COORD(m_pmoveHookVelocity[1], PLAYER_VELOCITY)
-	SENDENTITY_COORD(m_pmoveHookVelocity[2], PLAYER_VELOCITY)
+	SENDENTITY_COORD(m_pmoveBaseVelocity[0], PLAYER_PUNCHANGLE)
+	SENDENTITY_COORD(m_pmoveBaseVelocity[1], PLAYER_PUNCHANGLE)
+	SENDENTITY_COORD(m_pmoveBaseVelocity[2], PLAYER_PUNCHANGLE)
+	SENDENTITY_COORD(m_pmoveHookVelocity[0], PLAYER_PUNCHANGLE)
+	SENDENTITY_COORD(m_pmoveHookVelocity[1], PLAYER_PUNCHANGLE)
+	SENDENTITY_COORD(m_pmoveHookVelocity[2], PLAYER_PUNCHANGLE)
 	SENDENTITY_INT(flags, PLAYER_FLAGS)
 	SENDENTITY_INT(m_nuclideFlags, PLAYER_FLAGS)
 	SENDENTITY_INT(gflags, PLAYER_FLAGS)
 	SENDENTITY_FLOAT(gravity, PLAYER_FLAGS)
 	SENDENTITY_FLOAT(friction, PLAYER_FLAGS)
-	SENDENTITY_FLOAT(m_timeSinceJump, PLAYER_FLAGS)
-	SENDENTITY_FLOAT(m_timeSinceTeleport, PLAYER_FLAGS)
+	SENDENTITY_BYTE(m_timeSinceJump, PLAYER_TIMINGS)
+	SENDENTITY_BYTE(m_timeSinceTeleport, PLAYER_TIMINGS)
 	SENDENTITY_BYTE(m_weaponAnimSequence, PLAYER_WEAPONFRAME)
 	SENDENTITY_BYTE(health, PLAYER_HEALTH)
 	SENDENTITY_BYTE(armor, PLAYER_HEALTH)
@@ -1795,7 +1789,7 @@ ncPlayer::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_FLOAT(anim_bottom_time, PLAYER_BOTTOMFRAME)
 
 	for (int i = 0i; i < MAX_AMMO_TYPES; i++) {
-		SENDENTITY_INT(m_ammoTypes[i], PLAYER_AMMOTYPES)
+		SENDENTITY_BYTE(m_ammoTypes[i], PLAYER_AMMOTYPES)
 	}
 
 	return (1);

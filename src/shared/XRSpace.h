@@ -27,7 +27,7 @@
 
 @ingroup xr
 */
-class NSXRSpace {
+class NSXRSpace:ncEntity {
 public:
 	void NSXRSpace( void );
 

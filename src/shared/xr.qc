@@ -34,6 +34,8 @@ XR_Init(entity ePlayer)
 
 	if (!pl.m_xrSpace) {
 		pl.m_xrSpace = spawn(NSXRSpace);
+		pl.m_xrSpace.solid = SOLID_NOT;
+		pl.m_xrSpace.touch = 0;
 	}
 
 	/* the only 3 devices that matter right now */
@@ -66,9 +68,9 @@ void
 XR_Shutdown(entity ePlayer)
 {
 	ncClient pl = (ncClient)ePlayer;
-	remove(pl.m_xrInputHead);
-	remove(pl.m_xrInputLeft);
-	remove(pl.m_xrInputRight);
+	pl.m_xrInputHead.Destroy();
+	pl.m_xrInputLeft.Destroy();
+	pl.m_xrInputRight.Destroy();
 	
 }
 

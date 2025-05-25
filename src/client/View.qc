@@ -301,7 +301,7 @@ void
 ncView::UpdateView(void)
 {
 	ncPlayer pl = (ncPlayer)m_viewTarget;
-	ncClient cl = (ncClient)m_viewTarget;
+	ncPlayer cl = (ncPlayer)m_viewTarget;
 	ncSpectator spec = (ncSpectator)m_viewTarget;
 	entity c;
 
@@ -316,6 +316,19 @@ ncView::UpdateView(void)
 		pSeat->m_vecPredictedOrigin = cl.origin;
 		pSeat->m_flPredictedFlags = cl.flags;
 		pSeat->m_vecPredictedVelocity = cl.velocity;
+		pSeat->m_weaponAnimSequence = cl.m_weaponAnimSequence;
+		pSeat->m_weaponAnimTime = cl.m_weaponAnimTime;
+
+		if (cl.m_activeWeapon) {
+			pSeat->m_weaponModel = cl.m_activeWeapon.m_viewModel;
+			pSeat->m_weaponClass = cl.m_activeWeapon.declclass;
+			pSeat->m_weaponFireInfo = cl.m_activeWeapon.m_weaponLastFireInfo;
+		} else {
+			pSeat->m_weaponModel = 0;
+			pSeat->m_weaponClass = "";
+			pSeat->m_weaponFireInfo = "";
+		}
+
 		SetCameraOrigin(cl.origin);
 
 		/* this player will respawn, so null visual damage cues */

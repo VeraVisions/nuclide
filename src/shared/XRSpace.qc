@@ -21,6 +21,7 @@ NSXRSpace::NSXRSpace(void)
 	m_vecRight =
 	m_vecUp =
 	m_vecOrigin = [0.0f, 0.0f, 0.0f];
+	touch = 0;
 }
 
 vector

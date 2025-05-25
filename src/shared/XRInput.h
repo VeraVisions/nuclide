@@ -55,7 +55,7 @@ That way you can dual (or even triple) wield them.
 
 @ingroup xr
 */
-class NSXRInput {
+class NSXRInput:ncEntity {
   public:
 	void NSXRInput( void );
 

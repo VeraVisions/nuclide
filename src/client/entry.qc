@@ -457,6 +457,8 @@ CSQC_Input_Frame(void)
 			}
 		}
 
+		pl.SortWeaponChain();
+
 		g_clientInitialized = true;
 		pl.ClientInputFrame();
 
