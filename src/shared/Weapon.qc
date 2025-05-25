@@ -1066,11 +1066,20 @@ ncWeapon::DetonateDef(string defName)
 void
 ncWeapon::EjectBrass(void)
 {
+	ncPlayer ourOwner = (ncPlayer)GetOwner();
+
 	if (!STRING_SET(m_fiBrassDef)) {
 		return;
 	}
 
-	ncPlayer ourOwner = (ncPlayer)GetOwner();
+	if (!ourOwner) {
+		return;
+	}
+
+	if (wasfreed(this)) {
+		return;
+	}
+
 	vector viewAngle = ourOwner.GetViewAngle();
 	vector brassSpawnVelocity = entityDef.GetVector(m_fiBrassDef, "velocity");
 	vector brassVelocity = anglesToForward(viewAngle) * brassSpawnVelocity[0];
@@ -1094,11 +1103,20 @@ ncWeapon::EjectBrass(void)
 void
 ncWeapon::EjectCartridge(void)
 {
+	ncPlayer ourOwner = (ncPlayer)GetOwner();
+
 	if (!STRING_SET(m_fiCartridgeDef)) {
 		return;
 	}
 
-	ncPlayer ourOwner = (ncPlayer)GetOwner();
+	if (!ourOwner) {
+		return;
+	}
+
+	if (wasfreed(this)) {
+		return;
+	}
+
 	vector viewAngle = ourOwner.GetViewAngle();
 	vector brassSpawnVelocity = entityDef.GetVector(m_fiCartridgeDef, "velocity");
 	vector brassVelocity = anglesToForward(viewAngle) * brassSpawnVelocity[0];
