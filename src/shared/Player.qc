@@ -1088,68 +1088,68 @@ ncPlayer::ReceiveEntity(float isNew, float flChanged)
 
 	if (pSeat->m_ePlayer == this) {
 
-	if (activeweapon != 0) {
-		m_activeWeapon = findentity(world, ::entnum, activeweapon);
-	} else {
-		m_activeWeapon = __NULL__;
-	}
-
-	if (vehicle_entnum != 0) {
-		vehicle = findentity(world, ::entnum, vehicle_entnum);
-	} else {
-		vehicle = __NULL__;
-	}
-
-	if (m_itemStart != 0) {
-		m_itemList = findentity(world, ::entnum, m_itemStart);
-	} else {
-		m_itemList = __NULL__;
-	}
-
-	/* this should be better. */
-	for (ncItem items = world; (items = findfloat(items, ::_isItem, true));) {
-		entity oldOwner = items.owner;
-
-		if (items.owner_entnum != 0) {
-			items.owner = findentity(world, ::entnum, items.owner_entnum);
+		if (activeweapon != 0) {
+			m_activeWeapon = findentity(world, ::entnum, activeweapon);
 		} else {
-			items.owner = __NULL__;
+			m_activeWeapon = __NULL__;
 		}
 
-		if (items.owner != oldOwner && items.owner == this) {
-			items._AddedCallback();
-			sortWeapons = true;
-		}
-
-		if (items.chain_entnum != 0) {
-			items.m_nextItem = (ncItem)findentity(world, ::entnum, items.chain_entnum);
+		if (vehicle_entnum != 0) {
+			vehicle = findentity(world, ::entnum, vehicle_entnum);
 		} else {
-			items.m_nextItem = __NULL__;
+			vehicle = __NULL__;
 		}
 
-		if (items._isWeapon == true) {
-			ncWeapon ourWeapon = (ncWeapon)items;
+		if (m_itemStart != 0) {
+			m_itemList = findentity(world, ::entnum, m_itemStart);
+		} else {
+			m_itemList = __NULL__;
+		}
 
-			if (ourWeapon.m_nextWeapon_entnum != 0) {
-				ourWeapon.m_nextWeapon = findentity(world, ::entnum, ourWeapon.m_nextWeapon_entnum);
+		/* this should be better. */
+		for (ncItem items = world; (items = findfloat(items, ::_isItem, true));) {
+			entity oldOwner = items.owner;
+
+			if (items.owner_entnum != 0) {
+				items.owner = findentity(world, ::entnum, items.owner_entnum);
 			} else {
-				ourWeapon.m_nextWeapon = __NULL__;
+				items.owner = __NULL__;
 			}
 
-			if (ourWeapon.m_prevWeapon_entnum != 0) {
-				ourWeapon.m_prevWeapon = findentity(world, ::entnum, ourWeapon.m_prevWeapon_entnum);
-			} else {
-				ourWeapon.m_prevWeapon = __NULL__;
+			if (items.owner != oldOwner && items.owner == this) {
+				items._AddedCallback();
+				sortWeapons = true;
 			}
-		} else {
-			items.m_nextWeapon = __NULL__;
-			items.m_prevWeapon = __NULL__;
-		}
-	}
 
-	if (sortWeapons || PLAYER_WEAPON) {
-		SortWeaponChain();
-	}
+			if (items.chain_entnum != 0) {
+				items.m_nextItem = (ncItem)findentity(world, ::entnum, items.chain_entnum);
+			} else {
+				items.m_nextItem = __NULL__;
+			}
+
+			if (items._isWeapon == true) {
+				ncWeapon ourWeapon = (ncWeapon)items;
+
+				if (ourWeapon.m_nextWeapon_entnum != 0) {
+					ourWeapon.m_nextWeapon = findentity(world, ::entnum, ourWeapon.m_nextWeapon_entnum);
+				} else {
+					ourWeapon.m_nextWeapon = __NULL__;
+				}
+
+				if (ourWeapon.m_prevWeapon_entnum != 0) {
+					ourWeapon.m_prevWeapon = findentity(world, ::entnum, ourWeapon.m_prevWeapon_entnum);
+				} else {
+					ourWeapon.m_prevWeapon = __NULL__;
+				}
+			} else {
+				items.m_nextWeapon = __NULL__;
+				items.m_prevWeapon = __NULL__;
+			}
+		}
+
+		if (sortWeapons || flChanged & PLAYER_WEAPON) {
+			SortWeaponChain();
+		}
 	}
 
 	if (flChanged & PLAYER_SIZE) {
