@@ -39,6 +39,15 @@ ncNodeEditor::LinkNodes(graphNode_t *wp, graphNode_t *w2)
 }
 
 void
+ncNodeEditor::UnlinkNode(graphNode_t *wp)
+{
+	if (wp->m_neighborList)
+		memfree(wp->m_neighborList);
+
+	wp->m_neighborCount = 0;
+}
+
+void
 ncNodeEditor::UnlinkNodes(graphNode_t *wp, graphNode_t *w2)
 {
 	int w2n = w2 - g_nodeGraph;
@@ -657,6 +666,11 @@ ncNodeEditor::Cmd(void)
 	case "purge":
 		Nodes_Flush();
 		break;
+	case "purgelinks":
+		for (int i = 0i; i < g_nodeCount; i++) {
+			UnlinkNode(&g_nodeGraph[i]);
+		}
+		break;
 	case "radius":
 		ncNodeEditor::SetRadius(ncNodeEditor::FindClosestNode(self.origin), stof(argv(2)));
 		break;
@@ -730,7 +744,7 @@ ncNodeEditor::Cmd(void)
 	}
 }
 
-#ifdef NODE_DEBUG
+#if 1
 #define SEQUENCE_RECT_COLOR [1.0,0.0,0.0]
 #define NODE_RECT_COLOR [1.0,0.5,0.0]
 #define NODE_RECT_ALPHA 1.0f

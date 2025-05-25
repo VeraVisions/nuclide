@@ -91,7 +91,7 @@ Way_Init(void)
 		titles_t way_remove = g_title_null;
 		way_remove.m_strName = "WAY_REMOVE";
 		way_remove.m_strMessage = "\n" \
-								"\n" \
+								"2.\tRemove ^1LINKS^7 from ALL nodes\n" \
 								"\n" \
 								"\n" \
 								"\n" \
@@ -203,6 +203,7 @@ WAY_MENU(int n)
 		break;
 	case 9:
 		Textmenu_Call("");
+		cvar_set("nav_visualize", "0");
 		break;
 	}
 }
@@ -214,6 +215,7 @@ Way_Autoload(void)
 	if (!g_waymenu_opened && autocvar(way_autoload, 1))
 		localcmd(sprintf("sv way load %s.way\n", mapname));
 	g_waymenu_opened = 1;
+	cvar_set("nav_visualize", "1");
 }
 
 void
@@ -320,6 +322,10 @@ void
 WAY_REMOVE(int n)
 {
 	switch (n) {
+	case 2:
+		localcmd("sv way purgelinks\n");
+		Textmenu_Call("WAY_MENU");
+		break;
 	case 7:
 		localcmd("sv way purge\n");
 		Textmenu_Call("WAY_MENU");

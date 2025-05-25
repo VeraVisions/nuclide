@@ -184,7 +184,6 @@ ncActor::ReloadCachedAttributes(void)
 		m_sndPainHuge = GetSpawnString("snd_painHuge");
 	} else {
 		m_sndPainSmall =
-		m_sndStepLadderRight =
 		m_sndPainMedium =
 		m_sndPainLarge =
 		m_sndPainHuge = GetSpawnString("snd_pain");
