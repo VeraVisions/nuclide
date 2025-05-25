@@ -17,6 +17,7 @@
 #define bool float
 #define true 1
 #define false 0
+typedef float musictrack_t;
 
 /** @defgroup sharedAPI API: Shared
     @brief Shared Game-Logic APIs
@@ -455,6 +456,15 @@ typedef struct
 	@return sound def id. */
 	float Sound(string soundDef);
 
+	/** Precaches a given music track.
+
+	`precache.Music("music/e1m1.ogg");`
+	`precache.Music("music/track02.ogg");`
+
+	@param musicTrack to precache
+	@return music track handle. */
+	musictrack_t Music(string musicTrack);
+
 	/** Precaches a given particle effect.
 
 	The following loads `r_part impactSpark` from `particles/weapon_laser.cfg`.
@@ -726,6 +736,7 @@ _shared_main(void)
 	teams.SetSpawnPoint = linkToSharedProgs("SHPF_teams_SetSpawnPoint");
 
 	precache.Model = linkToSharedProgs("SHPF_precache_Model");
+	precache.Music = linkToSharedProgs("SHPF_precache_Music");
 	precache.Sound = linkToSharedProgs("SHPF_precache_Sound");
 	precache.Particle = linkToSharedProgs("SHPF_precache_Particle");
 	precache.Entity = linkToSharedProgs("SHPF_precache_Entity");

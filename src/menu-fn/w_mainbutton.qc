@@ -205,7 +205,7 @@ CMainButton::Draw(void)
 	}
 
 	/* if we have btns_main */
-	if (btnPresent == true) {
+	if (btnPresent == true && autocvar(font_ttfOnly, 0) == 0) {
 		if (!m_execute) {
 			drawsubpic([g_menuofs[0]+m_x,g_menuofs[1]+m_y], [156,26], g_mainbtn_sheets[m_bitmap], 
 					[0,0], [1, BUTTON_OFFSET], [1,1,1] * 0.75f, 1.0f, 0);
@@ -225,16 +225,16 @@ CMainButton::Draw(void)
 	} else {
 		drawfont = Font_GetID(font_label_p);
 		if (!m_execute) {
-			drawstring([g_menuofs[0]+m_x,g_menuofs[1]+m_y], g_mainbtn_text[m_bitmap], [16,16], col_button_disabled, 1.0, 0);
+			Font_DrawText_RGBA([g_menuofs[0]+m_x,g_menuofs[1]+m_y], g_mainbtn_text[m_bitmap], col_button_disabled, 1.0, font_button);
 			return;
 		}
 		if (m_click) {
-			drawstring([g_menuofs[0]+m_x,g_menuofs[1]+m_y], g_mainbtn_text[m_bitmap], [16,16], col_button_click, 1.0, 0);
+			Font_DrawText_RGBA([g_menuofs[0]+m_x,g_menuofs[1]+m_y], g_mainbtn_text[m_bitmap], col_button_click, 1.0, font_button);
 			return;
 		}
 
-		drawstring([g_menuofs[0]+m_x,g_menuofs[1]+m_y], g_mainbtn_text[m_bitmap], [16,16], col_button_bg, 1.0, 0);
-		drawstring([g_menuofs[0]+m_x,g_menuofs[1]+m_y], g_mainbtn_text[m_bitmap], [16,16], col_button_select, 1 - m_alpha, 0);
+		Font_DrawText_RGBA([g_menuofs[0]+m_x,g_menuofs[1]+m_y], g_mainbtn_text[m_bitmap], col_button_bg, 1.0, font_button);
+		Font_DrawText_RGBA([g_menuofs[0]+m_x,g_menuofs[1]+m_y], g_mainbtn_text[m_bitmap], col_button_select, 1 - m_alpha, font_button);
 	}
 
 	if (m_hover) {

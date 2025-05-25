@@ -1101,11 +1101,25 @@ SHPF_precache_Model(string modelPath)
 int
 SHPF_precache_Sound(string soundDecl)
 {
+	int returnValue = -1i;
+
 	if (!STRING_SET(soundDecl)) {
 		return (-1i);
 	}
 
-	return (int)SoundDef_Precache(soundDecl);
+	returnValue = (int)SoundDef_Precache(soundDecl);
+
+	if (returnValue == -1i) {
+		precache_sound(soundDecl);
+	}
+
+	return (returnValue);
+}
+
+musictrack_t
+SHPF_precache_Music(string musicTrack)
+{
+	return getmodelindex(strcat("*M:", musicTrack));
 }
 
 int

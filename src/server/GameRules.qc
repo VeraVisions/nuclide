@@ -227,8 +227,7 @@ ncRuleDelegate::IntermissionStart(void)
 	m_flIntermissionTime = time + 5.0f;
 
 	for (entity p = world; (p = next.Player(p));) {
-		p.health = 0;
-		p.modelindex = 0;
+		ents.ChangeToClass(p, "spectator");
 	}
 }
 

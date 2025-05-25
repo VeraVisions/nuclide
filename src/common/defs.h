@@ -25,6 +25,7 @@
 var bool autocvar_g_logTimestamps = false;
 
 typedef entity id;
+typedef float musictrack_t;
 
 typedef enum
 {

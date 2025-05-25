@@ -32,6 +32,11 @@ ncOutput::TriggerOutput(void)
 
 		if (ourTarget)
 			ourTarget.Input(ourActivator, m_strInput, m_strData);
+	} else if (m_strTarget == "!rules") {
+		ncRuleDelegate ourRules = ncRuleDelegate::ActiveInstance();
+
+		if (ourRules)
+			ourRules.Input(ourActivator, m_strInput, m_strData);
 	} else {
 		if (!STRING_SET(m_strTarget)) {
 			EntError("target invalid.");

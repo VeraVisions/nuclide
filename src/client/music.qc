@@ -47,3 +47,25 @@ Music_ParseLoop(void)
 	track = readbyte();
 	localcmd(sprintf("menu_musicloop %i\n", track));
 }
+
+void
+Music_ReadLoop(void)
+{
+	float trackID = readfloat();
+	string musicTrack = substring(modelnameforindex(trackID), 3, -1);
+	localcmd(strcat("music ", musicTrack, " 1\n"));
+}
+
+void
+Music_ReadOnce(void)
+{
+	float trackID = readfloat();
+	string musicTrack = substring(modelnameforindex(trackID), 3, -1);
+	localcmd(strcat("music ", musicTrack, " 0\n"));
+}
+
+void
+Music_Stop(void)
+{
+	localcmd("stopmusic\n");
+}

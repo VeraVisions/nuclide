@@ -21,6 +21,13 @@ SVPF_game_LoadNextMap(void)
 }
 
 void
+SVPF_game_EndMap(void)
+{
+	ncRuleDelegate currentRule = ncRuleDelegate::ActiveInstance();
+	currentRule.IntermissionStart();
+}
+
+void
 SVPF_game_CleanUpMap(void)
 {
 	//localcmd("respawnEntities\n");
@@ -300,4 +307,56 @@ void
 SVPF_ents_Input(entity target, string inputName, string dataString, entity activator)
 {
 	sendInput(target, inputName, dataString, activator);
+}
+
+void SVPF_music_Stop(void)
+{
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_MUSIC_STOP);
+	msg_entity = world;
+	multicast([0,0,0], MULTICAST_ALL_R);
+}
+
+void SVPF_music_StopOnClient(entity targetClient)
+{
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_MUSIC_STOP);
+	msg_entity = targetClient;
+	multicast([0,0,0], MULTICAST_ONE_R);
+}
+
+void SVPF_music_Play(musictrack_t globalTrack)
+{
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_MUSIC_LOOP);
+	WriteFloat(MSG_MULTICAST, globalTrack);
+	msg_entity = world;
+	multicast([0,0,0], MULTICAST_ALL_R);
+}
+
+void SVPF_music_PlayOnce(musictrack_t globalTrack)
+{
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_MUSIC_ONCE);
+	WriteFloat(MSG_MULTICAST, globalTrack);
+	msg_entity = world;
+	multicast([0,0,0], MULTICAST_ALL_R);
+}
+
+void SVPF_music_PlayOnClient(musictrack_t globalTrack, entity targetClient)
+{
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_MUSIC_LOOP);
+	WriteFloat(MSG_MULTICAST, globalTrack);
+	msg_entity = targetClient;
+	multicast([0,0,0], MULTICAST_ONE_R);
+}
+
+void SVPF_music_PlayOnceOnClient(musictrack_t globalTrack, entity targetClient)
+{
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_MUSIC_ONCE);
+	WriteFloat(MSG_MULTICAST, globalTrack);
+	msg_entity = targetClient;
+	multicast([0,0,0], MULTICAST_ONE_R);
 }

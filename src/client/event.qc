@@ -207,6 +207,8 @@ EV_Pickup(void)
 	}
 
 	HUD_PickedUpItem(itemClass);
+
+
 }
 
 void
@@ -250,6 +252,15 @@ Event_Parse(float type)
 		break;
 	case EV_MUSICLOOP:
 		Music_ParseLoop();
+		break;
+	case EV_MUSIC_ONCE:
+		Music_ReadOnce();
+		break;
+	case EV_MUSIC_LOOP:
+		Music_ReadLoop();
+		break;
+	case EV_MUSIC_STOP:
+		Music_Stop();
 		break;
 	case EV_SPEAK:
 		EV_Speak();

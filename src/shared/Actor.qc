@@ -1818,9 +1818,12 @@ ncActor::SortWeaponChain(void)
 
 	/* first we determine the range of our hud buckets. */
 	while (itemChain) {
-
 		/* no longer in inventory */
-		if (itemChain.owner != this) {
+#ifdef CLIENT
+		if (itemChain.owner_entnum == 0) {
+#else
+		if (itemChain.owner == 0) {
+#endif
 			itemChain = (ncWeapon)itemChain.m_nextItem;
 
 			/* link last weapon to the next */
@@ -1866,16 +1869,21 @@ ncActor::SortWeaponChain(void)
 					hudPos = itemChain.GetDefInt("hudSlotPos");
 
 					if (hudSlot == hS && hudPos == hP) {
-						/* first weapon in the chain? */
-						if (!lastWeapon) {
-							firstWeapon = itemChain;
-							lastWeapon = firstWeapon;
-						} else {
-							/* assign this weapon to the last weapon of our chain. */
-							lastWeapon.m_nextWeapon = itemChain;
-							itemChain.m_prevWeapon = lastWeapon;
-							lastWeapon = itemChain;
-						}
+
+						//if (!firstWeapon) {
+						//	firstWeapon = itemChain;
+						//} else {
+							/* first weapon in the chain? */
+							if (!lastWeapon || !firstWeapon) {
+								firstWeapon = itemChain;
+								lastWeapon = firstWeapon;
+							} else {
+								/* assign this weapon to the last weapon of our chain. */
+								lastWeapon.m_nextWeapon = itemChain;
+								itemChain.m_prevWeapon = lastWeapon;
+								lastWeapon = itemChain;
+							}
+						//}
 					}
 				}
 

@@ -174,20 +174,13 @@ View_DrawViewModel(void)
 	if (!pl)
 		return;
 
-	if (pl.health <= 0) {
-		return;
-	}
-
-	if (pl.vehicle) {
-		ncVehicle veh = (ncVehicle)pl.vehicle;
-
-		if (veh.HideViewWeapon() == true)
-			return;
-	}
-
-	if (cvar("r_drawviewmodel") == 0 || autocvar_pm_thirdPerson == TRUE) {
-		return;
-	}
+	float fBaseTime2 = m_eViewModel.frame1time;
+	float fBaseTime = m_eViewModel.frame1time;
+	m_eViewModelL.frame = m_eViewModel.frame = pl.m_weaponAnimSequence;
+	m_eViewModelL.frame1time =
+	m_eViewModelL.frame2time =
+	m_eViewModel.frame2time =
+	m_eViewModel.frame1time = pl.WeaponAnimTime();
 
 	/* used to be View_UpdateWeapon */
 	/* only bother upon change */
@@ -212,13 +205,6 @@ View_DrawViewModel(void)
 		View_ClearEvents();
 	}
 
-	float fBaseTime2 = m_eViewModel.frame1time;
-	float fBaseTime = m_eViewModel.frame1time;
-	m_eViewModelL.frame = m_eViewModel.frame = pl.m_weaponAnimSequence;
-	m_eViewModelL.frame1time =
-	m_eViewModelL.frame2time =
-	m_eViewModel.frame2time =
-	m_eViewModel.frame1time = pl.WeaponAnimTime();
 	Event_Callback(m_eViewModel.frame1time, fBaseTime2);
 
 	entity oldSelf = self;
@@ -226,6 +212,22 @@ View_DrawViewModel(void)
 	processmodelevents(m_eViewModel.modelindex, m_eViewModel.frame, fBaseTime,
 		m_eViewModel.frame1time, View_HandleAnimEvent);
 	self = oldSelf;
+
+	if (pl.health <= 0) {
+		return;
+	}
+
+	if (pl.vehicle) {
+		ncVehicle veh = (ncVehicle)pl.vehicle;
+
+		if (veh.HideViewWeapon() == true)
+			return;
+	}
+
+	if (cvar("r_drawviewmodel") == 0 || autocvar_pm_thirdPerson == TRUE) {
+		return;
+	}
+
 
 	makevectors(currentAngle);
 

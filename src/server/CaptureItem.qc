@@ -3,6 +3,7 @@ ncCaptureItem::ncCaptureItem(void)
 {
 	m_outputOnCapture = __NULL__;
 	m_outputOnTake = __NULL__;
+	m_outputOnReturn = __NULL__;
 }
 
 void
@@ -12,6 +13,8 @@ ncCaptureItem::Precache(void)
 		m_outputOnCapture = CreateOutput(m_outputOnCapture);
 	if (STRING_SET(m_outputOnTake))
 		m_outputOnTake = CreateOutput(m_outputOnTake);
+	if (STRING_SET(m_outputOnReturn))
+		m_outputOnReturn = CreateOutput(m_outputOnReturn);
 }
 
 void
@@ -23,6 +26,9 @@ ncCaptureItem::SpawnKey(string strKey, string strValue)
 		break;
 	case "OnTake":
 		m_outputOnTake = PrepareOutput(m_outputOnTake, strValue);
+		break;
+	case "OnReturn":
+		m_outputOnReturn = PrepareOutput(m_outputOnReturn, strValue);
 		break;
 	default:
 		super::SpawnKey(strKey, strValue);
@@ -53,12 +59,19 @@ ncCaptureItem::Respawn(void)
 void
 ncCaptureItem::Captured(float teamNum)
 {
-	for (ncCaptureItem e = __NULL__; ((e = (ncCaptureItem)find(e, ::classname, classname)));) {
-		if (e.m_goalNo != teamNum) {
+	for (ncCaptureItem e = __NULL__; ((e = (ncCaptureItem)find(e, ::spawnclass, spawnclass)));) {
+		if (e.m_goalNo == teamNum) {
 			e.Respawn();
 			e.Show();
 		}
 	}
+}
+
+void
+ncCaptureItem::Return(void)
+{
+	Respawn();
+	UseOutput(this, m_outputOnReturn);
 }
 
 void
@@ -72,7 +85,7 @@ ncCaptureItem::WatchPlayer(void)
 		dropFlag.AddVelocity([0,0, 200]);
 		dropFlag.target = classname;
 		dropFlag.team = m_goalNo;
-		ScheduleThink(Respawn, 30.0f);
+		ScheduleThink(Return, 30.0f);
 	}
 
 	/* continue */

@@ -238,8 +238,11 @@ ncPlayer::PreFrame(void)
 	PredictPreFrame();
 
 	ncItem itemEntry = m_itemList;
+	ncItem oldItem = __NULL__;
 
 	while (itemEntry) {
+		oldItem = oldItem;
+
 		if (itemEntry && !wasfreed(itemEntry))
 		if (itemEntry._isItem == true && itemEntry.PredictPreFrame) {
 			itemEntry.PredictPreFrame();
@@ -250,6 +253,13 @@ ncPlayer::PreFrame(void)
 			itemEntry = __NULL__;
 		} else {
 			itemEntry = (ncItem)itemEntry.m_nextItem;
+		}
+
+		/* we may have reached the end of an entity that isn't parsed yet? */
+		if (itemEntry) {
+			if (!STRING_SET(itemEntry.declclass)) {
+				itemEntry = __NULL__;
+			}
 		}
 	}
 
@@ -402,7 +412,7 @@ ncPlayer::ProcessInput(void)
 		return;
 	}
 
-	if (wasfreed(m_activeWeapon)) {
+	if (wasfreed(m_activeWeapon) || m_activeWeapon._isWeapon != true) {
 		m_activeWeapon = __NULL__;
 	}
 
@@ -963,8 +973,11 @@ ncPlayer::_ReceiveComplete(float flNew, float flChanged)
 }
 
 void
-ncPlayer::ReceiveEntity(float new, float flChanged)
+ncPlayer::ReceiveEntity(float isNew, float flChanged)
 {
+	float oldWeapon = activeweapon;
+	bool sortWeapons;
+
 	/* store which input sequence we're on, this helps us
 	 * later when we run prediction again between last/latest
 	 * servercommandframe */
@@ -974,24 +987,21 @@ ncPlayer::ReceiveEntity(float new, float flChanged)
 	if (flChanged == UPDATE_ALL) {
 		/* we respawned */
 		gravity = 1.0f;
+		activeweapon = 0;
 	}
 
 	READENTITY_INT(entityDefID, PLAYER_MODELINDEX)
 	READENTITY_INT(modelindex, PLAYER_MODELINDEX)
 	READENTITY_INT(vw_index, PLAYER_MODELINDEX)
 	READENTITY_BYTE(colormap, PLAYER_MODELINDEX)
-
-	/* crap the render mode updates in here */
 	READENTITY_BYTE(m_renderMode, PLAYER_MODELINDEX)
 	READENTITY_BYTE(m_renderFX, PLAYER_MODELINDEX)
 	READENTITY_BYTE(m_renderColor[0], PLAYER_MODELINDEX)
 	READENTITY_BYTE(m_renderColor[1], PLAYER_MODELINDEX)
 	READENTITY_BYTE(m_renderColor[2], PLAYER_MODELINDEX)
 	READENTITY_BYTE(m_renderAmount, PLAYER_MODELINDEX)
-
 	READENTITY_ENTNUM(m_itemStart, PLAYER_ITEMS)
 	READENTITY_ENTNUM(activeweapon, PLAYER_WEAPON)
-
 	READENTITY_COORD(origin[0], PLAYER_ORIGIN)
 	READENTITY_COORD(origin[1], PLAYER_ORIGIN)
 	READENTITY_COORD(origin[2], PLAYER_ORIGIN)
@@ -1047,12 +1057,16 @@ ncPlayer::ReceiveEntity(float new, float flChanged)
 	READENTITY_BYTE(m_spectatingEntity, PLAYER_SPECTATE)
 	READENTITY_BYTE(m_spectatingMode, PLAYER_SPECTATE)
 	READENTITY_BYTE(m_spectatingFlags, PLAYER_SPECTATE)
-
 	READENTITY_BYTE(anim_top, PLAYER_TOPFRAME)
 	READENTITY_FLOAT(anim_top_time, PLAYER_TOPFRAME)
 	READENTITY_FLOAT(anim_top_delay, PLAYER_TOPFRAME)
 	READENTITY_BYTE(anim_bottom, PLAYER_BOTTOMFRAME)
 	READENTITY_FLOAT(anim_bottom_time, PLAYER_BOTTOMFRAME)
+
+	/* we only really care about the declclass for decl lookups. */
+	if (flChanged & PLAYER_MODELINDEX) {
+		declclass = EntityDef_NameFromNetID(entityDefID);
+	}
 
 	for (int i = 0i; i < MAX_AMMO_TYPES; i++) {
 		READENTITY_INT(m_ammoTypes[i], PLAYER_AMMOTYPES)
@@ -1062,9 +1076,83 @@ ncPlayer::ReceiveEntity(float new, float flChanged)
 		}
 	}
 
-	/* we only really care about the declclass for decl lookups. */
-	if (flChanged & PLAYER_MODELINDEX) {
-		declclass = EntityDef_NameFromNetID(entityDefID);
+	if (pSeat->m_ePlayer == this) {
+
+	if (activeweapon != 0) {
+		m_activeWeapon = findentity(world, ::entnum, activeweapon);
+	} else {
+		m_activeWeapon = __NULL__;
+	}
+
+	if (vehicle_entnum != 0) {
+		vehicle = findentity(world, ::entnum, vehicle_entnum);
+	} else {
+		vehicle = __NULL__;
+	}
+
+	if (m_itemStart != 0) {
+		m_itemList = findentity(world, ::entnum, m_itemStart);
+	} else {
+		m_itemList = __NULL__;
+	}
+
+	/* this should be better. */
+	for (ncItem items = world; (items = findfloat(items, ::_isItem, true));) {
+		entity oldOwner = items.owner;
+
+		if (items.owner_entnum != 0) {
+			items.owner = findentity(world, ::entnum, items.owner_entnum);
+		} else {
+			items.owner = __NULL__;
+		}
+
+		if (items.owner != oldOwner && items.owner == this) {
+			items._AddedCallback();
+			sortWeapons = true;
+		}
+
+		if (items.chain_entnum != 0) {
+			items.m_nextItem = (ncItem)findentity(world, ::entnum, items.chain_entnum);
+		} else {
+			items.m_nextItem = __NULL__;
+		}
+
+		if (items._isWeapon == true) {
+			ncWeapon ourWeapon = (ncWeapon)items;
+
+			if (ourWeapon.m_nextWeapon_entnum != 0) {
+				ourWeapon.m_nextWeapon = findentity(world, ::entnum, ourWeapon.m_nextWeapon_entnum);
+			} else {
+				ourWeapon.m_nextWeapon = __NULL__;
+			}
+
+			if (ourWeapon.m_prevWeapon_entnum != 0) {
+				ourWeapon.m_prevWeapon = findentity(world, ::entnum, ourWeapon.m_prevWeapon_entnum);
+			} else {
+				ourWeapon.m_prevWeapon = __NULL__;
+			}
+		} else {
+			items.m_nextWeapon = __NULL__;
+			items.m_prevWeapon = __NULL__;
+		}
+	}
+
+	if (oldWeapon != activeweapon) {
+		if (m_activeWeapon) {
+			m_activeWeapon.owner = this;
+			m_activeWeapon._SwitchedToCallback();
+			sortWeapons = true;
+		}
+	}
+
+	if (sortWeapons || PLAYER_WEAPON) {
+		SortWeaponChain();
+	}
+	}
+
+	/* our decl class has changed. refresh movement values. */
+	if (isNew || (flChanged & PLAYER_MODELINDEX && STRING_SET(declclass))) {
+		_UpdatePMoveVars();
 	}
 
 	if (flChanged & PLAYER_SIZE) {
@@ -1072,17 +1160,12 @@ ncPlayer::ReceiveEntity(float new, float flChanged)
 		Physics_SetViewParms();
 	}
 
-	/* our decl class has changed. refresh movement values. */
-	if (new || (flChanged & PLAYER_MODELINDEX && STRING_SET(declclass))) {
-		_UpdatePMoveVars();
-	}
-
-	if (flChanged & PLAYER_MODELINDEX) {
-		SetAnimationPrefix(m_activeWeapon.classname);
-	}
-
-	if (pSeat->m_ePlayer != this) {
-		return;
+	if (flChanged & PLAYER_WEAPON || flChanged & PLAYER_MODELINDEX) {
+		if (m_activeWeapon) {
+			SetAnimationPrefix(m_activeWeapon.classname);
+		} else {
+			SetAnimationPrefix("");
+		}
 	}
 
 	PredictPreFrame();
@@ -1096,19 +1179,10 @@ ncPlayer::ReceiveEntity(float new, float flChanged)
 void
 ncPlayer::PredictPreFrame(void)
 {
-	if (vehicle_entnum == 0) {
-		vehicle = __NULL__;
+	if (m_activeWeapon) {
+		m_activeWeapon.owner = this;
+		m_activeWeapon.PredictPreFrame();
 	}
-	if (activeweapon == 0) {
-		m_activeWeapon = __NULL__;
-	}
-	if (m_itemStart == 0) {
-		m_itemList = __NULL__;
-	}
-
-	if (m_activeWeapon)
-		if (m_activeWeapon.PredictPreFrame)
-			m_activeWeapon.PredictPreFrame();
 
 	if (vehicle) {
 		ncVehicle veh = (ncVehicle)vehicle;
@@ -1427,6 +1501,7 @@ void
 ncPlayer::Respawn(void)
 {
 	/* make sure nothing happens here */
+	SendFlags |= UPDATE_ALL;
 }
 
 void
@@ -1564,6 +1639,8 @@ ncPlayer::EvaluateEntity(void)
 	EVALUATE_VECTOR(m_renderColor, 1, PLAYER_MODELINDEX)
 	EVALUATE_VECTOR(m_renderColor, 2, PLAYER_MODELINDEX)
 	EVALUATE_FIELD(m_renderAmount, PLAYER_MODELINDEX)
+	EVALUATE_FIELD(m_itemList, PLAYER_ITEMS)
+	EVALUATE_FIELD(m_activeWeapon, PLAYER_WEAPON)
 	EVALUATE_VECTOR(origin, 0, PLAYER_ORIGIN)
 	EVALUATE_VECTOR(origin, 1, PLAYER_ORIGIN)
 	EVALUATE_VECTOR(origin, 2, PLAYER_ORIGIN)
@@ -1589,17 +1666,15 @@ ncPlayer::EvaluateEntity(void)
 	EVALUATE_FIELD(friction, PLAYER_FLAGS)
 	EVALUATE_FIELD(m_timeSinceJump, PLAYER_FLAGS)
 	EVALUATE_FIELD(m_timeSinceTeleport, PLAYER_FLAGS)
-	EVALUATE_FIELD(m_itemList, PLAYER_ITEMS)
-	EVALUATE_FIELD(m_activeWeapon, PLAYER_WEAPON)
 	EVALUATE_FIELD(m_weaponAnimSequence, PLAYER_WEAPONFRAME)
 	EVALUATE_FIELD(health, PLAYER_HEALTH)
 	EVALUATE_FIELD(armor, PLAYER_HEALTH)
-	EVALUATE_VECTOR(mins, 0, PLAYER_SIZE)
-	EVALUATE_VECTOR(mins, 1, PLAYER_SIZE)
-	EVALUATE_VECTOR(mins, 2, PLAYER_SIZE)
-	EVALUATE_VECTOR(maxs, 0, PLAYER_SIZE)
-	EVALUATE_VECTOR(maxs, 1, PLAYER_SIZE)
-	EVALUATE_VECTOR(maxs, 2, PLAYER_SIZE)
+	EVALUATE_FIELD(mins, 0, PLAYER_SIZE)
+	EVALUATE_FIELD(mins, 1, PLAYER_SIZE)
+	EVALUATE_FIELD(mins, 2, PLAYER_SIZE)
+	EVALUATE_FIELD(maxs, 0, PLAYER_SIZE)
+	EVALUATE_FIELD(maxs, 1, PLAYER_SIZE)
+	EVALUATE_FIELD(maxs, 2, PLAYER_SIZE)
 	EVALUATE_VECTOR(view_ofs, 2, PLAYER_SIZE)
 	EVALUATE_FIELD(movetype, PLAYER_MOVETYPE)
 	EVALUATE_FIELD(solid, PLAYER_MOVETYPE)
@@ -1621,7 +1696,6 @@ ncPlayer::EvaluateEntity(void)
 	EVALUATE_FIELD(m_spectatingEntity, PLAYER_SPECTATE)
 	EVALUATE_FIELD(m_spectatingMode, PLAYER_SPECTATE)
 	EVALUATE_FIELD(m_spectatingFlags, PLAYER_SPECTATE)
-
 	EVALUATE_FIELD(anim_top, PLAYER_TOPFRAME)
 	EVALUATE_FIELD(anim_top_time, PLAYER_TOPFRAME)
 	EVALUATE_FIELD(anim_top_delay, PLAYER_TOPFRAME)
@@ -2038,6 +2112,7 @@ ncPlayer::Damage(entity inflictor, entity attacker, ncDict damageDecl, float dam
 	float damagePoints = (float)rint(stof(damageString) * damageScale);
 	ncSurfacePropEntity ourAttacker = (ncSurfacePropEntity)attacker;
 	ncRuleDelegate rules = (ncRuleDelegate)ncRuleDelegate::ActiveInstance();
+	float igniteTime = 0.0f;
 
 	/* sanity check */
 	if (is.Alive(this) == false) {
@@ -2113,6 +2188,12 @@ ncPlayer::Damage(entity inflictor, entity attacker, ncDict damageDecl, float dam
 
 	damagePoints = rint(damagePoints);
 	SetHealth(GetHealth() - damagePoints);
+	igniteTime = ReadFloat(damageDecl.GetString("ignite"));
+
+	if (igniteTime > 0.0f) {
+		Ignite(attacker, igniteTime, damageDecl.GetString("weapon"));
+		EntLog("damage causes entity to burn for %f seconds", igniteTime);
+	}
 
 	/* friendly fire penalty */
 	if (isFriendlyFire) {

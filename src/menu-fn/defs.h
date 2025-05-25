@@ -36,6 +36,7 @@ font_s font_label_b;
 font_s font_arial;
 font_s font_label_p;
 font_s font_console;
+font_s font_button;
 
 var int autocvar_menu_helptext_size = 13;
 

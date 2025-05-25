@@ -26,6 +26,10 @@ Platform_Init(void)
 	if (STRING_SET(menuMap)) {
 		localcmd(strcat("map_background ", menuMap, "\n"));
 	}
+
+	if (fileExists("media/gamestartup.ogg")) {
+		localcmd("music media/gamestartup.ogg\n");
+	}
 }
 
 void

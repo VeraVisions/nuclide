@@ -16,6 +16,7 @@
 
 /* used to keep track of decl across different classnames */
 .string declclass;
+.string spawnclass;
 
 /** @defgroup entities Entities
     @brief Objects within the game world, serving various functions.

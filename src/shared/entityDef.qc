@@ -352,6 +352,7 @@ EntityDef_PrepareEntity(entity target, int id)
 	}
 
 	targetEnt.declclass = g_entDefTable[id].entClass;
+	targetEnt.spawnclass = g_entDefTable[id].spawnClass;
 
 	if (isEntDefBased == false) {
 		/* first we spawn it as the base spawnclass */

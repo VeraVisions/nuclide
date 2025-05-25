@@ -614,11 +614,11 @@ tools: fteqcc vmap vvmtool iqmtool imgtool generatebuiltinsl makevulkanblob
 
 vmap:
 	cd Tools/vmap && $(MAKE)
-	install -m 0777 Tools/vmap/vmap vmap
+	-install -m 0777 Tools/vmap/vmap vmap
 
 vvmtool:
 	cd Tools/vvmtool && $(MAKE)
-	install -m 0777 Tools/vvmtool/vvmtool vvmtool
+	-install -m 0777 Tools/vvmtool/vvmtool vvmtool
 
 dist: dist-pak dist-engine
 
@@ -627,7 +627,8 @@ dist-engine: engine-lin32 engine-lin64 engine-win32 engine-win64 dedicated-lin32
 dist-pak: fteqcc
 	if [ -d $(GAME)/src ];then $(MAKE) game GAME=$(GAME) NAME="$(NAME)";fi
 	mkdir -p "$(BUILD_DIR)/$(NAME)-content/$(GAME)"
-	./Tools/make_dist.sh "$(GAME)" $(BUILD_DIR)/$(NAME)-content/$(GAME) > $(BUILD_DIR)/$(NAME)-content.log
+	if [ -f $(GAME)/DEPENDS ];then ./Tools/make_dist.sh "$(DEPENDS)" $(BUILD_DIR)/$(NAME)-content/$(GAME) >> $(BUILD_DIR)/$(NAME)-content.log;fi
+	./Tools/make_dist.sh "$(GAME)" $(BUILD_DIR)/$(NAME)-content/$(GAME) >> $(BUILD_DIR)/$(NAME)-content.log
 	-$(GAME)/post-dist.sh "$(GAME)" "$(BUILD_DIR)/$(NAME)-content"
 	@printf "Building finished. Check %s\n", "$(BUILD_DIR)/$(NAME)-content"
 
@@ -695,7 +696,7 @@ $(ENGINE_BINARY):
 	-cp $(GAME)/icon.ico ./ThirdParty/fteqw/engine/common/$(GAME).ico
 	-cp $(GAME)/$(GAME).ico ./ThirdParty/fteqw/engine/common/$(GAME).ico
 	cd ThirdParty/fteqw/engine && $(MAKE) $(ENGINE_CLBUILD) PKGCONFIG=pkg-config FTE_CONFIG=$(GAME) ARCH=x86_64
-	install -m 0777 $(ENGINE_BINARY) ./$(GAME_BINARY)
+	-install -m 0777 $(ENGINE_BINARY) ./$(GAME_BINARY)
 
 $(ENGINE_BINARY_WIN32): 
 	cd ThirdParty/fteqw/engine && $(MAKE) makelibs FTE_TARGET=win32
@@ -704,7 +705,7 @@ $(ENGINE_BINARY_WIN32):
 	-cp $(GAME)/$(GAME).ico ./ThirdParty/fteqw/engine/common/$(GAME).ico
 	cd ThirdParty/fteqw/engine && $(MAKE) m-rel FTE_TARGET=win32 FTE_CONFIG=$(GAME)
 	mkdir -p "$(BUILD_DIR)/$(NAME)-win"
-	install -m 0777 $(ENGINE_BINARY_WIN32) $(BUILD_DIR)/$(NAME)-win/$(NAME)_x86.exe
+	-install -m 0777 $(ENGINE_BINARY_WIN32) $(BUILD_DIR)/$(NAME)-win/$(NAME)_x86.exe
 	cd ThirdParty/fteqw/engine && $(MAKE) plugins-rel NATIVE_PLUGINS="$(NATIVE_PLUGINS)" FTE_CONFIG=$(GAME) FTE_TARGET=win32
 	find ThirdParty/fteqw/engine/release/ -name "fteplug_*.dll" -exec mv '{}' $(BUILD_DIR)/$(NAME)-win/ \;
 
@@ -715,7 +716,7 @@ $(ENGINE_BINARY_WIN64):
 	-cp $(GAME)/$(GAME).ico ./ThirdParty/fteqw/engine/common/$(GAME).ico
 	cd ThirdParty/fteqw/engine && $(MAKE) m-rel FTE_TARGET=win64 FTE_CONFIG=$(GAME)
 	mkdir -p "$(BUILD_DIR)/$(NAME)-win"
-	install -m 0777 $(ENGINE_BINARY_WIN64) $(BUILD_DIR)/$(NAME)-win/$(NAME)_x64.exe
+	-install -m 0777 $(ENGINE_BINARY_WIN64) $(BUILD_DIR)/$(NAME)-win/$(NAME)_x64.exe
 	cd ThirdParty/fteqw/engine && $(MAKE) plugins-rel NATIVE_PLUGINS="$(NATIVE_PLUGINS)" FTE_CONFIG=$(GAME) FTE_TARGET=win64
 	find ThirdParty/fteqw/engine/release/ -name "fteplug_*.dll" -exec mv '{}' $(BUILD_DIR)/$(NAME)-win/ \;
 
@@ -728,7 +729,7 @@ $(ENGINE_BINARY_LIN32):
 	mkdir -p "$(BUILD_DIR)/$(NAME)-linux"
 	cd ThirdParty/fteqw/engine && $(MAKE) plugins-rel NATIVE_PLUGINS="$(NATIVE_PLUGINS)" FTE_CONFIG=$(GAME) FTE_TARGET=linux32
 	find ThirdParty/fteqw/engine/release/ -name "fteplug_*.so" -exec mv '{}' $(BUILD_DIR)/$(NAME)-linux/ \;
-	install -m 0777 $(ENGINE_BINARY_LIN32) $(BUILD_DIR)/$(NAME)-linux/$(NAME)_x86
+	-install -m 0777 $(ENGINE_BINARY_LIN32) $(BUILD_DIR)/$(NAME)-linux/$(NAME)_x86
 
 $(ENGINE_BINARY_LIN64):
 	cd ThirdParty/fteqw/engine && $(MAKE) makelibs ARCH=x86_64 FTE_TARGET=linux64
@@ -737,7 +738,7 @@ $(ENGINE_BINARY_LIN64):
 	-cp $(GAME)/$(GAME).ico ./ThirdParty/fteqw/engine/common/$(GAME).ico
 	cd ThirdParty/fteqw/engine && $(MAKE) m-rel ARCH=x86_64 FTE_TARGET=linux64 FTE_CONFIG=$(GAME)
 	mkdir -p "$(BUILD_DIR)/$(NAME)-linux"
-	install -m 0777 $(ENGINE_BINARY_LIN64) $(BUILD_DIR)/$(NAME)-linux/$(NAME)_x64
+	-install -m 0777 $(ENGINE_BINARY_LIN64) $(BUILD_DIR)/$(NAME)-linux/$(NAME)_x64
 	cd ThirdParty/fteqw/engine && $(MAKE) plugins-rel NATIVE_PLUGINS="$(NATIVE_PLUGINS)" FTE_CONFIG=$(GAME) FTE_TARGET=linux64
 	find ThirdParty/fteqw/engine/release/ -name "fteplug_*.so" -exec mv '{}' $(BUILD_DIR)/$(NAME)-linux/ \;
 
@@ -747,75 +748,75 @@ $(ENGINE_DEDICATED):
 	cd ThirdParty/fteqw/engine && $(MAKE) makelibs ARCH=x86_64
 	cp $(GAME)/engine.h ./ThirdParty/fteqw/engine/common/config_$(GAME).h
 	cd ThirdParty/fteqw/engine && $(MAKE) sv-dbg FTE_CONFIG=$(GAME) ARCH=x86_64
-	install -m 0777 $(ENGINE_DEDICATED) ./$(GAMEDS_BINARY)
+	-install -m 0777 $(ENGINE_DEDICATED) ./$(GAMEDS_BINARY)
 
 $(ENGINE_DS_LIN32):
 	cd ThirdParty/fteqw/engine && $(MAKE) makelibs FTE_TARGET=win32
 	cp $(GAME)/engine.h ./ThirdParty/fteqw/engine/common/config_$(GAME).h
 	cd ThirdParty/fteqw/engine && $(MAKE) sv-rel FTE_TARGET=win32 FTE_CONFIG=$(GAME)
 	mkdir -p "$(BUILD_DIR)/$(NAME)-win"
-	install -m 0777 $(ENGINE_DS_WIN32) $(BUILD_DIR)/$(NAME)-win/$(NAME)DS_x86.exe
+	-install -m 0777 $(ENGINE_DS_WIN32) $(BUILD_DIR)/$(NAME)-win/$(NAME)DS_x86.exe
 
 $(ENGINE_DS_LIN64):
 	cd ThirdParty/fteqw/engine && $(MAKE) makelibs FTE_TARGET=win64
 	cp $(GAME)/engine.h ./ThirdParty/fteqw/engine/common/config_$(GAME).h
 	cd ThirdParty/fteqw/engine && $(MAKE) sv-rel FTE_TARGET=win64 FTE_CONFIG=$(GAME)
 	mkdir -p "$(BUILD_DIR)/$(NAME)-win"
-	install -m 0777 $(ENGINE_DS_WIN64) $(BUILD_DIR)/$(NAME)-win/$(NAME)DS_x64.exe
+	-install -m 0777 $(ENGINE_DS_WIN64) $(BUILD_DIR)/$(NAME)-win/$(NAME)DS_x64.exe
 
 $(ENGINE_DS_WIN32):
 	cd ThirdParty/fteqw/engine && $(MAKE) makelibs ARCH=i686 FTE_TARGET=linux32
 	cp $(GAME)/engine.h ./ThirdParty/fteqw/engine/common/config_$(GAME).h
 	cd ThirdParty/fteqw/engine && $(MAKE) sv-rel ARCH=i686 FTE_TARGET=linux32 FTE_CONFIG=$(GAME)
 	mkdir -p "$(BUILD_DIR)/$(NAME)-linux"
-	install -m 0777 $(ENGINE_DS_LIN32) $(BUILD_DIR)/$(NAME)-linux/$(NAME)DS_x86
+	-install -m 0777 $(ENGINE_DS_LIN32) $(BUILD_DIR)/$(NAME)-linux/$(NAME)DS_x86
 
 $(ENGINE_DS_WIN64):
 	cd ThirdParty/fteqw/engine && $(MAKE) makelibs ARCH=x86_64 FTE_TARGET=linux64
 	cp $(GAME)/engine.h ./ThirdParty/fteqw/engine/common/config_$(GAME).h
 	cd ThirdParty/fteqw/engine && $(MAKE) sv-rel ARCH=x86_64 FTE_TARGET=linux64 FTE_CONFIG=$(GAME)
 	mkdir -p "$(BUILD_DIR)/$(NAME)-linux"
-	install -m 0777 $(ENGINE_DS_LIN64) $(BUILD_DIR)/$(NAME)-linux/$(NAME)DS_x64
+	-install -m 0777 $(ENGINE_DS_LIN64) $(BUILD_DIR)/$(NAME)-linux/$(NAME)DS_x64
 
 # tools
 
 iqmtool:
 	cd ThirdParty/fteqw/engine && $(MAKE) iqmtool
-	install -m 0777 ./ThirdParty/fteqw/engine/release/iqmtool ./
+	-install -m 0777 ./ThirdParty/fteqw/engine/release/iqmtool ./
 
 imgtool:
 	cd ThirdParty/fteqw/engine && $(MAKE) imgtool CFLAGS="-g -DFTE_SDL -I/usr/include/SDL2" LDFLAGS="-lSDL2"
-	install -m 0777 ./ThirdParty/fteqw/engine/release/imgtool ./
+	-install -m 0777 ./ThirdParty/fteqw/engine/release/imgtool ./
 
 fteqcc:
 	if [ ! -d ThirdParty ];then mkdir ThirdParty && git clone $(ENGINE_URL) ThirdParty/fteqw;fi
 	cd ThirdParty/fteqw/engine && $(MAKE) qcc-rel
-	install -m 0777 ./ThirdParty/fteqw/engine/release/fteqcc ./
+	-install -m 0777 ./ThirdParty/fteqw/engine/release/fteqcc ./
 
 generatebuiltinsl:
 	cd ThirdParty/fteqw/engine/shaders && $(MAKE) generatebuiltinsl
-	install -m 0777 ./ThirdParty/fteqw/engine/shaders/generatebuiltinsl ./
+	-install -m 0777 ./ThirdParty/fteqw/engine/shaders/generatebuiltinsl ./
 
 makevulkanblob:
 	cd ThirdParty/fteqw/engine/shaders && $(MAKE) makevulkanblob
-	install -m 0777 ./ThirdParty/fteqw/engine/shaders/makevulkanblob ./
+	-install -m 0777 ./ThirdParty/fteqw/engine/shaders/makevulkanblob ./
 
 # stock FTE engine
 fteqw:
 	cd ThirdParty/fteqw/engine && $(MAKE) makelibs ARCH=x86_64
 	cd ThirdParty/fteqw/engine && $(MAKE) $(ENGINE_CLBUILD) PKGCONFIG=pkg-config ARCH=x86_64
-	install -m 0777 ./ThirdParty/fteqw/engine/debug/fteqw ./
+	-install -m 0777 ./ThirdParty/fteqw/engine/debug/fteqw ./
 
 fteqwglqw64.exe:
 	cd ThirdParty/fteqw/engine && $(MAKE) makelibs FTE_TARGET=win64
 	cd ThirdParty/fteqw/engine && $(MAKE) m-rel FTE_TARGET=win64
 	mkdir -p "$(BUILD_DIR)/$(NAME)-win"
-	install -m 0777 $(ENGINE_BINARY_WIN64) $(BUILD_DIR)/fteqwglqw64.exe
+	-install -m 0777 $(ENGINE_BINARY_WIN64) $(BUILD_DIR)/fteqwglqw64.exe
 
 fteqw-sv:
 	cd ThirdParty/fteqw/engine && $(MAKE) makelibs ARCH=x86_64
 	cd ThirdParty/fteqw/engine && $(MAKE) sv-dbg FTE_CONFIG=fteqw ARCH=x86_64
-	install -m 0777 ./ThirdParty/fteqw/engine/debug/fteqw-sv ./fteqw-sv
+	-install -m 0777 ./ThirdParty/fteqw/engine/debug/fteqw-sv ./fteqw-sv
 
 # stock FTE plugins
 fteqw-plugins:

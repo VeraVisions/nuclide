@@ -94,6 +94,8 @@ var entsAPI_t ents; /**< Access entsAPI_t functions using this variable. */
 /** Game library */
 typedef struct
 {
+	/** Ends the current map. Resulting in the scores and intermission screens being shown. */
+	void EndMap(void);
 	/** Force loads the next map/level in the rotation. If none is set, the map will restart.*/
 	void LoadNextMap(void);
 	/** Removed any temporary game entities from the game, and resets the state of the level to the default state. */
@@ -131,7 +133,7 @@ typedef struct
 } motdAPI_t;
 var motdAPI_t motd; /**< Access motdAPI_t functions using this variable. */
 
-/** MOTD library */
+/** Actor library */
 typedef struct
 {
 	/** Returns a tokenizable string containing a list of inventory items of a specified actor (this includes players).
@@ -166,6 +168,18 @@ typedef struct
 	entity FindCoverNode(entity);
 } actorAPI_t;
 var actorAPI_t actor; /**< Access actorAPI_t functions using this variable. */
+
+/** Music library */
+typedef struct
+{
+	void Stop(void);
+	void StopOnClient(entity);
+	void Play(musictrack_t);
+	void PlayOnce(musictrack_t);
+	void PlayOnClient(musictrack_t, entity);
+	void PlayOnceOnClient(musictrack_t, entity);
+} musicAPI_t;
+var musicAPI_t music; /**< Access musicAPI_t functions using this variable. */
 
 /** Combat library */
 typedef struct
@@ -225,6 +239,7 @@ linkToServerProgs(string funcName)
 void
 _server_main(void)
 {
+	game.EndMap = linkToServerProgs("SVPF_game_EndMap");
 	game.LoadNextMap = linkToServerProgs("SVPF_game_LoadNextMap");
 	game.CleanUpMap = linkToServerProgs("SVPF_game_CleanUpMap");
 	game.GetMap = linkToServerProgs("SVPF_game_GetMap");
@@ -248,6 +263,13 @@ _server_main(void)
 	actor.TotalActorsOnTeam = linkToServerProgs("SVPF_actor_TotalActorsOnTeam");
 	actor.MoveToPos = linkToServerProgs("SVPF_actor_MoveToPos");
 	actor.HasItem = linkToServerProgs("SVPF_actor_HasItem");
+
+	music.Stop = linkToServerProgs("SVPF_music_Stop");
+	music.StopOnClient = linkToServerProgs("SVPF_music_StopOnClient");
+	music.Play = linkToServerProgs("SVPF_music_Play");
+	music.PlayOnce = linkToServerProgs("SVPF_music_PlayOnce");
+	music.PlayOnClient = linkToServerProgs("SVPF_music_PlayOnClient");
+	music.PlayOnceOnClient = linkToServerProgs("SVPF_music_PlayOnceOnClient");
 
 	exists.InMap = linkToServerProgs("SVPF_exists_InMap");
 	exists.InVFS = linkToServerProgs("SVPF_exists_InVFS");

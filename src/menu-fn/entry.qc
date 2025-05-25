@@ -39,6 +39,7 @@ m_init(void)
 
 	Platform_Init();
 
+	Font_Load("fonts/menu_button.font", font_button);
 	Font_Load("fonts/menu_label.font", font_label);
 	Font_Load("fonts/menu_main.font", font_arial);
 	Font_Load("fonts/menu_label_bold.font", font_label_b);

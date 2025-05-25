@@ -20,6 +20,7 @@ public:
 	virtual void SpawnKey(string, string);
 	nonvirtual void Captured(float teamNumber);
 	nonvirtual void WatchPlayer(void);
+	nonvirtual void Return(void);
 
 private:
 	string m_desiredItem;
@@ -31,4 +32,5 @@ private:
 	ncPlayer m_watchPlayer;
 	string m_outputOnCapture;
 	string m_outputOnTake;
+	string m_outputOnReturn;
 };

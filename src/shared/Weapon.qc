@@ -58,16 +58,12 @@ ncWeapon::_AddedCallback(void)
 
 	super::_AddedCallback();
 
-	/* after being stored in someones inventory,
-	   re-sort our weapons according to their logic */
-	ourOwner.SortWeaponChain();
+	ReloadCachedAttributes();
 
-#ifdef SERVER
 	/* we have no active weapon, and this is our pick */
 	if (!ourOwner.m_activeWeapon) {
 		ourOwner.SwitchToExactWeapon(this);
 	}
-#endif
 }
 
 void
@@ -534,6 +530,13 @@ ncWeapon::SendEntity(entity ePEnt, float flChanged)
 	/* broadcast how much data is expected to be read */
 	WriteFloat(MSG_ENTITY, flChanged);
 
+	if (inInventory == false) {
+		owner = 0;
+		m_nextWeapon = 0;
+		m_prevWeapon = 0;
+		m_nextItem = 0;
+	}
+
 	SENDENTITY_INT(entityDefID, WEAPONFL_CHANGED_MODELINDEX)
 	SENDENTITY_ENTITY(m_nextItem, WEAPONFL_CHANGED_CHAIN)
 	SENDENTITY_ENTITY(owner, WEAPONFL_CHANGED_CHAIN)
@@ -671,6 +674,7 @@ ncWeapon::ReceiveEntity(float flNew, float flChanged)
 {
 	_isItem = true;
 	_isWeapon = true;
+
 	READENTITY_INT(entityDefID, WEAPONFL_CHANGED_MODELINDEX)
 	READENTITY_ENTNUM(chain_entnum, WEAPONFL_CHANGED_CHAIN)
 	READENTITY_ENTNUM(owner_entnum, WEAPONFL_CHANGED_CHAIN)
@@ -728,18 +732,6 @@ ncWeapon::ReceiveEntity(float flNew, float flChanged)
 	}
 
 	drawmask = (modelindex != 0) ? MASK_ENGINE : 0;
-
-	if (flChanged & WEAPONFL_CHANGED_CHAIN) {
-		pSeat->m_inventoryRelink = true;
-	}
-
-	if (flChanged & WEAPONFL_CHANGED_NEXTWEAPON) {
-		pSeat->m_inventoryRelink = true;
-	}
-
-	if (flChanged & WEAPONFL_CHANGED_PREVWEAPON) {
-		pSeat->m_inventoryRelink = true;
-	}
 }
 
 void
@@ -760,14 +752,6 @@ ncWeapon::PredictPreFrame(void)
 	/* may no longer be valid */
 	if (wasfreed(this)) {
 		return;
-	}
-
-	if (m_nextWeapon == __NULL__ && m_nextWeapon_entnum) {
-		m_nextWeapon = (ncWeapon)findentity(world, ::entnum, m_nextWeapon_entnum);
-	}
-
-	if (m_prevWeapon == __NULL__ && m_prevWeapon_entnum) {
-		m_prevWeapon = (ncWeapon)findentity(world, ::entnum, m_prevWeapon_entnum);
 	}
 
 	SAVE_STATE(m_nextWeapon)
@@ -798,6 +782,7 @@ ncWeapon::PredictPreFrame(void)
 	SAVE_STATE(m_weaponIsFiring)
 	SAVE_STATE(m_weaponOverheating)
 	SAVE_STATE(m_burstCount)
+	SAVE_STATE(owner)
 }
 
 void
@@ -833,6 +818,7 @@ ncWeapon::PredictPostFrame(void)
 	ROLL_BACK(m_weaponIsFiring)
 	ROLL_BACK(m_weaponOverheating)
 	ROLL_BACK(m_burstCount)
+	ROLL_BACK(owner)
 }
 
 #endif

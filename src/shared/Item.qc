@@ -505,8 +505,12 @@ ncItem::SendEntity(entity ePEnt, float flChanged)
 		flChanged &= ~ITEMFL_CHANGED_VELOCITY;
 		flChanged &= ~ITEMFL_CHANGED_ANGULARVELOCITY;
 		flChanged &= ~ITEMFL_CHANGED_RENDERPROPS;
+	} else {
+		owner = 0;
+		m_nextWeapon = 0;
+		m_prevWeapon = 0;
+		m_nextItem = 0;
 	}
-
 
 	WriteByte(MSG_ENTITY, ENT_ITEM);
 
@@ -609,11 +613,6 @@ ncItem::EvaluateEntity(void)
 void
 ncItem::ReceiveEntity(float flNew, float flChanged)
 {
-	if (flNew) {
-		owner = __NULL__;
-		m_nextItem = __NULL__;
-	}
-
 	_isItem = true;
 	_isWeapon = false;
 	READENTITY_INT(entityDefID, ITEMFL_CHANGED_MODELINDEX)
@@ -665,13 +664,6 @@ ncItem::ReceiveEntity(float flNew, float flChanged)
 	}
 
 	drawmask = (modelindex != 0) ? MASK_ENGINE : 0;
-
-	if (owner_entnum)
-	if (flChanged & ITEMFL_CHANGED_CHAIN || (chain_entnum && !m_nextItem) || (owner_entnum && !owner)) {
-		m_nextItem = __NULL__;
-		owner = __NULL__;
-		pSeat->m_inventoryRelink = true;
-	}
 
 	if (flChanged & ITEMFL_CHANGED_FRAME) {
 		frame1time = 0.0f;

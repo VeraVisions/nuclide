@@ -1353,12 +1353,12 @@ ncRenderableEntity::Input(entity eAct, string strInput, string strData)
 	case "SetAnimation":
 		float animFrame = frameforname(modelindex, strcat("@", strData));
 		SetFrame(animFrame);
-		print(sprintf("SetAnimation: %S (%d) on %S\n",strData, animFrame, model));
+		EntLog("SetAnimation: %S (%d) on %S\n", strData, animFrame, model);
 		break;
 	case "PlayNamedSequence":
 		float animFrame = frameforname(modelindex, strData);
 		SetFrame(animFrame);
-		print(sprintf("PlayNamedSequence: %S (%d) on %S\n",strData, animFrame, model));
+		EntLog("PlayNamedSequence: %S (%d) on %S\n", strData, animFrame, model);
 		frame1time = 0.0f;
 		break;
 	case "SetBody":

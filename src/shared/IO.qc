@@ -62,6 +62,11 @@ ncIO::ReloadCachedAttributes(void)
 void
 ncIO::Spawned(void)
 {
+	_isActor = false;
+	_isItem = false;
+	_isPlayer = false;
+	_isWeapon = false;
+
 #ifdef SERVER
 	if (STRING_SET(m_outputOnSpawn))
 		m_outputOnSpawn = CreateOutput(m_outputOnSpawn);
