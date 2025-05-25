@@ -32,10 +32,10 @@ createinet_btnok_start(void)
 		localcmd(sprintf("set password %S\n", create_tbPassword.m_text));
 		localcmd(sprintf("set g_gametype %S\n", gameType));
 
-		if (cvar("ui_filLServer") > 0) {
+		if (cvar("ui_fillServer") > 0) {
 			localcmd(sprintf("set bot_minClients %S\n", create_tbMaxplayers.m_text));
 		} else {
-			localcmd(sprintf("set bot_minClients %S\n", create_tbMaxplayers.m_text));
+			localcmd(sprintf("set bot_minClients %S\n", "0"));
 		}
 	
 		localcmd(sprintf("map %s\n", startmap));

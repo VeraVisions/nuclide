@@ -47,10 +47,10 @@ create_btnok_start(void)
 		localcmd(sprintf("set password %S\n", create_tbPassword.m_text));
 		localcmd(sprintf("set g_gametype %S\n", gameType));
 
-		if (cvar("ui_filLServer") > 0) {
+		if (cvar("ui_fillServer") > 0) {
 			localcmd(sprintf("set bot_minClients %S\n", create_tbMaxplayers.m_text));
 		} else {
-			localcmd(sprintf("set bot_minClients %S\n", create_tbMaxplayers.m_text));
+			localcmd(sprintf("set bot_minClients %S\n", "0"));
 		}
 	
 		localcmd(sprintf("map %s\n", startmap));
@@ -120,7 +120,7 @@ create_sbModes_changed(int val)
 void
 cz_cxFillBotsChanged(float val)
 {
-	localcmd(sprintf("seta ui_filLServer %f\n", val));
+	localcmd(sprintf("seta ui_fillServer %f\n", val));
 }
 
 void
@@ -226,7 +226,7 @@ menu_creategame_init(void)
 
 	create_cxFillBots = spawn(CCheckBox);
 	create_cxFillBots.SetPos(52,232);
-	create_cxFillBots.SetValue(cvar("ui_filLServer"));
+	create_cxFillBots.SetValue(cvar("ui_fillServer"));
 	create_cxFillBots.SetCallback(cz_cxFillBotsChanged);
 	Widget_Add(fn_createshared, create_cxFillBots);
 }

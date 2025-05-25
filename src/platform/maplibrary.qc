@@ -253,7 +253,7 @@ ModeLibrary_Init(void)
 	}
 
 	/* search for all maps in the current PATH */
-	mapsearch = search_begin("maps/*.bsp:maps/*/*.bsp", SEARCH_NAMESORT | SEARCH_FULLPACKAGE | SEARCH_MULTISEARCH, TRUE);
+	mapsearch = search_begin("progs/*.dat", SEARCH_NAMESORT | SEARCH_FULLPACKAGE | SEARCH_MULTISEARCH, TRUE);
 	mapCount = search_getsize(mapsearch);
 
 	/* we now iterate over the search entries to filter results out */
