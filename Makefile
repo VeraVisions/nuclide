@@ -892,14 +892,14 @@ defs-gtkradiant-q1: radiant $(GAME)/scripts/entities.def
 	rsync -rva "$(NUCLIDE_DIR)/ThirdParty/gtkradiant/install/installs/$(NAME)Pack/install/$(GAME)/." "./$(GAME)/."
 
 defs:
-	if [ -d "$(NUCLIDE_DIR)/ThirdParty/gtkradiant" ];then $(MAKE) defs-gtkradiant-q3;fi
-	if [ -d "$(NUCLIDE_DIR)/ThirdParty/netradiant" ];then $(MAKE) defs-nr-q3;fi
-	if [ -d "$(NUCLIDE_DIR)/ThirdParty/netradiant-custom" ];then $(MAKE) defs-nrc-q3;fi
+	if [ -d "$(NUCLIDE_DIR)/ThirdParty/gtkradiant/build/plugins" ];then $(MAKE) defs-gtkradiant-q3;fi
+	if [ -d "$(NUCLIDE_DIR)/ThirdParty/netradiant/build/plugins" ];then $(MAKE) defs-nr-q3;fi
+	if [ -d "$(NUCLIDE_DIR)/ThirdParty/netradiant-custom/install/plugins" ];then $(MAKE) defs-nrc-q3;fi
 
 defs-wad:
-	if [ -d "$(NUCLIDE_DIR)/ThirdParty/gtkradiant" ];then $(MAKE) defs-gtkradiant-q1;fi
-	if [ -d "$(NUCLIDE_DIR)/ThirdParty/netradiant" ];then $(MAKE) defs-nr-q1;fi
-	if [ -d "$(NUCLIDE_DIR)/ThirdParty/netradiant-custom" ];then $(MAKE) defs-nrc-q1;fi
+	if [ -d "$(NUCLIDE_DIR)/ThirdParty/gtkradiant/build/plugins" ];then $(MAKE) defs-gtkradiant-q1;fi
+	if [ -d "$(NUCLIDE_DIR)/ThirdParty/netradiant/build/plugins" ];then $(MAKE) defs-nr-q1;fi
+	if [ -d "$(NUCLIDE_DIR)/ThirdParty/netradiant-custom/install/plugins" ];then $(MAKE) defs-nrc-q1;fi
 
 $(GAME)/scripts/entities.def:
 	Tools/make_mapdef.sh $(GAME)
@@ -1172,7 +1172,7 @@ fteqw-plugins-lin64:
 # level editing software
 radiant:
 	if [ ! -d ThirdParty/gtkradiant ];then git clone https://github.com/TTimo/gtkradiant ThirdParty/gtkradiant;fi
-	cd ThirdParty/gtkradiant && scons
+	cd ThirdParty/gtkradiant && scons --no-packs
 	Tools/make_launcher.sh ./ThirdParty/gtkradiant/install/ ./radiant.bin radiant
 
 netradiant-custom:
