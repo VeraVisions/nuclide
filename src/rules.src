@@ -1,0 +1,6 @@
+#define QWSSQC
+
+#includelist
+common/include.src
+server/api.h
+#endlist
