@@ -55,7 +55,14 @@ RADIANT_TEXTURES="$(NUCLIDE_DIR)/ThirdParty/gtkradiant/install/installs/$(NAME)P
 RADIANT_DEF="$(NUCLIDE_DIR)/ThirdParty/gtkradiant/install/installs/$(NAME)Pack/install/$(GAME)/scripts/entities.def"
 RADIANT_SHADERLIST="$(NUCLIDE_DIR)/ThirdParty/gtkradiant/install/installs/$(NAME)Pack/install/$(GAME)/scripts/shaderlist.txt"
 
-NRC_GAME="$(NUCLIDE_DIR)/ThirdParty/netradiant-custom/install/gamepacks/games/$(NAME).game"
+NR_GAMES="$(NUCLIDE_DIR)/ThirdParty/netradiant/build/gamepacks/games"
+NR_GAME="$(NR_GAMES)/$(NAME).game"
+NR_GAMEDIR="$(NUCLIDE_DIR)/ThirdParty/netradiant/build/gamepacks/$(NAME).game/$(GAME)/"
+NR_DEF="$(NR_GAMEDIR)/entities.def"
+NR_SYNAPSE="$(NR_GAMEDIR)/../default_build_menu.xml"
+
+NRC_GAMES="$(NUCLIDE_DIR)/ThirdParty/netradiant-custom/install/gamepacks/games"
+NRC_GAME="$(NRC_GAMES)/$(NAME).game"
 NRC_GAMEDIR="$(NUCLIDE_DIR)/ThirdParty/netradiant-custom/install/gamepacks/$(NAME).game/$(GAME)/"
 NRC_DEF="$(NRC_GAMEDIR)/entities.def"
 NRC_SYNAPSE="$(NRC_GAMEDIR)/../default_build_menu.xml"
@@ -111,8 +118,329 @@ mapc: fteqcc
 	cd "$(GAME)/src/maps/" && $(MAKE) QCC=$(QCC_DIR)/../../../fteqcc CFLAGS="-I$(QCC_DIR)/../../../src/common/"
 
 # will build a gamepack for gtkradiant
-defs-nrc-q3: netradiant-custom $(GAME)/scripts/entities.def
+defs-nr-q3: netradiant trshaders $(GAME)/scripts/entities.def
+	mkdir -p "$(NR_GAMEDIR)"
+	mkdir -p "$(NR_GAMES)"
+	echo "<?xml version=\"1.0\" encoding=\"iso-8859-1\" standalone=\"yes\"?>" > "$(NR_GAME)"
+	echo "<game" >> "$(NR_GAME)"
+	echo "  type=\"q3\"" >> "$(NR_GAME)"
+	echo "  name=\"$(NAME)\"" >> "$(NR_GAME)"
+	echo "  enginepath_linux=\"$(NUCLIDE_DIR)\"" >> "$(NR_GAME)"
+	echo "  enginepath_win32=\"c:$(NUCLIDE_DIR)\"" >> "$(NR_GAME)"
+	echo "  engine_win32=\"fteqw.exe\"" >> "$(NR_GAME)"
+	echo "  engine_linux=\"fteqw\"" >> "$(NR_GAME)"
+	echo "  basegame=\"$(GAME)\"" >> "$(NR_GAME)"
+	echo "  basegamename=\"$(NAME)\"" >> "$(NR_GAME)"
+	echo "  unknowngamename=\"Custom Game Directory\"" >> "$(NR_GAME)"
+	echo "  default_scale=\"1.0\"" >> "$(NR_GAME)"
+	echo "  no_patch=\"1\"" >> "$(NR_GAME)"
+	echo "  no_bsp_monitor=\"1\"" >> "$(NR_GAME)"
+	echo "  archivetypes=\"pk3\"" >> "$(NR_GAME)"
+	echo "  texturetypes=\"tga jpg png ktx dds\"" >> "$(NR_GAME)"
+	echo "  modeltypes=\"md3 ase lwo obj 3ds 3d 3mf ac ac3d acc amf ask assbin b3d blend bvh cob csm dae dxf enff fbx glb gltf hmp iqm irr irrmesh lws lxo m3d md2 md5mesh mdc mdl mesh mesh.xml mot ms3d ndo nff off ply pmx prj q3o q3s raw scn sib smd stl ter uc vta x x3d x3db xgl xml zae zgl\"" >> "$(NR_GAME)"
+	echo "  maptypes=\"mapq3\"" >> "$(NR_GAME)"
+	echo "  shaders=\"quake3\"" >> "$(NR_GAME)"
+	echo "  shaderpath=\"texturesrc\"" >> "$(NR_GAME)"
+	echo "  entityclass=\"quake3\"" >> "$(NR_GAME)"
+	echo "  entityclasstype=\"def xml\"" >> "$(NR_GAME)"
+	echo "  entities=\"quake3\"" >> "$(NR_GAME)"
+	echo "  brushtypes=\"quake3\"" >> "$(NR_GAME)"
+	echo "  patchtypes=\"quake3\"" >> "$(NR_GAME)"
+	echo "/>" >> "$(NR_GAME)"
+	cp "$(GAME)/scripts/entities.def" "$(NR_DEF)"
+	echo "<?xml version=\"1.0\"?>" > $(NR_SYNAPSE)
+	echo "<project version=\"2.0\">" >> $(NR_SYNAPSE)
+	echo "  <var name=\"bsp\">\"[EnginePath]qbsp\"</var>" >> $(NR_SYNAPSE)
+	echo "  <var name=\"vis\">\"[EnginePath]qvis\"</var>" >> $(NR_SYNAPSE)
+	echo "  <var name=\"light\">\"[EnginePath]qrad\"</var>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qbsp\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qbsp -onlyents\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] -onlyents \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qvis\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[vis] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qvis -fast\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[vis] -fast \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qvis -noambient\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[vis] -noambient \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qvis -noambient -fast\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[vis] -noambient -fast \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qrad\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[light] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qrad -extra\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[light] -extra \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qrad -extra4x4\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[light] -extra4x4 \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qbsp\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qbsp, qrad\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[light] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qbsp, qrad -extra\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[light] -extra \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qbsp, qrad -extra4x4\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[light] -extra4x4 \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qbsp, qvis\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[vis] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qbsp, qvis, qrad\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[vis] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[light] \"[MapFile]\"</command>  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qbsp, qvis, qrad -extra\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[vis] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[light] -extra \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qbsp, qvis, qrad -extra4x4\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[vis] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[light] -extra4x4 \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qbsp, qvis -fast\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[vis] -fast \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qbsp, qvis -fast, qrad\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[vis] -fast \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[light] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qbsp, qvis -fast, qrad -extra\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[vis] -fast \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[light] -extra \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qbsp, qvis -fast, qrad -extra4x4\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[vis] -fast \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[light] -extra4x4 \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qbsp, qvis -noambient\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[vis] -noambient \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qbsp, qvis -noambient, qrad\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[vis] -noambient \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[light] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qbsp, qvis -noambient, qrad -extra\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[vis] -noambient \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[light] -extra \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qbsp, qvis -noambient, qrad -extra4x4\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[vis] -noambient \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[light] -extra4x4 \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qbsp, qvis -noambient -fast\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[vis] -noambient -fast \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qbsp, qvis -noambient -fast, qrad\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[vis] -noambient -fast \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[light] \"[MapFile]\"</command>  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qbsp, qvis -noambient -fast, qrad -extra\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[vis] -noambient -fast \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[light] -extra \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qbsp, qvis -noambient -fast, qrad -extra4x4\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[vis] -noambient -fast \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[light] -extra4x4 \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "</project>" >> $(NR_SYNAPSE)
+
+defs-nr-q1: netradiant $(GAME)/scripts/entities.def
+	mkdir -p "$(NR_GAMEDIR)"
+	echo "<?xml version=\"1.0\" encoding=\"iso-8859-1\" standalone=\"yes\"?>" > "$(NR_GAME)"
+	echo "<game" >> "$(NR_GAME)"
+	echo "  type=\"q1\"" >> "$(NR_GAME)"
+	echo "  name=\"$(NAME)\"" >> "$(NR_GAME)"
+	echo "  enginepath_linux=\"c:$(NUCLIDE_DIR)\"" >> "$(NR_GAME)"
+	echo "  enginepath_win32=\"c:$(NUCLIDE_DIR)\"" >> "$(NR_GAME)"
+	echo "  engine_win32=\"fteqw.exe\"" >> "$(NR_GAME)"
+	echo "  engine_linux=\"fteqw\"" >> "$(NR_GAME)"
+	echo "  basegame=\"$(GAME)\"" >> "$(NR_GAME)"
+	echo "  basegamename=\"$(NAME)\"" >> "$(NR_GAME)"
+	echo "  unknowngamename=\"Custom Quake modification\"" >> "$(NR_GAME)"
+	echo "  default_scale=\"1.0\"" >> "$(NR_GAME)"
+	echo "  no_patch=\"1\"" >> "$(NR_GAME)"
+	echo "  no_bsp_monitor=\"1\"" >> "$(NR_GAME)"
+	echo "  show_wads=\"1\"" >> "$(NR_GAME)"
+	echo "  archivetypes=\"pak wad\"" >> "$(NR_GAME)"
+	echo "  texturetypes=\"tga jpg mip hlw\"" >> "$(NR_GAME)"
+	echo "  modeltypes=\"mdl\"" >> "$(NR_GAME)"
+	echo "  maptypes=\"mapq1\"" >> "$(NR_GAME)"
+	echo "  shaders=\"quake3\"" >> "$(NR_GAME)"
+	echo "  entityclass=\"quake3\"" >> "$(NR_GAME)"
+	echo "  entityclasstype=\"def xml\"" >> "$(NR_GAME)"
+	echo "  entities=\"quake3\"" >> "$(NR_GAME)"
+	echo "  brushtypes=\"quake\"" >> "$(NR_GAME)"
+	echo "  patchtypes=\"quake3\"" >> "$(NR_GAME)"
+	echo "/>" >> "$(NR_GAME)"
+	cp "$(GAME)/scripts/entities.def" "$(NR_DEF)"
+	echo "<?xml version=\"1.0\"?>" > $(NR_SYNAPSE)
+	echo "<project version=\"2.0\">" >> $(NR_SYNAPSE)
+	echo "  <var name=\"bsp\">\"[EnginePath]qbsp\"</var>" >> $(NR_SYNAPSE)
+	echo "  <var name=\"vis\">\"[EnginePath]qvis\"</var>" >> $(NR_SYNAPSE)
+	echo "  <var name=\"light\">\"[EnginePath]qrad\"</var>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qbsp\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qbsp -onlyents\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] -onlyents \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qvis\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[vis] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qvis -fast\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[vis] -fast \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qvis -noambient\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[vis] -noambient \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qvis -noambient -fast\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[vis] -noambient -fast \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qrad\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[light] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qrad -extra\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[light] -extra \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qrad -extra4x4\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[light] -extra4x4 \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qbsp\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qbsp, qrad\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[light] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qbsp, qrad -extra\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[light] -extra \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qbsp, qrad -extra4x4\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[light] -extra4x4 \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qbsp, qvis\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[vis] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qbsp, qvis, qrad\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[vis] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[light] \"[MapFile]\"</command>  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qbsp, qvis, qrad -extra\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[vis] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[light] -extra \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qbsp, qvis, qrad -extra4x4\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[vis] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[light] -extra4x4 \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qbsp, qvis -fast\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[vis] -fast \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qbsp, qvis -fast, qrad\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[vis] -fast \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[light] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qbsp, qvis -fast, qrad -extra\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[vis] -fast \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[light] -extra \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qbsp, qvis -fast, qrad -extra4x4\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[vis] -fast \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[light] -extra4x4 \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qbsp, qvis -noambient\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[vis] -noambient \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qbsp, qvis -noambient, qrad\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[vis] -noambient \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[light] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qbsp, qvis -noambient, qrad -extra\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[vis] -noambient \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[light] -extra \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qbsp, qvis -noambient, qrad -extra4x4\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[vis] -noambient \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[light] -extra4x4 \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qbsp, qvis -noambient -fast\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[vis] -noambient -fast \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qbsp, qvis -noambient -fast, qrad\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[vis] -noambient -fast \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[light] \"[MapFile]\"</command>  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qbsp, qvis -noambient -fast, qrad -extra\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[vis] -noambient -fast \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[light] -extra \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "  <build name=\"qbsp, qvis -noambient -fast, qrad -extra4x4\">" >> $(NR_SYNAPSE)
+	echo "    <command>[bsp] \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[vis] -noambient -fast \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "    <command>[light] -extra4x4 \"[MapFile]\"</command>" >> $(NR_SYNAPSE)
+	echo "  </build>" >> $(NR_SYNAPSE)
+	echo "</project>" >> $(NR_SYNAPSE)
+
+# will build a gamepack for gtkradiant
+defs-nrc-q3: netradiant-custom trshaders $(GAME)/scripts/entities.def
 	mkdir -p "$(NRC_GAMEDIR)"
+	mkdir -p "$(NRC_GAMES)"
 	echo "<?xml version=\"1.0\" encoding=\"iso-8859-1\" standalone=\"yes\"?>" > "$(NRC_GAME)"
 	echo "<game" >> "$(NRC_GAME)"
 	echo "  type=\"q3\"" >> "$(NRC_GAME)"
@@ -430,7 +758,7 @@ defs-nrc-q1: netradiant-custom $(GAME)/scripts/entities.def
 	echo "</project>" >> $(NRC_SYNAPSE)
 
 # will build a gamepack for gtkradiant
-defs-gtkradiant-q3: radiant $(GAME)/scripts/entities.def
+defs-gtkradiant-q3: radiant trshaders $(GAME)/scripts/entities.def
 	echo "<?xml version=\"1.0\" encoding=\"iso-8859-1\" standalone=\"yes\"?>" > "$(RADIANT_GAME)"
 	echo "<game" >> "$(RADIANT_GAME)"
 	echo "  name=\"$(NAME)\"" >> "$(RADIANT_GAME)"
@@ -565,10 +893,12 @@ defs-gtkradiant-q1: radiant $(GAME)/scripts/entities.def
 
 defs:
 	if [ -d "$(NUCLIDE_DIR)/ThirdParty/gtkradiant" ];then $(MAKE) defs-gtkradiant-q3;fi
+	if [ -d "$(NUCLIDE_DIR)/ThirdParty/netradiant" ];then $(MAKE) defs-nr-q3;fi
 	if [ -d "$(NUCLIDE_DIR)/ThirdParty/netradiant-custom" ];then $(MAKE) defs-nrc-q3;fi
 
 defs-wad:
 	if [ -d "$(NUCLIDE_DIR)/ThirdParty/gtkradiant" ];then $(MAKE) defs-gtkradiant-q1;fi
+	if [ -d "$(NUCLIDE_DIR)/ThirdParty/netradiant" ];then $(MAKE) defs-nr-q1;fi
 	if [ -d "$(NUCLIDE_DIR)/ThirdParty/netradiant-custom" ];then $(MAKE) defs-nrc-q1;fi
 
 $(GAME)/scripts/entities.def:
@@ -854,8 +1184,8 @@ netradiant-custom:
 # TODO: still needs a gamepack
 netradiant:
 	if [ ! -d ThirdParty/netradiant ];then git clone --recursive https://gitlab.com/xonotic/netradiant ThirdParty/netradiant;fi
-	cd ThirdParty/netradiant && cmake -G "Unix Makefiles" -S. -Bbuild -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=$(MAKE)
+	cd ThirdParty/netradiant && cmake -G "Unix Makefiles" -S. -Bbuild -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=$(MAKE) -DDOWNLOAD_GAMEPACKS=OFF
 	cd ThirdParty/netradiant && cmake --build build -- -j$(nproc)
 	cd ThirdParty/netradiant && cmake --install build
-	Tools/make_launcher.sh ./ThirdParty/netradiant/install/ ./radiant.x86_64 netradiant
+	Tools/make_launcher.sh ./ThirdParty/netradiant/build/ ./netradiant netradiant
 
