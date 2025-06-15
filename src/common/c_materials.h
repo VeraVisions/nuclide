@@ -26,7 +26,7 @@ precache_material(string materialName)
 		newPath = materialName;
 	}
 
-#ifdef SERVER
+#ifndef CLIENT
 	return newPath;
 #else
 	return precache_pic(newPath, 0);

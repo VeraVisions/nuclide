@@ -288,13 +288,3 @@ CallSpawnfuncByName(entity target, string className)
 .string spawnclass;
 
 /** @} */ // end of common
-
-#include "c_math.h"
-#include "c_math_vector.h"
-#include "c_memory.h"
-#include "c_platform.h"
-#include "c_colors.h"
-#include "c_materials.h"
-#include "c_teams.h"
-#include "c_events.h"
-#include "c_flags.h"

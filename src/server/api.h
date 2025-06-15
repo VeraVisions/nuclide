@@ -18,8 +18,6 @@
 #define QWSSQC
 #define SERVER
 
-#include "../shared/fteextensions.qc"
-#include "../common/defs.h"
 #include "api_func.h"
 #include "../shared/api.h"
 

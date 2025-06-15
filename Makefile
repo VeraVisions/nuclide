@@ -93,7 +93,7 @@ all: game engine dedicated plugins
 game: fteqcc
 	-cp src/cvar_defaults.cfg "$(GAME)/default_cvar.cfg"
 	if [ -f "$(NUCLIDE_DIR)/$(GAME)/DEPENDS" ];then $(MAKE) game GAME=$(DEPENDS);fi
-	cd "$(GAME)/src/" && $(MAKE) QCC=$(QCC_DIR)/../../fteqcc CFLAGS="-I$(QCC_DIR)/../../src/common/"
+	cd "$(GAME)/src/" && $(MAKE) QCC=$(QCC_DIR)/../../fteqcc
 
 client: fteqcc
 	cd "$(GAME)/src/client/" && $(MAKE) QCC=$(QCC_DIR)/../../../fteqcc CFLAGS="-I$(QCC_DIR)/../../../src/common/"

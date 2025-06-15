@@ -1,0 +1,13 @@
+#includelist
+fteextensions.qc
+common.h
+c_colors.h
+c_events.h
+c_flags.h
+c_materials.h
+c_math.h
+c_math_vector.h
+c_memory.h
+c_platform.h
+c_teams.h
+#endlist

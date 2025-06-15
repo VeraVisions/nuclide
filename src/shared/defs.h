@@ -14,8 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-#include "../common/defs.h"
-
 /* networking helpers */
 #define NETWORKED_INT(x) int x; int x ##_net;
 #define NETWORKED_FLOAT(x) float x; float x ##_net;

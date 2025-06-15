@@ -527,6 +527,11 @@ ncMonster::Sound(string msg)
 void
 ncMonster::Gib(int damage, vector dir)
 {
+	if (HasPropData() == false) {
+		Disappear();
+		return;
+	}
+
 	string breakModel = GetPropData(PROPINFO_BREAKMODEL);
 	vector vecDir = vectorToAngles(GetOrigin() - dir);
 	SetState(MONSTER_DEAD);
@@ -2050,14 +2055,19 @@ ncMonster::Death(entity inflictor, entity attacker, int damage, vector dir, vect
 	if (actDeath < 0) {
 		if (actViolent >= 0 && GetHealth() < -25) { /* lots of damage */
 			actDeath = (actViolent);
+			printf("actViolent %d death\n", actDeath);
 		} else if (actBackshot >= 0 && IsFacingPosition(absImpactPos) == false) {
 			actDeath = (actBackshot);
+			printf("actBackshot %d death\n", actDeath);
 		} else if (actForward >= 0 && IsFacingPosition(absImpactPos) == false) {
 			actDeath = (actForward);
+			printf("actForward %d death\n", actDeath);
 		} else if (actBackward >= 0 && IsFacingPosition(absImpactPos) == true) {
 			actDeath = (actBackward);
+			printf("actBackward %d death\n", actDeath);
 		} else {
 			actDeath = actSimple;
+			printf("actSimple %d death\n", actDeath);
 		}
 	} else {
 		actDeath = actSimple;
@@ -2250,7 +2260,7 @@ ncMonster::Input( entity entityActivator, string inputName, string dataField )
 		m_eEnemy = ncMonster_FindClosestPlayer(this);
 
 		if (m_eEnemy) {
-			m_flSequenceSpeed = 300.0f;
+			m_flSequenceSpeed = GetChaseSpeed();
 			RouteToPosition(m_eEnemy.origin);
 		}
 

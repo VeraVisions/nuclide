@@ -1,6 +1,5 @@
 #includelist
-../shared/fteextensions.qc
-../common/defs.h
+../common/include.src
 ../platform/defs.h
 
 defs.h

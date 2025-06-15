@@ -18,10 +18,8 @@
 #define CSQC
 #define CLIENT
 
-#include "../shared/fteextensions.qc"
 #include "../shared/api.h"
 #include "../shared/input.h"
-#include "../common/defs.h"
 #include "api_func.h"
 
 void

@@ -688,8 +688,6 @@ ncSurfacePropEntity::BreakModel(int damage, vector dir, int location)
 	if (GetPropData(PROPINFO_SKIN) != 0) {
 		SetSkin(GetPropData(PROPINFO_SKIN));
 	} else if (GetPropData(PROPINFO_BREAKMODEL) != __NULL__) {
-		gibeffect = GetPropData(PROPINFO_BREAKMODEL);
-		breakcount = GetPropData(PROPINFO_BREAKCOUNT);
 		speedValue = length(GetVelocity());
 
 		/* if we have enough momentum of our own, use that instead. */
