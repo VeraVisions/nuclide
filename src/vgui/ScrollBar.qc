@@ -21,13 +21,12 @@ class vguiScrollBar:vguiWidget
 	int m_hold;
 	int m_hover;
 
-	int m_height;
-	int m_theight;
-	int m_scroll;
-	int m_minus;
-	int m_maxvisible;
-	int m_totalentries;
-	int m_itemheight;
+	float m_scrollBarHeight;
+	float m_maxBarHeight;
+	float m_scroll;
+	float m_visibleItems;
+	float m_listItemMax;
+	float m_listItemHeight;
 	virtual void(void) m_changed = 0;
 
 	int m_up_hover;
@@ -104,57 +103,79 @@ void
 vguiScrollBar::Draw(void)
 {
 	vguiTheme theme = GetTheme();
-	int barheight = 0;
+	float visualBarHeight = 0;
 	float barstep = 0;
 
-	barheight = (float)(m_minus) / (float)(m_totalentries) * m_theight;
+	/* the maximum actual bar (draggable) height */
+	m_maxBarHeight = m_scrollBarHeight - (vguiScrollBar_ArrowSize[1] * 2);
 
-	drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0,vguiScrollBar_ArrowSize[1]], [vguiScrollBar_ArrowSize[0],m_theight], [1.0f,1.0f,1.0f], 0.1f);
+	/* max visible items = physical length divided by item height */
+	m_visibleItems = m_scrollBarHeight / m_listItemHeight;
 
-	DrawArrowUp([m_parent.m_vecOrigin[0]+m_vecOrigin[0],m_parent.m_vecOrigin[1]+m_vecOrigin[1]]);
-	DrawArrowDown([m_parent.m_vecOrigin[0]+m_vecOrigin[0],m_parent.m_vecOrigin[1]+m_vecOrigin[1]+m_theight + vguiScrollBar_ArrowSize[1]]);
+	visualBarHeight = (m_visibleItems / m_listItemMax) * m_maxBarHeight;
 
+	if (m_visibleItems >= m_listItemMax) {
+		visualBarHeight = m_maxBarHeight - 20;
+	}
 
-	if (barheight < 20)
-		barheight = 20;
-
-	barstep = m_theight - barheight;
-	barstep *= (float)(m_scroll) / (float)(m_maxvisible);
-
-	/* too few entries? don't even bother */
-	if (m_totalentries * m_itemheight < m_height) {
-		drawfill([m_parent.m_vecOrigin[0]+m_vecOrigin[0],m_parent.m_vecOrigin[1]+m_vecOrigin[1]+vguiScrollBar_ArrowSize[1]], [vguiScrollBar_ArrowSize[0],m_theight], [0.25,0.25,0.25], 1.0f);
+	if (m_listItemMax <= 0) {
 		return;
 	}
 
-	drawfill([m_parent.m_vecOrigin[0]+m_vecOrigin[0],m_parent.m_vecOrigin[1]+m_vecOrigin[1]+vguiScrollBar_ArrowSize[1]+barstep], [vguiScrollBar_ArrowSize[0],barheight], UI_MAINCOLOR, UI_MAINALPHA);
+	drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0,vguiScrollBar_ArrowSize[1]], [vguiScrollBar_ArrowSize[0],m_maxBarHeight], [1.0f,1.0f,1.0f], 0.1f);
+
+	DrawArrowUp([m_parent.m_vecOrigin[0]+m_vecOrigin[0],m_parent.m_vecOrigin[1]+m_vecOrigin[1]]);
+	DrawArrowDown([m_parent.m_vecOrigin[0]+m_vecOrigin[0],m_parent.m_vecOrigin[1]+m_vecOrigin[1]+m_maxBarHeight + vguiScrollBar_ArrowSize[1]]);
+
+	if (visualBarHeight < 20)
+		visualBarHeight = 20;
+
+	barstep = (m_maxBarHeight - visualBarHeight);
+	barstep *= (m_scroll / m_listItemMax);
+
+	/* too few entries? don't even bother */
+	if (visualBarHeight > m_maxBarHeight) {
+		drawfill([m_parent.m_vecOrigin[0]+m_vecOrigin[0],m_parent.m_vecOrigin[1]+m_vecOrigin[1]+vguiScrollBar_ArrowSize[1]], [vguiScrollBar_ArrowSize[0],m_maxBarHeight], [0.25,0.25,0.25], 1.0f);
+		return;
+	}
+
+	drawfill([m_parent.m_vecOrigin[0]+m_vecOrigin[0],m_parent.m_vecOrigin[1]+m_vecOrigin[1]+vguiScrollBar_ArrowSize[1]+barstep], [vguiScrollBar_ArrowSize[0],visualBarHeight], UI_MAINCOLOR, UI_MAINALPHA);
 
 	if (!m_hold) {
-		theme.DrawButton([m_parent.m_vecOrigin[0]+m_vecOrigin[0],m_parent.m_vecOrigin[1]+m_vecOrigin[1]+vguiScrollBar_ArrowSize[1]+barstep], [vguiScrollBar_ArrowSize[0],barheight], VGUI_STATE_NORMAL);
+		theme.DrawButton([m_parent.m_vecOrigin[0]+m_vecOrigin[0],m_parent.m_vecOrigin[1]+m_vecOrigin[1]+vguiScrollBar_ArrowSize[1]+barstep], [vguiScrollBar_ArrowSize[0],visualBarHeight], VGUI_STATE_NORMAL);
 	} else {
-		theme.DrawButton([m_parent.m_vecOrigin[0]+m_vecOrigin[0],m_parent.m_vecOrigin[1]+m_vecOrigin[1]+vguiScrollBar_ArrowSize[1]+barstep], [vguiScrollBar_ArrowSize[0],barheight], VGUI_STATE_ACTIVE);
+		theme.DrawButton([m_parent.m_vecOrigin[0]+m_vecOrigin[0],m_parent.m_vecOrigin[1]+m_vecOrigin[1]+vguiScrollBar_ArrowSize[1]+barstep], [vguiScrollBar_ArrowSize[0],visualBarHeight], VGUI_STATE_ACTIVE);
 	}
 }
 
 float
 vguiScrollBar::Input(float type, float x, float y, float devid)
 {
-	int barheight = 0;
+	float barheight = 0;
 	float barstep = 0;
 	float returnVal = false;
 
-	/* too few entries? don't even bother */
-	if (m_totalentries * m_itemheight < m_height) {
-		return false;
+	/* the maximum actual bar (draggable) height */
+	m_maxBarHeight = m_scrollBarHeight - (vguiScrollBar_ArrowSize[1] * 2);
+
+	/* max visible items = physical length divided by item height */
+	m_visibleItems = m_scrollBarHeight / m_listItemHeight;
+
+	barheight = (m_visibleItems / m_listItemMax) * m_maxBarHeight;
+
+	if (m_visibleItems > m_listItemMax) {
+		barheight = m_maxBarHeight - 20;
 	}
 
-	barheight = (float)(m_minus) / (float)(m_totalentries) * m_theight;
+	if (m_listItemMax <= 0) {
+		return;
+	}
 
 	if (barheight < 20)
 		barheight = 20;
 
-	barstep = m_theight - barheight;
-	barstep *= (float)(m_scroll) / (float)(m_maxvisible);
+	barstep = m_maxBarHeight - barheight;
+	barstep *= (m_scroll / m_listItemMax);
 
 	if (Util_MouseAbove(g_vecMousePos, m_parent.m_vecOrigin + m_vecOrigin, vguiScrollBar_ArrowSize)) {
 		m_up_hover = TRUE;
@@ -162,7 +183,7 @@ vguiScrollBar::Input(float type, float x, float y, float devid)
 		m_up_hover = FALSE;
 	}
 
-	if (Util_MouseAbove(g_vecMousePos, m_parent.m_vecOrigin + m_vecOrigin + [0, m_theight + vguiScrollBar_ArrowSize[1]], vguiScrollBar_ArrowSize)) {
+	if (Util_MouseAbove(g_vecMousePos, m_parent.m_vecOrigin + m_vecOrigin + [0, m_maxBarHeight + vguiScrollBar_ArrowSize[1]], vguiScrollBar_ArrowSize)) {
 		m_dn_hover = TRUE;
 	} else {
 		m_dn_hover = FALSE;
@@ -207,10 +228,10 @@ vguiScrollBar::Input(float type, float x, float y, float devid)
 			float m_value;
 			/* The - 10 is putting the slider in the middle of the cursor */
 			mdelta = (g_vecMousePos[1] - (barheight / 2)) - ( m_parent.m_vecOrigin[1] + m_vecOrigin[1]);
-			m_value = ((float)mdelta / (float)m_theight);
+			m_value = ((float)mdelta / (float)m_maxBarHeight);
 			m_value = bound(0.0f, m_value, 1.0f);
 
-			SetValue(rint(m_totalentries * m_value));
+			SetValue(rint(m_listItemMax * m_value));
 			g_lastmousepos[0] = g_vecMousePos[0];
 			g_lastmousepos[1] = g_vecMousePos[1];
 
@@ -232,32 +253,32 @@ vguiScrollBar::GetValue(void)
 void
 vguiScrollBar::SetValue(int val)
 {
-	m_scroll = bound(0,val,m_totalentries);
+	m_scroll = bound(0,val,m_listItemMax);
 
 	if (m_changed) {
 		m_changed();
 	}
 }
 
+/* maximum number of entries */
 void
 vguiScrollBar::SetMax(int val)
 {
-	m_minus = m_height / m_itemheight;
-	m_totalentries = val;
-	m_maxvisible = m_totalentries - m_minus;
+	m_listItemMax = val;
 }
 
+/* absolute height of the scrollbar (with up/down arrows included */
 void
 vguiScrollBar::SetLength(int val)
 {
-	m_height = val;
-	m_theight = m_height - (vguiScrollBar_ArrowSize[1] * 2);
+	m_scrollBarHeight = val;
 }
 
+/* size of an item in a list. default is 20px */
 void
 vguiScrollBar::SetItemheight(int val)
 {
-	m_itemheight = val;
+	m_listItemHeight = val;
 }
 
 void
