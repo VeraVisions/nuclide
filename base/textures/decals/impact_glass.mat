@@ -6,7 +6,7 @@
 
 	{
 		program unlit
-		map "decals/impact_glass.ktx"
+		map "decals/impact_glass.tga"
 		blendFunc GL_ONE GL_ONE
 	}
 }

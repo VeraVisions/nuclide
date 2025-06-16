@@ -7,7 +7,7 @@
 	cull none
 
 	{
-		clampmap "sfx/steam.ktx"
+		clampmap "sfx/steam.tga"
 		rgbGen vertex
 		alphaGen vertex
 		blendFunc blend

@@ -1,7 +1,7 @@
 {
 	surfaceParm nolightmap
 
-	qer_editorImage "common/rtsurface.ktx"
+	qer_editorImage "common/rtsurface.tga"
 	{
 		map $rt:base
 	}

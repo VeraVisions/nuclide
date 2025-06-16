@@ -1,6 +1,6 @@
 // Vera Visions Material
 {
-	qer_editorImage "liquid/water2.ktx"
+	qer_editorImage "liquid/water2.tga"
 	sort banner
 	qer_trans 0.8
 	surfaceParm nonsolid
@@ -9,7 +9,7 @@
 	surfaceParm nodlight
 	cull none
 	diffusemap "liquid/water2.ktx"
-	normalmap "liquid/water1_n.ktx"
+	normalmap "liquid/water1_n.tga"
 
 	{
 		program water_high

@@ -1,5 +1,5 @@
 {
-	qer_editorImage "common/skyportal.ktx"
+	qer_editorImage "common/skyportal.tga"
 	surfaceParm noimpact
 	surfaceParm nolightmap
 	surfaceParm sky

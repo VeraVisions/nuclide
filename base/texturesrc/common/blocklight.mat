@@ -1,8 +1,0 @@
-{
-	qer_editorImage "common/blocklight.tga"
-	surfaceParm nodraw2
-	surfaceParm nonsolid
-	surfaceParm nomarks
-	surfaceParm nolightmap
-	nomipmaps
-}

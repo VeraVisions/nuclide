@@ -1,8 +1,8 @@
 // Vera Visions Material
 {
-	diffusemap pbrtest/tiles052.ktx
-	normalmap pbrtest/tiles052_local.ktx
-	specularmap pbrtest/tiles052_mra.ktx
+	diffusemap pbrtest/tiles052.tga
+	normalmap pbrtest/tiles052_local.tga
+	specularmap pbrtest/tiles052_mra.tga
 	
 	{
 		program defaultwall

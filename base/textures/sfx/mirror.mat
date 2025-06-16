@@ -1,8 +1,8 @@
 // Vera Visions Material
 {
 	polygonOffset 1
-	diffusemap "sfx/mirror.ktx"
-	normalmap "sfx/mirror_n.ktx"
+	diffusemap "sfx/mirror.tga"
+	normalmap "sfx/mirror_n.tga"
 
 	{
 		program lightmapped_reflect

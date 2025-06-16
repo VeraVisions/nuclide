@@ -1,5 +1,5 @@
 {
-	qer_editorImage "common/clipgrenade.ktx"
+	qer_editorImage "common/clipgrenade.tga"
 	qer_trans 0.50
 	surfaceParm grenadeclip
 	surfaceParm nodraw

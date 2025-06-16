@@ -1,5 +1,5 @@
 {
-	diffusemap dev/info_node_air.ktx
+	diffusemap dev/info_node_air.tga
 	
 	{
 		map $diffuse

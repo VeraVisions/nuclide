@@ -1,5 +1,5 @@
 {
-	diffusemap editor/light.ktx
+	diffusemap editor/light.tga
 	
 	{
 		map $diffuse

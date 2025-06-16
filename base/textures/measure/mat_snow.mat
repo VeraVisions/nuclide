@@ -3,14 +3,14 @@
 
 if $programs
 	program defaultwall
-	diffusemap measure/mat_snow.ktx
+	diffusemap measure/mat_snow.tga
 else
 	{
 		map $lightmap
 		rgbGen identity
 	}
 	{
-		map measure/mat_snow.ktx
+		map measure/mat_snow.tga
 		rgbGen identity
 		blendFunc GL_DST_COLOR GL_ZERO
 	}

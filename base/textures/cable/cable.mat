@@ -1,5 +1,5 @@
 {
-	diffusemap cable/cable.ktx
+	diffusemap cable/cable.tga
 	
 	{
 		map $diffuse

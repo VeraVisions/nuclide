@@ -1,5 +1,5 @@
 {
-	qer_editorImage "common/terrain.ktx"
+	qer_editorImage "common/terrain.tga"
 	vmap_terrain
 	surfaceParm dust
 	surfaceParm nodraw

@@ -1,8 +1,0 @@
-// Vera Visions Material
-{
-	program defaultwall
-	polygonOffset 1
-	diffusemap $whiteimage
-	normalmap dev/flat_normal.tga
-	specularmap dev/shiny_mra.tga
-}

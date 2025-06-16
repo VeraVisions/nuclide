@@ -1,5 +1,5 @@
 {
-	diffusemap dev/model_bone.ktx
+	diffusemap dev/model_bone.tga
 	
 	{
 		map $diffuse

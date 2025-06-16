@@ -7,7 +7,7 @@
 	cull none
 
 	{
-		clampmap "sfx/dustcloud.ktx"
+		clampmap "sfx/dustcloud.tga"
 		rgbGen vertex
 		alphaGen vertex
 		blendFunc blend

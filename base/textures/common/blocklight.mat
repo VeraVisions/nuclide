@@ -1,5 +1,5 @@
 {
-	qer_editorImage "common/blocklight.ktx"
+	qer_editorImage "common/blocklight.tga"
 	surfaceParm nodraw2
 	surfaceParm nonsolid
 	surfaceParm nomarks

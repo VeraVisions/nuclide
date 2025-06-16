@@ -7,7 +7,7 @@
 	cull none
 
 	{
-		clampmap "sfx/smoke.ktx"
+		clampmap "sfx/smoke.tga"
 		rgbGen vertex
 		alphaGen vertex
 		blendFunc blend

@@ -1,10 +1,10 @@
 {
 	program unlit
-	diffusemap "lights/green.ktx"
+	diffusemap "lights/green.tga"
 
 	nomipmaps
 	surfaceParm nolightmap
 	vmap_surfaceLight 5000
-	vmap_lightImage "lights/green.ktx"
+	vmap_lightImage "lights/green.tga"
 }
  

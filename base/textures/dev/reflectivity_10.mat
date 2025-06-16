@@ -1,7 +1,7 @@
 {
 	program defaultwall
-	diffusemap dev/reflectivity_10.ktx
-	normalmap pbrtest/norm_flat.ktx
-	specularmap pbrtest/reflectivity_10_mra.ktx
+	diffusemap dev/reflectivity_10.tga
+	normalmap pbrtest/norm_flat.tga
+	specularmap pbrtest/reflectivity_10_mra.tga
 }
  

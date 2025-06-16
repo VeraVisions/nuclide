@@ -1,6 +1,6 @@
 // Vera Visions Material
 {
-	qer_editorImage "liquid/water2.ktx"
+	qer_editorImage "liquid/water2.tga"
 	sort banner
 	qer_trans 0.8
 	surfaceParm nonsolid
@@ -11,6 +11,6 @@
 	{
 		program refract
 		map $refraction
-		map "liquid/water1_n.ktx"
+		map "liquid/water1_n.tga"
 	}
 }

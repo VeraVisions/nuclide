@@ -9,14 +9,14 @@
 if $programs
 	{
 		program heat
-		map "sfx/steam.ktx"
-		map "sfx/normwobble.ktx"
+		map "sfx/steam.tga"
+		map "sfx/normwobble.tga"
 		map $refraction
 		blendFunc blend
 	}
 else
 	{
-		clampmap "sfx/steam.ktx"
+		clampmap "sfx/steam.tga"
 		rgbGen vertex
 		alphaGen vertex
 		blendFunc blend

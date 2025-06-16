@@ -1,5 +1,5 @@
 {
-	qer_editorImage "common/hitmesh.ktx"
+	qer_editorImage "common/hitmesh.tga"
 	surfaceParm nolightmap
 	surfaceParm nomarks
 	surfaceParm nodraw

@@ -6,7 +6,7 @@
 
 	{
 		program unlit
-		map "decals/impact_tile.ktx"
+		map "decals/impact_tile.tga"
 		blendFunc GL_SRC_ALPHA GL_ONE_MINUS_SRC_ALPHA
 	}
 }

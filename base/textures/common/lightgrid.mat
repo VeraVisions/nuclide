@@ -1,5 +1,5 @@
 {
-	qer_editorImage "common/lightgrid.ktx"
+	qer_editorImage "common/lightgrid.tga"
 	surfaceParm nodraw
 	surfaceParm nolightmap
 	surfaceParm nonsolid

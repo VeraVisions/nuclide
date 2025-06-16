@@ -1,6 +1,6 @@
 // Vera Visions Material
 {
-	qer_editorImage env/sundown.ktx
+	qer_editorImage env/sundown.tga
 	surfaceParm sky
 	surfaceParm noimpact
 	surfaceParm nolightmap
@@ -15,20 +15,20 @@ if $programs
 		map $cube:env/sundown_hdr/40th/bg
 		map $cube:env/sundown_hdr/250th/bg
 		map $cube:env/sundown_hdr/1600th/bg
-		map env/clouds/dunecloud.ktx
-		map env/clouds/dunecloud_layer.ktx
+		map env/clouds/dunecloud.tga
+		map env/clouds/dunecloud_layer.tga
 	}
 else
 	skyParms env/sundown_hdr/250th/bg 256 -
 	{
-		map env/clouds/dunecloud.ktx
+		map env/clouds/dunecloud.tga
 		tcMod scroll 0.001 0.001
 		tcMod scale 5 5
 		blendFunc blend
 		rgbGen identity
 	}
 	{
-		map env/clouds/dunecloud_layer.ktx
+		map env/clouds/dunecloud_layer.tga
 		tcMod scroll 0.002 0.002
 		tcMod scale 5 5
 		blendFunc blend

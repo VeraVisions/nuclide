@@ -1,9 +1,9 @@
 // Vera Visions Material
 {
 	surfaceprop metal
-	diffusemap pbrtest/bricks023.ktx
-	normalmap pbrtest/bricks023_local.ktx
-	specularmap pbrtest/bricks023_mra.ktx
+	diffusemap pbrtest/bricks023.tga
+	normalmap pbrtest/bricks023_local.tga
+	specularmap pbrtest/bricks023_mra.tga
 	
 	{
 		program defaultskin

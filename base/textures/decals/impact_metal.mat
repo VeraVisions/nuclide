@@ -6,7 +6,7 @@
 
 	{
 		program unlit
-		map "decals/impact_metal.ktx"
+		map "decals/impact_metal.tga"
 		blendfunc GL_ZERO GL_ONE_MINUS_SRC_COLOR
 	}
 }

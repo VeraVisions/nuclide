@@ -1,9 +1,9 @@
 // Vera Visions Material
 {
 	surfaceprop metal
-	diffusemap pbrtest/metal022.ktx
-	normalmap pbrtest/metal022_local.ktx
-	specularmap pbrtest/metal022_mra.ktx
+	diffusemap pbrtest/metal022.tga
+	normalmap pbrtest/metal022_local.tga
+	specularmap pbrtest/metal022_mra.tga
 	
 	{
 		program defaultwall

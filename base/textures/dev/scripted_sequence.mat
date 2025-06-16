@@ -1,5 +1,5 @@
 {
-	diffusemap dev/scripted_sequence.ktx
+	diffusemap dev/scripted_sequence.tga
 	
 	{
 		map $diffuse

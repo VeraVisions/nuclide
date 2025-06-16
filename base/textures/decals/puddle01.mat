@@ -6,8 +6,8 @@
 	surfaceParm nodlight
 	surfaceParm noshadows
 
-	diffusemap decals/puddle01.ktx
-	normalmap liquid/water1_n.ktx
+	diffusemap decals/puddle01.tga
+	normalmap liquid/water1_n.tga
 
 	polygonOffset 1
 	{

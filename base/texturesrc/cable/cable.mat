@@ -1,8 +1,0 @@
-{
-	diffusemap cable/cable.tga
-	
-	{
-		map $diffuse
-		rgbGen vertex
-	}
-}

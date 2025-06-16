@@ -1,5 +1,5 @@
 {
-	diffusemap editor/env_sun.ktx
+	diffusemap editor/env_sun.tga
 	
 	{
 		map $diffuse

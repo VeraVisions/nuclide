@@ -1,5 +1,5 @@
 {
-	diffusemap editor/env_cubemap.ktx
+	diffusemap editor/env_cubemap.tga
 	
 	{
 		map $diffuse

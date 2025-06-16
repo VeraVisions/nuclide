@@ -4,10 +4,10 @@
 
 if $programs
 	program defaultwall#MASK=0.5#MASKLT
-	diffusemap "measure/ladder.ktx"
+	diffusemap "measure/ladder.tga"
 else
 	{
-		map "measure/ladder.ktx"
+		map "measure/ladder.tga"
 		alphaFunc GE128
 		depthWrite
 		rgbGen identity

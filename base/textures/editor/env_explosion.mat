@@ -1,5 +1,5 @@
 {
-	diffusemap editor/env_explosion.ktx
+	diffusemap editor/env_explosion.tga
 	
 	{
 		map $diffuse

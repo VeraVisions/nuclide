@@ -6,7 +6,7 @@
 
 	{
 		program unlit
-		map "decals/blood.ktx"
+		map "decals/blood.tga"
 		blendfunc GL_ZERO GL_ONE_MINUS_SRC_COLOR
 	}
 }

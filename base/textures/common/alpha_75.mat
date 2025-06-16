@@ -1,5 +1,5 @@
 {
-	qer_editorImage "common/alpha_75.ktx"
+	qer_editorImage "common/alpha_75.tga"
 	vmap_alphaMod volume
 	vmap_alphaMod set 0.75
 	surfaceParm nodraw
