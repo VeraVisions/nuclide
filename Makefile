@@ -710,13 +710,13 @@ defs-gtkradiant-q1: radiant $(GAME)/scripts/entities.def
 	rsync -rva "$(NUCLIDE_DIR)/ThirdParty/gtkradiant/install/installs/$(NAME)Pack/install/$(GAME)/." "./$(GAME)/."
 
 defs:
-	if [ -d "$(NUCLIDE_DIR)/ThirdParty/gtkradiant/build/plugins" ];then $(MAKE) defs-gtkradiant-q3;fi
-	if [ -d "$(NUCLIDE_DIR)/ThirdParty/netradiant/build/plugins" ];then $(MAKE) defs-nr-q3;fi
+	if [ -d "$(NUCLIDE_DIR)/ThirdParty/gtkradiant/install/base" ];then $(MAKE) defs-gtkradiant-q3;fi
+	if [ -d "$(NUCLIDE_DIR)/ThirdParty/netradiant/install/base" ];then $(MAKE) defs-nr-q3;fi
 	if [ -d "$(NUCLIDE_DIR)/ThirdParty/netradiant-custom/install/plugins" ];then $(MAKE) defs-nrc-q3;fi
 
 defs-wad:
-	if [ -d "$(NUCLIDE_DIR)/ThirdParty/gtkradiant/build/plugins" ];then $(MAKE) defs-gtkradiant-q1;fi
-	if [ -d "$(NUCLIDE_DIR)/ThirdParty/netradiant/build/plugins" ];then $(MAKE) defs-nr-q1;fi
+	if [ -d "$(NUCLIDE_DIR)/ThirdParty/gtkradiant/install/base" ];then $(MAKE) defs-gtkradiant-q1;fi
+	if [ -d "$(NUCLIDE_DIR)/ThirdParty/netradiant/install/base" ];then $(MAKE) defs-nr-q1;fi
 	if [ -d "$(NUCLIDE_DIR)/ThirdParty/netradiant-custom/install/plugins" ];then $(MAKE) defs-nrc-q1;fi
 
 $(GAME)/scripts/entities.def:
