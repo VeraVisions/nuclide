@@ -8,7 +8,7 @@
 
 #includelist
 /* engine, then nuclide headers & functions */
-../../../src/shared/fteextensions.qc
+../../../src/common/include.src
 ../../../src/shared/defs.h
 ../../../src/server/defs.h
 ../../../src/gs-entbase/server.src
