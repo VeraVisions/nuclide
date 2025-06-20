@@ -1,0 +1,69 @@
+entityDef ambient_drip
+{
+	"spawnclass"	"ambient_generic"
+	"message"	"ambience/drip1.wav"
+	"volume"	"0.5"
+}
+
+entityDef ambient_suck_wind
+{
+	"spawnclass"	"ambient_generic"
+	"message"	"ambience/suck1.wav"
+	"volume"	"1.0"
+}
+
+entityDef ambient_drone
+{
+	"spawnclass"	"ambient_generic"
+	"message"	"ambience/drone6.wav"
+	"volume"	"0.5"
+}
+
+entityDef ambient_flouro_buzz
+{
+	"spawnclass"	"ambient_generic"
+	"message"	"ambience/buzz1.wav"
+	"volume"	"1.0"
+}
+
+entityDef ambient_drip
+{
+	"spawnclass"	"ambient_generic"
+	"message"	"ambience/drip1.wav"
+	"volume"	"0.5"
+}
+
+entityDef ambient_comp_hum
+{
+	"spawnclass"	"ambient_generic"
+	"message"	"ambience/comp1.wav"
+	"volume"	"1.0"
+}
+
+entityDef ambient_thunder
+{
+	"spawnclass"	"ambient_generic"
+	"message"	"ambience/thunder1.wav"
+	"volume"	"0.5"
+}
+
+entityDef ambient_light_buzz
+{
+	"spawnclass"	"ambient_generic"
+	"message"	"ambience/fl_hum1.wav"
+	"volume"	"0.5"
+}
+
+entityDef ambient_swamp1
+{
+	"spawnclass"	"ambient_generic"
+	"message"	"ambience/swamp1.wav"
+	"volume"	"0.5"
+}
+
+entityDef ambient_swamp2
+{
+	"spawnclass"	"ambient_generic"
+	"message"	"ambience/swamp2.wav"
+	"volume"	"0.5"
+}

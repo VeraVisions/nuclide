@@ -1,0 +1,96 @@
+Player.FallDamage
+{
+	sample player/pl_fallpain3.wav
+}
+SprayCan.Paint
+{
+	sample player/sprayer.wav
+}
+Player.LightFall
+{
+	sample player/pl_fallpain1.wav
+}
+Player.Death
+{
+	sample player/death1.wav
+	sample player/death2.wav
+	sample player/death3.wav
+	sample player/death4.wav
+	sample player/death5.wav
+}
+
+Player.GaspLight
+{
+	sample player/gasp1.wav
+}
+
+Player.GaspHeavy
+{
+	sample player/gasp2.wav
+}
+
+Player.WaterExit
+{
+	sample player/h2ojump.wav
+}
+
+Player.WaterEnter
+{
+	sample player/inh2o.wav
+}
+
+Player.DenyWeaponSelection
+{
+	follow
+	omnidirectional
+	attenuation none
+	volume 0.5
+	sample common/wpn_denyselect.wav
+}
+
+Player.WeaponSelected
+{
+	follow
+	omnidirectional
+	attenuation none
+	volume 0.5
+	sample common/wpn_select.wav
+}
+
+Player.WeaponSelectionMoveSlot
+{
+	follow
+	omnidirectional
+	attenuation none
+	volume 0.5
+	sample common/wpn_moveselect.wav
+}
+
+Player.WeaponSelectionOpen
+{
+	follow
+	omnidirectional
+	attenuation none
+	volume 0.5
+	sample common/wpn_hudon.wav
+}
+
+Player.WeaponSelectionClose
+{
+	follow
+	omnidirectional
+	attenuation none
+	volume 0.5
+	sample common/wpn_hudoff.wav
+}
+
+Player.Jump
+{
+	sample player/plyrjmp8.wav
+}
+
+
+Player.Gib
+{
+	sample player/udeath.wav
+}

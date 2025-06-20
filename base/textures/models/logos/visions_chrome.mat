@@ -1,0 +1,7 @@
+// Vera Visions Material
+{
+	program defaultskin
+	diffusemap textures/models/logos/visions_chrome.ktx
+	specularmap dev/shiny_mra.ktx
+	normalmap dev/flat_normal.ktx
+}

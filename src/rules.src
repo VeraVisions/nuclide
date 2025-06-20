@@ -1,3 +1,4 @@
+#pragma target fte_5768
 #define QWSSQC
 
 #includelist

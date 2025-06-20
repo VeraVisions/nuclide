@@ -1,0 +1,4 @@
+entityDef mayhem_trigger_teleport {
+	"spawnclass"	"trigger_teleport"
+	"snd_teleport"	"mayhem_teleporter.teleported"
+}

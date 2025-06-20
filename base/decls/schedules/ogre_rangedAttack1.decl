@@ -1,0 +1,11 @@
+typeInfo ogre_rangedAttack1
+{
+	"task_1"			"SetFailSchedule huntPlayer"
+	"task_2"			"TurnToEnemy"
+	"task_3"			"SpawnProjectileOffset projectile_ogre_grenade 0 0 24"
+	"task_4"			"PlayActivity rangeAttack1"
+	"task_5"			"Wait 1.5"
+	"fail_onDeadEnemy"	"1"
+	"fail_onDamage"		"1"
+	"fail_onOccludedEnemy"		"1"
+}

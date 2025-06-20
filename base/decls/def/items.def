@@ -1,0 +1,13 @@
+#include "items/base.def"
+#include "items/armor.def"
+#include "items/health.def"
+
+entityDef item_suit
+{
+	"spawnclass"	"ncItem"
+	"model"			"models/w_suit.mdl"
+	"mins"			"-16 -16 0"
+	"maxs"			"16 16 16"
+	"inv_carry"		"1"
+}
+

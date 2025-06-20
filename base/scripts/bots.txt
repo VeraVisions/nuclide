@@ -1,25 +1,81 @@
 {
 	name Marco
-}
-{
-	name Ash
+	topcolor 0xeff
+	bottomcolor 0xff0020
 }
 {
 	name Gethyn
-}
-{
-	name Megan
+	topcolor 0xff6b00
+	bottomcolor 0xff0b00
 }
 {
 	name Max
+	topcolor 0x9200ff
+	bottomcolor 0xc800ff
 }
 {
-	name John
-	funname Pilsnerd
+	name Ash
+	topcolor 0xa8ff00
+	bottomcolor 0xf3ff00
 }
 {
 	name Jonny
+	topcolor 0xffaf
+	bottomcolor 0xffb600
 }
 {
-	name Marten
+	name Megan
+	topcolor 0xff24
+	bottomcolor 0xff4000
+}
+{
+	name Blue
+	topcolor 0x8fff
+	bottomcolor 0xff0076
+}
+{
+	name Lavender
+	topcolor 0xff0076
+	bottomcolor 0xa4ff
+}
+{
+	name Alex
+	topcolor 0xfffa
+	bottomcolor 0xffcb00
+}
+{
+	name Ted
+	topcolor 0xa4ff
+	bottomcolor 0xffab00
+}
+{
+	name Tundra
+	topcolor 0xa4ff
+	bottomcolor 0xffab00
+}
+{
+	name Rich
+	topcolor 0xa4ff
+	bottomcolor 0xffab00
+}
+{
+	name TC
+	funname T.C.
+	topcolor 0xa4ff
+	bottomcolor 0xffab00
+}
+{
+	name Karsten
+	topcolor 0xa4ff
+	bottomcolor 0xffab00
+}
+{
+	name Mario
+	topcolor 0xa4ff
+	bottomcolor 0xffab00
+}
+{
+	name Ralph
+	topcolor 0xa4ff
+	bottomcolor 0xffab00
 }

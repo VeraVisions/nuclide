@@ -1,0 +1,102 @@
+entityDef weapon_rocketlauncher
+{
+	"editor_color"		".3 .3 1"
+	"editor_mins"		"-16 -16 0"
+	"editor_maxs"		"16 16 32"
+	"editor_usage"		"Rocket Launcher"
+	"editor_rotatable"	"1"
+
+	"spawnclass"		"ncWeapon"
+	"model"				"progs/g_rock2.mdl"
+	"model_view"		"progs/v_rock2.mdl"
+	"snd_acquire"		"mayhem_weapon.pickup"
+	"snd_respawn"		"mayhem_item.respawn"
+	"spin"				"1"
+	"pickupFlash"		"1"
+
+	// weapon specific
+	"def_fireInfo"		"fireInfo_rocketLauncher"
+	"inv_name"			"Rocket Launcher"
+	"ammoType"			"ammo_rockets"
+	"inv_ammo_rockets"	"5"
+	"ammoRequired"		"1"
+	"ammoPerShot"		"1"
+	"animPrefix"		"rocket"
+
+	"act_fire"			"1"
+	"act_idle"			"0"
+
+	"snd_fire"			"weapon_rocketlauncher.shoot"
+	"snd_empty"			"weapon.empty"
+
+//	"msg_obituary"		"%s rides %s's rocket."
+//	"msg_gib"			"%s rips %s a new one."
+//	"msg_quad"			"%s was brutalized by %s's quad rocket."
+//	"msg_suicide"		"%s becomes bored with life."
+
+	// ncWeapon specific
+	"hudSlot"			"6"
+	"hudSlotPos"		"0"
+	"weight"			"30"
+	"crosshair"			"none"
+	"ammoIcon"			"weapon_rocketl.ammo"
+	"icon"				"weapon_rocketl.weapon"
+	"iconSelected"		"weapon_rocketl.weapon_s"
+}
+
+entityDef fireInfo_rocketLauncher
+{
+	"def_onFire"		"projectile_rocket"
+	"fireRate"			"0.8"
+	"punchSpring"		"-5 0 0"
+	"model_flash"		"sprites/muzzleflash.spr"
+}
+
+entityDef projectile_rocket
+{
+	"spawnclass"				"ncProjectile"
+	"model"						"progs/missile.mdl"
+	"offset"					"24 0 -8"
+
+	"velocity"					"1000"
+	"angular_velocity"			"0 0 200"
+	"fuse"						"10"
+	"detonate_on_fuse"			"0"
+	"detonate_on_death"			"1"
+	"detonate_on_world"			"1"
+	"detonate_on_actor"			"1"
+	"impact_damage_effect"		"1"
+	"impact_gib"				"1"
+
+	"smoke_fly"					"weapon_rocketlauncher.trail"
+	"decal_detonate"			"ExplosionScorch"
+	"model_detonate"			"fx_explosion.main"
+	"light_color"				"1 0.8 0.4"
+	"light_radius"				"160"
+	"light_offset"				"0 0 0"
+	"detonate_offset"			"24"
+	"snd_explode"				"weapon_rocketlauncher.explode"
+
+//	"range"						"5000" 
+
+	"def_damage"				"damage_rocketDirect"
+	"def_splash_damage"			"damage_rocketSplash"
+}
+
+entityDef damage_rocketDirect
+{
+	"damage"				"skill:plr_rocketlauncher_impact"
+	"damage_random"			"skill:plr_rocketlauncher_impact_rand"
+	"knockback"				"300"
+	"push"					"45000"
+	"gib"					"1"
+}
+
+entityDef damage_rocketSplash
+{
+	"knockback"				"300"
+	"damage"				"skill:plr_rocketlauncher"
+	"radius"				"160"
+	"push"					"10000"
+	"gib"					"0"
+}

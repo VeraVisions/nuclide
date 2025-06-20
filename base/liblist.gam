@@ -1,8 +1,8 @@
-// Nuclide Base liblist.gam file
+// Mayhem liblist.gam file
 // Take this one and adjust for your game
 
 // window title
-game "Nuclide Base Game"
+game "Mayhem"
 // main game directory
 gamedir "base"
 // folder to also include in the path (before game dir)
@@ -34,9 +34,9 @@ mpentity "info_player_deathmatch"
 // which server progs.dat to use
 gamedll "progs.dat"
 // which map we'll start a new singleplayer game on
-startmap "test_shaders"
+startmap "e0m1"
 // which map the training button will go to
-trainingmap "test_hdr"
+trainingmap "dev"
 // names of the packages this game needs
 pkgname ""
 // name of file inside the packages we should check for 
@@ -46,12 +46,13 @@ chatroom "lobby"
 // which file is to view when clicking the readme menu button
 readme "readme.txt"
 // which map to use as a level background
-menumap ""
+menumap "dlights"
 // what movie to play when starting the game
 introvideo ""
 // whether to use a steam styled resource background cut into multiple parts
 steambg 0
 // the title text of the game
-title "Nuclide"
+title "Mayhem"
 // the subtitle of the game
-subtitle "Test Game"
+subtitle "powered by LibreQuake"
+

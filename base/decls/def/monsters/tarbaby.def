@@ -1,0 +1,20 @@
+#define SPAWN_WALK	0
+#define SPAWN_RUN	1
+#define SPAWN_JUMP	2
+#define SPAWN_FLY	3
+
+entityDef monster_tarbaby
+{
+	"inherit"	"monster_base"
+	"netname"	"Spawn"
+	"model"		"progs/tarbaby.mdl"
+	"mins"		"-16 -16 -24"
+	"maxs"		"16 16 40"
+	"health"	"80"
+	"propdata"	"actor_tarbaby"
+
+	"act_idle"	"$SPAWN_FLY"
+	"act_walk"	"$SPAWN_WALK"
+	"act_run"	"$SPAWN_RUN"
+	"act_jump"	"$SPAWN_JUMP"
+}

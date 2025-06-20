@@ -1,0 +1,28 @@
+#define SCRAG_HOVER		0
+#define SCRAG_FLY		1
+#define SCRAG_MAGATTT	2
+#define SCRAG_PAIN		3
+#define SCRAG_DEATH		4
+
+entityDef monster_wizard
+{
+	"inherit"	"monster_base"
+	"netname"	"Scrag"
+	"model"		"progs/wizard.mdl"
+	"mins"		"-16 -16 -24"
+	"maxs"		"16 16 40"
+	"health"	"80"
+	"propdata"	"actor_wizard"
+
+	"flying"	"1"
+
+	"act_fly"				"$SCRAG_FLY"
+	"act_hover"				"$SCRAG_HOVER"
+	
+	"act_smallFlinch"		"$SCRAG_PAIN"
+	"act_bigFlinch"			"$SCRAG_PAIN"
+	"act_dieSimple"			"$SCRAG_DEATH"
+
+	"attack_ranged_range"	"1024"
+	"act_rangedAttack1"		"$SCRAG_MAGATTT"
+}

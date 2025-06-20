@@ -1,0 +1,56 @@
+#define ENFORCER_IDLE		0
+#define ENFORCER_WALK		1
+#define ENFORCER_RUN		2
+#define ENFORCER_ATTACK		3
+#define ENFORCER_DEATH		4
+#define ENFORCER_FDEATH		5
+#define ENFORCER_PAIN1		6
+#define ENFORCER_PAIN2		7
+#define ENFORCER_PAIN3		8
+#define ENFORCER_PAIN4		9
+
+entityDef monster_enforcer
+{
+	"inherit"	"monster_base"
+	"netname"	"Enforcer"
+	"model"		"progs/enforcer.mdl"
+	"mins"		"-16 -16 -24"
+	"maxs"		"16 16 40"
+	"health"	"80"
+	"propdata"	"actor_enforcer"
+
+	"act_idle"			"$ENFORCER_IDLE"
+	"act_walk"			"$ENFORCER_WALK"
+	"act_run"			"$ENFORCER_RUN"
+	"act_smallFlinch"	"$ENFORCER_PAIN1,$ENFORCER_PAIN2"
+	"act_bigFlinch"		"$ENFORCER_PAIN3,$ENFORCER_PAIN4"
+	"act_dieSimple"		"$ENFORCER_DEATH,$ENFORCER_FDEATH"
+
+	"attack_ranged_range"	"1024"
+	"act_rangeAttack1"	"$ENFORCER_ATTACK"
+	"mindset_rangedCombat"	"enforcer_rangedAttack1"
+}
+
+entityDef projectile_enforcer_laser
+{
+	"spawnclass"			"ncProjectile"
+	"model"					"progs/laser.mdl"
+	"mins"					"0 0 0"
+	"maxs"					"0 0 0"
+	"velocity"				"600"
+	"fuse"					"5"
+
+	"detonate_on_fuse"		"0"
+	"detonate_on_death"		"0"
+	"detonate_on_world"		"1"
+	"detonate_on_actor"		"1"
+
+	"model_detonate"		"monster_enforcer.laser_impact"
+	"decal_detonate"		"Impact.Shot"
+	"snd_explode"			"enforcer/envstop.wav"
+
+	"light_color"			"1 0.25 0"
+	"light_radius"			"160"
+	"light_offset"			"0 0 0"
+	"damage"				"15"
+}

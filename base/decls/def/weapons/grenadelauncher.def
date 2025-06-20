@@ -1,0 +1,93 @@
+entityDef weapon_grenadelauncher
+{
+	"editor_color"		".3 .3 1"
+	"editor_mins"		"-16 -16 0"
+	"editor_maxs"		"16 16 32"
+	"editor_usage"		"Grenade Launcher"
+	"editor_rotatable"	"1"
+
+	"spawnclass"		"ncWeapon"
+	"model"				"progs/g_rock.mdl"
+	"model_view"		"progs/v_rock.mdl"
+	"snd_acquire"		"mayhem_weapon.pickup"
+	"snd_respawn"		"mayhem_item.respawn"
+	"spin"				"1"
+	"pickupFlash"		"1"
+
+	// weapon specific
+	"def_fireInfo"		"fireInfo_grenadeLauncher"
+	"inv_name"			"Grenade Launcher"
+	"ammoType"			"ammo_rockets"
+	"inv_ammo_rockets"	"5"
+	"ammoRequired"		"1"
+	"ammoPerShot"		"1"
+
+	"act_fire"			"1"
+	"act_idle"			"0"
+
+	"snd_fire"			"weapon_grenadelauncher.shoot"
+	"snd_empty"			"weapon.empty"
+
+//	"msg_obituary"		"%s eats %s's pineapple."
+//	"msg_gib"			"%s was gibbed by %s's grenade."
+//	"msg_suicide"		"%s tries to put the pin back in."
+
+	// ncWeapon specific
+	"hudSlot"			"5"
+	"hudSlotPos"		"0"
+	"weight"			"25"
+	"crosshair"			"none"
+	"ammoIcon"			"weapon_grenadel.ammo"
+	"icon"				"weapon_grenadel.weapon"
+	"iconSelected"		"weapon_grenadel.weapon_s"
+}
+
+entityDef fireInfo_grenadeLauncher
+{
+	"def_onFire"		"projectile_grenade"
+	"fireRate"			"0.6"
+	"punchSpring"		"-4 0 0"
+	"model_flash"		"sprites/muzzleflash.spr"
+}
+
+entityDef projectile_grenade
+{
+	"spawnclass"				"ncProjectile"
+	"model"						"progs/grenade.mdl"
+	"offset"					"24 0 -8"
+	"velocity"					"600 0 200"
+	"angular_velocity"			"300 300 300"
+	"fuse"						"2.5"
+	"bounce"					"1"
+	"detonate_on_fuse"			"1"
+	"detonate_on_death"			"0"
+	"detonate_on_world"			"0"
+	"detonate_on_actor"			"1"
+	"detonate_offset"			"64"
+	"impact_damage_effect"		"1"
+	"impact_gib"				"1"
+
+	"smoke_fly"					"weapon_grenadelauncher.trail"
+	"decal_detonate"			"ExplosionScorch"
+	"model_detonate"			"fx_explosion.main"
+
+	"explode_light_color"		"1 0.5 0"
+	"explode_light_radius"		"1024"
+	"explode_light_fadetime"	"3"
+
+	"snd_explode"				"weapon_grenadelauncher.explode"
+	"snd_bounce"				"weapon_grenadelauncher.bounce"
+
+//	"range"						"900" // Reference only, max throw distance
+
+	"def_splash_damage"			"damage_grenadeSplash"
+}
+
+entityDef damage_grenadeSplash
+{
+	"damage"		"skill:plr_grenadelauncher"
+	"radius"		"160"
+	"knockback"		"300"
+	"push"			"45000"
+	"gib"			"1"
+}

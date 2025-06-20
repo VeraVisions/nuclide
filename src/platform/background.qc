@@ -115,10 +115,10 @@ Background_Steam(vector vecPos, vector vecSize)
 }
 
 void
-Background_Draw(vector vecPos, vector vecSize)
+Background_Draw(vector vecPos, vector vecSize, optional bool forceDraw = false)
 {
 	/* when ingame, we'll draw a slight black tint... */
-	if (clientstate() == 2) {
+	if (clientstate() == 2 && forceDraw == false) {
 		/* ...unless we're in background map mode. */
 		if (!g_background) {
 			drawpic([0,0], "menutint", g_vidsize, [1,1,1], 1.0f);

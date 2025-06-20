@@ -28,7 +28,7 @@ WaveTimer_Tick(void)
 		entity zombie = ents.Create(autocvar_invasion_monsterClass, [0,0,0]);
 		ents.Input(zombie, "SetTeam", "1", self);
 		game.TeleportToSpawn(zombie);
-		ents.Input(zombie, "PerformSchedule", "searchNearestPlayer", self);
+		ents.Input(zombie, "ChangeMindset", "search", self);
 	}
 
 	self.nextthink = time + 2.0f;
@@ -48,9 +48,9 @@ CodeCallback_StartGameType(void)
 	game.SetSpawnPoint("info_player_deathmatch");
 
 	teams.SetUp(1, "Enemies", [255, 0, 0], false);
-	teams.SetUp(3, "Players", [255, 255, 255], false);
+	teams.SetUp(2, "Players", [255, 255, 255], false);
 	teams.SetSpawnPoint(1, "info_player_deathmatch");
-	teams.SetSpawnPoint(3, "info_player_deathmatch");
+	teams.SetSpawnPoint(2, "info_player_deathmatch");
 
 	entity tick = spawn();
 	tick.think = WaveTimer_Tick;
@@ -61,7 +61,7 @@ void
 CodeCallback_PlayerSpawn(entity playerEntity)
 {
 	ents.ChangeToClass(playerEntity, "player_mp");
-	ents.Input(playerEntity, "SetTeam", "3", world);
+	ents.Input(playerEntity, "SetTeam", "2", world);
 	game.TeleportToSpawn(playerEntity);
 }
 

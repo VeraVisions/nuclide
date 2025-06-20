@@ -1,5 +1,6 @@
 #pragma PROGS_DAT  "../../hud.dat"
 
-#includelist../../../src/hud.src
+#includelist
+../../../src/hud.src
 hud.qc
 #endlist

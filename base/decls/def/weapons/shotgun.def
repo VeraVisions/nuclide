@@ -1,0 +1,57 @@
+entityDef weapon_shotgun
+{
+	"editor_color"		".3 .3 1"
+	"editor_mins"		"-16 -16 -16"
+	"editor_maxs"		"16 16 16"
+	"editor_usage"		"Shotgun"
+	"editor_rotatable"	"1"
+
+	"spawnclass"		"ncWeapon"
+	"model"				"progs/g_shot1.mdl"
+	"model_view"		"progs/v_shot.mdl"
+	"snd_acquire"		"mayhem_weapon.pickup"
+	"snd_respawn"		"item.respawn"
+	"spin"				"1"
+	"pickupFlash"		"1"
+
+	// weapon specific
+	"def_fireInfo"		"fireInfo_shotgun"
+	"inv_name"			"Shotgun"
+	"ammoType"			"ammo_shells"
+	"ammoRequired"		"1"
+	"ammoPerShot"		"1"
+
+	"act_fire"			"1"
+	"act_idle"			"0"
+
+	"snd_fire"			"weapon_shotgun.shoot"
+	"snd_empty"			"weapon.empty"
+
+//	"msg_obituary"		"%s ate two loads of %s's buckshot."
+
+	// ncWeapon specific
+	"hudSlot"			"1"
+	"hudSlotPos"		"0"
+	"weight"			"10"
+	"crosshair"			"none"
+	"ammoIcon"			"weapon_shotgun.ammo"
+	"icon"				"weapon_shotgun.weapon"
+	"iconSelected"		"weapon_shotgun.weapon_s"
+}
+
+entityDef projectile_shotgun
+{
+	"inherit"			"projectile_bullet_base"
+	"damage"			"skill:plr_shotgun"
+	"hitscans"			"6"
+	"spread"			"0.08716 0.08716"
+//	"range"				"2048"
+}
+
+entityDef fireInfo_shotgun
+{
+	"def_onFire"		"projectile_shotgun"
+	"fireRate"			"0.5"
+	"punchSpring"		"-5 0 0"
+	"model_flash"		"sprites/muzzleflash.spr"
+}

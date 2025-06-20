@@ -53,7 +53,19 @@ The `self` global is the connecting client in question.
 void
 ClientConnect(void)
 {
-	EntityDef_SpawnClassname("player");
+	/* this will hide/remove the player from other clients */
+	ncPlayer pl = (ncPlayer)self;
+	spawnfunc_ncPlayer();
+	pl.SetSolid(SOLID_NOT);
+	pl.SetMovetype(MOVETYPE_NONE);
+	pl.SetModelindex(0);
+	pl.SetTeam(0);
+	pl.Disappear();
+	pl.classname = "";
+	pl.flags = 0;
+	pl.deaths = 0;
+	pl.frags = 0;
+	pl.score = 0;
 	self.gotData = false;
 
 	/* don't carry over team settings from a previous session */
@@ -632,7 +644,7 @@ CheckSpawn(void() spawnfunc)
 
 	/* give it a copy of its spawndata. */
 	ent.m_rawSpawnData = __fullspawndata;
-	ent.spawnclass = desiredClass; /* ENtityDef_ will override this later, needed for saves */
+	ent.spawnclass = desiredClass; /* EntityDef_ will override this later, needed for saves */
 
 	/* no longer needed, immediately discard. */
 	__fullspawndata = "";

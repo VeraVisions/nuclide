@@ -1,0 +1,25 @@
+#define SHALRATH_ATTACK		0
+#define SHALRATH_PAIN		1
+#define SHALRATH_DEATH		2
+#define SHALRATH_WALK		3
+
+entityDef monster_shalrath
+{
+	"inherit"	"monster_base"
+	"netname"	"Vore"
+	"model"		"progs/shalrath.mdl"
+	"mins"		"-32 -32 -24"
+	"maxs"		"32 32 64"
+	"health"	"400"
+	"propdata"	"actor_shalrath"
+
+	"act_idle"	"$SHALRATH_WALK"
+	"act_walk"	"$SHALRATH_WALK"
+	"act_run"	"$SHALRATH_WALK"
+	"act_smallFlinch"	"$SHALRATH_PAIN"
+	"act_bigFlinch"		"$SHALRATH_PAIN"
+	"act_dieSimple"		"$SHALRATH_DEATH"
+
+	"attack_ranged_range"	"1024"
+	"act_rangedAttack1"	"$SHALRATH_ATTACK"
+}

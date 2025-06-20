@@ -1,0 +1,59 @@
+entityDef weapon_lightning
+{
+	"editor_color"		".3 .3 1"
+	"editor_mins"		"-16 -16 0"
+	"editor_maxs"		"16 16 32"
+	"editor_usage"		"Lightning Gun"
+	"editor_rotatable"	"1"
+
+	"spawnclass"		"ncWeapon"
+	"model"				"progs/g_light.mdl"
+	"model_view"		"progs/v_light.mdl"
+	"snd_acquire"		"mayhem_weapon.pickup"
+	"snd_respawn"		"mayhem_item.respawn"
+	"spin"				"1"
+	"pickupFlash"		"1"
+	"animPrefix"		"lightning"
+
+	// weapon specific
+	"def_onFire"		"projectile_lightning"
+	"model_flash"		"sprites/muzzleflash3.spr"
+	"inv_ammo_cells"	"15"
+	"inv_name"			"Lightning Gun"
+	"ammoType"			"ammo_cells"
+	"ammoRequired"		"1"
+	"act_idle"			"0"
+	"act_Loop"			"1"
+	"act_fireEnd"		"1"
+	"fireRate"			"0.1"
+
+	"snd_fireStart"		"weapon_lightning.shoot"
+	"snd_fireLoop"		"weapon_lightning.loop"
+
+	"fx_trail"			"weapon_lightning.trail"
+	"fx_trail_world"	"weapon_lightning.trail_world"
+
+//	"msg_obituary"		"%s accepts %s's shaft."
+//	"msg_gib"			"%s accepts %s's discharge."
+//	"msg_suicide"		"%s discharges in liquid."
+	"joint_view_trail"	"light"
+	"joint_world_trail"	"light"
+
+	// ncWeapon specific
+	"hudSlot"			"7"
+	"hudSlotPos"		"0"
+	"weight"			"30"
+	"crosshair"			"none"
+}
+
+entityDef projectile_lightning
+{
+	"spawnclass"			"ncProjectile"
+	"offset"				"24 0 -8"
+	"is_bullet"				"1"
+	"damage"				"skill:plr_lightning"
+	"detonate_on_world" 	"0"
+	"decal_detonate"		"Impact.Gauss"
+	"model_detonate"		"fx_spark.main"
+//	"range"					"600"
+}

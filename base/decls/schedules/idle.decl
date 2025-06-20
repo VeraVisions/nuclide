@@ -1,0 +1,11 @@
+typeInfo idle
+{
+	"task_1"	"StopMovement"
+	"task_2"	"PlayActivity idle"
+	"task_3"	"Wait 2"
+	"NewEnemy"	"ChangeMindset hunt"
+	"Damage"	"ChangeMindset hunt"
+	"OccludedEnemy"	"ChangeMindset hunt"
+	"CanRangedAttack1"	"ChangeMindset rangedCombat"
+	"CanMeleeAttack1"	"ChangeMindset meleeCombat"
+}

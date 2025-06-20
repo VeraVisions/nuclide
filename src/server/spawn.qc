@@ -98,7 +98,7 @@ living player.
 entity Spawn_SelectRandom(string cname) 
 {
 	static entity lastspot;
-	entity spot = lastspot;
+	entity spot = world;
 
 	float max = 0;
 

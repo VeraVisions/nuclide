@@ -1555,6 +1555,7 @@ ncEntity::Input(entity eAct, string strInput, string strData)
 		}
 		break;
 	case "SpawnProjectileOffset":
+		ncActor me = (ncActor)this;
 		vector launchOffset;
 		tokenize_console(strData);
 		string defName = argv(0);
@@ -1563,7 +1564,7 @@ ncEntity::Input(entity eAct, string strInput, string strData)
 		launchOffset[2]= stof(argv(3));
 
 		if (EntityDef_HasSpawnClass(defName)) {
-			ncProjectile_SpawnDefAtPosition(defName, (ncActor)this, GetOrigin() + launchOffset, GetViewAngle());
+			ncProjectile_SpawnDefAtPosition(defName, me, GetOrigin() + launchOffset, GetViewAngle());
 		}
 		break;
 	case "SpawnProjectileDef":

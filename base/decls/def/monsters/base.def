@@ -1,0 +1,17 @@
+entityDef monster_base
+{
+	"spawnclass"	"ncMonster"
+	"propdata"	"actor_fleshy"
+	"mins"		"-16 -16 -24"
+	"maxs"		"16 16 32"
+	"team"		"$ALLIANCE_ENEMY"
+	"speed_walk"	"64"
+	"speed_run"	"192"
+	"eye_height"	"55"
+
+	"mindset_idle"		"idle"
+
+	"mindset_hunt"	"huntPlayer"
+	"mindset_search"	"searchNearestPlayer"
+	
+}

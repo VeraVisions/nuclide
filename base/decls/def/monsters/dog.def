@@ -1,0 +1,36 @@
+#define DOG_ATTACK 0
+#define DOG_DEATH1	1
+#define DOG_DEATH2	2
+#define DOG_PAIN1	3
+#define DOG_PAIN2	4
+#define DOG_RUN		5
+#define DOG_LEAP	6
+#define DOG_IDLE	7
+#define DOG_WALK	8
+
+entityDef monster_dog
+{
+	"inherit"	"monster_base"
+	"netname"	"Rottweiler"
+	"model"		"progs/dog.mdl"
+	"mins"		"-32 -32 -24"
+	"maxs"		"32 32 40"
+	"health"	"25"
+	"propdata"	"actor_dog"
+
+
+	"act_idle"			"$DOG_IDLE"
+	"act_walk"			"$DOG_WALK"
+	"act_run"			"$DOG_RUN"
+	"act_smallFlinch"	"$DOG_PAIN1,$DOG_PAIN2"
+	"act_bigFlinch"		"$DOG_PAIN1,$DOG_PAIN2"
+	"act_dieSimple"		"$DOG_DEATH1,$DOG_DEATH2"
+	"act_jump"			"$DOG_LEAP"
+
+	"act_meleeAttack1"	"$DOG_ATTACK"
+
+	"attack_melee_range"	"256"
+	"mindset_search"		"searchNearestPlayerMelee"
+	"mindset_meleeCombat"	"knight_meleeAttack1"
+	"mindset_rangedCombat"	"moveTowardsEnemy"
+}

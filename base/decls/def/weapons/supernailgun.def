@@ -1,0 +1,80 @@
+entityDef weapon_supernailgun
+{
+	"editor_color"		".3 .3 1"
+	"editor_mins"		"-16 -16 0"
+	"editor_maxs"		"16 16 32"
+	"editor_usage"		"Super Nailgun"
+	"editor_rotatable"	"1"
+
+	"spawnclass"		"ncWeapon"
+	"model"				"progs/g_nail2.mdl"
+	"model_view"		"progs/v_nail2.mdl"
+	"snd_acquire"		"mayhem_weapon.pickup"
+	"snd_respawn"		"mayhem_item.respawn"
+	"spin"				"1"
+	"pickupFlash"		"1"
+	"animPrefix"		"nailgun"
+
+	// weapon specific
+	"def_fireInfo"		"fireInfo_superNailgun"
+	"inv_name"			"Super Nailgun"
+	"ammoType"			"ammo_nails"
+	"inv_ammo_nails"	"30"
+	"ammoRequired"		"2"
+	"ammoPerShot"		"2"
+
+	"act_fire"			"1"
+	"act_idle"			"0"
+
+	"snd_fire"			"weapon_supernailgun.shoot"
+	"snd_empty"			"weapon.empty"
+
+//	"msg_obituary"		"%s was punctured by %s."
+
+	// ncWeapon specific
+	"hudSlot"			"4"
+	"hudSlotPos"		"0"
+	"weight"			"25"
+	"crosshair"			"none"
+	"ammoIcon"			"weapon_supernail.ammo"
+	"icon"				"weapon_supernail.weapon"
+	"iconSelected"		"weapon_supernail.weapon_s"
+}
+
+entityDef fireInfo_superNailgun
+{
+	"def_onFire"		"projectile_supernail"
+	"fireRate"			"0.1"
+	"punchSpring"		"-2 0 0"
+	"model_flash"		"sprites/muzzleflash.spr"
+}
+
+entityDef projectile_supernail
+{
+	"spawnclass"			"ncProjectile"
+	"model"					"progs/spike.mdl"
+	"offset"				"24 0 -8"
+	"mins"					"0 0 0"
+	"maxs"					"0 0 0"
+	"velocity"				"1000"
+	"fuse"					"10"
+	"detonate_on_fuse"		"0"
+	"detonate_on_death"		"0"
+	"detonate_on_world"		"1"
+	"detonate_on_actor"		"1"
+	"model_detonate"		"weapon_supernailgun.impact"
+	"decal_detonate"		"Impact.Shot"
+	"snd_explode"			"weapon_nailgun.ricochet"
+	"projectile_debris" 	"debris_nail"
+	"debris_count"			"1"
+	"debris_stick"			"1"
+	"debris_offset"			"-2 0 0"
+//	"range"					"6000"
+
+	"def_damage"			"damage_supernailDirect"
+}
+
+entityDef damage_supernailDirect
+{
+	"damage"	"skill:plr_supernailgun"
+}

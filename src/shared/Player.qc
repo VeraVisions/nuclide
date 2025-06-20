@@ -1536,8 +1536,15 @@ ncPlayer::MakeTempSpectator(void)
 }
 
 void
-ncPlayer::Death(entity inflictor, entity attacker, int damage, vector dir, vector absImpactPos, int hitBody)
+ncPlayer::Death(entity inflictor, entity attacker, int damagePoints, vector dir, vector absImpactPos, int hitBody)
 {
+	/* either gib, or make a corpse */
+	if (GetHealth()< -50) {
+		float gibStrength = damagePoints * 2.0f;
+		BreakModel_Entity(this, dir, gibStrength);
+		SetHealth(0);
+	}
+
 	RemoveAllItems(false);
 	health = max_health = 0;
 	armor = 0;

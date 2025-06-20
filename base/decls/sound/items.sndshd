@@ -1,0 +1,96 @@
+armor_green.pickup
+{
+	sample items/armor1.wav
+}
+
+armor_yellow.pickup
+{
+	sample items/armor1.wav
+}
+
+
+armor_red.pickup
+{
+	sample items/armor1.wav
+}
+
+ammo.pickup
+{
+	sample weapons/lock4.wav
+}
+
+item_health_rotten.pickup
+{
+	sample items/r_item1.wav
+}
+
+item_health_mega.pickup
+{
+	sample items/r_item2.wav
+}
+
+item_health.pickup
+{
+	sample items/health1.wav
+}
+
+item_artifact_envirosuit.pickup
+{
+	sample items/suit.wav
+}
+
+item_artifact_invisibility.pickup
+{
+	sample items/inv1.wav
+}
+
+item_artifact_invulnerability.pickup
+{
+	sample items/protect.wav
+}
+
+item_artifact_super_damage.pickup
+{
+	sample items/damage.wav
+}
+
+item_artifact_super_damage.attack
+{
+	sample items/damage3.wav
+}
+
+item_artifact_super_damage.expiring
+{
+	sample items/damage2.wav
+}
+
+item_artifact_invisibility.expiring
+{
+	sample items/inv2.wav
+}
+
+item_artifact_invisibility.idle
+{
+	follow
+	sample items/inv3.wav
+}
+
+item_artifact_invulnerability.expiring
+{
+	sample items/protect2.wav
+}
+
+item_artifact_envirosuit.expiring
+{
+	sample items/suit2.wav
+}
+
+mayhem_item.respawn
+{
+	sample items/itembk2.wav
+}
+
+mayhem_weapon.pickup
+{
+	sample weapons/pkup.wav
+}

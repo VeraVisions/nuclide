@@ -558,6 +558,7 @@ ncActor::CancelSchedule(void)
 	if (m_activeSchedule) {
 		m_activeSchedule.ReleaseThink();
 		m_activeSchedule.Cancel();
+		m_activeSchedule = __NULL__;
 		return (true);
 	}
 
@@ -678,30 +679,60 @@ ncActor::Input(entity eAct, string strInput, string strData)
 		break;
 	/* some tasks. */
 	case "WalkToTarget":
-		RouteToPosition(m_activeSchedule.GetTarget().origin);
-		m_activeSchedule.AdvanceLater(100);
+		if (m_activeSchedule) {
+			RouteToPosition(m_activeSchedule.GetTarget().origin);
+			m_activeSchedule.AdvanceLater(100);
+		}
 		break;
 	case "RunToTarget":
-		RouteToPosition(m_activeSchedule.GetTarget().origin);
-		m_activeSchedule.AdvanceLater(100);
+		if (m_activeSchedule) {
+			RouteToPosition(m_activeSchedule.GetTarget().origin);
+			m_activeSchedule.AdvanceLater(100);
+		}
 		break;
 	case "CrouchToTarget":
-		RouteToPosition(m_activeSchedule.GetTarget().origin);
-		m_activeSchedule.AdvanceLater(100);
+		if (m_activeSchedule) {
+			RouteToPosition(m_activeSchedule.GetTarget().origin);
+			m_activeSchedule.AdvanceLater(100);
+		}
 		break;
 	case "ProneToTarget":
-		RouteToPosition(m_activeSchedule.GetTarget().origin);
-		m_activeSchedule.AdvanceLater(100);
+		if (m_activeSchedule) {
+			RouteToPosition(m_activeSchedule.GetTarget().origin);
+			m_activeSchedule.AdvanceLater(100);
+		}
 		break;
 	case "TargetNearestPlayer":
-		ncEntity firstPlayer = (ncEntity)next.Player(world);
+		ncEntity firstPlayer = __NULL__;
+		float bestDist = 99999.0f;
+		
+		for (entity pl = world; (pl = findfloat(pl, ::_isPlayer, 1));) {
+			float currentDist = distance(pl.origin, this.origin);
 
-		if (firstPlayer) {
-			m_activeSchedule.SetTarget(firstPlayer);
+			if (currentDist < bestDist) {
+				firstPlayer = pl;
+				bestDist = currentDist;
+			}
+		}
+		
+		if (m_activeSchedule) {
+			if (firstPlayer) {
+				m_activeSchedule.SetTarget(firstPlayer);
+				EntLog("Targetted player %s", firstPlayer.netname);
+			} else {
+				CancelSchedule();
+			}
+		}
+		break;
+	case "RunToSpotNearTarget":
+		ncEntity targetEntity = m_activeSchedule.GetTarget();
+		vector spot1 = ncNavInfo::FindEmptySpotNearPosition(this, targetEntity.GetOrigin(), 96.0f, stof(strData));
+
+		if (vlen(spot1) > 0.0f) {
+			RouteToPosition(spot1);
 		} else {
 			CancelSchedule();
 		}
-// 		ncWarning("Task %S unimplemented", strInput);
 		break;
 	case "GoToCover":
 		vector coverPos = ncNavInfo::FindCoverFromPosition(this, GetOrigin());
@@ -736,7 +767,13 @@ ncActor::Input(entity eAct, string strInput, string strData)
 		v_angle = angles;
 		break;
 	case "GoForward":
-		RouteToPosition(GetOrigin() + (anglesToForward(angles) * 1024.0f));
+		float distance = stof(strData);
+
+		if (distance <= 0) {
+			distance = 1024.0f;
+		}
+
+		RouteToPosition(GetOrigin() + (anglesToForward(angles) * distance));
 		break;
 	default:
 		super::Input(eAct, strInput, strData);
@@ -1446,9 +1483,10 @@ ncActor::GiveExactItem(ncItem theItem)
 
 		newItem.SetOwner(this);
 		lastItem.m_nextItem = newItem;
-		linkedList = newItem;
 		newItem._AddedCallback();
 	}
+
+	linkedList = theItem;
 
 	if (!m_activeWeapon) {
 		SwitchToBestWeapon(false);

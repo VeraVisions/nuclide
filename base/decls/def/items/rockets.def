@@ -1,0 +1,16 @@
+entityDef item_rockets
+{
+	"editor_usage"			"Rockets for the Grenade & Rocket Launcher."
+	"editor_usage2"			"Gives players 5 Rockets Ammo."
+	"editor_var spawnflags"	"Gives players 10 Rockets Ammo."
+
+	"inherit"			"ammo_base"
+	"model"				"maps/b_rock0.bsp"
+	"inv_ammo_rockets"	"5"
+	"pickupFlash"		"1"
+
+	when "spawnflags" contains "1" {
+		"model"				"maps/b_rock1.bsp"
+		"inv_ammo_rockets"	"10"
+	}
+}

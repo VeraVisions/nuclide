@@ -24,6 +24,22 @@ void
 CodeCallback_StartGameType(void)
 {
 	motd.LoadDefault();
+	game.SetSpawnPoint("info_player_deathmatch");
+
+	for (entity s = world; (s = next.NPC(s));) {
+		ents.Input(s, "Kill", "20.0f", world);
+	}
+
+	for (entity s = world; (s = next.Item(s));) {
+		string isWeapon = substring(s.classname, 0, 7);
+		string isAmmo = substring(s.classname, 0, 5);
+
+		if (isWeapon == "weapon_" || isAmmo == "ammo_") {
+			ents.Input(s, "SetRespawnTime", "20.0f", world);
+		} else {
+			ents.Input(s, "SetRespawnTime", "30.0f", world);
+		}
+	}
 }
 
 void

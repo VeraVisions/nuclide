@@ -1,0 +1,9 @@
+0 17 10 1 // stand
+17 12 10 1 // walk
+29 6 10 1 // run
+35 12 10 0 // smash
+47 9 10 0 // swingr
+56 9 10 0 // swingl
+65 12 10 0 // magic
+77 6 10 0 // pain
+83 11 10 0 // death

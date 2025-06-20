@@ -1,0 +1,35 @@
+entityDef misc_explobox_base
+{
+	"spawnclass"		"func_breakable"
+	"explodemagnitude"	"160"
+	"health"		"20"
+	"material"		"2" // metal
+	"mins"			"0 0 0"
+	"maxs"			"32 32 64"
+}
+
+entityDef misc_explobox
+{
+	"inherit"		"misc_explobox_base"
+	"model"			"maps/b_explob.bsp"
+}
+
+
+entityDef misc_explobox2
+{
+	"inherit"		"misc_explobox_base"
+	"model"			"maps/b_exbox2.bsp"
+}
+
+entityDef misc_fireball
+{
+	"spawnclass"	"env_shooter"
+	"delay"		"3"
+	"delay_random"	"5"
+	"angles"	"90 0 0"
+	"m_iGibs"	"1"
+	"m_flGibLife"	"10"
+	"m_flVelocity"	"1000"
+	"m_flVariance"	"0.1"
+	"shootmodel"	"progs/lavaball.mdl"
+}

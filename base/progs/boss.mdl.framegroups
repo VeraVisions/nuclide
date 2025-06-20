@@ -1,0 +1,7 @@
+0 17 10 0 // rise
+17 31 10 1 // walk
+48 9 10 0 // death
+57 23 10 0 // attack
+80 10 10 0 // shocka
+90 6 10 0 // shockb
+96 10 10 0 // shockc

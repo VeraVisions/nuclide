@@ -15,6 +15,12 @@
  */
 
 void
+CodeCallback_Precaches(void)
+{
+	precache.Entity("player");
+}
+
+void
 CodeCallback_StartGameType(void)
 {
 }

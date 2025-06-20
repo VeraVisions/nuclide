@@ -1,0 +1,16 @@
+entityDef item_spikes
+{
+	"editor_usage"			"Nails for the (Super) Nail Gun."
+	"editor_usage2"			"Gives players 25 Nails Ammo."
+	"editor_var spawnflags"	"Gives players 50 Nails Ammo."
+
+	"inherit"			"ammo_base"
+	"model"				"maps/b_nail0.bsp"
+	"inv_ammo_nails"	"25"
+	"pickupFlash"		"1"
+
+	when "spawnflags" contains "1" {
+		"model"				"maps/b_nail1.bsp"
+		"inv_ammo_nails"	"50"
+	}
+}

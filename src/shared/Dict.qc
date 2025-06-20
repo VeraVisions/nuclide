@@ -133,6 +133,13 @@ ncDict::LoadDeclFromFile(string declName, string fileName)
 	string lastWord = __NULL__;
 	string lastDecl = "";
 
+	/* find an existing dict in memory */
+	for (ncDict dictSearch = 0; (dictSearch = find(dictSearch, ::classname, "ncDict"));) {
+		if (dictSearch.m_declPath == declName) {
+			return (dictSearch);
+		}
+	}
+
 	fh = fopen(strcat("decls/", fileName), FILE_READ);
 
 	if (fh < 0) {

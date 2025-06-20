@@ -81,7 +81,7 @@ m_draw(vector screensize)
 		return;
 	}
 
-	Background_Draw([0,0], g_vidsize);
+	Background_Draw([0,0], g_vidsize, false);
 	Desktop_Draw();
 }
 
@@ -99,7 +99,7 @@ m_drawloading(vector screensize, float opaque)
 	pos = (screensize / 2) - [32,32];
 
 	if (opaque || (clientstate() != 2)) {
-		Background_Draw([0,0], screensize);
+		Background_Draw([0,0], screensize, opaque);
 	}
 
 	Loading_Draw(screensize);

@@ -46,6 +46,7 @@ ncIO::ncIO(void)
 	_isItem = false;
 	_isPlayer = false;
 	_isWeapon = false;
+	solid = SOLID_NOT;
 }
 
 void
@@ -86,6 +87,8 @@ ncIO::Spawned(void)
 
 	_isWeapon = false;
 	_isItem = false;
+
+	solid = SOLID_NOT;
 
 #ifdef SERVER
 	UseOutput(this, m_outputOnSpawn);

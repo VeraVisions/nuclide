@@ -954,6 +954,10 @@ BreakModel_SpawnID(vector smins, vector smaxs, vector dir, float speed, int coun
 	float x = tokenize(g_breakmodel[index].data);
 	int modelcount = x / 2;
 	bool usePhysics = g_breakmodel[index].physics;
+	
+	if (speed < 200) {
+		speed = 200;
+	}
 
 	//print(sprintf("breaking into %i models\n", modelcount));
 
@@ -1043,14 +1047,15 @@ BreakModel_SpawnID(vector smins, vector smaxs, vector dir, float speed, int coun
 		gib.SetScale(1.0f);
 
 		if (usePhysics == false) {
-			gib.SetSize([-8,-8,-8],[8,8,8]);
-			gib.velocity = (dir * speed) * 0.75;
-			gib.velocity[0] += (random() - 0.5) * (speed * 0.25);
-			gib.velocity[1] += (random() - 0.5) * (speed * 0.25);
-			gib.velocity[2] += (random() - 0.5) * (speed * 0.25);
+			gib.SetSize([-2,-2,-2],[2,2,2]);
+			gib.velocity = (dir * (speed * 0.75));
+			gib.velocity[0] += (random() - 0.5) * (speed * 0.5);
+			gib.velocity[1] += (random() - 0.5) * (speed * 0.5);
+			gib.velocity[2] += (random() - 0.5) * (speed * 0.5);
+			gib.velocity[2] += (speed * 0.25f);
 			gib.SetAngularVelocity([300,300,300]);
 			gib.SetMovetype(MOVETYPE_BOUNCE);
-			gib.SetSolid(SOLID_CORPSE);
+			gib.SetSolid(SOLID_NOT);
 		} else {
 			gib.SetMovetype(MOVETYPE_PHYSICS);
 			gib.SetSolid(SOLID_CORPSE);

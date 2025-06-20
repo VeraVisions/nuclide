@@ -1,0 +1,8 @@
+typeInfo meleeAttack1
+{
+	"task_1"			"TurnToEnemy"
+	"task_2"			"AttackMelee1"
+	"fail_onDeadEnemy"	"1"
+	"fail_onDamage"		"1"
+	"fail_onAlertSound"	"1"
+}

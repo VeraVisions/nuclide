@@ -1,0 +1,47 @@
+#define ARMY_IDLE 0
+#define ARMY_DEATH1 1
+#define ARMY_DEATH2 2
+#define ARMY_LOAD 3
+#define ARMY_PAIN1 4
+#define ARMY_PAIN2 5
+#define ARMY_PAIN3 6
+#define ARMY_RUN 7
+#define ARMY_SHOOT 8
+#define ARMY_PROWL 9
+
+entityDef monster_army
+{
+	"inherit"	"monster_base"
+	"netname"	"Grunt"
+	"model"		"progs/soldier.mdl"
+	"mins"		"-16 -16 -24"
+	"maxs"		"16 16 40"
+	"health"	"30"
+	"propdata"	"actor_army"
+
+	"act_idle"	"$ARMY_IDLE"
+	"act_walk"	"$ARMY_PROWL"
+	"act_run"	"$ARMY_RUN"
+	"act_smallFlinch"	"$ARMY_PAIN1"
+	"act_bigFlinch"		"$ARMY_PAIN2,$ARMY_PAIN3"
+	"act_dieSimple"		"$ARMY_DEATH1,$ARMY_DEATH2"
+
+	"attack_ranged_range"	"1024"
+	"act_rangeAttack1"	"$ARMY_SHOOT"
+	"mindset_rangedCombat"	"army_rangedAttack1"
+}
+
+entityDef projectile_army_rifle
+{
+	"spawnclass"			"ncProjectile"
+	"model"					"progs/spike.mdl"
+	"mins"					"0 0 0"
+	"maxs"					"0 0 0"
+	"velocity"				"9000"
+	"fuse"					"5"
+	"detonate_on_fuse"		"0"
+	"detonate_on_death"		"0"
+	"detonate_on_world"		"1"
+	"detonate_on_actor"		"1"
+	"damage"				"15"
+}

@@ -588,7 +588,6 @@ private:
 	float m_flyOffset;
 	bool m_usesNav;
 	bool m_fireFromHead;
-	bool m_pvsSleep;
 	bool m_bCanAttack;
 
 	nonvirtual void _LerpTurnToPos(vector);

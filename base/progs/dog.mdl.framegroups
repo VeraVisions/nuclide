@@ -1,0 +1,9 @@
+0 8 10 0 // attack
+8 9 10 0 // death
+17 9 10 0 // deathb
+26 6 10 0 // pain
+32 16 10 0 // painb
+48 12 10 1 // run
+60 9 10 0 // leap
+69 9 10 1 // stand
+78 8 10 1 // walk

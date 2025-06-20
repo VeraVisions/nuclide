@@ -1,0 +1,58 @@
+entityDef weapon_supershotgun
+{
+	"editor_color"		".3 .3 1"
+	"editor_mins"		"-16 -16 -16"
+	"editor_maxs"		"16 16 16"
+	"editor_usage"		"Super Shotgun"
+	"editor_rotatable"	"1"
+
+	"spawnclass"		"ncWeapon"
+	"model"				"progs/g_shot.mdl"
+	"model_view"		"progs/v_shot2.mdl"
+	"snd_acquire"		"dmc_weapon.pickup"
+	"snd_respawn"		"item.respawn"
+	"spin"				"1"
+	"pickupFlash"		"1"
+
+	// weapon specific
+	"def_fireInfo"		"fireInfo_superShotgun"
+	"inv_name"			"Super Shotgun"
+	"inv_ammo_shells"	"5"
+	"ammoType"			"ammo_shells"
+	"ammoRequired"		"2"
+
+	"act_fire"			"1"
+	"act_idle"			"0"
+
+	"snd_fire"			"weapon_supershotgun.shoot"
+	"snd_empty"			"weapon.empty"
+
+//	"msg_obituary"		"%s ate two loads of %s's buckshot."
+
+	// ncWeapon specific
+	"hudSlot"			"2"
+	"hudSlotPos"		"0"
+	"weight"			"15"
+	"crosshair"			"none"
+	"ammoIcon"			"weapon_doubleshotgun.ammo"
+	"icon"				"weapon_doubleshotgun.weapon"
+	"iconSelected"		"weapon_doubleshotgun.weapon_s"
+}
+
+entityDef projectile_superShotgun
+{
+	"inherit"			"projectile_bullet_base"
+	"damage"			"skill:plr_supershotgun"
+	"hitscans"			"14"
+	"spread"			"0.08716 0.08716"
+//	"range"				"2048"
+}
+
+entityDef fireInfo_superShotgun
+{
+	"def_onFire"		"projectile_shotgun"
+	"ammoPerShot"		"2"
+	"fireRate"			"0.7"
+	"punchSpring"		"-5 0 0"
+	"model_flash"		"sprites/muzzleflash.spr"
+}

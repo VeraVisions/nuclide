@@ -1,0 +1,47 @@
+entityDef item_armor1
+{
+	"editor_usage"	"(Green) Armor item that gives you 100 armor points."
+	"spawnclass"	"ncItem"
+	"model"			"progs/armor.mdl"
+	"mins"			"-16 -16 0"
+	"maxs"			"16 16 16"
+	"snd_acquire"	"armor_green.pickup"
+	"snd_respawn"	"item.respawn"
+	"inv_armor"		"skill:armor_green"
+	"spin"			"1"
+	"pickupFlash"	"1"
+	"skin"			"0"
+}
+
+entityDef item_armor2
+{
+	"editor_usage"	"(Yellow) Armor item that gives you 150 armor points."
+	"spawnclass"	"ncItem"
+	"model"			"progs/armor.mdl"
+	"mins"			"-16 -16 0"
+	"maxs"			"16 16 16"
+	"snd_acquire"	"armor_yellow.pickup"
+	"snd_respawn"	"item.respawn"
+	"inv_armor"		"skill:armor_yellow"
+	"spin"			"1"
+	"pickupFlash"	"1"
+	"skin"			"1"
+}
+
+
+entityDef item_armorInv
+{
+	"editor_usage"	"(Red) Armor item that gives you 200 armor points."
+	"spawnclass"	"ncItem"
+	"model"			"progs/armor.mdl"
+	"mins"			"-16 -16 0"
+	"maxs"			"16 16 16"
+	"snd_acquire"	"armor_red.pickup"
+	"snd_respawn"	"item.respawn"
+	"inv_armor"		"skill:armor_red"
+	"spin"			"1"
+	"pickupFlash"	"1"
+	"skin"			"2"
+}
+
+// TODO if deathmatch is 4 and player invincible, don't pick up

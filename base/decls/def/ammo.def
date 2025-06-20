@@ -1,0 +1,39 @@
+// these have to be defined by the game.
+#include "ammo/base.def"
+#include "items/cells.def"
+#include "items/nails.def"
+#include "items/rockets.def"
+#include "items/shells.def"
+
+entityDef ammo_types {
+	"ammo_none"				"0"
+	"ammo_rockets"			"1"
+	"ammo_nails"			"2"
+	"ammo_cells"			"3"
+	"ammo_shells"			"4"
+	"ammo_plasma"			"5"
+	"ammo_lava_nails"		"6"
+	"ammo_multi_rockets"	"7"
+}
+
+entityDef ammo_names {
+	"ammo_none"				"None"
+	"ammo_rockets"			"Rockets"
+	"ammo_nails"			"Nails"
+	"ammo_cells"			"Cells"
+	"ammo_shells"			"Shells"
+	"ammo_plasma"			"Plasma"
+	"ammo_lava_nails"		"Lava Nails"
+	"ammo_multi_rockets"	"Multi Rockets"
+}
+
+entityDef ammo_max {
+	"ammo_none"				"0"
+	"ammo_rockets"			"100"
+	"ammo_nails"			"200"
+	"ammo_cells"			"100"
+	"ammo_shells"			"100"
+	"ammo_plasma"			"100"
+	"ammo_lava_nails"		"200"
+	"ammo_multi_rockets"	"100"
+}

@@ -1,0 +1,19 @@
+typeInfo knight_meleeAttack1
+{
+	"task_1"			"SetFailSchedule moveCloserToEnemy"
+	"task_2"			"TurnToEnemy"
+	"task_3"			"TaskCheck_MeleeEnemy"
+	"task_4"			"PlayActivity meleeAttack1"
+	"task_5"			"SnapToIdealYaw"
+	"task_6"			"SpawnProjectileOffset melee_knight_attack 0 0 24"
+	"task_7"			"Wait 0.01"
+	"task_8"			"SnapToIdealYaw"
+	"task_9"			"SpawnProjectileOffset melee_knight_attack 0 0 24"
+	"task_10"			"Wait 0.01"
+	"task_11"			"SnapToIdealYaw"
+	"task_12"			"SpawnProjectileOffset melee_knight_attack 0 0 24"
+	"task_13"			"Wait 1"
+	"fail_onDeadEnemy"			"1"
+	"fail_onDamage"				"1"
+	"fail_onOccludedEnemy"		"1"
+}

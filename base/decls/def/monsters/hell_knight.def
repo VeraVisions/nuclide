@@ -1,0 +1,66 @@
+#define HKNIGHT_IDLE		0
+#define HKNIGHT_WALK		1
+#define HKNIGHT_RUN		2
+#define HKNIGHT_PAIN		3
+#define HKNIGHT_DEATH1		4
+#define HKNIGHT_DEATH2		5
+#define HKNIGHT_CHARGE1		6
+#define HKNIGHT_MAGIC1		7
+#define HKNIGHT_MAGIC2		8
+#define HKNIGHT_CHARGE2		9
+#define HKNIGHT_SLICE		10
+#define HKNIGHT_SMASH		11
+#define HKNIGHT_ATTACK		12
+#define HKNIGHT_MAGIC3		13
+
+entityDef monster_hell_knight
+{
+	"inherit"	"monster_base"
+	"netname"	"Death Knight"
+	"model"		"progs/hknight.mdl"
+	"mins"		"-16 -16 -24"
+	"maxs"		"16 16 40"
+	"health"	"250"
+	"propdata"	"actor_hknight"
+
+	"act_idle"			"$HKNIGHT_IDLE"
+	"act_walk"			"$HKNIGHT_WALK"
+	"act_run"			"$HKNIGHT_RUN"
+	"act_smallFlinch"	"$HKNIGHT_PAIN"
+	"act_bigFlinch"		"$HKNIGHT_PAIN"
+	"act_dieSimple"		"$HKNIGHT_DEATH1,$HKNIGHT_DEATH2"
+	"act_meleeAttack1"	"$HKNIGHT_CHARGE1,$HKNIGHT_CHARGE2"
+	"act_rangedAttack1"	"$HKNIGHT_MAGIC1,$HKNIGHT_MAGIC2,$HKNIGHT_MAGIC3"
+
+
+	"attack_ranged_range"	"1024"
+	"mindset_rangedCombat"	"hknight_rangedAttack1,moveTowardsEnemy"
+	"def_precache1"			"projectile_hknight_spike"
+
+	"attack_melee_range"	"164"
+	"mindset_meleeCombat"	"knight_meleeAttack1"
+}
+
+entityDef projectile_hknight_spike
+{
+	"spawnclass"			"ncProjectile"
+	"model"				"progs/k_spike.mdl"
+	"mins"				"0 0 0"
+	"maxs"				"0 0 0"
+	"velocity"			"300"
+	"fuse"				"5"
+
+	"detonate_on_fuse"		"0"
+	"detonate_on_death"		"0"
+	"detonate_on_world"		"1"
+	"detonate_on_actor"		"1"
+
+	"model_detonate"		"monster_enforcer.laser_impact"
+	"decal_detonate"		"Impact.Shot"
+	"snd_explode"			"enforcer/envstop.wav"
+
+	"light_color"			"1 0.25 0"
+	"light_radius"			"160"
+	"light_offset"			"0 0 0"
+	"damage"			"9"
+}

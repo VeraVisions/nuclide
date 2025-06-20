@@ -34,7 +34,7 @@ Platform_ConsoleCommand(string commandString, int wordCount)
 		//m_display();
 	//	break;
 	case "map_background":
-		localcmd(sprintf("maxplayers 2\nset coop 1\nset sv_background 1\nmap %s\n",
+		localcmd(sprintf("set g_gametype \"singleplayer\"\nset sv_playerslots 2\nset coop 1\nset sv_background 1\nmap %s\n",
 			argv(1)));
 		break;
 	case "listGameLibrary":

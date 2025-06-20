@@ -1,0 +1,17 @@
+typeInfo alert
+{
+	"task_1"	"StopMovement"
+	"task_2"	"GoToSpotInRadius 1024"
+	"task_3"	"Wait 4"
+	"task_4"	"GoToSpotInRadius 512"
+	"task_5"	"Wait 3"
+	"task_6"	"GoToSpotInRadius 256"
+	"task_7"	"Wait 2"
+	"task_8"	"ChangeMindset idle"
+
+	"NewEnemy"		"ChangeMindset hunt"
+	"Damage"		"ChangeMindset hunt"
+	"OccludedEnemy"		"ChangeMindset hunt"
+	"CanRangedAttack1"	"ChangeMindset rangedCombat"
+	"CanMeleeAttack1"	"ChangeMindset meleeCombat"
+}

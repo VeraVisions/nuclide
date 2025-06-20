@@ -1,0 +1,16 @@
+entityDef item_cells
+{
+	"editor_usage"			"Cells for the Lightning Gun."
+	"editor_usage1"			"Gives players 6 Cells Ammo."
+	"editor_var spawnflags"	"Gives players 12 Cells Ammo."
+
+	"inherit"			"ammo_base"
+	"model"				"maps/b_batt0.bsp"
+	"inv_ammo_cells"	"6"
+	"pickupFlash"		"1"
+
+	when "spawnflags" contains "1" {
+		"model"				"maps/b_batt1.bsp"
+		"inv_ammo_cells"	"12"
+	}
+}

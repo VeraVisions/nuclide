@@ -1,0 +1,11 @@
+typeInfo army_rangedAttack1
+{
+	"task_1"			"SetFailSchedule huntPlayer"
+	"task_2"			"TurnToEnemy"
+	"task_3"			"TaskCheck_FriendlyFire"
+	"task_4"			"SpawnProjectileOffset projectile_army_rifle 0 0 24"
+	"task_5"			"PlayActivity rangeAttack1"
+	"fail_onDeadEnemy"	"1"
+	"fail_onDamage"		"1"
+	"fail_onOccludedEnemy"		"1"
+}

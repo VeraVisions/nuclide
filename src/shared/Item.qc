@@ -328,6 +328,11 @@ ncItem::Touch(entity eToucher)
 		return;
 	}
 
+	/* never!!! */
+	if (eToucher.health <= 0 || eToucher.solid == SOLID_CORPSE) {
+		return;
+	}
+
 	if (m_itemNoTouch) {
 		return;
 	}

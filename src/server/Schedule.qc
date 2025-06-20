@@ -129,6 +129,12 @@ ncSchedule::Cancel(void)
 		}
 	}
 
+	if (wasfreed(this)) {
+		return;
+	}
+
+	think = __NULL__;
+	nextthink = 0.0f;
 	Destroy();
 }
 
@@ -231,6 +237,8 @@ ncSchedule::CreateSchedule(ncActor targetActor, string scheduleDecl)
 
 	newSchedule.m_name = scheduleDecl;
 	newSchedule.m_scheduleDecl = ncDict::LoadDeclFromFile(scheduleDecl, sprintf("schedules/%s.decl", scheduleDecl));
+
+	ncLog("Created schedule %S on %s (%d)", scheduleDecl, targetActor.classname, num_for_edict(targetActor));
 
 	if ((newSchedule.m_scheduleDecl.TokenCount() % 2) != 0) {
 		newSchedule.Destroy();

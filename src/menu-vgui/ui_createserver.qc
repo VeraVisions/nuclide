@@ -14,28 +14,44 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+var int autocvar_ui_maxclients = 8i;
+
+
 int g_iCreateServerInitialized;
 
 void UI_CreateServer_Show ( void )
 {
 	static vguiScrollBar scrlMaps;
+	static vguiScrollBar scrlModes;
 	static vguiWindow winCreate;
 	static vguiButton btnCancel;
 	static vguiButton btnStart;
 	static vguiList lsbMaps;
+	static vguiList lsbModes;
+	static vguiLabel lblModes;
 	static vguiLabel lblHostname;
 	static vguiTextBox txbHostname;
 	static vguiLabel lblMaxplayers;
 	static vguiTextBox txbMaxplayers;
 	static vguiLabel lblPassword;
 	static vguiTextBox txbPassword;
+	static vguiCheckbox chkLAN;
 
 	static void CreateServer_Start ( void ) {
 		int iEndMap = lsbMaps.GetSelected();
 		if ( lsbMaps.GetSelected() == 0 ) {
 			iEndMap = (int)( rint( random( 1, lsbMaps.GetItemCount() ) ) );
 		}
-		Map_SpawnServer(txbHostname.GetText(), lsbMaps.GetItem( iEndMap ), stof(txbMaxplayers.GetText()), "", txbPassword.GetText());
+
+		string gameType = lsbModes.GetItem( lsbModes.GetSelected() );
+
+		if (chkLAN.GetValue() == true) {
+			cvar_set("sv_public", "0");	
+		} else {
+			cvar_set("sv_public", "2");	
+		}
+
+		Map_SpawnServer(txbHostname.GetText(), lsbMaps.GetItem( iEndMap ), stof(txbMaxplayers.GetText()), gameType, txbPassword.GetText());
 		winCreate.Hide();
 	}
 	static void CreateServer_Cancel ( void ) {
@@ -44,8 +60,14 @@ void UI_CreateServer_Show ( void )
 	static void CreateServer_ListUpdate ( void ) {
 		lsbMaps.SetOffset( scrlMaps.GetValue(), FALSE );
 	}
+	static void CreateServer_ListUpdateMode ( void ) {
+		lsbModes.SetOffset( scrlModes.GetValue(), FALSE );
+	}
 	static void CreateServer_Scrolled ( void ) {
 		scrlMaps.SetValue( lsbMaps.GetOffset() );
+	}
+	static void CreateServer_ScrolledMode ( void ) {
+		scrlModes.SetValue( lsbModes.GetOffset() );
 	}
 
 	if ( !g_iCreateServerInitialized ) {
@@ -69,6 +91,16 @@ void UI_CreateServer_Show ( void )
 			//lsbMaps.AddItem( search_getfilename( shMaps, i ) );
 		}
 
+		chkLAN = spawn( vguiCheckbox );
+		chkLAN.SetTitle( "LAN Game" );
+		chkLAN.SetValue( TRUE );
+		chkLAN.SetSize( '124 24' );
+		chkLAN.SetPos( '20 186' );
+
+		lblModes = spawn( vguiLabel );
+		lblModes.SetPos( '20 218' );
+		lblModes.SetTitle( "Gametype" );
+
 		scrlMaps = spawn( vguiScrollBar );
 		scrlMaps.SetLength( 306 );
 		scrlMaps.SetPos( '303 32' );
@@ -76,6 +108,27 @@ void UI_CreateServer_Show ( void )
 		scrlMaps.SetStep( 1 );
 		scrlMaps.SetMax( lsbMaps.GetMaxVisibleItems() );
 		scrlMaps.CallOnChange( CreateServer_ListUpdate );
+
+		lsbModes = spawn( vguiList );
+		lsbModes.SetSize( '128 128' );
+		lsbModes.SetPos( '20 234' );
+		lsbModes.SetItemCount( ModeLibrary_GetModeCount() );
+		lsbModes.CallOnScroll( CreateServer_ScrolledMode );
+		lsbModes.SetSelected( 0 );
+
+		for ( int i = 0; i < ModeLibrary_GetModeCount(); i++ ) {
+			string strMode = substring(ModeLibrary_GetInfo(i, MODEINFO_NAME), 0, -5);
+			lsbModes.AddItem( strMode );
+			//lsbMaps.AddItem( search_getfilename( shMaps, i ) );
+		}
+
+		scrlModes = spawn( vguiScrollBar );
+		scrlModes.SetLength( 128 );
+		scrlModes.SetPos(  '195 234' );
+		scrlModes.SetMin( 0 );
+		scrlModes.SetStep( 1 );
+		scrlModes.SetMax( lsbModes.GetMaxVisibleItems() );
+		scrlModes.CallOnChange( CreateServer_ListUpdateMode );
 
 		btnStart = spawn( vguiButton );
 		btnStart.SetTitle( "Start" );
@@ -105,7 +158,7 @@ void UI_CreateServer_Show ( void )
 		txbMaxplayers = spawn( vguiTextBox );
 		txbMaxplayers.SetPos( [ 20, 102 ] );
 		txbMaxplayers.SetSize( [ 124, 24 ] );
-		txbMaxplayers.SetText( cvar_string( "sv_playerslots" ) != "1" ? cvar_string( "sv_playerslots" ) : "8" );
+		txbMaxplayers.SetText( cvar( "ui_maxclients" ) != 0 ? cvar_string( "ui_maxclients" ) : "8" );
 
 		lblPassword = spawn( vguiLabel );
 		lblPassword.SetPos( '20 136' );
@@ -118,7 +171,10 @@ void UI_CreateServer_Show ( void )
 
 		g_uiDesktop.Add( winCreate );
 		winCreate.Add( lsbMaps );
+		winCreate.Add( lblModes );
 		winCreate.Add( scrlMaps );
+		winCreate.Add( lsbModes );
+		winCreate.Add( scrlModes );
 		winCreate.Add( btnStart );
 		winCreate.Add( btnCancel );
 		winCreate.Add( lblHostname );
@@ -127,6 +183,7 @@ void UI_CreateServer_Show ( void )
 		winCreate.Add( txbMaxplayers );
 		winCreate.Add( lblPassword );
 		winCreate.Add( txbPassword );
+		winCreate.Add( chkLAN );
 	}
 
 	winCreate.Show();

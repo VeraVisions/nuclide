@@ -1,0 +1,36 @@
+#define ZOMBIE_IDLE		0
+#define ZOMBIE_WALK		1
+#define ZOMBIE_RUN		2
+#define ZOMBIE_ATTACK1	3
+#define ZOMBIE_ATTACK2	4
+#define ZOMBIE_ATTACK3	5
+#define ZOMBIE_PAIN1	6
+#define ZOMBIE_PAIN2	7
+#define ZOMBIE_PAIN3	8
+#define ZOMBIE_PAIN4	9
+#define ZOMBIE_PAIN5	10
+#define ZOMBIE_CRUC		11
+
+entityDef monster_zombie
+{
+	"inherit"	"monster_base"
+	"netname"	"Zombie"
+	"model"		"progs/zombie.mdl"
+	"mins"		"-16 -16 -24"
+	"maxs"		"16 16 40"
+	"health"	"60"
+	"propdata"	"actor_zombie"
+
+	"act_idle"	"$ZOMBIE_IDLE"
+	"act_walk"	"$ZOMBIE_WALK"
+	"act_run"	"$ZOMBIE_RUN"
+	"act_smallFlinch"	"$ZOMBIE_PAIN1,$ZOMBIE_PAIN4"
+	"act_bigFlinch"	"$ZOMBIE_PAIN1,$ZOMBIE_PAIN4"
+	"act_dieSimple"		"$ZOMBIE_PAIN2,$ZOMBIE_PAIN3"
+	"act_rangedAttack1"	"$ZOMBIE_ATTACK1,$ZOMBIE_ATTACK2,$ZOMBIE_ATTACK3"
+
+	when "spawnflags" contains "1" {
+		"dead"	"1"
+		"frame"	"$ZOMBIE_CRUC"
+	}
+}

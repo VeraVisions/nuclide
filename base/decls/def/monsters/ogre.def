@@ -1,0 +1,74 @@
+#define OGRE_IDLE	0
+#define OGRE_WALK	1
+#define OGRE_RUN	2
+#define OGRE_SWING	3
+#define OGRE_SMASH	4
+#define OGRE_SHOOT	5
+#define OGRE_PAIN1	6
+#define OGRE_PAIN2	7
+#define OGRE_PAIN3	8
+#define OGRE_PAIN4	9
+#define OGRE_PAIN5	10
+#define OGRE_DEATH1	11
+#define OGRE_DEATH2	12
+#define OGRE_PULL	13
+
+entityDef monster_ogre
+{
+	"inherit"			"monster_base"
+	"netname"			"Ogre"
+	"model"				"progs/ogre.mdl"
+	"mins"				"-32 -32 -24"
+	"maxs"				"32 32 64"
+	"health"			"200"
+	"propdata"			"actor_ogre"
+
+	"act_idle"			"$OGRE_IDLE"
+	"act_walk"			"$OGRE_WALK"
+	"act_run"			"$OGRE_RUN"
+	"act_smallFlinch"	"$OGRE_PAIN1,$OGRE_PAIN2,$OGRE_PAIN3"
+	"act_bigFlinch"		"$OGRE_PAIN4,$OGRE_PAIN5"
+	"act_dieSimple"		"$OGRE_DEATH1,$OGRE_DEATH2"
+	"act_rangedAttack1"	"$OGRE_SHOOT"
+	"act_meleeAttack1"	"$OGRE_SWING,$OGRE_SMASH"
+
+	"attack_ranged_range"	"600"
+	"mindset_rangedCombat"	"ogre_rangedAttack1,moveTowardsEnemy"
+	"def_rangedAttack1"		"projectile_ogre_grenade"
+
+	"attack_melee_range"	"256"
+	"mindset_meleeCombat"	"knight_meleeAttack1"
+}
+
+entityDef projectile_ogre_grenade
+{
+	"spawnclass"				"ncProjectile"
+	"model"						"progs/grenade.mdl"
+	"offset"					"24 0 -8"
+	"velocity"					"600 0 200"
+	"angular_velocity"			"300 300 300"
+	"fuse"						"2.5"
+	"bounce"					"1"
+	"detonate_on_fuse"			"1"
+	"detonate_on_death"			"0"
+	"detonate_on_world"			"0"
+	"detonate_on_actor"			"1"
+	"detonate_offset"			"64"
+	"impact_damage_effect"		"1"
+	"impact_gib"				"1"
+
+	"smoke_fly"					"weapon_grenadelauncher.trail"
+	"decal_detonate"			"ExplosionScorch"
+	"model_detonate"			"fx_explosion.main"
+
+	"explode_light_color"		"1 0.5 0"
+	"explode_light_radius"		"1024"
+	"explode_light_fadetime"	"3"
+
+	"snd_explode"				"weapon_grenadelauncher.explode"
+	"snd_bounce"				"weapon_grenadelauncher.bounce"
+
+//	"range"						"900" // Reference only, max throw distance
+
+	"def_splash_damage"			"damage_grenadeSplash"
+}

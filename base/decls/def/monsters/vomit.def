@@ -1,0 +1,11 @@
+// Vomitus. Cut enemy
+entityDef monster_vomit
+{
+	"inherit"	"monster_base"
+	"netname"	"Vomitus"
+	"model"		"progs/vomit.mdl"
+	"mins"		"-16 -16 -24"
+	"maxs"		"16 16 40"
+	"health"	"100"
+	"propdata"	"actor_vomit"
+}

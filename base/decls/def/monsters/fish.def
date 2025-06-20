@@ -1,0 +1,21 @@
+#define FISH_ATTACK		0
+#define FISH_DEATH		1
+#define FISH_SWIM		2
+#define FISH_PAIN		3
+
+entityDef monster_fish
+{
+	"inherit"	"monster_base"
+	"model"		"progs/fish.mdl"
+	"netname"	"Rotfish"
+	"mins"		"-16 -16 -24"
+	"maxs"		"16 16 24"
+	"health"	"25"
+	"propdata"	"actor_fish"
+
+	"act_swim"			"$FISH_SWIM"
+	"act_smallFlinch"	"$FISH_PAIN"
+	"act_bigFlinch"		"$FISH_PAIN"
+	"act_dieSimple"		"$FISH_DEATH"
+	"act_meleeAttack1"	"$FISH_ATTACK"
+}

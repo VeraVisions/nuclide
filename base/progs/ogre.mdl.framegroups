@@ -1,0 +1,14 @@
+0 9 10 1 // stand
+9 16 10 1 // walk
+25 8 10 1 // run
+33 14 10 0 // swing
+47 14 10 0 // smash
+61 6 10 0 // shoot
+67 5 10 0 // pain
+72 3 10 0 // painb
+75 6 10 0 // painc
+81 16 10 0 // paind
+97 15 10 0 // paine
+112 14 10 0 // death
+126 10 10 0 // bdeath
+136 11 10 0 // pull

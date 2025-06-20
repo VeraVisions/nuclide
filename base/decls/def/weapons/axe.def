@@ -1,0 +1,58 @@
+entityDef weapon_axe
+{
+	"editor_color"		".3 .3 1"
+	"editor_mins"		"-16 -16 -16"
+	"editor_maxs"		"16 16 16"
+	"editor_usage"		"Axe"
+	"editor_rotatable"	"1"
+
+	"spawnclass"		"ncWeapon"
+	"model"				"progs/g_axe.mdl"
+	"model_view"		"progs/v_axe.mdl"
+	"snd_acquire"		"mayhem_weapon.pickup"
+	"snd_respawn"		"item.respawn"
+	"spin"				"1"
+	"pickupFlash"		"1"
+	"animPrefix"		"axe"
+
+	// weapon specific
+	"def_onFire"		"projectile_axe"
+	"testDistance"		"-64"
+	"inv_name"			"Axe"
+	"ammoRequired"		"0"
+	"silent_fire"		"1"
+
+	"failRate"			"0.5"
+	"fireRate"			"0.5"
+	"snd_hit"			"weapon_crowbar.hit"
+	"snd_failed"		"weapon_crowbar.miss"
+
+	"act_idle"			"0"
+	"act_draw"			"0"
+	"act_fireFailed"	"1,2"
+	"act_fire"			"1,2"
+
+//	"msg_obituary"		"%s was axe murdered by %s."
+
+	// ncWeapon specific
+	"hudSlot"			"0"
+	"hudSlotPos"		"0"
+	"weight"			"0"
+	"crosshair"			"none"
+	"ammoIcon"			"none"
+	"icon"				"weapon_axe.weapon"
+	"iconSelected"		"weapon_axe.weapon_s"
+}
+
+entityDef projectile_axe
+{
+	"spawnclass"			"ncProjectile"
+	"damage"				"skill:plr_crowbar"
+	"is_bullet"				"1"
+	"range"					"48"
+	"decal_detonate"		"Impact.Shot"
+	"detonate_on_world" 	"0"
+	"snd_hitBody"			"Weapon_Crowbar.Melee_Hit"
+	"snd_hitWorld"			"Weapon_Crowbar.Melee_HitWorld"
+}
+

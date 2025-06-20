@@ -1,0 +1,28 @@
+entityDef light_flame_small_white
+{
+	"spawnclass"	"ncRenderableEntity"
+	"model"		"progs/flame2.mdl"
+}
+
+entityDef light_flame_small_walltorch
+{
+	"spawnclass"	"ncRenderableEntity"
+	"model"		"progs/flame.mdl"
+	"frame"		"1"
+}
+
+entityDef light_flame_large_white
+{
+	"spawnclass"	"ncRenderableEntity"
+	"model"		"progs/flame2.mdl"
+	"frame"		"1"
+}
+
+entityDef light_flame_large_yellow
+{
+	"spawnclass"	"ncRenderableEntity"
+	"model"		"progs/flame2.mdl"
+	"frame"		"1"
+}
+
+

@@ -252,6 +252,8 @@ public:
 private:
 
 #ifdef SERVER
+	bool m_pvsSleep;
+
 	/* pathfinding */
 	int m_pathfindingNodeCount;
 	int m_pathfindingCurrentNode;

@@ -1,0 +1,34 @@
+entityDef ctf_baseflag
+{
+	"editor_model"	"models/flag.mdl"
+
+	"spawnclass"	"ncCaptureItem"
+	"mins"			"-16 -16 0"
+	"maxs"			"16 16 72"
+	"model"			"models/flag.mdl"
+	"renderfx"		"$RFX_GLOWSHELL"
+	"renderamt"		"32"
+	"frame"			"4"
+	"dropToFloor"	"1"
+	"goalItem"		"ctf_flag"
+
+	// doubles as a capture point!
+	"needs"			"ctf_flag"
+	"playerScore"	"10"
+	"teamScore"		"1"
+
+	"msg1"			"You got the enemy flag. Return to base!"
+	"msg2"			"%s got the % flag!"
+	"msg3"			"Your team captured the flag!"
+	"msg4"			"%s captured the %s flag!"
+}
+
+// the actual inventory item
+entityDef ctf_flag
+{
+	"editor_model"	"models/flag.mdl"
+	"spawnclass"	"ncItem"
+	"mins"			"-16 -16 0"
+	"maxs"			"16 16 72"
+	"inv_carry"		"1"
+}

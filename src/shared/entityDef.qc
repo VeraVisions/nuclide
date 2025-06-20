@@ -338,6 +338,12 @@ EntityDef_PrepareEntity(entity target, int id)
 	ncEntity targetEnt = (ncEntity)target;
 	entity oldSelf = self;
 	bool isEntDefBased = false;
+	
+	if (!STRING_SET(g_entDefTable[id].spawnClass)) {
+		ncError("%S (%i) doesn't define spawnclass", g_entDefTable[id].entClass, id);
+		g_lastSpawnData = "";
+		return (__NULL__);
+	}
 
 	/* check if the spawnclass is an entityDef */
 	for (int i = 0i; i < g_entDefCount; i++) {
@@ -567,7 +573,7 @@ EntityDef_NewClassname(string className)
 {
 	g_lastSpawnData = __fullspawndata;
 
-	if not (className) {
+	if (!STRING_SET(className)) {
 		return (__NULL__);
 	}
 
@@ -586,7 +592,7 @@ EntityDef_SpawnClassname(string className)
 {
 	g_lastSpawnData = __fullspawndata;
 
-	if not (className) {
+	if (!STRING_SET(className)) {
 		return (__NULL__);
 	}
 
@@ -605,6 +611,10 @@ EntityDef_SwitchClass(ncEntity target, string className)
 {
 	ncEntity returnEntity = __NULL__;
 	g_lastSpawnData = target.m_rawSpawnData;
+
+	if (!STRING_SET(className)) {
+		return (__NULL__);
+	}
 
 	for (int i = 0i; i < g_entDefCount; i++) {
 		if (className == g_entDefTable[i].entClass) {

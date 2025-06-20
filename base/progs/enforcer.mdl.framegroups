@@ -1,0 +1,10 @@
+0 7 10 1 // stand
+7 16 10 1 // walk
+23 8 10 1 // run
+31 10 10 0 // attack
+41 14 10 0 // death
+55 11 10 0 // fdeath
+66 4 10 0 // paina
+70 5 10 0 // painb
+75 8 10 0 // painc
+83 19 10 0 // paind

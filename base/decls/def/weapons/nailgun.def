@@ -1,0 +1,106 @@
+entityDef weapon_nailgun
+{
+	"editor_color"		".3 .3 1"
+	"editor_mins"		"-16 -16 0"
+	"editor_maxs"		"16 16 32"
+	"editor_usage"		"Nailgun"
+	"editor_rotatable"	"1"
+
+	"spawnclass"		"ncWeapon"
+	"model"				"progs/g_nail.mdl"
+	"model_view"		"progs/v_nail.mdl"
+	"snd_acquire"		"mayhem_weapon.pickup"
+	"snd_respawn"		"mayhem_item.respawn"
+	"spin"				"1"
+	"pickupFlash"		"1"
+	"animPrefix"		"nailgun"
+
+	// weapon specific
+	"def_fireInfo"		"fireInfo_nailgun"
+	"def_altFireInfo"	"fireInfo_nailgunAlt"
+	"inv_name"			"Nailgun"
+	"ammoType"			"ammo_nails"
+	"inv_ammo_nails"	"30"
+	"ammoRequired"		"1"
+	"ammoPerShot"		"1"
+
+	"altAlternates"		"1"
+
+	"act_fire"			"1"
+	"act_idle"			"0"
+
+	"snd_fire"			"weapon_nailgun.shoot"
+	"snd_empty"			"weapon.empty"
+
+//	"msg_obituary"		"%s was nailed by %s."
+
+	// ncWeapon specific
+	"hudSlot"			"3"
+	"hudSlotPos"		"0"
+	"weight"			"20"
+	"crosshair"			"none"
+}
+
+entityDef fireInfo_nailgun
+{
+	"def_onFire"		"projectile_nailLeft"
+	"fireRate"			"0.1"
+	"punchSpring"		"-0.5 2 -2"
+	"model_flash"		"sprites/muzzleflash.spr"
+}
+
+entityDef fireInfo_nailgunAlt
+{
+	"def_onFire"		"projectile_nailRight"
+	"fireRate"			"0.1"
+	"punchSpring"		"-0.5 -2 2"
+	"model_flash"		"sprites/muzzleflash.spr"
+}
+
+entityDef debris_nail
+{
+	"spawnclass"		"ncProjectile"
+	"model"				"progs/spike.mdl"
+}
+
+entityDef projectile_nail
+{
+	"spawnclass"			"ncProjectile"
+	"model"					"progs/spike.mdl"
+	"mins"					"0 0 0"
+	"maxs"					"0 0 0"
+	"velocity"				"1000"
+	"fuse"					"10"
+	"detonate_on_fuse"		"0"
+	"detonate_on_death"		"0"
+	"detonate_on_world"		"1"
+	"detonate_on_actor"		"1"
+	"model_detonate"		"weapon_nailgun.impact"
+	"decal_detonate"		"Impact.Shot"
+	"snd_explode"			"weapon_nailgun.ricochet"
+	"projectile_debris" 	"debris_nail"
+	"debris_count"			"1"
+	"debris_stick"			"1"
+	"debris_offset"			"-2 0 0"
+//	"range"					"6000"
+
+	"def_damage"			"damage_nailDirect"
+}
+
+entityDef projectile_nailLeft
+{
+	"inherit"	"projectile_nail"
+	"offset"	"24 -3 -8"
+}
+
+entityDef projectile_nailRight
+{
+	"inherit"	"projectile_nail"
+	"offset"	"24 3 -8"
+	"act_fire"			"2"
+}
+
+entityDef damage_nailDirect
+{
+	"damage"	"skill:plr_nailgun"
+}

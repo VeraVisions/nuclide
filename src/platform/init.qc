@@ -82,6 +82,11 @@ Platform_Draw(vector screensize)
 			RichPresence_Set("status", "Main Menu");
 	}
 
+	/* ensure menu background draws the controls */
+	if (g_background) {
+		return (true);
+	}
+
 	/* if the menu is not visible and we're no background map... */
 	if (!g_active && !g_background) {
 		/* make sure we're redirecting input when the background's gone */

@@ -953,6 +953,10 @@ makevulkanblob:
 
 # stock FTE engine
 fteqw:
+	cd ThirdParty/fteqw/engine && $(MAKE) $(ENGINE_CLBUILD) PKGCONFIG=pkg-config ARCH=x86_64
+	-install -m 0777 ./ThirdParty/fteqw/engine/debug/fteqw ./
+
+fteqw-static:
 	cd ThirdParty/fteqw/engine && $(MAKE) makelibs ARCH=x86_64
 	cd ThirdParty/fteqw/engine && $(MAKE) $(ENGINE_CLBUILD) PKGCONFIG=pkg-config ARCH=x86_64
 	-install -m 0777 ./ThirdParty/fteqw/engine/debug/fteqw ./

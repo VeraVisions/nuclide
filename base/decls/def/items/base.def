@@ -1,0 +1,14 @@
+entityDef item_base
+{
+	"spawnclass"	"ncItem"
+	"mins"			"-16 -16 -24"
+	"maxs"			"16 16 32"
+
+	"snd_respawn"	"item.respawn"
+	"renderfx"		"$RFX_GLOWSHELL"
+	"renderamt"		"32"
+	"inv_carry"		"1"
+	"spin"			"1"
+	"renderGSThick"	"2"
+	"pickupFlash"	"1"
+}

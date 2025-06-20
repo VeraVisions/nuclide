@@ -1,0 +1,5 @@
+// Quake 1's buttons are triggered by touch most of the time
+entityDef mayhem_func_button {
+	"spawnclass"	"func_button"
+	"spawnflags"	"256"
+}

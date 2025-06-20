@@ -1,0 +1,36 @@
+#define SHAMBLER_IDLE	0
+#define SHAMBLER_WALK	1
+#define SHAMBLER_RUN	2
+#define SHAMBLER_SMASH	3
+#define SMAMBLER_SWINGR	4
+#define SHAMBLER_SWINGL	5
+#define SHAMBLER_MAGIC	6
+#define SHAMBLER_PAIN	7
+#define SAMBLER_DEATH	8
+
+entityDef monster_shambler
+{
+	"inherit"	"monster_base"
+	"netname"	"Shambler"
+	"model"		"progs/shambler.mdl"
+	"mins"		"-32 -32 -24"
+	"maxs"		"32 32 64"
+	"health"	"600"
+	"propdata"	"actor_shambler"
+
+	"act_idle"	"$SHAMBLER_IDLE"
+	"act_walk"	"$SHAMBLER_WALK"
+	"act_run"	"$SHAMBLER_RUN"
+	"act_smallFlinch"	"$SHAMBLER_PAIN"
+	"act_bigFlinch"		"$SHAMBLER_PAIN"
+	"act_dieSimple"		"$SAMBLER_DEATH"
+
+	"attack_ranged_range"	"1024"
+	"act_rangedAttack1"	"$SHAMBLER_MAGIC"
+
+	"attack_melee_range"	"128"
+	"act_meleeAttack1"	"$SMAMBLER_SWINGR,$SMAMBLER_SWINGL"
+	"mindset_search"		"searchNearestPlayerMelee"
+	"mindset_meleeCombat"	"knight_meleeAttack1"
+	"mindset_rangedCombat"	"moveTowardsEnemy"
+}

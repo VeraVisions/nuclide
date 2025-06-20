@@ -1,0 +1,14 @@
+0 9 10 1 // stand
+9 20 10 1 // walk
+29 8 10 1 // run
+37 5 10 0 // pain
+42 12 10 0 // death
+54 9 10 0 // deathb
+63 16 10 0 // char_a
+79 14 10 0 // magica
+93 13 10 0 // magicb
+106 6 10 0 // char_b
+112 10 10 0 // slice
+122 11 10 0 // smash
+133 22 10 0 // w_attack
+155 11 10 0 // magicc

@@ -1,0 +1,35 @@
+#define DEMON_IDLE		0
+#define DEMON_WALK		1
+#define DEMON_RUN		2
+#define DEMON_LEAP		3
+#define DEMON_PAIN		4
+#define DEMON_DEATH		5
+#define DEMON_ATTACK	6
+
+entityDef monster_demon1
+{
+	"inherit"	"monster_base"
+	"netname"	"Fiend"
+	"model"		"progs/demon.mdl"
+	"mins"		"-32 -32 -24"
+	"maxs"		"32 32 64"
+	"health"	"300"
+	"propdata"	"actor_demon"
+
+
+	"act_idle"			"$DEMON_IDLE"
+	"act_walk"			"$DEMON_WALK"
+	"act_run"			"$DEMON_RUN"
+	"act_smallFlinch"	"$DEMON_PAIN"
+	"act_bigFlinch"		"$DEMON_PAIN"
+	"act_dieSimple"		"$DEMON_DEATH"
+	"act_jump"			"$DEMON_LEAP"
+
+	"act_meleeAttack1"	"$DEMON_ATTACK"
+
+
+	"attack_melee_range"	"256"
+	"mindset_search"		"searchNearestPlayerMelee"
+	"mindset_meleeCombat"	"knight_meleeAttack1"
+	"mindset_rangedCombat"	"moveTowardsEnemy"
+}

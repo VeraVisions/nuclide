@@ -2371,12 +2371,30 @@ ncMonster::Input( entity entityActivator, string inputName, string dataField )
 		vector runToPos = ncNavInfo::FindEmptySpotNearPosition(this, m_activeSchedule.GetTarget().origin, stof(dataField), 128.0f);
 		RouteToPosition(runToPos);
 		break;
-	case "RunToEnemyWithinRadius":
-		vector runToEnemyPos = ncNavInfo::FindEmptySpotNearPosition(this, m_eEnemy.origin, stof(dataField), 2024.0f);
+	case "RunToTargetWithinRadius":
+		vector runToEnemyPos = ncNavInfo::FindEmptySpotNearPosition(this, m_activeSchedule.GetTarget().origin, stof(dataField), 2024.0f);
+		m_flSequenceSpeed = GetRunSpeed();
 
 		if (vlen(runToEnemyPos) > 0.0f) {
 			RouteToPosition(runToEnemyPos);
 		} else {
+			CancelSchedule();
+		}
+		break;
+	case "RunToEnemyWithinRadius":
+		vector runToEnemyPos = ncNavInfo::FindEmptySpotNearPosition(this, m_eEnemy.origin, stof(dataField), 2024.0f);
+		m_flSequenceSpeed = GetRunSpeed();
+
+		if (vlen(runToEnemyPos) > 0.0f) {
+			RouteToPosition(runToEnemyPos);
+		} else {
+			CancelSchedule();
+		}
+		break;
+	case "TaskCheck_MeleeEnemy":
+		float dist = distance(m_eEnemy.origin, origin);
+
+		if (dist > m_flMeleeRange) {
 			CancelSchedule();
 		}
 		break;
@@ -2416,12 +2434,16 @@ ncMonster::Input( entity entityActivator, string inputName, string dataField )
 	case "TurnRight":
 		ideal_yaw -= stof(dataField);
 		break;
+	case "SnapToIdealYaw":
+		v_angle[1] = angles[1] = ideal_yaw;
+		break;
 	case "TurnToIdealPosition":
 		ideal_yaw = random(-179,180);
 		break;
 	case "TurnToEnemy":
 		vector turnTo = vectoangles(m_eEnemy.origin - origin);
 		ideal_yaw = turnTo[1];
+		v_angle = turnTo;
 		break;
 	case "TurnToRandomYaw":
 		float randomYaw = random(45.0f,180.0f) - 90.0f;

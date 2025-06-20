@@ -1,0 +1,10 @@
+0 8 10 1 // stand
+8 10 10 0 // death
+18 11 10 0 // deathc
+29 11 10 0 // load
+40 6 10 0 // pain
+46 14 10 0 // painb
+60 13 10 0 // painc
+73 8 10 1 // run
+81 9 15 0 // shoot
+90 24 10 1 // prowl

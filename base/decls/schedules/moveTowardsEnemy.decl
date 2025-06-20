@@ -1,0 +1,13 @@
+typeInfo moveTowardsEnemy
+{
+	"task_1"	"SetFailSchedule alert"
+	"task_2"	"StopMovement"
+	"task_3"	"TargetNearestPlayer"
+	"task_4"	"RunToEnemyWithinRadius 32"
+	"task_5"	"WaitForMovement"
+	"CanRangedAttack1"	"ChangeMindset rangedCombat"
+	"CanMeleeAttack1"	"ChangeMindset meleeCombat"
+	"NewEnemy"			"ChangeMindset hunt"
+	"Damage"			"ChangeMindset hunt"
+	"OccludedEnemy"		"ChangeMindset hunt"
+}

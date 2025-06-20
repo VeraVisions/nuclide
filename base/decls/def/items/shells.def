@@ -1,0 +1,16 @@
+entityDef item_shells
+{
+	"editor_usage"			"Shells for the (Double Barrel) Shotgun."
+	"editor_usage2"			"Gives players 20 Shells Ammo."
+	"editor_var spawnflags"	"Gives players 40 Shells Ammo."
+
+	"inherit"			"ammo_base"
+	"model"				"maps/b_shell0.bsp"
+	"inv_ammo_shells"	"20"
+	"pickupFlash"		"1"
+
+	when "spawnflags" contains "1" {
+		"model"				"maps/b_shell1.bsp"
+		"inv_ammo_shells"	"40"
+	}
+}

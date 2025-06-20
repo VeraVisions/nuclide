@@ -1,0 +1,8 @@
+#pragma target fte_5768
+#define CSQC
+#define CLIENT
+
+#includelist
+common/include.src
+client/api.h
+#endlist

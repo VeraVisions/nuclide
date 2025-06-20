@@ -1,0 +1,10 @@
+typeInfo moveCloserToEnemy
+{
+	"task_1"	"SetFailSchedule alert"
+	"task_2"	"StopMovement"
+	"task_3"	"TargetNearestPlayer"
+	"task_4"	"RunToSpotNearTarget 512"
+	"task_5"	"WaitForMovement"
+	"CanRangedAttack1"	"ChangeMindset rangedCombat"
+	"CanMeleeAttack1"	"ChangeMindset meleeCombat"
+}

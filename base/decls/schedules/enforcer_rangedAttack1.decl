@@ -1,0 +1,10 @@
+typeInfo enforcer_rangedAttack1
+{
+	"task_1"			"SetFailSchedule huntPlayer"
+	"task_2"			"TurnToEnemy"
+	"task_3"			"SpawnProjectileOffset projectile_enforcer_laser 0 0 24"
+	"task_4"			"PlayActivity rangeAttack1"
+	"fail_onDeadEnemy"	"1"
+	"fail_onDamage"		"1"
+	"fail_onOccludedEnemy"		"1"
+}

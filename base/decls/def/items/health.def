@@ -1,0 +1,26 @@
+entityDef item_health
+{
+	"editor_usage"				"Gives players 25 Health Points."
+	"editor_var spawnflags"		"Gives players 15 Health Points."
+	"editor_var spawnflags2"	"Gives players 100 Health Points."
+
+	"spawnclass"	"ncItem"
+	"model"			"maps/b_bh25.bsp"
+	"mins"			"-16 -16 0"
+	"maxs"			"16 16 16"
+	"snd_acquire"	"item.healthkit"
+	"snd_respawn"	"item.respawn"
+	"inv_health"	"skill:health"
+	"pickupFlash"	"1"
+
+	when "spawnflags" equals "1" {
+		"model"				"maps/b_bh10.bsp"
+		"inv_health"		"skill:health_small"
+	}
+
+	when "spawnflags" equals "2" {
+		"model"				"maps/b_bh100.bsp"
+		"inv_health"		"0"
+		"inv_bonushealth"	"skill:health_large"
+	}
+}

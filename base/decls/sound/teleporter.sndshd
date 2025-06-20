@@ -1,0 +1,8 @@
+mayhem_teleporter.teleported
+{
+	sample misc/r_tele1.wav
+	sample misc/r_tele2.wav
+	sample misc/r_tele3.wav
+	sample misc/r_tele4.wav
+	sample misc/r_tele5.wav
+}

@@ -5,6 +5,8 @@ entityDef info_player_start
 	"editor_description" "Singleplayer Spawn Point"
 	"editor_color" "1 0 0"
 	"spawnclass" "ncSpawnPoint"
+	"def_precache1"		"weapon_shotgun"
+	"def_precache2"		"weapon_axe"
 }
 
 entityDef info_player_deathmatch
@@ -14,6 +16,8 @@ entityDef info_player_deathmatch
 	"editor_description" "Deathmatch Spawn Point"
 	"editor_color" "1 0 0"
 	"spawnclass" "ncSpawnPoint"
+	"def_precache1"		"weapon_shotgun"
+	"def_precache2"		"weapon_axe"
 }
 
 entityDef info_player_coop
@@ -22,5 +26,23 @@ entityDef info_player_coop
 	"editor_maxs" "16 16 36"
 	"editor_description" "Cooperative Spawn Point"
 	"editor_color" "1 0 0"
+	"spawnclass" "ncSpawnPoint"
+}
+
+entityDef info_player_team1
+{
+	"editor_mins" "-16 -16 -36"
+	"editor_maxs" "16 16 36"
+	"editor_description" "Red Team Spawn Point"
+	"editor_color" "1 0 0"
+	"spawnclass" "ncSpawnPoint"
+}
+
+entityDef info_player_team2
+{
+	"editor_mins" "-16 -16 -36"
+	"editor_maxs" "16 16 36"
+	"editor_description" "Blue Team Spawn Point"
+	"editor_color" "0 0 1"
 	"spawnclass" "ncSpawnPoint"
 }

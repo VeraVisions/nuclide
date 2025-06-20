@@ -1,38 +1,118 @@
-weapon_bat.hit
+weapon.empty
 {
 	alerts
-	sample common/null.wav
+	sample weapons/dryfire1.wav
 }
 
-weapon_bat.hitbody
+weapon_axe.miss
 {
 	alerts
-	sample common/null.wav
+	sample weapons/ax1.wav
 }
 
-weapon_bat.miss
-{
-	sample common/null.wav
-}
-
-weapon_pistol.fire
+weapon_axe.hitbody
 {
 	alerts
-	pitch_min 0.95
-	pitch_max 1.05
-	sample weapons/pistol_fire.wav
+	sample player/axhit1.wav
 }
 
-weapon_frag.bounce
+weapon_axe.hit
 {
-	sample weapons/grenade_hit1.wav
-	sample weapons/grenade_hit2.wav
-	sample weapons/grenade_hit3.wav
+	alerts
+	sample player/axhit2.wav
 }
 
-weapon_frag.explode
+weapon_shotgun.shoot
 {
+	alerts
+	sample weapons/guncock.wav
+}
+
+weapon_supershotgun.shoot
+{
+	alerts
+	sample weapons/shotgn2.wav
+}
+
+sfx_impact.flesh
+{
+	alerts
+	sample weapons/ric1.wav
+	sample weapons/ric2.wav
+	sample weapons/ric3.wav
+}
+
+sfx_impact.default
+{
+	alerts
+	sample weapons/ric1.wav
+	sample weapons/ric2.wav
+	sample weapons/ric3.wav
+}
+
+
+weapon_nailgun.ricochet
+{
+	alerts
+	sample weapons/ric1.wav
+	sample weapons/ric2.wav
+	sample weapons/ric3.wav
+}
+
+weapon_nailgun.shoot
+{
+	alerts
+	sample weapons/rocket1i.wav
+}
+
+weapon_supernailgun.shoot
+{
+	alerts
+	sample weapons/spike2.wav
+}
+
+weapon_grenadelauncher.shoot
+{
+	alerts
+	sample weapons/grenade.wav
+}
+
+weapon_grenadelauncher.explode
+{
+	alerts
 	sample weapons/explode3.wav
 	sample weapons/explode4.wav
 	sample weapons/explode5.wav
+}
+
+weapon_grenadelauncher.bounce
+{
+	alerts
+	sample weapons/bounce.wav
+}
+
+weapon_rocketlauncher.shoot
+{
+	alerts
+	sample weapons/sgun1.wav
+}
+
+weapon_rocketlauncher.explode
+{
+	alerts
+	sample weapons/explode3.wav
+	sample weapons/explode4.wav
+	sample weapons/explode5.wav
+}
+
+weapon_lightning.shoot
+{
+	alerts
+	sample weapons/lstart.wav
+}
+
+weapon_lightning.loop
+{
+	alerts
+	sample weapons/lhit.wav
 }

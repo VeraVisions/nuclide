@@ -1,0 +1,20 @@
+0 5 10 1 // axe run
+6 5 10 1 // rock run
+12 4 10 1 // stand
+17 11 10 1 // axe stand
+29 5 10 0 // axe pain
+35 5 10 0 // rock pain
+41 8 10 0 // axe death 1
+50 10 10 0 // rock death 1
+61 8 10 0 // rock death 2
+70 8 10 0 // rock death 3
+85 8 10 0 // rock death 4 
+94 8 10 0 // rock death 5
+103 1 10 0 // nail attack
+105 1 10 0 // light attack
+107 5 10 0 // rocket attack
+113 5 10 0 // shot attack
+119 5 10 0 // axe attack 1
+125 5 10 0 // axe attack 2
+131 5 10 0 // axe attack 2
+137 5 10 0 // axe attack 2

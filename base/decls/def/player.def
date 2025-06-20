@@ -1,10 +1,65 @@
+#define PLAYER_RUN_AXE 0
+#define PLAYER_RUN 1
+#define PLAYER_IDLE 2
+#define PLAYER_IDLE_AXE 3
+#define PLAYER_PAIN_AXE 4
+#define PLAYER_PAIN 5
+#define PLAYER_DEATH_AXE1 6
+#define PLAYER_DEATH1 7
+#define PLAYER_DEATH2 8
+#define PLAYER_DEATH3 9
+#define PLAYER_DEATH4 10
+#define PLAYER_DEATH5 11
+#define PLAYER_ATTACK_NAILGUN 12
+#define PLAYER_ATTACK_LIGHT 13
+#define PLAYER_ATTACK_ROCKET 14
+#define PLAYER_ATTACK_SHOTGUN 15
+#define PLAYER_ATTACK_AXE1 16
+#define PLAYER_ATTACK_AXE2 17
+#define PLAYER_ATTACK_AXE3 18
+#define PLAYER_ATTACK_AXE4 19
+
 entityDef player
 {
-	"spawnclass"	"ncPlayer"
-	"model"		"models/player.vvm"
+	"spawnclass"			"ncPlayer"
+	"health"				"100"
+	"maxarmor"				"100"
+	"max_health"			"100"
+	"bleeds"				"1"
+	"propdata"				"actor_player"
+	"armorProtection"		"0"
+	"armorBonus"			"1"
+	"ammo_shells"			"25"
+	"weapon"				"weapon_axe,weapon_shotgun"
+	"current_weapon"		"1"
+	"pm_normalviewheight"	"46"
+	"pm_walkspeed"			"180"
+	"pm_runspeed"			"320"
+	"pm_normalheight"		"56"
+	"model"					"progs/player.mdl"
+
+	"act_idle"			"$PLAYER_IDLE"
+	"act_jump"			"$PLAYER_IDLE"
+	"act_walk_crouch"	"$PLAYER_RUN"
+	"act_idle_crouch"	"$PLAYER_IDLE"
+	"act_run"			"$PLAYER_RUN"
+	"act_walk"			"$PLAYER_RUN"
+	"act_pain"			"$PLAYER_PAIN"
+	"act_death"			"$PLAYER_DEATH"
+
+	"act_attack"		"$PLAYER_ATTACK_SHOTGUN"
+
+	"act_walk_axe"		"$PLAYER_RUN_AXE"
+	"act_run_axe"		"$PLAYER_RUN_AXE"
+	"act_idle_axe"		"$PLAYER_IDLE_AXE"
+	"act_attack_nailgun"	"$PLAYER_ATTACK_NAILGUN"
+	"act_attack_lightning"	"$PLAYER_ATTACK_LIGHT"
+	"act_attack_rocket"		"$PLAYER_ATTACK_ROCKET"
+	"act_attack_axe"			"$PLAYER_ATTACK_AXE1,$PLAYER_ATTACK_AXE2,$PLAYER_ATTACK_AXE3,$PLAYER_ATTACK_AXE4"
+
 }
 
 entityDef player_mp
 {
-	"inherit" "player"
+	"inherit"			"player"
 }

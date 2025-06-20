@@ -1,0 +1,5 @@
+q1_entity_compat
+{
+	replace trigger_teleport mayhem_trigger_teleport
+	replace func_button mayhem_func_button
+}

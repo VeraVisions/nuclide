@@ -553,13 +553,13 @@ ncTrigger::_TouchHandler(void)
 
 	/* start touch in case we haven't */
 	if (!m_touchTimer || wasfreed(m_touchTimer)) {
-		StartTouch(m_touchingEntity);
-		UseOutput(m_touchingEntity, m_outputOnStartTouch);
-		m_touchTimer = m_touchTimer.SetupTimer(this, _TouchEnded, 0.1f, false);
+		//StartTouch(m_touchingEntity);
+		//UseOutput(m_touchingEntity, m_outputOnStartTouch);
+		//m_touchTimer = m_touchTimer.SetupTimer(this, _TouchEnded, 0.1f, false);
 	}
 
 	if (m_touchTimer && !wasfreed(m_touchTimer)) {
-		m_touchTimer.RunTimer();
+		//m_touchTimer.RunTimer();
 	}
 #endif
 

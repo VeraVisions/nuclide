@@ -1053,6 +1053,12 @@ SHPF_next_Player(entity lastItem)
 	return findfloat(lastItem, ::_isPlayer, 1);
 }
 
+entity
+SHPF_next_NPC(entity lastItem)
+{
+	return findfloat(lastItem, ::flags, FL_MONSTER);
+}
+
 string
 SHPF_entityDef_GetString(string declName, string keyName)
 {

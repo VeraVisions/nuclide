@@ -561,6 +561,13 @@ typedef struct
 	@param lastPlayer The previous item, can be `world` or `__NULL__` or `0` to retrieve the first item.
 	@return The next item in the entity pool. Will be `world` or `__NULL__` if none are left. */
 	entity Player(entity lastPlayer);
+
+
+	/** Returns the next entity of type 'NPC' in the game.
+
+	@param lastNPC The previous item, can be `world` or `__NULL__` or `0` to retrieve the first item.
+	@return The next item in the entity pool. Will be `world` or `__NULL__` if none are left. */
+	entity NPC(entity lastNPC);
 } nextAPI_t;
 nextAPI_t next; /**< Access nextAPI_t functions using this variable. */
 
@@ -774,4 +781,5 @@ _shared_main(void)
 	next.Item = linkToSharedProgs("SHPF_next_Item");
 	next.Weapon = linkToSharedProgs("SHPF_next_Weapon");
 	next.Player = linkToSharedProgs("SHPF_next_Player");
+	next.NPC = linkToSharedProgs("SHPF_next_NPC");
 }

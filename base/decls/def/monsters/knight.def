@@ -1,0 +1,54 @@
+#define KNIGHT_STAND	0
+#define KNIGHT_RUN	1
+#define KNIGHT_ATTACK1	2
+#define KNIGHT_PAIN1	3
+#define KNIGHT_PAIN2	4
+#define KNIGHT_ATTACK2	5
+#define KNIGHT_WALK	6
+#define KNIGHT_KNEEL	7
+#define KNIGHT_GUARD	8
+#define KNIGHT_DEATH1	9
+#define KNIGHT_DEATH2	10
+
+entityDef monster_knight
+{
+	"inherit"	"monster_base"
+	"netname"	"Knight"
+	"model"		"progs/knight.mdl"
+	"mins"		"-16 -16 -24"
+	"maxs"		"16 16 40"
+	"health"	"75"
+	"propdata"	"actor_knight"
+	
+	"melee_range"	"128"
+
+	"act_idle"		"$KNIGHT_STAND"
+	"act_walk"		"$KNIGHT_WALK"
+	"act_run"		"$KNIGHT_RUN"
+	"act_smallFlinch"	"$KNIGHT_PAIN1"
+	"act_bigFlinch"		"$KNIGHT_PAIN2"
+	"act_dieSimple"		"$KNIGHT_DEATH1,$KNIGHT_DEATH2"
+	"act_guard"		"$KNIGHT_GUARD"
+	"act_meleeAttack1"	"$KNIGHT_ATTACK1"
+	"act_meleeAttack2"	"$KNIGHT_ATTACK2"
+
+	"attack_melee_range"	"256"
+	"mindset_search"		"searchNearestPlayerMelee"
+	"mindset_meleeCombat"	"knight_meleeAttack1"
+	"mindset_rangedCombat"	"moveTowardsEnemy"
+}
+
+entityDef melee_knight_attack
+{
+	"spawnclass"			"ncProjectile"
+	"model"					"progs/spike.mdl"
+	"mins"					"0 0 0"
+	"maxs"					"0 0 0"
+	"velocity"				"9000"
+	"fuse"					".25"
+	"detonate_on_fuse"		"0"
+	"detonate_on_death"		"0"
+	"detonate_on_world"		"1"
+	"detonate_on_actor"		"1"
+	"damage"				"15"
+}

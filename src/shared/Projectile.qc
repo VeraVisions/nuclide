@@ -1164,9 +1164,9 @@ ncProjectile::Launch(vector startPos, vector launchDir, float fuseOffset, float 
 	moveVel += (m_vecLaunchVelocity[2] * powerMultiplier) * anglesToUp(launchDir);
 
 	projPos = startPos;
-	projPos += v_forward * m_vecSpawnOrigin[0];
-	projPos += v_right * m_vecSpawnOrigin[1];
-	projPos += v_up * m_vecSpawnOrigin[2];
+	projPos += anglesToForward(launchDir) * m_vecSpawnOrigin[0];
+	projPos += anglesToRight(launchDir) * m_vecSpawnOrigin[1];
+	projPos += anglesToUp(launchDir) * m_vecSpawnOrigin[2];
 
 	/* prevent from spawning in-walls */
 	traceline(startPos, projPos, MOVE_NORMAL, owner);

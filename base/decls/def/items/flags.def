@@ -1,0 +1,34 @@
+entityDef info_flag
+{
+	"editor_mins"	"-16 -16 -36"
+	"editor_maxs"	"16 16 36"
+	"editor_usage"	"Gray Flag (OneTeam)"
+	"editor_color"	"0 0 0"
+	"inherit"		"item_base"
+	"inv_name"		"Gray Flag (OneTeam)"
+	"model"			"progs/flag.mdl"
+	"spin"			"0"
+}
+
+
+// red
+entityDef item_flag_team1
+{
+	"spawnclass"	"ncCaptureItem"
+	"inherit"		"ctf_baseflag"
+	"skin"			"1"
+	"goal_no"		"1"
+
+	"rendercolor"	"255 0 0"
+}
+
+// blue
+entityDef item_flag_team2
+{
+	"spawnclass"	"ncCaptureItem"
+	"inherit"		"ctf_baseflag"
+	"skin"			"2"
+	"goal_no"		"2"
+
+	"rendercolor"	"0 0 255"
+}

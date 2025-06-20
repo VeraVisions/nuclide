@@ -1,9 +1,12 @@
 #pragma PROGS_DAT  "../../hud.dat"
 
-#include "../../../src/client/api.h"
-
 const float baseIconSize = 32.0;
 const float baseIconPadding = 16.0;
+var float autocvar_cg_damageFill = 0.25f;
+
+var float g_damageAlpha;
+var vector g_damageLocation;
+var int g_damageFlags;
 
 font_s FONT_HUD;
 var string g_ammoPic;
@@ -29,6 +32,17 @@ HUD_Draw(void)
 	string armorValue = ftos(player.GetArmor());
 	string ammoValue = ftos(weapon.GetAmmo1());
 
+	if (g_damageAlpha > 0.0f) {
+		if (autocvar_cg_damageFill > 0.0) {
+			vector screenSize = screen.Size();
+			vector finalColor = [1,1,1];
+			finalColor[1] = finalColor[2] = 1.0 - (g_damageAlpha * autocvar_cg_damageFill);
+			draw.Pic(hud_mins, "fade_modulate", screenSize, finalColor, 1.0, DRAWFLAG_NORMAL);
+		}
+
+		g_damageAlpha -= clframetime;
+	}
+
 	/* ammo */
 	if (weapon.AmmoRequired() == true) {
 		draw.RText([hudSize[0] - baseIconPadding - baseIconSize - baseIconPadding, iconPos[1]], ammoValue, FONT_HUD);
@@ -44,6 +58,19 @@ HUD_Draw(void)
 
 	draw.Text(iconPos + [(baseIconSize/2) + (baseIconPadding/2) + baseIconSize + baseIconPadding, 0], armorValue, FONT_HUD);
 	draw.Pic(iconPos + [(baseIconSize/2) + (baseIconPadding/2), 0], "gfx/hud/armor", [baseIconSize, baseIconSize], [1,1,1], 1.0f, DRAWFLAG_NORMAL);
+}
+
+void
+HUD_DamageReceived(vector damageLocation, int damagePoints, int damageFlags)
+{
+	if (damagePoints <= 0i) {
+		return;
+	}
+
+	g_damageAlpha = 1.0;
+	g_damageLocation = damageLocation;
+	g_damageFlags = damageFlags;
+
 }
 
 void

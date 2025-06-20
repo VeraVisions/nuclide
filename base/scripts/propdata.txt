@@ -1,4 +1,214 @@
 "PropData.txt"
 {
+	"gs_material_glass"
+	{
+		"breakable_model" "GlassChunks"
+	}
+	"gs_material_wood"
+	{
+		"breakable_model" "WoodChunks"
+	}
+	"gs_material_metal"
+	{
+		"breakable_model" "MetalChunks"
+	}
+	"gs_material_flesh"
+	{
+		"breakable_model" "PlayerGibs"
+	}
+	"gs_material_cinderblock"
+	{
+		"breakable_model" "CinderBlocks"
+	}
+	"gs_material_tile"
+	{
+		"breakable_model" "CeilingTile"
+	}
+	"gs_material_computer"
+	{
+		"breakable_model" "ComputerGibs"
+	}
+	"gs_material_unbreakableglass"
+	{
+		"breakable_model" "GlassChunks"
+	}
+	"gs_material_rocks"
+	{
+		"breakable_model" "RockGibs"
+	}
+	"actor_army"
+	{
+		"breakable_model" "ArmyGibs"
+		"breakable_count" "4"
+		"surfaceprop"	"gs_material_flesh"
+	}
+	"actor_demon"
+	{
+		"breakable_model" "DemonGibs"
+		"breakable_count" "4"
+		"surfaceprop"	"gs_material_flesh"
+	}
+	"actor_dog"
+	{
+		"breakable_model" "DogGibs"
+		"breakable_count" "4"
+		"surfaceprop"	"gs_material_flesh"
+	}
+	"actor_enforcer"
+	{
+		"breakable_model" "EnforcerGibs"
+		"breakable_count" "4"
+		"surfaceprop"	"gs_material_flesh"
+	}
+	"actor_fish"
+	{
+		"breakable_model" "FishGibs"
+		"breakable_count" "3"
+		"surfaceprop"	"gs_material_flesh"
+	}
+	"actor_knight"
+	{
+		"breakable_model" "KnightGibs"
+		"breakable_count" "4"
+		"surfaceprop"	"gs_material_flesh"
+	}
+	"actor_hknight"
+	{
+		"breakable_model" "HKnightGibs"
+		"breakable_count" "4"
+		"surfaceprop"	"gs_material_flesh"
+	}
+	"actor_ogre"
+	{
+		"breakable_model" "OgreGibs"
+		"breakable_count" "4"
+		"surfaceprop"	"gs_material_flesh"
+	}
+	"actor_player"
+	{
+		"breakable_model" "PlayerGibs"
+		"breakable_count" "6"
+		"surfaceprop"	"gs_material_flesh"
+	}
+	"actor_robot"
+	{
+		"breakable_model" "MetalChunks"
+		"breakable_count" "6"
+		"surfaceprop"	"gs_material_computer"
+	}
+	
+	
+	"BreakableModels"
+	{
+		"GlassChunks"
+		{
+			"progs/spike.mdl#rendermode=5" "5.0"
+		}
+		"WoodChunks"
+		{
+			"progs/spike.mdl" "5.0"
+		}
+		"MetalChunks"
+		{
+			"progs/spike.mdl" "5.0"
+		}
+		"FleshGibs"
+		{
+			"progs/gib1.mdl#impactdecal=Blood.Human" "5.0"
+			"progs/gib2.mdl#impactdecal=Blood.Human" "5.0"
+			"progs/gib3.mdl#impactdecal=Blood.Human" "5.0"
+		}
+		"CeilingTile"
+		{
+			"progs/spike.mdl" "5.0"
+		}
+		"ComputerGibs"
+		{
+			"progs/spike.mdl" "5.0"
+		}
+		"RockGibs"
+		{
+			"progs/spike.mdl" "5.0"
+		}
+		"WebGibs"
+		{
+			"progs/spike.mdl" "5.0"
+		}
+		"CinderBlocks"
+		{
+			"progs/spike.mdl" "5.0"
+		}
 
+		"ArmyGibs"
+		{
+			"progs/h_guard.mdl#impactdecal=Blood.Human" "5.0"
+			"progs/gib1.mdl#impactdecal=Blood.Human" "5.0"
+			"progs/gib2.mdl#impactdecal=Blood.Human" "5.0"
+			"progs/gib3.mdl#impactdecal=Blood.Human" "5.0"
+		}
+		"DemonGibs"
+		{
+			"progs/h_demon.mdl#impactdecal=Blood.Human" "5.0"
+			"progs/gib1.mdl#impactdecal=Blood.Human" "5.0"
+			"progs/gib2.mdl#impactdecal=Blood.Human" "5.0"
+			"progs/gib3.mdl#impactdecal=Blood.Human" "5.0"
+		}
+		"DogGibs"
+		{
+			"progs/h_dog.mdl#impactdecal=Blood.Human" "5.0"
+			"progs/gib1.mdl#impactdecal=Blood.Human" "5.0"
+			"progs/gib2.mdl#impactdecal=Blood.Human" "5.0"
+			"progs/gib3.mdl#impactdecal=Blood.Human" "5.0"
+		}
+		"EnforcerGibs"
+		{
+			"progs/h_mega.mdl#impactdecal=Blood.Human" "5.0"
+			"progs/gib1.mdl#impactdecal=Blood.Human" "5.0"
+			"progs/gib2.mdl#impactdecal=Blood.Human" "5.0"
+			"progs/gib3.mdl#impactdecal=Blood.Human" "5.0"
+		}
+		"FishGibs"
+		{
+			"progs/gib1.mdl#impactdecal=Blood.Human" "5.0"
+			"progs/gib2.mdl#impactdecal=Blood.Human" "5.0"
+			"progs/gib3.mdl#impactdecal=Blood.Human" "5.0"
+		}
+		"HKnightGibs"
+		{
+			"progs/h_knight.mdl#impactdecal=Blood.Human" "5.0"
+			"progs/gib1.mdl#impactdecal=Blood.Human" "5.0"
+			"progs/gib2.mdl#impactdecal=Blood.Human" "5.0"
+			"progs/gib3.mdl#impactdecal=Blood.Human" "5.0"
+		}
+		"KnightGibs"
+		{
+			"progs/h_hellkn.mdl#impactdecal=Blood.Human" "5.0"
+			"progs/gib1.mdl#impactdecal=Blood.Human" "5.0"
+			"progs/gib2.mdl#impactdecal=Blood.Human" "5.0"
+			"progs/gib3.mdl#impactdecal=Blood.Human" "5.0"
+		}
+		"OgreGibs"
+		{
+			"progs/h_ogre.mdl#impactdecal=Blood.Human" "5.0"
+			"progs/gib1.mdl#impactdecal=Blood.Human" "5.0"
+			"progs/gib2.mdl#impactdecal=Blood.Human" "5.0"
+			"progs/gib3.mdl#impactdecal=Blood.Human" "5.0"
+		}
+
+		"PlayerGibs"
+		{
+			"progs/h_player.mdl#impactdecal=Blood.Human" "5.0"
+			"progs/gib1.mdl#impactdecal=Blood.Human" "5.0"
+			"progs/gib2.mdl#impactdecal=Blood.Human" "5.0"
+			"progs/gib3.mdl#impactdecal=Blood.Human" "5.0"
+		}
+
+		"ZombieGibs"
+		{
+			"progs/h_zombie.mdl#impactdecal=Blood.Human" "5.0"
+			"progs/zom_gib.mdl#impactdecal=Blood.Human" "5.0"
+			"progs/zom_gib.mdl#impactdecal=Blood.Human" "5.0"
+			"progs/zom_gib.mdl#impactdecal=Blood.Human" "5.0"
+		}
+	}
 }

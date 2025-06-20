@@ -1,6 +1,6 @@
 // dictionary containing various settings for lava volumes
 typeInfo lava
 {
-	"damage"	"5"
+	"damage"	"4"
 	"dmgtime"	"0.2"
 }

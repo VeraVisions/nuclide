@@ -1,0 +1,16 @@
+#define SHUB_IDLE	0
+#define SHUB_SHAKE	1
+
+entityDef monster_oldone
+{
+	"inherit"		"monster_base"
+	"netname"		"Shub-Nuggirath"
+	"model"			"progs/oldone.mdl"
+	"mins"			"-160 -128 -24"
+	"maxs"			"160 128 256"
+	"health"		"40000"
+	"propdata"		"actor_oldone"
+
+	"act_idle"		"$SHUB_IDLE"
+	"act_dieSimple"	"$SHUB_SHAKE"
+}
