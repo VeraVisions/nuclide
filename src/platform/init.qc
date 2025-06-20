@@ -20,6 +20,12 @@ Platform_Init(void)
 	videoFile = GameLibrary_GetInfo(GAMEINFO_INTROVIDEO);
 	menuMap = GameLibrary_GetInfo(GAMEINFO_MENUMAP);
 
+	/* if we're already in a game? don't interrupt it with videos,
+	   music or other background fluff */
+	if (clientstate() == 2) {
+		return;
+	}
+
 	if (STRING_SET(videoFile)) {
 		localcmd(strcat("playvideo ", videoFile, "\n"));
 	}

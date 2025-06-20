@@ -596,10 +596,10 @@ ncWeapon::EvaluateEntity(void)
 
 	if (InInventory() == true) {
 		SetOrigin(owner.origin);
-		pvsflags = PVSF_IGNOREPVS;
+		pvsflags = PVSF_IGNOREPVS | PVSF_NOREMOVE;
 		modelindex = 0;
 	} else {
-		pvsflags = 0;
+		pvsflags = PVSF_NORMALPVS;
 	}
 }
 #endif

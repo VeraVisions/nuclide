@@ -15,8 +15,8 @@
  */
 
 
-var string autocvar_invasion_monsterClass = "monster_knight";
-var int autocvar_invasion_monsterCount = 5;
+var string autocvar_invasion_monsterClass = "monster_enforcer";
+var int autocvar_invasion_monsterCount = 12;
 
 void
 WaveTimer_Tick(void)

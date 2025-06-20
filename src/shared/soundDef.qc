@@ -602,8 +602,9 @@ SoundDef_Play(entity target, int chan, string shader)
 	float flag;
 	int sample;
 
-	if (shader == "")
+	if (!STRING_SET(shader)) {
 		return;
+	}
 
 	flag = 0;
 	sample = (int)hash_get(g_hashsounds, shader, -1);

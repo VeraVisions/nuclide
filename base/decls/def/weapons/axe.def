@@ -24,8 +24,8 @@ entityDef weapon_axe
 
 	"failRate"			"0.5"
 	"fireRate"			"0.5"
-	"snd_hit"			"weapon_crowbar.hit"
-	"snd_failed"		"weapon_crowbar.miss"
+	"snd_hit"			"weapon_axe.hit"
+	"snd_failed"		"weapon_axe.miss"
 
 	"act_idle"			"0"
 	"act_draw"			"0"
@@ -47,9 +47,9 @@ entityDef weapon_axe
 entityDef projectile_axe
 {
 	"spawnclass"			"ncProjectile"
-	"damage"				"skill:plr_crowbar"
+	"damage"				"skill:plr_axe"
 	"is_bullet"				"1"
-	"range"					"48"
+	"range"					"64"
 	"decal_detonate"		"Impact.Shot"
 	"detonate_on_world" 	"0"
 	"snd_hitBody"			"Weapon_Crowbar.Melee_Hit"
