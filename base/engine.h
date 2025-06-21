@@ -118,12 +118,12 @@
 #define RFBSPS
 #define	VERTEXINDEXBYTES	2	//16bit indexes work everywhere but may break some file types, 32bit indexes are optional in gles<=2 and d3d<=9 and take more memory/copying but allow for bigger batches/models. Plugins need to be compiled the same way so this is no longer set per-renderer.
 #define SPRMODELS
-#undef SP2MODELS
+#define SP2MODELS
 #undef DSPMODELS
-#undef MD1MODELS
-#undef MD2MODELS
-#undef MD3MODELS
-#undef MD5MODELS
+#define MD1MODELS
+#define MD2MODELS
+#define MD3MODELS
+#define MD5MODELS
 #undef ZYMOTICMODELS
 #undef DPMMODELS
 #undef PSKMODELS
