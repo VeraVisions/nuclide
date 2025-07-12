@@ -237,7 +237,7 @@ PMoveCustom_AccelLadder(float move_time, float premove, vector wish_dir, float w
 	self.velocity = ladder_vel;
 	if (input_buttons & INPUT_JUMP) {
 		self.velocity += self.m_pmoveLadderNormal * 250;
-		self.velocity[2] -= 20;
+		self.velocity[2] += 40;
 		self.flags &= ~FL_ONGROUND;
 		self.flags &= ~FL_JUMPRELEASED;
 	}
