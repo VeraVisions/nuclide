@@ -213,7 +213,9 @@ PMoveCustom_AccelLadder(float move_time, float premove, vector wish_dir, float w
 	float accel_ladder = 1;
 	makevectors(input_angles);
 
-	vector ladder_normal = normalize(self.m_pmoveLadderNormal);
+	vector ladder_normal = self.m_pmoveLadderNormal;
+	ladder_normal[2] = 0;
+	ladder_normal = normalize(ladder_normal);
 	vector ladder_up = [0, 0, 1];
 	vector ladder_right = normalize(crossproduct(ladder_normal, ladder_up));
 	
