@@ -278,6 +278,8 @@ private:
 	NETWORKED_FLOAT_N(gravity)
 	NETWORKED_FLOAT_N(friction)
 
+	NETWORKED_VECTOR_N(m_pmoveLadderNormal)
+
 	NETWORKED_FLOAT(m_timeUntilNextAttack)
 	NETWORKED_FLOAT(m_timeUntilNextIdle)
 	NETWORKED_FLOAT(m_timeUntilReloaded)
