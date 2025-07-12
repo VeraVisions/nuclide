@@ -83,7 +83,9 @@ PMoveCustom_Categorize(void)
 
 	/* ladder content testing */
 	makevectors(self.v_angle);
-	vector ladderTestDir = v_forward * 0.5f;
+	vector ladderTestDir = crossproduct([0,0,1],v_right) * 0.5f;
+	/* using this instead of v_forward so that player doesn't fall off
+	 * the ladder while facing straight up */
 	int oldhitcontents = self.hitcontentsmaski;
 	self.hitcontentsmaski = CONTENTBIT_FTELADDER;
 	tracebox(self.origin, self.mins, self.maxs, self.origin + ladderTestDir, MOVE_NORMAL, self);
