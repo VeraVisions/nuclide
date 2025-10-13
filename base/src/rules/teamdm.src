@@ -1,0 +1,8 @@
+#pragma target fte_5768
+#pragma PROGS_DAT  "../../progs/teamdm.dat"
+
+#includelist
+../../../src/rules.src
+shared.qc
+teamdm.qc
+#endlist

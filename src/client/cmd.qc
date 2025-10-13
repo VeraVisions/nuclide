@@ -533,6 +533,7 @@ Cmd_Parse(string sCMD)
 
 	/* client aliases for server commands */
 	case "addBot":
+	case "kickAllBots":
 	case "killAllBots":
 	case "resetAllBotsGoals":
 	case "killClass":
@@ -594,6 +595,38 @@ Cmd_Parse(string sCMD)
 	case "ragdollCreate":
 		ncRagdoll_Create(argv(1));
 		break;
+
+	/* can be overriden as well */
+	case "showClassSelectionMenu":
+		VGUI_ShowClassSelectionMenu(userinfo.GetInteger(pSeat->m_ePlayer, "*team"));
+		break;
+	case "showTeamSelectionMenu":
+		VGUI_ShowTeamSelectionMenu();
+		break;
+	case "showMOTD":
+		VGUI_ShowMOTD();
+		break;
+	case "showModelSpawner":
+		VGUI_ModelSpawner();
+		break;
+	case "showPlayerList":
+		VGUI_PlayerList();
+		break;
+	case "showServerInfo":
+		VGUI_ShowServerInfo();
+		break;
+	case "reloadClientLocale":
+		Locale_Reload();
+		break;
+	case "showEditor":
+		VGUI_ShowEditor();
+		break;
+	case "showSunEditor":
+		VGUI_ShowSunEditor();
+		break;
+	case "listUserInfo":
+		g_userInfo.DebugPrint();
+		break;
 	default:
 		return HUD_ConsoleCommand(sCMD);
 	}
@@ -604,6 +637,14 @@ void
 Cmd_Init(void)
 {
 	InitStart();
+	registercommand("showClassSelectionMenu");
+	registercommand("showTeamSelectionMenu");
+	registercommand("showMOTD");
+	registercommand("showModelSpawner");
+	registercommand("showPlayerList");
+	registercommand("showServerInfo");
+	registercommand("showEditor");
+	registercommand("showSunEditor");
 
 	/* developer/debug commands */
 	registercommand("killAllBots");
@@ -633,6 +674,7 @@ Cmd_Init(void)
 
 	/* server commands */
 	registercommand("addBot");
+	registercommand("kickAllBots");
 	registercommand("addon");
 	registercommand("input");
 	registercommand("resetAllBotsGoals");
@@ -746,6 +788,9 @@ Cmd_Init(void)
 	registercommand("-menu_left");
 	registercommand("+menu_right");
 	registercommand("-menu_right");
+	registercommand("reloadClientLocale");
+
+	registercommand("listUserInfo");
 
 	InitEnd();
 }

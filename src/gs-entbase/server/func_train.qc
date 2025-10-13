@@ -368,7 +368,7 @@ func_train::AfterSpawn(void)
 	path_corner eNode = __NULL__;
 
 	if (HasTriggerTarget() == false) {
-		EntError("No 'target' set. Won't move.", num_for_edict(this));
+		EntError("No 'target' set. Won't move.");
 		return;
 	}
 

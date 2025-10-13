@@ -14,8 +14,9 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-static int g_ent_spawned;
-var bool g_gamemode_done = false;
+static int g_mapSpawnEntityCount;
+var bool g_mapEntitiesLoaded = false;
+var bool g_menuBackgroundMapMode = false;
 .bool gotData;
 
 /** Called once every single tic on the server. */
@@ -37,7 +38,7 @@ StartFrame(void)
 		externset(g_mapCProgs, frametime, "frametime");
 	}
 
-	if (g_ents_initialized && g_grMode)
+	if (g_grMode)
 		if (g_grMode.FrameStart && time > 1)
 			g_grMode.FrameStart();
 
@@ -55,7 +56,18 @@ ClientConnect(void)
 {
 	/* this will hide/remove the player from other clients */
 	ncPlayer pl = (ncPlayer)self;
-	spawnfunc_ncPlayer();
+
+	if (g_menuBackgroundMapMode == false) {
+		if (ncAuthManager::Connect(pl) == false) {
+			return;
+		}
+	}
+
+	/* not necessary to do this again */
+	if (pl.declclass != "ncPlayer") {
+		spawnfunc_ncPlayer();
+	}
+
 	pl.SetSolid(SOLID_NOT);
 	pl.SetMovetype(MOVETYPE_NONE);
 	pl.SetModelindex(0);
@@ -66,19 +78,24 @@ ClientConnect(void)
 	pl.deaths = 0;
 	pl.frags = 0;
 	pl.score = 0;
-	self.gotData = false;
+	pl.gotData = false;
+	pl.team = TEAM_CONNECTING;
+	pl.flags |= FL_CLIENT;
 
-	/* don't carry over team settings from a previous session */
-	self.team = TEAM_CONNECTING;
-	self.flags |= FL_CLIENT;
-	userinfo.SetString(self, "*team", "0");
+	userinfo.SetString(pl, "*team", "0");
 
-	if (g_ents_initialized) {
-		g_grMode.PlayerConnect((ncPlayer)self);
+	ncStats::Connect(pl);
 
-		for (ncAddonDelegate addonEnum = __NULL__; (addonEnum = AddonManager_NextAddon(addonEnum));) {
-			addonEnum.PlayerConnect((ncPlayer)self);
-		}
+	g_grMode.PlayerConnect((ncPlayer)self);
+
+	for (ncAddonDelegate addonEnum = __NULL__; (addonEnum = AddonManager_NextAddon(addonEnum));) {
+		addonEnum.PlayerConnect((ncPlayer)self);
+	}
+
+	if (physics_supported() == TRUE) {
+		serverinfo.SetBool("physics", true);
+	} else {
+		serverinfo.SetBool("physics", false);
 	}
 }
 
@@ -89,7 +106,7 @@ This means the fields will still be accessible inside of this function.
 void
 ClientDisconnect(void)
 {
-	if (g_ents_initialized) {
+	if (g_grMode) {
 		g_grMode.PlayerDisconnect((ncPlayer)self);
 	}
 
@@ -99,6 +116,7 @@ ClientDisconnect(void)
 
 	/* this will hide/remove the player from other clients */
 	ncPlayer pl = (ncPlayer)self;
+	ncStats::Disconnect(pl);
 	pl.SetSolid(SOLID_NOT);
 	pl.SetMovetype(MOVETYPE_NONE);
 	pl.SetModelindex(0);
@@ -111,6 +129,8 @@ ClientDisconnect(void)
 	pl.deaths = 0;
 	pl.frags = 0;
 	pl.score = 0;
+
+	ncAuthManager::Disconnect(pl);
 }
 
 /** Called by the `kill` console command.
@@ -119,7 +139,11 @@ The `self` global is the client issuing the command.
 void
 ClientKill(void)
 {
-	if (g_ents_initialized) {
+	if (g_menuBackgroundMapMode == true) {
+		return;
+	}
+
+	if (g_grMode) {
 		g_grMode.PlayerKill((ncPlayer)self);
 	}
 }
@@ -170,7 +194,21 @@ PutClientInServer(void)
 	/* we're officially in-game now. */
 	ourPlayer.team = TEAM_UNASSIGNED;
 
-	if (g_ents_initialized) {
+
+	if (g_menuBackgroundMapMode == true) {
+		/* the game and its triggers start when the player is ready to see it */
+		self.health = 100;
+		self.classname = "player";
+		return;
+	}
+
+	if (ncAuthManager::AllowRespawn(ourPlayer) == false) {
+		return;
+	}
+
+	ncStats::Enter(ourPlayer);
+
+	if (g_grMode) {
 		g_grMode.PlayerSpawn(ourPlayer);
 	}
 
@@ -195,9 +233,6 @@ PutClientInServer(void)
 		}
 	}
 
-	/* the game and its triggers start when the player is ready to see it */
-	trigger_auto_trigger();
-
 	if (g_grMode.InIntermission() == true) {
 		g_grMode.IntermissionToPlayer(ourPlayer);
 	}
@@ -213,7 +248,7 @@ PlayerPreThink(void)
 	ncPlayer ourPlayer = (ncPlayer)self;
 	bool isBot = is.Bot(ourPlayer);
 
-	if (g_gamemode_done) {
+	if (g_mapEntitiesLoaded) {
 		return;
 	}
 
@@ -237,7 +272,7 @@ PlayerPreThink(void)
 	}
 
 
-	if (g_ents_initialized) {
+	if (g_grMode) {
 		g_grMode.PlayerPreFrame((ncPlayer) ourPlayer);
 	}
 }
@@ -252,7 +287,7 @@ PlayerPostThink(void)
 	ncPlayer ourPlayer = (ncPlayer)self;
 	bool isBot = is.Bot(ourPlayer);
 
-	if (g_gamemode_done) {
+	if (g_mapEntitiesLoaded) {
 		return;
 	}
 
@@ -274,7 +309,7 @@ PlayerPostThink(void)
 		((ncBot)ourPlayer).BotPostFrame();
 	}
 
-	if (g_ents_initialized) {
+	if (g_grMode) {
 		g_grMode.PlayerPostFrame(ourPlayer);
 		ourPlayer.EvaluateEntity();
 		userinfo.SetString(ourPlayer, "*score", ftos(ourPlayer.score));
@@ -290,8 +325,9 @@ SetNewParms(void)
 {
 	InitPrint("Setting New Level Parameters");
 
-	if (g_ents_initialized)
+	if (g_grMode) {
 		g_grMode.LevelNewParms();
+	}
 }
 
 /** Called whenever a single-player level change is about to happen, carrying
@@ -308,8 +344,9 @@ SetChangeParms(void)
 
 	InitPrint("Setting Level-Change Parameters");
 
-	if (g_ents_initialized)
+	if (g_grMode) {
 		g_grMode.LevelChangeParms(ourPlayer);
+	}
 }
 
 /** Run whenever an input packet by a client has been received.
@@ -322,11 +359,17 @@ SV_RunClientCommand(void)
 {
 	ncClient cl = (ncClient)self;
 
-	if (g_ents_initialized == false) {
+	if (g_mapEntitiesLoaded == false) {
 		return;
 	}
 
 	if (!is.Player(cl)) {
+		return;
+	}
+
+	trigger_auto_trigger();
+
+	if (g_menuBackgroundMapMode == true) {
 		return;
 	}
 
@@ -361,12 +404,16 @@ SV_ParseClientCommand(string cmd)
 	int argc;
 	ncClient theClient = (ncClient)self;
 
+	if (g_menuBackgroundMapMode == true) {
+		return;
+	}
+
 	for (ncAddonDelegate addonEnum = __NULL__; (addonEnum = AddonManager_NextAddon(addonEnum));) {
 		addonEnum.ClientCommand(theClient, cmd);
 	}
 
 	/* give the game-mode a chance to override us */
-	if (g_ents_initialized == true) {
+	if (g_grMode) {
 		if (g_grMode.ClientCommand(theClient, cmd) == true) {
 			return;
 		}
@@ -392,23 +439,18 @@ init(float prevprogs)
 
 	Skill_Init();
 	Constants_Init();
-	EntityDef_Init();
-	Ammo_Init();
 	MapTweaks_Init();
 	MapC_Init();
 	RuleC_Init();
 
-	SoundDef_Init();
-	PropData_Init();
-	SurfData_Init();
-	DecalGroups_Init();
+	ncStats::Init();
 
 	/* DO NOT EVER CHANGE THESE. */
 	cvars.SetString("r_meshpitch", "1");
 
 	/* ENGINE, PLS FIX */
 	input_cursor_entitynumber = 0;
-	g_gamemode_done = false;
+	g_mapEntitiesLoaded = false;
 }
 
 /** Called inside initents() to make sure the entities have their Respawn()
@@ -418,6 +460,44 @@ void
 init_respawn(void)
 {
 	int spawnCounter = 0i;
+
+	ncMapDelegate::InitialRespawn();
+
+	if (g_grMode) {
+		g_grMode.InitPostEnts();
+	}
+
+	/* of all the map entities that we wanted to spawn, how many are left? */
+	for (entity a = world; (a = findfloat(a, ::_mapspawned, true));) {
+		ncEntity ent = (ncEntity)a;
+		//ent.Respawn();
+		spawnCounter++;
+	}
+
+	g_mapEntitiesLoaded = true;
+	ncLog("...%i entities spawned (%i inhibited)", g_mapSpawnEntityCount, g_mapSpawnEntityCount - spawnCounter);
+	Nodes_Init();
+	ncStats::StartGame();
+
+	remove(self);
+}
+
+void
+SV_Shutdown(void)
+{
+	ncStats::Shutdown();
+}
+
+entity g_respawntimer;
+
+/** Called by the engine when we're ready to spawn entities.
+Before this, we are not able to spawn, touch or allocate any entity slots.
+*/
+void
+initents(void)
+{
+	ncRuleDelegate currentRule;
+	ncMapDelegate currentMap;
 
 	forceinfokey(world, "teams", "");
 	forceinfokey(world, "teamplay", "");
@@ -437,67 +517,29 @@ init_respawn(void)
 	forceinfokey(world, sprintf("teamspawn_%d", TEAM_UNASSIGNED), "info_player_start");
 	forceinfokey(world, sprintf("teamspawn_%d", TEAM_SPECTATOR), "info_spectator_start");
 
-	if (g_ents_initialized) {
-		g_grMode.InitPostEnts();
-	}
-
-	/* of all the map entities that we wanted to spawn, how many are left? */
-	for (entity a = world; (a = findfloat(a, ::_mapspawned, true));) {
-		ncEntity ent = (ncEntity)a;
-		ent.Respawn();
-		spawnCounter++;
-	}
-
-	g_gamemode_done = true;
-	ncLog("...%i entities spawned (%i inhibited)", g_ent_spawned, g_ent_spawned - spawnCounter);
-	Nodes_Init();
-	remove(self);
-}
-
-entity g_respawntimer;
-
-/** Called by the engine when we're ready to spawn entities.
-Before this, we are not able to spawn, touch or allocate any entity slots.
-*/
-void
-initents(void)
-{
-	ncRuleDelegate currentRule;
-	ncMapDelegate currentMap;
-
 	g_ents_initialized = false;
-	g_gamemode_done = false;
-
-	/* sound shader init */
+	EntityDef_Init();
+	Ammo_Init();
+	SoundDef_Init();
+	PropData_Init();
+	SurfData_Init();
+	DecalGroups_Init();
 	Materials_Init();
 	MOTD_Init();
 	PMove_Init();
-
-#warning Move these into player decl
-	precache.Sound("Player.Death");
-	precache.Sound("Player.Pain");
-	precache.Sound("SprayCan.Paint");
-
-#warning These sound defs need renaming.
-	precache.Sound("damage_bullet.hit");
-	precache.Sound("step_ladder.left");
-	precache.Sound("step_ladder.right");
+	g_ents_initialized = true;
 
 	BodyQue_Init();
 
-	ncRuleDelegate::LinkProgs();
-	ncMapDelegate::LinkProgs();
+	precache.Entity("player");
+
+	currentRule.LinkProgs();
+	currentMap.LinkProgs();
 
 	Game_Worldspawn();
 	Decals_Init();
 	Sentences_Init();
 	Activities_Init();
-
-	/* append entities from external .add file */
-	string appendEntitiesFile = strcat("maps/", mapname, ".add");
-	if (fileExists(appendEntitiesFile)) {
-		loadfromfile(appendEntitiesFile);
-	}
 
 	/* TODO: Make sure every entity calls Respawn inside the constructor, then
 	 * remove this */
@@ -510,24 +552,27 @@ initents(void)
 		/* trade them in. */
 		serverinfo.SetBool("background", true);
 		localcmd("sv_background 0\n");
+		g_menuBackgroundMapMode = true;
 	} else {
 		serverinfo.SetBool("background", false);
+		g_menuBackgroundMapMode = false;
 	}
 
 	/* the maxclients serverinfo key? yeah, that one lies to the client. so
 	 * let's add our own that we can actually trust. */
 	serverinfo.SetInteger("sv_playerslots", cvars.GetInteger("sv_playerslots"));
 
-	currentRule = ncRuleDelegate::ActiveInstance();
-	currentMap = ncMapDelegate::ActiveInstance();
+	currentRule = currentRule.ActiveInstance();
+	currentMap = currentMap.ActiveInstance();
+
+	g_ents_initialized = false;
 	currentRule.Precache();
 	currentMap.Precache();
+	g_ents_initialized = true;
 
 	Mapcycle_Init();
 	Vote_Init();
 	ChangeTarget_Activate();
-
-	g_ents_initialized = true;
 
 	BotLib_Init();
 
@@ -567,7 +612,7 @@ ConsoleCmd(string cmd)
 	pl = (ncPlayer)self;
 
 	/* give the game-mode a chance to override us */
-	if (g_ents_initialized) {
+	if (g_grMode) {
 		if (g_grMode.ConsoleCommand(pl, cmd) == TRUE) {
 			return (1);
 		}
@@ -584,11 +629,11 @@ is being executed.
 float
 SV_ShouldPause(float newstatus)
 {
-	if (serverinfo.GetFloat("background") == 1) {
+	if (g_menuBackgroundMapMode == true) {
 		return (0);
 	}
 
-	if (cvars.GetFloat("pausable") == 1) {
+	if (cvars.GetBool("pausable") == true) {
 		return (1);
 	}
 
@@ -633,13 +678,35 @@ CheckSpawn(void() spawnfunc)
 	static string lastClass;
 	bool skipLoad = false; /* entity data will be loaded elsewhere */
 
-	g_ents_initialized = false;
-
 	/* cancel out early */
 	if (ent == world) {
 		worldspawn();
-		g_ents_initialized = true;
 		return;
+	}
+
+	/* Quake compat: spawnflag filter compatibility */
+	if (cvars.GetBool("g_spawnflagFilter") == true) {
+		bool discardEntity = false;
+
+		if (serverinfo.GetString("mode") == "deathmatch") {
+			if (ent.spawnflags & 2048) {
+				discardEntity = true;
+			}
+		} else if (serverinfo.GetString("mode") == "singleplayer") {
+			if (ent.spawnflags & 256 && cvars.GetInteger("skill") == 0i) {
+				discardEntity = true;
+			} else if (ent.spawnflags & 512 && cvars.GetInteger("skill") == 1i) {
+				discardEntity = true;
+			} else if (ent.spawnflags & 1024 && cvars.GetInteger("skill") == 2i) {
+				discardEntity = true;
+			}
+		}
+
+		if (discardEntity == true) {
+			ncLog("...discarded %s (%d) due to spawnflag rules", ent.classname, num_for_edict(ent));
+			remove(ent);
+			return;
+		}
 	}
 
 	/* give it a copy of its spawndata. */
@@ -648,6 +715,7 @@ CheckSpawn(void() spawnfunc)
 
 	/* no longer needed, immediately discard. */
 	__fullspawndata = "";
+	g_ents_initialized = false;
 
 	/* we have to diverge here in order to support in-code class entities,
 	   decl entities and overrides of both.
@@ -669,12 +737,12 @@ CheckSpawn(void() spawnfunc)
 	} else {
 		ent.identity = 0;
 	}
+	g_ents_initialized = true;
 
 	/* check if this entity was meant to spawn on the client-side only */
 	if (ent.identity) {
 		if (ent.CanSpawn(false) == false) {
 			ent.Destroy();
-			g_ent_spawned--;
 		}
 	} else {
 		/* don't need to spam repetitive messages */
@@ -684,7 +752,6 @@ CheckSpawn(void() spawnfunc)
 
 		lastClass = desiredClass;
 		remove(ent);
-		g_ents_initialized = true;
 		return;
 	}
 
@@ -698,27 +765,26 @@ CheckSpawn(void() spawnfunc)
 				ent.SpawnKey(argv(i), argv(i+1));
 			}
 		}
-		
-		
- 
+
 		if (STRING_SET(ent.m_gameModeFilter)) {
 			if (ent.m_gameModeFilter != g_ruleCName) {
+				ent._loading = false;
+
 				if (ent.identity) {
-					ent.Destroy();
+					ent.ScheduleThink(ent.Destroy, 0.0f);
 				} else {
 					remove(ent);
 				}
-				ent = __NULL__;
-				g_ents_initialized = true;
 				return;
 			}
 		}
 
 		ent._loading = false;
+		g_ents_initialized = false;
 		ent.Spawn();
+		g_ents_initialized = true;
 	}
 
 	/* count and mark as map spawned */
-	g_ent_spawned++;
-	g_ents_initialized = true;
+	g_mapSpawnEntityCount++;
 }

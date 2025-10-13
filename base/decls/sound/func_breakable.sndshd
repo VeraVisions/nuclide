@@ -1,0 +1,34 @@
+func_breakable.break_glass
+{
+	sample weapons/lock4.wav
+}
+
+func_breakable.break_wood
+{
+	sample weapons/lock4.wav
+}
+
+func_breakable.break_metal
+{
+	sample weapons/lock4.wav
+}
+
+func_breakable.break_flesh
+{
+	sample weapons/lock4.wav
+}
+
+func_breakable.break_cinder
+{
+	sample weapons/lock4.wav
+}
+
+func_breakable.break_computer
+{
+	sample weapons/lock4.wav
+}
+
+func_breakable.break_rocks
+{
+	sample weapons/lock4.wav
+}

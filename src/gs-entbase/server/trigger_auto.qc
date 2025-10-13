@@ -130,6 +130,10 @@ trigger_auto::Respawn(void)
 		return;
 	}
 
+	if (IsThinking() == true) {
+		return;
+	}
+
 	/* deliberately add a bit more time in case we're first in the ent-lump
 		also we'll only do this in multiplayer games. SP games will call
 	    trigger_auto_trigger() for when one player has fully joined */
@@ -168,7 +172,7 @@ trigger_auto_trigger(void)
 	}
 
 	for (loop = __NULL__; (loop = (trigger_auto)find(loop, ::classname, "trigger_auto"));) {
-		loop.ScheduleThink(trigger_auto::Processing, 0.25f);
+		loop.ScheduleThink(trigger_auto::Processing, 0.0f);
 	}
 
 	called = true;

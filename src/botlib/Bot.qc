@@ -14,16 +14,39 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+void
+ncBot::ncBot(void)
+{
+#ifdef SERVER
+	m_flLastDist = 0.0f;
+	m_flNodeGiveup = 0.0f;
+	m_eDestination = world;
+	m_eTarget = world;
+	m_iAttackMode = 0i;
+	m_flAttackTime = 0.0f;
+	m_iOldItems = 0i;
+	m_flSeeTime = 0.0f;
+	m_bsState = 0;
+	m_bpPersonality = 0;
+	m_flEnemyDist = 0.0f;
+	m_wtWeaponType = 0;
+	m_vecLastPOI = g_vec_null;
+	m_flForceWeaponAttack = 0.0f;
+	m_vecForceWeaponAttackPos = g_vec_null;
+#endif
+}
+
 #ifdef SERVER
 /* default client side player movement values */
 var float autocvar_bot_forwardspeed = 190;
 var float autocvar_bot_sidespeed = 152;
 var float autocvar_bot_backspeed = 133;
 
+
 botstate_t
 ncBot::GetState(void)
 {
-	return m_bsState;
+	return (m_bsState);
 }
 
 void
@@ -522,10 +545,10 @@ ncBot::BotPostFrame(void)
 void
 ncBot::AddedItemCallback(ncItem newItem)
 {
+	super::AddedItemCallback(newItem);
+
 	if (is.Bot(this) == true) {
 		SwitchToBestWeapon(false);
-	} else {
-		super::AddedItemCallback(newItem);
 	}
 }
 
@@ -533,64 +556,20 @@ void
 ncBot::SetName(string nickname)
 {
 	if (is.Bot(this)) {
-		SetInfoKey("*bot", "1");
+		userinfo.SetBool(this, "*bot", true);
 
 		if (STRING_SET(autocvar_bot_prefix)) {
-			SetInfoKey("name", sprintf("%s %s", autocvar_bot_prefix, nickname));
+			userinfo.SetString(this, "name", sprintf("%s %s", autocvar_bot_prefix, nickname));
 			return;
 		}
 	} else {
-		SetInfoKey("*bot", "");
+		userinfo.SetBool(this, "*bot", false);
 	}
 
-	SetInfoKey("name", nickname);
-}
-
-void
-ncBot::SetInfoKey(string strKey, string strValue)
-{
-	forceinfokey(this, strKey, strValue);
-}
-
-void
-ncBot::SetInfoKeyFloat(string strKey, float floatValue)
-{
-	forceinfokey(this, strKey, ftos(floatValue));
-}
-#endif
-
-string
-ncBot::GetInfoKey(string strKey)
-{
-#ifdef SERVER
-	return infokey(this, strKey);
-#endif
-
-#ifdef CLIENT
-	return getplayerkeyvalue(entnum-1, strKey);
-#endif
+	userinfo.SetString(this, "name", nickname);
 }
 
 
-float
-ncBot::GetInfoKeyFloat(string strKey)
-{
-#ifdef SERVER
-	return infokeyf(this, strKey);
-#endif
-
-#ifdef CLIENT
-	return getplayerkeyfloat(entnum-1, strKey);
-#endif
-}
-
-
-void
-ncBot::ncBot(void)
-{
-}
-
-#ifdef SERVER
 void
 Bot_KickRandom(void)
 {
@@ -607,7 +586,7 @@ bot_spawner_think(void)
 {
 	int clientCount = 0i;
 	int botCount = 0i;
-	int minClientsCvar = (int)cvar("bot_minClients");
+	int minClientsCvar = cvars.GetInteger("bot_minClients");
 
 	/* if -1, we are not managing _anything_ */
 	if (minClientsCvar == -1i) {
@@ -641,13 +620,7 @@ void
 BotLib_Init(void)
 {
 	/* kill all old bots */
-	for (ncPlayer botChain = __NULL__;(botChain = (ncPlayer)nextent(botChain));) {
-		if (is.Bot(botChain)) {
-			botChain.SetInfoKey("*bot", "0");
-			dropclient(botChain);
-		}
-	}
-
+	Bot_KickAllBots();
 	BotProfile_Init();
 
 	/* this spawner manages the active bots */

@@ -20,7 +20,7 @@ html {
         --code-background: #2a2c2f;
 
         --tablehead-background: #2a2c2f;
-    
+
         --blockquote-background: #222325;
         --blockquote-foreground: #7e8c92;
 
@@ -55,4 +55,127 @@ html {
         --fragment-linenumber-color: #cccccc;
         --fragment-linenumber-background: #35393c;
         --fragment-linenumber-border: #1f1f1f;
+        --font-family: serifPlex;
+        --font-family-monospace: monoPlex;
+}
+
+@font-face {
+    font-family: serifPlex;
+    src: url(IBMPlexSans-Medm.woff);
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: monoPlex;
+    src: url(IBMPlexMono-Text.woff);
+    font-weight: 500;
+    font-style: normal;
+}
+
+/* Page Header */
+/*#top {
+  background: url(/home/silverthorn/Pictures/carbonFiber.png);
+}*/
+#top {
+  background: center linear-gradient(#2a363a, #202638) no-repeat;
+}
+
+/* NavBar */
+#navrow1 {
+  background: center linear-gradient(#424f62, #121d24) no-repeat;
+  border-top: 1px solid #000;
+  box-shadow: inset 0 -1px 0 #000;
+}
+
+.tablist li:not(:last-child) {
+  border: 1px solid #000;
+  box-shadow: 0 1px 0 #fff4;
+}
+
+.tablist li.current {
+  border: 1px solid #000;
+  box-shadow: inset 0 .1rem .1rem #000, 0 1px 0 #fff4;
+}
+
+#MSearchBox.MSearchBoxInactive {
+  border: 1px solid #000;
+  box-shadow: inset 0 .1rem .1rem #000, 0 .1rem .1rem #fff4;
+}
+
+#MSearchBox.MSearchBoxActive {
+  border: 1px solid #000;
+  box-shadow: inset 0 .1rem .1rem #000, 0 .1rem .1rem #fff4;
+  filter: drop-shadow(0 0 .4rem var(--primary-color));
+}
+
+/* -------------------- */
+
+/* ToC/Chapters */
+#nav-tree {
+  box-shadow: inset -1px 0 0 #000;
+}
+
+#nav-tree .selected a {
+  color: #aeccff !important;
+}
+
+#nav-tree .selected::after {
+  background: #8fa8fe;
+}
+
+.children_ul li:nth-child(odd) {
+  background: #0004;
+}
+
+/* -------------------- */
+
+/* Page Content */
+/* Underlined Links */
+.textblock a:not(code a) {
+  color: #5DB8FF !important;
+  /* var(--primary-color) */
+  text-decoration: underline;
+}
+
+/* Code Blocks */
+code,
+div.fragment,
+pre.fragment {
+  background: #111;
+  border-width: 2px;
+  border-style: groove groove groove ridge;
+  border-color: #080808 #181818 #4A4A4A;
+  border-radius: 0;
+  box-shadow: inset 2px 1px 1px 0 #030303, inset -2px -1px 1px 0 #030303;
+}
+
+div.contents,
+div.header .title,
+div.header .summary {
+  max-width: 1546px;
+}
+
+dl.note,
+dl.remark {
+  background: #324159;
+  border-left: 8px solid #8fa8fe;
+  box-shadow: 0 0 0 1px #000, inset 1px 0 0 #000;
+}
+
+dl.note dt {
+  color: #aeccff
+}
+
+/* -------------------- */
+
+/* Page Footer */
+#nav-path ul {
+  border-top: 1px solid #000;
+  box-shadow: inset 0 1px 0 var(--separator-color)
+}
+
+.footer a {
+  color: #5DB8FF !important;
+  text-decoration: underline;
 }

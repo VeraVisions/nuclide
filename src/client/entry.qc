@@ -16,6 +16,8 @@
 
 void EFX_UpdateListener(ncView);
 
+const string g_rtEnvSphereMaterial = "rtenvsphere";
+
 void
 init(float prevprogs)
 {
@@ -53,8 +55,9 @@ void
 CSQC_Init(float apilevel, string enginename, float engineversion)
 {
 	InitPrint("Initializing Client Game");
-	ncLog("Built: %s %s", __DATE__, __TIME__);
-	ncLog("QCC: %s", __QCCVER__);
+
+	ncLogAlways("Game Logic Info: Date=%s Time=%s Compiler=%S", __DATE__, __TIME__, __QCCVER__);
+	ncLogAlways("Game Runtime Info: API=%d Engine=%S Version=%d", apilevel, enginename, engineversion);
 
 	for (int i = 0i; i < 4i; i++) {
 		g_viewSeats[i] = spawn(ncView);
@@ -86,7 +89,6 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	Decals_Init();
 	Way_Init();
 	Materials_Init();
-	MOTD_Init();
 	Commandmenu_Init();
 	Activities_Init();
 
@@ -109,9 +111,6 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 
 	HUD_Init();
 
-	/* end msg */
-	ncLog("Client game initialized.");
-
 	/* because the engine will do really bad hacks to our models otherwise. e.g. R6284 */
 	cvar_set("r_fullbrightSkins", "0");
 
@@ -126,6 +125,9 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 			SoundDef_Precache(substring(tmp, 3, -1));
 		}
 	}
+
+	/* end msg, next messages belong to engine NOT us. */
+	ncLogAlways("Client game initialized.");
 }
 
 /** Called by the engine whenever video resources need to be reloaded.
@@ -174,8 +176,11 @@ CSQC_RendererRestarted(string rstr)
 	g_shellchromeshader = shaderforname("shellchrome", sprintf("{\ndeformVertexes bulge 1.25 1.25 0\n{\nmap %s\ntcMod scroll -0.1 0.1\ntcGen environment\nblendFunc add\nrgbGen entity\n}\n}", "textures/sfx/reflection.tga"));
 	g_shellchromeshader_cull = shaderforname("shellchrome2", sprintf("{\ncull back\ndeformVertexes bulge 1.5 1.5 0\n{\nmap %s\ntcMod scroll -0.1 0.1\ntcGen environment\nrgbGen entity\n}\n}", "textures/sfx/reflection.tga"));
 
+	shaderforname(g_rtEnvSphereMaterial, sprintf("{\nsurfaceParm nolightmap\n{\nmap $rt:%s\n}\n}", g_rtEnvSphereMaterial));
+
 	InitEnd();
 }
+
 
 /** Always call this instead of renderscene(); !
 We want you to avoid calling renderscene() directly because it misrepresents
@@ -190,6 +195,40 @@ CSQC_RenderScene(void)
 	renderscene();
 }
 
+var bool autocvar_r_glsl_rtenvsphere = false;
+var int autocvar_r_glsl_rtenvsphere_size = 32;
+
+/* renders a basic envsphere 2d texture, for your metal spheres
+   that bump into peoples heads or something */
+void
+CSQC_RenderRTEnvSphere(vector cameraOrigin, vector cameraAngle)
+{
+	if (autocvar_r_glsl_rtenvsphere == false) {
+		return;
+	}
+
+	clearscene();
+
+	cvar_set("r_projection", "5");
+	setviewprop(VF_RT_DESTCOLOUR, g_rtEnvSphereMaterial, (float)1, [autocvar_r_glsl_rtenvsphere_size,autocvar_r_glsl_rtenvsphere_size]);
+	setviewprop(VF_SIZE, [autocvar_r_glsl_rtenvsphere_size,autocvar_r_glsl_rtenvsphere_size]);
+	setviewprop(VF_DRAWENGINESBAR, (float)0);
+	setviewprop(VF_ORIGIN, cameraOrigin);
+
+	setviewprop(VF_ANGLES, vectoangles(anglesToForward(cameraAngle) * -1));
+	setviewprop(VF_AFOV, 90.0f);
+
+	/* expensive as hell */
+	if (autocvar(r_skipRTEnvSphereEntities, 1))
+		addentities(MASK_ENGINE);
+
+	CSQC_RenderScene();
+
+	/* reset */
+	setviewprop(VF_RT_DESTCOLOUR, "");
+	cvar_set("r_projection", "0");
+}
+
 /** Called on top of every 3D rendered view. This just again ensures we box
 and seperate 2D plane operations from 3D ones. This is where the HUD, Chat etc.
 will be drawn. They don't necessarily have to be 2D but this is just a clear
@@ -202,7 +241,7 @@ CSQC_Update2D(float w, float h, bool focus)
 	self = cl;
 
 	if (Util_GetMaxPlayers() > 1 && !VGUI_Active() && (Client_InIntermission() || (!cl.IsFakeSpectator() && cl.IsDead()))) {
-		HUD_Draw();
+		HUD_DrawIntermission();
 		Textmenu_Draw();
 		Scores_Draw();
 		Chat_Draw();
@@ -211,12 +250,18 @@ CSQC_Update2D(float w, float h, bool focus)
 		GameText_Draw();
 		PointMessage_Draw();
 
-		if (Client_IsSpectator(cl) == false) {
-			if (cl.m_activeWeapon)
-				cl.m_activeWeapon.UpdateGUI();
-			HUD_Draw();
+		if (Client_InIntermission() == true) {
+			HUD_DrawIntermission();
 		} else {
-			HUD_DrawSpectator();
+			if (Client_IsSpectator(cl) == false) {
+				if (cl.m_activeWeapon) {
+					cl.m_activeWeapon.UpdateGUI();
+				}
+
+				HUD_Draw();
+			} else {
+				HUD_DrawSpectator();
+			}
 		}
 
 		Textmenu_Draw();
@@ -234,6 +279,13 @@ CSQC_Update2D(float w, float h, bool focus)
 	}
 }
 
+
+var bool autocvar_overview_generate = false;
+var bool autocvar_overview_test = false;
+var float autocvar_overview_fov = 10.0f;
+var vector autocvar_overview_origin = [0,0,4096];
+var vector autocvar_overview_offset = [0,0,0];
+var float autocvar_overview_zoom = 1.0f;
 
 /** Called every single frame by the engine's renderer to construct a frame.
 This is for all clients on display. So we handle splitscreen/multiple-views
@@ -258,6 +310,8 @@ CSQC_UpdateView(float w, float h, float focus)
 			g_vidsize[0] = w;
 			g_vidsize[1] = h;
 			ClientGame_InitDone();
+			MOTD_Init();
+			VGUI_ShowMOTD();
 			Sky_Update(true);
 		}
 	}
@@ -294,7 +348,29 @@ CSQC_UpdateView(float w, float h, float focus)
 	}
 
 	/* this is running whenever we're doing 'buildcubemaps' */
-	if (g_iCubeProcess == TRUE) {
+	if (autocvar_overview_test == true) {
+		float totalWidth = 4096.0f;
+		float radFromFov = autocvar_overview_fov * (MATH_PI / 180.0f);
+		float newDistance = (totalWidth / 2.0f) / tan(radFromFov / 2.0f);
+		float zoomLevel = (4096 / world.size[0]);
+		vector worldCenter = -autocvar_overview_offset;
+		vector overviewOffset = [worldCenter[0], worldCenter[1], newDistance];
+
+		cvar_set("overview_newoffset", vtos(worldCenter));
+
+		setproperty(VF_DRAWENGINESBAR, (float)0);
+		setproperty(VF_DRAWCROSSHAIR, (float)0);
+		setproperty(VF_DRAWWORLD, (float)1);
+		setproperty(VF_MIN, [0,0]);
+		setproperty(VF_VIEWENTITY, player_localentnum);
+		setproperty(VF_ORIGIN, overviewOffset);
+		setproperty(VF_ANGLES, [90,0,0]);
+		setproperty(VF_CL_VIEWANGLES, [90,0,0]);
+		setproperty(VF_SIZE_X, 1024);
+		setproperty(VF_SIZE_Y, 768);
+		setproperty(VF_AFOV, autocvar_overview_fov * (1.0/autocvar_overview_zoom));
+		CSQC_RenderScene();
+	} else if (g_iCubeProcess == TRUE) {
 		setproperty(VF_DRAWENGINESBAR, (float)0);
 		setproperty(VF_DRAWCROSSHAIR, (float)0);
 		setproperty(VF_DRAWWORLD, (float)1);
@@ -338,11 +414,17 @@ CSQC_UpdateView(float w, float h, float focus)
 				g_dlight_cached = true;
 				dynamiclight_add(g_view.GetCameraOrigin(), 2048.0f, [0.1,0.1,0.1]);
 			}
+			
+			CSQC_RenderRTEnvSphere(g_view.GetCameraOrigin(), g_view.GetCameraAngle());
 
 			g_view.UpdateView();
 
 			/* 2D calls happen here, after rendering is done */
 			CSQC_Update2D(w, h, focus);
+
+			if (autocvar(r_showRTEnvSphere, 0))
+				draw.Pic([16,16], g_rtEnvSphereMaterial, [64, 64], [1,1,1], 1.0f, DRAWFLAG_NORMAL);
+
 			Commandmenu_Draw();
 
 			EFX_UpdateListener(g_view);
@@ -439,7 +521,7 @@ CSQC_Input_Frame(void)
 	me = pSeat->m_ePlayer;
 
 	if (is.Player(me)) {
-		ncPlayer pl = (ncClient)me;
+		ncPlayer pl = (ncPlayer)me;
 
 		pl.SharedInputFrame();
 		float delayInputs = HUD_ClientInputFrame(input_buttons);

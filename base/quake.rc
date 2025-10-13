@@ -3,3 +3,5 @@ exec default_cvar.cfg
 exec default_video.cfg
 exec default_mayhem.cfg
 exec fte.cfg
+exec config.cfg
+exec autoexec.cfg

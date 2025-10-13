@@ -2,7 +2,7 @@
 	noMipmap
 	noPicmip
 	{
-		map gfx/lambda64.tga
+		map gfx/loading.tga
 		blendFunc blend
 	}
 }

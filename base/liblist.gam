@@ -2,7 +2,7 @@
 // Take this one and adjust for your game
 
 // window title
-game "Mayhem"
+game "Nuclide II: Mayhem"
 // main game directory
 gamedir "base"
 // folder to also include in the path (before game dir)
@@ -27,6 +27,8 @@ type "Both"
 minversion 0
 // if we should show player model selection in the multiplayer options
 nomodels 1
+// if we should show the 'high quality players' option
+nohimodels 1
 // if we should allow spraylogos in the multiplayer options
 nosprays 0
 // name of the entity used for multiplayer map identifcation
@@ -46,7 +48,7 @@ chatroom "lobby"
 // which file is to view when clicking the readme menu button
 readme "readme.txt"
 // which map to use as a level background
-menumap "dlights"
+menumap "background01"
 // what movie to play when starting the game
 introvideo ""
 // whether to use a steam styled resource background cut into multiple parts
@@ -54,5 +56,5 @@ steambg 0
 // the title text of the game
 title "Mayhem"
 // the subtitle of the game
-subtitle "powered by LibreQuake"
+subtitle "Nuclide + LibreQuad"
 

@@ -4,6 +4,9 @@ View.qc
 Radar.qc
 hud.qc
 InterfaceSpriteSheet.qc
+UserInfo.qc
+UserInfoManager.qc
+ServerInfo.qc
 fog.qc
 font.qc
 sky.qc
@@ -21,6 +24,14 @@ damage.qc
 chat.qc
 textmenu.qc
 vgui.qc
+vgui_changeclass.qc
+vgui_chooseteam.qc
+vgui_motd.qc
+vgui_modelspawner.qc
+vgui_playerlist.qc
+vgui_serverinfo.qc
+Editor.qc
+EditorSun.qc
 way.qc
 detailtex.qc
 shake.qc

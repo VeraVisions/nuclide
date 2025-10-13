@@ -1,9 +1,11 @@
 
+var bool autocvar_g_showHud = true;
 var float g_flHUDProgs;
 var void(void) g_hudMain;
 var void(void) g_hudInit;
 var void(void) g_hudDraw;
 var void(void) g_hudDrawSpectator;
+var void(void) g_hudDrawIntermission;
 var void(string, string) g_hudSendStat;
 var void(string) g_hudSwitchedWeapon;
 var void(string) g_hudPickedUpItem;
@@ -29,6 +31,7 @@ HUDProgs_Init(void)
 		g_hudInit = externvalue(g_flHUDProgs, "HUD_Init");
 		g_hudDraw = externvalue(g_flHUDProgs, "HUD_Draw");
 		g_hudDrawSpectator = externvalue(g_flHUDProgs, "HUD_DrawSpectator");
+		g_hudDrawIntermission = externvalue(g_flHUDProgs, "HUD_DrawIntermission");
 		g_hudSendStat = externvalue(g_flHUDProgs, "HUD_SendStat");
 		g_hudSwitchedWeapon = externvalue(g_flHUDProgs, "HUD_WeaponSwitched");
 		g_hudInputFrame = externvalue(g_flHUDProgs, "HUD_InputFrame");
@@ -69,20 +72,45 @@ HUDProgs_Draw(void)
 		return;
 	}
 
+	if (autocvar_g_showHud == false) {
+		return;
+	}
+
 	if (g_flHUDProgs > 0) {
 		if (g_hudDraw) {
 			externset(g_flHUDProgs, clframetime, "clframetime");
+			externset(g_flHUDProgs, frametime, "frametime");
+			externset(g_flHUDProgs, time, "time");
+			externset(g_flHUDProgs, cltime, "cltime");
 			g_hudDraw();
 		}
 	}
 }
 
- void
+void
 HUDProgs_DrawSpectator(void)
 {
+	if (autocvar_g_showHud == false) {
+		return;
+	}
+
 	if (g_flHUDProgs > 0) {
 		if (g_hudDrawSpectator) {
 			g_hudDrawSpectator();
+		}
+	}
+}
+
+void
+HUDProgs_DrawIntermission(void)
+{
+	if (autocvar_g_showHud == false) {
+		return;
+	}
+
+	if (g_flHUDProgs > 0) {
+		if (g_hudDrawIntermission) {
+			g_hudDrawIntermission();
 		}
 	}
 }
@@ -186,13 +214,31 @@ HUD_ReloadVideoResources(void)
 __weak void
 HUD_Draw(void)
 {
+	if (autocvar_g_showHud == false) {
+		return;
+	}
+
 	HUDProgs_Draw();
 }
 
 __weak void
 HUD_DrawSpectator(void)
 {
+	if (autocvar_g_showHud == false) {
+		return;
+	}
+
 	HUDProgs_DrawSpectator();
+}
+
+__weak void
+HUD_DrawIntermission(void)
+{
+	if (autocvar_g_showHud == false) {
+		return;
+	}
+
+	HUDProgs_DrawIntermission();
 }
 
 __weak void

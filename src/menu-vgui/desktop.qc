@@ -23,7 +23,7 @@ void Desktop_Init ( void )
 	static vguiMenuButton btnOptions;
 	static vguiMenuButton btnQuit;
 	static vguiMenuButton btnMPlayer;
-	static vguiMenuButton btnMViewer;
+	static vguiMenuButton btnPlayerList;
 	static vguiMenuButton btnResume;
 	static vguiMenuButton btnDisconnect;
 	static vguiMenuButton btnMods;
@@ -37,6 +37,10 @@ void Desktop_Init ( void )
 	}
 	static void Desktop_DisconnectGame ( void ) {
 		localcmd( "disconnect\n" );
+	}
+	static void Desktop_PlayerList ( void ) {
+		m_toggle( 0 );
+		localcmd( "showPlayerList\n" );
 	}
 
 	g_uiDesktop = spawn( vguiWidget );
@@ -108,12 +112,13 @@ void Desktop_Init ( void )
 	btnMPlayer.SetFunc( UI_MusicPlayer_Show );
 	btnMPlayer.SetIcon( "gfx/icon16/ipod" );
 
-	btnMViewer = spawn( vguiMenuButton );
-	btnMViewer.SetTitle( "Model Viewer" );
-	btnMViewer.SetSize( '128 24' );
-	btnMViewer.SetPosition( 9 );
-	btnMViewer.SetFunc( UI_ModelViewer_Show );
-	btnMViewer.SetIcon( "gfx/icon16/images" );
+	btnPlayerList = spawn( vguiMenuButton );
+	btnPlayerList.SetTitle( "Player List" );
+	btnPlayerList.SetSize( '128 24' );
+	btnPlayerList.SetPosition( 9 );
+	btnPlayerList.SetFunc( Desktop_PlayerList );
+	btnPlayerList.FlagRemove( MBUTTON_SHOWOFFLINE );
+	btnPlayerList.SetIcon( "gfx/icon16/user" );
 
 	btnResume = spawn( vguiMenuButton );
 	btnResume.SetTitle( "Resume Game" );
@@ -159,7 +164,7 @@ void Desktop_Init ( void )
 	g_uiDesktop.Add( btnOptions );
 	g_uiDesktop.Add( btnQuit );
 	g_uiDesktop.Add( btnMPlayer );
-	g_uiDesktop.Add( btnMViewer );
+	g_uiDesktop.Add( btnPlayerList );
 	g_uiDesktop.Add( btnResume );
 	g_uiDesktop.Add( btnDisconnect );
 	g_uiDesktop.Add( btnMods );
@@ -178,3 +183,8 @@ void Desktop_CanvasChanged ( void )
 	g_uiDesktop.Reposition();
 }
 
+void
+Desktop_Add( vguiWidget toAdd )
+{
+	g_uiDesktop.Add(toAdd);
+}

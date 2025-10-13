@@ -42,11 +42,7 @@
 #define AVAIL_STBI /* avoid libpng/libjpeg dependancies */
 #define ENGINE_ROUTING /* engine-side, fast routing */
 
-#ifndef LEGACY_GPU
 	#define RTLIGHTS
-#else
-	#undef RTLIGHTS
-#endif
 
 #undef D3D9QUAKE	/* MICROS~1 trash */
 #undef D3D11QUAKE	/* MICROS~1 trash */
@@ -90,8 +86,8 @@
 #define TERRAIN
 
 /* audio */
-#define AVAIL_DSOUND
-#undef AVAIL_OPENAL
+#undef AVAIL_DSOUND
+#define AVAIL_OPENAL
 #define AVAIL_OGGVORBIS
 #define HAVE_OPUS
 #define VOICECHAT
@@ -161,7 +157,7 @@
 #undef RUNTIMELIGHTING	/* automatic generation of .lit files */
 #undef R_XFLIP		/* old silly thing */
 #undef TEXTEDITOR	/* because emacs */
-#undef TCPCONNECT	/* support for playing over tcp sockets, instead of just udp. compatible with qizmo */
+#define TCPCONNECT	/* support for playing over tcp sockets, instead of just udp. compatible with qizmo */
 #undef IRCCONNECT	/* lame support for routing game packets via irc server. not a good idea */
 #undef PSET_CLASSIC	/* support the 'classic' particle system, for that classic quake feel */
 #undef HAVE_CDPLAYER	/* Redbook CD Audio */

@@ -115,7 +115,7 @@ Background_Steam(vector vecPos, vector vecSize)
 }
 
 void
-Background_Draw(vector vecPos, vector vecSize, optional bool forceDraw = false)
+Background_Draw(vector vecPos, vector vecSize, bool forceDraw = false)
 {
 	/* when ingame, we'll draw a slight black tint... */
 	if (clientstate() == 2 && forceDraw == false) {

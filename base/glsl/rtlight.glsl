@@ -119,7 +119,7 @@ varying vec4 vtexprojcoord;
 			return vec3(D);
 
 		return ((1.0-F)*(Cdiff/PI) + 
-			(F*G*D)/(4*NL*NV)) * NL;
+			(F*G*D)/(4.0*NL*NV)) * NL;
 	}
 
 	#include "sys/fog.h"
@@ -163,7 +163,7 @@ varying vec4 vtexprojcoord;
 		colorscale*=1.0-(dot(spot,spot));
 	#endif
 
-		if (colorscale > 0)
+		if (colorscale > 0.0)
 		{
 			vec3 out_f;
 

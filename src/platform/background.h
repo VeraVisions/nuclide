@@ -14,4 +14,4 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-void Background_Draw(vector atPos, vector withSize);
+void Background_Draw(vector atPos, vector withSize, bool forceDraw);

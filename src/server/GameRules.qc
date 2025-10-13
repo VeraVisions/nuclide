@@ -75,9 +75,13 @@ ncRuleDelegate::Precache(void)
 void
 ncRuleDelegate::FrameStart(void)
 {
-	if (cvar("timelimit"))
-	if (time >= (cvar("timelimit") * 60)) {
-		IntermissionStart();
+	if (!m_iIntermission) {
+		if (cvar("timelimit")) {
+			if (time >= (cvar("timelimit") * 60)) {
+				ncStats::EndGame("timelimit");
+				IntermissionStart();
+			}
+		}
 	}
 
 	IntermissionCycle();
@@ -113,12 +117,7 @@ ncRuleDelegate::PlayerDisconnect(ncPlayer pl)
 void
 ncRuleDelegate::PlayerKill(ncPlayer pl)
 {
-	ncDict damageDecl = spawn(ncDict);
-	damageDecl.AddKey("damage", itos(1000));
-	damageDecl.AddKey("noGod", "1");
-	damageDecl.AddKey("noArmor", "1");
-	pl.Damage(pl, pl, damageDecl, 1.0, g_vec_null, pl.GetOrigin());
-	remove(damageDecl);
+	pl.Input(pl, "Kill", "");
 }
 
 void
@@ -131,7 +130,7 @@ ncRuleDelegate::PlayerDeath(ncPlayer deadPlayer, ncEntity inflictor, ncEntity at
 {
 	/* death-counter */
 	deadPlayer.deaths++;
-	deadPlayer.SetInfoKey("*deaths", ftos(deadPlayer.deaths));
+	userinfo.SetString(deadPlayer, "*deaths", ftos(deadPlayer.deaths));
 
 	/* update score-counter */
 	if (is.Player(attacker)) {
@@ -233,12 +232,14 @@ ncRuleDelegate::IntermissionCycle(void)
 
 	/* if we have an intermission point, send it to all players. */
 	if (m_eIntermissionPoint) {
-		targ = (ncEntity)find(world, ::targetname, m_eIntermissionPoint.target);
+		targ = __NULL__;
+
+		if (STRING_SET(m_eIntermissionPoint.target)) {
+			targ = (ncEntity)find(world, ::targetname, m_eIntermissionPoint.target);
+		}
 
 		if (targ) {
-			vector foo;
-			foo = vectoangles(targ.origin - m_eIntermissionPoint.origin);
-			m_eIntermissionPoint.angles = foo;
+			m_eIntermissionPoint.angles = vectoangles(targ.origin - m_eIntermissionPoint.origin);
 		}
 
 		WriteByte(MSG_MULTICAST, 1);
@@ -436,6 +437,7 @@ ncRuleDelegate::LinkProgs(void)
 		RULEMAP(newRule, PlayerRequestTeam, "CodeCallback_CallRequestTeam")
 		RULEMAP(newRule, PlayerSpawn, "CodeCallback_PlayerSpawn")
 		RULEMAP(newRule, Title, "CodeCallback_Title")
+		RULEMAP(newRule, MaxItemPerSlot, "CodeCallback_MaxItemsPerSlot")
 	}
 
 	serverinfo.SetString("mode", newRule.Title());

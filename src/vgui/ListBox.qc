@@ -16,6 +16,10 @@
 
 /** VGUI Widget: List Box
 
+A box containing a listing of items. Taking up as much space as any vguiTextBox.
+When interacted with, gives you the choice of making a selection of an undefined
+selection of items.
+
 @ingroup vgui
 */
 class vguiListBox:vguiWidget
@@ -23,11 +27,11 @@ class vguiListBox:vguiWidget
 public:
 	void vguiListBox(void);
 
-	nonvirtual void SetOffset(int);
 	nonvirtual void AddItem(string);
 	nonvirtual void SetItemCount(int);
-	nonvirtual string GetItem(int);
-	nonvirtual int GetSelected(void);
+	nonvirtual string GetItem(void);
+	nonvirtual void SelectionComplete(string);
+	nonvirtual void ShowPicker(void);
 
 	virtual void Draw(void);
 	virtual bool Input(float, float, float, float);
@@ -36,117 +40,87 @@ public:
 private:
 	vector m_vecSize;
 	string m_strTitle;
-	string *m_strItems;
-	int m_iItemCount;
-	int m_iSelected;
-	int m_iDrawOffset;
+
+	vguiListPicker m_listPicker;
 };
 
-void vguiListBox::vguiListBox(void)
+void
+vguiListBox::vguiListBox(void)
 {
-	m_iSelected = -1;
+	m_strTitle = __NULL__;
 }
 
-void vguiListBox::Spawned(void)
+void
+vguiListBox::SelectionComplete(string selectedString)
+{
+	m_strTitle = selectedString;
+}
+
+void
+vguiListBox::Spawned(void)
 {
 	SetSize([96,16]);
+
+	m_listPicker = spawn(vguiListPicker);
+	m_listPicker.CallOnSelect(SelectionComplete);
+	//Desktop_Add( m_listPicker );
+	m_listPicker.Hide();
 }
 
-void vguiListBox::SetItemCount (int iCount)
+string
+vguiListBox::GetItem(void)
 {
-	if (!m_iItemCount) {
-		ncLog("vguiListBox: Initialized with a maximum of %i entries", iCount);
-		m_iItemCount = iCount;
-		m_strItems = memalloc(iCount * sizeof(string));
-	}
-}
-void vguiListBox::SetOffset (int iOffset)
-{
-	int iMaxDisplay = bound(0, m_iItemCount, floor(m_vecSize[1] / 20));
-	m_iDrawOffset = bound(0, iOffset, m_iItemCount - iMaxDisplay);
+	return (m_strTitle);
 }
 
-string vguiListBox::GetItem (int iIndex)
+void
+vguiListBox::SetItemCount(int itemCount)
 {
-	return m_strItems[iIndex];
+	m_listPicker.SetItemCount(itemCount);
 }
 
-int vguiListBox::GetSelected(void)
+void
+vguiListBox::AddItem(string strItem)
 {
-	return m_iSelected;
-}
-
-void vguiListBox::AddItem (string strItem)
-{
-	if (!m_iItemCount) {
-		dprint("vguiListBox: Can't add item to empty list!\n");
-		return;
+	if (!STRING_SET(m_strTitle)) {
+		m_strTitle = strItem;
 	}
 
-	for (int i = 0; i < m_iItemCount; i++) {
-		if (!m_strItems[i]) {
-			m_strItems[i] = strItem;
-			dprint("vguiListBox: Item added\n");
-			break;
-		}
-	}
+	m_listPicker.AddItem(strItem);
 }
 
-void vguiListBox::Draw(void)
+void
+vguiListBox::Draw(void)
 {
 	vguiTheme theme = GetTheme();
-
-	int iMaxDisplay;
-	if (!m_iItemCount) {
-		return;
-	}
-
 	drawfill(m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, [0,0,0], 0.5f);
 	drawfill(m_parent.m_vecOrigin + m_vecOrigin, [m_vecSize[0], 1], [0,0,0], 0.5f);
 	drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, m_vecSize[1] - 1], [m_vecSize[0], 1], [1,1,1], 0.5f);
 	drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, 1], [1, m_vecSize[1] - 2], [0,0,0], 0.5f);
 	drawfill(m_parent.m_vecOrigin + m_vecOrigin + [m_vecSize[0] - 1, 1], [1, m_vecSize[1] - 2], [1,1,1], 0.5f);
-
-	vector vecOffset = [8,8];
-
-	iMaxDisplay = bound(0, m_iItemCount, floor(m_vecSize[1] / 20));
-	for (int i = m_iDrawOffset; i < iMaxDisplay + m_iDrawOffset; i++) {
-		if (!m_strItems[i]) {
-			break;
-		}
-
-		if (m_iSelected == i) {
-			drawfill(m_parent.m_vecOrigin + m_vecOrigin + vecOffset + [-7,-3], [m_vecSize[0] - 2, 18], [1,1,1], 0.5f);
-		}
-
-		theme.DrawText(m_parent.m_vecOrigin + m_vecOrigin + vecOffset, m_strItems[i], m_vecSize, g_fntDefault);
-		vecOffset[1] += 20;
-	}
+	theme.DrawText(m_parent.m_vecOrigin + m_vecOrigin, m_strTitle, m_vecSize, g_fntDefault);
 }
 
-bool vguiListBox::Input (float flEVType, float flKey, float flChar, float flDevID)
+void
+vguiListBox::ShowPicker(void)
+{
+	m_listPicker.Show();
+	m_listPicker.Reposition();
+}
+
+bool
+vguiListBox::Input (float flEVType, float flKey, float flChar, float flDevID)
 {
 	bool ret = false;
-	int iMaxDisplay;
-	iMaxDisplay = bound(0, m_iItemCount, floor(m_vecSize[1] / 20));
 
-	vector vecOffset = [8,8];
 	if (flEVType == IE_KEYDOWN) {
 		if (flKey == K_MOUSE1) {
-			for (int i = m_iDrawOffset; i < iMaxDisplay + m_iDrawOffset; i++) {
-				if (Util_MouseAbove(g_vecMousePos, m_parent.m_vecOrigin + m_vecOrigin + vecOffset, [m_vecSize[0] - 16, 20])) {
-					m_iSelected = i;
-					ret = true;
-				}
-				vecOffset[1] += 20;
+			if (Util_MouseAbove(g_vecMousePos, m_parent.m_vecOrigin + m_vecOrigin, m_vecSize)) {
+				ShowPicker();
+				//ret = true;
 			}
-		} else if (flKey == K_MWHEELUP) {
-			SetOffset(--m_iDrawOffset);
-			ret = true;
-		} else if (flKey == K_MWHEELDOWN) {
-			SetOffset(++m_iDrawOffset);
-			ret = true;
 		}
 	}
+
 	return (ret);
 }

@@ -32,7 +32,7 @@ Commandmenu_Init(void)
 	commandFile = fopen("commandmenu.txt", FILE_READ);
 
 	if (commandFile < 0) {
-		ncWarning("No command-menu. Missing commandmenu.txt");
+		ncWarning("Commandmenu unavailable.");
 		return;
 	}
 

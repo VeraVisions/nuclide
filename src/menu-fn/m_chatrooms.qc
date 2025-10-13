@@ -573,11 +573,11 @@ menu_chatrooms_draw(void)
 	}
 
 	/* draw the labels */
-	WLabel_Static(30, 38, m_reslbl[IDS_MULTI_CHATROOMCAPTION], 22, 22, [0.4,0.4,0.4],
+	WLabel_AtHeight(30, 38, m_reslbl[IDS_MULTI_CHATROOMCAPTION], 22, [0.4,0.4,0.4],
 		1.0f, 0, font_label_p);
-	WLabel_Static(155, 38, menu_chatrooms_gettopic(), 22, 22, [1,1,1],
+	WLabel_AtHeight(155, 38, menu_chatrooms_gettopic(), 22, [1,1,1],
 		1.0f, 0, font_label_p);
-	WLabel_Static(30, 446, m_reslbl[IDS_CHAT_PROMPT], 12, 12, [1,1,1],
+	WLabel_AtHeight(30, 446, m_reslbl[IDS_CHAT_PROMPT], 12, [1,1,1],
 		1.0f, 0, font_arial);
 }
 

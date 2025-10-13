@@ -1,0 +1,7 @@
+#pragma target fte_5768
+#pragma PROGS_DAT  "../../maps/lqdm4.dat"
+
+#includelist
+../../../src/rules.src
+lqdm4.qc
+#endlist

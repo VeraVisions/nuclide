@@ -262,11 +262,13 @@ menu_customize_init(void)
 	cz_tbNetname.SetText(cvar_string("name"));
 	Widget_Add(fn_customize, cz_tbNetname);
 
-	cz_cxHQModels = spawn(CCheckBox);
-	cz_cxHQModels.SetPos(52,223);
-	cz_cxHQModels.SetValue(cvar("cl_himodels"));
-	cz_cxHQModels.SetCallback(cz_cxHQModelsChanged);
-	Widget_Add(fn_customize, cz_cxHQModels);
+	if (GameLibrary_GetInfo(GAMEINFO_NOHIMODELS) == false) {
+		cz_cxHQModels = spawn(CCheckBox);
+		cz_cxHQModels.SetPos(52,223);
+		cz_cxHQModels.SetValue(cvar("cl_himodels"));
+		cz_cxHQModels.SetCallback(cz_cxHQModelsChanged);
+		Widget_Add(fn_customize, cz_cxHQModels);
+	}
 
 	cz_cxEnableVoice = spawn(CCheckBox);
 	cz_cxEnableVoice.SetPos(52,351);
@@ -467,26 +469,44 @@ menu_customize_draw(void)
 {
 
 	Header_Draw(HEAD_CUSTOMIZE);
-	WLabel_Static(212, 140, m_reslbl[IDS_PLAYERINFO_NAME], 14, 14, [1,1,1],
+	WLabel_AtHeight(212, 140, m_reslbl[IDS_PLAYERINFO_NAME], 14, [1,1,1],
 					1.0f, 0, font_label);
 
-	WField_Static(52 + 26, 225, "High quality models", 115, 64, [0.75, 0.75, 0.75],
+	if (GameLibrary_GetInfo(GAMEINFO_NOHIMODELS) == false) {
+		WField_Static(52 + 26, 225, "High quality models", 115, 64, [0.75, 0.75, 0.75],
 					1.0f, 3, font_label_b);
+	}
+
 	WField_Static(52 + 26, 353, "Enable voice in this mod.", 115, 64, [0.75, 0.75, 0.75],
 					1.0f, 3, font_label_b);
 	WField_Static(52 + 26, 393, "Use microphone for voice input.", 115, 64, [0.75, 0.75, 0.75],
 					1.0f, 3, font_label_b);
 
-	WLabel_Static(410, 140, "", HELPTXT_SIZE, HELPTXT_SIZE, [1,1,1],
+	WLabel_AtHeight(410, 140, "", HELPTXT_SIZE, [1,1,1],
 						1.0f, 0, font_label);
 
 	if (cvar("cl_voip_codec") == 2)
-	WField_Static(52, 393+40, "* Uses Opus sound codec. Copyright © 2012-2023 by Xiph.Org Foundation.", 128, 64, [0.75, 0.75, 0.75],
+	WField_Static(52, 393+40, "* Uses Opus sound codec. Copyright © 2012-2025 by Xiph.Org Foundation.", 148, 64, [0.75, 0.75, 0.75],
+					1.0f, 3, font_label);
+	else if (cvar("cl_voip_codec") == 3)
+	WField_Static(52, 393+40, "* Uses Speex (16 khz) codec. Copyright © 2002-2025 by Xiph.Org Foundation.", 148, 64, [0.75, 0.75, 0.75],
+					1.0f, 3, font_label);
+	else if (cvar("cl_voip_codec") == 4)
+	WField_Static(52, 393+40, "* Uses Speex (8 khz) codec. Copyright © 2002-2025 by Xiph.Org Foundation.", 148, 64, [0.75, 0.75, 0.75],
+					1.0f, 3, font_label);
+	else if (cvar("cl_voip_codec") == 5)
+	WField_Static(52, 393+40, "* Uses Speex (32 khz) codec. Copyright © 2002-2025 by Xiph.Org Foundation.", 148, 64, [0.75, 0.75, 0.75],
+					1.0f, 3, font_label);
+	else if (cvar("cl_voip_codec") == 0)
+	WField_Static(52, 393+40, "* Uses Speex codec. Copyright © 2002-2025 by Xiph.Org Foundation.", 148, 64, [0.75, 0.75, 0.75],
+					1.0f, 3, font_label);
+	else
+	WField_Static(52, 393+40, "* Voice will be sent uncompressed with current codec setting.", 148, 64, [0.75, 0.75, 0.75],
 					1.0f, 3, font_label);
 
-	WLabel_Static(213, 377 - 16, "Voice Transmit Volume *", 14, 14, [1,1,1],
+	WLabel_AtHeight(213, 377 - 16, "Voice Transmit Volume *", 14, [1,1,1],
 						1.0f, 0, font_label);
-	WLabel_Static(213, 428 - 16, "Voice Receive Volume *", 14, 14, [1,1,1],
+	WLabel_AtHeight(213, 428 - 16, "Voice Receive Volume *", 14, [1,1,1],
 						1.0f, 0, font_label);
 
 
@@ -494,18 +514,18 @@ menu_customize_draw(void)
 	if (GameLibrary_GetInfo(GAMEINFO_NOPLAYERMODELS) == false) {
 		drawfill([g_menuofs[0] + 410,g_menuofs[1] + 160], [170, 221], FRAME_COLOR, 1.0f);
 		drawfill([g_menuofs[0] + 413,g_menuofs[1] + 163], [164,190], [0,0,0], 1.0f);
-		WLabel_Static(410, 390, "Colors", 14, 14, [1,1,1],
+		WLabel_AtHeight(410, 390, "Colors", 14, [1,1,1],
 						1.0f, 0, font_label);
-		WLabel_Static(410, 140, sprintf(m_reslbl[IDS_MODEL_NAME], cvar_string("_cl_playermodel")), 14, 14, [1,1,1],
+		WLabel_AtHeight(410, 140, sprintf(m_reslbl[IDS_MODEL_NAME], cvar_string("_cl_playermodel")), 14, [1,1,1],
 						1.0f, 0, font_arial);
 #ifdef MODEL_PREVIEW
 		//drawfill([g_menuofs[0] + 414,g_menuofs[1] + 166], [64,12], g_vecTopcolor, 0.75f);
 		//drawfill([g_menuofs[0] + 510,g_menuofs[1] + 166], [64,12], g_vecBottomcolor, 0.75f);
 
 		/* fake buttons */
-		WLabel_Static(414, 360, m_reslbl[IDS_PREVIOUS], 14, 14, col_prompt_text,
+		WLabel_AtHeight(414, 360, m_reslbl[IDS_PREVIOUS], 14, col_prompt_text,
 							1.0f, 0, font_arial);
-		WLabel_StaticR(575, 360, m_reslbl[IDS_NEXT], 14, 14, col_prompt_text,
+		WLabel_AtHeightR(575, 360, m_reslbl[IDS_NEXT], 14, col_prompt_text,
 							1.0f, 0, font_arial);
 #else
 		drawfill([g_menuofs[0] + 414,g_menuofs[1] + 346], [64,12], g_vecTopcolor, 0.75f);
@@ -523,7 +543,7 @@ menu_customize_draw(void)
 #endif
 
 	if (GameLibrary_GetInfo(GAMEINFO_NOSPRAYS) == false)
-	WLabel_Static(212, 203, m_reslbl[IDS_PROFILE_LOGO], 14, 14, [1,1,1],
+	WLabel_AtHeight(212, 203, m_reslbl[IDS_PROFILE_LOGO], 14, [1,1,1],
 					1.0f, 0, font_arial);
 
 }

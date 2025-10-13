@@ -41,6 +41,8 @@
 #define PREDICTED_STRING_N(x) string x ##_net;
 
 #ifdef CLIENT
+var bool autocvar_net_showArrivals = false;
+
 #define NSENTITY_READENTITY(x, y) \
 	{ \
 		local x x ##_e = ( x )self;\
@@ -48,6 +50,9 @@
 		if (y == true) { \
 			self.classname = strcat("spawnfunc_", #x); \
 			callfunction(self.classname); \
+			if (autocvar_net_showArrivals)\
+			ncError("New entity appeared to client: %S", self.classname);\
+			x ##_e.Spawned();\
 		} \
 		x ##receivedFlags = readfloat();\
 		x ##_e.ReceiveEntity( y, x ##receivedFlags );\
@@ -76,9 +81,9 @@ noref const float   SVC_TEMPENTITY          = 23;
 string __fullspawndata;
 #endif
 
-#include "cloader.h"
-#include "soundDef.h"
-#include "effects.h"
+#include "system/cloader.h"
+#include "audio/soundDef.h"
+#include "environment/effects.h"
 
 #ifdef CLIENT
 #include "../gs-entbase/client/defs.h"
@@ -86,61 +91,62 @@ string __fullspawndata;
 #include "../gs-entbase/server/defs.h"
 #endif
 
-#include "Decal.h"
+#include "environment/Decal.h"
 
-#include "../botlib/botinfo.h"
-#include "sentences.h"
+#include "audio/sentences.h"
 
-#include "IO.h"
-#include "Dict.h"
-#include "Trigger.h"
-#include "Entity.h"
-#include "Timer.h"
-#include "RenderableEntity.h"
-#include "SurfacePropEntity.h"
-#include "Ragdoll.h"
-#include "Mover.h"
-#include "PhysicsConstraint.h"
-#include "PhysicsEntity.h"
-#include "BrushTrigger.h"
-#include "PointTrigger.h"
-#include "Item.h"
-#include "Dispenser.h"
-#include "Weapon.h"
-#include "Actor.h"
-#include "Monster.h"
-#include "SquadMonster.h"
-#include "TalkMonster.h"
-#include "SpawnPoint.h"
-#include "SoundScape.h"
-#include "Attack.h"
-#include "Projectile.h"
-#include "Spraylogo.h"
-#include "Portal.h"
-#include "Sound.h"
-#include "Debris.h"
-
-#include "xr.h"
+#include "system/IO.h"
+#include "system/Dict.h"
+#include "audio/SoundDict.h"
+#include "system/Trigger.h"
+#include "system/Entity.h"
+#include "system/Timer.h"
+#include "system/RenderableEntity.h"
+#include "environment/SurfacePropEntity.h"
+#include "physics/Ragdoll.h"
+#include "environment/Mover.h"
+#include "physics/PhysicsConstraint.h"
+#include "physics/PhysicsEntity.h"
+#include "triggers/BrushTrigger.h"
+#include "triggers/PointTrigger.h"
+#include "game/Item.h"
+#include "game/Dispenser.h"
+#include "game/Weapon.h"
+#include "game/Actor.h"
+#include "ai/Monster.h"
+#include "ai/SquadMonster.h"
+#include "ai/TalkMonster.h"
+#include "game/SpawnPoint.h"
+#include "audio/SoundScape.h"
+#include "game/Attack.h"
+#include "game/Projectile.h"
+#include "environment/Spraylogo.h"
+#include "physics/Portal.h"
+#include "audio/Sound.h"
+#include "physics/Debris.h"
+#include "input/XRSpace.h"
+#include "input/XRInput.h"
+#include "input/XRManager.h"
 #include "../botlib/Bot.h"
-#include "Client.h"
-#include "Spectator.h"
-#include "pmove.h"
-#include "Player.h"
+#include "game/Client.h"
+#include "game/Spectator.h"
+#include "physics/pmove.h"
+#include "game/Player.h"
 
-#include "Vehicle.h"
+#include "physics/Vehicle.h"
 
-#include "materials.h"
-#include "damage.h"
-#include "entities.h"
-#include "hitmesh.h"
-#include "propdata.h"
-#include "surfaceproperties.h"
-#include "decalgroups.h"
-#include "bodyque.h"
-#include "motd.h"
-#include "util.h"
-#include "ammo.h"
-#include "activities.h"
+#include "environment/materials.h"
+#include "environment/damage.h"
+#include "game/entities.h"
+#include "game/hitmesh.h"
+#include "environment/propdata.h"
+#include "environment/surfaceproperties.h"
+#include "environment/decalgroups.h"
+#include "environment/bodyque.h"
+#include "game/motd.h"
+#include "system/util.h"
+#include "game/ammo.h"
+#include "system/activities.h"
 
 #define BSPVER_PREREL 	28
 #define BSPVER_Q1		29
@@ -158,7 +164,7 @@ const vector VEC_HULL_MAX = [16,16,36];
 const vector VEC_CHULL_MIN = [-16,-16,-18];
 const vector VEC_CHULL_MAX = [16,16,18];
 
-#include "input.h"
+#include "input/input.h"
 
 /* sendflags */
 #define UPDATE_ALL				16777215
@@ -207,14 +213,8 @@ crossprint(string m)
 __wrap string
 precache_model(string m)
 {
-	if not (m) {
-		breakpoint();
-		return "";
-	}
-
-	if (m == "") {
-		breakpoint();
-		return "";
+	if (!STRING_SET(m)) {
+		return ("");
 	}
 
 	return prior(m);
@@ -317,18 +317,6 @@ setmodel(entity ent, string mname)
 	return prior(ent, mname);
 }
 
-__wrap __variant*
-memalloc(int size)
-{
-#if 0
-	if (size > 55000)
-		breakpoint();
-
-	print(sprintf("memalloc: %i\n", size));
-#endif
-	return prior(size);
-}
-
 .float removed;
 __wrap void
 remove(entity target)
@@ -346,7 +334,6 @@ remove(entity target)
 		}
 	}
 
-	target.removed = 0;
 	prior(target);
 }
 

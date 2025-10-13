@@ -80,7 +80,7 @@ void UI_CreateServer_Show ( void )
 		lsbMaps = spawn( vguiList );
 		lsbMaps.SetSize( '128 306' );
 		lsbMaps.SetPos( '175 32 ' );
-		lsbMaps.SetItemCount( MapLibrary_GetMapCount() );
+		lsbMaps.SetItemCount( MapLibrary_GetMapCount() + 1 );
 		lsbMaps.CallOnScroll( CreateServer_Scrolled );
 		lsbMaps.SetSelected( 0 );
 

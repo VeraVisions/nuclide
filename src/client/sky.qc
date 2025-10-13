@@ -25,8 +25,13 @@ Sky_Update(int force)
 		string skyPrefix;
 
 		g_strSkyName = serverkey("skyname");
-		skyPrefix = substring(g_strSkyName, 0, 4);
 
+		if (!STRING_SET(g_strSkyName)) {
+			ncLog("No sky set.");
+			return;
+		}
+
+		skyPrefix = substring(g_strSkyName, 0, 4);
 		//print(sprintf("SKY PREFIX: %S\n", skyPrefix));
 
 		/* is it a Source Engine material? */

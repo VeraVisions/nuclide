@@ -1,0 +1,12 @@
+global
+{
+    ZOOM 2.2
+    ORIGIN 192 0 0
+    ROTATED 0
+}
+
+layer
+{
+    IMAGE "overviews/lqdm7.png"
+    HEIGHT 0
+}

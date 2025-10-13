@@ -55,11 +55,15 @@ public:
 	virtual void SpawnKey(string,string);
 	virtual void Spawned(void);
 
+	nonvirtual ncHint PlaceEntityHint(entity owningEntity, string hintType);
+
 private:
-	string m_hintType;
+	//string m_hintType;
 	string m_hintActivity;
 	float m_nodeFieldOfView;
 	string m_hintGroup;
 	ignorefacing_t m_ignoreFacing;
 	string m_mindsetFilter;
 };
+
+.string m_hintType;

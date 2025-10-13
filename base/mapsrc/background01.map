@@ -1,0 +1,268 @@
+// entity 0
+{
+"classname" "worldspawn"
+"sounds" "11"
+// brush 0
+{
+( -256 -192 0 ) ( -256 192 0 ) ( -256 -192 8 ) pbrtest/woodfloor041 0 0 0 0.5 0.5 0 0 0
+( -256 -192 0 ) ( -256 -192 8 ) ( 256 -192 0 ) pbrtest/woodfloor041 0 0 0 0.5 0.5 0 0 0
+( -256 -192 -128 ) ( 256 -192 -128 ) ( -256 192 -128 ) pbrtest/woodfloor041 0 0 0 0.5 0.5 0 0 0
+( 256 192 8 ) ( 256 192 0 ) ( 256 -192 8 ) pbrtest/woodfloor041 0 0 0 0.5 0.5 0 0 0
+( 256 192 8 ) ( -256 192 8 ) ( 256 192 0 ) pbrtest/woodfloor041 0 0 0 0.5 0.5 0 0 0
+( 248 192 -64 ) ( 248 -192 -64 ) ( -264 192 -64 ) pbrtest/woodfloor041 0 0 0 0.25 0.25 0 0 0
+}
+// brush 1
+{
+( -256 -192 256 ) ( -256 192 256 ) ( -256 -192 264 ) measure/floor 0 0 0 0.5 0.5 0 0 0
+( -256 -192 256 ) ( -256 -192 264 ) ( 256 -192 256 ) measure/floor 0 0 0 0.5 0.5 0 0 0
+( -256 -192 128 ) ( 256 -192 128 ) ( -256 192 128 ) pbrtest/concrete028 0 0 0 0.25 0.25 0 0 0
+( 256 192 264 ) ( 256 192 256 ) ( 256 -192 264 ) measure/floor 0 0 0 0.5 0.5 0 0 0
+( 256 192 264 ) ( -256 192 264 ) ( 256 192 256 ) measure/floor 0 0 0 0.5 0.5 0 0 0
+( 248 192 192 ) ( 248 -192 192 ) ( -264 192 192 ) measure/floor 0 0 0 0.5 0.5 0 0 0
+}
+// brush 2
+{
+( -320 -192 256 ) ( -320 192 256 ) ( -320 -192 264 ) common/caulk 0 0 0 0.5 0.5 0 0 0
+( -320 -192 256 ) ( -320 -192 264 ) ( 192 -192 256 ) common/caulk 0 0 0 0.5 0.5 0 0 0
+( -768 -192 -128 ) ( -256 -192 -128 ) ( -768 192 -128 ) common/caulk 0 0 0 0.5 0.5 0 0 0
+( -256 192 8 ) ( -256 192 0 ) ( -256 -192 8 ) common/caulk 0 0 0 0.25 0.25 0 0 0
+( 192 192 264 ) ( -320 192 264 ) ( 192 192 256 ) common/caulk 0 0 0 0.5 0.5 0 0 0
+( 184 192 192 ) ( 184 -192 192 ) ( -328 192 192 ) common/caulk 0 0 0 0.5 0.5 0 0 0
+}
+// brush 3
+{
+( 256 -192 256 ) ( 256 192 256 ) ( 256 -192 264 ) pbrtest/redbrick003 0 0 0 0.25 0.25 0 0 0
+( 256 -192 256 ) ( 256 -192 264 ) ( 768 -192 256 ) measure/wall128gr 0 0 0 0.5 0.5 0 0 0
+( -192 -192 -128 ) ( 320 -192 -128 ) ( -192 192 -128 ) measure/wall128gr 0 0 0 0.5 0.5 0 0 0
+( 320 192 8 ) ( 320 192 0 ) ( 320 -192 8 ) measure/wall128gr 0 0 0 0.5 0.5 0 0 0
+( 768 192 264 ) ( 256 192 264 ) ( 768 192 256 ) measure/wall128gr 0 0 0 0.5 0.5 0 0 0
+( 760 192 192 ) ( 760 -192 192 ) ( 248 192 192 ) measure/wall128gr 0 0 0 0.5 0.5 0 0 0
+}
+// brush 4
+{
+( -320 -128 256 ) ( -320 256 256 ) ( -320 -128 264 ) measure/wall128gr 0 0 0 0.5 0.5 0 0 0
+( 272 192 256 ) ( 272 192 264 ) ( 784 192 256 ) pbrtest/redbrick003 0 0 0 0.25 0.25 0 0 0
+( -768 -128 -128 ) ( -256 -128 -128 ) ( -768 256 -128 ) measure/wall128gr 0 0 0 0.5 0.5 0 0 0
+( 320 544 8 ) ( 320 544 0 ) ( 320 160 8 ) measure/wall128gr 0 0 0 0.5 0.5 0 0 0
+( 192 256 264 ) ( -320 256 264 ) ( 192 256 256 ) measure/wall128gr 0 0 0 0.5 0.5 0 0 0
+( 184 256 192 ) ( 184 -128 192 ) ( -328 256 192 ) measure/wall128gr 0 0 0 0.5 0.5 0 0 0
+}
+// brush 5
+{
+( -56 -104 128 ) ( 80 -472 128 ) ( 80 -104 128 ) measure/wall64a 48 0 0 0.5 0.5 0 0 0
+( -320 -576 256 ) ( -320 -192 256 ) ( -320 -576 264 ) measure/wall128gr 0 0 0 0.5 0.5 0 0 0
+( 272 -320 256 ) ( 272 -320 264 ) ( 784 -320 256 ) measure/wall128gr 0 0 0 0.5 0.5 0 0 0
+( 320 96 8 ) ( 320 96 0 ) ( 320 -288 8 ) measure/wall128gr 0 0 0 0.5 0.5 0 0 0
+( 192 -192 264 ) ( -320 -192 264 ) ( 192 -192 256 ) measure/wall128gr 0 0 0 0.5 0.5 0 0 0
+( 184 -192 192 ) ( 184 -576 192 ) ( -328 -192 192 ) measure/wall128gr 0 0 0 0.5 0.5 0 0 0
+}
+// brush 6
+{
+( 320 -488 192 ) ( 320 -120 -128 ) ( 320 -488 -128 ) dev/dev_measurewall01d 0 256 0 0.25 0.25 0 0 0
+( -72 -472 -64 ) ( 64 -472 -64 ) ( -72 -104 -64 ) radiant/notex 16 0 0 0.5 0.5 0 0 0
+( 80 -104 128 ) ( 80 -472 128 ) ( -56 -104 128 ) radiant/notex 48 0 0 0.5 0.5 0 0 0
+( -320 -576 256 ) ( -320 -192 256 ) ( -320 -576 264 ) measure/wall128gr 0 0 0 0.5 0.5 0 0 0
+( 272 -320 256 ) ( 272 -320 264 ) ( 784 -320 256 ) measure/wall128gr 0 0 0 0.5 0.5 0 0 0
+( 192 -192 264 ) ( -320 -192 264 ) ( 192 -192 256 ) pbrtest/redbrick003 0 0 0 0.25 0.25 0 0 0
+}
+}
+// entity 1
+{
+"classname" "info_player_start"
+}
+// entity 2
+{
+"classname" "info_player_deathmatch"
+}
+// entity 4
+{
+"classname" "light_dynamic"
+"brightness" "500"
+"_light" "64 255 64"
+"style" "3"
+"targetname" "foobar1"
+"origin" "176.000000 72.000000 48.000000"
+}
+// entity 6
+{
+"classname" "light_dynamic"
+"brightness" "500"
+"start_active" "1"
+"_light" "210 224 240"
+"style" "65"
+"targetname" "foobar2"
+"origin" "192.000000 -128.000000 64.000000"
+}
+// entity 7
+{
+"classname" "ncItem"
+"shadows" "1"
+"avelocity" "0 125 0"
+"angles" "0 -90 0"
+"mins" "-16 -16 -64"
+"model" "models/logos/visions.vvm"
+"origin" "160.000000 0.000000 0.000000"
+"spin" "1"
+"targetname" "vera"
+}
+// entity 8
+{
+"classname" "ambient_generic"
+"message" "ambience/comp1.wav"
+"origin" "160.000000 0.000000 0.000000"
+"volume" "0.75"
+}
+// entity 9
+{
+"classname" "env_cubemap"
+"origin" "0 0 0"
+"scale" "256"
+}
+// entity 10
+{
+"classname" "env_projectedtexture"
+"spawnflags" "1"
+"origin" "-16.000000 104.000000 -16.000000"
+"target" "train2"
+"lightcolor" "0 0 255"
+"style" "6"
+}
+// entity 11
+{
+"classname" "env_projectedtexture"
+"spawnflags" "1"
+"origin" "-16.000000 -96.000000 80.000000"
+"target" "train1"
+"lightcolor" "255 0 0"
+"style" "6"
+}
+// entity 12
+{
+"classname" "trigger_camera"
+"origin" "86 72 -29"
+"target" "vera"
+"targetname" "autocam"
+"wait"	"-1"
+}
+// entity 13
+{
+"classname" "trigger_auto"
+"spawnflags" "1"
+"origin" "86 72 -29"
+"target" "autocam"
+}
+// entity 14
+{
+"classname" "env_fade"
+"origin" "240.000000 136.000000 -96.000000"
+"spawnflags" "1"
+"rendercolor" "0 0 0"
+"renderamt" "255"
+"duration" "1"
+"holdtime" "1"
+"targetname" "autocam"
+}
+// entity 15
+{
+"classname" "func_train"
+"targetname" "train1"
+"target" "path1"
+"speed" "100"
+// brush 0
+{
+( 232 136 -8 ) ( 232 120 -8 ) ( 216 136 -8 ) common/caulk 0 0 0 1 1 0 0 0
+( 232 136 -8 ) ( 216 136 -8 ) ( 232 136 -136 ) common/caulk 0 0 0 1 1 0 0 0
+( 232 136 104 ) ( 232 136 -24 ) ( 232 120 104 ) common/caulk 0 0 0 1 1 0 0 0
+( 216 120 -24 ) ( 232 120 -24 ) ( 216 136 -24 ) common/caulk 0 0 0 1 1 0 0 0
+( 216 120 -136 ) ( 216 120 -8 ) ( 232 120 -136 ) common/caulk 0 0 0 1 1 0 0 0
+( 216 120 -136 ) ( 216 136 -136 ) ( 216 120 -8 ) common/caulk 0 0 0 1 1 0 0 0
+}
+}
+// entity 16
+{
+"classname" "path_corner"
+"origin" "232.000000 160.000000 -48.000000"
+"targetname" "path1"
+"target" "path2"
+}
+// entity 17
+{
+"classname" "path_corner"
+"origin" "232.000000 -176.000000 104.000000"
+"targetname" "path2"
+"target" "path1"
+}
+// entity 18
+{
+"classname" "trigger_auto"
+"spawnflags" "1"
+"origin" "38.000000 64.000000 -29.000000"
+"target" "train1"
+}
+// entity 19
+{
+"classname" "path_corner"
+"origin" "232.000000 184.000000 112.000000"
+"targetname" "path3"
+"target" "path4"
+}
+// entity 20
+{
+"classname" "path_corner"
+"origin" "224.000000 -184.000000 -56.000000"
+"targetname" "path4"
+"target" "path3"
+}
+// entity 21
+{
+"classname" "func_train"
+"targetname" "train2"
+"target" "path4"
+"speed" "100"
+// brush 0
+{
+( 232 -88 -24 ) ( 232 -104 -24 ) ( 216 -88 -24 ) common/caulk 0 0 0 1 1 0 0 0
+( 232 -88 -24 ) ( 216 -88 -24 ) ( 232 -88 -152 ) common/caulk 0 0 0 1 1 0 0 0
+( 232 -88 88 ) ( 232 -88 -40 ) ( 232 -104 88 ) common/caulk 0 0 0 1 1 0 0 0
+( 216 -104 -40 ) ( 232 -104 -40 ) ( 216 -88 -40 ) common/caulk 0 0 0 1 1 0 0 0
+( 216 -104 -152 ) ( 216 -104 -24 ) ( 232 -104 -152 ) common/caulk 0 0 0 1 1 0 0 0
+( 216 -104 -152 ) ( 216 -88 -152 ) ( 216 -104 -24 ) common/caulk 0 0 0 1 1 0 0 0
+}
+}
+// entity 22
+{
+"classname" "trigger_auto"
+"spawnflags" "1"
+"origin" "-18.000000 64.000000 -29.000000"
+"target" "train2"
+}
+// entity 23
+{
+"classname" "func_dustmotes"
+// brush 0
+{
+( 264 192 112 ) ( 264 -192 112 ) ( 16 192 112 ) common/caulk 0 0 0 1 1 0 0 0
+( 240 152 72 ) ( -8 152 72 ) ( 240 152 64 ) common/caulk 0 0 0 1 1 0 0 0
+( 216 192 72 ) ( 216 192 64 ) ( 216 -192 72 ) common/caulk 0 0 0 1 1 0 0 0
+( 0 -192 -48 ) ( 248 -192 -48 ) ( 0 192 -48 ) common/caulk 0 0 0 1 1 0 0 0
+( 24 -160 64 ) ( 24 -160 72 ) ( 272 -160 64 ) common/caulk 0 0 0 1 1 0 0 0
+( 112 -192 56 ) ( 112 192 56 ) ( 112 -192 64 ) common/caulk 0 0 0 1 1 0 0 0
+}
+}
+// entity 24
+{
+"classname" "func_smokevolume"
+"SizeMax" "32"
+"ParticleDrawWidth" "16"
+"Color1" "128 128 128"
+"Color2" "128 128 128"
+// brush 0
+{
+( 304 192 120 ) ( 304 -192 120 ) ( 56 192 120 ) common/caulk 0 0 0 1 1 0 0 0
+( 280 152 80 ) ( 32 152 80 ) ( 280 152 72 ) common/caulk 0 0 0 1 1 0 0 0
+( 256 192 80 ) ( 256 192 72 ) ( 256 -192 80 ) common/caulk 0 0 0 1 1 0 0 0
+( 56 -192 80 ) ( 304 -192 80 ) ( 56 192 80 ) common/caulk 0 0 0 1 1 0 0 0
+( 64 -160 72 ) ( 64 -160 80 ) ( 312 -160 72 ) common/caulk 0 0 0 1 1 0 0 0
+( 120 -192 64 ) ( 120 192 64 ) ( 120 -192 72 ) common/caulk 0 0 0 1 1 0 0 0
+}
+}

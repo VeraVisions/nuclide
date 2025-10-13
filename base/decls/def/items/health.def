@@ -8,7 +8,7 @@ entityDef item_health
 	"model"			"maps/b_bh25.bsp"
 	"mins"			"-16 -16 0"
 	"maxs"			"16 16 16"
-	"snd_acquire"	"item.healthkit"
+	"snd_acquire"	"health.pickup"
 	"snd_respawn"	"item.respawn"
 	"inv_health"	"skill:health"
 	"pickupFlash"	"1"

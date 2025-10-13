@@ -1,0 +1,78 @@
+// these are the material
+// overrides for classic BSP
+// levels, like Q1/HL BSP
+//
+// the letters in the first row
+// correspond to the surfaceproperties
+// defined within `decls/typeinfo/hlmat.decl`
+// so if you want to add a new type of material
+// ensure it is defined within your scripts/surfaceproperties
+// text definitions, then assign a unique character to the `hlmat.decl`.
+//
+// keep in mind that this file is parsed
+// and treated like it is in Half-Life (1998)
+// for compatibility reasons
+// 
+// if you want your custom level to ship its own
+// material file, you can save it under `maps/yourlevel.mat`
+
+// metal
+M AQPIPE12
+M AQPIPE13
+M AQPIPE14
+M AQRUST01
+M AQRUST10
+M AQSUPP01
+M MED_RMET
+M METALSTRIP_1
+M MET_RMET_TRIM32
+M RW33_1
+M RW33_4
+M RW33_5
+M RW33_FLAT
+M TEK_PIPE2
+M TELE_FRAME1
+M TELE_FRAME3
+M T_BLOK04
+M T_BLOK05
+M T_BLOK08
+M T_FLAT02
+M T_METALSHEETB
+M T_TRIM1D
+M T_TRIM1E
+M T_TRIM2D
+M T_TRIM2D
+M T_TRIM2E
+M MET_BRN_TRIM16
+M MET_BRN_TRIM32
+M MED_WOOD_RIV1B
+M MET_BRN_FLAT
+M MET_BRN_GRATE2
+
+// wood
+W MED_WOOD2
+W MED_WOOD4
+W MED_WOOD7
+W MED_WOOD2_PLK1
+W MED_DR3C
+W MED_ROOF4
+
+// foliage
+O GRK_LEAF1_1
+O MAY_DRT1_1
+
+// flesh
+F MAY_FLESH1_B
+F MAY_FLESH1_TE
+
+// grate
+G TEK_GRATE
+
+// computer
+P T_TECH01
+P T_TECH02
+P T_TECH06
+P T_TECH04
+
+// snow
+K SNOW1

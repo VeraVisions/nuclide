@@ -1,0 +1,65 @@
+sfx_impact.glass
+{
+	sample weapons/lock4.wav
+}
+
+sfx_impact.wood
+{
+	sample weapons/lock4.wav
+}
+
+sfx_impact.metal
+{
+	sample weapons/lock4.wav
+}
+
+sfx_impact.tile
+{
+	sample weapons/lock4.wav
+}
+
+sfx_impact.flesh
+{
+	sample weapons/lock4.wav
+}
+
+sfx_impact.concrete
+{
+	sample weapons/lock4.wav
+}
+
+sfx_impact.computer
+{
+	sample weapons/lock4.wav
+}
+
+sfx_impact.dirt
+{
+	sample weapons/lock4.wav
+}
+
+sfx_impact.foliage
+{
+	sample weapons/lock4.wav
+}
+
+sfx_impact.alien
+{
+	sample weapons/lock4.wav
+}
+
+sfx_impact.snow
+{
+	sample weapons/lock4.wav
+}
+
+sfx_impact.slosh
+{
+	sample weapons/lock4.wav
+}
+
+sfx_impact.grate
+{
+	sample weapons/lock4.wav
+}
+

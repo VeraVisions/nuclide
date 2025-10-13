@@ -17,7 +17,7 @@
 #include "../platform/localize.h"
 #include "api_func.h"
 #include "../shared/api.h"
-#include "../shared/entityDef.h"
+#include "../shared/system/entityDef.h"
 #include "text.h"
 #include "textmenu.h"
 #include "font.h"
@@ -29,6 +29,9 @@
 #include "crosshair.h"
 #include "hud.h"
 #include "InterfaceSpriteSheet.h"
+#include "UserInfo.h"
+#include "UserInfoManager.h"
+#include "ServerInfo.h"
 
 var bool g_net_debug = false;
 var bool g_cheats = false;

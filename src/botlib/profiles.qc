@@ -42,7 +42,7 @@ Bot_InsertIntoGame(entity targetBot)
 		return;
 	}
 
-	newBot.SetInfoKey("*bot", "1");
+	userinfo.SetString(newBot, "*bot", "1");
 
 	self = targetBot;
 	ClientConnect();
@@ -105,10 +105,11 @@ Bot_AddBot_f(string botName, float teamValue, float spawnDelay, string newName)
 	}
 
 	newBot = (ncPlayer)self;
-	newBot.SetInfoKey("name", g_bots[foundID].m_strNetName);
+
+	userinfo.SetString(newBot, "name", g_bots[foundID].m_strNetName);
 
 	for (i = 0i; i < tokenize(g_bots[foundID].m_strExtra); i+=2) {
-		newBot.SetInfoKey(argv(i), argv(i+1));
+		userinfo.SetString(newBot, argv(i), argv(i+1));
 	}
 
 	Bot_InsertIntoGame(newBot);
@@ -122,6 +123,11 @@ BotProfile_AddRandom(void)
 {
 	int startValue = (int)floor(random(0, g_botScriptCount));
 	int spawnBot = -1i;
+
+	/* sanity check */
+	if (startValue >= BOTSCRIPT_MAX) {
+		startValue = (int)floor(random(0, BOTSCRIPT_MAX));
+	}
 
 	/* start at a random index */
 	for (int i = startValue; i < g_botScriptCount; i++) {

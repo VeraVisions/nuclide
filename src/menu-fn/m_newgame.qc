@@ -26,11 +26,7 @@ ng_btneasy_start(void)
 {
 	static void ng_btneasy_end(void) {
 		g_menupage = PAGE_MAIN;
-		localcmd("stopmusic\n");
-		localcmd("set skill 1; maxplayers 1\n");
-		localcmd(GameLibrary_GetInfo(GAMEINFO_STARTMAP));
-		RichPresence_Clear();
-		RichPresence_Set("status", "Singleplayer: Easy");
+		Map_NewGame(1i);
 	}
 	localsound("../media/launch_upmenu1.wav");
 	header.SetStartEndPos(45,45,70,208);
@@ -46,11 +42,7 @@ ng_btnnormal_start(void)
 {
 	static void ng_btnnormal_end(void) {
 		g_menupage = PAGE_MAIN;
-		localcmd("stopmusic\n");
-		localcmd("set skill 2; maxplayers 1\n");
-		localcmd(GameLibrary_GetInfo(GAMEINFO_STARTMAP));
-		RichPresence_Clear();
-		RichPresence_Set("status", "Singleplayer: Normal");
+		Map_NewGame(2i);
 	}
 	localsound("../media/launch_upmenu1.wav");
 	header.SetStartEndPos(45,45,70,208);
@@ -66,11 +58,7 @@ ng_btnhard_start(void)
 {
 	static void ng_btnhard_end(void) {
 		g_menupage = PAGE_MAIN;
-		localcmd("stopmusic\n");
-		localcmd("set skill 3; maxplayers 1\n");
-		localcmd(GameLibrary_GetInfo(GAMEINFO_STARTMAP));
-		RichPresence_Clear();
-		RichPresence_Set("status", "Singleplayer: Hard");
+		Map_NewGame(3i);
 	}
 	localsound("../media/launch_upmenu1.wav");
 	header.SetStartEndPos(45,45,70,208);
@@ -133,13 +121,13 @@ menu_newgame_draw(void)
 	Widget_Draw(fn_newgame);
 	Header_Draw(HEAD_NEWGAME);
 
-	WLabel_Static(215, 148, m_reslbl[IDS_NEWGAME_EASYHELP], HELPTXT_SIZE, HELPTXT_SIZE, col_help,
+	WLabel_AtHeight(215, 148, m_reslbl[IDS_NEWGAME_EASYHELP], HELPTXT_SIZE, col_help,
 					1.0f, 0, font_label);
-	WLabel_Static(215, 180, m_reslbl[IDS_NEWGAME_MEDIUMHELP], HELPTXT_SIZE, HELPTXT_SIZE, col_help,
+	WLabel_AtHeight(215, 180, m_reslbl[IDS_NEWGAME_MEDIUMHELP], HELPTXT_SIZE, col_help,
 					1.0f, 0, font_label);
-	WLabel_Static(215, 212, m_reslbl[IDS_NEWGAME_DIFFICULTHELP], HELPTXT_SIZE, HELPTXT_SIZE, col_help,
+	WLabel_AtHeight(215, 212, m_reslbl[IDS_NEWGAME_DIFFICULTHELP], HELPTXT_SIZE, col_help,
 					1.0f, 0, font_label);
-	WLabel_Static(215, 244, m_reslbl[IDS_NEWGAME_RETURNHELP], HELPTXT_SIZE, HELPTXT_SIZE, col_help,
+	WLabel_AtHeight(215, 244, m_reslbl[IDS_NEWGAME_RETURNHELP], HELPTXT_SIZE, col_help,
 					1.0f, 0, font_label);
 }
 

@@ -1,5 +1,5 @@
 {
-	qer_editorImage "common/clip.tga"
+	qer_editorImage "textures/common/clip.tga"
 	surfaceParm nodraw
 	surfaceParm trans
 	surfaceParm nolightmap

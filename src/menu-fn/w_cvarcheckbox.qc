@@ -20,6 +20,13 @@ class CCVarCheckBox:CWidget
 	float m_value;
 	int m_hover;
 	int m_click;
+	resource_t m_resChecked;
+	resource_t m_resEmpty;
+	resource_t m_resHover;
+	resource_t m_resDown;
+
+	void CCVarCheckBox(void);
+
 	virtual void(float value) m_changed = 0;
 
 	virtual void(void) Draw;
@@ -27,7 +34,21 @@ class CCVarCheckBox:CWidget
 
 	virtual void(string, string) SetCvar;
 	virtual void _CVarChanged(void);
+
+	nonvirtual void DrawBoxChecked(vector);
+	nonvirtual void DrawBoxEmpty(vector);
+	nonvirtual void DrawBoxHover(vector);
+	nonvirtual void DrawBoxDown(vector);
 };
+
+void
+CCVarCheckBox:: CCVarCheckBox(void)
+{
+	m_resChecked = Resource_Check(strcat(g_bmp[CB_CHECKED], ".bmp"));
+	m_resEmpty = Resource_Check(strcat(g_bmp[CB_EMPTY], ".bmp"));
+	m_resHover = Resource_Check(strcat(g_bmp[CB_OVER], ".bmp"));
+	m_resDown = Resource_Check(strcat(g_bmp[CB_DOWN], ".bmp"));
+}
 
 void
 CCVarCheckBox::_CVarChanged(void)
@@ -37,24 +58,84 @@ CCVarCheckBox::_CVarChanged(void)
 }
 
 void
+CCVarCheckBox::DrawBoxChecked(vector vecPos)
+{
+	if (Resource_Available(m_resChecked))
+		drawpic([g_menuofs[0]+m_x,g_menuofs[1]+m_y], g_bmp[CB_CHECKED],
+			[19,19], [1,1,1], 1.0f);
+	else {
+		drawfill([g_menuofs[0]+m_x,g_menuofs[1]+m_y], [19,19], [0.5,0.5,0.5], 1.0f);
+		drawfill([g_menuofs[0]+m_x+3,g_menuofs[1]+m_y+3], [13,13], [0,0,0], 1.0f);
+
+		drawfill([g_menuofs[0]+m_x+4,g_menuofs[1]+m_y+4],
+			[11,11],
+			[1,1,1],
+			0.75f);
+	}
+}
+
+void
+CCVarCheckBox::DrawBoxEmpty(vector vecPos)
+{
+	if (Resource_Available(m_resEmpty))
+		drawpic([g_menuofs[0]+m_x,g_menuofs[1]+m_y], g_bmp[CB_EMPTY],
+			[19,19], [1,1,1], 1.0f);
+	else {
+		drawfill([g_menuofs[0]+m_x,g_menuofs[1]+m_y], [19,19], [0.5,0.5,0.5], 1.0f);
+		drawfill([g_menuofs[0]+m_x+3,g_menuofs[1]+m_y+3], [13,13], [0,0,0], 1.0f);
+	}
+}
+
+void
+CCVarCheckBox::DrawBoxHover(vector vecPos)
+{
+	if (Resource_Available(m_resHover))
+		drawpic([g_menuofs[0]+m_x,g_menuofs[1]+m_y], g_bmp[CB_OVER],
+			[19,19], [1,1,1], 1.0f, 1);
+	else {
+		drawfill([g_menuofs[0]+m_x,g_menuofs[1]+m_y], [19,19], [0.5,0.5,0.5], 1.0f);
+		drawfill([g_menuofs[0]+m_x+3,g_menuofs[1]+m_y+3], [13,13], [0,0,0], 1.0f);
+
+		drawfill([g_menuofs[0]+m_x+4,g_menuofs[1]+m_y+4],
+			[11,11],
+			[1,1,1],
+			0.5f);
+	}
+}
+
+void
+CCVarCheckBox::DrawBoxDown(vector vecPos)
+{
+	if (Resource_Available(m_resDown))
+		drawpic([g_menuofs[0]+m_x,g_menuofs[1]+m_y], g_bmp[CB_DOWN],
+			[19,19], [1,1,1], 1.0f, 0);
+	else {
+		drawfill([g_menuofs[0]+m_x,g_menuofs[1]+m_y], [19,19], [0.5,0.5,0.5], 1.0f);
+		drawfill([g_menuofs[0]+m_x+3,g_menuofs[1]+m_y+3], [13,13], [0,0,0], 1.0f);
+
+		drawfill([g_menuofs[0]+m_x+4,g_menuofs[1]+m_y+4],
+			[11,11],
+			[1,1,1],
+			1.0f);
+	}
+}
+
+
+void
 CCVarCheckBox::Draw(void)
 {
 	if (m_click) {
-		drawpic([g_menuofs[0]+m_x,g_menuofs[1]+m_y], g_bmp[CB_DOWN],
-			[19,19], [1,1,1], 1.0f, 0);
+		DrawBoxDown([g_menuofs[0]+m_x,g_menuofs[1]+m_y]);
 	} else {
 		if (m_value) {
-			drawpic([g_menuofs[0]+m_x,g_menuofs[1]+m_y], g_bmp[CB_CHECKED],
-				[19,19], [1,1,1], 1.0f);
+			DrawBoxChecked([g_menuofs[0]+m_x,g_menuofs[1]+m_y]);
 		} else {
-			drawpic([g_menuofs[0]+m_x,g_menuofs[1]+m_y], g_bmp[CB_EMPTY],
-				[19,19], [1,1,1], 1.0f);
+			DrawBoxEmpty([g_menuofs[0]+m_x,g_menuofs[1]+m_y]);
 		}
-	}
 
-	if (m_hover) {
-		drawpic([g_menuofs[0]+m_x,g_menuofs[1]+m_y], g_bmp[CB_OVER],
-			[19,19], [1,1,1], 1.0f, 1);
+		if (m_hover) {
+			DrawBoxHover([g_menuofs[0]+m_x,g_menuofs[1]+m_y]);
+		}
 	}
 }
 void

@@ -172,7 +172,7 @@ varying vec2 lm1, lm2, lm3;
 		D = alphaSqr/(pi * denom * denom);
 
 		// F
-		float dotLH5 = pow(1.0f-dotLH,5);
+		float dotLH5 = pow(1.0f-dotLH,5.0);
 		F = F0 + (1.0-F0)*(dotLH5);
 
 		// V

@@ -96,6 +96,8 @@ typedef struct
 {
 	/** Ends the current map. Resulting in the scores and intermission screens being shown. */
 	void EndMap(void);
+	/** Ends the current map in the specified number of seconds. */
+	void EndMapDelayed(float);
 	/** Force loads the next map/level in the rotation. If none is set, the map will restart.*/
 	void LoadNextMap(void);
 	/** Removed any temporary game entities from the game, and resets the state of the level to the default state. */
@@ -218,6 +220,64 @@ var combatAPI_t combat; /**< Access combatAPI_t functions using this variable. *
 
 /** @} */ // end of multiprogs
 
+
+/** LocalInfo library */
+typedef struct
+{
+	/** Returns the string value of a server local (hidden-from-clients) info-key.
+
+	@param serverKey specifies the server local (hidden-from-clients) info-key to query.
+	@return The value in string format. */
+	string GetString(string serverKey);
+	/** Returns the integer value of a server local (hidden-from-clients) info-key.
+
+	@param serverKey specifies the server local (hidden-from-clients) info-key to query.
+	@return The value in integer format. */
+	int GetInteger(string serverKey);
+	/** Returns the floating-point value of a server local (hidden-from-clients) info-key.
+
+	@param serverKey specifies the server local (hidden-from-clients) info-key to query.
+	@return The value in floating-point format. */
+	float GetFloat(string serverKey);
+	/** Returns the boolean value of a server local (hidden-from-clients) info-key.
+
+	@param serverKey specifies the server local (hidden-from-clients) info-key to query.
+	@return The value in boolean form. */
+	bool GetBool(string serverKey);
+	/** Returns the vector value of a server local (hidden-from-clients) info-key.
+
+	@param serverKey specifies the server local (hidden-from-clients) info-key to query.
+	@return The value in vector form. */
+	vector GetVector(string serverKey);
+	/** Server only. Sets the specified server local (hidden-from-clients) info-key to a set string value.
+
+	@param serverKey specifies the server local (hidden-from-clients) info-key to set.
+	@param setValue specifies the value of said key. */
+	void SetString(string serverKey, string setValue);
+	/** Server only. Sets the specified server local (hidden-from-clients) info-key to a set integer value.
+
+	@param serverKey specifies the server local (hidden-from-clients) info-key to set.
+	@param setValue specifies the value of said key. */
+	void SetInteger(string serverKey, int setValue);
+	/** Server only. Sets the specified server local (hidden-from-clients) info-key to a set boolean value.
+
+	@param serverKey specifies the server local (hidden-from-clients) info-key to set.
+	@param setValue specifies the value of said key. */
+	void SetBool(string serverKey, bool setValue);
+	/** Server only. Sets the specified server local (hidden-from-clients) info-key to a set floating-point value.
+
+	@param serverKey specifies the server local (hidden-from-clients) info-key to set.
+	@param setValue specifies the value of said key. */
+	void SetFloat(string serverKey, float setValue);
+	/** Server only. Sets the specified server local (hidden-from-clients) info-key to a set vector.
+
+	@param serverKey specifies the server local (hidden-from-clients) info-key to set.
+	@param setValue specifies the value of said key. */
+	void SetVector(string serverKey, vector setValue);
+} localinfoAPI_t;
+
+localinfoAPI_t localinfo; /**< Access localinfoAPI_t functions using this variable. */
+
 __variant
 linkToServerProgs(string funcName)
 {
@@ -240,6 +300,7 @@ void
 _server_main(void)
 {
 	game.EndMap = linkToServerProgs("SVPF_game_EndMap");
+	game.EndMapDelayed = linkToServerProgs("SVPF_game_EndMapDelayed");
 	game.LoadNextMap = linkToServerProgs("SVPF_game_LoadNextMap");
 	game.CleanUpMap = linkToServerProgs("SVPF_game_CleanUpMap");
 	game.GetMap = linkToServerProgs("SVPF_game_GetMap");
@@ -251,6 +312,17 @@ _server_main(void)
 	combat.Damage = linkToServerProgs("SVPF_combat_Damage");
 	combat.RadiusDamage = linkToServerProgs("SVPF_combat_RadiusDamage");
 	combat.Obituary = linkToServerProgs("SVPF_combat_Obituary");
+
+	localinfo.SetString = linkToServerProgs("SVPF_localinfo_SetString");
+	localinfo.SetBool = linkToServerProgs("SVPF_localinfo_SetBool");
+	localinfo.SetInteger = linkToServerProgs("SVPF_localinfo_SetInteger");
+	localinfo.SetFloat = linkToServerProgs("SVPF_localinfo_SetFloat");
+	localinfo.SetVector = linkToServerProgs("SVPF_localinfo_SetVector");
+	localinfo.GetString = linkToServerProgs("SVPF_localinfo_GetString");
+	localinfo.GetInteger = linkToServerProgs("SVPF_localinfo_GetInteger");
+	localinfo.GetBool = linkToServerProgs("SVPF_localinfo_GetBool");
+	localinfo.GetFloat = linkToServerProgs("SVPF_localinfo_GetFloat");
+	localinfo.GetVector = linkToServerProgs("SVPF_localinfo_GetVector");
 
 	ents.Create = linkToServerProgs("SVPF_ents_Create");
 	ents.ChangeToClass = linkToServerProgs("SVPF_ents_ChangeToClass");

@@ -57,15 +57,46 @@ Font_Load(string strFile, font_s &fntNew)
 				fntNew.iScaleY = (int)stof(argv(1));
 				break;
 			case "size":
-				fntNew.iScaleY = fntNew.iScaleX = (int)stof(argv(1));
+				if ((autocvar(font_ttfOnly, 0) == 0) && (autocvar(font_bitmapOnly, 0) == 0)) {
+					fntNew.iScaleY = fntNew.iScaleX = (int)stof(argv(1));
+				}
+				break;
+			case "size_ttf":
+				if (autocvar(font_ttfOnly, 0) == 1) {
+					float segments = tokenize(argv(1));
+					
+					if (segments == 2) {
+						fntNew.iScaleX = (int)stof(argv(0));
+						fntNew.iScaleY = (int)stof(argv(1));
+					} else if (segments == 1) {
+						fntNew.iScaleY = fntNew.iScaleX = (int)stof(argv(0));
+					}
+				}
+				break;
+			case "size_bitmap":
+				if (autocvar(font_bitmapOnly, 0) == 1) {
+					float segments = tokenize(argv(1));
+					
+					if (segments == 2) {
+						fntNew.iScaleX = (int)stof(argv(0));
+						fntNew.iScaleY = (int)stof(argv(1));
+					} else if (segments == 1) {
+						fntNew.iScaleY = fntNew.iScaleX = (int)stof(argv(0));
+					}
+				}
 				break;
 			case "path":
-				if (autocvar(font_ttfOnly, 0) == 0) {
+				if ((autocvar(font_ttfOnly, 0) == 0) && (autocvar(font_bitmapOnly, 0) == 0)) {
 					strFontPath = argv(1);
 				}
 				break;
 			case "path_ttf":
 				if (autocvar(font_ttfOnly, 0) == 1) {
+					strFontPath = argv(1);
+				}
+				break;
+			case "path_bitmap":
+				if (autocvar(font_bitmapOnly, 0) == 1) {
 					strFontPath = argv(1);
 				}
 				break;
@@ -94,7 +125,7 @@ Font_Load(string strFile, font_s &fntNew)
 		fntNew.iScaleY = 12i;
 	}
 
-	ncLog("Loaded font definition for %s", strFile);
+	ncLogAlways("...precached font %S (%i x %i)", strFile, fntNew.iScaleX, fntNew.iScaleY);
 
 	if (strRenderSize != "") {
 		fntNew.iID = (int)loadfont("", strFontPath, strRenderSize, -1, 0, 0);

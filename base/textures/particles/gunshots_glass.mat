@@ -1,0 +1,10 @@
+// Vera Visions Material
+{
+	surfaceParm noshadows
+	surfaceParm nodlight
+	polygonOffset 6
+	{
+		map "textures/particles/gunshots_glass.tga"
+		blendFunc GL_ONE GL_ONE_MINUS_SRC_COLOR
+	}
+}

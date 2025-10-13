@@ -31,14 +31,14 @@ Route_RoundDistance(float flDist)
 
 /* returns a botinfo point that's nearest to us */
 ncEntity
-Route_SelectFarthest(float type, vector org, optional vector lastpoi = [0,0,0]) 
+Route_SelectFarthest(string type, vector org, optional vector lastpoi = [0,0,0]) 
 {
 	entity temp;
 	int bestrange = 0;
 	int range;
 	entity dest = __NULL__;
 
-	for (temp = world; (temp = findfloat(temp, ::botinfo, type));) {
+	for (temp = world; (temp = find(temp, ::m_hintType, type));) {
 		range = distanceSquared(temp.origin, org);
 
 		if (lastpoi == temp.origin)
@@ -55,20 +55,20 @@ Route_SelectFarthest(float type, vector org, optional vector lastpoi = [0,0,0])
 
 /* returns a botinfo point that's nearest to us */
 ncEntity
-Route_SelectNearest(float type, vector org, optional vector lastpoi = [0,0,0]) 
+Route_SelectNearest(string type, vector org, optional vector lastpoi = [0,0,0]) 
 {
 	entity temp;
 	int bestrange = MAX_DISTANCE;
 	int range;
 	entity dest = __NULL__;
 
-	for (temp = world; (temp = findfloat(temp, ::botinfo, type));) {
-		range = distanceSquared(temp.origin, org);
+	for (temp = world; (temp = find(temp, ::m_hintType, type));) {
+		range = distanceSquared(temp.owner.origin, org);
 
-		if (lastpoi == temp.origin)
+		if (lastpoi == temp.owner.origin)
 			continue;
 
-		if ((range < bestrange) && (temp.solid != SOLID_NOT)) {
+		if ((range < bestrange) && (temp.owner.solid != SOLID_NOT)) {
 			bestrange = range;
 			dest = temp;
 		}
@@ -79,21 +79,22 @@ Route_SelectNearest(float type, vector org, optional vector lastpoi = [0,0,0])
 
 /* returns a botinfo point belonging to our team */
 ncEntity
-Route_SelectNearestTeam(float type, vector org, float tt) 
+Route_SelectNearestTeam(string type, vector org, float tt) 
 {
 	entity temp;
 	int bestrange = MAX_DISTANCE;
 	int range;
 	entity dest = __NULL__;
 
-	for (temp = world; (temp = findfloat(temp, ::botinfo, type));) {
-		ncEntity tempEnt = (ncEntity)temp;
-		if (temp.team != tt)
+	for (temp = world; (temp = find(temp, ::m_hintType, type));) {
+		ncEntity tempEnt = (ncEntity)temp.owner;
+
+		if (tempEnt.team != tt)
 			continue;
 
 		range = distanceSquared(tempEnt.WorldSpaceCenter(), org);
 
-		if ((range < bestrange) && (temp.solid != SOLID_NOT)) {
+		if ((range < bestrange) && (tempEnt.solid != SOLID_NOT)) {
 			bestrange = range;
 			dest = temp;
 		}
@@ -104,21 +105,22 @@ Route_SelectNearestTeam(float type, vector org, float tt)
 
 /* returns a botinfo point belonging to the enemy team */
 ncEntity
-Route_SelectNearestEnemyTeam(float type, vector org, float tt) 
+Route_SelectNearestEnemyTeam(string type, vector org, float tt) 
 {
 	entity temp;
 	int bestrange = MAX_DISTANCE;
 	int range;
 	entity dest = __NULL__;
 
-	for (temp = world; (temp = findfloat(temp, ::botinfo, type));) {
-		ncEntity tempEnt = (ncEntity)temp;
-		if (temp.team == tt)
+	for (temp = world; (temp = find(temp, ::m_hintType, type));) {
+		ncEntity tempEnt = (ncEntity)temp.owner;
+
+		if (tempEnt.team == tt)
 			continue;
 
 		range = distanceSquared(tempEnt.WorldSpaceCenter(), org);
 
-		if ((range < bestrange) && (temp.solid != SOLID_NOT)) {
+		if ((range < bestrange) && (tempEnt.solid != SOLID_NOT)) {
 			bestrange = range;
 			dest = temp;
 		}
@@ -150,7 +152,7 @@ ncEntity
 Route_SelectRandomSpot(void)
 {
 	static entity eLastSpot;
-	eLastSpot = findfloat(eLastSpot, ::botinfo, BOTINFO_SPAWNPOINT);
+	eLastSpot = find(eLastSpot, ::m_hintType, "SPAWN");
 
 	if (!eLastSpot)
 		return (Route_SelectRandomSpot());
@@ -170,15 +172,15 @@ Route_SelectDestination(ncBot target)
 		/* we have the goal item, so capture it */
 		if (target.m_nuclideFlags & VFL_GOALITEM) {
 			BotLog("%s going for capture", target.netname);
-			dest = Route_SelectNearestTeam(BOTINFO_TEAM_GOALCAPTURE, target.origin, target.team);
+			dest = Route_SelectNearestTeam("GOALCAP", target.origin, target.team);
 			
 			/* we may have to go to our teams' goal item then */
 			if (!dest) {
-				dest = Route_SelectNearestTeam(BOTINFO_TEAM_GOALITEM, target.origin, target.team);
+				dest = Route_SelectNearestTeam("GOALITEM", target.origin, target.team);
 			}
 		} else {
 			BotLog("%s hunting for goal item", target.netname);
-			dest = Route_SelectNearestEnemyTeam(BOTINFO_TEAM_GOALITEM, target.origin, target.team);
+			dest = Route_SelectNearestEnemyTeam("GOALITEM", target.origin, target.team);
 		}
 
 		if (dest != __NULL__) {
@@ -193,7 +195,7 @@ Route_SelectDestination(ncBot target)
 	/* if we're low on health, look for health items */
 	if (target.health < 50) {
 		BotLog("%s going for health", target.netname);
-		dest = Route_SelectNearest(BOTINFO_HEALTH, target.origin, target.m_vecLastPOI);
+		dest = Route_SelectNearest("HEALTH", target.origin, target.m_vecLastPOI);
 
 		if (dest != __NULL__) {
 			target.m_vecLastPOI = dest.WorldSpaceCenter();
@@ -207,7 +209,7 @@ Route_SelectDestination(ncBot target)
 	if (random() < 0.25)
 	if (target.armor < 50) {
 		BotLog("%s going for armor", target.netname);
-		dest = Route_SelectNearest(BOTINFO_ARMOR, target.origin, target.m_vecLastPOI);
+		dest = Route_SelectNearest("ARMOR", target.origin, target.m_vecLastPOI);
 		
 		if (dest != __NULL__) {
 			target.m_vecLastPOI = dest.origin;
@@ -223,9 +225,9 @@ Route_SelectDestination(ncBot target)
 		BotLog("%s going for ammo/weapon", target.netname);
 
 		if (random() < 0.5)
-			dest = Route_SelectFarthest(BOTINFO_WEAPON, target.origin, target.m_vecLastPOI);
+			dest = Route_SelectFarthest("WEAPON", target.origin, target.m_vecLastPOI);
 		else
-			dest = Route_SelectFarthest(BOTINFO_AMMO, target.origin, target.m_vecLastPOI);
+			dest = Route_SelectFarthest("AMMO", target.origin, target.m_vecLastPOI);
 		
 		if (dest != __NULL__) {
 			target.m_vecLastPOI = dest.origin;

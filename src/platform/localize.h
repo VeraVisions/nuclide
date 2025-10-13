@@ -21,28 +21,35 @@
 
 # Overview
 
+Nuclide has its own system to handle localized text.
+
+While the engine has its own localization support with .po files,
+they're unfortunately not of any use with dynamically typed strings.
+
+# Usage
+
+Strings that are meant to represent localized text start with the `#` character. You'll find examples such as `#UI_ACCEPT".
+Only the client and server actually handle localized text right now. That is by design to ensure best practices are followed, for now.
+
+# Resouce Files
+
 By default the client (and menu) loads both `resource/gameui_[LANG].txt`,
 but only the client looks for `resources/[GAME]_[LANG].txt`.
 
 The client or menu game code is allowed to call Locale_AddFile() to add
 new resource files to the localization table.
 
-The localization table gets re-loaded upon a renderer restart, such as
-when invoking `vid_reload`.
+The localization table, generated form said resource files, gets re-loaded upon a renderer restart. 
+Invoking `vid_reload` via console can accomplish this, for example.
 
-# Resouce Files
+# Setting locale
 
-While the engine has its own localization support with .po files,
-they're unfortunately not of any use with dynamically typed strings.
-
-So we built a system that's more or less compatible with whatever
-Valve does in Source. It uses hash tables for fast look-ups.
-
-The engine attempts to set `lang` to the operating system's appropriate
-locale. We then do a look-up, falling back to `english` as the suffix
+The engine attempts to set the `lang` console variable to the operating system's appropriate
+locale by default. We then do a look-up, falling back to `english` as the suffix
 for our resource files.
 
-## Language Table
+
+# Language Table
 
 | Language            | POSIX Locale | Resource Suffix |
 |---------------------|--------------|-----------------|

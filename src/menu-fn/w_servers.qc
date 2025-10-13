@@ -64,7 +64,7 @@ CServerList::Draw(void)
 			drawfill([g_menuofs[0] + pos[0] - 2, g_menuofs[1] + pos[1] - 2], [m_size[0], 15], 
 			 [84/255,45/255,0], 1.0f);
 		}
-		WLabel_Static(pos[0], pos[1], m_entries[i], 12, 12, [1,0.5,0.1],
+		WLabel_AtHeight(pos[0], pos[1], m_entries[i], 12, [1,0.5,0.1],
 					1.0f, 0, font_label);
 		pos[1] += 15;
 	}

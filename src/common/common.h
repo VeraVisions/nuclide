@@ -93,21 +93,21 @@ _ncError(string functionName, string msg)
 {
 #ifdef CLIENT
 	if (autocvar_g_logTimestamps)
-		print(sprintf("%s ^9%f ^1%s^7: %s\n", CG_ERROR, time, functionName, msg));
+		print(sprintf("%s ^9%f ^1%s^1: %s\n", CG_ERROR, time, functionName, msg));
 	else
-		print(sprintf("%s ^1%s^7: %s\n", CG_ERROR, functionName, msg));
+		print(sprintf("%s ^1%s^1: %s\n", CG_ERROR, functionName, msg));
 #endif
 #ifdef SERVER
 	if (autocvar_g_logTimestamps)
-		print(sprintf("%s ^9%f ^1%s^7: %s\n", SV_ERROR, time, functionName, msg));
+		print(sprintf("%s ^9%f ^1%s^1: %s\n", SV_ERROR, time, functionName, msg));
 	else
-		print(sprintf("%s ^1%s^7: %s\n", SV_ERROR, functionName, msg));
+		print(sprintf("%s ^1%s^1: %s\n", SV_ERROR, functionName, msg));
 #endif
 #ifdef MENU
 	if (autocvar_g_logTimestamps)
-		print(sprintf("%s ^9%f ^1%s^7: %s\n", UI_ERROR, time, functionName, msg));
+		print(sprintf("%s ^9%f ^1%s^1: %s\n", UI_ERROR, time, functionName, msg));
 	else
-		print(sprintf("%s ^1%s^7: %s\n", UI_ERROR, functionName, msg));
+		print(sprintf("%s ^1%s^1: %s\n", UI_ERROR, functionName, msg));
 #endif
 }
 
@@ -116,21 +116,21 @@ _ncWarning(string functionName, string msg)
 {
 #ifdef CLIENT
 	if (autocvar_g_logTimestamps)
-		print(sprintf("%s ^9%f ^3%s^7: %s\n", CG_WARNING, time, functionName, msg));
+		print(sprintf("%s ^9%f ^3%s^1: %s\n", CG_WARNING, time, functionName, msg));
 	else
-		print(sprintf("%s ^3%s^7: %s\n", CG_WARNING, functionName, msg));
+		print(sprintf("%s ^3%s^1: %s\n", CG_WARNING, functionName, msg));
 #endif
 #ifdef SERVER
 	if (autocvar_g_logTimestamps)
-		print(sprintf("%s ^9%f ^3%s^7: %s\n", SV_WARNING, time, functionName, msg));
+		print(sprintf("%s ^9%f ^3%s^1: %s\n", SV_WARNING, time, functionName, msg));
 	else
-		print(sprintf("%s ^3%s^7: %s\n", SV_WARNING, functionName, msg));
+		print(sprintf("%s ^3%s^1: %s\n", SV_WARNING, functionName, msg));
 #endif
 #ifdef MENU
 	if (autocvar_g_logTimestamps)
-		print(sprintf("%s ^9%f ^3%s^7: %s\n", UI_WARNING, time, functionName, msg));
+		print(sprintf("%s ^9%f ^3%s^1: %s\n", UI_WARNING, time, functionName, msg));
 	else
-		print(sprintf("%s ^3%s^7: %s\n", UI_WARNING, functionName, msg));
+		print(sprintf("%s ^3%s^1: %s\n", UI_WARNING, functionName, msg));
 #endif
 }
 
@@ -161,6 +161,12 @@ _NSAssert(bool condition, string function, string descr)
 
 @param description(...) contains a formatted string containing a description. */
 #define ncLog(...) if (autocvar_g_logLevel >= LOGLEVEL_DEBUG) _ncLog(sprintf(__VA_ARGS__))
+
+/** Logs an message, with timestamp.
+	 The console variable `g_logLevel` has to be `3` or higher for them to be visible.
+
+@param description(...) contains a formatted string containing a description. */
+#define ncLogAlways(...) _ncLog(sprintf(__VA_ARGS__))
 
 /** Logs an error message, with timestamp.
 	 The console variable `g_logLevel` has to be `1` or higher for them to be visible.
@@ -223,7 +229,7 @@ InitPrint(string functionName)
 		sideRight = strcat(sideRight,"-");
 	}
 
-	ncLog( "%s %s %s", sideLeft, functionName, sideRight);
+	ncLogAlways( "%s %s %s", sideLeft, functionName, sideRight);
 }
 
 var string g_lastInitFunc;
@@ -244,8 +250,8 @@ void
 _InitEnd(void)
 {
 	float endTime = gettime(1);
-	ncLog("loaded in %.1f seconds", (endTime - g_initTime));
-	ncLog("---------------------------------------------------");
+	ncLogAlways("loaded in %.1f seconds", (endTime - g_initTime));
+	ncLogAlways("---------------------------------------------------");
 	g_initTime = 0;
 }
 
@@ -268,11 +274,28 @@ fileExists(string filePath)
 
 	return true;
 }
+
 string
-Util_ExtensionFromString(string inputString)
+fileExtensionFromString(string inputString)
 {
 	int modelNameLength = strlen(inputString);
-	return substring(inputString, modelNameLength - 3, modelNameLength);
+	return substring(inputString, modelNameLength - 3, -1);
+}
+
+#define Util_ExtensionFromString fileExtensionFromString
+
+bool
+wordInString(string fullString, string wordToFind)
+{
+	int wordCount = tokenize(fullString);
+
+	for (int i = 0; i < wordCount; i++) {
+		if (wordToFind == argv(i)) {
+			return (true);
+		}
+	}
+
+	return (false);
 }
 
 void
@@ -286,5 +309,6 @@ CallSpawnfuncByName(entity target, string className)
 }
 
 .string spawnclass;
+.float team_info;
 
 /** @} */ // end of common

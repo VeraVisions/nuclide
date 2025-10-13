@@ -34,6 +34,7 @@
 #include "fragnet.h"
 #include "map.h"
 #include "servers.h"
+#include "profiles.h"
 
 /** Definitions for FTE's internal package manager. We don't want you to talk to this one directly within Nuclide. */
 typedef enum

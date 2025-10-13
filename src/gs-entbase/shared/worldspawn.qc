@@ -127,6 +127,7 @@ ncWorldSpawn::ncWorldSpawn(void)
 	lightstyle(63, "a");
 	lightstyle(64, "m");
 	lightstyle(65, "z");
+	lightstyle(69, "vv");
 
 	precache.Model("models/error.vvm");
 

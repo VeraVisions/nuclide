@@ -64,6 +64,7 @@ public:
 	virtual void ReloadVideoResources(void);
 	virtual bool CanSpawn(bool);
 
+
 private:
 	vector m_vecLensPos;
 	float m_flLensAlpha;

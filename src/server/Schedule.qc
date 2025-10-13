@@ -33,8 +33,7 @@ ncSchedule::AdvanceLater(float timeDelta)
 {
 	m_inProgress = true;
 	EntLog("Advancing %S in %f seconds.", m_name, timeDelta);
-	ncTimer newTimer = __NULL__;
-	newTimer = newTimer.TemporaryTimer(this, Advance, timeDelta, false);
+	ncTimer::TemporaryTimer(this, Advance, timeDelta, false);
 }
 
 bool
@@ -129,13 +128,7 @@ ncSchedule::Cancel(void)
 		}
 	}
 
-	if (wasfreed(this)) {
-		return;
-	}
-
-	think = __NULL__;
-	nextthink = 0.0f;
-	Destroy();
+	ScheduleThink(Destroy, 0.0f);
 }
 
 bool
@@ -241,7 +234,7 @@ ncSchedule::CreateSchedule(ncActor targetActor, string scheduleDecl)
 	ncLog("Created schedule %S on %s (%d)", scheduleDecl, targetActor.classname, num_for_edict(targetActor));
 
 	if ((newSchedule.m_scheduleDecl.TokenCount() % 2) != 0) {
-		newSchedule.Destroy();
+		newSchedule.ScheduleThink(Destroy, 0.0f);
 		ncError("Schedule %S has keys set with no specified value!", scheduleDecl);
 		return (__NULL__);
 	}
@@ -249,7 +242,7 @@ ncSchedule::CreateSchedule(ncActor targetActor, string scheduleDecl)
 	newSchedule.m_taskCount = (newSchedule.m_scheduleDecl.TokenCount() / 2);
 
 	if (newSchedule.AssignActor(targetActor) == false) {
-		newSchedule.Destroy();
+		newSchedule.ScheduleThink(Destroy, 0.0f);
 		return (__NULL__);
 	} else {
 		return (newSchedule);

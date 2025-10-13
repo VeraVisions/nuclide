@@ -37,6 +37,10 @@ Platform_ConsoleCommand(string commandString, int wordCount)
 		localcmd(sprintf("set g_gametype \"singleplayer\"\nset sv_playerslots 2\nset coop 1\nset sv_background 1\nmap %s\n",
 			argv(1)));
 		break;
+	case "menu_refreshSavedGames":
+		Saves_Init();
+		SavesCallback_EntriesUpdated();
+		break;
 	case "listGameLibrary":
 		GameLibrary_DebugList();
 		break;
@@ -55,6 +59,24 @@ Platform_ConsoleCommand(string commandString, int wordCount)
 	case "removeFriend":
 		FragNet_RemoveFriend(argv(1));
 		break;
+	case "reloadMenuLocale":
+		Locale_Reload();
+		break;
+	case "listProfiles":
+		ncProfileManager::ListProfiles();
+		break;
+	case "profile_create":
+		ncProfileManager::CreateNamedProfile(argv(1));
+		break;
+	case "profile_delete":
+		ncProfileManager::DeleteNamedProfile(argv(1));
+		break;
+	case "profile_select":
+		ncProfileManager::SetProfileByName(argv(1));
+		break;
+	case "profile_save":
+		ncProfileManager::SaveActiveProfile();
+		break;
 	default:
 		return (false);
 	}
@@ -72,10 +94,18 @@ Platform_RegisterCommands(void)
 	registercommand("map_background");
 	registercommand("listGameLibrary");
 	registercommand("ap_userID");
+	registercommand("menu_refreshSavedGames");
 
 	/* online service */
 	registercommand("signOn");
 	registercommand("signOff");
 	registercommand("addFriend");
 	registercommand("removeFriend");
+	registercommand("reloadMenuLocale");
+	registercommand("listProfiles");
+
+	registercommand("profile_create");
+	registercommand("profile_delete");
+	registercommand("profile_select");
+	registercommand("profile_save");
 }

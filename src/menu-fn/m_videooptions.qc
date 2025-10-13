@@ -102,11 +102,11 @@ menu_videooptions_draw(void)
 	drawpic([g_menuofs[0] + 250, g_menuofs[1] + 141], g_bmp[GAMMA],
 			[280,278], [1,1,1], 1.0f, 0);
 			
-	WLabel_Static(50, 143, m_reslbl[IDS_VIDEO_SCREENSIZE], 14, 14, [1,1,1],
+	WLabel_AtHeight(50, 143, m_reslbl[IDS_VIDEO_SCREENSIZE], 14, [1,1,1],
 					1.0f, 0, font_label_b);
-	WLabel_Static(50, 193, m_reslbl[IDS_VIDEO_GAMMA], 14, 14, [1,1,1],
+	WLabel_AtHeight(50, 193, m_reslbl[IDS_VIDEO_GAMMA], 14, [1,1,1],
 					1.0f, 0, font_label_b);
-	WLabel_Static(50, 245, m_reslbl[IDS_VIDEO_GLARE], 14, 14, [1,1,1],
+	WLabel_AtHeight(50, 245, m_reslbl[IDS_VIDEO_GLARE], 14, [1,1,1],
 					1.0f, 0, font_label_b);
 }
 

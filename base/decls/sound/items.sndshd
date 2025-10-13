@@ -8,7 +8,6 @@ armor_yellow.pickup
 	sample items/armor1.wav
 }
 
-
 armor_red.pickup
 {
 	sample items/armor1.wav
@@ -85,12 +84,22 @@ item_artifact_envirosuit.expiring
 	sample items/suit2.wav
 }
 
-mayhem_item.respawn
+ammo.respawn
 {
 	sample items/itembk2.wav
 }
 
-mayhem_weapon.pickup
+item.respawn
+{
+	sample items/itembk2.wav
+}
+
+health.pickup
+{
+	sample items/health1.wav
+}
+
+weapon.pickup
 {
 	sample weapons/pkup.wav
 }

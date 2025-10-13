@@ -116,13 +116,13 @@ menu_contentcontrol_draw(void)
 	WField_Static(208, 140, g_cc_descr, 256, 64, col_help,
 					1.0f, 1, font_label);
 
-	WLabel_Static(232, 251, "Human blood", 12, 12, [0.75,0.75,0.75],
+	WLabel_AtHeight(232, 251, "Human blood", 12, [0.75,0.75,0.75],
 					1.0f, 0, font_label_b);
-	WLabel_Static(232, 283, "Human gibs", 12, 12, [0.75,0.75,0.75],
+	WLabel_AtHeight(232, 283, "Human gibs", 12, [0.75,0.75,0.75],
 					1.0f, 0, font_label_b);
-	WLabel_Static(232, 315, "Alien blood", 12, 12, [0.75,0.75,0.75],
+	WLabel_AtHeight(232, 315, "Alien blood", 12, [0.75,0.75,0.75],
 					1.0f, 0, font_label_b);
-	WLabel_Static(232, 347, "Alien gibs", 12, 12, [0.75,0.75,0.75],
+	WLabel_AtHeight(232, 347, "Alien gibs", 12, [0.75,0.75,0.75],
 					1.0f, 0, font_label_b);
 }
 

@@ -9,14 +9,14 @@ entityDef weapon_supershotgun
 	"spawnclass"		"ncWeapon"
 	"model"				"progs/g_shot.mdl"
 	"model_view"		"progs/v_shot2.mdl"
-	"snd_acquire"		"dmc_weapon.pickup"
+	"snd_acquire"		"weapon.pickup"
 	"snd_respawn"		"item.respawn"
 	"spin"				"1"
 	"pickupFlash"		"1"
 
 	// weapon specific
 	"def_fireInfo"		"fireInfo_superShotgun"
-	"inv_name"			"Super Shotgun"
+	"inv_name"			"#WEAPON_SUPERSHOTGUN"
 	"inv_ammo_shells"	"5"
 	"ammoType"			"ammo_shells"
 	"ammoRequired"		"2"
@@ -27,7 +27,7 @@ entityDef weapon_supershotgun
 	"snd_fire"			"weapon_supershotgun.shoot"
 	"snd_empty"			"weapon.empty"
 
-//	"msg_obituary"		"%s ate two loads of %s's buckshot."
+	"msg_obituary"		"%s ate two loads of %s's buckshot."
 
 	// ncWeapon specific
 	"hudSlot"			"2"
@@ -46,6 +46,7 @@ entityDef projectile_superShotgun
 	"hitscans"			"14"
 	"spread"			"0.08716 0.08716"
 //	"range"				"2048"
+	"fx_path"			"weapon_shotgun.tracer"
 }
 
 entityDef fireInfo_superShotgun
@@ -54,5 +55,4 @@ entityDef fireInfo_superShotgun
 	"ammoPerShot"		"2"
 	"fireRate"			"0.7"
 	"punchSpring"		"-5 0 0"
-	"model_flash"		"sprites/muzzleflash.spr"
 }

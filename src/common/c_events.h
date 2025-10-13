@@ -59,5 +59,45 @@ enum
 	EV_MUZZLEFLASH,
 	EV_TRACEDEBUG,
 	EV_ACHIEVEMENT,
+	EV_MOTD_CHANGED,
+	EV_GAME_SAVED,
 	EV_SEPARATOR
 };
+
+#ifdef SERVER
+/** A single, no-parameter event that is reliably sent over the network
+	to anyone connected to the game.
+    Used merely to minimize space */
+void
+networkEventBroadcast(float eventType)
+{
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, eventType);
+	msg_entity = world;
+	multicast([0,0,0], MULTICAST_ALL_R);
+}
+
+/** A single, no-parameter event that is reliably sent over the network
+	to anyone within a specific PVS (or in laymans terms, location)
+	to optimize network usage. Used mainly for cosmetics, or fluff located
+	to a certain region of a map. */
+void
+networkEventInPVS(float eventType, vector castAtPos)
+{
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, eventType);
+	msg_entity = world;
+	multicast(castAtPos, MULTICAST_PVS_R);
+}
+
+/** A single, no-parameter event that is reliably sent over the network to
+	an individual client. */
+void
+networkEventSingle(float eventType, entity targetEntity)
+{
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, eventType);
+	msg_entity = targetEntity;
+	multicast([0,0,0], MULTICAST_ONE_R);
+}
+#endif

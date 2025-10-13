@@ -402,7 +402,13 @@ func_tracktrain::Save(float handle)
 	/* if we are on a track, take the difference in offset so we can smoothly transition */
 	if (HasTriggerTarget()) {
 		path_track targetEnt = GetTrackNodeForward();
-		m_vecRelationTarget = targetEnt.GetOrigin() - GetOrigin();
+
+		if (!targetEnt) {
+			EntError("Can't get supposed track path %S", GetTriggerTarget());
+			m_vecRelationTarget = g_vec_null;
+		} else {
+			m_vecRelationTarget = targetEnt.GetOrigin() - GetOrigin();
+		}
 	} else {
 		m_vecRelationTarget = g_vec_null;
 	}
@@ -1029,11 +1035,20 @@ func_tracktrain::_AfterSpawn(void)
 
 	/* face the train towards the next target. while it may be tempting to use
 	   GetPathTargetEntity() here, that node may be disabled. so look manually. */
+
+	if (STRING_SET(targetNode.target)) {
 	nodeAhead = (path_track)find(world, ::targetname, targetNode.target);
 
 	/* node found. */
 	if (nodeAhead) {
-		vector newAngle = vectoangles(targetNode.GetOrigin() - nodeAhead.GetOrigin());
+
+		vector newAngle = g_vec_null;
+
+		if (targetNode) {
+			newAngle = vectoangles(targetNode.GetOrigin() - nodeAhead.GetOrigin());
+		} else {
+			newAngle = vectoangles(WorldSpaceCenter() - nodeAhead.GetOrigin());
+		}
 
 		if (IgnoresPitch() == true) {
 			newAngle[0] = 0;
@@ -1042,6 +1057,7 @@ func_tracktrain::_AfterSpawn(void)
 		}
 
 		SetAngles(newAngle);
+	}
 	}
 
 	/* if speed is 0, retain current speed */

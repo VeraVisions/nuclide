@@ -71,6 +71,29 @@ MapLibrary_MapInGameDir(string fileName, string gameDir)
 	return list;
 }
 
+
+
+static bool
+ModeLibrary_ModeInGameDir(string fileName, string gameDir)
+{
+	bool list = true;
+
+	if (fileName == "singleplayer.dat") {
+		return false;
+	}
+
+	if (autocvar(fs_modeFilter, 1) == 0) {
+		return (true);
+	}
+
+	/* only look for maps in the current gamedir, requires SEARCH_FULLPACKAGE */
+	if (gameDir != MapLibrary_GetMapGamedir()) {
+		return false;
+	}
+
+	return list;
+}
+
 static string
 MapLibrary_FindPreview(string mapFile)
 {
@@ -258,19 +281,19 @@ ModeLibrary_Init(void)
 
 	/* we now iterate over the search entries to filter results out */
 	for (i = 0i; i < mapCount; i++) {
-		mapFile = substring(search_getfilename(mapsearch, i), 5, -1);
+		mapFile = substring(search_getfilename(mapsearch, i), 6, -1);
 
 		/* the strlen(gameDir) is technically wrong, but it'll work anyway because
 		   we only care about maps in the current game directory */
 		mapDir = substring(search_getpackagename(mapsearch, i), 0, strlen(gameDir));
 
-		if (MapLibrary_MapInGameDir(mapFile, mapDir) == true) {
+		if (ModeLibrary_ModeInGameDir(mapFile, mapDir) == true) {
 			g_modeLibrary_count++;
 		}
 	}
 	search_end(mapsearch);
 
-	g_modeLibrary = (mapLibrary_t *)memalloc(sizeof(mapLibrary_t) * g_modeLibrary_count);
+	g_modeLibrary = (modeLibrary_t *)memalloc(sizeof(modeLibrary_t) * g_modeLibrary_count);
 
 	/* let's do it again, but this time we'll sort the data into our array */
 	mapsearch = search_begin("progs/*.dat", SEARCH_NAMESORT | SEARCH_FULLPACKAGE | SEARCH_MULTISEARCH, TRUE);
@@ -280,7 +303,7 @@ ModeLibrary_Init(void)
 		mapFile = substring(search_getfilename(mapsearch, i), 6, -1);
 		mapDir = substring(search_getpackagename(mapsearch, i), 0, strlen(gameDir));
 
-		if (MapLibrary_MapInGameDir(mapFile, mapDir) == true) {
+		if (ModeLibrary_ModeInGameDir(mapFile, mapDir) == true) {
 			g_modeLibrary[c].name = mapFile;
 			g_modeLibrary[c].title = mapFile;
 			c++;

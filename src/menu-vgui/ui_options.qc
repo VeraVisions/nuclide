@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-int g_iServerBrowserInitialized;
+int g_iOptionsWindowInitialized;
 
 var string autocvar_ui_name = "Player";
 
@@ -132,8 +132,8 @@ void UI_Options_Show ( void )
 		Options_Cancel();
 	}
 
-	if ( !g_iServerBrowserInitialized ) {
-		g_iServerBrowserInitialized = TRUE;
+	if ( !g_iOptionsWindowInitialized ) {
+		g_iOptionsWindowInitialized = TRUE;
 		winServers = spawn( vguiWindow );
 		winServers.SetTitle( "Options" );
 		winServers.SetSize( '512 406' );

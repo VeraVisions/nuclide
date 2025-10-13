@@ -86,6 +86,7 @@ server/item_food.qc
 server/item_generic.qc
 server/item_healthcharger.qc
 server/item_recharge.qc
+server/item_item_crate.qc
 server/light.qc
 server/logic_auto.qc
 server/logic_case.qc
@@ -150,5 +151,6 @@ server/trigger_relay.qc
 server/trigger_teleport.qc
 server/trigger_use.qc
 server/trigger_capture_area.qc
+server/trigger_capture_point.qc
 server/team_control_point.qc
 #endlist

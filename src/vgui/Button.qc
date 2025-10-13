@@ -201,7 +201,7 @@ vguiButton::Draw(void)
 		theme.DrawText(m_parent.m_vecOrigin + m_vecOrigin + [8, 8], keyText, m_vecSize, g_fntDefault);
 	}
 
-	if (STRING_SET(m_strIcon) && UI_NOICONS == false) {
+	if ((STRING_SET(m_strIcon) && UI_NOICONS == false) || (!STRING_SET(m_strTitle) && STRING_SET(m_strIcon))) {
 		if (m_iFlags & BUTTON_DOWN)
 			drawpic(m_parent.m_vecOrigin + m_vecOrigin + [4,4], m_strIcon, m_vecIMGSize, m_vecIconColor * 0.25, 1.0f, 0);
 		else

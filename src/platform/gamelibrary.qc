@@ -192,6 +192,9 @@ GameLibrary_LibListParse(int targetID, string strKey, string strValue)
 	case "minversion":
 		games[targetID].minversion = strValue;
 		break;
+	case "nohimodels":
+		games[targetID].nohimodels = (int)stof(strValue);
+		break;
 	case "nomodels":
 		games[targetID].nomodels = (int)stof(strValue);
 		break;
@@ -413,6 +416,7 @@ GameLibrary_SetDefaults(int targetID, string gamedirname)
 	games[targetID].version = "1.0";
 	games[targetID].size = 0;
 	games[targetID].type = "Both";
+	games[targetID].nohimodels = 0;
 	games[targetID].nomodels = 0;
 	games[targetID].nosprays = 0;
 	games[targetID].mpentity = "info_player_deathmatch";
@@ -460,6 +464,7 @@ GameLibrary_InitCustom(void)
 	int packageinfo_count = 0i;
 	int c = 0i;
 	string modPrefix = strcat(GAME_DIR, "-mod");
+	bool scanPackages = checkcommand("pkg") == 0 ? false : true;
 
 	gameinfo_count = 1i; /* do not count the base game (0) */
 
@@ -469,10 +474,11 @@ GameLibrary_InitCustom(void)
 			continue;
 
 		gameinfo_count++;
-		printf("MANUAL: %S\n", gamedirname);
+		//printf("MANUAL: %S\n", gamedirname);
 	}
 
 	/* count the package installed mods after */
+	if (scanPackages)
 	for (int i = 0; (getpackagemanagerinfo(i, GPMI_NAME)); i++) {
 		string packageName = getpackagemanagerinfo(i, GPMI_NAME);
 		string installStatus = getpackagemanagerinfo(i, GPMI_INSTALLED);
@@ -534,6 +540,7 @@ GameLibrary_InitCustom(void)
 	}
 
 	/* iterate through all packages again */
+	if (scanPackages)
 	for (int i = 0i; (getpackagemanagerinfo(i, GPMI_NAME)); i++) {
 		string packageName = getpackagemanagerinfo(i, GPMI_NAME);
 		string installStatus = getpackagemanagerinfo(i, GPMI_INSTALLED);
@@ -832,6 +839,9 @@ GameLibrary_GetGameInfo(int gameID, gameInfo_t infoType)
 		break;
 	case GAMEINFO_NOPLAYERMODELS:
 		return games[gameID].nomodels == 1 ? true : false;
+		break;
+	case GAMEINFO_NOHIMODELS:
+		return games[gameID].nohimodels == 1 ? true : false;
 		break;
 	case GAMEINFO_NOSPRAYS:
 		return games[gameID].nosprays == 1 ? true : false;

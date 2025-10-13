@@ -21,3 +21,5 @@ int Saves_GetSaveCount(void);
 __variant Saves_GetInfo(int, saveInfo_t);
 
 void Saves_Init(void);
+
+void SavesCallback_EntriesUpdated(void);

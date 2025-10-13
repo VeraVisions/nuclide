@@ -19,6 +19,7 @@
 ../vgui/3DView.qc
 ../vgui/ScrollBar.qc
 ../vgui/List.qc
+../vgui/ListPicker.qc
 ../vgui/ListBox.qc
 ../vgui/TextBox.qc
 ../vgui/TabViewItem.qc

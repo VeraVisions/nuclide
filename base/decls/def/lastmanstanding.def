@@ -1,0 +1,29 @@
+entityDef lms_outmessage
+{
+	"spawnclass"	"game_text"
+	"message"	"...another one OUT!"
+	"x"		"-1"
+	"y"		"-1"
+	"fadein"	"0.5"
+	"fadeout"	"0.5"
+	"holdtime"	"4"
+	"color"		"255 255 255"
+	"color2"	"255 255 255"
+	"spawnflags"	"1"
+	"targetname"	"message_out"
+}
+
+entityDef lms_endmessage
+{
+	"spawnclass"	"game_text"
+	"message"	"LAST MAN STANDING!"
+	"x"		"-1"
+	"y"		"-1"
+	"fadein"	"0.5"
+	"fadeout"	"0.5"
+	"holdtime"	"4"
+	"color"		"255 255 255"
+	"color2"	"255 255 255"
+	"spawnflags"	"1"
+	"targetname"	"message_end"
+}

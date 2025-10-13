@@ -1,0 +1,26 @@
+"lang" 
+{ 
+	"Language" "English" 
+	"Tokens" 
+	{ 
+		"MAYHEM_Chapter1_Title"		"LQ Episode 0"
+		"WEAPON_AXE"			"Axe"
+		"WEAPON_SHOTGUN"		"Shotgun"
+		"WEAPON_SUPERSHOTGUN"		"Super Shotgun"
+		"WEAPON_NAILGUN"		"Nailgun"
+		"WEAPON_SUPERNAILGUN"		"Super Nailgun"
+		"WEAPON_ROCKETLAUNCHER"		"Rocket Launcher"
+		"WEAPON_GRENADELAUNCHER"		"Grenade Launcher"
+		"WEAPON_LIGHTNING"		"Lightning"
+
+		"Team_AutoAssign"		"Auto assign"
+		"Menu_Spectate"			"Spectate"
+		"Title_SelectYourTeam"		"Select your team"
+		"Map_Description_not_available"	"Map description not available."
+		"Distance"			"Distance"
+
+		"USERINFO_HELP" "Select an entry from the list of players to view information about them. That information is not verified, and we can make no guarantee that it is accurate.    A verification based mechanism based on a known GUID may be introduced in the future.    You can use the `ap_userID @username@fedi.instance` command to import profile settings from an ActivityPub profile."
+		"EMPTY_PLAYERSLOT"		"Empty player slot"
+		
+	} 
+}

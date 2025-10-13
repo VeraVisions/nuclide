@@ -132,13 +132,13 @@ CScrollbar::Draw(void)
 	if (!m_hold) {
 		drawfill([g_menuofs[0]+m_x,g_menuofs[1]+m_y+16], [16,m_theight], [0.25,0.25,0.25], 1.0f);
 		if (!m_hover) {
-			drawfill([g_menuofs[0]+m_x+4,g_menuofs[1]+m_y+16+4+barstep], [8,barheight-8], [0,0,0], 1.0f);
+			drawfill([g_menuofs[0]+m_x+4,g_menuofs[1]+m_y+16+4+barstep], [8,barheight-8], autocvar_menu_color_scrollbar_bg, 1.0f);
 		} else {
-			drawfill([g_menuofs[0]+m_x+4,g_menuofs[1]+m_y+16+4+barstep], [8,barheight-8], [1,0.5,0.25], 1.0f);
+			drawfill([g_menuofs[0]+m_x+4,g_menuofs[1]+m_y+16+4+barstep], [8,barheight-8], autocvar_menu_color_scrollbar_select, 1.0f);
 		}
 	} else {
 		drawfill([g_menuofs[0]+m_x,g_menuofs[1]+m_y+16], [16,m_theight], [0,0,0], 1.0f);
-		drawfill([g_menuofs[0]+m_x+4,g_menuofs[1]+m_y+16+4+barstep], [8,barheight-8], [1,0.5,0.25], 1.0f);
+		drawfill([g_menuofs[0]+m_x+4,g_menuofs[1]+m_y+16+4+barstep], [8,barheight-8], autocvar_menu_color_scrollbar_click, 1.0f);
 	}
 }
 

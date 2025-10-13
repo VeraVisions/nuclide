@@ -42,24 +42,24 @@ create_btnok_start(void)
 	static string gameType;
 	static void create_btnok_end(void) {
 		localcmd("stopmusic\nset sv_public 0\n");
-		localcmd(sprintf("set hostname %s\n", create_tbHostname.m_text));
-		localcmd(sprintf("set sv_playerslots %S\n", create_tbMaxplayers.m_text));
-		localcmd(sprintf("set password %S\n", create_tbPassword.m_text));
-		localcmd(sprintf("set g_gametype %S\n", gameType));
-
 		if (cvar("ui_fillServer") > 0) {
 			localcmd(sprintf("set bot_minClients %S\n", create_tbMaxplayers.m_text));
 		} else {
 			localcmd(sprintf("set bot_minClients %S\n", "0"));
 		}
-	
-		localcmd(sprintf("map %s\n", startmap));
 		g_menupage = PAGE_MULTIPLAYER;
-		RichPresence_Clear();
-		RichPresence_Set("status", sprintf("Multiplayer (LAN): %s", startmap));
+		Map_SpawnServer(create_tbHostname.m_text, startmap, stof(create_tbMaxplayers.m_text), gameType, create_tbPassword.m_text);
 	}
-	/* Strip .bsp extension before submitting */
-	startmap = substring(create_lbMaps.GetSelectedItem(), 0, -5);
+
+	/* random */
+	if (create_lbMaps.GetSelected() == 0) {
+		int randomMap = (int)rint(random(1, create_lbMaps.GetCount() + 1));
+		startmap = substring(create_lbMaps.GetItem(randomMap), 0, -5);
+	} else {
+		/* Strip .bsp extension before submitting */
+		startmap = substring(create_lbMaps.GetSelectedItem(), 0, -5);
+	}
+
 	gameType = substring(create_lbModes.GetSelectedItem(), 0, -5);
 
 	if (startmap == __NULL__) {
@@ -156,18 +156,18 @@ menu_creategame_init(void)
 
 	create_tbMaxplayers = spawn(CTextBox);
 	create_tbMaxplayers.SetPos(216,226);
-	create_tbMaxplayers.m_length = 156;
+	create_tbMaxplayers.SetLength(156);
 	Widget_Add(fn_createshared, create_tbMaxplayers);
 
 	/* if it's 1, that means we recently played a SP game, reset to default for now */
-	if (cvar("sv_playerslots") <= 1)
+	if (cvar("ui_maxclients") <= 1)
 		create_tbMaxplayers.SetText("8");
 	else
-		create_tbMaxplayers.SetText(cvar_string("sv_playerslots"));
+		create_tbMaxplayers.SetText(cvar_string("ui_maxclients"));
 
 	create_tbPassword = spawn(CTextBox);
 	create_tbPassword.SetPos(216,280);
-	create_tbPassword.m_length = 156;
+	create_tbPassword.SetLength(156);
 	create_tbPassword.SetText(cvar_string("password"));
 	Widget_Add(fn_createshared, create_tbPassword);
 	
@@ -190,6 +190,11 @@ menu_creategame_init(void)
 	/* fill in our list box */
 	mapCount = MapLibrary_GetMapCount();
 
+#ifndef AUTHENTIC
+	create_lbMaps.AddEntry( "< Random Map >" );
+	create_lbMaps.m_selected = 0;
+#endif
+
 	for (int i = 0i; i < mapCount; i++) {
 		string mapName = MapLibrary_GetInfo(i, MAPINFO_NAME);
 		create_lbMaps.AddEntry(mapName);
@@ -199,20 +204,20 @@ menu_creategame_init(void)
 
 	/* game modes */
 	create_frModes = spawn(CFrame);
-	create_frModes.SetPos(216,332);
-	create_frModes.SetSize(108,96+6);
+	create_frModes.SetPos(216,332+24);
+	create_frModes.SetSize(156,96+6);
 	Widget_Add(fn_createshared, create_frModes);
 
 	create_lbModes = spawn(CListBox);
-	create_lbModes.SetPos(218,335);
-	create_lbModes.SetSize(102-16,96);
+	create_lbModes.SetPos(218,335+24);
+	create_lbModes.SetSize(150-16,96);
 	Widget_Add(fn_createshared, create_lbModes);
 	
 	create_sbModes = spawn(CScrollbar);
-	create_sbModes.SetPos(371,175);
-	create_sbModes.SetHeight(96);
+	create_sbModes.SetPos(216 + 156 - 16,332+24);
+	create_sbModes.SetHeight(96+6);
 	create_sbModes.SetCallback(create_sbModes_changed);
-	//Widget_Add(fn_createshared, create_sbModes);
+	Widget_Add(fn_createshared, create_sbModes);
 
 	/* fill in our list box */
 	modeCount = ModeLibrary_GetModeCount();
@@ -220,6 +225,7 @@ menu_creategame_init(void)
 	for (int i = 0i; i < modeCount; i++) {
 		string modeName = ModeLibrary_GetInfo(i, MODEINFO_NAME);
 		create_lbModes.AddEntry(modeName);
+		create_lbModes.m_selected = 0;
 	}
 
 	create_sbModes.SetMax(modeCount);
@@ -236,13 +242,15 @@ menu_creategame_draw(void)
 {
 	Header_Draw(HEAD_CREATEGAME);
 
-	WLabel_Static(216, 143, m_reslbl[IDS_CREATESERVER_NAME], 14, 14, [1,1,1],
+	WLabel_AtHeight(216, 143, m_reslbl[IDS_CREATESERVER_NAME], 14, [1,1,1],
 					1.0f, 0, font_arial);
-	WLabel_Static(216, 202, m_reslbl[IDS_CREATESERVER_MAXPLAYERS], 14, 14, [1,1,1],
+	WLabel_AtHeight(216, 202, m_reslbl[IDS_CREATESERVER_MAXPLAYERS], 14, [1,1,1],
 					1.0f, 0, font_arial);
-	WLabel_Static(216, 256, m_reslbl[IDS_NEWPROFILE_PASSWORD], 14, 14, [1,1,1],
+	WLabel_AtHeight(216, 256, m_reslbl[IDS_NEWPROFILE_PASSWORD], 14, [1,1,1],
 					1.0f, 0, font_arial);
-	WLabel_Static(381, 143, m_reslbl[IDS_CREATESERVER_MAP], 14, 14, [1,1,1],
+	WLabel_AtHeight(381, 143, m_reslbl[IDS_CREATESERVER_MAP], 14, [1,1,1],
+					1.0f, 0, font_arial);
+	WLabel_AtHeight(216, 332, "Game type", 14, [1,1,1],
 					1.0f, 0, font_arial);
 
 	WField_Static(52 + 26, 234, "Bots", 115, 64, [0.75, 0.75, 0.75],

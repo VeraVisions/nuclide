@@ -168,8 +168,18 @@ env_projectedtexture::EvaluateEntity(void)
 	if (ATTR_CHANGED(origin)) {
 		SetSendFlags(PRTEXFL_CHANGED_ORIGIN);
 	}
+
+	if (STRING_SET(target)) {
+		ncEntity aimingAt = (ncEntity)find(world, ::targetname, target);
+		vector centerPos = aimingAt.WorldSpaceCenter();
+
+		if (aimingAt) {
+			TurnToPos(centerPos);
+		}
+	}
+
 	if (ATTR_CHANGED(angles)) {
-		angles = fixAngle(angles);
+		//angles = fixAngle(angles);
 		SetSendFlags(PRTEXFL_CHANGED_ANGLES);
 	}
 	SAVE_STATE(origin)

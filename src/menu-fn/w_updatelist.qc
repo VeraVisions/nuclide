@@ -126,7 +126,7 @@ CUpdateList::Draw(void)
 		}
 
 		/* Game */
-		WLabel_Static(m_x + 3, pos + 3, updateTitle, 11, 11, colo,
+		WLabel_AtHeight(m_x + 3, pos + 3, updateTitle, 11, colo,
 					1.0f, 0, font_arial);
 
 		pos += 18;

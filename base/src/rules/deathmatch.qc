@@ -14,10 +14,22 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/* Basic Deathmatch
+
+   Whoever reaches the designated score-limit, wins.
+*/
+void
+DM_PlayerSpawn(entity playerTarget)
+{
+	ents.ChangeToClass(playerTarget, "player_mp");
+	game.TeleportToSpawn(playerTarget);
+}
+
+/* rule callbacks, called by Nuclide if present */
 void
 CodeCallback_Precaches(void)
 {
-	precache.Entity("player_mp");
+	Util_SharedPrecaches();
 }
 
 void
@@ -26,58 +38,38 @@ CodeCallback_StartGameType(void)
 	motd.LoadDefault();
 	game.SetSpawnPoint("info_player_deathmatch");
 
-	for (entity s = world; (s = next.NPC(s));) {
-		ents.Input(s, "Kill", "20.0f", world);
-	}
-
-	for (entity s = world; (s = next.Item(s));) {
-		string isWeapon = substring(s.classname, 0, 7);
-		string isAmmo = substring(s.classname, 0, 5);
-
-		if (isWeapon == "weapon_" || isAmmo == "ammo_") {
-			ents.Input(s, "SetRespawnTime", "20.0f", world);
-		} else {
-			ents.Input(s, "SetRespawnTime", "30.0f", world);
-		}
-	}
+	/* from shared.qc */
+	Util_RemoveAllMonsters();
+	Util_SetItemRespawnTimers();
 }
 
 void
 CodeCallback_PlayerSpawn(entity playerTarget)
 {
-	ents.ChangeToClass(playerTarget, "player_mp");
-	game.TeleportToSpawn(playerTarget);
-}
-
-void
-CodeCallback_PlayerDisconnect(entity playerTarget)
-{
-
+	DM_PlayerSpawn(playerTarget);
 }
 
 bool
 CodeCallback_PlayerRequestRespawn(entity playerTarget)
 {
-	CodeCallback_PlayerSpawn(playerTarget);
+	DM_PlayerSpawn(playerTarget);
 	return (true);
-}
-
-void
-CodeCallback_PlayerDamage(entity playerTarget, entity inflictor, entity attacker)
-{
-
 }
 
 void
 CodeCallback_PlayerKilled(entity playerTarget, entity inflictor, entity attacker, string weapon)
 {
-	combat.Obituary(playerTarget.netname, attacker.netname, weapon, "");
+	if (playerTarget == attacker)
+		combat.Obituary(playerTarget.netname, attacker.netname, weapon, "self");
+	else
+		combat.Obituary(playerTarget.netname, attacker.netname, weapon, "");
 
 	/* death-counter */
 	playerTarget.deaths++;
 
 	/* update score-counter */
 	if (is.Player(attacker)) {
+		/* self harm won't be rewarded */
 		if (playerTarget == attacker) {
 			attacker.frags--;
 		} else {

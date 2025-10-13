@@ -1,0 +1,7 @@
+// Vera Visions Material
+{
+	program unlit
+	fullbrightmap models/logos/visions_eye.ktx
+	diffusemap models/logos/visions_black.tga
+	normalmap models/logos/visions_eye_n.tga
+}

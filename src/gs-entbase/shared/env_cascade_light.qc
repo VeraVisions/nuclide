@@ -77,6 +77,15 @@ public:
 	nonvirtual void LightChanged(float);
 #endif
 
+	nonvirtual void SetRedColor(float byteColor);
+	nonvirtual void SetGreenColor(float byteColor);
+	nonvirtual void SetBlueColor(float byteColor);
+	nonvirtual void SetShadowDistance(float shadowDistance);
+
+	nonvirtual void SetPitch(float eulerValue);
+	nonvirtual void SetYaw(float eulerValue);
+	nonvirtual void SetRoll(float eulerValue);
+
 private:
 	NETWORKED_BOOL(m_bLightActive)
 	NETWORKED_VECTOR(m_vecLightColor)
@@ -95,12 +104,91 @@ private:
 void
 env_cascade_light::env_cascade_light(void)
 {
-#ifdef SERVER
 	m_vecLightColor = [1.0, 1.0, 1.0];
 	m_bLightActive = true;
+	m_flShadowDistance = 512.0f;
+
+#ifdef CLIENT
+	m_lightHandle = 0;
+#endif
+	
+#ifdef SERVER
 	m_bUseEnvColors = false;
 	m_bUseEnvAngles = false;
-	m_flShadowDistance = 512.0f;
+#endif
+}
+
+
+
+
+void
+env_cascade_light::SetRedColor(float byteColor)
+{
+	m_vecLightColor[0] = byteColor;
+
+#ifdef CLIENT
+	LightChanged(ENVCASLIGHT_CHANGED_COLOR_X);
+#endif
+}
+
+void
+env_cascade_light::SetGreenColor(float byteColor)
+{
+	m_vecLightColor[1] = byteColor;
+
+#ifdef CLIENT
+	LightChanged(ENVCASLIGHT_CHANGED_COLOR_Y);
+#endif
+}
+
+void
+env_cascade_light::SetBlueColor(float byteColor)
+{
+	m_vecLightColor[2] = byteColor;
+
+#ifdef CLIENT
+	LightChanged(ENVCASLIGHT_CHANGED_COLOR_Z);
+#endif
+}
+
+
+void
+env_cascade_light::SetPitch(float eulerValue)
+{
+	angles[0] = eulerValue;
+
+#ifdef CLIENT
+	LightChanged(ENVCASLIGHT_CHANGED_ANGLE_X);
+#endif
+}
+
+void
+env_cascade_light::SetYaw(float eulerValue)
+{
+	angles[1] = eulerValue;
+
+#ifdef CLIENT
+	LightChanged(ENVCASLIGHT_CHANGED_ANGLE_Y);
+#endif
+}
+  
+void
+env_cascade_light::SetRoll(float eulerValue)
+{
+	angles[2] = eulerValue;
+
+#ifdef CLIENT
+	LightChanged(ENVCASLIGHT_CHANGED_ANGLE_Z);
+#endif
+}
+	   
+void
+env_cascade_light::SetShadowDistance(float shadowDistance)
+{
+	m_flShadowDistance = shadowDistance;
+
+#ifdef CLIENT
+	LightChanged(ENVCASLIGHT_CHANGED_DISTANCE);
 #endif
 }
 
@@ -278,6 +366,7 @@ env_cascade_light::LightChanged(float flFlags)
 {
 	bool updateAngle = false;
 	bool updateColor = false;
+	bool updateDistance = false;
 
 	updateAngle |= (flFlags & ENVCASLIGHT_CHANGED_ANGLE_X) ? true : false;
 	updateAngle |= (flFlags & ENVCASLIGHT_CHANGED_ANGLE_Y) ? true : false;
@@ -287,11 +376,16 @@ env_cascade_light::LightChanged(float flFlags)
 	updateColor |= (flFlags & ENVCASLIGHT_CHANGED_COLOR_Y) ? true : false;
 	updateColor |= (flFlags & ENVCASLIGHT_CHANGED_COLOR_Z) ? true : false;
 
+	updateDistance |= (flFlags & ENVCASLIGHT_CHANGED_DISTANCE) ? true : false;
+
 	if (updateAngle) {
 		dynamiclight_set(m_lightHandle, LFIELD_ANGLES, angles);
 	}
 	if (updateColor) {
 		dynamiclight_set(m_lightHandle, LFIELD_COLOUR, m_vecLightColor / 255);
+	}
+	if (updateDistance) {
+		dynamiclight_set(m_lightHandle, LFIELD_RADIUS, m_flShadowDistance);
 	}
 }
 
@@ -319,7 +413,7 @@ env_cascade_light::ReloadVideoResources(void)
 {
 	OnRemoveEntity();
 	m_lightHandle = dynamiclight_spawnstatic(origin, m_flShadowDistance, m_vecLightColor / 255);
-	dynamiclight_set(m_lightHandle, LFIELD_FLAGS, LFLAG_ORTHOSUN | LFLAG_SHADOWMAP | LFLAG_REALTIMEMODE);
+	dynamiclight_set(m_lightHandle, LFIELD_FLAGS, LFLAG_ORTHOSUN | LFLAG_SHADOWMAP | LFLAG_REALTIMEMODE | LFLAG_CREPUSCULAR);
 	LightChanged(0xFFFFFF);
 }
 #endif

@@ -19,6 +19,7 @@ vguiLoadingPanel:vguiWindow
 {
 	void vguiLoadingPanel(void);
 	virtual void Spawned(void);
+	virtual void Reposition(void);
 	nonvirtual void UpdateProgress(void);
 
 private:
@@ -45,6 +46,12 @@ vguiLoadingPanel::UpdateProgress(void)
 		timePassed = 0.0f;
 
 	m_progressBar.SetProgress(timePassed);
+}
+
+void
+vguiLoadingPanel::Reposition(void)
+{
+	SetPos( ( g_vidsize / 2 ) - ( GetSize() / 2 ) );
 }
 
 void
@@ -76,5 +83,5 @@ vguiLoadingPanel::Spawned(void)
 	Add( m_progressBar );
 	Add( m_btnCancel );
 	Add( m_lblLoading );
-	SetPos( ( g_vidsize / 2 ) - ( GetSize() / 2 ) );
+	Reposition();
 }

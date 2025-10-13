@@ -25,6 +25,7 @@ void Loading_Draw ( vector vecSize )
 	}
 
 #if 1
+	loadingPanel.Reposition();
 	loadingPanel.Draw();
 	loadingPanel.UpdateProgress();
 #else

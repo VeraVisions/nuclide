@@ -4,6 +4,10 @@ Saves_Init(void)
 	searchhandle searchy;
 	searchy = search_begin("saves/*/info.fsv", SEARCH_NAMESORT, TRUE);
 
+	if (g_savegame_count > 0i) {
+		memfree(g_savegames);
+	}
+
 	g_savegame_count = search_getsize(searchy);
 	g_savegames = memalloc(sizeof(savegame_t) * g_savegame_count);
 
@@ -41,4 +45,11 @@ Saves_GetInfo(int saveID, saveInfo_t saveInfo)
 	default:
 		return __NULL__;
 	}
+}
+
+/* to be implemented by your custom menu/platform progs */
+__weak void
+SavesCallback_EntriesUpdated(void)
+{
+
 }

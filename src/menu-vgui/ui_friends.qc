@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-int g_iLoadGameInitialized;
+int g_iFriendsListInitialized;
 
 
 
@@ -333,8 +333,8 @@ void UI_Friends_Show ( void )
 {
 	static VGUIFriendsList winFriends;
 
-	if ( !g_iLoadGameInitialized ) {
-		g_iLoadGameInitialized = TRUE;
+	if ( !g_iFriendsListInitialized ) {
+		g_iFriendsListInitialized = TRUE;
 		winFriends = spawn( VGUIFriendsList );
 
 		g_uiDesktop.Add( winFriends );

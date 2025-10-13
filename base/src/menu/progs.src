@@ -5,5 +5,5 @@
 #define GAME_DIR "base"
 
 #includelist
-../../../src/menu-vgui/includes.src
+../../../src/menu-fn/includes.src
 #endlist

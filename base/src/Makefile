@@ -6,3 +6,4 @@ all:
 	cd server && $(MAKE)
 	cd menu && $(MAKE)
 	cd rules && $(MAKE)
+	cd maps && $(MAKE)

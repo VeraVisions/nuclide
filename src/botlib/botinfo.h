@@ -38,6 +38,5 @@ typedef enum
 	BOTINFO_END				/**< end destination */
 } botInfo_t;
 
-.float botinfo;
 
 /** @} */ // end of bot_tags

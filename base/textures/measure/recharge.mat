@@ -1,14 +1,14 @@
 {
 if $programs
 	program defaultwall
-	diffusemap measure/recharge.tga
+	diffusemap textures/measure/recharge.tga
 else
 	{
 		map $lightmap
 		rgbGen identity
 	}
 	{
-		map measure/recharge.tga
+		map textures/measure/recharge.tga
 		rgbGen identity
 		blendFunc GL_DST_COLOR GL_ZERO
 	}

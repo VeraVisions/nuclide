@@ -9,17 +9,16 @@ entityDef weapon_lightning
 	"spawnclass"		"ncWeapon"
 	"model"				"progs/g_light.mdl"
 	"model_view"		"progs/v_light.mdl"
-	"snd_acquire"		"mayhem_weapon.pickup"
-	"snd_respawn"		"mayhem_item.respawn"
+	"snd_acquire"		"weapon.pickup"
+	"snd_respawn"		"item.respawn"
 	"spin"				"1"
 	"pickupFlash"		"1"
 	"animPrefix"		"lightning"
 
 	// weapon specific
 	"def_onFire"		"projectile_lightning"
-	"model_flash"		"sprites/muzzleflash3.spr"
 	"inv_ammo_cells"	"15"
-	"inv_name"			"Lightning Gun"
+	"inv_name"			"#WEAPON_LIGHTNING"
 	"ammoType"			"ammo_cells"
 	"ammoRequired"		"1"
 	"act_idle"			"0"
@@ -55,5 +54,6 @@ entityDef projectile_lightning
 	"detonate_on_world" 	"0"
 	"decal_detonate"		"Impact.Gauss"
 	"model_detonate"		"fx_spark.main"
+	"fx_path"			"weapon_nailgun.muzzleflash"
 //	"range"					"600"
 }

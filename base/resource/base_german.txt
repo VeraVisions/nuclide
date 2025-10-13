@@ -1,0 +1,27 @@
+"lang"
+{
+	"Language" "German"
+	"Tokens"
+	{
+		"MAYHEM_Chapter1_Title"		"LQ Episode 0"
+		"WEAPON_AXE"			"Axt"
+		"WEAPON_SHOTGUN"		"Schrotflinte"
+		"WEAPON_SUPERSHOTGUN"		"Superschrotflinte"
+		"WEAPON_NAILGUN"		"Nagelschiesser"
+		"WEAPON_SUPERNAILGUN"		"Supernagelschiesser"
+		"WEAPON_ROCKETLAUNCHER"		"Raketenwerfer"
+		"WEAPON_GRENADELAUNCHER"	"Granatenwerfer"
+		"WEAPON_LIGHTNING"		"Donnerkraftwerk"
+
+		"Team_AutoAssign"		"Auto Wahl"
+		"Menu_Spectate"			"Zuschauen"
+		"Title_SelectYourTeam"		"Team Auswahl"
+		"Map_Description_not_available"	"Keine weitere Karten Informationen gefunden."
+		"Distance"			"Distanz"
+
+		"USERINFO_HELP" "Klicken sie auf einen Spielereintrag um Informationen ueber diesen Spielern herauszufinden.    Die Informationen ist von dem Spieler selbst eingetragen worden, und sind derzeit nicht verifizierbar.    Ein Verifizierungssytem welches GUID parameter in betracht zieht ist in der Entwicklung.    Man kann den `ap_userID @username@fedi.instance` Konsolenkommand um Informationen von einen ActivityPub profil zu importieren."
+
+		"EMPTY_PLAYERSLOT"		"Leerer Spielerslot"
+
+	}
+}

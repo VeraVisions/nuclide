@@ -221,6 +221,21 @@ game_text::Input(entity eAct, string strInput, string strData)
 	case "Display":
 		Trigger(eAct, TRIG_ON);
 		break;
+	case "SetText":
+		SpawnKey("message", strData);
+		break;
+	case "SetPosX":
+		m_flPosX = ReadFloat(strData);
+		break;
+	case "SetPosY":
+		m_flPosY = ReadFloat(strData);
+		break;
+	case "SetTextColor":
+		m_vecColor1 = ReadVector(strData);
+		break;
+	case "SetTextColor2":
+		m_vecColor2 = ReadVector(strData);
+		break;
 	default:
 		super::Input(eAct, strInput, strData);
 	}

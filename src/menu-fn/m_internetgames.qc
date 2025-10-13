@@ -345,15 +345,15 @@ menu_internetgames_draw(void)
 	drawpic([g_menuofs[0]+550,g_menuofs[1]+10], g_bmp[FN_LOGO],[80,80], [1,1,1], 1.0f, 0);
 
 	/* Labels */
-	WLabel_Static(252, 128, m_reslbl[IDS_SERVER_GAMESERVER], 10, 10, [1,1,1],
+	WLabel_AtHeight(252, 128, m_reslbl[IDS_SERVER_GAMESERVER], 10, [1,1,1],
 					1.0f, 0, font_arial);
-	WLabel_Static(357, 128, m_reslbl[IDS_SERVER_SPEED], 10, 10, [1,1,1],
+	WLabel_AtHeight(357, 128, m_reslbl[IDS_SERVER_SPEED], 10, [1,1,1],
 					1.0f, 0, font_arial);
-	WLabel_Static(407, 128, m_reslbl[IDS_SERVER_MAP], 10, 10, [1,1,1],
+	WLabel_AtHeight(407, 128, m_reslbl[IDS_SERVER_MAP], 10, [1,1,1],
 					1.0f, 0, font_arial);
-	WLabel_Static(476, 128, m_reslbl[IDS_SERVER_GAME], 10, 10, [1,1,1],
+	WLabel_AtHeight(476, 128, m_reslbl[IDS_SERVER_GAME], 10, [1,1,1],
 					1.0f, 0, font_arial);
-	WLabel_Static(552, 128, m_reslbl[IDS_SERVER_PLAYERS], 10, 10, [1,1,1],
+	WLabel_AtHeight(552, 128, m_reslbl[IDS_SERVER_PLAYERS], 10, [1,1,1],
 					1.0f, 0, font_arial);
 
 	if (!g_inetrefresh)

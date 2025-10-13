@@ -1,0 +1,57 @@
+{
+	"fraglimit"
+	{
+		"Frag Limit"
+		{ NUMBER 0.000000 -1.000000 }
+		{ "0.000000" }
+	}
+
+	"timelimit"
+	{
+		"Time Limit (Min.)"
+		{ NUMBER 0.000000 -1.000000 }
+		{ "10.000000" }
+	}
+
+	"mp_friendlyfire"
+	{
+		"Friendly Fire"
+		{ BOOL }
+		{ "0" }
+	}
+
+	"mp_weaponstay"
+	{
+		"Weapons Stay"
+		{ BOOL }
+		{ "0" }
+	}
+
+	"mp_forcerespawn"
+	{
+		"Force Respawn"
+		{ BOOL }
+		{ "0" }
+	}
+
+	"mp_footsteps"
+	{
+		"Footsteps"
+		{ BOOL }
+		{ "1" }
+	}
+
+	"sv_aim"
+	{
+		"Aut-aim"
+		{ BOOL }
+		{ "0" }
+	}
+
+	"g_infiniteAmmo"
+	{
+		"Unlimited ammo"
+		{ BOOL }
+		{ "1" }
+	}
+}

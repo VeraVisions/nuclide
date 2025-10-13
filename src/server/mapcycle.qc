@@ -39,7 +39,7 @@ Mapcycle_Load(string filename)
 			continue;
 		}
 
-		localcmd(sprintf("alias m%i \"map %s;alias nextmap m%i\"\n", mapCount, mapName, mapCount + 1i));
+		localcmd(sprintf("alias mc_%i \"map %s;alias nextmap mc_%i\"\n", mapCount, mapName, mapCount + 1i));
 
 		if (mapname == lastMap) {
 			nextMapID = mapCount;
@@ -56,10 +56,10 @@ Mapcycle_Load(string filename)
 	}
 
 	/* override the last map so that it goes back to m0 */
-	localcmd(sprintf("alias m%i \"map %s;alias nextmap m0\"\n", mapCount - 1i, lastMap));
+	localcmd(sprintf("alias mc_%i \"map %s;alias nextmap mc_0\"\n", mapCount - 1i, lastMap));
 
 	/* the current map in the list will decide the nextmap */
-	localcmd(sprintf("alias nextmap m%i\n", nextMapID));
+	localcmd(sprintf("alias nextmap mc_%i\n", nextMapID));
 
 	ncLog("...MapCycle initialized with %i entries.", mapCount);
 }

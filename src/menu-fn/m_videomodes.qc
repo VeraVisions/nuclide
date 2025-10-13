@@ -179,7 +179,7 @@ menu_videomodes_draw(void)
 	Widget_Draw(fn_vidmodes);
 	Header_Draw(HEAD_VIDMODES);
 
-	WLabel_Static(270, 393, m_reslbl[IDS_VIDMODE_WINDOWED], 12, 12, [0.75,0.75,0.75],
+	WLabel_AtHeight(270, 393, m_reslbl[IDS_VIDMODE_WINDOWED], 12, [0.75,0.75,0.75],
 					1.0f, 0, font_arial);
 	
 	WField_Static(55, 333, m_reslbl[IDS_VID_HINT], 175, 117, col_help,

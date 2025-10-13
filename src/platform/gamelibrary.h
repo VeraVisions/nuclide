@@ -65,6 +65,7 @@ typedef enum
 	GAMEINFO_TITLE,			/**< (string) The title of the game in the main menu. */
 	GAMEINFO_SUBTITLE,			/**< (string) The sub-title of the game in the main menu. */
 	GAMEINFO_TYPE,			/**< (string) The game type. E.g. "Singleplayer" */
+	GAMEINFO_NOHIMODELS,	/**< (bool) If the game allows for alternative, often higher quality models. */
 	GAMEINFO_NOPLAYERMODELS,/**< (bool) If the game allows player model selection. */
 	GAMEINFO_NOSPRAYS,		/**< (bool) If the game allows custom spray logos. */
 	GAMEINFO_STARTMAP,		/**< (string) The command for starting a new game. */
@@ -138,6 +139,7 @@ typedef struct
 	string pkgname;
 	string pkgfile;
 	int pkgid;
+	int nohimodels;
 	int nomodels;
 	int nosprays;
 	int installed;

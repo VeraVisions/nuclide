@@ -274,27 +274,30 @@ ncRadar::InitFromHLTVScript(string fileName)
 		}
 	}
 
+	NSAssert(fileExists(newRadar.m_strMaterial), "Overview image specified not found in the virtual filesystem.");
 	newRadar.CalculateVertices();
 
-	/* load the (presumably) .bmp file */
 	int width, height, format;
 	int *imgData = r_readimage(newRadar.m_strMaterial, width, height, format);
 
 	NSAssert((imgData != __NULL__), "Cannot read overview image.");
+		
+	/* only do the bitmap color conversion when it's actually a Windows Bitmap */
+	if (fileExtensionFromString(newRadar.m_strMaterial) == "bmp") {
+		/* blank out the areas that are supposed to be transparent */
+		for (int i = 0i; i < (width * height); i += 1i) {
+			int r = (imgData[i] & 0xFF);
+			int g = ((imgData[i] >> 8) & 0xFF);
+			int b = ((imgData[i] >> 16) & 0xFF);
 
-	/* blank out the areas that are supposed to be transparent */
-	for (int i = 0i; i < (width * height); i += 1i) {
-		int r = (imgData[i] & 0xFF);
-		int g = ((imgData[i] >> 8) & 0xFF);
-		int b = ((imgData[i] >> 16) & 0xFF);
-
-		/* check for purple, blue color */
-		if (r == 255 && g == 0 && b == 255) {
-			imgData[i] = 0i;
-		} else if (r == 0 && g == 0 && b == 255) {
-			imgData[i] = 0i;
-		} else if (r == 0 && g == 255 && b == 0) {
-			imgData[i] = 0i;
+			/* check for purple, blue color */
+			if (r == 255 && g == 0 && b == 255) {
+				imgData[i] = 0i;
+			} else if (r == 0 && g == 0 && b == 255) {
+				imgData[i] = 0i;
+			} else if (r == 0 && g == 255 && b == 0) {
+				imgData[i] = 0i;
+			}
 		}
 	}
 
@@ -303,7 +306,7 @@ ncRadar::InitFromHLTVScript(string fileName)
 	memfree(imgData);
 	newRadar.m_strMaterial = "overview";
 	ncLog("Map overview available.");
-	return newRadar;
+	return (newRadar);
 }
 
 ncRadar
@@ -370,4 +373,12 @@ ncRadar::InitFromSourceHLTVScript(string fileName)
 	newRadar.CalculateVerticesSource(imageSize[0], imageSize[1]);
 	ncLog("Map overview available.");
 	return newRadar;
+}
+
+__weak void
+Radar_Draw(vector atPosition, vector rectSize)
+{
+	g_overview.SetViewPosition(atPosition);
+	g_overview.SetViewSize(rectSize);
+	g_overview.UpdateView();
 }

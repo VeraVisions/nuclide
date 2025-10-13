@@ -88,49 +88,49 @@ CModList::Draw(void)
 
 		if (gameType!= "") {
 			drawsetcliparea(g_menuofs[0] + m_x + 2, g_menuofs[1] + pos + 3, 50,30);
-			WLabel_Static(m_x + 2, pos + 3, gameType,
-						  11, 11, colo, 1.0f, 0, font_arial);
+			WLabel_AtHeight(m_x + 2, pos + 3, gameType,
+						  11, colo, 1.0f, 0, font_arial);
 			drawresetcliparea();
 		}
 
 		/* Game */
 		drawsetcliparea(g_menuofs[0] + m_x + 57, g_menuofs[1] + pos + 3, 112,30);
-		WLabel_Static(m_x + 57, pos + 3, gameTitle, 11, 11, colo,
+		WLabel_AtHeight(m_x + 57, pos + 3, gameTitle, 11, colo,
 					1.0f, 0, font_arial);
 		drawresetcliparea();
 		/* URL */
-		WLabel_Static(m_x + 2, pos + 18, sprintf("Info: %s", gameURL), 11, 11, ML_COL_4,
+		WLabel_AtHeight(m_x + 2, pos + 18, sprintf("Info: %s", gameURL), 11, ML_COL_4,
 					1.0f, 0, font_arial);
 		/* Version */
-		WLabel_Static(m_x + 177, pos + 3, gameVersion, 11, 11, colo,
+		WLabel_AtHeight(m_x + 177, pos + 3, gameVersion, 11, colo,
 					1.0f, 0, font_arial);
 		/* Size */
 		float size = gameSize / 1024000;
-		WLabel_Static(m_x + 227, pos + 3, sprintf("%.1fmb", size), 11, 11, colo,
+		WLabel_AtHeight(m_x + 227, pos + 3, sprintf("%.1fmb", size), 11, colo,
 					1.0f, 0, font_arial);
 		/* Rating */
-		WLabel_Static(m_x + 277, pos + 3, "0.0", 11, 11, colo,
+		WLabel_AtHeight(m_x + 277, pos + 3, "0.0", 11, colo,
 					1.0f, 0, font_arial);
 
 		if (gameInstalled == true) {
 			/* Installed */
-			WLabel_Static(m_x + 327, pos + 3, "Yes", 11, 11, ML_COL_3,
+			WLabel_AtHeight(m_x + 327, pos + 3, "Yes", 11, ML_COL_3,
 						1.0f, 0, font_arial);
 			/* Servers */
-			WLabel_Static(m_x + 377, pos + 3, "0", 11, 11, ML_COL_3,
+			WLabel_AtHeight(m_x + 377, pos + 3, "0", 11, ML_COL_3,
 						1.0f, 0, font_arial);
 			/* Players */
-			WLabel_Static(m_x + 427, pos + 3, "0", 11, 11, ML_COL_3,
+			WLabel_AtHeight(m_x + 427, pos + 3, "0", 11, ML_COL_3,
 						1.0f, 0, font_arial);
 		} else {
 			/* Installed */
-			WLabel_Static(m_x + 327, pos + 3, "No", 11, 11, ML_COL_4,
+			WLabel_AtHeight(m_x + 327, pos + 3, "No", 11, ML_COL_4,
 						1.0f, 0, font_arial);
 			/* Servers */
-			WLabel_Static(m_x + 377, pos + 3, "0", 11, 11, ML_COL_4,
+			WLabel_AtHeight(m_x + 377, pos + 3, "0", 11, ML_COL_4,
 						1.0f, 0, font_arial);
 			/* Players */
-			WLabel_Static(m_x + 427, pos + 3, "0", 11, 11, ML_COL_4,
+			WLabel_AtHeight(m_x + 427, pos + 3, "0", 11, ML_COL_4,
 						1.0f, 0, font_arial);
 		}
 

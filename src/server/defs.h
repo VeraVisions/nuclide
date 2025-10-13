@@ -16,11 +16,11 @@
 
 #include "api_func.h"
 #include "../shared/api.h"
-#include "../shared/entityDef.h"
+#include "../shared/system/entityDef.h"
 #include "Output.h"
 #include "GameRules.h"
 #include "skill.h"
-#include "logging.h"
+#include "Stats.h"
 
 #include "../nav/linkflags.h"
 #include "../nav/nodes.h"
@@ -43,6 +43,7 @@
 
 #include "CapturePoint.h"
 #include "CaptureItem.h"
+#include "Auth.h"
 
 /* helper macros */
 #define EVALUATE_FIELD(fieldname, changedflag) {\
@@ -127,7 +128,6 @@ ncEntity eActivator;
 .entity eUser;
 .float material;
 .float deaths;
-.float botinfo;
 
 /* in idTech the .owner field causes collisions to fail against set entity,
  * we don't want this all of the time. so use this as a fallback */

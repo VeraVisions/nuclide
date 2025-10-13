@@ -60,7 +60,12 @@ EV_Intermission(void)
 
 	pSeat->m_vecCameraOrigin = pos;
 	pSeat->m_vecCameraAngle = ang;
+	g_view.SetCameraAngle(ang);
+	g_view.SetClientAngle(ang);
 	g_iIntermission = TRUE;
+
+	setproperty(VF_CL_VIEWANGLES, ang);
+	setproperty(VF_ANGLES, ang);
 }
 
 void
@@ -114,8 +119,12 @@ EV_Angle(void)
 	a[0] = readfloat();
 	a[1] = readfloat();
 	a[2] = readfloat();
+
 	g_view.SetCameraAngle(a);
 	g_view.SetClientAngle(a);
+
+	setproperty(VF_CL_VIEWANGLES, a);
+	setproperty(VF_ANGLES, a);
 }
 
 void
@@ -196,7 +205,13 @@ EV_Pickup(void)
 {
 	int entityDefID = readint();
 	string itemClass = EntityDef_NameFromNetID(entityDefID);
-	ncLog("Player picked up item %S", itemClass);
+	string itemName = localize(EntityDef_GetKeyValue(itemClass, "inv_name"));
+
+	if (STRING_SET(itemName)) {
+		ncLog("Player picked up item %S (%S)", itemName, itemClass);
+	} else {
+		ncLog("Player picked up unnamed item (%S)", itemClass);
+	}
 
 	if (EntityDef_GetKeyValue(itemClass, "pickupFlash") == "1") {
 		localcmd("bf\n");
@@ -324,6 +339,12 @@ Event_Parse(float type)
 		break;
 	case EV_ENTITYEVENT:
 		EV_EntityEvent();
+		break;
+	case EV_MOTD_CHANGED:
+		MOTD_Init();
+		break;
+	case EV_GAME_SAVED:
+		localcmd("menu_refreshSavedGames\n");
 		break;
 	case EV_CHAT:
 		float fSender = readbyte();

@@ -1,0 +1,6 @@
+// Vera Visions Material
+{
+	diffusemap models/logos/visions_chrome.ktx
+	normalmap textures/sfx/mirror_mra.tga
+	fullbrightmap models/logos/visions_chrome.ktx
+}

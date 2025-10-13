@@ -44,4 +44,5 @@ entityDef projectile_army_rifle
 	"detonate_on_world"		"1"
 	"detonate_on_actor"		"1"
 	"damage"				"15"
+	"fx_path"				"weapon_shotgun.tracer"
 }

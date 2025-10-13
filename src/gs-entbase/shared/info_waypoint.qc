@@ -21,6 +21,7 @@ enumflags
 	INFWAY_CHANGED_ORIGIN,
 	INFWAY_CHANGED_IMAGE,
 	INFWAY_CHANGED_TEXT,
+	INFWAY_CHANGED_COLOR,
 	INFWAY_CHANGED_STATE
 };
 
@@ -39,6 +40,7 @@ by players.
 - "Enable" : Enable the entity.
 - "Disable" : Disable the entity.
 - "Toggle" : Toggles between enabled/disabled states.
+- "Color" : Sets a tint for the image.
 
 # TRIVIA
 This entity was introduced in Obsidian Conflict (2006).
@@ -69,9 +71,10 @@ public:
 #endif
 
 private:
-	PREDICTED_STRING(m_strIcon)
-	PREDICTED_STRING(m_strText)
-	PREDICTED_BOOL(m_bEnabled)
+	NETWORKED_STRING(m_strIcon)
+	NETWORKED_STRING(m_strText)
+	NETWORKED_BOOL(m_bEnabled)
+	NETWORKED_VECTOR(m_imageColor)
 };
 
 void
@@ -79,6 +82,7 @@ info_waypoint::info_waypoint(void)
 {
 	m_strIcon =
 	m_strText = __NULL__;
+	m_imageColor = [255, 255, 255];
 }
 
 #ifdef SERVER
@@ -148,6 +152,12 @@ info_waypoint::Input(entity eAct, string strInput, string strData)
 	case "Toggle":
 		Trigger(eAct, TRIG_TOGGLE);
 		break;
+	case "Color":
+		m_imageColor = ReadVector(strData);
+		break;
+	case "SetText":
+		m_strText = ReadString(strData);
+		break;
 	default:
 		super::Input(eAct, strInput, strData);
 	}
@@ -162,6 +172,9 @@ info_waypoint::EvaluateEntity(void)
 	EVALUATE_FIELD(m_strIcon, INFWAY_CHANGED_IMAGE)
 	EVALUATE_FIELD(m_strText, INFWAY_CHANGED_TEXT)
 	EVALUATE_FIELD(m_bEnabled, INFWAY_CHANGED_STATE)
+	EVALUATE_VECTOR(m_imageColor, 0, INFWAY_CHANGED_COLOR)
+	EVALUATE_VECTOR(m_imageColor, 1, INFWAY_CHANGED_COLOR)
+	EVALUATE_VECTOR(m_imageColor, 2, INFWAY_CHANGED_COLOR)
 	pvsflags = PVSF_IGNOREPVS;
 }
 
@@ -176,6 +189,9 @@ info_waypoint::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_STRING(m_strIcon, INFWAY_CHANGED_IMAGE)
 	SENDENTITY_STRING(m_strText, INFWAY_CHANGED_TEXT)
 	SENDENTITY_BYTE(m_bEnabled, INFWAY_CHANGED_STATE)
+	SENDENTITY_BYTE(m_imageColor[0], INFWAY_CHANGED_COLOR)
+	SENDENTITY_BYTE(m_imageColor[1], INFWAY_CHANGED_COLOR)
+	SENDENTITY_BYTE(m_imageColor[2], INFWAY_CHANGED_COLOR)
 	return true;
 }
 #endif
@@ -190,6 +206,9 @@ info_waypoint::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_STRING(m_strIcon, INFWAY_CHANGED_IMAGE)
 	READENTITY_STRING(m_strText, INFWAY_CHANGED_TEXT)
 	READENTITY_BYTE(m_bEnabled, INFWAY_CHANGED_STATE)
+	READENTITY_BYTE(m_imageColor[0], INFWAY_CHANGED_COLOR)
+	READENTITY_BYTE(m_imageColor[1], INFWAY_CHANGED_COLOR)
+	READENTITY_BYTE(m_imageColor[2], INFWAY_CHANGED_COLOR)
 	setorigin(this, origin);
 }
 
@@ -234,7 +253,7 @@ info_waypoint::postdraw(void)
 		float dist = vlen(origin - g_view.GetCameraOrigin()) / WAYPOINT_METER;
 		string distText = sprintf("Distance: %d m", dist);
 
-		drawpic(vecProj, m_strIcon, [64, 64], [1,1,1], a);
+		drawpic(vecProj, m_strIcon, [64, 64], m_imageColor/255, a);
 
 		Font_DrawText_RGBA(projectedPos + [1,1], distText, [0,0,0], a, FONT_CON);
 		Font_DrawText_RGBA(projectedPos, distText, [1,1,1], a, FONT_CON);

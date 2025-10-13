@@ -51,7 +51,7 @@ CTextBuffer::Draw(void)
 
 	for (int i = (TB_MAX_ENTRIES - 1); i > (TB_MAX_ENTRIES - visible) - 1; i--) {
 		drawsetcliparea(g_menuofs[0] + m_x, g_menuofs[1] + m_y, m_size[0], m_size[1]);
-		WLabel_Static(pos[0], pos[1], m_entries[i], 12, 12, [1,1,1],
+		WLabel_AtHeight(pos[0], pos[1], m_entries[i], 12, [1,1,1],
 					1.0f, 0, font_label);
 		drawresetcliparea();
 		pos[1] -= 15;

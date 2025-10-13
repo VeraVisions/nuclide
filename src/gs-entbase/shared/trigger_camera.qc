@@ -221,6 +221,10 @@ trigger_camera::Restore(string strKey, string setValue)
 float
 trigger_camera::SendEntity(entity ePEnt, float flFlags)
 {
+	if (m_eLooker != ePEnt) {
+		return (0);
+	}
+
 	WriteByte(MSG_ENTITY, ENT_OLDCAMERA);
 	WriteFloat(MSG_ENTITY, flFlags);
 
@@ -255,13 +259,18 @@ trigger_camera::EvaluateEntity(void)
 	if (!m_eLooker)
 		return;
 
-	aimingAt = (ncEntity)find(world, ::targetname, m_strAimAt);
+	SendFlags = -1;
 
-	if (aimingAt) {
-		TurnToPos(aimingAt.GetOrigin());
-	} else {
-		//ncEntity targetNode = (ncEntity)find(world, ::targetname, target);
-		//TurnToPos(targetNode.GetOrigin());
+	if (STRING_SET(m_strAimAt)) {
+
+		aimingAt = (ncEntity)find(world, ::targetname, m_strAimAt);
+
+		if (aimingAt) {
+			TurnToPos(aimingAt.GetOrigin());
+		} else {
+			//ncEntity targetNode = (ncEntity)find(world, ::targetname, m_strAimAt);
+			//TurnToPos(targetNode.GetOrigin());
+		}
 	}
 
 	if (ATTR_CHANGED(origin)) {
@@ -311,13 +320,6 @@ trigger_camera::GoToTarget(void)
 		EntWarning("Distance too short, going to next.");
 		NextPath();
 		return;
-	}
-
-	if (!m_strAimAt) {
-		vector vecAngleDiff = targetNode.GetOrigin() - GetOrigin();
-		vector vecAngleDest = vectorToAngles(vecAngleDiff);
-		vecAngleDiff = angleDifference(vecAngleDest, angles);
-		SetAngularVelocity(vecAngleDiff * (1 / travelTime));
 	}
 
 	SetVelocity(camVelocity * (1 / travelTime));
@@ -391,8 +393,20 @@ trigger_camera::Trigger(entity act, triggermode_t state)
 		}
 	}
 
+	if (m_eLooker)
 	if (act == m_eLooker) {
 		DeactivateCamera();
+		return;
+	}
+
+	/* uh oh - this was triggered by the map - probably
+	   a map background. let's pick the first player. */
+	if (act == world) {
+		act = find(world, ::classname, "player");
+	}
+
+	if (!act) {
+		ncError("world triggered camera on without avail. no possible target found.");
 		return;
 	}
 
@@ -408,9 +422,13 @@ trigger_camera::Trigger(entity act, triggermode_t state)
 	SetMovetype(MOVETYPE_PUSH);
 	SetSolid(SOLID_NOT);
 	SetOrigin(GetSpawnVector("origin"));
-	SetTriggerTarget(m_strMoveTo);
-	NextPath();
-	GoToTarget();
+
+	if (STRING_SET(m_strMoveTo)) {
+		SetTriggerTarget(m_strMoveTo);
+		NextPath();
+		GoToTarget();
+	}
+
 	SetSendFlags(0xFFFFFF);
 	pvsflags = PVSF_IGNOREPVS;
 }
@@ -419,10 +437,15 @@ trigger_camera::Trigger(entity act, triggermode_t state)
 void
 trigger_camera::DeactivateCamera(void)
 {
+	SetSendFlags(-1);
+
+	if (!m_eLooker) {
+		return;
+	}
+
 	EntLog("Turning it off on %S", m_eLooker.netname);
 	m_eLooker.view2 = __NULL__;
 	m_eLooker = __NULL__;
-	SetSendFlags(-1);
 }
 
 void

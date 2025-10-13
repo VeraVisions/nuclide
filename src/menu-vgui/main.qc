@@ -14,27 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-var int autocvar_r_autoscale = false;
-
-void
-Menu_AutoScale(void)
-{
-	if (autocvar_r_autoscale) {
-		/* override for vid_conautoscales */
-		vector psize = getproperty(VF_SCREENPSIZE);
-
-		if (psize[1] >= (480 * 4)) {
-			cvar_set("vid_conautoscale", "4");
-		} else if (psize[1] >= (480 * 3)) {
-			cvar_set("vid_conautoscale", "3");
-		} else if (psize[1] >= (480 * 2)) {
-			cvar_set("vid_conautoscale", "2");
-		} else {
-			cvar_set("vid_conautoscale", "1");
-		}
-	}
-}
-
 void
 m_init(void)
 {
@@ -48,14 +27,12 @@ m_init(void)
 	registercommand("menu_quit");
 	registercommand("menu_music");
 	registercommand("map_background");
-	Menu_AutoScale();
 }
 
 void
 Menu_RendererRestarted(string renderer)
 {
 	Platform_RendererRestarted();
-	Menu_AutoScale();
 }
 
 void

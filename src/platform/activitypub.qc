@@ -45,6 +45,11 @@ ActivityPub_UpdatePlayerInfo(string jsonData)
 
 	string stringName = acctNode["display_name"].s;
 	string stringAvatar = acctNode["avatar_static"].s;
+	string stringHeader = acctNode["header_static"].s;
+	string stringURL = acctNode["url"].s;
+	string stringUsername = acctNode["username"].s;
+	tokenizebyseparator(stringURL, "/");
+	string instanceName = argv(2);
 
 	if (!stringName) {
 		ncError("ActivityPub display name invalid.");
@@ -56,6 +61,18 @@ ActivityPub_UpdatePlayerInfo(string jsonData)
 		ncError("ActivityPub avatar invalid.");
 	} else {
 		localcmd(sprintf("setinfo avatar %S\n", stringAvatar));
+	}
+
+	if (!stringHeader) {
+		ncError("ActivityPub background invalid.");
+	} else {
+		localcmd(sprintf("setinfo bg %S\n", stringHeader));
+	}
+
+	if (!stringURL) {
+		ncError("ActivityPub url invalid.");
+	} else {
+		localcmd(sprintf("setinfo fedi %S\n", strcat(stringUsername, "@", instanceName)));
 	}
 
 	json_free(acctNode);

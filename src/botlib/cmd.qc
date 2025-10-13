@@ -78,6 +78,18 @@ Bot_KillAllBots(void)
 }
 
 void
+Bot_KickAllBots(void)
+{
+	entity botIterator;
+
+	for ( botIterator = world; ( botIterator = next.Player(botIterator) ); ) {
+		if ( clienttype( botIterator ) == CLIENTTYPE_BOT ) {
+			dropclient( botIterator );
+		}
+	}
+}
+
+void
 Bot_ResetAllBotsGoals(void)
 {
 	for ( other = world; ( other = next.Player(other) ); ) {

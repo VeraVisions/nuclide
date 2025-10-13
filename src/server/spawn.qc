@@ -175,6 +175,14 @@ Spawn_TeleportToSpawn(entity targetEnt)
 			targetEnt.origin = spawnPoint.origin;
 			targetEnt.angles = spawnPoint.angles;
 			setorigin_safe(targetEnt, targetEnt.origin);
+
+			WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+			WriteByte(MSG_MULTICAST, EV_ANGLE);
+			WriteFloat(MSG_MULTICAST, spawnPoint.angles[0]);
+			WriteFloat(MSG_MULTICAST, spawnPoint.angles[1]);
+			WriteFloat(MSG_MULTICAST, spawnPoint.angles[2]);
+			msg_entity = targetEnt;
+			multicast([0,0,0], MULTICAST_ONE_R);
 			return;
 		}
 	}
@@ -184,6 +192,15 @@ Spawn_TeleportToSpawn(entity targetEnt)
 	if (spawnPoint) {
 		targetEnt.origin = spawnPoint.origin;
 		targetEnt.angles = spawnPoint.angles;
+		targetEnt.v_angle = spawnPoint.v_angle;
 		setorigin_safe(targetEnt, targetEnt.origin);
+
+		WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+		WriteByte(MSG_MULTICAST, EV_ANGLE);
+		WriteFloat(MSG_MULTICAST, spawnPoint.angles[0]);
+		WriteFloat(MSG_MULTICAST, spawnPoint.angles[1]);
+		WriteFloat(MSG_MULTICAST, spawnPoint.angles[2]);
+		msg_entity = targetEnt;
+		multicast([0,0,0], MULTICAST_ONE_R);
 	}
 }

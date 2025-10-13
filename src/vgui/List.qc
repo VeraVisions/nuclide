@@ -39,6 +39,8 @@ public:
 	nonvirtual void SetItemCount(int);
 	nonvirtual int GetItemCount(void);
 
+	nonvirtual void RemoveAllItems(void);
+
 	nonvirtual int GetOffset(void);
 
 	nonvirtual void CallOnScroll(void(void));
@@ -187,6 +189,11 @@ void vguiList::SetItemCount (int iCount)
 int vguiList::GetItemCount(void)
 {
 	return m_iItemCount;
+}
+void vguiList::RemoveAllItems(void)
+{
+	memfree(m_strItems);
+	m_iItemCount = 0;
 }
 
 string vguiList::GetItem (int iIndex)

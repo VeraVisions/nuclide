@@ -1,10 +1,53 @@
+var bool autocvar_vid_force480pRendering = false;
+var bool autocvar_vid_forceIntegerConAutoscale = false;
+var bool g_old480pSetting = 1;
+var bool g_oldIntegerSetting = 1;
+
+/* r_autoscale forces vid_conautoscale to be one of 4 integer values.
+ * this is due to vid_conautoscale 0 scaling with in floating point... which
+ * in turns results in skipped rows/columns and shimmering. */
+void
+Platform_AutoScale(void)
+{
+	vector psize = getproperty(VF_SCREENPSIZE);
+
+	if (autocvar_vid_forceIntegerConAutoscale != g_oldIntegerSetting) {
+		if (autocvar_vid_forceIntegerConAutoscale) {
+			if (psize[1] >= (480 * 4)) {
+				cvar_set("vid_conautoscale", "4");
+			} else if (psize[1] >= (480 * 3)) {
+				cvar_set("vid_conautoscale", "3");
+			} else if (psize[1] >= (480 * 2)) {
+				cvar_set("vid_conautoscale", "2");
+			} else {
+				cvar_set("vid_conautoscale", "1");
+			}
+		} else {
+			cvar_set("vid_conautoscale", "0");
+		}
+
+		g_oldIntegerSetting = autocvar_vid_forceIntegerConAutoscale;
+	}
+
+	if (autocvar_vid_force480pRendering != g_old480pSetting) {
+		if (autocvar_vid_force480pRendering)  {
+			float scale = bound(0.0, 480 / psize[1], 1.0);
+			cvar_set("r_renderscale", sprintf("-%f", scale));
+		} else {
+			cvar_set("r_renderscale", "1");
+		}
+
+		g_old480pSetting = autocvar_vid_force480pRendering;
+	}
+}
+
 void
 Platform_Init(void)
 {
 	string menuMap = "";
 	string videoFile = "";
 
-	/* the HL configs make the rate this low by default. */
+	/* old configs make the rate this low by default. */
 	if (cvar("rate") <= 2500) {
 		cvar_set("rate", "30000");
 	}
@@ -16,6 +59,8 @@ Platform_Init(void)
 	ModeLibrary_Init();
 	Saves_Init();
 	Platform_RendererRestarted();
+	
+	ncProfileManager::Init();
 
 	videoFile = GameLibrary_GetInfo(GAMEINFO_INTROVIDEO);
 	menuMap = GameLibrary_GetInfo(GAMEINFO_MENUMAP);
@@ -43,6 +88,9 @@ void
 Platform_Shutdown(void)
 {
 	FragNet_SignOff();
+
+	/* remember to save last */
+	ncProfileManager::Shutdown();
 }
 
 void
@@ -59,6 +107,8 @@ Platform_Draw(vector screensize)
 	if (Platform_DimensionsChanged(screensize) == true) {
 		Platform_CalculateRenderingScale(screensize);
 	}
+
+	Platform_AutoScale();
 
 	FragNet_Frame();
 	g_background = cvar("_background");
@@ -109,32 +159,6 @@ Platform_Draw(vector screensize)
 	return (g_active);
 }
 
-/* r_autoscale forces vid_conautoscale to be one of 4 integer values.
- * this is due to vid_conautoscale 0 scaling with in floating point... which
- * in turns results in skipped rows/columns and shimmering. */
-var int autocvar_r_autoscale = false;
-var int autocvar_r_pixelscale = FALSE;
-void
-Platform_AutoScale(void)
-{
-	if (autocvar_r_autoscale) {
-		vector psize = getproperty(VF_SCREENPSIZE);
-		if (psize[1] >= (480 * 4)) {
-			cvar_set("vid_conautoscale", "4");
-		} else if (psize[1] >= (480 * 3)) {
-			cvar_set("vid_conautoscale", "3");
-		} else if (psize[1] >= (480 * 2)) {
-			cvar_set("vid_conautoscale", "2");
-		} else {
-			cvar_set("vid_conautoscale", "1");
-		}
-
-		if (autocvar_r_pixelscale) {
-			float scale = bound(0.0, 480 / psize[1], 1.0);
-			cvar_set("r_renderscale", sprintf("-%f", scale));
-		}
-	}
-}
 
 void
 Platform_CalculateRenderingScale(vector screensize)
@@ -143,7 +167,6 @@ Platform_CalculateRenderingScale(vector screensize)
 	g_vidsize[1] = screensize[1];
 	g_menuofs[0] = (g_vidsize[0] / 2) - 320;
 	g_menuofs[1] = (g_vidsize[1] / 2) - 240;
-	Platform_AutoScale();
 }
 
 bool

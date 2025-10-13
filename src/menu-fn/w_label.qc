@@ -69,6 +69,30 @@ WLabel_Static(int x, int y, string msg, int sx, int sy, vector col,
 	y += g_menuofs[1];
 	drawstring([x,y], msg, [sx,sy], col, alpha, flags);
 }
+void
+WLabel_AtHeight(int x, int y, string msg, int sy, vector col,
+				float alpha, float flags, font_s font)
+{
+	float fontAspect = ((float)font.iScaleX/(float)font.iScaleY);
+	drawfont = Font_GetID(font);
+	int sx = (int)rint((float)sy * fontAspect);
+	x += g_menuofs[0];
+	y += g_menuofs[1];
+	drawstring([x,y], msg, [sx, sy], col, alpha, flags);
+}
+
+void
+WLabel_AtHeightR(int x, int y, string msg, int sy, vector col,
+				float alpha, float flags, font_s font)
+{
+	float fontAspect = ((float)font.iScaleX/(float)font.iScaleY);
+	int sx = (int)rint((float)sy * fontAspect);
+	drawfont = Font_GetID(font);
+	x += g_menuofs[0] - stringwidth(msg, true,[font.iScaleX,sy]);
+	y += g_menuofs[1];
+	drawstring([x,y], msg, [sx, sy], col, alpha, flags);
+	drawfont = 0;
+}
 
 void
 WLabel_StaticR(int x, int y, string msg, int sx, int sy, vector col,

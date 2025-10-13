@@ -25,10 +25,18 @@ typedef struct
 class
 ncInterfaceSpriteSheet
 {
+	nonvirtual int Load(string spriteName);
 	nonvirtual void Initialize(void);
-	nonvirtual void Draw_RGBA(string spriteName, vector spritePos, vector spriteColor, float spriteAlpha, bool isAdditive);
-	nonvirtual void Draw(string spriteName, vector spritePos, bool isAdditive);
-	nonvirtual void Draw_A(string spriteName, vector spritePos, float spriteAlpha, bool isAdditive);
-	nonvirtual void Draw_RGB(string spriteName, vector spritePos, vector spriteColor, bool isAdditive);
-	nonvirtual void DrawCrosshair(string spriteName);
+	nonvirtual void Draw_RGBA(int spriteName, vector spritePos, vector spriteColor, float spriteAlpha, bool isAdditive);
+	nonvirtual void DrawTop_RGBA(int spriteName, vector spritePos, float percentageDrawn, vector spriteColor, float spriteAlpha, bool isAdditive);
+	nonvirtual void DrawLeft_RGBA(int spriteName, vector spritePos, float percentageDrawn, vector spriteColor, float spriteAlpha, bool isAdditive);
+	nonvirtual void DrawRight_RGBA(int spriteName, vector spritePos, float percentageDrawn, vector spriteColor, float spriteAlpha, bool isAdditive);
+	nonvirtual void DrawBottom_RGBA(int spriteName, vector spritePos, float percentageDrawn, vector spriteColor, float spriteAlpha, bool isAdditive);
+	nonvirtual void Draw(int spriteName, vector spritePos, bool isAdditive);
+	nonvirtual void Draw_A(int spriteName, vector spritePos, float spriteAlpha, bool isAdditive);
+	nonvirtual void Draw_RGB(int spriteName, vector spritePos, vector spriteColor, bool isAdditive);
+	nonvirtual void DrawCrosshair(int spriteName);
+	nonvirtual float GetWidth(int spriteName);
+	nonvirtual float GetHeight(int spriteName);
+	nonvirtual vector GetSize(int spriteName);
 };

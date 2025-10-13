@@ -1,0 +1,9 @@
+// Vera Visions Material
+{
+	{
+		clampmap models/logos/visions_glow.ktx
+		blendFunc add
+		rgbGen wave sin 1 0.2 1 .8
+		tcMod rotate 50
+	}
+}

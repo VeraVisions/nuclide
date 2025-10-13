@@ -25,6 +25,15 @@ SVPF_game_EndMap(void)
 {
 	ncRuleDelegate currentRule = ncRuleDelegate::ActiveInstance();
 	currentRule.IntermissionStart();
+	ncStats::EndGame("rules");
+}
+
+void
+SVPF_game_EndMapDelayed(float endTimer)
+{
+	entity timer = spawn();
+	timer.think = SVPF_game_EndMap;
+	timer.nextthink = time + bound(0.0f, endTimer, endTimer);
 }
 
 void
@@ -78,6 +87,7 @@ void
 SVPF_game_TeleportToSpawn(entity targetClient)
 {
 	Spawn_TeleportToSpawn(targetClient);
+	ncStats::Respawn(targetClient);
 }
 
 void
@@ -283,6 +293,8 @@ SVPF_combat_Obituary(string targetName, string attackerName, string weaponDef, s
 {
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_OBITUARY);
+
+	#warning TODO: we can optimise this further. weaponDef can be replaced with a decl id target and attacker can be id's if they occupy client slots.
 	WriteString(MSG_MULTICAST, targetName);
 	WriteString(MSG_MULTICAST, attackerName);
 	WriteString(MSG_MULTICAST, weaponDef);
@@ -359,4 +371,83 @@ void SVPF_music_PlayOnceOnClient(musictrack_t globalTrack, entity targetClient)
 	WriteFloat(MSG_MULTICAST, globalTrack);
 	msg_entity = targetClient;
 	multicast([0,0,0], MULTICAST_ONE_R);
+}
+
+
+
+
+/* localinfo library */
+string
+SVPF_localinfo_GetString(string serverKey)
+{
+	return serverkey(serverKey);
+}
+
+float
+SVPF_localinfo_GetFloat(string serverKey)
+{
+	return serverkeyfloat(serverKey);
+}
+
+int
+SVPF_localinfo_GetInteger(string serverKey)
+{
+	return (int)serverkeyfloat(serverKey);
+}
+
+bool
+SVPF_localinfo_GetBool(string serverKey)
+{
+	return (serverkeyfloat(serverKey) > 0) ? (true) : (false);
+}
+
+vector
+SVPF_localinfo_GetVector(string serverKey)
+{
+	return stov(serverkey(serverKey));
+}
+
+void
+SVPF_localinfo_SetString(string serverKey, string setValue)
+{
+#ifdef SERVER
+	forceinfokey(world, serverKey, setValue);
+#else
+#endif
+}
+
+void
+SVPF_localinfo_SetInteger(string serverKey, int setValue)
+{
+#ifdef SERVER
+	SVPF_localinfo_SetString(serverKey, itos(setValue));
+#else
+#endif
+}
+
+void
+SVPF_localinfo_SetBool(string serverKey, bool setValue)
+{
+#ifdef SERVER
+	SVPF_localinfo_SetString(serverKey, ftos(setValue));
+#else
+#endif
+}
+
+void
+SVPF_localinfo_SetFloat(string serverKey, float setValue)
+{
+#ifdef SERVER
+	SVPF_localinfo_SetString(serverKey, ftos(setValue));
+#else
+#endif
+}
+
+void
+SVPF_localinfo_SetVector(string serverKey, vector setValue)
+{
+#ifdef SERVER
+	SVPF_localinfo_SetString(serverKey, vtos(setValue));
+#else
+#endif
 }

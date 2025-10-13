@@ -9,14 +9,14 @@ entityDef weapon_grenadelauncher
 	"spawnclass"		"ncWeapon"
 	"model"				"progs/g_rock.mdl"
 	"model_view"		"progs/v_rock.mdl"
-	"snd_acquire"		"mayhem_weapon.pickup"
-	"snd_respawn"		"mayhem_item.respawn"
+	"snd_acquire"		"weapon.pickup"
+	"snd_respawn"		"item.respawn"
 	"spin"				"1"
 	"pickupFlash"		"1"
 
 	// weapon specific
 	"def_fireInfo"		"fireInfo_grenadeLauncher"
-	"inv_name"			"Grenade Launcher"
+	"inv_name"			"#WEAPON_GRENADELAUNCHER"
 	"ammoType"			"ammo_rockets"
 	"inv_ammo_rockets"	"5"
 	"ammoRequired"		"1"
@@ -47,7 +47,6 @@ entityDef fireInfo_grenadeLauncher
 	"def_onFire"		"projectile_grenade"
 	"fireRate"			"0.6"
 	"punchSpring"		"-4 0 0"
-	"model_flash"		"sprites/muzzleflash.spr"
 }
 
 entityDef projectile_grenade
@@ -77,6 +76,7 @@ entityDef projectile_grenade
 
 	"snd_explode"				"weapon_grenadelauncher.explode"
 	"snd_bounce"				"weapon_grenadelauncher.bounce"
+	"fx_path"					"weapon_nailgun.muzzleflash"
 
 //	"range"						"900" // Reference only, max throw distance
 

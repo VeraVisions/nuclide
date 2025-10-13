@@ -344,7 +344,7 @@ trigger_capture_area::CaptureThink(void)
 	m_statePlayerPower = 0i;
 
 	/* who is in our bounds? */
-	for (ncPlayer nextPlayer = __NULL__; (nextPlayer = next.Player(nextPlayer));) {
+	for (ncPlayer nextPlayer = __NULL__; (nextPlayer = (ncPlayer)next.Player(nextPlayer));) {
 		bool testPlayer = false;
 		float playerTeam = nextPlayer.GetTeam();
 

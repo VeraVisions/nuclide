@@ -7,9 +7,8 @@ entityDef weapon_axe
 	"editor_rotatable"	"1"
 
 	"spawnclass"		"ncWeapon"
-	"model"				"progs/g_axe.mdl"
 	"model_view"		"progs/v_axe.mdl"
-	"snd_acquire"		"mayhem_weapon.pickup"
+	"snd_acquire"		"weapon.pickup"
 	"snd_respawn"		"item.respawn"
 	"spin"				"1"
 	"pickupFlash"		"1"
@@ -18,14 +17,14 @@ entityDef weapon_axe
 	// weapon specific
 	"def_onFire"		"projectile_axe"
 	"testDistance"		"-64"
-	"inv_name"			"Axe"
+	"inv_name"			"#WEAPON_AXE"
 	"ammoRequired"		"0"
 	"silent_fire"		"1"
 
 	"failRate"			"0.5"
 	"fireRate"			"0.5"
-	"snd_hit"			"weapon_axe.hit"
-	"snd_failed"		"weapon_axe.miss"
+	"snd_hit"			"Weapon_Axe.Melee_Hit"
+	"snd_failed"		"Weapon_Axe.Miss"
 
 	"act_idle"			"0"
 	"act_draw"			"0"
@@ -52,7 +51,7 @@ entityDef projectile_axe
 	"range"					"64"
 	"decal_detonate"		"Impact.Shot"
 	"detonate_on_world" 	"0"
-	"snd_hitBody"			"Weapon_Crowbar.Melee_Hit"
-	"snd_hitWorld"			"Weapon_Crowbar.Melee_HitWorld"
+	"snd_hitBody"			"Weapon_Axe.Melee_Hit"
+	"snd_hitWorld"			"Weapon_Axe.Melee_HitWorld"
 }
 

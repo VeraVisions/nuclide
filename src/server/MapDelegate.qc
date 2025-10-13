@@ -122,3 +122,96 @@ MapC_Init(void)
 		}
 	}
 }
+
+static ncEntity
+SpawnEntityWithSpawnData(string entityClass, string spawnData)
+{
+	entity oldSelf = self;
+	ncEntity newEntity = spawn();
+
+	__fullspawndata = spawnData;
+	self = newEntity;
+	newEntity.classname = entityClass;
+	newEntity.m_rawSpawnData = __fullspawndata;
+	newEntity._mapspawned = true;
+	newEntity = EntityDef_SpawnClassname(entityClass);
+	__fullspawndata = __NULL__;
+
+	if (newEntity) {
+		newEntity.Spawn();
+	}
+
+	self = oldSelf;
+	return (newEntity);
+}
+
+bool
+ncMapDelegate::AppendEntitiesFromFile( string fileName )
+{
+	filestream addEntitiesFileStream;
+	string temp;
+	int c = 0;
+	int mp = 0;
+	bool isBraced = false;
+	string desiredClass = __NULL__;
+	string constructedSpawnData = __NULL__;
+	string gameTypeFilter = __NULL__;
+
+	addEntitiesFileStream = fopen(fileName, FILE_READ);
+
+	if (addEntitiesFileStream < 0) {
+		ncWarning("Can't append entities from %S", fileName);
+		return (false);
+	}
+
+	while ((temp = fgets(addEntitiesFileStream))) {
+		c = tokenize_console(temp);
+		
+		switch(argv(0)) {
+		case "{":
+			isBraced = true;
+			constructedSpawnData = "{\n";
+			break;
+		case "}":
+			/* skip broken syntax */
+			if (isBraced == false) {
+				break;
+			}
+			if (STRING_SET(desiredClass)) {
+				constructedSpawnData = sprintf("%s}", constructedSpawnData);
+				ncEntity newEntity = SpawnEntityWithSpawnData(desiredClass, constructedSpawnData);
+				ncLog("imported %S @ %v, %v", newEntity.classname, newEntity.origin, newEntity.angles);
+				constructedSpawnData = "";
+				desiredClass = "";
+				isBraced = false;
+			}
+			break;
+		case "classname":
+			if (isBraced == true) {
+				desiredClass = argv(1);
+			}
+			break;
+		default:
+			if (isBraced == true) {
+				/* append string entry after another */
+				constructedSpawnData = sprintf("%s%s\n", constructedSpawnData, temp);
+			}
+		}
+	}
+
+	fclose(addEntitiesFileStream);
+	return (true);
+}
+
+void
+ncMapDelegate::InitialRespawn(void)
+{
+	/* append entities from external .add file */
+	string appendEntitiesFile = strcat("maps/", mapname, ".add");
+	if (fileExists(appendEntitiesFile)) {
+		ncLog("Loading extra entities for %s from %S", mapname, appendEntitiesFile);
+		ncMapDelegate::AppendEntitiesFromFile(appendEntitiesFile);
+	} else {
+		ncLog("No entity additions exist for %s under %S", mapname, appendEntitiesFile);
+	}
+}

@@ -403,4 +403,6 @@ ncSessionManager::SaveStateToHandle(float fh, float entcount, float playerslots)
 	fclose(fh);
 
 	ncLog("saved %i entities", num_saved);
+
+	networkEventBroadcast(EV_GAME_SAVED);
 }

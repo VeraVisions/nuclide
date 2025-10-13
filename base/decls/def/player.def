@@ -33,10 +33,13 @@ entityDef player
 	"weapon"				"weapon_axe,weapon_shotgun"
 	"current_weapon"		"1"
 	"pm_normalviewheight"	"46"
-	"pm_walkspeed"			"180"
-	"pm_runspeed"			"320"
+	"pm_walkspeed"			"280"
+	"pm_runspeed"			"400"
 	"pm_normalheight"		"56"
+	"pm_runfiring"			"0"
 	"model"					"progs/player.mdl"
+
+	"snd_jump"				"Player.Jump"
 
 	"act_idle"			"$PLAYER_IDLE"
 	"act_jump"			"$PLAYER_IDLE"
@@ -62,4 +65,20 @@ entityDef player
 entityDef player_mp
 {
 	"inherit"			"player"
+}
+
+
+entityDef player_enforcer
+{
+	"inherit"		"player"
+	"model"			"progs/enforcer.mdl"
+	
+	"act_idle"		"$ENFORCER_IDLE"
+	"act_walk"		"$ENFORCER_WALK"
+	"act_run"		"$ENFORCER_RUN"
+	"act_smallFlinch"	"$ENFORCER_PAIN1,$ENFORCER_PAIN2"
+	"act_bigFlinch"		"$ENFORCER_PAIN3,$ENFORCER_PAIN4"
+	"act_dieSimple"		"$ENFORCER_DEATH,$ENFORCER_FDEATH"
+	"act_attack"		"$ENFORCER_ATTACK"
+
 }

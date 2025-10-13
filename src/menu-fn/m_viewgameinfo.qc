@@ -218,34 +218,34 @@ menu_viewgameinfo_draw(void)
 	Header_Draw(HEAD_MULTI);
 
 	/* draw the left side-bar elements and descriptions */
-	WLabel_Static(57, 156, m_reslbl[IDS_PLAYERINFO_SERVERNAME], 14, 14, col_button_bg,
+	WLabel_AtHeight(57, 156, m_reslbl[IDS_PLAYERINFO_SERVERNAME], 14, col_button_bg,
 					1.0f, 0, font_label_b);
-	WLabel_Static(57, 240, m_reslbl[IDS_PLAYERINFO_SERVERIP], 14, 14, col_button_bg,
+	WLabel_AtHeight(57, 240, m_reslbl[IDS_PLAYERINFO_SERVERIP], 14, col_button_bg,
 					1.0f, 0, font_label_b);
-	WLabel_Static(57, 324, m_reslbl[IDS_PLAYERINFO_SERVERPING], 14, 14, col_button_bg,
+	WLabel_AtHeight(57, 324, m_reslbl[IDS_PLAYERINFO_SERVERPING], 14, col_button_bg,
 					1.0f, 0, font_label_b);
 
 	WField_Static(56, 189, g_vgiLabelName, 128, 64, [1,1,1],
 					1.0f, AF_LEFT | AF_TOP, font_label);
-	WLabel_Static(56, 272, g_vgiLabelAddress, 11, 11, [1,1,1],
+	WLabel_AtHeight(56, 272, g_vgiLabelAddress, 11, [1,1,1],
 					1.0f, 0, font_label);
-	WLabel_Static(56, 356, g_vgiLabelPing, 11, 11, [1,1,1],
+	WLabel_AtHeight(56, 356, g_vgiLabelPing, 11, [1,1,1],
 					1.0f, 0, font_label);
 
 	/* the descriptions over the two frames */
 	/* player list */
-	WLabel_Static(220, 143, m_reslbl[IDS_PLAYERINFO_NUMBER], 11, 11, [1,1,1],
+	WLabel_AtHeight(220, 143, m_reslbl[IDS_PLAYERINFO_NUMBER], 11, [1,1,1],
 					1.0f, 0, font_arial);
-	WLabel_Static(245, 143, m_reslbl[IDS_PLAYERINFO_NAME], 11, 11, [1,1,1],
+	WLabel_AtHeight(245, 143, m_reslbl[IDS_PLAYERINFO_NAME], 11, [1,1,1],
 					1.0f, 0, font_arial);
-	WLabel_Static(345, 143, m_reslbl[IDS_PLAYERINFO_KILLS], 11, 11, [1,1,1],
+	WLabel_AtHeight(345, 143, m_reslbl[IDS_PLAYERINFO_KILLS], 11, [1,1,1],
 					1.0f, 0, font_arial);
-	WLabel_Static(380, 143, m_reslbl[IDS_PLAYERINFO_TIME], 11, 11, [1,1,1],
+	WLabel_AtHeight(380, 143, m_reslbl[IDS_PLAYERINFO_TIME], 11, [1,1,1],
 					1.0f, 0, font_arial);
 	/* serverinfo */
-	WLabel_Static(220, 323, m_reslbl[IDS_PLAYERINFO_RULENAME], 11, 11, [1,1,1],
+	WLabel_AtHeight(220, 323, m_reslbl[IDS_PLAYERINFO_RULENAME], 11, [1,1,1],
 					1.0f, 0, font_arial);
-	WLabel_Static(370, 323, m_reslbl[IDS_PLAYERINFO_RULEVALUE], 11, 11, [1,1,1],
+	WLabel_AtHeight(370, 323, m_reslbl[IDS_PLAYERINFO_RULEVALUE], 11, [1,1,1],
 					1.0f, 0, font_arial);
 }
 

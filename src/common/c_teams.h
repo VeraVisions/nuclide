@@ -8,3 +8,15 @@ typedef enum
 } team_t;
 
 #define TEAM_ANY 0 /* not used for clients. */
+
+/** Defines available modes when spectating a game. */
+typedef enum
+{
+	SPECMODE_DEATHCAM,		/**< We're dying, game specific camera movements */
+	SPECMODE_LOCKEDCHASE,	/**< Fixed angle chase camera */
+	SPECMODE_THIRDPERSON,	/**< Free angle chase camera */
+	SPECMODE_FREE,			/**< Free noclipped movement camera */
+	SPECMODE_FIRSTPERSON,	/**< First-person camera of another player */
+	SPECMODE_FREEOVERVIEW,	/**< Free map overview */
+	SPECMODE_CHASEOVERVIEW	/**< Map overview chasing another player */
+} ncSpectatorMode_t;

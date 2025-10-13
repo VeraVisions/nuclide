@@ -164,6 +164,10 @@ Updates_Refresh(void)
 	float currentNameLength = strlen(gameDir);
 	float nameLength = currentNameLength;
 
+	if (checkcommand("pkg") == 0) {
+		return;
+	}
+
 	/* clear */
 	if (updates) {
 		memfree(updates);
@@ -275,37 +279,37 @@ Updates_GetInfo(int packageID, updateType_t fieldType)
 				if (updates[packageID].dlpercentage > 0.0) {
 					return sprintf("%d %%", updates[packageID].dlpercentage);
 				} else {
-					return _("UPDATE_PENDING_INSTALL");
+					return localize("UPDATE_PENDING_INSTALL");
 				}
 				break;
 			case UPDATEACTION_REINSTALL:
-				return _("UPDATE_PENDING_REINSTALL");
+				return localize("UPDATE_PENDING_REINSTALL");
 				break;
 			case UPDATEACTION_UNINSTALL:
-				return _("UPDATE_PENDING_UNINSTALL");
+				return localize("UPDATE_PENDING_UNINSTALL");
 				break;
 			case UPDATEACTION_AUTOINSTALL:
-				return _("UPDATE_PENDING_AUTOINSTALL");
+				return localize("UPDATE_PENDING_AUTOINSTALL");
 				break;
 			case UPDATEACTION_DISABLE:
-				return _("UPDATE_PENDING_DISABLE");
+				return localize("UPDATE_PENDING_DISABLE");
 				break;
 			case UPDATEACTION_RETAIN:
-				return _("UPDATE_PENDING_RETAIN");
+				return localize("UPDATE_PENDING_RETAIN");
 				break;
 			default:
 				switch (updates[packageID].state) {
 				case UPDATESTATE_DISABLED:
-					return _("UPDATE_DISABLED");
+					return localize("UPDATE_DISABLED");
 					break;
 				case UPDATESTATE_ENABLED:
-					return _("UPDATE_ENABLED");
+					return localize("UPDATE_ENABLED");
 					break;
 				case UPDATESTATE_CORRUPT:
-					return _("UPDATE_CORRUPT");
+					return localize("UPDATE_CORRUPT");
 					break;
 				default:
-					return _("UPDATE_NOTINSTALLED");
+					return localize("UPDATE_NOTINSTALLED");
 				}
 			}
 			break;

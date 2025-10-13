@@ -80,6 +80,11 @@ public:
 	/** Overridable:: Called when an NPC gets killed. */
 	virtual void NPCDeath(ncActor, ncEntity, ncEntity);
 
+	/* Imports additional entities from the named file. */
+	nonvirtual bool AppendEntitiesFromFile(string fileName);
+	
+	nonvirtual void InitialRespawn(void);
+
 	nonvirtual void LinkProgs(void);
 	nonvirtual ncMapDelegate ActiveInstance(void);
 };

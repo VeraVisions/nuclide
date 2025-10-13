@@ -204,64 +204,64 @@ menu_advancedcontrols_draw(void)
 	Header_Draw(HEAD_ADVANCED);
 
 	/* now come the checkbox / slider labels */
-	WLabel_Static(80, 148,
-	              m_reslbl[IDS_OPTS_CROSSHAIR], 12, 12,
+	WLabel_AtHeight(80, 148,
+	              m_reslbl[IDS_OPTS_CROSSHAIR], 12,
 	              [0.75,0.75,0.75], 1.0f, 0, font_label_b);
 	WField_Static(220, 148,
 	              m_reslbl[IDS_OPTS_CROSSHAIRHELP], 410, 30,
 	              [0.75,0.75,0.75], 1.0f, 3, font_label);
 
-	WLabel_Static(80, 178,
-	              m_reslbl[IDS_OPTS_REVERSE], 12, 12,
+	WLabel_AtHeight(80, 178,
+	              m_reslbl[IDS_OPTS_REVERSE], 12,
 	              [0.75,0.75,0.75], 1.0f, 0, font_label_b);
 	WField_Static(220, 178,
 	              m_reslbl[IDS_OPTS_REVERSEHELP], 410, 30,
 	              [0.75,0.75,0.75], 1.0f, 3, font_label);
 
-	WLabel_Static(80, 208,
-	              m_reslbl[IDS_OPTS_MLOOK], 12, 12,
+	WLabel_AtHeight(80, 208,
+	              m_reslbl[IDS_OPTS_MLOOK], 12,
 	              [0.75,0.75,0.75], 1.0f, 0, font_label_b);
 	WField_Static(220, 208,
 	              m_reslbl[IDS_OPTS_MLOOKHELP], 410, 30,
 	              [0.75,0.75,0.75], 1.0f, 3, font_label);
 
-	WLabel_Static(80, 238,
-	              m_reslbl[IDS_OPTS_LOOKSPRING], 12, 12,
+	WLabel_AtHeight(80, 238,
+	              m_reslbl[IDS_OPTS_LOOKSPRING], 12,
 	              [0.75,0.75,0.75], 1.0f, 0, font_label_b);
 	WField_Static(220, 238,
 	              m_reslbl[IDS_OPTS_LOOKSPRINGHELP], 410, 30,
 	              [0.75,0.75,0.75], 1.0f, 3, font_label);
 
-	WLabel_Static(80, 268,
-	              m_reslbl[IDS_OPTS_LOOKSTRAFE], 12, 12,
+	WLabel_AtHeight(80, 268,
+	              m_reslbl[IDS_OPTS_LOOKSTRAFE], 12,
 	              [0.75,0.75,0.75], 1.0f, 0, font_label);
 	WField_Static(220, 268,
 	              m_reslbl[IDS_OPTS_LOOKSTRAFEHELP], 410, 30,
 	              [0.75,0.75,0.75], 1.0f, 3, font_label);
 
-	WLabel_Static(80, 298,
-	              m_reslbl[IDS_OPTS_MFILTER], 12, 12,
+	WLabel_AtHeight(80, 298,
+	              m_reslbl[IDS_OPTS_MFILTER], 12,
 	              [0.75,0.75,0.75], 1.0f, 0, font_label_b);
 	WField_Static(220, 298,
 	              m_reslbl[IDS_OPTS_MFILTERHELP], 410, 30,
 	              [0.75,0.75,0.75], 1.0f, 3, font_label);
 
-	WLabel_Static(80, 328,
-	              m_reslbl[IDS_OPTS_JOYSTICK], 12, 12,
+	WLabel_AtHeight(80, 328,
+	              m_reslbl[IDS_OPTS_JOYSTICK], 12,
 	              [0.75,0.75,0.75], 1.0f, 0, font_label_b);
 	WField_Static(220, 328,
 	              m_reslbl[IDS_OPTS_JOYSTICKHELP], 410, 30,
 	              [0.75,0.75,0.75], 1.0f, 3, font_label);
 
-	WLabel_Static(80, 358,
-	              m_reslbl[IDS_OPTS_JLOOK], 12, 12,
+	WLabel_AtHeight(80, 358,
+	              m_reslbl[IDS_OPTS_JLOOK], 12,
 	              [0.75,0.75,0.75], 1.0f, 0, font_label_b);
 	WField_Static(220, 358,
 	              m_reslbl[IDS_OPTS_JLOOKHELP], 410, 30,
 	              [0.75,0.75,0.75], 1.0f, 3, font_label);
 
-	WLabel_Static(80, 388,
-	              m_reslbl[IDS_OPTS_AUTOAIM], 12, 12,
+	WLabel_AtHeight(80, 388,
+	              m_reslbl[IDS_OPTS_AUTOAIM], 12,
 	              [0.75,0.75,0.75], 1.0f, 0, font_label_b);
 	WField_Static(220, 388,
 	              m_reslbl[IDS_OPTS_AUTOAIMHELP], 410, 30,

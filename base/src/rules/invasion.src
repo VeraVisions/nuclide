@@ -3,5 +3,6 @@
 
 #includelist
 ../../../src/rules.src
+shared.qc
 invasion.qc
 #endlist

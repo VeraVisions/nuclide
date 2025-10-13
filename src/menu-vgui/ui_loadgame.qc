@@ -15,27 +15,34 @@
 */
 
 int g_iLoadGameInitialized;
+static vguiList lsbSaves;
+static vguiScrollBar scrlSaves;
+
+static void
+LoadGame_Play ( void )
+{
+	string strSong;
+	strSong = lsbSaves.GetItem( lsbSaves.GetSelected() );
+	localcmd( sprintf( "load %s\n", strSong) );
+}
+
+static void
+LoadGame_ScrollUpdate ( void )
+{
+	scrlSaves.SetValue( lsbSaves.GetOffset() );
+}
+
+static void
+LoadGame_ListUpdate ( void )
+{
+	lsbSaves.SetOffset( scrlSaves.GetValue(), FALSE );
+}
+
 
 void UI_LoadGame_Show ( void )
 {
 	static vguiWindow winLoadGame;
-	static vguiList lsbSaves;
-	static vguiScrollBar scrlSaves;
 	static vguiButton btnLoad;
-
-	static void LoadGame_Play ( void ) {
-		string strSong;
-		strSong = lsbSaves.GetItem( lsbSaves.GetSelected() );
-		localcmd( sprintf( "load %s\n", strSong) );
-	}
-
-	static void LoadGame_ScrollUpdate ( void ) {
-		scrlSaves.SetValue( lsbSaves.GetOffset() );
-	}
-	static void LoadGame_ListUpdate ( void ) {
-		lsbSaves.SetOffset( scrlSaves.GetValue(), FALSE );
-	}
-
 	if ( !g_iLoadGameInitialized ) {
 		g_iLoadGameInitialized = TRUE;
 		winLoadGame = spawn( vguiWindow );
@@ -46,19 +53,13 @@ void UI_LoadGame_Show ( void )
 		lsbSaves = spawn( vguiList );
 		lsbSaves.SetSize( [192, 96] );
 		lsbSaves.SetPos( [8, 32] );
-		lsbSaves.SetItemCount( Saves_GetSaveCount() );
 		lsbSaves.CallOnScroll( LoadGame_ScrollUpdate );
-
-		for ( int i = 0; i < Saves_GetSaveCount(); i++ ) {
-			lsbSaves.AddItem( Saves_GetInfo(i, SAVEINFO_NAME) );
-		}
 
 		scrlSaves = spawn( vguiScrollBar );
 		scrlSaves.SetLength( 96 );
 		scrlSaves.SetPos( [201,32] );
 		scrlSaves.SetMin( 0 );
 		scrlSaves.SetStep( 1 );
-		scrlSaves.SetMax( lsbSaves.GetMaxVisibleItems() );
 		scrlSaves.CallOnChange( LoadGame_ListUpdate );
 
 		btnLoad = spawn( vguiButton );
@@ -72,8 +73,24 @@ void UI_LoadGame_Show ( void )
 		winLoadGame.Add( lsbSaves );
 		winLoadGame.Add( scrlSaves );
 		winLoadGame.Add( btnLoad );
+
+		SavesCallback_EntriesUpdated();
 	}
 
 	winLoadGame.Show();
 	winLoadGame.SetPos( ( g_vidsize / 2 ) - ( winLoadGame.GetSize() / 2 ) );
+}
+
+void
+SavesCallback_EntriesUpdated(void)
+{
+	lsbSaves.RemoveAllItems();
+	lsbSaves.SetItemCount( Saves_GetSaveCount() );
+	lsbSaves.CallOnScroll( LoadGame_ScrollUpdate );
+
+	for ( int i = 0; i < Saves_GetSaveCount(); i++ ) {
+		lsbSaves.AddItem( Saves_GetInfo(i, SAVEINFO_NAME) );
+	}
+
+	scrlSaves.SetMax( lsbSaves.GetMaxVisibleItems() );
 }

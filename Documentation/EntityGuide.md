@@ -222,6 +222,8 @@
 
 [infodecal](@ref infodecal)
 
+[item_ammo_crate](@ref item_ammo_crate)
+
 [item_eyescanner](@ref item_eyescanner)
 
 [item_food](@ref item_food)
@@ -229,6 +231,8 @@
 [item_generic](@ref item_generic)
 
 [item_healthcharger](@ref item_healthcharger)
+
+[item_item_crate](@ref item_item_crate)
 
 [item_recharge](@ref item_recharge)
 

@@ -1,14 +1,14 @@
 {
 if $programs
 	program defaultwall
-	diffusemap measure/floor.tga
+	diffusemap textures/measure/floor.tga
 else
 	{
 		map $lightmap
 		rgbGen identity
 	}
 	{
-		map measure/floor.tga
+		map textures/measure/floor.tga
 		rgbGen identity
 		blendFunc GL_DST_COLOR GL_ZERO
 	}

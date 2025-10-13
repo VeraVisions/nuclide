@@ -154,25 +154,25 @@ menu_audio_draw(void)
 	Widget_Draw(fn_audio);
 	Header_Draw(HEAD_AUDIO);
 	
-	WLabel_Static(206, 143, m_reslbl[IDS_AUDIO_VOLUME], 14, 14, [1,1,1],
+	WLabel_AtHeight(206, 143, m_reslbl[IDS_AUDIO_VOLUME], 14, [1,1,1],
 					1.0f, 0, font_label_b);
-	WLabel_Static(206, 194, m_reslbl[IDS_AUDIO_SUITVOL], 14, 14, [1,1,1],
+	WLabel_AtHeight(206, 194, m_reslbl[IDS_AUDIO_SUITVOL], 14, [1,1,1],
 					1.0f, 0, font_label_b);
 
-	WLabel_Static(232, 251, m_reslbl[IDS_AUDIO_USECD], 12, 12, [0.75,0.75,0.75],
+	WLabel_AtHeight(232, 251, m_reslbl[IDS_AUDIO_USECD], 12, [0.75,0.75,0.75],
 					1.0f, 0, font_label_b);
-	WLabel_Static(232, 283, m_reslbl[IDS_AUDIO_HIGHQUALITY], 12, 12, [0.75,0.75,0.75],
+	WLabel_AtHeight(232, 283, m_reslbl[IDS_AUDIO_HIGHQUALITY], 12, [0.75,0.75,0.75],
 					1.0f, 0, font_label_b);
-	WLabel_Static(232, 315, m_reslbl[IDS_AUDIO_A3D], 12, 12, [0.75,0.75,0.75],
+	WLabel_AtHeight(232, 315, m_reslbl[IDS_AUDIO_A3D], 12, [0.75,0.75,0.75],
 					1.0f, 0, font_label_b);
-	WLabel_Static(232, 347, m_reslbl[IDS_AUDIO_EAX], 12, 12, [0.75,0.75,0.75],
+	WLabel_AtHeight(232, 347, m_reslbl[IDS_AUDIO_EAX], 12, [0.75,0.75,0.75],
 					1.0f, 0, font_label_b);
 
 #ifdef ACCURATE
 	WField_Static(395, 133, m_reslbl[IDS_AUDIO_CDHINT], 169, 64, col_help,
 					1.0f, 1, font_label);
 #else
-	WLabel_Static(395, 143, "Music volume:", 14, 14, [1,1,1],
+	WLabel_AtHeight(395, 143, "Music volume:", 14, [1,1,1],
 					1.0f, 0, font_label_b);
 #endif
 }

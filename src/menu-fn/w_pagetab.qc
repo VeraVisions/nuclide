@@ -82,7 +82,7 @@ CPageTab::Draw(void)
 	DrawArrowLeft([g_menuofs[0]+440,g_menuofs[1]+108]);
 	DrawArrowRight([g_menuofs[0]+573,g_menuofs[1]+108]);
 
-	WLabel_Static(460, 111, sprintf("Page %i of %i", m_page, m_maxpage), 14, 14, [1,1,1],
+	WLabel_AtHeight(460, 111, sprintf("Page %i of %i", m_page, m_maxpage), 14, [1,1,1],
 				1.0, 0, font_label);
 
 	CWidget wNext = m_children;

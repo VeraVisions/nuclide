@@ -19,7 +19,7 @@
 #define CLIENT
 
 #include "../shared/api.h"
-#include "../shared/input.h"
+#include "../shared/input/input.h"
 #include "api_func.h"
 
 void

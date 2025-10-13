@@ -117,6 +117,9 @@ menu: fteqcc
 mapc: fteqcc
 	cd "$(GAME)/src/maps/" && $(MAKE) QCC=$(QCC_DIR)/../../../fteqcc CFLAGS="-I$(QCC_DIR)/../../../src/common/"
 
+hud: fteqcc
+	cd "$(GAME)/src/hud/" && $(MAKE) QCC=$(QCC_DIR)/../../../fteqcc CFLAGS="-I$(QCC_DIR)/../../../src/common/"
+
 # will build a gamepack for gtkradiant
 defs-nr-q3: netradiant trshaders $(GAME)/scripts/entities.def
 	mkdir -p "$(NR_GAMEDIR)"
@@ -761,12 +764,15 @@ dedicated-lin64: $(ENGINE_DS_LIN64)
 tools: fteqcc vmap vvmtool iqmtool imgtool generatebuiltinsl makevulkanblob
 
 vmap:
-	if [ ! -d Tools/vmap ];then git clone https://github.com/VeraVisions/vmap Tools/vmap;else cd ./Tools/vmap && git pull;fi
+	if [ ! -d Tools/vmap ];then git clone https://code.idtech.space/vera/vmap Tools/vmap;else cd ./Tools/vmap && git pull;fi
 	cd Tools/vmap && $(MAKE)
 	-install -m 0777 Tools/vmap/vmap vmap
 
+clean-vmap:
+	cd Tools/vmap && $(MAKE) clean
+
 vvmtool:
-	if [ ! -d Tools/vvmtool ];then git clone https://github.com/VeraVisions/vvmtool Tools/vvmtool;else cd ./Tools/vvmtool && git pull;fi
+	if [ ! -d Tools/vvmtool ];then git clone https://code.idtech.space/vera/vvmtool Tools/vvmtool;else cd ./Tools/vvmtool && git pull;fi
 	cd Tools/vvmtool && $(MAKE)
 	-install -m 0777 Tools/vvmtool/vvmtool vvmtool
 
@@ -833,15 +839,16 @@ update:
 	if [ -f ./.git/config ];then git pull;fi
 	if [ -f $(GAME)/.git/config ];then cd $(GAME) && git pull;fi
 	if [ ! -d ThirdParty/fteqw ];then git clone $(ENGINE_URL) ThirdParty/fteqw;else cd ./ThirdParty/fteqw && git pull;fi
-	if [ ! -d Tools/vvmtool ];then git clone https://github.com/VeraVisions/vvmtool Tools/vvmtool;else cd ./Tools/vvmtool && git pull;fi
-	if [ ! -d Tools/vmap ];then git clone https://github.com/VeraVisions/vmap Tools/vmap;else cd ./Tools/vmap && git pull;fi
+	if [ ! -d Tools/vvmtool ];then git clone https://code.idtech.space/vera/vvmtool Tools/vvmtool;else cd ./Tools/vvmtool && git pull;fi
+	if [ ! -d Tools/vmap ];then git clone https://code.idtech.space/vera/vmap Tools/vmap;else cd ./Tools/vmap && git pull;fi
 	if [ ! -d ThirdParty/gtkradiant ];then git clone https://github.com/TTimo/gtkradiant ThirdParty/gtkradiant;else cd ./ThirdParty/gtkradiant && git pull;fi
 	if [ ! -d ThirdParty/netradiant-custom ];then git clone https://github.com/Garux/netradiant-custom ThirdParty/netradiant-custom;else cd ./ThirdParty/netradiant-custom && git pull;fi
 
 # game engine binaries
+makelibs:
+	cd ThirdParty/fteqw/engine && $(MAKE) makelibs ARCH=x86_64
 
 $(ENGINE_BINARY):
-	cd ThirdParty/fteqw/engine && $(MAKE) makelibs ARCH=x86_64
 	cp $(GAME)/engine.h ./ThirdParty/fteqw/engine/common/config_$(GAME).h
 	-cp $(GAME)/icon.ico ./ThirdParty/fteqw/engine/common/$(GAME).ico
 	-cp $(GAME)/$(GAME).ico ./ThirdParty/fteqw/engine/common/$(GAME).ico
@@ -1001,15 +1008,17 @@ radiant:
 
 netradiant-custom:
 	if [ ! -d ThirdParty/netradiant-custom ];then git clone https://github.com/Garux/netradiant-custom ThirdParty/netradiant-custom;fi
-	cd ThirdParty/netradiant-custom && $(MAKE) DOWNLOAD_GAMEPACKS=no BUILD=debug RADIANT_ABOUTMSG="NuclideLite managed build."
+	cd ThirdParty/netradiant-custom && $(MAKE) binaries-radiant DOWNLOAD_GAMEPACKS=no BUILD=debug RADIANT_ABOUTMSG="NuclideLite managed build."
 	mkdir -p ./ThirdParty/netradiant-custom/install/gamepacks/games
 	Tools/make_launcher.sh ./ThirdParty/netradiant-custom/install/ ./radiant.x86_64 netradiant-custom
 
-# TODO: still needs a gamepack
 netradiant:
 	if [ ! -d ThirdParty/netradiant ];then git clone --recursive https://gitlab.com/xonotic/netradiant ThirdParty/netradiant;fi
 	cd ThirdParty/netradiant && cmake -G "Unix Makefiles" -S. -Bbuild -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=$(MAKE) -DDOWNLOAD_GAMEPACKS=OFF
 	cd ThirdParty/netradiant && cmake --build build -- -j$(nproc)
 	cd ThirdParty/netradiant && cmake --install build
 	Tools/make_launcher.sh ./ThirdParty/netradiant/build/ ./netradiant netradiant
+
+trenchbroom:
+	if [ ! -d ThirdParty/trenchbroom ];then git clone --recursive https://github.com/TrenchBroom/TrenchBroom ThirdParty/trenchbroom;fi
 

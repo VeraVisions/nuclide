@@ -145,16 +145,12 @@ ncInterfaceSpriteSheet::Initialize(void)
 }
 
 void
-ncInterfaceSpriteSheet::Draw_RGBA(string spriteName, vector spritePos, vector spriteColor, float spriteAlpha, bool isAdditive)
+ncInterfaceSpriteSheet::Draw_RGBA(int spriteNum, vector spritePos, vector spriteColor, float spriteAlpha, bool isAdditive)
 {
-	int spriteNum = -1i;
-
-	spriteNum = (int)hash_get(g_hashhlsprite, spriteName, -1i);
-
 	if (spriteNum == -1i) {
-		ncError("Cannot draw sprite %S!", spriteName);
 		return;
 	}
+
 
 	drawsubpic(
 		spritePos,
@@ -169,38 +165,147 @@ ncInterfaceSpriteSheet::Draw_RGBA(string spriteName, vector spritePos, vector sp
 }
 
 void
-ncInterfaceSpriteSheet::Draw(string spriteName, vector spritePos, bool isAdditive)
+ncInterfaceSpriteSheet::DrawBottom_RGBA(int spriteNum, vector spritePos, float percentageDrawn, vector spriteColor, float spriteAlpha, bool isAdditive)
 {
-	Draw_RGBA(spriteName, spritePos, [1,1,1], 1.0f, isAdditive);
-}
-
-void
-ncInterfaceSpriteSheet::Draw_A(string spriteName, vector spritePos, float spriteAlpha, bool isAdditive)
-{
-	Draw_RGBA(spriteName, spritePos, [1,1,1], spriteAlpha, isAdditive);
-}
-
-void
-ncInterfaceSpriteSheet::Draw_RGB(string spriteName, vector spritePos, vector spriteColor, bool isAdditive)
-{
-	Draw_RGBA(spriteName, spritePos, spriteColor, 1.0f, isAdditive);
-}
-
-void
-ncInterfaceSpriteSheet::DrawCrosshair(string spriteName)
-{
-	int spriteNum = -1i;
-
-	if (!spriteName) {
+	if (spriteNum == -1i) {
 		return;
 	}
 
-	spriteNum = (int)hash_get(g_hashhlsprite, spriteName, -1i);
+	drawsubpic(
+		spritePos + [0, g_hlsprites[spriteNum].m_vecSize[1] * (1.0-percentageDrawn)],
+		[g_hlsprites[spriteNum].m_vecSize[0], g_hlsprites[spriteNum].m_vecSize[1] * percentageDrawn],
+		g_hlsprites[spriteNum].m_strImage,
+		g_hlsprites[spriteNum].m_vecCanvasPos + [0, g_hlsprites[spriteNum].m_vecCanvasSize[1] * (1.0-percentageDrawn)],
+		[g_hlsprites[spriteNum].m_vecCanvasSize[0], g_hlsprites[spriteNum].m_vecCanvasSize[1] * percentageDrawn],
+		spriteColor,
+		spriteAlpha,
+		isAdditive ? DRAWFLAG_ADDITIVE : 0
+	);
+}
 
+void
+ncInterfaceSpriteSheet::DrawTop_RGBA(int spriteNum, vector spritePos, float percentageDrawn, vector spriteColor, float spriteAlpha, bool isAdditive)
+{
 	if (spriteNum == -1i) {
-		ncError("Cannot draw sprite %S!", spriteName);
+		return;
+	}
+
+	drawsubpic(
+		spritePos,
+		[g_hlsprites[spriteNum].m_vecSize[0], g_hlsprites[spriteNum].m_vecSize[1] * percentageDrawn],
+		g_hlsprites[spriteNum].m_strImage,
+		g_hlsprites[spriteNum].m_vecCanvasPos,
+		[g_hlsprites[spriteNum].m_vecCanvasSize[0], g_hlsprites[spriteNum].m_vecCanvasSize[1] * percentageDrawn],
+		spriteColor,
+		spriteAlpha,
+		isAdditive ? DRAWFLAG_ADDITIVE : 0
+	);
+}
+
+
+
+void
+ncInterfaceSpriteSheet::DrawRight_RGBA(int spriteNum, vector spritePos, float percentageDrawn, vector spriteColor, float spriteAlpha, bool isAdditive)
+{
+	if (spriteNum == -1i) {
+		return;
+	}
+
+	drawsubpic(
+		spritePos,
+		[g_hlsprites[spriteNum].m_vecSize[0] * percentageDrawn, g_hlsprites[spriteNum].m_vecSize[1]],
+		g_hlsprites[spriteNum].m_strImage,
+		g_hlsprites[spriteNum].m_vecCanvasPos,
+		[g_hlsprites[spriteNum].m_vecCanvasSize[0] * percentageDrawn, g_hlsprites[spriteNum].m_vecCanvasSize[1]],
+		spriteColor,
+		spriteAlpha,
+		isAdditive ? DRAWFLAG_ADDITIVE : 0
+	);
+}
+
+void
+ncInterfaceSpriteSheet::DrawLeft_RGBA(int spriteNum, vector spritePos, float percentageDrawn, vector spriteColor, float spriteAlpha, bool isAdditive)
+{
+	if (spriteNum == -1i) {
+		return;
+	}
+
+	drawsubpic(
+		spritePos,
+		[g_hlsprites[spriteNum].m_vecSize[0] * percentageDrawn, g_hlsprites[spriteNum].m_vecSize[1]],
+		g_hlsprites[spriteNum].m_strImage,
+		g_hlsprites[spriteNum].m_vecCanvasPos,
+		[g_hlsprites[spriteNum].m_vecCanvasSize[0] * percentageDrawn, g_hlsprites[spriteNum].m_vecCanvasSize[1]],
+		spriteColor,
+		spriteAlpha,
+		isAdditive ? DRAWFLAG_ADDITIVE : 0
+	);
+}
+
+void
+ncInterfaceSpriteSheet::Draw(int spriteNum, vector spritePos, bool isAdditive)
+{
+	Draw_RGBA(spriteNum, spritePos, [1,1,1], 1.0f, isAdditive);
+}
+
+void
+ncInterfaceSpriteSheet::Draw_A(int spriteNum, vector spritePos, float spriteAlpha, bool isAdditive)
+{
+	Draw_RGBA(spriteNum, spritePos, [1,1,1], spriteAlpha, isAdditive);
+}
+
+void
+ncInterfaceSpriteSheet::Draw_RGB(int spriteNum, vector spritePos, vector spriteColor, bool isAdditive)
+{
+	Draw_RGBA(spriteNum, spritePos, spriteColor, 1.0f, isAdditive);
+}
+
+int
+ncInterfaceSpriteSheet::Load(string spriteName)
+{
+	if (!g_hlSpriteCount) {
+		Initialize();
+	}
+
+	return (int)hash_get(g_hashhlsprite, spriteName, -1i);
+}
+
+void
+ncInterfaceSpriteSheet::DrawCrosshair(int spriteNum)
+{
+	if (spriteNum == -1i) {
 		return;
 	}
 
 	Cross_DrawSub(g_hlsprites[spriteNum].m_strImage, g_hlsprites[spriteNum].m_vecSize, g_hlsprites[spriteNum].m_vecCanvasPos, g_hlsprites[spriteNum].m_vecCanvasSize);
+}
+
+float
+ncInterfaceSpriteSheet::GetWidth(int spriteNum)
+{
+	if (spriteNum == -1i) {
+		return -1;
+	}
+
+	return g_hlsprites[spriteNum].m_vecSize[0];
+}
+
+float
+ncInterfaceSpriteSheet::GetHeight(int spriteNum)
+{
+	if (spriteNum == -1i) {
+		return -1;
+	}
+
+	return g_hlsprites[spriteNum].m_vecSize[1];
+}
+
+vector
+ncInterfaceSpriteSheet::GetSize(int spriteNum)
+{
+	if (spriteNum == -1i) {
+		return [-1, -1, -1];
+	}
+
+	return g_hlsprites[spriteNum].m_vecSize;
 }

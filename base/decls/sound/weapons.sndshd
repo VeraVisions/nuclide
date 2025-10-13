@@ -1,22 +1,24 @@
 weapon.empty
 {
 	alerts
-	sample weapons/dryfire1.wav
+	pitch_min 0.8
+	pitch_max 0.8
+	sample weapons/ric1.wav
 }
 
-weapon_axe.miss
+Weapon_Axe.Miss
 {
 	alerts
 	sample weapons/ax1.wav
 }
 
-weapon_axe.hitbody
+Weapon_Axe.Melee_Hit
 {
 	alerts
 	sample player/axhit1.wav
 }
 
-weapon_axe.hit
+Weapon_Axe.Melee_HitWorld
 {
 	alerts
 	sample player/axhit2.wav
@@ -80,9 +82,7 @@ weapon_grenadelauncher.shoot
 weapon_grenadelauncher.explode
 {
 	alerts
-	sample weapons/explode3.wav
-	sample weapons/explode4.wav
-	sample weapons/explode5.wav
+	sample weapons/r_exp3.wav
 }
 
 weapon_grenadelauncher.bounce
@@ -100,9 +100,7 @@ weapon_rocketlauncher.shoot
 weapon_rocketlauncher.explode
 {
 	alerts
-	sample weapons/explode3.wav
-	sample weapons/explode4.wav
-	sample weapons/explode5.wav
+	sample weapons/r_exp3.wav
 }
 
 weapon_lightning.shoot

@@ -46,7 +46,7 @@ typedef struct
 	string m_strExtra;
 } botScript_t;
 
-#define BOTSCRIPT_MAX 32
+#define BOTSCRIPT_MAX 64
 botScript_t g_bots[BOTSCRIPT_MAX];
 var int g_botScriptCount;
 

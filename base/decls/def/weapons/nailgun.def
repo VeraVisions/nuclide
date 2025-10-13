@@ -9,8 +9,8 @@ entityDef weapon_nailgun
 	"spawnclass"		"ncWeapon"
 	"model"				"progs/g_nail.mdl"
 	"model_view"		"progs/v_nail.mdl"
-	"snd_acquire"		"mayhem_weapon.pickup"
-	"snd_respawn"		"mayhem_item.respawn"
+	"snd_acquire"		"weapon.pickup"
+	"snd_respawn"		"item.respawn"
 	"spin"				"1"
 	"pickupFlash"		"1"
 	"animPrefix"		"nailgun"
@@ -18,7 +18,7 @@ entityDef weapon_nailgun
 	// weapon specific
 	"def_fireInfo"		"fireInfo_nailgun"
 	"def_altFireInfo"	"fireInfo_nailgunAlt"
-	"inv_name"			"Nailgun"
+	"inv_name"			"#WEAPON_NAILGUN"
 	"ammoType"			"ammo_nails"
 	"inv_ammo_nails"	"30"
 	"ammoRequired"		"1"
@@ -46,7 +46,6 @@ entityDef fireInfo_nailgun
 	"def_onFire"		"projectile_nailLeft"
 	"fireRate"			"0.1"
 	"punchSpring"		"-0.5 2 -2"
-	"model_flash"		"sprites/muzzleflash.spr"
 }
 
 entityDef fireInfo_nailgunAlt
@@ -54,7 +53,6 @@ entityDef fireInfo_nailgunAlt
 	"def_onFire"		"projectile_nailRight"
 	"fireRate"			"0.1"
 	"punchSpring"		"-0.5 -2 2"
-	"model_flash"		"sprites/muzzleflash.spr"
 }
 
 entityDef debris_nail
@@ -78,11 +76,12 @@ entityDef projectile_nail
 	"model_detonate"		"weapon_nailgun.impact"
 	"decal_detonate"		"Impact.Shot"
 	"snd_explode"			"weapon_nailgun.ricochet"
-	"projectile_debris" 	"debris_nail"
+	"smoke_fly"				"weapon_nailgun.trail"
 	"debris_count"			"1"
 	"debris_stick"			"1"
 	"debris_offset"			"-2 0 0"
 //	"range"					"6000"
+	"fx_path"			"weapon_nailgun.muzzleflash"
 
 	"def_damage"			"damage_nailDirect"
 }

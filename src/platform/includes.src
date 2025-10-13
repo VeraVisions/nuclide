@@ -16,5 +16,6 @@ cmd.qc
 fragnet.qc
 servers.qc
 localize.qc
+profiles.qc
 init.qc
 #endlist 

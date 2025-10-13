@@ -185,21 +185,21 @@ menu_customgame_draw(void)
 
 	Widget_Draw(fn_customgame);
 
-	WLabel_Static(155, 143, m_reslbl[IDS_MODLIST_TYPE], 11, 11, [1,1,1],
+	WLabel_AtHeight(155, 143, m_reslbl[IDS_MODLIST_TYPE], 11, [1,1,1],
 					1.0f, 0, font_arial);
-	WLabel_Static(201, 143, m_reslbl[IDS_MODLIST_NAME], 11, 11, [1,1,1],
+	WLabel_AtHeight(201, 143, m_reslbl[IDS_MODLIST_NAME], 11, [1,1,1],
 					1.0f, 0, font_arial);
-	WLabel_Static(321, 143, m_reslbl[IDS_MODLIST_VERSION], 11, 11, [1,1,1],
+	WLabel_AtHeight(321, 143, m_reslbl[IDS_MODLIST_VERSION], 11, [1,1,1],
 					1.0f, 0, font_arial);
-	WLabel_Static(371, 143, m_reslbl[IDS_MODLIST_SIZE], 11, 11, [1,1,1],
+	WLabel_AtHeight(371, 143, m_reslbl[IDS_MODLIST_SIZE], 11, [1,1,1],
 					1.0f, 0, font_arial);
-	WLabel_Static(421, 143, m_reslbl[IDS_MODLIST_RATING], 11, 11, [1,1,1],
+	WLabel_AtHeight(421, 143, m_reslbl[IDS_MODLIST_RATING], 11, [1,1,1],
 					1.0f, 0, font_arial);
-	WLabel_Static(471, 143, m_reslbl[IDS_MODLIST_INSTALLED], 11, 11, [1,1,1],
+	WLabel_AtHeight(471, 143, m_reslbl[IDS_MODLIST_INSTALLED], 11, [1,1,1],
 					1.0f, 0, font_arial);
-	WLabel_Static(521, 143, m_reslbl[IDS_MODLIST_SERVERS], 11, 11, [1,1,1],
+	WLabel_AtHeight(521, 143, m_reslbl[IDS_MODLIST_SERVERS], 11, [1,1,1],
 					1.0f, 0, font_arial);
-	WLabel_Static(571, 143, m_reslbl[IDS_MODLIST_PLAYERS], 11, 11, [1,1,1],
+	WLabel_AtHeight(571, 143, m_reslbl[IDS_MODLIST_PLAYERS], 11, [1,1,1],
 					1.0f, 0, font_arial);
 
 	/* draw a frame for when we're refreshing the mod list */

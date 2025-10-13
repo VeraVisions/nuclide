@@ -218,6 +218,13 @@ typedef struct
 @param rectRGB  is the color of the rectangle, in normalized RGB values. E.g. `[0.0f, 0.0f, 1.0f]` for blue.
 @param rectAlpha is the alpha channel of the rectangle. 0.0 is invisible, 1.0 is fully visible. */
 	void RectOutline(vector rectPos, vector rectSize, float outlineThickness, vector rectColor, float rectAlpha);
+/** Displays a colored, rounded rectangle outline at the specified position with a specified size.
+
+@param rectPos is the position at which the rounded rectangle will be drawn.
+@param rectSize is the size at which we draw the rounded rectangle, in pixels.
+@param rectRGB  is the color of the rounded rectangle, in normalized RGB values. E.g. `[0.0f, 0.0f, 1.0f]` for blue.
+@param rectAlpha is the alpha channel of the rounded rectangle. 0.0 is invisible, 1.0 is fully visible. */
+	void RoundedRectOutline(vector rectPos, vector rectSize, vector rectColor, float rectAlpha);
 
 /** Displays a colored rounded box at the specified position with a specified size.
 
@@ -311,169 +318,248 @@ with a desired font.
 @param fnt is the font to be used for rendering the text.
 @param iAlignFlags sets how the text may be aligned. */
 	void TextFieldAtHeight(vector vecOrigin, vector vecSize, int iTextHeight, string strText, font_s fnt, alignflags_t iAlignFlags);
+	
+	/** Draws an opaque, rectangular radar that is centered around the current player, or the player that is being spectated. */
+	void RadarRect(vector vecOrigin, vector vecSize);
 } drawAPI_t;
 var drawAPI_t draw;/**< Access drawAPI_t functions using this variable. */
 
 /** Player library */
 typedef struct
 {
+	/** Get the current 3D viewport's camera position.
 
-/** Get the current 3D viewport's camera position.
-
-@return the absolute world-space coordinate of the camera. */
+	@return the absolute world-space coordinate of the camera. */
 	vector GetCameraPosition(void);
-/** Get the current 3D viewport's camera angle.
+	/** Get the current 3D viewport's camera angle.
 
-@return the direction the camera is facing in euler-angle form. */
+	@return the direction the camera is facing in euler-angle form. */
 	vector GetCameraAngles(void);
-/** Get the current player's armor value.
+	/** Get the current player's armor value.
 
-@return the current armor value. */
+	@return the current armor value. */
 	float GetArmor(void);
-/** Get the current player's health value.
+	/** Get the current player's health value.
 
-@return the current health value. */
+	@return the current health value. */
 	float GetHealth(void);
-/** Get the current player's stamina value. 
+	/** Get the current player's stamina value. 
 
-@return the current stamina value, ranging from 0.0f to 1.0f. */
+	@return the current stamina value, ranging from 0.0f to 1.0f. */
 	float GetStamina(void);
-/** Get the current player's team ID.
+	/** Get the current player's team ID.
 
-@return the current player's team ID. */
+	@return the current player's team ID. */
 	int GetTeam(void);
-/** Check if the current player is standing upright. As in, not ducking, prone.
-They may still be walking or running.
+	/** Check if the current player is standing upright. As in, not ducking, prone.
+	They may still be walking or running.
 
-@return whether the current player is standing upright. */
+	@return whether the current player is standing upright. */
 	bool IsStanding(void);
-/** Check if the current player is leaning in any direction.
+	/** Check if the current player is leaning in any direction.
 
-@return whether the current player is leaning. */
+	@return whether the current player is leaning. */
 	bool IsLeaning(void);
-/** Check if the current player is actively sprinting.
+	/** Check if the current player is actively sprinting.
 
-@return whether the current player is sprinting. */
+	@return whether the current player is sprinting. */
 	bool IsSprinting(void);
-/** Check if the current player is actively crouched/ducked.
+	/** Check if the current player is actively crouched/ducked.
 
-@return whether the current player is crouched. */
+	@return whether the current player is crouched. */
 	bool IsCrouched(void);
-/** Check if the current player is actively prone/laying flat on the ground.
+	/** Check if the current player is actively prone/laying flat on the ground.
 
-@return whether the current player is prone. */
+	@return whether the current player is prone. */
 	bool IsProne(void);
-/** Check if the current player is actively moving.
+	/** Check if the current player is actively moving.
 
-@return whether the current player is moving. */
+	@return whether the current player is moving. */
 	bool IsMoving(void);
-/** Check if the current player is not on ground.
+	/** Check if the current player is not on ground.
 
-@return whether the current player is falling. */
+	@return whether the current player is falling. */
 	bool IsFalling(void);
-/** Check if the current player has a particular item.
+	/** Check if the current player has a particular item.
 
-@param itemClassName the classname of the item. E.g. "item_suit"
-@return whether the named item exists in the current player's inventory.*/
+	@param itemClassName the classname of the item. E.g. "item_suit"
+	@return whether the named item exists in the current player's inventory.*/
 	bool HasItem(string itemClassName);
+	/** Returns the string value of the current/active player's info-key.
+
+	@param userKey specifies the user info-key to query.
+	@return The value in string format. */
+	string GetString(string userKey);
+	/** Returns the integer value of a current/active player's info-key.
+
+	@param userKey specifies the user info-key to query.
+	@return The value in integer format. */
+	int GetInteger(string userKey);
+	/** Returns the floating-point value of a current/active player's info-key.
+
+	@param userKey specifies the user info-key to query.
+	@return The value in floating-point format. */
+	float GetFloat(string userKey);
+	/** Returns the boolean value of a current/active player's info-key.
+
+	@param userKey specifies the user info-key to query.
+	@return The value in boolean form. */
+	bool GetBool(string userKey);
+	/** Returns the vector value of a current/active player's info-key.
+
+	@param userKey specifies the user info-key to query.
+	@return The value in vector form. */
+	vector GetVector(string userKey);
+	
+	/** Returns the game flags of the player entity.
+	    These are highly performant, predicted, game specific
+	    flags. Use these if infokeys are too expensive.
+
+	@return The gameflag bitfield in float form. */
+	float GetGameFlags(void);
 } playerAPI_t;
 var playerAPI_t player; /**< Access playerAPI_t functions using this variable. */
 
 /** Weapon library */
 typedef struct
 {
+	/** Returns whether this entity reference to a weapon is still valid.
 
-/** Returns whether this entity reference to a weapon is still valid.
+	@param weaponRef is the weapon entity to reference
+	@return whether the weapon entity reference is valid to the current player.*/
+	bool IsValid(entity weaponRef = __NULL__);
+	/** Returns the title of the weapon specified.
 
-@param weaponRef is the weapon entity to reference
-@return whether the weapon entity reference is valid to the current player.*/
-	bool IsValid(entity weaponRef);
-/** Returns the title of the weapon specified.
+	@param weaponRef is the weapon entity to reference
+	@return string value containing a localized weapon name.*/
+	string GetTitle(entity weaponRef = __NULL__);
+	/** Returns the slot number of the weapon specified.
 
-@param weaponRef is the weapon entity to reference
-@return string value containing a localized weapon name.*/
-	string GetTitle(entity weaponRef);
-/** Returns the slot number of the weapon specified.
+	@param weaponRef is the weapon entity to reference
+	@return integer value containing the inventory slot the weapon is in. */
+	int GetSlot(entity weaponRef = __NULL__);
+	/** Returns if the slot position of the weapon specified.
 
-@param weaponRef is the weapon entity to reference
-@return integer value containing the inventory slot the weapon is in. */
-	int GetSlot(entity weaponRef);
-/** Returns if the slot position of the weapon specified.
+	@param weaponRef is the weapon entity to reference
+	@return integer value containing the position within an inventory slot that the weapon is in. */
+	int GetSlotPos(entity weaponRef = __NULL__);
+	/** Returns the inventory icons of the weapon specified.
 
-@param weaponRef is the weapon entity to reference
-@return integer value containing the position within an inventory slot that the weapon is in. */
-	int GetSlotPos(entity weaponRef);
-/** Returns the inventory icons of the weapon specified.
+	@param weaponRef is the weapon entity to reference
+	@return string value containing the material/image of the weapon inventory icon.*/
+	string GetIcon(entity weaponRef = __NULL__);
+	/** Returns the selected variant inventory icons of the weapon specified.
 
-@param weaponRef is the weapon entity to reference
-@return string value containing the material/image of the weapon inventory icon.*/
-	string GetIcon(entity weaponRef);
-/** Returns the selected variant inventory icons of the weapon specified.
+	@param weaponRef is the weapon entity to reference
+	@return string value containing the material/image of the selected weapon inventory icon.*/
+	string GetSelectedIcon(entity weaponRef = __NULL__);
+	/** Returns if the current/active weapons present reserve ammo.
 
-@param weaponRef is the weapon entity to reference
-@return string value containing the material/image of the selected weapon inventory icon.*/
-	string GetSelectedIcon(entity weaponRef);
-/** Returns if the current/active weapons present reserve ammo.
+	@return integer value of the present reserve ammo.*/
+	int GetAmmo1(entity weaponRef = __NULL__);
+	/** Returns if the current/active weapons present reserve ammo, but for the second ammo type.
 
-@return integer value of the present reserve ammo.*/
-	int GetAmmo1(void);
-/** Returns if the current/active weapons present reserve ammo, but for the second ammo type.
+	@return integer value of the present reserve ammo.*/
+	int GetAmmo2(entity weaponRef = __NULL__);
+	/** Returns if the current/active weapons present clip/magazine size.
 
-@return integer value of the present reserve ammo.*/
-	int GetAmmo2(void);
-/** Returns if the current/active weapons present clip/magazine size.
+	@return integer value of the present clip/magazine size.*/
+	int GetClip(entity weaponRef = __NULL__);
+	/** Returns if the current/active weapons maximum clip/magazine size.
 
-@return integer value of the present clip/magazine size.*/
-	int GetClip(void);
-/** Returns if the current/active weapons maximum clip/magazine size.
+	@return integer value of the maximum clip/magazine size.*/
+	int GetClipSize(entity weaponRef = __NULL__);
+	/** Returns if the maximum reserve ammo.
 
-@return integer value of the maximum clip/magazine size.*/
-	int GetClipSize(void);
-/** Returns if the maximum reserve ammo.
+	@return integer value of the maximum ammo size.*/
+	int MaxAmmo(entity weaponRef = __NULL__);
+	/** Returns if the current/active weapon item in the player's inventory makes use of a secondary ammo type.
 
-@return integer value of the maximum ammo size.*/
-	int MaxAmmo(void);
-/** Returns if the current/active weapon item in the player's inventory makes use of a secondary ammo type.
+	@return **true** when it supports a second ammo type.*/
+	bool UsesSecondaryAmmo(entity weaponRef = __NULL__);
+	/** Returns if the current/active weapon item in the player's inventory requires ammo.
 
-@return **true** when it supports a second ammo type.*/
-	bool UsesSecondaryAmmo(void);
-/** Returns if the current/active weapon item in the player's inventory requires ammo.
+	@return **true** when it requires ammo.*/
+	bool AmmoRequired(entity weaponRef = __NULL__);
 
-@return **true** when it requires ammo.*/
-	bool AmmoRequired(void);
+	/** Returns the current/active weapon item in the player's inventory.
 
-/** Returns the current/active weapon item in the player's inventory.
-
-@return the active weapon in the player's inventory. __NULL__ if invalid.*/
+	@return the active weapon in the player's inventory. __NULL__ if invalid.*/
 	entity GetActiveWeapon(void);
-/** Returns the first weapon item in the player's inventory.
+	/** Returns the first weapon item in the player's inventory.
 
-@return the first weapon in the player's inventory. __NULL__ if invalid.*/
+	@return the first weapon in the player's inventory. __NULL__ if invalid.*/
 	entity GetFirstWeaponInInventory(void);
-/** Returns the last weapon item in the player's inventory.
+	/** Returns the last weapon item in the player's inventory.
 
-@return the last weapon in the player's inventory. __NULL__ if invalid.*/
+	@return the last weapon in the player's inventory. __NULL__ if invalid.*/
 	entity GetLastWeaponInInventory(void);
 
-/** Returns the weapon that comes after (in the player's inventory) the input weapon.
+	/** Returns the weapon that comes after (in the player's inventory) the input weapon.
 
-@param playerWeapon the weapon entity of the player.
-@return the weapon after playerWeapon in the player's inventory. __NULL__ if invalid.*/
+	@param playerWeapon the weapon entity of the player.
+	@return the weapon after playerWeapon in the player's inventory. __NULL__ if invalid.*/
 	entity GetNextWeaponRelativeTo(entity);
 
-/** Returns the weapon that comes before (in the player's inventory) the input weapon.
+	/** Returns the weapon that comes before (in the player's inventory) the input weapon.
 
-@param playerWeapon the weapon entity of the player.
-@return the weapon before playerWeapon in the player's inventory. __NULL__ if invalid.*/
+	@param playerWeapon the weapon entity of the player.
+	@return the weapon before playerWeapon in the player's inventory. __NULL__ if invalid.*/
 	entity GetPreviousWeaponRelativeTo(entity playerWeapon);
 
-/** Attempts to make the player switch to the specified weapon reference.
+	/** Attempts to make the player switch to the specified weapon reference.
 
-@param weaponRef is the weapon entity to switch to. */
+	@param weaponRef is the weapon entity to switch to. */
 	void SelectWeapon(entity);
 } weaponAPI_t;
 var weaponAPI_t weapon; /**< Access weaponAPI_t functions using this variable. */
 
+
+/** Spectating library */
+typedef struct
+{
+	ncSpectatorMode_t Mode(void);
+	string LocalizedMode(void);
+	string Name(void);
+	int Team(void);
+} spectatingAPI_t;
+var spectatingAPI_t spectating; /**< Access spectatingAPI_t functions using this variable. */
+
+/** atlasPic library */
+typedef struct
+{
+	int Load(string atlasPicName); /* loads a permanent handle for the named atlas pic */
+	void Draw(int atlasPic, vector drawAtPos, bool forceAdditive);
+	void Draw_A(int atlasPic, vector drawAtPos, float picAlpha, bool forceAdditive);
+	void Draw_RGBA(int atlasPic, vector drawAtPos, vector picColor, float picAlpha, bool forceAdditive);
+	void DrawTop_RGBA(int atlasPic, vector drawAtPos, float percentageDrawn, vector picColor, float picAlpha, bool forceAdditive);
+	void DrawBottom_RGBA(int atlasPic, vector drawAtPos, float percentageDrawn, vector picColor, float picAlpha, bool forceAdditive);
+	void DrawLeft_RGBA(int atlasPic, vector drawAtPos, float percentageDrawn, vector picColor, float picAlpha, bool forceAdditive);
+	void DrawRight_RGBA(int atlasPic, vector drawAtPos, float percentageDrawn, vector picColor, float picAlpha, bool forceAdditive);
+
+
+	void DrawTop_RGB(int atlasPic, vector drawAtPos, float percentageDrawn, vector picColor, bool forceAdditive);
+	void DrawBottom_RGB(int atlasPic, vector drawAtPos, float percentageDrawn, vector picColor, bool forceAdditive);
+	void DrawLeft_RGB(int atlasPic, vector drawAtPos, float percentageDrawn, vector picColor, bool forceAdditive);
+	void DrawRight_RGB(int atlasPic, vector drawAtPos, float percentageDrawn, vector picColor, bool forceAdditive);
+
+	void Draw_RGB(int atlasPic, vector drawAtPos, vector picColor, bool forceAdditive);
+	void DrawCrosshair(int atlasPic);
+	float GetWidth(int atlasPic);
+	float GetHeight(int atlasPic);
+	vector GetSize(int atlasPic);
+} atlasPicAPI_t;
+var atlasPicAPI_t atlasPic; /**< Access atlasPicAPI_t functions using this variable. */
+
+/** material library */
+typedef struct
+{
+	bool Cached(void);
+	float GetWidth(string materialName);
+	float GetHeight(string materialName);
+	vector GetSize(string materialName);
+} materialAPI_t;
+var materialAPI_t material; /**< Access atlasPicAPI_t functions using this variable. */
 
 /** @} */ // end of hudC
 
@@ -507,12 +593,17 @@ _client_main(void)
 	font.RGBtoHex = linkToClientProgs("Font_RGBtoHex");
 	font.StringWidth = linkToClientProgs("Font_StringWidth");
 
-	screen.Width = linkToClientProgs("CLPF_surface_ScreenHeight");
+	screen.Width = linkToClientProgs("CLPF_surface_ScreenWidth");
 	screen.Height = linkToClientProgs("CLPF_surface_ScreenHeight");
 	screen.Size = linkToClientProgs("CLPF_surface_ScreenSize");
 	screen.Mins = linkToClientProgs("CLPF_surface_ScreenMins");
 	screen.HUDMins = linkToClientProgs("CLPF_surface_HUDMins");
 	screen.HUDSize = linkToClientProgs("CLPF_surface_HUDSize");
+
+	material.GetSize = linkToClientProgs("CLPF_material_GetSize");
+	material.GetWidth = linkToClientProgs("CLPF_material_GetWidth");
+	material.GetHeight = linkToClientProgs("CLPF_material_GetHeight");
+	material.Cached = linkToClientProgs("CLPF_material_Cached");
 
 	player.GetCameraPosition = linkToClientProgs("CLPF_player_GetCameraPosition");
 	player.GetCameraAngles = linkToClientProgs("CLPF_player_GetCameraAngles");
@@ -528,6 +619,13 @@ _client_main(void)
 	player.IsProne = linkToClientProgs("CLPF_player_IsProne");
 	player.IsMoving = linkToClientProgs("CLPF_player_IsMoving");
 	player.IsFalling = linkToClientProgs("CLPF_player_IsFalling");
+	player.GetGameFlags = linkToClientProgs("CLPF_player_GetGameFlags");
+
+	player.GetString = linkToClientProgs("CLPF_player_GetString");
+	player.GetInteger = linkToClientProgs("CLPF_player_GetInteger");
+	player.GetBool = linkToClientProgs("CLPF_player_GetBool");
+	player.GetFloat = linkToClientProgs("CLPF_player_GetFloat");
+	player.GetVector = linkToClientProgs("CLPF_player_GetVector");
 
 	weapon.IsValid = linkToClientProgs("CLPF_weapon_IsValid");
 	weapon.GetTitle = linkToClientProgs("CLPF_weapon_GetTitle");
@@ -550,7 +648,8 @@ _client_main(void)
 	weapon.SelectWeapon = linkToClientProgs("CLPF_weapon_SelectWeapon");
 
 	draw.Rect = linkToClientProgs("CLPF_draw_Rect");
-	draw.RectOutline = linkToClientProgs("CLPF_CLPF_draw_RectOutline");
+	draw.RectOutline = linkToClientProgs("CLPF_draw_RectOutline");
+	draw.RoundedRectOutline = linkToClientProgs("CLPF_draw_RoundedRectOutline");
 	draw.RoundedBox = linkToClientProgs("CLPF_draw_RoundedBox");
 	draw.Line = linkToClientProgs("CLPF_draw_Line");
 	draw.Pic = linkToClientProgs("CLPF_draw_Pic");
@@ -566,4 +665,30 @@ _client_main(void)
 	draw.Text_A= linkToClientProgs("Font_DrawText_A");
 	draw.Text_RGB= linkToClientProgs("Font_DrawText_RGB");
 	draw.Text_RGBA = linkToClientProgs("Font_DrawText_RGBA");
+	draw.RadarRect = linkToClientProgs("CLPF_draw_RadarRect");
+
+	spectating.Mode = linkToClientProgs("CLPF_spectating_Mode");
+	spectating.LocalizedMode = linkToClientProgs("CLPF_spectating_LocalizedMode");
+	spectating.Name = linkToClientProgs("CLPF_spectating_Name");
+	spectating.Team = linkToClientProgs("CLPF_spectating_Team");
+
+	atlasPic.Load = linkToClientProgs("CLPF_atlasPic_Load");
+	atlasPic.Draw = linkToClientProgs("CLPF_atlasPic_Draw");
+	atlasPic.Draw_A = linkToClientProgs("CLPF_atlasPic_Draw_A");
+	atlasPic.Draw_RGB = linkToClientProgs("CLPF_atlasPic_Draw_RGB");
+	atlasPic.Draw_RGBA = linkToClientProgs("CLPF_atlasPic_Draw_RGBA");
+	atlasPic.DrawTop_RGBA = linkToClientProgs("CLPF_atlasPic_DrawTop_RGBA");
+	atlasPic.DrawBottom_RGBA = linkToClientProgs("CLPF_atlasPic_DrawBottom_RGBA");
+	atlasPic.DrawLeft_RGBA = linkToClientProgs("CLPF_atlasPic_DrawLeft_RGBA");
+	atlasPic.DrawRight_RGBA = linkToClientProgs("CLPF_atlasPic_DrawRight_RGBA");
+
+	atlasPic.DrawTop_RGB = linkToClientProgs("CLPF_atlasPic_DrawTop_RGB");
+	atlasPic.DrawBottom_RGB = linkToClientProgs("CLPF_atlasPic_DrawBottom_RGB");
+	atlasPic.DrawLeft_RGB = linkToClientProgs("CLPF_atlasPic_DrawLeft_RGB");
+	atlasPic.DrawRight_RGB = linkToClientProgs("CLPF_atlasPic_DrawRight_RGB");
+
+	atlasPic.DrawCrosshair = linkToClientProgs("CLPF_atlasPic_DrawCrosshair");
+	atlasPic.GetWidth = linkToClientProgs("CLPF_atlasPic_GetWidth");
+	atlasPic.GetHeight = linkToClientProgs("CLPF_atlasPic_GetHeight");
+	atlasPic.GetSize = linkToClientProgs("CLPF_atlasPic_GetSize");
 }

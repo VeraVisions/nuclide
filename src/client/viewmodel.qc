@@ -15,6 +15,7 @@
 */
 
 var bool autocvar_cg_viewmodelLag = 0;
+var bool autocvar_r_showViewModels = true;
 
 void
 View_Init(void)
@@ -174,8 +175,6 @@ View_DrawViewModel(void)
 	if (!pl)
 		return;
 
-	float fBaseTime2 = m_eViewModel.frame1time;
-	float fBaseTime = m_eViewModel.frame1time;
 	m_eViewModelL.frame = m_eViewModel.frame = pl.m_weaponAnimSequence;
 	m_eViewModelL.frame1time =
 	m_eViewModelL.frame2time =
@@ -209,12 +208,14 @@ View_DrawViewModel(void)
 		View_ClearEvents();
 	}
 
-	Event_Callback(m_eViewModel.frame1time, fBaseTime2);
-
 	entity oldSelf = self;
 	self = m_eViewModel;
-	processmodelevents(m_eViewModel.modelindex, m_eViewModel.frame, fBaseTime,
+	processmodelevents(m_eViewModel.modelindex, m_eViewModel.frame, m_eViewModel.m_modelEventTime,
 		m_eViewModel.frame1time, View_HandleAnimEvent);
+
+	Event_Callback(m_eViewModel.frame1time, m_eViewModel.m_modelEventTime);
+
+	m_eViewModel.m_modelEventTime = m_eViewModel.frame1time;
 	self = oldSelf;
 
 	if (pl.health <= 0) {
@@ -228,7 +229,7 @@ View_DrawViewModel(void)
 			return;
 	}
 
-	if (cvar("r_drawviewmodel") == 0 || autocvar_pm_thirdPerson == TRUE) {
+	if (autocvar_r_showViewModels == false || autocvar_pm_thirdPerson == TRUE) {
 		return;
 	}
 
@@ -259,16 +260,17 @@ View_DrawViewModel(void)
 	}
 
 	/* apply to the left side */
+	m_eViewModel.angles += [pSeat->m_flZoomTime * 16, 0, 0];
 	m_eViewModelL.angles = m_eViewModel.angles;
 	m_eViewModelL.colormap = m_eViewModel.colormap = pSeat->m_ePlayer.colormap;
 
 	/* now apply the scale hack */
 	m_eViewModelL.scale = m_eViewModel.scale = autocvar_cg_viewmodelScale;
 
-	if (Client_IsSpectator(cl) || XR_Available(cl) == false) {
+	if (Client_IsSpectator(cl) || ncXRManager::Available(cl) == false) {
 		m_eViewModelL.origin = g_view.GetCameraOrigin();
 		makevectors(currentAngle);
-		m_eViewModelL.origin += (v_forward * cvar("cg_gunX"));
+		m_eViewModelL.origin += (v_forward * cvar("cg_gunX")) + (v_forward * -(pSeat->m_flZoomTime * 16));
 		m_eViewModelL.origin += (v_right * cvar("cg_gunY"));
 		m_eViewModelL.origin += (v_up * cvar("cg_gunZ"));
 		m_eViewModel.origin = m_eViewModelL.origin;

@@ -58,6 +58,10 @@ ncBot::SetEnemy(entity en)
 void
 ncBot::WeaponThink(void)
 {
+	if (!m_activeWeapon) {
+		return;
+	}
+
 	bool isEmpty = m_activeWeapon.IsEmpty();
 
 	/* clip empty, but the whole weapon isn't */

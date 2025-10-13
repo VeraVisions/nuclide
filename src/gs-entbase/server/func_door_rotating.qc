@@ -127,7 +127,7 @@ func_door_rotating::func_door_rotating(void)
 	m_flSoundWait = 0.0f;
 	m_iDamage = 0i;
 	m_bLocked = false;
-	m_flDistance = 0.0f;
+	m_flDistance = 90.0f;
 	m_flSpeed = 100.0f;
 	m_flNextAction = 0.0f;
 	m_flWait = -1;

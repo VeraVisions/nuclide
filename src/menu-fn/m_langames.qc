@@ -277,15 +277,15 @@ menu_langames_draw(void)
 	Header_Draw(HEAD_LAN);
 	
 	/* Labels */
-	WLabel_Static(282, 128, m_reslbl[IDS_SERVER_GAMESERVER], 10, 10, [1,1,1],
+	WLabel_AtHeight(282, 128, m_reslbl[IDS_SERVER_GAMESERVER], 10, [1,1,1],
 					1.0f, 0, font_arial);
-	WLabel_Static(377, 128, m_reslbl[IDS_SERVER_SPEED], 10, 10, [1,1,1],
+	WLabel_AtHeight(377, 128, m_reslbl[IDS_SERVER_SPEED], 10, [1,1,1],
 					1.0f, 0, font_arial);
-	WLabel_Static(422, 128, m_reslbl[IDS_SERVER_MAP], 10, 10, [1,1,1],
+	WLabel_AtHeight(422, 128, m_reslbl[IDS_SERVER_MAP], 10, [1,1,1],
 					1.0f, 0, font_arial);
-	WLabel_Static(497, 128, m_reslbl[IDS_SERVER_GAME], 10, 10, [1,1,1],
+	WLabel_AtHeight(497, 128, m_reslbl[IDS_SERVER_GAME], 10, [1,1,1],
 					1.0f, 0, font_arial);
-	WLabel_Static(572, 128, m_reslbl[IDS_SERVER_PLAYERS], 10, 10, [1,1,1],
+	WLabel_AtHeight(572, 128, m_reslbl[IDS_SERVER_PLAYERS], 10, [1,1,1],
 					1.0f, 0, font_arial);
 
 	if (!g_lanrefresh)

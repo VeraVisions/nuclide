@@ -140,7 +140,7 @@ ncInteractiveSurface::FocusCheck(vector vecViewPos, vector vecViewAng)
 void
 ncInteractiveSurface::ReloadVideoResources(void)
 {
-	m_flSurfaceMat = shaderforname(m_strSurfaceMat, sprintf("{\nsurfaceParm nolightmap\n{\nmap $rt:%s\n}\n}", m_strSurfaceMat));
+	//m_flSurfaceMat = shaderforname(m_strSurfaceMat, sprintf("{\nsurfaceParm nolightmap\n{\nmap $rt:%s\n}\n}", m_strSurfaceMat));
 	m_bCached = true;
 }
 

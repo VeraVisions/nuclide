@@ -65,10 +65,10 @@ CListBox::Draw(void)
 	for (int i = m_scroll; i < (visible + m_scroll); i++) {
 		if (m_selected == i) {
 			drawfill([g_menuofs[0] + pos[0] - 2, g_menuofs[1] + pos[1] - 2], [m_size[0], 15], 
-			 [84/255,45/255,0], 1.0f);
+			 autocvar_menu_color_list_select, 1.0f);
 		}
 		drawsetcliparea(g_menuofs[0] + m_x, g_menuofs[1] + m_y, m_size[0], m_size[1]);
-		WLabel_Static(pos[0], pos[1], m_entries[i], 12, 12, [1,0.5,0.1],
+		WLabel_AtHeight(pos[0], pos[1], m_entries[i], 12, autocvar_menu_color_list,
 					1.0f, 0, font_label);
 		drawresetcliparea();
 		pos[1] += 15;

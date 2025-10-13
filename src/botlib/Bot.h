@@ -85,19 +85,8 @@ public:
 	nonvirtual void ForceWeaponAttack(vector, float);
 
 	virtual void SetName(string);
-
-
-	/** Server: Set the value of an InfoKey. */
-	nonvirtual void SetInfoKey(string, string);
-
-	/** Server: Floating point based version of SetInfoKey(). */
-	nonvirtual void SetInfoKeyFloat(string, float);
 #endif
 
-	/** Get the string value of an InfoKey. */
-	nonvirtual string GetInfoKey(string);
-	/** Floating point based version of GetInfoKey(). */
-	nonvirtual float GetInfoKeyFloat(string);
 
 #ifdef SERVER
 private:

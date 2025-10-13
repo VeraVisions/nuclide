@@ -185,27 +185,33 @@ CMD_RespawnEntities(void)
 static void
 CMD_Spawn(void)
 {
+	ncActor spawnerEntity = (ncActor)self;
 	ncEntity unit = EntityDef_CreateClassname(argv(1));
-	makevectors(self.v_angle);
-	traceline(self.origin, self.origin + (v_forward * 1024), MOVE_NORMAL, self);
-	setorigin(unit, trace_endpos);
+	vector sourcePos = spawnerEntity.GetEyePos();
+	traceline(sourcePos, sourcePos + (anglesToForward(spawnerEntity.GetViewAngle()) * 1024.0f), MOVE_NORMAL, spawnerEntity);
+	setorigin(unit, trace_endpos + [0, 0, -unit.mins[2]]);
+}
+
+static void
+SV_PropSpawn(string newModel, entity spawningEntity)
+{
+	makevectors(spawningEntity.v_angle);
+	traceline(spawningEntity.origin, self.origin + (v_forward * 1024), MOVE_NORMAL, spawningEntity);
+	vector finalPosition = trace_endpos;
+	prop_physics newProp = spawn(prop_physics);
+	newProp.SetModel(newModel);
+	newProp.SetOriginUnstick(finalPosition + [0,0,32]);
+	newProp.Spawn();
+	newProp.SetModel(newModel);
+	newProp.SetOriginUnstick(finalPosition + [0,0,32]);
+	newProp.ClearVelocity();
+	newProp.Wake();
 }
 
 static void
 CMD_PropSpawn(void)
 {
-	string newModel = argv(1);
-	makevectors(self.v_angle);
-	traceline(self.origin, self.origin + (v_forward * 1024), MOVE_NORMAL, self);
-
-	prop_physics newProp = spawn(prop_physics);
-	newProp.SetModel(newModel);
-	newProp.SetOriginUnstick(trace_endpos + [0,0,32]);
-	newProp.Spawn();
-	newProp.SetModel(newModel);
-	newProp.SetOriginUnstick(trace_endpos + [0,0,32]);
-	newProp.ClearVelocity();
-	newProp.Wake();
+	SV_PropSpawn(argv(1), self);
 }
 
 static void
@@ -317,6 +323,9 @@ Cmd_ParseServerCommand(void)
 		break;
 	case "killAllBots":
 		Bot_KillAllBots();
+		break;
+	case "kickAllBots":
+		Bot_KickAllBots();
 		break;
 	case "resetAllBotsGoals":
 		Bot_ResetAllBotsGoals();

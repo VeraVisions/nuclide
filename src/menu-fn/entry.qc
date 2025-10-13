@@ -55,7 +55,7 @@ m_init(void)
 	/* prepare spray logo keys */
 	spray_setinfokeys();
 
-	if (GameLibrary_GetInfo(GAMEINFO_GAMEDIR) != "valve") {
+	if (!Platform_FileInCurrentGamedir("gfx/shell/splash8bit.bmp")) {
 		m_intro_skip();
 		Music_MenuStart();
 	}
@@ -112,10 +112,6 @@ m_draw(vector screensize)
 {
 	static float oldtime;
 
-	if (!g_input_received) {
-		return;
-	}
-
 	frametime = time - oldtime;
 
 	/* don't attempt to draw unless we're done loading everything */
@@ -130,7 +126,7 @@ m_draw(vector screensize)
 		return;
 	}
 
-	Background_Draw((g_vidsize / 2) - [320,240], [640,480]);
+	Background_Draw((g_vidsize / 2) - [320,240], [640,480], false);
 
 	#if 0
 	/* water mark for version info */
@@ -190,6 +186,13 @@ Menu_InputEvent(float evtype, float scanx, float chary, float devid)
 			if (clientstate() == 2 && !g_background) {
 				m_toggle(0);
 			}
+		} else if (chary == K_TOUCH) {
+			/* hack for touchscreens. */
+			evtype = IE_KEYDOWN;
+			chary = K_MOUSE1;
+			main_input(evtype, scanx, chary, devid);
+			evtype = IE_KEYUP;
+			chary = K_MOUSE1;
 		}
 		break;
 	case IE_MOUSEABS:

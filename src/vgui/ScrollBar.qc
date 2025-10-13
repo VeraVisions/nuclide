@@ -16,6 +16,16 @@
 
 const vector vguiScrollBar_ArrowSize = [19,20];
 
+static void
+vguiScrollBar_Trigger(void(void) targetFunc, entity delegateEntity)
+{
+	entity oldSelf = self;
+	self = delegateEntity;
+	targetFunc();
+	self = oldSelf;
+}
+
+
 class vguiScrollBar:vguiWidget
 {
 	int m_hold;
@@ -33,6 +43,8 @@ class vguiScrollBar:vguiWidget
 	int m_up_hold;
 	int m_dn_hover;
 	int m_dn_hold;
+	
+	entity m_delegateEntity;
 
 	void vguiScrollBar(void);
 	virtual void Draw(void);
@@ -46,6 +58,7 @@ class vguiScrollBar:vguiWidget
 	virtual void SetLength(int);
 	virtual void SetItemheight(int) ;
 	virtual void CallOnChange(void(void));
+	virtual void CallOnChangeWithDelegate(void(void) targetFunc, entity delegateEntity);
 
 	nonvirtual void DrawArrowUp(vector);
 	nonvirtual void DrawArrowDown(vector);
@@ -58,6 +71,7 @@ vguiScrollBar::vguiScrollBar(void)
 	 * (border, etc. ignored) */
 	SetItemheight(20);
 	SetLength(128);
+	m_delegateEntity = 0;
 }
 
 void
@@ -168,7 +182,7 @@ vguiScrollBar::Input(float type, float x, float y, float devid)
 	}
 
 	if (m_listItemMax <= 0) {
-		return;
+		return (false);
 	}
 
 	if (barheight < 20)
@@ -256,7 +270,7 @@ vguiScrollBar::SetValue(int val)
 	m_scroll = bound(0,val,m_listItemMax);
 
 	if (m_changed) {
-		m_changed();
+		vguiScrollBar_Trigger(m_changed, m_delegateEntity);
 	}
 }
 
@@ -285,4 +299,13 @@ void
 vguiScrollBar::CallOnChange(void(void) vFunc)
 {
 	m_changed = vFunc;
+	m_delegateEntity = this;
+}
+
+
+void
+vguiScrollBar::CallOnChangeWithDelegate(void(void) vFunc, entity delegateEntity)
+{
+	m_changed = vFunc;
+	m_delegateEntity = delegateEntity;
 }
