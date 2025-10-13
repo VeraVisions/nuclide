@@ -84,6 +84,11 @@ ncAttack::Launch(vector startPos, vector launchDir, float fuseOffset, float powe
 
 		/* this doesn't need to be customize right now, as testDistance in ncWeapon handles a test */
 		traceline(startPos, startPos + forwardPos, MOVE_NORMAL, m_weaponOwner);
+
+		if (willPlantOnGround) {
+			traceline(trace_endpos, trace_endpos + [0f, 0f, -max(64f, plantDistance * 2f)], MOVE_NORMAL, m_weaponOwner);
+		}
+
 		plantedEntity = spawnClass(classToPlant, trace_endpos + (trace_plane_normal * plantOffset));
 		plantedEntity.SetAngles(vectoangles(trace_plane_normal));
 	} else if (willDrop) {
