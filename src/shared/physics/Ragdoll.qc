@@ -23,26 +23,48 @@ ncRagdoll::ncRagdoll(void)
 void
 ncRagdoll::OnRemoveEntity(void)
 {
-	skel_ragupdate(this, "cleardoll", 0);
+	super::OnRemoveEntity();
 
 	/* decouple */
 	if (skeletonindex) {
+		skel_ragupdate(this, "cleardoll", 0);
 		skel_delete(skeletonindex);
 		skeletonindex = 0;
 	}
 
-	modelindex = 0;
+	if (m_animationSkeletonIndex) {
+		skel_delete(m_animationSkeletonIndex);
+		m_animationSkeletonIndex = 0;
+	}
+
+	Hide();
 	SetSolid(SOLID_NOT);
 	SetMovetype(MOVETYPE_NONE);
-	ClearVelocity();
 }
 
 void
 ncRagdoll::CreateRagdoll(void)
 {
+	/* ensure we're wiping the previous state */
+	if (skeletonindex) {
+		skel_ragupdate(this, "cleardoll", 0);
+		skel_delete(skeletonindex);
+		skeletonindex = 0;
+	}
 
 	skeletonindex = skel_create(modelindex);
 	skel_build(skeletonindex, this, modelindex, 0, 0, 0, 1);
+
+	/* used for lerping to the animation */
+	if (m_animationSkeletonIndex) {
+		skel_delete(m_animationSkeletonIndex);
+		m_animationSkeletonIndex = 0;
+	}
+
+	m_animationSkeletonIndex = skel_create(modelindex);
+	skel_build(m_animationSkeletonIndex, this, modelindex, 0, 0, 0, 1);
+	
+	physics_addforce(this, velocity, [0,0,0]);
 
 #if 0
 	string dollString = GetPropData(PROPINFO_DOLL);
@@ -58,10 +80,11 @@ ncRagdoll::CreateRagdoll(void)
 			skel_ragupdate(this, strcat("doll ", modelnameforindex(modelindex), ".doll"), 0);
 		else
 #endif
-		skel_ragupdate(this, "doll models/rt2/human.doll", 0);
+		skel_ragupdate(this, strcat("dollstring ", "models/player.doll"), 0);
 
-	skel_ragupdate(this, "animate 0", 0);
+	skel_ragupdate(this, "animate 1", m_animationSkeletonIndex);
 	m_morphTime = 1.0f;
+	Show();
 }
 
 #ifdef SERVER
@@ -265,7 +288,8 @@ ncRagdoll::ReceiveEntity(float flNew, float flChanged)
 		velocity = oldVelocity;
 	}
 
-	if (!skeletonindex && modelindex) {
+	/* force set */
+	if ((flChanged & RDENT_CHANGED_ORIGIN_X) || (flChanged & RDENT_CHANGED_ORIGIN_Y) || (flChanged & RDENT_CHANGED_ORIGIN_Z)) {
 		CreateRagdoll();
 	}
 
@@ -283,24 +307,35 @@ ncRagdoll::ReceiveEntity(float flNew, float flChanged)
 float
 ncRagdoll::predraw(void)
 {
-	if (!modelindex || !skeletonindex) {
+	/* no model, don't render */
+	if (!modelindex) {
 		return (PREDRAW_NEXT);
 	}
 
+	/* no skeletonindex, cheap render */
+	if (frame1time >= 10.0f) {
+		addentity(this);
+		return (PREDRAW_NEXT);
+	}
+
+	/* ragdoll is alive, morph from death animation, which we build first */
 	frame1time += frametime;
 	frame2time += frametime;
 	lerpfrac = 0.0;
-	skel_build(this.skeletonindex, this, this.modelindex, 0, 0, 0, 1);
-	skel_ragupdate(this, "", m_morphTime);
+	skel_build(m_animationSkeletonIndex, this, this.modelindex, 0, 0, 0, 1);
+
+	/* set animation lerp value against animation index */
+	skel_ragupdate(this, sprintf("animate %f", m_morphTime), m_animationSkeletonIndex);
+
+	/* calculate physics frame data */
+	skel_ragupdate(this, "", 0);
+
 	addentity(this);
 
-	m_morphTime -= frametime * 0.25f;
+	m_morphTime -= frametime * 10.0f;
 
-	if (m_morphTime < 0.0f)
+	if (m_morphTime < 0.0f) {
 		m_morphTime = 0.0f;
-
-	if (frame1time >= 10.0f) {
-		OnRemoveEntity();
 	}
 
 	return (PREDRAW_NEXT);

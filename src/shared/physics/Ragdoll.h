@@ -40,6 +40,7 @@ public:
 
 private:
 	float m_morphTime;
+	float m_animationSkeletonIndex;
 };
 
 
