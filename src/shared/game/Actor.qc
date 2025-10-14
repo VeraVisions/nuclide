@@ -468,6 +468,9 @@ ncActor::Spawned(void)
 	for (int i = 0; i < MAX_AMMO_TYPES; i++) {
 		string defKey = ammoNameForNum(i);
 
+		/* always reset before giving spawn values! */
+		m_ammoTypes[i] = 0;
+
 		if (defKey != "") {
 			int defValue = GetDefInt(defKey);
 			if (defValue > 0i) {
