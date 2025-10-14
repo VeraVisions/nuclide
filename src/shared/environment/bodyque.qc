@@ -126,6 +126,7 @@ BodyQue_SpawnRagdoll(ncActor pl, float anim)
 	nextRagdoll.ScheduleThink(BodyQue_Update, 0.0f);
 	nextRagdoll.colormap = pl.colormap;
 	nextRagdoll.frame1time = 0.0f;
+	nextRagdoll.SendFlags |= RDENT_CHANGED_ORIGIN_X | RDENT_CHANGED_ORIGIN_Y | RDENT_CHANGED_ORIGIN_Z;
 
 	return (nextRagdoll);
 }
