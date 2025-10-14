@@ -2027,21 +2027,16 @@ ncPlayer::Spawned(void)
 	vehicle_entnum = 0;
 #endif
 
-#ifdef SERVER
-	/* we really need to check if whether we're a real client yet. */
-	if (clienttype(this) == CLIENTTYPE_REAL || clienttype(this) == CLIENTTYPE_BOT) {
-		MakePlayer();
-	} else {
-		Disappear(); /* hide us for now */
-	}
-#endif
-
 	_UpdatePMoveVars();
 	Physics_SetViewParms();
 	mins = m_pmoveVars.GetStandingMins();
 	maxs = m_pmoveVars.GetStandingMaxs();
 
 	m_animBackend = GetSpawnFloat("animBackend");
+
+#ifdef SERVER
+	MakePlayer();
+#endif
 }
 
 float
