@@ -141,6 +141,7 @@ ncRuleDelegate::PlayerPreFrame = CodeCallback_PlayerPreFrame
 ncRuleDelegate::PlayerRequestRespawn = CodeCallback_PlayerRequestRespawn  
 ncRuleDelegate::PlayerRequestTeam = CodeCallback_CallRequestTeam  
 ncRuleDelegate::PlayerSpawn = CodeCallback_PlayerSpawn  
+ncRuleDelegate::Shutdown = CodeCallback_Shutdown  
 
 The underlying return values and parameters are inherited from its class counter-part.
 
@@ -164,6 +165,9 @@ public:
 	/* logic */
 	/** Overridable: Called from initents(). */
 	virtual void Precache(void);
+
+	/** Overridable: Called from SV_Shutdown(). */
+	virtual void Shutdown(void);
 
 	/** Overridable: Called every server frame. */
 	virtual void FrameStart(void);

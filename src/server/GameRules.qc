@@ -71,6 +71,11 @@ ncRuleDelegate::Precache(void)
 {
 }
 
+void
+ncRuleDelegate::Shutdown(void)
+{
+}
+
 /* logic */
 void
 ncRuleDelegate::FrameStart(void)
@@ -438,6 +443,7 @@ ncRuleDelegate::LinkProgs(void)
 		RULEMAP(newRule, PlayerSpawn, "CodeCallback_PlayerSpawn")
 		RULEMAP(newRule, Title, "CodeCallback_Title")
 		RULEMAP(newRule, MaxItemPerSlot, "CodeCallback_MaxItemsPerSlot")
+		RULEMAP(newRule, Shutdown, "CodeCallback_Shutdown")
 	}
 
 	serverinfo.SetString("mode", newRule.Title());

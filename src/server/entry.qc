@@ -485,6 +485,10 @@ init_respawn(void)
 void
 SV_Shutdown(void)
 {
+	if (g_grMode) {
+		g_grMode.Shutdown();
+	}
+
 	ncStats::Shutdown();
 }
 
