@@ -7,6 +7,9 @@ ThirdParty/
 
 fteqcc
 fteqw
+fteqw64
+fteqw-sdl2
+fteqw-sv64
 imgtool
 vmap
 vvmtool
@@ -44,11 +47,18 @@ ssqccore.txt
 *.pk3
 *.pk4
 *.way
+*.cfg
+*.db
+*.directory
+*.desktop
 
 # Binary files
+
 *_x86*
 *_x64*
 *.dll
+*.so
+*.exe
 
 # Known Games and Mods
 #
