@@ -195,6 +195,7 @@ private:
 
 	float m_touchingOnlyTeam;
 
+	string m_outputOnPlayerTouch;
 	string m_outputOnStartTouch;
 	string m_outputOnEndTouch;
 
