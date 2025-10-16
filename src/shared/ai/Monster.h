@@ -295,6 +295,8 @@ public:
 	virtual void SpawnKey(string,string);
 	virtual void HandleAnimEvent(float, int, string);
 
+	virtual void OnMapFinishedLoading(void);
+
 	/** Internal use only.
 	Run every frame to go through the main AI loop. */
 	virtual void RunAI(void);

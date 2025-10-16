@@ -1014,6 +1014,12 @@ ncEntity::Respawn(void)
 }
 
 void
+ncEntity::OnMapFinishedLoading(void)
+{
+
+}
+
+void
 ncEntity::Save(float handle)
 {
 	/* all the stock Quake fields the engine is aware of */

@@ -2272,6 +2272,21 @@ ncMonster::Respawn(void)
 	}
 }
 
+
+void
+ncMonster::OnMapFinishedLoading(void)
+{
+	RestoreAngles();
+	SetOrigin(GetSpawnVector("origin") + GetSpawnVector("origin_add"));
+
+	if (GetSpawnBool("flying")) {
+	} else if (GetSpawnBool("static")) {
+	} else {
+		DropToFloor();
+		SetOriginUnstick(origin);
+	}
+}
+
 void
 ncMonster::Input( entity entityActivator, string inputName, string dataField )
 {

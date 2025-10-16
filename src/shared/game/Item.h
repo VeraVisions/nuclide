@@ -153,6 +153,7 @@ public:
 	virtual void Restore(string,string);
 	virtual void EvaluateEntity(void);
 	virtual float SendEntity(entity,float);
+	virtual void OnMapFinishedLoading(void);
 
 	/* item related accessors */
 	nonvirtual void SetFloating(int);

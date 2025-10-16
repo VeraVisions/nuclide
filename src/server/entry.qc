@@ -470,7 +470,7 @@ init_respawn(void)
 	/* of all the map entities that we wanted to spawn, how many are left? */
 	for (entity a = world; (a = findfloat(a, ::_mapspawned, true));) {
 		ncEntity ent = (ncEntity)a;
-		//ent.Respawn();
+		ent.OnMapFinishedLoading();
 		spawnCounter++;
 	}
 

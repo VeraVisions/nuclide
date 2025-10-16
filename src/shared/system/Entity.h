@@ -118,6 +118,9 @@ public:
 	virtual void Restore(string,string);
 	virtual void ParentUpdate(void);
 
+	/** Overridable: Called when the level finished loading. */
+	virtual void OnMapFinishedLoading(void);
+
 	nonvirtual void Event_SpawnDefCenter(string);
 	nonvirtual void Event_SpawnDefRelative(string, float, float, float);
 
