@@ -25,6 +25,7 @@ ncTrigger::ncTrigger(void)
 	m_touchTimer = __NULL__;
 	m_outputOnStartTouch =
 	m_outputOnEndTouch = __NULL__;
+	m_outputOnPlayerTouch = __NULL__;
 	m_globalState = __NULL__;
 	m_triggerKillTarget = "";
 	m_triggerMessage = __NULL__;
@@ -47,6 +48,8 @@ ncTrigger::Spawned(void)
 
 	if (STRING_SET(m_outputOnStartTouch))
 		m_outputOnStartTouch = CreateOutput(m_outputOnStartTouch);
+	if (STRING_SET(m_outputOnPlayerTouch))
+		m_outputOnPlayerTouch = CreateOutput(m_outputOnPlayerTouch);
 	if (STRING_SET(m_outputOnEndTouch))
 		m_outputOnEndTouch = CreateOutput(m_outputOnEndTouch);
 }
@@ -462,6 +465,9 @@ ncTrigger::SpawnKey(string keyName, string setValue)
 	case "OnStartTouch":
 		m_outputOnStartTouch = PrepareOutput(m_outputOnStartTouch, setValue);
 		break;
+	case "OnPlayerTouch":
+		m_outputOnPlayerTouch = PrepareOutput(m_outputOnPlayerTouch, setValue);
+		break;
 	case "OnEndTouch":
 		m_outputOnEndTouch = PrepareOutput(m_outputOnEndTouch, setValue);
 		break;
@@ -557,15 +563,18 @@ ncTrigger::_TouchHandler(void)
 		}
 	}
 
+	if (is.Player(m_touchingEntity))
+		UseOutput(m_touchingEntity, m_outputOnPlayerTouch);
+
 	/* start touch in case we haven't */
 	if (!m_touchTimer || wasfreed(m_touchTimer)) {
-		//StartTouch(m_touchingEntity);
-		//UseOutput(m_touchingEntity, m_outputOnStartTouch);
-		//m_touchTimer = m_touchTimer.SetupTimer(this, _TouchEnded, 0.1f, false);
+		StartTouch(m_touchingEntity);
+		UseOutput(m_touchingEntity, m_outputOnStartTouch);
+		m_touchTimer = m_touchTimer.SetupTimer(this, _TouchEnded, 0.1f, false);
 	}
 
 	if (m_touchTimer && !wasfreed(m_touchTimer)) {
-		//m_touchTimer.RunTimer();
+		m_touchTimer.RunTimer();
 	}
 #endif
 

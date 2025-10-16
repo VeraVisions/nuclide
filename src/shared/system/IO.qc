@@ -328,10 +328,11 @@ ncIO::UseOutput(entity act, string outname)
 		ncOutput op = (ncOutput)f;
 
 		EntLog("Sent Output Message:\n\tTarget: %s\n"\
+			"\tActivator: %s\n"\
 			"\tInput: %s\n"\
 			"\tData Message: %s\n"\
 			"\tDelay: %f\n"\
-			"\tUses: %i", op.m_strTarget, op.m_strInput, op.m_strData, op.m_flDelay, op.m_iCount);
+			"\tUses: %i", op.m_strTarget, act.classname, op.m_strInput, op.m_strData, op.m_flDelay, op.m_iCount);
 
 		/* no more tries and not -1 (infinite) */
 		if (op.m_iCount == 0) {

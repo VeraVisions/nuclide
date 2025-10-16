@@ -23,20 +23,20 @@ ncOutput::TriggerOutput(void)
 	/* plug into all the inputs. */
 	if (m_strTarget == "!self") {
 		if (ourOwner)
-			ourOwner.Input(ourOwner, m_strInput, m_strData);
+			ourOwner.Input(m_eActivator, m_strInput, m_strData);
 	} else if (m_strTarget == "!activator") {
 		if (ourActivator)
-			ourActivator.Input(ourActivator, m_strInput, m_strData);
+			ourActivator.Input(m_eActivator, m_strInput, m_strData);
 	} else if (m_strTarget == "!target") {
 		ncEntity ourTarget = (ncEntity)find(world, ::targetname, ourOwner.target);
 
 		if (ourTarget)
-			ourTarget.Input(ourActivator, m_strInput, m_strData);
+			ourTarget.Input(m_eActivator, m_strInput, m_strData);
 	} else if (m_strTarget == "!rules") {
 		ncRuleDelegate ourRules = ncRuleDelegate::ActiveInstance();
 
 		if (ourRules)
-			ourRules.Input(ourActivator, m_strInput, m_strData);
+			ourRules.Input(m_eActivator, m_strInput, m_strData);
 	} else {
 		if (!STRING_SET(m_strTarget)) {
 			EntError("target invalid.");
