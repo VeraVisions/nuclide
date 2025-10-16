@@ -70,6 +70,8 @@ ncMonster::ncMonster(void)
 	m_flAttackAccuracy = 1.0f;
 	m_flMeleeRange = -1;
 	m_fireFromHead = false;
+	m_freezeDuringPain = true;
+	m_flinchDuringMovement = false;
 
 	m_defRanged1 = __NULL__;
 	m_defRanged2 = __NULL__;
@@ -234,6 +236,8 @@ ncMonster::Save(float handle)
 	SaveFloat(handle, "m_flRunSpeed", m_flRunSpeed);
 	SaveFloat(handle, "m_flLeapDamage", m_flLeapDamage);
 	SaveBool(handle, "m_bLeapAttacked", m_bLeapAttacked);
+	SaveBool(handle, "m_freezeDuringPain", m_freezeDuringPain);
+	SaveBool(handle, "m_flinchDuringMovement", m_flinchDuringMovement);
 }
 
 void
@@ -473,6 +477,12 @@ ncMonster::Restore(string keyName, string setValue)
 		break;
 	case "m_bLeapAttacked":
 		m_bLeapAttacked = ReadBool(setValue);
+		break;
+	case "m_freezeDuringPain":
+		m_freezeDuringPain = ReadBool(setValue);
+		break;
+	case "m_flinchDuringMovement":
+		m_flinchDuringMovement = ReadBool(setValue);
 		break;
 	default:
 		super::Restore(keyName, setValue);
@@ -1822,6 +1832,20 @@ ncMonster::Physics(void)
 }
 
 void
+ncMonster::HandleAnimEvent(float flTimeStamp, int iCode, string strData)
+{
+	switch(iCode) {
+	case 1000:
+		SetState(MONSTER_DEAD);
+		/* make sure we're not causing any more obituaries */
+		RemoveFlags(FL_MONSTER);
+		break;
+	default:
+		super::HandleAnimEvent(flTimeStamp, iCode, strData);
+	}
+}
+
+void
 ncMonster::Touch(entity eToucher)
 {
 	/* leap test, are we no longer on the ground? */
@@ -1949,6 +1973,12 @@ ncMonster::Pain(entity inflictor, entity attacker, int damage, vector dir,  vect
 
 	/* alert all nearby friendlies */
 	AlertNearby();
+	StartSoundDef(m_sndPain, CHAN_VOICE, true);
+	HasBeenHit();
+
+	if (m_flinchDuringMovement == false && length(GetVelocity()) > 5) {
+		return;
+	}
 
 	switch (hitBody) {
 	case BODY_HEAD:
@@ -1977,7 +2007,7 @@ ncMonster::Pain(entity inflictor, entity attacker, int damage, vector dir,  vect
 	/* fallback in case we do not have specialized flinches */
 	if (actPain == -1) {
 		/* for big damage pain anim, we need to take at least 1/3rd of health */
-		if (actBigFlinch >= 0 && damage > (baseHealth / 3))
+		if (actBigFlinch >= 0 && (float)damage > (baseHealth / 3))
 			actPain = actBigFlinch;
 		else if (actSmallFlinch >= 0)
 			actPain = actSmallFlinch;
@@ -1991,8 +2021,11 @@ ncMonster::Pain(entity inflictor, entity attacker, int damage, vector dir,  vect
 
 	AnimPlay(actPain);
 
-	StartSoundDef(m_sndPain, CHAN_VOICE, true);
-	HasBeenHit();
+	/* stop the monster from moving during pain, if desired */
+	if (m_freezeDuringPain == true) {
+		m_flStopTime = time + frameduration(modelindex, actPain);
+		ClearVelocity();
+	}
 }
 
 void
@@ -2071,7 +2104,7 @@ ncMonster::Death(entity inflictor, entity attacker, int damage, vector dir, vect
 	AnimPlay(actDeath);
 
 	if (FORCE_RAGDOLLS || GetDefBool("ragdoll") == true) {
-		BodyQue_SpawnRagdoll((ncActor)this, frame);
+		BodyQue_SpawnRagdoll((ncActor)this, actDeath);
 		Disappear();
 		SetState(MONSTER_DEAD);
 		Extinguish();
@@ -2679,6 +2712,12 @@ ncMonster::SpawnKey(string keyName, string setValue)
 		break;
 	case "fireFromHead":
 		m_fireFromHead = ReadBool(setValue);
+		break;
+	case "freezeDuringPain":
+		m_freezeDuringPain = ReadBool(setValue);
+		break;
+	case "flinchDuringMovement":
+		m_flinchDuringMovement = ReadBool(setValue);
 		break;
 	default:
 		super::SpawnKey(keyName, setValue);

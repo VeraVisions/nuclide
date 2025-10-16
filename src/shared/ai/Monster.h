@@ -293,6 +293,7 @@ public:
 	virtual void Gib(int, vector);
 	virtual void Sound(string);
 	virtual void SpawnKey(string,string);
+	virtual void HandleAnimEvent(float, int, string);
 
 	/** Internal use only.
 	Run every frame to go through the main AI loop. */
@@ -587,6 +588,8 @@ private:
 	bool m_usesNav;
 	bool m_fireFromHead;
 	bool m_bCanAttack;
+	bool m_freezeDuringPain;
+	bool m_flinchDuringMovement;
 
 	nonvirtual void _LerpTurnToPos(vector);
 	nonvirtual void _LerpTurnToYaw(float);
