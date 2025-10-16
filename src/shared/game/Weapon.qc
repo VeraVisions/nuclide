@@ -64,6 +64,10 @@ ncWeapon::_AddedCallback(void)
 	}
 
 	ourOwner.SortWeaponChain();
+
+#ifdef SERVER
+	SendFlags |= WEAPONFL_CHANGED_MODELINDEX | WEAPONFL_CHANGED_CLIP;
+#endif
 }
 
 void
@@ -118,133 +122,6 @@ nsweapon_state_t
 ncWeapon::GetWeaponState(void)
 {
 	return (m_weaponState);
-}
-
-void
-ncWeapon::UpdateFireInfoCache(void)
-{
-	string ammoPerShot = GetSubDefString(m_weaponLastFireInfo, "ammoPerShot");
-	string reloadSpeed = GetSubDefString(m_weaponLastFireInfo, "reloadTime");
-	m_fiDetonateOnFire = GetSubDefString(m_weaponLastFireInfo, "detonateOnFire");
-	m_fiPunchAngle = GetSubDefVector(m_weaponLastFireInfo, "punchAngle");
-	m_fiPunchSpring = GetSubDefVector(m_weaponLastFireInfo, "punchSpring");
-	m_fiSndFire = GetSubDefString(m_weaponLastFireInfo, "snd_fire");
-	m_fiSndFailed = GetSubDefString(m_weaponLastFireInfo, "snd_fireFailed");
-	m_fiSndFireLast = GetSubDefString(m_weaponLastFireInfo, "snd_fireLast");
-	m_fiSndRelease = GetSubDefString(m_weaponLastFireInfo, "snd_release");
-	m_fiSndEmpty = GetSubDefString(m_weaponLastFireInfo, "snd_empty");
-	m_fiAmmoType = ammoNumForName(GetSubDefString(m_weaponLastFireInfo, "ammoType"));
-	m_fiAmmoRequired = GetSubDefBool(m_weaponLastFireInfo, "ammoRequired");
-	m_fiFireRate = GetSubDefFloat(m_weaponLastFireInfo, "fireRate");
-	m_fiSemiAuto = GetSubDefBool(m_weaponLastFireInfo, "semiAuto");
-	m_fiZoomFOV = GetSubDefFloat(m_weaponLastFireInfo, "zoomFov") / 90.0f;
-
-	/* defs to spawn */
-	m_fiOnFire = GetSubDefString(m_weaponLastFireInfo, "def_onFire");
-	m_fiOnRelease = GetSubDefString(m_weaponLastFireInfo, "def_onRelease");
-	m_fiChargeTime = GetSubDefFloat(m_weaponLastFireInfo, "chargeTime");
-
-	m_fiOverheatPoints = GetSubDefFloat(m_weaponLastFireInfo, "overheatPerShot");
-
-	m_fiSndFireStart = GetSubDefString(m_weaponLastFireInfo, "snd_fireStart");
-	m_fiSndFireStop = GetSubDefString(m_weaponLastFireInfo, "snd_fireStop");
-	m_fiSndFireLoop = GetSubDefString(m_weaponLastFireInfo, "snd_fireLoop");
-	m_fiFireUnderwater = GetSubDefBool(m_weaponLastFireInfo, "fireUnderwater");
-
-	m_fiMaxBurst = GetSubDefFloat(m_weaponLastFireInfo, "burstCount");
-	m_fiBurstTime = GetSubDefFloat(m_weaponLastFireInfo, "burstTime");
-
-	m_fiKnockBack = GetSubDefFloat(m_weaponLastFireInfo, "knockback");
-	m_fiKnockBackRelease = GetSubDefFloat(m_weaponLastFireInfo, "knockbackRelease");
-	m_fiTestDistance = GetSubDefFloat(m_weaponLastFireInfo, "testDistance");
-	m_viewModel = getmodelindex(GetDefString("model_view"));
-	m_worldModel = getmodelindex(GetDefString("model"));
-
-	m_fiBrassDef = GetSubDefString(m_weaponLastFireInfo, "def_ejectBrass");
-	m_fiBrassDelay = GetSubDefFloat(m_weaponLastFireInfo, "ejectBrassDelay");
-	m_fiCartridgeDef = GetSubDefString(m_weaponLastFireInfo, "def_ejectCartridge");
-	m_fiCartridgeDelay = GetSubDefFloat(m_weaponLastFireInfo, "ejectCartridgeDelay");
-
-	/* only check if it's present. */
-	m_fiLoopingFire = GetSubDefBool(m_weaponLastFireInfo, "act_loop");
-	m_fiCocks = GetSubDefBool(m_weaponLastFireInfo, "cocks");
-	m_fiDrawAfterRelease = GetSubDefBool(m_weaponLastFireInfo, "drawAfterRelease");
-
-	m_fiRegenAmmo = GetSubDefInt(m_weaponLastFireInfo, "regenAmmo");
-	m_fiRegenRate = GetSubDefFloat(m_weaponLastFireInfo, "regenRate");
-
-	m_fiDepleteAmmo = GetSubDefInt(m_weaponLastFireInfo, "depleteAmmo");
-	m_fiDepleteRate = GetSubDefFloat(m_weaponLastFireInfo, "depleteRate");
-
-	/* keep the last valid value (don't 0.0f it) to prevent overlay dropouts. */
-	if (m_fiOverheatPoints) {
-		m_fiOverheatLength = GetSubDefFloat(m_weaponLastFireInfo, "overheatLength");
-	}
-
-	/* when -1.0 we'll pull it from the animation. */
-	if (reloadSpeed != "") {
-		m_fiReloadTime = stof(reloadSpeed);
-	} else {
-		m_fiReloadTime = -1.0f;
-	}
-
-#ifdef CLIENT
-	if (pSeat != __NULL__) {
-		string viewGeomset = GetSubDefString(m_weaponLastFireInfo, "view_geomset");
-		if (pSeat->m_eViewModel) {
-			if (viewGeomset) {
-				setcustomskin(pSeat->m_eViewModel, "", viewGeomset);
-				setcustomskin(pSeat->m_eViewModelL, "", viewGeomset);
-			} else {
-				setcustomskin(pSeat->m_eViewModel, "", "");
-				setcustomskin(pSeat->m_eViewModelL, "", "");
-			}
-		}
-	}
-#endif
-
-#if 0
-	ncError("Switched FireInfo to %S", m_weaponLastFireInfo);
-	ncError("m_fiAmmoType: %i", m_fiAmmoRequired);
-	ncError("m_fiAmmoRequired: %d", m_fiAmmoRequired);
-	ncError("m_fiFireRate: %f", m_fiAmmoRequired);
-	ncError("m_fiReloadTime: %f", m_fiReloadTime);
-#endif
-
-	/* validate */
-	if (ammoPerShot != __NULL__) {
-		m_fiAmmoPerShot = (int)stoi(ammoPerShot);
-	} else {
-		m_fiAmmoPerShot = 1i;
-	}
-
-#ifdef CLIENT
-	if (pSeat != __NULL__) {
-		ncRenderableEntity viewModel = (ncRenderableEntity)pSeat->m_eViewModel;
-		ncRenderableEntity viewModel2 = (ncRenderableEntity)pSeat->m_eViewModelL;
-
-		if (viewModel && viewModel.classname == "vm") {
-			string viewModelPath2 = GetSubDefString(m_primaryFireInfo, "model_view2");
-			string viewModelPath3 = GetSubDefString(m_primaryFireInfo, "model_view3");
-			string viewModelPath4 = GetSubDefString(m_primaryFireInfo, "model_view4");
-
-			viewModel.modelindex = m_viewModel;
-			viewModel.modelindex2 = getmodelindex(viewModelPath2);
-			viewModel.modelindex3 = getmodelindex(viewModelPath3);
-			viewModel.modelindex4 = getmodelindex(viewModelPath4);
-			string modelFlash = GetSubDefString(m_weaponLastFireInfo, "model_flash");
-			viewModel2.m_iMuzzleModel = viewModel.m_iMuzzleModel = (int)getmodelindex(modelFlash);
-
-			if (viewModel) {
-				viewModel._UpdateBoneCount();
-			}
-
-			if (viewModel2) {
-				viewModel2._UpdateBoneCount();
-			}
-		}
-	}
-#endif
 }
 
 void
@@ -872,13 +749,121 @@ ncWeapon::ReloadCachedAttributes(void)
 	m_jointTrailView = gettagindex(this, jointTrailView);
 	modelindex = oldModelindex;
 
+	if (!STRING_SET(m_weaponLastFireInfo)) {
+		m_weaponLastFireInfo = m_primaryFireInfo;
+		UpdateFireInfoCache();
+	}
+
 	/* alt fire is optional. */
-	if (!m_secondaryFireInfo) {
+	if (!STRING_SET(m_secondaryFireInfo)) {
 		return;
 	}
 
 	secondType = GetSubDefString(m_secondaryFireInfo, "ammoType");
 	m_secondaryAmmoType = ammoNumForName(secondType);
+}
+
+void
+ncWeapon::UpdateFireInfoCache(void)
+{
+	string ammoPerShot = GetSubDefString(m_weaponLastFireInfo, "ammoPerShot");
+	string reloadSpeed = GetSubDefString(m_weaponLastFireInfo, "reloadTime");
+	m_fiDetonateOnFire = GetSubDefString(m_weaponLastFireInfo, "detonateOnFire");
+	m_fiPunchAngle = GetSubDefVector(m_weaponLastFireInfo, "punchAngle");
+	m_fiPunchSpring = GetSubDefVector(m_weaponLastFireInfo, "punchSpring");
+	m_fiSndFire = GetSubDefString(m_weaponLastFireInfo, "snd_fire");
+	m_fiSndFailed = GetSubDefString(m_weaponLastFireInfo, "snd_fireFailed");
+	m_fiSndFireLast = GetSubDefString(m_weaponLastFireInfo, "snd_fireLast");
+	m_fiSndRelease = GetSubDefString(m_weaponLastFireInfo, "snd_release");
+	m_fiSndEmpty = GetSubDefString(m_weaponLastFireInfo, "snd_empty");
+	m_fiAmmoType = ammoNumForName(GetSubDefString(m_weaponLastFireInfo, "ammoType"));
+	m_fiAmmoRequired = GetSubDefBool(m_weaponLastFireInfo, "ammoRequired");
+	m_fiFireRate = GetSubDefFloat(m_weaponLastFireInfo, "fireRate");
+	m_fiSemiAuto = GetSubDefBool(m_weaponLastFireInfo, "semiAuto");
+	m_fiZoomFOV = GetSubDefFloat(m_weaponLastFireInfo, "zoomFov") / 90.0f;
+
+	/* defs to spawn */
+	m_fiOnFire = GetSubDefString(m_weaponLastFireInfo, "def_onFire");
+	m_fiOnRelease = GetSubDefString(m_weaponLastFireInfo, "def_onRelease");
+	m_fiChargeTime = GetSubDefFloat(m_weaponLastFireInfo, "chargeTime");
+
+	m_fiOverheatPoints = GetSubDefFloat(m_weaponLastFireInfo, "overheatPerShot");
+
+	m_fiSndFireStart = GetSubDefString(m_weaponLastFireInfo, "snd_fireStart");
+	m_fiSndFireStop = GetSubDefString(m_weaponLastFireInfo, "snd_fireStop");
+	m_fiSndFireLoop = GetSubDefString(m_weaponLastFireInfo, "snd_fireLoop");
+	m_fiFireUnderwater = GetSubDefBool(m_weaponLastFireInfo, "fireUnderwater");
+
+	m_fiMaxBurst = GetSubDefFloat(m_weaponLastFireInfo, "burstCount");
+	m_fiBurstTime = GetSubDefFloat(m_weaponLastFireInfo, "burstTime");
+
+	m_fiKnockBack = GetSubDefFloat(m_weaponLastFireInfo, "knockback");
+	m_fiKnockBackRelease = GetSubDefFloat(m_weaponLastFireInfo, "knockbackRelease");
+	m_fiTestDistance = GetSubDefFloat(m_weaponLastFireInfo, "testDistance");
+	m_viewModel = getmodelindex(GetDefString("model_view"));
+	m_worldModel = getmodelindex(GetDefString("model"));
+
+	m_fiBrassDef = GetSubDefString(m_weaponLastFireInfo, "def_ejectBrass");
+	m_fiBrassDelay = GetSubDefFloat(m_weaponLastFireInfo, "ejectBrassDelay");
+	m_fiCartridgeDef = GetSubDefString(m_weaponLastFireInfo, "def_ejectCartridge");
+	m_fiCartridgeDelay = GetSubDefFloat(m_weaponLastFireInfo, "ejectCartridgeDelay");
+
+	/* only check if it's present. */
+	m_fiLoopingFire = GetSubDefBool(m_weaponLastFireInfo, "act_loop");
+	m_fiCocks = GetSubDefBool(m_weaponLastFireInfo, "cocks");
+	m_fiDrawAfterRelease = GetSubDefBool(m_weaponLastFireInfo, "drawAfterRelease");
+
+	m_fiRegenAmmo = GetSubDefInt(m_weaponLastFireInfo, "regenAmmo");
+	m_fiRegenRate = GetSubDefFloat(m_weaponLastFireInfo, "regenRate");
+
+	m_fiDepleteAmmo = GetSubDefInt(m_weaponLastFireInfo, "depleteAmmo");
+	m_fiDepleteRate = GetSubDefFloat(m_weaponLastFireInfo, "depleteRate");
+
+	/* keep the last valid value (don't 0.0f it) to prevent overlay dropouts. */
+	if (m_fiOverheatPoints) {
+		m_fiOverheatLength = GetSubDefFloat(m_weaponLastFireInfo, "overheatLength");
+	}
+
+	/* when -1.0 we'll pull it from the animation. */
+	if (reloadSpeed != "") {
+		m_fiReloadTime = stof(reloadSpeed);
+	} else {
+		m_fiReloadTime = -1.0f;
+	}
+
+#ifdef CLIENT
+	if (pSeat != __NULL__) {
+		string viewGeomset = GetSubDefString(m_weaponLastFireInfo, "view_geomset");
+		if (pSeat->m_eViewModel) {
+			if (viewGeomset) {
+				setcustomskin(pSeat->m_eViewModel, "", viewGeomset);
+				setcustomskin(pSeat->m_eViewModelL, "", viewGeomset);
+			} else {
+				setcustomskin(pSeat->m_eViewModel, "", "");
+				setcustomskin(pSeat->m_eViewModelL, "", "");
+			}
+		}
+	}
+#endif
+
+#if 0
+	ncError("Switched FireInfo to %S", m_weaponLastFireInfo);
+	ncError("m_fiAmmoType: %i", m_fiAmmoRequired);
+	ncError("m_fiAmmoRequired: %d", m_fiAmmoRequired);
+	ncError("m_fiFireRate: %f", m_fiAmmoRequired);
+	ncError("m_fiReloadTime: %f", m_fiReloadTime);
+#endif
+
+	/* validate */
+	if (ammoPerShot != __NULL__) {
+		m_fiAmmoPerShot = (int)stoi(ammoPerShot);
+	} else {
+		m_fiAmmoPerShot = 1i;
+	}
+
+#ifdef SERVER
+	SendFlags |= WEAPONFL_CHANGED_CLIP;
+#endif
 }
 
 void
@@ -905,6 +890,32 @@ ncWeapon::_SwitchedToCallback(void)
 	pSeat->m_iHUDWeaponSelected = GetSharedID();
 	PredictPreFrame();
 	HUD_SwitchedToWeapon(declclass);
+
+	if (pSeat != __NULL__) {
+		ncRenderableEntity viewModel = (ncRenderableEntity)pSeat->m_eViewModel;
+		ncRenderableEntity viewModel2 = (ncRenderableEntity)pSeat->m_eViewModelL;
+
+		if (viewModel && viewModel.classname == "vm") {
+			string viewModelPath2 = GetSubDefString(m_primaryFireInfo, "model_view2");
+			string viewModelPath3 = GetSubDefString(m_primaryFireInfo, "model_view3");
+			string viewModelPath4 = GetSubDefString(m_primaryFireInfo, "model_view4");
+
+			viewModel.modelindex = m_viewModel;
+			viewModel.modelindex2 = getmodelindex(viewModelPath2);
+			viewModel.modelindex3 = getmodelindex(viewModelPath3);
+			viewModel.modelindex4 = getmodelindex(viewModelPath4);
+			string modelFlash = GetSubDefString(m_weaponLastFireInfo, "model_flash");
+			viewModel2.m_iMuzzleModel = viewModel.m_iMuzzleModel = (int)getmodelindex(modelFlash);
+
+			if (viewModel) {
+				viewModel._UpdateBoneCount();
+			}
+
+			if (viewModel2) {
+				viewModel2._UpdateBoneCount();
+			}
+		}
+	}
 #endif
 }
 
@@ -954,12 +965,7 @@ ncWeapon::IsEmpty(void)
 void
 ncWeapon::Draw(void)
 {
-	/* TODO: some weapons want to unset the mode upon re-draw! */
-	#if 0
-	SwitchFireInfo(m_primaryFireInfo);
-	#else
 	SwitchFireInfo(m_weaponLastFireInfo);
-	#endif
 
 	float drawAnimation = -1;
 	float drawTime = 0.0f;
