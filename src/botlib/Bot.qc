@@ -581,6 +581,7 @@ Bot_KickRandom(void)
 	}
 }
 
+var entity g_botSpawner;
 void
 bot_spawner_think(void)
 {
@@ -590,7 +591,7 @@ bot_spawner_think(void)
 
 	/* if -1, we are not managing _anything_ */
 	if (minClientsCvar == -1i) {
-		self.nextthink = time + 5.0f;
+		g_botSpawner.nextthink = time + 5.0f;
 		return;
 	}
 
@@ -613,7 +614,7 @@ bot_spawner_think(void)
 		}
 	}
 
-	self.nextthink = time + 1.0f;
+	g_botSpawner.nextthink = time + 1.0f;
 }
 
 void
@@ -624,8 +625,23 @@ BotLib_Init(void)
 	BotProfile_Init();
 
 	/* this spawner manages the active bots */
-	entity bot_spawner = spawn();
-	bot_spawner.think = bot_spawner_think;
-	bot_spawner.nextthink = time + 1.0f;
+	g_botSpawner = spawn();
+	g_botSpawner.think = bot_spawner_think;
+	g_botSpawner.nextthink = time + 5.0f;
 }
+
+void
+BotLib_Shutdown(void)
+{
+	if (serverinfo.GetString("mode") != "singleplayer") {
+		for (entity e = world;(e = next.Player(e));) {
+			if (clienttype(e) == CLIENTTYPE_BOT) {
+				dropclient(e);
+			}
+		}
+	}
+
+	remove(g_botSpawner);
+}
+
 #endif
