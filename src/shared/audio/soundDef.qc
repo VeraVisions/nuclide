@@ -17,12 +17,11 @@
 /* this was converted from one system to another, so excuse the sloppy */
 
 static void pointsound_proper(vector origin, string sample, float volume, float attenuation, float pitch) = #483;
-var int autocvar_s_nominaldistance = 1000;
 
 
 #define SND_NOMINALDISTANCE autocvar_s_nominaldistance
-#define SND_MAXRADIUS_QUAKE 1000
-#define SND_MAXRADIUS_SOURCE 1000
+#define SND_MAXRADIUS_QUAKE 1000.0f
+#define SND_MAXRADIUS_SOURCE 1000.0f
 
 #define ATTN_SOURCE_NONE		0.0f
 #define ATTN_SOURCE_NORM		0.8f
@@ -231,15 +230,6 @@ SoundDef_ParseField(ncSoundDict newSound, int a, string keyName, string valueCS)
 	}
 }
 
-static float
-SoundDef_GetAttenuation(ncSoundDict newSound)
-{
-	if (newSound.dist_max == 0)
-		return 0;
-	else
-		return cvar("s_nominaldistance") / newSound.dist_max;
-}
-
 static int
 SoundDef_Parse(ncSoundDict newSound, string line, string shader)
 {
@@ -308,7 +298,7 @@ SoundDef_PrecacheFile(string fileName)
 		int lineSegments = tokenize_console(lineStream);
 
 		/* word for word */
-		for (int i = 0i; i < lineSegments; i++) {
+		for (int i = 0i; i < tokenize_console(lineStream); i++) {
 			string word = argv(i);
 
 			switch (word) {
@@ -475,7 +465,7 @@ SoundDef_Distance(entity target, string shader)
 
 	/* set pitch */
 	pitch = random(newSound.pitch_min, newSound.pitch_max);
-	radius = SoundDef_GetAttenuation(sample);
+	radius = newSound.AttenuationValue();
 	volume = newSound.volume;
 
 	/* flags */
@@ -508,6 +498,8 @@ SoundDef_Distance(entity target, string shader)
 		flag,
 		newSound.offset
 	);
+
+	SndLog("Playing %S (vol: %f, pitch: %d)", argv(r), volume, pitch );
 }
 
 static void
@@ -539,7 +531,7 @@ SoundDef_DistancePos(vector pos, string shader)
 
 	/* set pitch */
 	pitch = random(newSound.pitch_min, newSound.pitch_max);
-	radius = SoundDef_GetAttenuation(sample);
+	radius = newSound.AttenuationValue();
 	volume = newSound.volume;
 
 	/* flags */
@@ -574,7 +566,7 @@ SoundDef_Stop(entity target, float chan)
 }
 
 void
-SoundDef_Play(entity target, int chan, string shader)
+SoundDef_Play(entity targetEntity, int chan, string shader)
 {
 	int r;
 	float volume;
@@ -582,6 +574,7 @@ SoundDef_Play(entity target, int chan, string shader)
 	float pitch;
 	float flag;
 	int sample;
+	string randomSample;
 
 	if (!STRING_SET(shader)) {
 		return;
@@ -600,10 +593,11 @@ SoundDef_Play(entity target, int chan, string shader)
 	/* pick a sample */
 	r = floor(random(0,  newSound.sample_count));
 	tokenizebyseparator(newSound.samples, "\n");
+	randomSample = argv(r);
 
 	/* set pitch */
 	pitch = random(newSound.pitch_min, newSound.pitch_max);
-	radius = SoundDef_GetAttenuation(sample);
+	radius = newSound.AttenuationValue();
 	volume = newSound.volume;
 
 	/* flags */
@@ -626,7 +620,7 @@ SoundDef_Play(entity target, int chan, string shader)
 		flag |= SOUNDFLAG_FOLLOW;
 	}
 	if (newSound.flags & SNDFL_STEP) {
-		float s = vlen(target.velocity);
+		float s = vlen(targetEntity.velocity);
 
 		if (s <= (g_pmoveVars.pm_walkspeed * 0.5)) {
 			return;
@@ -636,6 +630,7 @@ SoundDef_Play(entity target, int chan, string shader)
 			volume *= 0.75f;
 		}
 	}
+
 #ifdef CLIENT
 	if (newSound.flags & SNDFL_OMNI) {
 		flag |= SOUNDFLAG_NOSPACIALISE;
@@ -643,29 +638,29 @@ SoundDef_Play(entity target, int chan, string shader)
 #else
 	if (newSound.flags & SNDFL_PRIVATE) {
 		flag |= SOUNDFLAG_UNICAST;
-		msg_entity = target;
+		msg_entity = targetEntity;
 	}
 	if (newSound.flags & SNDFL_ALERTS) {
-		ncMonster_AlertEnemyAlliance(target.origin, newSound.dist_max, target.m_iAlliance);
-		BotLib_Alert(target.origin, newSound.dist_max, target.team);
+		ncMonster_AlertEnemyAlliance(targetEntity.origin, newSound.dist_max, targetEntity.m_iAlliance);
+		BotLib_Alert(targetEntity.origin, newSound.dist_max, targetEntity.team);
 	}
 #endif
 
-	SndLog("Playing %S (radius: %f)", argv(r), newSound.dist_max );
+	SndLog("Playing %S (radius: %f (%f))", randomSample, newSound.dist_max, radius );
 
 #ifdef SERVER
 	if (newSound.shakes > 0.0) {
-		Client_ShakeOnce(target.origin, 512, 2.5, 1.0, 1.0f);
+		Client_ShakeOnce(targetEntity.origin, 512, 2.5, 1.0, 1.0f);
 	}
 #else
 	if (newSound.shakes > 0.0) {
 		float srad = 512;
-		float dist = vlen(pSeat->m_vecPredictedOrigin - target.origin);
+		float dist = vlen(pSeat->m_vecPredictedOrigin - targetEntity.origin);
 		if (dist < srad) {
 			float dif = 1.0 - (dist/srad);
 			pSeat->m_flShakeFreq = (1.0 * dif) * newSound.shakes;
 			pSeat->m_flShakeAmp = (1.0 * dif) * newSound.shakes;
-			pSeat->m_flShakeDuration = soundlength(argv(r));
+			pSeat->m_flShakeDuration = soundlength(randomSample);
 			pSeat->m_flShakeTime = pSeat->m_flShakeDuration;
 		}
 	}
@@ -673,16 +668,16 @@ SoundDef_Play(entity target, int chan, string shader)
 
 #ifdef CLIENT
 	if (newSound.pointparticle > -1)
-		pointparticles(newSound.pointparticle, target.origin, [0,0,0], 1);
+		pointparticles(newSound.pointparticle, targetEntity.origin, [0,0,0], 1);
 #else
 	if (newSound.pointparticle > -1)
 		ncWarning("SoundDef %S is attempting to spawn a particle on the server side.", shader);
 #endif
 
 	sound(
-		target,
+		targetEntity,
 		chan,
-		argv(r),
+		randomSample,
 		volume,
 		radius,
 		pitch,
@@ -691,7 +686,7 @@ SoundDef_Play(entity target, int chan, string shader)
 	);
 
 	if (STRING_SET(newSound.distshader)) {
-		SoundDef_Distance(target, newSound.distshader);
+		SoundDef_Distance(targetEntity, newSound.distshader);
 	}
 }
 
@@ -703,6 +698,7 @@ SoundDef_PlayAt(vector pos, string shader)
 	float pitch;
 	int flag;
 	int sample;
+	string randomSample;
 
 	if (!STRING_SET(shader)) {
 		return;
@@ -747,10 +743,10 @@ SoundDef_PlayAt(vector pos, string shader)
 	}
 #endif
 
-	SndLog("Playing %s %S (radius: %f)", shader, argv(r), newSound.dist_max );
+	SndLog("Playing %s %S (radius: %f)", shader, randomSample, newSound.dist_max );
 
 	/* really? this doesn't do any more? */
-	pointsound_proper(pos, argv(r), newSound.volume, SoundDef_GetAttenuation(sample), pitch);
+	pointsound_proper(pos, randomSample, newSound.volume, newSound.AttenuationValue(), pitch);
 
 	if (STRING_SET(newSound.distshader)) {
 		SoundDef_DistancePos(pos, newSound.distshader);
@@ -818,7 +814,7 @@ SoundDef_Update(entity target, int channel, int sample, float volume)
 
 	/* set pitch */
 	pitch = random(newSound.pitch_min, newSound.pitch_max);
-	radius = SoundDef_GetAttenuation(sample);
+	radius = newSound.AttenuationValue();
 	flag = 0;
 
 	/* flags */
