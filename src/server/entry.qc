@@ -341,10 +341,12 @@ void
 SetChangeParms(void)
 {
 	ncPlayer ourPlayer = (ncPlayer)self;
-	
-	if (clienttype(ourPlayer) == CLIENTTYPE_BOT) {
-		dropclient(ourPlayer);
-		return;
+
+	if (serverinfo.GetString("mode") != "singleplayer") {
+		if (clienttype(ourPlayer) == CLIENTTYPE_BOT) {
+			dropclient(ourPlayer);
+			return;
+		}
 	}
 
 	InitPrint("Setting Level-Change Parameters");

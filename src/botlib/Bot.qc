@@ -589,8 +589,6 @@ bot_spawner_think(void)
 	int botCount = 0i;
 	int minClientsCvar = cvars.GetInteger("bot_minClients");
 
-	printf("minClientsCvar: %i; ", minClientsCvar);
-
 	/* if -1, we are not managing _anything_ */
 	if (minClientsCvar == -1i) {
 		g_botSpawner.nextthink = time + 5.0f;
@@ -606,8 +604,6 @@ bot_spawner_think(void)
 			clientCount++;
 		}
 	}
-	
-	printf("clientCount: %i; botCount: %i\n", clientCount, botCount);
 
 	/* add remove as necessary */
 	if (clientCount < minClientsCvar) {
@@ -637,9 +633,11 @@ BotLib_Init(void)
 void
 BotLib_Shutdown(void)
 {
-	for (entity e = world;(e = next.Player(e));) {
-		if (clienttype(e) == CLIENTTYPE_BOT) {
-			dropclient(e);
+	if (serverinfo.GetString("mode") != "singleplayer") {
+		for (entity e = world;(e = next.Player(e));) {
+			if (clienttype(e) == CLIENTTYPE_BOT) {
+				dropclient(e);
+			}
 		}
 	}
 
