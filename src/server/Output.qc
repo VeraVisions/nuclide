@@ -28,10 +28,17 @@ ncOutput::TriggerOutput(void)
 		if (ourActivator)
 			ourActivator.Input(m_eActivator, m_strInput, m_strData);
 	} else if (m_strTarget == "!target") {
-		ncEntity ourTarget = (ncEntity)find(world, ::targetname, ourOwner.target);
+		ncEntity ourTarget = __NULL__;
 
-		if (ourTarget)
+		if (m_internalTarget) {
+			ourTarget = (ncEntity)m_internalTarget;
 			ourTarget.Input(m_eActivator, m_strInput, m_strData);
+		} else {
+			ourTarget = (ncEntity)find(world, ::targetname, ourOwner.target);
+
+			if (ourTarget)
+				ourTarget.Input(m_eActivator, m_strInput, m_strData);
+		}
 	} else if (m_strTarget == "!rules") {
 		ncRuleDelegate ourRules = ncRuleDelegate::ActiveInstance();
 
@@ -103,4 +110,5 @@ ncOutput::ncOutput(void)
 	m_flDelay = 0.0f;
 	m_iCount = 0i;
 	m_iOldCount = 0i;
+	m_internalTarget = __NULL__;
 }

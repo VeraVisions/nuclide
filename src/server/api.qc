@@ -321,6 +321,21 @@ SVPF_ents_Input(entity target, string inputName, string dataString, entity activ
 	sendInput(target, inputName, dataString, activator);
 }
 
+
+void
+SVPF_ents_InputDelayed(entity target, string inputName, string dataString, entity activator, float delayInSeconds)
+{
+	ncOutput delayedOutput = spawn(ncOutput);
+	delayedOutput.m_eActivator = activator;
+	delayedOutput.m_strTarget = "!target";
+	delayedOutput.m_internalTarget = target;
+	delayedOutput.m_strInput = inputName;
+	delayedOutput.m_strData = dataString;
+	delayedOutput.m_flDelay = delayInSeconds;
+	delayedOutput.m_iCount = 1;
+	delayedOutput.ScheduleOutput(activator);
+}
+
 void SVPF_music_Stop(void)
 {
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);

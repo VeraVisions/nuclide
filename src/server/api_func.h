@@ -88,6 +88,20 @@ typedef struct
 	@param dataString contains parameters for the input. E.g. "0 0 0"
 	@param activator references which entity is "responsible" for triggering this input. */
 	void Input(entity target, string inputName, string dataString, entity activator);
+	
+	
+	/** Sends a delayed input (See ncIO::Input) to an entity.
+
+	While you're able to manipulate entities in most ways using bare MapC, you might want to change Nuclide specific attributes of them as well. This can only be done using the I/O system.
+
+	For the variety of inputs an entity supports, please look at the respective entity-specific documentation.
+
+	@param target is the entity which will receive the input
+	@param inputName is the name of the input. E.g. "SetOrigin"
+	@param dataString contains parameters for the input. E.g. "0 0 0"
+	@param activator references which entity is "responsible" for triggering this input. 
+	@param delayInSeconds specifies the delay in seconds. */
+	void InputDelayed(entity target, string inputName, string dataString, entity activator, float delayInSeconds);
 } entsAPI_t;
 var entsAPI_t ents; /**< Access entsAPI_t functions using this variable. */
 
@@ -327,6 +341,7 @@ _server_main(void)
 	ents.Create = linkToServerProgs("SVPF_ents_Create");
 	ents.ChangeToClass = linkToServerProgs("SVPF_ents_ChangeToClass");
 	ents.Input = linkToServerProgs("SVPF_ents_Input");
+	ents.InputDelayed = linkToServerProgs("SVPF_ents_InputDelayed");
 
 	actor.GetInventory = linkToServerProgs("SVPF_actor_GetInventory");
 	actor.GetReserveAmmo = linkToServerProgs("SVPF_actor_GetReserveAmmo");
