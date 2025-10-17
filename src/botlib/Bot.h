@@ -124,6 +124,7 @@ private:
 /** Adds a bot to the game with some basic info. Returns the resulting entity. __NULL__ if unavailable. */
 entity Bot_AddQuick(void);
 void BotLib_Init(void);
+void BotLib_Shutdown(void);
 
 /** Applies random custom colors to the given bot entity. */
 void
