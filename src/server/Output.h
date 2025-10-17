@@ -22,6 +22,7 @@
 class ncOutput:ncEntity
 {
 private:
+	entity m_internalTarget;
 	entity m_eActivator;
 	string m_strTarget;
 	string m_strInput;
