@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+var float autocvar_s_nominaldistance = 1000.0f;
+
 /** Enumeration of valid sound flags. */
 typedef enumflags
 {
@@ -37,6 +39,8 @@ ncSoundDict:ncDict
 {
 public:
 	void ncSoundDict(void);
+
+	nonvirtual float AttenuationValue(void);
 
 private:
 	float dist_min; /**< Minimum playback distance. Default is 0. */
@@ -72,4 +76,14 @@ ncSoundDict::ncSoundDict(void)
 	name = "";
 	distshader = "";
 	pointparticle = -1;
+}
+
+
+float
+ncSoundDict::AttenuationValue(void)
+{
+	if (dist_max == 0)
+		return 0;
+	else
+		return autocvar_s_nominaldistance / dist_max;
 }
