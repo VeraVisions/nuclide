@@ -1,6 +1,11 @@
 entityDef item_armor1
 {
 	"editor_usage"	"(Green) Armor item that gives you 100 armor points."
+	"editor_model"	"progs/armor.mdl"
+	"editor_mins"	"-16 -16 0"
+	"editor_maxs"	"16 16 16"
+	"editor_color"	"0.8 0.7 0"
+
 	"spawnclass"	"ncItem"
 	"model"			"progs/armor.mdl"
 	"mins"			"-16 -16 0"
@@ -15,6 +20,12 @@ entityDef item_armor1
 
 entityDef item_armor2
 {
+	"editor_usage"	"(Yellow) Armor item that gives you 150 armor points."
+	"editor_model"	"progs/armor.mdl"
+	"editor_mins"	"-16 -16 0"
+	"editor_maxs"	"16 16 16"
+	"editor_skin"	"1"
+
 	"editor_usage"	"(Yellow) Armor item that gives you 150 armor points."
 	"spawnclass"	"ncItem"
 	"model"			"progs/armor.mdl"
@@ -31,6 +42,12 @@ entityDef item_armor2
 
 entityDef item_armorInv
 {
+	"editor_usage"	"(Red) Armor item that gives you 200 armor points."
+	"editor_model"	"progs/armor.mdl"
+	"editor_mins"	"-16 -16 0"
+	"editor_maxs"	"16 16 16"
+	"editor_skin"	"2"
+
 	"editor_usage"	"(Red) Armor item that gives you 200 armor points."
 	"spawnclass"	"ncItem"
 	"model"			"progs/armor.mdl"

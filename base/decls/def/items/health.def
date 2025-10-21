@@ -3,6 +3,10 @@ entityDef item_health
 	"editor_usage"				"Gives players 25 Health Points."
 	"editor_var spawnflags"		"Gives players 15 Health Points."
 	"editor_var spawnflags2"	"Gives players 100 Health Points."
+	"editor_model"	"maps/b_bh25.bsp"
+	"editor_mins"	"-16 -16 0"
+	"editor_maxs"	"16 16 16"
+	"editor_color"	"0.8 0.7 0"
 
 	"spawnclass"	"ncItem"
 	"model"			"maps/b_bh25.bsp"

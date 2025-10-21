@@ -4,6 +4,12 @@ entityDef item_cells
 	"editor_usage1"			"Gives players 6 Cells Ammo."
 	"editor_var spawnflags"	"Gives players 12 Cells Ammo."
 
+	"editor_model"	"maps/b_batt0.bsp"
+	"editor_mins"	"-16 -16 0"
+	"editor_maxs"	"16 16 16"
+	"editor_color"	"0.8 0.7 0"
+
+
 	"inherit"			"ammo_base"
 	"model"				"maps/b_batt0.bsp"
 	"inv_ammo_cells"	"6"

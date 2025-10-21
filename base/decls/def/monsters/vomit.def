@@ -1,6 +1,12 @@
 // Vomitus. Cut enemy
 entityDef monster_vomit
 {
+	"editor_color"  "1 .5 0"
+	"editor_usage"	"Vomitus"
+	"editor_model"	"progs/vomit.mdl"
+	"editor_mins"	"-16 -16 -24"
+	"editor_maxs"	"16 16 40"
+
 	"inherit"	"monster_base"
 	"netname"	"Vomitus"
 	"model"		"progs/vomit.mdl"

@@ -6,6 +6,12 @@
 
 entityDef monster_wizard
 {
+	"editor_color"  "1 .5 0"
+	"editor_usage"	"Scrag"
+	"editor_model"	"progs/wizard.mdl"
+	"editor_mins"	"-16 -16 -24"
+	"editor_maxs"	"16 16 40"
+
 	"inherit"	"monster_base"
 	"netname"	"Scrag"
 	"model"		"progs/wizard.mdl"

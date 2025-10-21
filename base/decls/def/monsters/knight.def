@@ -12,6 +12,12 @@
 
 entityDef monster_knight
 {
+	"editor_color"  "1 .5 0"
+	"editor_usage"	"Knight"
+	"editor_model"	"progs/knight.mdl"
+	"editor_mins"	"-16 -16 -24"
+	"editor_maxs"	"16 16 40"
+
 	"inherit"	"monster_base"
 	"netname"	"Knight"
 	"model"		"progs/knight.mdl"

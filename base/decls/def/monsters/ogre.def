@@ -15,6 +15,12 @@
 
 entityDef monster_ogre
 {
+	"editor_color"  "1 .5 0"
+	"editor_usage"	"Ogre"
+	"editor_model"	"progs/ogre.mdl"
+	"editor_mins"	"-32 -32 -24"
+	"editor_maxs"	"32 32 64"
+
 	"inherit"			"monster_base"
 	"netname"			"Ogre"
 	"model"				"progs/ogre.mdl"

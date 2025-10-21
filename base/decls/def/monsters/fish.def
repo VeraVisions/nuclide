@@ -5,6 +5,12 @@
 
 entityDef monster_fish
 {
+	"editor_color"	"1 .5 0"
+	"editor_usage"	"Rotfish"
+	"editor_model"	"progs/fish.mdl"
+	"editor_mins"	"-16 -16 -24"
+	"editor_maxs"	"16 16 24"
+
 	"inherit"	"monster_base"
 	"model"		"progs/fish.mdl"
 	"netname"	"Rotfish"

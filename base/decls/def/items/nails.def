@@ -3,6 +3,10 @@ entityDef item_spikes
 	"editor_usage"			"Nails for the (Super) Nail Gun."
 	"editor_usage2"			"Gives players 25 Nails Ammo."
 	"editor_var spawnflags"	"Gives players 50 Nails Ammo."
+	"editor_model"	"maps/b_nail0.bsp"
+	"editor_mins"	"-16 -16 0"
+	"editor_maxs"	"16 16 16"
+	"editor_color"	"0.8 0.7 0"
 
 	"inherit"			"ammo_base"
 	"model"				"maps/b_nail0.bsp"
