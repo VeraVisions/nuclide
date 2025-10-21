@@ -5,6 +5,12 @@
 
 entityDef monster_shalrath
 {
+	"editor_color"  "1 .5 0"
+	"editor_usage"	"Vore"
+	"editor_model"	"progs/shalrath.mdl"
+	"editor_mins"	"-32 -32 -24"
+	"editor_maxs"	"32 32 64"
+
 	"inherit"	"monster_base"
 	"netname"	"Vore"
 	"model"		"progs/shalrath.mdl"

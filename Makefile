@@ -121,7 +121,7 @@ hud: fteqcc
 	cd "$(GAME)/src/hud/" && $(MAKE) QCC=$(QCC_DIR)/../../../fteqcc CFLAGS="-I$(QCC_DIR)/../../../src/common/"
 
 # will build a gamepack for gtkradiant
-defs-nr-q3: netradiant trshaders $(GAME)/scripts/entities.def
+defs-nr-q3: netradiant trshaders
 	mkdir -p "$(NR_GAMEDIR)"
 	mkdir -p "$(NR_GAMES)"
 	echo "<?xml version=\"1.0\" encoding=\"iso-8859-1\" standalone=\"yes\"?>" > "$(NR_GAME)"
@@ -190,7 +190,7 @@ defs-nr-q3: netradiant trshaders $(GAME)/scripts/entities.def
 	echo "  </build>" >> $(NR_SYNAPSE)
 	echo "</project>" >> $(NR_SYNAPSE)
 
-defs-nr-q1: netradiant $(GAME)/scripts/entities.def
+defs-nr-q1: netradiant
 	mkdir -p "$(NR_GAMEDIR)"
 	echo "<?xml version=\"1.0\" encoding=\"iso-8859-1\" standalone=\"yes\"?>" > "$(NR_GAME)"
 	echo "<game" >> "$(NR_GAME)"
@@ -350,7 +350,7 @@ defs-nr-q1: netradiant $(GAME)/scripts/entities.def
 	echo "</project>" >> $(NR_SYNAPSE)
 
 # will build a gamepack for gtkradiant
-defs-nrc-q3: netradiant-custom trshaders $(GAME)/scripts/entities.def
+defs-nrc-q3: netradiant-custom trshaders
 	mkdir -p "$(NRC_GAMEDIR)"
 	mkdir -p "$(NRC_GAMES)"
 	echo "<?xml version=\"1.0\" encoding=\"iso-8859-1\" standalone=\"yes\"?>" > "$(NRC_GAME)"
@@ -419,7 +419,7 @@ defs-nrc-q3: netradiant-custom trshaders $(GAME)/scripts/entities.def
 	echo "  </build>" >> $(NRC_SYNAPSE)
 	echo "</project>" >> $(NRC_SYNAPSE)
 
-defs-nrc-q1: netradiant-custom $(GAME)/scripts/entities.def
+defs-nrc-q1: netradiant-custom
 	mkdir -p "$(NRC_GAMEDIR)"
 	echo "<?xml version=\"1.0\" encoding=\"iso-8859-1\" standalone=\"yes\"?>" > "$(NRC_GAME)"
 	echo "<game" >> "$(NRC_GAME)"
@@ -579,7 +579,7 @@ defs-nrc-q1: netradiant-custom $(GAME)/scripts/entities.def
 	echo "</project>" >> $(NRC_SYNAPSE)
 
 # will build a gamepack for gtkradiant
-defs-gtkradiant-q3: radiant trshaders $(GAME)/scripts/entities.def
+defs-gtkradiant-q3: radiant trshaders
 	echo "<?xml version=\"1.0\" encoding=\"iso-8859-1\" standalone=\"yes\"?>" > "$(RADIANT_GAME)"
 	echo "<game" >> "$(RADIANT_GAME)"
 	echo "  name=\"$(NAME)\"" >> "$(RADIANT_GAME)"
@@ -646,7 +646,7 @@ defs-gtkradiant-q3: radiant trshaders $(GAME)/scripts/entities.def
 	mkdir -p "$(HOME)/.$(GAME)/$(GAME)/scripts"
 
 # will build a gamepack for gtkradiant
-defs-gtkradiant-q1: radiant $(GAME)/scripts/entities.def
+defs-gtkradiant-q1: radiant
 	echo "<?xml version=\"1.0\" encoding=\"iso-8859-1\" standalone=\"yes\"?>" > "$(RADIANT_GAME)"
 	echo "<game" >> "$(RADIANT_GAME)"
 	echo "  name=\"$(NAME)\"" >> "$(RADIANT_GAME)"
@@ -712,17 +712,17 @@ defs-gtkradiant-q1: radiant $(GAME)/scripts/entities.def
 	rsync -rva "$(NUCLIDE_DIR)/ThirdParty/gtkradiant/install/installs/$(NAME)Pack/install/$(GAME)/." "$(HOME)/.$(GAME)/$(GAME)/."
 	rsync -rva "$(NUCLIDE_DIR)/ThirdParty/gtkradiant/install/installs/$(NAME)Pack/install/$(GAME)/." "./$(GAME)/."
 
-defs:
+defs: editordefs
 	if [ -d "$(NUCLIDE_DIR)/ThirdParty/gtkradiant/install/base" ];then $(MAKE) defs-gtkradiant-q3;fi
 	if [ -d "$(NUCLIDE_DIR)/ThirdParty/netradiant/install/base" ];then $(MAKE) defs-nr-q3;fi
 	if [ -d "$(NUCLIDE_DIR)/ThirdParty/netradiant-custom/install/plugins" ];then $(MAKE) defs-nrc-q3;fi
 
-defs-wad:
+defs-wad: editordefs
 	if [ -d "$(NUCLIDE_DIR)/ThirdParty/gtkradiant/install/base" ];then $(MAKE) defs-gtkradiant-q1;fi
 	if [ -d "$(NUCLIDE_DIR)/ThirdParty/netradiant/install/base" ];then $(MAKE) defs-nr-q1;fi
 	if [ -d "$(NUCLIDE_DIR)/ThirdParty/netradiant-custom/install/plugins" ];then $(MAKE) defs-nrc-q1;fi
 
-$(GAME)/scripts/entities.def:
+editordefs:
 	Tools/make_mapdef.sh $(GAME)
 	
 maps:

@@ -3,7 +3,9 @@ entityDef info_flag
 	"editor_mins"	"-16 -16 -36"
 	"editor_maxs"	"16 16 36"
 	"editor_usage"	"Gray Flag (OneTeam)"
-	"editor_color"	"0 0 0"
+	"editor_color"	"0.8 0.7 0"
+	"editor_model"	"progs/flag.mdl"
+
 	"inherit"		"item_base"
 	"inv_name"		"Gray Flag (OneTeam)"
 	"model"			"progs/flag.mdl"
@@ -14,6 +16,13 @@ entityDef info_flag
 // red
 entityDef item_flag_team1
 {
+	"editor_mins"	"-16 -16 -36"
+	"editor_maxs"	"16 16 36"
+	"editor_usage"	"Red Flag"
+	"editor_color"	"0.8 0.7 0"
+	"editor_model"	"progs/flag.mdl"
+	"editor_skin"	"1"
+
 	"spawnclass"	"ncCaptureItem"
 	"inherit"		"ctf_baseflag"
 	"skin"			"1"
@@ -25,6 +34,13 @@ entityDef item_flag_team1
 // blue
 entityDef item_flag_team2
 {
+	"editor_mins"	"-16 -16 -36"
+	"editor_maxs"	"16 16 36"
+	"editor_usage"	"Blue Flag"
+	"editor_color"	"0.8 0.7 0"
+	"editor_model"	"progs/flag.mdl"
+	"editor_skin"	"2"
+
 	"spawnclass"	"ncCaptureItem"
 	"inherit"		"ctf_baseflag"
 	"skin"			"2"

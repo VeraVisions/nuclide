@@ -10,6 +10,12 @@
 
 entityDef monster_shambler
 {
+	"editor_color"  "1 .5 0"
+	"editor_usage"	"Shambler"
+	"editor_model"	"progs/shambler.mdl"
+	"editor_mins"	"-32 -32 -24"
+	"editor_maxs"	"32 32 64"
+
 	"inherit"	"monster_base"
 	"netname"	"Shambler"
 	"model"		"progs/shambler.mdl"

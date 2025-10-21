@@ -5,6 +5,12 @@
 
 entityDef monster_tarbaby
 {
+	"editor_color"  "1 .5 0"
+	"editor_usage"	"Spawn"
+	"editor_model"	"progs/tarbaby.mdl"
+	"editor_mins"	"-16 -16 -24"
+	"editor_maxs"	"16 16 40"
+
 	"inherit"	"monster_base"
 	"netname"	"Spawn"
 	"model"		"progs/tarbaby.mdl"

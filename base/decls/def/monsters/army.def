@@ -11,6 +11,12 @@
 
 entityDef monster_army
 {
+	"editor_color"	"1 .5 0"
+	"editor_usage"	"Grunt"
+	"editor_model"	"progs/soldier.mdl"
+	"editor_mins"	"-16 -16 -24"
+	"editor_maxs"	"16 16 40"
+
 	"inherit"	"monster_base"
 	"netname"	"Grunt"
 	"model"		"progs/soldier.mdl"

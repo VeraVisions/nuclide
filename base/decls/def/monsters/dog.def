@@ -1,4 +1,4 @@
-#define DOG_ATTACK 0
+#define DOG_ATTACK	0
 #define DOG_DEATH1	1
 #define DOG_DEATH2	2
 #define DOG_PAIN1	3
@@ -10,6 +10,12 @@
 
 entityDef monster_dog
 {
+	"editor_color"	"1 .5 0"
+	"editor_usage"	"Rottweiler"
+	"editor_model"	"progs/dog.mdl"
+	"editor_mins"	"-32 -32 -24"
+	"editor_maxs"	"32 32 40"
+
 	"inherit"	"monster_base"
 	"netname"	"Rottweiler"
 	"model"		"progs/dog.mdl"

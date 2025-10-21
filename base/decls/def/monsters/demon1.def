@@ -8,6 +8,12 @@
 
 entityDef monster_demon1
 {
+	"editor_color"	"1 .5 0"
+	"editor_usage"	"Demon"
+	"editor_model"	"progs/demon.mdl"
+	"editor_mins"	"-32 -32 -24"
+	"editor_maxs"	"32 32 64"
+
 	"inherit"	"monster_base"
 	"netname"	"Fiend"
 	"model"		"progs/demon.mdl"

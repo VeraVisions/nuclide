@@ -3,6 +3,10 @@ entityDef item_rockets
 	"editor_usage"			"Rockets for the Grenade & Rocket Launcher."
 	"editor_usage2"			"Gives players 5 Rockets Ammo."
 	"editor_var spawnflags"	"Gives players 10 Rockets Ammo."
+	"editor_model"	"maps/b_rock0.bsp"
+	"editor_mins"	"-16 -16 0"
+	"editor_maxs"	"16 16 16"
+	"editor_color"	"0.8 0.7 0"
 
 	"inherit"			"ammo_base"
 	"model"				"maps/b_rock0.bsp"

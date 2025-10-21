@@ -3,6 +3,12 @@
 
 entityDef monster_oldone
 {
+	"editor_color"	"1 0 0"
+	"editor_usage"	"Shub-Nuggirath"
+	"editor_model"	"progs/oldone.mdl"
+	"editor_mins"	"-160 -128 -24"
+	"editor_maxs"	"160 128 256"
+
 	"inherit"		"monster_base"
 	"netname"		"Shub-Nuggirath"
 	"model"			"progs/oldone.mdl"

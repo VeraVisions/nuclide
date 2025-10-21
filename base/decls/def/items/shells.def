@@ -3,6 +3,10 @@ entityDef item_shells
 	"editor_usage"			"Shells for the (Double Barrel) Shotgun."
 	"editor_usage2"			"Gives players 20 Shells Ammo."
 	"editor_var spawnflags"	"Gives players 40 Shells Ammo."
+	"editor_model"	"maps/b_shell0.bsp"
+	"editor_mins"	"-16 -16 0"
+	"editor_maxs"	"16 16 16"
+	"editor_color"	"0.8 0.7 0"
 
 	"inherit"			"ammo_base"
 	"model"				"maps/b_shell0.bsp"

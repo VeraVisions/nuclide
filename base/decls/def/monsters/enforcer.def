@@ -11,6 +11,12 @@
 
 entityDef monster_enforcer
 {
+	"editor_color"	"1 .5 0"
+	"editor_usage"	"Enforcer"
+	"editor_model"	"progs/enforcer.mdl"
+	"editor_mins"	"-16 -16 -24"
+	"editor_maxs"	"16 16 40"
+
 	"inherit"	"monster_base"
 	"netname"	"Enforcer"
 	"model"		"progs/enforcer.mdl"
