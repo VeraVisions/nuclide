@@ -21,6 +21,7 @@ PMoveCustom_Init(void)
 	
 }
 
+
 /* pointcontents reimplementation, only way we can effectively trace 
  * against ladders and liquids that are defined in the game-logic.
  */
@@ -82,10 +83,12 @@ PMoveCustom_Categorize(void)
 
 	/* ladder content testing */
 	makevectors(self.v_angle);
-	ladderTestPos = self.origin + v_forward * 8.0f;
+	vector ladderTestDir = crossproduct([0,0,1],v_right) * 0.5f;
+	/* using this instead of v_forward so that player doesn't fall off
+	 * the ladder while facing straight up */
 	int oldhitcontents = self.hitcontentsmaski;
 	self.hitcontentsmaski = CONTENTBIT_FTELADDER;
-	tracebox(ladderTestPos, self.mins, self.maxs, ladderTestPos, MOVE_NORMAL, self);
+	tracebox(self.origin, self.mins, self.maxs, self.origin + ladderTestDir, MOVE_NORMAL, self);
 	self.hitcontentsmaski = oldhitcontents;
 
 	/* if set, you need to directly face the ladder or else you'll fall right off */
@@ -110,7 +113,8 @@ PMoveCustom_Categorize(void)
 #else
 	if (trace_endcontentsi & CONTENTBIT_FTELADDER) {
 #endif
-		self.m_nuclideFlags |= VFL_ONLADDER;
+		self.m_pmoveLadderNormal = trace_plane_normal;
+		self.m_nuclideFlags |= VFL_ONLADDER;		
 	} else {
 		self.m_nuclideFlags &= ~VFL_ONLADDER;
 	}
@@ -206,24 +210,38 @@ PMoveCustom_AccelWater(float move_time, float premove)
 void
 PMoveCustom_AccelLadder(float move_time, float premove, vector wish_dir, float wish_speed)
 {
-	vector vPlayerVector;
-
+	float accel_ladder = 1;
 	makevectors(input_angles);
-	vPlayerVector = v_forward;
-	vPlayerVector = (vPlayerVector * 240);
 
-	if (input_movevalues[0] > 0) {
-		self.velocity = vPlayerVector;
-	} else {
-		self.velocity = [0,0,0];
+	vector ladder_normal = self.m_pmoveLadderNormal;
+	ladder_normal[2] = 0;
+	ladder_normal = normalize(ladder_normal);
+	vector ladder_up = [0, 0, 1];
+	vector ladder_right = normalize(crossproduct(ladder_normal, ladder_up));
+	
+	vector wishdir_wskeys = v_forward;
+	vector wishdir_adkeys = v_right;
+	wishdir_wskeys[2] += 0.75f; //looking straight at it should still move you up
+	vector ladder_vel = [0, 0, 0];
+
+	if (input_movevalues[0]) {
+		wishdir_wskeys = normalize(wishdir_wskeys);
+		float ws_hor_speed = dotproduct(wishdir_wskeys, ladder_right) * input_movevalues[0];
+		float ws_vert_speed = dotproduct(wishdir_wskeys, ladder_up) * input_movevalues[0];
+		ladder_vel += ladder_right * ws_hor_speed * accel_ladder;
+		ladder_vel += ladder_up * ws_vert_speed * accel_ladder;
 	}
-
+	if (input_movevalues[1]) {
+		wishdir_adkeys = normalize(wishdir_adkeys);
+		float ad_hor_speed = dotproduct(wishdir_adkeys, ladder_right) * input_movevalues[1];
+		float ad_vert_speed = -dotproduct(wishdir_adkeys, ladder_normal) * input_movevalues[1];
+		ladder_vel += ladder_right * ad_hor_speed * accel_ladder;
+		ladder_vel += ladder_up * ad_vert_speed * accel_ladder;
+	}
+	self.velocity = ladder_vel;
 	if (input_buttons & INPUT_JUMP) {
-		vector ladderpos = trace_ent.absmin + (0.5f * (trace_ent.absmax - trace_ent.absmin));
-		ladderpos[2] = self.origin[2];
-		makevectors(normalize(ladderpos - self.origin));
-		self.velocity = v_forward * -250;
-		self.velocity += v_up * 100;
+		self.velocity += self.m_pmoveLadderNormal * 250;
+		self.velocity[2] += 40;
 		self.flags &= ~FL_ONGROUND;
 		self.flags &= ~FL_JUMPRELEASED;
 	}
