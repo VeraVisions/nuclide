@@ -1008,7 +1008,7 @@ radiant:
 
 netradiant-custom:
 	if [ ! -d ThirdParty/netradiant-custom ];then git clone https://github.com/Garux/netradiant-custom ThirdParty/netradiant-custom;fi
-	cd ThirdParty/netradiant-custom && $(MAKE) binaries-radiant DOWNLOAD_GAMEPACKS=no BUILD=debug RADIANT_ABOUTMSG="NuclideLite managed build."
+	cd ThirdParty/netradiant-custom && $(MAKE) DOWNLOAD_GAMEPACKS=no BUILD=debug RADIANT_ABOUTMSG="NuclideLite managed build."
 	mkdir -p ./ThirdParty/netradiant-custom/install/gamepacks/games
 	Tools/make_launcher.sh ./ThirdParty/netradiant-custom/install/ ./radiant.x86_64 netradiant-custom
 
