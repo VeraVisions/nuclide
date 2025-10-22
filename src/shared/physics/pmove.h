@@ -21,6 +21,7 @@
 int trace_endcontentsi;
 .vector m_pmoveBaseVelocity;
 .entity groundentity;
+.vector m_pmoveLadderNormal;
 
 
 /** @defgroup pmove Player Movement

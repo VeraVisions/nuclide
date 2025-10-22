@@ -75,6 +75,7 @@ ncPlayer::ncPlayer(void)
 	m_pmoveHookVelocity = g_vec_null;
 	m_pmoveVars = 0;
 	m_holdingEntity = 0;
+	m_pmoveLadderNormal = g_vec_null;
 }
 
 ncWeapon
@@ -1074,6 +1075,8 @@ ncPlayer::ReceiveEntity(float isNew, float flChanged)
 	READENTITY_FLOAT(gflags, PLAYER_FLAGS)
 	READENTITY_FLOAT(gravity, PLAYER_FLAGS)
 	READENTITY_FLOAT(friction, PLAYER_FLAGS)
+	READENTITY_ANGLE(m_pmoveLadderNormal[0], PLAYER_FLAGS)
+	READENTITY_ANGLE(m_pmoveLadderNormal[1], PLAYER_FLAGS)
 	READENTITY_FLOAT(m_timeSinceJump, PLAYER_TIMINGS)
 	READENTITY_FLOAT(m_timeSinceTeleport, PLAYER_TIMINGS)
 	READENTITY_BYTE(m_weaponAnimSequence, PLAYER_WEAPONFRAME)
@@ -1676,6 +1679,8 @@ ncPlayer::EvaluateEntity(void)
 	EVALUATE_FIELD(gflags, PLAYER_FLAGS)
 	EVALUATE_FIELD(gravity, PLAYER_FLAGS)
 	EVALUATE_FIELD(friction, PLAYER_FLAGS)
+	EVALUATE_VECTOR(m_pmoveLadderNormal, 0, PLAYER_FLAGS)
+	EVALUATE_VECTOR(m_pmoveLadderNormal, 1, PLAYER_FLAGS)
 	EVALUATE_FIELD(m_timeSinceJump, PLAYER_TIMINGS)
 	EVALUATE_FIELD(m_timeSinceTeleport, PLAYER_TIMINGS)
 	EVALUATE_FIELD(m_weaponAnimSequence, PLAYER_WEAPONFRAME)
@@ -1789,6 +1794,8 @@ ncPlayer::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_FLOAT(gflags, PLAYER_FLAGS)
 	SENDENTITY_FLOAT(gravity, PLAYER_FLAGS)
 	SENDENTITY_FLOAT(friction, PLAYER_FLAGS)
+	SENDENTITY_ANGLE(m_pmoveLadderNormal[0], PLAYER_FLAGS)
+	SENDENTITY_ANGLE(m_pmoveLadderNormal[1], PLAYER_FLAGS)
 	SENDENTITY_FLOAT(m_timeSinceJump, PLAYER_TIMINGS)
 	SENDENTITY_FLOAT(m_timeSinceTeleport, PLAYER_TIMINGS)
 	SENDENTITY_BYTE(m_weaponAnimSequence, PLAYER_WEAPONFRAME)
