@@ -1012,6 +1012,12 @@ netradiant-custom:
 	mkdir -p ./ThirdParty/netradiant-custom/install/gamepacks/games
 	Tools/make_launcher.sh ./ThirdParty/netradiant-custom/install/ ./radiant.x86_64 netradiant-custom
 
+# Unsupported, internal use only
+worldspawn:
+	if [ ! -d Tools/worldspawn ];then git clone https://code.idtech.space/vera/worldspawn Tools/worldspawn;fi
+	cd Tools/worldspawn && $(MAKE) LDFLAGS="-ldl"
+	rsync -rva Tools/worldspawn/build/. ./.
+
 netradiant:
 	if [ ! -d ThirdParty/netradiant ];then git clone --recursive https://gitlab.com/xonotic/netradiant ThirdParty/netradiant;fi
 	cd ThirdParty/netradiant && cmake -G "Unix Makefiles" -S. -Bbuild -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=$(MAKE) -DDOWNLOAD_GAMEPACKS=OFF
