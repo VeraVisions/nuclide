@@ -406,6 +406,25 @@ CLPF_CLPF_weapon_GetClipSize(entity activeWeapon)
 }
 
 bool
+CLPF_weapon_IsEmpty(entity activeWeapon)
+{
+	ncActor owner = (ncActor)pSeat->m_ePlayer;
+	ncWeapon weapon;
+
+	if (activeWeapon == __NULL__) {
+		weapon = owner.m_activeWeapon;
+	} else {
+		weapon = (ncWeapon)activeWeapon;
+	}
+
+	if (weapon) {
+		return weapon.IsEmpty();
+	}
+
+	return (true);
+}
+
+bool
 CLPF_weapon_UsesSecondaryAmmo(entity activeWeapon)
 {
 	ncActor owner = (ncActor)pSeat->m_ePlayer;
