@@ -305,37 +305,46 @@ bool
 Cmd_Parse(string sCMD)
 {
 	ncClient localPlayer = (ncClient)pSeat->m_ePlayer;
+	
+	static void Cmd_Parse_HudCmd(int i, string sCMD) {
+		Textmenu_Input(i);
+		
+		if (!Textmenu_IsActive()) {
+			HUD_ConsoleCommand(sCMD);
+		}
+	}
+
 	switch (argv(0)) {
 
 	case "slot1":
-		Textmenu_Input(0);
+		Cmd_Parse_HudCmd(0, sCMD);
 		break;
 	case "slot2":
-		Textmenu_Input(1);
+		Cmd_Parse_HudCmd(1, sCMD);
 		break;
 	case "slot3":
-		Textmenu_Input(2);
+		Cmd_Parse_HudCmd(2, sCMD);
 		break;
 	case "slot4":
-		Textmenu_Input(3);
+		Cmd_Parse_HudCmd(3, sCMD);
 		break;
 	case "slot5":
-		Textmenu_Input(4);
+		Cmd_Parse_HudCmd(4, sCMD);
 		break;
 	case "slot6":
-		Textmenu_Input(5);
+		Cmd_Parse_HudCmd(5, sCMD);
 		break;
 	case "slot7":
-		Textmenu_Input(6);
+		Cmd_Parse_HudCmd(6, sCMD);
 		break;
 	case "slot8":
-		Textmenu_Input(7);
+		Cmd_Parse_HudCmd(7, sCMD);
 		break;
 	case "slot9":
-		Textmenu_Input(8);
+		Cmd_Parse_HudCmd(8, sCMD);
 		break;
 	case "slot10":
-		Textmenu_Input(9);
+		Cmd_Parse_HudCmd(9, sCMD);
 		break;
 
 	case "listFramegroups":
