@@ -97,6 +97,7 @@ BodyQue_Spawn(ncActor pl, float anim)
 	nextBody.ScheduleThink(BodyQue_Update, 0.0f);
 	nextBody.colormap = pl.colormap;
 	nextBody.frame1time = 0.0f;
+	nextBody.SendFlags = -1;
 
 	return (nextBody);
 }
@@ -108,7 +109,7 @@ BodyQue_SpawnRagdoll(ncActor pl, float anim)
 
 	nextRagdoll.Spawn();
 	/* don't run physics on server side */
-	nextRagdoll.SetMovetype(MOVETYPE_NONE);
+	nextRagdoll.SetMovetype(MOVETYPE_BOUNCE);
 	nextRagdoll.SetSolid(SOLID_NOT);
 	nextRagdoll.SetModelindex(pl.GetModelindex());
 
@@ -120,13 +121,13 @@ BodyQue_SpawnRagdoll(ncActor pl, float anim)
 
 	nextRagdoll.SetSize(pl.GetMins(), pl.GetMaxs());
 	nextRagdoll.SetAngles(pl.GetAngles());
-	nextRagdoll.SetVelocity(pl.GetVelocity() + [0,0,120]);
 	nextRagdoll.SetFrame(anim);
+	nextRagdoll.SetSkin(pl.GetSkin());
 	nextRagdoll.m_geomsetField = pl.m_geomsetField;
 	nextRagdoll.ScheduleThink(BodyQue_Update, 0.0f);
 	nextRagdoll.colormap = pl.colormap;
 	nextRagdoll.frame1time = 0.0f;
-	nextRagdoll.SendFlags |= RDENT_CHANGED_ORIGIN_X | RDENT_CHANGED_ORIGIN_Y | RDENT_CHANGED_ORIGIN_Z;
+	nextRagdoll.SendFlags = -1;
 
 	return (nextRagdoll);
 }
