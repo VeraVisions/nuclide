@@ -1064,13 +1064,15 @@ ncProjectile::_FireSingle(vector vecPos, vector vecAngles, float flDamage, float
 #endif
 
 	/* impact per bullet */
-	if (m_bDetonateOnWorld == true && impactTarget.iBleeds == 0 && skipFX == false) {
-		StartSoundDef(m_sndExplode, CHAN_VOICE, true);
-	
-		if (STRING_SET(m_strDecalGroup))
+	if (impactTarget.iBleeds == 0 && skipFX == false) {
+		if (m_bDetonateOnWorld == true) {
+			StartSoundDef(m_sndExplode, CHAN_VOICE, true);
+			SurfData_Impact(impactTarget, m_hitLocation, m_lastPlaneNormal);
+		}
+		
+		if (STRING_SET(m_strDecalGroup)) {
 			DecalGroups_Place(m_strDecalGroup, m_hitLocation + (vecAngles * -2));
-
-		SurfData_Impact(impactTarget, m_hitLocation, m_lastPlaneNormal);
+		}
 
 		if (STRING_SET(m_sndHitWorld)) {
 			//SoundDef_PlayAt(m_hitLocation, m_sndHitWorld);
