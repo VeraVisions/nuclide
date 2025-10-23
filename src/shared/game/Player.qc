@@ -1565,12 +1565,7 @@ ncPlayer::MakeTempSpectator(void)
 void
 ncPlayer::Death(entity inflictor, entity attacker, int damagePoints, vector dir, vector absImpactPos, int hitBody)
 {
-	/* either gib, or make a corpse */
-	if (GetHealth()< -50) {
-		float gibStrength = damagePoints * 2.0f;
-		BreakModel_Entity(this, dir, gibStrength);
-		SetHealth(0);
-	}
+	super::Death(inflictor, attacker, damagePoints, dir, absImpactPos, hitBody);
 
 	RemoveAllItems(false);
 	health = max_health = 0;
@@ -1589,7 +1584,6 @@ ncPlayer::Death(entity inflictor, entity attacker, int damagePoints, vector dir,
 	SetGravity(1.0f);
 	customphysics = Empty;
 	setsize(this, [0,0,0], [0,0,0]);
-
 	userinfo.SetFloat(this, "*deaths", deaths);
 	userinfo.SetBool(this, "*spectator", false);
 	userinfo.SetBool(this, "*dead", false);
@@ -2297,7 +2291,6 @@ ncPlayer::Damage(entity inflictor, entity attacker, ncDict damageDecl, float dam
 		rules.PlayerPain(this, (ncActor)attacker, damageDecl);
 		Pain(inflictor, attacker, (int)damagePoints, dmgDir, hitLocation, 0i);
 	}
-
 #endif
 }
 

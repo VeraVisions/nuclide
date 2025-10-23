@@ -51,7 +51,7 @@ SVPF_game_CleanUpMap(void)
 		ncEntity caw = (ncEntity)a;
 
 		if (!(is.Player(caw))) {
-			caw.Respawn();
+			ents.Input(caw, "Respawn", "", world);
 		}
 	}
 

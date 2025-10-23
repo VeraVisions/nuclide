@@ -215,6 +215,8 @@ public:
 	virtual void LevelNewParms(void);
 	/** Overridable: Called to store parms for a specific ncPlayer. */
 	virtual void LevelChangeParms(ncPlayer);
+	/** Overridable: Called to decode parms for a specific ncPlayer. */
+	virtual void LevelDecodeParms(ncPlayer);
 	
 	/* Entities/Item manipulation */
 	/** Overridable: Returns how many items players can carry in a given slot. */

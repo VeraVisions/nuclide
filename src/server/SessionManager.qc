@@ -365,13 +365,13 @@ void
 ncSessionManager::SaveStateToHandle(float fh, float entcount, float playerslots)
 {
 	float i = 0;
-	int num_saved = 0i;
+	int numSaved = 0i;
 	entity e;
 
 	fputs(fh, sprintf("GLOBAL %S\n", g_globalDictionary.GetDeclBody()));
 
 	for (i = 0; i < entcount; i++) {
-		ncEntity willsave;
+		ncEntity willSave;
 		e = edict_num(i);
 
 		if (e==world && i) {
@@ -386,23 +386,23 @@ ncSessionManager::SaveStateToHandle(float fh, float entcount, float playerslots)
 			continue;
 		}
 
-		willsave = (ncEntity)e;
+		willSave = (ncEntity)e;
 
-		if (!STRING_SET(willsave.declclass)) {
-			willsave.spawnclass = willsave.classname;
+		if (!STRING_SET(willSave.declclass)) {
+			willSave.spawnclass = willSave.classname;
 		}
 
-		fputs(fh, sprintf("ENTITY \"%d\" %S\n", i, willsave.spawnclass));
+		fputs(fh, sprintf("ENTITY \"%d\" %S\n", i, willSave.spawnclass));
 		fputs(fh, "{\n");
-		fputs(fh, sprintf("%S %S\n", "classname", willsave.classname));
-		fputs(fh, sprintf("%S %S\n", "declclass", willsave.declclass));
-		willsave.Save(fh);
+		fputs(fh, sprintf("%S %S\n", "classname", willSave.classname));
+		fputs(fh, sprintf("%S %S\n", "declclass", willSave.declclass));
+		willSave.Save(fh);
 		fputs(fh, "}\n");
-		num_saved++;
+		numSaved++;
 	}
 	fclose(fh);
 
-	ncLog("saved %i entities", num_saved);
+	ncLog("saved %i entities", numSaved);
 
 	networkEventBroadcast(EV_GAME_SAVED);
 }
