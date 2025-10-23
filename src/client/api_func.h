@@ -473,11 +473,15 @@ typedef struct
 
 	@return integer value of the maximum ammo size.*/
 	int MaxAmmo(entity weaponRef = __NULL__);
-	/** Returns if the current/active weapon item in the player's inventory makes use of a secondary ammo type.
+	/** Returns if the specified weapon item in the player's inventory is empty.
+
+	@return **true** when it supports a second ammo type.*/
+	bool IsEmpty(entity weaponRef = __NULL__);
+	/** Returns if the specified weapon item in the player's inventory makes use of a secondary ammo type.
 
 	@return **true** when it supports a second ammo type.*/
 	bool UsesSecondaryAmmo(entity weaponRef = __NULL__);
-	/** Returns if the current/active weapon item in the player's inventory requires ammo.
+	/** Returns if the specified weapon item in the player's inventory requires ammo.
 
 	@return **true** when it requires ammo.*/
 	bool AmmoRequired(entity weaponRef = __NULL__);
@@ -638,6 +642,7 @@ _client_main(void)
 	weapon.GetClip = linkToClientProgs("CLPF_weapon_GetClip");
 	weapon.GetClipSize = linkToClientProgs("CLPF_CLPF_weapon_GetClipSize");
 	weapon.MaxAmmo = linkToClientProgs("CLPF_weapon_MaxAmmo");
+	weapon.IsEmpty = linkToClientProgs("CLPF_weapon_IsEmpty");
 	weapon.UsesSecondaryAmmo = linkToClientProgs("CLPF_weapon_UsesSecondaryAmmo");
 	weapon.AmmoRequired = linkToClientProgs("CLPF_weapon_AmmoRequired");
 	weapon.GetActiveWeapon = linkToClientProgs("CLPF_weapon_GetActiveWeapon");
