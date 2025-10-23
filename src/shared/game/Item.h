@@ -56,6 +56,7 @@ Some configurations will simply increase your statistics upon touch.
 - "inv_weapon" : name of the weapon to give on pickup. can be the same as this entitydef.
 - "inv_health" : How much health points to give on pick-up.
 - "inv_armor" : How much armor points to give on pick-up.
+- "inv_air" : How much air (in seconds) to give on pick-up.
 - "no_touch" : If 1, will have to be triggered to be given to the activator.
 - "inv_carry" : If 1, will not use the item instantly.
 - "inv_icon" : Material for HUD graphics.
@@ -214,6 +215,7 @@ private:
 
 	int m_itemGivesHealth;
 	int m_itemGivesArmor;
+	float m_itemGivesAir;
 	int m_itemGivesBonusHealth;
 	int m_itemGivesBonusArmor;
 	bool m_itemNoTouch;

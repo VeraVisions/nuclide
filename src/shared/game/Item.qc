@@ -156,6 +156,9 @@ ncItem::SpawnKey(string keyName, string setValue)
 	case "droptofloor":
 		m_itemPickupFloats = !ReadBool(setValue);
 		break;
+	case "inv_air":
+		m_itemGivesAir = ReadFloat(setValue);
+		break;
 	default:
 		super::SpawnKey(keyName, setValue);
 		break;
@@ -183,6 +186,7 @@ ncItem::Save(float handle)
 	SaveBool(handle, "itemNoTouch", m_itemNoTouch);
 	SaveBool(handle, "itemCarries", m_itemCarries);
 	SaveString(handle, "itemRequiresItem", m_itemRequiresItem);
+	SaveBool(handle, "itemGivesAir", m_itemGivesAir);
 
 	for (int i = 0i; i < MAX_AMMO_TYPES; i++) {
 		SaveInt(handle, sprintf("itemGivesAmmo_%i", i), m_itemGivesAmmo[i]);
@@ -255,6 +259,9 @@ ncItem::Restore(string keyName, string setValue)
 	case "nextItem":
 		m_nextItem = (ncItem)ReadEntity(setValue);
 		break;
+	case "itemGivesAir":
+		m_itemGivesAir = ReadFloat(setValue);
+		break;
 	default:
 		super::Restore(keyName, setValue);
 		break;
@@ -268,6 +275,9 @@ ncItem::Input(entity eAct, string strInput, string strData)
 	/* gamemodes can alternatively use this to set the respawn time of items post-init */
 	case "SetRespawnTime":
 		SetRespawnTime(stof(strData));
+		break;
+	case "Respawn":
+		PickupRespawn();
 		break;
 	default:
 		super::Input(eAct, strInput, strData);
@@ -302,6 +312,11 @@ ncItem::ItemBonusCheck(entity pickerUpper)
 	}
 
 	if (m_itemGivesBonusArmor >= 1i && pl.GetArmor() < 200) {
+		return (true);
+	}
+
+	/* don't give air if... still able to breathe */
+	if (m_itemGivesAir > 0.0 && pl.m_timeUnderwater < time) {
 		return (true);
 	}
 
@@ -823,6 +838,13 @@ ncItem::GiveBonusItems(entity theOwner)
 	multicast([0,0,0], MULTICAST_ONE_R);
 
 	ourOwner.StartSoundDef(m_sndAcquire, CHAN_ITEM, true);
+
+	if (m_itemGivesAir > 0.0f) {
+		/* only dispense if we need air */
+		if (m_itemGivesAir && ourOwner.m_timeUnderwater < time) {
+			ourOwner.m_timeUnderwater = time + m_itemGivesAir;
+		}
+	}
 
 	if (m_itemGivesHealth > 0i) {
 		if (ourOwner.GetHealth() < 100) {
