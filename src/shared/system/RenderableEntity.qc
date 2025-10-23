@@ -1105,6 +1105,12 @@ ncRenderableEntity::HandleAnimEvent(float flTimeStamp, int iCode, string strData
 		}
 #endif
 		break;
+	case 2001:
+		/* body drops - light */
+		break;
+	case 2002:
+		/* body drops - heavy */
+		break;
 	case 5004: /* view model sound? */
 		/* if the file doesn't exist, assume it's a SoundDef */
 		if (fileExists(strcat("sound/", strData)) == false) {
