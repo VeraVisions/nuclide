@@ -32,6 +32,7 @@ ncActor::ncActor(void)
 	m_mindset = __NULL__;
 	m_hook = __NULL__;
 	m_pathTarget = "";
+	m_gibHealth = -50i;
 #endif
 
 	m_itemList = __NULL__;
@@ -88,13 +89,15 @@ ncActor::SetAnimationPrefix(string animPrefix)
 	m_actDraw = __ActForPrefix("draw", animPrefix, emotionString);
 	m_actAttack = __ActForPrefix("attack", animPrefix, emotionString);
 	m_actReload = __ActForPrefix("reload", animPrefix, emotionString);
+	m_actReloadStart = __ActForPrefix("reloadStart", animPrefix, emotionString);
+	m_actReloadEnd = __ActForPrefix("reloadEnd", animPrefix, emotionString);
 
 	m_boneSpine = gettagindex(this, GetDefString("spine"));
 	m_torsoFirst = gettagindex(this, GetDefString("torsoStart"));
 	m_torsoLast = gettagindex(this, GetDefString("torsoEnd"));
 	m_torsoTwistYaw = gettagindex(this, GetDefString("twistYaw"));
 
-#if 0
+#if 1
 	EntLog("Activity Set for prefix %S:", animPrefix);
 	EntLog("\tm_boneSpine: %i", m_boneSpine);
 	EntLog("\tm_actIdle: %d", m_actIdle);
@@ -254,6 +257,9 @@ void
 ncActor::SpawnKey(string keyName, string setValue)
 {
 	switch (keyName) {
+	case "gibsAtHealth":
+		m_gibHealth = ReadFloat(setValue);
+		break;
 	default:
 		super::SpawnKey(keyName, setValue);
 	}
@@ -484,6 +490,7 @@ ncActor::Spawned(void)
 	string weaponList = GetDefString("weapon");
 	string itemList = GetDefString("item");
 	int desiredWeapon = GetDefInt("current_weapon");
+
 	string switchTo = "";
 	float weaponCount = 0;
 
@@ -540,10 +547,58 @@ ncActor::RestoreComplete(void)
 }
 
 void
+ncActor::Pain(entity inflictor, entity attacker, int damagePoints, vector dir,  vector absImpactPos, int hitBody)
+{
+	super::Pain(inflictor, attacker, damagePoints, dir, absImpactPos, hitBody);
+
+	if (damagePoints < 10) {
+		StartSoundDef(m_sndPainSmall, CHAN_VOICE, true);
+	} else if (damagePoints < 25) {
+		StartSoundDef(m_sndPainMedium, CHAN_VOICE, true);
+	} else if (damagePoints < 50) {
+		StartSoundDef(m_sndPainLarge, CHAN_VOICE, true);
+	} else if (damagePoints < 75) {
+		StartSoundDef(m_sndPainHuge, CHAN_VOICE, true);
+	}
+}
+
+void
 ncActor::Death(entity inflictor, entity attacker, int damagePoints, vector dir, vector absImpactPos, int hitBody)
 {
 	RouteClear();
-	super::Death(inflictor, attacker, damagePoints, dir, absImpactPos, hitBody);
+	CancelSchedule();
+
+	/* either gib, or make a corpse */
+	if (GetHealth()< m_gibHealth) {
+		super::Death(inflictor, attacker, damagePoints, dir, absImpactPos, hitBody);
+	} else {
+		float deathAnimation = Activities_GetSequenceForEntity(this, "dieSimple");
+
+		switch (hitBody) {
+		case BODY_HEAD:
+			deathAnimation = Activities_GetSequenceForEntity(this, "dieHeadshot");
+			break;
+		case BODY_CHEST:
+			deathAnimation = Activities_GetSequenceForEntity(this, "dieChestshot");
+			break;
+		case BODY_STOMACH:
+			deathAnimation = Activities_GetSequenceForEntity(this, "dieGutshot");
+			break;
+		default:
+			bool isFacing = IsFacingPosition(absImpactPos);
+
+			if (random() < 0.5)
+			if (isFacing == false) {
+				deathAnimation = Activities_GetSequenceForEntity(this, "dieForward");
+			} else {
+				deathAnimation = Activities_GetSequenceForEntity(this, "dieBackward");
+			}
+			break;
+		}
+
+		MakeCorpse(deathAnimation);
+		StartSoundDef(m_sndDeath, CHAN_VOICE, true);
+	}
 }
 
 void

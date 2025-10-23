@@ -1973,7 +1973,7 @@ ncMonster::Pain(entity inflictor, entity attacker, int damage, vector dir,  vect
 
 	/* alert all nearby friendlies */
 	AlertNearby();
-	StartSoundDef(m_sndPain, CHAN_VOICE, true);
+	super::Pain(inflictor, attacker, damage, dir, absImpactPos, hitBody);
 	HasBeenHit();
 
 	if (m_flinchDuringMovement == false && length(GetVelocity()) > 5) {

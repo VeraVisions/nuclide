@@ -674,7 +674,6 @@ ncSurfacePropEntity::BreakModel(int damage, vector dir, int location)
 
 	m_timeOfDeath = time;
 
-
 	/* the first thing we do is mark this as invulnerable, to avoid
 	   any possible recursion in regards to damage later. */
 	MakeInvulnerable();

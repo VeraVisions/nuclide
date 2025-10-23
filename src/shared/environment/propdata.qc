@@ -405,7 +405,7 @@ PropData_ForModel(string modelname)
 		return -1;
 	}
 
-	if (!modelname) {
+	if (!STRING_SET(modelname)) {
 		return -1;
 	}
 
@@ -627,7 +627,7 @@ PropData_Load(string type)
 		return -1i;
 	}
 
-	if (!type) {
+	if (!STRING_SET(type)) {
 		return -1i;
 	}
 

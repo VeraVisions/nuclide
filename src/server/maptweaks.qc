@@ -138,11 +138,12 @@ MapTweak_Check(int num)
 	for (int i = 0; i < segments; i += 3) {
 		string infoName = argv(i);
 		string checkType = argv(i + 1);
-		float infoValue = stof(argv(i + 2));
+		string infoValueString = argv(i + 2);
+		float infoValue = stof(infoValueString);
 
 		switch (checkType) {
 		case "equals":
-			if not (serverkeyfloat(infoName) == infoValue)
+			if not (serverkey(infoName) == infoValueString)
 				return (false);
 			break;
 		case "less-than":

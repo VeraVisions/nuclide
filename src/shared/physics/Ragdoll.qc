@@ -14,10 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+var float autocvar_ragdoll_morphTime = 10.0f;
+
 void
 ncRagdoll::ncRagdoll(void)
 {
-	m_morphTime = 1.0f;
+	m_morphTime = 0.95f;
 }
 
 void
@@ -63,8 +65,6 @@ ncRagdoll::CreateRagdoll(void)
 
 	m_animationSkeletonIndex = skel_create(modelindex);
 	skel_build(m_animationSkeletonIndex, this, modelindex, 0, 0, 0, 1);
-	
-	physics_addforce(this, velocity, [0,0,0]);
 
 #if 0
 	string dollString = GetPropData(PROPINFO_DOLL);
@@ -83,7 +83,8 @@ ncRagdoll::CreateRagdoll(void)
 		skel_ragupdate(this, strcat("dollstring ", "models/player.doll"), 0);
 
 	skel_ragupdate(this, "animate 1", m_animationSkeletonIndex);
-	m_morphTime = 1.0f;
+	m_morphTime = 0.95f;
+
 	Show();
 }
 
@@ -284,24 +285,27 @@ ncRagdoll::ReceiveEntity(float flNew, float flChanged)
 
 	movetype = MOVETYPE_PHYSICS;
 
-	if (flNew == false) {
-		velocity = oldVelocity;
-	}
-
 	/* force set */
 	if ((flChanged & RDENT_CHANGED_ORIGIN_X) || (flChanged & RDENT_CHANGED_ORIGIN_Y) || (flChanged & RDENT_CHANGED_ORIGIN_Z)) {
 		CreateRagdoll();
 	}
 
-	if (scale == 0.0)
+	if (scale == 0.0) {
 		scale = 1.0f;
+	}
 
-	if (flChanged & RDENT_CHANGED_SIZE)
+	if (flChanged & RDENT_CHANGED_SIZE) {
 		setsize(this, mins * scale, maxs * scale);
-	if (flChanged & RDENT_CHANGED_BODY)
+	}
+
+	if (flChanged & RDENT_CHANGED_BODY) {
 		_UpdateGeomset();
-	if (flChanged & RDENT_CHANGED_MODELINDEX)
+	}
+
+	if (flChanged & RDENT_CHANGED_MODELINDEX) {
+		_ModelChanged();
 		_UpdateBoneCount();
+	}
 }
 
 float
@@ -313,7 +317,7 @@ ncRagdoll::predraw(void)
 	}
 
 	/* no skeletonindex, cheap render */
-	if (frame1time >= 10.0f) {
+	if (m_morphTime <= 0.0f && frame1time >= 10.0f) {
 		addentity(this);
 		return (PREDRAW_NEXT);
 	}
@@ -325,15 +329,16 @@ ncRagdoll::predraw(void)
 	skel_build(m_animationSkeletonIndex, this, this.modelindex, 0, 0, 0, 1);
 
 	/* set animation lerp value against animation index */
-	skel_ragupdate(this, sprintf("animate %f", m_morphTime), m_animationSkeletonIndex);
+	skel_ragupdate(this, sprintf("animate %f\n", m_morphTime), m_animationSkeletonIndex);
 
 	/* calculate physics frame data */
-	skel_ragupdate(this, "", 0);
+	skel_ragupdate(this, "", m_animationSkeletonIndex);
 
 	addentity(this);
 
-	m_morphTime -= frametime * 10.0f;
+	m_morphTime -= (frametime * autocvar_ragdoll_morphTime);
 
+	/* once 0.0, animation stops playing */
 	if (m_morphTime < 0.0f) {
 		m_morphTime = 0.0f;
 	}

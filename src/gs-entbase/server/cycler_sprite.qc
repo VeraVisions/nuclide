@@ -36,5 +36,21 @@ This entity was introduced in Half-Life (1998).
 class
 cycler_sprite:ncRenderableEntity
 {
+	void cycler_sprite(void);
 
+	virtual void Respawn(void);
 };
+
+void
+cycler_sprite::cycler_sprite(void)
+{
+}
+
+
+void
+cycler_sprite::Respawn(void)
+{
+	super::Respawn();
+
+	SetSize([-1024,-1024,-1024], [1024,1024,1024]);
+}

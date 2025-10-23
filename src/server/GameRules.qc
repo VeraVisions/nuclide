@@ -171,14 +171,41 @@ ncRuleDelegate::PlayerPostFrame(ncPlayer pl)
 
 /* level transitions */
 void
-ncRuleDelegate::LevelNewParms(void)
+ncRuleDelegate::LevelDecodeParms(ncPlayer pl)
 {
-	/* implemented by sub-class */
+	g_landmarkpos[0] = parm1;
+	g_landmarkpos[1] = parm2;
+	g_landmarkpos[2] = parm3;
+	pl.angles[0] = parm4;
+	pl.angles[1] = parm5;
+	pl.angles[2] = parm6;
+	pl.velocity[0] = parm7;
+	pl.velocity[1] = parm8;
+	pl.velocity[2] = parm9;
+	pl.flags = parm18;
 }
+
 void
 ncRuleDelegate::LevelChangeParms(ncPlayer pl)
 {
-	//print("LevelChangeParms!\n");
+	parm1 = g_landmarkpos[0];
+	parm2 = g_landmarkpos[1];
+	parm3 = g_landmarkpos[2];
+	parm4 = pl.angles[0];
+	parm5 = pl.angles[1];
+	parm6 = pl.angles[2];
+	parm7 = pl.velocity[0];
+	parm8 = pl.velocity[1];
+	parm9 = pl.velocity[2];
+	parm18 = pl.flags;
+}
+
+void
+ncRuleDelegate::LevelNewParms(void)
+{
+	parm1 = parm2 = parm3 = parm4 = parm5 = parm6 = parm7 =
+	parm8 = parm9 = 0;
+	parm18 = 0;
 }
 
 /* spectator */

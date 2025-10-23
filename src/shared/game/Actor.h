@@ -198,6 +198,7 @@ public:
 	virtual void Input(entity, string, string);
 	virtual void DebugDraw(void);
 	virtual void OnRemoveEntity(void);
+	virtual void Pain(entity inflictor, entity attacker, int damage, vector dir,  vector absImpactPos, int hitBody);
 	virtual void Death(entity inflictor, entity attacker, int damagePoints, vector dir, vector absImpactPos, int hitBody);
 
 	/** Overridable: Called regularily to select a new schedule to perform. */
@@ -340,6 +341,7 @@ private:
 	int m_torsoFirst;
 	int m_torsoLast;
 	int m_torsoTwistYaw;
+	int m_gibHealth;
 };
 
 /* for now here to make debugging easier */
