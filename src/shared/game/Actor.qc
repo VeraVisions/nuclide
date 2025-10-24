@@ -598,6 +598,7 @@ ncActor::Death(entity inflictor, entity attacker, int damagePoints, vector dir, 
 
 		MakeCorpse(deathAnimation);
 		StartSoundDef(m_sndDeath, CHAN_VOICE, true);
+		
 	}
 }
 
@@ -1731,6 +1732,14 @@ ncActor::SwitchToBestWeapon(bool ignoreActive)
 			float weight;
 
 			if (toIgnore == weaponName) {
+				linkedList = (ncItem)linkedList.m_nextItem;
+				continue;
+			}
+
+			ncWeapon ourWeapon = (ncWeapon)linkedList;
+
+			/* don't auto-switch to empty weapons */			
+			if (ourWeapon.IsEmpty()) {
 				linkedList = (ncItem)linkedList.m_nextItem;
 				continue;
 			}

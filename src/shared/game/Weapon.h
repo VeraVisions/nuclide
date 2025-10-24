@@ -319,6 +319,8 @@ public:
 	virtual void EvaluateEntity(void);
 	virtual float SendEntity(entity,float);
 	virtual void RestoreComplete(void);
+	virtual void GiveBonusItems(entity, bool);
+	virtual bool ItemBonusCheck(entity);
 
 	virtual void EjectBrass(void);
 	virtual void EjectCartridge(void);
@@ -520,6 +522,7 @@ private:
 	float m_fiZoomFOV;
 	bool m_fiPowerAmmo;
 	bool m_fiRemoveOnEmpty;
+	bool m_switchOnEmpty;
 	string m_fiBrassDef;
 	string m_fiCartridgeDef;
 	string m_fiDetonateOnFire;

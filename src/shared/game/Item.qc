@@ -33,6 +33,7 @@ ncItem::ncItem(void)
 	owner = __NULL__;
 	m_itemRespawn = 0;
 	m_oldOwner = __NULL__;
+	_m_itemTouchPickup = false;
 }
 
 #ifdef SERVER
@@ -44,6 +45,7 @@ ncItem::Spawned(void)
 	precache.Sound(m_sndAcquire);
 	precache.Sound(m_sndRespawn);
 	_isItem = true;
+	_m_itemTouchPickup = false;
 
 	if (CreatedByMap() == false) {
 		return;
@@ -70,6 +72,7 @@ void
 ncItem::Respawn(void)
 {
 	super::Respawn();
+	_m_itemTouchPickup = false;
 }
 
 void
@@ -361,6 +364,8 @@ ncItem::Touch(entity eToucher)
 {
 	ncPlayer pl;
 	bool removeFromMap = false;
+	bool hasItem = false;
+	string itemToAdd = __NULL__;
 
 	if (owner) {
 		return;
@@ -388,15 +393,17 @@ ncItem::Touch(entity eToucher)
 		}
 	}
 
+	itemToAdd = STRING_SET(m_itemWeapon) ? m_itemWeapon : declclass;
+	hasItem = pl.HasItem(itemToAdd);
+
 	if (ItemBonusCheck(pl) == true) {
-		GiveBonusItems(pl);
+		_m_itemTouchPickup = true;
+		GiveBonusItems(pl, hasItem ? (false) : (true));
 		removeFromMap = true;
 	}
 
 	if (ItemPickupCheck(pl) == true) {
 		/* don't remove if AddItem fails */
-		string itemToAdd = STRING_SET(m_itemWeapon) ? m_itemWeapon : declclass;
-
 		if (CreatedByMap()) {
 			ncItem copy = spawn(ncItem);
 			copyentity(this, copy);
@@ -826,7 +833,7 @@ ncItem::IsWeapon(void)
 
 #ifdef SERVER
 void
-ncItem::GiveBonusItems(entity theOwner)
+ncItem::GiveBonusItems(entity theOwner, bool isNew)
 {
 	ncActor ourOwner = (ncActor)theOwner;
 
@@ -886,7 +893,10 @@ ncItem::_AddedCallback(void)
 #ifdef SERVER
 	SendFlags |= -1;
 
-	GiveBonusItems(ourOwner);
+	/* only if we weren't picked up by touch... */
+	if (_m_itemTouchPickup == false) {
+		GiveBonusItems(ourOwner, ourOwner.HasItem(classname) ? (false) : (true));
+	}
 
 	OnPickup();
 	MakeInvulnerable();
