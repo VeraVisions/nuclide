@@ -568,6 +568,8 @@ ncActor::Death(entity inflictor, entity attacker, int damagePoints, vector dir, 
 	RouteClear();
 	CancelSchedule();
 
+	m_lastCorpse = __NULL__;
+
 	/* either gib, or make a corpse */
 	if (GetHealth()< m_gibHealth) {
 		super::Death(inflictor, attacker, damagePoints, dir, absImpactPos, hitBody);
@@ -596,8 +598,9 @@ ncActor::Death(entity inflictor, entity attacker, int damagePoints, vector dir, 
 			break;
 		}
 
-		MakeCorpse(deathAnimation);
+		m_lastCorpse = MakeCorpse(deathAnimation);
 		StartSoundDef(m_sndDeath, CHAN_VOICE, true);
+		
 		
 	}
 }

@@ -297,6 +297,15 @@ void View_PreDraw();
 void View_PostDraw();
 void View_DrawViewModel();
 
+typedef enum
+{
+	DEATHCAM_TRACK = 0,
+	DEATHCAM_DEUS = 1,
+	DEATHCAM_ATTACKER = 2,
+} deathcam_t;
+
+var deathcam_t autocvar_bodyque_trackingStyle = DEATHCAM_TRACK;
+
 void
 ncView::UpdateView(void)
 {
@@ -396,36 +405,63 @@ ncView::UpdateView(void)
 		case SPECMODE_DEATHCAM:
 			vector vecCamEnd;
 			c = findfloat(world, ::entnum, spec.m_spectatingEntity);
-#if 0
-			vector deathAngle;
-			vector vecCamStart = c.origin;
-			float progression = time - spec.m_flLastSpecTargetChange;
 
-			vecCamStart[2] += 16;
-			vecCamStart += (v_right * 4);
+			switch (autocvar_bodyque_trackingStyle) {
+			case DEATHCAM_DEUS:
+				vector deathAngle;
+				vector vecCamStart = c.origin;
+				float progression = time - spec.m_flLastSpecTargetChange;
 
-			deathAngle[0] = bound(0, progression * 15.0f, 90.0f);
-			deathAngle[1] = c.angles[1] + (progression * 22.5f);
-			deathAngle[2] = 0.0f;
+				vecCamStart[2] += 16;
+				vecCamStart += (v_right * 4);
 
-			makevectors(deathAngle);
+				deathAngle[0] = bound(0, progression * 15.0f, 90.0f);
+				deathAngle[1] = c.angles[1] + (progression * 22.5f);
+				deathAngle[2] = 0.0f;
 
-			vecCamEnd = vecCamStart + (v_forward * -48) + [0,0,16] + (v_right * 4);
-			traceline(vecCamStart, vecCamEnd, FALSE, m_viewTarget);
+				makevectors(deathAngle);
 
-			SetCameraOrigin(trace_endpos + (v_forward * 5));
-			SetCameraAngle(deathAngle);
-			SetClientAngle(deathAngle);
-#else
-			vector vecCamStart = c.origin + [0,0,16];
-			float tag = gettagindex(c, "ValveBiped.Bip01");
-			vecCamStart = gettaginfo(c, tag);
-			vecCamEnd = vecCamStart + (anglesToForward(GetCameraAngle()) * -128);
-			other = world;
-			traceline(vecCamStart, vecCamEnd, MOVE_OTHERONLY, m_viewTarget);
-			SetCameraOrigin(trace_endpos);
-			SetCameraAngle(view_angles);
-#endif
+				vecCamEnd = vecCamStart + (v_forward * -48) + [0,0,16] + (v_right * 4);
+				traceline(vecCamStart, vecCamEnd, FALSE, m_viewTarget);
+
+				SetCameraOrigin(trace_endpos + (v_forward * 5));
+				SetCameraAngle(deathAngle);
+				SetClientAngle(deathAngle);
+				break;
+			case DEATHCAM_ATTACKER: /* TODO: */
+				vector deathAngle;
+				vector vecCamStart = c.origin;
+				float progression = time - spec.m_flLastSpecTargetChange;
+
+				vecCamStart[2] += 16;
+				vecCamStart += (v_right * 4);
+
+				deathAngle[0] = bound(0, progression * 15.0f, 90.0f);
+				deathAngle[1] = c.angles[1] + (progression * 22.5f);
+				deathAngle[2] = 0.0f;
+
+				makevectors(deathAngle);
+
+				vecCamEnd = vecCamStart + (v_forward * -48) + [0,0,16] + (v_right * 4);
+				traceline(vecCamStart, vecCamEnd, FALSE, m_viewTarget);
+
+				SetCameraOrigin(trace_endpos + (v_forward * 5));
+				SetCameraAngle(deathAngle);
+				SetClientAngle(deathAngle);
+				break;
+			case DEATHCAM_TRACK:
+			default:
+				vector vecCamStart = c.origin + [0,0,16];
+				float tag = gettagindex(c, "ValveBiped.Bip01");
+				vecCamStart = gettaginfo(c, tag);
+				vecCamEnd = vecCamStart + (anglesToForward(GetCameraAngle()) * -128);
+				other = world;
+				traceline(vecCamStart, vecCamEnd, MOVE_OTHERONLY, m_viewTarget);
+				SetCameraOrigin(trace_endpos);
+				SetCameraAngle(view_angles);
+				break;
+			}
+
 			break;
 		case SPECMODE_LOCKEDCHASE:
 			view_angles = [0, spec.v_angle[1], 0];
