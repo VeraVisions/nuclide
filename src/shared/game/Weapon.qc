@@ -45,6 +45,7 @@ ncWeapon::ncWeapon(void)
 	m_nextWeapon = __NULL__;
 	m_prevWeapon = __NULL__;
 	m_fiFireUnderwater = true;
+	m_switchOnEmpty = true;
 }
 
 void
@@ -213,6 +214,9 @@ ncWeapon::SpawnKey(string keyName, string setValue)
 		break;
 	case "clipSizeDefault":
 		m_weaponClipStartSize = ReadInt(setValue);
+		break;
+	case "switchOnEmpty":
+		m_switchOnEmpty = ReadBool(setValue);
 		break;
 	case "mtr_flashShader":
 		m_fiMuzzleFlashMaterial = ReadString(setValue);
@@ -735,7 +739,6 @@ ncWeapon::ReloadCachedAttributes(void)
 	m_primaryAmmoType = ammoNumForName(firstType);
 	m_fiPrimedFuse = GetDefFloat("primed_fuse");
 	m_fiPowerAmmo = GetDefBool("powerAmmo");
-	m_fiRemoveOnEmpty = GetDefBool("removeOnEmpty");
 	m_fiFXTrail = particleeffectnum(GetDefString("fx_trail"));
 	m_fiAltModeSwitch = GetDefBool("altMode");
 
@@ -781,6 +784,8 @@ ncWeapon::UpdateFireInfoCache(void)
 	m_fiFireRate = GetSubDefFloat(m_weaponLastFireInfo, "fireRate");
 	m_fiSemiAuto = GetSubDefBool(m_weaponLastFireInfo, "semiAuto");
 	m_fiZoomFOV = GetSubDefFloat(m_weaponLastFireInfo, "zoomFov") / 90.0f;
+	
+	m_fiRemoveOnEmpty = GetSubDefFloat(m_weaponLastFireInfo, "removeOnEmpty");
 
 	/* defs to spawn */
 	m_fiOnFire = GetSubDefString(m_weaponLastFireInfo, "def_onFire");
@@ -1012,6 +1017,11 @@ ncWeapon::EmptySound(void)
 	ncPlayer ourOwner = (ncPlayer)GetOwner();
 	ourOwner.StartSoundDef(m_fiSndEmpty, CHAN_WEAPON, true);
 	ourOwner.gflags |= GF_SEMI_TOGGLED;
+
+	/* Remove when empty, but not when we're supposed to be detonating on fire */
+	if (m_fiRemoveOnEmpty) {
+		ourOwner.RemoveItem(classname);
+	}
 #endif
 }
 
@@ -1099,6 +1109,32 @@ ncWeapon::DetonateDef(string defName)
 }
 
 #ifdef SERVER
+void
+ncWeapon::GiveBonusItems(entity theOwner, bool isNew)
+{
+	ncActor ourOwner = (ncActor)theOwner;
+	super::GiveBonusItems(theOwner, isNew);
+
+	/* we already had this weapon, but we're taking extra ammo from the clip */
+	if (isNew == false) {
+		ourOwner.GiveAmmo(m_primaryAmmoType, m_weaponClip);
+	}
+}
+
+bool
+ncWeapon::ItemBonusCheck(entity pickerUpper)
+{
+	ncActor pl = (ncActor)pickerUpper;
+	bool superValue = super::ItemBonusCheck(pickerUpper);
+	
+	/* weapon has ammo in the clip/mag also! ensure that if we aren't full, we force this one to get picked up. */
+	if (pl.HasItem(classname) == true && pl.MaxAmmo(m_primaryAmmoType) == false) {
+		return (true);
+	}
+
+	return (superValue);
+}
+
 void
 ncWeapon::EjectBrass(void)
 {
@@ -1262,13 +1298,11 @@ ncWeapon::Attack(string fireInfo)
 			if (detonateAct >= 0) {
 				SetWeaponFrame(GetSubDefAct(fireInfo, "detonate"));
 			}
-
-			return;
 		}
 	}
 
 	/* Remove when empty */
-	if (m_fiRemoveOnEmpty == true && HasReserveAmmo() == false && m_weaponClipSize <= 0i) {
+	if (m_fiRemoveOnEmpty == true && IsEmpty()) {
 #ifdef SERVER
 		ourOwner.RemoveItem(classname);
 #endif
@@ -2053,15 +2087,17 @@ ncWeapon::_WeaponStoppedFiring(void)
 			_SetWeaponState(WEAPONSTATE_RELEASED);
 		}
 
-		WeaponStoppedFiring();
+	#ifdef SERVER
+		bool isEmpty = IsEmpty();
 
 		/* Remove when empty, but not when we're supposed to be detonating on fire */
-		if (!STRING_SET(m_fiDetonateOnFire) && m_fiRemoveOnEmpty && HasReserveAmmo() == false && m_weaponClipSize <= 0i) {
-#ifdef SERVER
+		if (m_fiRemoveOnEmpty && isEmpty) {
 			ourOwner.RemoveItem(classname);
-#endif
 			return;
+		} else if (isEmpty && m_switchOnEmpty && m_fiAmmoType == m_primaryAmmoType) {
+			ourOwner.SwitchToBestWeapon(true);
 		}
+	#endif
 	}
 
 	owner.m_nuclideFlags &= ~VFL_FIRING;

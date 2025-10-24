@@ -34,7 +34,7 @@ ncDispenser::Touch(entity touchingEntity)
 	}
 
 	if (ItemBonusCheck(touchingEntity) == true) {
-		GiveBonusItems(touchingEntity);
+		GiveBonusItems(touchingEntity, true);
 		UseTargets(touchingEntity, TRIG_TOGGLE, GetTriggerDelay());
 	} 
 

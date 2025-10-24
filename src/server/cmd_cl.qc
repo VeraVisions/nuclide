@@ -32,6 +32,7 @@ Cmd_ParseClientCommand(ncClient sender, string cmd, int commandArguments)
 			g_grMode.ChatMessageTeam(sender, substring(cmd, 9, -1));
 		}
 		break;
+#if 0
 	case "spectate":
 		if (is.Player(sender)) {
 			break;
@@ -48,7 +49,22 @@ Cmd_ParseClientCommand(ncClient sender, string cmd, int commandArguments)
 		EntityDef_SpawnClassname("player");
 		PutClientInServer();
 		break;
+#endif
+	case "timeleft":
+		string timestring;
+		float timeleft;
+		timeleft = cvar("timelimit") - (time / 60);
+		timestring = Util_TimeToString(timeleft);
+		bprint(PRINT_CHAT, sprintf("we have %s minutes remaining", timestring));
+		break;
+	case "joinTeam":
+		g_grMode.PlayerRequestTeam((ncPlayer)sender, (int)stoi(argv(1)));
+		break;
+	/* somewhat cheaty commands */
 	case "setpos":
+		if (!serverinfo.GetBool("cheats"))
+			break;
+		
 		printf("%i %S\n", commandArguments, cmd);
 		if (cvar("sv_cheats") == 1) {
 			if (commandArguments == 2) { /* setpos "0 0 0" */
@@ -63,30 +79,29 @@ Cmd_ParseClientCommand(ncClient sender, string cmd, int commandArguments)
 		}
 
 		break;
-	case "timeleft":
-		string timestring;
-		float timeleft;
-		timeleft = cvar("timelimit") - (time / 60);
-		timestring = Util_TimeToString(timeleft);
-		bprint(PRINT_CHAT, sprintf("we have %s minutes remaining", timestring));
-		break;
 	case "listInventory":
+		if (!cvars.GetBool("sv_cheats"))
+			break;
+
 		ncActor_ListInventory(sender);
 		break;
 	case "giveInventoryItem":
-		(ncActor)sender.GiveItem(argv(1));
+		if (cvars.GetBool("sv_cheats"))
+			(ncActor)sender.GiveItem(argv(1));
 		break;
 	case "removeInventoryItem":
-		(ncActor)sender.RemoveItem(argv(1));
+		if (cvars.GetBool("sv_cheats"))
+			(ncActor)sender.RemoveItem(argv(1));
 		break;
 	case "removeAllInventoryItems":
-		(ncActor)sender.RemoveAllItems(false);
+		if (cvars.GetBool("sv_cheats"))
+			(ncActor)sender.RemoveAllItems(false);
 		break;
 	case "listAmmo":
+		if (!cvars.GetBool("sv_cheats"))
+			break;
+
 		Ammo_DebugList();
-		break;
-	case "joinTeam":
-		g_grMode.PlayerRequestTeam((ncPlayer)sender, (int)stoi(argv(1)));
 		break;
 	default:
 		clientcommand(sender, cmd);

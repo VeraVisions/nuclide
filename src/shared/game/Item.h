@@ -145,7 +145,7 @@ public:
 	virtual void Spawned(void);
 	virtual bool ItemBonusCheck(entity);
 	virtual bool ItemPickupCheck(entity);
-	virtual void GiveBonusItems(entity);
+	virtual void GiveBonusItems(entity, bool);
 	virtual void Touch(entity);
 	virtual void Respawn(void);
 	virtual void SpawnKey(string, string);
@@ -221,6 +221,7 @@ private:
 	bool m_itemNoTouch;
 	bool m_itemCarries;
 	string m_itemRequiresItem;
+	bool _m_itemTouchPickup; /* whether the item was touched for pick-up */
 
 	int m_itemGivesAmmo[MAX_AMMO_TYPES];
 
