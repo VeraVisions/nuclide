@@ -63,6 +63,7 @@ ncProjectile::ncProjectile(void)
 	m_sndFly = __NULL__;
 	m_sndExplode = __NULL__;
 	m_sndBounce = __NULL__;
+	m_bReflect = false;
 	m_vecSpawnMins = g_vec_null;
 	m_vecSpawnMaxs = g_vec_null;
 	m_flSpawnFrame = 0;

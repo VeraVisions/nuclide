@@ -1562,6 +1562,8 @@ ncPlayer::MakeTempSpectator(void)
 	userinfo.SetBool(this, "*dead", false);
 }
 
+var bool autocvar_bodyque_trackCorpse = true;
+
 void
 ncPlayer::Death(entity inflictor, entity attacker, int damagePoints, vector dir, vector absImpactPos, int hitBody)
 {
@@ -1588,6 +1590,10 @@ ncPlayer::Death(entity inflictor, entity attacker, int damagePoints, vector dir,
 	userinfo.SetBool(this, "*spectator", false);
 	userinfo.SetBool(this, "*dead", false);
 	m_timeOfDeath = time;
+
+	if (m_lastCorpse && autocvar_bodyque_trackCorpse) {
+		SpectatorDeathcam(m_lastCorpse, (ncEntity)attacker, 3.0f);
+	}
 }
 
 void

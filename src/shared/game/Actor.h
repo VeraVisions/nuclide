@@ -341,6 +341,7 @@ private:
 	int m_torsoLast;
 	int m_torsoTwistYaw;
 	int m_gibHealth;
+	entity m_lastCorpse;
 
 	/* taken from player, makes sense though */
 	float m_timeUnderwater;
