@@ -278,6 +278,7 @@ private:
 	NETWORKED_VECTOR_N(v_angle)
 	NETWORKED_FLOAT_N(gravity)
 	NETWORKED_FLOAT_N(friction)
+	NETWORKED_FLOAT(speedmod)
 
 	NETWORKED_VECTOR_N(m_pmoveLadderNormal)
 
