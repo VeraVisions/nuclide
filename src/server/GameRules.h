@@ -197,6 +197,8 @@ public:
 	virtual void PlayerPain(ncPlayer, ncActor, ncDict);
 	/** Overridable: Called to check if a ncPlayer can attack. */
 	virtual bool PlayerCanAttack(ncPlayer);
+	/** Overridable: Called whenever the inventory had changed at the end of a frame. You want to put expensive operations here - as it is not called whenever an individual item is added. */
+	virtual void PlayerInventoryChanged(ncPlayer);
 	/** Overridable:: Called when an NPC gets killed. */
 	virtual void NPCDeath(ncActor, ncEntity, ncEntity);
 

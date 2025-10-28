@@ -248,16 +248,8 @@ PlayerPreThink(void)
 	ncPlayer ourPlayer = (ncPlayer)self;
 	bool isBot = is.Bot(ourPlayer);
 
-	if (g_mapEntitiesLoaded) {
-		return;
-	}
-
 	if (!STRING_SET(ourPlayer.classname) && isBot) {
 		Bot_InsertIntoGame(ourPlayer);
-		return;
-	}
-
-	if (is.Player(ourPlayer)) {
 		return;
 	}
 
@@ -271,8 +263,12 @@ PlayerPreThink(void)
 		((ncBot)ourPlayer).BotPreFrame();
 	}
 
-
 	if (g_grMode) {
+		if (ourPlayer.ruleSendInventory == true) {
+			g_grMode.PlayerInventoryChanged(ourPlayer);
+			ourPlayer.ruleSendInventory = false;
+		}
+
 		g_grMode.PlayerPreFrame((ncPlayer) ourPlayer);
 	}
 }
