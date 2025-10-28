@@ -424,6 +424,7 @@ ncItem::Touch(entity eToucher)
 		return;
 	}
 
+	pl.ruleSendInventory = true;
 	ncStats::PickupItem(this, pl);
 	UseTargets(pl, TRIG_TOGGLE, GetTriggerDelay());
 
@@ -898,6 +899,7 @@ ncItem::_AddedCallback(void)
 		GiveBonusItems(ourOwner, ourOwner.HasItem(classname) ? (false) : (true));
 	}
 
+	ourOwner.ruleSendInventory = true;
 	OnPickup();
 	MakeInvulnerable();
 #endif

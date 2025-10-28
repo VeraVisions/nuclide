@@ -987,8 +987,6 @@ SHPF_is_Client(entity entityToCheck)
 bool
 SHPF_is_Player(entity entityToCheck)
 {
-	if (STRING_SET(entityToCheck.classname))
-
 	if (SHPF_is_Client(entityToCheck)) {
 		ncClient pl = (ncClient)entityToCheck;
 		return pl.IsPlayer();

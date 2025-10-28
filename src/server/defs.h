@@ -125,6 +125,7 @@ ncEntity eActivator;
 .void(void) PlayerUse;
 .void(void) PlayerUseUnpressed;
 .bool iBleeds;
+.bool ruleSendInventory;
 .entity eUser;
 .float material;
 .float deaths;

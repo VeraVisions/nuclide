@@ -369,6 +369,11 @@ ncRuleDelegate::PlayerCanAttack(ncPlayer bp)
 	return (true);
 }
 
+void
+ncRuleDelegate::PlayerInventoryChanged(ncPlayer pl)
+{
+}
+
 bool
 ncRuleDelegate::PlayerRequestRespawn(ncPlayer pl)
 {
@@ -468,6 +473,7 @@ ncRuleDelegate::LinkProgs(void)
 		RULEMAP(newRule, PlayerRequestRespawn, "CodeCallback_PlayerRequestRespawn")
 		RULEMAP(newRule, PlayerRequestTeam, "CodeCallback_CallRequestTeam")
 		RULEMAP(newRule, PlayerSpawn, "CodeCallback_PlayerSpawn")
+		RULEMAP(newRule, PlayerInventoryChanged, "CodeCallback_PlayerInventoryChanged")
 		RULEMAP(newRule, Title, "CodeCallback_Title")
 		RULEMAP(newRule, MaxItemPerSlot, "CodeCallback_MaxItemsPerSlot")
 		RULEMAP(newRule, Shutdown, "CodeCallback_Shutdown")
