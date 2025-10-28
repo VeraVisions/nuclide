@@ -1075,6 +1075,7 @@ ncPlayer::ReceiveEntity(float isNew, float flChanged)
 	READENTITY_FLOAT(gflags, PLAYER_FLAGS)
 	READENTITY_FLOAT(gravity, PLAYER_FLAGS)
 	READENTITY_FLOAT(friction, PLAYER_FLAGS)
+	READENTITY_FLOAT(speedmod, PLAYER_FLAGS)
 	READENTITY_ANGLE(m_pmoveLadderNormal[0], PLAYER_FLAGS)
 	READENTITY_ANGLE(m_pmoveLadderNormal[1], PLAYER_FLAGS)
 	READENTITY_FLOAT(m_timeSinceJump, PLAYER_TIMINGS)
@@ -1185,6 +1186,7 @@ ncPlayer::PredictPreFrame(void)
 	SAVE_STATE(gflags)
 	SAVE_STATE(gravity)
 	SAVE_STATE(friction)
+	SAVE_STATE(speedmod)
 	SAVE_STATE(m_timeSinceJump)
 	SAVE_STATE(m_timeSinceTeleport)
 	SAVE_STATE(m_itemList)
@@ -1243,6 +1245,7 @@ ncPlayer::PredictPostFrame(void)
 	ROLL_BACK(gflags)
 	ROLL_BACK(gravity)
 	ROLL_BACK(friction)
+	ROLL_BACK(speedmod)
 	ROLL_BACK(m_timeSinceJump)
 	ROLL_BACK(m_timeSinceTeleport)
 	ROLL_BACK(m_weaponAnimSequence)
@@ -1334,6 +1337,7 @@ ncPlayer::Save(float handle)
 	SaveFloat(handle, "activeweapon", activeweapon);
 	SaveFloat(handle, "colormap", colormap);
 	SaveFloat(handle, "friction", friction);
+	SaveFloat(handle, "speedmod", speedmod);
 	SaveFloat(handle, "gflags", gflags);
 	SaveFloat(handle, "gravity", gravity);
 	SaveFloat(handle, "health", health);
@@ -1392,6 +1396,9 @@ ncPlayer::Restore(string keyName, string setValue)
 		break;
 	case "friction":
 		friction = ReadFloat(setValue);
+		break;
+	case "speedmod":
+		speedmod = ReadFloat(setValue);
 		break;
 	case "gflags":
 		gflags = ReadFloat(setValue);
@@ -1518,6 +1525,9 @@ ncPlayer::Input(entity eAct, string strInput, string strData)
 		break;
 	case "Spectate":
 		MakeTempSpectator();
+		break;
+	case "ModifySpeed":
+		speedmod = ReadFloat(strData);
 		break;
 	default:
 		super::Input(eAct, strInput, strData);
@@ -1679,6 +1689,7 @@ ncPlayer::EvaluateEntity(void)
 	EVALUATE_FIELD(gflags, PLAYER_FLAGS)
 	EVALUATE_FIELD(gravity, PLAYER_FLAGS)
 	EVALUATE_FIELD(friction, PLAYER_FLAGS)
+	EVALUATE_FIELD(speedmod, PLAYER_FLAGS)
 	EVALUATE_VECTOR(m_pmoveLadderNormal, 0, PLAYER_FLAGS)
 	EVALUATE_VECTOR(m_pmoveLadderNormal, 1, PLAYER_FLAGS)
 	EVALUATE_FIELD(m_timeSinceJump, PLAYER_TIMINGS)
@@ -1794,6 +1805,7 @@ ncPlayer::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_FLOAT(gflags, PLAYER_FLAGS)
 	SENDENTITY_FLOAT(gravity, PLAYER_FLAGS)
 	SENDENTITY_FLOAT(friction, PLAYER_FLAGS)
+	SENDENTITY_FLOAT(speedmod, PLAYER_FLAGS)
 	SENDENTITY_ANGLE(m_pmoveLadderNormal[0], PLAYER_FLAGS)
 	SENDENTITY_ANGLE(m_pmoveLadderNormal[1], PLAYER_FLAGS)
 	SENDENTITY_FLOAT(m_timeSinceJump, PLAYER_TIMINGS)

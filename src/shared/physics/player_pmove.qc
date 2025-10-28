@@ -511,7 +511,13 @@ ncPlayer::Physics_InputPreMove(void)
 
 	/* clamp movement values to max speed */
 	{
-		float wishSpeed = vlen(input_movevalues);
+		float wishSpeed = 0;
+		float speedModifier = speedmod;
+		
+		if (speedModifier <= 0.0)
+			speedModifier = 1.0f;
+
+		wishSpeed = vlen(input_movevalues) * speedModifier;
 
 		if (wishSpeed > maxspeed) {
 			wishSpeed = maxspeed;
