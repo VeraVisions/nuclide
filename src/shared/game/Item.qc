@@ -500,6 +500,20 @@ ncItem::PrintDebugInfo(void)
 }
 
 void
+ncItem::BecomeSolid(void)
+{
+	SetSolid(SOLID_TRIGGER);
+	SetMovetype(MOVETYPE_NONE);
+}
+
+void
+ncItem::BecomeDropped(void)
+{
+	SetSolid(SOLID_NOT);
+	SetMovetype(MOVETYPE_BOUNCE);
+}
+
+void
 ncItem::BecomePickup(void)
 {
 	SetModel(GetSpawnString("model"));
@@ -923,5 +937,7 @@ ncItem::_RemovedCallback(void)
 	owner = __NULL__;
 	chain = __NULL__;
 	m_nextItem = __NULL__;
-	ScheduleThink(Destroy, 0.0f);
+	
+	#warning make sure this is called somewhere!
+	//ScheduleThink(Destroy, 0.0f);
 }

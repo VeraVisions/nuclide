@@ -1796,7 +1796,78 @@ ncActor::RemoveWeaponInSlot(int desiredSlot)
 	return (false);
 }
 
-bool
+ncItem
+ncActor::DropItem(ncItem itemToDrop)
+{
+#ifdef SERVER
+	ncItem linkedList = __NULL__;
+	ncItem frontItem = __NULL__;
+	ncItem lastItem = __NULL__;
+	ncItem itemToRemove = __NULL__;
+	bool removeItem = false;
+	string itemName = itemName.declclass;
+
+	/* we posess nothing. auto return false. */
+	if (!m_itemList) {
+		return (__NULL__);
+	}
+
+	/* prevent nonsense */
+	if (GetCurrentWeapon() == itemName) {
+		SwitchToBestWeapon(true);
+	}
+
+	/* since we have something in the inventory, start there */
+	linkedList = m_itemList;
+
+	/* iterate through the inventory, then figure out if we already have it*/
+	while (linkedList) {
+		/* found the item, mark as needing to be removed */
+		if (linkedList == itemToDrop) {
+			removeItem = true;
+			frontItem = lastItem; /* the one before the current one */
+			itemToRemove = linkedList; /* the item to destroy */
+			break;
+		} else if (!STRING_SET(linkedList.declclass)) {
+			linkedList = __NULL__;
+			break;
+		}
+
+		lastItem = linkedList;
+		linkedList = (ncItem)linkedList.m_nextItem;
+	}
+
+	/* successfully remove the last item */
+	if (removeItem == true) {
+		/* we had an item in front, bridge across the removed item. */
+		if (frontItem) {
+			frontItem.m_nextItem = (ncItem)itemToRemove.m_nextItem;
+		} else {
+			/* this was the first item. set to chain (can be NULL) */
+			m_itemList = (ncItem)itemToRemove.m_nextItem;
+		}
+
+		itemToRemove._RemovedCallback();
+		itemToRemove.BecomePickup();
+		itemToRemove.BecomeDropped();
+		itemToRemove.ScheduleThink(ncItem::BecomeSolid, 1.0f);
+		return (itemToRemove);
+	}
+#endif
+
+	return (__NULL__);
+}
+
+
+ncItem
+ncActor::DropCurrentWeapon(ncItem itemToDrop)
+{
+	
+	return (__NULL__);
+}
+
+
+ncItem
 ncActor::DropWeaponInSlot(int desiredSlot)
 {
 	/* iterate over all the inventory items */
@@ -1815,14 +1886,15 @@ ncActor::DropWeaponInSlot(int desiredSlot)
 			int hudSlot = testWeapon.m_weaponHUDSlot;
 
 			if (hudSlot == desiredSlot) {
-				return RemoveItem(weaponName);
+				RemoveItem(weaponName);
+				return (testWeapon);
 			}
 		}
 
 		linkedList = (ncItem)linkedList.m_nextItem;
 	}
 
-	return (false);
+	return (__NULL__);
 }
 
 bool

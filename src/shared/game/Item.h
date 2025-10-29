@@ -176,6 +176,9 @@ public:
 	virtual void PrintDebugInfo(void);
 	/** Call to turn a weapon into a pickup. */
 	nonvirtual void BecomePickup(void);
+
+	nonvirtual void BecomeSolid(void);
+	nonvirtual void BecomeDropped(void);
 #endif
 
 	/** Called when an item was added to someones inventory. */
