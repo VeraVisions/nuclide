@@ -268,6 +268,7 @@ env_sprite::Respawn(void)
 	super::Respawn();
 
 	string modelTest = GetSpawnString("model");
+	scale = GetSpawnFloat("scale");
 
 	/* HACK: Source Engine support. Yes, they re-used 'model' for this. */
 	if (exists.InVFS(modelTest) == false) {
@@ -298,7 +299,7 @@ env_sprite::predraw(void)
 	makevectors(view_angles);
 	makevectors(vectoangles(origin - vecPlayer));
 	vector forg = origin + (v_forward * -16);
-	vector fsize = [64,64];
+	vector fsize = [64,64] * scale;
 
 	traceline(origin, vecPlayer, MOVE_WORLDONLY, this);
 
