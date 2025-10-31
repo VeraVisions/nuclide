@@ -1893,7 +1893,6 @@ ncWeapon::_ReloadFinished(void)
 		m_weaponClip = m_weaponClipSize;
 	}
 
-	ourOwner.ruleSendInventory = true;
 	ourOwner.UseAmmo(m_primaryAmmoType, ammoToDeduct);
 	WeaponStoppedReloading();
 }
