@@ -771,6 +771,12 @@ ncActor::Input(entity eAct, string strInput, string strData)
 	case "DropWeaponInSlot":
 		DropWeaponInSlot(ReadInt(strData));
 		break;
+	case "DropCurrentWeapon":
+		DropCurrentWeapon();
+		break;
+	case "DropItem":
+		DropNamedItem(strData);
+		break;
 	case "RemoveWeaponInSlot":
 		RemoveWeaponInSlot(ReadInt(strData));
 		break;
@@ -1810,6 +1816,24 @@ ncActor::RemoveWeaponInSlot(int desiredSlot)
 }
 
 ncItem
+ncActor::DropNamedItem(string namedItemToDrop)
+{
+	ncItem linkedList;
+
+	linkedList = m_itemList;
+
+	while (linkedList) {
+		/* found the item, mark as needing to be removed */
+		if (linkedList.declclass == namedItemToDrop) {
+			return DropItem(linkedList);
+		}
+		linkedList = (ncItem)linkedList.m_nextItem;
+	}
+
+	return (__NULL__);
+}
+
+ncItem
 ncActor::DropItem(ncItem itemToDrop)
 {
 #ifdef SERVER
@@ -1818,7 +1842,7 @@ ncActor::DropItem(ncItem itemToDrop)
 	ncItem lastItem = __NULL__;
 	ncItem itemToRemove = __NULL__;
 	bool removeItem = false;
-	string itemName = itemName.declclass;
+	string itemName = itemToDrop.declclass;
 
 	/* we posess nothing. auto return false. */
 	if (!m_itemList) {
@@ -1873,9 +1897,11 @@ ncActor::DropItem(ncItem itemToDrop)
 
 
 ncItem
-ncActor::DropCurrentWeapon(ncItem itemToDrop)
+ncActor::DropCurrentWeapon(void)
 {
-	
+	if (m_activeWeapon) {
+		return DropItem(m_activeWeapon);
+	}
 	return (__NULL__);
 }
 

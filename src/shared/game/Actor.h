@@ -163,6 +163,9 @@ public:
 	/** Drops the current weapon in someones specified inventory slot, placing it into the world in front of them. Return value is the handle of the entity that is dropped. If nothing is dropped in-front successfully, it will return __NULL__. The item may still have been removed by something else. */
 	nonvirtual ncItem DropCurrentWeapon(void);
 
+	nonvirtual ncItem DropItem(ncItem);
+	nonvirtual ncItem DropNamedItem(string);
+
 	/** Returns the name of the current weapon. E.g. "weapon_foobar" */
 	nonvirtual string GetCurrentWeapon(void);
 	/** Switches the entity to use the desired weapon. */
