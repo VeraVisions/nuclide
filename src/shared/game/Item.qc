@@ -414,16 +414,16 @@ ncItem::Touch(entity eToucher)
 			ncItem copy = spawn(ncItem);
 			copyentity(this, copy);
 			pl.GiveExactItem(copy);
+			removeFromMap = true;
 		} else {
 			pl.GiveExactItem(this);
+			removeFromMap = false;
 		}
 
 		/* if we have the carry flag set in addition, we'll put in an extra copy of this item */
 		if (STRING_SET(m_itemWeapon) && m_itemCarries) {
-			pl.GiveItem(itemToAdd);
+			pl.GiveNamedItem(itemToAdd);
 		}
-
-		removeFromMap = true;
 	}
 
 	if (removeFromMap == false) {
@@ -503,6 +503,20 @@ ncItem::PrintDebugInfo(void)
 	DebugBool("m_itemPickupFloats", m_itemPickupFloats);
 	DebugBool("m_itemPickupSpins", m_itemPickupSpins);
 	DebugString("m_itemWeapon", m_itemWeapon);
+}
+
+void
+ncItem::BecomeSolid(void)
+{
+	SetSolid(SOLID_TRIGGER);
+	SetMovetype(MOVETYPE_NONE);
+}
+
+void
+ncItem::BecomeDropped(void)
+{
+	SetSolid(SOLID_NOT);
+	SetMovetype(MOVETYPE_BOUNCE);
 }
 
 void
@@ -929,5 +943,7 @@ ncItem::_RemovedCallback(void)
 	owner = __NULL__;
 	chain = __NULL__;
 	m_nextItem = __NULL__;
-	ScheduleThink(Destroy, 0.0f);
+	
+	#warning make sure this is called somewhere!
+	//ScheduleThink(Destroy, 0.0f);
 }

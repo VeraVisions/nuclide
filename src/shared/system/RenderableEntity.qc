@@ -35,6 +35,7 @@ ncRenderableEntity::ncRenderableEntity(void)
 
 	m_iMuzzleModel = 0i;
 	m_flMuzzleScale = 0.25f;
+	m_modelEventTime = 0.0f;
 
 #ifdef CLIENT
 	drawmask = MASK_ENGINE;
@@ -342,6 +343,7 @@ ncRenderableEntity::ReceiveEntity(float flNew, float flChanged)
 	if (flChanged & RDENT_CHANGED_BODY)
 		_UpdateGeomset();
 	if (flChanged & RDENT_CHANGED_MODELINDEX) {
+		m_modelEventTime = 0.0f;
 		_ModelChanged();
 		_UpdateBoneCount();
 	}
@@ -897,6 +899,7 @@ ncRenderableEntity::Respawn(void)
 	SetBodyInGroup(1, GetSpawnInt("body1"));
 	SetBodyInGroup(2, GetSpawnInt("body2"));
 	SetBodyInGroup(3, GetSpawnInt("body3"));
+	m_modelEventTime = 0.0f;
 }
 #endif
 
@@ -1059,6 +1062,10 @@ ncRenderableEntity::GetAxialScale(void)
 void
 ncRenderableEntity::HandleAnimEvent(float flTimeStamp, int iCode, string strData)
 {
+	if (!modelindex || iCode == 0i) {
+		return;	
+	}
+
 	switch(iCode) {
 	case 1004:	/* plays a sound on CHAN_BODY */
 #ifdef CLIENT

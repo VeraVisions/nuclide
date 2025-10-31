@@ -1021,7 +1021,7 @@ ncWeapon::EmptySound(void)
 
 	/* Remove when empty, but not when we're supposed to be detonating on fire */
 	if (m_fiRemoveOnEmpty) {
-		ourOwner.RemoveItem(classname);
+		ourOwner.RemoveItem(this);
 	}
 #endif
 }
@@ -1305,7 +1305,7 @@ ncWeapon::Attack(string fireInfo)
 	/* Remove when empty */
 	if (m_fiRemoveOnEmpty == true && IsEmpty()) {
 #ifdef SERVER
-		ourOwner.RemoveItem(classname);
+		ourOwner.RemoveItem(this);
 #endif
 		return;
 	}
@@ -2093,7 +2093,7 @@ ncWeapon::_WeaponStoppedFiring(void)
 
 		/* Remove when empty, but not when we're supposed to be detonating on fire */
 		if (m_fiRemoveOnEmpty && isEmpty) {
-			ourOwner.RemoveItem(classname);
+			ourOwner.RemoveItem(this);
 			return;
 		} else if (isEmpty && m_switchOnEmpty && m_fiAmmoType == m_primaryAmmoType) {
 			ourOwner.SwitchToBestWeapon(true);

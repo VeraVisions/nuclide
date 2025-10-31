@@ -14,8 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-typedef enumflags
-{
+typedef enumflags {
 	ITEMFL_CHANGED_MODELINDEX,
 	ITEMFL_CHANGED_ORIGIN_X,
 	ITEMFL_CHANGED_ORIGIN_Y,
@@ -90,9 +89,9 @@ entityDef item_health
 	"editor_usage3"		"Gives players 15 Health Points."
 
 	"spawnclass"		"ncItem"
-	"model"				"models/items/health.vvm"
-	"mins"				"-16 -16 0"
-	"maxs"				"16 16 16"
+	"model"			"models/items/health.vvm"
+	"mins"			"-16 -16 0"
+	"maxs"			"16 16 16"
 	"inv_health"		"15"
 }
 ```
@@ -109,10 +108,10 @@ entityDef item_keycard
 	"editor_usage3"		"Resides in the inventory without much effect on its own."
 
 	"spawnclass"		"ncItem"
-	"model"				"models/items/keycard.vvm"
-	"mins"				"-16 -16 0"
-	"maxs"				"16 16 16"
-	"inv_carry"			"1"
+	"model"			"models/items/keycard.vvm"
+	"mins"			"-16 -16 0"
+	"maxs"			"16 16 16"
+	"inv_carry"		"1"
 }
 ```
 
@@ -126,9 +125,9 @@ entityDef ammo_shells
 	"editor_usage3"		"Gives players 20 Shells Ammo."
 
 	"spawnclass"		"ncItem"
-	"model"				"models/ammo/shells.vvm"
-	"mins"				"-16 -16 0"
-	"maxs"				"16 16 16"
+	"model"			"models/ammo/shells.vvm"
+	"mins"			"-16 -16 0"
+	"maxs"			"16 16 16"
 	"inv_ammo_shells"	"20"
 }
 ```
@@ -176,6 +175,9 @@ public:
 	virtual void PrintDebugInfo(void);
 	/** Call to turn a weapon into a pickup. */
 	nonvirtual void BecomePickup(void);
+
+	nonvirtual void BecomeSolid(void);
+	nonvirtual void BecomeDropped(void);
 #endif
 
 	/** Called when an item was added to someones inventory. */

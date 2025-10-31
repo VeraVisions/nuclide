@@ -139,10 +139,12 @@ public:
 
 	/* inventory handling */
 	/** Adds a named ncItem to the inventory. Returns `false` when impossible. */
-	nonvirtual bool GiveItem(string);
+	nonvirtual bool GiveNamedItem(string);
 	nonvirtual bool GiveExactItem(ncItem);
-	/** Removes a named ncItem from the inventory Returns `false` when impossible. */
-	nonvirtual bool RemoveItem(string);
+	/** Removes a referenced ncItem from the inventory. Returns `false` when impossible. */
+	nonvirtual bool RemoveItem(ncItem);
+	/** Removes a named ncItem from the inventory. Returns `false` when impossible. */
+	nonvirtual bool RemoveNamedItem(string);
 	/** Adds the specified ncItem to the inventory. Returns `false` when impossible. */
 	nonvirtual bool AddItem(ncItem);
 	/** Returns `true` or `false` depending on if the entity has the named item. */
@@ -155,10 +157,17 @@ public:
 	nonvirtual bool RemoveAllItems(bool);
 	/** Removes all weapons from the inventory. Returns `false` when already clear. */
 	nonvirtual bool RemoveAllWeapons(void);
-	/** Removes the first item in someones specified inventory slot. Return values equals whether the inventory was changed. */
+	/** Removes the first weapon in someones specified inventory slot. Return values equals whether the inventory was changed. */
 	nonvirtual bool RemoveWeaponInSlot(int);
-	/** Drops the first item in someones specified inventory slot, placing it into the world in front of them. Return values equals whether the inventory was changed. */
-	nonvirtual bool DropWeaponInSlot(int);
+
+	/** Drops the first weapon in someones specified inventory slot, placing it into the world in front of them. Return value is the handle of the entity that is dropped. If nothing is dropped in-front successfully, it will return __NULL__. The item may still have been removed by something else. */
+	nonvirtual ncItem DropWeaponInSlot(int);
+	/** Drops the current weapon in someones specified inventory slot, placing it into the world in front of them. Return value is the handle of the entity that is dropped. If nothing is dropped in-front successfully, it will return __NULL__. The item may still have been removed by something else. */
+	nonvirtual ncItem DropCurrentWeapon(void);
+
+	nonvirtual ncItem DropItem(ncItem);
+	nonvirtual ncItem DropNamedItem(string);
+
 	/** Returns the name of the current weapon. E.g. "weapon_foobar" */
 	nonvirtual string GetCurrentWeapon(void);
 	/** Switches the entity to use the desired weapon. */
@@ -209,7 +218,7 @@ public:
 	nonvirtual void PerformSchedule(string);
 	nonvirtual void MessageSchedule(string);
 	nonvirtual bool IsPerforming(void);
-	
+
 	nonvirtual int PathNodeCount(void);
 	nonvirtual int PathCurrentNode(void);
 	nonvirtual vector PathDestination(void);

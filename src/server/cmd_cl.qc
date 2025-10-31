@@ -87,11 +87,11 @@ Cmd_ParseClientCommand(ncClient sender, string cmd, int commandArguments)
 		break;
 	case "giveInventoryItem":
 		if (cvars.GetBool("sv_cheats"))
-			(ncActor)sender.GiveItem(argv(1));
+			(ncActor)sender.GiveNamedItem(argv(1));
 		break;
 	case "removeInventoryItem":
 		if (cvars.GetBool("sv_cheats"))
-			(ncActor)sender.RemoveItem(argv(1));
+			(ncActor)sender.RemoveNamedItem(argv(1));
 		break;
 	case "removeAllInventoryItems":
 		if (cvars.GetBool("sv_cheats"))

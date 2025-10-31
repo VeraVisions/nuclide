@@ -59,6 +59,6 @@ ncCapturePoint::Touch(entity touchingEntity)
 		}
 
 		Captured(theItem.target, theItem.team);
-		ourToucher.RemoveItem(m_desiredItem);
+		ourToucher.RemoveItem(theItem);
 	}
 }

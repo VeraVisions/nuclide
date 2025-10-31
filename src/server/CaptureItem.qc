@@ -105,7 +105,7 @@ ncCaptureItem::Touch(entity touchingEntity)
 	}
 
 	if (ourToucher.team != m_goalNo) {
-		ourToucher.GiveItem(m_goalItem);
+		ourToucher.GiveNamedItem(m_goalItem);
 		theItem = ourToucher.GetItem(m_goalItem);
 		theItem.team = m_goalNo;
 		theItem.target = classname;
@@ -128,7 +128,7 @@ ncCaptureItem::Touch(entity touchingEntity)
 
 			Captured(theItem.team);
 			UseOutput(touchingEntity, m_outputOnCapture);
-			ourToucher.RemoveItem(m_desiredItem);
+			ourToucher.RemoveItem(theItem);
 		}
 	}
 }
