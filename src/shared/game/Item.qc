@@ -283,10 +283,20 @@ ncItem::Input(entity eAct, string strInput, string strData)
 		PickupRespawn();
 		break;
 	case "AddAmmo":
-		int ammoNum = ammoNumForName(argv(0));
-		int ammoCount = stoi(argv(1));
+		tokenize(strData);
+		string ammoName = argv(0);
+		string ammoCountString = argv(1);
+		int ammoNum = ammoNumForName(ammoName);
+		int ammoCount = stoi(ammoCountString);
+
+		if (ammoNum == -1) {
+			break;
+		}
 
 		m_itemGivesAmmo[ammoNum] += ammoCount;
+		break;
+	case "SetWeapon":
+		m_itemWeapon = strData;
 		break;
 	default:
 		super::Input(eAct, strInput, strData);

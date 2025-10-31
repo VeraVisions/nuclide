@@ -53,6 +53,10 @@ typedef struct
 	@param ammoID is the unique identifier for an ammo type.
 	@return integer value containing the max ammo count. Returns `0i` when invalid. */
 	int MaxForNum(int ammoID);
+	
+	/** Find out the total amount of ammo types. 
+	@return integer value reflecting the allocated ammo types. */
+	int Count();
 } ammoAPI_t;
 
 ammoAPI_t ammo; /**< Access ammoAPI_t functions using this variable. */
@@ -695,6 +699,7 @@ _shared_main(void)
 	ammo.NumForName = linkToSharedProgs("SHPF_ammo_NumForName");
 	ammo.MaxForName = linkToSharedProgs("SHPF_ammo_MaxForName");
 	ammo.MaxForNum = linkToSharedProgs("SHPF_ammo_MaxForNum");
+	ammo.Count = linkToSharedProgs("SHPF_ammo_Count");
 
 	cvars.SetString = linkToSharedProgs("SHPF_cvars_SetString");
 	cvars.SetBool = linkToSharedProgs("SHPF_cvars_SetBool");
