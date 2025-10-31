@@ -176,6 +176,11 @@ typedef struct
 	@return integer value of the total amount of actors in a team. */
 	int TotalActorsOnTeam(int teamID);
 
+	/** Returns the current weapon of the referenced actor in string form
+	param targetActor is the actor to query active weapon information from.
+	@return string value containing the classname of the weapon, identifying the classname (e.g. `weapon_pistol`). */
+	string CurrentWeapon(entity targetActor);
+
 	float AimAtPos(entity, vector);
 	float MoveToPos(entity, vector);
 	bool CanSee(entity, entity);
@@ -350,6 +355,7 @@ _server_main(void)
 	actor.TotalActorsOnTeam = linkToServerProgs("SVPF_actor_TotalActorsOnTeam");
 	actor.MoveToPos = linkToServerProgs("SVPF_actor_MoveToPos");
 	actor.HasItem = linkToServerProgs("SVPF_actor_HasItem");
+	actor.CurrentWeapon = linkToServerProgs("SVPF_actor_CurrentWeapon");
 
 	music.Stop = linkToServerProgs("SVPF_music_Stop");
 	music.StopOnClient = linkToServerProgs("SVPF_music_StopOnClient");
