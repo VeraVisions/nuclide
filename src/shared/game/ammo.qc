@@ -27,6 +27,11 @@ static ammoInfo_t g_ammoInfo[MAX_AMMO_TYPES];
 string
 ammoNameForNum(int ammoIndex)
 {
+	if (ammoIndex <= 0)
+		return "";
+	if (ammoIndex >= MAX_AMMO_TYPES)
+		return "";
+
 	return (g_ammoInfo[ammoIndex].m_strName);
 }
 

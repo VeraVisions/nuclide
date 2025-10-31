@@ -221,6 +221,12 @@ SHPF_ammo_MaxForNum(int ammoIndex)
 	return ammoMaxForNum(ammoIndex);
 }
 
+int
+SHPF_ammo_Count(void)
+{
+	return MAX_AMMO_TYPES;
+}
+
 /* userinfo library */
 string
 SHPF_userinfo_GetString(entity client, string keyName)
