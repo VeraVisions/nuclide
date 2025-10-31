@@ -88,10 +88,10 @@ void VGUI_ModelSpawner ( void )
 		viewModel.Set3DPos( modelPos + (v_forward * -vecDistance[0]) + (v_right * vecDistance[1]) + (v_up * vecDistance[2]) );
 	}
 	static void VGUI_ModelViewer_SpawnProp( void ) {
-		localcmd(sprintf("sv propSpawn %S\n", eModel.model));
+		localcmd(sprintf("propSpawn %S\n", eModel.model));
 	}
 	static void VGUI_ModelViewer_SpawnDoll( void ) {
-		localcmd(sprintf("sv dollSpawn %S\n", eModel.model));
+		localcmd(sprintf("ragdollCreate %S\n", eModel.model));
 	}
 	static void VGUI_ModelViewer_SetFrame( int iFrame ) {
 		float maxFrame = modelframecount(eModel.modelindex) - 1;

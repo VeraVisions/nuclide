@@ -360,6 +360,11 @@ Event_Parse(float type)
 
 		CSQC_Parse_Print(Util_ChatFormat(fSender2, fTeam2, sMessage2), PRINT_CHAT);
 		break;
+	case EV_GPRINT:
+		float chatLevel =  readbyte();
+		string chatMessage = readstring();
+		CSQC_Parse_Print(chatMessage, chatLevel);
+		break;
 	default:
 		error(sprintf("event id %d not recognized. abort immediately.\n", type));
 	}

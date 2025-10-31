@@ -158,6 +158,8 @@ ncWeapon::SwitchFireInfo(string newInfo)
 void
 ncWeapon::Spawned(void)
 {
+	m_itemCarries = true;
+
 	super::Spawned();
 
 	ReloadCachedAttributes();
@@ -168,7 +170,6 @@ ncWeapon::Spawned(void)
 		m_weaponClip = m_weaponClipSize;
 	}
 
-	m_itemCarries = true;
 	precache.Model(m_weaponViewModelPath);
 	precache.Model(m_weaponPlayerModelPath);
 
@@ -1892,6 +1893,7 @@ ncWeapon::_ReloadFinished(void)
 		m_weaponClip = m_weaponClipSize;
 	}
 
+	ourOwner.ruleSendInventory = true;
 	ourOwner.UseAmmo(m_primaryAmmoType, ammoToDeduct);
 	WeaponStoppedReloading();
 }
