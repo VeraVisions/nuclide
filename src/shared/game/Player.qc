@@ -147,7 +147,7 @@ ncPlayer::SharedInputFrame(void)
 			}
 
 			/* item isn't a weapon */
-			if (nextWeapon.IsWeapon() == false) {
+			if (is.Weapon(nextWeapon) == false) {
 				return;
 			}
 		}
@@ -418,7 +418,7 @@ ncPlayer::ProcessInput(void)
 		return;
 	}
 
-	if (wasfreed(m_activeWeapon) || m_activeWeapon._isWeapon != true) {
+	if (wasfreed(m_activeWeapon) || is.Weapon(m_activeWeapon) != true) {
 		m_activeWeapon = __NULL__;
 		return;
 	}
@@ -1523,6 +1523,42 @@ ncPlayer::Input(entity eAct, string strInput, string strData)
 	case "Message":
 		env_message_single(this, strData);
 		break;
+	case "PrintLow":
+		ncLog("PrintLow: %S", strData);
+		WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+		WriteByte(MSG_MULTICAST, EV_GPRINT);
+		WriteByte(MSG_MULTICAST, PRINT_LOW);
+		WriteString(MSG_MULTICAST, strData);
+		msg_entity = this;
+		multicast(origin, MULTICAST_ONE_R);
+		break;
+	case "PrintMedium":
+		ncLog("PrintMedium: %S", strData);
+		WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+		WriteByte(MSG_MULTICAST, EV_GPRINT);
+		WriteByte(MSG_MULTICAST, PRINT_MEDIUM);
+		WriteString(MSG_MULTICAST, strData);
+		msg_entity = this;
+		multicast(origin, MULTICAST_ONE_R);
+		break;
+	case "PrintHigh":
+		ncLog("PrintHigh: %S", strData);
+		WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+		WriteByte(MSG_MULTICAST, EV_GPRINT);
+		WriteByte(MSG_MULTICAST, PRINT_HIGH);
+		WriteString(MSG_MULTICAST, strData);
+		msg_entity = this;
+		multicast(origin, MULTICAST_ONE_R);
+		break;
+	case "PrintChat":
+		ncLog("PrintChat: %S", strData);
+		WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+		WriteByte(MSG_MULTICAST, EV_GPRINT);
+		WriteByte(MSG_MULTICAST, PRINT_CHAT);
+		WriteString(MSG_MULTICAST, strData);
+		msg_entity = this;
+		multicast(origin, MULTICAST_ONE_R);
+		break;
 	case "Spectate":
 		MakeTempSpectator();
 		break;
@@ -1611,11 +1647,26 @@ ncPlayer::MakePlayer(void)
 {
 	AddFlags(FL_CLIENT);
 	RemoveVFlags(VFL_FAKESPEC);
-	Unspectate();
+
+	if (IsAlive() == false) {
+		Unspectate();
+	}
 
 	if (health <= 0) {
-		health = max_health = 100;
-		armor = 0;
+		float maxPlayerHealth = GetSpawnFloat("max_health");
+		float startPlayerHealth = GetSpawnFloat("health");
+
+		if (maxPlayerHealth <= 0) {
+			maxPlayerHealth = 100;
+		}
+
+		if (startPlayerHealth <= 0) {
+			startPlayerHealth = 100;
+		}
+
+		SetMaxHealth(maxPlayerHealth);
+		SetHealth(startPlayerHealth);
+		SetArmor(GetSpawnFloat("armor"));
 	}
 
 	effects = 0;
