@@ -106,6 +106,16 @@ SVPF_actor_GetReserveAmmo(ncActor targetActor, int ammoID)
 	return targetActor.GetReserveAmmo(ammoID);
 }
 
+string
+SVPF_actor_CurrentWeapon(ncActor targetActor)
+{
+	if (!targetActor) {
+		return (0i);
+	}
+
+	return targetActor.GetCurrentWeapon();
+}
+
 bool
 SVPF_actor_MaxAmmo(ncActor targetActor, int ammoID)
 {

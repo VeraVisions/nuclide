@@ -47,6 +47,8 @@ vector col_button_bg; /* 1,1,1 */
 vector col_button_select; /* 1,0,0 */
 vector col_button_click; /* 1,1,0 */
 vector col_button_disabled; /* 0.25, 0.25, 0.25 */
+vector col_list_text;
+vector col_list_select;
 
 /* Menu color scheme init.
    First we read cvars for defaults.
@@ -80,6 +82,8 @@ Colors_Init(void)
 	col_button_select	= autocvar_menu_color_button_select;
 	col_button_click	= autocvar_menu_color_button_click;
 	col_button_disabled	= autocvar_menu_color_button_disabled;
+	col_list_text		= autocvar_menu_color_list;
+	col_list_select		= autocvar_menu_color_list_select;
 
 	if (autocvar_menu_color_external == false) {
 		ncLog("Ignoring external colors list due to menu_color_external cvar.");
@@ -156,6 +160,12 @@ Colors_Init(void)
 				break;
 			case "BUTTON_DISABLED_COLOR":
 				col_button_disabled = coltmp;
+				break;
+			case "LIST_TEXT_COLOR":
+				col_list_text = coltmp;
+				break;
+			case "LIST_SELECT_COLOR":
+				col_list_select = coltmp;
 				break;
 			}
 		}

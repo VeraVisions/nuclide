@@ -759,6 +759,15 @@ ncActor::Input(entity eAct, string strInput, string strData)
 			GiveAmmo(ammoNum, ammoCount);
 		}
 		break;
+	case "UseAmmo":
+		tokenize_console(strData);
+		int ammoNum2 = ammoNumForName(argv(0));
+		int ammoCount3 = stoi(argv(1));
+
+		if (ammoNum != -1i) {
+			UseAmmo(ammoNum2, ammoCount3);
+		}
+		break;
 	case "DropWeaponInSlot":
 		DropWeaponInSlot(ReadInt(strData));
 		break;
@@ -1443,6 +1452,10 @@ ncActor::UseAmmo(int ammoType, int ammoAmount)
 	}
 
 	m_ammoTypes[ammoType] -= ammoAmount;
+
+#ifdef SERVER
+	ruleSendInventory = true;
+#endif
 	return (true);
 }
 

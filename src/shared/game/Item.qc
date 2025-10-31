@@ -282,6 +282,12 @@ ncItem::Input(entity eAct, string strInput, string strData)
 	case "Respawn":
 		PickupRespawn();
 		break;
+	case "AddAmmo":
+		int ammoNum = ammoNumForName(argv(0));
+		int ammoCount = stoi(argv(1));
+
+		m_itemGivesAmmo[ammoNum] += ammoCount;
+		break;
 	default:
 		super::Input(eAct, strInput, strData);
 	}
