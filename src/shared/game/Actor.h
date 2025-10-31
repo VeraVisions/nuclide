@@ -139,10 +139,12 @@ public:
 
 	/* inventory handling */
 	/** Adds a named ncItem to the inventory. Returns `false` when impossible. */
-	nonvirtual bool GiveItem(string);
+	nonvirtual bool GiveNamedItem(string);
 	nonvirtual bool GiveExactItem(ncItem);
-	/** Removes a named ncItem from the inventory Returns `false` when impossible. */
-	nonvirtual bool RemoveItem(string);
+	/** Removes a referenced ncItem from the inventory. Returns `false` when impossible. */
+	nonvirtual bool RemoveItem(ncItem);
+	/** Removes a named ncItem from the inventory. Returns `false` when impossible. */
+	nonvirtual bool RemoveNamedItem(string);
 	/** Adds the specified ncItem to the inventory. Returns `false` when impossible. */
 	nonvirtual bool AddItem(ncItem);
 	/** Returns `true` or `false` depending on if the entity has the named item. */
@@ -216,7 +218,7 @@ public:
 	nonvirtual void PerformSchedule(string);
 	nonvirtual void MessageSchedule(string);
 	nonvirtual bool IsPerforming(void);
-	
+
 	nonvirtual int PathNodeCount(void);
 	nonvirtual int PathCurrentNode(void);
 	nonvirtual vector PathDestination(void);

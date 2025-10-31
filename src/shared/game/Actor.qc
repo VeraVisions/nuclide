@@ -514,7 +514,7 @@ ncActor::Spawned(void)
 
 	for (float i = 0; i < tokenizebyseparator(weaponList, ","); i++) {
 		string itemName = argv(i);
-		GiveItem(itemName);
+		GiveNamedItem(itemName);
 
 		if (i == desiredWeapon) {
 			switchTo = itemName;
@@ -748,7 +748,7 @@ ncActor::Input(entity eAct, string strInput, string strData)
 		}
 		break;
 	case "GiveItem":
-		GiveItem(strData);
+		GiveNamedItem(strData);
 		break;
 	case "GiveAmmo":
 		tokenize_console(strData);
@@ -780,8 +780,11 @@ ncActor::Input(entity eAct, string strInput, string strData)
 	case "RemoveWeaponInSlot":
 		RemoveWeaponInSlot(ReadInt(strData));
 		break;
+	case "RemoveItem":
+		RemoveNamedItem(strData);
+		break;
 	case "RemoveActiveWeapon":
-		RemoveItem(GetCurrentWeapon());
+		RemoveNamedItem(GetCurrentWeapon());
 		break;
 	case "SwitchToWeapon":
 		SwitchToWeapon(strData);
@@ -1633,7 +1636,7 @@ ncActor::GiveExactItem(ncItem theItem)
 
 	/* items (not weapons) may not be added permanently by default */
 	if (canCarry == false && is.Weapon(linkedList) == false) {
-		RemoveItem(theItem.declclass);
+		RemoveItem(theItem);
 	}
 
 	return (true);
@@ -1643,7 +1646,7 @@ ncActor::GiveExactItem(ncItem theItem)
 }
 
 bool
-ncActor::GiveItem(string itemName)
+ncActor::GiveNamedItem(string itemName)
 {
 #ifdef SERVER
 	ncItem linkedList = __NULL__;
@@ -1713,7 +1716,7 @@ ncActor::GiveItem(string itemName)
 
 	/* items (not weapons) may not be added permanently by default */
 	if (canCarry == false && is.Weapon(linkedList) == false) {
-		RemoveItem(itemName);
+		RemoveNamedItem(itemName);
 	}
 
 	return (true);
@@ -1801,11 +1804,10 @@ ncActor::RemoveWeaponInSlot(int desiredSlot)
 		/* inventory item may not be a weapon */
 		if (is.Weapon(linkedList)) {
 			ncWeapon testWeapon = (ncWeapon)linkedList;
-			string weaponName = testWeapon.declclass;
 			int hudSlot = testWeapon.m_weaponHUDSlot;
 
 			if (hudSlot == desiredSlot) {
-				return RemoveItem(weaponName);
+				return RemoveItem(testWeapon);
 			}
 		}
 
@@ -1887,6 +1889,7 @@ ncActor::DropItem(ncItem itemToDrop)
 		itemToRemove._RemovedCallback();
 		itemToRemove.BecomePickup();
 		itemToRemove.BecomeDropped();
+		itemToRemove.velocity = anglesToForward(this.v_angle + [0, random(-45,45), 0]) * 100.0f + [0,0,100];
 		itemToRemove.ScheduleThink(ncItem::BecomeSolid, 1.0f);
 		return (itemToRemove);
 	}
@@ -1921,11 +1924,10 @@ ncActor::DropWeaponInSlot(int desiredSlot)
 		/* inventory item may not be a weapon */
 		if (is.Weapon(linkedList)) {
 			ncWeapon testWeapon = (ncWeapon)linkedList;
-			string weaponName = testWeapon.declclass;
 			int hudSlot = testWeapon.m_weaponHUDSlot;
 
 			if (hudSlot == desiredSlot) {
-				RemoveItem(weaponName);
+				RemoveItem(testWeapon);
 				return (testWeapon);
 			}
 		}
@@ -1937,7 +1939,22 @@ ncActor::DropWeaponInSlot(int desiredSlot)
 }
 
 bool
-ncActor::RemoveItem(string itemName)
+ncActor::RemoveItem(ncItem itemRef)
+{
+#ifdef SERVER
+	ncItem toBeRemoved = DropItem(itemRef);
+
+	if (toBeRemoved) {
+		toBeRemoved.Destroy();
+		return (true);
+	}
+#endif
+
+	return (false);
+}
+
+bool
+ncActor::RemoveNamedItem(string itemName)
 {
 #ifdef SERVER
 	ncItem linkedList = __NULL__;
@@ -2031,7 +2048,7 @@ ncActor::RemoveAllItems(bool ignoreWeapons)
 			}
 
 			if (is.Item(linkedList) == true) {
-				RemoveItem(linkedList.declclass);
+				RemoveItem(linkedList);
 			}
 
 			linkedList = nextItem;

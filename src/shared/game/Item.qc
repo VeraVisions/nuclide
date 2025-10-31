@@ -414,16 +414,16 @@ ncItem::Touch(entity eToucher)
 			ncItem copy = spawn(ncItem);
 			copyentity(this, copy);
 			pl.GiveExactItem(copy);
+			removeFromMap = true;
 		} else {
 			pl.GiveExactItem(this);
+			removeFromMap = false;
 		}
 
 		/* if we have the carry flag set in addition, we'll put in an extra copy of this item */
 		if (STRING_SET(m_itemWeapon) && m_itemCarries) {
-			pl.GiveItem(itemToAdd);
+			pl.GiveNamedItem(itemToAdd);
 		}
-
-		removeFromMap = true;
 	}
 
 	if (removeFromMap == false) {
