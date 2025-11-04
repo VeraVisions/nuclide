@@ -519,6 +519,7 @@ initents(void)
 		forceinfokey(world, sprintf("teamclosed_%i", teamID), "");
 		forceinfokey(world, sprintf("teamspawn_%i", teamID), "");
 		forceinfokey(world, sprintf("teamclass_%i", teamID), "");
+		forceinfokey(world, sprintf("teamflags_%i", teamID), "");
 	}
 
 	forceinfokey(world, sprintf("teamspawn_%d", TEAM_CONNECTING), "");

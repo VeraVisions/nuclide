@@ -63,6 +63,12 @@ ncUserInfo::Flag(void)
 }
 
 int
+ncUserInfo::Team(void)
+{
+	return (m_userTeam);
+}
+
+int
 ncUserInfo::Kills(void)
 {
 	return (m_userKills);
@@ -124,6 +130,7 @@ ncUserInfo::Update(void)
 	m_userKills = (int)getplayerkeyfloat(m_slot, "frags");
 	m_userDeaths = (int)getplayerkeyfloat(m_slot, "*deaths");
 	m_userScore = (int)getplayerkeyfloat(m_slot, "*score");
+	m_userTeam = (int)getplayerkeyfloat(m_slot, "*team");
 
 	if (!STRING_SET(m_userAvatars)) {
 		m_userAvatars = "gfx/ui/avatar_missing";
