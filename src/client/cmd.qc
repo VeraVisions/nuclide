@@ -565,6 +565,7 @@ Cmd_Parse(string sCMD)
 	case "nodeUnlink":
 	case "traceMaterial":
 	case "listEntitySpawnData":
+	case "listEntities":
 	case "listEntitiesByClass":
 	case "listEntityData":
 	case "listEntitiesByTarget":
@@ -665,6 +666,7 @@ Cmd_Init(void)
 	registercommand("listClientSoundDef");
 	registercommand("listEntityData");
 	registercommand("listEntityDef");
+	registercommand("listEntities");
 	registercommand("listEntitiesByClass");
 	registercommand("listEntitySpawnData");
 	registercommand("listFramegroups");

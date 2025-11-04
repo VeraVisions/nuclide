@@ -219,16 +219,28 @@ ncPlayer::CanCrouch(void)
 	return m_pmoveVars.pm_crouchheight > 0 ? (true) : false;
 }
 
+static ncPMoveVars
+FindPMoveVars(entity playerEntity)
+{
+	ncPMoveVars foundSpace = __NULL__;
+
+	for (ncPMoveVars spaceList = world; (spaceList = find(spaceList, ::classname, "ncPMoveVars"));) {
+		if (spaceList.owner == playerEntity) {
+			spaceList.LinkToEntity(playerEntity.declclass);
+			return (spaceList);
+		}
+	}
+
+	foundSpace = spawn(ncPMoveVars);
+	foundSpace.owner = playerEntity;
+	foundSpace.LinkToEntity(playerEntity.declclass);
+	return (foundSpace);
+}
+
 void
 ncPlayer::_UpdatePMoveVars(void)
 {
-	if (m_pmoveVars) {
-		m_pmoveVars.Destroy();
-		m_pmoveVars = 0;
-	}
-
-	m_pmoveVars = spawn(ncPMoveVars);
-	m_pmoveVars.LinkToEntity(declclass);
+	m_pmoveVars = FindPMoveVars(this);
 }
 
 void

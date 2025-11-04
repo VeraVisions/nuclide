@@ -1264,6 +1264,7 @@ ncActor::ChasePath(string startPath)
 void
 ncActor::OnRemoveEntity(void)
 {
+	RemoveAllItems(false);
 	RouteClear();
 
 	super::OnRemoveEntity();
@@ -2010,6 +2011,7 @@ ncActor::RemoveNamedItem(string itemName)
 		}
 
 		itemToRemove._RemovedCallback();
+		itemToRemove.Destroy();
 		return (true);
 	}
 #endif
@@ -2091,6 +2093,7 @@ ncActor::RemoveAllWeapons(void)
 			}
 
 			linkedList._RemovedCallback();
+			linkedList.Destroy();
 			continue;
 		}
 

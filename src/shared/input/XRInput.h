@@ -22,7 +22,7 @@
 
 /** Various input device types.
 Right now each client will have a single head, a 'left' and a 'right' NSXRInput. */
-typedef enum : __uint64
+typedef enum
 {
 	XR_INPUT_UNKNOWN,	/**< Unknown device. Don't use! */
 	XR_INPUT_HEAD,		/**< Device represents a single head. 
