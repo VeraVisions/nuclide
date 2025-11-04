@@ -222,8 +222,6 @@ EV_Pickup(void)
 	}
 
 	HUD_PickedUpItem(itemClass);
-
-
 }
 
 void
@@ -233,6 +231,13 @@ EV_Obituary(void)
 	string attackerName = readstring();
 	string weaponDef = readstring();
 	string meansOfDeath = readstring();
+	ncUserInfo playerInfo = g_userInfo.LocalPlayerInfo();
+	int playerTeam =  playerInfo.Team();
+
+	/* member of a team that can't see kill messages */
+	if (teams.Flags(playerTeam) & TEAMFLAG_KILLMSGBLIND) {
+		return;
+	}
 
 	ncLog("Obituary:");
 	ncLog("\ttargetName: %S", targetName);

@@ -169,6 +169,24 @@ ncUserInfoManager::InfoByRanking(int rankingIndex)
 }
 
 
+ncUserInfo
+ncUserInfoManager::LocalPlayerInfo(void)
+{
+	ncPlayer pl = (ncPlayer)pSeat->m_ePlayer;
+	int playerIndex = -1i;
+	
+	if (pl) {
+		playerIndex = pl.entnum-1;
+	}
+
+	if ((playerIndex <= -1i) || (playerIndex >= m_numUsers)) {
+		return (__NULL__);
+	}
+
+	return (m_users[playerIndex]);
+}
+
+
 /* FIXME: this callback is run whenever a single user infokey changes.
    so we might want to curb repetition by scheduling updates */
 void

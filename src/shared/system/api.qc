@@ -432,6 +432,13 @@ SHPF_teams_Color(int teamID)
 }
 
 int
+SHPF_teams_Flags(int teamID)
+{
+	return SHPF_serverinfo_GetInteger(sprintf("teamflags_%i", teamID));
+}
+
+
+int
 SHPF_teams_Score(int teamID)
 {
 	return SHPF_serverinfo_GetInteger(sprintf("teamscore_%i", teamID));
@@ -617,6 +624,19 @@ SHPF_teams_BestAutoJoinTeam(void)
 	}
 
 	return (sadTeam);
+}
+
+void
+SHPF_teams_SetFlags(int teamID, int setValue)
+{
+	if (SHPF_teams_Valid(teamID) == false) {
+		return;
+	}
+
+#ifdef SERVER
+	SHPF_serverinfo_SetInteger(sprintf("teamflags_%i", teamID), setValue);
+#else
+#endif
 }
 
 void

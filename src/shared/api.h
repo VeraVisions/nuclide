@@ -350,6 +350,10 @@ typedef struct
 	@return whether a team ID is valid, set up. 
 	@param teamID specifies the team to query. */
 	bool Valid(int teamID);
+	/** Find the flags of a team. These are usually used to mark certain information as sensitive to specific teams.
+	@return the flags bitfield of a team. 
+	@param teamID specifies the team to query. */
+	int Flags(int teamID);
 
 	/** Increases the score of a specified team. 
 	@param teamID specifies the team to query. 
@@ -359,6 +363,10 @@ typedef struct
 	@param teamID specifies the team to query.
 	@param scoreValue is the value which the score should be set to. */
 	void SetScore(int teamID, int scoreValue);
+	/** Overridess the flags of a specified team. 
+	@param teamID specifies the team to query.
+	@param flagsField is the bitfield which the score should be set to. */
+	void SetFlags(int teamID, int flagsField);
 	/** Find a random player belonging to a given team.
 	@return a single random entity reference to a player of a given team. Will return `__NULL__` if one does not exist.
 	@param teamID specifies the team to query. */
@@ -759,10 +767,12 @@ _shared_main(void)
 	teams.RandomPlayer = linkToSharedProgs("SHPF_teams_RandomPlayer");
 	teams.TotalClasses = linkToSharedProgs("SHPF_teams_TotalClasses");
 	teams.ClassForIndex = linkToSharedProgs("SHPF_teams_ClassForIndex");
+	teams.Flags = linkToSharedProgs("SHPF_teams_Flags");
 
 	/* server */
 	teams.AddScore = linkToSharedProgs("SHPF_teams_AddScore");
 	teams.SetScore = linkToSharedProgs("SHPF_teams_SetScore");
+	teams.SetFlags = linkToSharedProgs("SHPF_teams_SetFlags");
 	teams.SetUp = linkToSharedProgs("SHPF_teams_SetUp");
 	teams.AddClass = linkToSharedProgs("SHPF_teams_AddClass");
 	teams.SetSpawnPoint = linkToSharedProgs("SHPF_teams_SetSpawnPoint");

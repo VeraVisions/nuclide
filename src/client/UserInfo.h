@@ -29,6 +29,7 @@ public:
 	nonvirtual string Banner(void);
 	nonvirtual string Contact(void);
 	nonvirtual string Flag(void);
+	nonvirtual int Team(void);
 	nonvirtual int Kills(void);
 	nonvirtual int Deaths(void);
 	nonvirtual int Score(void);
@@ -44,6 +45,7 @@ private:
 	string m_userContact;
 	string m_userFlag;
 	int m_userKills;
+	int m_userTeam;
 	int m_userDeaths;
 	int m_userScore;
 	float m_slot;

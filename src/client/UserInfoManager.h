@@ -44,6 +44,9 @@ public:
 	/* Returns the player info according to the server ranking. Invalid queries return -1. */
 	nonvirtual ncUserInfo InfoByRanking(int rankingIndex);
 
+	/* Return the local player info. */
+	nonvirtual ncUserInfo LocalPlayerInfo(void);
+
 private:
 
 	int m_numUsers;
