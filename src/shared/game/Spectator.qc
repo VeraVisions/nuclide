@@ -32,7 +32,7 @@ void
 ncSpectator::OnRemoveEntity(void)
 {
 	Unspectate();
-	super::Respawn();
+	super::OnRemoveEntity();
 }
 
 void

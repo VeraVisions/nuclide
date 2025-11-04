@@ -52,13 +52,19 @@ FindXRInput(entity playerEntity, xrinput_t inputType)
 
 	/* See if it exists already */
 	for (NSXRInput inputList = world; (inputList = find(inputList, ::classname, "NSXRInput"));) {
-		if (inputList.owner == playerEntity) {
+		if (inputList.owner != playerEntity) {
 			continue;
 		}
 		if (inputList.GetType() != inputType) {
 			continue;
 		}
-		return (inputList);
+
+		foundInput = inputList;
+		foundInput.SetParentSpace(FindXRSpace(playerEntity));
+		foundInput.solid = SOLID_NOT;
+		foundInput.touch = 0;
+		foundInput.owner = playerEntity;
+		return (foundInput);
 	}
 
 	/* Doesn't exist. Create it. */

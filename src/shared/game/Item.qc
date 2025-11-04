@@ -423,6 +423,7 @@ ncItem::Touch(entity eToucher)
 		if (CreatedByMap()) {
 			ncItem copy = spawn(ncItem);
 			copyentity(this, copy);
+			copy._mapspawned = false;
 			pl.GiveExactItem(copy);
 			removeFromMap = true;
 		} else {

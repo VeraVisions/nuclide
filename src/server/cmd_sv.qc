@@ -311,6 +311,26 @@ CMD_ListEntitiesByTarget(void)
 	}
 }
 
+static void
+CMD_ListEntities(void)
+{
+	entity e = world;
+	int mapSpawnedCount = 0i;
+	int gameSpawnedCount = 0i;
+
+	while ((e = nextent(e))) {
+		if (e._mapspawned) {
+			mapSpawnedCount++;
+			printf("\t^2(%d) %s %v (map ent: %d) (mins: %v; maxs: %v)\n", num_for_edict(e), e.classname, e.origin, e._mapspawned, e.mins, e.maxs);
+		} else {
+			gameSpawnedCount++;
+			printf("\t^3(%d) %s %v (map ent: %d) (mins: %v; maxs: %v)\n", num_for_edict(e), e.classname, e.origin, e._mapspawned, e.mins, e.maxs);
+		}
+	}
+
+	printf("^2Map spawned: %i; ^3Game spawned: %i; ^7Total: %i\n", mapSpawnedCount, gameSpawnedCount, mapSpawnedCount + gameSpawnedCount);
+}
+
 bool
 Cmd_ParseServerCommand(void)
 {
@@ -403,6 +423,9 @@ Cmd_ParseServerCommand(void)
 		break;
 	case "listGlobals":
 		ncSessionManager::ListGlobals();
+		break;
+	case "listEntities":
+		CMD_ListEntities();
 		break;
 	default:
 		return (false);
