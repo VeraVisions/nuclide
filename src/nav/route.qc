@@ -152,7 +152,7 @@ ncEntity
 Route_SelectRandomSpot(void)
 {
 	static entity eLastSpot;
-	eLastSpot = find(eLastSpot, ::m_hintType, "SPAWN");
+	eLastSpot = find(eLastSpot, ::spawnclass, "ncSpawnPoint");
 
 	if (!eLastSpot)
 		return (Route_SelectRandomSpot());

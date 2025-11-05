@@ -36,22 +36,22 @@ typedef struct
 	int mapname8;
 } fb_header;
 
-#define FBFL_TEAM1				0x00000001
-#define FBFL_TEAM2				0x00000002
+#define FBFL_TEAM1			0x00000001
+#define FBFL_TEAM2			0x00000002
 #define FBFL_TEAMSPECIFIC		0x00000004
-#define FBFL_CROUCH				0x00000008
-#define FBFL_LADDER				0x00000010
-#define FBFL_LIFT				0x00000020
-#define FBFL_WALK				0x00000040
-#define FBFL_HEALTH				0x00000080
-#define FBFL_ARMOR				0x00000100
-#define FBFL_AMMO				0x00000200
-#define FBFL_SNIPER				0x00000400
+#define FBFL_CROUCH			0x00000008
+#define FBFL_LADDER			0x00000010
+#define FBFL_LIFT			0x00000020
+#define FBFL_WALK			0x00000040
+#define FBFL_HEALTH			0x00000080
+#define FBFL_ARMOR			0x00000100
+#define FBFL_AMMO			0x00000200
+#define FBFL_SNIPER			0x00000400
 #define FBFL_GOALITEM			0x00000800
-#define FBFL_GOAL				0x00001000
-#define FBFL_SENTRY				0x00002000
-#define FBFL_AIMING				0x00004000
-#define FBFL_JUMP				0x00008000
+#define FBFL_GOAL			0x00001000
+#define FBFL_SENTRY			0x00002000
+#define FBFL_AIMING			0x00004000
+#define FBFL_JUMP			0x00008000
 #define FBFL_DETPACKSEAL		0x00010000
 #define FBFL_PATHCHECK			0x00020000
 #define FBFL_UNUSED1			0x00040000
@@ -65,7 +65,7 @@ typedef struct
 #define FBFL_TELEENTER			0x04000000
 #define FBFL_CONCJUMP			0x08000000
 #define FBFL_SENTRY_180			0x10000000
-#define FBFL_DEFEND				0x20000000
+#define FBFL_DEFEND			0x20000000
 #define FBFL_TELEEXIT			0x40000000
 #define FBFL_DELETED			0x80000000
 
@@ -203,12 +203,12 @@ typedef struct
 
 #define PBFL_USEBUTTON		0x00000001i
 #define PBFL_ELEVATOR		0x00000002i
-#define PBFL_CROUCH			0x00000004i
+#define PBFL_CROUCH		0x00000004i
 #define PBFL_CROSSING		0x00000008i
-#define PBFL_GOAL			0x00000010i
-#define PBFL_LADDER			0x00000020i
-#define PBFL_RESCUE			0x00000040i
-#define PBFL_CAMP			0x00000080i
+#define PBFL_GOAL		0x00000010i
+#define PBFL_LADDER		0x00000020i
+#define PBFL_RESCUE		0x00000040i
+#define PBFL_CAMP		0x00000080i
 
 static int
 Way_PBFlagsToNC(int inputFlags)
@@ -460,7 +460,7 @@ Way_ReadJumbotFile(string strFile, bool flush)
 
 	filestream file = fopen(strFile, FILE_READ);
 	if (file < 0) {
-		print("Way_ReadFile: unable to open ", strFile, "\n");
+		print("Way_ReadJumbotFile: unable to open ", strFile, "\n");
 		return (false);
 	}
 
@@ -505,3 +505,42 @@ Way_ReadJumbotFile(string strFile, bool flush)
 	fclose(file);
 	return (true);
 }
+
+bool
+Way_SaveJumbotFile(string filename)
+{
+	filestream file;
+
+	if (!g_nodeCount) {
+		ncError("No nodes in map. Unable to save Jumbot file.");
+		return (false);
+	}
+
+	file = fopen(filename, FILE_WRITE);
+
+	if (file < 0) {
+		ncError("Unable to open %S for writing.", filename);
+		return (false);
+	}
+
+	for (int i = 0i; i < g_nodeCount; i++) {
+		bool jbFlag = 0;
+
+		for(int j = 0i; j < g_nodeGraph[i].m_neighborCount; j++) {
+			if (g_nodeGraph[i].m_neighborList[j].m_travelFlags & LF_JUMP) {
+				jbFlag = 2;
+			}
+			if (g_nodeGraph[i].m_neighborList[j].m_travelFlags & LF_CROUCH) {
+				jbFlag = 1;
+			}
+		}
+
+		fputs(file, sprintf("%i %d (%d %d %d)\n", i+1i, jbFlag, g_nodeGraph[i].m_origin[0], g_nodeGraph[i].m_origin[1], g_nodeGraph[i].m_origin[2]));
+
+	}
+	
+	fputs(file, "$\n");
+
+	fclose(file);
+}
+

@@ -738,6 +738,9 @@ ncNodeEditor::Cmd(void)
 	case "loadrich":
 		Way_ReadJumbotFile(argv(2), true);
 		break;
+	case "saverich":
+		Way_SaveJumbotFile(argv(2));
+		break;
 	case "loadfb":
 		Way_ReadFBFile(argv(2), true);
 		break;

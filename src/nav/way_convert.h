@@ -22,6 +22,7 @@
 bool Way_ReadFBFile(string, bool);
 bool Way_ReadJumbotFile(string, bool);
 bool Way_ReadPBFile(string, bool);
+bool Way_SaveJumbotFile(string);
 
 /** @} */ // end of nav
 
