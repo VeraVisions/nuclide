@@ -269,6 +269,11 @@ typedef struct
 	@param weaponDef the name of the entityDef that defines the weapon. */
 	bool IsSemiAuto(string weaponDef);
 
+	/** Find out all ammotypes associated with this weapon.
+	@return a tokenizable list of ammotypes associated with this weapon. E.g. `ammo_bullets ammo_SMGgrenades`
+	@param weaponDef the name of the entityDef that defines the weapon. */
+	string AmmoTypes(string weaponDef);
+
 	/** Find out how this weapon is stored.
 	@return a string description of how it's stored. Usually "item", unless it's temporary.
 	@param weaponDef the name of the entityDef that defines the weapon. */
@@ -790,6 +795,7 @@ _shared_main(void)
 	weaponInfo.Type = linkToSharedProgs("SHPF_weaponInfo_Type");
 	weaponInfo.StartAmmo = linkToSharedProgs("SHPF_weaponInfo_StartAmmo");
 	weaponInfo.MaxAmmo = linkToSharedProgs("SHPF_weaponInfo_MaxAmmo");
+	weaponInfo.AmmoTypes = linkToSharedProgs("SHPF_weaponInfo_AmmoTypes");
 	weaponInfo.IsSemiAuto = linkToSharedProgs("SHPF_weaponInfo_IsSemiAuto");
 	weaponInfo.InventoryType = linkToSharedProgs("SHPF_weaponInfo_InventoryType");
 	weaponInfo.FireTime = linkToSharedProgs("SHPF_weaponInfo_FireTime");
