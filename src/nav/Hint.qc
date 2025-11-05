@@ -14,6 +14,9 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+var bool autocvar_ai_noHints = false;
+var bool autocvar_ai_noNodes = false;
+
 void
 ncHint::ncHint(void)
 {
@@ -94,6 +97,11 @@ ncHint::SpawnKey(string strKey, string strValue)
 void
 ncHint::Spawned(void)
 {
+	if (autocvar_ai_noHints) {
+		Destroy();
+		return;
+	}
+
 	super::Spawned();
 }
 
@@ -105,9 +113,10 @@ ncHint::PlaceEntityHint(entity owningEntity, string hintType)
 		ncError("can't place EntityHint without owner");
 		return (__NULL__);
 	}
-	
+
 	/* be lax for now */
 	ncHint newHint = spawn(ncHint);
+	newHint.Spawn();
 	newHint.SetOrigin(owningEntity.origin);
 	newHint.SetOwner(owningEntity);
 	newHint.m_hintType = hintType;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Vera Visions LLC.
+ * Copyright (c) 2016-2025 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -111,8 +111,9 @@ public:
 void
 multi_manager::multi_manager(void)
 {
-	for (int i = 0; i < 16; i++)
+	for (int i = 0; i < 16; i++) {
 		m_subTriggers[i] = __NULL__;
+	}
 
 	m_triggerBuffer = __NULL__;
 }
@@ -122,22 +123,55 @@ multi_manager::Save(float handle)
 {
 	super::Save(handle);
 	SaveString(handle, "m_triggerBuffer", m_triggerBuffer);
-	SaveEntity(handle, "m_subTriggers_0", m_subTriggers[0]);
-	SaveEntity(handle, "m_subTriggers_1", m_subTriggers[1]);
-	SaveEntity(handle, "m_subTriggers_2", m_subTriggers[2]);
-	SaveEntity(handle, "m_subTriggers_3", m_subTriggers[3]);
-	SaveEntity(handle, "m_subTriggers_4", m_subTriggers[4]);
-	SaveEntity(handle, "m_subTriggers_5", m_subTriggers[5]);
-	SaveEntity(handle, "m_subTriggers_6", m_subTriggers[6]);
-	SaveEntity(handle, "m_subTriggers_7", m_subTriggers[7]);
-	SaveEntity(handle, "m_subTriggers_8", m_subTriggers[8]);
-	SaveEntity(handle, "m_subTriggers_9", m_subTriggers[9]);
-	SaveEntity(handle, "m_subTriggers_10", m_subTriggers[10]);
-	SaveEntity(handle, "m_subTriggers_11", m_subTriggers[11]);
-	SaveEntity(handle, "m_subTriggers_12", m_subTriggers[12]);
-	SaveEntity(handle, "m_subTriggers_13", m_subTriggers[13]);
-	SaveEntity(handle, "m_subTriggers_14", m_subTriggers[14]);
-	SaveEntity(handle, "m_subTriggers_15", m_subTriggers[15]);
+
+	if (m_subTriggers[0]) {
+		SaveEntity(handle, "m_subTriggers_0", m_subTriggers[0]);
+	}
+	if (m_subTriggers[1]) {
+		SaveEntity(handle, "m_subTriggers_1", m_subTriggers[1]);
+	}
+	if (m_subTriggers[2]) {
+		SaveEntity(handle, "m_subTriggers_2", m_subTriggers[2]);
+	}
+	if (m_subTriggers[3]) {
+		SaveEntity(handle, "m_subTriggers_3", m_subTriggers[3]);
+	}
+	if (m_subTriggers[4]) {
+		SaveEntity(handle, "m_subTriggers_4", m_subTriggers[4]);
+	}
+	if (m_subTriggers[5]) {
+		SaveEntity(handle, "m_subTriggers_5", m_subTriggers[5]);
+	}
+	if (m_subTriggers[6]) {
+		SaveEntity(handle, "m_subTriggers_6", m_subTriggers[6]);
+	}
+	if (m_subTriggers[7]) {
+		SaveEntity(handle, "m_subTriggers_7", m_subTriggers[7]);
+	}
+	if (m_subTriggers[8]) {
+		SaveEntity(handle, "m_subTriggers_8", m_subTriggers[8]);
+	}
+	if (m_subTriggers[9]) {
+		SaveEntity(handle, "m_subTriggers_9", m_subTriggers[9]);
+	}
+	if (m_subTriggers[10]) {
+		SaveEntity(handle, "m_subTriggers_10", m_subTriggers[10]);
+	}
+	if (m_subTriggers[11]) {
+		SaveEntity(handle, "m_subTriggers_11", m_subTriggers[11]);
+	}
+	if (m_subTriggers[12]) {
+		SaveEntity(handle, "m_subTriggers_12", m_subTriggers[12]);
+	}
+	if (m_subTriggers[13]) {
+		SaveEntity(handle, "m_subTriggers_13", m_subTriggers[13]);
+	}
+	if (m_subTriggers[14]) {
+		SaveEntity(handle, "m_subTriggers_14", m_subTriggers[14]);
+	}
+	if (m_subTriggers[15]) {
+		SaveEntity(handle, "m_subTriggers_15", m_subTriggers[15]);
+	}
 }
 
 void
@@ -243,11 +277,6 @@ multi_manager::Spawned(void)
 
 	super::Spawned();
 
-	for (b = 0; b < 16; b++) {
-		m_subTriggers[b] = spawn(multi_manager_sub);
-		m_subTriggers[b].Spawn();
-	}
-
 	/* set up our triggers */
 	b = 0;
 	iFields = tokenizebyseparator(m_triggerBuffer, " ");
@@ -256,13 +285,18 @@ multi_manager::Spawned(void)
 			break;
 		}
 
-		if (!argv(i))
+		/* no more data */
+		if (!STRING_SET(argv(i))) {
 			break;
+		}
 
 		/* avoid infinite-loops, only when MULTITHREADED flag is NOT set */
-		if ((!HasSpawnFlags(MM_MULTITHREADED) && targetname == argv(i)))
+		if ((!HasSpawnFlags(MM_MULTITHREADED) && targetname == argv(i))) {
 			continue;
+		}
 
+		m_subTriggers[b] = spawn(multi_manager_sub);
+		m_subTriggers[b].Spawn();
 		m_subTriggers[b].SetTriggerTarget(argv(i));
 		m_subTriggers[b].target = argv(i);
 		m_subTriggers[b].m_flUntilTriggered = stof(argv(i+1));
@@ -279,6 +313,9 @@ multi_manager::Respawn(void)
 
 	/* Mark them inactive */
 	for (int b = 0; b < 16; b++) {
+		if (!m_subTriggers[b]) {
+			break;
+		}
 		m_subTriggers[b].SetValue(0i);
 	}
 }
@@ -294,6 +331,10 @@ multi_manager::Trigger(entity act, triggermode_t state)
 	/* If not multi-threaded, we have to watch out 'til all triggers are done. */
 	if (!HasSpawnFlags(MM_MULTITHREADED)) {
 		for (int i = 0; i < 16; i++) {
+			/* hit the end of our allocation chain */
+			if (!m_subTriggers[i]) {
+				break;
+			}
 			if (m_subTriggers[i].IsThinking() == true) {
 				return;
 			}
@@ -302,6 +343,11 @@ multi_manager::Trigger(entity act, triggermode_t state)
 
 	/* time to trigger our sub triggers */
 	for (int i = 0; i < 16; i++) {
+		/* hit the end of our allocation chain */
+		if (!m_subTriggers[i]) {
+			break;
+		}
+
 		if (m_subTriggers[i].HasTriggerTarget() == false)
 			continue;
 

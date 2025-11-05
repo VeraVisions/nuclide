@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+var bool autocvar_light_stripUnnamed = true;
+
 /*! \brief Tool/Server-Entity: Light Source */
 /*!QUAKED light (0 1 0) (-8 -8 -8) (8 8 8) LFL_LINEAR x LFL_DARK LFL_NOGRID x x
 # OVERVIEW
@@ -242,11 +244,15 @@ light::Input(entity theActivator, string inputName, string dataString)
 	}
 }
 
-
 void
 light::Spawned(void)
 {
 	super::Spawned();
+
+	if (autocvar_light_stripUnnamed && !STRING_SET(targetname)) {
+		Destroy();
+		return;
+	}
 
 	/* switch styles before 12 are builtins from Quake. */
 	if (m_lightStyleSwitch > 0 && m_lightStyleSwitch <= 11) {
@@ -344,7 +350,6 @@ light::DebugDraw(void)
 	R_EndPolygon();
 #endif
 }
-
 
 class
 light_spot:light

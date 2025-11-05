@@ -34,6 +34,7 @@ info_node:ncPointTrigger
 public:
 	void info_node(void);
 	
+	virtual void Spawned(void);
 	virtual void Respawn(void);
 
 };
@@ -42,6 +43,17 @@ void
 info_node::info_node(void)
 {
 
+}
+
+void
+info_node::Spawned(void)
+{
+	if (cvars.GetBool("ai_noNodes")) {
+		Destroy();
+		return;
+	}
+
+	super::Respawn();
 }
 
 void
