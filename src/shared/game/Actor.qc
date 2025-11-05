@@ -761,10 +761,12 @@ ncActor::Input(entity eAct, string strInput, string strData)
 		break;
 	case "UseAmmo":
 		tokenize_console(strData);
-		int ammoNum2 = ammoNumForName(argv(0));
-		int ammoCount3 = stoi(argv(1));
+		string useAmmoName = argv(0);
+		string useAmmoCount = argv(1);
+		int ammoNum2 = ammoNumForName(useAmmoName);
+		int ammoCount3 = stoi(useAmmoCount);
 
-		if (ammoNum != -1i) {
+		if (ammoNum2 != -1i) {
 			UseAmmo(ammoNum2, ammoCount3);
 		}
 		break;

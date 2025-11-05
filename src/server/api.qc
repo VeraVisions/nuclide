@@ -116,6 +116,16 @@ SVPF_actor_CurrentWeapon(ncActor targetActor)
 	return targetActor.GetCurrentWeapon();
 }
 
+entity
+SVPF_actor_DropItem(ncActor targetActor, string namedItem)
+{
+	if (!targetActor) {
+		return (0i);
+	}
+
+	return (entity)targetActor.DropNamedItem(namedItem);
+}
+
 bool
 SVPF_actor_MaxAmmo(ncActor targetActor, int ammoID)
 {

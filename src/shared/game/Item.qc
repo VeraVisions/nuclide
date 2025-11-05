@@ -295,6 +295,19 @@ ncItem::Input(entity eAct, string strInput, string strData)
 
 		m_itemGivesAmmo[ammoNum] += ammoCount;
 		break;
+	case "SetAmmo":
+		tokenize(strData);
+		string setAmmoName = argv(0);
+		string setAmmoCount = argv(1);
+		int ammoNum2 = ammoNumForName(setAmmoName);
+		int ammoCount2 = stoi(setAmmoCount);
+
+		if (ammoNum2 == -1) {
+			break;
+		}
+
+		m_itemGivesAmmo[ammoNum2] = ammoCount2;
+		break;
 	case "SetWeapon":
 		m_itemWeapon = strData;
 		break;
@@ -426,6 +439,16 @@ ncItem::Touch(entity eToucher)
 			copy._mapspawned = false;
 			pl.GiveExactItem(copy);
 			removeFromMap = true;
+
+			copy.m_itemWeapon = 0;
+			copy.m_itemGivesHealth = 0;
+			copy.m_itemGivesBonusHealth = 0;
+			copy.m_itemGivesBonusArmor = 0;
+			copy.m_itemGivesArmor = 0;
+			
+			for (int i = 0; i < MAX_AMMO_TYPES; i++) {
+				copy.m_itemGivesAmmo[i] = 0i;
+			}
 		} else {
 			pl.GiveExactItem(this);
 			removeFromMap = false;

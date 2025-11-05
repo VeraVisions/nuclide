@@ -181,6 +181,11 @@ typedef struct
 	@return string value containing the classname of the weapon, identifying the classname (e.g. `weapon_pistol`). */
 	string CurrentWeapon(entity targetActor);
 
+	/** Asks the actor to drop a named item. It'll be removed from their inventory as a result.
+	param targetActor is the actor to request this to.
+	@return entity handle with the dropped item reference. When unsuccessful, returns `__NULL__` */
+	entity DropItem(entity targetActor, string namedItem);
+
 	float AimAtPos(entity, vector);
 	float MoveToPos(entity, vector);
 	bool CanSee(entity, entity);
@@ -356,6 +361,7 @@ _server_main(void)
 	actor.MoveToPos = linkToServerProgs("SVPF_actor_MoveToPos");
 	actor.HasItem = linkToServerProgs("SVPF_actor_HasItem");
 	actor.CurrentWeapon = linkToServerProgs("SVPF_actor_CurrentWeapon");
+	actor.DropItem = linkToServerProgs("SVPF_actor_DropItem");
 
 	music.Stop = linkToServerProgs("SVPF_music_Stop");
 	music.StopOnClient = linkToServerProgs("SVPF_music_StopOnClient");
