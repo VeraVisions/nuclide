@@ -812,6 +812,43 @@ SHPF_weaponInfo_Type(string weaponDef)
 	return ("unknown");
 }
 
+string
+SHPF_weaponInfo_AmmoTypes(string weaponDef)
+{
+	string globalType = EntityDef_GetKeyValue(weaponDef, "ammoType");
+	string primaryFireInfo = EntityDef_GetKeyValue(weaponDef, "def_fireInfo");
+	string secondaryFireInfo = EntityDef_GetKeyValue(weaponDef, "def_altFireInfo");
+
+	if (STRING_SET(globalType)) {
+		return (globalType);
+	}
+
+	if (!STRING_SET(primaryFireInfo)) {
+		primaryFireInfo = EntityDef_GetKeyValue(weaponDef, "ammoType");
+	} else {
+		primaryFireInfo = EntityDef_GetKeyValue(primaryFireInfo, "ammoType");
+	}
+
+	if (!STRING_SET(secondaryFireInfo)) {
+		secondaryFireInfo = EntityDef_GetKeyValue(weaponDef, "ammoType");
+	} else {
+		secondaryFireInfo = EntityDef_GetKeyValue(secondaryFireInfo, "ammoType");
+	}
+
+	/* the same? discard the other */
+	if (primaryFireInfo == secondaryFireInfo) {
+		secondaryFireInfo = "";
+	}
+
+	if (STRING_SET(primaryFireInfo) && STRING_SET(secondaryFireInfo)) {
+		return sprintf("%s %s", primaryFireInfo, secondaryFireInfo);
+	} else if (STRING_SET(primaryFireInfo)) {
+		return (primaryFireInfo);
+	}
+
+	return ("unknown");
+}
+
 int
 SHPF_weaponInfo_StartAmmo(string weaponDef)
 {
