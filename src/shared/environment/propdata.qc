@@ -974,8 +974,8 @@ BreakModel_SpawnID(vector smins, vector smaxs, vector dir, float speed, int coun
 		ncDebris gib;
 		int p;
 		int bodygroup = 0;
-		vector rendercolor = [1,1,1];
-		float renderamt = 1.0f;
+		vector rendercolor = [255,255,255];
+		float renderamt = 255.0f;
 		float rendermode = RM_NORMAL;
 		float renderfx = RFX_NORMAL;
 		string impactDecal = __NULL__;

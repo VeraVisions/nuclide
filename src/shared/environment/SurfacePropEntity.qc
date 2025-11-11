@@ -338,7 +338,7 @@ ncSurfacePropEntity::Damage(entity inflictor, entity attacker, ncDict damageDecl
 		float pushForce = damageDecl.GetFloat("push");
 
 		if (pushForce > 0.0f) {
-			meSelf.ApplyForceOffset(dmgDir * pushForce, hitLocation);
+			meSelf.ApplyForceOffset(anglesToForward(dmgDir) * pushForce, hitLocation);
 		}
 	}
 
@@ -359,8 +359,8 @@ ncSurfacePropEntity::Damage(entity inflictor, entity attacker, ncDict damageDecl
 			/* apply knockback, but only on death */
 			float knockBack = damageDecl.GetFloat("knockback");
 
-			if (knockBack >= 0) {
-				AddVelocity(dmgDir * knockBack);
+			if (knockBack > 0) {
+				AddVelocity(dmgDir * knockBack + [0,0,100]);
 			}
 
 			Death(inflictor, attacker, (int)damagePoints, dmgDir, hitLocation, damageDecl.GetInteger("hitbody"));
@@ -892,6 +892,10 @@ ncSurfacePropEntity::ReceiveEntity(float flNew, float flChanged)
 		scale = 1.0f;
 	}
 
+	if (flChanged & SRFENT_CHANGED_FRAME) {
+		frame1time = 0.0f;
+	}
+
 	/* other post-eval operations happen here */
 	if (flChanged & SRFENT_CHANGED_SIZE) {
 		setsize(this, mins * scale, maxs * scale);
@@ -935,6 +939,7 @@ ncSurfacePropEntity::predraw(void)
 
 	float returnValue = super::predraw();
 
+	frame1time += clframetime;
 	effects = oldEffects;
 	return returnValue;
 }

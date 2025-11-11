@@ -17,6 +17,7 @@
 #include "api_func.h"
 #include "../shared/api.h"
 #include "../shared/system/entityDef.h"
+#include "ServerGame.h"
 #include "Output.h"
 #include "GameRules.h"
 #include "skill.h"

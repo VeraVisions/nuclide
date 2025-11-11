@@ -108,8 +108,10 @@ public:
 	nonvirtual bool GetDefBool(string);
 	/** Looks up the integer value of a key within this entity's declaration. */
 	nonvirtual int GetDefInt(string);
-	/** Looks up the integer value of a key within this entity's declaration. */
+	/** Looks up the vector value of a key within this entity's declaration. */
 	nonvirtual vector GetDefVector(string);
+	/** Looks up the sound dictionary of a key within this entity's declaration. */
+	nonvirtual ncSoundDict GetDefSound(string);
 
 	/** Like GetDefAct, but queries a specified def, falling back to reading from our own if it's not defined. */
 	nonvirtual float GetSubDefAct(string, string);
@@ -123,6 +125,8 @@ public:
 	nonvirtual int GetSubDefInt(string, string);
 	/** Like GetDefVector, but queries a specified def, falling back to reading from our own if it's not defined. */
 	nonvirtual vector GetSubDefVector(string, string);
+	/** Like GetDefSound, but queries a specified def, falling back to reading from our own if it's not defined. */
+	nonvirtual ncSoundDict GetSubDefSound(string, string);
 
 	/** When called, will remove the entity from the game entirely. */
 	nonvirtual void Destroy(void);
@@ -235,6 +239,8 @@ public:
 	    @param keyName Name of the key in the spawn data.
 	    @param startEntity Start search at this entity. Can be `world` or `__NULL__`.*/
 	nonvirtual entity GetSpawnEntity(string, entity);
+	
+	nonvirtual ncSoundDict GetSpawnSound(string keyName);
 
 	/* load game/spawn helper functions */
 	/** Returns a floating point value from a string value. */

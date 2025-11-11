@@ -79,11 +79,12 @@ ncPlayer::Physics_Fall(float flDownforce)
 		remove(damageDecl);
 
 		//Damage_Apply(this, world, fFallDamage, 0, DMG_FALL | DMG_SKIP_ARMOR);
-		StartSoundDef(m_sndFall, CHAN_VOICE, true);
+
+		m_sndFall.PlayOnEntityChannel(this, CHAN_VOICE);
 	} else if (flDownforce >= minLandDistance) {
-		StartSoundDef(m_sndLandHard, CHAN_VOICE, true);
+		m_sndLandHard.PlayOnEntityChannel(this, CHAN_VOICE);
 	} else {
-		StartSoundDef(m_sndLandSoft, CHAN_VOICE, true);
+		m_sndLandSoft.PlayOnEntityChannel(this, CHAN_VOICE);
 	}
 #endif
 }
@@ -271,8 +272,8 @@ ncPlayer::Physics_Jump(void)
 		if (GetFlags() & FL_ONGROUND) {
 			velocity[2] += m_pmoveVars.pm_jumpheight;
 #ifdef SERVER
-			if (STRING_SET(m_sndJump)) {
-				StartSoundDef(m_sndJump, CHAN_BODY, true);
+			if (m_sndJump) {
+				m_sndJump.PlayOnEntityChannel(this, CHAN_BODY);
 			}
 #endif
 		}
@@ -383,9 +384,9 @@ ncPlayer::Physics_WaterMove(void)
 	if (WaterLevel() != 3) {
 		if (m_timeUnderwater < time) {
 #warning Read sound from player decl
-			StartSoundDef(m_sndAirGaspHeavy, CHAN_BODY, true);
+			m_sndAirGaspHeavy.PlayOnEntityChannel(this, CHAN_BODY);
 		} else if (m_timeUnderwater < time + 9) {
-			StartSoundDef(m_sndAirGaspLight, CHAN_BODY, true);
+			m_sndAirGaspLight.PlayOnEntityChannel(this, CHAN_BODY);
 		}
 #warning Read lung capacity for water from typeInfo water
 		m_timeUnderwater = time + 12;
@@ -403,7 +404,7 @@ ncPlayer::Physics_WaterMove(void)
 	if (!WaterLevel()){
 		if (GetFlags() & FL_INWATER) {
 #ifdef SERVER
-			StartSoundDef(m_sndWaterExit, CHAN_BODY, true);
+			m_sndWaterExit.PlayOnEntityChannel(this, CHAN_BODY);
 #endif
 			RemoveFlags(FL_INWATER);
 		}
@@ -412,7 +413,7 @@ ncPlayer::Physics_WaterMove(void)
 
 	if (!(GetFlags() & FL_INWATER)) {
 #ifdef SERVER
-		StartSoundDef(m_sndWaterEnter, CHAN_BODY, true);
+		m_sndWaterEnter.PlayOnEntityChannel(this, CHAN_BODY);
 		m_timeUntilNextPainSFX = 0;
 #endif
 		AddFlags(FL_INWATER);

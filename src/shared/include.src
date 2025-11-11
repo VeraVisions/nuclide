@@ -33,6 +33,7 @@ game/Client.qc
 game/Spectator.qc
 physics/pmove_custom.qc
 system/cloader.qc
+audio/SoundDict.qc
 audio/soundDef.qc
 physics/Ragdoll.qc
 game/Player.qc
@@ -46,7 +47,7 @@ game/Charger.qc
 environment/Spraylogo.qc
 system/util.qc
 game/motd.qc
-environment/bodyque.qc
+environment/DeadBody.qc
 system/entityDef.qc
 game/ammo.qc
 system/activities.qc

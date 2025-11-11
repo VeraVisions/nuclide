@@ -265,11 +265,15 @@ func_train::PathMove(void)
 		return;
 	}
 
+	if (!m_flCurrentSpeed) {
+		m_flCurrentSpeed = 100;
+	}
+
 	vecWorldPos = WorldSpaceCenter();
 	vecVelocity = (eNode.origin - vecWorldPos);
 	flTravelTime = (vlen(vecVelocity) / m_flCurrentSpeed);
 
-	if (!flTravelTime) {
+	if (flTravelTime <= 0) {
 		EntLog("Distance is 0, advancing to next node.");
 		ClearVelocity();
 		ScheduleThink(PathNext, 0.0f);

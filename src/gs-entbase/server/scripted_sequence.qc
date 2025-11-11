@@ -109,6 +109,7 @@ public:
 	virtual void SpawnKey(string,string);
 	virtual void Touch(entity);
 	virtual void DebugDraw(void);
+	virtual void OnMapFinishedLoading(void);
 	
 	nonvirtual void RunOnEntity(entity);
 	nonvirtual void InitIdle(void);
@@ -230,13 +231,19 @@ scripted_sequence::Respawn(void)
 		SetSolid(SOLID_TRIGGER);
 		mins[0] = mins[1] = mins[2] = -(m_flSearchRadius/2);
 		maxs[0] = maxs[1] = maxs[2] = (m_flSearchRadius/2);
-		setsize(this, mins, maxs);
+		SetSize(mins, maxs);
 	} else {
 		SetSolid(SOLID_NOT);
 	}
 
+	ScheduleThink(InitIdle, 1.0f);
+}
+
+void
+scripted_sequence::OnMapFinishedLoading(void)
+{
 	if (m_strIdleAnim) {
-		ScheduleThink(InitIdle, 0.0f);
+		ScheduleThink(InitIdle, 1.0f);
 	}
 }
 

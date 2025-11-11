@@ -580,6 +580,12 @@ Cmd_Parse(string sCMD)
 	case "removeAllInventoryItems":
 	case "listAmmo":
 	case "joinTeam":
+
+	case "ent_create":
+	case "ent_fire":
+	case "ent_remove":
+	case "ent_remove_all":
+	case "ent_teleport":
 		localcmd(sprintf("cmd %s\n", sCMD));
 		break;
 
@@ -800,6 +806,13 @@ Cmd_Init(void)
 	registercommand("+menu_right");
 	registercommand("-menu_right");
 	registercommand("reloadClientLocale");
+
+	/* Source Engine compat */
+	registercommand("ent_create");
+	registercommand("ent_fire");
+	registercommand("ent_remove");
+	registercommand("ent_remove_all");
+	registercommand("ent_teleport");
 
 	registercommand("listUserInfo");
 

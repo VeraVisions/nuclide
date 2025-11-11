@@ -109,8 +109,9 @@ BodyQue_SpawnRagdoll(ncActor pl, float anim)
 
 	nextRagdoll.Spawn();
 	/* don't run physics on server side */
-	nextRagdoll.SetMovetype(MOVETYPE_BOUNCE);
-	nextRagdoll.SetSolid(SOLID_NOT);
+	nextRagdoll.SetMovetype(MOVETYPE_TOSS);
+	nextRagdoll.SetSolid(SOLID_CORPSE);
+	nextRagdoll.SetVelocity(pl.GetVelocity() + [0,0,120]);
 	nextRagdoll.SetModelindex(pl.GetModelindex());
 
 	if (pl.IsCrouching()) {

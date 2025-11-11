@@ -11,6 +11,7 @@ mapcycle.qc
 maptweaks.qc
 cmd_cl.qc
 cmd_sv.qc
+ServerGame.qc
 entry.qc
 Schedule.qc
 AddonDelegate.qc

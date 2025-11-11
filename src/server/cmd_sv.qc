@@ -292,7 +292,7 @@ CMD_ListEntitiesByClass(void)
 	}
 
 	for (entity e = world; (e = find(e, ::classname, entString));) {
-		printf("\t(%d) %v (mins: %v; maxs: %v)\n", num_for_edict(e), e.origin, e.mins, e.maxs);
+		printf("\t(%d) %v (owner: %d; model: %d)\n", num_for_edict(e), e.origin, num_for_edict(e.owner), e.modelindex);
 	}
 }
 
@@ -307,7 +307,7 @@ CMD_ListEntitiesByTarget(void)
 	}
 
 	for (entity e = world; (e = find(e, ::target, targetString));) {
-		printf("\t(%d) %v (mins: %v; maxs: %v)\n", num_for_edict(e), e.origin, e.mins, e.maxs);
+		printf("\t(%d) %v (owner: %d; model: %d)\n", num_for_edict(e), e.origin, num_for_edict(e.owner), e.modelindex);
 	}
 }
 
@@ -321,10 +321,10 @@ CMD_ListEntities(void)
 	while ((e = nextent(e))) {
 		if (e._mapspawned) {
 			mapSpawnedCount++;
-			printf("\t^2(%d) %s %v (map ent: %d) (mins: %v; maxs: %v)\n", num_for_edict(e), e.classname, e.origin, e._mapspawned, e.mins, e.maxs);
+			printf("\t^2(%d) %s %v (owner: %d; model: %d)\n", num_for_edict(e), e.classname, e.origin, num_for_edict(e.owner), e.modelindex);
 		} else {
 			gameSpawnedCount++;
-			printf("\t^3(%d) %s %v (map ent: %d) (mins: %v; maxs: %v)\n", num_for_edict(e), e.classname, e.origin, e._mapspawned, e.mins, e.maxs);
+			printf("\t^3(%d) %s %v (owner: %d; model: %d)\n", num_for_edict(e), e.classname, e.origin, num_for_edict(e.owner), e.modelindex);
 		}
 	}
 
@@ -415,6 +415,9 @@ Cmd_ParseServerCommand(void)
 	case "listEntityData":
 		CMD_ListEntityData();
 		break;
+	case "listEntities":
+		CMD_ListEntities();
+		break;
 	case "listEntitiesByClass":
 		CMD_ListEntitiesByClass();
 		break;
@@ -423,9 +426,6 @@ Cmd_ParseServerCommand(void)
 		break;
 	case "listGlobals":
 		ncSessionManager::ListGlobals();
-		break;
-	case "listEntities":
-		CMD_ListEntities();
 		break;
 	default:
 		return (false);

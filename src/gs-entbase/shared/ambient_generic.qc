@@ -352,6 +352,12 @@ ambient_generic::Input(entity eAct, string strKey, string setValue)
 		m_bToggle = false;
 		Trigger(eAct, TRIG_TOGGLE);
 		break;
+	case "PlaySoundOnActivator":
+		SoundDef_Play(eAct, CHAN_AUTO, m_strActivePath);
+		break;
+	case "SetSound":
+		m_strActivePath = ReadString(setValue);
+		break;
 	case "StopSound":
 		m_bToggle = true;
 		Trigger(eAct, TRIG_TOGGLE);

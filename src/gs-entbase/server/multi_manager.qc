@@ -15,6 +15,7 @@
 */
 
 #define MM_MULTITHREADED 1
+#define MM_MAX_SUBTRIGGERS 16
 
 static class
 multi_manager_sub:ncPointTrigger
@@ -93,7 +94,7 @@ class
 multi_manager:ncPointTrigger
 {
 private:
-	multi_manager_sub m_subTriggers[16];
+	multi_manager_sub m_subTriggers[MM_MAX_SUBTRIGGERS];
 	string m_triggerBuffer;
 
 public:
@@ -111,7 +112,7 @@ public:
 void
 multi_manager::multi_manager(void)
 {
-	for (int i = 0; i < 16; i++) {
+	for (int i = 0; i < MM_MAX_SUBTRIGGERS; i++) {
 		m_subTriggers[i] = __NULL__;
 	}
 
@@ -279,27 +280,30 @@ multi_manager::Spawned(void)
 
 	/* set up our triggers */
 	b = 0;
-	iFields = tokenizebyseparator(m_triggerBuffer, " ");
-	for (int i = 0; i < iFields; i+=2) {
-		if (b >= 16) {
+
+	for (int i = 0; i < tokenizebyseparator(m_triggerBuffer, " "); i+=2) {
+		string dataString = argv(i);
+		string dataArgs = argv(i+1);
+
+		if (b >= MM_MAX_SUBTRIGGERS) {
 			break;
 		}
 
 		/* no more data */
-		if (!STRING_SET(argv(i))) {
+		if (!STRING_SET(dataString)) {
 			break;
 		}
 
 		/* avoid infinite-loops, only when MULTITHREADED flag is NOT set */
-		if ((!HasSpawnFlags(MM_MULTITHREADED) && targetname == argv(i))) {
+		if ((!HasSpawnFlags(MM_MULTITHREADED) && targetname == dataString)) {
 			continue;
 		}
 
 		m_subTriggers[b] = spawn(multi_manager_sub);
 		m_subTriggers[b].Spawn();
-		m_subTriggers[b].SetTriggerTarget(argv(i));
-		m_subTriggers[b].target = argv(i);
-		m_subTriggers[b].m_flUntilTriggered = stof(argv(i+1));
+		m_subTriggers[b].SetTriggerTarget(dataString);
+		m_subTriggers[b].target = dataString;
+		m_subTriggers[b].m_flUntilTriggered = stof(dataArgs);
 		b++;
 	}
 }
@@ -312,7 +316,7 @@ multi_manager::Respawn(void)
 	SetValue(0i);
 
 	/* Mark them inactive */
-	for (int b = 0; b < 16; b++) {
+	for (int b = 0; b < MM_MAX_SUBTRIGGERS; b++) {
 		if (!m_subTriggers[b]) {
 			break;
 		}
@@ -330,7 +334,7 @@ multi_manager::Trigger(entity act, triggermode_t state)
 
 	/* If not multi-threaded, we have to watch out 'til all triggers are done. */
 	if (!HasSpawnFlags(MM_MULTITHREADED)) {
-		for (int i = 0; i < 16; i++) {
+		for (int i = 0; i < MM_MAX_SUBTRIGGERS; i++) {
 			/* hit the end of our allocation chain */
 			if (!m_subTriggers[i]) {
 				break;
@@ -342,14 +346,15 @@ multi_manager::Trigger(entity act, triggermode_t state)
 	}
 
 	/* time to trigger our sub triggers */
-	for (int i = 0; i < 16; i++) {
+	for (int i = 0; i < MM_MAX_SUBTRIGGERS; i++) {
 		/* hit the end of our allocation chain */
 		if (!m_subTriggers[i]) {
 			break;
 		}
 
-		if (m_subTriggers[i].HasTriggerTarget() == false)
+		if (m_subTriggers[i].HasTriggerTarget() == false) {
 			continue;
+		}
 
 		m_subTriggers[i].SetValue(0i);
 		m_subTriggers[i].m_lastActivator = act;

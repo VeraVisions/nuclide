@@ -158,9 +158,12 @@ void
 Spawn_TeleportToSpawn(entity targetEnt)
 {
 	string desiredSpawn = teams.SpawnPoint((int)targetEnt.team);
+	
+	ncLog("desired spawn %s for client %d (Name: %S, Team: %d)", desiredSpawn, num_for_edict(targetEnt), targetEnt.netname, targetEnt.team);
 
 	/* singleplayer */
 	if (STRING_SET(startspot)) {
+		ncLog("placing client at startspot %S", startspot);
 		targetEnt.origin = Landmark_GetSpot();
 		setorigin_safe(targetEnt, targetEnt.origin);
 		return;
@@ -170,6 +173,7 @@ Spawn_TeleportToSpawn(entity targetEnt)
 	if (STRING_SET(desiredSpawn)) {
 
 		entity spawnPoint = Spawn_SelectRandom(desiredSpawn);
+		ncLog("finding random spot %S", desiredSpawn);
 
 		if (spawnPoint) {
 			targetEnt.origin = spawnPoint.origin;
@@ -183,6 +187,7 @@ Spawn_TeleportToSpawn(entity targetEnt)
 			WriteFloat(MSG_MULTICAST, spawnPoint.angles[2]);
 			msg_entity = targetEnt;
 			multicast([0,0,0], MULTICAST_ONE_R);
+			ncLog("placing client at random %v; %v", targetEnt.origin, targetEnt.angles);
 			return;
 		}
 	}
@@ -202,5 +207,6 @@ Spawn_TeleportToSpawn(entity targetEnt)
 		WriteFloat(MSG_MULTICAST, spawnPoint.angles[2]);
 		msg_entity = targetEnt;
 		multicast([0,0,0], MULTICAST_ONE_R);
+		ncLog("placing client at internal start %v; %v", targetEnt.origin, targetEnt.angles);
 	}
 }

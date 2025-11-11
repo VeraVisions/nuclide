@@ -1,5 +1,6 @@
 #pragma target fte_5768
 #define QWSSQC
+#define RULEC
 
 #includelist
 common/include.src

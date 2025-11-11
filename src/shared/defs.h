@@ -95,9 +95,9 @@ string __fullspawndata;
 
 #include "audio/sentences.h"
 
-#include "system/IO.h"
 #include "system/Dict.h"
 #include "audio/SoundDict.h"
+#include "system/IO.h"
 #include "system/Trigger.h"
 #include "system/Entity.h"
 #include "system/Timer.h"
@@ -142,7 +142,7 @@ string __fullspawndata;
 #include "environment/propdata.h"
 #include "environment/surfaceproperties.h"
 #include "environment/decalgroups.h"
-#include "environment/bodyque.h"
+#include "environment/DeadBody.h"
 #include "game/motd.h"
 #include "system/util.h"
 #include "game/ammo.h"

@@ -151,7 +151,6 @@ private:
 	int m_iOldInputDirection;
 	int m_iInputLevel;
 	int m_iOldInputLevel;
-	ncTimer m_timerAngled;
 	float m_flTrainLength;
 	bool _m_bDriving;
 
@@ -183,7 +182,6 @@ func_tracktrain::func_tracktrain(void)
 	m_iOldInputDirection = 0i;
 	m_iInputLevel = 0i;
 	m_iOldInputLevel = 0i;
-	m_timerAngled = __NULL__;
 	m_flTrainLength = 0.0f;
 	_m_bDriving = false;
 #endif
@@ -204,7 +202,7 @@ vector
 func_tracktrain::GetTrainPivotPoint(bool drivingBackwards)
 {
 /* needs more work */
-#if 1
+#if 0
 	return GetOrigin();
 #else
 	vector newPos;
@@ -395,7 +393,6 @@ func_tracktrain::Save(float handle)
 	SaveInt(handle, "m_iInputDirection", m_iInputDirection);
 	SaveInt(handle, "m_iOldInputDirection", m_iOldInputDirection);
 	SaveInt(handle, "m_iInputLevel", m_iInputLevel);
-	SaveEntity(handle, "m_timerAngled", m_timerAngled);
 	SaveFloat(handle, "m_flTrainLength", m_flTrainLength);
 	SaveBool(handle, "_m_bDriving", _m_bDriving);
 
@@ -458,9 +455,6 @@ func_tracktrain::Restore(string strKey, string setValue)
 		break;
 	case "m_iInputLevel":
 		m_iInputLevel = ReadInt(setValue);
-		break;
-	case "m_timerAngled":
-		m_timerAngled = (ncTimer)ReadEntity(setValue);
 		break;
 	case "m_flTrainLength":
 		m_flTrainLength = ReadFloat(setValue);
@@ -683,21 +677,21 @@ func_tracktrain::PathMoveForward(void)
 		printf("vecDiff: %v\n", vecDiff);
 	}
 
-	/* If we're moving vertically, do not change the current angle at all. */
+	/* If we're moving vertically, do not change the current pitch at all. */
 	if (fabs(vecDiff[0]) == 0 && fabs(vecDiff[0]) == 0) {
-		vecAngleDest[1] = angles[1];
+		vecAngleDest[0] = angles[0];
 	}
 
 	vecAngleDiff = angleDifference(vecAngleDest, angles);
 	vecAngleDiff[2] = 0;
 
-	if (vecAngleDiff[0] > 180)
+	while (vecAngleDiff[0] > 180)
 		vecAngleDiff[0] -= 180;
-	if (vecAngleDiff[0] < -180)
+	while (vecAngleDiff[0] < -180)
 		vecAngleDiff[0] += 180;
-	if (vecAngleDiff[1] > 180)
+	while (vecAngleDiff[1] > 180)
 		vecAngleDiff[1] -= 180;
-	if (vecAngleDiff[1] < -180)
+	while (vecAngleDiff[1] < -180)
 		vecAngleDiff[1] += 180;
 
 	if (IgnoresPitch() == true) {
@@ -706,12 +700,15 @@ func_tracktrain::PathMoveForward(void)
 	} 
 
 	if (autocvar(trackTrain_debug, 0) == num_for_edict(this)) {
-		printf("vecAngleDiff: %v", vecAngleDiff);
+		printf("vecAngleDiff: %v\n", vecAngleDiff);
 	}
 
-	if (vecAngleDiff[1] == 0)
+	EntLog("Turning to %v (delta: %v) within %d s", vecAngleDest, vecAngleDiff, turnTime);
+
+	if (vecAngleDiff[1] == 0 || turnTime < 0) {
 		SetAngles(vecAngleDest);
-	else
+		SetAngularVelocity(g_vec_null);
+	} else
 		SetAngularVelocity(vecAngleDiff * (1 / turnTime));
 
 	if (!eNode)
@@ -719,7 +716,9 @@ func_tracktrain::PathMoveForward(void)
 
 	_m_bDriving = true;
 	ScheduleThink(_PathArrivedForward, flTravelTime);
-	m_timerAngled = m_timerAngled.ScheduleTimer(this, _AngleDone, turnTime, false);
+
+	if (turnTime > 0.0f)
+		ncTimer::TemporaryTimer(this, _AngleDone, turnTime, false);
 }
 
 void
@@ -769,7 +768,7 @@ func_tracktrain::PathMoveBack(void)
 		return;
 	}
 
-	ncVehicle_Log("Changing velocity from '%v' to '%v'", GetVelocity(), vecVelocity);
+	EntLog("Changing velocity from '%v' to '%v'", GetVelocity(), vecVelocity);
 	SetVelocity(vecVelocity * (1.0f / flTravelTime));
 	_SoundMove();
 
@@ -781,21 +780,21 @@ func_tracktrain::PathMoveBack(void)
 		printf("vecDiff: %v\n", vecDiff);
 	}
 
-	/* If we're moving vertically, do not change the current angle at all. */
+	/* If we're moving vertically, do not change the current pitch at all. */
 	if (fabs(vecDiff[0]) == 0 && fabs(vecDiff[0]) == 0) {
-		vecAngleDest[1] = angles[1];
+		vecAngleDest[0] = angles[0];
 	}
 
 	vecAngleDiff = angleDifference(vecAngleDest, angles);
 	vecAngleDiff[2] = 0;
 
-	if (vecAngleDiff[0] > 180)
+	while (vecAngleDiff[0] > 180)
 		vecAngleDiff[0] -= 180;
-	if (vecAngleDiff[0] < -180)
+	while (vecAngleDiff[0] < -180)
 		vecAngleDiff[0] += 180;
-	if (vecAngleDiff[1] > 180)
+	while (vecAngleDiff[1] > 180)
 		vecAngleDiff[1] -= 180;
-	if (vecAngleDiff[1] < -180)
+	while (vecAngleDiff[1] < -180)
 		vecAngleDiff[1] += 180;
 
 	if (IgnoresPitch() == true) {
@@ -807,17 +806,20 @@ func_tracktrain::PathMoveBack(void)
 		printf("vecAngleDiff: %v", vecAngleDiff);
 	}
 
-	if (vecAngleDiff[1] == 0)
-		SetAngles(vecAngleDest);
-	else
-		SetAngularVelocity(vecAngleDiff * (1 / turnTime));
+	EntLog("Turning to %v (delta: %v) within %d s", vecAngleDest, vecAngleDiff, turnTime);
 
-	if (!eNode)
-		SetAngularVelocity([0,0,0]);
+	if (vecAngleDiff[1] == 0 || turnTime < 0) {
+		SetAngles(vecAngleDest);
+		SetAngularVelocity(g_vec_null);
+	} else {
+		SetAngularVelocity(vecAngleDiff * (1 / turnTime));
+	}
 
 	_m_bDriving = true;
 	ScheduleThink(_PathArrivedBack, flTravelTime);
-	m_timerAngled = m_timerAngled.ScheduleTimer(this, _AngleDone, turnTime, false);
+
+	if (turnTime > 0)
+		ncTimer::TemporaryTimer(this, _AngleDone, turnTime, false);
 }
 
 void

@@ -395,14 +395,18 @@ void
 ncEntity::ParentUpdate(void)
 {
 	if (tag_entity) {
-		makevectors(tag_entity.angles);
-		origin = tag_entity.origin + v_forward * m_parentPosOffs[0];
-		origin += v_right * m_parentPosOffs[1];
-		origin += v_up * m_parentPosOffs[2];
-		angles = v_forward * m_parentPosOffs[0];
-		angles += v_right * m_parentPosOffs[1];
-		angles += v_up * m_parentPosOffs[2];
-		angles = vectoangles(angles);
+		ncEntity parentEntity = (ncEntity)GetParent();
+
+		origin = parentEntity.WorldSpaceCenter() + anglesToForward(parentEntity.angles) * m_parentPosOffs[0];
+		origin += anglesToRight(tag_entity.angles) * m_parentPosOffs[1];
+		origin += anglesToUp(tag_entity.angles) * m_parentPosOffs[2];
+
+		if (IsBrush() == false) {
+			angles = anglesToForward(tag_entity.angles) * m_parentAngOffs[0];
+			angles += anglesToRight(tag_entity.angles) * m_parentAngOffs[1];
+			angles += anglesToUp(tag_entity.angles) * m_parentAngOffs[2];
+			angles = vectoangles(angles);
+		}
 	}
 
 	EvaluateEntity();
@@ -447,16 +451,33 @@ void
 ncEntity::SetParent(string name)
 {
 	vector parentOffset, angleOffset;
+	vector ourAbsPos, parentAbsPos;
+	ncEntity parentEntity;
+
 	tag_entity = find(world, ::targetname, name);
-	parentOffset = origin - tag_entity.origin;
+	parentEntity = (ncEntity)tag_entity;
+
+	/* when part of map, always use the initial starting-point as a reference */
+	if (CreatedByMap() == true && parentEntity.CreatedByMap()) {
+		parentAbsPos = parentEntity.GetSpawnVector("origin");
+		ourAbsPos = GetSpawnVector("origin");
+	} else {
+		parentAbsPos = parentEntity.GetOrigin();
+		ourAbsPos = GetOrigin();
+	}
+
+	parentOffset = ourAbsPos - parentAbsPos;
 	angleOffset = anglesToForward(angles) - anglesToForward(tag_entity.angles);
+
 	makevectors(tag_entity.angles);
-	m_parentPosOffs[0] = dotproduct(parentOffset, v_forward);
-	m_parentPosOffs[1] = dotproduct(parentOffset, v_right);
-	m_parentPosOffs[2] = dotproduct(parentOffset, v_up);
-	m_parentAngOffs[0] = dotproduct(angleOffset, v_forward);
-	m_parentAngOffs[1] = dotproduct(angleOffset, v_right);
-	m_parentAngOffs[2] = dotproduct(angleOffset, v_up);
+	m_parentPosOffs[0] = dotproduct(parentOffset, anglesToForward(tag_entity.angles));
+	m_parentPosOffs[1] = dotproduct(parentOffset, anglesToRight(tag_entity.angles));
+	m_parentPosOffs[2] = dotproduct(parentOffset, anglesToUp(tag_entity.angles));
+	m_parentAngOffs[0] = dotproduct(angleOffset, anglesToForward(tag_entity.angles));
+	m_parentAngOffs[1] = dotproduct(angleOffset, anglesToRight(tag_entity.angles));
+	m_parentAngOffs[2] = dotproduct(angleOffset, anglesToUp(tag_entity.angles));
+
+	EntLog("Parented to (%d) %s (offs: %v) (%v - %v)", num_for_edict(tag_entity), tag_entity.classname, m_parentPosOffs, ourAbsPos, parentAbsPos);
 }
 
 void
@@ -534,11 +555,9 @@ ncEntity::SetFrame(float newFrame)
 	frame = newFrame;
 	frame1time = 0.0f;
 
-
 #ifdef SERVER
 	/* check if an event callback exists */
 	{
-		int eDefEvents;
 		string ourName;
 
 		if (modelframecount(modelindex) > 0) {
@@ -547,9 +566,7 @@ ncEntity::SetFrame(float newFrame)
 			return;
 		}
 
-		eDefEvents = tokenize(m_modelEventCallbacks);
-
-		for (int i = 0; i < eDefEvents; i+=3) {
+		for (int i = 0; i < tokenize(m_modelEventCallbacks); i+=3) {
 			string testName = argv(i+0);
 			string testInput = argv(i+1);
 			string testData = argv(i+2);
@@ -560,8 +577,6 @@ ncEntity::SetFrame(float newFrame)
 				} else {
 					Input(this, testInput, ""); /* no parms passed. */
 				}
-
-				tokenize(m_modelEventCallbacks); /* ensure argv() is 'rewound'... */
 			}
 		}
 	}
@@ -1005,19 +1020,20 @@ ncEntity::Respawn(void)
 
 	if (CreatedByMap()) {
 		SetOrigin(GetSpawnVector("origin"));
+		_RelinkToSpawnParent();
 	}
 
 	RestoreAngles();
 	SetModel(GetSpawnString("model"));
 
-	_RelinkToSpawnParent();
 }
 
 void
 ncEntity::OnMapFinishedLoading(void)
 {
-
+	_RelinkToSpawnParent();
 }
+
 
 void
 ncEntity::Save(float handle)

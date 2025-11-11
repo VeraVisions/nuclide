@@ -44,7 +44,10 @@ ncSpawnPoint::Respawn(void)
 
 	SetSolid(SOLID_BBOX);
 	SetSize(newMins, newMaxs);
-	SetOriginUnstick(GetSpawnVector("origin"));
+
+	if (CreatedByMap() == true) {
+		SetOriginUnstick(GetSpawnVector("origin"));
+	}
 
 #ifdef SERVER
 	RestoreAngles();

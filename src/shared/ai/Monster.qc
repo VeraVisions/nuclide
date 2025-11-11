@@ -2024,7 +2024,6 @@ ncMonster::Pain(entity inflictor, entity attacker, int damage, vector dir,  vect
 	/* stop the monster from moving during pain, if desired */
 	if (m_freezeDuringPain == true) {
 		m_flStopTime = time + frameduration(modelindex, actPain);
-		ClearVelocity();
 	}
 }
 
@@ -2135,15 +2134,16 @@ ncMonster::Death(entity inflictor, entity attacker, int damage, vector dir, vect
 		AddVelocity([0,0,128]);
 		//SetSize([-8,-8,-8], [8,8,16]);
 		SetMovetype(MOVETYPE_BOUNCE);
-		customphysics = __NULL__;
 	} else if (GetMovetype() != MOVETYPE_NONE) {
-		SetMovetype(MOVETYPE_TOSS);
+		SetMovetype(MOVETYPE_BOUNCE);
 	}
 
 	/* monsters trigger their targets when dead */
 	if (GetTriggerCondition() == MTRIG_DEATH) {
 		TriggerTargets();
 	}
+
+	customphysics = __NULL__;
 }
 
 #if 0

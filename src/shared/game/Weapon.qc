@@ -93,6 +93,7 @@ ncWeapon::AddedToInventory(void)
 void
 ncWeapon::RemovedFromInventory(void)
 {
+	SwitchedFromWeapon();
 }
 
 void
@@ -230,9 +231,6 @@ ncWeapon::SpawnKey(string keyName, string setValue)
 		break;
 	case "def_dropItem":
 		m_weaponDropsItem = ReadString(setValue);
-		break;
-	case "snd_hum":
-		m_sndHum = ReadString(setValue);
 		break;
 	case "continuousSmoke":
 		m_fiFXSmokeContinous = ReadBool(setValue);
@@ -775,11 +773,11 @@ ncWeapon::UpdateFireInfoCache(void)
 	m_fiDetonateOnFire = GetSubDefString(m_weaponLastFireInfo, "detonateOnFire");
 	m_fiPunchAngle = GetSubDefVector(m_weaponLastFireInfo, "punchAngle");
 	m_fiPunchSpring = GetSubDefVector(m_weaponLastFireInfo, "punchSpring");
-	m_fiSndFire = GetSubDefString(m_weaponLastFireInfo, "snd_fire");
-	m_fiSndFailed = GetSubDefString(m_weaponLastFireInfo, "snd_fireFailed");
-	m_fiSndFireLast = GetSubDefString(m_weaponLastFireInfo, "snd_fireLast");
-	m_fiSndRelease = GetSubDefString(m_weaponLastFireInfo, "snd_release");
-	m_fiSndEmpty = GetSubDefString(m_weaponLastFireInfo, "snd_empty");
+	m_fiSndFire = GetSubDefSound(m_weaponLastFireInfo, "snd_fire");
+	m_fiSndFailed = GetSubDefSound(m_weaponLastFireInfo, "snd_fireFailed");
+	m_fiSndFireLast = GetSubDefSound(m_weaponLastFireInfo, "snd_fireLast");
+	m_fiSndRelease = GetSubDefSound(m_weaponLastFireInfo, "snd_release");
+	m_fiSndEmpty = GetSubDefSound(m_weaponLastFireInfo, "snd_empty");
 	m_fiAmmoType = ammoNumForName(GetSubDefString(m_weaponLastFireInfo, "ammoType"));
 	m_fiAmmoRequired = GetSubDefBool(m_weaponLastFireInfo, "ammoRequired");
 	m_fiFireRate = GetSubDefFloat(m_weaponLastFireInfo, "fireRate");
@@ -794,11 +792,22 @@ ncWeapon::UpdateFireInfoCache(void)
 	m_fiChargeTime = GetSubDefFloat(m_weaponLastFireInfo, "chargeTime");
 
 	m_fiOverheatPoints = GetSubDefFloat(m_weaponLastFireInfo, "overheatPerShot");
-
-	m_fiSndFireStart = GetSubDefString(m_weaponLastFireInfo, "snd_fireStart");
-	m_fiSndFireStop = GetSubDefString(m_weaponLastFireInfo, "snd_fireStop");
-	m_fiSndFireLoop = GetSubDefString(m_weaponLastFireInfo, "snd_fireLoop");
 	m_fiFireUnderwater = GetSubDefBool(m_weaponLastFireInfo, "fireUnderwater");
+
+	m_fiSndHolster = GetSubDefSound(m_weaponLastFireInfo, "snd_holster");
+	m_fiSndDraw = GetSubDefSound(m_weaponLastFireInfo, "snd_draw");
+	m_fiSndFireStart = GetSubDefSound(m_weaponLastFireInfo, "snd_fireStart");
+	m_fiSndFireStop = GetSubDefSound(m_weaponLastFireInfo, "snd_fireStop");
+	m_fiSndFireLoop = GetSubDefSound(m_weaponLastFireInfo, "snd_fireLoop");
+	m_fiSndEjectBrass = GetSubDefSound(m_weaponLastFireInfo, "snd_ejectBrass");
+	m_fiSndEjectCartridge = GetSubDefSound(m_weaponLastFireInfo, "snd_ejectCartridge");
+	m_fiSndReload = GetSubDefSound(m_weaponLastFireInfo, "snd_reload");
+	m_fiSndReloadStart = GetSubDefSound(m_weaponLastFireInfo, "snd_reloadStart");
+	m_fiSndReloadEnd = GetSubDefSound(m_weaponLastFireInfo, "snd_reloadEnd");
+	m_sndRaiseScope = GetSubDefSound(m_weaponLastFireInfo, "snd_raiseScope");
+	m_sndLowerScope = GetSubDefSound(m_weaponLastFireInfo, "snd_lowerScope");
+	m_sndModeOff = GetSubDefSound(m_weaponLastFireInfo, "snd_modeOff");
+	m_sndModeOn = GetSubDefSound(m_weaponLastFireInfo, "snd_modeOn");
 
 	m_fiMaxBurst = GetSubDefFloat(m_weaponLastFireInfo, "burstCount");
 	m_fiBurstTime = GetSubDefFloat(m_weaponLastFireInfo, "burstTime");
@@ -992,7 +1001,7 @@ ncWeapon::Draw(void)
 	}
 
 #ifdef SERVER
-	PlaySound(GetDefString("snd_draw"), CHAN_AUTO, false);
+	m_fiSndDraw.PlayOnEntity(this);
 #endif
 
 	SetAttackNext(drawTime);
@@ -1016,7 +1025,7 @@ ncWeapon::EmptySound(void)
 {
 #ifdef SERVER
 	ncPlayer ourOwner = (ncPlayer)GetOwner();
-	ourOwner.StartSoundDef(m_fiSndEmpty, CHAN_WEAPON, true);
+	m_fiSndEmpty.PlayOnEntityChannel(ourOwner, CHAN_WEAPON);
 	ourOwner.gflags |= GF_SEMI_TOGGLED;
 
 	/* Remove when empty, but not when we're supposed to be detonating on fire */
@@ -1082,7 +1091,7 @@ ncWeapon::UseAmmo(string fireInfo)
 		SetIdleNext(failDuration);
 
 #ifdef SERVER
-		ourOwner.StartSoundDef(m_fiSndFailed, CHAN_WEAPON, true);
+		m_fiSndFailed.PlayOnEntityChannel(ourOwner, CHAN_WEAPON);
 #endif
 
 		return (false);
@@ -1117,7 +1126,7 @@ ncWeapon::GiveBonusItems(entity theOwner, bool isNew)
 	super::GiveBonusItems(theOwner, isNew);
 
 	/* we already had this weapon, but we're taking extra ammo from the clip */
-	if (isNew == false) {
+	if (isNew == false && CreatedByMap() == true) {
 		ourOwner.GiveAmmo(m_primaryAmmoType, m_weaponClip);
 	}
 }
@@ -1170,7 +1179,8 @@ ncWeapon::EjectBrass(void)
 	brass.SetSolid(SOLID_NOT);
 	brass.ScheduleThink(Destroy, 4.0f);
 
-	PlaySound(GetSubDefString(m_weaponLastFireInfo, "snd_ejectBrass"), CHAN_AUTO, false);
+	//PlaySound(GetSubDefString(m_weaponLastFireInfo, "snd_ejectBrass"), CHAN_AUTO, false);
+	m_fiSndEjectBrass.PlayOnEntity(ourOwner);
 }
 
 void
@@ -1207,7 +1217,8 @@ ncWeapon::EjectCartridge(void)
 	brass.SetSolid(SOLID_NOT);
 	brass.ScheduleThink(Destroy, 4.0f);
 
-	PlaySound(GetSubDefString(m_weaponLastFireInfo, "snd_ejectCartridge"), CHAN_AUTO, false);
+	//PlaySound(GetSubDefString(m_weaponLastFireInfo, "snd_ejectCartridge"), CHAN_AUTO, false);
+	m_fiSndEjectCartridge.PlayOnEntity(ourOwner);
 	
 }
 #endif
@@ -1234,7 +1245,7 @@ ncWeapon::FiredWeaponAttack(string fireInfo)
 	}
 #endif
 
-	if (STRING_SET(fireInfo)) {
+	if (STRING_SET(fireInfo) && ourOwner) {
 		vector firePos = ourOwner.m_xrInputRight.GetOrigin();
 		vector fireAng = ourOwner.m_xrInputRight.GetAngles();
 		ourOwner._ProjectileAttack(fireInfo, false, firePos, fireAng);
@@ -1340,7 +1351,7 @@ ncWeapon::Attack(string fireInfo)
 
 #ifdef SERVER
 			ourOwner.m_weaponCookingTime = time;
-			PlaySound(GetSubDefString(fireInfo, "snd_delay"), CHAN_WEAPON, false);
+			m_fiSndDelay.PlayOnEntityChannel(this, CHAN_WEAPON);
 #endif
 
 			/* mark as charging, play loop anim in Idle() next */
@@ -1374,22 +1385,26 @@ ncWeapon::Attack(string fireInfo)
 	ourOwner.m_punchVelocity += m_fiPunchSpring * 20.0f;
 
 #ifdef SERVER
-	string fireSound = m_fiSndFire;
+	ncSoundDict fireSound = m_fiSndFire;
 	v_angle = input_angles;
 
 	if (m_weaponClipSize > 0 && m_weaponClip == 0) {
-		if (m_fiSndFireLast != "") {
+		if (m_fiSndFireLast) {
 			fireSound = m_fiSndFireLast;
 		}
 	}
 
 	if (fireSound) {
-		ourOwner.StartSoundDef(fireSound, CHAN_WEAPON, true);
+		fireSound.PlayOnEntityChannel(ourOwner, CHAN_WEAPON);
 	}
 #endif
 
 	FiredWeaponAttack(fireInfo);
-	ourOwner.Event_FireWeapon();
+
+	/* owner could have been removed by this point! */
+	if (ourOwner) {
+		ourOwner.Event_FireWeapon();
+	}
 
 	if (wasfreed(this)) {
 		return;
@@ -1626,7 +1641,7 @@ ncWeapon::Idle(void)
 		idleAnim = GetSubDefAct(m_weaponLastFireInfo, "reloadStart");
 		_SetWeaponState(WEAPONSTATE_RELOAD);
 #ifdef SERVER
-		PlaySound(GetDefString("snd_reloadStart"), CHAN_AUTO, false);
+		m_fiSndReloadStart.PlayOnEntity(this);
 #endif
 		SetAttackNext(frameduration(m_viewModel, idleAnim));
 		ourOwner.Event_ReloadWeaponStart();
@@ -1648,7 +1663,7 @@ ncWeapon::Idle(void)
 			reloadTime = m_fiReloadTime;
 		}
 #ifdef SERVER
-		PlaySound(GetDefString("snd_reload"), CHAN_AUTO, false);
+		m_fiSndReload.PlayOnEntity(this);
 #endif
 		SetWeaponFrame(idleAnim);
 		SetIdleNext(reloadTime);
@@ -1659,7 +1674,7 @@ ncWeapon::Idle(void)
 		idleAnim = GetSubDefAct(m_weaponLastFireInfo, "reloadEnd");
 		_SetWeaponState(WEAPONSTATE_IDLE);
 #ifdef SERVER
-		PlaySound(GetDefString("snd_reloadEnd"), CHAN_AUTO, false);
+		m_fiSndReloadEnd.PlayOnEntity(this);
 #endif
 		SetAttackNext(frameduration(m_viewModel, idleAnim));
 		ourOwner.Event_ReloadWeaponEnd();
@@ -1674,7 +1689,7 @@ ncWeapon::Idle(void)
 		//breakpoint();
 		idleAnim = GetSubDefAct(m_weaponLastFireInfo, "cock");
 #ifdef SERVER
-		PlaySound(GetDefString("snd_cock"), CHAN_AUTO, false);
+		m_fiSndCock.PlayOnEntity(this);
 #endif
 		_SetWeaponState(WEAPONSTATE_IDLE);
 		SetAttackNext(frameduration(m_viewModel, idleAnim));
@@ -1682,9 +1697,9 @@ ncWeapon::Idle(void)
 	case WEAPONSTATE_RELEASED:
 		//breakpoint();
 
-		if (STRING_SET(m_fiSndRelease)) {
-			ourOwner.StartSoundDef(m_fiSndRelease, CHAN_WEAPON, true);
-		}
+#ifdef SERVER
+		m_fiSndRelease.PlayOnEntityChannel(this, CHAN_WEAPON);
+#endif
 
 		if (STRING_SET(m_fiOnRelease)) {
 			if (UseAmmo(m_weaponLastFireInfo) == false) {
@@ -1806,10 +1821,12 @@ ncWeapon::SecondaryAttack(void)
 
 #ifdef SERVER
 		if (ourOwner.viewzoom == 1.0) {
-			PlaySound(GetDefString("snd_lowerScope"), CHAN_AUTO, false);
+			//PlaySound(GetDefString("snd_lowerScope"), CHAN_AUTO, false);
+			m_sndLowerScope.PlayOnEntity(this);
 			SetViewZoom(m_fiZoomFOV);
 		} else {
-			PlaySound(GetDefString("snd_raiseScope"), CHAN_AUTO, false);
+			//PlaySound(GetDefString("snd_raiseScope"), CHAN_AUTO, false);
+			m_sndRaiseScope.PlayOnEntity(this);
 			SetViewZoom(1.0f);
 		}
 #endif
@@ -1836,9 +1853,11 @@ ncWeapon::SecondaryAttack(void)
 
 #ifdef SERVER
 		if (m_weaponFireInfoValue) {
-			PlaySound(GetDefString("snd_modeOn"), CHAN_AUTO, false);
+			//PlaySound(GetDefString("snd_modeOn"), CHAN_AUTO, false);
+			m_sndModeOn.PlayOnEntity(this);
 		} else {
-			PlaySound(GetDefString("snd_modeOff"), CHAN_AUTO, false);
+			//PlaySound(GetDefString("snd_modeOff"), CHAN_AUTO, false);
+			m_sndModeOff.PlayOnEntity(this);
 		}
 #endif
 
@@ -1865,13 +1884,13 @@ ncWeapon::SecondaryAttack(void)
 }
 
 void
-ncWeapon:: WeaponStartedReloading(void)
+ncWeapon::WeaponStartedReloading(void)
 {
 
 }
 
 void
-ncWeapon:: WeaponStoppedReloading(void)
+ncWeapon::WeaponStoppedReloading(void)
 {
 
 }
@@ -1981,7 +2000,7 @@ ncWeapon::Reload(void)
 		}
 	}
 
-	ourOwner.StartSoundDef(reloadSound, CHAN_AUTO, true);
+	m_fiSndReload.PlayOnEntity(ourOwner);
 	ScheduleThink(_ReloadFinished, reloadTime - 0.1f);
 	WeaponStartedReloading();
 
@@ -2047,11 +2066,11 @@ ncWeapon::_WeaponStartedFiring(void)
 		ncPlayer ourOwner = (ncPlayer)GetOwner();
 
 		if (m_fiSndFireStart) {
-			ourOwner.StartSoundDef(m_fiSndFireStart, CHAN_WEAPON, true);
+			m_fiSndFireStart.PlayOnEntityChannel(ourOwner, CHAN_WEAPON);
 		}
 
 		if (m_fiSndFireLoop) {
-			ourOwner.StartSoundDef(m_fiSndFireLoop, CHAN_LOOP, true);
+			m_fiSndFireLoop.PlayOnEntityChannel(ourOwner, CHAN_LOOP);
 		}
 
 		//printf("actFireStart %d %S\n", actFireStart, m_weaponLastFireInfo);
@@ -2193,7 +2212,7 @@ ncWeapon::Release(void)
 	if (WeaponIsFiring() == true) {
 
 		if (m_fiSndFireStop) {
-			ourOwner.StartSoundDef(m_fiSndFireStop, CHAN_WEAPON, true);
+			m_fiSndFireStop.PlayOnEntityChannel(ourOwner, CHAN_WEAPON);
 		}
 
 		ourOwner.StopSound(CHAN_LOOP, true);

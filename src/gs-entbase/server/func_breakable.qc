@@ -35,78 +35,10 @@ enum
 	BREAKMT_NONE
 };
 
-#ifdef VALVE
-const string funcbreakable_objtable[22] = {
-	"",
-	"spawnfunc_item_battery",
-	"spawnfunc_item_healthkit",
-	"weapon_9mmhandgun",
-	"weapon_9mmclip",
-	"weapon_9mmAR",
-	"spawnfunc_ammo_9mmAR",
-	"spawnfunc_ammo_ARgrenades",
-	"weapon_shotgun",
-	"spawnfunc_ammo_buckshot",
-	"weapon_crossbow",
-	"spawnfunc_ammo_crossbow",
-	"weapon_357",
-	"spawnfunc_ammo_357",
-	"weapon_rpg",
-	"spawnfunc_ammo_rpgclip",
-	"spawnfunc_ammo_gaussclip",
-	"weapon_hegrenade",
-	"weapon_tripmine",
-	"weapon_satchel",
-	"weapon_snark",
-	"weapon_hornetgun"
-};
-#else
-const string funcbreakable_objtable[] = {
-	""
-};
-#endif
+ncDict g_func_breakable_objects;
+ncDict g_func_breakable_props;
+ncDict g_func_breakable_surfaces;
 
-const string funcbreakable_surftable[] = {
-"gs_material_glass",
-"gs_material_wood",
-"gs_material_metal",
-"gs_material_flesh",
-"gs_material_cinderblock",
-"gs_material_tile",
-"gs_material_computer",
-"gs_material_unbreakableglass",
-"gs_material_rocks"
-};
-
-
-
-const string funcbreakable_proptable[] = {
-"",
-"Wooden.Tiny",
-"Wooden.Small",
-"Wooden.Medium",
-"Wooden.Large",
-"Wooden.Huge",
-"Metal.Small",
-"Metal.Medium",
-"Metal.Large",
-"Cardboard.Small",
-"Cardboard.Medium",
-"Cardboard.Large",
-"Stone.Small",
-"Stone.Medium",
-"Stone.Large",
-"Stone.Huge",
-"Glass.Small",
-"Plastic.Small",
-"Plastic.Medium",
-"Plastic.Large",
-"Pottery.Small",
-"Pottery.Medium",
-"Pottery.Large",
-"Pottery.Huge",
-"Glass.Window",
-};
 
 /*! \brief Server-Entity: Breakable Brush Model */
 /*!QUAKED func_breakable (0 .5 .8) ? SF_TRIGGER SF_TOUCH SF_PRESSURE
@@ -179,6 +111,8 @@ private:
 	int _m_iExplosionParticle;
 	vector m_explodeDir;
 
+	int m_breakablePropData;
+
 	/*entity m_pressAttacker;
 	int m_pressType;
 	int m_pressDamage;*/
@@ -246,11 +180,7 @@ func_breakable::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "propdata":
-		int propDataID = ReadInt(setValue);
-
-		if (propDataID > 0i) {
-			SetPropData(funcbreakable_proptable[propDataID]);
-		}
+		m_breakablePropData = ReadInt(setValue);
 		break;
 	case "material":
 		material = ReadFloat(setValue);
@@ -261,13 +191,7 @@ func_breakable::SpawnKey(string strKey, string setValue)
 		break;
 	case "spawnobject":
 		int oid = ReadInt(setValue);
-
-		if (oid >= funcbreakable_objtable.length) {
-			m_strBreakSpawn = "";
-			EntWarning("spawnobject %i out of bounds", oid);
-		} else {
-			m_strBreakSpawn = funcbreakable_objtable[oid];
-		}
+		m_strBreakSpawn = g_func_breakable_objects.GetString(itos(oid));
 		break;
 	case "spawnonbreak":
 		m_strBreakSpawn = ReadString(setValue);
@@ -284,13 +208,33 @@ func_breakable::Spawned(void)
 	_m_iExplosionParticle = particleeffectnum("fx_explosion.main");
 	super::Spawned();
 
-	/* needs to be called before super function */
-	if (HasSurfaceData() == false) {
-		SetSurfaceData(funcbreakable_surftable[material]);
+	if (!g_func_breakable_objects) {
+		g_func_breakable_objects = ncDict::LoadDeclFromFile("objects", "typeinfo/func_breakable.decl");
+	}
+	if (!g_func_breakable_props) {
+		g_func_breakable_props = ncDict::LoadDeclFromFile("props", "typeinfo/func_breakable.decl");
+	}
+	if (!g_func_breakable_surfaces) {
+		g_func_breakable_surfaces = ncDict::LoadDeclFromFile("surfaces", "typeinfo/func_breakable.decl");
 	}
 
+	string breakSurface;
+	string breakProp;
+
+	/* needs to be called before super function */
+	if (HasSurfaceData() == false) {
+		breakSurface = g_func_breakable_surfaces.GetString(itos(material));
+		SetSurfaceData(breakSurface);
+	}
+	
+	
 	if (HasPropData() == false) {
-		SetPropData(funcbreakable_surftable[material]);
+		if (m_breakablePropData > 0i) {
+			breakProp = g_func_breakable_props.GetString(itos(m_breakablePropData));
+			SetPropData(breakProp);
+		} else {
+			SetPropData(breakSurface);
+		}
 	}
 }
 
@@ -392,34 +336,14 @@ func_breakable::Death(entity inflictor, entity attacker, int damage, vector dir,
 	string breakModel = __NULL__;
 	int gibCount = (int)bound(5, vlen(size) / 10, 32);
 		
-// 	if (HasPropData()) {
-// 		breakModel = GetPropData(PROPINFO_BREAKMODEL);
-// 	}
+ 	if (HasPropData()) {
+ 		breakModel = GetPropData(PROPINFO_BREAKMODEL);
+ 	}
 
-	if (!STRING_SET(breakModel)) {
-		switch (material) {
-		case 0:
-			breakModel = "glasschunks";
-			break;
-		case 1:
-			breakModel = "woodchunks";
-			break;
-		case 2:
-			breakModel = "metalchunks";
-			break;
-		case 4:
-			breakModel = "concretechunks";
-			break;
-		case 6:
-			breakModel = "metalchunks";
-			break;
-		case 8:
-			breakModel = "concretechunks";
-			break;
-		}
-	}
+	//breakModel = g_func_breakable_surfaces.GetString(itos(material));
 
 	if (STRING_SET(breakModel)) {
+		EntError(" BreakModel %S set for \"material\" \"%d\"", breakModel, material);
 		BreakModel_Spawn(absmin, absmax, dir, damage * 2.5, gibCount, breakModel);
 	} else {
 		EntError("No BreakModel set for \"material\" \"%d\"", material);

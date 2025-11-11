@@ -151,9 +151,7 @@ ncDict::LoadDeclFromFile(string declName, string fileName)
 	newDict.m_declPath = declName;
 
 	while ((tempString = fgets(fh))) {
-		int lineSegments = tokenize_console(tempString);
-
-		for (int i = 0i; i < lineSegments; i++) {
+		for (int i = 0i; i < tokenize_console(tempString); i++) {
 			string word = argv(i);
 
 			switch (word) {
@@ -176,19 +174,8 @@ ncDict::LoadDeclFromFile(string declName, string fileName)
 				/* anything outside braces defines the classname for the next def */
 				if (braceDepth == 0 && lastWord == "typeInfo") {
 					lastDecl = word;
-				} /* else if (braceDepth == 0 && lastWord == "#include") {
-					g_entDefInclude = strcat(g_entDefInclude, word, ";");
-				} else if (braceDepth == 0 && lastWord == "#define") {
-					Constants_Add(argv(i), argv(i+1));
-				} */ else if (braceDepth == 1) {
-					/* spawnclass is reserved and the next keyword specs it */
-					/*if (word == "spawnclass") {
-						currentDef.spawnClass = argv(i+1);
-						i++;
-					} else if (word == "inherit") {
-						currentDef.inheritKeys = argv(i+1);
-						i++;
-					} else*/ if (lastDecl == declName) { /* rest gets dumped into spawndata */
+				} else if (braceDepth == 1) {
+					if (lastDecl == declName) { /* rest gets dumped into spawndata */
 						newDict.m_strBody = strcat(newDict.m_strBody, "\"", word, "\"", " ");
 					}
 				}

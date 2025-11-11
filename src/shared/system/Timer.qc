@@ -17,7 +17,6 @@
 void
 ncTimer::ncTimer(void)
 {
-	m_eReceiver = __NULL__;
 	_m_ncTimerFunc = __NULL__;
 	m_flTime = 0.0f;
 	m_bRepeats = false;
@@ -36,27 +35,29 @@ _ncTimerWrapper(entity receiver, void() func)
 void
 ncTimer::_TimerThink(void)
 {
-	if (!m_eReceiver) {
+	if (!owner) {
 		Destroy();
 		return;
 	}
 
-	_ncTimerWrapper(m_eReceiver, _m_ncTimerFunc);
+	_ncTimerWrapper(owner, _m_ncTimerFunc);
 
-	if (m_bRepeats == true)
+	if (m_bRepeats == true) {
+		think = ncTimer::_TempTimerThink;
 		nextthink = time + m_flTime;
+	}
 }
 
 void
 ncTimer::_TempTimerThink(void)
 {
-	_ncTimerWrapper(m_eReceiver, _m_ncTimerFunc);
+	_ncTimerWrapper(owner, _m_ncTimerFunc);
 
-	if (m_bRepeats == true)
+	if (m_bRepeats == true) {
+		think = ncTimer::_TempTimerThink;
 		nextthink = time + m_flTime;
-	else {
-		think = Destroy;
-		nextthink = time;
+	} else {
+		Destroy();
 	}
 }
 
@@ -65,7 +66,7 @@ ncTimer::ScheduleTimer(entity receiver, void() call, float interval, bool repeat
 {
 	ncTimer ret = spawn(ncTimer);
 
-	ret.m_eReceiver = receiver;
+	ret.owner = receiver;
 	ret.m_flTime = interval;
 	ret._m_ncTimerFunc = call;
 	ret.m_bRepeats = repeats;
@@ -80,7 +81,7 @@ ncTimer
 ncTimer::TemporaryTimer(entity receiver, void() call, float interval, bool repeats)
 {
 	ncTimer ret = spawn(ncTimer);
-	ret.m_eReceiver = receiver;
+	ret.owner = receiver;
 	ret.m_flTime = interval;
 	ret._m_ncTimerFunc = call;
 	ret.m_bRepeats = repeats;
@@ -94,15 +95,19 @@ ncTimer::TemporaryTimer(entity receiver, void() call, float interval, bool repea
 void
 ncTimer::RunTimer(void)
 {
-	think = ncTimer::_TimerThink;
-	nextthink = time + m_flTime;
+	if (!m_bRepeats) {
+		think = ncTimer::_TimerThink;
+		nextthink = time + m_flTime;
+	} else {
+	
+	}
 }
 
 ncTimer
 ncTimer::SetupTimer(entity receiver, void() call, float interval, bool repeats)
 {
 	ncTimer ret = spawn(ncTimer);
-	ret.m_eReceiver = receiver;
+	ret.owner = receiver;
 	ret.m_flTime = interval;
 	ret._m_ncTimerFunc = call;
 	ret.m_bRepeats = repeats;
@@ -112,8 +117,14 @@ ncTimer::SetupTimer(entity receiver, void() call, float interval, bool repeats)
 void
 ncTimer::OnRemoveEntity(void)
 {
+	super::OnRemoveEntity();
+
 	nextthink = 0.0f;
 	think = __NULL__;
+	owner = __NULL__;
+	_m_ncTimerFunc = __NULL__;
+	m_flTime = 0.0f;
+	m_bRepeats = false;
 }
 
 void
@@ -125,12 +136,23 @@ ncTimer::StopTimer(void)
 	}
 }
 
+void
+ncTimer::WipeEntityTimers(entity targetEntity)
+{
+	for (entity scheduleTimers = world; (scheduleTimers = find(scheduleTimers, ::classname, "ncTimer"));) {
+		ncTimer ourTimer = (ncTimer)scheduleTimers;
+
+		if (ourTimer.owner == targetEntity || !ourTimer.owner) {
+			ourTimer.Destroy();
+		}
+	}
+}
+
 #ifdef SERVER
 void
 ncTimer::Save(float handle)
 {
 	super::Save(handle);
-	SaveEntity(handle, "eReceiver", m_eReceiver);
 	SaveString(handle, "ncTimerFunc", getentityfieldstring(findentityfield("_m_ncTimerFunc"), this));
 	SaveFloat(handle, "flTime", m_flTime);
 	SaveBool(handle, "bRepeats", m_bRepeats);
@@ -140,9 +162,6 @@ void
 ncTimer::Restore(string keyName, string setValue)
 {
 	switch (keyName) {
-	case "eReceiver":
-		m_eReceiver = ReadEntity(setValue);
-		break;
 	case "ncTimerFunc":
 		_m_ncTimerFunc = externvalue(-1, setValue);
 		break;
