@@ -895,19 +895,11 @@ ncPlayer::UpdateAliveCam(void)
 {
 	vector cam_pos = GetEyePos();
 
-#if defined(VALVE) || defined(CSTRIKE) || defined(GEARBOX) || defined(TFC) || defined(REWOLF)
-	//view_angles = Camera_RunBob(view_angles);
-	//view_angles = Camera_StrafeRoll(view_angles);
-	cam_pos += CalculateLean(view_angles);
-	g_view.SetCameraAngle(view_angles);
-	g_view.SetCameraOrigin(cam_pos );
-#else
 	view_angles = Camera_RunBob(view_angles);
 	view_angles = Camera_StrafeRoll(view_angles);
 	cam_pos += CalculateLean(view_angles);
 	g_view.SetCameraAngle(view_angles);
 	g_view.SetCameraOrigin(cam_pos + Camera_AddCamBob(view_angles));
-#endif
 
 	if (vehicle) {
 		ncVehicle veh = (ncVehicle)vehicle;
