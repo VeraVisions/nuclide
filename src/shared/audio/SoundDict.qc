@@ -41,6 +41,7 @@ ncSoundDict::PlayOnEntityChannel(entity targetEntity, int audioChannel)
 	float radius;
 	float pitch;
 	int flag;
+	float playAtVolume = volume;
 	string randomSample;
 
 	if (sample_count <= 0) {
@@ -80,9 +81,9 @@ ncSoundDict::PlayOnEntityChannel(entity targetEntity, int audioChannel)
 		if (s <= (g_pmoveVars.pm_walkspeed * 0.5)) {
 			return;
 		} else if (s <= g_pmoveVars.pm_walkspeed) {
-			volume *= 0.35f;
+			playAtVolume *= 0.35f;
 		} else {
-			volume *= 0.75f;
+			playAtVolume *= 0.75f;
 		}
 	}
 
@@ -100,8 +101,6 @@ ncSoundDict::PlayOnEntityChannel(entity targetEntity, int audioChannel)
 		BotLib_Alert(targetEntity.origin, dist_max, targetEntity.team);
 	}
 #endif
-
-	SndLog("Playing %S (radius: %f (%f))", randomSample, dist_max, radius );
 
 #ifdef SERVER
 	if (shakes > 0.0) {
@@ -133,12 +132,14 @@ ncSoundDict::PlayOnEntityChannel(entity targetEntity, int audioChannel)
 		targetEntity,
 		audioChannel,
 		randomSample,
-		volume,
+		playAtVolume,
 		radius,
 		pitch,
 		flag,
 		offset
 	);
+
+	SndLog("(%d) %S (radius: %d) (volume: %d) (pitch: %d) (offset: %.2f) (flags: %d)", num_for_edict(targetEntity), randomSample, dist_max, playAtVolume * 100, pitch, offset, flag);
 
 #ifdef SERVER
 	if (music_count > 0) {
