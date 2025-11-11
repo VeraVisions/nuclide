@@ -34,6 +34,10 @@ ncItem::ncItem(void)
 	m_itemRespawn = 0;
 	m_oldOwner = __NULL__;
 	_m_itemTouchPickup = false;
+
+	for (int i = 0; i < MAX_AMMO_TYPES; i++) {
+		m_itemGivesAmmo[i] = 0i;
+	}
 }
 
 #ifdef SERVER
@@ -551,6 +555,10 @@ ncItem::BecomeDropped(void)
 {
 	SetSolid(SOLID_NOT);
 	SetMovetype(MOVETYPE_BOUNCE);
+
+	for (int i = 0; i < MAX_AMMO_TYPES; i++) {
+		m_itemGivesAmmo[i] = 0i;
+	}
 }
 
 void
@@ -950,7 +958,7 @@ ncItem::_AddedCallback(void)
 
 	/* only if we weren't picked up by touch... */
 	if (_m_itemTouchPickup == false) {
-		GiveBonusItems(ourOwner, ourOwner.HasItem(classname) ? (false) : (true));
+		GiveBonusItems(ourOwner, ourOwner.HasItem(declclass) ? (false) : (true));
 	}
 
 	ourOwner.ruleSendInventory = true;

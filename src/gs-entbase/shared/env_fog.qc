@@ -36,16 +36,32 @@ Covers the map in fog.
 - "killtarget" : Target to kill when triggered.
 - "startdist" : Distance between the player and the fog.
 - "enddist" : Distance between the player and the end of the fog.
-- "density" : Strength of the fog.
 - "rendercolor" : Color of the fog.
-
-# KEYS (DMC/SPIRIT)
 - "fadein" : Fade in time (ignored)
 - "fadeout" : Fade out time (ignored)
+
+# KEYS (CS, non-linear fog)
+- "density" : Strength of the fog.
+
+# KEYS (DMC/SPIRIT)
 - "holdtime" : Hold time, 0 is permanent.
 
 # SPAWNFLAGS
 - STARTACTIVE (1) : Start active on map load.
+
+# NOTES
+
+There are two conflicting implementations of this entity in GoldSrc.
+The variant used in Spirit of Half-Life as well as Deathmatch Classic
+uses a linear fog. It can be identifier with the far plane appearing
+to move with the camera.
+
+The other implementation of fog is more pleasing, but uses
+the "density" key instead.
+
+If no "density" key is detected, we assume it's the linear
+fog (and the `STARTACTIVE` spawnflag is also ignored, for compatibility).
+
 
 # TRIVIA
 This entity was introduced in Counter-Strike (1998).
@@ -83,6 +99,7 @@ private:
 	PREDICTED_FLOAT(m_flDensity)
 	PREDICTED_VECTOR(m_vecColor)
 	PREDICTED_BOOL(m_bEnabled)
+	PREDICTED_BOOL(m_fogIsLinear)
 
 #ifdef SERVER
 	float m_holdTime;
@@ -100,6 +117,8 @@ env_fog::env_fog(void)
 	m_flDensity = 1.0f;
 	m_vecColor = [255, 255, 255];
 	m_bEnabled = true;
+	m_fogIsLinear = true;
+
 #ifdef SERVER
 	m_holdTime = 0.0f;
 #endif
@@ -123,13 +142,23 @@ env_fog::FogUpdate(void)
 
 	m_wasActive = true;
 
-	localcmd(sprintf("r_fog_linear 1; fog %f %f %f %f %f %f\n", \
-		m_flEndDist, /* winging this */
-		m_vecColor[0] / 255,
-		m_vecColor[1] / 255,
-		m_vecColor[2] / 255,
-		1.0f,
-		m_flStartDist)); /* rough conversion from units */
+	if (m_fogIsLinear == true) {
+		localcmd(sprintf("set r_fog_linear 1; fog %f %f %f %f %f %f\n", \
+			m_flEndDist, /* winging this */
+			m_vecColor[0] / 255,
+			m_vecColor[1] / 255,
+			m_vecColor[2] / 255,
+			1.0f,
+			m_flStartDist)); /* rough conversion from units */
+	} else {
+		localcmd(sprintf("set r_fog_linear 0; fog %f %f %f %f %f %f\n", \
+			m_flDensity * 100, /* winging this */
+			m_vecColor[0] / 255,
+			m_vecColor[1] / 255,
+			m_vecColor[2] / 255,
+			1.0f,
+			m_flStartDist / 10)); /* rough conversion from units */
+	}
 }
 
 void
@@ -142,6 +171,7 @@ env_fog::ReceiveEntity(float flNew, float flChanged)
 	READENTITY_BYTE(m_vecColor[1], ENVFOG_CHANGED_COLOR)
 	READENTITY_BYTE(m_vecColor[2], ENVFOG_CHANGED_COLOR)
 	READENTITY_BYTE(m_bEnabled, ENVFOG_CHANGED_ACTIVE)
+	READENTITY_BYTE(m_fogIsLinear, ENVFOG_CHANGED_ACTIVE)
 	FogUpdate();
 }
 #endif
@@ -159,6 +189,7 @@ env_fog::SendEntity(entity ePVEnt, float flChanged)
 	SENDENTITY_BYTE(m_vecColor[1], ENVFOG_CHANGED_COLOR)
 	SENDENTITY_BYTE(m_vecColor[2], ENVFOG_CHANGED_COLOR)
 	SENDENTITY_BYTE(m_bEnabled, ENVFOG_CHANGED_ACTIVE)
+	SENDENTITY_BYTE(m_fogIsLinear, ENVFOG_CHANGED_ACTIVE)
 	return (1);
 }
 
@@ -172,6 +203,7 @@ env_fog::EvaluateEntity(void)
 	EVALUATE_VECTOR(m_vecColor, 1, ENVFOG_CHANGED_COLOR)
 	EVALUATE_VECTOR(m_vecColor, 2, ENVFOG_CHANGED_COLOR)
 	EVALUATE_FIELD(m_bEnabled, ENVFOG_CHANGED_ACTIVE)
+	EVALUATE_FIELD(m_fogIsLinear, ENVFOG_CHANGED_ACTIVE)
 }
 
 void
@@ -182,6 +214,8 @@ env_fog::Save(float handle)
 	SaveFloat(handle, "m_flEndDist", m_flEndDist);
 	SaveFloat(handle, "m_flDensity", m_flDensity);
 	SaveVector(handle, "m_vecColor", m_vecColor);
+	SaveBool(handle, "m_bEnabled", m_bEnabled);
+	SaveBool(handle, "m_fogIsLinear", m_fogIsLinear);
 }
 
 void
@@ -200,6 +234,12 @@ env_fog::Restore(string strKey, string setValue)
 	case "m_vecColor":
 		m_vecColor = ReadVector(setValue);
 		break;
+	case "m_bEnabled":
+		m_bEnabled = ReadBool(setValue);
+		break;
+	case "m_fogIsLinear":
+		m_fogIsLinear = ReadBool(setValue);
+		break;
 	default:
 		super::Restore(strKey, setValue);
 	}
@@ -210,9 +250,11 @@ env_fog::SpawnKey(string strKey, string setValue)
 {
 	switch (strKey) {
 	case "startdist":
+	case "fogStartDistance":
 		m_flStartDist = ReadFloat(setValue);
 		break;
 	case "enddist":
+	case "fogStopDistance":
 		m_flEndDist = ReadFloat(setValue);
 		break;
 	case "density":
@@ -223,6 +265,9 @@ env_fog::SpawnKey(string strKey, string setValue)
 		break;
 	case "holdtime":
 		m_holdTime = ReadFloat(setValue);
+		break;
+	case "fadeout":
+	case "fadein":
 		break;
 	default:
 		super::SpawnKey(strKey, setValue);
@@ -240,10 +285,19 @@ env_fog::Respawn(void)
 {
 	pvsflags = PVSF_IGNOREPVS;
 
-	if (HasSpawnFlags(ENVFOG_STARTACTIVE) == false && HasTargetname() == true) {
-		DisableFog();
+	m_flDensity = GetSpawnFloat("density");
+
+	if (m_flDensity > 0.0f) {
+		m_fogIsLinear = false;
+
+		/* only CS maps support this, `dmc2_psx_hydrophobia` uses a targetname and will break otherwise! */
+		if (HasSpawnFlags(ENVFOG_STARTACTIVE) == false && HasTargetname() == true) {
+			DisableFog();
+		} else {
+			EnableFog();
+		}
 	} else {
-		EnableFog();
+		m_fogIsLinear = true;
 	}
 }
 

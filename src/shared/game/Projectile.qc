@@ -864,7 +864,6 @@ ncProjectile::_Explode(entity explodedOn)
 
 	/* another def that'll be spawned when this one detonates */
 	if (STRING_SET(m_defProjectileDebris) && !explodedOn && explodedOn != this) {
-	breakpoint();
 		float movementAmount = 360.0f / (float)m_iDebrisCount;
 
 		for (int i = 0; i < m_iDebrisCount; i++) {
@@ -1180,6 +1179,7 @@ ncProjectile::OnRemoveEntity(void)
 		m_thrustHandler.Destroy(); /* invalidate */
 		m_thrustHandler = 0;
 	}
+	StopSound(CHAN_BODY, true);
 }
 
 void
@@ -1459,7 +1459,7 @@ float
 ncProjectile::predraw(void)
 {
 	if (m_flLightRadius > 0.0f) {
-		dynamiclight_add(origin, m_flLightRadius, m_vecLightColor * 7.5f, 65, "", LFLAG_NOSHADOWS);
+		dynamiclight_add(origin, m_flLightRadius, m_vecLightColor, 65, "", LFLAG_NOSHADOWS);
 		//printf("DLight: %v; rad: %f; color: %v\n", origin,  m_flLightRadius, m_vecLightColor);
 	}
 

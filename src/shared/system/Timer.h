@@ -42,6 +42,8 @@ public:
 	/** Invalidates the timer when called. */
 	nonvirtual void StopTimer(void);
 
+	nonvirtual void WipeEntityTimers(entity targetEntity);
+
 	virtual void OnRemoveEntity(void);
 
 #ifdef SERVER
@@ -50,7 +52,6 @@ public:
 #endif
 
 private:
-	entity m_eReceiver;
 	float m_flTime;
 	bool m_bRepeats;
 

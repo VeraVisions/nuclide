@@ -91,7 +91,7 @@ trigger_changetarget::Trigger(entity act, triggermode_t state)
 	for (f = __NULL__; (f = (ncEntity)find(f, ::targetname, target));) {
 
 		EntLog("Changing %s (%s) target from '%s' to '%s'\n", \
-		       target, f.classname, f.target, target);
+		       target, f.classname, f.target, m_strNewTarget);
 
 		/* now change the target */
 		f.target = m_strNewTarget;

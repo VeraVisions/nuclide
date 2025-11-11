@@ -397,6 +397,8 @@ func_breakable::Death(entity inflictor, entity attacker, int damage, vector dir,
 // 	}
 
 	if (!STRING_SET(breakModel)) {
+		breakModel = funcbreakable_surftable[material];
+
 		switch (material) {
 		case 0:
 			breakModel = "glasschunks";

@@ -2078,10 +2078,10 @@ ncPlayer::InputUse_Down(void)
 
 		/* Some entities want to support Use spamming */
 		if (HasVFlags(VFL_USE_RELEASED) == false) {
-			StartSoundDef(m_sndUseSuccess, CHAN_ITEM, false);
+			m_sndUseSuccess.PlayOnEntityChannel(this, CHAN_ITEM);
 		}
 	} else {
-		StartSoundDef(m_sndUseDeny, CHAN_ITEM, false);
+		m_sndUseDeny.PlayOnEntityChannel(this, CHAN_ITEM);
 		RemoveVFlags(VFL_USE_RELEASED);
 	}
 }
@@ -2150,15 +2150,15 @@ ncPlayer::Footsteps_Update(void)
 		return;
 
 	if (waterlevel == 1) {
-		StartSoundDef(m_sndWaterWade, CHAN_BODY, true);
+		m_sndWaterWade.PlayOnEntityChannel(this, CHAN_BODY);
 		m_timeUntilNextFootstep = time + 2.0f;
 		return;
 	} else if (waterlevel == 2) {
-		StartSoundDef(m_sndWaterWade, CHAN_BODY, true);
+		m_sndWaterWade.PlayOnEntityChannel(this, CHAN_BODY);
 		m_timeUntilNextFootstep = time + 2.0f;
 		return;
 	} else if (waterlevel == 3) {
-		StartSoundDef(m_sndWaterSwim, CHAN_BODY, true);
+		m_sndWaterSwim.PlayOnEntityChannel(this, CHAN_BODY);
 		m_timeUntilNextFootstep = time + 2.0f;
 		return;
 	} else {
@@ -2181,9 +2181,9 @@ ncPlayer::Footsteps_Update(void)
 		return;
 	} else if (HasVFlags(VFL_ONLADDER) && HasFlags(FL_ONGROUND) == false) { /* play ladder sounds */
 		if (step)
-			StartSoundDef(m_sndStepLadderLeft, CHAN_BODY, true);
+			m_sndStepLadderLeft.PlayOnEntityChannel(this, CHAN_BODY);
 		else
-			StartSoundDef(m_sndStepLadderRight, CHAN_BODY, true);
+			m_sndStepLadderRight.PlayOnEntityChannel(this, CHAN_BODY);
 
 		/* switch between feet */
 		step = 1 - step;

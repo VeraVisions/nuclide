@@ -67,7 +67,6 @@ ncSchedule::Advance(void)
 	}
 
 	if (shouldCancel == true) {
-		ReleaseThink();
 		Cancel();
 		return;
 	}
@@ -75,7 +74,6 @@ ncSchedule::Advance(void)
 	m_onTask++;
 
 	if (m_onTask > m_taskCount) {
-		ReleaseThink();
 		Cancel();
 		return;
 	}
@@ -87,9 +85,8 @@ ncSchedule::Advance(void)
 		taskInput = argv(0);
 		taskParms = substring(taskString, strlen(taskInput) + 1, -1);
 	} else {
-		EntError("Task %i not defined in %S! Cancelling schedule.", m_onTask, m_scheduleDecl.Name());
+		EntLog("Task %i not defined in %S! Cancelling schedule.", m_onTask, m_scheduleDecl.Name());
 		m_onTask = m_taskCount + 1i;
-		ReleaseThink();
 		Cancel();
 		return;
 	}
@@ -107,12 +104,16 @@ ncSchedule::Advance(void)
 }
 
 void
+ncSchedule::OnRemoveEntity(void)
+{
+	/* kill any timers associated with us */
+	ncTimer::WipeEntityTimers(this);
+	super::OnRemoveEntity();
+}
+
+void
 ncSchedule::Cancel(void)
 {
-	if (wasfreed(this)) {
-		return;
-	}
-
 	EntLog("Schedule for %S (%d) terminated.", m_controllingActor.classname, num_for_edict(m_controllingActor));
 
 	/* TODO: Let NPC know that it's done? */
@@ -128,7 +129,8 @@ ncSchedule::Cancel(void)
 		}
 	}
 
-	ScheduleThink(Destroy, 0.0f);
+	m_inProgress = false;
+	Destroy();
 }
 
 bool
@@ -227,6 +229,19 @@ ncSchedule
 ncSchedule::CreateSchedule(ncActor targetActor, string scheduleDecl)
 {
 	ncSchedule newSchedule = spawn(ncSchedule);
+
+	if (targetActor.m_activeSchedule) {
+		targetActor.m_activeSchedule.Cancel();
+	}
+	
+	/* kill any schedules associated with us */
+	for (entity enumSchedules = world; (enumSchedules = find(enumSchedules, ::classname, "ncSchedule"));) {
+		ncSchedule attachedSchedule = (ncSchedule)enumSchedules;
+
+		if (attachedSchedule.m_controllingActor == targetActor) {
+			attachedSchedule.Cancel();
+		}
+	}
 
 	newSchedule.m_name = scheduleDecl;
 	newSchedule.m_scheduleDecl = ncDict::LoadDeclFromFile(scheduleDecl, sprintf("schedules/%s.decl", scheduleDecl));

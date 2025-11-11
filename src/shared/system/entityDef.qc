@@ -466,7 +466,7 @@ EntityDef_PrepareEntity(entity target, int id)
 			}
 
 			if (foundMode == false) {
-				ncError("Spawning %s blocked by game mode filter %S", targetEnt.classname, targetEnt.m_gameModeFilter);
+				ncLog("blocked %s by game mode filter %S", targetEnt.classname, targetEnt.m_gameModeFilter);
 				targetEnt.m_gameModeFilter = __NULL__;
 				targetEnt.Destroy();
 				targetEnt = __NULL__;

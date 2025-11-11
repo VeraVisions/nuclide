@@ -78,5 +78,6 @@ cycler::Pain(entity inflictor, entity attacker, int damage, vector dir, vector a
 		SetFrame(GetFrame() + 1);
 	}
 
+	frame1time = 0.0f;
 	SetHealth(9999);
 }

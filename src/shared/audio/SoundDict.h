@@ -41,49 +41,27 @@ public:
 	void ncSoundDict(void);
 
 	nonvirtual float AttenuationValue(void);
+	nonvirtual void Play(void);
+	nonvirtual void PlayOnEntity(entity);
+	nonvirtual void PlayOnEntityChannel(entity, int);
+	nonvirtual void PlayOnSpot(vector);
 
 private:
-	float dist_min; /**< Minimum playback distance. Default is 0. */
-	float dist_max; /**< Maximum playback distance. */
-	float offset;	/**< Sound sample offset. Will start playback this many seconds in. */
-	float pitch_min; /**< Minimum sound pitch. */
-	float pitch_max; /**< Maximum sound pitch. */
-	float shakes; /**< Earthquake/Shake amplifier. Default is 0. */
-	float volume; /**< Desired playback volume. */
-	soundFlag_t flags; /**< Sound flags that are applied to this soundDef. */
-	int playc; /**< Number of plays. */
-	int sample_count; /**< Total amount of samples within this soundDef. */
-	string samples; /**< Separated list of samples. */
-	string name; /**< Name of the soundDef. */
-	string distshader; /**< soundDef to play where this soundDef is not audible. */
+	float dist_min;		/**< Minimum playback distance. Default is 0. */
+	float dist_max;		/**< Maximum playback distance. */
+	float offset;		/**< Sound sample offset. Will start playback this many seconds in. */
+	float pitch_min;	/**< Minimum sound pitch. */
+	float pitch_max;	/**< Maximum sound pitch. */
+	float shakes;		/**< Earthquake/Shake amplifier. Default is 0. */
+	float volume;		/**< Desired playback volume. */
+	soundFlag_t flags;	/**< Sound flags that are applied to this soundDef. */
+	int playc;		/**< Number of plays. */
+	int sample_count;	/**< Total amount of samples within this soundDef. */
+	string samples;		/**< Separated list of samples. */
+	string name;		/**< Name of the soundDef. */
+	string distshader;	/**< soundDef to play where this soundDef is not audible. */
 	float pointparticle;
+	string musictracks;
+	int music_count;
 };
 
-void
-ncSoundDict::ncSoundDict(void)
-{
-	dist_min = 0;
-	dist_max = 1000.0f;
-	offset = 0;
-	pitch_min = 100.0f;
-	pitch_max = 100.0f;
-	shakes = 0.0f;
-	volume = 1.0f;
-	flags = SNDFL_FOLLOW;
-	playc = 0i;
-	sample_count = 0i;
-	samples = "";
-	name = "";
-	distshader = "";
-	pointparticle = -1;
-}
-
-
-float
-ncSoundDict::AttenuationValue(void)
-{
-	if (dist_max == 0)
-		return 0;
-	else
-		return autocvar_s_nominaldistance / dist_max;
-}

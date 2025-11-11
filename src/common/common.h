@@ -65,6 +65,22 @@ imageToConsole(string imageName, int imgSize, string toolTip)
 #define UI_WARNING		imageToConsole("gfx/icon16/error", ICN_SIZE, "Menu Game Warning")
 #define UI_ERROR		imageToConsole("gfx/icon16/exclamation", ICN_SIZE, "Menu Game Error")
 
+#define RULE_LOG		imageToConsole("gfx/icon16/script_go", ICN_SIZE, "RuleC Log")
+#define RULE_WARNING		imageToConsole("gfx/icon16/error", ICN_SIZE, "RuleC Warning")
+#define RULE_ERROR		imageToConsole("gfx/icon16/exclamation", ICN_SIZE, "RuleC Error")
+
+#define MAP_LOG			imageToConsole("gfx/icon16/map_go", ICN_SIZE, "MapC Log")
+#define MAP_WARNING		imageToConsole("gfx/icon16/error", ICN_SIZE, "MapC Warning")
+#define MAP_ERROR		imageToConsole("gfx/icon16/exclamation", ICN_SIZE, "MapC Error")
+
+#define HUD_LOG			imageToConsole("gfx/icon16/monitor_go", ICN_SIZE, "HudC Log")
+#define HUD_WARNING		imageToConsole("gfx/icon16/error", ICN_SIZE, "HudC Warning")
+#define HUD_ERROR		imageToConsole("gfx/icon16/exclamation", ICN_SIZE, "HudC Error")
+
+#define ADDON_LOG		imageToConsole("gfx/icon16/plugin_go", ICN_SIZE, "AddonC Log")
+#define ADDON_WARNING		imageToConsole("gfx/icon16/error", ICN_SIZE, "AddonC Warning")
+#define ADDON_ERROR		imageToConsole("gfx/icon16/exclamation", ICN_SIZE, "AddonC Error")
+
 void
 _ncLog(string msg)
 {
@@ -85,6 +101,30 @@ _ncLog(string msg)
 		print(sprintf("%s ^9%f ^7%s\n", UI_LOG, time, msg));
 	else
 		print(sprintf("%s ^7%s\n", UI_LOG, msg));
+#endif
+#ifdef RULEC
+	if (autocvar_g_logTimestamps)
+		print(sprintf("%s ^9%f ^7%s\n", RULE_LOG, time, msg));
+	else
+		print(sprintf("%s ^7%s\n", RULE_LOG, msg));
+#endif
+#ifdef MAPC
+	if (autocvar_g_logTimestamps)
+		print(sprintf("%s ^9%f ^7%s\n", MAP_LOG, time, msg));
+	else
+		print(sprintf("%s ^7%s\n", MAP_LOG, msg));
+#endif
+#ifdef HUDC
+	if (autocvar_g_logTimestamps)
+		print(sprintf("%s ^9%f ^7%s\n", HUD_LOG, time, msg));
+	else
+		print(sprintf("%s ^7%s\n", HUD_LOG, msg));
+#endif
+#ifdef ADDONC
+	if (autocvar_g_logTimestamps)
+		print(sprintf("%s ^9%f ^7%s\n", ADDON_LOG, time, msg));
+	else
+		print(sprintf("%s ^7%s\n", ADDON_LOG, msg));
 #endif
 }
 
@@ -109,6 +149,30 @@ _ncError(string functionName, string msg)
 	else
 		print(sprintf("%s ^1%s^1: %s\n", UI_ERROR, functionName, msg));
 #endif
+#ifdef RULEC
+	if (autocvar_g_logTimestamps)
+		print(sprintf("%s ^9%f ^1%s^1: %s\n", RULE_ERROR, time, functionName, msg));
+	else
+		print(sprintf("%s ^1%s^1: %s\n", RULE_ERROR, functionName, msg));
+#endif
+#ifdef MAPC
+	if (autocvar_g_logTimestamps)
+		print(sprintf("%s ^9%f ^1%s^1: %s\n", MAP_ERROR, time, functionName, msg));
+	else
+		print(sprintf("%s ^1%s^1: %s\n", MAP_ERROR, functionName, msg));
+#endif
+#ifdef HUDC
+	if (autocvar_g_logTimestamps)
+		print(sprintf("%s ^9%f ^1%s^1: %s\n", HUD_ERROR, time, functionName, msg));
+	else
+		print(sprintf("%s ^1%s^1: %s\n", HUD_ERROR, functionName, msg));
+#endif
+#ifdef ADDONC
+	if (autocvar_g_logTimestamps)
+		print(sprintf("%s ^9%f ^1%s^1: %s\n", ADDON_ERROR, time, functionName, msg));
+	else
+		print(sprintf("%s ^1%s^1: %s\n", ADDON_ERROR, functionName, msg));
+#endif
 }
 
 void
@@ -132,6 +196,30 @@ _ncWarning(string functionName, string msg)
 	else
 		print(sprintf("%s ^3%s^1: %s\n", UI_WARNING, functionName, msg));
 #endif
+#ifdef RULEC
+	if (autocvar_g_logTimestamps)
+		print(sprintf("%s ^9%f ^3%s^1: %s\n", RULE_WARNING, time, functionName, msg));
+	else
+		print(sprintf("%s ^3%s^1: %s\n", RULE_WARNING, functionName, msg));
+#endif
+#ifdef MAPC
+	if (autocvar_g_logTimestamps)
+		print(sprintf("%s ^9%f ^3%s^1: %s\n", MAP_WARNING, time, functionName, msg));
+	else
+		print(sprintf("%s ^3%s^1: %s\n", MAP_WARNING, functionName, msg));
+#endif
+#ifdef HUDC
+	if (autocvar_g_logTimestamps)
+		print(sprintf("%s ^9%f ^3%s^1: %s\n", HUD_WARNING, time, functionName, msg));
+	else
+		print(sprintf("%s ^3%s^1: %s\n", HUD_WARNING, functionName, msg));
+#endif
+#ifdef ADDONC
+	if (autocvar_g_logTimestamps)
+		print(sprintf("%s ^9%f ^3%s^1: %s\n", ADDON_WARNING, time, functionName, msg));
+	else
+		print(sprintf("%s ^3%s^1: %s\n", ADDON_WARNING, functionName, msg));
+#endif
 }
 
 void
@@ -152,6 +240,26 @@ _NSAssert(bool condition, string function, string descr)
 #ifdef MENU
 	if (!condition) {
 		print(strcat(UI_ERROR, " ^1Assertion failed in ", function, ", reason: ", descr, "\n"));
+	}
+#endif
+#ifdef RULEC
+	if (!condition) {
+		print(strcat(RULE_ERROR, " ^1Assertion failed in ", function, ", reason: ", descr, "\n"));
+	}
+#endif
+#ifdef MAPC
+	if (!condition) {
+		print(strcat(MAP_ERROR, " ^1Assertion failed in ", function, ", reason: ", descr, "\n"));
+	}
+#endif
+#ifdef HUDC
+	if (!condition) {
+		print(strcat(HUD_ERROR, " ^1Assertion failed in ", function, ", reason: ", descr, "\n"));
+	}
+#endif
+#ifdef ADDONC
+	if (!condition) {
+		print(strcat(ADDON_ERROR, " ^1Assertion failed in ", function, ", reason: ", descr, "\n"));
 	}
 #endif
 }
@@ -236,26 +344,21 @@ var string g_lastInitFunc;
 void
 _InitStart(string functionName)
 {
-	if (g_initTime != 0)
-		error(sprintf("Called InitStart() without InitEnd()ing %s!", g_lastInitFunc));
-
 	InitPrint(functionName);
-	g_lastInitFunc = functionName;
-	g_initTime = gettime(1);
 }
 
-#define InitStart() _InitStart(__FUNC__)
+#define InitStart() float local_initTime = gettime(1); _InitStart(__FUNC__)
 
 void
-_InitEnd(void)
+_InitEnd(float oldTime, string functionName)
 {
 	float endTime = gettime(1);
-	ncLogAlways("loaded in %.1f seconds", (endTime - g_initTime));
+	ncLogAlways("%s loaded in %.1f seconds", functionName, (endTime - oldTime));
 	ncLogAlways("---------------------------------------------------");
 	g_initTime = 0;
 }
 
-#define InitEnd() _InitEnd()
+#define InitEnd() _InitEnd(local_initTime, __FUNC__)
 
 /** Doesn't work yet. Compiler bug (!) */
 #define entity_def(x, ...) const string x[] = { __VA_ARGS__ }

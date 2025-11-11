@@ -586,9 +586,9 @@ void
 ncTrigger::OnRemoveEntity(void)
 {
 #ifdef SERVER
-		if (m_touchTimer) {
-			m_touchTimer.Destroy();
-			m_touchTimer = 0;
-		}
+	if (m_touchTimer) {
+		m_touchTimer.Destroy();
+		m_touchTimer = 0;
+	}
 #endif
 }

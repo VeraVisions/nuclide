@@ -182,74 +182,74 @@ ncActor::__FiredWeapon(string weaponDef, string fireInfo)
 void
 ncActor::ReloadCachedAttributes(void)
 {
-	m_sndStepLadderLeft = GetSpawnString("snd_stepladderLeft");
+	m_sndStepLadderLeft = GetSpawnSound("snd_stepladderLeft");
 
-	if (STRING_SET(m_sndStepLadderLeft)) {
-		m_sndStepLadderRight = GetSpawnString("snd_stepladderRight");
+	if (m_sndStepLadderLeft) {
+		m_sndStepLadderRight = GetSpawnSound("snd_stepladderRight");
 	} else {
 		m_sndStepLadderLeft =
-		m_sndStepLadderRight = GetSpawnString("snd_stepladder");
+		m_sndStepLadderRight = GetSpawnSound("snd_stepladder");
 	}
 
-	m_sndDeath = GetSpawnString("snd_death");
-	m_sndFall = GetSpawnString("snd_fall");
-	m_sndPainSmall = GetSpawnString("snd_painSmall");
-	m_sndJump = GetSpawnString("snd_jump");
+	m_sndDeath = GetSpawnSound("snd_death");
+	m_sndFall = GetSpawnSound("snd_fall");
+	m_sndPainSmall = GetSpawnSound("snd_painSmall");
+	m_sndJump = GetSpawnSound("snd_jump");
 
-	if (STRING_SET(m_sndPainSmall)) {
-		m_sndPainMedium = GetSpawnString("snd_painMedium");
-		m_sndPainLarge = GetSpawnString("snd_painLarge");
-		m_sndPainHuge = GetSpawnString("snd_painHuge");
+	if (m_sndPainSmall) {
+		m_sndPainMedium = GetSpawnSound("snd_painMedium");
+		m_sndPainLarge = GetSpawnSound("snd_painLarge");
+		m_sndPainHuge = GetSpawnSound("snd_painHuge");
 	} else {
 		m_sndPainSmall =
 		m_sndPainMedium =
 		m_sndPainLarge =
-		m_sndPainHuge = GetSpawnString("snd_pain");
+		m_sndPainHuge = GetSpawnSound("snd_pain");
 	}
 
-	m_sndLandSoft = GetSpawnString("snd_landSoft");
+	m_sndLandSoft = GetSpawnSound("snd_landSoft");
 
-	if (STRING_SET(m_sndLandSoft)) {
-		m_sndLandHard = GetSpawnString("snd_landHard");
+	if (m_sndLandSoft) {
+		m_sndLandHard = GetSpawnSound("snd_landHard");
 	} else {
 		m_sndLandSoft =
-		m_sndLandHard = GetSpawnString("snd_land");
+		m_sndLandHard = GetSpawnSound("snd_land");
 	}
 
-	m_sndHitArmor = GetSpawnString("snd_hitArmor");
+	m_sndHitArmor = GetSpawnSound("snd_hitArmor");
 
-	if (STRING_SET(m_sndHitArmor)) {
-		m_sndHitFlesh = GetSpawnString("snd_hitFlesh");
+	if (m_sndHitArmor) {
+		m_sndHitFlesh = GetSpawnSound("snd_hitFlesh");
 	} else {
 		m_sndHitArmor =
-		m_sndHitFlesh = GetSpawnString("snd_hit");
+		m_sndHitFlesh = GetSpawnSound("snd_hit");
 	}
 
-	m_sndAirGaspHeavy = GetSpawnString("snd_airGaspHeavy");
+	m_sndAirGaspHeavy = GetSpawnSound("snd_airGaspHeavy");
 
-	if (STRING_SET(m_sndAirGaspHeavy)) {
-		m_sndAirGaspLight = GetSpawnString("snd_airGaspLight");
+	if (m_sndAirGaspHeavy) {
+		m_sndAirGaspLight = GetSpawnSound("snd_airGaspLight");
 	} else {
 		m_sndAirGaspHeavy =
-		m_sndAirGaspLight = GetSpawnString("snd_airGasp");
+		m_sndAirGaspLight = GetSpawnSound("snd_airGasp");
 	}
 
-	m_sndNoAir = GetSpawnString("snd_noAir");
-	m_sndTeleportExit = GetSpawnString("snd_teleportExit");
-	m_sndTeleportStart = GetSpawnString("snd_teleportStart");
-	m_sndWaterExit = GetSpawnString("snd_waterExit");
-	m_sndWaterEnter = GetSpawnString("snd_waterStart");
-	m_sndWaterWade = GetSpawnString("snd_waterWade");
-	m_sndWaterSwim = GetSpawnString("snd_waterSwim");
-	m_sndBurn = GetSpawnString("snd_stepladderLeft");
-	m_sndHealthtake = GetSpawnString("snd_stepladderLeft");
-	m_sndUseDeny = GetSpawnString("snd_useDeny");
+	m_sndNoAir = GetSpawnSound("snd_noAir");
+	m_sndTeleportExit = GetSpawnSound("snd_teleportExit");
+	m_sndTeleportStart = GetSpawnSound("snd_teleportStart");
+	m_sndWaterExit = GetSpawnSound("snd_waterExit");
+	m_sndWaterEnter = GetSpawnSound("snd_waterStart");
+	m_sndWaterWade = GetSpawnSound("snd_waterWade");
+	m_sndWaterSwim = GetSpawnSound("snd_waterSwim");
+	m_sndBurn = GetSpawnSound("snd_stepladderLeft");
+	m_sndHealthtake = GetSpawnSound("snd_stepladderLeft");
+	m_sndUseDeny = GetSpawnSound("snd_useDeny");
 
-	if (STRING_SET(m_sndUseDeny)) {
-		m_sndUseSuccess = GetSpawnString("snd_useSuccess");
+	if (m_sndUseDeny) {
+		m_sndUseSuccess = GetSpawnSound("snd_useSuccess");
 	} else {
 		m_sndUseDeny =
-		m_sndUseSuccess = GetSpawnString("snd_use");
+		m_sndUseSuccess = GetSpawnSound("snd_use");
 	}
 }
 
@@ -552,26 +552,28 @@ ncActor::Pain(entity inflictor, entity attacker, int damagePoints, vector dir,  
 	super::Pain(inflictor, attacker, damagePoints, dir, absImpactPos, hitBody);
 
 	if (damagePoints < 10) {
-		StartSoundDef(m_sndPainSmall, CHAN_VOICE, true);
+		m_sndPainSmall.PlayOnEntityChannel(this, CHAN_VOICE);
 	} else if (damagePoints < 25) {
-		StartSoundDef(m_sndPainMedium, CHAN_VOICE, true);
+		m_sndPainMedium.PlayOnEntityChannel(this, CHAN_VOICE);
 	} else if (damagePoints < 50) {
-		StartSoundDef(m_sndPainLarge, CHAN_VOICE, true);
+		m_sndPainLarge.PlayOnEntityChannel(this, CHAN_VOICE);
 	} else if (damagePoints < 75) {
-		StartSoundDef(m_sndPainHuge, CHAN_VOICE, true);
+		m_sndPainHuge.PlayOnEntityChannel(this, CHAN_VOICE);
 	}
 }
 
 void
 ncActor::Death(entity inflictor, entity attacker, int damagePoints, vector dir, vector absImpactPos, int hitBody)
 {
+	vector deathVelocity = GetVelocity();
 	RouteClear();
 	CancelSchedule();
+	ncTimer::WipeEntityTimers(this);
 
 	m_lastCorpse = __NULL__;
 
 	/* either gib, or make a corpse */
-	if (GetHealth()< m_gibHealth) {
+	if (GetHealth() < m_gibHealth) {
 		super::Death(inflictor, attacker, damagePoints, dir, absImpactPos, hitBody);
 	} else {
 		float deathAnimation = Activities_GetSequenceForEntity(this, "dieSimple");
@@ -599,7 +601,7 @@ ncActor::Death(entity inflictor, entity attacker, int damagePoints, vector dir, 
 		}
 
 		m_lastCorpse = MakeCorpse(deathAnimation);
-		StartSoundDef(m_sndDeath, CHAN_VOICE, true);
+		m_sndDeath.PlayOnEntityChannel(this, CHAN_VOICE);
 		
 		
 	}
@@ -2151,15 +2153,13 @@ ncActor::SwitchToExactWeapon(ncWeapon item)
 		return;
 	}
 
+	if (m_activeWeapon) {
+		m_activeWeapon._SwitchedFromCallback();
+	}
+
 	m_activeWeapon = item;
 	m_activeWeapon._SwitchedToCallback();
 	//m_activeWeapon.PrintDebugInfo();
-}
-
-bool
-ncActor::AddItem(ncItem theItem)
-{
-	return (false);
 }
 
 ncWeapon

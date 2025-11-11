@@ -219,6 +219,17 @@ ncIO::GetSubDefInt(string subDef, string keyName)
 	return (int)stoi(GetSubDefString(subDef, keyName));
 }
 
+ncSoundDict
+ncIO::GetSubDefSound(string subDef, string keyName)
+{
+	return GetSpawnSound(GetSubDefString(subDef, keyName));
+}
+
+ncSoundDict
+ncIO::GetDefSound(string keyName)
+{
+	return GetSpawnSound(GetDefString(keyName));
+}
 
 bool
 ncIO::ReadBool(string inputString)
@@ -300,6 +311,17 @@ ncIO::GetSpawnString(string keyName)
 	}
 
 	return ReadString(EntityDef_GetKeyValue(declclass, keyName));
+}
+
+ncSoundDict
+ncIO::GetSpawnSound(string keyName)
+{
+	for (ncSoundDict spaceList = world; (spaceList = find(spaceList, ::classname, "ncSoundDict"));) {
+		if (spaceList.name == keyName) {
+			return (spaceList);
+		}
+	}
+	return (__NULL__);
 }
 
 vector

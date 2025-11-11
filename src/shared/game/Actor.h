@@ -138,15 +138,14 @@ public:
 	nonvirtual int GetReserveAmmo(int);
 
 	/* inventory handling */
-	/** Adds a named ncItem to the inventory. Returns `false` when impossible. */
+	/** Adds a named, newly created ncItem to the inventory. Returns `false` when impossible. */
 	nonvirtual bool GiveNamedItem(string);
+	/** Adds an existing ncItem reference to the inventory. Returns `false` when impossible. */
 	nonvirtual bool GiveExactItem(ncItem);
 	/** Removes a referenced ncItem from the inventory. Returns `false` when impossible. */
 	nonvirtual bool RemoveItem(ncItem);
 	/** Removes a named ncItem from the inventory. Returns `false` when impossible. */
 	nonvirtual bool RemoveNamedItem(string);
-	/** Adds the specified ncItem to the inventory. Returns `false` when impossible. */
-	nonvirtual bool AddItem(ncItem);
 	/** Returns `true` or `false` depending on if the entity has the named item. */
 	nonvirtual ncItem GetItem(string);
 	/** Returns `true` or `false` depending on if the entity has the named item. */
@@ -302,32 +301,32 @@ private:
 	ncWeapon m_activeWeapon_net;
 
 	/* non-state heavy cached values, reloaded frequently. */
-	string m_sndStepLadderLeft;
-	string m_sndStepLadderRight;
-	string m_sndDeath;
-	string m_sndFall;
-	string m_sndPainSmall;
-	string m_sndPainMedium;
-	string m_sndPainLarge;
-	string m_sndPainHuge;
-	string m_sndLandSoft;
-	string m_sndLandHard;
-	string m_sndHitArmor;
-	string m_sndHitFlesh;
-	string m_sndAirGaspHeavy;
-	string m_sndAirGaspLight;
-	string m_sndNoAir;
-	string m_sndTeleportExit;
-	string m_sndTeleportStart;
-	string m_sndWaterExit;
-	string m_sndWaterEnter;
-	string m_sndWaterWade;
-	string m_sndWaterSwim;
-	string m_sndBurn;
-	string m_sndHealthtake;
-	string m_sndUseDeny;
-	string m_sndUseSuccess;
-	string m_sndJump;
+	ncSoundDict m_sndStepLadderLeft;
+	ncSoundDict m_sndStepLadderRight;
+	ncSoundDict m_sndDeath;
+	ncSoundDict m_sndFall;
+	ncSoundDict m_sndPainSmall;
+	ncSoundDict m_sndPainMedium;
+	ncSoundDict m_sndPainLarge;
+	ncSoundDict m_sndPainHuge;
+	ncSoundDict m_sndLandSoft;
+	ncSoundDict m_sndLandHard;
+	ncSoundDict m_sndHitArmor;
+	ncSoundDict m_sndHitFlesh;
+	ncSoundDict m_sndAirGaspHeavy;
+	ncSoundDict m_sndAirGaspLight;
+	ncSoundDict m_sndNoAir;
+	ncSoundDict m_sndTeleportExit;
+	ncSoundDict m_sndTeleportStart;
+	ncSoundDict m_sndWaterExit;
+	ncSoundDict m_sndWaterEnter;
+	ncSoundDict m_sndWaterWade;
+	ncSoundDict m_sndWaterSwim;
+	ncSoundDict m_sndBurn;
+	ncSoundDict m_sndHealthtake;
+	ncSoundDict m_sndUseDeny;
+	ncSoundDict m_sndUseSuccess;
+	ncSoundDict m_sndJump;
 
 	/* recalculate these */
 	float m_actIdle;

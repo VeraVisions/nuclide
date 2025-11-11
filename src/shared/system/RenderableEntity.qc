@@ -456,7 +456,11 @@ ncRenderableEntity::RenderFXPass(void)
 			scale = bound(1, vlen(vecPlayer - origin) / 256, 4);
 		break;
 	case RM_SOLID:
-		colormod = [1,1,1];
+		//colormod = [1,1,1];
+
+		if (colormod == [0,0,0])
+			colormod = [1,1,1];
+
 		alpha = (m_renderAmount == 0) ? 0.0f : 1.0f;
 		glowmod[0] = 0.5f;
 		break;
