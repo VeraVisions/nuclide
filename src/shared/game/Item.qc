@@ -985,7 +985,4 @@ ncItem::_RemovedCallback(void)
 	owner = __NULL__;
 	chain = __NULL__;
 	m_nextItem = __NULL__;
-	
-	#warning make sure this is called somewhere!
-	//ScheduleThink(Destroy, 0.0f);
 }

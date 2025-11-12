@@ -273,7 +273,6 @@ multi_manager::SpawnKey(string strKey, string setValue)
 void
 multi_manager::Spawned(void)
 {
-	int iFields;
 	int b;
 
 	super::Spawned();

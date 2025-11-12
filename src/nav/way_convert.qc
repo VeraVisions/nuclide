@@ -542,5 +542,6 @@ Way_SaveJumbotFile(string filename)
 	fputs(file, "$\n");
 
 	fclose(file);
+	return (true);
 }
 

@@ -92,6 +92,9 @@ ncSchedule:ncIO
 public:
 	void ncSchedule(void);
 
+	/* overrides */
+	virtual void OnRemoveEntity(void);
+
 	/** Creates a schedule for an NPC and returns it. */
 	nonvirtual ncSchedule CreateSchedule(ncActor targetActor, string scheduleDecl);
 	nonvirtual void SetTarget(ncEntity target);

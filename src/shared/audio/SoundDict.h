@@ -46,6 +46,14 @@ public:
 	nonvirtual void PlayOnEntityChannel(entity, int);
 	nonvirtual void PlayOnSpot(vector);
 
+	nonvirtual ncSoundDict SoundForName(string soundDef);
+	nonvirtual ncSoundDict SoundForID(int soundID);
+	nonvirtual int ID(void);
+
+#ifdef CLIENT
+	nonvirtual void UpdateChannelVolumeOnEntity(entity, int, float);
+#endif
+
 private:
 	float dist_min;		/**< Minimum playback distance. Default is 0. */
 	float dist_max;		/**< Maximum playback distance. */

@@ -358,6 +358,7 @@ ncSurfacePropEntity::Damage(entity inflictor, entity attacker, ncDict damageDecl
 		if (GetHealth() <= 0) {
 			/* apply knockback, but only on death */
 			float knockBack = damageDecl.GetFloat("knockback");
+			//printf("KNOCKBACK: %v (%d)\n", dmgDir * knockBack, knockBack);
 
 			if (knockBack > 0) {
 				AddVelocity(dmgDir * knockBack + [0,0,100]);

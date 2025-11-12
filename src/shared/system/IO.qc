@@ -222,13 +222,13 @@ ncIO::GetSubDefInt(string subDef, string keyName)
 ncSoundDict
 ncIO::GetSubDefSound(string subDef, string keyName)
 {
-	return GetSpawnSound(GetSubDefString(subDef, keyName));
+	return ncSoundDict::SoundForName(GetSubDefString(subDef, keyName));
 }
 
 ncSoundDict
 ncIO::GetDefSound(string keyName)
 {
-	return GetSpawnSound(GetDefString(keyName));
+	return ncSoundDict::SoundForName(EntityDef_GetKeyValue(declclass, keyName));
 }
 
 bool
@@ -316,12 +316,7 @@ ncIO::GetSpawnString(string keyName)
 ncSoundDict
 ncIO::GetSpawnSound(string keyName)
 {
-	for (ncSoundDict spaceList = world; (spaceList = find(spaceList, ::classname, "ncSoundDict"));) {
-		if (spaceList.name == keyName) {
-			return (spaceList);
-		}
-	}
-	return (__NULL__);
+	return ncSoundDict::SoundForName(GetSpawnString(keyName));
 }
 
 vector

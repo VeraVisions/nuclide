@@ -1103,7 +1103,7 @@ ncProjectile::_FireSingle(vector vecPos, vector vecAngles, float flDamage, float
 	/* combine them into one single Damage_Apply call later */
 	if (impactTarget.IsVulnerable()) {
 		if (impactTarget != m_eMultiTarget) {
-			angles = vecAngles;
+			angles = vectoangles(vecAngles);
 			_ApplyDamage();
 			m_eMultiTarget = impactTarget;
 			m_iMultiValue = flDamage;

@@ -32,7 +32,7 @@ FindXRSpace(entity playerEntity)
 {
 	NSXRSpace foundSpace = __NULL__;
 
-	for (NSXRSpace spaceList = world; (spaceList = find(spaceList, ::classname, "NSXRSpace"));) {
+	for (NSXRSpace spaceList = 0; (spaceList = (NSXRSpace)find(spaceList, ::classname, "NSXRSpace"));) {
 		if (spaceList.owner == playerEntity) {
 			return (spaceList);
 		}
@@ -51,7 +51,7 @@ FindXRInput(entity playerEntity, xrinput_t inputType)
 	NSXRInput foundInput = __NULL__;
 
 	/* See if it exists already */
-	for (NSXRInput inputList = world; (inputList = find(inputList, ::classname, "NSXRInput"));) {
+	for (NSXRInput inputList = 0; (inputList = (NSXRInput)find(inputList, ::classname, "NSXRInput"));) {
 		if (inputList.owner != playerEntity) {
 			continue;
 		}

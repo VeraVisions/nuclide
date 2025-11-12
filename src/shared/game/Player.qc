@@ -224,7 +224,7 @@ FindPMoveVars(entity playerEntity)
 {
 	ncPMoveVars foundSpace = __NULL__;
 
-	for (ncPMoveVars spaceList = world; (spaceList = find(spaceList, ::classname, "ncPMoveVars"));) {
+	for (ncPMoveVars spaceList = 0; (spaceList = (ncPMoveVars)find(spaceList, ::classname, "ncPMoveVars"));) {
 		if (spaceList.owner == playerEntity) {
 			spaceList.LinkToEntity(playerEntity.declclass);
 			return (spaceList);
@@ -419,8 +419,9 @@ ncPlayer::ProcessInput(void)
 			canfire = false;
 
 	/* can't fire when dead, sorry. */
-	if (health <= 0)
-		canfire = false;
+	if (health <= 0) { 
+		return;
+	}
 
 	if (canfire == false) {
 		if (m_activeWeapon) {
@@ -1642,7 +1643,7 @@ ncPlayer::Death(entity inflictor, entity attacker, int damagePoints, vector dir,
 	m_timeOfDeath = time;
 
 	if (m_lastCorpse && autocvar_bodyque_trackCorpse) {
-		SpectatorDeathcam(m_lastCorpse, (ncEntity)attacker, 3.0f);
+		SpectatorDeathcam((ncRenderableEntity)m_lastCorpse, (ncEntity)attacker, 3.0f);
 	}
 }
 
@@ -2359,7 +2360,7 @@ ncPlayer::Damage(entity inflictor, entity attacker, ncDict damageDecl, float dam
 		string deadWeapon = this.m_activeWeapon.declclass;
 		rules.PlayerDeath(this, (ncActor)inflictor, (ncActor)attacker, attackerWeapon);
 		Death(inflictor, attacker, (int)damagePoints, dmgDir, hitLocation, 0i);
-		ncStats::Kill(this, inflictor, attacker, attacker.frags - attackerOldScore, attackerWeapon, this.frags - deadOldScore, deadWeapon);
+		ncStats::Kill(this, (ncEntity)inflictor, (ncEntity)attacker, attacker.frags - attackerOldScore, attackerWeapon, this.frags - deadOldScore, deadWeapon);
 	} else {
 		rules.PlayerPain(this, (ncActor)attacker, damageDecl);
 		Pain(inflictor, attacker, (int)damagePoints, dmgDir, hitLocation, 0i);

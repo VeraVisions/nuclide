@@ -103,15 +103,23 @@ ncTimer::RunTimer(void)
 	}
 }
 
-ncTimer
+bool
+ncTimer::IsRunning(void)
+{
+	if (nextthink > time) {
+		return (true);
+	}
+	
+	return (false);
+}
+
+void
 ncTimer::SetupTimer(entity receiver, void() call, float interval, bool repeats)
 {
-	ncTimer ret = spawn(ncTimer);
-	ret.owner = receiver;
-	ret.m_flTime = interval;
-	ret._m_ncTimerFunc = call;
-	ret.m_bRepeats = repeats;
-	return ret;
+	owner = receiver;
+	m_flTime = interval;
+	_m_ncTimerFunc = call;
+	m_bRepeats = repeats;
 }
 
 void

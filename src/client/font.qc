@@ -38,7 +38,9 @@ Font_Load(string strFile, font_s &fntNew)
 	if (fileFont >= 0) {
 		int argc;
 		while ((strTemp = fgets(fileFont))) {
+			float segments;
 			argc = tokenize_console(strTemp);
+
 			if (argc != 2)
 				continue;
 
@@ -63,7 +65,7 @@ Font_Load(string strFile, font_s &fntNew)
 				break;
 			case "size_ttf":
 				if (autocvar(font_ttfOnly, 0) == 1) {
-					float segments = tokenize(argv(1));
+					segments = tokenize(argv(1));
 					
 					if (segments == 2) {
 						fntNew.iScaleX = (int)stof(argv(0));
@@ -75,7 +77,7 @@ Font_Load(string strFile, font_s &fntNew)
 				break;
 			case "size_bitmap":
 				if (autocvar(font_bitmapOnly, 0) == 1) {
-					float segments = tokenize(argv(1));
+					segments = tokenize(argv(1));
 					
 					if (segments == 2) {
 						fntNew.iScaleX = (int)stof(argv(0));

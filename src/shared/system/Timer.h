@@ -36,8 +36,10 @@ public:
 	/** Runs the timer that's set up. */
 	virtual void RunTimer(void);
 
+	nonvirtual bool IsRunning(void);
+
 	/** When called, sets up a timer that has to be run manually later. */
-	static ncTimer SetupTimer(entity, void(), float, bool);
+	nonvirtual void SetupTimer(entity receiver, void() call, float interval, bool repeats);
 
 	/** Invalidates the timer when called. */
 	nonvirtual void StopTimer(void);

@@ -461,9 +461,11 @@ ncEntity::SetParent(string name)
 	if (CreatedByMap() == true && parentEntity.CreatedByMap()) {
 		parentAbsPos = parentEntity.GetSpawnVector("origin");
 		ourAbsPos = GetSpawnVector("origin");
-	} else {
+	} else if (parentEntity) {
 		parentAbsPos = parentEntity.GetOrigin();
 		ourAbsPos = GetOrigin();
+	} else {
+		return;
 	}
 
 	parentOffset = ourAbsPos - parentAbsPos;

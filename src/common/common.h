@@ -340,7 +340,6 @@ InitPrint(string functionName)
 	ncLogAlways( "%s %s %s", sideLeft, functionName, sideRight);
 }
 
-var string g_lastInitFunc;
 void
 _InitStart(string functionName)
 {

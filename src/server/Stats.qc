@@ -33,14 +33,17 @@ var bool autocvar_stats_enabled = true;
 string
 ncStats::OutputFilename(void)
 {
+	string currentTime;
+	string fileName;
+
 	switch (autocvar_stats_logtype) {
 	case NGLOG_UT99:
-		string currentTime = ncStats::NetGamesTime();
-		string fileName = strcat(currentTime, ".txt");
+		currentTime = ncStats::NetGamesTime();
+		fileName = strcat(currentTime, ".txt");
 		return (fileName);
 	case NGLOG_Q2OSP:
-		string currentTime = ncStats::NetGamesTime();
-		string fileName = strcat(currentTime, ".txt");
+		currentTime = ncStats::NetGamesTime();
+		fileName = strcat(currentTime, ".txt");
 		return (fileName);
 	default:
 	case NGLOG_Q3A:
@@ -480,7 +483,8 @@ ncStats::Kill(ncPlayer killedPlayer, ncEntity inflicingEntity, ncEntity attackin
 			return;
 		}
 
-		fputs(g_statLogHandle, sprintf("%s\tKill\t%i\t%s\t%i\t%i\t%i\t%s\t%i\t%i\n", LocalTime(), attackerNum, attackerWeapon, attackerScoreChange, attackerPing, deadNum, deadWeapon, killedScoreChange, deadPing));
+		fputs(g_statLogHandle, sprintf("%s\tKill\t%i\t%s\t%i\t%i\t", LocalTime(), attackerNum, attackerWeapon, attackerScoreChange, attackerPing));
+		fputs(g_statLogHandle, sprintf("%i\t%s\t%i\t%i\n", deadNum, deadWeapon, killedScoreChange, deadPing));
 		break;
 	}
 
@@ -525,7 +529,7 @@ ncStats::UseItem(ncItem useditem, ncPlayer inflictingPlayer)
 	int itemID =  num_for_edict(useditem);
 	int playerNum =  num_for_edict(inflictingPlayer) - 1;
 	int playerPing =  userinfo.GetInteger(inflictingPlayer, "ping");
-	int ngItemID;
+	int ngItemID = 0;
 
 	switch (autocvar_stats_logtype) {
 	case NGLOG_UT99:
@@ -549,7 +553,7 @@ ncStats::DropItem(ncItem droppedItem, ncPlayer inflictingPlayer)
 	int itemID =  num_for_edict(droppedItem);
 	int playerNum =  num_for_edict(inflictingPlayer) - 1;
 	int playerPing =  userinfo.GetInteger(inflictingPlayer, "ping");
-	int ngItemID;
+	int ngItemID = 0;
 
 	switch (autocvar_stats_logtype) {
 	case NGLOG_UT99:

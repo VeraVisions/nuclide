@@ -53,7 +53,6 @@ PMoveCustom_Categorize(void)
 	int contents;
 	bool inladder = false;
 	vector testPos;
-	vector ladderTestPos;
 
 	if (self.movetype == MOVETYPE_NOCLIP)
 		return;

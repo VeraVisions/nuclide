@@ -147,6 +147,7 @@ string __fullspawndata;
 #include "system/util.h"
 #include "game/ammo.h"
 #include "system/activities.h"
+#include "environment/BreakableBrushManager.h"
 
 #define BSPVER_PREREL 	28
 #define BSPVER_Q1		29

@@ -87,7 +87,7 @@ void
 SVPF_game_TeleportToSpawn(entity targetClient)
 {
 	Spawn_TeleportToSpawn(targetClient);
-	ncStats::Respawn(targetClient);
+	ncStats::Respawn((ncPlayer)targetClient);
 }
 
 void
@@ -304,6 +304,7 @@ SVPF_combat_RadiusDamage(vector damageCenter, float damageRange, int damageMin, 
 		damageDecl.AddKey("location", vtos(entPos - (anglesToForward(dmgDir) * e.size[0])));
 		damageDecl.AddKey("push", itos(newDamage * 100));
 		e.Damage(attackingEnt, attackingEnt, damageDecl, 1.0, dmgDir, e.origin);
+		ncBreakableBrushManager::CarveRadiusIntoBrush(damageCenter, ((float)newDamage) / 2);
 		remove(damageDecl);
 	}
 }

@@ -127,7 +127,7 @@ static ncEntity
 SpawnEntityWithSpawnData(string entityClass, string spawnData)
 {
 	entity oldSelf = self;
-	ncEntity newEntity = spawn();
+	ncEntity newEntity = (ncEntity)spawn();
 
 	__fullspawndata = spawnData;
 	self = newEntity;

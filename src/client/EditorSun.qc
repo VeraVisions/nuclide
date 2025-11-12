@@ -24,6 +24,13 @@ public:
 
 	virtual void Spawned(void);
 	virtual void Reposition(void);
+	nonvirtual void RedColorChanged(void);
+	nonvirtual void GreenColorChanged(void);
+	nonvirtual void BlueColorChanged(void);
+	nonvirtual void PitchChanged(void);
+	nonvirtual void YawChanged(void);
+	nonvirtual void RollChanged(void);
+	nonvirtual void DistanceChanged(void);
 
 private:
 

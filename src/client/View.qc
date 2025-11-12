@@ -404,13 +404,16 @@ ncView::UpdateView(void)
 		switch (spec.m_spectatingMode) {
 		case SPECMODE_DEATHCAM:
 			vector vecCamEnd;
+			vector deathAngle;
+			vector vecCamStart;
+			float progression = time - spec.m_flLastSpecTargetChange;
+
 			c = findfloat(world, ::entnum, spec.m_spectatingEntity);
+			vecCamStart = c.origin;
 
 			switch (autocvar_bodyque_trackingStyle) {
 			case DEATHCAM_DEUS:
-				vector deathAngle;
-				vector vecCamStart = c.origin;
-				float progression = time - spec.m_flLastSpecTargetChange;
+				progression = time - spec.m_flLastSpecTargetChange;
 
 				vecCamStart[2] += 16;
 				vecCamStart += (v_right * 4);
@@ -429,9 +432,7 @@ ncView::UpdateView(void)
 				SetClientAngle(deathAngle);
 				break;
 			case DEATHCAM_ATTACKER: /* TODO: */
-				vector deathAngle;
-				vector vecCamStart = c.origin;
-				float progression = time - spec.m_flLastSpecTargetChange;
+				progression = time - spec.m_flLastSpecTargetChange;
 
 				vecCamStart[2] += 16;
 				vecCamStart += (v_right * 4);
@@ -451,7 +452,7 @@ ncView::UpdateView(void)
 				break;
 			case DEATHCAM_TRACK:
 			default:
-				vector vecCamStart = c.origin + [0,0,16];
+				vecCamStart = c.origin + [0,0,16];
 				float tag = gettagindex(c, "ValveBiped.Bip01");
 				vecCamStart = gettaginfo(c, tag);
 				vecCamEnd = vecCamStart + (anglesToForward(GetCameraAngle()) * -128);

@@ -19,7 +19,6 @@ Cmd_GetViewPoint(ncPlayer viewEnt)
 {
 	vector traceStart;
 	vector traceEnd;
-	string textureName;
 
 	traceStart = self.origin + self.view_ofs;
 	makevectors(self.v_angle);
@@ -45,6 +44,12 @@ Cmd_FindEntityByIdentifier(string identifierString)
 bool
 Cmd_ParseClientCommand(ncClient sender, string cmd, int commandArguments)
 {
+	string identStr;
+	string inputName;
+	string dataString;
+	float secondsDelay;
+	vector targetOrg;
+
 	switch (argv(0)) {
 	case "say":
 		if (commandArguments == 2) {
@@ -151,7 +156,7 @@ Cmd_ParseClientCommand(ncClient sender, string cmd, int commandArguments)
 			__fullspawndata = sprintf("%s%S %S\n", __fullspawndata, keyName, setValue);
 		}
 		resultingEntity.m_rawSpawnData = __fullspawndata = sprintf("%s}\n", __fullspawndata);
-		vector targetOrg = Cmd_GetViewPoint(sender);
+		targetOrg = Cmd_GetViewPoint((ncPlayer)sender);
 
 		ncLogAlways("spawning %S at %v with spawn data:\n%s", spawnClass, targetOrg, __fullspawndata);
 
@@ -166,10 +171,10 @@ Cmd_ParseClientCommand(ncClient sender, string cmd, int commandArguments)
 		if (!cvars.GetBool("sv_cheats"))
 			break;
 
-		string identStr = argv(1);
-		string inputName = argv(2);
-		string dataString = argv(3);
-		float secondsDelay = stof(argv(4));
+		identStr = argv(1);
+		inputName = argv(2);
+		dataString = argv(3);
+		secondsDelay = stof(argv(4));
 
 		if (!STRING_SET(identStr)) {
 			break;
@@ -188,7 +193,7 @@ Cmd_ParseClientCommand(ncClient sender, string cmd, int commandArguments)
 		if (!cvars.GetBool("sv_cheats"))
 			break;
 
-		string identStr = argv(1);
+		identStr = argv(1);
 
 		if (!STRING_SET(identStr)) {
 			break;
@@ -205,16 +210,16 @@ Cmd_ParseClientCommand(ncClient sender, string cmd, int commandArguments)
 		if (!cvars.GetBool("sv_cheats"))
 			break;
 
-		string identStr = argv(1);
+		identStr = argv(1);
 
 		if (!STRING_SET(identStr)) {
 			break;
 		}
 
-		for (ncEntity entEnum = world; (entEnum = (ncEntity)find(entEnum, ::targetname, identStr));) {
+		for (ncEntity entEnum = 0; (entEnum = (ncEntity)find(entEnum, ::targetname, identStr));) {
 			entEnum.Destroy();
 		}
-		for (ncEntity entEnum = world; (entEnum = (ncEntity)find(entEnum, ::classname, identStr));) {
+		for (ncEntity entEnum = 0; (entEnum = (ncEntity)find(entEnum, ::classname, identStr));) {
 			entEnum.Destroy();
 		}
 		break;
@@ -223,18 +228,18 @@ Cmd_ParseClientCommand(ncClient sender, string cmd, int commandArguments)
 		if (!cvars.GetBool("sv_cheats"))
 			break;
 
-		string identStr = argv(1);
+		identStr = argv(1);
 
 		if (!STRING_SET(identStr)) {
 			break;
 		}
 
-		vector targetOrg = Cmd_GetViewPoint(sender);
+		targetOrg = Cmd_GetViewPoint((ncPlayer)sender);
 		
-		for (ncEntity entEnum = world; (entEnum = (ncEntity)find(entEnum, ::targetname, identStr));) {
+		for (ncEntity entEnum = 0; (entEnum = (ncEntity)find(entEnum, ::targetname, identStr));) {
 			entEnum.SetOrigin(targetOrg);
 		}
-		for (ncEntity entEnum = world; (entEnum = (ncEntity)find(entEnum, ::classname, identStr));) {
+		for (ncEntity entEnum = 0; (entEnum = (ncEntity)find(entEnum, ::classname, identStr));) {
 			entEnum.SetOrigin(targetOrg);
 		}
 		break;

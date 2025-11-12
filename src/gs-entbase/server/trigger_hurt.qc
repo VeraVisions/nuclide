@@ -38,11 +38,11 @@
 #define HURTTYPE_SLOWBURN	2097152
 #define HURTTYPE_SLOWFREEZE	4194304
 
-#define SF_HURT_ONCE			1 // Turn off once it fired the first time
-#define SF_HURT_OFF				2 // Needs to be triggered in order to work again
-#define SF_HURT_NOPLAYERS		8 // Don't hurt players
-#define SF_HURT_FIREONPLAYER	16 // Only call UseTarget functions when it's a player
-#define SF_HURT_TOUCHPLAYER		32 // Only hurt players
+#define SF_HURT_ONCE		1 	/*<< Turn off once it fired the first time */
+#define SF_HURT_OFF		2 	/*<< Needs to be triggered in order to work again */
+#define SF_HURT_NOPLAYERS	8	/*<< Don't hurt players */
+#define SF_HURT_FIREONPLAYER	16	/*<< Only call UseTarget functions when it's a player */
+#define SF_HURT_TOUCHPLAYER	32	/*<< Only hurt players */
 
 /*! \brief Server-Entity: Damages/Hurts Characters */
 /*!QUAKED trigger_hurt (.5 .5 .5) ? SF_HURT_ONCE SF_HURT_OFF x SF_HURT_NOPLAYERS SF_HURT_FIREONPLAYER SF_HURT_TOUCHPLAYER

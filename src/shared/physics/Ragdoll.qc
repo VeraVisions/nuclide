@@ -80,10 +80,16 @@ ncRagdoll::CreateRagdoll(void)
 			skel_ragupdate(this, strcat("doll ", modelnameforindex(modelindex), ".doll"), 0);
 		else
 #endif
-		skel_ragupdate(this, strcat("dollstring ", "models/player.doll"), 0);
 
-	skel_ragupdate(this, "animate 1", m_animationSkeletonIndex);
-	m_morphTime = 0.95f;
+	skel_ragupdate(this, strcat("dollstring ", "models/player.doll"), 0);
+
+	if (vlen(velocity) > 0) {
+		skel_ragupdate(this, "animate 0", m_animationSkeletonIndex);
+		m_morphTime = 0.0f;
+	} else {
+		skel_ragupdate(this, "animate 0.955", m_animationSkeletonIndex);
+		m_morphTime = 0.995f;
+	}
 
 	Show();
 }
@@ -234,7 +240,6 @@ ncRagdoll::ReceiveEntity
 void
 ncRagdoll::ReceiveEntity(float flNew, float flChanged)
 {
-	vector oldVelocity = velocity;
 	READENTITY_COORD(origin[0], RDENT_CHANGED_ORIGIN_X)
 	READENTITY_COORD(origin[1], RDENT_CHANGED_ORIGIN_Y)
 	READENTITY_COORD(origin[2], RDENT_CHANGED_ORIGIN_Z)
@@ -285,11 +290,6 @@ ncRagdoll::ReceiveEntity(float flNew, float flChanged)
 
 	movetype = MOVETYPE_PHYSICS;
 
-	/* force set */
-	if ((flChanged & RDENT_CHANGED_ORIGIN_X) || (flChanged & RDENT_CHANGED_ORIGIN_Y) || (flChanged & RDENT_CHANGED_ORIGIN_Z)) {
-		CreateRagdoll();
-	}
-
 	if (scale == 0.0) {
 		scale = 1.0f;
 	}
@@ -298,13 +298,14 @@ ncRagdoll::ReceiveEntity(float flNew, float flChanged)
 		setsize(this, mins * scale, maxs * scale);
 	}
 
-	if (flChanged & RDENT_CHANGED_BODY) {
-		_UpdateGeomset();
-	}
-
 	if (flChanged & RDENT_CHANGED_MODELINDEX) {
+		CreateRagdoll();
 		_ModelChanged();
 		_UpdateBoneCount();
+	}
+
+	if (flChanged & RDENT_CHANGED_BODY) {
+		_UpdateGeomset();
 	}
 }
 
@@ -312,37 +313,31 @@ float
 ncRagdoll::predraw(void)
 {
 	/* no model, don't render */
-	if (!modelindex) {
+	if (!modelindex && m_morphTime < 10.0) {
 		return (PREDRAW_NEXT);
 	}
 
-	/* no skeletonindex, cheap render */
-	if (m_morphTime <= 0.0f && frame1time >= 10.0f) {
-		addentity(this);
-		return (PREDRAW_NEXT);
+	if (m_morphTime > 0) {
+		/* ragdoll is alive, morph from death animation, which we build first */
+		frame1time += frametime;
+		frame2time += frametime;
+		lerpfrac = 0.0;
+		skel_build(m_animationSkeletonIndex, this, this.modelindex, 0, 0, 0, 1);
+
+		/* set animation lerp value against animation index */
+		float animProgression = m_morphTime;
+		
+		if (animProgression < 0) 
+			animProgression = 0;
+
+		skel_ragupdate(this, sprintf("animate %f\n", animProgression), m_animationSkeletonIndex);
+		m_morphTime -= (frametime * autocvar_ragdoll_morphTime);
 	}
-
-	/* ragdoll is alive, morph from death animation, which we build first */
-	frame1time += frametime;
-	frame2time += frametime;
-	lerpfrac = 0.0;
-	skel_build(m_animationSkeletonIndex, this, this.modelindex, 0, 0, 0, 1);
-
-	/* set animation lerp value against animation index */
-	skel_ragupdate(this, sprintf("animate %f\n", m_morphTime), m_animationSkeletonIndex);
 
 	/* calculate physics frame data */
 	skel_ragupdate(this, "", m_animationSkeletonIndex);
 
 	addentity(this);
-
-	m_morphTime -= (frametime * autocvar_ragdoll_morphTime);
-
-	/* once 0.0, animation stops playing */
-	if (m_morphTime < 0.0f) {
-		m_morphTime = 0.0f;
-	}
-
 	return (PREDRAW_NEXT);
 }
 

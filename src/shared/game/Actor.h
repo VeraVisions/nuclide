@@ -206,6 +206,7 @@ public:
 	virtual void Input(entity, string, string);
 	virtual void DebugDraw(void);
 	virtual void OnRemoveEntity(void);
+	virtual void Pain(entity inflictor, entity attacker, int damagePoints, vector dir, vector absImpactPos, int hitBody);
 	virtual void Death(entity inflictor, entity attacker, int damagePoints, vector dir, vector absImpactPos, int hitBody);
 
 	/** Overridable: Called regularily to select a new schedule to perform. */

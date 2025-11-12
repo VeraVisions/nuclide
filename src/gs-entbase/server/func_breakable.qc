@@ -218,13 +218,16 @@ func_breakable::Spawned(void)
 		g_func_breakable_surfaces = ncDict::LoadDeclFromFile("surfaces", "typeinfo/func_breakable.decl");
 	}
 
-	string breakSurface;
-	string breakProp;
+	string breakSurface = "";
+	string breakProp = "";
 
 	/* needs to be called before super function */
 	if (HasSurfaceData() == false) {
 		breakSurface = g_func_breakable_surfaces.GetString(itos(material));
-		SetSurfaceData(breakSurface);
+		
+		if (STRING_SET(breakSurface)) {
+			SetSurfaceData(breakSurface);
+		}
 	}
 	
 	
@@ -232,7 +235,7 @@ func_breakable::Spawned(void)
 		if (m_breakablePropData > 0i) {
 			breakProp = g_func_breakable_props.GetString(itos(m_breakablePropData));
 			SetPropData(breakProp);
-		} else {
+		} else if (STRING_SET(breakSurface)) {
 			SetPropData(breakSurface);
 		}
 	}
@@ -343,7 +346,6 @@ func_breakable::Death(entity inflictor, entity attacker, int damage, vector dir,
 	//breakModel = g_func_breakable_surfaces.GetString(itos(material));
 
 	if (STRING_SET(breakModel)) {
-		EntError(" BreakModel %S set for \"material\" \"%d\"", breakModel, material);
 		BreakModel_Spawn(absmin, absmax, dir, damage * 2.5, gibCount, breakModel);
 	} else {
 		EntError("No BreakModel set for \"material\" \"%d\"", material);

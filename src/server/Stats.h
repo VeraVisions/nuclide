@@ -43,6 +43,14 @@ ncStats
 public:
 	nonvirtual void Init(void);
 	nonvirtual void Shutdown(void);
+	
+	nonvirtual string OutputFilename(void);
+	
+	nonvirtual void Game(string keyName, string setValue);
+	nonvirtual void Player(string keyName, string setValue);
+	nonvirtual void Map(string keyName, string setValue);
+	nonvirtual void JoinTeam(int teamID, ncPlayer leavingPlayer);
+	nonvirtual void LeaveTeam(int teamID, ncPlayer leavingPlayer);
 
 	/* player activities */
 	nonvirtual void Connect(ncClient connectingClient);

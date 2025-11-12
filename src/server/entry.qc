@@ -139,7 +139,7 @@ SetChangeParms(void)
 	ncPlayer ourPlayer = (ncPlayer)self;
 
 	if ((cvars.GetString("g_gametype") != "singleplayer") || (serverinfo.GetString("mode") != "singleplayer")) {
-		ncLog("Reset client %d (Name: %S, Class %s)", ourPlayer, ourPlayer.netname, ourPlayer.classname);
+		ncLog("Reset client %d (Name: %S, Class %s)", num_for_edict(ourPlayer), ourPlayer.netname, ourPlayer.classname);
 		g_grMode.LevelNewParms();
 
 		if (clienttype(ourPlayer) == CLIENTTYPE_BOT) {
@@ -149,7 +149,7 @@ SetChangeParms(void)
 		return;
 	}
 
-	ncLog("Transitioning client %d (Name: %S, Class %s)", ourPlayer, ourPlayer.netname, ourPlayer.classname);
+	ncLog("Transitioning client %d (Name: %S, Class %s)", num_for_edict(ourPlayer), ourPlayer.netname, ourPlayer.classname);
 
 	if (g_grMode) {
 		g_grMode.LevelChangeParms(ourPlayer);
@@ -245,8 +245,6 @@ SV_Shutdown(void)
 {
 	ncServerGame::Shutdown();
 }
-
-entity g_respawntimer;
 
 /** Called by the engine when we're ready to spawn entities.
 Before this, we are not able to spawn, touch or allocate any entity slots.

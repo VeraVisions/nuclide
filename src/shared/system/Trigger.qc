@@ -418,7 +418,7 @@ ncTrigger::SetTeam(float new_team)
 		userinfo.SetFloat(client, "*team", new_team);
 
 		if (teamChanged) {
-			ncStats::JoinTeam(new_team, this);
+			ncStats::JoinTeam(new_team, (ncPlayer)this);
 		}
 
 	}
@@ -529,11 +529,6 @@ ncTrigger::_TouchEnded(void)
 	UseOutput(m_touchingEntity, m_outputOnEndTouch);
 	m_touchingEntity = __NULL__;
 	m_beingTouched = false;
-
-	if (m_touchTimer) {
-		m_touchTimer.Destroy();
-		m_touchTimer = 0;
-	}
 }
 #endif
 
@@ -544,6 +539,12 @@ ncTrigger::_TouchHandler(void)
 	m_touchNormal = trace_plane_normal;
 	m_touchingEntity = other;
 
+	if (!m_touchingEntity) {
+		Touch(m_touchingEntity);
+		m_timeSinceLastTouch = GetTime();
+		return;
+	}
+
 	/* let's not waste anything... */
 	if (solid == SOLID_NOT) {
 #ifdef SERVER
@@ -553,6 +554,12 @@ ncTrigger::_TouchHandler(void)
 		}
 #endif
 		return;
+	} else {
+#ifdef SERVER
+		if (!m_touchTimer || m_touchTimer.classname != "ncTimer") {
+			m_touchTimer = spawn(ncTimer);
+		}
+#endif
 	}
 
 #ifdef SERVER
@@ -567,15 +574,14 @@ ncTrigger::_TouchHandler(void)
 		UseOutput(m_touchingEntity, m_outputOnPlayerTouch);
 
 	/* start touch in case we haven't */
-	if (!m_touchTimer || wasfreed(m_touchTimer)) {
+	if (m_touchTimer.IsRunning() == false) {
 		StartTouch(m_touchingEntity);
 		UseOutput(m_touchingEntity, m_outputOnStartTouch);
-		m_touchTimer = m_touchTimer.SetupTimer(this, _TouchEnded, 0.1f, false);
+		m_touchTimer.SetupTimer(this, _TouchEnded, 0.1f, false);
 	}
 
-	if (m_touchTimer && !wasfreed(m_touchTimer)) {
+	if (m_touchTimer && m_touchTimer.classname == "ncTimer")
 		m_touchTimer.RunTimer();
-	}
 #endif
 
 	Touch(m_touchingEntity);

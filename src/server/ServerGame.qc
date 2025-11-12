@@ -86,8 +86,8 @@ ncServerGame::InitEnts(void)
 
 	precache.Entity("player");
 
-	currentRule.LinkProgs();
-	currentMap.LinkProgs();
+	ncRuleDelegate::LinkProgs();
+	ncMapDelegate::LinkProgs();
 
 	Game_Worldspawn();
 	Decals_Init();
@@ -109,8 +109,8 @@ ncServerGame::InitEnts(void)
 	 * let's add our own that we can actually trust. */
 	serverinfo.SetInteger("sv_playerslots", cvars.GetInteger("sv_playerslots"));
 
-	currentRule = currentRule.ActiveInstance();
-	currentMap = currentMap.ActiveInstance();
+	currentRule = ncRuleDelegate::ActiveInstance();
+	currentMap = ncMapDelegate::ActiveInstance();
 
 	g_ents_initialized = false;
 	currentRule.Precache();
@@ -281,7 +281,7 @@ ncServerGame::ClientKill(ncClient targetClient)
 	}
 
 	if (g_grMode) {
-		g_grMode.PlayerKill(targetClient);
+		g_grMode.PlayerKill((ncPlayer)targetClient);
 	}
 }
 

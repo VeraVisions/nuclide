@@ -1008,8 +1008,11 @@ ncWeapon::Draw(void)
 	SetIdleNext(drawTime);
 
 	ncPlayer ourOwner = (ncPlayer)GetOwner();
-	ourOwner.viewzoom = 1.0f;
-	ourOwner.Event_DrawWeapon();
+
+	if (ourOwner) {
+		ourOwner.viewzoom = 1.0f;
+		ourOwner.Event_DrawWeapon();
+	}
 }
 
 void
@@ -1017,7 +1020,10 @@ ncWeapon::Holster(void)
 {
 	ncPlayer ourOwner = (ncPlayer)GetOwner();
 	EntLog("Holstering Weapon!");
-	ourOwner.Event_HolsterWeapon();
+	
+	if (ourOwner) {
+		ourOwner.Event_HolsterWeapon();
+	}
 }
 
 void
@@ -1025,6 +1031,12 @@ ncWeapon::EmptySound(void)
 {
 #ifdef SERVER
 	ncPlayer ourOwner = (ncPlayer)GetOwner();
+
+	if (!ourOwner) {
+		m_fiSndEmpty.PlayOnEntityChannel(this, CHAN_WEAPON);
+		return;
+	}
+	
 	m_fiSndEmpty.PlayOnEntityChannel(ourOwner, CHAN_WEAPON);
 	ourOwner.gflags |= GF_SEMI_TOGGLED;
 
@@ -1178,6 +1190,7 @@ ncWeapon::EjectBrass(void)
 	brass.SetMovetype(MOVETYPE_BOUNCE);
 	brass.SetSolid(SOLID_NOT);
 	brass.ScheduleThink(Destroy, 4.0f);
+	brass.touch = __NULL__;
 
 	//PlaySound(GetSubDefString(m_weaponLastFireInfo, "snd_ejectBrass"), CHAN_AUTO, false);
 	m_fiSndEjectBrass.PlayOnEntity(ourOwner);

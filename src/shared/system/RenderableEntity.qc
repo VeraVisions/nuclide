@@ -1258,7 +1258,7 @@ ncRenderableEntity::HandleAnimEvent(float flTimeStamp, int iCode, string strData
 		}
 		//print(sprintf("Received: %f %i %S\n", flTimeStamp, iCode, strData));
 #endif
-		EntWarning("? event %i in %S from %S\n\tTime: %f; Data: %S", iCode, frametoname(modelindex, frame), modelnameforindex(modelindex), flTimeStamp, strData);
+		//EntWarning("? event %i in %S from %S\n\tTime: %f; Data: %S", iCode, frametoname(modelindex, frame), modelnameforindex(modelindex), flTimeStamp, strData);
 	}
 }
 

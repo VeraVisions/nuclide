@@ -13,7 +13,7 @@ ncSoundDict::ncSoundDict(void)
 	pitch_max = 100.0f;
 	shakes = 0.0f;
 	volume = 1.0f;
-	flags = 0;
+	flags = SNDFL_FOLLOW;
 	playc = 0i;
 	sample_count = 0i;
 	samples = "";
@@ -40,7 +40,7 @@ ncSoundDict::PlayOnEntityChannel(entity targetEntity, int audioChannel)
 	int r;
 	float radius;
 	float pitch;
-	int flag;
+	int flag = 0;
 	float playAtVolume = volume;
 	string randomSample;
 
@@ -139,7 +139,7 @@ ncSoundDict::PlayOnEntityChannel(entity targetEntity, int audioChannel)
 		offset
 	);
 
-	SndLog("(%d) %S (radius: %d) (volume: %d) (pitch: %d) (offset: %.2f) (flags: %d)", num_for_edict(targetEntity), randomSample, dist_max, playAtVolume * 100, pitch, offset, flag);
+	SndLog("(%d) %S (radius: %d) (volume: %d) (pitch: %d) (offset: %.2f) (flags: %i)", num_for_edict(targetEntity), randomSample, dist_max, playAtVolume * 100, pitch, offset, flag);
 
 #ifdef SERVER
 	if (music_count > 0) {
@@ -174,12 +174,12 @@ ncSoundDict::PlayOnSpot(vector targetSpot)
 	int r;
 	float radius;
 	float pitch;
-	int flag;
-	int sample;
+	int flag = 0;
 	string randomSample;
 
 	r = floor(random(0,  sample_count));
 	tokenizebyseparator(samples, "\n");
+	randomSample = argv(r);
 
 	/* set pitch */
 	pitch = random(pitch_min, pitch_max);
@@ -223,6 +223,41 @@ ncSoundDict::AttenuationValue(void)
 	if (dist_max == 0) {
 		return 0;
 	} else {
-		return autocvar_s_nominaldistance / dist_max;
+		return (autocvar_s_nominaldistance / dist_max);
 	}
 }
+
+ncSoundDict
+ncSoundDict::SoundForName(string soundDef)
+{
+	for (ncSoundDict spaceList = 0; (spaceList = (ncSoundDict)find(spaceList, ::classname, "ncSoundDict"));) {
+		if (spaceList.name == soundDef) {
+			return (spaceList);
+		}
+	}
+	return (__NULL__);
+}
+
+ncSoundDict
+ncSoundDict::SoundForID(int soundID)
+{
+	string soundName = modelnameforindex((float)soundID);
+	SndLog("ID %i is %s", soundID, soundName);
+	return SoundForName(soundName);
+}
+
+int
+ncSoundDict::ID(void)
+{
+	int returnValue = (int)getmodelindex(sprintf("*S:%s", name));
+	SndLog("%s ID is %i", name, returnValue);
+	return (returnValue);
+}
+
+#ifdef CLIENT
+void
+ncSoundDict::UpdateChannelVolumeOnEntity(entity targetEntity, int targetChannel, float desiredVolume)
+{
+	//soundupdate(targetEntity, (float)targetChannel, "", desiredVolume, AttenuationValue(), 0, 0, 0);
+}
+#endif
