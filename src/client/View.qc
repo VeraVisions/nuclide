@@ -49,7 +49,7 @@ void
 ncView::SetupView(void)
 {
 	setproperty(VF_DRAWENGINESBAR, (float)0);
-	setproperty(VF_DRAWCROSSHAIR, (float)0);
+	setproperty(VF_DRAWCROSSHAIR, serverkeyfloat("background") == 1 ? (float)0 : (float)1); // only hide crosshair when not in game
 
 	if (g_cheats == true) {
 		setproperty(VF_DRAWWORLD, autocvar_r_skipWorld ? false : true);
