@@ -241,7 +241,7 @@ CSQC_Update2D(float w, float h, bool focus)
 	self = cl;
 
 	// Closes scoreboard when disconnected/kicked from lobby.
-	if (clientstate() != 2) pSeat->m_iScoresVisible = FALSE;
+	if (serverkey("constate") != "active") pSeat->m_iScoresVisible = FALSE;
 
 	if (Util_GetMaxPlayers() > 1 && !VGUI_Active() && (Client_InIntermission() || (!cl.IsFakeSpectator() && cl.IsDead()))) {
 		HUD_DrawIntermission();
