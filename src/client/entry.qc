@@ -240,7 +240,14 @@ CSQC_Update2D(float w, float h, bool focus)
 	ncPlayer cl = (ncPlayer)pSeat->m_ePlayer;
 	self = cl;
 
-	if (Util_GetMaxPlayers() > 1 && !VGUI_Active() && (Client_InIntermission() || (!cl.IsFakeSpectator() && cl.IsDead()))) {
+	/* True when the background/menu map is active — not a real game session. */
+	bool isBackground = (serverkeyfloat("background") == 1);
+
+	/* Close scoreboard if kicked, disconnected, or in the menu. */
+	if (serverkey("constate") != "active" || isBackground)
+		pSeat->m_iScoresVisible = FALSE;
+		
+	if (!isBackground && Util_GetMaxPlayers() > 1 && !VGUI_Active() && (Client_InIntermission() || (!cl.IsFakeSpectator() && cl.IsDead()))) {
 		HUD_DrawIntermission();
 		Textmenu_Draw();
 		Scores_Draw();
@@ -250,7 +257,7 @@ CSQC_Update2D(float w, float h, bool focus)
 		GameText_Draw();
 		PointMessage_Draw();
 
-		if (Client_InIntermission() == true) {
+		if (!isBackground && Client_InIntermission() == true) {
 			HUD_DrawIntermission();
 		} else {
 			if (Client_IsSpectator(cl) == false) {
@@ -270,7 +277,7 @@ CSQC_Update2D(float w, float h, bool focus)
 		Print_Draw();
 
 		/* no prints overlapping scoreboards */
-		if (Client_InIntermission() || pSeat->m_iScoresVisible == TRUE) {
+		if (!isBackground && (Client_InIntermission() || pSeat->m_iScoresVisible == TRUE)) {
 			Scores_Draw();
 		} else {
 			VGUI_Draw();
