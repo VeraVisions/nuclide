@@ -491,8 +491,7 @@ PMoveCustom_Fix_Origin(void)
 		}
 	}
 
-#if 0
-	/* still not done */
+	/* nudge out of corners */
 	for (z = 0; z < 3; z++) {
 		norg = oorg;
 		norg[z] = oorg[z] + 0.25;
@@ -501,7 +500,7 @@ PMoveCustom_Fix_Origin(void)
 			self.origin = norg;
 			return (1);
 		}
-		
+
 		norg = oorg;
 		norg[z] = oorg[z] - 0.25;
 		tracebox(norg, self.mins, self.maxs, norg, MOVE_NORMAL, self);
@@ -510,18 +509,6 @@ PMoveCustom_Fix_Origin(void)
 			return (1);
 		}
 	}
-
-	for (z = 0; z < 64; z++) {
-		norg = oorg;
-		norg[2] += z * 0.125;
-		tracebox(norg, self.mins, self.maxs, norg, MOVE_NORMAL, self);
-		if (!trace_startsolid) {
-			tracebox(norg, self.mins, self.maxs, norg + [0,0,18], MOVE_NORMAL, self);
-			self.origin = norg;
-			return (1);
-		}
-	}
-#endif
 
 	return (0);
 }
@@ -535,6 +522,8 @@ PMoveCustom_Move(void)
 	float stepped;
 	float move_time;
 	float i;
+	/* get the Z before move so we can detect if stuck in a corner. */
+	float startZ = self.origin[2];
 
 	/* noclippers don't need any of the below since they don't collide with anything */
 	if (self.movetype == MOVETYPE_NOCLIP) {
@@ -553,6 +542,8 @@ PMoveCustom_Move(void)
 
 		if (trace_startsolid) {
 			if (!PMoveCustom_Fix_Origin()) {
+				/* Completely stuck */
+				self.velocity[2] = 0;
 				return;
 			}
 			continue;
@@ -657,6 +648,15 @@ PMoveCustom_Move(void)
 		}*/
 		PMoveCustom_DoTouch(trace_ent);
 		self.groundentity = trace_ent;
+	}
+
+	 /* corner death protection: checks if we are wedged between walls so gravity doesnt accumulate */
+	if (!(self.flags & FL_ONGROUND) && self.velocity[2] < -100.0f) {
+		float movedZ    = startZ - self.origin[2];
+		float expectedZ = -self.velocity[2] * input_timelength;
+		if (movedZ < expectedZ * 0.1f) {
+			self.velocity[2] = 0;
+		}
 	}
 }
 
